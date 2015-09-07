@@ -1,0 +1,45 @@
+package mc.examples.lwc.edl;
+
+/**
+* Entity Definition Language (EDL) for Language Workbench Comparison (LWC).
+* It's a simple data definition language to define entities with properties. 
+* Properties have a name and a type. 
+* It's possible to use primitive types for properties (string, date and int), as well as other Entities.
+*/
+grammar EDL extends mc.grammar.lexicals.Lexicals {
+
+  ////////// PRODUCTIONS //////////
+  
+  EDLCompilationUnit =
+    ("package" package:(Name& || ".")+ ";")? 
+    (MCImportStatement)*
+    Entity;
+    
+  MCImportStatement = "import" importList:(Name& || ".")* ("." star:["*"])? ";" ;
+  
+  // This rule defines an entity
+  Entity =
+    "entity" Name "{" (Property)*
+  "}" ;
+
+  // This interface is implemented by all possible types of EDL language
+  interface Type;
+  
+  // Primitive types
+  StringLiteral implements Type = "string"; 
+  
+  IntLiteral implements Type = "int";
+  
+  DateLiteral implements Type = "date";
+  
+  // This type is a reference to another entity
+  ReferenceType implements Type = QualifiedName;
+  
+  // The rule for a property
+  Property = Type Name;
+  
+  // The rule for a qualified name
+  QualifiedName = (Name || ".")*;
+  
+  
+}

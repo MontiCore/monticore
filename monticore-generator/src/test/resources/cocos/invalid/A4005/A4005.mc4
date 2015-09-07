@@ -1,0 +1,8 @@
+package cocos.invalid.A4005;
+
+grammar A4005 {
+  A;
+
+  B = ((C:A)*)?;
+
+}

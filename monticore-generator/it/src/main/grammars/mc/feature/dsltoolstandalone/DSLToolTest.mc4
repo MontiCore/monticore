@@ -1,0 +1,17 @@
+package mc.feature.dsltoolstandalone;
+
+grammar DSLToolTest extends mc.common.Basics { 
+
+   DSLToolEvent =
+		"dsltoolevent" (public:["public"] | private:["private"] | protected:["protected"] | final:["final"] )? Name "{" body:DSLToolEventBody "}";
+
+	DSLToolTestUnit = "dsltooltestunit" Name "{" DSLToolEvent "}";
+	
+	DSLToolEventBody =
+	    (public:["public"] | private:["private"] | protected:["protected"])? "body" type:Name Name;
+	
+	// Tests if concepts are allowed in DSLTool
+	concept antlr {
+	}
+		
+}

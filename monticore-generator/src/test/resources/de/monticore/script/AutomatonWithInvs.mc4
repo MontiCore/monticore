@@ -1,0 +1,4 @@
+
+grammar Automaton2 extends InvAutomaton, Expression {
+  Invariant = Exp;
+}

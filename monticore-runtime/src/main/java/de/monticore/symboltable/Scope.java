@@ -1,0 +1,196 @@
+/*
+ * ******************************************************************************
+ * MontiCore Language Workbench
+ * Copyright (c) 2015, MontiCore, All rights reserved.
+ *
+ * This project is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * ******************************************************************************
+ */
+
+package de.monticore.symboltable;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import de.monticore.ast.ASTNode;
+import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.symboltable.resolving.ResolvingFilter;
+
+/**
+ * Super type of all scopes in the symbol table. A scope defines/contains a collection of symbols
+ * and can have an enclosing and several sub scopes. An example is the method scope in Java. A
+ * method scope can define variables and can have sub scopes, such as if-blocks. The enclosing
+ * scope is the scope of the class which defines the method.
+ *
+ * @author  Pedram Mir Seyed Nazari
+ *
+ */
+public interface Scope {
+
+  /**
+   * @return the name of the scope, if it is a named scope. If a symbol spans this scope, the name usually is the same
+   * as the spanning symbol's name.
+   *
+   * @see Scope#getSpanningSymbol()
+   */
+  Optional<String> getName();
+
+  // TODO PN add method getFullName() analogous to symbol.getFullName()?
+
+  /**
+   * @return the enclosing scope. In Java, for example, the enclosing scope of a method scope is
+   * the class scope that defines the method.
+   */
+  Optional<? extends Scope> getEnclosingScope();
+
+  /**
+   * @return the sub scopes. In Java, for example, method scopes are the sub scopes of a class
+   * scope.
+   */
+  List<? extends Scope> getSubScopes();
+
+  /**
+   * Resolves the symbol with the given <code>name</code> and <code>kind</code> starting from
+   * this scope. If no symbols are found, the resolving is continued in the enclosing scope. Note
+   * that hiding has also an impact on whether the resolving should continue in the enclosing scope.
+   *
+   * @param name the symbol name to be resolved
+   * @param kind the symbol kind to be resolved
+   * @param <T> the type of the resolved symbol
+   *
+   * @return the symbol with the given <code>name</code> and <code>kind</code> starting from
+   * this scope.
+   *
+   * @throws de.monticore.symboltable.resolving.ResolvedSeveralEntriesException Thrown if more than one
+   * symbol is resolved.
+   */
+  <T extends Symbol> Optional<T> resolve(String name, SymbolKind kind);
+
+  /**
+   *
+   * Resolves the symbol with the given <code>name</code> and <code>kind</code> starting from
+   * this scope. Additionally, the symbol must have a proper access <code>modifier</code>. For
+   * example, in Java, if <code>modifier</code> was <code>protected</code>, the symbol would have
+   * to be declared as <code>protected</code> or <code>public</code>. If no symbols are found,
+   * the resolving is continued in the enclosing scope. Note that hiding has also an impact on whether the
+   * resolving should continue in the enclosing scope.
+   *
+   * @param name the symbol name to be resolved
+   * @param kind the symbol kind to be resolved
+   * @param <T> the type of the resolved symbol
+   *
+   * @return the symbol with the given <code>name</code> and <code>kind</code> starting from
+   * this scope.
+   *
+   * @throws de.monticore.symboltable.resolving.ResolvedSeveralEntriesException Thrown if more than one
+   * symbol is resolved.
+   */
+  <T extends Symbol> Optional<T> resolve(String name, SymbolKind kind, AccessModifier modifier);
+
+  // TODO PN Doc
+  <T extends Symbol> Collection<T> resolveMany(String name, SymbolKind kind);
+
+  /**
+   * Resolves the symbol with the given <code>name</code> and <code>kind</code> only within scope.
+   *
+   * @param name the symbol name to be resolved
+   * @param kind the symbol kind to be resolved
+   * @param <T> the type of the resolved symbol
+   *
+   * @return the symbol with the given <code>name</code> and <code>kind</code> only within scope.
+   *
+   * @throws de.monticore.symboltable.resolving.ResolvedSeveralEntriesException Thrown if more than one
+   * symbol is resolved.
+   */
+  <T extends Symbol> Optional<T> resolveLocally(String name, SymbolKind kind);
+
+  /**
+   * Resolves all symbols with the given <code>kind</code> only within this scope.
+   *
+   * @param kind the symbol kind to be resolved
+   * @param <T> the type of the resolved symbols
+   *
+   * @return the symbols with the given <code>name</code> and <code>kind</code> only within scope.
+   */
+  <T extends Symbol> Collection<T> resolveLocally(SymbolKind kind);
+
+  /**
+   * Resolves the symbol fulfilling the <code>predicate</code>, starting from this scope.  If no
+   * symbols are found, the resolving is continued in the enclosing scope.
+   *
+   *
+   * @param predicate the predicate that has to be fulfilled by the symbol
+   *
+   * @return the symbol fulfilling the <code>predicate</code>, starting from this scope.
+   */
+  Optional<? extends Symbol> resolve(SymbolPredicate predicate);
+
+  /**
+   *
+   * @return all symbols directly defined/contained in this scope (not in enclosing scope).
+   */
+  List<Symbol> getSymbols();
+
+  /**
+   * @return number of symbols directly defined/contained in this scope (not in enclosing scope).
+   */
+  int getSymbolsSize();
+
+  // TODO PN  add method hasSymbol(String, SymbolKind)
+
+  /**
+   * @return true, if this scope defines a new name space. For example, a Java method defines a
+   * new name space, but an if-statement does not.
+   *
+   * @deprecated use {@link #isShadowingScope()} instead.
+   */
+  @Deprecated
+  boolean definesNameSpace();
+
+  /**
+    * @return true, if this scope shadows symbols of the enclosing scope.
+   */
+  boolean isShadowingScope();
+
+  /**
+   * @return true, if this scope is spanned by a symbol. For example, a Java method spans a
+   * method scope.
+   */
+  default boolean isSpannedBySymbol() {
+    return getSpanningSymbol().isPresent();
+  }
+
+  /**
+   * @return the symbol that spans this scope. For example, a Java method spans a
+   * method scope.
+   */
+  Optional<? extends ScopeSpanningSymbol> getSpanningSymbol();
+
+  /**
+   * Returns the resolvers that are available in this scope. Within a simple grammarlanguage, these
+   * resolvers are usually the same for all scopes of the grammarlanguage. The composing languages this
+   * may vary.
+   *
+   * @return the resolvers available in this scope.
+   */
+  Set<ResolvingFilter<? extends Symbol>> getResolvingFilters();
+
+  /**
+   * @return the corresponding ast node
+   */
+  Optional<? extends ASTNode> getAstNode();
+
+
+}

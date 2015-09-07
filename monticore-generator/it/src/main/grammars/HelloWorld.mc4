@@ -1,0 +1,47 @@
+/*
+
+This grammar is a test that generation also works for top level concepts
+
+
+*/
+grammar HelloWorld extends mc.common.Basics { 
+
+
+Start = "Hello" "World" "!";
+
+
+Composite implements Component =  
+  "composite"  "(" children:Component* ")";
+  
+
+Leaf implements Component =
+  "leaf" value:STRING ;
+
+ast Composite =
+  method public int getDepth() {
+    int maxDepth = 0; 
+    for (ASTComponent child: getChildren()) {
+      int depth = child.getDepth() + 1;
+      if (depth>maxDepth) {
+        maxDepth = depth;
+      }
+    }
+    return maxDepth;
+  }
+;
+
+ast Leaf = 
+ Children:Component*
+ method public int getDepth() { return 0;}
+;
+
+interface Component;
+ast Component =
+  children:Component*
+  method public int getDepth() {}
+;
+
+
+Test =	["private"];
+
+}

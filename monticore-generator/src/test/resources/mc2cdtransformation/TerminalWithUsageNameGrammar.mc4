@@ -1,0 +1,7 @@
+package mc2cdtransformation;
+
+grammar TerminalWithUsageNameGrammar {
+
+   A = testname : "literal";
+  
+}      

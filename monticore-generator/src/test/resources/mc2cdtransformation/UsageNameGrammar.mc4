@@ -1,0 +1,11 @@
+package mc2cdtransformation;
+
+grammar UsageNameGrammar {
+
+  A = nonTerminalUsageName:X;
+  
+  B = constantUsageName:["cons"];
+  
+  X;
+  
+}

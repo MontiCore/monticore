@@ -1,0 +1,13 @@
+package de.monticore;
+
+classdiagram Simple {
+
+  class ASTA {
+    public String name;
+  }
+  
+  class ASTB {
+    public ASTA a;
+  }
+  
+}

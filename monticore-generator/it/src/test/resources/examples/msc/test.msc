@@ -1,0 +1,21 @@
+
+msc test{
+
+  instance i{
+    out Hello to j;
+    in World from j;
+
+    //TODO add more conditions      
+    condition cond shared all{
+     a
+    }
+  }
+
+  instance j{
+    in Hello from i;
+    out World to i;
+    
+    condition cond shared all;
+  }
+
+}

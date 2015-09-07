@@ -1,0 +1,12 @@
+package cocos.invalid.A4013;
+
+grammar A4013 {
+  A extends B;
+
+  ast A astextends C;
+
+  B;
+
+  C;
+
+}

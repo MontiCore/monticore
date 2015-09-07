@@ -1,0 +1,7 @@
+package cocos.invalid.A0276;
+
+grammar A0276 {
+
+  external A;
+
+}

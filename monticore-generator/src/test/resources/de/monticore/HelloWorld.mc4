@@ -1,0 +1,6 @@
+package de.monticore;
+
+grammar HelloWorld  {
+
+	HelloWorld = "Hello" "World" "!";
+}

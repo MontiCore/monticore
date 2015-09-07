@@ -1,0 +1,37 @@
+package mc.feature.wiki;
+
+
+grammar Wiki {
+
+WikiArtikel = (text:WikiZeilenElement)*;
+
+
+interface SatzElement;
+
+Wordtt implements SatzElement = 
+   (text:WORD | text:WS | text:"=" | text:"*" | text:"-" | text:":" | text:";" | text:"[" | text:"]" | text:"#");
+
+ast Wordtt =
+	text:WORD
+;
+
+interface WikiZeilenElement;
+
+Ueberschrift1 implements WikiZeilenElement = 
+	"=" "=" element:WikiElement "=" "=" NL;
+
+interface WikiElement;
+
+Satz implements WikiElement = (element:SatzElement)+;
+
+token WORD = (~('\r' | ' ' | '\n' | ':' | ';' | '-' | '*' |  '[' | ']' | 
+'#' | '='| '\''))+;
+
+token WS = (' ');
+
+token NL = ("\r\n" | "\n") ;
+
+
+}
+
+

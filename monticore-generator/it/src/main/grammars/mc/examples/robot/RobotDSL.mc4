@@ -1,0 +1,43 @@
+package mc.examples.robot;
+
+grammar RobotDSL extends mc.grammar.lexicals.Lexicals {
+
+    token INT = ('0'..'9')+;
+    
+    /**
+    * A procedure consists of one to many movements.
+    */
+    RobotProcedure =
+        "procedure" Name "{"
+            (Movement || ",")*
+        "}";	
+        
+    QualifiedName =
+        parts:(Name || ".")*;
+    
+    
+    interface Movement;
+    
+    /**
+    * Is used to reference a procedure that is defined in its own compilation unit.
+    * @reference qualified name of the referenced procedure
+    * @iteration amount iterate the procedure amount times
+    */
+    ProcedureReference implements Movement = 
+    	Iteration "procedure" reference:QualifiedName;
+    
+    /**
+    * A simple move to a direction.
+    *
+    * @amount iterate the move amount times
+    * @direction the moves direction 
+    */
+    SimpleMove implements Movement = 
+    	Iteration Direction;
+    
+    Iteration =
+    	(amount:INT "*")?;
+
+    enum Direction = 
+    	"NORTH" | "WEST" | "EAST" | "SOUTH" | "UP" | "DOWN";
+}

@@ -1,0 +1,7 @@
+package cocos.invalid.A2031;
+
+grammar A2031 {
+
+  A = B;
+
+}

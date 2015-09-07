@@ -1,0 +1,1 @@
+${glex.bindHookPoint("hp",tc.instantiate("de.monticore.generating.templateengine.TemplateHookPoint", ["de.monticore.generating.templateengine.templates.A"])) }TopTemplateHook ${tc.include("de.monticore.generating.templateengine.templates.HookCall")}

@@ -1,0 +1,11 @@
+package mc2cdtransformation;
+
+grammar ConstantsGrammar {
+    
+    // usual naming of a constant
+    A = usageCns:["Cns"];
+        
+    // short form equivalent to Cns:["Cns"]   
+    B = ["Cns"];
+    
+}

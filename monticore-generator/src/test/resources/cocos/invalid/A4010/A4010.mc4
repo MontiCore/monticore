@@ -1,0 +1,6 @@
+package cocos.invalid.A4010;
+
+grammar A4010 extends mc.grammars.types.TestTypes  {
+  abstract ArrayType;
+
+}

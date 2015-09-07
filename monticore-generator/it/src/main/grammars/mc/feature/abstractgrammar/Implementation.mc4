@@ -1,0 +1,10 @@
+package mc.feature.abstractgrammar;
+
+grammar Implementation extends mc.common.Basics, mc.feature.abstractgrammar.AbstractGrammar {
+  
+  B implements II = "impl" Name;
+  
+  C extends AA = "ext" Name;
+  
+
+}      

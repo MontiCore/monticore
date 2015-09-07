@@ -1,0 +1,9 @@
+package cocos.invalid.A2102;
+
+grammar A2102d {
+  enum A = "a";
+
+  B implements A;
+
+}
+

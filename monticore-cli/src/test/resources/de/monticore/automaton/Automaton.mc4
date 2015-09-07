@@ -1,0 +1,30 @@
+package de.monticore.automaton;
+
+/*
+   MCG for Automaton, Version Feb 27th, 2015
+*/
+
+grammar Automaton extends de.monticore.lexicals.Lexicals {
+
+  Automaton =
+    "automaton" Name "{" (states:State | transitions:Transition)* "}" ;
+
+  /** A ASTState represents a state of a finite automaton
+      @attribute Name Name of state
+      @attribute start True if state is start state
+      @attribute final True if state is a final state
+      @attribute States List of states
+      @attribute Transitions List of transitions
+  */
+  State =
+    "state" Name (("<<" ["initial"] ">>" ) | ("<<" ["final"] ">>" ))* ";" ;
+
+
+  /** A ASTTransition represents a transition
+      @attribute From Name of the state from which the transitions starts
+      @attribute Activate Activation signal for this transition
+      @attribute To Name of the state to which the transitions goes
+  */
+  Transition =
+    from:Name "-" activate:Name ">" to:Name ";" ;
+}

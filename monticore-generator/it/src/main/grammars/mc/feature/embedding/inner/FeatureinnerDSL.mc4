@@ -1,0 +1,9 @@
+/* Sinnfreise Sprache, an Automaten angelehnt, um MontiCore zu testen */
+package mc.feature.embedding.inner;
+
+grammar FeatureinnerDSL extends mc.common.Basics { 
+	
+	Inner= Name;
+	Inner2= "{" Name "}";
+	
+}

@@ -1,0 +1,29 @@
+package cocos.invalid.A2025;
+
+grammar A2025 {
+
+  A;
+
+  abstract A;
+
+  enum A = "B";
+
+  interface A;
+
+  external A;
+
+  token A  = "B";
+
+  A;
+
+  abstract A;
+
+  enum A  = "B";
+
+  interface A;
+
+  external A;
+
+  token A = "B";
+
+}

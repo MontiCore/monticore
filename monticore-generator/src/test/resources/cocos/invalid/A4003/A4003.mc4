@@ -1,0 +1,7 @@
+package cocos.invalid.A4003;
+
+grammar A4002  {
+
+  A;
+
+}

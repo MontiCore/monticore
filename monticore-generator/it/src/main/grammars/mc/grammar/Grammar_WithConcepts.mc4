@@ -1,0 +1,16 @@
+package mc.grammar;
+
+grammar Grammar_WithConcepts extends mc.grammar.Grammar, mc.lang.JavaDSL,
+  mc.grammar.concepts.antlr.Antlr {
+  
+  MCConcept = ConceptAntlr;
+  
+  Action = BlockStatement*;
+  
+  ExpressionPredicate = Expression;
+    
+  ActionAntlr = ClassMemberDeclaration*;
+  
+  AntlrCode = ClassMemberDeclaration*;
+  
+}

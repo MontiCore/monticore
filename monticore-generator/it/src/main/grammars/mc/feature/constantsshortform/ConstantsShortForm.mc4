@@ -1,0 +1,13 @@
+package mc.feature.constantsshortform;
+
+grammar ConstantsShortForm {
+    
+    // usual naming of a constant
+    A =
+        myConst:["const"];
+        
+    // short form equivalent to const:["const"]   
+    B = 
+        ["const"];
+                
+}

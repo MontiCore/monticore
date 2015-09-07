@@ -1,0 +1,10 @@
+package cocos.invalid.A4012;
+
+grammar A4012a {
+  A;
+
+  B;
+
+  abstract C extends A, B;
+
+}

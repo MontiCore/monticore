@@ -1,0 +1,7 @@
+package mc.feature.embedding.outer;
+
+grammar Embedded extends mc.feature.embedding.outer.Outer, mc.feature.embedding.inner.Inner {
+
+ Ex = X;
+    
+}

@@ -1,0 +1,4 @@
+Renaming automaton.Testautomat {
+	rename a b; // has to fail because b already exists
+	rename c f; // works
+}

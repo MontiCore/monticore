@@ -1,0 +1,13 @@
+package mc.feature.compilationunit;
+
+grammar Compunit extends mc.common.Basics { 
+
+	ast Cu = name : String;
+
+	interface Cu;
+	
+	CuFoo implements Cu = "foo" Name;
+	
+	CuBar implements Cu = "bar" Name;
+	
+}

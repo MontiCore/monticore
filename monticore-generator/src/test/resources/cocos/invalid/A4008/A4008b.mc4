@@ -1,0 +1,7 @@
+package cocos.invalid.A4008;
+
+grammar A4008b extends mc.grammars.types.TestTypes {
+
+  enum ArrayType = "a";
+
+}

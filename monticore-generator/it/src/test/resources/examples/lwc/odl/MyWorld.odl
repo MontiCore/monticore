@@ -1,0 +1,20 @@
+package lwc.odl;
+
+import lwc.edl.Person;
+
+instances MyWorld {
+
+  Person person = {
+     birthday = 01.01.1999
+     name = "alice"
+     id = 1 
+     car = car
+  }
+  
+  lwc.edl.Car car = {
+     model = "VW"
+  	 age = 3 
+  	 owner = person
+  }
+
+}

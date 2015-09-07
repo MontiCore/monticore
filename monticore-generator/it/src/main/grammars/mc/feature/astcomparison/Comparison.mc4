@@ -1,0 +1,9 @@
+package mc.feature.astcomparison;
+
+grammar Comparison {
+
+    S = A*;
+    
+    A = (Foo:"foo" | Bar:"bar");
+
+}

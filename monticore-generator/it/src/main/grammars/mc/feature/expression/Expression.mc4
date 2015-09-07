@@ -1,0 +1,13 @@
+/* Sinnfreise Sprache um MontiCore zu testen */
+package mc.feature.expression;
+
+grammar Expression extends mc.common.Basics { 
+
+  token NumericLiteral = ('0'..'9')+;
+
+  Expr = left:Expr (op:["*"]|op:["/"]) right:Expr |
+         left:Expr (op:["+"]|op:["-"]) right:Expr |
+         "(" Expr ")" |
+         NumericLiteral;
+
+}

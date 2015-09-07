@@ -1,0 +1,22 @@
+package mc.feature.embedding.outer;
+
+component grammar Outer extends mc.common.Basics {
+
+	external Ex;
+	
+	Start = "a" ( Ex | "a" ) "a" // ( Ex2 | "a" ) "a"
+	;
+	
+	Start2 = "a" Ex "a";
+	
+	Start3 = "b" Foo;
+	
+	interface Foo;
+    
+    Foo1 implements Foo =
+        Ex;
+    
+    Foo2 implements Foo =
+      "foo2";
+    
+}

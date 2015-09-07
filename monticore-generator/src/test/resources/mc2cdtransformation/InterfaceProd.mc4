@@ -1,0 +1,14 @@
+package mc2cdtransformation;
+
+grammar InterfaceProd {
+
+  interface A extends extendedProd; 
+  
+  interface B astextends AstExtendedType;
+  
+  interface C astextends java.io.Serializable;
+  
+  extendedProd;
+  
+  
+}      

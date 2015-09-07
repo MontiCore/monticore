@@ -1,0 +1,9 @@
+package mc.feature.visitor;
+
+component grammar Sup extends mc.common.Basics {
+
+  external E;
+  
+  A = "test1" E;
+
+}

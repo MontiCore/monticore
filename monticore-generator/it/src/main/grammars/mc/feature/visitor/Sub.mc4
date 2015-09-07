@@ -1,0 +1,9 @@
+package mc.feature.visitor;
+
+grammar Sub extends mc.feature.visitor.Sup {
+
+  E = B;
+  
+  B = "test2";
+
+}

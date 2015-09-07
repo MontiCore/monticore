@@ -1,0 +1,82 @@
+/*
+ * ******************************************************************************
+ * MontiCore Language Workbench
+ * Copyright (c) 2015, MontiCore, All rights reserved.
+ *
+ * This project is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * ******************************************************************************
+ */
+
+package de.monticore.symboltable.mocks.languages.scandentity;
+
+import java.util.Optional;
+
+import de.monticore.CommonModelingLanguage;
+import de.monticore.modelloader.ModelingLanguageModelLoader;
+import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.mocks.languages.entity.ActionSymbol;
+import de.monticore.symboltable.mocks.languages.entity.EntityLanguage;
+import de.monticore.symboltable.mocks.languages.entity.EntitySymbol;
+import de.monticore.symboltable.mocks.languages.entity.PropertySymbol;
+import de.monticore.symboltable.mocks.languages.statechart.StateChartSymbol;
+import de.monticore.symboltable.mocks.languages.statechart.StateSymbol;
+import de.monticore.symboltable.resolving.CommonResolvingFilter;
+import de.monticore.antlr4.MCConcreteParser;
+import de.monticore.ast.ASTNode;
+import de.se_rwth.commons.logging.Log;
+
+public class EntityEmbeddingScLanguage extends CommonModelingLanguage {
+  
+  public static final String FILE_ENDING = EntityLanguage.FILE_ENDING;
+  
+  private MCConcreteParser parser;
+  
+  public EntityEmbeddingScLanguage() {
+    super("Entity with embedded Statechart language", FILE_ENDING);
+    
+    // add default resolvers of the entity language
+    addResolver(CommonResolvingFilter.create(EntitySymbol.class, EntitySymbol.KIND));
+    addResolver(CommonResolvingFilter.create(ActionSymbol.class, ActionSymbol.KIND));
+    addResolver(CommonResolvingFilter.create(PropertySymbol.class, PropertySymbol.KIND));
+    
+    // add default resolvers of the statechart language
+    addResolver(CommonResolvingFilter.create(StateChartSymbol.class, StateChartSymbol.KIND));
+    addResolver(CommonResolvingFilter.create(StateSymbol.class, StateSymbol.KIND));
+    
+    // add sc2entity resolvers
+    addResolver(new Sc2EntityTransitiveResolvingFilter());
+  }
+  
+  @Override
+  public MCConcreteParser getParser() {
+    return parser;
+  }
+  
+  @Override
+  public Optional<CompositeScAndEntitySymbolTableCreator> getSymbolTableCreator(ResolverConfiguration
+      resolverConfiguration, MutableScope enclosingScope) {
+    return Optional.of(new CompositeScAndEntitySymbolTableCreator(resolverConfiguration,
+        enclosingScope));
+  }
+  
+  // used for testing
+  public void setParser(final MCConcreteParser parser) {
+    this.parser = Log.errorIfNull(parser);
+  }
+
+  @Override
+  protected ModelingLanguageModelLoader<? extends ASTNode> provideModelLoader() {
+    return new EntityEmbeddingScModelLoader(this);
+  }
+}

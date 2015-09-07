@@ -1,0 +1,68 @@
+package mc.common;
+
+grammar Basics {
+ 
+  token Name =
+        ( 'a'..'z' | 'A'..'Z' | '_' | '$' )( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '$' )*;
+  
+  fragment token NEWLINE =
+    ('\r' '\n' |
+    '\r' |
+    '\n' ):
+  ;
+
+  token WS =
+    (' ' | 
+    '\t' |
+     '\r' '\n' |
+    '\r' |
+    '\n' ) :{_channel = HIDDEN;};
+    
+  token SL_COMMENT =
+    "//" (~('\n' |
+      '\r' )
+    )*
+    : {_channel = HIDDEN;
+    if (getCompiler() != null) {
+      de.monticore.ast.Comment _comment = new de.monticore.ast.Comment(getText());
+      de.se_rwth.commons.SourcePosition startPos = new de.se_rwth.commons.SourcePosition(_tokenStartLine, _tokenStartCharPositionInLine);
+      _comment.set_SourcePositionStart(startPos);
+      _comment.set_SourcePositionEnd(getCompiler().computeEndPosition(startPos, getText()));
+      getCompiler().addComment(_comment);
+  }};
+
+  token ML_COMMENT =
+    "/*" ({_input.LA(2) != '/'}?'*' |
+     NEWLINE |
+      ~('*' |
+      '\n' |
+      '\r' )
+    )*
+    "*/" : {_channel = HIDDEN;
+    if (getCompiler() != null) {
+      de.monticore.ast.Comment _comment = new de.monticore.ast.Comment(getText());
+      de.se_rwth.commons.SourcePosition startPos = new de.se_rwth.commons.SourcePosition(_tokenStartLine, _tokenStartCharPositionInLine);
+      _comment.set_SourcePositionStart(startPos);
+      _comment.set_SourcePositionEnd(getCompiler().computeEndPosition(startPos, getText()));
+      getCompiler().addComment(_comment);
+  }};
+
+  fragment token ESC =
+    '\\' ('n' |
+    'r' |
+    't' |
+    '"' |
+    '\\' );
+
+token STRING =
+    '"' ( ESC |
+      ~('"' |
+      '\\' |
+      '\n' |
+      '\r' )
+    )*
+'"': {setText(getText().substring(1, getText().length() - 1));};
+
+MCImportStatement = "import" importList:Name& ( "." importList:Name&)* ("." Star:["*"])? ";" ;
+     
+}

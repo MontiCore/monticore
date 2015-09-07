@@ -1,0 +1,19 @@
+package mc.examples.automaton.renaming;
+
+grammar Renaming extends mc.grammar.lexicals.Lexicals {
+
+/** A ASTRename represents a renaming script 
+	@attribute Name Name of the renaming script
+	@attribute RenameStatements List of RenameStatements
+*/
+Rename =
+  "Renaming" (Name || ".")* "{" RenameStatement* "}";
+ 
+/** A ASTRenameStatement represents a renaming statement 
+	@attribute From Rename this name 
+	@attribute To Target of the rename
+*/  
+RenameStatement = 
+  "rename" from:Name to:Name ";" ;    
+
+}

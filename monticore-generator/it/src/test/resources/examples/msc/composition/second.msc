@@ -1,0 +1,12 @@
+msc second{
+
+  instance i{
+    out message to k;
+   }
+  
+
+  instance k{
+    in message from i;
+  }
+
+}

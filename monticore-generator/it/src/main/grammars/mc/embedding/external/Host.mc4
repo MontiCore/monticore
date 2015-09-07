@@ -1,0 +1,9 @@
+package mc.embedding.external;
+
+component grammar Host extends de.monticore.lexicals.Lexicals {
+
+   Host@! = Name "content" Content;
+
+   external Content@!;
+
+}

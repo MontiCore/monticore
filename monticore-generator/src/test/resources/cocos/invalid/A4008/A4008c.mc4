@@ -1,0 +1,7 @@
+package cocos.invalid.A4008;
+
+grammar A4008c extends mc.grammars.types.TestTypes {
+
+  token ArrayType = "a";
+
+}

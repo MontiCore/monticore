@@ -1,0 +1,60 @@
+package mc.examples.lwc.odl;
+
+/**
+* Object Definition Language (ODL) for Language Workbench Comparison (LWC).
+* This language defines instances of the EDL entities, 
+* including assignment of values to the properties.
+*/
+grammar ODL extends mc.grammar.lexicals.Lexicals {
+     
+  token INT  = ('0'..'9')+;  
+  
+  ////////// PRODUCTIONS //////////
+  
+  ODLCompilationUnit =
+    ("package" package:(Name& || ".")+ ";")? 
+    (MCImportStatement)*
+    Instances;
+    
+  MCImportStatement = "import" importList:(Name& || ".")* ("." star:["*"])? ";" ;
+    
+  Instances = "instances" Name "{" (Object)* "}";
+
+  Object = type:QualifiedName Name "=" "{" (Assignment)* "}";
+	
+  Assignment = Name "=" Value;
+
+	
+  interface Value;
+		
+  StringValue implements Value = STRING;
+  
+  IntValue implements Value = INT;
+  
+  DateValue implements Value = Date; 
+
+  ReferenceValue implements Value = Name;
+  
+  
+  Date = day:INT "." month:INT "." year:INT;
+  
+  QualifiedName = (Name || ".")*;
+  
+  fragment token ESC =
+    '\\' ('n' |
+    'r' |
+    't' |
+    '"' |
+    '\\' );
+
+  token STRING =
+    '"' ( ESC |
+      ~('"' |
+      '\\' |
+      '\n' |
+      '\r' )
+    )*
+	'"' : {setText(getText().substring(1, getText().length() - 1));};
+
+    
+}

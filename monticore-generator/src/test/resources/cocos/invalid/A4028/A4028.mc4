@@ -1,0 +1,14 @@
+package cocos.invalid.A4028;
+
+grammar A4028 {
+
+  A;
+
+  B;
+
+  E = a:A;
+
+  ast E = a:B;
+
+
+}

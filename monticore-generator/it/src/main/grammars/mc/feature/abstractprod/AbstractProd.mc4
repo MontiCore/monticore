@@ -1,0 +1,14 @@
+package mc.feature.abstractprod;
+
+grammar AbstractProd {
+
+
+abstract A;
+
+B extends A = "b";
+
+
+C extends A = "c";
+
+
+}

@@ -1,0 +1,9 @@
+package mc2cdtransformation.super;
+
+grammar Supergrammar {
+  
+  SuperProd;
+ 
+  interface SuperInterface;
+  
+}

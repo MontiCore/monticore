@@ -1,0 +1,8 @@
+package cocos.invalid.A4017;
+
+grammar A4017 {
+
+  token A = B;
+
+  B;
+}

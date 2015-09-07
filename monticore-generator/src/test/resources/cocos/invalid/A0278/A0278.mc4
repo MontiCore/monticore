@@ -1,0 +1,7 @@
+package cocos.invalid.A0278;
+
+grammar A0278 {
+
+  interface A;
+
+}

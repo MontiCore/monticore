@@ -1,0 +1,15 @@
+/* Sinnfreise Sprache, an Automaten angelehnt, um MontiCore zu testen */
+package mc.feature.followoption;
+
+grammar FollowOption extends mc.common.Basics {
+
+	options {
+		 follow A "," ; 
+	}
+
+  	
+  	A = ("test")?;
+  
+
+	B = ("test")?;
+}

@@ -1,0 +1,13 @@
+package mc.feature.abstractgrammar;
+
+component grammar AbstractGrammar {
+    
+  interface II;
+  
+  abstract AA;
+  
+  UseUnterface = "use" II;
+  
+  UseAbstract = "use" AA;
+  
+}      

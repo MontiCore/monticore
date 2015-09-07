@@ -1,0 +1,13 @@
+sm A {
+
+ state a {
+ 	entry <<java>> {z = z +1;}
+ 	state x;
+ 	state y;
+ }
+ 
+ state b {entry a=b;}
+	
+ a -x> b {a=b;};
+ a-y>b {a=c;};
+}

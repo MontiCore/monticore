@@ -1,0 +1,18 @@
+package mc.grammars;
+
+grammar TestGrammarWithConcepts extends mc.grammars.TestGrammar, 
+  mc.grammars.concepts.antlr.TestAntlr, de.JavaDSL {
+  
+  MCConcept = ConceptAntlr;
+  
+  Action = Statements;
+  
+  ExpressionPredicate = Expression;
+  
+  ASTScript = MCStatement;
+  
+  ActionAntlr = Statements;
+  
+  AntlrCode = Statements;
+  
+}

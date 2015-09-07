@@ -1,0 +1,82 @@
+/*
+ * Copyright (c) 2015 RWTH Aachen. All rights reserved.
+ *
+ * http://www.se-rwth.de/
+ */
+package org.nest.nestml;
+
+grammar NESTML extends org.nest.spl.SPL {
+
+
+  NESTMLCompilationUnit = "package" packageName:QualifiedName
+    BLOCK_OPEN
+    (Import | NEWLINE)*
+    (Neuron | Component | SL_COMMENT | NEWLINE)*
+    BLOCK_CLOSE (SL_COMMENT | NEWLINE)*;
+
+  Import = "import" QualifiedName ([star:".*"])? (";")?;
+
+  Neuron = "neuron" Name Body;
+
+  Component = "component" Name Body;
+
+  interface BodyElement;
+
+  Body = BLOCK_OPEN ( SL_COMMENT | NEWLINE | BodyElement)* BLOCK_CLOSE;
+
+  USE_Stmt implements BodyElement = "use" name:QualifiedName "as" alias:Name;
+
+  Var_Block implements BodyElement =
+      ([state:"state"]|[para:"parameter"]|[internal:"internal"])
+          BLOCK_OPEN
+              (AliasDecl (";" AliasDecl)* (";")?
+                | SL_COMMENT | NEWLINE)*
+          BLOCK_CLOSE;
+
+  AliasDecl = ([hide:"-"])? ([alias:"alias"])? Declaration ("[" invariants:Expr (";" invariants:Expr)* "]")?;
+
+  Input implements BodyElement = "input"
+          BLOCK_OPEN
+              (InputLine | SL_COMMENT | NEWLINE)*
+          BLOCK_CLOSE;
+
+  InputLine = Name "<-" InputType* ([spike:"spike"]|[current:"current"]);
+
+  InputType = (["inhibitory"]|["excitatory"]);
+
+  Output implements BodyElement =
+                  "output" BLOCK_OPEN ([spike:"spike"]|[current:"current"]) ;
+
+  Structure implements BodyElement = "structure"
+              BLOCK_OPEN
+                  (StructureLine | SL_COMMENT | NEWLINE)*
+              BLOCK_CLOSE;
+
+  StructureLine = compartments:QualifiedName ("-" compartments:QualifiedName)*;
+
+  // TODO model it better
+  Function implements BodyElement =
+          "function" Name "(" Parameters? ")" (returnType:QualifiedName | PrimitiveType)?
+             BLOCK_OPEN
+             Block
+             BLOCK_CLOSE;
+
+  Parameters = Parameter ("," Parameter)*;
+
+
+  Parameter = Name type:QualifiedName;
+
+
+  // e.g. first: current time, second: min delay in ms
+  // e.g. first: current time, second: timestep in ms
+  Dynamics implements BodyElement = "dynamics" (MinDelay | TimeStep)
+                                    "(" Parameters? ")"
+                                      BLOCK_OPEN // Todo remove me. It is not the way for modular extension
+                                        Block
+                                      BLOCK_CLOSE;
+
+
+  MinDelay = "minDelay";
+
+  TimeStep = "timestep";
+}

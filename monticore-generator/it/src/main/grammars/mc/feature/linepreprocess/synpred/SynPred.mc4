@@ -1,0 +1,11 @@
+package mc.feature.linepreprocess.synpred;
+
+grammar SynPred {
+
+    S = A 
+        | B;
+    A = ("a")* "b" ;
+    B = ("a")* "c" ;
+
+
+}

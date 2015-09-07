@@ -1,0 +1,18 @@
+package de.monticore;
+
+component grammar RuleWithSymbolReference {
+
+  Name;
+
+  interface S@!;
+
+  interface T@!S;
+
+  A@!T = "a";
+
+  B = an:Name@A;
+
+  external E@!;
+  abstract R@!;
+
+}

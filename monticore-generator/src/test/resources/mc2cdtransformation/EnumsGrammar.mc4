@@ -1,0 +1,15 @@
+package mc2cdtransformation;
+
+grammar EnumsGrammar {
+
+    enum E = "+";
+     
+    enum F = "+" | PLUS:"#" | "test" | "-";
+    
+    enum G = "+" | PLUS:"#";
+    
+    A =  E F G a:["+"] alt:["A_1"|"WORD"];
+   
+	B =  E* "," F*;        
+	
+}

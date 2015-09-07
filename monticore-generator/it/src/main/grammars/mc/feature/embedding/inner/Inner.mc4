@@ -1,0 +1,8 @@
+package mc.feature.embedding.inner;
+
+grammar Inner {
+
+
+	X = ("x"|"y") ;
+	
+}

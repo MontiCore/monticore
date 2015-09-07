@@ -1,0 +1,7 @@
+package cocos.invalid.A2030;
+
+grammar A2030c {
+
+  abstract A implements B;
+
+}

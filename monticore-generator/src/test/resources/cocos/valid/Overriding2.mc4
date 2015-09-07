@@ -1,0 +1,15 @@
+package cocos.valid;
+
+grammar Overriding2 extends mc.grammars.types.TestTypes {
+
+
+  QualifiedName;
+
+  // Override mc.literals.Literals
+      interface Literal extends Expression;
+
+      Expression;
+
+
+
+}

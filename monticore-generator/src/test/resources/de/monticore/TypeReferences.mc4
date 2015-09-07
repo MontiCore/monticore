@@ -1,0 +1,15 @@
+package de.monticore;
+
+grammar TypeReferences { 
+
+  interface A;
+  interface B extends A;
+  
+  
+  P implements B = "p";
+  
+  Q implements C = "q";
+
+  interface C extends B;
+  
+}

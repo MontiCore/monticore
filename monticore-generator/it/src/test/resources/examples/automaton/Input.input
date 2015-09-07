@@ -1,0 +1,11 @@
+input for automaton.Testautomat {
+	x;
+	xx;
+	xxx;
+	y;
+	xy;
+	yyy;
+	xxxyy;
+	xxxyyy; 
+	xxxyx;
+}

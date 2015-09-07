@@ -1,0 +1,10 @@
+package lwc.edl;
+
+import lwc.edl.Car;
+
+entity Person {
+	string name
+	int id
+	date birthday
+	Car car
+}

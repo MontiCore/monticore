@@ -1,0 +1,29 @@
+package mc.feature.lexerformat;
+
+grammar KleenePlus {
+
+	/* Test grammar for iteration symbols (i.e '*' and '+') in lexical productions.
+	   The symbols may be applied either to CHARs or STRINGs, which may be surrounded
+	   by both apostrophs and parentheses or by apostrophs only.*/
+	
+	token KLEENETOKEN = 'a' ('b')*;
+	
+	token SIMPLEKLEENE = 'c' 'd'*;
+	
+    token SIMPLEKLEENESTRING = "ee" "fg"*;
+	
+	token PLUSTOKEN = 'g' ('h')+;
+	
+	token SIMPLEPLUS = 'i' ('j')+;
+	
+	token SIMPLEPLUSSTRING = "kk" "lm"+;
+	
+	KPStart = 
+		kleene:KLEENETOKEN  
+      | simpleKleene:SIMPLEKLEENE
+      | simpleKleeneString:SIMPLEKLEENESTRING 
+      | plus:PLUSTOKEN 
+      | simplePlus:SIMPLEPLUS
+      | simplePlusString:SIMPLEPLUSSTRING;
+
+}

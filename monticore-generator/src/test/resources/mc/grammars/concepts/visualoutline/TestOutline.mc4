@@ -1,0 +1,33 @@
+package mc.grammars.concepts.visualoutline;
+
+
+/**
+	The actual language to define the visual editor behaviour
+*/
+component grammar TestOutline extends mc.grammars.concepts.visualoutline.TestCommon {
+	/**
+		The root element to parse, everything is in common
+	*/
+	VisualOutline =
+		"{"
+			"outline" outlinename:StringLiteral
+			"for" extension:StringLiteral
+			"using" "factory" toolfactory:StringLiteral 
+			("display" displayElements:QualifiedName ("," displayElements:QualifiedName)*)?
+			";"
+			
+			(
+				("stringbuilder" stringBuilder:QualifiedName ";") |
+				("visitor" visitors:QualifiedName ";")
+			)*
+			
+			(styles:VOStyle)*
+			
+			(
+				texts:VOText |
+				links:VOLink |
+				containers:VOContainer
+			)*
+		"}"
+		;
+}

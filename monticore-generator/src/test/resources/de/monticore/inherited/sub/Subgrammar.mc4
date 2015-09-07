@@ -1,0 +1,17 @@
+package de.monticore.inherited.sub;
+
+grammar Subgrammar extends de.monticore.inherited.Supergrammar {
+
+  A = X;
+  
+  B extends X = D;
+  
+  M = K;
+  
+  D = L;
+  
+  // Y = "KK";
+  
+  L implements G  = "JJ";
+ 
+}

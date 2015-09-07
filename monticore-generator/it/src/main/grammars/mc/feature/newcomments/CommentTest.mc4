@@ -1,0 +1,10 @@
+package mc.feature.newcomments;
+
+grammar CommentTest extends mc.common.Basics {
+
+comment token LL = "%%" (~('\r'|'\n'))* ( "\r\n" |'\r' '\n' );
+
+Start = "test";
+
+      
+}

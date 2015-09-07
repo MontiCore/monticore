@@ -1,0 +1,21 @@
+package mc2cdtransformation;
+
+component grammar AbstractProd {
+
+  abstract A extends extendedProd;
+  
+  abstract B implements implementedProd;
+  
+  abstract C astextends AstExtendedType;
+  
+  abstract D astimplements AstImplementedType;
+  
+  abstract E astextends java.util.Observable;
+  
+  abstract F astimplements java.io.Serializable;
+  
+  extendedProd;
+  
+  implementedProd;
+  
+}      

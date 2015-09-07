@@ -1,0 +1,10 @@
+package mc.examples.cartesian;
+
+grammar Coordcartesian extends mc.grammar.lexicals.Lexicals {
+
+    token INT = ('0'..'9')+;
+
+    CoordinateFile = Coordinate+;
+
+    Coordinate     = "(" x:INT "," y:INT ")";
+}    

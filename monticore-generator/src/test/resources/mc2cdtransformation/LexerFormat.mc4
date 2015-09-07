@@ -1,0 +1,60 @@
+package mc2cdtransformation;
+
+grammar LexerFormat {
+
+token NUMBER = 
+	 ('0'..'9')+  : x ->  int  :  { return Integer.parseInt(x.getText()); };
+
+
+token BOOLEAN = 
+	 ('0'|'1'|"true"|"false"|"on"|"off"|"start"|"stop")
+	 : boolean; // support String (default), boolean, char, int, float, double, long, card
+
+token CHAR = 
+	 ('a'..'z') 
+	 : char; // support String (default), boolean, char, int, float, double, long, card
+	
+token NUMBERINT = 
+	 ('0'..'9')+ 
+	 : int; // support String (default), boolean, char, int, float, double, long, card
+
+token NUMBERFLOAT = 
+	 ('0'..'9')+ '.' ('0'..'9')+ 
+	 : float; // support String (default), boolean, char, int, float, double, long, card
+
+token NUMBERDOUBLE = 
+	 ('0'..'9')+ '.' ('0'..'9')+ 
+	 : double; // support String (default), boolean, char, int, float, double, long, card
+
+token NUMBERLONG = 
+	 ('0'..'9')+
+	 : long; // support String (default), boolean, char, int, float, double, long, card
+
+token CARD = 
+	 (('0'..'9')+ | '*' )
+	 : card; // support String (default), boolean, char, int, float, double, long, card 
+	 
+token ID =
+	  ('a'..'z')+;
+	
+token SHORT = 
+	 ('0'..'9') 
+	 : short; // support short
+
+token BYTE = 
+	 ('0'..'9') 
+	 : byte; // support byte
+
+token BYTE2 = 
+	 ('0'..'9') 
+	 : byte; // support byte	 
+	 
+Test = 
+  A:NUMBER | B:BOOLEAN | C:CHAR | D:NUMBERINT | E:NUMBERFLOAT | F:NUMBERDOUBLE | G:NUMBERLONG | H:CARD | I:SHORT | J:BYTE | K:BYTE2;
+  
+ 
+TestList =
+  (numbers:NUMBER)*
+;
+    
+}

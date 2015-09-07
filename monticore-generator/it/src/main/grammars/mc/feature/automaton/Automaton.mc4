@@ -1,0 +1,46 @@
+package mc.feature.automaton;
+
+grammar Automaton extends mc.common.Basics {
+
+/** A ASTAutomaton represents a finite automaton 
+	@attribute Name Name of the automaton
+*/
+Automaton =
+  "automaton" Name body:Body ;
+  
+  
+/** Body of an Automaton or State
+	@attribute States List of states
+	@attribute Transitions List of transitions  
+	*/
+Body = 
+  "{" (states:State | transitions:Transition)* "}" ;
+
+/** A ASTState represents a state of a finite automaton
+	@attribute Name Name of state
+	@attribute start True if state is start state<
+	@attribute final True if state is a final state
+*/
+State =
+  "state" Name 
+  
+  (("<<" initial:["initial"] ">>" ) | ("<<" final:["final"] ">>" ))*
+  
+  (body:Body | ";") ;
+
+
+
+/** A ASTTransition represents a transition
+	@attribute From Name of the state from which the transitions starts
+	@attribute Activate Activation signal for this transition
+	@attribute To Name of the state to which the transitions goes
+*/ 
+Transition =
+  from:Name "-" activate:Name ">" to:Name ";" ;
+  
+  
+  
+SubTransition extends Transition =
+	"sub" from:Name "-" activate:Name ">" to:Name ";" ;
+  
+}

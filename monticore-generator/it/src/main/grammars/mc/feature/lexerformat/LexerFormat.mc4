@@ -1,0 +1,35 @@
+package mc.feature.lexerformat;
+
+grammar LexerFormat {
+
+token NUMBER = 
+	 ('0'..'9')+  : x ->  int  :  { return Integer.parseInt(x.getText()); };
+
+
+token BOOLEAN = 
+	 ("true"|"false"|"on"|"off"|"start"|"stop")
+	 : boolean; // support String (default), boolean, char, int, float, double, long, card
+
+token CHAR = 
+	 ('a'..'z') 
+	 : char; // support String (default), boolean, char, int, float, double, long, card
+	
+token NUMBERFLOAT = 
+	 ('0'..'9')+ '.' ('0'..'9')+ 
+	 : float; // support String (default), boolean, char, int, float, double, long, card
+
+token CARD =
+	 (('0'..'9')+ | '*' )
+	 : card; // support String (default), boolean, char, int, float, double, long, card 
+	 	 
+Test = 
+  a:NUMBER | b:BOOLEAN | c:CHAR | d:NUMBERFLOAT | e:CARD ;
+	
+// TODO SO 	 
+/* 
+enum ENUM =
+	"public" | public:"+";	 	
+*/
+
+	  
+}

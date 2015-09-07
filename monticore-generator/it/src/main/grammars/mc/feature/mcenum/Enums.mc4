@@ -1,0 +1,17 @@
+package mc.feature.mcenum;
+
+grammar Enums extends mc.common.Basics { 
+
+    enum E = "+";
+     
+    enum F = "+" | PLUS:"#" | "test" | "-";
+    
+    enum G = "+" | PLUS:"#";
+    
+    A =  E F G a:["+"] alt:["A_1"|"WORD"];
+   
+	B =  E* "," F*;        
+	
+	C = Name; 
+		                
+}

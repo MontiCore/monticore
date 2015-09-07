@@ -1,0 +1,6 @@
+package mc.feature.linepreprocess.embedding;
+
+grammar AutomatonWithAction extends mc.feature.linepreprocess.embedding.Automaton {
+
+ Action = "{" "DUMMY_ACTION" "}";
+ }

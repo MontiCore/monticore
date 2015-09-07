@@ -1,0 +1,8 @@
+package mc2cdtransformation;
+
+grammar InheritedNonTerminalsGrammar extends mc2cdtransformation.Supergrammar {
+
+  A = X;
+  
+  B extends X;
+}

@@ -1,0 +1,14 @@
+package de.monticore;
+
+grammar CdAttributes {
+
+    CD = (["association"] | ["composition"]) | C | D | A | B;
+
+    C = CDerived:["cderived"] ;
+    
+    D = DDerived:[DDERIVED:"/"];
+    
+    A =  Derived:["derived"] ;
+    
+    B =  Derived:[DERIVED:"/"];
+}    

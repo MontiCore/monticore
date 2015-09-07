@@ -1,0 +1,5 @@
+grammar AutomatonV1 extends Lexicals {
+  Automaton = Name ( State | Transition )* ;
+  State = Name ( "initial" | "final" )* ;
+  Transition = Name Name Name ;   // = from input to
+}

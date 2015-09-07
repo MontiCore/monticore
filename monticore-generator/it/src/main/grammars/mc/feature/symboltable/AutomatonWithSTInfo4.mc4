@@ -1,0 +1,20 @@
+package mc.feature.symboltable;
+
+grammar AutomatonWithSTInfo4 extends mc.common.Basics {
+
+  // AutomatonElement and State are both declared as symbols
+
+  Automaton@! =
+    "automaton" Name "{" AutomatonElement* "}" ;
+
+  interface AutomatonElement@!;
+
+  State@! implements AutomatonElement =
+    "state" Name
+    (("<<" ["initial"] ">>" ) | ("<<" ["final"] ">>" ))*;
+
+
+  Transition implements AutomatonElement =
+    from:Name "-" input:Name ">" to:Name ";" ;
+
+}

@@ -1,0 +1,7 @@
+package cocos.invalid.A4002;
+
+grammar A4002 extends mc.grammars.types.TestTypes {
+
+  abstract ArrayType extends Name;
+
+}

@@ -1,0 +1,7 @@
+package mc2cdtransformation;
+
+grammar ExternalImplementationGrammar extends mc2cdtransformation.Supergrammar {
+
+  Z;
+  
+}

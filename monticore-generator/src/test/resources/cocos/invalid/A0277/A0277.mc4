@@ -1,0 +1,7 @@
+package cocos.invalid.A0277;
+
+grammar A0277 {
+
+  abstract A;
+
+}

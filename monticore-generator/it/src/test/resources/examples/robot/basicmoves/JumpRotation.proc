@@ -1,0 +1,12 @@
+package robot.basicmoves;
+
+procedure JumpRotation {
+    UP,
+    NORTH,
+    UP,
+    WEST,
+    DOWN,
+    SOUTH,
+    DOWN,
+    EAST
+}

@@ -1,0 +1,23 @@
+package robot;
+
+procedure ConfusingMove {
+	
+	10 * WEST,
+	
+	2 * procedure robot.basicmoves.Rotate,
+	
+	5 * EAST,
+	
+	2 * SOUTH, 
+	
+	procedure robot.basicmoves.Rotate,
+	
+	6 * NORTH,
+	
+	10 * procedure robot.basicmoves.Jump,
+	
+	5 * UP,
+	
+	6 * DOWN
+
+}

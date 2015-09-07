@@ -1,0 +1,20 @@
+package mc.feature.delete;
+
+/**
+grammar for test cases related to the deletion of elements from an AST
+**/
+
+grammar DeleteTest {
+   
+    B;
+    Parent = "parent" childList:Child*
+        | "son" son:Child?
+        | A;
+    
+    Child = "child";
+    
+    A;
+    C;
+    D;
+    
+}

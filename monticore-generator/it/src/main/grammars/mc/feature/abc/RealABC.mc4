@@ -1,0 +1,8 @@
+package mc.feature.abc;
+
+grammar RealABC extends mc.feature.abc.ABC { 
+	
+	C = "c";
+	
+
+}

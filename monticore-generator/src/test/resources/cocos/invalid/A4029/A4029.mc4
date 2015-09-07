@@ -1,0 +1,8 @@
+package cocos.invalid.A4029;
+
+grammar A4029 {
+  A;
+
+  B extends A astextends C;
+
+}

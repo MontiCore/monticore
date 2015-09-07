@@ -1,0 +1,12 @@
+package mc.feature.namecollision;
+grammar NameCollision {
+	
+	// result as a attribute name was a problem in deepClone-Implementation
+    A =
+        result:["result"];
+        
+        
+    // o as a attribute name was a problem in equals-Implementation
+    B =
+        o:["result"];
+}

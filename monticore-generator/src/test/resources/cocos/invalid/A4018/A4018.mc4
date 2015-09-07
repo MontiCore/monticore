@@ -1,0 +1,7 @@
+package cocos.invalid.A4018;
+
+grammar A4018 {
+
+  A = ["`"];
+
+}

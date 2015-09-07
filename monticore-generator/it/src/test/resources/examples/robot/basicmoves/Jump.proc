@@ -1,0 +1,6 @@
+package robot.basicmoves;
+
+procedure Jump {
+	2* UP,
+	2* DOWN
+}

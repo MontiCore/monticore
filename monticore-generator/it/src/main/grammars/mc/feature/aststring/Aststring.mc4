@@ -1,0 +1,20 @@
+/* Sinnfreise Sprache, an Automaten angelehnt, um MontiCore zu testen */
+
+package mc.feature.aststring;
+
+
+
+grammar Aststring extends mc.common.Basics { 
+
+  Start =
+    "start"  (a:Name)* "," b:Name b:Name* "," (c:Name ( "." c:Name)*) "," d:Name (d:Name)* ;  	
+ 
+ 	
+  Test = Start;	
+  
+  TestAm = 
+  		{_input.LA(1)==2}? "start" 
+  		|
+  		"start";
+ 
+}

@@ -1,0 +1,6 @@
+package mc.feature.cocochecker;
+
+grammar B {
+  X = "x";
+  Y = "y";
+}

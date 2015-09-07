@@ -1,0 +1,11 @@
+package cocos.valid;
+
+component grammar Component {
+
+  external A;
+
+  abstract B;
+
+  interface C;
+
+}

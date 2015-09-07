@@ -1,0 +1,17 @@
+/**
+ * A simple automaton "Second" with two states
+ */
+automaton Second{
+ 
+ 	/**
+ 	 * The initial state
+ 	 */
+	state a <<initial>>;
+	
+	/**
+ 	 * a final state
+ 	 */
+	state b <<final>>;   
+
+	a - y > b; 
+}   

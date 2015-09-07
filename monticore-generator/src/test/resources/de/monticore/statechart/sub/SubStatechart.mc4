@@ -1,0 +1,8 @@
+package de.monticore.statechart.sub;
+
+grammar SubStatechart extends de.monticore.statechart.Statechart {
+
+  First = "Hello";
+  Second = "Bye";
+
+}

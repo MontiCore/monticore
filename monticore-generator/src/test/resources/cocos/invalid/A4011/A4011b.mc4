@@ -1,0 +1,7 @@
+package cocos.invalid.A4011;
+
+grammar A4011b {
+
+  A astextends B, C;
+
+}

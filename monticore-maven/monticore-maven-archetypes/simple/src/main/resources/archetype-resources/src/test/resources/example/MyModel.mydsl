@@ -1,0 +1,15 @@
+model MyModel {
+
+  element Car {
+    name String;
+    color color;
+    orderId Number;
+  }
+
+  element String {
+  }
+
+  element color {
+  }
+
+}

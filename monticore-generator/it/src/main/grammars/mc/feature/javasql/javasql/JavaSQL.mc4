@@ -1,0 +1,8 @@
+/* Sinnfreise Sprache, an Automaten angelehnt, um MontiCore zu testen */
+package mc.feature.javasql.javasql;
+
+grammar JavaSQL extends mc.feature.javasql.java.Java, mc.feature.javasql.sql.SQL { 
+	
+	SelectStatement implements Expression;
+	 
+}

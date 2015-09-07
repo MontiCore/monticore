@@ -1,0 +1,27 @@
+package mc2cdtransformation;
+
+grammar AstRule extends mc2cdtransformation.super.Supergrammar {
+
+   A;
+  
+   interface B;
+   
+   C;
+   
+   D;
+   
+   F;
+   
+   interface E;
+   
+   ast A astextends ASTExternalProd;
+  
+   ast C astextends ASTA;
+  
+   ast D astextends ASTSuperProd astimplements ASTB, ASTSuperInterface, java.io.Serializable;
+   
+   ast F astextends java.util.Observable;
+   
+   ast E astextends ASTB, ASTSuperInterface, ASTExternalInterface, java.io.Serializable;
+  
+}      

@@ -1,0 +1,7 @@
+package mc.embedding.transitive;
+
+grammar TransComposite extends mc.embedding.transitive.TransHost, mc.embedding.Composite {
+
+   TransHost = Host;
+
+}

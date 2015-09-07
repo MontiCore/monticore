@@ -1,0 +1,6 @@
+package mc.feature.visitor.inheritance;
+
+// XA means X defined in A
+grammar A {
+  XA = "xa";
+}

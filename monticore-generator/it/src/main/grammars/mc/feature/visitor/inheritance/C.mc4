@@ -1,0 +1,7 @@
+package mc.feature.visitor.inheritance;
+
+// XC means X defined in C
+grammar C extends mc.feature.visitor.inheritance.B {
+  XC extends XB = "xc";
+  YC extends XC = YB;
+}

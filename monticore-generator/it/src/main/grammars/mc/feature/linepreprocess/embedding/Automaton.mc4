@@ -1,0 +1,20 @@
+package mc.feature.linepreprocess.embedding;
+
+component grammar Automaton extends mc.common.Basics {
+
+  Automaton = "automaton" Name "{"
+    (State | Transition)* "}" ;
+    
+  State =
+    "state" Name
+    ( "{" (State | Transition)* "}"
+      | ";"
+    ) ;
+  
+  Transition =
+    from:Name "-" activate:Name ">" to:Name
+    ("/" Action)? ";" ;
+   
+  external Action;
+  // mc.javadsl.JavaDSL.BlockStatement blockstmt in automaton.Action;     
+}

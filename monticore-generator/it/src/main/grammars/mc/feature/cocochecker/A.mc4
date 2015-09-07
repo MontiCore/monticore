@@ -1,0 +1,5 @@
+package mc.feature.cocochecker;
+
+grammar A extends mc.feature.cocochecker.B, mc.feature.cocochecker.C {
+  X = "x" Y Z;
+}

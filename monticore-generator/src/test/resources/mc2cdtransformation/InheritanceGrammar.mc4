@@ -1,0 +1,21 @@
+package mc2cdtransformation;
+
+grammar InheritanceGrammar {
+
+  A extends extendedProd;
+  
+  B implements implementedProd;
+  
+  C astextends AstExtendedType;
+  
+  D astimplements AstImplementedType;
+  
+  E astextends java.util.Observable;
+  
+  F astimplements java.io.Serializable;
+  
+  extendedProd;
+  
+  implementedProd;
+  
+}      

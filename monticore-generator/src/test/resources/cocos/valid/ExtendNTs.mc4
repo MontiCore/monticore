@@ -1,0 +1,29 @@
+package cocos.valid;
+
+grammar ExtendNTs {
+  A;
+
+  abstract B;
+
+  abstract C extends A;
+
+  abstract D extends B;
+
+  E extends A;
+
+  F extends B;
+
+  interface G;
+
+  interface H extends G;
+
+  interface I extends G, H;
+
+  J astextends K;
+
+  abstract L astextends K;
+
+  M astimplements ASTI;
+
+}
+

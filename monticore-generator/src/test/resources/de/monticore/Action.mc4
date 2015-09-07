@@ -1,0 +1,14 @@
+package de.monticore;
+
+grammar Action {
+  
+  // LexBlock with InitAction
+  token name = (init {int i = 0;} : 'a');
+  
+  // LexRule with InitAction
+  token name2 {int j = 0;} = 'b';
+  
+  // ClassBlock with InitAction
+  A = (init {int k = 0;} : "A");
+    
+}    

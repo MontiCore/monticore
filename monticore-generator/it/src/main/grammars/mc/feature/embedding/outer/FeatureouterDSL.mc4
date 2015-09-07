@@ -1,0 +1,17 @@
+/* Sinnfreise Sprache, an Automaten angelehnt, um MontiCore zu testen */
+package mc.feature.embedding.outer;
+
+component grammar FeatureouterDSL extends mc.common.Basics { 
+	
+	Outer= "out" "{" (inner:Ext) "}" EOF;
+	
+	
+	// Trick to handle optional embedding
+	Outer3= "out"
+	        ( "{" inner2:Ext "}" )?  EOF;
+	
+	Outer4= a:Outer3 (b:Outer3)*;
+	
+	external Ext; // TODO: /mc.ast.ASTNode;
+	
+}

@@ -1,0 +1,8 @@
+package cocos.invalid.A4030;
+
+grammar A4030 {
+  A;
+
+  abstract B extends A astextends C;
+
+}

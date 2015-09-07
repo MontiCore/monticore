@@ -1,0 +1,10 @@
+/* Sinnfreise Sprache, an Automaten angelehnt, um MontiCore zu testen */
+package mc.feature.sourcepositions;
+
+component grammar SourcePosition extends mc.common.Basics { 
+	
+    Parser =
+    	start:Name "{" embed:Extern "}" end:Name;
+    	
+    external Extern;
+}

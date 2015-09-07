@@ -1,0 +1,7 @@
+automaton First {
+ 
+	state a <<initial>>;
+	state b <<final>>;   
+	
+	a - x > b; 
+}   

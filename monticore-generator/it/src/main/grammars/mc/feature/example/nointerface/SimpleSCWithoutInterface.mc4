@@ -1,0 +1,10 @@
+package mc.feature.example.nointerface;
+
+grammar SimpleSCWithoutInterface extends mc.common.Basics {
+  State = "state" Name "{"
+    ( substates:State | transitions:Transition )*
+  "}" ;
+
+  Transition = from:Name "->" to:Name;
+
+}

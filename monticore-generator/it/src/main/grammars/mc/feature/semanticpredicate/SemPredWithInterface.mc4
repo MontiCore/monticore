@@ -1,0 +1,30 @@
+package mc.feature.semanticpredicate;
+
+grammar SemPredWithInterface extends mc.common.Basics {
+
+    concept antlr {
+      parser java {
+        boolean first = true;
+      }
+    }
+    
+    ISequence = I*;
+    
+    interface I;
+    
+    ast I = 
+      method public boolean isFirst() {}
+      method public void setFirst(boolean first) {};
+      
+    ast FirstRun =
+      first: boolean;
+      
+    ast OtherRun =
+      first: boolean;
+    
+    FirstRun implements { first }? I =
+        { _aNode.setFirst(true); first = false;} "foo";
+    
+    OtherRun implements { !first }? I =
+        {_aNode.setFirst(false);} "foo";
+}

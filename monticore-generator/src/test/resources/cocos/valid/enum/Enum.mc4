@@ -1,0 +1,7 @@
+package cocos.valid.enum;
+
+grammar Enum extends cocos.valid.Enum {
+
+ A = "a";
+
+}

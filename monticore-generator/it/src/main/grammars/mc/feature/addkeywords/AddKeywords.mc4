@@ -1,0 +1,17 @@
+package mc.feature.addkeywords;
+
+grammar AddKeywords extends mc.common.Basics {
+
+	token INT  = ('0'..'9')+;
+
+	A = "keyword" "key2" ;
+	
+	B = INT& ;
+	
+	C = name:INT& ;
+	
+	D = name:INT&* ;
+	
+	E = INT&* ;
+	
+}

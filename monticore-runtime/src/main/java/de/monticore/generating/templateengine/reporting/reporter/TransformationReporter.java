@@ -1,0 +1,109 @@
+/*
+ * ******************************************************************************
+ * MontiCore Language Workbench
+ * Copyright (c) 2015, MontiCore, All rights reserved.
+ *
+ * This project is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * ******************************************************************************
+ */
+
+package de.monticore.generating.templateengine.reporting.reporter;
+
+import java.io.File;
+
+import de.monticore.ast.ASTNode;
+import de.monticore.generating.templateengine.reporting.commons.AReporter;
+import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
+import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
+
+/**
+ * TODO: Write me!
+ *
+ * @author (last commit) $Author$
+ * @version $Revision$, $Date$
+ * @since TODO: add version number
+ */
+public class TransformationReporter extends AReporter {
+  
+  /**
+   * @see mc.codegen.reporting.commons.DefaultReportEventHandler#reportTransformationStart(java.lang.String)
+   */
+  @Override
+  public void reportTransformationStart(String transformationName) {
+    writeLine("Start Trafo: " + transformationName);
+  }
+  
+  final static String SIMPLE_FILE_NAME = "14_Transformations";
+  
+  final static String INDENT = "                                        ";
+  
+  private ReportingRepository repository;
+  
+  public TransformationReporter(
+      String outputDir,
+      String modelName,
+      ReportingRepository repo) {
+    super(outputDir + File.separator + ReportingConstants.REPORTING_DIR + File.separator
+        + modelName, SIMPLE_FILE_NAME, ReportingConstants.REPORT_FILE_EXTENSION);
+    this.repository = repo;
+  }
+  
+  @Override
+  public void reportTransformationObjectCreation(String transformationName, ASTNode ast) {
+    String formattedName = repository.getASTNodeNameFormatted(ast);
+    writeLine(transformationName + getIndentAfterFile(transformationName) + formattedName
+        + getIndentAfterFile(formattedName) + "added");
+  }
+  
+  @Override
+  public void reportTransformationObjectChange(String transformationName, ASTNode ast) {
+    String formattedName = repository.getASTNodeNameFormatted(ast);
+    writeLine(transformationName + getIndentAfterFile(transformationName) + formattedName
+        + getIndentAfterFile(formattedName) + "changed");
+  }
+  
+  @Override
+  public void reportTransformationObjectDeletion(String transformationName, ASTNode ast) {
+    String formattedName = repository.getASTNodeNameFormatted(ast);
+    writeLine(transformationName + getIndentAfterFile(transformationName) + formattedName
+        + getIndentAfterFile(formattedName) + "deleted");
+  }
+  
+  @Override
+  public void flush(ASTNode ast) {
+    writeFooter();
+    super.flush(ast);
+  }
+  
+  private void writeFooter() {
+    writeLine("========================================================== Explanation");
+    writeLine("Applied Transformations: the list of transformations in the order they are applied.");
+    writeLine("(EOF)");
+  }
+  
+  private String getIndentAfterFile(String file) {
+    if (file.length() < INDENT.length() + 1) {
+      return INDENT.substring(file.length());
+    }
+    else {
+      return "  ";
+    }
+  }
+  
+  @Override
+  protected void writeHeader() {
+    writeLine("========================================================== Applied Transformations");
+    writeLine("Transformation Name                     AST-Node                                Transformation Type");
+  }
+  
+}

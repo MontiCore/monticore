@@ -1,0 +1,8 @@
+package mc.feature.visitor.inheritance;
+
+// XB means X defined in B
+grammar B extends mc.feature.visitor.inheritance.A {
+  YB = "y";
+  XB extends XA = "xb";
+  ZB = XA YB;
+}

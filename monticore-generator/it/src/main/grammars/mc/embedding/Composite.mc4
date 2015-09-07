@@ -1,0 +1,7 @@
+package mc.embedding;
+
+grammar Composite extends mc.embedding.Host, mc.embedding.Embedded {
+
+   Content = Text;
+
+}

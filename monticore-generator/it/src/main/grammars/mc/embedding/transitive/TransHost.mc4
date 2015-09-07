@@ -1,0 +1,9 @@
+package mc.embedding.transitive;
+
+grammar TransHost extends de.monticore.lexicals.Lexicals {
+
+   TransStart@! = Name "host" TransHost;
+
+   TransHost@!;
+
+}

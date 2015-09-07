@@ -1,0 +1,9 @@
+package cocos.invalid.A4032;
+
+grammar A4032 {
+
+ enum A = "a";
+
+ ast A;
+
+}

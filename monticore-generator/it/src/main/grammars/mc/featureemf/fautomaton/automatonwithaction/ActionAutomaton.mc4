@@ -1,0 +1,32 @@
+package mc.featureemf.fautomaton.automatonwithaction;
+
+component grammar ActionAutomaton extends mc.featureemf.fautomaton.automaton.FlatAutomaton {
+
+	external Action;
+
+    /** A finite automaton
+	@attribute name Name of the automaton
+    @attribute Counter List of all counters
+    @attribute State List of all states
+    @attribute Transition List of all transitions
+	*/
+	Automaton =
+	   "automaton" Name "{" 
+	     (Counter | State | Transition )*
+	   "}";
+
+    /** A Counter represents a variable in the automaton
+   	@attribute Name of the counter
+    */
+	Counter =
+	  "counter" Name ("," Name)* ";" ;
+
+    /** A transition in a finite automaton with embedded action
+    @attribute from The source of the transition
+    @attribute activate Character that triggers the transition
+ 	@attribute to The target of the transition
+    @attribute Action Embedded action
+    */
+	// TODO SO, GV: TransitionWithAction extends Transition = from:Name "-" activate:Name "[" Action "]" ">" to:Name ";" ;
+
+}

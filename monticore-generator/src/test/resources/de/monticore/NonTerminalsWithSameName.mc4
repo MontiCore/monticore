@@ -1,0 +1,9 @@
+package de.monticore;
+
+grammar NonTerminalsWithSameName {
+
+    Transition = (Arguments:Argument ( "," Arguments:Argument)*);
+
+    Argument = "arg";
+
+}

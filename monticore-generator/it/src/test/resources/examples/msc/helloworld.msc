@@ -1,0 +1,28 @@
+msc helloworld {
+
+  instance i {
+    out Hello to controller;
+    in World from controller;
+    condition successfulHelloWorld shared all;
+    in Partner_j from controller;
+  }
+
+  instance controller {
+    in Hello from i;
+    in Hello from j;
+    condition successfulHello ;
+    out World to i;
+    out World to j;
+    condition successfulHelloWorld shared all;
+    out Partner_j to i;
+    out Partner_i to j;
+  }
+
+  instance j {
+    out Hello to controller;
+    in World from controller;
+    condition successfulHelloWorld shared all;
+    in Partner_i from controller;
+  }
+
+}

@@ -1,0 +1,11 @@
+package lwc.edl;
+
+entity Car {
+	string brand
+	string model
+	int price
+	int age
+	int doors
+    Car myself   
+    lwc.edl.Person owner
+}

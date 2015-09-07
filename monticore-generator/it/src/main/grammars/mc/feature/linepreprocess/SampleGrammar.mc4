@@ -1,0 +1,18 @@
+package mc.feature.linepreprocess;
+
+component grammar SampleGrammar {
+
+    // simple lexer rule
+    token HELLO = "Hello World";
+    
+    
+    fragment token  DIGIT =
+        '0'..'9';
+
+    fragment token  XDIGIT = 
+        '0' .. '9'  |   'a' .. 'f'  |   'A' .. 'F'  ;
+
+    token NUMBER =
+        ( '0'..'9')+;  
+
+}

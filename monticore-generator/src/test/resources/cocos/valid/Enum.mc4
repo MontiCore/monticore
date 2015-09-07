@@ -1,0 +1,7 @@
+package cocos.valid;
+
+grammar Enum {
+
+  enum E = "a";
+
+}

@@ -1,0 +1,6 @@
+package cocos.invalid.A4033;
+
+grammar a4033 {
+  a = "a";
+
+}

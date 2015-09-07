@@ -1,0 +1,13 @@
+package mc.feature.list;
+
+grammar Lists extends mc.common.Basics { 
+
+    Parent = sons:Son*;
+    
+    ast Parent =
+        sons:<<unordered>> Son*;
+
+    
+    Son = "son" Name;
+
+}

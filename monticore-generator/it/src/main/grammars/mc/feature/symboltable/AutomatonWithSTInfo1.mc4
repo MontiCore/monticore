@@ -1,0 +1,17 @@
+package mc.feature.symboltable;
+
+grammar AutomatonWithSTInfo1 extends mc.common.Basics {
+
+  Automaton@! =
+    "automaton" Name "{" (State | Transition)* "}" ;
+
+  State@! =
+    "state" Name
+    (("<<" ["initial"] ">>" ) | ("<<" ["final"] ">>" ))*
+    ( ("{" (State | Transition)* "}") | ";") ;
+
+
+  Transition =
+    from:Name "-" input:Name ">" to:Name ";" ;
+
+}

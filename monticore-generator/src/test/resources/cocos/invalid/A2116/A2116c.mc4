@@ -1,0 +1,8 @@
+package cocos.invalid.A2116;
+
+grammar A2116c {
+  A;
+
+  interface B extends A;
+
+}

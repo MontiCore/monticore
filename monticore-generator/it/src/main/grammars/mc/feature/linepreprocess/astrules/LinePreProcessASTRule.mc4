@@ -1,0 +1,28 @@
+package mc.feature.linepreprocess.astrules;
+
+grammar LinePreProcessASTRule {
+
+  RuleX = "something";
+  
+  ExtraComponent = "somethingElse";
+  
+  Component = "foo";
+
+  // create additional members in the class ASTRule  
+  ast RuleX = 
+    // create an attribute ExtraComponent of type ASTComponent
+    ExtraComponent:Component 
+  
+    // create an attribute ExtraComponent of type ASTComponentList
+    // check that it contains at least two elements during parsing
+    ExtraComponents:Component min=2 max=* 
+  
+    // create an attribute ExtraBool of type boolean
+    ExtraBool:boolean 
+  
+    // create an attribute ExtraInt of type int
+    ExtraInt:int 
+  
+    // add a toString() method
+    method public String toString() { return Integer.toString(extraInt); } ;
+}

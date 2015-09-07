@@ -1,0 +1,10 @@
+package mc2cdtransformation;
+
+grammar Supergrammar {
+
+  X = Y;
+  
+  Y;
+  
+  external Z;
+}

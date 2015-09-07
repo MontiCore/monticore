@@ -1,0 +1,13 @@
+package mc2cdtransformation;
+
+grammar DirectLeftRecursionDetector {
+  token Name = ( 'a'..'z' | 'A'..'Z' | '_' | '$' )( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '$' )*;
+
+  Expr = Expr "or" Expr |
+         Expr "and" Expr |
+         "(" Expr ")" | Name;
+
+  NonLeftRecursiveRule1 = "a";
+
+  NonLeftRecursiveRule2 = "a" NonLeftRecursiveRule2 | "a";
+}      

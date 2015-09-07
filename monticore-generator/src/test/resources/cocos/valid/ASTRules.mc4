@@ -1,0 +1,23 @@
+package cocos.valid;
+
+grammar ASTRules {
+
+ A;
+
+ ast A;
+
+ interface B;
+
+ ast B;
+
+ abstract C;
+
+ ast C;
+
+ D implements B;
+
+   E = d:D;
+
+   ast E = d:B;
+
+}

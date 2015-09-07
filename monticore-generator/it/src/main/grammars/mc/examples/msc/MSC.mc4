@@ -1,0 +1,23 @@
+package mc.examples.msc;
+
+grammar MSC extends mc.grammar.lexicals.Lexicals {
+
+	MSC = "msc" Name "{" ( Instance | Method )* "}";
+	
+	// external Cond;
+	// external Method;	
+	Cond = "cond";
+	Method = "Method";
+
+	Instance = "instance" Name "{" Event* "}";
+
+	interface Event;
+	
+	SendEvent implements Event = "out" message:Name "to" receiver:Name ";";
+	
+	ReceiveEvent implements Event = "in" message:Name "from" sender:Name ";"; 
+	
+	Condition implements Event = "condition" Name 
+	         ( ["shared"] ( sharedWithAll:["all"] | sharedWith:Name ("," sharedWith:Name)* ) )? ( "{" Cond "}" | ";");
+	         	         
+}

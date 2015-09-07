@@ -1,0 +1,31 @@
+/*
+ * Copyright (c) 2015 RWTH Aachen. All rights reserved.
+ *
+ * http://www.se-rwth.de/
+ */
+package org.nest.commons;
+
+grammar Commons extends mc.grammar.types.Types {
+
+  token SL_COMMENT =
+      "#" (~('\n' |
+        '\r' )
+      )*
+      ('\n' |
+        '\r' ('\n' )?
+      )?
+      : {_channel = HIDDEN;
+      if (getCompiler() != null) {
+        de.monticore.ast.Comment _comment = new de.monticore.ast.Comment(getText());
+        _comment.set_SourcePositionStart(new de.se_rwth.commons.SourcePosition(getLine(), getCharPositionInLine()));
+        _comment.set_SourcePositionEnd(getCompiler().computeEndPosition(getToken()));
+        getCompiler().addComment(_comment);
+    }};
+
+  token NEWLINE = ('\r' '\n' | '\r' | '\n' );
+  token WS = (' ' | '\t'):{_channel = HIDDEN;};
+
+  BLOCK_OPEN = ":"; 
+  BLOCK_CLOSE = "end";
+
+}

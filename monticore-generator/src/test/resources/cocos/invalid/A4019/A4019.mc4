@@ -1,0 +1,6 @@
+package cocos.invalid.A4019;
+
+grammar A4019 {
+  A= ["a" | "A"| "b"];
+
+}

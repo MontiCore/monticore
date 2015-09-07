@@ -1,0 +1,8 @@
+/* Sinnfreise Sprache, an Automaten angelehnt, um MontiCore zu testen */
+package mc.feature.embedding.outer;
+
+grammar Featureembedded extends mc.feature.embedding.outer.FeatureouterDSL, mc.feature.embedding.inner.FeatureinnerDSL { 
+	
+	Ext = Inner;
+	
+}

@@ -1,0 +1,6 @@
+package cocos.invalid.A4027;
+
+grammar A4027 extends cocos.valid.Enum {
+
+  E;
+}

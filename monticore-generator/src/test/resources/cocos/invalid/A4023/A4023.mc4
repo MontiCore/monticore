@@ -1,0 +1,7 @@
+package cocos.invalid.A4023;
+
+grammar A4023 extends cocos.invalid.A4023.A4023 {
+
+ A = "a";
+
+}

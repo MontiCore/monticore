@@ -1,0 +1,58 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- == PROJECT COORDINATES ===================================== -->
+
+  <parent>
+    <groupId>de.monticore.mojo</groupId>
+    <artifactId>monticore-m2e</artifactId>
+    <version>4.1.8-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>de.monticore.m2e.site</artifactId>
+
+  <packaging>eclipse-repository</packaging>
+
+  <profiles>
+    <profile>
+      <id>deploy-m2e</id>
+      <properties>
+        <skip.m2e.deployment>false</skip.m2e.deployment>
+      </properties>
+    </profile>
+  </profiles>
+
+  <!-- == PROJECT METAINFORMATION ================================ -->
+
+  <name>MontiCore M2E Connector Site</name>
+  <description>A Site bundling the MontiCore M2E Connector</description>
+  <inceptionYear>2012</inceptionYear>
+
+  <organization>
+    <name>Department of Software Engineering, RWTH Aachen University</name>
+    <url>http://www.se-rwth.de/</url>
+  </organization>
+
+  <!-- == BUILD ================================================= -->
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-maven-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>wagon-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

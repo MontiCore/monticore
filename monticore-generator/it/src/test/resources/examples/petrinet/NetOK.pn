@@ -1,0 +1,8 @@
+petrinet NetOK bool {
+	place a:false;
+	place b: true;
+	place c: true;
+	
+	a,b --x-> c;
+	
+}

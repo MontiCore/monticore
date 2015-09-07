@@ -1,0 +1,59 @@
+package mc.examples.petrinet;
+
+// the definition of petri nets
+grammar Petrinet extends mc.grammar.lexicals.Lexicals {
+	               
+ token NUMBER  
+        = 
+       ( '0'..'9' )+;        
+
+ /** ASTPetrinet represents a boolean or numerical petri net.
+	@attribute Name Name of the petri net.
+	@attribute Type Type of the petri net which is either bool or num.
+	@attribute Places List of places
+	@attribute Transitions List of transitions
+ */
+ Petrinet=
+        "petrinet" Name Type:["bool"| "num"] "{" 
+        (places:Placedeclaration)* (Transition)*
+        "}" EOF ;
+
+ /** ASTPlacedeclaration represents a place in a petri net.
+	 @attribute Name Name of the place.
+	 @attribute Marker Marker of the place.
+ */ 		
+ Placedeclaration =
+        "place" Name ":" Marker ";" ;
+
+ //
+ /** ASTTransition is a transition in a petri net.
+	 @attribute From List of conncections from places to this transition.
+	 @attribute Name Name of the transition.
+	 @attribute To List of conncections to places from this transition.
+ */
+ Transition =
+        from:Connection("," from:Connection)* "--" Name
+        "->"  to:(Connection || ",")* ";" ;
+   
+ /** ASTConncetion descibes the conncetion between a place and a transition.
+     @attribute Name Name of the source place.
+     @attribute Card Optional cardinality of the conncetion.
+ */        
+ Connection =
+        Name (":" card:NUMBER)? ;
+    
+ /** ASTBool is a boolean marker in a petri net.
+     @attribute Value The value is either true or false.
+ */            
+ Bool implements Marker =
+        value:["true"| "false"] ;
+
+ /** ASTNunmber is a numerical marker in a petri net.
+     @attribute Amount The amount reprensents the number of tokens in the place.
+     @attribute Max Optional maximum number of tokens.
+ */            
+ NumberMarker implements Marker =
+        amount:NUMBER ("," max:NUMBER)? ;
+        
+ interface Marker;      
+}

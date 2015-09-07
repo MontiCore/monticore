@@ -1,0 +1,12 @@
+package de.monticore;
+
+grammar TypeSymbols {
+
+    A = "a" C r:D* F+ ret=G;
+
+    C;
+    D;
+    F;
+    G;
+
+}

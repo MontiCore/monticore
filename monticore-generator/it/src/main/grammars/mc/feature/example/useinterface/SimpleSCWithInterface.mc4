@@ -1,0 +1,17 @@
+package mc.feature.example.useinterface;
+
+grammar SimpleSCWithInterface extends mc.common.Basics {
+  interface StateElement;
+  
+  State implements StateElement =
+    "state" Name "{"
+      (stateElements:StateElement)* 
+    "}" ;
+    
+  Transition implements StateElement =
+    from:Name "->" to:Name;    
+
+   token Name =
+        ( 'a'..'z' | 'A'..'Z' | '_' | '$' )( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '$' | '.' )*;
+  
+}

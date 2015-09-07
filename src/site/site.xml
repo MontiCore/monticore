@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/DECORATION/1.4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/DECORATION/1.4.0 http://maven.apache.org/xsd/decoration-1.4.0.xsd">
+  <skin>
+    <groupId>de.se_rwth</groupId>
+    <artifactId>se-site-skin</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </skin>
+  
+  <publishDate format="yyyy-MM-dd HH:mm:ss z" />
+  
+  <version position="right" />
+  
+  <body>
+    <menu ref="parent" inherit="top" />
+    <menu ref="modules" inherit="top" />
+    <menu ref="reports" inherit="bottom" />
+  </body>
+</project>

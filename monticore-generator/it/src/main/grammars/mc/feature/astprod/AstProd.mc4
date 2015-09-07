@@ -1,0 +1,14 @@
+/* Sinnfreise Sprache, an Automaten angelehnt, um MontiCore zu testen */
+
+package mc.feature.astprod;
+
+grammar AstProd extends mc.common.Basics { 
+		
+  Start =
+     "start" ;  	
+ 
+
+  ast Start = 
+  	Name derived {return "test";} ;
+  	
+}

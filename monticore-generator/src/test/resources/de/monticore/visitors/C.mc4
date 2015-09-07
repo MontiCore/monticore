@@ -1,0 +1,5 @@
+package de.monticore.visitors;
+
+grammar C extends de.monticore.visitors.B {
+  Z extends Y implements J = "z";
+}

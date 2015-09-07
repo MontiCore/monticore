@@ -1,0 +1,7 @@
+package mc.embedding;
+
+grammar Embedded extends de.monticore.lexicals.Lexicals {
+
+   Text@! = "text" Name;
+
+}

@@ -1,0 +1,35 @@
+/* Sinnfreise Sprache, an Automaten angelehnt, um MontiCore zu testen */
+package mc.feature.grammarinherit.sub;
+	
+grammar FeatureDSLgrammarinherit extends mc.feature.grammarinherit.sup.FeatureDSLgrammarinherit {
+
+  // Works with inherited field a
+  concept antlr { 
+		
+	 parser java {
+			public int b=this.a;
+		}
+	}
+		
+  File = (automatons:Automaton)+;
+
+  Automaton=
+    "automaton" Name "{" (states:State | transitions:Transition )* "}" ;
+    
+  Stereotype =
+    Name ;
+    
+  State =
+    "state" Name ("<<" (stereotypes:Stereotype ("," stereotypes:Stereotype )*) ">>")?
+    ( ("{" (states:State | transitions:Transition)* "}") | ";") ;
+
+  S =
+    "<<>" ;
+
+  // Checks interface inheritance
+  T = Inter;	
+
+
+  B implements Y;
+	
+}

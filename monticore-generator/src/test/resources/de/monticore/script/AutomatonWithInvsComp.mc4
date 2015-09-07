@@ -1,0 +1,7 @@
+component grammar InvAutomaton {
+  external Invariant;
+  
+  State = "state" Name
+          Invariant
+          ( "<<" ["initial"] ">>" | "<<" ["final"] ">>" )* ";" ;
+}

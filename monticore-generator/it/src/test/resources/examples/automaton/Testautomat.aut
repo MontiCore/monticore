@@ -1,0 +1,17 @@
+// Non-deterministic finite hierarchical automaton that detects strings  that conform to the regular expression (xy*x)*(xy+)?
+
+automaton Testautomat {
+	state a  <<initial>><<final>>;
+	
+	a -x> c;
+	
+	state b { 
+		state c;
+		state d <<final>>; 
+		
+		c -y> d;
+		d -y> d;
+	 }
+
+	b -x> a;
+}

@@ -1,0 +1,34 @@
+package de.monticore;
+
+grammar AstAttributes {
+
+   A;
+   
+   B;
+   
+   TransformationStructure = B;
+    ast TransformationStructure =
+   
+   /* TODO GV
+      map1:java.util.Map<String, java.util.List<String> >
+      map2:java.util.Map<String, java.util.List<String> >
+      map3:java.util.Map<String, java.util.List<String> >
+      map4:java.util.Map<String, java.util.List<String> >
+   
+      list1: java.util.List<String>
+      list2: java.util.List
+      list3: java.util.List<java.util.List<String> >
+      list4: java.util.List<java.util.List<String> >
+    
+      string1: String
+      string2: java.lang.String
+      
+      bool1: boolean
+      bool2: Boolean
+      int1: int
+      int2: Integer
+          */ 
+      a1: A
+      a2: A*
+      ;
+}    

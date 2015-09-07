@@ -1,0 +1,14 @@
+package de.monticore.parsing;
+
+grammar SimpleStateChart {
+
+  StateChart = Member*;
+  
+  interface Member;
+  
+  State implements Member = "state" Name;
+  
+  Transition implements Member = "from" from:Name "->" "to" to:Name;
+
+
+}

@@ -1,0 +1,182 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- == PROJECT COORDINATES ============================================= -->
+
+  <groupId>${groupId}</groupId>
+  <artifactId>${artifactId}</artifactId>
+  <version>${version}</version>
+
+  <!-- == PROJECT PROPERTIES ============================================== -->
+
+  <properties>
+
+    <!-- .. Libraries ..................................................... -->
+    <antlr.version>4.5</antlr.version>
+    <guava.version>18.0</guava.version>
+    <jsr305.version>3.0.0</jsr305.version>
+    <junit.version>4.12</junit.version>
+    <logback.version>1.1.2</logback.version>
+    <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
+    <monticore.version>4.1.8-SNAPSHOT</monticore.version>
+
+    <!-- .. Plugins ....................................................... -->
+    <assembly.plugin>2.5.4</assembly.plugin>
+    <compiler.plugin>3.3</compiler.plugin>
+    <monticore.plugin>4.1.8-SNAPSHOT</monticore.plugin>
+
+    <!-- Classifiers -->
+    <grammars.classifier>grammars</grammars.classifier>
+
+    <!-- .. Misc .......................................................... -->
+    <java.version>1.8</java.version>
+
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
+
+  <!-- == PROJECT DEPENDENCIES ============================================= -->
+
+  <dependencies>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${guava.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+      <version>${jsr305.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr4-runtime</artifactId>
+      <version>${antlr.version}</version>
+    </dependency>
+
+    <!-- MontiCore Dependencies -->
+    <dependency>
+      <groupId>de.monticore</groupId>
+      <artifactId>monticore-runtime</artifactId>
+      <version>${monticore.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>de.monticore</groupId>
+      <artifactId>monticore-grammar</artifactId>
+      <version>${monticore.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>de.monticore</groupId>
+      <artifactId>monticore-grammar</artifactId>
+      <version>${monticore.version}</version>
+      <classifier>${grammars.classifier}</classifier>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- .. Test Libraries ............................................... -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>de.monticore</groupId>
+      <artifactId>monticore-runtime</artifactId>
+      <version>${monticore.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${logback.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!-- == PROJECT BUILD SETTINGS =========================================== -->
+
+  <build>
+    <plugins>
+      <!-- MontiCore Generation -->
+      <plugin>
+        <groupId>de.monticore.mojo</groupId>
+        <artifactId>monticore-maven-plugin</artifactId>
+        <version>${monticore.plugin}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Other Configuration -->
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${compiler.plugin}</version>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>${assembly.plugin}</version>
+          <dependencies>
+            <dependency>
+              <groupId>de.monticore</groupId>
+              <artifactId>mc-assemblies</artifactId>
+              <version>${mc.grammars.assembly.version}</version>
+            </dependency>
+          </dependencies>
+          <executions>
+            <execution>
+              <id>grammars</id>
+              <configuration>
+                <!-- activate assembly for language reuse -->
+                <skipAssembly>true</skipAssembly>
+                <finalName>${project.artifactId}-${project.version}</finalName>
+                <descriptorRefs>
+                  <descriptorRef>grammars-assembly</descriptorRef>
+                </descriptorRefs>
+                <formats>
+                  <format>jar</format>
+                </formats>
+              </configuration>
+              <phase>package</phase>
+              <goals>
+                <goal>single</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+    </plugins>
+  </build>
+
+  <!-- == DEPENDENCY & PLUGIN REPOSITORIES ================================= -->
+
+  <repositories>
+    <repository>
+      <id>se-public</id>
+      <url>http://nexus.se.rwth-aachen.de/content/groups/public</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>se-public</id>
+      <url>http://nexus.se.rwth-aachen.de/content/groups/public</url>
+    </pluginRepository>
+  </pluginRepositories>
+
+</project>

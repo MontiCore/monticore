@@ -1,0 +1,15 @@
+/* Sinnfreise Sprache, an Automaten angelehnt, um MontiCore zu testen */
+package mc.feature.javasql.java;
+grammar Java extends mc.common.Basics {
+
+	Start = Expression ("," Expression)* ;
+			
+	interface Expression;
+	
+	Increment implements Expression =
+		Name "++";
+
+	Asssignment implements Expression =
+		Name "=" Expression;	
+		
+}

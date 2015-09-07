@@ -1,0 +1,20 @@
+package mc.examples.automaton.input;
+
+grammar Input extends mc.grammar.lexicals.Lexicals {
+
+/** An ASTInput represents a set of inputs for an finite automaton 
+	@attribute Name Name of the inputs
+	@attribute InputStrings List of InputStrings
+*/
+Input =
+  "input" "for" (Name || ".")* "{" InputString* "}" ;
+
+
+/** An ASTInputString represents a single input for an finite automaton 
+	@attribute Input Input String
+*/
+InputString =
+  input:Name ";" ;
+  
+    
+}

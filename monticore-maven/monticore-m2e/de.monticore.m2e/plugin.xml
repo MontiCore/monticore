@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.7"?>
+<plugin>
+  <extension point="org.eclipse.m2e.core.projectConfigurators">
+    <configurator
+      id="de.monticore.mojo.m2e.projectConfigurator"
+      class="de.monticore.mojo.m2e.MontiCoreProjectConfigurator"
+      name="Maven Configurator for the MontiCore Maven Plugin">
+    </configurator>
+  </extension>
+  <extension point="org.eclipse.m2e.core.lifecycleMappingMetadataSource"></extension>
+</plugin>

@@ -1,0 +1,7 @@
+automaton Second{
+ 
+	state a <<initial>>;
+	state b <<final>>;   
+
+	a - y > b; 
+}   

@@ -1,0 +1,82 @@
+/*
+ * Copyright (c) 2015 RWTH Aachen. All rights reserved.
+ *
+ * http://www.se-rwth.de/
+ */
+package org.nest.spl;
+
+grammar SPL extends org.nest.commons.Commons {
+
+  SPLFile = ModuleDefinitionStatement Block;
+
+  ModuleDefinitionStatement = "module" moduleName:QualifiedName;
+
+  Block = ( Stmt | SL_COMMENT | NEWLINE )*;
+
+  Stmt = Simple_Stmt ((SL_COMMENT | NEWLINE)* | EOF) | Compound_Stmt;
+
+  Compound_Stmt = IF_Stmt
+                | FOR_Stmt
+                | WHILE_Stmt;
+
+  Simple_Stmt = Small_Stmt (";" Small_Stmt)* (";")?;
+
+  Small_Stmt = Assignment
+             | FunctionCall
+             | Declaration
+             | ReturnStmt
+             | OdeDeclaration;
+
+   OdeDeclaration  =
+   "ODE" BLOCK_OPEN (SL_COMMENT | NEWLINE)*
+     Eq (SL_COMMENT | NEWLINE)*
+     ODE (SL_COMMENT | NEWLINE)*
+     BLOCK_CLOSE;
+
+  Eq = lhsVariable:Name "===" rhs:Expr;
+  ODE = "d/dt" lhsVariable:Name "===" rhs:Expr;
+
+  Assignment = variableName:QualifiedName "=" Expr;
+
+  // inherited PrimitiveType must be used here because otherwise the parser cannot distinguish between fqn: boolean and "keyword" boolean
+  Declaration = vars:Name ("," vars:Name)* (type:QualifiedName | primitiveType:PrimitiveType) ( "=" Expr )? ;
+
+  ReturnStmt = "return" Expr?;
+
+  IF_Stmt = IF_Clause
+            ELIF_Clause*
+            (ELSE_Clause)?
+            BLOCK_CLOSE;
+  IF_Clause = "if" Expr BLOCK_OPEN Block;
+
+  ELIF_Clause = "elif" Expr BLOCK_OPEN Block;
+
+  ELSE_Clause = "else" BLOCK_OPEN Block;
+
+  FOR_Stmt = "for" var:Name "in" from:Expr "..." to:Expr ("step" stepValue:SignedNumericLiteral)? BLOCK_OPEN Block BLOCK_CLOSE;
+
+  WHILE_Stmt = "while" Expr BLOCK_OPEN Block BLOCK_CLOSE;
+
+  Expr =   (unaryPlus:["+"] | unaryMinus:["-"] | unaryTilde:["~"]) term:Expr
+         | "not" Expr // TODO not explicit?
+         | left:Expr (timesOp:["*"] | divOp:["/"] | moduloOp:["%"]) right:Expr
+         | left:Expr (plusOp:["+"] | minusOp:["-"]) right:Expr
+         | left:Expr (shiftLeft:["<<"] | shiftRight:[">>"]) right:Expr
+         | left:Expr bitAnd:["&"] right:Expr
+         | left:Expr bitOr:["^"]  right:Expr
+         | left:Expr bitXor:["|"] right:Expr
+         | left:Expr logicalAnd:["and"] right:Expr
+         | left:Expr logicalOr:["or"] right:Expr
+         | base:Expr pow:["**"] exponent:Expr // TODO make right assoc keyword asap
+         | left:Expr (lt:["<"] | le:["<="] | eq:["=="] | ne:["!="] | ne2:["<>"] | ge:[">="] | gt:[">"]) right:Expr
+         | FunctionCall
+         | BooleanLiteral // true & false;
+         | NumericLiteral type:QualifiedName?
+         | StringLiteral
+         | QualifiedName
+         | leftParentheses:"(" Expr rightParentheses:")";
+
+  FunctionCall = QualifiedName "(" ArgList ")";
+
+  ArgList = (args:Expr ("," args:Expr)*)?;
+}

@@ -1,0 +1,7 @@
+package mc2cdtransformation;
+
+grammar OverridingClassProdGrammar extends mc2cdtransformation.Supergrammar {
+
+  X;
+  
+}

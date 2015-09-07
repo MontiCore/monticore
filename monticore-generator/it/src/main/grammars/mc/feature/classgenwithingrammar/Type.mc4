@@ -1,0 +1,65 @@
+package mc.feature.classgenwithingrammar;
+
+grammar Type extends mc.common.Basics { 
+	
+	// ----
+		
+	ast Type =
+		sub:ASTSubRule1 min=1 max = 3
+		sub2:ASTSubRule2*
+		additional:Name
+		additionalList:Name*
+		additionalSomething:java.util.Vector
+		
+	;
+			 
+ 	Type = (sub:SubRule1)* EOF;	
+	
+	SubRule1=  "Hallo";
+	
+	SubRule2=  "Welt";
+	
+	// ----
+	
+	ast Type2 =
+		Name min=1 max=3
+		name2:Name*	
+	;
+			 
+ 	Type2 = (Name)*;	
+	
+	
+	// ----
+	
+	interface A;
+	interface B;
+	
+	Super implements A,B = Name;
+	
+	Sub implements A = "a" name2:Name;	
+
+	Sub2 = name2:Name;	
+
+    ast Sub2 /* astextends  mc.ast._ast.ASTString */;	
+
+	ast A astimplements Cloneable  astextends  de.monticore.ast.ASTNode =
+		name3:Name
+		sub:SubRule1 min=1 max = 3
+		method public String toString() {return name3;}
+	;	
+	
+	ast Super astimplements  Cloneable =
+		name3:Name
+		sub:SubRule1 min=1 max = 3
+		method public String toString() {return name3;}
+	;	
+	
+	ast Sub astextends ASTSuper astimplements Cloneable  =
+		name3:Name
+		sub:SubRule1 min=1 max = 3
+		method public String toString() {return name3;}
+		method public java.util.ArrayList<String> test() {return new java.util.ArrayList<String>();}
+		method public java.util.ArrayList<String[]> test2() {return new java.util.ArrayList<String>();}
+	;
+		
+}

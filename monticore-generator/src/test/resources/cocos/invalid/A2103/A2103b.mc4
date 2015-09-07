@@ -1,0 +1,8 @@
+package cocos.invalid.A2103;
+
+grammar A2103b {
+  external A;
+
+  B extends A;
+
+}

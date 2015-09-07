@@ -1,0 +1,17 @@
+package mc2cdtransformation;
+
+grammar AttributeInASTOverridingGrammar {
+
+    A = overrridden:X ;
+    
+    ast A = overrridden:Y ;
+    
+    B = X;
+    
+    ast B = additional:X;
+    
+    X;
+    
+    Y;
+
+}

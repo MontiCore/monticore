@@ -1,0 +1,8 @@
+package robot.basicmoves;
+
+procedure Rotate {
+	NORTH,
+	WEST,
+	SOUTH,
+	EAST
+}

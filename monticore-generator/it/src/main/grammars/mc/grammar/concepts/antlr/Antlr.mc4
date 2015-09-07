@@ -1,0 +1,55 @@
+package mc.grammar.concepts.antlr;
+
+component grammar Antlr extends mc.grammar.lexicals.Lexicals { 
+
+    /** Used for embedding java declarations */
+	external AntlrCode;
+	
+    /** Used for embedding ANTLR statements */
+	external ActionAntlr;
+
+	/** An AntlrConcept allows to specify additional antlr rules and Java code for Parser and lexer
+	@attribute AntlrParserCode Additional Antlr rules for the parser
+	@attribute AntlrParserAction Additional Java code for the parser
+	@attribute AntlrLexerCode Additional Antlr rules for the lexer
+	@attribute AntlrLexerAction Additional Java code for the lexer
+	*/	
+	ConceptAntlr = 
+		"{"
+		   (antlrParserCode:AntlrParserCode | antlrParserAction:AntlrParserAction |
+		    antlrLexerCode:AntlrLexerCode | antlrLexerAction:AntlrLexerAction)*
+		"}";
+		
+	ast ConceptAntlr =
+		method public String toString() {
+			return "";
+		};
+	
+	
+	/** Additional Antlr rules for the parser
+	@attribute Text	Antlr Parser rules
+	*/
+	AntlrParserCode = 
+		"parser" "antlr" Name? "{" text:ActionAntlr "}";
+
+	/** Additional Java code for the parser
+	@attribute Text	Java Code
+	*/		
+	AntlrParserAction= 
+		"parser" "java" "{" text:AntlrCode "}"; // MemberDeclarations
+		
+	/** AntlrLexerCode Additional Antlr rules for the lexer
+	@attribute Text	Antlr lexer rules
+	*/
+	AntlrLexerCode= 
+		"lexer" "antlr" Name? "{" text:ActionAntlr "}";
+	
+	/** Additional Additional Java code for the lexer
+	@attribute Text	Java Code
+	*/
+	AntlrLexerAction= 
+		"lexer" "java" "{" text:AntlrCode "}";	// MemberDeclarations
+}
+
+
+	

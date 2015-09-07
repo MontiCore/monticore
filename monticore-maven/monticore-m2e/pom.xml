@@ -1,0 +1,118 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- == PROJECT COORDINATES ===================================== -->
+
+  <parent>
+    <groupId>de.monticore.mojo</groupId>
+    <artifactId>monticore-maven</artifactId>
+    <version>4.1.8-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>monticore-m2e</artifactId>
+
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>de.monticore.m2e</module>
+    <module>de.monticore.m2e.feature</module>
+    <module>de.monticore.m2e.site</module>
+  </modules>
+
+  <!-- == PROJECT METAINFORMATION ========================================= -->
+
+  <name>MontiCore M2E Connector</name>
+  <description>M2E Connector for the MontiCore Maven Plugin</description>
+  <inceptionYear>2012</inceptionYear>
+
+  <organization>
+    <name>Department of Software Engineering, RWTH Aachen University</name>
+    <url>http://www.se-rwth.de/</url>
+  </organization>
+
+  <!-- == PROJECT PROPERTIES ============================================== -->
+
+  <properties>
+    <skip.m2e.deployment>true</skip.m2e.deployment>
+  </properties>
+
+  <!-- == BUILD ================================================= -->
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-maven-plugin</artifactId>
+          <version>${tycho.plugin}</version>
+          <extensions>true</extensions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>target-platform-configuration</artifactId>
+          <version>${tycho.plugin}</version>
+          <configuration>
+            <target>
+              <artifact>
+                <groupId>de.se_rwth.eclipse</groupId>
+                <artifactId>de.se_rwth.eclipse.targetplatform.luna</artifactId>
+                <version>1.0.2-SNAPSHOT</version>
+              </artifact>
+            </target>
+            <environments>
+              <environment>
+                <os>linux</os>
+                <ws>gtk</ws>
+                <arch>x86</arch>
+              </environment>
+              <environment>
+                <os>linux</os>
+                <ws>gtk</ws>
+                <arch>x86_64</arch>
+              </environment>
+              <environment>
+                <os>win32</os>
+                <ws>win32</ws>
+                <arch>x86</arch>
+              </environment>
+              <environment>
+                <os>win32</os>
+                <ws>win32</ws>
+                <arch>x86_64</arch>
+              </environment>
+              <environment>
+                <os>macosx</os>
+                <ws>cocoa</ws>
+                <arch>x86_64</arch>
+              </environment>
+            </environments>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>wagon-maven-plugin</artifactId>
+          <version>${wagon.plugin}</version>
+          <configuration>
+            <skip>${skip.m2e.deployment}</skip>
+            <fromFile>${project.build.directory}/${project.build.finalName}.zip</fromFile>
+            <serverId>se-nexus</serverId>
+            <url>http://nexus.se.rwth-aachen.de/service/local/repositories/monticore-snapshots/content-compressed</url>
+          </configuration>
+          <executions>
+            <execution>
+              <id>deploy-repository</id>
+              <phase>install</phase>
+              <goals>
+                <goal>upload-single</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+</project>

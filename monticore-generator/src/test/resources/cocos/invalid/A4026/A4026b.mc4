@@ -1,0 +1,12 @@
+package cocos.invalid.A4026;
+
+grammar A4026b extends cocos.invalid.A4026.A4026 {
+  token CARDINALITY = ('0'..'9')+ | '*' :
+  x -> double : { // Java code:
+  if (x.equals(" * "))
+  return -1;
+  else
+  return Double.parseDouble(x.getText());
+  };
+
+}

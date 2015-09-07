@@ -1,0 +1,8 @@
+package cocos.invalid.A2107;
+
+grammar A2107a {
+  interface A;
+
+  abstract B extends A;
+
+}

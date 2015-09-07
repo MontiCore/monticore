@@ -1,0 +1,204 @@
+/*
+***************************************************************************************
+Copyright (c) 2015, MontiCore
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation and/or
+other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its contributors
+may be used to endorse or promote products derived from this software
+without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGE.
+***************************************************************************************
+*/
+package de.monticore.common;
+
+/**
+ * Grammar for common elements of the UML/P-Language-Family
+ *
+ * @author Martin Schindler, Marita Breuer
+ */
+component grammar Common extends de.monticore.types.Types {
+    /*========================================================================*/
+    /*======================= INTERFACE DEFINITIONS ==========================*/
+    /*========================================================================*/
+    
+    ast Stereotype =
+        method public boolean containsStereoValue(String name) {
+          return (getStereoValue(name) != null);
+        }
+        method public boolean containsStereoValue(String name, String value) {
+          for (ASTStereoValue sv : values) {
+            if (sv.getName() != null && sv.getName().equals(name) 
+                && sv.getValue() != null && sv.getValue().equals(value)) {
+              return true;
+            }
+          }
+          return false;
+        }
+        method public ASTStereoValue getStereoValue(String name) {
+          for (ASTStereoValue sv : values) {
+            if (sv.getName() != null && sv.getName().equals(name)) {
+              return sv;
+            }
+          }
+          return null;
+        };
+    
+    ast StereoValue =
+        method public String getValue() {
+          try {
+            if (source.isPresent()) {
+              return
+                de.monticore.literals.LiteralsHelper.getInstance().decodeString(source.get());
+            } else {
+              return "";
+            }
+          }
+          catch (Exception e) {
+            return "";
+          }
+        }
+        method public void setValue(String value) {
+          this.source = Optional.of('"' + value + '"');
+        };
+    
+    ast Cardinality =
+        lowerBound:int
+        upperBound:int;
+         
+    /*========================================================================*/
+    /*============================== GRAMMAR =================================*/
+    /*========================================================================*/
+    
+    /** ASTStereotype represents Stereotypes in the UML/P
+        @attribute values List of Values of this Stereotype
+    */
+    Stereotype =
+        "<<" values:(StereoValue || ",")+ ">>";
+    
+    /** ASTStereoValue represents a Value of a Stereotype in the UML/P
+        @attribute name  Name of the Stereotype-Value
+        @attribute source Source of the Stereotype (String including '"';
+                          use getValue() for decoded String)
+    */
+    StereoValue =
+        Name& ("=" source:String)?;
+    
+    /** ASTCardinality represents a Cardinality in the UML/P
+        @attribute many          True if "*" is set as Cardinality
+        @attribute lowerBound    Minimum number of associated Classes/Ojects
+        @attribute upperBound    Maximum number of associated Classes/Ojects
+        @attribute lowerBoundLit Lower bound as Literal
+        @attribute upperBoundLit Upper bound as Literal
+        @attribute noUpperLimit  True if no upper bound exists
+    */
+    Cardinality =
+        "["
+        ( 
+          many:["*"] {_aNode.setLowerBound(0);_aNode.setUpperBound(0);}
+          |
+          lowerBoundLit:IntLiteral
+          {
+            _aNode.setLowerBound(_aNode.getLowerBoundLit().get().getValue());
+            _aNode.setUpperBound(_aNode.getLowerBound());
+          }
+          (
+            ".."
+            (
+              upperBoundLit:IntLiteral
+              ({_aNode.setUpperBound(_aNode.getUpperBoundLit().get().getValue());})
+              |
+              noUpperLimit:["*"] {_aNode.setUpperBound(0);}
+            )
+          )?
+        )
+        "]";
+    
+    /** ASTCompleteness represents the completeness in the UML/P
+        Syntax: (left-completeness, right-completeness)
+        Interpretation:
+          CD: Diagramm: left: Types,      right: Assoziations
+              Types:    left: Attributes, right: Methods
+          OD: Diagramm: left: Objects,    right: Links
+              Objects:  left=right: Attributes
+          SC: Diagramm: left: States (state space coverage),
+                        right: Transitions
+              States:   left: Substates,
+                        right: Transitions of Substates
+          SD: Diagramm: left=right: Interactions:
+                                    (c) = <<match:complete>>
+                                    (...) = <<match:free>>
+              Objects:  left=right: Interactions of this Object
+        @attribute incomplete    true if left and right side are
+                                 incomplete (...)
+        @attribute complete      true if left and right side are
+                                 complete (c)
+        @attribute rightComplete true if only right side is complete (...,c)
+        @attribute leftComplete  true if only left is complete (c,...)
+    */
+    Completeness =
+        //the following complex lexer symbol construction is to prevent clash
+        //with ident "c"
+          [complete:"(c)"] 
+          | ("(" [incomplete:"..."] ")") //separate brackets to avoid
+                                                 //lexer-symbol clash with SD/SC
+          | [incomplete:"(...,...)"] | [complete:"(c,c)"]
+          | [rightComplete:"(...,c)"] 
+          | [leftComplete:"(c,...)"];
+    
+    /** ASTModifier represents a Modifier for Classes, Interfaces, Methods,
+        Constructors and Attributes in the UML/P
+        @attribute stereotype Optional Stereotype
+        @attribute public     true if Modifier is public 
+                              (i.e. Modifier written as "public" or "+")
+        @attribute private    true if Modifier is private 
+                              (i.e. Modifier written as "private" or "-")
+        @attribute protected  true if Modifier is protected 
+                              (i.e. Modifier written as "protected" or "#")
+        @attribute final      true if Modifier is final 
+                              (i.e. Modifier written as "final")
+        @attribute abstract   true if Modifier is abstract 
+                              (i.e. Modifier written as "abstract")
+        @attribute local      true if Modifier is local 
+                              (i.e. Modifier written as "local")
+        @attribute derived    true if Modifier is derived 
+                              (i.e. Modifier written as "derived" or "/")
+        @attribute readonly   true if Modifier is readonly 
+                              (i.e. Modifier written as "readonly" or "?")
+        @attribute static     true if Modifier is static 
+                              (i.e. Modifier written as "static")
+    */
+    Modifier =
+        Stereotype?
+        (   ["public"]       | [public:"+"]   //type modifier
+          | ["private"]      | [private:"-"]
+          | ["protected"]    | [protected:"#"]
+          | ["final"]
+          | ["abstract"]
+          | ["local"]
+          | ["derived"]      | [derived:"/"] //attribute modifier
+          | ["readonly"]     | [readonly:"?"]
+          | ["static"]
+        )*;
+
+}

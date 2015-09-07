@@ -1,0 +1,11 @@
+package mc.feature.linepreprocess.synpred;
+
+grammar SynPred_LLk {
+
+    S = A
+        | B ;
+    A = "a" "b" | "b" "a" ;
+    B = "a" "a" ;
+
+
+}

@@ -1,0 +1,6 @@
+package cocos.invalid.A4014;
+
+grammar A4014 {
+  enum A = "a" | "a";
+
+}

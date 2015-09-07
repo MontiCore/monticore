@@ -1,0 +1,109 @@
+/* Sinnfreise Sprache, an Automaten angelehnt, um MontiCore zu testen */
+package mc.feature.inheritence;
+
+grammar Inheritence { 
+
+	interface IG;
+	
+	interface IM;
+
+	interface IF extends IG;	
+	
+	interface X;
+
+	// Test1 : IG should parse all "a", "b", and "c"
+	A implements IF = "a" ;
+
+	B implements IF = "b" ;
+		
+	C implements IG = "c";
+	
+	
+
+		
+	
+	// Test 2 : IH should parse "d"  (calls D with parameters null)
+	interface IH;
+	
+	D implements IH =
+		"d";
+	
+	// Test 3 : IM should parse "aa", "bb" and "ab" (predicate is necessary for k=1)
+	
+	K implements IM astimplements Cloneable=
+	
+	 "a" "a" | "b" "b";
+	L implements IM = "a" "b";	
+	
+	
+	N implements X = "c"; 
+	
+	O astextends ASTN = "c";	
+	
+	
+	interface Component;
+	
+	Composite implements Component =
+		"composite" "(" children:Component* ")";
+		
+
+	Leaf implements Component =
+		"leaf" value:STRING ;
+	
+	ast Leaf =
+		children:Component*;
+	
+	ast Component =
+		children:Component*
+	;
+	
+	
+	// Test 4: XAE should parse "f"
+	abstract XAE;
+	
+	XF extends XAE = "f";
+	
+
+	// Test 5: XAO should parse "p" and not q	
+	abstract XAO;
+	
+	XP extends XAO = "p";
+
+	XQ = "q";
+	
+	
+	
+	Sub extends Super = XQ XP;
+	
+	Super = XQ;
+	
+  fragment token NEWLINE =
+    ('\r' '\n' |
+    '\r' |
+    '\n' ) :
+    ;
+
+  token WS =
+    (' ' | 
+    '\t' |
+     '\r' '\n' |
+    '\r' |
+    '\n' ) : {_channel = HIDDEN;};
+    
+  fragment token ESC =
+    '\\' ('n' |
+    'r' |
+    't' |
+    '"' |
+    '\\' );
+
+  token STRING =
+    '"' ( ESC |
+      ~('"' |
+      '\\' |
+      '\n' |
+      '\r' )
+    )*
+	'"' : {setText(getText().substring(1, getText().length() - 1));};
+	
+}

@@ -1,0 +1,8 @@
+petrinet NetError bool {
+	place a:false;
+	place b: true;
+	place c: 445, 50;
+	
+	a:1,b --x-> c;
+	
+}

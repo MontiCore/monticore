@@ -1,0 +1,15 @@
+package mc.feature.abc;
+
+component grammar ABC extends mc.common.Basics {
+
+	S = X ( C )* ;
+	
+	X = "a" X? b:"b"  ;
+	
+	
+	external C;
+	
+	RealC = "c";
+	
+
+}

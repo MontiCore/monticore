@@ -1,0 +1,12 @@
+package cocos.invalid.A4020;
+
+grammar A4020 {
+
+ A;
+
+ ast A;
+
+ ast A;
+
+
+}

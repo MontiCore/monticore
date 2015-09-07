@@ -1,0 +1,9 @@
+/* Sinnfreise Sprache, an Automaten angelehnt, um MontiCore zu testen */
+package mc.feature.javasql.sql;
+
+grammar SQL extends mc.common.Basics { 
+
+	 SelectStatement = 
+	    "SELECT" (distinct:["ALL"|"DISTINCT"])? selection:Name ("," selection:Name)* "FROM" table:Name;
+
+}

@@ -1,0 +1,26 @@
+package mc.feature.comments;
+
+grammar CommentTest extends mc.common.Basics {
+
+// Undecideable with k=1, use explicit lookahed
+Start = "start"
+  (
+    A 
+  |
+    B
+  )*;
+
+A =   
+	 Name "a";
+ 
+B = 
+	 Name "b"; 
+      
+      
+/** Grammardoc
+@attribute
+name in next line which forced a bug in former versions
+*/      
+C = "a";
+      
+}

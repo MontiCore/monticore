@@ -1,0 +1,24 @@
+package mc2cdtransformation;
+
+grammar NonTerminalMultiplicityGrammar {
+
+  A = X*;
+  B = (X)*;
+  
+  C = X+;
+  D = (X)+;
+  
+  E = X?;
+  F = (X)?;
+    
+  G = (X) (X);
+  H = X | Y;
+  
+  I = X ("," X)?;
+  
+  J = X | X ;
+    
+  X;
+  Y;
+  
+}      

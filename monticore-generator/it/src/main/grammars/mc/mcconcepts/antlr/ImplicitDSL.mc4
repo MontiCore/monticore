@@ -1,0 +1,25 @@
+package mc.mcconcepts.antlr;
+
+grammar ImplictDSL extends mc.common.Basics {
+
+
+BreakStatement = "-" ID:Name ;
+
+// Überschreiben von parser-Regeln
+concept antlr { parser antlr BreakStatement {
+breakstatement returns[mc.mcconcepts.antlr._ast.ASTBreakStatement ret = null]
+	: 'break' (Name)?
+	;
+}}
+
+// Überschreiben von Lexer-Regeln
+concept antlr { 
+  lexer antlr Name {
+    Name: 'test_new';
+  }
+}
+
+// 4) Referenzierung und Parsen ist möglich
+Dummy = BreakStatement; 
+
+}

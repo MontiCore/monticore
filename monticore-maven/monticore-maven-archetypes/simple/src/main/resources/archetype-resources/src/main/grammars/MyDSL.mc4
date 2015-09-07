@@ -1,0 +1,26 @@
+package ${package};
+
+grammar MyDSL extends de.monticore.lexicals.Lexicals {
+
+/** A model with a name and a set of model elements
+    @attribute name Name of the model
+    @attribute myElements List of model elements
+*/
+MyModel =
+  "model" Name "{" myElements:MyElement* "}" ;
+
+/** A model element consisting of a name and a list of fields
+    @attribute name Name of the model element
+    @attribute myFields List of fields of the model element
+*/
+MyElement =
+  "element" Name
+  "{" myFields:MyField* "}" ;
+
+/** A field has a name and refers to a model element as its type
+    @attribute name Name of the field
+    @attribute type Name of the model element denoting the type of the field
+*/ 
+MyField =
+  name:Name type:Name ";" ;
+}

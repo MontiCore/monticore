@@ -1,0 +1,7 @@
+package cocos.invalid.A4012;
+
+grammar A4012b {
+
+  abstract A astextends B, C;
+
+}

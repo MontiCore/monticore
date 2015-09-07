@@ -1,0 +1,27 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- == PROJECT COORDINATES ===================================== -->
+
+  <parent>
+    <groupId>de.monticore.mojo</groupId>
+    <artifactId>monticore-maven</artifactId>
+    <version>4.1.8-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>monticore-maven-archetypes</artifactId>
+
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>blank</module>
+    <module>simple</module>
+  </modules>
+
+  <!-- == PROJECT METAINFORMATION ========================================= -->
+
+  <name>MontiCore: Maven Archetypes</name>
+  <description>Maven Archetypes for MontiCore Maven Projects</description>
+
+</project>

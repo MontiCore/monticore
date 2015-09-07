@@ -1,0 +1,7 @@
+package cocos.invalid.A4009;
+
+grammar A4009a extends mc.grammars.types.TestTypes {
+
+  interface QualifiedName;
+
+}

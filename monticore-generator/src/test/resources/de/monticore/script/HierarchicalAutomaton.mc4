@@ -1,0 +1,6 @@
+grammar HierarchicalAutomaton extends Automaton {
+  State =  "state" Name
+    ( "<<" ["initial"] ">>" |
+    "<<" ["final"] ">>" )* 
+    ( ";" | "{" State* "}" ) ;
+}

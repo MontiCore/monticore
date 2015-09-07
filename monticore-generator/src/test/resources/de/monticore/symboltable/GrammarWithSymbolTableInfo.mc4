@@ -1,0 +1,16 @@
+package de.monticore.symboltable;
+
+grammar GrammarWithSymbolTableInfo extends mc.grammars.lexicals.TestLexicals {
+
+ Automaton@! =
+     "automaton" Name "{" (states:State | transitions:Transition)* "}";
+
+ State@! =
+     (Ellipsis:["..."])?
+     (initial:["initial"] | ["final"])? Name;
+
+ // @State means that the name refers to a state symbol.
+ Transition =
+     from:Name@State "-" Name ">" to:Name@State ";";
+
+}

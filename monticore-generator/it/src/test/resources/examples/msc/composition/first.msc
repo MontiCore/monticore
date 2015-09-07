@@ -1,0 +1,13 @@
+msc first{
+
+  instance i{
+    out Hello to j;
+    in World from j;  
+  }
+    
+  instance j{
+    in Hello from i;
+    out World to i;
+  }
+
+}
