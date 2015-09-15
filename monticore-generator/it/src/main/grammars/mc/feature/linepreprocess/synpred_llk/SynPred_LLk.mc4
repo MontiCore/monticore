@@ -1,4 +1,4 @@
-package mc.feature.linepreprocess.synpred;
+package mc.feature.linepreprocess.synpred_llk;
 
 grammar SynPred_LLk {
 
