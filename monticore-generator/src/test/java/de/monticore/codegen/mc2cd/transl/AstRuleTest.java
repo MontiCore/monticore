@@ -104,8 +104,6 @@ public class AstRuleTest {
     assertTrue(astA.getModifier().isPresent());
     assertTrue(astA.getModifier().get().getStereotype().isPresent());
     assertEquals(1, astA.getModifier().get().getStereotype().get().getValues().size());
-    assertEquals(astA.getModifier().get().getStereotype().get().getValues().get(0).getName(),
-        "externalType");
     assertTrue(astA.getModifier().get().getStereotype().get().getValues().get(0).getValue()
         .isPresent());
     assertEquals(astA.getModifier().get().getStereotype().get().getValues().get(0).getValue()
@@ -114,8 +112,6 @@ public class AstRuleTest {
     assertTrue(astF.getModifier().isPresent());
     assertTrue(astF.getModifier().get().getStereotype().isPresent());
     assertEquals(1, astF.getModifier().get().getStereotype().get().getValues().size());
-    assertEquals(astF.getModifier().get().getStereotype().get().getValues().get(0).getName(),
-        "externalType");
     assertTrue(astF.getModifier().get().getStereotype().get().getValues().get(0).getValue()
         .isPresent());
     assertEquals(astF.getModifier().get().getStereotype().get().getValues().get(0).getValue()
@@ -131,8 +127,6 @@ public class AstRuleTest {
     assertTrue(astD.getModifier().isPresent());
     assertTrue(astD.getModifier().get().getStereotype().isPresent());
     assertEquals(1, astD.getModifier().get().getStereotype().get().getValues().size());
-    assertEquals(astD.getModifier().get().getStereotype().get().getValues().get(0).getName(),
-        "externalType");
     assertTrue(astD.getModifier().get().getStereotype().get().getValues().get(0).getValue()
         .isPresent());
     assertEquals(astD.getModifier().get().getStereotype().get().getValues().get(0).getValue()
@@ -141,14 +135,10 @@ public class AstRuleTest {
     assertTrue(astE.getModifier().isPresent());
     assertTrue(astE.getModifier().get().getStereotype().isPresent());
     assertEquals(2, astE.getModifier().get().getStereotype().get().getValues().size());
-    assertEquals(astE.getModifier().get().getStereotype().get().getValues().get(0).getName(),
-        "externalType");
     assertTrue(astE.getModifier().get().getStereotype().get().getValues().get(0).getValue()
         .isPresent());
     assertEquals(astE.getModifier().get().getStereotype().get().getValues().get(0).getValue()
         .get(), "ASTExternalInterface");
-    assertEquals(astE.getModifier().get().getStereotype().get().getValues().get(1).getName(),
-        "externalType");
     assertTrue(astE.getModifier().get().getStereotype().get().getValues().get(1).getValue()
         .isPresent());
     assertEquals(astE.getModifier().get().getStereotype().get().getValues().get(1).getValue()
