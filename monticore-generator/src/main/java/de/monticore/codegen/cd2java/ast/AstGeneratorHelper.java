@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 import de.monticore.codegen.GeneratorHelper;
+import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.TypesPrinter;
 import de.monticore.umlcd4a.CD4AnalysisHelper;
@@ -55,10 +56,9 @@ public class AstGeneratorHelper extends GeneratorHelper {
       return "Optional.empty()";
     }
     String typeName = TypesPrinter.printType(attribute.getType());
-    String simpleTypeName = Names.getSimpleName(typeName);
     if (isAstList(attribute)) {
       return new StringBuilder(getNodeFactoryName(attribute)).append("NodeFactory.create")
-          .append(simpleTypeName).append("()").toString();
+          .append(Names.getSimpleName(typeName)).append("()").toString();
     }
     if (isListType(typeName)) {
       return "new java.util.ArrayList<>()";
@@ -77,7 +77,8 @@ public class AstGeneratorHelper extends GeneratorHelper {
   }
   
   public String getNodeFactoryName(ASTCDAttribute attribute) {
-    List<String> values = CD4AnalysisHelper.getStereotypeValues(attribute, "definedInGrammar");
+    List<String> values = CD4AnalysisHelper.getStereotypeValues(attribute,
+        MC2CDStereotypes.DEFINED_IN_GRAMMAR.toString());
     if (values.size() != 1) {
       return getCdName();
     }
@@ -89,6 +90,11 @@ public class AstGeneratorHelper extends GeneratorHelper {
   
   public String getAstPackage() {
     return getPackageName(getPackageName(), getAstPackageSuffix());
+  }
+  
+  public Optional<ASTCDClass> getASTBuilder(ASTCDClass clazz) {
+    return getCdDefinition().getCDClasses().stream()
+        .filter(c -> c.getName().equals(getNameOfBuilderClass(clazz))).findAny();
   }
   
   /**
@@ -108,9 +114,6 @@ public class AstGeneratorHelper extends GeneratorHelper {
     return AST_BUILDER + getPlainName(astClass);
   }
 
-  public Optional<ASTCDClass> getASTBuilder(ASTCDClass clazz) {
-    return getCdDefinition().getCDClasses().stream()
-        .filter(c -> c.getName().equals(getNameOfBuilderClass(clazz))).findAny();
-  }
+  
   
 }

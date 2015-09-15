@@ -88,8 +88,6 @@ public final class TransformationHelper {
   
   public static final String AST_PACKAGE_SUFFIX = "_ast";
   
-  public static final String STEREOTYPE_EXTERNAL = "externalType";
-  
   private TransformationHelper() {
     // noninstantiable
   }
@@ -335,7 +333,7 @@ public final class TransformationHelper {
     
     if (!typeSymbol.isPresent()) {
       addStereoType(cdClass,
-          STEREOTYPE_EXTERNAL, qualifiedRuleName);
+          MC2CDStereotypes.EXTERNAL_TYPE.toString(), qualifiedRuleName);
     }
     
     return qualifiedRuleName;
@@ -353,7 +351,7 @@ public final class TransformationHelper {
     
     if (!typeSymbol.isPresent()) {
       addStereoType(interf,
-          STEREOTYPE_EXTERNAL, qualifiedRuleName);
+          MC2CDStereotypes.EXTERNAL_TYPE.toString(), qualifiedRuleName);
     }
     
     return qualifiedRuleName;

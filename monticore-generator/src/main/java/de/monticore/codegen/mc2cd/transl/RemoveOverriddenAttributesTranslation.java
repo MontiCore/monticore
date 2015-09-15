@@ -23,6 +23,7 @@ import de.monticore.grammar.grammar._ast.*;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.utils.Link;
 import de.monticore.ast.ASTNode;
+import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 
 import java.util.Optional;
 import java.util.Set;
@@ -94,6 +95,6 @@ public class RemoveOverriddenAttributesTranslation implements
     }
     return stereotype.get().getValues().stream()
         .map(ASTStereoValue::getName)
-        .noneMatch("inherited"::equals);
+        .noneMatch(MC2CDStereotypes.INHERITED.toString()::equals);
   }
 }
