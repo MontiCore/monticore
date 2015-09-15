@@ -571,13 +571,12 @@ component grammar Grammar extends de.monticore.literals.Literals {
   LexActionOrPredicate implements LexComponent = 
      "{" ExpressionPredicate "}" Predicate:["?"] 
      ;
-      
-     
+          
   LexNonTerminal implements LexComponent =
     (variable:Name& "=")? Name ;
    
   LexSimpleIteration implements LexComponent =
-    (LexString | LexChar) iteration:["?"|"*"|"+"];
+    (LexNonTerminal | LexString | LexChar) iteration:["?"|"*"|"+"];
    
   LexOption =
     "options" "{" iD:Name "=" value:Name ";" "}";

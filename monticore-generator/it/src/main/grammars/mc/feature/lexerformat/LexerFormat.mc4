@@ -31,5 +31,11 @@ enum ENUM =
 	"public" | public:"+";	 	
 */
 
+// Check Nonterminals with cardinality
+token NUMBERFLOAT2 =
+	NUMBER+ ';' NUMBER+;
+
+Test2 =
+	a:NUMBERFLOAT2;
 	  
 }
