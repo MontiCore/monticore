@@ -28,8 +28,10 @@ import java.util.Optional;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.lexerformat.lexerformat._ast.ASTTest;
+import mc.feature.lexerformat.lexerformat._ast.ASTTest2;
 import mc.feature.lexerformat.lexerformat._parser.LexerFormatParserFactory;
 import mc.feature.lexerformat.lexerformat._parser.TestMCParser;
+import mc.feature.lexerformat.lexerformat._parser.Test2MCParser;
 
 import org.junit.Test;
 
@@ -118,4 +120,10 @@ public class LexerTest extends GeneratorIntegrationsTest {
     assertEquals(-1, r);
   }
   
+  @Test
+  public void test5() throws IOException {    
+    Test2MCParser p = LexerFormatParserFactory.createTest2MCParser();
+    Optional<ASTTest2> ast = p.parse(new StringReader("1;1"));
+    assertTrue(ast.isPresent());
+  }
 }

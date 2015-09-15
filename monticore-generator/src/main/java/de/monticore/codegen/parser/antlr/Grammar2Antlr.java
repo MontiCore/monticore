@@ -501,6 +501,9 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     }
     else if (ast.getLexString().isPresent()) {
       ast.getLexString().get().accept(getRealThis());
+    } 
+    else if (ast.getLexNonTerminal().isPresent()) {
+      ast.getLexNonTerminal().get().accept(getRealThis());
     }
     
     // Close block and print iteration
