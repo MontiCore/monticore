@@ -17,7 +17,6 @@ grammar KleenePlus {
 	token SIMPLEPLUS = 'i' ('j')+;
 	
 	token SIMPLEPLUSSTRING = "kk" "lm"+;
-	
     
 	KPStart = 
 		kleene:KLEENETOKEN  

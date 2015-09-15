@@ -2,10 +2,8 @@ package mc.feature.lexerformat;
 
 grammar LexerFormat {
 
-
 token NUMBER = 
 	 ('0'..'9')+  : x ->  int  :  { return Integer.parseInt(x.getText()); };
-
 
 token BOOLEAN = 
 	 ("true"|"false"|"on"|"off"|"start"|"stop")
