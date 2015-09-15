@@ -19,20 +19,22 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
+import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.nio.file.Paths;
+
+import org.junit.Ignore;
+import org.junit.Test;
+
+import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.types.types._ast.ASTReferenceType;
 import de.monticore.types.types._ast.ASTReferenceTypeList;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import java.nio.file.Paths;
-
-import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Test for the proper transformation of ASTAbstractProds to corresponding
@@ -105,7 +107,7 @@ public class AstRuleTest {
     assertTrue(astA.getModifier().get().getStereotype().isPresent());
     assertEquals(1, astA.getModifier().get().getStereotype().get().getValues().size());
     assertEquals(astA.getModifier().get().getStereotype().get().getValues().get(0).getName(),
-        "externalType");
+        MC2CDStereotypes.EXTERNAL_TYPE.toString());
     assertTrue(astA.getModifier().get().getStereotype().get().getValues().get(0).getValue()
         .isPresent());
     assertEquals(astA.getModifier().get().getStereotype().get().getValues().get(0).getValue()
@@ -115,7 +117,7 @@ public class AstRuleTest {
     assertTrue(astF.getModifier().get().getStereotype().isPresent());
     assertEquals(1, astF.getModifier().get().getStereotype().get().getValues().size());
     assertEquals(astF.getModifier().get().getStereotype().get().getValues().get(0).getName(),
-        "externalType");
+        MC2CDStereotypes.EXTERNAL_TYPE.toString());
     assertTrue(astF.getModifier().get().getStereotype().get().getValues().get(0).getValue()
         .isPresent());
     assertEquals(astF.getModifier().get().getStereotype().get().getValues().get(0).getValue()
@@ -132,7 +134,7 @@ public class AstRuleTest {
     assertTrue(astD.getModifier().get().getStereotype().isPresent());
     assertEquals(1, astD.getModifier().get().getStereotype().get().getValues().size());
     assertEquals(astD.getModifier().get().getStereotype().get().getValues().get(0).getName(),
-        "externalType");
+        MC2CDStereotypes.EXTERNAL_TYPE.toString());
     assertTrue(astD.getModifier().get().getStereotype().get().getValues().get(0).getValue()
         .isPresent());
     assertEquals(astD.getModifier().get().getStereotype().get().getValues().get(0).getValue()
@@ -142,13 +144,13 @@ public class AstRuleTest {
     assertTrue(astE.getModifier().get().getStereotype().isPresent());
     assertEquals(2, astE.getModifier().get().getStereotype().get().getValues().size());
     assertEquals(astE.getModifier().get().getStereotype().get().getValues().get(0).getName(),
-        "externalType");
+        MC2CDStereotypes.EXTERNAL_TYPE.toString());
     assertTrue(astE.getModifier().get().getStereotype().get().getValues().get(0).getValue()
         .isPresent());
     assertEquals(astE.getModifier().get().getStereotype().get().getValues().get(0).getValue()
         .get(), "ASTExternalInterface");
     assertEquals(astE.getModifier().get().getStereotype().get().getValues().get(1).getName(),
-        "externalType");
+        MC2CDStereotypes.EXTERNAL_TYPE.toString());
     assertTrue(astE.getModifier().get().getStereotype().get().getValues().get(1).getValue()
         .isPresent());
     assertEquals(astE.getModifier().get().getStereotype().get().getValues().get(1).getValue()

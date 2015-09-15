@@ -23,6 +23,7 @@ import java.util.function.UnaryOperator;
 
 import com.google.common.base.Strings;
 
+import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
@@ -43,14 +44,16 @@ public class DefinedInTranslation implements
     for (Link<ASTNonTerminal, ASTCDAttribute> link : rootLink.getLinks(ASTNonTerminal.class,
         ASTCDAttribute.class)) {
       
-      String grammarName = Names.getQualifiedName((rootLink.source().getPackage()), rootLink.source().getName());
+      String grammarName = Names.getQualifiedName((rootLink.source().getPackage()), rootLink
+          .source().getName());
       // TODO GV, SO: replace with the Cd4Analysis symbol table if exists
-      MCRuleSymbol ruleSymbol = MCGrammarSymbolTableHelper.resolveRule(rootLink.source(), link.source().getName()).get();
+      MCRuleSymbol ruleSymbol = MCGrammarSymbolTableHelper.resolveRule(rootLink.source(),
+          link.source().getName()).get();
       String definedInGrammar = ruleSymbol.getGrammarSymbol().getName();
       if (!Strings.isNullOrEmpty(definedInGrammar) && !definedInGrammar.equals(grammarName)) {
-        TransformationHelper.addStereoType(link.target(), "definedInGrammar", definedInGrammar);
+        TransformationHelper.addStereoType(link.target(),
+            MC2CDStereotypes.DEFINED_IN_GRAMMAR.toString(), definedInGrammar);
       }
-      
     }
     
     return rootLink;

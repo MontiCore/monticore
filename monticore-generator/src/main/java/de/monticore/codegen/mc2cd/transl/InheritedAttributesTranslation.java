@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
@@ -53,7 +54,8 @@ public class InheritedAttributesTranslation implements
         MCRuleSymbol ruleSymbol = MCGrammarSymbolTableHelper.resolveRule(rootLink.source(),
             nonTerminal.getName()).get();
         String superGrammarName = ruleSymbol.getGrammarSymbol().getName();
-        ASTCDAttribute cdAttribute = createStereoTypedCDAttribute("inherited", superGrammarName);
+        ASTCDAttribute cdAttribute = createStereoTypedCDAttribute(
+            MC2CDStereotypes.INHERITED.toString(), superGrammarName);
         link.target().getCDAttributes().add(cdAttribute);
         new Link<>(nonTerminal, cdAttribute, link);
       }

@@ -21,6 +21,7 @@ package de.monticore.codegen.mc2cd.transl;
 
 import java.util.function.UnaryOperator;
 
+import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
@@ -54,9 +55,11 @@ class NonTerminalsWithSymbolReferenceToCDAttributeStereotypes implements
 
         if (referencedSymbol != null) {
           final String referencedSymbolName =
-              referencedSymbol.getGrammarSymbol().getFullName() + "." + referencedSymbol.getName() + "Symbol";
-
-          TransformationHelper.addStereoType(cdAttribute, "referencedSymbol", referencedSymbolName);
+              referencedSymbol.getGrammarSymbol().getFullName() + "." + referencedSymbol.getName()
+                  + "Symbol";
+          
+          TransformationHelper.addStereoType(cdAttribute,
+              MC2CDStereotypes.REFERENCED_SYMBOL.toString(), referencedSymbolName);
         }
       }
     }

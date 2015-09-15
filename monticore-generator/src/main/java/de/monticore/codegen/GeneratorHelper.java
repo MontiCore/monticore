@@ -37,13 +37,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
+import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.mc2cd.transl.ConstantsTranslation;
 import de.monticore.io.FileReaderWriter;
@@ -590,7 +590,7 @@ public class GeneratorHelper extends TypesHelper {
   }
   
   public static boolean isInherited(ASTCDAttribute attribute) {
-    return CD4AnalysisHelper.hasStereotype(attribute, "inherited");
+    return CD4AnalysisHelper.hasStereotype(attribute, MC2CDStereotypes.INHERITED.toString());
   }
 
   public boolean isEnum(String qualifiedName) {
@@ -997,7 +997,7 @@ public class GeneratorHelper extends TypesHelper {
     }
     ASTStereotype stereoTypes = type.getModifier().get().getStereotype().get();
     return stereoTypes.getValues().stream()
-        .filter(value -> value.getName().equals(TransformationHelper.STEREOTYPE_EXTERNAL))
+        .filter(value -> value.getName().equals(MC2CDStereotypes.EXTERNAL_TYPE.toString()))
         .filter(value -> value.getValue().equals(superType))
         .count() <= 0;
   }
@@ -1010,7 +1010,7 @@ public class GeneratorHelper extends TypesHelper {
    * @return
    */
   public static boolean isExternal(CDTypeSymbol type, String superType) {
-    Optional<Stereotype> ster = type.getStereotype(TransformationHelper.STEREOTYPE_EXTERNAL);
+    Optional<Stereotype> ster = type.getStereotype(MC2CDStereotypes.EXTERNAL_TYPE.toString());
     if (ster.isPresent()) {
       return ster.get().getValue().equals(superType);
     }

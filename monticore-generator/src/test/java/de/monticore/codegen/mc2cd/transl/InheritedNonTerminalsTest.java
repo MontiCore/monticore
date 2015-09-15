@@ -29,6 +29,7 @@ import java.util.Optional;
 
 import org.junit.Test;
 
+import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.umlcd4a.CD4AnalysisHelper;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
@@ -58,7 +59,8 @@ public class InheritedNonTerminalsTest {
   
   @Test
   public void testInheritedNonTerminals() {
-    List<String> values = CD4AnalysisHelper.getStereotypeValues(astB.getCDAttributes().get(0), "definedInGrammar");
+    List<String> values = CD4AnalysisHelper.getStereotypeValues(astB.getCDAttributes().get(0),
+        MC2CDStereotypes.DEFINED_IN_GRAMMAR.toString());
     assertEquals(values.size(), 1);
     assertEquals(values.get(0), "mc2cdtransformation.Supergrammar");
   }
