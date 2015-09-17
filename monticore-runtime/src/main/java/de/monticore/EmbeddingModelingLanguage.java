@@ -24,7 +24,7 @@ import static java.util.Collections.singletonList;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableList;
@@ -84,7 +84,7 @@ public abstract class EmbeddingModelingLanguage extends CommonModelingLanguage {
    */
   @Override
   public Collection<ResolvingFilter<? extends Symbol>> getResolvers() {
-    final Set<ResolvingFilter<? extends Symbol>> resolvingFilters = new HashSet<>();
+    final Set<ResolvingFilter<? extends Symbol>> resolvingFilters = new LinkedHashSet<>();
 
     // resolving filters directly stored in this (composite) language, e.g., adapters.
     resolvingFilters.addAll(super.getResolvers());

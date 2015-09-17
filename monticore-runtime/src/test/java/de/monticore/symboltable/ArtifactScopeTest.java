@@ -27,7 +27,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -41,7 +41,7 @@ public class ArtifactScopeTest {
   public void testArtifactScopeWithoutImportStatements() {
     final CommonResolvingFilter<EntitySymbol> classResolver = new CommonResolvingFilter<>(EntitySymbol.class, EntitySymbol.KIND);
 
-    final MutableScope globalScope = new GlobalScope(new ModelPath(), new HashSet<>(), new ResolverConfiguration());
+    final MutableScope globalScope = new GlobalScope(new ModelPath(), new LinkedHashSet<>(), new ResolverConfiguration());
     globalScope.addResolver(classResolver);
 
     ArtifactScope artifactScope1 = new ArtifactScope(Optional.of(globalScope), "p", new ArrayList<>());
@@ -82,7 +82,7 @@ public class ArtifactScopeTest {
   public void testArtifactScopeWithImportStatements() {
     final CommonResolvingFilter<EntitySymbol> classResolver = new CommonResolvingFilter<>(EntitySymbol.class, EntitySymbol.KIND);
 
-    final MutableScope globalScope = new GlobalScope(new ModelPath(), new HashSet<>(), new ResolverConfiguration());
+    final MutableScope globalScope = new GlobalScope(new ModelPath(), new LinkedHashSet<>(), new ResolverConfiguration());
     globalScope.addResolver(classResolver);
 
     ArtifactScope artifactScope1 = new ArtifactScope(Optional.of(globalScope), "p", Arrays.asList(
@@ -135,7 +135,7 @@ public class ArtifactScopeTest {
   public void testResolveUnqualifiedSymbolInSamePackage() {
     final CommonResolvingFilter<EntitySymbol> classResolver = new CommonResolvingFilter<>(EntitySymbol.class, EntitySymbol.KIND);
 
-    final MutableScope globalScope = new GlobalScope(new ModelPath(), new HashSet<>(), new ResolverConfiguration());
+    final MutableScope globalScope = new GlobalScope(new ModelPath(), new LinkedHashSet<>(), new ResolverConfiguration());
     globalScope.addResolver(classResolver);
 
     ArtifactScope scope1 = new ArtifactScope(Optional.of(globalScope), "p", new ArrayList<>());

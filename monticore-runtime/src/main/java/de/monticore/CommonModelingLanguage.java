@@ -23,7 +23,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 import com.google.common.collect.ImmutableList;
 import de.monticore.ast.ASTNode;
@@ -42,7 +42,7 @@ public abstract class CommonModelingLanguage implements ModelingLanguage {
 
   private final String fileEnding;
   private final String name;
-  private final Collection<ResolvingFilter<? extends Symbol>> resolvingFilters = new HashSet<>();
+  private final Collection<ResolvingFilter<? extends Symbol>> resolvingFilters = new LinkedHashSet<>();
 
   // TODO PN  make it final
   protected ModelingLanguageModelLoader<? extends ASTNode> modelLoader;

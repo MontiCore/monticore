@@ -48,11 +48,11 @@ public final class MontiCoreConfiguration implements Configuration {
 
   public static final String FTL_EXTENSION = "ftl";
 
-  public static final Set<String> MC4_EXTENSIONS = Sets.newHashSet(MC4_EXTENSION);
+  public static final Set<String> MC4_EXTENSIONS = Sets.newLinkedHashSet(MC4_EXTENSION);
 
-  public static final Set<String> HWC_EXTENSIONS = Sets.newHashSet(JAVA_EXTENSION);
+  public static final Set<String> HWC_EXTENSIONS = Sets.newLinkedHashSet(JAVA_EXTENSION);
 
-  public static final Set<String> FTL_EXTENSIONS = Sets.newHashSet(FTL_EXTENSION);
+  public static final Set<String> FTL_EXTENSIONS = Sets.newLinkedHashSet(FTL_EXTENSION);
 
   public static final String CONFIGURATION_PROPERTY = "_configuration";
 

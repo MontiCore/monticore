@@ -22,7 +22,7 @@ package de.monticore.symboltable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -88,7 +88,7 @@ public class ArtifactScope extends CommonScope {
       symbolName, final SymbolKind kind) {
     resolvingInfo.addInvolvedScope(this);
 
-    final Set<T> resolved = new HashSet<>(this.<T>resolveManyLocally(resolvingInfo, symbolName, kind));
+    final Set<T> resolved = new LinkedHashSet<>(this.<T>resolveManyLocally(resolvingInfo, symbolName, kind));
 
     Log.trace("START resolve(\"" + symbolName + "\", " + "\"" + kind.getName() + "\") in scope \"" +
         getName() + "\". Found #" + resolved.size() + " (local)", "");
@@ -127,7 +127,7 @@ public class ArtifactScope extends CommonScope {
   }
 
   private Collection<String> determinePotentialNames(final String name) {
-    final Collection<String> potentialSymbolNames = new HashSet<>();
+    final Collection<String> potentialSymbolNames = new LinkedHashSet<>();
 
     // the simple name (in default package)
     potentialSymbolNames.add(name);

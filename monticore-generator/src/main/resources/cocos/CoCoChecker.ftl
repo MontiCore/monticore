@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 import ${astPackage}.${genHelper.getASTNodeBaseType()};
 import ${visitorPackage}.${genHelper.getVisitorType()};
@@ -106,7 +106,7 @@ public class ${checkerType} implements ${genHelper.getInheritanceVisitorType()} 
         <#assign cocoCollectionName = genHelper.qualifiedJavaTypeToName(astType) + "CoCos">
 
         <#if isCurrentDiagram>
-          private Collection<${cocoType}> ${cocoCollectionName} = new HashSet<>();
+          private Collection<${cocoType}> ${cocoCollectionName} = new LinkedHashSet<>();
         </#if>
  
         /**

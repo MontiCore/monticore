@@ -68,7 +68,7 @@ public class MontiCoreScriptTest {
   
   private GlobalExtensionManagement glex;
   
-  private static Set<String> additionalMethods = Sets.newHashSet();
+  private static Set<String> additionalMethods = Sets.newLinkedHashSet();
   
   private static Path modelPathPath = Paths.get("src/test/resources");
   

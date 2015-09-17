@@ -235,11 +235,11 @@ public class MCTypeSymbol extends CommonScopeSpanningSymbol implements Comparabl
    * @return all direct AND indirect super types.
    */
   public Collection<MCTypeSymbol> getAllSuperTypes() {
-    Set<MCTypeSymbol> supersHandled = new HashSet<>();
+    Set<MCTypeSymbol> supersHandled = new LinkedHashSet<>();
 
     List<MCTypeSymbol> supersToHandle = new ArrayList();
     supersToHandle.addAll(getSuperTypes());
-    HashSet<MCTypeSymbol> supersNextRound = new HashSet<>();
+    LinkedHashSet<MCTypeSymbol> supersNextRound = new LinkedHashSet<>();
 
     while (!supersToHandle.isEmpty()) {
       for (MCTypeSymbol superType : supersToHandle) {
@@ -261,9 +261,9 @@ public class MCTypeSymbol extends CommonScopeSpanningSymbol implements Comparabl
    * @return all direct AND indirect super interfaces of this type.
    */
   public Collection<MCTypeSymbol> getAllSTSuperInterfaces() {
-    Set<MCTypeSymbol> supersHandled = new HashSet<>();
+    Set<MCTypeSymbol> supersHandled = new LinkedHashSet<>();
     List<MCTypeSymbol> supersToHandle = getSuperInterfaces();
-    Set<MCTypeSymbol> supersNextRound = new HashSet<>();
+    Set<MCTypeSymbol> supersNextRound = new LinkedHashSet<>();
 
     while (!supersToHandle.isEmpty()) {
       for (MCTypeSymbol superType : supersToHandle) {
@@ -306,7 +306,7 @@ public class MCTypeSymbol extends CommonScopeSpanningSymbol implements Comparabl
   public void addEnum(String name, String constant) {
     Set<String> constantsInGrammar = possibleValuesForEnum.get(name.intern());
     if (constantsInGrammar == null) {
-      constantsInGrammar = new HashSet<>();
+      constantsInGrammar = new LinkedHashSet<>();
       possibleValuesForEnum.put(name.intern(), constantsInGrammar);
     }
     constantsInGrammar.add(constant.intern());
@@ -449,7 +449,7 @@ public class MCTypeSymbol extends CommonScopeSpanningSymbol implements Comparabl
    * grammars
    */
   public Set<MCTypeSymbol> getOverloadedTypes() {
-    Set<MCTypeSymbol> overloadedTypes = new HashSet<>();
+    Set<MCTypeSymbol> overloadedTypes = new LinkedHashSet<>();
     overloadedTypes.addAll(grammarSymbol.getAllMCTypesWithGivenName(this.getSimpleName()));
     overloadedTypes.remove(this);
 

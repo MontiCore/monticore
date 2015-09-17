@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -173,8 +173,8 @@ public class MCGrammarSymbol extends CommonScopeSpanningSymbol {
    * @return
    */
   public Set<MCGrammarSymbol> getAllSuperGrammars() {
-    Set<MCGrammarSymbol> allSuperGrammars = new HashSet<>();
-    Set<MCGrammarSymbol> tmpList = new HashSet<>();
+    Set<MCGrammarSymbol> allSuperGrammars = new LinkedHashSet<>();
+    Set<MCGrammarSymbol> tmpList = new LinkedHashSet<>();
     allSuperGrammars.addAll(this.getSuperGrammars());
     
     boolean modified = false;
@@ -236,7 +236,7 @@ public class MCGrammarSymbol extends CommonScopeSpanningSymbol {
   }
 
   public Collection<String> getTypeNames() {
-    final Set<String> typeNames = new HashSet<>();
+    final Set<String> typeNames = new LinkedHashSet<>();
 
     for (final MCTypeSymbol type : getTypes()) {
       typeNames.add(type.getName());
@@ -280,7 +280,7 @@ public class MCGrammarSymbol extends CommonScopeSpanningSymbol {
   }
 
   public Set<MCTypeSymbol> getAllMCTypesWithGivenName(String name) {
-    final Set<MCTypeSymbol> ret = Sets.newHashSet();
+    final Set<MCTypeSymbol> ret = Sets.newLinkedHashSet();
     MCTypeSymbol type;
 
     if (name.startsWith("super.")) {
@@ -336,7 +336,7 @@ public class MCGrammarSymbol extends CommonScopeSpanningSymbol {
   }
 
   public Collection<String> getRuleNames() {
-    final Set<String> ruleNames = new HashSet<>();
+    final Set<String> ruleNames = new LinkedHashSet<>();
 
     for (final MCRuleSymbol ruleSymbol : getRules()) {
       ruleNames.add(ruleSymbol.getName());

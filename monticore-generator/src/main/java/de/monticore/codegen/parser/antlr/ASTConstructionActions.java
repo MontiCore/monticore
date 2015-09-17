@@ -19,7 +19,7 @@
 
 package de.monticore.codegen.parser.antlr;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -417,7 +417,7 @@ public class ASTConstructionActions {
   private String getCodeForTmpVars(ASTClassProd ast) {
     MCRuleSymbol rule = symbolTable.getRuleWithInherited(ast.getName());
     StringBuilder code = new StringBuilder();
-    Set<String> usedTmp = new HashSet<>();
+    Set<String> usedTmp = new LinkedHashSet<>();
     
     // Declare tmp-Variables for NonTerminals
     for (ASTNonTerminal element : ASTNodes.getSuccessors(ast, ASTNonTerminal.class)) {

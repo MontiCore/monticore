@@ -26,7 +26,7 @@ import static com.google.common.base.Strings.nullToEmpty;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -124,7 +124,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
    * <code>Name:Name</code>.
    */
   public Collection<MCRuleSymbol> getAllSymbolDefiningRules() {
-    final Set<MCRuleSymbol> ruleSymbolsWithName = new HashSet<>();
+    final Set<MCRuleSymbol> ruleSymbolsWithName = new LinkedHashSet<>();
 
     // TODO PN include inherited rules?
     for (final MCRuleSymbol rule : grammarSymbol.getRules()) {
@@ -260,7 +260,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
 
   // TODO PN move to JavaNamesHelper
 
-  private static final Set<String> KEYWORDS = new HashSet<>(Arrays.asList(
+  private static final Set<String> KEYWORDS = new LinkedHashSet<>(Arrays.asList(
       "abstract", "continue", "for", "new", "switch", "assert", "default", "goto",
       "package", "synchronized", "boolean", "do", "if", "private", "this", "break",
       "double", "implements", "protected", "throw", "byte", "else", "import", "public",

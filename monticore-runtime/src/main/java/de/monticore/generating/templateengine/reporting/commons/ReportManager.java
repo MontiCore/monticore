@@ -21,7 +21,7 @@ package de.monticore.generating.templateengine.reporting.commons;
 
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -40,7 +40,7 @@ import de.se_rwth.commons.logging.Log;
  */
 public class ReportManager implements IReportEventHandler {
   
-  private Set<IReportEventHandler> reportEventHandlers = new HashSet<IReportEventHandler>();
+  private Set<IReportEventHandler> reportEventHandlers = new LinkedHashSet<IReportEventHandler>();
   
   private String outputDir;
   

@@ -20,6 +20,7 @@
 package de.monticore.grammar;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +56,7 @@ public class MCGrammarInfo {
   /**
    * Keywords of the processed grammar and its super grammars
    */
-  private Set<String> keywords = Sets.newHashSet();
+  private Set<String> keywords = Sets.newLinkedHashSet();
   
   /**
    * Lexer patterns
@@ -90,7 +91,7 @@ public class MCGrammarInfo {
   
   private void addHWAntlrCode() {
     // Get Antlr hwc
-    Set<MCGrammarSymbol> grammarsToHandle = Sets.newHashSet(grammarSymbol);
+    Set<MCGrammarSymbol> grammarsToHandle = Sets.newLinkedHashSet(Arrays.asList(grammarSymbol));
     grammarsToHandle.addAll(grammarSymbol.getAllSuperGrammars());
     for (MCGrammarSymbol grammar: grammarsToHandle) {
       if (grammar.getAstNode().isPresent()) {

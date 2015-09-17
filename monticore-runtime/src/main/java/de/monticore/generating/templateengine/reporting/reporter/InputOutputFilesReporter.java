@@ -30,7 +30,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -158,7 +158,7 @@ public class InputOutputFilesReporter extends AReporter {
     }
   }
   
-  private Set<Path> filesThatMatterButAreNotThereInTime = new HashSet<>();
+  private Set<Path> filesThatMatterButAreNotThereInTime = new LinkedHashSet<>();
   
   // TODO: think about when to clean this up
   private static Map<Path, Path> modelToArtifactMap = new HashMap<>();

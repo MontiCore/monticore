@@ -140,7 +140,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     
     addToCodeSection(ast.getName(), " ");
     List<ASTLexNonTerminal> findAll = ASTNodes.getSuccessors(ast, ASTLexNonTerminal.class);
-    Set<String> s = Sets.newHashSet();
+    Set<String> s = Sets.newLinkedHashSet();
     for (ASTLexNonTerminal nt : findAll) {
       if (nt.getVariable().isPresent()) {
         s.add(nt.getVariable().get());

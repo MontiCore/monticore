@@ -20,7 +20,7 @@
 package de.monticore.generating.templateengine.reporting.reporter;
 
 import java.io.File;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
@@ -51,9 +51,9 @@ public class TemplatesReporter extends AReporter {
   
   private SortedMap<String, Integer> hwTemplateCount = new TreeMap<String, Integer>();
   
-  private Set<String> realTemplateNames = new HashSet<>();
+  private Set<String> realTemplateNames = new LinkedHashSet<>();
   
-  private Set<String> realHWTemplateNames = new HashSet<>();
+  private Set<String> realHWTemplateNames = new LinkedHashSet<>();
   
   private ReportingRepository repository;
   

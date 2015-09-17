@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -329,7 +329,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     resolverConfiguration.addTopScopeResolvers(mcLanguage.getResolvers());
     resolverConfiguration.addTopScopeResolvers(cd4AnalysisLanguage.getResolvers());
     
-    Set<ModelingLanguageModelLoader<? extends ASTNode>> modelLoaders = new HashSet<>();
+    Set<ModelingLanguageModelLoader<? extends ASTNode>> modelLoaders = new LinkedHashSet<>();
     modelLoaders.add(mcLanguage.getModelLoader());
     modelLoaders.add(cd4AnalysisLanguage.getModelLoader());
     

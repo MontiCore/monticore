@@ -68,7 +68,7 @@ public class VariablesReporter extends AReporter {
   }
   
   private void writeContent() {
-    Set<String> allKeys = Sets.newHashSet();
+    Set<String> allKeys = Sets.newLinkedHashSet();
     allKeys.addAll(var2adds.keySet());
     allKeys.addAll(var2asmt.keySet());
     for (String key : allKeys) {

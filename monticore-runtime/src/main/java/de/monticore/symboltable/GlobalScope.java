@@ -22,7 +22,7 @@ package de.monticore.symboltable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -147,7 +147,7 @@ public final class GlobalScope extends CommonScope {
       modelName2ModelLoaderCache.get(calculatedModelName).add(modelLoader);
     }
     else {
-      final Set<ModelingLanguageModelLoader<? extends ASTNode>> ml = new HashSet<>();
+      final Set<ModelingLanguageModelLoader<? extends ASTNode>> ml = new LinkedHashSet<>();
       ml.add(modelLoader);
       modelName2ModelLoaderCache.put(calculatedModelName, ml);
     }
