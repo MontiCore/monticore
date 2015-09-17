@@ -19,18 +19,24 @@
 
 package de.monticore;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.google.common.collect.Sets;
+
 import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.configuration.ConfigurationContributorChainBuilder;
 import de.se_rwth.commons.configuration.DelegatingConfigurationContributor;
 import de.se_rwth.commons.logging.Log;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Provides access to the aggregated configuration of a MontiCore instance
@@ -48,11 +54,11 @@ public final class MontiCoreConfiguration implements Configuration {
 
   public static final String FTL_EXTENSION = "ftl";
 
-  public static final Set<String> MC4_EXTENSIONS = Sets.newLinkedHashSet(MC4_EXTENSION);
+  public static final Set<String> MC4_EXTENSIONS = Sets.newHashSet(MC4_EXTENSION);
 
-  public static final Set<String> HWC_EXTENSIONS = Sets.newLinkedHashSet(JAVA_EXTENSION);
+  public static final Set<String> HWC_EXTENSIONS = Sets.newHashSet(JAVA_EXTENSION);
 
-  public static final Set<String> FTL_EXTENSIONS = Sets.newLinkedHashSet(FTL_EXTENSION);
+  public static final Set<String> FTL_EXTENSIONS = Sets.newHashSet(FTL_EXTENSION);
 
   public static final String CONFIGURATION_PROPERTY = "_configuration";
 
