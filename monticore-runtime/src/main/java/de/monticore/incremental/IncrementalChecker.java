@@ -32,7 +32,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -573,8 +573,8 @@ public class IncrementalChecker {
     
     InputStory mainInputStory = null;
     Map<String, InputStory> inputStories = new HashMap<>();
-    Set<String> hwcStories = new HashSet<>();
-    Set<String> outputStories = new HashSet<>();
+    Set<String> hwcStories = new LinkedHashSet<>();
+    Set<String> outputStories = new LinkedHashSet<>();
     
     it.next(); // skip first line (it's the input heading)
     String line = it.next();

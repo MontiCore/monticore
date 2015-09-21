@@ -396,7 +396,7 @@ public class MCGrammarSymbolTableCreator extends CommonSymbolTableCreator implem
   }
   
   private void setStartParserRuleForNonAbstractGrammar(ASTMCGrammar astGrammar) {
-      final Set<ASTProd> firstProductions = Sets.newHashSet();
+      final Set<ASTProd> firstProductions = Sets.newLinkedHashSet();
       // The start rule for parsing is the first occurring Interface-, Abstract-
       // or Class-Production in this grammar
       if (astGrammar.getClassProds().size() != 0) {

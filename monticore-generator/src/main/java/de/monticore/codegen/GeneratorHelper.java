@@ -29,7 +29,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -334,7 +334,7 @@ public class GeneratorHelper extends TypesHelper {
    * @see #getASTNodeBaseType()
    */
   public Collection<String> getASTNodeBaseTypes() {
-    Set<String> baseNodesNames = new HashSet<>();
+    Set<String> baseNodesNames = new LinkedHashSet<>();
 
     // current cd
     baseNodesNames.add(getASTNodeBaseType());

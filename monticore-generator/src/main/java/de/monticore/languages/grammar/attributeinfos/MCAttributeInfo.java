@@ -19,7 +19,7 @@
 
 package de.monticore.languages.grammar.attributeinfos;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -41,9 +41,9 @@ public class MCAttributeInfo {
 
   private boolean referencesConstantTerminal = false;
   
-  private Set<String> referencedRule = new HashSet<>();
+  private Set<String> referencedRule = new LinkedHashSet<>();
   
-  private Set<String> constantValues = new HashSet<>();
+  private Set<String> constantValues = new LinkedHashSet<>();
   
   public Set<String> getConstantValues() {
     return constantValues;
@@ -99,9 +99,9 @@ public class MCAttributeInfo {
     att.max = max;
     att.min = 0;
     
-    att.referencedRule = new HashSet<>(referencedRule);
+    att.referencedRule = new LinkedHashSet<>(referencedRule);
     
-    att.constantValues = new HashSet<>(constantValues);
+    att.constantValues = new LinkedHashSet<>(constantValues);
     att.setReferencesConstantTerminal(isReferencesConstantTerminal());
     
     return att;
@@ -113,10 +113,10 @@ public class MCAttributeInfo {
     att.max = plus(max, value.getMax());
     att.min = plus(min, value.getMin());
     
-    att.referencedRule = new HashSet<>(referencedRule);
+    att.referencedRule = new LinkedHashSet<>(referencedRule);
     att.referencedRule.addAll(value.referencedRule);
     
-    att.constantValues = new HashSet<>(constantValues);
+    att.constantValues = new LinkedHashSet<>(constantValues);
     att.constantValues.addAll(value.constantValues);
     att.setReferencesConstantTerminal(value.isReferencesConstantTerminal() || att.isReferencesConstantTerminal());
     
@@ -129,10 +129,10 @@ public class MCAttributeInfo {
     att.max = max(max, value.getMax());
     att.min = min(min, value.getMin());
     
-    att.referencedRule = new HashSet<>(referencedRule);
+    att.referencedRule = new LinkedHashSet<>(referencedRule);
     att.referencedRule.addAll(value.referencedRule);
     
-    att.constantValues = new HashSet<>(constantValues);
+    att.constantValues = new LinkedHashSet<>(constantValues);
     att.constantValues.addAll(value.constantValues);
     att.setReferencesConstantTerminal(value.isReferencesConstantTerminal() || att.isReferencesConstantTerminal());
     
@@ -145,8 +145,8 @@ public class MCAttributeInfo {
     att.max = STAR;
     att.min = 0;
     
-    att.referencedRule = new HashSet<>(referencedRule);
-    att.constantValues = new HashSet<>(constantValues);
+    att.referencedRule = new LinkedHashSet<>(referencedRule);
+    att.constantValues = new LinkedHashSet<>(constantValues);
     att.setReferencesConstantTerminal(this.isReferencesConstantTerminal());
     
     return att;
@@ -159,8 +159,8 @@ public class MCAttributeInfo {
     att.max = STAR;
     att.min = min;
     
-    att.referencedRule = new HashSet<>(referencedRule);
-    att.constantValues = new HashSet<>(constantValues);
+    att.referencedRule = new LinkedHashSet<>(referencedRule);
+    att.constantValues = new LinkedHashSet<>(constantValues);
     att.setReferencesConstantTerminal(this.isReferencesConstantTerminal());
     
     return att;
@@ -173,8 +173,8 @@ public class MCAttributeInfo {
     att.max = max;
     att.min = 0;
     
-    att.referencedRule = new HashSet<>(referencedRule);
-    att.constantValues = new HashSet<>(constantValues);
+    att.referencedRule = new LinkedHashSet<>(referencedRule);
+    att.constantValues = new LinkedHashSet<>(constantValues);
     att.setReferencesConstantTerminal(this.isReferencesConstantTerminal());
     
     return att;

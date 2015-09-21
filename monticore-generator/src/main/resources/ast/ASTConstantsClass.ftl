@@ -54,7 +54,7 @@ public class ${ast.getName()} extends Object {
   public static String[] superGrammars = {<#list superGrammars as superGrammar>${del}"${superGrammar}"<#assign del = ","></#list>};
   
   public static Collection<String> getAllLanguages() {
-    Collection<String> allLanguages = Sets.newHashSet();
+    Collection<String> allLanguages = Sets.newLinkedHashSet();
     <#list superGrammars as superGrammar>
     <#assign superPackage = astHelper.getAstPackage(superGrammar)>
     allLanguages.addAll(${superPackage}.ASTConstants${nameHelper.getSimpleName(superGrammar)}.getAllLanguages());

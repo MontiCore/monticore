@@ -22,7 +22,7 @@ package de.monticore.generating.templateengine.reporting.commons;
 // TODO: Used by reporting tool
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -116,7 +116,7 @@ public class MapUtil {
     if(map.containsKey(key)) {
       currentSet = map.get(key);
     } else {
-      currentSet = new HashSet<String>();
+      currentSet = new LinkedHashSet<String>();
     }
     currentSet.add(value);
     map.put(key, currentSet);

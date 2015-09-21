@@ -25,7 +25,7 @@ import static com.google.common.collect.Iterators.any;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
@@ -139,7 +139,7 @@ public class CommonScope implements MutableScope {
     Log.errorIfNull(resolvingInfo);
     resolvingInfo.addInvolvedScope(this);
 
-    final Set<T> resolved = new HashSet<>(this.<T>resolveManyLocally(resolvingInfo, name, kind));
+    final Set<T> resolved = new LinkedHashSet<>(this.<T>resolveManyLocally(resolvingInfo, name, kind));
 
     // TODO PN must this check be done AFTER the symbols are filtered by the access modifiers?
     continueWithEnclosingScope(resolvingInfo, name, kind, modifier, resolved);
@@ -184,7 +184,7 @@ public class CommonScope implements MutableScope {
     Log.errorIfNull(resolvingInfo);
     resolvingInfo.addInvolvedScope(this);
 
-    final Set<T> resolved = new HashSet<>(this.<T>resolveManyLocally(resolvingInfo, symbolName, kind));
+    final Set<T> resolved = new LinkedHashSet<>(this.<T>resolveManyLocally(resolvingInfo, symbolName, kind));
 
     Log.trace("START resolve(\"" + symbolName + "\", " + "\"" + kind.getName() + "\") in scope \"" +
         getName() + "\". Found #" + resolved.size() + " (local)" , "");
@@ -397,7 +397,7 @@ public class CommonScope implements MutableScope {
 
 
   public void setResolvingFilters(Collection<ResolvingFilter<? extends Symbol>> resolvingFilters) {
-    this.resolvingFilters = new HashSet<>(resolvingFilters);
+    this.resolvingFilters = new LinkedHashSet<>(resolvingFilters);
   }
 
   public void addResolver(ResolvingFilter<? extends Symbol> resolvingFilter) {
@@ -417,7 +417,7 @@ public class CommonScope implements MutableScope {
   @Override
   public <T extends Symbol> Collection<T> resolveMany(final String name, final SymbolKind kind) {
     // TODO PN should resolve() use this method (not vice versa)?
-    final Collection<T> resolvedSymbols = new HashSet<>();
+    final Collection<T> resolvedSymbols = new LinkedHashSet<>();
 
 
     try {
@@ -443,7 +443,7 @@ public class CommonScope implements MutableScope {
     Collection<ResolvingFilter<? extends Symbol>> resolversForKind =
         getResolvingFiltersForTargetKind(resolvingInfo.getResolvingFilters(), kind);
 
-    final Set<T> resolvedSymbols = new HashSet<>();
+    final Set<T> resolvedSymbols = new LinkedHashSet<>();
 
     for (ResolvingFilter<? extends Symbol> resolvingFilter : resolversForKind) {
       Optional<T> resolvedSymbol = (Optional<T>) resolvingFilter.filter(resolvingInfo, name, symbols);

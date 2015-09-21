@@ -21,7 +21,7 @@ package de.monticore.generating.templateengine.reporting.reporter;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -149,13 +149,13 @@ public class SummaryReporter extends AReporter {
   
   private int numCalledUnsetHookpoints;
   
-  private Set<String> variableNames = new HashSet<String>();
+  private Set<String> variableNames = new LinkedHashSet<String>();
   
-  private Set<String> usedTemplates = Sets.newHashSet();
+  private Set<String> usedTemplates = Sets.newLinkedHashSet();
   
-  private Set<String> usedHWTemplates = Sets.newHashSet();
+  private Set<String> usedHWTemplates = Sets.newLinkedHashSet();
   
-  private Set<String> calledUnsetHookpoints = Sets.newHashSet();
+  private Set<String> calledUnsetHookpoints = Sets.newLinkedHashSet();
   
   private ReportingRepository repository;
   

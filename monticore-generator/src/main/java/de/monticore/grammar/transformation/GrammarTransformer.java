@@ -30,7 +30,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -117,7 +117,7 @@ public class GrammarTransformer {
   
   private static void transformNonTerminals(ASTMCGrammar grammar,
       ASTClassProd classProd) {
-    Set<ASTNonTerminal> components = new HashSet<>();
+    Set<ASTNonTerminal> components = new LinkedHashSet<>();
     
     ASTNodes.getSuccessors(classProd, ASTNonTerminal.class).stream()
         .filter(nonTerminal -> getMultiplicity(grammar, nonTerminal) == Multiplicity.LIST)
@@ -128,7 +128,7 @@ public class GrammarTransformer {
         .filter(nonTerminal -> multiplicityByDuplicates(grammar, nonTerminal) == Multiplicity.LIST)
         .filter(nonTerminal -> !nonTerminal.getUsageName().isPresent())
         .forEach(components::add);
-    Collection<String> changedNames = new HashSet<>();
+    Collection<String> changedNames = new LinkedHashSet<>();
     components.forEach(s -> {
       s.setUsageName(StringTransformations.uncapitalize(s.getName()) + 's');
       Log.debug("Change the name of " + classProd.getName()

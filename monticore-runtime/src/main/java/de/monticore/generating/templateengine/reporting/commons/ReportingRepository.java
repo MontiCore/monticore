@@ -70,11 +70,11 @@ public class ReportingRepository {
   // save current maxID for aSTNode string
   private Map<String, Integer> name2maxid = Maps.newHashMap();
   
-  private Set<String> allTemplateNames = Sets.newHashSet();
+  private Set<String> allTemplateNames = Sets.newLinkedHashSet();
   
-  private Set<String> allHWJavaNames = Sets.newHashSet();
+  private Set<String> allHWJavaNames = Sets.newLinkedHashSet();
   
-  private Set<String> allHWTemplateNames = Sets.newHashSet();
+  private Set<String> allHWTemplateNames = Sets.newLinkedHashSet();
   
   public ReportingRepository(IASTNodeIdentHelper astNodeIdentHelper) {
     this.astNodeIdentHelper = astNodeIdentHelper;

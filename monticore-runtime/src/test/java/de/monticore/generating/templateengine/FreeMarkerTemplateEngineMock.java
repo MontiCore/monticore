@@ -39,7 +39,7 @@ import freemarker.template.Template;
  */
 public class FreeMarkerTemplateEngineMock extends FreeMarkerTemplateEngine {
   
-  private Set<FreeMarkerTemplateMock> processedTemplates = Sets.newHashSet();
+  private Set<FreeMarkerTemplateMock> processedTemplates = Sets.newLinkedHashSet();
   
   public FreeMarkerTemplateEngineMock() {
     super(new FreeMarkerConfigurationBuilder().build());

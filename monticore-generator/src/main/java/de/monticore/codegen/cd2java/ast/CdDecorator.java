@@ -27,7 +27,7 @@ import groovyjarjarantlr.ANTLRException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -465,7 +465,7 @@ public class CdDecorator {
     nodeFactoryClass.setName(nodeFactoryName);
     
     // Add factory-attributes for all ast classes
-    Set<String> astClasses = new HashSet<>();
+    Set<String> astClasses = new LinkedHashSet<>();
     nativeClasses.stream().filter(e -> e.getModifier().isPresent())
         .filter(e -> !e.getModifier().get().isAbstract())
         .forEach(e -> astClasses.add(GeneratorHelper.getPlainName(e)));

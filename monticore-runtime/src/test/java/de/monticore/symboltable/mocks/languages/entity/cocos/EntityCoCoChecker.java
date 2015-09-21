@@ -20,7 +20,7 @@
 package de.monticore.symboltable.mocks.languages.entity.cocos;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 import de.monticore.symboltable.mocks.languages.entity.asts.ASTAction;
 import de.monticore.symboltable.mocks.languages.entity.asts.ASTEntity;
@@ -42,7 +42,7 @@ public class EntityCoCoChecker implements EntityLanguageVisitor {
    * no instanceof is needed in the visit-methods. However, for the mock its less
    * to implement doing it the "bad" way.
    */
-  private Collection<ContextCondition> cocos = new HashSet<>();
+  private Collection<ContextCondition> cocos = new LinkedHashSet<>();
   
   /**
    * @param cocos the cocos to set

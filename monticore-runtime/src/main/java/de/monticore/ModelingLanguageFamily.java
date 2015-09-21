@@ -23,7 +23,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -48,13 +48,13 @@ public class ModelingLanguageFamily {
   // TODO PN adding of other modeling language families should be possible, too.
   // TODO PN add name for language family?
 
-  private final Collection<ModelingLanguage> modelingLanguages = new HashSet<>();
+  private final Collection<ModelingLanguage> modelingLanguages = new LinkedHashSet<>();
 
   /**
    * All resolvers added directly to this language family (not those of the single modeling
    * languages).
    */
-  private final Collection<ResolvingFilter<? extends Symbol>> resolvingFilters = new HashSet<>();
+  private final Collection<ResolvingFilter<? extends Symbol>> resolvingFilters = new LinkedHashSet<>();
 
   public Optional<ModelingLanguage> getLanguageByFileExtension(final String fileExtension) {
     checkArgument(!isNullOrEmpty(fileExtension), "File extension may not be null or empty");
@@ -95,7 +95,7 @@ public class ModelingLanguageFamily {
    * @return all resolvers specified in this language family and all its single languages.
    */
   public Collection<ResolvingFilter<? extends Symbol>> getAllResolvers() {
-    final Collection<ResolvingFilter<? extends Symbol>> allResolvingFilters = new HashSet<>();
+    final Collection<ResolvingFilter<? extends Symbol>> allResolvingFilters = new LinkedHashSet<>();
     allResolvingFilters.addAll(resolvingFilters);
 
     for (ModelingLanguage language : modelingLanguages) {

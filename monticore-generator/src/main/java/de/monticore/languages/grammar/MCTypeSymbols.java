@@ -19,8 +19,9 @@
 
 package de.monticore.languages.grammar;
 
-import static com.google.common.collect.Sets.newHashSet;
+import static com.google.common.collect.Sets.newLinkedHashSet;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 
@@ -30,7 +31,7 @@ import de.se_rwth.commons.logging.Log;
 public class MCTypeSymbols {
 
   public static boolean isSubtype(MCTypeSymbol subType, MCTypeSymbol superType) {
-    return isSubtype(subType, superType, newHashSet(subType));
+    return isSubtype(subType, superType, newLinkedHashSet(Arrays.asList(subType)));
   }
 
   private static boolean isSubtype(MCTypeSymbol subType, MCTypeSymbol superType, Set<MCTypeSymbol> handledTypes) {
@@ -87,7 +88,7 @@ public class MCTypeSymbols {
   }
 
   public static boolean isAssignmentCompatibleOrUndecidable(MCTypeSymbol subType, MCTypeSymbol superType) {
-    return isAssignmentCompatibleOrUndecidable(subType, superType, newHashSet(subType));
+    return isAssignmentCompatibleOrUndecidable(subType, superType, newLinkedHashSet(Arrays.asList(subType)));
   }
 
   private static boolean isAssignmentCompatibleOrUndecidable(MCTypeSymbol subType, MCTypeSymbol superType, Set<MCTypeSymbol> handledTypes) {

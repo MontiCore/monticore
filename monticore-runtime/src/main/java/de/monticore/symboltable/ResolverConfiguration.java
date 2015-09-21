@@ -21,7 +21,7 @@ package de.monticore.symboltable;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.google.common.collect.HashBasedTable;
@@ -40,7 +40,7 @@ public final class ResolverConfiguration {
   private final Table<String, SymbolKind, Set<ResolvingFilter<? extends Symbol>>> resolverTable = HashBasedTable
       .create();
   
-  private final Set<ResolvingFilter<? extends Symbol>> topScopeResolvingFilters = new HashSet<>();
+  private final Set<ResolvingFilter<? extends Symbol>> topScopeResolvingFilters = new LinkedHashSet<>();
   
   /**
    * Adds a resolver to the set of resolvers for the specified symbol name and kind. Constructing a
@@ -53,7 +53,7 @@ public final class ResolverConfiguration {
   public void addResolver(String symbolName, SymbolKind symbolKind,
       ResolvingFilter<? extends Symbol> resolvingFilter) {
     if (resolverTable.get(symbolName, symbolKind) == null) {
-      resolverTable.put(symbolName, symbolKind, new HashSet<>());
+      resolverTable.put(symbolName, symbolKind, new LinkedHashSet<>());
     }
     resolverTable.get(symbolName, symbolKind).add(resolvingFilter);
   }

@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -98,7 +99,7 @@ public final class IterablePath {
    * @return
    */
   public static IterablePath from(File file, String extension) {
-    return from(file, Sets.newHashSet(extension));
+    return from(file, Sets.newLinkedHashSet(Arrays.asList(extension)));
   }
   
   /**
@@ -128,7 +129,7 @@ public final class IterablePath {
    * @return
    */
   public static IterablePath from(List<File> files, String extension) {
-    return from(files, Sets.newHashSet(extension));
+    return from(files, Sets.newLinkedHashSet(Arrays.asList(extension)));
   }
   
   /**
@@ -172,7 +173,7 @@ public final class IterablePath {
    * @return
    */
   public static IterablePath fromPaths(List<Path> paths, String extension) {
-    return fromPaths(paths, Sets.newHashSet(extension));
+    return fromPaths(paths, Sets.newLinkedHashSet(Arrays.asList(extension)));
   }
   
   /**

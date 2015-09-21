@@ -19,18 +19,24 @@
 
 package de.monticore;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.google.common.collect.Sets;
+
 import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.configuration.ConfigurationContributorChainBuilder;
 import de.se_rwth.commons.configuration.DelegatingConfigurationContributor;
 import de.se_rwth.commons.logging.Log;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Provides access to the aggregated configuration of a MontiCore instance

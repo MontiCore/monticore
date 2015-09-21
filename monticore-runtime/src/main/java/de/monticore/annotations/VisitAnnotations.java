@@ -21,7 +21,7 @@ package de.monticore.annotations;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import de.monticore.ast.ASTNode;
@@ -47,13 +47,13 @@ public final class VisitAnnotations {
   public static Set<Method> visitMethods(Object visitingObject) {
     // using a set ensures that public methods, which are returned both by getMethods() and
     // getDeclaredMethods(), aren't gathered twice
-    Set<Method> allMethods = new HashSet<>();
+    Set<Method> allMethods = new LinkedHashSet<>();
     // gather inherited visit methods
     allMethods.addAll(Arrays.asList(visitingObject.getClass().getMethods()));
     // gather private visit methods
     allMethods.addAll(Arrays.asList(visitingObject.getClass().getDeclaredMethods()));
     
-    Set<Method> visitMethods = new HashSet<>();
+    Set<Method> visitMethods = new LinkedHashSet<>();
     for (Method method : allMethods) {
       if (method.isAnnotationPresent(Visit.class)) {
         checkVisitMethod(method);
