@@ -1024,7 +1024,7 @@ public class GeneratorHelper extends TypesHelper {
   }
   
   public static String getSimpleTypeNameToGenerate(String simpleName, String packageName,
-      String modelName, IterablePath targetPath) {
+      IterablePath targetPath) {
     if (!packageName.isEmpty() && !packageName.endsWith(".")) {
       packageName = packageName + ".";
     }

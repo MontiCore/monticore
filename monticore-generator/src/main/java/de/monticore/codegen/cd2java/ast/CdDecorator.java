@@ -893,27 +893,24 @@ public class CdDecorator {
   void transformCdTypeNamesForHWTypes(ASTCDCompilationUnit cdCompilationUnit) {
     String packageName = TransformationHelper.getAstPackageName(cdCompilationUnit);
     
-    String modelName = Names.getQualifiedName(cdCompilationUnit.getPackage(), cdCompilationUnit
-        .getCDDefinition().getName());
-    
     cdCompilationUnit
         .getCDDefinition()
         .getCDClasses()
         .forEach(
             c -> c.setName(GeneratorHelper.getSimpleTypeNameToGenerate(c.getName(), packageName,
-                modelName, targetPath)));
+                targetPath)));
     cdCompilationUnit
         .getCDDefinition()
         .getCDInterfaces()
         .forEach(
             c -> c.setName(GeneratorHelper.getSimpleTypeNameToGenerate(c.getName(), packageName,
-                modelName, targetPath)));
+                targetPath)));
     cdCompilationUnit
         .getCDDefinition()
         .getCDEnums()
         .forEach(
             c -> c.setName(GeneratorHelper.getSimpleTypeNameToGenerate(c.getName(), packageName,
-                modelName, targetPath)));
+                targetPath)));
   }
   
   /**
