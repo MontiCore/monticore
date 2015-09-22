@@ -40,9 +40,8 @@ import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._ast.ASTTerminal;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
-import de.monticore.grammar.grammar_withconcepts._ast.ASTActionAntlr;
-import de.monticore.grammar.grammar_withconcepts._ast.ASTAntlrCode;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTExpressionPredicate;
+import de.monticore.grammar.grammar_withconcepts._ast.ASTJavaCode;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.languages.grammar.MCClassRuleSymbol;
 import de.monticore.languages.grammar.MCEnumRuleSymbol;
@@ -395,13 +394,8 @@ public class ParserGeneratorHelper {
       Log.debug("ASTAction:\n" + action, ParserGenerator.LOG);
       return action;
     }
-    if (node instanceof ASTAntlrCode) {
-      String action = getPrettyPrinter().prettyprint(((ASTAntlrCode) node).getClassMemberDeclarations());
-      Log.debug("ASTAntlrCode:\n" + action, ParserGenerator.LOG);
-      return action;
-    }
-    if (node instanceof ASTActionAntlr) {
-      String action = getPrettyPrinter().prettyprint(((ASTActionAntlr) node).getClassMemberDeclarations());
+    if (node instanceof ASTJavaCode) {
+      String action = getPrettyPrinter().prettyprint(((ASTJavaCode) node).getClassMemberDeclarations());
       Log.debug("ASTActionAntlr:\n" + action, ParserGenerator.LOG);
       return action;
     }

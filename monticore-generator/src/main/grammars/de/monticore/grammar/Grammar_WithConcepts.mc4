@@ -40,9 +40,7 @@ grammar Grammar_WithConcepts extends de.monticore.grammar.Grammar, de.monticore.
   Action = BlockStatement*;
   
   ExpressionPredicate = Expression;
-  
-  ActionAntlr = ClassMemberDeclaration*;
-  
-  AntlrCode = ClassMemberDeclaration*;
+    
+  JavaCode = ClassMemberDeclaration*;
   
 }

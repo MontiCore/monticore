@@ -32,9 +32,9 @@ import java.util.regex.Pattern;
 import com.google.common.collect.Sets;
 
 import de.monticore.codegen.parser.ParserGeneratorHelper;
-import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrCodeExt;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrLexerAction;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrParserAction;
+import de.monticore.grammar.concepts.antlr.antlr._ast.ASTJavaCodeExt;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTConstant;
 import de.monticore.grammar.grammar._ast.ASTTerminal;
@@ -64,17 +64,17 @@ public class MCGrammarInfo {
   private Map<MCGrammarSymbol, List<Pattern>> lexerPatterns = new HashMap<>();
   
   /**
-   * Lexer actions defined in antlr concepts of the processed grammar and its
+   * Additional java code for parser defined in antlr concepts of the processed grammar and its
    * super grammars
    */
-  private List<String> lexerActions = new ArrayList<String>();
+  private List<String> additionalParserJavaCode = new ArrayList<String>();
   
   /**
-   * Parser actions defined in antlr concepts of the processed grammar and its
+   * Additional java code for lexer defined in antlr concepts of the processed grammar and its
    * super grammars
    */
-  private List<String> parserActions = new ArrayList<String>();
-  
+  private List<String> additionalLexerJavaCode = new ArrayList<String>();
+    
   /**
    * The symbol of the processed grammar
    */
@@ -95,42 +95,43 @@ public class MCGrammarInfo {
     grammarsToHandle.addAll(grammarSymbol.getAllSuperGrammars());
     for (MCGrammarSymbol grammar: grammarsToHandle) {
       if (grammar.getAstNode().isPresent()) {
+        // Add additional java code for lexer and parser
         ASTNodes.getSuccessors(grammar.getAstNode().get(), ASTAntlrParserAction.class).forEach(
-            a -> addParserAction(a.getText()));
+            a -> addAdditionalParserJavaCode(a.getText()));
         ASTNodes.getSuccessors(grammar.getAstNode().get(), ASTAntlrLexerAction.class).forEach(
-            a -> addLexerAction(a.getText()));
-      }
+            a -> addAdditionalLexerJavaCode(a.getText()));
+     }
     }
   }
   
   /**
-   * @return lexerActions
+   * @return java code
    */
-  public List<String> getLexerActions() {
-    return this.lexerActions;
+  public List<String> getAdditionalParserJavaCode() {
+    return this.additionalParserJavaCode;
   }
   
   /**
-   * @return parserActions
+   * @return java code
    */
-  public List<String> getParserActions() {
-    return this.parserActions;
+  public List<String> getAdditionalLexerJavaCode() {
+    return this.additionalLexerJavaCode;
   }
   
   /**
-   * @param lexerAction the lexerAction to add
+   * @param action the java code to add
    */
-  private void addLexerAction(ASTAntlrCodeExt action) {
-    lexerActions.add(ParserGeneratorHelper.getText(action));
+  private void addAdditionalParserJavaCode(ASTJavaCodeExt action) {
+    additionalParserJavaCode.add(ParserGeneratorHelper.getText(action));
   }
   
   /**
-   * @param parserAction the parserAction to add
+   * @param action the java code to add
    */
-  private void addParserAction(ASTAntlrCodeExt action) {
-    parserActions.add(ParserGeneratorHelper.getText(action));
+  private void addAdditionalLexerJavaCode(ASTJavaCodeExt action) {
+    additionalLexerJavaCode.add(ParserGeneratorHelper.getText(action));
   }
-  
+
   // ------------- Handling of keywords -----------------------------
   
   public Set<String> getKeywords() {

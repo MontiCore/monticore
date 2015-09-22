@@ -39,8 +39,8 @@ ${tc.signature("antlrGenerator")}
 ${tc.include("parser.ParserHeader")}
 {
 // Global actions
-<#list antlrGenerator.getHWParserAntlrCode() as parserAction>
-  ${parserAction}
+<#list antlrGenerator.getHWParserJavaCode() as javaCode>
+  ${javaCode}
 </#list>
 
 // Convert functions
@@ -51,6 +51,8 @@ ${tc.include("parser.ParserHeader")}
 
 // Lexer header
 ${tc.includeArgs("parser.LexerMember", [antlrGenerator])}
+
+// Global actions
 
 // Parser rules 
 <#list genHelper.getParserRulesToGenerate() as parserProd>
@@ -77,3 +79,4 @@ ${tc.includeArgs("parser.LexerMember", [antlrGenerator])}
   ${lexerRule}
   </#list>
 </#list>
+

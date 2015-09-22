@@ -156,7 +156,6 @@
                 <grammar>src/main/grammars/mc/featureemf/fautomaton/action/Expression.mc4</grammar>
                 <grammar>src/main/grammars/mc/featureemf/fautomaton/automaton/FlatAutomaton.mc4</grammar>
                 <grammar>src/main/grammars/mc/featureemf/fautomaton/automatonwithaction/ActionAutomaton.mc4</grammar> <!-- TODO SO: uncomment TransitionWithAction rule -->
-                <!-- TODO MB: grammar>src/main/grammars/mc/mcconcepts/antlr/ImplicitDSL.mc4</grammar-->
                 <grammar>src/main/grammars/mc/feature/visitor/Sub.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/visitor/Sup.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/visitor/inheritance/A.mc4</grammar>

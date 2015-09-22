@@ -19,16 +19,11 @@
 
 package de.monticore.grammar.prettyprint;
 
-import de.monticore.ast.ASTNode;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrLexerAction;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrLexerActionList;
-import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrLexerCode;
-import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrLexerCodeList;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrNode;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrParserAction;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrParserActionList;
-import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrParserCode;
-import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrParserCodeList;
 import de.monticore.grammar.concepts.antlr.antlr._visitor.AntlrVisitor;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
@@ -65,14 +60,6 @@ public class AntlrPrettyPrinter implements AntlrVisitor {
   }
   
   @Override
-  public void handle(ASTAntlrLexerCode a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    getPrinter().print("lexer antlr ");
-    a.getText().accept(getRealThis());
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-  
-  @Override
   public void handle(ASTAntlrParserAction a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().print("parser java ");
@@ -86,14 +73,6 @@ public class AntlrPrettyPrinter implements AntlrVisitor {
   }
   
   @Override
-  public void handle(ASTAntlrParserCode a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    getPrinter().print("parser antlr ");
-    a.getText().accept(getRealThis());
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-  
-  @Override
   public void handle(ASTAntlrLexerActionList a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     for (ASTAntlrLexerAction s : a) {
@@ -101,16 +80,7 @@ public class AntlrPrettyPrinter implements AntlrVisitor {
     }
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
-  
-  @Override
-  public void handle(ASTAntlrLexerCodeList a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    for (ASTAntlrLexerCode s : a) {
-      s.accept(getRealThis());
-    }
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-  
+    
   @Override
   public void handle(ASTAntlrParserActionList a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
@@ -119,16 +89,7 @@ public class AntlrPrettyPrinter implements AntlrVisitor {
     }
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
-  
-  @Override
-  public void handle(ASTAntlrParserCodeList a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    for (ASTAntlrParserCode s : a) {
-      s.accept(getRealThis());
-    }
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-  
+    
   public String prettyprint(ASTAntlrNode a) {
     getPrinter().clearBuffer();
     a.accept(getRealThis());
@@ -148,7 +109,6 @@ public class AntlrPrettyPrinter implements AntlrVisitor {
    */
   @Override
   public AntlrVisitor getRealThis() {
-    // TODO Auto-generated method stub
     return realThis;
   }
 
