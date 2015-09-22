@@ -123,7 +123,7 @@ public class SymbolTableGenerator {
   private static void generateModelingLanguage(SymbolTableGeneratorHelper genHelper, GeneratorEngine generator,
       MCGrammarSymbol grammarSymbol, IterablePath handcodedPath, Collection<String> ruleNames) {
     final String className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getName() + "Language"),
-        genHelper.getTargetPackage(), grammarSymbol.getName(), handcodedPath);
+        genHelper.getTargetPackage(), handcodedPath);
 
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
     generator.generate("symboltable.ModelingLanguage", filePath, grammarSymbol.getAstNode().get(), className, ruleNames);
@@ -132,7 +132,7 @@ public class SymbolTableGenerator {
   private static void generateModelLoader(SymbolTableGeneratorHelper genHelper,
       GeneratorEngine generator, MCGrammarSymbol grammarSymbol, IterablePath handcodedPath) {
     final String className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getName() + "ModelLoader"),
-        genHelper.getTargetPackage(), grammarSymbol.getName(), handcodedPath);
+        genHelper.getTargetPackage(), handcodedPath);
 
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
 
@@ -143,7 +143,7 @@ public class SymbolTableGenerator {
       GeneratorEngine generator, MCGrammarSymbol grammarSymbol, IterablePath handcodedPath, Collection<String> ruleNames) {
 
     final String className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getName() + "ModelNameCalculator"),
-        genHelper.getTargetPackage(), grammarSymbol.getName(), handcodedPath);
+        genHelper.getTargetPackage(), handcodedPath);
 
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
     generator.generate("symboltable.ModelNameCalculator", filePath, grammarSymbol.getAstNode().get(), className, ruleNames);
@@ -152,7 +152,7 @@ public class SymbolTableGenerator {
   private static void generateSymbolTableCreator(SymbolTableGeneratorHelper genHelper,
       GeneratorEngine generator, MCGrammarSymbol grammarSymbol, IterablePath handcodedPath) {
     final String className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getName() + "SymbolTableCreator"),
-        genHelper.getTargetPackage(), grammarSymbol.getName(), handcodedPath);
+        genHelper.getTargetPackage(), handcodedPath);
 
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
 
@@ -163,7 +163,7 @@ public class SymbolTableGenerator {
   private static void generateSymbolAndScope(SymbolTableGeneratorHelper genHelper, GeneratorEngine generator,
       MCRuleSymbol ruleSymbol, IterablePath handcodedPath) {
     final String className = getSimpleTypeNameToGenerate(getSimpleName(ruleSymbol.getName() + "Symbol"),
-        genHelper.getTargetPackage(), ruleSymbol.getName(), handcodedPath);
+        genHelper.getTargetPackage(), handcodedPath);
 
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
     if (ruleSymbol.getAstNode().isPresent()) {
@@ -190,7 +190,7 @@ public class SymbolTableGenerator {
     final String suffix = INTERFACEORABSTRACTRULE.equals(ruleSymbol.getKindSymbolRule()) ? SYMBOL_SUFFIX : EMPTY_SYMBOL_SUFFIX;
 
     final String className = getSimpleTypeNameToGenerate(getSimpleName(ruleSymbol.getName() + suffix),
-        genHelper.getTargetPackage(), ruleSymbol.getName(), handcodedPath);
+        genHelper.getTargetPackage(), handcodedPath);
 
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
     if (ruleSymbol.getAstNode().isPresent()) {
@@ -201,7 +201,7 @@ public class SymbolTableGenerator {
   private static void generateEmptyScopeSpanningSymbol(SymbolTableGeneratorHelper genHelper, GeneratorEngine generator,
       MCRuleSymbol ruleSymbol, IterablePath handcodedPath) {
     final String className = getSimpleTypeNameToGenerate(getSimpleName(ruleSymbol.getName() + EMPTY_SYMBOL_SUFFIX),
-        genHelper.getTargetPackage(), ruleSymbol.getName(), handcodedPath);
+        genHelper.getTargetPackage(), handcodedPath);
 
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
     if (ruleSymbol.getAstNode().isPresent()) {
@@ -258,7 +258,7 @@ public class SymbolTableGenerator {
   private static void generateSymbolReference(SymbolTableGeneratorHelper genHelper,
       GeneratorEngine generator, MCRuleSymbol ruleSymbol, IterablePath handcodedPath) {
     final String className = getSimpleTypeNameToGenerate(getSimpleName(ruleSymbol.getName() + "SymbolReference"),
-        genHelper.getTargetPackage(), ruleSymbol.getName(), handcodedPath);
+        genHelper.getTargetPackage(), handcodedPath);
 
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
     if (ruleSymbol.getAstNode().isPresent()) {
