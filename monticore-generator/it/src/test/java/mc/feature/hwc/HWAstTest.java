@@ -20,9 +20,13 @@
 package mc.feature.hwc;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.statechart.statechartdsl._ast.ASTState;
 import mc.feature.statechart.statechartdsl._ast.ASTStatechart;
+import mc.feature.statechart.statechartdsl._ast.ASTStatechartList;
+import mc.feature.statechart.statechartdsl._ast.ASTTransitionList;
 import mc.feature.statechart.statechartdsl._ast.StatechartDSLNodeFactory;
 
 import org.junit.Test;
@@ -51,5 +55,16 @@ public class HWAstTest extends GeneratorIntegrationsTest {
     
     ASTState b = StatechartDSLNodeFactory.createASTState();
     assertEquals("ASTState", b.foo());
+  }
+  
+  @Test
+  public void testHWAstNodeFactory() {
+    // Call the method of the HW node factory
+    ASTStatechartList a = StatechartDSLNodeFactory.createASTStatechartList();
+    assertFalse(a.isStrictlyOrdered());
+    
+    // Call the method of the generated node factory
+    ASTTransitionList b = StatechartDSLNodeFactory.createASTTransitionList();
+    assertTrue(b.isStrictlyOrdered());
   }
 }
