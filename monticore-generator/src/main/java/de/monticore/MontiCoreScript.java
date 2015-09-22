@@ -222,11 +222,11 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param symbolTable
    * @param outputDirectory output directory for generated Java code
    */
-  public void generateParser(ASTMCGrammar grammar, GlobalScope symbolTable, File outputDirectory) {
+  public void generateParser(ASTMCGrammar grammar, GlobalScope symbolTable, IterablePath handcodedPath, File outputDirectory) {
     Log.errorIfNull(
         grammar,
         "0xA4038 Parser generation can't be processed: the reference to the grammar ast is null");
-    ParserGenerator.generateParser(grammar, symbolTable, outputDirectory);
+    ParserGenerator.generateParser(grammar, symbolTable, handcodedPath, outputDirectory);
   }
   
   /**
@@ -357,11 +357,12 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param outputDirectory TODO
    */
   public void generateParserWrappers(ASTMCGrammar grammar, GlobalScope globalScope,
+      IterablePath targetPath,
       File outputDirectory) {
     Log.errorIfNull(
         grammar,
         "0xA4037 Generation of parser wrappers can't be processed: the reference to the grammar ast is null");
-    ParserGenerator.generateParserWrappers(grammar, globalScope, outputDirectory);
+    ParserGenerator.generateParserWrappers(grammar, globalScope, targetPath, outputDirectory);
   }
   
   /**

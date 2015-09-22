@@ -38,9 +38,9 @@ for (astGrammar in astGrammars) {
   astGrammar = createSymbolsFromAST(symbolTable, astGrammar)
   
   // Generate parser
-  generateParser(astGrammar, symbolTable, out)
+  generateParser(astGrammar, symbolTable, handcodedPath, out)
   
   // Generate wrappers for parser rules
-  generateParserWrappers(astGrammar, symbolTable, out)
+  generateParserWrappers(astGrammar, symbolTable, handcodedPath, out)
   
 }

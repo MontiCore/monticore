@@ -29,7 +29,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -1002,6 +1001,13 @@ public class GeneratorHelper extends TypesHelper {
         .count() <= 0;
   }
   
+  public static String getDotPackageName(String packageName) {
+    if (packageName.isEmpty() || packageName.endsWith(".")) {
+      return packageName;
+    }
+    return packageName + ".";
+  }
+  
   /**
    * Checks if the node is part of the current language (or one of its super
    * languages) or if it is external (e.g. String, List, etc.)
@@ -1025,11 +1031,8 @@ public class GeneratorHelper extends TypesHelper {
   
   public static String getSimpleTypeNameToGenerate(String simpleName, String packageName,
       IterablePath targetPath) {
-    if (!packageName.isEmpty() && !packageName.endsWith(".")) {
-      packageName = packageName + ".";
-    }
-    
-    if (TransformationHelper.existsHandwrittenClass(targetPath, packageName + simpleName)) {
+    if (TransformationHelper.existsHandwrittenClass(targetPath, getDotPackageName(packageName)
+        + simpleName)) {
       return simpleName + TransformationHelper.GENERATED_CLASS_SUFFIX;
     }
     return simpleName;

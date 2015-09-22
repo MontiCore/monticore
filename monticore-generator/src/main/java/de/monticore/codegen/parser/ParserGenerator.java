@@ -25,6 +25,8 @@ import java.nio.file.Paths;
 
 import com.google.common.base.Joiner;
 
+import de.monticore.codegen.GeneratorHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.parser.antlr.AntlrTool;
 import de.monticore.codegen.parser.antlr.Grammar2Antlr;
 import de.monticore.generating.GeneratorEngine;
@@ -32,6 +34,7 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.io.paths.IterablePath;
 import de.monticore.languages.grammar.MCGrammarSymbol;
 import de.monticore.languages.grammar.MCRuleSymbol;
 import de.monticore.symboltable.Scope;
@@ -48,7 +51,9 @@ import de.se_rwth.commons.logging.Log;
  */
 public class ParserGenerator {
   
-  public final static String PARSER_PACKAGE = "_parser";
+  public static final String PARSER_PACKAGE = "_parser";
+  
+  public static final String PARSER_FACTORY = "ParserFactory";
   
   public static final String LOG = "ParserGenerator";
   
@@ -58,7 +63,8 @@ public class ParserGenerator {
    * @param astGrammar - grammar AST
    * @param targetFile - target file
    */
-  public static void generateParser(ASTMCGrammar astGrammar, Scope symbolTable, File targetFile) {
+  public static void generateParser(ASTMCGrammar astGrammar, Scope symbolTable,
+      IterablePath handcodedPath, File targetFile) {
     if (astGrammar.isComponent()) {
       Log.info("No parser generation for the grammar " + astGrammar.getName(), LOG);
       return;
@@ -84,15 +90,22 @@ public class ParserGenerator {
     MCGrammarInfo grammarInfo = new MCGrammarInfo(genHelper.getGrammarSymbol());
     
     final GeneratorEngine generator = new GeneratorEngine(setup);
-    final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getParserPackage()),  
-        astGrammar.getName() + ".g4");
-    generator.generate("parser.Parser", filePath, astGrammar, new Grammar2Antlr(genHelper, grammarInfo));
+    
+    String simpleName = TransformationHelper.existsHandwrittenClass(handcodedPath,
+        GeneratorHelper.getDotPackageName(genHelper.getParserPackage()) + astGrammar.getName()
+            + "Parser") ? astGrammar.getName()
+        + "" : astGrammar.getName();
+    
+    final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getParserPackage()),
+        simpleName + ".g4");
+    generator.generate("parser.Parser", filePath, astGrammar, new Grammar2Antlr(genHelper,
+        grammarInfo));
     
     // construct parser, lexer, ... (antlr), 
     String gFile = Paths.get(targetFile.getAbsolutePath(), filePath.toString()).toString();
     Log.debug("Start Antlr generation for the antlr file " + gFile, LOG);
     AntlrTool antlrTool = new AntlrTool(new String[]{}, 
-        Paths.get(targetFile.getAbsolutePath(),Names.getPathFromPackage(genHelper.getParserPackage())));
+        Paths.get(targetFile.getAbsolutePath(), Names.getPathFromPackage(genHelper.getParserPackage())));
     
     antlrTool.createParser(gFile);
     Log.debug("End parser generation for the grammar " + astGrammar.getName(), LOG);
@@ -104,7 +117,8 @@ public class ParserGenerator {
    * @param astGrammar - grammar AST
    * @param targetFile - target file
    */
-  public static void generateParserWrappers(ASTMCGrammar astGrammar, Scope symbolTable, File targetFile) {
+  public static void generateParserWrappers(ASTMCGrammar astGrammar, Scope symbolTable,
+      IterablePath handcodedPath, File targetFile) {
     if (astGrammar.isComponent()) {
       return;
     }
@@ -133,9 +147,14 @@ public class ParserGenerator {
     }
     
     // Generate Factory for wrapper methods
-    final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getParserPackage()), astGrammar.getName() + "ParserFactory.java");
-    generator.generate("parser.ParserFactory", filePath, astGrammar, astGrammar, genHelper.getGrammarSymbol().getRulesWithInherited().values());
-    
+    String parserFactorySuffix = TransformationHelper.existsHandwrittenClass(handcodedPath,
+        GeneratorHelper.getDotPackageName(genHelper.getParserPackage()) + astGrammar.getName()
+            + PARSER_FACTORY) ? TransformationHelper.GENERATED_CLASS_SUFFIX : "";
+    final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getParserPackage()),
+        astGrammar.getName() + PARSER_FACTORY + parserFactorySuffix + ".java");
+    generator.generate("parser.ParserFactory", filePath, astGrammar, astGrammar,
+        parserFactorySuffix, genHelper.getGrammarSymbol().getRulesWithInherited().values());
+
   }
   
   private ParserGenerator() {

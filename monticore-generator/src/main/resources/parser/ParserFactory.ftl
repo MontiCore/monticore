@@ -30,7 +30,7 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-${tc.signature("ast", "methods")}
+${tc.signature("ast", "suffix", "methods")}
 <#assign genHelper = glex.getGlobalValue("parserHelper")>
   
 <#-- Copyright -->
@@ -39,15 +39,15 @@ ${tc.defineHookPoint("JavaCopyright")}
 <#-- set package -->
 package ${genHelper.getParserPackage()};
 
-public class ${ast.getName()}ParserFactory {
+public class ${ast.getName()}ParserFactory${suffix} {
   
-  private static ${ast.getName()}ParserFactory getFactory() {
-    return new ${ast.getName()}ParserFactory();
+  private static ${ast.getName()}ParserFactory${suffix} getFactory() {
+    return new ${ast.getName()}ParserFactory${suffix}();
   }
   
-  protected static ${ast.getName()}ParserFactory factory = null;
+  protected static ${ast.getName()}ParserFactory${suffix} factory = null;
 
-  protected ${ast.getName()}ParserFactory () {}
+  protected ${ast.getName()}ParserFactory${suffix} () {}
 
   <#-- generate all methods -->
 <#list methods as method>
