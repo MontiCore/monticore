@@ -846,12 +846,12 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     return getAntlrCode();
   }
   
-  public List<String> getHWLexerAntlrCode() {
-    return grammarInfo.getLexerActions();
+  public List<String> getHWParserJavaCode() {
+    return grammarInfo.getAdditionalParserJavaCode();
   }
   
-  public List<String> getHWParserAntlrCode() {
-    return grammarInfo.getParserActions();
+  public List<String> getHWLexerJavaCode() {
+    return grammarInfo.getAdditionalLexerJavaCode();
   }
   
   // ----------------------------------------------------------------------------------------------

@@ -21,10 +21,9 @@ package de.monticore;
 
 import static de.monticore.generating.templateengine.reporting.commons.Layouter.className;
 import static de.monticore.generating.templateengine.reporting.commons.Layouter.nodeName;
+
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.reporting.commons.IASTNodeIdentHelper;
-import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrLexerCode;
-import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrParserCode;
 import de.monticore.grammar.grammar._ast.ASTAntlrOption;
 import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
 import de.monticore.grammar.grammar._ast.ASTConcept;
@@ -129,24 +128,6 @@ public class MontiCoreNodeIdentifierHelper implements IASTNodeIdentHelper {
     return format(ast.getName(), nodeName(ast));
   }
   
-  // ##############
-  // Identifier helper for Antlr Concepts
-  // TODO: incomplete by now; only those added here which "seem" to have a name
-  // ##############
-  
-  private static String getIdentifier(ASTAntlrLexerCode ast) {
-    if (ast.getName().isPresent()) {
-      return format(ast.getName().get(), nodeName(ast));
-    }
-    return format(nodeName(ast));
-  }
-  
-  private static String getIdentifier(ASTAntlrParserCode ast) {
-    if (ast.getName().isPresent()) {
-      return format(ast.getName().get(), nodeName(ast));
-    }
-    return format(nodeName(ast));
-  }
   
   // ##############
   // Identifier helper for Grammar
@@ -263,12 +244,6 @@ public class MontiCoreNodeIdentifierHelper implements IASTNodeIdentHelper {
     }
     else if (ast instanceof ASTTypeVariableDeclaration) {
       return getIdentifier((ASTTypeVariableDeclaration) ast);
-    }
-    else if (ast instanceof ASTAntlrLexerCode) {
-      return getIdentifier((ASTAntlrLexerCode) ast);
-    }
-    else if (ast instanceof ASTAntlrParserCode) {
-      return getIdentifier((ASTAntlrParserCode) ast);
     }
     else if (ast instanceof ASTAntlrOption) {
       return getIdentifier((ASTAntlrOption) ast);
