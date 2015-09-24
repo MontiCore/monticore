@@ -24,7 +24,6 @@ import static de.se_rwth.commons.Names.getQualifier;
 import static de.se_rwth.commons.Names.getSimpleName;
 import groovyjarjarantlr.ANTLRException;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -38,7 +37,6 @@ import org.antlr.v4.runtime.RecognitionException;
 import transformation.ast.ASTCDTransformation;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 
 import de.monticore.ast.ASTNode;
@@ -121,66 +119,55 @@ public class CdDecorator {
   }
   
   public void decorate(ASTCDCompilationUnit cdCompilationUnit) {
-    Preconditions.checkArgument(cdCompilationUnit.getCDDefinition() != null);
-    
     AstGeneratorHelper astHelper = new AstGeneratorHelper(cdCompilationUnit, symbolTable);
-    
     ASTCDDefinition cdDefinition = cdCompilationUnit.getCDDefinition();
+    List<ASTCDClass> nativeClasses = Lists.newArrayList(cdDefinition.getCDClasses());
     
+    // Run over classdiagramm and converts cd types to mc-java types
+    new Cd2JavaTypeConverter(astHelper).handle(cdDefinition);
+    
+    // Interface for all ast nodes of the language
+    decorateBaseInterface(cdDefinition);
+    
+    // Decorate with builder pattern
+    addBuilders(cdDefinition, astHelper);
+    
+    addNodeFactoryClass(cdCompilationUnit, nativeClasses, astHelper);
+    
+    // Check if handwritten ast types exist
+    transformCdTypeNamesForHWTypes(cdCompilationUnit);
+    
+    cdDefinition.getCDClasses().stream().filter(c -> !astHelper.isAstListClass(c))
+        .forEach(c -> addSuperInterfaces(c));
+    
+    // Decorate with additional methods and attributes
+    for (ASTCDClass clazz : nativeClasses) {
+      addConstructors(clazz, astHelper);
+      addGetter(clazz, astHelper);
+      addSetter(clazz, astHelper);
+      addSymbolGetter(clazz, astHelper);
+      addAdditionalAttributes(clazz, astHelper);
+      addAdditionalMethods(clazz, astHelper);
+    }
+    
+    for (ASTCDInterface interf : cdDefinition.getCDInterfaces()) {
+      addGetter(interf);
+    }
+    
+    // Decorate list classes
+    cdDefinition.getCDClasses().stream().filter(c -> astHelper.isAstListClass(c))
+        .forEach(c -> decorateAstListClass(c));
+    
+    // Add ASTConstant class
+    addConstantsClass(cdDefinition, astHelper);
+    
+    // Additional imports
     cdCompilationUnit.getImportStatements().add(
         ASTImportStatement
             .getBuilder()
             .importList(
                 Lists.newArrayList(VisitorGeneratorHelper.getQualifiedVisitorType(astHelper
                     .getPackageName(), cdDefinition.getName()))).build());
-    
-    try {
-      
-      List<ASTCDClass> nativeClasses = Lists.newArrayList(cdDefinition.getCDClasses());
-
-      // Run over classdiagramm and converts cd types to mc-java types
-      Cd2JavaTypeConverter visitor = new Cd2JavaTypeConverter(astHelper);
-      visitor.handle(cdDefinition);
-      
-      // Interface for all ast nodes of the language
-      decorateBaseInterface(cdDefinition);
-      
-      // Decorate with builder pattern
-      addBuilders(cdDefinition, astHelper);
-      
-      addNodeFactoryClass(cdCompilationUnit, nativeClasses, astHelper);
-      
-      // Check if handwritten ast types exist
-      transformCdTypeNamesForHWTypes(cdCompilationUnit);
-      
-      cdDefinition.getCDClasses().stream().filter(c -> !astHelper.isAstListClass(c))
-          .forEach(c -> addSuperInterfaces(c));
-      
-      // Decorate with additional methods and attributes
-      for (ASTCDClass clazz : nativeClasses) {
-        addAdditionalMethods(clazz, astHelper);
-        addConstructors(clazz, astHelper);
-        addAdditionalAttributes(clazz, astHelper);
-        addGetter(clazz, astHelper);
-        addSetter(clazz, astHelper);
-        addSymbolGetter(clazz, astHelper);
-      }
-      
-      for (ASTCDInterface interf : cdDefinition.getCDInterfaces()) {
-        addGetter(interf);
-      }
-      
-      // Decorate list classes
-      cdDefinition.getCDClasses().stream().filter(c -> astHelper.isAstListClass(c))
-          .forEach(c -> decorateAstListClass(c));
-      
-      // Add ASTConstant class
-      addConstantsClass(cdDefinition, astHelper);
-      
-    }
-    catch (IOException e) {
-      Throwables.propagate(e);
-    }
     
   }
   
@@ -236,7 +223,7 @@ public class CdDecorator {
    * @throws ANTLRException
    */
   void addAdditionalMethods(ASTCDClass clazz,
-      AstGeneratorHelper astHelper) throws RecognitionException, IOException {
+      AstGeneratorHelper astHelper) throws RecognitionException {
     if (astHelper.isAstClass(clazz)) {
       AstAdditionalMethods additionalMethod = AstAdditionalMethods.accept;
       String visitorTypeFQN = VisitorGeneratorHelper.getQualifiedVisitorType(
@@ -326,7 +313,7 @@ public class CdDecorator {
    * @throws ANTLRException
    */
   void addBuilders(ASTCDDefinition cdDefinition, AstGeneratorHelper astHelper)
-      throws RecognitionException, IOException {
+      throws RecognitionException {
     newArrayList(cdDefinition.getCDClasses()).stream()
         .filter(c -> !astHelper.isAstListClass(c))
         .forEach(c -> cdTransformation.addCdClassUsingDefinition(cdDefinition,
@@ -370,7 +357,7 @@ public class CdDecorator {
    * @throws ANTLRException
    */
   void addGetter(ASTCDClass clazz, AstGeneratorHelper astHelper)
-      throws RecognitionException, IOException {
+      throws RecognitionException {
     if (!astHelper.isAstListClass(clazz)) {
       List<ASTCDAttribute> attributes = Lists.newArrayList(clazz.getCDAttributes());
       // attributes.addAll(astHelper.getAttributesOfExtendedInterfaces(clazz));
@@ -394,8 +381,7 @@ public class CdDecorator {
    * @param astHelper
    * @param glex
    */
-  void addGetter(ASTCDInterface interf) throws RecognitionException,
-      IOException {
+  void addGetter(ASTCDInterface interf) throws RecognitionException {
     for (ASTCDAttribute attribute : interf.getCDAttributes()) {
       if (GeneratorHelper.isInherited(attribute)) {
         continue;
@@ -414,7 +400,7 @@ public class CdDecorator {
    * @throws ANTLRException
    */
   void addSetter(ASTCDClass clazz, AstGeneratorHelper astHelper)
-      throws RecognitionException, IOException {
+      throws RecognitionException {
     if (!astHelper.isAstListClass(clazz)) {
       for (ASTCDAttribute attribute : clazz.getCDAttributes()) {
         if (GeneratorHelper.isInherited(attribute)) {
@@ -451,7 +437,7 @@ public class CdDecorator {
    * @throws ANTLRException
    */
   void addNodeFactoryClass(ASTCDCompilationUnit cdCompilationUnit,
-      List<ASTCDClass> nativeClasses, AstGeneratorHelper astHelper) throws RecognitionException, IOException {
+      List<ASTCDClass> nativeClasses, AstGeneratorHelper astHelper) throws RecognitionException {
     ASTCDDefinition cdDef = cdCompilationUnit.getCDDefinition();
     ASTCDClass nodeFactoryClass = CD4AnalysisNodeFactory.createASTCDClass();
     String nodeFactoryName = cdDef.getName() + NODE_FACTORY;
@@ -819,7 +805,7 @@ public class CdDecorator {
    * @throws ANTLRException
    */
   void addConstantsClass(ASTCDDefinition cdDefinition, AstGeneratorHelper astHelper)
-      throws RecognitionException, IOException {
+      throws RecognitionException {
     
     String constantsClassName = ConstantsTranslation.AST_CONSTANTS_ENUM + cdDefinition.getName();
     Optional<ASTCDEnum> enumConstans = cdDefinition.getCDEnums().stream()
@@ -861,7 +847,7 @@ public class CdDecorator {
    * @param cdDefinition
    * @param astHelper
    */
-  private void decorateBaseInterface(ASTCDDefinition cdDefinition) {
+  void decorateBaseInterface(ASTCDDefinition cdDefinition) {
     List<ASTCDInterface> stream = cdDefinition
         .getCDInterfaces()
         .stream()

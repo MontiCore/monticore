@@ -109,9 +109,6 @@ public class CdDecoratorTest {
     catch (org.antlr.v4.runtime.RecognitionException e) {
       fail("Should not reach this, but: " + e);
     }
-    catch (IOException e) {
-      fail("Should not reach this, but: " + e);
-    }
   }
   
   /** {@link CdDecorator#addGetter(Entry, CdInfos, GlobalExtensionManagement)} */
