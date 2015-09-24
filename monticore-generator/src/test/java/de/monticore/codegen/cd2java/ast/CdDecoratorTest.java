@@ -38,10 +38,14 @@ import com.google.common.collect.Lists;
 
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.types.types._ast.ASTSimpleReferenceType;
+import de.monticore.types.types._ast.ASTVoidType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDDefinition;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParserFactory;
+import de.se_rwth.commons.Names;
 
 /**
  * Test for the {@link CdDecorator} class.
@@ -57,7 +61,7 @@ public class CdDecoratorTest {
   private AstGeneratorHelper astHelper;
   
   private CdDecorator cdDecorator;
-
+  
   @Before
   public void setup() {
     String classDiagram = "src/test/resources/de/monticore/Simple.cd";
@@ -92,7 +96,7 @@ public class CdDecoratorTest {
   public void decorateWithBuilders() {
     try {
       assertEquals(2, cdDefinition.getCDClasses().size());
-       List<ASTCDClass> cdClasses = Lists.newArrayList(cdDefinition.getCDClasses());
+      List<ASTCDClass> cdClasses = Lists.newArrayList(cdDefinition.getCDClasses());
       
       cdDecorator.addBuilders(cdDefinition, astHelper);
       assertEquals(4, cdDefinition.getCDClasses().size());
@@ -102,8 +106,6 @@ public class CdDecoratorTest {
         ASTCDClass builderClass = astHelper.getASTBuilder(clazz).get();
         assertTrue(builderClass.getName().startsWith("Builder_"));
         assertTrue(builderClass.getName().endsWith(clazz.getName()));
-        // assertEquals(clazz.getCDAttributes().size(),
-        // builderClass.getCDAttributes().size());
       }
     }
     catch (org.antlr.v4.runtime.RecognitionException e) {
@@ -111,58 +113,49 @@ public class CdDecoratorTest {
     }
   }
   
-  /** {@link CdDecorator#addGetter(Entry, CdInfos, GlobalExtensionManagement)} */
-  /*
+  /** {@link CdDecorator#addGetter(ASTCDClass, AstGeneratorHelper)} */
   @Test
   public void addGetter() {
     try {
-      cdDecorator.addBuilders(cdDefinition, cdInfos);
-      for (Entry<ASTCDClass, Optional<ASTCDClass>> classes : cdDefinition.getCDClasses()) {
-        cdDecorator.addGetter(classes, cdInfos);
+      cdDecorator.addBuilders(cdDefinition, astHelper);
+      for (ASTCDClass classes : cdDefinition.getCDClasses()) {
+        cdDecorator.addGetter(classes, astHelper);
       }
       
-      for (Entry<ASTCDClass, Optional<ASTCDClass>> classes : cdInfos.getAllAstCdClasses()) {
-        ASTCDClass clazz = classes.getKey();
+      for (ASTCDClass clazz : cdDefinition.getCDClasses()) {
         if (clazz.getName().equals("ASTA")) {
           assertEquals(1, clazz.getCDMethods().size());
           ASTCDMethod method = clazz.getCDMethods().get(0);
           assertEquals("getName", method.getName());
-          // assertTrue(method.getReturnType() instanceof
-          // ASTSimpleReferenceType);
-          // assertEquals("String",
-          // NameHelper.getSimplenameFromComplexname(((ASTSimpleReferenceType)method.getReturnType()).getName()));
+          assertTrue(method.getReturnType() instanceof ASTSimpleReferenceType);
+          assertEquals("String", ((ASTSimpleReferenceType) method.getReturnType()).getNames()
+              .get(0));
         }
-        else if (classes.getKey().getName().equals("ASTB")) {
+        else if (clazz.getName().equals("ASTB")) {
           assertEquals(1, clazz.getCDMethods().size());
           ASTCDMethod method = clazz.getCDMethods().get(0);
           assertEquals("getA", method.getName());
-          // assertTrue(method.getReturnType() instanceof
-          // ASTSimpleReferenceType);
-          // assertEquals("ASTA",
-          // NameHelper.getSimplenameFromComplexname(((ASTSimpleReferenceType)method.getReturnType()).getName()));
+          assertTrue(method.getReturnType() instanceof ASTSimpleReferenceType);
+          assertEquals("ASTA", ((ASTSimpleReferenceType) method.getReturnType()).getNames().get(0));
         }
       }
     }
     catch (RecognitionException e) {
       fail("Should not reach this, but: " + e);
     }
-    catch (IOException e) {
-      fail("Should not reach this, but: " + e);
-    }
     
   }
-  */
-  /** {@link CdDecorator#addSetter(Entry, CdInfos, GlobalExtensionManagement)} */
-  /*
+  
+  /** {@link CdDecorator#addSetter(ASTCDClass, AstGeneratorHelper)} */
   @Test
   public void addSetter() {
     try {
-      for (Entry<ASTCDClass, Optional<ASTCDClass>> classes : cdInfos.getAllAstCdClasses()) {
-        cdDecorator.addSetter(classes, cdInfos);
+      
+      for (ASTCDClass classes : cdDefinition.getCDClasses()) {
+        cdDecorator.addSetter(classes, astHelper);
       }
       
-      for (Entry<ASTCDClass, Optional<ASTCDClass>> classes : cdInfos.getAllAstCdClasses()) {
-        ASTCDClass clazz = classes.getKey();
+      for (ASTCDClass clazz : cdDefinition.getCDClasses()) {
         if (clazz.getName().equals("ASTA")) {
           assertEquals(1, clazz.getCDMethods().size());
           ASTCDMethod method = clazz.getCDMethods().get(0);
@@ -175,7 +168,7 @@ public class CdDecoratorTest {
               Names.getQualifiedName(((ASTSimpleReferenceType) method
                   .getCDParameters().get(0).getType()).getNames()));
         }
-        else if (classes.getKey().getName().equals("ASTB")) {
+        else if (clazz.getName().equals("ASTB")) {
           assertEquals(1, clazz.getCDMethods().size());
           ASTCDMethod method = clazz.getCDMethods().get(0);
           assertEquals("setA", method.getName());
@@ -191,9 +184,5 @@ public class CdDecoratorTest {
     catch (RecognitionException e) {
       fail("Should not reach this, but: " + e);
     }
-    catch (IOException e) {
-      fail("Should not reach this, but: " + e);
-    }
-    
-  }*/
+  }
 }

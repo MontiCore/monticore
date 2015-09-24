@@ -143,11 +143,11 @@ public class CdDecorator {
     // Decorate with additional methods and attributes
     for (ASTCDClass clazz : nativeClasses) {
       addConstructors(clazz, astHelper);
+      addAdditionalMethods(clazz, astHelper);
+      addAdditionalAttributes(clazz, astHelper);
       addGetter(clazz, astHelper);
       addSetter(clazz, astHelper);
       addSymbolGetter(clazz, astHelper);
-      addAdditionalAttributes(clazz, astHelper);
-      addAdditionalMethods(clazz, astHelper);
     }
     
     for (ASTCDInterface interf : cdDefinition.getCDInterfaces()) {
