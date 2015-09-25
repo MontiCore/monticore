@@ -43,6 +43,7 @@ import org.junit.Test;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import de.monticore.MontiCoreScript;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.IterablePath;
@@ -113,7 +114,7 @@ public class CdDecoratorTest {
       assertEquals("ASTA", classA.getName());
       glex = new GlobalExtensionManagement();
       cdDecorator = new CdDecorator(glex, null, IterablePath.empty());
-      astHelper = new AstGeneratorHelper(topNode.get(), null);
+      astHelper = new AstGeneratorHelper(topNode.get(), globalScope);
     }
     catch (FileNotFoundException e) {
       fail("Should not reach this, but: " + e);
@@ -233,21 +234,19 @@ public class CdDecoratorTest {
     }
   }
   
-  /** {@link CdDecorator#addAdditionalAttributes(ASTCDClass, AstGeneratorHelper)  */
+  /** {@link CdDecorator#additionalMethods(ASTCDClass, AstGeneratorHelper)  */
+  @Test
   public void additionalMethods() {
-    
     for (ASTCDClass clazz : cdDefinition.getCDClasses()) {
       cdDecorator.addAdditionalMethods(clazz, astHelper);
     }
     
     for (ASTCDClass clazz : cdDefinition.getCDClasses()) {
-      assertEquals(10, clazz.getCDMethods().size());
-      assertEquals(AstAdditionalMethods.accept.toString(), clazz.getCDMethods().get(0)
-          .getName());
+      assertEquals(13, clazz.getCDMethods().size());
     }
     
-    Set<String> additionalMethods = Sets.newLinkedHashSet();
     // Check if there are all additional methods defined in the given CD class
+    Set<String> additionalMethods = Sets.newLinkedHashSet();
     for (AstAdditionalMethods additionalMethod : AstAdditionalMethods.class.getEnumConstants()) {
       additionalMethods.add(additionalMethod.name());
     }
@@ -269,7 +268,18 @@ public class CdDecoratorTest {
         }
       }
     }
+  }
+  
+  /** {@link CdDecorator#addConstructors(ASTCDClass, AstGeneratorHelper)  */
+  @Test
+  public void addConstructors() {
+    for (ASTCDClass clazz : cdDefinition.getCDClasses()) {
+      cdDecorator.addConstructors(clazz, astHelper);
+    }
     
+    for (ASTCDClass clazz : cdDefinition.getCDClasses()) {
+      assertEquals(2, clazz.getCDConstructors().size());
+    }
   }
   
 }
