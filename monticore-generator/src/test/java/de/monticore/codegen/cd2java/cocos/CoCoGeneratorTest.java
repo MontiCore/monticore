@@ -95,7 +95,7 @@ public class CoCoGeneratorTest extends AstDependentGeneratorTest {
    */
   @Override
   protected void doGenerate(String model) {
-    Log.info("Runs VisitorGenerator test for the model " + model, LOG);
+    Log.info("Runs CoCoGenerator test for the model " + model, LOG);
     
     MontiCoreScript mc = new MontiCoreScript();
     GlobalScope symbolTable = mc.initSymbolTable(modelPath);
