@@ -32,7 +32,6 @@ import java.util.Set;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
@@ -138,25 +137,24 @@ public class MontiCoreScriptTest {
   
   /** {@link MontiCoreScript#decorateCd(GlobalExtensionManagement, ASTCDCompilationUnit)} */
   @Test
-  @Ignore
   public void testDecorateCd() {
     MontiCoreScript mc = new MontiCoreScript();
     GlobalScope symbolTable = mc.initSymbolTable(modelPath);
+    mc.createSymbolsFromAST(symbolTable, grammar);
     cdCompilationUnit = mc.transformAstGrammarToAstCd(new GlobalExtensionManagement(),
         grammar, symbolTable, targetPath);
-    mc.storeInCdFile(cdCompilationUnit, outputPath);
     assertNotNull(cdCompilationUnit);
     GeneratorHelper genHelper = new GeneratorHelper(cdCompilationUnit, symbolTable);
-    assertEquals("de.monticore.statechart._ast", GeneratorHelper.getPackageName(
+    assertEquals("de.monticore.statechart.statechart._ast", GeneratorHelper.getPackageName(
         genHelper.getPackageName(), GeneratorHelper.AST_PACKAGE_SUFFIX));
     assertNotNull(cdCompilationUnit.getCDDefinition());
     ASTCDDefinition cdDefinition = cdCompilationUnit.getCDDefinition();
-    assertEquals(15, cdDefinition.getCDClasses().size());
-    assertEquals(1, cdDefinition.getCDInterfaces().size());
+    assertEquals(20, cdDefinition.getCDClasses().size());
+    assertEquals(5, cdDefinition.getCDInterfaces().size());
     
     mc.decorateCd(glex, cdCompilationUnit, symbolTable, targetPath);
     // Added Builder classes to the each not list class
-    assertEquals(24, cdDefinition.getCDClasses().size());
+    assertEquals(30, cdDefinition.getCDClasses().size());
     
     // Check if there are all additional methods defined in the given CD class
     List<String> methods = Lists.newArrayList();
@@ -166,7 +164,6 @@ public class MontiCoreScriptTest {
         for (ASTCDMethod method : cdClass.getCDMethods()) {
           methods.add(method.getName());
         }
-        
         String withOrder = "WithOrder";
         for (String additionalMethod : additionalMethods) {
           if (additionalMethod.endsWith(withOrder)) {
