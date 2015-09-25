@@ -285,7 +285,7 @@ public class CdDecorator {
       replaceMethodBodyTemplate(clazz, stringToParse,
           new StringHookPoint("return deepClone(_construct());\n"));
       
-      stringToParse = String.format(AstAdditionalMethods.deepCloneWithParameters.getDeclaration(),
+      stringToParse = String.format(AstAdditionalMethods.deepCloneWithOrder.getDeclaration(),
           plainClassName, plainClassName);
       replaceMethodBodyTemplate(clazz, stringToParse,
           new TemplateHookPoint("ast.additionalmethods.DeepCloneWithParameters"));

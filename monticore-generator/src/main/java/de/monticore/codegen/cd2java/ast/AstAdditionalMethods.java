@@ -43,7 +43,7 @@ public enum AstAdditionalMethods {
   deepClone("public %s deepClone();"),
   
   // %s the ast-class name as return and input parameter type
-  deepCloneWithParameters("public %s deepClone(%s result);"),
+  deepCloneWithOrder("public %s deepClone(%s result);"),
   
   get_Children("public java.util.Collection<de.monticore.ast.ASTNode> get_Children();"),
   
