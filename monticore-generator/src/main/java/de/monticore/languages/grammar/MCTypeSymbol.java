@@ -21,6 +21,8 @@ package de.monticore.languages.grammar;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+
 import de.monticore.ast.Comment;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.grammar.grammar._ast.ASTMethod;
@@ -236,16 +238,14 @@ public class MCTypeSymbol extends CommonScopeSpanningSymbol implements Comparabl
    */
   public Collection<MCTypeSymbol> getAllSuperTypes() {
     Set<MCTypeSymbol> supersHandled = new LinkedHashSet<>();
-
-    List<MCTypeSymbol> supersToHandle = new ArrayList();
+    List<MCTypeSymbol> supersToHandle = new ArrayList<>();
     supersToHandle.addAll(getSuperTypes());
-    LinkedHashSet<MCTypeSymbol> supersNextRound = new LinkedHashSet<>();
+    Set<MCTypeSymbol> supersNextRound = new LinkedHashSet<>();
 
     while (!supersToHandle.isEmpty()) {
       for (MCTypeSymbol superType : supersToHandle) {
         if (!supersHandled.contains(superType)) {
-          List<MCTypeSymbol> itsSupers = superType.getSuperTypes();
-          supersNextRound.addAll(itsSupers);
+          supersNextRound.addAll(superType.getSuperTypes());
         }
         supersHandled.add(superType);
       }
@@ -262,14 +262,13 @@ public class MCTypeSymbol extends CommonScopeSpanningSymbol implements Comparabl
    */
   public Collection<MCTypeSymbol> getAllSTSuperInterfaces() {
     Set<MCTypeSymbol> supersHandled = new LinkedHashSet<>();
-    List<MCTypeSymbol> supersToHandle = getSuperInterfaces();
+    List<MCTypeSymbol> supersToHandle = Lists.newArrayList(getSuperInterfaces());
     Set<MCTypeSymbol> supersNextRound = new LinkedHashSet<>();
 
     while (!supersToHandle.isEmpty()) {
       for (MCTypeSymbol superType : supersToHandle) {
         if (!supersHandled.contains(superType)) {
-          List<MCTypeSymbol> itsSupers = superType.getSuperInterfaces();
-          supersNextRound.addAll(itsSupers);
+          supersNextRound.addAll(superType.getSuperInterfaces());
         }
         supersHandled.add(superType);
       }
