@@ -19,6 +19,7 @@
 
 package de.monticore.grammar;
 
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
@@ -32,10 +33,10 @@ import de.se_rwth.commons.logging.Log;
  */
 public class LexNamer {
   
-  private int i = 0;
   private int j = 0;
   
   private Map<String, String> usedLex = new Hashtable<String, String>();
+  
   private Map<String, String> usedConstants = new Hashtable<String, String>();
   
   private static Map<String, String> goodNames = null;
@@ -110,35 +111,29 @@ public class LexNamer {
     }
     else
       return null;
-    
+      
   }
   
   /**
-   * Returns Human-Readable, antlr conformed name for a lexsymbols nice names
-   * for common tokens (change constructor to add tokenes) LEXi where i is
-   * number for unknown ones
+   * Returns Human-Readable, antlr conformed name for a lexsymbols nice names for common tokens
+   * (change constructor to add tokenes) LEXi where i is number for unknown ones
    * 
    * @param sym lexer symbol
    * @return Human-Readable, antlr conformed name for a lexsymbols
    */
-  public String getLexName(String sym) {
-    
-    String s = sym.intern();
-    
-    if (!usedLex.containsKey(s)) {
-      String goodName = createGoodName(s);
-      if (goodName != null) {
-        usedLex.put(s, goodName);
-      }
-      else {
-        usedLex.put(s, ("LEXSYM" + i++).intern());
-      }
+  public String getLexName(Collection<String> ruleNames, String sym) {
+    if (usedLex.containsKey(sym)) {
+      return usedLex.get(sym);
     }
     
-    String name = (String) usedLex.get(sym.intern());
-    Log.debug("Using lexer symbol " + name + " for symbol '" + s + "'", "LexNamer");
-
-    return name;
+    String goodName = createGoodName(sym);
+    if (goodName != null && !ruleNames.contains(goodName)) {
+      usedLex.put(sym, goodName);
+      Log.debug("Using lexer symbol " + goodName + " for symbol '" + sym + "'", "LexNamer");
+      return goodName;
+    }
+    
+    return "'" + sym + "'";
   }
   
   public String getConstantName(String sym) {
@@ -153,10 +148,10 @@ public class LexNamer {
         usedConstants.put(s, ("CONSTANT" + j++).intern());
       }
     }
-
+    
     String name = (String) usedConstants.get(sym.intern());
     Log.debug("Using lexer constant " + name + " for symbol '" + s + "'", "LexNamer");
-
+    
     return name;
   }
   

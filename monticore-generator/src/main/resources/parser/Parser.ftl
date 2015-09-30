@@ -70,7 +70,7 @@ ${tc.includeArgs("parser.LexerMember", [antlrGenerator])}
  
 // Lexer symbols
 <#list symbolTable.getLexSymbolsWithInherited() as lexSymbol>
-  ${symbolTable.getLexSymbolName(lexSymbol)} : '<#if lexSymbol == "'">/</#if>${lexSymbol}';
+  ${symbolTable.getLexSymbolName(lexSymbol)} : '${lexSymbol}';
 </#list>
  
 // Lexer rules 

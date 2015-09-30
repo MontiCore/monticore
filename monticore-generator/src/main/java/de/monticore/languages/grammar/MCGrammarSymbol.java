@@ -23,9 +23,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -35,6 +35,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.LexNamer;
@@ -92,7 +93,7 @@ public class MCGrammarSymbol extends CommonScopeSpanningSymbol {
    * Internal: LexNamer for naming lexer symbols in the antlr source code
    */
   private LexNamer lexNamer = new LexNamer();
-
+  
   /**
    * Predicates
    */
@@ -443,7 +444,8 @@ public class MCGrammarSymbol extends CommonScopeSpanningSymbol {
    */
   public String getLexSymbolName(String x) {
     Log.errorIfNull(x);
-    return lexNamer.getLexName(x);
+    
+    return lexNamer.getLexName(getRuleNames(), x);
   }
 
   /**
