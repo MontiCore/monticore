@@ -3,14 +3,7 @@ package mc.feature;
 
 grammar FeatureDSL extends mc.common.Basics {
 	
-    token Name =
-        ( 'a'..'z' | 'A'..'Z' | '_' | '$' )( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '$' | '.' )*;
-        
-    token Name2 =
-        ( '0' )( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '$' | '.' )*;
-     
-
-  // Folgenden Kommentar nicht enfernen, da er zum Testen da ist!
+   // Folgenden Kommentar nicht enfernen, da er zum Testen da ist!
   /** Ein File ist ein File!
   	
   	@attribute Automatons Liste von Automaten einer Datei
@@ -129,6 +122,9 @@ grammar FeatureDSL extends mc.common.Basics {
   interface InterfaceRule;	
   
   SubClassRule implements InterfaceRule = (a:["tests"] )*;
-  	 
-  		
+  
+  ClassProd = "aString";
+  
+  token LexProd = "aString";
+		
 }
