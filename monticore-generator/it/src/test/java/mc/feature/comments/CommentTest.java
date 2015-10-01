@@ -65,14 +65,12 @@ public class CommentTest extends GeneratorIntegrationsTest {
     
     assertEquals(ASTConstantsFeatureDSL.NONE, ((ASTSpices2) ((ASTAutomaton) ast).getWired().get(4)).getSpicelevel());
     
-    // TODO Antlr: Will man das Leerzeichen hier noch haben. Mit dem neuen Antlr hängen diese noch am Text
-    // TODO MB:
-//    assertEquals("// Test \n", ast.get_PreComments().get(0).getText());
-//    assertEquals("/*Second*/", ast.get_PreComments().get(1).getText());
-//    assertEquals("// First Constant 1\n", ((ASTNode) ast.getWired().get(0)).get_PreComments().get(0).getText());
-    // TODO Antlr: Position der Kommentare hat sich geändert => überprüfen
-   // assertEquals("// First Constant 2\n", ((ASTNode) ast.getWired().get(0)).get_PostComments().get(0).getText());
-   // assertEquals("/*Second Constant*/", ((ASTNode) ast.getWired().get(1)).get_PreComments().get(0).getText());
+    // TODO Antlr: Will man das Newline am Ende des Kommentars haben?
+    assertEquals("// Test ", ast.get_PreComments().get(0).getText());
+    assertEquals("/*Second*/", ast.get_PreComments().get(1).getText());
+    assertEquals("// First Constant 1", ast.getWired().get(0).get_PreComments().get(0).getText());
+    assertEquals("// First Constant 2",  ast.getWired().get(0).get_PostComments().get(0).getText());
+    assertEquals("/*Second Constant*/", ast.getWired().get(1).get_PreComments().get(0).getText());
     
   }
   
