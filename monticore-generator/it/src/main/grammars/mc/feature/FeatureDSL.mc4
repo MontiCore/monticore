@@ -127,4 +127,6 @@ grammar FeatureDSL extends mc.common.Basics {
   
   token LexProd = "aString";
 		
+  token Name =
+        ( 'a'..'z' | 'A'..'Z' | '_' | '$' )( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '$' | '.')*;
 }
