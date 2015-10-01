@@ -21,9 +21,12 @@ package de.monticore.codegen.parser;
 
 import static com.google.common.base.Preconditions.checkState;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
@@ -207,6 +210,8 @@ public class ParserGeneratorHelper {
     // Iterate over all LexRules
     List<ASTLexProd> prods = Lists.newArrayList();
     MCLexRuleSymbol mcanything = null;
+    Collection<MCRuleSymbol> ownRules = grammarSymbol.getRules();
+    int ownInd = 0;
     for (Entry<String, MCRuleSymbol> ruleSymbol : grammarSymbol.getRulesWithInherited().entrySet()) {
       if (ruleSymbol.getValue().getKindSymbolRule().equals(KindSymbolRule.LEXERRULE)) {
         MCLexRuleSymbol lexRule = ((MCLexRuleSymbol) ruleSymbol.getValue());
@@ -216,7 +221,13 @@ public class ParserGeneratorHelper {
           mcanything = lexRule;
         }
         else {
-          prods.add(lexRule.getRuleNode());
+          // Not inherited rules are at the beginning
+          if (ownRules.contains(lexRule)) {
+            prods.add(ownInd, lexRule.getRuleNode());
+            ownInd++;
+          } else {
+            prods.add(lexRule.getRuleNode());
+          }
         }
       }
     }
