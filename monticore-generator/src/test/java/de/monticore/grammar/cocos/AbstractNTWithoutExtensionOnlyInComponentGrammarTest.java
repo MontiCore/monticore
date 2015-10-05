@@ -32,8 +32,6 @@ import de.se_rwth.commons.logging.Log;
  */
 public class AbstractNTWithoutExtensionOnlyInComponentGrammarTest extends CocoTest{
 
-  private final String MESSAGE = " The abstract nonterminal A must not be used without nonterminals " +
-          "extending it in a grammar not marked as a grammar component.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "cocos.invalid.A0277.A0277";
 
@@ -46,9 +44,9 @@ public class AbstractNTWithoutExtensionOnlyInComponentGrammarTest extends CocoTe
   @Test
   public void testInvalid() {
     testInvalidGrammar(grammar, AbstractNTWithoutExtensionOnlyInComponentGrammar.ERROR_CODE,
-        MESSAGE, checker);
+        String.format(AbstractNTWithoutExtensionOnlyInComponentGrammar.ERROR_MSG_FORMAT, "A"),
+        checker);
   }
-
 
   @Test
   public void testCorrect(){

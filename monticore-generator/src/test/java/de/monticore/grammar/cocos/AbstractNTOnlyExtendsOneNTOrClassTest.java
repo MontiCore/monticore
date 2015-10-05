@@ -32,7 +32,6 @@ import de.se_rwth.commons.logging.Log;
  */
 public class AbstractNTOnlyExtendsOneNTOrClassTest extends CocoTest{
 
-  private final String MESSAGE = " The abstract nonterminal %s must not %s more than one %s.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "cocos.invalid.A4012.A4012";
 
@@ -45,13 +44,13 @@ public class AbstractNTOnlyExtendsOneNTOrClassTest extends CocoTest{
   @Test
   public void testExtendMultiple() {
     testInvalidGrammar(grammar + "a", AbstractNTOnlyExtendsOneNTOrClass.ERROR_CODE,
-        String.format(MESSAGE, "C", "extend", "nonterminal"), checker);
+        String.format(AbstractNTOnlyExtendsOneNTOrClass.ERROR_MSG_FORMAT, "C", "extend", "nonterminal"), checker);
   }
 
   @Test
   public void testAstExtendMultiple() {
     testInvalidGrammar(grammar + "b", AbstractNTOnlyExtendsOneNTOrClass.ERROR_CODE,
-        String.format(MESSAGE, "A", "astextend", "class"), checker);
+        String.format(AbstractNTOnlyExtendsOneNTOrClass.ERROR_MSG_FORMAT, "A", "astextend", "class"), checker);
   }
 
   @Test

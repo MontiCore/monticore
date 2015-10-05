@@ -31,12 +31,11 @@ import de.se_rwth.commons.logging.Log;
  * @author KH
  */
 public class AbstractNTNotExtendInterfaceOrExternalNTsTest extends CocoTest {
-
-  private final String MESSAGE = " The abstract nonterminal B must not extend the %s nonterminal A. " +
-          "Abstract nonterminals may only extend abstract or normal nonterminals.";
+  
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
+  
   private final String grammar = "cocos.invalid.A2107.A2107";
-
+  
   @BeforeClass
   public static void disableFailQuick() {
     Log.enableFailQuick(false);
@@ -46,17 +45,19 @@ public class AbstractNTNotExtendInterfaceOrExternalNTsTest extends CocoTest {
   @Test
   public void testExtendInterfaceNT() {
     testInvalidGrammar(grammar + "a", AbstractNTNotExtendInterfaceOrExternalNTs.ERROR_CODE,
-        String.format(MESSAGE, "interface"), checker);
+        String.format(AbstractNTNotExtendInterfaceOrExternalNTs.ERROR_MSG_FORMAT, "B", "interface",
+            "A"), checker);
   }
   
   @Test
   public void testExtendExternalNT() {
     testInvalidGrammar(grammar + "b", AbstractNTNotExtendInterfaceOrExternalNTs.ERROR_CODE,
-        String.format(MESSAGE, "external"), checker);
+        String.format(AbstractNTNotExtendInterfaceOrExternalNTs.ERROR_MSG_FORMAT, "B", "external",
+            "A"), checker);
   }
-
+  
   @Test
-  public void testExtendNT(){
+  public void testExtendNT() {
     testValidGrammar("cocos.valid.ExtendNTs", checker);
   }
 }

@@ -32,10 +32,12 @@ import de.se_rwth.commons.logging.Log;
  * @author KH
  */
 public class AbstractNTOnlyImplementInterfaceNTsTest extends CocoTest {
-  private final String MESSAGE = " The abstract nonterminal B must not implement the nonterminal A." +
-          " Abstract nonterminals may only implement interface nonterminals.";
+  private final String MESSAGE = String.format(
+      AbstractNTOnlyImplementInterfaceNTs.ERROR_MSG_FORMAT, "B", "A");
+  
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
-  private final String grammar ="cocos.invalid.A2106.A2106";
+  
+  private final String grammar = "cocos.invalid.A2106.A2106";
 
   @BeforeClass
   public static void disableFailQuick() {

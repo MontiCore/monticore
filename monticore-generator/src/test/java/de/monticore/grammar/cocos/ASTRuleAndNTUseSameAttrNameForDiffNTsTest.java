@@ -31,8 +31,6 @@ import org.junit.Test;
  */
 public class ASTRuleAndNTUseSameAttrNameForDiffNTsTest extends CocoTest{
 
-  private final String MESSAGE = " The AST rule for the nonterminal E must not use the same attribute"
-      + " name a as the corresponding production with the type B as B is not identical to or a super type of A.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "cocos.invalid.A4028.A4028";
 
@@ -44,9 +42,10 @@ public class ASTRuleAndNTUseSameAttrNameForDiffNTsTest extends CocoTest{
 
   @Test
   public void testInvalid() {
-    testInvalidGrammar(grammar, ASTRuleAndNTUseSameAttrNameForDiffNTs.ERROR_CODE, MESSAGE, checker);
+    testInvalidGrammar(grammar, ASTRuleAndNTUseSameAttrNameForDiffNTs.ERROR_CODE,
+        String.format(ASTRuleAndNTUseSameAttrNameForDiffNTs.ERROR_MSG_FORMAT, "E", "a", "B", "B", "A"),
+        checker);
   }
-
 
   @Test
   public void testCorrect(){
