@@ -858,4 +858,19 @@
     </site>
   </distributionManagement>
 
+  <!-- == DEPENDENCY & PLUGIN REPOSITORIES ================================= -->
+
+  <repositories>
+    <repository>
+      <id>se-public</id>
+      <url>http://nexus.se.rwth-aachen.de/content/groups/public</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>se-public</id>
+      <url>http://nexus.se.rwth-aachen.de/content/groups/public</url>
+    </pluginRepository>
+  </pluginRepositories>
+
 </project>
