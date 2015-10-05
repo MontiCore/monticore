@@ -32,7 +32,6 @@ import de.se_rwth.commons.logging.Log;
  */
 public class NTForASTRuleExistsTest extends CocoTest{
 
-  private final String CODE = "0xA4021";
   private final String MESSAGE = " There must not exist an AST rule for the nonterminal A" +
           " because there exists no production defining A.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
@@ -46,9 +45,8 @@ public class NTForASTRuleExistsTest extends CocoTest{
 
   @Test
   public void testInvalid(){
-    testInvalidGrammar(grammar, CODE, MESSAGE, checker);
+    testInvalidGrammar(grammar, NTForASTRuleExists.ERROR_CODE, MESSAGE, checker);
   }
-
 
   @Test
   public void testCorrect(){

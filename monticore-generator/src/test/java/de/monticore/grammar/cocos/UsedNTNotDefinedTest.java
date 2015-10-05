@@ -38,7 +38,6 @@ import de.se_rwth.commons.logging.Log;
  */
 public class UsedNTNotDefinedTest extends CocoTest {
 
-  private final String CODE = "0xA2031";
   private final String MESSAGE =" The production A must not use the nonterminal " +
           "B because there exists no production defining B.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
@@ -53,14 +52,14 @@ public class UsedNTNotDefinedTest extends CocoTest {
   @Test
   public void testInvalid() {
     try{
-    testInvalidGrammar(grammar, CODE, MESSAGE, checker);
+    testInvalidGrammar(grammar, UsedNTNotDefined.ERROR_CODE, MESSAGE, checker);
       fail("expected NullPointerException");
     } catch (NullPointerException e){
       assertFalse(Log.getFindings().isEmpty());
       assertEquals(5, Log.getFindings().size());
       boolean found = false;
       for (Finding f: Log.getFindings()) {
-        found |= f.getMsg().equals(CODE + MESSAGE);
+        found |= f.getMsg().equals(UsedNTNotDefined.ERROR_CODE + MESSAGE);
       }
       assertTrue(found);
     }

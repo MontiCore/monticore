@@ -31,7 +31,6 @@ import de.se_rwth.commons.logging.Log;
  * @author KH
  */
 public class KeywordInvalidNameTest extends CocoTest {
-  private final String CODE = "0xA4018";
   private final String MESSAGE = " The production A must not use the keyword ` without naming it.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "cocos.invalid.A4018.A4018";
@@ -44,7 +43,7 @@ public class KeywordInvalidNameTest extends CocoTest {
 
   @Test
   public void testInvalid() throws IllegalArgumentException {
-    testInvalidGrammar(grammar, CODE, MESSAGE, checker);
+    testInvalidGrammar(grammar, KeywordInvalidName.ERROR_CODE, MESSAGE, checker);
   }
 
   @Test

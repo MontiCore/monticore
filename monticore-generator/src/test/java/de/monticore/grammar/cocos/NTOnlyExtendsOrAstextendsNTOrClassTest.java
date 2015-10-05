@@ -32,7 +32,6 @@ import de.se_rwth.commons.logging.Log;
  */
 public class NTOnlyExtendsOrAstextendsNTOrClassTest extends CocoTest{
 
-  private final String CODE = "0xA4029";
   private final String MESSAGE = " The nonterminal B must not extend and astextend a type.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "cocos.invalid.A4029.A4029";
@@ -44,8 +43,8 @@ public class NTOnlyExtendsOrAstextendsNTOrClassTest extends CocoTest{
   }
 
   @Test
-  public void testASTExtendMultiple(){
-    testInvalidGrammar(grammar, CODE, MESSAGE, checker);
+  public void testASTExtendMultiple() {
+    testInvalidGrammar(grammar, NTOnlyExtendOrAstextendNTOrClass.ERROR_CODE, MESSAGE, checker);
   }
 
   @Test

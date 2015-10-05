@@ -51,7 +51,7 @@ public class AttributeNameForNTDuplicatedTest extends CocoTest{
   public void testDuplicatedAttribute(){
     Log.getFindings().clear();
     try {
-      testInvalidGrammar(grammar, CODE, MESSAGE, checker);
+      testInvalidGrammar(grammar, "0xA4006", MESSAGE, checker);
       fail("NullPointerException expected");
     } catch (NullPointerException e) {
 

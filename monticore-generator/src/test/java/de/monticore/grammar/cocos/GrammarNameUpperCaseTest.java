@@ -19,12 +19,11 @@
 
 package de.monticore.grammar.cocos;
 
-import de.monticore.grammar.grammar._cocos.GrammarCoCoChecker;
-import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import de.se_rwth.commons.logging.Log;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
+import de.se_rwth.commons.logging.Log;
 
 /**
  * Created by
@@ -33,7 +32,6 @@ import org.junit.Test;
  */
 public class GrammarNameUpperCaseTest extends CocoTest{
 
-  private final String CODE = "0xA4033";
   private final String MESSAGE = " The grammar's name a4033 should start with an upper-case letter.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "cocos.invalid.A4033.a4033";
@@ -45,8 +43,8 @@ public class GrammarNameUpperCaseTest extends CocoTest{
   }
 
   @Test
-  public void testLowerCasedGrammarName(){
-    testInvalidGrammar(grammar, CODE, MESSAGE, checker);
+  public void testLowerCasedGrammarName() {
+    testInvalidGrammar(grammar, GrammarNameUpperCase.ERROR_CODE, MESSAGE, checker);
   }
 
 

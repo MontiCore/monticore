@@ -32,7 +32,6 @@ import de.se_rwth.commons.logging.Log;
  */
 public class AttributeNameLowerCaseTest extends CocoTest{
 
-  private final String CODE = "0xA4005";
   private final String MESSAGE = " The name C used for the nonterminal A referenced by the production B " +
           "should start with a lower-case letter.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
@@ -45,8 +44,8 @@ public class AttributeNameLowerCaseTest extends CocoTest{
   }
 
   @Test
-  public void testUpperCasedAttribute(){
-    testInvalidGrammar(grammar, CODE, MESSAGE, checker);
+  public void testUpperCasedAttribute() {
+    testInvalidGrammar(grammar, AttributeNameLowerCase.ERROR_CODE, MESSAGE, checker);
   }
 
 

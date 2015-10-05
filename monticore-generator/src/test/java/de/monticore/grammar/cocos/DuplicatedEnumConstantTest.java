@@ -32,7 +32,6 @@ import de.se_rwth.commons.logging.Log;
  */
 public class DuplicatedEnumConstantTest extends CocoTest{
 
-  private final String CODE = "0xA4014";
   private final String MESSAGE =  " Duplicate enum constant: a.";
   public static final String HINT =   "\nHint: The constants of enumerations must be unique within an enumeration.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
@@ -46,7 +45,7 @@ public class DuplicatedEnumConstantTest extends CocoTest{
 
   @Test
   public void testInvalid(){
-    testInvalidGrammar(grammar, CODE, MESSAGE+HINT, checker);
+    testInvalidGrammar(grammar, DuplicatedEnumConstant.ERROR_CODE, MESSAGE+HINT, checker);
   }
 
 

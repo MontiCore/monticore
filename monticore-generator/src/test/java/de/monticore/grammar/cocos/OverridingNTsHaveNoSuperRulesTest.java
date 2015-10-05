@@ -32,7 +32,6 @@ import de.se_rwth.commons.logging.Log;
  */
 public class OverridingNTsHaveNoSuperRulesTest extends CocoTest{
 
-  private final String CODE = "0xA4001";
   private final String MESSAGE =  " The production QualifiedName overriding a production of " +
           "a super grammar must not extend the production Name.\n" +
           "Hint: Overriding productions can only implement interfaces.";
@@ -47,7 +46,7 @@ public class OverridingNTsHaveNoSuperRulesTest extends CocoTest{
 
   @Test
   public void testInvalid(){
-    testInvalidGrammar(grammar, CODE,MESSAGE, checker);
+    testInvalidGrammar(grammar, OverridingNTsHaveNoSuperRules.ERROR_CODE, MESSAGE, checker);
   }
 
   @Test

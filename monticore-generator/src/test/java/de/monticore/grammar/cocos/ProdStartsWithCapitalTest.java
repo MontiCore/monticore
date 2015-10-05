@@ -32,7 +32,6 @@ import de.se_rwth.commons.logging.Log;
  */
 public class ProdStartsWithCapitalTest extends CocoTest {
 
-  private final String CODE = "0xA4031";
   private final String MESSAGE = " The nonterminal a should not start with a lower-case letter.";;
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "cocos.invalid.A4031.A4031";
@@ -44,28 +43,28 @@ public class ProdStartsWithCapitalTest extends CocoTest {
   }
 
   @Test
-  public void testNT(){
-    testInvalidGrammar(grammar+"a", CODE, MESSAGE, checker);
+  public void testNT() {
+    testInvalidGrammar(grammar + "a", ProdStartsWithCapital.ERROR_CODE, MESSAGE, checker);
   }
-
+  
   @Test
-  public void testAbstractNT(){
-    testInvalidGrammar(grammar+"b", CODE, MESSAGE, checker);
+  public void testAbstractNT() {
+    testInvalidGrammar(grammar + "b", ProdStartsWithCapital.ERROR_CODE, MESSAGE, checker);
   }
-
+  
   @Test
-  public void testInterfaceNT(){
-    testInvalidGrammar(grammar+"c", CODE, MESSAGE, checker);
+  public void testInterfaceNT() {
+    testInvalidGrammar(grammar + "c", ProdStartsWithCapital.ERROR_CODE, MESSAGE, checker);
   }
-
+  
   @Test
-  public void testExternalNT(){
-    testInvalidGrammar(grammar+"d", CODE, MESSAGE, checker);
+  public void testExternalNT() {
+    testInvalidGrammar(grammar + "d", ProdStartsWithCapital.ERROR_CODE, MESSAGE, checker);
   }
-
+  
   @Test
-  public void testEnumNT(){
-    testInvalidGrammar(grammar+"e", CODE, MESSAGE, checker);
+  public void testEnumNT() {
+    testInvalidGrammar(grammar + "e", ProdStartsWithCapital.ERROR_CODE, MESSAGE, checker);
   }
 
   @Test

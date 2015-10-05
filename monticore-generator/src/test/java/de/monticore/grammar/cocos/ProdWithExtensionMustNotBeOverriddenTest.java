@@ -32,7 +32,6 @@ import de.se_rwth.commons.logging.Log;
  */
 public class ProdWithExtensionMustNotBeOverriddenTest extends CocoTest{
 
-  private final String CODE = "0xA4010";
   private final String MESSAGE =  " The production ArrayType must not be overridden because there"
       + " already exist productions extending it.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
@@ -45,8 +44,8 @@ public class ProdWithExtensionMustNotBeOverriddenTest extends CocoTest{
   }
 
   @Test
-  public void testInvalid(){
-    testInvalidGrammar(grammar, CODE, MESSAGE, checker);
+  public void testInvalid() {
+    testInvalidGrammar(grammar, ProdWithExtensionMustNotBeOverridden.ERROR_CODE, MESSAGE, checker);
   }
 
   @Test

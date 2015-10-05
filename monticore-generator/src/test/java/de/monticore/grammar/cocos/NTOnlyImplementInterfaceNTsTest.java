@@ -32,7 +32,6 @@ import de.se_rwth.commons.logging.Log;
  */
 public class NTOnlyImplementInterfaceNTsTest extends CocoTest {
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
-  private final String CODE = "0xA2102";
   private final String MESSAGE = " The nonterminal B must not implement the nonterminal A." +
           " Nonterminals may only implement interface nonterminals.";
   private final String grammar = "cocos.invalid.A2102.A2102";
@@ -44,23 +43,23 @@ public class NTOnlyImplementInterfaceNTsTest extends CocoTest {
   }
 
   @Test
-  public void testImplementsNormalNT(){
-    testInvalidGrammar(grammar+"a", CODE, MESSAGE, checker);
+  public void testImplementsNormalNT() {
+    testInvalidGrammar(grammar + "a", NTOnlyImplementInterfaceNTs.ERROR_CODE, MESSAGE, checker);
   }
-
+  
   @Test
-  public void testImplementsExternalNT(){
-    testInvalidGrammar(grammar+"b", CODE, MESSAGE, checker);
+  public void testImplementsExternalNT() {
+    testInvalidGrammar(grammar + "b", NTOnlyImplementInterfaceNTs.ERROR_CODE, MESSAGE, checker);
   }
-
+  
   @Test
-   public void testImplementsAbstractNT(){
-    testInvalidGrammar(grammar+"c", CODE, MESSAGE, checker);
+  public void testImplementsAbstractNT() {
+    testInvalidGrammar(grammar + "c", NTOnlyImplementInterfaceNTs.ERROR_CODE, MESSAGE, checker);
   }
-
+  
   @Test
-  public void testImplementsEnumNT(){
-    testInvalidGrammar(grammar+"d", CODE, MESSAGE, checker);
+  public void testImplementsEnumNT() {
+    testInvalidGrammar(grammar + "d", NTOnlyImplementInterfaceNTs.ERROR_CODE, MESSAGE, checker);
   }
 
   @Test

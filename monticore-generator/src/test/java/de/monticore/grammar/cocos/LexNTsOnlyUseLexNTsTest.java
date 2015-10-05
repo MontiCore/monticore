@@ -32,7 +32,6 @@ import de.se_rwth.commons.logging.Log;
  */
 public class LexNTsOnlyUseLexNTsTest extends CocoTest {
 
-  private final String CODE = "0xA4017";
   private final String MESSAGE = " The lexical production A must not use" +
           " the nonterminal B because B is defined by a production of" +
           " another type than lexical. Lexical productions may only reference nonterminals" +
@@ -48,7 +47,7 @@ public class LexNTsOnlyUseLexNTsTest extends CocoTest {
 
   @Test
   public void testInvalid() {
-    testInvalidGrammar(grammar, CODE, MESSAGE, checker);
+    testInvalidGrammar(grammar, LexNTsOnlyUseLexNTs.ERROR_CODE, MESSAGE, checker);
   }
 
   @Test

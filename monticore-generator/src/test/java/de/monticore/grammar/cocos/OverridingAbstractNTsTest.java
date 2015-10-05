@@ -32,7 +32,6 @@ import de.se_rwth.commons.logging.Log;
  */
 public class OverridingAbstractNTsTest extends CocoTest{
 
-  private final String CODE = "0xA4008";
   private final String MESSAGE =  " The production for the abstract nonterminal ArrayType must not be overridden\n" +
           "by a production for an %s nonterminal.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
@@ -45,22 +44,27 @@ public class OverridingAbstractNTsTest extends CocoTest{
   }
 
   @Test
-  public void testInvalidA(){
-    testInvalidGrammar(grammar + "a", CODE, String.format(MESSAGE, "interface"), checker);
+  public void testInvalidA() {
+    testInvalidGrammar(grammar + "a", OverridingAbstractNTs.ERROR_CODE,
+        String.format(MESSAGE, "interface"), checker);
   }
+  
   @Test
-  public void testInvalidB(){
-    testInvalidGrammar(grammar+"b", CODE, String.format(MESSAGE, "enum"), checker);
+  public void testInvalidB() {
+    testInvalidGrammar(grammar + "b", OverridingAbstractNTs.ERROR_CODE,
+        String.format(MESSAGE, "enum"), checker);
   }
-
+  
   @Test
-  public void testInvalidC(){
-    testInvalidGrammar(grammar+"c", CODE, String.format(MESSAGE, "lexical"), checker);
+  public void testInvalidC() {
+    testInvalidGrammar(grammar + "c", OverridingAbstractNTs.ERROR_CODE,
+        String.format(MESSAGE, "lexical"), checker);
   }
-
+  
   @Test
-  public void testInvalidD(){
-    testInvalidGrammar(grammar+"d", CODE, String.format(MESSAGE, "external"), checker);
+  public void testInvalidD() {
+    testInvalidGrammar(grammar + "d", OverridingAbstractNTs.ERROR_CODE,
+        String.format(MESSAGE, "external"), checker);
   }
 
   @Test

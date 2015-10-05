@@ -31,7 +31,6 @@ import org.junit.Test;
  */
 public class OverridingLexNTsTest extends CocoTest{
 
-  private final String CODE = "0xA4026";
   private final String MESSAGE =  " The lexical production CARDINALITY must not use a different "
       + "type to store the token than the overridden production.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
@@ -44,8 +43,9 @@ public class OverridingLexNTsTest extends CocoTest{
   }
 
   @Test
-  public void testInvalid(){
-    testInvalidGrammar(grammar, CODE, String.format(MESSAGE, "interface"), checker);
+  public void testInvalid() {
+    testInvalidGrammar(grammar, OverridingLexNTs.ERROR_CODE, String.format(MESSAGE, "interface"),
+        checker);
   }
 
   @Test

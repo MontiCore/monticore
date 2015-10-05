@@ -32,7 +32,6 @@ import de.se_rwth.commons.logging.Log;
  */
 public class InterfaceNTWithoutImplementationOnlyInComponentGrammarTest extends CocoTest{
 
-  private final String CODE = "0xA0278";
   private final String MESSAGE = " The interface nonterminal A must not be used without nonterminals " +
           "implementing it in a grammar not marked as a grammar component.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
@@ -45,8 +44,9 @@ public class InterfaceNTWithoutImplementationOnlyInComponentGrammarTest extends 
   }
 
   @Test
-  public void testInvalid(){
-    testInvalidGrammar(grammar, CODE, MESSAGE, checker);
+  public void testInvalid() {
+    testInvalidGrammar(grammar, InterfaceNTWithoutImplementationOnlyInComponentGrammar.ERROR_CODE,
+        MESSAGE, checker);
   }
 
 

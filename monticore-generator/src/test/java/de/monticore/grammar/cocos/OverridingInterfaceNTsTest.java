@@ -32,7 +32,6 @@ import de.se_rwth.commons.logging.Log;
  */
 public class OverridingInterfaceNTsTest extends CocoTest{
 
-  private final String CODE = "0xA4007";
   private final String MESSAGE =  " The production for the interface nonterminal ReturnType must not be overridden.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "cocos.invalid.A4007.A4007";
@@ -45,7 +44,7 @@ public class OverridingInterfaceNTsTest extends CocoTest{
 
   @Test
   public void testInvalid(){
-    testInvalidGrammar(grammar, CODE, MESSAGE, checker);
+    testInvalidGrammar(grammar, OverridingInterfaceNTs.ERROR_CODE, MESSAGE, checker);
   }
 
 

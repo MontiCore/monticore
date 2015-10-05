@@ -32,7 +32,6 @@ import de.se_rwth.commons.logging.Log;
  */
 public class ProdAndExtendedProdUseSameAttrNameForDiffNTsTest extends CocoTest{
 
-  private final String CODE = "0xA4024";
   private final String MESSAGE = " The production B extending the production A must not use the\n" +
           "name a for the nonterminal D as A already uses this name for the nonterminal C.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
@@ -45,8 +44,9 @@ public class ProdAndExtendedProdUseSameAttrNameForDiffNTsTest extends CocoTest{
   }
 
   @Test
-  public void testInvalid(){
-    testInvalidGrammar(grammar, CODE, MESSAGE, checker);
+  public void testInvalid() {
+    testInvalidGrammar(grammar, ProdAndExtendedProdUseSameAttrNameForDiffNTs.ERROR_CODE, MESSAGE,
+        checker);
   }
 
 

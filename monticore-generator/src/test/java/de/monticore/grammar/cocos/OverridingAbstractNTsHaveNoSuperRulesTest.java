@@ -32,7 +32,6 @@ import de.se_rwth.commons.logging.Log;
  */
 public class OverridingAbstractNTsHaveNoSuperRulesTest extends CocoTest{
 
-  private final String CODE = "0xA4002";
   private final String MESSAGE =  " The abstract production ArrayType overriding a production of " +
           "a super grammar must not extend the production Name.\n" +
           "Hint: Overriding productions can only implement interfaces.";
@@ -46,8 +45,8 @@ public class OverridingAbstractNTsHaveNoSuperRulesTest extends CocoTest{
   }
 
   @Test
-  public void testInvalid(){
-    testInvalidGrammar(grammar, CODE,MESSAGE, checker);
+  public void testInvalid() {
+    testInvalidGrammar(grammar, OverridingAbstractNTsHaveNoSuperRules.ERROR_CODE, MESSAGE, checker);
   }
 
   @Test

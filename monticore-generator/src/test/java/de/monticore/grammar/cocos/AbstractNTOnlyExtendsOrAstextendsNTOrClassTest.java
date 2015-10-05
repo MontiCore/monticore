@@ -32,7 +32,6 @@ import de.se_rwth.commons.logging.Log;
  */
 public class AbstractNTOnlyExtendsOrAstextendsNTOrClassTest extends CocoTest{
 
-  private final String CODE = "0xA4030";
   private final String MESSAGE = " The abstract nonterminal B must not extend and astextend a type.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "cocos.invalid.A4030.A4030";
@@ -44,8 +43,9 @@ public class AbstractNTOnlyExtendsOrAstextendsNTOrClassTest extends CocoTest{
   }
 
   @Test
-  public void testASTExtendMultiple(){
-    testInvalidGrammar(grammar, CODE, MESSAGE, checker);
+  public void testASTExtendMultiple() {
+    testInvalidGrammar(grammar, AbstractNTOnlyExtendOrAstextendNTOrClass.ERROR_CODE, MESSAGE,
+        checker);
   }
 
   @Test

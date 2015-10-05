@@ -32,7 +32,6 @@ import de.se_rwth.commons.logging.Log;
  */
 public class ReferencedNTNotDefinedTest extends CocoTest {
 
-  private final String CODE = "0xA2030";
   private final String MESSAGE = " The production A must not reference the " +
           "%snonterminal B because there exists no defining production for B.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
@@ -46,34 +45,33 @@ public class ReferencedNTNotDefinedTest extends CocoTest {
 
   @Test
   public void testInvalidA() {
-      testInvalidGrammar(grammar + "a", CODE, String.format(MESSAGE, ""), checker);
-
+    testInvalidGrammar(grammar + "a", ReferencedNTNotDefined.ERROR_CODE,
+        String.format(MESSAGE, ""), checker);
   }
-
+  
   @Test
   public void testInvalidB() {
-    testInvalidGrammar(grammar+"b", CODE, String.format(MESSAGE, "interface "), checker);
-
+    testInvalidGrammar(grammar + "b", ReferencedNTNotDefined.ERROR_CODE,
+        String.format(MESSAGE, "interface "), checker);
   }
-
+  
   @Test
   public void testInvalidC() {
-    testInvalidGrammar(grammar+"c", CODE, String.format(MESSAGE, "interface "), checker);
-
+    testInvalidGrammar(grammar + "c", ReferencedNTNotDefined.ERROR_CODE,
+        String.format(MESSAGE, "interface "), checker);
   }
-
+  
   @Test
   public void testInvalidD() {
-    testInvalidGrammar(grammar+"d", CODE, String.format(MESSAGE, ""), checker);
-
+    testInvalidGrammar(grammar + "d", ReferencedNTNotDefined.ERROR_CODE,
+        String.format(MESSAGE, ""), checker);
   }
-
+  
   @Test
   public void testInvalidE() {
-    testInvalidGrammar(grammar+"e", CODE, String.format(MESSAGE, "interface "), checker);
-
+    testInvalidGrammar(grammar + "e", ReferencedNTNotDefined.ERROR_CODE,
+        String.format(MESSAGE, "interface "), checker);
   }
-
 
   @Test
   public void testCorrect(){

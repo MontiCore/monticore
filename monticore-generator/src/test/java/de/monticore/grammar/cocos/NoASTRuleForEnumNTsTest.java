@@ -32,7 +32,6 @@ import de.se_rwth.commons.logging.Log;
  */
 public class NoASTRuleForEnumNTsTest extends CocoTest{
 
-  private final String CODE = "0xA4032";
   private final String MESSAGE = " There must not exist an AST rule for the enum nonterminal A.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "cocos.invalid.A4032.A4032";
@@ -45,7 +44,7 @@ public class NoASTRuleForEnumNTsTest extends CocoTest{
 
   @Test
   public void testInvalid(){
-    testInvalidGrammar(grammar, CODE, MESSAGE, checker);
+    testInvalidGrammar(grammar, NoASTRuleForEnumNTs.ERROR_CODE, MESSAGE, checker);
   }
 
 

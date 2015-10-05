@@ -32,7 +32,6 @@ import de.se_rwth.commons.logging.Log;
  */
 public class NTAndASTRuleExtendTypeTest extends CocoTest{
 
-  private final String CODE = "0xA4013";
   private final String MESSAGE = " The AST rule for A must not extend the type " +
           "C because the production already extends a type.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
@@ -46,7 +45,7 @@ public class NTAndASTRuleExtendTypeTest extends CocoTest{
 
   @Test
   public void testInvalid(){
-    testInvalidGrammar(grammar, CODE, MESSAGE, checker);
+    testInvalidGrammar(grammar, NTAndASTRuleExtendType.ERROR_CODE, MESSAGE, checker);
   }
 
 

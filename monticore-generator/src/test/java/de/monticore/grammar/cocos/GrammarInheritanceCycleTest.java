@@ -40,7 +40,6 @@ import static org.junit.Assert.assertFalse;
  */
 public class GrammarInheritanceCycleTest extends CocoTest{
 
-  private final String CODE = "0xA4023";
   private final String MESSAGE = " The grammar A4023%s introduces an inheritance cycle.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "cocos.invalid.A4023.A4023";
@@ -52,18 +51,17 @@ public class GrammarInheritanceCycleTest extends CocoTest{
   }
 
   @Test
-  public void testInvalid(){
+  public void testInvalid() {
     Optional<ASTMCGrammar> grammar = MCGrammarParser
         .parse(Paths.get("src/test/resources/cocos/invalid/A4023/A4023.mc4"));
-
+    
     Log.getFindings().clear();
     checker.handle(grammar.get());
-
-
+    
     assertFalse(Log.getFindings().isEmpty());
     assertEquals(1, Log.getFindings().size());
-    for(Finding f : Log.getFindings()){
-      assertEquals(String.format(CODE + MESSAGE, ""), f.getMsg());
+    for (Finding f : Log.getFindings()) {
+      assertEquals(String.format(GrammarInheritanceCycle.ERROR_CODE + MESSAGE, ""), f.getMsg());
     }
   }
 

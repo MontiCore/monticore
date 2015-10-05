@@ -32,7 +32,6 @@ import de.se_rwth.commons.logging.Log;
  */
 public class ProdAndOverriddenProdUseSameAttrNameForDiffNTsTest extends CocoTest{
 
-  private final String CODE = "0xA4025";
   private final String MESSAGE = " The overriding production QualifiedName must not use " +
           "the name parts for the nonterminal StringLiteral as the overridden production uses this name for the nonterminal Name";;
           private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
@@ -45,8 +44,9 @@ public class ProdAndOverriddenProdUseSameAttrNameForDiffNTsTest extends CocoTest
   }
 
   @Test
-  public void testInvalid(){
-    testInvalidGrammar(grammar, CODE, MESSAGE, checker);
+  public void testInvalid() {
+    testInvalidGrammar(grammar, ProdAndOverriddenProdUseSameAttrNameForDiffNTs.ERROR_CODE, MESSAGE,
+        checker);
   }
 
 

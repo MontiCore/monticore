@@ -32,7 +32,6 @@ import de.se_rwth.commons.logging.Log;
  */
 public class UsedLexNTNotDefinedTest extends CocoTest {
 
-  private final String CODE = "0xA4016";
   private final String MESSAGE =" The lexical production A must not" +
           " use the nonterminal B because there exists no lexical production defining B.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
@@ -46,7 +45,7 @@ public class UsedLexNTNotDefinedTest extends CocoTest {
 
   @Test
   public void testInvalid() {
-      testInvalidGrammar(grammar, CODE, MESSAGE, checker);
+      testInvalidGrammar(grammar, UsedLexNTNotDefined.ERROR_CODE, MESSAGE, checker);
   }
 
   @Test

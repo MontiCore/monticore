@@ -39,7 +39,6 @@ import de.se_rwth.commons.logging.Log;
  * @author KH
  */
 public class KeywordAlternativeNameTest extends CocoTest {
-  private final String CODE = "0xA4019";
   private final String MESSAGE = " The production A must not use an alternative of keywords without naming it.";
   private final String grammar = "cocos.invalid.A4019.A4019";
 
@@ -56,15 +55,14 @@ public class KeywordAlternativeNameTest extends CocoTest {
 
     // test grammar symbol
     try {
-      final MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) globalScope.resolve(grammar,
-              MCGrammarSymbol.KIND).orElse(null);
+      globalScope.resolve(grammar,  MCGrammarSymbol.KIND).orElse(null);
       fail("IllegalArgumentException expected");
     } catch (IllegalArgumentException e) {
 
       assertFalse(Log.getFindings().isEmpty());
       assertEquals(1, Log.getFindings().size());
       for (Finding f : Log.getFindings()) {
-        assertEquals(CODE + MESSAGE, f.getMsg());
+        assertEquals(KeywordAlternativeName.ERROR_CODE + MESSAGE, f.getMsg());
       }
     }
   }

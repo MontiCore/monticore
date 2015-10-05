@@ -32,7 +32,6 @@ import de.se_rwth.commons.logging.Log;
  */
 public class OverridingEnumNTsTest extends CocoTest {
   
-  private final String CODE = "0xA4027";
   private final String MESSAGE = " The production for the enum nonterminal E must not be overridden."; 
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "cocos.invalid.A4027.A4027";
@@ -45,7 +44,7 @@ public class OverridingEnumNTsTest extends CocoTest {
   
   @Test
   public void testInvalid() {
-    testInvalidGrammar(grammar, CODE, MESSAGE, checker);
+    testInvalidGrammar(grammar, OverridingEnumNTs.ERROR_CODE, MESSAGE, checker);
   }
   
   @Test

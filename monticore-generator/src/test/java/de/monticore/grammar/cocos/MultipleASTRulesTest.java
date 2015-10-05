@@ -32,7 +32,6 @@ import de.se_rwth.commons.logging.Log;
  */
 public class MultipleASTRulesTest extends CocoTest{
 
-  private final String CODE = "0xA4020";
   private final String MESSAGE = " There must not exist more than one AST" +
           " rule for the nonterminal A.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
@@ -45,10 +44,9 @@ public class MultipleASTRulesTest extends CocoTest{
   }
 
   @Test
-  public void testInvalid(){
-    testInvalidGrammar(grammar, CODE, MESSAGE, checker);
+  public void testInvalid() {
+    testInvalidGrammar(grammar, MultipleASTRules.ERROR_CODE, MESSAGE, checker);
   }
-
 
   @Test
   public void testCorrect(){

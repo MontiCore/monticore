@@ -32,7 +32,6 @@ import de.se_rwth.commons.logging.Log;
  */
 public class ExternalNTOnlyInComponentGrammarTest extends CocoTest{
 
-  private final String CODE = "0xA0276";
   private final String MESSAGE = " The external nonterminal A must not be used in a grammar not marked " +
           "as a grammar component.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
@@ -46,7 +45,7 @@ public class ExternalNTOnlyInComponentGrammarTest extends CocoTest{
 
   @Test
   public void testInvalid(){
-    testInvalidGrammar(grammar, CODE, MESSAGE, checker);
+    testInvalidGrammar(grammar, ExternalNTOnlyInComponentGrammar.ERROR_CODE, MESSAGE, checker);
   }
 
 

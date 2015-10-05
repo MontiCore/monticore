@@ -38,7 +38,6 @@ import de.se_rwth.commons.logging.Log;
  */
 public class NTDefinedByAtmostOneProductionTest extends CocoTest {
 
-  private final String CODE = "0xA2025";
   private final String MESSAGE = " The nonterminal A must not be defined by more than one production.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "cocos.invalid.A2025.A2025";
@@ -53,18 +52,18 @@ public class NTDefinedByAtmostOneProductionTest extends CocoTest {
   public void testInvalid() {
     Log.getFindings().clear();
     try {
-      testInvalidGrammar(grammar, CODE, MESSAGE, checker);
+      testInvalidGrammar(grammar, NTDefinedByAtmostOneProduction.ERROR_CODE, MESSAGE, checker);
       fail("expected ResolvedSeveralEntriesException");
-    } catch (ResolvedSeveralEntriesException e){
-
+    }
+    catch (ResolvedSeveralEntriesException e) {
+      
       assertFalse(Log.getFindings().isEmpty());
       assertEquals(11, Log.getFindings().size());
-      for(Finding f : Log.getFindings()){
-        assertEquals(CODE + MESSAGE, f.getMsg());
+      for (Finding f : Log.getFindings()) {
+        assertEquals(NTDefinedByAtmostOneProduction.ERROR_CODE + MESSAGE, f.getMsg());
       }
     }
   }
-
 
   @Test
   public void testCorrect(){
