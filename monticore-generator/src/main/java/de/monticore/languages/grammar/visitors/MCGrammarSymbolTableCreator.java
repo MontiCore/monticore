@@ -155,7 +155,7 @@ public class MCGrammarSymbolTableCreator extends CommonSymbolTableCreator implem
     grammarSymbol = MCGrammarSymbolsFactory.createMCGrammarSymbol(grammarName);
     grammarSymbol.setComponent(astGrammar.isComponent());
     
-    putInScopeAndLinkWithAst(grammarSymbol, astGrammar);
+    addToScopeAndLinkWithNode(grammarSymbol, astGrammar);
     
     addSuperGrammars(astGrammar, grammarSymbol);
   }
@@ -565,7 +565,7 @@ public class MCGrammarSymbolTableCreator extends CommonSymbolTableCreator implem
     }
     
     ruleSymbol.setGrammarSymbol(grammarSymbol);
-    putInScopeAndLinkWithAst(ruleSymbol, astInterfaceProd);
+    addToScopeAndLinkWithNode(ruleSymbol, astInterfaceProd);
   }
 
   private void setSymbolDefinition(MCRuleSymbol ruleSymbol, Optional<ASTSymbolDefinition> symbolDefinition) {
@@ -596,7 +596,7 @@ public class MCGrammarSymbolTableCreator extends CommonSymbolTableCreator implem
     final MCLexRuleSymbol ruleSymbol = createLexProd(astLexProd, currentScope().get());
     
     ruleSymbol.setGrammarSymbol(grammarSymbol);
-    putInScopeAndLinkWithAst(ruleSymbol, astLexProd);
+    addToScopeAndLinkWithNode(ruleSymbol, astLexProd);
   }
   
   @Override
@@ -641,7 +641,7 @@ public class MCGrammarSymbolTableCreator extends CommonSymbolTableCreator implem
     }
     
     ruleSymbol.setGrammarSymbol(grammarSymbol);
-    putInScopeAndLinkWithAst(ruleSymbol, astClassProd);
+    addToScopeAndLinkWithNode(ruleSymbol, astClassProd);
   }
   
   public void endVisit(ASTClassProd astClassProd) {
@@ -712,7 +712,7 @@ public class MCGrammarSymbolTableCreator extends CommonSymbolTableCreator implem
     
     ruleSymbol.setGrammarSymbol(grammarSymbol);
     
-    putInScopeAndLinkWithAst(ruleSymbol, astAbstractProd);
+    addToScopeAndLinkWithNode(ruleSymbol, astAbstractProd);
   }
   
   @Override
@@ -761,7 +761,7 @@ public class MCGrammarSymbolTableCreator extends CommonSymbolTableCreator implem
       }
       
       ruleSymbol.setGrammarSymbol(grammarSymbol);
-      putInScopeAndLinkWithAst(ruleSymbol, astExternalProd);
+      addToScopeAndLinkWithNode(ruleSymbol, astExternalProd);
     }
   }
   
@@ -793,7 +793,7 @@ public class MCGrammarSymbolTableCreator extends CommonSymbolTableCreator implem
     }
     
     ruleSymbol.setGrammarSymbol(grammarSymbol);
-    putInScopeAndLinkWithAst(ruleSymbol, astEnumProd);
+    addToScopeAndLinkWithNode(ruleSymbol, astEnumProd);
   }
   
   @Override
@@ -916,7 +916,7 @@ public class MCGrammarSymbolTableCreator extends CommonSymbolTableCreator implem
         surroundingRule.addRuleComponent(ruleComponent);
       }
       else {
-        putInScope(ruleComponent);
+        addToScope(ruleComponent);
       }
       
       setLinkBetweenSymbolAndNode(ruleComponent, node);
@@ -1080,7 +1080,7 @@ public class MCGrammarSymbolTableCreator extends CommonSymbolTableCreator implem
   public void putInScopeIfNotExists(final Symbol symbol) {
     if (currentScope().isPresent()) {
       if (!currentScope().get().resolveLocally(symbol.getName(), symbol.getKind()).isPresent()) {
-        putInScope(symbol);
+        addToScope(symbol);
       }
       else {
         Log.debug("Symbol '" + symbol.getName() + "' (Kind '" + symbol.getKind() + "') is already "

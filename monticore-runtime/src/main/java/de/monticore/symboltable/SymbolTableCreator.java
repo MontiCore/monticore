@@ -30,19 +30,7 @@ import de.monticore.ast.ASTNode;
 // TODO PN use generics <T extends ASTNode> and add method createFromAST(T node)
 public interface SymbolTableCreator {
 
-  /**
-   * @deprecated use {@link #putSpannedScopeOnStack(ScopeSpanningSymbol)} instead
-   */
-  @Deprecated
-  void putScopeOnStackAndSetEnclosingIfExists(ScopeSpanningSymbol symbol);
-
   void putSpannedScopeOnStack(ScopeSpanningSymbol symbol);
-
-  /**
-   * @deprecated use {@link #putOnStack(MutableScope)} instead
-   */
-  @Deprecated
-  void putOnStackAndSetEnclosingIfExists(MutableScope scope);
 
   void putOnStack(MutableScope scope);
 
@@ -54,34 +42,32 @@ public interface SymbolTableCreator {
    * this method does not do anything.
    *
    * @param symbol the symbol to be added in the current scope.
-   */
-  // TODO PN rename addToScope
-  void putInScope(Symbol symbol);
-
-   /**
-   * @deprecated use {#link putInScope} instead
+   *
+   * @deprecated use {@link #addToScope(Symbol)} instead
    */
   @Deprecated
-  void defineInScope(Symbol symbol);
+  void putInScope(Symbol symbol);
 
-
+  /**
+   * Adds the <code>symbol</code> to the current scope (see {@link #currentScope()}).
+   *
+   * Note: if <code>symbol</code> is a reference
+   * (i.e., {@link de.monticore.symboltable.references.SymbolReference})
+   * this method does not do anything.
+   *
+   * @param symbol the symbol to be added in the current scope.
+   */
+  void addToScope(Symbol symbol);
 
   void setLinkBetweenSymbolAndNode(Symbol symbol, ASTNode astNode);
 
-  // TODO PN rename addToScopeAndLinkWithAST
-  void putInScopeAndLinkWithAst(Symbol symbol, ASTNode astNode);
-
   /**
-   * @deprecated use {@link #putInScopeAndLinkWithAst(Symbol, ASTNode)} instead
+   * @deprecated use {@link #addToScopeAndLinkWithNode(Symbol, ASTNode)} instead
    */
   @Deprecated
-  void defineInScopeAndSetLinkBetweenSymbolAndAst(Symbol symbol, ASTNode astNode);
+  void defineInScopeAndLinkWithNode(Symbol symbol, ASTNode astNode);
 
-  /**
-   * @deprecated use {@link #putInScopeAndLinkWithAst(Symbol, ASTNode)} instead
-   */
-  @Deprecated
-  void defineInScopeAndLinkWithAst(Symbol symbol, ASTNode astNode);
+  void addToScopeAndLinkWithNode(Symbol symbol, ASTNode astNode);
 
   Optional<? extends MutableScope> removeCurrentScope();
 

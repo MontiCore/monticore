@@ -71,10 +71,15 @@ public interface MutableScope extends Scope {
   void setSpanningSymbol(ScopeSpanningSymbol symbol);
 
   /**
-   * @param symbol defines the symbol, i.e., adds the symbol to this scope. Also, this scope is set as the
-   *               symbol's enclosing scope.
+   * @deprecated use {@link #add(Symbol)} instead
    */
+  @Deprecated
   void define(Symbol symbol);
+
+  /**
+   * Adds the symbol to this scope. Also, this scope is set as the symbol's enclosing scope.
+   */
+  void add(Symbol symbol);
 
   /**
    * Sets the resolvers that are available in this scope. Within a simple grammarlanguage, these

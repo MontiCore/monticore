@@ -63,8 +63,8 @@ public class SymbolTableTest {
     
     topScope.setResolvingFilters(resolvingFilters);
     
-    topScope.define(new JTypeSymbolMock("int"));
-    topScope.define(new JTypeSymbolMock("String"));
+    topScope.add(new JTypeSymbolMock("int"));
+    topScope.add(new JTypeSymbolMock("String"));
 
     intSymbol = topScope.<JTypeSymbolMock>resolve("int", Symbol.KIND).get();
     stringSymbol = topScope.<JTypeSymbolMock>resolve("String", Symbol.KIND).get();
@@ -92,7 +92,7 @@ public class SymbolTableTest {
     
     
     ActionSymbol method = new ActionSymbol("m");
-    topScope.define(method);
+    topScope.add(method);
     
     Set<ResolvingFilter<? extends Symbol>> resolvingFilters = new LinkedHashSet<>();
     resolvingFilters.add(CommonResolvingFilter.create(PropertySymbol.class, PropertySymbol.KIND));
@@ -112,8 +112,8 @@ public class SymbolTableTest {
     
     PropertySymbol globalVariable1 = new PropertySymbol("var1", stringReference);
     PropertySymbol globalVariable2 = new PropertySymbol("var2", intReference);
-    topScope.define(globalVariable1);
-    topScope.define(globalVariable2);
+    topScope.add(globalVariable1);
+    topScope.add(globalVariable2);
     
     assertSame(globalVariable1, topScope.resolve("var1", Symbol.KIND).get());
     // returns only the local variable  
@@ -136,7 +136,7 @@ public class SymbolTableTest {
      *  }
      */
     ActionSymbol method = new ActionSymbol("m");
-    topScope.define(method);
+    topScope.add(method);
     
     PropertySymbol variable = new PropertySymbol("var1", intReference);
     method.addVariable(variable);
@@ -146,7 +146,7 @@ public class SymbolTableTest {
     ((MutableScope)method.getSpannedScope()).setResolvingFilters(resolvingFilters);
     
     PropertySymbol globalVariable1 = new PropertySymbol("var1", stringReference);
-    topScope.define(globalVariable1);
+    topScope.add(globalVariable1);
     
 
     assertSame(method, topScope.resolve(new SymbolNameAndKindPredicate("m", ActionSymbolKind.KIND)

@@ -65,7 +65,7 @@ public interface EntityLanguageSymbolTableCreator extends EntityLanguageVisitor,
   @Override
   default void visit(ASTEntity node) {
     EntitySymbol entity = new EntitySymbol(node.getName());
-    putInScope(entity);
+    addToScope(entity);
     putSpannedScopeOnStack(entity);
   }
 
@@ -77,7 +77,7 @@ public interface EntityLanguageSymbolTableCreator extends EntityLanguageVisitor,
   @Override
   default void visit(ASTAction astAction) {
     ActionSymbol method = new ActionSymbol(astAction.getName());
-    putInScope(method);
+    addToScope(method);
     putSpannedScopeOnStack(method);
   }
 
@@ -106,6 +106,6 @@ public interface EntityLanguageSymbolTableCreator extends EntityLanguageVisitor,
     //    typeReference.setDefinedInScope(currentScope().get());
 
     PropertySymbol variable = new PropertySymbol(node.getName(), null/*typeReference*/);
-    putInScope(variable);
+    addToScope(variable);
   }
 }

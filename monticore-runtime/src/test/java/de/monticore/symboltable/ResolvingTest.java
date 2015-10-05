@@ -56,8 +56,8 @@ public class ResolvingTest {
     final MutableScope localScope = new CommonScope(false);
     localScope.addResolver(CommonResolvingFilter.create(EntitySymbol.class, EntitySymbol.KIND));
 
-    localScope.define(entity);
-    localScope.define(entity);
+    localScope.add(entity);
+    localScope.add(entity);
 
     assertEquals(2, localScope.getSymbols().size());
 
@@ -125,7 +125,7 @@ public class ResolvingTest {
     final ModelPath modelPath = new ModelPath(Paths.get(""));
 
     final GlobalScope globalScope = new GlobalScope(modelPath, modelingLanguage.getModelLoader(), resolverConfiguration);
-    globalScope.define(entity);
+    globalScope.add(entity);
 
     assertTrue(globalScope.resolve("Entity", EntitySymbol.KIND).isPresent());
     assertTrue(globalScope.resolve("Entity.action", ActionSymbol.KIND).isPresent());

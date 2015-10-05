@@ -51,7 +51,7 @@ public class EntitySymbol extends CommonJTypeSymbol<EntitySymbol, PropertySymbol
   }
   
   public void addAction(ActionSymbol method) {
-    spannedScope.define(method);
+    spannedScope.add(method);
   }
   
   public Collection<ActionSymbol> getActions() {
@@ -63,7 +63,7 @@ public class EntitySymbol extends CommonJTypeSymbol<EntitySymbol, PropertySymbol
   }
   
   public void addProperty(PropertySymbol property) {
-    spannedScope.define(property);
+    spannedScope.add(property);
   }
   
   public Collection<PropertySymbol> getProperties() {

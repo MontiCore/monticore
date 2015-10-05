@@ -56,8 +56,8 @@ public class AdaptedResolvingTest {
     final EntitySymbol entity = new EntitySymbol("Entity");
     final StateChartSymbol sc = new StateChartSymbol("Sc");
 
-    scope.define(entity);
-    scope.define(sc);
+    scope.add(entity);
+    scope.add(sc);
 
     scope.addResolver(CommonResolvingFilter.create(EntitySymbol.class, EntitySymbol.KIND));
     scope.addResolver(CommonResolvingFilter.create(StateChartSymbol.class, StateChartSymbol.KIND));
@@ -97,8 +97,8 @@ public class AdaptedResolvingTest {
     final StateChartSymbol sc = new StateChartSymbol("Sc");
 
     // Symbols are defined in parent scope...
-    parentScope.define(entity);
-    parentScope.define(sc);
+    parentScope.add(entity);
+    parentScope.add(sc);
 
     // ...Resolving filters are only registered in the sub scope.
     subScope.addResolver(CommonResolvingFilter.create(EntitySymbol.class, EntitySymbol.KIND));
@@ -139,9 +139,9 @@ public class AdaptedResolvingTest {
     final StateChartSymbol sc = new StateChartSymbol("Sc");
     final StateSymbol state = new StateSymbol("state");
 
-    scope.define(entity);
-    scope.define(sc);
-    scope.define(state);
+    scope.add(entity);
+    scope.add(sc);
+    scope.add(state);
 
     scope.addResolver(CommonResolvingFilter.create(EntitySymbol.class, EntitySymbol.KIND));
     scope.addResolver(CommonResolvingFilter.create(StateChartSymbol.class, StateChartSymbol.KIND));
@@ -172,8 +172,8 @@ public class AdaptedResolvingTest {
     final EntitySymbol entity = new EntitySymbol("Entity");
     final StateChartSymbol sc = new StateChartSymbol("Sc");
 
-    scope.define(entity);
-    scope.define(sc);
+    scope.add(entity);
+    scope.add(sc);
 
     scope.addResolver(CommonResolvingFilter.create(EntitySymbol.class, EntitySymbol.KIND));
     scope.addResolver(CommonResolvingFilter.create(StateChartSymbol.class, StateChartSymbol.KIND));
@@ -207,10 +207,10 @@ public class AdaptedResolvingTest {
     final EntitySymbol entity = new EntitySymbol("Entity");
 
     // Add all kinds of symbols to ensure that really the correct one is resolved
-    scope.define(entity);
-    scope.define(new ActionSymbol("action"));
-    scope.define(new StateChartSymbol("Sc"));
-    scope.define(new StateSymbol("state"));
+    scope.add(entity);
+    scope.add(new ActionSymbol("action"));
+    scope.add(new StateChartSymbol("Sc"));
+    scope.add(new StateSymbol("state"));
 
     scope.addResolver(CommonResolvingFilter.create(EntitySymbol.class, EntitySymbol.KIND));
     scope.addResolver(CommonResolvingFilter.create(ActionSymbol.class, ActionSymbol.KIND));

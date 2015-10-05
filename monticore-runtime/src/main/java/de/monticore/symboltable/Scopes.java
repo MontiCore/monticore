@@ -91,7 +91,7 @@ public final class Scopes {
     Optional<? extends Scope> currentScope = Optional.of(scope);
     
     while (currentScope.isPresent()) {
-      if (currentScope.get().definesNameSpace()) {
+      if (currentScope.get().isShadowingScope()) {
         return currentScope;
       }
       currentScope = currentScope.get().getEnclosingScope();

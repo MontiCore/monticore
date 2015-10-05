@@ -77,7 +77,7 @@ public class CommonJMethodSymbol <T extends JTypeReference<? extends JTypeSymbol
     Log.errorIfNull(paramType);
     checkArgument(paramType.isParameter(), "Only parameters can be added.");
 
-    spannedScope.define(paramType);
+    spannedScope.add(paramType);
   }
 
   @Override

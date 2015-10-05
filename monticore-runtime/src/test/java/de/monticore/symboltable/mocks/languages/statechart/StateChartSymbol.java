@@ -52,7 +52,7 @@ public class StateChartSymbol extends CommonScopeSpanningSymbol {
   }
   
   public void addState(StateSymbol state) {
-    spannedScope.define(state);
+    spannedScope.add(state);
   }
 
 }

@@ -167,7 +167,7 @@ public class LanguageCompositionTest {
         (StateSymbol.class, StateSymbol.KIND));
     // Note how symbols of the sub language can be used without any adapters
 
-    scope.define(xSc);
+    scope.add(xSc);
     assertSame(xSc, scope.resolve("xSc", StateChartKind.KIND).get());
     // Super symbol cannot be used instead of sub. Resolver for sub needed.
     assertFalse(scope.resolve("xSc", XStateChartKind.KIND).isPresent());

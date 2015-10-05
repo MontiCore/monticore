@@ -64,7 +64,7 @@ public interface StateChartLanguageSymbolTableCreator extends
 
   default void visit(ASTStateChart node) {
     StateChartSymbol sc = new StateChartSymbol(node.getName());
-    putInScope(sc);
+    addToScope(sc);
     putSpannedScopeOnStack(sc);
   }
 
@@ -75,7 +75,7 @@ public interface StateChartLanguageSymbolTableCreator extends
 
   default void visit(ASTState node) {
     StateSymbol state = new StateSymbol(node.getName());
-    putInScope(state);
+    addToScope(state);
   }
 
 }

@@ -47,14 +47,14 @@ public class ArtifactScopeTest {
     ArtifactScope artifactScope1 = new ArtifactScope(Optional.of(globalScope), "p", new ArrayList<>());
     artifactScope1.addResolver(classResolver);
     EntitySymbol classA = new EntitySymbol("p.A");
-    artifactScope1.define(classA);
+    artifactScope1.add(classA);
 
     Scope classAScope = classA.getSpannedScope();
 
     ArtifactScope artifactScope2 = new ArtifactScope(Optional.of(globalScope), "q", new ArrayList<>());
     artifactScope2.addResolver(classResolver);
     EntitySymbol classQB = new EntitySymbol("q.B");
-    artifactScope2.define(classQB);
+    artifactScope2.add(classQB);
 
     // resolve by qualified name
     assertSame(classQB, classAScope.resolve("q.B", EntitySymbol.KIND).get());
@@ -65,7 +65,7 @@ public class ArtifactScopeTest {
     ArtifactScope artifactScope3 = new ArtifactScope(Optional.of(globalScope), "r", new ArrayList<>());
     artifactScope3.addResolver(classResolver);
     EntitySymbol classRB = new EntitySymbol("r.B");
-    artifactScope3.define(classRB);
+    artifactScope3.add(classRB);
 
     // Now, besides q.B the symbol r.B is defines in the global scope (resp. in the compilation scopes)
     // => Nothing changes
@@ -89,7 +89,7 @@ public class ArtifactScopeTest {
         new ImportStatement("q", true), new ImportStatement("r.B", false)));
     artifactScope1.addResolver(classResolver);
     EntitySymbol classA = new EntitySymbol("p.A");
-    artifactScope1.define(classA);
+    artifactScope1.add(classA);
 
     MutableScope classAScope = (MutableScope) classA.getSpannedScope();
     classAScope.addResolver(classResolver);
@@ -98,7 +98,7 @@ public class ArtifactScopeTest {
     artifactScope2.addResolver(classResolver);
     EntitySymbol classQB = new EntitySymbol("q.B");
     ((MutableScope)classQB.getSpannedScope()).addResolver(classResolver);
-    artifactScope2.define(classQB);
+    artifactScope2.add(classQB);
 
     // resolve by qualified name
     assertSame(classQB, classAScope.resolve("q.B", EntitySymbol.KIND).get());
@@ -110,7 +110,7 @@ public class ArtifactScopeTest {
     artifactScope3.addResolver(classResolver);
     EntitySymbol classRB = new EntitySymbol("r.B");
     ((MutableScope)classRB.getSpannedScope()).addResolver(classResolver);
-    artifactScope3.define(classRB);
+    artifactScope3.add(classRB);
 
     // Now, besides q.B the symbol r.B is defined in the global scope (resp. in the compilation
     // scopes)
@@ -141,14 +141,14 @@ public class ArtifactScopeTest {
     ArtifactScope scope1 = new ArtifactScope(Optional.of(globalScope), "p", new ArrayList<>());
     scope1.addResolver(classResolver);
     EntitySymbol classA = new EntitySymbol("p.A");
-    scope1.define(classA);
+    scope1.add(classA);
     Scope classAScope = classA.getSpannedScope();
 
 
     ArtifactScope scope2 = new ArtifactScope(Optional.of(globalScope), "p", new ArrayList<>());
     scope2.addResolver(classResolver);
     EntitySymbol classB = new EntitySymbol("p.B");
-    scope2.define(classB);
+    scope2.add(classB);
 
     // resolve B with unqualified name, because it is in the same package as A.
     assertSame(classB, classAScope.resolve("B", EntitySymbol.KIND).get());

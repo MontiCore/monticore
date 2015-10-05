@@ -362,7 +362,7 @@ public class MCTypeSymbol extends CommonScopeSpanningSymbol implements Comparabl
   }
 
   public void addAttribute(MCAttributeSymbol attr) {
-    spannedScope.define(attr);
+    spannedScope.add(attr);
   }
 
 

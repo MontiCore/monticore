@@ -54,14 +54,14 @@ public class ShadowingTest {
     JTypeReference stringReference = new CommonJTypeReference<>("String", JTypeSymbol.KIND, scope);
 
     PropertySymbol v1 = new PropertySymbol("var", intReference);
-    enclosingScope.define(v1);
+    enclosingScope.add(v1);
     PropertySymbol x = new PropertySymbol("x", intReference);
-    enclosingScope.define(x);
+    enclosingScope.add(x);
 
     PropertySymbol v2 = new PropertySymbol("var", stringReference);
-    scope.define(v2);
+    scope.add(v2);
     PropertySymbol y = new PropertySymbol("y", stringReference);
-    scope.define(y);
+    scope.add(y);
 
     ResolvingFilter<PropertySymbol> variableResolvingFilter = CommonResolvingFilter.create
         (PropertySymbol.class, PropertySymbol.KIND);
@@ -94,14 +94,14 @@ public class ShadowingTest {
     JTypeReference stringReference = new CommonJTypeReference<>("String", JTypeSymbol.KIND, scope);
 
     PropertySymbol v1 = new PropertySymbol("var", intReference);
-    enclosingScope.define(v1);
+    enclosingScope.add(v1);
     PropertySymbol x = new PropertySymbol("x", intReference);
-    enclosingScope.define(x);
+    enclosingScope.add(x);
 
     PropertySymbol v2 = new PropertySymbol("var", stringReference);
-    scope.define(v2);
+    scope.add(v2);
     PropertySymbol y = new PropertySymbol("y", stringReference);
-    scope.define(y);
+    scope.add(y);
 
     ResolvingFilter<PropertySymbol> variableResolvingFilter = CommonResolvingFilter.create
         (PropertySymbol.class, PropertySymbol.KIND);
@@ -126,10 +126,10 @@ public class ShadowingTest {
     JTypeReference intReference = new CommonJTypeReference<>("int", JTypeSymbol.KIND, scope);
 
     PropertySymbol gpVariable = new PropertySymbol("var", intReference);
-    grandEnclosingScope.define(gpVariable);
+    grandEnclosingScope.add(gpVariable);
 
     PropertySymbol variable = new PropertySymbol("var", intReference);
-    scope.define(variable);
+    scope.add(variable);
 
     ResolvingFilter<PropertySymbol> variableResolvingFilter = CommonResolvingFilter.create
         (PropertySymbol.class, PropertySymbol.KIND);

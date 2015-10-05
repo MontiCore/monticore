@@ -226,7 +226,7 @@ public class MCGrammarSymbol extends CommonScopeSpanningSymbol {
     }
 
     type.setGrammarSymbol(this);
-    this.spannedScope.define(type);
+    this.spannedScope.add(type);
     // Since we do not create the type in the usual symbol tabel creation mechanism, the resolving
     // filters have to be added manually
     ((MutableScope)type.getSpannedScope()).setResolvingFilters(getSpannedScope().getResolvingFilters());
@@ -329,7 +329,7 @@ public class MCGrammarSymbol extends CommonScopeSpanningSymbol {
           getName() + "'", MCGrammarSymbol.class.getSimpleName());
     }
 
-    this.spannedScope.define(ruleSymbol);
+    this.spannedScope.add(ruleSymbol);
   }
 
   public Collection<MCRuleSymbol> getRules() {

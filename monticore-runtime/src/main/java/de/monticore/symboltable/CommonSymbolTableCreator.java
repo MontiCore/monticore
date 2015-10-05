@@ -65,16 +65,6 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
     putOnStack((MutableScope) symbol.getSpannedScope());
   }
 
-  /**
-   * @deprecated use {@link #putSpannedScopeOnStack(ScopeSpanningSymbol)} instead
-   */
-  @Deprecated
-  @Override
-  public final void putScopeOnStackAndSetEnclosingIfExists(final ScopeSpanningSymbol symbol) {
-    putSpannedScopeOnStack(symbol);
-  }
-
-
   @Override
   public void putOnStack(MutableScope scope) {
     Log.errorIfNull(scope);
@@ -95,15 +85,6 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
     }
 
     scopeStack.addLast(scope);
-  }
-
-  /**
-   * @deprecated use {@link #putOnStack(MutableScope)} instead
-   */
-  @Deprecated
-  @Override
-  public final void putOnStackAndSetEnclosingIfExists(final MutableScope scope) {
-    putOnStack(scope);
   }
 
   /**
@@ -135,19 +116,23 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
   }
 
   /**
-   * @deprecated use {@link #putInScope(Symbol)} instead
+   * @deprecated use {@link #addToScope(Symbol)} instead
    */
   @Override
   @Deprecated
-  public final void defineInScope(final Symbol symbol) {
-    putInScope(symbol);
+  public void putInScope(final Symbol symbol) {
+    addToScope(symbol);
   }
 
   @Override
-  public void putInScope(final Symbol symbol) {
+  public void addToScope(Symbol symbol) {
     if (!(symbol instanceof SymbolReference)){
       if (currentScope().isPresent()) {
-        currentScope().get().define(symbol);
+        currentScope().get().add(symbol);
+      }
+      else {
+        // TODO PN add error id
+        Log.warn("Symbol cannot be added to current scope, since no scope exists.");
       }
     }
   }
@@ -163,27 +148,16 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
   }
 
   /**
-   * @deprecated use {@link #putInScopeAndLinkWithAst(Symbol, ASTNode)} instead
+   * @deprecated use {@link #addToScopeAndLinkWithNode(Symbol, ASTNode)} instead
    */
   @Override
-  @Deprecated
-  public void defineInScopeAndSetLinkBetweenSymbolAndAst(Symbol symbol, ASTNode astNode) {
-    putInScope(symbol);
-    setLinkBetweenSymbolAndNode(symbol, astNode);
-  }
-
-  /**
-   * @deprecated use {@link #putInScopeAndLinkWithAst(Symbol, ASTNode)} instead
-   */
-  @Override
-  @Deprecated
-  public void defineInScopeAndLinkWithAst(Symbol symbol, ASTNode astNode) {
-    putInScopeAndLinkWithAst(symbol, astNode);
+  public void defineInScopeAndLinkWithNode(Symbol symbol, ASTNode astNode) {
+    addToScopeAndLinkWithNode(symbol, astNode);
   }
 
   @Override
-  public void putInScopeAndLinkWithAst(Symbol symbol, ASTNode astNode) {
-    putInScope(symbol);
+  public void addToScopeAndLinkWithNode(Symbol symbol, ASTNode astNode) {
+    addToScope(symbol);
     setLinkBetweenSymbolAndNode(symbol, astNode);
 
     if (symbol instanceof ScopeSpanningSymbol) {

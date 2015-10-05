@@ -130,7 +130,7 @@ public abstract class MCRuleSymbol extends CommonScopeSpanningSymbol {
       r.setList(r.isList() || ruleComponent.isList());
     }
     else {
-      spannedScope.define(ruleComponent);
+      spannedScope.add(ruleComponent);
     }
   }
   

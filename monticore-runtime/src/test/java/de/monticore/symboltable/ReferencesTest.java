@@ -70,8 +70,8 @@ public class ReferencesTest {
 
     final MutableScope globalScope = new GlobalScope(new ModelPath(), new ArrayList<>(), resolverConfiguration);
 
-    globalScope.define(c);
-    globalScope.define(d);
+    globalScope.add(c);
+    globalScope.add(d);
 
     ((MutableScope)d.getSpannedScope()).setResolvingFilters(globalScope.getResolvingFilters());
 

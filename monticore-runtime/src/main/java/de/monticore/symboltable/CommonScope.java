@@ -122,7 +122,15 @@ public class CommonScope implements MutableScope {
     }
   }
 
+  /**
+   * @deprecated use {@link #add(Symbol)} instead
+   */
+  @Deprecated
   public void define(Symbol symbol) {
+    add(symbol);
+  }
+
+  public void add(Symbol symbol) {
     Log.errorIfNull(symbol);
 
     // TODO PN is this check really needed? Some languages allow multiple definitions of symbol (names)
@@ -329,12 +337,6 @@ public class CommonScope implements MutableScope {
   @Override
   public int getSymbolsSize() {
     return symbols.size();
-  }
-
-  @Override
-  @Deprecated
-  public boolean definesNameSpace() {
-    return isShadowingScope();
   }
 
   @Override

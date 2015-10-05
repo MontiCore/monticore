@@ -25,7 +25,6 @@ import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolverConfiguration;
 import mc.embedding.external.host._ast.ASTHost;
 import mc.embedding.external.host._visitor.HostVisitor;
-import mc.embedding.external.host._symboltable.HostSymbolTableCreatorTOP;
 
 public class HostSymbolTableCreator extends HostSymbolTableCreatorTOP {
 
@@ -44,7 +43,7 @@ public class HostSymbolTableCreator extends HostSymbolTableCreatorTOP {
   @Override public void visit(ASTHost node) {
     final HostSymbol hostSymbol = new HostSymbol(node.getName());
 
-    putInScopeAndLinkWithAst(hostSymbol, node);
+    addToScopeAndLinkWithNode(hostSymbol, node);
   }
 
   @Override public void endVisit(ASTHost node) {

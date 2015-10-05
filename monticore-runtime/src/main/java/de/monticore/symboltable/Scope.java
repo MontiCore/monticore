@@ -151,15 +151,6 @@ public interface Scope {
   // TODO PN  add method hasSymbol(String, SymbolKind)
 
   /**
-   * @return true, if this scope defines a new name space. For example, a Java method defines a
-   * new name space, but an if-statement does not.
-   *
-   * @deprecated use {@link #isShadowingScope()} instead.
-   */
-  @Deprecated
-  boolean definesNameSpace();
-
-  /**
     * @return true, if this scope shadows symbols of the enclosing scope.
    */
   boolean isShadowingScope();

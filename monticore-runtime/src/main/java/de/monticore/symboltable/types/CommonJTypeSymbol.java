@@ -85,7 +85,7 @@ public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JAttri
   }
 
   public void addFormalTypeParameter(T formalTypeParameter) {
-    spannedScope.define(formalTypeParameter);
+    spannedScope.add(formalTypeParameter);
   }
 
   @Override
@@ -123,7 +123,7 @@ public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JAttri
   }
 
   public void addField(S attribute) {
-    spannedScope.define(Log.errorIfNull(attribute));
+    spannedScope.add(Log.errorIfNull(attribute));
   }
 
   @Override
@@ -142,7 +142,7 @@ public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JAttri
     Log.errorIfNull(method);
     checkArgument(!method.isConstructor());
 
-    spannedScope.define(method);
+    spannedScope.add(method);
   }
 
   @Override
@@ -169,7 +169,7 @@ public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JAttri
     Log.errorIfNull(constructor);
     checkArgument(constructor.isConstructor());
 
-    spannedScope.define(constructor);
+    spannedScope.add(constructor);
   }
 
   @Override
