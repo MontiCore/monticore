@@ -65,7 +65,7 @@ public interface SymbolTableCreator {
    * @deprecated use {@link #addToScopeAndLinkWithNode(Symbol, ASTNode)} instead
    */
   @Deprecated
-  void defineInScopeAndLinkWithNode(Symbol symbol, ASTNode astNode);
+  void putInScopeAndLinkWithAst(Symbol symbol, ASTNode astNode);
 
   void addToScopeAndLinkWithNode(Symbol symbol, ASTNode astNode);
 

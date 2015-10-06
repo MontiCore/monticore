@@ -151,7 +151,8 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
    * @deprecated use {@link #addToScopeAndLinkWithNode(Symbol, ASTNode)} instead
    */
   @Override
-  public void defineInScopeAndLinkWithNode(Symbol symbol, ASTNode astNode) {
+  @Deprecated
+  public void putInScopeAndLinkWithAst(Symbol symbol, ASTNode astNode) {
     addToScopeAndLinkWithNode(symbol, astNode);
   }
 
