@@ -50,20 +50,22 @@ public class MCGrammarParser {
       String simplePathName = grammarFile.toString();
       String packageName = Names.getPackageFromPath(Names.getPathFromFilename(simplePathName));
 
-      String simpleFileName = Files.getNameWithoutExtension(grammarFile.toString());
-      String modelName = ast.get().getName();
-      if (!modelName.equals(simpleFileName)) {
-        Log.error("0xA4003 The grammar name " + modelName + " must not differ from the file name "
-            + simpleFileName + " of "
-            + "the grammar (without its file extension).");
-      }
-
-      if(!packageName.endsWith(Names.getQualifiedName(ast.get().getPackage()))){
-        Log.error("0xA4004 The package declaration " + Names.getQualifiedName(ast.get().getPackage()) + " of the grammar must not differ from the "
-            + "package of the grammar file.");
-      }
-
       if (!parser.hasErrors() && ast.isPresent()) {
+        // Checks
+        String simpleFileName = Files.getNameWithoutExtension(grammarFile.toString());
+        String modelName = ast.get().getName();
+        if (!modelName.equals(simpleFileName)) {
+          Log.error("0xA4003 The grammar name " + modelName + " must not differ from the file name "
+              + simpleFileName + " of "
+              + "the grammar (without its file extension).");
+        }
+        
+        if(!packageName.endsWith(Names.getQualifiedName(ast.get().getPackage()))){
+          Log.error("0xA4004 The package declaration " + Names.getQualifiedName(ast.get().getPackage()) + " of the grammar must not differ from the "
+              + "package of the grammar file.");
+        }
+        
+        // Transform
         GrammarTransformer.transform(ast.get());
       }
 
