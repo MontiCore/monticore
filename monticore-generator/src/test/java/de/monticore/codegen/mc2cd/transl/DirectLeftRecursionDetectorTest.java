@@ -29,7 +29,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import parser.MCGrammarParser;
-import de.monticore.codegen.parser.antlr.DirectLeftRecursionDetector;
+import de.monticore.grammar.DirectLeftRecursionDetector;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTClassProdList;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;

@@ -65,6 +65,7 @@ public class GrammarCoCos {
     checker.addCoCo(new ASTRuleAndNTUseSameAttrNameForDiffNTs());
     checker.addCoCo(new OverridingLexNTs());
     checker.addCoCo(new GrammarInheritanceCycle());
+    checker.addCoCo(new LeftRecursiveRulesInBlock());
 
     return checker;
   }

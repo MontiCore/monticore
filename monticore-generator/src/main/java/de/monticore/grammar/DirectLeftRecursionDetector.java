@@ -17,7 +17,7 @@
  * ******************************************************************************
  */
 
-package de.monticore.codegen.parser.antlr;
+package de.monticore.grammar;
 
 import java.util.List;
 
@@ -74,4 +74,41 @@ public class DirectLeftRecursionDetector {
     }
     return false;
   }
-}
+
+  public boolean isAlternativeLeftRecursive(final ASTAlt productionAlternative, final String classProductionName) {
+    final List<ASTNonTerminal> nonterminals = ASTNodes.getSuccessors(productionAlternative, ASTNonTerminal.class);
+    final List<ASTTerminal> terminals = ASTNodes.getSuccessors(productionAlternative, ASTTerminal.class);
+    final List<ASTConstant> constants = ASTNodes.getSuccessors(productionAlternative, ASTConstant.class);
+    // rules of the form Expr -> "a"
+    if (nonterminals.isEmpty()) {
+      return false;
+    }
+
+    if (!terminals.isEmpty() && !nonterminals.isEmpty()) {
+      final ASTTerminal leftmostTerminal = terminals.get(0);
+      final ASTNonTerminal leftmostNonterminal = nonterminals.get(0);
+      // checks the case: Expr -> "a" Expr, e.g. the nonterminal occurs before the terminal
+      if (leftmostNonterminal.get_SourcePositionStart().compareTo(leftmostTerminal.get_SourcePositionStart()) > 0) {
+        return false;
+      }
+    }
+
+    if (!constants.isEmpty() && !nonterminals.isEmpty()) {
+      final ASTConstant leftmostConstant = constants.get(0);
+      final ASTNonTerminal leftmostNonterminal = nonterminals.get(0);
+      // checks the case: Expr -> ["a"] Expr, e.g. the nonterminal occurs before the terminal
+      if (leftmostNonterminal.get_SourcePositionStart().compareTo(leftmostConstant.get_SourcePositionStart()) > 0) {
+        return false;
+      }
+    }
+
+    // e.g. the alternative begins with a nonterminal.
+    if (!nonterminals.isEmpty()) {
+      final ASTNonTerminal leftmostNonterminal = nonterminals.get(0);
+      if (leftmostNonterminal.getName().equals(classProductionName)) {
+        return true;
+      }
+
+    }
+    return false;
+  }}
