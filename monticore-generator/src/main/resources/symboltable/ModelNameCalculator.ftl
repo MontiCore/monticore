@@ -60,7 +60,7 @@ public class ${className} extends de.monticore.CommonModelNameCalculator {
 
   <#list ruleNames as ruleName>
   protected Optional<String> calculateModelNameFor${ruleName?cap_first}(String name) {
-    return super.calculateModelName(name, Symbol.KIND);
+    return super.calculateModelName(name, ${ruleName?cap_first}Symbol.KIND);
   }
   </#list>
 

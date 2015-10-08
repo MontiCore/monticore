@@ -40,7 +40,7 @@ ${tc.defineHookPoint("JavaCopyright")}
 <#-- set package -->
 package ${genHelper.getTargetPackage()};
 
-public class ${ruleName}Kind extends de.monticore.symboltable.SymbolKind {
+public class ${ruleName}Kind implements de.monticore.symboltable.SymbolKind {
 
   public static final ${ruleName}Kind INSTANCE = new ${ruleName}Kind();
 
