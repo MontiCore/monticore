@@ -310,7 +310,7 @@ public class IncrementalChecker {
           Files.deleteIfExists(toDelete);
         }
         catch (IOException e) {
-          Log.warn("0xA4064 Failed to clean up output.");
+          Log.warn("0xA4072 Failed to clean up output.");
           Log.debug("Error while deleting " + toDelete.toString(), e,
               IncrementalChecker.class.getName());
         }
@@ -567,7 +567,7 @@ public class IncrementalChecker {
     
     Iterator<String> it = lines.iterator();
     if (!it.hasNext()) {
-      Log.warn("0xA4065 Empty input output report " + report.toString());
+      Log.warn("0xA4073 Empty input output report " + report.toString());
       return;
     }
     

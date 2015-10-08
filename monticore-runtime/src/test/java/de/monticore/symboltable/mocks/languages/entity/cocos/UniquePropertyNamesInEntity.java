@@ -28,6 +28,8 @@ import de.se_rwth.commons.logging.Log;
 
 public class UniquePropertyNamesInEntity implements EntityASTEntityCoCo {
   
+  public static final String ERROR_CODE = "0xA2020";
+  
   /**
    * @see de.monticore.symboltable.mocks.languages.entity.cocos.EntityASTEntityCoCo#check(de.monticore.symboltable.mocks.languages.entity.asts.ASTEntity)
    */
@@ -52,7 +54,7 @@ public class UniquePropertyNamesInEntity implements EntityASTEntityCoCo {
       for (PropertySymbol duplicate : duplicates.values()) {
         final String warnMsg = "Property " + duplicate.getName() +
             " is already defined";
-        Log.warn("0xA2020 " + warnMsg, duplicate.getSourcePosition());
+        Log.warn(ERROR_CODE + warnMsg, duplicate.getSourcePosition());
       }
     }
   }

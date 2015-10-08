@@ -85,7 +85,7 @@ public class ScriptReportRenderer extends AbstractMavenReportRenderer {
       }
       catch (IOException e) {
         log.error(
-            "0xA4061 Could not create sink for ".concat(new File(outputDirectory, inputFile
+            "0xA4070 Could not create sink for ".concat(new File(outputDirectory, inputFile
                 .getName().concat(".html")).getPath()), e);
       }
     }

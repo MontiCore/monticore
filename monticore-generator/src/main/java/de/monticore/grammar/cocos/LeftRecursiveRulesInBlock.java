@@ -35,7 +35,7 @@ import de.se_rwth.commons.logging.Log;
  */
 public class LeftRecursiveRulesInBlock implements GrammarASTClassProdCoCo {
   
-  public static final String ERROR_CODE = "0xA4041";
+  public static final String ERROR_CODE = "0xA4056";
   
   public static final String ERROR_MSG_FORMAT = " The left recursive rule %s is not allowed in blocks, because it doesn't work in Antlr. ";
   

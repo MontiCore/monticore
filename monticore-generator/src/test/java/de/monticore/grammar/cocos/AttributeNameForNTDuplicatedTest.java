@@ -37,7 +37,7 @@ import de.se_rwth.commons.logging.Log;
  */
 public class AttributeNameForNTDuplicatedTest extends CocoTest{
 
-  private final String CODE = "0xA4006";
+  private final String CODE = "xA4006";
   private final String MESSAGE = " The production C must not use the attribute name a for different nonterminals.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "cocos.invalid.A4006.A4006";
@@ -51,14 +51,14 @@ public class AttributeNameForNTDuplicatedTest extends CocoTest{
   public void testDuplicatedAttribute(){
     Log.getFindings().clear();
     try {
-      testInvalidGrammar(grammar, "0xA4006", MESSAGE, checker);
+      testInvalidGrammar(grammar, "0" + CODE, MESSAGE, checker);
       fail("NullPointerException expected");
     } catch (NullPointerException e) {
 
       assertFalse(Log.getFindings().isEmpty());
       assertEquals(1, Log.getFindings().size());
       for (Finding f : Log.getFindings()) {
-        assertEquals(CODE + MESSAGE, f.getMsg());
+        assertEquals("0" + CODE + MESSAGE, f.getMsg());
       }
     }
 

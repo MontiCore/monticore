@@ -74,8 +74,8 @@ public class CocoCheckTest {
     
     Collection<Finding> expectedErrors = Arrays
         .asList(
-            Finding.warning("0xA2020 Property a is already defined"),
-            Finding.warning("0xA2020 Property b is already defined")
+            Finding.warning(UniquePropertyNamesInEntity.ERROR_CODE + " Property a is already defined"),
+            Finding.warning(UniquePropertyNamesInEntity.ERROR_CODE + " Property b is already defined")
         );
     
     Assert.assertErrors(expectedErrors, Log.getFindings());
