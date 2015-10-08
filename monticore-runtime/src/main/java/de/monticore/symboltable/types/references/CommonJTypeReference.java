@@ -19,8 +19,8 @@
 
 package de.monticore.symboltable.types.references;
 
-import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.SymbolKind;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.types.JTypeSymbol;
 
 /**

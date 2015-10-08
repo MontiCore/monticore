@@ -26,8 +26,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.google.common.collect.Lists;
-import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
+import de.monticore.symboltable.Symbol;
 
 /**
  * TODO: Write me!
@@ -40,8 +40,7 @@ public class CommonResolvingFilter<S extends Symbol> implements ResolvingFilter<
   private final SymbolKind targetKind;
   private final Class<S> symbolClass;
   
-  public static <S extends Symbol> ResolvingFilter<S> create(Class<S> symbolClass, SymbolKind
-      symbolKind) {
+  public static <S extends Symbol> ResolvingFilter<S> create(Class<S> symbolClass, SymbolKind symbolKind) {
     // TODO PN check einbauen dass kein Resolver existiert, dessen S und T nicht mit den aktuellen Parametern kompatibel sind
     return new CommonResolvingFilter<>(symbolClass, symbolKind);
   }

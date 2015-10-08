@@ -23,7 +23,9 @@
 
 package mc.embedding.external.host._symboltable;
 
-public class ContentKind extends de.monticore.symboltable.SymbolKind {
+import de.monticore.symboltable.SymbolKind;
+
+public class ContentKind implements SymbolKind {
 
   public static final ContentKind INSTANCE = new ContentKind();
 

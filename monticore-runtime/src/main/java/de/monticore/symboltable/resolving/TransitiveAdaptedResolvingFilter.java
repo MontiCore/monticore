@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
+import de.monticore.symboltable.Symbol;
 
 /**
  * TODO: Write me!

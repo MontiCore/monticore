@@ -29,7 +29,7 @@ import de.monticore.symboltable.SymbolKind;
  *          $Date$
  *
  */
-public class StateChartKind extends SymbolKind {
+public class StateChartKind implements SymbolKind {
 
   public static final StateChartKind KIND = new StateChartKind();
   

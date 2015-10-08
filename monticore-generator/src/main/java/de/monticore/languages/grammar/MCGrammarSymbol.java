@@ -35,7 +35,6 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.LexNamer;
@@ -48,10 +47,10 @@ import de.monticore.grammar.grammar._ast.ASTRuleComponent;
 import de.monticore.languages.grammar.attributeinfos.MCAttributeInfo;
 import de.monticore.languages.grammar.symbolreferences.MCExternalTypeSymbolReference;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
+import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.references.SymbolReference;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.SourcePosition;
@@ -708,7 +707,7 @@ public class MCGrammarSymbol extends CommonScopeSpanningSymbol {
     return result;
   }
 
-  public static final class GrammarKind extends SymbolKind {
+  public static final class GrammarKind implements SymbolKind {
     private GrammarKind() {}
   }
 }

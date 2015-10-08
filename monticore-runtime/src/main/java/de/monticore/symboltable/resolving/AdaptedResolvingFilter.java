@@ -19,8 +19,8 @@
 
 package de.monticore.symboltable.resolving;
 
-import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
+import de.monticore.symboltable.Symbol;
 
 /**
  * @author Pedram Mir Seyed Nazari

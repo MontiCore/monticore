@@ -27,7 +27,6 @@ package mc.embedding.external.host._symboltable;
 
 import java.util.Optional;
 
-import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
 
 public class HostModelNameCalculator extends de.monticore.CommonModelNameCalculator {
@@ -45,10 +44,10 @@ public class HostModelNameCalculator extends de.monticore.CommonModelNameCalcula
   }
 
   protected Optional<String> calculateModelNameForContent(String name) {
-    return super.calculateModelName(name, Symbol.KIND);
+    return super.calculateModelName(name, ContentSymbol.KIND);
   }
   protected Optional<String> calculateModelNameForHost(String name) {
-    return super.calculateModelName(name, Symbol.KIND);
+    return super.calculateModelName(name, ContentSymbol.KIND);
   }
 
 

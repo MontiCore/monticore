@@ -66,8 +66,8 @@ public class SymbolTableTest {
     topScope.add(new JTypeSymbolMock("int"));
     topScope.add(new JTypeSymbolMock("String"));
 
-    intSymbol = topScope.<JTypeSymbolMock>resolve("int", Symbol.KIND).get();
-    stringSymbol = topScope.<JTypeSymbolMock>resolve("String", Symbol.KIND).get();
+    intSymbol = topScope.<JTypeSymbolMock>resolve("int", JTypeSymbolMock.KIND).get();
+    stringSymbol = topScope.<JTypeSymbolMock>resolve("String", JTypeSymbolMock.KIND).get();
 
     intReference = new CommonJTypeReference<>("int", JTypeSymbol.KIND, topScope);
     stringReference = new CommonJTypeReference<>("String", JTypeSymbol.KIND, topScope);
@@ -115,13 +115,13 @@ public class SymbolTableTest {
     topScope.add(globalVariable1);
     topScope.add(globalVariable2);
     
-    assertSame(globalVariable1, topScope.resolve("var1", Symbol.KIND).get());
+    assertSame(globalVariable1, topScope.resolve("var1", PropertySymbol.KIND).get());
     // returns only the local variable  
     assertSame(variable, method.getVariable("var1").get());
     // returns nothing, because var2 is not defined locally
     assertFalse(method.getVariable("var2").isPresent());
     // normal resolving finds the global variable
-    assertSame(globalVariable2, method.getSpannedScope().resolve("var2", Symbol.KIND).get());
+    assertSame(globalVariable2, method.getSpannedScope().resolve("var2", PropertySymbol.KIND).get());
   }
   
   @Test
@@ -162,7 +162,7 @@ public class SymbolTableTest {
     assertSame(globalVariable1, method.getSpannedScope().resolve(varPredicate).get());
 
     
-    assertSame(variable, method.getSpannedScope().resolve("var1", Symbol.KIND).get());
+    assertSame(variable, method.getSpannedScope().resolve("var1", PropertySymbol.KIND).get());
     
   }
   

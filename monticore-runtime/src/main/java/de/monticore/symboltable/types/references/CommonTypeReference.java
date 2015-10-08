@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
-import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.SymbolKind;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.references.CommonSymbolReference;
 import de.monticore.symboltable.types.TypeSymbol;
 

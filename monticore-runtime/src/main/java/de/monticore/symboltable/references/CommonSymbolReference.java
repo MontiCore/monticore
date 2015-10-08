@@ -26,9 +26,9 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import java.util.Optional;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.SymbolKind;
 import de.se_rwth.commons.logging.Log;
 
 /**

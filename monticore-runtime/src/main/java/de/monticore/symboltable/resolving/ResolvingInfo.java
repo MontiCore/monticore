@@ -26,10 +26,9 @@ import java.util.Collection;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
-
+import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.SymbolKind;
 import de.se_rwth.commons.logging.Log;
 
 /**

@@ -34,9 +34,6 @@
 // TODO PN create an technical interface analogous to Scope and ScopeManipulationApi?
 public interface Symbol {
 
-  SymbolKind KIND = new SymbolKind();
-
-
   /**
    * @return the symbol name
    */

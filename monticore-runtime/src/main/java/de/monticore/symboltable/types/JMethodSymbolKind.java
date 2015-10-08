@@ -25,7 +25,7 @@ import de.monticore.symboltable.SymbolKind;
  * @author Pedram Mir Seyed Nazari
  *
  */
-public class JMethodSymbolKind extends SymbolKind {
+public class JMethodSymbolKind implements SymbolKind {
 
   protected JMethodSymbolKind() {
   }

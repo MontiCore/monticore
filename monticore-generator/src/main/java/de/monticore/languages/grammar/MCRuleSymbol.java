@@ -28,12 +28,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.grammar.grammar._ast.ASTAlt;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
 import de.monticore.symboltable.SymbolKind;
 import de.se_rwth.commons.StringTransformations;
-import de.monticore.ast.ASTNode;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -259,7 +259,7 @@ public abstract class MCRuleSymbol extends CommonScopeSpanningSymbol {
     }
   }
   
-  public static final class RuleKind extends SymbolKind {
+  public static final class RuleKind implements SymbolKind {
     private RuleKind() {
     }
   }

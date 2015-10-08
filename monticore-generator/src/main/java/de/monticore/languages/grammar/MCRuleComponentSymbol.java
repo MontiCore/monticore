@@ -174,7 +174,7 @@ public class MCRuleComponentSymbol extends CommonSymbol {
     TERMINAL, NONTERMINAL, CONSTRUCTOR, CONSTANTGROUP, LEXNONTERMINAL, CONSTANT
   }
   
-  public static final class RuleComponentKind extends SymbolKind {
+  public static final class RuleComponentKind implements SymbolKind {
     
     private RuleComponentKind() {
     }

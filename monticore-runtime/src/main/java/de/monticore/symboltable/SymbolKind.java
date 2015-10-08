@@ -30,20 +30,10 @@ package de.monticore.symboltable;
  * @author Pedram Mir Seyed Nazari
  *
  */
-// TODO PN extract interface
-public class SymbolKind {
+public interface SymbolKind {
 
-  // precomputation for performance reasons
-  private final String name = getClass().getSimpleName();
-  
-  protected SymbolKind() {
-  }
-
-  /**
-   * @return the name of the symbol kind
-   */
-  public String getName() {
-    return name;
+  default String getName() {
+    return getClass().getSimpleName();
   }
 
   /**
@@ -53,21 +43,11 @@ public class SymbolKind {
    * @param kind
    * @return true, if this symbol kind is a kind of the given symbol kind.
    */
-  public boolean isKindOf(SymbolKind kind) {
+  default boolean isKindOf(SymbolKind kind) {
     return (kind != null) && (kind.getClass().isAssignableFrom(this.getClass()));
   }
 
-  // TODO PN remove this method and use equals instead?
-  public boolean isSame(SymbolKind kind) {
+  default boolean isSame(SymbolKind kind) {
     return (kind != null) && isKindOf(kind) && kind.isKindOf(this);
-
   }
-
-  @Override
-  public String toString() {
-    return "Symbol Kind: '" + getName() + "'";
-  }
-  
-  // TODO PN equals+hashCode überschreiben: getClass() == o.getClass(), bzw. this.isSame(o)
-
 }

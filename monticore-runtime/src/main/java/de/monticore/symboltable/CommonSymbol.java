@@ -45,7 +45,6 @@ public abstract class CommonSymbol implements Symbol {
   
   private ASTNode node;
 
-  // TODO PN delete and make getKind() method abstract?
   private SymbolKind kind;
 
   private AccessModifier accessModifier = BasicAccessModifier.ABSENT;
@@ -56,7 +55,7 @@ public abstract class CommonSymbol implements Symbol {
     this.kind = Log.errorIfNull(kind);
   }
 
-  // TODO: AHo this is a quick fix for DEx/cd4a java.lang types
+  // TODO PN pull-up?
   public void setPackageName(String packageName) {
     this.packageName = Log.errorIfNull(packageName);
   }
@@ -84,6 +83,11 @@ public abstract class CommonSymbol implements Symbol {
     return nullToEmpty(packageName);
   }
 
+  // TODO PN pull-up?
+  public void setFullName(String fullName) {
+    this.fullName = Log.errorIfNull(fullName);
+  }
+
   @Override
   public String getFullName() {
     if (fullName == null) {
@@ -98,6 +102,8 @@ public abstract class CommonSymbol implements Symbol {
       nameParts.addFirst(name);
 
       Scope currentScope = enclosingScope;
+
+      // TODO PN FQN = parent.FQN + "." simpleName
 
       while (currentScope.getEnclosingScope().isPresent()) {
         if (!(currentScope instanceof GlobalScope)) {
@@ -114,6 +120,8 @@ public abstract class CommonSymbol implements Symbol {
               if (currentScope.getName().isPresent()) {
                 nameParts.addFirst(currentScope.getName().get());
               }
+              // TODO PN else stop? If one of the enclosing scopes is unnamed,
+              //         the full name is same as the simple name.
             }
           }
         }

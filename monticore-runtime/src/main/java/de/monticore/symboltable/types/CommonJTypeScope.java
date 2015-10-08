@@ -26,10 +26,10 @@ import static de.monticore.symboltable.modifiers.BasicAccessModifier.PROTECTED;
 import java.util.Optional;
 
 import de.monticore.symboltable.CommonScope;
+import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ScopeSpanningSymbol;
 import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.SymbolPredicate;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.types.references.JTypeReference;

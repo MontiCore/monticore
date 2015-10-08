@@ -24,7 +24,7 @@ import de.monticore.symboltable.SymbolKind;
 /**
  * @author Pedram Mir Seyed Nazari
  */
-public class JAttributeSymbolKind extends SymbolKind {
+public class JAttributeSymbolKind implements SymbolKind {
 
   protected JAttributeSymbolKind(){}
 

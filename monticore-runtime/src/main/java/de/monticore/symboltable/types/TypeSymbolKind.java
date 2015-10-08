@@ -25,7 +25,7 @@ import de.monticore.symboltable.SymbolKind;
  * @author Pedram Mir Seyed Nazari
  *
  */
-public class TypeSymbolKind extends SymbolKind {
+public class TypeSymbolKind implements SymbolKind {
   protected TypeSymbolKind() {
   }
 }

@@ -28,8 +28,8 @@ import java.util.LinkedHashSet;
 import com.google.common.collect.ImmutableList;
 import de.monticore.ast.ASTNode;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
-import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
+import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 
 /**
@@ -54,7 +54,7 @@ public abstract class CommonModelingLanguage implements ModelingLanguage {
    *
    * @param name the name of the modeling grammarlanguage, e.g., "MontiCore Grammar Language"
    * @param fileEnding the file ending, e.g., ".cd" or "cd"
-   * @param topLevelSymbolKind the {@link de.monticore.symboltable.SymbolKind} of the top level
+   * @param topLevelSymbolKind the {@link SymbolKind} of the top level
    * {@link de.monticore.symboltable.Symbol}
    *
    * @deprecated use {@link #CommonModelingLanguage(String, String)} instead
