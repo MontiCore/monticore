@@ -18,7 +18,7 @@ public class MyFieldSymbol extends CommonSymbol {
     return type;
   }
   
-  static final class MyFieldKind extends SymbolKind {
+  static final class MyFieldKind implements SymbolKind {
     MyFieldKind() {
     }
   }

@@ -22,7 +22,7 @@ public class MyModelSymbol extends CommonScopeSpanningSymbol {
     return getSpannedScope().resolveLocally(MyElementSymbol.KIND);
   }
   
-  static final class MyModelKind extends SymbolKind {
+  static final class MyModelKind implements SymbolKind {
     MyModelKind() {
     }
   }
