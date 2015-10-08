@@ -52,7 +52,7 @@ public class UniquePropertyNamesInEntity implements EntityASTEntityCoCo {
     
     if (!duplicates.isEmpty()) {
       for (PropertySymbol duplicate : duplicates.values()) {
-        final String warnMsg = "Property " + duplicate.getName() +
+        final String warnMsg = " Property " + duplicate.getName() +
             " is already defined";
         Log.warn(ERROR_CODE + warnMsg, duplicate.getSourcePosition());
       }
