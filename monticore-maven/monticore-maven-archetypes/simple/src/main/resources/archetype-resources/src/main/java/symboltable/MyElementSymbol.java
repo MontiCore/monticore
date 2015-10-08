@@ -11,8 +11,6 @@ public class MyElementSymbol extends CommonSymbol {
     super(name, KIND);
   }
   
-  static final class MyElementKind extends SymbolKind {
-    MyElementKind() {
-    }
+  static final class MyElementKind implements SymbolKind {
   }
 }
