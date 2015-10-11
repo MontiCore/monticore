@@ -34,7 +34,6 @@ import de.monticore.symboltable.CommonScopeSpanningSymbol;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.symboltable.types.references.JTypeReference;
-import de.monticore.symboltable.types.references.TypeReference;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -61,6 +60,8 @@ public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JAttri
   private boolean isInterface = false;
   private boolean isEnum = false;
   private boolean isFormalTypeParameter = false;
+  // e.g., inner interface or inner class
+  private boolean isInnerType = false;
 
   protected CommonJTypeSymbol(String name, JTypeSymbolKind typeKind,
       JAttributeSymbolKind attributeKind, JMethodSymbolKind methodKind) {
@@ -181,6 +182,26 @@ public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JAttri
     return constructors;
   }
 
+  public void addInnerType(T innerType) {
+    Log.errorIfNull(innerType);
+
+    spannedScope.add(innerType);
+  }
+
+  @Override
+  public List<T> getInnerTypes() {
+    return sortSymbolsByPosition(spannedScope.resolveLocally(getKind()));
+  }
+
+  @Override
+  public Optional<T> getInnerType(String innerTypeName) {
+    checkArgument(!isNullOrEmpty(innerTypeName));
+
+    return spannedScope.resolveLocally(innerTypeName, getKind());
+  }
+
+
+
   public void setAbstract(boolean isAbstract) {
     this.isAbstract = isAbstract;
   }
@@ -249,6 +270,14 @@ public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JAttri
     return getAccessModifier() == BasicAccessModifier.PUBLIC;
   }
 
+  public void setInnerType(boolean innerType) {
+    isInnerType = innerType;
+  }
+
+  @Override
+  public boolean isInnerType() {
+    return isInnerType;
+  }
 
   /**
    * @param formalTypeParameter true, if this type itself is a formal type parameter

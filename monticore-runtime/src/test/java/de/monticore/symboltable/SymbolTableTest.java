@@ -19,6 +19,14 @@
 
 package de.monticore.symboltable;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import de.monticore.symboltable.mocks.languages.JTypeSymbolMock;
 import de.monticore.symboltable.mocks.languages.entity.ActionSymbol;
 import de.monticore.symboltable.mocks.languages.entity.ActionSymbolKind;
@@ -34,11 +42,6 @@ import de.monticore.symboltable.types.references.JTypeReference;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
-import static org.junit.Assert.*;
-
 /**
  *
  * @author Pedram Mir Seyed Nazari
@@ -46,8 +49,6 @@ import static org.junit.Assert.*;
 public class SymbolTableTest {
 
   private MutableScope topScope;
-  private JTypeSymbolMock intSymbol;
-  private JTypeSymbolMock stringSymbol;
 
   private JTypeReference<JTypeSymbol> intReference;
   private JTypeReference<JTypeSymbol> stringReference;
@@ -66,8 +67,8 @@ public class SymbolTableTest {
     topScope.add(new JTypeSymbolMock("int"));
     topScope.add(new JTypeSymbolMock("String"));
 
-    intSymbol = topScope.<JTypeSymbolMock>resolve("int", JTypeSymbolMock.KIND).get();
-    stringSymbol = topScope.<JTypeSymbolMock>resolve("String", JTypeSymbolMock.KIND).get();
+    JTypeSymbolMock intSymbol = topScope.<JTypeSymbolMock>resolve("int", JTypeSymbolMock.KIND).get();
+    JTypeSymbolMock stringSymbol = topScope.<JTypeSymbolMock>resolve("String", JTypeSymbolMock.KIND).get();
 
     intReference = new CommonJTypeReference<>("int", JTypeSymbol.KIND, topScope);
     stringReference = new CommonJTypeReference<>("String", JTypeSymbol.KIND, topScope);

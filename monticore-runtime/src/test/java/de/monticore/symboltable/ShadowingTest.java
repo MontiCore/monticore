@@ -26,7 +26,6 @@ import static org.junit.Assert.fail;
 
 import java.util.Optional;
 
-import de.monticore.symboltable.mocks.languages.JTypeSymbolMock;
 import de.monticore.symboltable.mocks.languages.entity.PropertySymbol;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
@@ -41,9 +40,6 @@ import org.junit.Test;
  * @author Pedram Mir Seyed Nazari
  */
 public class ShadowingTest {
-
-  private JTypeSymbol STRING = new JTypeSymbolMock("String");
-  private JTypeSymbol INT = new JTypeSymbolMock("int");
 
   @Test
   public void testLocalScopeDoesNotShadowEnclosingScope() {

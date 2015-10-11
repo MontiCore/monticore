@@ -73,13 +73,26 @@ public abstract class CommonSymbol implements Symbol {
    */
   @Override
   public String getPackageName() {
-    if (packageName == null) {
-      Optional<ArtifactScope> artifactScope = Scopes.getArtifactScope(getEnclosingScope());
+    if ((packageName == null)) {
+      Optional<? extends Scope> optCurrentScope = Optional.of(enclosingScope);
 
-      if (artifactScope.isPresent()) {
-        packageName = artifactScope.get().getPackageName();
+      while (optCurrentScope.isPresent()) {
+        final Scope currentScope = optCurrentScope.get();
+        if (currentScope.isSpannedBySymbol()) {
+          // If one of the enclosing scope(s) is spanned by a symbol, take its
+          // package name. This check is important, since the package name of the
+          // enclosing symbol might be set manually.
+          packageName = currentScope.getSpanningSymbol().get().getPackageName();
+          break;
+        }
+        else if (currentScope instanceof ArtifactScope) {
+            packageName = ((ArtifactScope)currentScope).getPackageName();
+          }
+
+        optCurrentScope = currentScope.getEnclosingScope();
       }
     }
+
     return nullToEmpty(packageName);
   }
 
@@ -89,49 +102,73 @@ public abstract class CommonSymbol implements Symbol {
   }
 
   @Override
+  /**
+   * @return the full name of a symbol. For example, the full name of a state symbol <code>s</code>
+   * in a state chart <code>p.q.SC</code> is <code>p.q.SC.s</code>.
+   *
+   * By default, this method determines the full name dynamically via
+   * {@link #determineFullName()} and caches the value. If the name should not
+   * be cached, and hence, calculated everytime this method is invoked, override
+   * it and directly delegate to {@link #determineFullName()}.
+   *
+   * @see #getPackageName()
+   */
   public String getFullName() {
     if (fullName == null) {
-      if (enclosingScope == null) {
-        // There should not be a symbol that is not defined in any scope. This case should only
-        // occur while the symbol is build (by the symbol table creator). So, here the fullName
-        // should not be cached yet.
-        return name;
-      }
-
-      final Deque<String> nameParts = new ArrayDeque<>();
-      nameParts.addFirst(name);
-
-      Scope currentScope = enclosingScope;
-
-      // TODO PN FQN = parent.FQN + "." simpleName
-
-      while (currentScope.getEnclosingScope().isPresent()) {
-        if (!(currentScope instanceof GlobalScope)) {
-		  // TODO PN should we really only consider shadowing scopes?
-          if (currentScope.isShadowingScope()) {
-            if (currentScope instanceof ArtifactScope) {
-              ArtifactScope artifactScope = (ArtifactScope) currentScope;
-              if (!artifactScope.getPackageName().isEmpty()) {
-			    // TODO PN use this.getPackageName() instead.
-                nameParts.addFirst(artifactScope.getPackageName());
-              }
-            }
-            else {
-              if (currentScope.getName().isPresent()) {
-                nameParts.addFirst(currentScope.getName().get());
-              }
-              // TODO PN else stop? If one of the enclosing scopes is unnamed,
-              //         the full name is same as the simple name.
-            }
-          }
-        }
-        currentScope = currentScope.getEnclosingScope().get();
-      }
-
-      fullName = Names.getQualifiedName(nameParts);
+      fullName = determineFullName();
     }
 
     return fullName;
+  }
+
+  /**
+   * Determines <b>dynamically</b>t he full name of the symbol.
+   * @return the full name of the symbol determined dynamically
+   */
+  protected String determineFullName() {
+    if (enclosingScope == null) {
+      // There should not be a symbol that is not defined in any scope. This case should only
+      // occur while the symbol is build (by the symbol table creator). So, here the fullName
+      // should not be cached yet.
+      return name;
+    }
+
+    final Deque<String> nameParts = new ArrayDeque<>();
+    nameParts.addFirst(name);
+
+    Optional<? extends Scope> optCurrentScope = Optional.of(enclosingScope);
+
+    while (optCurrentScope.isPresent()) {
+      final Scope currentScope = optCurrentScope.get();
+      if (currentScope.isSpannedBySymbol()) {
+        // If one of the enclosing scope(s) is spanned by a symbol, the full name
+        // of that symbol is the missing prefix, and hence, the calculation
+        // ends here. This check is important, since the full name of the enclosing
+        // symbol might be set manually.
+        nameParts.addFirst(currentScope.getSpanningSymbol().get().getFullName());
+        break;
+      }
+
+      if (!(currentScope instanceof GlobalScope)) {
+          if (currentScope instanceof ArtifactScope) {
+            // We have reached the artifact scope. Get the package name from the
+            // symbol itself, since it might be set manually.
+            if (!getPackageName().isEmpty()) {
+              nameParts.addFirst(getPackageName());
+            }
+          }
+          else {
+            if (currentScope.getName().isPresent()) {
+              nameParts.addFirst(currentScope.getName().get());
+            }
+            // TODO PN else stop? If one of the enclosing scopes is unnamed,
+            //         the full name is same as the simple name.
+          }
+      }
+      optCurrentScope = currentScope.getEnclosingScope();
+    }
+
+    return Names.getQualifiedName(nameParts);
   }
 
   @Override
@@ -187,8 +224,7 @@ public abstract class CommonSymbol implements Symbol {
 
   @Override
   public String toString() {
-    // TODO PN do not return full name, since it needs the full information about a symbol.
-    return getFullName();
+    return getName();
   }
 
 }

@@ -24,7 +24,6 @@ import java.util.Optional;
 
 import de.monticore.symboltable.ScopeSpanningSymbol;
 import de.monticore.symboltable.types.references.JTypeReference;
-import de.monticore.symboltable.types.references.TypeReference;
 
 /**
  * @author Pedram Mir Seyed Nazari
@@ -53,6 +52,9 @@ public interface JTypeSymbol extends TypeSymbol, ScopeSpanningSymbol {
 
   List<? extends JMethodSymbol> getConstructors();
 
+  List<? extends JTypeSymbol> getInnerTypes();
+
+  Optional<? extends JTypeSymbol> getInnerType(String innerTypeName);
 
   boolean isAbstract();
 
@@ -63,6 +65,11 @@ public interface JTypeSymbol extends TypeSymbol, ScopeSpanningSymbol {
   boolean isEnum();
 
   boolean isClass();
+
+  /**
+   * @return true, if this type is an inner type, such as an inner interface or inner class
+   */
+  boolean isInnerType();
 
   boolean isPrivate();
 
