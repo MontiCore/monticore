@@ -19,8 +19,6 @@
 
 package de.monticore.symboltable;
 
-import static com.google.common.base.Strings.nullToEmpty;
-
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Optional;
@@ -69,31 +67,50 @@ public abstract class CommonSymbol implements Symbol {
   }
 
   /**
-   * @see Symbol#getPackageName()
+   * Returns the package of this symbol. All symbols within  an artifact usually
+   * have the same package name. For example, the state chart <code>p.q.SC</code>
+   * and its containing states all have the package <code>p.q</code>.
+   *
+   * By default, this method determines the package name dynamically via
+   * {@link #determinePackageName()} } and caches the value. If the package name
+   * should not be cached, and hence, calculated every time this method is invoked,
+   * override this method and directly delegate to {@link #determinePackageName()}.
+   *
+   * @see #getFullName()
+   *
    */
   @Override
   public String getPackageName() {
-    if ((packageName == null)) {
-      Optional<? extends Scope> optCurrentScope = Optional.of(enclosingScope);
-
-      while (optCurrentScope.isPresent()) {
-        final Scope currentScope = optCurrentScope.get();
-        if (currentScope.isSpannedBySymbol()) {
-          // If one of the enclosing scope(s) is spanned by a symbol, take its
-          // package name. This check is important, since the package name of the
-          // enclosing symbol might be set manually.
-          packageName = currentScope.getSpanningSymbol().get().getPackageName();
-          break;
-        }
-        else if (currentScope instanceof ArtifactScope) {
-            packageName = ((ArtifactScope)currentScope).getPackageName();
-          }
-
-        optCurrentScope = currentScope.getEnclosingScope();
-      }
+    if (packageName == null) {
+      packageName = determinePackageName();
     }
 
-    return nullToEmpty(packageName);
+    return packageName;
+  }
+
+  /**
+   * Determines <b>dynamically</b> the package name of the symbol.
+   * @return the package name of the symbol determined dynamically
+   */
+  protected String determinePackageName() {
+    Optional<? extends Scope> optCurrentScope = Optional.ofNullable(enclosingScope);
+
+    while (optCurrentScope.isPresent()) {
+      final Scope currentScope = optCurrentScope.get();
+      if (currentScope.isSpannedBySymbol()) {
+        // If one of the enclosing scope(s) is spanned by a symbol, take its
+        // package name. This check is important, since the package name of the
+        // enclosing symbol might be set manually.
+        return currentScope.getSpanningSymbol().get().getPackageName();
+      }
+      else if (currentScope instanceof ArtifactScope) {
+          return ((ArtifactScope)currentScope).getPackageName();
+        }
+
+      optCurrentScope = currentScope.getEnclosingScope();
+    }
+
+    return "";
   }
 
   // TODO PN pull-up?
@@ -107,9 +124,9 @@ public abstract class CommonSymbol implements Symbol {
    * in a state chart <code>p.q.SC</code> is <code>p.q.SC.s</code>.
    *
    * By default, this method determines the full name dynamically via
-   * {@link #determineFullName()} and caches the value. If the name should not
-   * be cached, and hence, calculated everytime this method is invoked, override
-   * it and directly delegate to {@link #determineFullName()}.
+   * {@link #determineFullName()} and caches the value. If the full name should not
+   * be cached, and hence, calculated every time this method is invoked, override
+   * this method and directly delegate to {@link #determineFullName()}.
    *
    * @see #getPackageName()
    */
@@ -122,7 +139,7 @@ public abstract class CommonSymbol implements Symbol {
   }
 
   /**
-   * Determines <b>dynamically</b>t he full name of the symbol.
+   * Determines <b>dynamically</b> the full name of the symbol.
    * @return the full name of the symbol determined dynamically
    */
   protected String determineFullName() {

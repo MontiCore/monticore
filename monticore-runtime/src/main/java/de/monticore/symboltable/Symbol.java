@@ -40,17 +40,19 @@ public interface Symbol {
   String getName();
 
   /**
-   * @return the package of this symbol. Note that this is not the full name {@link #getFullName()} of the
-   * symbol. For example, the full name of a state symbol <code>s</code> in a state chart <code>p.q.SC</code> is
-   * <code>p.q.SC.s</code>, whereas the package name is <code>p.q</code>.
+   * @return the package of this symbol. The package name of all symbols within
+   * an artifact is usually the same. For example, the package name of a state
+   * chart <code>p.q.SC</code> and its containing state <code>s</code> are the
+   * same, i.e., <code>p.q</code>.
    *
    * @see #getFullName()
    */
   String getPackageName();
 
   /**
-   * @return the full name of a symbol. For example, the full name of a state symbol <code>s</code>
-   * in a state chart <code>p.q.SC</code> is <code>p.q.SC.s</code>.
+   * @return the package of this symbol. All symbols within  an artifact usually
+   * have the same package name. For example, the state chart <code>p.q.SC</code>
+   * and its containing states all have the package <code>p.q</code>.
    *
    * @see #getPackageName()
    */
