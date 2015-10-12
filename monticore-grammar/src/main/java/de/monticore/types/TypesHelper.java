@@ -34,7 +34,6 @@ import de.monticore.types.types._ast.ASTType;
 import de.monticore.types.types._ast.ASTTypeArgument;
 import de.monticore.types.types._ast.ASTWildcardType;
 import de.se_rwth.commons.Names;
-import de.se_rwth.commons.logging.Log;
 
 /**
  * TODO: Write me!
