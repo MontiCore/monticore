@@ -1,0 +1,9 @@
+package cocos.invalid.A4022;
+
+grammar A4022b {
+
+  A extends B;
+
+  B extends A;
+
+}
