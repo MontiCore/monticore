@@ -20,18 +20,15 @@
 package de.monticore.grammar.cocos;
 
 import de.monticore.GrammarGlobalScopeTestFactory;
-import de.monticore.grammar.grammar._cocos.GrammarASTClassProdCoCo;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.monticore.languages.grammar.MCGrammarSymbol;
 import de.monticore.symboltable.Scope;
-import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -53,7 +50,7 @@ public class NoNTInheritanceCycleTest extends CocoTest{
   @Test
   public void testInvalid() {
     testInvalidGrammar(grammar, NoNTInheritanceCycle.ERROR_CODE,
-        String.format(NoNTInheritanceCycle.ERROR_MSG_FORMAT, "A"), checker);
+        String.format(NoNTInheritanceCycle.ERROR_MSG_FORMAT, "cocos.invalid.A4022.A4022.A"), checker);
   }
 
   @Test
@@ -71,9 +68,9 @@ public class NoNTInheritanceCycleTest extends CocoTest{
     checker.handle(grammarSymbol.getASTGrammar());
 
     assertEquals(2, Log.getFindings().size());
-    assertEquals(NoNTInheritanceCycle.ERROR_CODE + String.format(NoNTInheritanceCycle.ERROR_MSG_FORMAT, "A"),
+    assertEquals(NoNTInheritanceCycle.ERROR_CODE + String.format(NoNTInheritanceCycle.ERROR_MSG_FORMAT, "cocos.invalid.A4022.A4022b.A"),
                  Log.getFindings().get(0).getMsg());
-    assertEquals(NoNTInheritanceCycle.ERROR_CODE + String.format(NoNTInheritanceCycle.ERROR_MSG_FORMAT, "B"),
+    assertEquals(NoNTInheritanceCycle.ERROR_CODE + String.format(NoNTInheritanceCycle.ERROR_MSG_FORMAT, "cocos.invalid.A4022.A4022b.B"),
                  Log.getFindings().get(1).getMsg());
 
   }
