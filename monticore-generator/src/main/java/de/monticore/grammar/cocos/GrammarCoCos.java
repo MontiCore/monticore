@@ -66,7 +66,7 @@ public class GrammarCoCos {
     checker.addCoCo(new OverridingLexNTs());
     checker.addCoCo(new GrammarInheritanceCycle());
     checker.addCoCo(new LeftRecursiveRulesInBlock());
-    checker.addCoCo(new NoNTInheritanceCycle());
+    // checker.addCoCo(new NoNTInheritanceCycle());
 
     return checker;
   }
