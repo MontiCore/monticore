@@ -409,7 +409,7 @@ public class HelperGrammar {
    */
   public static String getRuleNameForAntlr(String rulename) {
     
-    String s = JavaNamesHelper.getNonReservedName(rulename.toLowerCase());
+    String s = JavaNamesHelper.getNonReservedName(StringTransformations.uncapitalize(rulename));
     
     return s;
   }

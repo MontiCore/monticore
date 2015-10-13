@@ -104,7 +104,7 @@ public class ParserGenerator {
     // construct parser, lexer, ... (antlr), 
     String gFile = Paths.get(targetFile.getAbsolutePath(), filePath.toString()).toString();
     Log.debug("Start Antlr generation for the antlr file " + gFile, LOG);
-    AntlrTool antlrTool = new AntlrTool(new String[]{}, 
+    AntlrTool antlrTool = new AntlrTool(new String[]{}, grammarSymbol,
         Paths.get(targetFile.getAbsolutePath(), Names.getPathFromPackage(genHelper.getParserPackage())));
     
     antlrTool.createParser(gFile);

@@ -21,13 +21,11 @@ package de.monticore.codegen.parser;
 
 import static com.google.common.base.Preconditions.checkState;
 
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.Set;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
@@ -425,7 +423,7 @@ public class ParserGeneratorHelper {
   
   
   public static String getParseRuleName(MCRuleSymbol rule) {
-    return JavaNamesHelper.getNonReservedName(rule.getName().toLowerCase());
+    return JavaNamesHelper.getNonReservedName(StringTransformations.uncapitalize(rule.getName()));
   }
   
   public static String getMCParserWrapperName(MCRuleSymbol rule) {
