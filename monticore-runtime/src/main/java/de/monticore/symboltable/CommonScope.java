@@ -172,7 +172,7 @@ public class CommonScope implements MutableScope {
    */
   private <T extends Symbol> void continueWithScope(MutableScope scope, ResolvingInfo resolvingInfo, String name, SymbolKind kind,
       AccessModifier modifier, Set<T> alreadyResolved) {
-    if (checkIfContinueWithEnclosingScope(scope, !alreadyResolved.isEmpty() || resolvingInfo.areSymbolsFound())) {
+    if (checkIfContinueWithScope(scope, !alreadyResolved.isEmpty() || resolvingInfo.areSymbolsFound())) {
       final Optional<T> resolvedFromEnclosing = scope.resolve(resolvingInfo, name, kind, modifier);
 
       if (resolvedFromEnclosing.isPresent()) {
@@ -204,6 +204,14 @@ public class CommonScope implements MutableScope {
 
   }
 
+  /**
+   * Continues resolving with enclosing scope, if it exists.
+   *
+   * @param resolvingInfo contains resolving information, such as, the already involved scopes.
+   * @param symbolName the name of the searched symbol
+   * @param kind the kind of the searched symbol
+   * @param resolved the already found symbols
+   */
   protected <T extends Symbol> void continueWithEnclosingScope(ResolvingInfo resolvingInfo, String symbolName,
       SymbolKind kind, Set<T> resolved) {
     if (getEnclosingScope().isPresent()) {
@@ -211,9 +219,18 @@ public class CommonScope implements MutableScope {
     }
   }
 
+  /**
+   * Continues resolving with the specific <b>scope</b> (usually the enclosing scope).
+   *
+   * @param scope the scope with which resolving should be continued.
+   * @param resolvingInfo contains resolving information, such as, the already involved scopes.
+   * @param symbolName the name of the searched symbol
+   * @param kind the kind of the searched symbol
+   * @param resolved the already found symbols
+   */
   protected <T extends Symbol> void continueWithScope(MutableScope scope, ResolvingInfo resolvingInfo, String symbolName,
       SymbolKind kind, Set<T> resolved) {
-    if (checkIfContinueWithEnclosingScope(scope, !resolved.isEmpty() || resolvingInfo.areSymbolsFound())) {
+    if (checkIfContinueWithScope(scope, !resolved.isEmpty() || resolvingInfo.areSymbolsFound())) {
       final Optional<T> resolvedFromEnclosing = scope.resolve(resolvingInfo, symbolName, kind);
 
       if (resolvedFromEnclosing.isPresent()) {
@@ -306,7 +323,7 @@ public class CommonScope implements MutableScope {
   }
 
   protected void continueWithScope(MutableScope scope, SymbolPredicate predicate, List<Symbol> result) {
-    if (checkIfContinueWithEnclosingScope(scope, !result.isEmpty()/* TODO PN || resolvingInfo.areSymbolsFound())*/)) {
+    if (checkIfContinueWithScope(scope, !result.isEmpty()/* TODO PN || resolvingInfo.areSymbolsFound())*/)) {
       Optional<? extends Symbol> resolvedFromParent = scope.resolve(predicate);
 
       if (resolvedFromParent.isPresent()) {
@@ -316,13 +333,16 @@ public class CommonScope implements MutableScope {
   }
 
   /**
-   * Returns true, if enclosing scope should continue with resolving. For example, if symbols are already found and
-   * the current scope is a shadowing scope, the resolving process is not continued.
+   * Returns true, if <b>scope</b> (usually the enclosing scope) should continue
+   * with resolving. By default, if symbols are already found and the current scope
+   * is a shadowing scope, the resolving process is not continued.
    *
-   * @param foundSomeSymbols states whether symbols have been already found during the current resolving process.
+   * @param scope the scope which should continue with resolving
+   * @param foundSomeSymbols states whether symbols have been already found during
+   *                         the current resolving process.
    * @return true, if enclosing scope should continue with resolving.
    */
-  protected boolean checkIfContinueWithEnclosingScope(MutableScope scope, boolean foundSomeSymbols) {
+  protected boolean checkIfContinueWithScope(MutableScope scope, boolean foundSomeSymbols) {
     // If this scope shadows its enclosing scope and already some symbols are found,
     // there is no need to continue searching.
     return !(foundSomeSymbols && isShadowingScope());
