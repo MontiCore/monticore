@@ -70,12 +70,13 @@ public enum Multiplicity {
     ASTCard cardinality = attributeInAST.getCard().get();
     if (!cardinality.getMax().isPresent() || cardinality.isUnbounded()
         || cardinality.getMax().get().equals("*")
-        || getMaxCardinality(cardinality) != 1) {;
+        || getMaxCardinality(cardinality) != 1) {
       return LIST;
     }
     else {
-      if (!cardinality.getMin().isPresent() || getMinCardinality(cardinality)==0) 
+      if (!cardinality.getMin().isPresent() || getMinCardinality(cardinality)==0)  {
         return OPTIONAL;
+      }
     }
     return STANDARD;
   }
@@ -147,10 +148,10 @@ public enum Multiplicity {
     for (ASTNode intermediate : ASTNodes.getIntermediates(rootNode, astNode)) {
       int iteration = getIterationInt(intermediate);
       
-      if (iteration == 2 || iteration == 3) {
+      if (iteration == ASTConstantsGrammar.PLUS || iteration == ASTConstantsGrammar.STAR) {
         multiplicity = LIST;
       }
-      if (iteration == 4 && multiplicity != LIST) {
+      if (iteration == ASTConstantsGrammar.QUESTION && multiplicity != LIST) {
         multiplicity = OPTIONAL;
       }
     }
