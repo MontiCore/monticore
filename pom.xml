@@ -6,7 +6,7 @@
 
   <groupId>de.monticore</groupId>
   <artifactId>monticore</artifactId>
-  <version>4.2.0</version>
+  <version>4.2.1-SNAPSHOT</version>
 
   <packaging>pom</packaging>
 
