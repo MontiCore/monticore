@@ -50,10 +50,9 @@ import de.se_rwth.commons.logging.Log;
  *
  * @author Pedram Mir Seyed Nazari
  */
-// TODO PN use generic for spanning symbol? That means, CommonScope<? extends ScopeSpanningSymbol>
 public class CommonScope implements MutableScope {
 
-  // TODO PN: by defauilt, a named scope should be a shadowing scope.
+  // TODO PN: by default, a named scope should be a shadowing scope.
   private final boolean isShadowingScope;
   private final List<Symbol> symbols = new ArrayList<>();
   private final List<MutableScope> subScopes = new ArrayList<>();
@@ -309,7 +308,9 @@ public class CommonScope implements MutableScope {
   public Optional<? extends Symbol> resolve(SymbolPredicate predicate) {
     List<Symbol> result = new ArrayList<>(Collections2.filter(symbols, predicate));
 
-    // TODO PN Combine with adaptors
+    // TODO PN Combine with adaptors. For this: add filter(SymbolPredicate) to
+    //         AdaptedResolvingFilter (maybe ResolvingFilter too). Then, run pass
+    //         resolved symbols to all filters.
 
     continueWithEnclosingScope(predicate, result);
 
@@ -459,6 +460,8 @@ public class CommonScope implements MutableScope {
     return getResolvedOrThrowException(
         this.<T>resolveManyLocally(new ResolvingInfo(getResolvingFilters()), name, kind));
   }
+
+  // TODO PN add resolveManyLocally(String name, SymbolKind kind)
 
   protected <T extends Symbol> Collection<T> resolveManyLocally(ResolvingInfo resolvingInfo, String name, SymbolKind kind) {
     Collection<ResolvingFilter<? extends Symbol>> resolversForKind =
