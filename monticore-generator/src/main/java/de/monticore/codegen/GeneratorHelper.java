@@ -158,6 +158,8 @@ public class GeneratorHelper extends TypesHelper {
   protected List<String> superGrammarCds = new ArrayList<>();
   
   protected GlobalScope symbolTable;
+
+  protected CDSymbol cdSymbol;
   
   public GeneratorHelper(ASTCDCompilationUnit topAst, GlobalScope symbolTable) {
     Preconditions.checkArgument(topAst.getCDDefinition() != null);
@@ -170,6 +172,9 @@ public class GeneratorHelper extends TypesHelper {
     
     // CD package
     packageName = getCdPackage(qualifiedName);
+    
+    // CD symbol
+    this.cdSymbol = getCd();
     
     // Create list of CDs for super grammars
     for (ASTImportStatement importSt : topAst.getImportStatements()) {
@@ -318,6 +323,13 @@ public class GeneratorHelper extends TypesHelper {
       Log.debug("CD or Java type couldn't be resolved: " + convertedTypeName, LOG_NAME);
     }
     return astType;
+  }
+  
+  /**
+   * @return cdSymbol
+   */
+  public CDSymbol getCdSymbol() {
+    return this.cdSymbol;
   }
   
   /**
