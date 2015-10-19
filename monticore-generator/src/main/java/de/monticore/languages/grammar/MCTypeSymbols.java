@@ -84,7 +84,7 @@ public class MCTypeSymbols {
     // return false;
     // }
 
-    return type1.getGrammarSymbol().getName().equals(type2.getGrammarSymbol().getName());
+    return type1.getGrammarSymbol().getFullName().equals(type2.getGrammarSymbol().getFullName());
   }
 
   public static boolean isAssignmentCompatibleOrUndecidable(MCTypeSymbol subType, MCTypeSymbol superType) {

@@ -22,7 +22,6 @@ package de.monticore.codegen.mc2cd.transl;
 import java.util.function.UnaryOperator;
 
 import com.google.common.base.Strings;
-
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
@@ -49,7 +48,7 @@ public class DefinedInTranslation implements
       // TODO GV, SO: replace with the Cd4Analysis symbol table if exists
       MCRuleSymbol ruleSymbol = MCGrammarSymbolTableHelper.resolveRule(rootLink.source(),
           link.source().getName()).get();
-      String definedInGrammar = ruleSymbol.getGrammarSymbol().getName();
+      String definedInGrammar = ruleSymbol.getGrammarSymbol().getFullName();
       if (!Strings.isNullOrEmpty(definedInGrammar) && !definedInGrammar.equals(grammarName)) {
         TransformationHelper.addStereoType(link.target(),
             MC2CDStereotypes.DEFINED_IN_GRAMMAR.toString(), definedInGrammar);

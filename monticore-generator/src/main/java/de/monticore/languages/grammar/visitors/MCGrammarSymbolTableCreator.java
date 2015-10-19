@@ -23,15 +23,13 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Strings.nullToEmpty;
 import static de.se_rwth.commons.Names.getQualifiedName;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.annotation.Nullable;
-
 import com.google.common.collect.Sets;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.ast.Comment;
 import de.monticore.grammar.HelperGrammar;
@@ -147,14 +145,12 @@ public class MCGrammarSymbolTableCreator extends CommonSymbolTableCreator implem
     final ArtifactScope scope = new ArtifactScope(Optional.empty(), packageName, imports);
     putOnStack(scope);
     
-    // TODO PN grammar name should not be qualified. Use setPackageName()
-    // instead
-    final String grammarName = (isNullOrEmpty(packageName))
-        ? astGrammar.getName()
-        : packageName + "" + "." + astGrammar.getName();
+    final String grammarName = astGrammar.getName();
+
     grammarSymbol = MCGrammarSymbolsFactory.createMCGrammarSymbol(grammarName);
     grammarSymbol.setComponent(astGrammar.isComponent());
-    
+    // TODO PN set package name explicitly?
+
     addToScopeAndLinkWithNode(grammarSymbol, astGrammar);
     
     addSuperGrammars(astGrammar, grammarSymbol);
