@@ -57,7 +57,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
     }
     String typeName = TypesPrinter.printType(attribute.getType());
     if (isAstList(attribute)) {
-      return new StringBuilder(getNodeFactoryName(attribute)).append("NodeFactory.create")
+      return new StringBuilder(getCdName()).append("NodeFactory.create")
           .append(Names.getSimpleName(typeName)).append("()").toString();
     }
     if (isListType(typeName)) {
@@ -74,18 +74,6 @@ public class AstGeneratorHelper extends GeneratorHelper {
       return "";
     }
     return getAstAttributeValue(attribute);
-  }
-  
-  public String getNodeFactoryName(ASTCDAttribute attribute) {
-    List<String> values = CD4AnalysisHelper.getStereotypeValues(attribute,
-        MC2CDStereotypes.DEFINED_IN_GRAMMAR.toString());
-    if (values.size() != 1) {
-      return getCdName();
-    }
-    String qualifiedGrammarName = values.get(0);
-    String grammarName = Names.getSimpleName(qualifiedGrammarName);
-    return new StringBuilder(getAstPackage(qualifiedGrammarName)).
-        append(".").append(grammarName).toString();
   }
   
   public String getAstPackage() {

@@ -36,10 +36,6 @@ public enum MC2CDStereotypes {
    */
   EXTERNAL_TYPE("externalType"),
   /**
-   * The name of the grammar where the rule is defined
-   */
-  DEFINED_IN_GRAMMAR("definedInGrammar"),
-  /**
    * Referenced symbol
    */
   REFERENCED_SYMBOL("referencedSymbol");
