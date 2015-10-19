@@ -26,10 +26,11 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Optional;
 
 import de.monticore.ModelingLanguage;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.mocks.languages.JTypeSymbolMock;
 import de.monticore.symboltable.mocks.languages.entity.ActionSymbol;
 import de.monticore.symboltable.mocks.languages.entity.EntityLanguage;
 import de.monticore.symboltable.mocks.languages.entity.EntitySymbol;
@@ -70,8 +71,6 @@ public class ResolvingTest {
       fail();
     }
 
-
-
   }
 
   @Test
@@ -103,7 +102,7 @@ public class ResolvingTest {
     assertFalse(entity.getSpannedScope().resolve("prop", PropertySymbol.KIND).isPresent());
 
 
-    ((MutableScope)entity.getSpannedScope()).addResolver(propertyResolvingFilter);
+    entity.getSpannedScope().addResolver(propertyResolvingFilter);
     assertFalse(action.getSpannedScope().resolve("prop", PropertySymbol.KIND).isPresent());
     assertTrue(entity.getSpannedScope().resolve("prop", PropertySymbol.KIND).isPresent());
   }
@@ -131,7 +130,64 @@ public class ResolvingTest {
     assertTrue(globalScope.resolve("Entity.action", ActionSymbol.KIND).isPresent());
     assertTrue(globalScope.resolve("Entity.action.prop", PropertySymbol.KIND).isPresent());
 
+    assertFalse(globalScope.resolve("Entity.action2.prop", PropertySymbol.KIND).isPresent());
   }
 
+
+  @Test
+  public void testResolveInnerSymbolWithArtifactScope() {
+    final ArtifactScope artifactScope = new ArtifactScope(Optional.empty(), "p.q", new ArrayList<>());
+
+    final EntitySymbol entity = new EntitySymbol("Entity");
+    artifactScope.add(entity);
+
+    final ActionSymbol action = new ActionSymbol("action");
+    entity.addAction(action);
+
+    final PropertySymbol property = new PropertySymbol("prop", new CommonJTypeReference<>("int", JTypeSymbol.KIND, entity.getSpannedScope()));
+    action.addVariable(property);
+
+
+    final ModelingLanguage modelingLanguage = new EntityLanguage();
+    final ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
+    resolverConfiguration.addTopScopeResolvers(modelingLanguage.getResolvers());
+    final ModelPath modelPath = new ModelPath(Paths.get(""));
+
+    final GlobalScope globalScope = new GlobalScope(modelPath, modelingLanguage.getModelLoader(), resolverConfiguration);
+    globalScope.addSubScope(artifactScope);
+
+    assertTrue(globalScope.resolve("p.q.Entity", EntitySymbol.KIND).isPresent());
+    assertTrue(globalScope.resolve("p.q.Entity.action", ActionSymbol.KIND).isPresent());
+    assertTrue(globalScope.resolve("p.q.Entity.action.prop", PropertySymbol.KIND).isPresent());
+
+    // Cannot be resolved since names are not qualified
+    assertFalse(globalScope.resolve("Entity", EntitySymbol.KIND).isPresent());
+    assertFalse(globalScope.resolve("Entity.action", ActionSymbol.KIND).isPresent());
+    assertFalse(globalScope.resolve("Entity.action.prop", PropertySymbol.KIND).isPresent());
+  }
+
+  @Test
+  public void testCannotResolveInnerSymbolViaPartialName() {
+    final ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
+    resolverConfiguration.addTopScopeResolvers(new EntityLanguage().getResolvers());
+
+    final ArtifactScope artifactScope = new ArtifactScope(Optional.empty(), "p", new ArrayList<>());
+    artifactScope.setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
+
+    final EntitySymbol entity = new EntitySymbol("Entity");
+    entity.getSpannedScope().setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
+    artifactScope.add(entity);
+
+    final ActionSymbol action = new ActionSymbol("action");
+    entity.addAction(action);
+
+    assertTrue(entity.getSpannedScope().resolve("action", ActionSymbol.KIND).isPresent());
+    assertTrue(entity.getSpannedScope().resolve("p.Entity.action", ActionSymbol.KIND).isPresent());
+
+    // Cannot resolve Entity.action, since it is not clear whether it is a qualified
+    // or a partial name.
+    assertFalse(entity.getSpannedScope().resolve("Entity.action", ActionSymbol.KIND).isPresent());
+
+  }
 
 }

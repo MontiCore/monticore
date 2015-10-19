@@ -43,6 +43,7 @@ public class ArtifactScope extends CommonScope {
   public ArtifactScope(final Optional<MutableScope> enclosingScope, final String packageName,
       final List<ImportStatement> imports) {
     super(enclosingScope, true);
+    setExportsSymbols(true);
 
     Log.errorIfNull(packageName);
     Log.errorIfNull(imports);
@@ -152,9 +153,5 @@ public class ArtifactScope extends CommonScope {
         ArtifactScope.class.getSimpleName());
     return potentialSymbolNames;
   }
-
-  // TODO PN resolveDown so ueberschreiben, dass im Fall von qualifizierte Namen, dass Package als
-  // Suffix passen muss? z.B.: resolveDown("a.b.c.D"), dann muss der CompilationUnitScope im
-  // Package "a.b.c", "a.b" oder "a" sein.
 
 }

@@ -53,7 +53,7 @@ public class InheritedAttributesTranslation implements
       for (ASTNonTerminal nonTerminal : getInheritedNonTerminals(link.source())) {
         MCRuleSymbol ruleSymbol = MCGrammarSymbolTableHelper.resolveRule(rootLink.source(),
             nonTerminal.getName()).get();
-        String superGrammarName = ruleSymbol.getGrammarSymbol().getName();
+        String superGrammarName = ruleSymbol.getGrammarSymbol().getFullName();
         ASTCDAttribute cdAttribute = createStereoTypedCDAttribute(
             MC2CDStereotypes.INHERITED.toString(), superGrammarName);
         link.target().getCDAttributes().add(cdAttribute);
