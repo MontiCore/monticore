@@ -475,9 +475,9 @@ public class CdDecorator {
       for (CDSymbol superCd : astHelper.getAllCds(astHelper.getCdSymbol())) {
         Log.debug(" CDSymbol for " + nodeFactoryName + " : " + superCd, "CdDecorator");
         nodeFactoryName = getSimpleName(superCd.getName()) + NODE_FACTORY;
-        String superCdImport = superCd.getFullName().toLowerCase()
-            + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT + "*";
-        imports.add(superCdImport);
+        String factoryPackage = superCd.getFullName().toLowerCase()
+            + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;
+        imports.add(factoryPackage + "*");
         for (CDTypeSymbol type : superCd.getTypes()) {
           Optional<ASTNode> node = type.getAstNode();
           if (node.isPresent() && node.get() instanceof ASTCDClass) {
@@ -487,7 +487,7 @@ public class CdDecorator {
             }
             astClasses.add(cdClass.getName());
             addDelegateMethodsToNodeFactory(cdClass, nodeFactoryClass, astHelper, superCd,
-                nodeFactoryName);
+                factoryPackage + nodeFactoryName);
           }
         }
       }
@@ -637,20 +637,20 @@ public class CdDecorator {
       return;
     }
     String className = GeneratorHelper.getPlainName(clazz);
-    String toParse = "public static " + className + " create" + className + "() ;";
+    String toParse = "public static " + cdSymbol.getFullName().toLowerCase()
+        + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT + className + " create" + className + "() ;";
     HookPoint methodBody = new TemplateHookPoint("ast.factorymethods.CreateDelegate",
         delegateFactoryName, className);
     replaceMethodBodyTemplate(nodeFactoryClass, toParse, methodBody);
-    
-    String ordered = "strictlyOrdered";
-    boolean isListClass = AstGeneratorHelper.isAstListClass(clazz.getName(), cdSymbol);
-    toParse = "public static " + className + " create" + className + "() ;";
     
     // No create methods with parameters (only additional attributes {@link
     // AstAdditionalAttributes}
     if (clazz.getCDAttributes().size() <= 2) {
       return;
     }
+    
+    String ordered = "strictlyOrdered";
+    boolean isListClass = AstGeneratorHelper.isAstListClass(clazz.getName(), cdSymbol);
     
     Optional<ASTCDMethod> astMethod = cdTransformation.addCdMethodUsingDefinition(
         nodeFactoryClass, toParse);
