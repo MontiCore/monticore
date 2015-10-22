@@ -858,12 +858,8 @@ public class GeneratorHelper extends TypesHelper {
     return isAstListClass(((CDFieldSymbol) attribute.getSymbol().get()).getType());
   }
   
-  public boolean isOptionalAstNode(CDTypeSymbol type) {
+  public boolean isOptionalAstNode(CDTypeSymbolReference type) {
     if (!type.getName().equals(OPTIONAL)) {
-      return false;
-    }
-    //TODO PN, GV: Remove if CD symbol table works with CDTypeSymbolReference 
-    if (!(type instanceof CDTypeSymbolReference)) {
       return false;
     }
     CDTypeSymbolReference cdType = (CDTypeSymbolReference)type;
@@ -876,18 +872,6 @@ public class GeneratorHelper extends TypesHelper {
       return false;
     }
     return isAstNode((CDTypeSymbolReference)typeArgs.get(0).getType());
-    /*
-    if (!type.getAstNode().isPresent()) {
-      Log.error(String.format("0xABC124 ASTNode of cd type symbol %s is not set.",
-          type.getFullName()));
-    }
-    ASTNode node = type.getAstNode().get();
-    if (!(node instanceof ASTType)) {
-      Log.error(String
-          .format(
-              "0xABC125 Expected the ASTNode of cd type symbol %s to be an ASTType, but it is of kind %s",
-              type.getFullName(), node.getClass().getName()));
-    }*/
   }
   
   public static boolean isSupertypeOfHWType(String className) {

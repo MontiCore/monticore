@@ -89,16 +89,9 @@ public class ParserGenerator {
     // TODO: grammarInfo as parameter for this method?
     MCGrammarInfo grammarInfo = new MCGrammarInfo(genHelper.getGrammarSymbol());
     
-    final GeneratorEngine generator = new GeneratorEngine(setup);
-    
-    String simpleName = TransformationHelper.existsHandwrittenClass(handcodedPath,
-        GeneratorHelper.getDotPackageName(genHelper.getParserPackage()) + astGrammar.getName()
-            + "Parser") ? astGrammar.getName()
-        + "" : astGrammar.getName();
-    
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getParserPackage()),
-        simpleName + ".g4");
-    generator.generate("parser.Parser", filePath, astGrammar, new Grammar2Antlr(genHelper,
+        astGrammar.getName() + ".g4");
+    new GeneratorEngine(setup).generate("parser.Parser", filePath, astGrammar, new Grammar2Antlr(genHelper,
         grammarInfo));
     
     // construct parser, lexer, ... (antlr), 
@@ -150,8 +143,10 @@ public class ParserGenerator {
     String parserFactorySuffix = TransformationHelper.existsHandwrittenClass(handcodedPath,
         GeneratorHelper.getDotPackageName(genHelper.getParserPackage()) + astGrammar.getName()
             + PARSER_FACTORY) ? TransformationHelper.GENERATED_CLASS_SUFFIX : "";
+    
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getParserPackage()),
         astGrammar.getName() + PARSER_FACTORY + parserFactorySuffix + ".java");
+    
     generator.generate("parser.ParserFactory", filePath, astGrammar, astGrammar,
         parserFactorySuffix, genHelper.getGrammarSymbol().getRulesWithInherited().values());
 
