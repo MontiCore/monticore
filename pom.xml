@@ -18,6 +18,7 @@
     <module>monticore-generator</module>
     <module>monticore-maven</module>
     <module>monticore-runtime</module>
+    <module>monticore-emf-runtime</module>
   </modules>
 
   <!-- == PROJECT PROPERTIES ============================================== -->
@@ -55,6 +56,9 @@
     <se-commons.version>1.7.6</se-commons.version>
     <slf4j.version>1.7.10</slf4j.version>
     <freemarker.version>2.3.22</freemarker.version>
+    <emf.common.version>2.5.0</emf.common.version>
+    <emf.ecore.version>2.5.0</emf.ecore.version>
+    <emf.ecore.xmi.version>2.5.0</emf.ecore.xmi.version>
     <!-- has been relocated to that version -->
     <xml-apis.version>1.0.b2</xml-apis.version>
 
@@ -284,7 +288,23 @@
         <artifactId>freemarker</artifactId>
         <version>${freemarker.version}</version>
       </dependency>
-
+      
+      <!-- EMF dependencies -->
+      <dependency>
+        <groupId>org.mod4j.org.eclipse.emf</groupId>
+        <artifactId>ecore</artifactId>
+        <version>${emf.ecore.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mod4j.org.eclipse.emf.ecore</groupId>
+        <artifactId>xmi</artifactId>
+        <version>${emf.ecore.xmi.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mod4j.org.eclipse.emf</groupId>
+        <artifactId>common</artifactId>
+        <version>${emf.common.version}</version>
+      </dependency>
 
       <!-- MontiCore 4 -->
       <dependency>
