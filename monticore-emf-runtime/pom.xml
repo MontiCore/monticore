@@ -76,7 +76,7 @@
     
     <dependency>
       <groupId>de.monticore</groupId>
-      <artifactId>de.monticore.re</artifactId>
+      <artifactId>monticore-runtime</artifactId>
     </dependency>
 
 
