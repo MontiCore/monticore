@@ -42,7 +42,7 @@ import de.se_rwth.commons.logging.Log;
  */
 public class AstGeneratorHelper extends GeneratorHelper {
   
-  private static final String AST_BUILDER = "Builder_";
+  protected static final String AST_BUILDER = "Builder_";
   
   public AstGeneratorHelper(ASTCDCompilationUnit topAst, GlobalScope symbolTable) {
     super(topAst, symbolTable);

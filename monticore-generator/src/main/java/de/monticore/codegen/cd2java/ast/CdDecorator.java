@@ -99,15 +99,15 @@ public class CdDecorator {
   
   public static final String NODE_FACTORY = "NodeFactory";
   
-  private static final String DEL = ", ";
+  protected static final String DEL = ", ";
   
-  private ASTCDTransformation cdTransformation = new ASTCDTransformation();
+  protected ASTCDTransformation cdTransformation = new ASTCDTransformation();
   
-  private GlobalExtensionManagement glex;
+  protected GlobalExtensionManagement glex;
   
-  private IterablePath targetPath;
+  protected IterablePath targetPath;
   
-  private GlobalScope symbolTable;
+  protected GlobalScope symbolTable;
   
   public CdDecorator(
       GlobalExtensionManagement glex,

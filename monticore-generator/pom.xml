@@ -22,6 +22,11 @@
       <groupId>de.monticore</groupId>
       <artifactId>monticore-runtime</artifactId>
     </dependency>
+    
+    <dependency>
+      <groupId>de.monticore</groupId>
+      <artifactId>monticore-emf-runtime</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>de.se_rwth.commons</groupId>
@@ -44,6 +49,16 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.mod4j.org.eclipse.emf</groupId>
+      <artifactId>ecore</artifactId>      
+    </dependency>
+    
+    <dependency>
+      <groupId>org.mod4j.org.eclipse.emf.ecore</groupId>
+      <artifactId>xmi</artifactId>      
     </dependency>
 
     <dependency>

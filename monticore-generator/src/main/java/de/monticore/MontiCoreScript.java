@@ -26,9 +26,9 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedHashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -46,6 +46,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstGenerator;
 import de.monticore.codegen.cd2java.ast.CdDecorator;
+import de.monticore.codegen.cd2java.ast.CdEmfDecorator;
 import de.monticore.codegen.cd2java.cocos.CoCoGenerator;
 import de.monticore.codegen.cd2java.visitor.VisitorGenerator;
 import de.monticore.codegen.mc2cd.MC2CDTransformation;
@@ -431,6 +432,33 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   public void generate(GlobalExtensionManagement glex, GlobalScope globalScope,
       ASTCDCompilationUnit astClassDiagram, File outputDirectory, IterablePath templatePath) {
     AstGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory, templatePath);
+    VisitorGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
+    CoCoGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
+  }
+  
+  /**
+   * Decorates class diagram AST by adding of new classes and methods using in ast files TODO:
+   * rephrase!
+   *
+   * @param glex - object for managing hook points, features and global variables
+   * @param astClassDiagram - class diagram AST
+   * @param targetPath the directory to produce output in
+   */
+  public void decorateEmfCd(GlobalExtensionManagement glex,
+      ASTCDCompilationUnit astClassDiagram, GlobalScope symbolTable, IterablePath targetPath) {
+    new CdEmfDecorator(glex, symbolTable, targetPath).decorate(astClassDiagram);
+  }
+  
+  /**
+   * Generates ast files for the given class diagram AST TODO: rephrase!
+   *
+   * @param glex - object for managing hook points, features and global variables
+   * @param astClassDiagram - class diagram AST
+   * @param outputDirectory TODO
+   */
+  public void generateEmfCompatible(GlobalExtensionManagement glex, GlobalScope globalScope,
+      ASTCDCompilationUnit astClassDiagram, File outputDirectory, IterablePath templatePath) {
+    AstGenerator.generateEmfCompatible(glex, globalScope, astClassDiagram, outputDirectory, templatePath);
     VisitorGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
     CoCoGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
   }

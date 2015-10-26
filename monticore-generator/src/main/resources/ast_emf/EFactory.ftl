@@ -30,41 +30,20 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-<#--
-  Generates a Java interface
-  
-  @params    ASTCDInterface $ast
-  @result    mc.javadsl.JavaDSL.CompilationUnit
-  
--->
-${tc.signature("visitorPackage", "visitorType")}
-
 <#assign genHelper = glex.getGlobalValue("astHelper")>
-
-import ${visitorPackage}.${visitorType};
-
-public interface ${ast.getName()} extends ${tc.include("ast.AstExtendedInterfaces")} ${genHelper.getASTNodeBaseType()} {
-  <#-- generate all methods -->
-  <#list ast.getCDMethods() as method>
-    ${tc.includeArgs("ast.ClassMethod", [method, ast])}
-  </#list>
-
-  public de.monticore.ast.ASTNode deepClone();
-
-  public boolean equals(Object o);
-
-  public boolean equalsWithComments(Object o);
-
-  public boolean deepEquals(Object o);
   
-  public boolean deepEquals(Object o, boolean forceSameOrder);
+<#-- Copyright -->
+${tc.defineHookPoint("JavaCopyright")}
 
-  public boolean deepEqualsWithComments(Object o);
+${tc.signature("ast", "grammarName")}
 
-  public boolean deepEqualsWithComments(Object o, boolean forceSameOrder);
-  
-  public void accept(${visitorType} visitor);
-   
-  <#-- member HOOK -->
-  ${tc.defineHookPoint("<Block>?InterfaceContent:Members")}
+import org.eclipse.emf.ecore.EFactory;
+
+public interface ${ast.getName()} extends EFactory {
+    
+    // The singleton instance of the factory.
+    ${ast.getName()} eINSTANCE = ${genHelper.getAstPackage()}.${ast.getName()}Impl.init();
+    
+    // Returns the package supported by this factory.
+    ${grammarName}Package get${grammarName}Package();
 }

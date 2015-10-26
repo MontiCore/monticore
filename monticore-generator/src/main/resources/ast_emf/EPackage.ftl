@@ -30,41 +30,46 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-<#--
-  Generates a Java interface
-  
-  @params    ASTCDInterface $ast
-  @result    mc.javadsl.JavaDSL.CompilationUnit
-  
--->
-${tc.signature("visitorPackage", "visitorType")}
-
 <#assign genHelper = glex.getGlobalValue("astHelper")>
-
-import ${visitorPackage}.${visitorType};
-
-public interface ${ast.getName()} extends ${tc.include("ast.AstExtendedInterfaces")} ${genHelper.getASTNodeBaseType()} {
-  <#-- generate all methods -->
-  <#list ast.getCDMethods() as method>
-    ${tc.includeArgs("ast.ClassMethod", [method, ast])}
-  </#list>
-
-  public de.monticore.ast.ASTNode deepClone();
-
-  public boolean equals(Object o);
-
-  public boolean equalsWithComments(Object o);
-
-  public boolean deepEquals(Object o);
   
-  public boolean deepEquals(Object o, boolean forceSameOrder);
+<#-- Copyright -->
+${tc.defineHookPoint("JavaCopyright")}
 
-  public boolean deepEqualsWithComments(Object o);
+${tc.signature("ast", "grammarName", "packageURI")}
 
-  public boolean deepEqualsWithComments(Object o, boolean forceSameOrder);
-  
-  public void accept(${visitorType} visitor);
-   
-  <#-- member HOOK -->
-  ${tc.defineHookPoint("<Block>?InterfaceContent:Members")}
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EEnum;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.EDataType;
+
+public interface ${ast.getName()} extends EPackage {
+    // The package name.
+    String eNAME = "${grammarName}";
+    // The package namespace URI.
+    String eNS_URI = "${packageURI}";
+    // The package namespace name.
+    String eNS_PREFIX = "${grammarName}";
+    // The singleton instance of the package.
+    ${ast.getName()} eINSTANCE = ${grammarName}PackageImpl.init();
+ <#--   ${op.includeTemplates(ePackageIDCalculationMain, ast)}
+    ${op.includeTemplates(ePackageMetaObjectGetMethodsMain, ast.getFiles())} -->    
+    // Returns the factory that creates the instances of the model.
+    ${grammarName}Factory get${grammarName}Factory();
+    
+     /**
+     * <!-- begin-user-doc -->
+     * Defines literals for the meta objects that represent
+     * <ul>
+     *   <li>each class,</li>
+     *   <li>each feature of each class,</li>
+     *   <li>each enum,</li>
+     *   <li>and each data type</li>
+     * </ul>
+     * <!-- end-user-doc -->
+     */
+     interface Literals {
+       <#--  ${op.includeTemplates(ePackageLiteralMain, ast.getFiles())} --> 
+     }
 }
