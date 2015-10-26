@@ -332,6 +332,12 @@
         <artifactId>monticore-generator</artifactId>
         <version>${project.version}</version>
       </dependency>
+      
+      <dependency>
+        <groupId>de.monticore</groupId>
+        <artifactId>monticore-emf-runtime</artifactId>
+        <version>${project.version}</version>
+      </dependency>
 
       <!-- Java -->
       <dependency>
