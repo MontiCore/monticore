@@ -24,6 +24,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import de.monticore.ast.ASTNode;
+import mc.GeneratorIntegrationsTest;
 import mc.feature.visitor.inheritance.a._ast.ASTXA;
 import mc.feature.visitor.inheritance.b._ast.ASTXB;
 import mc.feature.visitor.inheritance.c._ast.ASTXC;
@@ -37,7 +38,7 @@ import mc.feature.visitor.inheritance.c._visitor.CVisitor;
  * 
  * @author Robert Heim
  */
-public class VisitorTest {
+public class VisitorTest extends GeneratorIntegrationsTest {
   @Test
   public void testSimple() {
     SimpleVisitor v = new SimpleVisitor();

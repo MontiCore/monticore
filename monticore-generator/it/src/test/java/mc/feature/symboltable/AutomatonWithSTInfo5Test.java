@@ -21,6 +21,7 @@ package mc.feature.symboltable;
 
 import java.util.Collection;
 
+import mc.GeneratorIntegrationsTest;
 import mc.feature.symboltable.automatonwithstinfo5._symboltable.AutomatonKind;
 import mc.feature.symboltable.automatonwithstinfo5._symboltable.AutomatonResolvingFilter;
 import mc.feature.symboltable.automatonwithstinfo5._symboltable.AutomatonScope;
@@ -43,7 +44,7 @@ import mc.feature.symboltable.automatonwithstinfo5._symboltable.TransitionSymbol
 import mc.feature.symboltable.automatonwithstinfo5._symboltable.TransitionSymbolReference;
 import org.junit.Test;
 
-public class AutomatonWithSTInfo5Test {
+public class AutomatonWithSTInfo5Test extends GeneratorIntegrationsTest {
 
   /**
    * This test ensures that all expected classes are generated. Otherwise, the test will not compile

@@ -19,6 +19,7 @@
 
 package mc.feature.cocochecker;
 
+import mc.GeneratorIntegrationsTest;
 import mc.feature.cocochecker.a._ast.ASTANode;
 import mc.feature.cocochecker.a._ast.ASTX;
 import mc.feature.cocochecker.a._cocos.AASTXCoCo;
@@ -53,7 +54,7 @@ import static org.junit.Assert.*;
  * 
  * @author Robert Heim
  */
-public class CoCoCheckerTest {
+public class CoCoCheckerTest extends GeneratorIntegrationsTest {
   final StringBuilder checked = new StringBuilder();
   
   final private AASTXCoCo cocoA = new AASTXCoCo() {
