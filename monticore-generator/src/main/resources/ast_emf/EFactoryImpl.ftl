@@ -31,7 +31,7 @@ SUCH DAMAGE.
 ***************************************************************************************
 -->
 <#assign genHelper = glex.getGlobalValue("astHelper")>
-${tc.signature("ast", "grammarName", "packageURI")}
+${tc.signature("ast", "grammarName", "packageURI", "astClasses")}
   
 <#-- Copyright -->
 ${tc.defineHookPoint("JavaCopyright")}
@@ -70,6 +70,10 @@ public class ${ast.getName()} extends EFactoryImpl implements ${grammarName}Fact
     @Override
     public EObject create(EClass eClass) {
         switch (eClass.getClassifierID()) {
+        <#list astClasses as astClass>
+          case ${grammarName}Package.${astClass?upper_case}: return ${grammarName}NodeFactory.create${astClass}();
+        </#list>
+        
            <#-- ${op.includeTemplates(eFactoryImplReflectiveCreateMethod, ast.getFiles())} -->
             default:
                 throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");

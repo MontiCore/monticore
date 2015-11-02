@@ -35,7 +35,7 @@ SUCH DAMAGE.
 <#-- Copyright -->
 ${tc.defineHookPoint("JavaCopyright")}
 
-${tc.signature("ast", "grammarName", "packageURI")}
+${tc.signature("ast", "grammarName", "packageURI", "astClasses")}
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -53,11 +53,30 @@ public interface ${ast.getName()} extends EPackage {
     String eNS_PREFIX = "${grammarName}";
     // The singleton instance of the package.
     ${ast.getName()} eINSTANCE = ${grammarName}PackageImpl.init();
+    
+  <#--  TODO GV: interfaces, enums -->
+  <#list astClasses as astClass>
+    int ${astClass?upper_case} = ${astClass?index};
+  </#list>
+  
+   <#-- generate all attributes -->  
+  <#list ast.getCDAttributes() as attribute>
+    <#if !genHelper.isInherited(attribute)>
+  ${tc.include("ast.Attribute", attribute)}
+    </#if>
+  </#list>
  <#--   ${op.includeTemplates(ePackageIDCalculationMain, ast)}
-    ${op.includeTemplates(ePackageMetaObjectGetMethodsMain, ast.getFiles())} -->    
+    ${op.includeTemplates(ePackageMetaObjectGetMethodsMain, ast.getFiles())} -->   
+     
     // Returns the factory that creates the instances of the model.
     ${grammarName}Factory get${grammarName}Factory();
     
+    <#--  TODO GV: interfaces, enums -->
+    <#list astClasses as astClass>
+    EClass get${astClass[3..]}();
+       <#--  ${op.includeTemplates(ePackageLiteralMain, ast.getFiles())} --> 
+    </#list>
+     
      /**
      * <!-- begin-user-doc -->
      * Defines literals for the meta objects that represent
@@ -70,6 +89,10 @@ public interface ${ast.getName()} extends EPackage {
      * <!-- end-user-doc -->
      */
      interface Literals {
+     <#--  TODO GV: interfaces, enums -->
+     <#list astClasses as astClass>
+       EClass ${astClass[3..]?upper_case} = eINSTANCE.get${astClass[3..]}();
        <#--  ${op.includeTemplates(ePackageLiteralMain, ast.getFiles())} --> 
+     </#list>
      }
 }

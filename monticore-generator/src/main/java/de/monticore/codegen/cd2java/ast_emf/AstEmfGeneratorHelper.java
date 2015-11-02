@@ -21,6 +21,7 @@ package de.monticore.codegen.cd2java.ast_emf;
 
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.symboltable.GlobalScope;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 
 /**
@@ -41,5 +42,12 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
   
   public static String getEmfRuntimePackage() {
     return "de.monticore.emf._ast";
+  }
+  
+  public static String getSuperClass(ASTCDClass clazz) {
+    if (!clazz.getSuperclass().isPresent()) {
+      return "de.monticore.emf.ASTEObjectImplNode";
+    }
+    return clazz.printSuperClass();
   }
 }

@@ -28,7 +28,7 @@
     <!-- .. Libraries ..................................................... -->
 
     <mc.java.version>4.3.0</mc.java.version>
-    <cd4analysis.version>1.3.5</cd4analysis.version>
+    <cd4analysis.version>1.3.6-SNAPSHOT</cd4analysis.version>
 
     <antlr.version>4.5</antlr.version>
     <commons.io.version>2.4</commons.io.version>
@@ -55,7 +55,7 @@
     <reflections.version>0.9.9</reflections.version>
     <se-commons.version>1.7.6</se-commons.version>
     <slf4j.version>1.7.10</slf4j.version>
-    <freemarker.version>2.3.22</freemarker.version>
+    <freemarker.version>2.3.23</freemarker.version>
     <emf.common.version>2.5.0</emf.common.version>
     <emf.ecore.version>2.5.0</emf.ecore.version>
     <emf.ecore.xmi.version>2.5.0</emf.ecore.xmi.version>

@@ -35,7 +35,7 @@ SUCH DAMAGE.
 <#-- Copyright -->
 ${tc.defineHookPoint("JavaCopyright")}
 
-${tc.signature("ast", "grammarName")}
+${tc.signature("ast", "grammarName", "astClasses")}
 
 <#-- set package -->
 package ${genHelper.getAstPackage()};
@@ -52,108 +52,128 @@ import ${genHelper.getEmfRuntimePackage()}.*;
 
 public class ${ast.getName()} extends EPackageImpl implements ${grammarName}Package {
    <#--TODO GV   ${op.includeTemplates(ePackageImplEClassInit, ast.getFiles())} -->
+ 
+  <#--  TODO GV: interfaces, enums -->
+  <#list astClasses as astClass>
+  private EClass ${astClass[3..]?uncap_first}EClass = null;
+  </#list>
     
-    /**
-     * Creates an instance of the model <b>Package</b>, registered with
-     * {@link org.eclipse.emf.ecore.EPackage.Registry EPackage.Registry} by the package
-     * package URI value.
-     * <p>Note: the correct way to create the package is via the static
-     * factory method {@link #init init()}, which also performs
-     * initialization of the package, or returns the registered package,
-     * if one already exists.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see org.eclipse.emf.ecore.EPackage.Registry
-     */
-    private ${ast.getName()}() {
-        super(eNS_URI, ${grammarName}Factory.eINSTANCE);
+  /**
+   * Creates an instance of the model <b>Package</b>, registered with
+   * {@link org.eclipse.emf.ecore.EPackage.Registry EPackage.Registry} by the package
+   * package URI value.
+   * <p>Note: the correct way to create the package is via the static
+   * factory method {@link #init init()}, which also performs
+   * initialization of the package, or returns the registered package,
+   * if one already exists.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.emf.ecore.EPackage.Registry
+  */
+  private ${ast.getName()}() {
+    super(eNS_URI, ${grammarName}Factory.eINSTANCE);
+  }
+    
+  private static boolean isInited = false;
+    
+  /**
+   * Creates, registers, and initializes the <b>Package</b> for this model, and for any others upon which it depends.
+   * 
+   * This method is used to initialize eInstance when that field is accessed.
+   * Clients should not invoke it directly. Instead, they should simply access that field to obtain the package.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #eNS_URI
+   * @see #createPackageContents()
+   * @see #initializePackageContents()
+  */
+  public static ${grammarName}Package init() {
+    if (isInited) {
+      return (${grammarName}Package)EPackage.Registry.INSTANCE.getEPackage(${grammarName}Package.eNS_URI);
     }
-    
-    private static boolean isInited = false;
-    
-      /**
-     * Creates, registers, and initializes the <b>Package</b> for this model, and for any others upon which it depends.
-     * 
-     * This method is used to initialize eInstance when that field is accessed.
-     * Clients should not invoke it directly. Instead, they should simply access that field to obtain the package.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #eNS_URI
-     * @see #createPackageContents()
-     * @see #initializePackageContents()
-     */
-    public static ${grammarName}Package init() {
-        if (isInited) return (${grammarName}Package)EPackage.Registry.INSTANCE.getEPackage(${grammarName}Package.eNS_URI);
         
-        // Obtain or create and register package
-        ${ast.getName()} the${grammarName}Package = (${ast.getName()})(EPackage.Registry.INSTANCE.get(eNS_URI) instanceof ${ast.getName()} ? EPackage.Registry.INSTANCE.get(eNS_URI) : new ${ast.getName()}());
+    // Obtain or create and register package
+    ${ast.getName()} the${grammarName}Package = (${ast.getName()})(EPackage.Registry.INSTANCE.get(eNS_URI) instanceof ${ast.getName()} ? EPackage.Registry.INSTANCE.get(eNS_URI) : new ${ast.getName()}());
 
-        isInited = true;
-        
-        // Obtain or create and register interdependencies
-        ASTENodePackageImpl theASTENodePackage = (ASTENodePackageImpl) (EPackage.Registry.INSTANCE.getEPackage(ASTENodePackage.eNS_URI)  instanceof ASTENodePackage ? 
+    isInited = true;
+       
+    // Obtain or create and register interdependencies
+    ASTENodePackageImpl theASTENodePackage = (ASTENodePackageImpl) (EPackage.Registry.INSTANCE.getEPackage(ASTENodePackage.eNS_URI)  instanceof ASTENodePackage ? 
                                                                     EPackage.Registry.INSTANCE.getEPackage(ASTENodePackage.eNS_URI) : ASTENodePackage.eINSTANCE);
         
      <#--TODO GV   ${op.includeTemplates(ePackageImplRegisterSuperGrammar, ast.getSuperGrammars())} -->
         
-        // Create package meta-data objects
-        the${grammarName}Package.createPackageContents();
-        theASTENodePackage.createPackageContents();
+     // Create package meta-data objects
+     the${grammarName}Package.createPackageContents();
+     theASTENodePackage.createPackageContents();
    <#--TODO GV       ${op.includeTemplates(ePackageImplCreateSuperGrammar, ast.getSuperGrammars())} -->
         
-        // Initialize created meta-data
-        the${grammarName}Package.initializePackageContents();
-        theASTENodePackage.initializePackageContents();
+    // Initialize created meta-data
+    the${grammarName}Package.initializePackageContents();
+    theASTENodePackage.initializePackageContents();
        <#--TODO GV   ${op.includeTemplates(ePackageImplInitSuperGrammar, ast.getSuperGrammars())} -->
         
-        // Mark meta-data to indicate it can't be changed
-        the${grammarName}Package.freeze();
+    // Mark meta-data to indicate it can't be changed
+    the${grammarName}Package.freeze();
 
   
-        // Update the registry and return the package
-        EPackage.Registry.INSTANCE.put(${grammarName}Package.eNS_URI, the${grammarName}Package);
-        return the${grammarName}Package;
-    }
+    // Update the registry and return the package
+    EPackage.Registry.INSTANCE.put(${grammarName}Package.eNS_URI, the${grammarName}Package);
+    return the${grammarName}Package;
+  }
     
    <#--TODO GV   ${op.includeTemplates(ePackageImplMetaObjectGetMethodsMain, ast.getFiles())} -->
     
-    public ${grammarName}Factory get${grammarName}Factory() {
-        return (${grammarName}Factory)getEFactoryInstance();
+  public ${grammarName}Factory get${grammarName}Factory() {
+    return (${grammarName}Factory)getEFactoryInstance();
+  }
+    
+       <#--  TODO GV: interfaces, enums -->
+    <#list astClasses as astClass>
+  public EClass get${astClass[3..]}() {
+    return ${astClass[3..]?uncap_first}EClass;
+  }
+       <#--  ${op.includeTemplates(ePackageLiteralMain, ast.getFiles())} --> 
+    </#list>
+    
+  private boolean isCreated = false;
+    
+  /**
+  * Creates the meta-model objects for the package.  This method is
+  * guarded to have no affect on any invocation but its first.
+  */
+  public void createPackageContents() {
+    if (isCreated) {
+      return;
     }
+    isCreated = true;
+      
+    // Create classes and their features
+       <#--TODO GV   ${op.includeTemplates(ePackageImplCreatePackageContentsMain, ast.getFiles())} -->
+  }
     
-    private boolean isCreated = false;
+  private boolean isInitialized = false;
     
-    /**
-     * Creates the meta-model objects for the package.  This method is
-     * guarded to have no affect on any invocation but its first.
-     */
-    public void createPackageContents() {
-        if (isCreated) return;
-        isCreated = true;
-        // Create classes and their features
-       <#--TODO GV   ${op.includeTemplates(ePackageImplCreatePackageContentsMain, ast.getFiles())} --
+  /**
+   * Complete the initialization of the package and its meta-model.  This
+   * method is guarded to have no affect on any invocation but its first.
+   */
+  public void initializePackageContents() {
+    if (isInitialized) {
+      return;
     }
-    
-    private boolean isInitialized = false;
-    
-    /**
-     * Complete the initialization of the package and its meta-model.  This
-     * method is guarded to have no affect on any invocation but its first.
-     */
-    public void initializePackageContents() {
-        if (isInitialized) return;
-        isInitialized = true;
+    isInitialized = true;
 
-        // Initialize package
-        setName(eNAME);
-        setNsPrefix(eNS_PREFIX);
-        setNsURI(eNS_URI);
-        
+    // Initialize package
+    setName(eNAME);
+    setNsPrefix(eNS_PREFIX);
+    setNsURI(eNS_URI);
+       
       <#--TODO GV    ${op.includeTemplates(ePackageImplInitializePackageContentsMain, ast)} -->
         
-        // Create resource
-        createResource(eNS_URI);
+    // Create resource
+    createResource(eNS_URI);
 
-    }
+  }
     
 }
