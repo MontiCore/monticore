@@ -27,11 +27,12 @@ import java.nio.file.Paths;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.ResolverConfiguration;
+import mc.GeneratorIntegrationsTest;
 import mc.embedding.host._symboltable.HostLanguage;
 import mc.embedding.host._symboltable.HostSymbol;
 import org.junit.Test;
 
-public class HostTest {
+public class HostTest extends GeneratorIntegrationsTest {
 
   @Test
   public void test() {

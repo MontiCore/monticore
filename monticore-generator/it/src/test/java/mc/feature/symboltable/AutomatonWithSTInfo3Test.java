@@ -22,6 +22,7 @@ package mc.feature.symboltable;
 import static org.junit.Assert.assertFalse;
 
 import de.monticore.symboltable.ScopeSpanningSymbol;
+import mc.GeneratorIntegrationsTest;
 import mc.feature.symboltable.automatonwithstinfo3._symboltable.AutomatonKind;
 import mc.feature.symboltable.automatonwithstinfo3._symboltable.AutomatonResolvingFilter;
 import mc.feature.symboltable.automatonwithstinfo3._symboltable.AutomatonSymbol;
@@ -38,7 +39,7 @@ import mc.feature.symboltable.automatonwithstinfo3._symboltable.StateSymbolEMPTY
 import mc.feature.symboltable.automatonwithstinfo3._symboltable.StateSymbolReference;
 import org.junit.Test;
 
-public class AutomatonWithSTInfo3Test {
+public class AutomatonWithSTInfo3Test extends GeneratorIntegrationsTest {
 
   /**
    * This test ensures that all expected classes are generated. Otherwise, the test will not compile

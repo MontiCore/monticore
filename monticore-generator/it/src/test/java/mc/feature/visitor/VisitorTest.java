@@ -27,6 +27,7 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.util.Optional;
 
+import mc.GeneratorIntegrationsTest;
 import mc.feature.visitor.sub._ast.ASTB;
 import mc.feature.visitor.sub._ast.ASTE;
 import mc.feature.visitor.sub._parser.AMCParser;
@@ -42,13 +43,7 @@ import org.junit.Test;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
 
-public class VisitorTest {
-  
-  @BeforeClass
-  public static void disableFailQuick() {
-    Slf4jLog.init();
-    Log.enableFailQuick(false);
-  }
+public class VisitorTest extends GeneratorIntegrationsTest {
   
   @Test
   public void testConcreteVisitor() throws IOException {

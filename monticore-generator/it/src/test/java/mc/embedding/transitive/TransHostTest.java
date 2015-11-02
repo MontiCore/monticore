@@ -27,12 +27,13 @@ import java.nio.file.Paths;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.ResolverConfiguration;
+import mc.GeneratorIntegrationsTest;
 import mc.embedding.transitive.transhost._symboltable.TransHostLanguage;
 import mc.embedding.transitive.transhost._symboltable.TransStartSymbol;
 
 import org.junit.Test;
 
-public class TransHostTest {
+public class TransHostTest extends GeneratorIntegrationsTest {
 
   @Test
   public void test() {
