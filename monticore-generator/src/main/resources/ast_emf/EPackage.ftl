@@ -45,54 +45,66 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EDataType;
 
 public interface ${ast.getName()} extends EPackage {
-    // The package name.
-    String eNAME = "${grammarName}";
-    // The package namespace URI.
-    String eNS_URI = "${packageURI}";
-    // The package namespace name.
-    String eNS_PREFIX = "${grammarName}";
-    // The singleton instance of the package.
-    ${ast.getName()} eINSTANCE = ${grammarName}PackageImpl.init();
+  // The package name.
+  String eNAME = "${grammarName}";
+  // The package namespace URI.
+  String eNS_URI = "${packageURI}";
+  // The package namespace name.
+  String eNS_PREFIX = "${grammarName}";
+  // The singleton instance of the package.
+  ${ast.getName()} eINSTANCE = ${grammarName}PackageImpl.init();
+  
+  int Constants${grammarName} = 0;
     
   <#--  TODO GV: interfaces, enums -->
   <#list astClasses as astClass>
-    int ${astClass?upper_case} = ${astClass?index};
+  int ${astClass} = ${astClass?counter};
   </#list>
   
    <#-- generate all attributes -->  
   <#list ast.getCDAttributes() as attribute>
     <#if !genHelper.isInherited(attribute)>
-  ${tc.include("ast.Attribute", attribute)}
+  ${tc.include("ast.Constant", attribute)}
     </#if>
   </#list>
  <#--   ${op.includeTemplates(ePackageIDCalculationMain, ast)}
     ${op.includeTemplates(ePackageMetaObjectGetMethodsMain, ast.getFiles())} -->   
-     
-    // Returns the factory that creates the instances of the model.
-    ${grammarName}Factory get${grammarName}Factory();
     
-    <#--  TODO GV: interfaces, enums -->
-    <#list astClasses as astClass>
-    EClass get${astClass[3..]}();
-       <#--  ${op.includeTemplates(ePackageLiteralMain, ast.getFiles())} --> 
-    </#list>
+    // Returns the factory that creates the instances of the model.
+  ${grammarName}Factory get${grammarName}Factory();
+  
+  EEnum getConstants${grammarName}();
+    
+  <#--  TODO GV: interfaces, enums -->
+  <#list astClasses as astClass>
+  EClass get${astClass[3..]}();
+  </#list>
+    
+  <#-- generate all methods -->  
+  <#list ast.getCDMethods() as method>
+  ${tc.includeArgs("ast.ClassMethod", [method, ast])}
+  </#list>
      
-     /**
-     * <!-- begin-user-doc -->
-     * Defines literals for the meta objects that represent
-     * <ul>
-     *   <li>each class,</li>
-     *   <li>each feature of each class,</li>
-     *   <li>each enum,</li>
-     *   <li>and each data type</li>
-     * </ul>
-     * <!-- end-user-doc -->
-     */
-     interface Literals {
-     <#--  TODO GV: interfaces, enums -->
-     <#list astClasses as astClass>
-       EClass ${astClass[3..]?upper_case} = eINSTANCE.get${astClass[3..]}();
-       <#--  ${op.includeTemplates(ePackageLiteralMain, ast.getFiles())} --> 
-     </#list>
-     }
+  <#--  ${op.includeTemplates(ePackageLiteralMain, ast.getFiles())} --> 
+  /**
+   * <!-- begin-user-doc -->
+   * Defines literals for the meta objects that represent
+   * <ul>
+   *   <li>each class,</li>
+   *   <li>each feature of each class,</li>
+   *   <li>each enum,</li>
+   *   <li>and each data type</li>
+   * </ul>
+   * <!-- end-user-doc -->
+  */
+  interface Literals {
+  
+    EEnum Constants${grammarName} = eINSTANCE.getConstants${grammarName}();
+    
+  <#--  TODO GV: interfaces, enums -->
+  <#list astClasses as astClass>
+    EClass ${astClass} = eINSTANCE.get${astClass[3..]}();
+    <#--  ${op.includeTemplates(ePackageLiteralMain, ast.getFiles())} --> 
+  </#list>
+  }
 }

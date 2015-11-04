@@ -51,12 +51,18 @@ import org.eclipse.emf.ecore.impl.EPackageImpl;
 import ${genHelper.getEmfRuntimePackage()}.*;
 
 public class ${ast.getName()} extends EPackageImpl implements ${grammarName}Package {
-   <#--TODO GV   ${op.includeTemplates(ePackageImplEClassInit, ast.getFiles())} -->
+
+  <#--TODO GV   ${op.includeTemplates(ePackageImplEClassInit, ast.getFiles())} -->
  
   <#--  TODO GV: interfaces, enums -->
   <#list astClasses as astClass>
   private EClass ${astClass[3..]?uncap_first}EClass = null;
   </#list>
+  private EEnum constants${grammarName}EEnum = null;
+  
+  private boolean isCreated = false;
+    
+  private boolean isInitialized = false;
     
   /**
    * Creates an instance of the model <b>Package</b>, registered with
@@ -101,79 +107,46 @@ public class ${ast.getName()} extends EPackageImpl implements ${grammarName}Pack
     ASTENodePackageImpl theASTENodePackage = (ASTENodePackageImpl) (EPackage.Registry.INSTANCE.getEPackage(ASTENodePackage.eNS_URI)  instanceof ASTENodePackage ? 
                                                                     EPackage.Registry.INSTANCE.getEPackage(ASTENodePackage.eNS_URI) : ASTENodePackage.eINSTANCE);
         
-     <#--TODO GV   ${op.includeTemplates(ePackageImplRegisterSuperGrammar, ast.getSuperGrammars())} -->
+    <#--TODO GV   ${op.includeTemplates(ePackageImplRegisterSuperGrammar, ast.getSuperGrammars())} -->
         
-     // Create package meta-data objects
-     the${grammarName}Package.createPackageContents();
-     theASTENodePackage.createPackageContents();
-   <#--TODO GV       ${op.includeTemplates(ePackageImplCreateSuperGrammar, ast.getSuperGrammars())} -->
+    // Create package meta-data objects
+    the${grammarName}Package.createPackageContents();
+    theASTENodePackage.createPackageContents();
+    <#--TODO GV       ${op.includeTemplates(ePackageImplCreateSuperGrammar, ast.getSuperGrammars())} -->
         
     // Initialize created meta-data
     the${grammarName}Package.initializePackageContents();
     theASTENodePackage.initializePackageContents();
-       <#--TODO GV   ${op.includeTemplates(ePackageImplInitSuperGrammar, ast.getSuperGrammars())} -->
+    <#--TODO GV   ${op.includeTemplates(ePackageImplInitSuperGrammar, ast.getSuperGrammars())} -->
         
     // Mark meta-data to indicate it can't be changed
     the${grammarName}Package.freeze();
 
-  
     // Update the registry and return the package
     EPackage.Registry.INSTANCE.put(${grammarName}Package.eNS_URI, the${grammarName}Package);
     return the${grammarName}Package;
   }
     
-   <#--TODO GV   ${op.includeTemplates(ePackageImplMetaObjectGetMethodsMain, ast.getFiles())} -->
-    
   public ${grammarName}Factory get${grammarName}Factory() {
     return (${grammarName}Factory)getEFactoryInstance();
   }
+  
+  public EEnum getConstants${grammarName}(){
+    return constants${grammarName}EEnum;
+  }
     
-       <#--  TODO GV: interfaces, enums -->
-    <#list astClasses as astClass>
+  <#--  ${op.includeTemplates(ePackageLiteralMain, ast.getFiles())} --> 
+  <#--  TODO GV: interfaces, enums -->
+  <#list astClasses as astClass>
   public EClass get${astClass[3..]}() {
     return ${astClass[3..]?uncap_first}EClass;
   }
-       <#--  ${op.includeTemplates(ePackageLiteralMain, ast.getFiles())} --> 
-    </#list>
-    
-  private boolean isCreated = false;
-    
-  /**
-  * Creates the meta-model objects for the package.  This method is
-  * guarded to have no affect on any invocation but its first.
-  */
-  public void createPackageContents() {
-    if (isCreated) {
-      return;
-    }
-    isCreated = true;
-      
-    // Create classes and their features
-       <#--TODO GV   ${op.includeTemplates(ePackageImplCreatePackageContentsMain, ast.getFiles())} -->
-  }
-    
-  private boolean isInitialized = false;
-    
-  /**
-   * Complete the initialization of the package and its meta-model.  This
-   * method is guarded to have no affect on any invocation but its first.
-   */
-  public void initializePackageContents() {
-    if (isInitialized) {
-      return;
-    }
-    isInitialized = true;
-
-    // Initialize package
-    setName(eNAME);
-    setNsPrefix(eNS_PREFIX);
-    setNsURI(eNS_URI);
-       
-      <#--TODO GV    ${op.includeTemplates(ePackageImplInitializePackageContentsMain, ast)} -->
-        
-    // Create resource
-    createResource(eNS_URI);
-
-  }
-    
+  </#list>
+   
+  <#--  ${op.includeTemplates(ePackageImplMetaObjectGetMethodsMain, ast.getFiles())} -->
+  <#-- generate all methods -->  
+  <#list ast.getCDMethods() as method>
+  ${tc.includeArgs("ast.ClassMethod", [method, ast])}
+  </#list>  
+   
 }

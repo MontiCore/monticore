@@ -30,19 +30,25 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-<#--
-  Generates a Java method
-  
-  @params    ASTCDMethod     $ast
-  @result    
-  
--->
-  ${tc.signature("ast", "astType")}
+  ${tc.signature("grammarName", "astClasses", "emfAttributes")}
   <#assign genHelper = glex.getGlobalValue("astHelper")>
-  ${ast.printModifier()} ${ast.printReturnType()} ${ast.getName()}(${ast.printParametersDecl()}) ${ast.printThrowsDecl()}<#if genHelper.isAbstract(ast, astType)>;
-  <#else>
-  { 
-     ${tc.include("ast.ErrorIfNull")}
-     ${tc.includeArgs("ast.EmptyMethodBody", [ast, astType])}
-  } 
-  </#if>
+/**
+ * Creates the meta-model objects for the package.  This method is
+ * guarded to have no affect on any invocation but its first.
+*/
+    if (isCreated) {
+      return;
+    }
+    isCreated = true;
+    
+    // Create classes and their features
+       <#--TODO GV   ePackageImplCreatePackageContentsMain, ast.getFiles() -->
+    constants${grammarName}EEnum = createEEnum(Constants${grammarName});
+  
+  <#list astClasses as astClass>
+    ${astClass.getName()[3..]?lower_case}EClass = createEClass(${astClass.getName()});
+  </#list>  
+  
+  <#list emfAttributes as emfAttribute>
+    create${emfAttribute.getEmfType()}(${astHelper.getPlainName(emfAttribute.getCdType())[3..]?lower_case}EClass, ${emfAttribute.getFullName()});
+  </#list>  

@@ -31,18 +31,12 @@ SUCH DAMAGE.
 ***************************************************************************************
 -->
 <#--
-  Generates a Java method
+  Generates a Java attribute for a constant
   
-  @params    ASTCDMethod     $ast
+  @params    ASTCDAttribute     $ast
   @result    
   
 -->
-  ${tc.signature("ast", "astType")}
   <#assign genHelper = glex.getGlobalValue("astHelper")>
-  ${ast.printModifier()} ${ast.printReturnType()} ${ast.getName()}(${ast.printParametersDecl()}) ${ast.printThrowsDecl()}<#if genHelper.isAbstract(ast, astType)>;
-  <#else>
-  { 
-     ${tc.include("ast.ErrorIfNull")}
-     ${tc.includeArgs("ast.EmptyMethodBody", [ast, astType])}
-  } 
-  </#if>
+  <#assign attributeValue = genHelper.getAstAttributeValue(ast)>
+  ${ast.printModifier()} ${ast.printType()} ${ast.getName()}<#if attributeValue?has_content> = ${attributeValue}</#if>;

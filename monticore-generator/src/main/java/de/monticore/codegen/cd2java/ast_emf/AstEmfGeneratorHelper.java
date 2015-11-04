@@ -19,10 +19,22 @@
 
 package de.monticore.codegen.cd2java.ast_emf;
 
+import static de.se_rwth.commons.Util.listTillNull;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.symboltable.GlobalScope;
+import de.monticore.symboltable.Symbol;
+import de.monticore.types.TypesPrinter;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
 
 /**
  * TODO: Write me!
@@ -31,6 +43,8 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
  * @version $Revision$, $Date$
  */
 public class AstEmfGeneratorHelper extends AstGeneratorHelper {
+  
+  private Map<ASTCDType, List<EmfAttribute>> emfAttributes = new LinkedHashMap<>();
   
   public AstEmfGeneratorHelper(ASTCDCompilationUnit topAst, GlobalScope symbolTable) {
     super(topAst, symbolTable);
@@ -49,5 +63,31 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
       return "de.monticore.emf.ASTEObjectImplNode";
     }
     return clazz.printSuperClass();
+  }
+  
+  public void addEmfAttribute(ASTCDType type, EmfAttribute attribute) {
+    List<EmfAttribute> attributes = emfAttributes.get(type);
+    if (attributes == null) {
+      attributes = new ArrayList<>();
+      emfAttributes.put(type, attributes);
+    }
+    attributes.add(attribute);
+  }
+  
+  public List<EmfAttribute> getEmfAttributes(ASTCDType type) {
+    if (!emfAttributes.containsKey(type)) {
+      return new ArrayList<>();
+    }
+    return emfAttributes.get(type);
+  }
+  
+  public List<EmfAttribute> getAllEmfAttributes() {
+    return emfAttributes.keySet().stream()
+        .flatMap(type -> getEmfAttributes(type).stream()).collect(Collectors.toList());
+  }
+  
+  public static boolean istAstENodeList(ASTCDAttribute attribute) {
+    return TypesPrinter.printTypeWithoutTypeArgumentsAndDimension(attribute.getType()).startsWith(
+        "de.monticore.emf._ast.ASTENodeList");
   }
 }

@@ -71,7 +71,7 @@ public class ${ast.getName()} extends EFactoryImpl implements ${grammarName}Fact
     public EObject create(EClass eClass) {
         switch (eClass.getClassifierID()) {
         <#list astClasses as astClass>
-          case ${grammarName}Package.${astClass?upper_case}: return ${grammarName}NodeFactory.create${astClass}();
+          case ${grammarName}Package.${astClass}: return ${grammarName}NodeFactory.create${astClass}();
         </#list>
         
            <#-- ${op.includeTemplates(eFactoryImplReflectiveCreateMethod, ast.getFiles())} -->

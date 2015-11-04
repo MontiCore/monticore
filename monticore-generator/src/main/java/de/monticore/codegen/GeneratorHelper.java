@@ -961,11 +961,11 @@ public class GeneratorHelper extends TypesHelper {
   /**
    * Returns name without suffix for HW classes
    * 
-   * @param clazz
+   * @param type
    * @return
    */
-  public static String getPlainName(ASTCDClass clazz) {
-    String name = clazz.getName();
+  public static String getPlainName(ASTCDType type) {
+    String name = type.getName();
     if (isSupertypeOfHWType(name)) {
       return name.substring(0, name.lastIndexOf(TransformationHelper.GENERATED_CLASS_SUFFIX));
     }
