@@ -20,16 +20,15 @@
 package de.monticore.codegen.cd2java.ast;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static de.monticore.codegen.GeneratorHelper.getPlainName;
 import static de.se_rwth.commons.Names.getQualifier;
 import static de.se_rwth.commons.Names.getSimpleName;
 import groovyjarjarantlr.ANTLRException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.RecognitionException;
@@ -451,7 +450,7 @@ public class CdDecorator {
     nodeFactoryClass.setName(nodeFactoryName);
     
     // Add factory-attributes for all ast classes
-    Set<String> astClasses = new LinkedHashSet<>();
+    List<String> astClasses = new ArrayList<>();
     nativeClasses.stream().filter(e -> e.getModifier().isPresent())
         .filter(e -> !e.getModifier().get().isAbstract())
         .forEach(e -> astClasses.add(GeneratorHelper.getPlainName(e)));
@@ -496,9 +495,14 @@ public class CdDecorator {
       }
     }
     
+    List<String> astNotListClasses = nativeClasses.stream()
+        .filter(e -> !astHelper.isAstListClass(e))
+        .map(e -> astHelper.getPlainName(e))
+        .collect(Collectors.toList());
+    
     cdDef.getCDClasses().add(nodeFactoryClass);
     glex.replaceTemplate("ast.ClassContent", nodeFactoryClass, new TemplateHookPoint(
-        "ast.AstNodeFactory", nodeFactoryClass, imports));
+        "ast.AstNodeFactory", nodeFactoryClass, imports, astNotListClasses));
     
   }
   

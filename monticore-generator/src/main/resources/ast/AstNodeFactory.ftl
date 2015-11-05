@@ -30,7 +30,7 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-${tc.signature("ast", "astImports")}
+${tc.signature("ast", "astImports", "astClasses")}
 <#assign genHelper = glex.getGlobalValue("astHelper")>
   
 <#-- Copyright -->
@@ -39,9 +39,10 @@ ${tc.defineHookPoint("JavaCopyright")}
 <#-- set package -->
 package ${genHelper.getAstPackage()};
 
-import static com.google.common.base.Preconditions.*;
-
 import java.util.ArrayList;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.impl.EFactoryImpl;
 import de.se_rwth.commons.logging.Log;
 
 <#-- handle ast imports from the super grammars -->
@@ -50,9 +51,9 @@ import ${astImport};
 </#list>
 
 
-public class ${ast.getName()} {
+public class ${ast.getName()} extends EFactoryImpl implements ${genHelper.getCdName()}Factory {
   
-  private static ${ast.getName()} getFactory() {
+  static ${ast.getName()} getFactory() {
     if (factory == null) {
       factory = new ${ast.getName()}();
     }
@@ -60,6 +61,18 @@ public class ${ast.getName()} {
   }
   
   protected static ${ast.getName()} factory = null;
+  
+  @Override
+  public EObject create(EClass eClass) {
+    switch (eClass.getClassifierID()) {
+    <#list astClasses as astClass>
+      case ${genHelper.getCdName()}Package.${astClass}: return ${genHelper.getCdName()}NodeFactory.create${astClass}();
+    </#list>
+    <#-- eFactoryImplReflectiveCreateMethod -->
+      default:
+        throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
+    }
+  }
 
 <#list ast.getCDAttributes() as attribute>
   ${tc.include("ast.Attribute", attribute)}

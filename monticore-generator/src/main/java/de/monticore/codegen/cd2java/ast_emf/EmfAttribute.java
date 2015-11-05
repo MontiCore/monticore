@@ -90,20 +90,49 @@ public class EmfAttribute {
     this.isAstNode = isAstNode;
   }
   
-  private boolean isASTList;
+  private boolean isAstList;
   
   /**
    * @return isASTList
    */
-  public boolean isASTList() {
-    return this.isASTList;
+  public boolean isAstList() {
+    return this.isAstList;
   }
   
   /**
    * @param isASTList the isASTList to set
    */
-  public void setASTList(boolean isASTList) {
-    this.isASTList = isASTList;
+  public void setAstList(boolean isASTList) {
+    this.isAstList = isASTList;
+  }
+  
+  public String getTypeName() {
+    return TypesPrinter.printType(getCdAttribute().getType());
+  }
+  
+  public String getDefaultValue() {
+    if (isAstNode()) {
+      return "null";
+    }
+    String typeName = getTypeName();
+    switch (typeName) {
+      case "boolean":
+        return "false";
+      case "int":
+        return "0";
+      case "short":
+        return "(short) 0";
+      case "long":
+        return "0";
+      case "float":
+        return "0.0f";
+      case "double":
+        return "0.0";
+      case "char":
+        return "'\u0000'";
+      default:
+        return "null";
+    }
   }
   
   public String getEmfType() {
@@ -113,7 +142,7 @@ public class EmfAttribute {
   public String getEDataType() {
     String type = Names.getSimpleName(TypesPrinter
         .printTypeWithoutTypeArgumentsAndDimension(getCdAttribute().getType()));
-    if (!isASTList()) {
+    if (!isAstList()) {
       return type;
     }
     return type.substring(0,
@@ -130,7 +159,7 @@ public class EmfAttribute {
     this.cdType = type;
     this.fullName = name;
     this.isAstNode = isAstNode;
-    this.isASTList = isAstList;
+    this.isAstList = isAstList;
   }
   
 }

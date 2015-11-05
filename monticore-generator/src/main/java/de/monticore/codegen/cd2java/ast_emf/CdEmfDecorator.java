@@ -8,7 +8,6 @@ package de.monticore.codegen.cd2java.ast_emf;
 import static de.monticore.codegen.GeneratorHelper.getPlainName;
 import groovyjarjarantlr.ANTLRException;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +18,7 @@ import com.google.common.collect.Lists;
 
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstAdditionalAttributes;
+import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.ast.CdDecorator;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
@@ -28,13 +28,14 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.symboltable.GlobalScope;
-import de.monticore.types.TypesPrinter;
+import de.monticore.types.TypesHelper;
 import de.monticore.types.types._ast.ASTImportStatement;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDDefinition;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.se_rwth.commons.StringTransformations;
 
@@ -74,10 +75,11 @@ public class CdEmfDecorator extends CdDecorator {
     // .forEach(e ->
     // astNotAbstractClasses.add(GeneratorHelper.getPlainName(e)));
     
-    List<ASTCDClass> astNotListClasses = astNotAbstractClasses.stream()
+    List<ASTCDClass> astNotListClasses = nativeClasses.stream()
         .filter(e -> !astHelper.isAstListClass(e))
         .collect(Collectors.toList());
     // .forEach(e -> astNoListsClasses.add(GeneratorHelper.getPlainName(e)));
+    createEmfAttributes(astHelper, astNotListClasses);
     
     // Run over classdiagramm and converts cd types to mc-java types
     new Cd2JavaTypeConverter(astHelper).handle(cdDefinition);
@@ -104,6 +106,7 @@ public class CdEmfDecorator extends CdDecorator {
       addGetter(clazz, astHelper);
       addSetter(clazz, astHelper);
       addSymbolGetter(clazz, astHelper);
+      glex.replaceTemplate("ast.AstImports", clazz, new TemplateHookPoint("ast_emf.AstEImports"));
     }
     
     for (ASTCDInterface interf : cdDefinition.getCDInterfaces()) {
@@ -132,10 +135,11 @@ public class CdEmfDecorator extends CdDecorator {
   /**
    * TODO: Write me!
    * 
-   * @param astClasses
+   * @param astHelper
+   * @param astNotListClasses
    */
-  void addEmfCode(ASTCDCompilationUnit cdCompilationUnit, List<ASTCDClass> astClasses,
-      AstEmfGeneratorHelper astHelper) {
+  void createEmfAttributes(AstEmfGeneratorHelper astHelper,
+      List<ASTCDClass> astClasses) {
     // TODO GV: interfaces, enums
     for (ASTCDClass clazz : astClasses) {
       for (int i = 0; i < clazz.getCDAttributes().size(); i++) {
@@ -154,16 +158,37 @@ public class CdEmfDecorator extends CdDecorator {
       }
     }
     
-    addEFactoryInterface(cdCompilationUnit, astHelper);
-    addEFactoryImplementation(cdCompilationUnit, astClasses, astHelper);
+  }
+  
+  /**
+   * TODO: Write me!
+   * 
+   * @param astClasses
+   */
+  void addEmfCode(ASTCDCompilationUnit cdCompilationUnit, List<ASTCDClass> astClasses,
+      AstEmfGeneratorHelper astHelper) {
+    
+    addEFactoryInterface(cdCompilationUnit, astClasses, astHelper);
+    // addEFactoryImplementation(cdCompilationUnit, astClasses, astHelper);
     addEPackageInterface(cdCompilationUnit, astClasses, astHelper);
     addEPackageImplementation(cdCompilationUnit, astClasses, astHelper);
+    
+    // Decorate with additional EMF methods and attributes
+    for (ASTCDClass clazz : astClasses) {
+      addEGetter(clazz, astHelper);
+      addESetter(clazz, astHelper);
+      addEUnset(clazz, astHelper);
+      addEIsSet(clazz, astHelper);
+      addToString(clazz, astHelper);
+      addEStaticClass(clazz, astHelper);
+    }
   }
   
   /**
    * TODO: Write me!
    */
-  void addEFactoryInterface(ASTCDCompilationUnit cdCompilationUnit, AstEmfGeneratorHelper astHelper)
+  void addEFactoryInterface(ASTCDCompilationUnit cdCompilationUnit, List<ASTCDClass> astClasses,
+      AstEmfGeneratorHelper astHelper)
       throws RecognitionException {
     ASTCDDefinition cdDef = cdCompilationUnit.getCDDefinition();
     ASTCDInterface factory = CD4AnalysisNodeFactory.createASTCDInterface();
@@ -178,8 +203,12 @@ public class CdEmfDecorator extends CdDecorator {
     factory.setName(factoryName);
     cdDef.getCDInterfaces().add(factory);
     
+    List<String> classNames = astClasses.stream().map(e -> getPlainName(e))
+        .collect(Collectors.toList());
+    
     glex.replaceTemplate("ast.AstInterfaceContent", factory, new TemplateHookPoint(
-        "ast_emf.EFactory", factory, cdDef.getName()));
+        "ast_emf.EFactory", factory, cdDef.getName(), "http://" + cdDef.getName()
+            + "/1.0", classNames));
   }
   
   /**
@@ -283,15 +312,16 @@ public class CdEmfDecorator extends CdDecorator {
     
     for (int i = 0; i < astHelper.getAllEmfAttributes().size(); i++) {
       EmfAttribute emfAttribute = astHelper.getAllEmfAttributes().get(i);
-        
-        // TODO GV: replace StringHookPoint by TemplaeHookPoint
-        String toParse = "public " + emfAttribute.getEmfType() + " get" + emfAttribute.getFullName() + "();";
-        HookPoint getMethodBody = new StringHookPoint("return (" + emfAttribute.getEmfType() + ")"
-            + getPlainName(emfAttribute.getCdType()).substring(3).toLowerCase()
-            + "EClass.getEStructuralFeatures().get(" + emfAttribute.getFullName() + ");");
-        replaceMethodBodyTemplate(packageImpl, toParse, getMethodBody);
-        
-      }
+      
+      // TODO GV: replace StringHookPoint by TemplaeHookPoint
+      String toParse = "public " + emfAttribute.getEmfType() + " get" + emfAttribute.getFullName()
+          + "();";
+      HookPoint getMethodBody = new StringHookPoint("return (" + emfAttribute.getEmfType() + ")"
+          + getPlainName(emfAttribute.getCdType()).substring(3).toLowerCase()
+          + "EClass.getEStructuralFeatures().get(" + emfAttribute.getFullName() + ");");
+      replaceMethodBodyTemplate(packageImpl, toParse, getMethodBody);
+      
+    }
     
     String toParse = "public void createPackageContents();";
     HookPoint getMethodBody = new TemplateHookPoint(
@@ -312,4 +342,118 @@ public class CdEmfDecorator extends CdDecorator {
     
   }
   
+  protected void addSetter(ASTCDClass clazz, AstEmfGeneratorHelper astHelper)
+      throws RecognitionException {
+    for (EmfAttribute attribute : astHelper.getEmfAttributes(clazz)) {
+      ASTCDAttribute cdAttribute = attribute.getCdAttribute();
+      if (GeneratorHelper.isInherited(cdAttribute)) {
+        continue;
+      }
+      String attributeName = cdAttribute.getName();
+      boolean isOptional = GeneratorHelper.isOptional(cdAttribute);
+      String typeName = TypesHelper.printSimpleRefType(cdAttribute.getType());
+      String toParse = "public void " + GeneratorHelper.getPlainSetter(cdAttribute) + "("
+          + typeName + " " + attributeName + ") ;";
+      HookPoint methodBody = new TemplateHookPoint("ast_emf.additionalmethods.Set",
+          astHelper.getCdName(),
+          attribute, attributeName, typeName);
+      ASTCDMethod setMethod = replaceMethodBodyTemplate(clazz, toParse, methodBody);
+      
+      if (isOptional) {
+        glex.replaceTemplate("ast.ErrorIfNull", setMethod, new StringHookPoint(""));
+      }
+      
+      if (isOptional) {
+        toParse = "public boolean " + attributeName + "IsPresent() ;";
+        methodBody = new StringHookPoint("  return " + attributeName + ".isPresent(); \n");
+        replaceMethodBodyTemplate(clazz, toParse, methodBody);
+      }
+    }
+  }
+  
+  /**
+   * Adds getter for all attributes of ast classes
+   * 
+   * @param clazz
+   * @param astHelper
+   * @throws ANTLRException
+   */
+  void addEGetter(ASTCDClass clazz, AstEmfGeneratorHelper astHelper)
+      throws RecognitionException {
+    String toParse = "public Object eGet(int featureID, boolean resolve, boolean coreType);";
+    HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.EGet",
+        astHelper.getCdName(), astHelper.getEmfAttributes(clazz));
+    replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
+  }
+  
+  /**
+   * Adds setter for all attributes of ast classes
+   * 
+   * @param clazz
+   * @param astHelper
+   * @throws ANTLRException
+   */
+  void addESetter(ASTCDClass clazz, AstEmfGeneratorHelper astHelper)
+      throws RecognitionException {
+    String toParse = "public void eSet(int featureID, Object newValue);";
+    HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.ESet",
+        astHelper.getCdName(), astHelper.getEmfAttributes(clazz));
+    replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
+  }
+  
+  /**
+   * Adds setter for all attributes of ast classes
+   * 
+   * @param clazz
+   * @param astHelper
+   * @throws ANTLRException
+   */
+  void addEUnset(ASTCDClass clazz, AstEmfGeneratorHelper astHelper)
+      throws RecognitionException {
+    String toParse = "public void eUnset(int featureID);";
+    HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.EUnset",
+        astHelper.getCdName(), astHelper.getEmfAttributes(clazz));
+    replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
+  }
+  
+  /**
+   * Adds setter for all attributes of ast classes
+   * 
+   * @param clazz
+   * @param astHelper
+   * @throws ANTLRException
+   */
+  void addEIsSet(ASTCDClass clazz, AstEmfGeneratorHelper astHelper)
+      throws RecognitionException {
+    String toParse = "public boolean eIsSet(int featureID);";
+    HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.EIsSet",
+        astHelper.getCdName(), astHelper.getEmfAttributes(clazz));
+    replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
+  }
+  
+  /**
+   * TODO: Write me!
+   * 
+   * @param clazz
+   * @param astHelper
+   */
+  void addToString(ASTCDClass clazz, AstEmfGeneratorHelper astHelper) {
+    String toParse = "public String toString();";
+    HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.EToString",
+        astHelper.getCdName(), astHelper.getEmfAttributes(clazz));
+    replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
+  }
+  
+  /**
+   * TODO: Write me!
+   * 
+   * @param clazz
+   * @param astHelper
+   */
+  void addEStaticClass(ASTCDClass clazz, AstEmfGeneratorHelper astHelper) {
+    String toParse = "protected EClass eStaticClass();";
+    HookPoint getMethodBody = new StringHookPoint("return " + astHelper.getCdName()
+        + "Package.Literals." + GeneratorHelper.getPlainName(clazz) + ";");
+    replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
+  }
 }

@@ -30,38 +30,23 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-<#assign genHelper = glex.getGlobalValue("astHelper")>
-  
-<#-- Copyright -->
-${tc.defineHookPoint("JavaCopyright")}
-
-${tc.signature("ast", "grammarName", "packageURI", "astClasses")}
-
-import org.eclipse.emf.ecore.EFactory;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.plugin.EcorePlugin;
-
-public interface ${ast.getName()} extends EFactory {
-    
-    // The singleton instance of the factory.
-    ${ast.getName()} eINSTANCE = getEFactory();
-    
-    // Returns the package supported by this factory.
-    default ${grammarName}Package get${grammarName}Package() {
-        return (${grammarName}Package)getEPackage();
+  ${tc.signature("grammarName", "emfAttributes")}
+  <#assign genHelper = glex.getGlobalValue("astHelper")>
+    if (eIsProxy()) {
+      return super.toString();
     }
-    
-    // Creates the default factory implementation.
-    static ${grammarName}Factory getEFactory() {
-        try {
-            ${grammarName}Factory eFactory = (${grammarName}Factory)EPackage.Registry.INSTANCE.getEFactory("${packageURI}"); 
-            if (eFactory != null) {
-                return eFactory;
-            }
-        }
-        catch (Exception exception) {
-            EcorePlugin.INSTANCE.log(exception);
-        }
-        return ${grammarName}NodeFactory.getFactory();
+    StringBuffer result = new StringBuffer(super.toString());
+  <#list emfAttributes as emfAttribute>
+    <#-- eToStringAttribut, ast.getCollectedAttributes() -->
+    result.append(" ${astHelper.getPlainName(emfAttribute.getCdAttribute())}: ");
+    <#if astHelper.isOptional(emfAttribute.getCdAttribute())>
+    if (${emfAttribute.getAttributeName()}.isPresent()) {
+      result.append(${emfAttribute.getAttributeName()}.get());
+    } else {
+      result.append("Optional.empty()");
     }
-}
+    <#else>
+    result.append(${emfAttribute.getAttributeName()});
+    </#if>
+  </#list>
+    return result.toString();
