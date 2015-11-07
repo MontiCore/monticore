@@ -204,6 +204,7 @@ public final class GlobalScope extends CommonScope {
         if (symbolNameParts.size() > packageASNameParts.size()) {
           remainingSymbolName = Joiners.DOT.join(symbolNameParts.skip(packageASNameParts.size()));
         }
+        // TODO PN else?
 
         return subScope.resolveDownMany(resolvingInfo, remainingSymbolName, kind);
       }
@@ -223,6 +224,7 @@ public final class GlobalScope extends CommonScope {
         final String symbolPackage = Names.getQualifier(symbolName);
 
         if (symbolPackage.startsWith(packageCU)) {
+          // TODO PN compare name parts, to exclude cases like "a.bb".startsWith("a.b")
           return true;
         }
       }

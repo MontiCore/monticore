@@ -22,8 +22,6 @@
  */
 package de.monticore.ast;
 
-import de.monticore.ast.ASTNode;
-
 /**
  * interface for all lists, in addition to ASTNode it allows for the distinction
  * between the state "empty" and "null"
@@ -32,7 +30,7 @@ import de.monticore.ast.ASTNode;
  */
 public interface ASTList extends ASTNode {
   
-  public boolean is_Existent();
+  boolean is_Existent();
   
-  public void set_Existent(boolean existent);
+  void set_Existent(boolean existent);
 }

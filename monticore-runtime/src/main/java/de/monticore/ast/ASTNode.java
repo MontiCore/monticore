@@ -19,21 +19,19 @@
 
 package de.monticore.ast;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.SourcePosition;
 
-import java.util.Collection;
-import java.util.List;
-
 /**
  * Foundation interface for all AST-classes
  * 
  * @author krahn
  */
-// STATE OK *
 public interface ASTNode {
   
   /**

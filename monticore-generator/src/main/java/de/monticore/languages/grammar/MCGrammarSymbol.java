@@ -80,11 +80,6 @@ import de.se_rwth.commons.logging.Log;
  */
 public class MCGrammarSymbol extends CommonScopeSpanningSymbol {
 
-  @Override
-  public String getName() {
-    return super.getName();
-  }
-
   public static final GrammarKind KIND = new GrammarKind();
 
   /**

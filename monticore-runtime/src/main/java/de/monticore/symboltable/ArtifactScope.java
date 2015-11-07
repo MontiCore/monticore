@@ -106,7 +106,16 @@ public class ArtifactScope extends CommonScope {
     return getResolvedOrThrowException(resolved);
   }
 
-  private <T extends Symbol> List<T> resolveInEnclosingScope(final ResolvingInfo resolvingInfo,
+  /**
+   * Starts the bottom-up inter-model resolution process.
+   *
+   * @param resolvingInfo
+   * @param name
+   * @param kind
+   * @param <T>
+   * @return
+   */
+  protected <T extends Symbol> List<T> resolveInEnclosingScope(final ResolvingInfo resolvingInfo,
       final String name, final SymbolKind kind) {
     final List<T> resolved = new ArrayList<>();
 
@@ -127,7 +136,8 @@ public class ArtifactScope extends CommonScope {
     return resolved;
   }
 
-  private Collection<String> determinePotentialNames(final String name) {
+  // TODO PN doc
+  protected Collection<String> determinePotentialNames(final String name) {
     final Collection<String> potentialSymbolNames = new LinkedHashSet<>();
 
     // the simple name (in default package)

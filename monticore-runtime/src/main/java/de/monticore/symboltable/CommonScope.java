@@ -537,6 +537,7 @@ public class CommonScope implements MutableScope {
     return ImmutableList.copyOf(resolvedSymbols);
   }
 
+  // TODO PN merge with resolveManyLocally?
   protected <T extends Symbol> List<T> resolveDownManyLocally(final ResolvingInfo resolvingInfo,
       final String name, final SymbolKind kind) {
     final Collection<ResolvingFilter<? extends Symbol>> resolversForKind = getResolvingFiltersForTargetKind
