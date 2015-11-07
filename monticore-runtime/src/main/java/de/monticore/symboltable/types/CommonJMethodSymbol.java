@@ -28,17 +28,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableList;
-
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.symboltable.types.references.JTypeReference;
-import de.monticore.symboltable.types.references.TypeReference;
 import de.se_rwth.commons.logging.Log;
 
 /**
  * @author Pedram Mir Seyed Nazari
  */
-public class CommonJMethodSymbol <T extends JTypeReference<? extends JTypeSymbol>, S extends JAttributeSymbol>
+public class CommonJMethodSymbol <U extends JTypeSymbol, T extends JTypeReference<? extends U>, S extends JAttributeSymbol>
     extends CommonScopeSpanningSymbol implements JMethodSymbol {
 
   private boolean isAbstract = false;
@@ -48,7 +46,6 @@ public class CommonJMethodSymbol <T extends JTypeReference<? extends JTypeSymbol
   private boolean isEllipsisParameterMethod = false;
 
   private T returnType;
-  private List<T> typeParameters = new ArrayList<>();
   private List<T> exceptions = new ArrayList<>();
 
   public CommonJMethodSymbol(String name, JMethodSymbolKind kind) {
@@ -80,17 +77,15 @@ public class CommonJMethodSymbol <T extends JTypeReference<? extends JTypeSymbol
     spannedScope.add(paramType);
   }
 
+  public void addFormalTypeParameter(U formalTypeParameter) {
+    checkArgument(formalTypeParameter.isFormalTypeParameter());
+    spannedScope.add(formalTypeParameter);
+  }
+
   @Override
-  public List<T> getTypeParameters() {
-    return ImmutableList.copyOf(typeParameters);
-  }
-
-  public void setTypeParameters(List<T> typeParameter) {
-    this.typeParameters = typeParameter;
-  }
-
-  public void addTypeParameter(T typeParameter) {
-    this.typeParameters.add(typeParameter);
+  public List<U> getFormalTypeParameters() {
+    final Collection<U> resolvedTypes = spannedScope.resolveLocally(U.KIND);
+    return resolvedTypes.stream().filter(U::isFormalTypeParameter).collect(Collectors.toList());
   }
 
   @Override

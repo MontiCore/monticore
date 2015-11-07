@@ -42,8 +42,6 @@ import de.se_rwth.commons.logging.Log;
  * @param <T>
  * @param <S>
  */
-
-// TODO PN add isTypeParameter, e.g., C<T> defines a TypeSymbol T that is a type parameter
 public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JAttributeSymbol, U extends JMethodSymbol, V extends JTypeReference<T>>
     extends CommonScopeSpanningSymbol implements JTypeSymbol {
 
@@ -86,12 +84,13 @@ public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JAttri
   }
 
   public void addFormalTypeParameter(T formalTypeParameter) {
+    checkArgument(formalTypeParameter.isFormalTypeParameter());
     spannedScope.add(formalTypeParameter);
   }
 
   @Override
   public List<T> getFormalTypeParameters() {
-    final Collection<T> resolvedTypes = spannedScope.resolveLocally(getKind());
+    final Collection<T> resolvedTypes = spannedScope.resolveLocally(T.KIND);
     return resolvedTypes.stream().filter(T::isFormalTypeParameter).collect(Collectors.toList());
   }
 
