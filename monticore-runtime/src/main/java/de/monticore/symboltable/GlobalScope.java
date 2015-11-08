@@ -195,18 +195,7 @@ public final class GlobalScope extends CommonScope {
   protected <T extends Symbol> Collection<T> continueWithSubScope(MutableScope subScope, ResolvingInfo resolvingInfo, String symbolName, SymbolKind kind) {
     if (checkIfContinueWithSubScope(symbolName, subScope)) {
       if (subScope instanceof ArtifactScope) {
-        final String packageAS = ((ArtifactScope) subScope).getPackageName();
-        final FluentIterable<String> packageASNameParts = FluentIterable.from(Splitters.DOT.omitEmptyStrings().split(packageAS));
-
-        final FluentIterable<String> symbolNameParts = FluentIterable.from(Splitters.DOT.split(symbolName));
-        String remainingSymbolName = symbolName;
-
-        if (symbolNameParts.size() > packageASNameParts.size()) {
-          remainingSymbolName = Joiners.DOT.join(symbolNameParts.skip(packageASNameParts.size()));
-        }
-        // TODO PN else?
-
-        return subScope.resolveDownMany(resolvingInfo, remainingSymbolName, kind);
+        return continueWithArtifactScope((ArtifactScope) subScope, resolvingInfo, symbolName, kind);
       }
       else {
         return super.continueWithSubScope(subScope, resolvingInfo, symbolName, kind);
@@ -235,5 +224,20 @@ public final class GlobalScope extends CommonScope {
     }
 
     return false;
+  }
+
+  protected <T extends Symbol> Collection<T> continueWithArtifactScope(ArtifactScope subScope, ResolvingInfo resolvingInfo, String symbolName, SymbolKind kind) {
+    final String packageAS = subScope.getPackageName();
+    final FluentIterable<String> packageASNameParts = FluentIterable.from(Splitters.DOT.omitEmptyStrings().split(packageAS));
+
+    final FluentIterable<String> symbolNameParts = FluentIterable.from(Splitters.DOT.split(symbolName));
+    String remainingSymbolName = symbolName;
+
+    if (symbolNameParts.size() > packageASNameParts.size()) {
+      remainingSymbolName = Joiners.DOT.join(symbolNameParts.skip(packageASNameParts.size()));
+    }
+    // TODO PN else?
+
+    return subScope.resolveDownMany(resolvingInfo, remainingSymbolName, kind);
   }
 }
