@@ -87,7 +87,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
          )*
       "}" ;
  
-  MCImportStatement = "import" importList:Name& ( "." importList:Name&)* ("." star:["*"])? ";" ;
+  MCImportStatement = "import" importList:(Name& || ".")+ ("." star:["*"])? ";" ;
 
   // One OptionBlock only 
   ast MCGrammar =
@@ -187,7 +187,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
   @attribute constant List of all constants
   */
   EnumProd implements Prod =
-    "enum" Name "=" Constant ("|" Constant)* ";";
+    "enum" Name "=" (Constant || "|")+ ";";
 
 
   /** A ExternalProduction represents a hole in the grammar where another production
