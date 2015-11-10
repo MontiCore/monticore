@@ -52,16 +52,14 @@ public abstract class ModelingLanguageModelLoader<T extends ASTNode> {
 
   private final ModelingLanguage modelingLanguage;
 
-  private final AstProvider<T> astProvider;
+  private AstProvider<T> astProvider;
 
   public ModelingLanguageModelLoader(ModelingLanguage modelingLanguage) {
     this.modelingLanguage = modelingLanguage;
     this.astProvider = new FileBasedAstProvider<>(modelingLanguage);
   }
 
-  public ModelingLanguageModelLoader(ModelingLanguage modelingLanguage,
-      AstProvider<T> astProvider) {
-    this.modelingLanguage = modelingLanguage;
+  public void setAstProvider(AstProvider<T> astProvider) {
     this.astProvider = astProvider;
   }
 
