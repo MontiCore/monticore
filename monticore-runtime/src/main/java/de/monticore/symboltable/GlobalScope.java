@@ -90,14 +90,14 @@ public final class GlobalScope extends CommonScope {
   }
 
   @Override
-  public <T extends Symbol> Optional<T> resolve(final ResolvingInfo resolvingInfo,
+  public <T extends Symbol> Collection<T> resolveMany(final ResolvingInfo resolvingInfo,
       final String symbolName, final SymbolKind kind) {
     resolvingInfo.addInvolvedScope(this);
 
     // First, try to resolve the symbol in the current scope and its sub scopes.
-    Optional<T> resolvedSymbol = resolveDown(symbolName, kind);
+    Collection<T> resolvedSymbol = resolveDownMany(new ResolvingInfo(getResolvingFilters()), symbolName, kind);
 
-    if (resolvedSymbol.isPresent()) {
+    if (!resolvedSymbol.isEmpty()) {
       return resolvedSymbol;
     }
 
@@ -108,7 +108,7 @@ public final class GlobalScope extends CommonScope {
     loadWithModelLoadersAndAddToScope(resolvingInfo, symbolName, kind);
 
     // Maybe the symbol now exists in this scope (resp. its sub scopes). So, resolve down, again.
-    resolvedSymbol = resolveDown(symbolName, kind);
+    resolvedSymbol = resolveDownMany(new ResolvingInfo(getResolvingFilters()), symbolName, kind);
 
     return resolvedSymbol;
   }
@@ -143,7 +143,7 @@ public final class GlobalScope extends CommonScope {
     }
   }
 
-  // TODO PN wrtie tests
+  // TODO PN write tests
   public void cache(ModelingLanguageModelLoader<? extends ASTNode> modelLoader, String calculatedModelName) {
     if (modelName2ModelLoaderCache.containsKey(calculatedModelName)) {
       modelName2ModelLoaderCache.get(calculatedModelName).add(modelLoader);

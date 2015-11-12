@@ -137,6 +137,10 @@ public interface Scope {
    */
   Optional<? extends Symbol> resolve(SymbolPredicate predicate);
 
+  <T extends Symbol> Optional<T> resolveDown(String name, SymbolKind kind);
+
+  <T extends Symbol> Collection<T> resolveDownMany(String name, SymbolKind kind);
+
   /**
    *
    * @return all symbols directly defined/contained in this scope (not in enclosing scope).
@@ -192,6 +196,4 @@ public interface Scope {
    * @return the corresponding ast node
    */
   Optional<? extends ASTNode> getAstNode();
-
-
 }

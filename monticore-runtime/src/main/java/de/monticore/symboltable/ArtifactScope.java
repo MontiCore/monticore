@@ -85,7 +85,7 @@ public class ArtifactScope extends CommonScope {
   // TODO PN alle anderen resolve-Methoden entsprechend anpassen, falls notwendig
 
   @Override
-  public <T extends Symbol> Optional<T> resolve(final ResolvingInfo resolvingInfo, final String
+  public <T extends Symbol> Collection<T> resolveMany(final ResolvingInfo resolvingInfo, final String
       symbolName, final SymbolKind kind) {
     resolvingInfo.addInvolvedScope(this);
 
@@ -103,7 +103,7 @@ public class ArtifactScope extends CommonScope {
     Log.trace("END resolve(\"" + symbolName + "\", " + "\"" + kind.getName() + "\") in scope \"" +
         getName() + "\". Found #" + resolved.size() , "");
 
-    return getResolvedOrThrowException(resolved);
+    return resolved;
   }
 
   /**
@@ -126,9 +126,10 @@ public class ArtifactScope extends CommonScope {
       }
 
       for (final String potentialName : determinePotentialNames(name)) {
-        final Optional<T> resolvedFromGlobal = enclosingScope.resolve(resolvingInfo, potentialName, kind);
-        if (resolvedFromGlobal.isPresent()) {
-          addResolvedSymbolsIfNotShadowed(resolved, resolvedFromGlobal.get());
+        final Collection<T> resolvedFromGlobal = enclosingScope.resolveMany(resolvingInfo, potentialName, kind);
+
+        if (!resolvedFromGlobal.isEmpty()) {
+          addResolvedSymbolsIfNotShadowed(resolved, resolvedFromGlobal);
         }
       }
     }

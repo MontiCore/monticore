@@ -179,7 +179,7 @@ public class CommonScope implements MutableScope {
    */
   private <T extends Symbol> void continueWithScope(MutableScope scope, ResolvingInfo resolvingInfo, String name, SymbolKind kind,
       AccessModifier modifier, Set<T> alreadyResolved) {
-    if (checkIfContinueWithScope(scope, !alreadyResolved.isEmpty() || resolvingInfo.areSymbolsFound())) {
+    if (checkIfContinueWithResolving(!alreadyResolved.isEmpty() || resolvingInfo.areSymbolsFound())) {
       final Optional<T> resolvedFromEnclosing = scope.resolve(resolvingInfo, name, kind, modifier);
 
       if (resolvedFromEnclosing.isPresent()) {
@@ -194,7 +194,13 @@ public class CommonScope implements MutableScope {
   }
 
   @Override
+  @Deprecated
   public <T extends Symbol> Optional<T> resolve(ResolvingInfo resolvingInfo, String symbolName, SymbolKind kind) {
+    return getResolvedOrThrowException(resolveMany(resolvingInfo, symbolName, kind));
+  }
+
+  @Override
+  public <T extends Symbol> Collection<T> resolveMany(ResolvingInfo resolvingInfo, String symbolName, SymbolKind kind) {
     Log.errorIfNull(resolvingInfo);
     resolvingInfo.addInvolvedScope(this);
 
@@ -207,8 +213,7 @@ public class CommonScope implements MutableScope {
 
     Log.trace("END resolve(\"" + symbolName + "\", " + "\"" + kind.getName() + "\") in scope \"" +
         getName() + "\". Found #" + resolved.size() , "");
-    return getResolvedOrThrowException(resolved);
-
+    return resolved;
   }
 
   /**
@@ -221,44 +226,35 @@ public class CommonScope implements MutableScope {
    */
   protected <T extends Symbol> void continueWithEnclosingScope(ResolvingInfo resolvingInfo, String symbolName,
       SymbolKind kind, Set<T> resolved) {
-    if (getEnclosingScope().isPresent()) {
-      continueWithScope(getEnclosingScope().get(), resolvingInfo, symbolName, kind, resolved);
-    }
-  }
 
-  /**
-   * Continues resolving with the specific <b>scope</b> (usually the enclosing scope).
-   *
-   * @param scope the scope with which resolving should be continued.
-   * @param resolvingInfo contains resolving information, such as, the already involved scopes.
-   * @param symbolName the name of the searched symbol
-   * @param kind the kind of the searched symbol
-   * @param resolved the already found symbols
-   */
-  protected <T extends Symbol> void continueWithScope(MutableScope scope, ResolvingInfo resolvingInfo, String symbolName,
-      SymbolKind kind, Set<T> resolved) {
-    if (checkIfContinueWithScope(scope, !resolved.isEmpty() || resolvingInfo.areSymbolsFound())) {
-      final Optional<T> resolvedFromEnclosing = scope.resolve(resolvingInfo, symbolName, kind);
+    if (checkIfContinueWithResolving(!resolved.isEmpty() || resolvingInfo.areSymbolsFound())) {
+      if (getEnclosingScope().isPresent()) {
+        final Collection<T> resolvedFromEnclosing = getEnclosingScope().get().resolveMany(resolvingInfo, symbolName, kind);
 
-      if (resolvedFromEnclosing.isPresent()) {
-        addResolvedSymbolsIfNotShadowed(resolved, resolvedFromEnclosing.get());
+        if (!resolvedFromEnclosing.isEmpty()) {
+          addResolvedSymbolsIfNotShadowed(resolved, resolvedFromEnclosing);
+        }
       }
     }
+
   }
 
   @Override
   public <T extends Symbol> Optional<T> resolve(String symbolName, SymbolKind kind) {
-    return resolve(new ResolvingInfo(getResolvingFilters()), symbolName, kind);
+    return getResolvedOrThrowException(resolveMany(symbolName, kind));
   }
 
-  protected <T extends Symbol> void addResolvedSymbolsIfNotShadowed(Collection<T> result, T resolved) {
+  protected <T extends Symbol> void addResolvedSymbolsIfNotShadowed(Collection<T> result, T resolvedSymbol) {
     // Does any local symbol shadow the symbol of the enclosing scope?
-    if (!any(result.iterator(), createIsShadowingByPredicate(resolved))) {
-      result.add(resolved);
+    if (!any(result.iterator(), createIsShadowingByPredicate(resolvedSymbol))) {
+      result.add(resolvedSymbol);
     }
+  }
 
-    // TODO PN enclosing enclosing scope might throw an exception. Catch the exception and rethrow it with the
-    //         resolved symbols from this scope.
+  protected <T extends Symbol> void addResolvedSymbolsIfNotShadowed(Collection<T> result, Collection<T> resolvedSymbols) {
+    for (T resolvedSymbol : resolvedSymbols) {
+      addResolvedSymbolsIfNotShadowed(result, resolvedSymbol);
+    }
   }
 
   /**
@@ -332,7 +328,7 @@ public class CommonScope implements MutableScope {
   }
 
   protected void continueWithScope(MutableScope scope, SymbolPredicate predicate, List<Symbol> result) {
-    if (checkIfContinueWithScope(scope, !result.isEmpty()/* TODO PN || resolvingInfo.areSymbolsFound())*/)) {
+    if (checkIfContinueWithResolving(!result.isEmpty()/* TODO PN || resolvingInfo.areSymbolsFound())*/)) {
       Optional<? extends Symbol> resolvedFromParent = scope.resolve(predicate);
 
       if (resolvedFromParent.isPresent()) {
@@ -342,16 +338,15 @@ public class CommonScope implements MutableScope {
   }
 
   /**
-   * Returns true, if <b>scope</b> (usually the enclosing scope) should continue
-   * with resolving. By default, if symbols are already found and the current scope
-   * is a shadowing scope, the resolving process is not continued.
+   * Returns true, if current scope should continue with resolving. By default,
+   * if symbols are already found and the current scope is a shadowing scope,
+   * the resolving process is not continued.
    *
-   * @param scope the scope which should continue with resolving
-   * @param foundSomeSymbols states whether symbols have been already found during
+   * @param foundSomeSymbols states whether symbols have already been found during
    *                         the current resolving process.
-   * @return true, if enclosing scope should continue with resolving.
+   * @return true, if resolving should continue
    */
-  protected boolean checkIfContinueWithScope(MutableScope scope, boolean foundSomeSymbols) {
+  protected boolean checkIfContinueWithResolving(boolean foundSomeSymbols) {
     // If this scope shadows its enclosing scope and already some symbols are found,
     // there is no need to continue searching.
     return !(foundSomeSymbols && isShadowingScope());
@@ -466,21 +461,7 @@ public class CommonScope implements MutableScope {
 
   @Override
   public <T extends Symbol> Collection<T> resolveMany(final String name, final SymbolKind kind) {
-    // TODO PN should resolve() use this method (not vice versa)?
-    final Collection<T> resolvedSymbols = new LinkedHashSet<>();
-
-
-    try {
-      Optional<T> resolvedSymbol = resolve(name, kind);
-      if (resolvedSymbol.isPresent()) {
-        resolvedSymbols.add(resolvedSymbol.get());
-      }
-    }
-    catch (ResolvedSeveralEntriesException e) {
-      resolvedSymbols.addAll((Collection<? extends T>) e.getSymbols());
-    }
-
-    return ImmutableSet.copyOf(resolvedSymbols);
+    return resolveMany(new ResolvingInfo(getResolvingFilters()), name, kind);
   }
 
   @Override
@@ -498,15 +479,23 @@ public class CommonScope implements MutableScope {
     final Set<T> resolvedSymbols = new LinkedHashSet<>();
 
     for (ResolvingFilter<? extends Symbol> resolvingFilter : resolversForKind) {
-      Optional<T> resolvedSymbol = (Optional<T>) resolvingFilter.filter(resolvingInfo, name, symbols);
-      if (resolvedSymbol.isPresent()) {
-        // TODO add resolvedSymbols to resolvingInfo?
-        if (resolvedSymbols.contains(resolvedSymbol.get())) {
-          // TODO PN do not add to list in this case?
-          Log.debug("The symbol " + resolvedSymbol.get().getName() + " has already been resolved.",
-              CommonScope.class.getSimpleName());
+
+      // TODO PN this is a quix fix. filter() should return a collection of symbols
+
+      try {
+        Optional<T> resolvedSymbol = (Optional<T>) resolvingFilter.filter(resolvingInfo, name, symbols);
+        if (resolvedSymbol.isPresent()) {
+          // TODO add resolvedSymbols to resolvingInfo?
+          if (resolvedSymbols.contains(resolvedSymbol.get())) {
+            // TODO PN do not add to list in this case?
+            Log.debug("The symbol " + resolvedSymbol.get().getName() + " has already been resolved.",
+                CommonScope.class.getSimpleName());
+          }
+          resolvedSymbols.add(resolvedSymbol.get());
         }
-        resolvedSymbols.add(resolvedSymbol.get());
+      }
+      catch(ResolvedSeveralEntriesException e) {
+        resolvedSymbols.addAll((Collection<? extends T>) e.getSymbols());
       }
     }
 
@@ -556,6 +545,7 @@ public class CommonScope implements MutableScope {
   }
 
   @Override
+  @Deprecated
   public <T extends Symbol> Optional<T> resolveDown(ResolvingInfo resolvingInfo, String name, SymbolKind kind) {
     Log.errorIfNull(resolvingInfo);
     resolvingInfo.addInvolvedScope(this);
@@ -567,7 +557,12 @@ public class CommonScope implements MutableScope {
    */
   @Override
   public <T extends Symbol> Optional<T> resolveDown(String name, SymbolKind kind) {
-    return this.resolveDown(new ResolvingInfo(getResolvingFilters()), name, kind);
+    return getResolvedOrThrowException(this.resolveDownMany(name, kind));
+  }
+
+  @Override
+  public <T extends Symbol> Collection<T> resolveDownMany(String name, SymbolKind kind) {
+    return this.resolveDownMany(new ResolvingInfo(getResolvingFilters()), name, kind);
   }
 
   // TODO PN Doc if a symbol is found, resolving is stopped.
@@ -577,7 +572,7 @@ public class CommonScope implements MutableScope {
     Log.errorIfNull(resolvingInfo);
     resolvingInfo.addInvolvedScope(this);
 
-    final List<T> resolved = resolveDownManyLocally(resolvingInfo, name, kind);
+    final Set<T> resolved = new LinkedHashSet<>(this.<T>resolveManyLocally(resolvingInfo, name, kind));
 
     String resolveCall = "resolveDownMany(\"" + name + "\", \"" + kind.getName() + "\") in scope \"" + getName() +
             "\"";
