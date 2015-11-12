@@ -34,11 +34,11 @@ import java.util.Optional;
  *
  * @author Sebastian Oberhoff, Pedram Mir Seyed Nazari
  */
-final class FileBasedAstProvider<T extends ASTNode> implements AstProvider {
+public final class FileBasedAstProvider<T extends ASTNode> implements AstProvider {
 
   private final ModelingLanguage modelingLanguage;
 
-  FileBasedAstProvider(ModelingLanguage modelingLanguage) {
+  public FileBasedAstProvider(ModelingLanguage modelingLanguage) {
     this.modelingLanguage = modelingLanguage;
   }
 
