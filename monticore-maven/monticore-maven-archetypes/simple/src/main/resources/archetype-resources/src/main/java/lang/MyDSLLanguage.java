@@ -29,7 +29,7 @@ public class MyDSLLanguage extends CommonModelingLanguage {
   
   @Override
   public MyDSLParser getParser() {
-    return MyDSLParser();
+    return new MyDSLParser();
   }
   
   @Override
