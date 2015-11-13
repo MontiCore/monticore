@@ -8,8 +8,7 @@ import de.monticore.CommonModelingLanguage;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolverConfiguration;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
-import ${package}.mydsl._parser.MyDSLParserFactory;
-import ${package}.mydsl._parser.MyModelMCParser;
+import ${package}.mydsl._parser.MyDSLParser;
 import ${package}.symboltable.MyDSLModelLoader;
 import ${package}.symboltable.MyDSLSymbolTableCreator;
 import ${package}.symboltable.MyElementSymbol;
@@ -29,8 +28,8 @@ public class MyDSLLanguage extends CommonModelingLanguage {
   }
   
   @Override
-  public MyModelMCParser getParser() {
-    return MyDSLParserFactory.createMyModelMCParser();
+  public MyDSLParser getParser() {
+    return MyDSLParser();
   }
   
   @Override
