@@ -29,20 +29,19 @@ import java.io.StringReader;
 
 import org.junit.Test;
 
-import mc.feature.semanticpredicate.sempredwithinterface._ast.ASTISequence;
-import mc.feature.semanticpredicate.sempredwithinterface._parser.SemPredWithInterfaceParserFactory;
-import mc.feature.semanticpredicate.sempredwithinterface._parser.ISequenceMCParser;
 import mc.GeneratorIntegrationsTest;
+import mc.feature.semanticpredicate.sempredwithinterface._ast.ASTISequence;
+import mc.feature.semanticpredicate.sempredwithinterface._parser.SemPredWithInterfaceParser;
 
 public class SemPredWithInterfaceParserTest extends GeneratorIntegrationsTest {
   
   @Test
   public void testParse() {
     String input = "foo foo";
-    ISequenceMCParser p = SemPredWithInterfaceParserFactory.createISequenceMCParser();
+    SemPredWithInterfaceParser p = new SemPredWithInterfaceParser();
     java.util.Optional<ASTISequence> ast = null;
     try {
-       ast = p.parse(new StringReader(input));
+       ast = p.parseISequence(new StringReader(input));
     } catch (IOException e) {
       fail();
     }

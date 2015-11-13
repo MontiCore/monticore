@@ -81,6 +81,10 @@ public abstract class MCConcreteParser {
     return hasErrors;
   }
   
+  public void setError(boolean value) {
+    hasErrors = value;
+  }
+  
   /**
    * Indicates what should be parsed: The Rule or the rule followed by an EOF
    * (End Of File)

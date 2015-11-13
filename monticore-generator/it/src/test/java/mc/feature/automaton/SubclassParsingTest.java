@@ -25,22 +25,21 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
+import org.junit.Test;
+
 import mc.GeneratorIntegrationsTest;
+import mc.feature.automaton.automaton._parser.AutomatonParser;
 import mc.feature.automaton.automaton._ast.ASTSubTransition;
 import mc.feature.automaton.automaton._ast.ASTTransition;
-import mc.feature.automaton.automaton._parser.AutomatonParserFactory;
-import mc.feature.automaton.automaton._parser.TransitionMCParser;
-
-import org.junit.Test;
 
 public class SubclassParsingTest extends GeneratorIntegrationsTest {
   
   @Test
   public void testSubtypeParsing() throws IOException {
     
-    TransitionMCParser parser = AutomatonParserFactory.createTransitionMCParser();
+    AutomatonParser parser = new AutomatonParser();
     
-    Optional<ASTTransition> ast = parser.parse(new StringReader("sub a -x> b;"));
+    Optional<ASTTransition> ast = parser.parseTransition(new StringReader("sub a -x> b;"));
     assertTrue(ast.isPresent());
     assertTrue(ast.get() instanceof ASTSubTransition);
     

@@ -24,19 +24,18 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.io.StringReader;
 
-import mc.GeneratorIntegrationsTest;
-import mc.feature.javasql.javasql.javasql._parser.JavaSQLParserFactory;
-import mc.feature.javasql.javasql.javasql._parser.StartMCParser;
-
 import org.junit.Test;
+
+import mc.GeneratorIntegrationsTest;
+import mc.feature.javasql.javasql.javasql._parser.JavaSQLParser;
 
 public class JavaSQLTest extends GeneratorIntegrationsTest {
   
   @Test
   public void test1() throws IOException {
     
-    StartMCParser p = JavaSQLParserFactory.createStartMCParser();
-    p.parse(new StringReader("a++,a=SELECT a FROM x ,i++"));
+    JavaSQLParser p = new JavaSQLParser();
+    p.parseStart(new StringReader("a++,a=SELECT a FROM x ,i++"));
     
     assertEquals(false, p.hasErrors());
     

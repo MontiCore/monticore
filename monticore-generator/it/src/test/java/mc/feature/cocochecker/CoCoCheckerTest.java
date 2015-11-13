@@ -24,7 +24,7 @@ import mc.feature.cocochecker.a._ast.ASTANode;
 import mc.feature.cocochecker.a._ast.ASTX;
 import mc.feature.cocochecker.a._cocos.AASTXCoCo;
 import mc.feature.cocochecker.a._cocos.ACoCoChecker;
-import mc.feature.cocochecker.a._parser.AParserFactory;
+import mc.feature.cocochecker.a._parser.AParser;
 import mc.feature.cocochecker.b._cocos.BASTXCoCo;
 import mc.feature.cocochecker.b._cocos.BASTYCoCo;
 import mc.feature.cocochecker.b._cocos.BCoCoChecker;
@@ -36,6 +36,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -99,7 +100,7 @@ public class CoCoCheckerTest extends GeneratorIntegrationsTest {
   public void setUp() {
     Optional<ASTX> astOpt = Optional.empty();
     try {
-      astOpt = AParserFactory.createXMCParser().parseString("xyz");
+      astOpt = new AParser().parseX(new StringReader("xyz"));
     }
     catch (RecognitionException | IOException e) {
       e.printStackTrace();

@@ -21,6 +21,7 @@ package de.monticore.codegen.parser;
 
 import static com.google.common.base.Preconditions.checkState;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ import java.util.Optional;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
+import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.grammar.grammar._ast.ASTBlock;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTConstantGroup;
@@ -59,6 +61,7 @@ import de.monticore.languages.grammar.PredicatePair;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.JavaNamesHelper;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -108,6 +111,27 @@ public class ParserGeneratorHelper {
     return qualifiedGrammarName;
   }
   
+  /**
+   * @return the name of the start rule
+   */
+  public String getStartRuleName() {
+    if (grammarSymbol.getStartRule().isPresent()) {
+      return grammarSymbol.getStartRule().get().getName();
+    }
+
+    return "";
+  }
+
+  /**
+   * @return the qualified name of the top ast, i.e., the ast of the start rule.
+   */
+  public String getQualifiedStartRuleName() {
+    if (grammarSymbol.getStartRule().isPresent()) {
+      return getASTClassName(grammarSymbol.getStartRule().get());
+    }
+    return "";
+  }
+
   /**
    * @return the package for the generated parser files
    */
@@ -457,6 +481,5 @@ public class ParserGeneratorHelper {
     }
     return Optional.<MCRuleSymbol> empty();
   }
-  
   
 }

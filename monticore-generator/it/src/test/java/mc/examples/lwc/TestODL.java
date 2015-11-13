@@ -27,6 +27,10 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.Optional;
 
+import org.junit.Test;
+
+import com.google.common.collect.Lists;
+
 import mc.GeneratorIntegrationsTest;
 import mc.examples.lwc.odl.odl._ast.ASTDate;
 import mc.examples.lwc.odl.odl._ast.ASTDateValue;
@@ -36,20 +40,15 @@ import mc.examples.lwc.odl.odl._ast.ASTODLCompilationUnit;
 import mc.examples.lwc.odl.odl._ast.ASTQualifiedName;
 import mc.examples.lwc.odl.odl._ast.ASTReferenceValue;
 import mc.examples.lwc.odl.odl._ast.ASTStringValue;
-import mc.examples.lwc.odl.odl._parser.ODLCompilationUnitMCParser;
-import mc.examples.lwc.odl.odl._parser.ODLParserFactory;
-
-import org.junit.Test;
-
-import com.google.common.collect.Lists;
+import mc.examples.lwc.odl.odl._parser.ODLParser;
 
 public class TestODL extends GeneratorIntegrationsTest {
   
   @Test
   public void testParser() throws IOException {
-    ODLCompilationUnitMCParser parser = ODLParserFactory.createODLCompilationUnitMCParser();
+    ODLParser parser = new ODLParser();
     Optional<ASTODLCompilationUnit> ast = parser
-        .parse("src/test/resources/examples/lwc/odl/MyWorld.odl");
+        .parseODLCompilationUnit("src/test/resources/examples/lwc/odl/MyWorld.odl");
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     

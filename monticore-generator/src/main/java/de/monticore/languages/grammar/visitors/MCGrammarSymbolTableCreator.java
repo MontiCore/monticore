@@ -37,11 +37,12 @@ import de.monticore.symboltable.*;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
+import javax.annotation.Nullable;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Strings.nullToEmpty;
@@ -141,7 +142,7 @@ public class MCGrammarSymbolTableCreator extends CommonSymbolTableCreator implem
     addSubRules(astGrammar.getClassProds());
     addSubRules(astGrammar.getInterfaceProds());
     
-    setStartParserRuleForNonAbstractGrammar(astGrammar);
+    computeStartParserRule(astGrammar);
     
     // Level 3x: Consider follow options (requires 3b, should normally be
     // done in 3a)
@@ -342,7 +343,18 @@ public class MCGrammarSymbolTableCreator extends CommonSymbolTableCreator implem
     grammarSymbol.addPredicate(superrule, subclassPredicatePair);
   }
   
-  private void setStartParserRuleForNonAbstractGrammar(ASTMCGrammar astGrammar) {
+  private void computeStartParserRule(ASTMCGrammar astGrammar) {
+    if (astGrammar.getStartRules().isPresent()) {
+      String name = astGrammar.getStartRules().get().getRuleReference().getName();
+      MCRuleSymbol rule = grammarSymbol.getRuleWithInherited(name);
+      if (rule == null) {
+        Log.error("0xA0243 Rule " + name + " couldn't be found!");
+      }
+      else {
+        rule.setStartRule(true);
+        grammarSymbol.setStartRule(rule);
+      }      
+    } else {
       final Set<ASTProd> firstProductions = Sets.newLinkedHashSet();
       // The start rule for parsing is the first occurring Interface-, Abstract-
       // or Class-Production in this grammar
@@ -356,6 +368,7 @@ public class MCGrammarSymbolTableCreator extends CommonSymbolTableCreator implem
         firstProductions.add(astGrammar.getAbstractProds().get(0));
       }
       setStartProd(firstProductions);
+    }
   }
   
   /**

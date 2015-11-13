@@ -84,6 +84,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
            ASTRule
          |
            Concept
+         | StartRule
          )*
       "}" ;
  
@@ -91,7 +92,8 @@ component grammar Grammar extends de.monticore.literals.Literals {
 
   // One OptionBlock only 
   ast MCGrammar =
-    ASTGrammarOption max=1 ;
+    ASTGrammarOption max=1
+    ASTStartRule max=1 ;
    
  
   /** A GrammarReference references another grammar
@@ -131,6 +133,9 @@ component grammar Grammar extends de.monticore.literals.Literals {
   */ 
   AntlrOption =
     Name  ("=" value:Name |"=" value:String)? ; 
+    
+  StartRule = 
+    "start" RuleReference ";";
     
   // ------------------------------------------------------------------------------
   // Productions

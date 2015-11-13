@@ -29,6 +29,8 @@ import java.io.PrintStream;
 import java.io.StringReader;
 import java.util.Optional;
 
+import org.junit.Test;
+
 import mc.GeneratorIntegrationsTest;
 import mc.feature.featuredsl._ast.ASTA;
 import mc.feature.featuredsl._ast.ASTAList;
@@ -40,13 +42,7 @@ import mc.feature.featuredsl._ast.ASTConstants;
 import mc.feature.featuredsl._ast.ASTConstantsFeatureDSL;
 import mc.feature.featuredsl._ast.ASTSpices1;
 import mc.feature.featuredsl._ast.ASTSpices2;
-import mc.feature.featuredsl._parser.AutomatonMCParser;
-import mc.feature.featuredsl._parser.BMCParser;
-import mc.feature.featuredsl._parser.CMCParser;
-import mc.feature.featuredsl._parser.ComplexnameMCParser;
-import mc.feature.featuredsl._parser.FeatureDSLParserFactory;
-
-import org.junit.Test;
+import mc.feature.featuredsl._parser.FeatureDSLParser;
 
 public class ParserTest extends GeneratorIntegrationsTest {
   
@@ -55,8 +51,8 @@ public class ParserTest extends GeneratorIntegrationsTest {
     StringReader s = new StringReader(
         "automaton a { constants public; constants +; constants private; spices1 garlic pepper;	spices2 none;}");
     
-    AutomatonMCParser p = FeatureDSLParserFactory.createAutomatonMCParser();
-    Optional<ASTAutomaton> opt = p.parse(s);
+    FeatureDSLParser p = new FeatureDSLParser();
+    Optional<ASTAutomaton> opt = p.parseAutomaton(s);
     assertTrue(opt.isPresent());
     ASTAutomaton ast = opt.get();
     
@@ -87,8 +83,8 @@ public class ParserTest extends GeneratorIntegrationsTest {
     // Ignore std.err
     System.setOut(new PrintStream(new ByteArrayOutputStream()));
     
-    AutomatonMCParser p = FeatureDSLParserFactory.createAutomatonMCParser();
-    p.parse(s);
+    FeatureDSLParser p = new FeatureDSLParser();
+    p.parseAutomaton(s);
     
     assertEquals(true, p.hasErrors());
     
@@ -107,8 +103,8 @@ public class ParserTest extends GeneratorIntegrationsTest {
     // Ignore std.err
     System.setErr(new PrintStream(new ByteArrayOutputStream()));
     
-    BMCParser p = FeatureDSLParserFactory.createBMCParser();
-    Optional<ASTB> ast = p.parse(s);
+    FeatureDSLParser p = new FeatureDSLParser();
+    Optional<ASTB> ast = p.parseB(s);
     
     assertEquals(false, p.hasErrors());
     assertTrue(ast.isPresent());
@@ -130,8 +126,8 @@ public class ParserTest extends GeneratorIntegrationsTest {
     // Ignore std.err
     System.setErr(new PrintStream(new ByteArrayOutputStream()));
     
-    CMCParser p = FeatureDSLParserFactory.createCMCParser();
-    Optional<ASTC> ast = p.parse(s);
+    FeatureDSLParser p = new FeatureDSLParser();
+    Optional<ASTC> ast = p.parseC(s);
     
     assertTrue(ast.isPresent());
     assertEquals(false, p.hasErrors());
@@ -152,8 +148,8 @@ public class ParserTest extends GeneratorIntegrationsTest {
     // Ignore std.err
     System.setErr(new PrintStream(new ByteArrayOutputStream()));
     
-    ComplexnameMCParser p = FeatureDSLParserFactory.createComplexnameMCParser();
-    Optional<ASTComplexname> ast = p.parse(s);
+    FeatureDSLParser p = new FeatureDSLParser();
+    Optional<ASTComplexname> ast = p.parseComplexname(s);
     
     assertFalse(ast.isPresent());    
   }

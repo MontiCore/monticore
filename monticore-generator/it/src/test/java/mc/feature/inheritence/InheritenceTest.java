@@ -26,6 +26,9 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
+import org.junit.Test;
+
+import de.monticore.antlr4.MCConcreteParser.ParserExecution;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.inheritence.inheritence._ast.ASTA;
 import mc.feature.inheritence.inheritence._ast.ASTB;
@@ -40,16 +43,7 @@ import mc.feature.inheritence.inheritence._ast.ASTXAE;
 import mc.feature.inheritence.inheritence._ast.ASTXAO;
 import mc.feature.inheritence.inheritence._ast.ASTXF;
 import mc.feature.inheritence.inheritence._ast.ASTXP;
-import mc.feature.inheritence.inheritence._parser.IGMCParser;
-import mc.feature.inheritence.inheritence._parser.IHMCParser;
-import mc.feature.inheritence.inheritence._parser.IMMCParser;
-import mc.feature.inheritence.inheritence._parser.InheritenceParserFactory;
-import mc.feature.inheritence.inheritence._parser.XAEMCParser;
-import mc.feature.inheritence.inheritence._parser.XAOMCParser;
-
-import org.junit.Test;
-
-import de.monticore.antlr4.MCConcreteParser.ParserExecution;
+import mc.feature.inheritence.inheritence._parser.InheritenceParser;
 
 public class InheritenceTest extends GeneratorIntegrationsTest {
   
@@ -64,10 +58,10 @@ public class InheritenceTest extends GeneratorIntegrationsTest {
   @Test
   public void test1a() throws IOException {
     
-    IGMCParser parser = InheritenceParserFactory.createIGMCParser();
+    InheritenceParser parser = new InheritenceParser();
     parser.setParserTarget(ParserExecution.EOF);
     
-    Optional<ASTIG> ast = parser.parse(new StringReader("a"));
+    Optional<ASTIG> ast = parser.parseIG(new StringReader("a"));
     
     assertTrue(ast.get() instanceof ASTA);
     
@@ -76,10 +70,10 @@ public class InheritenceTest extends GeneratorIntegrationsTest {
   @Test
   public void test1b() throws IOException {
     
-    IGMCParser parser = InheritenceParserFactory.createIGMCParser();
+    InheritenceParser parser = new InheritenceParser();
     parser.setParserTarget(ParserExecution.EOF);
     
-    Optional<ASTIG> ast = parser.parse(new StringReader("b"));
+    Optional<ASTIG> ast = parser.parseIG(new StringReader("b"));
     
     assertTrue(ast.get() instanceof ASTB);
     
@@ -88,10 +82,10 @@ public class InheritenceTest extends GeneratorIntegrationsTest {
   @Test
   public void test1c() throws IOException {
     
-    IGMCParser parser = InheritenceParserFactory.createIGMCParser();
+    InheritenceParser parser = new InheritenceParser();
     parser.setParserTarget(ParserExecution.EOF);
     
-    Optional<ASTIG> ast = parser.parse(new StringReader("c"));
+    Optional<ASTIG> ast = parser.parseIG(new StringReader("c"));
     
     assertTrue(ast.get() instanceof ASTC);
     
@@ -105,10 +99,10 @@ public class InheritenceTest extends GeneratorIntegrationsTest {
   @Test
   public void test2() throws IOException {
     
-    IHMCParser parser = InheritenceParserFactory.createIHMCParser();
+    InheritenceParser parser = new InheritenceParser();
     parser.setParserTarget(ParserExecution.EOF);
     
-    Optional<ASTIH> ast = parser.parse(new StringReader("d"));
+    Optional<ASTIH> ast = parser.parseIH(new StringReader("d"));
     assertTrue(ast.get() instanceof ASTD);
     
   }
@@ -122,30 +116,30 @@ public class InheritenceTest extends GeneratorIntegrationsTest {
   @Test
   public void test3a() throws IOException {
     
-    IMMCParser parser = InheritenceParserFactory.createIMMCParser();
+    InheritenceParser parser = new InheritenceParser();
     parser.setParserTarget(ParserExecution.EOF);
     
-    Optional<ASTIM> ast = parser.parse(new StringReader("aa"));
+    Optional<ASTIM> ast = parser.parseIM(new StringReader("aa"));
     assertTrue(ast.get() instanceof ASTK);
   }
   
   @Test
   public void test3b() throws IOException {
     
-    IMMCParser parser = InheritenceParserFactory.createIMMCParser();
+    InheritenceParser parser = new InheritenceParser();
     parser.setParserTarget(ParserExecution.EOF);
     
-    Optional<ASTIM> ast = parser.parse(new StringReader("bb"));
+    Optional<ASTIM> ast = parser.parseIM(new StringReader("bb"));
     assertTrue(ast.get() instanceof ASTK);
   }
   
   @Test
   public void test3c() throws IOException {
     
-    IMMCParser parser = InheritenceParserFactory.createIMMCParser();
+    InheritenceParser parser = new InheritenceParser();
     parser.setParserTarget(ParserExecution.EOF);
     
-    Optional<ASTIM> ast = parser.parse(new StringReader("ab"));
+    Optional<ASTIM> ast = parser.parseIM(new StringReader("ab"));
     assertTrue(ast.get() instanceof ASTL);
     
   }
@@ -155,10 +149,10 @@ public class InheritenceTest extends GeneratorIntegrationsTest {
   @Test
   public void test4a() throws IOException {
     
-    XAEMCParser parser = InheritenceParserFactory.createXAEMCParser();
+    InheritenceParser parser = new InheritenceParser();
     parser.setParserTarget(ParserExecution.EOF);
     
-    Optional<ASTXAE> ast = parser.parse(new StringReader("f"));
+    Optional<ASTXAE> ast = parser.parseXAE(new StringReader("f"));
     assertTrue(ast.get() instanceof ASTXF);
   }
   
@@ -167,10 +161,10 @@ public class InheritenceTest extends GeneratorIntegrationsTest {
   @Test
   public void test5a() throws IOException {
     
-    XAOMCParser parser = InheritenceParserFactory.createXAOMCParser();
+    InheritenceParser parser = new InheritenceParser();
     parser.setParserTarget(ParserExecution.EOF);
     
-    Optional<ASTXAO> ast = parser.parse(new StringReader("p"));
+    Optional<ASTXAO> ast = parser.parseXAO(new StringReader("p"));
     assertTrue(ast.get() instanceof ASTXP);
     assertFalse(parser.hasErrors());
     
@@ -179,10 +173,10 @@ public class InheritenceTest extends GeneratorIntegrationsTest {
   @Test
   public void test5b() throws IOException {
     
-    XAOMCParser parser = InheritenceParserFactory.createXAOMCParser();
+    InheritenceParser parser = new InheritenceParser();
     parser.setParserTarget(ParserExecution.EOF);
     
-    parser.parse(new StringReader("q"));
+    parser.parseXAO(new StringReader("q"));
     assertTrue(parser.hasErrors());
   }
  

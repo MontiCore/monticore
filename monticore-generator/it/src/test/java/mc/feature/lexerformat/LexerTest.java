@@ -26,22 +26,20 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
+import org.junit.Test;
+
 import mc.GeneratorIntegrationsTest;
 import mc.feature.lexerformat.lexerformat._ast.ASTTest;
 import mc.feature.lexerformat.lexerformat._ast.ASTTest2;
-import mc.feature.lexerformat.lexerformat._parser.LexerFormatParserFactory;
-import mc.feature.lexerformat.lexerformat._parser.TestMCParser;
-import mc.feature.lexerformat.lexerformat._parser.Test2MCParser;
-
-import org.junit.Test;
+import mc.feature.lexerformat.lexerformat._parser.LexerFormatParser;
 
 public class LexerTest extends GeneratorIntegrationsTest {
   
   @Test
   public void test0() throws IOException {
     
-    TestMCParser p = LexerFormatParserFactory.createTestMCParser();
-    Optional<ASTTest> ast = p.parse(new StringReader("007"));
+    LexerFormatParser p = new LexerFormatParser();
+    Optional<ASTTest> ast = p.parseTest(new StringReader("007"));
     assertTrue(ast.isPresent());
     
     int r = ast.get().getA();
@@ -51,8 +49,8 @@ public class LexerTest extends GeneratorIntegrationsTest {
   @Test
   public void test1() throws IOException {
     
-    TestMCParser p = LexerFormatParserFactory.createTestMCParser();
-    Optional<ASTTest> ast = p.parse(new StringReader("on"));
+    LexerFormatParser p = new LexerFormatParser();
+    Optional<ASTTest> ast = p.parseTest(new StringReader("on"));
     assertTrue(ast.isPresent());
 
     boolean r = ast.get().isB();
@@ -61,8 +59,8 @@ public class LexerTest extends GeneratorIntegrationsTest {
   
   @Test
   public void test1a() throws IOException { 
-    TestMCParser p = LexerFormatParserFactory.createTestMCParser();
-    Optional<ASTTest> ast = p.parse(new StringReader("start"));
+    LexerFormatParser p = new LexerFormatParser();
+    Optional<ASTTest> ast = p.parseTest(new StringReader("start"));
     assertTrue(ast.isPresent());
     
     boolean r = ast.get().isB();
@@ -71,8 +69,8 @@ public class LexerTest extends GeneratorIntegrationsTest {
   
   @Test
   public void test1b() throws IOException { 
-    TestMCParser p =LexerFormatParserFactory.createTestMCParser();
-    Optional<ASTTest> ast = p.parse(new StringReader("stop"));
+    LexerFormatParser p = new LexerFormatParser();
+    Optional<ASTTest> ast = p.parseTest(new StringReader("stop"));
     assertTrue(ast.isPresent());
 
     boolean r = ast.get().isB();
@@ -81,8 +79,8 @@ public class LexerTest extends GeneratorIntegrationsTest {
   
   @Test
   public void test1c() throws IOException {   
-    TestMCParser p =LexerFormatParserFactory.createTestMCParser();
-    Optional<ASTTest> ast = p.parse(new StringReader("off"));
+    LexerFormatParser p = new LexerFormatParser();
+    Optional<ASTTest> ast = p.parseTest(new StringReader("off"));
     assertTrue(ast.isPresent());
 
     boolean r = ast.get().isB();
@@ -91,8 +89,8 @@ public class LexerTest extends GeneratorIntegrationsTest {
   
   @Test
   public void test2() throws IOException {
-    TestMCParser p = LexerFormatParserFactory.createTestMCParser();
-    Optional<ASTTest> ast = p.parse(new StringReader("a"));
+    LexerFormatParser p = new LexerFormatParser();
+    Optional<ASTTest> ast = p.parseTest(new StringReader("a"));
     assertTrue(ast.isPresent());
 
     char r = ast.get().getC();
@@ -102,8 +100,8 @@ public class LexerTest extends GeneratorIntegrationsTest {
 
   @Test
   public void test3() throws IOException {
-    TestMCParser p = LexerFormatParserFactory.createTestMCParser();
-    Optional<ASTTest> ast = p.parse(new StringReader("99.5"));
+    LexerFormatParser p = new LexerFormatParser();
+    Optional<ASTTest> ast = p.parseTest(new StringReader("99.5"));
     assertTrue(ast.isPresent());
 
     float r = ast.get().getD();
@@ -112,8 +110,8 @@ public class LexerTest extends GeneratorIntegrationsTest {
   
   @Test
   public void test4() throws IOException {    
-    TestMCParser p = LexerFormatParserFactory.createTestMCParser();
-    Optional<ASTTest> ast = p.parse(new StringReader("*"));
+    LexerFormatParser p = new LexerFormatParser();
+    Optional<ASTTest> ast = p.parseTest(new StringReader("*"));
     assertTrue(ast.isPresent());
 
     int r = ast.get().getE();
@@ -122,8 +120,8 @@ public class LexerTest extends GeneratorIntegrationsTest {
   
   @Test
   public void test5() throws IOException {    
-    Test2MCParser p = LexerFormatParserFactory.createTest2MCParser();
-    Optional<ASTTest2> ast = p.parse(new StringReader("1;1"));
+    LexerFormatParser p = new LexerFormatParser();
+    Optional<ASTTest2> ast = p.parseTest2(new StringReader("1;1"));
     assertTrue(ast.isPresent());
   }
 }

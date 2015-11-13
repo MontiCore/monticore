@@ -25,22 +25,21 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.StringReader;
 
+import org.junit.Test;
+
 import mc.GeneratorIntegrationsTest;
 import mc.feature.abstractprod.abstractprod._ast.ASTA;
 import mc.feature.abstractprod.abstractprod._ast.ASTB;
 import mc.feature.abstractprod.abstractprod._ast.ASTC;
-import mc.feature.abstractprod.abstractprod._parser.AMCParser;
-import mc.feature.abstractprod.abstractprod._parser.AbstractProdParserFactory;
-
-import org.junit.Test;
+import mc.feature.abstractprod.abstractprod._parser.AbstractProdParser;
 
 public class AbstractProdTest extends GeneratorIntegrationsTest {
   
   @Test
   public void testb() throws IOException {
     
-    AMCParser p = AbstractProdParserFactory.createAMCParser();
-    java.util.Optional<ASTA> ast = p.parse(new StringReader("b"));
+    AbstractProdParser p = new AbstractProdParser();
+    java.util.Optional<ASTA> ast = p.parseA(new StringReader("b"));
     
     assertTrue(ast.isPresent());
     assertTrue(ast.get() instanceof ASTB);
@@ -51,8 +50,8 @@ public class AbstractProdTest extends GeneratorIntegrationsTest {
   @Test
   public void testc() throws IOException {
     
-    AMCParser p = AbstractProdParserFactory.createAMCParser();
-    java.util.Optional<ASTA> ast = p.parse(new StringReader("c"));
+    AbstractProdParser p = new AbstractProdParser();
+    java.util.Optional<ASTA> ast = p.parseA(new StringReader("c"));
 
     assertTrue(ast.isPresent());
     assertTrue(ast.get() instanceof ASTC);

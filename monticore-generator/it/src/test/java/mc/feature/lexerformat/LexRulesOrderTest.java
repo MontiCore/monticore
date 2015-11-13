@@ -27,15 +27,14 @@ import java.io.StringReader;
 import org.junit.Test;
 
 import mc.GeneratorIntegrationsTest;
-import mc.feature.featuredsl._parser.ClassProdMCParser;
-import mc.feature.featuredsl._parser.FeatureDSLParserFactory;
+import mc.feature.featuredsl._parser.FeatureDSLParser;
 
 public class LexRulesOrderTest extends GeneratorIntegrationsTest {
   
   @Test
   public void testOrder() throws IOException {
-    ClassProdMCParser parser = FeatureDSLParserFactory.createClassProdMCParser();
-    parser.parse(new StringReader("aString"));
+    FeatureDSLParser parser = new FeatureDSLParser();
+    parser.parseClassProd(new StringReader("aString"));
     assertFalse(parser.hasErrors());
   }
   

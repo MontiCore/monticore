@@ -20,17 +20,16 @@
 package mc.feature.comments;
 
 import static org.junit.Assert.assertEquals;
-import groovyjarjarantlr.TokenStreamException;
 
 import java.io.IOException;
 import java.io.StringReader;
 
-import mc.GeneratorIntegrationsTest;
-import mc.feature.comments.commenttypestest._parser.CStartMCParser;
-import mc.feature.comments.commenttypestest._parser.CommentTypesTestParserFactory;
-
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
+
+import groovyjarjarantlr.TokenStreamException;
+import mc.GeneratorIntegrationsTest;
+import mc.feature.comments.commenttypestest._parser.CommentTypesTestParser;
 
 public class CommentTypesTest extends GeneratorIntegrationsTest {
   
@@ -47,8 +46,8 @@ public class CommentTypesTest extends GeneratorIntegrationsTest {
   public void testXMLComment() throws org.antlr.v4.runtime.RecognitionException, IOException  {
     StringReader r = new StringReader("start <!-- comment \n --> marita");
     
-    CStartMCParser p = CommentTypesTestParserFactory.createCStartMCParser();    
-    p.parse(r);
+    CommentTypesTestParser p = new CommentTypesTestParser();    
+    p.parseCStart(r);
     
     assertEquals(false, p.hasErrors());
   }
@@ -63,8 +62,8 @@ public class CommentTypesTest extends GeneratorIntegrationsTest {
   public void testCComment_With__() throws org.antlr.v4.runtime.RecognitionException, IOException  {
     StringReader r = new StringReader("start <!-- -- --> marita");
     
-    CStartMCParser p = CommentTypesTestParserFactory.createCStartMCParser();    
-    p.parse(r);
+    CommentTypesTestParser p = new CommentTypesTestParser();    
+    p.parseCStart(r);
     
     assertEquals(false, p.hasErrors());
   }
@@ -79,8 +78,8 @@ public class CommentTypesTest extends GeneratorIntegrationsTest {
   public void testTexComment() throws org.antlr.v4.runtime.RecognitionException, IOException {
     StringReader r = new StringReader("start % comment\n  marita");
     
-    CStartMCParser p = CommentTypesTestParserFactory.createCStartMCParser();    
-    p.parse(r);
+    CommentTypesTestParser p = new CommentTypesTestParser();    
+    p.parseCStart(r);
     
     assertEquals(false, p.hasErrors());
   }
@@ -95,8 +94,8 @@ public class CommentTypesTest extends GeneratorIntegrationsTest {
   public void testFreeMarkerComment() throws org.antlr.v4.runtime.RecognitionException, IOException {
     StringReader r = new StringReader("start <#-- comment \n --> marita");
     
-    CStartMCParser p = CommentTypesTestParserFactory.createCStartMCParser();    
-    p.parse(r);
+    CommentTypesTestParser p = new CommentTypesTestParser();    
+    p.parseCStart(r);
     
     assertEquals(false, p.hasErrors());
   }
@@ -111,8 +110,8 @@ public class CommentTypesTest extends GeneratorIntegrationsTest {
   public void testHashComment() throws org.antlr.v4.runtime.RecognitionException, IOException {
     StringReader r = new StringReader("start # comment \n marita");
     
-    CStartMCParser p = CommentTypesTestParserFactory.createCStartMCParser();    
-    p.parse(r);
+    CommentTypesTestParser p = new CommentTypesTestParser();    
+    p.parseCStart(r);
     
     assertEquals(false, p.hasErrors());
   }

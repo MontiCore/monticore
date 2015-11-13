@@ -27,27 +27,25 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
+import org.junit.Test;
+
+import de.monticore.prettyprint.IndentPrinter;
 import mc.GeneratorIntegrationsTest;
 import mc.examples.cartesian.coordcartesian._ast.ASTCoordinateFile;
-import mc.examples.cartesian.coordcartesian._parser.CoordcartesianParserFactory;
-import mc.examples.cartesian.coordcartesian._parser.CoordinateFileMCParser;
+import mc.examples.cartesian.coordcartesian._parser.CoordcartesianParser;
 import mc.examples.coord.cartesian.prettyprint.CartesianPrettyPrinterConcreteVisitor;
 import mc.examples.coord.polar.prettyprint.PolarPrettyPrinterConcreteVisitor;
 import mc.examples.coord.transform.CartesianToPolar;
 import mc.examples.coord.transform.Mirror;
-import mc.examples.polar.coordpolar._parser.CoordpolarParserFactory;
-
-import org.junit.Test;
-
-import de.monticore.prettyprint.IndentPrinter;
+import mc.examples.polar.coordpolar._parser.CoordpolarParser;
 
 public class TestCoordinates extends GeneratorIntegrationsTest {
   
   @Test
   public void testCoordcartesianParser() throws IOException {
-    CoordinateFileMCParser parser = CoordcartesianParserFactory.createCoordinateFileMCParser();
+    CoordcartesianParser parser = new CoordcartesianParser();
     Optional<ASTCoordinateFile> astCartesian = parser
-        .parse("src/test/resources/examples/coord/coordinates.cart"); // (2,4)
+        .parseCoordinateFile("src/test/resources/examples/coord/coordinates.cart"); // (2,4)
                                                                       // (5,2)
                                                                       // (1,7)
     assertFalse(parser.hasErrors());
@@ -67,10 +65,9 @@ public class TestCoordinates extends GeneratorIntegrationsTest {
   
   @Test
   public void testCoordpolarParser() throws IOException {
-    mc.examples.polar.coordpolar._parser.CoordinateFileMCParser parser = CoordpolarParserFactory
-        .createCoordinateFileMCParser();
+    mc.examples.polar.coordpolar._parser.CoordpolarParser parser = new CoordpolarParser();
     Optional<mc.examples.polar.coordpolar._ast.ASTCoordinateFile> astPolar = parser
-        .parse("src/test/resources/examples/coord/coordinates.polar");
+        .parseCoordinateFile("src/test/resources/examples/coord/coordinates.polar");
     // [1,0;0,5]
     // [2,5;1,3]
     // [47,11;0,815]
@@ -91,9 +88,9 @@ public class TestCoordinates extends GeneratorIntegrationsTest {
   
   @Test
   public void cartesian2Polar() throws IOException {
-    CoordinateFileMCParser parser = CoordcartesianParserFactory.createCoordinateFileMCParser();
+    CoordcartesianParser parser = new CoordcartesianParser();
     Optional<ASTCoordinateFile> astCartesian = parser
-        .parse("src/test/resources/examples/coord/coordinates.cart");
+        .parseCoordinateFile("src/test/resources/examples/coord/coordinates.cart");
     assertFalse(parser.hasErrors());
     assertTrue(astCartesian.isPresent());
     
@@ -108,10 +105,9 @@ public class TestCoordinates extends GeneratorIntegrationsTest {
     // Pretty-print the cartesian coordinates
     p.print(transformer.getResult());
     
-    mc.examples.polar.coordpolar._parser.CoordinateFileMCParser polarParser = CoordpolarParserFactory
-        .createCoordinateFileMCParser();
+    mc.examples.polar.coordpolar._parser.CoordpolarParser polarParser = new CoordpolarParser();
     Optional<mc.examples.polar.coordpolar._ast.ASTCoordinateFile> astPolar = polarParser
-        .parse(new StringReader(ip.getContent()));
+        .parseCoordinateFile(new StringReader(ip.getContent()));
     assertFalse(polarParser.hasErrors());
     assertTrue(astPolar.isPresent());
     
@@ -130,9 +126,9 @@ public class TestCoordinates extends GeneratorIntegrationsTest {
   
   @Test
   public void mirrorTransformation() throws IOException {
-    CoordinateFileMCParser parser = CoordcartesianParserFactory.createCoordinateFileMCParser();
+    CoordcartesianParser parser = new CoordcartesianParser();
     Optional<ASTCoordinateFile> astCartesian = parser
-        .parse("src/test/resources/examples/coord/coordinates.cart");
+        .parseCoordinateFile("src/test/resources/examples/coord/coordinates.cart");
     assertFalse(parser.hasErrors());
     assertTrue(astCartesian.isPresent());
     
@@ -158,7 +154,7 @@ public class TestCoordinates extends GeneratorIntegrationsTest {
     // Pretty-print the cartesian coordinates
     p.print(astCartesian.get());
     
-    Optional<ASTCoordinateFile> astTransformed = parser.parse(new StringReader(ip.getContent()));
+    Optional<ASTCoordinateFile> astTransformed = parser.parseCoordinateFile(new StringReader(ip.getContent()));
     assertFalse(parser.hasErrors());
     assertTrue(astTransformed.isPresent());
     

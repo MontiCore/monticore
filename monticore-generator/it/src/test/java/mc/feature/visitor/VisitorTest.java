@@ -25,31 +25,28 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.Optional;
 
+import org.junit.Test;
+
+import de.se_rwth.commons.logging.Log;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.visitor.sub._ast.ASTB;
 import mc.feature.visitor.sub._ast.ASTE;
-import mc.feature.visitor.sub._parser.AMCParser;
-import mc.feature.visitor.sub._parser.SubParserFactory;
+import mc.feature.visitor.sub._parser.SubParser;
 import mc.feature.visitor.sub._visitor.SubParentAwareVisitor;
 import mc.feature.visitor.sub._visitor.SubVisitor;
 import mc.feature.visitor.sup._ast.ASTA;
 import mc.feature.visitor.sup._visitor.SupVisitor;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.Slf4jLog;
 
 public class VisitorTest extends GeneratorIntegrationsTest {
   
   @Test
   public void testConcreteVisitor() throws IOException {
     // Create AST
-    AMCParser p = SubParserFactory.createAMCParser();
-    Optional<ASTA> node = p.parseString("test1 test2");
+    SubParser p = new SubParser();
+    Optional<ASTA> node = p.parseA(new StringReader("test1 test2"));
     assertFalse(p.hasErrors());
     assertTrue(node.isPresent());
     
@@ -69,9 +66,9 @@ public class VisitorTest extends GeneratorIntegrationsTest {
   @Test
   public void testParentAware() throws IOException {
     // Create AST
-    AMCParser p = SubParserFactory.createAMCParser();
+    SubParser p = new SubParser();
     // in b ist parent a
-    Optional<ASTA> node = p.parseString("test1 test2");
+    Optional<ASTA> node = p.parseA(new StringReader("test1 test2"));
     assertFalse(p.hasErrors());
     assertTrue(node.isPresent());
     

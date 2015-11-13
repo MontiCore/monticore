@@ -34,9 +34,8 @@ ${signature("className")}
 
 <#assign genHelper = glex.getGlobalValue("stHelper")>
 <#assign grammarName = ast.getName()?cap_first>
-<#assign fqn = genHelper.getQualifiedGrammarName()?lower_case>
 <#assign package = genHelper.getTargetPackage()?lower_case>
-<#assign topAstName = genHelper.getTopAstName()>
+<#assign topAstName = genHelper.getQualifiedStartRuleName()>
 <#assign skipSTGen = glex.getGlobalValue("skipSTGen")>
 
 <#-- Copyright -->
@@ -48,7 +47,6 @@ package ${package};
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolverConfiguration;
 
-import ${fqn}._ast.${topAstName};
 <#if !skipSTGen>
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.Scope;

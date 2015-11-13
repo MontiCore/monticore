@@ -34,6 +34,7 @@ import java.util.regex.Pattern;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
+
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
@@ -98,22 +99,10 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   /**
    * @return the name of the top ast, i.e., the ast of the start rule.
    */
-  public String getTopAstName() {
+  public String getQualifiedStartRuleName() {
     if (grammarSymbol.getStartRule().isPresent()) {
-      return "AST" + grammarSymbol.getStartRule().get().getName();
+      return grammarSymbol.getStartRule().get().getType().getQualifiedName();
     }
-
-    return "";
-  }
-
-  /**
-   * @return the name of the start rule
-   */
-  public String getStartRuleName() {
-    if (grammarSymbol.getStartRule().isPresent()) {
-      return grammarSymbol.getStartRule().get().getName();
-    }
-
     return "";
   }
 

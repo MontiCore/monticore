@@ -24,16 +24,15 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.io.StringReader;
 
+import org.junit.Test;
+
 import mc.GeneratorIntegrationsTest;
 import mc.feature.featuredsl._ast.ASTAutomaton;
 import mc.feature.featuredsl._ast.ASTConstants;
 import mc.feature.featuredsl._ast.ASTConstantsFeatureDSL;
 import mc.feature.featuredsl._ast.ASTSpices1;
 import mc.feature.featuredsl._ast.ASTSpices2;
-import mc.feature.featuredsl._parser.AutomatonMCParser;
-import mc.feature.featuredsl._parser.FeatureDSLParserFactory;
-
-import org.junit.Test;
+import mc.feature.featuredsl._parser.FeatureDSLParser;
 
 public class CommentTest extends GeneratorIntegrationsTest {
   
@@ -42,9 +41,9 @@ public class CommentTest extends GeneratorIntegrationsTest {
     StringReader s = new StringReader(
         "// Test \n /*Second*/ automaton a { // First Constant 1\n constants public ;// First Constant 2\n /*Second Constant*/ constants +; constants private; spices1 garlic pepper;	spices2 none;}");
         
-    AutomatonMCParser cp = FeatureDSLParserFactory.createAutomatonMCParser();
+    FeatureDSLParser cp = new FeatureDSLParser();
     
-    java.util.Optional<ASTAutomaton> optAst = cp.parse(s);
+    java.util.Optional<ASTAutomaton> optAst = cp.parseAutomaton(s);
     ASTAutomaton ast = optAst.get();
     
     // Parsing

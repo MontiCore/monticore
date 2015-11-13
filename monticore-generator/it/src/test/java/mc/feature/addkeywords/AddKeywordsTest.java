@@ -27,16 +27,12 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
+import org.junit.Test;
+
 import mc.GeneratorIntegrationsTest;
 import mc.feature.addkeywords.addkeywords._ast.ASTD;
 import mc.feature.addkeywords.addkeywords._ast.ASTE;
-import mc.feature.addkeywords.addkeywords._parser.AddKeywordsParserFactory;
-import mc.feature.addkeywords.addkeywords._parser.BMCParser;
-import mc.feature.addkeywords.addkeywords._parser.CMCParser;
-import mc.feature.addkeywords.addkeywords._parser.DMCParser;
-import mc.feature.addkeywords.addkeywords._parser.EMCParser;
-
-import org.junit.Test;
+import mc.feature.addkeywords.addkeywords._parser.AddKeywordsParser;
 
 public class AddKeywordsTest extends GeneratorIntegrationsTest {
   
@@ -50,8 +46,8 @@ public class AddKeywordsTest extends GeneratorIntegrationsTest {
   }
   
   private void helperb(String in) throws IOException {
-    BMCParser b = AddKeywordsParserFactory.createBMCParser();
-    b.parse(new StringReader(in));
+    AddKeywordsParser b = new AddKeywordsParser();
+    b.parseB(new StringReader(in));
         
     assertFalse(b.hasErrors());
   }
@@ -66,8 +62,8 @@ public class AddKeywordsTest extends GeneratorIntegrationsTest {
   }
   
   private void helperc(String in) throws IOException {
-    CMCParser b = AddKeywordsParserFactory.createCMCParser();
-    b.parse(new StringReader(in));
+    AddKeywordsParser b = new AddKeywordsParser();
+    b.parseC(new StringReader(in));
     assertFalse(b.hasErrors());
   }
   
@@ -85,10 +81,10 @@ public class AddKeywordsTest extends GeneratorIntegrationsTest {
   }
   
   private ASTD helperd(String in) throws IOException {
-    DMCParser createSimpleMCParser = AddKeywordsParserFactory.createDMCParser();
-    Optional<ASTD> parse = createSimpleMCParser.parse(new StringReader(in));
+    AddKeywordsParser createSimpleParser = new AddKeywordsParser();
+    Optional<ASTD> parse = createSimpleParser.parseD(new StringReader(in));
     assertTrue(parse.isPresent());
-    assertFalse(createSimpleMCParser.hasErrors());
+    assertFalse(createSimpleParser.hasErrors());
     
     return parse.get();
   }
@@ -107,10 +103,10 @@ public class AddKeywordsTest extends GeneratorIntegrationsTest {
   }
   
   private ASTE helpere(String in) throws IOException {
-    EMCParser createSimpleMCParser = AddKeywordsParserFactory.createEMCParser();
-    Optional<ASTE> parse = createSimpleMCParser.parse(new StringReader(in));
+    AddKeywordsParser createSimpleParser = new AddKeywordsParser();
+    Optional<ASTE> parse = createSimpleParser.parseE(new StringReader(in));
     assertTrue(parse.isPresent());
-    assertFalse(createSimpleMCParser.hasErrors());
+    assertFalse(createSimpleParser.hasErrors());
     
     return parse.get();
   }

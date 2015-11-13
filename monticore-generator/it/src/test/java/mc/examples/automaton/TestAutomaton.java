@@ -25,20 +25,19 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.Optional;
 
+import org.junit.Test;
+
 import mc.GeneratorIntegrationsTest;
 import mc.examples.automaton.automaton._ast.ASTAutomaton;
-import mc.examples.automaton.automaton._parser.AutomatonMCParser;
-import mc.examples.automaton.automaton._parser.AutomatonParserFactory;
-
-import org.junit.Test;
+import mc.examples.automaton.automaton._parser.AutomatonParser;
 
 public class TestAutomaton extends GeneratorIntegrationsTest {
   
   @Test
   public void testParser() throws IOException {
-    AutomatonMCParser parser = AutomatonParserFactory.createAutomatonMCParser();
+    AutomatonParser parser = new AutomatonParser();
     Optional<ASTAutomaton> optAutomaton;
-    optAutomaton = parser.parse("src/test/resources/examples/automaton/Testautomat.aut");
+    optAutomaton = parser.parseAutomaton("src/test/resources/examples/automaton/Testautomat.aut");
     assertFalse(parser.hasErrors());
     assertTrue(optAutomaton.isPresent());
   }

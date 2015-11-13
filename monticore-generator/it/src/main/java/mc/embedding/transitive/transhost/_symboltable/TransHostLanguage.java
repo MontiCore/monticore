@@ -27,10 +27,6 @@ package mc.embedding.transitive.transhost._symboltable;
 
 import java.util.Optional;
 
-import mc.embedding.transitive.transhost._parser.TransStartMCParser;
-import mc.embedding.transitive.transhost._parser.TransHostParserFactory;
-import de.monticore.ast.ASTNode;
-import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolverConfiguration;
 
@@ -39,11 +35,6 @@ public class TransHostLanguage extends TransHostLanguageTOP {
   public final static String FILE_ENDING = "transhost";
   public TransHostLanguage() {
     super("Trans Host Language", FILE_ENDING);
-  }
-
-  @Override
-  public TransStartMCParser getParser() {
-    return TransHostParserFactory.createTransStartMCParser();
   }
 
   @Override

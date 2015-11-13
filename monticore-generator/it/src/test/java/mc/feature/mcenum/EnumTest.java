@@ -27,8 +27,8 @@ import mc.feature.mcenum._ast.ASTConstantsEnums;
 import mc.feature.mcenum._ast.E;
 import mc.feature.mcenum._ast.F;
 import mc.feature.mcenum._ast.G;
-import mc.feature.mcenum._parser.AMCParser;
-import mc.feature.mcenum._parser.BMCParser;
+import mc.feature.mcenum._parser.AParser;
+import mc.feature.mcenum._parser.BParser;
 */
 public class EnumTest extends GeneratorIntegrationsTest {
   // TODO SO <- GV: transformation foe MC-enums
@@ -36,7 +36,7 @@ public class EnumTest extends GeneratorIntegrationsTest {
   @Test
   public void testa() throws IOException {
     
-    AMCParser p = new AMCParser();
+    AParser p = new AParser();
     
     Optional<ASTA> optAst = p.parse(new StringReader("++++WORD"));
     assertTrue(optAst.isPresent());
@@ -53,7 +53,7 @@ public class EnumTest extends GeneratorIntegrationsTest {
    @Test
   public void testB() throws IOException {
     
-    BMCParser p = new BMCParser();
+    BParser p = new BParser();
     
     Optional<ASTB> optAst = p.parse(new StringReader("++,++"));
     assertTrue(optAst.isPresent());
@@ -70,7 +70,7 @@ public class EnumTest extends GeneratorIntegrationsTest {
    @Test
   public void testB2() throws IOException {
     
-    BMCParser p = new BMCParser();
+    BParser p = new BParser();
     
     Optional<ASTB> optAst = p.parse(new StringReader("++,#+"));
     assertTrue(optAst.isPresent());
@@ -88,7 +88,7 @@ public class EnumTest extends GeneratorIntegrationsTest {
    @Test
   public void testB3() throws IOException {
     
-    BMCParser p = new BMCParser();
+    BParser p = new BParser();
     
     Optional<ASTB> optAst = p.parse(new StringReader("++,#-"));
     assertTrue(optAst.isPresent());

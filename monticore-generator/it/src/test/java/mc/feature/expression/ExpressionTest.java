@@ -27,18 +27,16 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
-import mc.GeneratorIntegrationsTest;
-import mc.feature.expression.expression._ast.ASTConstantsExpression;
-import mc.feature.expression.expression._ast.ASTExpr;
-import mc.feature.expression.expression._parser.ExprMCParser;
-import mc.feature.expression.expression._parser.ExpressionParserFactory;
-
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.monticore.antlr4.MCConcreteParser.ParserExecution;
 import de.se_rwth.commons.logging.Log;
+import mc.GeneratorIntegrationsTest;
+import mc.feature.expression.expression._ast.ASTConstantsExpression;
+import mc.feature.expression.expression._ast.ASTExpr;
+import mc.feature.expression.expression._parser.ExpressionParser;
 
 public class ExpressionTest extends GeneratorIntegrationsTest {
   
@@ -48,9 +46,9 @@ public class ExpressionTest extends GeneratorIntegrationsTest {
   }
   
   public Optional<ASTExpr> parse(String input) throws RecognitionException, IOException {
-    ExprMCParser parser = ExpressionParserFactory.createExprMCParser();
+    ExpressionParser parser = new ExpressionParser();
     parser.setParserTarget(ParserExecution.EOF);
-    Optional<ASTExpr> res = parser.parse(new StringReader(input));
+    Optional<ASTExpr> res = parser.parseExpr(new StringReader(input));
     return res;
   }
   

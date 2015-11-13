@@ -27,7 +27,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolverConfiguration;
-import mc.embedding.composite._parser.CompositeParserFactory;
+import mc.embedding.composite._parser.CompositeParser;
 import mc.embedding.embedded._symboltable.EmbeddedLanguage;
 import mc.embedding.host._symboltable.HostLanguage;
 
@@ -43,7 +43,7 @@ public class CompositeLanguage extends EmbeddingModelingLanguage {
   }
 
   @Override public MCConcreteParser getParser() {
-    return CompositeParserFactory.createHostMCParser();
+    return new CompositeParser();
   }
 
   @Override public Optional<CompositeSymbolTableCreator> getSymbolTableCreator(

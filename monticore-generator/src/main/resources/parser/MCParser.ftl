@@ -32,27 +32,65 @@ SUCH DAMAGE.
 -->
 ${tc.signature("ast", "suffix", "methods")}
 <#assign genHelper = glex.getGlobalValue("parserHelper")>
-  
+<#assign grammar = genHelper.getGrammarSymbol()>
+<#assign parserName = grammar.getSimpleName()?cap_first>
+<#assign startRule = genHelper.getStartRuleName()>
+<#assign qualifiedStartRule = genHelper.getQualifiedStartRuleName()>
+ 
 <#-- Copyright -->
 ${tc.defineHookPoint("JavaCopyright")}
 
 <#-- set package -->
 package ${genHelper.getParserPackage()};
 
-public class ${ast.getName()}ParserFactory${suffix} {
-  
-  private static ${ast.getName()}ParserFactory${suffix} getFactory() {
-    return new ${ast.getName()}ParserFactory${suffix}();
+import java.io.IOException;
+import java.io.Reader;
+
+import java.util.Optional;
+import de.monticore.ast.ASTNode;
+import de.monticore.antlr4.MCConcreteParser;
+
+import org.antlr.v4.runtime.ANTLRFileStream;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.RecognitionException;
+
+public class ${ast.getName()}Parser${suffix} extends MCConcreteParser {
+
+  protected ${parserName}AntlrParser create(String filename) throws IOException, RecognitionException {
+    ${parserName}AntlrLexer lexer = new ${parserName}AntlrLexer(new  ANTLRFileStream(filename));
+    CommonTokenStream tokens = new CommonTokenStream(lexer);
+    ${parserName}AntlrParser parser = new ${parserName}AntlrParser(tokens);
+    lexer.setMCParser(parser);  
+    parser.setFilename(filename);
+    setError(false);
+    return parser;
   }
   
-  protected static ${ast.getName()}ParserFactory${suffix} factory = null;
-
-  protected ${ast.getName()}ParserFactory${suffix} () {}
-
-  <#-- generate all methods -->
+  protected ${parserName}AntlrParser create(Reader reader) throws IOException, RecognitionException {
+    ${parserName}AntlrLexer lexer = new ${parserName}AntlrLexer(new ANTLRInputStream(reader));
+    CommonTokenStream tokens = new CommonTokenStream(lexer);
+    ${parserName}AntlrParser parser = new ${parserName}AntlrParser(tokens);
+    lexer.setMCParser(parser);  
+    parser.setFilename("Reader");
+    setError(false);
+    return parser;
+  }
+  
+  @Override
+  public Optional<${qualifiedStartRule}> parse(Reader reader) throws IOException, RecognitionException {
+    return parse${startRule}(reader);
+  }
+  
+  @Override
+  public Optional<${qualifiedStartRule}> parse(String fileName) throws IOException, RecognitionException {
+    return parse${startRule}(fileName);
+  }
+ 
+<#-- generate all methods -->
 <#list methods as method>
   <#if genHelper.generateParserForRule(method)>
-    ${tc.includeArgs("parser.FactoryMethods", [method])}
+    ${tc.includeArgs("parser.MCParserMethods", [method])}
   </#if>
 </#list>
 

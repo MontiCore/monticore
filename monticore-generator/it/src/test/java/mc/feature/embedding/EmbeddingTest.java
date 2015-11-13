@@ -20,33 +20,31 @@
 package mc.feature.embedding;
 
 import static org.junit.Assert.assertEquals;
-import groovyjarjarantlr.TokenStreamRecognitionException;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Optional;
 
-import mc.GeneratorIntegrationsTest;
-import mc.feature.embedding.outer.featureembedded._ast.ASTExt;
-import mc.feature.embedding.outer.featureembedded._parser.FeatureembeddedParserFactory;
-import mc.feature.embedding.outer.featureembedded._parser.Outer3MCParser;
-import mc.feature.embedding.outer.featureembedded._parser.OuterMCParser;
-import mc.feature.embedding.outer.featureouterdsl._ast.ASTOuter;
-import mc.feature.embedding.outer.featureouterdsl._ast.ASTOuter3;
-
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
+
+import groovyjarjarantlr.TokenStreamRecognitionException;
+import mc.GeneratorIntegrationsTest;
+import mc.feature.embedding.outer.featureembedded._ast.ASTExt;
+import mc.feature.embedding.outer.featureembedded._parser.FeatureembeddedParser;
+import mc.feature.embedding.outer.featureouterdsl._ast.ASTOuter;
+import mc.feature.embedding.outer.featureouterdsl._ast.ASTOuter3;
 
 public class EmbeddingTest extends GeneratorIntegrationsTest {
   
   private ASTOuter createAST(String filename, Reader r) throws RecognitionException, TokenStreamRecognitionException, IOException {
     
     // Create overall parser
-    OuterMCParser parser = FeatureembeddedParserFactory.createOuterMCParser();
+    FeatureembeddedParser parser = new FeatureembeddedParser();
     
     // Parse the input expression
-    Optional<ASTOuter> ast = parser.parse(r);
+    Optional<ASTOuter> ast = parser.parseOuter(r);
     
     return ast.get();
   }
@@ -54,10 +52,10 @@ public class EmbeddingTest extends GeneratorIntegrationsTest {
   private ASTOuter3 createAST3(String filename, Reader r) throws RecognitionException, IOException {
     
     // Create overall parser
-    Outer3MCParser parser = FeatureembeddedParserFactory.createOuter3MCParser();
+    FeatureembeddedParser parser = new FeatureembeddedParser();
     
     // Parse the input expression
-    Optional<ASTOuter3> ast = parser.parse(r);
+    Optional<ASTOuter3> ast = parser.parseOuter3(r);
     
     return ast.get();
   }

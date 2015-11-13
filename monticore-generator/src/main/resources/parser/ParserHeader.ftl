@@ -32,7 +32,7 @@ SUCH DAMAGE.
 -->
 <#-- Write parser header -->
 <#assign genHelper = glex.getGlobalValue("parserHelper")>
-grammar ${ast.getName()};
+grammar ${ast.getName()}Antlr;
 @parser::header {
 package ${genHelper.getParserPackage()};
 import de.monticore.antlr4.MCParser;

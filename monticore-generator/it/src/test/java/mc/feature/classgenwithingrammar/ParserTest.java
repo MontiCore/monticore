@@ -25,12 +25,10 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.StringReader;
 
-import mc.GeneratorIntegrationsTest;
-import mc.feature.classgenwithingrammar.type._parser.Type2MCParser;
-import mc.feature.classgenwithingrammar.type._parser.TypeMCParser;
-import mc.feature.classgenwithingrammar.type._parser.TypeParserFactory;
-
 import org.junit.Test;
+
+import mc.GeneratorIntegrationsTest;
+import mc.feature.classgenwithingrammar.type._parser.TypeParser;
 
 public class ParserTest extends GeneratorIntegrationsTest {
 
@@ -94,18 +92,18 @@ public class ParserTest extends GeneratorIntegrationsTest {
   
   private boolean parse( String input) throws IOException {
     StringReader s = new StringReader(input);    
-    TypeMCParser parser = TypeParserFactory.createTypeMCParser();
+    TypeParser parser = new TypeParser();
             
-    parser.parse(s);
+    parser.parseType(s);
     return parser.hasErrors();
   }
   
   private boolean parse2(String input) throws IOException {
     StringReader s = new StringReader(input);
     
-    Type2MCParser parser = TypeParserFactory.createType2MCParser();
+    TypeParser parser = new TypeParser();
     
-    parser.parse(s);
+    parser.parseType2(s);
     return parser.hasErrors();
 
   }
