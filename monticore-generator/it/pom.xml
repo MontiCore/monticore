@@ -44,6 +44,12 @@
       <groupId>de.monticore</groupId>
       <artifactId>de.monticore.java</artifactId>
     </dependency>
+    
+     <dependency>
+        <groupId>de.monticore</groupId>
+        <artifactId>monticore-emf-runtime</artifactId>
+        <version>4.2.1-SNAPSHOT</version>
+      </dependency>
 
     <dependency>
       <groupId>junit</groupId>
@@ -60,6 +66,25 @@
       <version>2.0.7</version>
       <scope>test</scope>
     </dependency>
+    
+       
+      <!-- EMF dependencies -->
+      <dependency>
+        <groupId>org.mod4j.org.eclipse.emf</groupId>
+        <artifactId>ecore</artifactId>
+        <version>2.5.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mod4j.org.eclipse.emf.ecore</groupId>
+        <artifactId>xmi</artifactId>
+        <version>2.5.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mod4j.org.eclipse.emf</groupId>
+        <artifactId>common</artifactId>
+        <version>2.5.0</version>
+      </dependency>
+    
   </dependencies>
 
   <build>
@@ -95,7 +120,7 @@
               <skip>false</skip>
               <addOutputDirectoryToModelPath>true</addOutputDirectoryToModelPath>
               <grammars>
-                <grammar>src/main/grammars/mc/common/Basics.mc4</grammar>
+               <!--  <grammar>src/main/grammars/mc/common/Basics.mc4</grammar>
                 <grammar>src/main/grammars/HelloWorld.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/abc/ABC.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/abc/RealABC.mc4</grammar>
@@ -106,9 +131,9 @@
                 <grammar>src/main/grammars/mc/feature/astcomparison/Comparison.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/astident/AstIdent.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/astprod/AstProd.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/aststring/Aststring.mc4</grammar>
+                <grammar>src/main/grammars/mc/feature/aststring/Aststring.mc4</grammar-->
                 <grammar>src/main/grammars/mc/feature/automaton/Automaton.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/classgenwithingrammar/Type.mc4</grammar>
+                <!-- grammar>src/main/grammars/mc/feature/classgenwithingrammar/Type.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/cocochecker/A.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/cocochecker/B.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/cocochecker/C.mc4</grammar>
@@ -132,10 +157,10 @@
                 <grammar>src/main/grammars/mc/feature/listrule/ListRule.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/semanticpredicate/SemPredWithInterface.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/inheritence/Inheritence.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/followoption/FollowOption.mc4</grammar>
+                <grammar>src/main/grammars/mc/feature/followoption/FollowOption.mc4</grammar> -->
                 <!-- TODO SO grammar>src/main/grammars/mc/feature/mcenum/Enums.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/mcenum/SubEnum.mc4</grammar-->
-                <grammar>src/main/grammars/mc/feature/lexerformat/KleenePlus.mc4</grammar>
+        <!--         <grammar>src/main/grammars/mc/feature/lexerformat/KleenePlus.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/lexerformat/LexerFormat.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/expression/Expression.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/grammarinherit/sub/FeatureDSLgrammarinherit.mc4</grammar>
@@ -155,39 +180,24 @@
                 <grammar>src/main/grammars/mc/feature/statechart/StatechartDSL.mc4</grammar>
                 <grammar>src/main/grammars/mc/featureemf/fautomaton/action/Expression.mc4</grammar>
                 <grammar>src/main/grammars/mc/featureemf/fautomaton/automaton/FlatAutomaton.mc4</grammar>
-                <grammar>src/main/grammars/mc/featureemf/fautomaton/automatonwithaction/ActionAutomaton.mc4</grammar> <!-- TODO SO: uncomment TransitionWithAction rule -->
-                <grammar>src/main/grammars/mc/feature/visitor/Sub.mc4</grammar>
+                <grammar>src/main/grammars/mc/featureemf/fautomaton/automatonwithaction/ActionAutomaton.mc4</grammar> --> <!-- TODO SO: uncomment TransitionWithAction rule -->
+               <!--  <grammar>src/main/grammars/mc/feature/visitor/Sub.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/visitor/Sup.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/visitor/inheritance/A.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/visitor/inheritance/B.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/visitor/inheritance/C.mc4</grammar>
+                <grammar>src/main/grammars/mc/feature/visitor/inheritance/C.mc4</grammar> -->
                 
                 <!-- MontiCore grammars -->
-                <grammar>src/main/grammars/mc/grammar/lexicals/Lexicals.mc4</grammar>
+             <!--    <grammar>src/main/grammars/mc/grammar/lexicals/Lexicals.mc4</grammar>
                 <grammar>src/main/grammars/mc/grammar/literals/Literals.mc4</grammar>
                 <grammar>src/main/grammars/mc/grammar/types/Types.mc4</grammar>
                 <grammar>src/main/grammars/mc/grammar/Grammar.mc4</grammar>
                 <grammar>src/main/grammars/mc/grammar/concepts/antlr/Antlr.mc4</grammar>
                 <grammar>src/main/grammars/mc/grammar/Grammar_WithConcepts.mc4</grammar>
                 <grammar>src//main/grammars/mc/grammar/concepts/visualoutline/Common.mc4</grammar>
-                <grammar>src//main/grammars/mc/grammar/concepts/visualoutline/Outline.mc4</grammar>
+                <grammar>src//main/grammars/mc/grammar/concepts/visualoutline/Outline.mc4</grammar> -->
                
-                <!-- MontiCore Examples -->
-                <grammar>src/main/grammars/mc/examples</grammar>
-                
-                <!-- MontiCore Languages -->
-                <grammar>src/main/grammars/mc/lang</grammar>
-
-                <!-- Language Embedding -->
-                <grammar>src/main/grammars/mc/embedding/</grammar>
-
-                <!-- Symbol Table Generation -->
-                <grammar>src/main/grammars/mc/feature/symboltable/</grammar>
-              
-                <!-- NestML (Left Recursion) -->
-                <grammar>src/main/grammars/org/nest/commons/Commons.mc4</grammar>
-                <grammar>src/main/grammars/org/nest/spl/SPL.mc4</grammar>
-                <grammar>src/main/grammars/org/nest/nestml/NESTML.mc4</grammar>
+         
               </grammars>
               <modelPaths>
                 <modelPath>src/main/grammars</modelPath>

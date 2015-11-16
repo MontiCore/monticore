@@ -1,6 +1,6 @@
 package mc.feature.automaton;
 
-grammar Automaton extends mc.common.Basics {
+grammar Automaton {
 
 /** A ASTAutomaton represents a finite automaton 
 	@attribute Name Name of the automaton
@@ -8,6 +8,8 @@ grammar Automaton extends mc.common.Basics {
 Automaton =
   "automaton" Name body:Body ;
   
+   token Name =
+        ( 'a'..'z' | 'A'..'Z' | '_' | '$' )( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '$' )*;
   
 /** Body of an Automaton or State
 	@attribute States List of states
@@ -24,7 +26,7 @@ Body =
 State =
   "state" Name 
   
-  (("<<" initial:["initial"] ">>" ) | ("<<" final:["final"] ">>" ))*
+  (("<<" initial:["initial"] ">>" ) | ("<<" final:["final"] ">>" ))* // body:Body;
   
   (body:Body | ";") ;
 

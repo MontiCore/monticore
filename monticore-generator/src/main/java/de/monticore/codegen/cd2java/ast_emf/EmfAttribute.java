@@ -5,8 +5,8 @@
  */
 package de.monticore.codegen.cd2java.ast_emf;
 
-import de.monticore.codegen.GeneratorHelper;
-import de.monticore.types.TypesPrinter;
+import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
+import de.monticore.types.TypesHelper;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
 import de.se_rwth.commons.Names;
@@ -99,6 +99,22 @@ public class EmfAttribute {
     return this.isAstList;
   }
   
+  private boolean isOptional;
+  
+  /**
+   * @return isOptionalAstNode
+   */
+  public boolean isOptional() {
+    return this.isOptional;
+  }
+  
+  /**
+   * @param isOptionalAstNode the isOptionalAstNode to set
+   */
+  public void setOptional(boolean isOptional) {
+    this.isOptional = isOptional;
+  }
+  
   /**
    * @param isASTList the isASTList to set
    */
@@ -107,7 +123,15 @@ public class EmfAttribute {
   }
   
   public String getTypeName() {
-    return TypesPrinter.printType(getCdAttribute().getType());
+    return getCdAttribute().printType();
+  }
+  
+  public String getNativeTypeName() {
+    if (!isOptional) {
+      return getTypeName();
+    }
+    return TypesHelper
+        .printType(TypesHelper.getSimpleReferenceTypeFromOptional(getCdAttribute().getType()));
   }
   
   public String getDefaultValue() {
@@ -140,13 +164,11 @@ public class EmfAttribute {
   }
   
   public String getEDataType() {
-    String type = Names.getSimpleName(TypesPrinter
-        .printTypeWithoutTypeArgumentsAndDimension(getCdAttribute().getType()));
+    String type = Names.getSimpleName(getNativeTypeName());
     if (!isAstList()) {
       return type;
     }
-    return type.substring(0,
-        type.lastIndexOf(GeneratorHelper.LIST_SUFFIX));
+    return AstGeneratorHelper.getAstClassNameForASTLists(type);
   }
   
   public EmfAttribute(
@@ -154,12 +176,14 @@ public class EmfAttribute {
       ASTCDType type,
       String name,
       boolean isAstNode,
-      boolean isAstList) {
+      boolean isAstList,
+      boolean isOptional) {
     this.cdAttribute = cdAttribute;
     this.cdType = type;
     this.fullName = name;
     this.isAstNode = isAstNode;
     this.isAstList = isAstList;
+    this.isOptional = isOptional;
   }
   
 }

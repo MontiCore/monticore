@@ -88,13 +88,13 @@ for (astGrammar in getParsedGrammars()) {
   astClassDiagram = getCDOfParsedGrammar(astGrammar)
   
   // M8: decorate Class Diagram AST
-  decorateCd(glex, astClassDiagram, symbolTable, handcodedPath)
+  decorateEmfCd(glex, astClassDiagram, symbolTable, handcodedPath)
   
   // M?: generate symbol table
   generateSymbolTable(astGrammar, symbolTable, astClassDiagram, out, handcodedPath)
   
   // M9: generate AST classes
-  generate(glex, symbolTable, astClassDiagram, out, templatePath)
+  generateEmfCompatible(glex, symbolTable, astClassDiagram, out, templatePath)
   
   info("Grammar " + astGrammar.getName() + " processed successfully!")
   

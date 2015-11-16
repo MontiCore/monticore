@@ -30,14 +30,14 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-${tc.signature("grammarName", "emfAttribute", "cDAndJavaConformName", "typeName")}
+${tc.signature("grammarName", "emfAttribute", "cDAndJavaConformName")}
   <#assign genHelper = glex.getGlobalValue("astHelper")>
-    ${typeName} old${cDAndJavaConformName?cap_first} = this.${cDAndJavaConformName};
+    ${emfAttribute.getTypeName()} old${cDAndJavaConformName?cap_first} = this.${cDAndJavaConformName};
   <#if genHelper.isOptional(emfAttribute.getCdAttribute())>
     this.${cDAndJavaConformName} = Optional.ofNullable(${cDAndJavaConformName});
   <#else>
     this.${cDAndJavaConformName} = ${cDAndJavaConformName};
-      if (eNotificationRequired()) {
-        eNotify(new ENotificationImpl(this, Notification.SET, ${grammarName}Package.${emfAttribute.getFullName()}, old${cDAndJavaConformName?cap_first}, this.${cDAndJavaConformName}));
-      }      
   </#if>
+    if (eNotificationRequired()) {
+      eNotify(new ENotificationImpl(this, Notification.SET, ${grammarName}Package.${emfAttribute.getFullName()}, old${cDAndJavaConformName?cap_first}, this.${cDAndJavaConformName}));
+    }  

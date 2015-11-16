@@ -46,9 +46,9 @@ SUCH DAMAGE.
     constants${grammarName}EEnum = createEEnum(Constants${grammarName});
   
   <#list astClasses as astClass>
-    ${astClass.getName()[3..]?lower_case}EClass = createEClass(${astClass.getName()});
+    ${astClass.getName()[3..]?uncap_first}EClass = createEClass(${astClass.getName()});
   </#list>  
   
   <#list emfAttributes as emfAttribute>
-    create${emfAttribute.getEmfType()}(${astHelper.getPlainName(emfAttribute.getCdType())[3..]?lower_case}EClass, ${emfAttribute.getFullName()});
+    create${emfAttribute.getEmfType()}(${astHelper.getPlainName(emfAttribute.getCdType())[3..]?uncap_first}EClass, ${emfAttribute.getFullName()});
   </#list>  

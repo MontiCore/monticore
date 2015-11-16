@@ -54,7 +54,7 @@ SUCH DAMAGE.
      
     // Add supertypes to classes <#-- TODO GV: check super type EPackageImplInitializeSuperTypes.ftl-->
   <#list astClasses as astClass>
-    ${astClass.getName()[3..]?lower_case}EClass.getESuperTypes().add(theASTENodePackage.getENode());
+    ${astClass.getName()[3..]?uncap_first}EClass.getESuperTypes().add(theASTENodePackage.getENode());
   </#list>  
   
     // Initialize classes and features; add operations and parameters
@@ -63,7 +63,7 @@ SUCH DAMAGE.
     <#-- TODO GV -->
     
   <#list astClasses as astClass>
-    <#assign className = astClass.getName()[3..]>
+    <#assign className = astClass.getName()>
     <#-- TODO GV -->
     // TODO: ${astClass.getName()}.class vs. ${astClass.getName()[3..]}.class?
     <#if astClass.getModifier().isPresent() && astClass.getModifier().get().isAbstract()>
@@ -71,7 +71,7 @@ SUCH DAMAGE.
     <#else>
       <#assign abstract = "!IS_ABSTRACT">
     </#if>   
-    initEClass(${className?lower_case}EClass, ${astClass.getName()}.class, "${className}", ${abstract}, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEClass(${className[3..]?uncap_first}EClass, ${className}.class, "${className}", ${abstract}, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
   </#list>  
   
   <#list emfAttributes as emfAttribute>
