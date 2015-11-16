@@ -81,7 +81,7 @@ ${tc.signature("ruleSymbol")}
     return Optional.ofNullable(ast);
   }
   
-    /** Parses content of a String.
+  /** Parses content of a String.
    * 
    * @param str String to parse from
    * @return Resulting AST
