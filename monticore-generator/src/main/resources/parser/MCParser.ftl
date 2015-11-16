@@ -45,9 +45,9 @@ package ${genHelper.getParserPackage()};
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 
 import java.util.Optional;
-import de.monticore.ast.ASTNode;
 import de.monticore.antlr4.MCConcreteParser;
 
 import org.antlr.v4.runtime.ANTLRFileStream;

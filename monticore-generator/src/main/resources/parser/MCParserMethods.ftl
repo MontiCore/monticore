@@ -81,3 +81,14 @@ ${tc.signature("ruleSymbol")}
     return Optional.ofNullable(ast);
   }
   
+    /** Parses content of a String.
+   * 
+   * @param str String to parse from
+   * @return Resulting AST
+   * @throws IOException 
+   * @throws RecognitionException
+   * */
+  public  Optional<${astClassName}> parseString_${parseRuleName?cap_first}(String str) throws IOException, RecognitionException {
+    return parse${parseRuleName?cap_first}(new StringReader(str));
+  }
+  
