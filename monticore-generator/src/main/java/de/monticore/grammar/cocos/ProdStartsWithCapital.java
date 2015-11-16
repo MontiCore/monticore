@@ -37,7 +37,7 @@ public class ProdStartsWithCapital implements GrammarASTProdCoCo {
   @Override
   public void check(ASTProd node) {
     if(Character.isLowerCase(node.getName().charAt(0))){
-      Log.warn(String.format(ERROR_CODE + ERROR_MSG_FORMAT, node.getName()), node.get_SourcePositionStart());
+      Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, node.getName()), node.get_SourcePositionStart());
     }
   }
 }
