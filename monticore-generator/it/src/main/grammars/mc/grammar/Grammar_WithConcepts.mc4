@@ -3,6 +3,8 @@ package mc.grammar;
 grammar Grammar_WithConcepts extends mc.grammar.Grammar, mc.lang.JavaDSL,
   mc.grammar.concepts.antlr.Antlr {
   
+  start MCGrammar;
+  
   MCConcept = ConceptAntlr;
   
   Action = BlockStatement*;
