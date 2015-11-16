@@ -77,14 +77,24 @@ public class ${ast.getName()}Parser${suffix} extends MCConcreteParser {
     return parser;
   }
   
+  /**
+   * @see de.monticore.antlr4.MCConcreteParser#parse(java.lang.String)
+   */
+  @Override
+  public Optional<${qualifiedStartRule}> parse(String fileName) throws IOException, RecognitionException {
+    return parse${startRule}(fileName);
+  }
+  
+  /**
+   * @see de.monticore.antlr4.MCConcreteParser#parse(java.io.Reader)
+   */
   @Override
   public Optional<${qualifiedStartRule}> parse(Reader reader) throws IOException, RecognitionException {
     return parse${startRule}(reader);
   }
   
-  @Override
-  public Optional<${qualifiedStartRule}> parse(String fileName) throws IOException, RecognitionException {
-    return parse${startRule}(fileName);
+  public Optional<${qualifiedStartRule}> parse_String(String str) throws IOException, RecognitionException {
+    return parseString_${startRule}(str);
   }
  
 <#-- generate all methods -->
