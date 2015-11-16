@@ -469,18 +469,15 @@ public class CdDecorator {
     }
     
     // Add delegating methods for creating of the ast nodes of the super grammars
-    List<String> superCds = astHelper.getSuperGrammarCds();
     List<String> imports = new ArrayList<>();
-    if (superCds.size() != 0) {
-      String testName = superCds.get(0);
-      Optional<CDSymbol> superCd = astHelper.resolveCd(testName);
-      if (superCd.isPresent()) {
+    if (astHelper.getSuperGrammarCds().size() != 0) {
+      for (CDSymbol superCd : astHelper.getAllCds(astHelper.getCdSymbol())) {
         Log.debug(" CDSymbol for " + nodeFactoryName + " : " + superCd, "CdDecorator");
-        nodeFactoryName = getSimpleName(superCd.get().getName()) + NODE_FACTORY;
-        String superCdImport = superCd.get().getFullName().toLowerCase()
-            + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT + "*";
-        imports.add(superCdImport);
-        for (CDTypeSymbol type : superCd.get().getTypes()) {
+        nodeFactoryName = getSimpleName(superCd.getName()) + NODE_FACTORY;
+        String factoryPackage = superCd.getFullName().toLowerCase()
+            + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;
+        imports.add(factoryPackage + "*");
+        for (CDTypeSymbol type : superCd.getTypes()) {
           Optional<ASTNode> node = type.getAstNode();
           if (node.isPresent() && node.get() instanceof ASTCDClass) {
             ASTCDClass cdClass = (ASTCDClass) node.get();
@@ -488,8 +485,8 @@ public class CdDecorator {
               continue;
             }
             astClasses.add(cdClass.getName());
-            addDelegateMethodsToNodeFactory(cdClass, nodeFactoryClass, astHelper, superCd.get(),
-                nodeFactoryName);
+            addDelegateMethodsToNodeFactory(cdClass, nodeFactoryClass, astHelper, superCd,
+                factoryPackage + nodeFactoryName);
           }
         }
       }
@@ -644,20 +641,20 @@ public class CdDecorator {
       return;
     }
     String className = GeneratorHelper.getPlainName(clazz);
-    String toParse = "public static " + className + " create" + className + "() ;";
+    String toParse = "public static " + cdSymbol.getFullName().toLowerCase()
+        + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT + className + " create" + className + "() ;";
     HookPoint methodBody = new TemplateHookPoint("ast.factorymethods.CreateDelegate",
         delegateFactoryName, className);
     replaceMethodBodyTemplate(nodeFactoryClass, toParse, methodBody);
-    
-    String ordered = "strictlyOrdered";
-    boolean isListClass = AstGeneratorHelper.isAstListClass(clazz.getName(), cdSymbol);
-    toParse = "public static " + className + " create" + className + "() ;";
     
     // No create methods with parameters (only additional attributes {@link
     // AstAdditionalAttributes}
     if (clazz.getCDAttributes().size() <= 2) {
       return;
     }
+    
+    String ordered = "strictlyOrdered";
+    boolean isListClass = AstGeneratorHelper.isAstListClass(clazz.getName(), cdSymbol);
     
     Optional<ASTCDMethod> astMethod = cdTransformation.addCdMethodUsingDefinition(
         nodeFactoryClass, toParse);

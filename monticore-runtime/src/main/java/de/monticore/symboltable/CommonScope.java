@@ -31,6 +31,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.google.common.collect.Collections2;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import de.monticore.ast.ASTNode;
@@ -40,6 +41,8 @@ import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingInfo;
 import de.monticore.symboltable.visibility.IsShadowedBySymbol;
+import de.se_rwth.commons.Joiners;
+import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.logging.Log;
 
 // TODO PN Doc resolve[Down|Up|Many|Locally] methods
@@ -50,13 +53,13 @@ import de.se_rwth.commons.logging.Log;
  *
  * @author Pedram Mir Seyed Nazari
  */
-// TODO PN use generic for spanning symbol? That means, CommonScope<? extends ScopeSpanningSymbol>
 public class CommonScope implements MutableScope {
 
-  // TODO PN: by defauilt, a named scope should be a shadowing scope.
-  private final boolean isShadowingScope;
   private final List<Symbol> symbols = new ArrayList<>();
   private final List<MutableScope> subScopes = new ArrayList<>();
+
+  private Boolean exportsSymbols = null;
+  private Boolean isShadowingScope;
 
   private String name;
 
@@ -66,6 +69,10 @@ public class CommonScope implements MutableScope {
   private ASTNode astNode;
   private Set<ResolvingFilter<? extends Symbol>> resolvingFilters = new LinkedHashSet<>();
 
+
+  public CommonScope() {
+
+  }
 
   public CommonScope(boolean isShadowingScope) {
     this(Optional.empty(), isShadowingScope);
@@ -309,7 +316,9 @@ public class CommonScope implements MutableScope {
   public Optional<? extends Symbol> resolve(SymbolPredicate predicate) {
     List<Symbol> result = new ArrayList<>(Collections2.filter(symbols, predicate));
 
-    // TODO PN Combine with adaptors
+    // TODO PN Combine with adaptors. For this: add filter(SymbolPredicate) to
+    //         AdaptedResolvingFilter (maybe ResolvingFilter too). Then, run pass
+    //         resolved symbols to all filters.
 
     continueWithEnclosingScope(predicate, result);
 
@@ -360,6 +369,9 @@ public class CommonScope implements MutableScope {
 
   @Override
   public boolean isShadowingScope() {
+    if (isShadowingScope == null) {
+      return getName().isPresent();
+    }
     return isShadowingScope;
   }
 
@@ -412,10 +424,27 @@ public class CommonScope implements MutableScope {
     return Optional.ofNullable(spanningSymbol);
   }
 
+  @Override
+  public boolean isSpannedBySymbol() {
+    return getSpanningSymbol().isPresent();
+  }
+
   public void setSpanningSymbol(ScopeSpanningSymbol symbol) {
     this.spanningSymbol = symbol;
   }
 
+  @Override
+  public boolean exportsSymbols() {
+    if (exportsSymbols == null) {
+      return getName().isPresent();
+    }
+
+    return exportsSymbols;
+  }
+
+  public void setExportsSymbols(boolean exportsSymbols) {
+    this.exportsSymbols = exportsSymbols;
+  }
 
   public void setResolvingFilters(Collection<ResolvingFilter<? extends Symbol>> resolvingFilters) {
     this.resolvingFilters = new LinkedHashSet<>(resolvingFilters);
@@ -459,6 +488,8 @@ public class CommonScope implements MutableScope {
     return getResolvedOrThrowException(
         this.<T>resolveManyLocally(new ResolvingInfo(getResolvingFilters()), name, kind));
   }
+
+  // TODO PN add resolveManyLocally(String name, SymbolKind kind)
 
   protected <T extends Symbol> Collection<T> resolveManyLocally(ResolvingInfo resolvingInfo, String name, SymbolKind kind) {
     Collection<ResolvingFilter<? extends Symbol>> resolversForKind =
@@ -558,11 +589,50 @@ public class CommonScope implements MutableScope {
     }
 
     for (MutableScope scope : getSubScopes()) {
-      resolved.addAll(scope.resolveDownMany(resolvingInfo, name, kind));
+      resolved.addAll(continueWithSubScope(scope, resolvingInfo, name, kind));
     }
 
     Log.trace("END " + resolveCall + ". Found #" + resolved.size() , "");
 
     return resolved;
+  }
+
+  /**
+   * Continues resolving with the specific <b>subScope</b>
+   *
+   * @param subScope the sub scope with which resolving should be continued.
+   * @param resolvingInfo contains resolving information, such as, the already involved scopes.
+   * @param symbolName the name of the searched symbol
+   * @param kind the kind of the searched symbol
+   */
+  protected <T extends Symbol> Collection<T> continueWithSubScope(MutableScope subScope, ResolvingInfo resolvingInfo,
+      String symbolName, SymbolKind kind) {
+    if (checkIfContinueWithSubScope(symbolName, subScope)) {
+
+      final FluentIterable<String> nameParts = FluentIterable.from(Splitters.DOT.split(symbolName));
+      String remainingSymbolName = symbolName;
+
+      if (nameParts.size() > 1) {
+        remainingSymbolName = Joiners.DOT.join(nameParts.skip(1));
+      }
+
+      return subScope.resolveDownMany(resolvingInfo, remainingSymbolName, kind);
+    }
+
+    return new ArrayList<>();
+  }
+
+  protected boolean checkIfContinueWithSubScope(String symbolName, MutableScope subScope) {
+    if(subScope.exportsSymbols()) {
+      FluentIterable<String> symbolNameParts = FluentIterable.from(Splitters.DOT.split(symbolName));
+
+      if (symbolNameParts.size() > 1) {
+        final String firstNamePart = symbolNameParts.get(0);
+        // A scope that exports symbols should always have a name too.
+        return firstNamePart.equals(subScope.getName().orElse(""));
+      }
+    }
+
+    return false;
   }
 }

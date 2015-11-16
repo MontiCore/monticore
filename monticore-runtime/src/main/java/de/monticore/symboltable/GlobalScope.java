@@ -19,15 +19,16 @@
 
 package de.monticore.symboltable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import com.google.common.collect.FluentIterable;
 import de.monticore.ModelNameCalculator;
 import de.monticore.ModelingLanguage;
 import de.monticore.ModelingLanguageFamily;
@@ -37,7 +38,9 @@ import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.symboltable.resolving.AdaptedResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingInfo;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
+import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -103,10 +106,10 @@ public final class GlobalScope extends CommonScope {
     // TODO PN Optimize: if no further models have been loaded, we can stop here. There is no need
     // to resolveDown again
     loadWithModelLoadersAndAddToScope(resolvingInfo, symbolName, kind);
-    
+
     // Maybe the symbol now exists in this scope (resp. its sub scopes). So, resolve down, again.
     resolvedSymbol = resolveDown(symbolName, kind);
-    
+
     return resolvedSymbol;
   }
 
@@ -189,37 +192,46 @@ public final class GlobalScope extends CommonScope {
   }
 
   @Override
-  public <T extends Symbol> List<T> resolveDownMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind) {
-    List<T> resolved = resolveDownManyLocally(resolvingInfo, name, kind);
-    Log.trace("Start resolveDownMany(\"" + name + "\", " + "\"" + kind.getName() + "\"). "
-        + "Found #" + resolved.size() + " (local)", GlobalScope.class.getSimpleName());
+  protected <T extends Symbol> Collection<T> continueWithSubScope(MutableScope subScope, ResolvingInfo resolvingInfo, String symbolName, SymbolKind kind) {
+    if (checkIfContinueWithSubScope(symbolName, subScope)) {
+      if (subScope instanceof ArtifactScope) {
+        final String packageAS = ((ArtifactScope) subScope).getPackageName();
+        final FluentIterable<String> packageASNameParts = FluentIterable.from(Splitters.DOT.omitEmptyStrings().split(packageAS));
 
-    // TODO PN Doc if a symbol is found, resolving is stopped.
-    if (!resolved.isEmpty()) {
-      Log.trace("END resolveDownMany(\"" + name + "\", " + "\"" + kind.getName() + "\") in scope \"" +
-          getName() + "\". Found #" + resolved.size() , "");
-      return resolved;
+        final FluentIterable<String> symbolNameParts = FluentIterable.from(Splitters.DOT.split(symbolName));
+        String remainingSymbolName = symbolName;
+
+        if (symbolNameParts.size() > packageASNameParts.size()) {
+          remainingSymbolName = Joiners.DOT.join(symbolNameParts.skip(packageASNameParts.size()));
+        }
+
+        return subScope.resolveDownMany(resolvingInfo, remainingSymbolName, kind);
+      }
+      else {
+        return super.continueWithSubScope(subScope, resolvingInfo, symbolName, kind);
+      }
     }
 
-    for (Scope scope : getSubScopes()) {
-      if (scope instanceof ArtifactScope) {
-        final String packageCU = ((ArtifactScope)scope).getPackageName();
-        final String symbolPackage = Names.getQualifier(name);
+    return new ArrayList<>();
+  }
+
+  @Override
+  protected boolean checkIfContinueWithSubScope(String symbolName, MutableScope subScope) {
+    if(subScope.exportsSymbols()) {
+      if (subScope instanceof ArtifactScope) {
+        final String packageCU = ((ArtifactScope)subScope).getPackageName();
+        final String symbolPackage = Names.getQualifier(symbolName);
 
         if (symbolPackage.startsWith(packageCU)) {
-          resolved.addAll(((MutableScope) scope).resolveDownMany(resolvingInfo, name, kind));
+          return true;
         }
       }
       else {
         // This case only occurs if a model does not have an artifact scope.
-        resolved.addAll(((MutableScope) scope).resolveDownMany(resolvingInfo, name, kind));
+        return super.checkIfContinueWithSubScope(symbolName, subScope);
       }
     }
 
-    Log.trace("END resolveDownMany(\"" + name + "\", " + "\"" + kind.getName() + "\"). "
-        + "Found #" + resolved.size() , GlobalScope.class.getSimpleName());
-
-    return resolved;
+    return false;
   }
-
 }

@@ -58,14 +58,6 @@ public class InheritedNonTerminalsTest {
   }
   
   @Test
-  public void testInheritedNonTerminals() {
-    List<String> values = CD4AnalysisHelper.getStereotypeValues(astB.getCDAttributes().get(0),
-        MC2CDStereotypes.DEFINED_IN_GRAMMAR.toString());
-    assertEquals(values.size(), 1);
-    assertEquals(values.get(0), "mc2cdtransformation.Supergrammar");
-  }
-  
-  @Test
   public void testSuperGrammarResolving() {
     String name = typeToString(astA.getCDAttributes().get(0).getType());
     assertEquals("mc2cdtransformation.Supergrammar.ASTX", name);

@@ -61,7 +61,7 @@ public class CreateConstantAttributeTranslation implements
     if (!typeProd.isPresent()) {
       Log.debug("Unknown type of the grammar rule "
           + link.source().getName() + " in the grammar "
-          + MCGrammarSymbolTableHelper.getMCGrammarSymbol(link.source()).get().getName()
+          + MCGrammarSymbolTableHelper.getMCGrammarSymbol(link.source()).get().getFullName()
           + "\n Check if this a kind of rule A:B=... ",
           CreateConstantAttributeTranslation.class.getName());
       return;

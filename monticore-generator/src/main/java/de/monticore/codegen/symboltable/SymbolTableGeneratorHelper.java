@@ -34,7 +34,6 @@ import java.util.regex.Pattern;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
@@ -71,7 +70,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     Log.errorIfNull(grammarSymbol, "0xA4036 Grammar " + qualifiedGrammarName
         + " can't be resolved in the scope " + globalScope);
 
-    checkState(qualifiedGrammarName.equals(grammarSymbol.getName()));
+    checkState(qualifiedGrammarName.equals(grammarSymbol.getFullName()));
   }
 
   public MCGrammarSymbol getGrammarSymbol() {

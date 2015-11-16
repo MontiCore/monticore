@@ -33,14 +33,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import de.monticore.ast.ASTNode;
-
-import org.antlr.v4.runtime.RecognitionException;
-
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-
+import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
@@ -77,6 +73,7 @@ import de.monticore.umlcd4a.prettyprint.CDPrettyPrinterConcreteVisitor;
 import de.monticore.utils.ASTNodes;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
+import org.antlr.v4.runtime.RecognitionException;
 
 public final class TransformationHelper {
   
@@ -241,7 +238,7 @@ public final class TransformationHelper {
   }
   
   public static String getPackageName(MCGrammarSymbol grammar) {
-    return grammar.getName() + ".";
+    return grammar.getFullName() + ".";
   }
   
   public static String getAstPackageName(

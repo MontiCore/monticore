@@ -129,7 +129,7 @@ public class AntlrTool extends Tool {
     
     // Create message
     ST messageST = message.getMessageTemplate(false);
-    String output = "0xA0128 " + messageST.render();
+    String output = "0xA0129 " + messageST.render();
     
     // Print message
     if (isError) {

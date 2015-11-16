@@ -29,7 +29,6 @@ import java.util.Optional;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.grammar.grammar._ast.ASTBlock;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
@@ -91,7 +90,7 @@ public class ParserGeneratorHelper {
         Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackage()),
             astGrammar.getName());
     
-    checkState(qualifiedGrammarName.equals(grammarSymbol.getName()));
+    checkState(qualifiedGrammarName.equals(grammarSymbol.getFullName()));
     this.grammarSymbol = grammarSymbol;
   }
   

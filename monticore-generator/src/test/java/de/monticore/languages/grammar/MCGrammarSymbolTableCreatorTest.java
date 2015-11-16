@@ -71,7 +71,7 @@ public class MCGrammarSymbolTableCreatorTest {
   
   private void testGrammarSymbolOfStatechart(MCGrammarSymbol grammar) {
     assertNotNull(grammar);
-    assertEquals("de.monticore.statechart.Statechart", grammar.getName());
+    assertEquals("de.monticore.statechart.Statechart", grammar.getFullName());
     assertEquals("de.monticore.statechart", grammar.getPackageName());
     assertEquals("de.monticore.statechart.Statechart", grammar.getFullName());
     assertTrue(grammar.getKind().isSame(MCGrammarSymbol.KIND));
@@ -333,7 +333,7 @@ public class MCGrammarSymbolTableCreatorTest {
     MCGrammarSymbol grammar = globalScope.<MCGrammarSymbol> resolve("de.monticore.statechart.sub.SubStatechart",
         MCGrammarSymbol.KIND).orElse(null);
     assertNotNull(grammar);
-    assertEquals("de.monticore.statechart.sub.SubStatechart", grammar.getName());
+    assertEquals("de.monticore.statechart.sub.SubStatechart", grammar.getFullName());
     assertTrue(grammar.getStartRule().isPresent());
     
     assertEquals(1, grammar.getSuperGrammars().size());
@@ -363,7 +363,7 @@ public class MCGrammarSymbolTableCreatorTest {
     MCGrammarSymbol grammar = globalScope.<MCGrammarSymbol> resolve("mc.grammars.TestGrammar",
         MCGrammarSymbol.KIND).orElse(null);
     assertNotNull(grammar);
-    assertEquals("mc.grammars.TestGrammar", grammar.getName());
+    assertEquals("mc.grammars.TestGrammar", grammar.getFullName());
     
     assertEquals(3, countExternalRules(grammar));
     assertEquals(5, countInterfaceAndAbstractRules(grammar));
@@ -371,11 +371,11 @@ public class MCGrammarSymbolTableCreatorTest {
     assertEquals(1, grammar.getSuperGrammars().size());
     MCGrammarSymbol superGrammar = grammar.getSuperGrammars().get(0);
     assertTrue(superGrammar instanceof MCGrammarSymbolReference);
-    assertEquals("mc.grammars.literals.TestLiterals", superGrammar.getName());
+    assertEquals("mc.grammars.literals.TestLiterals", superGrammar.getFullName());
     
     MCRuleSymbol rule = grammar.getRuleWithInherited("StringLiteral");
     assertNotNull(rule);
-    assertEquals(superGrammar.getName(), rule.getGrammarSymbol().getName());
+    assertEquals(superGrammar.getFullName(), rule.getGrammarSymbol().getFullName());
   }
 
   @Test
@@ -385,7 +385,7 @@ public class MCGrammarSymbolTableCreatorTest {
     MCGrammarSymbol grammar = globalScope.<MCGrammarSymbol>resolve("de.monticore"
         + ".NonTerminalsWithSameName", MCGrammarSymbol.KIND).orElse(null);
     assertNotNull(grammar);
-    assertEquals("de.monticore.NonTerminalsWithSameName", grammar.getName());
+    assertEquals("de.monticore.NonTerminalsWithSameName", grammar.getFullName());
 
     assertEquals(2, grammar.getRules().size());
     MCRuleSymbol transition = grammar.getRule("Transition");
@@ -507,7 +507,7 @@ public class MCGrammarSymbolTableCreatorTest {
     MCGrammarSymbol grammar = globalScope.<MCGrammarSymbol>resolve("de.monticore"
         + ".RuleWithSymbolReference", MCGrammarSymbol.KIND).orElse(null);
     assertNotNull(grammar);
-    assertEquals("de.monticore.RuleWithSymbolReference", grammar.getName());
+    assertEquals("de.monticore.RuleWithSymbolReference", grammar.getFullName());
 
     assertEquals(7, grammar.getRules().size());
 
