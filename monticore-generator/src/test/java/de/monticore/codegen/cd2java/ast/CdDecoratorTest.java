@@ -30,25 +30,15 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.antlr.v4.runtime.RecognitionException;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-
-import de.monticore.MontiCoreScript;
-import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.ResolverConfiguration;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
@@ -60,6 +50,10 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDDefinition;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParserFactory;
 import de.se_rwth.commons.Names;
+import org.antlr.v4.runtime.RecognitionException;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Test for the {@link CdDecorator} class.
@@ -92,10 +86,7 @@ public class CdDecoratorTest {
     CD4AnalysisLanguage cd4AnalysisLanguage = new CD4AnalysisLanguage();
     resolverConfiguration.addTopScopeResolvers(cd4AnalysisLanguage.getResolvers());
     
-    Set<ModelingLanguageModelLoader<? extends ASTNode>> modelLoaders = new LinkedHashSet<>();
-    modelLoaders.add(cd4AnalysisLanguage.getModelLoader());
-    
-    globalScope = new GlobalScope(modelPath, modelLoaders, resolverConfiguration);
+    globalScope = new GlobalScope(modelPath, cd4AnalysisLanguage, resolverConfiguration);
   }
   
   @Before

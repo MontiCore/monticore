@@ -51,19 +51,19 @@ public final class GlobalScope extends CommonScope {
   private final ModelPath modelPath;
   private final ResolverConfiguration resolverConfiguration;
 
-  private final Set<ModelingLanguageModelLoader<? extends ASTNode>> modelLoaders = new LinkedHashSet<>();
+  private final Set<ModelingLanguage> modelingLanguages = new LinkedHashSet<>();
 
   private final Map<String, Set<ModelingLanguageModelLoader<? extends ASTNode>>> modelName2ModelLoaderCache = new HashMap<>();
 
-  public GlobalScope(final ModelPath modelPath, final Collection <ModelingLanguageModelLoader<? extends ASTNode>> modelLoaders,
+  public GlobalScope(final ModelPath modelPath, final Collection <ModelingLanguage> modelingLanguages,
       final ResolverConfiguration resolverConfiguration) {
     super(Optional.empty(), true);
 
     this.modelPath = Log.errorIfNull(modelPath);
     this.resolverConfiguration = Log.errorIfNull(resolverConfiguration);
-    this.modelLoaders.addAll(Log.errorIfNull(modelLoaders));
+    this.modelingLanguages.addAll(Log.errorIfNull(modelingLanguages));
 
-    if (modelLoaders.isEmpty()) {
+    if (modelingLanguages.isEmpty()) {
       Log.warn(GlobalScope.class.getSimpleName() + ": 0xA1044 No model loaders defined. This hampers the "
           + "loading of models.");
     }
@@ -71,13 +71,13 @@ public final class GlobalScope extends CommonScope {
     setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
   }
 
-  public GlobalScope(final ModelPath modelPath, final ModelingLanguageModelLoader<? extends ASTNode>
-      modelLoader, ResolverConfiguration resolverConfiguration) {
-    this(modelPath, Collections.singletonList(modelLoader), resolverConfiguration);
+  public GlobalScope(final ModelPath modelPath, final ModelingLanguage mo,
+      ResolverConfiguration resolverConfiguration) {
+    this(modelPath, Collections.singletonList(mo), resolverConfiguration);
   }
 
   public GlobalScope(final ModelPath modelPath, ModelingLanguageFamily languageFamily) {
-    this(modelPath, languageFamily.getAllModelLoaders(), new ResolverConfiguration());
+    this(modelPath, languageFamily.getModelingLanguages(), new ResolverConfiguration());
 
     resolverConfiguration.addTopScopeResolvers(languageFamily.getAllResolvers());
     setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
@@ -105,7 +105,7 @@ public final class GlobalScope extends CommonScope {
     // Symbol not found: try to load corresponding model and build its symbol table
     // TODO PN Optimize: if no further models have been loaded, we can stop here. There is no need
     // to resolveDown again
-    loadWithModelLoadersAndAddToScope(resolvingInfo, symbolName, kind);
+    loadModels(resolvingInfo, symbolName, kind);
 
     // Maybe the symbol now exists in this scope (resp. its sub scopes). So, resolve down, again.
     resolvedSymbol = resolveDownMany(new ResolvingInfo(getResolvingFilters()), symbolName, kind);
@@ -113,14 +113,13 @@ public final class GlobalScope extends CommonScope {
     return resolvedSymbol;
   }
 
-  private void loadWithModelLoadersAndAddToScope(
-      final ResolvingInfo resolvingInfo, final String symbolName, final SymbolKind kind) {
+  protected void loadModels(final ResolvingInfo resolvingInfo, final String symbolName, final SymbolKind kind) {
 
     // TODO PN optimize
 
-    for (final ModelingLanguageModelLoader<? extends ASTNode> modelLoader : modelLoaders) {
-      final ModelingLanguage modelingLanguage = modelLoader.getModelingLanguage();
+    for (final ModelingLanguage modelingLanguage : modelingLanguages) {
       final ModelNameCalculator modelNameCalculator = modelingLanguage.getModelNameCalculator();
+      final ModelingLanguageModelLoader<? extends ASTNode> modelLoader = modelingLanguage.getModelLoader();
 
       final Collection<ResolvingFilter<? extends Symbol>> resolversForKind = ResolvingFilter
           .getFiltersForTargetKind(resolvingInfo.getResolvingFilters(), kind);
@@ -131,7 +130,7 @@ public final class GlobalScope extends CommonScope {
         final Optional<String> calculatedModelName = modelNameCalculator.calculateModelName(symbolName, kindForCalc);
 
         if (calculatedModelName.isPresent() && continueWithModelLoader(calculatedModelName.get(), modelLoader)) {
-          modelLoader.loadAmbiguousModelAndCreateSymbolTable(calculatedModelName.get(), modelPath, this, resolverConfiguration);
+          modelLoader.loadModelsIntoScope(calculatedModelName.get(), modelPath, this, resolverConfiguration);
           cache(modelLoader, calculatedModelName.get());
         }
         else {

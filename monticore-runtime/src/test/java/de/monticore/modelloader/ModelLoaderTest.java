@@ -25,10 +25,6 @@ import static org.junit.Assert.fail;
 
 import java.nio.file.Paths;
 
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import de.monticore.AmbiguityException;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.mocks.languages.entity.EntityLanguage;
@@ -36,6 +32,9 @@ import de.monticore.symboltable.mocks.languages.entity.EntityLanguageModelLoader
 import de.monticore.symboltable.mocks.languages.entity.asts.ASTEntity;
 import de.monticore.symboltable.mocks.languages.entity.asts.ASTEntityCompilationUnit;
 import de.se_rwth.commons.logging.Log;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * TODO: Write me!
@@ -99,7 +98,7 @@ public class ModelLoaderTest {
         Paths.get("src/test/resources/modelloader/modelpath2"));
     
     try {
-      entityModelLoader.loadAmbiguousModels("models.D", modelPath);
+      entityModelLoader.loadModels("models.D", modelPath);
       fail("Expected AmbiguityException");
     }
     catch (AmbiguityException e) {
