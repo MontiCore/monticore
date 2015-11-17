@@ -42,7 +42,7 @@ public class EmbeddedTest extends GeneratorIntegrationsTest {
 
     final ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/embedding"));
 
-    final GlobalScope scope = new GlobalScope(modelPath, language.getModelLoader(), resolverConfiguration);
+    final GlobalScope scope = new GlobalScope(modelPath, language, resolverConfiguration);
 
     final TextSymbol textSymbol = scope.<TextSymbol>resolve("E", TextSymbol.KIND).orElse(null);
     assertNotNull(textSymbol);

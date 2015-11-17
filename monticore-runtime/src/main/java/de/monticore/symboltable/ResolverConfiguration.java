@@ -30,11 +30,11 @@ import com.google.common.collect.Table;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 
 /**
- * The resolver configuration maintains a mapping from names and kinds of symbols to resolvers
- * responsible for that combination of name and kind.
- * 
+ * Maintains a mapping from names and kinds of symbols to {@link ResolvingFilter}s.
+ *
  * @author Pedram Mir Seyed Nazari, Sebastian Oberhoff
  */
+// TODO PN rename to ResolvingConfiguration
 public final class ResolverConfiguration {
   
   private final Table<String, SymbolKind, Set<ResolvingFilter<? extends Symbol>>> resolverTable = HashBasedTable

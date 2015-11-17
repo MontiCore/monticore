@@ -47,7 +47,8 @@ import de.se_rwth.commons.Names;
  */
 
 // TODO PN update doc
-// TODO PN extract CommonModelingLanguageModelLoader
+// TODO PN extract CommonModelLoader
+// TODO PN rename to ModelLoader
 public abstract class ModelingLanguageModelLoader<T extends ASTNode> {
 
   private final ModelingLanguage modelingLanguage;

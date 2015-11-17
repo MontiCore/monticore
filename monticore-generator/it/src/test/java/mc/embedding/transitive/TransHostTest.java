@@ -30,7 +30,6 @@ import de.monticore.symboltable.ResolverConfiguration;
 import mc.GeneratorIntegrationsTest;
 import mc.embedding.transitive.transhost._symboltable.TransHostLanguage;
 import mc.embedding.transitive.transhost._symboltable.TransStartSymbol;
-
 import org.junit.Test;
 
 public class TransHostTest extends GeneratorIntegrationsTest {
@@ -43,7 +42,7 @@ public class TransHostTest extends GeneratorIntegrationsTest {
 
     final ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/embedding/transitive"));
 
-    final GlobalScope scope = new GlobalScope(modelPath, language.getModelLoader(), resolverConfiguration);
+    final GlobalScope scope = new GlobalScope(modelPath, language, resolverConfiguration);
 
     TransStartSymbol hostSymbol = scope.<TransStartSymbol>resolve("TH", TransStartSymbol.KIND).orElse(null);
     assertNotNull(hostSymbol);
