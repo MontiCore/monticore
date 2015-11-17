@@ -1,4 +1,7 @@
 
 grammar Automaton extends InvAutomaton, Expression {
+  
+  start Automaton;
+  
   Invariant = Exp;
 }
