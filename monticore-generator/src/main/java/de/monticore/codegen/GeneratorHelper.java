@@ -158,6 +158,8 @@ public class GeneratorHelper extends TypesHelper {
   protected List<String> superGrammarCds = new ArrayList<>();
   
   protected GlobalScope symbolTable;
+
+  private CDSymbol cdSymbol;
   
   public GeneratorHelper(ASTCDCompilationUnit topAst, GlobalScope symbolTable) {
     Preconditions.checkArgument(topAst.getCDDefinition() != null);

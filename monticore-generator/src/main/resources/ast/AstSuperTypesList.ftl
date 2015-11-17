@@ -34,5 +34,11 @@ SUCH DAMAGE.
 <#assign astName = genHelper.getAstClassNameForASTLists(ast.getName())>
 <#assign diagramName = genHelper.getCdName()>
 de.monticore.ast.ASTCList implements java.lang.Iterable<${astName}>
-, java.util.List<${astName}>
+, EList<${astName}>
+, NotifyingList<${astName}>
+, RandomAccess, 
+    Cloneable, Serializable
+, InternalEList<${astName}>
+, InternalEList.Unsettable<${astName}>
+, EStructuralFeature.Setting
 , ${genHelper.getASTNodeBaseType()}

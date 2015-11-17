@@ -76,8 +76,13 @@ SUCH DAMAGE.
   
   <#list emfAttributes as emfAttribute>
     <#if emfAttribute.isAstNode()>
+      <#if emfAttribute.isAstList()>
+        <#assign isList = "-1">
+      <#else>
+        <#assign isList = "1">
+      </#if>   
     init${emfAttribute.getEmfType()}(get${emfAttribute.getFullName()}(), this.get${emfAttribute.getEDataType()[3..]}(), null, "${emfAttribute.getAttributeName()?cap_first}", null,
-      0, 1, ${emfAttribute.getCdType().getName()}.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+      0, ${isList}, ${emfAttribute.getCdType().getName()}.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     <#else>
       <#if astHelper.istAstENodeList(emfAttribute.getCdAttribute())>
         <#assign isList = "-1">

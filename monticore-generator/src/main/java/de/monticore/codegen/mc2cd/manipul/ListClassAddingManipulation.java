@@ -56,7 +56,8 @@ final class ListClassAddingManipulation implements UnaryOperator<ASTCDCompilatio
 
     ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
     cdAttribute.setName("list");
-    cdAttribute.setType(TransformationHelper.createSimpleReference("ArrayList", cdClass.getName()));
+    // TODO GV:
+    cdAttribute.setType(TransformationHelper.createSimpleReference("EObjectContainmentEList", cdClass.getName()));
     listClass.getCDAttributes().add(cdAttribute);
     return listClass;
   }

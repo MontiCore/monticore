@@ -36,7 +36,12 @@ SUCH DAMAGE.
     <#list emfAttributes as emfAttribute>
     <#--TODO GV: inherited attributes eGetAttribut, ast.getCollectedAttributesWithSuper() -->
       case ${grammarName}Package.${emfAttribute.getFullName()}:
-        return ${astHelper.getPlainGetter(emfAttribute.getCdAttribute())}();
+        <#if emfAttribute.isOptional()>
+          <#assign get = ".get()">
+        <#else>
+          <#assign get = "">
+        </#if>    
+        return ${astHelper.getPlainGetter(emfAttribute.getCdAttribute())}()${get};
     </#list>
     }
     return eDynamicGet(featureID, resolve, coreType);
