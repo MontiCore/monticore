@@ -36,7 +36,7 @@ ${signature("className", "directSuperCds")}
 <#assign grammarName = ast.getName()?cap_first>
 <#assign fqn = genHelper.getQualifiedGrammarName()?lower_case>
 <#assign package = genHelper.getTargetPackage()?lower_case>
-<#assign topAstName = genHelper.getTopAstName()>
+<#assign topAstName = genHelper.getQualifiedStartRuleName()>
 
 <#-- Copyright -->
 ${tc.defineHookPoint("JavaCopyright")}
@@ -46,7 +46,6 @@ package ${package};
 
 import de.se_rwth.commons.logging.Log;
 
-import ${fqn}._ast.${topAstName};
 import ${fqn}._visitor.${genHelper.getVisitorType()};
 import ${fqn}._visitor.${genHelper.getDelegatorVisitorType()};
 import ${fqn}._visitor.${genHelper.getCommonDelegatorVisitorType()};

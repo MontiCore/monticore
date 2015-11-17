@@ -33,17 +33,18 @@ import de.monticore.symboltable.resolving.ResolvingInfo;
 public interface MutableScope extends Scope {
   // TODO PN DOC
 
-  // TODO PN move to Scope?
-  <T extends Symbol> Optional<T> resolveDown(String name, SymbolKind kind);
-
   <T extends Symbol> Optional<T> resolve(ResolvingInfo resolvingInfo, String name,
       SymbolKind kind, AccessModifier modifier);
 
+  @Deprecated
   <T extends Symbol> Optional<T> resolve(ResolvingInfo resolvingInfo, String name, SymbolKind kind);
 
+  @Deprecated
   <T extends Symbol> Optional<T> resolveDown(ResolvingInfo resolvingInfo, String name, SymbolKind kind);
 
   <T extends Symbol> Collection<T> resolveDownMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind);
+
+  <T extends Symbol> Collection<T> resolveMany(ResolvingInfo resolvingInfo, String symbolName, SymbolKind kind);
 
   /**
    * @param enclosingScope the enclosing scope. In Java, for example, a class scope is the

@@ -28,8 +28,8 @@ import java.util.LinkedHashSet;
 import com.google.common.collect.ImmutableList;
 import de.monticore.ast.ASTNode;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
-import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 
 /**
@@ -76,11 +76,8 @@ public abstract class CommonModelingLanguage implements ModelingLanguage {
     checkArgument(!isNullOrEmpty(name));
     checkArgument(!isNullOrEmpty(fileEnding));
 
-    final String cleanedFileEnding = !fileEnding.startsWith(".") ? fileEnding : fileEnding.substring(1);
-
-
     this.name = name;
-    this.fileEnding = cleanedFileEnding;
+    this.fileEnding = !fileEnding.startsWith(".") ? fileEnding : fileEnding.substring(1);
     this.modelLoader = provideModelLoader();
 
     modelNameCalculator = new CommonModelNameCalculator();

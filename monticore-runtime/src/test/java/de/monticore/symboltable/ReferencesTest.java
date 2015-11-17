@@ -19,7 +19,11 @@
 
 package de.monticore.symboltable;
 
+import static org.junit.Assert.assertSame;
+
+import java.util.ArrayList;
 import java.util.Optional;
+
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.mocks.languages.JTypeSymbolMock;
 import de.monticore.symboltable.mocks.languages.entity.EntitySymbol;
@@ -29,10 +33,6 @@ import de.monticore.symboltable.resolving.CommonResolvingFilter;
 import de.monticore.symboltable.types.CommonJTypeSymbol;
 import de.monticore.symboltable.types.references.CommonJTypeReference;
 import org.junit.Test;
-
-import java.util.ArrayList;
-
-import static org.junit.Assert.assertSame;
 
 /**
  *
@@ -73,7 +73,7 @@ public class ReferencesTest {
     globalScope.add(c);
     globalScope.add(d);
 
-    ((MutableScope)d.getSpannedScope()).setResolvingFilters(globalScope.getResolvingFilters());
+    d.getSpannedScope().setResolvingFilters(globalScope.getResolvingFilters());
 
     assertSame(c, globalScope.resolve("C", CommonJTypeSymbol.KIND).orElse(null));
     assertSame(d, globalScope.resolve("D", CommonJTypeSymbol.KIND).orElse(null));

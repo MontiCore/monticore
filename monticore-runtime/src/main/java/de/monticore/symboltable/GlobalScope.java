@@ -90,14 +90,14 @@ public final class GlobalScope extends CommonScope {
   }
 
   @Override
-  public <T extends Symbol> Optional<T> resolve(final ResolvingInfo resolvingInfo,
+  public <T extends Symbol> Collection<T> resolveMany(final ResolvingInfo resolvingInfo,
       final String symbolName, final SymbolKind kind) {
     resolvingInfo.addInvolvedScope(this);
 
     // First, try to resolve the symbol in the current scope and its sub scopes.
-    Optional<T> resolvedSymbol = resolveDown(symbolName, kind);
+    Collection<T> resolvedSymbol = resolveDownMany(new ResolvingInfo(getResolvingFilters()), symbolName, kind);
 
-    if (resolvedSymbol.isPresent()) {
+    if (!resolvedSymbol.isEmpty()) {
       return resolvedSymbol;
     }
 
@@ -108,7 +108,7 @@ public final class GlobalScope extends CommonScope {
     loadWithModelLoadersAndAddToScope(resolvingInfo, symbolName, kind);
 
     // Maybe the symbol now exists in this scope (resp. its sub scopes). So, resolve down, again.
-    resolvedSymbol = resolveDown(symbolName, kind);
+    resolvedSymbol = resolveDownMany(new ResolvingInfo(getResolvingFilters()), symbolName, kind);
 
     return resolvedSymbol;
   }
@@ -143,7 +143,7 @@ public final class GlobalScope extends CommonScope {
     }
   }
 
-  // TODO PN wrtie tests
+  // TODO PN write tests
   public void cache(ModelingLanguageModelLoader<? extends ASTNode> modelLoader, String calculatedModelName) {
     if (modelName2ModelLoaderCache.containsKey(calculatedModelName)) {
       modelName2ModelLoaderCache.get(calculatedModelName).add(modelLoader);
@@ -195,17 +195,7 @@ public final class GlobalScope extends CommonScope {
   protected <T extends Symbol> Collection<T> continueWithSubScope(MutableScope subScope, ResolvingInfo resolvingInfo, String symbolName, SymbolKind kind) {
     if (checkIfContinueWithSubScope(symbolName, subScope)) {
       if (subScope instanceof ArtifactScope) {
-        final String packageAS = ((ArtifactScope) subScope).getPackageName();
-        final FluentIterable<String> packageASNameParts = FluentIterable.from(Splitters.DOT.omitEmptyStrings().split(packageAS));
-
-        final FluentIterable<String> symbolNameParts = FluentIterable.from(Splitters.DOT.split(symbolName));
-        String remainingSymbolName = symbolName;
-
-        if (symbolNameParts.size() > packageASNameParts.size()) {
-          remainingSymbolName = Joiners.DOT.join(symbolNameParts.skip(packageASNameParts.size()));
-        }
-
-        return subScope.resolveDownMany(resolvingInfo, remainingSymbolName, kind);
+        return continueWithArtifactScope((ArtifactScope) subScope, resolvingInfo, symbolName, kind);
       }
       else {
         return super.continueWithSubScope(subScope, resolvingInfo, symbolName, kind);
@@ -223,6 +213,7 @@ public final class GlobalScope extends CommonScope {
         final String symbolPackage = Names.getQualifier(symbolName);
 
         if (symbolPackage.startsWith(packageCU)) {
+          // TODO PN compare name parts, to exclude cases like "a.bb".startsWith("a.b")
           return true;
         }
       }
@@ -233,5 +224,20 @@ public final class GlobalScope extends CommonScope {
     }
 
     return false;
+  }
+
+  protected <T extends Symbol> Collection<T> continueWithArtifactScope(ArtifactScope subScope, ResolvingInfo resolvingInfo, String symbolName, SymbolKind kind) {
+    final String packageAS = subScope.getPackageName();
+    final FluentIterable<String> packageASNameParts = FluentIterable.from(Splitters.DOT.omitEmptyStrings().split(packageAS));
+
+    final FluentIterable<String> symbolNameParts = FluentIterable.from(Splitters.DOT.split(symbolName));
+    String remainingSymbolName = symbolName;
+
+    if (symbolNameParts.size() > packageASNameParts.size()) {
+      remainingSymbolName = Joiners.DOT.join(symbolNameParts.skip(packageASNameParts.size()));
+    }
+    // TODO PN else?
+
+    return subScope.resolveDownMany(resolvingInfo, remainingSymbolName, kind);
   }
 }

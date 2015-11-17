@@ -137,6 +137,10 @@ public interface Scope {
    */
   Optional<? extends Symbol> resolve(SymbolPredicate predicate);
 
+  <T extends Symbol> Optional<T> resolveDown(String name, SymbolKind kind);
+
+  <T extends Symbol> Collection<T> resolveDownMany(String name, SymbolKind kind);
+
   /**
    *
    * @return all symbols directly defined/contained in this scope (not in enclosing scope).
@@ -173,7 +177,7 @@ public interface Scope {
    * For example, a Java class exports symbols. In contrast, a Java if-block does not
    * export any symbols, hence, its locally defined variables cannot be referenced
    * from outside. By default, a scope with a name exports its symbols (although
-   * this does not apply for Java methods),
+   * this does not apply for Java methods).
    *
    * @return true, if this scope exports symbols that can be used from outside the scope.
    */
@@ -192,6 +196,4 @@ public interface Scope {
    * @return the corresponding ast node
    */
   Optional<? extends ASTNode> getAstNode();
-
-
 }

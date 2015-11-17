@@ -20,10 +20,11 @@
 package de.monticore.symboltable.mocks.languages.entity;
 
 import java.util.Optional;
+
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.types.CommonJMethodSymbol;
 
-public class ActionSymbol extends CommonJMethodSymbol<EntitySymbolReference, PropertySymbol> {
+public class ActionSymbol extends CommonJMethodSymbol<EntitySymbol, EntitySymbolReference, PropertySymbol> {
   
   public static final ActionSymbolKind KIND = ActionSymbolKind.KIND;
   
