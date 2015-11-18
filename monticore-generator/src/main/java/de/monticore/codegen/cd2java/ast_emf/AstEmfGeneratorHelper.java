@@ -19,8 +19,6 @@
 
 package de.monticore.codegen.cd2java.ast_emf;
 
-import static de.se_rwth.commons.Util.listTillNull;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -29,12 +27,13 @@ import java.util.stream.Collectors;
 
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.Symbol;
 import de.monticore.types.TypesPrinter;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
+import de.se_rwth.commons.Names;
+import de.se_rwth.commons.StringTransformations;
 
 /**
  * TODO: Write me!
@@ -84,6 +83,30 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
   public List<EmfAttribute> getAllEmfAttributes() {
     return emfAttributes.keySet().stream()
         .flatMap(type -> getEmfAttributes(type).stream()).collect(Collectors.toList());
+  }
+  
+  @Override
+  // TODO GV
+  public String getAstAttributeValue(ASTCDAttribute attribute, ASTCDType clazz) {
+    if (attribute.getValue().isPresent()) {
+      return attribute.printValue();
+    }
+    if (isOptional(attribute)) {
+      return "Optional.empty()";
+    }
+    String typeName = TypesPrinter.printType(attribute.getType());
+    if (isAstList(attribute)) {
+      return getCdName() + "NodeFactory.create" + Names.getSimpleName(typeName) + "(this, "
+          + getCdName() + "Package." + clazz.getName() + "_"
+          + StringTransformations.capitalize(attribute.getName()) + ")";
+    }
+    if (isListType(typeName)) {
+      return "new java.util.ArrayList<>()";
+    }
+    if (isMapType(typeName)) {
+      return "new java.util.HashMap<>()";
+    }
+    return "";
   }
   
   public static boolean istAstENodeList(ASTCDAttribute attribute) {

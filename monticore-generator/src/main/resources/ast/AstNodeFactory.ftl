@@ -42,6 +42,7 @@ package ${genHelper.getAstPackage()};
 import java.util.ArrayList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
 import de.se_rwth.commons.logging.Log;
 
@@ -75,7 +76,7 @@ public class ${ast.getName()} extends EFactoryImpl implements ${genHelper.getCdN
   }
 
 <#list ast.getCDAttributes() as attribute>
-  ${tc.include("ast.Attribute", attribute)}
+  ${tc.includeArgs("ast.Attribute", [attribute, ast])}
 </#list>
 
   protected ${ast.getName()} () {}

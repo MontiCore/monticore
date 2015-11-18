@@ -20,10 +20,8 @@
 package de.monticore.codegen.cd2java.ast;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static de.monticore.codegen.GeneratorHelper.getPlainName;
 import static de.se_rwth.commons.Names.getQualifier;
 import static de.se_rwth.commons.Names.getSimpleName;
-import groovyjarjarantlr.ANTLRException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,8 +30,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.RecognitionException;
-
-import transformation.ast.ASTCDTransformation;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -77,6 +73,8 @@ import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
+import groovyjarjarantlr.ANTLRException;
+import transformation.ast.ASTCDTransformation;
 
 /**
  * Decorates class diagrams by adding of new classes and methods using in ast
@@ -515,16 +513,22 @@ public class CdDecorator {
       return;
     }
     String className = GeneratorHelper.getPlainName(clazz);
+    
     String toParse = "public static " + className + " create" + className + "() ;";
-    HookPoint methodBody = new TemplateHookPoint("ast.factorymethods.Create", clazz, className);
+    HookPoint methodBody = new TemplateHookPoint("ast.factorymethods.Create", clazz, className, "");
     replaceMethodBodyTemplate(nodeFactoryClass, toParse, methodBody);
     
     toParse = "protected " + className + " doCreate" + className + "() ;";
-    methodBody = new TemplateHookPoint("ast.factorymethods.DoCreate", clazz, className);
+    methodBody = new TemplateHookPoint("ast.factorymethods.DoCreate", clazz, className, "");
     replaceMethodBodyTemplate(nodeFactoryClass, toParse, methodBody);
     
-    String ordered = "strictlyOrdered";
     boolean isListClass = astHelper.isAstListClass(clazz);
+    if (isListClass) {
+      addAdditionalCreateMethods(nodeFactoryClass, clazz);
+    }
+  
+    
+    String ordered = "strictlyOrdered";
     toParse = "public static " + className + " create" + className + "() ;";
     
     // No create methods with parameters
@@ -626,6 +630,15 @@ public class CdDecorator {
     
   }
   
+  /**
+   * TODO: Write me!
+   * @param clazz 
+   * @param nodeFactoryClass 
+   * @return
+   */
+  protected void addAdditionalCreateMethods(ASTCDClass nodeFactoryClass, ASTCDClass clazz) {
+  }
+
   /**
    * TODO: Write me!
    * 
@@ -743,6 +756,7 @@ public class CdDecorator {
     if (astHelper.isAstListClass(clazz)) {
       return;
     }
+    
     ASTCDConstructor emptyConstructor = CD4AnalysisNodeFactory.createASTCDConstructor();
     emptyConstructor.setName(clazz.getName());
     emptyConstructor.setModifier(TransformationHelper.createProtectedModifier());

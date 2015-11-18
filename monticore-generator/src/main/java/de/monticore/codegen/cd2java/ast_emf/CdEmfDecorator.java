@@ -70,10 +70,10 @@ public class CdEmfDecorator extends CdDecorator {
     
     List<ASTCDClass> nativeClasses = Lists.newArrayList(cdDefinition.getCDClasses());
     
-    List<ASTCDClass> astNotAbstractClasses =
-        cdDefinition.getCDClasses().stream().filter(e -> e.getModifier().isPresent())
-            .filter(e -> !e.getModifier().get().isAbstract())
-            .collect(Collectors.toList());
+    List<ASTCDClass> astNotAbstractClasses = cdDefinition.getCDClasses().stream()
+        .filter(e -> e.getModifier().isPresent())
+        .filter(e -> !e.getModifier().get().isAbstract())
+        .collect(Collectors.toList());
     // .forEach(e ->
     // astNotAbstractClasses.add(GeneratorHelper.getPlainName(e)));
     
@@ -99,7 +99,7 @@ public class CdEmfDecorator extends CdDecorator {
     
     cdDefinition.getCDClasses().stream().filter(c -> !astHelper.isAstListClass(c))
         .forEach(c -> addSuperInterfaces(c));
-    
+        
     // Decorate with additional methods and attributes
     for (ASTCDClass clazz : nativeClasses) {
       addConstructors(clazz, astHelper);
@@ -118,7 +118,7 @@ public class CdEmfDecorator extends CdDecorator {
     // Decorate list classes
     cdDefinition.getCDClasses().stream().filter(c -> astHelper.isAstListClass(c))
         .forEach(c -> decorateAstListClass(c));
-    
+        
     // Add ASTConstant class
     addConstantsClass(cdDefinition, astHelper);
     
@@ -128,8 +128,9 @@ public class CdEmfDecorator extends CdDecorator {
             .getBuilder()
             .importList(
                 Lists.newArrayList(VisitorGeneratorHelper.getQualifiedVisitorType(astHelper
-                    .getPackageName(), cdDefinition.getName()))).build());
-    
+                    .getPackageName(), cdDefinition.getName())))
+            .build());
+            
     addEmfCode(cdCompilationUnit, astNotListClasses, astHelper);
     
   }
@@ -153,7 +154,8 @@ public class CdEmfDecorator extends CdDecorator {
         String attributeName = getPlainName(clazz) + "_"
             + StringTransformations.capitalize(GeneratorHelper.getNativeAttributeName(cdAttribute
                 .getName()));
-        boolean isAstNode = astHelper.isAstNode(cdAttribute) || astHelper.isOptionalAstNode(cdAttribute);
+        boolean isAstNode = astHelper.isAstNode(cdAttribute)
+            || astHelper.isOptionalAstNode(cdAttribute);
         boolean isAstList = astHelper.isAstList(cdAttribute);
         boolean isOptional = AstGeneratorHelper.isOptional(cdAttribute);
         astHelper.addEmfAttribute(clazz, new EmfAttribute(cdAttribute, clazz, attributeName,
@@ -170,7 +172,7 @@ public class CdEmfDecorator extends CdDecorator {
    */
   void addEmfCode(ASTCDCompilationUnit cdCompilationUnit, List<ASTCDClass> astClasses,
       AstEmfGeneratorHelper astHelper) {
-    
+      
     addEFactoryInterface(cdCompilationUnit, astClasses, astHelper);
     // addEFactoryImplementation(cdCompilationUnit, astClasses, astHelper);
     addEPackageInterface(cdCompilationUnit, astClasses, astHelper);
@@ -182,6 +184,7 @@ public class CdEmfDecorator extends CdDecorator {
       addESetter(clazz, astHelper);
       addEUnset(clazz, astHelper);
       addEIsSet(clazz, astHelper);
+      // addValuesForEListAttributes(clazz, astHelper);
       addToString(clazz, astHelper);
       addEStaticClass(clazz, astHelper);
     }
@@ -194,7 +197,7 @@ public class CdEmfDecorator extends CdDecorator {
    */
   void addEFactoryInterface(ASTCDCompilationUnit cdCompilationUnit, List<ASTCDClass> astClasses,
       AstEmfGeneratorHelper astHelper)
-      throws RecognitionException {
+          throws RecognitionException {
     ASTCDDefinition cdDef = cdCompilationUnit.getCDDefinition();
     ASTCDInterface factory = CD4AnalysisNodeFactory.createASTCDInterface();
     String factoryName = cdDef.getName() + EFACTORY;
@@ -210,10 +213,11 @@ public class CdEmfDecorator extends CdDecorator {
     
     List<String> classNames = astClasses.stream().map(e -> getPlainName(e))
         .collect(Collectors.toList());
-    
+        
     glex.replaceTemplate("ast.AstInterfaceContent", factory, new TemplateHookPoint(
         "ast_emf.EFactory", factory, cdDef.getName(), "http://" + cdDef.getName()
-            + "/1.0", classNames));
+            + "/1.0",
+        classNames));
   }
   
   /**
@@ -240,12 +244,13 @@ public class CdEmfDecorator extends CdDecorator {
     
     List<String> classNames = astClasses.stream().map(e -> getPlainName(e))
         .collect(Collectors.toList());
-    
+        
     cdDef.getCDClasses().add(factoryClass);
     glex.replaceTemplate("ast.ClassContent", factoryClass, new TemplateHookPoint(
         "ast_emf.EFactoryImpl", factoryClass, cdDef.getName(), "http://" + cdDef.getName()
-            + "/1.0", classNames));
-    
+            + "/1.0",
+        classNames));
+        
   }
   
   /**
@@ -253,7 +258,7 @@ public class CdEmfDecorator extends CdDecorator {
    */
   void addEPackageInterface(ASTCDCompilationUnit cdCompilationUnit, List<ASTCDClass> astClasses,
       AstEmfGeneratorHelper astHelper)
-      throws RecognitionException {
+          throws RecognitionException {
     ASTCDDefinition cdDef = cdCompilationUnit.getCDDefinition();
     ASTCDInterface packageInterface = CD4AnalysisNodeFactory.createASTCDInterface();
     String interfaceName = cdDef.getName() + EPACKAGE;
@@ -281,11 +286,12 @@ public class CdEmfDecorator extends CdDecorator {
     
     List<String> classNames = astClasses.stream().map(e -> getPlainName(e))
         .collect(Collectors.toList());
-    
+        
     glex.replaceTemplate("ast.AstInterfaceContent", packageInterface,
         new TemplateHookPoint(
             "ast_emf.EPackage", packageInterface, cdDef.getName(), "http://" + cdDef.getName()
-                + "/1.0", classNames));
+                + "/1.0",
+            classNames));
   }
   
   /**
@@ -312,7 +318,7 @@ public class CdEmfDecorator extends CdDecorator {
     
     List<String> classNames = astClasses.stream().map(e -> getPlainName(e))
         .collect(Collectors.toList());
-    
+        
     for (String clazz : classNames) {
       String toParse = "protected static " + className + " factory" + clazz + " = null;";
       cdTransformation.addCdAttributeUsingDefinition(packageImpl, toParse);
@@ -347,7 +353,7 @@ public class CdEmfDecorator extends CdDecorator {
     
     glex.replaceTemplate("ast.ClassContent", packageImpl, new TemplateHookPoint(
         "ast_emf.EPackageImpl", packageImpl, cdDef.getName(), classNames));
-    
+        
   }
   
   protected void addSetter(ASTCDClass clazz, AstEmfGeneratorHelper astHelper)
@@ -472,6 +478,26 @@ public class CdEmfDecorator extends CdDecorator {
   /**
    * TODO: Write me!
    * 
+   * @return
+   */
+  protected void addAdditionalCreateMethods(ASTCDClass nodeFactoryClass, ASTCDClass clazz) {
+    String className = GeneratorHelper.getPlainName(clazz);
+    String params = "owner, featureID";
+    String toParse = "public static " + className + " create" + className
+        + "(InternalEObject owner, int featureID) ;";
+    HookPoint methodBody = new TemplateHookPoint("ast.factorymethods.Create", clazz, className,
+        params);
+    replaceMethodBodyTemplate(nodeFactoryClass, toParse, methodBody);
+    
+    toParse = "protected " + className + " doCreate" + className
+        + "(InternalEObject owner, int featureID) ;";
+    methodBody = new TemplateHookPoint("ast.factorymethods.DoCreate", clazz, className, params);
+    replaceMethodBodyTemplate(nodeFactoryClass, toParse, methodBody);
+  }
+  
+  /**
+   * TODO: Write me!
+   * 
    * @param cdCompilationUnit
    * @param nativeClasses
    * @param astHelper
@@ -493,13 +519,14 @@ public class CdEmfDecorator extends CdDecorator {
     
     List<String> classNames = astClasses.stream().map(e -> getPlainName(e))
         .collect(Collectors.toList());
-    
+        
     cdDef.getCDClasses().add(resourceControllerClass);
     glex.replaceTemplate("ast.ClassContent", resourceControllerClass,
         new TemplateHookPoint(
             "ast_emf.ResourceController", resourceControllerClass, cdDef.getName(), "http://"
                 + cdDef.getName()
-                + "/1.0", classNames));
-    
+                + "/1.0",
+            classNames));
+            
   }
 }

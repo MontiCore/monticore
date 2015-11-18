@@ -32,12 +32,13 @@ SUCH DAMAGE.
 -->
 ${tc.signature("grammarName", "emfAttribute", "cDAndJavaConformName")}
   <#assign genHelper = glex.getGlobalValue("astHelper")>
-    ${emfAttribute.getTypeName()} old${cDAndJavaConformName?cap_first} = this.${cDAndJavaConformName};
-  <#if genHelper.isOptional(emfAttribute.getCdAttribute())>
+  <#if emfAttribute.isOptional()>
+    ${emfAttribute.getNativeTypeName()} old${cDAndJavaConformName?cap_first} = this.${cDAndJavaConformName}.isPresent()? this.${cDAndJavaConformName}.get() : null;
     this.${cDAndJavaConformName} = Optional.ofNullable(${cDAndJavaConformName});
   <#else>
+    ${emfAttribute.getTypeName()} old${cDAndJavaConformName?cap_first} = this.${cDAndJavaConformName};
     this.${cDAndJavaConformName} = ${cDAndJavaConformName};
   </#if>
     if (eNotificationRequired()) {
-      eNotify(new ENotificationImpl(this, Notification.SET, ${grammarName}Package.${emfAttribute.getFullName()}, old${cDAndJavaConformName?cap_first}, this.${cDAndJavaConformName}));
+      eNotify(new ENotificationImpl(this, Notification.SET, ${grammarName}Package.${emfAttribute.getFullName()}, old${cDAndJavaConformName?cap_first}, ${cDAndJavaConformName}));
     }  

@@ -30,10 +30,10 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-${tc.signature("ast", "astNodeName")}
+${tc.signature("ast", "astNodeName", "params")}
   {
     if (factory${astNodeName} == null) {
       factory${astNodeName} = getFactory();
     }
-    return factory${astNodeName}.doCreate${astNodeName}();
+    return factory${astNodeName}.doCreate${astNodeName}(${params});
   }

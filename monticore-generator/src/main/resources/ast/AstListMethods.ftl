@@ -43,8 +43,8 @@ SUCH DAMAGE.
     this._strictlyOrdered = strictlyOrdered;
   }
   
-   public ${ast.getName()} (Class<?> dataClass, InternalEObject owner, int featureID) {
-      list = new EObjectContainmentEList<${astName}>(dataClass, owner, featureID);
+   public ${ast.getName()} (InternalEObject owner, int featureID) {
+      list = new EObjectContainmentEList<${astName}>(${astName}.class, owner, featureID);
       set_Existent(false);
     }
     

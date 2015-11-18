@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="ASCII"?>
-<Automaton:ASTTransition xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:Automaton="http://Automaton/1.0" From="myfrom" Activate="myactivate" To="myto"/>

@@ -38,8 +38,9 @@ SUCH DAMAGE.
       case ${grammarName}Package.${emfAttribute.getFullName()}:
       <#if emfAttribute.isAstList()>
         return !${emfAttribute.getAttributeName()}.isEmpty();
-      <#else>
-        <#-- TODO GV: not optionals! -->
+      <#elseif emfAttribute.isOptional()>
+        return ${emfAttribute.getAttributeName()}.isPresent();
+      <#else>  
         return ${emfAttribute.getAttributeName()} != ${emfAttribute.getDefaultValue()};
       </#if>
     </#list>

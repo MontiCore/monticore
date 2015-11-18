@@ -19,17 +19,15 @@
 
 package de.monticore.codegen.cd2java.ast;
 
-import java.util.List;
 import java.util.Optional;
 
 import de.monticore.codegen.GeneratorHelper;
-import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.TypesPrinter;
-import de.monticore.umlcd4a.CD4AnalysisHelper;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -46,6 +44,10 @@ public class AstGeneratorHelper extends GeneratorHelper {
   
   public AstGeneratorHelper(ASTCDCompilationUnit topAst, GlobalScope symbolTable) {
     super(topAst, symbolTable);
+  }
+  
+  public String getAstAttributeValue(ASTCDAttribute attribute, ASTCDType clazz) {
+    return getAstAttributeValue(attribute);
   }
   
   public String getAstAttributeValue(ASTCDAttribute attribute) {
