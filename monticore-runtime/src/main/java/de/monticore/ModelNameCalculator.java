@@ -21,18 +21,20 @@ package de.monticore;
 
 // TODO PN updated doc
 
-import java.util.Optional;
+import java.util.Set;
 
 import de.monticore.symboltable.SymbolKind;
 
 /**
  * Calculates the model name from a (un-)qualified symbol <code>name</code> depending on the
- * <code>kind</code> (see {@link #calculateModelName(String, SymbolKind)}.
+ * <code>kind</code> (see {@link #calculateModelNames(String, SymbolKind)}.
  *
  * @author Pedram Mir Seyed Nazari
  */
 public interface ModelNameCalculator {
 
+
+  // TODO PN update doc
   /**
    * Calculates the model name from a (un-)qualified symbol <code>name</code> depending on the
    * <code>kind</code>. This is required to resolve inner model elements, since their containing
@@ -43,11 +45,10 @@ public interface ModelNameCalculator {
    * .cd</code> exists. The name of the model (here class diagram) is <code>a.b.CD</code>, leading
    * to the correct model path <code>a/b/CD.cd</code>.
    *
-   *
    * @param name the (qualified) name
    * @param kind the symbol kind
    * @return model name depending on the
    */
-  Optional<String> calculateModelName(String name, SymbolKind kind);
+  Set<String> calculateModelNames(String name, SymbolKind kind);
 
 }

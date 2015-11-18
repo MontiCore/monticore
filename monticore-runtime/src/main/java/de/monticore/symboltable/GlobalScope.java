@@ -105,7 +105,7 @@ public final class GlobalScope extends CommonScope {
     // Symbol not found: try to load corresponding model and build its symbol table
     // TODO PN Optimize: if no further models have been loaded, we can stop here. There is no need
     // to resolveDown again
-    loadModels(resolvingInfo, symbolName, kind);
+    loadModels(resolvingInfo.getResolvingFilters(), symbolName, kind);
 
     // Maybe the symbol now exists in this scope (resp. its sub scopes). So, resolve down, again.
     resolvedSymbol = resolveDownMany(new ResolvingInfo(getResolvingFilters()), symbolName, kind);
@@ -113,7 +113,7 @@ public final class GlobalScope extends CommonScope {
     return resolvedSymbol;
   }
 
-  protected void loadModels(final ResolvingInfo resolvingInfo, final String symbolName, final SymbolKind kind) {
+  protected void loadModels(final Collection<ResolvingFilter<? extends Symbol>> resolvingFilters, final String symbolName, final SymbolKind kind) {
 
     // TODO PN optimize
 
@@ -122,16 +122,16 @@ public final class GlobalScope extends CommonScope {
       final ModelingLanguageModelLoader<? extends ASTNode> modelLoader = modelingLanguage.getModelLoader();
 
       final Collection<ResolvingFilter<? extends Symbol>> resolversForKind = ResolvingFilter
-          .getFiltersForTargetKind(resolvingInfo.getResolvingFilters(), kind);
+          .getFiltersForTargetKind(resolvingFilters, kind);
 
       for (final ResolvingFilter<? extends Symbol> resolvingFilter : resolversForKind) {
         final SymbolKind kindForCalc = getSymbolKindByResolvingFilter(kind, resolvingFilter);
 
-        final Optional<String> calculatedModelName = modelNameCalculator.calculateModelName(symbolName, kindForCalc);
+        final Set<String> calculatedModelName = modelNameCalculator.calculateModelNames(symbolName, kindForCalc);
 
-        if (calculatedModelName.isPresent() && continueWithModelLoader(calculatedModelName.get(), modelLoader)) {
-          modelLoader.loadModelsIntoScope(calculatedModelName.get(), modelPath, this, resolverConfiguration);
-          cache(modelLoader, calculatedModelName.get());
+        if (!calculatedModelName.isEmpty() && continueWithModelLoader(calculatedModelName.iterator().next(), modelLoader)) {
+          modelLoader.loadModelsIntoScope(calculatedModelName.iterator().next(), modelPath, this, resolverConfiguration);
+          cache(modelLoader, calculatedModelName.iterator().next());
         }
         else {
           Log.debug("Model for '" + symbolName + "' already exists. No need to load it.", GlobalScope.class.getSimpleName());

@@ -25,14 +25,16 @@
 
 package mc.embedding.external.host._symboltable;
 
-import java.util.Optional;
+import java.util.Collections;
+import java.util.Set;
 
+import com.google.common.collect.ImmutableSet;
 import de.monticore.symboltable.SymbolKind;
 
 public class HostModelNameCalculator extends de.monticore.CommonModelNameCalculator {
 
   @Override
-  public Optional<String> calculateModelName(final String name, final SymbolKind kind) {
+  public Set<String> calculateModelNames(final String name, final SymbolKind kind) {
     if (ContentSymbol.KIND.isKindOf(kind)) {
       return calculateModelNameForContent(name);
     }
@@ -40,14 +42,14 @@ public class HostModelNameCalculator extends de.monticore.CommonModelNameCalcula
       return calculateModelNameForHost(name);
     }
 
-    return Optional.empty();
+    return Collections.emptySet();
   }
 
-  protected Optional<String> calculateModelNameForContent(String name) {
-    return super.calculateModelName(name, ContentSymbol.KIND);
+  protected Set<String> calculateModelNameForContent(String name) {
+    return ImmutableSet.of(name);
   }
-  protected Optional<String> calculateModelNameForHost(String name) {
-    return super.calculateModelName(name, ContentSymbol.KIND);
+  protected Set<String> calculateModelNameForHost(String name) {
+    return ImmutableSet.of(name);
   }
 
 
