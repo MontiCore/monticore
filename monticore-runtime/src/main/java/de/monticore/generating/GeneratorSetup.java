@@ -27,6 +27,7 @@ import java.util.Optional;
 import com.google.common.collect.ImmutableList;
 
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.io.paths.IterablePath;
 
 /**
  * Setup for generator (see {@link GeneratorEngine}).
@@ -41,6 +42,11 @@ public class GeneratorSetup {
   private ClassLoader classLoader;
   
   private GlobalExtensionManagement glex;
+  
+  /**
+   * The path for the handwritten code 
+   */
+  private IterablePath handcodedPath;
   
   /**
    * Additional path as the source of templates
@@ -95,6 +101,20 @@ public class GeneratorSetup {
   
   public List<File> getAdditionalTemplatePaths() {
     return ImmutableList.copyOf(additionalTemplatePaths);
+  }
+  
+  /**
+   * @return targetPath
+   */
+  public IterablePath getHandcodedPath() {
+    return this.handcodedPath;
+  }
+
+  /**
+   * @param hwcpath the handcoded path to set
+   */
+  public void setHandcodedPath(IterablePath hwcPath) {
+    this.handcodedPath = hwcPath;
   }
   
   /**

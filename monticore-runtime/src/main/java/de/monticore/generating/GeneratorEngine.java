@@ -141,7 +141,9 @@ public class GeneratorEngine {
   /**
    * Processes the template <code>templateName</code> with the <code>node</code>
    * and the given <code>templateArguments</code> and writes the content into
-   * the <code>filePath</code>. Note: Unless not absolute, the
+   * the <code>filePath</code>. If there is a handwritten file on the handcoded path,
+   * the suffix "TOP" is added to the name of the generated file.
+   * Note: Unless not absolute, the
    * <code>filePath</code> is relative to the configured output directory
    * specified in the {@link de.monticore.generating.GeneratorSetup}.
    *
@@ -151,7 +153,7 @@ public class GeneratorEngine {
    * @param node the ast node
    * @param templateArguments additional template arguments (if needed).
    */
-  public void generate(String templateName, Path filePath, IterablePath handcodedPath,
+  public void generateAndConsiderHWC(String templateName, Path filePath, IterablePath handcodedPath,
       ASTNode node,
       Object... templateArguments) {
     Log.errorIfNull(filePath);

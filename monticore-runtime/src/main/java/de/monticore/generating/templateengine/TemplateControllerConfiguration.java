@@ -19,15 +19,16 @@
 
 package de.monticore.generating.templateengine;
 
-import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
-import de.monticore.io.FileReaderWriter;
-import de.se_rwth.commons.logging.Log;
-
-import java.io.File;
-
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Strings.nullToEmpty;
+
+import java.io.File;
+
+import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
+import de.monticore.io.FileReaderWriter;
+import de.monticore.io.paths.IterablePath;
+import de.se_rwth.commons.logging.Log;
 
 /**
  * Holds settings for {@link TemplateController}. These settings are usually set
@@ -52,6 +53,9 @@ public class TemplateControllerConfiguration {
   /** the target directory for generated files */
   private File targetDir;
   
+  /** the path for the handwritten code */
+  private IterablePath handcodedPath;
+
   private String modelName;
   
   /**
@@ -212,6 +216,21 @@ public class TemplateControllerConfiguration {
   
   public FileReaderWriter getFileHandler() {
     return this.fileHandler;
+  }
+  
+  
+  /**
+   * @return handcoded path
+   */
+  public IterablePath getHandcodedPath() {
+    return this.handcodedPath;
+  }
+
+  /**
+   * @param handcodedPath the handcoded path to set
+   */
+  public void setHandcodedPath(IterablePath handcodedPath) {
+    this.handcodedPath = handcodedPath;
   }
   
   void setTemplateControllerFactory(ITemplateControllerFactory templateControllerFactory) {
