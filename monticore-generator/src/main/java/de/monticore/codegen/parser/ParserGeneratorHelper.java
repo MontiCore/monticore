@@ -73,6 +73,8 @@ public class ParserGeneratorHelper {
   
   public static final String MONTICOREANYTHING = "MONTICOREANYTHING";
   
+  public static final String RIGHTASSOC = "<assoc=right>";
+
   public static final String ANTLR_CONCEPT = "antlr";
   
   private static Grammar_WithConceptsPrettyPrinter prettyPrinter;

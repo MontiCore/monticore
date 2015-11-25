@@ -144,5 +144,18 @@ public class ExpressionTest extends GeneratorIntegrationsTest {
     }
   }
 
+  @Test
+  public void testPowerWithRightAssoc() {
+    try {
+      Optional<ASTExpr> res = parse("2^3^4");
+      assertTrue(res.isPresent());
+      Optional<ASTExpr> left = res.get().getLeft();
+      assertTrue(left.isPresent());
+      assertTrue(left.get().getNumericLiteral().isPresent());
+    }
+    catch (Exception e) {
+      fail(e.getMessage());
+    }
+  }
   
 }

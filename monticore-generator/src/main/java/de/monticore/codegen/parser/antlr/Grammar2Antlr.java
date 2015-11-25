@@ -768,6 +768,9 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
   @Override
   public void visit(ASTAlt alt) {
     altList.add(alt);
+    if (alt.isRightAssoc()) {
+      addToAntlrCode(ParserGeneratorHelper.RIGHTASSOC);
+    }
   }
   
   @Override
