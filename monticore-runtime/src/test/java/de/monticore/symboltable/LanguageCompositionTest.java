@@ -19,6 +19,14 @@
 
 package de.monticore.symboltable;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
+import java.nio.file.Paths;
+
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.mocks.languages.ParserMock;
@@ -43,10 +51,6 @@ import de.monticore.symboltable.mocks.languages.statechart.asts.ASTStateChart;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 import org.junit.Test;
 
-import java.nio.file.Paths;
-
-import static org.junit.Assert.*;
-
 /**
  *
  * @author  Pedram Mir Seyed Nazari
@@ -60,14 +64,10 @@ public class LanguageCompositionTest {
   public void testLanguageFamily() {
     final ModelingLanguageFamily languageFamily = new ScAndEntityLanguageFamily();
 
-    final ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
-    resolverConfiguration.addTopScopeResolvers(languageFamily.getAllResolvers());
-
 
     final ModelPath modelPath =
         new ModelPath(Paths.get("src/test/resources/de/monticore/symboltable/languagecomposition"));
-    final MutableScope globalScope = new GlobalScope(modelPath, languageFamily
-        .getAllModelLoaders(), resolverConfiguration);
+    final MutableScope globalScope = new GlobalScope(modelPath, languageFamily);
 
 
 
@@ -127,8 +127,7 @@ public class LanguageCompositionTest {
     final ModelPath modelPath = new ModelPath(Paths.get
         ("src/test/resources/de/monticore/symboltable/languagecomposition"));
 
-    final Scope globalScope = new GlobalScope(modelPath, language.getModelLoader(),
-        resolverConfiguration);
+    final Scope globalScope = new GlobalScope(modelPath, language, resolverConfiguration);
 
     final EntitySymbol entity = globalScope.<EntitySymbol>resolve("embedding.Entity",
         EntitySymbol.KIND).orElse(null);

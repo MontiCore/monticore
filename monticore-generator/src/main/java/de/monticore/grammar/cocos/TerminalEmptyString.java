@@ -17,21 +17,27 @@
  * ******************************************************************************
  */
 
-package de.monticore;
+package de.monticore.grammar.cocos;
 
-import java.util.Collections;
-import java.util.Set;
-
-import de.monticore.symboltable.SymbolKind;
+import de.monticore.grammar.grammar._ast.ASTTerminal;
+import de.monticore.grammar.grammar._cocos.GrammarASTTerminalCoCo;
+import de.se_rwth.commons.logging.Log;
 
 /**
- * @author Pedram Mir Seyed Nazari
+ * Checks that used terminals are not empty strings.
+ *
+ * @author KH
  */
-// TODO PN Doc
-public final class EmptyModelNameCalculator implements ModelNameCalculator {
+public class TerminalEmptyString implements GrammarASTTerminalCoCo {
+
+  public static final String ERROR_CODE = "0xA4054";
+
+  public static final String ERROR_MSG_FORMAT = " The empty string cannot be used as a keyword.";
 
   @Override
-  public Set<String> calculateModelNames(String name, SymbolKind kind) {
-    return Collections.emptySet();
+  public void check(ASTTerminal a) {
+    if(a.getName().isEmpty()) {
+      Log.error(ERROR_CODE + ERROR_MSG_FORMAT, a.get_SourcePositionStart());
+    }
   }
 }

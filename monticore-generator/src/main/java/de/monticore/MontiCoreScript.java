@@ -19,13 +19,13 @@
 
 package de.monticore;
 
-import groovy.lang.Script;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -79,6 +79,9 @@ import de.se_rwth.commons.groovy.GroovyInterpreter;
 import de.se_rwth.commons.groovy.GroovyRunner;
 import de.se_rwth.commons.groovy.GroovyRunnerBase;
 import de.se_rwth.commons.logging.Log;
+import groovy.lang.Script;
+import org.codehaus.groovy.control.customizers.ImportCustomizer;
+import parser.MCGrammarParser;
 
 /**
  * The actual top level functional implementation of MontiCore. This is the top-most interface of
@@ -330,11 +333,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     resolverConfiguration.addTopScopeResolvers(mcLanguage.getResolvers());
     resolverConfiguration.addTopScopeResolvers(cd4AnalysisLanguage.getResolvers());
     
-    Set<ModelingLanguageModelLoader<? extends ASTNode>> modelLoaders = new LinkedHashSet<>();
-    modelLoaders.add(mcLanguage.getModelLoader());
-    modelLoaders.add(cd4AnalysisLanguage.getModelLoader());
-    
-    return new GlobalScope(modelPath, modelLoaders, resolverConfiguration);
+    return new GlobalScope(modelPath, Arrays.asList(mcLanguage, cd4AnalysisLanguage), resolverConfiguration);
   }
   
   /**

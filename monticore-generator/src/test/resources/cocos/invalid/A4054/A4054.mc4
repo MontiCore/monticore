@@ -1,0 +1,7 @@
+package cocos.invalid.A4054;
+
+grammar A4054 {
+
+  A = "";
+
+}

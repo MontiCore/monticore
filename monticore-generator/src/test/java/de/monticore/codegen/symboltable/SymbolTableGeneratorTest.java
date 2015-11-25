@@ -26,10 +26,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import de.monticore.ModelingLanguage;
 import de.monticore.MontiCoreScript;
 import de.monticore.codegen.AstDependentGeneratorTest;
@@ -42,6 +38,9 @@ import de.monticore.symboltable.ResolverConfiguration;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * @author Pedram Mir Seyed Nazari
@@ -115,7 +114,7 @@ public class SymbolTableGeneratorTest extends AstDependentGeneratorTest {
     resolverConfiguration.addTopScopeResolvers(grammarLanguage.getResolvers());
 
     GlobalScope globalScope = new GlobalScope(new ModelPath(Paths.get(modelPath.getAbsolutePath())),
-        grammarLanguage.getModelLoader(), resolverConfiguration);
+        grammarLanguage, resolverConfiguration);
 
 
 //TODO    decoreate and create cdInfos

@@ -11,20 +11,17 @@ package mc.feature.automaton;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+
+import mc.feature.automaton.automaton._ast.ASTTransition;
+import mc.feature.automaton.automaton._ast.AutomatonPackage;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import de.monticore.emf._ast.ASTENodePackage;
-import mc.feature.automaton.automaton._ast.ASTAutomaton;
-import mc.feature.automaton.automaton._ast.ASTTransition;
-import mc.feature.automaton.automaton._ast.AutomatonPackage;
 
 public class TestAutomatonResourceController {
  
@@ -85,38 +82,13 @@ public class TestAutomatonResourceController {
       resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put( Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl()); 
       // Get the URI of the model file. 
       URI fileURI = URI.createFileURI(new File(fileName + ".xmi").getAbsolutePath()); 
-     // URI fileURI = object.eResource().getURI();
       // Create a resource for this file. 
       Resource resource = resourceSet.createResource(fileURI);
        // Add instance of package to the contents. 
       resource.getContents().add(object);
       // Save the contents of the resource to the file system. 
-      Map options = new HashMap();
-      options.put(XMLResource.OPTION_SCHEMA_LOCATION, Boolean.TRUE);
-      try { resource.save(options); } catch (IOException e) {e.printStackTrace();}
+      try { resource.save(Collections.EMPTY_MAP); } catch (IOException e) {e.printStackTrace();}
   }
-  
-  public void serializeASTClassInstance (ASTAutomaton object, String fileName) {
-    // Create a resource set. 
-   ResourceSet resourceSet = new ResourceSetImpl(); 
-   // Register the default resource factory -- only needed for stand-alone! 
-   resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put( Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl()); 
-   // Get the URI of the model file. 
-   URI fileURI = URI.createFileURI(new File(fileName + ".xmi").getAbsolutePath()); 
-   // Create a resource for this file. 
-  // new Ecore2XMLResourceImpl(fileURI);
-   Resource resource = resourceSet.createResource(fileURI);
-    // Add instance of package to the contents. 
-   resource.getContents().add(object);
-   // Save the contents of the resource to the file system. 
-   /*
-   * Save the resource using OPTION_SCHEMA_LOCATION save option toproduce 
-   * xsi:schemaLocation attribute in the document
-   */
-   Map options = new HashMap();
-   options.put(XMLResource.OPTION_SCHEMA_LOCATION, Boolean.TRUE);
-   try { resource.save(options); } catch (IOException e) {e.printStackTrace();}
-}
     
 
 }

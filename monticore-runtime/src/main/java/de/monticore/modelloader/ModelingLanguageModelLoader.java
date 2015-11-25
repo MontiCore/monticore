@@ -19,6 +19,15 @@
 
 package de.monticore.modelloader;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Strings.isNullOrEmpty;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
+
 import de.monticore.AmbiguityException;
 import de.monticore.ModelingLanguage;
 import de.monticore.ast.ASTNode;
@@ -30,15 +39,6 @@ import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolverConfiguration;
 import de.se_rwth.commons.Names;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Strings.isNullOrEmpty;
-
 /**
  * This class is responsible for loading models from the model path (
  * {@link de.monticore.io.paths.ModelPath}).
@@ -47,7 +47,8 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  */
 
 // TODO PN update doc
-// TODO PN extract CommonModelingLanguageModelLoader
+// TODO PN extract CommonModelLoader
+// TODO PN rename to ModelLoader
 public abstract class ModelingLanguageModelLoader<T extends ASTNode> {
 
   private final ModelingLanguage modelingLanguage;
@@ -69,13 +70,14 @@ public abstract class ModelingLanguageModelLoader<T extends ASTNode> {
    * thrown.
    *
    * @param qualifiedModelName the qualified name of the model to be loaded
+   * @param modelPath the modelPath
    * @return An ast of the loaded model.
    * @throws de.monticore.AmbiguityException is thrown, if more than one model
    *                                         with the name <code>qualifiedModelName</code>
-   * @see #loadAmbiguousModels(String, de.monticore.io.paths.ModelPath)
+   * @see #loadModels(String, de.monticore.io.paths.ModelPath)
    */
   public Optional<T> loadModel(final String qualifiedModelName, final ModelPath modelPath) {
-    final Collection<T> models = loadAmbiguousModels(qualifiedModelName, modelPath);
+    final Collection<T> models = loadModels(qualifiedModelName, modelPath);
     if (models.size() > 1) {
       throw new AmbiguityException("0xA4092 Multiple models were found with name '"
           + qualifiedModelName + "'");
@@ -84,12 +86,33 @@ public abstract class ModelingLanguageModelLoader<T extends ASTNode> {
     return models.stream().findFirst();
   }
 
-  // TODO PN rename loadModels
+  /**
+   * @deprecated use {@link #loadModelsIntoScope(String, ModelPath, MutableScope, ResolverConfiguration)}
+   * instead.
+   */
+  @Deprecated
   public Collection<T> loadAmbiguousModelAndCreateSymbolTable(final String qualifiedModelName,
       final ModelPath modelPath, final MutableScope enclosingScope,
       final ResolverConfiguration resolverConfiguration) {
 
-    final Collection<T> asts = loadAmbiguousModels(qualifiedModelName, modelPath);
+    return loadModelsIntoScope(qualifiedModelName, modelPath, enclosingScope, resolverConfiguration);
+  }
+
+  /**
+   * Loads all models with the specified <code>qualifiedModelName</code>, creates
+   * the corresponding scope graphs and puts each in the <code>enclosingScope</code>.
+   *
+   * @param qualifiedModelName the qualified name of the model(s) to be loaded
+   * @param modelPath the model path
+   * @param enclosingScope the enclosing scope for each scope graph of the loaded models
+   * @param resolverConfiguration the configuration of the resolving filters
+   * @return the asts of the loaded models (mapped to the corresponding symbol table elements)
+   */
+  public Collection<T> loadModelsIntoScope(final String qualifiedModelName,
+      final ModelPath modelPath, final MutableScope enclosingScope,
+      final ResolverConfiguration resolverConfiguration) {
+
+    final Collection<T> asts = loadModels(qualifiedModelName, modelPath);
 
     for (T ast : asts) {
       // TODO PN add here a general hook, to allow further processing of the asts
@@ -112,22 +135,30 @@ public abstract class ModelingLanguageModelLoader<T extends ASTNode> {
       ResolverConfiguration resolverConfiguration);
 
   /**
+   * @deprecated use {@link #loadModels(String, ModelPath)} instead.
+   */
+  public Collection<T> loadAmbiguousModels(final String qualifiedModelName, ModelPath modelPath) {
+    checkArgument(!isNullOrEmpty(qualifiedModelName));
+
+    return loadModels(qualifiedModelName, modelPath);
+  }
+
+  /**
    * Loads one or more models with the <code>qualifiedModelName</code>. If only
    * one model is expected, use
    * {@link #loadModel(String, de.monticore.io.paths.ModelPath)} instead.
    *
    * @param qualifiedModelName the qualified name of the model(s) to be loaded
-   * @param modelPath
-   * @return A collection with an ast for each existing model.
+   * @param modelPath the model path
+   * @return the asts of the loaded models
    * @see #loadModel(String, de.monticore.io.paths.ModelPath)
    */
-  public Collection<T> loadAmbiguousModels(final String qualifiedModelName, ModelPath modelPath) {
+  public Collection<T> loadModels(final String qualifiedModelName, ModelPath modelPath) {
     checkArgument(!isNullOrEmpty(qualifiedModelName));
 
     final Collection<T> foundModels = new ArrayList<>();
 
-    final ModelCoordinate resolvedCoordinate = resolve(qualifiedModelName, modelingLanguage,
-        modelPath);
+    final ModelCoordinate resolvedCoordinate = resolve(qualifiedModelName, modelPath);
     if (resolvedCoordinate.hasLocation()) {
       final T ast = astProvider.getRootNode(resolvedCoordinate);
       Reporting.reportOpenInputFile(resolvedCoordinate.getParentDirectoryPath(),
@@ -140,12 +171,10 @@ public abstract class ModelingLanguageModelLoader<T extends ASTNode> {
 
   /**
    * @param qualifiedModelName example: "de.mc.statechartOne"
-   * @param modelingLanguage   the language to which the model <i>might</i> belong
    * @return the resolved coordinate (the location of the model is set if
    * successful)
    */
-  private ModelCoordinate resolve(final String qualifiedModelName,
-      final ModelingLanguage modelingLanguage, final ModelPath modelPath) {
+  private ModelCoordinate resolve(final String qualifiedModelName, final ModelPath modelPath) {
     String simpleName = Names.getSimpleName(qualifiedModelName);
     Path qualifiedPath = Paths.get(
         Names.getPathFromQualifiedName(qualifiedModelName)).resolve(

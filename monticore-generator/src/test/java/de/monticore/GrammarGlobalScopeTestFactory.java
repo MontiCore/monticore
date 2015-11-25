@@ -35,7 +35,7 @@ public class GrammarGlobalScopeTestFactory {
     resolverConfiguration.addTopScopeResolvers(grammarLanguage.getResolvers());
 
     return  new GlobalScope(new ModelPath(Paths.get("src/test/resources")),
-        grammarLanguage.getModelLoader(), resolverConfiguration);
+        grammarLanguage, resolverConfiguration);
   }
 
 }

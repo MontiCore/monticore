@@ -574,8 +574,8 @@ public class CommonScope implements MutableScope {
 
     final Set<T> resolved = new LinkedHashSet<>(this.<T>resolveManyLocally(resolvingInfo, name, kind));
 
-    String resolveCall = "resolveDownMany(\"" + name + "\", \"" + kind.getName() + "\") in scope \"" + getName() +
-            "\"";
+    final String resolveCall = "resolveDownMany(\"" + name + "\", \"" + kind.getName()
+        + "\") in scope \"" + getName() + "\"";
     Log.trace("START " + resolveCall + ". Found #" + resolved.size() + " (local)", "");
 
     // TODO PN Doc if a symbol is found in the current scope, resolving is stopped.
@@ -620,10 +620,10 @@ public class CommonScope implements MutableScope {
 
   protected boolean checkIfContinueWithSubScope(String symbolName, MutableScope subScope) {
     if(subScope.exportsSymbols()) {
-      FluentIterable<String> symbolNameParts = FluentIterable.from(Splitters.DOT.split(symbolName));
+      final FluentIterable<String> nameParts = FluentIterable.from(Splitters.DOT.split(symbolName));
 
-      if (symbolNameParts.size() > 1) {
-        final String firstNamePart = symbolNameParts.get(0);
+      if (nameParts.size() > 1) {
+        final String firstNamePart = nameParts.get(0);
         // A scope that exports symbols should always have a name too.
         return firstNamePart.equals(subScope.getName().orElse(""));
       }

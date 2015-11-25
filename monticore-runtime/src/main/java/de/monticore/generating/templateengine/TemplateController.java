@@ -82,6 +82,8 @@ public class TemplateController {
   
   private List<Object> arguments = newArrayList();
   
+  public static final String DEFAULT_FILE_EXTENSION = "java";
+  
   /**
    * A list of all freemarker functions that serve as aliases for Java methods,
    * e.g. 'include' as alias for 'tc.include'
@@ -673,6 +675,17 @@ public class TemplateController {
    */
   List<Macro> getAliases() {
     return aliases;
+  }
+  
+  public boolean existsHWC(String fileName) {
+    return existsHWC(fileName, DEFAULT_FILE_EXTENSION);
+  }
+  
+  public boolean existsHWC(String fileName, String extension) {
+    checkArgument(!isNullOrEmpty(fileName));
+    checkArgument(!isNullOrEmpty(extension));
+    Path filePath = Paths.get(Names.getFileName(Names.getPathFromPackage(fileName), extension));
+    return config.getHandcodedPath().exists(filePath);
   }
   
   /**

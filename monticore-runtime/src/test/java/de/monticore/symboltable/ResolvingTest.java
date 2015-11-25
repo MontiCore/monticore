@@ -123,7 +123,7 @@ public class ResolvingTest {
     resolverConfiguration.addTopScopeResolvers(modelingLanguage.getResolvers());
     final ModelPath modelPath = new ModelPath(Paths.get(""));
 
-    final GlobalScope globalScope = new GlobalScope(modelPath, modelingLanguage.getModelLoader(), resolverConfiguration);
+    final GlobalScope globalScope = new GlobalScope(modelPath, modelingLanguage, resolverConfiguration);
     globalScope.add(entity);
 
     assertTrue(globalScope.resolve("Entity", EntitySymbol.KIND).isPresent());
@@ -153,7 +153,7 @@ public class ResolvingTest {
     resolverConfiguration.addTopScopeResolvers(modelingLanguage.getResolvers());
     final ModelPath modelPath = new ModelPath(Paths.get(""));
 
-    final GlobalScope globalScope = new GlobalScope(modelPath, modelingLanguage.getModelLoader(), resolverConfiguration);
+    final GlobalScope globalScope = new GlobalScope(modelPath, modelingLanguage, resolverConfiguration);
     globalScope.addSubScope(artifactScope);
 
     assertTrue(globalScope.resolve("p.q.Entity", EntitySymbol.KIND).isPresent());

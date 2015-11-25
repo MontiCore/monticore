@@ -117,8 +117,7 @@ public class MyDSLTool {
     final ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
     resolverConfiguration.addTopScopeResolvers(lang.getResolvers());
     
-    GlobalScope globalScope = new GlobalScope(new ModelPath(), lang.getModelLoader(),
-        resolverConfiguration);
+    GlobalScope globalScope = new GlobalScope(new ModelPath(), lang, resolverConfiguration);
     
     Optional<MyDSLSymbolTableCreator> symbolTable = lang.getSymbolTableCreator(
         resolverConfiguration, globalScope);

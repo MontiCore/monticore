@@ -27,6 +27,7 @@ import java.io.File;
 
 import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.io.FileReaderWriter;
+import de.monticore.io.paths.IterablePath;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -61,6 +62,8 @@ public class TemplateControllerConfigurationBuilder {
   private String defaultFileExtension = "java";
   
   private File targetDir;
+  
+  private IterablePath handcodedPath;
   
   private String modelName;
   
@@ -123,6 +126,11 @@ public class TemplateControllerConfigurationBuilder {
     return this;
   }
   
+  public TemplateControllerConfigurationBuilder handcodedPath(IterablePath hwcPath) {
+    this.handcodedPath = hwcPath;
+    return this;
+  }
+  
   public TemplateControllerConfigurationBuilder targetDir(File targetDir) {
     this.targetDir = targetDir;
     return this;
@@ -158,6 +166,7 @@ public class TemplateControllerConfigurationBuilder {
     config.setTemplateControllerFactory(templateControllerFactory);
     config.setExternalTemplatePath(externalTemplatePaths);
     config.setTargetDir(targetDir);
+    config.setHandcodedPath(handcodedPath);
     config.setModelName(modelName);
     config.setDefaultFileExtension(defaultFileExtension);
     config.setCommentStart(commentStart);
