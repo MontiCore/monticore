@@ -151,13 +151,6 @@ public interface ${genHelper.getVisitorType()} ${genHelper.getVisitorSuperInterf
         // Instead we double-dispatch the call, to call the correctly typed
         // traverse(...) method with the elements concrete type.
 
-        <#if genHelper.isAstListClass(type)>
-          <#assign astChildTypeName = genHelper.getAstClassNameForASTLists(astName)>
-          Iterator<${astChildTypeName}> iter = node.iterator();
-          while (iter.hasNext()) {
-            iter.next().accept(getRealThis());
-          }
-        <#else>
           <#list type.getAllVisibleFields() as field>
             <#if genHelper.isAstNode(field) || genHelper.isOptionalAstNode(field) >
               <#assign attrGetter = genHelper.getPlainGetter(field)>
@@ -172,7 +165,6 @@ public interface ${genHelper.getVisitorType()} ${genHelper.getVisitorSuperInterf
               </#if>
             </#if>
           </#list>
-        </#if>
       }
     </#if>
   </#list>

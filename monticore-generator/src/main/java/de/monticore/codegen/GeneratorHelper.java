@@ -520,7 +520,7 @@ public class GeneratorHelper extends TypesHelper {
         || type.equals("ArrayList") || type.equals("java.util.ArrayList");
   }
   
-  public boolean isAstListClass(CDTypeSymbol cdType) {
+  public boolean isAstListClass(CDTypeSymbolReference cdType) {
     String typeName = cdType.getName();
     // at first check the name convention
     if (!(typeName.endsWith(LIST_SUFFIX) || typeName.endsWith(LIST_SUFFIX
@@ -556,26 +556,6 @@ public class GeneratorHelper extends TypesHelper {
     // try to resolve the corresponding ast type
     Optional<CDTypeSymbol> correspondingAstClass = resolveCdType(nameToResolve);
     return correspondingAstClass.isPresent();
-  }
-
-  public boolean isAstListClass(ASTCDClass clazz) {
-    String listClassName = clazz.getName();
-    if (!listClassName.startsWith(AST_PREFIX)
-        || !(listClassName.endsWith(LIST_SUFFIX) || listClassName.endsWith(LIST_SUFFIX
-            + GENERATED_CLASS_SUFFIX))) {
-      return false;
-    }
-    String nameToResolve = listClassName.contains(".") ? listClassName : qualifiedName + "."
-        + listClassName;
-    if (nameToResolve.endsWith(TransformationHelper.GENERATED_CLASS_SUFFIX)) {
-      nameToResolve = nameToResolve.substring(0,
-          nameToResolve.lastIndexOf(TransformationHelper.GENERATED_CLASS_SUFFIX));
-    }
-    if (!resolveCdType(nameToResolve).isPresent()) {
-      return false;
-    }
-    nameToResolve = nameToResolve.substring(0, nameToResolve.lastIndexOf(LIST_SUFFIX));
-    return resolveCdType(nameToResolve).isPresent();
   }
 
   public static boolean isMapType(String type) {
@@ -1271,7 +1251,6 @@ public class GeneratorHelper extends TypesHelper {
   public static String getCdName(String qualifiedCdName) {
     return Names.getSimpleName(qualifiedCdName);
   }
-  
   
   /**
    * Gets the qualified java AST type for the given type.

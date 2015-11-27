@@ -109,14 +109,15 @@ public class MultiplicityTranslation implements
   }
 
   private static ASTSimpleReferenceType createNewListType(String oldTypeName) {
-    // TODO GV, SO: quick fix only, change it
-    //if (oldTypeName.contains("_ast.AST")) {
+    return createSimpleReference("java.util.List", oldTypeName);
+    // TODO GV, MB
+    /*
     if (Names.getSimpleName(oldTypeName).startsWith(TransformationHelper.AST_PREFIX)) {
       return createSimpleReference(oldTypeName + "List");
     }
     else {
       return createSimpleReference("java.util.List", oldTypeName);
-    }
+    }*/
   }
   
   private static String changePrimitiveType(int primType) {

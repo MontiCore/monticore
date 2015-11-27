@@ -149,30 +149,28 @@ public class MontiCoreScriptTest {
         genHelper.getPackageName(), GeneratorHelper.AST_PACKAGE_SUFFIX));
     assertNotNull(cdCompilationUnit.getCDDefinition());
     ASTCDDefinition cdDefinition = cdCompilationUnit.getCDDefinition();
-    assertEquals(20, cdDefinition.getCDClasses().size());
+    assertEquals(8, cdDefinition.getCDClasses().size());
     assertEquals(5, cdDefinition.getCDInterfaces().size());
     
     mc.decorateCd(glex, cdCompilationUnit, symbolTable, targetPath);
     // Added Builder classes to the each not list class
-    assertEquals(30, cdDefinition.getCDClasses().size());
+    assertEquals(18, cdDefinition.getCDClasses().size());
     
     // Check if there are all additional methods defined in the given CD class
     List<String> methods = Lists.newArrayList();
     for (ASTCDClass cdClass : cdDefinition.getCDClasses()) {
-      if (!genHelper.isAstListClass(cdClass)) {
-        // All methods of CD class
-        for (ASTCDMethod method : cdClass.getCDMethods()) {
-          methods.add(method.getName());
+      // All methods of CD class
+      for (ASTCDMethod method : cdClass.getCDMethods()) {
+        methods.add(method.getName());
+      }
+      String withOrder = "WithOrder";
+      for (String additionalMethod : additionalMethods) {
+        if (additionalMethod.endsWith(withOrder)) {
+          assertTrue(methods.contains(additionalMethod.substring(0,
+              additionalMethod.indexOf(withOrder))));
         }
-        String withOrder = "WithOrder";
-        for (String additionalMethod : additionalMethods) {
-          if (additionalMethod.endsWith(withOrder)) {
-            assertTrue(methods.contains(additionalMethod.substring(0,
-                additionalMethod.indexOf(withOrder))));
-          }
-          else {
-            assertTrue(methods.contains(additionalMethod));
-          }
+        else {
+          assertTrue(methods.contains(additionalMethod));
         }
       }
     }
