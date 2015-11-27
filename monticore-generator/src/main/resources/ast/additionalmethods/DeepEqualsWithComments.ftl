@@ -55,6 +55,7 @@ ${tc.signature("ast","astType")}
       return false;
     }
        <#elseif genHelper.isAstNode(attribute)>
+    // TODO GV, MB   
     // comparing ${attrName}
     if ( (this.${attrName} == null && comp.${attrName} != null) || 
       (this.${attrName} != null && !this.${attrName}.deepEqualsWithComments(comp.${attrName})) ) {

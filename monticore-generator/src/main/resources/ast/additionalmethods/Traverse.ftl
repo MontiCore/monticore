@@ -36,6 +36,7 @@ ${tc.signature("ast", "astType")}
     <#-- TODO: attributes of super class - use symbol table -->
     <#list astType.getCDAttributes()  as attribute> 
       <#assign attrName = genHelper.getJavaConformName(attribute.getName())>
+      // TODO GV, MB
       <#if genHelper.isAstNode(attribute)>
     visitor.startVisit(${attrName});
       <#elseif genHelper.isOptionalAstNode(attribute)>

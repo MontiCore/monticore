@@ -65,6 +65,7 @@ SUCH DAMAGE.
          </#if>    
        <#else>
     if (this.${attributeName} != null) {
+         // TODO GV, MB
          <#if genHelper.isAstList(attribute)>
       result.set${genHelper.getNativeAttributeName(attribute.getName())?cap_first}(this.${attributeName}.deepClone());
          <#else>

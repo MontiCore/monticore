@@ -520,6 +520,7 @@ public class GeneratorHelper extends TypesHelper {
         || type.equals("ArrayList") || type.equals("java.util.ArrayList");
   }
   
+  // TODO GV, MB
   public boolean isAstListClass(CDTypeSymbolReference cdType) {
     String typeName = cdType.getName();
     // at first check the name convention
@@ -827,6 +828,7 @@ public class GeneratorHelper extends TypesHelper {
     return cdPrettyPrinter;
   }
   
+  // TODO GV, MB
   public boolean isAstList(ASTCDAttribute attribute) {
     if (!attribute.getSymbol().isPresent()) {
       return false;
