@@ -205,7 +205,6 @@ public class SymbolTableGenerator {
 
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
     if (ruleSymbol.getAstNode().isPresent()) {
-      final boolean isClass = ruleSymbol instanceof MCInterfaceOrAbstractRuleSymbol;
       generator.generate("symboltable.EmptyScopeSpanningSymbol", filePath, ruleSymbol.getAstNode().get(), className, ruleSymbol);
     }
   }

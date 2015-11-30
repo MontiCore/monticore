@@ -30,7 +30,6 @@ import de.monticore.grammar.grammar._ast.ASTLexProd;
 import de.monticore.grammar.grammar._ast.ASTLexSimpleIteration;
 import de.monticore.grammar.grammar._ast.ASTLexString;
 import de.monticore.grammar.grammar._cocos.GrammarASTLexProdCoCo;
-import de.monticore.languages.grammar.MCLexRuleSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -46,7 +45,6 @@ public class LexNTsNotEmpty implements GrammarASTLexProdCoCo {
 
   @Override
   public void check(ASTLexProd a) {
-    MCLexRuleSymbol lexRuleSymbol = (MCLexRuleSymbol) a.getSymbol().get();
     for(ASTLexAlt alt :a.getAlts()){
       if(alt.getLexComponents().isEmpty()){
         Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName()),
