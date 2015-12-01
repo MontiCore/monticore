@@ -19,14 +19,11 @@
 
 package de.monticore.codegen.cd2java.ast;
 
-import java.util.List;
 import java.util.Optional;
 
 import de.monticore.codegen.GeneratorHelper;
-import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.TypesPrinter;
-import de.monticore.umlcd4a.CD4AnalysisHelper;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;

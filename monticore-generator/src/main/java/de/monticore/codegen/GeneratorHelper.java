@@ -435,11 +435,20 @@ public class GeneratorHelper extends TypesHelper {
     return nameAsList.get(nameAsList.size() - 1);
   }
   
-  public static String getAstClassNameForASTLists(String astListClassName) {
-    Preconditions.checkArgument(!Strings.isNullOrEmpty(astListClassName));
-    Preconditions.checkArgument(astListClassName.endsWith(LIST_SUFFIX)
-        || astListClassName.endsWith(LIST_SUFFIX + GENERATED_CLASS_SUFFIX));
-    return astListClassName.substring(0, astListClassName.lastIndexOf(LIST_SUFFIX));
+  public String getAstClassNameForASTLists(CDFieldSymbol field) {
+    String astListClassName = field.getType().getStringRepresentation();
+    int from = astListClassName.lastIndexOf("<");
+    int to = astListClassName.lastIndexOf(">");
+    if (from>0 && to>0) {
+      astListClassName = astListClassName.substring(from+1, to);      
+    }
+    
+    //TODO MB: Checken, ob eigentlich alles voll qualifiert sein sollte
+    if (!astListClassName.contains(".")) {
+      return getPackageName() + AST_DOT_PACKAGE_SUFFIX_DOT + astListClassName;
+    }
+    return AstGeneratorHelper.getAstPackage(Names.getQualifier(astListClassName)) + "."
+      + Names.getSimpleName(astListClassName);
   }
   
   public static boolean isOptional(ASTCDAttribute attribute) {
@@ -502,6 +511,14 @@ public class GeneratorHelper extends TypesHelper {
     return isOptionalAstNode(field.getType());
   }
   
+  public boolean isListAstNode(CDFieldSymbol field) {
+    // TODO for default types (e.g. String) this field.getType() would try to
+    // resolve the default type but fail
+    // hence we currently use the ast methods instead of
+    // "return isOptionalAstNode(field.getType())"
+    return isListAstNode(field.getType());
+  }
+
   public boolean isAstNode(CDFieldSymbol field) {
     // TODO for default types (e.g. String) this field.getType() would try to
     // resolve the default type but fail
@@ -840,6 +857,22 @@ public class GeneratorHelper extends TypesHelper {
     return isAstListClass(((CDFieldSymbol) attribute.getSymbol().get()).getType());
   }
   
+  public boolean isListAstNode(CDTypeSymbolReference type) {
+    if (!type.getName().equals(JAVA_LIST)) {
+      return false;
+    }
+    CDTypeSymbolReference cdType = (CDTypeSymbolReference)type;
+    List<ActualTypeArgument> typeArgs = cdType.getActualTypeArguments();
+    if (typeArgs.size() != 1) {
+      return false;
+    }
+    
+    if (!(typeArgs.get(0).getType() instanceof CDTypeSymbolReference)) {
+      return false;
+    }
+    return isAstNode((CDTypeSymbolReference)typeArgs.get(0).getType());
+  }
+
   public boolean isOptionalAstNode(CDTypeSymbolReference type) {
     if (!type.getName().equals(OPTIONAL)) {
       return false;
