@@ -185,7 +185,7 @@ public class CdDecorator {
       
       String returnType;
       String nameSuffix;
-      if (astHelper.isAstList(attribute)) {
+      if (astHelper.isListAstNode(attribute)) {
         returnType = "java.util.Collection<" + referencedSymbol + ">";
         nameSuffix = "Symbols";
       }
@@ -502,7 +502,6 @@ public class CdDecorator {
     methodBody = new TemplateHookPoint("ast.factorymethods.DoCreate", clazz, className);
     replaceMethodBodyTemplate(nodeFactoryClass, toParse, methodBody);
     
-    String ordered = "strictlyOrdered";
     toParse = "public static " + className + " create" + className + "() ;";
     
     // No create methods with parameters
@@ -617,9 +616,7 @@ public class CdDecorator {
     if (clazz.getCDAttributes().size() <= 2) {
       return;
     }
-    
-    String ordered = "strictlyOrdered";
-    
+        
     Optional<ASTCDMethod> astMethod = cdTransformation.addCdMethodUsingDefinition(
         nodeFactoryClass, toParse);
     Preconditions.checkArgument(astMethod.isPresent());

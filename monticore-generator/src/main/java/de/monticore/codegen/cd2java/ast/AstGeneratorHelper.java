@@ -53,10 +53,6 @@ public class AstGeneratorHelper extends GeneratorHelper {
       return "Optional.empty()";
     }
     String typeName = TypesPrinter.printType(attribute.getType());
-    if (isAstList(attribute)) {
-      return new StringBuilder(getCdName()).append("NodeFactory.create")
-          .append(Names.getSimpleName(typeName)).append("()").toString();
-    }
     if (isListType(typeName)) {
       return "new java.util.ArrayList<>()";
     }

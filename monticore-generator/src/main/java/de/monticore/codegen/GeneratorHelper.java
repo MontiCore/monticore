@@ -537,45 +537,6 @@ public class GeneratorHelper extends TypesHelper {
         || type.equals("ArrayList") || type.equals("java.util.ArrayList");
   }
   
-  // TODO GV, MB
-  public boolean isAstListClass(CDTypeSymbolReference cdType) {
-    String typeName = cdType.getName();
-    // at first check the name convention
-    if (!(typeName.endsWith(LIST_SUFFIX) || typeName.endsWith(LIST_SUFFIX
-        + GENERATED_CLASS_SUFFIX))) {
-      return false;
-    }
-    if (!typeName.contains(".")) {
-      if (!typeName.startsWith(AST_PREFIX)) {
-        return false;
-      }
-      // if not qualified check locally
-      if (isAstListClass(typeName, getCd())) {
-        return true;
-      }
-    }
-    else {
-      List<String> listName = TypesHelper.createListFromDotSeparatedString(typeName);
-      if (!listName.get(listName.size() - 1).startsWith(AST_PREFIX)) {
-        return false;
-      }
-    }
-    // try to resolve the given list type
-    if (!(cdType instanceof CDTypeSymbolReference)
-        || !((CDTypeSymbolReference) cdType).existsReferencedSymbol() || !cdType.isClass()) {
-      return false;
-    }
-    String nameToResolve = cdType.getFullName().substring(0,
-        cdType.getFullName().lastIndexOf(LIST_SUFFIX));
-    if (nameToResolve.endsWith(TransformationHelper.GENERATED_CLASS_SUFFIX)) {
-      nameToResolve = nameToResolve.substring(0,
-          nameToResolve.lastIndexOf(TransformationHelper.GENERATED_CLASS_SUFFIX));
-    }
-    // try to resolve the corresponding ast type
-    Optional<CDTypeSymbol> correspondingAstClass = resolveCdType(nameToResolve);
-    return correspondingAstClass.isPresent();
-  }
-
   public static boolean isMapType(String type) {
     // TODO : use symbol table
     int index = type.indexOf('<');
@@ -845,8 +806,7 @@ public class GeneratorHelper extends TypesHelper {
     return cdPrettyPrinter;
   }
   
-  // TODO GV, MB
-  public boolean isAstList(ASTCDAttribute attribute) {
+  public boolean isListAstNode(ASTCDAttribute attribute) {
     if (!attribute.getSymbol().isPresent()) {
       return false;
     }
@@ -854,7 +814,7 @@ public class GeneratorHelper extends TypesHelper {
       Log.error(String.format("0xA04127 Symbol of ASTCDAttribute %s is not CDFieldSymbol.",
           attribute.getName()));
     }
-    return isAstListClass(((CDFieldSymbol) attribute.getSymbol().get()).getType());
+    return isListAstNode(((CDFieldSymbol) attribute.getSymbol().get()).getType());
   }
   
   public boolean isListAstNode(CDTypeSymbolReference type) {
