@@ -436,19 +436,18 @@ public class GeneratorHelper extends TypesHelper {
   }
   
   public String getAstClassNameForASTLists(CDFieldSymbol field) {
-    String astListClassName = field.getType().getStringRepresentation();
-    int from = astListClassName.lastIndexOf("<");
-    int to = astListClassName.lastIndexOf(">");
-    if (from>0 && to>0) {
-      astListClassName = astListClassName.substring(from+1, to);      
+    CDTypeSymbolReference cdType = field.getType();
+    List<ActualTypeArgument> typeArgs = cdType.getActualTypeArguments();
+    if (typeArgs.size() != 1) {
+      return AST_NODE_CLASS_NAME;
     }
     
-    //TODO MB: Checken, ob eigentlich alles voll qualifiert sein sollte
-    if (!astListClassName.contains(".")) {
-      return getPackageName() + AST_DOT_PACKAGE_SUFFIX_DOT + astListClassName;
+    if (!(typeArgs.get(0).getType() instanceof CDTypeSymbolReference)) {
+      return AST_NODE_CLASS_NAME;
     }
-    return AstGeneratorHelper.getAstPackage(Names.getQualifier(astListClassName)) + "."
-      + Names.getSimpleName(astListClassName);
+    String arg = typeArgs.get(0).getType().getReferencedSymbol().getFullName();
+    return AstGeneratorHelper.getAstPackage(Names.getQualifier(arg)) + "."
+        + Names.getSimpleName(arg);
   }
   
   public static boolean isOptional(ASTCDAttribute attribute) {
