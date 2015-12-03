@@ -27,7 +27,11 @@ package de.monticore.ast;
  * between the state "empty" and "null"
  * 
  * @author groen
+ * 
+ *  
+ * @deprecated Remove this class after MC-Release 4.2.1. It is no longer necessary.
  */
+@Deprecated
 public interface ASTList extends ASTNode {
   
   boolean is_Existent();

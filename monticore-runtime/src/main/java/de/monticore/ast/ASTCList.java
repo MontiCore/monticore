@@ -30,6 +30,7 @@ import java.util.Collection;
  * 
  * @author groen
  */
+@Deprecated
 public abstract class ASTCList extends ASTCNode implements ASTList, ASTNode {
   
   protected boolean _existent;
