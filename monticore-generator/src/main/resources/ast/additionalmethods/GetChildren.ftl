@@ -35,7 +35,6 @@ ${tc.signature("ast","astType")}
     java.util.LinkedList<de.monticore.ast.ASTNode> result = new java.util.LinkedList<de.monticore.ast.ASTNode>();
    <#list astType.getCDAttributes() as attribute> 
      <#assign attrName = genHelper.getNativeAttributeName(attribute.getName())>
-     // TODO GV, MB
      <#if genHelper.isAstNode(attribute)>
     if ( get${attrName?cap_first}() != null ) {
       result.add ( get${attrName?cap_first}() );
@@ -44,6 +43,8 @@ ${tc.signature("ast","astType")}
     if ( get${attrName?cap_first}().isPresent()) {
       result.add ( get${attrName?cap_first}().get());
     }
+     <#elseif genHelper.isListAstNode(attribute)>
+       result.addAll ( get${attrName?cap_first}() );
      </#if>
    </#list>
     return result;

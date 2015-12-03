@@ -52,5 +52,9 @@ ${tc.signature("ast","astType")}
     if (get${attrName?cap_first}().isPresent() && get${attrName?cap_first}().get() == child) {
       set${attrName?cap_first}(null);
     }
+      <#elseif genHelper.isListAstNode(attribute)>
+    if (get${attrName?cap_first}().contains(child)) {
+      get${attrName?cap_first}().remove(child);
+    }
       </#if>
     </#list>
