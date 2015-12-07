@@ -27,13 +27,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.StringReader;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.Test;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.featuredsl._ast.ASTA;
-import mc.feature.featuredsl._ast.ASTAList;
 import mc.feature.featuredsl._ast.ASTAutomaton;
 import mc.feature.featuredsl._ast.ASTB;
 import mc.feature.featuredsl._ast.ASTC;
@@ -109,7 +109,7 @@ public class ParserTest extends GeneratorIntegrationsTest {
     assertEquals(false, p.hasErrors());
     assertTrue(ast.isPresent());
     assertEquals(true, ast.get().getA() instanceof ASTA);
-    assertEquals(true, ast.get().getB() instanceof ASTAList);
+    assertEquals(true, ast.get().getB() instanceof List);
     
   }
   
@@ -131,7 +131,7 @@ public class ParserTest extends GeneratorIntegrationsTest {
     
     assertTrue(ast.isPresent());
     assertEquals(false, p.hasErrors());
-    assertEquals(true, ast.get().getA() instanceof ASTAList);
+    assertEquals(true, ast.get().getA() instanceof List);
     
   }
   

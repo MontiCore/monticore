@@ -436,8 +436,15 @@ public class GeneratorHelper extends TypesHelper {
   }
   
   public String getAstClassNameForASTLists(CDFieldSymbol field) {
-    CDTypeSymbolReference cdType = field.getType();
-    List<ActualTypeArgument> typeArgs = cdType.getActualTypeArguments();
+    // TODO for default types (e.g. String) this field.getType() would try to
+    // resolve the default type but fail
+    // hence we currently use the ast methods instead of
+    // "return isOptionalAstNode(field.getType())"
+    return getAstClassNameForASTLists(field.getType());
+  }
+
+  public String getAstClassNameForASTLists(CDTypeSymbolReference field) {
+    List<ActualTypeArgument> typeArgs = field.getActualTypeArguments();
     if (typeArgs.size() != 1) {
       return AST_NODE_CLASS_NAME;
     }
@@ -450,6 +457,17 @@ public class GeneratorHelper extends TypesHelper {
         + Names.getSimpleName(arg);
   }
   
+  public String getAstClassNameForASTLists(ASTCDAttribute attr) {
+    if (!attr.getSymbol().isPresent()) {
+      return "";
+    }
+    if (!(attr.getSymbol().get() instanceof CDFieldSymbol)) {
+      Log.error(String.format("0xA04125 Symbol of ASTCDAttribute %s is not CDFieldSymbol.",
+          attr.getName()));
+    }
+    return getAstClassNameForASTLists(((CDFieldSymbol) attr.getSymbol().get()).getType());
+  }
+
   public static boolean isOptional(ASTCDAttribute attribute) {
     return isOptional(attribute.getType());
   }

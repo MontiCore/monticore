@@ -241,11 +241,11 @@ public class CdDecorator {
     Optional<ASTModifier> modifier = clazz.getModifier();
     String plainClassName = GeneratorHelper.getPlainName(clazz);
     
-    replaceMethodBodyTemplate(clazz, AstAdditionalMethods.deepEquals.getDeclaration(),
-        new TemplateHookPoint("ast.additionalmethods.DeepEquals"));
-        
     replaceMethodBodyTemplate(clazz, AstAdditionalMethods.deepEqualsWithOrder.getDeclaration(),
-        new StringHookPoint("return deepEquals(o);\n"));
+        new TemplateHookPoint("ast.additionalmethods.DeepEqualsWithOrder"));
+        
+    replaceMethodBodyTemplate(clazz, AstAdditionalMethods.deepEquals.getDeclaration(),
+        new StringHookPoint("return deepEquals(o, true);\n"));
         
     replaceMethodBodyTemplate(clazz,
         AstAdditionalMethods.deepEqualsWithComments.getDeclaration(),

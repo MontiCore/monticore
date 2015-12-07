@@ -34,3 +34,4 @@ import java.util.Optional;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
+import java.util.Iterator;

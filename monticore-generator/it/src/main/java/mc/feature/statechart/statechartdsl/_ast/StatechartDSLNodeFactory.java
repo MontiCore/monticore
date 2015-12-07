@@ -5,15 +5,17 @@ public class StatechartDSLNodeFactory extends StatechartDSLNodeFactoryTOP {
   protected StatechartDSLNodeFactory() {
   }
   
-  public static ASTStatechartList createASTStatechartList() {
-    if (factoryASTStatechartList == null) {
-      factoryASTStatechartList = new StatechartDSLNodeFactory();
+  public static ASTStatechart createASTStatechart() {
+    if (factoryASTStatechart == null) {
+      factoryASTStatechart = new StatechartDSLNodeFactory();
     }
-    return factoryASTStatechartList.doCreateASTStatechartList();
+    return factoryASTStatechart.doCreateASTStatechart();
   }
   
-  protected ASTStatechartList doCreateASTStatechartList() {
-    return new ASTStatechartList(false);
+  protected ASTStatechart doCreateASTStatechart() {
+    ASTStatechart s = new ASTStatechart();
+    s.setName("default");
+    return s;
   }
   
 }
