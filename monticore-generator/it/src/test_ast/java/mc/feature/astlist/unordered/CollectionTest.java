@@ -19,14 +19,19 @@
 
 package mc.feature.astlist.unordered;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
 import de.monticore.ast.Comment;
-import junit.framework.TestCase;
 import mc.feature.list.lists._ast.ASTParent;
 import mc.feature.list.lists._ast.ASTSon;
 import mc.feature.list.lists._ast.ListsNodeFactory;
 
-public class CollectionTest extends TestCase {
+public class CollectionTest {
       
+  @Test
   public void testDeepEquals1() {
     ASTParent p1 = ListsNodeFactory.createASTParent();
     ASTParent p2 = ListsNodeFactory.createASTParent();
@@ -51,6 +56,7 @@ public class CollectionTest extends TestCase {
     assertFalse(p2.deepEquals(p1, true));
   }
   
+  @Test
   public void testDeepEquals2() {
     ASTParent p1 = ListsNodeFactory.createASTParent();
     ASTParent p2 = ListsNodeFactory.createASTParent();
@@ -77,6 +83,7 @@ public class CollectionTest extends TestCase {
     assertFalse(p2.deepEquals(p1, true));
   }
   
+  @Test
   public void testDeepEqualsWithComments1() {
     ASTParent p1 = ListsNodeFactory.createASTParent();
     ASTParent p2 = ListsNodeFactory.createASTParent();
@@ -101,6 +108,7 @@ public class CollectionTest extends TestCase {
     assertFalse(p2.deepEqualsWithComments(p1));
   }
   
+  @Test
   public void testDeepEqualsWithComments2() {
     ASTParent p1 = ListsNodeFactory.createASTParent();
     ASTParent p2 = ListsNodeFactory.createASTParent();
@@ -123,6 +131,7 @@ public class CollectionTest extends TestCase {
     assertFalse(p2.deepEqualsWithComments(p1));
   }
   
+  @Test
   public void deepEqualsWithComments3() {
     ASTParent p1 = ListsNodeFactory.createASTParent();
     ASTParent p2 = ListsNodeFactory.createASTParent();
@@ -152,6 +161,7 @@ public class CollectionTest extends TestCase {
     assertFalse(p2.deepEqualsWithComments(p1));
   }
   
+  @Test
   public void testDeepClone() {
     ASTParent p1 = ListsNodeFactory.createASTParent();
     
@@ -169,12 +179,13 @@ public class CollectionTest extends TestCase {
     assertTrue(p1.deepEqualsWithComments(p2));
   }
   
+  @Test
   public void testClone() {
     ASTParent p1 = ListsNodeFactory.createASTParent();
     
     ASTSon s1 = ListsNodeFactory.createASTSon();
     Comment c1 = new Comment();
-    //c1.setText("mycomment");
+    c1.setText("mycomment");
     s1.get_PreComments().add(c1);
     ASTSon s2 = ListsNodeFactory.createASTSon();
     
@@ -183,6 +194,8 @@ public class CollectionTest extends TestCase {
     
     ASTParent p2 = p1.deepClone();
     
-    assertTrue(p1.equals(p2));
+    // TOD MB Bedeutung von clone, deepClone bzw. equals und deepEquals klären
+    assertTrue(p1.deepEquals(p2));
   }
+  
 }

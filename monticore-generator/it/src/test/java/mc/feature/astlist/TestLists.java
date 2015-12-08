@@ -20,12 +20,14 @@
 package mc.feature.astlist;
 
 import static org.junit.Assert.assertEquals;
-import mc.GeneratorIntegrationsTest;
-import mc.feature.featuredsl._ast.ASTB;
-import mc.feature.featuredsl._ast.ASTBList;
-import mc.feature.featuredsl._ast.FeatureDSLNodeFactory;
+
+import java.util.ArrayList;
 
 import org.junit.Test;
+
+import mc.GeneratorIntegrationsTest;
+import mc.feature.featuredsl._ast.ASTB;
+import mc.feature.featuredsl._ast.FeatureDSLNodeFactory;
 
 public class TestLists extends GeneratorIntegrationsTest {
   
@@ -33,7 +35,6 @@ public class TestLists extends GeneratorIntegrationsTest {
   @Test
   public void testLists() {
     
-    ASTBList aList = FeatureDSLNodeFactory.createASTBList();
     ASTB a = FeatureDSLNodeFactory.createASTB();
     ASTB b = FeatureDSLNodeFactory.createASTB();
     ASTB c = FeatureDSLNodeFactory.createASTB();
@@ -42,17 +43,18 @@ public class TestLists extends GeneratorIntegrationsTest {
     ASTB f = FeatureDSLNodeFactory.createASTB();
     ASTB g = FeatureDSLNodeFactory.createASTB();
     
-    aList.add(a);
-    aList.add(b);
-    aList.add(c);
-    aList.add(d);
-    aList.add(e);
-    aList.add(f);
-    aList.add(g);
+    ArrayList<ASTB> list = new ArrayList<>();
+    list.add(a);
+    list.add(b);
+    list.add(c);
+    list.add(d);
+    list.add(e);
+    list.add(f);
+    list.add(g);
     
-    assertEquals(6, aList.indexOf(g));
-    aList.remove(g);
-    assertEquals(-1, aList.indexOf(g));
+    assertEquals(6, list.indexOf(g));
+    list.remove(g);
+    assertEquals(-1, list.indexOf(g));
     
   }
 }

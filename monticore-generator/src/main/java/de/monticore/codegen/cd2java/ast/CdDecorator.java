@@ -248,12 +248,12 @@ public class CdDecorator {
         new StringHookPoint("return deepEquals(o, true);\n"));
         
     replaceMethodBodyTemplate(clazz,
-        AstAdditionalMethods.deepEqualsWithComments.getDeclaration(),
+        AstAdditionalMethods.deepEqualsWithCommentsWithOrder.getDeclaration(),
         new TemplateHookPoint("ast.additionalmethods.DeepEqualsWithComments"));
         
     replaceMethodBodyTemplate(clazz,
-        AstAdditionalMethods.deepEqualsWithCommentsWithOrder.getDeclaration(),
-        new StringHookPoint("return deepEqualsWithComments(o);\n"));
+        AstAdditionalMethods.deepEqualsWithComments.getDeclaration(),
+        new StringHookPoint("return deepEqualsWithComments(o, true);\n"));
         
     replaceMethodBodyTemplate(clazz, AstAdditionalMethods.equalAttributes.getDeclaration(),
         new TemplateHookPoint("ast.additionalmethods.EqualAttributes"));
