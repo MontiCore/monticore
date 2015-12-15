@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 import de.monticore.CommonModelingLanguage;
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.ast.ASTNode;
-import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParserFactory;
+import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.languages.grammar.visitors.MCGrammarSymbolTableCreator;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
@@ -55,7 +55,7 @@ public class MontiCoreGrammarLanguage extends CommonModelingLanguage {
   
   @Override
   public MCConcreteParser getParser() {
-    return Grammar_WithConceptsParserFactory.createMCGrammarMCParser();
+    return new Grammar_WithConceptsParser();
   }
   
   @Override

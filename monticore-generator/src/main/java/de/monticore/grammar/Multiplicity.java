@@ -24,6 +24,7 @@ import de.monticore.utils.ASTNodes;
 import de.monticore.ast.ASTNode;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -98,10 +99,15 @@ public enum Multiplicity {
   }
   
   public static Multiplicity multiplicityByAlternative(ASTNode rootNode, ASTNode astNode) {
-    boolean containedInAlternative = getIntermediates(rootNode, astNode).stream()
-        .filter(ASTAltList.class::isInstance)
-        .map(ASTAltList.class::cast)
-        .anyMatch(altList -> altList.size() > 1);
+    List<ASTNode> intermediates = getIntermediates(rootNode, astNode);
+    boolean containedInAlternative = false;
+    for (ASTNode intermediate: intermediates) {
+      if (intermediate instanceof ASTClassProd) {
+        containedInAlternative |= ((ASTClassProd) intermediate).getAlts().size()>1;
+      } else if (intermediate instanceof ASTBlock) {
+        containedInAlternative |= ((ASTBlock) intermediate).getAlts().size()>1;
+      }
+    }
     return containedInAlternative ? OPTIONAL : STANDARD;
   }
   

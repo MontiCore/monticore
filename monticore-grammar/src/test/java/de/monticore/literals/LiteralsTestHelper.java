@@ -23,12 +23,10 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
-import junit.framework.TestCase;
 import de.monticore.literals.literals._ast.ASTLiteral;
 import de.monticore.literals.literals._ast.ASTSignedLiteral;
-import de.monticore.literals.literals._parser.LiteralMCParser;
-import de.monticore.literals.literals._parser.LiteralsParserFactory;
-import de.monticore.literals.literals._parser.SignedLiteralMCParser;
+import de.monticore.literals.literals._parser.LiteralsParser;
+import junit.framework.TestCase;
 
 /**
  * This class provides two methods that allow testing type grammar. The test
@@ -70,8 +68,8 @@ public class LiteralsTestHelper {
    */
   public ASTLiteral parseLiteral(String input) throws org.antlr.v4.runtime.RecognitionException,
       IOException {
-    LiteralMCParser parser = LiteralsParserFactory.createLiteralMCParser();
-    Optional<ASTLiteral> res = parser.parse(new StringReader(input));
+    LiteralsParser parser = new LiteralsParser();
+    Optional<ASTLiteral> res = parser.parseLiteral(new StringReader(input));
     TestCase.assertTrue(res.isPresent());
     return res.get();
   }
@@ -86,8 +84,8 @@ public class LiteralsTestHelper {
    */
   public ASTSignedLiteral parseSignedLiteral(String input)
       throws org.antlr.v4.runtime.RecognitionException, IOException {
-    SignedLiteralMCParser parser = LiteralsParserFactory.createSignedLiteralMCParser();
-    Optional<ASTSignedLiteral> res = parser.parse(new StringReader(input));
+    LiteralsParser parser = new LiteralsParser();
+    Optional<ASTSignedLiteral> res = parser.parseSignedLiteral(new StringReader(input));
     TestCase.assertTrue(res.isPresent());
     return res.get();
   }

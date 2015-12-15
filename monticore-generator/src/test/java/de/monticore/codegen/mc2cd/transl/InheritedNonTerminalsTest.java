@@ -29,11 +29,8 @@ import java.util.Optional;
 
 import org.junit.Test;
 
-import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.umlcd4a.CD4AnalysisHelper;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClassList;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 
 public class InheritedNonTerminalsTest {
@@ -46,7 +43,7 @@ public class InheritedNonTerminalsTest {
     Optional<ASTCDCompilationUnit> cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/InheritedNonTerminalsGrammar.mc4"));
     assertTrue(cdCompilationUnit.isPresent());
-    ASTCDClassList classList = cdCompilationUnit.get().getCDDefinition().getCDClasses();
+    List<ASTCDClass> classList = cdCompilationUnit.get().getCDDefinition().getCDClasses();
     astA = classList.get(0);
     astB = classList.get(1);
   }

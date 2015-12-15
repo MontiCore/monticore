@@ -19,6 +19,8 @@
 
 package de.monticore.types;
 
+import java.util.List;
+
 /**
  * @deprecated STATE DEL PN will be implemented with new symbol table concept
  */
@@ -28,17 +30,13 @@ import de.monticore.types.types._ast.ASTComplexReferenceType;
 import de.monticore.types.types._ast.ASTConstantsTypes;
 import de.monticore.types.types._ast.ASTPrimitiveType;
 import de.monticore.types.types._ast.ASTReferenceType;
-import de.monticore.types.types._ast.ASTReferenceTypeList;
 import de.monticore.types.types._ast.ASTReturnType;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
-import de.monticore.types.types._ast.ASTSimpleReferenceTypeList;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.types.types._ast.ASTTypeArgument;
-import de.monticore.types.types._ast.ASTTypeArgumentList;
 import de.monticore.types.types._ast.ASTTypeArguments;
 import de.monticore.types.types._ast.ASTTypeParameters;
 import de.monticore.types.types._ast.ASTTypeVariableDeclaration;
-import de.monticore.types.types._ast.ASTTypeVariableDeclarationList;
 import de.monticore.types.types._ast.ASTVoidType;
 import de.monticore.types.types._ast.ASTWildcardType;
 import de.se_rwth.commons.Names;
@@ -231,11 +229,11 @@ public class TypesPrinter {
    * @param decl ASTTypeVariableDeclarationList to be converted
    * @return String representation of "decl"
    */
-  public static String printTypeVariableDeclarationList(ASTTypeVariableDeclarationList decl) {
+  public static String printTypeVariableDeclarationList(List<ASTTypeVariableDeclaration> decl) {
     return getInstance().doPrintTypeVariableDeclarationList(decl);
   }
   
-  protected String doPrintTypeVariableDeclarationList(ASTTypeVariableDeclarationList decl) {
+  protected String doPrintTypeVariableDeclarationList(List<ASTTypeVariableDeclaration> decl) {
     String ret = "";
     if (decl != null) {
       String sep = "";
@@ -357,11 +355,11 @@ public class TypesPrinter {
    * @param type ASTReferenceTypeList to be converted
    * @return String representation of "type"
    */
-  public static String printReferenceTypeList(ASTReferenceTypeList type) {
+  public static String printReferenceTypeList(List<ASTReferenceType> type) {
     return getInstance().doPrintReferenceTypeList(type);
   }
   
-  protected String doPrintReferenceTypeList(ASTReferenceTypeList type) {
+  protected String doPrintReferenceTypeList(List<ASTReferenceType> type) {
     String ret = "";
     if (type != null) {
       String sep = "";
@@ -419,11 +417,11 @@ public class TypesPrinter {
    * @param type ComplexReferenceType to be converted
    * @return String representation of "type"
    */
-  public static String printSimpleReferenceTypeList(ASTSimpleReferenceTypeList type) {
+  public static String printSimpleReferenceTypeList(List<ASTSimpleReferenceType> type) {
     return getInstance().doPrintSimpleReferenceTypeList(type);
   }
 
-  protected String doPrintSimpleReferenceTypeList(ASTSimpleReferenceTypeList argList) {
+  protected String doPrintSimpleReferenceTypeList(List<ASTSimpleReferenceType> argList) {
     String ret = "";
     if (argList != null) {
       String sep = "";
@@ -458,11 +456,11 @@ public class TypesPrinter {
    * @param argList ASTTypeArgumentList to be converted
    * @return String representation of "argList"
    */
-  public static String printTypeArgumentList(ASTTypeArgumentList argList) {
+  public static String printTypeArgumentList(List<ASTTypeArgument> argList) {
     return getInstance().doPrintTypeArgumentList(argList);
   }
   
-  protected String doPrintTypeArgumentList(ASTTypeArgumentList argList) {
+  protected String doPrintTypeArgumentList(List<ASTTypeArgument> argList) {
     String ret = "";
     if (argList != null) {
       String sep = "";
@@ -526,7 +524,7 @@ public class TypesPrinter {
     return ret;
   }
 
-  protected String doPrintSimpleReferenceTypeListWithoutTypeArguments(ASTSimpleReferenceTypeList argList) {
+  protected String doPrintSimpleReferenceTypeListWithoutTypeArguments(List<ASTSimpleReferenceType> argList) {
     String ret = "";
     if (argList != null) {
       String sep = "";

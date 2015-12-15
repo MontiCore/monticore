@@ -34,8 +34,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.antlr.v4.runtime.RecognitionException;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
@@ -48,12 +54,8 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDDefinition;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
-import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParserFactory;
+import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParser;
 import de.se_rwth.commons.Names;
-import org.antlr.v4.runtime.RecognitionException;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /**
  * Test for the {@link CdDecorator} class.
@@ -93,8 +95,7 @@ public class CdDecoratorTest {
   public void init() {
     String classDiagram = "src/test/resources/de/monticore/Simple.cd";
     try {
-      Optional<ASTCDCompilationUnit> topNode = CD4AnalysisParserFactory
-          .createCDCompilationUnitMCParser().parse(new FileReader(classDiagram));
+      Optional<ASTCDCompilationUnit> topNode = new CD4AnalysisParser().parse(new FileReader(classDiagram));
       assertTrue(topNode.isPresent());
       cdComilationUnit = topNode.get();
       assertNotNull(cdComilationUnit.getCDDefinition());

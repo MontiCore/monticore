@@ -19,11 +19,11 @@
 
 package de.monticore.grammar.cocos;
 
+import java.util.List;
 import java.util.Optional;
 
 import de.monticore.grammar.grammar._ast.ASTAbstractProd;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
-import de.monticore.grammar.grammar._ast.ASTRuleReferenceList;
 import de.monticore.grammar.grammar._cocos.GrammarASTAbstractProdCoCo;
 import de.monticore.languages.grammar.MCRuleSymbol;
 import de.se_rwth.commons.logging.Log;
@@ -43,7 +43,7 @@ public class AbstractNTNotExtendInterfaceOrExternalNTs implements GrammarASTAbst
   @Override
   public void check(ASTAbstractProd a) {
     if (!a.getSuperRule().isEmpty()) {
-      ASTRuleReferenceList superRules = a.getSuperRule();
+      List<ASTRuleReference> superRules = a.getSuperRule();
       for(ASTRuleReference sr : superRules){
         Optional<MCRuleSymbol> ruleSymbol = a.getEnclosingScope().get().resolve(sr.getName(), MCRuleSymbol.KIND);
         if(ruleSymbol.isPresent()){

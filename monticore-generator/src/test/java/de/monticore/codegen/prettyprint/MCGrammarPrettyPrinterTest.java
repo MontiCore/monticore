@@ -31,8 +31,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParserFactory;
-import de.monticore.grammar.grammar_withconcepts._parser.MCGrammarMCParser;
+import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
@@ -61,7 +60,7 @@ public class MCGrammarPrettyPrinterTest {
     String model = "src/test/resources/de/monticore/statechart/Statechart.mc4";
     
     // Parsing input
-    MCGrammarMCParser parser = Grammar_WithConceptsParserFactory.createMCGrammarMCParser();
+    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTMCGrammar> result = parser.parse(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
@@ -86,7 +85,7 @@ public class MCGrammarPrettyPrinterTest {
     String model = "src/test/resources/mc/grammars/types/TestTypes.mc4";
     
     // Parsing input
-    MCGrammarMCParser parser = Grammar_WithConceptsParserFactory.createMCGrammarMCParser();
+    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTMCGrammar> result = parser.parse(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());

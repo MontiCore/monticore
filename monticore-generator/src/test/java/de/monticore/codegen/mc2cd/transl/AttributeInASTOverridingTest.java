@@ -19,17 +19,19 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttributeList;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import static org.junit.Assert.assertEquals;
+
+import java.nio.file.Paths;
+import java.util.List;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.nio.file.Paths;
-
-import static org.junit.Assert.assertEquals;
+import de.monticore.codegen.mc2cd.TestHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 
 /**
  * Tests that attributes that are redefined in ASTRules correctly override their counterparts in the
@@ -51,7 +53,7 @@ public class AttributeInASTOverridingTest {
 
   @Test
   public void testAttributeOverridden() {
-    ASTCDAttributeList attributes = astA.getCDAttributes();
+    List<ASTCDAttribute> attributes = astA.getCDAttributes();
     assertEquals(1, attributes.size());
     assertEquals("mc2cdtransformation.AttributeInASTOverridingGrammar.ASTY",
         TransformationHelper.typeToString(attributes.get(0).getType()));
@@ -59,7 +61,7 @@ public class AttributeInASTOverridingTest {
   
   @Test
   public void testAttributeNotOverridden() {
-    ASTCDAttributeList attributes = astB.getCDAttributes();
+    List<ASTCDAttribute> attributes = astB.getCDAttributes();
     assertEquals(2, attributes.size());
   }
 }

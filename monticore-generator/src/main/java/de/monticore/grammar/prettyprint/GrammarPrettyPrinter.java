@@ -19,19 +19,18 @@
 
 package de.monticore.grammar.prettyprint;
 
+import java.util.Iterator;
+
 import de.monticore.grammar.grammar._ast.ASTASTRule;
 import de.monticore.grammar.grammar._ast.ASTAbstractProd;
 import de.monticore.grammar.grammar._ast.ASTAlt;
-import de.monticore.grammar.grammar._ast.ASTAltList;
 import de.monticore.grammar.grammar._ast.ASTAnything;
 import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
 import de.monticore.grammar.grammar._ast.ASTBlock;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTConcept;
-import de.monticore.grammar.grammar._ast.ASTConceptList;
 import de.monticore.grammar.grammar._ast.ASTConstant;
 import de.monticore.grammar.grammar._ast.ASTConstantGroup;
-import de.monticore.grammar.grammar._ast.ASTConstantList;
 import de.monticore.grammar.grammar._ast.ASTConstantsGrammar;
 import de.monticore.grammar.grammar._ast.ASTEnumProd;
 import de.monticore.grammar.grammar._ast.ASTEof;
@@ -44,7 +43,6 @@ import de.monticore.grammar.grammar._ast.ASTGrammarReference;
 import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
 import de.monticore.grammar.grammar._ast.ASTLexActionOrPredicate;
 import de.monticore.grammar.grammar._ast.ASTLexAlt;
-import de.monticore.grammar.grammar._ast.ASTLexAltList;
 import de.monticore.grammar.grammar._ast.ASTLexBlock;
 import de.monticore.grammar.grammar._ast.ASTLexChar;
 import de.monticore.grammar.grammar._ast.ASTLexCharRange;
@@ -59,11 +57,8 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTMethod;
 import de.monticore.grammar.grammar._ast.ASTMethodParameter;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
-import de.monticore.grammar.grammar._ast.ASTNonTerminalList;
 import de.monticore.grammar.grammar._ast.ASTNonTerminalSeparator;
 import de.monticore.grammar.grammar._ast.ASTOptionValue;
-import de.monticore.grammar.grammar._ast.ASTRuleComponent;
-import de.monticore.grammar.grammar._ast.ASTRuleComponentList;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
 import de.monticore.grammar.grammar._ast.ASTSemanticpredicateOrAction;
 import de.monticore.grammar.grammar._ast.ASTTerminal;
@@ -147,7 +142,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     println("options {");
     getPrinter().indent();
     
-    a.getFollowOptions().accept(getRealThis());
+    printList(a.getFollowOptions().iterator(), "");
     
     getPrinter().unindent();
     print("}");
@@ -157,23 +152,6 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     println();
     println();
     
-  }
-  
-  @Override
-  public void handle(ASTNonTerminalList a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    if (!a.isEmpty()) {
-      print("[");
-      
-      for (int i = 0; i < a.size(); i++) {
-        a.get(i).accept(getRealThis());
-        if (i < a.size() - 1) {
-          print(", ");
-        }
-      }
-      print("]");
-    }
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
   
   @Override
@@ -224,16 +202,6 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
   }
   
   @Override
-  public void handle(ASTConceptList a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    for (ASTConcept s : a) {
-      s.accept(getRealThis());
-    }
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-    
-  }
-  
-  @Override
   public void handle(ASTBlock a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     print("(");
@@ -262,7 +230,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
       print(": ");
     }
     
-    a.getAlts().accept(getRealThis());
+    printList(a.getAlts().iterator(), "| ");
     print(")");
     outputIteration(a.getIteration());
     
@@ -306,23 +274,6 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
   }
   
   /**
-   * #complete children calls except for getstart getend ?!
-   * 
-   * @param a
-   */
-  @Override
-  public void handle(ASTConstantList a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    for (int i = 0; i < a.size(); i++) {
-      a.get(i).accept(getRealThis());
-      if (i < a.size() - 1) {
-        print(" | ");
-      }
-    }
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-  
-  /**
    * #complete children calls is usagename ever used??
    * 
    * @param a
@@ -339,27 +290,9 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
       print("=");
     }
     print("[");
-    a.getConstants().accept(getRealThis());
+    printList(a.getConstants().iterator(), " | ");
     print("]");
     outputIteration(a.getIteration());
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-  
-  /**
-   * #complete children calls except for getstart getend ?!
-   * 
-   * @param a
-   */
-  @Override
-  public void handle(ASTRuleComponentList a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    
-    String sep = "";
-    for (ASTRuleComponent s : a) {
-      print(sep);
-      s.accept(getRealThis());
-      sep = " ";
-    }
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
   
@@ -371,19 +304,8 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
   @Override
   public void handle(ASTAlt a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    a.getComponents().accept(getRealThis());
+    printList(a.getComponents().iterator(), " ");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-  
-  @Override
-  public void handle(ASTAltList a) {
-    for (int i = 0; i < a.size(); i++) {
-      a.get(i).accept(getRealThis());
-      if (i < a.size() - 1) {
-        print(" | ");
-      }
-    }
-    
   }
   
   @Override
@@ -477,8 +399,8 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
       println(" = ");
       getPrinter().indent();
       // TODO MB: Reihenfolge beibehalten?
-      a.getMethods().accept(getRealThis());
-      a.getAttributeInASTs().accept(getRealThis());
+      printList(a.getMethods().iterator(), "");
+      printList(a.getAttributeInASTs().iterator(), "");
       
     }
     
@@ -616,32 +538,22 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
       
       if (a.getSuperRule().size() != 0) {
         getPrinter().print(" extends ");
-        a.getSuperRule().accept(getRealThis());
+        printList(a.getSuperRule().iterator(), " ");
       }
       
       if (a.getSuperInterfaceRule().size() != 0) {
         getPrinter().print(" implements ");
-        String comma = "";
-        for (ASTRuleReference x : a.getSuperInterfaceRule()) {
-          getPrinter().print(comma);
-          x.accept(getRealThis());
-          comma = ", ";
-        }
+        printList(a.getSuperInterfaceRule().iterator(), ", ");
       }
       
       if (a.getASTSuperClass().size() != 0) {
         getPrinter().print(" astextends ");
-        a.getASTSuperClass().accept(getRealThis());
+        printList(a.getASTSuperClass().iterator(), "");
       }
       
       if (a.getASTSuperInterface().size() != 0) {
         getPrinter().print(" astimplements ");
-        String comma = "";
-        for (ASTGenericType x : a.getASTSuperInterface()) {
-          getPrinter().print(comma);
-          x.accept(getRealThis());
-          comma = ", ";
-        }
+        printList(a.getASTSuperInterface().iterator(), ", ");
       }
       
       if (a.getAction().isPresent()) {
@@ -657,7 +569,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
         println(" =");
         
         getPrinter().indent();
-        a.getAlts().accept(getRealThis());
+        printList(a.getAlts().iterator(), " | ");
       }
       println(";");
       
@@ -698,7 +610,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     
     getPrinter().print("=");
     
-    a.getAlts().accept(getRealThis());
+    printList(a.getAlts().iterator(), "");
     
     if (a.getVariable().isPresent()) {
       
@@ -764,7 +676,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
       print(": ");
     }
     
-    a.getLexAlts().accept(getRealThis());
+    printList(a.getLexAlts().iterator(), " | ");
     print(")");
     outputIteration(a.getIteration());
     
@@ -812,14 +724,14 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     if (a.getGrammarOptions().isPresent()) {
       a.getGrammarOptions().get().accept(getRealThis());
     }
-    a.getLexProds().accept(getRealThis());
-    a.getClassProds().accept(getRealThis());
-    a.getExternalProds().accept(getRealThis());
-    a.getEnumProds().accept(getRealThis());
-    a.getInterfaceProds().accept(getRealThis());
-    a.getAbstractProds().accept(getRealThis());
-    a.getASTRules().accept(getRealThis());
-    a.getConcepts().accept(getRealThis());
+    printList(a.getLexProds().iterator(), "");
+    printList(a.getClassProds().iterator(), "");
+    printList(a.getExternalProds().iterator(), "");
+    printList(a.getEnumProds().iterator(), "");
+    printList(a.getInterfaceProds().iterator(), "");
+    printList(a.getAbstractProds().iterator(), "");
+    printList(a.getASTRules().iterator(), "");
+    printList(a.getConcepts().iterator(), "");
     
     getPrinter().unindent();
     print("}");
@@ -940,17 +852,6 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
   }
   
   @Override
-  public void handle(ASTLexAltList a) {
-    for (int i = 0; i < a.size(); i++) {
-      a.get(i).accept(getRealThis());
-      if (i < a.size() - 1) {
-        print(" | ");
-      }
-    }
-    
-  }
-  
-  @Override
   public void handle(ASTLexChar a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     
@@ -1052,32 +953,22 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     }
     if (!a.getSuperRule().isEmpty()) {
       getPrinter().print("extends ");
-      a.getSuperRule().accept(getRealThis());
+      printList(a.getSuperRule().iterator(), " ");
       getPrinter().print(" ");
     }
     if (!a.getSuperInterfaceRule().isEmpty()) {
       getPrinter().print("implements ");
-      String comma = "";
-      for (ASTRuleReference rr : a.getSuperInterfaceRule()) {
-        print(comma);
-        rr.accept(getRealThis());
-        comma = ", ";
-      }
+      printList(a.getSuperInterfaceRule().iterator(), ", ");
       getPrinter().print(" ");
     }
     if (!a.getASTSuperClass().isEmpty()) {
       getPrinter().print("astextends ");
-      a.getASTSuperClass().accept(getRealThis());
+      printList(a.getASTSuperClass().iterator(), " ");
       getPrinter().print(" ");
     }
     if (!a.getASTSuperInterface().isEmpty()) {
       getPrinter().print("astimplements ");
-      String comma = "";
-      for (ASTGenericType ref : a.getASTSuperInterface()) {
-        print(comma);
-        ref.accept(getRealThis());
-        comma = ", ";
-      }
+      printList(a.getASTSuperInterface().iterator(), ", ");
       getPrinter().print(" ");
     }
     
@@ -1158,5 +1049,22 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     return realThis;
   }
   
+  /**
+   * Prints a list
+   * 
+   * @param iter iterator for the list
+   * @param seperator string for seperating list
+   */
+  protected void printList(Iterator<? extends ASTGrammarNode> iter, String seperator) {
+    // print by iterate through all items
+    String sep = "";
+    while (iter.hasNext()) {
+      getPrinter().print(sep);
+      iter.next().accept(getRealThis());
+      sep = seperator;
+    }
+  }
+  
+
   
 }

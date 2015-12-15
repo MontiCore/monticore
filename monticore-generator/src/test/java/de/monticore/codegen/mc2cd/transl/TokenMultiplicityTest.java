@@ -19,17 +19,19 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttributeList;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import org.junit.Test;
-
-import java.nio.file.Paths;
-import java.util.Optional;
-
 import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
 import static org.junit.Assert.assertEquals;
+
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.Test;
+
+import de.monticore.codegen.mc2cd.TestHelper;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 
 /**
  * @author Sebastian Oberhoff
@@ -46,7 +48,7 @@ public class TokenMultiplicityTest {
 
   @Test
   public void testTokenStar() {
-    ASTCDAttributeList attributes = testListClass.getCDAttributes();
+    List<ASTCDAttribute> attributes = testListClass.getCDAttributes();
     String name = typeToString(attributes.get(0).getType());
     assertEquals("java.util.List", name);
   }

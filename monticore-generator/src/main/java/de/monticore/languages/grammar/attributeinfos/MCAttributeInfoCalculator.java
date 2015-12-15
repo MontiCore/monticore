@@ -19,6 +19,8 @@
 
 package de.monticore.languages.grammar.attributeinfos;
 
+import java.util.List;
+
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.grammar._ast.ASTAlt;
 import de.monticore.grammar.grammar._ast.ASTAnything;
@@ -28,7 +30,6 @@ import de.monticore.grammar.grammar._ast.ASTConstant;
 import de.monticore.grammar.grammar._ast.ASTConstantGroup;
 import de.monticore.grammar.grammar._ast.ASTConstantsGrammar;
 import de.monticore.grammar.grammar._ast.ASTEof;
-import de.monticore.grammar.grammar._ast.ASTITerminalList;
 import de.monticore.grammar.grammar._ast.ASTMCAnything;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTNonTerminalSeparator;
@@ -63,7 +64,7 @@ public class MCAttributeInfoCalculator {
     if (ruleComponent instanceof ASTEof) {
       return calculateAttributes((ASTEof) ruleComponent);
     }
-    if (ruleComponent instanceof ASTITerminalList) {
+    if (ruleComponent instanceof List) {
       return null; // nothing to do
     }
     if (ruleComponent instanceof ASTMCAnything) {

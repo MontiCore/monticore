@@ -24,13 +24,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Paths;
+import java.util.List;
 
 import org.junit.Test;
 
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.types.types._ast.ASTSimpleReferenceType;
-import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttributeList;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 
@@ -62,7 +61,7 @@ public class AttributeInASTMultiplicityTest {
    */
   @Test
   public void testStarMultiplicity() {
-    ASTCDAttributeList attributes = astA.getCDAttributes();
+    List<ASTCDAttribute> attributes = astA.getCDAttributes();
     assertTrue(TestHelper.isListOfType(attributes.get(0).getType(),
         "mc2cdtransformation.AttributeInASTMultiplicityGrammar.ASTX"));
     /*
@@ -83,14 +82,14 @@ public class AttributeInASTMultiplicityTest {
    */
   @Test
   public void testOptionalCardinality() {
-    ASTCDAttributeList attributes = astB.getCDAttributes();
+    List<ASTCDAttribute> attributes = astB.getCDAttributes();
     String name = typeToString(attributes.get(0).getType());
     assertEquals("Optional", name);
   }
   
   @Test
   public void testOneCardinality() {
-    ASTCDAttributeList attributes = astC.getCDAttributes();
+    List<ASTCDAttribute> attributes = astC.getCDAttributes();
     String name = typeToString(attributes.get(0).getType());
     assertEquals("mc2cdtransformation.AttributeInASTMultiplicityGrammar.ASTZ", name);
   }

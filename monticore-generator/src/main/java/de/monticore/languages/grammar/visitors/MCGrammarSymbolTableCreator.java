@@ -19,23 +19,9 @@
 
 package de.monticore.languages.grammar.visitors;
 
-import com.google.common.collect.Sets;
-import de.monticore.ast.ASTNode;
-import de.monticore.ast.Comment;
-import de.monticore.grammar.HelperGrammar;
-import de.monticore.grammar.cocos.GrammarCoCos;
-import de.monticore.grammar.cocos.GrammarInheritanceCycle;
-import de.monticore.grammar.grammar._ast.*;
-import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
-import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
-import de.monticore.languages.grammar.*;
-import de.monticore.languages.grammar.symbolreferences.MCExternalTypeSymbolReference;
-import de.monticore.languages.grammar.symbolreferences.MCGrammarSymbolReference;
-import de.monticore.languages.grammar.symbolreferences.MCRuleSymbolReference;
-import de.monticore.languages.grammar.symbolreferences.MCTypeSymbolReference;
-import de.monticore.symboltable.*;
-import de.se_rwth.commons.SourcePosition;
-import de.se_rwth.commons.logging.Log;
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.base.Strings.nullToEmpty;
+import static de.se_rwth.commons.Names.getQualifiedName;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,9 +30,63 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.base.Strings.nullToEmpty;
-import static de.se_rwth.commons.Names.getQualifiedName;
+import com.google.common.collect.Sets;
+
+import de.monticore.ast.ASTNode;
+import de.monticore.ast.Comment;
+import de.monticore.grammar.HelperGrammar;
+import de.monticore.grammar.cocos.GrammarCoCos;
+import de.monticore.grammar.cocos.GrammarInheritanceCycle;
+import de.monticore.grammar.grammar._ast.ASTASTRule;
+import de.monticore.grammar.grammar._ast.ASTAbstractProd;
+import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
+import de.monticore.grammar.grammar._ast.ASTClassProd;
+import de.monticore.grammar.grammar._ast.ASTConstant;
+import de.monticore.grammar.grammar._ast.ASTConstantGroup;
+import de.monticore.grammar.grammar._ast.ASTConstantsGrammar;
+import de.monticore.grammar.grammar._ast.ASTEnumProd;
+import de.monticore.grammar.grammar._ast.ASTExternalProd;
+import de.monticore.grammar.grammar._ast.ASTFollowOption;
+import de.monticore.grammar.grammar._ast.ASTGenericType;
+import de.monticore.grammar.grammar._ast.ASTGrammarReference;
+import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
+import de.monticore.grammar.grammar._ast.ASTLexActionOrPredicate;
+import de.monticore.grammar.grammar._ast.ASTLexNonTerminal;
+import de.monticore.grammar.grammar._ast.ASTLexProd;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar._ast.ASTMCImportStatement;
+import de.monticore.grammar.grammar._ast.ASTNonTerminal;
+import de.monticore.grammar.grammar._ast.ASTProd;
+import de.monticore.grammar.grammar._ast.ASTRuleComponent;
+import de.monticore.grammar.grammar._ast.ASTRuleReference;
+import de.monticore.grammar.grammar._ast.ASTSymbolDefinition;
+import de.monticore.grammar.grammar._ast.ASTTerminal;
+import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
+import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
+import de.monticore.languages.grammar.MCClassRuleSymbol;
+import de.monticore.languages.grammar.MCEnumRuleSymbol;
+import de.monticore.languages.grammar.MCExternalTypeSymbol;
+import de.monticore.languages.grammar.MCGrammarSymbol;
+import de.monticore.languages.grammar.MCGrammarSymbolsFactory;
+import de.monticore.languages.grammar.MCInterfaceOrAbstractRuleSymbol;
+import de.monticore.languages.grammar.MCLexRuleSymbol;
+import de.monticore.languages.grammar.MCRuleComponentSymbol;
+import de.monticore.languages.grammar.MCRuleSymbol;
+import de.monticore.languages.grammar.MCTypeSymbol;
+import de.monticore.languages.grammar.PredicatePair;
+import de.monticore.languages.grammar.symbolreferences.MCExternalTypeSymbolReference;
+import de.monticore.languages.grammar.symbolreferences.MCGrammarSymbolReference;
+import de.monticore.languages.grammar.symbolreferences.MCRuleSymbolReference;
+import de.monticore.languages.grammar.symbolreferences.MCTypeSymbolReference;
+import de.monticore.symboltable.ArtifactScope;
+import de.monticore.symboltable.CommonSymbolTableCreator;
+import de.monticore.symboltable.ImportStatement;
+import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.Symbol;
+import de.se_rwth.commons.SourcePosition;
+import de.se_rwth.commons.logging.Log;
 
 public class MCGrammarSymbolTableCreator extends CommonSymbolTableCreator implements Grammar_WithConceptsVisitor {
   
@@ -140,7 +180,7 @@ public class MCGrammarSymbolTableCreator extends CommonSymbolTableCreator implem
     
     addASTRuleTypesToTypeSymbols(astGrammar.getASTRules());
     addSubRules(astGrammar.getClassProds());
-    addSubRules(astGrammar.getInterfaceProds());
+    addSubRulesToInterface(astGrammar.getInterfaceProds());
     
     computeStartParserRule(astGrammar);
     
@@ -228,7 +268,7 @@ public class MCGrammarSymbolTableCreator extends CommonSymbolTableCreator implem
    *
    * @param astRuleList the ast node
    */
-  private void addASTRuleTypesToTypeSymbols(ASTASTRuleList astRuleList) {
+  private void addASTRuleTypesToTypeSymbols(List<ASTASTRule> astRuleList) {
     for (ASTASTRule astRule : astRuleList) {
       
       final MCTypeSymbol typeSymbol = grammarSymbol.getTypeWithInherited(astRule.getType());
@@ -282,7 +322,7 @@ public class MCGrammarSymbolTableCreator extends CommonSymbolTableCreator implem
    *
    * @param classProds Rule
    */
-  private void addSubRules(ASTClassProdList classProds) {
+  private void addSubRules(List<ASTClassProd> classProds) {
     for (ASTClassProd classProd : classProds) {
       for (ASTRuleReference superRule : classProd.getSuperRule()) {
         MCRuleSymbol prodByName = grammarSymbol.getRuleWithInherited(superRule.getTypeName());
@@ -317,7 +357,7 @@ public class MCGrammarSymbolTableCreator extends CommonSymbolTableCreator implem
    *
    * @param interfaceProdList Rule
    */
-  private void addSubRules(ASTInterfaceProdList interfaceProdList) {
+  private void addSubRulesToInterface(List<ASTInterfaceProd> interfaceProdList) {
     for (ASTInterfaceProd r : interfaceProdList) {
       for (ASTRuleReference ruleRef : r.getSuperInterfaceRule()) {
         String typeName = ruleRef.getTypeName();
