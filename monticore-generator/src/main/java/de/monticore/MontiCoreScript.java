@@ -38,6 +38,7 @@ import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstGenerator;
 import de.monticore.codegen.cd2java.ast.CdDecorator;
 import de.monticore.codegen.cd2java.cocos.CoCoGenerator;
+import de.monticore.codegen.cd2java.od.ODGenerator;
 import de.monticore.codegen.cd2java.visitor.VisitorGenerator;
 import de.monticore.codegen.mc2cd.MC2CDTransformation;
 import de.monticore.codegen.parser.ParserGenerator;
@@ -422,6 +423,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     AstGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory, templatePath);
     VisitorGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
     CoCoGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
+    ODGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
   }
   
   // #######################
