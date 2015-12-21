@@ -29,7 +29,10 @@ import java.util.Collection;
  * distinction between the state "empty" and "null"
  * 
  * @author groen
+ * 
+ * @deprecated Remove this class after MC-Release 4.2.1. It is no longer necessary.
  */
+@Deprecated
 public abstract class ASTCList extends ASTCNode implements ASTList, ASTNode {
   
   protected boolean _existent;

@@ -19,6 +19,8 @@
 
 package mc.feature.statechart.statechartdsl._ast;
 
+import java.util.List;
+
 public class ASTStatechart extends mc.feature.statechart.statechartdsl._ast.ASTStatechartTOP {
   
   protected ASTStatechart()
@@ -27,10 +29,10 @@ public class ASTStatechart extends mc.feature.statechart.statechartdsl._ast.ASTS
   }
   
   protected ASTStatechart(
-      mc.feature.statechart.statechartdsl._ast.ASTCodeList userCode,
+      List<ASTCode> userCode,
       String name,
-      mc.feature.statechart.statechartdsl._ast.ASTStateList states,
-      mc.feature.statechart.statechartdsl._ast.ASTTransitionList transitions)
+      List<ASTState> states,
+      List<ASTTransition> transitions)
   {
     super(userCode, name, states, transitions);
   }

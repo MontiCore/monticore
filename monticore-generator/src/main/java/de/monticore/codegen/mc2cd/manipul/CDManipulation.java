@@ -19,9 +19,9 @@
 
 package de.monticore.codegen.mc2cd.manipul;
 
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-
 import java.util.function.UnaryOperator;
+
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 
 /**
  * The term manipulation refers to transformations that write to the same AST that they're reading
@@ -35,8 +35,7 @@ public final class CDManipulation implements UnaryOperator<ASTCDCompilationUnit>
   
   @Override
   public ASTCDCompilationUnit apply(ASTCDCompilationUnit cdCompilationUnit) {
-    return new ListClassAddingManipulation()
-        .andThen(new BaseInterfaceAddingManipulation())
+    return new BaseInterfaceAddingManipulation()
         .andThen(new AddAttributesOfExtendedInterfacesManipulation())
         .andThen(new RemoveRedundantAttributesManipulation())
         .andThen(new RemoveRedundantSupertypesManipulation())

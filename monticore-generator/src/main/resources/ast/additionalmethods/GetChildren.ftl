@@ -43,6 +43,8 @@ ${tc.signature("ast","astType")}
     if ( get${attrName?cap_first}().isPresent()) {
       result.add ( get${attrName?cap_first}().get());
     }
+     <#elseif genHelper.isListAstNode(attribute)>
+       result.addAll ( get${attrName?cap_first}() );
      </#if>
    </#list>
     return result;

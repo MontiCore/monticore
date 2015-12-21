@@ -104,11 +104,7 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
         return firstArgument.get();
       }
     }
-    String typeName = TransformationHelper.typeToString(cdAttribute.getType());
-    if (category == AttributeCategory.LISTCLASS) {
-      return typeName.substring(0, typeName.length() - 4);
-    }
-    return typeName;
+    return TransformationHelper.typeToString(cdAttribute.getType());
   }
 
   private static Optional<String> getFirstTypeArgument(ASTCDAttribute cdAttribute) {

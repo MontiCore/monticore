@@ -19,14 +19,11 @@
 
 package de.monticore.codegen.cd2java.ast;
 
-import java.util.List;
 import java.util.Optional;
 
 import de.monticore.codegen.GeneratorHelper;
-import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.TypesPrinter;
-import de.monticore.umlcd4a.CD4AnalysisHelper;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
@@ -56,10 +53,6 @@ public class AstGeneratorHelper extends GeneratorHelper {
       return "Optional.empty()";
     }
     String typeName = TypesPrinter.printType(attribute.getType());
-    if (isAstList(attribute)) {
-      return new StringBuilder(getCdName()).append("NodeFactory.create")
-          .append(Names.getSimpleName(typeName)).append("()").toString();
-    }
     if (isListType(typeName)) {
       return "new java.util.ArrayList<>()";
     }
