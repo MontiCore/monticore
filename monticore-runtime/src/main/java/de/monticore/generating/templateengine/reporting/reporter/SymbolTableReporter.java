@@ -25,7 +25,6 @@ import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.reporting.commons.AReporter;
 import de.monticore.generating.templateengine.reporting.commons.Layouter;
 import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
-import de.monticore.symboltable.CommonScope;
 
 /**
  * @author BM
@@ -44,14 +43,6 @@ public class SymbolTableReporter extends AReporter {
         SIMPLE_FILE_NAME, ReportingConstants.REPORT_FILE_EXTENSION);
   }
   
-  /**
-   * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportSymbolTable(de.monticore.symboltable.CommonScope)
-   */
-  @Override
-  public void reportSymbolTable(CommonScope scope) {
-    writeLine(scope.toString());
-  }
-
   @Override
   protected void writeHeader() {
     writeLine("========================================================== Symbol Table");

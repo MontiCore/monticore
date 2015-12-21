@@ -25,7 +25,7 @@ import java.util.List;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.HookPoint;
-import de.monticore.symboltable.CommonScope;
+import de.monticore.symboltable.Scope;
 
 /**
  * This class is the default implementation of the {@link IReportEventHandler}
@@ -375,7 +375,7 @@ public class DefaultReportEventHandler implements IReportEventHandler {
    * @see de.monticore.generating.templateengine.reporting.commons.IReportEventHandler#reportSymbolTable(de.monticore.symboltable.CommonScope)
    */
   @Override
-  public void reportSymbolTable(CommonScope scope) {
+  public void reportSymbolTableScope(Scope scope) {
     // TODO Auto-generated method stub
     
   }
