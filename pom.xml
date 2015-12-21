@@ -58,7 +58,7 @@
     <xml-apis.version>1.0.b2</xml-apis.version>
 
     <!-- .. Plugins ....................................................... -->
-    <monticore.plugin>4.2.1</monticore.plugin>
+    <monticore.plugin>4.3.0</monticore.plugin>
 
     <archetype.plugin>2.3</archetype.plugin>
     <assembly.plugin>2.5.4</assembly.plugin>
