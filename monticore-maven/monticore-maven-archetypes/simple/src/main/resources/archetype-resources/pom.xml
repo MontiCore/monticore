@@ -19,20 +19,12 @@
     <junit.version>4.12</junit.version>
     <logback.version>1.1.2</logback.version>
     <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
-<<<<<<< HEAD
     <monticore.version>4.3.0</monticore.version>
-=======
-    <monticore.version>4.3.0-SNAPSHOT</monticore.version>
->>>>>>> refs/heads/ticket1791_bootstrap
 
     <!-- .. Plugins ....................................................... -->
     <assembly.plugin>2.5.4</assembly.plugin>
     <compiler.plugin>3.3</compiler.plugin>
-<<<<<<< HEAD
     <monticore.plugin>4.3.0</monticore.plugin>
-=======
-    <monticore.plugin>4.3.0-SNAPSHOT</monticore.plugin>
->>>>>>> refs/heads/ticket1791_bootstrap
 
     <!-- Classifiers -->
     <grammars.classifier>grammars</grammars.classifier>
