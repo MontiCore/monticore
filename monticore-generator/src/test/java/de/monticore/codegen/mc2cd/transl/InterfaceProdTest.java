@@ -19,16 +19,18 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.types.types._ast.ASTReferenceTypeList;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
-import org.junit.Test;
-
-import java.nio.file.Paths;
-
 import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
 import static org.junit.Assert.assertEquals;
+
+import java.nio.file.Paths;
+import java.util.List;
+
+import org.junit.Test;
+
+import de.monticore.codegen.mc2cd.TestHelper;
+import de.monticore.types.types._ast.ASTReferenceType;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
 
 /**
  * Test for the proper transformation of ASTInterfaceProds to corresponding ASTCDInterfaces
@@ -57,7 +59,7 @@ public class InterfaceProdTest {
    */
   @Test
   public void testExtends() {
-    ASTReferenceTypeList superInterfaces = astA.getInterfaces();
+    List<ASTReferenceType> superInterfaces = astA.getInterfaces();
     assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
     assertEquals("mc2cdtransformation.InterfaceProd.ASTextendedProd", name);
@@ -69,7 +71,7 @@ public class InterfaceProdTest {
    */
   @Test
   public void testAstextends() {
-    ASTReferenceTypeList superInterfaces = astB.getInterfaces();
+    List<ASTReferenceType> superInterfaces = astB.getInterfaces();
     assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
     assertEquals("AstExtendedType", name);
@@ -81,7 +83,7 @@ public class InterfaceProdTest {
    */
   @Test
   public void testAstimplementsQualified() {
-    ASTReferenceTypeList superInterfaces = astC.getInterfaces();
+    List<ASTReferenceType> superInterfaces = astC.getInterfaces();
     assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
     assertEquals("java.io.Serializable", name);

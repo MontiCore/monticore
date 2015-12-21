@@ -24,6 +24,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Paths;
+import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -31,7 +32,6 @@ import org.junit.Test;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.types.types._ast.ASTReferenceType;
-import de.monticore.types.types._ast.ASTReferenceTypeList;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
@@ -163,7 +163,7 @@ public class AstRuleTest {
    */
   @Test
   public void testAstInterfaces() {
-    ASTReferenceTypeList superInterfaces = astD.getInterfaces();
+    List<ASTReferenceType> superInterfaces = astD.getInterfaces();
     assertEquals(3, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
     assertEquals("ASTB", name);

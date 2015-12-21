@@ -29,11 +29,8 @@ import de.monticore.types.types._ast.ASTConstantsTypes;
 import de.monticore.types.types._ast.ASTPrimitiveArrayType;
 import de.monticore.types.types._ast.ASTPrimitiveType;
 import de.monticore.types.types._ast.ASTQualifiedName;
-import de.monticore.types.types._ast.ASTQualifiedNameList;
-import de.monticore.types.types._ast.ASTReferenceTypeList;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.types.types._ast.ASTTypeArguments;
-import de.monticore.types.types._ast.ASTTypeList;
 import de.monticore.types.types._ast.ASTTypeParameters;
 import de.monticore.types.types._ast.ASTTypeVariableDeclaration;
 import de.monticore.types.types._ast.ASTTypesNode;
@@ -75,17 +72,7 @@ public class TypesPrettyPrinterConcreteVisitor extends LiteralsPrettyPrinterConc
   public void visit(ASTQualifiedName a) {
     getPrinter().print(Names.getQualifiedName(a.getParts()));
   }
-  
-  /**
-   * Prints a list of qualified names
-   * 
-   * @param a list of qualified names
-   */
-  @Override
-  public void handle(ASTQualifiedNameList a) {
-    printList(a.iterator(), ",");
-  }
-  
+    
   /**
    * Prints an array of a complex array type
    * 
@@ -241,32 +228,12 @@ public class TypesPrettyPrinterConcreteVisitor extends LiteralsPrettyPrinterConc
       printList(a.getUpperBounds().iterator(), "& ");
     }
   }
-  
+    
   /**
-   * Prints List of Types
+   * Prints a list
    * 
-   * @param a list of types
-   */
-  @Override
-  public void handle(ASTTypeList a) {
-    printList(a.iterator(), ", ");
-  }
-  
-  /**
-   * Prints List of Types
-   * 
-   * @param a list of types
-   */
-  @Override
-  public void handle(ASTReferenceTypeList a) {
-    printList(a.iterator(), ", ");
-  }
-  
-  /**
-   * Prints a list of ASTQualifiedNames in an ownVisit method
-   * 
-   * @param iter iterator for the list of ASTQualifiedNames
-   * @param seperator string for seperating the ASTQualifiedNames
+   * @param iter iterator for the list
+   * @param seperator string for seperating list
    */
   protected void printList(Iterator<? extends ASTTypesNode> iter, String seperator) {
     // print by iterate through all items

@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
-import junit.framework.TestCase;
-
 import org.antlr.runtime.RecognitionException;
 
 import de.monticore.antlr4.MCConcreteParser.ParserExecution;
@@ -34,11 +32,8 @@ import de.monticore.types.types._ast.ASTPrimitiveType;
 import de.monticore.types.types._ast.ASTReturnType;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.types.types._ast.ASTTypeParameters;
-import de.monticore.types.types._parser.PrimitiveTypeMCParser;
-import de.monticore.types.types._parser.ReturnTypeMCParser;
-import de.monticore.types.types._parser.TypeMCParser;
-import de.monticore.types.types._parser.TypeParametersMCParser;
-import de.monticore.types.types._parser.TypesParserFactory;
+import de.monticore.types.types._parser.TypesParser;
+import junit.framework.TestCase;
 
 /**
  * This class provides two methods that allow testing type grammar. The test
@@ -131,9 +126,9 @@ public class TypesTestHelper {
    * @throws IOException
    */
   public ASTType parseType(String input) throws RecognitionException, IOException {
-    TypeMCParser parser = TypesParserFactory.createTypeMCParser();
+    TypesParser parser = new TypesParser();
     parser.setParserTarget(ParserExecution.EOF);
-    Optional<ASTType> res = parser.parse(new StringReader(input));
+    Optional<ASTType> res = parser.parseType(new StringReader(input));
     if (parser.hasErrors()) {
       throw new RecognitionException();
     }
@@ -153,8 +148,8 @@ public class TypesTestHelper {
    */
   public ASTReturnType parseReturnType(String input)
       throws org.antlr.v4.runtime.RecognitionException, IOException {
-    ReturnTypeMCParser parser = TypesParserFactory.createReturnTypeMCParser();
-    Optional<ASTReturnType> res = parser.parse(new StringReader(input));
+    TypesParser parser = new TypesParser();
+    Optional<ASTReturnType> res = parser.parseReturnType(new StringReader(input));
     TestCase.assertTrue(res.isPresent());
     TestCase.assertTrue(res.get() instanceof ASTReturnType);
     return (ASTReturnType) res.get();
@@ -171,8 +166,8 @@ public class TypesTestHelper {
    */
   public ASTTypeParameters parseTypeParameters(String input) throws RecognitionException,
       IOException {
-    TypeParametersMCParser parser = TypesParserFactory.createTypeParametersMCParser();
-    Optional<ASTTypeParameters> res = parser.parse(new StringReader(input));
+    TypesParser parser = new TypesParser();
+    Optional<ASTTypeParameters> res = parser.parseTypeParameters(new StringReader(input));
     if (parser.hasErrors()) {
       throw new RecognitionException();
     }
@@ -192,8 +187,8 @@ public class TypesTestHelper {
    */
   public ASTPrimitiveType parseBooleanType(String input)
       throws org.antlr.v4.runtime.RecognitionException, IOException {
-    PrimitiveTypeMCParser parser = TypesParserFactory.createPrimitiveTypeMCParser();
-    Optional<ASTPrimitiveType> res = parser.parse(new StringReader(input));
+    TypesParser parser = new TypesParser();
+    Optional<ASTPrimitiveType> res = parser.parsePrimitiveType(new StringReader(input));
     TestCase.assertTrue(res.isPresent());
     TestCase.assertTrue(res.get() instanceof ASTPrimitiveType);
     return (ASTPrimitiveType) res.get();
@@ -210,8 +205,8 @@ public class TypesTestHelper {
    */
   public ASTPrimitiveType parseIntegralType(String input)
       throws org.antlr.v4.runtime.RecognitionException, IOException {
-    PrimitiveTypeMCParser parser = TypesParserFactory.createPrimitiveTypeMCParser();
-    Optional<ASTPrimitiveType> res = parser.parse(new StringReader(input));
+    TypesParser parser = new TypesParser();
+    Optional<ASTPrimitiveType> res = parser.parsePrimitiveType(new StringReader(input));
     TestCase.assertTrue(res.isPresent());
     TestCase.assertTrue(res.get() instanceof ASTPrimitiveType);
     return (ASTPrimitiveType) res.get();
@@ -228,8 +223,8 @@ public class TypesTestHelper {
    */
   public ASTPrimitiveType parseFloatingPointType(String input)
       throws org.antlr.v4.runtime.RecognitionException, IOException {
-    PrimitiveTypeMCParser parser = TypesParserFactory.createPrimitiveTypeMCParser();
-    Optional<ASTPrimitiveType> res = parser.parse(new StringReader(input));
+    TypesParser parser = new TypesParser();
+    Optional<ASTPrimitiveType> res = parser.parsePrimitiveType(new StringReader(input));
     TestCase.assertTrue(res.isPresent());
     TestCase.assertTrue(res.get() instanceof ASTPrimitiveType);
     return (ASTPrimitiveType) res.get();
@@ -246,8 +241,8 @@ public class TypesTestHelper {
    */
   public ASTPrimitiveType parseNumericType(String input)
       throws org.antlr.v4.runtime.RecognitionException, IOException {
-    PrimitiveTypeMCParser parser = TypesParserFactory.createPrimitiveTypeMCParser();
-    Optional<ASTPrimitiveType> res = parser.parse(new StringReader(input));
+    TypesParser parser = new TypesParser();
+    Optional<ASTPrimitiveType> res = parser.parsePrimitiveType(new StringReader(input));
     TestCase.assertTrue(res.isPresent());
     TestCase.assertTrue(res.get() instanceof ASTPrimitiveType);
     return (ASTPrimitiveType) res.get();

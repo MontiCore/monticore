@@ -19,11 +19,11 @@
 
 package de.monticore.grammar.cocos;
 
+import java.util.List;
 import java.util.Optional;
 
 import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
-import de.monticore.grammar.grammar._ast.ASTRuleReferenceList;
 import de.monticore.grammar.grammar._cocos.GrammarASTInterfaceProdCoCo;
 import de.monticore.languages.grammar.MCRuleSymbol;
 import de.se_rwth.commons.logging.Log;
@@ -43,7 +43,7 @@ public class InterfaceNTOnlyExtendInterfaceNTs implements GrammarASTInterfacePro
   @Override
   public void check(ASTInterfaceProd a) {
     if (!a.getSuperInterfaceRule().isEmpty()) {
-      ASTRuleReferenceList superRules = a.getSuperInterfaceRule();
+      List<ASTRuleReference> superRules = a.getSuperInterfaceRule();
       for(ASTRuleReference sr : superRules){
         Optional<MCRuleSymbol> ruleSymbol = a.getEnclosingScope().get().resolve(sr.getName(), MCRuleSymbol.KIND);
         if(ruleSymbol.isPresent()){

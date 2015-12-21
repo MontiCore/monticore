@@ -21,7 +21,6 @@ package de.monticore.codegen.parser;
 
 import static com.google.common.base.Preconditions.checkState;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,8 +29,8 @@ import java.util.Optional;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+
 import de.monticore.ast.ASTNode;
-import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.grammar.grammar._ast.ASTBlock;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTConstantGroup;
@@ -46,6 +45,8 @@ import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTExpressionPredicate;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTJavaCode;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
+import de.monticore.java.javadsl._ast.ASTBlockStatement;
+import de.monticore.java.javadsl._ast.ASTClassMemberDeclaration;
 import de.monticore.languages.grammar.MCClassRuleSymbol;
 import de.monticore.languages.grammar.MCEnumRuleSymbol;
 import de.monticore.languages.grammar.MCExternalTypeSymbol;
@@ -61,7 +62,6 @@ import de.monticore.languages.grammar.PredicatePair;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.JavaNamesHelper;
-import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -427,14 +427,19 @@ public class ParserGeneratorHelper {
     Log.errorIfNull(node);
 
     if (node instanceof ASTAction) {
-      String action = getPrettyPrinter().prettyprint(((ASTAction) node).getBlockStatements());
-      Log.debug("ASTAction:\n" + action, ParserGenerator.LOG);
-      return action;
+      StringBuffer buffer = new StringBuffer();
+      for (ASTBlockStatement action: ((ASTAction) node).getBlockStatements()) {
+        buffer.append(getPrettyPrinter().prettyprint(action));
+      }
+      return buffer.toString();
     }
     if (node instanceof ASTJavaCode) {
-      String action = getPrettyPrinter().prettyprint(((ASTJavaCode) node).getClassMemberDeclarations());
-      Log.debug("ASTActionAntlr:\n" + action, ParserGenerator.LOG);
-      return action;
+      StringBuffer buffer = new StringBuffer();
+      for (ASTClassMemberDeclaration action: ((ASTJavaCode) node).getClassMemberDeclarations()) {
+        buffer.append(getPrettyPrinter().prettyprint(action));
+
+      }
+      return buffer.toString();
     }
     if (node instanceof ASTExpressionPredicate) {
       String exprPredicate = getPrettyPrinter().prettyprint(((ASTExpressionPredicate) node).getExpression());

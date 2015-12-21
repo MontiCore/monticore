@@ -41,7 +41,6 @@ import de.monticore.grammar.DirectLeftRecursionDetector;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.grammar._ast.ASTAlt;
-import de.monticore.grammar.grammar._ast.ASTAltList;
 import de.monticore.grammar.grammar._ast.ASTAnything;
 import de.monticore.grammar.grammar._ast.ASTBlock;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
@@ -51,7 +50,6 @@ import de.monticore.grammar.grammar._ast.ASTEnumProd;
 import de.monticore.grammar.grammar._ast.ASTEof;
 import de.monticore.grammar.grammar._ast.ASTLexActionOrPredicate;
 import de.monticore.grammar.grammar._ast.ASTLexAlt;
-import de.monticore.grammar.grammar._ast.ASTLexAltList;
 import de.monticore.grammar.grammar._ast.ASTLexBlock;
 import de.monticore.grammar.grammar._ast.ASTLexChar;
 import de.monticore.grammar.grammar._ast.ASTLexCharRange;
@@ -165,7 +163,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     }
     endCodeSection();
     
-    ast.getAlts().accept(getRealThis());
+    createAntlrCodeForLexAlts(ast.getAlts());
     
     // Add Action
     startCodeSection();
@@ -284,7 +282,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     }
     
     // Iterate over all Components
-    ast.getAlts().accept(getRealThis());
+    createAntlrCodeForAlts(ast.getAlts());
     
     addToAntlrCode(";");
     
@@ -434,8 +432,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
    * 
    * @param ast
    */
-  @Override
-  public void handle(ASTAltList ast) {
+  public void createAntlrCodeForAlts(List<ASTAlt> ast) {
     String del = "";
     for (Iterator<ASTAlt> iter = ast.iterator(); iter.hasNext();) {
       addToAntlrCode(del);
@@ -446,8 +443,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     }
   }
   
-  @Override
-  public void handle(ASTLexAltList ast) {
+  public void createAntlrCodeForLexAlts(List<ASTLexAlt> ast) {
     String del = "";
     for (ASTLexAlt anAst : ast) {
       addToAntlrCode(del);
@@ -478,7 +474,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     endCodeSection();
     
     // Visit all alternatives
-    ast.getLexAlts().accept(getRealThis());
+    createAntlrCodeForLexAlts(ast.getLexAlts());
     
     // Start of Block with iteration
     startCodeSection();
@@ -546,7 +542,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     endCodeSection();
     
     // Visit all alternatives    
-    a.getAlts().accept(getRealThis());
+    createAntlrCodeForAlts(a.getAlts());
     
     // Start of Block with iteration
     startCodeSection();
