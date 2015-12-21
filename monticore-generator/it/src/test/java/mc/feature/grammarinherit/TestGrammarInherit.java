@@ -20,17 +20,16 @@
 package mc.feature.grammarinherit;
 
 import static org.junit.Assert.assertEquals;
-import groovyjarjarantlr.TokenStreamException;
 
 import java.io.IOException;
 import java.io.StringReader;
 
-import mc.GeneratorIntegrationsTest;
-import mc.feature.grammarinherit.sub.featuredslgrammarinherit._parser.FeatureDSLgrammarinheritParserFactory;
-import mc.feature.grammarinherit.sub.featuredslgrammarinherit._parser.FileMCParser;
-
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
+
+import groovyjarjarantlr.TokenStreamException;
+import mc.GeneratorIntegrationsTest;
+import mc.feature.grammarinherit.sub.featuredslgrammarinherit._parser.FeatureDSLgrammarinheritParser;
 
 public class TestGrammarInherit extends GeneratorIntegrationsTest {
   
@@ -39,8 +38,8 @@ public class TestGrammarInherit extends GeneratorIntegrationsTest {
     
     StringReader s = new StringReader("automaton ad {\n state all;\n state bss;\n ass -> bss; }");
     
-    FileMCParser p = FeatureDSLgrammarinheritParserFactory.createFileMCParser();
-    p.parse(s);
+    FeatureDSLgrammarinheritParser p = new FeatureDSLgrammarinheritParser();
+    p.parseFile(s);
     
     assertEquals(false, p.hasErrors());
     

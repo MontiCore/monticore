@@ -19,9 +19,23 @@
 
 package de.monticore.languages.grammar.visitors;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.base.Strings.nullToEmpty;
-import static de.se_rwth.commons.Names.getQualifiedName;
+import com.google.common.collect.Sets;
+import de.monticore.ast.ASTNode;
+import de.monticore.ast.Comment;
+import de.monticore.grammar.HelperGrammar;
+import de.monticore.grammar.cocos.GrammarCoCos;
+import de.monticore.grammar.cocos.GrammarInheritanceCycle;
+import de.monticore.grammar.grammar._ast.*;
+import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
+import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
+import de.monticore.languages.grammar.*;
+import de.monticore.languages.grammar.symbolreferences.MCExternalTypeSymbolReference;
+import de.monticore.languages.grammar.symbolreferences.MCGrammarSymbolReference;
+import de.monticore.languages.grammar.symbolreferences.MCRuleSymbolReference;
+import de.monticore.languages.grammar.symbolreferences.MCTypeSymbolReference;
+import de.monticore.symboltable.*;
+import de.se_rwth.commons.SourcePosition;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,67 +44,9 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
-import com.google.common.collect.Sets;
-
-import de.monticore.ast.ASTNode;
-import de.monticore.ast.Comment;
-import de.monticore.grammar.HelperGrammar;
-import de.monticore.grammar.cocos.GrammarCoCos;
-import de.monticore.grammar.cocos.GrammarInheritanceCycle;
-import de.monticore.grammar.grammar._ast.ASTASTRule;
-import de.monticore.grammar.grammar._ast.ASTASTRuleList;
-import de.monticore.grammar.grammar._ast.ASTAbstractProd;
-import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
-import de.monticore.grammar.grammar._ast.ASTClassProd;
-import de.monticore.grammar.grammar._ast.ASTClassProdList;
-import de.monticore.grammar.grammar._ast.ASTConstant;
-import de.monticore.grammar.grammar._ast.ASTConstantGroup;
-import de.monticore.grammar.grammar._ast.ASTConstantsGrammar;
-import de.monticore.grammar.grammar._ast.ASTEnumProd;
-import de.monticore.grammar.grammar._ast.ASTExternalProd;
-import de.monticore.grammar.grammar._ast.ASTFollowOption;
-import de.monticore.grammar.grammar._ast.ASTGenericType;
-import de.monticore.grammar.grammar._ast.ASTGrammarReference;
-import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
-import de.monticore.grammar.grammar._ast.ASTInterfaceProdList;
-import de.monticore.grammar.grammar._ast.ASTLexActionOrPredicate;
-import de.monticore.grammar.grammar._ast.ASTLexNonTerminal;
-import de.monticore.grammar.grammar._ast.ASTLexProd;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._ast.ASTMCImportStatement;
-import de.monticore.grammar.grammar._ast.ASTNonTerminal;
-import de.monticore.grammar.grammar._ast.ASTProd;
-import de.monticore.grammar.grammar._ast.ASTRuleComponent;
-import de.monticore.grammar.grammar._ast.ASTRuleReference;
-import de.monticore.grammar.grammar._ast.ASTSymbolDefinition;
-import de.monticore.grammar.grammar._ast.ASTTerminal;
-import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
-import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
-import de.monticore.grammar.transformation.GrammarTransformer;
-import de.monticore.languages.grammar.MCClassRuleSymbol;
-import de.monticore.languages.grammar.MCEnumRuleSymbol;
-import de.monticore.languages.grammar.MCExternalTypeSymbol;
-import de.monticore.languages.grammar.MCGrammarSymbol;
-import de.monticore.languages.grammar.MCGrammarSymbolsFactory;
-import de.monticore.languages.grammar.MCInterfaceOrAbstractRuleSymbol;
-import de.monticore.languages.grammar.MCLexRuleSymbol;
-import de.monticore.languages.grammar.MCRuleComponentSymbol;
-import de.monticore.languages.grammar.MCRuleSymbol;
-import de.monticore.languages.grammar.MCTypeSymbol;
-import de.monticore.languages.grammar.PredicatePair;
-import de.monticore.languages.grammar.symbolreferences.MCExternalTypeSymbolReference;
-import de.monticore.languages.grammar.symbolreferences.MCGrammarSymbolReference;
-import de.monticore.languages.grammar.symbolreferences.MCRuleSymbolReference;
-import de.monticore.languages.grammar.symbolreferences.MCTypeSymbolReference;
-import de.monticore.symboltable.ArtifactScope;
-import de.monticore.symboltable.CommonSymbolTableCreator;
-import de.monticore.symboltable.ImportStatement;
-import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.Symbol;
-import de.se_rwth.commons.SourcePosition;
-import de.se_rwth.commons.logging.Log;
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.base.Strings.nullToEmpty;
+import static de.se_rwth.commons.Names.getQualifiedName;
 
 public class MCGrammarSymbolTableCreator extends CommonSymbolTableCreator implements Grammar_WithConceptsVisitor {
   
@@ -128,12 +84,6 @@ public class MCGrammarSymbolTableCreator extends CommonSymbolTableCreator implem
     Log.debug("Building Symboltable for Grammar: " + astGrammar.getName(),
         MCGrammarSymbolTableCreator.class.getSimpleName());
     
-    // TODO PN <- GV: Don't parse already parsed models
-    Log.debug("Transform grammar " + astGrammar.getName()
-        + ": replace NonTerminalSeparator shortcuts",
-        MCGrammarSymbolTableCreator.class.getSimpleName());
-    GrammarTransformer.transform(astGrammar);
-    
     packageName = getQualifiedName(astGrammar.getPackage());
     
     final List<ImportStatement> imports = new ArrayList<>();
@@ -147,14 +97,12 @@ public class MCGrammarSymbolTableCreator extends CommonSymbolTableCreator implem
     final ArtifactScope scope = new ArtifactScope(Optional.empty(), packageName, imports);
     putOnStack(scope);
     
-    // TODO PN grammar name should not be qualified. Use setPackageName()
-    // instead
-    final String grammarName = (isNullOrEmpty(packageName))
-        ? astGrammar.getName()
-        : packageName + "" + "." + astGrammar.getName();
+    final String grammarName = astGrammar.getName();
+
     grammarSymbol = MCGrammarSymbolsFactory.createMCGrammarSymbol(grammarName);
     grammarSymbol.setComponent(astGrammar.isComponent());
-    
+    // TODO PN set package name explicitly?
+
     addToScopeAndLinkWithNode(grammarSymbol, astGrammar);
     
     addSuperGrammars(astGrammar, grammarSymbol);
@@ -194,7 +142,7 @@ public class MCGrammarSymbolTableCreator extends CommonSymbolTableCreator implem
     addSubRules(astGrammar.getClassProds());
     addSubRules(astGrammar.getInterfaceProds());
     
-    setStartParserRuleForNonAbstractGrammar(astGrammar);
+    computeStartParserRule(astGrammar);
     
     // Level 3x: Consider follow options (requires 3b, should normally be
     // done in 3a)
@@ -395,7 +343,18 @@ public class MCGrammarSymbolTableCreator extends CommonSymbolTableCreator implem
     grammarSymbol.addPredicate(superrule, subclassPredicatePair);
   }
   
-  private void setStartParserRuleForNonAbstractGrammar(ASTMCGrammar astGrammar) {
+  private void computeStartParserRule(ASTMCGrammar astGrammar) {
+    if (astGrammar.getStartRules().isPresent()) {
+      String name = astGrammar.getStartRules().get().getRuleReference().getName();
+      MCRuleSymbol rule = grammarSymbol.getRuleWithInherited(name);
+      if (rule == null) {
+        Log.error("0xA0243 Rule " + name + " couldn't be found!");
+      }
+      else {
+        rule.setStartRule(true);
+        grammarSymbol.setStartRule(rule);
+      }      
+    } else {
       final Set<ASTProd> firstProductions = Sets.newLinkedHashSet();
       // The start rule for parsing is the first occurring Interface-, Abstract-
       // or Class-Production in this grammar
@@ -409,6 +368,7 @@ public class MCGrammarSymbolTableCreator extends CommonSymbolTableCreator implem
         firstProductions.add(astGrammar.getAbstractProds().get(0));
       }
       setStartProd(firstProductions);
+    }
   }
   
   /**

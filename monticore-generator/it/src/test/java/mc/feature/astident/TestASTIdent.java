@@ -25,23 +25,22 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.StringReader;
 
+import org.junit.Test;
+
 import mc.GeneratorIntegrationsTest;
 import mc.feature.astident.astident._ast.ASTA;
-import mc.feature.astident.astident._parser.AMCParser;
-import mc.feature.astident.astident._parser.AstIdentParserFactory;
-
-import org.junit.Test;
+import mc.feature.astident.astident._parser.AstIdentParser;
 
 public class TestASTIdent extends GeneratorIntegrationsTest {
   
   @Test
-  public void testMCParser() throws IOException {
+  public void testParser() throws IOException {
     
     StringReader s = new StringReader(
         "Otto");
     
-    AMCParser p = AstIdentParserFactory.createAMCParser();
-    java.util.Optional<ASTA> ast = p.parse(s);
+    AstIdentParser p = new AstIdentParser();
+    java.util.Optional<ASTA> ast = p.parseA(s);
     assertTrue(ast.isPresent());
     assertEquals(false, p.hasErrors());
     

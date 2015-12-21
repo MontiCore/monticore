@@ -25,12 +25,11 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
+import org.junit.Test;
+
 import mc.GeneratorIntegrationsTest;
 import mc.feature.expression.expression._ast.ASTExpr;
-import mc.feature.expression.expression._parser.ExprMCParser;
-import mc.feature.expression.expression._parser.ExpressionParserFactory;
-
-import org.junit.Test;
+import mc.feature.expression.expression._parser.ExpressionParser;
 
 /**
  * Tests the source position's computing for the AST nodes
@@ -82,8 +81,8 @@ public class ExpressionSourcePositionsTest extends GeneratorIntegrationsTest {
   }
   
   private ASTExpr parse(String input) throws IOException {
-    ExprMCParser parser = ExpressionParserFactory.createExprMCParser();
-    Optional<ASTExpr> ast = parser.parse(new StringReader(input));
+    ExpressionParser parser = new ExpressionParser();
+    Optional<ASTExpr> ast = parser.parseExpr(new StringReader(input));
     assertTrue(ast.isPresent());
     return ast.get();
   }

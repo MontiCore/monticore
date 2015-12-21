@@ -22,19 +22,18 @@ package mc.feature.lexerformat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import groovyjarjarantlr.TokenStreamException;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
-import mc.GeneratorIntegrationsTest;
-import mc.feature.lexerformat.kleeneplus._ast.ASTKPStart;
-import mc.feature.lexerformat.kleeneplus._parser.KPStartMCParser;
-import mc.feature.lexerformat.kleeneplus._parser.KleenePlusParserFactory;
-
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
+
+import groovyjarjarantlr.TokenStreamException;
+import mc.GeneratorIntegrationsTest;
+import mc.feature.lexerformat.kleeneplus._ast.ASTKPStart;
+import mc.feature.lexerformat.kleeneplus._parser.KleenePlusParser;
 
 public class KleenePlusTest extends GeneratorIntegrationsTest {
   
@@ -46,26 +45,26 @@ public class KleenePlusTest extends GeneratorIntegrationsTest {
    */
   @Test
   public void testKleeneStar() throws IOException {
-    KPStartMCParser p = KleenePlusParserFactory.createKPStartMCParser();
+    KleenePlusParser p = new KleenePlusParser ();
     Optional<ASTKPStart> ast;
     
-    ast = p.parse(new StringReader("a"));
+    ast = p.parseKPStart(new StringReader("a"));
     assertTrue(ast.isPresent());
     assertEquals("a", ast.get().getKleene().get());
     
-    ast = p.parse(new StringReader("ab"));
+    ast = p.parseKPStart(new StringReader("ab"));
     assertTrue(ast.isPresent());
     assertEquals("ab", ast.get().getKleene().get());
     
-    ast = p.parse(new StringReader("abb"));
+    ast = p.parseKPStart(new StringReader("abb"));
     assertTrue(ast.isPresent());
     assertEquals("abb", ast.get().getKleene().get());
     
-    ast = p.parse(new StringReader("abbbb"));
+    ast = p.parseKPStart(new StringReader("abbbb"));
     assertTrue(ast.isPresent());
     assertEquals("abbbb", ast.get().getKleene().get());
     
-    ast = p.parse(new StringReader("b"));
+    ast = p.parseKPStart(new StringReader("b"));
     assertFalse(ast.isPresent());
   }
   
@@ -77,26 +76,26 @@ public class KleenePlusTest extends GeneratorIntegrationsTest {
    */
   @Test
   public void testSimpleKleene() throws IOException {
-    KPStartMCParser p = KleenePlusParserFactory.createKPStartMCParser();
+    KleenePlusParser p = new KleenePlusParser ();
     Optional<ASTKPStart> ast;
     
-    ast = p.parse(new StringReader("c"));
+    ast = p.parseKPStart(new StringReader("c"));
     assertTrue(ast.isPresent());
     assertEquals("c", ast.get().getSimpleKleene().get());
     
-    ast = p.parse(new StringReader("cd"));
+    ast = p.parseKPStart(new StringReader("cd"));
     assertTrue(ast.isPresent());
     assertEquals("cd", ast.get().getSimpleKleene().get());
     
-    ast = p.parse(new StringReader("cdd"));
+    ast = p.parseKPStart(new StringReader("cdd"));
     assertTrue(ast.isPresent());
     assertEquals("cdd", ast.get().getSimpleKleene().get());
     
-    ast = p.parse(new StringReader("cdddd"));
+    ast = p.parseKPStart(new StringReader("cdddd"));
     assertTrue(ast.isPresent());
     assertEquals("cdddd", ast.get().getSimpleKleene().get());
     
-    ast = p.parse(new StringReader("d"));
+    ast = p.parseKPStart(new StringReader("d"));
     assertFalse(ast.isPresent());
   }
   
@@ -108,26 +107,26 @@ public class KleenePlusTest extends GeneratorIntegrationsTest {
    */
   @Test
   public void testSimpleKleeneString() throws IOException {
-    KPStartMCParser p = KleenePlusParserFactory.createKPStartMCParser();
+    KleenePlusParser p = new KleenePlusParser ();
     Optional<ASTKPStart> ast;
     
-    ast = p.parse(new StringReader("ee"));
+    ast = p.parseKPStart(new StringReader("ee"));
     assertTrue(ast.isPresent());
     assertEquals("ee", ast.get().getSimpleKleeneString().get());
     
-    ast = p.parse(new StringReader("eefg"));
+    ast = p.parseKPStart(new StringReader("eefg"));
     assertTrue(ast.isPresent());
     assertEquals("eefg", ast.get().getSimpleKleeneString().get());
     
-    ast = p.parse(new StringReader("eefgfg"));
+    ast = p.parseKPStart(new StringReader("eefgfg"));
     assertTrue(ast.isPresent());
     assertEquals("eefgfg", ast.get().getSimpleKleeneString().get());
     
-    ast = p.parse(new StringReader("eefgfgfgfg"));
+    ast = p.parseKPStart(new StringReader("eefgfgfgfg"));
     assertTrue(ast.isPresent());
     assertEquals("eefgfgfgfg", ast.get().getSimpleKleeneString().get());
     
-    ast = p.parse(new StringReader("fg"));
+    ast = p.parseKPStart(new StringReader("fg"));
     assertFalse(ast.isPresent());
   }
   
@@ -139,25 +138,25 @@ public class KleenePlusTest extends GeneratorIntegrationsTest {
    */
   @Test
   public void testPlus() throws IOException {
-    KPStartMCParser p = KleenePlusParserFactory.createKPStartMCParser();
+    KleenePlusParser p = new KleenePlusParser ();
     Optional<ASTKPStart> ast;
     
-    ast = p.parse(new StringReader("g"));
+    ast = p.parseKPStart(new StringReader("g"));
     assertFalse(ast.isPresent());
     
-    ast = p.parse(new StringReader("gh"));
+    ast = p.parseKPStart(new StringReader("gh"));
     assertTrue(ast.isPresent());
     assertEquals("gh", ast.get().getPlus().get());
     
-    ast = p.parse(new StringReader("ghh"));
+    ast = p.parseKPStart(new StringReader("ghh"));
     assertTrue(ast.isPresent());
     assertEquals("ghh", ast.get().getPlus().get());
     
-    ast = p.parse(new StringReader("ghhhh"));
+    ast = p.parseKPStart(new StringReader("ghhhh"));
     assertTrue(ast.isPresent());
    assertEquals("ghhhh", ast.get().getPlus().get());
     
-    ast = p.parse(new StringReader("h"));
+    ast = p.parseKPStart(new StringReader("h"));
     assertFalse(ast.isPresent());
   }
   
@@ -169,25 +168,25 @@ public class KleenePlusTest extends GeneratorIntegrationsTest {
    */
   @Test
   public void testSimplePlus() throws IOException {
-    KPStartMCParser p = KleenePlusParserFactory.createKPStartMCParser();
+    KleenePlusParser p = new KleenePlusParser ();
     Optional<ASTKPStart> ast;
     
-    ast = p.parse(new StringReader("i"));
+    ast = p.parseKPStart(new StringReader("i"));
     assertFalse(ast.isPresent());
     
-    ast = p.parse(new StringReader("ij"));
+    ast = p.parseKPStart(new StringReader("ij"));
     assertTrue(ast.isPresent());
     assertEquals("ij", ast.get().getSimplePlus().get());
     
-    ast = p.parse(new StringReader("ijj"));
+    ast = p.parseKPStart(new StringReader("ijj"));
     assertTrue(ast.isPresent());
     assertEquals("ijj", ast.get().getSimplePlus().get());
     
-    ast = p.parse(new StringReader("ijjjj"));
+    ast = p.parseKPStart(new StringReader("ijjjj"));
     assertTrue(ast.isPresent());
     assertEquals("ijjjj", ast.get().getSimplePlus().get());
     
-    ast = p.parse(new StringReader("j"));
+    ast = p.parseKPStart(new StringReader("j"));
     assertFalse(ast.isPresent());
   }
   
@@ -199,27 +198,27 @@ public class KleenePlusTest extends GeneratorIntegrationsTest {
    */
   @Test
   public void testSimplePlusString() throws IOException {
-    KPStartMCParser p = KleenePlusParserFactory.createKPStartMCParser();
+    KleenePlusParser p = new KleenePlusParser ();
     Optional<ASTKPStart> ast;
     
-    ast = p.parse(new StringReader("kk"));
+    ast = p.parseKPStart(new StringReader("kk"));
     ast = null;
     
     assertTrue(p.hasErrors());
     
-    ast = p.parse(new StringReader("kklm"));
+    ast = p.parseKPStart(new StringReader("kklm"));
     assertTrue(ast.isPresent());
     assertEquals("kklm", ast.get().getSimplePlusString().get());
     
-    ast = p.parse(new StringReader("kklmlm"));
+    ast = p.parseKPStart(new StringReader("kklmlm"));
     assertTrue(ast.isPresent());
     assertEquals("kklmlm", ast.get().getSimplePlusString().get());
     
-    ast = p.parse(new StringReader("kklmlmlmlm"));
+    ast = p.parseKPStart(new StringReader("kklmlmlmlm"));
     assertTrue(ast.isPresent());
     assertEquals("kklmlmlmlm", ast.get().getSimplePlusString().get());
     
-    ast = p.parse(new StringReader("lm"));
+    ast = p.parseKPStart(new StringReader("lm"));
     assertFalse(ast.isPresent());
   }
   

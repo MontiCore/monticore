@@ -24,20 +24,19 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.io.StringReader;
 
-import mc.GeneratorIntegrationsTest;
-import mc.feature.wiki.wiki._parser.WikiArtikelMCParser;
-import mc.feature.wiki.wiki._parser.WikiParserFactory;
-
 import org.junit.Test;
+
+import mc.GeneratorIntegrationsTest;
+import mc.feature.wiki.wiki._parser.WikiParser;
 
 public class WikiTest extends GeneratorIntegrationsTest {
   
   @Test
   public void test() throws IOException {
     
-    WikiArtikelMCParser p = WikiParserFactory.createWikiArtikelMCParser();
+    WikiParser p = new WikiParser();
     
-    p.parse(new StringReader("==Test==\n==Test== ==\n== test ==\n"));
+    p.parseWikiArtikel(new StringReader("==Test==\n==Test== ==\n== test ==\n"));
     assertEquals(false, p.hasErrors());
     
   }

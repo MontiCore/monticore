@@ -26,12 +26,11 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
+import org.junit.Test;
+
 import mc.GeneratorIntegrationsTest;
 import mc.feature.featuredsl._ast.ASTTestOptions;
-import mc.feature.featuredsl._parser.FeatureDSLParserFactory;
-import mc.feature.featuredsl._parser.TestOptionsMCParser;
-
-import org.junit.Test;
+import mc.feature.featuredsl._parser.FeatureDSLParser;
 
 public class MultipleOptionTest extends GeneratorIntegrationsTest {
   
@@ -40,9 +39,9 @@ public class MultipleOptionTest extends GeneratorIntegrationsTest {
     
     StringReader r = new StringReader("constants constants");
     
-    TestOptionsMCParser p = FeatureDSLParserFactory.createTestOptionsMCParser();
+    FeatureDSLParser p = new FeatureDSLParser();
     
-    Optional<ASTTestOptions> ast = p.parse(r);
+    Optional<ASTTestOptions> ast = p.parseTestOptions(r);
     
     assertEquals(false, p.hasErrors());
     assertTrue(ast.isPresent());

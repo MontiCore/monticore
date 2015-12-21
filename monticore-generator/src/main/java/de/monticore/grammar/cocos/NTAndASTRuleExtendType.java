@@ -19,9 +19,6 @@
 
 package de.monticore.grammar.cocos;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import de.monticore.grammar.grammar._ast.ASTASTRule;
 import de.monticore.grammar.grammar._ast.ASTAbstractProd;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
@@ -46,7 +43,6 @@ public class NTAndASTRuleExtendType implements GrammarASTMCGrammarCoCo {
   
   @Override
   public void check(ASTMCGrammar a) {
-    List<String> nts = new ArrayList<>();
     MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol().get();
     for(ASTASTRule rule : a.getASTRules()) {
       if (!rule.getASTSuperClass().isEmpty()) {

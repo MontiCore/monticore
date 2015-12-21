@@ -24,21 +24,20 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.Optional;
 
+import org.junit.Test;
+
 import mc.GeneratorIntegrationsTest;
 import mc.grammar.grammar._ast.ASTMCGrammar;
-import mc.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParserFactory;
-import mc.grammar.grammar_withconcepts._parser.MCGrammarMCParser;
-
-import org.junit.Test;
+import mc.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 
 public class MCParserTest extends GeneratorIntegrationsTest {
   
   @Test
   public void test1() throws IOException {
     
-    MCGrammarMCParser parser = Grammar_WithConceptsParserFactory.createMCGrammarMCParser();
+    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     
-    Optional<ASTMCGrammar> ast = parser.parse("src/test/resources/mc/grammar/SimpleGrammarWithConcept.mc4");
+    Optional<ASTMCGrammar> ast = parser.parseMCGrammar("src/test/resources/mc/grammar/SimpleGrammarWithConcept.mc4");
     
     assertTrue(ast.isPresent());
     

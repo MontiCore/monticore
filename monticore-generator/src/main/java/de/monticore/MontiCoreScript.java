@@ -19,34 +19,26 @@
 
 package de.monticore;
 
-import groovy.lang.Script;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedHashSet;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-
-import org.codehaus.groovy.control.customizers.ImportCustomizer;
-
-import parser.MCGrammarParser;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
-
-import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstGenerator;
 import de.monticore.codegen.cd2java.ast.CdDecorator;
 import de.monticore.codegen.cd2java.cocos.CoCoGenerator;
+import de.monticore.codegen.cd2java.od.ODGenerator;
 import de.monticore.codegen.cd2java.visitor.VisitorGenerator;
 import de.monticore.codegen.mc2cd.MC2CDTransformation;
 import de.monticore.codegen.parser.ParserGenerator;
@@ -64,7 +56,6 @@ import de.monticore.io.paths.ModelPath;
 import de.monticore.languages.grammar.MCGrammarSymbol;
 import de.monticore.languages.grammar.MontiCoreGrammarLanguage;
 import de.monticore.languages.grammar.visitors.MCGrammarSymbolTableCreator;
-import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.ResolverConfiguration;
 import de.monticore.umlcd4a.CD4AnalysisLanguage;
@@ -78,6 +69,9 @@ import de.se_rwth.commons.groovy.GroovyInterpreter;
 import de.se_rwth.commons.groovy.GroovyRunner;
 import de.se_rwth.commons.groovy.GroovyRunnerBase;
 import de.se_rwth.commons.logging.Log;
+import groovy.lang.Script;
+import org.codehaus.groovy.control.customizers.ImportCustomizer;
+import parser.MCGrammarParser;
 
 /**
  * The actual top level functional implementation of MontiCore. This is the top-most interface of
@@ -329,11 +323,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     resolverConfiguration.addTopScopeResolvers(mcLanguage.getResolvers());
     resolverConfiguration.addTopScopeResolvers(cd4AnalysisLanguage.getResolvers());
     
-    Set<ModelingLanguageModelLoader<? extends ASTNode>> modelLoaders = new LinkedHashSet<>();
-    modelLoaders.add(mcLanguage.getModelLoader());
-    modelLoaders.add(cd4AnalysisLanguage.getModelLoader());
-    
-    return new GlobalScope(modelPath, modelLoaders, resolverConfiguration);
+    return new GlobalScope(modelPath, Arrays.asList(mcLanguage, cd4AnalysisLanguage), resolverConfiguration);
   }
   
   /**
@@ -433,6 +423,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     AstGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory, templatePath);
     VisitorGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
     CoCoGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
+    ODGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
   }
   
   // #######################

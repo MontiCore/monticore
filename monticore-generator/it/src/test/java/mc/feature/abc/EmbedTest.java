@@ -26,8 +26,7 @@ import java.io.IOException;
 import java.io.StringReader;
 
 import mc.GeneratorIntegrationsTest;
-import mc.feature.abc.realabc._parser.RealABCParserFactory;
-import mc.feature.abc.realabc._parser.SMCParser;
+import mc.feature.abc.realabc._parser.RealABCParser;
 
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
@@ -37,7 +36,7 @@ public class EmbedTest extends GeneratorIntegrationsTest {
   @Test
   public void test() throws RecognitionException, TokenStreamException, IOException {
     
-    SMCParser p = parse("a b c");
+    RealABCParser p = parse("a b c");
     
     assertEquals(false, p.hasErrors());
   }
@@ -45,7 +44,7 @@ public class EmbedTest extends GeneratorIntegrationsTest {
   @Test
   public void testb() throws RecognitionException, TokenStreamException, IOException {
     
-    SMCParser p = parse("a b");
+    RealABCParser p = parse("a b");
     
     assertEquals(false, p.hasErrors());
   }
@@ -53,7 +52,7 @@ public class EmbedTest extends GeneratorIntegrationsTest {
   @Test
   public void testc() throws RecognitionException, TokenStreamException, IOException {
     
-    SMCParser p = parse("a a a b b b c c c");
+    RealABCParser p = parse("a a a b b b c c c");
     
     assertEquals(false, p.hasErrors());
   }
@@ -61,14 +60,14 @@ public class EmbedTest extends GeneratorIntegrationsTest {
   @Test
   public void testd() throws RecognitionException, TokenStreamException, IOException {
     
-    SMCParser p = parse("a b c c");
+    RealABCParser p = parse("a b c c");
     
     assertEquals(false, p.hasErrors());
   }
   
-  private SMCParser parse(String in) throws RecognitionException, TokenStreamException, IOException {
-    SMCParser parser = RealABCParserFactory.createSMCParser();
-    parser.parse(new StringReader(in));
+  private RealABCParser parse(String in) throws RecognitionException, TokenStreamException, IOException {
+    RealABCParser parser = new  RealABCParser();
+    parser.parseS(new StringReader(in));
 
     return parser;
   }

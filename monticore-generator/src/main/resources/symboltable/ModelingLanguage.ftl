@@ -36,7 +36,6 @@ ${signature("className", "ruleNames")}
 <#assign grammarName = ast.getName()?cap_first>
 <#assign fqn = genHelper.getQualifiedGrammarName()?lower_case>
 <#assign package = genHelper.getTargetPackage()?lower_case>
-<#assign startRule = genHelper.getStartRuleName()>
 <#assign skipSTGen = glex.getGlobalValue("skipSTGen")>
 
 <#-- Copyright -->
@@ -47,8 +46,7 @@ package ${package};
 
 import java.util.Optional;
 
-import ${fqn}._parser.${startRule}MCParser;
-import ${fqn}._parser.${grammarName}ParserFactory;
+import ${fqn}._parser.${grammarName}Parser;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolverConfiguration;
 
@@ -61,8 +59,8 @@ public abstract class ${className} extends de.monticore.CommonModelingLanguage {
   }
 
   @Override
-  public ${startRule}MCParser getParser() {
-    return ${grammarName}ParserFactory.create${startRule}MCParser();
+  public ${grammarName}Parser getParser() {
+    return new ${grammarName}Parser();
   }
 
   <#if !skipSTGen>

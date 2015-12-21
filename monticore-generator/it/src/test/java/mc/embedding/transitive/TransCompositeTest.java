@@ -25,20 +25,19 @@ import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Paths;
 
+import de.monticore.io.paths.ModelPath;
+import de.monticore.symboltable.GlobalScope;
+import de.monticore.symboltable.ResolverConfiguration;
+import mc.GeneratorIntegrationsTest;
 import mc.embedding.composite._symboltable.Text2ContentAdapter;
 import mc.embedding.embedded._symboltable.TextSymbol;
 import mc.embedding.host._symboltable.ContentSymbol;
 import mc.embedding.host._symboltable.HostSymbol;
 import mc.embedding.transitive.transcomposite._symboltable.TransCompositeLanguage;
 import mc.embedding.transitive.transhost._symboltable.TransStartSymbol;
-
 import org.junit.Test;
 
-import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.ResolverConfiguration;
-
-public class TransCompositeTest {
+public class TransCompositeTest extends GeneratorIntegrationsTest {
 
   @Test
   public void test() {
@@ -48,7 +47,7 @@ public class TransCompositeTest {
 
     final ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/embedding/transitive/"));
 
-    final GlobalScope scope = new GlobalScope(modelPath, language.getModelLoader(), resolverConfiguration);
+    final GlobalScope scope = new GlobalScope(modelPath, language, resolverConfiguration);
 
     // Symbol of the host language
     final TransStartSymbol transHostSymbol = scope.<TransStartSymbol>resolve("TransComposite", TransStartSymbol.KIND).orElse(null);

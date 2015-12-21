@@ -31,7 +31,7 @@ import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager.ReportManagerFactory;
-import de.monticore.symboltable.CommonScope;
+import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
 
@@ -728,9 +728,9 @@ public class Reporting extends Slf4jLog {
    * 
    * @param scope
    */
-  public static void reportSymbolTable(CommonScope scope) {
+  public static void reportSymbolTableScope(Scope scope) {
     if (isEnabled()) {
-      getReportManager().reportSymbolTable(scope);
+      getReportManager().reportSymbolTableScope(scope);
     }
   }
   

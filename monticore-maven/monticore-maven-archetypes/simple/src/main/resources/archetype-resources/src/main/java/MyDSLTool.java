@@ -12,7 +12,7 @@ import ${package}.cocos.MyElementNameStartsWithCapitalLetter;
 import ${package}.lang.MyDSLLanguage;
 import ${package}.mydsl._ast.ASTMyModel;
 import ${package}.mydsl._cocos.MyDSLCoCoChecker;
-import ${package}.mydsl._parser.MyModelMCParser;
+import ${package}.mydsl._parser.MyDSLParser;
 import ${package}.prettyprint.PrettyPrinter;
 import ${package}.symboltable.MyDSLSymbolTableCreator;
 import ${package}.symboltable.MyElementSymbol;
@@ -91,7 +91,7 @@ public class MyDSLTool {
    * @param parser
    * @return
    */
-  public static ASTMyModel parse(String model, MyModelMCParser parser) {
+  public static ASTMyModel parse(String model, MyDSLParser parser) {
     try {
       Optional<ASTMyModel> optModel = parser.parse(model);
       
@@ -117,8 +117,7 @@ public class MyDSLTool {
     final ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
     resolverConfiguration.addTopScopeResolvers(lang.getResolvers());
     
-    GlobalScope globalScope = new GlobalScope(new ModelPath(), lang.getModelLoader(),
-        resolverConfiguration);
+    GlobalScope globalScope = new GlobalScope(new ModelPath(), lang, resolverConfiguration);
     
     Optional<MyDSLSymbolTableCreator> symbolTable = lang.getSymbolTableCreator(
         resolverConfiguration, globalScope);

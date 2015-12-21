@@ -20,27 +20,24 @@
 package mc.feature.embedding;
 
 import static org.junit.Assert.assertEquals;
-import groovyjarjarantlr.TokenStreamException;
 
 import java.io.IOException;
 import java.io.StringReader;
 
-import mc.GeneratorIntegrationsTest;
-import mc.feature.embedding.outer.embedded._parser.EmbeddedParserFactory;
-import mc.feature.embedding.outer.embedded._parser.Start2MCParser;
-import mc.feature.embedding.outer.embedded._parser.Start3MCParser;
-import mc.feature.embedding.outer.embedded._parser.StartMCParser;
-
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
+
+import groovyjarjarantlr.TokenStreamException;
+import mc.GeneratorIntegrationsTest;
+import mc.feature.embedding.outer.embedded._parser.EmbeddedParser;
 
 public class EmbedTest extends GeneratorIntegrationsTest {
   
   @Test
   public void test() throws RecognitionException, TokenStreamException, IOException {
     
-    StartMCParser parser = EmbeddedParserFactory.createStartMCParser();
-    parser.parse(new StringReader("a a a"));
+    EmbeddedParser parser = new EmbeddedParser();
+    parser.parseStart(new StringReader("a a a"));
     
     assertEquals(false, parser.hasErrors());
   }
@@ -48,8 +45,8 @@ public class EmbedTest extends GeneratorIntegrationsTest {
   @Test
   public void test2_a() throws RecognitionException, TokenStreamException, IOException {
     
-    StartMCParser parser = EmbeddedParserFactory.createStartMCParser();
-    parser.parse(new StringReader("a x a"));
+    EmbeddedParser parser = new EmbeddedParser();
+    parser.parseStart(new StringReader("a x a"));
     
     assertEquals(false, parser.hasErrors());
   }
@@ -57,8 +54,8 @@ public class EmbedTest extends GeneratorIntegrationsTest {
   @Test
   public void test2_b() throws RecognitionException, TokenStreamException, IOException {
     
-    Start2MCParser parser = EmbeddedParserFactory.createStart2MCParser();
-    parser.parse(new StringReader("a x a"));
+    EmbeddedParser parser = new EmbeddedParser();
+    parser.parseStart2(new StringReader("a x a"));
     
     assertEquals(false, parser.hasErrors());
   }
@@ -66,8 +63,8 @@ public class EmbedTest extends GeneratorIntegrationsTest {
   @Test
   public void test3() throws RecognitionException, TokenStreamException, IOException {
     
-    Start2MCParser parser = EmbeddedParserFactory.createStart2MCParser();
-    parser.parse(new StringReader("a a x a a"));
+    EmbeddedParser parser = new EmbeddedParser();
+    parser.parseStart2(new StringReader("a a x a a"));
     
     assertEquals(true, parser.hasErrors());
   }
@@ -75,8 +72,8 @@ public class EmbedTest extends GeneratorIntegrationsTest {
   @Test
   public void test4() throws RecognitionException, TokenStreamException, IOException {
     
-    Start3MCParser parser = EmbeddedParserFactory.createStart3MCParser();
-    parser.parse(new StringReader("b x"));
+    EmbeddedParser parser = new EmbeddedParser();
+    parser.parseStart3(new StringReader("b x"));
     
     assertEquals(false, parser.hasErrors());
   }

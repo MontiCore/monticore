@@ -19,7 +19,8 @@
 
 package de.monticore;
 
-import java.util.Optional;
+import java.util.Collections;
+import java.util.Set;
 
 import de.monticore.symboltable.SymbolKind;
 
@@ -30,7 +31,7 @@ import de.monticore.symboltable.SymbolKind;
 public final class EmptyModelNameCalculator implements ModelNameCalculator {
 
   @Override
-  public Optional<String> calculateModelName(String name, SymbolKind kind) {
-    return Optional.empty();
+  public Set<String> calculateModelNames(String name, SymbolKind kind) {
+    return Collections.emptySet();
   }
 }

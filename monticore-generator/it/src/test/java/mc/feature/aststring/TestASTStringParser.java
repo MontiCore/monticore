@@ -24,23 +24,22 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.StringReader;
 
+import org.junit.Test;
+
 import mc.GeneratorIntegrationsTest;
 import mc.feature.aststring.aststring._ast.ASTStart;
-import mc.feature.aststring.aststring._parser.AststringParserFactory;
-import mc.feature.aststring.aststring._parser.StartMCParser;
-
-import org.junit.Test;
+import mc.feature.aststring.aststring._parser.AststringParser;
 
 public class TestASTStringParser extends GeneratorIntegrationsTest {
   
   @Test
-  public void testMCParser() throws IOException {
+  public void testParser() throws IOException {
     
     StringReader s = new StringReader(
         "start ah be ce , oh pe qu , x.y.z , de eh ef");
     
-    StartMCParser p = AststringParserFactory.createStartMCParser();
-    java.util.Optional<ASTStart> opt = p.parse(s);
+    AststringParser p = new AststringParser();
+    java.util.Optional<ASTStart> opt = p.parseStart(s);
     assertTrue(opt.isPresent());
     ASTStart ast = opt.get();
     

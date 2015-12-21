@@ -19,8 +19,9 @@
 
 package de.monticore;
 
-import java.util.Optional;
+import java.util.Set;
 
+import com.google.common.collect.ImmutableSet;
 import de.monticore.symboltable.SymbolKind;
 
 /**
@@ -32,7 +33,7 @@ import de.monticore.symboltable.SymbolKind;
 public class CommonModelNameCalculator implements ModelNameCalculator {
 
   @Override
-  public Optional<String> calculateModelName(String name, SymbolKind kind) {
-    return Optional.of(name);
+  public Set<String> calculateModelNames(String name, SymbolKind kind) {
+    return ImmutableSet.of(name);
   }
 }

@@ -36,7 +36,6 @@ import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.languages.grammar.MCGrammarSymbol;
-import de.monticore.languages.grammar.MCRuleSymbol;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -53,7 +52,7 @@ public class ParserGenerator {
   
   public static final String PARSER_PACKAGE = "_parser";
   
-  public static final String PARSER_FACTORY = "ParserFactory";
+  public static final String PARSER_WRAPPER = "Parser";
   
   public static final String LOG = "ParserGenerator";
   
@@ -89,16 +88,9 @@ public class ParserGenerator {
     // TODO: grammarInfo as parameter for this method?
     MCGrammarInfo grammarInfo = new MCGrammarInfo(genHelper.getGrammarSymbol());
     
-    final GeneratorEngine generator = new GeneratorEngine(setup);
-    
-    String simpleName = TransformationHelper.existsHandwrittenClass(handcodedPath,
-        GeneratorHelper.getDotPackageName(genHelper.getParserPackage()) + astGrammar.getName()
-            + "Parser") ? astGrammar.getName()
-        + "" : astGrammar.getName();
-    
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getParserPackage()),
-        simpleName + ".g4");
-    generator.generate("parser.Parser", filePath, astGrammar, new Grammar2Antlr(genHelper,
+        astGrammar.getName() + "Antlr.g4");
+    new GeneratorEngine(setup).generate("parser.Parser", filePath, astGrammar, new Grammar2Antlr(genHelper,
         grammarInfo));
     
     // construct parser, lexer, ... (antlr), 
@@ -138,23 +130,13 @@ public class ParserGenerator {
     setup.setGlex(glex);
     
     final GeneratorEngine generator = new GeneratorEngine(setup);
-    // Retrieve data
-    for (MCRuleSymbol rule : genHelper.getGrammarSymbol().getRulesWithInherited().values()) {
-      final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getParserPackage()), rule.getName() + "MCParser.java");
-      if (rule.getAstNode().isPresent() && genHelper.generateParserForRule(rule)) {
-        generator.generate("parser.MCConcreteParser", filePath, rule.getAstNode().get(), rule);
-      }
-    }
-    
-    // Generate Factory for wrapper methods
-    String parserFactorySuffix = TransformationHelper.existsHandwrittenClass(handcodedPath,
+    // Generate wrapper
+    String parserWrapperSuffix = TransformationHelper.existsHandwrittenClass(handcodedPath,
         GeneratorHelper.getDotPackageName(genHelper.getParserPackage()) + astGrammar.getName()
-            + PARSER_FACTORY) ? TransformationHelper.GENERATED_CLASS_SUFFIX : "";
-    final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getParserPackage()),
-        astGrammar.getName() + PARSER_FACTORY + parserFactorySuffix + ".java");
-    generator.generate("parser.ParserFactory", filePath, astGrammar, astGrammar,
-        parserFactorySuffix, genHelper.getGrammarSymbol().getRulesWithInherited().values());
-
+            + PARSER_WRAPPER) ? TransformationHelper.GENERATED_CLASS_SUFFIX : "";
+    final Path path = Paths.get(Names.getPathFromPackage(genHelper.getParserPackage()), astGrammar.getName() + "Parser" + parserWrapperSuffix + ".java");
+    generator.generate("parser.MCParser", path, astGrammar, astGrammar, 
+        parserWrapperSuffix, genHelper.getGrammarSymbol().getRulesWithInherited().values());
   }
   
   private ParserGenerator() {

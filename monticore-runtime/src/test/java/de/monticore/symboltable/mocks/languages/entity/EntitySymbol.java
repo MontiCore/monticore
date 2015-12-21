@@ -19,11 +19,11 @@
 
 package de.monticore.symboltable.mocks.languages.entity;
 
+import java.util.Collection;
 import java.util.Optional;
+
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.types.CommonJTypeSymbol;
-
-import java.util.Collection;
 
 /**
  * TODO: Write me!
@@ -44,6 +44,11 @@ public class EntitySymbol extends CommonJTypeSymbol<EntitySymbol, PropertySymbol
   @Override
   protected MutableScope createSpannedScope() {
     return new EntityScope(this);
+  }
+
+  @Override
+  public EntityScope getSpannedScope() {
+    return (EntityScope) super.getSpannedScope();
   }
 
   public Optional<ActionSymbol> getAction(String actionName) {

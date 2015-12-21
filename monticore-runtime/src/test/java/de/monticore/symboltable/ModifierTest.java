@@ -19,8 +19,12 @@
 
 package de.monticore.symboltable;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+
+import java.util.Set;
+
 import com.google.common.collect.Sets;
-import de.monticore.symboltable.mocks.languages.JTypeSymbolMock;
 import de.monticore.symboltable.mocks.languages.entity.EntitySymbol;
 import de.monticore.symboltable.mocks.languages.entity.PropertySymbol;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
@@ -31,11 +35,6 @@ import de.monticore.symboltable.types.references.CommonJTypeReference;
 import de.monticore.symboltable.types.references.JTypeReference;
 import org.junit.Test;
 
-import java.util.Set;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-
 /**
  *
  * @author Pedram Mir Seyed Nazari
@@ -44,7 +43,7 @@ public class ModifierTest {
 
   @Test
   public void test() {
-    EntitySymbol entity = new EntitySymbol("Clazz");
+    EntitySymbol entity = new EntitySymbol("Entity");
 
     final JTypeReference<JTypeSymbol> intReference = new CommonJTypeReference<>("int", JTypeSymbol.KIND, entity.getSpannedScope());
     
@@ -65,11 +64,10 @@ public class ModifierTest {
     entity.addProperty(defaultK);
     entity.addProperty(privateL);
    
-    MutableScope scope = (MutableScope) entity.getSpannedScope();
+    MutableScope scope = entity.getSpannedScope();
     
     Set<ResolvingFilter<? extends Symbol>> resolvingFilters = Sets.newLinkedHashSet();
-    resolvingFilters.add(CommonResolvingFilter.create(PropertySymbol.class, PropertySymbol
-        .KIND));
+    resolvingFilters.add(CommonResolvingFilter.create(PropertySymbol.class, PropertySymbol.KIND));
     scope.setResolvingFilters(resolvingFilters);
     
     // public (is always found)
@@ -100,5 +98,42 @@ public class ModifierTest {
     assertSame(privateL, scope.resolve("l", PropertySymbol.KIND, BasicAccessModifier.PRIVATE).get());
     assertSame(privateL, scope.resolve("l", PropertySymbol.KIND, BasicAccessModifier.ABSENT).get());
   }
-  
+
+
+  public void test2() {
+    EntitySymbol entity = new EntitySymbol("Entity");
+
+    final JTypeReference<JTypeSymbol> intReference = new CommonJTypeReference<>("int", JTypeSymbol.KIND, entity.getSpannedScope());
+
+    PropertySymbol publicI = new PropertySymbol("i", intReference);
+    publicI.setAccessModifier(BasicAccessModifier.PUBLIC);
+
+    PropertySymbol protectedJ = new PropertySymbol("j", intReference);
+    protectedJ.setAccessModifier(BasicAccessModifier.PROTECTED);
+
+    PropertySymbol defaultK = new PropertySymbol("k", intReference);
+    defaultK.setAccessModifier(BasicAccessModifier.PACKAGE_LOCAL);
+
+    PropertySymbol privateL = new PropertySymbol("l", intReference);
+    privateL.setAccessModifier(BasicAccessModifier.PRIVATE);
+
+    entity.addProperty(publicI);
+    entity.addProperty(protectedJ);
+    entity.addProperty(defaultK);
+    entity.addProperty(privateL);
+
+    MutableScope scope = entity.getSpannedScope();
+
+    Set<ResolvingFilter<? extends Symbol>> resolvingFilters = Sets.newLinkedHashSet();
+    resolvingFilters.add(CommonResolvingFilter.create(PropertySymbol.class, PropertySymbol
+        .KIND));
+    scope.setResolvingFilters(resolvingFilters);
+
+    // public (is always found)
+    assertSame(publicI, scope.resolve("i", PropertySymbol.KIND, BasicAccessModifier.PUBLIC).get());
+    assertSame(publicI, scope.resolve("i", PropertySymbol.KIND, BasicAccessModifier.PROTECTED).get());
+    assertSame(publicI, scope.resolve("i", PropertySymbol.KIND, BasicAccessModifier.PACKAGE_LOCAL).get());
+    assertSame(publicI, scope.resolve("i", PropertySymbol.KIND, BasicAccessModifier.PRIVATE).get());
+    assertSame(publicI, scope.resolve("i", PropertySymbol.KIND, BasicAccessModifier.ABSENT).get());
+  }
 }

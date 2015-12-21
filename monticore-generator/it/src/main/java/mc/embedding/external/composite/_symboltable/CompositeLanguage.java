@@ -22,13 +22,11 @@ package mc.embedding.external.composite._symboltable;
 import java.util.Optional;
 
 import de.monticore.EmbeddingModelingLanguage;
-import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.ast.ASTNode;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolverConfiguration;
-import mc.embedding.external.composite._symboltable.Text2ContentResolvingFilter;
-import mc.embedding.external.composite._parser.CompositeParserFactory;
+import mc.embedding.external.composite._parser.CompositeParser;
 import mc.embedding.external.embedded._symboltable.EmbeddedLanguage;
 import mc.embedding.external.host._symboltable.HostLanguage;
 
@@ -43,8 +41,8 @@ public class CompositeLanguage extends EmbeddingModelingLanguage {
     addResolver(new Text2ContentResolvingFilter());
   }
 
-  @Override public MCConcreteParser getParser() {
-    return CompositeParserFactory.createHostMCParser();
+  @Override public CompositeParser getParser() {
+    return new CompositeParser();
   }
 
   @Override public Optional<CompositeSymbolTableCreator> getSymbolTableCreator(

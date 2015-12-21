@@ -54,8 +54,7 @@ public class MCGrammarSymbolTableHelper {
 
     Grammar_WithConceptsPrettyPrinter prettyPrinter = new Grammar_WithConceptsPrettyPrinter(new IndentPrinter());
 
-    MutableScope globalScope = new GlobalScope(modelPath, grammarLanguage.getModelLoader(),
-        resolverConfiguration);
+    MutableScope globalScope = new GlobalScope(modelPath, grammarLanguage, resolverConfiguration);
     MCGrammarSymbolTableCreator symbolTableCreator = new MCGrammarSymbolTableCreator
         (resolverConfiguration, globalScope, prettyPrinter);
 

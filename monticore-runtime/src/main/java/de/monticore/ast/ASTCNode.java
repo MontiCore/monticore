@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.common.collect.Lists;
-
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.SourcePosition;
@@ -36,7 +35,6 @@ import de.se_rwth.commons.logging.Log;
  * 
  * @author krahn, volkova
  */
-// STATE OK *
 public abstract class ASTCNode implements ASTNode, Cloneable {
   
   protected Optional<SourcePosition> start = Optional.empty();

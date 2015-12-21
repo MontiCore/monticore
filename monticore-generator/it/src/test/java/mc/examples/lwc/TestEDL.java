@@ -27,6 +27,10 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.Optional;
 
+import org.junit.Test;
+
+import com.google.common.collect.Lists;
+
 import mc.GeneratorIntegrationsTest;
 import mc.examples.lwc.edl.edl._ast.ASTEDLCompilationUnit;
 import mc.examples.lwc.edl.edl._ast.ASTEntity;
@@ -34,20 +38,15 @@ import mc.examples.lwc.edl.edl._ast.ASTIntLiteral;
 import mc.examples.lwc.edl.edl._ast.ASTQualifiedName;
 import mc.examples.lwc.edl.edl._ast.ASTReferenceType;
 import mc.examples.lwc.edl.edl._ast.ASTStringLiteral;
-import mc.examples.lwc.edl.edl._parser.EDLCompilationUnitMCParser;
-import mc.examples.lwc.edl.edl._parser.EDLParserFactory;
-
-import org.junit.Test;
-
-import com.google.common.collect.Lists;
+import mc.examples.lwc.edl.edl._parser.EDLParser;
 
 public class TestEDL extends GeneratorIntegrationsTest {
   
   @Test
   public void testParser() throws IOException {
-    EDLCompilationUnitMCParser parser = EDLParserFactory.createEDLCompilationUnitMCParser();
+    EDLParser parser = new EDLParser();
     Optional<ASTEDLCompilationUnit> ast = parser
-        .parse("src/test/resources/examples/lwc/edl/Car.edl");
+        .parseEDLCompilationUnit("src/test/resources/examples/lwc/edl/Car.edl");
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertNotNull(ast.get().getEntity());

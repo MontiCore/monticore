@@ -24,16 +24,10 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.io.StringReader;
 
-import mc.GeneratorIntegrationsTest;
-import mc.feature.listrule.listrule._parser.ListRuleParserFactory;
-import mc.feature.listrule.listrule._parser.Parent2MCParser;
-import mc.feature.listrule.listrule._parser.Parent3MCParser;
-import mc.feature.listrule.listrule._parser.Parent4MCParser;
-import mc.feature.listrule.listrule._parser.Parent5MCParser;
-import mc.feature.listrule.listrule._parser.Parent6MCParser;
-import mc.feature.listrule.listrule._parser.ParentMCParser;
-
 import org.junit.Test;
+
+import mc.GeneratorIntegrationsTest;
+import mc.feature.listrule.listrule._parser.ListRuleParser;
 
 public class ListRuleTest extends GeneratorIntegrationsTest {
   
@@ -41,8 +35,8 @@ public class ListRuleTest extends GeneratorIntegrationsTest {
   public void testParent1() throws IOException {
     StringReader s = new StringReader(
         "P1 a, P1 b");
-    ParentMCParser p = ListRuleParserFactory.createParentMCParser();
-    p.parse(s);
+    ListRuleParser p = new ListRuleParser();
+    p.parseParent(s);
     
     assertEquals(false, p.hasErrors());
     
@@ -57,8 +51,8 @@ public class ListRuleTest extends GeneratorIntegrationsTest {
   public void testParent2() throws IOException {
     StringReader s = new StringReader(
         "Parent2 P2 a, P2 b Parent2");
-    Parent2MCParser p = ListRuleParserFactory.createParent2MCParser();
-    p.parse(s);
+    ListRuleParser p = new ListRuleParser();
+    p.parseParent2(s);
     
     assertEquals(false, p.hasErrors());
   }
@@ -67,8 +61,8 @@ public class ListRuleTest extends GeneratorIntegrationsTest {
   public void testParent3() throws IOException {
     StringReader s = new StringReader(
         "P3 a, P3 b");
-    Parent3MCParser p = ListRuleParserFactory.createParent3MCParser();
-    p.parse(s);
+    ListRuleParser p = new ListRuleParser();
+    p.parseParent3(s);
     
     assertEquals(false, p.hasErrors());
   }
@@ -77,14 +71,14 @@ public class ListRuleTest extends GeneratorIntegrationsTest {
   public void testParent4() throws IOException {
     StringReader s = new StringReader(
         "P4 a, P4 b");
-    Parent4MCParser p = ListRuleParserFactory.createParent4MCParser();
-    p.parse(s);
+    ListRuleParser p = new ListRuleParser();
+    p.parseParent4(s);
     
     assertEquals(false, p.hasErrors());
     
     // Empty lists are allowed
     s = new StringReader("");
-    p.parse(s);
+    p.parseParent4(s);
     
     assertEquals(false, p.hasErrors());
   }
@@ -93,8 +87,8 @@ public class ListRuleTest extends GeneratorIntegrationsTest {
   public void testParent5() throws IOException {
     StringReader s = new StringReader(
         "P5 a, P5 b");
-    Parent5MCParser p = ListRuleParserFactory.createParent5MCParser();
-    p.parse(s);
+    ListRuleParser p = new ListRuleParser();
+    p.parseParent5(s);
     
     assertEquals(false, p.hasErrors());
   }
@@ -103,8 +97,8 @@ public class ListRuleTest extends GeneratorIntegrationsTest {
   public void testParent6() throws IOException {
     StringReader s = new StringReader(
         "a, P1");
-    Parent6MCParser p = ListRuleParserFactory.createParent6MCParser();
-    p.parse(s);
+    ListRuleParser p = new ListRuleParser();
+    p.parseParent6(s);
     
     assertEquals(false, p.hasErrors());
   }}

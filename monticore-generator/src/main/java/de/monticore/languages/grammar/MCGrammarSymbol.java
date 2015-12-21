@@ -47,12 +47,11 @@ import de.monticore.grammar.grammar._ast.ASTRuleComponent;
 import de.monticore.languages.grammar.attributeinfos.MCAttributeInfo;
 import de.monticore.languages.grammar.symbolreferences.MCExternalTypeSymbolReference;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
-import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.references.SymbolReference;
-import de.se_rwth.commons.Names;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -114,18 +113,6 @@ public class MCGrammarSymbol extends CommonScopeSpanningSymbol {
 
   protected MCGrammarSymbol(String name) {
     super(name, KIND);
-  }
-
-  // TODO PN use default implementation of super
-  @Override
-  public String getFullName() {
-    return getName();
-  }
-
-  // TODO PN use default implementation of super
-  @Override
-  public String getPackageName() {
-    return Names.getQualifier(getName());
   }
 
   public List<Symbol> getChildren() {
@@ -325,7 +312,7 @@ public class MCGrammarSymbol extends CommonScopeSpanningSymbol {
   public void addRule(MCRuleSymbol ruleSymbol) {
     if (getRule(ruleSymbol.getName()) != null) {
       Log.debug("Rule '" + ruleSymbol.getName() + "' already defined in grammar symbol '" +
-          getName() + "'", MCGrammarSymbol.class.getSimpleName());
+          getFullName() + "'", MCGrammarSymbol.class.getSimpleName());
     }
 
     this.spannedScope.add(ruleSymbol);
@@ -483,7 +470,7 @@ public class MCGrammarSymbol extends CommonScopeSpanningSymbol {
     // getClassnameFromRulenameorInterfacename(a, MCConstants.AST);
     String classNameFromRuleNameOrInterfaceNamee = "";
     if (ruleByName == null) {
-      Log.error("0xA2351 Asking for rule or interface '" + a + "' in grammar '" + getName() + "' "
+      Log.error("0xA2351 Asking for rule or interface '" + a + "' in grammar '" + getFullName() + "' "
           + "which is non-existing!");
     }
     else {
@@ -504,7 +491,7 @@ public class MCGrammarSymbol extends CommonScopeSpanningSymbol {
         (a, GeneratorHelper.AST_PREFIX);
 
     if (classNameFromRuleNameOrInterfaceName == null) {
-      Log.error("0xA2350 Asking for rule or interface '" + a + "' in grammar '" + getName() + "' "
+      Log.error("0xA2350 Asking for rule or interface '" + a + "' in grammar '" + getFullName() + "' "
           + "which is non-existing!");
     }
     return classNameFromRuleNameOrInterfaceName;
@@ -574,7 +561,7 @@ public class MCGrammarSymbol extends CommonScopeSpanningSymbol {
    */
   // TODO PN Move to a class, such as CodeGenInfoForGrammar?
   public String getConstantClassName() {
-    return getName().toLowerCase() +
+    return getFullName().toLowerCase() +
         GeneratorHelper.AST_PACKAGE_SUFFIX_DOT + "."
         + getConstantClassSimpleName();
 
@@ -659,7 +646,7 @@ public class MCGrammarSymbol extends CommonScopeSpanningSymbol {
   }
 
   public String getSimpleName() {
-    return Names.getSimpleName(getName());
+    return getName();
   }
 
   public void setStartRule(MCRuleSymbol startRule) {
@@ -690,10 +677,10 @@ public class MCGrammarSymbol extends CommonScopeSpanningSymbol {
     //      return getBestKnownVersion().equals(other.getBestKnownVersion());
     //    }
 
-    if ((getName() == null) && (other.getName() != null)) {
+    if ((getFullName() == null) && (other.getFullName() != null)) {
       return false;
     }
-    else if (!getName().equals(other.getName())) {
+    else if (!getFullName().equals(other.getFullName())) {
       return false;
     }
     return true;
@@ -703,7 +690,7 @@ public class MCGrammarSymbol extends CommonScopeSpanningSymbol {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
+    result = prime * result + ((getFullName() == null) ? 0 : getFullName().hashCode());
     return result;
   }
 

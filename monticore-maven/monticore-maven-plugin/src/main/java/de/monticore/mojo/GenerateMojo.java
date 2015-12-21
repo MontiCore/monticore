@@ -18,30 +18,14 @@
  */
 package de.monticore.mojo;
 
-import static com.google.common.base.MoreObjects.firstNonNull;
-import static de.monticore.MontiCoreConfiguration.Options.FORCE;
-import static de.monticore.MontiCoreConfiguration.Options.GRAMMARS;
-import static de.monticore.MontiCoreConfiguration.Options.HANDCODEDPATH;
-import static de.monticore.MontiCoreConfiguration.Options.MODELPATH;
-import static de.monticore.MontiCoreConfiguration.Options.OUT;
-import static de.monticore.MontiCoreConfiguration.Options.OUTTOMODELPATH;
-import static de.monticore.MontiCoreConfiguration.Options.TEMPLATEPATH;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.Set;
-
+import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
+import de.monticore.MontiCoreConfiguration;
+import de.monticore.MontiCoreScript;
+import de.se_rwth.commons.configuration.Configuration;
+import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
@@ -53,15 +37,14 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
-import com.google.common.base.Throwables;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.util.*;
 
-import de.monticore.MontiCoreConfiguration;
-import de.monticore.MontiCoreScript;
-import de.se_rwth.commons.configuration.Configuration;
-import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
+import static com.google.common.base.MoreObjects.firstNonNull;
+import static de.monticore.MontiCoreConfiguration.Options.*;
 
 /**
  * Invokes {@link MontiCore} using the given configuration parameters.
@@ -196,15 +179,15 @@ public final class GenerateMojo extends AbstractMojo {
     
     ImmutableSet<File> templatePathFiles = templatePathsBuilder.build();
     return templatePathFiles.isEmpty()
-        ? ImmutableSet.of(getDefaultTemplatePath())
+        ? getDefaultTemplatePath().map(ImmutableSet::of).orElse(ImmutableSet.of())
         : templatePathFiles;
   }
   
   /**
-   * @return the default path for templates.
+   * @return the default path for templates. Returns empty if the directory doesn't exist.
    */
-  public File getDefaultTemplatePath() {
-    return fromBasePath("src/main/resources");
+  public Optional<File> getDefaultTemplatePath() {
+    return Optional.of(fromBasePath("src/main/resources")).filter(File::exists);
   }
   
   /**

@@ -25,7 +25,7 @@ import java.util.List;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.HookPoint;
-import de.monticore.symboltable.CommonScope;
+import de.monticore.symboltable.Scope;
 
 /**
  * TODO: Write me!
@@ -275,7 +275,7 @@ public interface IReportEventHandler {
    * TODO: Write me!
    * @param scope
    */
-  public void reportSymbolTable(CommonScope scope);
+  public void reportSymbolTableScope(Scope scope);
 
   /**
    * TODO: Write me!

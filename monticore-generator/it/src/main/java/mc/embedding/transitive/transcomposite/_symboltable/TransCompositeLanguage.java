@@ -27,13 +27,12 @@ package mc.embedding.transitive.transcomposite._symboltable;
 
 import java.util.Optional;
 
-import mc.embedding.composite._symboltable.CompositeLanguage;
-import mc.embedding.transitive.transcomposite._parser.TransCompositeParserFactory;
-import mc.embedding.transitive.transcomposite._parser.TransStartMCParser;
-import mc.embedding.transitive.transhost._symboltable.TransHostLanguage;
 import de.monticore.EmbeddingModelingLanguage;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolverConfiguration;
+import mc.embedding.composite._symboltable.CompositeLanguage;
+import mc.embedding.transitive.transcomposite._parser.TransCompositeParser;
+import mc.embedding.transitive.transhost._symboltable.TransHostLanguage;
 
 public class TransCompositeLanguage extends EmbeddingModelingLanguage {
 
@@ -45,8 +44,8 @@ public class TransCompositeLanguage extends EmbeddingModelingLanguage {
   }
 
   @Override
-  public TransStartMCParser getParser() {
-    return TransCompositeParserFactory.createTransStartMCParser();
+  public TransCompositeParser getParser() {
+    return new TransCompositeParser();
   }
 
 

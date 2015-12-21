@@ -27,11 +27,12 @@ import java.nio.file.Paths;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.ResolverConfiguration;
+import mc.GeneratorIntegrationsTest;
 import mc.embedding.host._symboltable.HostLanguage;
 import mc.embedding.host._symboltable.HostSymbol;
 import org.junit.Test;
 
-public class HostTest {
+public class HostTest extends GeneratorIntegrationsTest {
 
   @Test
   public void test() {
@@ -41,7 +42,7 @@ public class HostTest {
 
     final ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/embedding"));
 
-    final GlobalScope scope = new GlobalScope(modelPath, language.getModelLoader(), resolverConfiguration);
+    final GlobalScope scope = new GlobalScope(modelPath, language, resolverConfiguration);
 
     HostSymbol hostSymbol = scope.<HostSymbol>resolve("H", HostSymbol.KIND).orElse(null);
     assertNotNull(hostSymbol);

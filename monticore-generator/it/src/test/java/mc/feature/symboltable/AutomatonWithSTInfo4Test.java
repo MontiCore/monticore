@@ -21,6 +21,7 @@ package mc.feature.symboltable;
 
 import static org.junit.Assert.assertFalse;
 
+import mc.GeneratorIntegrationsTest;
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.AutomatonElementKind;
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.AutomatonElementResolvingFilter;
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.AutomatonElementSymbol;
@@ -42,7 +43,7 @@ import mc.feature.symboltable.automatonwithstinfo4._symboltable.StateSymbolEMPTY
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.StateSymbolReference;
 import org.junit.Test;
 
-public class AutomatonWithSTInfo4Test {
+public class AutomatonWithSTInfo4Test extends GeneratorIntegrationsTest {
 
   /**
    * This test ensures that all expected classes are generated. Otherwise, the test will not compile

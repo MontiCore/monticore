@@ -19,15 +19,16 @@
 
 package de.monticore.symboltable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import com.google.common.collect.FluentIterable;
 import de.monticore.ModelNameCalculator;
 import de.monticore.ModelingLanguage;
 import de.monticore.ModelingLanguageFamily;
@@ -37,7 +38,9 @@ import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.symboltable.resolving.AdaptedResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingInfo;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
+import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -48,19 +51,19 @@ public final class GlobalScope extends CommonScope {
   private final ModelPath modelPath;
   private final ResolverConfiguration resolverConfiguration;
 
-  private final Set<ModelingLanguageModelLoader<? extends ASTNode>> modelLoaders = new LinkedHashSet<>();
+  private final Set<ModelingLanguage> modelingLanguages = new LinkedHashSet<>();
 
   private final Map<String, Set<ModelingLanguageModelLoader<? extends ASTNode>>> modelName2ModelLoaderCache = new HashMap<>();
 
-  public GlobalScope(final ModelPath modelPath, final Collection <ModelingLanguageModelLoader<? extends ASTNode>> modelLoaders,
+  public GlobalScope(final ModelPath modelPath, final Collection <ModelingLanguage> modelingLanguages,
       final ResolverConfiguration resolverConfiguration) {
     super(Optional.empty(), true);
 
     this.modelPath = Log.errorIfNull(modelPath);
     this.resolverConfiguration = Log.errorIfNull(resolverConfiguration);
-    this.modelLoaders.addAll(Log.errorIfNull(modelLoaders));
+    this.modelingLanguages.addAll(Log.errorIfNull(modelingLanguages));
 
-    if (modelLoaders.isEmpty()) {
+    if (modelingLanguages.isEmpty()) {
       Log.warn(GlobalScope.class.getSimpleName() + ": 0xA1044 No model loaders defined. This hampers the "
           + "loading of models.");
     }
@@ -68,13 +71,13 @@ public final class GlobalScope extends CommonScope {
     setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
   }
 
-  public GlobalScope(final ModelPath modelPath, final ModelingLanguageModelLoader<? extends ASTNode>
-      modelLoader, ResolverConfiguration resolverConfiguration) {
-    this(modelPath, Collections.singletonList(modelLoader), resolverConfiguration);
+  public GlobalScope(final ModelPath modelPath, final ModelingLanguage mo,
+      ResolverConfiguration resolverConfiguration) {
+    this(modelPath, Collections.singletonList(mo), resolverConfiguration);
   }
 
   public GlobalScope(final ModelPath modelPath, ModelingLanguageFamily languageFamily) {
-    this(modelPath, languageFamily.getAllModelLoaders(), new ResolverConfiguration());
+    this(modelPath, languageFamily.getModelingLanguages(), new ResolverConfiguration());
 
     resolverConfiguration.addTopScopeResolvers(languageFamily.getAllResolvers());
     setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
@@ -87,14 +90,14 @@ public final class GlobalScope extends CommonScope {
   }
 
   @Override
-  public <T extends Symbol> Optional<T> resolve(final ResolvingInfo resolvingInfo,
+  public <T extends Symbol> Collection<T> resolveMany(final ResolvingInfo resolvingInfo,
       final String symbolName, final SymbolKind kind) {
     resolvingInfo.addInvolvedScope(this);
 
     // First, try to resolve the symbol in the current scope and its sub scopes.
-    Optional<T> resolvedSymbol = resolveDown(symbolName, kind);
+    Collection<T> resolvedSymbol = resolveDownMany(new ResolvingInfo(getResolvingFilters()), symbolName, kind);
 
-    if (resolvedSymbol.isPresent()) {
+    if (!resolvedSymbol.isEmpty()) {
       return resolvedSymbol;
     }
 
@@ -102,34 +105,33 @@ public final class GlobalScope extends CommonScope {
     // Symbol not found: try to load corresponding model and build its symbol table
     // TODO PN Optimize: if no further models have been loaded, we can stop here. There is no need
     // to resolveDown again
-    loadWithModelLoadersAndAddToScope(resolvingInfo, symbolName, kind);
-    
+    loadModels(resolvingInfo.getResolvingFilters(), symbolName, kind);
+
     // Maybe the symbol now exists in this scope (resp. its sub scopes). So, resolve down, again.
-    resolvedSymbol = resolveDown(symbolName, kind);
-    
+    resolvedSymbol = resolveDownMany(new ResolvingInfo(getResolvingFilters()), symbolName, kind);
+
     return resolvedSymbol;
   }
 
-  private void loadWithModelLoadersAndAddToScope(
-      final ResolvingInfo resolvingInfo, final String symbolName, final SymbolKind kind) {
+  protected void loadModels(final Collection<ResolvingFilter<? extends Symbol>> resolvingFilters, final String symbolName, final SymbolKind kind) {
 
     // TODO PN optimize
 
-    for (final ModelingLanguageModelLoader<? extends ASTNode> modelLoader : modelLoaders) {
-      final ModelingLanguage modelingLanguage = modelLoader.getModelingLanguage();
+    for (final ModelingLanguage modelingLanguage : modelingLanguages) {
       final ModelNameCalculator modelNameCalculator = modelingLanguage.getModelNameCalculator();
+      final ModelingLanguageModelLoader<? extends ASTNode> modelLoader = modelingLanguage.getModelLoader();
 
       final Collection<ResolvingFilter<? extends Symbol>> resolversForKind = ResolvingFilter
-          .getFiltersForTargetKind(resolvingInfo.getResolvingFilters(), kind);
+          .getFiltersForTargetKind(resolvingFilters, kind);
 
       for (final ResolvingFilter<? extends Symbol> resolvingFilter : resolversForKind) {
         final SymbolKind kindForCalc = getSymbolKindByResolvingFilter(kind, resolvingFilter);
 
-        final Optional<String> calculatedModelName = modelNameCalculator.calculateModelName(symbolName, kindForCalc);
+        final Set<String> calculatedModelName = modelNameCalculator.calculateModelNames(symbolName, kindForCalc);
 
-        if (calculatedModelName.isPresent() && continueWithModelLoader(calculatedModelName.get(), modelLoader)) {
-          modelLoader.loadAmbiguousModelAndCreateSymbolTable(calculatedModelName.get(), modelPath, this, resolverConfiguration);
-          cache(modelLoader, calculatedModelName.get());
+        if (!calculatedModelName.isEmpty() && continueWithModelLoader(calculatedModelName.iterator().next(), modelLoader)) {
+          modelLoader.loadModelsIntoScope(calculatedModelName.iterator().next(), modelPath, this, resolverConfiguration);
+          cache(modelLoader, calculatedModelName.iterator().next());
         }
         else {
           Log.debug("Model for '" + symbolName + "' already exists. No need to load it.", GlobalScope.class.getSimpleName());
@@ -140,7 +142,7 @@ public final class GlobalScope extends CommonScope {
     }
   }
 
-  // TODO PN wrtie tests
+  // TODO PN write tests
   public void cache(ModelingLanguageModelLoader<? extends ASTNode> modelLoader, String calculatedModelName) {
     if (modelName2ModelLoaderCache.containsKey(calculatedModelName)) {
       modelName2ModelLoaderCache.get(calculatedModelName).add(modelLoader);
@@ -189,37 +191,52 @@ public final class GlobalScope extends CommonScope {
   }
 
   @Override
-  public <T extends Symbol> List<T> resolveDownMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind) {
-    List<T> resolved = resolveDownManyLocally(resolvingInfo, name, kind);
-    Log.trace("Start resolveDownMany(\"" + name + "\", " + "\"" + kind.getName() + "\"). "
-        + "Found #" + resolved.size() + " (local)", GlobalScope.class.getSimpleName());
-
-    // TODO PN Doc if a symbol is found, resolving is stopped.
-    if (!resolved.isEmpty()) {
-      Log.trace("END resolveDownMany(\"" + name + "\", " + "\"" + kind.getName() + "\") in scope \"" +
-          getName() + "\". Found #" + resolved.size() , "");
-      return resolved;
+  protected <T extends Symbol> Collection<T> continueWithSubScope(MutableScope subScope, ResolvingInfo resolvingInfo, String symbolName, SymbolKind kind) {
+    if (checkIfContinueWithSubScope(symbolName, subScope)) {
+      if (subScope instanceof ArtifactScope) {
+        return continueWithArtifactScope((ArtifactScope) subScope, resolvingInfo, symbolName, kind);
+      }
+      else {
+        return super.continueWithSubScope(subScope, resolvingInfo, symbolName, kind);
+      }
     }
 
-    for (Scope scope : getSubScopes()) {
-      if (scope instanceof ArtifactScope) {
-        final String packageCU = ((ArtifactScope)scope).getPackageName();
-        final String symbolPackage = Names.getQualifier(name);
+    return new ArrayList<>();
+  }
+
+  @Override
+  protected boolean checkIfContinueWithSubScope(String symbolName, MutableScope subScope) {
+    if(subScope.exportsSymbols()) {
+      if (subScope instanceof ArtifactScope) {
+        final String packageCU = ((ArtifactScope)subScope).getPackageName();
+        final String symbolPackage = Names.getQualifier(symbolName);
 
         if (symbolPackage.startsWith(packageCU)) {
-          resolved.addAll(((MutableScope) scope).resolveDownMany(resolvingInfo, name, kind));
+          // TODO PN compare name parts, to exclude cases like "a.bb".startsWith("a.b")
+          return true;
         }
       }
       else {
         // This case only occurs if a model does not have an artifact scope.
-        resolved.addAll(((MutableScope) scope).resolveDownMany(resolvingInfo, name, kind));
+        return super.checkIfContinueWithSubScope(symbolName, subScope);
       }
     }
 
-    Log.trace("END resolveDownMany(\"" + name + "\", " + "\"" + kind.getName() + "\"). "
-        + "Found #" + resolved.size() , GlobalScope.class.getSimpleName());
-
-    return resolved;
+    return false;
   }
 
+  protected <T extends Symbol> Collection<T> continueWithArtifactScope(ArtifactScope subScope, ResolvingInfo resolvingInfo, String symbolName, SymbolKind kind) {
+    final String packageAS = subScope.getPackageName();
+    final FluentIterable<String> packageASNameParts = FluentIterable.from(Splitters.DOT.omitEmptyStrings().split(packageAS));
+
+    final FluentIterable<String> symbolNameParts = FluentIterable.from(Splitters.DOT.split(symbolName));
+    String remainingSymbolName = symbolName;
+
+    if (symbolNameParts.size() > packageASNameParts.size()) {
+      remainingSymbolName = Joiners.DOT.join(symbolNameParts.skip(packageASNameParts.size()));
+    }
+    // TODO PN else?
+
+    return subScope.resolveDownMany(resolvingInfo, remainingSymbolName, kind);
+  }
 }

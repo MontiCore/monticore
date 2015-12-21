@@ -22,6 +22,7 @@ package de.monticore.codegen.mc2cd;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static de.monticore.codegen.GeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;
+import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -33,14 +34,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import de.monticore.ast.ASTNode;
-
-import org.antlr.v4.runtime.RecognitionException;
-
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-
+import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
@@ -64,6 +61,7 @@ import de.monticore.types.types._ast.ASTVoidType;
 import de.monticore.types.types._ast.TypesNodeFactory;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCD4AnalysisNode;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttributeList;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
@@ -77,6 +75,7 @@ import de.monticore.umlcd4a.prettyprint.CDPrettyPrinterConcreteVisitor;
 import de.monticore.utils.ASTNodes;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
+import org.antlr.v4.runtime.RecognitionException;
 
 public final class TransformationHelper {
   
@@ -119,8 +118,9 @@ public final class TransformationHelper {
   // TODO: should be placed somewhere in the UML/P CD project
   public static String prettyPrint(ASTCD4AnalysisNode astNode) {
     // set up objects
-    CDPrettyPrinterConcreteVisitor prettyPrinter = new CDPrettyPrinterConcreteVisitor(new IndentPrinter());
-    
+    CDPrettyPrinterConcreteVisitor prettyPrinter = new CDPrettyPrinterConcreteVisitor(
+        new IndentPrinter());
+        
     // run, check result and return
     String prettyPrintedAst = prettyPrinter.prettyprint(astNode);
     checkArgument(!isNullOrEmpty(prettyPrintedAst));
@@ -211,7 +211,7 @@ public final class TransformationHelper {
       String typeName, String... generics) {
     ASTSimpleReferenceType reference = TypesNodeFactory
         .createASTSimpleReferenceType();
-    
+        
     // set the name of the type
     ArrayList<String> name = new ArrayList<String>();
     name.add(typeName);
@@ -236,12 +236,12 @@ public final class TransformationHelper {
   }
   
   public static String getAstPackageName(MCGrammarSymbol grammar) {
- //   return grammar.getName().toLowerCase() + AST_DOT_PACKAGE_SUFFIX_DOT;
+    // return grammar.getName().toLowerCase() + AST_DOT_PACKAGE_SUFFIX_DOT;
     return getPackageName(grammar);
   }
   
   public static String getPackageName(MCGrammarSymbol grammar) {
-    return grammar.getName() + ".";
+    return grammar.getFullName() + ".";
   }
   
   public static String getAstPackageName(
@@ -251,7 +251,8 @@ public final class TransformationHelper {
     if (!packageName.isEmpty()) {
       packageName = packageName + ".";
     }
-    return packageName + cdCompilationUnit.getCDDefinition().getName().toLowerCase() + AST_DOT_PACKAGE_SUFFIX_DOT;
+    return packageName + cdCompilationUnit.getCDDefinition().getName().toLowerCase()
+        + AST_DOT_PACKAGE_SUFFIX_DOT;
   }
   
   public static String getPackageName(
@@ -290,7 +291,7 @@ public final class TransformationHelper {
   
   public static java.util.Optional<ASTCDAttribute> createAttributeUsingCdParser(
       String toParse)
-      throws RecognitionException, IOException {
+          throws RecognitionException, IOException {
     checkArgument(!Strings.isNullOrEmpty(toParse));
     java.util.Optional<ASTCDAttribute> astCDAttribute = CD4AnalysisParserFactory
         .createCDAttributeMCParser()
@@ -299,8 +300,8 @@ public final class TransformationHelper {
   }
   
   /**
-   * Checks if a handwritten class with the given qualifiedName (dot-separated) exists on the target
-   * path
+   * Checks if a handwritten class with the given qualifiedName (dot-separated)
+   * exists on the target path
    * 
    * @param qualifiedName name of the class to search for
    * @return true if a handwritten class with the qualifiedName exists
@@ -312,11 +313,13 @@ public final class TransformationHelper {
         + DEFAULT_FILE_EXTENSION);
     Log.debug("Checking existence of handwritten class " + qualifiedName
         + " by searching for "
-        + handwrittenFile.toString(), TransformationHelper.class.getName());    
+        + handwrittenFile.toString(), TransformationHelper.class.getName());
     boolean result = targetPath.exists(handwrittenFile);
     if (result) {
-      Reporting.reportUseHandwrittenCodeFile(targetPath.getResolvedPath(handwrittenFile).get(), handwrittenFile);
-    } else {
+      Reporting.reportUseHandwrittenCodeFile(targetPath.getResolvedPath(handwrittenFile).get(),
+          handwrittenFile);
+    }
+    else {
       Reporting.reportUseHandwrittenCodeFile(null, handwrittenFile);
     }
     return result;
@@ -325,12 +328,12 @@ public final class TransformationHelper {
   public static String getQualifiedTypeNameAndMarkIfExternal(
       ASTGenericType ruleReference,
       ASTMCGrammar grammar, ASTCDClass cdClass) {
-    
+      
     Optional<MCRuleSymbol> typeSymbol = resolveAstRuleType(ruleReference);
     
     String qualifiedRuleName = getQualifiedAstName(
         typeSymbol, ruleReference, grammar);
-    
+        
     if (!typeSymbol.isPresent()) {
       addStereoType(cdClass,
           MC2CDStereotypes.EXTERNAL_TYPE.toString(), qualifiedRuleName);
@@ -343,12 +346,12 @@ public final class TransformationHelper {
   public static String getQualifiedTypeNameAndMarkIfExternal(
       ASTGenericType ruleReference,
       ASTMCGrammar grammar, ASTCDInterface interf) {
-    
+      
     Optional<MCRuleSymbol> typeSymbol = resolveAstRuleType(ruleReference);
     
     String qualifiedRuleName = getQualifiedAstName(
         typeSymbol, ruleReference, grammar);
-    
+        
     if (!typeSymbol.isPresent()) {
       addStereoType(interf,
           MC2CDStereotypes.EXTERNAL_TYPE.toString(), qualifiedRuleName);

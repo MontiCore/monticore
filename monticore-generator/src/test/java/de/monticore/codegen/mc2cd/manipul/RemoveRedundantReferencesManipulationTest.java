@@ -32,20 +32,6 @@ import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
 public class RemoveRedundantReferencesManipulationTest {
   
   @Test
-  public void testFilterRedundantReferences() {
-    ASTCDClass cdClass = setupCDClass("name",
-        TransformationHelper.createSimpleReference("ASTReference"), "name",
-        TransformationHelper.createSimpleReference("ASTReferenceList"));
-    
-    assertEquals(2, cdClass.getCDAttributes().size());
-    
-    new RemoveRedundantAttributesManipulation()
-        .removeRedundantAttributes(cdClass.getCDAttributes());
-    
-    assertEquals(1, cdClass.getCDAttributes().size());
-  }
-  
-  @Test
   public void testGenericList() {
     ASTCDClass cdClass = setupCDClass("name",
         TransformationHelper.createSimpleReference("ASTReference"), "name",

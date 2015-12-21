@@ -20,7 +20,9 @@
 package de.monticore.languages.grammar;
 
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.transformation.GrammarTransformer;
 import de.monticore.languages.grammar.visitors.MCGrammarSymbolTableCreator;
+import de.monticore.modelloader.FileBasedAstProvider;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.MutableScope;
@@ -32,6 +34,12 @@ public class MontiCoreGrammarModelLoader extends ModelingLanguageModelLoader<AST
 
   public MontiCoreGrammarModelLoader(MontiCoreGrammarLanguage modelingLanguage) {
     super(modelingLanguage);
+    FileBasedAstProvider<ASTMCGrammar> astProvider = new FileBasedAstProvider<>(modelingLanguage);
+    setAstProvider(modelCoordinate -> {
+      ASTMCGrammar mcGrammar = astProvider.getRootNode(modelCoordinate);
+      GrammarTransformer.transform(mcGrammar);
+      return mcGrammar;
+    });
   }
 
   @Override

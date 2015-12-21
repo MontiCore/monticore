@@ -26,22 +26,21 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
+import org.junit.Test;
+
 import mc.GeneratorIntegrationsTest;
 import mc.feature.compilationunit.compunit._ast.ASTCu;
 import mc.feature.compilationunit.compunit._ast.ASTCuBar;
 import mc.feature.compilationunit.compunit._ast.ASTCuFoo;
-import mc.feature.compilationunit.compunit._parser.CompunitParserFactory;
-import mc.feature.compilationunit.compunit._parser.CuMCParser;
-
-import org.junit.Test;
+import mc.feature.compilationunit.compunit._parser.CompunitParser;
 
 public class ParserTest extends GeneratorIntegrationsTest {
   
   @Test
   public void testFoo() throws IOException {
-    CuMCParser p = CompunitParserFactory.createCuMCParser();
+    CompunitParser p = new CompunitParser();
     
-    Optional<ASTCu> cUnit = p.parse(new StringReader("foo a"));
+    Optional<ASTCu> cUnit = p.parseCu(new StringReader("foo a"));
     assertFalse(p.hasErrors());
     assertTrue(cUnit.isPresent());
     assertTrue(cUnit.get() instanceof ASTCuFoo);
@@ -49,9 +48,9 @@ public class ParserTest extends GeneratorIntegrationsTest {
   
   @Test
   public void testBar() throws IOException {
-    CuMCParser p = CompunitParserFactory.createCuMCParser();
+    CompunitParser p = new CompunitParser();
     
-    Optional<ASTCu> cUnit = p.parse(new StringReader("bar a"));
+    Optional<ASTCu> cUnit = p.parseCu(new StringReader("bar a"));
     assertFalse(p.hasErrors());
     assertTrue(cUnit.isPresent());
     assertTrue(cUnit.get() instanceof ASTCuBar);

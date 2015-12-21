@@ -28,6 +28,7 @@ import java.nio.file.Paths;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.ResolverConfiguration;
+import mc.GeneratorIntegrationsTest;
 import mc.embedding.composite._symboltable.CompositeLanguage;
 import mc.embedding.composite._symboltable.Text2ContentAdapter;
 import mc.embedding.embedded._symboltable.TextSymbol;
@@ -35,7 +36,7 @@ import mc.embedding.host._symboltable.ContentSymbol;
 import mc.embedding.host._symboltable.HostSymbol;
 import org.junit.Test;
 
-public class CompositeTest {
+public class CompositeTest extends GeneratorIntegrationsTest {
 
   @Test
   public void test() {
@@ -45,7 +46,7 @@ public class CompositeTest {
 
     final ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/embedding"));
 
-    final GlobalScope scope = new GlobalScope(modelPath, language.getModelLoader(), resolverConfiguration);
+    final GlobalScope scope = new GlobalScope(modelPath, language, resolverConfiguration);
 
     // Symbol of the host language
     final HostSymbol hostSymbol = scope.<HostSymbol>resolve("ZComposite", HostSymbol.KIND).orElse(null);

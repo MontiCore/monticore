@@ -23,6 +23,7 @@ import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 
+import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
 public class MCErrorListener extends BaseErrorListener {
@@ -37,7 +38,7 @@ public class MCErrorListener extends BaseErrorListener {
   @Override
   public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
 
-    Log.error(_parser.getFilename() + ": " + msg + " in line " + line + " at position " + charPositionInLine);
+    Log.error(_parser.getFilename() + ": " + msg, new SourcePosition(line, charPositionInLine));
 
     _parser.setErrors(true);
   }

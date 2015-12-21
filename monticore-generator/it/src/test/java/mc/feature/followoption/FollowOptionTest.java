@@ -20,20 +20,17 @@
 package mc.feature.followoption;
 
 import static org.junit.Assert.assertEquals;
-import groovyjarjarantlr.TokenStreamException;
 
 import java.io.IOException;
 import java.io.StringReader;
-
-import mc.GeneratorIntegrationsTest;
-import mc.feature.followoption.followoption._parser.AMCParser;
-import mc.feature.followoption.followoption._parser.BMCParser;
-import mc.feature.followoption.followoption._parser.FollowOptionParserFactory;
 
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
 
 import de.monticore.antlr4.MCConcreteParser.ParserExecution;
+import groovyjarjarantlr.TokenStreamException;
+import mc.GeneratorIntegrationsTest;
+import mc.feature.followoption.followoption._parser.FollowOptionParser;
 
 public class FollowOptionTest extends GeneratorIntegrationsTest {
   
@@ -41,9 +38,9 @@ public class FollowOptionTest extends GeneratorIntegrationsTest {
   public void test1() throws IOException {
     
     //-- extractfile gen/FollowOptionTest.x
-    AMCParser simpleAParser = FollowOptionParserFactory.createAMCParser();
+    FollowOptionParser simpleAParser = new FollowOptionParser();
     simpleAParser.setParserTarget(ParserExecution.EOF);
-    simpleAParser.parse(new StringReader("test ,"));
+    simpleAParser.parseA(new StringReader("test ,"));
     assertEquals(false, simpleAParser.hasErrors());
     //-- endfile gen/FollowOptionTest.x
   }
@@ -52,9 +49,9 @@ public class FollowOptionTest extends GeneratorIntegrationsTest {
   public void test2() throws IOException {    
     //-- extractfile gen/FollowOptionTest.x
 
-    BMCParser simpleBParser = FollowOptionParserFactory.createBMCParser();    
+    FollowOptionParser simpleBParser = new FollowOptionParser();
     simpleBParser.setParserTarget(ParserExecution.EOF);
-    simpleBParser.parse(new StringReader("test ,"));
+    simpleBParser.parseB(new StringReader("test ,"));
     assertEquals(true, simpleBParser.hasErrors());
     //-- endfile gen/FollowOptionTest.x
   }
@@ -69,10 +66,10 @@ public class FollowOptionTest extends GeneratorIntegrationsTest {
   @Test
   public void test3() throws IOException {
     
-    BMCParser simpleParser = FollowOptionParserFactory.createBMCParser();
+    FollowOptionParser simpleParser = new FollowOptionParser();
     
     simpleParser.setParserTarget(ParserExecution.EOF);
-    simpleParser.parse(new StringReader(","));
+    simpleParser.parseB(new StringReader(","));
     
     assertEquals(true, simpleParser.hasErrors());
   }
@@ -80,11 +77,11 @@ public class FollowOptionTest extends GeneratorIntegrationsTest {
   @Test
   public void test4() throws IOException {
     
-    AMCParser simpleParser = FollowOptionParserFactory.createAMCParser();
+    FollowOptionParser simpleAParser = new FollowOptionParser();
     
-    simpleParser.setParserTarget(ParserExecution.EOF);
-    simpleParser.parse(new StringReader("test ."));
+    simpleAParser.setParserTarget(ParserExecution.EOF);
+    simpleAParser.parseA(new StringReader("test ."));
 
-    assertEquals(true, simpleParser.hasErrors());
+    assertEquals(true, simpleAParser.hasErrors());
   }
 }

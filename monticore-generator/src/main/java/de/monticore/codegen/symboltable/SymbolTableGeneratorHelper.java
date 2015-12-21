@@ -71,7 +71,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     Log.errorIfNull(grammarSymbol, "0xA4036 Grammar " + qualifiedGrammarName
         + " can't be resolved in the scope " + globalScope);
 
-    checkState(qualifiedGrammarName.equals(grammarSymbol.getName()));
+    checkState(qualifiedGrammarName.equals(grammarSymbol.getFullName()));
   }
 
   public MCGrammarSymbol getGrammarSymbol() {
@@ -99,22 +99,10 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   /**
    * @return the name of the top ast, i.e., the ast of the start rule.
    */
-  public String getTopAstName() {
+  public String getQualifiedStartRuleName() {
     if (grammarSymbol.getStartRule().isPresent()) {
-      return "AST" + grammarSymbol.getStartRule().get().getName();
+      return grammarSymbol.getStartRule().get().getType().getQualifiedName();
     }
-
-    return "";
-  }
-
-  /**
-   * @return the name of the start rule
-   */
-  public String getStartRuleName() {
-    if (grammarSymbol.getStartRule().isPresent()) {
-      return grammarSymbol.getStartRule().get().getName();
-    }
-
     return "";
   }
 

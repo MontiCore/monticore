@@ -38,39 +38,36 @@ SUCH DAMAGE.
       <#assign attributeName = genHelper.getJavaConformName(attribute.getName())>
       <#assign attrType = attribute.getType()>
       <#assign typeName = genHelper.printType(attribute.getType())>
-      <#if <#--!attribute.isDerived() && --> !genHelper.isAstNode(attribute)>
-        <#if genHelper.isPrimitive(attribute.getType())> 
-    result.${attributeName} = this.${attributeName};
-        <#elseif genHelper.isOptional(attribute)>
-          <#assign reference = genHelper.getSimpleReferenceTypeFromOptional(attrType)>
-          <#assign referenceName = genHelper.getQualifiedReferenceNameFromOptional(attrType)>
-          <#if genHelper.isString(reference) || genHelper.isAdditionalAttribute(attribute) || genHelper.isAttributeOfTypeEnum(attribute)>
-            <#assign clone = "">
-          <#elseif genHelper.isOptionalAstNode(attribute)>
-             <#assign clone = ".deepClone()">
-          <#else>
-             <#assign clone = ".clone()">
-          </#if>
-    result.${attributeName} = this.${attributeName}.isPresent()? Optional.ofNullable((${referenceName})this.${attributeName}.get()${clone}) : Optional.empty();
-        <#else>  
+      <#if genHelper.isAstNode(attribute)>
     if (this.${attributeName} != null) {
-          <#if genHelper.isString(typeName) || genHelper.isAttributeOfTypeEnum(attribute)> 
-      result.${attributeName} = this.${attributeName};
-          <#elseif genHelper.isListType(typeName)>
-      result.${attributeName} = com.google.common.collect.Lists.newArrayList(this.${attributeName});
-          <#else>
-      result.${attributeName} = (${typeName}) this.${attributeName}.clone();
-          </#if>
-    }
-         </#if>    
-       <#else>
-    if (this.${attributeName} != null) {
-         <#if genHelper.isAstList(attribute)>
-      result.set${genHelper.getNativeAttributeName(attribute.getName())?cap_first}(this.${attributeName}.deepClone());
-         <#else>
       result.set${genHelper.getNativeAttributeName(attribute.getName())?cap_first}((${typeName}) this.${attributeName}.deepClone());
-         </#if>
     }
-       </#if>
-     </#list>
+      <#elseif genHelper.isPrimitive(attribute.getType())> 
+    result.${attributeName} = this.${attributeName};
+      <#elseif genHelper.isOptional(attribute)>
+        <#assign reference = genHelper.getSimpleReferenceTypeFromOptional(attrType)>
+        <#assign referenceName = genHelper.getQualifiedReferenceNameFromOptional(attrType)>
+        <#if genHelper.isString(reference) || genHelper.isAdditionalAttribute(attribute) || genHelper.isAttributeOfTypeEnum(attribute)>
+          <#assign clone = "">
+        <#elseif genHelper.isOptionalAstNode(attribute)>
+           <#assign clone = ".deepClone()">
+        <#else>
+           <#assign clone = ".clone()">
+        </#if>
+    result.${attributeName} = this.${attributeName}.isPresent()? Optional.ofNullable((${referenceName})this.${attributeName}.get()${clone}) : Optional.empty();
+      <#else>  
+    if (this.${attributeName} != null) {
+        <#if genHelper.isString(typeName) || genHelper.isAttributeOfTypeEnum(attribute)> 
+      result.${attributeName} = this.${attributeName};
+        <#elseif genHelper.isListAstNode(attribute)>
+      result.${attributeName} = com.google.common.collect.Lists.newArrayList();
+      this.${attributeName}.forEach(s -> result.${attributeName}.add(s.deepClone()));
+        <#elseif genHelper.isListType(typeName)>
+      result.${attributeName} = com.google.common.collect.Lists.newArrayList(this.${attributeName});
+        <#else>
+      result.${attributeName} = (${typeName}) this.${attributeName}.clone();
+        </#if>
+    }
+      </#if>    
+    </#list>
     return result;

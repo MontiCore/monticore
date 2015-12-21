@@ -1,4 +1,4 @@
 
-grammar Automaton2 extends InvAutomaton, Expression {
+grammar Automaton extends InvAutomaton, Expression {
   Invariant = Exp;
 }

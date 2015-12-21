@@ -137,6 +137,10 @@ public interface Scope {
    */
   Optional<? extends Symbol> resolve(SymbolPredicate predicate);
 
+  <T extends Symbol> Optional<T> resolveDown(String name, SymbolKind kind);
+
+  <T extends Symbol> Collection<T> resolveDownMany(String name, SymbolKind kind);
+
   /**
    *
    * @return all symbols directly defined/contained in this scope (not in enclosing scope).
@@ -151,7 +155,8 @@ public interface Scope {
   // TODO PN  add method hasSymbol(String, SymbolKind)
 
   /**
-    * @return true, if this scope shadows symbols of the enclosing scope.
+    * @return true, if this scope shadows symbols of the enclosing scope. By default, named scopes
+   * (see #getName()) are shadowing scopes.
    */
   boolean isShadowingScope();
 
@@ -159,15 +164,24 @@ public interface Scope {
    * @return true, if this scope is spanned by a symbol. For example, a Java method spans a
    * method scope.
    */
-  default boolean isSpannedBySymbol() {
-    return getSpanningSymbol().isPresent();
-  }
+  boolean isSpannedBySymbol();
 
   /**
    * @return the symbol that spans this scope. For example, a Java method spans a
    * method scope.
    */
   Optional<? extends ScopeSpanningSymbol> getSpanningSymbol();
+
+  /**
+   * States whether this scope exports symbols that can be used from outside the scope.
+   * For example, a Java class exports symbols. In contrast, a Java if-block does not
+   * export any symbols, hence, its locally defined variables cannot be referenced
+   * from outside. By default, a scope with a name exports its symbols (although
+   * this does not apply for Java methods).
+   *
+   * @return true, if this scope exports symbols that can be used from outside the scope.
+   */
+  boolean exportsSymbols();
 
   /**
    * Returns the resolvers that are available in this scope. Within a simple grammarlanguage, these
@@ -182,6 +196,4 @@ public interface Scope {
    * @return the corresponding ast node
    */
   Optional<? extends ASTNode> getAstNode();
-
-
 }

@@ -65,7 +65,6 @@ public class MC2CDTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCDC
         .andThen(new ExternalImplementationTranslation())
         .andThen(new ConstantTypeTranslation())
         .andThen(new CreateConstantAttributeTranslation())
-        .andThen(new DefinedInTranslation())
         .andThen(new MultiplicityTranslation())
         .andThen(new ConstantsTranslation())
         .andThen(new NonTerminalsWithSymbolReferenceToCDAttributeStereotypes())

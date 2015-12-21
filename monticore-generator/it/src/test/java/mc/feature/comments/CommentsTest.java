@@ -30,8 +30,7 @@ import org.junit.Test;
 import de.monticore.ast.ASTNode;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.comments.commenttest._ast.ASTStart;
-import mc.feature.comments.commenttest._parser.CommentTestParserFactory;
-import mc.feature.comments.commenttest._parser.StartMCParser;
+import mc.feature.comments.commenttest._parser.CommentTestParser;
 
 public class CommentsTest extends GeneratorIntegrationsTest {
   
@@ -44,8 +43,8 @@ public class CommentsTest extends GeneratorIntegrationsTest {
   public void testComment() throws IOException {
     StringReader r = new StringReader("start /* comment 1 */ test a // comment 2 \n test b");
     
-    StartMCParser p = CommentTestParserFactory.createStartMCParser();    
-    java.util.Optional<ASTStart> optAst =  p.parse(r);
+    CommentTestParser p = new CommentTestParser();    
+    java.util.Optional<ASTStart> optAst =  p.parseStart(r);
     assertTrue(optAst.isPresent());
     ASTStart ast = optAst.get();
     assertEquals(false, p.hasErrors());

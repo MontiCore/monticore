@@ -22,17 +22,19 @@
  */
 package de.monticore.ast;
 
-import de.monticore.ast.ASTNode;
-
 /**
  * interface for all lists, in addition to ASTNode it allows for the distinction
  * between the state "empty" and "null"
  * 
  * @author groen
+ * 
+ *  
+ * @deprecated Remove this class after MC-Release 4.2.1. It is no longer necessary.
  */
+@Deprecated
 public interface ASTList extends ASTNode {
   
-  public boolean is_Existent();
+  boolean is_Existent();
   
-  public void set_Existent(boolean existent);
+  void set_Existent(boolean existent);
 }

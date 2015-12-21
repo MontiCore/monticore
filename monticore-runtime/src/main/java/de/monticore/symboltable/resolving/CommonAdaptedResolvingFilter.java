@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.SymbolKind;
 
 /**
  * TODO: Write me!
@@ -35,8 +35,6 @@ import de.monticore.symboltable.Symbol;
  * @author Pedram Mir Seyed Nazari
  *
  */
-// TODO PN Problem, wenn unterschiedliche Symbole selben Kind nutzen. Welcher Adapter wird dann genutzt?
-//         Statt Kinds eher Klassen nutzen? D.h. From extends Symbol (gleiches für To)
 public abstract class CommonAdaptedResolvingFilter<S extends Symbol>
     extends CommonResolvingFilter<S> implements AdaptedResolvingFilter<S> {
 
@@ -71,7 +69,7 @@ public abstract class CommonAdaptedResolvingFilter<S extends Symbol>
 
       Optional<? extends Symbol> optSymbol = resolvingFilter.filter(resolvingInfo, symbolName, symbols);
 
-      // TODO PN Remove this whole if-statement, if adaptors should be created eager.
+      // remove the following if-statement, if adaptors should be created eager.
       if (optSymbol.isPresent()) {
         resolvedSymbols.add(createAdapter(optSymbol.get()));
       }

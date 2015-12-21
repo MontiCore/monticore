@@ -37,6 +37,7 @@ public class Serialization {
       FileInputStream fis = new FileInputStream(fileName);
       ObjectInputStream ois = new ObjectInputStream(fis);
       Object obj = ois.readObject();
+      fis.close();
       ois.close();
       return obj;
   }
@@ -45,8 +46,8 @@ public class Serialization {
       FileOutputStream fos = new FileOutputStream(fileName);
       ObjectOutputStream oos = new ObjectOutputStream(fos);
       oos.writeObject(object);
-
       fos.close();
+      oos.close();
   }
 
 }

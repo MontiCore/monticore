@@ -52,6 +52,7 @@ public class ComposeSimpleAndInheritanceTest extends CommonVisitorTest {
   
   @Before
   public void setUp() {
+    super.setup();
     run.setLength(0);
     expectedRun.setLength(0);
     if (!setUpDone) {

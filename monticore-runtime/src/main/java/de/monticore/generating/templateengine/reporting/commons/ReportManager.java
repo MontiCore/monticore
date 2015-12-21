@@ -28,7 +28,7 @@ import java.util.Set;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.reporting.artifacts.ReportingNameHelper;
-import de.monticore.symboltable.CommonScope;
+import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -346,9 +346,9 @@ public class ReportManager implements IReportEventHandler {
   }
   
   @Override
-  public void reportSymbolTable(CommonScope scope) {
+  public void reportSymbolTableScope(Scope scope) {
     for (IReportEventHandler handler : this.reportEventHandlers) {
-      handler.reportSymbolTable(scope);
+      handler.reportSymbolTableScope(scope);
     }
   }
   
