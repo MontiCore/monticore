@@ -7,11 +7,7 @@
   <parent>
     <groupId>de.monticore.mojo</groupId>
     <artifactId>monticore-maven-archetypes</artifactId>
-<<<<<<< HEAD
     <version>4.3.1-SNAPSHOT</version>
-=======
-    <version>4.3.1-SNAPSHOT-SNAPSHOT</version>
->>>>>>> refs/heads/ticket1791_bootstrap
   </parent>
 
   <artifactId>simple-archetype</artifactId>
