@@ -49,7 +49,7 @@ public class PrettyPrinter implements MyDSLVisitor {
   
   @Override
   public void traverse(ASTMyModel node) {
-    node.getMyElements().accept(getRealThis());
+    node.getMyElements().stream().forEach(e -> e.accept(getRealThis()));
   }
   
   @Override
@@ -66,7 +66,7 @@ public class PrettyPrinter implements MyDSLVisitor {
   
   @Override
   public void traverse(ASTMyElement node) {
-    node.getMyFields().accept(getRealThis());
+    node.getMyFields().stream().forEach(e -> e.accept(getRealThis()));
   }
   
   @Override
