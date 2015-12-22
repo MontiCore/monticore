@@ -394,7 +394,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
       }
     }
     
-    if (a.getMethods().size() != 0 || a.getAttributeInASTs().size() != 0) {
+    if (!a.getMethods().isEmpty() || !a.getAttributeInASTs().isEmpty()) {
       
       println(" = ");
       getPrinter().indent();

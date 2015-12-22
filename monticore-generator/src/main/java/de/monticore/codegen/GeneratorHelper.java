@@ -550,8 +550,8 @@ public class GeneratorHelper extends TypesHelper {
     if (index != -1) {
       type = type.substring(0, index);
     }
-    return type.equals("List") || type.equals("java.util.List")
-        || type.equals("ArrayList") || type.equals("java.util.ArrayList");
+    return "List".equals(type)|| "java.util.List".equals(type)
+        || "ArrayList".equals(type) || "java.util.ArrayList".equals(type);
   }
   
   public static boolean isMapType(String type) {
@@ -560,8 +560,8 @@ public class GeneratorHelper extends TypesHelper {
     if (index != -1) {
       type = type.substring(0, index);
     }
-    return type.equals("Map") || type.equals("java.util.Map")
-        || type.equals("HashMap") || type.equals("java.util.HashMap");
+    return "Map".equals(type) || "java.util.Map".equals(type)
+        || "HashMap".equals(type) || "java.util.HashMap".equals(type);
   }
   
   public static boolean isAbstract(ASTCDClass clazz) {

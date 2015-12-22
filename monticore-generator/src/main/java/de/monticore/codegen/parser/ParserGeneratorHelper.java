@@ -427,14 +427,14 @@ public class ParserGeneratorHelper {
     Log.errorIfNull(node);
 
     if (node instanceof ASTAction) {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       for (ASTBlockStatement action: ((ASTAction) node).getBlockStatements()) {
         buffer.append(getPrettyPrinter().prettyprint(action));
       }
       return buffer.toString();
     }
     if (node instanceof ASTJavaCode) {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       for (ASTClassMemberDeclaration action: ((ASTJavaCode) node).getClassMemberDeclarations()) {
         buffer.append(getPrettyPrinter().prettyprint(action));
 

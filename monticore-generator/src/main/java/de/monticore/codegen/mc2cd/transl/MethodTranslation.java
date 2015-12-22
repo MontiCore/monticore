@@ -96,7 +96,7 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
       cdMethod.getCDParameters().add(TransformationHelper.createParameter(typeName, param.getName()));
     }
     if (method.getBody() instanceof ASTAction) {
-      StringBuffer code = new StringBuffer();
+      StringBuilder code = new StringBuilder();
       for (ASTBlockStatement action: ((ASTAction) method.getBody()).getBlockStatements()) {
         code.append(GeneratorHelper.getJavaPrettyPrinter().prettyprint(action));
       }
