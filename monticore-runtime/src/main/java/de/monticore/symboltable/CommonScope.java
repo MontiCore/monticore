@@ -480,34 +480,16 @@ public class CommonScope implements MutableScope {
     final Collection<ResolvingFilter<? extends Symbol>> resolversForKind =
         getResolvingFiltersForTargetKind(resolvingFilters, kind);
 
-    final List<T> resolvedSymbols = new ArrayList<>();
+    final Collection<T> resolvedSymbols = new LinkedHashSet<>();
 
     for (ResolvingFilter<? extends Symbol> resolvingFilter : resolversForKind) {
       final ResolvingInfo resolvingInfo = new ResolvingInfo(getResolvingFilters());
       resolvingInfo.addInvolvedScope(this);
-      List<T> s = (List<T>) resolvingFilter.filter(resolvingInfo, symbols);
-      resolvedSymbols.addAll(s);
+      Collection<T> filtered = (Collection<T>) resolvingFilter.filter(resolvingInfo, symbols);
+      resolvedSymbols.addAll(filtered);
     }
 
     return ImmutableList.copyOf(resolvedSymbols);
-  }
-
-  // TODO PN merge with resolveManyLocally?
-  protected <T extends Symbol> List<T> resolveDownManyLocally(final ResolvingInfo resolvingInfo,
-      final String name, final SymbolKind kind) {
-    final Collection<ResolvingFilter<? extends Symbol>> resolversForKind = getResolvingFiltersForTargetKind
-        (resolvingInfo.getResolvingFilters(), kind);
-
-    final List<T> resolvedSymbols = new ArrayList<>();
-
-    for (ResolvingFilter<? extends Symbol> resolvingFilter : resolversForKind) {
-      Optional<T> s = (Optional<T>) resolvingFilter.filter(resolvingInfo, name, symbols);
-      if (s.isPresent()) {
-        resolvedSymbols.add(s.get());
-      }
-    }
-
-    return resolvedSymbols;
   }
 
   @Override
@@ -538,7 +520,7 @@ public class CommonScope implements MutableScope {
     }
 
     for (MutableScope scope : getSubScopes()) {
-      resolved.addAll(continueWithSubScope(scope, resolvingInfo, name, kind));
+      resolved.addAll(continueWithSubScope(scope, resolvingInfo, name, kind, modifier));
     }
 
     Log.trace("END " + resolveCall + ". Found #" + resolved.size() , "");
@@ -553,7 +535,7 @@ public class CommonScope implements MutableScope {
    */
   @Override
   public <T extends Symbol> Optional<T> resolveDown(String name, SymbolKind kind) {
-    return getResolvedOrThrowException(this.resolveDownMany(name, kind, BasicAccessModifier.ABSENT));
+    return getResolvedOrThrowException(this.resolveDownMany(name, kind));
   }
 
   @Override
@@ -569,11 +551,6 @@ public class CommonScope implements MutableScope {
    * @param symbolName the name of the searched symbol
    * @param kind the kind of the searched symbol
    */
-  protected <T extends Symbol> Collection<T> continueWithSubScope(MutableScope subScope, ResolvingInfo resolvingInfo,
-      String symbolName, SymbolKind kind) {
-    return continueWithSubScope(subScope, resolvingInfo, symbolName, kind, BasicAccessModifier.ABSENT);
-  }
-
   protected <T extends Symbol> Collection<T> continueWithSubScope(MutableScope subScope, ResolvingInfo resolvingInfo,
       String symbolName, SymbolKind kind, AccessModifier modifier) {
     if (checkIfContinueWithSubScope(symbolName, subScope)) {

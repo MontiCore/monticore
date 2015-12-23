@@ -83,29 +83,6 @@ public class ArtifactScope extends CommonScope {
     return packageName;
   }
 
-  // TODO PN alle anderen resolve-Methoden entsprechend anpassen, falls notwendig
-
-  @Override
-  public <T extends Symbol> Optional<T> resolve(ResolvingInfo resolvingInfo, String symbolName, SymbolKind kind, AccessModifier modifier) {
-    resolvingInfo.addInvolvedScope(this);
-
-    final Set<T> resolved = new LinkedHashSet<>(this.<T>resolveManyLocally(resolvingInfo, symbolName, kind));
-
-    Log.trace("START resolve(\"" + symbolName + "\", " + "\"" + kind.getName() + "\") in scope \"" +
-        getName() + "\". Found #" + resolved.size() + " (local)", "");
-
-
-    // TODO PN also check whether resolverInfo.areSymbolsFound() ?
-    if (resolved.isEmpty()) {
-      resolved.addAll(resolveInEnclosingScope(resolvingInfo, symbolName, kind, modifier));
-    }
-
-    Log.trace("END resolve(\"" + symbolName + "\", " + "\"" + kind.getName() + "\") in scope \"" +
-        getName() + "\". Found #" + resolved.size() , "");
-
-    return getResolvedOrThrowException(resolved);
-  }
-
   @Override
   public <T extends Symbol> Collection<T> resolveMany(final ResolvingInfo resolvingInfo, final String
       symbolName, final SymbolKind kind, AccessModifier modifier) {

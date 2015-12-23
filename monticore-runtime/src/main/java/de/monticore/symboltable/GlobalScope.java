@@ -200,13 +200,14 @@ public final class GlobalScope extends CommonScope {
   }
 
   @Override
-  protected <T extends Symbol> Collection<T> continueWithSubScope(MutableScope subScope, ResolvingInfo resolvingInfo, String symbolName, SymbolKind kind) {
+  protected <T extends Symbol> Collection<T> continueWithSubScope(MutableScope subScope, ResolvingInfo resolvingInfo,
+      String symbolName, SymbolKind kind, AccessModifier modifier) {
     if (checkIfContinueWithSubScope(symbolName, subScope)) {
       if (subScope instanceof ArtifactScope) {
         return continueWithArtifactScope((ArtifactScope) subScope, resolvingInfo, symbolName, kind);
       }
       else {
-        return super.continueWithSubScope(subScope, resolvingInfo, symbolName, kind);
+        return super.continueWithSubScope(subScope, resolvingInfo, symbolName, kind, modifier);
       }
     }
 

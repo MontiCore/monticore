@@ -19,7 +19,6 @@
 
 package de.monticore.symboltable.resolving;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -73,7 +72,7 @@ public class CommonResolvingFilter<S extends Symbol> implements ResolvingFilter<
   @SuppressWarnings("unchecked")
   public Collection<S> filter(ResolvingInfo resolvingInfo, List<Symbol> symbols) {
       // TODO PN  create new LinkedHashSet<>() instead
-      final Collection<S> foundSymbols = new ArrayList<>();
+      final Collection<S> foundSymbols = new LinkedHashSet<>();
 
       for (Symbol symbol : symbols) {
         // TODO PN in eigene Methode auslagern, damit Unterklassen das überschreiben können.
