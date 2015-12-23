@@ -200,49 +200,8 @@ public class CommonScope implements MutableScope {
   }
 
   @Override
-  @Deprecated
-  public <T extends Symbol> Optional<T> resolve(ResolvingInfo resolvingInfo, String symbolName, SymbolKind kind) {
-    return getResolvedOrThrowException(resolveMany(resolvingInfo, symbolName, kind));
-  }
-
-  @Override
-  public <T extends Symbol> Collection<T> resolveMany(ResolvingInfo resolvingInfo, String symbolName, SymbolKind kind) {
-    Log.errorIfNull(resolvingInfo);
-    resolvingInfo.addInvolvedScope(this);
-
-    final Set<T> resolved = new LinkedHashSet<>(this.<T>resolveManyLocally(resolvingInfo, symbolName, kind));
-
-    Log.trace("START resolve(\"" + symbolName + "\", " + "\"" + kind.getName() + "\") in scope \"" +
-        getName() + "\". Found #" + resolved.size() + " (local)" , "");
-
-    continueWithEnclosingScope(resolvingInfo, symbolName, kind, resolved);
-
-    Log.trace("END resolve(\"" + symbolName + "\", " + "\"" + kind.getName() + "\") in scope \"" +
-        getName() + "\". Found #" + resolved.size() , "");
-    return resolved;
-  }
-
-  /**
-   * Continues resolving with enclosing scope, if it exists.
-   *
-   * @param resolvingInfo contains resolving information, such as, the already involved scopes.
-   * @param symbolName the name of the searched symbol
-   * @param kind the kind of the searched symbol
-   * @param resolved the already found symbols
-   */
-  protected <T extends Symbol> void continueWithEnclosingScope(ResolvingInfo resolvingInfo, String symbolName,
-      SymbolKind kind, Set<T> resolved) {
-
-    if (checkIfContinueWithResolving(!resolved.isEmpty() || resolvingInfo.areSymbolsFound())) {
-      if (getEnclosingScope().isPresent()) {
-        final Collection<T> resolvedFromEnclosing = getEnclosingScope().get().resolveMany(resolvingInfo, symbolName, kind);
-
-        if (!resolvedFromEnclosing.isEmpty()) {
-          addResolvedSymbolsIfNotShadowed(resolved, resolvedFromEnclosing);
-        }
-      }
-    }
-
+  public <T extends Symbol> Collection<T> resolveMany(String name, SymbolKind kind, AccessModifier modifier) {
+    return resolveMany(new ResolvingInfo(getResolvingFilters()), name, kind, modifier);
   }
 
   @Override
@@ -468,7 +427,7 @@ public class CommonScope implements MutableScope {
 
   @Override
   public <T extends Symbol> Collection<T> resolveMany(final String name, final SymbolKind kind) {
-    return resolveMany(new ResolvingInfo(getResolvingFilters()), name, kind);
+    return resolveMany(new ResolvingInfo(getResolvingFilters()), name, kind, BasicAccessModifier.ABSENT);
   }
 
   @Override
@@ -552,14 +511,6 @@ public class CommonScope implements MutableScope {
   }
 
   @Override
-  @Deprecated
-  public <T extends Symbol> Optional<T> resolveDown(ResolvingInfo resolvingInfo, String name, SymbolKind kind) {
-    Log.errorIfNull(resolvingInfo);
-    resolvingInfo.addInvolvedScope(this);
-    return getResolvedOrThrowException(this.<T>resolveDownMany(resolvingInfo, name, kind));
-  }
-
-  @Override
   public <T extends Symbol> Optional<T> resolveDown(String name, SymbolKind kind, AccessModifier modifier) {
     return getResolvedOrThrowException(resolveDownMany(new ResolvingInfo(getResolvingFilters()), name, kind, modifier));
   }
@@ -602,40 +553,12 @@ public class CommonScope implements MutableScope {
    */
   @Override
   public <T extends Symbol> Optional<T> resolveDown(String name, SymbolKind kind) {
-    return getResolvedOrThrowException(this.resolveDownMany(name, kind));
+    return getResolvedOrThrowException(this.resolveDownMany(name, kind, BasicAccessModifier.ABSENT));
   }
 
   @Override
   public <T extends Symbol> Collection<T> resolveDownMany(String name, SymbolKind kind) {
-    return this.resolveDownMany(new ResolvingInfo(getResolvingFilters()), name, kind);
-  }
-
-  // TODO PN Doc if a symbol is found, resolving is stopped.
-  // TODO PN check argmuments name and kind
-  @Override
-  public <T extends Symbol> Collection<T> resolveDownMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind) {
-    Log.errorIfNull(resolvingInfo);
-    resolvingInfo.addInvolvedScope(this);
-
-    final Set<T> resolved = new LinkedHashSet<>(this.<T>resolveManyLocally(resolvingInfo, name, kind));
-
-    final String resolveCall = "resolveDownMany(\"" + name + "\", \"" + kind.getName()
-        + "\") in scope \"" + getName() + "\"";
-    Log.trace("START " + resolveCall + ". Found #" + resolved.size() + " (local)", "");
-
-    // TODO PN Doc if a symbol is found in the current scope, resolving is stopped.
-    if (!resolved.isEmpty()) {
-      Log.trace("END " + resolveCall + ". Found #" + resolved.size() , "");
-      return resolved;
-    }
-
-    for (MutableScope scope : getSubScopes()) {
-      resolved.addAll(continueWithSubScope(scope, resolvingInfo, name, kind));
-    }
-
-    Log.trace("END " + resolveCall + ". Found #" + resolved.size() , "");
-
-    return resolved;
+    return this.resolveDownMany(new ResolvingInfo(getResolvingFilters()), name, kind, BasicAccessModifier.ABSENT);
   }
 
   /**

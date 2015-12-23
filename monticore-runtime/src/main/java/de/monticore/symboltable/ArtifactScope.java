@@ -28,7 +28,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.symboltable.resolving.ResolvingInfo;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -98,19 +97,13 @@ public class ArtifactScope extends CommonScope {
 
     // TODO PN also check whether resolverInfo.areSymbolsFound() ?
     if (resolved.isEmpty()) {
-      resolved.addAll(resolveInEnclosingScope(resolvingInfo, symbolName, kind));
+      resolved.addAll(resolveInEnclosingScope(resolvingInfo, symbolName, kind, modifier));
     }
 
     Log.trace("END resolve(\"" + symbolName + "\", " + "\"" + kind.getName() + "\") in scope \"" +
         getName() + "\". Found #" + resolved.size() , "");
 
     return getResolvedOrThrowException(resolved);
-  }
-
-  @Override
-  public <T extends Symbol> Collection<T> resolveMany(final ResolvingInfo resolvingInfo, final String
-      symbolName, final SymbolKind kind) {
-    return resolveMany(resolvingInfo, symbolName, kind, BasicAccessModifier.ABSENT);
   }
 
   @Override
@@ -126,7 +119,7 @@ public class ArtifactScope extends CommonScope {
 
     // TODO PN also check whether resolverInfo.areSymbolsFound() ?
     if (resolved.isEmpty()) {
-      resolved.addAll(resolveInEnclosingScope(resolvingInfo, symbolName, kind));
+      resolved.addAll(resolveInEnclosingScope(resolvingInfo, symbolName, kind, modifier));
     }
 
     Log.trace("END resolve(\"" + symbolName + "\", " + "\"" + kind.getName() + "\") in scope \"" +
@@ -144,8 +137,8 @@ public class ArtifactScope extends CommonScope {
    * @param <T>
    * @return
    */
-  protected <T extends Symbol> List<T> resolveInEnclosingScope(final ResolvingInfo resolvingInfo,
-      final String name, final SymbolKind kind) {
+  protected <T extends Symbol> List<T> resolveInEnclosingScope(final ResolvingInfo resolvingInfo, final String name,
+      final SymbolKind kind, final AccessModifier modifier) {
     final List<T> resolved = new ArrayList<>();
 
     if (enclosingScope != null) {
@@ -155,7 +148,7 @@ public class ArtifactScope extends CommonScope {
       }
 
       for (final String potentialName : determinePotentialNames(name)) {
-        final Collection<T> resolvedFromGlobal = enclosingScope.resolveMany(resolvingInfo, potentialName, kind);
+        final Collection<T> resolvedFromGlobal = enclosingScope.resolveMany(resolvingInfo, potentialName, kind, modifier);
 
         if (!resolvedFromGlobal.isEmpty()) {
           addResolvedSymbolsIfNotShadowed(resolved, resolvedFromGlobal);

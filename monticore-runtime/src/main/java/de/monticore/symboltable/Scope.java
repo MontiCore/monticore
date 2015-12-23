@@ -102,6 +102,9 @@ public interface Scope {
   // TODO PN Doc
   <T extends Symbol> Collection<T> resolveMany(String name, SymbolKind kind);
 
+  // TODO PN Doc
+  <T extends Symbol> Collection<T> resolveMany(String name, SymbolKind kind, AccessModifier modifier);
+
   /**
    * Resolves the symbol with the given <code>name</code> and <code>kind</code> only within scope.
    *

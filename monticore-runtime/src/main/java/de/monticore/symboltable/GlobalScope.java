@@ -94,17 +94,11 @@ public final class GlobalScope extends CommonScope {
 
   @Override
   public <T extends Symbol> Collection<T> resolveMany(final ResolvingInfo resolvingInfo,
-      final String symbolName, final SymbolKind kind) {
-    return resolveMany(resolvingInfo, symbolName, kind, BasicAccessModifier.ABSENT);
-  }
-
-  @Override
-  public <T extends Symbol> Collection<T> resolveMany(final ResolvingInfo resolvingInfo,
       final String symbolName, final SymbolKind kind, final AccessModifier modifier) {
     resolvingInfo.addInvolvedScope(this);
 
     // First, try to resolve the symbol in the current scope and its sub scopes.
-    Collection<T> resolvedSymbol = resolveDownMany(new ResolvingInfo(getResolvingFilters()), symbolName, kind);
+    Collection<T> resolvedSymbol = resolveDownMany(new ResolvingInfo(getResolvingFilters()), symbolName, kind, modifier);
 
     if (!resolvedSymbol.isEmpty()) {
       return resolvedSymbol;
@@ -117,7 +111,7 @@ public final class GlobalScope extends CommonScope {
     loadModels(resolvingInfo.getResolvingFilters(), symbolName, kind);
 
     // Maybe the symbol now exists in this scope (resp. its sub scopes). So, resolve down, again.
-    resolvedSymbol = resolveDownMany(new ResolvingInfo(getResolvingFilters()), symbolName, kind);
+    resolvedSymbol = resolveDownMany(new ResolvingInfo(getResolvingFilters()), symbolName, kind, modifier);
 
     return resolvedSymbol;
   }
@@ -252,6 +246,6 @@ public final class GlobalScope extends CommonScope {
     }
     // TODO PN else?
 
-    return subScope.resolveDownMany(resolvingInfo, remainingSymbolName, kind);
+    return subScope.resolveDownMany(resolvingInfo, remainingSymbolName, kind, BasicAccessModifier.ABSENT);
   }
 }
