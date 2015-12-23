@@ -502,12 +502,12 @@ public class CdDecorator {
     methodBody = new TemplateHookPoint("ast.factorymethods.DoCreate", clazz, className);
     replaceMethodBodyTemplate(nodeFactoryClass, toParse, methodBody);
     
-    toParse = "public static " + className + " create" + className + "() ;";
-    
     // No create methods with parameters
     if (clazz.getCDAttributes().isEmpty()) {
       return;
     }
+    
+    toParse = "public static " + className + " create" + className + "() ;";
     
     Optional<ASTCDMethod> astMethod = cdTransformation.addCdMethodUsingDefinition(
         nodeFactoryClass, toParse);

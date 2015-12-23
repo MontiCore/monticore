@@ -19,7 +19,6 @@
 
 package de.monticore.codegen;
 
-import static de.monticore.codegen.mc2cd.TransformationHelper.GENERATED_CLASS_SUFFIX;
 import static de.monticore.codegen.mc2cd.TransformationHelper.createSimpleReference;
 import static de.monticore.codegen.mc2cd.transl.ConstantsTranslation.AST_CONSTANTS_ENUM;
 
@@ -37,7 +36,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 import de.monticore.ast.ASTNode;
@@ -587,10 +585,6 @@ public class GeneratorHelper extends TypesHelper {
     if (!attr.getSymbol().isPresent() || !(attr.getSymbol().get() instanceof CDFieldSymbol)) {
       return false;
     }
-    if (!(((CDFieldSymbol) attr.getSymbol().get()).getType() instanceof CDTypeSymbolReference)) {
-      return false;
-    }
-    
     CDTypeSymbolReference attrType = (CDTypeSymbolReference) ((CDFieldSymbol) attr.getSymbol()
         .get()).getType();
     
