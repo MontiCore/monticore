@@ -46,7 +46,6 @@ public interface ASTNode {
    * 
    * @return start position of this ASTNode
    */
-  // TODO GV: change return type to Optional after the next bootstrapping step
   public SourcePosition get_SourcePositionEnd();
   
   /**
@@ -61,7 +60,6 @@ public interface ASTNode {
    * 
    * @return end position of this ASTNode
    */
-  // TODO GV: change return type to Optional after the next bootstrapping step
   public SourcePosition get_SourcePositionStart();
   
   /**

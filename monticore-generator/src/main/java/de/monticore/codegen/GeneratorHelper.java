@@ -109,8 +109,6 @@ public class GeneratorHelper extends TypesHelper {
   
   public static final String AST_DOT_PACKAGE_SUFFIX_DOT = "._ast.";
   
-  public static final String LIST_SUFFIX = "List";
-  
   public static final String MC_CONCRETE_PARSER_CONTEXT = "MCParser";
   
   public static final String BUILDER_PREFIX = "Builder_";
@@ -744,24 +742,6 @@ public class GeneratorHelper extends TypesHelper {
     return theSuperTypes;
   }
   
-  // TODO: remove
-  public static String printSuperInterfaces(ASTCDClass type) {
-    return type.printInterfaces();
-    /* String del = ", "; StringBuilder interfaces = new StringBuilder();
-     * type.getInterfaces().forEach(i ->
-     * interfaces.append(TypesPrinter.printType(i)).append(del)); return
-     * interfaces.toString(); */
-  }
-  
-  // TODO: remove
-  public static String printSuperInterfaces(ASTCDInterface type) {
-    return type.printInterfaces();
-    /* String del = ", "; StringBuilder interfaces = new StringBuilder();
-     * type.getInterfaces().forEach(i ->
-     * interfaces.append(TypesPrinter.printType(i)).append(del)); return
-     * interfaces.toString(); */
-  }
-  
   public static String getSuperClass(ASTCDClass clazz) {
     if (!clazz.getSuperclass().isPresent()) {
       return "de.monticore.ast.ASTCNode";
@@ -774,21 +754,6 @@ public class GeneratorHelper extends TypesHelper {
       return "";
     }
     return clazz.printSuperClass();
-  }
-  
-  public static boolean isAstListClass(String className, CDSymbol cdDef) {
-    Preconditions.checkArgument(!Strings.isNullOrEmpty(className));
-    
-    if (!className.startsWith(AST_PREFIX)
-        || !(className.endsWith(LIST_SUFFIX) || className.endsWith(LIST_SUFFIX
-            + GENERATED_CLASS_SUFFIX))) {
-      return false;
-    }
-    
-    return cdDef.getType(className).isPresent()
-        && (cdDef.getType(className.substring(0, className.lastIndexOf(LIST_SUFFIX))).isPresent() || cdDef
-            .getType(className.substring(0, className.lastIndexOf(LIST_SUFFIX))
-                + GENERATED_CLASS_SUFFIX).isPresent());
   }
   
   public static List<String> getValuesOfConstantEnum(ASTCDDefinition ast) {
