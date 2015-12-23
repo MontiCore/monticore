@@ -141,6 +141,11 @@ public interface Scope {
 
   <T extends Symbol> Collection<T> resolveDownMany(String name, SymbolKind kind);
 
+
+  <T extends Symbol> Optional<T> resolveDown(String name, SymbolKind kind, AccessModifier modifier);
+
+  <T extends Symbol> Collection<T> resolveDownMany(String name, SymbolKind kind, AccessModifier modifier);
+
   /**
    *
    * @return all symbols directly defined/contained in this scope (not in enclosing scope).

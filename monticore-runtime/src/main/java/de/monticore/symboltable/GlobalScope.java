@@ -27,6 +27,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.FluentIterable;
 import de.monticore.ModelNameCalculator;
@@ -35,6 +36,8 @@ import de.monticore.ModelingLanguageFamily;
 import de.monticore.ast.ASTNode;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
+import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.symboltable.resolving.AdaptedResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingInfo;
@@ -92,6 +95,12 @@ public final class GlobalScope extends CommonScope {
   @Override
   public <T extends Symbol> Collection<T> resolveMany(final ResolvingInfo resolvingInfo,
       final String symbolName, final SymbolKind kind) {
+    return resolveMany(resolvingInfo, symbolName, kind, BasicAccessModifier.ABSENT);
+  }
+
+  @Override
+  public <T extends Symbol> Collection<T> resolveMany(final ResolvingInfo resolvingInfo,
+      final String symbolName, final SymbolKind kind, final AccessModifier modifier) {
     resolvingInfo.addInvolvedScope(this);
 
     // First, try to resolve the symbol in the current scope and its sub scopes.
@@ -121,12 +130,9 @@ public final class GlobalScope extends CommonScope {
       final ModelNameCalculator modelNameCalculator = modelingLanguage.getModelNameCalculator();
       final ModelingLanguageModelLoader<? extends ASTNode> modelLoader = modelingLanguage.getModelLoader();
 
-      final Collection<ResolvingFilter<? extends Symbol>> resolversForKind = ResolvingFilter
-          .getFiltersForTargetKind(resolvingFilters, kind);
+      final Set<SymbolKind> possibleSymbolKinds = getPossibleSymbolKinds(resolvingFilters, kind);
 
-      for (final ResolvingFilter<? extends Symbol> resolvingFilter : resolversForKind) {
-        final SymbolKind kindForCalc = getSymbolKindByResolvingFilter(kind, resolvingFilter);
-
+      for (final SymbolKind kindForCalc : possibleSymbolKinds) {
         final Set<String> calculatedModelName = modelNameCalculator.calculateModelNames(symbolName, kindForCalc);
 
         if (!calculatedModelName.isEmpty() && continueWithModelLoader(calculatedModelName.iterator().next(), modelLoader)) {
@@ -140,6 +146,15 @@ public final class GlobalScope extends CommonScope {
 
 
     }
+  }
+
+  protected Set<SymbolKind> getPossibleSymbolKinds(Collection<ResolvingFilter<? extends Symbol>> resolvingFilters, SymbolKind kind) {
+    final Collection<ResolvingFilter<? extends Symbol>> resolversForKind = ResolvingFilter
+        .getFiltersForTargetKind(resolvingFilters, kind);
+
+    return resolversForKind.stream()
+        .map(resolvingFilter -> getSymbolKindByResolvingFilter(kind, resolvingFilter))
+        .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
   // TODO PN write tests

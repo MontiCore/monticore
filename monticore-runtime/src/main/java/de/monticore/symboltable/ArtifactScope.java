@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.symboltable.resolving.ResolvingInfo;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -85,8 +87,35 @@ public class ArtifactScope extends CommonScope {
   // TODO PN alle anderen resolve-Methoden entsprechend anpassen, falls notwendig
 
   @Override
+  public <T extends Symbol> Optional<T> resolve(ResolvingInfo resolvingInfo, String symbolName, SymbolKind kind, AccessModifier modifier) {
+    resolvingInfo.addInvolvedScope(this);
+
+    final Set<T> resolved = new LinkedHashSet<>(this.<T>resolveManyLocally(resolvingInfo, symbolName, kind));
+
+    Log.trace("START resolve(\"" + symbolName + "\", " + "\"" + kind.getName() + "\") in scope \"" +
+        getName() + "\". Found #" + resolved.size() + " (local)", "");
+
+
+    // TODO PN also check whether resolverInfo.areSymbolsFound() ?
+    if (resolved.isEmpty()) {
+      resolved.addAll(resolveInEnclosingScope(resolvingInfo, symbolName, kind));
+    }
+
+    Log.trace("END resolve(\"" + symbolName + "\", " + "\"" + kind.getName() + "\") in scope \"" +
+        getName() + "\". Found #" + resolved.size() , "");
+
+    return getResolvedOrThrowException(resolved);
+  }
+
+  @Override
   public <T extends Symbol> Collection<T> resolveMany(final ResolvingInfo resolvingInfo, final String
       symbolName, final SymbolKind kind) {
+    return resolveMany(resolvingInfo, symbolName, kind, BasicAccessModifier.ABSENT);
+  }
+
+  @Override
+  public <T extends Symbol> Collection<T> resolveMany(final ResolvingInfo resolvingInfo, final String
+      symbolName, final SymbolKind kind, AccessModifier modifier) {
     resolvingInfo.addInvolvedScope(this);
 
     final Set<T> resolved = new LinkedHashSet<>(this.<T>resolveManyLocally(resolvingInfo, symbolName, kind));

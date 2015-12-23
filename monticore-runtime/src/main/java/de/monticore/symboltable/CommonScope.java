@@ -36,6 +36,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.symboltable.modifiers.IncludesAccessModifierPredicate;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
 import de.monticore.symboltable.resolving.ResolvingFilter;
@@ -150,6 +151,11 @@ public class CommonScope implements MutableScope {
 
   @Override
   public <T extends Symbol> Optional<T> resolve(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier) {
+    return getResolvedOrThrowException(resolveMany(resolvingInfo, name, kind, modifier));
+  }
+
+  @Override
+  public <T extends Symbol> Collection<T> resolveMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier) {
     Log.errorIfNull(resolvingInfo);
     resolvingInfo.addInvolvedScope(this);
 
@@ -161,7 +167,7 @@ public class CommonScope implements MutableScope {
     // filter out symbols that are not included within the access modifier
     final List<T> result = new ArrayList<>(Collections2.filter(resolved, new IncludesAccessModifierPredicate(modifier)));
 
-    return getResolvedOrThrowException(result);
+    return result;
   }
 
   /**
@@ -241,7 +247,8 @@ public class CommonScope implements MutableScope {
 
   @Override
   public <T extends Symbol> Optional<T> resolve(String symbolName, SymbolKind kind) {
-    return getResolvedOrThrowException(resolveMany(symbolName, kind));
+    return resolve(symbolName, kind, BasicAccessModifier.ABSENT);
+//    return getResolvedOrThrowException(resolveMany(symbolName, kind));
   }
 
   protected <T extends Symbol> void addResolvedSymbolsIfNotShadowed(Collection<T> result, T resolvedSymbol) {
@@ -552,6 +559,44 @@ public class CommonScope implements MutableScope {
     return getResolvedOrThrowException(this.<T>resolveDownMany(resolvingInfo, name, kind));
   }
 
+  @Override
+  public <T extends Symbol> Optional<T> resolveDown(String name, SymbolKind kind, AccessModifier modifier) {
+    return getResolvedOrThrowException(resolveDownMany(new ResolvingInfo(getResolvingFilters()), name, kind, modifier));
+  }
+
+  @Override
+  public <T extends Symbol> Collection<T> resolveDownMany(String name, SymbolKind kind, AccessModifier modifier) {
+    return resolveDownMany(new ResolvingInfo(getResolvingFilters()), name, kind, modifier);
+  }
+
+  @Override
+  public <T extends Symbol> Collection<T> resolveDownMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier) {
+    Log.errorIfNull(resolvingInfo);
+    resolvingInfo.addInvolvedScope(this);
+
+    final Set<T> resolved = new LinkedHashSet<>(this.<T>resolveManyLocally(resolvingInfo, name, kind));
+
+    final String resolveCall = "resolveDownMany(\"" + name + "\", \"" + kind.getName()
+        + "\") in scope \"" + getName() + "\"";
+    Log.trace("START " + resolveCall + ". Found #" + resolved.size() + " (local)", "");
+
+    // TODO PN Doc if a symbol is found in the current scope, resolving is stopped.
+    if (!resolved.isEmpty()) {
+      Log.trace("END " + resolveCall + ". Found #" + resolved.size() , "");
+      return resolved;
+    }
+
+    for (MutableScope scope : getSubScopes()) {
+      resolved.addAll(continueWithSubScope(scope, resolvingInfo, name, kind));
+    }
+
+    Log.trace("END " + resolveCall + ". Found #" + resolved.size() , "");
+
+    return resolved;
+  }
+
+
+
   /**
    * @see MutableScope#resolveDown(java.lang.String, SymbolKind)
    */
@@ -603,6 +648,11 @@ public class CommonScope implements MutableScope {
    */
   protected <T extends Symbol> Collection<T> continueWithSubScope(MutableScope subScope, ResolvingInfo resolvingInfo,
       String symbolName, SymbolKind kind) {
+    return continueWithSubScope(subScope, resolvingInfo, symbolName, kind, BasicAccessModifier.ABSENT);
+  }
+
+  protected <T extends Symbol> Collection<T> continueWithSubScope(MutableScope subScope, ResolvingInfo resolvingInfo,
+      String symbolName, SymbolKind kind, AccessModifier modifier) {
     if (checkIfContinueWithSubScope(symbolName, subScope)) {
 
       final FluentIterable<String> nameParts = FluentIterable.from(Splitters.DOT.split(symbolName));
@@ -612,7 +662,7 @@ public class CommonScope implements MutableScope {
         remainingSymbolName = Joiners.DOT.join(nameParts.skip(1));
       }
 
-      return subScope.resolveDownMany(resolvingInfo, remainingSymbolName, kind);
+      return subScope.resolveDownMany(resolvingInfo, remainingSymbolName, kind, modifier);
     }
 
     return new ArrayList<>();
