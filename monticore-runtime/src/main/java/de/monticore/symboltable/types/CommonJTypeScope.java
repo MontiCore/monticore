@@ -23,8 +23,10 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static de.monticore.symboltable.modifiers.BasicAccessModifier.PRIVATE;
 import static de.monticore.symboltable.modifiers.BasicAccessModifier.PROTECTED;
 
+import java.util.Collection;
 import java.util.Optional;
 
+import com.google.common.collect.Collections2;
 import de.monticore.symboltable.CommonScope;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ScopeSpanningSymbol;
@@ -32,6 +34,9 @@ import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.SymbolPredicate;
 import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.symboltable.modifiers.BasicAccessModifier;
+import de.monticore.symboltable.modifiers.IncludesAccessModifierPredicate;
+import de.monticore.symboltable.resolving.ResolvingInfo;
 import de.monticore.symboltable.types.references.JTypeReference;
 import de.se_rwth.commons.logging.Log;
 
@@ -58,24 +63,21 @@ public class CommonJTypeScope extends CommonScope {
 
   @Override
   public <T extends Symbol> Optional<T> resolve(String symbolName, SymbolKind kind) {
-    Optional<T> resolvedSymbol = super.resolve(symbolName, kind);
-
-
-    if (!resolvedSymbol.isPresent()) {
-      // To resolve symbols of super types, they must at least be protected.
-      resolvedSymbol = resolveInSuperTypes(symbolName, kind, PROTECTED);
-    }
-
-    return resolvedSymbol;
+    return this.resolve(symbolName, kind, BasicAccessModifier.ABSENT);
   }
 
   @Override
   public <T extends Symbol> Optional<T> resolve(String name, SymbolKind kind, AccessModifier modifier) {
     // TODO PN rather resolveLocally, then in the super types, and finally in enclosing scope
-    Optional<T> resolvedSymbol = super.resolve(name, kind, modifier);
+    Optional<T> resolvedSymbol = this.resolveImported(name, kind, modifier);
 
     if (!resolvedSymbol.isPresent()) {
       resolvedSymbol = resolveInSuperTypes(name, kind, modifier);
+    }
+
+    if (!resolvedSymbol.isPresent()) {
+      // continue with enclosing scope
+      resolvedSymbol = super.resolve(name, kind, modifier);
     }
 
     return resolvedSymbol;
@@ -146,12 +148,14 @@ public class CommonJTypeScope extends CommonScope {
 
   @Override
   public <T extends Symbol> Optional<T> resolveImported(String name, SymbolKind kind, AccessModifier modifier) {
-    Optional<T> resolvedSymbol = resolveLocally(name, kind);
+    final Collection<T> resolvedSymbols = resolveManyLocally(new ResolvingInfo(getResolvingFilters()), name, kind);
 
-    if (!resolvedSymbol.isPresent()) {
-      resolvedSymbol = resolveInSuperTypes(name, kind, modifier);
+    final Collection<T> filtered = Collections2.filter(resolvedSymbols, new IncludesAccessModifierPredicate(modifier));
+
+    if (filtered.isEmpty()) {
+      return resolveInSuperTypes(name, kind, modifier);
     }
 
-    return resolvedSymbol;
+    return getResolvedOrThrowException(filtered);
   }
 }
