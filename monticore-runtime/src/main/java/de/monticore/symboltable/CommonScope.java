@@ -200,6 +200,11 @@ public class CommonScope implements MutableScope {
   }
 
   @Override
+  public <T extends Symbol> Optional<T> resolveImported(String name, SymbolKind kind, AccessModifier modifier) {
+    return this.resolveLocally(name, kind);
+  }
+
+  @Override
   public <T extends Symbol> Collection<T> resolveMany(String name, SymbolKind kind, AccessModifier modifier) {
     return resolveMany(new ResolvingInfo(getResolvingFilters()), name, kind, modifier);
   }
@@ -233,12 +238,6 @@ public class CommonScope implements MutableScope {
   protected IsShadowedBySymbol createIsShadowingByPredicate(Symbol shadowedSymbol) {
     return new IsShadowedBySymbol(shadowedSymbol);
   }
-
-
-  private boolean noResolversRegistered() {
-    return (resolvingFilters == null) || resolvingFilters.isEmpty();
-  }
-
 
 
   /**

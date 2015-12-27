@@ -41,7 +41,6 @@ import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.monticore.symboltable.types.JTypeSymbol;
 import de.monticore.symboltable.types.references.CommonJTypeReference;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -192,7 +191,6 @@ public class ResolvingTest {
 
   }
 
-  @Ignore
   @Test
   public void testOnlyConsiderExplicitlyImportedScopesWhenResolvingInImportedScope() {
     final ModelingLanguage language = new EntityLanguage();
@@ -204,7 +202,7 @@ public class ResolvingTest {
     gs.addSubScope(as);
     as.setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
 
-    final PropertySymbol asProp = new PropertySymbol("asProp", new EntitySymbolReference("foo", gs));
+    final PropertySymbol asProp = new PropertySymbol("asProp", new EntitySymbolReference("foo", as));
     as.add(asProp);
 
     final EntitySymbol supEntity = new EntitySymbol("SupEntity");
@@ -213,6 +211,10 @@ public class ResolvingTest {
 
     assertTrue(supEntity.getSpannedScope().resolve("asProp", PropertySymbol.KIND).isPresent());
 
+    final PropertySymbol supProp = new PropertySymbol("supProp", new EntitySymbolReference("bar", supEntity.getSpannedScope()));
+    supEntity.addProperty(supProp);
+
+    assertTrue(supEntity.getSpannedScope().resolve("supProp", PropertySymbol.KIND).isPresent());
 
     final EntitySymbol subEntity = new EntitySymbol("SubEntity");
     gs.add(subEntity);
@@ -221,10 +223,8 @@ public class ResolvingTest {
     subEntity.setSuperClass(new EntitySymbolReference("p.SupEntity", gs));
 
     assertTrue(subEntity.getSuperClass().get().existsReferencedSymbol());
+    assertTrue(subEntity.getSpannedScope().resolve("supProp", PropertySymbol.KIND).isPresent());
     assertFalse(subEntity.getSpannedScope().resolve("asProp", PropertySymbol.KIND).isPresent());
-
-
-
   }
 
 }

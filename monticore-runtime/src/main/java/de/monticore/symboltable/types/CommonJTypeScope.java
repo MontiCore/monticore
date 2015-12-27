@@ -58,7 +58,6 @@ public class CommonJTypeScope extends CommonScope {
 
   @Override
   public <T extends Symbol> Optional<T> resolve(String symbolName, SymbolKind kind) {
-    // TODO PN rather resolveLocally, then in the super types, and finally in enclosing scope
     Optional<T> resolvedSymbol = super.resolve(symbolName, kind);
 
 
@@ -72,6 +71,7 @@ public class CommonJTypeScope extends CommonScope {
 
   @Override
   public <T extends Symbol> Optional<T> resolve(String name, SymbolKind kind, AccessModifier modifier) {
+    // TODO PN rather resolveLocally, then in the super types, and finally in enclosing scope
     Optional<T> resolvedSymbol = super.resolve(name, kind, modifier);
 
     if (!resolvedSymbol.isPresent()) {
@@ -120,7 +120,7 @@ public class CommonJTypeScope extends CommonScope {
 
     // TODO PN forward current ResolverInfo?
     // TODO PN only resolve locally?
-    return superType.getSpannedScope().resolve(name, kind, modifierForSuperClass);
+    return superType.getSpannedScope().resolveImported(name, kind, modifierForSuperClass);
   }
 
   @Override
@@ -139,6 +139,17 @@ public class CommonJTypeScope extends CommonScope {
         Log.trace("Continue in scope of super class " + superClas.getName(), CommonJTypeScope.class.getSimpleName());
         resolvedSymbol = superClas.getSpannedScope().resolve(predicate);
       }
+    }
+
+    return resolvedSymbol;
+  }
+
+  @Override
+  public <T extends Symbol> Optional<T> resolveImported(String name, SymbolKind kind, AccessModifier modifier) {
+    Optional<T> resolvedSymbol = resolveLocally(name, kind);
+
+    if (!resolvedSymbol.isPresent()) {
+      resolvedSymbol = resolveInSuperTypes(name, kind, modifier);
     }
 
     return resolvedSymbol;
