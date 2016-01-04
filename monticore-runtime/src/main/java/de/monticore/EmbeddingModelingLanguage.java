@@ -57,8 +57,6 @@ public abstract class EmbeddingModelingLanguage extends CommonModelingLanguage {
     this.hostLanguage = Log.errorIfNull(hostLanguage);
     this.embeddedLanguages.addAll(Log.errorIfNull(embeddedLanguages));
 
-    modelLoader = hostLanguage.getModelLoader();
-
     setModelNameCalculator(hostLanguage.getModelNameCalculator());
   }
 

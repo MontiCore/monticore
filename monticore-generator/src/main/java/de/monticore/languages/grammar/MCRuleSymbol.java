@@ -189,7 +189,7 @@ public abstract class MCRuleSymbol extends CommonScopeSpanningSymbol {
 
   // TODO NN <- PN what is this method for? Please write doc
   private String getnewtemp() {
-    return "tmp" + (new Integer(tmp_counter++)).toString();
+    return "tmp" + (Integer.valueOf(tmp_counter++)).toString();
   }
 
   public boolean isStartRule() {

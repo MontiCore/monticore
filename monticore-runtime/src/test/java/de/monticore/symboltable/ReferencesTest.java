@@ -64,15 +64,14 @@ public class ReferencesTest {
     ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
     resolverConfiguration.addTopScopeResolver(CommonResolvingFilter.create(CommonJTypeSymbol.class,
         CommonJTypeSymbol.KIND));
-    resolverConfiguration.addTopScopeResolver(CommonResolvingFilter.create(PropertySymbol
-            .class,
-        PropertySymbol.KIND));
+    resolverConfiguration.addTopScopeResolver(CommonResolvingFilter.create(PropertySymbol.class, PropertySymbol.KIND));
 
     final MutableScope globalScope = new GlobalScope(new ModelPath(), new ArrayList<>(), resolverConfiguration);
 
     globalScope.add(c);
     globalScope.add(d);
 
+    c.getSpannedScope().setResolvingFilters(globalScope.getResolvingFilters());
     d.getSpannedScope().setResolvingFilters(globalScope.getResolvingFilters());
 
     assertSame(c, globalScope.resolve("C", CommonJTypeSymbol.KIND).orElse(null));

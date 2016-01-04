@@ -37,12 +37,12 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
-import de.se_rwth.commons.StringTransformations;
 import org.antlr.v4.runtime.RecognitionException;
 
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.ASTASTRule;
+import de.monticore.grammar.grammar._ast.ASTAlt;
 import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
 import de.monticore.grammar.grammar._ast.ASTBlock;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
@@ -50,11 +50,10 @@ import de.monticore.grammar.grammar._ast.ASTConstantsGrammar;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTNonTerminalSeparator;
-import de.monticore.grammar.grammar._ast.ASTRuleComponentList;
-import de.monticore.grammar.grammar_withconcepts._parser.BlockMCParser;
-import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParserFactory;
+import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.monticore.utils.ASTNodes;
 import de.monticore.utils.ASTTraverser;
+import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -76,7 +75,7 @@ public class GrammarTransformer {
    * List(Element || ',')* ==> (List:Element (',' List:Element)+)
    */
   public static void removeNonTerminalSeparators(ASTMCGrammar grammar) {
-    Map<ASTNonTerminalSeparator, ASTRuleComponentList> map = new HashMap<ASTNonTerminalSeparator, ASTRuleComponentList>();
+    Map<ASTNonTerminalSeparator, ASTAlt> map = new HashMap<ASTNonTerminalSeparator, ASTAlt>();
     RuleComponentListFinder componentListTransformer = new RuleComponentListFinder(map);
     ASTTraverser traverser = new ASTTraverser(componentListTransformer);
     
@@ -84,17 +83,17 @@ public class GrammarTransformer {
     traverser.traverse(grammar);
     
     // execute the transformation
-    for (Entry<ASTNonTerminalSeparator, ASTRuleComponentList> entry : map.entrySet()) {
+    for (Entry<ASTNonTerminalSeparator, ASTAlt> entry : map.entrySet()) {
       Log.debug("Find NonTerminalSeparator", GrammarTransformer.class.getName());
       Optional<ASTBlock> block = transform(entry.getKey());
       if (block.isPresent()) {
-        ASTRuleComponentList parent = entry.getValue();
-        int ind = parent.indexOf(entry.getKey());
+        ASTAlt parent = entry.getValue();
+        int ind = parent.getComponents().indexOf(entry.getKey());
         if (ind >= 0) {
           Log.debug("Remove NonTerminalSeparator", GrammarTransformer.class.getName());
-          parent.remove(ind);
+          parent.getComponents().remove(ind);
           Log.debug("Added new generated block", GrammarTransformer.class.getName());
-          parent.add(ind, block.get());
+          parent.getComponents().add(ind, block.get());
         }
         else {
           Log.error("0xA1009 Can't transform grammar");
@@ -197,11 +196,11 @@ public class GrammarTransformer {
     extendedList = extendedList.replaceAll("%terminal%", nonTerminalSep.getSeparator());
     extendedList = extendedList.replaceAll("%iterator%", iteration);
     
-    BlockMCParser parser = Grammar_WithConceptsParserFactory.createBlockMCParser();
+    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTBlock> block = null;
     try {
       Log.debug("Create ast for " + extendedList, GrammarTransformer.class.getName());
-      block = parser.parse(new StringReader(extendedList));
+      block = parser.parseBlock(new StringReader(extendedList));
       if (parser.hasErrors()) {
         Log.error("0xA0362 RecognitionException during parsing " + extendedList);
       }

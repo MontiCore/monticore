@@ -36,10 +36,7 @@ import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTSemanticpredicateOrAction;
-import de.monticore.grammar.grammar_withconcepts._parser.ASTRuleMCParser;
-import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParserFactory;
-import de.monticore.grammar.grammar_withconcepts._parser.MCGrammarMCParser;
-import de.monticore.grammar.grammar_withconcepts._parser.SemanticpredicateOrActionMCParser;
+import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.monticore.grammar.transformation.GrammarTransformer;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
@@ -62,7 +59,7 @@ public class MCGrammarParserTest {
   public void testParse() throws RecognitionException, IOException {
     String model = "src/test/resources/de/monticore/statechart/Statechart.mc4";
     
-    MCGrammarMCParser parser = Grammar_WithConceptsParserFactory.createMCGrammarMCParser();
+    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTMCGrammar> result = parser.parse(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
@@ -79,13 +76,13 @@ public class MCGrammarParserTest {
     String str;
     
     str = "ast MCGrammar = GrammarOption max=1 ;";
-    ASTRuleMCParser parser = Grammar_WithConceptsParserFactory.createASTRuleMCParser();
-    Optional<ASTASTRule> result = parser.parse(new StringReader(str));
+    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
+    Optional<ASTASTRule> result = parser.parseASTRule(new StringReader(str));
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     
     str = " ast State = method public String getName(){ return \"\";};";
-    result = parser.parse(new StringReader(str));
+    result = parser.parseASTRule(new StringReader(str));
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     
@@ -95,8 +92,8 @@ public class MCGrammarParserTest {
   public void testSematicPred() throws RecognitionException, IOException {
     String str = "{(0 != cmpCounter)}?";
     
-    SemanticpredicateOrActionMCParser parser = Grammar_WithConceptsParserFactory.createSemanticpredicateOrActionMCParser();
-    Optional<ASTSemanticpredicateOrAction> result = parser.parse(new StringReader(str));
+    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
+    Optional<ASTSemanticpredicateOrAction> result = parser.parseSemanticpredicateOrAction(new StringReader(str));
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
   }
@@ -105,7 +102,7 @@ public class MCGrammarParserTest {
   public void testParseTypes() throws RecognitionException, IOException {
     String model = "src/test/resources/mc/grammars/types/TestTypes.mc4";
     
-    MCGrammarMCParser parser = Grammar_WithConceptsParserFactory.createMCGrammarMCParser();
+    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTMCGrammar> result = parser.parse(model.toString());
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
@@ -115,7 +112,7 @@ public class MCGrammarParserTest {
   public void testScript() throws RecognitionException, IOException {
     String model = "src/test/resources/de/monticore/script/ScriptExample.mc4";
     
-    MCGrammarMCParser parser = Grammar_WithConceptsParserFactory.createMCGrammarMCParser();
+    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTMCGrammar> result = parser.parse(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
@@ -125,7 +122,7 @@ public class MCGrammarParserTest {
   public void testAutomatonV1() throws RecognitionException, IOException {
     String model = "src/test/resources/de/monticore/script/AutomatonV1.mc4";
     
-    MCGrammarMCParser parser = Grammar_WithConceptsParserFactory.createMCGrammarMCParser();
+    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTMCGrammar> result = parser.parse(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
@@ -135,7 +132,7 @@ public class MCGrammarParserTest {
   public void testAutomatonV2() throws RecognitionException, IOException {
     String model = "src/test/resources/de/monticore/script/AutomatonV2.mc4";
     
-    MCGrammarMCParser parser = Grammar_WithConceptsParserFactory.createMCGrammarMCParser();
+    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTMCGrammar> result = parser.parse(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
@@ -145,7 +142,7 @@ public class MCGrammarParserTest {
   public void testAutomatonV3() throws RecognitionException, IOException {
     String model = "src/test/resources/de/monticore/script/AutomatonV3.mc4";
     
-    MCGrammarMCParser parser = Grammar_WithConceptsParserFactory.createMCGrammarMCParser();
+    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTMCGrammar> result = parser.parse(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
@@ -155,7 +152,7 @@ public class MCGrammarParserTest {
   public void testHierarchicalAutomaton() throws RecognitionException, IOException {
     String model = "src/test/resources/de/monticore/script/HierarchicalAutomaton.mc4";
 
-    MCGrammarMCParser parser = Grammar_WithConceptsParserFactory.createMCGrammarMCParser();
+    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTMCGrammar> result = parser.parse(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
@@ -165,7 +162,7 @@ public class MCGrammarParserTest {
   public void testAutomatonWithInvsComp() throws RecognitionException, IOException {
     String model = "src/test/resources/de/monticore/script/AutomatonWithInvsComp.mc4";
 
-    MCGrammarMCParser parser = Grammar_WithConceptsParserFactory.createMCGrammarMCParser();
+    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTMCGrammar> result = parser.parse(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
@@ -175,7 +172,7 @@ public class MCGrammarParserTest {
   public void testAutomatonWithInvs() throws RecognitionException, IOException {
     String model = "src/test/resources/de/monticore/script/AutomatonWithInvs.mc4";
     
-    MCGrammarMCParser parser = Grammar_WithConceptsParserFactory.createMCGrammarMCParser();
+    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTMCGrammar> result = parser.parse(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
@@ -185,7 +182,7 @@ public class MCGrammarParserTest {
   public void testGrammarSymbolTableInfo() throws RecognitionException, IOException {
     String model = "src/test/resources/de/monticore/symboltable/GrammarWithSymbolTableInfo.mc4";
 
-    MCGrammarMCParser parser = Grammar_WithConceptsParserFactory.createMCGrammarMCParser();
+    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTMCGrammar> result = parser.parse(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());

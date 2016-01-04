@@ -44,18 +44,11 @@ public enum AttributeCategory {
   /**
    * a reference to a generic List such as 'List<String>'
    */
-  GENERICLIST,
-  /**
-   * a reference to a Monticore generated List class such as 'StringList'
-   */
-  LISTCLASS;
+  GENERICLIST;
   
   public static AttributeCategory determineCategory(ASTCDAttribute cdAttribute) {
     if (cdAttribute.getType() instanceof ASTPrimitiveType) {
       return PRIMITIVE;
-    }
-    if (isListClass(cdAttribute)) {
-      return LISTCLASS;
     }
     if (isGenericList(cdAttribute)) {
       return GENERICLIST;
@@ -64,11 +57,6 @@ public enum AttributeCategory {
       return OPTIONAL;
     }
     return STANDARD;
-  }
-  
-  private static boolean isListClass(ASTCDAttribute cdAttribute) {
-    String typeName = typeToString(cdAttribute.getType());
-    return typeName.contains("AST") && typeName.endsWith("List");
   }
   
   private static boolean isGenericList(ASTCDAttribute cdAttribute) {

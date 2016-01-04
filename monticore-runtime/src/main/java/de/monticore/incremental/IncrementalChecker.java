@@ -36,6 +36,7 @@ import java.util.LinkedHashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -182,10 +183,11 @@ public class IncrementalChecker {
       ModelPath modelPath) {
     // here we analyze the dependencies of the file we want to check according
     // to the last report
-    for (String input : stories.keySet()) {
+    for (Entry<String, InputStory> story : stories.entrySet()) {
       // for each dependency we get the respective state (hash or "missing")
       // from the last report
-      InputStory inputStory = stories.get(input);
+      String input = story.getKey();
+      InputStory inputStory = story.getValue();
       
       ModelCoordinate currentResolution = ModelCoordinates.createQualifiedCoordinate(Paths
           .get(inputStory.inputPath));

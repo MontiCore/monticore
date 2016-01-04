@@ -42,13 +42,8 @@ public class EntitySymbol extends CommonJTypeSymbol<EntitySymbol, PropertySymbol
   }
 
   @Override
-  protected MutableScope createSpannedScope() {
-    return new EntityScope(this);
-  }
-
-  @Override
-  public EntityScope getSpannedScope() {
-    return (EntityScope) super.getSpannedScope();
+  public MutableScope getSpannedScope() {
+    return (MutableScope) super.getSpannedScope();
   }
 
   public Optional<ActionSymbol> getAction(String actionName) {

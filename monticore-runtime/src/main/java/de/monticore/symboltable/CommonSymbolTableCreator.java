@@ -44,7 +44,6 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
    */
   private MutableScope firstCreatedScope;
 
-  // TODO PN Move parameters to createFromAST() method?
   public CommonSymbolTableCreator(final ResolverConfiguration resolverConfig,
       final MutableScope enclosingScope) {
     this(resolverConfig, new ArrayDeque<>());

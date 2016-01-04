@@ -21,7 +21,6 @@ package de.monticore.languages.grammar.lexpatterns;
 
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.grammar._ast.ASTLexAlt;
-import de.monticore.grammar.grammar._ast.ASTLexAltList;
 import de.monticore.grammar.grammar._ast.ASTLexBlock;
 import de.monticore.grammar.grammar._ast.ASTLexChar;
 import de.monticore.grammar.grammar._ast.ASTLexCharRange;
@@ -51,18 +50,14 @@ public class RegExpBuilder implements Grammar_WithConceptsVisitor {
    */
   @Override
   public void handle(ASTLexProd a) {
-    a.getAlts().accept(getRealThis());
-  }
-  
-  @Override
-  public void handle(ASTLexAltList a) {
     String del = "";
-    for (ASTLexAlt alt: a) {
+    for (ASTLexAlt alt: a.getAlts()) {
       b.append(del);
       alt.accept(getRealThis());
       del = "|";
     }
   }
+  
    
   @Override
   public void handle(ASTLexBlock a) {
@@ -74,7 +69,12 @@ public class RegExpBuilder implements Grammar_WithConceptsVisitor {
     b.append("(");
     
     // Visit all alternatives
-    a.getLexAlts().accept(getRealThis());
+    String del = "";
+    for (ASTLexAlt alt: a.getLexAlts()) {
+      b.append(del);
+      alt.accept(getRealThis());
+      del = "|";
+    }
     
     // Start of Block with iteration
     b.append(")");

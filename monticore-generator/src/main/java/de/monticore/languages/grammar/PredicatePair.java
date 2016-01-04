@@ -45,7 +45,13 @@ public class PredicatePair {
     this.component = Optional.ofNullable(block);
   }
   
+  @Override
   public boolean equals(Object o) {
     return (o instanceof PredicatePair) && classname.equals(((PredicatePair) o).classname);
+  }
+  
+  @Override
+  public int hashCode() {
+    return classname.hashCode();
   }
 }

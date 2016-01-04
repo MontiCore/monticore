@@ -42,9 +42,7 @@ public class TreePrintVisitor implements CommonVisitor {
   // output to be stored here:
   protected List<String> treeResult;
   
-  Stack<String> indent;
-  
-  Stack<Integer> siblingsLeft;
+  Stack<String> indents;
   
   static final String INITALINDENT = "";
   
@@ -66,45 +64,35 @@ public class TreePrintVisitor implements CommonVisitor {
   
   /* visits all nodes and prints them as one liner with correct indentation */
   @Override
-  public void visit(ASTNode a) {
-    indent.pop();
-    int cl = siblingsLeft.pop();
-    
+  public void visit(ASTNode a) {   
     // prepare the output
-    String ident = repo.getASTNodeNameFormatted(a);
-    String out = indent.peek() + INDENT1 + ident;
-    if (endLineDecoration != null && endLineDecoration.containsKey(ident)) {
-      String decor = endLineDecoration.get(ident);
+    String nodeId = repo.getASTNodeNameFormatted(a);
+    String out = indents.peek() + INDENT1 + nodeId;
+    if (endLineDecoration != null && endLineDecoration.containsKey(nodeId)) {
+      String decor = endLineDecoration.get(nodeId);
       out = Layouter.padleft(out, 60) + " " + decor;
     }
     treeResult.add(out);
     
-    cl--; // one less sibling
-    String nextIndent = (cl >= 1) ? INDENT2 : INDENT3;
-    
-    indent.push(indent.peek() + nextIndent);
-    siblingsLeft.push(cl);
-    
+    String nextIndent = (indents.size() == 1) ? INDENT3 : INDENT2;
+
     // care for potential children:
-    indent.push(indent.peek() + "|  ");
-    siblingsLeft.push(a.get_Children().size());
+    indents.push(indents.peek() + nextIndent);
     
     // print the extra infos
-    if (astNodeExtraInfos != null && astNodeExtraInfos.containsKey(ident)) {
-      List<String> extras = astNodeExtraInfos.get(ident);
+    if (astNodeExtraInfos != null && astNodeExtraInfos.containsKey(nodeId)) {
+      List<String> extras = astNodeExtraInfos.get(nodeId);
       for (String s : extras) {
-        treeResult.add(Layouter.padleft(indent.peek(), 20) + "      "
+        treeResult.add(Layouter.padleft(indents.peek(), 20) + "      "
             + s);
       }
     }
-    
   }
   
   @Override
   public void endVisit(ASTNode a) {
     // remove children stuff
-    indent.pop();
-    siblingsLeft.pop();
+    indents.pop();
   }
   
   /**
@@ -132,12 +120,8 @@ public class TreePrintVisitor implements CommonVisitor {
     this.treeResult = Lists.newArrayList();
     this.endLineDecoration = endLineDecoration;
     this.astNodeExtraInfos = astNodeExtraInfos;
-    indent = new Stack<String>();
-    indent.add(INITALINDENT); // initial indentation
-    indent.add(INITALINDENT + INDENT2); // + one child
-    siblingsLeft = new Stack<Integer>();
-    siblingsLeft.add(1);
-    siblingsLeft.add(1);
+    indents = new Stack<String>();
+    indents.add(INITALINDENT); 
   }
   
   public List<String> getTreeResult() {

@@ -32,6 +32,7 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTMethod;
 import de.monticore.grammar.grammar._ast.ASTMethodParameter;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
+import de.monticore.java.javadsl._ast.ASTBlockStatement;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
@@ -95,8 +96,11 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
       cdMethod.getCDParameters().add(TransformationHelper.createParameter(typeName, param.getName()));
     }
     if (method.getBody() instanceof ASTAction) {
-      String code = GeneratorHelper.getJavaPrettyPrinter().prettyprint(((ASTAction) method.getBody()).getBlockStatements());
-      HookPoint methodBody = new StringHookPoint(code);
+      StringBuilder code = new StringBuilder();
+      for (ASTBlockStatement action: ((ASTAction) method.getBody()).getBlockStatements()) {
+        code.append(GeneratorHelper.getJavaPrettyPrinter().prettyprint(action));
+      }
+      HookPoint methodBody = new StringHookPoint(code.toString());
       glex.replaceTemplate(CdDecorator.EMPTY_BODY_TEMPLATE, cdMethod, methodBody);
     }
     return cdMethod;

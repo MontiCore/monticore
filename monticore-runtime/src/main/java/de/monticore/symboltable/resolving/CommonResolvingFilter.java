@@ -25,12 +25,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import com.google.common.collect.Lists;
-import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.SymbolKind;
 
 /**
- * TODO: Write me!
+ * Default implementation for {@link ResolvingFilter}.
  *
  * @author Pedram Mir Seyed Nazari
  *
@@ -72,7 +71,8 @@ public class CommonResolvingFilter<S extends Symbol> implements ResolvingFilter<
   @Override
   @SuppressWarnings("unchecked")
   public Collection<S> filter(ResolvingInfo resolvingInfo, List<Symbol> symbols) {
-      final Collection<S> foundSymbols = Lists.newArrayList();
+      // TODO PN  create new LinkedHashSet<>() instead
+      final Collection<S> foundSymbols = new LinkedHashSet<>();
 
       for (Symbol symbol : symbols) {
         // TODO PN in eigene Methode auslagern, damit Unterklassen das überschreiben können.

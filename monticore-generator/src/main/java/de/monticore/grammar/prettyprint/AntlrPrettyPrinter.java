@@ -20,10 +20,8 @@
 package de.monticore.grammar.prettyprint;
 
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrLexerAction;
-import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrLexerActionList;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrNode;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrParserAction;
-import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrParserActionList;
 import de.monticore.grammar.concepts.antlr.antlr._visitor.AntlrVisitor;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
@@ -72,24 +70,6 @@ public class AntlrPrettyPrinter implements AntlrVisitor {
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
   
-  @Override
-  public void handle(ASTAntlrLexerActionList a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    for (ASTAntlrLexerAction s : a) {
-      s.accept(getRealThis());
-    }
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-    
-  @Override
-  public void handle(ASTAntlrParserActionList a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    for (ASTAntlrParserAction s : a) {
-      s.accept(getRealThis());
-    }
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-    
   public String prettyprint(ASTAntlrNode a) {
     getPrinter().clearBuffer();
     a.accept(getRealThis());

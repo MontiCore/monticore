@@ -19,17 +19,17 @@
 
 package parser;
 
-import com.google.common.io.Files;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParserFactory;
-import de.monticore.grammar.grammar_withconcepts._parser.MCGrammarMCParser;
-import de.monticore.grammar.transformation.GrammarTransformer;
-import de.se_rwth.commons.Names;
-import de.se_rwth.commons.logging.Log;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
+
+import com.google.common.io.Files;
+
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
+import de.monticore.grammar.transformation.GrammarTransformer;
+import de.se_rwth.commons.Names;
+import de.se_rwth.commons.logging.Log;
 
 /**
  * The MontiCore grammar parser.
@@ -45,8 +45,8 @@ public class MCGrammarParser {
    */
   public static Optional<ASTMCGrammar> parse(Path grammarFile) {
     try {
-      MCGrammarMCParser parser = Grammar_WithConceptsParserFactory.createMCGrammarMCParser();
-      java.util.Optional<ASTMCGrammar> ast = parser.parse(grammarFile.toString());
+      Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
+      java.util.Optional<ASTMCGrammar> ast = parser.parseMCGrammar(grammarFile.toString());
       String simplePathName = grammarFile.toString();
       String packageName = Names.getPackageFromPath(Names.getPathFromFilename(simplePathName));
 

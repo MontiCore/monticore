@@ -45,7 +45,7 @@ ${tc.signature("ast","astType")}
       <#-- TODO: attributes of super class - use symbol table -->
        <#list astType.getCDAttributes()  as attribute>  
          <#assign attributeName = genHelper.getJavaConformName(attribute.getName())>
-         <#if !genHelper.isAstNode(attribute) && !genHelper.isOptionalAstNode(attribute) >
+         <#if !genHelper.isAstNode(attribute) && !genHelper.isOptionalAstNode(attribute) && !genHelper.isListAstNode(attribute)>
 	// comparing ${attributeName} 
 	      <#if genHelper.isPrimitive(attribute.getType())>
     if (!(this.${attributeName} == comp.${attributeName})) {

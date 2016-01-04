@@ -23,16 +23,16 @@ import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import parser.MCGrammarParser;
 import de.monticore.grammar.DirectLeftRecursionDetector;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
-import de.monticore.grammar.grammar._ast.ASTClassProdList;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import parser.MCGrammarParser;
 
 /**
  * Tests the helper class on a concrete grammar containing left recursive and normal rules.
@@ -57,7 +57,7 @@ public class DirectLeftRecursionDetectorTest {
   @Test
   public void testRecursiveRule() {
     // firs
-    final ASTClassProdList productions = astMCGrammarOptional.get().getClassProds();
+    final List<ASTClassProd> productions = astMCGrammarOptional.get().getClassProds();
 
     // TODO: add ASTAlt parameter to isAlternativeLeftRecursive-method
     final ASTClassProd exprProduction = productions.get(0);

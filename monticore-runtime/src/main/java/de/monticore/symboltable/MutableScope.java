@@ -36,15 +36,9 @@ public interface MutableScope extends Scope {
   <T extends Symbol> Optional<T> resolve(ResolvingInfo resolvingInfo, String name,
       SymbolKind kind, AccessModifier modifier);
 
-  @Deprecated
-  <T extends Symbol> Optional<T> resolve(ResolvingInfo resolvingInfo, String name, SymbolKind kind);
+  <T extends Symbol> Collection<T> resolveDownMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier);
 
-  @Deprecated
-  <T extends Symbol> Optional<T> resolveDown(ResolvingInfo resolvingInfo, String name, SymbolKind kind);
-
-  <T extends Symbol> Collection<T> resolveDownMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind);
-
-  <T extends Symbol> Collection<T> resolveMany(ResolvingInfo resolvingInfo, String symbolName, SymbolKind kind);
+  <T extends Symbol> Collection<T> resolveMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier);
 
   /**
    * @param enclosingScope the enclosing scope. In Java, for example, a class scope is the

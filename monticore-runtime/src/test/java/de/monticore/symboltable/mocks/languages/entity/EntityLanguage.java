@@ -32,7 +32,7 @@ public class EntityLanguage extends CommonModelingLanguage {
   public static final String FILE_ENDING = "cla";
   
   public EntityLanguage() {
-    super("Entity Language Mock", FILE_ENDING, EntitySymbol.KIND);
+    super("Entity Language Mock", FILE_ENDING);
     
     addResolver(CommonResolvingFilter.create(EntitySymbol.class, EntitySymbol.KIND));
     addResolver(CommonResolvingFilter.create(ActionSymbol.class, ActionSymbol.KIND));
