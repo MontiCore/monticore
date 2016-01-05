@@ -5,7 +5,10 @@
  */
 package de.monticore.codegen.cd2java.ast_emf;
 
+import java.util.Optional;
+
 import de.monticore.types.TypesHelper;
+import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
 import de.se_rwth.commons.Names;
@@ -126,11 +129,13 @@ public class EmfAttribute {
   }
   
   public String getNativeTypeName() {
-    if (!isOptional) {
-      return getTypeName();
+    if (isOptional) {
+      System.err.println("Optional " + getTypeName());
+      return TypesHelper
+          .printType(TypesHelper.getSimpleReferenceTypeFromOptional(getCdAttribute().getType()));
+          
     }
-    return TypesHelper
-        .printType(TypesHelper.getSimpleReferenceTypeFromOptional(getCdAttribute().getType()));
+    return getTypeName();
   }
   
   public String getDefaultValue() {
@@ -159,10 +164,18 @@ public class EmfAttribute {
   }
   
   public String getEmfType() {
-    return isAstNode() ? "EReference" : "EAttribute";
+    return (isAstNode() || isAstList()) ? "EReference" : "EAttribute";
   }
   
   public String getEDataType() {
+    if (isAstList) {
+      Optional<ASTSimpleReferenceType> typeArg = TypesHelper
+          .getFirstTypeArgumentOfGenericType(getCdAttribute().getType(), "java.util.List");
+      if (typeArg.isPresent()) {
+        return Names.getSimpleName(TypesHelper
+            .printType(typeArg.get()));
+      }
+    }
     return Names.getSimpleName(getNativeTypeName());
   }
   
