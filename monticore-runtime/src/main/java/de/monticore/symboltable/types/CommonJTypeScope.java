@@ -136,10 +136,10 @@ public class CommonJTypeScope extends CommonScope {
       final Optional<? extends JTypeReference<? extends JTypeSymbol>> optSuperClass = spanningSymbol.getSuperClass();
 
       if (optSuperClass.isPresent()) {
-        final JTypeSymbol superClas = optSuperClass.get().getReferencedSymbol();
+        final JTypeSymbol superClass = optSuperClass.get().getReferencedSymbol();
 
-        Log.trace("Continue in scope of super class " + superClas.getName(), CommonJTypeScope.class.getSimpleName());
-        resolvedSymbol = superClas.getSpannedScope().resolve(predicate);
+        Log.trace("Continue in scope of super class " + superClass.getName(), CommonJTypeScope.class.getSimpleName());
+        resolvedSymbol = superClass.getSpannedScope().resolve(predicate);
       }
     }
 

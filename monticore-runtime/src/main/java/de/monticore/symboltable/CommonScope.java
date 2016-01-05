@@ -160,33 +160,28 @@ public class CommonScope implements MutableScope {
     Log.errorIfNull(resolvingInfo);
     resolvingInfo.addInvolvedScope(this);
 
-    final Set<T> resolved = new LinkedHashSet<>(this.<T>resolveManyLocally(resolvingInfo, name, kind));
-
-    // TODO PN must this check be done AFTER the symbols are filtered by the access modifiers?
-    continueWithEnclosingScope(resolvingInfo, name, kind, modifier, resolved);
+    final Set<T> resolvedUnfiltered = new LinkedHashSet<>(this.<T>resolveManyLocally(resolvingInfo, name, kind));
 
     // filter out symbols that are not included within the access modifier
-    final List<T> result = new ArrayList<>(Collections2.filter(resolved, new IncludesAccessModifierPredicate(modifier)));
+    final Set<T> resolvedFiltered = new LinkedHashSet<>(Collections2.filter(resolvedUnfiltered, new IncludesAccessModifierPredicate(modifier)));
+    resolvingInfo.updateSymbolsFound(!resolvedFiltered.isEmpty());
 
-    return result;
+    resolvedFiltered.addAll(continueWithEnclosingScope(resolvingInfo, name, kind, modifier));
+
+    return resolvedFiltered;
   }
 
   /**
    * Continues resolving with the enclosing scope.
    */
-  // TODO PN return a collection of resolved symbols.
-  protected <T extends Symbol> void continueWithEnclosingScope(ResolvingInfo resolvingInfo, String name, SymbolKind kind,
-      AccessModifier modifier, Set<T> resolvedLocally) {
+  protected <T extends Symbol> Collection<T> continueWithEnclosingScope(ResolvingInfo resolvingInfo, String name, SymbolKind kind,
+      AccessModifier modifier) {
 
-    final boolean foundSymbols = !resolvedLocally.isEmpty() || resolvingInfo.areSymbolsFound();
-    if (checkIfContinueWithEnclosing(foundSymbols) && (getEnclosingScope().isPresent())) {
-      // TODO PN resolveMany from enclosing scope.
-      final Optional<T> resolvedFromEnclosing = getEnclosingScope().get().resolve(resolvingInfo, name, kind, modifier);
-
-      if (resolvedFromEnclosing.isPresent()) {
-        addResolvedSymbolsIfNotShadowed(resolvedLocally, resolvedFromEnclosing.get());
-      }
+    if (checkIfContinueWithEnclosing(resolvingInfo.areSymbolsFound()) && (getEnclosingScope().isPresent())) {
+      return getEnclosingScope().get().resolveMany(resolvingInfo, name, kind, modifier);
     }
+
+    return Collections.emptySet();
   }
 
   @Override
@@ -209,17 +204,21 @@ public class CommonScope implements MutableScope {
     return getResolvedOrThrowException(resolveMany(symbolName, kind));
   }
 
-  protected <T extends Symbol> void addResolvedSymbolsIfNotShadowed(Collection<T> result, T resolvedSymbol) {
+  protected <T extends Symbol> boolean isNotSymbolShadowed(Collection<T> shadowingSymbols, T symbol) {
     // Does any local symbol shadow the symbol of the enclosing scope?
-    if (!any(result.iterator(), createIsShadowingByPredicate(resolvedSymbol))) {
-      result.add(resolvedSymbol);
-    }
+    return  (!any(shadowingSymbols.iterator(), createIsShadowingByPredicate(symbol)));
   }
 
-  protected <T extends Symbol> void addResolvedSymbolsIfNotShadowed(Collection<T> result, Collection<T> resolvedSymbols) {
-    for (T resolvedSymbol : resolvedSymbols) {
-      addResolvedSymbolsIfNotShadowed(result, resolvedSymbol);
+  protected <T extends Symbol> Collection<T> getNotShadowedSymbols(Collection<T> shadowingSymbols, Collection<T> symbols) {
+    final Collection<T> result = new LinkedHashSet<>();
+
+    for (T resolvedSymbol : symbols) {
+      if (isNotSymbolShadowed(shadowingSymbols, resolvedSymbol)) {
+        result.add(resolvedSymbol);
+      }
     }
+
+    return result;
   }
 
   /**
@@ -270,31 +269,37 @@ public class CommonScope implements MutableScope {
    */
   @Override
   public Optional<? extends Symbol> resolve(SymbolPredicate predicate) {
-    List<Symbol> result = new ArrayList<>(Collections2.filter(symbols, predicate));
+    Set<Symbol> result = new LinkedHashSet<>(Collections2.filter(symbols, predicate));
 
     // TODO PN Combine with adaptors. For this: add filter(SymbolPredicate) to
     //         AdaptedResolvingFilter (maybe ResolvingFilter too). Then, run pass
     //         resolved symbols to all filters.
 
-    continueWithEnclosingScope(predicate, result);
-
-    return getResolvedOrThrowException(new ArrayList<>(result));
-  }
-
-  protected void continueWithEnclosingScope(SymbolPredicate predicate, List<Symbol> result) {
-    if (getEnclosingScope().isPresent()) {
-      continueWithScope(getEnclosingScope().get(), predicate, result);
+    final Optional<? extends Symbol> resolvedFromEnclosing = continueWithEnclosingScope(predicate, result);
+    if (resolvedFromEnclosing.isPresent()) {
+      result.add(resolvedFromEnclosing.get());
     }
+
+    return getResolvedOrThrowException(result);
   }
 
-  protected void continueWithScope(MutableScope scope, SymbolPredicate predicate, List<Symbol> result) {
+  protected Optional<? extends Symbol> continueWithEnclosingScope(SymbolPredicate predicate, Set<Symbol> result) {
+    if (getEnclosingScope().isPresent()) {
+      return continueWithScope(getEnclosingScope().get(), predicate, result);
+    }
+
+    return Optional.empty();
+  }
+
+  protected Optional<? extends Symbol> continueWithScope(MutableScope scope, SymbolPredicate predicate, Set<Symbol> result) {
     if (checkIfContinueWithEnclosing(!result.isEmpty()/* TODO PN || resolvingInfo.areSymbolsFound())*/)) {
       Optional<? extends Symbol> resolvedFromParent = scope.resolve(predicate);
 
-      if (resolvedFromParent.isPresent()) {
-        addResolvedSymbolsIfNotShadowed(result, resolvedFromParent.get());
+      if (resolvedFromParent.isPresent() && isNotSymbolShadowed(result, resolvedFromParent.get())) {
+        return resolvedFromParent;
       }
     }
+    return Optional.empty();
   }
 
   /**
@@ -510,6 +515,7 @@ public class CommonScope implements MutableScope {
     // TODO PN Doc if a symbol is found in the current scope, resolving is stopped.
     if (!resolved.isEmpty()) {
       Log.trace("END " + resolveCall + ". Found #" + resolved.size() , "");
+      resolvingInfo.updateSymbolsFound(true);
       return resolved;
     }
 

@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import com.google.common.collect.FluentIterable;
 import de.monticore.symboltable.modifiers.AccessModifier;
@@ -89,18 +88,18 @@ public class ArtifactScope extends CommonScope {
   /**
    * Starts the bottom-up inter-model resolution process.
    *
+   * @param <T>
    * @param resolvingInfo
    * @param name
    * @param kind
-   * @param <T>
    * @return
    */
-  protected <T extends Symbol> void continueWithEnclosingScope(final ResolvingInfo resolvingInfo, final String name,
-      final SymbolKind kind, final AccessModifier modifier, final Set<T> resolvedLocally) {
+  @Override
+  protected <T extends Symbol> Collection<T> continueWithEnclosingScope(final ResolvingInfo resolvingInfo, final String name,
+      final SymbolKind kind, final AccessModifier modifier) {
+    final Collection<T> result = new LinkedHashSet<>();
 
-    final boolean foundSymbols = !resolvedLocally.isEmpty() || resolvingInfo.areSymbolsFound();
-
-    if (checkIfContinueWithEnclosing(foundSymbols) && (getEnclosingScope().isPresent())) {
+    if (checkIfContinueWithEnclosing(resolvingInfo.areSymbolsFound()) && (getEnclosingScope().isPresent())) {
       if (!(enclosingScope instanceof GlobalScope)) {
         Log.warn("0xA1039 An artifact scope should have the global scope as enclosing scope or no "
             + "enclosing scope at all.");
@@ -109,11 +108,10 @@ public class ArtifactScope extends CommonScope {
       for (final String potentialName : determinePotentialNames(name)) {
         final Collection<T> resolvedFromGlobal = enclosingScope.resolveMany(resolvingInfo, potentialName, kind, modifier);
 
-        if (!resolvedFromGlobal.isEmpty()) {
-          addResolvedSymbolsIfNotShadowed(resolvedLocally, resolvedFromGlobal);
-        }
+        result.addAll(resolvedFromGlobal);
       }
     }
+    return result;
   }
 
   // TODO PN doc
