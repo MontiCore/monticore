@@ -166,7 +166,7 @@ public class CdDecorator {
             
   }
   
-  void addSymbolGetter(ASTCDClass clazz, AstGeneratorHelper astHelper) {
+  protected void addSymbolGetter(ASTCDClass clazz, AstGeneratorHelper astHelper) {
     List<ASTCDAttribute> attributes = Lists.newArrayList(clazz.getCDAttributes());
     for (ASTCDAttribute attribute : attributes) {
       if (GeneratorHelper.isInherited(attribute)
@@ -478,10 +478,14 @@ public class CdDecorator {
       }
     }
     
+    List<String> astNotListClasses = nativeClasses.stream()
+        .map(e -> astHelper.getPlainName(e))
+        .collect(Collectors.toList());
+    
     cdDef.getCDClasses().add(nodeFactoryClass);
     glex.replaceTemplate("ast.ClassContent", nodeFactoryClass, new TemplateHookPoint(
-        "ast.AstNodeFactory", nodeFactoryClass, imports));
-        
+        "ast.AstNodeFactory", nodeFactoryClass, imports, astNotListClasses));
+    
   }
   
   /**
@@ -733,16 +737,6 @@ public class CdDecorator {
           new TemplateHookPoint(
               "ast.BuilderConstructorParametersDeclaration", fullConstructor.getCDParameters()));
     }
-  }
-  
-  /**
-   * TODO: Write me!
-   */
-  protected void decorateAstListClass(ASTCDClass clazz) {
-    glex.replaceTemplate("ast.ClassContent", clazz, new TemplateHookPoint("ast.AstListMethods"));
-    glex.replaceTemplate("ast.AstImports", clazz, new TemplateHookPoint("ast.ListImports"));
-    glex.replaceTemplate("ast.AstSuperTypes", clazz, new TemplateHookPoint(
-        "ast.AstSuperTypesList"));
   }
   
   /**

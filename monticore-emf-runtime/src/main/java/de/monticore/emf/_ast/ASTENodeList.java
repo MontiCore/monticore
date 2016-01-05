@@ -21,7 +21,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.ast.Comment;
 import de.se_rwth.commons.SourcePosition;
 
-public class ASTENodeList extends de.monticore.ast.ASTCList implements
+public class ASTENodeList implements
     java.lang.Iterable<ASTENode>, EList<ASTENode>, NotifyingList<ASTENode>, RandomAccess,
     Cloneable, Serializable, InternalEList<ASTENode>, InternalEList.Unsettable<ASTENode>,
     EStructuralFeature.Setting {
@@ -30,18 +30,11 @@ public class ASTENodeList extends de.monticore.ast.ASTCList implements
   
   public ASTENodeList(Class<?> dataClass, InternalEObject owner, int featureID) {
     list = new EObjectContainmentEList<ASTENode>(dataClass, owner, featureID);
-    set_Existent(false);
   }
   
   public ASTENodeList() {
     list = new EObjectContainmentEList<ASTENode>(ASTENode.class,
         new de.monticore.emf.ASTDummyEObjectImplNode(), 0);
-    set_Existent(false);
-  }
-  
-  public ASTENodeList(boolean strictlyOrdered) {
-    this();
-    this._strictlyOrdered = strictlyOrdered;
   }
   
   /* @deprecated dont gets actual list but creates a new arraylist and makes
@@ -58,20 +51,15 @@ public class ASTENodeList extends de.monticore.ast.ASTCList implements
   protected void setList(ArrayList<ASTENode> list) {
     this.list.clear();
     this.list.addAll(list);
-    set_Existent(false);
   }
   
   // added for EMF generation
   protected void setList(EObjectContainmentEList<ASTENode> list) {
     this.list.clear();
     this.list.addAll(list);
-    set_Existent(false);
   }
   
   public void add(int index, ASTENode o) {
-    if (!is_Existent()) {
-      set_Existent(true);
-    }
     list.add(index, o);
   }
   
@@ -85,9 +73,6 @@ public class ASTENodeList extends de.monticore.ast.ASTCList implements
   }
   
   public boolean add(ASTENode o) {
-    if (!is_Existent()) {
-      set_Existent(true);
-    }
     list.add(o);
     return true;
   }
@@ -182,6 +167,8 @@ public class ASTENodeList extends de.monticore.ast.ASTCList implements
         result.add((ASTENode) iter.next().deepClone());
       }
     }
+    // TODO GV:
+    /*
     for (Comment x : get_PreComments()) {
       result.get_PreComments().add(new Comment(x.getText()));
     }
@@ -189,6 +176,8 @@ public class ASTENodeList extends de.monticore.ast.ASTCList implements
     for (Comment x : get_PostComments()) {
       result.get_PostComments().add(new Comment(x.getText()));
     }
+    
+    */
     
     return result;
   }
@@ -341,16 +330,6 @@ public class ASTENodeList extends de.monticore.ast.ASTCList implements
       return false;
     }
     if (this.size() == comp.size()) {
-      if (isStrictlyOrdered()) {
-        java.util.Iterator<ASTENode> one = this.iterator();
-        java.util.Iterator<ASTENode> two = comp.iterator();
-        while (one.hasNext()) {
-          if (!one.next().deepEquals(two.next())) {
-            return false;
-          }
-        }
-      }
-      else {
         java.util.Iterator<ASTENode> one = this.iterator();
         while (one.hasNext()) {
           ASTENode oneNext = one.next();
@@ -366,7 +345,6 @@ public class ASTENodeList extends de.monticore.ast.ASTCList implements
             return false;
           }
         }
-      }
     }
     else {
       return false;
@@ -383,16 +361,6 @@ public class ASTENodeList extends de.monticore.ast.ASTCList implements
       return false;
     }
     if (this.size() == comp.size()) {
-      if (isStrictlyOrdered()) {
-        java.util.Iterator<ASTENode> one = this.iterator();
-        java.util.Iterator<ASTENode> two = comp.iterator();
-        while (one.hasNext()) {
-          if (!one.next().deepEqualsWithComments(two.next())) {
-            return false;
-          }
-        }
-      }
-      else {
         java.util.Iterator<ASTENode> one = this.iterator();
         while (one.hasNext()) {
           ASTENode oneNext = one.next();
@@ -407,7 +375,6 @@ public class ASTENodeList extends de.monticore.ast.ASTCList implements
           if (!matchFound) {
             return false;
           }
-        }
       }
     }
     else {
@@ -555,9 +522,6 @@ public class ASTENodeList extends de.monticore.ast.ASTCList implements
     
     public void add(ASTENode o) {
       it.add(o);
-      if (!t.is_Existent())
-        t.set_Existent(true);
-    }
   }
   
   // Methods added for EMF
@@ -570,138 +534,355 @@ public class ASTENodeList extends de.monticore.ast.ASTCList implements
     return list.move(newPosition, oldPosition);
   }
   
-  @Override
   public boolean addAllUnique(Collection<? extends ASTENode> collection) {
     return list.addAllUnique(collection);
   }
   
-  @Override
   public boolean addAllUnique(int index, Collection<? extends ASTENode> collection) {
     return list.addAllUnique(index, collection);
   }
   
-  @Override
   public void addUnique(ASTENode object) {
     list.addUnique(object);
   }
   
-  @Override
   public void addUnique(int index, ASTENode object) {
     list.addUnique(index, object);
   }
   
-  @Override
   public NotificationChain basicAdd(ASTENode object, NotificationChain notifications) {
     return list.basicAdd(object, notifications);
   }
   
-  @Override
   public boolean basicContains(Object object) {
     return list.basicContains(object);
   }
   
-  @Override
   public boolean basicContainsAll(Collection<?> collection) {
     return list.basicContainsAll(collection);
   }
   
-  @Override
   public ASTENode basicGet(int index) {
     return list.basicGet(index);
   }
   
-  @Override
   public int basicIndexOf(Object object) {
     return list.basicIndexOf(object);
   }
   
-  @Override
-  public Iterator<ASTENode> basicIterator() {
-    return this.iterator();
-  }
   
-  @Override
   public int basicLastIndexOf(Object object) {
     return list.lastIndexOf(object);
   }
   
-  @Override
-  public List<ASTENode> basicList() {
-    return this;
-  }
   
-  @Override
-  public ListIterator<ASTENode> basicListIterator() {
-    return this.listIterator();
-  }
-  
-  @Override
-  public ListIterator<ASTENode> basicListIterator(int index) {
-    return this.listIterator(index);
-  }
-  
-  @Override
   public NotificationChain basicRemove(Object object, NotificationChain notifications) {
     return list.basicRemove(object, notifications);
   }
   
-  @Override
   public Object[] basicToArray() {
     return list.basicToArray();
   }
   
-  @Override
   public <T> T[] basicToArray(T[] array) {
     return list.basicToArray(array);
   }
   
-  @Override
   public ASTENode setUnique(int index, ASTENode object) {
     return list.setUnique(index, object);
   }
   
-  @Override
   public boolean isSet() {
     return list.isSet();
   }
   
-  @Override
   public void unset() {
     list.unset();
   }
   
-  @Override
   public Object get(boolean resolve) {
     return list.get(resolve);
   }
   
-  @Override
   public EObject getEObject() {
     return list.getEObject();
   }
   
-  @Override
   public EStructuralFeature getEStructuralFeature() {
     return list.getEStructuralFeature();
   }
   
-  @Override
-  public void set(Object newValue) {
-    list.set(newValue);
-  }
-  
-  @Override
   public Object getFeature() {
     return list.getFeature();
   }
   
-  @Override
   public int getFeatureID() {
     return list.getFeatureID();
   }
   
-  @Override
   public Object getNotifier() {
     return list.getNotifier();
+  }
+}
+
+  /**
+   * @see org.eclipse.emf.ecore.EStructuralFeature.Setting#getEObject()
+   */
+  @Override
+  public EObject getEObject() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  /**
+   * @see org.eclipse.emf.ecore.EStructuralFeature.Setting#getEStructuralFeature()
+   */
+  @Override
+  public EStructuralFeature getEStructuralFeature() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  /**
+   * @see org.eclipse.emf.ecore.EStructuralFeature.Setting#get(boolean)
+   */
+  @Override
+  public Object get(boolean resolve) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  /**
+   * @see org.eclipse.emf.ecore.EStructuralFeature.Setting#set(java.lang.Object)
+   */
+  @Override
+  public void set(Object newValue) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  /**
+   * @see org.eclipse.emf.ecore.util.InternalEList.Unsettable#isSet()
+   */
+  @Override
+  public boolean isSet() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  /**
+   * @see org.eclipse.emf.ecore.util.InternalEList.Unsettable#unset()
+   */
+  @Override
+  public void unset() {
+    // TODO Auto-generated method stub
+    
+  }
+
+  /**
+   * @see org.eclipse.emf.ecore.util.InternalEList#basicGet(int)
+   */
+  @Override
+  public ASTENode basicGet(int index) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  /**
+   * @see org.eclipse.emf.ecore.util.InternalEList#basicList()
+   */
+  @Override
+  public List<ASTENode> basicList() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  /**
+   * @see org.eclipse.emf.ecore.util.InternalEList#basicIterator()
+   */
+  @Override
+  public Iterator<ASTENode> basicIterator() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  /**
+   * @see org.eclipse.emf.ecore.util.InternalEList#basicListIterator()
+   */
+  @Override
+  public ListIterator<ASTENode> basicListIterator() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  /**
+   * @see org.eclipse.emf.ecore.util.InternalEList#basicListIterator(int)
+   */
+  @Override
+  public ListIterator<ASTENode> basicListIterator(int index) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  /**
+   * @see org.eclipse.emf.ecore.util.InternalEList#basicToArray()
+   */
+  @Override
+  public Object[] basicToArray() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  /**
+   * @see org.eclipse.emf.ecore.util.InternalEList#basicToArray(java.lang.Object[])
+   */
+  @Override
+  public <T> T[] basicToArray(T[] array) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  /**
+   * @see org.eclipse.emf.ecore.util.InternalEList#basicIndexOf(java.lang.Object)
+   */
+  @Override
+  public int basicIndexOf(Object object) {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
+  /**
+   * @see org.eclipse.emf.ecore.util.InternalEList#basicLastIndexOf(java.lang.Object)
+   */
+  @Override
+  public int basicLastIndexOf(Object object) {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
+  /**
+   * @see org.eclipse.emf.ecore.util.InternalEList#basicContains(java.lang.Object)
+   */
+  @Override
+  public boolean basicContains(Object object) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  /**
+   * @see org.eclipse.emf.ecore.util.InternalEList#basicContainsAll(java.util.Collection)
+   */
+  @Override
+  public boolean basicContainsAll(Collection<?> collection) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  /**
+   * @see org.eclipse.emf.ecore.util.InternalEList#basicRemove(java.lang.Object, org.eclipse.emf.common.notify.NotificationChain)
+   */
+  @Override
+  public NotificationChain basicRemove(Object object, NotificationChain notifications) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  /**
+   * @see org.eclipse.emf.ecore.util.InternalEList#basicAdd(java.lang.Object, org.eclipse.emf.common.notify.NotificationChain)
+   */
+  @Override
+  public NotificationChain basicAdd(ASTENode object, NotificationChain notifications) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  /**
+   * @see org.eclipse.emf.ecore.util.InternalEList#addUnique(java.lang.Object)
+   */
+  @Override
+  public void addUnique(ASTENode object) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  /**
+   * @see org.eclipse.emf.ecore.util.InternalEList#addUnique(int, java.lang.Object)
+   */
+  @Override
+  public void addUnique(int index, ASTENode object) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  /**
+   * @see org.eclipse.emf.ecore.util.InternalEList#addAllUnique(java.util.Collection)
+   */
+  @Override
+  public boolean addAllUnique(Collection<? extends ASTENode> collection) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  /**
+   * @see org.eclipse.emf.ecore.util.InternalEList#addAllUnique(int, java.util.Collection)
+   */
+  @Override
+  public boolean addAllUnique(int index, Collection<? extends ASTENode> collection) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  /**
+   * @see org.eclipse.emf.ecore.util.InternalEList#setUnique(int, java.lang.Object)
+   */
+  @Override
+  public ASTENode setUnique(int index, ASTENode object) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  /**
+   * @see org.eclipse.emf.common.notify.NotifyingList#getNotifier()
+   */
+  @Override
+  public Object getNotifier() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  /**
+   * @see org.eclipse.emf.common.notify.NotifyingList#getFeature()
+   */
+  @Override
+  public Object getFeature() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  /**
+   * @see org.eclipse.emf.common.notify.NotifyingList#getFeatureID()
+   */
+  @Override
+  public int getFeatureID() {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
+  /**
+   * @see org.eclipse.emf.common.util.EList#move(int, java.lang.Object)
+   */
+  @Override
+  public void move(int newPosition, ASTENode object) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  /**
+   * @see org.eclipse.emf.common.util.EList#move(int, int)
+   */
+  @Override
+  public ASTENode move(int newPosition, int oldPosition) {
+    // TODO Auto-generated method stub
+    return null;
   }
 }

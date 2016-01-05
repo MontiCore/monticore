@@ -77,9 +77,7 @@ public class CdEmfDecorator extends CdDecorator {
     // .forEach(e ->
     // astNotAbstractClasses.add(GeneratorHelper.getPlainName(e)));
     
-    List<ASTCDClass> astNotListClasses = nativeClasses.stream()
-        .filter(e -> !astHelper.isAstListClass(e))
-        .collect(Collectors.toList());
+    List<ASTCDClass> astNotListClasses = Lists.newArrayList(nativeClasses);
     // .forEach(e -> astNoListsClasses.add(GeneratorHelper.getPlainName(e)));
     createEmfAttributes(astHelper, astNotListClasses);
     
@@ -97,7 +95,7 @@ public class CdEmfDecorator extends CdDecorator {
     // Check if handwritten ast types exist
     transformCdTypeNamesForHWTypes(cdCompilationUnit);
     
-    cdDefinition.getCDClasses().stream().filter(c -> !astHelper.isAstListClass(c))
+    cdDefinition.getCDClasses().stream()
         .forEach(c -> addSuperInterfaces(c));
         
     // Decorate with additional methods and attributes
@@ -115,10 +113,6 @@ public class CdEmfDecorator extends CdDecorator {
       addGetter(interf);
     }
     
-    // Decorate list classes
-    cdDefinition.getCDClasses().stream().filter(c -> astHelper.isAstListClass(c))
-        .forEach(c -> decorateAstListClass(c));
-        
     // Add ASTConstant class
     addConstantsClass(cdDefinition, astHelper);
     
@@ -156,7 +150,7 @@ public class CdEmfDecorator extends CdDecorator {
                 .getName()));
         boolean isAstNode = astHelper.isAstNode(cdAttribute)
             || astHelper.isOptionalAstNode(cdAttribute);
-        boolean isAstList = astHelper.isAstList(cdAttribute);
+        boolean isAstList = astHelper.isListAstNode(cdAttribute);
         boolean isOptional = AstGeneratorHelper.isOptional(cdAttribute);
         astHelper.addEmfAttribute(clazz, new EmfAttribute(cdAttribute, clazz, attributeName,
             isAstNode, isAstList, isOptional));

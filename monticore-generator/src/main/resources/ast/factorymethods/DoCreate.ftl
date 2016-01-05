@@ -30,7 +30,7 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-${tc.signature("ast", "astNodeName", "params")}
+${tc.signature("ast", "astNodeName")}
   {
-    return new ${astNodeName}(${params});
+    return new ${astNodeName}();
   }

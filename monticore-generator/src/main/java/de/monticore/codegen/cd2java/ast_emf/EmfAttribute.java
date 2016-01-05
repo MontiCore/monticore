@@ -5,7 +5,6 @@
  */
 package de.monticore.codegen.cd2java.ast_emf;
 
-import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.types.TypesHelper;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
@@ -164,11 +163,7 @@ public class EmfAttribute {
   }
   
   public String getEDataType() {
-    String type = Names.getSimpleName(getNativeTypeName());
-    if (!isAstList()) {
-      return type;
-    }
-    return AstGeneratorHelper.getAstClassNameForASTLists(type);
+    return Names.getSimpleName(getNativeTypeName());
   }
   
   public EmfAttribute(

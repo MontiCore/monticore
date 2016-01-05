@@ -14,20 +14,5 @@ public class ASTENodeNodeFactory {
   protected ASTENodeNodeFactory() {
   }
   
-  public static ASTENodeList createASTENodeList() {
-    return getFactory().doCreateASTENodeList();
-  }
-  
-  public static ASTENodeList createASTENodeList(boolean strictlyOrdered) {
-    return getFactory().doCreateASTENodeList(strictlyOrdered);
-  }
-  
-  public ASTENodeList doCreateASTENodeList() {
-    return new ASTENodeList();
-  }
-  
-  public ASTENodeList doCreateASTENodeList(boolean strictlyOrdered) {
-    return new ASTENodeList(strictlyOrdered);
-  }
   
 }
