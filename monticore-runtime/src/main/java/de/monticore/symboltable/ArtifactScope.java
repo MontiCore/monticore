@@ -27,9 +27,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.google.common.collect.FluentIterable;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.resolving.ResolvingInfo;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
+import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -139,6 +142,42 @@ public class ArtifactScope extends CommonScope {
     Log.trace("Potential qualified names for \"" + name + "\": " + potentialSymbolNames.toString(),
         ArtifactScope.class.getSimpleName());
     return potentialSymbolNames;
+  }
+
+  @Override
+  public <T extends Symbol> Collection<T> continueAsSubScope(ResolvingInfo resolvingInfo, String symbolName,
+      SymbolKind kind, AccessModifier modifier) {
+    if (checkIfContinueAsSubScope(symbolName, kind)) {
+
+      final String packageAS = this.getPackageName();
+      final FluentIterable<String> packageASNameParts = FluentIterable.from(Splitters.DOT.omitEmptyStrings().split(packageAS));
+
+      final FluentIterable<String> symbolNameParts = FluentIterable.from(Splitters.DOT.split(symbolName));
+      String remainingSymbolName = symbolName;
+
+      if (symbolNameParts.size() > packageASNameParts.size()) {
+        remainingSymbolName = Joiners.DOT.join(symbolNameParts.skip(packageASNameParts.size()));
+      }
+      // TODO PN else?
+
+      return this.resolveDownMany(resolvingInfo, remainingSymbolName, kind, modifier);
+    }
+
+    return Collections.emptySet();
+  }
+
+  @Override
+  protected boolean checkIfContinueAsSubScope(String symbolName, SymbolKind kind) {
+    if(this.exportsSymbols()) {
+      final String packageCU = this.getPackageName();
+      final String symbolPackage = Names.getQualifier(symbolName);
+
+      if (symbolPackage.startsWith(packageCU)) {
+        // TODO PN compare name parts, to exclude cases like "a.bb".startsWith("a.b")
+        return true;
+      }
+    }
+    return false;
   }
 
 }

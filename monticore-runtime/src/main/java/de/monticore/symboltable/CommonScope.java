@@ -513,8 +513,8 @@ public class CommonScope implements MutableScope {
       return resolved;
     }
 
-    for (MutableScope scope : getSubScopes()) {
-      resolved.addAll(continueWithSubScope(scope, resolvingInfo, name, kind, modifier));
+    for (MutableScope subScope : getSubScopes()) {
+      resolved.addAll(subScope.continueAsSubScope(resolvingInfo, name, kind, modifier));
     }
 
     Log.trace("END " + resolveCall + ". Found #" + resolved.size() , "");
@@ -540,34 +540,31 @@ public class CommonScope implements MutableScope {
   /**
    * Continues resolving with the specific <b>subScope</b>
    *
-   * @param subScope the sub scope with which resolving should be continued.
    * @param resolvingInfo contains resolving information, such as, the already involved scopes.
    * @param symbolName the name of the searched symbol
    * @param kind the kind of the searched symbol
    */
-  protected <T extends Symbol> Collection<T> continueWithSubScope(MutableScope subScope, ResolvingInfo resolvingInfo,
+  @Override
+  public <T extends Symbol> Collection<T> continueAsSubScope(ResolvingInfo resolvingInfo,
       String symbolName, SymbolKind kind, AccessModifier modifier) {
-    if (checkIfContinueWithSubScope(symbolName, subScope)) {
-
+    if (checkIfContinueAsSubScope(symbolName, kind)) {
       final FluentIterable<String> nameParts = FluentIterable.from(Splitters.DOT.split(symbolName));
-
       final String remainingSymbolName = (nameParts.size() > 1) ? Joiners.DOT.join(nameParts.skip(1)) : symbolName;
 
-      return subScope.resolveDownMany(resolvingInfo, remainingSymbolName, kind, modifier);
+      return this.resolveDownMany(resolvingInfo, remainingSymbolName, kind, modifier);
     }
 
     return Collections.emptySet();
   }
 
-  // TODO PN should sub scope itself conduct this check?
-  protected boolean checkIfContinueWithSubScope(String symbolName, MutableScope subScope) {
-    if(subScope.exportsSymbols()) {
+  protected boolean checkIfContinueAsSubScope(String symbolName, SymbolKind kind) {
+    if(this.exportsSymbols()) {
       final FluentIterable<String> nameParts = FluentIterable.from(Splitters.DOT.split(symbolName));
 
       if (nameParts.size() > 1) {
         final String firstNamePart = nameParts.get(0);
         // A scope that exports symbols should always have a name too.
-        return firstNamePart.equals(subScope.getName().orElse(""));
+        return firstNamePart.equals(this.getName().orElse(""));
       }
     }
 

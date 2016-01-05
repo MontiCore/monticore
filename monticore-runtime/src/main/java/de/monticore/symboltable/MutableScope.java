@@ -104,5 +104,5 @@ public interface MutableScope extends Scope {
    */
   void setName(String name);
 
-
+  <T extends Symbol> Collection<T> continueAsSubScope(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier);
 }
