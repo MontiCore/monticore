@@ -218,13 +218,7 @@ public final class GlobalScope extends CommonScope {
   protected boolean checkIfContinueWithSubScope(String symbolName, MutableScope subScope) {
     if(subScope.exportsSymbols()) {
       if (subScope instanceof ArtifactScope) {
-        final String packageCU = ((ArtifactScope)subScope).getPackageName();
-        final String symbolPackage = Names.getQualifier(symbolName);
-
-        if (symbolPackage.startsWith(packageCU)) {
-          // TODO PN compare name parts, to exclude cases like "a.bb".startsWith("a.b")
-          return true;
-        }
+        return checkIfContinueWithArtifactScope(symbolName, (ArtifactScope) subScope);
       }
       else {
         // This case only occurs if a model does not have an artifact scope.
@@ -232,6 +226,17 @@ public final class GlobalScope extends CommonScope {
       }
     }
 
+    return false;
+  }
+
+  protected boolean checkIfContinueWithArtifactScope(String symbolName, ArtifactScope subScope) {
+    final String packageCU = subScope.getPackageName();
+    final String symbolPackage = Names.getQualifier(symbolName);
+
+    if (symbolPackage.startsWith(packageCU)) {
+      // TODO PN compare name parts, to exclude cases like "a.bb".startsWith("a.b")
+      return true;
+    }
     return false;
   }
 

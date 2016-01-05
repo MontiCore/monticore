@@ -83,28 +83,6 @@ public class ArtifactScope extends CommonScope {
     return packageName;
   }
 
-  @Override
-  public <T extends Symbol> Collection<T> resolveMany(final ResolvingInfo resolvingInfo, final String
-      symbolName, final SymbolKind kind, AccessModifier modifier) {
-    resolvingInfo.addInvolvedScope(this);
-
-    final Set<T> resolved = new LinkedHashSet<>(this.<T>resolveManyLocally(resolvingInfo, symbolName, kind));
-
-    Log.trace("START resolve(\"" + symbolName + "\", " + "\"" + kind.getName() + "\") in scope \"" +
-        getName() + "\". Found #" + resolved.size() + " (local)", "");
-
-
-    // TODO PN also check whether resolverInfo.areSymbolsFound() ?
-    if (resolved.isEmpty()) {
-      resolved.addAll(resolveInEnclosingScope(resolvingInfo, symbolName, kind, modifier));
-    }
-
-    Log.trace("END resolve(\"" + symbolName + "\", " + "\"" + kind.getName() + "\") in scope \"" +
-        getName() + "\". Found #" + resolved.size() , "");
-
-    return resolved;
-  }
-
   /**
    * Starts the bottom-up inter-model resolution process.
    *
@@ -114,11 +92,12 @@ public class ArtifactScope extends CommonScope {
    * @param <T>
    * @return
    */
-  protected <T extends Symbol> List<T> resolveInEnclosingScope(final ResolvingInfo resolvingInfo, final String name,
-      final SymbolKind kind, final AccessModifier modifier) {
-    final List<T> resolved = new ArrayList<>();
+  protected <T extends Symbol> void continueWithEnclosingScope(final ResolvingInfo resolvingInfo, final String name,
+      final SymbolKind kind, final AccessModifier modifier, final Set<T> resolvedLocally) {
 
-    if (enclosingScope != null) {
+    final boolean foundSymbols = !resolvedLocally.isEmpty() || resolvingInfo.areSymbolsFound();
+
+    if (checkIfContinueWithEnclosing(foundSymbols) && (getEnclosingScope().isPresent())) {
       if (!(enclosingScope instanceof GlobalScope)) {
         Log.warn("0xA1039 An artifact scope should have the global scope as enclosing scope or no "
             + "enclosing scope at all.");
@@ -128,12 +107,10 @@ public class ArtifactScope extends CommonScope {
         final Collection<T> resolvedFromGlobal = enclosingScope.resolveMany(resolvingInfo, potentialName, kind, modifier);
 
         if (!resolvedFromGlobal.isEmpty()) {
-          addResolvedSymbolsIfNotShadowed(resolved, resolvedFromGlobal);
+          addResolvedSymbolsIfNotShadowed(resolvedLocally, resolvedFromGlobal);
         }
       }
     }
-
-    return resolved;
   }
 
   // TODO PN doc
