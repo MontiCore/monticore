@@ -33,6 +33,7 @@ import de.monticore.symboltable.resolving.ResolvingInfo;
 public interface MutableScope extends Scope {
   // TODO PN DOC
 
+  @Deprecated
   <T extends Symbol> Optional<T> resolve(ResolvingInfo resolvingInfo, String name,
       SymbolKind kind, AccessModifier modifier);
 

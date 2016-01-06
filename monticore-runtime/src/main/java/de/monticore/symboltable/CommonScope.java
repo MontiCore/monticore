@@ -186,7 +186,7 @@ public class CommonScope implements MutableScope {
 
   @Override
   public <T extends Symbol> Optional<T> resolve(String name, SymbolKind kind, AccessModifier modifier) {
-    return resolve(new ResolvingInfo(getResolvingFilters()), name, kind, modifier);
+    return getResolvedOrThrowException(resolveMany(name, kind, modifier));
   }
 
   @Override
