@@ -437,7 +437,7 @@ public class CommonScope implements MutableScope {
 
   // TODO PN add resolveManyLocally(String name, SymbolKind kind)
 
-  protected <T extends Symbol> Collection<T> resolveManyLocally(ResolvingInfo resolvingInfo, String name, SymbolKind kind) {
+  protected <T extends Symbol> Set<T> resolveManyLocally(ResolvingInfo resolvingInfo, String name, SymbolKind kind) {
     Collection<ResolvingFilter<? extends Symbol>> resolversForKind =
         getResolvingFiltersForTargetKind(resolvingInfo.getResolvingFilters(), kind);
 
@@ -506,7 +506,7 @@ public class CommonScope implements MutableScope {
     Log.errorIfNull(resolvingInfo);
     resolvingInfo.addInvolvedScope(this);
 
-    final Set<T> resolved = new LinkedHashSet<>(this.<T>resolveManyLocally(resolvingInfo, name, kind));
+    final Set<T> resolved = this.<T>resolveManyLocally(resolvingInfo, name, kind);
 
     final String resolveCall = "resolveDownMany(\"" + name + "\", \"" + kind.getName()
         + "\") in scope \"" + getName() + "\"";
@@ -544,7 +544,7 @@ public class CommonScope implements MutableScope {
   }
 
   /**
-   * Continues resolving with the specific <b>subScope</b>
+   * Continues (top-down) resolving with this sub scope
    *
    * @param resolvingInfo contains resolving information, such as, the already involved scopes.
    * @param symbolName the name of the searched symbol
@@ -554,8 +554,7 @@ public class CommonScope implements MutableScope {
   public <T extends Symbol> Collection<T> continueAsSubScope(ResolvingInfo resolvingInfo,
       String symbolName, SymbolKind kind, AccessModifier modifier) {
     if (checkIfContinueAsSubScope(symbolName, kind)) {
-      final FluentIterable<String> nameParts = FluentIterable.from(Splitters.DOT.split(symbolName));
-      final String remainingSymbolName = (nameParts.size() > 1) ? Joiners.DOT.join(nameParts.skip(1)) : symbolName;
+      final String remainingSymbolName = getRemainingNameForResolveDown(symbolName);
 
       return this.resolveDownMany(resolvingInfo, remainingSymbolName, kind, modifier);
     }
@@ -563,13 +562,22 @@ public class CommonScope implements MutableScope {
     return Collections.emptySet();
   }
 
+  protected String getRemainingNameForResolveDown(String symbolName) {
+    final FluentIterable<String> nameParts = getNameParts(symbolName);
+    return (nameParts.size() > 1) ? Joiners.DOT.join(nameParts.skip(1)) : symbolName;
+  }
+
+  protected FluentIterable<String> getNameParts(String symbolName) {
+    return FluentIterable.from(Splitters.DOT.split(symbolName));
+  }
+
   protected boolean checkIfContinueAsSubScope(String symbolName, SymbolKind kind) {
     if(this.exportsSymbols()) {
-      final FluentIterable<String> nameParts = FluentIterable.from(Splitters.DOT.split(symbolName));
+      final List<String> nameParts = getNameParts(symbolName).toList();
 
       if (nameParts.size() > 1) {
         final String firstNamePart = nameParts.get(0);
-        // A scope that exports symbols should always have a name too.
+        // A scope that exports symbols usually has a name.
         return firstNamePart.equals(this.getName().orElse(""));
       }
     }

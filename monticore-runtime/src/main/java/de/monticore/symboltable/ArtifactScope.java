@@ -142,35 +142,27 @@ public class ArtifactScope extends CommonScope {
     return potentialSymbolNames;
   }
 
-  @Override
-  public <T extends Symbol> Collection<T> continueAsSubScope(ResolvingInfo resolvingInfo, String symbolName,
-      SymbolKind kind, AccessModifier modifier) {
-    if (checkIfContinueAsSubScope(symbolName, kind)) {
+  protected String getRemainingNameForResolveDown(String symbolName) {
+    final String packageAS = this.getPackageName();
+    final FluentIterable<String> packageASNameParts = FluentIterable.from(Splitters.DOT.omitEmptyStrings().split(packageAS));
 
-      final String packageAS = this.getPackageName();
-      final FluentIterable<String> packageASNameParts = FluentIterable.from(Splitters.DOT.omitEmptyStrings().split(packageAS));
+    final FluentIterable<String> symbolNameParts = FluentIterable.from(Splitters.DOT.split(symbolName));
+    String remainingSymbolName = symbolName;
 
-      final FluentIterable<String> symbolNameParts = FluentIterable.from(Splitters.DOT.split(symbolName));
-      String remainingSymbolName = symbolName;
-
-      if (symbolNameParts.size() > packageASNameParts.size()) {
-        remainingSymbolName = Joiners.DOT.join(symbolNameParts.skip(packageASNameParts.size()));
-      }
-      // TODO PN else?
-
-      return this.resolveDownMany(resolvingInfo, remainingSymbolName, kind, modifier);
+    if (symbolNameParts.size() > packageASNameParts.size()) {
+      remainingSymbolName = Joiners.DOT.join(symbolNameParts.skip(packageASNameParts.size()));
     }
-
-    return Collections.emptySet();
+    // TODO PN else?
+    return remainingSymbolName;
   }
 
   @Override
   protected boolean checkIfContinueAsSubScope(String symbolName, SymbolKind kind) {
     if(this.exportsSymbols()) {
       final String packageCU = this.getPackageName();
-      final String symbolPackage = Names.getQualifier(symbolName);
+      final String symbolQualifier = Names.getQualifier(symbolName);
 
-      if (symbolPackage.startsWith(packageCU)) {
+      if (symbolQualifier.startsWith(packageCU)) {
         // TODO PN compare name parts, to exclude cases like "a.bb".startsWith("a.b")
         return true;
       }

@@ -92,7 +92,7 @@ public final class GlobalScope extends CommonScope {
     resolvingInfo.addInvolvedScope(this);
 
     // First, try to resolve the symbol in the current scope and its sub scopes.
-    Collection<T> resolvedSymbol = resolveDownMany(new ResolvingInfo(getResolvingFilters()), symbolName, kind, modifier);
+    Collection<T> resolvedSymbol = resolveDownMany(resolvingInfo, symbolName, kind, modifier);
 
     if (!resolvedSymbol.isEmpty()) {
       return resolvedSymbol;
@@ -193,4 +193,8 @@ public final class GlobalScope extends CommonScope {
         || !modelName2ModelLoaderCache.get(calculatedModelName).contains(modelLoader);
   }
 
+  @Override
+  protected boolean checkIfContinueAsSubScope(String symbolName, SymbolKind kind) {
+    return false;
+  }
 }
