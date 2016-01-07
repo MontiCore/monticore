@@ -26,9 +26,9 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import java.util.Optional;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.SymbolKind;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -39,41 +39,41 @@ import de.se_rwth.commons.logging.Log;
  */
 public class CommonSymbolReference<T extends Symbol> implements SymbolReference<T> {
 
-  private final String referencedSymbolName;
-  private final SymbolKind referencedSymbolKind;
+  private final String referencedName;
+  private final SymbolKind referencedKind;
 
   private ASTNode astNode;
 
   /**
    * The enclosing scope of the reference, not of the referenced symbol (i.e., symbol definition).
    */
-  private final Scope enclosingScopeOfReference;
+  private final Scope enclosingScope;
 
   private T referencedSymbol;
 
   public CommonSymbolReference(String referencedSymbolName, SymbolKind referencedSymbolKind,
       Scope enclosingScopeOfReference) {
-    this.referencedSymbolName = Log.errorIfNull(emptyToNull(referencedSymbolName));
-    this.referencedSymbolKind = Log.errorIfNull(referencedSymbolKind);
-    this.enclosingScopeOfReference = Log.errorIfNull(enclosingScopeOfReference);
+    this.referencedName = Log.errorIfNull(emptyToNull(referencedSymbolName));
+    this.referencedKind = Log.errorIfNull(referencedSymbolKind);
+    this.enclosingScope = Log.errorIfNull(enclosingScopeOfReference);
   }
 
   @Override
   public String getName() {
-    return referencedSymbolName;
+    return referencedName;
   }
 
   @Override
   public T getReferencedSymbol() {
     if (!isReferencedSymbolLoaded()) {
-      referencedSymbol = loadReferencedSymbol(referencedSymbolName, referencedSymbolKind).orElse(null);
+      referencedSymbol = loadReferencedSymbol().orElse(null);
 
       if (!isReferencedSymbolLoaded()) {
-        throw new FailedLoadingSymbol(referencedSymbolName);
+        throw new FailedLoadingSymbol(referencedName);
       }
     }
     else {
-      Log.debug("Full information of '" + referencedSymbolName + "' already loaded. Use cached "
+      Log.debug("Full information of '" + referencedName + "' already loaded. Use cached "
               + "version.",
           CommonSymbolReference.class.getSimpleName());
     }
@@ -83,28 +83,28 @@ public class CommonSymbolReference<T extends Symbol> implements SymbolReference<
 
   @Override
   public boolean existsReferencedSymbol() {
-    return isReferencedSymbolLoaded() || loadReferencedSymbol(referencedSymbolName, referencedSymbolKind).isPresent();
+    return isReferencedSymbolLoaded() || loadReferencedSymbol().isPresent();
   }
 
   public boolean isReferencedSymbolLoaded() {
     return referencedSymbol != null;
   }
 
-  protected Optional<T> loadReferencedSymbol(final String symbolName, final SymbolKind symbolKind) {
-    checkArgument(!isNullOrEmpty(symbolName), " 0xA4070 Symbol name may not be null or empty.");
-    Log.errorIfNull(symbolKind);
+  protected Optional<T> loadReferencedSymbol() {
+    checkArgument(!isNullOrEmpty(referencedName), " 0xA4070 Symbol name may not be null or empty.");
+    Log.errorIfNull(referencedKind);
 
-    Log.debug("Load full information of '" + symbolName + "' (Kind " + symbolKind.getName() + ").",
+    Log.debug("Load full information of '" + referencedName + "' (Kind " + referencedKind.getName() + ").",
         SymbolReference.class.getSimpleName());
-    Optional<T> resolvedSymbol = enclosingScopeOfReference.resolve(symbolName, symbolKind);
+    Optional<T> resolvedSymbol = enclosingScope.resolve(referencedName, referencedKind);
 
     if (resolvedSymbol.isPresent()) {
-      Log.debug("Loaded full information of '" + symbolName + "' successfully.",
+      Log.debug("Loaded full information of '" + referencedName + "' successfully.",
           SymbolReference.class.getSimpleName());
     }
     else {
       Log.warn("0xA1038 " + SymbolReference.class.getSimpleName() + " Could not load full information of '" +
-          symbolName + "' (Kind " + symbolKind.getName() + ").");
+          referencedName + "' (Kind " + referencedKind.getName() + ").");
     }
 
 
