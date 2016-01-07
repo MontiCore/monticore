@@ -19,20 +19,27 @@
 
 package de.monticore.symboltable;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+
+import java.util.ArrayList;
+
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.mocks.asts.ASTSymbolReference;
-import de.monticore.symboltable.mocks.languages.entity.*;
+import de.monticore.symboltable.mocks.languages.entity.ActionSymbol;
+import de.monticore.symboltable.mocks.languages.entity.CommonEntityLanguageSymbolTableCreator;
+import de.monticore.symboltable.mocks.languages.entity.EntityLanguage;
+import de.monticore.symboltable.mocks.languages.entity.EntityLanguageSymbolTableCreator;
+import de.monticore.symboltable.mocks.languages.entity.EntitySymbol;
+import de.monticore.symboltable.mocks.languages.entity.EntitySymbolKind;
+import de.monticore.symboltable.mocks.languages.entity.PropertySymbol;
+import de.monticore.symboltable.mocks.languages.entity.PropertySymbolKind;
 import de.monticore.symboltable.mocks.languages.entity.asts.ASTAction;
 import de.monticore.symboltable.mocks.languages.entity.asts.ASTEntity;
 import de.monticore.symboltable.mocks.languages.entity.asts.ASTEntityCompilationUnit;
 import de.monticore.symboltable.mocks.languages.entity.asts.ASTProperty;
 import org.junit.Test;
-
-import java.util.ArrayList;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
 
 /**
  *

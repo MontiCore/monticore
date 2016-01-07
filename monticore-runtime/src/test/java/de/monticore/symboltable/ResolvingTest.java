@@ -34,7 +34,6 @@ import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.mocks.languages.entity.ActionSymbol;
 import de.monticore.symboltable.mocks.languages.entity.EntityLanguage;
 import de.monticore.symboltable.mocks.languages.entity.EntitySymbol;
-import de.monticore.symboltable.mocks.languages.entity.EntitySymbolReference;
 import de.monticore.symboltable.mocks.languages.entity.PropertySymbol;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;

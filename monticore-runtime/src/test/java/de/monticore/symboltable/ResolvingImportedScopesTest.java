@@ -19,30 +19,21 @@
 
 package de.monticore.symboltable;
 
-import static org.junit.Assert.assertEquals;
+import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Optional;
 
 import de.monticore.ModelingLanguage;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.mocks.languages.entity.ActionSymbol;
 import de.monticore.symboltable.mocks.languages.entity.EntityLanguage;
 import de.monticore.symboltable.mocks.languages.entity.EntitySymbol;
 import de.monticore.symboltable.mocks.languages.entity.EntitySymbolReference;
 import de.monticore.symboltable.mocks.languages.entity.PropertySymbol;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
-import de.monticore.symboltable.resolving.CommonResolvingFilter;
-import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
-import de.monticore.symboltable.resolving.ResolvingFilter;
-import de.monticore.symboltable.types.JTypeSymbol;
-import de.monticore.symboltable.types.references.CommonJTypeReference;
 import org.junit.Test;
 
 /**
@@ -162,7 +153,7 @@ public class ResolvingImportedScopesTest {
     resolverConfiguration.addTopScopeResolvers(language.getResolvers());
 
     final GlobalScope gs = new GlobalScope(new ModelPath(), language, resolverConfiguration);
-    final ArtifactScope asSub = new ArtifactScope(Optional.empty(), "p.q", Arrays.asList(new ImportStatement("x.y", true)));
+    final ArtifactScope asSub = new ArtifactScope(Optional.empty(), "p.q",  singletonList(new ImportStatement("x.y", true)));
     gs.addSubScope(asSub);
     asSub.setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
 
