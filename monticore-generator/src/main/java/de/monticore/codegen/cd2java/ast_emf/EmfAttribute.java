@@ -7,11 +7,15 @@ package de.monticore.codegen.cd2java.ast_emf;
 
 import java.util.Optional;
 
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+
 import de.monticore.types.TypesHelper;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
 import de.se_rwth.commons.Names;
+import mc.feature.automaton.automaton._ast.ASTState;
+import mc.feature.automaton.automaton._ast.AutomatonPackage;
 
 /**
  * TODO: Write me!

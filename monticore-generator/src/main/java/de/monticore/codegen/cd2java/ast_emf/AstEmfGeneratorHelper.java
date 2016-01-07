@@ -23,15 +23,21 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.symboltable.GlobalScope;
+import de.monticore.types.TypesHelper;
 import de.monticore.types.TypesPrinter;
+import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
+import de.se_rwth.commons.Names;
+import de.se_rwth.commons.StringTransformations;
 
 /**
  * TODO: Write me!
@@ -84,7 +90,6 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
   }
   
   @Override
-  // TODO GV
   public String getAstAttributeValue(ASTCDAttribute attribute, ASTCDType clazz) {
     if (attribute.getValue().isPresent()) {
       return attribute.printValue();
@@ -94,7 +99,17 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
     }
     String typeName = TypesPrinter.printType(attribute.getType());
     if (isListType(typeName)) {
-      return "new java.util.ArrayList<>()";
+      String attributeName = getPlainName(clazz) + "_"
+          + StringTransformations.capitalize(GeneratorHelper.getNativeAttributeName(attribute
+              .getName()));
+      Optional<ASTSimpleReferenceType> typeArg = TypesHelper
+          .getFirstTypeArgumentOfGenericType(attribute.getType(), JAVA_LIST);
+      if (typeArg.isPresent()) {
+        typeName = Names.getSimpleName(TypesHelper
+            .printType(typeArg.get()));
+        return "new EObjectContainmentEList<" + typeName + ">(" + typeName + ".class, this, "
+            + this.getCdName() + "Package." + attributeName + ")";
+      }
     }
     if (isMapType(typeName)) {
       return "new java.util.HashMap<>()";

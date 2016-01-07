@@ -36,6 +36,11 @@ ${tc.signature("grammarName", "emfAttribute", "cDAndJavaConformName")}
     ${emfAttribute.getNativeTypeName()} old${cDAndJavaConformName?cap_first} = this.${cDAndJavaConformName}.isPresent()? this.${cDAndJavaConformName}.get() : null;
     this.${cDAndJavaConformName} = Optional.ofNullable(${cDAndJavaConformName});
   <#else>
+    <#if emfAttribute.isAstList()>
+    if (${cDAndJavaConformName}.isEmpty() && this.${cDAndJavaConformName}.isEmpty()) {
+      return;
+    }  
+    </#if>
     ${emfAttribute.getTypeName()} old${cDAndJavaConformName?cap_first} = this.${cDAndJavaConformName};
     this.${cDAndJavaConformName} = ${cDAndJavaConformName};
   </#if>

@@ -474,6 +474,7 @@ public class CdEmfDecorator extends CdDecorator {
    * 
    * @return
    */
+  // TODO GV: not used now
   protected void addAdditionalCreateMethods(ASTCDClass nodeFactoryClass, ASTCDClass clazz) {
     String className = GeneratorHelper.getPlainName(clazz);
     String params = "owner, featureID";
