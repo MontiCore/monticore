@@ -20,6 +20,7 @@
 package de.monticore.symboltable.types;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static de.monticore.symboltable.modifiers.BasicAccessModifier.PACKAGE_LOCAL;
 import static de.monticore.symboltable.modifiers.BasicAccessModifier.PRIVATE;
 import static de.monticore.symboltable.modifiers.BasicAccessModifier.PROTECTED;
 
@@ -111,18 +112,30 @@ public class CommonJTypeScope extends CommonScope {
   }
 
   private <T extends Symbol> Optional<T> resolveInSuperType(String name, SymbolKind kind,
-      AccessModifier modifier, JTypeSymbol superType) {
+      final AccessModifier modifier, JTypeSymbol superType) {
 
     Log.trace("Continue in scope of super class " + superType.getName(), CommonJTypeScope.class
         .getSimpleName());
     // Private symbols cannot be resolved from the super class. So, the modifier must at
     // least be protected when searching in the super class scope
     // TODO PN use default modifier instead of protected?
-    AccessModifier modifierForSuperClass = (modifier == PRIVATE) ? PROTECTED : modifier;
+    AccessModifier modifierForSuperClass = getModifierForSuperClass(modifier, superType);
 
     // TODO PN forward current ResolverInfo?
     // TODO PN only resolve locally?
     return superType.getSpannedScope().resolveImported(name, kind, modifierForSuperClass);
+  }
+
+  private AccessModifier getModifierForSuperClass(AccessModifier modifier, JTypeSymbol superType) {
+    if ((modifier == PRIVATE) || (modifier == PACKAGE_LOCAL)) {
+      if (getSpanningSymbol().get().getPackageName().equals(superType.getPackageName())) {
+        return PACKAGE_LOCAL;
+      }
+      else {
+        return PROTECTED;
+      }
+    }
+    return modifier;
   }
 
   @Override
