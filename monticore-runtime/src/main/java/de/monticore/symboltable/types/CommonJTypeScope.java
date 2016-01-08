@@ -161,7 +161,7 @@ public class CommonJTypeScope extends CommonScope {
 
   @Override
   public <T extends Symbol> Optional<T> resolveImported(String name, SymbolKind kind, AccessModifier modifier) {
-    final Collection<T> resolvedSymbols = resolveManyLocally(new ResolvingInfo(getResolvingFilters()), name, kind);
+    final Collection<T> resolvedSymbols = resolveManyLocally(new ResolvingInfo(getResolvingFilters()), name, kind, modifier);
 
     final Collection<T> filtered = Collections2.filter(resolvedSymbols, new IncludesAccessModifierPredicate(modifier));
 

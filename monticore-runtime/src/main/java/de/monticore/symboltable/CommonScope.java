@@ -157,18 +157,16 @@ public class CommonScope implements MutableScope {
 
   @Override
   public <T extends Symbol> Collection<T> resolveMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier) {
-    Log.errorIfNull(resolvingInfo);
-    resolvingInfo.addInvolvedScope(this);
+    final Set<T> resolvedSymbols = this.<T>resolveManyLocally(resolvingInfo, name, kind, modifier);
 
-    final Set<T> resolvedUnfiltered = new LinkedHashSet<>(this.<T>resolveManyLocally(resolvingInfo, name, kind));
+    final Collection<T> resolvedFromEnclosing = continueWithEnclosingScope(resolvingInfo, name, kind, modifier);
+    resolvedSymbols.addAll(resolvedFromEnclosing);
 
-    // filter out symbols that are not included within the access modifier
-    final Set<T> resolvedFiltered = new LinkedHashSet<>(Collections2.filter(resolvedUnfiltered, new IncludesAccessModifierPredicate(modifier)));
-    resolvingInfo.updateSymbolsFound(!resolvedFiltered.isEmpty());
+    return resolvedSymbols;
+  }
 
-    resolvedFiltered.addAll(continueWithEnclosingScope(resolvingInfo, name, kind, modifier));
-
-    return resolvedFiltered;
+  protected <T extends Symbol> Set<T> filterSymbolsByAccessModifier(AccessModifier modifier, Set<T> resolvedUnfiltered) {
+    return new LinkedHashSet<>(Collections2.filter(resolvedUnfiltered, new IncludesAccessModifierPredicate(modifier)));
   }
 
   /**
@@ -432,12 +430,15 @@ public class CommonScope implements MutableScope {
   @Override
   public <T extends Symbol> Optional<T> resolveLocally(String name, SymbolKind kind) {
     return getResolvedOrThrowException(
-        this.<T>resolveManyLocally(new ResolvingInfo(getResolvingFilters()), name, kind));
+        this.<T>resolveManyLocally(new ResolvingInfo(getResolvingFilters()), name, kind, BasicAccessModifier.ABSENT));
   }
 
   // TODO PN add resolveManyLocally(String name, SymbolKind kind)
 
-  protected <T extends Symbol> Set<T> resolveManyLocally(ResolvingInfo resolvingInfo, String name, SymbolKind kind) {
+  protected <T extends Symbol> Set<T> resolveManyLocally(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier) {
+    Log.errorIfNull(resolvingInfo);
+    resolvingInfo.addInvolvedScope(this);
+
     Collection<ResolvingFilter<? extends Symbol>> resolversForKind =
         getResolvingFiltersForTargetKind(resolvingInfo.getResolvingFilters(), kind);
 
@@ -464,9 +465,12 @@ public class CommonScope implements MutableScope {
       }
     }
 
-    // TODO PN filter shadowed symbols here?
+    // filter out symbols that are not included within the access modifier
+    final Set<T> filteredSymbols = filterSymbolsByAccessModifier(modifier, resolvedSymbols);
 
-    return resolvedSymbols;
+    resolvingInfo.updateSymbolsFound(!filteredSymbols.isEmpty());
+
+    return filteredSymbols;
   }
 
   /**
@@ -503,10 +507,7 @@ public class CommonScope implements MutableScope {
 
   @Override
   public <T extends Symbol> Collection<T> resolveDownMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier) {
-    Log.errorIfNull(resolvingInfo);
-    resolvingInfo.addInvolvedScope(this);
-
-    final Set<T> resolved = this.<T>resolveManyLocally(resolvingInfo, name, kind);
+    final Set<T> resolved = this.<T>resolveManyLocally(resolvingInfo, name, kind, modifier);
 
     final String resolveCall = "resolveDownMany(\"" + name + "\", \"" + kind.getName()
         + "\") in scope \"" + getName() + "\"";
@@ -515,7 +516,6 @@ public class CommonScope implements MutableScope {
     // TODO PN Doc if a symbol is found in the current scope, resolving is stopped.
     if (!resolved.isEmpty()) {
       Log.trace("END " + resolveCall + ". Found #" + resolved.size() , "");
-      resolvingInfo.updateSymbolsFound(true);
       return resolved;
     }
 
