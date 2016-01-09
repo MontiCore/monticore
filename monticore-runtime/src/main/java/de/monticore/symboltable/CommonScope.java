@@ -507,20 +507,21 @@ public class CommonScope implements MutableScope {
 
   @Override
   public <T extends Symbol> Collection<T> resolveDownMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier) {
+    // 1. Conduct search locally in the current scope
     final Set<T> resolved = this.<T>resolveManyLocally(resolvingInfo, name, kind, modifier);
 
     final String resolveCall = "resolveDownMany(\"" + name + "\", \"" + kind.getName()
         + "\") in scope \"" + getName() + "\"";
     Log.trace("START " + resolveCall + ". Found #" + resolved.size() + " (local)", "");
 
-    // TODO PN Doc if a symbol is found in the current scope, resolving is stopped.
-    if (!resolved.isEmpty()) {
-      Log.trace("END " + resolveCall + ". Found #" + resolved.size() , "");
-      return resolved;
-    }
-
-    for (MutableScope subScope : getSubScopes()) {
-      resolved.addAll(subScope.continueAsSubScope(resolvingInfo, name, kind, modifier));
+    // If no matching symbols have been found...
+    if (resolved.isEmpty()) {
+      // 2. Continue search in sub scopes and ...
+      for (MutableScope subScope : getSubScopes()) {
+        final Collection<T> resolvedFromSub = subScope.continueAsSubScope(resolvingInfo, name, kind, modifier);
+        // 3. unify results
+        resolved.addAll(resolvedFromSub);
+      }
     }
 
     Log.trace("END " + resolveCall + ". Found #" + resolved.size() , "");

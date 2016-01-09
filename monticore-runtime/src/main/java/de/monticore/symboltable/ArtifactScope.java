@@ -106,9 +106,9 @@ public class ArtifactScope extends CommonScope {
       }
 
       for (final String potentialName : determinePotentialNames(name)) {
-        final Collection<T> resolvedFromGlobal = enclosingScope.resolveMany(resolvingInfo, potentialName, kind, modifier);
+        final Collection<T> resolvedFromEnclosing = enclosingScope.resolveMany(resolvingInfo, potentialName, kind, modifier);
 
-        result.addAll(resolvedFromGlobal);
+        result.addAll(resolvedFromEnclosing);
       }
     }
     return result;
