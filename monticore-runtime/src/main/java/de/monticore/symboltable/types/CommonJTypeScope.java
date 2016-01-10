@@ -27,7 +27,6 @@ import static de.monticore.symboltable.modifiers.BasicAccessModifier.PROTECTED;
 import java.util.Collection;
 import java.util.Optional;
 
-import com.google.common.collect.Collections2;
 import de.monticore.symboltable.CommonScope;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ScopeSpanningSymbol;
@@ -36,7 +35,6 @@ import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.SymbolPredicate;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
-import de.monticore.symboltable.modifiers.IncludesAccessModifierPredicate;
 import de.monticore.symboltable.resolving.ResolvingInfo;
 import de.monticore.symboltable.types.references.JTypeReference;
 import de.se_rwth.commons.logging.Log;
@@ -163,12 +161,10 @@ public class CommonJTypeScope extends CommonScope {
   public <T extends Symbol> Optional<T> resolveImported(String name, SymbolKind kind, AccessModifier modifier) {
     final Collection<T> resolvedSymbols = resolveManyLocally(new ResolvingInfo(getResolvingFilters()), name, kind, modifier);
 
-    final Collection<T> filtered = Collections2.filter(resolvedSymbols, new IncludesAccessModifierPredicate(modifier));
-
-    if (filtered.isEmpty()) {
+    if (resolvedSymbols.isEmpty()) {
       return resolveInSuperTypes(name, kind, modifier);
     }
 
-    return getResolvedOrThrowException(filtered);
+    return getResolvedOrThrowException(resolvedSymbols);
   }
 }

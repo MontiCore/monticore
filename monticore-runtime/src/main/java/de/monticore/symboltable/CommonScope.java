@@ -563,15 +563,6 @@ public class CommonScope implements MutableScope {
     return Collections.emptySet();
   }
 
-  protected String getRemainingNameForResolveDown(String symbolName) {
-    final FluentIterable<String> nameParts = getNameParts(symbolName);
-    return (nameParts.size() > 1) ? Joiners.DOT.join(nameParts.skip(1)) : symbolName;
-  }
-
-  protected FluentIterable<String> getNameParts(String symbolName) {
-    return FluentIterable.from(Splitters.DOT.split(symbolName));
-  }
-
   protected boolean checkIfContinueAsSubScope(String symbolName, SymbolKind kind) {
     if(this.exportsSymbols()) {
       final List<String> nameParts = getNameParts(symbolName).toList();
@@ -584,5 +575,14 @@ public class CommonScope implements MutableScope {
     }
 
     return false;
+  }
+
+  protected String getRemainingNameForResolveDown(String symbolName) {
+    final FluentIterable<String> nameParts = getNameParts(symbolName);
+    return (nameParts.size() > 1) ? Joiners.DOT.join(nameParts.skip(1)) : symbolName;
+  }
+
+  protected FluentIterable<String> getNameParts(String symbolName) {
+    return FluentIterable.from(Splitters.DOT.split(symbolName));
   }
 }
