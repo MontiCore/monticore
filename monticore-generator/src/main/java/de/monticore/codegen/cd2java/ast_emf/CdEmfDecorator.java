@@ -77,9 +77,8 @@ public class CdEmfDecorator extends CdDecorator {
     // .forEach(e ->
     // astNotAbstractClasses.add(GeneratorHelper.getPlainName(e)));
     
-    List<ASTCDClass> astNotListClasses = Lists.newArrayList(nativeClasses);
     // .forEach(e -> astNoListsClasses.add(GeneratorHelper.getPlainName(e)));
-    createEmfAttributes(astHelper, astNotListClasses);
+    createEmfAttributes(astHelper, astNotAbstractClasses);
     
     // Run over classdiagramm and converts cd types to mc-java types
     new Cd2JavaTypeConverter(astHelper).handle(cdDefinition);
@@ -90,7 +89,7 @@ public class CdEmfDecorator extends CdDecorator {
     // Decorate with builder pattern
     addBuilders(cdDefinition, astHelper);
     
-    addNodeFactoryClass(cdCompilationUnit, nativeClasses, astHelper);
+    addNodeFactoryClass(cdCompilationUnit, astNotAbstractClasses, astHelper);
     
     // Check if handwritten ast types exist
     transformCdTypeNamesForHWTypes(cdCompilationUnit);
@@ -125,7 +124,7 @@ public class CdEmfDecorator extends CdDecorator {
                     .getPackageName(), cdDefinition.getName())))
             .build());
             
-    addEmfCode(cdCompilationUnit, astNotListClasses, astHelper);
+    addEmfCode(cdCompilationUnit, astNotAbstractClasses, astHelper);
     
   }
   
@@ -236,7 +235,10 @@ public class CdEmfDecorator extends CdDecorator {
     }
     factoryClass.setName(factoryClassName);
     
-    List<String> classNames = astClasses.stream().map(e -> getPlainName(e))
+    List<String> classNames = astClasses.stream()
+        .filter(e -> e.getModifier().isPresent())
+        .filter(e -> !e.getModifier().get().isAbstract())                                                                                                                                   
+        .map(e -> getPlainName(e))
         .collect(Collectors.toList());
         
     cdDef.getCDClasses().add(factoryClass);

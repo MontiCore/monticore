@@ -436,8 +436,7 @@ public class CdDecorator {
     
     // Add factory-attributes for all ast classes
     Set<String> astClasses = new LinkedHashSet<>();
-    nativeClasses.stream().filter(e -> e.getModifier().isPresent())
-        .filter(e -> !e.getModifier().get().isAbstract())
+    nativeClasses.stream()
         .forEach(e -> astClasses.add(GeneratorHelper.getPlainName(e)));
         
     for (String clazz : astClasses) {
@@ -447,9 +446,6 @@ public class CdDecorator {
     
     // Add ast-creating methods
     for (ASTCDClass clazz : nativeClasses) {
-      if (!clazz.getModifier().isPresent() || clazz.getModifier().get().isAbstract()) {
-        continue;
-      }
       addMethodsToNodeFactory(clazz, nodeFactoryClass, astHelper);
     }
     
@@ -478,13 +474,13 @@ public class CdDecorator {
       }
     }
     
-    List<String> astNotListClasses = nativeClasses.stream()
-        .map(e -> astHelper.getPlainName(e))
+    List<String> classNames = nativeClasses.stream()
+        .map(e -> GeneratorHelper.getPlainName(e))
         .collect(Collectors.toList());
     
     cdDef.getCDClasses().add(nodeFactoryClass);
     glex.replaceTemplate("ast.ClassContent", nodeFactoryClass, new TemplateHookPoint(
-        "ast.AstNodeFactory", nodeFactoryClass, imports, astNotListClasses));
+        "ast.AstNodeFactory", nodeFactoryClass, imports, classNames));
     
   }
   
