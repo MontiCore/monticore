@@ -19,15 +19,20 @@
 
 package de.monticore.symboltable;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import com.google.common.collect.FluentIterable;
 import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.symboltable.names.CommonQualifiedNamesCalculator;
+import de.monticore.symboltable.names.QualifiedNamesCalculator;
 import de.monticore.symboltable.resolving.ResolvingInfo;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
@@ -42,6 +47,12 @@ public class ArtifactScope extends CommonScope {
 
   private final String packageName;
   private final List<ImportStatement> imports;
+
+  private QualifiedNamesCalculator qualifiedNamesCalculator;
+
+  public ArtifactScope(final String packageName, final List<ImportStatement> imports) {
+    this(Optional.empty(), packageName, imports);
+  }
 
   public ArtifactScope(final Optional<MutableScope> enclosingScope, final String packageName,
       final List<ImportStatement> imports) {
@@ -60,6 +71,8 @@ public class ArtifactScope extends CommonScope {
     }
 
     this.imports = Collections.unmodifiableList(new ArrayList<>(imports));
+
+    this.qualifiedNamesCalculator = new CommonQualifiedNamesCalculator();
   }
 
   @Override
@@ -105,41 +118,15 @@ public class ArtifactScope extends CommonScope {
             + "enclosing scope at all.");
       }
 
-      for (final String potentialName : determinePotentialNames(name)) {
-        final Collection<T> resolvedFromEnclosing = enclosingScope.resolveMany(resolvingInfo, potentialName, kind, modifier);
+      final Set<String> potentialQualifiedNames = qualifiedNamesCalculator.calculateQualifiedNames(name, packageName, imports);
+
+      for (final String potentialQualifiedName : potentialQualifiedNames) {
+        final Collection<T> resolvedFromEnclosing = enclosingScope.resolveMany(resolvingInfo, potentialQualifiedName, kind, modifier);
 
         result.addAll(resolvedFromEnclosing);
       }
     }
     return result;
-  }
-
-  // TODO PN doc
-  protected Collection<String> determinePotentialNames(final String name) {
-    final Collection<String> potentialSymbolNames = new LinkedHashSet<>();
-
-    // the simple name (in default package)
-    potentialSymbolNames.add(name);
-
-    // if name is already qualified, no further (potential) names exist.
-    if (Names.getQualifier(name).isEmpty()) {
-      // maybe the model belongs to the same package
-      if (!packageName.isEmpty()) {
-        potentialSymbolNames.add(packageName + "." + name);
-      }
-
-      for (ImportStatement importStatement : imports) {
-        if (importStatement.isStar()) {
-          potentialSymbolNames.add(importStatement.getStatement() + "." + name);
-        }
-        else if (Names.getSimpleName(importStatement.getStatement()).equals(name)) {
-          potentialSymbolNames.add(importStatement.getStatement());
-        }
-      }
-    }
-    Log.trace("Potential qualified names for \"" + name + "\": " + potentialSymbolNames.toString(),
-        ArtifactScope.class.getSimpleName());
-    return potentialSymbolNames;
   }
 
   protected String getRemainingNameForResolveDown(String symbolName) {
@@ -170,4 +157,7 @@ public class ArtifactScope extends CommonScope {
     return false;
   }
 
+  public void setQualifiedNamesCalculator(QualifiedNamesCalculator qualifiedNamesCalculator) {
+    this.qualifiedNamesCalculator = requireNonNull(qualifiedNamesCalculator);
+  }
 }
