@@ -5,7 +5,7 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore</artifactId>
-    <version>4.3.0</version>
+    <version>4.3.0.1</version>
   </parent>
 
   <artifactId>monticore-generator-it</artifactId>
@@ -90,7 +90,7 @@
           <plugin>
             <groupId>de.monticore.mojo</groupId>
             <artifactId>monticore-maven-plugin</artifactId>
-            <version>4.3.0</version>
+            <version>4.3.0.1</version>
             <configuration>
               <skip>false</skip>
               <addOutputDirectoryToModelPath>true</addOutputDirectoryToModelPath>
