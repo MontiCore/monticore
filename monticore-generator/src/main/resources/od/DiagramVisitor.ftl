@@ -42,27 +42,26 @@ package ${genHelper.getPackageName()}._od;
 import ${genHelper.getVisitorPackage()}.${genHelper.getCdName()}Visitor;
 import ${genHelper.getPackageName()}._ast.${genHelper.getASTNodeBaseType()};
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
-import de.monticore.generating.templateengine.reporting.commons.IASTNodeIdentHelper;
+import java.util.Iterator;
 
 public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visitor {
       
-  private Symbol symbol;
+  private ${genHelper.getCdName()}Visitor realThis = this;
   
-  private IndentPrinter pp = new IndentPrinter();
+  private IndentPrinter pp;
   
   private ReportingRepository reporting;
-  
-  public ${genHelper.getCdName()}2OD(Symbol symbol, IASTNodeIdentHelper identHelper) {
-    this.symbol = symbol;
-    reporting = new ReportingRepository(identHelper);
+    
+  public ${genHelper.getCdName()}2OD(IndentPrinter printer, ReportingRepository reporting) {
+    this.reporting = reporting;
+    this.pp = printer;
   }
     
   <#list cd.getTypes() as type>
-    <#if type.isClass() && !genHelper.isAstListClass(type.getName(), cd)>
+    <#if type.isClass()>
       <#assign astName = genHelper.getJavaASTName(type)>
   
       @Override
@@ -71,19 +70,29 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
         printObject(name, "${astName}");
         pp.indent();
         <#list type.getAllVisibleFields() as field>
-          <#if !genHelper.isAstNode(field) && !genHelper.isOptionalAstNode(field)>
-            <#if genHelper.isOptional(field)>
+          <#if !genHelper.isAstNode(field)>
+            <#if genHelper.isOptional(field) && !genHelper.isOptionalAstNode(field)>
               if (node.${genHelper.getPlainGetter(field)}().isPresent()) {
                printAttribute("${field.getName()}", String.valueOf(node.${genHelper.getPlainGetter(field)}().get()));
               }
-            <#elseif genHelper.isListType(field.getType())>
+            <#elseif genHelper.isListType(field.getType())  && !genHelper.isListAstNode(field)>
             {
-              StringBuffer buffer = new StringBuffer();
-              buffer.append("{");
-              node.${genHelper.getPlainGetter(field)}().forEach(elem -> {buffer.append(String.valueOf(elem)); buffer.append(" ");});
-              buffer.append("}");
+              String sep = "";
+              pp.print("${field.getName()}" + " = {");
+              <#if genHelper.isListOfString(field)>
+                String str = "\"";
+              <#else>
+                String str = "";
+              </#if>
+              Iterator<?> it = node.${genHelper.getPlainGetter(field)}().iterator();
+              while (it.hasNext()) {
+                pp.print(sep); 
+                pp.print(str + String.valueOf(it.next()) + str);
+                sep = ", ";
+              }
+              pp.println("};");
             }
-            <#else>
+            <#elseif !genHelper.isListType(field.getType()) && !genHelper.isOptional(field)>
               <#assign fieldType = field.getType()>
               <#if genHelper.isString(fieldType.getName())>
                 printAttribute("${field.getName()}", "\"" + String.valueOf(node.${genHelper.getPlainGetter(field)}()) + "\"");
@@ -117,19 +126,29 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
     pp.println(" {");
   }
   
-  public String printObjectDiagram(${genHelper.getASTNodeBaseType()} node) {
+  public String printObjectDiagram(String modelName, ${genHelper.getASTNodeBaseType()} node) {
     pp.clearBuffer();
     pp.setIndentLength(2);
     pp.print("astobjectdiagram ");
-    pp.print(symbol.getName());
+    pp.print(modelName);
     pp.println(" {");
     pp.indent();
     node.accept(getRealThis());
     pp.unindent();
     pp.println("}");
     return pp.getContent();
-
   }
+  
+  @Override
+  public void setRealThis(${genHelper.getCdName()}Visitor realThis) {
+    this.realThis = realThis;
+  }
+
+  @Override
+  public ${genHelper.getCdName()}Visitor getRealThis() {
+    return realThis;
+  }
+  
   
 }
   

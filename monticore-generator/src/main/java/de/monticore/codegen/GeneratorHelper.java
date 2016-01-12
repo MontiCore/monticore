@@ -850,6 +850,19 @@ public class GeneratorHelper extends TypesHelper {
     return isAstNode((CDTypeSymbolReference)typeArgs.get(0).getType());
   }
 
+  public boolean isListOfString(CDFieldSymbol field) {
+    CDTypeSymbolReference type = field.getType();
+    if (!type.getName().equals(JAVA_LIST)) {
+      return false;
+    }
+    CDTypeSymbolReference cdType = (CDTypeSymbolReference)type;
+    List<ActualTypeArgument> typeArgs = cdType.getActualTypeArguments();
+    if (typeArgs.size() != 1) {
+      return false;
+    }
+    return isString(typeArgs.get(0).getType().getName());
+  }
+
   public boolean isOptionalAstNode(CDTypeSymbolReference type) {
     if (!type.getName().equals(OPTIONAL)) {
       return false;
