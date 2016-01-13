@@ -7,6 +7,7 @@ package de.monticore.codegen.cd2java.ast_emf;
 
 import java.util.Optional;
 
+import de.monticore.codegen.GeneratorHelper;
 import de.monticore.types.TypesHelper;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
@@ -102,12 +103,35 @@ public class EmfAttribute {
   }
   
   private boolean isOptional;
+  private AstEmfGeneratorHelper astHelper;
   
   /**
    * @return isOptionalAstNode
    */
   public boolean isOptional() {
     return this.isOptional;
+  }
+  
+  /**
+   * @return isOptionalAstNode
+   */
+  //TODO GV: fix me!!
+  public boolean isExternal() {
+    return astHelper.getNativeTypeName(getCdAttribute()).endsWith("Ext");
+  }
+  
+  public boolean isInherited() {
+    System.err.println(" getDefinedGrammarName() " + getDefinedGrammarName() + " CD: " + astHelper.getQualifiedCdName());
+    return !getDefinedGrammarName().equals(astHelper.getQualifiedCdName().toLowerCase());
+  }
+  
+  //TODO GV: fix me!!
+  public String getDefinedGrammarName() {
+    String type = astHelper.getNativeTypeName(getCdAttribute());
+    if (isAstNode || isAstList) {
+      return Names.getQualifier(Names.getQualifier(type));
+    }
+    return type;
   }
   
   /**
@@ -126,16 +150,6 @@ public class EmfAttribute {
   
   public String getTypeName() {
     return getCdAttribute().printType();
-  }
-  
-  public String getNativeTypeName() {
-    if (isOptional) {
-      System.err.println("Optional " + getTypeName());
-      return TypesHelper
-          .printType(TypesHelper.getSimpleReferenceTypeFromOptional(getCdAttribute().getType()));
-          
-    }
-    return getTypeName();
   }
   
   public String getDefaultValue() {
@@ -176,7 +190,7 @@ public class EmfAttribute {
             .printType(typeArg.get()));
       }
     }
-    return Names.getSimpleName(getNativeTypeName());
+    return Names.getSimpleName(astHelper.getNativeTypeName(getCdAttribute()));
   }
   
   public EmfAttribute(
@@ -185,13 +199,15 @@ public class EmfAttribute {
       String name,
       boolean isAstNode,
       boolean isAstList,
-      boolean isOptional) {
+      boolean isOptional,
+      AstEmfGeneratorHelper astHelper) {
     this.cdAttribute = cdAttribute;
     this.cdType = type;
     this.fullName = name;
     this.isAstNode = isAstNode;
     this.isAstList = isAstList;
     this.isOptional = isOptional;
+    this.astHelper = astHelper;
   }
   
 }

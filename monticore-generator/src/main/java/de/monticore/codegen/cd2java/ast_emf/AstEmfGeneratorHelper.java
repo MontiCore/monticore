@@ -117,6 +117,40 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
     return "";
   }
   
+  public String getNativeTypeName(ASTCDAttribute attribute) {
+    if (isOptional(attribute)) {
+      return TypesHelper
+          .printType(TypesHelper.getSimpleReferenceTypeFromOptional(attribute.getType()));
+          
+    }
+    if (isListAstNode(attribute)) {
+      Optional<ASTSimpleReferenceType> typeArg = TypesHelper
+          .getFirstTypeArgumentOfGenericType(attribute.getType(), JAVA_LIST);
+      if (typeArg.isPresent()) {
+        return printType(typeArg.get());
+      }
+    }
+    return attribute.printType();
+  }
+  
+  // TODO GV: rename
+  public String getTypeNameEliminOptional(ASTCDAttribute attribute) {
+    if (isOptional(attribute)) {
+      return TypesHelper
+          .printType(TypesHelper.getSimpleReferenceTypeFromOptional(attribute.getType()));
+          
+    }
+    return attribute.printType();
+  }
+  
+  public String getModelName(String qualifiedName) {
+    String qualifier = Names.getQualifier(qualifiedName);
+    if (!qualifier.endsWith(AST_PACKAGE_SUFFIX)) {
+      return "";
+    }
+    return Names.getSimpleName(Names.getQualifier(qualifier));
+  }
+   
   public static boolean istAstENodeList(ASTCDAttribute attribute) {
     return TypesPrinter.printTypeWithoutTypeArgumentsAndDimension(attribute.getType()).startsWith(
         "de.monticore.emf._ast.ASTENodeList");

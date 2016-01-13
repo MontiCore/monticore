@@ -152,7 +152,7 @@ public class CdEmfDecorator extends CdDecorator {
         boolean isAstList = astHelper.isListAstNode(cdAttribute);
         boolean isOptional = AstGeneratorHelper.isOptional(cdAttribute);
         astHelper.addEmfAttribute(clazz, new EmfAttribute(cdAttribute, clazz, attributeName,
-            isAstNode, isAstList, isOptional));
+            isAstNode, isAstList, isOptional, astHelper));
       }
     }
     
@@ -341,7 +341,7 @@ public class CdEmfDecorator extends CdDecorator {
     
     toParse = "public void initializePackageContents();";
     getMethodBody = new TemplateHookPoint(
-        "ast_emf.epackagemethods.InitializePackageContents", cdDef.getName(), astClasses,
+        "ast_emf.epackagemethods.InitializePackageContents", cdDef.getName(), astHelper.getSuperGrammarCds(), astClasses,
         astHelper.getAllEmfAttributes());
     replaceMethodBodyTemplate(packageImpl, toParse, getMethodBody);
     

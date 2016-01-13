@@ -30,7 +30,7 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-  ${tc.signature("grammarName", "astClasses", "emfAttributes")}
+  ${tc.signature("grammarName", "superGrammars", "astClasses", "emfAttributes")}
   <#assign genHelper = glex.getGlobalValue("astHelper")>
 /**
  * Complete the initialization of the package and its meta-model.  This
@@ -50,11 +50,26 @@ SUCH DAMAGE.
        
      EOperation op;
      // Obtain other dependent packages
-     ASTENodePackage theASTENodePackage = (ASTENodePackage)EPackage.Registry.INSTANCE.getEPackage(ASTENodePackage.eNS_URI);       
-     
+     ASTENodePackage theASTENodePackage = (ASTENodePackage)EPackage.Registry.INSTANCE.getEPackage(ASTENodePackage.eNS_URI);      
+     <#list superGrammars as superGrammar>
+       <#assign packageName = superGrammar?lower_case + "._ast.">
+       <#assign simpleName = nameHelper.getSimpleName(superGrammar)>
+       <#assign qualifiedName = packageName + simpleName?cap_first + "Package">
+     ${qualifiedName} the${simpleName?cap_first + "Package"} = 
+       (${qualifiedName})EPackage.Registry.INSTANCE.getEPackage(
+       ${qualifiedName}.eNS_URI); 
+     </#list>
+  
     // Add supertypes to classes <#-- TODO GV: check super type EPackageImplInitializeSuperTypes.ftl-->
   <#list astClasses as astClass>
-    ${astClass.getName()[3..]?uncap_first}EClass.getESuperTypes().add(theASTENodePackage.getENode());
+    <#if astClass.superclassIsPresent()>
+      <#assign superClass = nameHelper.getSimpleName(astClass.printSuperClass())[3..]>
+      <#assign sGrammarName = astHelper.getModelName(astClass.printSuperClass())?cap_first>
+      <#assign superClass = "the" + sGrammarName + "Package.get" + superClass>
+    <#else>
+      <#assign superClass = "theASTENodePackage.getENode">
+    </#if>
+    ${astClass.getName()[3..]?uncap_first}EClass.getESuperTypes().add(${superClass}());
   </#list>  
   
     // Initialize classes and features; add operations and parameters
@@ -75,8 +90,16 @@ SUCH DAMAGE.
   </#list>  
   
   <#list emfAttributes as emfAttribute>
+    <#if emfAttribute.isExternal()>
+      <#assign get = "theASTENodePackage.getENode">
+    <#elseif emfAttribute.isInherited()>
+      <#assign sGrammarName = nameHelper.getSimpleName(emfAttribute.getDefinedGrammarName())>
+      <#assign get = "the" + sGrammarName?cap_first + "Package.get" + emfAttribute.getEDataType()[3..]>
+    <#else>
+      <#assign get = "this.get" + emfAttribute.getEDataType()[3..]>
+    </#if>
     <#if emfAttribute.isAstNode()>
-     init${emfAttribute.getEmfType()}(get${emfAttribute.getFullName()}(), this.get${emfAttribute.getEDataType()[3..]}(), null, "${emfAttribute.getAttributeName()?cap_first}", null,
+     init${emfAttribute.getEmfType()}(get${emfAttribute.getFullName()}(), ${get}(), null, "${emfAttribute.getAttributeName()?cap_first}", null,
       0, 1, ${emfAttribute.getCdType().getName()}.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     <#elseif emfAttribute.isAstList()>
     init${emfAttribute.getEmfType()}(get${emfAttribute.getFullName()}(), this.get${emfAttribute.getEDataType()[3..]}(), null, "${emfAttribute.getAttributeName()?cap_first}", null,
