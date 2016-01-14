@@ -49,6 +49,7 @@ import de.monticore.generating.templateengine.reporting.commons.Layouter;
 import de.monticore.generating.templateengine.reporting.commons.ReportCreator;
 import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
 import de.monticore.incremental.IncrementalChecker;
+import de.se_rwth.commons.logging.Log;
 
 /**
  * This report is used to enable incremental generation. It reports the name of
@@ -259,8 +260,7 @@ public class InputOutputFilesReporter extends AReporter {
               writeLine(s + INPUT_STATE_SEPARATOR + digest);
             }
             catch (IOException | NoSuchAlgorithmException e) {
-              // TODO Auto-generated catch block
-              e.printStackTrace();
+              Log.warn("0xA0134 Cannot write to log file", e);
             }
             
           }

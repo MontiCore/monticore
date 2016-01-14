@@ -83,7 +83,7 @@ public interface ASTNode {
    * 
    * @param _precomments list of comments
    */
-  public void set_PreComments(List<Comment> _precomments);
+  public void set_PreComments(List<Comment> precomments);
   
   /**
    * Returns list of all comments which are associated with this ASTNode and can
@@ -99,7 +99,7 @@ public interface ASTNode {
    * 
    * @param _postcomments list of comments
    */
-  public void set_PostComments(List<Comment> _postcomments);
+  public void set_PostComments(List<Comment> postcomments);
   
   public boolean equalAttributes(Object o);
   
