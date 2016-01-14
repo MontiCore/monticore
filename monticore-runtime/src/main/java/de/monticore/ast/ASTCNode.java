@@ -41,9 +41,9 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
   
   protected Optional<SourcePosition> end = Optional.empty();
   
-  protected List<Comment> _precomments = Lists.newArrayList();
+  protected List<Comment> precomments = Lists.newArrayList();
   
-  protected List<Comment> _postcomments = Lists.newArrayList();
+  protected List<Comment> postcomments = Lists.newArrayList();
   
   protected Optional<? extends Symbol> symbol = Optional.empty();
   
@@ -93,19 +93,19 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
   }
   
   public List<Comment> get_PreComments() {
-    return _precomments;
+    return precomments;
   }
   
-  public void set_PreComments(List<Comment> _precomments) {
-    this._precomments = _precomments;
+  public void set_PreComments(List<Comment> precomments) {
+    this.precomments = precomments;
   }
   
   public List<Comment> get_PostComments() {
-    return _postcomments;
+    return postcomments;
   }
   
-  public void set_PostComments(List<Comment> _postcomments) {
-    this._postcomments = _postcomments;
+  public void set_PostComments(List<Comment> postcomments) {
+    this.postcomments = postcomments;
   }
   
   public boolean equalAttributes(Object o) {

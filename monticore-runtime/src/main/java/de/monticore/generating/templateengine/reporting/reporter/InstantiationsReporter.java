@@ -22,6 +22,7 @@ package de.monticore.generating.templateengine.reporting.reporter;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import de.monticore.ast.ASTNode;
 
@@ -58,9 +59,9 @@ public class InstantiationsReporter extends AReporter {
   }
   
   private void writeContent() {
-    for (String key : instantiateCount.keySet()) {
-      String s = instantiateCount.get(key) + "x";
-      writeLine(s + Layouter.getSpaceString(17 - s.length()) + key);
+    for (Entry<String, Integer> entry : instantiateCount.entrySet()) {
+      String s = entry.getValue() + "x";
+      writeLine(s + Layouter.getSpaceString(17 - s.length()) + entry.getKey());
     }
   }
   

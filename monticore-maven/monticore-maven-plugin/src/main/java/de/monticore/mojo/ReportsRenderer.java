@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.doxia.sink.SinkFactory;
@@ -83,25 +84,25 @@ public class ReportsRenderer extends AbstractMavenReportRenderer {
     paragraph("The following subpages contain the reports for each processed grammar.");
     
     // for each grammar one table
-    for (String grammar : this.inputFiles.keySet()) {
-      startSection("Reports for " + grammar);
+    for (Entry<String, List<Path>> entry : this.inputFiles.entrySet()) {
+      startSection("Reports for " + entry.getKey());
       startTable();
-      for (Path report : this.inputFiles.get(grammar)) {
+      for (Path report : entry.getValue()) {
         File input = report.toFile();
         try {
           // renders a row of the table with link to sub page and brief generic
           // description
           tableRow(new String[] {
-              createLinkPatternedText(input.getName(), "./" + grammar + "." + input.getName()
+              createLinkPatternedText(input.getName(), "./" + entry.getKey() + "." + input.getName()
                   + ".html"), "Report " + input.getName() });
           // renders the respective sub page
           new ReportRenderer(sinkFactory.createSink(
-              new File(outputDirectory), grammar + "." + input.getName().concat(".html")), input,
-              input.getName() + " for " + grammar, ReportingReport.OUTPUT_NAME, log).render();
+              new File(outputDirectory), entry.getKey() + "." + input.getName().concat(".html")), input,
+              input.getName() + " for " + entry.getKey(), ReportingReport.OUTPUT_NAME, log).render();
         }
         catch (IOException e) {
           log.error(
-              "0xA4061 Could not create sink for ".concat(new File(outputDirectory, grammar + "."
+              "0xA4061 Could not create sink for ".concat(new File(outputDirectory, entry.getKey() + "."
                   + input.getName().concat(".html")).getPath()), e);
         }
       }
