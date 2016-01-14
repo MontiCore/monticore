@@ -129,6 +129,7 @@ public class EmfAttribute {
   public String getDefinedGrammarName() {
     String type = astHelper.getNativeTypeName(getCdAttribute());
     if (isAstNode || isAstList) {
+      System.err.println("isAstNode || isAstList: " + Names.getQualifier(Names.getQualifier(type)));
       return Names.getQualifier(Names.getQualifier(type));
     }
     return type;
@@ -182,7 +183,7 @@ public class EmfAttribute {
   }
   
   public String getEDataType() {
-    if (isAstList) {
+    if (isAstList || AstEmfGeneratorHelper.istAstENodeList(getCdAttribute())) {
       Optional<ASTSimpleReferenceType> typeArg = TypesHelper
           .getFirstTypeArgumentOfGenericType(getCdAttribute().getType(), "java.util.List");
       if (typeArg.isPresent()) {

@@ -48,28 +48,33 @@ SUCH DAMAGE.
     
     <#-- (ePackageImplInitializePackageContentsMain, ast) -->
        
-     EOperation op;
+    EOperation op;
      // Obtain other dependent packages
-     ASTENodePackage theASTENodePackage = (ASTENodePackage)EPackage.Registry.INSTANCE.getEPackage(ASTENodePackage.eNS_URI);      
+    ASTENodePackage theASTENodePackage = (ASTENodePackage)EPackage.Registry.INSTANCE.getEPackage(ASTENodePackage.eNS_URI);      
      <#list superGrammars as superGrammar>
        <#assign packageName = superGrammar?lower_case + "._ast.">
        <#assign simpleName = nameHelper.getSimpleName(superGrammar)>
        <#assign qualifiedName = packageName + simpleName?cap_first + "Package">
-     ${qualifiedName} the${simpleName?cap_first + "Package"} = 
-       (${qualifiedName})EPackage.Registry.INSTANCE.getEPackage(
-       ${qualifiedName}.eNS_URI); 
+    ${qualifiedName} the${simpleName?cap_first + "Package"} = 
+      (${qualifiedName})EPackage.Registry.INSTANCE.getEPackage(
+      ${qualifiedName}.eNS_URI); 
      </#list>
   
     // Add supertypes to classes <#-- TODO GV: check super type EPackageImplInitializeSuperTypes.ftl-->
   <#list astClasses as astClass>
-    <#if astClass.superclassIsPresent()>
-      <#assign superClass = nameHelper.getSimpleName(astClass.printSuperClass())[3..]>
-      <#assign sGrammarName = astHelper.getModelName(astClass.printSuperClass())?cap_first>
-      <#assign superClass = "the" + sGrammarName + "Package.get" + superClass>
+    <#if !astClass.getSymbol().get().getSuperTypes()?has_content>
+    ${astClass.getName()[3..]?uncap_first}EClass.getESuperTypes().add(theASTENodePackage.getENode()); 
     <#else>
-      <#assign superClass = "theASTENodePackage.getENode">
+      <#list astClass.getSymbol().get().getSuperTypes() as superType>
+        <#assign sGrammarName = nameHelper.getSimpleName(superType.getModelName())>
+        <#if sGrammarName==grammarName>
+          <#assign package = "this.get">
+        <#else>
+          <#assign package = "the" + sGrammarName + "Package.get">
+        </#if>
+    ${astClass.getName()[3..]?uncap_first}EClass.getESuperTypes().add(${package}${superType.getName()[3..]}()); 
+      </#list>
     </#if>
-    ${astClass.getName()[3..]?uncap_first}EClass.getESuperTypes().add(${superClass}());
   </#list>  
   
     // Initialize classes and features; add operations and parameters
@@ -79,14 +84,18 @@ SUCH DAMAGE.
     
   <#list astClasses as astClass>
     <#assign className = astClass.getName()>
-    <#-- TODO GV -->
-    // TODO: ${astClass.getName()}.class vs. ${astClass.getName()[3..]}.class?
-    <#if astClass.getModifier().isPresent() && astClass.getModifier().get().isAbstract()>
+    <#if astClass.getSymbol().get().isInterface()>
       <#assign abstract = "IS_ABSTRACT">
+      <#assign interface = "IS_INTERFACE">
     <#else>
-      <#assign abstract = "!IS_ABSTRACT">
-    </#if>   
-    initEClass(${className[3..]?uncap_first}EClass, ${className}.class, "${className}", ${abstract}, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+      <#assign interface = "!IS_INTERFACE">
+      <#if astClass.getModifier().isPresent() && astClass.getModifier().get().isAbstract()>
+        <#assign abstract = "IS_ABSTRACT">
+      <#else>
+        <#assign abstract = "!IS_ABSTRACT">
+      </#if> 
+    </#if>  
+    initEClass(${className[3..]?uncap_first}EClass, ${className}.class, "${className}", ${abstract}, ${interface}, IS_GENERATED_INSTANCE_CLASS);
   </#list>  
   
   <#list emfAttributes as emfAttribute>

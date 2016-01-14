@@ -36,6 +36,7 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
+import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 
@@ -142,17 +143,24 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
     }
     return attribute.printType();
   }
-  
+  /*
   public String getModelName(String qualifiedName) {
     String qualifier = Names.getQualifier(qualifiedName);
     if (!qualifier.endsWith(AST_PACKAGE_SUFFIX)) {
       return "";
     }
     return Names.getSimpleName(Names.getQualifier(qualifier));
+  }*/
+  
+  public String getType(CDTypeSymbol type) {
+    System.err.println("model: " + type.getModelName());
+    System.err.println("name: " + type.getName());
+    return type.getFullName();
   }
    
+  // TODO GV:
   public static boolean istAstENodeList(ASTCDAttribute attribute) {
-    return TypesPrinter.printTypeWithoutTypeArgumentsAndDimension(attribute.getType()).startsWith(
-        "de.monticore.emf._ast.ASTENodeList");
+    return TypesPrinter.printTypeWithoutTypeArgumentsAndDimension(attribute.getType())
+        .equals(JAVA_LIST);
   }
 }
