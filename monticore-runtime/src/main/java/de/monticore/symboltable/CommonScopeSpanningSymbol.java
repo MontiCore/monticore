@@ -54,13 +54,8 @@ public abstract class CommonScopeSpanningSymbol extends CommonSymbol implements 
 
   @Override
   public void setEnclosingScope(MutableScope scope) {
-    // TODO PN remove from existing enclosing scope ??
-
     super.setEnclosingScope(scope);
-    //TODO PN add resolvers from enclosing scope?
     spannedScope.setEnclosingScope(scope);
-    // TODO PN sicherstellen, dass Enclosing und Sun Scopes konsistent bleiben
-    scope.addSubScope(spannedScope);
   }
 
 }

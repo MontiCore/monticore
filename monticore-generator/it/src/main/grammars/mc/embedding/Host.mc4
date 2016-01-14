@@ -1,6 +1,6 @@
 package mc.embedding;
 
-grammar Host extends de.monticore.lexicals.Lexicals {
+grammar Host extends mc.grammar.lexicals.Lexicals {
 
    Host@! = Name "content" Content;
 

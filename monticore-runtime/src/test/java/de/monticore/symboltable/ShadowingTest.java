@@ -24,8 +24,10 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.List;
 import java.util.Optional;
 
+import de.monticore.symboltable.mocks.CommonScopeMock;
 import de.monticore.symboltable.mocks.languages.entity.PropertySymbol;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
@@ -115,26 +117,41 @@ public class ShadowingTest {
 
   @Test
   public void testLocalScopeShadowsGrandEnclosingScopeIfEnclosingIsShadowingScope() {
-    CommonScope grandEnclosingScope = new CommonScope(false); // true would have the same impact
-    CommonScope enclosingScope = new CommonScope(Optional.of(grandEnclosingScope), true);
-    CommonScope scope = new CommonScope(Optional.of(enclosingScope), false);
+    CommonScopeMock grandGrandEnclosingScope = new CommonScopeMock(false); // true would have the same impact
+    CommonScopeMock grandEnclosing = new CommonScopeMock(Optional.of(grandGrandEnclosingScope), true);
+    CommonScopeMock enclosingScope = new CommonScopeMock(Optional.of(grandEnclosing), false);
+    CommonScopeMock scope = new CommonScopeMock(Optional.of(enclosingScope), false);
+
+    // Set names to simplify testing (see below)
+    grandGrandEnclosingScope.setName("grandGrand");
+    grandEnclosing.setName("grand");
+    enclosingScope.setName("enclosing");
+    scope.setName("scope");
 
     JTypeReference intReference = new CommonJTypeReference<>("int", JTypeSymbol.KIND, scope);
 
     PropertySymbol gpVariable = new PropertySymbol("var", intReference);
-    grandEnclosingScope.add(gpVariable);
+    grandGrandEnclosingScope.add(gpVariable);
 
     PropertySymbol variable = new PropertySymbol("var", intReference);
     scope.add(variable);
 
     ResolvingFilter<PropertySymbol> variableResolvingFilter = CommonResolvingFilter.create
         (PropertySymbol.class, PropertySymbol.KIND);
-    grandEnclosingScope.addResolver(variableResolvingFilter);
+    grandGrandEnclosingScope.addResolver(variableResolvingFilter);
     enclosingScope.addResolver(variableResolvingFilter);
     scope.addResolver(variableResolvingFilter);
 
-    assertSame(gpVariable, grandEnclosingScope.resolve("var", PropertySymbol.KIND).get());
+    assertSame(gpVariable, grandGrandEnclosingScope.resolve("var", PropertySymbol.KIND).get());
     assertSame(gpVariable, enclosingScope.resolve("var", PropertySymbol.KIND).get());
     assertSame(variable, scope.resolve("var", PropertySymbol.KIND).get());
+
+    final List<MutableScope> involvedScopes = scope.getResolvingInfo().getInvolvedScopes();
+
+    // Resolution must stop after the third scope (i.e., grandEnclosing)
+    assertEquals(3, involvedScopes.size());
+    assertEquals("scope", involvedScopes.get(0).getName().get());
+    assertEquals("enclosing", involvedScopes.get(1).getName().get());
+    assertEquals("grand", involvedScopes.get(2).getName().get());
   }
 }

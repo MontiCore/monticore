@@ -19,7 +19,6 @@
 
 package de.monticore.symboltable;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -29,7 +28,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.FluentIterable;
 import de.monticore.ModelNameCalculator;
 import de.monticore.ModelingLanguage;
 import de.monticore.ModelingLanguageFamily;
@@ -37,13 +35,9 @@ import de.monticore.ast.ASTNode;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.symboltable.resolving.AdaptedResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingInfo;
-import de.se_rwth.commons.Joiners;
-import de.se_rwth.commons.Names;
-import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -98,7 +92,7 @@ public final class GlobalScope extends CommonScope {
     resolvingInfo.addInvolvedScope(this);
 
     // First, try to resolve the symbol in the current scope and its sub scopes.
-    Collection<T> resolvedSymbol = resolveDownMany(new ResolvingInfo(getResolvingFilters()), symbolName, kind, modifier);
+    Collection<T> resolvedSymbol = resolveDownMany(resolvingInfo, symbolName, kind, modifier);
 
     if (!resolvedSymbol.isEmpty()) {
       return resolvedSymbol;
@@ -200,53 +194,7 @@ public final class GlobalScope extends CommonScope {
   }
 
   @Override
-  protected <T extends Symbol> Collection<T> continueWithSubScope(MutableScope subScope, ResolvingInfo resolvingInfo,
-      String symbolName, SymbolKind kind, AccessModifier modifier) {
-    if (checkIfContinueWithSubScope(symbolName, subScope)) {
-      if (subScope instanceof ArtifactScope) {
-        return continueWithArtifactScope((ArtifactScope) subScope, resolvingInfo, symbolName, kind);
-      }
-      else {
-        return super.continueWithSubScope(subScope, resolvingInfo, symbolName, kind, modifier);
-      }
-    }
-
-    return new ArrayList<>();
-  }
-
-  @Override
-  protected boolean checkIfContinueWithSubScope(String symbolName, MutableScope subScope) {
-    if(subScope.exportsSymbols()) {
-      if (subScope instanceof ArtifactScope) {
-        final String packageCU = ((ArtifactScope)subScope).getPackageName();
-        final String symbolPackage = Names.getQualifier(symbolName);
-
-        if (symbolPackage.startsWith(packageCU)) {
-          // TODO PN compare name parts, to exclude cases like "a.bb".startsWith("a.b")
-          return true;
-        }
-      }
-      else {
-        // This case only occurs if a model does not have an artifact scope.
-        return super.checkIfContinueWithSubScope(symbolName, subScope);
-      }
-    }
-
+  protected boolean checkIfContinueAsSubScope(String symbolName, SymbolKind kind) {
     return false;
-  }
-
-  protected <T extends Symbol> Collection<T> continueWithArtifactScope(ArtifactScope subScope, ResolvingInfo resolvingInfo, String symbolName, SymbolKind kind) {
-    final String packageAS = subScope.getPackageName();
-    final FluentIterable<String> packageASNameParts = FluentIterable.from(Splitters.DOT.omitEmptyStrings().split(packageAS));
-
-    final FluentIterable<String> symbolNameParts = FluentIterable.from(Splitters.DOT.split(symbolName));
-    String remainingSymbolName = symbolName;
-
-    if (symbolNameParts.size() > packageASNameParts.size()) {
-      remainingSymbolName = Joiners.DOT.join(symbolNameParts.skip(packageASNameParts.size()));
-    }
-    // TODO PN else?
-
-    return subScope.resolveDownMany(resolvingInfo, remainingSymbolName, kind, BasicAccessModifier.ABSENT);
   }
 }

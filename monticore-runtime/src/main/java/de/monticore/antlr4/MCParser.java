@@ -57,19 +57,19 @@ abstract public class MCParser extends Parser {
     return filename;
   }
   
-  public de.se_rwth.commons.SourcePosition computeEndPosition(Token LT0) {
-    if (LT0 == null || LT0.getText() == null) {
+  public de.se_rwth.commons.SourcePosition computeEndPosition(Token token) {
+    if (token == null || token.getText() == null) {
       return SourcePosition.getDefaultSourcePosition();
     }
-    return computeEndPosition(new SourcePosition(LT0.getLine(), LT0.getCharPositionInLine()), LT0.getText());
+    return computeEndPosition(new SourcePosition(token.getLine(), token.getCharPositionInLine()), token.getText());
   }
   
-  public de.se_rwth.commons.SourcePosition computeStartPosition(Token LT0) {
-    if (LT0 == null) {
+  public de.se_rwth.commons.SourcePosition computeStartPosition(Token token) {
+    if (token == null) {
       return null;
     }
-    int line = LT0.getLine();
-    int column = LT0.getCharPositionInLine();
+    int line = token.getLine();
+    int column = token.getCharPositionInLine();
     de.se_rwth.commons.SourcePosition pos = new de.se_rwth.commons.SourcePosition(line, column);
     return pos;
   }
@@ -80,7 +80,7 @@ abstract public class MCParser extends Parser {
     if (text == null) {
       throw new IllegalArgumentException("0xA0708 text was null!");
     }
-    else if (text.equals("\n")) {
+    else if ("\n".equals(text)) {
       column += text.length();
     }
     else if (text.indexOf("\n") == -1) {

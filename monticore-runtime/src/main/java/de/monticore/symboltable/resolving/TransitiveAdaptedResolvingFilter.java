@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.SymbolKind;
 
 /**
  * TODO: Write me!
@@ -40,24 +40,15 @@ import de.monticore.symboltable.Symbol;
 
 // TODO PN override other methods of DefaultResolver
 public abstract class TransitiveAdaptedResolvingFilter<S extends Symbol>
-    extends CommonResolvingFilter<S> implements AdaptedResolvingFilter<S> {
-
-  private final SymbolKind sourceKind;
+    extends CommonAdaptedResolvingFilter<S> implements AdaptedResolvingFilter<S> {
 
   /**
    * @param targetSymbolClass
    * @param targetKind
    */
   public TransitiveAdaptedResolvingFilter(SymbolKind sourceKind, Class<S> targetSymbolClass, SymbolKind targetKind) {
-    super(targetSymbolClass, targetKind);
-    this.sourceKind = sourceKind;
+    super(sourceKind, targetSymbolClass, targetKind);
   }
-
-  public SymbolKind getSourceKind() {
-    return sourceKind;
-  }
-
-  protected abstract S createAdapter(Symbol s);
 
   @Override
   public Optional<S> filter(ResolvingInfo resolvingInfo, String symbolName, List<Symbol> symbols) {
@@ -114,7 +105,7 @@ public abstract class TransitiveAdaptedResolvingFilter<S extends Symbol>
 
   @Override
   public String toString() {
-    return CommonAdaptedResolvingFilter.class.getSimpleName() + " [" + sourceKind.getName() + " -> " +
+    return CommonAdaptedResolvingFilter.class.getSimpleName() + " [" + getSourceKind().getName() + " -> " +
         getTargetKind().getName() + "]";
   }
 }

@@ -19,6 +19,8 @@
 
 package de.monticore.symboltable;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,9 +29,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.google.common.collect.FluentIterable;
 import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.symboltable.names.CommonQualifiedNamesCalculator;
+import de.monticore.symboltable.names.QualifiedNamesCalculator;
 import de.monticore.symboltable.resolving.ResolvingInfo;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
+import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -40,6 +47,12 @@ public class ArtifactScope extends CommonScope {
 
   private final String packageName;
   private final List<ImportStatement> imports;
+
+  private QualifiedNamesCalculator qualifiedNamesCalculator;
+
+  public ArtifactScope(final String packageName, final List<ImportStatement> imports) {
+    this(Optional.empty(), packageName, imports);
+  }
 
   public ArtifactScope(final Optional<MutableScope> enclosingScope, final String packageName,
       final List<ImportStatement> imports) {
@@ -58,6 +71,8 @@ public class ArtifactScope extends CommonScope {
     }
 
     this.imports = Collections.unmodifiableList(new ArrayList<>(imports));
+
+    this.qualifiedNamesCalculator = new CommonQualifiedNamesCalculator();
   }
 
   @Override
@@ -83,85 +98,66 @@ public class ArtifactScope extends CommonScope {
     return packageName;
   }
 
-  @Override
-  public <T extends Symbol> Collection<T> resolveMany(final ResolvingInfo resolvingInfo, final String
-      symbolName, final SymbolKind kind, AccessModifier modifier) {
-    resolvingInfo.addInvolvedScope(this);
-
-    final Set<T> resolved = new LinkedHashSet<>(this.<T>resolveManyLocally(resolvingInfo, symbolName, kind));
-
-    Log.trace("START resolve(\"" + symbolName + "\", " + "\"" + kind.getName() + "\") in scope \"" +
-        getName() + "\". Found #" + resolved.size() + " (local)", "");
-
-
-    // TODO PN also check whether resolverInfo.areSymbolsFound() ?
-    if (resolved.isEmpty()) {
-      resolved.addAll(resolveInEnclosingScope(resolvingInfo, symbolName, kind, modifier));
-    }
-
-    Log.trace("END resolve(\"" + symbolName + "\", " + "\"" + kind.getName() + "\") in scope \"" +
-        getName() + "\". Found #" + resolved.size() , "");
-
-    return resolved;
-  }
-
   /**
    * Starts the bottom-up inter-model resolution process.
    *
+   * @param <T>
    * @param resolvingInfo
    * @param name
    * @param kind
-   * @param <T>
    * @return
    */
-  protected <T extends Symbol> List<T> resolveInEnclosingScope(final ResolvingInfo resolvingInfo, final String name,
+  @Override
+  protected <T extends Symbol> Collection<T> continueWithEnclosingScope(final ResolvingInfo resolvingInfo, final String name,
       final SymbolKind kind, final AccessModifier modifier) {
-    final List<T> resolved = new ArrayList<>();
+    final Collection<T> result = new LinkedHashSet<>();
 
-    if (enclosingScope != null) {
+    if (checkIfContinueWithEnclosing(resolvingInfo.areSymbolsFound()) && (getEnclosingScope().isPresent())) {
       if (!(enclosingScope instanceof GlobalScope)) {
         Log.warn("0xA1039 An artifact scope should have the global scope as enclosing scope or no "
             + "enclosing scope at all.");
       }
 
-      for (final String potentialName : determinePotentialNames(name)) {
-        final Collection<T> resolvedFromGlobal = enclosingScope.resolveMany(resolvingInfo, potentialName, kind, modifier);
+      final Set<String> potentialQualifiedNames = qualifiedNamesCalculator.calculateQualifiedNames(name, packageName, imports);
 
-        if (!resolvedFromGlobal.isEmpty()) {
-          addResolvedSymbolsIfNotShadowed(resolved, resolvedFromGlobal);
-        }
+      for (final String potentialQualifiedName : potentialQualifiedNames) {
+        final Collection<T> resolvedFromEnclosing = enclosingScope.resolveMany(resolvingInfo, potentialQualifiedName, kind, modifier);
+
+        result.addAll(resolvedFromEnclosing);
       }
     }
-
-    return resolved;
+    return result;
   }
 
-  // TODO PN doc
-  protected Collection<String> determinePotentialNames(final String name) {
-    final Collection<String> potentialSymbolNames = new LinkedHashSet<>();
+  protected String getRemainingNameForResolveDown(String symbolName) {
+    final String packageAS = this.getPackageName();
+    final FluentIterable<String> packageASNameParts = FluentIterable.from(Splitters.DOT.omitEmptyStrings().split(packageAS));
 
-    // the simple name (in default package)
-    potentialSymbolNames.add(name);
+    final FluentIterable<String> symbolNameParts = FluentIterable.from(Splitters.DOT.split(symbolName));
+    String remainingSymbolName = symbolName;
 
-    // if name is already qualified, no further (potential) names exist.
-    if (Names.getQualifier(name).isEmpty()) {
-      // maybe the model belongs to the same package
-      if (!packageName.isEmpty()) {
-        potentialSymbolNames.add(packageName + "." + name);
-      }
+    if (symbolNameParts.size() > packageASNameParts.size()) {
+      remainingSymbolName = Joiners.DOT.join(symbolNameParts.skip(packageASNameParts.size()));
+    }
+    // TODO PN else?
+    return remainingSymbolName;
+  }
 
-      for (ImportStatement importStatement : imports) {
-        if (importStatement.isStar()) {
-          potentialSymbolNames.add(importStatement.getStatement() + "." + name);
-        }
-        else if (Names.getSimpleName(importStatement.getStatement()).equals(name)) {
-          potentialSymbolNames.add(importStatement.getStatement());
-        }
+  @Override
+  protected boolean checkIfContinueAsSubScope(String symbolName, SymbolKind kind) {
+    if(this.exportsSymbols()) {
+      final String packageCU = this.getPackageName();
+      final String symbolQualifier = Names.getQualifier(symbolName);
+
+      if (symbolQualifier.startsWith(packageCU)) {
+        // TODO PN compare name parts, to exclude cases like "a.bb".startsWith("a.b")
+        return true;
       }
     }
-    Log.trace("Potential qualified names for \"" + name + "\": " + potentialSymbolNames.toString(),
-        ArtifactScope.class.getSimpleName());
-    return potentialSymbolNames;
+    return false;
   }
 
+  public void setQualifiedNamesCalculator(QualifiedNamesCalculator qualifiedNamesCalculator) {
+    this.qualifiedNamesCalculator = requireNonNull(qualifiedNamesCalculator);
+  }
 }

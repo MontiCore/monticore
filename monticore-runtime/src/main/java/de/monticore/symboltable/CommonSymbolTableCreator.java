@@ -146,6 +146,16 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
     astNode.setEnclosingScope(symbol.getEnclosingScope());
   }
 
+  @Override
+  public void setLinkBetweenScopeAndNode(MutableScope scope, ASTNode astNode) {
+    // scope -> ast
+    scope.setAstNode(astNode);
+
+    // ast -> scope
+    // TODO PN uncomment as soon as ASTNode has been updated
+    // astNode.setScope(scope);
+  }
+
   /**
    * @deprecated use {@link #addToScopeAndLinkWithNode(Symbol, ASTNode)} instead
    */

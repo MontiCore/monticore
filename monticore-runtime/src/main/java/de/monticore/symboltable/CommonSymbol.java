@@ -113,7 +113,6 @@ public abstract class CommonSymbol implements Symbol {
     return "";
   }
 
-  // TODO PN pull-up?
   public void setFullName(String fullName) {
     this.fullName = Log.errorIfNull(fullName);
   }

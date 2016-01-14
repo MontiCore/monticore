@@ -34,14 +34,12 @@ import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.mocks.languages.entity.ActionSymbol;
 import de.monticore.symboltable.mocks.languages.entity.EntityLanguage;
 import de.monticore.symboltable.mocks.languages.entity.EntitySymbol;
-import de.monticore.symboltable.mocks.languages.entity.EntitySymbolReference;
 import de.monticore.symboltable.mocks.languages.entity.PropertySymbol;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.monticore.symboltable.types.JTypeSymbol;
 import de.monticore.symboltable.types.references.CommonJTypeReference;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -189,41 +187,6 @@ public class ResolvingTest {
     // Cannot resolve Entity.action, since it is not clear whether it is a qualified
     // or a partial name.
     assertFalse(entity.getSpannedScope().resolve("Entity.action", ActionSymbol.KIND).isPresent());
-
-  }
-
-  @Ignore
-  @Test
-  public void testOnlyConsiderExplicitlyImportedScopesWhenResolvingInImportedScope() {
-    final ModelingLanguage language = new EntityLanguage();
-    final ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
-    resolverConfiguration.addTopScopeResolvers(language.getResolvers());
-
-    final GlobalScope gs = new GlobalScope(new ModelPath(), language, resolverConfiguration);
-    final ArtifactScope as = new ArtifactScope(Optional.empty(), "p", new ArrayList<>());
-    gs.addSubScope(as);
-    as.setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
-
-    final PropertySymbol asProp = new PropertySymbol("asProp", new EntitySymbolReference("foo", gs));
-    as.add(asProp);
-
-    final EntitySymbol supEntity = new EntitySymbol("SupEntity");
-    as.add(supEntity);
-    supEntity.getSpannedScope().setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
-
-    assertTrue(supEntity.getSpannedScope().resolve("asProp", PropertySymbol.KIND).isPresent());
-
-
-    final EntitySymbol subEntity = new EntitySymbol("SubEntity");
-    gs.add(subEntity);
-    subEntity.getSpannedScope().setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
-
-    subEntity.setSuperClass(new EntitySymbolReference("p.SupEntity", gs));
-
-    assertTrue(subEntity.getSuperClass().get().existsReferencedSymbol());
-    assertFalse(subEntity.getSpannedScope().resolve("asProp", PropertySymbol.KIND).isPresent());
-
-
 
   }
 

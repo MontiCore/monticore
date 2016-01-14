@@ -26,9 +26,9 @@ import java.util.Collection;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
-import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.SymbolKind;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -56,6 +56,10 @@ public class ResolvingInfo {
   // TODO PN should the found symbols also be stored here? If yes, areSymbolsFound == !found.isEmpty()
   public boolean areSymbolsFound() {
     return areSymbolsFound;
+  }
+
+  public void updateSymbolsFound(boolean areSymbolsFound) {
+    this.areSymbolsFound = this.areSymbolsFound || areSymbolsFound;
   }
 
   public void addInvolvedScope(final MutableScope scope) {

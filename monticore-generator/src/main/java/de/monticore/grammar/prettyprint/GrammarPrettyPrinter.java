@@ -398,10 +398,8 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
       
       println(" = ");
       getPrinter().indent();
-      // TODO MB: Reihenfolge beibehalten?
-      printList(a.getMethods().iterator(), "");
       printList(a.getAttributeInASTs().iterator(), "");
-      
+      printList(a.getMethods().iterator(), "");      
     }
     
     getPrinter().print(";");
@@ -720,7 +718,6 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     println(" {");
     getPrinter().indent();
     
-    // TODO MB Reihenfolge beibehalten?
     if (a.getGrammarOptions().isPresent()) {
       a.getGrammarOptions().get().accept(getRealThis());
     }

@@ -19,10 +19,7 @@
 
 package de.monticore.generating.templateengine.reporting.commons;
 
-import java.io.File;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -111,38 +108,6 @@ public class ReportingRepository {
   }
   
   /**
-   * @deprecated use {@link #initAllHWTemplates(IterablePath)} instead
-   */
-  @Deprecated
-  public void initAllHWTemplates(String... path) {
-    Collection<String> dirs = Arrays.asList(path);
-    for (String d : dirs) {
-      File dir = new File(d);
-      if (dir.isDirectory()) {
-        resolveAllHWTemplateNames(dir);
-      }
-    }
-  }
-  
-  /* Use IterablePath API as provided by MontiCore API */
-  @Deprecated
-  private void resolveAllHWTemplateNames(File dir) {
-    if (dir.isDirectory()) {
-      List<File> files = Arrays.asList(dir.listFiles());
-      for (File f : files) {
-        if (f.isFile()) {
-          if (isTemplate(f)) {
-            allHWTemplateNames.add(f.getName());
-          }
-        }
-        if (f.isDirectory()) {
-          resolveAllHWTemplateNames(f);
-        }
-      }
-    }
-  }
-  
-  /**
    * Scans the current class path for templates and stores them in this
    * repository.
    */
@@ -155,50 +120,6 @@ public class ReportingRepository {
         .setScanners(new ResourcesScanner()));
     
     this.allTemplateNames = helper.getResources(Pattern.compile(".*\\.ftl"));
-  }
-  
-  /**
-   * @deprecated use {@link #initAllTemplates()} instead; Freemarker loads
-   * templates via class loader; as such it's rather senseless to search
-   * directories for templates manually; {@link #initAllTemplates()} does what
-   * is needed using the class loader thus mimicking what Freemarker sees
-   */
-  @Deprecated
-  public void initAllTemplates(String... path) {
-    Collection<String> dirs = Arrays.asList(path);
-    for (String d : dirs) {
-      File dir = new File(d);
-      if (dir.isDirectory()) {
-        resolveAllTemplateNames(dir);
-      }
-    }
-  }
-  
-  /* see above */
-  @Deprecated
-  private void resolveAllTemplateNames(File dir) {
-    if (dir.isDirectory()) {
-      List<File> files = Arrays.asList(dir.listFiles());
-      for (File f : files) {
-        if (f.isFile()) {
-          if (isTemplate(f)) {
-            allTemplateNames.add(f.getName());
-          }
-        }
-        if (f.isDirectory()) {
-          resolveAllTemplateNames(f);
-        }
-      }
-    }
-  }
-  
-  /* no longer needed (see IterablePath) */
-  @Deprecated
-  private boolean isTemplate(File file) {
-    if (file.getName().endsWith(".ftl")) {
-      return true;
-    }
-    return false;
   }
   
   /**

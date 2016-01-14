@@ -43,6 +43,7 @@ import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._ast.ASTTerminal;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTExpressionPredicate;
+import de.monticore.grammar.grammar_withconcepts._ast.ASTGrammar_WithConceptsNode;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTJavaCode;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.java.javadsl._ast.ASTBlockStatement;
@@ -446,8 +447,11 @@ public class ParserGeneratorHelper {
       Log.debug("ASTExpressionPredicate:\n" + exprPredicate, ParserGenerator.LOG);
       return exprPredicate;
     }
-    // TODO MB
-    // getPrettyPrinter().prettyPrint(node, buffer);
+    if (node instanceof ASTGrammar_WithConceptsNode) {
+      String output = getPrettyPrinter().prettyprint((ASTGrammar_WithConceptsNode) node);
+      Log.debug("ASTGrammar_WithConceptsNode:\n" + output, ParserGenerator.LOG);
+      return output;
+    }
     return "";
   }
   
