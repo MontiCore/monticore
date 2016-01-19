@@ -51,7 +51,8 @@ public class ODReporter extends AReporter {
   
   private void writeFooter() {
     writeLine("========================================================== Explanation");
-    writeLine("Shows symbol table after finishing the generation process.");
+    writeLine("Shows the AST with all attributes as object diagram");
+    writeLine("(EOF)");
   }
   
   @Override
