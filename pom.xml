@@ -332,12 +332,6 @@
         <version>${cd4analysis.version}</version>
       </dependency>
 
-      <dependency>
-        <groupId>de.monticore.lang</groupId>
-        <artifactId>od</artifactId>
-        <version>${od.version}</version>
-      </dependency>
-
       <!-- .. Test Libraries ............................................... -->
 
       <dependency>
