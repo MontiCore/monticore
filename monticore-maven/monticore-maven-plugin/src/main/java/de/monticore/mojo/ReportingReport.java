@@ -133,10 +133,12 @@ public class ReportingReport extends AbstractMavenReport {
     Map<String, List<Path>> modelReports = new LinkedHashMap<>();
     
     try {
-      modelReports = Files.walk(getReportsBaseDirectory().toPath())
-          .sorted()
-          .filter(p -> REPORTS.contains(p.getFileName().toString()))
-          .collect(Collectors.groupingBy(p -> p.getParent().getFileName().toString()));
+      if (getReportsBaseDirectory().exists()) {
+        modelReports = Files.walk(getReportsBaseDirectory().toPath())
+            .sorted()
+            .filter(p -> REPORTS.contains(p.getFileName().toString()))
+            .collect(Collectors.groupingBy(p -> p.getParent().getFileName().toString()));
+      }
     }
     catch (IOException e) {
       getLog().error(e);
