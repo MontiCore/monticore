@@ -159,7 +159,7 @@ public class ParserGeneratorHelper {
     
     if (rule instanceof MCInterfaceOrAbstractRuleSymbol) {
       List<PredicatePair> subRules = grammarSymbol.getSubRulesForParsing(ruleName);
-      generateParserForRule = subRules != null && subRules.size() > 0;
+      generateParserForRule = subRules != null && !subRules.isEmpty();
     }
     return generateParserForRule;
   }
@@ -247,7 +247,7 @@ public class ParserGeneratorHelper {
 
     for (Entry<String, MCRuleSymbol> ruleSymbol :rules.entrySet()) {
       if (ruleSymbol.getValue().getKindSymbolRule().equals(KindSymbolRule.LEXERRULE)) {
-        MCLexRuleSymbol lexRule = ((MCLexRuleSymbol) ruleSymbol.getValue());
+        MCLexRuleSymbol lexRule = (MCLexRuleSymbol) ruleSymbol.getValue();
         
         // MONTICOREANYTHING must be last rule
         if (lexRule.getName().equals(MONTICOREANYTHING)) {

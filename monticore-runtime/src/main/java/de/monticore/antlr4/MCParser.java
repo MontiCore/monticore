@@ -31,7 +31,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.ast.Comment;
 import de.se_rwth.commons.SourcePosition;
 
-abstract public class MCParser extends Parser {
+public abstract class MCParser extends Parser {
   
   protected List<Comment> comments = new ArrayList<Comment>();
     
@@ -70,8 +70,7 @@ abstract public class MCParser extends Parser {
     }
     int line = token.getLine();
     int column = token.getCharPositionInLine();
-    de.se_rwth.commons.SourcePosition pos = new de.se_rwth.commons.SourcePosition(line, column);
-    return pos;
+    return new de.se_rwth.commons.SourcePosition(line, column);
   }
   
   public SourcePosition computeEndPosition(SourcePosition start, String text) {   
@@ -93,8 +92,7 @@ abstract public class MCParser extends Parser {
       // be 2...
       column = splitted[splitted.length - 1].length() + 1;
     }
-    de.se_rwth.commons.SourcePosition pos = new de.se_rwth.commons.SourcePosition(line, column);
-    return pos;
+    return new de.se_rwth.commons.SourcePosition(line, column);
   }
   
   public boolean hasErrors() {
@@ -110,7 +108,7 @@ abstract public class MCParser extends Parser {
   }
   
   public boolean checkMax(int actual, int reference) {
-    return (reference < 0 || actual <= reference);
+    return reference < 0 || actual <= reference;
   }
   
   public void setFilename(String filename) {

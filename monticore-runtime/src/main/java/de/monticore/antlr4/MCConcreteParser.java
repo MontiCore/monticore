@@ -38,8 +38,6 @@ public abstract class MCConcreteParser {
       
   protected boolean hasErrors = false;
   
-  protected MCParser parser;
-  
   /**
    * Creates a MCConcreteParser with a certain name
    * 
@@ -58,7 +56,7 @@ public abstract class MCConcreteParser {
    *           grammar)
    * @author krahn
    */
-  public abstract Optional<? extends ASTNode> parse(String fileName) throws IOException, RecognitionException;
+  public abstract Optional<? extends ASTNode> parse(String fileName) throws IOException;
   
   /**
    * Implement this method to call top rule of parser. This method will be
@@ -70,7 +68,7 @@ public abstract class MCConcreteParser {
    *           grammar)
    * @author krahn
    */
-  public abstract Optional<? extends ASTNode> parse(Reader reader) throws IOException, RecognitionException;
+  public abstract Optional<? extends ASTNode> parse(Reader reader) throws IOException;
 
   /**
    * Returns true, iff errors occured while parsing

@@ -368,7 +368,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       IterablePath targetPath) {
     
     // transformation
-    ASTCDCompilationUnit compUnit = new MC2CDTransformation(glex, targetPath)
+    ASTCDCompilationUnit compUnit = new MC2CDTransformation(glex)
         .apply(astGrammar);
     
     return compUnit;

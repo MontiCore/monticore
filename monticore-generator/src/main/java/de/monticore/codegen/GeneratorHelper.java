@@ -117,7 +117,7 @@ public class GeneratorHelper extends TypesHelper {
   
   public static final String SCOPE = "Scope";
   
-  public static final String Base = "Node";
+  public static final String BASE = "Node";
   
   public static final String CD_EXTENSION = ".cd";
   
@@ -138,9 +138,9 @@ public class GeneratorHelper extends TypesHelper {
       "association",
       "composition" });
   
-  protected static JavaDSLPrettyPrinter javaPrettyPrinter;
+  static JavaDSLPrettyPrinter javaPrettyPrinter;
   
-  protected static CDPrettyPrinterConcreteVisitor cdPrettyPrinter;
+  static CDPrettyPrinterConcreteVisitor cdPrettyPrinter;
   
   protected static Collection<String> additionalAttributes = Lists.newArrayList(SYMBOL, SCOPE);
   
@@ -378,7 +378,7 @@ public class GeneratorHelper extends TypesHelper {
    * @see #getASTNodeBaseType()
    */
   public static String getASTNodeBaseType(String languageName) {
-    return AST_PREFIX + languageName + Base;
+    return AST_PREFIX + languageName + BASE;
   }
   
   public String getVisitorPackage() {
@@ -585,7 +585,7 @@ public class GeneratorHelper extends TypesHelper {
     if (!attr.getSymbol().isPresent() || !(attr.getSymbol().get() instanceof CDFieldSymbol)) {
       return false;
     }
-    CDTypeSymbolReference attrType = (CDTypeSymbolReference) ((CDFieldSymbol) attr.getSymbol()
+    CDTypeSymbolReference attrType = ((CDFieldSymbol) attr.getSymbol()
         .get()).getType();
     
     List<ActualTypeArgument> typeArgs = attrType.getActualTypeArguments();
@@ -797,8 +797,7 @@ public class GeneratorHelper extends TypesHelper {
     if (!type.getName().equals(JAVA_LIST)) {
       return false;
     }
-    CDTypeSymbolReference cdType = (CDTypeSymbolReference)type;
-    List<ActualTypeArgument> typeArgs = cdType.getActualTypeArguments();
+    List<ActualTypeArgument> typeArgs = type.getActualTypeArguments();
     if (typeArgs.size() != 1) {
       return false;
     }
@@ -814,8 +813,7 @@ public class GeneratorHelper extends TypesHelper {
     if (!type.getName().equals(JAVA_LIST)) {
       return false;
     }
-    CDTypeSymbolReference cdType = (CDTypeSymbolReference)type;
-    List<ActualTypeArgument> typeArgs = cdType.getActualTypeArguments();
+    List<ActualTypeArgument> typeArgs = type.getActualTypeArguments();
     if (typeArgs.size() != 1) {
       return false;
     }
@@ -826,8 +824,7 @@ public class GeneratorHelper extends TypesHelper {
     if (!type.getName().equals(OPTIONAL)) {
       return false;
     }
-    CDTypeSymbolReference cdType = (CDTypeSymbolReference)type;
-    List<ActualTypeArgument> typeArgs = cdType.getActualTypeArguments();
+    List<ActualTypeArgument> typeArgs = type.getActualTypeArguments();
     if (typeArgs.size() != 1) {
       return false;
     }
@@ -1074,7 +1071,7 @@ public class GeneratorHelper extends TypesHelper {
     resolvedCds.add(cd);
     // imported cds
     for (String importedCdName : cd.getImports()) {
-      Log.trace("Resolving the CD: " + importedCdName, "GeneratorHelper");
+      Log.trace("Resolving the CD: " + importedCdName, LOG_NAME);
       Optional<CDSymbol> importedCd = resolveCd(importedCdName);
       if (!importedCd.isPresent()) {
         Log.error("0xA8451 The class diagram could not be resolved: " + importedCdName);
@@ -1113,7 +1110,7 @@ public class GeneratorHelper extends TypesHelper {
     resolvedCds.add(cd);
     // imported cds
     for (String importedCdName : cd.getImports()) {
-      Log.trace("Resolving the CD: " + importedCdName, "GeneratorHelper");
+      Log.trace("Resolving the CD: " + importedCdName, LOG_NAME);
       Optional<CDSymbol> importedCd = resolveCd(importedCdName);
       if (!importedCd.isPresent()) {
         Log.error("0xA8452 The class diagram could not be resolved: " + importedCdName);
@@ -1217,7 +1214,7 @@ public class GeneratorHelper extends TypesHelper {
   }
   
   public Optional<CDTypeSymbol> resolveCdType(String type) {
-    Log.trace("Resolve: " + type + " -> " + symbolTable.resolve(type, CDTypeSymbol.KIND), "GeneratorHelper");
+    Log.trace("Resolve: " + type + " -> " + symbolTable.resolve(type, CDTypeSymbol.KIND), LOG_NAME);
     return symbolTable.resolve(type, CDTypeSymbol.KIND);
   }
   

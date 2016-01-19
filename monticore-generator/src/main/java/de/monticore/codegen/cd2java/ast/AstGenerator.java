@@ -45,6 +45,8 @@ import de.se_rwth.commons.Names;
  */
 public class AstGenerator {
   
+  private static final String JAVA_EXTENSION = ".java";
+  
   /**
    * Generates ast files for the given class diagram AST
    * 
@@ -73,7 +75,7 @@ public class AstGenerator {
     
     for (ASTCDClass clazz : astClassDiagram.getCDDefinition().getCDClasses()) {
       final Path filePath = Paths.get(Names.getPathFromPackage(astPackage),
-          Names.getSimpleName(clazz.getName()) + ".java");
+          Names.getSimpleName(clazz.getName()) + JAVA_EXTENSION);
       if (astHelper.isAstClass(clazz)) {
         generator.generate("ast.AstClass", filePath, clazz, clazz, astHelper.getASTBuilder(clazz));
       }
@@ -84,14 +86,14 @@ public class AstGenerator {
     
     for (ASTCDInterface interf : astClassDiagram.getCDDefinition().getCDInterfaces()) {
       final Path filePath = Paths.get(Names.getPathFromPackage(astPackage),
-          Names.getSimpleName(interf.getName()) + ".java");
+          Names.getSimpleName(interf.getName()) + JAVA_EXTENSION);
       generator.generate("ast.AstInterface", filePath, interf, visitorPackage,
           VisitorGeneratorHelper.getVisitorType(diagramName));
     }
     
     for (ASTCDEnum enm : astClassDiagram.getCDDefinition().getCDEnums()) {
       final Path filePath = Paths.get(Names.getPathFromPackage(astPackage),
-          Names.getSimpleName(enm.getName()) + ".java");
+          Names.getSimpleName(enm.getName()) + JAVA_EXTENSION);
       generator.generate("ast.AstEnum", filePath, enm);
     }
     

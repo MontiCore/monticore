@@ -20,7 +20,7 @@
 package de.monticore.grammar;
 
 import java.util.Collection;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -35,15 +35,15 @@ public class LexNamer {
   
   private int j = 0;
   
-  private Map<String, String> usedLex = new Hashtable<String, String>();
+  private Map<String, String> usedLex = new HashMap<String, String>();
   
-  private Map<String, String> usedConstants = new Hashtable<String, String>();
+  private Map<String, String> usedConstants = new HashMap<String, String>();
   
   private static Map<String, String> goodNames = null;
   
   public static Map<String, String> getGoodNames() {
     if (goodNames == null) {
-      goodNames = new Hashtable<String, String>();
+      goodNames = new HashMap<String, String>();
       // Put all common names here, one character only, since all others are
       // concatanation of these
       goodNames.put(";", "SEMI");
@@ -88,7 +88,7 @@ public class LexNamer {
    */
   
   public static String createGoodName(String x) {
-    StringBuffer ret = new StringBuffer();
+    StringBuilder ret = new StringBuilder();
     
     if (x.matches("[a-zA-Z]+")) {
       return x.toUpperCase();
@@ -149,7 +149,7 @@ public class LexNamer {
       }
     }
     
-    String name = (String) usedConstants.get(sym.intern());
+    String name = usedConstants.get(sym.intern());
     Log.debug("Using lexer constant " + name + " for symbol '" + s + "'", "LexNamer");
     
     return name;

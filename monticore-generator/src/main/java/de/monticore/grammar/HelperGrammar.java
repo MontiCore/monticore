@@ -114,10 +114,10 @@ public class HelperGrammar {
     }
 
     // default functions
-    else if (a.getType() == null || a.getType().size() == 0) {
+    else if (a.getType() == null || a.getType().isEmpty()) {
       String variable = a.getVariable().get();
 
-      if (variable.equals("int")) {
+      if ("int".equals(variable)) {
         String function = "private int convert%name%(Token t) throws RecognitionException {\n"
           + " try {\n"
           + "   return Integer.parseInt(t.getText());\n"
@@ -130,7 +130,7 @@ public class HelperGrammar {
         return createConvertFunction(name, function);
 
       }
-      else if (variable.equals("boolean")) {
+      else if ("boolean".equals(variable)) {
 
         return createConvertFunction(
             name,
@@ -140,7 +140,7 @@ public class HelperGrammar {
             + "    if (t.getText().equals(\"1\")||t.getText().equals(\"start\")||t.getText().equals(\"on\")||t.getText().equals(\"true\")){return true;}else{return false;} \n"
             + "}\n");
       }
-      else if (variable.equals("byte")) {
+      else if ("byte".equals(variable)) {
 
         String function = "private byte convert%name%(Token t) throws RecognitionException {\n"
           + " try {\n"
@@ -154,11 +154,11 @@ public class HelperGrammar {
         return createConvertFunction(name, function);
 
       }
-      else if (variable.equals("char")) {
+      else if ("char".equals(variable)) {
         return createConvertFunction(name, "private char convert" + name + "(Token t) " + throwss + "{\n" + "  return t.getText().charAt(0); \n" + "}\n");
 
       }
-      else if (variable.equals("float")) {
+      else if ("float".equals(variable)) {
 
         String function = "private float convert%name%(Token t) throws RecognitionException {\n"
           + " try {\n"
@@ -172,7 +172,7 @@ public class HelperGrammar {
         return createConvertFunction(name, function);
 
       }
-      else if (variable.equals("double")) {
+      else if ("double".equals(variable)) {
 
         String function = "private double convert%name%(Token t) throws RecognitionException {\n"
           + " try {\n"
@@ -186,7 +186,7 @@ public class HelperGrammar {
         return createConvertFunction(name, function);
 
       }
-      else if (variable.equals("long")) {
+      else if ("long".equals(variable)) {
 
         String function = "private long convert%name%(Token t) throws RecognitionException {\n"
           + " try {\n"
@@ -200,7 +200,7 @@ public class HelperGrammar {
         return createConvertFunction(name, function);
 
       }
-      else if (variable.equals("short")) {
+      else if ("short".equals(variable)) {
 
         String function = "private short convert%name%(Token t) throws RecognitionException {\n"
           + " try {\n"
@@ -214,7 +214,7 @@ public class HelperGrammar {
         return createConvertFunction(name, function);
 
       }
-      else if (variable.equals("card")) {
+      else if ("card".equals(variable)) {
 
         String function = "private int convert%name%(Token t) throws RecognitionException {\n"
           + " try {\n"
@@ -276,10 +276,10 @@ public class HelperGrammar {
     // simple String
     
     // default functions
-    if (a.getType() == null || a.getType().size() == 0) {
+    if (a.getType() == null || a.getType().isEmpty()) {
       
-      if (variable.equals("int") || variable.equals("boolean") || variable.equals("char") || variable.equals("float") || variable.equals("double")
-          || variable.equals("long") || variable.equals("byte") || variable.equals("short")) {
+      if ("int".equals(variable) || "boolean".equals(variable) || "char".equals(variable) || "float".equals(variable) || "double".equals(variable)
+          || "long".equals(variable) || "byte".equals(variable) || "short".equals(variable)) {
         return variable;
       }
       else if (variable.equals("card")) {
@@ -312,8 +312,9 @@ public class HelperGrammar {
         return "*";
       case ASTConstantsGrammar.QUESTION:
         return "?";
+      default:
+        return "";
     }
-    return "";
   }
 
   public static String printGenericType(ASTGenericType genericType) {

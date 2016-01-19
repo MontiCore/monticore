@@ -453,7 +453,7 @@ public class CdDecorator {
     // Add delegating methods for creating of the ast nodes of the super
     // grammars
     List<String> imports = new ArrayList<>();
-    if (astHelper.getSuperGrammarCds().size() != 0) {
+    if (!astHelper.getSuperGrammarCds().isEmpty()) {
       for (CDSymbol superCd : astHelper.getAllCds(astHelper.getCdSymbol())) {
         Log.debug(" CDSymbol for " + nodeFactoryName + " : " + superCd, "CdDecorator");
         nodeFactoryName = getSimpleName(superCd.getName()) + NODE_FACTORY;

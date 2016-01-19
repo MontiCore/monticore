@@ -208,7 +208,7 @@ public class TypesPrettyPrinterConcreteVisitor extends LiteralsPrettyPrinterConc
    */
   @Override
   public void handle(ASTTypeParameters a) {
-    if (a.getTypeVariableDeclarations().size() > 0) {
+    if (!a.getTypeVariableDeclarations().isEmpty()) {
       getPrinter().print("<");
       printList(a.getTypeVariableDeclarations().iterator(), ", ");
       getPrinter().print(">");

@@ -27,11 +27,16 @@ import java.nio.file.Path;
  */
 public class ReportingNameHelper {
 
+  /**
+   * Constructor for de.monticore.generating.templateengine.reporting.artifacts.ReportingNameHelper.
+   */
+  private ReportingNameHelper() {
+  }
+
   public static Path getPath(String outputDir, String qualifiedFilename, String fileextension) {
     String[] pathParts = qualifiedFilename.split("\\.");
     pathParts[pathParts.length-1] = pathParts[pathParts.length-1] + "." + fileextension; 
-    Path path = FileSystems.getDefault().getPath(outputDir, pathParts);
-    return path;
+    return FileSystems.getDefault().getPath(outputDir, pathParts);
   }
   
   /**
@@ -100,17 +105,17 @@ public class ReportingNameHelper {
    * @return
    */
   public static String getQualifiedName(String outputDir, Path path) {
-    //Path outputPath = FileSystems.getDefault().getPath(outputDir);
-    //Path relativePath = outputPath.relativize(path);
-    String qualifiedName = path.getName(0).toString(); //relativePath.getName(0).toString();
+    StringBuilder qualifiedName = new StringBuilder(path.getName(0).toString());
     
     for (int i = 1; i < path.getNameCount() - 1; i++) {
-      qualifiedName += ".";
-      qualifiedName += path.getName(i);
+      qualifiedName.append(".");
+      qualifiedName.append(path.getName(i));
     }
-    String[] seperatedFileName = path.getFileName().toString().split("\\.");
-    qualifiedName += "." + seperatedFileName[0];
-    return qualifiedName;
+    if (path.getFileName() != null) {
+      String[] seperatedFileName = path.getFileName().toString().split("\\.");
+      qualifiedName.append("." + seperatedFileName[0]);
+    }
+    return qualifiedName.toString();
   }
   
   /** Returns the fileextension of the file represented by the given path
@@ -122,7 +127,7 @@ public class ReportingNameHelper {
    */
   public static String getFileextension(Path path) {   
     String fileextension = null;    
-    String fullFileName = path.getFileName().toString();  
+    String fullFileName = (path.getFileName()==null)?"":path.getFileName().toString();  
     if (fullFileName.contains(".")) {
       fileextension = fullFileName.substring(fullFileName.indexOf(".") + 1);
     }

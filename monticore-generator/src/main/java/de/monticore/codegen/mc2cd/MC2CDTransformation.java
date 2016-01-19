@@ -19,16 +19,15 @@
 
 package de.monticore.codegen.mc2cd;
 
+import java.util.function.Function;
+
 import de.monticore.codegen.mc2cd.manipul.CDManipulation;
 import de.monticore.codegen.mc2cd.transl.MC2CDTranslation;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.io.paths.IterablePath;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.utils.Link;
-
-import java.util.function.Function;
 
 /**
  * This is the top-level function accepting a MC AST and taking it all the way through to the
@@ -38,18 +37,10 @@ import java.util.function.Function;
  */
 public class MC2CDTransformation implements Function<ASTMCGrammar, ASTCDCompilationUnit> {
 
-  private IterablePath targetPath;
-
   private GlobalExtensionManagement glex;
-
-  public MC2CDTransformation(GlobalExtensionManagement glex, IterablePath targetPath) {
-    this(glex);
-    this.targetPath = targetPath;
-  }
 
   public MC2CDTransformation(GlobalExtensionManagement glex) {
     this.glex = glex;
-    this.targetPath = IterablePath.empty();
   }
 
   @Override

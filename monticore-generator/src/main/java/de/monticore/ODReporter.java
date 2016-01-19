@@ -30,7 +30,7 @@ import de.monticore.prettyprint.IndentPrinter;
 
 public class ODReporter extends AReporter {
   
-  final static String SIMPLE_FILE_NAME = "18_ObjectDiagram";
+  static final String SIMPLE_FILE_NAME = "18_ObjectDiagram";
   
   private String modelName;
   

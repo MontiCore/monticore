@@ -155,7 +155,7 @@ public class ReportingReport extends AbstractMavenReport {
    */
   @Override
   public boolean canGenerateReport() {
-    if (getProject().getPackaging().equals("pom")) {
+    if ("pom".equals(getProject().getPackaging())) {
       getLog().info("MontiCore reports are not available for POM modules.");
       return false;
     }
