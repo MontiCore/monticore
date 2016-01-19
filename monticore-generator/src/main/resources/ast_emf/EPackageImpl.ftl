@@ -35,7 +35,7 @@ SUCH DAMAGE.
 <#-- Copyright -->
 ${tc.defineHookPoint("JavaCopyright")}
 
-${tc.signature("ast", "grammarName", "astClasses")}
+${tc.signature("ast", "grammarName", "astClasses", "externalTypes")}
 
 <#-- set package -->
 package ${genHelper.getAstPackage()};
@@ -57,6 +57,9 @@ public class ${ast.getName()} extends EPackageImpl implements ${grammarName}Pack
   <#--  TODO GV: interfaces, enums -->
   <#list astClasses as astClass>
   private EClass ${astClass[3..]?uncap_first}EClass = null;
+  </#list>
+  <#list externalTypes as extType>
+  private EDataType ${extType?uncap_first} = null;
   </#list>
   private EEnum constants${grammarName}EEnum = null;
   

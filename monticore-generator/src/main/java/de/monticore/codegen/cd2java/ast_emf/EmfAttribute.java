@@ -7,7 +7,6 @@ package de.monticore.codegen.cd2java.ast_emf;
 
 import java.util.Optional;
 
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.types.TypesHelper;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
@@ -103,6 +102,7 @@ public class EmfAttribute {
   }
   
   private boolean isOptional;
+  
   private AstEmfGeneratorHelper astHelper;
   
   /**
@@ -115,17 +115,20 @@ public class EmfAttribute {
   /**
    * @return isOptionalAstNode
    */
-  //TODO GV: fix me!!
+  // TODO GV: fix me!!
   public boolean isExternal() {
     return astHelper.getNativeTypeName(getCdAttribute()).endsWith("Ext");
   }
   
   public boolean isInherited() {
-    System.err.println(" getDefinedGrammarName() " + getDefinedGrammarName() + " CD: " + astHelper.getQualifiedCdName());
-    return !getDefinedGrammarName().equals(astHelper.getQualifiedCdName().toLowerCase());
+    System.err.println(" getDefinedGrammarName() " + getDefinedGrammarName() + " CD: "
+        + astHelper.getQualifiedCdName());
+    String definedGrammar = getDefinedGrammarName();
+    return !definedGrammar.isEmpty()
+        && !getDefinedGrammarName().equals(astHelper.getQualifiedCdName().toLowerCase());
   }
   
-  //TODO GV: fix me!!
+  // TODO GV: fix me!!
   public String getDefinedGrammarName() {
     String type = astHelper.getNativeTypeName(getCdAttribute());
     if (isAstNode || isAstList) {
@@ -191,9 +194,18 @@ public class EmfAttribute {
             .printType(typeArg.get()));
       }
     }
-    return Names.getSimpleName(astHelper.getNativeTypeName(getCdAttribute()));
+    String nativeType = astHelper.getNativeTypeName(getCdAttribute());
+    Optional<String> externalType = astHelper.getExternalType(nativeType);
+    if (externalType.isPresent()) {
+      return externalType.get();
+    }
+    return Names.getSimpleName(nativeType);
   }
   
+  public boolean isExternal1() {
+    return astHelper.isExternalType(astHelper.getNativeTypeName(getCdAttribute()));
+  }
+   
   public EmfAttribute(
       ASTCDAttribute cdAttribute,
       ASTCDType type,

@@ -55,7 +55,7 @@ SUCH DAMAGE.
        <#assign packageName = superGrammar?lower_case + "._ast.">
        <#assign simpleName = nameHelper.getSimpleName(superGrammar)>
        <#assign qualifiedName = packageName + simpleName?cap_first + "Package">
-    ${qualifiedName} the${simpleName?cap_first + "Package"} = 
+    ${qualifiedName} the${simpleName?lower_case?cap_first + "Package"} = 
       (${qualifiedName})EPackage.Registry.INSTANCE.getEPackage(
       ${qualifiedName}.eNS_URI); 
      </#list>
@@ -70,7 +70,7 @@ SUCH DAMAGE.
         <#if sGrammarName==grammarName>
           <#assign package = "this.get">
         <#else>
-          <#assign package = "the" + sGrammarName + "Package.get">
+          <#assign package = "the" + sGrammarName?lower_case?cap_first + "Package.get">
         </#if>
     ${astClass.getName()[3..]?uncap_first}EClass.getESuperTypes().add(${package}${superType.getName()[3..]}()); 
       </#list>
@@ -108,18 +108,23 @@ SUCH DAMAGE.
       <#assign get = "this.get" + emfAttribute.getEDataType()[3..]>
     </#if>
     <#if emfAttribute.isAstNode()>
-     init${emfAttribute.getEmfType()}(get${emfAttribute.getFullName()}(), ${get}(), null, "${emfAttribute.getAttributeName()?cap_first}", null,
-      0, 1, ${emfAttribute.getCdType().getName()}.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+      <#assign isList = "-1">
     <#elseif emfAttribute.isAstList()>
-    init${emfAttribute.getEmfType()}(get${emfAttribute.getFullName()}(), this.get${emfAttribute.getEDataType()[3..]}(), null, "${emfAttribute.getAttributeName()?cap_first}", null,
-      0, -1, ${emfAttribute.getCdType().getName()}.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+      <#assign isList = "1">
+    init${emfAttribute.getEmfType()}(get${emfAttribute.getFullName()}(), ${get}(), null, "${emfAttribute.getAttributeName()?cap_first}", null,
+      0, ${isList}, ${emfAttribute.getCdType().getName()}.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     <#else>
       <#if astHelper.istAstENodeList(emfAttribute.getCdAttribute())>
         <#assign isList = "-1">
       <#else>
         <#assign isList = "1">
-      </#if>   
-    init${emfAttribute.getEmfType()}(get${emfAttribute.getFullName()}(), ecorePackage.getE${emfAttribute.getEDataType()?cap_first}(), "${emfAttribute.getAttributeName()?cap_first}", null, 
+      </#if>  
+      <#if emfAttribute.isExternal1()>
+        <#assign get = "this.get" + emfAttribute.getEDataType()?cap_first>
+      <#else>
+        <#assign get = "ecorePackage.getE" + emfAttribute.getEDataType()?cap_first>
+    </#if> 
+    init${emfAttribute.getEmfType()}(get${emfAttribute.getFullName()}(), ${get}(), "${emfAttribute.getAttributeName()?cap_first}", null, 
       0, ${isList}, ${emfAttribute.getCdType().getName()}.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     </#if>
   

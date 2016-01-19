@@ -9,14 +9,18 @@ import static de.monticore.codegen.GeneratorHelper.getPlainName;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.RecognitionException;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstAdditionalAttributes;
@@ -31,7 +35,9 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.TypesHelper;
+import de.monticore.types.TypesPrinter;
 import de.monticore.types.types._ast.ASTImportStatement;
+import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
@@ -40,6 +46,9 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
 import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
+import de.monticore.umlcd4a.cd4analysis._visitor.CD4AnalysisInheritanceVisitor;
+import de.monticore.umlcd4a.symboltable.CDSymbol;
+import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
 import de.se_rwth.commons.StringTransformations;
 import groovyjarjarantlr.ANTLRException;
 
@@ -86,7 +95,7 @@ public class CdEmfDecorator extends CdDecorator {
         // astNotAbstractClasses.add(GeneratorHelper.getPlainName(e)));
         
     // .forEach(e -> astNoListsClasses.add(GeneratorHelper.getPlainName(e)));
-    createEmfAttributes(astHelper, astNotAbstractClasses);
+    createEmfAttributes(astHelper, nativeClasses);
     
     // Run over classdiagramm and converts cd types to mc-java types
     new Cd2JavaTypeConverter(astHelper).handle(cdDefinition);
@@ -132,11 +141,10 @@ public class CdEmfDecorator extends CdDecorator {
                     .getPackageName(), cdDefinition.getName())))
             .build());
             
-    addEmfCode(cdCompilationUnit, astNotAbstractClasses, types, astHelper);
+    addEmfCode(cdCompilationUnit, nativeClasses, types, astHelper, astHelper.getExternalTypes());
     
   }
   
-
   /**
    * TODO: Write me!
    * 
@@ -171,14 +179,15 @@ public class CdEmfDecorator extends CdDecorator {
    * TODO: Write me!
    * 
    * @param astClasses
+   * @param collection
    */
   void addEmfCode(ASTCDCompilationUnit cdCompilationUnit, List<ASTCDClass> astClasses,
-      List<ASTCDType> types, AstEmfGeneratorHelper astHelper) {
-    
+      List<ASTCDType> types, AstEmfGeneratorHelper astHelper, Collection<String> collection) {
+      
     addEFactoryInterface(cdCompilationUnit, types, astHelper);
     // addEFactoryImplementation(cdCompilationUnit, astClasses, astHelper);
-    addEPackageInterface(cdCompilationUnit, types, astHelper);
-    addEPackageImplementation(cdCompilationUnit, types, astHelper);
+    addEPackageInterface(cdCompilationUnit, types, collection, astHelper);
+    addEPackageImplementation(cdCompilationUnit, types, collection, astHelper);
     
     // Decorate with additional EMF methods and attributes
     for (ASTCDClass clazz : astClasses) {
@@ -260,9 +269,11 @@ public class CdEmfDecorator extends CdDecorator {
   
   /**
    * TODO: Write me!
+   * 
+   * @param collection
    */
   void addEPackageInterface(ASTCDCompilationUnit cdCompilationUnit, List<ASTCDType> astClasses,
-      AstEmfGeneratorHelper astHelper)
+      Collection<String> collection, AstEmfGeneratorHelper astHelper)
           throws RecognitionException {
     ASTCDDefinition cdDef = cdCompilationUnit.getCDDefinition();
     ASTCDInterface packageInterface = CD4AnalysisNodeFactory.createASTCDInterface();
@@ -289,6 +300,16 @@ public class CdEmfDecorator extends CdDecorator {
       }
     }
     
+    for (String typeName : collection) {
+      int i = astClasses.size() + 1;
+      String toParseAttr = "int " + typeName + " = " + i + ";";
+      cdTransformation.addCdAttributeUsingDefinition(packageInterface, toParseAttr);
+      String toParse = "EDataType get" + typeName + "();";
+      cdTransformation.addCdMethodUsingDefinition(packageInterface,
+          toParse);
+      i++;
+    }
+    
     List<String> classNames = astClasses.stream().map(e -> getPlainName(e))
         .collect(Collectors.toList());
         
@@ -303,12 +324,14 @@ public class CdEmfDecorator extends CdDecorator {
    * TODO: Write me!
    * 
    * @param cdCompilationUnit
+   * @param collection
    * @param nativeClasses
    * @param astHelper
    * @throws ANTLRException
    */
   void addEPackageImplementation(ASTCDCompilationUnit cdCompilationUnit,
-      List<ASTCDType> astClasses, AstEmfGeneratorHelper astHelper) throws RecognitionException {
+      List<ASTCDType> astClasses, Collection<String> collection, AstEmfGeneratorHelper astHelper)
+          throws RecognitionException {
     ASTCDDefinition cdDef = cdCompilationUnit.getCDDefinition();
     ASTCDClass packageImpl = CD4AnalysisNodeFactory.createASTCDClass();
     String className = cdDef.getName() + EPACKAGE_IMPL;
@@ -342,24 +365,32 @@ public class CdEmfDecorator extends CdDecorator {
       
     }
     
+    for (String typeName : collection) {
+      String toParse = "public EDataType get" + typeName + "();";
+      HookPoint getMethodBody = new StringHookPoint(
+          "return " + StringTransformations.uncapitalize(typeName) + ";");
+      replaceMethodBodyTemplate(packageImpl, toParse, getMethodBody);
+    }
+    
     String toParse = "public void createPackageContents();";
     HookPoint getMethodBody = new TemplateHookPoint(
         "ast_emf.epackagemethods.CreatePackageContents", cdDef.getName(), astClasses,
         astHelper.getAllEmfAttributes());
     replaceMethodBodyTemplate(packageImpl, toParse, getMethodBody);
     
+    List<String> superCDs = astHelper.getAllCds(astHelper.getCdSymbol()).stream()
+        .map(CDSymbol::getFullName).collect(Collectors.toList());
     toParse = "public void initializePackageContents();";
     getMethodBody = new TemplateHookPoint(
         "ast_emf.epackagemethods.InitializePackageContents", cdDef.getName(),
-        astHelper.getSuperGrammarCds(), astClasses,
+        superCDs, astClasses,
         astHelper.getAllEmfAttributes());
     replaceMethodBodyTemplate(packageImpl, toParse, getMethodBody);
     
     cdDef.getCDClasses().add(packageImpl);
     
     glex.replaceTemplate("ast.ClassContent", packageImpl, new TemplateHookPoint(
-        "ast_emf.EPackageImpl", packageImpl, cdDef.getName(), classNames));
-        
+        "ast_emf.EPackageImpl", packageImpl, cdDef.getName(), classNames, collection));
   }
   
   protected void addSetter(ASTCDClass clazz, AstEmfGeneratorHelper astHelper)
@@ -462,6 +493,9 @@ public class CdEmfDecorator extends CdDecorator {
    * @param astHelper
    */
   void addToString(ASTCDClass clazz, AstEmfGeneratorHelper astHelper) {
+    if (clazz.getCDMethods().stream().anyMatch(m -> m.getName().equals("toString"))) {
+      return;
+    }
     String toParse = "public String toString();";
     HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.EToString",
         astHelper.getCdName(), astHelper.getEmfAttributes(clazz));
@@ -483,6 +517,7 @@ public class CdEmfDecorator extends CdDecorator {
   
   /**
    * TODO: Write me!
+   * 
    * @param types
    * @param astHelper
    */
@@ -546,4 +581,5 @@ public class CdEmfDecorator extends CdDecorator {
             classNames));
             
   }
+  
 }

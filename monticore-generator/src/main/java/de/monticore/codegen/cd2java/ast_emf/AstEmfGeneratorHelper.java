@@ -20,11 +20,14 @@
 package de.monticore.codegen.cd2java.ast_emf;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import com.google.common.collect.Maps;
 
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
@@ -36,6 +39,7 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
+import de.monticore.umlcd4a.cd4analysis._visitor.CD4AnalysisInheritanceVisitor;
 import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
@@ -50,8 +54,14 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
   
   private Map<ASTCDType, List<EmfAttribute>> emfAttributes = new LinkedHashMap<>();
   
+  private Map<String, String> externalTypes = Maps.newHashMap();
+  
   public AstEmfGeneratorHelper(ASTCDCompilationUnit topAst, GlobalScope symbolTable) {
     super(topAst, symbolTable);
+    // Run over classdiagramm and converts cd types to mc-java types
+    ETypeCollector emfCollector = new ETypeCollector(this);
+    emfCollector.handle(topAst.getCDDefinition());
+    System.err.println(emfCollector.getTypes());
   }
   
   public static String getQualifiedENodeName() {
@@ -90,6 +100,31 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
         .flatMap(type -> getEmfAttributes(type).stream()).collect(Collectors.toList());
   }
   
+  /**
+   * @return externalTypes
+   */
+  public Collection<String> getExternalTypes() {
+    return this.externalTypes.values();
+  }
+  
+  public boolean isExternalType(String nativeType) {
+    return externalTypes.containsKey(nativeType);
+  }
+  
+  public Optional<String> getExternalType(String nativeType) {
+    return Optional.ofNullable(externalTypes.get(nativeType));
+  }
+  
+  private void addExternalType(String extType) {
+    int i = 0;
+    String typeName = "E" + Names.getSimpleName(extType);
+    while(externalTypes.values().contains(typeName)) {
+      typeName = typeName + i;
+      i++;
+    }
+    externalTypes.put(extType, typeName);
+  }
+  
   @Override
   public String getAstAttributeValue(ASTCDAttribute attribute, ASTCDType clazz) {
     if (attribute.getValue().isPresent()) {
@@ -106,8 +141,14 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
       Optional<ASTSimpleReferenceType> typeArg = TypesHelper
           .getFirstTypeArgumentOfGenericType(attribute.getType(), JAVA_LIST);
       if (typeArg.isPresent()) {
-        typeName = Names.getSimpleName(TypesHelper
-            .printType(typeArg.get()));
+        String typeArgName = TypesHelper.printType(typeArg.get());
+        System.err.println("Names.getQualifier(typeArgName) " + Names.getQualifier(typeArgName) + " getAstPackage() " + getAstPackage());
+        if (Names.getQualifier(typeArgName).equals(getAstPackage())) {
+          typeName = Names.getSimpleName(typeArgName);
+        } else {
+          typeName = typeArgName;
+        }
+        System.err.println(" typename " + typeName);
         return "new EObjectContainmentEList<" + typeName + ">(" + typeName + ".class, this, "
             + this.getCdName() + "Package." + attributeName + ")";
       }
@@ -163,4 +204,86 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
     return TypesPrinter.printTypeWithoutTypeArgumentsAndDimension(attribute.getType())
         .equals(JAVA_LIST);
   }
+
+  /**
+   * Converts CD type to Java type using the given package suffix.
+   * 
+   * @param type
+   * @param packageSuffix
+   * @return converted type or original type if type is java type already
+   */
+  public void collectExternalTypes(ASTSimpleReferenceType astType) {
+    System.err.println("Converted Cd or Java type: " + TypesPrinter.printType(astType));
+    String genericType = "";
+    ASTSimpleReferenceType convertedType = astType;
+    if (AstGeneratorHelper.isOptional(astType)) {
+      Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
+          .getFirstTypeArgumentOfOptional(astType);
+      if (!typeArgument.isPresent()) {
+        return;
+      }
+      convertedType = typeArgument.get();
+      genericType = AstGeneratorHelper.OPTIONAL;
+    }
+    else if (TypesHelper.isGenericTypeWithOneTypeArgument(astType,
+        AstGeneratorHelper.JAVA_LIST)) {
+      Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
+          .getFirstTypeArgumentOfGenericType(astType, AstGeneratorHelper.JAVA_LIST);
+      if (!typeArgument.isPresent()) {
+        return;
+      }
+      convertedType = typeArgument.get();
+      genericType = AstGeneratorHelper.JAVA_LIST;
+    }
+    
+    String convertedTypeName = TypesPrinter.printType(convertedType);
+    // Resolve only qualified types
+    if (!convertedTypeName.contains(".")) {
+      return;
+    }
+    
+    // TODO: GV, PN: path converter by resolving
+    // TODO GV: typeArgs!
+    if (convertedTypeName.contains("<")) {
+      return;
+    }
+    
+    String newType = "";
+    Optional<CDTypeSymbol> symbol = resolveCdType(convertedTypeName);
+    if (!symbol.isPresent() || (symbol.isPresent() && symbol.get().isEnum())) {
+      if (!genericType.isEmpty()) {
+        newType = genericType + "<" + convertedTypeName + ">";
+      }
+      else {
+        newType = convertedTypeName;
+      }
+      addExternalType(newType);
+      System.err.println("NewtYPE " + newType);
+    }
+    
+  }
+  
+  
+  public class ETypeCollector implements CD4AnalysisInheritanceVisitor {
+    
+    private AstEmfGeneratorHelper astHelper;
+    
+    /**
+     * @return types
+     */
+    public Collection<String> getTypes() {
+      return externalTypes.values();
+    }
+    
+    public ETypeCollector(AstEmfGeneratorHelper astHelper) {
+      this.astHelper = astHelper;
+    }
+    
+    @Override
+    public void visit(ASTSimpleReferenceType ast) {
+      astHelper.collectExternalTypes(ast);
+    }
+    
+  }
+
 }
