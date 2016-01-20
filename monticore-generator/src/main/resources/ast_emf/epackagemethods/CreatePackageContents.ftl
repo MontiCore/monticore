@@ -46,7 +46,8 @@ SUCH DAMAGE.
     constants${grammarName}EEnum = createEEnum(Constants${grammarName});
   
   <#list astClasses as astClass>
-    ${astClass.getName()[3..]?uncap_first}EClass = createEClass(${astClass.getName()});
+    <#assign name = astHelper.getPlainName(astClass)>
+    ${name[3..]?uncap_first}EClass = createEClass(${name});
   </#list>  
   
   <#list emfAttributes as emfAttribute>

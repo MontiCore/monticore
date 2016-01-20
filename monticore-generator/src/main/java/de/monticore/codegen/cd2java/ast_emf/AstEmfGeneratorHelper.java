@@ -118,7 +118,7 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
   private void addExternalType(String extType) {
     int i = 0;
     String typeName = "E" + Names.getSimpleName(extType);
-    while(externalTypes.values().contains(typeName)) {
+    while (externalTypes.values().contains(typeName)) {
       typeName = typeName + i;
       i++;
     }
@@ -142,15 +142,18 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
           .getFirstTypeArgumentOfGenericType(attribute.getType(), JAVA_LIST);
       if (typeArg.isPresent()) {
         String typeArgName = TypesHelper.printType(typeArg.get());
-        System.err.println("Names.getQualifier(typeArgName) " + Names.getQualifier(typeArgName) + " getAstPackage() " + getAstPackage());
+        System.err.println("Names.getQualifier(typeArgName) " + Names.getQualifier(typeArgName)
+            + " getAstPackage() " + getAstPackage());
         if (Names.getQualifier(typeArgName).equals(getAstPackage())) {
           typeName = Names.getSimpleName(typeArgName);
-        } else {
-          typeName = typeArgName;
+          return "new EObjectContainmentEList<" + typeName + ">(" + typeName + ".class, this, "
+              + this.getCdName() + "Package." + attributeName + ")";
         }
-        System.err.println(" typename " + typeName);
-        return "new EObjectContainmentEList<" + typeName + ">(" + typeName + ".class, this, "
-            + this.getCdName() + "Package." + attributeName + ")";
+        else {
+          typeName = typeArgName;
+          return "new EDataTypeEList<" + typeName + ">(" + typeName + ".class, this, "
+              + this.getCdName() + "Package." + attributeName + ")";
+        }
       }
     }
     if (isMapType(typeName)) {
@@ -184,27 +187,37 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
     }
     return attribute.printType();
   }
-  /*
-  public String getModelName(String qualifiedName) {
-    String qualifier = Names.getQualifier(qualifiedName);
-    if (!qualifier.endsWith(AST_PACKAGE_SUFFIX)) {
-      return "";
-    }
-    return Names.getSimpleName(Names.getQualifier(qualifier));
-  }*/
+  /* public String getModelName(String qualifiedName) { String qualifier =
+   * Names.getQualifier(qualifiedName); if
+   * (!qualifier.endsWith(AST_PACKAGE_SUFFIX)) { return ""; } return
+   * Names.getSimpleName(Names.getQualifier(qualifier)); } */
   
   public String getType(CDTypeSymbol type) {
     System.err.println("model: " + type.getModelName());
     System.err.println("name: " + type.getName());
     return type.getFullName();
   }
-   
+  
   // TODO GV:
   public static boolean istAstENodeList(ASTCDAttribute attribute) {
     return TypesPrinter.printTypeWithoutTypeArgumentsAndDimension(attribute.getType())
         .equals(JAVA_LIST);
   }
-
+  
+  public void createEmfAttribute(ASTCDType ast, ASTCDAttribute cdAttribute) {
+    // TODO GV: interfaces, enums
+    String attributeName = getPlainName(ast) + "_"
+        + StringTransformations.capitalize(GeneratorHelper.getNativeAttributeName(cdAttribute
+            .getName()));
+    boolean isAstNode = isAstNode(cdAttribute)
+        || isOptionalAstNode(cdAttribute);
+    boolean isAstList = isListAstNode(cdAttribute);
+    boolean isOptional = AstGeneratorHelper.isOptional(cdAttribute);
+    addEmfAttribute(ast, new EmfAttribute(cdAttribute, ast, attributeName,
+        isAstNode, isAstList, isOptional, this));
+        
+  }
+  
   /**
    * Converts CD type to Java type using the given package suffix.
    * 
@@ -263,7 +276,6 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
     
   }
   
-  
   public class ETypeCollector implements CD4AnalysisInheritanceVisitor {
     
     private AstEmfGeneratorHelper astHelper;
@@ -285,5 +297,5 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
     }
     
   }
-
+  
 }

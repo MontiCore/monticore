@@ -10,6 +10,7 @@ import java.util.Optional;
 import de.monticore.types.TypesHelper;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDEnum;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
 import de.se_rwth.commons.Names;
 
@@ -204,6 +205,11 @@ public class EmfAttribute {
   
   public boolean isExternal1() {
     return astHelper.isExternalType(astHelper.getNativeTypeName(getCdAttribute()));
+  }
+  
+  // TODO GV: change it
+  public boolean isEnum() {
+    return isAstNode() && (getCdType() instanceof ASTCDEnum);
   }
    
   public EmfAttribute(
