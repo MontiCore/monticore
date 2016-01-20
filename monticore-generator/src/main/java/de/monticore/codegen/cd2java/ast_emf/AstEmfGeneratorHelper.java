@@ -116,6 +116,9 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
   }
   
   private void addExternalType(String extType) {
+    if (externalTypes.containsKey(extType)) {
+      return;
+    }
     int i = 0;
     String typeName = "E" + Names.getSimpleName(extType);
     while (externalTypes.values().contains(typeName)) {

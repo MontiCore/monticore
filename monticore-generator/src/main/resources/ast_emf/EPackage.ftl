@@ -67,8 +67,6 @@ public interface ${ast.getName()} extends EPackage {
   ${tc.include("ast.Constant", attribute)}
     </#if>
   </#list>
- <#--   ${op.includeTemplates(ePackageIDCalculationMain, ast)}
-    ${op.includeTemplates(ePackageMetaObjectGetMethodsMain, ast.getFiles())} -->   
     
     // Returns the factory that creates the instances of the model.
   ${grammarName}Factory get${grammarName}Factory();

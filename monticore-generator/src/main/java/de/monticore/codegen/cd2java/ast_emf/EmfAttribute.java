@@ -209,7 +209,7 @@ public class EmfAttribute {
   
   // TODO GV: change it
   public boolean isEnum() {
-    return isAstNode() && (getCdType() instanceof ASTCDEnum);
+    return !isAstNode() && astHelper.isAttributeOfTypeEnum(getCdAttribute());
   }
    
   public EmfAttribute(

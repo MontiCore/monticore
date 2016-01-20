@@ -120,8 +120,10 @@ SUCH DAMAGE.
       <#else>
         <#assign isList = "1">
       </#if>  
-      <#if emfAttribute.isExternal1() || emfAttribute.isEnum()>
+      <#if emfAttribute.isExternal1()>
         <#assign get = "this.get" + emfAttribute.getEDataType()?cap_first>
+      <#elseif  emfAttribute.isEnum()>
+        <#assign get = "this.getE" + emfAttribute.getEDataType()?cap_first>
       <#else>
         <#assign get = "ecorePackage.getE" + emfAttribute.getEDataType()?cap_first>
     </#if> 
