@@ -7,11 +7,11 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore</artifactId>
-    <version>4.3.1.1-SNAPSHOT</version>
+    <version>4.3.1.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>monticore-grammar</artifactId>
-
+  
   <!-- == PROJECT METAINFORMATION ========================================= -->
 
   <name>MontiCore: Grammar</name>
@@ -22,6 +22,27 @@
       <groupId>de.monticore</groupId>
       <artifactId>monticore-runtime</artifactId>
     </dependency>
+      <dependency>
+      <groupId>de.monticore</groupId>
+      <artifactId>monticore-emf-runtime</artifactId>
+    </dependency>
+    
+    
+       <!-- EMF dependencies -->
+      <dependency>
+        <groupId>org.mod4j.org.eclipse.emf</groupId>
+        <artifactId>ecore</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>org.mod4j.org.eclipse.emf.ecore</groupId>
+        <artifactId>xmi</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>org.mod4j.org.eclipse.emf</groupId>
+        <artifactId>common</artifactId>
+      </dependency>
+      
+    
 
     <dependency>
       <groupId>de.se_rwth.commons</groupId>

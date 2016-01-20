@@ -62,8 +62,9 @@ SUCH DAMAGE.
   
     // Add supertypes to classes <#-- TODO GV: check super type EPackageImplInitializeSuperTypes.ftl-->
   <#list astClasses as astClass>
+    <#assign className = astHelper.getPlainName(astClass)>
     <#if !astClass.getSymbol().get().getSuperTypes()?has_content>
-    ${astClass.getName()[3..]?uncap_first}EClass.getESuperTypes().add(theASTENodePackage.getENode()); 
+    ${className[3..]?uncap_first}EClass.getESuperTypes().add(theASTENodePackage.getENode()); 
     <#else>
       <#list astClass.getSymbol().get().getSuperTypes() as superType>
         <#assign sGrammarName = nameHelper.getSimpleName(superType.getModelName())>
@@ -72,7 +73,7 @@ SUCH DAMAGE.
         <#else>
           <#assign package = "the" + sGrammarName?lower_case?cap_first + "Package.get">
         </#if>
-    ${astClass.getName()[3..]?uncap_first}EClass.getESuperTypes().add(${package}${superType.getName()[3..]}()); 
+    ${className[3..]?uncap_first}EClass.getESuperTypes().add(${package}${superType.getName()[3..]}()); 
       </#list>
     </#if>
   </#list>  
@@ -83,7 +84,7 @@ SUCH DAMAGE.
     <#-- TODO GV -->
     
   <#list astClasses as astClass>
-    <#assign className = astClass.getName()>
+    <#assign className = astHelper.getPlainName(astClass)>
     <#if astClass.getSymbol().get().isInterface()>
       <#assign abstract = "IS_ABSTRACT">
       <#assign interface = "IS_INTERFACE">
@@ -119,7 +120,7 @@ SUCH DAMAGE.
       <#else>
         <#assign isList = "1">
       </#if>  
-      <#if emfAttribute.isExternal1()>
+      <#if emfAttribute.isExternal1() || emfAttribute.isEnum()>
         <#assign get = "this.get" + emfAttribute.getEDataType()?cap_first>
       <#else>
         <#assign get = "ecorePackage.getE" + emfAttribute.getEDataType()?cap_first>

@@ -161,15 +161,7 @@ public class CdEmfDecorator extends CdDecorator {
             .anyMatch(a -> a.equals(cdAttribute.getName()))) {
           continue;
         }
-        String attributeName = getPlainName(clazz) + "_"
-            + StringTransformations.capitalize(GeneratorHelper.getNativeAttributeName(cdAttribute
-                .getName()));
-        boolean isAstNode = astHelper.isAstNode(cdAttribute)
-            || astHelper.isOptionalAstNode(cdAttribute);
-        boolean isAstList = astHelper.isListAstNode(cdAttribute);
-        boolean isOptional = AstGeneratorHelper.isOptional(cdAttribute);
-        astHelper.addEmfAttribute(clazz, new EmfAttribute(cdAttribute, clazz, attributeName,
-            isAstNode, isAstList, isOptional, astHelper));
+        astHelper.createEmfAttribute(clazz, cdAttribute);
       }
     }
     
@@ -454,6 +446,45 @@ public class CdEmfDecorator extends CdDecorator {
     Preconditions.checkArgument(astMethod.isPresent());
     glex.replaceTemplate(EMPTY_BODY_TEMPLATE, astMethod.get(), getMethodBody);
     glex.replaceTemplate("ast.ErrorIfNull", astMethod.get(), new StringHookPoint(""));
+  }
+  
+  /**
+   * TODO: Write me!
+   * 
+   * @param clazz
+   * @param astHelper
+   */
+  @Override
+  protected void addAdditionalAttributes(ASTCDClass clazz, AstGeneratorHelper astHelper) {
+    // Add Symbol attribute
+    Optional<ASTCDAttribute> attribute = cdTransformation.addCdAttributeUsingDefinition(clazz,
+        AstAdditionalAttributes.symbol.getDeclaration());
+    addSetterForAdditionalAttribute(clazz, attribute.get(), "Symbol",
+        AstAdditionalAttributes.symbol.toString(), true);
+    // Add Scope attribute
+    attribute = cdTransformation.addCdAttributeUsingDefinition(clazz,
+        AstAdditionalAttributes.enclosingScope.getDeclaration());
+    addSetterForAdditionalAttribute(clazz, attribute.get(), "Scope",
+        AstAdditionalAttributes.enclosingScope.toString(), true);
+  }
+  
+  private void addSetterForAdditionalAttribute(ASTCDClass clazz, ASTCDAttribute attribute,
+      String typeName, String attributeName, boolean isOptional) {
+    String toParse = "public void set" + StringTransformations.capitalize(attributeName) + "("
+        + typeName + " " + attributeName + ") ;";
+    HookPoint methodBody = new TemplateHookPoint("ast.additionalmethods.Set", clazz,
+        attribute, attributeName);
+    ASTCDMethod setMethod = replaceMethodBodyTemplate(clazz, toParse, methodBody);
+    
+    if (isOptional) {
+      glex.replaceTemplate("ast.ErrorIfNull", setMethod, new StringHookPoint(""));
+    }
+    
+    if (isOptional) {
+      toParse = "public boolean " + attributeName + "IsPresent() ;";
+      methodBody = new StringHookPoint("  return " + attributeName + ".isPresent(); \n");
+      replaceMethodBodyTemplate(clazz, toParse, methodBody);
+    }
   }
   
   /**
