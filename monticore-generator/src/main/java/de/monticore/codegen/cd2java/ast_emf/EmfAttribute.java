@@ -122,8 +122,6 @@ public class EmfAttribute {
   }
   
   public boolean isInherited() {
-    System.err.println(" getDefinedGrammarName() " + getDefinedGrammarName() + " CD: "
-        + astHelper.getQualifiedCdName());
     String definedGrammar = getDefinedGrammarName();
     return !definedGrammar.isEmpty()
         && !getDefinedGrammarName().equals(astHelper.getQualifiedCdName().toLowerCase());
@@ -133,7 +131,6 @@ public class EmfAttribute {
   public String getDefinedGrammarName() {
     String type = astHelper.getNativeTypeName(getCdAttribute());
     if (isAstNode || isAstList) {
-      System.err.println("isAstNode || isAstList: " + Names.getQualifier(Names.getQualifier(type)));
       return Names.getQualifier(Names.getQualifier(type));
     }
     return type;

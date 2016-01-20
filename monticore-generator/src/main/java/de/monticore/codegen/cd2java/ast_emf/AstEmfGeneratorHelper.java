@@ -145,8 +145,6 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
           .getFirstTypeArgumentOfGenericType(attribute.getType(), JAVA_LIST);
       if (typeArg.isPresent()) {
         String typeArgName = TypesHelper.printType(typeArg.get());
-        System.err.println("Names.getQualifier(typeArgName) " + Names.getQualifier(typeArgName)
-            + " getAstPackage() " + getAstPackage());
         if (Names.getQualifier(typeArgName).equals(getAstPackage())) {
           typeName = Names.getSimpleName(typeArgName);
           return "new EObjectContainmentEList<" + typeName + ">(" + typeName + ".class, this, "
@@ -196,8 +194,6 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
    * Names.getSimpleName(Names.getQualifier(qualifier)); } */
   
   public String getType(CDTypeSymbol type) {
-    System.err.println("model: " + type.getModelName());
-    System.err.println("name: " + type.getName());
     return type.getFullName();
   }
   
@@ -229,7 +225,6 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
    * @return converted type or original type if type is java type already
    */
   public void collectExternalTypes(ASTSimpleReferenceType astType) {
-    System.err.println("Converted Cd or Java type: " + TypesPrinter.printType(astType));
     String genericType = "";
     ASTSimpleReferenceType convertedType = astType;
     if (AstGeneratorHelper.isOptional(astType)) {
