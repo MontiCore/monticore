@@ -1074,9 +1074,30 @@ public class GeneratorHelper extends TypesHelper {
    * order of appearance in the imports of the class diagram.
    */
   public List<CDSymbol> getAllCds(CDSymbol cd) {
-    List<CDSymbol> resolvedCds = new ArrayList<>();
+    List<CDSymbol> resolvedCds = getAllSuperCds(cd);
     // the cd itself
     resolvedCds.add(cd);
+    return resolvedCds;
+  }
+  
+  /**
+   * This method gets all diagrams that participate in the given one by getting
+   * (1) the class diagram itself and (2) all imported class diagrams (as well
+   * as recursively their imported class diagrams as well). If a CD occurs twice
+   * in this import-graph, the algorithm understands that this is exactly the
+   * same diagram and thus <em>ignores the second</em> occurrence. Note that
+   * this is different to the rules within a grammar - there the last occurrence
+   * would be used, because it overrides the former declarations, but on a class
+   * diagram level exists no overriding, because different references to a
+   * diagram always mean the same diagram (i.e., the one on the model path with
+   * <em>the</em> matching name).
+   * 
+   * @param cd the class diagram to get all participating class diagrams for
+   * @return the class diagrams starting with the current grammar and then in
+   * order of appearance in the imports of the class diagram.
+   */
+  public List<CDSymbol> getAllSuperCds(CDSymbol cd) {
+    List<CDSymbol> resolvedCds = new ArrayList<>();
     // imported cds
     for (String importedCdName : cd.getImports()) {
       Log.trace("Resolving the CD: " + importedCdName, "GeneratorHelper");

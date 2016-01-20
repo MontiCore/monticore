@@ -274,6 +274,10 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
     
   }
   
+  public String getIdentifierName(String qualifiedName) {
+    return Names.getSimpleName(qualifiedName) + "_" + Names.getQualifier(qualifiedName).replace('.', '_');
+  }
+  
   public class ETypeCollector implements CD4AnalysisInheritanceVisitor {
     
     private AstEmfGeneratorHelper astHelper;
