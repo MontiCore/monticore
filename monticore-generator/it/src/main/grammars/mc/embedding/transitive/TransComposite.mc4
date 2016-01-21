@@ -2,6 +2,8 @@ package mc.embedding.transitive;
 
 grammar TransComposite extends mc.embedding.transitive.TransHost, mc.embedding.Composite {
 
+   start TransStart;
+   
    TransHost = Host;
 
 }
