@@ -1074,9 +1074,11 @@ public class GeneratorHelper extends TypesHelper {
    * order of appearance in the imports of the class diagram.
    */
   public List<CDSymbol> getAllCds(CDSymbol cd) {
-    List<CDSymbol> resolvedCds = getAllSuperCds(cd);
-    // the cd itself
+    List<CDSymbol> resolvedCds = new ArrayList<>();
     resolvedCds.add(cd);
+    resolvedCds.addAll(getAllSuperCds(cd));
+    //List<CDSymbol> resolvedCds = getAllSuperCds(cd);
+    // the cd itself
     return resolvedCds;
   }
   
