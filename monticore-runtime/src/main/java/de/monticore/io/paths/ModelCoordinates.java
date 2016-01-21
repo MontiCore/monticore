@@ -19,7 +19,6 @@
 
 package de.monticore.io.paths;
 
-import java.net.URL;
 import java.nio.file.Path;
 
 public final class ModelCoordinates {
@@ -38,13 +37,13 @@ public final class ModelCoordinates {
     return coordinate;
   }
   
-  public static ModelCoordinate createLocatedCoordinate(URL location) {
+  public static ModelCoordinate createLocatedCoordinate(Path location) {
     ModelCoordinate coordinate = new ModelCoordinateImpl();
     coordinate.setLocation(location);
     return coordinate;
   }
   
-  public static ModelCoordinate createFullCoordinate(Path qualifiedPath, URL location) {
+  public static ModelCoordinate createFullCoordinate(Path qualifiedPath, Path location) {
     ModelCoordinate coordinate = new ModelCoordinateImpl();
     coordinate.setQualifiedPath(qualifiedPath);
     coordinate.setLocation(location);
