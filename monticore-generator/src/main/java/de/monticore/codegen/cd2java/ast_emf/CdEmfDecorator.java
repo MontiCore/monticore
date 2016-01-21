@@ -370,7 +370,7 @@ public class CdEmfDecorator extends CdDecorator {
         astHelper.getAllEmfAttributes());
     replaceMethodBodyTemplate(packageImpl, toParse, getMethodBody);
     
-    List<String> superCDs = astHelper.getAllCds(astHelper.getCdSymbol()).stream()
+    List<String> superCDs = astHelper.getAllSuperCds(astHelper.getCdSymbol()).stream()
         .map(CDSymbol::getFullName).collect(Collectors.toList());
     toParse = "public void initializePackageContents();";
     getMethodBody = new TemplateHookPoint(

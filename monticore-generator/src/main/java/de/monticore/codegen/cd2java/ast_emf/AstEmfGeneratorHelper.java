@@ -116,6 +116,9 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
   }
   
   private void addExternalType(String extType) {
+    if (externalTypes.containsKey(extType)) {
+      return;
+    }
     int i = 0;
     String typeName = "E" + Names.getSimpleName(extType);
     while (externalTypes.values().contains(typeName)) {
@@ -193,8 +196,6 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
    * Names.getSimpleName(Names.getQualifier(qualifier)); } */
   
   public String getType(CDTypeSymbol type) {
-    System.err.println("model: " + type.getModelName());
-    System.err.println("name: " + type.getName());
     return type.getFullName();
   }
   
@@ -226,7 +227,6 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
    * @return converted type or original type if type is java type already
    */
   public void collectExternalTypes(ASTSimpleReferenceType astType) {
-    System.err.println("Converted Cd or Java type: " + TypesPrinter.printType(astType));
     String genericType = "";
     ASTSimpleReferenceType convertedType = astType;
     if (AstGeneratorHelper.isOptional(astType)) {
@@ -276,6 +276,9 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
     
   }
   
+  public String getIdentifierName(String qualifiedName) {
+    return Names.getSimpleName(qualifiedName) + "_" + Names.getQualifier(qualifiedName).replace('.', '_');
+  }
   public class ETypeCollector implements CD4AnalysisInheritanceVisitor {
     
     private AstEmfGeneratorHelper astHelper;

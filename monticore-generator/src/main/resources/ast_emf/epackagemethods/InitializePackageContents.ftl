@@ -55,7 +55,8 @@ SUCH DAMAGE.
        <#assign packageName = superGrammar?lower_case + "._ast.">
        <#assign simpleName = nameHelper.getSimpleName(superGrammar)>
        <#assign qualifiedName = packageName + simpleName?cap_first + "Package">
-    ${qualifiedName} the${simpleName?lower_case?cap_first + "Package"} = 
+       <#assign identifierName = astHelper.getIdentifierName(superGrammar)>
+    ${qualifiedName} the${identifierName?lower_case?cap_first + "Package"} = 
       (${qualifiedName})EPackage.Registry.INSTANCE.getEPackage(
       ${qualifiedName}.eNS_URI); 
      </#list>
@@ -68,10 +69,11 @@ SUCH DAMAGE.
     <#else>
       <#list astClass.getSymbol().get().getSuperTypes() as superType>
         <#assign sGrammarName = nameHelper.getSimpleName(superType.getModelName())>
-        <#if sGrammarName==grammarName>
+        <#if superType.getModelName()?lower_case==astHelper.getQualifiedCdName()?lower_case>
           <#assign package = "this.get">
         <#else>
-          <#assign package = "the" + sGrammarName?lower_case?cap_first + "Package.get">
+          <#assign identifierName = astHelper.getIdentifierName(superType.getModelName())>
+          <#assign package = "the" + identifierName?lower_case?cap_first + "Package.get">
         </#if>
     ${className[3..]?uncap_first}EClass.getESuperTypes().add(${package}${superType.getName()[3..]}()); 
       </#list>
@@ -103,7 +105,7 @@ SUCH DAMAGE.
     <#if emfAttribute.isExternal()>
       <#assign get = "theASTENodePackage.getENode">
     <#elseif emfAttribute.isInherited()>
-      <#assign sGrammarName = nameHelper.getSimpleName(emfAttribute.getDefinedGrammarName())>
+      <#assign sGrammarName = astHelper.getIdentifierName(emfAttribute.getDefinedGrammarName())>
       <#assign get = "the" + sGrammarName?cap_first + "Package.get" + emfAttribute.getEDataType()[3..]>
     <#else>
       <#assign get = "this.get" + emfAttribute.getEDataType()[3..]>
@@ -122,6 +124,8 @@ SUCH DAMAGE.
       </#if>  
       <#if emfAttribute.isExternal1() || emfAttribute.isEnum()>
         <#assign get = "this.get" + emfAttribute.getEDataType()?cap_first>
+      <#elseif  emfAttribute.isEnum()>
+        <#assign get = "this.getE" + emfAttribute.getEDataType()?cap_first>
       <#else>
         <#assign get = "ecorePackage.getE" + emfAttribute.getEDataType()?cap_first>
     </#if> 

@@ -1,7 +1,8 @@
+
 /* Sinnfreise Sprache, an Automaten angelehnt, um MontiCore zu testen */
 package mc.feature.grammarinherit.sub;
 	
-grammar FeatureDSLgrammarinherit1 extends mc.feature.grammarinherit.sup.FeatureDSLgrammarinherit {
+grammar FeatureDSLgrammarinherit extends mc.feature.grammarinherit.sup.FeatureDSLgrammarinherit {
 
   // Works with inherited field a
   concept antlr { 
@@ -29,7 +30,7 @@ grammar FeatureDSLgrammarinherit1 extends mc.feature.grammarinherit.sup.FeatureD
   // Checks interface inheritance
   T = Inter;	
 
-
-  B implements Y;
+   
+  B implements Y;  
 	
-}
+}  
