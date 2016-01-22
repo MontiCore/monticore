@@ -344,7 +344,7 @@ public class MCTypeSymbol extends CommonScopeSpanningSymbol implements Comparabl
    */
   // TODO PN return optional value
   public MCAttributeSymbol getAttribute(String attrName) {
-    return spannedScope.<MCAttributeSymbol>resolveLocally(attrName, MCAttributeSymbol.KIND).orElse(null);
+    return getSpannedScope().<MCAttributeSymbol>resolveLocally(attrName, MCAttributeSymbol.KIND).orElse(null);
   }
 
   /**
@@ -364,11 +364,11 @@ public class MCTypeSymbol extends CommonScopeSpanningSymbol implements Comparabl
    * @return Set of attributes
    */
   public Collection<MCAttributeSymbol> getAttributes() {
-    return spannedScope.resolveLocally(MCAttributeSymbol.KIND);
+    return getSpannedScope().resolveLocally(MCAttributeSymbol.KIND);
   }
 
   public void addAttribute(MCAttributeSymbol attr) {
-    spannedScope.add(attr);
+    getMutableSpannedScope().add(attr);
   }
 
 

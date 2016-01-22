@@ -20,6 +20,7 @@
 package de.monticore.symboltable.mocks.languages.statechart;
 
 import java.util.Optional;
+
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
 import de.monticore.symboltable.MutableScope;
 
@@ -48,11 +49,11 @@ public class StateChartSymbol extends CommonScopeSpanningSymbol {
   }
 
   public Optional<StateSymbol> getState(String simpleName) {
-    return spannedScope.<StateSymbol>resolveLocally(simpleName, StateKind.KIND);
+    return getSpannedScope().<StateSymbol>resolveLocally(simpleName, StateKind.KIND);
   }
   
   public void addState(StateSymbol state) {
-    spannedScope.add(state);
+    getMutableSpannedScope().add(state);
   }
 
 }

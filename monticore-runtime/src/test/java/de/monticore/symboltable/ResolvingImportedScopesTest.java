@@ -59,7 +59,7 @@ public class ResolvingImportedScopesTest {
 
     final EntitySymbol supEntity = new EntitySymbol("SupEntity");
     as.add(supEntity);
-    supEntity.getSpannedScope().setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
+    supEntity.getMutableSpannedScope().setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
 
     assertTrue(supEntity.getSpannedScope().resolve("asProp", PropertySymbol.KIND).isPresent());
 
@@ -71,7 +71,7 @@ public class ResolvingImportedScopesTest {
 
     final EntitySymbol subEntity = new EntitySymbol("SubEntity");
     gs.add(subEntity);
-    subEntity.getSpannedScope().setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
+    subEntity.getMutableSpannedScope().setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
 
     subEntity.setSuperClass(new EntitySymbolReference("p.SupEntity", gs));
 
@@ -99,13 +99,13 @@ public class ResolvingImportedScopesTest {
 
     final EntitySymbol subEntity = new EntitySymbol("SubEntity");
     as.add(subEntity);
-    subEntity.getSpannedScope().setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
+    subEntity.getMutableSpannedScope().setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
 
     subEntity.setSuperClass(new EntitySymbolReference("SupEntity", subEntity.getEnclosingScope()));
 
     final EntitySymbol supEntity = new EntitySymbol("SupEntity");
     gs.add(supEntity);
-    supEntity.getSpannedScope().setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
+    supEntity.getMutableSpannedScope().setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
 
     final PropertySymbol supProp = new PropertySymbol("prop", new EntitySymbolReference("bar", supEntity.getEnclosingScope()));
     supProp.setAccessModifier(BasicAccessModifier.PROTECTED);
@@ -129,7 +129,7 @@ public class ResolvingImportedScopesTest {
 
     final EntitySymbol subEntity = new EntitySymbol("SubEntity");
     asSub.add(subEntity);
-    subEntity.getSpannedScope().setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
+    subEntity.getMutableSpannedScope().setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
 
     subEntity.setSuperClass(new EntitySymbolReference("SupEntity", subEntity.getEnclosingScope()));
 
@@ -139,7 +139,7 @@ public class ResolvingImportedScopesTest {
 
     final EntitySymbol supEntity = new EntitySymbol("SupEntity");
     asSup.add(supEntity);
-    supEntity.getSpannedScope().setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
+    supEntity.getMutableSpannedScope().setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
 
     final PropertySymbol supProp = new PropertySymbol("prop", new EntitySymbolReference("bar", supEntity.getEnclosingScope()));
     supProp.setAccessModifier(BasicAccessModifier.PACKAGE_LOCAL);
@@ -163,7 +163,7 @@ public class ResolvingImportedScopesTest {
 
     final EntitySymbol subEntity = new EntitySymbol("SubEntity");
     asSub.add(subEntity);
-    subEntity.getSpannedScope().setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
+    subEntity.getMutableSpannedScope().setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
 
     subEntity.setSuperClass(new EntitySymbolReference("SupEntity", subEntity.getEnclosingScope()));
 
@@ -174,7 +174,7 @@ public class ResolvingImportedScopesTest {
 
     final EntitySymbol supEntity = new EntitySymbol("SupEntity");
     asSup.add(supEntity);
-    supEntity.getSpannedScope().setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
+    supEntity.getMutableSpannedScope().setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
 
     final PropertySymbol supPropPackageLocal = new PropertySymbol("propPL", new EntitySymbolReference("bar", supEntity.getEnclosingScope()));
     supPropPackageLocal.setAccessModifier(BasicAccessModifier.PACKAGE_LOCAL);
