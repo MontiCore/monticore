@@ -29,7 +29,7 @@
     <cd4analysis.version>1.3.6</cd4analysis.version>
 
     <se-commons.version>1.7.6</se-commons.version>
-    <antlr.version>4.5</antlr.version>
+    <antlr.version>4.5.1</antlr.version>
     <commons.io.version>2.4</commons.io.version>
     <doxia-sink-api.version>1.6</doxia-sink-api.version>
     <doxia-site-renderer.version>1.6</doxia-site-renderer.version>
