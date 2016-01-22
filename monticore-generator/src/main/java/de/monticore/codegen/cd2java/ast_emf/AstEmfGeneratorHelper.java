@@ -145,8 +145,6 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
           .getFirstTypeArgumentOfGenericType(attribute.getType(), JAVA_LIST);
       if (typeArg.isPresent()) {
         String typeArgName = TypesHelper.printType(typeArg.get());
-        System.err.println("Names.getQualifier(typeArgName) " + Names.getQualifier(typeArgName)
-            + " getAstPackage() " + getAstPackage());
         if (Names.getQualifier(typeArgName).equals(getAstPackage())) {
           typeName = Names.getSimpleName(typeArgName);
           return "new EObjectContainmentEList<" + typeName + ">(" + typeName + ".class, this, "

@@ -203,7 +203,7 @@ public class EmfAttribute {
   public boolean isExternal1() {
     return astHelper.isExternalType(astHelper.getNativeTypeName(getCdAttribute()));
   }
-
+  
   // TODO GV: change it
   public boolean isEnum() {
     return !isAstNode() && astHelper.isAttributeOfTypeEnum(getCdAttribute());
