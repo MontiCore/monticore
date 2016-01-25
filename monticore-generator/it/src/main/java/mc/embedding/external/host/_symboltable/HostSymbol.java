@@ -48,7 +48,7 @@ public class HostSymbol extends HostSymbolEMPTY {
 
 
   public Collection<ContentSymbol> getContent() {
-    return sortSymbolsByPosition(spannedScope.resolveLocally(ContentSymbol.KIND));
+    return sortSymbolsByPosition(getSpannedScope().resolveLocally(ContentSymbol.KIND));
   }
 
 

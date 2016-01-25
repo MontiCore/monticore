@@ -63,7 +63,7 @@ public class CommonJMethodSymbol <U extends JTypeSymbol, T extends JTypeReferenc
 
   @Override
   public List<S> getParameters() {
-    final Collection<S> resolvedAttributes = spannedScope.resolveLocally(CommonJAttributeSymbol.KIND);
+    final Collection<S> resolvedAttributes = getSpannedScope().resolveLocally(CommonJAttributeSymbol.KIND);
 
     final List<S> parameters = sortSymbolsByPosition(resolvedAttributes.stream().filter(S::isParameter).collect(Collectors.toList()));
 
@@ -74,17 +74,17 @@ public class CommonJMethodSymbol <U extends JTypeSymbol, T extends JTypeReferenc
     Log.errorIfNull(paramType);
     checkArgument(paramType.isParameter(), "Only parameters can be added.");
 
-    spannedScope.add(paramType);
+    getMutableSpannedScope().add(paramType);
   }
 
   public void addFormalTypeParameter(U formalTypeParameter) {
     checkArgument(formalTypeParameter.isFormalTypeParameter());
-    spannedScope.add(formalTypeParameter);
+    getMutableSpannedScope().add(formalTypeParameter);
   }
 
   @Override
   public List<U> getFormalTypeParameters() {
-    final Collection<U> resolvedTypes = spannedScope.resolveLocally(U.KIND);
+    final Collection<U> resolvedTypes = getSpannedScope().resolveLocally(U.KIND);
     return resolvedTypes.stream().filter(U::isFormalTypeParameter).collect(Collectors.toList());
   }
 
