@@ -19,18 +19,15 @@
 
 package de.monticore.symboltable.mocks.languages.entity;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.util.Optional;
 
+import de.monticore.antlr4.MCConcreteParser;
+import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.mocks.languages.entity.asts.ASTEntity;
 import de.monticore.symboltable.mocks.languages.entity.asts.ASTEntityCompilationUnit;
 import de.se_rwth.commons.Names;
-import de.monticore.antlr4.MCConcreteParser;
-import de.monticore.ast.ASTNode;
-
-import org.antlr.v4.runtime.RecognitionException;
-
-import java.io.IOException;
-import java.io.Reader;
 
 /**
  * TODO: Write me!
@@ -50,7 +47,7 @@ public class EntityParserMock extends MCConcreteParser {
   }
 
   @Override
-  public Optional<? extends ASTNode> parse(String path) throws IOException, RecognitionException {
+  public Optional<? extends ASTNode> parse(String path) throws IOException {
     String packageName = Names.getPackageFromPath(path);
 
     ASTEntityCompilationUnit compilationUnit = new ASTEntityCompilationUnit();
@@ -65,7 +62,7 @@ public class EntityParserMock extends MCConcreteParser {
   }
 
   @Override
-  public Optional<? extends ASTNode> parse(Reader reader) throws IOException, RecognitionException {
+  public Optional<? extends ASTNode> parse(Reader reader) throws IOException {
     throw new UnsupportedOperationException();
   }
 

@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.Optional;
 
-import org.antlr.v4.runtime.RecognitionException;
-
 import de.monticore.ast.ASTNode;
 
 /**
@@ -49,12 +47,10 @@ public abstract class MCConcreteParser {
   /**
    * Implement this method to call top rule of parser. This method will be
    * overridden in generated classes with covariant return type.
-   * 
-   * @return AST
-   * @throws RecognitionException Errors in recognition phase (Indicates fatal
-   *           unexpected error, not a malformatted input not conforming to the
-   *           grammar)
-   * @author krahn
+   *
+   * @param fileName The name of the file to be parsed
+   * @return An Optional of the created AST
+   * @throws IOException Errors during file handling
    */
   public abstract Optional<? extends ASTNode> parse(String fileName) throws IOException;
   
@@ -62,16 +58,14 @@ public abstract class MCConcreteParser {
    * Implement this method to call top rule of parser. This method will be
    * overridden in generated classes with covariant return type.
    * 
-   * @return AST
-   * @throws RecognitionException Errors in recognition phase (Indicates fatal
-   *           unexpected error, not a malformatted input not conforming to the
-   *           grammar)
-   * @author krahn
+   * @param reader The reader containing the input to be parsed
+   * @return An Optional of the created AST
+   * @throws IOException Errors during reader handling
    */
   public abstract Optional<? extends ASTNode> parse(Reader reader) throws IOException;
 
   /**
-   * Returns true, iff errors occured while parsing
+   * Returns true, if errors occured while parsing
    * 
    * @return
    */

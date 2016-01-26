@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
-import org.antlr.v4.runtime.RecognitionException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -56,7 +55,7 @@ public class MCGrammarParserTest {
   }
 
   @Test
-  public void testParse() throws RecognitionException, IOException {
+  public void testParse() throws IOException {
     String model = "src/test/resources/de/monticore/statechart/Statechart.mc4";
     
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
@@ -72,7 +71,7 @@ public class MCGrammarParserTest {
   }
   
   @Test
-  public void testASTRule() throws RecognitionException, IOException {
+  public void testASTRule() throws IOException {
     String str;
     
     str = "ast MCGrammar = GrammarOption max=1 ;";
@@ -89,7 +88,7 @@ public class MCGrammarParserTest {
   }
   
   @Test
-  public void testSematicPred() throws RecognitionException, IOException {
+  public void testSematicPred() throws IOException {
     String str = "{(0 != cmpCounter)}?";
     
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
@@ -99,7 +98,7 @@ public class MCGrammarParserTest {
   }
   
   @Test
-  public void testParseTypes() throws RecognitionException, IOException {
+  public void testParseTypes() throws IOException {
     String model = "src/test/resources/mc/grammars/types/TestTypes.mc4";
     
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
@@ -109,7 +108,7 @@ public class MCGrammarParserTest {
   }
   
   @Test
-  public void testScript() throws RecognitionException, IOException {
+  public void testScript() throws IOException {
     String model = "src/test/resources/de/monticore/script/ScriptExample.mc4";
     
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
@@ -119,7 +118,7 @@ public class MCGrammarParserTest {
   }
 
   @Test
-  public void testAutomatonV1() throws RecognitionException, IOException {
+  public void testAutomatonV1() throws IOException {
     String model = "src/test/resources/de/monticore/script/AutomatonV1.mc4";
     
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
@@ -129,7 +128,7 @@ public class MCGrammarParserTest {
   }
   
   @Test
-  public void testAutomatonV2() throws RecognitionException, IOException {
+  public void testAutomatonV2() throws IOException {
     String model = "src/test/resources/de/monticore/script/AutomatonV2.mc4";
     
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
@@ -139,7 +138,7 @@ public class MCGrammarParserTest {
   }
   
   @Test
-  public void testAutomatonV3() throws RecognitionException, IOException {
+  public void testAutomatonV3() throws IOException {
     String model = "src/test/resources/de/monticore/script/AutomatonV3.mc4";
     
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
@@ -149,7 +148,7 @@ public class MCGrammarParserTest {
   }
   
   @Test
-  public void testHierarchicalAutomaton() throws RecognitionException, IOException {
+  public void testHierarchicalAutomaton() throws IOException {
     String model = "src/test/resources/de/monticore/script/HierarchicalAutomaton.mc4";
 
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
@@ -159,7 +158,7 @@ public class MCGrammarParserTest {
   }
 
   @Test
-  public void testAutomatonWithInvsComp() throws RecognitionException, IOException {
+  public void testAutomatonWithInvsComp() throws IOException {
     String model = "src/test/resources/de/monticore/script/AutomatonWithInvsComp.mc4";
 
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
@@ -169,7 +168,7 @@ public class MCGrammarParserTest {
   }
   
   @Test
-  public void testAutomatonWithInvs() throws RecognitionException, IOException {
+  public void testAutomatonWithInvs() throws IOException {
     String model = "src/test/resources/de/monticore/script/AutomatonWithInvs.mc4";
     
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
@@ -179,7 +178,7 @@ public class MCGrammarParserTest {
   }
 
   @Test
-  public void testGrammarSymbolTableInfo() throws RecognitionException, IOException {
+  public void testGrammarSymbolTableInfo() throws IOException {
     String model = "src/test/resources/de/monticore/symboltable/GrammarWithSymbolTableInfo.mc4";
 
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();

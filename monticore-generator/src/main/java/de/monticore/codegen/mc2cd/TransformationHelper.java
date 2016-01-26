@@ -33,8 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.antlr.v4.runtime.RecognitionException;
-
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -288,8 +286,7 @@ public final class TransformationHelper {
   }
   
   public static java.util.Optional<ASTCDAttribute> createAttributeUsingCdParser(
-      String toParse)
-          throws RecognitionException, IOException {
+      String toParse) throws IOException {
     checkArgument(!Strings.isNullOrEmpty(toParse));
     java.util.Optional<ASTCDAttribute> astCDAttribute = (new CD4AnalysisParser())
         .parseCDAttribute(new StringReader(toParse));

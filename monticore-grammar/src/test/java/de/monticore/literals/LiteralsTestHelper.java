@@ -64,10 +64,8 @@ public class LiteralsTestHelper {
    * @param input Literal as a string.
    * @return The ASTLiteral or null.
    * @throws IOException
-   * @throws org.antlr.v4.runtime.RecognitionException
    */
-  public ASTLiteral parseLiteral(String input) throws org.antlr.v4.runtime.RecognitionException,
-      IOException {
+  public ASTLiteral parseLiteral(String input) throws IOException {
     LiteralsParser parser = new LiteralsParser();
     Optional<ASTLiteral> res = parser.parseLiteral(new StringReader(input));
     TestCase.assertTrue(res.isPresent());
@@ -80,10 +78,9 @@ public class LiteralsTestHelper {
    * @param input Literal as a string.
    * @return The ASTLiteral or null.
    * @throws IOException
-   * @throws org.antlr.v4.runtime.RecognitionException
    */
   public ASTSignedLiteral parseSignedLiteral(String input)
-      throws org.antlr.v4.runtime.RecognitionException, IOException {
+      throws IOException {
     LiteralsParser parser = new LiteralsParser();
     Optional<ASTSignedLiteral> res = parser.parseSignedLiteral(new StringReader(input));
     TestCase.assertTrue(res.isPresent());

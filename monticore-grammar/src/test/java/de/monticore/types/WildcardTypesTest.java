@@ -19,7 +19,11 @@
 
 package de.monticore.types;
 
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.io.IOException;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -35,53 +39,36 @@ public class WildcardTypesTest {
   public static void disableFailQuick() {
     Log.enableFailQuick(false);
   }
- 
+  
   @Test
   public void testWildcardType() {
     try {
       // Test for a simple wildcard type
-      TypesTestHelper.getInstance().testType("ParameterizedType<?>");
+      assertTrue(TypesTestHelper.getInstance().testType("ParameterizedType<?>"));
       // Test with a upper bound
-      TypesTestHelper.getInstance().testType("ParameterizedType<? extends ParentClass>");
+      assertTrue(TypesTestHelper.getInstance().testType("ParameterizedType<? extends ParentClass>"));
       // Test with a lower bound
-      TypesTestHelper.getInstance().testType("ParameterizedType<? super ChildClass>");
+      assertTrue(TypesTestHelper.getInstance().testType("ParameterizedType<? super ChildClass>"));
     }
-    catch (Exception e) {
+    catch (IOException e) {
       fail(e.getMessage());
     }
   }
   
   @Test
   public void testNegativeWildcardType() {
-    // Negative test with a upper and lower bound
     try {
-      TypesTestHelper.getInstance().testType("ParameterizedType<? extends ParentClass super ChildClass>");
-      fail("The test should fail");
+      // Negative test with a upper and lower bound
+      assertNull(TypesTestHelper.getInstance()
+          .parseType("ParameterizedType<? extends ParentClass super ChildClass>"));
+          
+      // Negative test with a wildcard as upper bound
+      assertNull(
+          TypesTestHelper.getInstance().parseType("ParameterizedType<? extends ? extends Invalid>"));         
     }
-    catch (Exception e) {
+    catch (IOException e) {
+      fail(e.getMessage());
     }
-    // Negative test with a wildcard as upper bound
-    try {
-      TypesTestHelper.getInstance().testType("ParameterizedType<? extends ? extends Invalid>");
-      fail("The test should fail");
-    }
-    catch (Exception e) {
-    }
-    // to be checked by context-analysis:
-    // // Negative test with primitive type array as upper bound
-    // try {
-    // TypeTestHelper.getInstance().testType("ParameterizedType<? extends int>");
-    // fail("The test should fail");
-    // }
-    // catch (Exception e) {
-    // }
-    // // Negative test with primitive type as lower bound
-    // try {
-    // TypeTestHelper.getInstance().testType("ParameterizedType<? super char>");
-    // fail("The test should fail");
-    // }
-    // catch (Exception e) {
-    // }
   }
   
 }

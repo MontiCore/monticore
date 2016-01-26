@@ -19,7 +19,10 @@
 
 package de.monticore.types;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.io.IOException;
 
 import org.junit.Test;
 
@@ -31,9 +34,9 @@ public class NestedTypeParametersTest {
   @Test
   public void testNestedTypeParameter1() {
     try {
-      TypesTestHelper.getInstance().testTypeParameter("<T extends A.B<C[]>.D<E<F<G<H>>,I>> & J<K>>");
+      assertTrue(TypesTestHelper.getInstance().testTypeParameter("<T extends A.B<C[]>.D<E<F<G<H>>,I>> & J<K>>"));
     }
-    catch (Exception e) {
+    catch (IOException e) {
       fail(e.getMessage());
     }
   }
@@ -41,9 +44,9 @@ public class NestedTypeParametersTest {
   @Test
   public void testNestedTypeParameter2() {
     try {
-      TypesTestHelper.getInstance().testTypeParameter("<T1 extends A<B<D, E>>, T2 extends " + "A.B<C[]>.D<E<F<G<H>>,I>> & J<K>>");
+      assertTrue(TypesTestHelper.getInstance().testTypeParameter("<T1 extends A<B<D, E>>, T2 extends " + "A.B<C[]>.D<E<F<G<H>>,I>> & J<K>>"));
     }
-    catch (Exception e) {
+    catch (IOException e) {
       fail(e.getMessage());
     }
   }

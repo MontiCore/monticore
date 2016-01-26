@@ -19,7 +19,10 @@
 
 package de.monticore.types;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
+
+import java.io.IOException;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -45,19 +48,19 @@ public class ReturnTypesTest {
         TypesTestHelper.getInstance().parseReturnType(returntype);
       }
     }
-    catch (Exception e) {
+    catch (IOException e) {
       fail(e.getMessage());
     }
   }
   
   @Test
   public void testNegativeVoidType() {
+    // "void" is no type
     try {
-      // "void" is no type
-      TypesTestHelper.getInstance().parseType("void");
-      fail("The test should fail");
+      assertNull(TypesTestHelper.getInstance().parseType("void"));
     }
-    catch (Exception e) {
-    }
+    catch (IOException e) {
+      fail(e.getMessage());
+    }   
   }
 }

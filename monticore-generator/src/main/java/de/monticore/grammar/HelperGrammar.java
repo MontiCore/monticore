@@ -104,9 +104,6 @@ public class HelperGrammar {
    */
   public static String createConvertFunction(ASTLexProd a, Grammar_WithConceptsPrettyPrinter prettyPrinter) {
 
-    String throwss = " throws RecognitionException";
-
-
     String name = a.getName();
     // simple String
     if (!a.getVariable().isPresent()) {
@@ -118,20 +115,13 @@ public class HelperGrammar {
       String variable = a.getVariable().get();
 
       if ("int".equals(variable)) {
-        String function = "private int convert%name%(Token t) throws RecognitionException {\n"
-          + " try {\n"
-          + "   return Integer.parseInt(t.getText());\n"
-          + " }\n"
-          + " catch (NumberFormatException e){\n"
-          + "   throw new RecognitionException(\"Cannot convert token to desired datatype!\", null, getInputStream(), null);\n"
-          + " }\n"
-          + "}\n";
+        String function = "private int convert%name%(Token t) {\n"
 
+          + "  return Integer.parseInt(t.getText());\n"
+          + " }\n";
         return createConvertFunction(name, function);
-
       }
       else if ("boolean".equals(variable)) {
-
         return createConvertFunction(
             name,
             "private boolean convert"
@@ -141,94 +131,44 @@ public class HelperGrammar {
             + "}\n");
       }
       else if ("byte".equals(variable)) {
-
-        String function = "private byte convert%name%(Token t) throws RecognitionException {\n"
-          + " try {\n"
-          + "   return Byte.parseByte(t.getText());\n"
-          + " }\n"
-          + " catch (NumberFormatException e){\n"
-          + "   throw new RecognitionException(\"Cannot convert token to desired datatype!\", null, getInputStream(), null);\n"
-          + " }\n"
-          + "}\n";
-
+        String function = "private byte convert%name%(Token t) {\n"
+          + "  return Byte.parseByte(t.getText());\n"
+          + " }\n";
         return createConvertFunction(name, function);
-
       }
       else if ("char".equals(variable)) {
-        return createConvertFunction(name, "private char convert" + name + "(Token t) " + throwss + "{\n" + "  return t.getText().charAt(0); \n" + "}\n");
-
+        return createConvertFunction(name, "private char convert" + name + "(Token t) " + "{\n" + "  return t.getText().charAt(0); \n" + "}\n");
       }
       else if ("float".equals(variable)) {
-
-        String function = "private float convert%name%(Token t) throws RecognitionException {\n"
-          + " try {\n"
-          + "   return Float.parseFloat(t.getText());\n"
-          + " }\n"
-          + " catch (NumberFormatException e){\n"
-          + "   throw new RecognitionException(\"Cannot convert token to desired datatype!\", null, getInputStream(), null);\n"
-          + " }\n"
-          + "}\n";
-
+        String function = "private float convert%name%(Token t) {\n"
+          + "  return Float.parseFloat(t.getText());\n"
+          + " }\n";
         return createConvertFunction(name, function);
-
       }
       else if ("double".equals(variable)) {
-
-        String function = "private double convert%name%(Token t) throws RecognitionException {\n"
-          + " try {\n"
-          + "   return Double.parseDouble(t.getText());\n"
-          + " }\n"
-          + " catch (NumberFormatException e){\n"
-          + "   throw new RecognitionException(\"Cannot convert token to desired datatype!\", null, getInputStream(), null);\n"
-          + " }\n"
-          + "}\n";
-
+        String function = "private double convert%name%(Token t) {\n"
+          + "  return Double.parseDouble(t.getText());\n"
+          + " }\n";
         return createConvertFunction(name, function);
-
       }
       else if ("long".equals(variable)) {
-
-        String function = "private long convert%name%(Token t) throws RecognitionException {\n"
-          + " try {\n"
-          + "   return Long.parseLong(t.getText());\n"
-          + " }\n"
-          + " catch (NumberFormatException e){\n"
-          + "   throw new RecognitionException(\"Cannot convert token to desired datatype!\", null, getInputStream(), null);\n"
-          + " }\n"
-          + "}\n";
-
+        String function = "private long convert%name%(Token t) {\n"
+          + "  return Long.parseLong(t.getText());\n"
+          + " }\n";
         return createConvertFunction(name, function);
-
       }
       else if ("short".equals(variable)) {
-
-        String function = "private short convert%name%(Token t) throws RecognitionException {\n"
-          + " try {\n"
-          + "   return Short.parseShort(t.getText());\n"
-          + " }\n"
-          + " catch (NumberFormatException e){\n"
-          + "   throw new RecognitionException(\"Cannot convert token to desired datatype!\", null, getInputStream(), null);\n"
-          + " }\n"
-          + "}\n";
-
+        String function = "private short convert%name%(Token t) {\n"
+          + "return Short.parseShort(t.getText());\n"
+          + " }\n";
         return createConvertFunction(name, function);
-
       }
       else if ("card".equals(variable)) {
-
-        String function = "private int convert%name%(Token t) throws RecognitionException {\n"
-          + " try {\n"
+        String function = "private int convert%name%(Token t) {\n"
           + "   if (t.getText().equals(\"*\")) return -1; else return Integer.parseInt(t.getText());\n"
-          + " }\n"
-          + " catch (NumberFormatException e){\n"
-          + "   throw new RecognitionException(\"Cannot convert token to desired datatype!\", null, getInputStream(), null);\n"
-          + " }\n"
-          + "}\n";
-
+          + " }\n";
         return createConvertFunction(name, function);
-
       }
-
       else {
         Log.warn("0xA1061 No function for " + a.getVariable() + " registered, will treat it as string!");
         return createStringConvertFunction(name);
@@ -241,7 +181,7 @@ public class HelperGrammar {
         StringBuilder buffer = new StringBuilder();
         buffer.append(prettyPrinter.prettyprint(a.getBlock().get()));
         String createConvertFunction = createConvertFunction(name, "private " + Names.getQualifiedName(a.getType()) + " convert" + name
-         + "(Token " + a.getVariable().get() + ")" + throwss + " {\n" + buffer.toString() + "}\n");
+         + "(Token " + a.getVariable().get() + ")" + " {\n" + buffer.toString() + "}\n");
         return createConvertFunction;
       }
     }

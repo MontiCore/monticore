@@ -24,11 +24,9 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.io.StringReader;
 
-import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
 
 import de.monticore.antlr4.MCConcreteParser.ParserExecution;
-import groovyjarjarantlr.TokenStreamException;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.followoption.followoption._parser.FollowOptionParser;
 
@@ -60,8 +58,6 @@ public class FollowOptionTest extends GeneratorIntegrationsTest {
    * Test assures that follow option is necessary, as this test fails to produce
    * correct behavior due to missing follow option
    * 
-   * @throws RecognitionException
-   * @throws TokenStreamException
    */
   @Test
   public void test3() throws IOException {
