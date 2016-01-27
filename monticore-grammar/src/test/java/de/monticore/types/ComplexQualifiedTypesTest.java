@@ -24,12 +24,20 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
+
+import de.se_rwth.commons.logging.Log;
 
 /**
  * @author Martin Schindler
  */
 public class ComplexQualifiedTypesTest {
+  
+  @BeforeClass
+  public static void disableFailQuick() {
+    Log.enableFailQuick(false);
+  }
   
   @Test
   public void testComplexQualifiedType() {
@@ -48,8 +56,7 @@ public class ComplexQualifiedTypesTest {
       assertTrue(TypesTestHelper.getInstance().testType("Pair<T,S>"));
       assertTrue(TypesTestHelper.getInstance().testType("Seq<Pair<String,Number>>"));
       assertTrue(TypesTestHelper.getInstance().testType("A<B<C,D<E,F<G>>>>"));
-      // TODO MB Fix failing test
-      //assertTrue(TypesTestHelper.getInstance().testType("A<B<C,D<E,F<G<H>>>>,I<J>>"));
+      assertTrue(TypesTestHelper.getInstance().testType("A<B<C,D<E,F<G<H>>>>,I<J>>"));
       assertTrue(TypesTestHelper.getInstance().testType("Vector<String>"));
       assertTrue(TypesTestHelper.getInstance().testType("A.B<String>.C<Object>"));
       assertTrue(TypesTestHelper.getInstance().testType("A.B<int[][]>.C<int[]>"));

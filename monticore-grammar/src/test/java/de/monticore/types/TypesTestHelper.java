@@ -76,11 +76,13 @@ public class TypesTestHelper {
   public boolean testType(String input) throws IOException {
     // Parse input
     ASTType inputAST = parseType(input);
+    TestCase.assertNotNull(inputAST);
     // Print the inputAST
     TypesPrettyPrinterConcreteVisitor printer = new TypesPrettyPrinterConcreteVisitor(new IndentPrinter());
     String output = printer.prettyprint(inputAST);
     // Parse output
     ASTType outputAST = parseType(output);
+    TestCase.assertNotNull(outputAST);
     // Compare both AST
     if (!inputAST.deepEquals(outputAST)) {
       return false;
@@ -156,6 +158,7 @@ public class TypesTestHelper {
    */
   public ASTTypeParameters parseTypeParameters(String input) throws IOException {
     TypesParser parser = new TypesParser();
+    parser.setParserTarget(ParserExecution.EOF);
     Optional<ASTTypeParameters> res = parser.parseTypeParameters(new StringReader(input));
     if (parser.hasErrors()) {
       return null;
