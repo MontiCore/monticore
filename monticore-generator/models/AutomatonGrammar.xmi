@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="ASCII"?>
+<Grammar:ASTMCGrammar xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Grammar="http://Grammar/1.0" xsi:schemaLocation="http://Grammar/1.0 ../grammars_emf/Grammar.ecore" Name="Automaton">
+  <Supergrammar>
+    <Names>mc</Names>
+    <Names>grammars</Names>
+    <Names>lexicals</Names>
+    <Names>TestLexicals</Names>
+  </Supergrammar>
+  <ClassProds Name="Automaton">
+    <Alts>
+      <Components xsi:type="Grammar:ASTTerminal" Name="automaton"/>
+      <Components xsi:type="Grammar:ASTNonTerminal" Name="Name"/>
+      <Components xsi:type="Grammar:ASTTerminal" Name="{"/>
+      <Components xsi:type="Grammar:ASTBlock" Iteration="3">
+        <Alts>
+          <Components xsi:type="Grammar:ASTNonTerminal" Name="State"/>
+        </Alts>
+        <Alts>
+          <Components xsi:type="Grammar:ASTNonTerminal" Name="Transition"/>
+        </Alts>
+      </Components>
+      <Components xsi:type="Grammar:ASTTerminal" Name="}"/>
+    </Alts>
+  </ClassProds>
+  <ClassProds Name="State">
+    <Alts>
+      <Components xsi:type="Grammar:ASTTerminal" Name="state"/>
+      <Components xsi:type="Grammar:ASTNonTerminal" Name="Name"/>
+      <Components xsi:type="Grammar:ASTBlock" Iteration="3">
+        <Alts>
+          <Components xsi:type="Grammar:ASTBlock">
+            <Alts>
+              <Components xsi:type="Grammar:ASTTerminal" Name="&lt;&lt;"/>
+              <Components xsi:type="Grammar:ASTConstantGroup">
+                <Constants Name="initial"/>
+              </Components>
+              <Components xsi:type="Grammar:ASTTerminal" Name=">>"/>
+            </Alts>
+          </Components>
+        </Alts>
+        <Alts>
+          <Components xsi:type="Grammar:ASTBlock">
+            <Alts>
+              <Components xsi:type="Grammar:ASTTerminal" Name="&lt;&lt;"/>
+              <Components xsi:type="Grammar:ASTConstantGroup">
+                <Constants Name="final"/>
+              </Components>
+              <Components xsi:type="Grammar:ASTTerminal" Name=">>"/>
+            </Alts>
+          </Components>
+        </Alts>
+      </Components>
+      <Components xsi:type="Grammar:ASTBlock">
+        <Alts>
+          <Components xsi:type="Grammar:ASTBlock">
+            <Alts>
+              <Components xsi:type="Grammar:ASTTerminal" Name="{"/>
+              <Components xsi:type="Grammar:ASTBlock" Iteration="3">
+                <Alts>
+                  <Components xsi:type="Grammar:ASTNonTerminal" Name="State"/>
+                </Alts>
+                <Alts>
+                  <Components xsi:type="Grammar:ASTNonTerminal" Name="Transition"/>
+                </Alts>
+              </Components>
+              <Components xsi:type="Grammar:ASTTerminal" Name="}"/>
+            </Alts>
+          </Components>
+        </Alts>
+        <Alts>
+          <Components xsi:type="Grammar:ASTTerminal" Name=";"/>
+        </Alts>
+      </Components>
+    </Alts>
+  </ClassProds>
+  <ClassProds Name="Transition">
+    <Alts>
+      <Components xsi:type="Grammar:ASTNonTerminal" UsageName="from" Name="Name"/>
+      <Components xsi:type="Grammar:ASTTerminal" Name="-"/>
+      <Components xsi:type="Grammar:ASTNonTerminal" UsageName="input" Name="Name"/>
+      <Components xsi:type="Grammar:ASTTerminal" Name=">"/>
+      <Components xsi:type="Grammar:ASTNonTerminal" UsageName="to" Name="Name"/>
+      <Components xsi:type="Grammar:ASTTerminal" Name=";"/>
+    </Alts>
+  </ClassProds>
+  <R__package>mc</R__package>
+</Grammar:ASTMCGrammar>

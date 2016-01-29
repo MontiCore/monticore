@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ASCII"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="Grammar_WithConcepts" nsURI="http://Grammar_WithConcepts/1.0" nsPrefix="Grammar_WithConcepts">
+  <eClassifiers xsi:type="ecore:EEnum"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTMCConcept">
+    <eSuperTypes href="Grammar.ecore#//ASTMCConceptExt"/>
+    <eStructuralFeatures xsi:type="ecore:EReference"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTAction">
+    <eSuperTypes href="Grammar.ecore#//ASTActionExt"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="BlockStatements" unique="false" upperBound="-1" containment="true" resolveProxies="false">
+      <eType xsi:type="ecore:EClass" href="JavaDSL.ecore#//ASTBlockStatement"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTExpressionPredicate">
+    <eSuperTypes href="Grammar.ecore#//ASTExpressionPredicateExt"/>
+    <eStructuralFeatures xsi:type="ecore:EReference"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTJavaCode">
+    <eSuperTypes href="Antlr.ecore#//ASTJavaCodeExt"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ClassMemberDeclarations" unique="false" upperBound="-1" containment="true" resolveProxies="false">
+      <eType xsi:type="ecore:EClass" href="JavaDSL.ecore#//ASTClassMemberDeclaration"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>

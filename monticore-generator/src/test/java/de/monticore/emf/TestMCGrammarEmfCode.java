@@ -3,7 +3,7 @@
  *
  * http://www.se-rwth.de/
  */
-package de.monticore.languages.grammar;
+package de.monticore.emf;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -11,8 +11,15 @@ import java.util.Optional;
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
 
+import de.monticore.grammar.concepts.antlr.antlr._ast.AntlrResourceController;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar._ast.GrammarResourceController;
+import de.monticore.grammar.grammar_withconcepts._ast.Grammar_WithConceptsResourceController;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
+import de.monticore.java.javadsl._ast.JavaDSLResourceController;
+import de.monticore.lexicals.lexicals._ast.LexicalsResourceController;
+import de.monticore.literals.literals._ast.LiteralsResourceController;
+import de.monticore.types.types._ast.TypesResourceController;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
 
@@ -22,18 +29,18 @@ import de.se_rwth.commons.logging.Slf4jLog;
  * @author (last commit) $Author$
  * @version $Revision$, $Date$
  */
-public class TestAutomaton {
+public class TestMCGrammarEmfCode {
   
   /**
    * TODO: Write me!
    * 
    * @param args
    */
-  //@Test
+  @Test
   public  void test() {
     Slf4jLog.init();
     Log.enableFailQuick(false);
-//    TestAutomatonResourceController.getInstance().serializeAstToECoreModelFile("models/automaton/");
+  //  TestAutomatonResourceController.getInstance().serializeAstToECoreModelFile("models/");
 //    ASTTransition transMy = AutomatonNodeFactory.createASTTransition("myfrom", "myactivate",
 //        "myto");
 //    TestAutomatonResourceController.getInstance().serializeASTClassInstance(transMy, "models/automaton/My");
@@ -58,7 +65,7 @@ public class TestAutomaton {
 //        System.err.println("Missed");
 //      }
 //      
-//      
+      
    // Configure EMF Compare
 //      EMFCompare comparator = EMFCompare.builder().build();
 //      
@@ -118,11 +125,17 @@ public class TestAutomaton {
 //     snapshot.setDiff(diff);
 //     ModelUtils.save(snapshot, "result.emfdiff"); //$NON-NLS-1$
       
-      
+      LexicalsResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
+      LiteralsResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
+      TypesResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
+      JavaDSLResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
+      AntlrResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
+      GrammarResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
+      Grammar_WithConceptsResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
       Optional<ASTMCGrammar> transB = new Grammar_WithConceptsParser().parse("src/test/resources/Automaton.mc4");
       if (transB.isPresent()) {
         System.err.println("ASTMCGrammar: " + transB.get());
-        TestAutomatonResourceController.getInstance().serializeASTClassInstance(transB.get(), "models");
+        MCGrammarResourceController.getInstance().serializeASTClassInstance(transB.get(), "models/AutomatonGrammar");
       }
       else {
         System.err.println("Missed");

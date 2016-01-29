@@ -6,7 +6,7 @@
 
 
 
-package de.monticore.languages.grammar;
+package mc.feature;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,18 +22,19 @@ import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import de.monticore.emf._ast.ASTENodePackage;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar_withconcepts._ast.Grammar_WithConceptsPackage;
+import mc.featureemf.fautomaton.automaton.flatautomaton._ast.ASTTransition;
+import mc.featureemf.fautomaton.automatonwithaction.actionautomaton._ast.ASTAutomaton;
+import mc.featureemf.fautomaton.automatonwithaction.actionautomaton._ast.ActionAutomatonPackage;
 
-public class TestAutomatonResourceController {
+public class TestActionAutomatonResourceController {
  
-    private static final TestAutomatonResourceController controller = new TestAutomatonResourceController();
+    private static final TestActionAutomatonResourceController controller = new TestActionAutomatonResourceController();
  
     // Private constructor for Singleton-Pattern
-    private TestAutomatonResourceController() {
+    private TestActionAutomatonResourceController() {
     }
  
-    public static TestAutomatonResourceController getInstance() {
+    public static TestActionAutomatonResourceController getInstance() {
         return controller;
     }
     
@@ -50,11 +51,11 @@ public class TestAutomatonResourceController {
           Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl()); 
         
         // For Current Package 
-        URI fileURI = URI.createFileURI(new File(path + "Automaton.mc4").getAbsolutePath());
+        URI fileURI = URI.createFileURI(new File(path + "Automaton.ecore").getAbsolutePath());
         // Create a resource for this file. 
         Resource resource = resourceSet.createResource(fileURI);
         // Add instance of package to the contents.
-        resource.getContents().add(Grammar_WithConceptsPackage.eINSTANCE);
+        resource.getContents().add(ActionAutomatonPackage.eINSTANCE);
         
         // For ASTNodePackage
         URI fileURIASTNode = URI.createFileURI(new File(path + "ASTENode.ecore").getAbsolutePath()); 
@@ -72,12 +73,12 @@ public class TestAutomatonResourceController {
     
     }
     
-    public void serializeASTClassInstance (ASTMCGrammar object) {
-      serializeASTClassInstance(object, "ASTMCGrammar");
+    public void serializeASTClassInstance (ASTTransition object) {
+      serializeASTClassInstance(object, "ASTTransition");
   }
   
   
-  public void serializeASTClassInstance (ASTMCGrammar object, String fileName) {
+  public void serializeASTClassInstance (ASTTransition object, String fileName) {
        // Create a resource set. 
       ResourceSet resourceSet = new ResourceSetImpl(); 
       // Register the default resource factory -- only needed for stand-alone! 
@@ -95,6 +96,27 @@ public class TestAutomatonResourceController {
       try { resource.save(options); } catch (IOException e) {e.printStackTrace();}
   }
   
+  public void serializeASTClassInstance (ASTAutomaton object, String fileName) {
+    // Create a resource set. 
+   ResourceSet resourceSet = new ResourceSetImpl(); 
+   // Register the default resource factory -- only needed for stand-alone! 
+   resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put( Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl()); 
+   // Get the URI of the model file. 
+   URI fileURI = URI.createFileURI(new File(fileName + ".xmi").getAbsolutePath()); 
+   // Create a resource for this file. 
+  // new Ecore2XMLResourceImpl(fileURI);
+   Resource resource = resourceSet.createResource(fileURI);
+    // Add instance of package to the contents. 
+   resource.getContents().add(object);
+   // Save the contents of the resource to the file system. 
+   /*
+   * Save the resource using OPTION_SCHEMA_LOCATION save option toproduce 
+   * xsi:schemaLocation attribute in the document
+   */
+   Map options = new HashMap();
+   options.put(XMLResource.OPTION_SCHEMA_LOCATION, Boolean.TRUE);
+   try { resource.save(options); } catch (IOException e) {e.printStackTrace();}
+}
     
 
 }

@@ -1,8 +1,8 @@
 package mc.featureemf.fautomaton.automatonwithaction;
 
-component grammar ActionAutomaton extends mc.featureemf.fautomaton.automaton.FlatAutomaton {
+ grammar ActionAutomaton extends mc.featureemf.fautomaton.automaton.FlatAutomaton {
 
-	external Action;
+	//external Action;
 
     /** A finite automaton
 	@attribute name Name of the automaton
@@ -10,11 +10,7 @@ component grammar ActionAutomaton extends mc.featureemf.fautomaton.automaton.Fla
     @attribute State List of all states
     @attribute Transition List of all transitions
 	*/
-	Automaton =
-	   "automaton" Name "{" 
-	     (Counter | State | Transition )*
-	   "}";
-
+  
     /** A Counter represents a variable in the automaton
    	@attribute Name of the counter
     */

@@ -2,12 +2,6 @@ package mc;
 
 grammar Automaton extends mc.grammars.lexicals.TestLexicals {
 
-options {
-		 follow State "," ; 
-	}
-	
-	start Automaton;
-
 /** A ASTAutomaton represents a finite automaton
     @attribute Name Name of the automaton
     @attribute States List of states

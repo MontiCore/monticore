@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="ASCII"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="Literals" nsURI="http://Literals/1.0" nsPrefix="Literals">
+  <eClassifiers xsi:type="ecore:EEnum"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTNullLiteral" eSuperTypes="//ASTLiteral //ASTSignedLiteral"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTBooleanLiteral" eSuperTypes="//ASTLiteral //ASTSignedLiteral">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Source">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTCharLiteral" eSuperTypes="//ASTLiteral //ASTSignedLiteral">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Source">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTStringLiteral" eSuperTypes="//ASTLiteral //ASTSignedLiteral">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Source">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTIntLiteral" eSuperTypes="//ASTNumericLiteral">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Source">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTSignedIntLiteral" eSuperTypes="//ASTIntLiteral //ASTSignedNumericLiteral">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Source">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Negative">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTLongLiteral" eSuperTypes="//ASTNumericLiteral">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Source">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTSignedLongLiteral" eSuperTypes="//ASTLongLiteral //ASTSignedNumericLiteral">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Source">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Negative">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTFloatLiteral" eSuperTypes="//ASTNumericLiteral">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Source">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTSignedFloatLiteral" eSuperTypes="//ASTFloatLiteral //ASTSignedNumericLiteral">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Source">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Negative">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTDoubleLiteral" eSuperTypes="//ASTNumericLiteral">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Source">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTSignedDoubleLiteral" eSuperTypes="//ASTDoubleLiteral //ASTSignedNumericLiteral">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Source">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Negative">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTLiteral" abstract="true" interface="true">
+    <eSuperTypes href="ASTENode.ecore#//ENode"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTSignedLiteral" abstract="true" interface="true">
+    <eSuperTypes href="ASTENode.ecore#//ENode"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTNumericLiteral" abstract="true" interface="true" eSuperTypes="//ASTLiteral"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTSignedNumericLiteral" abstract="true" interface="true" eSuperTypes="//ASTSignedLiteral"/>
+</ecore:EPackage>

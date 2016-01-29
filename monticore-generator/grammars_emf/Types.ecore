@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="ASCII"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="Types" nsURI="http://Types/1.0" nsPrefix="Types">
+  <eClassifiers xsi:type="ecore:EEnum"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTQualifiedName">
+    <eSuperTypes href="ASTENode.ecore#//ENode"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Parts" upperBound="-1">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTComplexArrayType" eSuperTypes="//ASTArrayType //ASTType">
+    <eStructuralFeatures xsi:type="ecore:EReference"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTPrimitiveArrayType" eSuperTypes="//ASTArrayType //ASTType">
+    <eStructuralFeatures xsi:type="ecore:EReference"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTVoidType" eSuperTypes="//ASTReturnType"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTPrimitiveType" eSuperTypes="//ASTType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Primitive">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTSimpleReferenceType" eSuperTypes="//ASTReferenceType //ASTType">
+    <eStructuralFeatures xsi:type="ecore:EReference"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Names" upperBound="-1">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTComplexReferenceType" eSuperTypes="//ASTReferenceType //ASTType">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="SimpleReferenceTypes" unique="false" upperBound="-1" eType="//ASTSimpleReferenceType" containment="true" resolveProxies="false"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTTypeArguments">
+    <eSuperTypes href="ASTENode.ecore#//ENode"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="TypeArguments" unique="false" upperBound="-1" eType="//ASTTypeArgument" containment="true" resolveProxies="false"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTWildcardType" eSuperTypes="//ASTTypeArgument">
+    <eStructuralFeatures xsi:type="ecore:EReference"/>
+    <eStructuralFeatures xsi:type="ecore:EReference"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTTypeParameters">
+    <eSuperTypes href="ASTENode.ecore#//ENode"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="TypeVariableDeclarations" unique="false" upperBound="-1" eType="//ASTTypeVariableDeclaration" containment="true" resolveProxies="false"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTTypeVariableDeclaration">
+    <eSuperTypes href="ASTENode.ecore#//ENode"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="UpperBounds" unique="false" upperBound="-1" eType="//ASTComplexReferenceType" containment="true" resolveProxies="false"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Name">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTImportStatement">
+    <eSuperTypes href="ASTENode.ecore#//ENode"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ImportList" upperBound="-1">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Star">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTArrayType" abstract="true" eSuperTypes="//ASTType">
+    <eStructuralFeatures xsi:type="ecore:EReference"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Dimensions">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTType" abstract="true" interface="true" eSuperTypes="//ASTTypeArgument //ASTReturnType"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTReferenceType" abstract="true" interface="true">
+    <eSuperTypes href="ASTENode.ecore#//ENode"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTTypeArgument" abstract="true" interface="true">
+    <eSuperTypes href="ASTENode.ecore#//ENode"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ASTReturnType" abstract="true" interface="true">
+    <eSuperTypes href="ASTENode.ecore#//ENode"/>
+  </eClassifiers>
+</ecore:EPackage>
