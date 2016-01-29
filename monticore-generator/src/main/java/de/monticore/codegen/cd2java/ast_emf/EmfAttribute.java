@@ -183,6 +183,14 @@ public class EmfAttribute {
     return (isAstNode() || isAstList()) ? "EReference" : "EAttribute";
   }
   
+  public boolean isEAttribute() {
+    return "EAttribute".equals(getEmfType());
+  }
+  
+  public boolean isEReference() {
+    return "EReference".equals(getEmfType());
+  }
+  
   public String getEDataType() {
     if (isAstList || AstEmfGeneratorHelper.istAstENodeList(getCdAttribute())) {
       Optional<ASTSimpleReferenceType> typeArg = TypesHelper

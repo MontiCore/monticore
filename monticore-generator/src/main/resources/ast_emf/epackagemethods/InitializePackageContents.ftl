@@ -111,9 +111,9 @@ SUCH DAMAGE.
       <#assign get = "this.get" + emfAttribute.getEDataType()[3..]>
     </#if>
     <#if emfAttribute.isAstNode()>
-      <#assign isList = "-1">
-    <#elseif emfAttribute.isAstList()>
       <#assign isList = "1">
+    <#elseif emfAttribute.isAstList()>
+      <#assign isList = "-1">
     init${emfAttribute.getEmfType()}(get${emfAttribute.getFullName()}(), ${get}(), null, "${emfAttribute.getAttributeName()?cap_first}", null,
       0, ${isList}, ${emfAttribute.getCdType().getName()}.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     <#else>

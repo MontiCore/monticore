@@ -89,15 +89,31 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
   }
   
   public List<EmfAttribute> getEmfAttributes(ASTCDType type) {
+    List<EmfAttribute> attributes = new ArrayList<>();
+    attributes.addAll(getEReferences(type));
+    attributes.addAll(getEAttributes(type));
+    return attributes;
+  }
+  
+  public List<EmfAttribute> getEAttributes(ASTCDType type) {
     if (!emfAttributes.containsKey(type)) {
       return new ArrayList<>();
     }
-    return emfAttributes.get(type);
+    return emfAttributes.get(type).stream().filter(e -> e.isEAttribute()).collect(Collectors.toList());
+  }
+  
+  public List<EmfAttribute> getEReferences(ASTCDType type) {
+    if (!emfAttributes.containsKey(type)) {
+      return new ArrayList<>();
+    }
+    return emfAttributes.get(type).stream().filter(e -> e.isEReference()).collect(Collectors.toList());
   }
   
   public List<EmfAttribute> getAllEmfAttributes() {
-    return emfAttributes.keySet().stream()
-        .flatMap(type -> getEmfAttributes(type).stream()).collect(Collectors.toList());
+    List<EmfAttribute> attributes = new ArrayList<>();
+    emfAttributes.keySet().stream().forEach(t -> attributes.addAll(getEReferences(t)));
+    emfAttributes.keySet().stream().forEach(t -> attributes.addAll(getEAttributes(t)));
+    return attributes;
   }
   
   /**
