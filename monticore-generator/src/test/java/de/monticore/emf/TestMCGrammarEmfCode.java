@@ -6,9 +6,19 @@
 package de.monticore.emf;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 import org.antlr.v4.runtime.RecognitionException;
+import org.eclipse.emf.compare.diff.metamodel.DiffElement;
+import org.eclipse.emf.compare.diff.metamodel.DiffModel;
+import org.eclipse.emf.compare.diff.service.DiffService;
+import org.eclipse.emf.compare.match.metamodel.MatchModel;
+import org.eclipse.emf.compare.match.service.MatchService;
+import org.eclipse.emf.ecore.EObject;
 import org.junit.Test;
 
 import de.monticore.grammar.concepts.antlr.antlr._ast.AntlrResourceController;
@@ -125,6 +135,7 @@ public class TestMCGrammarEmfCode {
 //     snapshot.setDiff(diff);
 //     ModelUtils.save(snapshot, "result.emfdiff"); //$NON-NLS-1$
       
+     
       LexicalsResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
       LiteralsResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
       TypesResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
@@ -132,47 +143,68 @@ public class TestMCGrammarEmfCode {
       AntlrResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
       GrammarResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
       Grammar_WithConceptsResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
-      Optional<ASTMCGrammar> transB = new Grammar_WithConceptsParser().parse("src/test/resources/Automaton.mc4");
+      
+      
+      String path1 = "de/monticore/emf/Automaton.mc4";
+      String path2 = "de/monticore/emf/Automaton2.mc4";
+      Optional<ASTMCGrammar> transB = new Grammar_WithConceptsParser().parse("src/test/resources/" + path1);
       if (transB.isPresent()) {
-        System.err.println("ASTMCGrammar: " + transB.get());
-        MCGrammarResourceController.getInstance().serializeASTClassInstance(transB.get(), "models/AutomatonGrammar");
+        MCGrammarResourceController.getInstance().serializeASTClassInstance(transB.get(), "models/Automaton_mc4");
       }
       else {
         System.err.println("Missed");
       }
-    /*  
-      Optional<ASTAutomaton> transC = new AutomatonParser().parse("src/test/resources/mc/automaton/Testautomat2.aut");
-      if (transC.isPresent()) {
-        System.err.println("ASTAutomaton: " + transC.get());
-        TestAutomatonResourceController.getInstance().serializeASTClassInstance(transC.get(), "models/automaton/B");
+      
+      Optional<ASTMCGrammar> transC = new Grammar_WithConceptsParser().parse("src/test/resources/" + path2);
+      if (transB.isPresent()) {
+        MCGrammarResourceController.getInstance().serializeASTClassInstance(transB.get(), "models/Automaton2_mc4");
       }
       else {
         System.err.println("Missed");
       }
       
       // Matching model elements
-      MatchModel match = MatchService.doMatch(transB.get(), transC.get(), Collections.<String, Object> emptyMap());
+      MatchModel match = MatchService.doMatch(transC.get(), transB.get(), Collections.<String, Object> emptyMap());
       // Computing differences
       DiffModel diff = DiffService.doDiff(match, false);
       // Merges all differences from model1 to model2
       List<DiffElement>  differences = new ArrayList<DiffElement>(diff.getOwnedElements());
-      //MergeService.merge(differences, true);
-      
-      for(DiffElement diffElement : diff.getDifferences(transB.get())) {
-        System.err.println(" diffElement: " + diffElement.toString());
+      System.err.println("Compare: " + path2 + "  vs. " + path1);
+      for (DiffElement e : differences) {
+        System.err.println("\nChanges: " );
+        for (EObject contents : e.eContents()) {
+          printDiffs((DiffElement)contents, new StringBuffer(" "));
+        }
       }
-      System.err.println("::: " + diff.getDifferences(transB.get()));
-      */
+      //MergeService.merge(differences, true);
+      System.err.println("\nAll changes : ");
+      for(DiffElement diffElement : diff.getDifferences(transC.get())) {
+        System.err.println(" : " + diffElement.toString());
+      }
     }
     catch (RecognitionException | IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-//    catch (InterruptedException e) {
-//      // TODO Auto-generated catch block
-//      e.printStackTrace();
-//    }
+    catch (InterruptedException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     
+  }
+  
+  public void printDiffs(DiffElement diff, StringBuffer s) {
+    System.err.println(s + " - " + diff + " :");
+    Iterator<DiffElement> it = diff.getSubDiffElements().iterator();
+    s.append("  ");
+    while (it.hasNext()) {
+      DiffElement dw  = it.next();
+      if (dw.getSubDiffElements().size() != 0) {
+        printDiffs(dw, s);
+      } else {
+        System.err.println(s + " - " + dw);
+      }
+    }
   }
   
 }

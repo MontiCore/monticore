@@ -59,6 +59,7 @@
     <emf.common.version>2.5.0</emf.common.version>
     <emf.ecore.version>2.5.0</emf.ecore.version>
     <emf.ecore.xmi.version>2.5.0</emf.ecore.xmi.version>
+    <emf.compare.version>1.2.0</emf.compare.version>
     <!-- has been relocated to that version -->
     <xml-apis.version>1.0.b2</xml-apis.version>
 
@@ -425,6 +426,25 @@
         <version>${guava.version}</version>
         <scope>test</scope>
       </dependency>
+      
+         <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.compare</artifactId>
+      <version>${emf.compare.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.compare.match</artifactId>
+          <version>${emf.compare.version}</version>
+          <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.compare.diff</artifactId>
+          <version>${emf.compare.version}</version>
+          <scope>test</scope>
+    </dependency>
 
       <!-- all the stuff for the Maven plugin -->
 
