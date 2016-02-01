@@ -27,7 +27,7 @@
       <groupId>de.monticore</groupId>
       <artifactId>monticore-emf-runtime</artifactId>
     </dependency>
-
+    
     <dependency>
       <groupId>de.se_rwth.commons</groupId>
       <artifactId>se-commons-utilities</artifactId>
@@ -120,18 +120,23 @@
       <classifier>${grammars.classifier}</classifier>
     </dependency>
     
-      <dependency>
+    <!-- EMF test dependencies -->
+    <dependency>
       <groupId>org.eclipse.emf</groupId>
       <artifactId>org.eclipse.emf.compare</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.emf</groupId>
       <artifactId>org.eclipse.emf.compare.match</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.emf</groupId>
       <artifactId>org.eclipse.emf.compare.diff</artifactId>
+      <scope>test</scope>
     </dependency>
+    
   </dependencies>
 
   <build>

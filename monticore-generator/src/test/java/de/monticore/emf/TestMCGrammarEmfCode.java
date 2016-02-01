@@ -19,8 +19,11 @@ import org.eclipse.emf.compare.diff.service.DiffService;
 import org.eclipse.emf.compare.match.metamodel.MatchModel;
 import org.eclipse.emf.compare.match.service.MatchService;
 import org.eclipse.emf.ecore.EObject;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import de.monticore.codegen.cd2java.ast.AstAdditionalMethods;
+import de.monticore.emf.util.compare.EmfDiffTest;
 import de.monticore.grammar.concepts.antlr.antlr._ast.AntlrResourceController;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.GrammarResourceController;
@@ -41,6 +44,13 @@ import de.se_rwth.commons.logging.Slf4jLog;
  */
 public class TestMCGrammarEmfCode {
   
+  
+  @BeforeClass
+  public static void setup() {
+    Slf4jLog.init();
+    Log.enableFailQuick(false);
+  }
+  
   /**
    * TODO: Write me!
    * 
@@ -48,8 +58,6 @@ public class TestMCGrammarEmfCode {
    */
   @Test
   public  void test() {
-    Slf4jLog.init();
-    Log.enableFailQuick(false);
   //  TestAutomatonResourceController.getInstance().serializeAstToECoreModelFile("models/");
 //    ASTTransition transMy = AutomatonNodeFactory.createASTTransition("myfrom", "myactivate",
 //        "myto");
@@ -163,47 +171,30 @@ public class TestMCGrammarEmfCode {
         System.err.println("Missed");
       }
       
-      // Matching model elements
-      MatchModel match = MatchService.doMatch(transC.get(), transB.get(), Collections.<String, Object> emptyMap());
-      // Computing differences
-      DiffModel diff = DiffService.doDiff(match, false);
-      // Merges all differences from model1 to model2
-      List<DiffElement>  differences = new ArrayList<DiffElement>(diff.getOwnedElements());
-      System.err.println("Compare: " + path2 + "  vs. " + path1);
-      for (DiffElement e : differences) {
-        System.err.println("\nChanges: " );
-        for (EObject contents : e.eContents()) {
-          printDiffs((DiffElement)contents, new StringBuffer(" "));
-        }
-      }
-      //MergeService.merge(differences, true);
-      System.err.println("\nAll changes : ");
-      for(DiffElement diffElement : diff.getDifferences(transC.get())) {
-        System.err.println(" : " + diffElement.toString());
-      }
+//      // Matching model elements
+//      MatchModel match = MatchService.doMatch(transC.get(), transB.get(), Collections.<String, Object> emptyMap());
+//      // Computing differences
+//      DiffModel diff = DiffService.doDiff(match, false);
+//      // Merges all differences from model1 to model2
+//      List<DiffElement>  differences = new ArrayList<DiffElement>(diff.getOwnedElements());
+//      System.err.println("Compare: " + path2 + "  vs. " + path1);
+//      for (DiffElement e : differences) {
+//        System.err.println("\nChanges: " );
+//        for (EObject contents : e.eContents()) {
+//          printDiffs((DiffElement)contents, new StringBuffer(" "));
+//        }
+//      }
+//      //MergeService.merge(differences, true);
+//      System.err.println("\nAll changes : ");
+//      for(DiffElement diffElement : diff.getDifferences(transC.get())) {
+//        System.err.println(" : " + diffElement.toString());
+//      }
+//      
+      EmfDiffTest.printDiff(transC.get(), transB.get());
     }
     catch (RecognitionException | IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
-    }
-    catch (InterruptedException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    
-  }
-  
-  public void printDiffs(DiffElement diff, StringBuffer s) {
-    System.err.println(s + " - " + diff + " :");
-    Iterator<DiffElement> it = diff.getSubDiffElements().iterator();
-    s.append("  ");
-    while (it.hasNext()) {
-      DiffElement dw  = it.next();
-      if (dw.getSubDiffElements().size() != 0) {
-        printDiffs(dw, s);
-      } else {
-        System.err.println(s + " - " + dw);
-      }
     }
   }
   
