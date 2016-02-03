@@ -6,32 +6,22 @@
 package de.monticore.emf;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Optional;
 
 import org.antlr.v4.runtime.RecognitionException;
-import org.eclipse.emf.compare.diff.metamodel.DiffElement;
-import org.eclipse.emf.compare.diff.metamodel.DiffModel;
-import org.eclipse.emf.compare.diff.service.DiffService;
-import org.eclipse.emf.compare.match.metamodel.MatchModel;
-import org.eclipse.emf.compare.match.service.MatchService;
-import org.eclipse.emf.ecore.EObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.monticore.codegen.cd2java.ast.AstAdditionalMethods;
-import de.monticore.emf.util.compare.EmfDiffTest;
+import de.monticore.emf.util.ResourceController;
+import de.monticore.emf.util.compare.AstEmfDiffUtility;
 import de.monticore.grammar.concepts.antlr.antlr._ast.AntlrResourceController;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar._ast.GrammarPackage;
 import de.monticore.grammar.grammar._ast.GrammarResourceController;
-import de.monticore.grammar.grammar_withconcepts._ast.Grammar_WithConceptsResourceController;
+import de.monticore.grammar.grammar_withconcepts._ast.Grammar_WithConceptsPackage;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.monticore.java.javadsl._ast.JavaDSLResourceController;
 import de.monticore.lexicals.lexicals._ast.LexicalsResourceController;
-import de.monticore.literals.literals._ast.LiteralsResourceController;
 import de.monticore.types.types._ast.TypesResourceController;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
@@ -145,12 +135,17 @@ public class TestMCGrammarEmfCode {
       
      
       LexicalsResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
-      LiteralsResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
+//      LiteralsResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
       TypesResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
       JavaDSLResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
       AntlrResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
       GrammarResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
-      Grammar_WithConceptsResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
+//      Grammar_WithConceptsResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
+//      
+   //   ResourceController.getInstance().serializeAstToECoreModelFile(LiteralsPackage.eINSTANCE, "Literals3", "grammars_emf_new/");
+      ResourceController.getInstance().serializeAST(GrammarPackage.eINSTANCE);
+      ResourceController.getInstance().serializeAST(Grammar_WithConceptsPackage.eINSTANCE);
+     // ResourceController.getInstance().serializeAstToECoreModelFile(TypesPackage.eINSTANCE, "Types3", "grammars_emf/");
       
       
       String path1 = "de/monticore/emf/Automaton.mc4";
@@ -190,7 +185,7 @@ public class TestMCGrammarEmfCode {
 //        System.err.println(" : " + diffElement.toString());
 //      }
 //      
-      EmfDiffTest.printDiff(transC.get(), transB.get());
+      AstEmfDiffUtility.printAstDiffs(transC.get(), transB.get());
     }
     catch (RecognitionException | IOException e) {
       // TODO Auto-generated catch block

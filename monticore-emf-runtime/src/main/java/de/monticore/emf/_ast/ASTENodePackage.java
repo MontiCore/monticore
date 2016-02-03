@@ -4,7 +4,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EPackage;
 
-public interface ASTENodePackage extends EPackage {
+public interface ASTENodePackage extends ASTEPackage {
   // The package name.
   String eNAME = "ASTENode";
   

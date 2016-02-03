@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.common.collect.Lists;
+
+import de.monticore.prettyprint.AstPrettyPrinter;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.SourcePosition;
@@ -48,6 +50,8 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
   protected Optional<? extends Symbol> symbol = Optional.empty();
   
   protected Optional<? extends Scope> enclosingScope = Optional.empty();
+  
+  protected Optional<AstPrettyPrinter<ASTNode>> prettyPrinter = Optional.empty();
   
   public abstract ASTNode deepClone();
   
@@ -169,5 +173,26 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
   
   public Optional<? extends Symbol> getSymbol() {
     return symbol;
+  }
+  
+  /**
+   * @return prettyPrinter
+   */
+  public Optional<AstPrettyPrinter<ASTNode>> getPrettyPrinter() {
+    return this.prettyPrinter;
+  }
+
+  /**
+   * @param prettyPrinter the prettyPrinter to set
+   */
+  public void setPrettyPrinter(AstPrettyPrinter<ASTNode> prettyPrinter) {
+    this.prettyPrinter = Optional.ofNullable(prettyPrinter);
+  }
+  
+  public  Optional<String> prettyPrint() { 
+    if (prettyPrinter.isPresent()) {
+      return Optional.ofNullable(prettyPrinter.get().prettyPrint(this));
+    }
+    return Optional.empty();
   }
 }

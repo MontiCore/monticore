@@ -27,7 +27,7 @@
 
     <!-- .. Libraries ..................................................... -->
 
-    <mc.java.version>4.3.2-SNAPSHOT</mc.java.version>
+    <mc.java.version>4.3.3-SNAPSHOT</mc.java.version>
     <cd4analysis.version>1.3.6</cd4analysis.version>
 
     <se-commons.version>1.7.6</se-commons.version>
@@ -431,19 +431,16 @@
       <groupId>org.eclipse.emf</groupId>
       <artifactId>org.eclipse.emf.compare</artifactId>
       <version>${emf.compare.version}</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.emf</groupId>
       <artifactId>org.eclipse.emf.compare.match</artifactId>
           <version>${emf.compare.version}</version>
-          <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.emf</groupId>
       <artifactId>org.eclipse.emf.compare.diff</artifactId>
           <version>${emf.compare.version}</version>
-          <scope>test</scope>
     </dependency>
 
       <!-- all the stuff for the Maven plugin -->

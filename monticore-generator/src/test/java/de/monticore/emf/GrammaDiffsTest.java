@@ -12,7 +12,7 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.monticore.emf.util.compare.EmfDiffTest;
+import de.monticore.emf.util.compare.AstEmfDiffUtility;
 import de.monticore.grammar.concepts.antlr.antlr._ast.AntlrResourceController;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.GrammarResourceController;
@@ -43,19 +43,7 @@ public class GrammaDiffsTest {
 
   @Test
   public  void test() {
-    Slf4jLog.init();
-    Log.enableFailQuick(false);
      try {
-     
-      LexicalsResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
-      LiteralsResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
-      TypesResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
-      JavaDSLResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
-      AntlrResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
-      GrammarResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
-      Grammar_WithConceptsResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
-      
-      
       String path1 = "de/monticore/emf/Automaton.mc4";
       String path2 = "de/monticore/emf/Automaton2.mc4";
       Optional<ASTMCGrammar> transB = new Grammar_WithConceptsParser().parse("src/test/resources/" + path1);
@@ -93,9 +81,13 @@ public class GrammaDiffsTest {
 //        System.err.println(" : " + diffElement.toString());
 //      }
 //      
-      EmfDiffTest.printDiff(transC.get(), transB.get());
+      AstEmfDiffUtility.getAstDiffs(transC.get(), transB.get());
     }
     catch (RecognitionException | IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    catch (InterruptedException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }

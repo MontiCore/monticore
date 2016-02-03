@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ASCII"?>
-<Grammar:ASTMCGrammar xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Grammar="http://Grammar/1.0" xsi:schemaLocation="http://Grammar/1.0 ../grammars_emf/Grammar.ecore" Name="Automaton">
+<Grammar:ASTMCGrammar xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Grammar="http://Grammar/1.0" Name="Automaton">
   <Supergrammar>
     <Names>mc</Names>
     <Names>grammars</Names>

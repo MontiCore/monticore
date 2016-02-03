@@ -1,5 +1,8 @@
 package de.monticore.emf._ast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EOperation;
@@ -65,7 +68,7 @@ public class ASTENodePackageImpl extends EPackageImpl implements ASTENodePackage
     theASTENodePackage.initializePackageContents();
     
     // Mark meta-data to indicate it can't be changed
-    theASTENodePackage.freeze();
+   // theASTENodePackage.freeze();
     
     // Update the registry and return the package
     EPackage.Registry.INSTANCE.put(ASTENodePackage.eNS_URI, theASTENodePackage);
@@ -151,6 +154,26 @@ public class ASTENodePackageImpl extends EPackageImpl implements ASTENodePackage
     // Create resource
     createResource(eNS_URI);
     
+  }
+  
+  public List<EPackage> getESuperPackages() {
+    return new ArrayList<>();
+  }
+
+  /**
+   * @see de.monticore.emf._ast.ASTEPackage#getASTESuperPackages()
+   */
+  @Override
+  public List<ASTEPackage> getASTESuperPackages() {
+    return new ArrayList<>();
+  }
+
+  /**
+   * @see de.monticore.emf._ast.ASTEPackage#getPackageName()
+   */
+  @Override
+  public String getPackageName() {
+    return "de.monticore.emf";
   }
   
 }

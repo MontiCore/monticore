@@ -18,8 +18,6 @@ import org.eclipse.emf.compare.match.service.MatchService;
 import org.eclipse.emf.ecore.EObject;
 
 import de.monticore.emf.ASTEObjectImplNode;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.Slf4jLog;
 
 /**
  * TODO: Write me!
@@ -29,11 +27,20 @@ import de.se_rwth.commons.logging.Slf4jLog;
  *          $Date$
  *
  */
-public class EmfDiffTest {
+public class AstEmfDiffUtility {
   
-  public static void printDiff(ASTEObjectImplNode node1, ASTEObjectImplNode node2) {
-    Slf4jLog.init();
-    Log.enableFailQuick(false);
+  
+  
+  public static List<DiffElement> getAstDiffs(ASTEObjectImplNode node1, ASTEObjectImplNode node2)
+      throws InterruptedException {
+    // Matching model elements
+    MatchModel match = MatchService.doMatch(node1, node2, Collections.<String, Object> emptyMap());
+    // Computing differences
+    DiffModel diff = DiffService.doDiff(match, false);
+    return diff.getOwnedElements();
+  }
+  
+  public static void printAstDiffs(ASTEObjectImplNode node1, ASTEObjectImplNode node2) {
       
    // Configure EMF Compare
 //      EMFCompare comparator = EMFCompare.builder().build();
@@ -105,7 +112,7 @@ public class EmfDiffTest {
       for (DiffElement e : differences) {
         System.err.println("\nChanges: " );
         for (EObject contents : e.eContents()) {
-          printDiffs((DiffElement)contents, new StringBuffer(" "));
+          printDiff((DiffElement)contents, new StringBuffer(" "));
         }
       }
       //MergeService.merge(differences, true);
@@ -121,14 +128,14 @@ public class EmfDiffTest {
     
   }
   
-  public static void printDiffs(DiffElement diff, StringBuffer s) {
+  public static void printDiff(DiffElement diff, StringBuffer s) {
     System.err.println(s + " - " + diff + " :");
     Iterator<DiffElement> it = diff.getSubDiffElements().iterator();
     s.append("  ");
     while (it.hasNext()) {
       DiffElement dw  = it.next();
       if (dw.getSubDiffElements().size() != 0) {
-        printDiffs(dw, s);
+        printDiff(dw, s);
       } else {
         System.err.println(s + " - " + dw);
       }

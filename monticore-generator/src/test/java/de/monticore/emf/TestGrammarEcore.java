@@ -60,7 +60,7 @@ public class TestGrammarEcore {
       JavaDSLResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
       AntlrResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
       GrammarResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
-      res.serializeAstToECoreModelFile(Grammar_WithConceptsPackage.eINSTANCE, "Grammar_WithConceptsPackage2", "grammars_emf/");
+      res.serializeAST(Grammar_WithConceptsPackage.eINSTANCE);
       
       
       String path1 = "de/monticore/emf/Automaton.mc4";
