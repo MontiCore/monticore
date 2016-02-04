@@ -11,6 +11,4 @@ grammar Supergrammar {
   interface G;
    
   K implements G = "OO";
-  
-  abstract P;
 }

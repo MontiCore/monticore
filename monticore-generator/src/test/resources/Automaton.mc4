@@ -1,6 +1,5 @@
-package de.monticore.emf;
 
-grammar Automaton2 extends mc.grammars.lexicals.TestLexicals {
+grammar Automaton extends mc.grammars.lexicals.TestLexicals {
 
 /** A ASTAutomaton represents a finite automaton
     @attribute Name Name of the automaton
@@ -31,8 +30,6 @@ State =
     @attribute To Name of the state to which the transitions goes
 */ 
 Transition =
-  from:Name "-" input:Name ">>" to:Name ";" Action;
-  
- Action = "{" Name "}"; 
+  from:Name "-" input:Name ">" to:Name ";" ;
   
 }

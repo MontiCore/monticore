@@ -1,5 +1,0 @@
-automaton Testautomat {
-   state a  <<initial>><<final>>;
-	
-
-}

@@ -62,7 +62,6 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
     // Run over classdiagramm and converts cd types to mc-java types
     ETypeCollector emfCollector = new ETypeCollector(this);
     emfCollector.handle(topAst.getCDDefinition());
-    System.err.println(emfCollector.getTypes());
   }
   
   public static String getQualifiedENodeName() {

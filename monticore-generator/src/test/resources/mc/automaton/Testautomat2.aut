@@ -1,5 +1,0 @@
-automaton Testautomat2 {
-      state b  <<initial>><<final>>;
-	
-	
-}
