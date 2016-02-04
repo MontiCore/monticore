@@ -1,9 +1,9 @@
 /*
- * Copyright (c) 2016 RWTH Aachen. All rights reserved.
+ * Copyright (c) 2015 RWTH Aachen. All rights reserved.
  *
  * http://www.se-rwth.de/
  */
-package de.monticore.emf;
+package mc.emf;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -18,12 +18,11 @@ import org.eclipse.emf.compare.diff.metamodel.DiffElement;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.monticore.emf.util.AST2ModelFiles;
 import de.monticore.emf.util.compare.AstEmfDiffUtility;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
+import mc.grammar.grammar_withconcepts._ast.ASTMCConcept;
+import mc.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 
 /**
  * TODO: Write me!
@@ -31,7 +30,7 @@ import de.se_rwth.commons.logging.Slf4jLog;
  * @author (last commit) $Author$
  * @version $Revision$, $Date$
  */
-public class GrammaDiffsTest {
+public class TestMCGrammarEmfCode {
   
   @BeforeClass
   public static void setup() {
@@ -39,24 +38,29 @@ public class GrammaDiffsTest {
     Log.enableFailQuick(false);
   }
   
+  /**
+   * TODO: Write me!
+   * 
+   * @param args
+   */
   @Test
   public void testAstGrammarDiffs() {
     try {
-      Optional<ASTMCGrammar> grammar1 = new Grammar_WithConceptsParser()
-          .parse("src/test/resources/de/monticore/emf/Automaton.mc4");
+      Optional<ASTMCConcept> grammar1 = new Grammar_WithConceptsParser()
+          .parse("src/test/resources/mc/grammar/Automaton.mc4");
           
-      Optional<ASTMCGrammar> grammar2 = new Grammar_WithConceptsParser()
-          .parse("src/test/resources/de/monticore/emf/Automaton2.mc4");
-      
+      Optional<ASTMCConcept> grammar2 = new Grammar_WithConceptsParser()
+          .parse("src/test/resources/mc/diff/Automaton2.mc4");
+          
       if (grammar1.isPresent() && grammar2.isPresent()) {
-      
+        
         List<DiffElement> diffs = AstEmfDiffUtility.getAllAstDiffs(grammar2.get(), grammar1.get());
         
         assertEquals(5, diffs.size());
         
         assertEquals("Attribute Name in Automaton2 has changed from Automaton to Automaton2",
             diffs.get(0).toString());
-        
+            
         assertEquals("Action has been added", diffs.get(1).toString());
         
         assertTrue(diffs.get(2).toString().contains("ASTTerminal"));

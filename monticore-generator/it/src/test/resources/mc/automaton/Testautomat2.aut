@@ -1,6 +1,6 @@
 automaton Testautomat2 {
       state b  <<initial>><<final>>;
-	
+	/*
 	a -x> t;
 	
 	state b { 
@@ -11,5 +11,5 @@ automaton Testautomat2 {
 		d -y> d;
 	 }
 
-	b -g> a;
+	b -g> a;  */
 }

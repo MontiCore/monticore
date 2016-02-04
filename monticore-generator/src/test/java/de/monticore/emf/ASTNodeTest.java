@@ -5,6 +5,12 @@
  */
 package de.monticore.emf;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import java.io.IOException;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -36,7 +42,12 @@ public class ASTNodeTest {
   @Test
   public  void test() {
      
-    AST2ModelFiles.get().serializeAST(ASTENodePackage.eINSTANCE);
+    try {
+      AST2ModelFiles.get().serializeAST(ASTENodePackage.eINSTANCE);
+    }
+    catch (IOException e) {
+      fail("Should not reach this, but: " + e);
+    }
       
 //      String path1 = "de/monticore/emf/Automaton.mc4";
 //      String path2 = "de/monticore/emf/Automaton2.mc4";

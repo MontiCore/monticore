@@ -29,7 +29,7 @@ grammar FeatureDSLgrammarinherit extends mc.feature.grammarinherit.sup.FeatureDS
   // Checks interface inheritance
   T = Inter;	
 
-   
-  B implements Y;  
+
+  B implements Y;
 	
-}  
+}

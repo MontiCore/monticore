@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.compare.diff.metamodel.DiffElement;
 import org.eclipse.emf.compare.diff.metamodel.DiffModel;
 import org.eclipse.emf.compare.diff.service.DiffService;
@@ -40,7 +41,7 @@ public class AstEmfDiffUtility {
     return diff.getOwnedElements();
   }
   
-  public static void printAstDiffs(ASTEObjectImplNode node1, ASTEObjectImplNode node2) {
+  public static void printAstDiffsHierarchical(ASTEObjectImplNode node1, ASTEObjectImplNode node2) throws InterruptedException {
       
    // Configure EMF Compare
 //      EMFCompare comparator = EMFCompare.builder().build();
@@ -84,7 +85,6 @@ public class AstEmfDiffUtility {
 //     System.err.println("::: " + diff.getDifferences(transA1.get()));
 //      
   // Prints the results
-     try {
 //       System.out.println("MatchModel :\n"); 
 //       System.out.println(ModelUtils.serialize(match));
 //       System.out.println("DiffModel :\n"); 
@@ -103,29 +103,40 @@ public class AstEmfDiffUtility {
       
      
       // Matching model elements
-      MatchModel match = MatchService.doMatch(node1, node2, Collections.<String, Object> emptyMap());
-      // Computing differences
-      DiffModel diff = DiffService.doDiff(match, false);
-      // Merges all differences from model1 to model2
-      List<DiffElement>  differences = new ArrayList<DiffElement>(diff.getOwnedElements());
-      System.err.println("Compare: " + node1 + "  vs. " + node2);
-      for (DiffElement e : differences) {
-        System.err.println("\nChanges: " );
-        for (EObject contents : e.eContents()) {
-          printDiff((DiffElement)contents, new StringBuffer(" "));
-        }
-      }
-      //MergeService.merge(differences, true);
-      System.err.println("\nAll changes : ");
-      for(DiffElement diffElement : diff.getDifferences(node2)) {
-        System.err.println(" : " + diffElement.toString());
+    MatchModel match = MatchService.doMatch(node1, node2, Collections.<String, Object> emptyMap());
+    // Computing differences
+    DiffModel diff = DiffService.doDiff(match, false);
+    // Merges all differences from model1 to model2
+    System.err.println("Compare: " + node1 + "\n vs. " + node2);
+    for (DiffElement e : diff.getOwnedElements()) {
+      System.err.println("\nChanges: ");
+      for (EObject contents : e.eContents()) {
+        printDiff((DiffElement) contents, new StringBuffer(" "));
       }
     }
-    catch (InterruptedException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+  }
+  
+  public static void printAllAstDiffs(ASTEObjectImplNode node1, ASTEObjectImplNode node2)
+      throws InterruptedException {
+    // Matching model elements
+    MatchModel match = MatchService.doMatch(node1, node2, Collections.<String, Object> emptyMap());
+    // Computing differences
+    DiffModel diff = DiffService.doDiff(match, false);
+    // Merges all differences from model1 to model2
+    System.err.println("\nAll changes : ");
+    for (DiffElement diffElement : diff.getDifferences(node2)) {
+      System.err.println(" : " + diffElement.toString());
     }
-    
+  }
+  
+  public static EList<DiffElement> getAllAstDiffs(ASTEObjectImplNode node1,
+      ASTEObjectImplNode node2) throws InterruptedException {
+    // Matching model elements
+    MatchModel match = MatchService.doMatch(node1, node2, Collections.<String, Object> emptyMap());
+    // Computing differences
+    DiffModel diff = DiffService.doDiff(match, false);
+    // Merges all differences from model1 to model2
+    return diff.getDifferences(node2);
   }
   
   public static void printDiff(DiffElement diff, StringBuffer s) {
@@ -133,10 +144,11 @@ public class AstEmfDiffUtility {
     Iterator<DiffElement> it = diff.getSubDiffElements().iterator();
     s.append("  ");
     while (it.hasNext()) {
-      DiffElement dw  = it.next();
+      DiffElement dw = it.next();
       if (dw.getSubDiffElements().size() != 0) {
         printDiff(dw, s);
-      } else {
+      }
+      else {
         System.err.println(s + " - " + dw);
       }
     }

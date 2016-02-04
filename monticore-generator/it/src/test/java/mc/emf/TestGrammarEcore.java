@@ -3,7 +3,7 @@
  *
  * http://www.se-rwth.de/
  */
-package de.monticore.emf;
+package mc.emf;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -16,19 +16,17 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.monticore.emf.util.AST2ModelFiles;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar_withconcepts._ast.Grammar_WithConceptsPackage;
-import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
+import mc.grammar.grammar_withconcepts._ast.ASTMCConcept;
+import mc.grammar.grammar_withconcepts._ast.Grammar_WithConceptsPackage;
+import mc.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 
 /**
  * TODO: Write me!
  *
- * @author  (last commit) $Author$
- * @version $Revision$,
- *          $Date$
- *
+ * @author (last commit) $Author$
+ * @version $Revision$, $Date$
  */
 public class TestGrammarEcore {
   
@@ -40,16 +38,16 @@ public class TestGrammarEcore {
   
   @Test
   public void testMCGrammar() {
-     try {
-       
-       AST2ModelFiles res = AST2ModelFiles.get();
-      res.serializeAST(Grammar_WithConceptsPackage.eINSTANCE);
+    try {
       
+      AST2ModelFiles.get().serializeAST(Grammar_WithConceptsPackage.eINSTANCE);
       
-      String path1 = "de/monticore/emf/Automaton.mc4";
-      Optional<ASTMCGrammar> transB = new Grammar_WithConceptsParser().parse("src/test/resources/" + path1);
-      assertTrue(transB.isPresent());
-      AST2ModelFiles.get().serializeASTInstance(transB.get(), "Automaton");
+      Optional<ASTMCConcept> grammar = new Grammar_WithConceptsParser()
+          .parse("src/test/resources/mc/grammar/Automaton.mc4");
+      assertTrue(grammar.isPresent());
+      
+      AST2ModelFiles.get().serializeASTInstance(grammar.get(), "Automaton");
+      
     }
     catch (RecognitionException | IOException e) {
       fail(e.getMessage());

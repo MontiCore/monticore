@@ -186,8 +186,6 @@ public class CdEmfDecorator extends CdDecorator {
       addToString(clazz, astHelper);
       addEStaticClass(clazz, astHelper);
     }
-    
-    addResourceController(cdCompilationUnit, astClasses, astHelper);
   }
   
   /**
@@ -571,41 +569,6 @@ public class CdEmfDecorator extends CdDecorator {
         + "(InternalEObject owner, int featureID) ;";
     methodBody = new TemplateHookPoint("ast.factorymethods.DoCreate", clazz, className, params);
     replaceMethodBodyTemplate(nodeFactoryClass, toParse, methodBody);
-  }
-  
-  /**
-   * TODO: Write me!
-   * 
-   * @param cdCompilationUnit
-   * @param nativeClasses
-   * @param astHelper
-   * @throws ANTLRException
-   */
-  void addResourceController(ASTCDCompilationUnit cdCompilationUnit,
-      List<ASTCDClass> astClasses, AstEmfGeneratorHelper astHelper) throws RecognitionException {
-    ASTCDDefinition cdDef = cdCompilationUnit.getCDDefinition();
-    ASTCDClass resourceControllerClass = CD4AnalysisNodeFactory.createASTCDClass();
-    String className = cdDef.getName() + "ResourceController";
-    
-    // Check if a handwritten node factory exists
-    if (TransformationHelper.existsHandwrittenClass(targetPath,
-        TransformationHelper.getAstPackageName(cdCompilationUnit)
-            + className)) {
-      className += TransformationHelper.GENERATED_CLASS_SUFFIX;
-    }
-    resourceControllerClass.setName(className);
-    
-    List<String> classNames = astClasses.stream().map(e -> getPlainName(e))
-        .collect(Collectors.toList());
-        
-    cdDef.getCDClasses().add(resourceControllerClass);
-    glex.replaceTemplate("ast.ClassContent", resourceControllerClass,
-        new TemplateHookPoint(
-            "ast_emf.ResourceController", resourceControllerClass, cdDef.getName(), "http://"
-                + cdDef.getName()
-                + "/1.0",
-            classNames));
-            
   }
   
 }
