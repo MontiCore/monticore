@@ -3,18 +3,28 @@
  *
  * http://www.se-rwth.de/
  */
-package de.monticore.languages.grammar;
+package mc.feature;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.antlr.v4.runtime.RecognitionException;
+import org.eclipse.emf.compare.diff.metamodel.DiffElement;
+import org.eclipse.emf.compare.diff.metamodel.DiffModel;
+import org.eclipse.emf.compare.diff.service.DiffService;
+import org.eclipse.emf.compare.match.metamodel.MatchModel;
+import org.eclipse.emf.compare.match.service.MatchService;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
+import de.monticore.emf.util.AST2ModelFiles;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
+import mc.featureemf.fautomaton.automatonwithaction.actionautomaton._ast.ASTCounter;
+import mc.featureemf.fautomaton.automatonwithaction.actionautomaton._parser.ActionAutomatonParser;
 
 /**
  * TODO: Write me!
@@ -22,17 +32,21 @@ import de.se_rwth.commons.logging.Slf4jLog;
  * @author (last commit) $Author$
  * @version $Revision$, $Date$
  */
-public class TestAutomaton {
+public class TestActionAutomaton {
+  
+  @BeforeClass
+  public static void setup() {
+    Slf4jLog.init();
+    Log.enableFailQuick(false);
+  }
   
   /**
    * TODO: Write me!
    * 
    * @param args
    */
-  //@Test
+  @Test
   public  void test() {
-    Slf4jLog.init();
-    Log.enableFailQuick(false);
 //    TestAutomatonResourceController.getInstance().serializeAstToECoreModelFile("models/automaton/");
 //    ASTTransition transMy = AutomatonNodeFactory.createASTTransition("myfrom", "myactivate",
 //        "myto");
@@ -118,20 +132,19 @@ public class TestAutomaton {
 //     snapshot.setDiff(diff);
 //     ModelUtils.save(snapshot, "result.emfdiff"); //$NON-NLS-1$
       
-      
-      Optional<ASTMCGrammar> transB = new Grammar_WithConceptsParser().parse("src/test/resources/Automaton.mc4");
+      Optional<ASTCounter> transB = new ActionAutomatonParser().parse("src/test/resources/mc/automaton/Testautomat.aut");
       if (transB.isPresent()) {
-        System.err.println("ASTMCGrammar: " + transB.get());
-        TestAutomatonResourceController.getInstance().serializeASTClassInstance(transB.get(), "models");
+        System.err.println("ASTAutomaton: " + transB.get());
+        AST2ModelFiles.get().serializeASTInstance(transB.get(), "B");
       }
       else {
         System.err.println("Missed");
       }
-    /*  
-      Optional<ASTAutomaton> transC = new AutomatonParser().parse("src/test/resources/mc/automaton/Testautomat2.aut");
+      
+      Optional<ASTCounter> transC = new ActionAutomatonParser().parse("src/test/resources/mc/automaton/Testautomat2.aut");
       if (transC.isPresent()) {
         System.err.println("ASTAutomaton: " + transC.get());
-        TestAutomatonResourceController.getInstance().serializeASTClassInstance(transC.get(), "models/automaton/B");
+        AST2ModelFiles.get().serializeASTInstance(transC.get(), "C");
       }
       else {
         System.err.println("Missed");
@@ -149,16 +162,16 @@ public class TestAutomaton {
         System.err.println(" diffElement: " + diffElement.toString());
       }
       System.err.println("::: " + diff.getDifferences(transB.get()));
-      */
+      
     }
     catch (RecognitionException | IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-//    catch (InterruptedException e) {
-//      // TODO Auto-generated catch block
-//      e.printStackTrace();
-//    }
+    catch (InterruptedException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     
   }
   

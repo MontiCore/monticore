@@ -11,16 +11,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.RecognitionException;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstAdditionalAttributes;
@@ -35,9 +32,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.TypesHelper;
-import de.monticore.types.TypesPrinter;
 import de.monticore.types.types._ast.ASTImportStatement;
-import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;

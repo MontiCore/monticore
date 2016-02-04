@@ -43,8 +43,9 @@ import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EDataType;
+import de.monticore.emf._ast.ASTEPackage;
 
-public interface ${ast.getName()} extends EPackage {
+public interface ${ast.getName()} extends ASTEPackage {
   // The package name.
   String eNAME = "${grammarName}";
   // The package namespace URI.

@@ -40,6 +40,7 @@ ${tc.signature("ast", "grammarName", "astClasses", "externalTypes")}
 <#-- set package -->
 package ${genHelper.getAstPackage()};
 
+import java.util.*;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EEnum;
@@ -110,20 +111,34 @@ public class ${ast.getName()} extends EPackageImpl implements ${grammarName}Pack
     ASTENodePackageImpl theASTENodePackage = (ASTENodePackageImpl) (EPackage.Registry.INSTANCE.getEPackage(ASTENodePackage.eNS_URI)  instanceof ASTENodePackage ? 
                                                                     EPackage.Registry.INSTANCE.getEPackage(ASTENodePackage.eNS_URI) : ASTENodePackage.eINSTANCE);
         
-    <#--TODO GV   ${op.includeTemplates(ePackageImplRegisterSuperGrammar, ast.getSuperGrammars())} -->
-        
+    <#list genHelper.getSuperGrammarCds() as superGrammar>
+      <#assign qualifiedName = genHelper.getEPackageName(superGrammar)>
+      <#assign identifierName = astHelper.getIdentifierName(superGrammar)>
+      ${qualifiedName}Impl the${identifierName?lower_case?cap_first + "Package"} = 
+      (${qualifiedName}Impl)(EPackage.Registry.INSTANCE.getEPackage(
+      ${qualifiedName}.eNS_URI) instanceof ${qualifiedName}? 
+      EPackage.Registry.INSTANCE.getEPackage(${qualifiedName}.eNS_URI) :
+      ${qualifiedName}.eINSTANCE);
+    </#list>    
+    
     // Create package meta-data objects
     the${grammarName}Package.createPackageContents();
     theASTENodePackage.createPackageContents();
-    <#--TODO GV       ${op.includeTemplates(ePackageImplCreateSuperGrammar, ast.getSuperGrammars())} -->
+  <#list genHelper.getSuperGrammarCds() as superGrammar>
+    <#assign identifierName = astHelper.getIdentifierName(superGrammar)>
+    the${identifierName?lower_case?cap_first + "Package"}.createPackageContents();
+  </#list>    
         
     // Initialize created meta-data
     the${grammarName}Package.initializePackageContents();
     theASTENodePackage.initializePackageContents();
-    <#--TODO GV   ${op.includeTemplates(ePackageImplInitSuperGrammar, ast.getSuperGrammars())} -->
+  <#list genHelper.getSuperGrammarCds() as superGrammar>
+    <#assign identifierName = astHelper.getIdentifierName(superGrammar)>
+    the${identifierName?lower_case?cap_first + "Package"}.initializePackageContents();
+  </#list> 
         
     // Mark meta-data to indicate it can't be changed
-    the${grammarName}Package.freeze();
+  //  the${grammarName}Package.freeze();
 
     // Update the registry and return the package
     EPackage.Registry.INSTANCE.put(${grammarName}Package.eNS_URI, the${grammarName}Package);
@@ -136,6 +151,18 @@ public class ${ast.getName()} extends EPackageImpl implements ${grammarName}Pack
   
   public EEnum getConstants${grammarName}(){
     return constants${grammarName}EEnum;
+  }
+  
+  public String getPackageName() {
+    return "${genHelper.getPackageName()}";
+  }
+  
+  public List<ASTEPackage> getASTESuperPackages() {
+    List<ASTEPackage> eSuperPackages = new ArrayList<>();
+     <#list genHelper.getASTESuperPackages() as eSuperPackage>
+    eSuperPackages.add((ASTEPackage)${eSuperPackage}.eINSTANCE);
+    </#list>   
+    return eSuperPackages;
   }
     
   <#--  ${op.includeTemplates(ePackageLiteralMain, ast.getFiles())} --> 

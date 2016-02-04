@@ -119,6 +119,24 @@
       <artifactId>de.monticore.java</artifactId>
       <classifier>${grammars.classifier}</classifier>
     </dependency>
+    
+    <!-- EMF test dependencies -->
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.compare</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.compare.match</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.compare.diff</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
   </dependencies>
 
   <build>

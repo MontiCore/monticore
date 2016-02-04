@@ -6,7 +6,7 @@
 
 
 
-package de.monticore.languages.grammar;
+package mc.emf;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,15 +25,15 @@ import de.monticore.emf._ast.ASTENodePackage;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._ast.Grammar_WithConceptsPackage;
 
-public class TestAutomatonResourceController {
+public class MCGrammarResourceController {
  
-    private static final TestAutomatonResourceController controller = new TestAutomatonResourceController();
+    private static final MCGrammarResourceController controller = new MCGrammarResourceController();
  
     // Private constructor for Singleton-Pattern
-    private TestAutomatonResourceController() {
+    private MCGrammarResourceController() {
     }
  
-    public static TestAutomatonResourceController getInstance() {
+    public static MCGrammarResourceController getInstance() {
         return controller;
     }
     
@@ -50,7 +50,7 @@ public class TestAutomatonResourceController {
           Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl()); 
         
         // For Current Package 
-        URI fileURI = URI.createFileURI(new File(path + "Automaton.mc4").getAbsolutePath());
+        URI fileURI = URI.createFileURI(new File(path + "Grammar_WithConcepts.ecore").getAbsolutePath());
         // Create a resource for this file. 
         Resource resource = resourceSet.createResource(fileURI);
         // Add instance of package to the contents.

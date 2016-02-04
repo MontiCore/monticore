@@ -1,18 +1,20 @@
-package mc.featureemf.fautomaton.automatonwithaction;
+package de.monticore.emf.fautomaton.automatonwithaction;
 
- grammar ActionAutomaton extends mc.featureemf.fautomaton.automaton.FlatAutomaton {
+ grammar ActionAutomaton extends de.monticore.emf.fautomaton.automaton.FlatAutomaton {
 
 	//external Action;
+	
+	Action = State "hh" Transition*; 
 
     /** A finite automaton
-	@attribute name Name of the automaton
+	@attribute name Name of the automaton 
     @attribute Counter List of all counters
-    @attribute State List of all states
+    @attribute State List of all states  
     @attribute Transition List of all transitions
-	*/
-  
+	*/  
+   
     /** A Counter represents a variable in the automaton
-   	@attribute Name of the counter
+   	@attribute Name of the counter 
     */
 	Counter =
 	  "counter" Name ("," Name)* ";" ;
@@ -25,4 +27,4 @@ package mc.featureemf.fautomaton.automatonwithaction;
     */
 	// TODO SO, GV: TransitionWithAction extends Transition = from:Name "-" activate:Name "[" Action "]" ">" to:Name ";" ;
 
-}
+}        

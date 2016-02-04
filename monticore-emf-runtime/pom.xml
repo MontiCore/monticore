@@ -78,6 +78,20 @@
       <groupId>de.monticore</groupId>
       <artifactId>monticore-runtime</artifactId>
     </dependency>
+    
+    <!-- EMF test dependencies -->
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.compare</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.compare.match</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.compare.diff</artifactId>
+    </dependency>
 
 
     <!-- include this dependency if you want logging of your test executions -->
