@@ -31,6 +31,7 @@ import com.google.common.collect.Maps;
 
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
+import de.monticore.emf._ast.ASTENodePackage;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.TypesHelper;
 import de.monticore.types.TypesPrinter;
@@ -99,14 +100,16 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
     if (!emfAttributes.containsKey(type)) {
       return new ArrayList<>();
     }
-    return emfAttributes.get(type).stream().filter(e -> e.isEAttribute()).collect(Collectors.toList());
+    return emfAttributes.get(type).stream().filter(e -> e.isEAttribute())
+        .collect(Collectors.toList());
   }
   
   public List<EmfAttribute> getEReferences(ASTCDType type) {
     if (!emfAttributes.containsKey(type)) {
       return new ArrayList<>();
     }
-    return emfAttributes.get(type).stream().filter(e -> e.isEReference()).collect(Collectors.toList());
+    return emfAttributes.get(type).stream().filter(e -> e.isEReference())
+        .collect(Collectors.toList());
   }
   
   public List<EmfAttribute> getAllEmfAttributes() {
@@ -219,6 +222,30 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
         .equals(JAVA_LIST);
   }
   
+  public List<String> getASTESuperPackages() {
+    List<String> ePackages = new ArrayList<>();
+    for (String superGrammar : getSuperGrammarCds()) {
+      ePackages.add(getEPackageName(superGrammar));
+    }
+    if (ePackages.isEmpty()) {
+      ePackages.add(ASTENodePackage.class.getName());
+    }
+    return ePackages;
+  }
+  
+  public static String getEPackageName(String qualifiedSuperGrammar) {
+    return qualifiedSuperGrammar.toLowerCase() + "._ast."
+        + StringTransformations.capitalize(Names.getSimpleName(qualifiedSuperGrammar)) + "Package";
+        
+  }
+  
+//  public List<String> getIndirectSuperGrammars() {
+//    List<String> superCDs = getAllSuperCds(getCdSymbol()).stream()
+//        .map(CDSymbol::getFullName).collect(Collectors.toList());
+//    superCDs.removeAll(getSuperGrammarCds());
+//    return superCDs;
+//  }
+  
   public void createEmfAttribute(ASTCDType ast, ASTCDAttribute cdAttribute) {
     // TODO GV: interfaces, enums
     String attributeName = getPlainName(ast) + "_"
@@ -285,14 +312,15 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
         newType = convertedTypeName;
       }
       addExternalType(newType);
-      System.err.println("NewtYPE " + newType);
     }
     
   }
   
   public String getIdentifierName(String qualifiedName) {
-    return Names.getSimpleName(qualifiedName) + "_" + Names.getQualifier(qualifiedName).replace('.', '_');
+    return Names.getSimpleName(qualifiedName) + "_"
+        + Names.getQualifier(qualifiedName).replace('.', '_');
   }
+  
   public class ETypeCollector implements CD4AnalysisInheritanceVisitor {
     
     private AstEmfGeneratorHelper astHelper;

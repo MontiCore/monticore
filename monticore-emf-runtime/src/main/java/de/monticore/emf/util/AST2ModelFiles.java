@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -30,24 +29,25 @@ import de.se_rwth.commons.Names;
  * @author (last commit) $Author$
  * @version $Revision$, $Date$
  */
-public class ResourceController {
-  private static final ResourceController controller = new ResourceController();
+public class AST2ModelFiles {
   
   public static final String EMF_TEST_OUTPUT_MODELS = "target/generated-test-sources/emf/models/";
   
   public static final String EMF_TEST_OUTPUT_MODELINSTANCES = "target/generated-test-sources/emf/modelinstances/";
   
+  private static final AST2ModelFiles instance = new AST2ModelFiles();
+  
   private ResourceSet resourceSet;
   
   // Private constructor for Singleton-Pattern
-  private ResourceController() {
+  private AST2ModelFiles() {
     resourceSet = new ResourceSetImpl();
     resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(
         Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl());
   }
   
-  public static ResourceController getInstance() {
-    return controller;
+  public static AST2ModelFiles get() {
+    return instance;
   }
   
   public void serializeAST(ASTEPackage eInstance) throws IOException {
@@ -60,7 +60,7 @@ public class ResourceController {
         " ECLASS " + astNode.eClass().getName() + " hh " + astNode.eClass().getEPackage().getName()
             + " ns " + astNode.eClass().getEPackage().getNsURI());
             
-    serializeASTIfNotExists((ASTEPackage)astNode.eClass().getEPackage());
+    serializeASTIfNotExists((ASTEPackage) astNode.eClass().getEPackage());
     
     String packageName = astNode.eClass().getEPackage().getName().toLowerCase() + "/";
     String fileName = astNode.eClass().getName() + "_" + instanceName;
@@ -90,24 +90,22 @@ public class ResourceController {
     }
   }
   
-  private Resource createResource(EPackage ePackage) {
-    String packageName = Names.getPathFromPackage(Names
-        .getQualifier(Names.getQualifier(ePackage.getEFactoryInstance().getClass().getName())));
-    String simpleName = ePackage.getEFactoryInstance().getClass().getSimpleName();
+  private Resource createResource(ASTEPackage ePackage) {
     URI fileURI = URI
-        .createFileURI(new File(EMF_TEST_OUTPUT_MODELS + packageName + "/" + simpleName + ".ecore")
-            .getAbsolutePath());
+        .createFileURI(
+            new File(EMF_TEST_OUTPUT_MODELS + Names.getPathFromPackage(ePackage.getPackageName())
+                + "/" + ePackage.getName() + ".ecore")
+                    .getAbsolutePath());
     // Create a resource for this file.
     return resourceSet.createResource(fileURI);
   }
   
-  private Optional<Resource> createResourceIfNotExists(EPackage ePackage) {
-    String packageName = Names.getPathFromPackage(Names
-        .getQualifier(Names.getQualifier(ePackage.getEFactoryInstance().getClass().getName())));
-    String simpleName = ePackage.getEFactoryInstance().getClass().getSimpleName();
+  private Optional<Resource> createResourceIfNotExists(ASTEPackage ePackage) {
     URI fileURI = URI
-        .createFileURI(new File(EMF_TEST_OUTPUT_MODELS + packageName + "/" + simpleName + ".ecore")
-            .getAbsolutePath());
+        .createFileURI(
+            new File(EMF_TEST_OUTPUT_MODELS + Names.getPathFromPackage(ePackage.getPackageName())
+                + "/" + ePackage.getName() + ".ecore")
+                    .getAbsolutePath());
     // Create a resource for this file if doesn't exist
     if (resourceSet.getResource(fileURI, false) == null) {
       return Optional.of(resourceSet.createResource(fileURI));
@@ -121,14 +119,13 @@ public class ResourceController {
     
     for (ASTEPackage superPackage : eInstance.getASTESuperPackages()) {
       System.err.println(superPackage + " for " + eInstance.getName());
-      System.err.println(" pack " +superPackage.getName() + "   "
+      System.err.println(" pack " + superPackage.getName() + "   "
           + superPackage.getClass().getName());
       serializeASTIfNotExists(superPackage);
     }
-
+    
     // Save the contents of the resources to the file system.
     resource.save(Collections.EMPTY_MAP);
   }
   
 }
-

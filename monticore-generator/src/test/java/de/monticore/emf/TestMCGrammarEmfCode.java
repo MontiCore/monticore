@@ -12,7 +12,7 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.monticore.emf.util.ResourceController;
+import de.monticore.emf.util.AST2ModelFiles;
 import de.monticore.emf.util.compare.AstEmfDiffUtility;
 import de.monticore.grammar.concepts.antlr.antlr._ast.AntlrResourceController;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
@@ -143,8 +143,8 @@ public class TestMCGrammarEmfCode {
 //      Grammar_WithConceptsResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
 //      
    //   ResourceController.getInstance().serializeAstToECoreModelFile(LiteralsPackage.eINSTANCE, "Literals3", "grammars_emf_new/");
-      ResourceController.getInstance().serializeAST(GrammarPackage.eINSTANCE);
-      ResourceController.getInstance().serializeAST(Grammar_WithConceptsPackage.eINSTANCE);
+      AST2ModelFiles.get().serializeAST(GrammarPackage.eINSTANCE);
+      AST2ModelFiles.get().serializeAST(Grammar_WithConceptsPackage.eINSTANCE);
      // ResourceController.getInstance().serializeAstToECoreModelFile(TypesPackage.eINSTANCE, "Types3", "grammars_emf/");
       
       

@@ -20,10 +20,10 @@ import org.eclipse.emf.compare.match.service.MatchService;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import de.monticore.emf.util.AST2ModelFiles;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
-import mc.featureemf.fautomaton.automaton.flatautomaton._ast.FlatAutomatonResourceController;
-import mc.featureemf.fautomaton.automatonwithaction.actionautomaton._ast.ActionAutomatonResourceController;
+import mc.featureemf.fautomaton.automatonwithaction.actionautomaton._ast.ASTCounter;
 import mc.featureemf.fautomaton.automatonwithaction.actionautomaton._parser.ActionAutomatonParser;
 
 /**
@@ -131,22 +131,20 @@ public class TestActionAutomaton {
 //     snapshot.setMatch(match);
 //     snapshot.setDiff(diff);
 //     ModelUtils.save(snapshot, "result.emfdiff"); //$NON-NLS-1$
-       FlatAutomatonResourceController.getInstance().serializeAstToECoreModelFile("models/flatautom/");
-      ActionAutomatonResourceController.getInstance().serializeAstToECoreModelFile("models/flatautom/");//(transB.get(), "models/automaton/B");
       
-      Optional<mc.featureemf.fautomaton.automatonwithaction.actionautomaton._ast.ASTAutomaton> transB = new ActionAutomatonParser().parse("src/test/resources/mc/automaton/Testautomat.aut");
+      Optional<ASTCounter> transB = new ActionAutomatonParser().parse("src/test/resources/mc/automaton/Testautomat.aut");
       if (transB.isPresent()) {
         System.err.println("ASTAutomaton: " + transB.get());
-        TestActionAutomatonResourceController.getInstance().serializeASTClassInstance(transB.get(), "models/flatautom/B");
+        AST2ModelFiles.get().serializeASTInstance(transB.get(), "B");
       }
       else {
         System.err.println("Missed");
       }
       
-      Optional<mc.featureemf.fautomaton.automatonwithaction.actionautomaton._ast.ASTAutomaton> transC = new ActionAutomatonParser().parse("src/test/resources/mc/automaton/Testautomat2.aut");
+      Optional<ASTCounter> transC = new ActionAutomatonParser().parse("src/test/resources/mc/automaton/Testautomat2.aut");
       if (transC.isPresent()) {
         System.err.println("ASTAutomaton: " + transC.get());
-        TestActionAutomatonResourceController.getInstance().serializeASTClassInstance(transC.get(), "models/automaton/B");
+        AST2ModelFiles.get().serializeASTInstance(transC.get(), "C");
       }
       else {
         System.err.println("Missed");

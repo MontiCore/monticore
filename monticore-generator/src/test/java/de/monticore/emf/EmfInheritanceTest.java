@@ -24,7 +24,7 @@ import de.monticore.emf.fautomaton.automaton.flatautomaton._ast.ASTAutomaton;
 import de.monticore.emf.fautomaton.automaton.flatautomaton._parser.FlatAutomatonParser;
 import de.monticore.emf.fautomaton.automatonwithaction.actionautomaton._ast.ActionAutomatonPackage;
 //import de.monticore.emf.fautomaton.automatonwithaction.actionautomaton._ast.ActionAutomatonPackage;
-import de.monticore.emf.util.ResourceController;
+import de.monticore.emf.util.AST2ModelFiles;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
 
@@ -82,7 +82,7 @@ public class EmfInheritanceTest {
           .parse("src/test/resources/mc/automaton/Testautomat.aut");
       if (transB.isPresent()) {
         System.err.println("ASTAutomaton: " + transB.get());
-        ResourceController.getInstance().serializeASTInstance(transB.get(),
+        AST2ModelFiles.get().serializeASTInstance(transB.get(),
             "B");
       }
       else {
@@ -93,7 +93,7 @@ public class EmfInheritanceTest {
           .parse("src/test/resources/mc/automaton/Testautomat2.aut");
       if (transC.isPresent()) {
         System.err.println("ASTAutomaton: " + transC.get());
-        ResourceController.getInstance().serializeASTInstance(transC.get(),
+        AST2ModelFiles.get().serializeASTInstance(transC.get(),
             "C");
       }
       else {

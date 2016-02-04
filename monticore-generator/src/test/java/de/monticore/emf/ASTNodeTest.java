@@ -9,7 +9,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.monticore.emf._ast.ASTENodePackage;
-import de.monticore.emf.util.ResourceController;
+import de.monticore.emf.util.AST2ModelFiles;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
 
@@ -36,7 +36,7 @@ public class ASTNodeTest {
   @Test
   public  void test() {
      
-    ResourceController.getInstance().serializeAST(ASTENodePackage.eINSTANCE);
+    AST2ModelFiles.get().serializeAST(ASTENodePackage.eINSTANCE);
       
 //      String path1 = "de/monticore/emf/Automaton.mc4";
 //      String path2 = "de/monticore/emf/Automaton2.mc4";

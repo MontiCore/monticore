@@ -52,9 +52,7 @@ SUCH DAMAGE.
      // Obtain other dependent packages
     ASTENodePackage theASTENodePackage = (ASTENodePackage)EPackage.Registry.INSTANCE.getEPackage(ASTENodePackage.eNS_URI);      
      <#list superGrammars as superGrammar>
-       <#assign packageName = superGrammar?lower_case + "._ast.">
-       <#assign simpleName = nameHelper.getSimpleName(superGrammar)>
-       <#assign qualifiedName = packageName + simpleName?cap_first + "Package">
+       <#assign qualifiedName = genHelper.getEPackageName(superGrammar)>
        <#assign identifierName = astHelper.getIdentifierName(superGrammar)>
     ${qualifiedName} the${identifierName?lower_case?cap_first + "Package"} = 
       (${qualifiedName})EPackage.Registry.INSTANCE.getEPackage(

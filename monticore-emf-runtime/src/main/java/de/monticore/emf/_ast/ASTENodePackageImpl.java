@@ -156,10 +156,6 @@ public class ASTENodePackageImpl extends EPackageImpl implements ASTENodePackage
     
   }
   
-  public List<EPackage> getESuperPackages() {
-    return new ArrayList<>();
-  }
-
   /**
    * @see de.monticore.emf._ast.ASTEPackage#getASTESuperPackages()
    */

@@ -11,10 +11,11 @@ import java.util.Optional;
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
 
-import mc.grammar.grammar._ast.ASTMCGrammar;
-import mc.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
+import de.monticore.emf.util.AST2ModelFiles;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
+import mc.grammar.grammar._ast.ASTMCGrammar;
+import mc.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 
 /**
  * TODO: Write me!
@@ -119,10 +120,10 @@ public class TestAutomaton {
 //     ModelUtils.save(snapshot, "result.emfdiff"); //$NON-NLS-1$
       
       
-      Optional<ASTMCGrammar> transB = new Grammar_WithConceptsParser().parseMCGrammar("src/test/resources/Automaton.mc4");
+      Optional<ASTMCGrammar> transB = new Grammar_WithConceptsParser().parseMCGrammar("src/test/resources/mc/Automaton.mc4");
       if (transB.isPresent()) {
         System.err.println("ASTMCGrammar: " + transB.get());
-        TestAutomatonResourceController.getInstance().serializeASTClassInstance(transB.get(), "models");
+        AST2ModelFiles.get().serializeASTInstance(transB.get(), "Automaton");
       }
       else {
         System.err.println("Missed");

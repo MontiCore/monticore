@@ -112,9 +112,7 @@ public class ${ast.getName()} extends EPackageImpl implements ${grammarName}Pack
                                                                     EPackage.Registry.INSTANCE.getEPackage(ASTENodePackage.eNS_URI) : ASTENodePackage.eINSTANCE);
         
     <#list genHelper.getSuperGrammarCds() as superGrammar>
-      <#assign packageName = superGrammar?lower_case + "._ast.">
-      <#assign simpleName = nameHelper.getSimpleName(superGrammar)>
-      <#assign qualifiedName = packageName + simpleName?cap_first + "Package">
+      <#assign qualifiedName = genHelper.getEPackageName(superGrammar)>
       <#assign identifierName = astHelper.getIdentifierName(superGrammar)>
       ${qualifiedName}Impl the${identifierName?lower_case?cap_first + "Package"} = 
       (${qualifiedName}Impl)(EPackage.Registry.INSTANCE.getEPackage(
@@ -155,14 +153,14 @@ public class ${ast.getName()} extends EPackageImpl implements ${grammarName}Pack
     return constants${grammarName}EEnum;
   }
   
-  public List<EPackage> getESuperPackages() {
-    List<EPackage> eSuperPackages = new ArrayList<>();
-     <#list genHelper.getSuperGrammarCds() as superGrammar>
-      <#assign packageName = superGrammar?lower_case + "._ast.">
-      <#assign simpleName = nameHelper.getSimpleName(superGrammar)>
-      <#assign qualifiedName = packageName + simpleName?cap_first + "Package">
-    eSuperPackages.add((${qualifiedName}Impl)EPackage.Registry.INSTANCE.getEPackage(
-        ${qualifiedName}.eNS_URI));
+  public String getPackageName() {
+    return "${genHelper.getPackageName()}";
+  }
+  
+  public List<ASTEPackage> getASTESuperPackages() {
+    List<ASTEPackage> eSuperPackages = new ArrayList<>();
+     <#list genHelper.getASTESuperPackages() as eSuperPackage>
+    eSuperPackages.add((ASTEPackage)${eSuperPackage}.eINSTANCE);
     </#list>   
     return eSuperPackages;
   }

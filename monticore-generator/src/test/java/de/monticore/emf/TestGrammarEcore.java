@@ -17,7 +17,7 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.monticore.emf.util.ResourceController;
+import de.monticore.emf.util.AST2ModelFiles;
 import de.monticore.grammar.concepts.antlr.antlr._ast.AntlrResourceController;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.GrammarResourceController;
@@ -51,7 +51,7 @@ public class TestGrammarEcore {
   public void testMCGrammar() {
      try {
        
-       ResourceController res = ResourceController.getInstance();
+       AST2ModelFiles res = AST2ModelFiles.get();
      
    
       LexicalsResourceController.getInstance().serializeAstToECoreModelFile("grammars_emf/");
