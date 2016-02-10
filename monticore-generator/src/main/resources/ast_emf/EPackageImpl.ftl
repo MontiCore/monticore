@@ -53,8 +53,6 @@ import ${genHelper.getEmfRuntimePackage()}.*;
 
 public class ${ast.getName()} extends EPackageImpl implements ${grammarName}Package {
 
-  <#--TODO GV   ${op.includeTemplates(ePackageImplEClassInit, ast.getFiles())} -->
- 
   <#--  TODO GV: interfaces, enums -->
   <#list astClasses as astClass>
   private EClass ${astClass[3..]?uncap_first}EClass = null;
@@ -165,7 +163,6 @@ public class ${ast.getName()} extends EPackageImpl implements ${grammarName}Pack
     return eSuperPackages;
   }
     
-  <#--  ${op.includeTemplates(ePackageLiteralMain, ast.getFiles())} --> 
   <#--  TODO GV: interfaces, enums -->
   <#list astClasses as astClass>
   public EClass get${astClass[3..]}() {
@@ -173,7 +170,6 @@ public class ${ast.getName()} extends EPackageImpl implements ${grammarName}Pack
   }
   </#list>
    
-  <#--  ${op.includeTemplates(ePackageImplMetaObjectGetMethodsMain, ast.getFiles())} -->
   <#-- generate all methods -->  
   <#list ast.getCDMethods() as method>
   ${tc.includeArgs("ast.ClassMethod", [method, ast])}

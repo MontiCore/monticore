@@ -7,12 +7,12 @@ package de.monticore.codegen.cd2java.ast_emf;
 
 import static de.monticore.codegen.GeneratorHelper.getPlainName;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.antlr.v4.runtime.RecognitionException;
 
@@ -41,9 +41,7 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
 import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
-import de.monticore.umlcd4a.cd4analysis._visitor.CD4AnalysisInheritanceVisitor;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
-import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
 import de.se_rwth.commons.StringTransformations;
 import groovyjarjarantlr.ANTLRException;
 
@@ -75,25 +73,17 @@ public class CdEmfDecorator extends CdDecorator {
     ASTCDDefinition cdDefinition = cdCompilationUnit.getCDDefinition();
     
     List<ASTCDClass> nativeClasses = Lists.newArrayList(cdDefinition.getCDClasses());
-    List<ASTCDInterface> nativeInterfaces = Lists.newArrayList(cdDefinition.getCDInterfaces());
-    List<ASTCDType> types = new ArrayList<>();
-    types.addAll(nativeClasses);
-    types.addAll(nativeInterfaces);
-    // TODO GV
-    types = excludeGenTypes(types, astHelper);
+    List<ASTCDType> nativeTypes = astHelper.getNativeTypes(cdDefinition);
     
     List<ASTCDClass> astNotAbstractClasses = cdDefinition.getCDClasses().stream()
         .filter(e -> e.getModifier().isPresent())
         .filter(e -> !e.getModifier().get().isAbstract())
         .collect(Collectors.toList());
-        // .forEach(e ->
-        // astNotAbstractClasses.add(GeneratorHelper.getPlainName(e)));
         
-    // .forEach(e -> astNoListsClasses.add(GeneratorHelper.getPlainName(e)));
-    createEmfAttributes(astHelper, nativeClasses);
-    
     // Run over classdiagramm and converts cd types to mc-java types
     new Cd2JavaTypeConverter(astHelper).handle(cdDefinition);
+    
+    createEmfAttributes(astHelper, nativeTypes);
     
     // Interface for all ast nodes of the language
     decorateBaseInterface(cdDefinition);
@@ -136,8 +126,9 @@ public class CdEmfDecorator extends CdDecorator {
                     .getPackageName(), cdDefinition.getName())))
             .build());
             
-    addEmfCode(cdCompilationUnit, nativeClasses, types, astHelper, astHelper.getExternalTypes());
-    
+    addEmfCode(cdCompilationUnit, nativeClasses, nativeTypes, astHelper,
+        astHelper.getExternalTypes());
+        
   }
   
   /**
@@ -147,19 +138,19 @@ public class CdEmfDecorator extends CdDecorator {
    * @param astNotListClasses
    */
   void createEmfAttributes(AstEmfGeneratorHelper astHelper,
-      List<ASTCDClass> astClasses) {
-    // TODO GV: interfaces, enums
-    for (ASTCDClass clazz : astClasses) {
-      for (int i = 0; i < clazz.getCDAttributes().size(); i++) {
-        ASTCDAttribute cdAttribute = clazz.getCDAttributes().get(i);
-        if (Arrays.asList(AstAdditionalAttributes.values()).stream().map(a -> a.toString())
-            .anyMatch(a -> a.equals(cdAttribute.getName()))) {
-          continue;
-        }
-        astHelper.createEmfAttribute(clazz, cdAttribute);
-      }
-    }
-    
+      List<ASTCDType> astTypes) {
+    astTypes.stream().filter(t -> t instanceof ASTCDClass)
+        .forEach(t -> ((ASTCDClass) t).getCDAttributes().stream()
+            .filter(a -> !(getAdditionaAttributeNames().anyMatch(ad -> ad.equals(a.getName()))))
+            .forEach(a -> astHelper.createEmfAttribute(t, a)));
+    astTypes.stream().filter(t -> t instanceof ASTCDInterface)
+    .forEach(t -> ((ASTCDInterface) t).getCDAttributes().stream()
+        .filter(a -> !(getAdditionaAttributeNames().anyMatch(ad -> ad.equals(a.getName()))))
+        .forEach(a -> astHelper.createEmfAttribute(t, a)));
+  }
+  
+  private Stream<String> getAdditionaAttributeNames() {
+    return Arrays.asList(AstAdditionalAttributes.values()).stream().map(a -> a.toString());
   }
   
   /**
@@ -337,9 +328,7 @@ public class CdEmfDecorator extends CdDecorator {
       cdTransformation.addCdAttributeUsingDefinition(packageImpl, toParse);
     }
     
-    for (int i = 0; i < astHelper.getAllEmfAttributes().size(); i++) {
-      EmfAttribute emfAttribute = astHelper.getAllEmfAttributes().get(i);
-      
+    for (EmfAttribute emfAttribute : astHelper.getAllEmfAttributes()) {
       // TODO GV: replace StringHookPoint by TemplaeHookPoint
       String toParse = "public " + emfAttribute.getEmfType() + " get" + emfAttribute.getFullName()
           + "();";
@@ -347,7 +336,6 @@ public class CdEmfDecorator extends CdDecorator {
           + StringTransformations.uncapitalize(getPlainName(emfAttribute.getCdType()).substring(3))
           + "EClass.getEStructuralFeatures().get(" + emfAttribute.getFullName() + ");");
       replaceMethodBodyTemplate(packageImpl, toParse, getMethodBody);
-      
     }
     
     for (String typeName : collection) {
@@ -537,17 +525,6 @@ public class CdEmfDecorator extends CdDecorator {
     HookPoint getMethodBody = new StringHookPoint("return " + astHelper.getCdName()
         + "Package.Literals." + GeneratorHelper.getPlainName(clazz) + ";");
     replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
-  }
-  
-  /**
-   * TODO: Write me!
-   * 
-   * @param types
-   * @param astHelper
-   */
-  List<ASTCDType> excludeGenTypes(List<ASTCDType> types, AstEmfGeneratorHelper astHelper) {
-    return types.stream().filter(c -> !c.getName().equals("AST" + astHelper.getCdName() + "Node"))
-        .collect(Collectors.toList());
   }
   
   /**

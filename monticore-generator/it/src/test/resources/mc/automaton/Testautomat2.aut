@@ -1,15 +1,15 @@
 automaton Testautomat2 {
-      state b  <<initial>><<final>>;
-	/*
-	a -x> t;
+  
+   state a  <<initial>>;
 	
-	state b { 
-		state c;
-		state d <<final>>; 
+   a -x> c;
+   
+   b -x> a;
+   
+   c -y> d;
+	
+   state c;
+	
+   state d <<final>>; 
 		
-		c -y> d;
-		d -y> d;
-	 }
-
-	b -g> a;  */
 }

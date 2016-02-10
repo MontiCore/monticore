@@ -33,7 +33,7 @@ SUCH DAMAGE.
 ${tc.signature("grammarName", "emfAttribute", "cDAndJavaConformName")}
   <#assign genHelper = glex.getGlobalValue("astHelper")>
   <#if emfAttribute.isOptional()>
-    ${astHelper.getTypeNameEliminOptional(emfAttribute.getCdAttribute())} old${cDAndJavaConformName?cap_first} = this.${cDAndJavaConformName}.isPresent()? this.${cDAndJavaConformName}.get() : null;
+    ${astHelper.getTypeNameWithoutOptional(emfAttribute.getCdAttribute())} old${cDAndJavaConformName?cap_first} = this.${cDAndJavaConformName}.isPresent()? this.${cDAndJavaConformName}.get() : null;
     this.${cDAndJavaConformName} = Optional.ofNullable(${cDAndJavaConformName});
   <#else>
     <#if emfAttribute.isAstList()>

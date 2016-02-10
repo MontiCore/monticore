@@ -36,7 +36,7 @@ SUCH DAMAGE.
     <#list emfAttributes as emfAttribute>
     <#--TODO GV: inherited attributes eGetAttribut, ast.getCollectedAttributesWithSuper() -->
       case ${grammarName}Package.${emfAttribute.getFullName()}:
-        ${astHelper.getPlainSetter(emfAttribute.getCdAttribute())}((${astHelper.getTypeNameEliminOptional(emfAttribute.getCdAttribute())})newValue);
+        ${astHelper.getPlainSetter(emfAttribute.getCdAttribute())}((${astHelper.getTypeNameWithoutOptional(emfAttribute.getCdAttribute())})newValue);
     </#list>
     }
     eDynamicSet(featureID, newValue);

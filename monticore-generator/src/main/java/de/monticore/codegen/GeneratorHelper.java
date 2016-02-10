@@ -660,7 +660,7 @@ public class GeneratorHelper extends TypesHelper {
     
     return Optional.of(convertedTypeName);
   }
-
+  
   /**
    * Gets super types recursively (without duplicates - the first occurrence in
    * the type hierarchy is used)
@@ -880,6 +880,15 @@ public class GeneratorHelper extends TypesHelper {
           attr.getName()));
     }
     return isOptionalAstNode(((CDFieldSymbol) attr.getSymbol().get()).getType());
+  }
+  
+  public String getTypeNameWithoutOptional(ASTCDAttribute attribute) {
+    if (isOptional(attribute)) {
+      return TypesHelper
+          .printType(TypesHelper.getSimpleReferenceTypeFromOptional(attribute.getType()));
+          
+    }
+    return attribute.printType();
   }
   
   public static boolean isBuilderClass(ASTCDClass clazz) {
