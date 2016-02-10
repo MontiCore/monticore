@@ -48,8 +48,6 @@ import org.junit.Test;
  */
 public class ResolvingTest {
 
-  // TODO PN test some complex resolving scenarios.
-
   @Test
   public void testSameSymbolOccursOnlyOnce() {
     final EntitySymbol entity = new EntitySymbol("Entity");

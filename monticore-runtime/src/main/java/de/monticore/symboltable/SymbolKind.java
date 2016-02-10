@@ -19,6 +19,7 @@
 
 package de.monticore.symboltable;
 
+import static java.util.Objects.requireNonNull;
 
 /**
  * Represents a kind of a symbol. It is the super class of all symbol kinds and can be used in
@@ -32,6 +33,8 @@ package de.monticore.symboltable;
  */
 public interface SymbolKind {
 
+  SymbolKind KIND = new SymbolKind() {};
+
   default String getName() {
     return getClass().getSimpleName();
   }
@@ -44,7 +47,9 @@ public interface SymbolKind {
    * @return true, if this symbol kind is a kind of the given symbol kind.
    */
   default boolean isKindOf(SymbolKind kind) {
-    return (kind != null) && (kind.getClass().isAssignableFrom(this.getClass()));
+    requireNonNull(kind);
+
+    return kind.equals(KIND) || kind.getClass().isAssignableFrom(this.getClass());
   }
 
   default boolean isSame(SymbolKind kind) {

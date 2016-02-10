@@ -446,8 +446,6 @@ public class CommonScope implements MutableScope {
 
     for (ResolvingFilter<? extends Symbol> resolvingFilter : resolversForKind) {
 
-      // TODO PN this is a quix fix. filter() should return a collection of symbols
-
       try {
         Optional<T> resolvedSymbol = (Optional<T>) resolvingFilter.filter(resolvingInfo, name, symbols);
         if (resolvedSymbol.isPresent()) {

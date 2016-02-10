@@ -160,4 +160,8 @@ public class ArtifactScope extends CommonScope {
   public void setQualifiedNamesCalculator(QualifiedNamesCalculator qualifiedNamesCalculator) {
     this.qualifiedNamesCalculator = requireNonNull(qualifiedNamesCalculator);
   }
+
+  public List<ImportStatement> getImports() {
+    return Collections.unmodifiableList(imports);
+  }
 }
