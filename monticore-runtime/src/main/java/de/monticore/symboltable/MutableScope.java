@@ -21,6 +21,7 @@ package de.monticore.symboltable;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.modifiers.AccessModifier;
@@ -41,9 +42,11 @@ public interface MutableScope extends Scope {
   <T extends Symbol> Optional<T> resolve(ResolvingInfo resolvingInfo, String name,
       SymbolKind kind, AccessModifier modifier);
 
-  <T extends Symbol> Collection<T> resolveDownMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier);
+  <T extends Symbol> Collection<T> resolveDownMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier, Predicate<Symbol> predicate);
 
   <T extends Symbol> Collection<T> resolveMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier);
+
+  <T extends Symbol> Collection<T> resolveMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier, Predicate<Symbol> predicate);
 
   /**
    * @param enclosingScope the enclosing scope. In Java, for example, a class scope is the
@@ -109,5 +112,6 @@ public interface MutableScope extends Scope {
    */
   void setName(String name);
 
-  <T extends Symbol> Collection<T> continueAsSubScope(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier);
+  <T extends Symbol> Collection<T> continueAsSubScope(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier, Predicate<Symbol> predicate);
+
 }

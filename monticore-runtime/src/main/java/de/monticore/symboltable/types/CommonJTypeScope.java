@@ -91,13 +91,15 @@ public class CommonJTypeScope extends CommonScope {
 
     // resolve in super class
     if (spanningSymbol.getSuperClass().isPresent()) {
-      resolvedSymbol = resolveInSuperType(name, kind, modifier, spanningSymbol.getSuperClass().get().getReferencedSymbol());
+      final JTypeSymbol superClass = spanningSymbol.getSuperClass().get().getReferencedSymbol();
+      resolvedSymbol = resolveInSuperType(name, kind, modifier, superClass);
     }
 
     // resolve in interfaces
     if (!resolvedSymbol.isPresent()) {
-      for (JTypeReference<? extends JTypeSymbol> interfaze : spanningSymbol.getInterfaces()) {
-        resolvedSymbol = resolveInSuperType(name, kind, modifier, interfaze.getReferencedSymbol());
+      for (JTypeReference<? extends JTypeSymbol> interfaceRef : spanningSymbol.getInterfaces()) {
+        final JTypeSymbol interfaze = interfaceRef.getReferencedSymbol();
+        resolvedSymbol = resolveInSuperType(name, kind, modifier, interfaze);
 
         // Stop as soon as symbol is found in an interface. Note that the other option is to
         // search in all interfaces and throw an ambiguous exception if more than one symbol is
@@ -161,7 +163,7 @@ public class CommonJTypeScope extends CommonScope {
 
   @Override
   public <T extends Symbol> Optional<T> resolveImported(String name, SymbolKind kind, AccessModifier modifier) {
-    final Collection<T> resolvedSymbols = resolveManyLocally(new ResolvingInfo(getResolvingFilters()), name, kind, modifier);
+    final Collection<T> resolvedSymbols = resolveManyLocally(new ResolvingInfo(getResolvingFilters()), name, kind, modifier, x -> true);
 
     if (resolvedSymbols.isEmpty()) {
       return resolveInSuperTypes(name, kind, modifier);

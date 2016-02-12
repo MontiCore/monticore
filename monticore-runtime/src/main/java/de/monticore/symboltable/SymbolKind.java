@@ -49,6 +49,7 @@ public interface SymbolKind {
   default boolean isKindOf(SymbolKind kind) {
     requireNonNull(kind);
 
+    // TODO This is just a quick fix. Remove reflection completely.
     return kind.equals(KIND) || kind.getClass().isAssignableFrom(this.getClass());
   }
 
