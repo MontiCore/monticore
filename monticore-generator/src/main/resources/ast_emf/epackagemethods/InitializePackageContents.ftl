@@ -97,7 +97,6 @@ SUCH DAMAGE.
     </#if>  
     initEClass(${className[3..]?uncap_first}EClass, ${className}.class, "${className}", ${abstract}, ${interface}, IS_GENERATED_INSTANCE_CLASS);
   </#list>  
-  
   <#list emfAttributes as emfAttribute>
     <#if emfAttribute.isExternal()>
       <#assign get = "theASTENodePackage.getENode">
@@ -111,25 +110,25 @@ SUCH DAMAGE.
       <#assign isList = "1">
     <#elseif emfAttribute.isAstList()>
       <#assign isList = "-1">
+    <#elseif astHelper.istJavaList(emfAttribute.getCdAttribute())>
+      <#assign isList = "-1">
+    <#else>
+      <#assign isList = "1">
+    </#if>    
+    <#if emfAttribute.isAstNode() || emfAttribute.isAstList()>
     init${emfAttribute.getEmfType()}(get${emfAttribute.getFullName()}(), ${get}(), null, "${emfAttribute.getAttributeName()?cap_first}", null,
       0, ${isList}, ${emfAttribute.getCdType().getName()}.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     <#else>
-      <#if astHelper.istJavaList(emfAttribute.getCdAttribute())>
-        <#assign isList = "-1">
-      <#else>
-        <#assign isList = "1">
-      </#if>  
       <#if  emfAttribute.isEnum()>
         <#assign get = "this.getE" + emfAttribute.getEDataType()?cap_first>
-      <#elseif astHelper.isExternalType(emfAttribute.getCdAttribute())>
+      <#elseif emfAttribute.hasExternalType()>
         <#assign get = "this.get" + emfAttribute.getEDataType()?cap_first>
       <#else>
         <#assign get = "ecorePackage.getE" + emfAttribute.getEDataType()?cap_first>
-    </#if> 
+      </#if> 
     init${emfAttribute.getEmfType()}(get${emfAttribute.getFullName()}(), ${get}(), "${emfAttribute.getAttributeName()?cap_first}", null, 
       0, ${isList}, ${emfAttribute.getCdType().getName()}.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     </#if>
-  
   </#list>
   
     <#-- TODO GV:   ePackageImplInitiliazeMethod, ast.getMethods() -->
