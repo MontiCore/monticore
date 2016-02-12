@@ -5,14 +5,8 @@
  */
 package de.monticore.codegen.cd2java.ast_emf;
 
-import java.util.Optional;
-
-import de.monticore.codegen.GeneratorHelper;
-import de.monticore.types.TypesHelper;
-import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
-import de.se_rwth.commons.Names;
 
 /**
  * TODO: Write me!
@@ -21,8 +15,6 @@ import de.se_rwth.commons.Names;
  * @version $Revision$, $Date$
  */
 public class EmfAttribute {
-  
-  private AstEmfGeneratorHelper astHelper;
   
   private ASTCDType cdType;
   
@@ -38,21 +30,21 @@ public class EmfAttribute {
   public String getDefinedGrammar() {
     return this.definedGrammar;
   }
-
+  
   /**
    * @return defaultValue
    */
   public String getDefaultValue() {
     return this.defaultValue;
   }
-
+  
   /**
    * @return eDataType
    */
   public String getEDataType() {
     return this.eDataType;
   }
-
+  
   /**
    * @return cdtype
    */
@@ -83,6 +75,22 @@ public class EmfAttribute {
     this.cdAttribute = cdAttribute;
   }
   
+  private boolean hasExternalType;
+  
+  /**
+   * @return hasExternalType
+   */
+  public boolean hasExternalType() {
+    return this.hasExternalType;
+  }
+  
+  /**
+   * @param hasExternalType the hasExternalType to set
+   */
+  public void setHasExternalType(boolean hasExternalType) {
+    this.hasExternalType = hasExternalType;
+  }
+  
   private String fullName;
   
   /**
@@ -107,7 +115,7 @@ public class EmfAttribute {
   public boolean isExternal() {
     return this.isExternal;
   }
-
+  
   /**
    * @return name of the attribute
    */
@@ -142,10 +150,8 @@ public class EmfAttribute {
   
   private boolean isOptional;
   
-  
-
   private boolean isInherited;
-
+  
   private boolean isEnum;
   
   /**
@@ -154,14 +160,14 @@ public class EmfAttribute {
   public boolean isEnum() {
     return this.isEnum;
   }
-
+  
   /**
    * @return isInherited
    */
   public boolean isInherited() {
     return this.isInherited;
   }
-
+  
   /**
    * @return isOptionalAstNode
    */
@@ -224,35 +230,19 @@ public class EmfAttribute {
     return "EReference".equals(getEmfType());
   }
   
-  private String createEDataType() {
-    if (isAstList || AstEmfGeneratorHelper.istJavaList(getCdAttribute())) {
-      Optional<ASTSimpleReferenceType> typeArg = TypesHelper
-          .getFirstTypeArgumentOfGenericType(getCdAttribute().getType(), GeneratorHelper.JAVA_LIST);
-      if (typeArg.isPresent()) {
-        return Names.getSimpleName(TypesHelper
-            .printType(typeArg.get()));
-      }
-    }
-    String nativeType = astHelper.getNativeTypeName(getCdAttribute());
-    Optional<String> externalType = astHelper.getExternalType(nativeType);
-    if (externalType.isPresent()) {
-      return externalType.get();
-    }
-    return Names.getSimpleName(nativeType);
-  }
-  
   public EmfAttribute(
       ASTCDAttribute cdAttribute,
       ASTCDType type,
       String name,
+      String eDataType,
       String definedGrammar,
       boolean isAstNode,
       boolean isAstList,
       boolean isOptional,
-      boolean isInherited, 
+      boolean isInherited,
       boolean isExternal,
       boolean isEnum,
-      AstEmfGeneratorHelper astHelper) {
+      boolean hasExternalType) {
     this.cdAttribute = cdAttribute;
     this.cdType = type;
     this.fullName = name;
@@ -260,12 +250,17 @@ public class EmfAttribute {
     this.isAstNode = isAstNode;
     this.isAstList = isAstList;
     this.isOptional = isOptional;
-    this.astHelper = astHelper;
     this.isInherited = isInherited;
     this.isExternal = isExternal;
     this.isEnum = isEnum;
-    this.eDataType = createEDataType();
+    this.hasExternalType = hasExternalType;
+    this.eDataType = eDataType;
     this.defaultValue = createDefaultValue();
+  }
+  
+  public String toString() {
+    return "+ " + getCdAttribute().getName() + " of " + getCdAttribute().printType() + " EType "
+        + getEmfType() + " + ";
   }
   
 }
