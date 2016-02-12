@@ -119,10 +119,10 @@ SUCH DAMAGE.
       <#else>
         <#assign isList = "1">
       </#if>  
-      <#if astHelper.isExternalType(emfAttribute.getCdAttribute())>
-        <#assign get = "this.get" + emfAttribute.getEDataType()?cap_first>
-      <#elseif  emfAttribute.isEnum()>
+      <#if  emfAttribute.isEnum()>
         <#assign get = "this.getE" + emfAttribute.getEDataType()?cap_first>
+      <#elseif astHelper.isExternalType(emfAttribute.getCdAttribute())>
+        <#assign get = "this.get" + emfAttribute.getEDataType()?cap_first>
       <#else>
         <#assign get = "ecorePackage.getE" + emfAttribute.getEDataType()?cap_first>
     </#if> 

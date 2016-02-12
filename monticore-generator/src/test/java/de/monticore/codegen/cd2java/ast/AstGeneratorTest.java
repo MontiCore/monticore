@@ -88,6 +88,12 @@ public class AstGeneratorTest extends GeneratorTest {
   }
   
   @Test
+  public void testEnum() {
+    testCorrectWithDependencies("mc/robot/RobotDSL.mc4",
+        "mc/grammars/lexicals/TestLexicals.mc4");
+  }
+  
+  @Test
   public void testGrammarInDefaultPackage() {
     testCorrectWithDependencies("Automaton.mc4", "mc/grammars/lexicals/TestLexicals.mc4");
   }
