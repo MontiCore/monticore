@@ -5,25 +5,21 @@
  */
 package mc.emf;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import org.antlr.v4.runtime.RecognitionException;
 import org.eclipse.emf.compare.diff.metamodel.DiffElement;
-import org.eclipse.emf.compare.diff.metamodel.DiffModel;
-import org.eclipse.emf.compare.diff.service.DiffService;
-import org.eclipse.emf.compare.match.metamodel.MatchModel;
-import org.eclipse.emf.compare.match.service.MatchService;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-//import de.monticore.emf.fautomaton.automatonwithaction.actionautomaton._ast.ActionAutomatonPackage;
 import de.monticore.emf.util.AST2ModelFiles;
+import de.monticore.emf.util.compare.AstEmfDiffUtility;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
 import mc.featureemf.fautomaton.automaton.flatautomaton._ast.ASTAutomaton;
@@ -35,7 +31,7 @@ import mc.featureemf.fautomaton.automaton.flatautomaton._parser.FlatAutomatonPar
  * @author (last commit) $Author$
  * @version $Revision$, $Date$
  */
-public class EmfInheritanceTest {
+public class EmfDiffTest {
   @BeforeClass
   public static void setup() {
     Slf4jLog.init();
@@ -43,7 +39,7 @@ public class EmfInheritanceTest {
   }
   
   @Test
-  public void test2() {
+  public void testDiffAutomaton() {
     try {
       Optional<ASTAutomaton> transB = new FlatAutomatonParser()
           .parse("src/test/resources/mc/automaton/Testautomat.aut");
@@ -51,27 +47,30 @@ public class EmfInheritanceTest {
       Optional<ASTAutomaton> transC = new FlatAutomatonParser()
           .parse("src/test/resources/mc/automaton/Testautomat2.aut");
       if (transB.isPresent() && transC.isPresent()) {
-        System.err.println("ASTAutomaton: " + transB.get());
-//        AST2ModelFiles.get().serializeASTInstance(transB.get(),
-//            "B");
-//            
-        System.err.println("ASTAutomaton: " + transC.get());
-//        AST2ModelFiles.get().serializeASTInstance(transC.get(),
-//            "C");
-//            
+        AST2ModelFiles.get().serializeASTInstance(transB.get(),
+            "B");
+        AST2ModelFiles.get().serializeASTInstance(transC.get(),
+            "C");
         // Matching model elements
-        MatchModel match = MatchService.doMatch(transB.get(), transC.get(),
-            Collections.<String, Object> emptyMap());
-        // Computing differences
-        DiffModel diff = DiffService.doDiff(match, false);
-        // Merges all differences from model1 to model2
-        List<DiffElement> differences = new ArrayList<DiffElement>(diff.getOwnedElements());
-        // MergeService.merge(differences, true);
+        List<DiffElement> diffs = AstEmfDiffUtility.getAllAstDiffs(transB.get(), transC.get());
         
-        for (DiffElement diffElement : diff.getDifferences(transB.get())) {
-          System.err.println(" diffElement: " + diffElement.toString());
-        }
-        System.err.println("::: " + diff.getDifferences(transB.get()));
+        AstEmfDiffUtility.printAstDiffsHierarchical(transB.get(), transC.get());
+
+        assertEquals(6, diffs.size());
+        
+        assertEquals("Attribute R__final in a has changed from false to true",
+            diffs.get(0).toString());
+            
+        assertEquals("Attribute Initial in a has changed from true to false", diffs.get(1).toString());
+        
+        assertEquals("Attribute Initial in c has changed from false to true", diffs.get(2).toString());
+    
+        assertEquals("Attribute R__final in d has changed from true to false", diffs.get(3).toString());
+
+        assertEquals("Attribute Activate in b has changed from x to y", diffs.get(4).toString());
+
+        assertEquals("Attribute From in d has changed from c to d", diffs.get(5).toString());
+       
       }
       else {
         fail("Parse errors");

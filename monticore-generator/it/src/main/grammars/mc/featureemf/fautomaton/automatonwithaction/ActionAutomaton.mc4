@@ -2,7 +2,10 @@ package mc.featureemf.fautomaton.automatonwithaction;
 
  grammar ActionAutomaton extends mc.featureemf.fautomaton.automaton.FlatAutomaton {
 
-	//external Action;
+	ActionAutomaton =
+	   "automaton" Name "{" 
+	     (Counter | State | Transition )*
+	   "}";
 
     /** A finite automaton
 	@attribute name Name of the automaton

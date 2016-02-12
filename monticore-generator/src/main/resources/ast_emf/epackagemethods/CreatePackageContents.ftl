@@ -42,7 +42,6 @@ SUCH DAMAGE.
     isCreated = true;
     
     // Create classes and their features
-       <#--TODO GV   ePackageImplCreatePackageContentsMain, ast.getFiles() -->
     constants${grammarName}EEnum = createEEnum(Constants${grammarName});
   
   <#list astClasses as astClass>

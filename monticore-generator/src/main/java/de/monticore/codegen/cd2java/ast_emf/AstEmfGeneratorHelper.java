@@ -31,6 +31,7 @@ import com.google.common.collect.Maps;
 
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
+import de.monticore.codegen.mc2cd.manipul.BaseInterfaceAddingManipulation;
 import de.monticore.emf._ast.ASTENodePackage;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.TypesHelper;
@@ -39,6 +40,7 @@ import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDDefinition;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
 import de.monticore.umlcd4a.cd4analysis._visitor.CD4AnalysisInheritanceVisitor;
 import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
@@ -59,9 +61,10 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
   
   public AstEmfGeneratorHelper(ASTCDCompilationUnit topAst, GlobalScope symbolTable) {
     super(topAst, symbolTable);
-    // Run over classdiagramm and converts cd types to mc-java types
+    // Run over classdiagramm and collects external emf types
     ETypeCollector emfCollector = new ETypeCollector(this);
     emfCollector.handle(topAst.getCDDefinition());
+    System.err.println("Types " + externalTypes);
   }
   
   public static String getQualifiedENodeName() {
@@ -197,28 +200,13 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
     return attribute.printType();
   }
   
-  // TODO GV: rename
-  public String getTypeNameEliminOptional(ASTCDAttribute attribute) {
-    if (isOptional(attribute)) {
-      return TypesHelper
-          .printType(TypesHelper.getSimpleReferenceTypeFromOptional(attribute.getType()));
-          
-    }
-    return attribute.printType();
-  }
-  /* public String getModelName(String qualifiedName) { String qualifier =
-   * Names.getQualifier(qualifiedName); if
-   * (!qualifier.endsWith(AST_PACKAGE_SUFFIX)) { return ""; } return
-   * Names.getSimpleName(Names.getQualifier(qualifier)); } */
-  
-  public String getType(CDTypeSymbol type) {
-    return type.getFullName();
-  }
-  
-  // TODO GV:
-  public static boolean istAstENodeList(ASTCDAttribute attribute) {
+  public static boolean istJavaList(ASTCDAttribute attribute) {
     return TypesPrinter.printTypeWithoutTypeArgumentsAndDimension(attribute.getType())
         .equals(JAVA_LIST);
+  }
+  
+  public boolean isExternalType(ASTCDAttribute cdAtttribute) {
+    return isExternalType(getNativeTypeName(cdAtttribute));
   }
   
   public List<String> getASTESuperPackages() {
@@ -235,18 +223,9 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
   public static String getEPackageName(String qualifiedSuperGrammar) {
     return qualifiedSuperGrammar.toLowerCase() + "._ast."
         + StringTransformations.capitalize(Names.getSimpleName(qualifiedSuperGrammar)) + "Package";
-        
   }
   
-//  public List<String> getIndirectSuperGrammars() {
-//    List<String> superCDs = getAllSuperCds(getCdSymbol()).stream()
-//        .map(CDSymbol::getFullName).collect(Collectors.toList());
-//    superCDs.removeAll(getSuperGrammarCds());
-//    return superCDs;
-//  }
-  
   public void createEmfAttribute(ASTCDType ast, ASTCDAttribute cdAttribute) {
-    // TODO GV: interfaces, enums
     String attributeName = getPlainName(ast) + "_"
         + StringTransformations.capitalize(GeneratorHelper.getNativeAttributeName(cdAttribute
             .getName()));
@@ -254,9 +233,44 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
         || isOptionalAstNode(cdAttribute);
     boolean isAstList = isListAstNode(cdAttribute);
     boolean isOptional = AstGeneratorHelper.isOptional(cdAttribute);
-    addEmfAttribute(ast, new EmfAttribute(cdAttribute, ast, attributeName,
-        isAstNode, isAstList, isOptional, this));
-        
+    boolean isInherited = attributeDefinedInOtherCd(cdAttribute);
+    boolean isEnum = !isAstNode && isAttributeOfTypeEnum(cdAttribute);
+    addEmfAttribute(ast,
+        new EmfAttribute(cdAttribute, ast, attributeName, getDefinedGrammarName(cdAttribute),
+            isAstNode, isAstList, isOptional, isInherited, isExternal(cdAttribute), isEnum, this));
+  }
+  
+  /**
+   * Get all native (not created by decorators) cd types
+   * 
+   * @param cdDefinition
+   * @return
+   */
+  public List<ASTCDType> getNativeTypes(ASTCDDefinition cdDefinition) {
+    List<ASTCDType> types = new ArrayList<>(cdDefinition.getCDClasses());
+    types.addAll(cdDefinition.getCDInterfaces());
+    String genNode = BaseInterfaceAddingManipulation.getBaseInterfaceName(getCdDefinition());
+    return types.stream().filter(c -> !c.getName().equals(genNode))
+        .collect(Collectors.toList());
+  }
+  
+  public boolean attributeDefinedInOtherCd(ASTCDAttribute attribute) {
+    String definedGrammar = getDefinedGrammarName(attribute);
+    return !definedGrammar.isEmpty()
+        && !definedGrammar.equals(getQualifiedCdName().toLowerCase());
+  }
+  
+  public String getDefinedGrammarName(ASTCDAttribute attribute) {
+    String type = getNativeTypeName(attribute);
+    if (isAstNode(attribute) || isListAstNode(attribute)) {
+      return Names.getQualifier(Names.getQualifier(type));
+    }
+    return type;
+  }
+  
+  // TODO GV: fix me
+  public boolean isExternal(ASTCDAttribute attribute) {
+    return getNativeTypeName(attribute).endsWith("Ext");
   }
   
   /**

@@ -59,7 +59,6 @@ SUCH DAMAGE.
       ${qualifiedName}.eNS_URI); 
      </#list>
   
-    // Add supertypes to classes <#-- TODO GV: check super type EPackageImplInitializeSuperTypes.ftl-->
   <#list astClasses as astClass>
     <#assign className = astHelper.getPlainName(astClass)>
     <#if !astClass.getSymbol().get().getSuperTypes()?has_content>
@@ -103,7 +102,7 @@ SUCH DAMAGE.
     <#if emfAttribute.isExternal()>
       <#assign get = "theASTENodePackage.getENode">
     <#elseif emfAttribute.isInherited()>
-      <#assign sGrammarName = astHelper.getIdentifierName(emfAttribute.getDefinedGrammarName())>
+      <#assign sGrammarName = astHelper.getIdentifierName(emfAttribute.getDefinedGrammar())>
       <#assign get = "the" + sGrammarName?cap_first + "Package.get" + emfAttribute.getEDataType()[3..]>
     <#else>
       <#assign get = "this.get" + emfAttribute.getEDataType()[3..]>
@@ -115,15 +114,15 @@ SUCH DAMAGE.
     init${emfAttribute.getEmfType()}(get${emfAttribute.getFullName()}(), ${get}(), null, "${emfAttribute.getAttributeName()?cap_first}", null,
       0, ${isList}, ${emfAttribute.getCdType().getName()}.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     <#else>
-      <#if astHelper.istAstENodeList(emfAttribute.getCdAttribute())>
+      <#if astHelper.istJavaList(emfAttribute.getCdAttribute())>
         <#assign isList = "-1">
       <#else>
         <#assign isList = "1">
       </#if>  
-      <#if emfAttribute.isExternal1()>
-        <#assign get = "this.get" + emfAttribute.getEDataType()?cap_first>
-      <#elseif  emfAttribute.isEnum()>
+      <#if  emfAttribute.isEnum()>
         <#assign get = "this.getE" + emfAttribute.getEDataType()?cap_first>
+      <#elseif astHelper.isExternalType(emfAttribute.getCdAttribute())>
+        <#assign get = "this.get" + emfAttribute.getEDataType()?cap_first>
       <#else>
         <#assign get = "ecorePackage.getE" + emfAttribute.getEDataType()?cap_first>
     </#if> 

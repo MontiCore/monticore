@@ -7,10 +7,10 @@ package de.monticore.codegen.cd2java.ast_emf;
 
 import java.util.Optional;
 
+import de.monticore.codegen.GeneratorHelper;
 import de.monticore.types.TypesHelper;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDEnum;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
 import de.se_rwth.commons.Names;
 
@@ -22,8 +22,37 @@ import de.se_rwth.commons.Names;
  */
 public class EmfAttribute {
   
+  private AstEmfGeneratorHelper astHelper;
+  
   private ASTCDType cdType;
   
+  private String eDataType;
+  
+  private String defaultValue;
+  
+  private String definedGrammar;
+  
+  /**
+   * @return definedGrammar
+   */
+  public String getDefinedGrammar() {
+    return this.definedGrammar;
+  }
+
+  /**
+   * @return defaultValue
+   */
+  public String getDefaultValue() {
+    return this.defaultValue;
+  }
+
+  /**
+   * @return eDataType
+   */
+  public String getEDataType() {
+    return this.eDataType;
+  }
+
   /**
    * @return cdtype
    */
@@ -70,8 +99,17 @@ public class EmfAttribute {
     this.fullName = fullName;
   }
   
+  private boolean isExternal;
+  
   /**
-   * @return fullName
+   * @return isExternal
+   */
+  public boolean isExternal() {
+    return this.isExternal;
+  }
+
+  /**
+   * @return name of the attribute
    */
   public String getAttributeName() {
     return getCdAttribute().getName();
@@ -104,36 +142,31 @@ public class EmfAttribute {
   
   private boolean isOptional;
   
-  private AstEmfGeneratorHelper astHelper;
   
+
+  private boolean isInherited;
+
+  private boolean isEnum;
+  
+  /**
+   * @return isEnum
+   */
+  public boolean isEnum() {
+    return this.isEnum;
+  }
+
+  /**
+   * @return isInherited
+   */
+  public boolean isInherited() {
+    return this.isInherited;
+  }
+
   /**
    * @return isOptionalAstNode
    */
   public boolean isOptional() {
     return this.isOptional;
-  }
-  
-  /**
-   * @return isOptionalAstNode
-   */
-  // TODO GV: fix me!!
-  public boolean isExternal() {
-    return astHelper.getNativeTypeName(getCdAttribute()).endsWith("Ext");
-  }
-  
-  public boolean isInherited() {
-    String definedGrammar = getDefinedGrammarName();
-    return !definedGrammar.isEmpty()
-        && !getDefinedGrammarName().equals(astHelper.getQualifiedCdName().toLowerCase());
-  }
-  
-  // TODO GV: fix me!!
-  public String getDefinedGrammarName() {
-    String type = astHelper.getNativeTypeName(getCdAttribute());
-    if (isAstNode || isAstList) {
-      return Names.getQualifier(Names.getQualifier(type));
-    }
-    return type;
   }
   
   /**
@@ -154,7 +187,7 @@ public class EmfAttribute {
     return getCdAttribute().printType();
   }
   
-  public String getDefaultValue() {
+  private String createDefaultValue() {
     if (isAstNode()) {
       return "null";
     }
@@ -191,10 +224,10 @@ public class EmfAttribute {
     return "EReference".equals(getEmfType());
   }
   
-  public String getEDataType() {
-    if (isAstList || AstEmfGeneratorHelper.istAstENodeList(getCdAttribute())) {
+  private String createEDataType() {
+    if (isAstList || AstEmfGeneratorHelper.istJavaList(getCdAttribute())) {
       Optional<ASTSimpleReferenceType> typeArg = TypesHelper
-          .getFirstTypeArgumentOfGenericType(getCdAttribute().getType(), "java.util.List");
+          .getFirstTypeArgumentOfGenericType(getCdAttribute().getType(), GeneratorHelper.JAVA_LIST);
       if (typeArg.isPresent()) {
         return Names.getSimpleName(TypesHelper
             .printType(typeArg.get()));
@@ -208,30 +241,31 @@ public class EmfAttribute {
     return Names.getSimpleName(nativeType);
   }
   
-  public boolean isExternal1() {
-    return astHelper.isExternalType(astHelper.getNativeTypeName(getCdAttribute()));
-  }
-  
-  // TODO GV: change it
-  public boolean isEnum() {
-    return !isAstNode() && astHelper.isAttributeOfTypeEnum(getCdAttribute());
-  }
-   
   public EmfAttribute(
       ASTCDAttribute cdAttribute,
       ASTCDType type,
       String name,
+      String definedGrammar,
       boolean isAstNode,
       boolean isAstList,
       boolean isOptional,
+      boolean isInherited, 
+      boolean isExternal,
+      boolean isEnum,
       AstEmfGeneratorHelper astHelper) {
     this.cdAttribute = cdAttribute;
     this.cdType = type;
     this.fullName = name;
+    this.definedGrammar = definedGrammar;
     this.isAstNode = isAstNode;
     this.isAstList = isAstList;
     this.isOptional = isOptional;
     this.astHelper = astHelper;
+    this.isInherited = isInherited;
+    this.isExternal = isExternal;
+    this.isEnum = isEnum;
+    this.eDataType = createEDataType();
+    this.defaultValue = createDefaultValue();
   }
   
 }

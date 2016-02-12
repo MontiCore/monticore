@@ -1,5 +1,15 @@
-automaton Testautomat {
-   state a  <<initial>><<final>>;
+automaton Testautomat2 {
+  
+   state a  <<final>>;
 	
-
+   a -x> c;
+   
+   b -y> a;
+   
+   d -y> d;
+	
+   state c <<initial>>;
+	
+   state d; 
+		
 }
