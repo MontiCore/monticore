@@ -97,7 +97,6 @@ SUCH DAMAGE.
     </#if>  
     initEClass(${className[3..]?uncap_first}EClass, ${className}.class, "${className}", ${abstract}, ${interface}, IS_GENERATED_INSTANCE_CLASS);
   </#list>  
-  
   <#list emfAttributes as emfAttribute>
     <#if emfAttribute.isExternal()>
       <#assign get = "theASTENodePackage.getENode">
@@ -107,7 +106,6 @@ SUCH DAMAGE.
     <#else>
       <#assign get = "this.get" + emfAttribute.getEDataType()[3..]>
     </#if>
-
     <#if emfAttribute.isAstNode()>
       <#assign isList = "1">
     <#elseif emfAttribute.isAstList()>
@@ -117,7 +115,6 @@ SUCH DAMAGE.
     <#else>
       <#assign isList = "1">
     </#if>    
-       
     <#if emfAttribute.isAstNode() || emfAttribute.isAstList()>
     init${emfAttribute.getEmfType()}(get${emfAttribute.getFullName()}(), ${get}(), null, "${emfAttribute.getAttributeName()?cap_first}", null,
       0, ${isList}, ${emfAttribute.getCdType().getName()}.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -132,7 +129,6 @@ SUCH DAMAGE.
     init${emfAttribute.getEmfType()}(get${emfAttribute.getFullName()}(), ${get}(), "${emfAttribute.getAttributeName()?cap_first}", null, 
       0, ${isList}, ${emfAttribute.getCdType().getName()}.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     </#if>
-  
   </#list>
   
     <#-- TODO GV:   ePackageImplInitiliazeMethod, ast.getMethods() -->
