@@ -4,12 +4,12 @@ automaton Testautomat2 {
 	
    a -x> c;
    
+  state d <<final>>; 
+   
    b -x> a;
    
    c -y> d;
 	
    state c;
 	
-   state d <<final>>; 
-		
 }
