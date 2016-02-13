@@ -51,10 +51,11 @@ public class EmfDiffTest {
             "B");
         AST2ModelFiles.get().serializeASTInstance(transC.get(),
             "C");
-        // Matching model elements
-        List<DiffElement> diffs = AstEmfDiffUtility.getAllAstDiffs(transB.get(), transC.get());
         
         AstEmfDiffUtility.printAstDiffsHierarchical(transB.get(), transC.get());
+        
+        // Matching model elements
+        List<DiffElement> diffs = AstEmfDiffUtility.getAllAstDiffs(transB.get(), transC.get());
 
         assertEquals(6, diffs.size());
         

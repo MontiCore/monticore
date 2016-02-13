@@ -35,6 +35,7 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.symboltable.GlobalScope;
+import de.monticore.symboltable.Symbol;
 import de.monticore.types.TypesHelper;
 import de.monticore.types.TypesPrinter;
 import de.monticore.types.types._ast.ASTImportStatement;
@@ -97,7 +98,7 @@ public class CdEmfDecorator extends CdDecorator {
         .filter(e -> e.getModifier().isPresent())
         .filter(e -> !e.getModifier().get().isAbstract())
         .collect(Collectors.toList());
-        
+          
     // Run over classdiagramm and converts cd types to mc-java types
     new Cd2JavaTypeConverter(astHelper).handle(cdDefinition);
     
@@ -163,9 +164,9 @@ public class CdEmfDecorator extends CdDecorator {
             .filter(a -> !(getAdditionaAttributeNames().anyMatch(ad -> ad.equals(a.getName()))))
             .forEach(a -> createEmfAttribute(t, a, astHelper, emfCollector)));
     astTypes.stream().filter(t -> t instanceof ASTCDInterface)
-    .forEach(t -> ((ASTCDInterface) t).getCDAttributes().stream()
-        .filter(a -> !(getAdditionaAttributeNames().anyMatch(ad -> ad.equals(a.getName()))))
-        .forEach(a -> createEmfAttribute(t, a, astHelper, emfCollector)));
+        .forEach(t -> ((ASTCDInterface) t).getCDAttributes().stream()
+            .filter(a -> !(getAdditionaAttributeNames().anyMatch(ad -> ad.equals(a.getName()))))
+            .forEach(a -> createEmfAttribute(t, a, astHelper, emfCollector)));
     System.err.println("All attributes " + getAllEmfAttributes());
   }
   
@@ -557,7 +558,8 @@ public class CdEmfDecorator extends CdDecorator {
     attributes.add(attribute);
   }
   
-  void createEmfAttribute(ASTCDType ast, ASTCDAttribute cdAttribute, AstEmfGeneratorHelper astHelper, ETypeCollector eTypeCollector) {
+  void createEmfAttribute(ASTCDType ast, ASTCDAttribute cdAttribute,
+      AstEmfGeneratorHelper astHelper, ETypeCollector eTypeCollector) {
     String attributeName = getPlainName(ast) + "_"
         + StringTransformations.capitalize(GeneratorHelper.getNativeAttributeName(cdAttribute
             .getName()));
@@ -567,11 +569,14 @@ public class CdEmfDecorator extends CdDecorator {
     boolean isOptional = AstGeneratorHelper.isOptional(cdAttribute);
     boolean isInherited = astHelper.attributeDefinedInOtherCd(cdAttribute);
     boolean isEnum = !isAstNode && astHelper.isAttributeOfTypeEnum(cdAttribute);
-    boolean hasExternalType = eTypeCollector.isExternalType(astHelper.getNativeTypeName(cdAttribute));
+    boolean hasExternalType = eTypeCollector
+        .isExternalType(astHelper.getNativeTypeName(cdAttribute));
     String eDataType = createEDataType(cdAttribute, isAstList, astHelper, eTypeCollector);
     addEmfAttribute(ast,
-        new EmfAttribute(cdAttribute, ast, attributeName, eDataType, astHelper.getDefinedGrammarName(cdAttribute),
-            isAstNode, isAstList, isOptional, isInherited, astHelper.isExternal(cdAttribute), isEnum, hasExternalType));
+        new EmfAttribute(cdAttribute, ast, attributeName, eDataType,
+            astHelper.getDefinedGrammarName(cdAttribute),
+            isAstNode, isAstList, isOptional, isInherited, astHelper.isExternal(cdAttribute),
+            isEnum, hasExternalType));
   }
   
   List<EmfAttribute> getEmfAttributes(ASTCDType type) {
@@ -580,6 +585,22 @@ public class CdEmfDecorator extends CdDecorator {
     attributes.addAll(getEAttributes(type));
     return attributes;
   }
+  
+//  List<EmfAttribute> getAllEmfAttributes(ASTCDType type, AstEmfGeneratorHelper astHelper) {
+//    List<EmfAttribute> attributes = getEmfAttributes(type);
+//    Optional<? extends Symbol> symbol = type.getSymbol();
+//    if (symbol.isPresent()) {
+//      CDTypeSymbol typeSymbol = (CDTypeSymbol) symbol.get();
+//      List<CDTypeSymbol> superTypes = astHelper.getSuperTypes(typeSymbol);
+//      for (CDTypeSymbol superType : superTypes) {
+//        if (superType.getAstNode().isPresent()
+//            && superType.getAstNode().get() instanceof ASTCDType) {
+//          attributes.addAll(getEmfAttributes((ASTCDType)superType.getAstNode().get()));
+//        }
+//      }
+//    }
+//    return attributes;
+//  }
   
   List<EmfAttribute> getEAttributes(ASTCDType type) {
     if (!emfAttributes.containsKey(type)) {
@@ -605,7 +626,8 @@ public class CdEmfDecorator extends CdDecorator {
     return attributes;
   }
   
-  String createEDataType(ASTCDAttribute cdAttribute, boolean isAstList, AstEmfGeneratorHelper astHelper, ETypeCollector eTypeCollector) {
+  String createEDataType(ASTCDAttribute cdAttribute, boolean isAstList,
+      AstEmfGeneratorHelper astHelper, ETypeCollector eTypeCollector) {
     if (isAstList || AstEmfGeneratorHelper.istJavaList(cdAttribute)) {
       Optional<ASTSimpleReferenceType> typeArg = TypesHelper
           .getFirstTypeArgumentOfGenericType(cdAttribute.getType(), GeneratorHelper.JAVA_LIST);
@@ -643,7 +665,7 @@ public class CdEmfDecorator extends CdDecorator {
     replaceMethodBodyTemplate(nodeFactoryClass, toParse, methodBody);
   }
   
-public class ETypeCollector implements CD4AnalysisInheritanceVisitor {
+  public class ETypeCollector implements CD4AnalysisInheritanceVisitor {
     
     private AstEmfGeneratorHelper astHelper;
     
@@ -673,7 +695,7 @@ public class ETypeCollector implements CD4AnalysisInheritanceVisitor {
       }
       externalTypes.put(extType, typeName);
     }
-
+    
     /**
      * @return types
      */
