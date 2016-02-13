@@ -6,7 +6,6 @@
 package mc.emf;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -42,19 +41,16 @@ public class EmfDiffTest {
   public void testDiffAutomaton() {
     try {
       Optional<ASTAutomaton> transB = new FlatAutomatonParser()
-          .parse("src/test/resources/mc/automaton/Testautomat.aut");
+          .parse("src/test/resources/mc/diff/automaton/Testautomat.aut");
           
       Optional<ASTAutomaton> transC = new FlatAutomatonParser()
-          .parse("src/test/resources/mc/automaton/Testautomat2.aut");
+          .parse("src/test/resources/mc/diff/automaton/Testautomat2.aut");
       if (transB.isPresent() && transC.isPresent()) {
-        AST2ModelFiles.get().serializeASTInstance(transB.get(),
-            "B");
-        AST2ModelFiles.get().serializeASTInstance(transC.get(),
-            "C");
+       
         // Matching model elements
         List<DiffElement> diffs = AstEmfDiffUtility.getAllAstDiffs(transB.get(), transC.get());
         
-        AstEmfDiffUtility.printAstDiffsHierarchical(transB.get(), transC.get());
+        //AstEmfDiffUtility.printAstDiffsHierarchical(transB.get(), transC.get());
 
         assertEquals(7, diffs.size());
         

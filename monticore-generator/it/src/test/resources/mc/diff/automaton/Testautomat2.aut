@@ -1,10 +1,10 @@
 automaton Testautomat2 {
   
    state a  <<initial>>;
+   
+   state d <<final>>; 
 	
    a -x> c;
-   
-  state d <<final>>; 
    
    b -x> a;
    
@@ -12,4 +12,6 @@ automaton Testautomat2 {
 	
    state c;
 	
+ 
+		
 }
