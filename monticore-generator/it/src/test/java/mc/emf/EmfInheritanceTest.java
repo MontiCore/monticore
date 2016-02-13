@@ -5,6 +5,7 @@
  */
 package mc.emf;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -24,6 +25,7 @@ import org.junit.Test;
 
 //import de.monticore.emf.fautomaton.automatonwithaction.actionautomaton._ast.ActionAutomatonPackage;
 import de.monticore.emf.util.AST2ModelFiles;
+import de.monticore.emf.util.compare.AstEmfDiffUtility;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
 import mc.featureemf.fautomaton.automaton.flatautomaton._ast.ASTAutomaton;
@@ -46,32 +48,18 @@ public class EmfInheritanceTest {
   public void test2() {
     try {
       Optional<ASTAutomaton> transB = new FlatAutomatonParser()
-          .parse("src/test/resources/mc/automaton/Testautomat.aut");
+          .parse("src/test/resources/mc/diff/automaton/Testautomat.aut");
           
       Optional<ASTAutomaton> transC = new FlatAutomatonParser()
-          .parse("src/test/resources/mc/automaton/Testautomat2.aut");
+          .parse("src/test/resources/mc/diff/automaton/Testautomat2.aut");
       if (transB.isPresent() && transC.isPresent()) {
-        System.err.println("ASTAutomaton: " + transB.get());
-//        AST2ModelFiles.get().serializeASTInstance(transB.get(),
-//            "B");
-//            
-        System.err.println("ASTAutomaton: " + transC.get());
-//        AST2ModelFiles.get().serializeASTInstance(transC.get(),
-//            "C");
-//            
-        // Matching model elements
-        MatchModel match = MatchService.doMatch(transB.get(), transC.get(),
-            Collections.<String, Object> emptyMap());
-        // Computing differences
-        DiffModel diff = DiffService.doDiff(match, false);
-        // Merges all differences from model1 to model2
-        List<DiffElement> differences = new ArrayList<DiffElement>(diff.getOwnedElements());
-        // MergeService.merge(differences, true);
-        
-        for (DiffElement diffElement : diff.getDifferences(transB.get())) {
-          System.err.println(" diffElement: " + diffElement.toString());
-        }
-        System.err.println("::: " + diff.getDifferences(transB.get()));
+        AST2ModelFiles.get().serializeASTInstance(transB.get(),
+            "B");
+        AST2ModelFiles.get().serializeASTInstance(transC.get(),
+            "C");
+  
+        AstEmfDiffUtility.printAstDiffsHierarchical(transB.get(), transC.get());
+      
       }
       else {
         fail("Parse errors");

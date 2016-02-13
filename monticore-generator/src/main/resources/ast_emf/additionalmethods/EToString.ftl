@@ -35,17 +35,20 @@ SUCH DAMAGE.
     if (eIsProxy()) {
       return super.toString();
     }
-    StringBuffer result = new StringBuffer(super.toString());
+    StringBuffer result = new StringBuffer(getClass().getSimpleName());
   <#list emfAttributes as emfAttribute>
-    <#-- eToStringAttribut, ast.getCollectedAttributes() -->
-    result.append(" ${astHelper.getPlainName(emfAttribute.getCdAttribute())}: ");
-    <#if astHelper.isOptional(emfAttribute.getCdAttribute())>
+    <#if emfAttribute.isOptional()>
     if (${emfAttribute.getAttributeName()}.isPresent()) {
+      result.append(" ${astHelper.getPlainName(emfAttribute.getCdAttribute())}: ");
       result.append(${emfAttribute.getAttributeName()}.get());
-    } else {
-      result.append("Optional.empty()");
-    }
+    } 
+    <#elseif emfAttribute.isAstList()>
+    if (!${emfAttribute.getAttributeName()}.isEmpty()) {
+      result.append(" ${astHelper.getPlainName(emfAttribute.getCdAttribute())}: ");
+      result.append(${emfAttribute.getAttributeName()});
+    } 
     <#else>
+    result.append(" ${astHelper.getPlainName(emfAttribute.getCdAttribute())}: ");
     result.append(${emfAttribute.getAttributeName()});
     </#if>
   </#list>
