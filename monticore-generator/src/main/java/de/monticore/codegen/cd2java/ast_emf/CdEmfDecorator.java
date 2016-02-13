@@ -162,11 +162,10 @@ public class CdEmfDecorator extends CdDecorator {
         .forEach(t -> ((ASTCDClass) t).getCDAttributes().stream()
             .filter(a -> !(getAdditionaAttributeNames().anyMatch(ad -> ad.equals(a.getName()))))
             .forEach(a -> createEmfAttribute(t, a, astHelper, emfCollector)));
-    astTypes.stream().filter(t -> t instanceof ASTCDInterface)
-    .forEach(t -> ((ASTCDInterface) t).getCDAttributes().stream()
-        .filter(a -> !(getAdditionaAttributeNames().anyMatch(ad -> ad.equals(a.getName()))))
-        .forEach(a -> createEmfAttribute(t, a, astHelper, emfCollector)));
-    System.err.println("All attributes " + getAllEmfAttributes());
+//    astTypes.stream().filter(t -> t instanceof ASTCDInterface)
+//    .forEach(t -> ((ASTCDInterface) t).getCDAttributes().stream()
+//        .filter(a -> !(getAdditionaAttributeNames().anyMatch(ad -> ad.equals(a.getName()))))
+//        .forEach(a -> createEmfAttribute(t, a, astHelper, emfCollector)));
   }
   
   private Stream<String> getAdditionaAttributeNames() {

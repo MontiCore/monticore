@@ -56,20 +56,23 @@ public class EmfDiffTest {
         
         AstEmfDiffUtility.printAstDiffsHierarchical(transB.get(), transC.get());
 
-        assertEquals(6, diffs.size());
+        assertEquals(7, diffs.size());
+        
+        assertEquals("The order of the values of reference States have been changed",
+            diffs.get(0).toString());
         
         assertEquals("Attribute R__final in a has changed from false to true",
-            diffs.get(0).toString());
+            diffs.get(1).toString());
             
-        assertEquals("Attribute Initial in a has changed from true to false", diffs.get(1).toString());
+        assertEquals("Attribute Initial in a has changed from true to false", diffs.get(2).toString());
         
-        assertEquals("Attribute Initial in c has changed from false to true", diffs.get(2).toString());
+        assertEquals("Attribute Initial in c has changed from false to true", diffs.get(3).toString());
     
-        assertEquals("Attribute R__final in d has changed from true to false", diffs.get(3).toString());
+        assertEquals("Attribute R__final in d has changed from true to false", diffs.get(4).toString());
 
-        assertEquals("Attribute Activate in b has changed from x to y", diffs.get(4).toString());
+        assertEquals("Attribute Activate in b has changed from x to y", diffs.get(5).toString());
 
-        assertEquals("Attribute From in d has changed from c to d", diffs.get(5).toString());
+        assertEquals("Attribute From in d has changed from c to d", diffs.get(6).toString());
        
       }
       else {
