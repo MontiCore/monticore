@@ -53,11 +53,10 @@ import de.monticore.antlr4.MCConcreteParser;
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.RecognitionException;
 
 public class ${ast.getName()}Parser${suffix} extends MCConcreteParser {
 
-  protected ${parserName}AntlrParser create(String filename) throws IOException, RecognitionException {
+  protected ${parserName}AntlrParser create(String filename) throws IOException {
     ${parserName}AntlrLexer lexer = new ${parserName}AntlrLexer(new  ANTLRFileStream(filename));
     CommonTokenStream tokens = new CommonTokenStream(lexer);
     ${parserName}AntlrParser parser = new ${parserName}AntlrParser(tokens);
@@ -67,7 +66,7 @@ public class ${ast.getName()}Parser${suffix} extends MCConcreteParser {
     return parser;
   }
   
-  protected ${parserName}AntlrParser create(Reader reader) throws IOException, RecognitionException {
+  protected ${parserName}AntlrParser create(Reader reader) throws IOException {
     ${parserName}AntlrLexer lexer = new ${parserName}AntlrLexer(new ANTLRInputStream(reader));
     CommonTokenStream tokens = new CommonTokenStream(lexer);
     ${parserName}AntlrParser parser = new ${parserName}AntlrParser(tokens);
@@ -81,7 +80,7 @@ public class ${ast.getName()}Parser${suffix} extends MCConcreteParser {
    * @see de.monticore.antlr4.MCConcreteParser#parse(java.lang.String)
    */
   @Override
-  public Optional<${qualifiedStartRule}> parse(String fileName) throws IOException, RecognitionException {
+  public Optional<${qualifiedStartRule}> parse(String fileName) throws IOException {
     return parse${startRule}(fileName);
   }
   
@@ -89,11 +88,11 @@ public class ${ast.getName()}Parser${suffix} extends MCConcreteParser {
    * @see de.monticore.antlr4.MCConcreteParser#parse(java.io.Reader)
    */
   @Override
-  public Optional<${qualifiedStartRule}> parse(Reader reader) throws IOException, RecognitionException {
+  public Optional<${qualifiedStartRule}> parse(Reader reader) throws IOException {
     return parse${startRule}(reader);
   }
   
-  public Optional<${qualifiedStartRule}> parse_String(String str) throws IOException, RecognitionException {
+  public Optional<${qualifiedStartRule}> parse_String(String str) throws IOException {
     return parseString_${startRule}(str);
   }
  

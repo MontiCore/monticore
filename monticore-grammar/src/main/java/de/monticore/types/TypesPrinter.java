@@ -217,7 +217,7 @@ public class TypesPrinter {
   }
   
   protected String doPrintTypeParameters(ASTTypeParameters params) {
-    if (params != null && params.getTypeVariableDeclarations() != null && params.getTypeVariableDeclarations().size() != 0) {
+    if (params != null && params.getTypeVariableDeclarations() != null && !params.getTypeVariableDeclarations().isEmpty()) {
       return "<" + doPrintTypeVariableDeclarationList(params.getTypeVariableDeclarations()) + ">";
     }
     return "";
@@ -234,15 +234,15 @@ public class TypesPrinter {
   }
   
   protected String doPrintTypeVariableDeclarationList(List<ASTTypeVariableDeclaration> decl) {
-    String ret = "";
+    StringBuilder ret = new StringBuilder();
     if (decl != null) {
       String sep = "";
       for (ASTTypeVariableDeclaration d : decl) {
-        ret += sep + doPrintTypeVariableDeclaration(d);
+        ret.append(sep + doPrintTypeVariableDeclaration(d));
         sep = ", ";
       }
     }
-    return ret;
+    return ret.toString();
   }
   
   /**
@@ -256,18 +256,18 @@ public class TypesPrinter {
   }
   
   protected String doPrintTypeVariableDeclaration(ASTTypeVariableDeclaration decl) {
-    String ret = "";
+    StringBuilder ret = new StringBuilder();
     if (decl != null) {
-      ret = decl.getName();
+      ret.append(decl.getName());
       if (decl.getUpperBounds() != null && !decl.getUpperBounds().isEmpty()) {
         String sep = " extends ";
         for (ASTType type : decl.getUpperBounds()) {
-          ret += sep + doPrintType(type);
+          ret.append(sep + doPrintType(type));
           sep = " & ";
         }
       }
     }
-    return ret;
+    return ret.toString();
   }
   
   /**
@@ -340,11 +340,12 @@ public class TypesPrinter {
   
   protected String doPrintArrayType(ASTArrayType type) {
     if (type != null) {
-      String dimension = "";
+      StringBuilder dimension = new StringBuilder();
+      dimension.append(doPrintType(type.getComponentType()));
       for (int i = 0; i < type.getDimensions(); i++) {
-        dimension += "[]";
+        dimension.append("[]");
       }
-      return doPrintType(type.getComponentType()) + dimension;
+      return dimension.toString();
     }
     return "";
   }
@@ -360,15 +361,15 @@ public class TypesPrinter {
   }
   
   protected String doPrintReferenceTypeList(List<ASTReferenceType> type) {
-    String ret = "";
+    StringBuilder ret = new StringBuilder();
     if (type != null) {
       String sep = "";
       for (ASTReferenceType refType : type) {
-        ret += sep + doPrintReferenceType(refType);
+        ret.append(sep + doPrintReferenceType(refType));
         sep = ", ";
       }
     }
-    return ret;
+    return ret.toString();
   }
   
   /**
@@ -422,15 +423,15 @@ public class TypesPrinter {
   }
 
   protected String doPrintSimpleReferenceTypeList(List<ASTSimpleReferenceType> argList) {
-    String ret = "";
+    StringBuilder ret = new StringBuilder();
     if (argList != null) {
       String sep = "";
       for (ASTSimpleReferenceType arg : argList) {
-        ret += sep + doPrintSimpleReferenceType(arg);
+        ret.append(sep + doPrintSimpleReferenceType(arg));
         sep = ". ";
       }
     }
-    return ret;
+    return ret.toString();
   }
   
   /**
@@ -444,7 +445,7 @@ public class TypesPrinter {
   }
   
   protected String doPrintTypeArguments(ASTTypeArguments args) {
-    if (args != null && args.getTypeArguments() != null && args.getTypeArguments().size() != 0) {
+    if (args != null && args.getTypeArguments() != null && !args.getTypeArguments().isEmpty()) {
       return "<" + doPrintTypeArgumentList(args.getTypeArguments()) + ">";
     }
     return "";
@@ -461,15 +462,15 @@ public class TypesPrinter {
   }
   
   protected String doPrintTypeArgumentList(List<ASTTypeArgument> argList) {
-    String ret = "";
+    StringBuilder ret = new StringBuilder();
     if (argList != null) {
       String sep = "";
       for (ASTTypeArgument arg : argList) {
-        ret += sep + doPrintTypeArgument(arg);
+        ret.append(sep + doPrintTypeArgument(arg));
         sep = ", ";
       }
     }
-    return ret;
+    return ret.toString();
   }
   
   /**
@@ -483,17 +484,17 @@ public class TypesPrinter {
   }
   
   protected String doPrintWildcardType(ASTWildcardType type) {
-    String ret = "";
+    StringBuilder ret = new StringBuilder();
     if (type != null) {
-      ret = "?";
+      ret.append("?");
       if (type.getUpperBound().isPresent()) {
-        ret += " extends " + doPrintType(type.getUpperBound().get());
+        ret.append(" extends " + doPrintType(type.getUpperBound().get()));
       }
       else if (type.getLowerBound().isPresent()) {
-        ret += " super " + doPrintType(type.getLowerBound().get());
+        ret.append(" super " + doPrintType(type.getLowerBound().get()));
       }
     }
-    return ret;
+    return ret.toString();
   }
 
 
@@ -517,23 +518,22 @@ public class TypesPrinter {
   }
 
   protected String doPrintComplexReferenceTypeWithoutTypeArguments(ASTComplexReferenceType type) {
-    String ret = "";
     if (type != null && type.getSimpleReferenceTypes() != null) {
       return doPrintSimpleReferenceTypeListWithoutTypeArguments(type.getSimpleReferenceTypes());
     }
-    return ret;
+    return "";
   }
 
   protected String doPrintSimpleReferenceTypeListWithoutTypeArguments(List<ASTSimpleReferenceType> argList) {
-    String ret = "";
+    StringBuilder ret = new StringBuilder();
     if (argList != null) {
       String sep = "";
       for (ASTSimpleReferenceType arg : argList) {
-        ret += sep + doPrintSimpleReferenceTypeWithoutTypeArguments(arg);
+        ret.append(sep + doPrintSimpleReferenceTypeWithoutTypeArguments(arg));
         sep = ". ";
       }
     }
-    return ret;
+    return ret.toString();
   }
   
 }

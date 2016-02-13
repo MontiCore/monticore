@@ -19,20 +19,13 @@
 
 package de.monticore.io.paths;
 
-import static com.google.common.base.Preconditions.checkState;
+import org.apache.commons.io.FilenameUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.JarURLConnection;
-import java.net.URI;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 
-import org.apache.commons.io.FilenameUtils;
-
-import de.se_rwth.commons.logging.Log;
+import static com.google.common.base.Preconditions.checkState;
 
 final class ModelCoordinateImpl implements ModelCoordinate {
   
@@ -40,7 +33,7 @@ final class ModelCoordinateImpl implements ModelCoordinate {
    * The relative location of the model.<br>
    * Example: {@code src/main/grammars/de/mc/statechart.mc}
    */
-  private URL location;
+  private Path location;
   
   /**
    * The qualified path of the model. It is implied that any directories
@@ -60,7 +53,7 @@ final class ModelCoordinateImpl implements ModelCoordinate {
   }
   
   @Override
-  public void setLocation(URL location) {
+  public void setLocation(Path location) {
     checkState(this.location == null, "The location of the ModelCoordinate was already set.");
     this.location = location;
   }
@@ -99,7 +92,7 @@ final class ModelCoordinateImpl implements ModelCoordinate {
   }
   
   @Override
-  public URL getLocation() {
+  public Path getLocation() {
     checkState(location != null, "The location of the ModelCoordinate wasn't set.");
     return this.location;
   }
@@ -124,32 +117,13 @@ final class ModelCoordinateImpl implements ModelCoordinate {
   public Path getParentDirectoryPath() {
     checkState(qualifiedPath != null, "The qualified path of the ModelCoordinate wasn't set.");
     
-    if (location.getProtocol().equals("jar")) {
-      try {
-        JarURLConnection connection = (JarURLConnection) location.openConnection();
-        File result = new File(connection.getJarFileURL().getFile());
-        return Paths.get(result.getAbsolutePath());
-      }
-      catch (IOException e) {
-        Log.debug("Error reading jar file URL", e, ModelCoordinateImpl.class.getName());
-      }
+    if (location.endsWith(".jar")) {
+      return location.getParent();
     }
-    
-    String locationString = location.toString();
-    String protocol = location.getProtocol();
-    int protocolLength = 0;
-    if (locationString.startsWith(protocol)) {
-      protocolLength = protocol.length() + 1;
+    else {
+      int endIndex = location.getNameCount() - qualifiedPath.getNameCount();
+      return location.subpath(0, endIndex).toAbsolutePath();
     }
-    
-    int qualifiedPathLength = qualifiedPath.toString().length();
-    String parentDirectoryString = locationString
-        .substring(protocolLength, locationString.length() - qualifiedPathLength);
-    
-    String uri = protocol + ":" + parentDirectoryString;
-    URI temp = URI.create(uri);
-    Path p = Paths.get(temp);
-    return p;
   }
   
   @Override

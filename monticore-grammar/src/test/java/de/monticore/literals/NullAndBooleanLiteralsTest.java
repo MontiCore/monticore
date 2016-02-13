@@ -23,6 +23,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+
 import org.junit.Test;
 
 import de.monticore.literals.literals._ast.ASTBooleanLiteral;
@@ -58,7 +60,7 @@ public class NullAndBooleanLiteralsTest {
       assertTrue(lit instanceof ASTBooleanLiteral);
       assertFalse(((ASTBooleanLiteral) lit).getValue());
     }
-    catch (Exception e) {
+    catch (IOException e) {
       fail(e.getMessage());
     }
   }

@@ -17,38 +17,46 @@
  * ******************************************************************************
  */
 
-package de.monticore.types;
+package de.monticore.common;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.io.StringReader;
+import java.util.Optional;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import de.monticore.common.common._ast.ASTStereotype;
+import de.monticore.common.common._parser.CommonParser;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * @author Martin Schindler
+ * @author Marita Breuer
  */
-public class WildcardTypesTest {
+public class StereotypeTest {
   
   @BeforeClass
   public static void disableFailQuick() {
     Log.enableFailQuick(false);
   }
   
+  private ASTStereotype parseStereotype(String s) throws IOException {
+    CommonParser parser = new CommonParser();
+    Optional<ASTStereotype> ast = parser.parseStereotype(new StringReader(s));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    return ast.get();
+  }
+  
   @Test
-  public void testWildcardType() {
+  public void parseStereotype() {
     try {
-      // Test for a simple wildcard type
-      assertTrue(TypesTestHelper.getInstance().testType("ParameterizedType<?>"));
-      // Test with a upper bound
-      assertTrue(TypesTestHelper.getInstance().testType("ParameterizedType<? extends ParentClass>"));
-      // Test with a lower bound
-      assertTrue(TypesTestHelper.getInstance().testType("ParameterizedType<? super ChildClass>"));
+      parseStereotype("<<s1=\"S1\">>");
+      parseStereotype("<<s1=\"S1\", s2>>");
     }
     catch (IOException e) {
       fail(e.getMessage());
@@ -56,15 +64,24 @@ public class WildcardTypesTest {
   }
   
   @Test
-  public void testNegativeWildcardType() {
+  public void parseNegativeStereotype() {
     try {
-      // Negative test with a upper and lower bound
-      assertNull(TypesTestHelper.getInstance()
-          .parseType("ParameterizedType<? extends ParentClass super ChildClass>"));
-          
-      // Negative test with a wildcard as upper bound
-      assertNull(
-          TypesTestHelper.getInstance().parseType("ParameterizedType<? extends ? extends Invalid>"));         
+      CommonParser parser = new CommonParser();
+      parser.parseStereotype(new StringReader("<<s1> >"));
+      assertTrue(parser.hasErrors());
+    }
+    catch (IOException e) {
+      fail(e.getMessage());
+    }
+  }
+  
+  @Test
+  public void parseGenericType() {
+    // Check if handling of ">>" in generic tpyes is correct
+    try {
+      CommonParser parser = new CommonParser();
+      parser.parseType(new StringReader("List<List<String>>"));
+      assertFalse(parser.hasErrors());
     }
     catch (IOException e) {
       fail(e.getMessage());

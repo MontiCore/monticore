@@ -30,7 +30,7 @@ import de.monticore.prettyprint.IndentPrinter;
 
 public class ODReporter extends AReporter {
   
-  final static String SIMPLE_FILE_NAME = "18_ObjectDiagram";
+  static final String SIMPLE_FILE_NAME = "18_ObjectDiagram";
   
   private String modelName;
   
@@ -51,7 +51,8 @@ public class ODReporter extends AReporter {
   
   private void writeFooter() {
     writeLine("========================================================== Explanation");
-    writeLine("Shows symbol table after finishing the generation process.");
+    writeLine("Shows the AST with all attributes as object diagram");
+    writeLine("(EOF)");
   }
   
   @Override

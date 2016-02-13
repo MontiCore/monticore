@@ -71,8 +71,8 @@ public class ReferencesTest {
     globalScope.add(c);
     globalScope.add(d);
 
-    c.getSpannedScope().setResolvingFilters(globalScope.getResolvingFilters());
-    d.getSpannedScope().setResolvingFilters(globalScope.getResolvingFilters());
+    c.getMutableSpannedScope().setResolvingFilters(globalScope.getResolvingFilters());
+    d.getMutableSpannedScope().setResolvingFilters(globalScope.getResolvingFilters());
 
     assertSame(c, globalScope.resolve("C", CommonJTypeSymbol.KIND).orElse(null));
     assertSame(d, globalScope.resolve("D", CommonJTypeSymbol.KIND).orElse(null));

@@ -25,7 +25,6 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
-import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
 
 import de.monticore.literals.literals._ast.ASTDoubleLiteral;
@@ -36,7 +35,7 @@ import de.monticore.literals.literals._ast.ASTLiteral;
  */
 public class DoubleLiteralsTest {
   
-  private void checkDoubleLiteral(double d, String s) throws RecognitionException, IOException {
+  private void checkDoubleLiteral(double d, String s) throws IOException {
     ASTLiteral lit = LiteralsTestHelper.getInstance().parseLiteral(s);
     assertTrue(lit instanceof ASTDoubleLiteral);
     assertEquals(d, ((ASTDoubleLiteral) lit).getValue(), 0);
@@ -93,7 +92,7 @@ public class DoubleLiteralsTest {
       checkDoubleLiteral(1e-9d, "1e-9d");
       checkDoubleLiteral(1e137, "1e137");
     }
-    catch (Exception e) {
+    catch (IOException e) {
       fail(e.getMessage());
     }
   }

@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -109,9 +108,6 @@ public class CdDecoratorTest {
       astHelper = new AstGeneratorHelper(topNode.get(), globalScope);
     }
     catch (FileNotFoundException e) {
-      fail("Should not reach this, but: " + e);
-    }
-    catch (RecognitionException e) {
       fail("Should not reach this, but: " + e);
     }
     catch (IOException e) {

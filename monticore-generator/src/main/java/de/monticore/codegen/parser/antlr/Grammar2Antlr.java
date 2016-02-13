@@ -89,8 +89,6 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
   
   private MCGrammarSymbol grammarEntry;
   
-  private ParserGeneratorHelper parserGeneratorHelper;
-
   /**
    * This list is used for the detection of the left recursion
    */
@@ -114,7 +112,6 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
   
   public Grammar2Antlr(ParserGeneratorHelper parserGeneratorHelper, MCGrammarInfo grammarInfo) {
     Preconditions.checkArgument(parserGeneratorHelper.getGrammarSymbol() != null);
-    this.parserGeneratorHelper = parserGeneratorHelper;
     this.grammarEntry = parserGeneratorHelper.getGrammarSymbol();
     this.grammarInfo = grammarInfo;
     
@@ -156,7 +153,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     addToCodeSection("\n:");
     
     // Add init action
-    if (ast.getInitAction().isPresent() || s.size() > 0) {
+    if (ast.getInitAction().isPresent() || !s.isEmpty()) {
       if (ast.getInitAction().isPresent()) {
         addToCodeSection("{", ParserGeneratorHelper.getText(ast.getInitAction().get()), "\n}");
       }
@@ -209,7 +206,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     
     String options = "";
     // Antlr4: new syntax
-    if (ast.getAlts().size() == 0) {
+    if (ast.getAlts().isEmpty()) {
       options = "@rulecatch{}";
     }
     
@@ -256,7 +253,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     
     List<PredicatePair> subRules = grammarEntry
         .getSubRulesForParsing(HelperGrammar.getRuleName(ast));
-    if (subRules != null && subRules.size() > 0) {
+    if (subRules != null && !subRules.isEmpty()) {
       
       addToCodeSection("// Adding subrules");
       endCodeSection();
@@ -771,7 +768,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
   
   @Override
   public void endVisit(ASTAlt alt) {
-    if (altList.size() > 0) {
+    if (!altList.isEmpty()) {
       altList.remove(altList.size() - 1);
     }
   }
@@ -877,10 +874,12 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     startAction();
     
     if (isHandedOn) {
-      if (iteratedItself)
+      if (iteratedItself) {
         addToAction(astActions.getActionForLexerRuleIteratedHandedOn(ast));
-      else
+      }
+      else {
         addToAction(astActions.getActionForLexerRuleNotIteratedHandedOn(ast));
+      }
     }
     else {
       // TODO PN:
@@ -951,7 +950,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     
     boolean isLeftRecursive = false;
     if (scope.isPresent() && scope.get().getName().equals(ast.getName())
-        && altList.size() > 0) {
+        && !altList.isEmpty()) {
       // Check if rule is left recursive
       isLeftRecursive = leftRecursionDetector
           .isAlternativeLeftRecursive(altList.get(0), ast);
@@ -1028,10 +1027,12 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     startAction();
     
     if (isVariable) {
-      if (iteratedItself)
+      if (iteratedItself) {
         addToAction(astActions.getActionForTerminalIteratedVariable(keyword));
-      else
+      }
+      else {
         addToAction(astActions.getActionForTerminalNotIteratedVariable(keyword));
+      }
     }
     else if (isAttribute) {
       if (rule.getDefinedType().getAttribute(keyword.getUsageName().get()).isIterated()) {

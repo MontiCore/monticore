@@ -17,6 +17,7 @@
  * ******************************************************************************
  */
 
+
 package de.monticore.symboltable.resolving;
 
 import de.monticore.symboltable.Symbol;
@@ -30,4 +31,8 @@ import de.monticore.symboltable.Symbol;
 public interface SymbolAdapter<T extends Symbol> {
 
   T getAdaptee();
+
+  default String getName() {
+    return getAdaptee().getName();
+  }
 }

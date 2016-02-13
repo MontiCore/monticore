@@ -19,16 +19,14 @@
 
 package de.monticore.io.paths;
 
-import static org.junit.Assert.assertTrue;
+import de.monticore.AmbiguityException;
+import org.junit.Test;
 
-import java.io.File;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.Test;
-
-import de.monticore.AmbiguityException;
+import static org.junit.Assert.assertTrue;
 
 public class ModelPathTest {
   
@@ -53,8 +51,7 @@ public class ModelPathTest {
   @Test
   public void testResolveModel() throws URISyntaxException {
     assertTrue(modelPath.resolveModel(unambiguousModel).hasLocation());
-    Path resolvedLocation = Paths.get(new File(unambiguousModel.getLocation().toURI()).getPath());
-    assertTrue(resolvedLocation.endsWith(unambiguousModelLocation));
+    assertTrue(unambiguousModel.getLocation().endsWith(unambiguousModelLocation));
   }
   
   @Test(expected = AmbiguityException.class)

@@ -92,35 +92,29 @@ public class LiteralsHelper {
    * 
    * @param s string literal excluding '"'
    * @return decoded string
-   * @throws Exception
+   * @throws CharConversionException 
    */
-  public String decodeString(String s) throws Exception {
-    String ret = "";
+  public String decodeString(String s) throws CharConversionException {
+    StringBuilder ret = new StringBuilder();
     String in = s;
     
-    try {
-      while (in.length() != 0) {
-        if (in.charAt(0) == '\\') {
-          if (in.charAt(1) == 'u') { // unicode
-            ret += decodeChar(in.substring(0, 6));
-            in = in.substring(6);
-          }
-          else { // escape sequence
-            ret += decodeChar(in.substring(0, 2));
-            in = in.substring(2);
-          }
+    while (in.length() != 0) {
+      if (in.charAt(0) == '\\') {
+        if (in.charAt(1) == 'u') { // unicode
+          ret.append(decodeChar(in.substring(0, 6)));
+          in = in.substring(6);
         }
-        else { // single char
-          ret += in.charAt(0);
-          in = in.substring(1);
+        else { // escape sequence
+          ret.append(decodeChar(in.substring(0, 2)));
+          in = in.substring(2);
         }
       }
+      else { // single char
+        ret.append(in.charAt(0));
+        in = in.substring(1);
+      }
     }
-    catch (StringIndexOutOfBoundsException e) {
-      throw new Exception("0xA4081 Invalid String " + s);
-    }
-    
-    return ret.intern();
+    return ret.toString();    
   }
   
   /**
@@ -128,14 +122,12 @@ public class LiteralsHelper {
    * 
    * @param s int literal as string including '"'
    * @return decoded int
-   * @throws NumberFormatException
    */
-  public int decodeInt(String s) throws NumberFormatException {
+  public int decodeInt(String s) {
     int radix = 10;
     if (s.startsWith("0") && s.length() > 1) {
       if (s.startsWith("0x") || s.startsWith("0X")) {
-        radix = 16;
-        s = s.substring(2);
+        return Integer.parseInt(s.substring(2), 16);
       }
       else {
         radix = 8;
@@ -149,21 +141,20 @@ public class LiteralsHelper {
    * 
    * @param s long literal as string including '"'
    * @return decoded long
-   * @throws NumberFormatException
    */
-  public long decodeLong(String s) throws NumberFormatException {
+  public long decodeLong(String s) {
     int radix = 10;
+    String in = s;
     if (s.startsWith("0") && s.length() > 2) {
       if (s.startsWith("0x") || s.startsWith("0X")) {
         radix = 16;
-        s = s.substring(2);
+        in = s.substring(2);
       }
       else {
         radix = 8;
       }
     }
-    s = s.substring(0, s.length() - 1);
-    return Long.parseLong(s, radix);
+    return Long.parseLong(in.substring(0, in.length() - 1), radix);
   }
   
   /**
@@ -171,12 +162,11 @@ public class LiteralsHelper {
    * 
    * @param s float literal as string including '"'
    * @return decoded float
-   * @throws NumberFormatException
    */
-  public float decodeFloat(String s) throws NumberFormatException {
+  public float decodeFloat(String s) {
     // workaround as parseFloat() does not parse 0xp1F correctly
     if (s.toLowerCase().startsWith("0xp")) {
-      s = "0x0p" + s.substring(3); // 0xp1F == 0x0p1F == 0.0
+      return Float.parseFloat("0x0p" + s.substring(3)); // 0xp1F == 0x0p1F == 0.0
     }
     return Float.parseFloat(s);
   }
@@ -186,12 +176,11 @@ public class LiteralsHelper {
    * 
    * @param s double literal as string including '"'
    * @return decoded double
-   * @throws NumberFormatException
    */
-  public double decodeDouble(String s) throws NumberFormatException {
+  public double decodeDouble(String s) {
     // workaround as parseDouble() does not parse 0xp1 correctly
     if (s.toLowerCase().startsWith("0xp")) {
-      s = "0x0p" + s.substring(3); // 0xp1 == 0x0p1 == 0.0
+      return Double.parseDouble("0x0p" + s.substring(3)); // 0xp1 == 0x0p1 == 0.0
     }
     return Double.parseDouble(s);
   }

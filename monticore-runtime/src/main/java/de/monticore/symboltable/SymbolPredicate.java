@@ -19,7 +19,7 @@
 
 package de.monticore.symboltable;
 
-import com.google.common.base.Predicate;
+import java.util.function.Predicate;
 
 /**
  * @author Pedram Mir Seyed Nazari
@@ -30,7 +30,7 @@ import com.google.common.base.Predicate;
 public interface SymbolPredicate extends Predicate<Symbol> {
 
   @Override
-  boolean apply(Symbol symbol);
+  boolean test(Symbol symbol);
 
 
 }
