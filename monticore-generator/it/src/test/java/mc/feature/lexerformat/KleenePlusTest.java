@@ -27,10 +27,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
-import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
 
-import groovyjarjarantlr.TokenStreamException;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.lexerformat.kleeneplus._ast.ASTKPStart;
 import mc.feature.lexerformat.kleeneplus._parser.KleenePlusParser;
@@ -40,8 +38,6 @@ public class KleenePlusTest extends GeneratorIntegrationsTest {
   /**
    * Test the following lexer Production: token KLEENETOKEN = 'a' ('b')*;
    * 
-   * @throws RecognitionException
-   * @throws TokenStreamException
    */
   @Test
   public void testKleeneStar() throws IOException {
@@ -71,8 +67,6 @@ public class KleenePlusTest extends GeneratorIntegrationsTest {
   /**
    * Test the following lexer Production: token SIMPLEKLEENE = 'c' 'd'*;
    * 
-   * @throws RecognitionException
-   * @throws TokenStreamException
    */
   @Test
   public void testSimpleKleene() throws IOException {
@@ -102,8 +96,6 @@ public class KleenePlusTest extends GeneratorIntegrationsTest {
   /**
    * Test the following lexer Production: token SIMPLEKLEENESTRING = "ee" "fg"*;
    * 
-   * @throws RecognitionException
-   * @throws TokenStreamException
    */
   @Test
   public void testSimpleKleeneString() throws IOException {
@@ -133,8 +125,6 @@ public class KleenePlusTest extends GeneratorIntegrationsTest {
   /**
    * Test the following lexer Production: token PLUSTOKEN = 'g' ('h')+;
    * 
-   * @throws RecognitionException
-   * @throws TokenStreamException
    */
   @Test
   public void testPlus() throws IOException {
@@ -163,8 +153,6 @@ public class KleenePlusTest extends GeneratorIntegrationsTest {
   /**
    * Test the following lexer Production: token SIMPLEPLUS = 'i' ('j')+;
    * 
-   * @throws RecognitionException
-   * @throws TokenStreamException
    */
   @Test
   public void testSimplePlus() throws IOException {
@@ -193,8 +181,6 @@ public class KleenePlusTest extends GeneratorIntegrationsTest {
   /**
    * Test the following lexer Production: token SIMPLEPLUSSTRING = "kk" "lm"+;
    * 
-   * @throws RecognitionException
-   * @throws TokenStreamException
    */
   @Test
   public void testSimplePlusString() throws IOException {

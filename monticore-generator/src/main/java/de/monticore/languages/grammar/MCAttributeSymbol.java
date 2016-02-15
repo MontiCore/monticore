@@ -21,6 +21,7 @@ package de.monticore.languages.grammar;
 
 import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.types.JAttributeSymbolKind;
+import de.se_rwth.commons.logging.Log;
 
 // TODO PN update doc
 /**
@@ -64,7 +65,7 @@ public class MCAttributeSymbol extends CommonSymbol implements Comparable<MCAttr
   }
 
   public boolean isDerived() {
-    return !derived.equals("");
+    return !"".equals(derived);
   }
   
   public String getDerived() {
@@ -101,7 +102,7 @@ public class MCAttributeSymbol extends CommonSymbol implements Comparable<MCAttr
   }
   
   public void setMax(String max) {
-    if (max.equals("*")) {
+    if ("*".equals(max)) {
       setMax(STAR);
     }
     else {
@@ -110,6 +111,7 @@ public class MCAttributeSymbol extends CommonSymbol implements Comparable<MCAttr
         setMax(x);
       }
       catch (NumberFormatException ignored) {
+        Log.warn("0xA0140 Failed to parse an integer from string " + max);
       }
     }
   }
@@ -120,6 +122,7 @@ public class MCAttributeSymbol extends CommonSymbol implements Comparable<MCAttr
       setMin(x);
     }
     catch (NumberFormatException ignored) {
+      Log.warn("0xA0141 Failed to parse an integer from string " + min);
     }
   }
   

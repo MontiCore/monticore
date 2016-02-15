@@ -64,7 +64,7 @@ public class ModifierTest {
     entity.addProperty(defaultK);
     entity.addProperty(privateL);
    
-    MutableScope scope = entity.getSpannedScope();
+    MutableScope scope = entity.getMutableSpannedScope();
     
     Set<ResolvingFilter<? extends Symbol>> resolvingFilters = Sets.newLinkedHashSet();
     resolvingFilters.add(CommonResolvingFilter.create(PropertySymbol.class, PropertySymbol.KIND));
@@ -122,7 +122,7 @@ public class ModifierTest {
     entity.addProperty(defaultK);
     entity.addProperty(privateL);
 
-    MutableScope scope = entity.getSpannedScope();
+    MutableScope scope = entity.getMutableSpannedScope();
 
     Set<ResolvingFilter<? extends Symbol>> resolvingFilters = Sets.newLinkedHashSet();
     resolvingFilters.add(CommonResolvingFilter.create(PropertySymbol.class, PropertySymbol

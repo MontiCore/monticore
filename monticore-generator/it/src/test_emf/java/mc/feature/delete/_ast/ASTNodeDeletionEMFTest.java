@@ -16,15 +16,12 @@ import mc.feature.delete._tool.DeleteTestRootFactory;
 import org.junit.Before;
 import org.junit.Test;
 
-import mc.antlr.RecognitionException;
-import mc.antlr.TokenStreamException;
-
 public class ASTNodeDeletionEMFTest {
   
   DSLRoot<ASTB> root;
   
   @Before
-  public void setUp() throws FileNotFoundException, RecognitionException, TokenStreamException, IOException {
+  public void setUp() throws FileNotFoundException, IOException {
     DeleteTestRootFactory factory = new DeleteTestRootFactory(new StandardInfrastructureProvider(new DeleteTestTool()), null, null);
     root = factory.create(new StringReader(""), "reader without proper input for test purposes");
   }

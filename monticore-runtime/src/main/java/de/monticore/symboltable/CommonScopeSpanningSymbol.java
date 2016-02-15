@@ -24,6 +24,7 @@ package de.monticore.symboltable;
  */
 public abstract class CommonScopeSpanningSymbol extends CommonSymbol implements ScopeSpanningSymbol {
 
+  // TODO PN make field private (after bootstrapping is conducted)
   protected final MutableScope spannedScope;
 
   /**
@@ -33,7 +34,7 @@ public abstract class CommonScopeSpanningSymbol extends CommonSymbol implements 
     super(name, kind);
 
     spannedScope = createSpannedScope();
-    spannedScope.setSpanningSymbol(this);
+    getMutableSpannedScope().setSpanningSymbol(this);
   }
 
   /**
@@ -48,6 +49,10 @@ public abstract class CommonScopeSpanningSymbol extends CommonSymbol implements 
 
   @Override
   public Scope getSpannedScope() {
+    return getMutableSpannedScope();
+  }
+
+  protected MutableScope getMutableSpannedScope() {
     return spannedScope;
   }
 
@@ -55,7 +60,7 @@ public abstract class CommonScopeSpanningSymbol extends CommonSymbol implements 
   @Override
   public void setEnclosingScope(MutableScope scope) {
     super.setEnclosingScope(scope);
-    spannedScope.setEnclosingScope(scope);
+   getMutableSpannedScope().setEnclosingScope(scope);
   }
 
 }

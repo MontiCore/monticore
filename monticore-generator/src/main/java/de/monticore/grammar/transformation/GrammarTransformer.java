@@ -37,8 +37,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
-import org.antlr.v4.runtime.RecognitionException;
-
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.ASTASTRule;
@@ -211,9 +209,6 @@ public class GrammarTransformer {
                 nonTerminal -> nonTerminal.set_SourcePositionStart(nonTerminalSep
                     .get_SourcePositionStart()));
       }
-    }
-    catch (RecognitionException e) {
-      Log.error("0xA0360 RecognitionException during parsing " + extendedList);
     }
     catch (IOException e) {
       Log.error("0xA0361 IOException during parsing " + extendedList);

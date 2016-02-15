@@ -19,27 +19,41 @@
 
 package de.monticore.types;
 
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+
+import org.junit.BeforeClass;
 import org.junit.Test;
+
+import de.se_rwth.commons.logging.Log;
 
 /**
  * @author Martin Schindler
  */
 public class TypeParametersTest {
   
+  @BeforeClass
+  public static void disableFailQuick() {
+    Log.enableFailQuick(false);
+  }
+  
   @Test
   public void testTypeParameters1() {
     try {
-      TypesTestHelper.getInstance().testTypeParameter("<T extends SuperClassA<S> & SuperClassB," + " S extends a.b.c.SuperClassC<T>>");
-      TypesTestHelper.getInstance().testTypeParameter("<T extends mc.examples.ClassA>");
-      TypesTestHelper.getInstance().testTypeParameter("<T extends ClassA.ClassB<String>.ClassC<Object>>");
-      TypesTestHelper.getInstance().testTypeParameter("<T extends A.B<String[]>.C<Object>>");
-      TypesTestHelper.getInstance().testTypeParameter("<S>");
-      TypesTestHelper.getInstance().testTypeParameter("<T extends A.B<C[]>.D<E<F<G>>,H> & I<J>>");
-      TypesTestHelper.getInstance().testTypeParameter("<T1 extends A<B<C<D>>>, T2 extends A>");
+      assertTrue(TypesTestHelper.getInstance().testTypeParameter(
+          "<T extends SuperClassA<S> & SuperClassB," + " S extends a.b.c.SuperClassC<T>>"));
+      assertTrue(TypesTestHelper.getInstance().testTypeParameter("<T extends mc.examples.ClassA>"));
+      assertTrue(TypesTestHelper.getInstance()
+          .testTypeParameter("<T extends ClassA.ClassB<String>.ClassC<Object>>"));
+      assertTrue(TypesTestHelper.getInstance().testTypeParameter("<T extends A.B<String[]>.C<Object>>"));
+      assertTrue(TypesTestHelper.getInstance().testTypeParameter("<S>"));
+      assertTrue(TypesTestHelper.getInstance().testTypeParameter("<T extends A.B<C[]>.D<E<F<G>>,H> & I<J>>"));
+      assertTrue(TypesTestHelper.getInstance().testTypeParameter("<T1 extends A<B<C<D>>>, T2 extends A>"));
     }
-    catch (Exception e) {
+    catch (IOException e) {
       fail(e.getMessage());
     }
   }
@@ -49,24 +63,28 @@ public class TypeParametersTest {
   public void testTypeParameters2() {
     try {
       // Test for a simple type parameter
-      TypesTestHelper.getInstance().testTypeParameter("<Class1>");
+      assertTrue(TypesTestHelper.getInstance().testTypeParameter("<Class1>"));
       
       // Test for more than one type type parameter
-      TypesTestHelper.getInstance().testTypeParameter("<Class1, Class2, ExtendedClass extends UpperBound, Class3>");
-      
+      assertTrue(TypesTestHelper.getInstance()
+          .testTypeParameter("<Class1, Class2, ExtendedClass extends UpperBound, Class3>"));
+          
       // Test for a extended type parameter with a parameterized super class
-      TypesTestHelper.getInstance().testTypeParameter("<Class1,  ExtendedClass extends UpperBound<Arg1>>");
-      
+      assertTrue(TypesTestHelper.getInstance()
+          .testTypeParameter("<Class1,  ExtendedClass extends UpperBound<Arg1>>"));
+          
       // Test for a extended type parameter with a parameterized super
       // class with a parameterized super class
-      TypesTestHelper.getInstance().testTypeParameter("<Class1,  ExtendedClass extends UpperBound<Arg1<Arg2> >>");
-      
+      assertTrue(TypesTestHelper.getInstance()
+          .testTypeParameter("<Class1,  ExtendedClass extends UpperBound<Arg1<Arg2> >>"));
+          
       // Test for a extended type parameter with a parameterized super
       // class with a parameterized super class with a parameterized super
       // class
-      TypesTestHelper.getInstance().testTypeParameter("<Class1,  ExtendedClass extends UpperBound<Arg1<Arg2<Arg3>>>>");
+      assertTrue(TypesTestHelper.getInstance()
+          .testTypeParameter("<Class1,  ExtendedClass extends UpperBound<Arg1<Arg2<Arg3>>>>"));
     }
-    catch (Exception e) {
+    catch (IOException e) {
       fail(e.getMessage());
     }
   }
@@ -74,76 +92,49 @@ public class TypeParametersTest {
   @Test
   public void testNegativeTypeParameters1() {
     try {
-      TypesTestHelper.getInstance().testTypeParameter("<T extends A.B<String[]>.C<Object>[]>");
-      fail("The test should fail");
+      assertNull(TypesTestHelper.getInstance()
+          .parseTypeParameters("<T extends A.B<String[]>.C<Object>[]>"));
+          
+      assertNull(TypesTestHelper.getInstance().parseTypeParameters("<T extends String[]>"));
+      
+      assertNull(TypesTestHelper.getInstance().parseTypeParameters("<T extends int[]>"));
     }
-    catch (Exception e) {
-    }
-    try {
-      TypesTestHelper.getInstance().testTypeParameter("<T extends String[]>");
-      fail("The test should fail");
-    }
-    catch (Exception e) {
-    }
-    try {
-      TypesTestHelper.getInstance().testTypeParameter("<T extends int[]>");
-      fail("The test should fail");
-    }
-    catch (Exception e) {
+    catch (IOException e) {
+      fail(e.getMessage());
     }
   }
   
   // copied from JavaDSL
   @Test
   public void testNegativeTypeParameters2() {
-    // Negative test with 2 '<' in the beginning
     try {
-      TypesTestHelper.getInstance().testTypeParameter("<<Class1>");
-      fail("The test should fail");
+      // Negative test with 2 '<' in the beginning
+      assertNull(TypesTestHelper.getInstance().parseTypeParameters("<<Class1>"));
+      
+      // Negative test with 2 '>' in the end
+      assertNull(TypesTestHelper.getInstance().parseTypeParameters("<Class1>>"));
+      
+      // Negative test with double '<< >>'
+      assertNull(TypesTestHelper.getInstance().parseTypeParameters("<<Class1>>"));
+      
+      // Negative test with type argument syntax instead of type parameter
+      assertNull(TypesTestHelper.getInstance().parseTypeParameters("<Class1<Class2>>"));
+      
+      // Negative test with one '>' unsufficient
+      assertNull(TypesTestHelper.getInstance()
+          .parseTypeParameters("<Class1,  ExtendedClass extends UpperBound<Arg1<Arg2<Arg3>>>"));
+          
+      // Negative test with one '>' unsufficient
+      assertNull(TypesTestHelper.getInstance()
+          .parseTypeParameters(
+              "<Class1,  ExtendedClass extends UpperBound<Arg1<Arg2<Arg3<Arg>>>>"));
+              
+      // Negative test with a missing comma
+      assertNull(TypesTestHelper.getInstance()
+          .parseTypeParameters("<Class1,ExtendedClass extends UpperBound<Arg1> Class2 >"));
     }
     catch (Exception e) {
-    }
-    // Negative test with 2 '>' in the end
-    try {
-      TypesTestHelper.getInstance().testTypeParameter("<Class1>>");
-      fail("The test should fail");
-    }
-    catch (Exception e) {
-    }
-    // Negative test with double '<< >>'
-    try {
-      TypesTestHelper.getInstance().testTypeParameter("<<Class1>>");
-      fail("The test should fail");
-    }
-    catch (Exception e) {
-    }
-    // Negative test with type argument syntax instead of type parameter
-    try {
-      TypesTestHelper.getInstance().testTypeParameter("<Class1<Class2>>");
-      fail("The test should fail");
-    }
-    catch (Exception e) {
-    }
-    // Negative test with one '>' unsufficient
-    try {
-      TypesTestHelper.getInstance().testTypeParameter("<Class1,  ExtendedClass extends UpperBound<Arg1<Arg2<Arg3>>>");
-      fail("The test should fail");
-    }
-    catch (Exception e) {
-    }
-    // Negative test with one '>' unsufficient
-    try {
-      TypesTestHelper.getInstance().testTypeParameter("<Class1,  ExtendedClass extends UpperBound<Arg1<Arg2<Arg3<Arg>>>>");
-      fail("The test should fail");
-    }
-    catch (Exception e) {
-    }
-    // Negative test with a missing comma
-    try {
-      TypesTestHelper.getInstance().testTypeParameter("<Class1,ExtendedClass extends UpperBound<Arg1> Class2 >");
-      fail("The test should fail");
-    }
-    catch (Exception e) {
+      fail(e.getMessage());
     }
   }
   

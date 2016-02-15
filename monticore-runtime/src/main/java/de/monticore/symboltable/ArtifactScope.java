@@ -28,6 +28,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import com.google.common.collect.FluentIterable;
 import de.monticore.symboltable.modifiers.AccessModifier;
@@ -109,7 +110,7 @@ public class ArtifactScope extends CommonScope {
    */
   @Override
   protected <T extends Symbol> Collection<T> continueWithEnclosingScope(final ResolvingInfo resolvingInfo, final String name,
-      final SymbolKind kind, final AccessModifier modifier) {
+      final SymbolKind kind, final AccessModifier modifier, final Predicate<Symbol> predicate) {
     final Collection<T> result = new LinkedHashSet<>();
 
     if (checkIfContinueWithEnclosing(resolvingInfo.areSymbolsFound()) && (getEnclosingScope().isPresent())) {
@@ -121,7 +122,7 @@ public class ArtifactScope extends CommonScope {
       final Set<String> potentialQualifiedNames = qualifiedNamesCalculator.calculateQualifiedNames(name, packageName, imports);
 
       for (final String potentialQualifiedName : potentialQualifiedNames) {
-        final Collection<T> resolvedFromEnclosing = enclosingScope.resolveMany(resolvingInfo, potentialQualifiedName, kind, modifier);
+        final Collection<T> resolvedFromEnclosing = enclosingScope.resolveMany(resolvingInfo, potentialQualifiedName, kind, modifier, predicate);
 
         result.addAll(resolvedFromEnclosing);
       }
@@ -159,5 +160,9 @@ public class ArtifactScope extends CommonScope {
 
   public void setQualifiedNamesCalculator(QualifiedNamesCalculator qualifiedNamesCalculator) {
     this.qualifiedNamesCalculator = requireNonNull(qualifiedNamesCalculator);
+  }
+
+  public List<ImportStatement> getImports() {
+    return Collections.unmodifiableList(imports);
   }
 }

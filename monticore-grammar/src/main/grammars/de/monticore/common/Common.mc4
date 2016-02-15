@@ -37,7 +37,7 @@ package de.monticore.common;
  *
  * @author Martin Schindler, Marita Breuer
  */
-component grammar Common extends de.monticore.types.Types {
+grammar Common extends de.monticore.types.Types {
     /*========================================================================*/
     /*======================= INTERFACE DEFINITIONS ==========================*/
     /*========================================================================*/
@@ -94,7 +94,10 @@ component grammar Common extends de.monticore.types.Types {
         @attribute values List of Values of this Stereotype
     */
     Stereotype =
-        "<<" values:(StereoValue || ",")+ ">>";
+        "<<" values:(StereoValue || ",")+ ">" ">" 
+            // It is not possible to define ">>".
+            // Parsing generic typs like "List<List<String>>" leads to problems.
+            {((_input.LT(-2).getLine()==_input.LT(-1).getLine()) && (_input.LT(-1).getCharPositionInLine()==_input.LT(-2).getCharPositionInLine()+1))}?;
     
     /** ASTStereoValue represents a Value of a Stereotype in the UML/P
         @attribute name  Name of the Stereotype-Value

@@ -2,7 +2,7 @@ package mc.examples.polar;
 
 grammar Coordpolar extends mc.grammar.lexicals.Lexicals {
 
-    token REAL = ('0'..'9')+(','('0'..'9')+)?;
+    token REAL = ('0'..'9')+('.'('0'..'9')+)?: double;
 
 	CoordinateFile = (Coordinate)+;
 

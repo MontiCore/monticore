@@ -41,31 +41,12 @@ package de.monticore.types;
  *
  * @author Martin Schindler
  *
- * version "1.3";
+ * version 27.01.2016;
 */
 grammar Types extends de.monticore.literals.Literals {
 
     /*========================================================================*/
-    /*============================== OPTIONS =================================*/
-    /*========================================================================*/
-    
-    concept antlr {
-        parser java {
-            /**
-             * Counts the number of LT of type parameters and type arguments.
-             * It is used in semantic predicates to ensure the right number
-             * of closing '>' characters; which actually may have been
-             * either GT, SR (GTGT), or BSR (GTGTGT) tokens.
-             */
-            public int ltCounter = 0;
-            public int cmpCounter = 0;
-            
-        }
-    }
-    
-    
-    /*========================================================================*/
-    /*======================= INTERFACE DEFINITIONS ==========================*/
+    /*======================= AST Definition =================================*/
     /*========================================================================*/
     
     ast QualifiedName =
@@ -133,6 +114,10 @@ grammar Types extends de.monticore.literals.Literals {
         componentType:ASTType
         dimensions:int;
     
+    /*========================================================================*/
+    /*======================= INTERFACE DEFINITIONS ==========================*/
+    /*========================================================================*/
+
     /** ASTType defines types like primitives, Set, List, Collection, or
         class types. It might also be an array or generic type.
     */
@@ -256,28 +241,10 @@ grammar Types extends de.monticore.literals.Literals {
         like this <A<B<C>>>.
         @attribute typeArguments List of arguments
     */
-    TypeArguments {int ltLevel = 0;} =
-        {ltLevel = ltCounter;}
+    TypeArguments =
         (
-          "<" {ltCounter++;}
-          typeArguments:(TypeArgument || ",")*
-           (
-            /*
-             * The token stream contains GT, GTGT, or GTGTGT tokens,
-             * so the parser has to expect one of these three possibilities.
-             * Furthermore the angle brackets are counted to check if there 
-             * are some left open. After parsing the ltCounter has to be 0,
-             * what is checked by the predicate below.
-             */
-            ">" {ltCounter-=1;}
-            | ">>" {ltCounter-=2;}
-            | ">>>" {ltCounter-=3;}
-          )?
-        )
-       // This predicate checks if we have a valid angle bracket structure.
-        {cmpCounter = ltLevel;}
-        {(cmpCounter != 0) || ltCounter == cmpCounter}?;
-
+          "<" (TypeArgument || ",")* ">"
+        );
     
     /** ASTWildcardType represents a wildcard type in a type argument (generics)
         It could also contain an upper- or lower bound.
@@ -294,22 +261,10 @@ grammar Types extends de.monticore.literals.Literals {
         constructor declarations).
         @attribute typeVariableDeclarations List of parameters
     */
-    TypeParameters {int ltLevel = 0;} =
-        {ltLevel = ltCounter;}
-        (
-          "<" {ltCounter++;}
-          typeVariableDeclarations:(TypeVariableDeclaration || ",")+
-           ( // inlined typeArgumentsEnd
-            ">" {ltCounter-=1;}
-            | ">>" {ltCounter-=2;}
-            | ">>>" {ltCounter-=3;}
-          )?
-        )
-        {cmpCounter = ltLevel;}
-        // This predicate checks if we have a valid angle bracket structure
-        // (if we are at the "top level" of nested TypeArgument productions).
-        {(cmpCounter != 0) || ltCounter == cmpCounter}?
-        | /* nothing! (instead of optionality) */;
+    TypeParameters =
+         (
+           "<" (TypeVariableDeclaration || ",")+ ">"
+         )?;
     
     /** ASTTypeVariableDeclaration represents the generic variable declaration
         in '<'...'>' (e.g., in front of method or constructor declarations or

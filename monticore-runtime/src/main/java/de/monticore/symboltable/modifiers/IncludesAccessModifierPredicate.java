@@ -39,7 +39,8 @@ public class IncludesAccessModifierPredicate implements SymbolPredicate {
   /**
    * @see com.google.common.base.Predicate#apply(java.lang.Object)
    */
-  public boolean apply(Symbol symbol) {
+  @Override
+  public boolean test(Symbol symbol) {
     return modifier.includes(symbol.getAccessModifier());
   }
   

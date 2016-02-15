@@ -59,6 +59,12 @@ public class SymbolTableGenerator {
   public static final String SYMBOL_SUFFIX = "Symbol";
   public static final String EMPTY_SYMBOL_SUFFIX = "SymbolEMPTY";
 
+  /**
+   * Constructor for de.monticore.codegen.symboltable.SymbolTableGenerator.
+   */
+  private SymbolTableGenerator() {
+  }
+
   public static void generate(ASTMCGrammar astGrammar, GlobalScope globalScope, ASTCDCompilationUnit astCd,
       File outputPath, IterablePath handcodedPath) {
 
@@ -89,7 +95,7 @@ public class SymbolTableGenerator {
      * and ResolvingFilter
      *
      */
-    final boolean skipSymbolTableGeneration = allSymbolDefiningRules.size() == 0;
+    final boolean skipSymbolTableGeneration = allSymbolDefiningRules.isEmpty();
 
     final GeneratorSetup setup = new GeneratorSetup(outputPath);
     GlobalExtensionManagement glex = new GlobalExtensionManagement();

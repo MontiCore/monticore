@@ -42,9 +42,8 @@ ${tc.signature("ruleSymbol")}
    * @param filename Name of file to parse
    * @return Resulting AST
    * @throws IOException 
-   * @throws RecognitionException
    */
-  public Optional<${astClassName}> parse${parseRuleName?cap_first}(String filename) throws IOException, RecognitionException {   
+  public Optional<${astClassName}> parse${parseRuleName?cap_first}(String filename) throws IOException {   
     ${parserName}AntlrParser parser = create(filename);    
 	${astClassName} ast;
     if (getParserTarget().equals(MCConcreteParser.ParserExecution.NORMAL)) {
@@ -64,9 +63,8 @@ ${tc.signature("ruleSymbol")}
    * @param reader Reader to parse from
    * @return Resulting AST
    * @throws IOException 
-   * @throws RecognitionException
    * */
-  public  Optional<${astClassName}> parse${parseRuleName?cap_first}(Reader reader) throws IOException, RecognitionException {
+  public  Optional<${astClassName}> parse${parseRuleName?cap_first}(Reader reader) throws IOException {
  	${parserName}AntlrParser parser = create(reader);
 	${astClassName} ast;
     if (getParserTarget().equals(MCConcreteParser.ParserExecution.NORMAL)) {
@@ -86,9 +84,8 @@ ${tc.signature("ruleSymbol")}
    * @param str String to parse from
    * @return Resulting AST
    * @throws IOException 
-   * @throws RecognitionException
    * */
-  public  Optional<${astClassName}> parseString_${parseRuleName?cap_first}(String str) throws IOException, RecognitionException {
+  public  Optional<${astClassName}> parseString_${parseRuleName?cap_first}(String str) throws IOException {
     return parse${parseRuleName?cap_first}(new StringReader(str));
   }
   

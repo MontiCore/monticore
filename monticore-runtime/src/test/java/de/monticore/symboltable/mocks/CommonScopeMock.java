@@ -21,6 +21,7 @@ package de.monticore.symboltable.mocks;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import de.monticore.symboltable.CommonScope;
 import de.monticore.symboltable.MutableScope;
@@ -50,15 +51,16 @@ public class CommonScopeMock extends CommonScope {
 
   @Override
   public <T extends Symbol> Collection<T> resolveMany(ResolvingInfo resolvingInfo, String name,
-      SymbolKind kind, AccessModifier modifier) {
+      SymbolKind kind, AccessModifier modifier, Predicate<Symbol> predicate) {
     this.resolvingInfo = resolvingInfo;
-    return super.resolveMany(resolvingInfo, name, kind, modifier);
+    return super.resolveMany(resolvingInfo, name, kind, modifier, predicate);
   }
 
   @Override
-  public <T extends Symbol> Collection<T> resolveDownMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier) {
+  public <T extends Symbol> Collection<T> resolveDownMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier,
+      Predicate<Symbol> predicate) {
     this.resolvingInfo = resolvingInfo;
-    return super.resolveDownMany(resolvingInfo, name, kind, modifier);
+    return super.resolveDownMany(resolvingInfo, name, kind, modifier, predicate);
   }
 
   public ResolvingInfo getResolvingInfo() {

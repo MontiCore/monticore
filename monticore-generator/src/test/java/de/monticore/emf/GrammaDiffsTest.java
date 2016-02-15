@@ -52,6 +52,8 @@ public class GrammaDiffsTest {
       
         List<DiffElement> diffs = AstEmfDiffUtility.getAllAstDiffs(grammar2.get(), grammar1.get());
         
+        AstEmfDiffUtility.printAstDiffsHierarchical(grammar2.get(), grammar1.get());
+        
         assertEquals(5, diffs.size());
         
         assertEquals("Attribute Name in Automaton2 has changed from Automaton to Automaton2",
@@ -71,7 +73,6 @@ public class GrammaDiffsTest {
         assertTrue(diffs.get(4).toString().contains(">"));
         assertTrue(diffs.get(4).toString().contains("has been removed"));
         
-        AstEmfDiffUtility.printAstDiffsHierarchical(grammar2.get(), grammar1.get());
       }
       else {
         fail("Parse errors");

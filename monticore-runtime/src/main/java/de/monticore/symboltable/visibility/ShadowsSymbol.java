@@ -38,8 +38,9 @@ public class ShadowsSymbol implements SymbolPredicate {
   public ShadowsSymbol(Symbol shadowingSymbol) {
     this.shadowingSymbol = Log.errorIfNull(shadowingSymbol);
   }
-  
-  public boolean apply(Symbol symbol) {
+
+  @Override
+  public boolean test(Symbol symbol) {
     Log.errorIfNull(symbol);
     
     final Scope shadowingScope = shadowingSymbol.getEnclosingScope();

@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
-import org.antlr.runtime.RecognitionException;
-
 import de.monticore.antlr4.MCConcreteParser.ParserExecution;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.prettyprint.TypesPrettyPrinterConcreteVisitor;
@@ -73,17 +71,18 @@ public class TypesTestHelper {
    * 
    * @param input The input type as a string.
    * @throws IOException
-   * @throws RecognitionException This exception is thrown if something could
    * not be parsed.
    */
-  public boolean testType(String input) throws RecognitionException, IOException {
+  public boolean testType(String input) throws IOException {
     // Parse input
     ASTType inputAST = parseType(input);
+    TestCase.assertNotNull(inputAST);
     // Print the inputAST
     TypesPrettyPrinterConcreteVisitor printer = new TypesPrettyPrinterConcreteVisitor(new IndentPrinter());
     String output = printer.prettyprint(inputAST);
     // Parse output
     ASTType outputAST = parseType(output);
+    TestCase.assertNotNull(outputAST);
     // Compare both AST
     if (!inputAST.deepEquals(outputAST)) {
       return false;
@@ -98,10 +97,9 @@ public class TypesTestHelper {
    * 
    * @param input The input type as a string.
    * @throws IOException
-   * @throws RecognitionException This exception is thrown if something could
    * not be parsed.
    */
-  public boolean testTypeParameter(String input) throws RecognitionException, IOException {
+  public boolean testTypeParameter(String input) throws IOException {
     // Parse input
     ASTTypeParameters inputAST = parseTypeParameters(input);
     // Print the inputAST
@@ -121,16 +119,14 @@ public class TypesTestHelper {
    * 
    * @param input Type as a string.
    * @return The ASTType or null.
-   * @throws RecognitionException This exception is thrown if something could
-   * not be parsed.
    * @throws IOException
    */
-  public ASTType parseType(String input) throws RecognitionException, IOException {
+  public ASTType parseType(String input) throws IOException {
     TypesParser parser = new TypesParser();
     parser.setParserTarget(ParserExecution.EOF);
     Optional<ASTType> res = parser.parseType(new StringReader(input));
     if (parser.hasErrors()) {
-      throw new RecognitionException();
+      return null;
     }
     TestCase.assertTrue(res.isPresent());
     TestCase.assertTrue(res.get() instanceof ASTType);
@@ -143,11 +139,9 @@ public class TypesTestHelper {
    * @param input Return type as a string.
    * @return The ASTReturnType or null.
    * @throws IOException
-   * @throws RecognitionException This exception is thrown if something could
    * not be parsed.
    */
-  public ASTReturnType parseReturnType(String input)
-      throws org.antlr.v4.runtime.RecognitionException, IOException {
+  public ASTReturnType parseReturnType(String input) throws IOException {
     TypesParser parser = new TypesParser();
     Optional<ASTReturnType> res = parser.parseReturnType(new StringReader(input));
     TestCase.assertTrue(res.isPresent());
@@ -161,15 +155,13 @@ public class TypesTestHelper {
    * @param input Type parameter as a string.
    * @return The ASTType or null.
    * @throws IOException
-   * @throws RecognitionException This exception is thrown if something could
-   * not be parsed.
    */
-  public ASTTypeParameters parseTypeParameters(String input) throws RecognitionException,
-      IOException {
+  public ASTTypeParameters parseTypeParameters(String input) throws IOException {
     TypesParser parser = new TypesParser();
+    parser.setParserTarget(ParserExecution.EOF);
     Optional<ASTTypeParameters> res = parser.parseTypeParameters(new StringReader(input));
     if (parser.hasErrors()) {
-      throw new RecognitionException();
+      return null;
     }
     TestCase.assertTrue(res.isPresent());
     TestCase.assertTrue(res.get() instanceof ASTTypeParameters);
@@ -182,11 +174,8 @@ public class TypesTestHelper {
    * @param input Boolean primitive type as a string.
    * @return The ASTPrimitiveType or null.
    * @throws IOException
-   * @throws RecognitionException This exception is thrown if something could
-   * not be parsed.
    */
-  public ASTPrimitiveType parseBooleanType(String input)
-      throws org.antlr.v4.runtime.RecognitionException, IOException {
+  public ASTPrimitiveType parseBooleanType(String input) throws IOException {
     TypesParser parser = new TypesParser();
     Optional<ASTPrimitiveType> res = parser.parsePrimitiveType(new StringReader(input));
     TestCase.assertTrue(res.isPresent());
@@ -200,11 +189,8 @@ public class TypesTestHelper {
    * @param input Integral primitive type as a string.
    * @return The ASTPrimitiveType or null.
    * @throws IOException
-   * @throws RecognitionException This exception is thrown if something could
-   * not be parsed.
    */
-  public ASTPrimitiveType parseIntegralType(String input)
-      throws org.antlr.v4.runtime.RecognitionException, IOException {
+  public ASTPrimitiveType parseIntegralType(String input) throws IOException {
     TypesParser parser = new TypesParser();
     Optional<ASTPrimitiveType> res = parser.parsePrimitiveType(new StringReader(input));
     TestCase.assertTrue(res.isPresent());
@@ -218,11 +204,8 @@ public class TypesTestHelper {
    * @param input Floating point primitive type as a string.
    * @return The ASTPrimitiveType or null.
    * @throws IOException
-   * @throws RecognitionException This exception is thrown if something could
-   * not be parsed.
    */
-  public ASTPrimitiveType parseFloatingPointType(String input)
-      throws org.antlr.v4.runtime.RecognitionException, IOException {
+  public ASTPrimitiveType parseFloatingPointType(String input) throws IOException {
     TypesParser parser = new TypesParser();
     Optional<ASTPrimitiveType> res = parser.parsePrimitiveType(new StringReader(input));
     TestCase.assertTrue(res.isPresent());
@@ -236,11 +219,8 @@ public class TypesTestHelper {
    * @param input Numeric primitive type as a string.
    * @return The ASTPrimitiveType or null.
    * @throws IOException
-   * @throws RecognitionException This exception is thrown if something could
-   * not be parsed.
    */
-  public ASTPrimitiveType parseNumericType(String input)
-      throws org.antlr.v4.runtime.RecognitionException, IOException {
+  public ASTPrimitiveType parseNumericType(String input) throws IOException {
     TypesParser parser = new TypesParser();
     Optional<ASTPrimitiveType> res = parser.parsePrimitiveType(new StringReader(input));
     TestCase.assertTrue(res.isPresent());

@@ -30,7 +30,7 @@ public class Mirror implements CoordcartesianVisitor {
   
   @Override
   public void visit(ASTCoordinate a) {
-    String y = a.getY();
+    int y = a.getY();
     a.setY(a.getX());
     a.setX(y);
   }

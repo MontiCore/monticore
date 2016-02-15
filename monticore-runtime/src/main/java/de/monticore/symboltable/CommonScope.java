@@ -21,7 +21,6 @@ package de.monticore.symboltable;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Strings.nullToEmpty;
-import static com.google.common.collect.Iterators.any;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,8 +29,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
-import com.google.common.collect.Collections2;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -157,26 +157,31 @@ public class CommonScope implements MutableScope {
 
   @Override
   public <T extends Symbol> Collection<T> resolveMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier) {
-    final Set<T> resolvedSymbols = this.<T>resolveManyLocally(resolvingInfo, name, kind, modifier);
+    return resolveMany(resolvingInfo, name, kind, modifier, x -> true);
+  }
 
-    final Collection<T> resolvedFromEnclosing = continueWithEnclosingScope(resolvingInfo, name, kind, modifier);
+  public <T extends Symbol> Collection<T> resolveMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier,
+      Predicate<Symbol> predicate) {
+    final Set<T> resolvedSymbols = this.<T>resolveManyLocally(resolvingInfo, name, kind, modifier, predicate);
+
+    final Collection<T> resolvedFromEnclosing = continueWithEnclosingScope(resolvingInfo, name, kind, modifier, predicate);
     resolvedSymbols.addAll(resolvedFromEnclosing);
 
     return resolvedSymbols;
   }
 
   protected <T extends Symbol> Set<T> filterSymbolsByAccessModifier(AccessModifier modifier, Set<T> resolvedUnfiltered) {
-    return new LinkedHashSet<>(Collections2.filter(resolvedUnfiltered, new IncludesAccessModifierPredicate(modifier)));
+    return new LinkedHashSet<>(resolvedUnfiltered.stream().filter(new IncludesAccessModifierPredicate(modifier)).collect(Collectors.toSet()));
   }
 
   /**
    * Continues resolving with the enclosing scope.
    */
-  protected <T extends Symbol> Collection<T> continueWithEnclosingScope(ResolvingInfo resolvingInfo, String name, SymbolKind kind,
-      AccessModifier modifier) {
+  protected <T extends Symbol> Collection<T> continueWithEnclosingScope(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier,
+      Predicate<Symbol> predicate) {
 
     if (checkIfContinueWithEnclosing(resolvingInfo.areSymbolsFound()) && (getEnclosingScope().isPresent())) {
-      return getEnclosingScope().get().resolveMany(resolvingInfo, name, kind, modifier);
+      return getEnclosingScope().get().resolveMany(resolvingInfo, name, kind, modifier, predicate);
     }
 
     return Collections.emptySet();
@@ -194,7 +199,17 @@ public class CommonScope implements MutableScope {
 
   @Override
   public <T extends Symbol> Collection<T> resolveMany(String name, SymbolKind kind, AccessModifier modifier) {
-    return resolveMany(new ResolvingInfo(getResolvingFilters()), name, kind, modifier);
+    return resolveMany(name, kind, modifier,x -> true);
+  }
+
+  @Override
+  public <T extends Symbol> Collection<T> resolveMany(String name, SymbolKind kind, Predicate<Symbol> predicate) {
+    return resolveMany(new ResolvingInfo(getResolvingFilters()), name, kind, BasicAccessModifier.ABSENT, predicate);
+  }
+
+  @Override
+  public <T extends Symbol> Collection<T> resolveMany(String name, SymbolKind kind, AccessModifier modifier, Predicate<Symbol> predicate) {
+    return resolveMany(new ResolvingInfo(getResolvingFilters()), name, kind, modifier, predicate);
   }
 
   @Override
@@ -204,7 +219,7 @@ public class CommonScope implements MutableScope {
 
   protected <T extends Symbol> boolean isNotSymbolShadowed(Collection<T> shadowingSymbols, T symbol) {
     // Does any local symbol shadow the symbol of the enclosing scope?
-    return  (!any(shadowingSymbols.iterator(), createIsShadowingByPredicate(symbol)));
+    return shadowingSymbols.stream().noneMatch(createIsShadowingByPredicate(symbol));
   }
 
   protected <T extends Symbol> Collection<T> getNotShadowedSymbols(Collection<T> shadowingSymbols, Collection<T> symbols) {
@@ -264,10 +279,12 @@ public class CommonScope implements MutableScope {
 
   /**
    * @see Scope#resolve(SymbolPredicate)
+   * @deprecated use {@link #resolveMany(String, SymbolKind, Predicate)} instead
    */
+  @Deprecated
   @Override
   public Optional<? extends Symbol> resolve(SymbolPredicate predicate) {
-    Set<Symbol> result = new LinkedHashSet<>(Collections2.filter(symbols, predicate));
+    Set<Symbol> result = new LinkedHashSet<>(symbols.stream().filter(predicate).collect(Collectors.toSet()));
 
     // TODO PN Combine with adaptors. For this: add filter(SymbolPredicate) to
     //         AdaptedResolvingFilter (maybe ResolvingFilter too). Then, run pass
@@ -430,12 +447,13 @@ public class CommonScope implements MutableScope {
   @Override
   public <T extends Symbol> Optional<T> resolveLocally(String name, SymbolKind kind) {
     return getResolvedOrThrowException(
-        this.<T>resolveManyLocally(new ResolvingInfo(getResolvingFilters()), name, kind, BasicAccessModifier.ABSENT));
+        this.<T>resolveManyLocally(new ResolvingInfo(getResolvingFilters()), name, kind, BasicAccessModifier.ABSENT, x -> true));
   }
 
   // TODO PN add resolveManyLocally(String name, SymbolKind kind)
 
-  protected <T extends Symbol> Set<T> resolveManyLocally(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier) {
+  protected <T extends Symbol> Set<T> resolveManyLocally(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier,
+      Predicate<Symbol> predicate) {
     Log.errorIfNull(resolvingInfo);
     resolvingInfo.addInvolvedScope(this);
 
@@ -445,8 +463,6 @@ public class CommonScope implements MutableScope {
     final Set<T> resolvedSymbols = new LinkedHashSet<>();
 
     for (ResolvingFilter<? extends Symbol> resolvingFilter : resolversForKind) {
-
-      // TODO PN this is a quix fix. filter() should return a collection of symbols
 
       try {
         Optional<T> resolvedSymbol = (Optional<T>) resolvingFilter.filter(resolvingInfo, name, symbols);
@@ -466,7 +482,8 @@ public class CommonScope implements MutableScope {
     }
 
     // filter out symbols that are not included within the access modifier
-    final Set<T> filteredSymbols = filterSymbolsByAccessModifier(modifier, resolvedSymbols);
+    Set<T> filteredSymbols = filterSymbolsByAccessModifier(modifier, resolvedSymbols);
+    filteredSymbols = new LinkedHashSet<>(filteredSymbols.stream().filter(predicate).collect(Collectors.toSet()));
 
     resolvingInfo.updateSymbolsFound(!filteredSymbols.isEmpty());
 
@@ -497,18 +514,19 @@ public class CommonScope implements MutableScope {
 
   @Override
   public <T extends Symbol> Optional<T> resolveDown(String name, SymbolKind kind, AccessModifier modifier) {
-    return getResolvedOrThrowException(resolveDownMany(new ResolvingInfo(getResolvingFilters()), name, kind, modifier));
+    return getResolvedOrThrowException(resolveDownMany(new ResolvingInfo(getResolvingFilters()), name, kind, modifier, x -> true));
   }
 
   @Override
   public <T extends Symbol> Collection<T> resolveDownMany(String name, SymbolKind kind, AccessModifier modifier) {
-    return resolveDownMany(new ResolvingInfo(getResolvingFilters()), name, kind, modifier);
+    return resolveDownMany(new ResolvingInfo(getResolvingFilters()), name, kind, modifier, x -> true);
   }
 
   @Override
-  public <T extends Symbol> Collection<T> resolveDownMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier) {
+  public <T extends Symbol> Collection<T> resolveDownMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier,
+      Predicate<Symbol> predicate) {
     // 1. Conduct search locally in the current scope
-    final Set<T> resolved = this.<T>resolveManyLocally(resolvingInfo, name, kind, modifier);
+    final Set<T> resolved = this.<T>resolveManyLocally(resolvingInfo, name, kind, modifier, x -> true);
 
     final String resolveCall = "resolveDownMany(\"" + name + "\", \"" + kind.getName()
         + "\") in scope \"" + getName() + "\"";
@@ -518,7 +536,7 @@ public class CommonScope implements MutableScope {
     if (resolved.isEmpty()) {
       // 2. Continue search in sub scopes and ...
       for (MutableScope subScope : getSubScopes()) {
-        final Collection<T> resolvedFromSub = subScope.continueAsSubScope(resolvingInfo, name, kind, modifier);
+        final Collection<T> resolvedFromSub = subScope.continueAsSubScope(resolvingInfo, name, kind, modifier, predicate);
         // 3. unify results
         resolved.addAll(resolvedFromSub);
       }
@@ -541,7 +559,7 @@ public class CommonScope implements MutableScope {
 
   @Override
   public <T extends Symbol> Collection<T> resolveDownMany(String name, SymbolKind kind) {
-    return this.resolveDownMany(new ResolvingInfo(getResolvingFilters()), name, kind, BasicAccessModifier.ABSENT);
+    return this.resolveDownMany(new ResolvingInfo(getResolvingFilters()), name, kind, BasicAccessModifier.ABSENT, x -> true);
   }
 
   /**
@@ -553,11 +571,11 @@ public class CommonScope implements MutableScope {
    */
   @Override
   public <T extends Symbol> Collection<T> continueAsSubScope(ResolvingInfo resolvingInfo,
-      String symbolName, SymbolKind kind, AccessModifier modifier) {
+      String symbolName, SymbolKind kind, AccessModifier modifier, Predicate<Symbol> predicate) {
     if (checkIfContinueAsSubScope(symbolName, kind)) {
       final String remainingSymbolName = getRemainingNameForResolveDown(symbolName);
 
-      return this.resolveDownMany(resolvingInfo, remainingSymbolName, kind, modifier);
+      return this.resolveDownMany(resolvingInfo, remainingSymbolName, kind, modifier, predicate);
     }
 
     return Collections.emptySet();

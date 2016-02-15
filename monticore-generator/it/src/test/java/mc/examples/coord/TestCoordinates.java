@@ -41,6 +41,8 @@ import mc.examples.polar.coordpolar._parser.CoordpolarParser;
 
 public class TestCoordinates extends GeneratorIntegrationsTest {
   
+  private static final double DELTA = 1e-5;
+  
   @Test
   public void testCoordcartesianParser() throws IOException {
     CoordcartesianParser parser = new CoordcartesianParser();
@@ -53,14 +55,14 @@ public class TestCoordinates extends GeneratorIntegrationsTest {
     
     assertEquals(astCartesian.get().getCoordinates().size(), 3);
     
-    assertEquals(astCartesian.get().getCoordinates().get(0).getX(), "2");
-    assertEquals(astCartesian.get().getCoordinates().get(0).getY(), "4");
+    assertEquals(astCartesian.get().getCoordinates().get(0).getX(), 2);
+    assertEquals(astCartesian.get().getCoordinates().get(0).getY(), 4);
     
-    assertEquals(astCartesian.get().getCoordinates().get(1).getX(), "5");
-    assertEquals(astCartesian.get().getCoordinates().get(1).getY(), "2");
+    assertEquals(astCartesian.get().getCoordinates().get(1).getX(), 5);
+    assertEquals(astCartesian.get().getCoordinates().get(1).getY(), 2);
     
-    assertEquals(astCartesian.get().getCoordinates().get(2).getX(), "1");
-    assertEquals(astCartesian.get().getCoordinates().get(2).getY(), "7");
+    assertEquals(astCartesian.get().getCoordinates().get(2).getX(), 1);
+    assertEquals(astCartesian.get().getCoordinates().get(2).getY(), 7);
   }
   
   @Test
@@ -76,14 +78,16 @@ public class TestCoordinates extends GeneratorIntegrationsTest {
     
     assertEquals(astPolar.get().getCoordinates().size(), 3);
     
-    assertEquals(astPolar.get().getCoordinates().get(0).getD(), "1,0");
-    assertEquals(astPolar.get().getCoordinates().get(0).getPhi(), "0,5");
+
     
-    assertEquals(astPolar.get().getCoordinates().get(1).getD(), "2,5");
-    assertEquals(astPolar.get().getCoordinates().get(1).getPhi(), "1,3");
+    assertEquals(astPolar.get().getCoordinates().get(0).getD(), 1.0, DELTA);
+    assertEquals(astPolar.get().getCoordinates().get(0).getPhi(), 0.5, DELTA);
     
-    assertEquals(astPolar.get().getCoordinates().get(2).getD(), "47,11");
-    assertEquals(astPolar.get().getCoordinates().get(2).getPhi(), "0,815");
+    assertEquals(astPolar.get().getCoordinates().get(1).getD(), 2.5, DELTA);
+    assertEquals(astPolar.get().getCoordinates().get(1).getPhi(), 1.3, DELTA);
+    
+    assertEquals(astPolar.get().getCoordinates().get(2).getD(), 47.11, DELTA);
+    assertEquals(astPolar.get().getCoordinates().get(2).getPhi(), 0.815, DELTA);
   }
   
   @Test
@@ -113,14 +117,14 @@ public class TestCoordinates extends GeneratorIntegrationsTest {
     
     assertEquals(astPolar.get().getCoordinates().size(), 3);
     
-    assertEquals(astPolar.get().getCoordinates().get(0).getD(), "4,472");
-    assertEquals(astPolar.get().getCoordinates().get(0).getPhi(), "1,107");
+    assertEquals(astPolar.get().getCoordinates().get(0).getD(), 4.47213, DELTA);
+    assertEquals(astPolar.get().getCoordinates().get(0).getPhi(), 1.10714, DELTA);
     
-    assertEquals(astPolar.get().getCoordinates().get(1).getD(), "5,385");
-    assertEquals(astPolar.get().getCoordinates().get(1).getPhi(), "0,381");
+    assertEquals(astPolar.get().getCoordinates().get(1).getD(), 5.38516, DELTA);
+    assertEquals(astPolar.get().getCoordinates().get(1).getPhi(), 0.380506, DELTA);
     
-    assertEquals(astPolar.get().getCoordinates().get(2).getD(), "7,071");
-    assertEquals(astPolar.get().getCoordinates().get(2).getPhi(), "1,429");
+    assertEquals(astPolar.get().getCoordinates().get(2).getD(), 7.07106, DELTA);
+    assertEquals(astPolar.get().getCoordinates().get(2).getPhi(), 1.428899, DELTA);
     
   }
   
@@ -134,14 +138,14 @@ public class TestCoordinates extends GeneratorIntegrationsTest {
     
     assertEquals(astCartesian.get().getCoordinates().size(), 3);
     
-    assertEquals(astCartesian.get().getCoordinates().get(0).getX(), "2");
-    assertEquals(astCartesian.get().getCoordinates().get(0).getY(), "4");
+    assertEquals(astCartesian.get().getCoordinates().get(0).getX(), 2);
+    assertEquals(astCartesian.get().getCoordinates().get(0).getY(), 4);
     
-    assertEquals(astCartesian.get().getCoordinates().get(1).getX(), "5");
-    assertEquals(astCartesian.get().getCoordinates().get(1).getY(), "2");
+    assertEquals(astCartesian.get().getCoordinates().get(1).getX(), 5);
+    assertEquals(astCartesian.get().getCoordinates().get(1).getY(), 2);
     
-    assertEquals(astCartesian.get().getCoordinates().get(2).getX(), "1");
-    assertEquals(astCartesian.get().getCoordinates().get(2).getY(), "7");
+    assertEquals(astCartesian.get().getCoordinates().get(2).getX(), 1);
+    assertEquals(astCartesian.get().getCoordinates().get(2).getY(), 7);
     
     // Transform cartesian to polar coordinates
     Mirror transformer = new Mirror();
@@ -160,14 +164,14 @@ public class TestCoordinates extends GeneratorIntegrationsTest {
     
     assertEquals(astTransformed.get().getCoordinates().size(), 3);
     
-    assertEquals(astTransformed.get().getCoordinates().get(0).getX(), "4");
-    assertEquals(astTransformed.get().getCoordinates().get(0).getY(), "2");
+    assertEquals(astTransformed.get().getCoordinates().get(0).getX(), 4);
+    assertEquals(astTransformed.get().getCoordinates().get(0).getY(), 2);
     
-    assertEquals(astTransformed.get().getCoordinates().get(1).getX(), "2");
-    assertEquals(astTransformed.get().getCoordinates().get(1).getY(), "5");
+    assertEquals(astTransformed.get().getCoordinates().get(1).getX(), 2);
+    assertEquals(astTransformed.get().getCoordinates().get(1).getY(), 5);
     
-    assertEquals(astTransformed.get().getCoordinates().get(2).getX(), "7");
-    assertEquals(astTransformed.get().getCoordinates().get(2).getY(), "1");
+    assertEquals(astTransformed.get().getCoordinates().get(2).getX(), 7);
+    assertEquals(astTransformed.get().getCoordinates().get(2).getY(), 1);
     
   }
   

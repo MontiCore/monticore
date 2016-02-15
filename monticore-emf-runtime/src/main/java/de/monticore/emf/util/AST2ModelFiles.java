@@ -56,10 +56,6 @@ public class AST2ModelFiles {
   
   public void serializeASTInstance(ASTENode astNode, String instanceName) throws IOException {
     // Get the URI of the model file.
-    System.err.println(
-        " ECLASS " + astNode.eClass().getName() + " hh " + astNode.eClass().getEPackage().getName()
-            + " ns " + astNode.eClass().getEPackage().getNsURI());
-            
     serializeASTIfNotExists((ASTEPackage) astNode.eClass().getEPackage());
     
     String packageName = astNode.eClass().getEPackage().getName().toLowerCase() + "/";
@@ -118,9 +114,6 @@ public class AST2ModelFiles {
     resource.getContents().add(eInstance);
     
     for (ASTEPackage superPackage : eInstance.getASTESuperPackages()) {
-      System.err.println(superPackage + " for " + eInstance.getName());
-      System.err.println(" pack " + superPackage.getName() + "   "
-          + superPackage.getClass().getName());
       serializeASTIfNotExists(superPackage);
     }
     
