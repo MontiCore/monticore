@@ -52,22 +52,16 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
     super(topAst, symbolTable);
   }
   
-  public static String getQualifiedENodeName() {
-    return "de.monticore.emf._ast.ASTEnode";
-  }
-  
   public static String getEmfRuntimePackage() {
     return "de.monticore.emf._ast";
   }
   
   public static String getSuperClass(ASTCDClass clazz) {
     if (!clazz.getSuperclass().isPresent()) {
-      return "de.monticore.emf.ASTEObjectImplNode";
+      return "de.monticore.emf._ast.ASTECNode";
     }
     return clazz.printSuperClass();
   }
-  
-
   
   /**
    * @return externalTypes
