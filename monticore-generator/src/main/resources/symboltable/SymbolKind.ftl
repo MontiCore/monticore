@@ -42,9 +42,16 @@ package ${genHelper.getTargetPackage()};
 
 public class ${ruleName}Kind implements de.monticore.symboltable.SymbolKind {
 
-  public static final ${ruleName}Kind INSTANCE = new ${ruleName}Kind();
+  private static final String NAME = "${genHelper.getTargetPackage()}.${ruleName}Kind";
 
-  protected ${ruleName}Kind() {
+  @Override
+  public String getName() {
+    return NAME;
+  }
+
+  @Override
+  public boolean isKindOf(SymbolKind kind) {
+    return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
   }
 
 }
