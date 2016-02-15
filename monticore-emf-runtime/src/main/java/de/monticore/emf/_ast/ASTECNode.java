@@ -17,13 +17,17 @@
  * ******************************************************************************
  */
 
-package de.monticore.ast;
+package de.monticore.emf._ast;
 
 import java.util.List;
 import java.util.Optional;
 
+import org.eclipse.emf.ecore.impl.EObjectImpl;
+
 import com.google.common.collect.Lists;
 
+import de.monticore.ast.ASTNode;
+import de.monticore.ast.Comment;
 import de.monticore.prettyprint.AstPrettyPrinter;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
@@ -36,7 +40,7 @@ import de.se_rwth.commons.SourcePosition;
  * 
  * @author krahn, volkova
  */
-public abstract class ASTCNode implements ASTNode, Cloneable {
+public abstract class ASTECNode extends EObjectImpl implements ASTENode  {
   
   protected Optional<SourcePosition> start = Optional.empty();
   
