@@ -22,14 +22,11 @@ package de.monticore.symboltable.types;
 import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.symboltable.types.references.JTypeReference;
-import de.monticore.symboltable.types.references.TypeReference;
 
 /**
  * @author Pedram Mir Seyed Nazari
  */
 public class CommonJAttributeSymbol<T extends JTypeReference<? extends JTypeSymbol>> extends CommonSymbol implements JAttributeSymbol {
-
-  public static final JAttributeSymbolKind KIND = JAttributeSymbol.KIND;
 
   private T type;
 

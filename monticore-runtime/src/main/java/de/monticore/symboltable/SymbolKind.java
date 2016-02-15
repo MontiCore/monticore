@@ -36,7 +36,7 @@ public interface SymbolKind {
   SymbolKind KIND = new SymbolKind() {};
 
   default String getName() {
-    return getClass().getSimpleName();
+    return "de.monticore.symboltable.SymbolKind";
   }
 
   /**
@@ -49,7 +49,8 @@ public interface SymbolKind {
   default boolean isKindOf(SymbolKind kind) {
     requireNonNull(kind);
 
-    // TODO This is just a quick fix. Remove reflection completely.
+    // TODO PN The following statement makes use of reflection, and hence, will be soon
+    //         replaced by: kind.getName().equals(getName())
     return kind.equals(KIND) || kind.getClass().isAssignableFrom(this.getClass());
   }
 

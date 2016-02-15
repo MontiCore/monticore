@@ -33,10 +33,10 @@ import de.monticore.symboltable.types.references.JTypeReference;
  */
 public class PropertySymbol extends CommonJAttributeSymbol<JTypeReference<JTypeSymbol>> {
   
-  public static final PropertySymbolKind KIND = PropertySymbolKind.KIND;
+  public static final PropertySymbolKind KIND = new PropertySymbolKind();
 
   public PropertySymbol(String name, JTypeReference type) {
-    super(name, PropertySymbolKind.KIND, type);
+    super(name, KIND, type);
   }
 
 }

@@ -34,13 +34,13 @@ import de.monticore.symboltable.MutableScope;
  */
 public class StateChartSymbol extends CommonScopeSpanningSymbol {
 
-  public static final StateChartKind KIND = StateChartKind.KIND;
+  public static final StateChartKind KIND = new StateChartKind();
   
   /**
    * @param name
    */
   public StateChartSymbol(String name) {
-    super(name, StateChartKind.KIND);
+    super(name, StateChartSymbol.KIND);
   }
 
   @Override
@@ -49,7 +49,7 @@ public class StateChartSymbol extends CommonScopeSpanningSymbol {
   }
 
   public Optional<StateSymbol> getState(String simpleName) {
-    return getSpannedScope().<StateSymbol>resolveLocally(simpleName, StateKind.KIND);
+    return getSpannedScope().<StateSymbol>resolveLocally(simpleName, StateSymbol.KIND);
   }
   
   public void addState(StateSymbol state) {
