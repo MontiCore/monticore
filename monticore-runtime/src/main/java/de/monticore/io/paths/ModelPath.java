@@ -24,9 +24,11 @@ import de.monticore.AmbiguityException;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.File;
-import java.net.*;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -109,12 +111,7 @@ public final class ModelPath {
               + fixedPath, ambiguitiyArray);
     }
     if (1 == resolvedURLS.size()) {
-      try {
-        qualifiedModel.setLocation(Paths.get(Iterables.getOnlyElement(resolvedURLS).toURI()));
-      }
-      catch (URISyntaxException e) {
-        throw new RuntimeException(e);
-      }
+      qualifiedModel.setLocation(Iterables.getOnlyElement(resolvedURLS));
     }
     return qualifiedModel;
   }

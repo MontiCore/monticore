@@ -19,6 +19,7 @@
 
 package de.monticore.io.paths;
 
+import java.net.URL;
 import java.nio.file.Path;
 
 /**
@@ -36,7 +37,7 @@ public interface ModelCoordinate {
    * <p>
    * Example {@code src/main/grammars/de/mc/statechart.mc}
    */
-  void setLocation(Path location);
+  void setLocation(URL location);
   
   /**
    * @param qualifiedPath a Path representing the qualified model file.
@@ -83,7 +84,7 @@ public interface ModelCoordinate {
    * <p>
    * Example {@code src/main/grammars/de/mc/statechart.mc}
    */
-  Path getLocation();
+  URL getLocation();
   
   /**
    * Checks whether the file at the location returned by {@link #getLocation()} is present in the
