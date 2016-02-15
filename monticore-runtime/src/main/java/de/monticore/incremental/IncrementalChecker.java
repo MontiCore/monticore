@@ -19,17 +19,6 @@
 
 package de.monticore.incremental;
 
-import com.google.common.hash.Hashing;
-import com.google.common.io.CharStreams;
-import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
-import de.monticore.generating.templateengine.reporting.reporter.InputOutputFilesReporter;
-import de.monticore.io.FileReaderWriter;
-import de.monticore.io.paths.IterablePath;
-import de.monticore.io.paths.ModelCoordinate;
-import de.monticore.io.paths.ModelCoordinates;
-import de.monticore.io.paths.ModelPath;
-import de.se_rwth.commons.logging.Log;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -40,10 +29,30 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import com.google.common.hash.Hashing;
+import com.google.common.io.CharStreams;
+
+import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
+import de.monticore.generating.templateengine.reporting.reporter.InputOutputFilesReporter;
+import de.monticore.io.FileReaderWriter;
+import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.ModelCoordinate;
+import de.monticore.io.paths.ModelCoordinates;
+import de.monticore.io.paths.ModelPath;
+import de.se_rwth.commons.logging.Log;
 
 /**
  * Utility methods for checking whether for a given input file path based on the
@@ -198,7 +207,7 @@ public class IncrementalChecker {
         try {
           URL url = new URL(input);
           
-          if (!currentResolution.getLocation().toUri().toURL().sameFile(url)) {
+          if (!currentResolution.getLocation().sameFile(url)) {
             // this will detect changes in jar versions etc.
             Log.debug("The location of the dependency " + inputStory.inputPath + " changed.",
                 IncrementalChecker.class.getName());
