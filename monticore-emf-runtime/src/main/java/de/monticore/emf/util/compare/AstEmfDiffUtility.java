@@ -17,7 +17,7 @@ import org.eclipse.emf.compare.match.metamodel.MatchModel;
 import org.eclipse.emf.compare.match.service.MatchService;
 import org.eclipse.emf.ecore.EObject;
 
-import de.monticore.emf.ASTEObjectImplNode;
+import de.monticore.emf._ast.ASTENode;
 
 /**
  * TODO: Write me!
@@ -27,7 +27,7 @@ import de.monticore.emf.ASTEObjectImplNode;
  */
 public class AstEmfDiffUtility {
   
-  public static List<DiffElement> getAstDiffs(ASTEObjectImplNode node1, ASTEObjectImplNode node2)
+  public static List<DiffElement> getAstDiffs(ASTENode node1, ASTENode node2)
       throws InterruptedException {
     // Matching model elements
     MatchModel match = MatchService.doMatch(node1, node2, Collections.<String, Object> emptyMap());
@@ -36,7 +36,7 @@ public class AstEmfDiffUtility {
     return diff.getOwnedElements();
   }
   
-  public static void printAstDiffsHierarchical(ASTEObjectImplNode node1, ASTEObjectImplNode node2)
+  public static void printAstDiffsHierarchical(ASTENode node1, ASTENode node2)
       throws InterruptedException {
     // Matching model elements
     MatchModel match = MatchService.doMatch(node1, node2, Collections.<String, Object> emptyMap());
@@ -53,7 +53,7 @@ public class AstEmfDiffUtility {
     }
   }
   
-  public static void printAllAstDiffs(ASTEObjectImplNode node1, ASTEObjectImplNode node2)
+  public static void printAllAstDiffs(ASTENode node1, ASTENode node2)
       throws InterruptedException {
     // Matching model elements
     MatchModel match = MatchService.doMatch(node1, node2, Collections.<String, Object> emptyMap());
@@ -66,8 +66,8 @@ public class AstEmfDiffUtility {
     }
   }
   
-  public static EList<DiffElement> getAllAstDiffs(ASTEObjectImplNode node1,
-      ASTEObjectImplNode node2) throws InterruptedException {
+  public static EList<DiffElement> getAllAstDiffs(ASTENode node1,
+      ASTENode node2) throws InterruptedException {
     // Matching model elements
     MatchModel match = MatchService.doMatch(node1, node2, Collections.<String, Object> emptyMap());
     // Computing differences
