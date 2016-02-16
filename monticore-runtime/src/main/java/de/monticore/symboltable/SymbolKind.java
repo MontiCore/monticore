@@ -50,7 +50,7 @@ public interface SymbolKind {
     requireNonNull(kind);
 
     // TODO PN The following statement makes use of reflection, and hence, will be soon
-    //         replaced by: kind.getName().equals(getName())
+    //         (i.e., after next bootstrapping) replaced by: kind.getName().equals(getName())
     return kind.equals(KIND) || kind.getClass().isAssignableFrom(this.getClass());
   }
 
