@@ -19,14 +19,15 @@
 
 package de.monticore.io.paths;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 public class ModelCoordinateTest {
   
@@ -36,9 +37,10 @@ public class ModelCoordinateTest {
   
   public ModelCoordinateTest() throws MalformedURLException {
     
-    Path location = Paths.get("src/test/resources/de/monticore/parsing/SimpleStateChart.mc4");
-    Path locationWithWS = Paths
-        .get("src/te st/resources/de/monticore/parsing/SimpleStateChart.mc4");
+    URL location = Paths.get("src/test/resources/de/monticore/parsing/SimpleStateChart.mc4")
+        .toFile().toURI().toURL();
+    URL locationWithWS = Paths.get("src/te st/resources/de/monticore/parsing/SimpleStateChart.mc4")
+        .toFile().toURI().toURL();
     Path qualifiedPath = Paths.get("de/monticore/parsing/SimpleStateChart.mc4");
     testInfo = ModelCoordinates.createFullCoordinate(qualifiedPath, location);
     testInfoWithWhitespace = ModelCoordinates.createFullCoordinate(qualifiedPath, locationWithWS);
@@ -83,26 +85,24 @@ public class ModelCoordinateTest {
   
   @Test
   public void testGetLocation() throws MalformedURLException {
-    assertEquals(Paths.get("src/test/resources/de/monticore/parsing/SimpleStateChart.mc4"),
-        testInfo.getLocation());
+    assertEquals(Paths.get("src/test/resources/de/monticore/parsing/SimpleStateChart.mc4").toUri()
+        .toURL(), testInfo.getLocation());
   }
   
   @Test
   public void testGetLocationWithWhitespace() throws MalformedURLException {
-    assertEquals(Paths.get("src/te st/resources/de/monticore/parsing/SimpleStateChart.mc4"),
-        testInfoWithWhitespace.getLocation());
+    assertEquals(Paths.get("src/te st/resources/de/monticore/parsing/SimpleStateChart.mc4").toUri()
+        .toURL(), testInfoWithWhitespace.getLocation());
   }
   
   @Test
   public void testGetParentDirectoryPath() {
-    assertEquals(Paths.get("src/test/resources").toAbsolutePath(),
-        testInfo.getParentDirectoryPath());
+    assertEquals(Paths.get("src/test/resources").toAbsolutePath(), testInfo.getParentDirectoryPath());
   }
   
   @Test
   public void testGetParentDirectoryPathWithWhitespace() {
-    assertEquals(Paths.get("src/te st/resources").toAbsolutePath(),
-        testInfoWithWhitespace.getParentDirectoryPath());
+    assertEquals(Paths.get("src/te st/resources").toAbsolutePath(), testInfoWithWhitespace.getParentDirectoryPath());
   }
   
   @Test

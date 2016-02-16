@@ -25,8 +25,8 @@ import de.monticore.io.paths.ModelCoordinate;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
-import java.nio.file.Files;
 import java.util.Optional;
 
 /**
@@ -49,7 +49,7 @@ public final class FileBasedAstProvider<T extends ASTNode> implements AstProvide
       Log.debug("Start parsing model " + modelCoordinate + ".",
           ModelingLanguageModelLoader.class.getSimpleName());
 
-      Reader reader = Files.newBufferedReader(modelCoordinate.getLocation());
+      Reader reader = new InputStreamReader(modelCoordinate.getLocation().openStream());
       // TODO PN remove this cast as soon as the parsers return a specific ast node type.
       ast = (Optional<T>) modelingLanguage.getParser().parse(reader);
 
