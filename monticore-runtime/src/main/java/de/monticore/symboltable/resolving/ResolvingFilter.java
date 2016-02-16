@@ -39,7 +39,7 @@ public interface ResolvingFilter<S extends Symbol> {
 
   Optional<Symbol> filter(ResolvingInfo resolvingInfo, String name, List<Symbol> symbols);
 
-  Collection<? extends Symbol> filter(ResolvingInfo resolvingInfo, List<Symbol> symbols);
+  Collection<Symbol> filter(ResolvingInfo resolvingInfo, List<Symbol> symbols);
   SymbolKind getTargetKind();
 
 

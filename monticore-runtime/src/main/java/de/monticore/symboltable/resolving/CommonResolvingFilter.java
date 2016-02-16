@@ -81,14 +81,14 @@ public class CommonResolvingFilter<S extends Symbol> implements ResolvingFilter<
   }
 
   @Override
-  public Collection<? extends Symbol> filter(ResolvingInfo resolvingInfo, List<Symbol> symbols) {
+  public Collection<Symbol> filter(ResolvingInfo resolvingInfo, List<Symbol> symbols) {
       // TODO PN  create new LinkedHashSet<>() instead
-      final Collection<S> foundSymbols = new LinkedHashSet<>();
+      final Collection<Symbol> foundSymbols = new LinkedHashSet<>();
 
       for (Symbol symbol : symbols) {
         // TODO PN in eigene Methode auslagern, damit Unterklassen das überschreiben können.
         if (symbol.isKindOf(targetKind)) {
-          foundSymbols.add((S)symbol);
+          foundSymbols.add(symbol);
         }
       }
       

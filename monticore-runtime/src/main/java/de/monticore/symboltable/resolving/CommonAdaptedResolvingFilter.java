@@ -80,7 +80,7 @@ public abstract class CommonAdaptedResolvingFilter<S extends Symbol>
   }
 
   @Override
-  public Collection<? extends Symbol> filter(ResolvingInfo resolvingInfo, List<Symbol> symbols) {
+  public Collection<Symbol> filter(ResolvingInfo resolvingInfo, List<Symbol> symbols) {
     // TODO PN override implementation
     return super.filter(resolvingInfo, symbols);
   }
