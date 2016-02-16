@@ -31,14 +31,14 @@ import de.monticore.symboltable.mocks.languages.statechart.StateSymbol;
  */
 public class XStateSymbol extends StateSymbol {
   
-  public static final XStateKind KIND = XStateKind.KIND;
+  public static final XStateKind KIND = new XStateKind();
 
   /**
    * @param name
    */
   public XStateSymbol(String name) {
     super(name);
-    setKind(XStateKind.KIND);
+    setKind(XStateSymbol.KIND);
   }
   
 }

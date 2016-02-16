@@ -19,6 +19,7 @@
 
 package de.monticore.symboltable.mocks.languages.extendedstatechart;
 
+import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.mocks.languages.statechart.StateChartKind;
 
 /**
@@ -30,7 +31,19 @@ import de.monticore.symboltable.mocks.languages.statechart.StateChartKind;
  *
  */
 public class XStateChartKind extends StateChartKind {
-  
-  public static final XStateChartKind KIND = new XStateChartKind(); 
+
+  private static final String NAME = "de.monticore.symboltable.mocks.languages.extendedstatechart.XStateChartKind";
+
+  protected XStateChartKind(){}
+
+  @Override
+  public String getName() {
+    return NAME;
+  }
+
+  @Override
+  public boolean isKindOf(SymbolKind kind) {
+    return NAME.equals(kind.getName()) || super.isKindOf(kind);
+  }
   
 }

@@ -45,8 +45,6 @@ import de.se_rwth.commons.logging.Log;
 public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JAttributeSymbol, U extends JMethodSymbol, V extends JTypeReference<T>>
     extends CommonScopeSpanningSymbol implements JTypeSymbol {
 
-  public static final JTypeSymbolKind KIND = JTypeSymbol.KIND;
-
   private final JAttributeSymbolKind attributeKind;
   private final JMethodSymbolKind methodKind;
 

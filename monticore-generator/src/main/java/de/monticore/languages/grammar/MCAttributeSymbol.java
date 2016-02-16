@@ -20,6 +20,7 @@
 package de.monticore.languages.grammar;
 
 import de.monticore.symboltable.CommonSymbol;
+import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.types.JAttributeSymbolKind;
 import de.se_rwth.commons.logging.Log;
 
@@ -168,7 +169,20 @@ public class MCAttributeSymbol extends CommonSymbol implements Comparable<MCAttr
   }
 
   public static final class MCAttributeKind extends JAttributeSymbolKind {
-    private MCAttributeKind() {
+
+    private static final String NAME = "de.monticore.languages.grammar.MCAttributeKind";
+
+    protected MCAttributeKind() {
+    }
+
+    @Override
+    public String getName() {
+      return NAME;
+    }
+
+    @Override
+    public boolean isKindOf(SymbolKind kind) {
+      return NAME.equals(kind.getName()) || super.isKindOf(kind);
     }
   }
 

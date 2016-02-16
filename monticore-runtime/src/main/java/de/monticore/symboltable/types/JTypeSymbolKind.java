@@ -19,10 +19,26 @@
 
 package de.monticore.symboltable.types;
 
+import de.monticore.symboltable.SymbolKind;
+
 /**
  * @author Pedram Mir Seyed Nazari
  */
 public class JTypeSymbolKind extends TypeSymbolKind {
+
+  private static final String NAME = "de.monticore.symboltable.types.JTypeSymbolKind";
+
   protected JTypeSymbolKind() {
   }
+
+  @Override
+  public String getName() {
+    return NAME;
+  }
+
+  @Override
+  public boolean isKindOf(SymbolKind kind) {
+    return NAME.equals(kind.getName()) || super.isKindOf(kind);
+  }
+
 }

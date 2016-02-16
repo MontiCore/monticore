@@ -31,9 +31,18 @@ import de.monticore.symboltable.SymbolKind;
  */
 public class StateChartKind implements SymbolKind {
 
-  public static final StateChartKind KIND = new StateChartKind();
-  
-  protected StateChartKind() {
+  private static final String NAME = "de.monticore.symboltable.mocks.languages.statechart.StateChartKind";
+
+  protected StateChartKind(){}
+
+  @Override
+  public String getName() {
+    return NAME;
+  }
+
+  @Override
+  public boolean isKindOf(SymbolKind kind) {
+    return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
   }
 
 }

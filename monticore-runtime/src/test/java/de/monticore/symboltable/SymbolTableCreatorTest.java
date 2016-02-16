@@ -34,7 +34,6 @@ import de.monticore.symboltable.mocks.languages.entity.EntityLanguageSymbolTable
 import de.monticore.symboltable.mocks.languages.entity.EntitySymbol;
 import de.monticore.symboltable.mocks.languages.entity.EntitySymbolKind;
 import de.monticore.symboltable.mocks.languages.entity.PropertySymbol;
-import de.monticore.symboltable.mocks.languages.entity.PropertySymbolKind;
 import de.monticore.symboltable.mocks.languages.entity.asts.ASTAction;
 import de.monticore.symboltable.mocks.languages.entity.asts.ASTEntity;
 import de.monticore.symboltable.mocks.languages.entity.asts.ASTEntityCompilationUnit;
@@ -113,7 +112,7 @@ public class SymbolTableCreatorTest {
     PropertySymbol variable  = method.getVariable("var").get();
     assertNotNull(variable);
     assertEquals("var", variable.getName());
-    assertSame(variable, method.getSpannedScope().resolve("var", PropertySymbolKind.KIND).get());
+    assertSame(variable, method.getSpannedScope().resolve("var", PropertySymbol.KIND).get());
   }
   
 

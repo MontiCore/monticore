@@ -35,16 +35,12 @@ import de.monticore.symboltable.mocks.languages.entity.EntitySymbol;
 import de.monticore.symboltable.mocks.languages.entity.asts.ASTAction;
 import de.monticore.symboltable.mocks.languages.entity.asts.ASTEntity;
 import de.monticore.symboltable.mocks.languages.entity.asts.ASTEntityCompilationUnit;
-import de.monticore.symboltable.mocks.languages.extendedstatechart.XStateChartKind;
 import de.monticore.symboltable.mocks.languages.extendedstatechart.XStateChartSymbol;
-import de.monticore.symboltable.mocks.languages.extendedstatechart.XStateKind;
 import de.monticore.symboltable.mocks.languages.extendedstatechart.XStateSymbol;
 import de.monticore.symboltable.mocks.languages.scandentity.EntityEmbeddingScLanguage;
 import de.monticore.symboltable.mocks.languages.scandentity.Sc2EntityAdapter;
 import de.monticore.symboltable.mocks.languages.scandentity.ScAndEntityLanguageFamily;
-import de.monticore.symboltable.mocks.languages.statechart.StateChartKind;
 import de.monticore.symboltable.mocks.languages.statechart.StateChartSymbol;
-import de.monticore.symboltable.mocks.languages.statechart.StateKind;
 import de.monticore.symboltable.mocks.languages.statechart.StateSymbol;
 import de.monticore.symboltable.mocks.languages.statechart.asts.ASTState;
 import de.monticore.symboltable.mocks.languages.statechart.asts.ASTStateChart;
@@ -167,25 +163,25 @@ public class LanguageCompositionTest {
     // Note how symbols of the sub language can be used without any adapters
 
     scope.add(xSc);
-    assertSame(xSc, scope.resolve("xSc", StateChartKind.KIND).get());
+    assertSame(xSc, scope.resolve("xSc", StateChartSymbol.KIND).get());
     // Super symbol cannot be used instead of sub. Resolver for sub needed.
-    assertFalse(scope.resolve("xSc", XStateChartKind.KIND).isPresent());
-    scope.addResolver(CommonResolvingFilter.create(XStateChartSymbol.class, XStateChartKind.KIND));
-    assertSame(xSc, scope.resolve("xSc", XStateChartKind.KIND).get());
+    assertFalse(scope.resolve("xSc", XStateChartSymbol.KIND).isPresent());
+    scope.addResolver(CommonResolvingFilter.create(XStateChartSymbol.class, XStateChartSymbol.KIND));
+    assertSame(xSc, scope.resolve("xSc", XStateChartSymbol.KIND).get());
 
     XStateSymbol xState =  new XStateSymbol("xState");
     xSc.addState(xState);
-    assertSame(xState, xSc.getSpannedScope().resolve("xState", StateKind.KIND).get());
+    assertSame(xState, xSc.getSpannedScope().resolve("xState", StateSymbol.KIND).get());
     // Super symbol cannot be used instead of sub. Resolver for sub needed.
-    assertFalse(xSc.getSpannedScope().resolve("xState", XStateKind.KIND).isPresent());
+    assertFalse(xSc.getSpannedScope().resolve("xState", XStateSymbol.KIND).isPresent());
     ((MutableScope)xSc.getSpannedScope()).addResolver(CommonResolvingFilter.create
         (XStateSymbol.class, XStateSymbol.KIND));
-    assertSame(xState, xSc.getSpannedScope().resolve("xState", XStateKind.KIND).get());
+    assertSame(xState, xSc.getSpannedScope().resolve("xState", XStateSymbol.KIND).get());
 
     XStateSymbol xState2 = new XStateSymbol("xState2");
     sc.addState(xState2);
     assertSame(xState2, sc.getState("xState2").get());
-    assertSame(xState2, sc.getSpannedScope().resolve("xState2", StateKind.KIND).get());
+    assertSame(xState2, sc.getSpannedScope().resolve("xState2", StateSymbol.KIND).get());
   }
 
 

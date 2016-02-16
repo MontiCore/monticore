@@ -29,11 +29,9 @@ import java.util.Set;
 
 import de.monticore.symboltable.mocks.languages.JTypeSymbolMock;
 import de.monticore.symboltable.mocks.languages.entity.ActionSymbol;
-import de.monticore.symboltable.mocks.languages.entity.ActionSymbolKind;
 import de.monticore.symboltable.mocks.languages.entity.EntitySymbol;
 import de.monticore.symboltable.mocks.languages.entity.PropertyPredicate;
 import de.monticore.symboltable.mocks.languages.entity.PropertySymbol;
-import de.monticore.symboltable.mocks.languages.entity.PropertySymbolKind;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.monticore.symboltable.types.JTypeSymbol;
@@ -150,12 +148,12 @@ public class SymbolTableTest {
     topScope.add(globalVariable1);
     
 
-    assertSame(method, topScope.resolve(new SymbolNameAndKindPredicate("m", ActionSymbolKind.KIND)
+    assertSame(method, topScope.resolve(new SymbolNameAndKindPredicate("m", ActionSymbol.KIND)
     ).get());
-    assertSame(globalVariable1, topScope.resolve(new SymbolNameAndKindPredicate("var1", PropertySymbolKind.KIND)).get());
+    assertSame(globalVariable1, topScope.resolve(new SymbolNameAndKindPredicate("var1", PropertySymbol.KIND)).get());
 
     // no variable with name 'm' defined 
-    assertFalse(topScope.resolve(new SymbolNameAndKindPredicate("m", PropertySymbolKind.KIND)).isPresent());
+    assertFalse(topScope.resolve(new SymbolNameAndKindPredicate("m", PropertySymbol.KIND)).isPresent());
     
     PropertyPredicate varPredicate = new PropertyPredicate(new PropertySymbol("var1", stringReference));
     

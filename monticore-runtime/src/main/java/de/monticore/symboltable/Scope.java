@@ -169,7 +169,10 @@ public interface Scope {
    * @param predicate the predicate that has to be fulfilled by the symbol
    *
    * @return the symbol fulfilling the <code>predicate</code>, starting from this scope.
+   *
+   * @deprecated use {@link #resolveMany(String, SymbolKind, Predicate)} instead
    */
+  @Deprecated
   Optional<? extends Symbol> resolve(SymbolPredicate predicate);
 
   <T extends Symbol> Optional<T> resolveDown(String name, SymbolKind kind);

@@ -19,6 +19,7 @@
 
 package de.monticore.symboltable.mocks.languages.entity;
 
+import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.types.JMethodSymbolKind;
 
 /**
@@ -31,11 +32,18 @@ import de.monticore.symboltable.types.JMethodSymbolKind;
  */
 public class ActionSymbolKind extends JMethodSymbolKind {
 
-  public static final ActionSymbolKind KIND = new ActionSymbolKind();
+  private static final String NAME = "de.monticore.symboltable.mocks.languages.entity.ActionSymbolKind";
+
+  protected ActionSymbolKind(){}
 
   @Override
   public String getName() {
-    return "ActionSymbolKind";
+    return NAME;
+  }
+
+  @Override
+  public boolean isKindOf(SymbolKind kind) {
+    return NAME.equals(kind.getName()) || super.isKindOf(kind);
   }
 
 }
