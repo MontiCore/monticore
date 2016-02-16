@@ -19,11 +19,11 @@
 
 package de.monticore.symboltable.resolving;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import de.monticore.symboltable.Symbol;
@@ -35,6 +35,7 @@ import de.monticore.symboltable.SymbolKind;
  * @author Pedram Mir Seyed Nazari
  *
  */
+// TODO PN remove formal type argument, since not needed anymore
 public abstract class CommonAdaptedResolvingFilter<S extends Symbol>
     extends CommonResolvingFilter<S> implements AdaptedResolvingFilter<S> {
 
@@ -53,11 +54,11 @@ public abstract class CommonAdaptedResolvingFilter<S extends Symbol>
     return sourceKind;
   }
 
-  protected abstract S createAdapter(Symbol s);
+  protected abstract Symbol createAdapter(Symbol s);
 
   @Override
-  public Optional<S> filter(ResolvingInfo resolvingInfo, String symbolName, List<Symbol> symbols) {
-    final List<S> resolvedSymbols = new ArrayList<>();
+  public Optional<Symbol> filter(ResolvingInfo resolvingInfo, String symbolName, List<Symbol> symbols) {
+    final Set<Symbol> resolvedSymbols = new LinkedHashSet<>();
 
     final Collection<ResolvingFilter<? extends Symbol>> filtersWithoutAdapters =
         ResolvingFilter.getFiltersForTargetKind(resolvingInfo.getResolvingFilters(), getSourceKind())
@@ -79,7 +80,7 @@ public abstract class CommonAdaptedResolvingFilter<S extends Symbol>
   }
 
   @Override
-  public Collection<S> filter(ResolvingInfo resolvingInfo, List<Symbol> symbols) {
+  public Collection<? extends Symbol> filter(ResolvingInfo resolvingInfo, List<Symbol> symbols) {
     // TODO PN override implementation
     return super.filter(resolvingInfo, symbols);
   }

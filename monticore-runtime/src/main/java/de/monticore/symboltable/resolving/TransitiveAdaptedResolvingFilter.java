@@ -19,11 +19,11 @@
 
 package de.monticore.symboltable.resolving;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import de.monticore.symboltable.Symbol;
@@ -35,10 +35,7 @@ import de.monticore.symboltable.SymbolKind;
  * @author Pedram Mir Seyed Nazari
  *
  */
-// TODO PN Problem, wenn unterschiedliche Symbole selben Kind nutzen. Welcher Adapter wird dann genutzt?
-//         Statt Kinds eher Klassen nutzen? D.h. From extends Symbol (gleiches für To)
-
-// TODO PN override other methods of DefaultResolver
+// TODO PN remove formal type argument, since not needed anymore
 public abstract class TransitiveAdaptedResolvingFilter<S extends Symbol>
     extends CommonAdaptedResolvingFilter<S> implements AdaptedResolvingFilter<S> {
 
@@ -51,7 +48,7 @@ public abstract class TransitiveAdaptedResolvingFilter<S extends Symbol>
   }
 
   @Override
-  public Optional<S> filter(ResolvingInfo resolvingInfo, String symbolName, List<Symbol> symbols) {
+  public Optional<Symbol> filter(ResolvingInfo resolvingInfo, String symbolName, List<Symbol> symbols) {
     // This checks prevents circular dependencies in adapted resolving filters, e.g.,
     // A -> B (i.e., A is resolved and adapted to B) and B -> A would lead to a circular dependency:
     // A -> B -> A -> B -> A -> ...
@@ -63,7 +60,7 @@ public abstract class TransitiveAdaptedResolvingFilter<S extends Symbol>
     // this method.
     resolvingInfo.addHandledTargetKind(getTargetKind());
 
-    final List<S> resolvedSymbols = new ArrayList<>();
+    final Set<Symbol> resolvedSymbols = new LinkedHashSet<>();
 
     final Collection<ResolvingFilter<? extends Symbol>> filtersForTargetKind = ResolvingFilter.
         getFiltersForTargetKind(resolvingInfo.getResolvingFilters(), getSourceKind());
@@ -88,7 +85,7 @@ public abstract class TransitiveAdaptedResolvingFilter<S extends Symbol>
   }
 
   @Override
-  public Collection<S> filter(ResolvingInfo resolvingInfo, List<Symbol> symbols) {
+  public Collection<? extends Symbol> filter(ResolvingInfo resolvingInfo, List<Symbol> symbols) {
     // TODO PN override implementation
     return super.filter(resolvingInfo, symbols);
   }

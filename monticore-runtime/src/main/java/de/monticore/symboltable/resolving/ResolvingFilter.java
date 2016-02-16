@@ -34,11 +34,12 @@ import de.monticore.symboltable.SymbolKind;
  * @author Pedram Mir Seyed Nazari
  *
  */
+// TODO PN remove formal type argument, since not needed anymore
 public interface ResolvingFilter<S extends Symbol> {
 
-  Optional<S> filter(ResolvingInfo resolvingInfo, String name, List<Symbol> symbols);
+  Optional<Symbol> filter(ResolvingInfo resolvingInfo, String name, List<Symbol> symbols);
 
-  Collection<S> filter(ResolvingInfo resolvingInfo, List<Symbol> symbols);
+  Collection<? extends Symbol> filter(ResolvingInfo resolvingInfo, List<Symbol> symbols);
   SymbolKind getTargetKind();
 
 
