@@ -32,7 +32,7 @@ import de.monticore.symboltable.mocks.languages.statechart.StateChartKind;
  */
 public class XStateChartKind extends StateChartKind {
 
-  private static final String NAME = "de.monticore.symboltable.mocks.languages.extendedstatechart.XStateChartKind";
+  private static final String NAME = XStateChartKind.class.getName();
 
   protected XStateChartKind(){}
 

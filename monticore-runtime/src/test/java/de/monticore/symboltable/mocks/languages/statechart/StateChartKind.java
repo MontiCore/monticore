@@ -31,7 +31,7 @@ import de.monticore.symboltable.SymbolKind;
  */
 public class StateChartKind implements SymbolKind {
 
-  private static final String NAME = "de.monticore.symboltable.mocks.languages.statechart.StateChartKind";
+  private static final String NAME = StateChartKind.class.getName();
 
   protected StateChartKind(){}
 
