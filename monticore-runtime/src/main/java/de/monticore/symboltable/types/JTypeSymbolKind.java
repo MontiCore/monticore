@@ -26,7 +26,7 @@ import de.monticore.symboltable.SymbolKind;
  */
 public class JTypeSymbolKind extends TypeSymbolKind {
 
-  private static final String NAME = "de.monticore.symboltable.types.JTypeSymbolKind";
+  private static final String NAME = JTypeSymbolKind.class.getName();
 
   protected JTypeSymbolKind() {
   }

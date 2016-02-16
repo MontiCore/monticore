@@ -569,7 +569,7 @@ public class MCTypeSymbol extends CommonScopeSpanningSymbol implements Comparabl
 
   public static final class MCTypeKind extends JTypeSymbolKind {
 
-    private static final String NAME = "de.monticore.languages.grammar.MCTypeKind";
+    private static final String NAME = MCTypeKind.class.getName();
 
     protected MCTypeKind() {
     }

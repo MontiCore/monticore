@@ -695,6 +695,19 @@ public class MCGrammarSymbol extends CommonScopeSpanningSymbol {
   }
 
   public static final class GrammarKind implements SymbolKind {
-    private GrammarKind() {}
+    private static final String NAME = GrammarKind.class.getName();
+
+    private GrammarKind() {
+    }
+
+    @Override
+    public String getName() {
+      return NAME;
+    }
+
+    @Override
+    public boolean isKindOf(SymbolKind kind) {
+      return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
+    }
   }
 }

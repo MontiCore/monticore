@@ -170,7 +170,7 @@ public class MCAttributeSymbol extends CommonSymbol implements Comparable<MCAttr
 
   public static final class MCAttributeKind extends JAttributeSymbolKind {
 
-    private static final String NAME = "de.monticore.languages.grammar.MCAttributeKind";
+    private static final String NAME = MCAttributeKind.class.getName();
 
     protected MCAttributeKind() {
     }
