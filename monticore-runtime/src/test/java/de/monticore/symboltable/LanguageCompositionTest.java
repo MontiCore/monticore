@@ -151,22 +151,19 @@ public class LanguageCompositionTest {
     entity.addAction(action);
 
     MutableScope scope = new CommonScope(true);
-    scope.addResolver(CommonResolvingFilter.create(StateChartSymbol.class, StateChartSymbol
-        .KIND));
+    scope.addResolver(CommonResolvingFilter.create(StateChartSymbol.KIND));
 
-    ((MutableScope) sc.getSpannedScope()).addResolver(CommonResolvingFilter.create
-        (StateSymbol.class, StateSymbol.KIND));
+    ((MutableScope) sc.getSpannedScope()).addResolver(CommonResolvingFilter.create(StateSymbol.KIND));
 
     XStateChartSymbol xSc = new XStateChartSymbol("xSc");
-    ((MutableScope) xSc.getSpannedScope()).addResolver(CommonResolvingFilter.create
-        (StateSymbol.class, StateSymbol.KIND));
+    ((MutableScope) xSc.getSpannedScope()).addResolver(CommonResolvingFilter.create(StateSymbol.KIND));
     // Note how symbols of the sub language can be used without any adapters
 
     scope.add(xSc);
     assertSame(xSc, scope.resolve("xSc", StateChartSymbol.KIND).get());
     // Super symbol cannot be used instead of sub. Resolver for sub needed.
     assertFalse(scope.resolve("xSc", XStateChartSymbol.KIND).isPresent());
-    scope.addResolver(CommonResolvingFilter.create(XStateChartSymbol.class, XStateChartSymbol.KIND));
+    scope.addResolver(CommonResolvingFilter.create(XStateChartSymbol.KIND));
     assertSame(xSc, scope.resolve("xSc", XStateChartSymbol.KIND).get());
 
     XStateSymbol xState =  new XStateSymbol("xState");
@@ -174,8 +171,7 @@ public class LanguageCompositionTest {
     assertSame(xState, xSc.getSpannedScope().resolve("xState", StateSymbol.KIND).get());
     // Super symbol cannot be used instead of sub. Resolver for sub needed.
     assertFalse(xSc.getSpannedScope().resolve("xState", XStateSymbol.KIND).isPresent());
-    ((MutableScope)xSc.getSpannedScope()).addResolver(CommonResolvingFilter.create
-        (XStateSymbol.class, XStateSymbol.KIND));
+    ((MutableScope)xSc.getSpannedScope()).addResolver(CommonResolvingFilter.create(XStateSymbol.KIND));
     assertSame(xState, xSc.getSpannedScope().resolve("xState", XStateSymbol.KIND).get());
 
     XStateSymbol xState2 = new XStateSymbol("xState2");

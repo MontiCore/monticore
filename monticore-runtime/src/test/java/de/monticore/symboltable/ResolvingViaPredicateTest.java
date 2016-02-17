@@ -45,7 +45,7 @@ public class ResolvingViaPredicateTest {
   @Test
   public void testResolveOnlyPropertiesSymbolWithMatchingType() {
     final EntitySymbol entitySymbol = new EntitySymbol("E");
-    entitySymbol.getMutableSpannedScope().addResolver(CommonResolvingFilter.create(PropertySymbol.class, PropertySymbol.KIND));
+    entitySymbol.getMutableSpannedScope().addResolver(CommonResolvingFilter.create(PropertySymbol.KIND));
 
     entitySymbol.addProperty(new PropertySymbol("p", DUMMY_TYPE_REF));
 
@@ -65,8 +65,8 @@ public class ResolvingViaPredicateTest {
   @Test
   public void testResolveOnlyActionWithMatchingParameters() {
     final EntitySymbol entitySymbol = new EntitySymbol("E");
-    entitySymbol.getMutableSpannedScope().addResolver(CommonResolvingFilter.create(ActionSymbol.class, ActionSymbol.KIND));
-    entitySymbol.getMutableSpannedScope().addResolver(CommonResolvingFilter.create(PropertySymbol.class, PropertySymbol.KIND));
+    entitySymbol.getMutableSpannedScope().addResolver(CommonResolvingFilter.create(ActionSymbol.KIND));
+    entitySymbol.getMutableSpannedScope().addResolver(CommonResolvingFilter.create(PropertySymbol.KIND));
 
     PropertySymbol param1 = new PropertySymbol("param1", DUMMY_TYPE_REF);
     param1.setParameter(true);
@@ -76,7 +76,7 @@ public class ResolvingViaPredicateTest {
     param3.setParameter(true);
 
     final ActionSymbol a1 = new ActionSymbol("action");
-    a1.getMutableSpannedScope().addResolver(CommonResolvingFilter.create(PropertySymbol.class, PropertySymbol.KIND));
+    a1.getMutableSpannedScope().addResolver(CommonResolvingFilter.create(PropertySymbol.KIND));
 
     a1.addParameter(param1);
     a1.addParameter(param2);
@@ -93,7 +93,7 @@ public class ResolvingViaPredicateTest {
     param3.setParameter(true);
 
     final ActionSymbol a2 = new ActionSymbol("action");
-    a2.getMutableSpannedScope().addResolver(CommonResolvingFilter.create(PropertySymbol.class, PropertySymbol.KIND));
+    a2.getMutableSpannedScope().addResolver(CommonResolvingFilter.create(PropertySymbol.KIND));
 
     // parameters are in different order than action a1
     a2.addParameter(param1);

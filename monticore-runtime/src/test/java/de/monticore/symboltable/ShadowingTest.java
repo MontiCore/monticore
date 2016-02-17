@@ -61,8 +61,7 @@ public class ShadowingTest {
     PropertySymbol y = new PropertySymbol("y", stringReference);
     scope.add(y);
 
-    ResolvingFilter<PropertySymbol> variableResolvingFilter = CommonResolvingFilter.create
-        (PropertySymbol.class, PropertySymbol.KIND);
+    ResolvingFilter<PropertySymbol> variableResolvingFilter = CommonResolvingFilter.create(PropertySymbol.KIND);
     enclosingScope.addResolver(variableResolvingFilter);
     scope.addResolver(variableResolvingFilter);
 
@@ -101,8 +100,7 @@ public class ShadowingTest {
     PropertySymbol y = new PropertySymbol("y", stringReference);
     scope.add(y);
 
-    ResolvingFilter<PropertySymbol> variableResolvingFilter = CommonResolvingFilter.create
-        (PropertySymbol.class, PropertySymbol.KIND);
+    ResolvingFilter<PropertySymbol> variableResolvingFilter = CommonResolvingFilter.create(PropertySymbol.KIND);
     enclosingScope.addResolver(variableResolvingFilter);
     scope.addResolver(variableResolvingFilter);
 
@@ -136,8 +134,7 @@ public class ShadowingTest {
     PropertySymbol variable = new PropertySymbol("var", intReference);
     scope.add(variable);
 
-    ResolvingFilter<PropertySymbol> variableResolvingFilter = CommonResolvingFilter.create
-        (PropertySymbol.class, PropertySymbol.KIND);
+    ResolvingFilter<PropertySymbol> variableResolvingFilter = CommonResolvingFilter.create(PropertySymbol.KIND);
     grandGrandEnclosingScope.addResolver(variableResolvingFilter);
     enclosingScope.addResolver(variableResolvingFilter);
     scope.addResolver(variableResolvingFilter);

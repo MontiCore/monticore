@@ -22,6 +22,8 @@ package de.monticore.symboltable.mocks.languages.scandentity;
 import java.util.Optional;
 
 import de.monticore.CommonModelingLanguage;
+import de.monticore.antlr4.MCConcreteParser;
+import de.monticore.ast.ASTNode;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolverConfiguration;
@@ -32,8 +34,6 @@ import de.monticore.symboltable.mocks.languages.entity.PropertySymbol;
 import de.monticore.symboltable.mocks.languages.statechart.StateChartSymbol;
 import de.monticore.symboltable.mocks.languages.statechart.StateSymbol;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
-import de.monticore.antlr4.MCConcreteParser;
-import de.monticore.ast.ASTNode;
 import de.se_rwth.commons.logging.Log;
 
 public class EntityEmbeddingScLanguage extends CommonModelingLanguage {
@@ -46,13 +46,13 @@ public class EntityEmbeddingScLanguage extends CommonModelingLanguage {
     super("Entity with embedded Statechart language", FILE_ENDING);
     
     // add default resolvers of the entity language
-    addResolver(CommonResolvingFilter.create(EntitySymbol.class, EntitySymbol.KIND));
-    addResolver(CommonResolvingFilter.create(ActionSymbol.class, ActionSymbol.KIND));
-    addResolver(CommonResolvingFilter.create(PropertySymbol.class, PropertySymbol.KIND));
+    addResolver(CommonResolvingFilter.create(EntitySymbol.KIND));
+    addResolver(CommonResolvingFilter.create(ActionSymbol.KIND));
+    addResolver(CommonResolvingFilter.create(PropertySymbol.KIND));
     
     // add default resolvers of the statechart language
-    addResolver(CommonResolvingFilter.create(StateChartSymbol.class, StateChartSymbol.KIND));
-    addResolver(CommonResolvingFilter.create(StateSymbol.class, StateSymbol.KIND));
+    addResolver(CommonResolvingFilter.create(StateChartSymbol.KIND));
+    addResolver(CommonResolvingFilter.create(StateSymbol.KIND));
     
     // add sc2entity resolvers
     addResolver(new Sc2EntityTransitiveResolvingFilter());

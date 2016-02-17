@@ -62,9 +62,8 @@ public class ReferencesTest {
     d.addProperty(fieldOfD);
 
     ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
-    resolverConfiguration.addTopScopeResolver(CommonResolvingFilter.create(CommonJTypeSymbol.class,
-        CommonJTypeSymbol.KIND));
-    resolverConfiguration.addTopScopeResolver(CommonResolvingFilter.create(PropertySymbol.class, PropertySymbol.KIND));
+    resolverConfiguration.addTopScopeResolver(CommonResolvingFilter.create(CommonJTypeSymbol.KIND));
+    resolverConfiguration.addTopScopeResolver(CommonResolvingFilter.create(PropertySymbol.KIND));
 
     final MutableScope globalScope = new GlobalScope(new ModelPath(), new ArrayList<>(), resolverConfiguration);
 

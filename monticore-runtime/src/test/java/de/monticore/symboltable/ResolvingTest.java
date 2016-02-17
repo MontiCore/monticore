@@ -53,7 +53,7 @@ public class ResolvingTest {
     final EntitySymbol entity = new EntitySymbol("Entity");
 
     final MutableScope localScope = new CommonScope(false);
-    localScope.addResolver(CommonResolvingFilter.create(EntitySymbol.class, EntitySymbol.KIND));
+    localScope.addResolver(CommonResolvingFilter.create(EntitySymbol.KIND));
 
     localScope.add(entity);
     localScope.add(entity);
@@ -83,8 +83,7 @@ public class ResolvingTest {
     final MutableScope localScope = new CommonScope(false);
     ((MutableScope)action.getSpannedScope()).addSubScope(localScope);
 
-    final ResolvingFilter<PropertySymbol> propertyResolvingFilter = CommonResolvingFilter.create(
-        PropertySymbol.class, PropertySymbol.KIND);
+    final ResolvingFilter<PropertySymbol> propertyResolvingFilter = CommonResolvingFilter.create(PropertySymbol.KIND);
 
     // Only localScope is initialized with a resolver for properties
     localScope.addResolver(propertyResolvingFilter);

@@ -56,9 +56,8 @@ public class SymbolTableTest {
     topScope = new CommonScope(true);
 
     Set<ResolvingFilter<? extends Symbol>> resolvingFilters = new LinkedHashSet<>();
-    resolvingFilters.add(CommonResolvingFilter.create(JTypeSymbolMock.class,
-        JTypeSymbolMock.KIND));
-    resolvingFilters.add(CommonResolvingFilter.create(PropertySymbol.class, PropertySymbol.KIND));
+    resolvingFilters.add(CommonResolvingFilter.create(JTypeSymbolMock.KIND));
+    resolvingFilters.add(CommonResolvingFilter.create(PropertySymbol.KIND));
     
     topScope.setResolvingFilters(resolvingFilters);
     
@@ -94,7 +93,7 @@ public class SymbolTableTest {
     topScope.add(method);
     
     Set<ResolvingFilter<? extends Symbol>> resolvingFilters = new LinkedHashSet<>();
-    resolvingFilters.add(CommonResolvingFilter.create(PropertySymbol.class, PropertySymbol.KIND));
+    resolvingFilters.add(CommonResolvingFilter.create(PropertySymbol.KIND));
     ((MutableScope)method.getSpannedScope()).setResolvingFilters(resolvingFilters);
     
     
@@ -141,15 +140,14 @@ public class SymbolTableTest {
     method.addVariable(variable);
     
     Set<ResolvingFilter<? extends Symbol>> resolvingFilters = new LinkedHashSet<>();
-    resolvingFilters.add(CommonResolvingFilter.create(PropertySymbol.class, PropertySymbol.KIND));
+    resolvingFilters.add(CommonResolvingFilter.create(PropertySymbol.KIND));
     ((MutableScope)method.getSpannedScope()).setResolvingFilters(resolvingFilters);
     
     PropertySymbol globalVariable1 = new PropertySymbol("var1", stringReference);
     topScope.add(globalVariable1);
     
 
-    assertSame(method, topScope.resolve(new SymbolNameAndKindPredicate("m", ActionSymbol.KIND)
-    ).get());
+    assertSame(method, topScope.resolve(new SymbolNameAndKindPredicate("m", ActionSymbol.KIND)).get());
     assertSame(globalVariable1, topScope.resolve(new SymbolNameAndKindPredicate("var1", PropertySymbol.KIND)).get());
 
     // no variable with name 'm' defined 
@@ -181,9 +179,9 @@ public class SymbolTableTest {
      */
 
     Set<ResolvingFilter<? extends Symbol>> resolvingFilters = new LinkedHashSet<>();
-    resolvingFilters.add(CommonResolvingFilter.create(EntitySymbol.class, EntitySymbol.KIND));
-    resolvingFilters.add(CommonResolvingFilter.create(PropertySymbol.class, PropertySymbol.KIND));
-    resolvingFilters.add(CommonResolvingFilter.create(ActionSymbol.class, ActionSymbol.KIND));
+    resolvingFilters.add(CommonResolvingFilter.create(EntitySymbol.KIND));
+    resolvingFilters.add(CommonResolvingFilter.create(PropertySymbol.KIND));
+    resolvingFilters.add(CommonResolvingFilter.create(ActionSymbol.KIND));
     
     EntitySymbol clazz = new EntitySymbol("C");
     ((MutableScope)clazz.getSpannedScope()).setResolvingFilters(resolvingFilters);
