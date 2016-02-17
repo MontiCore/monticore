@@ -42,6 +42,7 @@ public class CommonResolvingFilter<S extends Symbol> implements ResolvingFilter<
   /**
    * @deprecated use {@link #create(SymbolKind)} instead
    */
+  @Deprecated
   public static <S extends Symbol> ResolvingFilter<S> create(Class<S> symbolClass, SymbolKind symbolKind) {
     // TODO PN check einbauen dass kein Resolver existiert, dessen S und T nicht mit den aktuellen Parametern kompatibel sind
     return new CommonResolvingFilter<>(symbolClass, symbolKind);

@@ -19,7 +19,7 @@
 
 package de.monticore.symboltable;
 
-import static de.monticore.symboltable.modifiers.BasicAccessModifier.ABSENT;
+import static de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -53,13 +53,13 @@ public class ResolvingViaPredicateTest {
 
     assertTrue(spannedScope.resolve("p", PropertySymbol.KIND).isPresent());
 
-    assertEquals(1, spannedScope.resolveMany("p", PropertySymbol.KIND, ABSENT, new PropertyTypePredicate(DUMMY_TYPE_REF.getName())).size());
-    assertEquals(0, spannedScope.resolveMany("p", PropertySymbol.KIND, ABSENT, new PropertyTypePredicate("OTHERTTYPE")).size());
+    assertEquals(1, spannedScope.resolveMany("p", PropertySymbol.KIND, ALL_INCLUSION, new PropertyTypePredicate(DUMMY_TYPE_REF.getName())).size());
+    assertEquals(0, spannedScope.resolveMany("p", PropertySymbol.KIND, ALL_INCLUSION, new PropertyTypePredicate("OTHERTTYPE")).size());
 
     entitySymbol.addProperty(new PropertySymbol("p", DUMMY_TYPE_REF2));
     entitySymbol.addProperty(new PropertySymbol("p", DUMMY_TYPE_REF));
 
-    assertEquals(2, spannedScope.resolveMany("p", PropertySymbol.KIND, ABSENT, new PropertyTypePredicate(DUMMY_TYPE_REF.getName())).size());
+    assertEquals(2, spannedScope.resolveMany("p", PropertySymbol.KIND, ALL_INCLUSION, new PropertyTypePredicate(DUMMY_TYPE_REF.getName())).size());
   }
 
   @Test

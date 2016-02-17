@@ -20,7 +20,7 @@
 package de.monticore.symboltable.types;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static de.monticore.symboltable.modifiers.BasicAccessModifier.ABSENT;
+import static de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION;
 import static de.monticore.symboltable.modifiers.BasicAccessModifier.PACKAGE_LOCAL;
 import static de.monticore.symboltable.modifiers.BasicAccessModifier.PRIVATE;
 import static de.monticore.symboltable.modifiers.BasicAccessModifier.PROTECTED;
@@ -35,7 +35,6 @@ import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.SymbolPredicate;
 import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.symboltable.resolving.ResolvingInfo;
 import de.monticore.symboltable.types.references.JTypeReference;
 import de.se_rwth.commons.logging.Log;
@@ -63,7 +62,7 @@ public class CommonJTypeScope extends CommonScope {
 
   @Override
   public <T extends Symbol> Optional<T> resolve(String symbolName, SymbolKind kind) {
-    return this.resolve(symbolName, kind, BasicAccessModifier.ABSENT);
+    return this.resolve(symbolName, kind, ALL_INCLUSION);
   }
 
   // TODO PN override resolve(ResolvingInfo, String, kind, AccessModifiier) instead?
@@ -129,7 +128,7 @@ public class CommonJTypeScope extends CommonScope {
   }
 
   private AccessModifier getModifierForSuperClass(AccessModifier modifier, JTypeSymbol superType) {
-    if ((modifier == ABSENT) || (modifier == PRIVATE) || (modifier == PACKAGE_LOCAL)) {
+    if ((modifier == ALL_INCLUSION) || (modifier == PRIVATE) || (modifier == PACKAGE_LOCAL)) {
       if (getSpanningSymbol().get().getPackageName().equals(superType.getPackageName())) {
         return PACKAGE_LOCAL;
       }

@@ -27,6 +27,7 @@ import java.util.Set;
 import com.google.common.collect.Sets;
 import de.monticore.symboltable.mocks.languages.entity.EntitySymbol;
 import de.monticore.symboltable.mocks.languages.entity.PropertySymbol;
+import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingFilter;
@@ -75,28 +76,28 @@ public class ModifierTest {
     assertSame(publicI, scope.resolve("i", PropertySymbol.KIND, BasicAccessModifier.PROTECTED).get());
     assertSame(publicI, scope.resolve("i", PropertySymbol.KIND, BasicAccessModifier.PACKAGE_LOCAL).get());
     assertSame(publicI, scope.resolve("i", PropertySymbol.KIND, BasicAccessModifier.PRIVATE).get());
-    assertSame(publicI, scope.resolve("i", PropertySymbol.KIND, BasicAccessModifier.ABSENT).get());
+    assertSame(publicI, scope.resolve("i", PropertySymbol.KIND, AccessModifier.ALL_INCLUSION).get());
     
     // protected
     assertFalse(scope.resolve("j", PropertySymbol.KIND, BasicAccessModifier.PUBLIC).isPresent());
     assertSame(protectedJ, scope.resolve("j", PropertySymbol.KIND, BasicAccessModifier.PROTECTED).get());
     assertSame(protectedJ, scope.resolve("j", PropertySymbol.KIND, BasicAccessModifier.PACKAGE_LOCAL).get());
     assertSame(protectedJ, scope.resolve("j", PropertySymbol.KIND, BasicAccessModifier.PRIVATE).get());
-    assertSame(protectedJ, scope.resolve("j", PropertySymbol.KIND, BasicAccessModifier.ABSENT).get());
+    assertSame(protectedJ, scope.resolve("j", PropertySymbol.KIND, AccessModifier.ALL_INCLUSION).get());
     
     // default (package access)
     assertFalse(scope.resolve("k", PropertySymbol.KIND, BasicAccessModifier.PUBLIC).isPresent());
     assertFalse(scope.resolve("k", PropertySymbol.KIND, BasicAccessModifier.PROTECTED).isPresent());
     assertSame(defaultK, scope.resolve("k", PropertySymbol.KIND, BasicAccessModifier.PACKAGE_LOCAL).get());
     assertSame(defaultK, scope.resolve("k", PropertySymbol.KIND, BasicAccessModifier.PRIVATE).get());
-    assertSame(defaultK, scope.resolve("k", PropertySymbol.KIND, BasicAccessModifier.ABSENT).get());
+    assertSame(defaultK, scope.resolve("k", PropertySymbol.KIND, AccessModifier.ALL_INCLUSION).get());
     
     // private
     assertFalse(scope.resolve("l", PropertySymbol.KIND, BasicAccessModifier.PUBLIC).isPresent());
     assertFalse(scope.resolve("l", PropertySymbol.KIND, BasicAccessModifier.PROTECTED).isPresent());
     assertFalse(scope.resolve("l", PropertySymbol.KIND, BasicAccessModifier.PACKAGE_LOCAL).isPresent());
     assertSame(privateL, scope.resolve("l", PropertySymbol.KIND, BasicAccessModifier.PRIVATE).get());
-    assertSame(privateL, scope.resolve("l", PropertySymbol.KIND, BasicAccessModifier.ABSENT).get());
+    assertSame(privateL, scope.resolve("l", PropertySymbol.KIND, AccessModifier.ALL_INCLUSION).get());
   }
 
 
@@ -134,6 +135,6 @@ public class ModifierTest {
     assertSame(publicI, scope.resolve("i", PropertySymbol.KIND, BasicAccessModifier.PROTECTED).get());
     assertSame(publicI, scope.resolve("i", PropertySymbol.KIND, BasicAccessModifier.PACKAGE_LOCAL).get());
     assertSame(publicI, scope.resolve("i", PropertySymbol.KIND, BasicAccessModifier.PRIVATE).get());
-    assertSame(publicI, scope.resolve("i", PropertySymbol.KIND, BasicAccessModifier.ABSENT).get());
+    assertSame(publicI, scope.resolve("i", PropertySymbol.KIND, AccessModifier.ALL_INCLUSION).get());
   }
 }
