@@ -120,7 +120,7 @@ public class TestAutomaton {
 //     ModelUtils.save(snapshot, "result.emfdiff"); //$NON-NLS-1$
       
       
-      Optional<ASTMCGrammar> transB = new Grammar_WithConceptsParser().parseMCGrammar("src/test/resources/mc/Automaton.mc4");
+      Optional<ASTMCGrammar> transB = new Grammar_WithConceptsParser().parseMCGrammar("src/test/resources/mc/emf/Automaton.mc4");
       if (transB.isPresent()) {
         System.err.println("ASTMCGrammar: " + transB.get());
         AST2ModelFiles.get().serializeASTInstance(transB.get(), "Automaton");

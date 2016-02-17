@@ -197,7 +197,7 @@ public class CdDecoratorTest {
   @Test
   public void addNodeFactoryClass() {
     assertEquals(2, cdDefinition.getCDClasses().size());
-    cdDecorator.addNodeFactoryClass(cdComilationUnit, cdDefinition.getCDClasses(), astHelper);
+    cdDecorator.addNodeFactoryClass(cdComilationUnit, cdDefinition.getCDClasses(), astHelper, "ast.AstNodeFactory");
     assertEquals(3, cdDefinition.getCDClasses().size());
     Optional<ASTCDClass> nodeFactoryClass = cdDefinition.getCDClasses().stream()
         .filter(c -> c.getName().equals("SimpleNodeFactory")).findAny();

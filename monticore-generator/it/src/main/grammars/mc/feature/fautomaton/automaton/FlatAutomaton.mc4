@@ -1,4 +1,4 @@
-package mc.featureemf.fautomaton.automaton;
+package mc.feature.fautomaton.automaton;
 
 grammar FlatAutomaton extends mc.common.Basics {
 

@@ -5,21 +5,12 @@
  */
 package mc.emf;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import org.antlr.v4.runtime.RecognitionException;
-import org.eclipse.emf.compare.diff.metamodel.DiffElement;
-import org.eclipse.emf.compare.diff.metamodel.DiffModel;
-import org.eclipse.emf.compare.diff.service.DiffService;
-import org.eclipse.emf.compare.match.metamodel.MatchModel;
-import org.eclipse.emf.compare.match.service.MatchService;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -28,8 +19,8 @@ import de.monticore.emf.util.AST2ModelFiles;
 import de.monticore.emf.util.compare.AstEmfDiffUtility;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
-import mc.featureemf.fautomaton.automaton.flatautomaton._ast.ASTAutomaton;
-import mc.featureemf.fautomaton.automaton.flatautomaton._parser.FlatAutomatonParser;
+import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTAutomaton;
+import mc.feature.fautomaton.automaton.flatautomaton._parser.FlatAutomatonParser;
 
 /**
  * TODO: Write me!
@@ -48,10 +39,10 @@ public class EmfInheritanceTest {
   public void test2() {
     try {
       Optional<ASTAutomaton> transB = new FlatAutomatonParser()
-          .parse("src/test/resources/mc/diff/automaton/Testautomat.aut");
+          .parse("src/test/resources/mc/emf/diff/Testautomat.aut");
           
       Optional<ASTAutomaton> transC = new FlatAutomatonParser()
-          .parse("src/test/resources/mc/diff/automaton/Testautomat2.aut");
+          .parse("src/test/resources/mc/emf/diff/Testautomat2.aut");
       if (transB.isPresent() && transC.isPresent()) {
         AST2ModelFiles.get().serializeASTInstance(transB.get(),
             "B");

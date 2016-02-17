@@ -17,12 +17,11 @@ import org.eclipse.emf.compare.diff.metamodel.DiffElement;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.monticore.emf.util.AST2ModelFiles;
 import de.monticore.emf.util.compare.AstEmfDiffUtility;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
-import mc.featureemf.fautomaton.automaton.flatautomaton._ast.ASTAutomaton;
-import mc.featureemf.fautomaton.automaton.flatautomaton._parser.FlatAutomatonParser;
+import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTAutomaton;
+import mc.feature.fautomaton.automaton.flatautomaton._parser.FlatAutomatonParser;
 
 /**
  * TODO: Write me!
@@ -41,10 +40,10 @@ public class EmfDiffTest {
   public void testDiffAutomaton() {
     try {
       Optional<ASTAutomaton> transB = new FlatAutomatonParser()
-          .parse("src/test/resources/mc/diff/automaton/Testautomat.aut");
+          .parse("src/test/resources/mc/emf/diff/Testautomat.aut");
           
       Optional<ASTAutomaton> transC = new FlatAutomatonParser()
-          .parse("src/test/resources/mc/diff/automaton/Testautomat2.aut");
+          .parse("src/test/resources/mc/emf/diff/Testautomat2.aut");
       if (transB.isPresent() && transC.isPresent()) {
        
         // Matching model elements

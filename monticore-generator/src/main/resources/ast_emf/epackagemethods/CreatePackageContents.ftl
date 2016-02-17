@@ -30,7 +30,7 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-  ${tc.signature("grammarName", "astClasses", "emfAttributes")}
+  ${tc.signature("grammarName", "astClasses", "emfAttributes", "externalTypes")}
   <#assign genHelper = glex.getGlobalValue("astHelper")>
 /**
  * Creates the meta-model objects for the package.  This method is
@@ -51,4 +51,8 @@ SUCH DAMAGE.
   
   <#list emfAttributes as emfAttribute>
     create${emfAttribute.getEmfType()}(${astHelper.getPlainName(emfAttribute.getCdType())[3..]?uncap_first}EClass, ${emfAttribute.getFullName()});
-  </#list>  
+  </#list> 
+  
+  <#list externalTypes as externalType>
+    ${externalType?uncap_first}EDataType = createEDataType(${externalType});
+  </#list>   

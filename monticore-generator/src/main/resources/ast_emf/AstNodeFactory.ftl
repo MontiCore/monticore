@@ -30,8 +30,8 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
+${tc.signature("ast", "astImports", "astClasses")}
 <#assign genHelper = glex.getGlobalValue("astHelper")>
-${tc.signature("ast", "grammarName", "packageURI", "astClasses")}
   
 <#-- Copyright -->
 ${tc.defineHookPoint("JavaCopyright")}
@@ -39,61 +39,70 @@ ${tc.defineHookPoint("JavaCopyright")}
 <#-- set package -->
 package ${genHelper.getAstPackage()};
 
+import java.util.ArrayList;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.impl.EFactoryImpl;
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
+import org.eclipse.emf.ecore.impl.EFactoryImpl;
+import de.se_rwth.commons.logging.Log;
 
-public class ${ast.getName()} extends EFactoryImpl implements ${grammarName}Factory {
+<#-- handle ast imports from the super grammars -->
+<#list astImports as astImport>
+import ${astImport};
+</#list>
 
-    // Creates the default factory implementation.
-    public static ${grammarName}Factory init() {
-        try {
-            ${grammarName}Factory the${grammarName}Factory = (${grammarName}Factory)EPackage.Registry.INSTANCE.getEFactory("${packageURI}"); 
-            if (the${grammarName}Factory != null) {
-                return the${grammarName}Factory;
-            }
-        }
-        catch (Exception exception) {
-            EcorePlugin.INSTANCE.log(exception);
-        }
-        return new ${ast.getName()}();
-    }
-    
-    // Creates an instance of the factory.
-    private ${ast.getName()}() {
-        super();
-    }
 
-    @Override
-    public EObject create(EClass eClass) {
-        switch (eClass.getClassifierID()) {
-        <#list astClasses as astClass>
-          case ${grammarName}Package.${astClass}: return ${grammarName}NodeFactory.create${astClass}();
-        </#list>
-        
-           <#-- ${op.includeTemplates(eFactoryImplReflectiveCreateMethod, ast.getFiles())} -->
-            default:
-                throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
-        }
+public class ${ast.getName()} extends EFactoryImpl {
+  
+  // Creates the default factory implementation.
+  public static ${ast.getName()} getFactory() {
+    try {
+      ${ast.getName()} eFactory = (${ast.getName()})EPackage.Registry.INSTANCE.getEFactory("${genHelper.getPackageURI()}"); 
+      if (eFactory != null) {
+        return eFactory;
+     }
     }
-    
-     public ${grammarName}Package get${grammarName}Package() {
-        return (${grammarName}Package)getEPackage();
+    catch (Exception exception) {
+      EcorePlugin.INSTANCE.log(exception);
     }
-    
-    @Deprecated
-    public static ${grammarName}Package getPackage() {
-        return ${grammarName}Package.eINSTANCE;
+    if (factory == null) {
+      factory = new ${ast.getName()}();
     }
+    return factory;
+  }
+
+  
+  protected static ${ast.getName()} factory = null;
+  
+  @Override
+  public EObject create(EClass eClass) {
+    switch (eClass.getClassifierID()) {
+    <#list astClasses as astClass>
+      case ${genHelper.getCdName()}Package.${astClass}: return ${ast.getName()}.create${astClass}();
+    </#list>
+    <#-- eFactoryImplReflectiveCreateMethod -->
+      default:
+        throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
+    }
+  }
+  
+  // Returns the package supported by this factory.
+  ${genHelper.getCdName()}Package get${genHelper.getCdName()}Package() {
+    return (${genHelper.getCdName()}Package)getEPackage();
+  }
     
-    <#--
-    
-    ${op.includeTemplates(eFactoryImplFile, ast.getFiles())}
-    ${op.includeTemplates(eFactoryImplCreateConvertStringMethods, ast)}
-    
-   -->
+<#list ast.getCDAttributes() as attribute>
+  ${tc.includeArgs("ast.Attribute", [attribute, ast])}
+</#list>
+
+  protected ${ast.getName()} () {}
+
+  <#-- generate all methods -->
+<#list ast.getCDMethods() as method>
+  ${tc.includeArgs("ast.ClassMethod", [method, ast])}
+</#list>
 
 }

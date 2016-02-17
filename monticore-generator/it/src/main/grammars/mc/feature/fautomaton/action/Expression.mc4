@@ -1,4 +1,4 @@
-package mc.featureemf.fautomaton.action;
+package mc.feature.fautomaton.action;
 
 
 grammar Expression extends mc.common.Basics {

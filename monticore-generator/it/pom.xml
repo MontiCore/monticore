@@ -175,6 +175,7 @@
                 <grammar>src/main/grammars/mc/feature/embedding/outer/FeatureouterDSL.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/example/nointerface/SimpleSCWithoutInterface.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/example/useinterface/SimpleSCWithInterface.mc4</grammar>
+                <grammar>src/main/grammars/mc/feature/fautomaton</grammar>
                 <grammar>src/main/grammars/mc/feature/wiki/Wiki.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/dsltoolstandalone/DSLToolTest.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/embedding/inner/Inner.mc4</grammar>

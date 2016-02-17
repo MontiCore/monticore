@@ -127,7 +127,7 @@ public class CdDecorator {
     // Decorate with builder pattern
     addBuilders(cdDefinition, astHelper);
     
-    addNodeFactoryClass(cdCompilationUnit, nativeClasses, astHelper);
+    addNodeFactoryClass(cdCompilationUnit, nativeClasses, astHelper, "ast.AstNodeFactory");
     
     // Check if handwritten ast types exist
     transformCdTypeNamesForHWTypes(cdCompilationUnit);
@@ -413,7 +413,7 @@ public class CdDecorator {
    * @throws ANTLRException
    */
   protected void addNodeFactoryClass(ASTCDCompilationUnit cdCompilationUnit,
-      List<ASTCDClass> nativeClasses, AstGeneratorHelper astHelper) {
+      List<ASTCDClass> nativeClasses, AstGeneratorHelper astHelper, String templateName) {
     ASTCDDefinition cdDef = cdCompilationUnit.getCDDefinition();
     ASTCDClass nodeFactoryClass = CD4AnalysisNodeFactory.createASTCDClass();
     String nodeFactoryName = cdDef.getName() + NODE_FACTORY;
@@ -472,7 +472,7 @@ public class CdDecorator {
         
     cdDef.getCDClasses().add(nodeFactoryClass);
     glex.replaceTemplate("ast.ClassContent", nodeFactoryClass, new TemplateHookPoint(
-        "ast.AstNodeFactory", nodeFactoryClass, imports, classNames));
+        templateName, nodeFactoryClass, imports, classNames));
         
   }
   
@@ -838,6 +838,15 @@ public class CdDecorator {
   public ASTCDMethod replaceMethodBodyTemplate(ASTCDClass clazz, String methodSignatur,
       HookPoint hookPoint) {
     Optional<ASTCDMethod> astMethod = cdTransformation.addCdMethodUsingDefinition(clazz,
+        methodSignatur);
+    Preconditions.checkArgument(astMethod.isPresent());
+    glex.replaceTemplate(EMPTY_BODY_TEMPLATE, astMethod.get(), hookPoint);
+    return astMethod.get();
+  }
+  
+  public ASTCDMethod replaceMethodBodyTemplate(ASTCDInterface interf, String methodSignatur,
+      HookPoint hookPoint) {
+    Optional<ASTCDMethod> astMethod = cdTransformation.addCdMethodUsingDefinition(interf,
         methodSignatur);
     Preconditions.checkArgument(astMethod.isPresent());
     glex.replaceTemplate(EMPTY_BODY_TEMPLATE, astMethod.get(), hookPoint);
