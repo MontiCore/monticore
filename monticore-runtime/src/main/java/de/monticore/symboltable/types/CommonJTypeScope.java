@@ -128,7 +128,7 @@ public class CommonJTypeScope extends CommonScope {
   }
 
   private AccessModifier getModifierForSuperClass(AccessModifier modifier, JTypeSymbol superType) {
-    if ((modifier == ALL_INCLUSION) || (modifier == PRIVATE) || (modifier == PACKAGE_LOCAL)) {
+    if (modifier.equals(ALL_INCLUSION) || modifier.equals(PRIVATE) || modifier.equals(PACKAGE_LOCAL)) {
       if (getSpanningSymbol().get().getPackageName().equals(superType.getPackageName())) {
         return PACKAGE_LOCAL;
       }
