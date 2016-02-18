@@ -414,6 +414,23 @@ public class CdDecorator {
    */
   protected void addNodeFactoryClass(ASTCDCompilationUnit cdCompilationUnit,
       List<ASTCDClass> nativeClasses, AstGeneratorHelper astHelper) {
+    
+    // Add factory-attributes for all ast classes
+    Set<String> astClasses = new LinkedHashSet<>();
+    nativeClasses.stream()
+        .forEach(e -> astClasses.add(GeneratorHelper.getPlainName(e)));
+    
+    ASTCDClass nodeFactoryClass = createNodeFactoryClass(cdCompilationUnit, nativeClasses, astHelper, astClasses);
+    
+    List<String> imports = getImportsForNodeFactory(nodeFactoryClass, astClasses, astHelper);
+    
+    glex.replaceTemplate("ast.ClassContent", nodeFactoryClass, new TemplateHookPoint(
+        "ast.AstNodeFactory", nodeFactoryClass, imports));
+        
+  }
+  
+  protected ASTCDClass createNodeFactoryClass(ASTCDCompilationUnit cdCompilationUnit,
+      List<ASTCDClass> nativeClasses, AstGeneratorHelper astHelper, Set<String> astClasses) {
     ASTCDDefinition cdDef = cdCompilationUnit.getCDDefinition();
     ASTCDClass nodeFactoryClass = CD4AnalysisNodeFactory.createASTCDClass();
     String nodeFactoryName = cdDef.getName() + NODE_FACTORY;
@@ -426,11 +443,6 @@ public class CdDecorator {
     }
     nodeFactoryClass.setName(nodeFactoryName);
     
-    // Add factory-attributes for all ast classes
-    Set<String> astClasses = new LinkedHashSet<>();
-    nativeClasses.stream()
-        .forEach(e -> astClasses.add(GeneratorHelper.getPlainName(e)));
-        
     for (String clazz : astClasses) {
       String toParse = "protected static " + nodeFactoryName + " factory" + clazz + " = null;";
       cdTransformation.addCdAttributeUsingDefinition(nodeFactoryClass, toParse);
@@ -441,6 +453,14 @@ public class CdDecorator {
       addMethodsToNodeFactory(clazz, nodeFactoryClass, astHelper);
     }
     
+    cdDef.getCDClasses().add(nodeFactoryClass);
+    
+    return nodeFactoryClass;
+  }
+  
+  protected List<String> getImportsForNodeFactory(ASTCDClass nodeFactoryClass,
+      Set<String> astClasses, AstGeneratorHelper astHelper) {
+    String nodeFactoryName = nodeFactoryClass.getName();
     // Add delegating methods for creating of the ast nodes of the super
     // grammars
     List<String> imports = new ArrayList<>();
@@ -465,15 +485,7 @@ public class CdDecorator {
         }
       }
     }
-    
-    List<String> classNames = nativeClasses.stream()
-        .map(e -> GeneratorHelper.getPlainName(e))
-        .collect(Collectors.toList());
-        
-    cdDef.getCDClasses().add(nodeFactoryClass);
-    glex.replaceTemplate("ast.ClassContent", nodeFactoryClass, new TemplateHookPoint(
-        "ast.AstNodeFactory", nodeFactoryClass, imports, classNames));
-        
+    return imports;
   }
   
   /**
@@ -838,6 +850,15 @@ public class CdDecorator {
   public ASTCDMethod replaceMethodBodyTemplate(ASTCDClass clazz, String methodSignatur,
       HookPoint hookPoint) {
     Optional<ASTCDMethod> astMethod = cdTransformation.addCdMethodUsingDefinition(clazz,
+        methodSignatur);
+    Preconditions.checkArgument(astMethod.isPresent());
+    glex.replaceTemplate(EMPTY_BODY_TEMPLATE, astMethod.get(), hookPoint);
+    return astMethod.get();
+  }
+  
+  public ASTCDMethod replaceMethodBodyTemplate(ASTCDInterface interf, String methodSignatur,
+      HookPoint hookPoint) {
+    Optional<ASTCDMethod> astMethod = cdTransformation.addCdMethodUsingDefinition(interf,
         methodSignatur);
     Preconditions.checkArgument(astMethod.isPresent());
     glex.replaceTemplate(EMPTY_BODY_TEMPLATE, astMethod.get(), hookPoint);

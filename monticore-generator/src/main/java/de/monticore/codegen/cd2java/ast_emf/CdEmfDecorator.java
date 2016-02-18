@@ -11,9 +11,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -108,7 +110,7 @@ public class CdEmfDecorator extends CdDecorator {
     addBuilders(cdDefinition, astHelper);
     
     addNodeFactoryClass(cdCompilationUnit, astNotAbstractClasses, astHelper);
-    
+        
     // Check if handwritten ast types exist
     transformCdTypeNamesForHWTypes(cdCompilationUnit);
     
@@ -175,15 +177,15 @@ public class CdEmfDecorator extends CdDecorator {
    * TODO: Write me!
    * 
    * @param astClasses
-   * @param collection
+   * @param map.
    */
   void addEmfCode(ASTCDCompilationUnit cdCompilationUnit, List<ASTCDClass> astClasses,
-      List<ASTCDType> types, AstEmfGeneratorHelper astHelper, Collection<String> collection) {
+      List<ASTCDType> types, AstEmfGeneratorHelper astHelper, Map<String, String> map) {
       
-    addEFactoryInterface(cdCompilationUnit, types, astHelper);
+    // addEFactoryInterface(cdCompilationUnit, types, astHelper);
     // addEFactoryImplementation(cdCompilationUnit, astClasses, astHelper);
-    addEPackageInterface(cdCompilationUnit, types, collection, astHelper);
-    addEPackageImplementation(cdCompilationUnit, types, collection, astHelper);
+    addEPackageInterface(cdCompilationUnit, types, map.values(), astHelper);
+    addEPackageImplementation(cdCompilationUnit, types, map, astHelper);
     
     // Decorate with additional EMF methods and attributes
     for (ASTCDClass clazz : astClasses) {
@@ -216,6 +218,15 @@ public class CdEmfDecorator extends CdDecorator {
     factory.setName(factoryName);
     cdDef.getCDInterfaces().add(factory);
     
+    for (ASTCDType clazz : astClasses) {
+      if (!clazz.getModifier().isPresent() || clazz.getModifier().get().isAbstract()) {
+        return;
+      }
+      String className = GeneratorHelper.getPlainName(clazz);
+      String toParse = "public static " + className + " create" + className + "() ;";
+      HookPoint methodBody = new TemplateHookPoint("ast.factorymethods.Create", clazz, className);
+      replaceMethodBodyTemplate(factory, toParse, methodBody);
+    }
     List<String> classNames = astClasses.stream().map(e -> getPlainName(e))
         .collect(Collectors.toList());
         
@@ -318,13 +329,14 @@ public class CdEmfDecorator extends CdDecorator {
    * TODO: Write me!
    * 
    * @param cdCompilationUnit
-   * @param collection
+   * @param map.values()
    * @param nativeClasses
    * @param astHelper
    * @throws ANTLRException
    */
   void addEPackageImplementation(ASTCDCompilationUnit cdCompilationUnit,
-      List<ASTCDType> astClasses, Collection<String> collection, AstEmfGeneratorHelper astHelper)
+      List<ASTCDType> astClasses, Map<String, String> externaltypes,
+      AstEmfGeneratorHelper astHelper)
           throws RecognitionException {
     ASTCDDefinition cdDef = cdCompilationUnit.getCDDefinition();
     ASTCDClass packageImpl = CD4AnalysisNodeFactory.createASTCDClass();
@@ -357,17 +369,17 @@ public class CdEmfDecorator extends CdDecorator {
       replaceMethodBodyTemplate(packageImpl, toParse, getMethodBody);
     }
     
-    for (String typeName : collection) {
+    for (String typeName : externaltypes.values()) {
       String toParse = "public EDataType get" + typeName + "();";
       HookPoint getMethodBody = new StringHookPoint(
-          "return " + StringTransformations.uncapitalize(typeName) + ";");
+          "return " + StringTransformations.uncapitalize(typeName) + "EDataType;");
       replaceMethodBodyTemplate(packageImpl, toParse, getMethodBody);
     }
     
     String toParse = "public void createPackageContents();";
     HookPoint getMethodBody = new TemplateHookPoint(
         "ast_emf.epackagemethods.CreatePackageContents", cdDef.getName(), astClasses,
-        allEmfAttrbutes);
+        allEmfAttrbutes, externaltypes.values());
     replaceMethodBodyTemplate(packageImpl, toParse, getMethodBody);
     
     List<String> superCDs = astHelper.getAllSuperCds(astHelper.getCdSymbol()).stream()
@@ -376,13 +388,13 @@ public class CdEmfDecorator extends CdDecorator {
     getMethodBody = new TemplateHookPoint(
         "ast_emf.epackagemethods.InitializePackageContents", cdDef.getName(),
         superCDs, astClasses,
-        allEmfAttrbutes);
+        allEmfAttrbutes, externaltypes);
     replaceMethodBodyTemplate(packageImpl, toParse, getMethodBody);
     
     cdDef.getCDClasses().add(packageImpl);
     
     glex.replaceTemplate("ast.ClassContent", packageImpl, new TemplateHookPoint(
-        "ast_emf.EPackageImpl", packageImpl, cdDef.getName(), classNames, collection));
+        "ast_emf.EPackageImpl", packageImpl, cdDef.getName(), classNames, externaltypes.values()));
   }
   
   protected void addSetter(ASTCDClass clazz, AstEmfGeneratorHelper astHelper)
@@ -645,14 +657,43 @@ public class CdEmfDecorator extends CdDecorator {
     replaceMethodBodyTemplate(nodeFactoryClass, toParse, methodBody);
   }
   
+  /**
+   * TODO: Write me!
+   * 
+   * @param cdCompilationUnit
+   * @param nativeClasses
+   * @param astHelper
+   * @throws ANTLRException
+   */
+  protected void addNodeFactoryClass(ASTCDCompilationUnit cdCompilationUnit,
+      List<ASTCDClass> nativeClasses, AstGeneratorHelper astHelper) {
+    
+    // Add factory-attributes for all ast classes
+    Set<String> astClasses = new LinkedHashSet<>();
+    nativeClasses.stream()
+        .forEach(e -> astClasses.add(GeneratorHelper.getPlainName(e)));
+    
+    ASTCDClass nodeFactoryClass = createNodeFactoryClass(cdCompilationUnit, nativeClasses, astHelper, astClasses);
+    
+    List<String> imports = getImportsForNodeFactory(nodeFactoryClass, astClasses, astHelper);
+    
+    List<String> classNames = nativeClasses.stream()
+        .map(e -> GeneratorHelper.getPlainName(e))
+        .collect(Collectors.toList());
+        
+    glex.replaceTemplate("ast.ClassContent", nodeFactoryClass, new TemplateHookPoint(
+        "ast_emf.AstNodeFactory", nodeFactoryClass, imports, classNames));
+        
+  }
+  
   public class ETypeCollector implements CD4AnalysisInheritanceVisitor {
     
     private AstEmfGeneratorHelper astHelper;
     
     private Map<String, String> externalTypes = Maps.newHashMap();
     
-    public Collection<String> getExternalTypes() {
-      return this.externalTypes.values();
+    public Map<String, String> getExternalTypes() {
+      return this.externalTypes;
     }
     
     public boolean isExternalType(String nativeType) {
@@ -736,7 +777,7 @@ public class CdEmfDecorator extends CdDecorator {
       
       String newType = "";
       Optional<CDTypeSymbol> symbol = astHelper.resolveCdType(convertedTypeName);
-      if (!symbol.isPresent() || (symbol.isPresent() && symbol.get().isEnum())) {
+      if (!symbol.isPresent()) {
         if (!genericType.isEmpty()) {
           newType = genericType + "<" + convertedTypeName + ">";
         }
@@ -745,7 +786,12 @@ public class CdEmfDecorator extends CdDecorator {
         }
         addExternalType(newType, Names.getSimpleName(convertedTypeName));
       }
-      
+      else if (symbol.get().isEnum()) {
+        String simpleName = Names.getSimpleName(convertedTypeName);
+        convertedTypeName = symbol.get().getModelName().toLowerCase()
+            + GeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT + simpleName;
+        addExternalType(convertedTypeName, simpleName);
+      }
     }
     
   }

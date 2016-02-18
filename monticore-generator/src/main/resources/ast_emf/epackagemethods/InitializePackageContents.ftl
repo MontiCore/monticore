@@ -30,7 +30,7 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-  ${tc.signature("grammarName", "superGrammars", "astClasses", "emfAttributes")}
+  ${tc.signature("grammarName", "superGrammars", "astClasses", "emfAttributes", "externalTypes")}
   <#assign genHelper = glex.getGlobalValue("astHelper")>
 /**
  * Complete the initialization of the package and its meta-model.  This
@@ -119,9 +119,9 @@ SUCH DAMAGE.
     init${emfAttribute.getEmfType()}(get${emfAttribute.getFullName()}(), ${get}(), null, "${emfAttribute.getAttributeName()?cap_first}", null,
       0, ${isList}, ${emfAttribute.getCdType().getName()}.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     <#else>
-      <#if  emfAttribute.isEnum()>
-        <#assign get = "this.getE" + emfAttribute.getEDataType()?cap_first>
-      <#elseif emfAttribute.hasExternalType()>
+      <#--if  emfAttribute.isEnum()>
+        <#assign get = "this.getE" + emfAttribute.getEDataType()?cap_first-->
+      <#if emfAttribute.hasExternalType()>
         <#assign get = "this.get" + emfAttribute.getEDataType()?cap_first>
       <#else>
         <#assign get = "ecorePackage.getE" + emfAttribute.getEDataType()?cap_first>
@@ -131,6 +131,10 @@ SUCH DAMAGE.
     </#if>
   </#list>
   
+  <#list externalTypes?keys as externalType>
+    initEDataType(${externalTypes[externalType]?uncap_first}EDataType, ${externalType}.class, "${externalTypes[externalType]}", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+  </#list>   
+   
     <#-- TODO GV:   ePackageImplInitiliazeMethod, ast.getMethods() -->
   
     // Create resource

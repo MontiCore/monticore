@@ -58,7 +58,7 @@ public class ${ast.getName()} extends EPackageImpl implements ${grammarName}Pack
   private EClass ${astClass[3..]?uncap_first}EClass = null;
   </#list>
   <#list externalTypes as extType>
-  private EDataType ${extType?uncap_first} = null;
+  private EDataType ${extType?uncap_first}EDataType = null;
   </#list>
   private EEnum constants${grammarName}EEnum = null;
   
@@ -79,7 +79,7 @@ public class ${ast.getName()} extends EPackageImpl implements ${grammarName}Pack
    * @see org.eclipse.emf.ecore.EPackage.Registry
   */
   private ${ast.getName()}() {
-    super(eNS_URI, ${grammarName}Factory.eINSTANCE);
+    super(eNS_URI, ${grammarName}NodeFactory.getFactory());
   }
     
   private static boolean isInited = false;
@@ -143,8 +143,8 @@ public class ${ast.getName()} extends EPackageImpl implements ${grammarName}Pack
     return the${grammarName}Package;
   }
     
-  public ${grammarName}Factory get${grammarName}Factory() {
-    return (${grammarName}Factory)getEFactoryInstance();
+  public ${grammarName}NodeFactory get${grammarName}Factory() {
+    return (${grammarName}NodeFactory)getEFactoryInstance();
   }
   
   public EEnum getConstants${grammarName}(){

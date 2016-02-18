@@ -42,6 +42,7 @@ SUCH DAMAGE.
         <#-- TODO GV: not optionals! -->
         ${astHelper.getPlainSetter(emfAttribute.getCdAttribute())}(${emfAttribute.getDefaultValue()});
       </#if>
+      return;
     </#list>
     }
     eDynamicUnset(featureID);

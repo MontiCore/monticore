@@ -70,7 +70,7 @@ public interface ${ast.getName()} extends ASTEPackage {
   </#list>
     
     // Returns the factory that creates the instances of the model.
-  ${grammarName}Factory get${grammarName}Factory();
+  ${grammarName}NodeFactory get${grammarName}Factory();
   
   EEnum getConstants${grammarName}();
     
@@ -84,7 +84,6 @@ public interface ${ast.getName()} extends ASTEPackage {
   ${tc.includeArgs("ast.ClassMethod", [method, ast])}
   </#list>
      
-  <#--  ${op.includeTemplates(ePackageLiteralMain, ast.getFiles())} --> 
   /**
    * <!-- begin-user-doc -->
    * Defines literals for the meta objects that represent

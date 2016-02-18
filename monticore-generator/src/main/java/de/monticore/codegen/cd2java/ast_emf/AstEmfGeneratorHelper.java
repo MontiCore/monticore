@@ -63,6 +63,10 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
     return clazz.printSuperClass();
   }
   
+  public String getPackageURI() {
+    return "http://" + getCdName() + "/1.0";
+  }
+  
   /**
    * @return externalTypes
    */
