@@ -11,9 +11,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -107,8 +109,7 @@ public class CdEmfDecorator extends CdDecorator {
     // Decorate with builder pattern
     addBuilders(cdDefinition, astHelper);
     
-    addNodeFactoryClass(cdCompilationUnit, astNotAbstractClasses, astHelper,
-        "ast_emf.AstNodeFactory");
+    addNodeFactoryClass(cdCompilationUnit, astNotAbstractClasses, astHelper);
         
     // Check if handwritten ast types exist
     transformCdTypeNamesForHWTypes(cdCompilationUnit);
@@ -654,6 +655,35 @@ public class CdEmfDecorator extends CdDecorator {
         + "(InternalEObject owner, int featureID) ;";
     methodBody = new TemplateHookPoint("ast.factorymethods.DoCreate", clazz, className, params);
     replaceMethodBodyTemplate(nodeFactoryClass, toParse, methodBody);
+  }
+  
+  /**
+   * TODO: Write me!
+   * 
+   * @param cdCompilationUnit
+   * @param nativeClasses
+   * @param astHelper
+   * @throws ANTLRException
+   */
+  protected void addNodeFactoryClass(ASTCDCompilationUnit cdCompilationUnit,
+      List<ASTCDClass> nativeClasses, AstGeneratorHelper astHelper) {
+    
+    // Add factory-attributes for all ast classes
+    Set<String> astClasses = new LinkedHashSet<>();
+    nativeClasses.stream()
+        .forEach(e -> astClasses.add(GeneratorHelper.getPlainName(e)));
+    
+    ASTCDClass nodeFactoryClass = createNodeFactoryClass(cdCompilationUnit, nativeClasses, astHelper, astClasses);
+    
+    List<String> imports = getImportsForNodeFactory(nodeFactoryClass, astClasses, astHelper);
+    
+    List<String> classNames = nativeClasses.stream()
+        .map(e -> GeneratorHelper.getPlainName(e))
+        .collect(Collectors.toList());
+        
+    glex.replaceTemplate("ast.ClassContent", nodeFactoryClass, new TemplateHookPoint(
+        "ast_emf.AstNodeFactory", nodeFactoryClass, imports, classNames));
+        
   }
   
   public class ETypeCollector implements CD4AnalysisInheritanceVisitor {
