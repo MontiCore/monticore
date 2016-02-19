@@ -57,7 +57,7 @@ public class GlobalScopeTest {
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/modelloader/modelpath"));
 
     ResolverConfiguration resolverConfig = new ResolverConfiguration();
-    resolverConfig.addTopScopeResolver(CommonResolvingFilter.create(EntitySymbol.class, EntitySymbol.KIND));
+    resolverConfig.addTopScopeResolver(CommonResolvingFilter.create(EntitySymbol.KIND));
 
     final MutableScope globalScope =
         new GlobalScope(modelPath, entityLanguage, resolverConfig);

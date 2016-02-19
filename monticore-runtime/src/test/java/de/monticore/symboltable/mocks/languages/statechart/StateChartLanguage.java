@@ -33,8 +33,8 @@ public class StateChartLanguage extends CommonModelingLanguage {
   public StateChartLanguage() {
     super("StateChart Language Mock", "sc", StateChartSymbol.KIND);
     
-    addResolver(CommonResolvingFilter.create(StateChartSymbol.class, StateChartSymbol.KIND));
-    addResolver(CommonResolvingFilter.create(StateSymbol.class, StateSymbol.KIND));
+    addResolver(CommonResolvingFilter.create(StateChartSymbol.KIND));
+    addResolver(CommonResolvingFilter.create(StateSymbol.KIND));
 
   }
   

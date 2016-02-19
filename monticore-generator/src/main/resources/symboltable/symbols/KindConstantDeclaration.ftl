@@ -32,4 +32,4 @@ SUCH DAMAGE.
 -->
 ${signature("ruleName")}
 
-  public static final ${ruleName}Kind KIND = ${ruleName}Kind.INSTANCE;
+  public static final ${ruleName}Kind KIND = new ${ruleName}Kind();

@@ -34,33 +34,46 @@ import de.monticore.symboltable.SymbolKind;
  * @author Pedram Mir Seyed Nazari
  *
  */
+// TODO PN remove formal type argument, since not needed anymore
 public class CommonResolvingFilter<S extends Symbol> implements ResolvingFilter<S> {
 
   private final SymbolKind targetKind;
-  private final Class<S> symbolClass;
-  
+
+  /**
+   * @deprecated use {@link #create(SymbolKind)} instead
+   */
+  @Deprecated
   public static <S extends Symbol> ResolvingFilter<S> create(Class<S> symbolClass, SymbolKind symbolKind) {
     // TODO PN check einbauen dass kein Resolver existiert, dessen S und T nicht mit den aktuellen Parametern kompatibel sind
     return new CommonResolvingFilter<>(symbolClass, symbolKind);
   }
-  
 
+  public static <S extends Symbol> ResolvingFilter<S> create(SymbolKind symbolKind) {
+    return new CommonResolvingFilter<>(symbolKind);
+  }
+
+  /**
+   * @deprecated use {@link #CommonResolvingFilter(SymbolKind)} instead
+   */
+  @Deprecated
   public CommonResolvingFilter(Class<S> symbolClass, SymbolKind targetKind) {
-    this.symbolClass = symbolClass;
+    this(targetKind);
+  }
+
+  public CommonResolvingFilter(SymbolKind targetKind) {
     this.targetKind = targetKind;
   }
 
   @Override
-  @SuppressWarnings("unchecked")
-  public Optional<S> filter(ResolvingInfo resolvingInfo, String name, final List<Symbol> symbols) {
-    final Set<S> resolvedSymbols = new LinkedHashSet<>();
+  public Optional<Symbol> filter(ResolvingInfo resolvingInfo, String name, final List<Symbol> symbols) {
+    final Set<Symbol> resolvedSymbols = new LinkedHashSet<>();
 
     for (Symbol symbol : symbols) {
       // TODO PN in eigene Methode auslagern, damit Unterklassen das überschreiben können.
-      if (symbol.isKindOf(targetKind) && symbolClass.isAssignableFrom(symbol.getClass())) {
+      if (symbol.isKindOf(targetKind)) {
 
         if (symbol.getName().equals(name) || symbol.getFullName().equals(name)) {
-          resolvedSymbols.add((S) symbol);
+          resolvedSymbols.add(symbol);
         }
       }
     }
@@ -69,15 +82,14 @@ public class CommonResolvingFilter<S extends Symbol> implements ResolvingFilter<
   }
 
   @Override
-  @SuppressWarnings("unchecked")
-  public Collection<S> filter(ResolvingInfo resolvingInfo, List<Symbol> symbols) {
+  public Collection<Symbol> filter(ResolvingInfo resolvingInfo, List<Symbol> symbols) {
       // TODO PN  create new LinkedHashSet<>() instead
-      final Collection<S> foundSymbols = new LinkedHashSet<>();
+      final Collection<Symbol> foundSymbols = new LinkedHashSet<>();
 
       for (Symbol symbol : symbols) {
         // TODO PN in eigene Methode auslagern, damit Unterklassen das überschreiben können.
-        if (symbol.isKindOf(targetKind) && symbolClass.isAssignableFrom(symbol.getClass())) {
-          foundSymbols.add((S)symbol);
+        if (symbol.isKindOf(targetKind)) {
+          foundSymbols.add(symbol);
         }
       }
       

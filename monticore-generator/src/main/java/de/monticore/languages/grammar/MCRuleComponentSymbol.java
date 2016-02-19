@@ -175,8 +175,20 @@ public class MCRuleComponentSymbol extends CommonSymbol {
   }
   
   public static final class RuleComponentKind implements SymbolKind {
-    
-    private RuleComponentKind() {
+
+    private static final String NAME = RuleComponentKind.class.getName();
+
+    protected RuleComponentKind() {
+    }
+
+    @Override
+    public String getName() {
+      return NAME;
+    }
+
+    @Override
+    public boolean isKindOf(SymbolKind kind) {
+      return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
     }
   }
   

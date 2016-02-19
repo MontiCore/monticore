@@ -260,7 +260,20 @@ public abstract class MCRuleSymbol extends CommonScopeSpanningSymbol {
   }
   
   public static final class RuleKind implements SymbolKind {
+
+    private static final String NAME = RuleKind.class.getName();
+
     private RuleKind() {
+    }
+
+    @Override
+    public String getName() {
+      return NAME;
+    }
+
+    @Override
+    public boolean isKindOf(SymbolKind kind) {
+      return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
     }
   }
   

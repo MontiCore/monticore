@@ -91,20 +91,6 @@ public interface EntityLanguageSymbolTableCreator extends EntityLanguageVisitor,
 
     ASTSymbolReference astReference = node.getReference();
 
-    // TODO PN notwendig? Klappt das auch mit Sprachkomposition
-    if (!ASTEntity.class.isAssignableFrom(astReference.getReferencedSymbolClass())) {
-      throw new RuntimeException("Kenn ich nicht: " + astReference.getReferencedSymbolClass());
-    }
-
-    // TODO PN implementiere Typ-Referenzen
-    //    Name referenceName = Name.of(astReference.getSymbolName());
-    //    TypeSymbolReference<Type> typeReference = newTypeSymbolReference(referenceName, EntitySymbol.KIND);
-    //    typeReference.setAstNode(astReference);
-    //
-    //    // Note that the reference is not defined in the scope. It remembers the current scope
-    //    // since this information is needed for qualifying/resolving the referenced symbol.
-    //    typeReference.setDefinedInScope(currentScope().get());
-
     PropertySymbol variable = new PropertySymbol(node.getName(), null/*typeReference*/);
     addToScope(variable);
   }

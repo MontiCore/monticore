@@ -160,17 +160,17 @@ public class CommonJMethodSymbol <U extends JTypeSymbol, T extends JTypeReferenc
 
   @Override
   public boolean isPrivate() {
-    return getAccessModifier() == BasicAccessModifier.PRIVATE;
+    return getAccessModifier().equals(BasicAccessModifier.PRIVATE);
   }
 
   @Override
   public boolean isProtected() {
-    return getAccessModifier() == BasicAccessModifier.PROTECTED;
+    return getAccessModifier().equals(BasicAccessModifier.PROTECTED);
   }
 
   @Override
   public boolean isPublic() {
-    return getAccessModifier() == BasicAccessModifier.PUBLIC;
+    return getAccessModifier().equals(BasicAccessModifier.PUBLIC);
   }
 
 }
