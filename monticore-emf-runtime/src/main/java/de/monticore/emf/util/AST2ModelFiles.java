@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -69,11 +70,15 @@ public class AST2ModelFiles {
   }
   
   public void serializeASTInstance(ASTENode astNode, String instanceName) throws IOException {
+    String fileName = astNode.eClass().getName() + "_" + instanceName;
+    serializeASTInstance(astNode, instanceName, fileName);
+  }
+  
+  public void serializeASTInstance(ASTENode astNode, String instanceName, String fileName) throws IOException {
     // Get the URI of the model file.
     serializeASTIfNotExists((ASTEPackage) astNode.eClass().getEPackage());
     
     String packageName = astNode.eClass().getEPackage().getName().toLowerCase() + "/";
-    String fileName = astNode.eClass().getName() + "_" + instanceName;
     URI fileURI = URI
         .createFileURI(new File(EMF_TEST_OUTPUT_MODELINSTANCES + packageName + fileName + ".xmi")
             .getAbsolutePath());
@@ -98,6 +103,27 @@ public class AST2ModelFiles {
     if (resource.isPresent()) {
       createModelFile(eInstance, resource.get());
     }
+  }
+  
+  public EObject deserializeASTInstance(String fileName, ASTEPackage eInstance) {
+    String packageName = EMF_TEST_OUTPUT_MODELINSTANCES + eInstance.getName().toLowerCase() + "/";
+    return deserializeASTInstance(fileName, packageName, eInstance);
+  }
+  
+  public EObject deserializeASTInstance(String fileName, String packageName, ASTEPackage eInstance) {
+    // Initialize the model
+    eInstance.eClass();
+    
+    ResourceSet resourceSet = new ResourceSetImpl();
+    resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
+        .put(Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl());
+    
+    URI fileURI = URI
+        .createFileURI(new File(packageName + fileName + ".xmi")
+            .getAbsolutePath());
+    
+    Resource resource = resourceSet.getResource(fileURI, true);
+    return resource.getContents().get(0);
   }
   
   private Resource createResource(ASTEPackage ePackage) {
