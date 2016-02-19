@@ -101,10 +101,10 @@ public interface MutableScope extends Scope {
   void addResolver(ResolvingFilter<? extends Symbol> resolvingFilter);
 
 
-  // TODO PN method needed?
   /**
    * @param node the corresponding ast node
    */
+  // TODO PN rename to setSpanningAstNode
   void setAstNode(ASTNode node);
 
   /**
