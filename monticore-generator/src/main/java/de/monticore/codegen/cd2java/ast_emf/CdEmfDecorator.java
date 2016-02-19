@@ -191,6 +191,7 @@ public class CdEmfDecorator extends CdDecorator {
     // addEFactoryImplementation(cdCompilationUnit, astClasses, astHelper);
     addEPackageInterface(cdCompilationUnit, types, map.values(), astHelper);
     addEPackageImplementation(cdCompilationUnit, types, map, astHelper);
+    addLiteralsEnum(cdCompilationUnit, astHelper);
     
     // Decorate with additional EMF methods and attributes
     for (ASTCDClass clazz : astClasses) {
@@ -693,45 +694,24 @@ public class CdEmfDecorator extends CdDecorator {
         
   }
   
-  protected void addConstantsClass(ASTCDDefinition cdDefinition, AstGeneratorHelper astHelper) {
-    String constantsClassName = cdDefinition.getName() + ConstantsTranslation.CONSTANTS_ENUM;
-    Optional<ASTCDEnum> enumConstans = cdDefinition.getCDEnums().stream()
-        .filter(e -> e.getName().equals(constantsClassName)).findAny();
-    if (!enumConstans.isPresent()) {
-      Log.error("0xA1004 CdDecorator error: " + constantsClassName
+  protected void addLiteralsEnum(ASTCDCompilationUnit ast, AstGeneratorHelper astHelper) {
+    ASTCDDefinition cdDefinition = ast.getCDDefinition();
+    String constantsEnumName = cdDefinition.getName() + ConstantsTranslation.CONSTANTS_ENUM;
+    Optional<ASTCDEnum> enumConstants = cdDefinition.getCDEnums().stream()
+        .filter(e -> e.getName().equals(constantsEnumName)).findAny();
+    if (!enumConstants.isPresent()) {
+      Log.error("0xA1004 CdDecorator error: " + constantsEnumName
           + " class can't be created for the class diagramm "
           + cdDefinition.getName());
       return;
     }
     
-    ASTCDEnum astEnum = enumConstans.get();
-    
-    Optional<ASTCDClass> ast = cdTransformation.addCdClassUsingDefinition(cdDefinition,
-        "public class " + constantsClassName + ";");
-    if (!ast.isPresent()) {
-      Log.error("0xA1028 CdDecorator error:" + constantsClassName
-          + " class can't be created for the class diagramm "
-          + cdDefinition.getName());
-      return;
-    }
-    
-    ASTCDClass astConstantsClass = ast.get();
-    glex.replaceTemplate(
-        "ast.ClassContent",
-        astConstantsClass,
-        new TemplateHookPoint(
-            "ast.ASTConstantsClass", astConstantsClass, astHelper.getQualifiedCdName(), astHelper
-                .getSuperGrammarCds()));
-    for (ASTCDEnumConstant astConstant : astEnum.getCDEnumConstants()) {
-      ASTCDAttribute constAttr = CD4AnalysisNodeFactory.createASTCDAttribute();
-      constAttr.setName(astConstant.getName());
-      astConstantsClass.getCDAttributes().add(constAttr);
-    }
-    
-    astEnum.setName(cdDefinition.getName() + "Constants");
+    ASTCDEnum astEnum = enumConstants.get();
     astEnum.getCDEnumConstants().add(0, ASTCDEnumConstant.getBuilder().name("DEFAULT").build());
     astEnum.getInterfaces()
         .add(new ASTCDRawTransformation().createType("org.eclipse.emf.common.util.Enumerator"));
+        
+    // Add methods of the implemented interface {@link Enumerator}
     String toParse = "public String getName();";
     StringHookPoint methodBody = new StringHookPoint("  return toString(); \n");
     replaceMethodBodyTemplate(astEnum, toParse, methodBody);

@@ -567,6 +567,10 @@ public class GeneratorHelper extends TypesHelper {
     return true;
   }
   
+  public static boolean isAbstract(ASTCDMethod method, ASTCDEnum type) {
+    return false;
+  }
+  
   public static boolean isAbstract(ASTCDMethod method, ASTCDClass type) {
     return CD4AnalysisHelper.isAbstract(method);
   }

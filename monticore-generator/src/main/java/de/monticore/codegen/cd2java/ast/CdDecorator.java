@@ -748,16 +748,17 @@ public class CdDecorator {
    * @throws ANTLRException
    */
   protected void addConstantsClass(ASTCDDefinition cdDefinition, AstGeneratorHelper astHelper) {
-    String constantsClassName = cdDefinition.getName() + ConstantsTranslation.CONSTANTS_ENUM;
+    String enumLiterals = cdDefinition.getName() + ConstantsTranslation.CONSTANTS_ENUM;
     Optional<ASTCDEnum> enumConstans = cdDefinition.getCDEnums().stream()
-        .filter(e -> e.getName().equals(constantsClassName)).findAny();
+        .filter(e -> e.getName().equals(enumLiterals)).findAny();
     if (!enumConstans.isPresent()) {
-      Log.error("0xA1004 CdDecorator error: " + constantsClassName
+      Log.error("0xA1004 CdDecorator error: " + enumLiterals
           + " class can't be created for the class diagramm "
           + cdDefinition.getName());
       return;
     }
     
+    String constantsClassName = "ASTConstants" + cdDefinition.getName();
     Optional<ASTCDClass> ast = cdTransformation.addCdClassUsingDefinition(cdDefinition,
         "public class " + constantsClassName + ";");
     if (!ast.isPresent()) {
@@ -779,7 +780,7 @@ public class CdDecorator {
       constAttr.setName(astConstant.getName());
       astConstantsClass.getCDAttributes().add(constAttr);
     }
-    cdDefinition.getCDEnums().remove(enumConstans.get());
+    //cdDefinition.getCDEnums().remove(enumConstans.get());
   }
   
   /**

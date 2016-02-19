@@ -80,9 +80,9 @@ SUCH DAMAGE.
     // Initialize classes and features; add operations and parameters
   
     // Initialize enums and add enum literals
-    initEEnum(constants${grammarName}EEnum, ${grammarName}Constants.class, "${grammarName}Constants");
+    initEEnum(constants${grammarName}EEnum, ${grammarName}Literals.class, "${grammarName}Literals");
   <#list literals as literal>   
-    addEEnumLiteral(constants${grammarName}EEnum, ${grammarName}Constants.${literal});
+    addEEnumLiteral(constants${grammarName}EEnum, ${grammarName}Literals.${literal});
   </#list>
     
   <#list astClasses as astClass>

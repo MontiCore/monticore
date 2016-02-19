@@ -38,7 +38,7 @@ import de.monticore.utils.Link;
 public class ConstantsTranslation implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
   
-  public static final String CONSTANTS_ENUM = "Constants";
+  public static final String CONSTANTS_ENUM = "Literals";
   
   @Override
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(
