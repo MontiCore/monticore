@@ -45,6 +45,11 @@ public abstract class ForwardingASTNode<T extends ASTNode> extends ForwardingObj
   protected abstract T delegate();
   
   @Override
+  public ASTNode deepClone() {
+    return delegate().deepClone();
+  }
+  
+  @Override
   public SourcePosition get_SourcePositionEnd() {
     return delegate().get_SourcePositionEnd();
   }

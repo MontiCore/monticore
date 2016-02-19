@@ -137,6 +137,13 @@ public interface ASTNode {
   }
   
   /**
+   * Performs a deep clone of this ASTNode and all of its successors
+   * 
+   * @return Clone of current ASTNode with a parent which is equal to null
+   */
+  public ASTNode deepClone();
+  
+  /**
    * Returns the start position of this ASTNode
    * 
    * @return start position of this ASTNode

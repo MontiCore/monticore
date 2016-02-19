@@ -41,6 +41,14 @@ import java.util.List;
 public class ASTNodeMock implements ASTNode {
   
   public static final ASTNode INSTANCE = new ASTNodeMock();
+  
+  /**
+   * @see de.monticore.ast.ASTNode#deepClone()
+   */
+  @Override
+  public ASTNode deepClone() {
+    return null;
+  }
 
   /**
    * @see de.monticore.ast.ASTNode#get_SourcePositionEnd()
