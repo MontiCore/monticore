@@ -31,6 +31,7 @@ import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.ast.CdDecorator;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
+import de.monticore.codegen.mc2cd.transl.ConstantsTranslation;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -45,6 +46,8 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDDefinition;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDEnum;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDEnumConstant;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
@@ -54,7 +57,9 @@ import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
+import de.se_rwth.commons.logging.Log;
 import groovyjarjarantlr.ANTLRException;
+import transformation.ast.ASTCDRawTransformation;
 
 /**
  * TODO: Write me!
@@ -110,7 +115,7 @@ public class CdEmfDecorator extends CdDecorator {
     addBuilders(cdDefinition, astHelper);
     
     addNodeFactoryClass(cdCompilationUnit, astNotAbstractClasses, astHelper);
-        
+    
     // Check if handwritten ast types exist
     transformCdTypeNamesForHWTypes(cdCompilationUnit);
     
@@ -388,7 +393,8 @@ public class CdEmfDecorator extends CdDecorator {
     getMethodBody = new TemplateHookPoint(
         "ast_emf.epackagemethods.InitializePackageContents", cdDef.getName(),
         superCDs, astClasses,
-        allEmfAttrbutes, externaltypes);
+        allEmfAttrbutes, externaltypes,
+        GeneratorHelper.getValuesOfConstantEnum(astHelper.getCdDefinition()));
     replaceMethodBodyTemplate(packageImpl, toParse, getMethodBody);
     
     cdDef.getCDClasses().add(packageImpl);
@@ -667,14 +673,15 @@ public class CdEmfDecorator extends CdDecorator {
    */
   protected void addNodeFactoryClass(ASTCDCompilationUnit cdCompilationUnit,
       List<ASTCDClass> nativeClasses, AstGeneratorHelper astHelper) {
-    
+      
     // Add factory-attributes for all ast classes
     Set<String> astClasses = new LinkedHashSet<>();
     nativeClasses.stream()
         .forEach(e -> astClasses.add(GeneratorHelper.getPlainName(e)));
-    
-    ASTCDClass nodeFactoryClass = createNodeFactoryClass(cdCompilationUnit, nativeClasses, astHelper, astClasses);
-    
+        
+    ASTCDClass nodeFactoryClass = createNodeFactoryClass(cdCompilationUnit, nativeClasses,
+        astHelper, astClasses);
+        
     List<String> imports = getImportsForNodeFactory(nodeFactoryClass, astClasses, astHelper);
     
     List<String> classNames = nativeClasses.stream()
@@ -684,6 +691,58 @@ public class CdEmfDecorator extends CdDecorator {
     glex.replaceTemplate("ast.ClassContent", nodeFactoryClass, new TemplateHookPoint(
         "ast_emf.AstNodeFactory", nodeFactoryClass, imports, classNames));
         
+  }
+  
+  protected void addConstantsClass(ASTCDDefinition cdDefinition, AstGeneratorHelper astHelper) {
+    String constantsClassName = cdDefinition.getName() + ConstantsTranslation.CONSTANTS_ENUM;
+    Optional<ASTCDEnum> enumConstans = cdDefinition.getCDEnums().stream()
+        .filter(e -> e.getName().equals(constantsClassName)).findAny();
+    if (!enumConstans.isPresent()) {
+      Log.error("0xA1004 CdDecorator error: " + constantsClassName
+          + " class can't be created for the class diagramm "
+          + cdDefinition.getName());
+      return;
+    }
+    
+    ASTCDEnum astEnum = enumConstans.get();
+    
+    Optional<ASTCDClass> ast = cdTransformation.addCdClassUsingDefinition(cdDefinition,
+        "public class " + constantsClassName + ";");
+    if (!ast.isPresent()) {
+      Log.error("0xA1028 CdDecorator error:" + constantsClassName
+          + " class can't be created for the class diagramm "
+          + cdDefinition.getName());
+      return;
+    }
+    
+    ASTCDClass astConstantsClass = ast.get();
+    glex.replaceTemplate(
+        "ast.ClassContent",
+        astConstantsClass,
+        new TemplateHookPoint(
+            "ast.ASTConstantsClass", astConstantsClass, astHelper.getQualifiedCdName(), astHelper
+                .getSuperGrammarCds()));
+    for (ASTCDEnumConstant astConstant : astEnum.getCDEnumConstants()) {
+      ASTCDAttribute constAttr = CD4AnalysisNodeFactory.createASTCDAttribute();
+      constAttr.setName(astConstant.getName());
+      astConstantsClass.getCDAttributes().add(constAttr);
+    }
+    
+    astEnum.setName(cdDefinition.getName() + "Constants");
+    astEnum.getCDEnumConstants().add(0, ASTCDEnumConstant.getBuilder().name("DEFAULT").build());
+    astEnum.getInterfaces()
+        .add(new ASTCDRawTransformation().createType("org.eclipse.emf.common.util.Enumerator"));
+    String toParse = "public String getName();";
+    StringHookPoint methodBody = new StringHookPoint("  return toString(); \n");
+    replaceMethodBodyTemplate(astEnum, toParse, methodBody);
+    
+    toParse = "public String getLiteral();";
+    methodBody = new StringHookPoint("  return toString(); \n");
+    replaceMethodBodyTemplate(astEnum, toParse, methodBody);
+    
+    toParse = "public int getValue();";
+    methodBody = new StringHookPoint("  return intValue; \n");
+    replaceMethodBodyTemplate(astEnum, toParse, methodBody);
   }
   
   public class ETypeCollector implements CD4AnalysisInheritanceVisitor {

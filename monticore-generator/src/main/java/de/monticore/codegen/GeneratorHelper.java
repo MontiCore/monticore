@@ -20,7 +20,7 @@
 package de.monticore.codegen;
 
 import static de.monticore.codegen.mc2cd.TransformationHelper.createSimpleReference;
-import static de.monticore.codegen.mc2cd.transl.ConstantsTranslation.AST_CONSTANTS_ENUM;
+import static de.monticore.codegen.mc2cd.transl.ConstantsTranslation.CONSTANTS_ENUM;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -42,7 +42,6 @@ import de.monticore.ast.ASTNode;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.codegen.mc2cd.transl.ConstantsTranslation;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.java.prettyprint.JavaDSLPrettyPrinter;
@@ -756,7 +755,7 @@ public class GeneratorHelper extends TypesHelper {
     Iterator<ASTCDEnum> it = ast.getCDEnums().iterator();
     while (it.hasNext() && constants == null) {
       ASTCDEnum cdEnum = it.next();
-      if (cdEnum.getName().equals(AST_CONSTANTS_ENUM)) {
+      if (cdEnum.getName().equals(ast.getName() + CONSTANTS_ENUM)) {
         constants = cdEnum;
       }
     }
@@ -1185,9 +1184,6 @@ public class GeneratorHelper extends TypesHelper {
   public boolean isAstClass(ASTCDClass clazz) {
     String simpleName = Names.getSimpleName(clazz.getName());
     if (!simpleName.startsWith(AST_PREFIX)) {
-      return false;
-    }
-    if (simpleName.equals(ConstantsTranslation.AST_CONSTANTS_ENUM + cdDefinition.getName())) {
       return false;
     }
     String nameToResolve = clazz.getName().contains(".") ? clazz.getName() : qualifiedName + "."

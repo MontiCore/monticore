@@ -64,6 +64,7 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDEnumConstant;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTModifier;
 import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.umlcd4a.cd4analysis._visitor.CD4AnalysisInheritanceVisitor;
@@ -747,8 +748,7 @@ public class CdDecorator {
    * @throws ANTLRException
    */
   protected void addConstantsClass(ASTCDDefinition cdDefinition, AstGeneratorHelper astHelper) {
-    
-    String constantsClassName = ConstantsTranslation.AST_CONSTANTS_ENUM + cdDefinition.getName();
+    String constantsClassName = cdDefinition.getName() + ConstantsTranslation.CONSTANTS_ENUM;
     Optional<ASTCDEnum> enumConstans = cdDefinition.getCDEnums().stream()
         .filter(e -> e.getName().equals(constantsClassName)).findAny();
     if (!enumConstans.isPresent()) {
@@ -847,18 +847,9 @@ public class CdDecorator {
    * @param replacedTemplateName qualified name of template to be replaced
    * @param glex
    */
-  public ASTCDMethod replaceMethodBodyTemplate(ASTCDClass clazz, String methodSignatur,
+  public ASTCDMethod replaceMethodBodyTemplate(ASTCDType clazz, String methodSignatur,
       HookPoint hookPoint) {
     Optional<ASTCDMethod> astMethod = cdTransformation.addCdMethodUsingDefinition(clazz,
-        methodSignatur);
-    Preconditions.checkArgument(astMethod.isPresent());
-    glex.replaceTemplate(EMPTY_BODY_TEMPLATE, astMethod.get(), hookPoint);
-    return astMethod.get();
-  }
-  
-  public ASTCDMethod replaceMethodBodyTemplate(ASTCDInterface interf, String methodSignatur,
-      HookPoint hookPoint) {
-    Optional<ASTCDMethod> astMethod = cdTransformation.addCdMethodUsingDefinition(interf,
         methodSignatur);
     Preconditions.checkArgument(astMethod.isPresent());
     glex.replaceTemplate(EMPTY_BODY_TEMPLATE, astMethod.get(), hookPoint);

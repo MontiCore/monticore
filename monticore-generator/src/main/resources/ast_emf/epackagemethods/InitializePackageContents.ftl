@@ -30,7 +30,7 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-  ${tc.signature("grammarName", "superGrammars", "astClasses", "emfAttributes", "externalTypes")}
+  ${tc.signature("grammarName", "superGrammars", "astClasses", "emfAttributes", "externalTypes", "literals")}
   <#assign genHelper = glex.getGlobalValue("astHelper")>
 /**
  * Complete the initialization of the package and its meta-model.  This
@@ -80,7 +80,10 @@ SUCH DAMAGE.
     // Initialize classes and features; add operations and parameters
   
     // Initialize enums and add enum literals
-    <#-- TODO GV -->
+    initEEnum(constants${grammarName}EEnum, ${grammarName}Constants.class, "${grammarName}Constants");
+  <#list literals as literal>   
+    addEEnumLiteral(constants${grammarName}EEnum, ${grammarName}Constants.${literal});
+  </#list>
     
   <#list astClasses as astClass>
     <#assign className = astHelper.getPlainName(astClass)>

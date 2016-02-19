@@ -38,14 +38,14 @@ import de.monticore.utils.Link;
 public class ConstantsTranslation implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
   
-  public static final String AST_CONSTANTS_ENUM = "ASTConstants";
+  public static final String CONSTANTS_ENUM = "Constants";
   
   @Override
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(
       Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
     
     ASTCDEnum constantsEnum = CD4AnalysisNodeFactory.createASTCDEnum();
-    constantsEnum.setName(AST_CONSTANTS_ENUM + rootLink.source().getName());
+    constantsEnum.setName(rootLink.source().getName() + CONSTANTS_ENUM);
     rootLink.target().getCDDefinition().getCDEnums().add(constantsEnum);
     for (String grammarConstant : TransformationHelper.getAllGrammarConstants(rootLink.source())) {
       ASTCDEnumConstant constant = CD4AnalysisNodeFactory.createASTCDEnumConstant();
