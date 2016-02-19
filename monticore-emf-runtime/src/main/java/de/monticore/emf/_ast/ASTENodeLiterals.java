@@ -19,24 +19,34 @@
 
 package de.monticore.emf._ast;
 
-import java.util.List;
+import org.eclipse.emf.common.util.Enumerator;
 
-import org.eclipse.emf.ecore.EPackage;
-
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- * @version $Revision$,
- *          $Date$
- *
- */
-public interface ASTEPackage extends EPackage {
+public enum ASTENodeLiterals implements Enumerator {
+  // Literal Object DEFAULT
+  DEFAULT(0);
   
-  public List<ASTEPackage> getASTESuperPackages();
+  public static final int DEFAULT_VALUE = 0;
   
-  public String getName();
+  protected int intValue;
   
-  public String getPackageName();
-
+  private ASTENodeLiterals(int intValue) {
+    this.intValue = intValue;
+  }
+  
+  public int intValue() {
+    return intValue;
+  }
+  
+  public String getName() {
+    return toString();
+  }
+  
+  public String getLiteral() {
+    return toString();
+  }
+  
+  public int getValue() {
+    return intValue;
+  }
+  
 }
