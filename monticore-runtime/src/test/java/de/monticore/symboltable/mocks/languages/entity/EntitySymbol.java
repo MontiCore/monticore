@@ -42,7 +42,7 @@ public class EntitySymbol extends CommonJTypeSymbol<EntitySymbol, PropertySymbol
   }
 
   public Optional<ActionSymbol> getAction(String actionName) {
-    return getMutableSpannedScope().<ActionSymbol>resolveLocally(actionName, ActionSymbolKind.KIND);
+    return getMutableSpannedScope().<ActionSymbol>resolveLocally(actionName, ActionSymbol.KIND);
   }
   
   public void addAction(ActionSymbol method) {

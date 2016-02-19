@@ -32,32 +32,32 @@ public enum BasicAccessModifier implements AccessModifier {
   PUBLIC {
     @Override
     public boolean includes (AccessModifier modifier){
-      return modifier == PUBLIC;
+      return modifier.equals(PUBLIC);
     }
   },
 
   PROTECTED {
     @Override
     public boolean includes(AccessModifier modifier) {
-      return (modifier == PUBLIC) || (modifier == PROTECTED);
+      return (modifier.equals(PUBLIC) || modifier.equals(PROTECTED));
     }
   },
 
   PACKAGE_LOCAL {
     @Override
     public boolean includes(AccessModifier modifier) {
-      return (modifier == PUBLIC)
-          || (modifier == PROTECTED)
-          || (modifier == PACKAGE_LOCAL);
+      return (modifier.equals(PUBLIC)
+          || modifier.equals(PROTECTED)
+          || modifier.equals(PACKAGE_LOCAL));
     }
   },
 
   PRIVATE {
     public boolean includes(AccessModifier modifier) {
-      return (modifier == PUBLIC)
-          || (modifier == PROTECTED)
-          || (modifier == PACKAGE_LOCAL)
-          || (modifier == PRIVATE);
+      return (modifier.equals(PUBLIC)
+          || modifier.equals(PROTECTED)
+          || modifier.equals(PACKAGE_LOCAL)
+          || modifier.equals(PRIVATE));
     }
   },
 
@@ -66,7 +66,10 @@ public enum BasicAccessModifier implements AccessModifier {
    * for
    * languages that do not support access modifiers. Note that this constant is different from the
    * {@link #PACKAGE_LOCAL}, which, e.g., in Java, is only SYNTACTICALLY absent.
+   *
+   * @deprecated use {@link AccessModifier#ALL_INCLUSION} instead
    */
+  @Deprecated
   ABSENT {
     @Override
     public boolean includes(AccessModifier modifier) {

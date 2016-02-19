@@ -39,6 +39,7 @@ import de.monticore.ast.Comment;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.grammar.grammar._ast.ASTMethod;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
+import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.types.JTypeSymbolKind;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
@@ -568,7 +569,19 @@ public class MCTypeSymbol extends CommonScopeSpanningSymbol implements Comparabl
 
   public static final class MCTypeKind extends JTypeSymbolKind {
 
-    private MCTypeKind() {
+    private static final String NAME = MCTypeKind.class.getName();
+
+    protected MCTypeKind() {
+    }
+
+    @Override
+    public String getName() {
+      return NAME;
+    }
+
+    @Override
+    public boolean isKindOf(SymbolKind kind) {
+      return NAME.equals(kind.getName()) || super.isKindOf(kind);
     }
   }
 

@@ -37,7 +37,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.symboltable.modifiers.IncludesAccessModifierPredicate;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
 import de.monticore.symboltable.resolving.ResolvingFilter;
@@ -204,7 +203,7 @@ public class CommonScope implements MutableScope {
 
   @Override
   public <T extends Symbol> Collection<T> resolveMany(String name, SymbolKind kind, Predicate<Symbol> predicate) {
-    return resolveMany(new ResolvingInfo(getResolvingFilters()), name, kind, BasicAccessModifier.ABSENT, predicate);
+    return resolveMany(new ResolvingInfo(getResolvingFilters()), name, kind, AccessModifier.ALL_INCLUSION, predicate);
   }
 
   @Override
@@ -441,13 +440,13 @@ public class CommonScope implements MutableScope {
 
   @Override
   public <T extends Symbol> Collection<T> resolveMany(final String name, final SymbolKind kind) {
-    return resolveMany(name, kind, BasicAccessModifier.ABSENT);
+    return resolveMany(name, kind, AccessModifier.ALL_INCLUSION);
   }
 
   @Override
   public <T extends Symbol> Optional<T> resolveLocally(String name, SymbolKind kind) {
     return getResolvedOrThrowException(
-        this.<T>resolveManyLocally(new ResolvingInfo(getResolvingFilters()), name, kind, BasicAccessModifier.ABSENT, x -> true));
+        this.<T>resolveManyLocally(new ResolvingInfo(getResolvingFilters()), name, kind, AccessModifier.ALL_INCLUSION, x -> true));
   }
 
   // TODO PN add resolveManyLocally(String name, SymbolKind kind)
@@ -559,7 +558,7 @@ public class CommonScope implements MutableScope {
 
   @Override
   public <T extends Symbol> Collection<T> resolveDownMany(String name, SymbolKind kind) {
-    return this.resolveDownMany(new ResolvingInfo(getResolvingFilters()), name, kind, BasicAccessModifier.ABSENT, x -> true);
+    return this.resolveDownMany(new ResolvingInfo(getResolvingFilters()), name, kind, AccessModifier.ALL_INCLUSION, x -> true);
   }
 
   /**

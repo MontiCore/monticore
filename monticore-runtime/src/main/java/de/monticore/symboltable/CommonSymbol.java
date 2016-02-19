@@ -25,7 +25,6 @@ import java.util.Optional;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
@@ -45,7 +44,8 @@ public abstract class CommonSymbol implements Symbol {
 
   private SymbolKind kind;
 
-  private AccessModifier accessModifier = BasicAccessModifier.ABSENT;
+  // TODO PN getter should return an Optional value
+  private AccessModifier accessModifier = AccessModifier.ALL_INCLUSION;
 
   public CommonSymbol(String name, SymbolKind kind) {
     // TODO PN if name is qualified: this.name = simple(name) and this.packageName = qualifier (name)?

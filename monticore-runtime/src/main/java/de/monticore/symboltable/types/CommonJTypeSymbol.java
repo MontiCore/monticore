@@ -45,8 +45,6 @@ import de.se_rwth.commons.logging.Log;
 public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JAttributeSymbol, U extends JMethodSymbol, V extends JTypeReference<T>>
     extends CommonScopeSpanningSymbol implements JTypeSymbol {
 
-  public static final JTypeSymbolKind KIND = JTypeSymbol.KIND;
-
   private final JAttributeSymbolKind attributeKind;
   private final JMethodSymbolKind methodKind;
 
@@ -256,17 +254,17 @@ public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JAttri
 
   @Override
   public boolean isPrivate() {
-    return getAccessModifier() == BasicAccessModifier.PRIVATE;
+    return getAccessModifier().equals(BasicAccessModifier.PRIVATE);
   }
 
   @Override
   public boolean isProtected() {
-    return getAccessModifier() == BasicAccessModifier.PROTECTED;
+    return getAccessModifier().equals(BasicAccessModifier.PROTECTED);
   }
 
   @Override
   public boolean isPublic() {
-    return getAccessModifier() == BasicAccessModifier.PUBLIC;
+    return getAccessModifier().equals(BasicAccessModifier.PUBLIC);
   }
 
   public void setInnerType(boolean innerType) {
