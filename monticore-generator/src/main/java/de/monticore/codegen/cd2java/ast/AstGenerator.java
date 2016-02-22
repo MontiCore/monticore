@@ -24,7 +24,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
-import de.monticore.codegen.cd2java.ast_emf.AstEmfGeneratorHelper;
+import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -62,7 +62,7 @@ public class AstGenerator {
       File outputDirectory, IterablePath templatePath, boolean emfCompatible) {
     final GeneratorSetup setup = new GeneratorSetup(outputDirectory);
     setup.setAdditionalTemplatePaths(templatePath.getPaths().stream().map(Path::toFile).collect(Collectors.toList()));
-    AstGeneratorHelper astHelper = createGeneratorHelper(astClassDiagram, globalScope, emfCompatible);
+    AstGeneratorHelper astHelper = GeneratorHelper.createGeneratorHelper(astClassDiagram, globalScope, emfCompatible);
     glex.setGlobalValue("astHelper", astHelper);
     glex.setGlobalValue("javaNameHelper", new JavaNamesHelper());
     glex.setGlobalValue("nameHelper", new Names());
@@ -100,21 +100,6 @@ public class AstGenerator {
     
   }
   
-  /**
-   * TODO: Write me!
-   * @param astClassDiagram
-   * @param globalScope
-   * @param emfCompatible
-   * @return
-   */
-  private static AstGeneratorHelper createGeneratorHelper(ASTCDCompilationUnit astClassDiagram,
-      GlobalScope globalScope, boolean emfCompatible) {
-    if (emfCompatible) {
-      return new AstEmfGeneratorHelper(astClassDiagram, globalScope);
-    }
-    return new AstGeneratorHelper(astClassDiagram, globalScope);
-  }
-
   private AstGenerator() {
     // noninstantiable
   }
