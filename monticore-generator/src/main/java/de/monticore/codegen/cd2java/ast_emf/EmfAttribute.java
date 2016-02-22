@@ -22,7 +22,7 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
 
 /**
- * TODO: Write me!
+ * Contains all attribute properties needed by emf generator
  *
  * @author (last commit) $Author$
  * @version $Revision$, $Date$
@@ -33,9 +33,27 @@ public class EmfAttribute {
   
   private String eDataType;
   
+  private ASTCDAttribute cdAttribute;
+  
   private String defaultValue;
   
   private String definedGrammar;
+  
+  private String fullName;
+  
+  private boolean isAstNode;
+  
+  private boolean isAstList;
+  
+  private boolean isOptional;
+  
+  private boolean isInherited;
+  
+  private boolean isEnum;
+  
+  private boolean isExternal;
+  
+  private boolean hasExternalType;
   
   /**
    * @return definedGrammar
@@ -72,8 +90,6 @@ public class EmfAttribute {
     this.cdType = cdtype;
   }
   
-  private ASTCDAttribute cdAttribute;
-  
   /**
    * @return cdAttribute
    */
@@ -87,8 +103,6 @@ public class EmfAttribute {
   public void setCdAttribute(ASTCDAttribute cdAttribute) {
     this.cdAttribute = cdAttribute;
   }
-  
-  private boolean hasExternalType;
   
   /**
    * @return hasExternalType
@@ -104,8 +118,6 @@ public class EmfAttribute {
     this.hasExternalType = hasExternalType;
   }
   
-  private String fullName;
-  
   /**
    * @return fullName
    */
@@ -119,8 +131,6 @@ public class EmfAttribute {
   public void setFullName(String fullName) {
     this.fullName = fullName;
   }
-  
-  private boolean isExternal;
   
   /**
    * @return isExternal
@@ -136,8 +146,6 @@ public class EmfAttribute {
     return getCdAttribute().getName();
   }
   
-  private boolean isAstNode;
-  
   /**
    * @return istAstNode
    */
@@ -152,20 +160,12 @@ public class EmfAttribute {
     this.isAstNode = isAstNode;
   }
   
-  private boolean isAstList;
-  
   /**
    * @return isASTList
    */
   public boolean isAstList() {
     return this.isAstList;
   }
-  
-  private boolean isOptional;
-  
-  private boolean isInherited;
-  
-  private boolean isEnum;
   
   /**
    * @return isEnum

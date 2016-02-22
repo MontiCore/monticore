@@ -656,11 +656,6 @@ public class CdEmfDecorator extends CdDecorator {
     return Names.getSimpleName(nativeType);
   }
   
-  /**
-   * TODO: Write me!
-   * 
-   * @return
-   */
   // TODO GV: not used now
   protected void addAdditionalCreateMethods(ASTCDClass nodeFactoryClass, ASTCDClass clazz) {
     String className = GeneratorHelper.getPlainName(clazz);
@@ -678,8 +673,6 @@ public class CdEmfDecorator extends CdDecorator {
   }
   
   /**
-   * TODO: Write me!
-   * 
    * @param cdCompilationUnit
    * @param nativeClasses
    * @param astHelper
@@ -738,6 +731,9 @@ public class CdEmfDecorator extends CdDecorator {
     replaceMethodBodyTemplate(astEnum, toParse, methodBody);
   }
   
+  /**
+   * Collects all external types used in the given class diagram
+   */
   public class ETypeCollector implements CD4AnalysisInheritanceVisitor {
     
     private AstEmfGeneratorHelper astHelper;
@@ -769,13 +765,6 @@ public class CdEmfDecorator extends CdDecorator {
       externalTypes.put(extType, typeName);
     }
     
-    /**
-     * @return types
-     */
-    public Collection<String> getTypes() {
-      return externalTypes.values();
-    }
-    
     public ETypeCollector(AstEmfGeneratorHelper astHelper) {
       this.astHelper = astHelper;
     }
@@ -785,14 +774,7 @@ public class CdEmfDecorator extends CdDecorator {
       collectExternalTypes(ast);
     }
     
-    /**
-     * Converts CD type to Java type using the given package suffix.
-     * 
-     * @param type
-     * @param packageSuffix
-     * @return converted type or original type if type is java type already
-     */
-    public void collectExternalTypes(ASTSimpleReferenceType astType) {
+    private void collectExternalTypes(ASTSimpleReferenceType astType) {
       String genericType = "";
       ASTSimpleReferenceType convertedType = astType;
       if (AstGeneratorHelper.isOptional(astType)) {
@@ -826,7 +808,6 @@ public class CdEmfDecorator extends CdDecorator {
       if (convertedTypeName.contains("<")) {
         return;
       }
-      
       String newType = "";
       Optional<CDTypeSymbol> symbol = astHelper.resolveCdType(convertedTypeName);
       if (!symbol.isPresent()) {
