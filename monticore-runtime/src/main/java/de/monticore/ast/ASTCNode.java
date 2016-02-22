@@ -54,7 +54,6 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
   
   public abstract ASTNode deepClone();
   
-  
   public SourcePosition get_SourcePositionEnd() {
     if (end.isPresent()) {
       return end.get();

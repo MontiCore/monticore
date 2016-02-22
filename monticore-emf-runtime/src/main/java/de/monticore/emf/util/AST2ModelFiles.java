@@ -1,8 +1,22 @@
 /*
- * Copyright (c) 2016 RWTH Aachen. All rights reserved.
+ * ******************************************************************************
+ * MontiCore Language Workbench
+ * Copyright (c) 2015, MontiCore, All rights reserved.
  *
- * http://www.se-rwth.de/
+ * This project is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * ******************************************************************************
  */
+
 package de.monticore.emf.util;
 
 import java.io.File;
@@ -13,6 +27,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -24,10 +39,8 @@ import de.monticore.emf._ast.ASTEPackage;
 import de.se_rwth.commons.Names;
 
 /**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
+ * The utility class for serialization and deserialization of AST models and
+ * instances
  */
 public class AST2ModelFiles {
   
@@ -55,13 +68,18 @@ public class AST2ModelFiles {
   }
   
   public void serializeASTInstance(ASTENode astNode, String instanceName) throws IOException {
+    serializeASTInstance(astNode, astNode.eClass().getName(), instanceName);
+  }
+  
+  public void serializeASTInstance(ASTENode astNode, String modelName, String instanceName)
+      throws IOException {
     // Get the URI of the model file.
     serializeASTIfNotExists((ASTEPackage) astNode.eClass().getEPackage());
     
-    String packageName = astNode.eClass().getEPackage().getName().toLowerCase() + "/";
-    String fileName = astNode.eClass().getName() + "_" + instanceName;
+    String packageName = astNode.eClass().getEPackage().getName().toLowerCase() + File.separator;
+    String fileName = modelName + "_" + instanceName + ".xmi";
     URI fileURI = URI
-        .createFileURI(new File(EMF_TEST_OUTPUT_MODELINSTANCES + packageName + fileName + ".xmi")
+        .createFileURI(new File(EMF_TEST_OUTPUT_MODELINSTANCES + packageName + fileName)
             .getAbsolutePath());
     // Create a resource for this file.
     Resource resource = resourceSet.createResource(fileURI);
@@ -86,6 +104,29 @@ public class AST2ModelFiles {
     }
   }
   
+  public EObject deserializeASTInstance(String fileName, ASTEPackage eInstance) {
+    String packageName = EMF_TEST_OUTPUT_MODELINSTANCES + eInstance.getName().toLowerCase()
+        + File.separator;
+    return deserializeASTInstance(fileName, packageName, eInstance);
+  }
+  
+  public EObject deserializeASTInstance(String fileName, String packageName,
+      ASTEPackage eInstance) {
+    // Initialize the model
+    eInstance.eClass();
+    
+    ResourceSet resourceSet = new ResourceSetImpl();
+    resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
+        .put(Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl());
+        
+    URI fileURI = URI
+        .createFileURI(new File(packageName + fileName + ".xmi")
+            .getAbsolutePath());
+            
+    Resource resource = resourceSet.getResource(fileURI, true);
+    return resource.getContents().get(0);
+  }
+  
   private Resource createResource(ASTEPackage ePackage) {
     URI fileURI = URI
         .createFileURI(
@@ -100,7 +141,7 @@ public class AST2ModelFiles {
     URI fileURI = URI
         .createFileURI(
             new File(EMF_TEST_OUTPUT_MODELS + Names.getPathFromPackage(ePackage.getPackageName())
-                + "/" + ePackage.getName() + ".ecore")
+                + File.separator + ePackage.getName() + ".ecore")
                     .getAbsolutePath());
     // Create a resource for this file if doesn't exist
     if (resourceSet.getResource(fileURI, false) == null) {

@@ -62,7 +62,7 @@ public class ${ast.getName()} {
   protected static ${ast.getName()} factory = null;
 
 <#list ast.getCDAttributes() as attribute>
-  ${tc.include("ast.Attribute", [attribute, ast])}
+  ${tc.includeArgs("ast.Attribute", [attribute, ast])}
 </#list>
 
   protected ${ast.getName()} () {}

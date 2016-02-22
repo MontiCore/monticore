@@ -51,9 +51,9 @@ while (grammarIterator.hasNext()) {
     storeInCdFile(astClassDiagram, out)
     
     // Decorate AST-CD
-    decorateCd(glex, astClassDiagram, symbolTable, handcodedPath)
+    decorateEmfCd(glex, astClassDiagram, symbolTable, handcodedPath)
     
     // Generate AST files
-    generate(glex, symbolTable, astClassDiagram, out, templatePath)
+    generateEmfCompatible(glex, symbolTable, astClassDiagram, out, templatePath)
   }
 }

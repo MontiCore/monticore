@@ -42,8 +42,6 @@ package ${genHelper.getAstPackage()};
 import java.util.ArrayList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 import org.eclipse.emf.ecore.impl.EFactoryImpl;

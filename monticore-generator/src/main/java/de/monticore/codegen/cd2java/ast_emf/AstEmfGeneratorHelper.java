@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.mc2cd.manipul.BaseInterfaceAddingManipulation;
+import de.monticore.emf._ast.ASTECNode;
 import de.monticore.emf._ast.ASTENodePackage;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.TypesHelper;
@@ -41,10 +42,7 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 
 /**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
+ * A helper for emf-compatible generation
  */
 public class AstEmfGeneratorHelper extends AstGeneratorHelper {
   
@@ -58,7 +56,7 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
   
   public static String getSuperClass(ASTCDClass clazz) {
     if (!clazz.getSuperclass().isPresent()) {
-      return "de.monticore.emf._ast.ASTECNode";
+      return ASTECNode.class.getName();
     }
     return clazz.printSuperClass();
   }

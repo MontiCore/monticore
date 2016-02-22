@@ -1,3 +1,22 @@
+/*
+ * ******************************************************************************
+ * MontiCore Language Workbench
+ * Copyright (c) 2015, MontiCore, All rights reserved.
+ *
+ * This project is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * ******************************************************************************
+ */
+
 package de.monticore.emf._ast;
 
 import java.util.ArrayList;
@@ -8,6 +27,7 @@ import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
+/** The package for the model object ASTENode **/
 public class ASTENodePackageImpl extends EPackageImpl implements ASTENodePackage {
 
   private EEnum constantsASTENodeEEnum = null;
@@ -119,9 +139,9 @@ public class ASTENodePackageImpl extends EPackageImpl implements ASTENodePackage
     // Initialize classes and features; add operations and parameters
     
     // Initialize enums and add enum literals
-    initEEnum(constantsASTENodeEEnum, ConstantsASTENode.class, "ConstantsASTENode");
+    initEEnum(constantsASTENodeEEnum, ASTENodeLiterals.class, "ASTENodeLiterals");
 
-    addEEnumLiteral(constantsASTENodeEEnum, ConstantsASTENode.DEFAULT);
+    addEEnumLiteral(constantsASTENodeEEnum, ASTENodeLiterals.DEFAULT);
     
     initEClass(eNodeEClass, ASTENode.class, "ENode", IS_ABSTRACT, IS_INTERFACE,
         IS_GENERATED_INSTANCE_CLASS);

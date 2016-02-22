@@ -19,26 +19,39 @@
 
 package de.monticore.emf._ast;
 
-import java.util.List;
-
-import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.common.util.Enumerator;
 
 /**
- * An interface for all MontiCore model packages.
+ * 
+ * Literals of the model object {@link ASTENode}
  *
  */
-public interface ASTEPackage extends EPackage {
+public enum ASTENodeLiterals implements Enumerator {
+  // Literal Object DEFAULT
+  DEFAULT(0);
   
-  /**
-   *  Returns the list of packages for all extended models 
-   */
-  public List<ASTEPackage> getASTESuperPackages();
+  public static final int DEFAULT_VALUE = 0;
   
-  public String getName();
+  protected int intValue;
   
-  /**
-   * Returns the package's name of the referenced model 
-   */
-  public String getPackageName();
-
+  private ASTENodeLiterals(int intValue) {
+    this.intValue = intValue;
+  }
+  
+  public int intValue() {
+    return intValue;
+  }
+  
+  public String getName() {
+    return toString();
+  }
+  
+  public String getLiteral() {
+    return toString();
+  }
+  
+  public int getValue() {
+    return intValue;
+  }
+  
 }
