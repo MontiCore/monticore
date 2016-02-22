@@ -39,10 +39,8 @@ import de.monticore.emf._ast.ASTEPackage;
 import de.se_rwth.commons.Names;
 
 /**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
+ * The utility class for serialization and deserialization of AST models and
+ * instances
  */
 public class AST2ModelFiles {
   
@@ -73,7 +71,8 @@ public class AST2ModelFiles {
     serializeASTInstance(astNode, astNode.eClass().getName(), instanceName);
   }
   
-  public void serializeASTInstance(ASTENode astNode, String modelName, String instanceName) throws IOException {
+  public void serializeASTInstance(ASTENode astNode, String modelName, String instanceName)
+      throws IOException {
     // Get the URI of the model file.
     serializeASTIfNotExists((ASTEPackage) astNode.eClass().getEPackage());
     
@@ -106,22 +105,24 @@ public class AST2ModelFiles {
   }
   
   public EObject deserializeASTInstance(String fileName, ASTEPackage eInstance) {
-    String packageName = EMF_TEST_OUTPUT_MODELINSTANCES + eInstance.getName().toLowerCase() + File.separator;
+    String packageName = EMF_TEST_OUTPUT_MODELINSTANCES + eInstance.getName().toLowerCase()
+        + File.separator;
     return deserializeASTInstance(fileName, packageName, eInstance);
   }
   
-  public EObject deserializeASTInstance(String fileName, String packageName, ASTEPackage eInstance) {
+  public EObject deserializeASTInstance(String fileName, String packageName,
+      ASTEPackage eInstance) {
     // Initialize the model
     eInstance.eClass();
     
     ResourceSet resourceSet = new ResourceSetImpl();
     resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
         .put(Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl());
-    
+        
     URI fileURI = URI
         .createFileURI(new File(packageName + fileName + ".xmi")
             .getAbsolutePath());
-    
+            
     Resource resource = resourceSet.getResource(fileURI, true);
     return resource.getContents().get(0);
   }

@@ -38,10 +38,7 @@ import org.eclipse.emf.ecore.EObject;
 import de.monticore.emf._ast.ASTENode;
 
 /**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
+ * Compare utility for two AST instances
  */
 public class AstEmfDiffUtility {
   

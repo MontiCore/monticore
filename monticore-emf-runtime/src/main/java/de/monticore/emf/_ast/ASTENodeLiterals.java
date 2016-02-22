@@ -21,6 +21,11 @@ package de.monticore.emf._ast;
 
 import org.eclipse.emf.common.util.Enumerator;
 
+/**
+ * 
+ * Literals of the model object {@link ASTENode}
+ *
+ */
 public enum ASTENodeLiterals implements Enumerator {
   // Literal Object DEFAULT
   DEFAULT(0);

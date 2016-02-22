@@ -33,14 +33,12 @@ import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.SourcePosition;
 
-
 /**
- * Foundation class of all AST-classes Shouldn't be used in an implementation,
- * all AST-classes also share the interface ASTNode
+ * Foundation class of all EMF compatible AST-classes.
  * 
  * @author krahn, volkova
  */
-public abstract class ASTECNode extends EObjectImpl implements ASTENode  {
+public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   
   protected Optional<SourcePosition> start = Optional.empty();
   
@@ -57,7 +55,6 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode  {
   protected Optional<AstPrettyPrinter<ASTNode>> prettyPrinter = Optional.empty();
   
   public abstract ASTNode deepClone();
-  
   
   public SourcePosition get_SourcePositionEnd() {
     if (end.isPresent()) {
@@ -97,7 +94,6 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode  {
     this.postcomments = postcomments;
   }
   
- 
   public void setEnclosingScope(Scope enclosingScope) {
     this.enclosingScope = Optional.ofNullable(enclosingScope);
   }
@@ -120,7 +116,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode  {
   public Optional<AstPrettyPrinter<ASTNode>> getPrettyPrinter() {
     return this.prettyPrinter;
   }
-
+  
   /**
    * @param prettyPrinter the prettyPrinter to set
    */
@@ -128,7 +124,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode  {
     this.prettyPrinter = Optional.ofNullable(prettyPrinter);
   }
   
-  public  Optional<String> prettyPrint() { 
+  public Optional<String> prettyPrint() {
     if (prettyPrinter.isPresent()) {
       return Optional.ofNullable(prettyPrinter.get().prettyPrint(this));
     }

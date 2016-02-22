@@ -7,6 +7,7 @@ package mc.emf.etools;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -41,14 +42,22 @@ public class EcoreUtilTest extends GeneratorIntegrationsTest {
           
       Optional<ASTAutomaton> transC = new FlatAutomatonParser()
           .parse("src/test/resources/mc/emf/Testautomat.aut");
-      if (transB.isPresent() && transC.isPresent()) {
+      
+      Optional<ASTAutomaton> transA = new FlatAutomatonParser()
+          .parse("src/test/resources/mc/emf/diff/Testautomat2.aut");
+      
+      if (transB.isPresent() && transC.isPresent() && transA.isPresent()) {
         
         assertTrue(EcoreUtil.equals(transB.get(), transC.get()));
+        
+        assertFalse(EcoreUtil.equals(transB.get(), transA.get()));
         
         AST2ModelFiles.get().serializeASTInstance(transB.get(),
             "B");
         AST2ModelFiles.get().serializeASTInstance(transC.get(),
             "C");
+        AST2ModelFiles.get().serializeASTInstance(transA.get(),
+            "A");
             
         EObject deserAstTransB = AST2ModelFiles.get().deserializeASTInstance("ASTAutomaton_B",
             FlatAutomatonPackage.eINSTANCE);
@@ -60,7 +69,14 @@ public class EcoreUtilTest extends GeneratorIntegrationsTest {
         assertNotNull(deserAstTransC);
         assertTrue(deserAstTransC instanceof ASTAutomaton);
         
+        EObject deserAstTransA = AST2ModelFiles.get().deserializeASTInstance("ASTAutomaton_A",
+            FlatAutomatonPackage.eINSTANCE);
+        assertNotNull(deserAstTransA);
+        assertTrue(deserAstTransA instanceof ASTAutomaton);
+        
         assertTrue(EcoreUtil.equals(deserAstTransB, deserAstTransC));
+        
+        assertFalse(EcoreUtil.equals(deserAstTransA, deserAstTransC));
         
       }
       else {
@@ -111,6 +127,12 @@ public class EcoreUtilTest extends GeneratorIntegrationsTest {
     state1a.setInitial(true);
     state2a.setFinal(true);
     
+    assertTrue(EcoreUtil.equals(aut, aut2));
+    
+    state2a.setFinal(false);
+    assertFalse(EcoreUtil.equals(aut, aut2));
+    
+    state2.setFinal(false);
     assertTrue(EcoreUtil.equals(aut, aut2));
   }
   

@@ -26,6 +26,10 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
+/**
+ * The Factory for the model object {@link ASTENode}
+ *
+ */
 public class ASTENodeFactoryImpl extends EFactoryImpl implements ASTENodeFactory {
   
   // Creates the default factory implementation.

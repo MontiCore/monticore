@@ -22,6 +22,7 @@ package de.monticore.emf._ast;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EEnum;
 
+/** A representation of the model object ASTENode **/
 public interface ASTENodePackage extends ASTEPackage {
   // The package name.
   String eNAME = "ASTENode";

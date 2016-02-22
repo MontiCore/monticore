@@ -27,6 +27,7 @@ import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
+/** The package for the model object ASTENode **/
 public class ASTENodePackageImpl extends EPackageImpl implements ASTENodePackage {
 
   private EEnum constantsASTENodeEEnum = null;
