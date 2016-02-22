@@ -9,6 +9,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import mc.GeneratorIntegrationsTest;
 import mc.feature.fautomaton.action.expression._ast.ASTAssignment;
 import mc.feature.fautomaton.action.expression._ast.ExpressionNodeFactory;
 import mc.feature.fautomaton.action.expression._ast.ExpressionPackage;
@@ -18,24 +19,18 @@ import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTTransition;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonNodeFactory;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonPackage;
 
-public class ReflectiveMethodsTest {
+public class EGeterSeterTest extends GeneratorIntegrationsTest {
   
-  ASTAutomaton aut;
-  
-  ASTState state1;
-  
-  ASTState state2;
-  
-  ASTTransition transition;
-  
-  ASTAssignment assign;
+  private ASTAutomaton aut;
+  private ASTTransition transition;
+  private ASTAssignment assign;
   
   @Before
   public void setUp() throws Exception {
     aut = FlatAutomatonNodeFactory.createASTAutomaton();
     aut.setName("aut1");
-    state1 = FlatAutomatonNodeFactory.createASTState();
-    state2 = FlatAutomatonNodeFactory.createASTState();
+    ASTState state1 = FlatAutomatonNodeFactory.createASTState();
+    ASTState state2 = FlatAutomatonNodeFactory.createASTState();
     
     transition = FlatAutomatonNodeFactory.createASTTransition();
     
@@ -48,7 +43,6 @@ public class ReflectiveMethodsTest {
     
     assign = ExpressionNodeFactory.createASTAssignment();
     assign.setValue("value");
-    
   }
   
   @Test

@@ -1,12 +1,18 @@
 package mc.emf.emethods;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Before;
+import org.junit.Test;
 
+import mc.GeneratorIntegrationsTest;
 import mc.feature.fautomaton.action.expression._ast.ASTComplexAssigment;
+import mc.feature.fautomaton.action.expression._ast.ASTValue;
 import mc.feature.fautomaton.action.expression._ast.ExpressionNodeFactory;
+import mc.feature.fautomaton.action.expression._ast.ExpressionPackage;
 
 
-public class FeatureIDConversionTest {
+public class FeatureIDConversionTest extends GeneratorIntegrationsTest {
   
   ASTComplexAssigment ast;
   
@@ -16,22 +22,20 @@ public class FeatureIDConversionTest {
   }
   
   // TODO GV
-//  @Test
-//  public void testDerivedFeatureID() {
-//    int derivedID = ast.eDerivedStructuralFeatureID(ExpressionPackage.VALUE__A, ASTValue.class);
-//    
-//    int expectedDerivedID = ExpressionPackage.COMPLEXASSIGMENT__A;
-//    
-//    assertEquals(expectedDerivedID, derivedID);
-//  }
-//  
-//  @Test
-//  public void testBaseFeatureID() {
-//    int baseID = ast.eBaseStructuralFeatureID(
-//        ExpressionPackage.COMPLEXASSIGMENT__A, ASTValue.class);
-//    
-//    int expectedBaseID = ExpressionPackage.VALUE__A;
-//    
-//    assertEquals(expectedBaseID, baseID);
-//  }
+  public void testDerivedFeatureID() {
+    int derivedID = ast.eDerivedStructuralFeatureID(ExpressionPackage.ASTValue, ASTValue.class);
+    
+    int expectedDerivedID = ExpressionPackage.ASTComplexAssigment_A;
+    
+    assertEquals(expectedDerivedID, derivedID);
+  }
+  
+  public void testBaseFeatureID() {
+    int baseID = ast.eBaseStructuralFeatureID(
+        ExpressionPackage.ASTComplexAssigment_A, ASTValue.class);
+    
+    int expectedBaseID = ExpressionPackage.ASTValue;
+    
+    assertEquals(expectedBaseID, baseID);
+  }
 }

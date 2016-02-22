@@ -12,12 +12,13 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.junit.Test;
 
+import mc.GeneratorIntegrationsTest;
 import mc.feature.fautomaton.action.expression._ast.ASTAssignment;
 import mc.feature.fautomaton.action.expression._ast.ExpressionPackage;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTAutomaton;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonPackage;
 
-public class MetaObjectTest {
+public class MetaObjectTest extends GeneratorIntegrationsTest {
   
   @Test
   public void testSuperTypes() {

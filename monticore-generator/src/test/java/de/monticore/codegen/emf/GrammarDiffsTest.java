@@ -3,7 +3,7 @@
  *
  * http://www.se-rwth.de/
  */
-package de.monticore.emf;
+package de.monticore.codegen.emf;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -31,7 +31,7 @@ import de.se_rwth.commons.logging.Slf4jLog;
  * @author (last commit) $Author$
  * @version $Revision$, $Date$
  */
-public class GrammaDiffsTest {
+public class GrammarDiffsTest {
   
   @BeforeClass
   public static void setup() {

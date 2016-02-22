@@ -70,17 +70,17 @@ public class AST2ModelFiles {
   }
   
   public void serializeASTInstance(ASTENode astNode, String instanceName) throws IOException {
-    String fileName = astNode.eClass().getName() + "_" + instanceName;
-    serializeASTInstance(astNode, instanceName, fileName);
+    serializeASTInstance(astNode, astNode.eClass().getName(), instanceName);
   }
   
-  public void serializeASTInstance(ASTENode astNode, String instanceName, String fileName) throws IOException {
+  public void serializeASTInstance(ASTENode astNode, String modelName, String instanceName) throws IOException {
     // Get the URI of the model file.
     serializeASTIfNotExists((ASTEPackage) astNode.eClass().getEPackage());
     
-    String packageName = astNode.eClass().getEPackage().getName().toLowerCase() + "/";
+    String packageName = astNode.eClass().getEPackage().getName().toLowerCase() + File.separator;
+    String fileName = modelName + "_" + instanceName + ".xmi";
     URI fileURI = URI
-        .createFileURI(new File(EMF_TEST_OUTPUT_MODELINSTANCES + packageName + fileName + ".xmi")
+        .createFileURI(new File(EMF_TEST_OUTPUT_MODELINSTANCES + packageName + fileName)
             .getAbsolutePath());
     // Create a resource for this file.
     Resource resource = resourceSet.createResource(fileURI);
@@ -106,7 +106,7 @@ public class AST2ModelFiles {
   }
   
   public EObject deserializeASTInstance(String fileName, ASTEPackage eInstance) {
-    String packageName = EMF_TEST_OUTPUT_MODELINSTANCES + eInstance.getName().toLowerCase() + "/";
+    String packageName = EMF_TEST_OUTPUT_MODELINSTANCES + eInstance.getName().toLowerCase() + File.separator;
     return deserializeASTInstance(fileName, packageName, eInstance);
   }
   
@@ -140,7 +140,7 @@ public class AST2ModelFiles {
     URI fileURI = URI
         .createFileURI(
             new File(EMF_TEST_OUTPUT_MODELS + Names.getPathFromPackage(ePackage.getPackageName())
-                + "/" + ePackage.getName() + ".ecore")
+                + File.separator + ePackage.getName() + ".ecore")
                     .getAbsolutePath());
     // Create a resource for this file if doesn't exist
     if (resourceSet.getResource(fileURI, false) == null) {

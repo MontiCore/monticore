@@ -10,12 +10,13 @@ import org.junit.Test;
 
 import com.google.common.collect.Lists;
 
+import mc.GeneratorIntegrationsTest;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonPackage;
 import mc.feature.fautomaton.automatonwithaction.actionautomaton._ast.ASTAutomaton;
 import mc.feature.fautomaton.automatonwithaction.actionautomaton._ast.ASTCounter;
 import mc.feature.fautomaton.automatonwithaction.actionautomaton._ast.ActionAutomatonNodeFactory;
 
-public class ExternalTest {
+public class ExternalTest extends GeneratorIntegrationsTest {
   
   private ASTAutomaton aut;
   

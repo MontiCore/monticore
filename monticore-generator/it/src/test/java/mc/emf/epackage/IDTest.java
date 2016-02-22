@@ -4,12 +4,12 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import mc.GeneratorIntegrationsTest;
 import mc.feature.fautomaton.action.expression._ast.ExpressionPackage;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonPackage;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonPackageImpl;
-import mc.feature.fautomaton.automatonwithaction.actionautomaton._ast.ActionAutomatonPackage;
 
-public class IDTest {
+public class IDTest extends GeneratorIntegrationsTest {
   
   @Test
   public void testFeatureIDs() {

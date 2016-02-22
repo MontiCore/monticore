@@ -3,7 +3,7 @@
  *
  * http://www.se-rwth.de/
  */
-package de.monticore.emf;
+package de.monticore.codegen.emf;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
