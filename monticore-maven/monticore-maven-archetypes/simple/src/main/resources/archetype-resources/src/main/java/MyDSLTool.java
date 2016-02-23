@@ -3,6 +3,8 @@ package ${package};
 import java.io.IOException;
 import java.util.Optional;
 
+import org.antlr.v4.runtime.RecognitionException;
+
 import ${package}.cocos.AtLeastOneMyField;
 import ${package}.cocos.ExistingMyFieldType;
 import ${package}.cocos.MyDSLCoCos;
@@ -98,7 +100,7 @@ public class MyDSLTool {
       }
       Log.error("0xC0005 Model could not be parsed.");
     }
-    catch (IOException e) {
+    catch (RecognitionException | IOException e) {
       Log.error("0xC0006 Failed to parse " + model, e);
     }
     return null;

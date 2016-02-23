@@ -1,4 +1,4 @@
-package mc.featureemf.fautomaton.automaton;
+package mc.feature.fautomaton.automaton;
 
 grammar FlatAutomaton extends mc.common.Basics {
 
@@ -9,7 +9,7 @@ grammar FlatAutomaton extends mc.common.Basics {
 	*/
 	Automaton =
 	   "automaton" Name "{" 
-	     (State | Transition )* // (names : Name)* (impState:State)
+	     (State | Transition )*// (names : Name)* (impState:State)
 	   "}";
 
     /** A state in a finite automaton

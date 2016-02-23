@@ -3,7 +3,7 @@
  *
  * http://www.se-rwth.de/
  */
-package mc.emf;
+package mc.emf.etools;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -17,12 +17,12 @@ import org.eclipse.emf.compare.diff.metamodel.DiffElement;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.monticore.emf.util.AST2ModelFiles;
 import de.monticore.emf.util.compare.AstEmfDiffUtility;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
-import mc.featureemf.fautomaton.automaton.flatautomaton._ast.ASTAutomaton;
-import mc.featureemf.fautomaton.automaton.flatautomaton._parser.FlatAutomatonParser;
+import mc.GeneratorIntegrationsTest;
+import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTAutomaton;
+import mc.feature.fautomaton.automaton.flatautomaton._parser.FlatAutomatonParser;
 
 /**
  * TODO: Write me!
@@ -30,45 +30,44 @@ import mc.featureemf.fautomaton.automaton.flatautomaton._parser.FlatAutomatonPar
  * @author (last commit) $Author$
  * @version $Revision$, $Date$
  */
-public class EmfDiffTest {
-  @BeforeClass
-  public static void setup() {
-    Slf4jLog.init();
-    Log.enableFailQuick(false);
-  }
+public class EmfDiffTest extends GeneratorIntegrationsTest {
   
   @Test
   public void testDiffAutomaton() {
     try {
       Optional<ASTAutomaton> transB = new FlatAutomatonParser()
-          .parse("src/test/resources/mc/diff/automaton/Testautomat.aut");
+          .parse("src/test/resources/mc/emf/diff/Testautomat.aut");
           
       Optional<ASTAutomaton> transC = new FlatAutomatonParser()
-          .parse("src/test/resources/mc/diff/automaton/Testautomat2.aut");
+          .parse("src/test/resources/mc/emf/diff/Testautomat2.aut");
       if (transB.isPresent() && transC.isPresent()) {
        
         // Matching model elements
         List<DiffElement> diffs = AstEmfDiffUtility.getAllAstDiffs(transB.get(), transC.get());
         
-        //AstEmfDiffUtility.printAstDiffsHierarchical(transB.get(), transC.get());
+        AstEmfDiffUtility.printAstDiffsHierarchical(transB.get(), transC.get());
 
-        assertEquals(7, diffs.size());
-        
-        assertEquals("The order of the values of reference States have been changed",
+        assertEquals(9, diffs.size());
+        assertEquals("Attribute Name in Testautomat has changed from Testautomat2 to Testautomat",
             diffs.get(0).toString());
         
-        assertEquals("Attribute R__final in a has changed from false to true",
+        assertEquals("The order of the values of reference States have been changed",
             diffs.get(1).toString());
-            
-        assertEquals("Attribute Initial in a has changed from true to false", diffs.get(2).toString());
         
-        assertEquals("Attribute Initial in c has changed from false to true", diffs.get(3).toString());
+        assertEquals("Attribute R__final in a has changed from false to true",
+            diffs.get(2).toString());
+            
+        assertEquals("Attribute Initial in a has changed from true to false", diffs.get(3).toString());
+        
+        assertEquals("Attribute Initial in c has changed from false to true", diffs.get(4).toString());
     
-        assertEquals("Attribute R__final in d has changed from true to false", diffs.get(4).toString());
+        assertEquals("Attribute R__final in d has changed from true to false", diffs.get(5).toString());
 
-        assertEquals("Attribute Activate in b has changed from x to y", diffs.get(5).toString());
+        assertEquals("Attribute Activate in b has changed from x to y", diffs.get(6).toString());
 
-        assertEquals("Attribute From in d has changed from c to d", diffs.get(6).toString());
+        assertEquals("ASTTransition From: d Activate: y To: d has been added", diffs.get(7).toString());
+        
+        assertEquals("ASTTransition From: c Activate: y To: d has been removed", diffs.get(8).toString());
        
       }
       else {

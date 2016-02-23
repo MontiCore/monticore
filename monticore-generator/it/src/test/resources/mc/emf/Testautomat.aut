@@ -1,4 +1,4 @@
-automaton Testautomat2 {
+automaton Testautomat {
   
    state a  <<final>>;
 	

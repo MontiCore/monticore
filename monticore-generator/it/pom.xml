@@ -5,7 +5,7 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore</artifactId>
-    <version>4.3.1</version>
+    <version>4.4.0</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -143,7 +143,7 @@
           <plugin>
             <groupId>de.monticore.mojo</groupId>
             <artifactId>monticore-maven-plugin</artifactId>
-            <version>4.3.1</version><!--$NO-MVN-MAN-VER$-->
+            <version>4.4.0</version><!--$NO-MVN-MAN-VER$-->
             <configuration>
               <skip>false</skip>
               <addOutputDirectoryToModelPath>true</addOutputDirectoryToModelPath>
@@ -175,6 +175,7 @@
                 <grammar>src/main/grammars/mc/feature/embedding/outer/FeatureouterDSL.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/example/nointerface/SimpleSCWithoutInterface.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/example/useinterface/SimpleSCWithInterface.mc4</grammar>
+                <grammar>src/main/grammars/mc/feature/fautomaton</grammar>
                 <grammar>src/main/grammars/mc/feature/wiki/Wiki.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/dsltoolstandalone/DSLToolTest.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/embedding/inner/Inner.mc4</grammar>

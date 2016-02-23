@@ -1,6 +1,6 @@
-package mc.featureemf.fautomaton.automatonwithaction;
+package mc.feature.fautomaton.automatonwithaction;
 
-component grammar ActionAutomaton extends mc.featureemf.fautomaton.automaton.FlatAutomaton {
+component grammar ActionAutomaton extends mc.feature.fautomaton.automaton.FlatAutomaton {
 
 	external Action;
 
