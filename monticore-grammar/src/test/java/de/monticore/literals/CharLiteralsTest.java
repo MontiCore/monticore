@@ -25,7 +25,6 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
-import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
 
 import de.monticore.literals.literals._ast.ASTCharLiteral;
@@ -36,7 +35,7 @@ import de.monticore.literals.literals._ast.ASTLiteral;
  */
 public class CharLiteralsTest {
   
-  private void checkCharLiteral(char c, String s) throws RecognitionException, IOException {
+  private void checkCharLiteral(char c, String s) throws IOException {
       ASTLiteral lit = LiteralsTestHelper.getInstance().parseLiteral(s);
       assertTrue(lit instanceof ASTCharLiteral);
       assertEquals(c, ((ASTCharLiteral) lit).getValue());
@@ -65,7 +64,7 @@ public class CharLiteralsTest {
       checkCharLiteral('\u0000', "'\\u0000'");
       checkCharLiteral('\uffff', "'\\uffff'");
     }
-    catch (Exception e) {
+    catch (IOException e) {
       fail(e.getMessage());
     }
     

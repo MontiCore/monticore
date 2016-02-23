@@ -20,9 +20,12 @@
 package de.monticore.types;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import org.junit.BeforeClass;
@@ -61,6 +64,7 @@ public class ComplexArrayTypesTest {
       // checks
       for (String teststring : testdata.keySet()) {
         ASTType type = TypesTestHelper.getInstance().parseType(teststring);
+        assertNotNull(type);
         // check typing and dimension:
         assertTrue(type instanceof ASTArrayType);
         ASTArrayType arrayType = (ASTArrayType) type;
@@ -68,7 +72,7 @@ public class ComplexArrayTypesTest {
         assertTrue(arrayType.getComponentType() instanceof ASTComplexReferenceType);
       }
     }
-    catch (Exception e) {
+    catch (IOException e) {
       fail(e.getMessage());
     }
   }
@@ -84,6 +88,7 @@ public class ComplexArrayTypesTest {
       // checks
       for (String teststring : testdata.keySet()) {
         ASTType type = TypesTestHelper.getInstance().parseType(teststring);
+        assertNotNull(type);
         // check typing and dimension:
         assertTrue(type instanceof ASTArrayType);
         ASTArrayType arrayType = (ASTArrayType) type;
@@ -91,7 +96,7 @@ public class ComplexArrayTypesTest {
         assertTrue(arrayType.getComponentType() instanceof ASTComplexReferenceType);
       }
     }
-    catch (Exception e) {
+    catch (IOException e) {
       fail(e.getMessage());
     }
   }
@@ -101,99 +106,65 @@ public class ComplexArrayTypesTest {
   public void testComplexArrayTypes3() {
     try {
       // Test for a simple array type with one dimension
-      TypesTestHelper.getInstance().testType("Type[]");
+      assertTrue(TypesTestHelper.getInstance().testType("Type[]"));
       
       // Test for a simple array type with mor than one dimension
-      TypesTestHelper.getInstance().testType("Type[][][][][]");
+      assertTrue(TypesTestHelper.getInstance().testType("Type[][][][][]"));
       
       // Test for a parameterized array type
-      TypesTestHelper.getInstance().testType("Type<?>[]");
+      assertTrue(TypesTestHelper.getInstance().testType("Type<?>[]"));
       
       // Test for a parameterized type argument
-      TypesTestHelper.getInstance().testType("Type<Arg1<Arg2>>[]");
+      assertTrue(TypesTestHelper.getInstance().testType("Type<Arg1<Arg2>>[]"));
       
       // Test for a parameterized type argument, which is also an array
-      TypesTestHelper.getInstance().testType("Type<Arg1<Arg2>[][]>[]");
+      assertTrue(TypesTestHelper.getInstance().testType("Type<Arg1<Arg2>[][]>[]"));
       
       // Test for a parameterized type argument. Only the innermost argument
       // is an array
-      TypesTestHelper.getInstance().testType("Type<Arg1<Arg2[]>>");
+      assertTrue(TypesTestHelper.getInstance().testType("Type<Arg1<Arg2[]>>"));
       
       // Test for a parameterized type argument. Just a step more
-      TypesTestHelper.getInstance().testType("Type<Arg1<Arg2<Arg3>>>[]");
+      assertTrue(TypesTestHelper.getInstance().testType("Type<Arg1<Arg2<Arg3>>>[]"));
       
       // Test for a parameterized type argument. Just a step more
-      TypesTestHelper.getInstance().testType("Type<Arg1<Arg2<Arg3<Arg4>>>>[]");
+      assertTrue(TypesTestHelper.getInstance().testType("Type<Arg1<Arg2<Arg3<Arg4>>>>[]"));
       
       // Same test as above, but with an array type as Arg2
-      TypesTestHelper.getInstance().testType("Type<Arg1<Arg2<Arg3<Arg4>>[]>>[]");
+      assertTrue(TypesTestHelper.getInstance().testType("Type<Arg1<Arg2<Arg3<Arg4>>[]>>[]"));
       
       // Same as above, but differnt place for the brackets
-      TypesTestHelper.getInstance().testType("Type<Arg1<Arg2<Arg3<Arg4>>>[]>[]");
+      assertTrue(TypesTestHelper.getInstance().testType("Type<Arg1<Arg2<Arg3<Arg4>>>[]>[]"));
     }
-    catch (Exception e) {
+    catch (IOException e) {
       fail(e.getMessage());
     }
   }
   
   @Test
   public void testNegativeComplexArrayTypes() {
-    // Negative test for a qualified type, whose qualification is an array type
     try {
-      TypesTestHelper.getInstance().testType("packageName.Type[].Invalid");
-      fail("The test should fail");
+      // Negative test for a qualified type, whose qualification is an array type
+      assertNull(TypesTestHelper.getInstance().parseType("packageName.Type[].Invalid"));
+      
+      // Test for a parameterized array type with additional ">"
+      assertNull(TypesTestHelper.getInstance().parseType("Type<?>[]>"));
+      
+      // Test for a parameterized type argument with missing ">"
+      assertNull(TypesTestHelper.getInstance().parseType("Type<Arg1<Arg2>[]"));
+      
+      // Test for a parameterized type argument with missing "]"
+      assertNull(TypesTestHelper.getInstance().parseType("Type<Arg1<Arg2>[[]>[]"));
+      
+      // Test for a parameterized type argument with missing ">"
+      assertNull(TypesTestHelper.getInstance().parseType("Type<Arg1<Arg2<Arg3<Arg4>>>[]"));
+      
+      // Same test as above, but with an array type as Arg2 and with additional
+      // ">"
+      assertNull(TypesTestHelper.getInstance().parseType("Type<Arg1<Arg2<Arg3<Arg4>>[]>>>[]"));
     }
-    catch (Exception e) {
-    }
-    
-    // Test for a parameterized array type with additional ">"
-    try {
-      TypesTestHelper.getInstance().testType("Type<?>[]>");
-      fail("The test should fail");
-    }
-    catch (Exception e) {
-    }
-    
-    // Test for a parameterized type argument with missing ">"
-    try {
-      TypesTestHelper.getInstance().testType("Type<Arg1<Arg2>[]");
-      fail("The test should fail");
-    }
-    catch (Exception e) {
-    }
-    
-    // Test for a parameterized type argument with missing "]"
-    try {
-      TypesTestHelper.getInstance().testType("Type<Arg1<Arg2>[[]>[]");
-      fail("The test should fail");
-    }
-    catch (Exception e) {
-    }
-    
-    // to be checked by context-analysis:
-    // // Test for a parameterized type argument with a primitive type
-    // try {
-    // TypeTestHelper.getInstance().testType("Type<Arg1<int>>");
-    // fail("The test should fail");
-    // }
-    // catch (Exception e) {
-    // }
-    
-    // Test for a parameterized type argument with missing ">"
-    try {
-      TypesTestHelper.getInstance().testType("Type<Arg1<Arg2<Arg3<Arg4>>>[]");
-      fail("The test should fail");
-    }
-    catch (Exception e) {
-    }
-    
-    // Same test as above, but with an array type as Arg2 and with additional
-    // ">"
-    try {
-      TypesTestHelper.getInstance().testType("Type<Arg1<Arg2<Arg3<Arg4>>[]>>>[]");
-      fail("The test should fail");
-    }
-    catch (Exception e) {
+    catch (IOException e) {
+      fail(e.getMessage());
     }
   }
   

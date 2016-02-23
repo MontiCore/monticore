@@ -45,8 +45,6 @@ import de.se_rwth.commons.logging.Log;
 public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JAttributeSymbol, U extends JMethodSymbol, V extends JTypeReference<T>>
     extends CommonScopeSpanningSymbol implements JTypeSymbol {
 
-  public static final JTypeSymbolKind KIND = JTypeSymbol.KIND;
-
   private final JAttributeSymbolKind attributeKind;
   private final JMethodSymbolKind methodKind;
 
@@ -85,12 +83,12 @@ public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JAttri
 
   public void addFormalTypeParameter(T formalTypeParameter) {
     checkArgument(formalTypeParameter.isFormalTypeParameter());
-    spannedScope.add(formalTypeParameter);
+    getMutableSpannedScope().add(formalTypeParameter);
   }
 
   @Override
   public List<T> getFormalTypeParameters() {
-    final Collection<T> resolvedTypes = spannedScope.resolveLocally(T.KIND);
+    final Collection<T> resolvedTypes = getSpannedScope().resolveLocally(T.KIND);
     return resolvedTypes.stream().filter(T::isFormalTypeParameter).collect(Collectors.toList());
   }
 
@@ -123,31 +121,31 @@ public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JAttri
   }
 
   public void addField(S attribute) {
-    spannedScope.add(Log.errorIfNull(attribute));
+    getMutableSpannedScope().add(Log.errorIfNull(attribute));
   }
 
   @Override
   public List<S> getFields() {
-    return sortSymbolsByPosition(spannedScope.resolveLocally(attributeKind));
+    return sortSymbolsByPosition(getSpannedScope().resolveLocally(attributeKind));
   }
 
   @Override
   public Optional<S> getField(String attributeName) {
     checkArgument(!isNullOrEmpty(attributeName));
 
-    return spannedScope.resolveLocally(attributeName, attributeKind);
+    return getSpannedScope().resolveLocally(attributeName, attributeKind);
   }
 
   public void addMethod(U method) {
     Log.errorIfNull(method);
     checkArgument(!method.isConstructor());
 
-    spannedScope.add(method);
+    getMutableSpannedScope().add(method);
   }
 
   @Override
   public List<U> getMethods() {
-    final Collection<U> resolvedMethods = spannedScope.resolveLocally(methodKind);
+    final Collection<U> resolvedMethods = getSpannedScope().resolveLocally(methodKind);
 
     final List<U> methods = sortSymbolsByPosition(resolvedMethods.stream().filter(method -> !method.isConstructor()).collect(Collectors.toList()));
 
@@ -158,7 +156,7 @@ public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JAttri
   public Optional<U> getMethod(String methodName) {
     checkArgument(!isNullOrEmpty(methodName));
 
-    Optional<U> method = spannedScope.resolveLocally(methodName, methodKind);
+    Optional<U> method = getSpannedScope().resolveLocally(methodName, methodKind);
     if (method.isPresent() && !method.get().isConstructor()) {
       return method;
     }
@@ -169,12 +167,12 @@ public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JAttri
     Log.errorIfNull(constructor);
     checkArgument(constructor.isConstructor());
 
-    spannedScope.add(constructor);
+    getMutableSpannedScope().add(constructor);
   }
 
   @Override
   public List<U> getConstructors() {
-    final Collection<U> resolvedMethods = spannedScope.resolveLocally(methodKind);
+    final Collection<U> resolvedMethods = getSpannedScope().resolveLocally(methodKind);
 
     final List<U> constructors = sortSymbolsByPosition(resolvedMethods.stream().filter(U::isConstructor).collect(Collectors.toList()));
 
@@ -184,19 +182,19 @@ public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JAttri
   public void addInnerType(T innerType) {
     Log.errorIfNull(innerType);
 
-    spannedScope.add(innerType);
+    getMutableSpannedScope().add(innerType);
   }
 
   @Override
   public List<T> getInnerTypes() {
-    return sortSymbolsByPosition(spannedScope.resolveLocally(getKind()));
+    return sortSymbolsByPosition(getSpannedScope().resolveLocally(getKind()));
   }
 
   @Override
   public Optional<T> getInnerType(String innerTypeName) {
     checkArgument(!isNullOrEmpty(innerTypeName));
 
-    return spannedScope.resolveLocally(innerTypeName, getKind());
+    return getSpannedScope().resolveLocally(innerTypeName, getKind());
   }
 
 
@@ -256,17 +254,17 @@ public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JAttri
 
   @Override
   public boolean isPrivate() {
-    return getAccessModifier() == BasicAccessModifier.PRIVATE;
+    return getAccessModifier().equals(BasicAccessModifier.PRIVATE);
   }
 
   @Override
   public boolean isProtected() {
-    return getAccessModifier() == BasicAccessModifier.PROTECTED;
+    return getAccessModifier().equals(BasicAccessModifier.PROTECTED);
   }
 
   @Override
   public boolean isPublic() {
-    return getAccessModifier() == BasicAccessModifier.PUBLIC;
+    return getAccessModifier().equals(BasicAccessModifier.PUBLIC);
   }
 
   public void setInnerType(boolean innerType) {

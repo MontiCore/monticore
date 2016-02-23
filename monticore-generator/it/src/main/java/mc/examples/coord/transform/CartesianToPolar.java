@@ -65,16 +65,13 @@ public class CartesianToPolar implements CoordcartesianVisitor {
     DecimalFormat Reals = new DecimalFormat("0.000", new DecimalFormatSymbols(Locale.GERMAN));
     
     // d = sqrt(x*x + y*y)
-    String d = Reals.format(
-        Math.sqrt(Double.parseDouble(a.getX())
-            * Double.parseDouble(a.getX())
-            + Double.parseDouble(a.getY())
-            * Double.parseDouble(a.getY())));
+    double d = Math.sqrt(a.getX()
+        * a.getX()
+        + a.getY()
+        * a.getY());
     
     // angle = atan2(y,x)
-    String angle = Reals.format(
-        Math.atan2(Double.parseDouble(a.getY()),
-            Double.parseDouble(a.getX())));
+    double angle = Math.atan2(a.getY(), a.getX());
     
     result.getCoordinates().add(CoordpolarNodeFactory.createASTCoordinate(d, angle));
   }

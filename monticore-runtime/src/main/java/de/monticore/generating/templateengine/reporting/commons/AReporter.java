@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 
 import de.monticore.ast.ASTNode;
+import de.se_rwth.commons.logging.Log;
 
 /**
  * TODO: Write me!
@@ -56,15 +57,13 @@ public abstract class AReporter extends DefaultReportEventHandler {
 				file = reportingHelper.createFile(qualifiedFileName,
 						fileextension);
 			} catch (IOException e) {
-				// TODO: Use MC4 log mechanism
-				e.printStackTrace();
+        Log.warn("0xA0130 Cannot create log file", e);
 			}
 			fileOpen = true;
 			try {
 				reportingHelper.openFile(file);
 			} catch (IOException e) {
-				// TODO: Use MC4 log mechanism
-				e.printStackTrace();
+        Log.warn("0xA0131 Cannot open log file", e);
 			}
 		}
 	}
@@ -83,8 +82,7 @@ public abstract class AReporter extends DefaultReportEventHandler {
 		try {
 			reportingHelper.writeLineToFile(file, line);
 		} catch (IOException e) {
-			// TODO: Use MC4 log mechanism
-			e.printStackTrace();
+      Log.warn("0xA0132 Cannot write to log file", e);
 		}
 	}
 
@@ -94,8 +92,7 @@ public abstract class AReporter extends DefaultReportEventHandler {
 				fileOpen = false;
 				reportingHelper.closeFile(file);
 			} catch (IOException e) {
-				// TODO: Use MC4 log mechanism
-				e.printStackTrace();
+			  Log.warn("0xA0133 Cannot close log file", e);
 			}
 		}
 	}

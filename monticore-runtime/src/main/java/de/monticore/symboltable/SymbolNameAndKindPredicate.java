@@ -39,7 +39,8 @@ public class SymbolNameAndKindPredicate implements SymbolPredicate {
   /**
    * @see com.google.common.base.Predicate#apply(java.lang.Object)
    */
-  public boolean apply(final Symbol symbol) {
+  @Override
+  public boolean test(final Symbol symbol) {
     return (symbol != null)
         && symbol.getName().equals(symbolName)
         && symbol.getKind().isKindOf(symbolKind);

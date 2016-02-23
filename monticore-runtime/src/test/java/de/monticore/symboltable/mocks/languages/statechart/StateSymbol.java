@@ -31,10 +31,10 @@ import de.monticore.symboltable.CommonSymbol;
  */
 public class StateSymbol extends CommonSymbol {
 
-  public static final StateKind KIND = StateKind.KIND;
+  public static final StateKind KIND = new StateKind();
   
   public StateSymbol(String name) {
-    super(name, StateKind.KIND);
+    super(name, StateSymbol.KIND);
   }
 
 }

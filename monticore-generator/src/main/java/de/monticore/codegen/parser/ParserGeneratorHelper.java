@@ -43,6 +43,7 @@ import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._ast.ASTTerminal;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTExpressionPredicate;
+import de.monticore.grammar.grammar_withconcepts._ast.ASTGrammar_WithConceptsNode;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTJavaCode;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.java.javadsl._ast.ASTBlockStatement;
@@ -158,7 +159,7 @@ public class ParserGeneratorHelper {
     
     if (rule instanceof MCInterfaceOrAbstractRuleSymbol) {
       List<PredicatePair> subRules = grammarSymbol.getSubRulesForParsing(ruleName);
-      generateParserForRule = subRules != null && subRules.size() > 0;
+      generateParserForRule = subRules != null && !subRules.isEmpty();
     }
     return generateParserForRule;
   }
@@ -246,7 +247,7 @@ public class ParserGeneratorHelper {
 
     for (Entry<String, MCRuleSymbol> ruleSymbol :rules.entrySet()) {
       if (ruleSymbol.getValue().getKindSymbolRule().equals(KindSymbolRule.LEXERRULE)) {
-        MCLexRuleSymbol lexRule = ((MCLexRuleSymbol) ruleSymbol.getValue());
+        MCLexRuleSymbol lexRule = (MCLexRuleSymbol) ruleSymbol.getValue();
         
         // MONTICOREANYTHING must be last rule
         if (lexRule.getName().equals(MONTICOREANYTHING)) {
@@ -427,14 +428,14 @@ public class ParserGeneratorHelper {
     Log.errorIfNull(node);
 
     if (node instanceof ASTAction) {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       for (ASTBlockStatement action: ((ASTAction) node).getBlockStatements()) {
         buffer.append(getPrettyPrinter().prettyprint(action));
       }
       return buffer.toString();
     }
     if (node instanceof ASTJavaCode) {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       for (ASTClassMemberDeclaration action: ((ASTJavaCode) node).getClassMemberDeclarations()) {
         buffer.append(getPrettyPrinter().prettyprint(action));
 
@@ -446,8 +447,11 @@ public class ParserGeneratorHelper {
       Log.debug("ASTExpressionPredicate:\n" + exprPredicate, ParserGenerator.LOG);
       return exprPredicate;
     }
-    // TODO MB
-    // getPrettyPrinter().prettyPrint(node, buffer);
+    if (node instanceof ASTGrammar_WithConceptsNode) {
+      String output = getPrettyPrinter().prettyprint((ASTGrammar_WithConceptsNode) node);
+      Log.debug("ASTGrammar_WithConceptsNode:\n" + output, ParserGenerator.LOG);
+      return output;
+    }
     return "";
   }
   

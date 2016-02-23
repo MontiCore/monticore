@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
-import org.antlr.v4.runtime.RecognitionException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -56,7 +55,7 @@ public class MCGrammarPrettyPrinterTest {
 
   @Test
   // Test simple grammar
-  public void testStatechart() throws RecognitionException, IOException {
+  public void testStatechart() throws IOException {
     String model = "src/test/resources/de/monticore/statechart/Statechart.mc4";
     
     // Parsing input
@@ -81,7 +80,7 @@ public class MCGrammarPrettyPrinterTest {
   
   @Test
   // Test grammar with concepts and java
-  public void testTypes() throws RecognitionException, IOException {
+  public void testTypes() throws IOException {
     String model = "src/test/resources/mc/grammars/types/TestTypes.mc4";
     
     // Parsing input

@@ -26,10 +26,10 @@ import de.monticore.symboltable.types.CommonJMethodSymbol;
 
 public class ActionSymbol extends CommonJMethodSymbol<EntitySymbol, EntitySymbolReference, PropertySymbol> {
   
-  public static final ActionSymbolKind KIND = ActionSymbolKind.KIND;
+  public static final ActionSymbolKind KIND = new ActionSymbolKind();
   
   public ActionSymbol(String name) {
-    super(name, ActionSymbolKind.KIND);
+    super(name, KIND);
   }
 
   @Override
@@ -38,17 +38,17 @@ public class ActionSymbol extends CommonJMethodSymbol<EntitySymbol, EntitySymbol
   }
 
   public Optional<PropertySymbol> getVariable(String name) {
-    return spannedScope.<PropertySymbol>resolveLocally(name, PropertySymbolKind.KIND);
+    return getSpannedScope().<PropertySymbol>resolveLocally(name, PropertySymbol.KIND);
   }
   
   public void addVariable(PropertySymbol variable) {
-    spannedScope.add(variable);
+    getMutableSpannedScope().add(variable);
   }
 
   
   @Override
   public String toString() {
-    return "method " + super.toString() + ":" + spannedScope.getSymbols();
+    return "method " + super.toString() + ":" + getSpannedScope().getSymbols();
   }
 
 }

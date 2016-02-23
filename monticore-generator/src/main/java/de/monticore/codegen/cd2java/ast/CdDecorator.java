@@ -31,8 +31,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.antlr.v4.runtime.RecognitionException;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
@@ -66,6 +64,7 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDEnumConstant;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTModifier;
 import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.umlcd4a.cd4analysis._visitor.CD4AnalysisInheritanceVisitor;
@@ -96,15 +95,15 @@ public class CdDecorator {
   
   public static final String NODE_FACTORY = "NodeFactory";
   
-  private static final String DEL = ", ";
+  protected static final String DEL = ", ";
   
-  private ASTCDTransformation cdTransformation = new ASTCDTransformation();
+  protected ASTCDTransformation cdTransformation = new ASTCDTransformation();
   
-  private GlobalExtensionManagement glex;
+  protected GlobalExtensionManagement glex;
   
-  private IterablePath targetPath;
+  protected IterablePath targetPath;
   
-  private GlobalScope symbolTable;
+  protected GlobalScope symbolTable;
   
   public CdDecorator(
       GlobalExtensionManagement glex,
@@ -164,7 +163,7 @@ public class CdDecorator {
             
   }
   
-  void addSymbolGetter(ASTCDClass clazz, AstGeneratorHelper astHelper) {
+  protected void addSymbolGetter(ASTCDClass clazz, AstGeneratorHelper astHelper) {
     List<ASTCDAttribute> attributes = Lists.newArrayList(clazz.getCDAttributes());
     for (ASTCDAttribute attribute : attributes) {
       if (GeneratorHelper.isInherited(attribute)
@@ -213,8 +212,8 @@ public class CdDecorator {
    * @param astHelper
    * @throws ANTLRException
    */
-  void addAdditionalMethods(ASTCDClass clazz,
-      AstGeneratorHelper astHelper) throws RecognitionException {
+  protected void addAdditionalMethods(ASTCDClass clazz,
+      AstGeneratorHelper astHelper) {
     if (astHelper.isAstClass(clazz)) {
       AstAdditionalMethods additionalMethod = AstAdditionalMethods.accept;
       String visitorTypeFQN = VisitorGeneratorHelper.getQualifiedVisitorType(
@@ -301,14 +300,13 @@ public class CdDecorator {
    * @param astHelper
    * @throws ANTLRException
    */
-  void addBuilders(ASTCDDefinition cdDefinition, AstGeneratorHelper astHelper)
-      throws RecognitionException {
+  protected void addBuilders(ASTCDDefinition cdDefinition, AstGeneratorHelper astHelper) {
     newArrayList(cdDefinition.getCDClasses()).stream()
         .forEach(c -> cdTransformation.addCdClassUsingDefinition(cdDefinition,
             "public static class " + AstGeneratorHelper.getNameOfBuilderClass(c) + " ;"));
   }
   
-  void addSuperInterfaces(ASTCDClass clazz) {
+  protected void addSuperInterfaces(ASTCDClass clazz) {
     String interfaces = clazz.printInterfaces();
     if (!interfaces.isEmpty()) {
       glex.replaceTemplate("ast.AstSuperInterfaces", clazz,
@@ -323,7 +321,7 @@ public class CdDecorator {
    * @param astHelper
    * @throws ANTLRException
    */
-  void addAdditionalAttributes(
+  protected void addAdditionalAttributes(
       ASTCDClass clazz, AstGeneratorHelper astHelper) {
     // Add Symbol attribute
     cdTransformation.addCdAttributeUsingDefinition(clazz,
@@ -341,8 +339,7 @@ public class CdDecorator {
    * @param astHelper
    * @throws ANTLRException
    */
-  void addGetter(ASTCDClass clazz, AstGeneratorHelper astHelper)
-      throws RecognitionException {
+  protected void addGetter(ASTCDClass clazz, AstGeneratorHelper astHelper) {
     List<ASTCDAttribute> attributes = Lists.newArrayList(clazz.getCDAttributes());
     // attributes.addAll(astHelper.getAttributesOfExtendedInterfaces(clazz));
     for (ASTCDAttribute attribute : attributes) {
@@ -364,7 +361,7 @@ public class CdDecorator {
    * @param astHelper
    * @param glex
    */
-  void addGetter(ASTCDInterface interf) throws RecognitionException {
+  protected void addGetter(ASTCDInterface interf) {
     for (ASTCDAttribute attribute : interf.getCDAttributes()) {
       if (GeneratorHelper.isInherited(attribute)) {
         continue;
@@ -382,8 +379,7 @@ public class CdDecorator {
    * @param astHelper
    * @throws ANTLRException
    */
-  void addSetter(ASTCDClass clazz, AstGeneratorHelper astHelper)
-      throws RecognitionException {
+  protected void addSetter(ASTCDClass clazz, AstGeneratorHelper astHelper) {
     for (ASTCDAttribute attribute : clazz.getCDAttributes()) {
       if (GeneratorHelper.isInherited(attribute)) {
         continue;
@@ -417,8 +413,25 @@ public class CdDecorator {
    * @param astHelper
    * @throws ANTLRException
    */
-  void addNodeFactoryClass(ASTCDCompilationUnit cdCompilationUnit,
-      List<ASTCDClass> nativeClasses, AstGeneratorHelper astHelper) throws RecognitionException {
+  protected void addNodeFactoryClass(ASTCDCompilationUnit cdCompilationUnit,
+      List<ASTCDClass> nativeClasses, AstGeneratorHelper astHelper) {
+    
+    // Add factory-attributes for all ast classes
+    Set<String> astClasses = new LinkedHashSet<>();
+    nativeClasses.stream()
+        .forEach(e -> astClasses.add(GeneratorHelper.getPlainName(e)));
+    
+    ASTCDClass nodeFactoryClass = createNodeFactoryClass(cdCompilationUnit, nativeClasses, astHelper, astClasses);
+    
+    List<String> imports = getImportsForNodeFactory(nodeFactoryClass, astClasses, astHelper);
+    
+    glex.replaceTemplate("ast.ClassContent", nodeFactoryClass, new TemplateHookPoint(
+        "ast.AstNodeFactory", nodeFactoryClass, imports));
+        
+  }
+  
+  protected ASTCDClass createNodeFactoryClass(ASTCDCompilationUnit cdCompilationUnit,
+      List<ASTCDClass> nativeClasses, AstGeneratorHelper astHelper, Set<String> astClasses) {
     ASTCDDefinition cdDef = cdCompilationUnit.getCDDefinition();
     ASTCDClass nodeFactoryClass = CD4AnalysisNodeFactory.createASTCDClass();
     String nodeFactoryName = cdDef.getName() + NODE_FACTORY;
@@ -431,12 +444,6 @@ public class CdDecorator {
     }
     nodeFactoryClass.setName(nodeFactoryName);
     
-    // Add factory-attributes for all ast classes
-    Set<String> astClasses = new LinkedHashSet<>();
-    nativeClasses.stream().filter(e -> e.getModifier().isPresent())
-        .filter(e -> !e.getModifier().get().isAbstract())
-        .forEach(e -> astClasses.add(GeneratorHelper.getPlainName(e)));
-        
     for (String clazz : astClasses) {
       String toParse = "protected static " + nodeFactoryName + " factory" + clazz + " = null;";
       cdTransformation.addCdAttributeUsingDefinition(nodeFactoryClass, toParse);
@@ -444,16 +451,21 @@ public class CdDecorator {
     
     // Add ast-creating methods
     for (ASTCDClass clazz : nativeClasses) {
-      if (!clazz.getModifier().isPresent() || clazz.getModifier().get().isAbstract()) {
-        continue;
-      }
       addMethodsToNodeFactory(clazz, nodeFactoryClass, astHelper);
     }
     
+    cdDef.getCDClasses().add(nodeFactoryClass);
+    
+    return nodeFactoryClass;
+  }
+  
+  protected List<String> getImportsForNodeFactory(ASTCDClass nodeFactoryClass,
+      Set<String> astClasses, AstGeneratorHelper astHelper) {
+    String nodeFactoryName = nodeFactoryClass.getName();
     // Add delegating methods for creating of the ast nodes of the super
     // grammars
     List<String> imports = new ArrayList<>();
-    if (astHelper.getSuperGrammarCds().size() != 0) {
+    if (!astHelper.getSuperGrammarCds().isEmpty()) {
       for (CDSymbol superCd : astHelper.getAllCds(astHelper.getCdSymbol())) {
         Log.debug(" CDSymbol for " + nodeFactoryName + " : " + superCd, "CdDecorator");
         nodeFactoryName = getSimpleName(superCd.getName()) + NODE_FACTORY;
@@ -474,11 +486,7 @@ public class CdDecorator {
         }
       }
     }
-    
-    cdDef.getCDClasses().add(nodeFactoryClass);
-    glex.replaceTemplate("ast.ClassContent", nodeFactoryClass, new TemplateHookPoint(
-        "ast.AstNodeFactory", nodeFactoryClass, imports));
-        
+    return imports;
   }
   
   /**
@@ -488,7 +496,7 @@ public class CdDecorator {
    * @param cdClass
    * @param nodeFactoryForSuperCd
    */
-  void addMethodsToNodeFactory(ASTCDClass clazz, ASTCDClass nodeFactoryClass,
+  protected void addMethodsToNodeFactory(ASTCDClass clazz, ASTCDClass nodeFactoryClass,
       AstGeneratorHelper astHelper) {
     if (!clazz.getModifier().isPresent() || clazz.getModifier().get().isAbstract()) {
       return;
@@ -502,12 +510,12 @@ public class CdDecorator {
     methodBody = new TemplateHookPoint("ast.factorymethods.DoCreate", clazz, className);
     replaceMethodBodyTemplate(nodeFactoryClass, toParse, methodBody);
     
-    toParse = "public static " + className + " create" + className + "() ;";
-    
     // No create methods with parameters
     if (clazz.getCDAttributes().isEmpty()) {
       return;
     }
+    
+    toParse = "public static " + className + " create" + className + "() ;";
     
     Optional<ASTCDMethod> astMethod = cdTransformation.addCdMethodUsingDefinition(
         nodeFactoryClass, toParse);
@@ -598,7 +606,7 @@ public class CdDecorator {
    * @param cdClass
    * @param nodeFactoryForSuperCd
    */
-  void addDelegateMethodsToNodeFactory(ASTCDClass clazz, ASTCDClass nodeFactoryClass,
+  protected void addDelegateMethodsToNodeFactory(ASTCDClass clazz, ASTCDClass nodeFactoryClass,
       AstGeneratorHelper astHelper, CDSymbol cdSymbol, String delegateFactoryName) {
     if (!clazz.getModifier().isPresent() || clazz.getModifier().get().isAbstract()) {
       return;
@@ -616,7 +624,7 @@ public class CdDecorator {
     if (clazz.getCDAttributes().size() <= 2) {
       return;
     }
-        
+    
     Optional<ASTCDMethod> astMethod = cdTransformation.addCdMethodUsingDefinition(
         nodeFactoryClass, toParse);
     Preconditions.checkArgument(astMethod.isPresent());
@@ -685,7 +693,7 @@ public class CdDecorator {
    * @param clazz
    * @param astHelper
    */
-  void addConstructors(ASTCDClass clazz,
+  protected void addConstructors(ASTCDClass clazz,
       AstGeneratorHelper astHelper) {
     ASTCDConstructor emptyConstructor = CD4AnalysisNodeFactory.createASTCDConstructor();
     emptyConstructor.setName(clazz.getName());
@@ -739,19 +747,18 @@ public class CdDecorator {
    * @param astHelper
    * @throws ANTLRException
    */
-  void addConstantsClass(ASTCDDefinition cdDefinition, AstGeneratorHelper astHelper)
-      throws RecognitionException {
-      
-    String constantsClassName = ConstantsTranslation.AST_CONSTANTS_ENUM + cdDefinition.getName();
+  protected void addConstantsClass(ASTCDDefinition cdDefinition, AstGeneratorHelper astHelper) {
+    String enumLiterals = cdDefinition.getName() + ConstantsTranslation.CONSTANTS_ENUM;
     Optional<ASTCDEnum> enumConstans = cdDefinition.getCDEnums().stream()
-        .filter(e -> e.getName().equals(constantsClassName)).findAny();
+        .filter(e -> e.getName().equals(enumLiterals)).findAny();
     if (!enumConstans.isPresent()) {
-      Log.error("0xA1004 CdDecorator error: " + constantsClassName
+      Log.error("0xA1004 CdDecorator error: " + enumLiterals
           + " class can't be created for the class diagramm "
           + cdDefinition.getName());
       return;
     }
     
+    String constantsClassName = "ASTConstants" + cdDefinition.getName();
     Optional<ASTCDClass> ast = cdTransformation.addCdClassUsingDefinition(cdDefinition,
         "public class " + constantsClassName + ";");
     if (!ast.isPresent()) {
@@ -773,7 +780,7 @@ public class CdDecorator {
       constAttr.setName(astConstant.getName());
       astConstantsClass.getCDAttributes().add(constAttr);
     }
-    cdDefinition.getCDEnums().remove(enumConstans.get());
+    //cdDefinition.getCDEnums().remove(enumConstans.get());
   }
   
   /**
@@ -782,7 +789,7 @@ public class CdDecorator {
    * @param cdDefinition
    * @param astHelper
    */
-  void decorateBaseInterface(ASTCDDefinition cdDefinition) {
+  protected void decorateBaseInterface(ASTCDDefinition cdDefinition) {
     List<ASTCDInterface> stream = cdDefinition
         .getCDInterfaces()
         .stream()
@@ -811,7 +818,7 @@ public class CdDecorator {
    * 
    * @param cdCompilationUnit
    */
-  void transformCdTypeNamesForHWTypes(ASTCDCompilationUnit cdCompilationUnit) {
+  protected void transformCdTypeNamesForHWTypes(ASTCDCompilationUnit cdCompilationUnit) {
     String packageName = TransformationHelper.getAstPackageName(cdCompilationUnit);
     
     cdCompilationUnit
@@ -841,7 +848,7 @@ public class CdDecorator {
    * @param replacedTemplateName qualified name of template to be replaced
    * @param glex
    */
-  public ASTCDMethod replaceMethodBodyTemplate(ASTCDClass clazz, String methodSignatur,
+  public ASTCDMethod replaceMethodBodyTemplate(ASTCDType clazz, String methodSignatur,
       HookPoint hookPoint) {
     Optional<ASTCDMethod> astMethod = cdTransformation.addCdMethodUsingDefinition(clazz,
         methodSignatur);

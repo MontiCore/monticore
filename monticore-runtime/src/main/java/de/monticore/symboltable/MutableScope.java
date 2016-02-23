@@ -21,6 +21,7 @@ package de.monticore.symboltable;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.modifiers.AccessModifier;
@@ -33,18 +34,19 @@ import de.monticore.symboltable.resolving.ResolvingInfo;
 public interface MutableScope extends Scope {
   // TODO PN DOC
 
+  /**
+   *
+   * @deprecated
+   */
+  @Deprecated
   <T extends Symbol> Optional<T> resolve(ResolvingInfo resolvingInfo, String name,
       SymbolKind kind, AccessModifier modifier);
 
-  @Deprecated
-  <T extends Symbol> Optional<T> resolve(ResolvingInfo resolvingInfo, String name, SymbolKind kind);
+  <T extends Symbol> Collection<T> resolveDownMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier, Predicate<Symbol> predicate);
 
-  @Deprecated
-  <T extends Symbol> Optional<T> resolveDown(ResolvingInfo resolvingInfo, String name, SymbolKind kind);
+  <T extends Symbol> Collection<T> resolveMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier);
 
-  <T extends Symbol> Collection<T> resolveDownMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind);
-
-  <T extends Symbol> Collection<T> resolveMany(ResolvingInfo resolvingInfo, String symbolName, SymbolKind kind);
+  <T extends Symbol> Collection<T> resolveMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier, Predicate<Symbol> predicate);
 
   /**
    * @param enclosingScope the enclosing scope. In Java, for example, a class scope is the
@@ -110,5 +112,6 @@ public interface MutableScope extends Scope {
    */
   void setName(String name);
 
+  <T extends Symbol> Collection<T> continueAsSubScope(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier, Predicate<Symbol> predicate);
 
 }

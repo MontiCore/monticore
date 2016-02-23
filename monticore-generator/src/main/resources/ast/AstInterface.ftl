@@ -46,7 +46,5 @@ package ${genHelper.getAstPackage()};
 <#-- Imports hook --> 
 ${tc.defineHookPoint("<Block>?InterfaceContent:addImports")}
 
-import ${visitorPackage}.${visitorType};
-
-${tc.includeArgs("ast.AstInterfaceContent", [visitorType])}
+${tc.includeArgs("ast.AstInterfaceContent", [visitorPackage, visitorType])}
 

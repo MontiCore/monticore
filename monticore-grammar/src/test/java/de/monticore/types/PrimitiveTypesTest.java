@@ -20,8 +20,11 @@
 package de.monticore.types;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.io.IOException;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -48,10 +51,11 @@ public class PrimitiveTypesTest {
           "float", "double" };
       for (String primitive : primitives) {
         ASTType type = TypesTestHelper.getInstance().parseType(primitive);
+        assertNotNull(type);
         assertTrue(type instanceof ASTPrimitiveType);
       }
     }
-    catch (Exception e) {
+    catch (IOException e) {
       fail(e.getMessage());
     }
   }
@@ -63,10 +67,12 @@ public class PrimitiveTypesTest {
       String[] noprimitives = new String[] { "String", "bool", "char[]" };
       for (String noprimitive : noprimitives) {
         ASTType type = TypesTestHelper.getInstance().parseType(noprimitive);
+        assertNotNull(type);
         assertFalse(type instanceof ASTPrimitiveType);
       }
     }
-    catch (Exception e) {
+    catch (IOException e) {
+      fail(e.getMessage());
     }
   }
   
@@ -75,7 +81,7 @@ public class PrimitiveTypesTest {
     try {
       TypesTestHelper.getInstance().parseBooleanType("boolean");
     }
-    catch (Exception e) {
+    catch (IOException e) {
       fail(e.getMessage());
     }
   }
@@ -94,7 +100,7 @@ public class PrimitiveTypesTest {
         assertFalse(((ASTPrimitiveType) ast).getPrimitive() == ASTConstantsTypes.BOOLEAN);
       }
     }
-    catch (Exception e) {
+    catch (IOException e) {
       fail(e.getMessage());
     }
   }
@@ -104,10 +110,10 @@ public class PrimitiveTypesTest {
     try {
       String[] integrals = new String[] { "byte", "short", "int", "long", "char" };
       for (String integral : integrals) {
-        TypesTestHelper.getInstance().parseIntegralType(integral);
+        assertNotNull(TypesTestHelper.getInstance().parseIntegralType(integral));
       }
     }
-    catch (Exception e) {
+    catch (IOException e) {
       fail(e.getMessage());
     }
   }
@@ -126,7 +132,7 @@ public class PrimitiveTypesTest {
         assertFalse(((ASTPrimitiveType) ast).getPrimitive() == ASTConstantsTypes.INT);
       }
     }
-    catch (Exception e) {
+    catch (IOException e) {
       fail(e.getMessage());
     }
   }
@@ -136,10 +142,10 @@ public class PrimitiveTypesTest {
     try {
       String[] integrals = new String[] { "float", "double" };
       for (String integral : integrals) {
-        TypesTestHelper.getInstance().parseFloatingPointType(integral);
+        assertNotNull(TypesTestHelper.getInstance().parseFloatingPointType(integral));
       }
     }
-    catch (Exception e) {
+    catch (IOException e) {
       fail(e.getMessage());
     }
   }
@@ -158,7 +164,7 @@ public class PrimitiveTypesTest {
         assertFalse(((ASTPrimitiveType) ast).getPrimitive() == ASTConstantsTypes.FLOAT);
       }
     }
-    catch (Exception e) {
+    catch (IOException e) {
       fail(e.getMessage());
     }
   }
@@ -171,7 +177,7 @@ public class PrimitiveTypesTest {
         TypesTestHelper.getInstance().parseNumericType(integral);
       }
     }
-    catch (Exception e) {
+    catch (IOException e) {
       fail(e.getMessage());
     }
   }
@@ -185,7 +191,7 @@ public class PrimitiveTypesTest {
       ast = TypesTestHelper.getInstance().parseNumericType("double");
       assertTrue(ast instanceof ASTPrimitiveType);
     }
-    catch (Exception e) {
+    catch (IOException e) {
       fail(e.getMessage());
     }
   }

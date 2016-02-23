@@ -19,6 +19,7 @@
 
 package de.monticore.symboltable.mocks.languages.entity;
 
+import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.types.JAttributeSymbolKind;
 
 /**
@@ -31,11 +32,19 @@ import de.monticore.symboltable.types.JAttributeSymbolKind;
  */
 public class PropertySymbolKind extends JAttributeSymbolKind {
 
-  public static final PropertySymbolKind KIND = new PropertySymbolKind();
+  private static final String NAME = "de.monticore.symboltable.mocks.languages.entity.PropertySymbolKind";
+
+  protected PropertySymbolKind() {
+  }
 
   @Override
   public String getName() {
-    return "VariableKind";
+    return NAME;
+  }
+
+  @Override
+  public boolean isKindOf(SymbolKind kind) {
+    return NAME.equals(kind.getName()) || super.isKindOf(kind);
   }
 
 }

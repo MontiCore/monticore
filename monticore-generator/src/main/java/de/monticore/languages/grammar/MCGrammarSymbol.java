@@ -212,14 +212,14 @@ public class MCGrammarSymbol extends CommonScopeSpanningSymbol {
     }
 
     type.setGrammarSymbol(this);
-    this.spannedScope.add(type);
+    this.getMutableSpannedScope().add(type);
     // Since we do not create the type in the usual symbol tabel creation mechanism, the resolving
     // filters have to be added manually
     ((MutableScope)type.getSpannedScope()).setResolvingFilters(getSpannedScope().getResolvingFilters());
   }
 
   public Collection<MCTypeSymbol> getTypes() {
-    return this.spannedScope.resolveLocally(MCTypeSymbol.KIND);
+    return this.getSpannedScope().resolveLocally(MCTypeSymbol.KIND);
   }
 
   public Collection<String> getTypeNames() {
@@ -234,7 +234,7 @@ public class MCGrammarSymbol extends CommonScopeSpanningSymbol {
 
   // TODO PN return Optional value
   public MCTypeSymbol getType(String typeName) {
-    return this.spannedScope.<MCTypeSymbol>resolveLocally(typeName, MCTypeSymbol.KIND).orElse(null);
+    return this.getSpannedScope().<MCTypeSymbol>resolveLocally(typeName, MCTypeSymbol.KIND).orElse(null);
   }
 
   /**
@@ -315,11 +315,11 @@ public class MCGrammarSymbol extends CommonScopeSpanningSymbol {
           getFullName() + "'", MCGrammarSymbol.class.getSimpleName());
     }
 
-    this.spannedScope.add(ruleSymbol);
+    this.getMutableSpannedScope().add(ruleSymbol);
   }
 
   public Collection<MCRuleSymbol> getRules() {
-    return this.spannedScope.resolveLocally(MCRuleSymbol.KIND);
+    return this.getSpannedScope().resolveLocally(MCRuleSymbol.KIND);
   }
 
   public Collection<String> getRuleNames() {
@@ -334,7 +334,7 @@ public class MCGrammarSymbol extends CommonScopeSpanningSymbol {
 
   // TODO PN return Optional value
   public MCRuleSymbol getRule(String ruleName) {
-    return this.spannedScope.<MCRuleSymbol>resolveLocally(ruleName, MCRuleSymbol.KIND).orElse(null);
+    return this.getSpannedScope().<MCRuleSymbol>resolveLocally(ruleName, MCRuleSymbol.KIND).orElse(null);
   }
 
   /**
@@ -581,7 +581,7 @@ public class MCGrammarSymbol extends CommonScopeSpanningSymbol {
   public void createEnum(MCAttributeInfo value, String enumName) {
     // Create private enum
     MCTypeSymbol typeEntry = MCGrammarSymbolsFactory.createMCTypeSymbol(enumName, this, null);
-        //new MCTypeSymbolReference(enumName, this, spannedScope);
+        //new MCTypeSymbolReference(enumName, this, getSpannedScope());
     typeEntry.setKindOfType(MCTypeSymbol.KindType.CONST);
     for (String constantValue : value.getConstantValues()) {
       typeEntry.addEnum(lexNamer.getConstantName(constantValue), constantValue);
@@ -695,6 +695,19 @@ public class MCGrammarSymbol extends CommonScopeSpanningSymbol {
   }
 
   public static final class GrammarKind implements SymbolKind {
-    private GrammarKind() {}
+    private static final String NAME = GrammarKind.class.getName();
+
+    private GrammarKind() {
+    }
+
+    @Override
+    public String getName() {
+      return NAME;
+    }
+
+    @Override
+    public boolean isKindOf(SymbolKind kind) {
+      return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
+    }
   }
 }

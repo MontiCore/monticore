@@ -111,11 +111,11 @@ public abstract class MCRuleSymbol extends CommonScopeSpanningSymbol {
   }
   
   public Collection<MCRuleComponentSymbol> getRuleComponents() {
-    return spannedScope.resolveLocally(MCRuleComponentSymbol.KIND);
+    return getSpannedScope().resolveLocally(MCRuleComponentSymbol.KIND);
   }
 
   public Optional<MCRuleComponentSymbol> getRuleComponent(String componentName) {
-    return spannedScope.resolveLocally(componentName, MCRuleComponentSymbol.KIND);
+    return getSpannedScope().resolveLocally(componentName, MCRuleComponentSymbol.KIND);
   }
   
   public void addRuleComponent(MCRuleComponentSymbol ruleComponent) {
@@ -130,7 +130,7 @@ public abstract class MCRuleSymbol extends CommonScopeSpanningSymbol {
       r.setList(r.isList() || ruleComponent.isList());
     }
     else {
-      spannedScope.add(ruleComponent);
+      getMutableSpannedScope().add(ruleComponent);
     }
   }
   
@@ -260,7 +260,20 @@ public abstract class MCRuleSymbol extends CommonScopeSpanningSymbol {
   }
   
   public static final class RuleKind implements SymbolKind {
+
+    private static final String NAME = RuleKind.class.getName();
+
     private RuleKind() {
+    }
+
+    @Override
+    public String getName() {
+      return NAME;
+    }
+
+    @Override
+    public boolean isKindOf(SymbolKind kind) {
+      return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
     }
   }
   

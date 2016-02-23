@@ -149,7 +149,5 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
     return realThis;
   }
   
-  
 }
   
-

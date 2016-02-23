@@ -59,8 +59,8 @@ public class AdaptedResolvingTest {
     scope.add(entity);
     scope.add(sc);
 
-    scope.addResolver(CommonResolvingFilter.create(EntitySymbol.class, EntitySymbol.KIND));
-    scope.addResolver(CommonResolvingFilter.create(StateChartSymbol.class, StateChartSymbol.KIND));
+    scope.addResolver(CommonResolvingFilter.create(EntitySymbol.KIND));
+    scope.addResolver(CommonResolvingFilter.create(StateChartSymbol.KIND));
 
     assertTrue(scope.resolve("Entity", EntitySymbol.KIND).isPresent());
     assertTrue(scope.resolve("Sc", StateChartSymbol.KIND).isPresent());
@@ -101,8 +101,8 @@ public class AdaptedResolvingTest {
     parentScope.add(sc);
 
     // ...Resolving filters are only registered in the sub scope.
-    subScope.addResolver(CommonResolvingFilter.create(EntitySymbol.class, EntitySymbol.KIND));
-    subScope.addResolver(CommonResolvingFilter.create(StateChartSymbol.class, StateChartSymbol.KIND));
+    subScope.addResolver(CommonResolvingFilter.create(EntitySymbol.KIND));
+    subScope.addResolver(CommonResolvingFilter.create(StateChartSymbol.KIND));
     subScope.addResolver(new Sc2EntityTransitiveResolvingFilter());
     subScope.addResolver(new Entity2StateTransitiveResolvingFilter());
 
@@ -143,9 +143,9 @@ public class AdaptedResolvingTest {
     scope.add(sc);
     scope.add(state);
 
-    scope.addResolver(CommonResolvingFilter.create(EntitySymbol.class, EntitySymbol.KIND));
-    scope.addResolver(CommonResolvingFilter.create(StateChartSymbol.class, StateChartSymbol.KIND));
-    scope.addResolver(CommonResolvingFilter.create(StateSymbol.class, StateSymbol.KIND));
+    scope.addResolver(CommonResolvingFilter.create(EntitySymbol.KIND));
+    scope.addResolver(CommonResolvingFilter.create(StateChartSymbol.KIND));
+    scope.addResolver(CommonResolvingFilter.create(StateSymbol.KIND));
 
     // Adapted resolving filters
     scope.addResolver(new Entity2StateTransitiveResolvingFilter());
@@ -175,8 +175,8 @@ public class AdaptedResolvingTest {
     scope.add(entity);
     scope.add(sc);
 
-    scope.addResolver(CommonResolvingFilter.create(EntitySymbol.class, EntitySymbol.KIND));
-    scope.addResolver(CommonResolvingFilter.create(StateChartSymbol.class, StateChartSymbol.KIND));
+    scope.addResolver(CommonResolvingFilter.create(EntitySymbol.KIND));
+    scope.addResolver(CommonResolvingFilter.create(StateChartSymbol.KIND));
 
     assertTrue(scope.resolve("Entity", EntitySymbol.KIND).isPresent());
     assertTrue(scope.resolve("Sc", StateChartSymbol.KIND).isPresent());
@@ -212,10 +212,10 @@ public class AdaptedResolvingTest {
     scope.add(new StateChartSymbol("Sc"));
     scope.add(new StateSymbol("state"));
 
-    scope.addResolver(CommonResolvingFilter.create(EntitySymbol.class, EntitySymbol.KIND));
-    scope.addResolver(CommonResolvingFilter.create(ActionSymbol.class, ActionSymbol.KIND));
-    scope.addResolver(CommonResolvingFilter.create(StateChartSymbol.class, StateChartSymbol.KIND));
-    scope.addResolver(CommonResolvingFilter.create(StateSymbol.class, StateSymbol.KIND));
+    scope.addResolver(CommonResolvingFilter.create(EntitySymbol.KIND));
+    scope.addResolver(CommonResolvingFilter.create(ActionSymbol.KIND));
+    scope.addResolver(CommonResolvingFilter.create(StateChartSymbol.KIND));
+    scope.addResolver(CommonResolvingFilter.create(StateSymbol.KIND));
 
     // Adapted resolving filters
     scope.addResolver(new Entity2ScTransitiveResolvingFilter());

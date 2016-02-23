@@ -26,10 +26,8 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.Optional;
 
-import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
 
-import groovyjarjarantlr.TokenStreamRecognitionException;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.embedding.outer.featureembedded._ast.ASTExt;
 import mc.feature.embedding.outer.featureembedded._parser.FeatureembeddedParser;
@@ -38,7 +36,7 @@ import mc.feature.embedding.outer.featureouterdsl._ast.ASTOuter3;
 
 public class EmbeddingTest extends GeneratorIntegrationsTest {
   
-  private ASTOuter createAST(String filename, Reader r) throws RecognitionException, TokenStreamRecognitionException, IOException {
+  private ASTOuter createAST(String filename, Reader r) throws IOException {
     
     // Create overall parser
     FeatureembeddedParser parser = new FeatureembeddedParser();
@@ -49,7 +47,7 @@ public class EmbeddingTest extends GeneratorIntegrationsTest {
     return ast.get();
   }
   
-  private ASTOuter3 createAST3(String filename, Reader r) throws RecognitionException, IOException {
+  private ASTOuter3 createAST3(String filename, Reader r) throws IOException {
     
     // Create overall parser
     FeatureembeddedParser parser = new FeatureembeddedParser();
@@ -61,7 +59,7 @@ public class EmbeddingTest extends GeneratorIntegrationsTest {
   }
   
   @Test
-  public void testEmbedding() throws TokenStreamRecognitionException, RecognitionException, IOException {
+  public void testEmbedding() throws IOException {
     
     StringReader s = new StringReader("out { test }");
     
@@ -72,7 +70,7 @@ public class EmbeddingTest extends GeneratorIntegrationsTest {
   }
 
   @Test
-  public void testEmbedding3() throws RecognitionException, IOException {
+  public void testEmbedding3() throws IOException {
     
     StringReader s = new StringReader("out  {test}  ");
     
@@ -81,7 +79,7 @@ public class EmbeddingTest extends GeneratorIntegrationsTest {
   }
   
   @Test
-  public void testEmbedding4() throws RecognitionException, IOException {
+  public void testEmbedding4() throws IOException {
     
     StringReader s = new StringReader("out");
     

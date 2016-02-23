@@ -31,7 +31,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.ast.Comment;
 import de.se_rwth.commons.SourcePosition;
 
-abstract public class MCParser extends Parser {
+public abstract class MCParser extends Parser {
   
   protected List<Comment> comments = new ArrayList<Comment>();
     
@@ -57,21 +57,20 @@ abstract public class MCParser extends Parser {
     return filename;
   }
   
-  public de.se_rwth.commons.SourcePosition computeEndPosition(Token LT0) {
-    if (LT0 == null || LT0.getText() == null) {
+  public de.se_rwth.commons.SourcePosition computeEndPosition(Token token) {
+    if (token == null || token.getText() == null) {
       return SourcePosition.getDefaultSourcePosition();
     }
-    return computeEndPosition(new SourcePosition(LT0.getLine(), LT0.getCharPositionInLine()), LT0.getText());
+    return computeEndPosition(new SourcePosition(token.getLine(), token.getCharPositionInLine()), token.getText());
   }
   
-  public de.se_rwth.commons.SourcePosition computeStartPosition(Token LT0) {
-    if (LT0 == null) {
+  public de.se_rwth.commons.SourcePosition computeStartPosition(Token token) {
+    if (token == null) {
       return null;
     }
-    int line = LT0.getLine();
-    int column = LT0.getCharPositionInLine();
-    de.se_rwth.commons.SourcePosition pos = new de.se_rwth.commons.SourcePosition(line, column);
-    return pos;
+    int line = token.getLine();
+    int column = token.getCharPositionInLine();
+    return new de.se_rwth.commons.SourcePosition(line, column);
   }
   
   public SourcePosition computeEndPosition(SourcePosition start, String text) {   
@@ -80,7 +79,7 @@ abstract public class MCParser extends Parser {
     if (text == null) {
       throw new IllegalArgumentException("0xA0708 text was null!");
     }
-    else if (text.equals("\n")) {
+    else if ("\n".equals(text)) {
       column += text.length();
     }
     else if (text.indexOf("\n") == -1) {
@@ -93,8 +92,7 @@ abstract public class MCParser extends Parser {
       // be 2...
       column = splitted[splitted.length - 1].length() + 1;
     }
-    de.se_rwth.commons.SourcePosition pos = new de.se_rwth.commons.SourcePosition(line, column);
-    return pos;
+    return new de.se_rwth.commons.SourcePosition(line, column);
   }
   
   public boolean hasErrors() {
@@ -110,7 +108,7 @@ abstract public class MCParser extends Parser {
   }
   
   public boolean checkMax(int actual, int reference) {
-    return (reference < 0 || actual <= reference);
+    return reference < 0 || actual <= reference;
   }
   
   public void setFilename(String filename) {

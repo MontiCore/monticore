@@ -17,24 +17,11 @@
  * ******************************************************************************
  */
 
-/**
- * 
- */
-package de.monticore.ast;
+package de.monticore.emf._ast;
 
-/**
- * interface for all lists, in addition to ASTNode it allows for the distinction
- * between the state "empty" and "null"
- * 
- * @author groen
- * 
- *  
- * @deprecated Remove this class after MC-Release 4.2.1. It is no longer necessary.
- */
-@Deprecated
-public interface ASTList extends ASTNode {
+/*
+ * Basic Interface for EMF compatible generated AST classes  */
+
+public interface ASTENode extends de.monticore.ast.ASTNode, org.eclipse.emf.ecore.InternalEObject {
   
-  boolean is_Existent();
-  
-  void set_Existent(boolean existent);
 }

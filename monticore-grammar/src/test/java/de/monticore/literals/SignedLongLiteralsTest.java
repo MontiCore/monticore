@@ -25,7 +25,6 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
-import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
 
 import de.monticore.literals.literals._ast.ASTSignedLiteral;
@@ -36,7 +35,7 @@ import de.monticore.literals.literals._ast.ASTSignedLongLiteral;
  */
 public class SignedLongLiteralsTest {
   
-  private void checkLongLiteral(long l, String s) throws RecognitionException, IOException {
+  private void checkLongLiteral(long l, String s) throws IOException {
     ASTSignedLiteral lit = LiteralsTestHelper.getInstance().parseSignedLiteral(s);
     assertTrue(lit instanceof ASTSignedLongLiteral);
     assertEquals(l, ((ASTSignedLongLiteral) lit).getValue());
@@ -65,7 +64,7 @@ public class SignedLongLiteralsTest {
       checkLongLiteral(02L, "02L");
       checkLongLiteral(-02L, "-02L");
     }
-    catch (Exception e) {
+    catch (IOException e) {
       fail(e.getMessage());
     }
   }

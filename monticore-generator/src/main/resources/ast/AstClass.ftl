@@ -51,7 +51,7 @@ ${ast.printModifier()} class ${ast.getName()} extends ${tc.include("ast.AstSuper
   <#-- generate all attributes -->  
   <#list ast.getCDAttributes() as attribute>
     <#if !genHelper.isInherited(attribute)>
-  ${tc.include("ast.Attribute", attribute)}
+  ${tc.includeArgs("ast.Attribute", [attribute, ast])}
     </#if>
   </#list>
   <#-- generate all constructors -->  

@@ -23,10 +23,11 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.common.collect.Lists;
+
+import de.monticore.prettyprint.AstPrettyPrinter;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.SourcePosition;
-import de.se_rwth.commons.logging.Log;
 
 
 /**
@@ -41,34 +42,17 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
   
   protected Optional<SourcePosition> end = Optional.empty();
   
-  protected List<Comment> _precomments = Lists.newArrayList();
+  protected List<Comment> precomments = Lists.newArrayList();
   
-  protected List<Comment> _postcomments = Lists.newArrayList();
+  protected List<Comment> postcomments = Lists.newArrayList();
   
   protected Optional<? extends Symbol> symbol = Optional.empty();
   
   protected Optional<? extends Scope> enclosingScope = Optional.empty();
   
-  public abstract ASTNode deepClone();
+  protected Optional<AstPrettyPrinter<ASTNode>> prettyPrinter = Optional.empty();
   
-  public ASTNode deepClone(ASTNode result) {
-    Log.errorIfNull(result, "0xA4040 Parameter 'result' must not be null.");
-    
-    result.set_SourcePositionStart(new de.se_rwth.commons.SourcePosition(
-        get_SourcePositionStart().getLine(), get_SourcePositionStart()
-            .getColumn()));
-    result.set_SourcePositionEnd(new de.se_rwth.commons.SourcePosition(
-        get_SourcePositionEnd().getLine(), get_SourcePositionEnd()
-            .getColumn()));
-    for (de.monticore.ast.Comment x : get_PreComments()) {
-      result.get_PreComments().add(new de.monticore.ast.Comment(x.getText()));
-    }
-    for (de.monticore.ast.Comment x : get_PostComments()) {
-      result.get_PostComments().add(new de.monticore.ast.Comment(x.getText()));
-    }
-    
-    return result;
-  }
+  public abstract ASTNode deepClone();
   
   public SourcePosition get_SourcePositionEnd() {
     if (end.isPresent()) {
@@ -93,68 +77,22 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
   }
   
   public List<Comment> get_PreComments() {
-    return _precomments;
+    return precomments;
   }
   
-  public void set_PreComments(List<Comment> _precomments) {
-    this._precomments = _precomments;
+  public void set_PreComments(List<Comment> precomments) {
+    this.precomments = precomments;
   }
   
   public List<Comment> get_PostComments() {
-    return _postcomments;
+    return postcomments;
   }
   
-  public void set_PostComments(List<Comment> _postcomments) {
-    this._postcomments = _postcomments;
+  public void set_PostComments(List<Comment> postcomments) {
+    this.postcomments = postcomments;
   }
   
-  public boolean equalAttributes(Object o) {
-    if (o == null) {
-      return false;
-    }
-    throw new CompareNotSupportedException(
-        "0xA4041 Method equalAttributes is not implemented properly in class: " + o.getClass().getName());
-  }
-  
-  public boolean equalsWithComments(Object o) {
-    if (o == null) {
-      return false;
-    }
-    throw new CompareNotSupportedException(
-        "0xA4042 Method equalsWithComments is not implemented properly in class: " + o.getClass().getName());
-  }
-  
-  public boolean deepEquals(Object o) {
-    if (o == null) {
-      return false;
-    }
-    throw new CompareNotSupportedException(
-        "0xA4043 Method deepEquals is not implemented properly in class: " + o.getClass().getName());
-  }
-  
-  public boolean deepEqualsWithComments(Object o) {
-    throw new CompareNotSupportedException(
-        "0xA4044 Method deepEqualsWithComments is not implemented properly in class: "
-            + o.getClass().getName());
-  }
-  
-  public boolean deepEquals(Object o, boolean forceSameOrder) {
-    if (o == null) {
-      return false;
-    }
-    throw new CompareNotSupportedException(
-        "0xA4045 Method deepEquals is not implemented properly in class: " + o.getClass().getName());
-  }
-  
-  public boolean deepEqualsWithComments(Object o, boolean forceSameOrder) {
-    if (o == null) {
-      return false;
-    }
-    throw new CompareNotSupportedException(
-        "0xA4046 Method deepEqualsWithComments is not implemented properly in class: "
-            + o.getClass().getName());
-  }
-  
+ 
   public void setEnclosingScope(Scope enclosingScope) {
     this.enclosingScope = Optional.ofNullable(enclosingScope);
   }
@@ -169,5 +107,26 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
   
   public Optional<? extends Symbol> getSymbol() {
     return symbol;
+  }
+  
+  /**
+   * @return prettyPrinter
+   */
+  public Optional<AstPrettyPrinter<ASTNode>> getPrettyPrinter() {
+    return this.prettyPrinter;
+  }
+
+  /**
+   * @param prettyPrinter the prettyPrinter to set
+   */
+  public void setPrettyPrinter(AstPrettyPrinter<ASTNode> prettyPrinter) {
+    this.prettyPrinter = Optional.ofNullable(prettyPrinter);
+  }
+  
+  public  Optional<String> prettyPrint() { 
+    if (prettyPrinter.isPresent()) {
+      return Optional.ofNullable(prettyPrinter.get().prettyPrint(this));
+    }
+    return Optional.empty();
   }
 }

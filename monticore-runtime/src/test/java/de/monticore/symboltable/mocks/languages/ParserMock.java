@@ -19,15 +19,12 @@
 
 package de.monticore.symboltable.mocks.languages;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.util.Optional;
 
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.ast.ASTNode;
-
-import org.antlr.v4.runtime.RecognitionException;
-
-import java.io.IOException;
-import java.io.Reader;
 
 public class ParserMock extends MCConcreteParser {
 
@@ -40,12 +37,12 @@ public class ParserMock extends MCConcreteParser {
 
   @Override
   public Optional<? extends ASTNode> parse(String fileName)
-      throws IOException, RecognitionException {
+      throws IOException {
     return Optional.of(astToBeReturned);
   }
 
   @Override
-  public Optional<? extends ASTNode> parse(Reader reader) throws IOException, RecognitionException {
+  public Optional<? extends ASTNode> parse(Reader reader) throws IOException {
     throw new UnsupportedOperationException();
   }
 }

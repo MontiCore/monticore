@@ -78,7 +78,19 @@ public class MontiCoreCLITest {
       "-" + MontiCoreConfiguration.Options.MODELPATH, "src/test/resources",
       "-" + MontiCoreConfiguration.Options.OUT, "target/test-run",
       "-" + MontiCoreConfiguration.Options.HANDCODEDPATH, "src/test/java",
-      "-" + MontiCoreCLIConfiguration.Options.SCRIPT, "src/test/resources/my.groovy",
+      "-" + MontiCoreCLIConfiguration.Options.SCRIPT, "src/test/resources/my_noemf.groovy",
+      "-" + MontiCoreConfiguration.Options.FORCE };
+  
+  /**
+   * Arguments for using a custom Groovy script.
+   */
+  static String[] customEmfScriptArgs = {
+      "-" + MontiCoreConfiguration.Options.GRAMMARS,
+      "src/test/resources/de/monticore/AutomatonEmf.mc4",
+      "-" + MontiCoreConfiguration.Options.MODELPATH, "src/test/resources",
+      "-" + MontiCoreConfiguration.Options.OUT, "target/test-run",
+      "-" + MontiCoreConfiguration.Options.HANDCODEDPATH, "src/test/java",
+      "-" + MontiCoreCLIConfiguration.Options.SCRIPT, "src/test/resources/my_emf.groovy",
       "-" + MontiCoreConfiguration.Options.FORCE };
   
   /**
@@ -124,6 +136,13 @@ public class MontiCoreCLITest {
   @Test
   public void testMontiCoreCustomScriptCLI() {
     MontiCoreCLI.main(customScriptArgs);
+    
+    assertTrue(!false);
+  }
+  
+  @Test
+  public void testMontiCoreCustomEmfScriptCLI() {
+    MontiCoreCLI.main(customEmfScriptArgs);
     
     assertTrue(!false);
   }

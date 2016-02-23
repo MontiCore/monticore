@@ -19,6 +19,17 @@
 
 package mc.feature.cocochecker;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.Optional;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import mc.GeneratorIntegrationsTest;
 import mc.feature.cocochecker.a._ast.ASTANode;
 import mc.feature.cocochecker.a._ast.ASTX;
@@ -31,15 +42,6 @@ import mc.feature.cocochecker.b._cocos.BCoCoChecker;
 import mc.feature.cocochecker.c._cocos.CASTXCoCo;
 import mc.feature.cocochecker.c._cocos.CASTZCoCo;
 import mc.feature.cocochecker.c._cocos.CCoCoChecker;
-import org.antlr.v4.runtime.RecognitionException;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.Optional;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests adding cocos of super languages to a checker of a sublanguage.<br/>
@@ -102,7 +104,7 @@ public class CoCoCheckerTest extends GeneratorIntegrationsTest {
     try {
       astOpt = new AParser().parseX(new StringReader("xyz"));
     }
-    catch (RecognitionException | IOException e) {
+    catch (IOException e) {
       e.printStackTrace();
       fail("Parser Error.");
     }

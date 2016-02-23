@@ -27,8 +27,8 @@ import de.monticore.types.TypesPrinter;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
 import de.se_rwth.commons.Joiners;
-import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -39,10 +39,14 @@ import de.se_rwth.commons.logging.Log;
  */
 public class AstGeneratorHelper extends GeneratorHelper {
   
-  private static final String AST_BUILDER = "Builder_";
+  protected static final String AST_BUILDER = "Builder_";
   
   public AstGeneratorHelper(ASTCDCompilationUnit topAst, GlobalScope symbolTable) {
     super(topAst, symbolTable);
+  }
+  
+  public String getAstAttributeValue(ASTCDAttribute attribute, ASTCDType clazz) {
+    return getAstAttributeValue(attribute);
   }
   
   public String getAstAttributeValue(ASTCDAttribute attribute) {

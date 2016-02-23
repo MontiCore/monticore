@@ -63,7 +63,7 @@ public class ${className} extends ${ruleName}SymbolEMPTY {
     <#assign type = fields[fname]>
 
   public Collection<${type}> get${fname?cap_first}() {
-    return sortSymbolsByPosition(spannedScope.resolveLocally(${type}.KIND));
+    return sortSymbolsByPosition(getSpannedScope().resolveLocally(${type}.KIND));
   }
   </#list>
 

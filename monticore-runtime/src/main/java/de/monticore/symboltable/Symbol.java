@@ -21,7 +21,6 @@
 
  import de.monticore.ast.ASTNode;
  import de.monticore.symboltable.modifiers.AccessModifier;
- import de.monticore.symboltable.modifiers.BasicAccessModifier;
  import de.se_rwth.commons.SourcePosition;
  import de.se_rwth.commons.logging.Log;
 
@@ -76,13 +75,13 @@ public interface Symbol {
 
   /**
    * @return the access modifier, such as public or protected in Java. By default, the {@link
-   * de.monticore.symboltable.modifiers.BasicAccessModifier#ABSENT} is returned, which indicates that
+   * AccessModifier#ALL_INCLUSION} is returned, which indicates that
    * the symbol does not have any access modifier. Note that this is not the same as the (implicit) access
    * modifier {@link de.monticore.symboltable.modifiers.BasicAccessModifier#PACKAGE_LOCAL} of Java.
    */
-  // TODO PN remove ABSENT Modifier and use Optional instead
+  // TODO PN return Optional instead
   default AccessModifier getAccessModifier() {
-    return BasicAccessModifier.ABSENT;
+    return AccessModifier.ALL_INCLUSION;
   }
 
   /**

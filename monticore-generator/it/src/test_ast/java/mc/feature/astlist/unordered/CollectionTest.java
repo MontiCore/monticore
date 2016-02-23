@@ -194,7 +194,6 @@ public class CollectionTest {
     
     ASTParent p2 = p1.deepClone();
     
-    // TOD MB Bedeutung von clone, deepClone bzw. equals und deepEquals klären
     assertTrue(p1.deepEquals(p2));
   }
   

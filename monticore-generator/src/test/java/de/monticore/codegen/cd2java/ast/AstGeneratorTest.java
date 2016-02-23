@@ -88,6 +88,12 @@ public class AstGeneratorTest extends GeneratorTest {
   }
   
   @Test
+  public void testEnum() {
+    testCorrectWithDependencies("mc/robot/RobotDSL.mc4",
+        "mc/grammars/lexicals/TestLexicals.mc4");
+  }
+  
+  @Test
   public void testGrammarInDefaultPackage() {
     testCorrectWithDependencies("Automaton.mc4", "mc/grammars/lexicals/TestLexicals.mc4");
   }
@@ -97,7 +103,7 @@ public class AstGeneratorTest extends GeneratorTest {
     doGenerate("de/monticore/inherited/Supergrammar.mc4");
     doGenerate("de/monticore/inherited/sub/Subgrammar.mc4");
     Path path = Paths.get(OUTPUT_FOLDER, Names.getPathFromFilename("de/monticore/inherited/"));
-    // assertTrue("There are compile errors in generated code for the models in grammars/inherited.",
+   // assertTrue("There are compile errors in generated code for the models in grammars/inherited.",
     // compile(path));
   }
 
@@ -132,7 +138,7 @@ public class AstGeneratorTest extends GeneratorTest {
     ClassLoader l = ParserGeneratorTest.class.getClassLoader();
     try {
       String script = Resources.asCharSource(
-          l.getResource("de/monticore/groovy/monticoreOnlyAst.groovy"),
+          l.getResource("de/monticore/groovy/monticoreOnlyAst_emf.groovy"),
           Charset.forName("UTF-8")).read();
       
       Configuration configuration =

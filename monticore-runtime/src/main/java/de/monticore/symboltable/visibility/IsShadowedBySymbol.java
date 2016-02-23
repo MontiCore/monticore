@@ -39,8 +39,9 @@ public class IsShadowedBySymbol implements SymbolPredicate {
   /**
    * @return true if the <code>shadowingSymbol</code> hides the <code>shadowedSymbol</code>.
    */
-  public boolean apply(final Symbol shadowingSymbol) {
-    return new ShadowsSymbol(shadowingSymbol).apply(shadowedSymbol);
+  @Override
+  public boolean test(final Symbol shadowingSymbol) {
+    return new ShadowsSymbol(shadowingSymbol).test(shadowedSymbol);
   }
   
 }

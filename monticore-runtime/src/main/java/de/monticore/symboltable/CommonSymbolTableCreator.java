@@ -44,7 +44,6 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
    */
   private MutableScope firstCreatedScope;
 
-  // TODO PN Move parameters to createFromAST() method?
   public CommonSymbolTableCreator(final ResolverConfiguration resolverConfig,
       final MutableScope enclosingScope) {
     this(resolverConfig, new ArrayDeque<>());
@@ -145,6 +144,16 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
     // ast -> symbol
     astNode.setSymbol(symbol);
     astNode.setEnclosingScope(symbol.getEnclosingScope());
+  }
+
+  @Override
+  public void setLinkBetweenScopeAndNode(MutableScope scope, ASTNode astNode) {
+    // scope -> ast
+    scope.setAstNode(astNode);
+
+    // ast -> scope
+    // TODO PN uncomment as soon as ASTNode has been updated
+    // astNode.setScope(scope);
   }
 
   /**

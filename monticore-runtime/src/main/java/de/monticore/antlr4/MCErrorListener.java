@@ -28,18 +28,18 @@ import de.se_rwth.commons.logging.Log;
 
 public class MCErrorListener extends BaseErrorListener {
   
-  protected MCParser _parser = null;
+  protected MCParser parser = null;
   
-  public MCErrorListener(MCParser _parser) {
+  public MCErrorListener(MCParser parser) {
     super();
-    this._parser = _parser;
+    this.parser = parser;
   }
   
   @Override
   public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
 
-    Log.error(_parser.getFilename() + ": " + msg, new SourcePosition(line, charPositionInLine));
+    Log.error(parser.getFilename() + ": " + msg, new SourcePosition(line, charPositionInLine));
 
-    _parser.setErrors(true);
+    parser.setErrors(true);
   }
 }

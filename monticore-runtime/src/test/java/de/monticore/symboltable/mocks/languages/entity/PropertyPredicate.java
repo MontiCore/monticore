@@ -39,7 +39,7 @@ public class PropertyPredicate implements SymbolPredicate {
   }
   
   @Override
-  public boolean apply(Symbol symbol) {
+  public boolean test(Symbol symbol) {
     // TODO PN eigentlich ist nur der Variable Kind relevant. Aber um auf alle
     //         Methoden von VariabelSymbol zugreifen zu können ist der Cast notwendig
     //         zu klären ist: wie stehen Symbol-Klasse und -Kind zueinander?

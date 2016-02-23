@@ -70,7 +70,7 @@ public enum Multiplicity {
     }
     ASTCard cardinality = attributeInAST.getCard().get();
     if (!cardinality.getMax().isPresent() || cardinality.isUnbounded()
-        || cardinality.getMax().get().equals("*")
+        || "*".equals(cardinality.getMax().get())
         || getMaxCardinality(cardinality) != 1) {
       return LIST;
     }

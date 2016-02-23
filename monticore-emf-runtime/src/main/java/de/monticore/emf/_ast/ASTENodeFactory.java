@@ -17,31 +17,18 @@
  * ******************************************************************************
  */
 
-package de.monticore.symboltable.mocks.languages.entity;
+package de.monticore.emf._ast;
 
-import java.util.Optional;
-import de.monticore.symboltable.CommonScope;
-import de.monticore.symboltable.MutableScope;
+import org.eclipse.emf.ecore.EFactory;
 
 /**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- * @version $Revision$,
- *          $Date$
+ * The Factory for the model object {@link ASTENode}
  *
  */
-public class EntityScope extends CommonScope {
-
-  public EntityScope(EntitySymbol spanningSymbol, Optional<MutableScope> enclosingScope) {
-    super(enclosingScope, true);
-    setSpanningSymbol(spanningSymbol);
-  }
+public interface ASTENodeFactory extends EFactory {
+  // The singleton instance of the factory.
+  ASTENodeFactory eINSTANCE = de.monticore.emf._ast.ASTENodeFactoryImpl.init();
   
-  public EntityScope(EntitySymbol spanningSymbol) {
-    super(true);
-    setSpanningSymbol(spanningSymbol);
-  }
-  
-  
+  // Returns the package supported by this factory.
+  ASTENodePackage getASTENodePackage();
 }

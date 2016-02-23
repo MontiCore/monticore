@@ -41,38 +41,32 @@ public class EntitySymbol extends CommonJTypeSymbol<EntitySymbol, PropertySymbol
     super(name, EntitySymbol.KIND, PropertySymbol.KIND, ActionSymbol.KIND);
   }
 
-  @Override
-  protected MutableScope createSpannedScope() {
-    return new EntityScope(this);
-  }
-
-  @Override
-  public EntityScope getSpannedScope() {
-    return (EntityScope) super.getSpannedScope();
-  }
-
   public Optional<ActionSymbol> getAction(String actionName) {
-    return spannedScope.<ActionSymbol>resolveLocally(actionName, ActionSymbolKind.KIND);
+    return getMutableSpannedScope().<ActionSymbol>resolveLocally(actionName, ActionSymbol.KIND);
   }
   
   public void addAction(ActionSymbol method) {
-    spannedScope.add(method);
+    getMutableSpannedScope().add(method);
   }
   
   public Collection<ActionSymbol> getActions() {
-    return spannedScope.resolveLocally(ActionSymbol.KIND);
+    return getMutableSpannedScope().resolveLocally(ActionSymbol.KIND);
   }
   
   public Optional<PropertySymbol> getProperty(String propertyName) {
-    return spannedScope.<PropertySymbol>resolveLocally(propertyName, PropertySymbol.KIND);
+    return getMutableSpannedScope().<PropertySymbol>resolveLocally(propertyName, PropertySymbol.KIND);
   }
   
   public void addProperty(PropertySymbol property) {
-    spannedScope.add(property);
+    getMutableSpannedScope().add(property);
   }
   
   public Collection<PropertySymbol> getProperties() {
-    return spannedScope.resolveLocally(PropertySymbol.KIND);
+    return getMutableSpannedScope().resolveLocally(PropertySymbol.KIND);
   }
-  
+
+  @Override
+  public MutableScope getMutableSpannedScope() {
+    return super.getMutableSpannedScope();
+  }
 }

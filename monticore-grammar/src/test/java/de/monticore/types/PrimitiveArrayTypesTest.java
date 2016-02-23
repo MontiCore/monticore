@@ -20,9 +20,12 @@
 package de.monticore.types;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import org.junit.BeforeClass;
@@ -42,7 +45,7 @@ public class PrimitiveArrayTypesTest {
   public static void disableFailQuick() {
     Log.enableFailQuick(false);
   }
- 
+  
   @Test
   public void testPrimitiveArrayTypes() {
     try {
@@ -58,6 +61,7 @@ public class PrimitiveArrayTypesTest {
       // checks
       for (String teststring : testdata.keySet()) {
         ASTType type = TypesTestHelper.getInstance().parseType(teststring);
+        assertNotNull(type);
         // check typing and dimension:
         assertTrue(type instanceof ASTArrayType);
         ASTArrayType arrayType = (ASTArrayType) type;
@@ -65,7 +69,7 @@ public class PrimitiveArrayTypesTest {
         assertTrue(arrayType.getComponentType() instanceof ASTPrimitiveType);
       }
     }
-    catch (Exception e) {
+    catch (IOException e) {
       fail(e.getMessage());
     }
   }
@@ -73,38 +77,22 @@ public class PrimitiveArrayTypesTest {
   @Test
   public void testNegativePrimitiveArrayTypes() {
     try {
-      TypesTestHelper.getInstance().testType("long[");
-      fail("The test should fail");
+      assertNull(TypesTestHelper.getInstance().parseType("long["));
+      
+      // Negative test for a array type with a missing ']'
+      assertNull(TypesTestHelper.getInstance().parseType("long[][][][[]"));
+      
+      // Negative test for a array type with a missing ']' in the end
+      assertNull(TypesTestHelper.getInstance().parseType("long[][][][]["));
+      
+      // Negative test for a array type with a missing '['
+      assertNull(TypesTestHelper.getInstance().parseType("long[] [] ] []"));
+      
+      // Negative test for a array type with a missing ']' in the beginning
+      assertNull(TypesTestHelper.getInstance().parseType("long][][]"));
     }
-    catch (Exception e) {
-    }
-    // Negative test for a array type with a missing ']'
-    try {
-      TypesTestHelper.getInstance().testType("long[][][][[]");
-      fail("The test should fail");
-    }
-    catch (Exception e) {
-    }
-    // Negative test for a array type with a missing ']' in the end
-    try {
-      TypesTestHelper.getInstance().testType("long[][][][][");
-      fail("The test should fail");
-    }
-    catch (Exception e) {
-    }
-    // Negative test for a array type with a missing '['
-    try {
-      TypesTestHelper.getInstance().testType("long[] [] ] []");
-      fail("The test should fail");
-    }
-    catch (Exception e) {
-    }
-    // Negative test for a array type with a missing ']' in the beginning
-    try {
-      TypesTestHelper.getInstance().testType("long][][]");
-      fail("The test should fail");
-    }
-    catch (Exception e) {
+    catch (IOException e) {
+      fail(e.getMessage());
     }
   }
 }

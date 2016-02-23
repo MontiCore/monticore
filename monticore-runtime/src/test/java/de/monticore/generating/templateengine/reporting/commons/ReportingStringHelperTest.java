@@ -24,15 +24,6 @@ import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
 
-import de.monticore.generating.templateengine.reporting.artifacts.ReportingNameHelper;
-
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
- */
 public class ReportingStringHelperTest {
   
   @Test
