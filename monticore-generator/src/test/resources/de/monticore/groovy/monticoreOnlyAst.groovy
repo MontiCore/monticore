@@ -45,15 +45,15 @@ while (grammarIterator.hasNext()) {
     // Transform AST-Grammar -> AST-CD
     astClassDiagram = transformAstGrammarToAstCd(glex, astGrammar, symbolTable, handcodedPath)
     
-    createSymbolsFromAST(symbolTable, astClassDiagram)
+    astClassDiagramWithST = createSymbolsFromAST(symbolTable, astClassDiagram)
     
     // Writes Class Diagram AST to the CD-file (*.cd)
-    storeInCdFile(astClassDiagram, out)
+    storeInCdFile(astClassDiagramWithST, out)
     
     // Decorate AST-CD
-    decorateCd(glex, astClassDiagram, symbolTable, handcodedPath)
+    decorateCd(glex, astClassDiagramWithST, symbolTable, handcodedPath)
     
     // Generate AST files
-    generate(glex, symbolTable, astClassDiagram, out, templatePath)
+    generate(glex, symbolTable, astClassDiagramWithST, out, templatePath)
   }
 }

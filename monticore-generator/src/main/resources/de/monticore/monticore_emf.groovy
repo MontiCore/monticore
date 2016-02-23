@@ -60,17 +60,17 @@ while (grammarIterator.hasNext()) {
       // M7: transform grammar AST into Class Diagram AST
       astClassDiagram = transformAstGrammarToAstCd(glex, astGrammar, symbolTable, handcodedPath)
       
-      createSymbolsFromAST(symbolTable, astClassDiagram)
+      astClassDiagramWithST = createSymbolsFromAST(symbolTable, astClassDiagram)
       
       // write Class Diagram AST to the CD-file (*.cd)
-      storeInCdFile(astClassDiagram, out)
+      storeInCdFile(astClassDiagramWithST, out)
       
       // M5 + M6: generate parser
       generateParser(astGrammar, symbolTable, handcodedPath, out)
       generateParserWrappers(astGrammar, symbolTable, handcodedPath, out)
       
       // store result of the first pass
-      storeCDForGrammar(astGrammar, astClassDiagram)
+      storeCDForGrammar(astGrammar, astClassDiagramWithST)
     }
   }
 }
