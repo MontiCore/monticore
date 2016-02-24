@@ -61,7 +61,7 @@ public interface MutableScope extends Scope {
   void addSubScope(MutableScope subScope);
 
   /**
-   * Removes the sub scope <code>subScope</code>.
+   * Removes given <code>subScope</code>.
    * @param subScope the sub scope to be removed
    *
    */
@@ -83,6 +83,12 @@ public interface MutableScope extends Scope {
    * Adds the symbol to this scope. Also, this scope is set as the symbol's enclosing scope.
    */
   void add(Symbol symbol);
+
+  /**
+   * removes the given symbol from this scope and unsets the enclosing scope relation.
+   * @param symbol the symbol to be removed
+   */
+  void remove(Symbol symbol);
 
   /**
    * Sets the resolvers that are available in this scope. Within a simple grammarlanguage, these
