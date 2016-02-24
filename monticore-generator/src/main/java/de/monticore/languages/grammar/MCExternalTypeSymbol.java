@@ -72,16 +72,6 @@ public class MCExternalTypeSymbol extends MCTypeSymbol {
     }
   }
   
-  @Override
-  public String getListImplementation() {
-    if (isASTNode()) {
-      return getQualifiedName() + "List";
-    }
-    else {
-      return "java.util.ArrayList<" + substitutePrimitive(getQualifiedName()) + ">";
-    }
-  }
-  
   private String substitutePrimitive(String qualifiedName) {
     if (qualifiedName.equals("int")) {
       return "Integer";
