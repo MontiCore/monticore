@@ -214,8 +214,7 @@ public class ASTConstructionActions {
   public String getActionForLexerRuleIteratedAttribute(ASTNonTerminal a) {
     
     String tmpname = parserGenHelper.getTmpVarNameForAntlrCode(a);
-    String tmp = "if (_aNode.get%u_usage%()==null){_aNode.set%u_usage%(new java.util.ArrayList());}; "
-        + " _aNode.get%u_usage%().add(convert" + a.getName() + "($%tmp%));";
+    String tmp = " addToIteratedAttributeIfNotNull(_aNode.get%u_usage%(), convert" + a.getName() + "($%tmp%));";
     
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%",
@@ -227,12 +226,7 @@ public class ASTConstructionActions {
   
   public String getActionForLexerRuleIteratedHandedOn(ASTNonTerminal a) {
     
-    String listType = symbolTable.getRuleWithInherited(a.getName()).getType()
-        .getListImplementation();
-    
-    String tmp = "if (%handontmp%==null){%handontmp%=new " + listType
-        + "();} %handontmp%.add(convert" + a.getName() + "($%tmp%));";
-    // String tmp = "%handontmp%.add(%tmp%.getText().intern()));";
+    String tmp = "addToIteratedAttributeIfNotNull(%handontmp%, convert" + a.getName() + "($%tmp%));";
     
     // Replace templates
     tmp = tmp.replaceAll("%handontmp%", a.getVariableName().orElse(null));
@@ -244,14 +238,14 @@ public class ASTConstructionActions {
   
   public String getActionForInternalRuleIteratedAttribute(ASTNonTerminal a) {
     
-    String tmp = "_aNode.get%u_usage%().add(_localctx.%tmp%.ret);";
+    String tmp = "addToIteratedAttributeIfNotNull(_aNode.get%u_usage%(), _localctx.%tmp%.ret);";
     
     if (symbolTable.getRuleWithInherited(a.getName()).getType().getKindOfType()
         .equals(MCTypeSymbol.KindType.CONST)
         ||
         symbolTable.getRuleWithInherited(a.getName()).getType().getKindOfType()
             .equals(MCTypeSymbol.KindType.ENUM)) {
-      tmp = "if (_aNode.get%u_usage%() == null) _aNode.set%u_usage%(new java.util.ArrayList()); _aNode.get%u_usage%().add(_localctx.%tmp%.ret);";
+      tmp = "addToIteratedAttributeIfNotNull(_aNode.get%u_usage%(), _localctx.%tmp%.ret);";
     }
     
     // Replace templates
@@ -335,8 +329,7 @@ public class ASTConstructionActions {
       return "";
     }
     
-    String tmp = "if (_aNode.get%u_usage%()==null){_aNode.set%u_usage%(new java.util.ArrayList());}; "
-        + " _aNode.get%u_usage%().add(\"%text%\");";
+    String tmp = "_aNode.get%u_usage%().add(\"%text%\");";
     
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%", StringTransformations.capitalize(a.getUsageName().get()));

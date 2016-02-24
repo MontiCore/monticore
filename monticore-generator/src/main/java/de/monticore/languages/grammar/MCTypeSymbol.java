@@ -623,13 +623,4 @@ public class MCTypeSymbol extends CommonScopeSpanningSymbol implements Comparabl
     }
   }
 
-  public String getListImplementation() {
-    if (isASTNode()) {
-      return getQualifiedName() + "List";
-    }
-    else {
-      return "java.util.ArrayList<" + getQualifiedName() + ">";
-    }
-  }
-
 }

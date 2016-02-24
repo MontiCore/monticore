@@ -119,6 +119,12 @@ public abstract class MCParser extends Parser {
     comments.add(comment);
   }
   
+  protected <E> void addToIteratedAttributeIfNotNull(List<E> attribute, E value) {
+    if (value != null) {
+      attribute.add(value);
+    }
+  }
+  
   public void setActiveASTNode(ASTNode n) {
    
     ListIterator<Comment> listIterator = comments.listIterator();
