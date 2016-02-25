@@ -39,35 +39,35 @@ public interface ASTNode {
    * 
    * @return Clone of current ASTNode with a parent which is equal to null
    */
-  public ASTNode deepClone();
+  ASTNode deepClone();
   
   /**
    * Returns the start position of this ASTNode
    * 
    * @return start position of this ASTNode
    */
-  public SourcePosition get_SourcePositionEnd();
+  SourcePosition get_SourcePositionEnd();
   
   /**
    * Sets the end position of this ASTNode
    * 
    * @param end end position of this ASTNode
    */
-  public void set_SourcePositionEnd(SourcePosition end);
+  void set_SourcePositionEnd(SourcePosition end);
   
   /**
    * Returns the end source position of this ASTNode
    * 
    * @return end position of this ASTNode
    */
-  public SourcePosition get_SourcePositionStart();
+  SourcePosition get_SourcePositionStart();
   
   /**
    * Sets the start position of this ASTNode
    * 
    * @param start start position of this ASTNode
    */
-  public void set_SourcePositionStart(SourcePosition start);
+  void set_SourcePositionStart(SourcePosition start);
   
   /**
    * Returns list of all comments which are associated with this ASTNode and are
@@ -75,15 +75,15 @@ public interface ASTNode {
    * 
    * @return list of comments
    */
-  public List<Comment> get_PreComments();
+  List<Comment> get_PreComments();
   
   /**
    * Sets list of all comments which are associated with this ASTNode and are
    * prior to the ASTNode in the input file
    * 
-   * @param _precomments list of comments
+   * @param precomments list of comments
    */
-  public void set_PreComments(List<Comment> precomments);
+  void set_PreComments(List<Comment> precomments);
   
   /**
    * Returns list of all comments which are associated with this ASTNode and can
@@ -91,19 +91,19 @@ public interface ASTNode {
    * 
    * @return list of comments
    */
-  public List<Comment> get_PostComments();
+  List<Comment> get_PostComments();
   
   /**
    * Sets list of all comments which are associated with this ASTNode and can be
    * found after the ASTNode in the input file
    * 
-   * @param _postcomments list of comments
+   * @param postcomments list of comments
    */
-  public void set_PostComments(List<Comment> postcomments);
+  void set_PostComments(List<Comment> postcomments);
   
-  public boolean equalAttributes(Object o);
+  boolean equalAttributes(Object o);
   
-  public boolean equalsWithComments(Object o);
+  boolean equalsWithComments(Object o);
   
   /**
    * Compare this object to another Object. Do not take comments into account.
@@ -111,7 +111,7 @@ public interface ASTNode {
    * forceSameOrder)</tt> method when using the default value for forceSameOrder
    * of each Node.
    */
-  public boolean deepEquals(Object o);
+  boolean deepEquals(Object o);
   
   /**
    * Compare this object to another Object. Take comments into account. This
@@ -119,7 +119,7 @@ public interface ASTNode {
    * <tt>deepEqualsWithComment(Object o, boolean forceSameOrder)</tt> method
    * when using the default value for forceSameOrder of each Node.
    */
-  public boolean deepEqualsWithComments(Object o);
+  boolean deepEqualsWithComments(Object o);
   
   /**
    * Compare this object to another Object. Do not take comments into account.
@@ -128,7 +128,7 @@ public interface ASTNode {
    * @param forceSameOrder consider the order in ancestor lists, even if these
    * lists are of stereotype <tt>&lt;&lt;unordered&gt;&gt;</tt> in the grammar.
    */
-  public boolean deepEquals(Object o, boolean forceSameOrder);
+  boolean deepEquals(Object o, boolean forceSameOrder);
   
   /**
    * Compare this object to another Object. Take comments into account.
@@ -137,12 +137,12 @@ public interface ASTNode {
    * @param forceSameOrder consider the order in ancestor lists, even if these
    * lists are of stereotype <tt>&lt;&lt;unordered&gt;&gt;</tt> in the grammar.
    */
-  public boolean deepEqualsWithComments(Object o, boolean forceSameOrder);
+  boolean deepEqualsWithComments(Object o, boolean forceSameOrder);
   
   /**
    * @returns a collection of all child nodes of this node
    */
-  public Collection<ASTNode> get_Children();
+  Collection<ASTNode> get_Children();
   
   /**
    * This method removes the reference from this node to a child node, no matter
@@ -150,30 +150,44 @@ public interface ASTNode {
    * 
    * @param child the target node of the reference to be removed
    */
-  public void remove_Child(ASTNode child);
+  void remove_Child(ASTNode child);
 
   /**
    * Sets the enclosing scope of this ast node.
    *
    * @param enclosingScope the enclosing scope of this ast node
    */
-  public void setEnclosingScope(Scope enclosingScope);
+  void setEnclosingScope(Scope enclosingScope);
 
   /**
    * @return the enclosing scope of this ast node
    */
-  public Optional<? extends Scope> getEnclosingScope();
+  Optional<? extends Scope> getEnclosingScope();
 
   /**
    * Sets the corresponding symbol of this ast node.
    *
    * @param symbol the corresponding symbol of this ast node..
    */
-  public void setSymbol(Symbol symbol);
+  void setSymbol(Symbol symbol);
 
   /**
    * @return the corresponding symbol of this ast node.
    */
-  public Optional<? extends Symbol> getSymbol();
+  Optional<? extends Symbol> getSymbol();
+
+  /**
+   * Sets the spanned scope of this ast node.
+   *
+   * @param spannedScope the spanned scope of this ast node
+   */
+  void setSpannedScope(Scope spannedScope);
+
+  /**
+   * @return the spanned scope of this ast node.
+   */
+  Optional<? extends Scope> getSpannedScope();
+
+
   
 }
