@@ -181,12 +181,14 @@ public interface ASTNode {
    *
    * @param spannedScope the spanned scope of this ast node
    */
-  void setSpannedScope(Scope spannedScope);
+  default void setSpannedScope(Scope spannedScope) {}
 
   /**
    * @return the spanned scope of this ast node.
    */
-  Optional<? extends Scope> getSpannedScope();
+  default Optional<? extends Scope> getSpannedScope() {
+    return Optional.empty();
+  }
 
 
   
