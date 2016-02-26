@@ -24,10 +24,8 @@ import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.*;
-import de.monticore.languages.grammar.MCClassRuleSymbol;
-import de.monticore.languages.grammar.MCGrammarSymbol;
-import de.monticore.languages.grammar.MCRuleSymbol;
-import de.monticore.languages.grammar.MCTypeSymbol;
+import de.monticore.languages.grammar.*;
+import de.monticore.symboltable.Symbol;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
@@ -76,9 +74,7 @@ public class InheritedAttributesTranslation implements
   private void handleInheritedAttributeInASTs(Link<ASTClassProd, ASTCDClass> link) {
     List<ASTAttributeInAST> inheritedAttributeInASTs = getAllSuperProds(link.source()).stream()
         .flatMap(astProd -> astProd.getSymbol()
-            .filter(MCClassRuleSymbol.class::isInstance)
-            .map(MCClassRuleSymbol.class::cast)
-            .map(MCClassRuleSymbol::getType)
+            .flatMap(this::getTypeSymbol)
             .map(MCTypeSymbol::getAttributeInASTs)
             .orElse(Collections.emptyList())
             .stream())
@@ -95,6 +91,16 @@ public class InheritedAttributesTranslation implements
       link.target().getCDAttributes().add(cdAttribute);
       new Link<>(attributeInAST, cdAttribute, link);
     }
+  }
+
+  private Optional<MCTypeSymbol> getTypeSymbol(Symbol symbol) {
+    if (symbol instanceof MCClassRuleSymbol) {
+      return Optional.of(((MCClassRuleSymbol) symbol).getType());
+    }
+    else if (symbol instanceof MCInterfaceOrAbstractRuleSymbol) {
+      return Optional.of(((MCInterfaceOrAbstractRuleSymbol) symbol).getType());
+    }
+    return Optional.empty();
   }
 
   private ASTCDAttribute createStereoTypedCDAttribute(String stereotypeName,
@@ -122,7 +128,14 @@ public class InheritedAttributesTranslation implements
   
   private List<ASTProd> getDirectSuperProds(ASTNode astNode) {
     if (astNode instanceof ASTClassProd) {
-      return resolveRuleReferences(((ASTClassProd) astNode).getSuperRule(), astNode);
+      List<ASTProd> directSuperProds = resolveRuleReferences(
+          ((ASTClassProd) astNode).getSuperRule(), astNode);
+      directSuperProds.addAll(
+          resolveRuleReferences(((ASTClassProd) astNode).getSuperInterfaceRule(), astNode));
+      return directSuperProds;
+    }
+    else if (astNode instanceof ASTInterfaceProd) {
+      return resolveRuleReferences(((ASTInterfaceProd) astNode).getSuperInterfaceRule(), astNode);
     }
     return Collections.emptyList();
   }
