@@ -1,0 +1,11 @@
+package mc2cdtransformation;
+
+grammar AstRuleInheritance {
+
+   A;
+
+   ast A = dimensions:int;
+
+   C extends A;
+
+}

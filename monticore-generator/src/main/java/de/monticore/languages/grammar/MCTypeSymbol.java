@@ -19,24 +19,12 @@
 
 package de.monticore.languages.grammar;
 
-import static de.monticore.languages.grammar.MCTypeSymbols.areSameTypes;
-import static de.monticore.languages.grammar.MCTypeSymbols.isSubtype;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import de.monticore.ast.Comment;
 import de.monticore.codegen.GeneratorHelper;
+import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
 import de.monticore.grammar.grammar._ast.ASTMethod;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
 import de.monticore.symboltable.SymbolKind;
@@ -44,6 +32,12 @@ import de.monticore.symboltable.types.JTypeSymbolKind;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static de.monticore.languages.grammar.MCTypeSymbols.areSameTypes;
+import static de.monticore.languages.grammar.MCTypeSymbols.isSubtype;
 
 /**
  * Symbol for a type in MontiCore grammar. This class represents a Java type (class and
@@ -88,6 +82,8 @@ public class MCTypeSymbol extends CommonScopeSpanningSymbol implements Comparabl
   private List<MCTypeSymbol> astSuperInterfaces = new ArrayList<>();
 
   private List<ASTMethod> methods = new ArrayList<>();
+
+  private List<ASTAttributeInAST> attributeInASTs = new ArrayList<>();
 
   // List of all comments for this type
   private List<Comment> grammarDoc = new ArrayList<>();
@@ -143,6 +139,16 @@ public class MCTypeSymbol extends CommonScopeSpanningSymbol implements Comparabl
 
   public List<ASTMethod> getAstMethods() {
     return methods;
+  }
+
+  // -------------- Handling of attributes -------------------------
+
+  public boolean addAttributeInAST(ASTAttributeInAST attributeInAST) {
+    return attributeInASTs.add(attributeInAST);
+  }
+
+  public List<ASTAttributeInAST> getAttributeInASTs() {
+    return Collections.unmodifiableList(attributeInASTs);
   }
 
   // -------------- Handling of names -------------------------
