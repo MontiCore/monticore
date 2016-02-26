@@ -1,6 +1,6 @@
-package mc.feature.fautomaton.automaton;
+package de.monticore.fautomaton.automaton;
 
-grammar FlatAutomaton extends mc.common.Basics {
+grammar FlatAutomaton extends mc.grammars.lexicals.TestLexicals {
 
 	/** An finite automaton
 	@attribute name Name of the automaton

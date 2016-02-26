@@ -23,6 +23,7 @@ import static de.monticore.codegen.GeneratorHelper.getPlainName;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -66,6 +67,7 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
 import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.umlcd4a.cd4analysis._visitor.CD4AnalysisInheritanceVisitor;
+import de.monticore.umlcd4a.symboltable.CDFieldSymbol;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
 import de.se_rwth.commons.Names;
@@ -180,11 +182,10 @@ public class CdEmfDecorator extends CdDecorator {
         .forEach(t -> ((ASTCDClass) t).getCDAttributes().stream()
             .filter(a -> !(getAdditionaAttributeNames().anyMatch(ad -> ad.equals(a.getName()))))
             .forEach(a -> createEmfAttribute(t, a, astHelper, emfCollector)));
-    // astTypes.stream().filter(t -> t instanceof ASTCDInterface)
-    // .forEach(t -> ((ASTCDInterface) t).getCDAttributes().stream()
-    // .filter(a -> !(getAdditionaAttributeNames().anyMatch(ad ->
-    // ad.equals(a.getName()))))
-    // .forEach(a -> createEmfAttribute(t, a, astHelper, emfCollector)));
+    astTypes.stream().filter(t -> t instanceof ASTCDInterface)
+        .forEach(t -> ((ASTCDInterface) t).getCDAttributes().stream()
+            .filter(a -> !(getAdditionaAttributeNames().anyMatch(ad -> ad.equals(a.getName()))))
+            .forEach(a -> createEmfAttribute(t, a, astHelper, emfCollector)));
   }
   
   private Stream<String> getAdditionaAttributeNames() {
@@ -212,6 +213,7 @@ public class CdEmfDecorator extends CdDecorator {
       addESetter(clazz, astHelper);
       addEUnset(clazz, astHelper);
       addEIsSet(clazz, astHelper);
+      addStructuralFeatureMethods(clazz, astHelper);
       // addValuesForEListAttributes(clazz, astHelper);
       addToString(clazz, astHelper);
       addEStaticClass(clazz, astHelper);
@@ -296,7 +298,7 @@ public class CdEmfDecorator extends CdDecorator {
    * 
    * @param collection
    */
-  void addEPackageInterface(ASTCDCompilationUnit cdCompilationUnit, List<ASTCDType> astClasses,
+  void addEPackageInterface(ASTCDCompilationUnit cdCompilationUnit, List<ASTCDType> astTypes,
       Collection<String> collection, AstEmfGeneratorHelper astHelper)
           throws RecognitionException {
     ASTCDDefinition cdDef = cdCompilationUnit.getCDDefinition();
@@ -312,10 +314,22 @@ public class CdEmfDecorator extends CdDecorator {
     packageInterface.setName(interfaceName);
     cdDef.getCDInterfaces().add(packageInterface);
     
-    for (ASTCDType clazz : astClasses) {
-      List<EmfAttribute> attributes = getEmfAttributes(clazz);
-      for (int i = 0; i < attributes.size(); i++) {
-        EmfAttribute emfAttribute = attributes.get(i);
+    for (ASTCDType type : astTypes) {
+      List<CDTypeSymbol> superInterfaces = astHelper.getAllSuperInterfaces(type);
+      Collections.reverse(superInterfaces);
+      int count = 0; 
+      for (CDTypeSymbol interf : superInterfaces) {
+        List<CDFieldSymbol> attributes = GeneratorHelper.getVisibleFields(interf);
+        for (int i = count; i < count + attributes.size(); i++) {
+          String toParseAttr = "int " + type.getName() + "_"
+              + StringTransformations.capitalize(attributes.get(i-count).getName()) + " = " + i + ";";
+          cdTransformation.addCdAttributeUsingDefinition(packageInterface, toParseAttr);
+        }
+        count += attributes.size();
+      }
+      List<EmfAttribute> attributes = getEmfAttributes(type);
+      for (int i = count; i < count + attributes.size(); i++) {
+        EmfAttribute emfAttribute = attributes.get(i-count);
         String toParseAttr = "int " + emfAttribute.getFullName() + " = " + i + ";";
         cdTransformation.addCdAttributeUsingDefinition(packageInterface, toParseAttr);
         String toParse = emfAttribute.getEmfType() + " get" + emfAttribute.getFullName() + "();";
@@ -325,7 +339,7 @@ public class CdEmfDecorator extends CdDecorator {
     }
     
     for (String typeName : collection) {
-      int i = astClasses.size() + 1;
+      int i = astTypes.size() + 1;
       String toParseAttr = "int " + typeName + " = " + i + ";";
       cdTransformation.addCdAttributeUsingDefinition(packageInterface, toParseAttr);
       String toParse = "EDataType get" + typeName + "();";
@@ -334,7 +348,7 @@ public class CdEmfDecorator extends CdDecorator {
       i++;
     }
     
-    List<String> classNames = astClasses.stream().map(e -> getPlainName(e))
+    List<String> classNames = astTypes.stream().map(e -> getPlainName(e))
         .collect(Collectors.toList());
         
     glex.replaceTemplate("ast.AstInterfaceContent", packageInterface,
@@ -546,6 +560,27 @@ public class CdEmfDecorator extends CdDecorator {
     String toParse = "public boolean eIsSet(int featureID);";
     HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.EIsSet",
         astHelper.getCdName(), getEmfAttributes(clazz));
+    replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
+  }
+  
+  /**
+   * Adds overriding for the eBaseStructuralFeatureID method i this class has an
+   * interfaces
+   * 
+   * @param clazz
+   * @param astHelper
+   */
+  void addStructuralFeatureMethods(ASTCDClass clazz, AstEmfGeneratorHelper astHelper) {
+    String methodName = "eBaseStructuralFeatureID";
+    String toParse = "public int " + methodName + "(int featureID, Class<?> baseClass);";
+    HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.EStructuralFeature",
+        clazz, methodName, astHelper.getAllSuperInterfaces(clazz));
+    replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
+    
+    methodName = "eDerivedStructuralFeatureID";
+    toParse = "public int " + methodName + "(int featureID, Class<?> baseClass);";
+    getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.EStructuralFeature",
+        clazz, methodName, astHelper.getAllSuperInterfaces(clazz));
     replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
   }
   

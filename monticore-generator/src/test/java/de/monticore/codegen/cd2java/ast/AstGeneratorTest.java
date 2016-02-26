@@ -19,6 +19,8 @@
 
 package de.monticore.codegen.cd2java.ast;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -26,8 +28,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
+
 import de.monticore.MontiCoreConfiguration;
 import de.monticore.MontiCoreScript;
 import de.monticore.codegen.GeneratorHelper;
@@ -39,8 +45,6 @@ import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /**
  * Test for the MontiCore generator. Generates ast files for the example
@@ -105,6 +109,16 @@ public class AstGeneratorTest extends GeneratorTest {
     Path path = Paths.get(OUTPUT_FOLDER, Names.getPathFromFilename("de/monticore/inherited/"));
    // assertTrue("There are compile errors in generated code for the models in grammars/inherited.",
     // compile(path));
+  }
+
+  @Test
+  public void testInherited2() {
+    doGenerate("de/monticore/fautomaton/action/Expression.mc4");
+    doGenerate("de/monticore/fautomaton/automaton/FlatAutomaton.mc4");
+    doGenerate("de/monticore/fautomaton/automatonwithaction/ActionAutomaton.mc4");
+    Path path = Paths.get(OUTPUT_FOLDER, Names.getPathFromFilename("de/monticore/mc/fautomaton/"));
+    assertTrue("There are compile errors in generated code for the models in grammars/inherited.",
+     compile(path));
   }
 
   @Test
