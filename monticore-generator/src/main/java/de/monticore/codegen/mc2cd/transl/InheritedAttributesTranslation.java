@@ -19,24 +19,39 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
+
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.grammar.grammar._ast.*;
-import de.monticore.languages.grammar.*;
+import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
+import de.monticore.grammar.grammar._ast.ASTClassProd;
+import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar._ast.ASTNonTerminal;
+import de.monticore.grammar.grammar._ast.ASTProd;
+import de.monticore.grammar.grammar._ast.ASTRuleReference;
+import de.monticore.languages.grammar.MCClassRuleSymbol;
+import de.monticore.languages.grammar.MCGrammarSymbol;
+import de.monticore.languages.grammar.MCInterfaceOrAbstractRuleSymbol;
+import de.monticore.languages.grammar.MCRuleSymbol;
+import de.monticore.languages.grammar.MCTypeSymbol;
 import de.monticore.symboltable.Symbol;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
 import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.utils.ASTNodes;
 import de.monticore.utils.Link;
-
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 
 public class InheritedAttributesTranslation implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
@@ -49,6 +64,10 @@ public class InheritedAttributesTranslation implements
         ASTCDClass.class)) {
       handleInheritedNonTerminals(link);
       handleInheritedAttributeInASTs(link);
+    }
+    for (Link<ASTInterfaceProd, ASTCDInterface> link : rootLink.getLinks(ASTInterfaceProd.class,
+        ASTCDInterface.class)) {
+      handleInheritedAttributeInASTsInterface(link);
     }
     return rootLink;
   }
@@ -72,6 +91,28 @@ public class InheritedAttributesTranslation implements
   }
 
   private void handleInheritedAttributeInASTs(Link<ASTClassProd, ASTCDClass> link) {
+    List<ASTAttributeInAST> inheritedAttributeInASTs = getAllSuperProds(link.source()).stream()
+        .flatMap(astProd -> astProd.getSymbol()
+            .flatMap(this::getTypeSymbol)
+            .map(MCTypeSymbol::getAttributeInASTs)
+            .orElse(Collections.emptyList())
+            .stream())
+        .collect(Collectors.toList());
+
+    for (ASTAttributeInAST attributeInAST : inheritedAttributeInASTs) {
+      String superGrammarName = MCGrammarSymbolTableHelper.getMCGrammarSymbol(attributeInAST)
+          .map(MCGrammarSymbol::getFullName)
+          .orElse("");
+
+      ASTCDAttribute cdAttribute = createStereoTypedCDAttribute(
+          MC2CDStereotypes.INHERITED.toString(), superGrammarName);
+
+      link.target().getCDAttributes().add(cdAttribute);
+      new Link<>(attributeInAST, cdAttribute, link);
+    }
+  }
+  
+  private void handleInheritedAttributeInASTsInterface(Link<ASTInterfaceProd, ASTCDInterface> link) {
     List<ASTAttributeInAST> inheritedAttributeInASTs = getAllSuperProds(link.source()).stream()
         .flatMap(astProd -> astProd.getSymbol()
             .flatMap(this::getTypeSymbol)
