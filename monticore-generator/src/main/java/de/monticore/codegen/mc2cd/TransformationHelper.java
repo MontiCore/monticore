@@ -40,13 +40,7 @@ import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.generating.templateengine.reporting.Reporting;
-import de.monticore.grammar.grammar._ast.ASTClassProd;
-import de.monticore.grammar.grammar._ast.ASTConstantGroup;
-import de.monticore.grammar.grammar._ast.ASTGenericType;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._ast.ASTNonTerminal;
-import de.monticore.grammar.grammar._ast.ASTNonTerminalSeparator;
-import de.monticore.grammar.grammar._ast.ASTTerminal;
+import de.monticore.grammar.grammar._ast.*;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.languages.grammar.MCGrammarSymbol;
 import de.monticore.languages.grammar.MCRuleSymbol;
@@ -144,6 +138,9 @@ public final class TransformationHelper {
       if (ancestor instanceof ASTTerminal) {
         return Optional.ofNullable(((ASTTerminal) ancestor).getUsageName()
             .orElse(null));
+      }
+      if (ancestor instanceof ASTAttributeInAST){
+        return ((ASTAttributeInAST) ancestor).getName();
       }
     }
     return Optional.empty();
