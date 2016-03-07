@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
+import static de.monticore.codegen.mc2cd.TransformationHelper.getName;
 import static de.monticore.codegen.mc2cd.TransformationHelper.getUsageName;
 
 /**
@@ -47,37 +48,38 @@ public class RemoveOverriddenAttributesTranslation implements
     for (Link<ASTNode, ASTCDClass> classLink : rootLink.getLinks(ASTNode.class,
         ASTCDClass.class)) {
 
-      classLink.getLinks(ASTNonTerminal.class, ASTCDAttribute.class).stream()
-          .filter(nonterminalLink -> isOverridden(nonterminalLink.source(), classLink))
-          .filter(nonterminalLink -> isNotInherited(nonterminalLink.target()))
+      classLink.getLinks(ASTNode.class, ASTCDAttribute.class).stream()
+          .filter(attributeLink -> isOverridden(attributeLink.source(), classLink))
+          .filter(attributeLink -> isNotInherited(attributeLink.target()))
           .map(Link::target)
           .forEach(classLink.target().getCDAttributes()::remove);
     }
     return rootLink;
   }
 
-  private boolean isOverridden(ASTNonTerminal nonTerminal, Link<?, ASTCDClass> link) {
-    Optional<String> usageName = getUsageName(link.source(), nonTerminal);
+  private boolean isOverridden(ASTNode source, Link<?, ASTCDClass> classLink) {
+    Optional<String> usageName = getUsageName(classLink.source(), source);
     Set<ASTAttributeInAST> attributesInASTLinkingToSameClass = attributesInASTLinkingToSameClass(
-        link);
+        classLink);
+    attributesInASTLinkingToSameClass.remove(source);
 
     boolean matchByUsageName = usageName.isPresent() && attributesInASTLinkingToSameClass.stream()
         .map(ASTAttributeInAST::getName)
-        .filter(java.util.Optional::isPresent)
-        .map(java.util.Optional::get)
+        .filter(Optional::isPresent)
+        .map(Optional::get)
         .anyMatch(usageName.get()::equals);
 
     boolean matchByTypeName = !usageName.isPresent() && attributesInASTLinkingToSameClass.stream()
         .filter(attributeInAST -> !attributeInAST.getName().isPresent())
         .map(ASTAttributeInAST::getGenericType)
         .map(ASTGenericType::getTypeName)
-        .anyMatch(nonTerminal.getName()::equals);
+        .anyMatch(getName(source).orElse("")::equals);
 
     return matchByUsageName || matchByTypeName;
   }
 
   private Set<ASTAttributeInAST> attributesInASTLinkingToSameClass(Link<?, ASTCDClass> link) {
-    return link.rootLink().getLinks(ASTASTRule.class, ASTCDClass.class).stream()
+    return link.rootLink().getLinks(ASTNode.class, ASTCDClass.class).stream()
         .filter(attributeLink -> attributeLink.target() == link.target())
         .flatMap(astRuleLink ->
             astRuleLink.getLinks(ASTAttributeInAST.class, ASTCDAttribute.class).stream())

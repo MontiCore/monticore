@@ -16,15 +16,23 @@ public final class AstRuleInheritanceTest {
 
   private final ASTCDClass astC;
 
+  private final ASTCDClass impl;
+
   public AstRuleInheritanceTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/AstRuleInheritance.mc4")).get();
     astC = TestHelper.getCDClass(cdCompilationUnit, "ASTC").get();
+    impl = TestHelper.getCDClass(cdCompilationUnit, "ASTImpl").get();
   }
 
   @Test
   public void testAstRuleInheritance() {
     assertEquals("dimensions", astC.getCDAttributes().get(0).getName());
+  }
+
+  @Test
+  public void testAstRuleDoubleInheritance() {
+    assertEquals(2, impl.getCDAttributes().size());
   }
   
 }

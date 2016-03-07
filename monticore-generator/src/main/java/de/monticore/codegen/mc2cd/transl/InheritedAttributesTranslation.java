@@ -24,10 +24,8 @@ import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.*;
-import de.monticore.languages.grammar.MCClassRuleSymbol;
-import de.monticore.languages.grammar.MCGrammarSymbol;
-import de.monticore.languages.grammar.MCRuleSymbol;
-import de.monticore.languages.grammar.MCTypeSymbol;
+import de.monticore.languages.grammar.*;
+import de.monticore.symboltable.Symbol;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
@@ -37,6 +35,7 @@ import de.monticore.utils.Link;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
@@ -56,17 +55,10 @@ public class InheritedAttributesTranslation implements
   }
 
   private void handleInheritedNonTerminals(Link<ASTClassProd, ASTCDClass> link) {
-    for (Entry<String, List<ASTNonTerminal>> entry : getInheritedNonTerminals(link.source())
+    for (Entry<ASTProd, List<ASTNonTerminal>> entry : getInheritedNonTerminals(link.source())
         .entrySet()) {
-
-      String superGrammarName = MCGrammarSymbolTableHelper.resolveRule(
-          link.rootLink().source(), entry.getKey()).get()
-          .getGrammarSymbol()
-          .getFullName();
-
       for (ASTNonTerminal nonTerminal : entry.getValue()) {
-        ASTCDAttribute cdAttribute = createStereoTypedCDAttribute(
-            MC2CDStereotypes.INHERITED.toString(), superGrammarName);
+        ASTCDAttribute cdAttribute = createCDAttribute(link.source(), entry.getKey());
         link.target().getCDAttributes().add(cdAttribute);
         new Link<>(nonTerminal, cdAttribute, link);
       }
@@ -74,42 +66,62 @@ public class InheritedAttributesTranslation implements
   }
 
   private void handleInheritedAttributeInASTs(Link<ASTClassProd, ASTCDClass> link) {
-    List<ASTAttributeInAST> inheritedAttributeInASTs = getAllSuperProds(link.source()).stream()
-        .flatMap(astProd -> astProd.getSymbol()
-            .filter(MCClassRuleSymbol.class::isInstance)
-            .map(MCClassRuleSymbol.class::cast)
-            .map(MCClassRuleSymbol::getType)
-            .map(MCTypeSymbol::getAttributeInASTs)
-            .orElse(Collections.emptyList())
-            .stream())
-        .collect(Collectors.toList());
-
-    for (ASTAttributeInAST attributeInAST : inheritedAttributeInASTs) {
-      String superGrammarName = MCGrammarSymbolTableHelper.getMCGrammarSymbol(attributeInAST)
-          .map(MCGrammarSymbol::getFullName)
-          .orElse("");
-
-      ASTCDAttribute cdAttribute = createStereoTypedCDAttribute(
-          MC2CDStereotypes.INHERITED.toString(), superGrammarName);
-
-      link.target().getCDAttributes().add(cdAttribute);
-      new Link<>(attributeInAST, cdAttribute, link);
+    for (Entry<ASTProd, List<ASTAttributeInAST>> entry :
+        getInheritedAttributeInASTs(link.source()).entrySet()) {
+      for (ASTAttributeInAST attributeInAST : entry.getValue()) {
+        ASTCDAttribute cdAttribute = createCDAttribute(link.source(), entry.getKey());
+        link.target().getCDAttributes().add(cdAttribute);
+        new Link<>(attributeInAST, cdAttribute, link);
+      }
     }
   }
 
-  private ASTCDAttribute createStereoTypedCDAttribute(String stereotypeName,
-      String stereotypeValue) {
+  private ASTCDAttribute createCDAttribute(ASTNode inheritingNode, ASTNode definingNode) {
+    List<ASTInterfaceProd> interfacesWithoutImplementation =
+        getAllInterfacesWithoutImplementation(inheritingNode);
+
+    String superGrammarName = MCGrammarSymbolTableHelper.getMCGrammarSymbol(definingNode)
+        .map(MCGrammarSymbol::getFullName)
+        .orElse("");
+
     ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-    TransformationHelper.addStereoType(cdAttribute, stereotypeName, stereotypeValue);
+    if (!interfacesWithoutImplementation.contains(definingNode)) {
+      TransformationHelper.addStereoType(
+          cdAttribute, MC2CDStereotypes.INHERITED.toString(), superGrammarName);
+    }
     return cdAttribute;
   }
 
-  private Map<String, List<ASTNonTerminal>> getInheritedNonTerminals(ASTProd sourceNode) {
+  private Map<ASTProd, List<ASTNonTerminal>> getInheritedNonTerminals(ASTProd sourceNode) {
     return getAllSuperProds(sourceNode).stream()
-        .collect(Collectors.toMap(ASTProd::getName, astProd ->
+        .distinct()
+        .collect(Collectors.toMap(Function.identity(), astProd ->
             ASTNodes.getSuccessors(astProd, ASTNonTerminal.class)));
   }
 
+  private Map<ASTProd, List<ASTAttributeInAST>> getInheritedAttributeInASTs(ASTNode astNode) {
+    return getAllSuperProds(astNode).stream()
+        .distinct()
+        .collect(Collectors.toMap(Function.identity(), astProd ->
+            astProd.getSymbol()
+                .flatMap(this::getTypeSymbol)
+                .map(MCTypeSymbol::getAttributeInASTs)
+                .orElse(Collections.emptyList())));
+  }
+
+  private Optional<MCTypeSymbol> getTypeSymbol(Symbol symbol) {
+    if (symbol instanceof MCClassRuleSymbol) {
+      return Optional.of(((MCClassRuleSymbol) symbol).getType());
+    }
+    else if (symbol instanceof MCInterfaceOrAbstractRuleSymbol) {
+      return Optional.of(((MCInterfaceOrAbstractRuleSymbol) symbol).getType());
+    }
+    return Optional.empty();
+  }
+
+  /**
+   * @return the super productions defined in all super grammars (including transitive super grammars)
+   */
   private List<ASTProd> getAllSuperProds(ASTNode astNode) {
     List<ASTProd> directSuperRules = getDirectSuperProds(astNode);
     List<ASTProd> allSuperRules = new ArrayList<>();
@@ -119,14 +131,44 @@ public class InheritedAttributesTranslation implements
     allSuperRules.addAll(directSuperRules);
     return allSuperRules;
   }
-  
+
+  /**
+   * @return a list of interfaces that aren't already implemented by another class higher up in the
+   * type hierarchy. (the list includes interfaces extended transitively by other interfaces)
+   */
+  private List<ASTInterfaceProd> getAllInterfacesWithoutImplementation(ASTNode astNode) {
+    List<ASTInterfaceProd> directInterfaces = getDirectSuperProds(astNode).stream()
+        .filter(ASTInterfaceProd.class::isInstance)
+        .map(ASTInterfaceProd.class::cast)
+        .collect(Collectors.toList());
+    List<ASTInterfaceProd> allSuperRules = new ArrayList<>();
+    for (ASTInterfaceProd superInterface : directInterfaces) {
+      allSuperRules.addAll(getAllInterfacesWithoutImplementation(superInterface));
+    }
+    allSuperRules.addAll(directInterfaces);
+    return allSuperRules;
+  }
+
+  /**
+   * @return the super productions defined in direct super grammars
+   */
   private List<ASTProd> getDirectSuperProds(ASTNode astNode) {
     if (astNode instanceof ASTClassProd) {
-      return resolveRuleReferences(((ASTClassProd) astNode).getSuperRule(), astNode);
+      List<ASTProd> directSuperProds = resolveRuleReferences(
+          ((ASTClassProd) astNode).getSuperRule(), astNode);
+      directSuperProds.addAll(
+          resolveRuleReferences(((ASTClassProd) astNode).getSuperInterfaceRule(), astNode));
+      return directSuperProds;
+    }
+    else if (astNode instanceof ASTInterfaceProd) {
+      return resolveRuleReferences(((ASTInterfaceProd) astNode).getSuperInterfaceRule(), astNode);
     }
     return Collections.emptyList();
   }
-  
+
+  /**
+   * @return the production definitions of B & C in "A extends B, C"
+   */
   private List<ASTProd> resolveRuleReferences(List<ASTRuleReference> ruleReferences,
       ASTNode nodeWithSymbol) {
     List<ASTProd> superRuleNodes = new ArrayList<>();
