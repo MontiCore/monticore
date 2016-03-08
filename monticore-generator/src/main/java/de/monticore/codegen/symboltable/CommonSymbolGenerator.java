@@ -47,13 +47,13 @@ public class CommonSymbolGenerator implements SymbolGenerator {
 
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
 
-    generateEmptySymbol(genEngine, genHelper, handCodedPath, ruleSymbol);
+    generateEmpty(genEngine, genHelper, handCodedPath, ruleSymbol);
     if (!(INTERFACEORABSTRACTRULE.equals(ruleSymbol.getKindSymbolRule()))) {
       genEngine.generate("symboltable.Symbol", filePath, ruleSymbol.getAstNode().get(), className, ruleSymbol);
     }
   }
 
-  protected void generateEmptySymbol(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
+  protected void generateEmpty(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
       IterablePath handCodedPath, MCRuleSymbol ruleSymbol) {
     // Interface and abstract rules both do not have any content. Hence, only the empty symbol interface must be generated.
     // In that case, the suffix is just "Symbol" instead of "SymbolEMPTY".

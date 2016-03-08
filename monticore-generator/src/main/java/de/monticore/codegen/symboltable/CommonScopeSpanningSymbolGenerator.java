@@ -46,12 +46,12 @@ public class CommonScopeSpanningSymbolGenerator implements ScopeSpanningSymbolGe
 
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
 
-    generateEmptyScopeSpanningSymbol(genEngine, genHelper, handCodedPath, ruleSymbol);
+    generateEmpty(genEngine, genHelper, handCodedPath, ruleSymbol);
     genEngine.generate("symboltable.ScopeSpanningSymbol", filePath, ruleSymbol.getAstNode().get(), className, ruleSymbol);
     generateScope(genEngine, genHelper, handCodedPath, ruleSymbol);
   }
 
-  protected void generateEmptyScopeSpanningSymbol(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
+  protected void generateEmpty(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
       IterablePath handCodedPath, MCRuleSymbol ruleSymbol) {
     final String className = getSimpleTypeNameToGenerate(getSimpleName(ruleSymbol.getName() + EMPTY_SYMBOL_SUFFIX),
         genHelper.getTargetPackage(), handCodedPath);

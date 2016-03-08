@@ -89,6 +89,11 @@ public class CommonSymbolReference<T extends Symbol> implements SymbolReference<
   }
 
   @Override
+  public Scope getEnclosingScope() {
+    return enclosingScope;
+  }
+
+  @Override
   public boolean existsReferencedSymbol() {
     return isReferencedSymbolLoaded() || loadReferencedSymbol().isPresent();
   }
