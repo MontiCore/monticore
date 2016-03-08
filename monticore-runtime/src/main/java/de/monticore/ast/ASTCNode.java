@@ -48,7 +48,9 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
   protected Optional<? extends Symbol> symbol = Optional.empty();
   
   protected Optional<? extends Scope> enclosingScope = Optional.empty();
-  
+
+  protected Optional<? extends Scope> spannedScope = Optional.empty();
+
   public abstract ASTNode deepClone();
   
   public ASTNode deepClone(ASTNode result) {
@@ -169,5 +171,15 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
   
   public Optional<? extends Symbol> getSymbol() {
     return symbol;
+  }
+
+  @Override
+  public void setSpannedScope(Scope spannedScope) {
+    this.spannedScope = Optional.ofNullable(spannedScope);
+  }
+
+  @Override
+  public Optional<? extends Scope> getSpannedScope() {
+    return spannedScope;
   }
 }

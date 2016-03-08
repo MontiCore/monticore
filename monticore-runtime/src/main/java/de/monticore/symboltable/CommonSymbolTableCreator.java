@@ -67,7 +67,7 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
   @Override
   public void putOnStack(MutableScope scope) {
     Log.errorIfNull(scope);
-    setSpecificResolvers(scope);
+    setResolvingFiltersForScope(scope);
 
     if (!scope.getEnclosingScope().isPresent() && currentScope().isPresent()) {
       scope.setEnclosingScope(currentScope().get());
@@ -87,12 +87,12 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
   }
 
   /**
-   * Sets the resolvers that are available for the <code>scope</code>. If no resolvers are
+   * Sets the resolving filters that are available for the <code>scope</code>. If no resolvers are
    * explicitly defined for the <code>scope</code>, the resolvers of the enclosing scope are used.
    *
    * @param scope the scope
    */
-  private void setSpecificResolvers(final MutableScope scope) {
+  private void setResolvingFiltersForScope(final MutableScope scope) {
     // Look for resolvers that are registered for that scope
     if (scope.isSpannedBySymbol()) {
       final Symbol symbol = scope.getSpanningSymbol().get();
@@ -144,10 +144,15 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
     // ast -> symbol
     astNode.setSymbol(symbol);
     astNode.setEnclosingScope(symbol.getEnclosingScope());
+
+    // ast -> spannedScope
+    if (symbol instanceof ScopeSpanningSymbol) {
+      astNode.setSpannedScope(((ScopeSpanningSymbol) symbol).getSpannedScope());
+    }
   }
 
   @Override
-  public void setLinkBetweenScopeAndNode(MutableScope scope, ASTNode astNode) {
+  public void setLinkBetweenSpannedScopeAndNode(MutableScope scope, ASTNode astNode) {
     // scope -> ast
     scope.setAstNode(astNode);
 

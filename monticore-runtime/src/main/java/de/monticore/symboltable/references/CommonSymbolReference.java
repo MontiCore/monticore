@@ -24,11 +24,13 @@ import static com.google.common.base.Strings.emptyToNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
+import de.monticore.symboltable.modifiers.AccessModifier;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -42,7 +44,12 @@ public class CommonSymbolReference<T extends Symbol> implements SymbolReference<
   private final String referencedName;
   private final SymbolKind referencedKind;
 
+  private AccessModifier accessModifier = AccessModifier.ALL_INCLUSION;
+  private Predicate<Symbol> predicate = x -> true;
+
+
   private ASTNode astNode;
+
 
   /**
    * The enclosing scope of the reference, not of the referenced symbol (i.e., symbol definition).
@@ -96,6 +103,7 @@ public class CommonSymbolReference<T extends Symbol> implements SymbolReference<
 
     Log.debug("Load full information of '" + referencedName + "' (Kind " + referencedKind.getName() + ").",
         SymbolReference.class.getSimpleName());
+    // TODO PN resolve with access modifier predicate
     Optional<T> resolvedSymbol = enclosingScope.resolve(referencedName, referencedKind);
 
     if (resolvedSymbol.isPresent()) {
@@ -117,5 +125,13 @@ public class CommonSymbolReference<T extends Symbol> implements SymbolReference<
 
   @Override public void setAstNode(ASTNode astNode) {
     this.astNode = astNode;
+  }
+
+  public void setAccessModifier(AccessModifier accessModifier) {
+    this.accessModifier = accessModifier;
+  }
+
+  public void setPredicate(Predicate<Symbol> predicate) {
+    this.predicate = predicate;
   }
 }

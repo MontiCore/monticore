@@ -350,7 +350,7 @@ public class CommonScope implements MutableScope {
   }
 
   @Override
-  public boolean isShadowingScope() {
+  public boolean  isShadowingScope() {
     if (isShadowingScope == null) {
       return getName().isPresent();
     }
