@@ -36,18 +36,9 @@ import de.se_rwth.commons.Names;
  */
 public class CommonModelNameCalculatorGenerator implements ModelNameCalculatorGenerator {
 
-  private final SymbolTableGeneratorHelper genHelper;
-  private final IterablePath handCodedPath;
-  private final GeneratorEngine genEngine;
-
-  public CommonModelNameCalculatorGenerator(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper, IterablePath handCodedPath) {
-    this.genEngine = genEngine;
-    this.genHelper = genHelper;
-    this.handCodedPath = handCodedPath;
-  }
-
   @Override
-  public void generate(MCGrammarSymbol grammarSymbol, Collection<String> grammarRuleNames) {
+  public void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
+      IterablePath handCodedPath, MCGrammarSymbol grammarSymbol, Collection<String> grammarRuleNames) {
     final String className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName() + "ModelNameCalculator"),
         genHelper.getTargetPackage(), handCodedPath);
 

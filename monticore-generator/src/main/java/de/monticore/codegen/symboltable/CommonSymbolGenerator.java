@@ -39,30 +39,22 @@ public class CommonSymbolGenerator implements SymbolGenerator {
   public static final String SYMBOL_SUFFIX = "Symbol";
   public static final String EMPTY_SYMBOL_SUFFIX = "SymbolEMPTY";
 
-  private final SymbolTableGeneratorHelper genHelper;
-  private final IterablePath handCodedPath;
-  private final GeneratorEngine genEngine;
-
-  public CommonSymbolGenerator(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper, IterablePath handCodedPath) {
-    this.genEngine = genEngine;
-    this.genHelper = genHelper;
-    this.handCodedPath = handCodedPath;
-  }
-
   @Override
-  public void generate(MCRuleSymbol ruleSymbol) {
+  public void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
+      IterablePath handCodedPath, MCRuleSymbol ruleSymbol) {
     final String className = getSimpleTypeNameToGenerate(getSimpleName(ruleSymbol.getName() + "Symbol"),
         genHelper.getTargetPackage(), handCodedPath);
 
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
 
-    generateEmptySymbol(ruleSymbol);
+    generateEmptySymbol(genEngine, genHelper, handCodedPath, ruleSymbol);
     if (!(INTERFACEORABSTRACTRULE.equals(ruleSymbol.getKindSymbolRule()))) {
       genEngine.generate("symboltable.Symbol", filePath, ruleSymbol.getAstNode().get(), className, ruleSymbol);
     }
   }
 
-  protected void generateEmptySymbol(MCRuleSymbol ruleSymbol) {
+  protected void generateEmptySymbol(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
+      IterablePath handCodedPath, MCRuleSymbol ruleSymbol) {
     // Interface and abstract rules both do not have any content. Hence, only the empty symbol interface must be generated.
     // In that case, the suffix is just "Symbol" instead of "SymbolEMPTY".
     final String suffix = INTERFACEORABSTRACTRULE.equals(ruleSymbol.getKindSymbolRule())

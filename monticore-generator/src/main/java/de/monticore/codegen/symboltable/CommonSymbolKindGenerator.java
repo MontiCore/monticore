@@ -35,18 +35,9 @@ import de.se_rwth.commons.Names;
  */
 public class CommonSymbolKindGenerator implements SymbolKindGenerator {
 
-  private final SymbolTableGeneratorHelper genHelper;
-  private final IterablePath handCodedPath;
-  private final GeneratorEngine genEngine;
-
-  public CommonSymbolKindGenerator(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper, IterablePath handCodedPath) {
-    this.genEngine = genEngine;
-    this.genHelper = genHelper;
-    this.handCodedPath = handCodedPath;
-  }
-
   @Override
-  public void generate(MCRuleSymbol ruleSymbol) {
+  public void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
+      IterablePath handCodedPath, MCRuleSymbol ruleSymbol) {
     final String className = ruleSymbol.getName() + "Kind";
     final String qualifiedClassName = getPackageName(genHelper.getTargetPackage(), "") + className;
 

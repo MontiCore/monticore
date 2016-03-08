@@ -21,6 +21,8 @@ package de.monticore.codegen.symboltable;
 
 import java.util.Collection;
 
+import de.monticore.generating.GeneratorEngine;
+import de.monticore.io.paths.IterablePath;
 import de.monticore.languages.grammar.MCGrammarSymbol;
 
 /**
@@ -28,6 +30,7 @@ import de.monticore.languages.grammar.MCGrammarSymbol;
  */
 public interface ModelNameCalculatorGenerator {
 
-  void generate(MCGrammarSymbol grammarSymbol, Collection<String> grammarRuleNames);
+  void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
+      IterablePath handCodedPath, MCGrammarSymbol grammarSymbol, Collection<String> grammarRuleNames);
 
 }

@@ -35,18 +35,9 @@ import de.se_rwth.commons.Names;
  */
 public class CommonSymbolReferenceGenerator implements SymbolReferenceGenerator {
 
-  private final SymbolTableGeneratorHelper genHelper;
-  private final IterablePath handCodedPath;
-  private final GeneratorEngine genEngine;
-
-  public CommonSymbolReferenceGenerator(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper, IterablePath handCodedPath) {
-    this.genEngine = genEngine;
-    this.genHelper = genHelper;
-    this.handCodedPath = handCodedPath;
-  }
-
   @Override
-  public void generate(MCRuleSymbol ruleSymbol, boolean isScopeSpanningSymbol) {
+  public void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
+      IterablePath handCodedPath, MCRuleSymbol ruleSymbol, boolean isScopeSpanningSymbol) {
     final String className = getSimpleTypeNameToGenerate(getSimpleName(ruleSymbol.getName() + "SymbolReference"),
         genHelper.getTargetPackage(), handCodedPath);
 

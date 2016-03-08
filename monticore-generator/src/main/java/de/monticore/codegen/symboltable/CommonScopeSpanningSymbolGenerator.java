@@ -39,29 +39,20 @@ public class CommonScopeSpanningSymbolGenerator implements ScopeSpanningSymbolGe
 
   public static final String EMPTY_SYMBOL_SUFFIX = "SymbolEMPTY";
 
-  private final SymbolTableGeneratorHelper genHelper;
-  private final IterablePath handCodedPath;
-  private final GeneratorEngine genEngine;
-
-  public CommonScopeSpanningSymbolGenerator(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
-      IterablePath handCodedPath) {
-    this.genEngine = genEngine;
-    this.genHelper = genHelper;
-    this.handCodedPath = handCodedPath;
-  }
-
-  public void generate(MCRuleSymbol ruleSymbol) {
+  public void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
+      IterablePath handCodedPath, MCRuleSymbol ruleSymbol) {
     final String className = getSimpleTypeNameToGenerate(getSimpleName(ruleSymbol.getName() + "Symbol"),
         genHelper.getTargetPackage(), handCodedPath);
 
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
 
-    generateEmptyScopeSpanningSymbol(ruleSymbol);
+    generateEmptyScopeSpanningSymbol(genEngine, genHelper, handCodedPath, ruleSymbol);
     genEngine.generate("symboltable.ScopeSpanningSymbol", filePath, ruleSymbol.getAstNode().get(), className, ruleSymbol);
-    generateScope(ruleSymbol);
+    generateScope(genEngine, genHelper, handCodedPath, ruleSymbol);
   }
 
-  protected void generateEmptyScopeSpanningSymbol(MCRuleSymbol ruleSymbol) {
+  protected void generateEmptyScopeSpanningSymbol(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
+      IterablePath handCodedPath, MCRuleSymbol ruleSymbol) {
     final String className = getSimpleTypeNameToGenerate(getSimpleName(ruleSymbol.getName() + EMPTY_SYMBOL_SUFFIX),
         genHelper.getTargetPackage(), handCodedPath);
 
@@ -71,7 +62,8 @@ public class CommonScopeSpanningSymbolGenerator implements ScopeSpanningSymbolGe
     }
   }
 
-  protected void generateScope(MCRuleSymbol ruleSymbol) {
+  protected void generateScope(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper, IterablePath handCodedPath,
+      MCRuleSymbol ruleSymbol) {
     final String className = ruleSymbol.getName() + "Scope";
     final String qualifiedClassName = getPackageName(genHelper.getTargetPackage(), "") + className;
 

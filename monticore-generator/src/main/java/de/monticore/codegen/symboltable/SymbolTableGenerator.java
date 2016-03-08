@@ -31,33 +31,52 @@ import de.monticore.io.paths.IterablePath;
 import de.monticore.languages.grammar.MCGrammarSymbol;
 import de.monticore.languages.grammar.MCRuleComponentSymbol;
 import de.monticore.languages.grammar.MCRuleSymbol;
-import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.ScopeSpanningSymbol;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
 /**
  * @author Pedram Mir Seyed Nazari
  */
-// TODO PN now that it runs, make it beautiful (+ all associated classes)
 public class SymbolTableGenerator {
 
   public static final String PACKAGE = "_symboltable";
   public static final String LOG = SymbolTableGenerator.class.getSimpleName();
 
-  private final SymbolGenerator symbolGenerator;
-  private final ScopeSpanningSymbol scopeSpanningSymbolGenerator;
+  private final ModelingLanguageGenerator modelingLanguageGenerator;
+  private final ModelLoaderGenerator modelLoaderGenerator;
+  private final ModelNameCalculatorGenerator modelNameCalculatorGenerator;
+  private final ResolvingFilterGenerator resolvingFilterGenerator;
 
-  public SymbolTableGenerator(SymbolGenerator symbolGenerator, ScopeSpanningSymbol scopeSpanningSymbolGenerator) {
+  private final SymbolGenerator symbolGenerator;
+  private final SymbolKindGenerator symbolKindGenerator;
+  private final ScopeSpanningSymbolGenerator scopeSpanningSymbolGenerator;
+
+  private final SymbolReferenceGenerator symbolReferenceGenerator;
+  private final SymbolTableCreatorGenerator symbolTableCreatorGenerator;
+
+  protected SymbolTableGenerator(ModelingLanguageGenerator modelingLanguageGenerator,
+      ModelLoaderGenerator modelLoaderGenerator,
+      ModelNameCalculatorGenerator modelNameCalculatorGenerator,
+      ResolvingFilterGenerator resolvingFilterGenerator,
+      SymbolGenerator symbolGenerator,
+      SymbolKindGenerator symbolKindGenerator,
+      ScopeSpanningSymbolGenerator scopeSpanningSymbolGenerator,
+      SymbolReferenceGenerator symbolReferenceGenerator,
+      SymbolTableCreatorGenerator symbolTableCreatorGenerator) {
+    this.modelingLanguageGenerator = modelingLanguageGenerator;
+    this.modelLoaderGenerator = modelLoaderGenerator;
+    this.modelNameCalculatorGenerator = modelNameCalculatorGenerator;
+    this.resolvingFilterGenerator = resolvingFilterGenerator;
     this.symbolGenerator = symbolGenerator;
+    this.symbolKindGenerator = symbolKindGenerator;
     this.scopeSpanningSymbolGenerator = scopeSpanningSymbolGenerator;
+    this.symbolReferenceGenerator = symbolReferenceGenerator;
+    this.symbolTableCreatorGenerator = symbolTableCreatorGenerator;
   }
 
-  public static void generate(ASTMCGrammar astGrammar, GlobalScope globalScope, ASTCDCompilationUnit astCd,
+  public void generate(ASTMCGrammar astGrammar, SymbolTableGeneratorHelper genHelper,
       File outputPath, final IterablePath handCodedPath) {
 
-    SymbolTableGeneratorHelper genHelper = new SymbolTableGeneratorHelper(astGrammar, globalScope, astCd);
     MCGrammarSymbol grammarSymbol = genHelper.getGrammarSymbol();
 
     // TODO PN also generate for components grammars everything that is possible and useful.
@@ -93,39 +112,39 @@ public class SymbolTableGenerator {
     glex.setGlobalValue("skipSTGen", skipSymbolTableGeneration);
     setup.setGlex(glex);
 
-    final GeneratorEngine generator = new GeneratorEngine(setup);
+    final GeneratorEngine genEngine = new GeneratorEngine(setup);
 
-    new CommonModelingLanguageGenerator(generator, genHelper, handCodedPath).generate(grammarSymbol, ruleNames);
-    new CommonModelLoaderGenerator(generator, genHelper, handCodedPath).generate(grammarSymbol);
+    modelingLanguageGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol, ruleNames);
+    modelLoaderGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol);
 
     if (!skipSymbolTableGeneration) {
-      new CommonModelNameCalculatorGenerator(generator, genHelper, handCodedPath).generate(grammarSymbol, ruleNames);
-      new CommonSymbolTableCreatorGenerator(generator, genHelper, handCodedPath).generate(grammarSymbol);
+      modelNameCalculatorGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol, ruleNames);
+      symbolTableCreatorGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol);
 
       for (MCRuleSymbol ruleSymbol : allSymbolDefiningRules) {
-        generateSymbolOrScopeSpanningSymbol(generator, genHelper, ruleSymbol, handCodedPath);
-        new CommonSymbolKindGenerator(generator, genHelper, handCodedPath).generate(ruleSymbol);
-        new CommonSymbolReferenceGenerator(generator, genHelper, handCodedPath).generate(ruleSymbol, isScopeSpanningSymbol(genHelper, ruleSymbol));
-        new CommonResolvingFilterGenerator(generator, genHelper, handCodedPath).generate(ruleSymbol);
+        generateSymbolOrScopeSpanningSymbol(genEngine, genHelper, ruleSymbol, handCodedPath);
+        symbolKindGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol);
+        symbolReferenceGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol, isScopeSpanningSymbol(genHelper, ruleSymbol));
+        resolvingFilterGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol);
       }
     }
 
     Log.debug("End symbol table generation for the grammar " + astGrammar.getName(), LOG);
   }
 
-  private static void generateSymbolOrScopeSpanningSymbol(GeneratorEngine generator, SymbolTableGeneratorHelper genHelper,
+  private void generateSymbolOrScopeSpanningSymbol(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
       MCRuleSymbol ruleSymbol, IterablePath handCodedPath) {
     if (ruleSymbol.getAstNode().isPresent()) {
       if (!isScopeSpanningSymbol(genHelper, ruleSymbol)) {
-         new CommonSymbolGenerator(generator, genHelper, handCodedPath).generate(ruleSymbol);
+         symbolGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol);
       }
       else {
-        new CommonScopeSpanningSymbolGenerator(generator, genHelper, handCodedPath).generate(ruleSymbol);
+        scopeSpanningSymbolGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol);
       }
     }
   }
 
-  private static boolean isScopeSpanningSymbol(SymbolTableGeneratorHelper genHelper, final MCRuleSymbol rule) {
+  private boolean isScopeSpanningSymbol(SymbolTableGeneratorHelper genHelper, final MCRuleSymbol rule) {
     for (MCRuleComponentSymbol ruleComponent : rule.getRuleComponents()) {
       final MCRuleSymbol referencedRule = genHelper.getGrammarSymbol().getRule(ruleComponent.getReferencedRuleName());
       if ((referencedRule != null) && referencedRule.isSymbolDefinition()) {

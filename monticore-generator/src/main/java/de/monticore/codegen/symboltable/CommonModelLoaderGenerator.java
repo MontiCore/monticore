@@ -35,18 +35,9 @@ import de.se_rwth.commons.Names;
  */
 public class CommonModelLoaderGenerator implements ModelLoaderGenerator {
 
-  private final SymbolTableGeneratorHelper genHelper;
-  private final IterablePath handCodedPath;
-  private final GeneratorEngine genEngine;
-
-  public CommonModelLoaderGenerator(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper, IterablePath handCodedPath) {
-    this.genEngine = genEngine;
-    this.genHelper = genHelper;
-    this.handCodedPath = handCodedPath;
-  }
-
   @Override
-  public void generate(MCGrammarSymbol grammarSymbol) {
+  public void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
+      IterablePath handCodedPath, MCGrammarSymbol grammarSymbol) {
     final String className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName() + "ModelLoader"),
         genHelper.getTargetPackage(), handCodedPath);
 

@@ -19,6 +19,8 @@
 
 package de.monticore.codegen.symboltable;
 
+import de.monticore.generating.GeneratorEngine;
+import de.monticore.io.paths.IterablePath;
 import de.monticore.languages.grammar.MCRuleSymbol;
 
 /**
@@ -26,6 +28,7 @@ import de.monticore.languages.grammar.MCRuleSymbol;
  */
 public interface SymbolGenerator {
 
-  void generate(MCRuleSymbol ruleSymbol);
+  void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
+      IterablePath handCodedPath, MCRuleSymbol ruleSymbol);
 
 }

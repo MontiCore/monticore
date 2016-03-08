@@ -43,6 +43,8 @@ import de.monticore.codegen.cd2java.visitor.VisitorGenerator;
 import de.monticore.codegen.mc2cd.MC2CDTransformation;
 import de.monticore.codegen.parser.ParserGenerator;
 import de.monticore.codegen.symboltable.SymbolTableGenerator;
+import de.monticore.codegen.symboltable.SymbolTableGeneratorBuilder;
+import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
@@ -235,7 +237,9 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   public void generateSymbolTable(ASTMCGrammar astGrammar, GlobalScope symbolTable, ASTCDCompilationUnit astCd,
       File outputDirectory, IterablePath handcodedPath) {
     Log.errorIfNull(astGrammar);
-    SymbolTableGenerator.generate(astGrammar, symbolTable, astCd, outputDirectory, handcodedPath);
+    SymbolTableGeneratorHelper genHelper = new SymbolTableGeneratorHelper(astGrammar, symbolTable, astCd);
+    SymbolTableGenerator symbolTableGenerator = new SymbolTableGeneratorBuilder().build();
+    symbolTableGenerator.generate(astGrammar, genHelper, outputDirectory, handcodedPath);
   }
   
   /**
@@ -360,7 +364,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    *
    * @param astGrammar - grammar AST
    * @param glex TODO
-   * @param modelPaths TODO
    * @param targetPath TODO
    */
   public ASTCDCompilationUnit transformAstGrammarToAstCd(
