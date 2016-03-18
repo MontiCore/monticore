@@ -34,7 +34,8 @@ import de.monticore.symboltable.resolving.ResolvingFilter;
  *
  * @author Pedram Mir Seyed Nazari, Sebastian Oberhoff
  */
-// TODO PN rename to ResolvingConfiguration
+// TODO PN rename to ResolvingConfiguration.
+// TODO PN refactor: Filter should be set for scope name, not for symbol name and kind.
 public final class ResolverConfiguration {
   
   private final Table<String, SymbolKind, Set<ResolvingFilter<? extends Symbol>>> resolverTable = HashBasedTable

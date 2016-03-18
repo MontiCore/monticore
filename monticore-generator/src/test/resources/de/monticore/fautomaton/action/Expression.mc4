@@ -1,9 +1,12 @@
 package de.monticore.fautomaton.action;
 
 
-grammar Expression extends mc.grammars.lexicals.TestLexicals {
+grammar Expression {
 
 	token NUMBER = ('1'..'9')('0'..'9')*;
+	
+	token Name =
+        ( 'a'..'z' | 'A'..'Z' | '_' | '$' )( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '$' )*;
 	
 	interface Expression; // = IncreaseExpression | Assignment | DecreaseExpression;
 	ast Expression = Varname:Name ;

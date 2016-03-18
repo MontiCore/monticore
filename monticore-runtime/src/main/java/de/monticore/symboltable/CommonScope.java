@@ -150,6 +150,14 @@ public class CommonScope implements MutableScope {
   }
 
   @Override
+  public void remove(Symbol symbol) {
+    if (symbols.contains(symbol)) {
+      symbols.remove(symbol);
+      symbol.setEnclosingScope(null);
+    }
+  }
+
+  @Override
   public <T extends Symbol> Optional<T> resolve(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier) {
     return getResolvedOrThrowException(resolveMany(resolvingInfo, name, kind, modifier));
   }
@@ -342,7 +350,7 @@ public class CommonScope implements MutableScope {
   }
 
   @Override
-  public boolean isShadowingScope() {
+  public boolean  isShadowingScope() {
     if (isShadowingScope == null) {
       return getName().isPresent();
     }

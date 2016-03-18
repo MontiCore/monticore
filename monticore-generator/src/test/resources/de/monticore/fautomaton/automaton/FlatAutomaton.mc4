@@ -1,6 +1,9 @@
 package de.monticore.fautomaton.automaton;
 
-grammar FlatAutomaton extends mc.grammars.lexicals.TestLexicals {
+grammar FlatAutomaton {
+
+   token Name =
+        ( 'a'..'z' | 'A'..'Z' | '_' | '$' )( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '$' )*;
 
 	/** An finite automaton
 	@attribute name Name of the automaton
@@ -29,14 +32,35 @@ grammar FlatAutomaton extends mc.grammars.lexicals.TestLexicals {
 	Transition =
 	  from:Name "-" activate:Name ">" to:Name ";"  ;
 	  
-	  interface A0;
+	
+	interface A0;
 	
 	ast A0 = VarnameA0:Name ;
 	
 	interface A1 extends A0;
 	
-	ast A1 = VarnameA1:Name;
+	ast A1 = VarnameA1:Name  dimensions:int;
 	
-	M implements A1 = VarnameM:Name;
+	interface B0;
+	
+	ast B0 = VarnameB0:Name;
+	
+	interface B1 extends B0;
+	
+	ast B1 = VarnameB1:Name;
+	
+	M implements A1, B1 = VarnameM:Name;
+	
+	interface C0;
+	
+	ast C0 = VarnameC0:Name;
+	
+	interface C1 extends C0;
+	
+	ast C1 = VarnameC1:Name;
+	
+	P extends M  implements C1 = VarnameP:Name;
+	
+    P1  implements C1 extends M  = VarnameP1:Name;
 	  	
 }

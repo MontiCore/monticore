@@ -23,7 +23,6 @@ import static de.monticore.codegen.GeneratorHelper.getPlainName;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -315,21 +314,25 @@ public class CdEmfDecorator extends CdDecorator {
     cdDef.getCDInterfaces().add(packageInterface);
     
     for (ASTCDType type : astTypes) {
-      List<CDTypeSymbol> superInterfaces = astHelper.getAllSuperInterfaces(type);
-      Collections.reverse(superInterfaces);
-      int count = 0; 
+      List<CDTypeSymbol> superInterfaces = astHelper.getAllSuperTypesEmfOrder(type);
+      int count = 0;
       for (CDTypeSymbol interf : superInterfaces) {
-        List<CDFieldSymbol> attributes = GeneratorHelper.getVisibleFields(interf);
+        List<CDFieldSymbol> attributes = GeneratorHelper.getVisibleFields(interf).stream()
+            .filter(e -> !astHelper.isAttributeOfSuperType(e, interf))
+            .collect(Collectors.toList());
         for (int i = count; i < count + attributes.size(); i++) {
           String toParseAttr = "int " + type.getName() + "_"
-              + StringTransformations.capitalize(attributes.get(i-count).getName()) + " = " + i + ";";
+              + StringTransformations.capitalize(attributes.get(i - count).getName()) + " = " + i
+              + ";";
           cdTransformation.addCdAttributeUsingDefinition(packageInterface, toParseAttr);
         }
         count += attributes.size();
       }
-      List<EmfAttribute> attributes = getEmfAttributes(type);
+      List<EmfAttribute> attributes = getEmfAttributes(type).stream()
+          .filter(e -> !astHelper.isAttributeOfSuperType(e.getCdAttribute(), type))
+          .collect(Collectors.toList());
       for (int i = count; i < count + attributes.size(); i++) {
-        EmfAttribute emfAttribute = attributes.get(i-count);
+        EmfAttribute emfAttribute = attributes.get(i - count);
         String toParseAttr = "int " + emfAttribute.getFullName() + " = " + i + ";";
         cdTransformation.addCdAttributeUsingDefinition(packageInterface, toParseAttr);
         String toParse = emfAttribute.getEmfType() + " get" + emfAttribute.getFullName() + "();";
@@ -471,7 +474,7 @@ public class CdEmfDecorator extends CdDecorator {
       throws RecognitionException {
     String toParse = "public Object eGet(int featureID, boolean resolve, boolean coreType);";
     HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.EGet",
-        astHelper.getCdName(), getEmfAttributes(clazz));
+        clazz, astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
     replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
   }
   
@@ -486,7 +489,7 @@ public class CdEmfDecorator extends CdDecorator {
       throws RecognitionException {
     String toParse = "public void eSet(int featureID, Object newValue);";
     HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.ESet",
-        astHelper.getCdName(), getEmfAttributes(clazz));
+        clazz, astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
     Optional<ASTCDMethod> astMethod = cdTransformation.addCdMethodUsingDefinition(clazz,
         toParse);
     Preconditions.checkArgument(astMethod.isPresent());
@@ -544,7 +547,7 @@ public class CdEmfDecorator extends CdDecorator {
       throws RecognitionException {
     String toParse = "public void eUnset(int featureID);";
     HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.EUnset",
-        astHelper.getCdName(), getEmfAttributes(clazz));
+        clazz, astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
     replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
   }
   
@@ -559,7 +562,7 @@ public class CdEmfDecorator extends CdDecorator {
       throws RecognitionException {
     String toParse = "public boolean eIsSet(int featureID);";
     HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.EIsSet",
-        astHelper.getCdName(), getEmfAttributes(clazz));
+        clazz, astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
     replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
   }
   

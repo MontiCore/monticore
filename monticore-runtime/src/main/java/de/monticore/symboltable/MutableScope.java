@@ -61,7 +61,7 @@ public interface MutableScope extends Scope {
   void addSubScope(MutableScope subScope);
 
   /**
-   * Removes the sub scope <code>subScope</code>.
+   * Removes given <code>subScope</code>.
    * @param subScope the sub scope to be removed
    *
    */
@@ -85,6 +85,12 @@ public interface MutableScope extends Scope {
   void add(Symbol symbol);
 
   /**
+   * removes the given symbol from this scope and unsets the enclosing scope relation.
+   * @param symbol the symbol to be removed
+   */
+  void remove(Symbol symbol);
+
+  /**
    * Sets the resolvers that are available in this scope. Within a simple grammarlanguage, these
    * resolvers are usually the same for all scopes of the grammarlanguage. The composing languages this
    * may vary.
@@ -101,10 +107,10 @@ public interface MutableScope extends Scope {
   void addResolver(ResolvingFilter<? extends Symbol> resolvingFilter);
 
 
-  // TODO PN method needed?
   /**
    * @param node the corresponding ast node
    */
+  // TODO PN rename to setSpanningAstNode
   void setAstNode(ASTNode node);
 
   /**

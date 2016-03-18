@@ -30,17 +30,21 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-  ${tc.signature("grammarName", "emfAttributes")}
+ ${tc.signature("ast", "grammarName", "fields")}
   <#assign genHelper = glex.getGlobalValue("astHelper")>
+  <#assign nameHelper = glex.getGlobalValue("nameHelper")>
+  <#assign packageName = grammarName + "Package">
     switch (featureID) {
-    <#list emfAttributes as emfAttribute>
-    <#--TODO GV: inherited attributes eGetAttribut, ast.getCollectedAttributesWithSuper() -->
-      case ${grammarName}Package.${emfAttribute.getFullName()}:
-      <#if emfAttribute.isAstList()>
-        ${emfAttribute.getAttributeName()}.clear();
+    <#list fields as field>
+      <#assign getter = astHelper.getPlainGetter(field)>
+      case ${packageName}.${genHelper.getPlainName(ast)}_${genHelper.getNativeAttributeName(field.getName())?cap_first}:
+      <#if genHelper.isListAstNode(field)>
+        ${field.getName()}.clear();
+      <#elseif genHelper.isOptional(field.getType())>
+        ${astHelper.getPlainSetter(field)}(null);
       <#else>
         <#-- TODO GV: not optionals! -->
-        ${astHelper.getPlainSetter(emfAttribute.getCdAttribute())}(${emfAttribute.getDefaultValue()});
+        ${astHelper.getPlainSetter(field)}(${genHelper.getDefaultValue(field)});
       </#if>
       return;
     </#list>

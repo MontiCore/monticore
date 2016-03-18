@@ -30,18 +30,19 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-  ${tc.signature("grammarName", "emfAttributes")}
+  ${tc.signature("ast", "grammarName", "fields")}
   <#assign genHelper = glex.getGlobalValue("astHelper")>
+  <#assign nameHelper = glex.getGlobalValue("nameHelper")>
+  <#assign packageName = grammarName + "Package">
     switch (featureID) {
-    <#list emfAttributes as emfAttribute>
-    <#--TODO GV: inherited attributes eGetAttribut, ast.getCollectedAttributesWithSuper() -->
-      case ${grammarName}Package.${emfAttribute.getFullName()}:
-        <#assign getter = astHelper.getPlainGetter(emfAttribute.getCdAttribute())>
-        <#if emfAttribute.isOptional()>
+    <#list fields as field>
+      <#assign getter = astHelper.getPlainGetter(field)>
+      case ${packageName}.${genHelper.getPlainName(ast)}_${genHelper.getNativeAttributeName(field.getName())?cap_first}:
+      <#if genHelper.isOptional(field.getType())>
          return ${getter}().isPresent()? ${getter}().get() : null;
-        <#else>
+      <#else>
          return ${getter}();
-        </#if>    
+      </#if>    
     </#list>
     }
     return eDynamicGet(featureID, resolve, coreType);

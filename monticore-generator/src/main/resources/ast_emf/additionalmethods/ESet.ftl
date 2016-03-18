@@ -30,13 +30,15 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-  ${tc.signature("grammarName", "emfAttributes")}
+  ${tc.signature("ast", "grammarName", "fields")}
   <#assign genHelper = glex.getGlobalValue("astHelper")>
+  <#assign nameHelper = glex.getGlobalValue("nameHelper")>
+  <#assign packageName = grammarName + "Package">
     switch (featureID) {
-    <#list emfAttributes as emfAttribute>
-    <#--TODO GV: inherited attributes eGetAttribut, ast.getCollectedAttributesWithSuper() -->
-      case ${grammarName}Package.${emfAttribute.getFullName()}:
-        ${astHelper.getPlainSetter(emfAttribute.getCdAttribute())}((${astHelper.getTypeNameWithoutOptional(emfAttribute.getCdAttribute())})newValue);
+    <#list fields as field>
+      <#assign getter = astHelper.getPlainGetter(field)>
+      case ${packageName}.${genHelper.getPlainName(ast)}_${genHelper.getNativeAttributeName(field.getName())?cap_first}:
+        ${astHelper.getPlainSetter(field)}((${astHelper.getJavaTypeNameWithoutOptional(field)})newValue);
         return;
     </#list>
     }

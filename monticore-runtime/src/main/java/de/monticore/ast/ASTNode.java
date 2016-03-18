@@ -238,6 +238,22 @@ public interface ASTNode {
   /**
    * @return the corresponding symbol of this ast node.
    */
-  public Optional<? extends Symbol> getSymbol();
+  Optional<? extends Symbol> getSymbol();
+
+  /**
+   * Sets the spanned scope of this ast node.
+   *
+   * @param spannedScope the spanned scope of this ast node
+   */
+  default void setSpannedScope(Scope spannedScope) {}
+
+  /**
+   * @return the spanned scope of this ast node.
+   */
+  default Optional<? extends Scope> getSpannedScope() {
+    return Optional.empty();
+  }
+
+
   
 }

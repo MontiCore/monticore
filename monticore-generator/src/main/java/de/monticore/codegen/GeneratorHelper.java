@@ -33,10 +33,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 
 import de.monticore.ast.ASTNode;
@@ -48,6 +48,7 @@ import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.java.prettyprint.JavaDSLPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
 import de.monticore.types.TypesHelper;
@@ -320,6 +321,81 @@ public class GeneratorHelper extends TypesHelper {
       Log.debug("CD or Java type couldn't be resolved: " + convertedTypeName, LOG_NAME);
     }
     return astType;
+  }
+  
+  /**
+   * Converts CD type to Java type using the given package suffix.
+   * 
+   * @param type
+   * @param packageSuffix
+   * @return converted type or original type if type is java type already
+   */
+  public String convertTypeCd2Java(CDTypeSymbolReference astType,
+      String packageSuffix) {
+    Log.trace("Converted Cd or Java type: " + astType.getName(), LOG_NAME);
+    System.err.println("Converted Cd or Java type: " + astType.getName());
+    String genericType = "";
+    CDTypeSymbolReference convertedType = astType;
+    if (isOptional(astType)) {
+      List<ActualTypeArgument> typeArgs = astType.getActualTypeArguments();
+      if (typeArgs.size() != 1) {
+        return astType.getName();
+      }
+      CDTypeSymbolReference typeArgument = (CDTypeSymbolReference) typeArgs.get(0).getType();
+      convertedType = typeArgument;
+      genericType = OPTIONAL;
+    }
+    else if (isList(astType)) {
+      List<ActualTypeArgument> typeArgs = astType.getActualTypeArguments();
+      if (typeArgs.size() != 1) {
+        return astType.getName();
+      }
+      CDTypeSymbolReference typeArgument = (CDTypeSymbolReference) typeArgs.get(0).getType();
+      convertedType = typeArgument;
+      genericType = JAVA_LIST;
+    }
+    
+    String convertedTypeName = convertedType.isReferencedSymbolLoaded()
+        ? convertedType.getFullName()
+        : convertedType.getName();
+    // Resolve only qualified types
+    if (!convertedTypeName.contains(".")) {
+      return astType.getName();
+    }
+    
+    // TODO: GV, PN: path converter by resolving
+    if (convertedTypeName.contains("<")) {
+      return astType.getName();
+    }
+    
+    Optional<CDTypeSymbol> symbol = resolveCdType(convertedTypeName);
+    if (symbol.isPresent()) {
+      CDTypeSymbol cdType = symbol.get();
+      Log.trace("CD Type: " + cdType, LOG_NAME);
+      // TODO GV: if use cd4analysis 1.3.1 cdType.getModelName()
+      String typeName = Names.getQualifier(cdType.getFullName()).toLowerCase()
+          + packageSuffix
+          + cdType.getName();
+      if (!genericType.isEmpty()) {
+        return getGenericTypeName(genericType, typeName);
+      }
+      return typeName;
+    }
+    else {
+      Log.debug("CD or Java type couldn't be resolved: " + convertedTypeName, LOG_NAME);
+    }
+    return astType.getName();
+  }
+  
+  /**
+   * TODO: Write me!
+   * 
+   * @param genericType
+   * @param typeName
+   * @return
+   */
+  public String getGenericTypeName(String genericType, String typeName) {
+    return genericType + '<' + typeName + '>';
   }
   
   /**
@@ -623,6 +699,59 @@ public class GeneratorHelper extends TypesHelper {
   /**
    * TODO: Write me!
    * 
+   * @param cdAttribute
+   * @param type
+   * @return
+   */
+  public boolean isAttributeOfSuperType(ASTCDAttribute cdAttribute, ASTCDType type) {
+    if (!type.getSymbol().isPresent()) {
+      Log.error("0xABC123 Could not load symbol information for " + type.getName() + ".");
+      return false;
+    }
+    CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol().get();
+    return getAllVisibleFieldsOfSuperTypes(sym).stream().map(a -> a.getName())
+        .collect(Collectors.toList()).contains(cdAttribute.getName());
+  }
+  
+  /**
+   * TODO: Write me!
+   * 
+   * @param field
+   * @param type
+   * @return
+   */
+  public boolean isAttributeOfSuperType(CDFieldSymbol field, CDTypeSymbol type) {
+    return getAllVisibleFieldsOfSuperTypes(type).stream().map(a -> a.getName())
+        .collect(Collectors.toList()).contains(field.getName());
+  }
+  
+  /**
+   * TODO: Write me!
+   * 
+   * @param cdType
+   * @return
+   */
+  public Collection<CDFieldSymbol> getAllVisibleFieldsOfSuperTypes(CDTypeSymbol cdType) {
+    final Set<CDFieldSymbol> allSuperTypeFields = new LinkedHashSet<>();
+    
+    for (CDTypeSymbol superType : cdType.getSuperTypes()) {
+      for (CDFieldSymbol superField : superType.getFields()) {
+        allSuperTypeFields.add(superField);
+      }
+      allSuperTypeFields.addAll(getAllVisibleFieldsOfSuperTypes(superType));
+    }
+    
+    // filter-out all private fields
+    final Set<CDFieldSymbol> allVisibleSuperTypeFields = allSuperTypeFields.stream()
+        .filter(field -> !field.isPrivate())
+        .collect(Collectors.toCollection(LinkedHashSet::new));
+        
+    return ImmutableSet.copyOf(allVisibleSuperTypeFields);
+  }
+  
+  /**
+   * TODO: Write me!
+   * 
    * @param type
    * @return
    */
@@ -713,9 +842,9 @@ public class GeneratorHelper extends TypesHelper {
     return allSuperTypes;
   }
   
-  private static void addIfNotContained(CDTypeSymbol toAdd, List<CDTypeSymbol> list) {
+  protected static <T extends CommonSymbol> void addIfNotContained(T toAdd, List<T> list) {
     if (!list.stream()
-        .filter(t -> t.getFullName().equals(toAdd.getFullName()))
+        .filter(t -> t.getName().equals(toAdd.getName()))
         .findAny()
         .isPresent()) {
       list.add(toAdd);
@@ -766,6 +895,24 @@ public class GeneratorHelper extends TypesHelper {
         .map(s -> AstGeneratorHelper.getAstPackage(Names.getQualifier(s)) + Names.getSimpleName(s))
         .collect(Collectors.toList());
     return theSuperTypes;
+  }
+  
+  /**
+   * Gets the java super types of the given clazz (without the clazz itself).
+   * 
+   * @param clazz
+   * @return
+   */
+  public List<CDTypeSymbol> getAllSuperTypes(ASTCDType type) {
+    if (!type.getSymbol().isPresent()) {
+      Log.error("0xABC123 Could not load symbol information for " + type.getName() + ".");
+    }
+    List<CDTypeSymbol> allSupertypes = new ArrayList<>();
+    CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol().get();
+    for (CDTypeSymbol superType : sym.getSuperTypes()) {
+    
+    }
+    return getAllSuperInterfaces(sym);
   }
   
   /**
@@ -859,6 +1006,13 @@ public class GeneratorHelper extends TypesHelper {
     return isAstNode((CDTypeSymbolReference) typeArgs.get(0).getType());
   }
   
+  public boolean isList(CDTypeSymbolReference type) {
+    if (!type.getName().equals(JAVA_LIST)) {
+      return false;
+    }
+    return type.getActualTypeArguments().size() == 1;
+  }
+  
   public boolean isListOfString(CDFieldSymbol field) {
     CDTypeSymbolReference type = field.getType();
     if (!type.getName().equals(JAVA_LIST)) {
@@ -938,6 +1092,25 @@ public class GeneratorHelper extends TypesHelper {
     return attribute.printType();
   }
   
+  public String getCdTypeNameWithoutOptional(CDFieldSymbol attribute) {
+    CDTypeSymbolReference type = attribute.getType();
+    if (!isOptional(type)) {
+      return type.getName();
+    }
+    return type.getActualTypeArguments().get(0).getType().getName();
+  }
+  
+  public String getJavaTypeNameWithoutOptional(CDFieldSymbol attribute) {
+    System.err.println("Converted attribute: " + attribute);
+    CDTypeSymbolReference type = attribute.getType();
+    if (!isOptional(type)) {
+      return convertTypeCd2Java(type, AST_DOT_PACKAGE_SUFFIX_DOT);
+    }
+    return convertTypeCd2Java(
+        (CDTypeSymbolReference) type.getActualTypeArguments().get(0).getType(),
+        AST_DOT_PACKAGE_SUFFIX_DOT);
+  }
+  
   public static boolean isBuilderClass(ASTCDClass clazz) {
     // TODO GV;
     return clazz.getName().startsWith("Builder_");
@@ -956,18 +1129,12 @@ public class GeneratorHelper extends TypesHelper {
   }
   
   public static String getPlainGetter(CDFieldSymbol field) {
-    if (!field.getAstNode().isPresent()) {
-      Log.error(String.format("0xABC130 ASTNode of cd field symbol %s is not set.",
-          field.getFullName()));
-    }
-    ASTNode node = field.getAstNode().get();
-    if (!(node instanceof ASTCDAttribute)) {
-      Log.error(String
-          .format(
-              "0xABC131 Expected the ASTNode of cd field symbol %s to be an ASTCDAttribute, but it is of kind %s",
-              field.getFullName(), node.getClass().getName()));
-    }
-    return getPlainGetter((ASTCDAttribute) node);
+    StringBuilder getPrefix = CDTypes.isBoolean(field.getType().getName())
+        ? new StringBuilder(GET_PREFIX_BOOLEAN)
+        : new StringBuilder(GET_PREFIX_NOT_BOOLEAN);
+    return getPrefix
+        .append(StringTransformations.capitalize(getNativeAttributeName(field.getName())))
+        .toString();
   }
   
   /**
@@ -976,6 +1143,15 @@ public class GeneratorHelper extends TypesHelper {
   public static String getPlainSetter(ASTCDAttribute ast) {
     return new StringBuilder(SET_PREFIX).append(
         StringTransformations.capitalize(getNativeAttributeName(ast.getName())))
+        .toString();
+  }
+  
+  /**
+   * Returns the plain getter for the given attribute
+   */
+  public static String getPlainSetter(CDFieldSymbol field) {
+    return new StringBuilder(SET_PREFIX).append(
+        StringTransformations.capitalize(getNativeAttributeName(field.getName())))
         .toString();
   }
   

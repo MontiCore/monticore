@@ -20,6 +20,7 @@
 package de.monticore.codegen.cd2java.ast_emf;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,8 +39,11 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDDefinition;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
+import de.monticore.umlcd4a.symboltable.CDFieldSymbol;
+import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
+import de.se_rwth.commons.logging.Log;
 
 /**
  * A helper for emf-compatible generation
@@ -168,15 +172,149 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
     return type;
   }
   
+  /**
+   * Gets super types recursively (without duplicates - the first occurrence in
+   * the type hierarchy is used) in the order according to the EMF-generator
+   * requirements
+   * 
+   * @param type
+   * @return all supertypes (without the type itself)
+   */
+  public List<CDTypeSymbol> getAllSuperTypesEmfOrder(ASTCDType type) {
+    if (!type.getSymbol().isPresent()) {
+      Log.error("0xABC123 Could not load symbol information for " + type.getName() + ".");
+    }
+    
+    CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol().get();
+    return getAllSuperTypesEmfOrder(sym);
+  }
+  
+  /**
+   * Gets super types recursively (without duplicates - the first occurrence in
+   * the type hierarchy is used) in the order according to the EMF-generator
+   * requirements
+   * 
+   * @param type
+   * @return all supertypes (without the type itself)
+   */
+  public List<CDTypeSymbol> getAllSuperTypesEmfOrder(CDTypeSymbol type) {
+    List<CDTypeSymbol> allSuperTypes = new ArrayList<>();
+    for (CDTypeSymbol s : type.getSuperTypes()) {
+      List<CDTypeSymbol> supers = getAllSuperTypesEmfOrder(s);
+      for (CDTypeSymbol sup : supers) {
+        addIfNotContained(sup, allSuperTypes);
+      }
+      addIfNotContained(s, allSuperTypes);
+    }
+    return allSuperTypes;
+  }
+  
+  /**
+   * Gets super types recursively (without duplicates - the first occurrence in
+   * the type hierarchy is used) in the order according to the EMF-generator
+   * requirements
+   * 
+   * @param type
+   * @return all supertypes (without the type itself)
+   */
+  public List<CDTypeSymbol> getAllTypesEmfOrder(ASTCDType type) {
+    if (!type.getSymbol().isPresent()) {
+      Log.error("0xABC123 Could not load symbol information for " + type.getName() + ".");
+    }
+    
+    CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol().get();
+    List<CDTypeSymbol> types = getAllSuperTypesEmfOrder(sym);
+    types.add(sym);
+    return types;
+  }
+  
+  /**
+   * TODO: Write me!
+   * 
+   * @param cdType
+   * @return
+   */
+  public Collection<CDFieldSymbol> getAllVisibleFields(ASTCDType type) {
+    List<CDFieldSymbol> allSuperTypeFields = new ArrayList<>();
+    if (!type.getSymbol().isPresent()) {
+      Log.error("0xABC123 Could not load symbol information for " + type.getName() + ".");
+      return new ArrayList<>();
+    }
+    CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol().get();
+    for (CDTypeSymbol sup : getAllSuperTypesEmfOrder(sym)) {
+      sup.getFields().forEach(a -> addIfNotContained(a, allSuperTypeFields));
+    }
+    // filter-out all private fields
+    List<CDFieldSymbol> allFields = allSuperTypeFields.stream()
+        .filter(field -> !field.isPrivate()).collect(Collectors.toList());
+    // add own fields if not inherited    
+    sym.getFields().stream()
+        .filter(e -> !isAttributeOfSuperType(e, sym)).forEach(allFields::add);
+    return allFields;
+  }
+  
+//  /**
+//   * TODO: Write me!
+//   * 
+//   * @param cdType
+//   * @return
+//   */
+//  public Collection<CDFieldSymbol> getNewVisibleFields(ASTCDType type) {
+//    List<CDFieldSymbol> allSuperTypeFields = new ArrayList<>();
+//    if (!type.getSymbol().isPresent()) {
+//      Log.error("0xABC123 Could not load symbol information for " + type.getName() + ".");
+//      return new ArrayList<>();
+//    }
+//    CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol().get();
+//    for (CDTypeSymbol sup : getAllSuperTypesEmfOrder(sym)) {
+//      sup.getFields().forEach(a -> addIfNotContained(a, allSuperTypeFields));
+//    }
+//    // filter-out all private fields and collect names
+//    List<String> fieldNames = allSuperTypeFields.stream()
+//        .filter(field -> !field.isPrivate()).map(field -> field.getName())
+//        .collect(Collectors.toList());
+//        
+//    //filter out attributes of super types
+//    return sym.getFields().stream().filter(field -> !fieldNames.contains(field))
+//        .collect(Collectors.toList());
+//  }
+  
   // TODO GV: fix me
   public boolean isExternal(ASTCDAttribute attribute) {
     return getNativeTypeName(attribute).endsWith("Ext");
+  }
+  
+  public String getDefaultValue(CDFieldSymbol attribute) {
+    if (isAstNode(attribute)) {
+      return "null";
+    }
+    if (isOptional(attribute)) {
+      return "Optional.empty()";
+    }
+    String typeName = attribute.getType().getName();
+    switch (typeName) {
+      case "boolean":
+        return "false";
+      case "int":
+        return "0";
+      case "short":
+        return "(short) 0";
+      case "long":
+        return "0";
+      case "float":
+        return "0.0f";
+      case "double":
+        return "0.0";
+      case "char":
+        return "'\u0000'";
+      default:
+        return "null";
+    }
   }
   
   public String getIdentifierName(String qualifiedName) {
     return Names.getSimpleName(qualifiedName) + "_"
         + Names.getQualifier(qualifiedName).replace('.', '_');
   }
-  
   
 }
