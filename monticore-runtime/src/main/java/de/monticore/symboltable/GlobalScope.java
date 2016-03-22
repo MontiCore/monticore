@@ -111,25 +111,26 @@ public final class GlobalScope extends CommonScope {
     return resolvedSymbol;
   }
 
-  protected void loadModels(final Collection<ResolvingFilter<? extends Symbol>> resolvingFilters, final String symbolName, final SymbolKind kind) {
+  protected void loadModels(final Collection<ResolvingFilter<? extends Symbol>> resolvingFilters,
+      final String symbolName, final SymbolKind kind) {
 
-    // TODO PN optimize
+    for (final ModelingLanguage lang : modelingLanguages) {
+      final ModelNameCalculator modelNameCalculator = lang.getModelNameCalculator();
+      final ModelingLanguageModelLoader<? extends ASTNode> modelLoader = lang.getModelLoader();
 
-    for (final ModelingLanguage modelingLanguage : modelingLanguages) {
-      final ModelNameCalculator modelNameCalculator = modelingLanguage.getModelNameCalculator();
-      final ModelingLanguageModelLoader<? extends ASTNode> modelLoader = modelingLanguage.getModelLoader();
-
-      final Set<SymbolKind> possibleSymbolKinds = getPossibleSymbolKinds(resolvingFilters, kind);
+      final Set<SymbolKind> possibleSymbolKinds = calculatePossibleSymbolKinds(resolvingFilters, kind);
 
       for (final SymbolKind kindForCalc : possibleSymbolKinds) {
-        final Set<String> calculatedModelName = modelNameCalculator.calculateModelNames(symbolName, kindForCalc);
+        final Set<String> calculatedModelNames = modelNameCalculator.calculateModelNames(symbolName, kindForCalc);
 
-        if (!calculatedModelName.isEmpty() && continueWithModelLoader(calculatedModelName.iterator().next(), modelLoader)) {
-          modelLoader.loadModelsIntoScope(calculatedModelName.iterator().next(), modelPath, this, resolverConfiguration);
-          cache(modelLoader, calculatedModelName.iterator().next());
-        }
-        else {
-          Log.debug("Model for '" + symbolName + "' already exists. No need to load it.", GlobalScope.class.getSimpleName());
+        for (String calculatedModelName : calculatedModelNames) {
+          if (continueWithModelLoader(calculatedModelName, modelLoader)) {
+            modelLoader.loadModelsIntoScope(calculatedModelName, modelPath, this, resolverConfiguration);
+            cache(modelLoader, calculatedModelNames.iterator().next());
+          }
+          else {
+            Log.debug("Model for '" + symbolName + "' already exists. No need to load it.", GlobalScope.class.getSimpleName());
+          }
         }
       }
 
@@ -137,7 +138,7 @@ public final class GlobalScope extends CommonScope {
     }
   }
 
-  protected Set<SymbolKind> getPossibleSymbolKinds(Collection<ResolvingFilter<? extends Symbol>> resolvingFilters, SymbolKind kind) {
+  protected Set<SymbolKind> calculatePossibleSymbolKinds(Collection<ResolvingFilter<? extends Symbol>> resolvingFilters, SymbolKind kind) {
     final Collection<ResolvingFilter<? extends Symbol>> resolversForKind = ResolvingFilter
         .getFiltersForTargetKind(resolvingFilters, kind);
 

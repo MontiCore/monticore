@@ -28,12 +28,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableList;
-
+import de.monticore.ast.ASTNode;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.se_rwth.commons.logging.Log;
-import de.monticore.ast.ASTNode;
 
 /**
  * Base class for language families. Provides access to language-related
@@ -42,7 +41,7 @@ import de.monticore.ast.ASTNode;
  * @author  Pedram Mir Seyed Nazari
  *
  */
-// TODO PN extract interface, analogous to ModelingLanguage?
+// TODO PN extract interface, analogous to ModelingLanguage
 public class ModelingLanguageFamily {
 
   // TODO PN adding of other modeling language families should be possible, too.

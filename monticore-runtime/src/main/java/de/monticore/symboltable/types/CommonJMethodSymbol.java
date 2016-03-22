@@ -36,7 +36,7 @@ import de.se_rwth.commons.logging.Log;
 /**
  * @author Pedram Mir Seyed Nazari
  */
-public class CommonJMethodSymbol <U extends JTypeSymbol, T extends JTypeReference<? extends U>, S extends JAttributeSymbol>
+public abstract class CommonJMethodSymbol <U extends JTypeSymbol, T extends JTypeReference<? extends U>, S extends JAttributeSymbol>
     extends CommonScopeSpanningSymbol implements JMethodSymbol {
 
   private boolean isAbstract = false;
