@@ -396,15 +396,19 @@ public class CdEmfDecorator extends CdDecorator {
       cdTransformation.addCdAttributeUsingDefinition(packageImpl, toParse);
     }
     
-    List<EmfAttribute> allEmfAttrbutes = getAllNotInheritedEmfAttributes(astHelper);
-    for (EmfAttribute emfAttribute : allEmfAttrbutes) {
-      // TODO GV: replace StringHookPoint by TemplaeHookPoint
-      String toParse = "public " + emfAttribute.getEmfType() + " get" + emfAttribute.getFullName()
-          + "();";
-      HookPoint getMethodBody = new StringHookPoint("return (" + emfAttribute.getEmfType() + ")"
-          + StringTransformations.uncapitalize(getPlainName(emfAttribute.getCdType()).substring(3))
-          + "EClass.getEStructuralFeatures().get(" + emfAttribute.getFullName() + ");");
-      replaceMethodBodyTemplate(packageImpl, toParse, getMethodBody);
+    for (ASTCDType type : emfAttributes.keySet()) {
+      List<EmfAttribute> allEmfAttrbutes = getNotInheritedEmfAttributes(type, astHelper);
+      for (int i = 0; i < allEmfAttrbutes.size(); i++) {
+        EmfAttribute emfAttribute = allEmfAttrbutes.get(i);
+        // TODO GV: replace StringHookPoint by TemplaeHookPoint
+        String toParse = "public " + emfAttribute.getEmfType() + " get" + emfAttribute.getFullName()
+            + "();";
+        HookPoint getMethodBody = new StringHookPoint("return (" + emfAttribute.getEmfType() + ")"
+            + StringTransformations
+                .uncapitalize(getPlainName(emfAttribute.getCdType()).substring(3))
+            + "EClass.getEStructuralFeatures().get(" + i + ");");
+        replaceMethodBodyTemplate(packageImpl, toParse, getMethodBody);
+      }
     }
     
     for (String typeName : externaltypes.values()) {
@@ -413,6 +417,8 @@ public class CdEmfDecorator extends CdDecorator {
           "return " + StringTransformations.uncapitalize(typeName) + "EDataType;");
       replaceMethodBodyTemplate(packageImpl, toParse, getMethodBody);
     }
+    
+    List<EmfAttribute> allEmfAttrbutes = getAllNotInheritedEmfAttributes(astHelper);
     
     String toParse = "public void createPackageContents();";
     HookPoint getMethodBody = new TemplateHookPoint(
