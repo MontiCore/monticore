@@ -76,7 +76,8 @@ import groovyjarjarantlr.ANTLRException;
 import transformation.ast.ASTCDRawTransformation;
 
 /**
- * TODO: Write me!
+ * Decorates class diagrams by adding of new classes and methods using in emf
+ * compatible ast files
  *
  * @author (last commit) $Author$
  * @version $Revision$, $Date$
@@ -189,7 +190,7 @@ public class CdEmfDecorator extends CdDecorator {
         .forEach(t -> AstEmfGeneratorHelper.sortEmfAttributes(emfAttributes.get(t)));
   }
   
-  private Stream<String> getAdditionaAttributeNames() {
+  Stream<String> getAdditionaAttributeNames() {
     return Arrays.asList(AstAdditionalAttributes.values()).stream().map(a -> a.toString());
   }
   
@@ -221,9 +222,6 @@ public class CdEmfDecorator extends CdDecorator {
     }
   }
   
-  /**
-   * TODO: Write me!
-   */
   void addEFactoryInterface(ASTCDCompilationUnit cdCompilationUnit, List<ASTCDType> astClasses,
       AstEmfGeneratorHelper astHelper)
           throws RecognitionException {
@@ -258,14 +256,6 @@ public class CdEmfDecorator extends CdDecorator {
         classNames));
   }
   
-  /**
-   * TODO: Write me!
-   * 
-   * @param cdCompilationUnit
-   * @param nativeClasses
-   * @param astHelper
-   * @throws ANTLRException
-   */
   void addEFactoryImplementation(ASTCDCompilationUnit cdCompilationUnit,
       List<ASTCDClass> astClasses, AstEmfGeneratorHelper astHelper) throws RecognitionException {
     ASTCDDefinition cdDef = cdCompilationUnit.getCDDefinition();
@@ -294,11 +284,6 @@ public class CdEmfDecorator extends CdDecorator {
         
   }
   
-  /**
-   * TODO: Write me!
-   * 
-   * @param collection
-   */
   void addEPackageInterface(ASTCDCompilationUnit cdCompilationUnit, List<ASTCDType> astTypes,
       Collection<String> collection, AstEmfGeneratorHelper astHelper)
           throws RecognitionException {
@@ -323,7 +308,7 @@ public class CdEmfDecorator extends CdDecorator {
             .filter(e -> !astHelper.isAttributeOfSuperType(e, interf))
             .collect(Collectors.toList());
         for (int i = count; i < count + attributes.size(); i++) {
-          String toParseAttr = "int " + type.getName() + "_"
+          String toParseAttr = "int " + getPlainName(type) + "_"
               + StringTransformations.capitalize(attributes.get(i - count).getName()) + " = " + i
               + ";";
           cdTransformation.addCdAttributeUsingDefinition(packageInterface, toParseAttr);
@@ -363,15 +348,6 @@ public class CdEmfDecorator extends CdDecorator {
             classNames));
   }
   
-  /**
-   * TODO: Write me!
-   * 
-   * @param cdCompilationUnit
-   * @param map.values()
-   * @param nativeClasses
-   * @param astHelper
-   * @throws ANTLRException
-   */
   void addEPackageImplementation(ASTCDCompilationUnit cdCompilationUnit,
       List<ASTCDType> astClasses, Map<String, String> externaltypes,
       AstEmfGeneratorHelper astHelper)
@@ -442,7 +418,7 @@ public class CdEmfDecorator extends CdDecorator {
         "ast_emf.EPackageImpl", packageImpl, cdDef.getName(), classNames, externaltypes.values()));
   }
   
-  protected void addSetter(ASTCDClass clazz, AstEmfGeneratorHelper astHelper)
+  void addSetter(ASTCDClass clazz, AstEmfGeneratorHelper astHelper)
       throws RecognitionException {
     for (EmfAttribute attribute : getEmfAttributes(clazz)) {
       ASTCDAttribute cdAttribute = attribute.getCdAttribute();
@@ -656,8 +632,6 @@ public class CdEmfDecorator extends CdDecorator {
   
   List<EmfAttribute> getEmfAttributes(ASTCDType type) {
     List<EmfAttribute> attributes = new ArrayList<>();
-    // attributes.addAll(getEReferences(type));
-    // attributes.addAll(getEAttributes(type));
     if (emfAttributes.containsKey(type)) {
       attributes.addAll(emfAttributes.get(type));
     }
@@ -666,8 +640,6 @@ public class CdEmfDecorator extends CdDecorator {
   
   List<EmfAttribute> getNotInheritedEmfAttributes(ASTCDType type, AstEmfGeneratorHelper astHelper) {
     List<EmfAttribute> attributes = new ArrayList<>();
-    // attributes.addAll(getEReferences(type));
-    // attributes.addAll(getEAttributes(type));
     if (emfAttributes.containsKey(type)) {
       emfAttributes.get(type).stream()
           .filter(e -> !astHelper.isAttributeOfSuperType(e.getCdAttribute(), type))
@@ -871,7 +843,7 @@ public class CdEmfDecorator extends CdDecorator {
       }
       
       // TODO: GV, PN: path converter by resolving
-      // TODO GV: typeArgs!
+      // TODO GV: typeArgs
       if (convertedTypeName.contains("<")) {
         return;
       }
