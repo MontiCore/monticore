@@ -185,6 +185,8 @@ public class CdEmfDecorator extends CdDecorator {
         .forEach(t -> ((ASTCDInterface) t).getCDAttributes().stream()
             .filter(a -> !(getAdditionaAttributeNames().anyMatch(ad -> ad.equals(a.getName()))))
             .forEach(a -> createEmfAttribute(t, a, astHelper, emfCollector)));
+    emfAttributes.keySet()
+        .forEach(t -> AstEmfGeneratorHelper.sortEmfAttributes(emfAttributes.get(t)));
   }
   
   private Stream<String> getAdditionaAttributeNames() {
@@ -314,9 +316,9 @@ public class CdEmfDecorator extends CdDecorator {
     cdDef.getCDInterfaces().add(packageInterface);
     
     for (ASTCDType type : astTypes) {
-      List<CDTypeSymbol> superInterfaces = astHelper.getAllSuperTypesEmfOrder(type);
+      List<CDTypeSymbol> superTypes = astHelper.getAllSuperTypesEmfOrder(type);
       int count = 0;
-      for (CDTypeSymbol interf : superInterfaces) {
+      for (CDTypeSymbol interf : superTypes) {
         List<CDFieldSymbol> attributes = GeneratorHelper.getVisibleFields(interf).stream()
             .filter(e -> !astHelper.isAttributeOfSuperType(e, interf))
             .collect(Collectors.toList());
@@ -394,7 +396,7 @@ public class CdEmfDecorator extends CdDecorator {
       cdTransformation.addCdAttributeUsingDefinition(packageImpl, toParse);
     }
     
-    List<EmfAttribute> allEmfAttrbutes = getAllEmfAttributes();
+    List<EmfAttribute> allEmfAttrbutes = getAllNotInheritedEmfAttributes(astHelper);
     for (EmfAttribute emfAttribute : allEmfAttrbutes) {
       // TODO GV: replace StringHookPoint by TemplaeHookPoint
       String toParse = "public " + emfAttribute.getEmfType() + " get" + emfAttribute.getFullName()
@@ -648,8 +650,23 @@ public class CdEmfDecorator extends CdDecorator {
   
   List<EmfAttribute> getEmfAttributes(ASTCDType type) {
     List<EmfAttribute> attributes = new ArrayList<>();
-    attributes.addAll(getEReferences(type));
-    attributes.addAll(getEAttributes(type));
+    // attributes.addAll(getEReferences(type));
+    // attributes.addAll(getEAttributes(type));
+    if (emfAttributes.containsKey(type)) {
+      attributes.addAll(emfAttributes.get(type));
+    }
+    return attributes;
+  }
+  
+  List<EmfAttribute> getNotInheritedEmfAttributes(ASTCDType type, AstEmfGeneratorHelper astHelper) {
+    List<EmfAttribute> attributes = new ArrayList<>();
+    // attributes.addAll(getEReferences(type));
+    // attributes.addAll(getEAttributes(type));
+    if (emfAttributes.containsKey(type)) {
+      emfAttributes.get(type).stream()
+          .filter(e -> !astHelper.isAttributeOfSuperType(e.getCdAttribute(), type))
+          .forEach(attributes::add);
+    }
     return attributes;
   }
   
@@ -671,8 +688,14 @@ public class CdEmfDecorator extends CdDecorator {
   
   List<EmfAttribute> getAllEmfAttributes() {
     List<EmfAttribute> attributes = new ArrayList<>();
-    emfAttributes.keySet().stream().forEach(t -> attributes.addAll(getEReferences(t)));
-    emfAttributes.keySet().stream().forEach(t -> attributes.addAll(getEAttributes(t)));
+    emfAttributes.keySet().stream().forEach(t -> attributes.addAll(getEmfAttributes(t)));
+    return attributes;
+  }
+  
+  List<EmfAttribute> getAllNotInheritedEmfAttributes(AstEmfGeneratorHelper astHelper) {
+    List<EmfAttribute> attributes = new ArrayList<>();
+    emfAttributes.keySet().stream()
+        .forEach(t -> attributes.addAll(getNotInheritedEmfAttributes(t, astHelper)));
     return attributes;
   }
   

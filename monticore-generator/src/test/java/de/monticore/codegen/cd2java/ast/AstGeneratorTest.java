@@ -66,8 +66,9 @@ public class AstGeneratorTest extends GeneratorTest {
   }
   
   @Test
-  public void testAstAttributes() {
-    testCorrect("de/monticore/AstAttributes.mc4");
+  public void testInterfaceAttributes() {
+    testCorrectWithDependencies("de/monticore/InterfaceAttributes.mc4",
+        "mc/grammars/lexicals/TestLexicals.mc4");
   }
   
   @Test
@@ -78,6 +79,11 @@ public class AstGeneratorTest extends GeneratorTest {
   
   @Test
   public void testCdAttributes() {
+    testCorrect("de/monticore/CdAttributes.mc4");
+  }
+  
+  @Test
+  public void testAstAttributes() {
     testCorrect("de/monticore/CdAttributes.mc4");
   }
   

@@ -21,6 +21,8 @@ package de.monticore.codegen.cd2java.ast_emf;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -247,37 +249,39 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
     // filter-out all private fields
     List<CDFieldSymbol> allFields = allSuperTypeFields.stream()
         .filter(field -> !field.isPrivate()).collect(Collectors.toList());
-    // add own fields if not inherited    
+    // add own fields if not inherited
     sym.getFields().stream()
         .filter(e -> !isAttributeOfSuperType(e, sym)).forEach(allFields::add);
     return allFields;
   }
   
-//  /**
-//   * TODO: Write me!
-//   * 
-//   * @param cdType
-//   * @return
-//   */
-//  public Collection<CDFieldSymbol> getNewVisibleFields(ASTCDType type) {
-//    List<CDFieldSymbol> allSuperTypeFields = new ArrayList<>();
-//    if (!type.getSymbol().isPresent()) {
-//      Log.error("0xABC123 Could not load symbol information for " + type.getName() + ".");
-//      return new ArrayList<>();
-//    }
-//    CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol().get();
-//    for (CDTypeSymbol sup : getAllSuperTypesEmfOrder(sym)) {
-//      sup.getFields().forEach(a -> addIfNotContained(a, allSuperTypeFields));
-//    }
-//    // filter-out all private fields and collect names
-//    List<String> fieldNames = allSuperTypeFields.stream()
-//        .filter(field -> !field.isPrivate()).map(field -> field.getName())
-//        .collect(Collectors.toList());
-//        
-//    //filter out attributes of super types
-//    return sym.getFields().stream().filter(field -> !fieldNames.contains(field))
-//        .collect(Collectors.toList());
-//  }
+  // /**
+  // * TODO: Write me!
+  // *
+  // * @param cdType
+  // * @return
+  // */
+  // public Collection<CDFieldSymbol> getNewVisibleFields(ASTCDType type) {
+  // List<CDFieldSymbol> allSuperTypeFields = new ArrayList<>();
+  // if (!type.getSymbol().isPresent()) {
+  // Log.error("0xABC123 Could not load symbol information for " +
+  // type.getName() + ".");
+  // return new ArrayList<>();
+  // }
+  // CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol().get();
+  // for (CDTypeSymbol sup : getAllSuperTypesEmfOrder(sym)) {
+  // sup.getFields().forEach(a -> addIfNotContained(a, allSuperTypeFields));
+  // }
+  // // filter-out all private fields and collect names
+  // List<String> fieldNames = allSuperTypeFields.stream()
+  // .filter(field -> !field.isPrivate()).map(field -> field.getName())
+  // .collect(Collectors.toList());
+  //
+  // //filter out attributes of super types
+  // return sym.getFields().stream().filter(field ->
+  // !fieldNames.contains(field))
+  // .collect(Collectors.toList());
+  // }
   
   // TODO GV: fix me
   public boolean isExternal(ASTCDAttribute attribute) {
@@ -315,6 +319,24 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
   public String getIdentifierName(String qualifiedName) {
     return Names.getSimpleName(qualifiedName) + "_"
         + Names.getQualifier(qualifiedName).replace('.', '_');
+  }
+  
+  public static List<EmfAttribute> getSortedEmfAttributes(List<EmfAttribute> list) {
+    List<EmfAttribute> sortedAttributes = new ArrayList<>(list);
+    Collections.sort(sortedAttributes, new Comparator<EmfAttribute>() {
+      public int compare(EmfAttribute attr1, EmfAttribute attr2) {
+        return attr1.getAttributeName().compareTo(attr2.getAttributeName());
+      }
+    });
+    return sortedAttributes;
+  }
+  
+  public static void sortEmfAttributes(List<EmfAttribute> list) {
+    Collections.sort(list, new Comparator<EmfAttribute>() {
+      public int compare(EmfAttribute attr1, EmfAttribute attr2) {
+        return attr1.getAttributeName().compareTo(attr2.getAttributeName());
+      }
+    });
   }
   
 }

@@ -333,7 +333,6 @@ public class GeneratorHelper extends TypesHelper {
   public String convertTypeCd2Java(CDTypeSymbolReference astType,
       String packageSuffix) {
     Log.trace("Converted Cd or Java type: " + astType.getName(), LOG_NAME);
-    System.err.println("Converted Cd or Java type: " + astType.getName());
     String genericType = "";
     CDTypeSymbolReference convertedType = astType;
     if (isOptional(astType)) {
@@ -1101,7 +1100,6 @@ public class GeneratorHelper extends TypesHelper {
   }
   
   public String getJavaTypeNameWithoutOptional(CDFieldSymbol attribute) {
-    System.err.println("Converted attribute: " + attribute);
     CDTypeSymbolReference type = attribute.getType();
     if (!isOptional(type)) {
       return convertTypeCd2Java(type, AST_DOT_PACKAGE_SUFFIX_DOT);
