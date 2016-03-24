@@ -14,12 +14,9 @@ import java.util.Optional;
 
 import org.antlr.v4.runtime.RecognitionException;
 import org.eclipse.emf.compare.diff.metamodel.DiffElement;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.monticore.emf.util.compare.AstEmfDiffUtility;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.Slf4jLog;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTAutomaton;
 import mc.feature.fautomaton.automaton.flatautomaton._parser.FlatAutomatonParser;
@@ -47,27 +44,33 @@ public class EmfDiffTest extends GeneratorIntegrationsTest {
         
         AstEmfDiffUtility.printAstDiffsHierarchical(transB.get(), transC.get());
 
-        assertEquals(9, diffs.size());
+        assertEquals(12, diffs.size());
         assertEquals("Attribute Name in Testautomat has changed from Testautomat2 to Testautomat",
             diffs.get(0).toString());
         
         assertEquals("The order of the values of reference States have been changed",
             diffs.get(1).toString());
         
+        assertEquals("Attribute Initial in a has changed from true to false", diffs.get(2).toString());
+        
         assertEquals("Attribute R__final in a has changed from false to true",
-            diffs.get(2).toString());
-            
-        assertEquals("Attribute Initial in a has changed from true to false", diffs.get(3).toString());
+            diffs.get(3).toString());
         
         assertEquals("Attribute Initial in c has changed from false to true", diffs.get(4).toString());
     
         assertEquals("Attribute R__final in d has changed from true to false", diffs.get(5).toString());
 
-        assertEquals("Attribute Activate in b has changed from x to y", diffs.get(6).toString());
+        assertEquals("Attribute From in x has changed from a to c", diffs.get(6).toString());
 
-        assertEquals("ASTTransition From: d Activate: y To: d has been added", diffs.get(7).toString());
+        assertEquals("Attribute To in x has changed from c to d", diffs.get(7).toString());
         
-        assertEquals("ASTTransition From: c Activate: y To: d has been removed", diffs.get(8).toString());
+        assertEquals("Attribute From in y has changed from c to b", diffs.get(8).toString());
+
+        assertEquals("Attribute To in y has changed from d to a", diffs.get(9).toString());
+        
+        assertEquals("ASTTransition Activate: y From: d To: d has been added", diffs.get(10).toString());
+        
+        assertEquals("ASTTransition Activate: x From: b To: a has been removed", diffs.get(11).toString());
        
       }
       else {

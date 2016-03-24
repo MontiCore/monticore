@@ -34,7 +34,6 @@ import java.util.regex.Pattern;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
@@ -49,6 +48,9 @@ import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
+/**
+ * @author Pedram Mir Seyed Nazari
+ */
 public class SymbolTableGeneratorHelper extends GeneratorHelper {
 
   public static final String NAME_NONTERMINAL = "Name";

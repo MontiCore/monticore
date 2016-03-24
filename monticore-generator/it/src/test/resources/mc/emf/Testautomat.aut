@@ -2,7 +2,7 @@ automaton Testautomat {
   
    state a  <<final>>;
 	
-   a -x> c;
+   c -x> d;
    
    b -y> a;
    
@@ -11,5 +11,7 @@ automaton Testautomat {
    state c <<initial>>;
 	
    state d; 
+   
+   state b;
 		
 }

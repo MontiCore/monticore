@@ -53,7 +53,6 @@ import ${genHelper.getEmfRuntimePackage()}.*;
 
 public class ${ast.getName()} extends EPackageImpl implements ${grammarName}Package {
 
-  <#--  TODO GV: interfaces, enums -->
   <#list astClasses as astClass>
   private EClass ${astClass[3..]?uncap_first}EClass = null;
   </#list>
@@ -163,7 +162,6 @@ public class ${ast.getName()} extends EPackageImpl implements ${grammarName}Pack
     return eSuperPackages;
   }
     
-  <#--  TODO GV: interfaces, enums -->
   <#list astClasses as astClass>
   public EClass get${astClass[3..]}() {
     return ${astClass[3..]?uncap_first}EClass;

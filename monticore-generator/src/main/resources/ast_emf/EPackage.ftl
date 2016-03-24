@@ -35,7 +35,7 @@ SUCH DAMAGE.
 <#-- Copyright -->
 ${tc.defineHookPoint("JavaCopyright")}
 
-${tc.signature("ast", "grammarName", "packageURI", "astClasses")}
+${tc.signature("ast", "grammarName", "packageURI", "astTypes")}
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -57,15 +57,14 @@ public interface ${ast.getName()} extends ASTEPackage {
   
   int Constants${grammarName} = 0;
     
-  <#--  TODO GV: interfaces, enums -->
-  <#list astClasses as astClass>
+  <#list astTypes as astClass>
   int ${astClass} = ${astClass?counter};
   </#list>
   
    <#-- generate all attributes -->  
   <#list ast.getCDAttributes() as attribute>
     <#if !genHelper.isInherited(attribute)>
-  ${tc.include("ast.Constant", attribute)}
+    ${tc.include("ast.Constant", attribute)}
     </#if>
   </#list>
     
@@ -74,8 +73,7 @@ public interface ${ast.getName()} extends ASTEPackage {
   
   EEnum getConstants${grammarName}();
     
-  <#--  TODO GV: interfaces, enums -->
-  <#list astClasses as astClass>
+  <#list astTypes as astClass>
   EClass get${astClass[3..]}();
   </#list>
     
@@ -99,10 +97,9 @@ public interface ${ast.getName()} extends ASTEPackage {
   
     EEnum Constants${grammarName} = eINSTANCE.getConstants${grammarName}();
     
-  <#--  TODO GV: interfaces, enums -->
-  <#list astClasses as astClass>
+  <#list astTypes as astClass>
     EClass ${astClass} = eINSTANCE.get${astClass[3..]}();
-    <#--  ${op.includeTemplates(ePackageLiteralMain, ast.getFiles())} --> 
+    <#--  ${ePackageLiteralMain} --> 
   </#list>
   }
 }

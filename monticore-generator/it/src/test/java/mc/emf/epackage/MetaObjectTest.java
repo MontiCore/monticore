@@ -47,7 +47,7 @@ public class MetaObjectTest extends GeneratorIntegrationsTest {
     assertFalse(incExp.isInterface());
     
     assertEquals(ASTAssignment.class, assig.getInstanceClass());
-    assertEquals(ExpressionPackage.ASTAssignment_Varname + 1, assig
+    assertEquals(3, assig
         .getFeatureCount());
         
   }
@@ -61,9 +61,7 @@ public class MetaObjectTest extends GeneratorIntegrationsTest {
   
   @Test
   public void testEAttribute() {
-    EAttribute varName = ExpressionPackage.eINSTANCE.getASTDecreaseExpression_Varname(); // TODO
-                                                                                         // GV:
-                                                                                         // getASTExpression_Varname
+    EAttribute varName = ExpressionPackage.eINSTANCE.getASTExpression_Varname(); 
     
     assertEquals(varName.getFeatureID(),
         ExpressionPackage.ASTDecreaseExpression_Varname);

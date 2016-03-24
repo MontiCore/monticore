@@ -10,8 +10,8 @@ automaton Testautomat2 {
    
    c -y> d;
 	
-   state c;
+  state c;
 	
- 
+  state b;
 		
 }
