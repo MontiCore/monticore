@@ -56,17 +56,6 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
     super(topAst, symbolTable);
   }
   
-  public static String getEmfRuntimePackage() {
-    return "de.monticore.emf._ast";
-  }
-  
-  public static String getSuperClass(ASTCDClass clazz) {
-    if (!clazz.getSuperclass().isPresent()) {
-      return ASTECNode.class.getName();
-    }
-    return clazz.printSuperClass();
-  }
-  
   public String getPackageURI() {
     return "http://" + getCdName() + "/1.0";
   }
@@ -223,7 +212,6 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
     if (!type.getSymbol().isPresent()) {
       Log.error("0xABC123 Could not load symbol information for " + type.getName() + ".");
     }
-    
     CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol().get();
     List<CDTypeSymbol> types = getAllSuperTypesEmfOrder(sym);
     types.add(sym);
@@ -255,35 +243,7 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
     return allFields;
   }
   
-  // /**
-  // * TODO: Write me!
-  // *
-  // * @param cdType
-  // * @return
-  // */
-  // public Collection<CDFieldSymbol> getNewVisibleFields(ASTCDType type) {
-  // List<CDFieldSymbol> allSuperTypeFields = new ArrayList<>();
-  // if (!type.getSymbol().isPresent()) {
-  // Log.error("0xABC123 Could not load symbol information for " +
-  // type.getName() + ".");
-  // return new ArrayList<>();
-  // }
-  // CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol().get();
-  // for (CDTypeSymbol sup : getAllSuperTypesEmfOrder(sym)) {
-  // sup.getFields().forEach(a -> addIfNotContained(a, allSuperTypeFields));
-  // }
-  // // filter-out all private fields and collect names
-  // List<String> fieldNames = allSuperTypeFields.stream()
-  // .filter(field -> !field.isPrivate()).map(field -> field.getName())
-  // .collect(Collectors.toList());
-  //
-  // //filter out attributes of super types
-  // return sym.getFields().stream().filter(field ->
-  // !fieldNames.contains(field))
-  // .collect(Collectors.toList());
-  // }
-  
-  // TODO GV: fix me
+  // TODO: fix me
   public boolean isExternal(ASTCDAttribute attribute) {
     return getNativeTypeName(attribute).endsWith("Ext");
   }
@@ -319,6 +279,17 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
   public String getIdentifierName(String qualifiedName) {
     return Names.getSimpleName(qualifiedName) + "_"
         + Names.getQualifier(qualifiedName).replace('.', '_');
+  }
+  
+  public static String getEmfRuntimePackage() {
+    return "de.monticore.emf._ast";
+  }
+  
+  public static String getSuperClass(ASTCDClass clazz) {
+    if (!clazz.getSuperclass().isPresent()) {
+      return ASTECNode.class.getName();
+    }
+    return clazz.printSuperClass();
   }
   
   public static List<EmfAttribute> getSortedEmfAttributes(List<EmfAttribute> list) {

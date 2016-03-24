@@ -1530,7 +1530,7 @@ public class GeneratorHelper extends TypesHelper {
   }
   
   /**
-   * TODO: Write me!
+   * Creates an instance of the generator helper
    * 
    * @param astClassDiagram
    * @param globalScope
