@@ -114,10 +114,7 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
     return attribute.printType();
   }
   
-  public static boolean istJavaList(ASTCDAttribute attribute) {
-    return TypesPrinter.printTypeWithoutTypeArgumentsAndDimension(attribute.getType())
-        .equals(JAVA_LIST);
-  }
+ 
   
   public List<String> getASTESuperPackages() {
     List<String> ePackages = new ArrayList<>();
@@ -128,11 +125,6 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
       ePackages.add(ASTENodePackage.class.getName());
     }
     return ePackages;
-  }
-  
-  public static String getEPackageName(String qualifiedSuperGrammar) {
-    return qualifiedSuperGrammar.toLowerCase() + "._ast."
-        + StringTransformations.capitalize(Names.getSimpleName(qualifiedSuperGrammar)) + "Package";
   }
   
   /**
@@ -276,9 +268,19 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
     }
   }
   
+  public static String getEPackageName(String qualifiedSuperGrammar) {
+    return qualifiedSuperGrammar.toLowerCase() + "._ast."
+        + StringTransformations.capitalize(Names.getSimpleName(qualifiedSuperGrammar)) + "Package";
+  }
+  
   public String getIdentifierName(String qualifiedName) {
     return Names.getSimpleName(qualifiedName) + "_"
         + Names.getQualifier(qualifiedName).replace('.', '_');
+  }
+  
+  public static boolean istJavaList(ASTCDAttribute attribute) {
+    return TypesPrinter.printTypeWithoutTypeArgumentsAndDimension(attribute.getType())
+        .equals(JAVA_LIST);
   }
   
   public static String getEmfRuntimePackage() {

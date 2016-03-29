@@ -19,8 +19,6 @@
 
 package de.monticore.codegen.cd2java.ast;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;

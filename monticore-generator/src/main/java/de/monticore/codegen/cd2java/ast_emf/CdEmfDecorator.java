@@ -739,7 +739,7 @@ public class CdEmfDecorator extends CdDecorator {
         
   }
   
-  protected void addLiteralsEnum(ASTCDCompilationUnit ast, AstGeneratorHelper astHelper) {
+  void addLiteralsEnum(ASTCDCompilationUnit ast, AstGeneratorHelper astHelper) {
     ASTCDDefinition cdDefinition = ast.getCDDefinition();
     String constantsEnumName = cdDefinition.getName() + ConstantsTranslation.CONSTANTS_ENUM;
     Optional<ASTCDEnum> enumConstants = cdDefinition.getCDEnums().stream()
