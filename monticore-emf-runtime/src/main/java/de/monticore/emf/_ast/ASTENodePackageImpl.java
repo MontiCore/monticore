@@ -64,9 +64,9 @@ public class ASTENodePackageImpl extends EPackageImpl implements ASTENodePackage
    * @see #initializePackageContents()
    */
   public static ASTENodePackage init() {
-    if (isInited)
+    if (isInited) {
       return (ASTENodePackage) EPackage.Registry.INSTANCE.getEPackage(ASTENodePackage.eNS_URI);
-    
+    }
     // Obtain or create and register package
     ASTENodePackageImpl theASTENodePackage = (ASTENodePackageImpl) (EPackage.Registry.INSTANCE
         .get(eNS_URI) instanceof ASTENodePackageImpl
@@ -110,8 +110,9 @@ public class ASTENodePackageImpl extends EPackageImpl implements ASTENodePackage
    * have no affect on any invocation but its first.
    */
   public void createPackageContents() {
-    if (isCreated)
+    if (isCreated) {
       return;
+    }
     isCreated = true;
     // Create classes and their features
     constantsASTENodeEEnum = createEEnum(CONSTANTSASTENODE);
@@ -127,8 +128,9 @@ public class ASTENodePackageImpl extends EPackageImpl implements ASTENodePackage
    * is guarded to have no affect on any invocation but its first.
    */
   public void initializePackageContents() {
-    if (isInitialized)
+    if (isInitialized) {
       return;
+    }
     isInitialized = true;
     
     // Initialize package

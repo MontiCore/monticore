@@ -144,7 +144,7 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
   public boolean attributeDefinedInOtherCd(ASTCDAttribute attribute) {
     String definedGrammar = getDefinedGrammarName(attribute);
     return !definedGrammar.isEmpty()
-        && !definedGrammar.equals(getQualifiedCdName().toLowerCase());
+        && !definedGrammar.equalsIgnoreCase(getQualifiedCdName());
   }
   
   public String getDefinedGrammarName(ASTCDAttribute attribute) {
@@ -165,7 +165,7 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
    */
   public List<CDTypeSymbol> getAllSuperTypesEmfOrder(ASTCDType type) {
     if (!type.getSymbol().isPresent()) {
-      Log.error("0xABC123 Could not load symbol information for " + type.getName() + ".");
+      Log.error("0xA4097 Could not load symbol information for " + type.getName() + ".");
     }
     
     CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol().get();
@@ -202,7 +202,7 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
    */
   public List<CDTypeSymbol> getAllTypesEmfOrder(ASTCDType type) {
     if (!type.getSymbol().isPresent()) {
-      Log.error("0xABC123 Could not load symbol information for " + type.getName() + ".");
+      Log.error("0xA4098 Could not load symbol information for " + type.getName() + ".");
     }
     CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol().get();
     List<CDTypeSymbol> types = getAllSuperTypesEmfOrder(sym);
@@ -219,7 +219,7 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
   public Collection<CDFieldSymbol> getAllVisibleFields(ASTCDType type) {
     List<CDFieldSymbol> allSuperTypeFields = new ArrayList<>();
     if (!type.getSymbol().isPresent()) {
-      Log.error("0xABC123 Could not load symbol information for " + type.getName() + ".");
+      Log.error("0xA4099 Could not load symbol information for " + type.getName() + ".");
       return new ArrayList<>();
     }
     CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol().get();

@@ -32,8 +32,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.antlr.v4.runtime.RecognitionException;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -91,6 +89,8 @@ public class CdEmfDecorator extends CdDecorator {
   public static final String EPACKAGE = "Package";
   
   public static final String EPACKAGE_IMPL = "PackageImpl";
+  
+  public static final String HTTP = "http://";
   
   private Map<ASTCDType, List<EmfAttribute>> emfAttributes = new LinkedHashMap<>();
   
@@ -223,8 +223,7 @@ public class CdEmfDecorator extends CdDecorator {
   }
   
   void addEFactoryInterface(ASTCDCompilationUnit cdCompilationUnit, List<ASTCDType> astClasses,
-      AstEmfGeneratorHelper astHelper)
-          throws RecognitionException {
+      AstEmfGeneratorHelper astHelper) {
     ASTCDDefinition cdDef = cdCompilationUnit.getCDDefinition();
     ASTCDInterface factory = CD4AnalysisNodeFactory.createASTCDInterface();
     String factoryName = cdDef.getName() + EFACTORY;
@@ -251,13 +250,13 @@ public class CdEmfDecorator extends CdDecorator {
         .collect(Collectors.toList());
         
     glex.replaceTemplate("ast.AstInterfaceContent", factory, new TemplateHookPoint(
-        "ast_emf.EFactory", factory, cdDef.getName(), "http://" + cdDef.getName()
+        "ast_emf.EFactory", factory, cdDef.getName(), HTTP + cdDef.getName()
             + "/1.0",
         classNames));
   }
   
   void addEFactoryImplementation(ASTCDCompilationUnit cdCompilationUnit,
-      List<ASTCDClass> astClasses, AstEmfGeneratorHelper astHelper) throws RecognitionException {
+      List<ASTCDClass> astClasses, AstEmfGeneratorHelper astHelper) {
     ASTCDDefinition cdDef = cdCompilationUnit.getCDDefinition();
     ASTCDClass factoryClass = CD4AnalysisNodeFactory.createASTCDClass();
     String factoryClassName = cdDef.getName() + EFACTORY_IMPL;
@@ -277,16 +276,15 @@ public class CdEmfDecorator extends CdDecorator {
         .collect(Collectors.toList());
         
     cdDef.getCDClasses().add(factoryClass);
-    glex.replaceTemplate("ast.ClassContent", factoryClass, new TemplateHookPoint(
-        "ast_emf.EFactoryImpl", factoryClass, cdDef.getName(), "http://" + cdDef.getName()
+    glex.replaceTemplate(CLASS_CONTENT_TEMPLATE, factoryClass, new TemplateHookPoint(
+        "ast_emf.EFactoryImpl", factoryClass, cdDef.getName(), HTTP + cdDef.getName()
             + "/1.0",
         classNames));
         
   }
   
   void addEPackageInterface(ASTCDCompilationUnit cdCompilationUnit, List<ASTCDType> astTypes,
-      Collection<String> collection, AstEmfGeneratorHelper astHelper)
-          throws RecognitionException {
+      Collection<String> collection, AstEmfGeneratorHelper astHelper) {
     ASTCDDefinition cdDef = cdCompilationUnit.getCDDefinition();
     ASTCDInterface packageInterface = CD4AnalysisNodeFactory.createASTCDInterface();
     String interfaceName = cdDef.getName() + EPACKAGE;
@@ -343,15 +341,14 @@ public class CdEmfDecorator extends CdDecorator {
         
     glex.replaceTemplate("ast.AstInterfaceContent", packageInterface,
         new TemplateHookPoint(
-            "ast_emf.EPackage", packageInterface, cdDef.getName(), "http://" + cdDef.getName()
+            "ast_emf.EPackage", packageInterface, cdDef.getName(), HTTP + cdDef.getName()
                 + "/1.0",
             classNames));
   }
   
   void addEPackageImplementation(ASTCDCompilationUnit cdCompilationUnit,
       List<ASTCDType> astClasses, Map<String, String> externaltypes,
-      AstEmfGeneratorHelper astHelper)
-          throws RecognitionException {
+      AstEmfGeneratorHelper astHelper) {
     ASTCDDefinition cdDef = cdCompilationUnit.getCDDefinition();
     ASTCDClass packageImpl = CD4AnalysisNodeFactory.createASTCDClass();
     String className = cdDef.getName() + EPACKAGE_IMPL;
@@ -414,12 +411,11 @@ public class CdEmfDecorator extends CdDecorator {
     
     cdDef.getCDClasses().add(packageImpl);
     
-    glex.replaceTemplate("ast.ClassContent", packageImpl, new TemplateHookPoint(
+    glex.replaceTemplate(CLASS_CONTENT_TEMPLATE, packageImpl, new TemplateHookPoint(
         "ast_emf.EPackageImpl", packageImpl, cdDef.getName(), classNames, externaltypes.values()));
   }
   
-  void addSetter(ASTCDClass clazz, AstEmfGeneratorHelper astHelper)
-      throws RecognitionException {
+  void addSetter(ASTCDClass clazz, AstEmfGeneratorHelper astHelper) {
     for (EmfAttribute attribute : getEmfAttributes(clazz)) {
       ASTCDAttribute cdAttribute = attribute.getCdAttribute();
       if (GeneratorHelper.isInherited(cdAttribute)) {
@@ -454,8 +450,7 @@ public class CdEmfDecorator extends CdDecorator {
    * @param astHelper
    * @throws ANTLRException
    */
-  void addEGetter(ASTCDClass clazz, AstEmfGeneratorHelper astHelper)
-      throws RecognitionException {
+  void addEGetter(ASTCDClass clazz, AstEmfGeneratorHelper astHelper) {
     String toParse = "public Object eGet(int featureID, boolean resolve, boolean coreType);";
     HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.EGet",
         clazz, astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
@@ -469,8 +464,7 @@ public class CdEmfDecorator extends CdDecorator {
    * @param astHelper
    * @throws ANTLRException
    */
-  void addESetter(ASTCDClass clazz, AstEmfGeneratorHelper astHelper)
-      throws RecognitionException {
+  void addESetter(ASTCDClass clazz, AstEmfGeneratorHelper astHelper) {
     String toParse = "public void eSet(int featureID, Object newValue);";
     HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.ESet",
         clazz, astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
@@ -527,8 +521,7 @@ public class CdEmfDecorator extends CdDecorator {
    * @param astHelper
    * @throws ANTLRException
    */
-  void addEUnset(ASTCDClass clazz, AstEmfGeneratorHelper astHelper)
-      throws RecognitionException {
+  void addEUnset(ASTCDClass clazz, AstEmfGeneratorHelper astHelper) {
     String toParse = "public void eUnset(int featureID);";
     HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.EUnset",
         clazz, astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
@@ -542,8 +535,7 @@ public class CdEmfDecorator extends CdDecorator {
    * @param astHelper
    * @throws ANTLRException
    */
-  void addEIsSet(ASTCDClass clazz, AstEmfGeneratorHelper astHelper)
-      throws RecognitionException {
+  void addEIsSet(ASTCDClass clazz, AstEmfGeneratorHelper astHelper) {
     String toParse = "public boolean eIsSet(int featureID);";
     HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.EIsSet",
         clazz, astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
@@ -578,7 +570,7 @@ public class CdEmfDecorator extends CdDecorator {
    * @param astHelper
    */
   void addToString(ASTCDClass clazz, AstEmfGeneratorHelper astHelper) {
-    if (clazz.getCDMethods().stream().anyMatch(m -> m.getName().equals("toString"))) {
+    if (clazz.getCDMethods().stream().anyMatch(m -> "toString".equals(m.getName()))) {
       return;
     }
     String toParse = "public String toString();";
@@ -734,7 +726,7 @@ public class CdEmfDecorator extends CdDecorator {
         .map(e -> GeneratorHelper.getPlainName(e))
         .collect(Collectors.toList());
         
-    glex.replaceTemplate("ast.ClassContent", nodeFactoryClass, new TemplateHookPoint(
+    glex.replaceTemplate(CLASS_CONTENT_TEMPLATE, nodeFactoryClass, new TemplateHookPoint(
         "ast_emf.AstNodeFactory", nodeFactoryClass, imports, classNames));
         
   }
@@ -745,7 +737,7 @@ public class CdEmfDecorator extends CdDecorator {
     Optional<ASTCDEnum> enumConstants = cdDefinition.getCDEnums().stream()
         .filter(e -> e.getName().equals(constantsEnumName)).findAny();
     if (!enumConstants.isPresent()) {
-      Log.error("0xA1004 CdDecorator error: " + constantsEnumName
+      Log.error("0xA5000 CdDecorator error: " + constantsEnumName
           + " class can't be created for the class diagramm "
           + cdDefinition.getName());
       return;

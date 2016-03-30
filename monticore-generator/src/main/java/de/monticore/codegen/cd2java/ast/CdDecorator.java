@@ -93,6 +93,8 @@ public class CdDecorator {
    */
   public static final String EMPTY_BODY_TEMPLATE = "ast.EmptyMethodBody";
   
+  public static final String CLASS_CONTENT_TEMPLATE = "ast.ClassContent";
+  
   public static final String NODE_FACTORY = "NodeFactory";
   
   protected static final String DEL = ", ";
@@ -425,7 +427,7 @@ public class CdDecorator {
     
     List<String> imports = getImportsForNodeFactory(nodeFactoryClass, astClasses, astHelper);
     
-    glex.replaceTemplate("ast.ClassContent", nodeFactoryClass, new TemplateHookPoint(
+    glex.replaceTemplate(CLASS_CONTENT_TEMPLATE, nodeFactoryClass, new TemplateHookPoint(
         "ast.AstNodeFactory", nodeFactoryClass, imports));
         
   }
@@ -770,7 +772,7 @@ public class CdDecorator {
     
     ASTCDClass astConstantsClass = ast.get();
     glex.replaceTemplate(
-        "ast.ClassContent",
+        CLASS_CONTENT_TEMPLATE,
         astConstantsClass,
         new TemplateHookPoint(
             "ast.ASTConstantsClass", astConstantsClass, astHelper.getQualifiedCdName(), astHelper
