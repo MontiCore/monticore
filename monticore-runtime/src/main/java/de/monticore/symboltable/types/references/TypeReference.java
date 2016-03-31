@@ -60,4 +60,11 @@ public interface TypeReference<T extends TypeSymbol> extends SymbolReference<T> 
    */
   void setDimension(int dimension);
 
+  /**
+   * @return true, for array references
+   */
+  default boolean isArray() {
+    return getDimension() >= 1;
+  }
+
 }
