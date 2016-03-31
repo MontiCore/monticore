@@ -33,6 +33,7 @@ SUCH DAMAGE.
 <#assign genHelper = glex.getGlobalValue("astHelper")>
 
 import ${genHelper.getQualifiedASTNodeType()};
+import ${astHelper.getVisitorPackage()}.${genHelper.getCdName()}Visitor;
 
 /**
  * Interface for all AST nodes of the ${genHelper.getCdName()} language.

@@ -1,0 +1,42 @@
+package mc.feature.fautomaton.automaton;
+
+grammar FlatAutomaton extends mc.common.Basics {
+
+	/** An finite automaton
+	@attribute name Name of the automaton
+    @attribute State List of all states
+    @attribute Transition List of all transitions
+	*/
+	Automaton =
+	   "automaton" Name "{" 
+	     (State | Transition )*// (names : Name)* (impState:State)
+	   "}";
+
+    /** A state in a finite automaton
+    @attribute name Name of the state
+    @attribute final True if state is final
+    @attribute initial True if state is initial
+    */
+	State =
+	  "state" Name
+	  (("<<" initial:["initial"] ">>" ) | ("<<" final:["final"] ">>" ))* ";"  ;
+
+    /** A transition in a finite automaton
+    @attribute from The source of the transition
+    @attribute activate Character that triggers the transition
+    @attribute to The target of the transition
+    */
+	Transition =
+	  from:Name "-" activate:Name ">" to:Name ";"  ;
+	  
+	  interface A0;
+	
+	ast A0 = VarnameA0:Name ;
+	
+	interface A1 extends A0;
+	
+	ast A1 = VarnameA1:Name;
+	
+	M implements A1 = VarnameM:Name;
+	  	
+}

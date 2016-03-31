@@ -39,9 +39,7 @@ SUCH DAMAGE.
 -->
   ${tc.signature("ast", "astType")}
   <#assign genHelper = glex.getGlobalValue("astHelper")>
-  ${ast.printModifier()} ${ast.printReturnType()} ${ast.getName()}(${ast.printParametersDecl()})
-   ${ast.printThrowsDecl()}
-  <#if genHelper.isAbstract(ast, astType)>;
+  ${ast.printModifier()} ${ast.printReturnType()} ${ast.getName()}(${ast.printParametersDecl()}) ${ast.printThrowsDecl()}<#if genHelper.isAbstract(ast, astType)>;
   <#else>
   { 
      ${tc.include("ast.ErrorIfNull")}

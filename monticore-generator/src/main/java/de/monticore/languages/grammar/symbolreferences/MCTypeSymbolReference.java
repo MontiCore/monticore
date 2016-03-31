@@ -273,11 +273,6 @@ public class MCTypeSymbolReference extends MCTypeSymbol implements SymbolReferen
   }
 
   @Override
-  public String getListImplementation() {
-    return getReferencedSymbol().getListImplementation();
-  }
-
-  @Override
   public List<MCTypeSymbol> getAllSuperclasses() {
     return getReferencedSymbol().getAllSuperclasses();
   }

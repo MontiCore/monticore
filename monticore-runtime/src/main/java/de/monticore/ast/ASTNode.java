@@ -26,6 +26,7 @@ import java.util.Optional;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.SourcePosition;
+import de.se_rwth.commons.logging.Log;
 
 /**
  * Foundation interface for all AST-classes
@@ -33,6 +34,107 @@ import de.se_rwth.commons.SourcePosition;
  * @author krahn
  */
 public interface ASTNode {
+  
+  /**
+   * Performs a deep clone of this ASTNode and all of its successors
+   * 
+   * @return Clone of current ASTNode with a parent which is equal to null
+   */
+  default public ASTNode deepClone(ASTNode result) {
+    Log.errorIfNull(result, "0xA4040 Parameter 'result' must not be null.");
+    
+    result.set_SourcePositionStart(new de.se_rwth.commons.SourcePosition(
+        get_SourcePositionStart().getLine(), get_SourcePositionStart()
+            .getColumn()));
+    result.set_SourcePositionEnd(new de.se_rwth.commons.SourcePosition(
+        get_SourcePositionEnd().getLine(), get_SourcePositionEnd()
+            .getColumn()));
+    for (de.monticore.ast.Comment x : get_PreComments()) {
+      result.get_PreComments().add(new de.monticore.ast.Comment(x.getText()));
+    }
+    for (de.monticore.ast.Comment x : get_PostComments()) {
+      result.get_PostComments().add(new de.monticore.ast.Comment(x.getText()));
+    }
+    
+    return result;
+  }
+  
+  default public boolean equalAttributes(Object o) {
+    if (o == null) {
+      return false;
+    }
+    throw new CompareNotSupportedException(
+        "0xA4041 Method equalAttributes is not implemented properly in class: "
+            + o.getClass().getName());
+  }
+  
+  default public boolean equalsWithComments(Object o) {
+    if (o == null) {
+      return false;
+    }
+    throw new CompareNotSupportedException(
+        "0xA4042 Method equalsWithComments is not implemented properly in class: "
+            + o.getClass().getName());
+  }
+  
+  /**
+   * Compare this object to another Object. Do not take comments into account.
+   * This method returns the same value as <tt>deepEquals(Object o, boolean 
+   * forceSameOrder)</tt> method when using the default value for forceSameOrder
+   * of each Node.
+   */
+  default public boolean deepEquals(Object o) {
+    if (o == null) {
+      return false;
+    }
+    throw new CompareNotSupportedException(
+        "0xA4043 Method deepEquals is not implemented properly in class: "
+            + o.getClass().getName());
+  }
+  
+  /**
+   * Compare this object to another Object. Take comments into account.
+   * 
+   * @param o the object to compare this node to
+   * @param forceSameOrder consider the order in ancestor lists, even if these
+   * lists are of stereotype <tt>&lt;&lt;unordered&gt;&gt;</tt> in the grammar.
+   */
+  default public boolean deepEqualsWithComments(Object o) {
+    throw new CompareNotSupportedException(
+        "0xA4044 Method deepEqualsWithComments is not implemented properly in class: "
+            + o.getClass().getName());
+  }
+  
+  /**
+   * Compare this object to another Object. Do not take comments into account.
+   * 
+   * @param o the object to compare this node to
+   * @param forceSameOrder consider the order in ancestor lists, even if these
+   * lists are of stereotype <tt>&lt;&lt;unordered&gt;&gt;</tt> in the grammar.
+   */
+  default public boolean deepEquals(Object o, boolean forceSameOrder) {
+    if (o == null) {
+      return false;
+    }
+    throw new CompareNotSupportedException(
+        "0xA4045 Method deepEquals is not implemented properly in class: "
+            + o.getClass().getName());
+  }
+  
+  /**
+   * Compare this object to another Object. Take comments into account. This
+   * method returns the same value as
+   * <tt>deepEqualsWithComment(Object o, boolean forceSameOrder)</tt> method
+   * when using the default value for forceSameOrder of each Node.
+   */
+  default public boolean deepEqualsWithComments(Object o, boolean forceSameOrder) {
+    if (o == null) {
+      return false;
+    }
+    throw new CompareNotSupportedException(
+        "0xA4046 Method deepEqualsWithComments is not implemented properly in class: "
+            + o.getClass().getName());
+  }
   
   /**
    * Performs a deep clone of this ASTNode and all of its successors
@@ -81,7 +183,7 @@ public interface ASTNode {
    * Sets list of all comments which are associated with this ASTNode and are
    * prior to the ASTNode in the input file
    * 
-   * @param precomments list of comments
+   * @param _precomments list of comments
    */
   void set_PreComments(List<Comment> precomments);
   
@@ -97,48 +199,10 @@ public interface ASTNode {
    * Sets list of all comments which are associated with this ASTNode and can be
    * found after the ASTNode in the input file
    * 
-   * @param postcomments list of comments
+   * @param _postcomments list of comments
    */
   void set_PostComments(List<Comment> postcomments);
-  
-  boolean equalAttributes(Object o);
-  
-  boolean equalsWithComments(Object o);
-  
-  /**
-   * Compare this object to another Object. Do not take comments into account.
-   * This method returns the same value as <tt>deepEquals(Object o, boolean 
-   * forceSameOrder)</tt> method when using the default value for forceSameOrder
-   * of each Node.
-   */
-  boolean deepEquals(Object o);
-  
-  /**
-   * Compare this object to another Object. Take comments into account. This
-   * method returns the same value as
-   * <tt>deepEqualsWithComment(Object o, boolean forceSameOrder)</tt> method
-   * when using the default value for forceSameOrder of each Node.
-   */
-  boolean deepEqualsWithComments(Object o);
-  
-  /**
-   * Compare this object to another Object. Do not take comments into account.
-   * 
-   * @param o the object to compare this node to
-   * @param forceSameOrder consider the order in ancestor lists, even if these
-   * lists are of stereotype <tt>&lt;&lt;unordered&gt;&gt;</tt> in the grammar.
-   */
-  boolean deepEquals(Object o, boolean forceSameOrder);
-  
-  /**
-   * Compare this object to another Object. Take comments into account.
-   * 
-   * @param o the object to compare this node to
-   * @param forceSameOrder consider the order in ancestor lists, even if these
-   * lists are of stereotype <tt>&lt;&lt;unordered&gt;&gt;</tt> in the grammar.
-   */
-  boolean deepEqualsWithComments(Object o, boolean forceSameOrder);
-  
+ 
   /**
    * @returns a collection of all child nodes of this node
    */
@@ -151,26 +215,26 @@ public interface ASTNode {
    * @param child the target node of the reference to be removed
    */
   void remove_Child(ASTNode child);
-
+  
   /**
    * Sets the enclosing scope of this ast node.
    *
    * @param enclosingScope the enclosing scope of this ast node
    */
   void setEnclosingScope(Scope enclosingScope);
-
+  
   /**
    * @return the enclosing scope of this ast node
    */
   Optional<? extends Scope> getEnclosingScope();
-
+  
   /**
    * Sets the corresponding symbol of this ast node.
    *
    * @param symbol the corresponding symbol of this ast node..
    */
   void setSymbol(Symbol symbol);
-
+  
   /**
    * @return the corresponding symbol of this ast node.
    */
@@ -189,7 +253,5 @@ public interface ASTNode {
   default Optional<? extends Scope> getSpannedScope() {
     return Optional.empty();
   }
-
-
   
 }
