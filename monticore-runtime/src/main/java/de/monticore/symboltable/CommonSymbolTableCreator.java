@@ -36,7 +36,7 @@ import de.se_rwth.commons.logging.Log;
 public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
 
   private final ResolverConfiguration resolverConfig;
-  protected final Deque<MutableScope> scopeStack;
+  protected Deque<MutableScope> scopeStack;
 
   /**
    * The first scope OTHER THAN THE GLOBAL SCOPE that has been created, i.e., added  to the scope
@@ -208,6 +208,10 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
   public void setEnclosingScopeOfNodes(ASTNode root) {
     EnclosingScopeOfNodesInitializer v = new EnclosingScopeOfNodesInitializer();
     v.handle(root);
+  }
+
+  protected void setScopeStack(final Deque<MutableScope> scopeStack) {
+    this.scopeStack = scopeStack;
   }
 
 }

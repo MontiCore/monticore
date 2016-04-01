@@ -169,7 +169,7 @@ public class CommonScope implements MutableScope {
 
   public <T extends Symbol> Collection<T> resolveMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier,
       Predicate<Symbol> predicate) {
-    final Set<T> resolvedSymbols = this.<T>resolveManyLocally(resolvingInfo, name, kind, modifier, predicate);
+    final Set<T> resolvedSymbols = this.resolveManyLocally(resolvingInfo, name, kind, modifier, predicate);
 
     final Collection<T> resolvedFromEnclosing = continueWithEnclosingScope(resolvingInfo, name, kind, modifier, predicate);
     resolvedSymbols.addAll(resolvedFromEnclosing);
@@ -533,7 +533,7 @@ public class CommonScope implements MutableScope {
   public <T extends Symbol> Collection<T> resolveDownMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier,
       Predicate<Symbol> predicate) {
     // 1. Conduct search locally in the current scope
-    final Set<T> resolved = this.<T>resolveManyLocally(resolvingInfo, name, kind, modifier, x -> true);
+    final Set<T> resolved = this.resolveManyLocally(resolvingInfo, name, kind, modifier, predicate);
 
     final String resolveCall = "resolveDownMany(\"" + name + "\", \"" + kind.getName()
         + "\") in scope \"" + getName() + "\"";

@@ -22,14 +22,14 @@ package de.monticore;
 import java.util.Collection;
 import java.util.Optional;
 
+import de.monticore.antlr4.MCConcreteParser;
+import de.monticore.ast.ASTNode;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolverConfiguration;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolTableCreator;
 import de.monticore.symboltable.resolving.ResolvingFilter;
-import de.monticore.antlr4.MCConcreteParser;
-import de.monticore.ast.ASTNode;
 
 /**
  * Super interface for languages. Provides access to language-related functionality,
@@ -38,10 +38,6 @@ import de.monticore.ast.ASTNode;
  * @author  Pedram Mir Seyed Nazari
  * 
  */
-// TODO PN die einzelnen Komponenten wie Parser, SymbolTableCreator etc. sind alle Stateful. Daher sollte die ModelingLanguage immer eine neue Instanz zurück geben...
-// TODO PN ...Das hat ggf. Einfluss auf das Design dieser Komponenten, z.B. kann der AST direkt
-// TODO PN ...dem Konstruktor des STCreators übergeben werden
-// TODO PN DIE oberen Punkte dokumentieren
 public interface ModelingLanguage {
 
   /**
@@ -73,6 +69,7 @@ public interface ModelingLanguage {
    *                       words, the scope in which the top level symbol should be defined.
    * @return the {@link de.monticore.symboltable.CommonSymbolTableCreator} for this language.
    */
+  // TODO PN change to mandatory
   Optional<? extends SymbolTableCreator> getSymbolTableCreator
   (ResolverConfiguration resolverConfiguration, MutableScope enclosingScope);
 
