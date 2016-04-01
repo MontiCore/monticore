@@ -95,6 +95,8 @@ public class CdDecorator {
   
   public static final String CLASS_CONTENT_TEMPLATE = "ast.ClassContent";
   
+  public static final String ERROR_IFNULL_TEMPLATE = "ast.ErrorIfNull";
+  
   public static final String NODE_FACTORY = "NodeFactory";
   
   protected static final String DEL = ", ";
@@ -396,7 +398,7 @@ public class CdDecorator {
       ASTCDMethod setMethod = replaceMethodBodyTemplate(clazz, toParse, methodBody);
       
       if (isOptional) {
-        glex.replaceTemplate("ast.ErrorIfNull", setMethod, new StringHookPoint(""));
+        glex.replaceTemplate(ERROR_IFNULL_TEMPLATE, setMethod, new StringHookPoint(""));
       }
       
       if (isOptional) {
@@ -589,11 +591,11 @@ public class CdDecorator {
         "ast.factorymethods.DoCreateWithParams", clazz, className, paramCall.toString()));
         
     if (parameters.size() != createMethod.getCDParameters().size()) {
-      glex.replaceTemplate("ast.ErrorIfNull", createMethod, new TemplateHookPoint(
+      glex.replaceTemplate(ERROR_IFNULL_TEMPLATE, createMethod, new TemplateHookPoint(
           "ast.factorymethods.ErrorIfNull", parameters));
     }
     if (parameters.size() != doCreateMethod.getCDParameters().size()) {
-      glex.replaceTemplate("ast.ErrorIfNull", doCreateMethod, new TemplateHookPoint(
+      glex.replaceTemplate(ERROR_IFNULL_TEMPLATE, doCreateMethod, new TemplateHookPoint(
           "ast.factorymethods.ErrorIfNull", parameters));
     }
     
@@ -685,7 +687,7 @@ public class CdDecorator {
         new TemplateHookPoint(
             "ast.factorymethods.CreateWithParamsDelegate", delegateFactoryName, className,
             paramCall.toString()));
-    glex.replaceTemplate("ast.ErrorIfNull", createMethod, new StringHookPoint(""));
+    glex.replaceTemplate(ERROR_IFNULL_TEMPLATE, createMethod, new StringHookPoint(""));
     
   }
   

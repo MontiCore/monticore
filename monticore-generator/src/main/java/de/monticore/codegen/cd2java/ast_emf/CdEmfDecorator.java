@@ -432,7 +432,7 @@ public class CdEmfDecorator extends CdDecorator {
       ASTCDMethod setMethod = replaceMethodBodyTemplate(clazz, toParse, methodBody);
       
       if (isOptional) {
-        glex.replaceTemplate("ast.ErrorIfNull", setMethod, new StringHookPoint(""));
+        glex.replaceTemplate(ERROR_IFNULL_TEMPLATE, setMethod, new StringHookPoint(""));
       }
       
       if (isOptional) {
@@ -472,7 +472,7 @@ public class CdEmfDecorator extends CdDecorator {
         toParse);
     Preconditions.checkArgument(astMethod.isPresent());
     glex.replaceTemplate(EMPTY_BODY_TEMPLATE, astMethod.get(), getMethodBody);
-    glex.replaceTemplate("ast.ErrorIfNull", astMethod.get(), new StringHookPoint(""));
+    glex.replaceTemplate(ERROR_IFNULL_TEMPLATE, astMethod.get(), new StringHookPoint(""));
   }
   
   /**
@@ -504,7 +504,7 @@ public class CdEmfDecorator extends CdDecorator {
     ASTCDMethod setMethod = replaceMethodBodyTemplate(clazz, toParse, methodBody);
     
     if (isOptional) {
-      glex.replaceTemplate("ast.ErrorIfNull", setMethod, new StringHookPoint(""));
+      glex.replaceTemplate(ERROR_IFNULL_TEMPLATE, setMethod, new StringHookPoint(""));
     }
     
     if (isOptional) {
