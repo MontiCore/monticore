@@ -1,8 +1,8 @@
 <#-- sig:
 Generates 
   
-@params    ASTCDEnum $ast, ASTSomething $bubu
-@result    mc.javadsl.JavaDSL.CompilationUnit
+@params    int $ast, double $bubu
+@result    String
 -->
 
 ${tc.signature("symbol", "package", "comments", "modifier", "prefix", "superComponent", "fqCompInterfaceWithTypeParameters", "helper", "timingParadigm", "existsHWC", "formalTypeParameters")}
