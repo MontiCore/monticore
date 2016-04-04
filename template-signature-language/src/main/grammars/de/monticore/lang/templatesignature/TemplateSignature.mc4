@@ -1,0 +1,17 @@
+package de.monticore.lang.templatesignature;
+
+/**
+ * Grammar for Template signatures.
+ *
+ * @author Jerome Pfeiffer
+ */
+grammar TemplateSignature extends de.monticore.literals.Literals, de.monticore.types.Types {
+
+  Signature = comment:Name* "@params" parameters:(Parameter || ",")* "@result" result:Result?;
+  
+  Parameter = paramType:QualifiedName name:Name;
+  
+  Result = resultType:QualifiedName;
+    
+
+}

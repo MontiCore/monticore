@@ -1,0 +1,4 @@
+  Generates a Java 
+  
+  @params    ASTCDEnum $ast, ASTSomething $bubu
+  @result    mc.javadsl.JavaDSL.CompilationUnit

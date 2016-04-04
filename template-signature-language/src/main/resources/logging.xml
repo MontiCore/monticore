@@ -1,0 +1,18 @@
+<configuration>
+
+  <timestamp key="bySecond" datePattern="yyyy-MM-dd-HHmmss"/>
+
+  <!-- this is a console appender -->
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>
+        %date{yyyy-MM-dd HH:mm:ss} %-7([%level]) %logger{26} %message%n
+      </pattern>
+    </encoder>
+  </appender>
+
+  <root level="TRACE">
+    <appender-ref ref="CONSOLE" />
+  </root>
+
+</configuration>
