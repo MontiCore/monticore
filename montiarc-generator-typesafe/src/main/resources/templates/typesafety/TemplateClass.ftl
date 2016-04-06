@@ -8,10 +8,9 @@ package ${package};
 
 import java.nio.file.Path;
 
-
+import de.se_rwth.commons.logging.Log;
 import de.monticore.ast.ASTNode;
-import de.monticore.generating.GeneratorEngine;
-import java.util.Optional;
+import de.montiarc.generator.codegen.MyGeneratorEngine;
 
 /**
  * @date ${helper.getTimeNow()}<br>
@@ -21,52 +20,44 @@ public abstract class ${classname} <#t>
 
   
 
-  public static void generate(GeneratorEngine generator, Path filePath, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)})
+  public static void generateToFile(MyGeneratorEngine generator, Path filePath, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)})
   {
     generator.generate("${fqnTemplateName?replace("\\","/")}", filePath, node<#if parameters?has_content>, </#if>${helper.printParameterNames(parameters)});
   }
   
     
   
-  public static String printTemplateResult()
+  public static String generateToString(MyGeneratorEngine generator, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)})
   {
-    return "";
+    return generator.generateToString("${fqnTemplateName?replace("\\","/")}", node<#if parameters?has_content>, </#if>${helper.printParameterNames(parameters)});
   }
   
   
   <#if result??>
   private static ${classname} instance;
   
-  private static ${classname} getInstance(){
-    if(null == instance) {
-      instance = new ${classname}Default();
-    }
-    return instance;
-  }
+  private static boolean initialized;
   
   public static void setInstance(${classname} instance){
+    initialized = true;
+    ${classname}.instance = instance;
+  }
+  
+  public static void init(${classname} instance){
+    initialized = true;
     ${classname}.instance = instance;
   }
   
   <#assign simpleName = helper.printSimpleName(result.get().getResultType())>
-  public static Optional<${result.get().getResultType()}> execute()
+  public static ${result.get().getResultType()} execute(MyGeneratorEngine generator, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)})
   {
-    return getInstance().create${simpleName}("");
-  }
-  
-  public abstract Optional<${result.get().getResultType()}> create${simpleName}(String fileContent);
-
-
-
-  
-  public static final class ${classname}Default extends ${classname} {
-    
-    @Override
-    public Optional<${result.get().getResultType()}> create${simpleName}(String fileContent) {
-      return Optional.empty();
+    if (!initialized) {
+      Log.error("No instance set!");
     }
-    
+    return instance.create${simpleName}(generateToString(generator, node<#if parameters?has_content>, </#if>${helper.printParameterNames(parameters)}));
   }
+  
+  public abstract ${result.get().getResultType()} create${simpleName}(String fileContent);
   
   
   </#if>

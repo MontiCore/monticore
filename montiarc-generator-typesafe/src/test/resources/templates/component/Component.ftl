@@ -1,8 +1,9 @@
+
 <#-- sig:
 Generates 
   
 @params    int $ast, double $bubu
-@result    String
+@result    java.util.List
 -->
 
 ${tc.signature("symbol", "package", "comments", "modifier", "prefix", "superComponent", "fqCompInterfaceWithTypeParameters", "helper", "timingParadigm", "existsHWC", "formalTypeParameters")}
@@ -24,6 +25,7 @@ import de.montiarc.generator.datatypes.Port;
  * @date ${genHelper.getTimeNow()}<br>
  *
  */
+
 <#if existsHWC>abstract</#if> public class ${symbol.getName()}<#if existsHWC>TOP</#if> ${formalTypeParameters} <#t>
 {
   // members for ports + getter + setter
