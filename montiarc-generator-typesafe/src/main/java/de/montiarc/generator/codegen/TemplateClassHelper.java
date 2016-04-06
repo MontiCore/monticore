@@ -151,7 +151,7 @@ public class TemplateClassHelper {
   
   public static String printSimpleName(String fqn) {
     if (fqn.contains(".")) {
-      return fqn.substring(fqn.lastIndexOf("."));
+      return fqn.substring(fqn.lastIndexOf(".")+1);
     }
     return fqn;
   }
