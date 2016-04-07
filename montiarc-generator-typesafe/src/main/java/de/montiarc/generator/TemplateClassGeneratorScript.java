@@ -72,23 +72,7 @@ public class TemplateClassGeneratorScript extends Script implements GroovyRunner
     g.evaluate(script);
   }
   
-  private GlobalScope initSymTab(final List<File> modelPaths) {
-    Set<Path> p = Sets.newHashSet();
-    for (File mP : modelPaths) {
-      p.add(Paths.get(mP.getAbsolutePath()));
-    }
-    
-    ModelPath mp = new ModelPath(p);
-    
-    ModelingLanguageFamily fam = new ModelingLanguageFamily();
-    fam.addModelingLanguage(new JavaDSLLanguage());
-    // Java2Arc
-    
-    GlobalScope gs = new GlobalScope(mp, fam);
-    
-    return gs;
-  }
-  
+ 
   
   /**
    * TODO: Write me!

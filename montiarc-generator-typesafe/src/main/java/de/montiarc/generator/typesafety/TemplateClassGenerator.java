@@ -14,6 +14,8 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
+import com.google.common.io.Files;
+
 import de.montiarc.generator.codegen.TemplateClassHelper;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.GeneratorEngine;
@@ -22,6 +24,7 @@ import de.monticore.lang.templatesignature.templatesignature._ast.ASTParameter;
 import de.monticore.lang.templatesignature.templatesignature._ast.ASTResult;
 import de.monticore.lang.templatesignature.templatesignature._ast.ASTSignature;
 import de.monticore.lang.templatesignature.templatesignature._parser.TemplateSignatureParser;
+import de.se_rwth.commons.Names;
 
 /**
  * @author (last commit) $Author$
@@ -48,9 +51,12 @@ public class TemplateClassGenerator {
       ASTNode node = new EmptyNode();
       qualifiedTargetTemplateName = qualifiedTargetTemplateName.substring(modelPath.toString()
           .length());
+      String packageNameWithSeperators = Names.getPathFromFilename(qualifiedTargetTemplateName);
+      String packageNameWithDots = Names.getPackageFromPath(packageNameWithSeperators.substring(1));
+      
       generator.generate("templates.typesafety.TemplateClass",
-          Paths.get("templateclasses", targetName + ".java"),node ,
-          "templateclasses", qualifiedTargetTemplateName, targetName,
+          Paths.get(packageNameWithSeperators, targetName + ".java"),node ,
+          packageNameWithDots, qualifiedTargetTemplateName, targetName,
           params, result, helper);
     }
     
