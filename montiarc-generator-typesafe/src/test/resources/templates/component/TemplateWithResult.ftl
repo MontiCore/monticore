@@ -1,8 +1,7 @@
-
-<#-- sig:
+<#--
 Generates 
   
-@params    int $ast, double $bubu
+@param int $ast @param double $bubu
 @result    java.util.List
 -->
 

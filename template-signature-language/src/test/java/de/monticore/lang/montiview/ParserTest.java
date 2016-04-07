@@ -5,7 +5,8 @@
  */
 package de.monticore.lang.montiview;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -21,21 +22,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import junit.framework.Assert;
-
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import de.monticore.lang.templatesignature.templatecontent._ast.ASTFTL;
+import de.monticore.lang.templatesignature.templatecontent._parser.TemplateContentParser;
+import de.monticore.lang.templatesignature.templatesignature._ast.ASTComment;
 import de.monticore.lang.templatesignature.templatesignature._ast.ASTParameter;
 import de.monticore.lang.templatesignature.templatesignature._ast.ASTResult;
 import de.monticore.lang.templatesignature.templatesignature._ast.ASTSignature;
 import de.monticore.lang.templatesignature.templatesignature._parser.TemplateSignatureParser;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * @author Robert Heim
- */
 public class ParserTest {
   public static final boolean ENABLE_FAIL_QUICK = true;
   
@@ -47,42 +46,63 @@ public class ParserTest {
   }
   
   @Test
-  public void testSignature() throws RecognitionException, IOException {
-    test("si");
+  public void testParser() throws RecognitionException, IOException {
+    TemplateContentParser p = new TemplateContentParser();
+    Optional<ASTFTL> ftl = p
+        .parse_String("<#-- Generates  @param int $ast @param double $bubu @result java.util.List -->  asfdkasfdblaf <#if existsHWC>abstract</#if>");
+    assertTrue(ftl.isPresent());
+    ASTFTL f = ftl.get();
+    System.out.println(f.getComments());
+    TemplateSignatureParser sigParser = new TemplateSignatureParser();
+    Optional<ASTComment> oSig = sigParser.parse_String(f.getComments().get(0));
+    assertTrue(oSig.isPresent());
+    ASTSignature s = oSig.get().getSignature();
+    System.out.println("Params: " + s.getParameters());
+    assertTrue(s.getResult().isPresent());
+    System.out.println("Result: " + s.getResult().get().getResultType());
   }
   
   @Test
   public void testSignatureCorrectness() {
-    File fqnTemplateName = new File("src/test/resources/parser/valid/simpleSignature.si");
-    Optional<ASTSignature> sig = parse(fqnTemplateName);
-    assertTrue(sig.isPresent());
-    ASTSignature signature = sig.get();
+    File fqnTemplateName = new File("src/test/resources/parser/valid/TemplateWithResult.ftl");
+    ASTSignature signature = parse(fqnTemplateName);
     List<ASTParameter> params = signature.getParameters();
     assertEquals(params.get(0).getName(), "$ast");
     assertEquals(params.get(0).getParamType().toString(), "int");
     Optional<ASTResult> res = signature.getResult();
     assertTrue(res.isPresent());
-    assertEquals(res.get().getResultType().toString(), "String");
+    assertEquals(res.get().getResultType().toString(), "java.util.List");
   }
   
-  private Optional<ASTSignature> parse(File fqnTemplateName) {
+  private ASTSignature parse(File fqnTemplateName) {
     FileReader fr;
-    Optional<ASTSignature> signature = Optional.empty();
+    ASTSignature signature = null;
     try {
       fr = new FileReader(fqnTemplateName);
       System.out.println(fqnTemplateName.getAbsolutePath());
       BufferedReader br = new BufferedReader(fr);
-      String line = "";
-      line = br.readLine();
-      String signatureString = "";
-      while (line != null) {
-        signatureString += "\n" + line;
-        line = br.readLine();
-      }
-      br.close();
+      // String line = "";
+      // line = br.readLine();
+      // String signatureString = "";
+      // while (line != null) {
+      // signatureString += "\n" + line;
+      // line = br.readLine();
+      // }
+      // br.close();
       
-      TemplateSignatureParser parser = new TemplateSignatureParser();
-      signature = parser.parseString_Signature(signatureString);
+      TemplateContentParser contentParser = new TemplateContentParser();
+      Optional<ASTFTL> oFTL = contentParser.parse(br);
+      assertTrue(oFTL.isPresent());
+      ASTFTL fTL = oFTL.get();
+      List<String> comments = fTL.getComments();
+      TemplateSignatureParser signatureParser = new TemplateSignatureParser();
+      System.out.println("Found Comments: " + comments);
+      Optional<ASTComment> oComment = signatureParser.parse_String(comments.get(0));
+      assertTrue(oComment.isPresent());
+      ASTComment comment = oComment.get();
+      signature = comment.getSignature();
+      // TemplateSignatureParser parser = new TemplateSignatureParser();
+      // signature = parser.parseString_Signature(signatureString);
     }
     catch (IOException e) {
       e.printStackTrace();
@@ -153,7 +173,7 @@ public class ParserTest {
         Optional<ASTSignature> signature = Optional.empty();
         TemplateSignatureParser parser = new TemplateSignatureParser();
         try {
-          signature = parser.parse(file.toString());
+          // signature = parser.parse(file.toString());
         }
         catch (Exception e) {
           Log.error("Exception during test", e);

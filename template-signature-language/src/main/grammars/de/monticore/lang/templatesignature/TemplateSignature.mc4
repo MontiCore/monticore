@@ -7,14 +7,12 @@ package de.monticore.lang.templatesignature;
  */
 grammar TemplateSignature extends de.monticore.literals.Literals, de.monticore.types.Types {
 
-  //FTL = (Comment | );
+  Comment = "<#--" Signature "-->";
   
-  //Comment = "<#--" (Signature | ) "-->";
+  Signature = comment:Name*  parameters:Parameter* result:Result?;
   
-  Signature = comment:Name*  "@params" parameters:(Parameter || ",")* "@result" result:Result?;
+  Parameter = "@param" paramType:QualifiedName name:Name;
   
-  Parameter = paramType:QualifiedName name:Name;
-  
-  Result = resultType:QualifiedName;
+  Result = "@result" resultType:QualifiedName;
     
 }

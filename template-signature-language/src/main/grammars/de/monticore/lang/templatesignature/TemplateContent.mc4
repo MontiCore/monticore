@@ -1,0 +1,16 @@
+package de.monticore.lang.templatesignature;
+
+/**
+ * Grammar for Template signatures.
+ *
+ * @author Jerome Pfeiffer
+ */
+grammar TemplateContent {
+
+  FTL = (Comment | Text)*;
+  
+  token Comment = "<#--" (Text)+ "-->";
+    
+  token Text =  ~('<')+;
+
+}
