@@ -33,7 +33,7 @@ public abstract class ${classname} <#t>
   }
   
   
-  <#if result??>
+  <#if result.isPresent()>
   private static ${classname} instance;
   
   private static boolean initialized;

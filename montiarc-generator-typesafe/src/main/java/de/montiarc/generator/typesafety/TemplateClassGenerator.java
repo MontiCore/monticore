@@ -20,6 +20,9 @@ import de.montiarc.generator.codegen.TemplateClassHelper;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
+import de.monticore.lang.templatesignature.templatecontent._ast.ASTFTL;
+import de.monticore.lang.templatesignature.templatecontent._parser.TemplateContentParser;
+import de.monticore.lang.templatesignature.templatesignature._ast.ASTComment;
 import de.monticore.lang.templatesignature.templatesignature._ast.ASTParameter;
 import de.monticore.lang.templatesignature.templatesignature._ast.ASTResult;
 import de.monticore.lang.templatesignature.templatesignature._ast.ASTSignature;
@@ -33,9 +36,6 @@ import de.se_rwth.commons.Names;
  */
 public class TemplateClassGenerator {
   
-  private static final String signatureStart = "<#-- sig:";
-  
-  private static final String signatureEnd = "-->";
   
   public static void generateClassForTemplate(String targetName, Path modelPath,
       File fqnTemplateName, File targetFilepath) {
@@ -64,41 +64,32 @@ public class TemplateClassGenerator {
   
   private static Optional<ASTSignature> getSignature(File fqnTemplateName) {
     FileReader fr;
-    Optional<ASTSignature> signature = Optional.empty();
     try {
       fr = new FileReader(fqnTemplateName);
       System.out.println(fqnTemplateName.getAbsolutePath());
       BufferedReader br = new BufferedReader(fr);
-      String line = "";
-      line = br.readLine();
-      String signatureString = "";
-      while (line != null) {
-        // start of signature
-        if (line.contains(signatureStart)) {
-          int lastIndex = line.indexOf(signatureStart)+signatureStart.length();
-          signatureString += line.substring(lastIndex);
+      TemplateContentParser contentParser = new TemplateContentParser();
+      TemplateSignatureParser signatureParser = new TemplateSignatureParser();
+      Optional<ASTFTL> oFTL = contentParser.parse(br);
+      if (oFTL.isPresent()) {
+        ASTFTL ftl = oFTL.get();
+        List<String> ftlComments = ftl.getComments();
+        for(String ftlComment : ftlComments){
+          Optional<ASTComment> oComment = signatureParser.parse_String(ftlComment);
+          if(oComment.isPresent()){
+            ASTComment comment = oComment.get();
+            ASTSignature signature = comment.getSignature();
+            if(!signature.getParameters().isEmpty()){
+              return Optional.of(signature);
+            }
+          }
         }
-        // end of signature
-        else if (line.contains(signatureEnd)) {
-          int lastIndex = line.indexOf(signatureEnd);
-          signatureString += line.substring(0,lastIndex);
-          break;
-        }
-        else {
-          signatureString += "\n" + line;
-        }
-        line = br.readLine();
       }
-      br.close();
-      
-      
-      TemplateSignatureParser parser = new TemplateSignatureParser();
-      signature = parser.parseString_Signature(signatureString);
     }
     catch (IOException e) {
       e.printStackTrace();
     }
-    return signature;
+    return Optional.empty();
   }
   
   
