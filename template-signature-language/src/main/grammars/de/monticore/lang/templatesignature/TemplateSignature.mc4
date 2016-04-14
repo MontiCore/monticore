@@ -9,9 +9,9 @@ grammar TemplateSignature extends de.monticore.literals.Literals, de.monticore.t
 
   Comment = "<#--" Signature "-->";
   
-  Signature = comment:Name*  parameters:Parameter* result:Result?;
+  Signature = comment:Name*  ("@param" | "@params")? parameters:Parameter* result:Result?;
   
-  Parameter = "@param" paramType:QualifiedName name:Name;
+  Parameter = ("@param" | ",")? paramType:QualifiedName name:Name;
   
   Result = "@result" resultType:QualifiedName;
     
