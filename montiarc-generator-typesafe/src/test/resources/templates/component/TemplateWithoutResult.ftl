@@ -1,5 +1,5 @@
 
-<#-- sig:
+<#--
 Generates 
   
 @param int $ast 

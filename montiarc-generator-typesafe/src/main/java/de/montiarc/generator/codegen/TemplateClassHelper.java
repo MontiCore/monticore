@@ -6,6 +6,7 @@
 package de.montiarc.generator.codegen;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import de.monticore.ast.Comment;
@@ -45,13 +46,13 @@ public class TemplateClassHelper {
     return result;
   }
   
-//  public static String printType(ArcTypeReference typeRef) {
-//    // return ArcTypePrinter.printType((ASTType) typeRef.getAstNode().get());
-//    if (typeRef.getReferencedSymbol().isFormalTypeParameter()) {
-//      return typeRef.getName();
-//    }
-//    return typeRef.getFullName();
-//  }
+  // public static String printType(ArcTypeReference typeRef) {
+  // // return ArcTypePrinter.printType((ASTType) typeRef.getAstNode().get());
+  // if (typeRef.getReferencedSymbol().isFormalTypeParameter()) {
+  // return typeRef.getName();
+  // }
+  // return typeRef.getFullName();
+  // }
   
   /**
    * TODO is there a helper in MC that can do it?<br/>
@@ -84,30 +85,32 @@ public class TemplateClassHelper {
    * @param symbol
    * @return
    */
-//  public static boolean requiresPortTimeIn(ComponentSymbol symbol) {
-//    return symbol.getAllIncomingPorts().isEmpty() && symbol.isDecomposed()
-//        && symbol.getSubComponents().size() == 1;
-//  }
+  // public static boolean requiresPortTimeIn(ComponentSymbol symbol) {
+  // return symbol.getAllIncomingPorts().isEmpty() && symbol.isDecomposed()
+  // && symbol.getSubComponents().size() == 1;
+  // }
   
-//  public static String printTypeParameters(ComponentSymbol symbol) {
-//    ASTComponent a = ((ASTComponent) symbol.getAstNode().get());
-//    return TypesPrinter.printTypeParameters(a.getHead().getGenericTypeParameters().get());
-//  }
+  // public static String printTypeParameters(ComponentSymbol symbol) {
+  // ASTComponent a = ((ASTComponent) symbol.getAstNode().get());
+  // return
+  // TypesPrinter.printTypeParameters(a.getHead().getGenericTypeParameters().get());
+  // }
   
-//  public static String printTypeParameters(ArcTypeSymbol symbol) {
-//    if (!symbol.getAstNode().isPresent()) {
-//      // TODO ?!
-//      return "";
-//    }
-//    ASTNode n = symbol.getAstNode().get();
-//    if (n instanceof ASTComponent) {
-//      ASTComponent a = (ASTComponent) n;
-//      return TypesPrinter.printTypeParameters(a.getHead().getGenericTypeParameters().get());
-//    }
-//    // TODO non-component types?
-//    Log.error("non-component types are not yet fully supported for generic-bindings");
-//    return "";
-//  }
+  // public static String printTypeParameters(ArcTypeSymbol symbol) {
+  // if (!symbol.getAstNode().isPresent()) {
+  // // TODO ?!
+  // return "";
+  // }
+  // ASTNode n = symbol.getAstNode().get();
+  // if (n instanceof ASTComponent) {
+  // ASTComponent a = (ASTComponent) n;
+  // return
+  // TypesPrinter.printTypeParameters(a.getHead().getGenericTypeParameters().get());
+  // }
+  // // TODO non-component types?
+  // Log.error("non-component types are not yet fully supported for generic-bindings");
+  // return "";
+  // }
   
   /**
    * TODO replace this method with something from MC and do not store the
@@ -117,15 +120,15 @@ public class TemplateClassHelper {
    * @param symbol
    * @return
    */
-//  public static List<String> getImports(ComponentSymbol symbol) {
-//    // TODO this probably should be implemented somewhere in MC
-//    List<String> statements = new ArrayList<>();
-//    for (ImportStatement is : symbol.getImports()) {
-//      String i = is.getStatement() + (is.isStar() ? ".*" : "");
-//      statements.add(i);
-//    }
-//    return statements;
-//  }
+  // public static List<String> getImports(ComponentSymbol symbol) {
+  // // TODO this probably should be implemented somewhere in MC
+  // List<String> statements = new ArrayList<>();
+  // for (ImportStatement is : symbol.getImports()) {
+  // String i = is.getStatement() + (is.isStar() ? ".*" : "");
+  // statements.add(i);
+  // }
+  // return statements;
+  // }
   
   public static String printParameters(List<ASTParameter> parameters) {
     String ret = "";
@@ -135,6 +138,7 @@ public class TemplateClassHelper {
     if (ret.contains(",")) {
       return ret.substring(0, ret.lastIndexOf(","));
     }
+    
     return ret;
   }
   
@@ -151,8 +155,19 @@ public class TemplateClassHelper {
   
   public static String printSimpleName(String fqn) {
     if (fqn.contains(".")) {
-      return fqn.substring(fqn.lastIndexOf(".")+1);
+      return fqn.substring(fqn.lastIndexOf(".") + 1);
     }
     return fqn;
+  }
+  
+  public static String printParametersAsStringList(List<ASTParameter> parameters) {
+    String ret = "";
+    for (int i = 0; i < parameters.size(); i++) {
+      if (i != parameters.size() - 2 && i != 0) {
+        ret += ", ";
+      }
+      ret += "\"" + parameters.get(i).getName() + "\"";
+    }
+    return ret;
   }
 }

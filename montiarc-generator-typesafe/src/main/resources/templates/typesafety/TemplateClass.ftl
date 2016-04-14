@@ -22,10 +22,10 @@ public abstract class ${classname} <#t>
 
   public static void generateToFile(MyGeneratorEngine generator, Path filePath, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)})
   {
+    generator.createTemplateController("");
+    generator.signature(${helper.printParametersAsStringList(parameters)});
     generator.generate("${fqnTemplateName?replace("\\","/")}", filePath, node<#if parameters?has_content>, </#if>${helper.printParameterNames(parameters)});
   }
-  
-    
   
   public static String generateToString(MyGeneratorEngine generator, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)})
   {

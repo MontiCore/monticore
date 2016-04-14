@@ -14,6 +14,8 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
+import org.antlr.v4.runtime.RecognitionException;
+
 import com.google.common.io.Files;
 
 import de.montiarc.generator.codegen.TemplateClassHelper;
@@ -36,7 +38,6 @@ import de.se_rwth.commons.Names;
  */
 public class TemplateClassGenerator {
   
-  
   public static void generateClassForTemplate(String targetName, Path modelPath,
       File fqnTemplateName, File targetFilepath) {
     Optional<ASTSignature> sig = getSignature(fqnTemplateName);
@@ -52,10 +53,14 @@ public class TemplateClassGenerator {
       qualifiedTargetTemplateName = qualifiedTargetTemplateName.substring(modelPath.toString()
           .length());
       String packageNameWithSeperators = Names.getPathFromFilename(qualifiedTargetTemplateName);
-      String packageNameWithDots = Names.getPackageFromPath(packageNameWithSeperators.substring(1));
+      String packageNameWithDots = "";
+      if (packageNameWithSeperators.length() > 1) {
+         packageNameWithDots = Names.getPackageFromPath(packageNameWithSeperators
+            .substring(1));
+      }
       
       generator.generate("templates.typesafety.TemplateClass",
-          Paths.get(packageNameWithSeperators, targetName + ".java"),node ,
+          Paths.get(packageNameWithSeperators, targetName + ".java"), node,
           packageNameWithDots, qualifiedTargetTemplateName, targetName,
           params, result, helper);
     }
@@ -70,16 +75,25 @@ public class TemplateClassGenerator {
       BufferedReader br = new BufferedReader(fr);
       TemplateContentParser contentParser = new TemplateContentParser();
       TemplateSignatureParser signatureParser = new TemplateSignatureParser();
-      Optional<ASTFTL> oFTL = contentParser.parse(br);
+      Optional<ASTFTL> oFTL = Optional.empty();
+      try {
+        System.err.println("pre parsing");
+        oFTL = contentParser.parse(br);
+        contentParser.setError(false);
+        System.err.println("post parsing");
+      }
+      catch (RecognitionException re) {
+      }
+      
       if (oFTL.isPresent()) {
         ASTFTL ftl = oFTL.get();
         List<String> ftlComments = ftl.getComments();
-        for(String ftlComment : ftlComments){
+        for (String ftlComment : ftlComments) {
           Optional<ASTComment> oComment = signatureParser.parse_String(ftlComment);
-          if(oComment.isPresent()){
+          if (oComment.isPresent()) {
             ASTComment comment = oComment.get();
             ASTSignature signature = comment.getSignature();
-            if(!signature.getParameters().isEmpty()){
+            if (!signature.getParameters().isEmpty()) {
               return Optional.of(signature);
             }
           }
@@ -91,6 +105,5 @@ public class TemplateClassGenerator {
     }
     return Optional.empty();
   }
-  
   
 }
