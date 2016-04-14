@@ -1,7 +1,7 @@
 <#--
 Generates 
   
-@param int $ast @param double $bubu
+@params int $ast, double $bubu
 @result    java.util.List
 -->
 

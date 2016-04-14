@@ -1,10 +1,3 @@
-<#--
-Generates 
-  
-@param int $ast @param double $bubu
-@result    java.util.List
--->
-
 ${tc.signature("symbol", "package", "comments", "modifier", "prefix", "superComponent", "fqCompInterfaceWithTypeParameters", "helper", "timingParadigm", "existsHWC", "formalTypeParameters")}
 <#assign genHelper = helper>
 
@@ -89,7 +82,7 @@ import de.montiarc.generator.datatypes.Port;
         </#list>
       </#if>
     }
-    <#-- I'm a Comment -->
+    
     public void setUp(){
       <#if symbol.isAtomic()>
         <#list symbol.getPorts() as port>

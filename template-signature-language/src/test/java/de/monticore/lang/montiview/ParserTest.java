@@ -74,6 +74,24 @@ public class ParserTest {
     assertEquals(res.get().getResultType().toString(), "java.util.List");
   }
   
+  @Test
+  public void testSignatureCorrectness2() {
+    File fqnTemplateName = new File("src/test/resources/parser/valid/TemplateWithResultWithParams.ftl");
+    ASTSignature signature = parse(fqnTemplateName);
+    List<ASTParameter> params = signature.getParameters();
+    assertEquals(params.get(0).getName(), "$ast");
+    assertEquals(params.get(0).getParamType().toString(), "int");
+    Optional<ASTResult> res = signature.getResult();
+    assertTrue(res.isPresent());
+    assertEquals(res.get().getResultType().toString(), "java.util.List");
+  }
+  
+  @Test
+  public void testNoSignature() {
+    File fqnTemplateName = new File("src/test/resources/parser/valid/TemplateWithoutSignature.ftl");
+    parse(fqnTemplateName);
+  }
+  
   private ASTSignature parse(File fqnTemplateName) {
     FileReader fr;
     ASTSignature signature = null;
