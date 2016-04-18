@@ -895,15 +895,15 @@
   <distributionManagement>
     <repository>
       <id>se-nexus</id>
-      <url>http://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/</url>
+      <url>https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/</url>
     </repository>
     <snapshotRepository>
       <id>se-nexus</id>
-      <url>http://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/</url>
+      <url>https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/</url>
     </snapshotRepository>
     <site>
       <id>se-nexus</id>
-      <url>dav:http://nexus.se.rwth-aachen.de/content/sites/se-sites/monticore/${project.version}/</url>
+      <url>dav:https://nexus.se.rwth-aachen.de/content/sites/se-sites/monticore/${project.version}/</url>
     </site>
   </distributionManagement>
 
@@ -912,13 +912,13 @@
   <repositories>
     <repository>
       <id>se-public</id>
-      <url>http://nexus.se.rwth-aachen.de/content/groups/public</url>
+      <url>https://nexus.se.rwth-aachen.de/content/groups/public</url>
     </repository>
   </repositories>
   <pluginRepositories>
     <pluginRepository>
       <id>se-public</id>
-      <url>http://nexus.se.rwth-aachen.de/content/groups/public</url>
+      <url>https://nexus.se.rwth-aachen.de/content/groups/public</url>
     </pluginRepository>
   </pluginRepositories>
 
