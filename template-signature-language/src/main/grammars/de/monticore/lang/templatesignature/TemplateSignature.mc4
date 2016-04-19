@@ -20,21 +20,19 @@ grammar TemplateSignature {
 
   Signature = comment:CommentText (("@params" (ParamDef || ",")*) | (ParamDecl)*) Result?;
     
-  Text = (Char | WS)+;
-  
-  OuterComment = (Text| EndComment)+;
+  OuterComment = (Word| EndComment)+;
   
   StartComment = "<#--";
   
   EndComment = "-->";
 
-  token Char = ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '$'  |'>' | '<' | '-' | '#' | '@' |','|';'|'.'|'('|')'|'['|']');
+  token Word = ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '$'  |'>' | '<' | '-' | '#' | '@' |','|';'|'.'|'('|')'|'['|']')+;
   
-  Type = Char+;
+  Type = Word+;
 
-  CommentText = Text;
+  CommentText = Word+;
   
-  ParamDef = Type Text;
+  ParamDef = Type name:Word;
   
   ParamDecl = "@param" ParamDef;
   
