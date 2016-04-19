@@ -5,14 +5,41 @@ package de.monticore.lang.templatesignature;
  *
  * @author Jerome Pfeiffer
  */
-grammar TemplateSignature extends de.monticore.literals.Literals, de.monticore.types.Types {
+grammar TemplateSignature {
 
-  Comment = "<#--" Signature "-->";
+  FTL = (Comment |  OuterComment)*;
   
-  Signature = comment:Name*  ("@param" | "@params")? parameters:Parameter* result:Result?;
+    token WS =
+    (' ' | 
+    '\t' |
+     '\r' '\n' |
+    '\r' |
+    '\n' ) :{_channel = HIDDEN;};
   
-  Parameter = ("@param" | ",")? paramType:QualifiedName name:Name;
-  
-  Result = "@result" resultType:QualifiedName;
+  Comment =  StartComment (Signature | StartComment)* EndComment;
+
+  Signature = comment:CommentText (("@params" (ParamDef || ",")*) | (ParamDecl)*) Result?;
     
+  Text = (Char | WS)+;
+  
+  OuterComment = (Text| EndComment)+;
+  
+  StartComment = "<#--";
+  
+  EndComment = "-->";
+
+  token Char = ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '$'  |'>' | '<' | '-' | '#' | '@' |','|';'|'.'|'('|')'|'['|']');
+  
+  Type = Char+;
+
+  CommentText = Text;
+  
+  ParamDef = Type Text;
+  
+  ParamDecl = "@param" ParamDef;
+  
+  Result = "@result" Type;
+  
+
+  
 }
