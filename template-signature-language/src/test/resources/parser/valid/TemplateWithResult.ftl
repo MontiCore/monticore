@@ -1,5 +1,5 @@
 <#--
-Generates 
+This is a template with result
   
 @param int $ast @param double $bubu
 @result    java.util.List

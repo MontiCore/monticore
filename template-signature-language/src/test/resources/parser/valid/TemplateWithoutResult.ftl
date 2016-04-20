@@ -1,8 +1,8 @@
 <#--
-Generates 
+This is a template without result 
   
-@params int $ast, double $bubu
-@result    java.util.List
+@param int $ast 
+@param double $bubu
 -->
 
 ${tc.signature("symbol", "package", "comments", "modifier", "prefix", "superComponent", "fqCompInterfaceWithTypeParameters", "helper", "timingParadigm", "existsHWC", "formalTypeParameters")}
