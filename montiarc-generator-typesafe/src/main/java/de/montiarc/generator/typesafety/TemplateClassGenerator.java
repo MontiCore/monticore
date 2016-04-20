@@ -11,20 +11,18 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.antlr.v4.runtime.RecognitionException;
 
-import com.google.common.io.Files;
-
 import de.montiarc.generator.codegen.TemplateClassHelper;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.lang.templatesignature.templatecontent._ast.ASTFTL;
-import de.monticore.lang.templatesignature.templatecontent._parser.TemplateContentParser;
 import de.monticore.lang.templatesignature.templatesignature._ast.ASTComment;
+import de.monticore.lang.templatesignature.templatesignature._ast.ASTFTL;
 import de.monticore.lang.templatesignature.templatesignature._ast.ASTParameter;
 import de.monticore.lang.templatesignature.templatesignature._ast.ASTResult;
 import de.monticore.lang.templatesignature.templatesignature._ast.ASTSignature;
@@ -41,29 +39,30 @@ public class TemplateClassGenerator {
   public static void generateClassForTemplate(String targetName, Path modelPath,
       File fqnTemplateName, File targetFilepath) {
     Optional<ASTSignature> sig = getSignature(fqnTemplateName);
+    List<ASTParameter> params = new ArrayList<>();
+    Optional<ASTResult> result = Optional.empty();
     if (sig.isPresent()) {
       ASTSignature signature = sig.get();
-      List<ASTParameter> params = signature.getParameters();
-      Optional<ASTResult> result = signature.getResult();
-      final GeneratorSetup setup = new GeneratorSetup(targetFilepath);
-      TemplateClassHelper helper = new TemplateClassHelper();
-      final GeneratorEngine generator = new GeneratorEngine(setup);
-      String qualifiedTargetTemplateName = fqnTemplateName.getPath();
-      ASTNode node = new EmptyNode();
-      qualifiedTargetTemplateName = qualifiedTargetTemplateName.substring(modelPath.toString()
-          .length());
-      String packageNameWithSeperators = Names.getPathFromFilename(qualifiedTargetTemplateName);
-      String packageNameWithDots = "";
-      if (packageNameWithSeperators.length() > 1) {
-         packageNameWithDots = Names.getPackageFromPath(packageNameWithSeperators
-            .substring(1));
-      }
-      
-      generator.generate("templates.typesafety.TemplateClass",
-          Paths.get(packageNameWithSeperators, targetName + ".java"), node,
-          packageNameWithDots, qualifiedTargetTemplateName, targetName,
-          params, result, helper);
+      params = signature.getParameters();
+      result = signature.getResult();
     }
+    final GeneratorSetup setup = new GeneratorSetup(targetFilepath);
+    TemplateClassHelper helper = new TemplateClassHelper();
+    final GeneratorEngine generator = new GeneratorEngine(setup);
+    String qualifiedTargetTemplateName = fqnTemplateName.getPath();
+    ASTNode node = new EmptyNode();
+    qualifiedTargetTemplateName = qualifiedTargetTemplateName.substring(modelPath.toString()
+        .length());
+    String packageNameWithSeperators = Names.getPathFromFilename(qualifiedTargetTemplateName);
+    String packageNameWithDots = "";
+    if (packageNameWithSeperators.length() > 1) {
+      packageNameWithDots = Names.getPackageFromPath(packageNameWithSeperators
+          .substring(1));
+    }
+    generator.generate("templates.typesafety.TemplateClass",
+        Paths.get(packageNameWithSeperators, targetName + ".java"), node,
+        packageNameWithDots, qualifiedTargetTemplateName, targetName,
+        params, result, helper);
     
   }
   
@@ -73,29 +72,22 @@ public class TemplateClassGenerator {
       fr = new FileReader(fqnTemplateName);
       System.out.println(fqnTemplateName.getAbsolutePath());
       BufferedReader br = new BufferedReader(fr);
-      TemplateContentParser contentParser = new TemplateContentParser();
-      TemplateSignatureParser signatureParser = new TemplateSignatureParser();
+      TemplateSignatureParser contentParser = new TemplateSignatureParser();
       Optional<ASTFTL> oFTL = Optional.empty();
       try {
-        System.err.println("pre parsing");
         oFTL = contentParser.parse(br);
         contentParser.setError(false);
-        System.err.println("post parsing");
       }
       catch (RecognitionException re) {
       }
       
       if (oFTL.isPresent()) {
         ASTFTL ftl = oFTL.get();
-        List<String> ftlComments = ftl.getComments();
-        for (String ftlComment : ftlComments) {
-          Optional<ASTComment> oComment = signatureParser.parse_String(ftlComment);
-          if (oComment.isPresent()) {
-            ASTComment comment = oComment.get();
-            ASTSignature signature = comment.getSignature();
-            if (!signature.getParameters().isEmpty()) {
-              return Optional.of(signature);
-            }
+        List<ASTComment> ftlComments = ftl.getComments();
+        for (ASTComment ftlComment : ftlComments) {
+          ASTSignature possibleSig = ftlComment.getSignatures().get(0);
+          if (!possibleSig.getParameters().isEmpty()) {
+            return Optional.of(possibleSig);
           }
         }
       }

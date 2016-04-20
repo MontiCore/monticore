@@ -18,8 +18,6 @@ import de.montiarc.generator.codegen.MyGeneratorEngine;
 public abstract class ${classname} <#t>
 {
 
-  
-
   public static void generateToFile(MyGeneratorEngine generator, Path filePath, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)})
   {
     generator.createTemplateController("");
@@ -48,8 +46,8 @@ public abstract class ${classname} <#t>
     ${classname}.instance = instance;
   }
   
-  <#assign simpleName = helper.printSimpleName(result.get().getResultType())>
-  public static ${result.get().getResultType()} execute(MyGeneratorEngine generator, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)})
+  <#assign simpleName = helper.printSimpleName(result.get().getType())>
+  public static ${result.get().getType()} execute(MyGeneratorEngine generator, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)})
   {
     if (!initialized) {
       Log.error("No instance set!");
@@ -57,7 +55,7 @@ public abstract class ${classname} <#t>
     return instance.create${simpleName}(generateToString(generator, node<#if parameters?has_content>, </#if>${helper.printParameterNames(parameters)}));
   }
   
-  public abstract ${result.get().getResultType()} create${simpleName}(String fileContent);
+  public abstract ${result.get().getType()} create${simpleName}(String fileContent);
   
   
   </#if>

@@ -2,7 +2,7 @@
 Generates 
   
 @param int $ast @param double $bubu
-@result    java.util.List
+@result    java.util.List<String>
 -->
 
 ${tc.signature("symbol", "package", "comments", "modifier", "prefix", "superComponent", "fqCompInterfaceWithTypeParameters", "helper", "timingParadigm", "existsHWC", "formalTypeParameters")}

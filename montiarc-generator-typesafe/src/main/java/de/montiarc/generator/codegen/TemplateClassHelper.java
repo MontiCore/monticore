@@ -6,7 +6,6 @@
 package de.montiarc.generator.codegen;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import de.monticore.ast.Comment;
@@ -133,7 +132,7 @@ public class TemplateClassHelper {
   public static String printParameters(List<ASTParameter> parameters) {
     String ret = "";
     for (ASTParameter p : parameters) {
-      ret += p.getParamType() + " " + p.getName() + ", ";
+      ret += p.getType() + " " + p.getName() + ", ";
     }
     if (ret.contains(",")) {
       return ret.substring(0, ret.lastIndexOf(","));
@@ -154,10 +153,14 @@ public class TemplateClassHelper {
   }
   
   public static String printSimpleName(String fqn) {
+    String ret = fqn;
     if (fqn.contains(".")) {
-      return fqn.substring(fqn.lastIndexOf(".") + 1);
+      ret = fqn.substring(fqn.lastIndexOf(".") + 1);
     }
-    return fqn;
+    if(ret.contains("<")){
+      ret = ret.substring(0,ret.indexOf("<"));
+    }
+    return ret;
   }
   
   public static String printParametersAsStringList(List<ASTParameter> parameters) {

@@ -18,7 +18,7 @@ grammar TemplateSignature {
   
   Comment =  StartComment (Signature | StartComment)* EndComment;
 
-  Signature = comment:CommentText ParamDecl* Result?;
+  Signature = comment:CommentText Parameter* Result?;
     
   OuterComment = (Word| EndComment)+;
   
@@ -28,15 +28,11 @@ grammar TemplateSignature {
 
   token Word = ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '$'  |'>' | '<' | '-' | '#' | '@' |','|';'|'.'|'('|')'|'['|']' | '{' | '}' | '"' | '/' | '=' | '?' | '+' | '-' | '!' | '*')+;
   
-  Type = Word+;
-
   CommentText = Word+;
   
-  ParamDef = Type name:Word;
+  Parameter = "@param" type:Word name:Word;
   
-  ParamDecl = "@param" ParamDef;
-  
-  Result = "@result" Type;
+  Result = "@result" type:Word;
   
 
   
