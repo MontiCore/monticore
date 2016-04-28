@@ -89,7 +89,7 @@ public abstract class ${classname} <#t>
   *
   * @param generator
   * @param node
-  * <#if parameters?has_content>
+  <#if parameters?has_content>
   <#list parameters as parameter>
   * @param ${parameter.getName()};
   </#list>

@@ -33,13 +33,6 @@ public class MyGeneratorEngine extends GeneratorEngine{
     super(generatorSetup);
   }
   
-  /**
-   * 
-   * @param templateName
-   * @param node
-   * @param templateArguments
-   * @return
-   */
   public String generateToString(String templateName, ASTNode node,
       Object... templateArguments) {
     MyTemplateController tc = (MyTemplateController)templateControllerFactory.create(templateControllerConfig, "");

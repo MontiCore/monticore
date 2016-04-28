@@ -1,10 +1,13 @@
 <#--
 Generates 
   
-@param int $ast @param double $bubu
+@param int $ast 
+@param double $bubu
 @result    java.util.List<String>
 -->
 
+${tc.params("int $ast", "double $bubu")}
+${tc.result("ASTPort")}
 ${tc.signature("symbol", "package", "comments", "modifier", "prefix", "superComponent", "fqCompInterfaceWithTypeParameters", "helper", "timingParadigm", "existsHWC", "formalTypeParameters")}
 <#assign genHelper = helper>
 
