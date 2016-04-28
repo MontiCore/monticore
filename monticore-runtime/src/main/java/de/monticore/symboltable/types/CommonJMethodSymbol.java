@@ -63,7 +63,7 @@ public abstract class CommonJMethodSymbol <U extends JTypeSymbol, T extends JTyp
 
   @Override
   public List<S> getParameters() {
-    final Collection<S> resolvedAttributes = getSpannedScope().resolveLocally(CommonJAttributeSymbol.KIND);
+    final Collection<S> resolvedAttributes = getSpannedScope().resolveLocally(S.KIND);
 
     final List<S> parameters = sortSymbolsByPosition(resolvedAttributes.stream().filter(S::isParameter).collect(Collectors.toList()));
 
