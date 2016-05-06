@@ -7,8 +7,6 @@ package ${package};
 
 
 import java.nio.file.Path;
-
-import de.se_rwth.commons.logging.Log;
 import de.monticore.ast.ASTNode;
 import de.montiarc.generator.codegen.MyGeneratorEngine;
 
@@ -55,37 +53,9 @@ public abstract class ${classname} <#t>
     return generator.generateToString("${fqnTemplateName?replace("\\","/")}", node<#if parameters?has_content>, </#if>${helper.printParameterNames(parameters)});
   }
   
-  
   <#if result.isPresent()>
-  private static ${classname} instance;
-  
-  private static boolean initialized;
-  
   /**
-  * Sets an instance of ${classname}. If not set before the method 
-  * {@link #execute(MyGeneratorEngine generator, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)}) works after calling this method.
-  *
-  * @param instance
-  */
-  public static void setInstance(${classname} instance){
-    initialized = true;
-    ${classname}.instance = instance;
-  }
-  
-  /**
-  * Initializes TemplateClass with instance. {@link #execute(MyGeneratorEngine generator, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)}) works after calling this method.
-  *
-  * @param instance
-  */  
-  public static void init(${classname} instance){
-    initialized = true;
-    ${classname}.instance = instance;
-  }
-  
-  /**
-  * Static call of method {@link #execute(MyGeneratorEngine generator, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)})}. 
-  * Only works if either {@link #init(${classname} instance)} 
-  * or {@link #setInstance(${classname} instance)} was called before.
+  * Executes the generator and returns the template result with help of the passed function.
   *
   * @param generator
   * @param node
@@ -93,22 +63,15 @@ public abstract class ${classname} <#t>
   <#list parameters as parameter>
   * @param ${parameter.getName()};
   </#list>
+  @param function
   </#if>
   * @result ${result.get().getResult()}
   */  
   <#assign simpleName = helper.printSimpleName(result.get().getResult())>
-  public static ${result.get().getResult()} execute(MyGeneratorEngine generator, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)})
+  public static ${result.get().getResult()} execute(MyGeneratorEngine generator, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)}, java.util.function.Function<String, ${result.get().getResult()}> function)
   {
-    if (!initialized) {
-      Log.error("No instance set!");
-    }
-    return instance.create${simpleName}(generateToString(generator, node<#if parameters?has_content>, </#if>${helper.printParameterNames(parameters)}));
+    return function.apply(generateToString(generator, node<#if parameters?has_content>, </#if>${helper.printParameterNames(parameters)}));
   }
-  
-  
-  public abstract ${result.get().getResult()} create${simpleName}(String fileContent);
-  
-  
   </#if>
   
 

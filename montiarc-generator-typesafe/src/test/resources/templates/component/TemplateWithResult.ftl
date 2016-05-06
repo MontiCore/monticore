@@ -6,8 +6,8 @@ Generates
 @result    java.util.List<String>
 -->
 
-${tc.params("int $ast", "double $bubu")}
-${tc.result("ASTPort")}
+${tc.params("int einInt", "double bubu")}
+${tc.result("Integer")}
 ${tc.signature("symbol", "package", "comments", "modifier", "prefix", "superComponent", "fqCompInterfaceWithTypeParameters", "helper", "timingParadigm", "existsHWC", "formalTypeParameters")}
 <#assign genHelper = helper>
 
