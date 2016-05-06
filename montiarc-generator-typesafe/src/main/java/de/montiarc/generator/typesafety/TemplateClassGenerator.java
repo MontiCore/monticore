@@ -21,10 +21,9 @@ import de.montiarc.generator.codegen.TemplateClassHelper;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.lang.templatesignature.templatesignature._ast.ASTComment;
 import de.monticore.lang.templatesignature.templatesignature._ast.ASTFTL;
 import de.monticore.lang.templatesignature.templatesignature._ast.ASTParameter;
-import de.monticore.lang.templatesignature.templatesignature._ast.ASTResult;
+import de.monticore.lang.templatesignature.templatesignature._ast.ASTResultDecl;
 import de.monticore.lang.templatesignature.templatesignature._ast.ASTSignature;
 import de.monticore.lang.templatesignature.templatesignature._parser.TemplateSignatureParser;
 import de.se_rwth.commons.Names;
@@ -36,15 +35,18 @@ import de.se_rwth.commons.Names;
  */
 public class TemplateClassGenerator {
   
+  private static final String[] CHARS_TO_REPLACE = {",", " ", "\"","(", ")"}; 
+  
   public static void generateClassForTemplate(String targetName, Path modelPath,
       File fqnTemplateName, File targetFilepath) {
     Optional<ASTSignature> sig = getSignature(fqnTemplateName);
     List<ASTParameter> params = new ArrayList<>();
-    Optional<ASTResult> result = Optional.empty();
+    Optional<ASTResultDecl> result = Optional.empty();
     if (sig.isPresent()) {
       ASTSignature signature = sig.get();
-      params = signature.getParameters();
-      result = signature.getResult();
+      params = cleanParams(signature.getParamDecl().getParameters());
+      
+      result = cleanResult(signature.getResultDecl());
     }
     final GeneratorSetup setup = new GeneratorSetup(targetFilepath);
     TemplateClassHelper helper = new TemplateClassHelper();
@@ -66,6 +68,20 @@ public class TemplateClassGenerator {
     
   }
   
+  /**
+   * TODO: Write me!
+   * @param resultDecl
+   * @return
+   */
+  private static Optional<ASTResultDecl> cleanResult(Optional<ASTResultDecl> resultDecl) {
+    if(!resultDecl.isPresent()){
+      return resultDecl;
+    }
+    ASTResultDecl decl = resultDecl.get();
+    decl.setResult(clean(resultDecl.get().getResult()));
+    return Optional.of(decl);
+  }
+
   private static Optional<ASTSignature> getSignature(File fqnTemplateName) {
     FileReader fr;
     try {
@@ -83,11 +99,10 @@ public class TemplateClassGenerator {
       
       if (oFTL.isPresent()) {
         ASTFTL ftl = oFTL.get();
-        List<ASTComment> ftlComments = ftl.getComments();
-        for (ASTComment ftlComment : ftlComments) {
-          ASTSignature possibleSig = ftlComment.getSignatures().get(0);
-          if (!possibleSig.getParameters().isEmpty()) {
-            return Optional.of(possibleSig);
+        List<ASTSignature> signatures = ftl.getSignatures();
+        for(ASTSignature s : signatures){
+          if(!s.getParamDecl().getParameters().isEmpty()){
+            return Optional.of(s);
           }
         }
       }
@@ -98,4 +113,41 @@ public class TemplateClassGenerator {
     return Optional.empty();
   }
   
+  private static List<ASTParameter> cleanParams(List<ASTParameter> dirtyParams) {
+    List<ASTParameter> cleanOnes = new ArrayList<>();
+    for(ASTParameter p : dirtyParams){
+      cleanOnes.add(cleanParam(p));
+    }
+    return cleanOnes;
+  }
+  
+
+  /**
+   * TODO: Write me!
+   * @param p
+   * @return
+   */
+  private static ASTParameter cleanParam(ASTParameter p) {
+    ASTParameter cleanOne = p;
+    String type = clean(p.getType());
+    String name = clean(p.getName());
+    cleanOne.setType(type);
+    cleanOne.setName(name);
+    return cleanOne;
+  }
+
+  /**
+   * TODO: Write me!
+   * @param type
+   * @return
+   */
+  private static String clean(String s) {
+    String clean = s;
+    for(String charToReplace : CHARS_TO_REPLACE){
+      if(clean.contains(charToReplace)){
+        clean = clean.replace(charToReplace, "");
+      }
+    }
+    return clean;
+  }
 }

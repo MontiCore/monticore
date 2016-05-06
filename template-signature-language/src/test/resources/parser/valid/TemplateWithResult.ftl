@@ -7,6 +7,8 @@ This is a template with result
 -->
 
 ${tc.signature("symbol", "package", "comments", "modifier", "prefix", "superComponent", "fqCompInterfaceWithTypeParameters", "helper", "timingParadigm", "existsHWC", "formalTypeParameters")}
+${tc.params("Integer hello", "Double world")}
+${tc.result("result")}
 <#assign genHelper = helper>
 
 <#-- Copyright -->
@@ -34,7 +36,7 @@ import de.montiarc.generator.datatypes.Port;
     protected Port<${helper.printType(port.getTypeReference())}> ${port.getName()};
     
     <#if port.isIncoming()>
-    public void set${portNameCap}(Port<${helper.printType(port.getTypeReference())}> ${port.getName()}) {
+    public void set ${portNameCap} (Port<${helper.printType(port.getTypeReference())}> ${port.getName()}) {
       this.${port.getName()} = ${port.getName()};
     }
     

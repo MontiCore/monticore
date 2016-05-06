@@ -46,6 +46,14 @@ public class MyGeneratorEngine extends GeneratorEngine{
     }
   }
   
+  public void params(String ... params){
+    
+  }
+  
+  public void result(String result){
+    
+  }
+  
   public void createTemplateController(String templateName){
     tc = Optional.of((MyTemplateController)templateControllerFactory.create(templateControllerConfig, templateName));
   }

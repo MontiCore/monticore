@@ -57,6 +57,13 @@ public class GroovyScriptTest {
     doGenerate();
   }
   
+  @Test
+  public void test() {
+    String s = "(param)";
+    System.out.println(s);
+    s = s.replace("(","");
+    System.out.println(s);
+  }
 
 
   private void doGenerate() {

@@ -94,10 +94,10 @@ public abstract class ${classname} <#t>
   * @param ${parameter.getName()};
   </#list>
   </#if>
-  * @result ${result.get().getType()}
+  * @result ${result.get().getResult()}
   */  
-  <#assign simpleName = helper.printSimpleName(result.get().getType())>
-  public static ${result.get().getType()} execute(MyGeneratorEngine generator, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)})
+  <#assign simpleName = helper.printSimpleName(result.get().getResult())>
+  public static ${result.get().getResult()} execute(MyGeneratorEngine generator, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)})
   {
     if (!initialized) {
       Log.error("No instance set!");
@@ -106,7 +106,7 @@ public abstract class ${classname} <#t>
   }
   
   
-  public abstract ${result.get().getType()} create${simpleName}(String fileContent);
+  public abstract ${result.get().getResult()} create${simpleName}(String fileContent);
   
   
   </#if>

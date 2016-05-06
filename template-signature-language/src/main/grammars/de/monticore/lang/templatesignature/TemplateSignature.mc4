@@ -7,7 +7,7 @@ package de.monticore.lang.templatesignature;
  */
 grammar TemplateSignature {
 
-  FTL = (Comment |  OuterComment)*;
+  FTL = (Signature |  TemplateCode)*;
   
     token WS =
     (' ' | 
@@ -16,24 +16,23 @@ grammar TemplateSignature {
     '\r' |
     '\n' ) :{_channel = HIDDEN;};
   
-  Comment =  StartComment (Signature | StartComment)* EndComment;
+  Signature = ParamDecl ResultDecl?;
+  
+  ParamDecl = StartParam (Parameter)+ EndDecl;
+  
+  Parameter = type:Word name:Word;
+  
+  ResultDecl = StartResult result:Word EndDecl;
 
-  Signature = comment:CommentText Parameter* Result?;
-    
-  OuterComment = (Word| EndComment)+;
+  TemplateCode = (Word|"}"|"{")+;
   
-  StartComment = "<#--";
+  StartParam = "${tc.params";
   
-  EndComment = "-->";
-
-  token Word = ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '$'  |'>' | '<' | '-' | '#' | '@' |','|';'|'.'|'('|')'|'['|']' | '{' | '}' | '"' | '/' | '=' | '?' | '+' | '-' | '!' | '*')+;
+  StartResult = "${tc.result";
   
-  CommentText = Word+;
+  EndDecl = "}";
   
-  Parameter = "@param" type:Word name:Word;
-  
-  Result = "@result" type:Word;
-  
-
+  token Word = ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '$'  |'>' | '<' | '-' | '#' | '@' |','|';'|'.'|'('|')'|'['|']' | '"' | '/' | '=' | '?' | '+' | '-' | '\'' | '!' | '*')+;
   
 }
+
