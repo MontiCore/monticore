@@ -36,16 +36,6 @@ public class MyTemplateController extends TemplateController {
   }
   
   /**
-   * @see de.monticore.generating.templateengine.TemplateController#processTemplate(java.lang.String,
-   * de.monticore.ast.ASTNode, java.util.List)
-   */
-  @Override
-  protected String processTemplate(String templateName, ASTNode astNode,
-      List<Object> passedArguments) {
-    return super.processTemplate(templateName, astNode, passedArguments);
-  }
-  
-  /**
    * Compares types of the passed params with the arguments passed in the
    * template call. Additionally signatures the names of the parameters. Method
    * is important for inter Template calls and for users who do not use the

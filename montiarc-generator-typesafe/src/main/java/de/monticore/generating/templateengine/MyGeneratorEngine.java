@@ -16,15 +16,11 @@ import de.monticore.generating.GeneratorSetup;
 /**
  * TODO: Write me!
  *
- * @author  (last commit) $Author$
- * @version $Revision$,
- *          $Date$
- * @since   TODO: add version number
- *
+ * @author (last commit) $Author$
+ * @version $Revision$, $Date$
+ * @since TODO: add version number
  */
-public class MyGeneratorEngine extends GeneratorEngine{
-  
-  Optional<MyTemplateController> tc = Optional.empty();
+public class MyGeneratorEngine extends GeneratorEngine {
   
   /**
    * Constructor for de.montiarc.generator.codegen.MyGeneratorEngine
@@ -35,38 +31,21 @@ public class MyGeneratorEngine extends GeneratorEngine{
   
   public String generateToString(String templateName, ASTNode node,
       Object... templateArguments) {
-    MyTemplateController tc = (MyTemplateController)templateControllerFactory.create(templateControllerConfig, "");
+    MyTemplateController tc = new MyTemplateControllerFactory().create(templateControllerConfig,
+        templateName);
     return tc.processTemplate(templateName, node, Arrays.asList(templateArguments));
   }
   
-  
-  public void signature(String ... params){
-    if(tc.isPresent()){
-      tc.get().signature(params);
-    }
-  }
-  
-  
-  public void createTemplateController(String templateName){
-    tc = Optional.of(new MyTemplateController(templateControllerConfig, templateName));
-    tc.get().setTemplateControllerFactory(new MyTemplateControllerFactory());
-  }
-  
   /**
-   * @see de.monticore.generating.GeneratorEngine#generate(java.lang.String, java.nio.file.Path, de.monticore.ast.ASTNode, java.lang.Object[])
+   * @see de.monticore.generating.GeneratorEngine#generate(java.lang.String,
+   * java.nio.file.Path, de.monticore.ast.ASTNode, java.lang.Object[])
    */
   @Override
   public void generate(String templateName, Path filePath, ASTNode node,
       Object... templateArguments) {
-    if(tc.isPresent()){
-      tc.get().writeArgs(templateName, filePath, node, Arrays.asList(templateArguments));
-    }else{
-      try {
-        throw new InstantiationException("TemplateController is not initialized! Please call createTemplateController first");
-      }
-      catch (InstantiationException e) {
-        e.printStackTrace();
-      }
-    }
+    MyTemplateController tc = new MyTemplateControllerFactory().create(templateControllerConfig,
+        templateName);
+    tc.setTemplateControllerFactory(new MyTemplateControllerFactory());
+    tc.writeArgs(templateName, filePath, node, Arrays.asList(templateArguments));
   }
 }

@@ -71,7 +71,6 @@ public class TemplateClassGenerator {
     final GeneratorSetup setup = new GeneratorSetup(targetFilepath);
     TemplateClassHelper helper = new TemplateClassHelper();
     final MyGeneratorEngine generator = new MyGeneratorEngine(setup);
-    generator.createTemplateController(fqnTemplateName);
     ASTNode node = new EmptyNode();
     String packageNameWithSeperators = Names.getPathFromFilename(fqnTemplateName);
     String packageNameWithDots = "";
