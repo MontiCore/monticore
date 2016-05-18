@@ -3,7 +3,7 @@
  *
  * http://www.se-rwth.de/
  */
-package de.montiarc.generator.codegen;
+package de.monticore.generating.templateengine;
 
 import java.util.List;
 
@@ -40,6 +40,8 @@ public class MyTemplateController extends TemplateController{
     return super.processTemplate(templateName, astNode, passedArguments);
   }
   
+  public void params(String ... params){
+  }
   
   
 }

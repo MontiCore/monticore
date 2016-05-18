@@ -8,7 +8,9 @@ package de.monticore.generator.typesafety.codegen;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.Optional;
 
+import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
@@ -16,6 +18,9 @@ import com.google.common.io.Resources;
 
 import de.montiarc.generator.TemplateClassGeneratorConfiguration;
 import de.montiarc.generator.TemplateClassGeneratorScript;
+import de.monticore.java.javadsl._ast.ASTCompilationUnit;
+import de.monticore.java.javadsl._ast.ASTTypeDeclaration;
+import de.monticore.java.javadsl._parser.JavaDSLParser;
 import de.se_rwth.commons.cli.CLIArguments;
 import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
@@ -59,10 +64,20 @@ public class GroovyScriptTest {
   
   @Test
   public void test() {
-    String s = "(param)";
-    System.out.println(s);
-    s = s.replace("(","");
-    System.out.println(s);
+    JavaDSLParser p = new JavaDSLParser();
+    try {
+     Optional<ASTCompilationUnit> s=  p.parse_String("java.util.List l");
+     if(s.isPresent()){
+       ASTCompilationUnit c = s.get();
+       List<ASTTypeDeclaration> types = c.getTypeDeclarations();
+       System.out.println(types);
+     }
+      
+    }
+    catch (RecognitionException | IOException e) {
+      e.printStackTrace();
+    }
+    
   }
 
 

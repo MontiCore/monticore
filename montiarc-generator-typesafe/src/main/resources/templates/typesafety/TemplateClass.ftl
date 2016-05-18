@@ -65,10 +65,10 @@ public abstract class ${classname} <#t>
   </#list>
   @param function
   </#if>
-  * @result ${result.get().getResult()}
+  * @result ${result.get()}
   */  
-  <#assign simpleName = helper.printSimpleName(result.get().getResult())>
-  public static ${result.get().getResult()} execute(MyGeneratorEngine generator, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)}, java.util.function.Function<String, ${result.get().getResult()}> function)
+  <#assign simpleName = helper.printSimpleName(result.get())>
+  public static ${result.get()} execute(MyGeneratorEngine generator, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)}, java.util.function.Function<String, ${result.get()}> function)
   {
     return function.apply(generateToString(generator, node<#if parameters?has_content>, </#if>${helper.printParameterNames(parameters)}));
   }

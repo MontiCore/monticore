@@ -9,10 +9,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import de.monticore.ast.Comment;
-import de.monticore.lang.templatesignature.templatesignature._ast.ASTParameter;
 import de.monticore.symboltable.types.TypeSymbol;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
 import de.monticore.symboltable.types.references.TypeReference;
+import freemarker.core.Argument;
 
 /**
  * Common helper methods for generator.
@@ -129,10 +129,10 @@ public class TemplateClassHelper {
   // return statements;
   // }
   
-  public static String printParameters(List<ASTParameter> parameters) {
+  public static String printParameters(List<Argument> parameters) {
     String ret = "";
-    for (ASTParameter p : parameters) {
-      ret += p.getType() + " " + p.getName() + ", ";
+    for (Argument p : parameters) {
+      ret += p.getType()+ " "+ p.getName() + ", ";
     }
     if (ret.contains(",")) {
       return ret.substring(0, ret.lastIndexOf(","));
@@ -141,10 +141,10 @@ public class TemplateClassHelper {
     return ret;
   }
   
-  public static String printParameterNames(List<ASTParameter> parameters) {
+  public static String printParameterNames(List<Argument> parameters) {
     String ret = "";
-    for (ASTParameter p : parameters) {
-      ret += p.getName() + ", ";
+    for (Argument a : parameters) {
+      ret += a.getName() + ", ";
     }
     if (ret.contains(",")) {
       return ret.substring(0, ret.lastIndexOf(","));
@@ -163,7 +163,7 @@ public class TemplateClassHelper {
     return ret;
   }
   
-  public static String printParametersAsStringList(List<ASTParameter> parameters) {
+  public static String printParametersAsStringList(List<Argument> parameters) {
     String ret = "";
     for (int i = 0; i < parameters.size(); i++) {
       if (i != parameters.size() - 2 && i != 0) {

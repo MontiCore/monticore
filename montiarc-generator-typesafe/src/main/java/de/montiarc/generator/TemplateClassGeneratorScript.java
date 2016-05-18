@@ -78,10 +78,10 @@ public class TemplateClassGeneratorScript extends Script implements GroovyRunner
    * TODO: Write me!
    * @param targetName Classname of the target TemplateClass
    * @param modelPath Path of templates e.g. src/main/resources
-   * @param fqnTemplateName full qualified name of template e.g. src/test/resources/templates/component/Component.ftl
+   * @param fqnTemplateName full qualified name of template e.g. /templates/component/Component.ftl
    * @param targetFilepath Path where the TemplateClass should be generated to e.g. target/generated-source/
    */
-  public void generate(String targetName, Path modelPath, File fqnTemplateName,
+  public void generate(String targetName, Path modelPath, String fqnTemplateName,
       File targetFilepath) {
     TemplateClassGenerator.generateClassForTemplate(targetName, modelPath, fqnTemplateName, targetFilepath);
   }
@@ -96,8 +96,8 @@ public class TemplateClassGeneratorScript extends Script implements GroovyRunner
     for(String template : foundTemplates){
       System.out.println("[TypesafetyScript] generates model: "+ template);
       String simpleName = Names.getSimpleName(template);
-      String fileName = modelPath.getAbsolutePath()+File.separator+Names.getPathFromQualifiedName(template)+File.separator+simpleName+".ftl";
-      generate(simpleName+"TemplateClass", Paths.get(modelPath.getAbsolutePath()), new File(fileName), targetFilepath);
+      String fileName = Names.getPathFromQualifiedName(template)+File.separator+simpleName+".ftl";
+      generate(simpleName+"TemplateClass", Paths.get(modelPath.getAbsolutePath()), fileName, targetFilepath);
     }
   }
   
