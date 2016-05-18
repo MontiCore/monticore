@@ -5,6 +5,8 @@
  */
 package de.monticore.generator.typesafety.codegen;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -21,6 +23,10 @@ import de.montiarc.generator.TemplateClassGeneratorScript;
 import de.monticore.java.javadsl._ast.ASTCompilationUnit;
 import de.monticore.java.javadsl._ast.ASTTypeDeclaration;
 import de.monticore.java.javadsl._parser.JavaDSLParser;
+import de.monticore.types.types._ast.ASTQualifiedName;
+import de.monticore.types.types._ast.ASTTypeArgument;
+import de.monticore.types.types._ast.ASTTypeVariableDeclaration;
+import de.monticore.types.types._parser.TypesParser;
 import de.se_rwth.commons.cli.CLIArguments;
 import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
@@ -55,31 +61,10 @@ public class GroovyScriptTest {
   
   protected static final String LOG = "GeneratorTest";
   
-
-  
   @Test
   public void testMultipleModels(){
     doGenerate();
   }
-  
-  @Test
-  public void test() {
-    JavaDSLParser p = new JavaDSLParser();
-    try {
-     Optional<ASTCompilationUnit> s=  p.parse_String("java.util.List l");
-     if(s.isPresent()){
-       ASTCompilationUnit c = s.get();
-       List<ASTTypeDeclaration> types = c.getTypeDeclarations();
-       System.out.println(types);
-     }
-      
-    }
-    catch (RecognitionException | IOException e) {
-      e.printStackTrace();
-    }
-    
-  }
-
 
   private void doGenerate() {
     Log.info("Runs AST generator test" , LOG);

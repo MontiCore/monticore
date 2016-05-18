@@ -12,7 +12,7 @@ package freemarker.core;
  * @version $Revision$, $Date$
  * @since TODO: add version number
  */
-public class Argument {
+public class Parameter {
   
   String type;
   
@@ -24,7 +24,7 @@ public class Argument {
    * @param type
    * @param name
    */
-  public Argument(String type, String name) {
+  public Parameter(String type, String name) {
     super();
     this.type = type;
     this.name = name;

@@ -55,13 +55,13 @@ public class FMHelper {
     return arguments;
   }
   
-  public static List<Argument> getParams(List<String> params){
-    List<Argument> ret = new ArrayList<>();
+  public static List<Parameter> getParams(List<String> params){
+    List<Parameter> ret = new ArrayList<>();
     for(String s: params){
       s = s.replace("\"", "");
       String type = s.substring(0,s.indexOf(" "));
       String name = s.substring(s.indexOf(" ")+1);
-      Argument a = new Argument(type, name);
+      Parameter a = new Parameter(type, name);
       ret.add(a);
     }
     return ret;

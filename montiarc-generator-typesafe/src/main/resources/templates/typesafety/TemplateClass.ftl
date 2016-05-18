@@ -1,9 +1,12 @@
-${tc.signature("package", "fqnTemplateName", "classname", "parameters", "result", "helper")}
+${tc.params("String package", "String fqnTemplateName", "String classname", "java.util.List<Parameter> parameters",
+"String result", "de.montiarc.generator.codegen.TemplateClassHelper helper")}
+${tc.result("Integer")}
 
 <#-- Copyright -->
 ${tc.defineHookPoint("JavaCopyright")}
 
 package ${package};
+
 
 
 import java.nio.file.Path;

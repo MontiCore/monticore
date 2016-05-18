@@ -12,7 +12,7 @@ import de.monticore.ast.Comment;
 import de.monticore.symboltable.types.TypeSymbol;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
 import de.monticore.symboltable.types.references.TypeReference;
-import freemarker.core.Argument;
+import freemarker.core.Parameter;
 
 /**
  * Common helper methods for generator.
@@ -129,9 +129,9 @@ public class TemplateClassHelper {
   // return statements;
   // }
   
-  public static String printParameters(List<Argument> parameters) {
+  public static String printParameters(List<Parameter> parameters) {
     String ret = "";
-    for (Argument p : parameters) {
+    for (Parameter p : parameters) {
       ret += p.getType()+ " "+ p.getName() + ", ";
     }
     if (ret.contains(",")) {
@@ -141,9 +141,9 @@ public class TemplateClassHelper {
     return ret;
   }
   
-  public static String printParameterNames(List<Argument> parameters) {
+  public static String printParameterNames(List<Parameter> parameters) {
     String ret = "";
-    for (Argument a : parameters) {
+    for (Parameter a : parameters) {
       ret += a.getName() + ", ";
     }
     if (ret.contains(",")) {
@@ -163,7 +163,7 @@ public class TemplateClassHelper {
     return ret;
   }
   
-  public static String printParametersAsStringList(List<Argument> parameters) {
+  public static String printParametersAsStringList(List<Parameter> parameters) {
     String ret = "";
     for (int i = 0; i < parameters.size(); i++) {
       if (i != parameters.size() - 2 && i != 0) {

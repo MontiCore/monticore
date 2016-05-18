@@ -48,7 +48,8 @@ public class MyGeneratorEngine extends GeneratorEngine{
   
   
   public void createTemplateController(String templateName){
-    tc = Optional.of((MyTemplateController)templateControllerFactory.create(templateControllerConfig, templateName));
+    tc = Optional.of(new MyTemplateController(templateControllerConfig, templateName));
+    tc.get().setTemplateControllerFactory(new MyTemplateControllerFactory());
   }
   
   /**
