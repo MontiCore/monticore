@@ -1,4 +1,4 @@
-${tc.params("String package", "String fqnTemplateName", "String classname", "java.util.List<Parameter> parameters",
+${tc.params("String package", "String fqnTemplateName", "String classname", "java.util.List<freemarker.core.Parameter> parameters",
 "String result", "de.montiarc.generator.codegen.TemplateClassHelper helper")}
 ${tc.result("Integer")}
 
@@ -11,7 +11,7 @@ package ${package};
 
 import java.nio.file.Path;
 import de.monticore.ast.ASTNode;
-import de.montiarc.generator.codegen.MyGeneratorEngine;
+import de.monticore.generating.templateengine.MyGeneratorEngine;
 
 /**
  * @date ${helper.getTimeNow()}<br>

@@ -9,6 +9,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import de.monticore.ast.ASTNode;
 
@@ -46,20 +48,42 @@ public class MyTemplateController extends TemplateController {
   public void params(String... params) {
     checkArgument(!parametrized,
         "0xA5297 Template '" + getTemplatename() + "': tried to invoke params() twice");
-    List<Object> types = getArguments();
+    List<Object> arguments = getArguments();
     List<String> names = getSignature();
-    checkArgument(params.length == types.size(),
+    checkArgument(params.length == arguments.size(),
         "0xA5298 Template '" + getTemplatename() + "': Parameter size (#" +
             params.length +
-            ") and number of arguments (#" + types.size() + ") mismatch.");
+            ") and number of arguments (#" + arguments.size() + ") mismatch.");
     List<String> toSignature = new ArrayList<String>();
-    for (int i = 0; i < types.size(); i++) {
-      Object argumentType = types.get(i);
+    for (int i = 0; i < arguments.size(); i++) {
+      Object argument = arguments.get(i);
       String parameter = params[i];
       String paramType = parameter.substring(0, parameter.indexOf(" "));
+      if(paramType.contains("<")){
+        paramType = paramType.substring(0, paramType.indexOf("<"));
+      }
       String paramName = parameter.substring(parameter.indexOf(" ") + 1);
-      
+      Class argumentClass = argument.getClass();
       // TODO instanceof things
+//      try {
+//        if (paramType.contains(".")) {
+//          checkArgument(argumentClass.isAssignableFrom(Class.forName(paramType)),
+//              "0xA5299 Template '" + getTemplatename() + "': Argument type (" +
+//                  argument +
+//                  ") and type of parameter in params (" + paramType + ") mismatch.");
+//        }
+//        else {
+//          if (!isAssignableWithJavaLibrary(paramType)) {
+//            throw new IllegalArgumentException("0xA5299 Template '" + getTemplatename()
+//                + "': Argument type (" +
+//                argument +
+//                ") and type of parameter in params (" + paramType + ") mismatch.");
+//          }
+//        }
+//      }
+//      catch (ClassNotFoundException e) {
+//        e.printStackTrace();
+//      }
       
       // Case 1: No Signature -> we have to signature the paramnames
       if (names.isEmpty()) {
@@ -71,7 +95,7 @@ public class MyTemplateController extends TemplateController {
       else {
         String argumentName = names.get(i);
         checkArgument(argumentName.equals(paramName),
-            "0xA5298 Template '" + getTemplatename() + "': Parameter name (" +
+            "0xA5300 Template '" + getTemplatename() + "': Parameter name (" +
                 paramName +
                 ") and name of parameter in signature (" + argumentName + ") mismatch.");
       }
@@ -83,6 +107,26 @@ public class MyTemplateController extends TemplateController {
     parametrized = true;
   }
   
+//  /**
+//   * TODO: Write me!
+//   * 
+//   * @param argumentClass
+//   * @return
+//   */
+//  private boolean isAssignableWithJavaLibrary(String paramType) {
+//    String[] classNamesToCheck = { "List", "int", "Map", "double", "Integer",
+//        "Double", "String", "Long", "Short", "double", "short", "Set",
+//        "long", "Character", "char", "Float", "float", "boolean",
+//        "Boolean"};
+//    for (String c : classNamesToCheck) {
+//      if (paramType.contains(c)) {
+//        return true;
+//      }
+//    }
+//    
+//    return false;
+//  }
+  
   /**
    * Checks whether there are more than one result definitions.
    * 
@@ -90,7 +134,7 @@ public class MyTemplateController extends TemplateController {
    */
   public void result(String result) {
     checkArgument(!resultized,
-        "0xA5297 Template '" + getTemplatename() + "': tried to invoke result() twice");
+        "0xA5301 Template '" + getTemplatename() + "': tried to invoke result() twice");
     resultized = true;
     
   }
