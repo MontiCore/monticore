@@ -9,8 +9,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import de.monticore.ast.ASTNode;
 
@@ -35,6 +33,15 @@ public class MyTemplateController extends TemplateController {
    */
   public MyTemplateController(TemplateControllerConfiguration tcConfig, String templatename) {
     super(tcConfig, templatename);
+  }
+  
+  /**
+   * @see de.monticore.generating.templateengine.TemplateController#processTemplate(java.lang.String, de.monticore.ast.ASTNode, java.util.List)
+   */
+  @Override
+  public String processTemplate(String templateName, ASTNode astNode,
+      List<Object> passedArguments) {
+    return super.processTemplate(templateName, astNode, passedArguments);
   }
   
   /**

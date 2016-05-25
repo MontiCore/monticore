@@ -3,15 +3,14 @@
  *
  * http://www.se-rwth.de/
  */
-package de.monticore.generating.templateengine;
+package de.monticore.generating;
 
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Optional;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.generating.GeneratorEngine;
-import de.monticore.generating.GeneratorSetup;
+import de.monticore.generating.templateengine.MyTemplateController;
+import de.monticore.generating.templateengine.MyTemplateControllerFactory;
 
 /**
  * TODO: Write me!

@@ -10,21 +10,11 @@ import groovy.lang.Script;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
-import com.google.common.collect.Sets;
-
-import de.montiarc.generator.codegen.TemplateClassGenerator;
-import de.monticore.ModelingLanguageFamily;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.io.paths.ModelPath;
-import de.monticore.java.lang.JavaDSLLanguage;
-import de.monticore.symboltable.GlobalScope;
+import de.monticore.templateclassgenerator.codegen.TemplateClassGenerator;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.groovy.GroovyInterpreter;

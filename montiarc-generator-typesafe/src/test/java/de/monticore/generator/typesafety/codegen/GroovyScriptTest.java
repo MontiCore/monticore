@@ -5,31 +5,17 @@
  */
 package de.monticore.generator.typesafety.codegen;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
-import java.util.Optional;
 
-import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
-
-import templates.component.TemplateWithResultTemplateClass;
-import templates.component.TemplateWithoutResultTemplateClass;
 
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 
-import de.monticore.java.javadsl._ast.ASTCompilationUnit;
-import de.monticore.java.javadsl._ast.ASTTypeDeclaration;
-import de.monticore.java.javadsl._parser.JavaDSLParser;
 import de.monticore.templateclassgenerator.TemplateClassGeneratorConfiguration;
 import de.monticore.templateclassgenerator.TemplateClassGeneratorScript;
-import de.monticore.types.types._ast.ASTQualifiedName;
-import de.monticore.types.types._ast.ASTTypeArgument;
-import de.monticore.types.types._ast.ASTTypeVariableDeclaration;
-import de.monticore.types.types._parser.TypesParser;
 import de.se_rwth.commons.cli.CLIArguments;
 import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
@@ -74,7 +60,7 @@ public class GroovyScriptTest {
     ClassLoader l = GroovyScriptTest.class.getClassLoader();
     try {
       String script = Resources.asCharSource(
-          l.getResource("de/montiarc/generator/montiarc.groovy"),
+          l.getResource("de/monticore/templateclassgenerator/montiarc.groovy"),
           Charset.forName("UTF-8")).read();
       
       Configuration configuration =

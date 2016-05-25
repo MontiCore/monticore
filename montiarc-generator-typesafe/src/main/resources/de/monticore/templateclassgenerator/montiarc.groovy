@@ -1,4 +1,4 @@
-package de.montiarc.generator
+package de.monticore.templateclassgenerator
 
 // M1: configuration object "_configuration" prepared externally
 info("--------------------------------")

@@ -17,7 +17,7 @@ import java.util.Optional;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.MyGeneratorEngine;
+import de.monticore.generating.MyGeneratorEngine;
 import de.monticore.templateclassgenerator.EmptyNode;
 import de.se_rwth.commons.Names;
 import freemarker.cache.FileTemplateLoader;

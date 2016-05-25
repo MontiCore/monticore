@@ -5,6 +5,9 @@
  */
 package de.monticore.generating.templateengine;
 
+import de.monticore.generating.templateengine.ITemplateControllerFactory;
+import de.monticore.generating.templateengine.TemplateControllerConfiguration;
+
 /**
  * TODO: Write me!
  *
