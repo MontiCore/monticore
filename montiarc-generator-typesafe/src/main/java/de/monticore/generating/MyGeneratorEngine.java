@@ -11,6 +11,7 @@ import java.util.Arrays;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.MyTemplateController;
 import de.monticore.generating.templateengine.MyTemplateControllerFactory;
+import de.monticore.generating.templateengine.TemplateControllerConfiguration;
 
 /**
  * TODO: Write me!
@@ -21,16 +22,19 @@ import de.monticore.generating.templateengine.MyTemplateControllerFactory;
  */
 public class MyGeneratorEngine extends GeneratorEngine {
   
+  private TemplateControllerConfiguration myTemplateControllerConfig;
+  
   /**
    * Constructor for de.montiarc.generator.codegen.MyGeneratorEngine
    */
   public MyGeneratorEngine(GeneratorSetup generatorSetup) {
     super(generatorSetup);
+    myTemplateControllerConfig = createTemplateControllerConfiguration(generatorSetup, null, null);
   }
   
   public String generateToString(String templateName, ASTNode node,
       Object... templateArguments) {
-    MyTemplateController tc = new MyTemplateControllerFactory().create(templateControllerConfig,
+    MyTemplateController tc = new MyTemplateControllerFactory().create(myTemplateControllerConfig,
         templateName);
     return tc.processTemplate(templateName, node, Arrays.asList(templateArguments));
   }
@@ -42,7 +46,7 @@ public class MyGeneratorEngine extends GeneratorEngine {
   @Override
   public void generate(String templateName, Path filePath, ASTNode node,
       Object... templateArguments) {
-    MyTemplateController tc = new MyTemplateControllerFactory().create(templateControllerConfig,
+    MyTemplateController tc = new MyTemplateControllerFactory().create(myTemplateControllerConfig,
         templateName);
     tc.setTemplateControllerFactory(new MyTemplateControllerFactory());
     tc.writeArgs(templateName, filePath, node, Arrays.asList(templateArguments));

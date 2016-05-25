@@ -11,7 +11,7 @@ package ${package};
 
 import java.nio.file.Path;
 import de.monticore.ast.ASTNode;
-import de.monticore.generating.templateengine.MyGeneratorEngine;
+import de.monticore.generating.MyGeneratorEngine;
 
 /**
  * @date ${helper.getTimeNow()}<br>
