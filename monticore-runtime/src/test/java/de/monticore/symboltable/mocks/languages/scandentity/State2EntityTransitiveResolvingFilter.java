@@ -24,7 +24,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.mocks.languages.entity.EntitySymbol;
 import de.monticore.symboltable.mocks.languages.entity.EntitySymbolKind;
-import de.monticore.symboltable.mocks.languages.statechart.StateKind;
 import de.monticore.symboltable.mocks.languages.statechart.StateSymbol;
 import de.monticore.symboltable.resolving.TransitiveAdaptedResolvingFilter;
 
@@ -38,7 +37,7 @@ import de.monticore.symboltable.resolving.TransitiveAdaptedResolvingFilter;
 public class State2EntityTransitiveResolvingFilter extends TransitiveAdaptedResolvingFilter<EntitySymbol> {
 
   public State2EntityTransitiveResolvingFilter() {
-    super(StateKind.KIND, EntitySymbol.class, EntitySymbolKind.KIND);
+    super(StateSymbol.KIND, EntitySymbol.class, EntitySymbolKind.KIND);
   }
 
   @Override

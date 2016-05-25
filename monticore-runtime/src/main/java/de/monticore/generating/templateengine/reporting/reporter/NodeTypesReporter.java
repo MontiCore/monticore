@@ -24,17 +24,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import de.monticore.ast.ASTNode;
-import de.se_rwth.commons.SourcePosition;
-
 import com.google.common.collect.Maps;
 
+import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.reporting.commons.AReporter;
 import de.monticore.generating.templateengine.reporting.commons.Layouter;
 import de.monticore.generating.templateengine.reporting.commons.MapUtil;
 import de.monticore.generating.templateengine.reporting.commons.ObjectCountVisitor;
 import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
-import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
+import de.se_rwth.commons.SourcePosition;
 
 /**
  * TODO: Write me!
@@ -47,18 +45,14 @@ public class NodeTypesReporter extends AReporter {
   
   final static String SIMPLE_FILE_NAME = "12_TypesOfNodes";
   
-  private ReportingRepository repository;
-  
   private Map<String, Integer> nodeTypeCount = Maps.newTreeMap();
   
   private Map<String, Integer> nodeTypeCountPos = Maps.newTreeMap();
   
-  public NodeTypesReporter(String outputDir, String modelName,
-      ReportingRepository repository) {
+  public NodeTypesReporter(String outputDir, String modelName) {
     super(outputDir + File.separator + ReportingConstants.REPORTING_DIR
         + File.separator + modelName, SIMPLE_FILE_NAME,
         ReportingConstants.REPORT_FILE_EXTENSION);
-    this.repository = repository;
   }
   
   @Override

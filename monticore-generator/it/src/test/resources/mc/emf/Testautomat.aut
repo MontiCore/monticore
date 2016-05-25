@@ -1,0 +1,17 @@
+automaton Testautomat {
+  
+   state a  <<final>>;
+	
+   c -x> d;
+   
+   b -y> a;
+   
+   d -y> d;
+	
+   state c <<initial>>;
+	
+   state d; 
+   
+   state b;
+		
+}

@@ -27,7 +27,6 @@ public abstract class MCLexer extends Lexer {
   
   public MCLexer(CharStream input) {
     super(input);
-    // TODO Auto-generated constructor stub
   }
 
   public void newline() {}

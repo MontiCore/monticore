@@ -44,7 +44,7 @@ package ${genHelper.getAstPackage()};
 <#-- Imports hook --> 
 ${tc.defineHookPoint("<Block>?EnumContent:addImports")}
 
-<#assign interfaces = ""><#--TODO GV: enable if use the next version of cd4analysis (1.3.3-SNAPSHOT) = ast.printInterfaces()-->
+<#assign interfaces = ast.printInterfaces()>
 
 public enum ${ast.getName()}<#if interfaces?has_content> implements ${interfaces}</#if> {
   <#assign count = 0>
@@ -68,5 +68,7 @@ public enum ${ast.getName()}<#if interfaces?has_content> implements ${interfaces
     return intValue;
   }
   
-
+<#list ast.getCDMethods() as method>
+  ${tc.includeArgs("ast.ClassMethod", [method, ast])}
+</#list>
 }

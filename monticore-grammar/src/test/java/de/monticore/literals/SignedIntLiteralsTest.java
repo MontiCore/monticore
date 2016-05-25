@@ -25,7 +25,6 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
-import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
 
 import de.monticore.literals.literals._ast.ASTSignedIntLiteral;
@@ -36,7 +35,7 @@ import de.monticore.literals.literals._ast.ASTSignedLiteral;
  */
 public class SignedIntLiteralsTest {
   
-  private void checkIntLiteral(int i, String s) throws RecognitionException, IOException {
+  private void checkIntLiteral(int i, String s) throws IOException {
     ASTSignedLiteral lit = LiteralsTestHelper.getInstance().parseSignedLiteral(s);
     assertTrue(lit instanceof ASTSignedIntLiteral);
     assertEquals(i, ((ASTSignedIntLiteral) lit).getValue());
@@ -63,7 +62,7 @@ public class SignedIntLiteralsTest {
       checkIntLiteral(076543210, "076543210");
       checkIntLiteral(-076543210, "-076543210");
     }
-    catch (Exception e) {
+    catch (IOException e) {
       fail(e.getMessage());
     }
   }

@@ -25,7 +25,6 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
-import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
 
 import de.monticore.literals.literals._ast.ASTFloatLiteral;
@@ -36,7 +35,7 @@ import de.monticore.literals.literals._ast.ASTLiteral;
  */
 public class FloatLiteralsTest {
   
-  private void checkFloatLiteral(float f, String s) throws RecognitionException, IOException {
+  private void checkFloatLiteral(float f, String s) throws IOException {
     ASTLiteral lit = LiteralsTestHelper.getInstance().parseLiteral(s);
     assertTrue(lit instanceof ASTFloatLiteral);
     assertEquals(f, ((ASTFloatLiteral) lit).getValue(), 0);
@@ -91,7 +90,7 @@ public class FloatLiteralsTest {
       checkFloatLiteral(3.14f, "3.14f");
       checkFloatLiteral(6.022137e+23f, "6.022137e+23f");
     }
-    catch (Exception e)
+    catch (IOException e)
     {
       fail(e.getMessage());
     }

@@ -61,6 +61,8 @@ public interface SymbolTableCreator {
 
   void setLinkBetweenSymbolAndNode(Symbol symbol, ASTNode astNode);
 
+  void setLinkBetweenSpannedScopeAndNode(MutableScope scope, ASTNode astNode);
+
   /**
    * @deprecated use {@link #addToScopeAndLinkWithNode(Symbol, ASTNode)} instead
    */

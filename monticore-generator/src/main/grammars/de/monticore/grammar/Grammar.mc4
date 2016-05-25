@@ -56,8 +56,8 @@ component grammar Grammar extends de.monticore.literals.Literals {
   @attribute InterfaceProd List of all interface productions of this grammar
   @attribute AbstractProd List of all abstract productions of this grammar
   @attribute ASTRule List of all ast rules of this grammar
-  @attribute AssociationBlock List of all associations blocks of this grammars
   @attribute Concepts List of additional concepts
+  @attribute StartRule defines the start rule 
   */
   MCGrammar =
     ("package" package:(Name& || ".")+ ";")? 
@@ -84,13 +84,14 @@ component grammar Grammar extends de.monticore.literals.Literals {
            ASTRule
          |
            Concept
-         | StartRule
+         | 
+           StartRule
          )*
       "}" ;
  
   MCImportStatement = "import" importList:(Name& || ".")+ ("." star:["*"])? ";" ;
 
-  // One OptionBlock only 
+  // One OptionBlock and one StartRule only 
   ast MCGrammar =
     ASTGrammarOption max=1
     ASTStartRule max=1 ;
@@ -134,6 +135,10 @@ component grammar Grammar extends de.monticore.literals.Literals {
   AntlrOption =
     Name  ("=" value:Name |"=" value:String)? ; 
     
+  /** The start rule should be the rule defining the whole model.
+  If there is no start rule the first rule of the grammar is the start rule.
+  @attribute ruleReference name of the start rule
+  */ 
   StartRule = 
     "start" RuleReference ";";
     
@@ -204,15 +209,12 @@ component grammar Grammar extends de.monticore.literals.Literals {
     "external" Name SymbolDefinition? GenericType? ";";
  
  
-  /** An ASTInterfaceRule represents an explicit definition for an interface production
+  /** An ASTInterfaceProd represents an explicit definition for an interface production
   and may overwrite the standard generated rule which is mentioned in the productions
   @attribute external True if this interface is programmed manually
   @attribute name Name of the production
-  @attribute Parameter List of production parameters
   @attribute superInterfaceRule Super interfaces
   @attribute aSTSuperInterface Super interfaces abstract syntax only
-  @attribute overrideStandard True if interfaces is relevant
-  @attribute interfaces Ordered list of productions that are used for parsing
   */
   InterfaceProd implements ParserProd =
     "interface" Name SymbolDefinition?
@@ -224,16 +226,12 @@ component grammar Grammar extends de.monticore.literals.Literals {
     ";";
  
  
-  /** An ASTInterfaceRule represents an explicit definition for an interface rule and
-  overwrites the standard generated rule which is mentioned in the rules
+  /** An ASTAbstractprod represents an abstract production in a context free grammar
   @attribute name Name of the production
-  @attribute Parameter List of production parameters
-  @attribute superInterfaceRule Super interfaces
-  @attribute aSTSuperInterface Super interfaces abstract syntax only
   @attribute superRule Super productions
-  @attribute aSTSuperClass Super productions abstract syntax only
-  @attribute overrideStandard True if interfaces is relevant
-  @attribute interfaces Ordered list of productions that are used for parsing
+  @attribute superInterfaceRule Super interfaces 
+  @attribute aSTSuperClass Super productions (abstract syntax only)
+  @attribute aSTSuperInterface Super interfaces  (abstract syntax only)
   */
   AbstractProd implements Prod =
     "abstract" Name SymbolDefinition?
@@ -250,14 +248,11 @@ component grammar Grammar extends de.monticore.literals.Literals {
      
   /** A rule represents a rule (production) in a context free grammar.
   @attribute name Name of the rule
-  @attribute type Type this rule contributes to
   @attribute superrule Rule reference to a super rule
   @attribute superInterfaceRule Rule reference to a super interface rule
-  @attribute aSTSuperClass Rule reference to a super rule used for abstract syntax only
-  @attribute aSTSuperInterfacerule Rule reference to a super rule used for abstract
-                                   syntax only
-  @attribute superInterfaceRule Rule reference to a super interface rule
-  @attribute ruleParameters List of formal Parameters handed to this rule
+  @attribute aSTSuperClass Rule reference to a super rule (used for abstract syntax only)
+  @attribute aSTSuperInterfacerule Rule reference to a super rule (used for abstract
+                                   syntax only)
   @attribute action Action executed priot to the rule body
   @attribute alts List of alternatives representing the body of the rule
   */
@@ -316,6 +311,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
      
   /** An alternative represents an alternative in a rule or block and contains
   (Rule)Components
+  @attribute rightAssoc The alternative is right associative (the default is left)
   @attribute Components List of the rule components of this alternative
   */ 
   Alt =
@@ -448,15 +444,13 @@ component grammar Grammar extends de.monticore.literals.Literals {
   // AST
  
  
-  /** A ASTClassgenWithinGrammar additional information for the class generation
-  process
-  @attribute
+  /** An ASTRule contains additional information for the class generation
+  process 
   @attribute type Type this rule refers to
   @attribute aSTSuperInterface Super interfaces abstract syntax only
   @attribute aSTSuperClass Super productions abstract syntax only
   @attribute methods Methods to be added to the class generation
   @attribute attributeInAST Attributes to be added to the class generation
-  @attribute method Sons to be added to the generation
   */
   ASTRule =
      "ast" type:Name
@@ -476,9 +470,9 @@ component grammar Grammar extends de.monticore.literals.Literals {
   @attribute protected True if method is protected
   @attribute final True if method is final
   @attribute static True if method is static
-  @attribute return Qualified name of the return type of the method
+  @attribute returnType Qualified name of the return type of the method
   @attribute name Name of the method
-  @attribute parameter List of the parameters
+  @attribute methodParameter List of the parameters
   @attribute exceptions Lit of the thrown exceptions
   @attribute body Body of the Method (mostly a JavaLazy-Object)
   */
@@ -501,11 +495,9 @@ component grammar Grammar extends de.monticore.literals.Literals {
     type:GenericType Name;
  
  
-  /** New Sons (=another ASTClass or String) or changed type (changed on difference to
-  the automatic inference rules) in ASTClass
-  @attribute name Name of the son
+  /** An attribute to be added to a certain ASTClass
+  @attribute name Name of the attribute
   @attribute genericType Name of the referring type
-  @attribute Iterate True if more than one son can be added (=list)
   @attribute unordered Defines whether a collection is ordered or unordered
   @attribute card Cardinality
   @attribute derived True indicates that the attribute is derived as specified in body

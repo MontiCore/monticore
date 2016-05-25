@@ -20,21 +20,19 @@
 package mc.feature.abc;
 
 import static org.junit.Assert.assertEquals;
-import groovyjarjarantlr.TokenStreamException;
 
 import java.io.IOException;
 import java.io.StringReader;
 
+import org.junit.Test;
+
 import mc.GeneratorIntegrationsTest;
 import mc.feature.abc.realabc._parser.RealABCParser;
-
-import org.antlr.v4.runtime.RecognitionException;
-import org.junit.Test;
 
 public class EmbedTest extends GeneratorIntegrationsTest {
   
   @Test
-  public void test() throws RecognitionException, TokenStreamException, IOException {
+  public void test() throws IOException {
     
     RealABCParser p = parse("a b c");
     
@@ -42,7 +40,7 @@ public class EmbedTest extends GeneratorIntegrationsTest {
   }
   
   @Test
-  public void testb() throws RecognitionException, TokenStreamException, IOException {
+  public void testb() throws IOException {
     
     RealABCParser p = parse("a b");
     
@@ -50,7 +48,7 @@ public class EmbedTest extends GeneratorIntegrationsTest {
   }
   
   @Test
-  public void testc() throws RecognitionException, TokenStreamException, IOException {
+  public void testc() throws IOException {
     
     RealABCParser p = parse("a a a b b b c c c");
     
@@ -58,14 +56,14 @@ public class EmbedTest extends GeneratorIntegrationsTest {
   }
   
   @Test
-  public void testd() throws RecognitionException, TokenStreamException, IOException {
+  public void testd() throws IOException {
     
     RealABCParser p = parse("a b c c");
     
     assertEquals(false, p.hasErrors());
   }
   
-  private RealABCParser parse(String in) throws RecognitionException, TokenStreamException, IOException {
+  private RealABCParser parse(String in) throws IOException {
     RealABCParser parser = new  RealABCParser();
     parser.parseS(new StringReader(in));
 

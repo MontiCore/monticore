@@ -23,42 +23,19 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.Optional;
 
 import org.junit.Test;
 
 import de.monticore.generating.templateengine.reporting.commons.ASTNodeIdentHelper;
-import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.ResolverConfiguration;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.Symbol;
+import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
+import de.monticore.prettyprint.IndentPrinter;
 import mc.GeneratorIntegrationsTest;
 import mc.examples.automaton.automaton._ast.ASTAutomaton;
 import mc.examples.automaton.automaton._od.Automaton2OD;
 import mc.examples.automaton.automaton._parser.AutomatonParser;
-import mc.examples.automaton.automaton._symboltable.AutomatonLanguage;
-import mc.examples.automaton.automaton._symboltable.AutomatonSymbol;
-import mc.examples.automaton.automaton._symboltable.AutomatonSymbolTableCreator;
 
 public class TestAutomaton extends GeneratorIntegrationsTest {
-  
-  private Scope createSymTab(ASTAutomaton node) {
-    final AutomatonLanguage language = new AutomatonLanguage();
-    final ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
-    resolverConfiguration.addTopScopeResolvers(language.getResolvers());
-    
-    final ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/"));
-    
-    GlobalScope globalScope = new GlobalScope(modelPath, language,
-        resolverConfiguration);
-    assertTrue(language.getSymbolTableCreator(resolverConfiguration, globalScope).isPresent());
-    AutomatonSymbolTableCreator creator = language
-        .getSymbolTableCreator(resolverConfiguration, globalScope).get();
-    return creator.createFromAST(node);
-  }
-  
   
   private ASTAutomaton parse() throws IOException {
     AutomatonParser parser = new AutomatonParser();
@@ -70,18 +47,19 @@ public class TestAutomaton extends GeneratorIntegrationsTest {
   }
   
 
-  private void printOD(ASTAutomaton ast, Scope scope, String symbolName) {
-    Optional<Symbol> symbol = scope.resolve(symbolName, AutomatonSymbol.KIND);
-    Automaton2OD odCreator = new Automaton2OD(symbol.get(), new ASTNodeIdentHelper());
-    String actual = odCreator.printObjectDiagram(ast);
+  private void printOD(ASTAutomaton ast, String symbolName) {
+    ReportingRepository reporting = new ReportingRepository(new ASTNodeIdentHelper());
+    IndentPrinter printer = new IndentPrinter();
+    Automaton2OD odCreator = new Automaton2OD(printer, reporting);
+    odCreator.printObjectDiagram(symbolName, ast);
     // TODO Check the output?
+    assertTrue(printer.getContent().length()>0);
   }
   
   @Test
   public void test() throws IOException {
     ASTAutomaton ast = parse();
-    Scope scope = createSymTab(ast);
-    printOD(ast, scope, "Testautomat");
+    printOD(ast, "Testautomat");
   }
   
 }

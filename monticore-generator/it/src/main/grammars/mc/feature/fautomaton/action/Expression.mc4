@@ -1,0 +1,22 @@
+package mc.feature.fautomaton.action;
+
+
+grammar Expression extends mc.common.Basics {
+
+	token NUMBER = ('1'..'9')('0'..'9')*;
+	
+	interface Expression; // = IncreaseExpression | Assignment | DecreaseExpression;
+	ast Expression = Varname:Name ;
+	
+	interface Value; 
+	ast Value = A:NUMBER;
+	
+	IncreaseExpression implements Expression = varname:Name "++";
+	
+	DecreaseExpression implements Expression = varname:Name "--";
+		
+	Assignment implements Expression = varname:Name "=" (rHS:Name | value:NUMBER );
+	
+	ComplexAssigment extends Assignment implements Value= a:NUMBER ;
+    ast ComplexAssigment = Bds:java.util.Vector;
+}

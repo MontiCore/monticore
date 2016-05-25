@@ -37,7 +37,7 @@ import mc.feature.featuredsl._parser.FeatureDSLParser;
 public class CommentTest extends GeneratorIntegrationsTest {
   
   @Test
-  public void testConstants() throws org.antlr.v4.runtime.RecognitionException, IOException  {
+  public void testConstants() throws IOException  {
     StringReader s = new StringReader(
         "// Test \n /*Second*/ automaton a { // First Constant 1\n constants public ;// First Constant 2\n /*Second Constant*/ constants +; constants private; spices1 garlic pepper;	spices2 none;}");
         

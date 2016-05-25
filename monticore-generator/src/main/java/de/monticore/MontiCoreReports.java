@@ -97,14 +97,15 @@ public class MontiCoreReports implements ReportManagerFactory {
     NodeTreeReporter nodeTree = new NodeTreeReporter(this.outputDirectory, modelName, repository);
     NodeTreeDecoratedReporter nodeTreeDecorated = new NodeTreeDecoratedReporter(
         this.outputDirectory, modelName, repository);
-    NodeTypesReporter nodeTypes = new NodeTypesReporter(this.outputDirectory, modelName, repository);
+    NodeTypesReporter nodeTypes = new NodeTypesReporter(this.outputDirectory, modelName);
     SymbolTableReporter symbolTable = new SymbolTableReporter(this.outputDirectory, modelName);
     TransformationReporter transformations = new TransformationReporter(this.outputDirectory,
         modelName, repository);
     ArtifactGmlReporter artifactGml = new ArtifactGmlReporter(this.outputDirectory, modelName);
     ArtifactGVReporter artifactGV = new ArtifactGVReporter(this.outputDirectory, modelName);
     InputOutputFilesReporter inputOutput = new InputOutputFilesReporter(this.outputDirectory);
-    
+    ODReporter objDiagram = new ODReporter(this.outputDirectory, modelName, repository);
+
     reports.addReportEventHandler(summary); // 01_Summary
     reports.addReportEventHandler(generated); // 02_GeneratedFiles
     reports.addReportEventHandler(handwritten); // 03_HandwrittenCodeFiles
@@ -122,6 +123,7 @@ public class MontiCoreReports implements ReportManagerFactory {
     reports.addReportEventHandler(artifactGml); // 15_ArtifactGml
     reports.addReportEventHandler(artifactGV); // 16_ArtifactGv
     reports.addReportEventHandler(inputOutput); // 17_InputOutputFiles
+    reports.addReportEventHandler(objDiagram); // 18_ObjectDiagram
     
     return reports;
   }

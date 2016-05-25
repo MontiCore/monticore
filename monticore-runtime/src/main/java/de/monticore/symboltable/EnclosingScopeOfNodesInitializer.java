@@ -19,13 +19,17 @@
 
 package de.monticore.symboltable;
 
-import de.monticore.visitor.CommonVisitor;
-import de.monticore.ast.ASTNode;
-
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+import de.monticore.ast.ASTNode;
+import de.monticore.visitor.CommonVisitor;
+
 /**
+ * Sets the enclosing scope of all AST nodes, if not already set.
+ * Uses a stack-based approach in order to access information of
+ * parent nodes
+ *
  * @author Pedram Mir Seyed Nazari
  */
 public class EnclosingScopeOfNodesInitializer implements CommonVisitor {

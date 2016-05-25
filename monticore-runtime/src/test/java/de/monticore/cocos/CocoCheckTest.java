@@ -24,10 +24,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import de.monticore.cocos.helper.Assert;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.mocks.languages.entity.EntitySymbol;
@@ -37,6 +33,9 @@ import de.monticore.symboltable.mocks.languages.entity.cocos.UniquePropertyNames
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class CocoCheckTest {
   
@@ -101,7 +100,6 @@ public class CocoCheckTest {
   }
   
   private void setVariableResolver(EntitySymbol clazz) {
-    ((MutableScope) clazz.getSpannedScope()).addResolver(CommonResolvingFilter.create
-        (PropertySymbol.class, PropertySymbol.KIND));
+    ((MutableScope) clazz.getSpannedScope()).addResolver(CommonResolvingFilter.create(PropertySymbol.KIND));
   }
 }

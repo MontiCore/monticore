@@ -22,6 +22,7 @@ package de.monticore.symboltable.references;
 import java.util.Optional;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 
 /**
@@ -62,5 +63,10 @@ public interface SymbolReference<T extends Symbol> {
    * @return true, if the referenced symbol is loaded
    */
   boolean isReferencedSymbolLoaded();
+
+  /**
+   * @return the enclosing scope of the reference itself
+   */
+  Scope getEnclosingScope();
 
 }

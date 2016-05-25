@@ -109,11 +109,6 @@ public class MCExternalTypeSymbolReference extends MCExternalTypeSymbol
   }
 
   @Override
-  public String getListImplementation() {
-    return getReferencedSymbol().getListImplementation();
-  }
-
-  @Override
   public int compareTo(MCTypeSymbol otherType) {
     return getReferencedSymbol().compareTo(otherType);
   }

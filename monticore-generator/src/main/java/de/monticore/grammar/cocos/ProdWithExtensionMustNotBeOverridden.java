@@ -20,6 +20,7 @@
 package de.monticore.grammar.cocos;
 
 import java.util.Map;
+import java.util.Map.Entry;
 
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTProdCoCo;
@@ -52,11 +53,13 @@ public class ProdWithExtensionMustNotBeOverridden implements GrammarASTProdCoCo 
         break;
       }
     }
-    if(!isOverriding) return;
+    if(!isOverriding) {
+      return;
+    }
 
     boolean extensionFound = false;
-    entryLoop: for(Map.Entry entry : grammarSymbol.getRulesWithInherited().entrySet()){
-      MCRuleSymbol rs = (MCRuleSymbol) entry.getValue();
+    entryLoop: for(Entry<String, MCRuleSymbol> entry : grammarSymbol.getRulesWithInherited().entrySet()){
+      MCRuleSymbol rs = entry.getValue();
       for(MCTypeSymbol typeSymbol : rs.getType().getAllSuperclasses()){
         if (a.getName().equals(typeSymbol.getName())) {
           extensionFound = true;

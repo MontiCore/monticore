@@ -21,6 +21,7 @@ package de.monticore.generating.templateengine.reporting.reporter;
 
 import java.io.File;
 import java.util.LinkedHashSet;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
@@ -79,9 +80,9 @@ public class TemplatesReporter extends AReporter {
   private void writeUsedTemplates() {
     writeLine("========================================================== Used Templates");
     writeLine("#Calls:   Template Name");
-    for (String key : templateCount.keySet()) {
-      String countString = templateCount.get(key) + "x";
-      writeLine(countString + getIndentAfterCount(countString) + key);
+    for (Entry<String, Integer> entry : templateCount.entrySet()) {
+      String countString = entry.getValue() + "x";
+      writeLine(countString + getIndentAfterCount(countString) + entry.getKey());
     }
   }
   
@@ -97,9 +98,9 @@ public class TemplatesReporter extends AReporter {
   private void writeUsedUSTemplates() {
     writeLine("========================================================== Used USTemplates");
     writeLine("#Calls:   Template Name");
-    for (String key : hwTemplateCount.keySet()) {
-      String countString = hwTemplateCount.get(key) + "x";
-      writeLine(countString + getIndentAfterCount(countString) + key);
+    for (Entry<String, Integer> entry : hwTemplateCount.entrySet()) {
+      String countString = entry.getValue() + "x";
+      writeLine(countString + getIndentAfterCount(countString) + entry.getKey());
     }
   }
   

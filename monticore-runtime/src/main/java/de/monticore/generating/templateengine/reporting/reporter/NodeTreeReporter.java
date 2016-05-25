@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import de.monticore.ast.ASTNode;
 
@@ -204,8 +205,8 @@ public class NodeTreeReporter extends AReporter {
     // this is a decoration of the tree at the lineend
     Map<String, String> endLineDecoration = Maps.newHashMap();
     
-    for (String s : nodeVisits.keySet()) {
-      endLineDecoration.put(s, "(" + nodeVisits.get(s) + "x)");
+    for (Entry<String, Integer> entry : nodeVisits.entrySet()) {
+      endLineDecoration.put(entry.getKey(), "(" + entry.getValue() + "x)");
     }
     
     TreePrintVisitor tpv = new TreePrintVisitor(repository,

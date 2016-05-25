@@ -19,14 +19,12 @@
 
 package de.monticore.symboltable.mocks.languages.entity;
 
-import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.types.references.CommonJTypeReference;
 
 public class EntitySymbolReference extends CommonJTypeReference<EntitySymbol> {
 
-  public EntitySymbolReference(final String referencedSymbolName, final SymbolKind referencedSymbolKind,
-      final Scope definingScopeOfReference) {
-    super(referencedSymbolName, referencedSymbolKind, definingScopeOfReference);
+  public EntitySymbolReference(final String referencedSymbolName, final Scope definingScopeOfReference) {
+    super(referencedSymbolName, EntitySymbol.KIND, definingScopeOfReference);
   }
 }

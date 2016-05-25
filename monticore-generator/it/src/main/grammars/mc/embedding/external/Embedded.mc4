@@ -1,6 +1,6 @@
 package mc.embedding.external;
 
-grammar Embedded extends de.monticore.lexicals.Lexicals {
+grammar Embedded extends mc.grammar.lexicals.Lexicals {
 
    Text@! = "text" Name;
 

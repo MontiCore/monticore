@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
-import org.antlr.v4.runtime.RecognitionException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -45,7 +44,7 @@ public class ExpressionTest extends GeneratorIntegrationsTest {
     Log.enableFailQuick(false);
   }
   
-  public Optional<ASTExpr> parse(String input) throws RecognitionException, IOException {
+  public Optional<ASTExpr> parse(String input) throws IOException {
     ExpressionParser parser = new ExpressionParser();
     parser.setParserTarget(ParserExecution.EOF);
     Optional<ASTExpr> res = parser.parseExpr(new StringReader(input));

@@ -21,6 +21,7 @@ package de.monticore.symboltable;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.modifiers.AccessModifier;
@@ -33,18 +34,19 @@ import de.monticore.symboltable.resolving.ResolvingInfo;
 public interface MutableScope extends Scope {
   // TODO PN DOC
 
+  /**
+   *
+   * @deprecated
+   */
+  @Deprecated
   <T extends Symbol> Optional<T> resolve(ResolvingInfo resolvingInfo, String name,
       SymbolKind kind, AccessModifier modifier);
 
-  @Deprecated
-  <T extends Symbol> Optional<T> resolve(ResolvingInfo resolvingInfo, String name, SymbolKind kind);
+  <T extends Symbol> Collection<T> resolveDownMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier, Predicate<Symbol> predicate);
 
-  @Deprecated
-  <T extends Symbol> Optional<T> resolveDown(ResolvingInfo resolvingInfo, String name, SymbolKind kind);
+  <T extends Symbol> Collection<T> resolveMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier);
 
-  <T extends Symbol> Collection<T> resolveDownMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind);
-
-  <T extends Symbol> Collection<T> resolveMany(ResolvingInfo resolvingInfo, String symbolName, SymbolKind kind);
+  <T extends Symbol> Collection<T> resolveMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier, Predicate<Symbol> predicate);
 
   /**
    * @param enclosingScope the enclosing scope. In Java, for example, a class scope is the
@@ -59,7 +61,7 @@ public interface MutableScope extends Scope {
   void addSubScope(MutableScope subScope);
 
   /**
-   * Removes the sub scope <code>subScope</code>.
+   * Removes given <code>subScope</code>.
    * @param subScope the sub scope to be removed
    *
    */
@@ -83,6 +85,12 @@ public interface MutableScope extends Scope {
   void add(Symbol symbol);
 
   /**
+   * removes the given symbol from this scope and unsets the enclosing scope relation.
+   * @param symbol the symbol to be removed
+   */
+  void remove(Symbol symbol);
+
+  /**
    * Sets the resolvers that are available in this scope. Within a simple grammarlanguage, these
    * resolvers are usually the same for all scopes of the grammarlanguage. The composing languages this
    * may vary.
@@ -99,10 +107,10 @@ public interface MutableScope extends Scope {
   void addResolver(ResolvingFilter<? extends Symbol> resolvingFilter);
 
 
-  // TODO PN method needed?
   /**
    * @param node the corresponding ast node
    */
+  // TODO PN rename to setSpanningAstNode
   void setAstNode(ASTNode node);
 
   /**
@@ -110,5 +118,6 @@ public interface MutableScope extends Scope {
    */
   void setName(String name);
 
+  <T extends Symbol> Collection<T> continueAsSubScope(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier, Predicate<Symbol> predicate);
 
 }

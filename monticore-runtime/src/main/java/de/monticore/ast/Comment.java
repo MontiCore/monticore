@@ -31,24 +31,24 @@ import de.se_rwth.commons.SourcePosition;
  */
 public class Comment {
   
-  protected SourcePosition _start = SourcePosition.getDefaultSourcePosition();
+  protected SourcePosition start = SourcePosition.getDefaultSourcePosition();
   
-  protected SourcePosition _end = SourcePosition.getDefaultSourcePosition();
+  protected SourcePosition end = SourcePosition.getDefaultSourcePosition();
   
   public SourcePosition get_SourcePositionEnd() {
-    return _end;
+    return end;
   }
   
   public void set_SourcePositionEnd(SourcePosition end) {
-    this._end = end;
+    this.end = end;
   }
   
   public SourcePosition get_SourcePositionStart() {
-    return _start;
+    return start;
   }
   
   public void set_SourcePositionStart(SourcePosition start) {
-    this._start = start;
+    this.start = start;
   }
   
   public String toString() {
@@ -81,11 +81,11 @@ public class Comment {
   
   @Override
   public int hashCode() {
-    if (_start == null) {
+    if (start == null) {
       return super.hashCode();
     }
     else {
-      return _start.getLine() * 100 + _start.getColumn();
+      return start.getLine() * 100 + start.getColumn();
     }
   }
   

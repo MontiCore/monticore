@@ -167,7 +167,6 @@ public interface ${genHelper.getVisitorType()} ${genHelper.getVisitorSuperInterf
               <#assign attrGetter = genHelper.getPlainGetter(field)>
               <#assign astChildTypeName = genHelper.getAstClassNameForASTLists(field)>
               {
-                // TOD MB Check, ob Block notwendig ist (doppelte Traversierung)
                 Iterator<${astChildTypeName}> iter_${field.getName()} = node.${attrGetter}().iterator();
                 while (iter_${field.getName()}.hasNext()) {
                   iter_${field.getName()}.next().accept(getRealThis());

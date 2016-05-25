@@ -71,7 +71,7 @@ import de.se_rwth.commons.Names;
 public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     implements GrammarVisitor {
     
-  private String QUOTE = "\"";
+  private final String QUOTE = "\"";
   
   private GrammarVisitor realThis = this;
   
@@ -318,7 +318,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
       getPrinter().print("@!");
     }
     
-    if (a.getSuperInterfaceRule().size() != 0) {
+    if (!a.getSuperInterfaceRule().isEmpty()) {
       getPrinter().print(" extends ");
       String comma = "";
       for (ASTRuleReference x : a.getSuperInterfaceRule()) {
@@ -328,7 +328,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
       }
     }
     
-    if (a.getASTSuperInterface().size() != 0) {
+    if (!a.getASTSuperInterface().isEmpty()) {
       getPrinter().print(" astextends ");
       String comma = "";
       for (ASTGenericType x : a.getASTSuperInterface()) {
@@ -374,7 +374,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     
     print(a.getType());
     
-    if (a.getASTSuperClass().size() != 0) {
+    if (!a.getASTSuperClass().isEmpty()) {
       getPrinter().print(" astextends ");
       String comma = "";
       for (ASTGenericType x : a.getASTSuperClass()) {
@@ -384,7 +384,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
       }
     }
     
-    if (a.getASTSuperInterface().size() != 0) {
+    if (!a.getASTSuperInterface().isEmpty()) {
       getPrinter().print(" astimplements ");
       String comma = "";
       for (ASTGenericType x : a.getASTSuperInterface()) {
@@ -394,14 +394,12 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
       }
     }
     
-    if (a.getMethods().size() != 0 || a.getAttributeInASTs().size() != 0) {
+    if (!a.getMethods().isEmpty() || !a.getAttributeInASTs().isEmpty()) {
       
       println(" = ");
       getPrinter().indent();
-      // TODO MB: Reihenfolge beibehalten?
-      printList(a.getMethods().iterator(), "");
       printList(a.getAttributeInASTs().iterator(), "");
-      
+      printList(a.getMethods().iterator(), "");      
     }
     
     getPrinter().print(";");
@@ -446,7 +444,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     
     print(")");
     
-    if (a.getExceptions().size() > 0) {
+    if (!a.getExceptions().isEmpty()) {
       
       print("throws ");
       comma = "";
@@ -505,11 +503,13 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
   @Override
   public void handle(ASTAttributeInAST a) {
     
-    if (a.getName().isPresent())
+    if (a.getName().isPresent()) {
       getPrinter().print(a.getName().get());
+    }
     getPrinter().print(":");
-    if (a.isUnordered())
+    if (a.isUnordered()) {
       getPrinter().print("<<unordered>> ");
+    }
     a.getGenericType().accept(getRealThis());
     if (a.getCard().isPresent() && a.getCard().get().getMin().isPresent()) {
       print(" min = " + a.getCard().get().getMin().get());
@@ -536,22 +536,22 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
       
       getPrinter().print(a.getName());
       
-      if (a.getSuperRule().size() != 0) {
+      if (!a.getSuperRule().isEmpty()) {
         getPrinter().print(" extends ");
         printList(a.getSuperRule().iterator(), " ");
       }
       
-      if (a.getSuperInterfaceRule().size() != 0) {
+      if (!a.getSuperInterfaceRule().isEmpty()) {
         getPrinter().print(" implements ");
         printList(a.getSuperInterfaceRule().iterator(), ", ");
       }
       
-      if (a.getASTSuperClass().size() != 0) {
+      if (!a.getASTSuperClass().isEmpty()) {
         getPrinter().print(" astextends ");
         printList(a.getASTSuperClass().iterator(), "");
       }
       
-      if (a.getASTSuperInterface().size() != 0) {
+      if (!a.getASTSuperInterface().isEmpty()) {
         getPrinter().print(" astimplements ");
         printList(a.getASTSuperInterface().iterator(), ", ");
       }
@@ -565,7 +565,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
         print("}"); 
       }
       
-      if (a.getAlts().size() != 0) {
+      if (!a.getAlts().isEmpty()) {
         println(" =");
         
         getPrinter().indent();
@@ -709,7 +709,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     }
     print("grammar " + a.getName());
     
-    if (a.getSupergrammar().size() > 0) {
+    if (!a.getSupergrammar().isEmpty()) {
       print(" extends ");
       String comma = "";
       for (ASTGrammarReference sgrammar : a.getSupergrammar()) {
@@ -720,7 +720,6 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     println(" {");
     getPrinter().indent();
     
-    // TODO MB Reihenfolge beibehalten?
     if (a.getGrammarOptions().isPresent()) {
       a.getGrammarOptions().get().accept(getRealThis());
     }
@@ -742,70 +741,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
   
   // helper fuctions
   
-  /**
-   * Parsing a grammar file eats some backslashes, here we add them back to the string
-   * 
-   * @param s the String
-   * @return the String with backslashes
-   */
-  public static String addBackslashes(String s) {
-    if (s.startsWith("\"")) {
-      // System.out.println("s: '" + s + "'");
-      s = s.substring(1, s.length());
-      int pos = s.lastIndexOf("\"");
-      // System.out.println("s ohne AN: '" + s + "'");
-      int i = 0;
-      for (char c : s.toCharArray()) {
-        if (c == '\\') {
-          i++;
-        }
-        else if (c == '\"') {
-          i++;
-        }
-      }
-      char[] str = new char[s.length() + i];
-      int j = 1;
-      int count = 0;
-      str[0] = '"';
-      for (char c : s.toCharArray()) {
-        if (c == '"') {
-          if (count != pos) {
-            str[j] = '\\';
-            j = j + 1;
-            str[j] = '"';
-            j = j + 1;
-            // System.out.println("c!=p: " + new String (str));
-          }
-          else {
-            str[j] = '"';
-            j = j + 1;
-          }
-          // System.out.println("count: " + count + " pos: " + pos + "
-          // j:" + j + " i: " + i + " '" + new String (str) + "'" + "
-          // legth: " +
-          // s.length() + " c: " + c);
-        }
-        else if (c == '\\') {
-          str[j] = c;
-          j = j + 1;
-          str[j] = '\\';
-          j = j + 1;
-          // System.out.println("backslash found");
-        }
-        else {
-          str[j] = c;
-          j = j + 1;
-          // System.out.println("nothing found: " + c);
-        }
-        count++;
-      }
-      // System.out.println("str: '" + new String(str) + "'");
-      return new String(str);
-    }
-    else
-      return s;
-  }
-  
+
   /**
    * returns the right String for the Iteration value
    * 

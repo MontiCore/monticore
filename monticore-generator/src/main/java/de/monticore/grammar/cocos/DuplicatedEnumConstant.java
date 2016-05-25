@@ -42,13 +42,13 @@ public class DuplicatedEnumConstant implements GrammarASTEnumProdCoCo {
   @Override
   public void check(ASTEnumProd a) {
     List<String> constants = new ArrayList<>();
-    for(ASTConstant c: a.getConstants())
+    for(ASTConstant c: a.getConstants()) {
       if(!constants.contains(c.getName())){
         constants.add(c.getName());
       } else {
         Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, c.getName()) + HINT,
                 c.get_SourcePositionStart());
       }
-
+    }
   }
 }

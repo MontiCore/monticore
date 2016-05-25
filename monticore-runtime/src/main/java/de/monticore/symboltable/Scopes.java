@@ -19,7 +19,10 @@
 
 package de.monticore.symboltable;
 
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import de.se_rwth.commons.logging.Log;
 
@@ -99,6 +102,28 @@ public final class Scopes {
     
     return Optional.empty();
     
+  }
+
+  public static Collection<? extends Symbol> getAllEncapsulatedSymbols(Scope scope) {
+    if(scope == null) {
+      return new LinkedHashSet<>();
+    }
+
+    final Set<Symbol> encapsulatedSymbols = new LinkedHashSet<>();
+
+    Scope nextScope = scope;
+
+    while (true) {
+      encapsulatedSymbols.addAll(nextScope.resolveLocally(SymbolKind.KIND));
+
+      if (!nextScope.getEnclosingScope().isPresent() || (nextScope.getEnclosingScope().get() instanceof GlobalScope)) {
+        break;
+      }
+
+      nextScope = nextScope.getEnclosingScope().orElse(null);
+    }
+
+    return encapsulatedSymbols;
   }
 
   // TODO PN print whole scope hierarchy
