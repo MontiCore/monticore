@@ -3,7 +3,7 @@
  *
  * http://www.se-rwth.de/
  */
-package de.montiarc.generator.typesafety;
+package de.monticore.templateclassgenerator;
 
 import java.util.Collection;
 import java.util.List;

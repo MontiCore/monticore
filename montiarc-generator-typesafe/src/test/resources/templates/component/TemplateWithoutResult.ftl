@@ -5,7 +5,7 @@ Generates
 @param int $ast 
 @param double $bubu
 -->
-
+${tc.params("int ast", "double bubu")}
 ${tc.signature("symbol", "package", "comments", "modifier", "prefix", "superComponent", "fqCompInterfaceWithTypeParameters", "helper", "timingParadigm", "existsHWC", "formalTypeParameters")}
 <#assign genHelper = helper>
 

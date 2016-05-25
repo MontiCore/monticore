@@ -3,7 +3,7 @@
  *
  * http://www.se-rwth.de/
  */
-package de.montiarc.generator;
+package de.monticore.templateclassgenerator;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -3,7 +3,7 @@
  *
  * http://www.se-rwth.de/
  */
-package de.montiarc.generator.typesafety;
+package de.monticore.templateclassgenerator.codegen;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import de.montiarc.generator.codegen.TemplateClassHelper;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.MyGeneratorEngine;
+import de.monticore.templateclassgenerator.EmptyNode;
 import de.se_rwth.commons.Names;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.core.FMHelper;

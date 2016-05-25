@@ -15,14 +15,17 @@ import java.util.Optional;
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
 
+import templates.component.TemplateWithResultTemplateClass;
+import templates.component.TemplateWithoutResultTemplateClass;
+
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 
-import de.montiarc.generator.TemplateClassGeneratorConfiguration;
-import de.montiarc.generator.TemplateClassGeneratorScript;
 import de.monticore.java.javadsl._ast.ASTCompilationUnit;
 import de.monticore.java.javadsl._ast.ASTTypeDeclaration;
 import de.monticore.java.javadsl._parser.JavaDSLParser;
+import de.monticore.templateclassgenerator.TemplateClassGeneratorConfiguration;
+import de.monticore.templateclassgenerator.TemplateClassGeneratorScript;
 import de.monticore.types.types._ast.ASTQualifiedName;
 import de.monticore.types.types._ast.ASTTypeArgument;
 import de.monticore.types.types._ast.ASTTypeVariableDeclaration;

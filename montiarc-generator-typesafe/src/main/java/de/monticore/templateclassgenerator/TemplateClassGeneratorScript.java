@@ -3,7 +3,7 @@
  *
  * http://www.se-rwth.de/
  */
-package de.montiarc.generator;
+package de.monticore.templateclassgenerator;
 
 import groovy.lang.Script;
 
@@ -19,7 +19,7 @@ import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
 import com.google.common.collect.Sets;
 
-import de.montiarc.generator.typesafety.TemplateClassGenerator;
+import de.montiarc.generator.codegen.TemplateClassGenerator;
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.ModelPath;
