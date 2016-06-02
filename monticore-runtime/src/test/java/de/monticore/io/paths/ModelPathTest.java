@@ -19,16 +19,18 @@
 
 package de.monticore.io.paths;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import org.junit.Test;
+import java.util.Collection;
+import java.util.Iterator;
 
 import de.monticore.AmbiguityException;
+import org.junit.Test;
 
 public class ModelPathTest {
   
@@ -37,7 +39,7 @@ public class ModelPathTest {
   Path parentPathOne = Paths.get("src/test/resources/modelpathtest/path1");
   
   Path parentPathTwo = Paths.get("src/test/resources/modelpathtest/path2");
-  
+
   ModelCoordinate ambiguousModel = ModelCoordinates.createQualifiedCoordinate(Paths
       .get("ambiguousfile.txt"));
   
@@ -60,5 +62,17 @@ public class ModelPathTest {
   @Test(expected = AmbiguityException.class)
   public void testAmbiguityException() {
     modelPath.resolveModel(ambiguousModel);
+  }
+
+  @Test
+  public void testGetFullPathOfEntries() {
+    final ModelPath p = new ModelPath(parentPathOne, parentPathTwo);
+
+    Collection<Path> actualEntries = p.getFullPathOfEntries();
+    assertEquals(2, actualEntries.size());
+
+    final Iterator<Path> entriesIterator = actualEntries.iterator();
+    assertTrue(entriesIterator.next().endsWith(parentPathOne));
+    assertTrue(entriesIterator.next().endsWith(parentPathTwo));
   }
 }
