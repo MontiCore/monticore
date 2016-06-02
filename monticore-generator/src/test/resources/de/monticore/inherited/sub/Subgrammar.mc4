@@ -15,5 +15,7 @@ grammar Subgrammar extends de.monticore.inherited.Supergrammar {
   L implements G  = "JJ";
   
   O = X*;
+  
+    N = X?;
  
 }

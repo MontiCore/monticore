@@ -1,6 +1,6 @@
 package de.monticore.inherited;
 
-grammar Supergrammar {
+component grammar Supergrammar {
 
   X = Y "HH" J;
   
@@ -11,4 +11,6 @@ grammar Supergrammar {
   interface G;
    
   K implements G = "OO";
+  
+  N;
 }

@@ -52,6 +52,8 @@ import de.se_rwth.commons.logging.Log;
  */
 public class AstEmfGeneratorHelper extends AstGeneratorHelper {
   
+  public static final String JAVA_MAP = "java.util.Map";
+  
   public AstEmfGeneratorHelper(ASTCDCompilationUnit topAst, GlobalScope symbolTable) {
     super(topAst, symbolTable);
   }
@@ -113,8 +115,6 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
     }
     return attribute.printType();
   }
-  
- 
   
   public List<String> getASTESuperPackages() {
     List<String> ePackages = new ArrayList<>();
@@ -285,6 +285,49 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
   
   public static String getEmfRuntimePackage() {
     return "de.monticore.emf._ast";
+  }
+  
+  public static String getEDataType(String typeName) {
+    switch (typeName) {
+      case JAVA_LIST:
+        return "Elist";
+      case JAVA_MAP:
+        return "EMap";
+      case "boolean":
+        return "EBoolean";
+      case "Boolean":
+        return "EBooleanObject";
+      case "int":
+        return "EInt";
+      case "Integer":
+        return "EIntegerObject";
+      case "byte":
+        return "EByte";
+      case "Byte":
+        return "EByteObject";
+      case "short":
+        return "EShort";
+      case "Short":
+        return "EShortObject";
+      case "long":
+        return "ELong";
+      case "Long":
+        return "ELongObject";
+      case "double":
+        return "EDouble";
+      case "Double":
+        return "EDoubleObject";
+      case "float":
+        return "EFloat";
+      case "Float":
+        return "EFloatObject";
+      case "char":
+        return "EChar";
+      case "Character":
+        return "ECharacterObject";
+      default:
+        return "E" + typeName;
+    }
   }
   
   public static String getSuperClass(ASTCDClass clazz) {
