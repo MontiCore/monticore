@@ -150,14 +150,19 @@ public class ArtifactScope extends CommonScope {
       final String packageCU = this.getPackageName();
       final String symbolQualifier = Names.getQualifier(symbolName);
 
-      List<String> symbolParts = Splitters.DOT.splitToList(symbolQualifier);
-      List<String> packageParts = Splitters.DOT.splitToList(packageCU);
+      final List<String> symbolQualifierParts = Splitters.DOT.splitToList(symbolQualifier);
+      final List<String> packageParts = Splitters.DOT.splitToList(packageCU);
 
       boolean symbolNameStartsWithPackage = true;
 
-      if (symbolParts.size() >= packageParts.size()) {
+      // TODO PN symbolQualifier.isEmpty()?
+      if (packageCU.isEmpty() && symbolQualifierParts.size() == 1) {
+        // symbol is in default package
+        symbolNameStartsWithPackage = true;
+      }
+      else if (symbolQualifierParts.size() >= packageParts.size()) {
         for (int i = 0; i < packageParts.size(); i++) {
-          if (!packageParts.get(i).equals(symbolParts.get(i))) {
+          if (!packageParts.get(i).equals(symbolQualifierParts.get(i))) {
             symbolNameStartsWithPackage = false;
             break;
           }
