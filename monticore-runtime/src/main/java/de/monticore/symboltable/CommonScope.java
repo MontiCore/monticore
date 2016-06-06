@@ -333,6 +333,7 @@ public class CommonScope implements MutableScope {
    *                         the current resolving process.
    * @return true, if resolving should continue
    */
+  // TODO PN rename to ...Scope
   protected boolean checkIfContinueWithEnclosing(boolean foundSymbols) {
     // If this scope shadows its enclosing scope and already some symbols are found,
     // there is no need to continue searching.
