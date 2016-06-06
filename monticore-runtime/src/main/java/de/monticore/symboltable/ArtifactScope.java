@@ -140,7 +140,7 @@ public class ArtifactScope extends CommonScope {
     if (symbolNameParts.size() > packageASNameParts.size()) {
       remainingSymbolName = Joiners.DOT.join(symbolNameParts.skip(packageASNameParts.size()));
     }
-    // TODO PN else?
+
     return remainingSymbolName;
   }
 
@@ -150,10 +150,25 @@ public class ArtifactScope extends CommonScope {
       final String packageCU = this.getPackageName();
       final String symbolQualifier = Names.getQualifier(symbolName);
 
-      if (symbolQualifier.startsWith(packageCU)) {
-        // TODO PN compare name parts, to exclude cases like "a.bb".startsWith("a.b")
-        return true;
+      List<String> symbolParts = Splitters.DOT.splitToList(symbolQualifier);
+      List<String> packageParts = Splitters.DOT.splitToList(packageCU);
+
+      boolean symbolNameStartsWithPackage = true;
+
+      if (symbolParts.size() >= packageParts.size()) {
+        for (int i = 0; i < packageParts.size(); i++) {
+          if (!packageParts.get(i).equals(symbolParts.get(i))) {
+            symbolNameStartsWithPackage = false;
+            break;
+          }
+        }
       }
+      else {
+        symbolNameStartsWithPackage = false;
+      }
+
+      return symbolNameStartsWithPackage;
+
     }
     return false;
   }
