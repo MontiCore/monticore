@@ -162,7 +162,7 @@ public class ArtifactScopeTest {
   }
 
   @Test
-  public void test() {
+  public void testPackageNameMustBePrefixOfQualifiedSymbolName() {
     final CommonResolvingFilter<EntitySymbol> classResolver = new CommonResolvingFilter<>(EntitySymbol.class, EntitySymbol.KIND);
 
     final MutableScope globalScope = new GlobalScope(new ModelPath(), new LinkedHashSet<>(), new ResolverConfiguration());
@@ -172,7 +172,6 @@ public class ArtifactScopeTest {
     artifactScope1.addResolver(classResolver);
     EntitySymbol classA = new EntitySymbol("A");
     artifactScope1.add(classA);
-    Scope classAScope = classA.getSpannedScope();
 
 
     ArtifactScope artifactScope2 = new ArtifactScope(Optional.of(globalScope), "p2", new ArrayList<>());
