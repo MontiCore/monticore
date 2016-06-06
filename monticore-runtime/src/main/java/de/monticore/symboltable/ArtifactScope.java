@@ -155,9 +155,8 @@ public class ArtifactScope extends CommonScope {
 
       boolean symbolNameStartsWithPackage = true;
 
-      // TODO PN symbolQualifier.isEmpty()?
-      if (packageCU.isEmpty() && symbolQualifierParts.size() == 1) {
-        // symbol is in default package
+      if (packageCU.isEmpty()) {
+        // symbol qualifier always contains default package (i.e., empty string)
         symbolNameStartsWithPackage = true;
       }
       else if (symbolQualifierParts.size() >= packageParts.size()) {
