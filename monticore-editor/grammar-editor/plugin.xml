@@ -14,8 +14,8 @@
             default="false"
             extensions="mc4"
             icon="icons/allteamstrms_rep.gif"
-            id="monticore-editor"
-            name="Monticore Editor">
+            id="grammar-editor"
+            name="Grammar Editor">
       </editor>
    </extension>
 </plugin>

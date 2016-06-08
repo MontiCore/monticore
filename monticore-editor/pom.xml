@@ -15,8 +15,8 @@
   <modules>
     <module>texteditor-core</module>
     <module>graphicaleditor-core</module>
-	<module>grammar-editor</module>
-   <!-- <module>editor-updatesite</module> -->
+    <module>grammar-editor</module>
+    <module>editor-updatesite</module>
   </modules>
 
 </project>
