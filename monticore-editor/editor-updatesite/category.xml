@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <bundle id="editor-bundle" version="4.4.1.qualifier">
+      <category name="language-editor"/>
+   </bundle>
+   <bundle id="texteditor-core" version="4.4.1.qualifier">
+      <category name="language-editor"/>
+   </bundle>
+   <bundle id="graphicaleditor-core" version="4.4.1.qualifier">
+      <category name="language-editor"/>
+   </bundle>
+   <bundle id="grammar-editor" version="4.4.1.qualifier">
+      <category name="language-editor"/>
+   </bundle>
+   <category-def name="grammar-editor" label="Grammar Editor"/>
+</site>

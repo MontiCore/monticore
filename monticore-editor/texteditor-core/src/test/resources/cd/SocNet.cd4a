@@ -1,0 +1,122 @@
+package de.monticore.umlcd4a.symboltable;
+
+import java.util.List;
+import java.util.Set;
+import java.util.Date;
+
+classdiagram SocNet {
+
+  // classes and associations ...
+
+  /********************************************
+   * Profiles, Persons, Groups
+   * There are two types of Profiles: Persons and Groups
+  *********************************************/
+
+  abstract class Profile {
+    String profileName;
+    /int numOfPosts;
+    /int friends;
+  }
+
+  // The individual Person participating in SocNet
+  class Person extends Profile {
+    // attributes ...
+    Date lastVisit;
+    String firstName;
+    String secondName;
+    Date dateOfBirth;
+    int zip;
+    String city;
+    String country;
+  }
+
+  // People may form Groups around purposes
+  class Group extends Profile {
+    boolean isOpen;
+    Date created;
+    String purpose;
+    /int members;
+  }
+
+  // A Group has members
+  association member [*] Person <-> Group [*];
+
+  // A Group has organizers
+  association [1] Person (organizer) <->
+                         (organized) [profileName] Group [*];
+
+  /********************************************
+   * Relationships
+   * Persons and Groups can be related:
+   * Relationships are binary and have an initiator as well as an
+   * invited Person/Group
+  *********************************************/
+
+  // Each Relationship connects two Profiles
+  class Relationship {
+    boolean isPending;
+    Date requested;
+    Date accepted;
+  }
+
+  // We distinguish between the initiator and the invited Profile:
+  association invited   [*] Relationship <-> Profile [1];
+  association initiated [*] Relationship <-> Profile [1];
+
+  // A Relationship has one of the following types:
+  enum RelationType { FRIEND, FAMILY, FOLLOWER, COLLEAGUE, OTHER; }
+
+  association Relationship -> RelationType [1];
+
+
+  /********************************************
+   * Posts
+   * our Social Network has posts of several kinds
+  *********************************************/
+
+  // The generic interface
+  interface Post;
+
+  // Each Post has one sender and multiple receivers:
+  association received [*] Profile <-> Post [*] <<ordered>>;
+  association sent [1] Profile <-> Post [*] <<ordered>>;
+
+
+  // InstantMessages are special forms of posts
+  class InstantMessage implements Post {
+    Date timestamp;
+    String content;
+  }
+
+  // A message can be followed up by another.
+  // Threading is supported
+  association [*] InstantMessage <-> (replyTo) InstantMessage [1];
+
+
+  //PhotoMessages are special InstantMessages
+  class PhotoMessage extends InstantMessage;
+
+  association [*] Photo (picture) <-> PhotoMessage;
+
+  /********************************************
+   * Photos and Tags
+   * we do have Photos with a size (but no content :-) )
+   * and people can be tagged on Photos
+  *********************************************/
+
+  class Photo {
+    double height;
+    double width;
+  }
+
+  // everybody can tag a Person found on a Photo,
+  // but the tagged Person has to confirm it
+  class Tag {
+    boolean confirmed;
+  }
+
+  association [1] Person (tagged) <-> Tag [*];
+  association [*] Tag <-> Photo [1];
+
+}
