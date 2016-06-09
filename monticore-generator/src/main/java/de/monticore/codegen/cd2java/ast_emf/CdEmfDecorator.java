@@ -788,8 +788,8 @@ public class CdEmfDecorator extends CdDecorator {
         return;
       }
       int i = 0;
-      //String typeName = "E" + simpleType;
-      String typeName = AstEmfGeneratorHelper.getEDataType(simpleType);
+      String typeName = "E" + simpleType;
+     // String typeName = AstEmfGeneratorHelper.getEDataType(simpleType);
       while (externalTypes.values().contains(typeName)) {
         typeName = typeName + i;
         i++;
@@ -829,6 +829,7 @@ public class CdEmfDecorator extends CdDecorator {
         genericType = AstGeneratorHelper.JAVA_LIST;
       }
       String convertedTypeName = TypesPrinter.printType(convertedType);
+      /* TODO GV
       if (!genericType.isEmpty() && !convertedTypeName.contains("<")) {
         String newType = "";
         Optional<CDTypeSymbol> symbol = astHelper.resolveCdType(convertedTypeName);
@@ -851,7 +852,7 @@ public class CdEmfDecorator extends CdDecorator {
       else {
         String typeName = Names.getQualifiedName(astType.getNames());
         addExternalType(typeName, Names.getSimpleName(convertedTypeName));
-      }
+      } */
       if (!convertedTypeName.contains(".")) {
         return;
       }
@@ -861,7 +862,23 @@ public class CdEmfDecorator extends CdDecorator {
       if (convertedTypeName.contains("<")) {
         return;
       }
-   
+      String newType = "";
+      Optional<CDTypeSymbol> symbol = astHelper.resolveCdType(convertedTypeName);
+      if (!symbol.isPresent()) {
+        if (!genericType.isEmpty()) {
+          newType = genericType + "<" + convertedTypeName + ">";
+        }
+        else {
+          newType = convertedTypeName;
+        }
+        addExternalType(newType, Names.getSimpleName(convertedTypeName));
+      }
+      else if (symbol.get().isEnum()) {
+        String simpleName = Names.getSimpleName(convertedTypeName);
+        convertedTypeName = symbol.get().getModelName().toLowerCase()
+            + GeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT + simpleName;
+        addExternalType(convertedTypeName, simpleName);
+      }
     }
     
   }

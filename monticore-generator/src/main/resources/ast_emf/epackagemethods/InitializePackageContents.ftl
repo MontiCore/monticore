@@ -122,6 +122,8 @@ SUCH DAMAGE.
     init${emfAttribute.getEmfType()}(get${emfAttribute.getFullName()}(), ${get}(), null, "${emfAttribute.getAttributeName()?cap_first}", null,
       0, ${isList}, ${emfAttribute.getCdType().getName()}.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     <#else>
+      <#--if  emfAttribute.isEnum()>
+        <#assign get = "this.getE" + emfAttribute.getEDataType()?cap_first-->
       <#if emfAttribute.hasExternalType()>
         <#assign get = "this.get" + emfAttribute.getEDataType()?cap_first>
       <#else>
