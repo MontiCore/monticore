@@ -1,0 +1,13 @@
+package de.monticore.umlcd4a.parser;
+
+import java.util.List;
+
+classdiagram Example2 {
+
+  // Parsing types with Generics
+  class A {
+    List<String> list;
+  }
+
+
+}

@@ -1,0 +1,5 @@
+grammar Java { 
+
+    MyExpression = {x? y : c = b;} ;
+    
+}

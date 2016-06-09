@@ -19,18 +19,26 @@
 
 package de.monticore.io.paths;
 
-import com.google.common.collect.Iterables;
-import de.monticore.AmbiguityException;
-import de.se_rwth.commons.logging.Log;
-
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
-import java.util.*;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import com.google.common.collect.Iterables;
+import de.monticore.AmbiguityException;
+import de.se_rwth.commons.logging.Log;
 
 /**
  * A ModelPath encapsulates the domain of accessible models inside the running
@@ -123,6 +131,21 @@ public final class ModelPath {
         .map(URL::toString)
         .collect(Collectors.joining(", "));
     return result + "]";
+  }
+
+  public Collection<Path> getFullPathOfEntries() {
+    final Collection<Path> entries = new LinkedHashSet<>();
+
+    for (URL entry : classloaderMap.values()) {
+      try {
+        entries.add(Paths.get(entry.toURI()));
+      }
+      catch (URISyntaxException e) {
+        // ignore this entry
+      }
+    }
+
+    return entries;
   }
 
 }

@@ -157,8 +157,8 @@
                 <grammar>src/main/grammars/mc/feature/semanticpredicate/SemPredWithInterface.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/inheritence/Inheritence.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/followoption/FollowOption.mc4</grammar>
-                <!-- TODO SO grammar>src/main/grammars/mc/feature/mcenum/Enums.mc4</grammar> 
-                  <grammar>src/main/grammars/mc/feature/mcenum/SubEnum.mc4</grammar -->
+                <grammar>src/main/grammars/mc/feature/mcenum/Enums.mc4</grammar> 
+                <grammar>src/main/grammars/mc/feature/mcenum/SubEnum.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/lexerformat/KleenePlus.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/lexerformat/LexerFormat.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/expression/Expression.mc4</grammar>
