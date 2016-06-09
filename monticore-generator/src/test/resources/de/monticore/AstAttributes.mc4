@@ -9,6 +9,7 @@ grammar AstAttributes {
    TransformationStructure = B;
     ast TransformationStructure =
    
+   /* TODO GV
       map1:java.util.Map<String, java.util.List<String> >
       map2:java.util.Map<String, java.util.List<String> >
       map3:java.util.Map<String, java.util.List<String> >
@@ -27,7 +28,7 @@ grammar AstAttributes {
       bool2: Boolean
       int1: int
       int2: Integer
-          
+          */ 
       a1: A
       a2: A*
       

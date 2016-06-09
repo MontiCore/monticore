@@ -27,7 +27,6 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
@@ -83,7 +82,7 @@ public class AstGeneratorTest extends GeneratorTest {
   
   @Test
   public void testAstAttributes() {
-    testCorrect("de/monticore/AstAttributes.mc4");
+    testCorrect("de/monticore/CdAttributes.mc4");
   }
   
   public void testScopesExample() {
@@ -111,7 +110,7 @@ public class AstGeneratorTest extends GeneratorTest {
   public void testInherited() {
     doGenerate("de/monticore/inherited/Supergrammar.mc4");
     doGenerate("de/monticore/inherited/sub/Subgrammar.mc4");
-    doGenerate("de/monticore/inherited/subsub/Subsubgrammar.mc4");
+   // doGenerate("de/monticore/inherited/subsub/Subsubgrammar.mc4");
     Path path = Paths.get(OUTPUT_FOLDER, Names.getPathFromFilename("de/monticore/inherited/"));
    // assertTrue("There are compile errors in generated code for the models in grammars/inherited.",
     // compile(path));
