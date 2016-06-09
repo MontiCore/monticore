@@ -122,7 +122,13 @@ SUCH DAMAGE.
     init${emfAttribute.getEmfType()}(get${emfAttribute.getFullName()}(), ${get}(), null, "${emfAttribute.getAttributeName()?cap_first}", null,
       0, ${isList}, ${emfAttribute.getCdType().getName()}.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     <#else>
-      <#if emfAttribute.isEnum() || emfAttribute.hasExternalType()>
+      <#if emfAttribute.isEnum()>
+        <#if isList == "-1">
+          <#assign get = "this.getE" + emfAttribute.getEDataType()?cap_first>
+        <#else>
+          <#assign get = "this.get" + emfAttribute.getEDataType()?cap_first>
+        </#if>
+      <#elseif emfAttribute.hasExternalType()>
         <#assign get = "this.get" + emfAttribute.getEDataType()?cap_first>
       <#else>
         <#assign get = "ecorePackage.getE" + emfAttribute.getEDataType()?cap_first>
