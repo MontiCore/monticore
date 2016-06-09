@@ -39,7 +39,8 @@ public class EnumTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCDCo
     for (Link<ASTEnumProd, ASTCDEnum> link : rootLink
         .getLinks(ASTEnumProd.class, ASTCDEnum.class)) {
       link.source().getConstants().stream()
-          .map(ASTConstant::getName)
+//          .map(constant -> constant.getHumanName().orElse(constant.getName()))
+      .map(ASTConstant::getName)
           .map(name -> {
             ASTCDEnumConstant enumConstant = CD4AnalysisNodeFactory.createASTCDEnumConstant();
             enumConstant.setName(LexNamer.createGoodName(name));
