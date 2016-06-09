@@ -7,7 +7,7 @@
     <version>4.4.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>editor-updatesite</artifactId>
+  <artifactId>grammar-editor-updatesite</artifactId>
   <packaging>eclipse-repository</packaging>
 
   <dependencies>
