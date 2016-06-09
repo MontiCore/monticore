@@ -20,7 +20,6 @@
 package de.monticore.codegen.mc2cd.transl;
 
 import de.monticore.grammar.LexNamer;
-import de.monticore.grammar.grammar._ast.ASTConstant;
 import de.monticore.grammar.grammar._ast.ASTEnumProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
@@ -39,8 +38,7 @@ public class EnumTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCDCo
     for (Link<ASTEnumProd, ASTCDEnum> link : rootLink
         .getLinks(ASTEnumProd.class, ASTCDEnum.class)) {
       link.source().getConstants().stream()
-//          .map(constant -> constant.getHumanName().orElse(constant.getName()))
-      .map(ASTConstant::getName)
+          .map(constant -> constant.getHumanName().orElse(constant.getName()))
           .map(name -> {
             ASTCDEnumConstant enumConstant = CD4AnalysisNodeFactory.createASTCDEnumConstant();
             enumConstant.setName(LexNamer.createGoodName(name));
