@@ -49,7 +49,7 @@ public interface ${ast.getName()} extends ${tc.include("ast.AstExtendedInterface
     ${tc.includeArgs("ast.ClassMethod", [method, ast])}
   </#list>
 
-  public ${ast.getName()} deepClone();
+  public ${genHelper.getPlainName(ast)} deepClone();
 
   public boolean equals(Object o);
 
