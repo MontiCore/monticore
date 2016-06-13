@@ -16,6 +16,7 @@
       <artifactId>texteditor-core</artifactId>
       <version>${project.version}</version>
     </dependency>  
+    
 	<dependency>
       <groupId>de.monticore</groupId>
       <artifactId>editor-bundle</artifactId>
