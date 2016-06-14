@@ -14,9 +14,9 @@ package freemarker.core;
  */
 public class Parameter {
   
-  String type;
+  private String type;
   
-  String name;
+  private String name;
   
   /**
    * Constructor for freemarker.core.Argument

@@ -87,7 +87,7 @@ public class TemplateClassGeneratorScript extends Script implements GroovyRunner
       System.out.println("[TypesafetyScript] generates model: "+ template);
       String simpleName = Names.getSimpleName(template);
       String fileName = Names.getPathFromQualifiedName(template)+File.separator+simpleName+".ftl";
-      generate(simpleName+"TemplateClass", Paths.get(modelPath.getAbsolutePath()), fileName, targetFilepath);
+      generate(simpleName+"Template", Paths.get(modelPath.getAbsolutePath()), fileName, targetFilepath);
     }
   }
   

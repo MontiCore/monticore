@@ -60,7 +60,7 @@ public class GroovyScriptTest {
     ClassLoader l = GroovyScriptTest.class.getClassLoader();
     try {
       String script = Resources.asCharSource(
-          l.getResource("de/monticore/templateclassgenerator/montiarc.groovy"),
+          l.getResource("de/monticore/templateclassgenerator/templateclassgenerator.groovy"),
           Charset.forName("UTF-8")).read();
       
       Configuration configuration =

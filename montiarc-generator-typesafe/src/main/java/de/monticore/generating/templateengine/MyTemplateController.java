@@ -36,7 +36,8 @@ public class MyTemplateController extends TemplateController {
   }
   
   /**
-   * @see de.monticore.generating.templateengine.TemplateController#processTemplate(java.lang.String, de.monticore.ast.ASTNode, java.util.List)
+   * @see de.monticore.generating.templateengine.TemplateController#processTemplate(java.lang.String,
+   * de.monticore.ast.ASTNode, java.util.List)
    */
   @Override
   public String processTemplate(String templateName, ASTNode astNode,
@@ -66,31 +67,32 @@ public class MyTemplateController extends TemplateController {
       Object argument = arguments.get(i);
       String parameter = params[i];
       String paramType = parameter.substring(0, parameter.indexOf(" "));
-      if(paramType.contains("<")){
+      if (paramType.contains("<")) {
         paramType = paramType.substring(0, paramType.indexOf("<"));
       }
       String paramName = parameter.substring(parameter.indexOf(" ") + 1);
       Class argumentClass = argument.getClass();
       // TODO instanceof things
-//      try {
-//        if (paramType.contains(".")) {
-//          checkArgument(argumentClass.isAssignableFrom(Class.forName(paramType)),
-//              "0xA5299 Template '" + getTemplatename() + "': Argument type (" +
-//                  argument +
-//                  ") and type of parameter in params (" + paramType + ") mismatch.");
-//        }
-//        else {
-//          if (!isAssignableWithJavaLibrary(paramType)) {
-//            throw new IllegalArgumentException("0xA5299 Template '" + getTemplatename()
-//                + "': Argument type (" +
-//                argument +
-//                ") and type of parameter in params (" + paramType + ") mismatch.");
-//          }
-//        }
-//      }
-//      catch (ClassNotFoundException e) {
-//        e.printStackTrace();
-//      }
+      // try {
+      // if (paramType.contains(".")) {
+      // checkArgument(argumentClass.isAssignableFrom(Class.forName(paramType)),
+      // "0xA5299 Template '" + getTemplatename() + "': Argument type (" +
+      // argument +
+      // ") and type of parameter in params (" + paramType + ") mismatch.");
+      // }
+      // else {
+      // if (!isAssignableWithJavaLibrary(paramType)) {
+      // throw new IllegalArgumentException("0xA5299 Template '" +
+      // getTemplatename()
+      // + "': Argument type (" +
+      // argument +
+      // ") and type of parameter in params (" + paramType + ") mismatch.");
+      // }
+      // }
+      // }
+      // catch (ClassNotFoundException e) {
+      // e.printStackTrace();
+      // }
       
       // Case 1: No Signature -> we have to signature the paramnames
       if (names.isEmpty()) {
@@ -114,25 +116,25 @@ public class MyTemplateController extends TemplateController {
     parametrized = true;
   }
   
-//  /**
-//   * TODO: Write me!
-//   * 
-//   * @param argumentClass
-//   * @return
-//   */
-//  private boolean isAssignableWithJavaLibrary(String paramType) {
-//    String[] classNamesToCheck = { "List", "int", "Map", "double", "Integer",
-//        "Double", "String", "Long", "Short", "double", "short", "Set",
-//        "long", "Character", "char", "Float", "float", "boolean",
-//        "Boolean"};
-//    for (String c : classNamesToCheck) {
-//      if (paramType.contains(c)) {
-//        return true;
-//      }
-//    }
-//    
-//    return false;
-//  }
+  // /**
+  // * TODO: Write me!
+  // *
+  // * @param argumentClass
+  // * @return
+  // */
+  // private boolean isAssignableWithJavaLibrary(String paramType) {
+  // String[] classNamesToCheck = { "List", "int", "Map", "double", "Integer",
+  // "Double", "String", "Long", "Short", "double", "short", "Set",
+  // "long", "Character", "char", "Float", "float", "boolean",
+  // "Boolean"};
+  // for (String c : classNamesToCheck) {
+  // if (paramType.contains(c)) {
+  // return true;
+  // }
+  // }
+  //
+  // return false;
+  // }
   
   /**
    * Checks whether there are more than one result definitions.

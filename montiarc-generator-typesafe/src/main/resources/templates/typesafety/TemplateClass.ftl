@@ -16,7 +16,7 @@ import de.monticore.generating.MyGeneratorEngine;
 /**
  * @date ${helper.getTimeNow()}<br>
  */
-public abstract class ${classname} <#t>
+public class ${classname} <#t>
 {
 
   /**
@@ -64,12 +64,12 @@ public abstract class ${classname} <#t>
   <#list parameters as parameter>
   * @param ${parameter.getName()};
   </#list>
-  @param function
+  * @param function
   </#if>
   * @result ${result.get()}
   */  
   <#assign simpleName = helper.printSimpleName(result.get())>
-  public static ${result.get()} execute(MyGeneratorEngine generator, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)}, java.util.function.Function<String, ${result.get()}> function)
+  public static ${result.get()} generateToResult(MyGeneratorEngine generator, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)}, java.util.function.Function<String, ${result.get()}> function)
   {
     return function.apply(generateToString(generator, node<#if parameters?has_content>, </#if>${helper.printParameterNames(parameters)}));
   }

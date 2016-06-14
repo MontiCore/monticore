@@ -36,6 +36,7 @@ public class MyGeneratorEngine extends GeneratorEngine {
       Object... templateArguments) {
     MyTemplateController tc = new MyTemplateControllerFactory().create(myTemplateControllerConfig,
         templateName);
+    tc.setTemplateControllerFactory(new MyTemplateControllerFactory());
     return tc.processTemplate(templateName, node, Arrays.asList(templateArguments));
   }
   
