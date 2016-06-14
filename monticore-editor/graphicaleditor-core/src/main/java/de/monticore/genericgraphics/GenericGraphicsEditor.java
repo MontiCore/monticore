@@ -211,7 +211,8 @@ public abstract class GenericGraphicsEditor extends GraphicalEditor {
     
   @Override
   public void doSave(IProgressMonitor monitor) {
-    viewer.doSave(monitor); // will call doSaveEditorOnly(), so there's no need to call it here
+    viewer.doSave(monitor);
+    getCommandStack().markSaveLocation();
   }
     
   @Override
