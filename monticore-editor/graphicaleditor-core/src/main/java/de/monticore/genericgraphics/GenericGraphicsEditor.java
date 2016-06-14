@@ -22,7 +22,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gef.DefaultEditDomain;
-import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.RootEditPart;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.editparts.ScalableRootEditPart;
@@ -214,12 +213,7 @@ public abstract class GenericGraphicsEditor extends GraphicalEditor {
   public void doSave(IProgressMonitor monitor) {
     viewer.doSave(monitor); // will call doSaveEditorOnly(), so there's no need to call it here
   }
-  
-  public void doSaveEditorOnly(IProgressMonitor monitor) {
-    getCommandStack().markSaveLocation();
-    // TODO flush stack?
-  }
-  
+    
   @Override
   public Object getAdapter(@SuppressWarnings("rawtypes") Class type) {
     if (type == CommandStack.class) {
@@ -239,8 +233,8 @@ public abstract class GenericGraphicsEditor extends GraphicalEditor {
   }
   
   
-  // mark the editor dirty when command stack changes
-  // whyever GEF does not do this
+  // Mark the editor dirty when command stack changes
+  // (layout is changed)
   @Override
   public void commandStackChanged(EventObject event) {
     firePropertyChange(IEditorPart.PROP_DIRTY);
@@ -291,19 +285,6 @@ public abstract class GenericGraphicsEditor extends GraphicalEditor {
     return null;
   }
   
-  /**
-   * @return The absolute path of the editor file.
-   */
-  public String getAbsoluteFilePath() {
-    return getEditorInputFile().getRawLocation().toOSString();
-  }
-  
-  /**
-   * @return The project folder.
-   */
-  public String getProjectFolder() {
-    return getEditorInputFile().getProject().getLocation().toString();
-  }
   
   /**
    * Every GEF editor has a {@link RootEditPart}. This {@link RootEditPart} has a single child,

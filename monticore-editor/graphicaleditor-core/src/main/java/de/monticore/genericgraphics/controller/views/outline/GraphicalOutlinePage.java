@@ -27,8 +27,6 @@ import org.eclipse.draw2d.parts.ScrollableThumbnail;
 import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.commands.CommandStack;
-import org.eclipse.gef.commands.CommandStackEvent;
-import org.eclipse.gef.commands.CommandStackEventListener;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.editparts.ScalableRootEditPart;
@@ -88,14 +86,7 @@ public class GraphicalOutlinePage extends ContentOutlinePage {
   }
   
   @Override
-  public void createControl(Composite parent) {
-    CommandStackEventListener cmdStackListener = new CommandStackEventListener() {
-      @Override
-      public void stackChanged(CommandStackEvent event) {
-        viewer.setDirty();
-      }
-    };
-    
+  public void createControl(Composite parent) {    
     // manage own graphical viewer and display it
     if(viewer != null && viewer.getControl() ==  null) {
       externalViewer = false;
@@ -136,11 +127,7 @@ public class GraphicalOutlinePage extends ContentOutlinePage {
           rootFigure.addLayoutListener(layoutListener);
         }
       }
-      
-
-      // Add CommandStackListener to mark editor as dirty when command stack changes
-      editDomain.getCommandStack().addCommandStackEventListener(cmdStackListener);
-      
+           
       // create popup menu
       createPopupMenu(viewer.getControl());
     }
@@ -148,7 +135,6 @@ public class GraphicalOutlinePage extends ContentOutlinePage {
       externalViewer = true;
       createOverview(parent);
       createPopupMenu(canvas);
-      viewer.getEditDomain().getCommandStack().addCommandStackEventListener(cmdStackListener);
     }
   }
   
