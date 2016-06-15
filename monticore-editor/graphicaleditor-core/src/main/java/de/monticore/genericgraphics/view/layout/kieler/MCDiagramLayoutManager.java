@@ -43,7 +43,6 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
-import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 import com.google.common.collect.BiMap;
 
@@ -72,7 +71,6 @@ import de.cau.cs.kieler.kiml.ui.diagram.LayoutMapping;
 import de.cau.cs.kieler.kiml.util.KimlUtil;
 import de.monticore.editorconnector.EditorConnector;
 import de.monticore.genericgraphics.GenericGraphicsEditor;
-import de.monticore.genericgraphics.GenericGraphicsViewer;
 import de.monticore.genericgraphics.controller.editparts.IMCConnectionEdgeEditPart;
 import de.monticore.genericgraphics.controller.editparts.IMCEditPart;
 import de.monticore.genericgraphics.controller.editparts.IMCGraphicalEditPart;
@@ -81,7 +79,6 @@ import de.monticore.genericgraphics.controller.editparts.IMCShapeEditPart;
 import de.monticore.genericgraphics.controller.editparts.IMCViewElementEditPart;
 import de.monticore.genericgraphics.controller.editparts.connections.IMCConnectionEditPart;
 import de.monticore.genericgraphics.controller.editparts.intern.TextConnectionLabelEditPart;
-import de.monticore.genericgraphics.controller.views.outline.CombinedGraphicsOutlinePage;
 import de.monticore.genericgraphics.controller.views.outline.GraphicalOutlinePage;
 import de.monticore.genericgraphics.model.ITextConnectionLabel;
 import de.monticore.genericgraphics.model.graphics.IEdgeViewElement;
@@ -251,19 +248,14 @@ public class MCDiagramLayoutManager implements IDiagramLayoutManager<IMCEditPart
     mapping.setProperty(CONNECTIONS, new ArrayList<IMCNodeEditPart>());
     
     GenericGraphicsEditor editor = null;
-    GenericGraphicsViewer viewer = null;
     
     // get the generic graphics editor part
     if (workbenchPart instanceof GenericGraphicsEditor) {
       editor = (GenericGraphicsEditor) workbenchPart;
     }
-    // check if this is an outline view which belongs to an TextEditorImpl/GenericGraphicsEditor
-    // and hence displays a GenericGraphicsViewer
-    if(workbenchPart instanceof ContentOutline) {
-      IEditorPart activeE = workbenchPart.getSite().getPage().getActiveEditor();
-      viewer = EditorConnector.getInstance().getViewerForEditor(activeE);
-    }
     
+    // TODO MB: Check if outline (viewer) is a possible workbenchpart
+   
     // choose the layout root edit part
     IMCEditPart layoutRootPart = null;
     if (diagramPart instanceof IMCEditPart) {
@@ -273,10 +265,7 @@ public class MCDiagramLayoutManager implements IDiagramLayoutManager<IMCEditPart
     if (layoutRootPart == null && editor != null) {
       layoutRootPart = editor.getContentEditPart();
     }
-    else if(layoutRootPart == null && viewer != null) {
-      layoutRootPart = viewer.getContentEditPart();
-    }
-    
+     
     if (layoutRootPart == null) {
       throw new UnsupportedOperationException("Not supported by this layout manager: Workbench part " + workbenchPart + ", Edit part " + diagramPart);
     }
@@ -284,17 +273,6 @@ public class MCDiagramLayoutManager implements IDiagramLayoutManager<IMCEditPart
     // set optional diagram editor
     if (editor != null) {
       mapping.setProperty(GENERIC_EDITOR, editor);
-    }
-    else if(viewer != null) {
-      IEditorPart activeE = workbenchPart.getSite().getWorkbenchWindow().getActivePage().getActiveEditor();
-      GraphicalOutlinePage grOutline = null;
-      
-      if(activeE instanceof GenericGraphicsEditor || activeE instanceof TextEditorImpl) {
-        CombinedGraphicsOutlinePage combOutline = (CombinedGraphicsOutlinePage)activeE.getAdapter(IContentOutlinePage.class);
-        grOutline = combOutline.getGraphicalOutline();
-      }
-      
-      mapping.setProperty(GRAPHICAL_OUTLINE, grOutline);
     }
     
     // set top level element

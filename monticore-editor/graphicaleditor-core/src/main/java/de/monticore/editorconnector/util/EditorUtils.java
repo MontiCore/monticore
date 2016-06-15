@@ -128,63 +128,6 @@ public class EditorUtils {
     return null;
   }
   
-  /**
-   * Opens the graphical editor that is associated with a specified
-   * textual editor.
-   * @param editor  The textual editor
-   * @return        The graphical editor that was opened
-   */
-  public static GenericGraphicsEditor openGraphicalEditor(TextEditorImpl editor, boolean activate) {
-    IWorkbenchPage page = editor.getSite().getPage();
-    
-    IEditorDescriptor[] editors = 
-        PlatformUI.getWorkbench().getEditorRegistry().getEditors(editor.getEditorInput().getName());
-
-    for(IEditorDescriptor descr : editors) {
-      // TODO MB Find better solution
-      if(descr.getId().contains("Graphic")) {
-        try {
-          IEditorPart res = page.openEditor(editor.getEditorInput(), descr.getId(), activate, IWorkbenchPage.MATCH_NONE);
-          
-          if(res instanceof GenericGraphicsEditor)
-            return (GenericGraphicsEditor)res;
-          else
-            page.closeEditor(res, false); // wrong editor, close it (this should never happen)
-        } catch (PartInitException e) {
-          e.printStackTrace();
-        }
-      }
-    }
-    
-    return null;
-  }
-  
-  public static TextEditorImpl openTextualEditor(GenericGraphicsEditor editor, boolean activate) {
-    IWorkbenchPage page = editor.getSite().getPage();
-    
-    IEditorDescriptor[] editors = 
-        PlatformUI.getWorkbench().getEditorRegistry().getEditors(editor.getEditorInputFile().getRawLocation().toString());
-    
-    for(IEditorDescriptor descr : editors) {
-      // TODO MB Find better solution
-      if(!descr.getId().contains("Graphic")) {
-        try {
-          IEditorPart res = page.openEditor(editor.getEditorInput(), descr.getId(), activate, IWorkbenchPage.MATCH_NONE);
-          
-          if(res instanceof TextEditorImpl)
-            return (TextEditorImpl)res;
-          else
-            page.closeEditor(res, false); // wrong editor, close it (this should not happen)
-        } catch (PartInitException e) {
-          e.printStackTrace();
-        }
-      }
-    }
-    
-    JOptionPane.showMessageDialog(null, "ERROR: no textual editor found");
-    
-    return null;
-  }
   
   /**
    * Checks whether the corresponding (textual/graphical) editor for

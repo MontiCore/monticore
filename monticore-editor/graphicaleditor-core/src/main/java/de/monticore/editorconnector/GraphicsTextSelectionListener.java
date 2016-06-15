@@ -229,25 +229,6 @@ public class GraphicsTextSelectionListener implements ISelectionListener {
   }
   
   /**
-   * Sets focus to the text editor associated with the generic graphics editor which registered a
-   * double click. This method is called by EditParts when a double click is registered.
-   */
-  public void editPartDoubleClick() {
-    IWorkbenchPage page = viewer.getDisplayingPart().getSite().getPage();
-    if (page.getActiveEditor() instanceof TextEditorImpl) {
-      page.activate(page.getActiveEditor());
-    }
-    else if (page.getActiveEditor() instanceof GenericGraphicsEditor) {
-      page.activate(EditorUtils.getCorrespondingEditor(page.getActiveEditor()));
-    }
-  }
-  
-  public void editPartSelected(IWorkbenchPart part, ISelection selection) {
-    lastStrSelection = null;
-    selectionChanged(part, selection);
-  }
-  
-  /**
    * Create the mappings needed for computation of selections:
    * <ul>
    * <li><code>epToPos</code>: Map from {@link IMCGraphicalEditPart IMCGraphicalEditParts} to

@@ -58,5 +58,5 @@ Export-Package: de.monticore.editorconnector,
  de.monticore.visualoutline.runtime,
  de.monticore.visualoutline.runtime.gef,
  de.monticore.visualoutline.runtime.model
-Bundle-Activator: de.monticore.editorconnector.EditorConnector
+ 
 
