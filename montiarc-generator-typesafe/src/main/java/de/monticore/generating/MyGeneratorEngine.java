@@ -14,7 +14,7 @@ import de.monticore.generating.templateengine.MyTemplateControllerFactory;
 import de.monticore.generating.templateengine.TemplateControllerConfiguration;
 
 /**
- * TODO: Write me!
+ * 
  *
  * @author (last commit) $Author$
  * @version $Revision$, $Date$
@@ -32,12 +32,12 @@ public class MyGeneratorEngine extends GeneratorEngine {
     myTemplateControllerConfig = createTemplateControllerConfiguration(generatorSetup, null, null);
   }
   
-  public String generateToString(String templateName, ASTNode node,
+  public String generateToString(String templateName,
       Object... templateArguments) {
     MyTemplateController tc = new MyTemplateControllerFactory().create(myTemplateControllerConfig,
         templateName);
     tc.setTemplateControllerFactory(new MyTemplateControllerFactory());
-    return tc.processTemplate(templateName, node, Arrays.asList(templateArguments));
+    return tc.includeArgs(templateName, Arrays.asList(templateArguments));
   }
   
   /**

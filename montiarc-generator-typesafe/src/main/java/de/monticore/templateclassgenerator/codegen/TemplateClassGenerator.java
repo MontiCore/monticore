@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.MyGeneratorEngine;
 import de.monticore.templateclassgenerator.EmptyNode;
@@ -27,6 +26,8 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 
 /**
+ * This class generates a template class for each template.
+ * 
  * @author (last commit) $Author$
  * @version $Revision$, $Date$
  * @since TODO: add version number
@@ -37,6 +38,15 @@ public class TemplateClassGenerator {
   
   private static final String RESULT_METHOD = "tc.result";
   
+  /**
+   * Generates the template fqnTemplateName from the modelPath to the
+   * targetFilePath with the targetName
+   * 
+   * @param targetName
+   * @param modelPath
+   * @param fqnTemplateName
+   * @param targetFilepath
+   */
   public static void generateClassForTemplate(String targetName, Path modelPath,
       String fqnTemplateName, File targetFilepath) {
     List<Parameter> params = new ArrayList<>();
@@ -66,6 +76,15 @@ public class TemplateClassGenerator {
     doGenerate(targetFilepath, fqnTemplateName, targetName, params, result);
   }
   
+  /**
+   * Does the generation with the parameters of the signature method tc.params(...) and tc.signature(...).
+   * 
+   * @param targetFilepath
+   * @param fqnTemplateName
+   * @param targetName
+   * @param params
+   * @param result
+   */
   private static void doGenerate(File targetFilepath, String fqnTemplateName, String targetName,
       List<Parameter> params, Optional<String> result) {
     final GeneratorSetup setup = new GeneratorSetup(targetFilepath);

@@ -11,7 +11,7 @@ package ${package};
 
 import java.nio.file.Path;
 import de.monticore.ast.ASTNode;
-import de.monticore.generating.MyGeneratorEngine;
+import de.monticore.generating.GeneratorConfig;
 
 /**
  * @date ${helper.getTimeNow()}<br>
@@ -32,9 +32,9 @@ public class ${classname} <#t>
   </#if>
   *
   */
-  public static void generateToFile(MyGeneratorEngine generator, Path filePath, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)})
+  public static void generateToFile(Path filePath, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)})
   {
-    generator.generate("${fqnTemplateName?replace("\\","/")}", filePath, node<#if parameters?has_content>, </#if>${helper.printParameterNames(parameters)});
+    GeneratorConfig.getGeneratorEngine().generate("${fqnTemplateName?replace("\\","/")}", filePath, node<#if parameters?has_content>, </#if>${helper.printParameterNames(parameters)});
   }
   
   /**
@@ -49,9 +49,9 @@ public class ${classname} <#t>
   </#if>
   * @return String
   */
-  public static String generateToString(MyGeneratorEngine generator, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)})
+  public static String generateToString(${helper.printParameters(parameters)})
   {
-    return generator.generateToString("${fqnTemplateName?replace("\\","/")}", node<#if parameters?has_content>, </#if>${helper.printParameterNames(parameters)});
+    return GeneratorConfig.getGeneratorEngine().generateToString("${fqnTemplateName?replace("\\","/")}"<#if parameters?has_content>, </#if>${helper.printParameterNames(parameters)});
   }
   
   <#if result.isPresent()>
@@ -69,9 +69,9 @@ public class ${classname} <#t>
   * @result ${result.get()}
   */  
   <#assign simpleName = helper.printSimpleName(result.get())>
-  public static ${result.get()} generateToResult(MyGeneratorEngine generator, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)}, java.util.function.Function<String, ${result.get()}> function)
+  public static ${result.get()} generateToResult(${helper.printParameters(parameters)}, java.util.function.Function<String, ${result.get()}> function)
   {
-    return function.apply(generateToString(generator, node<#if parameters?has_content>, </#if>${helper.printParameterNames(parameters)}));
+    return function.apply(generateToString(${helper.printParameterNames(parameters)}));
   }
   </#if>
   

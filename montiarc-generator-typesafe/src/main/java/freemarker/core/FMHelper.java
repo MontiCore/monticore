@@ -14,7 +14,7 @@ import freemarker.template.Template;
  */
 
 /**
- * TODO: Write me!
+ * Helper class for Freemarker templates
  *
  * @author (last commit) $Author$
  * @version $Revision$, $Date$
@@ -57,6 +57,13 @@ public class FMHelper {
     return arguments;
   }
   
+  /**
+   * Converts a list of parameter Strings to a List of Type Parameter
+   * e.g. "Integer s" -> new Parameter(type, name)
+   * 
+   * @param params
+   * @return
+   */
   public static List<Parameter> getParams(List<String> params) {
     List<Parameter> ret = new ArrayList<>();
     for (String s : params) {
@@ -69,10 +76,22 @@ public class FMHelper {
     return ret;
   }
   
+  /**
+   * Returns a name of MethodCall m as String
+   * 
+   * @param m
+   * @return
+   */
   private static String getMethodCallName(MethodCall m) {
     return ((Expression) m.getParameterValue(0)).toString();
   }
   
+  /**
+   * Returns the list of method arguments as String list.
+   * 
+   * @param m
+   * @return
+   */
   private static List<String> getMethodCallArguments(MethodCall m) {
     List<String> params = new ArrayList<>();
     for (int i = 1; i < m.getParameterCount(); i++) {

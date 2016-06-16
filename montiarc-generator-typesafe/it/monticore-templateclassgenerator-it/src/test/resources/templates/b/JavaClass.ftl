@@ -6,6 +6,8 @@ public class ${classname} {
   public ${classname}() {
     super();
   }
+  
+  <#-- ${templates.b.TemplateTemplate.generateToString("bubu")} -->
 
 
   <#list attributes as attribute>

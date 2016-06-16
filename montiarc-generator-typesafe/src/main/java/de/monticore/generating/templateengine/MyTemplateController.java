@@ -21,8 +21,15 @@ import de.monticore.ast.ASTNode;
  */
 public class MyTemplateController extends TemplateController {
   
+  
+  /**
+   * Ensures tc.params(...) is only called once
+   */
   private boolean parametrized = false;
   
+  /**
+   * Ensures tc.result(...) is only called once
+   */
   private boolean resultized = false;
   
   /**

@@ -63,12 +63,12 @@ private static Path outputDirectory = Paths.get("target/generated-sources/templa
     assertEquals(2, methods.size());;
     for(JavaMethodSymbol method :methods){
       if(method.getName().equals("generateToFile")){
-        assertEquals(3, method.getParameters().size());
+        assertEquals(2, method.getParameters().size());
         hasCorrectGenerate = true;
       }
       
       if(method.getName().equals("generateToString")){
-        assertEquals(2, method.getParameters().size());
+        assertEquals(0, method.getParameters().size());
         hasCorrectToString = true;
       }
     }
@@ -88,12 +88,12 @@ private static Path outputDirectory = Paths.get("target/generated-sources/templa
     assertEquals(2, methods.size());;
     for(JavaMethodSymbol method :methods){
       if(method.getName().equals("generateToFile")){
-        assertEquals(5, method.getParameters().size());
+        assertEquals(4, method.getParameters().size());
         hasCorrectGenerate = true;
       }
       
       if(method.getName().equals("generateToString")){
-        assertEquals(4, method.getParameters().size());
+        assertEquals(2, method.getParameters().size());
         hasCorrectToString = true;
       }
     }
@@ -113,12 +113,12 @@ private static Path outputDirectory = Paths.get("target/generated-sources/templa
     assertEquals(2, methods.size());;
     for(JavaMethodSymbol method :methods){
       if(method.getName().equals("generateToFile")){
-        assertEquals(3, method.getParameters().size());
+        assertEquals(2, method.getParameters().size());
         hasCorrectGenerate = true;
       }
       
       if(method.getName().equals("generateToString")){
-        assertEquals(2, method.getParameters().size());
+        assertEquals(0, method.getParameters().size());
         hasCorrectToString = true;
       }
     }
@@ -140,17 +140,17 @@ private static Path outputDirectory = Paths.get("target/generated-sources/templa
     assertEquals(3, methods.size());;
     for(JavaMethodSymbol method :methods){
       if(method.getName().equals("generateToFile")){
-        assertEquals(5, method.getParameters().size());
+        assertEquals(4, method.getParameters().size());
         hasCorrectGenerate = true;
       }
       
       if(method.getName().equals("generateToString")){
-        assertEquals(4, method.getParameters().size());
+        assertEquals(2, method.getParameters().size());
         hasCorrectToString = true;
       }
       
       if(method.getName().equals("generateToResult")){
-        assertEquals(5, method.getParameters().size());
+        assertEquals(3, method.getParameters().size());
         assertEquals("Integer", method.getReturnType().getName());
         hasCorrectToResult = true;
       }

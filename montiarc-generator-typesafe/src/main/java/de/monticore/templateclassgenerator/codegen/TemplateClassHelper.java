@@ -22,6 +22,12 @@ public class TemplateClassHelper {
     return LocalDateTime.now().toString();
   }
   
+  /**
+   * Prints a list of parameters as a single String seperated by a comma
+   * 
+   * @param parameters
+   * @return
+   */
   public static String printParameters(List<Parameter> parameters) {
     String ret = "";
     for (Parameter p : parameters) {
@@ -34,6 +40,12 @@ public class TemplateClassHelper {
     return ret;
   }
   
+  /**
+   * Prints a String with only the parameter's names seperated by a comma
+   * 
+   * @param parameters
+   * @return
+   */
   public static String printParameterNames(List<Parameter> parameters) {
     String ret = "";
     for (Parameter a : parameters) {
@@ -45,6 +57,13 @@ public class TemplateClassHelper {
     return ret;
   }
   
+  /**
+   * Prints name without generics and unqualified 
+   * e.g. a.b.C<T> -> C
+   * 
+   * @param fqn
+   * @return
+   */
   public static String printSimpleName(String fqn) {
     String ret = fqn;
     if (fqn.contains(".")) {
@@ -56,6 +75,12 @@ public class TemplateClassHelper {
     return ret;
   }
   
+  /**
+   * Prints a list of Parameters as String seperated by a comma with "".
+   * e.g. Integer i -> "Integer i"  
+   * @param parameters
+   * @return
+   */
   public static String printParametersAsStringList(List<Parameter> parameters) {
     String ret = "";
     for (int i = 0; i < parameters.size(); i++) {

@@ -56,7 +56,7 @@ public class UsageTest extends AbstractSymtabTest {
     attributes.add(new Attribute("Integer", "i"));
     attributes.add(new Attribute("String", "s"));
     Path filePath = Paths.get("test/" + classname + ".java");
-    JavaClassTemplate.generateToFile(generator, filePath, new EmptyNode(), "test", classname,
+    JavaClassTemplate.generateToFile(filePath, new EmptyNode(), "test", classname,
         attributes);
     JavaTypeSymbol testClass = symTab.<JavaTypeSymbol> resolve("test.Test1", JavaTypeSymbol.KIND)
         .orElse(null);
@@ -71,7 +71,7 @@ public class UsageTest extends AbstractSymtabTest {
     attributes.add(new Attribute("Integer", "i"));
     attributes.add(new Attribute("String", "s"));
     Function<String, ASTConstructorDeclaration> function = (String s) -> parseToASTMethodDecl(s);
-    ASTConstructorDeclaration meth = ConstructorTemplate.generateToResult(generator, new EmptyNode(), "Test2", attributes, new Helper(), function);
+    ASTConstructorDeclaration meth = ConstructorTemplate.generateToResult("Test2", attributes, new Helper(), function);
     assertNotNull(meth);
   }
   
@@ -83,7 +83,7 @@ public class UsageTest extends AbstractSymtabTest {
     List<Attribute> attributes = new ArrayList<>();
     attributes.add(new Attribute("Integer", "i"));
     attributes.add(new Attribute("String", "s"));
-    String s = JavaClassTemplate.generateToString(generator, new EmptyNode(), "test", classname, attributes);
+    String s = JavaClassTemplate.generateToString("test", classname, attributes);
     assertNotNull(s);
   }
   
