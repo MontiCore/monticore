@@ -17,7 +17,6 @@
 package de.monticore.editorconnector;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,20 +33,15 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.ISelectionListener;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.editorconnector.util.EditorUtils;
+import de.monticore.genericgraphics.GenericFormEditor;
 import de.monticore.genericgraphics.GenericGraphicsEditor;
 import de.monticore.genericgraphics.GenericGraphicsViewer;
 import de.monticore.genericgraphics.controller.editparts.IMCGraphicalEditPart;
@@ -93,11 +87,13 @@ import de.se_rwth.langeditor.texteditor.TextEditorImpl;
  * 
  * @author Tim Enger
  */
-public class GraphicsTextSelectionListener implements ISelectionListener {
+public class FormSelectionListener implements ISelectionListener {
   
   private GenericGraphicsViewer viewer;
   
   private IFile ownFile;
+  
+  private ISelection ownSelection;
   
   // mapping from line numbers to all editparts
   // that have an associated model object, that
@@ -109,21 +105,6 @@ public class GraphicsTextSelectionListener implements ISelectionListener {
   // mapping from editparts to position in textual source of the model
   private Map<IMCGraphicalEditPart, TextPosition> epToPos = new LinkedHashMap<IMCGraphicalEditPart, TextPosition>();;
   
-  /* This flag is set to false if the selection in a textual editor changed. When text is selected,
-   * the corresponding EditParts in the graphical outline/ editor are selected. This selection
-   * triggers a selection changed event and will cause the corresponding row in the textual editor
-   * to be selected -> loop. Hence, the latter selection is only carried out if textSelected is
-   * false. */
-  private boolean textSelected = false;
-  
-  private boolean epSelected = false;
-  
-  private boolean editorSwitched = false;
-  
-  private ISelection lastTextSelection = null;
-  
-  private ISelection lastStrSelection = null;
-  
   /**
    * Constructor
    * 
@@ -131,100 +112,43 @@ public class GraphicsTextSelectionListener implements ISelectionListener {
    * @param viewer The {@link GraphicalViewer} this listener is based on.
    * @throws SelectionSyncException
    */
-  public GraphicsTextSelectionListener(IFile ownFile, GenericGraphicsViewer viewer) {
+  public FormSelectionListener(IFile ownFile, GenericGraphicsViewer viewer) {
     this.viewer = viewer;
     this.ownFile = ownFile;
   }
   
   @Override
   public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-    // Sometimes the same selection change is registered several times due
-    // to bug workarounds in EditorConnector -> only handle it once
-    if ((lastStrSelection != null && selection.equals(lastStrSelection))
-        || (lastTextSelection != null && selection.equals(lastTextSelection))) {
+    if (selection.equals(ownSelection)) {
       return;
     }
-    
-    if (selection instanceof IStructuredSelection && !epSelected) {
-      lastStrSelection = selection;
-      
+    if (selection instanceof IStructuredSelection) {
       IStructuredSelection ss = (IStructuredSelection) selection;
-      if (part instanceof IEditorPart) {
+      if (part instanceof GenericFormEditor) {
         IFile file = getFile(part);
         if (file == null || !file.equals(ownFile)) {
           return;
         }
-        
-        List<IEditorReference> editors = findEditorsForFile(file);
-        TextEditorImpl editor = getTextEditor(editors);
-        if (editor != null) {
-          textSelected = true;
-          setSelectionText(ss, editor);
-        }
+        setSelection(ss, (GenericFormEditor) part);
       }
-      else if (part instanceof ContentOutline) {
+      else if (part instanceof IContentOutlinePage) {
         // selection originates from an OutlinePage
         ContentOutline co = (ContentOutline) part;
-        IEditorPart activeE = co.getViewSite().getPage().getActiveEditor();
-        
-        // only regard this case if textual outline is selected or the graphical editor is not
-        // opened
-        if (EditorConnector.getInstance().getOutlineState(activeE)
-            || !EditorUtils.isGraphicalEditorOpen(activeE)) {
-          // is the active editor a GenericGraphicsEditor (with textual outline displayed)? ->
-          // update selected edit parts
-          if (activeE instanceof GenericGraphicsEditor) {
-            TextEditorImpl txtEditor = (TextEditorImpl) EditorUtils.getCorrespondingEditor(activeE);
-            if (txtEditor != null) {
-              setSelectionGraphics(ss, txtEditor);
-              // switch to textual editor only if graphical outline is selected
-              if (EditorConnector.getInstance().isGraphicalOutlineShown(txtEditor)) {
-                editorSwitched = true;
-                txtEditor.getSite().getPage().activate(txtEditor);
-              }
-            }
-            return;
-          }
-          // is the active editor an TextEditorImpl and is the graphical outline shown? -> update
-          // text selection and switch to textual editor
-          else if (activeE instanceof TextEditorImpl) {
-            textSelected = true;
-            setSelectionText(ss, (TextEditorImpl) activeE);
-            
-            // switch to textual editor
-            editorSwitched = true;
-            activeE.getSite().getPage().activate(activeE);
-            return;
-          }
-        }
       }
     }
-    if (selection instanceof ITextSelection && !textSelected && !editorSwitched) {
-      lastTextSelection = selection;
-      
+    else if (selection instanceof ITextSelection) {
       ITextSelection ts = (ITextSelection) selection;
-      IFile file = getFile(part);
-      if (file == null || !file.equals(ownFile)) {
-        return;
+      if (part instanceof GenericFormEditor) {
+        IFile file = getFile(part);
+        if (file == null || !file.equals(ownFile)) {
+          return;
+        }
+        setSelection(ts, (GenericFormEditor) part);
       }
-      
-      if (part instanceof TextEditorImpl) {
-        epSelected = true;
-        setSelectionGraphics(ts, (TextEditorImpl) part);
+      else if (part instanceof IContentOutlinePage) {
+        // selection originates from an OutlinePage
+        ContentOutline co = (ContentOutline) part;
       }
-    }
-    
-    // reset flags
-    if (editorSwitched && selection instanceof ITextSelection) {
-      editorSwitched = false;
-    }
-    else if (textSelected && selection instanceof ITextSelection) {
-      lastTextSelection = selection;
-      textSelected = false;
-    }
-    else if (epSelected && selection instanceof IStructuredSelection) {
-      lastStrSelection = selection;
-      epSelected = false;
     }
   }
   
@@ -322,7 +246,7 @@ public class GraphicsTextSelectionListener implements ISelectionListener {
    * @param editor The {@link TextEditorImpl} to set the text selection in.
    */
   @SuppressWarnings("unchecked")
-  private void setSelectionText(IStructuredSelection ss, TextEditorImpl editor) {
+  private void setSelection(IStructuredSelection ss, GenericFormEditor editor) {
     List<Object> selectionList = ss.toList();
     
     // if there is more than one element selected select all
@@ -356,10 +280,8 @@ public class GraphicsTextSelectionListener implements ISelectionListener {
       }
     }
     if (setOnce) {
-      selectText(editor, new TextPosition(startLine, startOffset, endLine, endOffset));
-    }
-    else {
-      selectText(editor, null);
+      selectText(editor.getTextEditor(),
+          new TextPosition(startLine, startOffset, endLine, endOffset));
     }
   }
   
@@ -374,7 +296,6 @@ public class GraphicsTextSelectionListener implements ISelectionListener {
     
     // if Textpos is null, select nothing
     if (tp == null) {
-      sp.setSelection(new TextSelection(0, 0));
       return;
     }
     
@@ -413,10 +334,8 @@ public class GraphicsTextSelectionListener implements ISelectionListener {
     
     // do the selection
     if (offset > -1 && length > -1) {
-      sp.setSelection(new TextSelection(offset, length));
-    }
-    else {
-      sp.setSelection(new TextSelection(0, 0));
+      ownSelection = new TextSelection(offset, length);
+      sp.setSelection(ownSelection);
     }
   }
   
@@ -427,10 +346,10 @@ public class GraphicsTextSelectionListener implements ISelectionListener {
    * @param ts The {@link ITextSelection} containing the selected text
    * @param editor The {@link TextEditorImpl} needed to compute offset.
    */
-  private void setSelectionGraphics(ITextSelection ts, TextEditorImpl editor) {
+  private void setSelection(ITextSelection ts, GenericFormEditor editor) {
     
     // we have to find out which offset the lines have, we want to highlight
-    IDocumentProvider dp = editor.getDocumentProvider();
+    IDocumentProvider dp = editor.getTextEditor().getDocumentProvider();
     IDocument doc = dp.getDocument(editor.getEditorInput());
     
     // determine the current text selection
@@ -526,116 +445,19 @@ public class GraphicsTextSelectionListener implements ISelectionListener {
   }
   
   /**
-   * Sets the selection in the {@link GenericGraphicsEditor} according to the {@link Segment
-   * Segments} in the {@link IStructuredSelection}. Thereby, the line numbers are computed based on
-   * the {@link IDocument} provided by the {@link TextEditorImpl}.
-   * 
-   * @param ss The {@link IStructuredSelection}
-   * @param textE The {@link TextEditorImpl}
-   */
-  private void setSelectionGraphics(IStructuredSelection ss, TextEditorImpl textE) {
-    // translate range to linenumbers
-    IDocumentProvider dp = textE.getDocumentProvider();
-    IDocument doc = dp.getDocument(textE.getEditorInput());
-    
-    // determine the current text selection
-    int startLine = Integer.MAX_VALUE;
-    int startOffset = Integer.MAX_VALUE;
-    // TODO MB Segment???
-    /* try {
-     * @SuppressWarnings("unchecked") Iterator<Object> iter = ss.iterator(); while (iter.hasNext())
-     * { Object o = iter.next(); if (o instanceof Segment) { Segment seg = (Segment) o; // the
-     * segment only has a position, no length // the position is the starting character // of the
-     * line of the object // thus, it is not possible to find out // which elements are selected, //
-     * if multiple elements are selected in the outline int segOffset =
-     * seg.getPosition().getOffset(); // monticore start counting from 1, eclipse from 0, therefore
-     * +1 int segStartLine = doc.getLineOfOffset(segOffset); int segStartOffSet = segOffset -
-     * doc.getLineOffset(segStartLine); segStartLine++; segStartOffSet++; startLine =
-     * Math.min(segStartLine, startLine); startOffset = Math.min(segStartOffSet, startOffset); } } }
-     * catch (BadLocationException e) { Log.error(
-     * "Text Selection failed due to the following exception: " + e); return; } */
-    if (startLine != Integer.MAX_VALUE && startOffset != Integer.MAX_VALUE)
-      selectEPFromPosition(startLine, startOffset, startLine, startOffset);
-  }
-  
-  /**
    * Select the {@link GraphicalEditPart GraphicalEditParts} in the list. And sets the focus (
    * {@link GraphicalViewer#reveal(org.eclipse.gef.EditPart)} to the first one.
    * 
    * @param selection List of {@link GraphicalEditPart GraphicalEditParts} to select.
    */
   private void selectEditParts(List<IMCGraphicalEditPart> selection) {
-    viewer.setSelection(new StructuredSelection(selection));
+    ownSelection = new StructuredSelection(selection);
+    viewer.setSelection(ownSelection);
     // set focus to the first one
     if (!selection.isEmpty()) {
       if (viewer.getControl() != null)
         viewer.reveal(selection.get(0));
     }
-  }
-  
-  /**
-   * Find the {@link IEditorReference IEditorReferences} for a certain {@link IFile}.
-   * 
-   * @param f The {@link IFile}.
-   * @return All {@link IEditorReference IEditorReferences} that are opened an having the
-   * {@link IFile file} as input.
-   */
-  private List<IEditorReference> findEditorsForFile(IFile f) {
-    IWorkbench workbench = PlatformUI.getWorkbench();
-    IWorkbenchWindow window = workbench == null ? null : workbench.getActiveWorkbenchWindow();
-    IWorkbenchPage activePage = window == null ? null : window.getActivePage();
-    
-    if (activePage == null) {
-      return Collections.emptyList();
-    }
-    List<IEditorReference> refs = new ArrayList<IEditorReference>();
-    
-    for (IEditorReference er : activePage.getEditorReferences()) {
-      try {
-        if (er.getEditorInput() instanceof IFileEditorInput) {
-          IFile file = ((IFileEditorInput) er.getEditorInput()).getFile();
-          if (f.equals(file)) {
-            refs.add(er);
-          }
-        }
-      }
-      catch (PartInitException e) {
-        e.printStackTrace();
-      }
-    }
-    return refs;
-  }
-  
-  /**
-   * @param refs A list of {@link IEditorReference IEditorReferences} to search in.
-   * @return The first {@link IEditorReference} in <code>refs</code> that is a
-   * {@link TextEditorImpl}.
-   */
-  private TextEditorImpl getTextEditor(List<IEditorReference> refs) {
-    for (IEditorReference ref : refs) {
-      IEditorPart part = ref.getEditor(false);
-      // only take the first one you find
-      if (part instanceof TextEditorImpl) {
-        return (TextEditorImpl) part;
-      }
-    }
-    return null;
-  }
-  
-  /**
-   * @param refs A list of {@link IEditorReference IEditorReferences} to search in.
-   * @return The first {@link IEditorReference} in <code>refs</code> that is a
-   * {@link GenericGraphicsEditor}.
-   */
-  private GenericGraphicsEditor getGraphicsEditor(List<IEditorReference> refs) {
-    for (IEditorReference ref : refs) {
-      IEditorPart part = ref.getEditor(false);
-      // only take the first one you find
-      if (part instanceof GenericGraphicsEditor) {
-        return (GenericGraphicsEditor) part;
-      }
-    }
-    return null;
   }
   
   /**

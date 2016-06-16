@@ -57,7 +57,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 
-import de.monticore.editorconnector.GraphicsTextSelectionListener;
+import de.monticore.editorconnector.FormSelectionListener;
 import de.monticore.genericgraphics.controller.editparts.IMCEditPart;
 import de.monticore.genericgraphics.controller.editparts.IMCViewElementEditPart;
 import de.monticore.genericgraphics.controller.editparts.MCEditPartFactory;
@@ -164,7 +164,7 @@ public abstract class GenericGraphicsViewer extends ScrollingGraphicalViewer {
   
   private ILayoutAlgorithm layout;
   
-  private GraphicsTextSelectionListener selectionListener;
+  private FormSelectionListener selectionListener;
   
   private ResourceTracker resourceListener = new ResourceTracker();
   
@@ -208,7 +208,7 @@ public abstract class GenericGraphicsViewer extends ScrollingGraphicalViewer {
       return;
     }
     
-    selectionListener = new GraphicsTextSelectionListener(file, this);
+    selectionListener = new FormSelectionListener(file, this);
     site.getWorkbenchWindow().getSelectionService().addPostSelectionListener(selectionListener);
     this.txtEditor = txtEditor;    
   }
@@ -619,7 +619,7 @@ public abstract class GenericGraphicsViewer extends ScrollingGraphicalViewer {
     return (IMCEditPart) this.getRootEditPart().getContents();
   }  
   
-  public GraphicsTextSelectionListener getSelectionListener() {
+  public FormSelectionListener getSelectionListener() {
     return selectionListener;
   }
   

@@ -178,23 +178,8 @@ public class MCDiagramLayoutManager implements IDiagramLayoutManager<IMCEditPart
   
   @Override
   public boolean supports(Object object) {
-    // Only support ContentOutline if it belongs to an TextEditorImpl or a
-    // GenericGraphicsEditor and if the graphical outline is shown.
-    boolean supportsOutline = false;
-
-    IWorkbench workbench = PlatformUI.getWorkbench();
-    IWorkbenchWindow window = (workbench != null) ? workbench.getActiveWorkbenchWindow() : null;
-    IWorkbenchPage page = (window != null) ? window.getActivePage() : null;
-    
-    if(page != null && object instanceof ContentOutline) {
-      IEditorPart activeE = page.getActiveEditor();
-      supportsOutline = (activeE instanceof TextEditorImpl || activeE instanceof GenericGraphicsEditor) && !EditorConnector.getInstance().getOutlineState(activeE);
-    }
-    
-    boolean res = object instanceof GenericGraphicsEditor || object instanceof IMCEditPart || supportsOutline;
-    
-//    TODO: check what should be supported
-    return res;
+    // TODO MB: Check support
+    return false;
   }
   
   @SuppressWarnings("rawtypes")

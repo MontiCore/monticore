@@ -32,6 +32,8 @@ import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.editparts.ScalableRootEditPart;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.DisposeEvent;
@@ -262,4 +264,15 @@ public class GraphicalOutlinePage extends ContentOutlinePage {
     else
       return null;
   }
+
+  /**
+   * @see org.eclipse.ui.views.contentoutline.ContentOutlinePage#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
+   */
+  @Override
+  public void selectionChanged(SelectionChangedEvent event) {
+    ISelection selection = event.getSelection();
+    System.out.println("WW");
+  }
+  
+  
 }
