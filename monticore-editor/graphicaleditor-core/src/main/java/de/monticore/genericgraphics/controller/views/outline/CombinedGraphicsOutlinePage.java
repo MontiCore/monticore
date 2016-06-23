@@ -16,6 +16,8 @@
  *******************************************************************************/
 package de.monticore.genericgraphics.controller.views.outline;
 
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -73,13 +75,16 @@ public class CombinedGraphicsOutlinePage extends Page implements IContentOutline
     MenuManager manager = new MenuManager();
     Menu menu =  manager.createContextMenu(textualControl);
     textualControl.setMenu(menu);
-    getSite().registerContextMenu("outlineContext", manager, this);
+    getSite().registerContextMenu("outlineTextContext", manager, this);
         
     // add menu for selecting default outline type
     manager.add(new OutlineMenuContribution(false));
     manager.add(new OutlineMenuContribution(true));
-    
+     
     // initialize outline type
+    final IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode("graphical-editor-core");
+    showTextualOutline = !prefs.getBoolean(OutlineMenuContribution.PREF_NAME, true);
+
     changeOutlineType();
   }
   
@@ -139,7 +144,7 @@ public class CombinedGraphicsOutlinePage extends Page implements IContentOutline
       MenuManager managerTxt = new MenuManager();
       Menu menuTxt =  managerTxt.createContextMenu(textualControl);
       textualControl.setMenu(menuTxt);
-      getSite().registerContextMenu("outlineContext", managerTxt, this);
+      getSite().registerContextMenu("outlineTextContext", managerTxt, this);
       
 //  TODO fix me
     /* Somehow, if the outline was opened after the graphical editor has been opened, outline selection changes 

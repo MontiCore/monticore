@@ -40,7 +40,6 @@ import org.eclipse.gef.KeyStroke;
 import org.eclipse.gef.MouseWheelHandler;
 import org.eclipse.gef.MouseWheelZoomHandler;
 import org.eclipse.gef.RootEditPart;
-import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.editparts.ScalableRootEditPart;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.ui.actions.ActionRegistry;
@@ -216,13 +215,7 @@ public abstract class GenericGraphicsViewer extends ScrollingGraphicalViewer {
   public void configure() {
     // Equivalent to configureGraphicalViewer() from GraphicalEditor
     getControl().setBackground(ColorConstants.listBackground);
-    
-    // own configuration
-    this.setRootEditPart(new ScalableFreeformRootEditPart());
-    
-    ScalableRootEditPart rootEditPart = new ScalableRootEditPart();
-    setRootEditPart(rootEditPart);
-    
+        
     gLoader = new DefaultGraphicsLoader(createPersistenceUtil(), file);
     layout = createLayoutAlgorithm();
     setupPrinting();
@@ -295,15 +288,6 @@ public abstract class GenericGraphicsViewer extends ScrollingGraphicalViewer {
       this.doSave(new NullProgressMonitor());
     }
     
- /*   selectionListener = new GraphicsTextSelectionListener(file, this);
-    // Only add a selection listener for viewer's displayed in a graphical editor. Only add
-    // selection listener to other viewer if there is no graphical editor containing the viewer.
-    // This ensures that only one viewer is used per input file.
-    // (as the viewer can be displayed in outlines etc as well)
-    if ((selectionListener != null && getDisplayingPart() instanceof GenericGraphicsEditor)) {
-      site.getWorkbenchWindow().getSelectionService().addPostSelectionListener(selectionListener);
-    }
-*/      
     showProblemReports();
     
   }
@@ -602,13 +586,7 @@ public abstract class GenericGraphicsViewer extends ScrollingGraphicalViewer {
     return file;
   }
   
-  /**
-   * @return The absolute path of the editor file.
-   */
-  public String getAbsoluteFilePath() {
-    return file.getRawLocation().toOSString();
-  }
-      
+ 
   /**
    * Every GEF editor has a {@link RootEditPart}. This {@link RootEditPart} has a single child,
    * called <i>contents</i> editpart representing the model data of the editor.

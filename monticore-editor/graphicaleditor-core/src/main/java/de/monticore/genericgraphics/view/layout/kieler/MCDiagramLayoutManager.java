@@ -37,11 +37,7 @@ import org.eclipse.gef.editparts.ScalableRootEditPart;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
 
 import com.google.common.collect.BiMap;
@@ -69,7 +65,7 @@ import de.cau.cs.kieler.kiml.options.LayoutOptions;
 import de.cau.cs.kieler.kiml.ui.diagram.IDiagramLayoutManager;
 import de.cau.cs.kieler.kiml.ui.diagram.LayoutMapping;
 import de.cau.cs.kieler.kiml.util.KimlUtil;
-import de.monticore.editorconnector.EditorConnector;
+import de.monticore.genericgraphics.GenericFormEditor;
 import de.monticore.genericgraphics.GenericGraphicsEditor;
 import de.monticore.genericgraphics.controller.editparts.IMCConnectionEdgeEditPart;
 import de.monticore.genericgraphics.controller.editparts.IMCEditPart;
@@ -79,7 +75,6 @@ import de.monticore.genericgraphics.controller.editparts.IMCShapeEditPart;
 import de.monticore.genericgraphics.controller.editparts.IMCViewElementEditPart;
 import de.monticore.genericgraphics.controller.editparts.connections.IMCConnectionEditPart;
 import de.monticore.genericgraphics.controller.editparts.intern.TextConnectionLabelEditPart;
-import de.monticore.genericgraphics.controller.views.outline.GraphicalOutlinePage;
 import de.monticore.genericgraphics.model.ITextConnectionLabel;
 import de.monticore.genericgraphics.model.graphics.IEdgeViewElement;
 import de.monticore.genericgraphics.model.graphics.IShapeViewElement;
@@ -89,7 +84,6 @@ import de.monticore.genericgraphics.view.figures.connections.MCBendpoint;
 import de.monticore.genericgraphics.view.figures.connections.locators.ConnectionLocatorPosition;
 import de.monticore.genericgraphics.view.layout.IConnectionType;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.langeditor.texteditor.TextEditorImpl;
 
 /**
  * <p>
@@ -150,8 +144,6 @@ import de.se_rwth.langeditor.texteditor.TextEditorImpl;
  * @author Tim Enger
  */
 public class MCDiagramLayoutManager implements IDiagramLayoutManager<IMCEditPart> {
-
-  private IProperty<GraphicalOutlinePage> GRAPHICAL_OUTLINE = new Property<GraphicalOutlinePage>("de.monticore.genericgraphics.controller.views.outline");
   
   /** editor part of the currently layouted diagram. */
   private IProperty<GenericGraphicsEditor> GENERIC_EDITOR = new Property<GenericGraphicsEditor>("de.monticore.genericgraphics.GenericGraphicsEditor");
@@ -178,8 +170,9 @@ public class MCDiagramLayoutManager implements IDiagramLayoutManager<IMCEditPart
   
   @Override
   public boolean supports(Object object) {
-    // TODO MB: Check support
-    return false;
+    //  TODO: check what should be supported
+    // return object instanceof GenericFormEditor || object instanceof IMCEditPart || object instanceof CombinedGraphicsOutlinePage;
+    return true;
   }
   
   @SuppressWarnings("rawtypes")
@@ -205,6 +198,9 @@ public class MCDiagramLayoutManager implements IDiagramLayoutManager<IMCEditPart
         }
         else if (object instanceof GenericGraphicsEditor) {
           return ((GenericGraphicsEditor) object).getContentEditPart();
+        }
+        else if (object instanceof GenericFormEditor) {
+          return ((GenericFormEditor) object).getGraphicalEditor().getContentEditPart();
         }
         else if (object instanceof RootEditPart) {
           return ((RootEditPart) object).getContents();
@@ -233,13 +229,20 @@ public class MCDiagramLayoutManager implements IDiagramLayoutManager<IMCEditPart
     mapping.setProperty(CONNECTIONS, new ArrayList<IMCNodeEditPart>());
     
     GenericGraphicsEditor editor = null;
-    
+
     // get the generic graphics editor part
     if (workbenchPart instanceof GenericGraphicsEditor) {
       editor = (GenericGraphicsEditor) workbenchPart;
     }
     
-    // TODO MB: Check if outline (viewer) is a possible workbenchpart
+    // check if this is an outline view which belongs to an TextEditorImpl/GenericGraphicsEditor
+    // and hence displays a GenericGraphicsViewer
+    if(workbenchPart instanceof ContentOutline) {
+      IEditorPart activeE = workbenchPart.getSite().getPage().getActiveEditor();
+      if (activeE instanceof GenericFormEditor) {
+        editor = ((GenericFormEditor) activeE).getGraphicalEditor();
+      }
+    }
    
     // choose the layout root edit part
     IMCEditPart layoutRootPart = null;
@@ -370,19 +373,12 @@ public class MCDiagramLayoutManager implements IDiagramLayoutManager<IMCEditPart
     // use relative bendpoints
     Command applyCommand = new ApplyLayoutCommand(mapping, false, scale);
     
-//    TODO remove usage of GenericGraphicsEditor, use GenericGraphicsViewer
     GenericGraphicsEditor editor = mapping.getProperty(GENERIC_EDITOR);
-    GraphicalOutlinePage grOutline = mapping.getProperty(GRAPHICAL_OUTLINE);
     
     if (editor != null) {
       CommandStack cStack = (CommandStack) editor.getAdapter(CommandStack.class);
       cStack.execute(applyCommand);
-    }
-    else if(grOutline != null) {
-      CommandStack cStack = grOutline.getCommandStack();
-      cStack.execute(applyCommand);
-    }
-    else {
+    } else {
       Log.error("MCDLM> no Editor was found! Cannot execute apply layout command!");
     }
   }

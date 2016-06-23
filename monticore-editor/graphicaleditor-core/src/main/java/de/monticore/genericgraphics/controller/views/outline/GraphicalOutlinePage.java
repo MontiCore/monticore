@@ -21,13 +21,10 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LayoutListener;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.draw2d.Viewport;
-import org.eclipse.draw2d.geometry.PrecisionRectangle;
-import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.parts.ScrollableThumbnail;
 import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.commands.CommandStack;
-import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.editparts.ScalableRootEditPart;
 import org.eclipse.gef.editparts.ZoomManager;
@@ -43,9 +40,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.part.IPageSite;
-import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 
+import de.monticore.editorconnector.menus.OutlineMenuContribution;
 import de.monticore.genericgraphics.GenericGraphicsViewer;
 
 /**
@@ -77,7 +74,6 @@ public class GraphicalOutlinePage extends ContentOutlinePage {
   private IFigure rootFigure;
   private double zoom;
   private boolean hasBeenLayouted = false;
-  private boolean outlineHasBeenShown = false;
   
   private boolean externalViewer = false;
   
@@ -89,51 +85,7 @@ public class GraphicalOutlinePage extends ContentOutlinePage {
   
   @Override
   public void createControl(Composite parent) {    
-    // manage own graphical viewer and display it
-    if(viewer != null && viewer.getControl() ==  null) {
-      externalViewer = false;
-      viewer.createControl(parent);
-      editDomain.addViewer(viewer);
-      viewer.configure();
-      viewer.refreshContents();
-
-      // Add LayoutListener to root figure to calculate the zoom factor needed to
-      // fit the diagram to the view.
-      if(viewer.getRootEditPart().getContents() instanceof AbstractGraphicalEditPart) {
-        final ContentOutline outlineView = (ContentOutline)GraphicalOutlinePage.this.getSite().getPage().findView("org.eclipse.ui.views.ContentOutline"); 
-        
-        if(outlineView != null) {
-          rootFigure = ((AbstractGraphicalEditPart)viewer.getRootEditPart().getContents()).getFigure();
-          
-          layoutListener = new LayoutListener() {
-            public void postLayout(IFigure container) {
-              Rectangle diagramBounds = new PrecisionRectangle(container.getBounds());
-              container.translateToAbsolute(diagramBounds);
-              org.eclipse.swt.graphics.Rectangle outlineBounds = outlineView.getCurrentPage().getControl().getBounds();
-              zoom = Math.min((double)outlineBounds.width/(double)diagramBounds.width, (double)outlineBounds.height/(double)diagramBounds.height);
-              hasBeenLayouted = true;
-              
-              // if the outline has been shown before the layout was processed, apply zoom now
-              if(outlineHasBeenShown) {
-                rootFigure.removeLayoutListener(this);
-                ((ScalableRootEditPart)viewer.getRootEditPart()).getZoomManager().setZoom(zoom);
-              }
-            }
-
-            public void invalidate(IFigure figure) {}
-            public boolean layout(IFigure figure) {return false;}
-            public void remove(IFigure figure) {}
-            public void setConstraint(IFigure figure, Object obj) {}
-          };
-          
-          rootFigure.addLayoutListener(layoutListener);
-        }
-      }
-           
-      // create popup menu
-      createPopupMenu(viewer.getControl());
-    }
-    else if (viewer != null) {
+ if (viewer != null) {
       externalViewer = true;
       createOverview(parent);
       createPopupMenu(canvas);
@@ -194,7 +146,10 @@ public class GraphicalOutlinePage extends ContentOutlinePage {
     if(control != null) {
       Menu context = manager.createContextMenu(control);
       control.setMenu(context);
-      getSite().registerContextMenu("outlineContext", manager, this);
+      getSite().registerContextMenu("outlineGraphicalContext", manager, this);
+      // add menu for selecting default outline type
+      manager.add(new OutlineMenuContribution(false));
+      manager.add(new OutlineMenuContribution(true));
     }
   }
   
@@ -243,9 +198,7 @@ public class GraphicalOutlinePage extends ContentOutlinePage {
   /**
    * Informs this graphical outline page that it has been displayed
    */
-  public void shown() {
-    outlineHasBeenShown = true;
-    
+  public void shown() {    
     /* Remove layout listener only after the viewer has actually been displayed the
      * the first time. This ensures that the zoom on the viewer is updated until the
      * viewer is actually displayed.

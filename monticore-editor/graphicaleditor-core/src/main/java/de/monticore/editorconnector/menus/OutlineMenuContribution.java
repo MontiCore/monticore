@@ -47,7 +47,7 @@ public class OutlineMenuContribution extends ContributionItem {
     MenuItem item = new MenuItem(menu, SWT.RADIO, index);
     item.setText(label);
     
-    final IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode("de.monticore.montiCoreGE_RE");
+    final IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode("graphical-editor-core");
     boolean defaultType = prefs.getBoolean(PREF_NAME, true);
     
     if(defaultType && textual)

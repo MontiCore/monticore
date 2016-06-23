@@ -25,7 +25,7 @@
       point="org.eclipse.ui.menus">
    <menuContribution
          allPopups="false"
-         locationURI="popup:outlineContext">
+         locationURI="popup:outlineTextContext">
       <command
             commandId="cdGraphics.commands.SwitchOutline"
             id="switchOutline"
@@ -35,32 +35,22 @@
    </menuContribution>
    <menuContribution
          allPopups="false"
-         locationURI="popup:#TextEditorContext?after=additions">
-      <dynamic
-            class="de.monticore.editorconnector.menus.TextEditorContextContribution"
-            id="dynamic">
-      </dynamic>
+         locationURI="popup:outlineGraphicalContext">
+      <command
+            commandId="cdGraphics.commands.SwitchOutline"
+            id="switchOutline"
+            label="Switch Outline"
+            style="push">
+      </command>
    </menuContribution>
    <menuContribution
          allPopups="false"
-         locationURI="popup:outlineContext">
+         locationURI="popup:outlineGraphicalContext">
       <dynamic
             class="de.monticore.editorconnector.menus.GenerateLayoutContextContribution"
             id="de.monticore.editorconnector.GenerateLayoutMenuItem">
       </dynamic>
    </menuContribution>
-</extension>
-<extension
-      point="org.eclipse.core.expressions.definitions">
-   <definition
-         id="activeEditorIsCD">
-      <with
-            variable="activeEditorId">
-         <equals
-               value="de.monticore.umlp.cdGraphics">
-         </equals>
-      </with>
-   </definition>
 </extension>
 <extension
       point="org.eclipse.ui.perspectives">
