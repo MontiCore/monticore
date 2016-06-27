@@ -110,6 +110,7 @@ public class AstGeneratorTest extends GeneratorTest {
   public void testInherited() {
     doGenerate("de/monticore/inherited/Supergrammar.mc4");
     doGenerate("de/monticore/inherited/sub/Subgrammar.mc4");
+   // doGenerate("de/monticore/inherited/subsub/Subsubgrammar.mc4");
     Path path = Paths.get(OUTPUT_FOLDER, Names.getPathFromFilename("de/monticore/inherited/"));
    // assertTrue("There are compile errors in generated code for the models in grammars/inherited.",
     // compile(path));

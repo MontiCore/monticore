@@ -284,7 +284,7 @@ public class CdEmfDecorator extends CdDecorator {
   }
   
   void addEPackageInterface(ASTCDCompilationUnit cdCompilationUnit, List<ASTCDType> astTypes,
-      Collection<String> collection, AstEmfGeneratorHelper astHelper) {
+      Collection<String> externaltypes, AstEmfGeneratorHelper astHelper) {
     ASTCDDefinition cdDef = cdCompilationUnit.getCDDefinition();
     ASTCDInterface packageInterface = CD4AnalysisNodeFactory.createASTCDInterface();
     String interfaceName = cdDef.getName() + EPACKAGE;
@@ -326,8 +326,8 @@ public class CdEmfDecorator extends CdDecorator {
       }
     }
     
-    for (String typeName : collection) {
-      int i = astTypes.size() + 1;
+    int i = astTypes.size() + 1;
+    for (String typeName : externaltypes) {
       String toParseAttr = "int " + typeName + " = " + i + ";";
       cdTransformation.addCdAttributeUsingDefinition(packageInterface, toParseAttr);
       String toParse = "EDataType get" + typeName + "();";
@@ -432,7 +432,7 @@ public class CdEmfDecorator extends CdDecorator {
       ASTCDMethod setMethod = replaceMethodBodyTemplate(clazz, toParse, methodBody);
       
       if (isOptional) {
-        glex.replaceTemplate("ast.ErrorIfNull", setMethod, new StringHookPoint(""));
+        glex.replaceTemplate(ERROR_IFNULL_TEMPLATE, setMethod, new StringHookPoint(""));
       }
       
       if (isOptional) {
@@ -472,7 +472,7 @@ public class CdEmfDecorator extends CdDecorator {
         toParse);
     Preconditions.checkArgument(astMethod.isPresent());
     glex.replaceTemplate(EMPTY_BODY_TEMPLATE, astMethod.get(), getMethodBody);
-    glex.replaceTemplate("ast.ErrorIfNull", astMethod.get(), new StringHookPoint(""));
+    glex.replaceTemplate(ERROR_IFNULL_TEMPLATE, astMethod.get(), new StringHookPoint(""));
   }
   
   /**
@@ -504,7 +504,7 @@ public class CdEmfDecorator extends CdDecorator {
     ASTCDMethod setMethod = replaceMethodBodyTemplate(clazz, toParse, methodBody);
     
     if (isOptional) {
-      glex.replaceTemplate("ast.ErrorIfNull", setMethod, new StringHookPoint(""));
+      glex.replaceTemplate(ERROR_IFNULL_TEMPLATE, setMethod, new StringHookPoint(""));
     }
     
     if (isOptional) {
@@ -789,6 +789,7 @@ public class CdEmfDecorator extends CdDecorator {
       }
       int i = 0;
       String typeName = "E" + simpleType;
+     // String typeName = AstEmfGeneratorHelper.getEDataType(simpleType);
       while (externalTypes.values().contains(typeName)) {
         typeName = typeName + i;
         i++;
@@ -827,9 +828,31 @@ public class CdEmfDecorator extends CdDecorator {
         convertedType = typeArgument.get();
         genericType = AstGeneratorHelper.JAVA_LIST;
       }
-      
       String convertedTypeName = TypesPrinter.printType(convertedType);
-      // Resolve only qualified types
+      /* TODO GV
+      if (!genericType.isEmpty() && !convertedTypeName.contains("<")) {
+        String newType = "";
+        Optional<CDTypeSymbol> symbol = astHelper.resolveCdType(convertedTypeName);
+        if (!symbol.isPresent()) {
+          if (!genericType.isEmpty()) {
+            newType = genericType + "<" + convertedTypeName + ">";
+          }
+          else {
+            newType = convertedTypeName;
+          }
+          addExternalType(newType, Names.getSimpleName(convertedTypeName));
+        }
+        else if (symbol.get().isEnum()) {
+          String simpleName = Names.getSimpleName(convertedTypeName);
+          convertedTypeName = symbol.get().getModelName().toLowerCase()
+              + GeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT + simpleName;
+          addExternalType(convertedTypeName, simpleName);
+        }
+      }
+      else {
+        String typeName = Names.getQualifiedName(astType.getNames());
+        addExternalType(typeName, Names.getSimpleName(convertedTypeName));
+      } */
       if (!convertedTypeName.contains(".")) {
         return;
       }

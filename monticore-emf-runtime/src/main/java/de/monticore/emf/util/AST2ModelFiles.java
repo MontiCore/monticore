@@ -122,7 +122,7 @@ public class AST2ModelFiles {
             .getAbsolutePath());
             
     Resource resource = resourceSet.getResource(fileURI, true);
-    if (resource.getContents().size() < 1) {
+    if (resource.getContents().isEmpty()) {
       throw new IllegalArgumentException(
           "0xA5005 A problem occupied while the deserialising of the " + fileName);
     }

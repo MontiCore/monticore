@@ -1,0 +1,31 @@
+package de.monticore.umlcd4a.symboltable;
+
+
+classdiagram CD1 {
+  <<S1, S2>> class Person {
+    <<SF>> public String name;
+    protected int age;
+    private String secondName;
+    String setName(String name, String prefix);
+    private int getAge();
+}
+
+  protected interface Printable {
+    protected void print(String... s);
+}
+
+  interface Callable extends Printable;
+
+  private class Prof extends Person implements Printable, Callable {
+    / String uni;
+}
+
+  public enum E implements Printable {
+    A, B;
+}
+
+  <<SA>> association member [*] Person <-> Prof [1];
+
+  association ec [1..*] E <-> Callable [0..1];
+
+}

@@ -55,6 +55,22 @@ public class EmfAttribute {
   
   private boolean hasExternalType;
   
+  private String ecoreObjectType;
+  
+  /**
+   * @return ecoreObjectType
+   */
+  public String getEcoreObjectType() {
+    return this.ecoreObjectType;
+  }
+
+  /**
+   * @param ecoreObjectType the ecoreObjectType to set
+   */
+  public void setEcoreObjectType(String ecoreObjectType) {
+    this.ecoreObjectType = ecoreObjectType;
+  }
+
   /**
    * @return definedGrammar
    */
