@@ -37,8 +37,9 @@ public class GenericFormEditor extends FormEditor {
       if (outlinePage == null) {
         IFile file = ((IFileEditorInput) getEditorInput()).getFile();
         GenericGraphicsViewer viewer = graphicalEditor.getGraphicalViewer();
-        outlinePage = new CombinedGraphicsOutlinePage(new GraphicalOutlinePage(viewer, file));
-        outlinePage.setTextualOutline((OutlinePage) textEditor.getAdapter(adapter));       
+        GraphicalOutlinePage graphicalOutline = new GraphicalOutlinePage(viewer, file);
+        OutlinePage textualOutline = (OutlinePage) textEditor.getAdapter(adapter);
+        outlinePage = new CombinedGraphicsOutlinePage(graphicalOutline, textualOutline);
       }
       return outlinePage;
     }
@@ -55,10 +56,10 @@ public class GenericFormEditor extends FormEditor {
 
     try {
       int textEditorIndex = addPage((IEditorPart) textEditor, getEditorInput());
-      setPageText(textEditorIndex, "CDTextEditor");
+      setPageText(textEditorIndex, "TextEditor");
       
       int graphicalEditorIndex = addPage(graphicalEditor, getEditorInput());
-      setPageText(graphicalEditorIndex, "CDGraphicalView");
+      setPageText(graphicalEditorIndex, "GraphicalView");
     }
     catch (PartInitException e) {
       // TODO Auto-generated catch block
@@ -114,4 +115,6 @@ public class GenericFormEditor extends FormEditor {
   public GenericGraphicsEditor getGraphicalEditor() {
     return this.graphicalEditor;
   }
+  
+  
 }
