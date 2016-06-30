@@ -20,8 +20,8 @@
 package mc.feature.ast;
 
 import mc.GeneratorIntegrationsTest;
+import mc.feature.hwc.statechartdsl._ast.StatechartDSLNodeFactory;
 import mc.feature.statechart.statechartdsl._ast.ASTState;
-import mc.feature.statechart.statechartdsl._ast.StatechartDSLNodeFactory;
 
 import org.junit.Rule;
 import org.junit.Test;

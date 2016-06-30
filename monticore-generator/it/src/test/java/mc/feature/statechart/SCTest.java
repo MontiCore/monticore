@@ -21,8 +21,8 @@ package mc.feature.statechart;
 
 import static org.junit.Assert.assertEquals;
 import mc.GeneratorIntegrationsTest;
+import mc.feature.hwc.statechartdsl._ast.StatechartDSLNodeFactory;
 import mc.feature.statechart.statechartdsl._ast.ASTState;
-import mc.feature.statechart.statechartdsl._ast.StatechartDSLNodeFactory;
 
 import org.junit.Test;
 

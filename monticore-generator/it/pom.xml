@@ -176,7 +176,6 @@
                 <grammar>src/main/grammars/mc/feature/namecollision/NameCollision.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/newcomments/CommentTest.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/sourcepositions/SourcePosition.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/statechart/StatechartDSL.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/fautomaton/action/Expression.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/fautomaton/automaton/FlatAutomaton.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/fautomaton/automatonwithaction/ActionAutomaton.mc4</grammar> <!-- TODO SO: uncomment TransitionWithAction rule -->
@@ -195,6 +194,9 @@
                 <grammar>src/main/grammars/mc/grammar/Grammar_WithConcepts.mc4</grammar>
                 <grammar>src//main/grammars/mc/grammar/concepts/visualoutline/Common.mc4</grammar>
                 <grammar>src//main/grammars/mc/grammar/concepts/visualoutline/Outline.mc4</grammar>
+                
+                <!-- Handwritten ast code -->
+                <grammar>src/main/grammars/mc/feature/hwc</grammar>
 
                 <!-- MontiCore Examples -->
                 <grammar>src/main/grammars/mc/examples</grammar>

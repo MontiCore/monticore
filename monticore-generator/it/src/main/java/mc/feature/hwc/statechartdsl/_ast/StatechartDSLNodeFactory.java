@@ -1,4 +1,8 @@
-package mc.feature.statechart.statechartdsl._ast;
+package mc.feature.hwc.statechartdsl._ast;
+
+import mc.feature.hwc.statechartdsl._ast.ASTStatechart;
+import mc.feature.hwc.statechartdsl._ast.StatechartDSLNodeFactory;
+import mc.feature.hwc.statechartdsl._ast.StatechartDSLNodeFactoryTOP;
 
 public class StatechartDSLNodeFactory extends StatechartDSLNodeFactoryTOP {
   
