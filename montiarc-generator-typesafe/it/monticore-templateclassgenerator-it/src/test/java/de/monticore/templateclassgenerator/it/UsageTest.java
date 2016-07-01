@@ -18,10 +18,11 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import templates.b.ConstructorTemplate;
-import templates.b.JavaClassTemplate;
+import templates.templates.b.ConstructorTemplate;
+import templates.templates.b.JavaClassTemplate;
 import types.Attribute;
 import types.Helper;
+import de.monticore.ast.ASTNode;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.MyGeneratorEngine;
 import de.monticore.java.javadsl._ast.ASTConstructorDeclaration;
@@ -61,6 +62,8 @@ public class UsageTest extends AbstractSymtabTest {
     JavaTypeSymbol testClass = symTab.<JavaTypeSymbol> resolve("test.Test1", JavaTypeSymbol.KIND)
         .orElse(null);
     assertNotNull(testClass);
+    ASTNode node = new EmptyNode();
+    
   }
   
   @Test
@@ -70,8 +73,10 @@ public class UsageTest extends AbstractSymtabTest {
     List<Attribute> attributes = new ArrayList<>();
     attributes.add(new Attribute("Integer", "i"));
     attributes.add(new Attribute("String", "s"));
-    Function<String, ASTConstructorDeclaration> function = (String s) -> parseToASTMethodDecl(s);
+    Function<String, ASTConstructorDeclaration> function = (String s) -> parseToASTConstructorDecl(s);
     ASTConstructorDeclaration meth = ConstructorTemplate.generateToResult("Test2", attributes, new Helper(), function);
+    
+    
     assertNotNull(meth);
   }
   
@@ -87,7 +92,7 @@ public class UsageTest extends AbstractSymtabTest {
     assertNotNull(s);
   }
   
-  private ASTConstructorDeclaration parseToASTMethodDecl(String s) {
+  private ASTConstructorDeclaration parseToASTConstructorDecl(String s) {
     JavaDSLParser parser = new JavaDSLParser();
     try {
       return parser.parseString_ConstructorDeclaration(s).get();

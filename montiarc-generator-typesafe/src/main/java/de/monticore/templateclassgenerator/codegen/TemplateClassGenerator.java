@@ -34,9 +34,13 @@ import freemarker.template.Template;
  */
 public class TemplateClassGenerator {
   
-  private static final String PARAM_METHOD = "tc.params";
+  private static final String PARAM_METHOD_1 = "tc.params";
   
-  private static final String RESULT_METHOD = "tc.result";
+  private static final String PARAM_METHOD_2 = "params";
+  
+  private static final String RESULT_METHOD_1 = "tc.result";
+  
+  private static final String RESULT_METHOD_2 = "result";
   
   /**
    * Generates the template fqnTemplateName from the modelPath to the
@@ -61,23 +65,33 @@ public class TemplateClassGenerator {
       e.printStackTrace();
     }
     Map<String, List<List<String>>> methodCalls = FMHelper.getMethodCalls(t);
-    if (methodCalls.containsKey(PARAM_METHOD)) {
+    if (methodCalls.containsKey(PARAM_METHOD_1)) {
       // we just recognize the first entry as there
       // must not be multiple params definitions
-      params = FMHelper.getParams(methodCalls.get(PARAM_METHOD).get(0));
+      params = FMHelper.getParams(methodCalls.get(PARAM_METHOD_1).get(0));
     }
-    if (methodCalls.containsKey(RESULT_METHOD)) {
+    else if (methodCalls.containsKey(PARAM_METHOD_2)) {
+      params = FMHelper.getParams(methodCalls.get(PARAM_METHOD_2).get(0));
+    }
+    
+    if (methodCalls.containsKey(RESULT_METHOD_1)) {
       // A template can only have one result type.
-      String dirtyResult = methodCalls.get(RESULT_METHOD).get(0).get(0);
+      String dirtyResult = methodCalls.get(RESULT_METHOD_1).get(0).get(0);
       String cleanResult = dirtyResult.replace("\"", "");
       result = Optional.of(cleanResult);
     }
-    
+    else if (methodCalls.containsKey(RESULT_METHOD_2)) {
+      // A template can only have one result type.
+      String dirtyResult = methodCalls.get(RESULT_METHOD_2).get(0).get(0);
+      String cleanResult = dirtyResult.replace("\"", "");
+      result = Optional.of(cleanResult);
+    }
     doGenerate(targetFilepath, fqnTemplateName, targetName, params, result);
   }
   
   /**
-   * Does the generation with the parameters of the signature method tc.params(...) and tc.signature(...).
+   * Does the generation with the parameters of the signature method
+   * tc.params(...) and tc.signature(...).
    * 
    * @param targetFilepath
    * @param fqnTemplateName
@@ -91,15 +105,36 @@ public class TemplateClassGenerator {
     TemplateClassHelper helper = new TemplateClassHelper();
     final MyGeneratorEngine generator = new MyGeneratorEngine(setup);
     ASTNode node = new EmptyNode();
-    String packageNameWithSeperators = Names.getPathFromFilename(fqnTemplateName);
-    String packageNameWithDots = "";
-    if (packageNameWithSeperators.length() > 1) {
-      packageNameWithDots = Names.getPackageFromPath(packageNameWithSeperators);
-    }
-    generator.generate("templates.typesafety.TemplateClass",
+    String packageNameWithSeperators = "templates" + File.separator
+        + Names.getPathFromFilename(fqnTemplateName);
+    String packageNameWithDots = Names.getPackageFromPath(packageNameWithSeperators);
+    generator.generate("typesafety.TemplateClass",
         Paths.get(packageNameWithSeperators, targetName + ".java"), node,
         packageNameWithDots, fqnTemplateName, targetName,
         params, result, helper);
+  }
+  
+  /**
+   * TODO: Write me!
+   * 
+   * @param foundTemplates
+   */
+  public static void generateTemplateSetup(List<String> foundTemplates, File targetFilepath, File modelPath) {
+    String packageName = "setup";
+    final GeneratorSetup setup = new GeneratorSetup(targetFilepath);
+    TemplateClassHelper helper = new TemplateClassHelper();
+    final MyGeneratorEngine generator = new MyGeneratorEngine(setup);
+    String filePath = Names.getPathFromPackage(packageName) + File.separator + "Templates.java";
+    String mp = modelPath.getPath();
+    List<File> nodes = TemplateClassHelper.walkTree(modelPath);
+    generator.generate("typesafety.Templates", Paths.get(filePath), new EmptyNode(),
+        packageName, nodes, mp, new TemplateClassHelper());
+  }
+  
+  public static void generateSomething(ASTNode ast, File targetFilepath) {
+    final GeneratorSetup setup = new GeneratorSetup(targetFilepath);
+    final MyGeneratorEngine generator = new MyGeneratorEngine(setup);
+    generator.generate("a.b.c.SomeTemplate", Paths.get("aPath/bPath/"), ast, "hello", "world", 42);
   }
   
 }

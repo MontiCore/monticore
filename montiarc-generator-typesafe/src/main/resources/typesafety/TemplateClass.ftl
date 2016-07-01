@@ -1,6 +1,5 @@
 ${tc.params("String package", "String fqnTemplateName", "String classname", "java.util.List<freemarker.core.Parameter> parameters",
 "String result", "de.montiarc.generator.codegen.TemplateClassHelper helper")}
-${tc.result("Integer")}
 
 <#-- Copyright -->
 ${tc.defineHookPoint("JavaCopyright")}

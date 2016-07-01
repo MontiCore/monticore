@@ -10,6 +10,7 @@ import groovy.lang.Script;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
@@ -89,6 +90,8 @@ public class TemplateClassGeneratorScript extends Script implements GroovyRunner
       String fileName = Names.getPathFromQualifiedName(template)+File.separator+simpleName+".ftl";
       generate(simpleName+"Template", Paths.get(modelPath.getAbsolutePath()), fileName, targetFilepath);
     }
+    
+    TemplateClassGenerator.generateTemplateSetup(foundTemplates, targetFilepath, modelPath);
   }
   
 //  public void generate(final List<File> modelPaths, File outputDirectory,

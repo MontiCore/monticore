@@ -6,11 +6,18 @@
 package de.monticore.generating.templateengine;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.collect.Lists.newArrayList;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import org.omg.CORBA.TCKind;
 
 import de.monticore.ast.ASTNode;
+import freemarker.core.Macro;
+import freemarker.template.Template;
 
 /**
  * TODO: Write me!
@@ -32,6 +39,10 @@ public class MyTemplateController extends TemplateController {
    */
   private boolean resultized = false;
   
+  private TemplateControllerConfiguration tcConfig;
+  
+  private static final String MYALIASES_TEMPLATE = "de.monticore.generating.templateengine.freemarker.MyAliases";
+  
   /**
    * Constructor for de.montiarc.generator.codegen.MyTemplateController
    * 
@@ -40,6 +51,7 @@ public class MyTemplateController extends TemplateController {
    */
   public MyTemplateController(TemplateControllerConfiguration tcConfig, String templatename) {
     super(tcConfig, templatename);
+    this.tcConfig = tcConfig;
   }
   
   /**
@@ -142,6 +154,29 @@ public class MyTemplateController extends TemplateController {
   //
   // return false;
   // }
+  
+  /**
+   * @see de.monticore.generating.templateengine.TemplateController#initAliases()
+   */
+  @Override
+  protected void initAliases() {
+     super.initAliases();
+           List<Macro> aliases = newArrayList();
+       
+       Template aliasesTemplate = tcConfig.getFreeMarkerTemplateEngine().loadTemplate(
+           MYALIASES_TEMPLATE);
+       
+       Set macros = aliasesTemplate.getMacros().entrySet();
+       for (Object o : macros) {
+         Entry e = (Entry) o;
+         Macro macro = (Macro) e.getValue();
+         if(null != this.getAliases()){
+           this.getAliases().add(macro);
+         }
+       }
+  }
+  
+  
   
   /**
    * Checks whether there are more than one result definitions.
