@@ -65,9 +65,9 @@ public final class MonticoreLanguage implements Language {
   @Override
   public void buildProject(IProject project, ImmutableSet<ModelState> modelStates,
       ImmutableList<Path> modelPath) {
-    Log.getFindings().clear();
     resolving.buildProject(project, modelStates, modelPath);
     modelStates.forEach(state -> {
+      Log.getFindings().clear();
       checkContextConditions(state);
       addErrors(state);
     });
