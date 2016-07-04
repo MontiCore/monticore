@@ -28,11 +28,12 @@ import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.swt.widgets.Display;
 
 import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 import de.se_rwth.commons.SourcePosition;
+import de.se_rwth.commons.logging.Finding;
+import de.se_rwth.commons.logging.Finding.Type;
 import de.se_rwth.langeditor.injection.TextEditorScoped;
 import de.se_rwth.langeditor.modelstates.ModelState;
 import de.se_rwth.langeditor.modelstates.ObservableModelStates;
@@ -46,7 +47,9 @@ public class ErrorHighlighter {
   private final Set<Annotation> annotations = Sets.newConcurrentHashSet();
   
   @Inject
-  public ErrorHighlighter(@Nullable IAnnotationModel annotationModel, IStorage storage,
+  public ErrorHighlighter(
+      @Nullable IAnnotationModel annotationModel,
+      IStorage storage,
       ObservableModelStates observableModelStates) {
     this.annotationModel = annotationModel;
     if (annotationModel != null) {
@@ -68,30 +71,28 @@ public class ErrorHighlighter {
   
   private void displaySyntaxErrors(ModelState modelState) {
     ImmutableMultimap<Interval, String> syntaxErrors = modelState.getSyntaxErrors();
-    for (Interval interval: syntaxErrors.keys()) {
+    for (Interval interval : syntaxErrors.keys()) {
       for (String message : syntaxErrors.get(interval)) {
-        Display.getDefault().asyncExec(() -> displayError(interval, message));
+        Display.getDefault().asyncExec(() -> displayError(interval, Type.ERROR, message));
       }
     }
   }
   
   private void displayAdditionalErrors(ModelState modelState) {
-    Multimap<SourcePosition, String> additionalErrors = modelState.getAdditionalErrors();
-    for (SourcePosition position: additionalErrors.keys()) {
-      for (String message : additionalErrors.get(position)) {
-        int index = Misc.convertLineAndColumnToLinearIndex(
-            modelState.getContent(), position.getLine(), position.getColumn());
-        Interval interval = new Interval(index, index);
-        Display.getDefault().asyncExec(() -> displayError(interval, message));
-      }
+    for (Finding finding : modelState.getAdditionalErrors()) {
+      SourcePosition position = finding.getSourcePosition().orElse(SourcePosition.getDefaultSourcePosition());
+      int index = Misc.convertLineAndColumnToLinearIndex(
+          modelState.getContent(), position.getLine(), position.getColumn());
+      Interval interval = new Interval(index, index);
+      Display.getDefault().asyncExec(() -> displayError(interval, finding.getType(), finding.getMsg()));
     }
   }
   
-  private void displayError(Interval interval, String message) {
+  private void displayError(Interval interval, Type type, String message) {
     int startIndex = interval.a;
     int stopIndex = interval.b + 1;
-    Annotation annotation =
-        new Annotation("org.eclipse.ui.workbench.texteditor.error", false, message);
+    String annoType = (type == Type.ERROR) ? "org.eclipse.ui.workbench.texteditor.error" : "org.eclipse.ui.workbench.texteditor.warning";
+    Annotation annotation = new Annotation(annoType, false, message);
     annotations.add(annotation);
     annotationModel.addAnnotation(annotation, new Position(startIndex, stopIndex - startIndex));
   }

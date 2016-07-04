@@ -35,30 +35,28 @@ import de.monticore.grammar.grammar._ast.ASTNonTerminalSeparator;
 import de.monticore.symboltable.Symbol;
 import de.monticore.utils.ASTNodes;
 import de.se_rwth.langeditor.modelstates.ModelState;
+import de.se_rwth.langeditor.util.ResourceLocator;
 
 class Resolving {
   
-  private final Map<IProject, ModelStatesInProject> modelStatesInProjects = new HashMap<>();
+  private Map<IProject, ModelStatesInProject> modelStatesInProjects = new HashMap<>();
   
-  private final Map<IProject, SymbolTableMaintainer> symbolTableMaintainers = new HashMap<>();
+  private Map<IProject, SymbolTableMaintainer> symbolTableMaintainers = new HashMap<>();
   
   void buildProject(IProject project, ImmutableSet<ModelState> modelStates,
       ImmutableList<Path> modelPath) {
-    ModelStatesInProject astMapper = new ModelStatesInProject();
-    modelStatesInProjects.put(project, astMapper);
+    ModelStatesInProject astMapper = getModelStatesInProject(project);
     modelStates.forEach(astMapper::acceptModelState);
-    SymbolTableMaintainer symbolTableMaintainer = new SymbolTableMaintainer(astMapper, modelPath);
+    SymbolTableMaintainer symbolTableMaintainer = getSymbolTableMaintainer(project, modelPath);
     modelStates.forEach(symbolTableMaintainer::acceptModelState);
-    symbolTableMaintainers.put(project, symbolTableMaintainer);
   }
   
   void buildModel(ModelState modelState) {
-    Optional.ofNullable(modelStatesInProjects.get(modelState.getProject()))
-        .ifPresent(modelStatesInProject -> modelStatesInProject.acceptModelState(modelState));
+    ModelStatesInProject modelStatesInProject = getModelStatesInProject(modelState.getProject());
+    modelStatesInProject.acceptModelState(modelState);
     
-    SymbolTableMaintainer value = symbolTableMaintainers.get(modelState.getProject());
-    Optional.ofNullable(value)
-        .ifPresent(maintainer -> maintainer.acceptModelState(modelState));
+    SymbolTableMaintainer maintainer = getSymbolTableMaintainer(modelState.getProject());
+    maintainer.acceptModelState(modelState);
   }
   
   Optional<Supplier<Optional<ASTNode>>> createResolver(ASTNode astNode) {
@@ -92,4 +90,29 @@ class Resolving {
       return enclosingASTNode;
     }).map(type::cast);
   }
+  
+  private ModelStatesInProject getModelStatesInProject(IProject project) {
+    if (!modelStatesInProjects.containsKey(project)) {
+      ModelStatesInProject astMapper = new ModelStatesInProject();
+      modelStatesInProjects.put(project, astMapper);      
+    }
+    return modelStatesInProjects.get(project);
+  }
+  
+  private SymbolTableMaintainer getSymbolTableMaintainer(IProject project) {
+    if (!symbolTableMaintainers.containsKey(project)) {
+      SymbolTableMaintainer symbolTableMaintainer = new SymbolTableMaintainer(getModelStatesInProject(project), ResourceLocator.assembleModelPath(project) );
+      symbolTableMaintainers.put(project, symbolTableMaintainer);      
+    }
+    return symbolTableMaintainers.get(project);
+  }
+  
+  private SymbolTableMaintainer getSymbolTableMaintainer(IProject project, ImmutableList<Path> modelPath) {
+    if (!symbolTableMaintainers.containsKey(project)) {
+      SymbolTableMaintainer symbolTableMaintainer = new SymbolTableMaintainer(getModelStatesInProject(project), modelPath);
+      symbolTableMaintainers.put(project, symbolTableMaintainer);      
+    }
+    return symbolTableMaintainers.get(project);
+  }
+  
 }
