@@ -114,12 +114,14 @@ public class TemplateClassGenerator {
         params, result, helper);
   }
   
+
   /**
    * TODO: Write me!
-   * 
    * @param foundTemplates
+   * @param targetFilepath
+   * @param modelPath
    */
-  public static void generateTemplateSetup(List<String> foundTemplates, File targetFilepath, File modelPath) {
+  public static void generateTemplateSetup(File targetFilepath, File modelPath) {
     String packageName = "setup";
     final GeneratorSetup setup = new GeneratorSetup(targetFilepath);
     TemplateClassHelper helper = new TemplateClassHelper();
@@ -131,10 +133,14 @@ public class TemplateClassGenerator {
         packageName, nodes, mp, new TemplateClassHelper());
   }
   
-  public static void generateSomething(ASTNode ast, File targetFilepath) {
+  public static void generateGeneratorConfig(File targetFilepath) {
+    String packageName = "setup";
     final GeneratorSetup setup = new GeneratorSetup(targetFilepath);
+    TemplateClassHelper helper = new TemplateClassHelper();
     final MyGeneratorEngine generator = new MyGeneratorEngine(setup);
-    generator.generate("a.b.c.SomeTemplate", Paths.get("aPath/bPath/"), ast, "hello", "world", 42);
+    String filePath = Names.getPathFromPackage(packageName) + File.separator + "GeneratorConfig.java";
+    generator.generate("typesafety.GeneratorConfig", Paths.get(filePath), new EmptyNode(),
+        packageName);
   }
   
 }

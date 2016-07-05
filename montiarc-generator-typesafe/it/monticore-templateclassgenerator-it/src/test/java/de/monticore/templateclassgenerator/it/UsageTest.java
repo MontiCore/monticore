@@ -18,13 +18,16 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import setup.GeneratorConfig;
 import templates.templates.b.ConstructorTemplate;
 import templates.templates.b.JavaClassTemplate;
+import templates.templates.b.TemplateTemplate;
 import types.Attribute;
 import types.Helper;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.MyGeneratorEngine;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.java.javadsl._ast.ASTConstructorDeclaration;
 import de.monticore.java.javadsl._parser.JavaDSLParser;
 import de.monticore.java.symboltable.JavaTypeSymbol;
@@ -51,7 +54,12 @@ public class UsageTest extends AbstractSymtabTest {
   @Test
   public void testJavaClassTemplateClass() {
     final GeneratorSetup setup = new GeneratorSetup(outputDirectory.toFile());
+//    GlobalExtensionManagement g = new GlobalExtensionManagement();
+//    g.defineGlobalValue("a.b.TemplateTemplate", new TemplateTemplate());
+//    g.defineGlobalValue("bubu", "einString");
+//    setup.setGlex(g);
     MyGeneratorEngine generator = new MyGeneratorEngine(setup);
+    GeneratorConfig.setGeneratorEngine(generator);
     String classname = "Test1";
     List<Attribute> attributes = new ArrayList<>();
     attributes.add(new Attribute("Integer", "i"));
@@ -63,7 +71,6 @@ public class UsageTest extends AbstractSymtabTest {
         .orElse(null);
     assertNotNull(testClass);
     ASTNode node = new EmptyNode();
-    
   }
   
   @Test

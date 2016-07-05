@@ -44,7 +44,8 @@ public class TemplateClassGeneratorScript extends Script implements GroovyRunner
         .withImportCustomizer(new ImportCustomizer().addStarImports(DEFAULT_IMPORTS));
     
     // configuration
-    TemplateClassGeneratorConfiguration config = TemplateClassGeneratorConfiguration.withConfiguration(configuration);
+    TemplateClassGeneratorConfiguration config = TemplateClassGeneratorConfiguration
+        .withConfiguration(configuration);
     
     // we add the configuration object as property with a special property
     // name
@@ -63,47 +64,57 @@ public class TemplateClassGeneratorScript extends Script implements GroovyRunner
     g.evaluate(script);
   }
   
- 
-  
   /**
    * TODO: Write me!
+   * 
    * @param targetName Classname of the target TemplateClass
    * @param modelPath Path of templates e.g. src/main/resources
-   * @param fqnTemplateName full qualified name of template e.g. /templates/component/Component.ftl
-   * @param targetFilepath Path where the TemplateClass should be generated to e.g. target/generated-source/
+   * @param fqnTemplateName full qualified name of template e.g.
+   * /templates/component/Component.ftl
+   * @param targetFilepath Path where the TemplateClass should be generated to
+   * e.g. target/generated-source/
    */
   public void generate(String targetName, Path modelPath, String fqnTemplateName,
       File targetFilepath) {
-    TemplateClassGenerator.generateClassForTemplate(targetName, modelPath, fqnTemplateName, targetFilepath);
+    TemplateClassGenerator.generateClassForTemplate(targetName, modelPath, fqnTemplateName,
+        targetFilepath);
   }
   
   /**
-   * Gets called by Groovy Script. Generates Template Classes for all templates in {@link modelPath} to {@link targetFilepath}
+   * Gets called by Groovy Script. Generates Template Classes for all templates
+   * in {@link modelPath} to {@link targetFilepath}
+   * 
    * @param modelPath
    * @param fqnTemplateName
    */
-  public void generate(File modelPath, File targetFilepath){
-    List<String> foundTemplates = Modelfinder.getModelsInModelPath(Paths.get(modelPath.getAbsolutePath()).toFile(), "ftl");
-    for(String template : foundTemplates){
-      System.out.println("[TypesafetyScript] generates model: "+ template);
+  public void generate(File modelPath, File targetFilepath) {
+    List<String> foundTemplates = Modelfinder.getModelsInModelPath(
+        Paths.get(modelPath.getAbsolutePath()).toFile(), "ftl");
+    for (String template : foundTemplates) {
+      System.out.println("[TypesafetyScript] generates model: " + template);
       String simpleName = Names.getSimpleName(template);
-      String fileName = Names.getPathFromQualifiedName(template)+File.separator+simpleName+".ftl";
-      generate(simpleName+"Template", Paths.get(modelPath.getAbsolutePath()), fileName, targetFilepath);
+      String fileName = Names.getPathFromQualifiedName(template) + File.separator + simpleName
+          + ".ftl";
+      generate(simpleName + "Template", Paths.get(modelPath.getAbsolutePath()), fileName,
+          targetFilepath);
     }
-    
-    TemplateClassGenerator.generateTemplateSetup(foundTemplates, targetFilepath, modelPath);
+    if (!foundTemplates.isEmpty()) {
+      TemplateClassGenerator.generateTemplateSetup(targetFilepath, modelPath);
+      TemplateClassGenerator.generateGeneratorConfig(targetFilepath);
+    }
   }
   
-//  public void generate(final List<File> modelPaths, File outputDirectory,
-//      Optional<String> hwcPath) {
-//    for(File modelPath : modelPaths){
-//      File fqnMP = Paths.get(modelPath.getAbsolutePath()).toFile();
-//      List<String> modelsInModelPath = Modelfinder.getModelsInModelPath(fqnMP, "ftl");
-//      for(String model : modelsInModelPath){
-////        generate(modelPaths, model, outputDirectory, hwcPath);
-//      }
-//    }
-//  }
+  // public void generate(final List<File> modelPaths, File outputDirectory,
+  // Optional<String> hwcPath) {
+  // for(File modelPath : modelPaths){
+  // File fqnMP = Paths.get(modelPath.getAbsolutePath()).toFile();
+  // List<String> modelsInModelPath = Modelfinder.getModelsInModelPath(fqnMP,
+  // "ftl");
+  // for(String model : modelsInModelPath){
+  // // generate(modelPaths, model, outputDirectory, hwcPath);
+  // }
+  // }
+  // }
   
   // #######################
   // log functions

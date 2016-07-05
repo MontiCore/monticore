@@ -7,11 +7,14 @@ package de.monticore.generating;
 
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Optional;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.MyTemplateController;
+import de.monticore.generating.templateengine.MyTemplateControllerConstants;
 import de.monticore.generating.templateengine.MyTemplateControllerFactory;
 import de.monticore.generating.templateengine.TemplateControllerConfiguration;
+import de.monticore.templateclassgenerator.ITemplates;
 
 /**
  * 
@@ -23,6 +26,16 @@ import de.monticore.generating.templateengine.TemplateControllerConfiguration;
 public class MyGeneratorEngine extends GeneratorEngine {
   
   private TemplateControllerConfiguration myTemplateControllerConfig;
+  
+  
+  /**
+   * @param templates the templates to set
+   */
+  public void setTemplates(Optional<ITemplates> templates) {
+    if(templates.isPresent()){
+      myTemplateControllerConfig.getGlEx().defineGlobalValue(MyTemplateControllerConstants.TEMPLATES, templates.get());
+    }
+  }
   
   /**
    * Constructor for de.montiarc.generator.codegen.MyGeneratorEngine
@@ -36,6 +49,7 @@ public class MyGeneratorEngine extends GeneratorEngine {
       Object... templateArguments) {
     MyTemplateController tc = new MyTemplateControllerFactory().create(myTemplateControllerConfig,
         templateName);
+    
     tc.setTemplateControllerFactory(new MyTemplateControllerFactory());
     return tc.includeArgs(templateName, Arrays.asList(templateArguments));
   }

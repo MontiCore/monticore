@@ -7,7 +7,8 @@ public class ${classname} {
     super();
   }
   
-  <#-- ${templates.b.TemplateTemplate.generateToString("bubu")} -->
+  <#-- private String ${glex.getGlobalValue("a.b.TemplateTemplate").generateToString("hello")}; -->
+  <#-- private String ${bubu}; -->
 
 
   <#list attributes as attribute>

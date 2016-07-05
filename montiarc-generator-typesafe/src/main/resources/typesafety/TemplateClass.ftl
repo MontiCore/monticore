@@ -10,7 +10,7 @@ package ${package};
 
 import java.nio.file.Path;
 import de.monticore.ast.ASTNode;
-import de.monticore.generating.GeneratorConfig;
+import setup.GeneratorConfig;
 
 /**
  * @date ${helper.getTimeNow()}<br>

@@ -2,7 +2,7 @@ ${tc.params("String package", "java.util.List<File> nodes", "String modelPath", 
 
 package ${package};
 
-public static class Templates {
+public class Templates implements de.monticore.templateclassgenerator.ITemplates {
 
   ${tc.includeArgs("typesafety.TemplatesInnerClasses", [nodes,0, modelPath, helper])}
 
