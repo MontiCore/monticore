@@ -103,7 +103,7 @@ final class SymbolTableMaintainer {
         }
         catch (Exception e) {
           Log.error(
-              "Error while updating supergrammar references for " + existingGrammarSymbol.getName(),
+              "0xA1100 Error while updating supergrammar references for " + existingGrammarSymbol.getName(),
               e);
         }
       }

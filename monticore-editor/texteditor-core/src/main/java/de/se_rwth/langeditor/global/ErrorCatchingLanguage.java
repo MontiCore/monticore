@@ -56,7 +56,7 @@ final class ErrorCatchingLanguage implements Language {
       language.buildProject(project, modelStates, modelPath);
     }
     catch (Exception e) {
-      Log.error("Error while building project.", e);
+      Log.error("0xA1115 Error while building project.", e);
     }
   }
   
@@ -65,7 +65,7 @@ final class ErrorCatchingLanguage implements Language {
       language.buildModel(modelState);
     }
     catch (Exception e) {
-      Log.error("Error while building model.", e);
+      Log.error("0xA1116 Error while building model.", e);
     }
   }
   
@@ -74,7 +74,7 @@ final class ErrorCatchingLanguage implements Language {
       return language.getKeywords();
     }
     catch (Exception e) {
-      Log.error("Error while retrieving keywords.", e);
+      Log.error("0xA1117 Error while retrieving keywords.", e);
       return ImmutableList.of();
     }
   }
@@ -84,7 +84,7 @@ final class ErrorCatchingLanguage implements Language {
       return language.getOutlineElementSet();
     }
     catch (Exception e) {
-      Log.error("Error determining outline elements.", e);
+      Log.error("0xA1118 Error determining outline elements.", e);
       return OutlineElementSet.empty();
     }
   }
@@ -94,7 +94,7 @@ final class ErrorCatchingLanguage implements Language {
       return language.createResolver(astNode);
     }
     catch (Exception e) {
-      Log.error("Error while creating hyperlink.", e);
+      Log.error("0xA1119 Error while creating hyperlink.", e);
       return Optional.empty();
     }
   }

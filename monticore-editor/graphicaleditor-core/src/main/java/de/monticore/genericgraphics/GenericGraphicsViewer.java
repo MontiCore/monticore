@@ -260,7 +260,7 @@ public abstract class GenericGraphicsViewer extends ScrollingGraphicalViewer {
       selectionListener.createMappings();
     }
     catch (SelectionSyncException e) {
-      Log.error("Refreshing of content failed due to the following exception: " + e);
+      Log.error("0xA1114 Refreshing of content failed due to the following exception: " + e);
     } 
     
     beforeModelLoad();

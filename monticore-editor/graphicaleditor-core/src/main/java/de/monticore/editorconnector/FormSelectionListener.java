@@ -328,7 +328,7 @@ public class FormSelectionListener implements ISelectionListener {
       length--;
     }
     catch (BadLocationException e) {
-      Log.error("Text Selection failed due to the following exception: " + e);
+      Log.error("0xA1101 Text Selection failed due to the following exception: " + e);
       return;
     }
     
@@ -364,7 +364,7 @@ public class FormSelectionListener implements ISelectionListener {
       endOffset = ts.getOffset() + ts.getLength() - doc.getLineOffset(endLine);
     }
     catch (BadLocationException e) {
-      Log.error("Text Selection failed due to the following exception: " + e);
+      Log.error("0xA1102 Text Selection failed due to the following exception: " + e);
       return;
     }
     

@@ -45,7 +45,7 @@ public class ConnectionLabelMoveEditPolicy2 extends XYLayoutEditPolicy {
   @Override
   protected Command createChangeConstraintCommand(ChangeBoundsRequest request, EditPart child, Object constraint) {
     if (!(child instanceof IMCViewElementEditPart)) {
-      Log.error("ConnectionLabelMoveEditPolicy2> Error! ViewElement is not a IShapeViewElement: " + child);
+      Log.error("0xA1103 ConnectionLabelMoveEditPolicy2> Error! ViewElement is not a IShapeViewElement: " + child);
       return super.createChangeConstraintCommand(request, child, constraint);
     }
     
@@ -53,7 +53,7 @@ public class ConnectionLabelMoveEditPolicy2 extends XYLayoutEditPolicy {
     IViewElement ve = ep.getViewElement();
     
     if (!(ve instanceof IShapeViewElement)) {
-      Log.error("ConnectionLabelMoveEditPolicy2> Error! EditPart is not a IMCViewElementEditPart: " + child);
+      Log.error("0xA1104 ConnectionLabelMoveEditPolicy2> Error! EditPart is not a IMCViewElementEditPart: " + child);
       return super.createChangeConstraintCommand(request, child, constraint);
     }
     

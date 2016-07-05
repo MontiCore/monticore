@@ -379,7 +379,7 @@ public class MCDiagramLayoutManager implements IDiagramLayoutManager<IMCEditPart
       CommandStack cStack = (CommandStack) editor.getAdapter(CommandStack.class);
       cStack.execute(applyCommand);
     } else {
-      Log.error("MCDLM> no Editor was found! Cannot execute apply layout command!");
+      Log.error("0xA1113 MCDiagramLayoutManager: no Editor was found! Cannot execute apply layout command!");
     }
   }
   

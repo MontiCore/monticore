@@ -153,7 +153,7 @@ public class ImageSaveUtil {
       return save(editorPart, viewer);
     }
     else {
-      Log.error("Could not save as image! GraphicalViewer was not found!");
+      Log.error("0xA1111 Could not save as image! GraphicalViewer was not found!");
       return false;
     }
   }

@@ -132,7 +132,7 @@ public class DefaultGraphicsLoader implements IGraphicsLoader {
   @Override
   public List<IViewElement> loadViewData() {
     if (getViewFile() == null) {
-      Log.error("AbstractPersistanceHandler: View File is null, cannot load view data");
+      Log.error("0xA1107 AbstractPersistanceHandler: View File is null, cannot load view data");
       return Collections.emptyList();
     }
     if (vFile.exists()) {
@@ -142,7 +142,7 @@ public class DefaultGraphicsLoader implements IGraphicsLoader {
       // }
     }
     else {
-      Log.error("view data file does not exist and thus cannot be loaded!");
+      Log.error("0xA1108 view data file does not exist and thus cannot be loaded!");
     }
     return loadedVes;
   }
@@ -251,7 +251,7 @@ public class DefaultGraphicsLoader implements IGraphicsLoader {
         text = convertStreamToString(getModelFile().getContents());
       }
       else {
-        Log.error("AbstractPersistanceHandler: cannot load from model file. Model file is null");
+        Log.error("0xA1109 AbstractPersistanceHandler: cannot load from model file. Model file is null");
       }
     }
     catch (IOException e) {
