@@ -66,13 +66,24 @@ public final class MonticoreLanguage implements Language {
   public void buildProject(IProject project, ImmutableSet<ModelState> modelStates,
       ImmutableList<Path> modelPath) {
     resolving.buildProject(project, modelStates, modelPath);
-    modelStates.forEach(MonticoreLanguage::checkContextConditions);
+    modelStates.forEach(state -> {
+      Log.getFindings().clear();
+      checkContextConditions(state);
+      addErrors(state);
+    });
   }
   
   @Override
   public void buildModel(ModelState modelState) {
-    resolving.buildModel(modelState);
-    checkContextConditions(modelState);
+    Log.getFindings().clear();
+    try {
+      resolving.buildModel(modelState);
+      checkContextConditions(modelState);
+    }
+    catch (Exception e) {
+      // Do nothing
+    }
+    addErrors(modelState);
   }
   
   @Override
@@ -112,18 +123,16 @@ public final class MonticoreLanguage implements Language {
     return resolving.createResolver(astNode);
   }
   
-  private static void checkContextConditions(ModelState modelState) {
+  private void checkContextConditions(ModelState modelState) {
     if (modelState.getRootNode() instanceof ASTMCGrammar) {
-      Log.getFindings().clear();
       Grammar_WithConceptsCoCoChecker cocoChecker = new GrammarCoCos().getCoCoChecker();
       cocoChecker.handle((ASTMCGrammar) modelState.getRootNode());
-      
-      Log.getFindings().stream()
-          .forEach(finding -> {
-            finding.getSourcePosition().ifPresent(position -> {
-              modelState.addAdditionalError(position, finding.getMsg());
-            });
-          });
     }
+  }
+  
+  private void addErrors(ModelState modelState) {
+    Log.getFindings().stream().forEach(finding -> {
+      modelState.addAdditionalError(finding);
+    });
   }
 }

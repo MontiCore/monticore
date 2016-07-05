@@ -184,6 +184,9 @@
                 <grammar>src/main/grammars/mc/feature/visitor/inheritance/A.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/visitor/inheritance/B.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/visitor/inheritance/C.mc4</grammar>
+                <grammar>src/main/grammars/mc/feature/interfaces/Sup.mc4</grammar>
+                <grammar>src/main/grammars/mc/feature/interfaces/Sub.mc4</grammar>
+                
 
                 <!-- MontiCore grammars -->
                 <grammar>src/main/grammars/mc/grammar/lexicals/Lexicals.mc4</grammar>

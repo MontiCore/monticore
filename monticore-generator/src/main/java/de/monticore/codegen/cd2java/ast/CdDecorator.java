@@ -243,6 +243,10 @@ public class CdDecorator {
     
     Optional<ASTModifier> modifier = clazz.getModifier();
     String plainClassName = GeneratorHelper.getPlainName(clazz);
+    Optional<CDTypeSymbol> symbol = astHelper.getCd().getType(plainClassName);
+    if (!symbol.isPresent()) {
+      Log.error("0xA1062 CdDecorator error: Can't find symbol for class " + plainClassName);
+    }
     
     replaceMethodBodyTemplate(clazz, AstAdditionalMethods.deepEqualsWithOrder.getDeclaration(),
         new TemplateHookPoint("ast.additionalmethods.DeepEqualsWithOrder"));
@@ -265,10 +269,10 @@ public class CdDecorator {
         new TemplateHookPoint("ast.additionalmethods.EqualsWithComments"));
         
     replaceMethodBodyTemplate(clazz, AstAdditionalMethods.get_Children.getDeclaration(),
-        new TemplateHookPoint("ast.additionalmethods.GetChildren"));
+          new TemplateHookPoint("ast.additionalmethods.GetChildren", clazz, symbol.get()));
         
     replaceMethodBodyTemplate(clazz, AstAdditionalMethods.remove_Child.getDeclaration(),
-        new TemplateHookPoint("ast.additionalmethods.RemoveChild"));
+        new TemplateHookPoint("ast.additionalmethods.RemoveChild", clazz, symbol.get()));
         
     replaceMethodBodyTemplate(clazz, AstAdditionalMethods.getBuilder.getDeclaration(),
         new StringHookPoint("return new Builder();\n"));
