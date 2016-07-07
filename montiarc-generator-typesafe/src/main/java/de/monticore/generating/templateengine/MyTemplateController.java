@@ -9,11 +9,12 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Lists.newArrayList;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
-
-import org.omg.CORBA.TCKind;
 
 import de.monticore.ast.ASTNode;
 import freemarker.core.Macro;
@@ -27,7 +28,6 @@ import freemarker.template.Template;
  * @since TODO: add version number
  */
 public class MyTemplateController extends TemplateController {
-  
   
   /**
    * Ensures tc.params(...) is only called once
@@ -91,27 +91,25 @@ public class MyTemplateController extends TemplateController {
       }
       String paramName = parameter.substring(parameter.indexOf(" ") + 1);
       Class argumentClass = argument.getClass();
-      // TODO instanceof things
-      // try {
-      // if (paramType.contains(".")) {
-      // checkArgument(argumentClass.isAssignableFrom(Class.forName(paramType)),
-      // "0xA5299 Template '" + getTemplatename() + "': Argument type (" +
-      // argument +
-      // ") and type of parameter in params (" + paramType + ") mismatch.");
-      // }
-      // else {
-      // if (!isAssignableWithJavaLibrary(paramType)) {
-      // throw new IllegalArgumentException("0xA5299 Template '" +
-      // getTemplatename()
-      // + "': Argument type (" +
-      // argument +
-      // ") and type of parameter in params (" + paramType + ") mismatch.");
-      // }
-      // }
-      // }
-      // catch (ClassNotFoundException e) {
-      // e.printStackTrace();
-      // }
+      String argumentClassName = argumentClass.getName();
+      
+      if (!paramType.equals(argumentClassName)) {
+        Optional<Class> javaLibraryType = getJavaLibraryType(paramType);
+        boolean isAssignable = false;
+        if (javaLibraryType.isPresent()) {
+          isAssignable = javaLibraryType.get().isAssignableFrom(argumentClass);
+          if (!isAssignable) {
+            isAssignable = Number.class.isAssignableFrom(javaLibraryType.get())
+                && Number.class.isAssignableFrom(argumentClass);
+          }
+        }
+        if (!isAssignable || !javaLibraryType.isPresent()) {
+          checkArgument(true, "0xA5301 Template '"
+              + getTemplatename() + "': passed argument type (" +
+              argumentClassName +
+              ") and type of signature parameter (" + paramType + " " + paramName + ") mismatch.");
+        }
+      }
       
       // Case 1: No Signature -> we have to signature the paramnames
       if (names.isEmpty()) {
@@ -135,48 +133,75 @@ public class MyTemplateController extends TemplateController {
     parametrized = true;
   }
   
-  // /**
-  // * TODO: Write me!
-  // *
-  // * @param argumentClass
-  // * @return
-  // */
-  // private boolean isAssignableWithJavaLibrary(String paramType) {
-  // String[] classNamesToCheck = { "List", "int", "Map", "double", "Integer",
-  // "Double", "String", "Long", "Short", "double", "short", "Set",
-  // "long", "Character", "char", "Float", "float", "boolean",
-  // "Boolean"};
-  // for (String c : classNamesToCheck) {
-  // if (paramType.contains(c)) {
-  // return true;
-  // }
-  // }
-  //
-  // return false;
-  // }
+  /**
+   * TODO: Write me!
+   *
+   * @param argumentClass
+   * @return
+   */
+  private Optional<Class> getJavaLibraryType(String paramType) {
+    Map<String, String> primitiveTypes = new HashMap<String, String>();
+    primitiveTypes.put("long", "java.lang.Long");
+    primitiveTypes.put("int", "java.lang.Integer");
+    primitiveTypes.put("short", "java.lang.Short");
+    primitiveTypes.put("double", "java.lang.Double");
+    primitiveTypes.put("float", "java.lang.Float");
+    primitiveTypes.put("byte", "java.lang.Byte");
+    primitiveTypes.put("char", "java.lang.Character");
+    primitiveTypes.put("boolean", "java.lang.Boolean");
+    
+    String[] packagesToSearch = { "java.lang", "java.util" };
+    Optional<Class> fqnLibraryType = Optional.empty();
+    for (String _package : packagesToSearch) {
+      try {
+        Class c = Class.forName(_package + "." + paramType);
+        return Optional.of(c);
+      }
+      catch (ClassNotFoundException e) {
+        
+      }
+    }
+    try {
+      Class c = Class.forName(paramType);
+      return Optional.of(c);
+    }
+    catch (ClassNotFoundException e) {
+    }
+    
+    if (primitiveTypes.containsKey(paramType)) {
+      Class c;
+      try {
+        c = Class.forName(primitiveTypes.get(paramType));
+        return Optional.of(c);
+        
+      }
+      catch (ClassNotFoundException e) {
+      }
+      
+    }
+    return fqnLibraryType;
+  }
   
   /**
    * @see de.monticore.generating.templateengine.TemplateController#initAliases()
    */
   @Override
   protected void initAliases() {
-     super.initAliases();
-           List<Macro> aliases = newArrayList();
-       
-       Template aliasesTemplate = tcConfig.getFreeMarkerTemplateEngine().loadTemplate(
-           MYALIASES_TEMPLATE);
-       
-       Set macros = aliasesTemplate.getMacros().entrySet();
-       for (Object o : macros) {
-         Entry e = (Entry) o;
-         Macro macro = (Macro) e.getValue();
-         if(null != this.getAliases()){
-           this.getAliases().add(macro);
-         }
-       }
+    super.initAliases();
+    List<Macro> aliases = newArrayList();
+    
+    Template aliasesTemplate = tcConfig.getFreeMarkerTemplateEngine().loadTemplate(
+        MYALIASES_TEMPLATE);
+    
+    Set macros = aliasesTemplate.getMacros().entrySet();
+    for (Object o : macros) {
+      Entry e = (Entry) o;
+      Macro macro = (Macro) e.getValue();
+      if (null != this.getAliases()) {
+        this.getAliases().add(macro);
+      }
+    }
   }
-  
-  
   
   /**
    * Checks whether there are more than one result definitions.
