@@ -10,7 +10,9 @@ ${tc.params("java.util.List<File> nodes", "int depthIndex","String modelPath", "
   }
   <#else>
   
-  public static final templates.${helper.printFQNTemplateNameFromPath(node.getPath(), modelPath)}Template ${helper.printSimpleTemplateNameFromPath(node.getPath(), modelPath)}Template = new templates.${helper.printFQNTemplateNameFromPath(node.getPath(), modelPath)}Template();
+    <#if helper.isTemplateName(node.getPath())>
+      public static final templates.${helper.printFQNTemplateNameFromPath(node.getPath(), modelPath)}Template ${helper.printSimpleTemplateNameFromPath(node.getPath(), modelPath)}Template = new templates.${helper.printFQNTemplateNameFromPath(node.getPath(), modelPath)}Template();
+    </#if>
   </#if>
 
 </#list>

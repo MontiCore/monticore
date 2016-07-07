@@ -119,7 +119,7 @@ public class TemplateClassHelper {
       ret = ret.replace(modelPath, "");
     }
     if (ret.contains(File.separator)) {
-      if(ret.indexOf(File.separator) == 0){
+      if (ret.indexOf(File.separator) == 0) {
         ret = ret.substring(1);
       }
       ret = ret.replace(File.separatorChar, '.');
@@ -145,13 +145,13 @@ public class TemplateClassHelper {
       int depthIndex) {
     String ret = packagePath;
     ret = ret.replace(modelPath, "");
-    if(ret.indexOf(File.separator) == 0){
-      ret = ret.substring(ret.indexOf(File.separator)+1);
+    if (ret.indexOf(File.separator) == 0) {
+      ret = ret.substring(ret.indexOf(File.separator) + 1);
     }
     String[] packages = new String[0];
     if (ret.contains(File.separator)) {
-      ret = ret.replace(File.separator, ".");      
-       packages = ret.split("\\.");
+      ret = ret.replace(File.separator, ".");
+      packages = ret.split("\\.");
     }
     String currentPackage = "";
     if (packages.length > 0 && packages.length >= depthIndex) {
@@ -164,14 +164,19 @@ public class TemplateClassHelper {
       }
     }
     if (occurences > 0) {
-      ret += occurences-1;
-    }else if(ret.equals("templates")){
+      ret += occurences - 1;
+    }
+    else if (ret.equals("templates")) {
       ret += depthIndex;
     }
-    if(ret.contains(".")){
-      ret = ret.substring(ret.lastIndexOf(".")+1);
+    if (ret.contains(".")) {
+      ret = ret.substring(ret.lastIndexOf(".") + 1);
     }
     return ret;
     
+  }
+  
+  public static boolean isTemplateName(String name){
+    return name.endsWith(".ftl");
   }
 }
