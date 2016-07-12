@@ -1,0 +1,17 @@
+package de.monticore;
+
+grammar AstMethods extends mc.grammars.lexicals.TestLexicals {
+
+   A = B?;
+   
+   B = Name*;
+   
+   C = Name;
+   
+   ast A = method public Optional<ASTB> getB() { return Optional.empty(); };
+   
+   ast B = method void setName(java.util.List<String> name) { this.names = name; };
+   
+   ast C = method public Optional<ASTB> getName(String name) { return Optional.empty(); };
+   
+}    

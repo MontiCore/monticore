@@ -82,7 +82,12 @@ public class AstGeneratorTest extends GeneratorTest {
   
   @Test
   public void testAstAttributes() {
-    testCorrect("de/monticore/CdAttributes.mc4");
+    testCorrect("de/monticore/AstAttributes.mc4");
+  }
+  
+  @Test
+  public void testAstMethods() {
+    testCorrect("de/monticore/AstMethods.mc4");
   }
   
   public void testScopesExample() {
