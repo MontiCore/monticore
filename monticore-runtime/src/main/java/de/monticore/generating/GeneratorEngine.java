@@ -97,7 +97,7 @@ public class GeneratorEngine {
     
     FreeMarkerTemplateEngine freeMarkerTemplateEngine = new FreeMarkerTemplateEngine(
         freemarkerConfig);
-
+    
     TemplateControllerConfiguration tcConfig = new TemplateControllerConfigurationBuilder()
         .glex(glex)
         .templateControllerFactory(templateControllerFactory)
@@ -140,13 +140,27 @@ public class GeneratorEngine {
   }
   
   /**
+   * Processes the template <code>templateName</code> with the given
+   * <code>templateArguments</code> and returns the content as String.
+   *
+   * @param templateName the template to be processes
+   * @param templateArguments additional template arguments (if needed).
+   */
+  public String generateToString(String templateName,
+      Object... templateArguments) {
+    TemplateController tc = this.templateControllerFactory.create(this.templateControllerConfig,
+        templateName);
+    return tc.includeArgs(templateName, Arrays.asList(templateArguments));
+  }
+  
+  /**
    * Processes the template <code>templateName</code> with the <code>node</code>
    * and the given <code>templateArguments</code> and writes the content into
-   * the <code>filePath</code>. If there is a handwritten file on the handcoded path,
-   * the suffix "TOP" is added to the name of the generated file.
-   * Note: Unless not absolute, the
-   * <code>filePath</code> is relative to the configured output directory
-   * specified in the {@link de.monticore.generating.GeneratorSetup}.
+   * the <code>filePath</code>. If there is a handwritten file on the handcoded
+   * path, the suffix "TOP" is added to the name of the generated file. Note:
+   * Unless not absolute, the <code>filePath</code> is relative to the
+   * configured output directory specified in the
+   * {@link de.monticore.generating.GeneratorSetup}.
    *
    * @param templateName the template to be processes
    * @param filePath the file path in which the content is to be written
@@ -154,7 +168,8 @@ public class GeneratorEngine {
    * @param node the ast node
    * @param templateArguments additional template arguments (if needed).
    */
-  public void generateAndConsiderHWC(String templateName, Path filePath, IterablePath handcodedPath,
+  public void generateAndConsiderHWC(String templateName, Path filePath,
+      IterablePath handcodedPath,
       ASTNode node,
       Object... templateArguments) {
     Log.errorIfNull(filePath);
@@ -162,7 +177,8 @@ public class GeneratorEngine {
       Reporting.reportUseHandwrittenCodeFile(handcodedPath.getResolvedPath(filePath).get(),
           filePath);
       filePath = getPathIfHWCExists(filePath);
-    } else {
+    }
+    else {
       Reporting.reportUseHandwrittenCodeFile(null, filePath);
     }
     generate(templateName, filePath, node, templateArguments);
