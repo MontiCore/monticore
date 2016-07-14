@@ -54,9 +54,9 @@ import freemarker.template.Configuration;
  */
 public class GeneratorEngine {
   
-  protected final TemplateControllerConfiguration templateControllerConfig;
+  private final TemplateControllerConfiguration templateControllerConfig;
   
-  protected final ITemplateControllerFactory templateControllerFactory;
+  private final ITemplateControllerFactory templateControllerFactory;
   
   public final static String GENERATED_CLASS_SUFFIX = "TOP";
   
