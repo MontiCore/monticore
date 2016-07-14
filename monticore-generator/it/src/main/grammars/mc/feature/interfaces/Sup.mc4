@@ -1,0 +1,9 @@
+package mc.feature.interfaces;
+
+grammar Sup extends mc.common.Basics {
+
+  A = "Hello" B;
+  
+  B = firstName:Name lastName: Name;
+
+}

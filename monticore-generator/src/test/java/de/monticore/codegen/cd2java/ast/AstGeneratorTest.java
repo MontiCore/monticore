@@ -26,8 +26,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
+
 import de.monticore.MontiCoreConfiguration;
 import de.monticore.MontiCoreScript;
 import de.monticore.codegen.GeneratorHelper;
@@ -39,8 +43,6 @@ import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /**
  * Test for the MontiCore generator. Generates ast files for the example
@@ -62,8 +64,9 @@ public class AstGeneratorTest extends GeneratorTest {
   }
   
   @Test
-  public void testAstAttributes() {
-    testCorrect("de/monticore/AstAttributes.mc4");
+  public void testInterfaceAttributes() {
+    testCorrectWithDependencies("de/monticore/InterfaceAttributes.mc4",
+        "mc/grammars/lexicals/TestLexicals.mc4");
   }
   
   @Test
@@ -77,6 +80,16 @@ public class AstGeneratorTest extends GeneratorTest {
     testCorrect("de/monticore/CdAttributes.mc4");
   }
   
+  @Test
+  public void testAstAttributes() {
+    testCorrect("de/monticore/AstAttributes.mc4");
+  }
+  
+  @Test
+  public void testAstMethods() {
+    testCorrect("de/monticore/AstMethods.mc4");
+  }
+  
   public void testScopesExample() {
     testCorrectWithDependencies("de/monticore/ScopesExample.mc4",
         "mc/grammars/lexicals/TestLexicals.mc4");
@@ -88,6 +101,12 @@ public class AstGeneratorTest extends GeneratorTest {
   }
   
   @Test
+  public void testEnum() {
+    testCorrectWithDependencies("mc/robot/RobotDSL.mc4",
+        "mc/grammars/lexicals/TestLexicals.mc4");
+  }
+  
+  @Test
   public void testGrammarInDefaultPackage() {
     testCorrectWithDependencies("Automaton.mc4", "mc/grammars/lexicals/TestLexicals.mc4");
   }
@@ -96,9 +115,20 @@ public class AstGeneratorTest extends GeneratorTest {
   public void testInherited() {
     doGenerate("de/monticore/inherited/Supergrammar.mc4");
     doGenerate("de/monticore/inherited/sub/Subgrammar.mc4");
+   // doGenerate("de/monticore/inherited/subsub/Subsubgrammar.mc4");
     Path path = Paths.get(OUTPUT_FOLDER, Names.getPathFromFilename("de/monticore/inherited/"));
-    // assertTrue("There are compile errors in generated code for the models in grammars/inherited.",
+   // assertTrue("There are compile errors in generated code for the models in grammars/inherited.",
     // compile(path));
+  }
+
+  @Test
+  public void testInherited2() {
+    doGenerate("de/monticore/fautomaton/action/Expression.mc4");
+    doGenerate("de/monticore/fautomaton/automaton/FlatAutomaton.mc4");
+    doGenerate("de/monticore/fautomaton/automatonwithaction/ActionAutomaton.mc4");
+    Path path = Paths.get(OUTPUT_FOLDER, Names.getPathFromFilename("de/monticore/mc/fautomaton/"));
+//    assertTrue("There are compile errors in generated code for the models in grammars/inherited.",
+//     compile(path));
   }
 
   @Test
@@ -132,7 +162,7 @@ public class AstGeneratorTest extends GeneratorTest {
     ClassLoader l = ParserGeneratorTest.class.getClassLoader();
     try {
       String script = Resources.asCharSource(
-          l.getResource("de/monticore/groovy/monticoreOnlyAst.groovy"),
+          l.getResource("de/monticore/groovy/monticoreOnlyAst_emf.groovy"),
           Charset.forName("UTF-8")).read();
       
       Configuration configuration =

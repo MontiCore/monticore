@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="de.monticore.GraphicsViewer" name="GraphicsViewer" schema="src/main/resources/schema/GraphicsViewer.exsd"/>
+   <extension
+         point="de.cau.cs.kieler.kiml.ui.layoutManagers">
+     <manager
+            class="de.monticore.genericgraphics.view.layout.kieler.MCDiagramLayoutManager">
+     </manager>
+   </extension>
+<extension
+      point="org.eclipse.ui.commands">
+   <command
+         defaultHandler="de.monticore.genericgraphics.controller.commands.handler.ExportAsImageHandler"
+         id="cdGraphics.commands.ExportAsImage"
+         name="Export As Image">
+   </command>
+   <command
+         defaultHandler="de.monticore.editorconnector.EditorConnector"
+         id="cdGraphics.commands.SwitchOutline"
+         name="Switch Outline">
+   </command>
+</extension>
+<extension
+      point="org.eclipse.ui.menus">
+   <menuContribution
+         allPopups="false"
+         locationURI="popup:outlineTextContext">
+      <command
+            commandId="cdGraphics.commands.SwitchOutline"
+            id="switchOutline"
+            label="Switch Outline"
+            style="push">
+      </command>
+   </menuContribution>
+   <menuContribution
+         allPopups="false"
+         locationURI="popup:outlineGraphicalContext">
+      <command
+            commandId="cdGraphics.commands.SwitchOutline"
+            id="switchOutline"
+            label="Switch Outline"
+            style="push">
+      </command>
+   </menuContribution>
+   <menuContribution
+         allPopups="false"
+         locationURI="popup:outlineGraphicalContext">
+      <dynamic
+            class="de.monticore.editorconnector.menus.GenerateLayoutContextContribution"
+            id="de.monticore.editorconnector.GenerateLayoutMenuItem">
+      </dynamic>
+   </menuContribution>
+</extension>
+<extension
+      point="org.eclipse.ui.perspectives">
+   <perspective
+         class="de.monticore.editorconnector.PerspectiveFactory"
+         id="de.monticore.editorconnector.perspective"
+         name="MontiCore">
+   </perspective>
+</extension>
+<extension
+      point="org.eclipse.ui.perspectiveExtensions">
+   <perspectiveExtension
+         targetID="de.monticore.editorconnector.perspective">
+   </perspectiveExtension>
+</extension>
+<extension
+      point="org.eclipse.ui.activities">
+   <activity
+         id="de.monticore.editorconnector.activities.ContentOutline"
+         name="Content Outline Activity">
+      <enabledWhen>
+         <with
+               variable="activePartId">
+            <not>
+               <equals
+                     value="org.eclipse.ui.views.ContentOutline">
+               </equals>
+            </not>
+         </with>
+      </enabledWhen>
+   </activity>
+   <activityPatternBinding
+         activityId="de.monticore.editorconnector.activities.ContentOutline"
+         isEqualityPattern="true"
+         pattern="de.cau.cs.kieler.kiml.ui/de.cau.cs.kieler.kiml.ui.command.layout">
+   </activityPatternBinding>
+   <activityPatternBinding
+         activityId="de.monticore.editorconnector.activities.ContentOutline"
+         isEqualityPattern="true"
+         pattern="de.cau.cs.kieler.kiml.ui/de.cau.cs.kieler.kiml.ui.command.showLayoutView">
+   </activityPatternBinding>
+</extension>
+</plugin>

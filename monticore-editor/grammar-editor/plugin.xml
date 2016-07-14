@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="texteditor-core.language">
+      <language
+            implementation="de.se_rwth.monticoreeditor.MonticoreLanguage">
+      </language>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="de.se_rwth.langeditor.texteditor.TextEditorImpl"
+            default="false"
+            extensions="mc4"
+            icon="icons/allteamstrms_rep.gif"
+            id="grammar-editor"
+            name="Grammar Editor">
+      </editor>
+   </extension>
+</plugin>

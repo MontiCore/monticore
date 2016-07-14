@@ -19,8 +19,12 @@
 
 package de.monticore.grammar;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
+import de.monticore.ast.ASTNode;
 import de.monticore.grammar.grammar._ast.ASTAlt;
 import de.monticore.grammar.grammar._ast.ASTConstant;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
@@ -35,80 +39,45 @@ import de.monticore.utils.ASTNodes;
  */
 public class DirectLeftRecursionDetector {
   
-
-  public boolean isAlternativeLeftRecursive(final ASTAlt productionAlternative, final ASTNonTerminal actualNonTerminal) {
+  public boolean isAlternativeLeftRecursive(final ASTAlt productionAlternative,
+      final ASTNonTerminal actualNonTerminal) {
     final String classProductionName = actualNonTerminal.getName();
-    final List<ASTNonTerminal> nonterminals = ASTNodes.getSuccessors(productionAlternative, ASTNonTerminal.class);
-    final List<ASTTerminal> terminals = ASTNodes.getSuccessors(productionAlternative, ASTTerminal.class);
-    final List<ASTConstant> constants = ASTNodes.getSuccessors(productionAlternative, ASTConstant.class);
-    // rules of the form Expr -> "a"
-    if (nonterminals.isEmpty()) {
+    Collection<Class<? extends ASTNode>> types = new HashSet<>(
+        Arrays.asList(ASTNonTerminal.class, ASTTerminal.class, ASTConstant.class));
+    final List<ASTNode> nodes = ASTNodes.getSuccessors(productionAlternative, types);
+    
+    if (nodes.isEmpty()) {
       return false;
     }
-
-    if (!terminals.isEmpty() && !nonterminals.isEmpty()) {
-      final ASTTerminal leftmostTerminal = terminals.get(0);
-      final ASTNonTerminal leftmostNonterminal = nonterminals.get(0);
-      // checks the case: Expr -> "a" Expr, e.g. the nonterminal occurs before the terminal
-      if (leftmostNonterminal.get_SourcePositionStart().compareTo(leftmostTerminal.get_SourcePositionStart()) > 0) {
-        return false;
-      }
-    }
-
-    if (!constants.isEmpty() && !nonterminals.isEmpty()) {
-      final ASTConstant leftmostConstant = constants.get(0);
-      final ASTNonTerminal leftmostNonterminal = nonterminals.get(0);
-      // checks the case: Expr -> ["a"] Expr, e.g. the nonterminal occurs before the terminal
-      if (leftmostNonterminal.get_SourcePositionStart().compareTo(leftmostConstant.get_SourcePositionStart()) > 0) {
-        return false;
-      }
-    }
-
-    // e.g. the alternative begins with a nonterminal.
-    if (!nonterminals.isEmpty()) {
-      final ASTNonTerminal leftmostNonterminal = nonterminals.get(0);
-      if ((leftmostNonterminal == actualNonTerminal) && leftmostNonterminal.getName().equals(classProductionName)) {
+    
+    if (nodes.get(0) instanceof ASTNonTerminal) {
+      ASTNonTerminal leftmostNonterminal = (ASTNonTerminal) nodes.get(0);
+      if ((leftmostNonterminal == actualNonTerminal)
+          && leftmostNonterminal.getName().equals(classProductionName)) {
         return true;
       }
-
     }
+    
     return false;
   }
-
-  public boolean isAlternativeLeftRecursive(final ASTAlt productionAlternative, final String classProductionName) {
-    final List<ASTNonTerminal> nonterminals = ASTNodes.getSuccessors(productionAlternative, ASTNonTerminal.class);
-    final List<ASTTerminal> terminals = ASTNodes.getSuccessors(productionAlternative, ASTTerminal.class);
-    final List<ASTConstant> constants = ASTNodes.getSuccessors(productionAlternative, ASTConstant.class);
-    // rules of the form Expr -> "a"
-    if (nonterminals.isEmpty()) {
+  
+  public boolean isAlternativeLeftRecursive(final ASTAlt productionAlternative,
+      final String classProductionName) {
+    Collection<Class<? extends ASTNode>> types = new HashSet<>(
+        Arrays.asList(ASTNonTerminal.class, ASTTerminal.class, ASTConstant.class));
+    final List<ASTNode> nodes = ASTNodes.getSuccessors(productionAlternative, types);
+    
+    if (nodes.isEmpty()) {
       return false;
     }
-
-    if (!terminals.isEmpty() && !nonterminals.isEmpty()) {
-      final ASTTerminal leftmostTerminal = terminals.get(0);
-      final ASTNonTerminal leftmostNonterminal = nonterminals.get(0);
-      // checks the case: Expr -> "a" Expr, e.g. the nonterminal occurs before the terminal
-      if (leftmostNonterminal.get_SourcePositionStart().compareTo(leftmostTerminal.get_SourcePositionStart()) > 0) {
-        return false;
-      }
-    }
-
-    if (!constants.isEmpty() && !nonterminals.isEmpty()) {
-      final ASTConstant leftmostConstant = constants.get(0);
-      final ASTNonTerminal leftmostNonterminal = nonterminals.get(0);
-      // checks the case: Expr -> ["a"] Expr, e.g. the nonterminal occurs before the terminal
-      if (leftmostNonterminal.get_SourcePositionStart().compareTo(leftmostConstant.get_SourcePositionStart()) > 0) {
-        return false;
-      }
-    }
-
-    // e.g. the alternative begins with a nonterminal.
-    if (!nonterminals.isEmpty()) {
-      final ASTNonTerminal leftmostNonterminal = nonterminals.get(0);
+    
+    if (nodes.get(0) instanceof ASTNonTerminal) {
+      ASTNonTerminal leftmostNonterminal = (ASTNonTerminal) nodes.get(0);
       if (leftmostNonterminal.getName().equals(classProductionName)) {
         return true;
       }
-
     }
+    
     return false;
-  }}
+  }
+}

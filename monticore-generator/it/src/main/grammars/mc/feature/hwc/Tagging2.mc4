@@ -1,0 +1,38 @@
+package mc.feature.hwc;
+
+/**
+ * Basic grammar to tag non-functional properties
+ *
+ * @author Michael von Wenckstern
+ */
+grammar Tagging2 extends de.monticore.common.Common {
+
+  TaggingUnit@! =
+    ("package" package:(Name& || ".")+ ";")? 
+    (ImportStatement)*
+    "conforms" "to" (QualifiedName || ",")+ ";"
+	TagBody;
+	
+	// name should be optional, but than we need an transformation step in the parser
+	// b/c the symbol table needs a name
+	// and we need the symbol table for coco checks
+	// maybe later for convience we make the optional
+	TagBody = "tags" Name? ("for" targetModel: Scope)? "{"
+	   Tag+ "}";
+	   
+//	interface TagElement;
+	
+  Tag = "tag" (Scope || ",")+ "with" TagElement+;
+  TagElement = Name (TagValue | ";");
+
+ fragment token WSS = (' ' | '\t' | '\r' | '\n');
+
+ token TagValue = '=' WSS* BasicTagValue (WSS* ';');
+ fragment token BasicTagValue = (Recursion | TagToken | String);
+ fragment token Recursion = '{' (~('{' | '}' | '"') | String | Recursion)+ '}';
+ fragment token TagToken = (~('"' | '{' | '}' | ';'))+;
+
+ interface Scope;
+ NameScope implements Scope = QualifiedName;
+ ConnectorScope implements Scope = source:QualifiedName "->" QualifiedName;
+}

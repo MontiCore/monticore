@@ -1,0 +1,104 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>de.monticore</groupId>
+    <artifactId>monticore-editor</artifactId>
+    <version>4.4.1-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>editor-bundle</artifactId>
+  <packaging>bundle</packaging>
+
+  <name>Language Editor OSGI Bundle</name>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>com.google.inject</groupId>
+      <artifactId>guice</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr4-runtime</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>de.se_rwth.commons</groupId>
+      <artifactId>se-commons-logging</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>de.se_rwth.commons</groupId>
+      <artifactId>se-commons-utilities</artifactId>
+    </dependency>
+
+    <!-- Common MontiCore 4 Dependencies-->
+    <dependency>
+      <groupId>de.monticore</groupId>
+      <artifactId>monticore-runtime</artifactId>
+    </dependency>
+
+    <!-- Monticore 4 Editor Dependencies -->
+    <dependency>
+      <groupId>de.monticore</groupId>
+      <artifactId>monticore-generator</artifactId>
+    </dependency>
+
+  </dependencies>
+
+  <!-- == BUILD =========================================================== -->
+
+  <build>
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <manifestLocation>META-INF</manifestLocation>
+          <instructions>
+            <Bundle-SymbolicName>editor-bundle</Bundle-SymbolicName>
+            <Bundle-Version>${replace;${project.version};SNAPSHOT;${tstamp}}</Bundle-Version>
+            <Embed-Dependency>*;scope=compile|runtime;classifier=!grammars</Embed-Dependency>
+            <Embed-Transitive>true</Embed-Transitive>
+            <Embed-StripVersion>true</Embed-StripVersion>
+            <_exportcontents>
+              !.keep,
+              !*.xsd,
+              !*.dtd,
+              !org.eclipse.*,
+              !java.*,
+              *;
+            </_exportcontents>
+            <Import-Package>
+              org.osgi.*
+            </Import-Package>
+            <_failok>true</_failok>
+            <_nouses>true</_nouses>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+
+  </build>
+
+
+</project>

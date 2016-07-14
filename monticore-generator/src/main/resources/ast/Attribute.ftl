@@ -37,7 +37,8 @@ SUCH DAMAGE.
   @result    
   
 -->
+  ${tc.signature("ast", "astType")}
   <#assign genHelper = glex.getGlobalValue("astHelper")>
   <#assign attributeName = genHelper.getJavaConformName(ast.getName())>
-  <#assign attributeValue = genHelper.getAstAttributeValue(ast)>
+  <#assign attributeValue = genHelper.getAstAttributeValue(ast, astType)>
   ${ast.printModifier()} ${ast.printType()} ${attributeName}<#if attributeValue?has_content> = ${attributeValue}</#if>;

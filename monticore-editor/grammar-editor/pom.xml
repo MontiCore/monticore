@@ -1,0 +1,40 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>grammar-editor</artifactId>
+  <packaging>eclipse-plugin</packaging>
+
+  <parent>
+    <groupId>de.monticore</groupId>
+    <artifactId>monticore-editor</artifactId>
+    <version>4.4.1-SNAPSHOT</version>
+  </parent>
+
+  <dependencies>
+     <dependency>
+      <groupId>de.monticore</groupId>
+      <artifactId>texteditor-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>  
+    
+	<dependency>
+      <groupId>de.monticore</groupId>
+      <artifactId>editor-bundle</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-maven-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>

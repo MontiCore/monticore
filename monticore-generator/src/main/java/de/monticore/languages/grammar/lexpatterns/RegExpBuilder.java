@@ -138,10 +138,20 @@ public class RegExpBuilder implements Grammar_WithConceptsVisitor {
         i++;
       }
       else {
+        if (needsEscapeChar(x)) {
+          x = "\\".concat(x);
+        }
         b.append("[" + x + "]");
       }
     }
     
+  }
+  
+  private boolean needsEscapeChar(String x) {
+    if ("^".equals(x)) {
+      return true;
+    }
+    return false;
   }
   
   @Override

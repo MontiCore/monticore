@@ -23,11 +23,14 @@ import java.util.Optional;
 
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.symboltable.GlobalScope;
+import de.monticore.types.TypesHelper;
 import de.monticore.types.TypesPrinter;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
 import de.se_rwth.commons.Joiners;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -38,10 +41,14 @@ import de.se_rwth.commons.logging.Log;
  */
 public class AstGeneratorHelper extends GeneratorHelper {
   
-  private static final String AST_BUILDER = "Builder_";
+  protected static final String AST_BUILDER = "Builder_";
   
   public AstGeneratorHelper(ASTCDCompilationUnit topAst, GlobalScope symbolTable) {
     super(topAst, symbolTable);
+  }
+  
+  public String getAstAttributeValue(ASTCDAttribute attribute, ASTCDType clazz) {
+    return getAstAttributeValue(attribute);
   }
   
   public String getAstAttributeValue(ASTCDAttribute attribute) {
@@ -77,6 +84,17 @@ public class AstGeneratorHelper extends GeneratorHelper {
         .filter(c -> c.getName().equals(getNameOfBuilderClass(clazz))).findAny();
   }
   
+  public static boolean compareAstTypes(String qualifiedType, String type) {
+    if (type.indexOf('.') != -1) {
+      return qualifiedType.equals(type);
+    }
+    String simpleName = Names.getSimpleName(qualifiedType);
+    if (simpleName.startsWith(AST_PREFIX)) {
+      return simpleName.equals(type);
+    }
+    return false;
+  }
+  
   /**
    * @param qualifiedName
    * @return The lower case qualifiedName + AST_PACKAGE_SUFFIX
@@ -86,6 +104,16 @@ public class AstGeneratorHelper extends GeneratorHelper {
     return Joiners.DOT.join(qualifiedName.toLowerCase(), getAstPackageSuffix());
   }
   
+  /**
+   * @param qualifiedName
+   * @return The lower case qualifiedName + AST_PACKAGE_SUFFIX
+   */
+  public static String getAstPackageForCD(String qualifiedCdName) {
+    Log.errorIfNull(qualifiedCdName);
+    return Joiners.DOT.join(qualifiedCdName.toLowerCase(),
+        Names.getSimpleName(qualifiedCdName).toLowerCase(), getAstPackageSuffix());
+  }
+  
   public static String getAstPackageSuffix() {
     return GeneratorHelper.AST_PACKAGE_SUFFIX;
   }
@@ -93,7 +121,21 @@ public class AstGeneratorHelper extends GeneratorHelper {
   public static String getNameOfBuilderClass(ASTCDClass astClass) {
     return AST_BUILDER + getPlainName(astClass);
   }
-
   
+  public static boolean generateSetter(ASTCDClass clazz, ASTCDAttribute cdAttribute, String typeName) {
+    if (GeneratorHelper.isInherited(cdAttribute)) {
+      return false;
+    }
+    String methodName = GeneratorHelper.getPlainSetter(cdAttribute);
+    if (clazz.getCDMethods().stream()
+        .filter(m -> methodName.equals(m.getName()) && m.getCDParameters().size() == 1
+            && compareAstTypes(typeName,
+                TypesHelper.printSimpleRefType(m.getCDParameters().get(0).getType())))
+        .findAny()
+        .isPresent()) {
+      return false;
+    }
+    return true;
+  }
   
 }

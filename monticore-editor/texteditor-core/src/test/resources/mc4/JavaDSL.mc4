@@ -1,0 +1,1410 @@
+package de.java;
+
+grammar JavaDSL extends mc.grammars.types.TestTypes { 
+   
+    
+    /** The CompilationUnit represents a whole JAVA file
+        @attribute PackageDeclaration Represnts the package, the file belonging to
+        @attribute ImportDeclarations A list of the ImportDeclaration
+        @attribute TypeDeclarations a list of declarated types in the file
+    */
+    CompilationUnit =
+        (PackageDeclaration:PackageDeclaration)?
+        (ImportDeclarations:ImportDeclaration)*
+        (TypeDeclarations:TypeDeclaration | ";" )*
+    ; 
+    
+    
+    /** ASTPackageDeclaration represents a package declaration.
+        @attribute Modifiers Annotations in front of the declaration
+        @attribute Name Qualified package name
+    */
+    PackageDeclaration =
+        // Semantic: only one package name component is allowed to be annotated
+       (Modifiers:Annotation)*
+       "package" 
+       Name ( "." Name )*
+       ";"
+    ;
+    
+    
+    /** ASTImportDeclaration represents an import declaration
+        @attribute Name Qualified name of the class or the package, which is 
+                        imported
+        @attribute IsStatic Is true if keyword static is found in the declaration
+        @attribute IsOnDemand Is true if declaration ends with a '*', so all 
+                              classes of a package are imported
+    */
+    ImportDeclaration =
+        "import" (IsStatic:["static"])?
+        Name ("." Name)*
+        ("." IsOnDemand:["*"])?
+        ";"
+    ;
+    
+    
+    /** A TypeDeclaration represents the possible top level types in JAVA, which
+        can be a class declaration, enum declaration, interface declaration 
+        or annotation type declaration. The rule redirects "only" to the passing 
+        rules. 
+    */
+    interface TypeDeclaration extends 
+        AnnotationMemberDeclaration,
+        MemberDeclaration;
+    
+    ast TypeDeclaration =
+        Name
+        Modifiers:Modifier*
+    ;
+    
+    
+    /** ASTVariableDeclaration represents a whole variable declaration. It consist 
+        of modifiers, a type and one or more VariableDeclarators seperated by ';'
+        @attribute Modifiers A list of the modifier
+        @attribute Type The variable type
+        @attribute Declarators List of VariableDeclarators
+    */
+    VariableDeclaration =
+        (Modifiers:Modifier)*
+        Type:Type
+        Declarators:VariableDeclarator 
+        ("," Declarators:VariableDeclarator)*
+    ;
+    
+    
+    /** ASTVariableDeclarationStatement represents just an VariableDeclaration 
+        followed by an ";". Only a redirect to VariableDeclaration, but needed 
+        to make an Statement of it
+    */  
+    VariableDeclarationStatement implements Statement =
+        Declaration:VariableDeclaration ";"
+    ;
+    
+    
+    /** ASTVariableDeclarationExpression represents just an 
+        VariableDeclarationExpression. Only a redirect to VariableDeclaration, 
+        but needed to make an Expression of it
+    */
+    VariableDeclarationExpression implements Expression =
+        Declaration:VariableDeclaration 
+    ;
+    
+    //ClassOrInterfaceArrayType is ComplexArrayType now! 
+    
+    /** The interface Modifer redirect to an Annotation or a PrimitveModifier
+    */
+    interface Modifier;
+    
+    
+    /** ASTPrimitiveModifier represents the modifier keywords.
+        @attribute Modifier Modifier represents one of the Modifer Keywords:
+                            "private", "public", "protected", "static", 
+                            "transient", "final", "abstract", "native", 
+                            "threadsafe", "synchronized", "const", 
+                            "volatile", "strictfp"
+    */
+    PrimitiveModifier implements Modifier =
+        Modifier:["private" | "public" | "protected" | "static" | "transient" 
+        | "final" | "abstract" | "native" | "threadsafe" | "synchronized" 
+        | "const" | "volatile" | "strictfp"]
+    ;
+    
+    
+    /** An EnumDeclaration is the declaration for an enum type.
+        @attribute Modifiers A list of Modifiers
+        @attribute ImplementedTypes A list of implemented interfaces
+        @attribute EnumConstantDeclarations A list of EnumConstandDeclarations
+        @attribute MemberDeclarations A list of MemberDclarations (a class body)
+    */
+    EnumDeclaration implements TypeDeclaration =
+        (Modifiers:Modifier)* "enum" Name
+        ("implements" ImplementedTypes:Type ("," ImplementedTypes:Type)* )?
+        "{"
+          (EnumConstantDeclarations:EnumConstantDeclaration
+          (
+            "," EnumConstantDeclarations:EnumConstantDeclaration)*)?
+          (",")? // Note: This comma will not be stored in AST, 
+                 //       so the Pretty Printer can't print it
+          (";" (MemberDeclarations:MemberDeclaration | ";")* )?
+        "}"
+    ;
+    
+    
+    /** An EnumConstantDeclaration is in fact a class instance and can be followed 
+        by the usual class declarations
+        @attribute Annotations A list of Annotations
+        @attribute Arguments A list of Expressions 
+        @attribute MemberDeclarations A list of MemberDeclaration
+    */
+    EnumConstantDeclaration =
+        (Annotations:Annotation)* Name
+        (
+          "("
+            (Arguments: Expression ("," Arguments: Expression)* )?
+           ")"
+        )?
+        (
+          "{"( MemberDeclarations:MemberDeclaration  | ";" )* "}"
+          {a.getMemberDeclarations().set_Existent(true);}
+        )?
+    ;
+    
+    
+    /** An AnnotationTypeDeclaration is a special kind of interface declaration for 
+        annotations marked with an "@"
+        @attribute Modifers A list of (Interface-) Modifers 
+        @attribute Name The name of the annotation 
+        @attribute MemberDeclarations A list of MemberDeclaration, similar to 
+                                      class body 
+    */
+    AnnotationTypeDeclaration implements TypeDeclaration =
+        //semantic: this is an interface, not all Modifers allowed
+        (Modifiers:Modifier)* "@" "interface" Name
+        ("extends" extendedAnnotation:Type)?
+        "{"
+          (MemberDeclarations:AnnotationMemberDeclaration | ";")*
+        "}"
+    ;
+    
+    
+    /** A AnnotationMemberDeclaration represents the possible member declarations 
+        which can be used in an annotation type declaration. This rule only 
+        redirects to the passing rules
+    */
+    interface AnnotationMemberDeclaration;
+    
+    ast AnnotationMemberDeclaration astextends MemberDeclaration;
+    
+    
+    /** An annotation method declaration are special kind of mthod declarations 
+        which are only used in an annotation member declaration (and so in an 
+        annotation type declaration)
+        @attribute Modifiers A list of Modifier
+        @attribute Type The type of the method
+        @attribute Name The name of the declarated method
+        @attribute DefaultValue An AnnotationMemberValue which is an optional 
+                                default value in the method declaration
+    */
+    AnnotationMethodDeclaration 
+    implements AnnotationMemberDeclaration =
+        //semantic check: modifers are only allowed to be: 
+        //                public, abstract, annotation
+        (Modifiers:Modifier)* ReturnType Name "(" ")"
+        ("default" DefaultValue:AnnotationMemberValue )? ";"
+    ;
+    
+    
+    /** There are three kinds of Annotation-types: The MapeddMemberAnnoation, 
+        SingleMemberAnnotation and the MarkerAnntoation. The Annotation rule only 
+        redirects to the under rules.
+    */
+    interface Annotation extends Modifier;
+    
+    ast Annotation astextends Expression;
+    
+    
+    /** The MappedMemberAnnotation is the normal way to construct an annotation. It
+        exists of a TypeName, a StringList to construct qualified names, followed by
+        an list of MemberValuePairs,
+        e.g. @javax.persistence.JoinTable(name="a_name", schema="a_schema")
+        @attribute Name Name is the TypeName of an annotation
+        @attribute MemberValue MemberValue is a AnnotationMemberValuePair
+    */
+    MappedMemberAnnotation 
+    implements Annotation =
+        "@" Name ( "." Name)* 
+        "(" 
+          MemberValues:AnnotationMemberValuePair
+          ("," MemberValues:AnnotationMemberValuePair)*
+        ")"
+    ;
+    
+    
+    /** The SingleMemberAnnotation is a short hand design for the normal 
+        MappedMemberAnnotation for use with single element annotation. It exists 
+        of a TypeName, a StringList to construct qualified names, followed by a 
+        single AnnotationMemberValue, e.g. @SuppressWarnings("unchecked")
+        @attribute Name Name is the TypeName of an annotation
+        @attribute MemberValue MemberValue an AnnotationMemberValue
+    */
+    SingleMemberAnnotation 
+    implements Annotation =
+        "@" Name ("." Name)*
+        "(" MemberValue:AnnotationMemberValue ")"
+    ;
+    
+    
+    /** The MarkerAnnotation is a very short hand design for the normal 
+        MappedMemberAnnotation for use with only the Name, the marker. It only 
+        exists of a the TypeName followed by an optional "()", e.g. @WebService
+        @attribute Name Name is the TypeName of an annotation
+    */
+    MarkerAnnotation implements Annotation =
+        "@" Name ( "." Name)*
+        ("(" ")" )?
+    ;
+    
+    
+    /** AnnotationMemberValuePair is a single identifier followed by an 
+        AnnotationMemberValue.
+        @attribute MemberName The member name is an identifier
+        @attribute Value The value is by the type of an AnnotationMemberValue
+    */
+    AnnotationMemberValuePair =
+        MemberName:Name "=" Value:AnnotationMemberValue
+    ;
+    
+    
+    /** AnnotationMemberValue only redirect to three other rules: to an annotation, 
+        a conditional expression or to a annotation member array initializer.
+        There never will be instances of this ASTNode.
+    */
+    AnnotationMemberValue returns Expression =
+        ret = Annotation
+        | ret = ConditionalExpression
+        | ret = AnnotationMemberArrayInitializer
+    ;
+    
+    
+    /** AnnotationMemberArrayInitializer is an array which only content 
+        AnnoationMemberValues
+        @attribute Initializers List of AnnotationMemberValues
+    */
+    //Need to be an Expression because of the rule AnnotationMemberValue
+    AnnotationMemberArrayInitializer 
+    implements Expression =
+        "{"
+          (
+            Initializers:AnnotationMemberValue
+            (
+              "," Initializers:AnnotationMemberValue
+            )*
+          )?
+          (",")? // Note: This comma will not be stored in AST, 
+                 //       so the Pretty Printer can't print it
+        "}"
+    ;
+    
+    
+    /** A class declaration represents a whole class with its block identified by 
+        the keyword "class".
+        @attribute Modifers A Modifierlist with all possible Modifer
+        @attribute Name The class name
+        @attribute TypeParameters A list of type paramters
+        @attribute ExtendedType A Type which is extended by the class. 
+                                Only one allowed!
+        @attribute ImplementedInterfaces A list of implemented interfaces.
+        @attribute MemberDeclarations The class body is represented by the 
+                                      "{ classBody }", which exists of multiple 
+                                      MemeberDeclaration or a ";"
+    */
+    ClassDeclaration implements TypeDeclaration =
+        /* accords to classBody; rule couldn't be converted*/
+        //semantic check: not all modifers allowed
+        (Modifiers:Modifier)* "class" Name
+        TypeParameters
+        ("extends" ExtendedClass:Type)?
+        ("implements" ImplementedInterfaces:Type ("," ImplementedInterfaces:Type)*)?
+        "{"( MemberDeclarations:MemberDeclaration  | ";" )* "}"
+    ;
+    
+    
+    /** An interface declaration represents a whole interface, which is very 
+        similar to a class.
+        Identified by the keyword interface
+        @attribute Modifers A Modifierlist with all possible Modifer
+        @attribute Name The interface name
+        @attribute TypeParameters A list of type paramters
+        @attribute ExtendedTypes A list of extended types. Multiple allowed 
+        @attribute MemberDeclarations The class body is represented by the 
+                                      "{ classBody }", which exists of multiple 
+                                      MemeberDeclaration or a ";". In comparing 
+                                      with the class declaration, here not all 
+                                      possible member declaration allowed.
+    */
+    InterfaceDeclaration implements TypeDeclaration =
+        //semantic check: not all modifers allowed
+        (Modifiers:Modifier)* "interface" Name
+        TypeParameters
+        ("extends" ExtendedInterfaces:Type ("," ExtendedInterfaces:Type)* )?
+        "{"( MemberDeclarations:MemberDeclaration  | ";" )* "}"
+        //accords to classBody; rule couldn't be converted
+        //semantic check for allowed member declarations
+    ;
+    
+    
+    /** ASTMemberDeclaration is an interface for ASTTypeDeclaration,
+        ASTMethodDeclarathion, ASTConstructorDeclaration and ASTFieldDeclaration.
+    */
+    interface MemberDeclaration;
+    
+    MemberDeclarations = MemberDeclaration*;
+    
+    
+    /** ASTTypeInitializer represents a type initializer, which is just a
+        ASTBlockStatement headed by an optional 'static' modifier
+        @attribute IsStatic Is true if 'static' keyword is present
+    */
+    TypeInitializer implements MemberDeclaration =
+        (IsStatic:["static"])?
+        Body:BlockStatement
+    ;
+    
+    
+    /** ASTMethodOrConstructorDeclaration is an shared interface of the two classes
+    */
+    interface MethodOrConstructorDeclaration; //This rule is never invocated
+    
+    ast MethodOrConstructorDeclaration astextends MemberDeclaration =
+        Name
+        Throwables:QualifiedName*
+        Modifiers:Modifier*
+        TypeParameters
+        Parameters:ParameterDeclaration*
+        Block:BlockStatement
+    ;
+    
+    
+    /** The ASTConstructorDeclaration represents the declaration of a constructor
+        @attribute Modifiers List of modifier or annotations
+        @attribute TypeParameter Contains a list of generic TypeParameter (optional)
+        @attribute Name Single name of the constructor
+        @attribute Parameters List of parameters 
+        @attribute Throwables List of the qualified names of exceptions, which could 
+                              be thrown by the constructor
+        @attribute Block the actual block statement
+    */
+    ConstructorDeclaration 
+    implements MemberDeclaration =
+        //Modifiers and TypeParameters are moved from rule memberDeclaration
+        (Modifiers:Modifier)*
+        TypeParameters
+        Name
+        "(" 
+          (Parameters:ParameterDeclaration ("," Parameters:ParameterDeclaration)*)?
+        ")"
+        ( //this is the inlined rule thowsClause
+          "throws" Throwables:QualifiedName ("," Throwables:QualifiedName)*
+        )?
+        Block:BlockStatement
+    ;
+    
+    ast ConstructorDeclaration astimplements MethodOrConstructorDeclaration;
+    
+    
+    /** The ASTMethodDeclaration represents the declaration of a method
+        @attribute Modifiers List of modifier or annotations
+        @attribute TypeParameter Contains a list of generic TypeParameter(optional)
+        @attribute ReturnType The type of the return value of the method
+        @attribute Name Single name of the constructor
+        @attribute Parameters List of parameters 
+        @attribute Throwables List of the qualified names of exceptions, which could 
+                              be thrown by the constructor
+        @attribute Block the actual block statement
+    */
+    MethodDeclaration 
+    implements MemberDeclaration =
+        //Modifiers and TypeParameters are moved from rule memberDeclaration
+        (Modifiers:Modifier)*
+        TypeParameters
+        ReturnType Name
+        "(" 
+          (Parameters:ParameterDeclaration ("," Parameters:ParameterDeclaration)*)?
+        ")"
+        //this is the inlined rule optionalDims
+        (
+          "[" "]"
+          {a.setAdditionReturnTypeDimensions(
+              a.getAdditionReturnTypeDimensions()+1);}
+        )*
+        ( //this is the inlined rule thowsClause with the inlined rule greedyName
+          "throws" Throwables:QualifiedName ("," Throwables:QualifiedName)*
+        )?
+        ( ";" | Block:BlockStatement )
+    ;
+    
+    
+    Methods =
+        MethodDeclaration+;
+    
+    ast MethodDeclaration astimplements MethodOrConstructorDeclaration =
+        AdditionReturnTypeDimensions : int
+    ;
+    
+    
+    /** The ASTFieldDeclaration represents the declaration of a field. This is just 
+        a VariableDeclaration followed by a ';'.
+        @attribute Declaration One VariableDeclaration
+    */
+    FieldDeclaration 
+    implements MemberDeclaration,
+               AnnotationMemberDeclaration =
+        //Modifiers are moved from rule memberDeclaration to VariableDeclaration
+        Declaration:VariableDeclaration ";"
+    ;
+    
+    
+    /** The ASTVariableDeclarator represents the part of a variable declaration 
+        beginning at the name, e.g. 'varName = "someInitializer" '
+        It is also part of an field declaration
+        @attribute Name Variable name
+        @attribute AdditionalArrayDimensions Counts the dimension if variable is 
+                                             an array
+        @attribute Represents the initial assignment
+    */
+    VariableDeclarator =
+        Name
+        (
+          "[" "]"
+          {a.setAdditionalArrayDimensions(a.getAdditionalArrayDimensions()+1);}
+        )*
+        ("=" Initializer:Initializer)?
+    ;
+    
+    ast VariableDeclarator =
+        AdditionalArrayDimensions:int
+    ;
+    
+    
+    /** The ASTArrayInitializer represents the statement
+        in curly braces (incl. this braces!), which is used to initialize
+        an array.
+        @attribute Initializers A list of expressions or other arrayinitializers
+    */
+    ArrayInitializer implements Expression =
+        "{"
+        (
+          Initializers:Initializer
+          ("," Initializers:Initializer)*
+        )?
+        (",")?  // Note: This comma will not be stored in AST,
+                //       so the Pretty Printer can't print it
+        "}"
+    ;
+    
+    
+    /** The rule Initializer is necessary to combine Expression an ArrayInitializer. 
+        It represents the X from this example: int[] a = { X , X }
+        Never returns an ASTInitializer object
+    */
+    Initializer returns Expression =
+        ret=Expression
+    ;
+    
+    
+    /** ASTParameterDeclaration represents the declaration of a parameter in
+        a method or constructor declaration
+        @attribute Modifiers List of modifier
+        @attribute Type Parameter type
+        @attribute Ellipsis True if type is declared with '...'. So parameter could 
+                            accept more than one argument of this type. Note: The 
+                            grammar allows things like this in the moment:
+                            method(int... i, int... j, int k). Java 1.5 allows just 
+                            one of this parameter in the end of the parameter list
+        @attribute Name Parameter name
+        @attribute AdditionalArrayDimensions Counts dimensions if parameter is an 
+                                             array
+    */
+    ParameterDeclaration =
+        (Modifiers:Modifier)* Type:Type
+        (Ellipsis:["..."])?
+        Name
+        (
+          "[" "]" 
+          {a.setAdditionalArrayDimensions(a.getAdditionalArrayDimensions()+1);}
+        )*
+    ;
+    
+    ast ParameterDeclaration =
+        AdditionalArrayDimensions:int
+    ;
+    
+    
+    /** A BlockStatement represents a block which is rounded by: "{...}". In the 
+        Block could stand any Statement. This is used in many contexts:
+        Inside a class definition prefixed with "static": it is a class initializer.
+        Inside a class definition without "static": it is an instance initializer.
+        As the body of a method. As a completely indepdent braced block of code 
+        inside a method:
+        it starts a new scope for variable definitions
+        @attribute Statement Represents any Statements within the Block
+    */
+    BlockStatement implements Statement =
+        "{" (Statements:Statement)* "}"
+    ;
+    
+    
+    /** The interface Statement contains all possible Statements and redirect to 
+        the passing rules
+    */
+    interface Statement;
+    
+    Statements = Statement*;
+    
+    
+    /** An ExpressionStatement is a lonely Expression followed by a ";"
+        @attribute Expression The  for a ";"
+    */
+    ExpressionStatement implements Statement =
+        Expression:Expression ";"
+    ;
+    
+    
+    /** A TypeDeclarationStatement is the capsule of a TypeDeclaration in a 
+        Statement
+        @attribute TypeDeclaration Represents a TypeDeclaration
+    */
+    TypeDeclarationStatement implements Statement =
+        TypeDeclaration:TypeDeclaration
+    ;
+    
+    
+    /** An ASTEmptyStatement represents a single semicolon
+    */
+    EmptyStatement implements Statement =
+        ";"
+    ;
+    
+    
+    /** An ASTContinueStatement represents the continue keyword 
+        eventually followed by a jump label.
+        @attribute Label Name of the jump label. 
+    */
+    ContinueStatement implements Statement =
+        "continue" (Label:Name)? ";"
+    ;
+    
+    
+    /** An ASTSwitchDefaultStatement represents the default keyword 
+        in a switch statement.
+        */
+    SwitchDefaultStatement astimplements Statement =
+        "default"
+    ;
+    
+    
+    /** An ASTBreakStatement represents the break keyword 
+        eventually followed by a jump label.
+        @attribute Label Name of the jump label.
+    */
+    BreakStatement implements Statement =
+        "break" (Label:Name)? ";"
+    ;
+    
+    
+    /** A ReturnStatement: "return a ;". The Expression a is optional
+        @attribute Expression The Expression which is returns is optional
+    */
+    ReturnStatement implements Statement =
+        "return" (Expression:Expression)? ";"
+    ;
+    
+    
+    SwitchStatement implements Statement  =
+        "switch" "(" Expression:Expression ")"
+        "{"
+        (
+          (
+            (Statements:CaseStatement | Statements:SwitchDefaultStatement) ":"
+          )+
+          (Statements:Statement)*
+        )*
+        "}"
+    ;
+    
+    ast SwitchStatement =
+        Statements:Statement*
+    ;
+    
+    
+    /** A SwitchCaseStatement is only the "case a" construct of a switch construct
+        @attribute Expression The Expression which is proofed for a special case
+    */
+    CaseStatement astimplements Statement =
+        "case" Expression:Expression
+    ;
+    
+    
+    /** A ThrowStatement represents a construct like this: "throw Expression ;"
+        @attribute Expression the "target" in a throwStatement
+    */  
+    ThrowStatement implements Statement =
+        "throw" Expression:Expression ";"
+    ;
+    
+    
+    /** An AssertStatement is a checking for a boolean Expression, the Asserting,
+        if the value of Asserting is false the Message-Expression gets evualated 
+        @attribute Asserting The Asserting is an Expression which gets evualated 
+                             for a boolean value. A false-value throws an 
+                             "AssertionError".
+        @attribute Message   If the value of the Asserting is false, the Message 
+                             get evualated and his value is converted to a String 
+                             using string conversion. The "detail message" 
+                             of the "AssertionError" is then the value of Message
+    */
+    AssertStatement implements Statement =
+        "assert" Assertion:Expression (":" Message:Expression)? ";"
+    ;
+    
+    
+    /** A WhileStatement represents a loop. The Condition gets evualated and if the 
+        value is a boolean "true" the Statement gets evualated.
+        @attribute Condition The Condition gets evualated for a boolean value
+        @attribute Statement The Statement gets evualated if the Condition-value is 
+                             true
+    */
+    WhileStatement implements Statement =
+        "while" "(" Condition:Expression ")" Statement:Statement
+    ;
+    
+    
+    /** A DoWhileStatement represents a loop. The Statement is in any case executed 
+        for once, then the Condition gets evualated and if the value is a boolean 
+        "true" the Statement the loop begins for another time.
+        @attribute Statement The Statement gets evualated
+        @attribute Condition The Condition gets evualated for a boolean value
+    */
+    DoWhileStatement implements Statement =
+        "do" Statement:Statement "while" "(" Condition:Expression ")" ";"
+    ;
+    
+    
+    /** A for-each-statement is the enhanced form of a for-loop. The loop gets 
+        executed for every element the iterable has. The actual value get "saved" 
+        in the VariableDeclaration.
+        @attribute VariableDeclaration is variable that gets a value from th 
+                                       iterable expresion for each loop execution
+        @attribute Iterable The Iterable is an Expression by type of an iterable
+        @attribute Statement Statement gets executed every time the loop gets 
+                             executed
+    */
+    ForEachStatement implements Statement =
+        "for" "("
+          VariableDeclaration:ParameterDeclaration ":" Iterable:Expression 
+          //semantic check: don't allow '...' in VariablenDeclaration
+        ")" Statement:Statement
+    ;
+    
+    
+    /** A for-basic-statement is the normal form of a for-loop with an initializer, 
+        an boolean-condition, an update expression and a executive statement
+        @attribute Initialization A Initialization is a ForInitializer
+        @attribute Updates The Update is a List of Expressions which gets evualated 
+                           for every time the loop gets executed.
+        @attribute Statement The Statement gets executed if the Conditon is true, 
+                             absent or the value of it is not a boolean.
+    */
+    ForStatement implements Statement =
+        "for" "("
+          (
+            Initializations:VariableDeclarationExpression
+            |
+            Initializations:Expression ("," Initializations:Expression)*
+          )?
+          ";" (Condition:Expression)? 
+          ";" (Updates:Expression ("," Updates:Expression)*)?
+        ")" Statement:Statement
+    ;
+    
+    ast ForStatement =
+        Initializations:Expression*
+    ;
+    
+    
+    /** A IfStatement evualated the Expression for a boelean value. For a true the 
+        Statement get executed, for a false the ElseStatement.
+        @attribute Condition The Condition gets evualated for a boolean value
+        @attribute Statement The Statement gets executed if the Expression value is 
+                             a true
+        @attribute ElseStatement The ElseStatement gets evualated if the Expression 
+                                 vaule is false
+    */
+    IfStatement implements Statement =
+        "if" "(" Condition:Expression ")" SuccessStatement:Statement
+        ("else" OptionalElseStatement:Statement)?
+    ;
+    
+    
+    /** A Statement could be labeled, so it is possible to "jump" to the Statement 
+        using the label.
+        @attribute Label The Label is only the "name" of the label
+        @attribute Statement The Statement followed the Label
+    */  
+    LabeledStatement implements Statement =
+        Label:Name ":" Statement:Statement
+    ;
+    
+    
+    /** A SynchronizedStatement locks the Expression and evualted the Block.
+        @attribute Expression The Expression which gets lock (or get synchronizes 
+                              with the Block)
+        @attribute Block The Block gets executed, when the Expression is locked
+    */
+    SynchronizedStatement implements Statement =
+        "synchronized" "(" Expression:Expression ")" Block:BlockStatement
+    ;
+    
+    
+    /** A TryStatement is a capsuled Block who is tried to execute, possible errors 
+        can be "catched" by the catch clauses and the right clause gets executed. 
+        The finally clause gets executed in every case independet if an error 
+        occured or not an also if an error get catched by the catch clauses.
+        @attribute Block The Block gets executed and can of course occure an error
+        @attribute CatchClause The CatchClause can catch a specific error and gets 
+                               then executed
+        @attribute FinallyClause The FinallyClause, if existents, gets executed in 
+                                 every case
+    */
+    TryStatement implements Statement =
+        "try" Block:BlockStatement
+        (CatchClause:CatchClause)*
+        (FinallyClause:FinallyClause)?
+    ;
+    
+    
+    /** A FinallyClause belongs to a try-catch-finally-block (see TryStatement).
+        @attribute Block see TryStatement
+    */
+    FinallyClause =
+        "finally" Block:BlockStatement
+    ;
+    
+    
+    /** A CatchClause belongs to a try-catch-block (see TryStatement).
+        @attribute Block see TryStatement
+    */
+    CatchClause =
+        "catch" "(" ExceptionVariable:ParameterDeclaration ")" Block:BlockStatement
+    ;
+    
+    
+    // Expressions
+    // Note that most of these expressions follow the pattern
+    //   thisLevelExpression :
+    //       nextHigherPrecedenceExpression
+    //           (OPERATOR nextHigherPrecedenceExpression)*
+    // which is a standard recursive definition for a parsing an expression.
+    // The operators in java have the following precedences:
+    //    lowest  (13)  = *= /= %= += -= <<= >>= >>>= &= = |=
+    //            (12)  ?:
+    //            (11)  ||
+    //            (10)  &&
+    //            ( 9)  |
+    //            ( 8)  
+    //            ( 7)  &
+    //            ( 6)  == !=
+    //            ( 5)  < <= > >=
+    //            ( 4)  << >>
+    //            ( 3)  +(binary) -(binary)
+    //            ( 2)  * / %
+    //            ( 1)  ++ -- +(unary) -(unary)  ~  !  (type)
+    //                  []   () (method call)  . (POINT -- identifier qualification)
+    //                  new   ()  (explicit parenthesis)
+    //
+    // The last two are not usually on a precedence chart; I put them in
+    // to point out that new has a higher precedence than '.', so you
+    // can validy use
+    //     new Frame().show()
+    //
+    // Note that the above precedence levels map to the rules below...
+    // Once you have a precedence chart, writing the appropriate rules as below
+    // is usually very straightfoward.
+    
+    /** The interface expression represents all java expressions.
+    */
+    interface Expression;
+    
+    
+    /** A AssignmentExpression represents a "x = y"
+        with a =, +=, -=, *=, /=, %=, >>=, >>>=, <<=, &=,^=, |= as the operator
+        @attribute LeftHand The left hand is a ConditionalExpression, the "x"
+        @attribute RightHand The right hand is a AssignmentExpression, the "y" 
+        @attribute AssignmentOperator = (EQUALS), += (PLUSEQUALS), -= (MINUSEQUALS), 
+                                      *= (STAREQUALS), /= (SLASHEQUALS), 
+                                      %= (PERCENTEQUALS), >>= (GTGTEQUALS), 
+                                      >>>= (GTGTGTEQUALS), <<= (LTLTEQUALS), 
+                                      &= (ANDEQUALS),^= (ROOFEQUALS), 
+                                      |= (PIPEEQUALS)
+    */
+    AssignmentExpression 
+    implements Expression 
+    returns Expression =
+        ret=ConditionalExpression
+        (
+          astscript{!(LeftHand=ret;);}
+          AssignmentOperator:["=" | "+=" | "-=" | "*=" | "/="  | "%=" 
+                             | ">>=" | ">>>=" | "<<=" | "&=" | "^=" | "|="]
+          RightHand:AssignmentExpression
+        )?
+    ;
+    
+    ast AssignmentExpression =
+        LeftHand:Expression
+    ;
+    
+    interface InfixExpression;
+    
+    /*  This classgen is needed to produce a attribut LeftOperand with the
+        type Expression and not ExpressionList like it would be created from 
+        the expression rules
+    */
+    ast InfixExpression =
+        LeftOperand:Expression  
+        RightOperand:Expression
+        Operator:int
+    ;
+    
+    
+    /** A ConditionalExpression is something like a "if-then-else" Expression in 
+        a short Way. it looks like "a? b : c.
+        @attribute Condition A LogicalOrExpression which can (must) be boolean 
+                             Statement
+        @attribute ifTrue A AssignmentExpression which is executed when Condition 
+                          is a "true"-Statement
+        @attribute ifFalse A ConditionalExpression which is executed when Condition 
+                           is a "false"-Statement
+    */
+    ConditionalExpression implements Expression 
+    returns Expression =
+        ret=LogicalOrExpression
+        (
+          astscript{!(Condition=ret;);} 
+          "?" IfTrue:AssignmentExpression
+          ":" IfFalse:ConditionalExpression
+        )?
+    ;
+      
+    ast ConditionalExpression =
+        Condition:Expression
+    ;
+    
+    
+    /** A LogicalOrExpression represents a "x || y"
+        with a || as the operator
+        @attribute LeftOperand The left operand is a LogicalAndExpression, the "x"
+        @attribute RightOperand The right Operand is a LogicalAndExpression, the "y" 
+        @attribute Operator || (PIPEPIPE)
+    */
+    LogicalOrExpression astimplements InfixExpression
+    implements Expression returns Expression =
+        ret=LogicalAndExpression //ret accords to the left operand
+        (
+          astscript{!(LeftOperand=ret;);}
+          Operator:["||"] RightOperand:LogicalAndExpression
+        )*
+    ;
+    
+    
+    /** A LogicalAndExpression represents a "x && y"
+        with a && as the operator
+        @attribute LeftOperand The left operand is a BitWiseOrExpression, the "x"
+        @attribute RightOperand The right Operand is a BitWiseOrExpression, the "y"
+        @attribute Operator && (ANDAND)
+    */
+    LogicalAndExpression  astimplements InfixExpression
+    implements Expression returns Expression =
+        ret=BitWiseOrExpression //ret accords to the left operand
+        (
+          astscript{!(LeftOperand=ret;);}
+          Operator:["&&" ] RightOperand:BitWiseOrExpression
+        )*
+    ;
+    
+    
+    /** A BitWiseOrExpression represents a "x | y"
+        with a | as the operator
+        @attribute LeftOperand The left operand is a XorExpression, the "x"
+        @attribute RightOperand The right Operand is a XorExpression, the "y"
+        @attribute Operator | (PIPE)
+    */
+    BitWiseOrExpression astimplements InfixExpression
+    implements Expression returns Expression =
+        ret=XorExpression //ret accords to the left operand
+        (
+          astscript{!(LeftOperand=ret;);}
+          Operator:["|" ] RightOperand:XorExpression
+        )*
+    ;
+    
+    
+    /** A XorExpression represents a "x ^ y"
+        with a ^ as the operator
+        @attribute LeftOperand The left operand is a BitWiseAndExpression, the "x"
+        @attribute RightOperand The right Operand is a BitWiseAndExpression, the "y"
+        @attribute Operator ^ (ROOF)
+    */
+    XorExpression astimplements InfixExpression 
+    implements Expression returns Expression =
+        ret=BitWiseAndExpression //ret accords to the left operand
+        (
+          astscript{!(LeftOperand=ret;);}
+          Operator:["^"] RightOperand:BitWiseAndExpression
+        )*
+    ;
+    
+    
+    /** A BitWiseAndExpression represents a "x & y"
+        with a & as the operator
+        @attribute LeftOperand The left operand is a EqualityExpression, the "x"
+        @attribute RightOperand The right Operand is a EqualityExpression, the "y"
+        @attribute Operator & (AND)
+    */
+    BitWiseAndExpression astimplements InfixExpression
+    implements Expression returns Expression =
+        ret=EqualityExpression //ret accords to the left operand
+        (
+          astscript{!(LeftOperand=ret;);}
+          Operator:["&" ] RightOperand:EqualityExpression
+        )*
+    ;
+    
+    
+    /** A EqualityExpression represents a "x == y"
+        with a == or != as the operator
+        @attribute LeftOperand The left operand is a RelationalExpression, the "x"
+        @attribute RightOperand The right Operand is a RelationalExpression, the "y"
+        @attribute Operator == (EQUALSEQUALS), != (EXCLAMATIONMARKEQUALS)
+    */
+    EqualityExpression astimplements InfixExpression
+    implements Expression returns Expression =
+        ret=RelationalExpression //ret accords to the left operand
+        (
+          astscript{!(LeftOperand=ret;);}
+          Operator:["!=" | "=="] RightOperand:RelationalExpression
+        )*
+    ;
+    
+    
+    /** A RelationalExpression represents a "x > y"
+        with a <, >, <= or >= as the operator
+        @attribute LeftOperand The left operand is a ShiftExpression, the "x"
+        @attribute RightOperand The right Operand is a ShiftExpression, the "y"
+                                or a "instancOfExpression"
+        @attribute Operator < (LT), > (GT), <= (LTEQUALS), >= (GTEQUALS)
+    */
+    RelationalExpression astimplements InfixExpression 
+    implements Expression returns Expression =
+        ret=ShiftExpression //ret accords to the left operand
+        (
+          (
+            astscript{!(LeftOperand=ret;);}
+            Operator:["<" | ">" | "<=" | ">="] RightOperand:ShiftExpression
+          )*
+          | 
+          inst=InstanceOfExpression {inst.setExpression($ret); $ret = inst; }
+        )
+    ;
+    
+    ast InstanceOfExpression =
+      expression:Expression;
+      
+    /** A InstancOfExpression is a: "Expression instancof Type"
+        @attribute Expression The Expression which is checked to be the Type
+        @attribute Type The right Hand, a Type
+    */
+    InstanceOfExpression 
+    implements Expression =
+        "instanceof" Type:Type
+    ;
+    
+    
+    /** A ShiftExpression represents a "x >> y"
+        with a <<, >> or >>> as the operator
+        @attribute LeftOperand The left operand is a AdditiveExpression, the "x"
+        @attribute RightOperand The right Operand is a AdditiveExpression, the "y"
+        @attribute Operator << (LTLT), >> (GTGT), >>> (GTGTGT)
+    */
+    ShiftExpression astimplements InfixExpression
+    implements Expression returns Expression =
+        ret=AdditiveExpression //ret accords to the left operand
+        (
+          astscript{!(LeftOperand=ret;);}
+          Operator:["<<" | ">>" | ">>>"] RightOperand:AdditiveExpression
+        )*
+    ;
+    
+    
+    /** A AdditiveExpression represents a simple "x + y"
+        with a "+" or "-" as the operator
+        @attribute LeftOperand The left operand is a MultiplicativeExpression, 
+                               the "x"
+        @attribute RightOperand The right Operand is a MultiplicativeExpression, 
+                                the "y"
+        @attribute Operator + (PLUS), - (MINUS)
+    */
+    AdditiveExpression astimplements InfixExpression 
+    implements Expression returns Expression =
+        ret=MultiplicativeExpression //ret accords to the left operand
+        (
+          astscript{!(LeftOperand=ret;);}
+          Operator:["+" | "-"] RightOperand:MultiplicativeExpression
+        )*
+    ;
+    
+    
+    /** A MultiplicativeExpression represents a simple "x * y"
+        with a "*", "/" or "%" (= Modulo) as a Operand
+        @attribute LeftOperand The left operand is a PrefixExpression, the "x"
+        @attribute RightOperand The right Operand is a PrefixExpression, the "y"
+        @attribute Operator * (STAR), / (LASH) , % (PRECENT)
+    */
+    MultiplicativeExpression astimplements InfixExpression 
+    implements Expression returns Expression =
+        ret = PrefixExpression
+        ( 
+          astscript { !(LeftOperand=ret;);}
+          Operator:["*"|"/" | "%"] RightOperand:PrefixExpression
+        )* 
+    ;
+    
+    
+    /** An ASTPrefixExpression represents an prefix increment, decrement or 
+        negotiation of an expression. This rule conforms approximately to 
+        the unaryExpression rule of the antlr version of this grammar.
+        @attribute Expression The expression to apply the operator to.
+        @attribute Op ++ (PLUSPLUS), -- (MINUSMINUS), + (PLUS), - (MINUS), 
+                      ~ (TILDE) or ! (EXCLAMATIONMARK)
+    */
+    PrefixExpression 
+    implements Expression 
+    returns Expression =
+        (
+          ( astscript{!();}  
+            Operator: ["++"  | "--" | "-" | "+" |  "~" | "!"]
+            Expression:PrefixExpression
+          )
+          |
+          ret=CastExpression
+        )
+    ;
+    
+    
+    /** An ASTCastExpression represents an cast of an expression.
+        This rule conforms approximately to the unaryExpressionNotPlusMinus rule 
+        of the antlr version of this grammar.
+        @attribute Expression The expression to apply the cast to.
+        @attribute TargetType The cast type
+    */
+    CastExpression implements Expression returns Expression =
+      (                  
+        //BinaryNot and LogicalNot handling moved to the rule PrefixExpression
+        // use predicate to skip cases like: (int.class)
+        // explicit cast:
+        ( astscript{!();}
+          "(" PrimTargetType:PrimitiveArrayType ")" Expression:PrefixExpression
+        )
+        // Have to backtrack to see if operator follows.  If no operator
+        // follows, it's a typecast.  No semantic checking needed to parse.
+        // if it _looks_ like a cast, it _is_ a cast; else it's a "(expr)"
+        | 
+        // explicit cast:
+        ( astscript{!();}
+          "(" TargetType:ComplexArrayType ")" Expression:CastExpression
+        )
+        | ret=PostfixExpression
+      )  
+    ;
+    
+    
+    /** An ASTPostfixExpression represents an postfix 
+        increment or decrement of an expression
+        @attribute Expression The expression to increment/decrement
+        @attribute Op ++ (PLUSPLUS) or -- (MINUSMINUS)
+    */
+    PostfixExpression 
+    implements Expression returns Expression =
+        ret=Primary 
+        (astscript { !(Expression=ret;); } Operator:["++"|"--"] )?
+    ;
+    
+    ast PostfixExpression = 
+        Expression:Expression
+    ;
+    
+    
+    /** ASTConstructorInvocation represents explicit constructor invocations of the 
+        own class (e.g. this();) or of the super class (e.g. super();)
+        @attribute TypeArguments Generic arguments
+        @attribute Reference This- or SuperReference
+        @attribute Arguments List of parameter, which are handed to the constructor
+    */
+    ConstructorInvocation implements 
+      Expression =
+        //semantic: check that there are no wildcard types in the list
+        (TypeArguments:TypeArguments )?
+        (
+          Reference:ThisReference
+          | Reference:SuperReference
+        )
+        "(" 
+          (Arguments: Expression ("," Arguments: Expression)*)?
+        ")"
+    ;
+    
+    
+    /** This rule is needed for explicit constructor invocations with a 
+        qualification like 'new Outer().super()'. Qualified invocations 
+        can just used with 'super'.
+    */  
+    QualifiedConstructorInvocation extends ConstructorInvocation
+    implements Expression =
+        (TypeArguments:TypeArguments )?
+        //semantic: check, if qualification is a legal expression
+        Reference:SuperReference {_localctx.tmp1.ret.setQualification($ret); } // TODO: Find better solution
+        "("
+          (Arguments: Expression ("," Arguments: Expression)*)?
+        ")"
+    ;
+    
+    ast ConstructorInvocation =
+        Reference:Expression
+    ;
+    
+    
+    /** The Primary parser rule is necessary to encapsulate some other rules like 
+        ThisReference, MethodInvocation, FielAccess... But there are never 
+        produced ASTPrimary objects.
+    */
+    Primary returns Expression =
+        ret=PrimarySuffix 
+        (
+          "." qtype=ThisReference {qtype.setQualification($ret); $ret = qtype; }
+          |
+          "."
+          (
+            (typeArguments=TypeArguments)? 
+             qual=MethodInvocationWithSingleName {qual.setQualification($ret); qual.setTypeArguments(typeArguments); $ret = qual; }
+            |
+            type=FieldAccess {type.setQualification($ret); $ret = type; }
+            |
+            ret=QualifiedConstructorInvocation
+            |
+            superReference=SuperReference "."
+            (
+              (typeArguments=TypeArguments)?
+              qual=MethodInvocationWithSingleName {qual.setQualification($ret); qual.setTypeArguments(typeArguments); $ret = qual; }
+              |
+              ret=FieldAccess
+            )
+            |
+            ret=NewExpression
+          )
+          |
+          access=ArrayAccessExpression {access.setReceiver($ret); $ret = access; }
+        )*
+    ;
+    
+      
+    /** The ASTThisReference represents just the 'this' keyword
+        @attribute Qualification The qualification is the x in x.this
+    */  
+    ThisReference implements Expression =
+        "this"
+    ;
+
+    ast ThisReference = 
+      qualification: Expression;
+          
+    
+    /** The ASTFieldAccess represents an access to an field. 
+        @attribute Name Name of the field
+        @attribute Qualification
+    */
+    FieldAccess implements Expression =
+        Name
+    ;
+    
+    ast FieldAccess = 
+      qualification: Expression;
+    
+    /** The ASTMethodInvocation represents a method invocation
+        @attribute Name the single name of the method
+        @attribute Qualification The qualification of method1 is the expression X 
+                                 of this example: X.qualification()
+        @attribute TypeArguments The generic arguments of the method
+    */
+    MethodInvocationWithSingleName implements Expression, MethodInvocation  =
+        Name
+        "(" 
+          (Arguments: Expression ("," Arguments: Expression)*)?
+        ")"
+    ;
+    
+    interface MethodInvocation;
+    
+    ast MethodInvocation =
+      qualification: Expression
+      typeArguments: TypeArguments
+    ;
+    
+    
+    /** The ASTMethodInvocation represents a method invocation
+        @attribute Name the qualified name of the method
+        @attribute Qualification The qualification of method1 is the expression X 
+                                 of this example: X.qualification()
+        @attribute TypeArguments The generic arguments of the method
+    */
+    MethodInvocationWithQualifiedName implements MethodInvocation, Expression =
+        Name
+        ("." Name)*
+        "("
+          (Arguments: Expression ("," Arguments: Expression)*)?
+        ")"
+    ;
+    
+
+    /** An ASTArrayAccessExpression stands for a simple: "a[b]"
+        @attribute Receiver The Receiver is the "a" and must not be null
+        @attribute Component The Component is the b in the brackets and 
+                             must not be null
+    */
+    ArrayAccessExpression 
+    implements Expression =
+        "[" Component:Expression "]"
+    ;
+    
+    ast ArrayAccessExpression =
+      Receiver: Expression
+    ;
+    
+    /** The PrimarySuffix parser rule is necessary to encapsulate some other rules 
+        garant a correct redirect
+    */
+    PrimarySuffix returns Expression =
+        ret=ClassAccess 
+        | (ret=MethodInvocationWithQualifiedName)
+        | ret=QualifiedNameExpression
+        | ret=LiteralExpression
+        | ret=NewExpression
+        | ret=ConstructorInvocation
+        | ret=ThisReference
+        | ret=SuperReference
+        | ret=ParenthesizedExpression
+    ;
+    
+    LiteralExpression implements Expression =
+      Literal
+    ;
+ 
+    QualifiedNameExpression implements Expression =
+      QualifiedName
+    ;   
+    
+    /** ASTParenthesized represents any Epxression parenthesized with brackets 
+        '(...)'
+        @attribute Expression The expression between the brackets.
+    */
+    ParenthesizedExpression implements Expression =
+        "(" Expression:AssignmentExpression ")"
+    ;
+    
+    
+    /** An ASTClassAccess represents an 
+        @attribute Type Type represents the Type in a "Type.class"
+    */
+    ClassAccess implements Expression =
+        (Type|VoidType) "." "class"
+    ;
+    
+    
+    /** An ASTSuperReference represents the Literal "super" and a 
+        qualification X used in the form "X.super..." which can be used for
+        SuperMethodInvocations or FieldAccesses like used in the rule
+        primary2
+        @attribute Qualification Qualification is the X in "X.super..."
+    */
+    SuperReference implements Expression =
+        "super"
+    ;
+    
+
+    ast SuperReference =
+    	qualification: Expression;
+    
+    
+    /** The ASTNewExpression represents a ClassInstantiation or an 
+        ArrayInstantiation. It always begins with the keyword 'new'.
+        There are never ASTNewExpression objects.
+    */
+    NewExpression returns Expression =
+        "new" (typeArgs=TypeArguments)?
+        (type=ComplexReferenceType | primtype=PrimitiveType)
+        (
+          ret=ClassInstantiation
+          | ret=ArrayInstantiation
+        )
+    ;
+    
+    
+    /** ASTInstantiation just combines the two classes ASTArrayInstantiation and 
+        ASTClassInstantiation
+    */
+    interface Instantiation;
+    
+    ast Instantiation astextends Expression =
+        Qualification:Expression
+        TypeArguments:TypeArguments
+        Type:Type
+    ;
+    
+    
+    /** The ASTClassInstantiation represents the part of a class instantiation from 
+        the '(' on.
+        @attribute Qualification The outer class if you instantiate a inner class
+        @attribute TypeArguments The generic type arguments
+        @attribute Type The class which is initialized
+        @attribute MemberDeclarations The body of the class
+        @attribute ConstructorArguments Arguments handed to the constructor
+    */
+    ClassInstantiation =
+        "("
+          (ConstructorArguments: Expression 
+          ("," ConstructorArguments: Expression)*)?
+        ")"
+        (
+          "{"
+            (MemberDeclarations:MemberDeclaration | ";")*
+          "}"
+          {a.getMemberDeclarations().set_Existent(true);}
+        )? //This Line accords to '(classBody)?'. Classbody couldn't be converted
+    ;
+    
+    ast ClassInstantiation astimplements Instantiation;
+    
+    
+    /** The ASTArrayInstantiation represents the part of a array instantiation from 
+        the '[' on.
+        @attribute Qualification The outer class if you instantiate a inner class
+        @attribute TypeArguments The generic type arguments
+        @attribute Type The class which is initialized
+        @attribute Initializer Initial values for the Array
+        @attribute ConstructorArguments Arguments handed to the constructor
+    */
+    ArrayInstantiation =
+        (
+          ("["(Sizes:Expression? ) "]" {a.setDims(a.getDims()+1);})+ 
+          // TODO: Rewwrite or add a check
+          // TODO: old form ("["(Sizes:Expression) "]")+ 
+          // TODO: old form "[" "]" {a.setDims(a.getDims()+1);})*
+          |
+          ("[" "]" {a.setDims(a.getDims()+1);})+  
+          Initializer:ArrayInitializer
+        )
+    ;
+    
+    ast ArrayInstantiation astimplements Instantiation =
+        Dims:int
+    ;
+    
+    
+ /* TODO
+    concept attributes {
+        syn JavaTypeEntry: /mc.javadsl.ets.entries.JavaTypeEntry;
+        syn Constant: /java.lang.Object;
+        global SymbolTable: /interfaces2.helper.SymbolTableInterface;
+       
+    }
+     */
+    
+}

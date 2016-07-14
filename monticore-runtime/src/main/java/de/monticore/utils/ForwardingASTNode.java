@@ -19,18 +19,17 @@
 
 package de.monticore.utils;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import com.google.common.collect.ForwardingObject;
 
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.Symbol;
 import de.monticore.ast.ASTNode;
 import de.monticore.ast.Comment;
+import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.SourcePosition;
-
-import java.util.Collection;
-import java.util.List;
 
 /**
  * A ASTNode which forwards all its method calls to another ASTNode. Subclasses should override one

@@ -1,0 +1,45 @@
+package mc.feature.hwc; 
+
+component grammar StatechartDSL extends mc.common.Basics {      
+
+  Statechart implements SCStructure= "statechart" Name "{" (states:State | transitions:Transition | userCode:Code)* "}" EOF;
+  
+  EntryAction= "entry" ":" block:BlockStatement;
+  
+  ExitAction= "exit" ":" block:BlockStatement;  
+    
+   
+  State implements SCStructure = "state" Name ("<<" (["initial"] | ["final"])* ">>")?
+    ( ("{ options{}" (EntryAction)? (ExitAction)? (states:State | transitions:Transition)* "}") | ";") ;
+ 
+  Transition = from:Name "->" to:Name 
+    				(":" (event:Name ( "(" (arguments:Argument ( "," arguments:Argument)*) ")" )? )?
+  					 ("[" guard: Expression "]")?
+  					 ("/" action: BlockStatement)? ";" 
+  				| ";");  
+    
+  Argument= paramType:Name paramName:Name;  
+   
+  Code= "code" body: Classbody ;
+    
+  interface SCStructure; 
+  
+  ast SCStructure =
+  	Name
+  	states:State*
+  	transitions:Transition*
+  	method public String toString() {{return name;}} 
+  ;
+  
+  ast State = 
+  	method public String toString() {
+  		return name; 
+  	} ;
+  
+  external BlockStatement;
+  
+  external Expression;
+  
+  external Classbody;
+  
+ }

@@ -54,6 +54,7 @@ public abstract class CommonAdaptedResolvingFilter<S extends Symbol>
     return sourceKind;
   }
 
+  // TODO PN rename to translate(Symbol s)
   protected abstract Symbol createAdapter(Symbol s);
 
   @Override

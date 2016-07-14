@@ -19,6 +19,7 @@ grammar AstAttributes {
       list2: java.util.List
       list3: java.util.List<java.util.List<String> >
       list4: java.util.List<java.util.List<String> >
+        list5: java.util.List<A>
     
       string1: String
       string2: java.lang.String
@@ -30,5 +31,6 @@ grammar AstAttributes {
           */ 
       a1: A
       a2: A*
+      
       ;
 }    

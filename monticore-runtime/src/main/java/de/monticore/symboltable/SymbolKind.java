@@ -38,7 +38,8 @@ public interface SymbolKind {
   }
 
   /**
-   *Checks, whether this symbol kind is a kind of the given symbol kind. By default, this is true, if this symbol kind
+   * Checks, whether this symbol kind is a kind of the given symbol kind.
+   * By default, this is true, if this symbol kind
    * is a sub-type of <code>kind</code>.
    *
    * @param kind
@@ -46,7 +47,7 @@ public interface SymbolKind {
    */
   default boolean isKindOf(SymbolKind kind) {
     // TODO PN The following statement makes use of reflection, and hence, will be soon
-    //         (i.e., after next bootstrapping) replaced by: kind.getName().equals(SymbolKind.class.getName());
+    //         (i.e., after next bootstrapping) replaced by: kind.getName().equals(getName());
     return kind.equals(KIND) || kind.getClass().isAssignableFrom(this.getClass());
   }
 

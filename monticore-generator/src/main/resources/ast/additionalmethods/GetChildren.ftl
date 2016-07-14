@@ -30,21 +30,21 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-${tc.signature("ast","astType")}
+${tc.signature("ast", "type")}
   <#assign genHelper = glex.getGlobalValue("astHelper")>
     java.util.LinkedList<de.monticore.ast.ASTNode> result = new java.util.LinkedList<de.monticore.ast.ASTNode>();
-   <#list astType.getCDAttributes() as attribute> 
-     <#assign attrName = genHelper.getNativeAttributeName(attribute.getName())>
-     <#if genHelper.isAstNode(attribute)>
-    if ( get${attrName?cap_first}() != null ) {
-      result.add ( get${attrName?cap_first}() );
-    }
-     <#elseif genHelper.isOptionalAstNode(attribute)>
-    if ( get${attrName?cap_first}().isPresent()) {
-      result.add ( get${attrName?cap_first}().get());
-    }
-     <#elseif genHelper.isListAstNode(attribute)>
-       result.addAll ( get${attrName?cap_first}() );
-     </#if>
-   </#list>
+    <#list type.getAllVisibleFields() as field>
+      <#assign attrGetter = genHelper.getPlainGetter(field)>
+      <#if genHelper.isAstNode(field)>
+        if ( ${attrGetter}() != null ) {
+          result.add(${attrGetter}());
+        }
+      <#elseif genHelper.isOptionalAstNode(field)>
+        if (${attrGetter}().isPresent()) {
+          result.add(${attrGetter}().get());
+        }
+      <#elseif genHelper.isListAstNode(field)>
+        result.addAll(${attrGetter}());
+      </#if>
+    </#list>
     return result;

@@ -24,6 +24,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
+import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -58,10 +59,10 @@ public class AstGenerator {
    * @param outputDirectory - target directory
    */
   public static void generate(GlobalExtensionManagement glex, GlobalScope globalScope, ASTCDCompilationUnit astClassDiagram,
-      File outputDirectory, IterablePath templatePath) {
+      File outputDirectory, IterablePath templatePath, boolean emfCompatible) {
     final GeneratorSetup setup = new GeneratorSetup(outputDirectory);
     setup.setAdditionalTemplatePaths(templatePath.getPaths().stream().map(Path::toFile).collect(Collectors.toList()));
-    AstGeneratorHelper astHelper = new AstGeneratorHelper(astClassDiagram, globalScope);
+    AstGeneratorHelper astHelper = GeneratorHelper.createGeneratorHelper(astClassDiagram, globalScope, emfCompatible);
     glex.setGlobalValue("astHelper", astHelper);
     glex.setGlobalValue("javaNameHelper", new JavaNamesHelper());
     glex.setGlobalValue("nameHelper", new Names());

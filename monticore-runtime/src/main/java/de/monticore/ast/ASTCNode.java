@@ -23,10 +23,10 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.common.collect.Lists;
+
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.SourcePosition;
-import de.se_rwth.commons.logging.Log;
 
 
 /**
@@ -52,25 +52,6 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
   protected Optional<? extends Scope> spannedScope = Optional.empty();
 
   public abstract ASTNode deepClone();
-  
-  public ASTNode deepClone(ASTNode result) {
-    Log.errorIfNull(result, "0xA4040 Parameter 'result' must not be null.");
-    
-    result.set_SourcePositionStart(new de.se_rwth.commons.SourcePosition(
-        get_SourcePositionStart().getLine(), get_SourcePositionStart()
-            .getColumn()));
-    result.set_SourcePositionEnd(new de.se_rwth.commons.SourcePosition(
-        get_SourcePositionEnd().getLine(), get_SourcePositionEnd()
-            .getColumn()));
-    for (de.monticore.ast.Comment x : get_PreComments()) {
-      result.get_PreComments().add(new de.monticore.ast.Comment(x.getText()));
-    }
-    for (de.monticore.ast.Comment x : get_PostComments()) {
-      result.get_PostComments().add(new de.monticore.ast.Comment(x.getText()));
-    }
-    
-    return result;
-  }
   
   public SourcePosition get_SourcePositionEnd() {
     if (end.isPresent()) {
@@ -110,53 +91,7 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
     this.postcomments = postcomments;
   }
   
-  public boolean equalAttributes(Object o) {
-    if (o == null) {
-      return false;
-    }
-    throw new CompareNotSupportedException(
-        "0xA4041 Method equalAttributes is not implemented properly in class: " + o.getClass().getName());
-  }
-  
-  public boolean equalsWithComments(Object o) {
-    if (o == null) {
-      return false;
-    }
-    throw new CompareNotSupportedException(
-        "0xA4042 Method equalsWithComments is not implemented properly in class: " + o.getClass().getName());
-  }
-  
-  public boolean deepEquals(Object o) {
-    if (o == null) {
-      return false;
-    }
-    throw new CompareNotSupportedException(
-        "0xA4043 Method deepEquals is not implemented properly in class: " + o.getClass().getName());
-  }
-  
-  public boolean deepEqualsWithComments(Object o) {
-    throw new CompareNotSupportedException(
-        "0xA4044 Method deepEqualsWithComments is not implemented properly in class: "
-            + o.getClass().getName());
-  }
-  
-  public boolean deepEquals(Object o, boolean forceSameOrder) {
-    if (o == null) {
-      return false;
-    }
-    throw new CompareNotSupportedException(
-        "0xA4045 Method deepEquals is not implemented properly in class: " + o.getClass().getName());
-  }
-  
-  public boolean deepEqualsWithComments(Object o, boolean forceSameOrder) {
-    if (o == null) {
-      return false;
-    }
-    throw new CompareNotSupportedException(
-        "0xA4046 Method deepEqualsWithComments is not implemented properly in class: "
-            + o.getClass().getName());
-  }
-  
+ 
   public void setEnclosingScope(Scope enclosingScope) {
     this.enclosingScope = Optional.ofNullable(enclosingScope);
   }

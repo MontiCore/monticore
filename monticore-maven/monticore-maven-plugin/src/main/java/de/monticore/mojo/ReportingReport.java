@@ -133,12 +133,10 @@ public class ReportingReport extends AbstractMavenReport {
     Map<String, List<Path>> modelReports = new LinkedHashMap<>();
     
     try {
-      if (getReportsBaseDirectory().exists()) {
-        modelReports = Files.walk(getReportsBaseDirectory().toPath())
-            .sorted()
-            .filter(p -> REPORTS.contains(p.getFileName().toString()))
-            .collect(Collectors.groupingBy(p -> p.getParent().getFileName().toString()));
-      }
+      modelReports = Files.walk(getReportsBaseDirectory().toPath())
+          .sorted()
+          .filter(p -> REPORTS.contains(p.getFileName().toString()))
+          .collect(Collectors.groupingBy(p -> p.getParent().getFileName().toString()));
     }
     catch (IOException e) {
       getLog().error(e);
@@ -157,7 +155,7 @@ public class ReportingReport extends AbstractMavenReport {
    */
   @Override
   public boolean canGenerateReport() {
-    if ("pom".equals(getProject().getPackaging())) {
+    if (getProject().getPackaging().equals("pom")) {
       getLog().info("MontiCore reports are not available for POM modules.");
       return false;
     }

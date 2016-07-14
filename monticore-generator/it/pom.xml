@@ -5,7 +5,7 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore</artifactId>
-    <version>4.3.1-SNAPSHOT</version>
+    <version>4.4.1-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -29,23 +29,19 @@
       <groupId>de.monticore</groupId>
       <artifactId>monticore-generator</artifactId>
     </dependency>
-
-    <!-- <dependency> -->
-    <!-- <groupId>de.monticore</groupId> -->
-    <!-- <artifactId>de.monticore.monticoreEMF_RE</artifactId> -->
-    <!-- <version>${project.version}</version> TODO -->
-    <!-- </dependency> -->
-
     <dependency>
       <groupId>de.monticore</groupId>
       <artifactId>monticore-grammar</artifactId>
     </dependency>
-    
     <dependency>
       <groupId>de.monticore</groupId>
       <artifactId>de.monticore.java</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -61,6 +57,33 @@
       <version>2.0.7</version>
       <scope>test</scope>
     </dependency>
+
+    <!-- EMF dependencies -->
+    <dependency>
+      <groupId>org.mod4j.org.eclipse.emf</groupId>
+      <artifactId>ecore</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mod4j.org.eclipse.emf.ecore</groupId>
+      <artifactId>xmi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mod4j.org.eclipse.emf</groupId>
+      <artifactId>common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.compare</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.compare.match</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.compare.diff</artifactId>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -91,7 +114,7 @@
           <plugin>
             <groupId>de.monticore.mojo</groupId>
             <artifactId>monticore-maven-plugin</artifactId>
-            <version>4.3.1-SNAPSHOT</version><!--$NO-MVN-MAN-VER$-->
+            <version>4.4.1-SNAPSHOT</version><!--$NO-MVN-MAN-VER$ -->
             <configuration>
               <skip>false</skip>
               <addOutputDirectoryToModelPath>true</addOutputDirectoryToModelPath>
@@ -134,8 +157,8 @@
                 <grammar>src/main/grammars/mc/feature/semanticpredicate/SemPredWithInterface.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/inheritence/Inheritence.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/followoption/FollowOption.mc4</grammar>
-                <!-- TODO SO grammar>src/main/grammars/mc/feature/mcenum/Enums.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/mcenum/SubEnum.mc4</grammar-->
+                <grammar>src/main/grammars/mc/feature/mcenum/Enums.mc4</grammar> 
+                <grammar>src/main/grammars/mc/feature/mcenum/SubEnum.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/lexerformat/KleenePlus.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/lexerformat/LexerFormat.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/expression/Expression.mc4</grammar>
@@ -153,16 +176,18 @@
                 <grammar>src/main/grammars/mc/feature/namecollision/NameCollision.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/newcomments/CommentTest.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/sourcepositions/SourcePosition.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/statechart/StatechartDSL.mc4</grammar>
-                <grammar>src/main/grammars/mc/featureemf/fautomaton/action/Expression.mc4</grammar>
-                <grammar>src/main/grammars/mc/featureemf/fautomaton/automaton/FlatAutomaton.mc4</grammar>
-                <grammar>src/main/grammars/mc/featureemf/fautomaton/automatonwithaction/ActionAutomaton.mc4</grammar> <!-- TODO SO: uncomment TransitionWithAction rule -->
+                <grammar>src/main/grammars/mc/feature/fautomaton/action/Expression.mc4</grammar>
+                <grammar>src/main/grammars/mc/feature/fautomaton/automaton/FlatAutomaton.mc4</grammar>
+                <grammar>src/main/grammars/mc/feature/fautomaton/automatonwithaction/ActionAutomaton.mc4</grammar> <!-- TODO SO: uncomment TransitionWithAction rule -->
                 <grammar>src/main/grammars/mc/feature/visitor/Sub.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/visitor/Sup.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/visitor/inheritance/A.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/visitor/inheritance/B.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/visitor/inheritance/C.mc4</grammar>
+                <grammar>src/main/grammars/mc/feature/interfaces/Sup.mc4</grammar>
+                <grammar>src/main/grammars/mc/feature/interfaces/Sub.mc4</grammar>
                 
+
                 <!-- MontiCore grammars -->
                 <grammar>src/main/grammars/mc/grammar/lexicals/Lexicals.mc4</grammar>
                 <grammar>src/main/grammars/mc/grammar/literals/Literals.mc4</grammar>
@@ -172,10 +197,13 @@
                 <grammar>src/main/grammars/mc/grammar/Grammar_WithConcepts.mc4</grammar>
                 <grammar>src//main/grammars/mc/grammar/concepts/visualoutline/Common.mc4</grammar>
                 <grammar>src//main/grammars/mc/grammar/concepts/visualoutline/Outline.mc4</grammar>
-               
+                
+                <!-- Handwritten ast code -->
+                <grammar>src/main/grammars/mc/feature/hwc</grammar>
+
                 <!-- MontiCore Examples -->
                 <grammar>src/main/grammars/mc/examples</grammar>
-                
+
                 <!-- MontiCore Languages -->
                 <grammar>src/main/grammars/mc/lang</grammar>
 
@@ -184,7 +212,7 @@
 
                 <!-- Symbol Table Generation -->
                 <grammar>src/main/grammars/mc/feature/symboltable/</grammar>
-              
+
                 <!-- NestML (Left Recursion) -->
                 <grammar>src/main/grammars/org/nest/commons/Commons.mc4</grammar>
                 <grammar>src/main/grammars/org/nest/spl/SPL.mc4</grammar>
@@ -193,7 +221,7 @@
               <modelPaths>
                 <modelPath>src/main/grammars</modelPath>
               </modelPaths>
-              <handcodedPaths> 
+              <handcodedPaths>
                 <handcodedPath>src/main/java</handcodedPath>
               </handcodedPaths>
               <script>it.groovy</script>
@@ -229,63 +257,5 @@
       </build>
     </profile>
 
-    <!-- <profile> -->
-    <!-- <id>emf</id> -->
-    <!-- <build> -->
-    <!-- <directory>target/emf</directory> -->
-
-    <!-- <plugins> -->
-    <!-- MontiCore plugin -->
-    <!-- <plugin> -->
-    <!-- <groupId>de.monticore.maven</groupId> -->
-    <!-- <artifactId>monticore-maven-plugin</artifactId> -->
-    <!-- <executions> -->
-    <!-- <execution> -->
-    <!-- <goals> -->
-    <!-- <goal>clean</goal> -->
-    <!-- <goal>configure</goal> -->
-    <!-- <goal>generate</goal> -->
-    <!-- </goals> -->
-    <!-- <configuration> -->
-    <!-- <targetDirectory>target/emf/generated-sources/</targetDirectory> -->
-    <!-- <outputDirectory>target/emf/generated-sources/monticore</outputDirectory> -->
-    <!-- <arguments> -->
-    <!-- <argument>-workflow ALL -->
-    <!-- emfgenerate</argument> -->
-    <!-- </arguments> -->
-    <!-- </configuration> -->
-    <!-- </execution> -->
-    <!-- </executions> -->
-    <!-- <dependencies> -->
-    <!-- <dependency> -->
-    <!-- <groupId>de.monticore</groupId> -->
-    <!-- <artifactId>de.monticore</artifactId> -->
-    <!-- <version>${monticore.version}</version> -->
-    <!-- </dependency> -->
-    <!-- </dependencies> -->
-
-    <!-- </plugin> -->
-
-    <!-- <plugin> -->
-    <!-- <groupId>org.codehaus.mojo</groupId> -->
-    <!-- <artifactId>build-helper-maven-plugin</artifactId> -->
-    <!-- <executions> -->
-    <!-- <execution> -->
-    <!-- <phase>generate-test-sources</phase> -->
-    <!-- <goals> -->
-    <!-- <goal>add-test-source</goal> -->
-    <!-- </goals> -->
-    <!-- <configuration> -->
-    <!-- <sources> -->
-    <!-- <source>src/test_emf/java</source> -->
-    <!-- </sources> -->
-    <!-- </configuration> -->
-    <!-- </execution> -->
-    <!-- </executions> -->
-    <!-- </plugin> -->
-
-    <!-- </plugins> -->
-    <!-- </build> -->
-    <!-- </profile> -->
   </profiles>
 </project>
