@@ -1,5 +1,5 @@
 
-<#-- ${_templates.templates.a.EmptyTemplateTemplate.generateToString()}-->
+${_templates.templates.a.EmptyTemplateTemplate.generateToString()}
 
 <#macro templates_anotherFolder_EmptyTemplateTemplate_generateToString>
   templates.getAnotherFolder().getEmptyTemplateTemplate().generateToString()

@@ -8,11 +8,11 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.MyGeneratorEngine;
 import de.monticore.generating.templateengine.MyTemplateControllerConstants;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.freemarker.TempalateAutoImport;
 
 public class GeneratorConfig {
   
@@ -39,6 +39,10 @@ public class GeneratorConfig {
     GlobalExtensionManagement glex = setup.getGlex().orElse(new GlobalExtensionManagement());
     glex.defineGlobalValue(MyTemplateControllerConstants.TEMPLATES, new Templates());
     setup.setGlex(glex);
+    List<TempalateAutoImport> imports = new ArrayList<>();
+    TempalateAutoImport ta = new TempalateAutoImport(Paths.get("Setup.ftl"), "_templates");
+    imports.add(ta);
+    setup.setAutoImports(imports);
     List<File> files = new ArrayList<>();
     File f = Paths.get(workingDir + DEFAULT_OUTPUT_FOLDER + ""
         + "/setup/").toFile();

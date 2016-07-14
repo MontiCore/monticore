@@ -139,6 +139,7 @@ public class GeneratorEngine {
     tc.writeArgs(templateName, filePath, node, Arrays.asList(templateArguments));
   }
   
+  
   /**
    * Processes the template <code>templateName</code> with the given
    * <code>templateArguments</code> and returns the content as String.
