@@ -10,7 +10,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.base.Strings;
+import com.google.common.primitives.Chars;
+
 import de.se_rwth.commons.Files;
+import de.se_rwth.commons.Names;
 import freemarker.core.Parameter;
 
 /**
@@ -173,10 +177,85 @@ public class TemplateClassHelper {
       ret = ret.substring(ret.lastIndexOf(".") + 1);
     }
     return ret;
-    
   }
   
-  public static boolean isTemplateName(String name){
+  private String printNameWithDepthIndex(String packagePath, String modelPath, int curDepthIndex) {
+    String ret = "";
+    
+    return ret;
+  }
+  
+  public static boolean isTemplateName(String name) {
     return name.endsWith(".ftl");
   }
+  
+  // public String printGettersForTemplate(String templatePath, String
+  // modelPath) {
+  // String ret = "";
+  // String tmp = "";
+  // tmp = templatePath.replace(modelPath, "");
+  // if (tmp.indexOf(File.separator) == 0) {
+  // tmp = tmp.substring(tmp.indexOf(File.separator) + 1);
+  // }
+  // tmp = tmp.replace(".ftl", "");
+  //
+  // String[] packages = new String[0];
+  // if (tmp.contains(File.separator)) {
+  // tmp = tmp.replace(File.separator, ".");
+  // packages = tmp.split("\\.");
+  // }
+  //
+  // String packs = "";
+  // for(int i = 0; i<packages.length-1;i++){
+  // packs+=packages[i];
+  // ret+="get" +
+  // capitalizeFirst(printPackageClassWithDepthIndex(modelPath+File.separator+packs,
+  // modelPath, i))+"().";
+  // if(i<packages.length-2){
+  // packs+=File.separator;
+  // }
+  // }
+  //
+  // ret+="get"+packages[packages.length-1]+"()";
+  //
+  // return ret;
+  // }
+  
+  public String printGettersForTemplate(String templatePath, String modelPath) {
+    String tmp = "";
+    String ret = "";
+    tmp = templatePath.replace(modelPath, "");
+    if (tmp.indexOf(File.separator) == 0) {
+      tmp = tmp.substring(tmp.indexOf(File.separator) + 1);
+    }
+    tmp = tmp.replace(".ftl", "");
+    
+    String[] packages = new String[0];
+    if (tmp.contains(File.separator)) {
+      tmp = tmp.replace(File.separator, ".");
+      packages = tmp.split("\\.");
+    }
+    
+    for(int i = 0;i<packages.length-1;i++){
+      ret+="get"+capitalizeFirst(packages[i])+"().";
+    }
+    
+    ret+= "get"+packages[packages.length-1]+"Template()";
+    
+    return ret;
+  }
+  
+  private static String capitalizeFirst(String toCap) {
+    String ret = "";
+    if (null != toCap && toCap.length() > 0) {
+      char first = toCap.charAt(0);
+      first = Character.toUpperCase(first);
+      ret += first;
+    }
+    if (toCap.length() > 1) {
+      ret += toCap.substring(1);
+    }
+    return ret;
+  }
+  
 }

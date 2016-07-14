@@ -40,7 +40,8 @@ SUCH DAMAGE.
 	<#return tc.params(param)>
 </#function>
 
-
+<#global test={"t1":{"t2":"bubu"}}>
 <#function result r>
 	<#return tc.result(r)>
 </#function> -->
+

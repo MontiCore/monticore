@@ -192,7 +192,6 @@ public class MyTemplateController extends TemplateController {
     
     Template aliasesTemplate = tcConfig.getFreeMarkerTemplateEngine().loadTemplate(
         MYALIASES_TEMPLATE);
-    
     Set macros = aliasesTemplate.getMacros().entrySet();
     for (Object o : macros) {
       Entry e = (Entry) o;

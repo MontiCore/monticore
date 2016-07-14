@@ -4,11 +4,15 @@ ${tc.params("String _package")}
 package ${_package};
 
 import java.io.File;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-import de.monticore.generating.MyGeneratorEngine;
+
 import de.monticore.generating.GeneratorSetup;
-
-
+import de.monticore.generating.MyGeneratorEngine;
+import de.monticore.generating.templateengine.MyTemplateControllerConstants;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
 
 public class GeneratorConfig {
   
@@ -18,17 +22,36 @@ public class GeneratorConfig {
   
   public static MyGeneratorEngine getGeneratorEngine() {
     if (null == generator) {
-      String workingDir = System.getProperty("user.dir");
-      GeneratorSetup setup = new GeneratorSetup(new File(workingDir+DEFAULT_OUTPUT_FOLDER));
-      GeneratorConfig.generator = new MyGeneratorEngine(setup);
-      GeneratorConfig.generator.setTemplates(Optional.of(new Templates()));
+      init();
     }
     return generator;
   }
   
-  public static void setGeneratorEngine(MyGeneratorEngine generator) {
-    GeneratorConfig.generator = generator;
-    GeneratorConfig.generator.setTemplates(Optional.of(new Templates()));
+  static private GeneratorSetup init() {
+    return init(Optional.empty());
   }
   
+  private static GeneratorSetup init(Optional<GeneratorSetup> setupOpt) {
+    String workingDir = System.getProperty("user.dir");
+    GeneratorSetup setup = setupOpt.orElse(new GeneratorSetup(new File(workingDir
+        + DEFAULT_OUTPUT_FOLDER)));
+    
+    GlobalExtensionManagement glex = setup.getGlex().orElse(new GlobalExtensionManagement());
+    glex.defineGlobalValue(MyTemplateControllerConstants.TEMPLATES, new Templates());
+    setup.setGlex(glex);
+    List<File> files = new ArrayList<>();
+    File f = Paths.get(workingDir + DEFAULT_OUTPUT_FOLDER + ""
+        + "/setup/").toFile();
+    files.add(f);
+    setup.setAdditionalTemplatePaths(files);
+    GeneratorConfig.generator = new MyGeneratorEngine(setup, Optional.of(new Templates()));
+    
+    return setup;
+  }
+  
+  public static void init(GeneratorSetup setup) {
+    GeneratorConfig.generator = new MyGeneratorEngine(init(Optional.of(setup)),
+        Optional.of(new Templates()));
+  }
+    
 }

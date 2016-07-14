@@ -17,6 +17,7 @@ import java.util.Optional;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.MyGeneratorEngine;
+import de.monticore.generating.templateengine.MyTemplateControllerConstants;
 import de.monticore.templateclassgenerator.EmptyNode;
 import de.se_rwth.commons.Names;
 import freemarker.cache.FileTemplateLoader;
@@ -114,9 +115,9 @@ public class TemplateClassGenerator {
         params, result, helper);
   }
   
-
   /**
    * TODO: Write me!
+   * 
    * @param foundTemplates
    * @param targetFilepath
    * @param modelPath
@@ -124,6 +125,7 @@ public class TemplateClassGenerator {
   public static void generateTemplateSetup(File targetFilepath, File modelPath) {
     String packageName = "setup";
     final GeneratorSetup setup = new GeneratorSetup(targetFilepath);
+    setup.setTracing(false);
     TemplateClassHelper helper = new TemplateClassHelper();
     final MyGeneratorEngine generator = new MyGeneratorEngine(setup);
     String filePath = Names.getPathFromPackage(packageName) + File.separator + "Templates.java";
@@ -131,6 +133,9 @@ public class TemplateClassGenerator {
     List<File> nodes = TemplateClassHelper.walkTree(modelPath);
     generator.generate("typesafety.Templates", Paths.get(filePath), new EmptyNode(),
         packageName, nodes, mp, new TemplateClassHelper());
+    filePath = Names.getPathFromPackage(packageName) + File.separator + "Setup.ftl";
+    generator.generate("typesafety.setup.Setup", Paths.get(filePath), new EmptyNode(), nodes, mp,
+        new TemplateClassHelper(), MyTemplateControllerConstants.TEMPLATES);
   }
   
   public static void generateGeneratorConfig(File targetFilepath) {
@@ -138,7 +143,8 @@ public class TemplateClassGenerator {
     final GeneratorSetup setup = new GeneratorSetup(targetFilepath);
     TemplateClassHelper helper = new TemplateClassHelper();
     final MyGeneratorEngine generator = new MyGeneratorEngine(setup);
-    String filePath = Names.getPathFromPackage(packageName) + File.separator + "GeneratorConfig.java";
+    String filePath = Names.getPathFromPackage(packageName) + File.separator
+        + "GeneratorConfig.java";
     generator.generate("typesafety.GeneratorConfig", Paths.get(filePath), new EmptyNode(),
         packageName);
   }

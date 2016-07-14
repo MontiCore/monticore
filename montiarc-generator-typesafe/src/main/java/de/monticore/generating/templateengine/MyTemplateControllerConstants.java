@@ -17,5 +17,5 @@ package de.monticore.generating.templateengine;
 public class MyTemplateControllerConstants {
   
   
-  public static final String TEMPLATES = "templates";
+  public static final String TEMPLATES = "templatessdfkbvcasvib";
 }
