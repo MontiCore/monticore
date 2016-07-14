@@ -27,6 +27,7 @@ import java.util.Optional;
 import com.google.common.collect.ImmutableList;
 
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.freemarker.TempalateAutoImport;
 import de.monticore.io.paths.IterablePath;
 
 /**
@@ -44,7 +45,7 @@ public class GeneratorSetup {
   private GlobalExtensionManagement glex;
   
   /**
-   * The path for the handwritten code 
+   * The path for the handwritten code
    */
   private IterablePath handcodedPath;
   
@@ -54,19 +55,22 @@ public class GeneratorSetup {
   private List<File> additionalTemplatePaths = new ArrayList<>();
   
   /**
+   * Template to include automatically at beginning.
+   */
+  private List<TempalateAutoImport> autoImports = new ArrayList<>();
+  
+  /**
    * Defines if tracing infos are added to the result as comments
    */
   private boolean tracing = true;
   
   /**
-   * The characters for the start of a comment. Usually same as the target
-   * language.
+   * The characters for the start of a comment. Usually same as the target language.
    */
   private Optional<String> commentStart = Optional.empty();
   
   /**
-   * The characters for the end of a comment. Usually same as the target
-   * language.
+   * The characters for the end of a comment. Usually same as the target language.
    */
   private Optional<String> commentEnd = Optional.empty();
   
@@ -103,13 +107,24 @@ public class GeneratorSetup {
     return ImmutableList.copyOf(additionalTemplatePaths);
   }
   
+  public void setAutoImports(List<TempalateAutoImport> autoImports) {
+    this.autoImports = new ArrayList<>(autoImports);
+  }
+  
+  /**
+   * @return the templates to include automatically at the beginning
+   */
+  public List<TempalateAutoImport> getAutoTemplateImports() {
+    return ImmutableList.copyOf(autoImports);
+  }
+  
   /**
    * @return targetPath
    */
   public IterablePath getHandcodedPath() {
     return this.handcodedPath;
   }
-
+  
   /**
    * @param hwcpath the handcoded path to set
    */
@@ -118,8 +133,7 @@ public class GeneratorSetup {
   }
   
   /**
-   * @param tracing defines if tracing infos are added to the result as
-   * comments.
+   * @param tracing defines if tracing infos are added to the result as comments.
    */
   public void setTracing(boolean tracing) {
     this.tracing = tracing;
@@ -133,32 +147,29 @@ public class GeneratorSetup {
   }
   
   /**
-   * @return the characters for the start of a comment. Usually same as the
-   * target language.
+   * @return the characters for the start of a comment. Usually same as the target language.
    */
   public Optional<String> getCommentStart() {
     return commentStart;
   }
   
   /**
-   * @param commentStart the characters for the start of a comment. Usually same
-   * as the target language.
+   * @param commentStart the characters for the start of a comment. Usually same as the target
+   * language.
    */
   public void setCommentStart(Optional<String> commentStart) {
     this.commentStart = commentStart;
   }
   
   /**
-   * @return the characters for the end of a comment. Usually same as the target
-   * language.
+   * @return the characters for the end of a comment. Usually same as the target language.
    */
   public Optional<String> getCommentEnd() {
     return commentEnd;
   }
   
   /**
-   * @param commentEnd the characters for the end of a comment. Usually same as
-   * the target language.
+   * @param commentEnd the characters for the end of a comment. Usually same as the target language.
    */
   public void setCommentEnd(Optional<String> commentEnd) {
     this.commentEnd = commentEnd;

@@ -22,9 +22,8 @@ package de.monticore.generating.templateengine.freemarker;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-
-import com.google.common.collect.Lists;
 
 import de.se_rwth.commons.logging.Log;
 import freemarker.cache.MultiTemplateLoader;
@@ -42,15 +41,23 @@ public class FreeMarkerConfigurationBuilder {
   
   private ClassLoader classLoader = getClass().getClassLoader();
   
-  private List<File> additionalTemplatePaths = Lists.newArrayList();
+  private List<File> additionalTemplatePaths = new ArrayList<>();
+  
+  private Collection<TempalateAutoImport> autoImports = new ArrayList<>();
   
   public FreeMarkerConfigurationBuilder classLoader(ClassLoader classLoader) {
     this.classLoader = classLoader;
     return this;
   }
   
-  public FreeMarkerConfigurationBuilder additionalTemplatePaths(List<File> additionalTemplatePaths) {
+  public FreeMarkerConfigurationBuilder additionalTemplatePaths(
+      List<File> additionalTemplatePaths) {
     this.additionalTemplatePaths = additionalTemplatePaths;
+    return this;
+  }
+  
+  public FreeMarkerConfigurationBuilder autoImports(Collection<TempalateAutoImport> autoImports) {
+    this.autoImports = autoImports;
     return this;
   }
   
@@ -83,13 +90,17 @@ public class FreeMarkerConfigurationBuilder {
         }
       }
       
+      for (TempalateAutoImport i : autoImports) {
+        config.addAutoImport(i.getNamespaceHash(), i.getTemplatePath().toString());
+      }
+      
       config.setTemplateLoader(new MultiTemplateLoader(loaders.toArray(new TemplateLoader[loaders
           .size()])));
     }
     
     config.setTemplateExceptionHandler(new MontiCoreTemplateExceptionHandler(
         MontiCoreTemplateExceptionHandler.THROW_ERROR));
-    
+        
     return config;
   }
   

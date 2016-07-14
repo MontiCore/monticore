@@ -89,6 +89,7 @@ public class GeneratorEngine {
     Configuration freemarkerConfig = new FreeMarkerConfigurationBuilder()
         .classLoader(generatorSetup.getClassLoader())
         .additionalTemplatePaths(generatorSetup.getAdditionalTemplatePaths())
+        .autoImports(generatorSetup.getAutoTemplateImports())
         .build();
     
     GlobalExtensionManagement glex = generatorSetup.getGlex().orElse(
@@ -96,7 +97,7 @@ public class GeneratorEngine {
     
     FreeMarkerTemplateEngine freeMarkerTemplateEngine = new FreeMarkerTemplateEngine(
         freemarkerConfig);
-    
+
     TemplateControllerConfiguration tcConfig = new TemplateControllerConfigurationBuilder()
         .glex(glex)
         .templateControllerFactory(templateControllerFactory)
