@@ -117,6 +117,20 @@ public class GeneratorEngine {
     return tcConfig;
   }
   
+   /**
+   * Processes the template <code>templateName</code> with the given
+   * <code>templateArguments</code> and returns the content as String.
+   *
+   * @param templateName the template to be processes
+   * @param templateArguments additional template arguments (if needed).
+   */
+  public String generateToString(String templateName,
+      Object... templateArguments) {
+    TemplateController tc = this.templateControllerFactory.create(this.templateControllerConfig,
+        templateName);
+    return tc.includeArgs(templateName, Arrays.asList(templateArguments));
+  }
+  
   /**
    * Processes the template <code>templateName</code> with the <code>node</code>
    * and the given <code>templateArguments</code> and writes the content into
@@ -138,6 +152,8 @@ public class GeneratorEngine {
     TemplateController tc = templateControllerFactory.create(templateControllerConfig, "");
     tc.writeArgs(templateName, filePath, node, Arrays.asList(templateArguments));
   }
+  
+  
   
   /**
    * Processes the template <code>templateName</code> with the <code>node</code>
