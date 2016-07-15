@@ -1,84 +1,129 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-	<!-- == PROJECT COORDINATES ============================================= -->
+  <!-- == PROJECT COORDINATES ============================================= -->
 
-	<parent>
-		<groupId>de.monticore</groupId>
-		<artifactId>monticore</artifactId>
-		<version>4.3.1-SNAPSHOT</version>
-	</parent>
+  <parent>
+    <groupId>de.monticore</groupId>
+    <artifactId>monticore</artifactId>
+    <version>4.4.1-SNAPSHOT</version>
+  </parent>
 
-	<artifactId>monticore-grammar</artifactId>
+  <artifactId>monticore-grammar</artifactId>
+  
+  <!-- == PROJECT METAINFORMATION ========================================= -->
 
-	<!-- == PROJECT METAINFORMATION ========================================= -->
+  <name>MontiCore: Grammar</name>
+  <description>The MontiCore Language Definition Format</description>
+  <dependencies>
 
-	<name>MontiCore: Grammar</name>
-	<description>The MontiCore Language Definition Format</description>
-	<dependencies>
+    <dependency>
+      <groupId>de.monticore</groupId>
+      <artifactId>monticore-runtime</artifactId>
+    </dependency>
+      <dependency>
+      <groupId>de.monticore</groupId>
+      <artifactId>monticore-emf-runtime</artifactId>
+    </dependency>
+    
+    
+       <!-- EMF dependencies -->
+      <dependency>
+        <groupId>org.mod4j.org.eclipse.emf</groupId>
+        <artifactId>ecore</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>org.mod4j.org.eclipse.emf.ecore</groupId>
+        <artifactId>xmi</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>org.mod4j.org.eclipse.emf</groupId>
+        <artifactId>common</artifactId>
+      </dependency>
+      
+    
 
-		<dependency>
-			<groupId>de.monticore</groupId>
-			<artifactId>monticore-runtime</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>de.se_rwth.commons</groupId>
+      <artifactId>se-commons-utilities</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>de.se_rwth.commons</groupId>
+      <artifactId>se-commons-logging</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>de.se_rwth.commons</groupId>
-			<artifactId>se-commons-utilities</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.se_rwth.commons</groupId>
-			<artifactId>se-commons-logging</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr4</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.antlr</groupId>
-			<artifactId>antlr4</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>de.monticore</groupId>
-			<artifactId>de.monticore.java</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-		</dependency>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>de.monticore.mojo</groupId>
+        <artifactId>monticore-maven-plugin</artifactId>
+      </plugin>
 
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.groovy</groupId>
-			<artifactId>groovy</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+      </plugin>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>de.monticore.mojo</groupId>
-				<artifactId>monticore-maven-plugin</artifactId>
-			</plugin>
-
-			<plugin>
-				<artifactId>maven-source-plugin</artifactId>
-			</plugin>
-
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+      </plugin>
+    </plugins>
+    <pluginManagement>
+      <plugins>
+        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>de.monticore.mojo</groupId>
+                    <artifactId>monticore-maven-plugin</artifactId>
+                    <versionRange>[4.2.0,)</versionRange>
+                    <goals>
+                      <goal>generate</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 
 </project>
