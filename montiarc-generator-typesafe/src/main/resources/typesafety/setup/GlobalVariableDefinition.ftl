@@ -6,12 +6,18 @@ ${tc.params("java.util.List<File> nodes", "int depthIndex","String modelPath", "
   <#if node.isDirectory()> 
     "${node.getName()}":
     ${tc.includeArgs("typesafety.setup.GlobalVariableDefinition", [helper.walkTree(node), depthIndex+1, modelPath, helper, templatesCryptedName])}
+    <#if node?has_next>
+    ,
+    </#if>
   <#else>
-    "${helper.printSimpleTemplateNameFromPath(node.getPath(), modelPath)}Template":
-    ${templatesCryptedName}.${helper.printGettersForTemplate(node.getPath(), modelPath)}
+    <#if helper.isTemplateName(node.getPath())>
+      "${helper.printSimpleTemplateNameFromPath(node.getPath(), modelPath)}Template":
+      ${templatesCryptedName}.${helper.printGettersForTemplate(node.getPath(), modelPath)}
+      <#if node?has_next>
+      ,
+      </#if>
+    </#if>
   </#if>
-<#if node?has_next>
-,
-</#if>
+
 </#list>
 }

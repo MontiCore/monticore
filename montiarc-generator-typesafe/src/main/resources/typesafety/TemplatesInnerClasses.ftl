@@ -16,11 +16,12 @@ ${tc.params("java.util.List<File> nodes", "int depthIndex","String modelPath", "
   
     <#if helper.isTemplateName(node.getPath())>
       public  templates.${helper.printFQNTemplateNameFromPath(node.getPath(), modelPath)}Template ${helper.printSimpleTemplateNameFromPath(node.getPath(), modelPath)}Template = new templates.${helper.printFQNTemplateNameFromPath(node.getPath(), modelPath)}Template();
-    </#if>
+    
     
     public templates.${helper.printFQNTemplateNameFromPath(node.getPath(), modelPath)}Template get${helper.printSimpleTemplateNameFromPath(node.getPath(), modelPath)}Template() {
       return ${helper.printSimpleTemplateNameFromPath(node.getPath(), modelPath)}Template;
-    } 
+    }
+    </#if> 
   </#if>
 
 </#list>
