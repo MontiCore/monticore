@@ -18,13 +18,9 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import setup.GeneratorConfig;
-import setup.Templates;
-import templates.templates.b.ConstructorTemplate;
-import templates.templates.b.JavaClassTemplate;
-import templates.templates.b.TemplateTemplate;
-import types.Attribute;
-import types.Helper;
+import _templates.templates.b.ConstructorTemplate;
+import _templates.templates.b.JavaClassTemplate;
+import _templates.templates.b.TemplateTemplate;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.MyGeneratorEngine;
@@ -33,6 +29,10 @@ import de.monticore.java.javadsl._parser.JavaDSLParser;
 import de.monticore.java.symboltable.JavaTypeSymbol;
 import de.monticore.symboltable.Scope;
 import de.monticore.templateclassgenerator.EmptyNode;
+import setup.GeneratorConfig;
+import setup.Templates;
+import types.Attribute;
+import types.Helper;
 
 /**
  * TODO: Write me!

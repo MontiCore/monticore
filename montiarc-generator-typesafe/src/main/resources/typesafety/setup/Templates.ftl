@@ -4,6 +4,6 @@ package ${package};
 
 public class Templates {
 
-  ${tc.includeArgs("typesafety.TemplatesInnerClasses", [nodes,0, modelPath, helper])}
+  ${tc.includeArgs("typesafety.setup.TemplatesInnerClasses", [nodes,0, modelPath, helper])}
 
 }

@@ -53,7 +53,7 @@ private static Path outputDirectory = Paths.get("target/generated-sources/templa
   
   @Test
   public void testEmptyTemplate(){
-    JavaTypeSymbol emptyTemplateClass = symTab.<JavaTypeSymbol> resolve("templates.templates.a.EmptyTemplateTemplate", JavaTypeSymbol.KIND).orElse(null);
+    JavaTypeSymbol emptyTemplateClass = symTab.<JavaTypeSymbol> resolve("_templates.templates.a.EmptyTemplateTemplate", JavaTypeSymbol.KIND).orElse(null);
     assertNotNull(emptyTemplateClass);
     
     boolean hasCorrectGenerate = false;
@@ -78,7 +78,7 @@ private static Path outputDirectory = Paths.get("target/generated-sources/templa
   
   @Test
   public void testTemplateWithoutResult(){
-    JavaTypeSymbol templateWithoutResultClass = symTab.<JavaTypeSymbol> resolve("templates.templates.a.TemplateWithoutResultTemplate", JavaTypeSymbol.KIND).orElse(null);
+    JavaTypeSymbol templateWithoutResultClass = symTab.<JavaTypeSymbol> resolve("_templates.templates.a.TemplateWithoutResultTemplate", JavaTypeSymbol.KIND).orElse(null);
     assertNotNull(templateWithoutResultClass);  
     
     boolean hasCorrectGenerate = false;
@@ -103,7 +103,7 @@ private static Path outputDirectory = Paths.get("target/generated-sources/templa
   
   @Test
   public void testTemplateWithoutSignature(){
-    JavaTypeSymbol templateWithoutSignature= symTab.<JavaTypeSymbol> resolve("templates.templates.a.TemplateWithoutSignatureTemplate", JavaTypeSymbol.KIND).orElse(null);
+    JavaTypeSymbol templateWithoutSignature= symTab.<JavaTypeSymbol> resolve("_templates.templates.a.TemplateWithoutSignatureTemplate", JavaTypeSymbol.KIND).orElse(null);
     assertNotNull(templateWithoutSignature);  
     
     boolean hasCorrectGenerate = false;
@@ -129,7 +129,7 @@ private static Path outputDirectory = Paths.get("target/generated-sources/templa
   
   @Test
   public void testTemplateWithResult(){
-    JavaTypeSymbol templateWithResult = symTab.<JavaTypeSymbol> resolve("templates.templates.a.TemplateWithResultTemplate", JavaTypeSymbol.KIND).orElse(null);
+    JavaTypeSymbol templateWithResult = symTab.<JavaTypeSymbol> resolve("_templates.templates.a.TemplateWithResultTemplate", JavaTypeSymbol.KIND).orElse(null);
     assertNotNull(templateWithResult);  
     
     boolean hasCorrectGenerate = false;

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.MyGeneratorEngine;
-import de.monticore.generating.templateengine.MyTemplateControllerConstants;
+import de.monticore.templateclassgenerator.codegen.TemplateClassGeneratorConstants;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.freemarker.TempalateAutoImport;
 
@@ -37,10 +37,10 @@ public class GeneratorConfig {
         + DEFAULT_OUTPUT_FOLDER)));
     
     GlobalExtensionManagement glex = setup.getGlex().orElse(new GlobalExtensionManagement());
-    glex.defineGlobalValue(MyTemplateControllerConstants.TEMPLATES, new Templates());
+    glex.defineGlobalValue(TemplateClassGeneratorConstants.TEMPLATES_ALIAS, new Templates());
     setup.setGlex(glex);
     List<TempalateAutoImport> imports = new ArrayList<>();
-    TempalateAutoImport ta = new TempalateAutoImport(Paths.get("Setup.ftl"), "_templates");
+    TempalateAutoImport ta = new TempalateAutoImport(Paths.get("Setup.ftl"), "${glex.getGlobalValue("TemplateClassPackage")}");
     imports.add(ta);
     setup.setAutoImports(imports);
     List<File> files = new ArrayList<>();

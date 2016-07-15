@@ -16,6 +16,7 @@ import java.util.List;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
 import de.monticore.templateclassgenerator.codegen.TemplateClassGenerator;
+import de.monticore.templateclassgenerator.codegen.TemplateClassGeneratorConstants;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.groovy.GroovyInterpreter;
@@ -95,26 +96,13 @@ public class TemplateClassGeneratorScript extends Script implements GroovyRunner
       String simpleName = Names.getSimpleName(template);
       String fileName = Names.getPathFromQualifiedName(template) + File.separator + simpleName
           + ".ftl";
-      generate(simpleName + "Template", Paths.get(modelPath.getAbsolutePath()), fileName,
+      generate(simpleName + TemplateClassGeneratorConstants.TEMPLATE_CLASSES_POSTFIX, Paths.get(modelPath.getAbsolutePath()), fileName,
           targetFilepath);
     }
     if (!foundTemplates.isEmpty()) {
       TemplateClassGenerator.generateTemplateSetup(targetFilepath, modelPath);
-      TemplateClassGenerator.generateGeneratorConfig(targetFilepath);
     }
   }
-  
-  // public void generate(final List<File> modelPaths, File outputDirectory,
-  // Optional<String> hwcPath) {
-  // for(File modelPath : modelPaths){
-  // File fqnMP = Paths.get(modelPath.getAbsolutePath()).toFile();
-  // List<String> modelsInModelPath = Modelfinder.getModelsInModelPath(fqnMP,
-  // "ftl");
-  // for(String model : modelsInModelPath){
-  // // generate(modelPaths, model, outputDirectory, hwcPath);
-  // }
-  // }
-  // }
   
   // #######################
   // log functions
