@@ -1,8 +1,3 @@
 
-${_templates.templates.a.EmptyTemplateTemplate.generateToString()}
+${_templates.templates.a.EmptyTemplateTemplate.generate()}
 
-<#macro templates_anotherFolder_EmptyTemplateTemplate_generateToString>
-  templates.getAnotherFolder().getEmptyTemplateTemplate().generateToString()
-</#macro>
-
-private String <@templates_anotherFolder_EmptyTemplateTemplate_generateToString/>;

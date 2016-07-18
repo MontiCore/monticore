@@ -10,6 +10,8 @@
 		<version>4.4.1-SNAPSHOT</version>
 	</parent>
 
+
+	
 	<artifactId>monticore-templateclassgenerator</artifactId>
 
 	<!-- == PROJECT DEPENDENCIES ============================================= -->
@@ -26,7 +28,7 @@
 			<version>4.4.1-SNAPSHOT</version>
 			<artifactId>monticore-cli</artifactId>
 		</dependency>
-		
+
 		<!-- .. Test Libraries ............................................... -->
 		<dependency>
 			<groupId>junit</groupId>

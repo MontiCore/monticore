@@ -42,7 +42,7 @@ import types.Helper;
  * @since TODO: add version number
  */
 public class UsageTest extends AbstractSymtabTest {
-  private static Path outputDirectory = Paths.get("target/generated-sources/templateClasses");
+  private static Path outputDirectory = Paths.get("target/generated-sources/templateClasses/");
   
   private static Scope symTab = null;
   
@@ -64,7 +64,7 @@ public class UsageTest extends AbstractSymtabTest {
     attributes.add(new Attribute("Integer", "i"));
     attributes.add(new Attribute("String", "s"));
     Path filePath = Paths.get("test/" + classname + ".java");
-    JavaClassTemplate.generateToFile(filePath, new EmptyNode(), "test", classname,
+    JavaClassTemplate.generate(filePath, new EmptyNode(), "test", classname,
         attributes);
     JavaTypeSymbol testClass = symTab.<JavaTypeSymbol> resolve("test.Test1", JavaTypeSymbol.KIND)
         .orElse(null);
@@ -80,7 +80,7 @@ public class UsageTest extends AbstractSymtabTest {
     attributes.add(new Attribute("Integer", "i"));
     attributes.add(new Attribute("String", "s"));
     Function<String, ASTConstructorDeclaration> function = (String s) -> parseToASTConstructorDecl(s);
-    ASTConstructorDeclaration meth = ConstructorTemplate.generateToResult("Test2", attributes, new Helper(), function);
+    ASTConstructorDeclaration meth = ConstructorTemplate.generateASTConstructorDeclaration("Test2", attributes, new Helper(), function);
     
     
     assertNotNull(meth);
@@ -94,15 +94,14 @@ public class UsageTest extends AbstractSymtabTest {
     List<Attribute> attributes = new ArrayList<>();
     attributes.add(new Attribute("Integer", "i"));
     attributes.add(new Attribute("String", "s"));
-    String s = JavaClassTemplate.generateToString("test", classname, attributes);
+    String s = JavaClassTemplate.generate("test", classname, attributes);
     assertNotNull(s);
   }
   
   
   @Test
   public void testGenerateToStringInTemplate(){
-    Templates templates = new Templates();
-    String s = TemplateTemplate.generateToString();
+    String s = TemplateTemplate.generate();
     assertNotNull(s);
   }
   

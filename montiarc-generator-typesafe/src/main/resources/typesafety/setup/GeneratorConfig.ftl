@@ -44,8 +44,12 @@ public class GeneratorConfig {
     imports.add(ta);
     setup.setAutoImports(imports);
     List<File> files = new ArrayList<>();
-    File f = Paths.get(workingDir + DEFAULT_OUTPUT_FOLDER + ""
-        + "/setup/").toFile();
+    String filepath = setup.getOutputDirectory().getPath();
+    if(!filepath.endsWith(File.separator)){
+    	filepath+=File.separator;
+    }
+    filepath+="setup"+File.separator;
+    File f = Paths.get(filepath).toFile();
     files.add(f);
     setup.setAdditionalTemplatePaths(files);
     GeneratorConfig.generator = new MyGeneratorEngine(setup);
