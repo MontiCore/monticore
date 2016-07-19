@@ -23,6 +23,27 @@ import setup.GeneratorConfig;
 public class ${classname} <#t>
 {
 
+  static ${classname} ${classname?uncap_first};
+  
+  public static ${classname} get${classname}() {
+    if (${classname?uncap_first} == null){
+      ${classname?uncap_first} = new ${classname}();
+    }
+    return ${classname?uncap_first};
+  }
+  
+  protected static final void set${classname}(${classname} ${classname?uncap_first}){
+    if (${classname?uncap_first} == null) {
+      throw new IllegalArgumentException("Supplied ${classname?uncap_first} must not be null!");
+    }
+    ${classname}.${classname?uncap_first} = ${classname?uncap_first};
+  }
+  
+  protected ${classname}() {
+  
+  }
+  
+
   /**
   * Generates Template with given parameters to File filePath.
   *
@@ -36,8 +57,11 @@ public class ${classname} <#t>
   </#if>
   *
   */
-  public static void generate${resultPostfix}(Path filePath, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)})
-  {
+  public static void generate${resultPostfix}(Path filePath, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)}) {
+    get${classname}().doGenerate${resultPostfix}(filePath, node<#if parameters?has_content>, </#if>${helper.printParameterNames(parameters)});
+  }
+  
+  protected void doGenerate${resultPostfix}(Path filePath, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)}) {
     GeneratorConfig.getGeneratorEngine().generate("${fqnTemplateName?replace("\\","/")}", filePath, node<#if parameters?has_content>, </#if>${helper.printParameterNames(parameters)});
   }
   
@@ -53,8 +77,11 @@ public class ${classname} <#t>
   </#if>
   * @return String
   */
-  public static String generate${resultPostfix}(${helper.printParameters(parameters)})
-  {
+  public static String generate${resultPostfix}(${helper.printParameters(parameters)}) {
+    return get${classname}().doGenerate${resultPostfix}(${helper.printParameterNames(parameters)});
+  }
+  
+  protected String doGenerate${resultPostfix}(${helper.printParameters(parameters)}) {
     return GeneratorConfig.getGeneratorEngine().generateToString("${fqnTemplateName?replace("\\","/")}"<#if parameters?has_content>, </#if>${helper.printParameterNames(parameters)});
   }
   
@@ -75,8 +102,13 @@ public class ${classname} <#t>
   <#assign simpleName = helper.printSimpleName(result.get())>
   public static ${result.get()} generate${resultPostfix}(${helper.printParameters(parameters)}, java.util.function.Function<String, ${result.get()}> function)
   {
+    return get${classname}().doGenerate${resultPostfix}(${helper.printParameterNames(parameters)}, function);
+  }
+  
+  protected ${result.get()} doGenerate${resultPostfix}(${helper.printParameters(parameters)}, java.util.function.Function<String, ${result.get()}> function) {
     return function.apply(generate${resultPostfix}(${helper.printParameterNames(parameters)}));
   }
+  
   </#if>
   
 

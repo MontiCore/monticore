@@ -15,7 +15,7 @@ ${tc.params("java.util.List<File> nodes", "int depthIndex","String modelPath", "
   <#else>
   
     <#if helper.isTemplateName(node.getPath())>
-      public  ${glex.getGlobalValue("TemplateClassPackage")}.${helper.printFQNTemplateNameFromPath(node.getPath(), modelPath)}${glex.getGlobalValue("TemplatePostfix")} ${helper.printSimpleTemplateNameFromPath(node.getPath(), modelPath)}${glex.getGlobalValue("TemplatePostfix")} = new ${glex.getGlobalValue("TemplateClassPackage")}.${helper.printFQNTemplateNameFromPath(node.getPath(), modelPath)}${glex.getGlobalValue("TemplatePostfix")}();
+      public  ${glex.getGlobalValue("TemplateClassPackage")}.${helper.printFQNTemplateNameFromPath(node.getPath(), modelPath)}${glex.getGlobalValue("TemplatePostfix")} ${helper.printSimpleTemplateNameFromPath(node.getPath(), modelPath)}${glex.getGlobalValue("TemplatePostfix")} = ${glex.getGlobalValue("TemplateClassPackage")}.${helper.printFQNTemplateNameFromPath(node.getPath(), modelPath)}${glex.getGlobalValue("TemplatePostfix")}.get${helper.printSimpleTemplateNameFromPath(node.getPath(), modelPath)}${glex.getGlobalValue("TemplatePostfix")}();
     
     
     public ${glex.getGlobalValue("TemplateClassPackage")}.${helper.printFQNTemplateNameFromPath(node.getPath(), modelPath)}${glex.getGlobalValue("TemplatePostfix")} get${helper.printSimpleTemplateNameFromPath(node.getPath(), modelPath)}${glex.getGlobalValue("TemplatePostfix")}() {
