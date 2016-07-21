@@ -17,7 +17,7 @@
  * ******************************************************************************
  */
 
-package de.monticore.symboltable.types;
+package de.monticore.types;
 
 import java.util.ArrayList;
 import java.util.List;
