@@ -25,7 +25,7 @@ public class ${classname} <#t>
 
   static ${classname} ${classname?uncap_first};
   
-  public static ${classname} get${classname}() {
+  static ${classname} get${classname}() {
     if (${classname?uncap_first} == null){
       ${classname?uncap_first} = new ${classname}();
     }

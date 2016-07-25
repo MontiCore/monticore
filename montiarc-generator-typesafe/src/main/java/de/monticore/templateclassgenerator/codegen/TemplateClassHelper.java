@@ -146,9 +146,12 @@ public class TemplateClassHelper {
   }
   
   public static String printPackageClassWithDepthIndex(String packagePath, String modelPath,
-      int depthIndex) {
+      int depthIndex,
+      List<File> files) {
     String ret = packagePath;
-    ret = ret.replace(modelPath, "");
+    if (ret.contains(modelPath)) {
+      ret = ret.replace(modelPath, "");
+    }
     if (ret.indexOf(File.separator) == 0) {
       ret = ret.substring(ret.indexOf(File.separator) + 1);
     }
@@ -167,6 +170,18 @@ public class TemplateClassHelper {
         occurences++;
       }
     }
+    
+    for (File f : files) {
+      String cleanName = f.getName();
+      if (f.getName().contains(".ftl")) {
+        cleanName = cleanName.replace(".ftl", "");
+      }
+      cleanName = cleanName.toLowerCase();
+      if (currentPackage.equals(cleanName)) {
+        occurences++;
+      }
+    }
+    
     if (occurences > 0) {
       ret += occurences - 1;
     }
@@ -176,12 +191,6 @@ public class TemplateClassHelper {
     if (ret.contains(".")) {
       ret = ret.substring(ret.lastIndexOf(".") + 1);
     }
-    return ret;
-  }
-  
-  private String printNameWithDepthIndex(String packagePath, String modelPath, int curDepthIndex) {
-    String ret = "";
-    
     return ret;
   }
   
@@ -221,7 +230,8 @@ public class TemplateClassHelper {
   // return ret;
   // }
   
-  public String printGettersForTemplate(String templatePath, String modelPath) {
+  public String printGettersForTemplate(String templatePath, String modelPath,
+      List<File> visitedNodes) {
     String tmp = "";
     String ret = "";
     tmp = templatePath.replace(modelPath, "");
@@ -236,13 +246,35 @@ public class TemplateClassHelper {
       packages = tmp.split("\\.");
     }
     
-    for(int i = 0;i<packages.length-1;i++){
-      ret+="get"+capitalizeFirst(packages[i])+"().";
+    ret += "get" + capitalizeFirst(packages[0]) + "().";
+    for (int i = 1; i < packages.length - 1; i++) {
+      ret += "get" + capitalizeFirst(
+          printPackageClassWithDepthIndex(getPackageUntilDepthIndex(tmp, i), modelPath,
+              i, walkTree(visitedNodes.get(i - 1))))
+          + "().";
     }
     
-    ret+= "get"+packages[packages.length-1]+"Template()";
+    ret += "get" + packages[packages.length - 1]
+        + TemplateClassGeneratorConstants.TEMPLATE_CLASSES_POSTFIX + "()";
     
     return ret;
+  }
+  
+  private String getPackageUntilDepthIndex(String packagePath, int depthIndex) {
+    String ret = "";
+    String[] packages = new String[1];
+    if (packagePath.contains(".")) {
+      packages = packagePath.split("\\.");
+    }
+    else {
+      packages[0] = packagePath;
+    }
+    ret += packages[0];
+    for (int i = 1; i <= depthIndex; i++) {
+      ret += File.separator + packages[i];
+    }
+    return ret;
+    
   }
   
   private static String capitalizeFirst(String toCap) {

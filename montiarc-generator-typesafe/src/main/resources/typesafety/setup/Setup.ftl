@@ -1,7 +1,8 @@
-${tc.params("java.util.List<File> nodes", "String modelPath", "de.monticore.templateclassgenerator.codegen.TemplateClassHelper helper")}
+${tc.params("java.util.List<File> nodes", "String modelPath", "de.monticore.templateclassgenerator.codegen.TemplateClassHelper helper", "java.util.List<File> visitedNodes")}
 
 <#list nodes as node>
-  ${r"<#assign"} ${node.getName()} =  ${tc.includeArgs("typesafety.setup.GlobalVariableDefinition", [helper.walkTree(node),0, modelPath, helper])} ${r">"}
+  <#assign visitedNodes = visitedNodes + [node]>
+  ${r"<#assign"} ${node.getName()} =  ${tc.includeArgs("typesafety.setup.GlobalVariableDefinition", [helper.walkTree(node),0, modelPath, helper, visitedNodes])} ${r">"}
 </#list>
 
 

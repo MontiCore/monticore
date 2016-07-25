@@ -1,4 +1,4 @@
-${tc.params("String _package")}
+${tc.params("String _package", "String outputDirectory")}
 
 
 package ${_package};
@@ -44,12 +44,17 @@ public class GeneratorConfig {
     imports.add(ta);
     setup.setAutoImports(imports);
     List<File> files = new ArrayList<>();
-    String filepath = setup.getOutputDirectory().getPath();
-    if(!filepath.endsWith(File.separator)){
-    	filepath+=File.separator;
+    
+    String outDir = "${outputDirectory}";
+    if(!outDir.endsWith(File.separator)){
+    	outDir+=File.separator;
     }
-    filepath+="setup"+File.separator;
-    File f = Paths.get(filepath).toFile();
+    if(outDir.contains(workingDir)){
+      outDir = workingDir + outDir;
+    }
+    outDir = outDir.replace("/","\\");
+    outDir+="setup"+File.separator;
+    File f = Paths.get(outDir).toFile();
     files.add(f);
     setup.setAdditionalTemplatePaths(files);
     GeneratorConfig.generator = new MyGeneratorEngine(setup);
