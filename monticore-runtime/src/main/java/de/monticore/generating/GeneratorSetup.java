@@ -27,7 +27,7 @@ import java.util.Optional;
 import com.google.common.collect.ImmutableList;
 
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.freemarker.TempalateAutoImport;
+import de.monticore.generating.templateengine.freemarker.TemplateAutoImport;
 import de.monticore.io.paths.IterablePath;
 
 /**
@@ -57,7 +57,7 @@ public class GeneratorSetup {
   /**
    * Template to include automatically at beginning.
    */
-  private List<TempalateAutoImport> autoImports = new ArrayList<>();
+  private List<TemplateAutoImport> autoImports = new ArrayList<>();
   
   /**
    * Defines if tracing infos are added to the result as comments
@@ -107,14 +107,14 @@ public class GeneratorSetup {
     return ImmutableList.copyOf(additionalTemplatePaths);
   }
   
-  public void setAutoImports(List<TempalateAutoImport> autoImports) {
+  public void setAutoImports(List<TemplateAutoImport> autoImports) {
     this.autoImports = new ArrayList<>(autoImports);
   }
   
   /**
    * @return the templates to include automatically at the beginning
    */
-  public List<TempalateAutoImport> getAutoTemplateImports() {
+  public List<TemplateAutoImport> getAutoTemplateImports() {
     return ImmutableList.copyOf(autoImports);
   }
   
