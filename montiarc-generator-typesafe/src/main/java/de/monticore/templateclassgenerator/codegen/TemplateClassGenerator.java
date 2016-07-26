@@ -108,8 +108,9 @@ public class TemplateClassGenerator {
    * @param foundTemplates
    * @param targetFilepath
    * @param modelPath
+   * @param foundTemplates 
    */
-  public static void generateTemplateSetup(File targetFilepath, File modelPath) {
+  public static void generateTemplateSetup(File targetFilepath, File modelPath, List<String> foundTemplates) {
     String packageName = "setup";
     final GeneratorSetup setup = new GeneratorSetup(targetFilepath);
     setup.setTracing(false);
@@ -126,9 +127,10 @@ public class TemplateClassGenerator {
     String filePath = Names.getPathFromPackage(packageName) + File.separator;
     String mp = modelPath.getPath();
     List<File> nodes = TemplateClassHelper.walkTree(modelPath);
+    List<String> templates = foundTemplates;
     generator.generate("typesafety.setup.Templates", Paths.get(filePath + "Templates.java"),
         new EmptyNode(),
-        packageName, nodes, mp, new TemplateClassHelper());
+        packageName, templates, mp, new TemplateClassHelper());
     generator.generate("typesafety.setup.Setup", Paths.get(filePath + "Setup.ftl"), new EmptyNode(),
         nodes, mp,
         new TemplateClassHelper(), new ArrayList<File>());

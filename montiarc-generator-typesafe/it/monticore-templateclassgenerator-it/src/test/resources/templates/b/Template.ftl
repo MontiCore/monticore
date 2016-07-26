@@ -1,3 +1,3 @@
 
-${_templates.templates.a.EmptyTemplateTemplate.generate()}
+${_templates.templates.a.EmptyTemplate.generate()}
 

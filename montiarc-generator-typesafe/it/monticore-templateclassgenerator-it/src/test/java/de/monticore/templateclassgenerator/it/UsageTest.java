@@ -18,9 +18,12 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import _templates.templates.b.ConstructorTemplate;
-import _templates.templates.b.JavaClassTemplate;
-import _templates.templates.b.TemplateTemplate;
+import setup.GeneratorConfig;
+import types.Attribute;
+import types.Helper;
+import _templates.templates.b.Constructor;
+import _templates.templates.b.JavaClass;
+import _templates.templates.b.Template;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.MyGeneratorEngine;
@@ -29,10 +32,6 @@ import de.monticore.java.javadsl._parser.JavaDSLParser;
 import de.monticore.java.symboltable.JavaTypeSymbol;
 import de.monticore.symboltable.Scope;
 import de.monticore.templateclassgenerator.EmptyNode;
-import setup.GeneratorConfig;
-import setup.Templates;
-import types.Attribute;
-import types.Helper;
 
 /**
  * TODO: Write me!
@@ -64,7 +63,7 @@ public class UsageTest extends AbstractSymtabTest {
     attributes.add(new Attribute("Integer", "i"));
     attributes.add(new Attribute("String", "s"));
     Path filePath = Paths.get("test/" + classname + ".java");
-    JavaClassTemplate.generate(filePath, new EmptyNode(), "test", classname,
+    JavaClass.generate(filePath, new EmptyNode(), "test", classname,
         attributes);
     JavaTypeSymbol testClass = symTab.<JavaTypeSymbol> resolve("test.Test1", JavaTypeSymbol.KIND)
         .orElse(null);
@@ -80,7 +79,7 @@ public class UsageTest extends AbstractSymtabTest {
     attributes.add(new Attribute("Integer", "i"));
     attributes.add(new Attribute("String", "s"));
     Function<String, ASTConstructorDeclaration> function = (String s) -> parseToASTConstructorDecl(s);
-    ASTConstructorDeclaration meth = ConstructorTemplate.generateASTConstructorDeclaration("Test2", attributes, new Helper(), function);
+    ASTConstructorDeclaration meth = Constructor.generate("Test2", attributes, new Helper(), function);
     
     
     assertNotNull(meth);
@@ -94,14 +93,14 @@ public class UsageTest extends AbstractSymtabTest {
     List<Attribute> attributes = new ArrayList<>();
     attributes.add(new Attribute("Integer", "i"));
     attributes.add(new Attribute("String", "s"));
-    String s = JavaClassTemplate.generate("test", classname, attributes);
+    String s = JavaClass.generate("test", classname, attributes);
     assertNotNull(s);
   }
   
   
   @Test
   public void testGenerateToStringInTemplate(){
-    String s = TemplateTemplate.generate();
+    String s = Template.generate();
     assertNotNull(s);
   }
   

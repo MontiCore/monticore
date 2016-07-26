@@ -198,40 +198,7 @@ public class TemplateClassHelper {
     return name.endsWith(".ftl");
   }
   
-  // public String printGettersForTemplate(String templatePath, String
-  // modelPath) {
-  // String ret = "";
-  // String tmp = "";
-  // tmp = templatePath.replace(modelPath, "");
-  // if (tmp.indexOf(File.separator) == 0) {
-  // tmp = tmp.substring(tmp.indexOf(File.separator) + 1);
-  // }
-  // tmp = tmp.replace(".ftl", "");
-  //
-  // String[] packages = new String[0];
-  // if (tmp.contains(File.separator)) {
-  // tmp = tmp.replace(File.separator, ".");
-  // packages = tmp.split("\\.");
-  // }
-  //
-  // String packs = "";
-  // for(int i = 0; i<packages.length-1;i++){
-  // packs+=packages[i];
-  // ret+="get" +
-  // capitalizeFirst(printPackageClassWithDepthIndex(modelPath+File.separator+packs,
-  // modelPath, i))+"().";
-  // if(i<packages.length-2){
-  // packs+=File.separator;
-  // }
-  // }
-  //
-  // ret+="get"+packages[packages.length-1]+"()";
-  //
-  // return ret;
-  // }
-  
-  public String printGettersForTemplate(String templatePath, String modelPath,
-      List<File> visitedNodes) {
+  public String printGettersForTemplate(String templatePath, String modelPath) {
     String tmp = "";
     String ret = "";
     tmp = templatePath.replace(modelPath, "");
@@ -239,42 +206,12 @@ public class TemplateClassHelper {
       tmp = tmp.substring(tmp.indexOf(File.separator) + 1);
     }
     tmp = tmp.replace(".ftl", "");
-    
-    String[] packages = new String[0];
     if (tmp.contains(File.separator)) {
-      tmp = tmp.replace(File.separator, ".");
-      packages = tmp.split("\\.");
+      tmp = tmp.replace(File.separator, "_");
     }
     
-    ret += "get" + capitalizeFirst(packages[0]) + "().";
-    for (int i = 1; i < packages.length - 1; i++) {
-      ret += "get" + capitalizeFirst(
-          printPackageClassWithDepthIndex(getPackageUntilDepthIndex(tmp, i), modelPath,
-              i, walkTree(visitedNodes.get(i - 1))))
-          + "().";
-    }
-    
-    ret += "get" + packages[packages.length - 1]
-        + TemplateClassGeneratorConstants.TEMPLATE_CLASSES_POSTFIX + "()";
-    
+    ret += "get" + capitalizeFirst(tmp) + "()";
     return ret;
-  }
-  
-  private String getPackageUntilDepthIndex(String packagePath, int depthIndex) {
-    String ret = "";
-    String[] packages = new String[1];
-    if (packagePath.contains(".")) {
-      packages = packagePath.split("\\.");
-    }
-    else {
-      packages[0] = packagePath;
-    }
-    ret += packages[0];
-    for (int i = 1; i <= depthIndex; i++) {
-      ret += File.separator + packages[i];
-    }
-    return ret;
-    
   }
   
   private static String capitalizeFirst(String toCap) {
@@ -290,4 +227,10 @@ public class TemplateClassHelper {
     return ret;
   }
   
+  public static String replaceDotsWithUnderscores(String packageName) {
+    if (packageName.contains(".")) {
+      return packageName.replace(".", "_");
+    }
+    return packageName;
+  }
 }

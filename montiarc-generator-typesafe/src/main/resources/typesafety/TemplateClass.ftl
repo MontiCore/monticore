@@ -6,12 +6,6 @@ ${tc.defineHookPoint("JavaCopyright")}
 
 package ${package};
 
-<#assign resultPostfix="">
-
-<#if result.isPresent()>
-  <#assign resultPostfix = helper.printSimpleName(result.get())>
-</#if>
-
 
 import java.nio.file.Path;
 import de.monticore.ast.ASTNode;
@@ -57,11 +51,11 @@ public class ${classname} <#t>
   </#if>
   *
   */
-  public static void generate${resultPostfix}(Path filePath, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)}) {
-    get${classname}().doGenerate${resultPostfix}(filePath, node<#if parameters?has_content>, </#if>${helper.printParameterNames(parameters)});
+  public static void generate(Path filePath, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)}) {
+    get${classname}().doGenerate(filePath, node<#if parameters?has_content>, </#if>${helper.printParameterNames(parameters)});
   }
   
-  protected void doGenerate${resultPostfix}(Path filePath, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)}) {
+  protected void doGenerate(Path filePath, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)}) {
     GeneratorConfig.getGeneratorEngine().generate("${fqnTemplateName?replace("\\","/")}", filePath, node<#if parameters?has_content>, </#if>${helper.printParameterNames(parameters)});
   }
   
@@ -77,11 +71,11 @@ public class ${classname} <#t>
   </#if>
   * @return String
   */
-  public static String generate${resultPostfix}(${helper.printParameters(parameters)}) {
-    return get${classname}().doGenerate${resultPostfix}(${helper.printParameterNames(parameters)});
+  public static String generate(${helper.printParameters(parameters)}) {
+    return get${classname}().doGenerate(${helper.printParameterNames(parameters)});
   }
   
-  protected String doGenerate${resultPostfix}(${helper.printParameters(parameters)}) {
+  protected String doGenerate(${helper.printParameters(parameters)}) {
     return GeneratorConfig.getGeneratorEngine().generateToString("${fqnTemplateName?replace("\\","/")}"<#if parameters?has_content>, </#if>${helper.printParameterNames(parameters)});
   }
   
@@ -100,13 +94,13 @@ public class ${classname} <#t>
   * @result ${result.get()}
   */  
   <#assign simpleName = helper.printSimpleName(result.get())>
-  public static ${result.get()} generate${resultPostfix}(${helper.printParameters(parameters)}, java.util.function.Function<String, ${result.get()}> function)
+  public static ${result.get()} generate(${helper.printParameters(parameters)}, java.util.function.Function<String, ${result.get()}> function)
   {
-    return get${classname}().doGenerate${resultPostfix}(${helper.printParameterNames(parameters)}, function);
+    return get${classname}().doGenerate(${helper.printParameterNames(parameters)}, function);
   }
   
-  protected ${result.get()} doGenerate${resultPostfix}(${helper.printParameters(parameters)}, java.util.function.Function<String, ${result.get()}> function) {
-    return function.apply(generate${resultPostfix}(${helper.printParameterNames(parameters)}));
+  protected ${result.get()} doGenerate(${helper.printParameters(parameters)}, java.util.function.Function<String, ${result.get()}> function) {
+    return function.apply(generate(${helper.printParameterNames(parameters)}));
   }
   
   </#if>

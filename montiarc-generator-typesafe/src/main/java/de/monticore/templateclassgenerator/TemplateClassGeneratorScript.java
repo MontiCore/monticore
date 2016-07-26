@@ -100,7 +100,7 @@ public class TemplateClassGeneratorScript extends Script implements GroovyRunner
           targetFilepath);
     }
     if (!foundTemplates.isEmpty()) {
-      TemplateClassGenerator.generateTemplateSetup(targetFilepath, modelPath);
+      TemplateClassGenerator.generateTemplateSetup(targetFilepath, modelPath, foundTemplates);
     }
   }
   
