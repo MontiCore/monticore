@@ -1,4 +1,4 @@
-package mc.feature.statechart; 
+package mc.feature.hwc; 
 
 component grammar StatechartDSL extends mc.common.Basics {      
 
@@ -31,9 +31,9 @@ component grammar StatechartDSL extends mc.common.Basics {
   	method public String toString() {{return name;}} 
   ;
   
-  ast State =
+  ast State = 
   	method public String toString() {
-  		return name;
+  		return name; 
   	} ;
   
   external BlockStatement;

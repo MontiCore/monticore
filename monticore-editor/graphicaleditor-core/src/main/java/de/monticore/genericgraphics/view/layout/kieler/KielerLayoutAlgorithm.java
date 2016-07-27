@@ -63,8 +63,6 @@ public class KielerLayoutAlgorithm implements ILayoutAlgorithm {
    */
   @Override
   public void layout(List<IMCViewElementEditPart> ves) {
-    // workbenchPart, diagramPart, animate?, progressBar?, layoutAncestors ?,
-    // zoom?, List<ILayoutConfig> extraLayoutConfigs)
-    DiagramLayoutEngine.INSTANCE.layout(workbenchPart, diagramPart, false, true, true, false, null);
+    DiagramLayoutEngine.INSTANCE.layout(workbenchPart, diagramPart, false, false, true, false, null);
   }
 }

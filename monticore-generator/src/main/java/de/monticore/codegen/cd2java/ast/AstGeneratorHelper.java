@@ -23,6 +23,7 @@ import java.util.Optional;
 
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.symboltable.GlobalScope;
+import de.monticore.types.TypesHelper;
 import de.monticore.types.TypesPrinter;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
@@ -83,6 +84,17 @@ public class AstGeneratorHelper extends GeneratorHelper {
         .filter(c -> c.getName().equals(getNameOfBuilderClass(clazz))).findAny();
   }
   
+  public static boolean compareAstTypes(String qualifiedType, String type) {
+    if (type.indexOf('.') != -1) {
+      return qualifiedType.equals(type);
+    }
+    String simpleName = Names.getSimpleName(qualifiedType);
+    if (simpleName.startsWith(AST_PREFIX)) {
+      return simpleName.equals(type);
+    }
+    return false;
+  }
+  
   /**
    * @param qualifiedName
    * @return The lower case qualifiedName + AST_PACKAGE_SUFFIX
@@ -108,6 +120,22 @@ public class AstGeneratorHelper extends GeneratorHelper {
   
   public static String getNameOfBuilderClass(ASTCDClass astClass) {
     return AST_BUILDER + getPlainName(astClass);
+  }
+  
+  public static boolean generateSetter(ASTCDClass clazz, ASTCDAttribute cdAttribute, String typeName) {
+    if (GeneratorHelper.isInherited(cdAttribute)) {
+      return false;
+    }
+    String methodName = GeneratorHelper.getPlainSetter(cdAttribute);
+    if (clazz.getCDMethods().stream()
+        .filter(m -> methodName.equals(m.getName()) && m.getCDParameters().size() == 1
+            && compareAstTypes(typeName,
+                TypesHelper.printSimpleRefType(m.getCDParameters().get(0).getType())))
+        .findAny()
+        .isPresent()) {
+      return false;
+    }
+    return true;
   }
   
 }

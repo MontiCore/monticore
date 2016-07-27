@@ -40,7 +40,6 @@ import org.eclipse.gef.KeyStroke;
 import org.eclipse.gef.MouseWheelHandler;
 import org.eclipse.gef.MouseWheelZoomHandler;
 import org.eclipse.gef.RootEditPart;
-import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.editparts.ScalableRootEditPart;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.ui.actions.ActionRegistry;
@@ -51,18 +50,13 @@ import org.eclipse.gef.ui.actions.ZoomOutAction;
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
 import org.eclipse.gef.ui.parts.SelectionSynchronizer;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
-import org.eclipse.ui.Saveable;
-import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
-import org.eclipse.ui.views.contentoutline.ContentOutline;
 
-import de.monticore.editorconnector.GraphicsTextSelectionListener;
+import de.monticore.editorconnector.FormSelectionListener;
 import de.monticore.genericgraphics.controller.editparts.IMCEditPart;
 import de.monticore.genericgraphics.controller.editparts.IMCViewElementEditPart;
 import de.monticore.genericgraphics.controller.editparts.MCEditPartFactory;
@@ -72,7 +66,6 @@ import de.monticore.genericgraphics.controller.persistence.IGraphicsLoader;
 import de.monticore.genericgraphics.controller.persistence.util.IPersistenceUtil;
 import de.monticore.genericgraphics.controller.selection.SelectionSyncException;
 import de.monticore.genericgraphics.controller.util.ASTNodeProblemReportHandler;
-import de.monticore.genericgraphics.controller.views.outline.GraphicalOutlinePage;
 import de.monticore.genericgraphics.view.layout.ILayoutAlgorithm;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.langeditor.injection.DIService;
@@ -163,16 +156,14 @@ public abstract class GenericGraphicsViewer extends ScrollingGraphicalViewer {
   private IWorkbenchPartSite site;
   
   private IFile file;
-  
-  private GenericGraphicsSaveable saveable;
-  
+    
   private ActionRegistry actionRegistry;
   
   private IGraphicsLoader gLoader;
   
   private ILayoutAlgorithm layout;
   
-  private GraphicsTextSelectionListener selectionListener;
+  private FormSelectionListener selectionListener;
   
   private ResourceTracker resourceListener = new ResourceTracker();
   
@@ -216,23 +207,15 @@ public abstract class GenericGraphicsViewer extends ScrollingGraphicalViewer {
       return;
     }
     
-    selectionListener = new GraphicsTextSelectionListener(file, this);
+    selectionListener = new FormSelectionListener(file, this);
     site.getWorkbenchWindow().getSelectionService().addPostSelectionListener(selectionListener);
-    this.txtEditor = txtEditor;
-    saveable = new GenericGraphicsSaveable();
-    
+    this.txtEditor = txtEditor;    
   }
   
   public void configure() {
     // Equivalent to configureGraphicalViewer() from GraphicalEditor
     getControl().setBackground(ColorConstants.listBackground);
-    
-    // own configuration
-    this.setRootEditPart(new ScalableFreeformRootEditPart());
-    
-    ScalableRootEditPart rootEditPart = new ScalableRootEditPart();
-    setRootEditPart(rootEditPart);
-    
+        
     gLoader = new DefaultGraphicsLoader(createPersistenceUtil(), file);
     layout = createLayoutAlgorithm();
     setupPrinting();
@@ -305,15 +288,6 @@ public abstract class GenericGraphicsViewer extends ScrollingGraphicalViewer {
       this.doSave(new NullProgressMonitor());
     }
     
- /*   selectionListener = new GraphicsTextSelectionListener(file, this);
-    // Only add a selection listener for viewer's displayed in a graphical editor. Only add
-    // selection listener to other viewer if there is no graphical editor containing the viewer.
-    // This ensures that only one viewer is used per input file.
-    // (as the viewer can be displayed in outlines etc as well)
-    if ((selectionListener != null && getDisplayingPart() instanceof GenericGraphicsEditor)) {
-      site.getWorkbenchWindow().getSelectionService().addPostSelectionListener(selectionListener);
-    }
-*/      
     showProblemReports();
     
   }
@@ -439,12 +413,11 @@ public abstract class GenericGraphicsViewer extends ScrollingGraphicalViewer {
   }
   
   public void doSave(IProgressMonitor monitor) {
-    try {
-      saveable.doSave(monitor);
-    }
-    catch (CoreException e) {
-      e.printStackTrace();
-    }
+    Collection<EditPart> epsSet = getEditPartRegistry().values();
+    List<EditPart> eps = new ArrayList<EditPart>(epsSet);
+    gLoader.saveViewData(eps, monitor);
+
+    refreshContents();
   }
     
   public void dispose() {
@@ -613,34 +586,7 @@ public abstract class GenericGraphicsViewer extends ScrollingGraphicalViewer {
     return file;
   }
   
-  /**
-   * @return The absolute path of the editor file.
-   */
-  public String getAbsoluteFilePath() {
-    return file.getRawLocation().toOSString();
-  }
-  
-  /**
-   * @return The project folder.
-   */
-  public String getProjectFolder() {
-    return file.getProject().getLocation().toString();
-  }
-  
-  /**
-   * @return The {@link IGraphicsLoader}
-   */
-  public IGraphicsLoader getGraphicsLoader() {
-    return gLoader;
-  }
-  
-  /**
-   * @param gLoader The {@link IGraphicsLoader} to set
-   */
-  public void setGraphicsLoader(IGraphicsLoader gLoader) {
-    this.gLoader = gLoader;
-  }
-  
+ 
   /**
    * Every GEF editor has a {@link RootEditPart}. This {@link RootEditPart} has a single child,
    * called <i>contents</i> editpart representing the model data of the editor.
@@ -651,12 +597,8 @@ public abstract class GenericGraphicsViewer extends ScrollingGraphicalViewer {
     return (IMCEditPart) this.getRootEditPart().getContents();
   }  
   
-  public GraphicsTextSelectionListener getSelectionListener() {
+  public FormSelectionListener getSelectionListener() {
     return selectionListener;
-  }
-  
-  public GraphicalOutlinePage getGraphicalOutline() {
-    return null;
   }
   
   /**
@@ -687,122 +629,4 @@ public abstract class GenericGraphicsViewer extends ScrollingGraphicalViewer {
     return site.getPart();
   }
   
-  /**
-   * Returns the {@link IEditorPart} that is associated with this viewer. If the viewer is displayed
-   * in an editor, the {@link IEditorPart} is returned. If the viewer is displayed in the Outline
-   * View, the editor that belongs to the viewer's ContentOutlinePage is returned.
-   * 
-   * @return The {@link IEditorPart} that belongs to this viewer. Returns null if there is no such
-   * editor.
-   */
-  public IEditorPart getEditor() {
-    if (getDisplayingPart() instanceof ContentOutline) {
-      return txtEditor;
-    }
-    else if (getDisplayingPart() instanceof IEditorPart)
-      return (IEditorPart) getDisplayingPart();
-    else
-      return null;
-  }
-  
-  public void setDirty() {
-    if (saveable != null)
-      saveable.setDirty();
-  }
-  
-  class GenericGraphicsSaveable extends Saveable {
-    
-    private boolean isDirty = false;
-    
-    public GenericGraphicsSaveable() {
-      if (txtEditor != null
-          && !(GenericGraphicsViewer.this.getDisplayingPart() instanceof ContentOutline))
-        // TODO MB
-        // txtEditor.registerExternalSaveable(this);
-        System.out.println();
-    }
-    
-    @Override
-    public void doSave(IProgressMonitor monitor) throws CoreException {
-      // use persistenceHandler
-      Collection epsSet = getEditPartRegistry().values();
-      List<EditPart> eps = new ArrayList<EditPart>(epsSet);
-      gLoader.saveViewData(eps, monitor);
-      
-      if (getDisplayingPart() instanceof GenericGraphicsEditor) {
-        ((GenericGraphicsEditor) getDisplayingPart()).doSaveEditorOnly(monitor);
-      }
-      
-      isDirty = false;
-      refreshContents();
-    }
-    
-    public void doSaveAs() {
-      // update viewer's input file
-      if (txtEditor.getEditorInput() instanceof FileEditorInput) {
-        IFile newFile = ((FileEditorInput) txtEditor.getEditorInput()).getFile();
-        GenericGraphicsViewer.this.setInput(newFile);
-        
-        IFile oldViewFile = gLoader.getViewFile();
-        
-        try {
-          if (oldViewFile != null) {
-            // copy old view file to new location
-            String ext = oldViewFile.getFileExtension();
-            IPath newPath = (IPath) newFile.getFullPath().clone();
-            newPath = newPath.removeFileExtension().addFileExtension(ext);
-            
-            oldViewFile.copy(newPath, true, new NullProgressMonitor());
-            // remove old file
-            oldViewFile.delete(true, new NullProgressMonitor());
-          }
-        }
-        catch (CoreException e) {
-          e.printStackTrace();
-        }
-        gLoader.setViewFileAccordingToModelFile();
-        
-        try {
-          doSave(new NullProgressMonitor());
-        }
-        catch (CoreException e) {
-          e.printStackTrace();
-        }
-      }
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-      return (obj instanceof GenericGraphicsSaveable && obj.hashCode() == this.hashCode());
-    }
-    
-    @Override
-    public ImageDescriptor getImageDescriptor() {
-      return null;
-    }
-    
-    @Override
-    public String getName() {
-      return GenericGraphicsViewer.this.getInputFile().getName() + " (Graphical View)";
-    }
-    
-    @Override
-    public String getToolTipText() {
-      return null;
-    }
-    
-    @Override
-    public int hashCode() {
-      return GenericGraphicsViewer.this.hashCode();
-    }
-    
-    @Override
-    public boolean isDirty() {
-      return isDirty;
-    }
-    
-    public void setDirty() {
-      isDirty = true;
-    }
-  }
 }

@@ -122,7 +122,7 @@ public class ASTNodeProblemReportHandler {
     Map<Integer, List<Finding>> linesToReports = new HashMap<Integer, List<Finding>>();
     
     for (Finding report : Log.getFindings()) {
-      int line = SourcePosition.getDefaultSourcePosition().getLine();
+      int line = SourcePosition.getDefaultSourcePosition().getLine() + 1;
       if (report.getSourcePosition().isPresent()) {
         line = report.getSourcePosition().get().getLine();
       }

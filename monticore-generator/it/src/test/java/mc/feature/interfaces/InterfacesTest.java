@@ -17,34 +17,36 @@
  * ******************************************************************************
  */
 
-package mc.feature.ast;
+package mc.feature.interfaces;
 
-import mc.GeneratorIntegrationsTest;
-import mc.feature.hwc.statechartdsl._ast.StatechartDSLNodeFactory;
-import mc.feature.hwc.statechartdsl._ast.ASTState;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.Rule;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.Optional;
+
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
-public class GeneratedAstClassesTest extends GeneratorIntegrationsTest {
-  
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
-  
-  @Test
-  public void testErrorsIfNullByAstNodes() {
-    ASTState b = StatechartDSLNodeFactory.createASTState();
-    thrown.expect(NullPointerException.class);
-    thrown.expectMessage("must not be null.");
-    b.setTransitions(null);
-  }
+import de.monticore.antlr4.MCConcreteParser.ParserExecution;
+import mc.GeneratorIntegrationsTest;
+import mc.feature.interfaces.sub._ast.ASTA;
+import mc.feature.interfaces.sub._parser.SubParser;
+
+public class InterfacesTest extends GeneratorIntegrationsTest {
   
   @Test
-  public void testErrorsIfNullByAstNodeFactories() {
-    thrown.expect(NullPointerException.class);
-    thrown.expectMessage("must not be null.");
-    StatechartDSLNodeFactory.createASTCode(null);
+  public void test1a() throws IOException {
+    
+    SubParser parser = new SubParser();
+    parser.setParserTarget(ParserExecution.EOF);
+    
+    Optional<mc.feature.interfaces.sub._ast.ASTA> ast = parser.parseA(new StringReader("Hello Otto Mustermann"));
+    
+    assertTrue(ast.get() instanceof ASTA);
+    ASTA astA = ast.get();
+    assertNotNull(astA.getB());
+    assertTrue(astA.get_Children().size()==1);
   }
   
 }

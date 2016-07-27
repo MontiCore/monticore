@@ -30,31 +30,22 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-${tc.signature("ast","astType")}
+${tc.signature("ast","type")}
 <#assign genHelper = glex.getGlobalValue("astHelper")>
-<#--if isAttributeList??>
-    if ( get${ast.getName()?cap_first}() == child) {
-      set${ast.getName()?cap_first}(null);
-    }
-<#elseif isAttributeSon??>
-    if ( get${ast.getName()?cap_first}() == child) {
-      set${ast.getName()?cap_first}((${ast.getObjectType()})null);
-    }
-</#if-->
-   <#-- TODO: attributes of super class - use symbol table -->
-    <#list astType.getCDAttributes() as attribute> 
-    <#assign attrName = genHelper.getNativeAttributeName(attribute.getName())>
-      <#if genHelper.isAstNode(attribute)>
-    if (get${attrName?cap_first}() == child) {
-      set${attrName?cap_first}(null);
-    }
-      <#elseif genHelper.isOptionalAstNode(attribute)>
-    if (get${attrName?cap_first}().isPresent() && get${attrName?cap_first}().get() == child) {
-      set${attrName?cap_first}(null);
-    }
-      <#elseif genHelper.isListAstNode(attribute)>
-    if (get${attrName?cap_first}().contains(child)) {
-      get${attrName?cap_first}().remove(child);
-    }
-      </#if>
-    </#list>
+  <#list type.getAllVisibleFields() as field>
+    <#assign attrGetter = genHelper.getPlainGetter(field)>
+    <#assign attrSetter = genHelper.getPlainSetter(field)>
+    <#if genHelper.isAstNode(field)>
+      if (${attrGetter}() == child) {
+        ${attrSetter}(null);
+      }
+    <#elseif genHelper.isOptionalAstNode(field)>
+      if (${attrGetter}().isPresent() && ${attrGetter}().get() == child) {
+        ${attrSetter}(null);
+      }
+    <#elseif genHelper.isListAstNode(field)>
+      if (${attrGetter}().contains(child)) {
+        ${attrGetter}().remove(child);
+      }
+    </#if>
+  </#list>

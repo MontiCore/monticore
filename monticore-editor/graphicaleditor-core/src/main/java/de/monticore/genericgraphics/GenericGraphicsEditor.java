@@ -22,11 +22,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gef.DefaultEditDomain;
-import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.RootEditPart;
-import org.eclipse.gef.commands.CommandStack;
-import org.eclipse.gef.editparts.ScalableRootEditPart;
-import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.ui.parts.GraphicalEditor;
 import org.eclipse.gef.ui.parts.SelectionSynchronizer;
 import org.eclipse.swt.widgets.Composite;
@@ -35,15 +31,12 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.part.FileEditorInput;
-import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
-import de.monticore.editorconnector.util.EditorUtils;
 import de.monticore.editorconnector.util.ExtensionRegistryUtils;
 import de.monticore.genericgraphics.controller.editparts.IMCEditPart;
 import de.monticore.genericgraphics.controller.persistence.ErrorCollector;
 import de.monticore.genericgraphics.controller.persistence.IGraphicsLoader;
 import de.monticore.genericgraphics.controller.util.ASTNodeProblemReportHandler;
-import de.monticore.genericgraphics.controller.views.outline.CombinedGraphicsOutlinePage;
 import de.monticore.genericgraphics.view.layout.ILayoutAlgorithm;
 import de.se_rwth.langeditor.texteditor.TextEditorImpl;
 
@@ -124,12 +117,10 @@ import de.se_rwth.langeditor.texteditor.TextEditorImpl;
  * 
  * @author Tim Enger
  */
-public abstract class GenericGraphicsEditor extends GraphicalEditor {
+public class GenericGraphicsEditor extends GraphicalEditor {
   
   private GenericGraphicsViewer viewer;
-  
-  private CombinedGraphicsOutlinePage outlinePage;
-  
+    
   private IFile inputFile;
   
   private Composite parentControl;
@@ -212,35 +203,13 @@ public abstract class GenericGraphicsEditor extends GraphicalEditor {
     
   @Override
   public void doSave(IProgressMonitor monitor) {
-    viewer.doSave(monitor); // will call doSaveEditorOnly(), so there's no need to call it here
-  }
-  
-  public void doSaveEditorOnly(IProgressMonitor monitor) {
+    viewer.doSave(monitor);
     getCommandStack().markSaveLocation();
-    // TODO flush stack?
   }
+      
   
-  @Override
-  public Object getAdapter(@SuppressWarnings("rawtypes") Class type) {
-    if (type == CommandStack.class) {
-      return getEditDomain().getCommandStack();
-    }
-    if (type == ZoomManager.class) {
-      if (getGraphicalViewer() != null)
-        return ((ScalableRootEditPart) getGraphicalViewer().getRootEditPart()).getZoomManager();
-    }
-    if (type == IContentOutlinePage.class) {
-      if (outlinePage == null) {
-        outlinePage = (CombinedGraphicsOutlinePage) EditorUtils.getCorrespondingEditor(this).getAdapter(IContentOutlinePage.class);
-      }
-      return outlinePage;
-    }
-    return super.getAdapter(type);
-  }
-  
-  
-  // mark the editor dirty when command stack changes
-  // whyever GEF does not do this
+  // Mark the editor dirty when command stack changes
+  // (layout is changed)
   @Override
   public void commandStackChanged(EventObject event) {
     firePropertyChange(IEditorPart.PROP_DIRTY);
@@ -291,19 +260,6 @@ public abstract class GenericGraphicsEditor extends GraphicalEditor {
     return null;
   }
   
-  /**
-   * @return The absolute path of the editor file.
-   */
-  public String getAbsoluteFilePath() {
-    return getEditorInputFile().getRawLocation().toOSString();
-  }
-  
-  /**
-   * @return The project folder.
-   */
-  public String getProjectFolder() {
-    return getEditorInputFile().getProject().getLocation().toString();
-  }
   
   /**
    * Every GEF editor has a {@link RootEditPart}. This {@link RootEditPart} has a single child,

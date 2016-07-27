@@ -18,6 +18,8 @@ package de.se_rwth.langeditor.modelstates;
 
 import static com.google.common.base.Preconditions.checkState;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nullable;
@@ -27,13 +29,10 @@ import org.antlr.v4.runtime.misc.Interval;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IStorage;
 
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 
 import de.monticore.ast.ASTNode;
-import de.se_rwth.commons.SourcePosition;
+import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.langeditor.language.Language;
 
 public final class ModelState {
@@ -152,7 +151,7 @@ public final class ModelState {
   
   private final ImmutableMultimap<Interval, String> syntaxErrors;
   
-  private final Multimap<SourcePosition, String> additionalErrors = HashMultimap.create();
+  private final List<Finding> additionalErrors = new ArrayList<>();
   
   private final Optional<ModelState> lastLegalState;
   
@@ -219,12 +218,12 @@ public final class ModelState {
     return syntaxErrors;
   }
   
-  public Multimap<SourcePosition, String> getAdditionalErrors() {
-    return Multimaps.unmodifiableMultimap(additionalErrors);
+  public List<Finding> getAdditionalErrors() {
+    return additionalErrors;
   }
   
-  public void addAdditionalError(SourcePosition location, String errorMessage) {
-    additionalErrors.put(location, errorMessage);
+  public void addAdditionalError(Finding finding) {
+    additionalErrors.add(finding);
   }
   
   public boolean isLegal() {
