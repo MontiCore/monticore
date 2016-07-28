@@ -49,6 +49,7 @@ public class TemplateClassGenerator {
     Optional<String> result = Optional.empty();
     Configuration config = new Configuration();
     Template t = null;
+    boolean hasSignature = false;
     try {
       config.setTemplateLoader(new FileTemplateLoader(modelPath.toFile()));
       t = config.getTemplate(fqnTemplateName);
@@ -60,6 +61,7 @@ public class TemplateClassGenerator {
     if (methodCalls.containsKey(TemplateClassGeneratorConstants.PARAM_METHOD)) {
       // we just recognize the first entry as there
       // must not be multiple params definitions
+      hasSignature = true;
       params = FMHelper
           .getParams(methodCalls.get(TemplateClassGeneratorConstants.PARAM_METHOD).get(0));
     }
@@ -72,7 +74,7 @@ public class TemplateClassGenerator {
       result = Optional.of(cleanResult);
     }
     
-    doGenerate(targetFilepath, fqnTemplateName, targetName, params, result);
+    doGenerateTemplateClass(targetFilepath, fqnTemplateName, targetName, params, result, hasSignature);
   }
   
   /**
@@ -85,8 +87,8 @@ public class TemplateClassGenerator {
    * @param params
    * @param result
    */
-  private static void doGenerate(File targetFilepath, String fqnTemplateName, String targetName,
-      List<Parameter> params, Optional<String> result) {
+  private static void doGenerateTemplateClass(File targetFilepath, String fqnTemplateName, String targetName,
+      List<Parameter> params, Optional<String> result, boolean hasSignature) {
     final GeneratorSetup setup = new GeneratorSetup(targetFilepath);
     TemplateClassHelper helper = new TemplateClassHelper();
     final ExtendedGeneratorEngine generator = new ExtendedGeneratorEngine(setup);
@@ -97,7 +99,7 @@ public class TemplateClassGenerator {
     String packageNameWithDots = Names.getPackageFromPath(packageNameWithSeperators);
     generator.generate("typesafety.TemplateClass",
         Paths.get(packageNameWithSeperators, targetName + ".java"), node,
-        packageNameWithDots, fqnTemplateName, targetName, params, result, helper);
+        packageNameWithDots, fqnTemplateName, targetName, params, result, hasSignature, helper);
   }
   
   /**

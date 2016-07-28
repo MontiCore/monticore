@@ -1,5 +1,5 @@
 ${tc.params("String package", "String fqnTemplateName", "String classname", "java.util.List<freemarker.core.Parameter> parameters",
-"Optional<String> result", "de.monticore.templateclassgenerator.codegen.TemplateClassHelper helper")}
+"Optional<String> result", "Boolean hasSignature", "de.monticore.templateclassgenerator.codegen.TemplateClassHelper helper")}
 
 <#-- Copyright -->
 ${tc.defineHookPoint("JavaCopyright")}
@@ -51,12 +51,18 @@ public class ${classname} <#t>
   </#if>
   *
   */
-  public static void generate(Path filePath, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)}) {
-    get${classname}().doGenerate(filePath, node<#if parameters?has_content>, </#if>${helper.printParameterNames(parameters)});
+  
+  <#assign printedParams = helper.printParameters(parameters)>
+  <#assign printedParamNames = helper.printParameterNames(parameters)>
+  <#assign defaultParam = "Object... args">
+  <#assign defaultParamName = "args">
+  
+  public static void generate(Path filePath, ASTNode node<#if parameters?has_content || !hasSignature>, </#if><#if !hasSignature>${defaultParam}<#else>${printedParams}</#if>) {
+    get${classname}().doGenerate(filePath, node<#if parameters?has_content || !hasSignature>, </#if><#if !hasSignature>${defaultParamName}<#else>${printedParamNames}</#if>);
   }
   
-  protected void doGenerate(Path filePath, ASTNode node<#if parameters?has_content>, </#if>${helper.printParameters(parameters)}) {
-    GeneratorConfig.getGeneratorEngine().generate("${fqnTemplateName?replace("\\","/")}", filePath, node<#if parameters?has_content>, </#if>${helper.printParameterNames(parameters)});
+  protected void doGenerate(Path filePath, ASTNode node<#if parameters?has_content || !hasSignature>, </#if><#if !hasSignature>${defaultParam}<#else>${printedParams}</#if>) {
+    GeneratorConfig.getGeneratorEngine().generate("${fqnTemplateName?replace("\\","/")}", filePath, node<#if parameters?has_content || !hasSignature>, </#if><#if !hasSignature>${defaultParamName}<#else>${printedParamNames}</#if>);
   }
   
   /**
@@ -71,12 +77,12 @@ public class ${classname} <#t>
   </#if>
   * @return String
   */
-  public static String generate(${helper.printParameters(parameters)}) {
-    return get${classname}().doGenerate(${helper.printParameterNames(parameters)});
+  public static String generate(<#if !hasSignature>${defaultParam}<#else>${printedParams}</#if>) {
+    return get${classname}().doGenerate(<#if !hasSignature>${defaultParamName}<#else>${printedParamNames}</#if>);
   }
   
-  protected String doGenerate(${helper.printParameters(parameters)}) {
-    return GeneratorConfig.getGeneratorEngine().generateToString("${fqnTemplateName?replace("\\","/")}"<#if parameters?has_content>, </#if>${helper.printParameterNames(parameters)});
+  protected String doGenerate(<#if !hasSignature>${defaultParam}<#else>${printedParams}</#if>) {
+    return GeneratorConfig.getGeneratorEngine().generateToString("${fqnTemplateName?replace("\\","/")}"<#if parameters?has_content || !hasSignature>, </#if><#if !hasSignature>${defaultParamName}<#else>${printedParamNames}</#if>);
   }
   
   <#if result.isPresent()>
@@ -93,7 +99,6 @@ public class ${classname} <#t>
   </#if>
   * @result ${result.get()}
   */  
-  <#assign simpleName = helper.printSimpleName(result.get())>
   public static ${result.get()} generate(${helper.printParameters(parameters)}, java.util.function.Function<String, ${result.get()}> function)
   {
     return get${classname}().doGenerate(${helper.printParameterNames(parameters)}, function);
