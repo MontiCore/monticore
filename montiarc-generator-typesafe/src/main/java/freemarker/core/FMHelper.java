@@ -16,9 +16,7 @@ import freemarker.template.Template;
 /**
  * Helper class for Freemarker templates
  *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
+ * @author Jerome Pfeiffer
  */
 public class FMHelper {
   

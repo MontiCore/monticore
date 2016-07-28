@@ -9,18 +9,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.MyGeneratorEngine;
+import de.monticore.generating.ExtendedGeneratorEngine;
 import de.monticore.templateclassgenerator.codegen.TemplateClassGeneratorConstants;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.freemarker.TemplateAutoImport;
 
 public class GeneratorConfig {
   
-  private static MyGeneratorEngine generator;
+  private static ExtendedGeneratorEngine generator;
   
-  private static final String DEFAULT_OUTPUT_FOLDER = "/target/generated-sources/templateClasses";
+  private static final String DEFAULT_OUTPUT_FOLDER = "/target/generated-sources/gen";
   
-  public static MyGeneratorEngine getGeneratorEngine() {
+  public static ExtendedGeneratorEngine getGeneratorEngine() {
     if (null == generator) {
       init();
     }
@@ -37,7 +37,7 @@ public class GeneratorConfig {
         + DEFAULT_OUTPUT_FOLDER)));
     
     GlobalExtensionManagement glex = setup.getGlex().orElse(new GlobalExtensionManagement());
-    glex.defineGlobalValue(TemplateClassGeneratorConstants.TEMPLATES_ALIAS, new Templates());
+    glex.defineGlobalValue(TemplateClassGeneratorConstants.TEMPLATES_ALIAS, new TemplateStorage());
     setup.setGlex(glex);
     List<TemplateAutoImport> imports = new ArrayList<>();
     TemplateAutoImport ta = new TemplateAutoImport(Paths.get("Setup.ftl"), "${glex.getGlobalValue("TemplateClassPackage")}");
@@ -52,18 +52,18 @@ public class GeneratorConfig {
     if(outDir.contains(workingDir)){
       outDir = workingDir + outDir;
     }
-    outDir = outDir.replace("/","\\");
+    outDir = outDir.replace("/",File.separator);
     outDir+="setup"+File.separator;
     File f = Paths.get(outDir).toFile();
     files.add(f);
     setup.setAdditionalTemplatePaths(files);
-    GeneratorConfig.generator = new MyGeneratorEngine(setup);
+    GeneratorConfig.generator = new ExtendedGeneratorEngine(setup);
     
     return setup;
   }
   
   public static void init(GeneratorSetup setup) {
-    GeneratorConfig.generator = new MyGeneratorEngine(init(Optional.of(setup)));
+    GeneratorConfig.generator = new ExtendedGeneratorEngine(init(Optional.of(setup)));
   }
     
 }

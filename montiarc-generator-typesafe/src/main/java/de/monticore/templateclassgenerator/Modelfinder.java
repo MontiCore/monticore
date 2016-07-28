@@ -12,10 +12,16 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 
+/**
+ * Class that finds all models with a given file extension in a modelpath.
+ *
+ * @author  Jerome Pfeiffer
+ *          
+ */
 public class Modelfinder {
   
   /**
-   * Finds all models with a certain file ending in the given model path
+   * Finds all models with a certain {@code fileExtension} in the given {@code modelPath}
    * 
    * @param modelPath
    * @param fileExtension

@@ -24,9 +24,9 @@ import de.se_rwth.commons.groovy.GroovyRunner;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * TODO: Write me!
+ * This class is used to call the TemplateClassGenerator.
  *
- * @author Robert Heim
+ * @author Jerome Pfeiffer
  */
 public class TemplateClassGeneratorScript extends Script implements GroovyRunner {
   
@@ -66,7 +66,7 @@ public class TemplateClassGeneratorScript extends Script implements GroovyRunner
   }
   
   /**
-   * TODO: Write me!
+   * Generates template class for the given {@code fqnTemplateName}.
    * 
    * @param targetName Classname of the target TemplateClass
    * @param modelPath Path of templates e.g. src/main/resources
@@ -83,7 +83,7 @@ public class TemplateClassGeneratorScript extends Script implements GroovyRunner
   
   /**
    * Gets called by Groovy Script. Generates Template Classes for all templates
-   * in {@link modelPath} to {@link targetFilepath}
+   * in {@code modelPath} to {@code targetFilepath}
    * 
    * @param modelPath
    * @param fqnTemplateName

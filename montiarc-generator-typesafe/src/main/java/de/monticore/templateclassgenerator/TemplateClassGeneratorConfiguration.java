@@ -8,9 +8,6 @@ package de.monticore.templateclassgenerator;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -21,9 +18,9 @@ import de.se_rwth.commons.configuration.ConfigurationContributorChainBuilder;
 import de.se_rwth.commons.configuration.DelegatingConfigurationContributor;
 
 /**
- * Configuration of MontiArc generator.
+ * Configuration of TemplateClass Generator.
  *
- * @author Robert Heim
+ * @author Jerome Pfeiffer
  */
 public class TemplateClassGeneratorConfiguration implements Configuration {
 
@@ -70,12 +67,7 @@ public class TemplateClassGeneratorConfiguration implements Configuration {
    * Constructor for {@link TemplateClassGeneratorConfiguration}
    */
   private TemplateClassGeneratorConfiguration(Configuration internal) {
-    
-    // ConfigurationSystemPropertiesContributor systemPropertiesContributor =
-    // ConfigurationSystemPropertiesContributor.withPrefix("montiarc");
-    
     this.configuration = ConfigurationContributorChainBuilder.newChain()
-        // .add(systemPropertiesContributor)
         .add(DelegatingConfigurationContributor.with(internal))
         .build();
   }
@@ -216,24 +208,6 @@ public class TemplateClassGeneratorConfiguration implements Configuration {
     return getValues(key.toString());
   }
   
-//  /**
-//   * Getter for the list of model path elements (files and directories) stored in this
-//   * configuration.
-//   * 
-//   * @return list of model path files
-//   */
-//  public List<File> getModelPath() {
-//    Optional<List<String>> modelPath = getAsStrings(Options.MODELPATH);
-//    if (modelPath.isPresent()) {
-//      return toFileList(modelPath.get());
-//    }
-//    modelPath = getAsStrings(Options.MODELPATH_SHORT);
-//    if (modelPath.isPresent()) {
-//      return toFileList(modelPath.get());
-//    }
-//    // default model path is empty
-//    return Collections.emptyList();
-//  }
   
   public File getModelPath() {
     Optional<String> modelPath = getAsString(Options.MODELPATH);

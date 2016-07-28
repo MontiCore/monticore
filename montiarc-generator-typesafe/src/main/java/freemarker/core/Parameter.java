@@ -6,11 +6,7 @@
 package freemarker.core;
 
 /**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
+ * @author Jerome Pfeiffer
  */
 public class Parameter {
   

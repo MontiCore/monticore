@@ -9,22 +9,18 @@ import de.monticore.generating.templateengine.ITemplateControllerFactory;
 import de.monticore.generating.templateengine.TemplateControllerConfiguration;
 
 /**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- * @version $Revision$,
- *          $Date$
- * @since   TODO: add version number
+ * 
+ * @author  Jerome Pfeiffer
  *
  */
-public class MyTemplateControllerFactory implements ITemplateControllerFactory{
+public class ExtendedTemplateControllerFactory implements ITemplateControllerFactory{
 
   /**
    * @see de.monticore.generating.templateengine.ITemplateControllerFactory#create(de.monticore.generating.templateengine.TemplateControllerConfiguration, java.lang.String)
    */
   @Override
-  public MyTemplateController create(TemplateControllerConfiguration config, String templateName) {
-    return new MyTemplateController(config, templateName);  
+  public ExtendedTemplateController create(TemplateControllerConfiguration config, String templateName) {
+    return new ExtendedTemplateController(config, templateName);  
   }
   
 }

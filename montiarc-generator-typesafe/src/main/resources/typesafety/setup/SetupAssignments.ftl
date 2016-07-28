@@ -6,7 +6,7 @@ ${tc.params("java.util.List<File> nodes", "int depthIndex","String modelPath", "
   <#if node.isDirectory()> 
     "${node.getName()}":
     <#assign visitedNodes = visitedNodes + [node]>
-    ${tc.includeArgs("typesafety.setup.GlobalVariableDefinition", [helper.walkTree(node), depthIndex+1, modelPath, helper, visitedNodes])}
+    ${tc.includeArgs("typesafety.setup.SetupAssignments", [helper.walkTree(node), depthIndex+1, modelPath, helper, visitedNodes])}
     <#if node?has_next>
     ,
     </#if>

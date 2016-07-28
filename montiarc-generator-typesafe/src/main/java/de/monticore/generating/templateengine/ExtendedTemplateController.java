@@ -14,13 +14,12 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * TODO: Write me!
+ * This class adds the signature methods tc.params(...) and tc.result(...) to
+ * the existing TemplateController.
  *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
+ * @author Jerome Pfeiffer
  */
-public class MyTemplateController extends TemplateController {
+public class ExtendedTemplateController extends TemplateController {
   
   /**
    * Ensures tc.params(...) is only called once
@@ -32,14 +31,13 @@ public class MyTemplateController extends TemplateController {
    */
   private boolean resultized = false;
   
-  
   /**
    * Constructor for de.montiarc.generator.codegen.MyTemplateController
    * 
    * @param tcConfig
    * @param templatename
    */
-  public MyTemplateController(TemplateControllerConfiguration tcConfig, String templatename) {
+  public ExtendedTemplateController(TemplateControllerConfiguration tcConfig, String templatename) {
     super(tcConfig, templatename);
   }
   
@@ -160,7 +158,6 @@ public class MyTemplateController extends TemplateController {
     }
     return fqnLibraryType;
   }
-  
   
   /**
    * Checks whether there are more than one result definitions.

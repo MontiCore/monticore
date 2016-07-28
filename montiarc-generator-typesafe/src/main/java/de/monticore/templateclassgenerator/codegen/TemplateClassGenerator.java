@@ -15,8 +15,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.generating.ExtendedGeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.MyGeneratorEngine;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.templateclassgenerator.EmptyNode;
 import de.se_rwth.commons.Names;
@@ -29,9 +29,7 @@ import freemarker.template.Template;
 /**
  * This class generates a template class for each template.
  * 
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
+ * @author Jerome Pfeiffer
  */
 public class TemplateClassGenerator {
   
@@ -91,7 +89,7 @@ public class TemplateClassGenerator {
       List<Parameter> params, Optional<String> result) {
     final GeneratorSetup setup = new GeneratorSetup(targetFilepath);
     TemplateClassHelper helper = new TemplateClassHelper();
-    final MyGeneratorEngine generator = new MyGeneratorEngine(setup);
+    final ExtendedGeneratorEngine generator = new ExtendedGeneratorEngine(setup);
     ASTNode node = new EmptyNode();
     String packageNameWithSeperators = TemplateClassGeneratorConstants.TEMPLATE_CLASSES_PACKAGE
         + File.separator
@@ -103,14 +101,18 @@ public class TemplateClassGenerator {
   }
   
   /**
-   * TODO: Write me!
+   * Generates a TemplateStorage class, which contains all generated template
+   * classes. Further it generates a generator config class to configure the
+   * used generator engine in template classes and a setup template to configure
+   * the static use of template classes within a template.
    * 
    * @param foundTemplates
    * @param targetFilepath
    * @param modelPath
-   * @param foundTemplates 
+   * @param foundTemplates
    */
-  public static void generateTemplateSetup(File targetFilepath, File modelPath, List<String> foundTemplates) {
+  public static void generateTemplateSetup(File targetFilepath, File modelPath,
+      List<String> foundTemplates) {
     String packageName = "setup";
     final GeneratorSetup setup = new GeneratorSetup(targetFilepath);
     setup.setTracing(false);
@@ -121,17 +123,17 @@ public class TemplateClassGenerator {
         TemplateClassGeneratorConstants.TEMPLATE_CLASSES_PACKAGE);
     glex.setGlobalValue("TemplatesAlias", TemplateClassGeneratorConstants.TEMPLATES_ALIAS);
     setup.setGlex(glex);
-    TemplateClassHelper helper = new TemplateClassHelper();
-    final MyGeneratorEngine generator = new MyGeneratorEngine(setup);
+    final ExtendedGeneratorEngine generator = new ExtendedGeneratorEngine(setup);
     
     String filePath = Names.getPathFromPackage(packageName) + File.separator;
     String mp = modelPath.getPath();
     List<File> nodes = TemplateClassHelper.walkTree(modelPath);
     List<String> templates = foundTemplates;
-    generator.generate("typesafety.setup.Templates", Paths.get(filePath + "Templates.java"),
+    generator.generate("typesafety.setup.TemplateStorage", Paths.get(filePath + "TemplateStorage.java"),
         new EmptyNode(),
         packageName, templates, mp, new TemplateClassHelper());
-    generator.generate("typesafety.setup.Setup", Paths.get(filePath + "Setup.ftl"), new EmptyNode(),
+    generator.generate("typesafety.setup.Setup", Paths.get(filePath + "Setup.ftl"),
+        new EmptyNode(),
         nodes, mp,
         new TemplateClassHelper(), new ArrayList<File>());
     generator.generate("typesafety.setup.GeneratorConfig",

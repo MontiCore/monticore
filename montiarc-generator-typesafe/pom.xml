@@ -11,7 +11,7 @@
 	</parent>
 
 
-	
+
 	<artifactId>monticore-templateclassgenerator</artifactId>
 
 	<!-- == PROJECT DEPENDENCIES ============================================= -->
@@ -28,6 +28,13 @@
 			<version>4.4.1-SNAPSHOT</version>
 			<artifactId>monticore-cli</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>de.monticore</groupId>
+			<version>4.4.1-SNAPSHOT</version>
+			<artifactId>monticore-runtime</artifactId>
+		</dependency>
+
 
 		<!-- .. Test Libraries ............................................... -->
 		<dependency>

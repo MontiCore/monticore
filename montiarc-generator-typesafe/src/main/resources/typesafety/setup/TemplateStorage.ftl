@@ -2,7 +2,7 @@ ${tc.params("String package", "java.util.List<String> templates", "String modelP
 
 package ${package};
 
-public class Templates {
+public class TemplateStorage {
 
   <#list templates as template>
     

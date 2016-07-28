@@ -26,7 +26,7 @@ import _templates.templates.b.JavaClass;
 import _templates.templates.b.Template;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.MyGeneratorEngine;
+import de.monticore.generating.ExtendedGeneratorEngine;
 import de.monticore.java.javadsl._ast.ASTConstructorDeclaration;
 import de.monticore.java.javadsl._parser.JavaDSLParser;
 import de.monticore.java.symboltable.JavaTypeSymbol;
@@ -74,7 +74,7 @@ public class UsageTest extends AbstractSymtabTest {
   @Test
   public void testReturnMethod() throws RecognitionException, IOException {
     final GeneratorSetup setup = new GeneratorSetup(outputDirectory.toFile());
-    MyGeneratorEngine generator = new MyGeneratorEngine(setup);
+    ExtendedGeneratorEngine generator = new ExtendedGeneratorEngine(setup);
     List<Attribute> attributes = new ArrayList<>();
     attributes.add(new Attribute("Integer", "i"));
     attributes.add(new Attribute("String", "s"));
@@ -88,7 +88,7 @@ public class UsageTest extends AbstractSymtabTest {
   @Test
   public void testToStringMethod() {
     final GeneratorSetup setup = new GeneratorSetup(outputDirectory.toFile());
-    MyGeneratorEngine generator = new MyGeneratorEngine(setup);
+    ExtendedGeneratorEngine generator = new ExtendedGeneratorEngine(setup);
     String classname = "Test1";
     List<Attribute> attributes = new ArrayList<>();
     attributes.add(new Attribute("Integer", "i"));

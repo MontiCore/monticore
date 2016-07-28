@@ -2,7 +2,7 @@ ${tc.params("java.util.List<File> nodes", "String modelPath", "de.monticore.temp
 
 <#list nodes as node>
   <#assign visitedNodes = visitedNodes + [node]>
-  ${r"<#assign"} ${node.getName()} =  ${tc.includeArgs("typesafety.setup.GlobalVariableDefinition", [helper.walkTree(node),0, modelPath, helper, visitedNodes])} ${r">"}
+  ${r"<#assign"} ${node.getName()} =  ${tc.includeArgs("typesafety.setup.SetupAssignments", [helper.walkTree(node),0, modelPath, helper, visitedNodes])} ${r">"}
 </#list>
 
 

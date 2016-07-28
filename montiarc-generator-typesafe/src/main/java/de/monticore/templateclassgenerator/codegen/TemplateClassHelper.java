@@ -98,6 +98,11 @@ public class TemplateClassHelper {
     return ret;
   }
   
+  /**
+   * Walks down one level in the filetree.
+   * @param node
+   * @return all files below the level of {@code node}
+   */
   public static List<File> walkTree(File node) {
     List<File> ret = new ArrayList<File>();
     if (node.isDirectory()) {
@@ -143,55 +148,6 @@ public class TemplateClassHelper {
    */
   public static String printSimpleTemplateNameFromPath(String path, String modelPath) {
     return printSimpleName(printFQNTemplateNameFromPath(path, modelPath));
-  }
-  
-  public static String printPackageClassWithDepthIndex(String packagePath, String modelPath,
-      int depthIndex,
-      List<File> files) {
-    String ret = packagePath;
-    if (ret.contains(modelPath)) {
-      ret = ret.replace(modelPath, "");
-    }
-    if (ret.indexOf(File.separator) == 0) {
-      ret = ret.substring(ret.indexOf(File.separator) + 1);
-    }
-    String[] packages = new String[0];
-    if (ret.contains(File.separator)) {
-      ret = ret.replace(File.separator, ".");
-      packages = ret.split("\\.");
-    }
-    String currentPackage = "";
-    if (packages.length > 0 && packages.length >= depthIndex) {
-      currentPackage = packages[depthIndex];
-    }
-    int occurences = 0;
-    for (int i = 0; i < depthIndex; i++) {
-      if (packages[i].equals(currentPackage)) {
-        occurences++;
-      }
-    }
-    
-    for (File f : files) {
-      String cleanName = f.getName();
-      if (f.getName().contains(".ftl")) {
-        cleanName = cleanName.replace(".ftl", "");
-      }
-      cleanName = cleanName.toLowerCase();
-      if (currentPackage.equals(cleanName)) {
-        occurences++;
-      }
-    }
-    
-    if (occurences > 0) {
-      ret += occurences - 1;
-    }
-    else if (ret.equals("templates")) {
-      ret += depthIndex;
-    }
-    if (ret.contains(".")) {
-      ret = ret.substring(ret.lastIndexOf(".") + 1);
-    }
-    return ret;
   }
   
   public static boolean isTemplateName(String name) {

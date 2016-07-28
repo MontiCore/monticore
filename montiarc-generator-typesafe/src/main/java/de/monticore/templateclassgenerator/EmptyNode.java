@@ -15,15 +15,22 @@ import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.SourcePosition;
 
+/**
+ * Without ASTNode it is not possible to generate in MontiCore. As there exists
+ * no ASTNode for templates, we fool MontiCore with this class.
+ *
+ * @author Jerome Pfeiffer
+ */
 public class EmptyNode implements ASTNode {
-
   
   /**
-   * Constructor for de.montiarc.generator.typesafety.TemplateClassesGenerator.MyNode
+   * Constructor for
+   * de.montiarc.generator.typesafety.TemplateClassesGenerator.MyNode
    */
   public EmptyNode() {
     super();
   }
+  
   /**
    * @see de.monticore.ast.ASTNode#deepClone()
    */
@@ -32,7 +39,7 @@ public class EmptyNode implements ASTNode {
     // TODO Auto-generated method stub
     return null;
   }
-
+  
   /**
    * @see de.monticore.ast.ASTNode#get_SourcePositionEnd()
    */
@@ -41,7 +48,7 @@ public class EmptyNode implements ASTNode {
     // TODO Auto-generated method stub
     return null;
   }
-
+  
   /**
    * @see de.monticore.ast.ASTNode#set_SourcePositionEnd(de.se_rwth.commons.SourcePosition)
    */
@@ -50,7 +57,7 @@ public class EmptyNode implements ASTNode {
     // TODO Auto-generated method stub
     
   }
-
+  
   /**
    * @see de.monticore.ast.ASTNode#get_SourcePositionStart()
    */
@@ -59,7 +66,7 @@ public class EmptyNode implements ASTNode {
     // TODO Auto-generated method stub
     return null;
   }
-
+  
   /**
    * @see de.monticore.ast.ASTNode#set_SourcePositionStart(de.se_rwth.commons.SourcePosition)
    */
@@ -68,7 +75,7 @@ public class EmptyNode implements ASTNode {
     // TODO Auto-generated method stub
     
   }
-
+  
   /**
    * @see de.monticore.ast.ASTNode#get_PreComments()
    */
@@ -77,7 +84,7 @@ public class EmptyNode implements ASTNode {
     // TODO Auto-generated method stub
     return null;
   }
-
+  
   /**
    * @see de.monticore.ast.ASTNode#set_PreComments(java.util.List)
    */
@@ -86,7 +93,7 @@ public class EmptyNode implements ASTNode {
     // TODO Auto-generated method stub
     
   }
-
+  
   /**
    * @see de.monticore.ast.ASTNode#get_PostComments()
    */
@@ -95,7 +102,7 @@ public class EmptyNode implements ASTNode {
     // TODO Auto-generated method stub
     return null;
   }
-
+  
   /**
    * @see de.monticore.ast.ASTNode#set_PostComments(java.util.List)
    */
@@ -104,7 +111,7 @@ public class EmptyNode implements ASTNode {
     // TODO Auto-generated method stub
     
   }
-
+  
   /**
    * @see de.monticore.ast.ASTNode#equalAttributes(java.lang.Object)
    */
@@ -113,7 +120,7 @@ public class EmptyNode implements ASTNode {
     // TODO Auto-generated method stub
     return false;
   }
-
+  
   /**
    * @see de.monticore.ast.ASTNode#equalsWithComments(java.lang.Object)
    */
@@ -122,7 +129,7 @@ public class EmptyNode implements ASTNode {
     // TODO Auto-generated method stub
     return false;
   }
-
+  
   /**
    * @see de.monticore.ast.ASTNode#deepEquals(java.lang.Object)
    */
@@ -131,7 +138,7 @@ public class EmptyNode implements ASTNode {
     // TODO Auto-generated method stub
     return false;
   }
-
+  
   /**
    * @see de.monticore.ast.ASTNode#deepEqualsWithComments(java.lang.Object)
    */
@@ -140,7 +147,7 @@ public class EmptyNode implements ASTNode {
     // TODO Auto-generated method stub
     return false;
   }
-
+  
   /**
    * @see de.monticore.ast.ASTNode#deepEquals(java.lang.Object, boolean)
    */
@@ -149,16 +156,17 @@ public class EmptyNode implements ASTNode {
     // TODO Auto-generated method stub
     return false;
   }
-
+  
   /**
-   * @see de.monticore.ast.ASTNode#deepEqualsWithComments(java.lang.Object, boolean)
+   * @see de.monticore.ast.ASTNode#deepEqualsWithComments(java.lang.Object,
+   * boolean)
    */
   @Override
   public boolean deepEqualsWithComments(Object o, boolean forceSameOrder) {
     // TODO Auto-generated method stub
     return false;
   }
-
+  
   /**
    * @see de.monticore.ast.ASTNode#get_Children()
    */
@@ -167,7 +175,7 @@ public class EmptyNode implements ASTNode {
     // TODO Auto-generated method stub
     return null;
   }
-
+  
   /**
    * @see de.monticore.ast.ASTNode#remove_Child(de.monticore.ast.ASTNode)
    */
@@ -176,7 +184,7 @@ public class EmptyNode implements ASTNode {
     // TODO Auto-generated method stub
     
   }
-
+  
   /**
    * @see de.monticore.ast.ASTNode#setEnclosingScope(de.monticore.symboltable.Scope)
    */
@@ -185,7 +193,7 @@ public class EmptyNode implements ASTNode {
     // TODO Auto-generated method stub
     
   }
-
+  
   /**
    * @see de.monticore.ast.ASTNode#getEnclosingScope()
    */
@@ -194,7 +202,7 @@ public class EmptyNode implements ASTNode {
     // TODO Auto-generated method stub
     return null;
   }
-
+  
   /**
    * @see de.monticore.ast.ASTNode#setSymbol(de.monticore.symboltable.Symbol)
    */
@@ -203,7 +211,7 @@ public class EmptyNode implements ASTNode {
     // TODO Auto-generated method stub
     
   }
-
+  
   /**
    * @see de.monticore.ast.ASTNode#getSymbol()
    */
