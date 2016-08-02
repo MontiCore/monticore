@@ -6,14 +6,18 @@ public class TemplateStorage {
 
   <#list templates as template>
     
-  private ${glex.getGlobalValue("TemplateClassPackage")}.${template}${glex.getGlobalValue("TemplatePostfix")} ${helper.replaceDotsWithUnderscores(template)} = new ${helper.replaceDotsWithUnderscores(template)?cap_first}_Extended();
+  private ${helper.replaceDotsWithUnderscores(template)?cap_first}_Extended ${helper.replaceDotsWithUnderscores(template)} = new ${helper.replaceDotsWithUnderscores(template)?cap_first}_Extended();
   
-  public ${glex.getGlobalValue("TemplateClassPackage")}.${template}${glex.getGlobalValue("TemplatePostfix")} get${helper.replaceDotsWithUnderscores(template)?cap_first}() {
+  public ${helper.replaceDotsWithUnderscores(template)?cap_first}_Extended get${helper.replaceDotsWithUnderscores(template)?cap_first}_Extended() {
     return this.${helper.replaceDotsWithUnderscores(template)};
   }
   
-  private class ${helper.replaceDotsWithUnderscores(template)?cap_first}_Extended extends ${glex.getGlobalValue("TemplateClassPackage")}.${template}${glex.getGlobalValue("TemplatePostfix")} {
+  public static class ${helper.replaceDotsWithUnderscores(template)?cap_first}_Extended {
     protected ${helper.replaceDotsWithUnderscores(template)?cap_first}_Extended () {}
+    
+    public static String generate(Object... args) {
+      return GeneratorConfig.getGeneratorEngine().generateToString("${template?replace(".","/")}.ftl", args);
+    }
   } 
   
   </#list>

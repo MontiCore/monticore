@@ -1,3 +1,3 @@
+${tc.params("String s")}
 
-
-s
+${s}

@@ -166,7 +166,7 @@ public class TemplateClassHelper {
       tmp = tmp.replace(File.separator, "_");
     }
     
-    ret += "get" + capitalizeFirst(tmp) + "()";
+    ret += "get" + capitalizeFirst(tmp)+ "_Extended" + "()";
     return ret;
   }
   

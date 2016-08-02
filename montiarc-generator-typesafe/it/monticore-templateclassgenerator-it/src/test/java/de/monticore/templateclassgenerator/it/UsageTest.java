@@ -19,6 +19,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import setup.GeneratorConfig;
+import setup.TemplateStorage;
 import types.Attribute;
 import types.Helper;
 import _templates.templates.b.Constructor;
@@ -89,6 +90,7 @@ public class UsageTest extends AbstractSymtabTest {
   public void testToStringMethod() {
     final GeneratorSetup setup = new GeneratorSetup(outputDirectory.toFile());
     ExtendedGeneratorEngine generator = new ExtendedGeneratorEngine(setup);
+    TemplateStorage t = new TemplateStorage();
     String classname = "Test1";
     List<Attribute> attributes = new ArrayList<>();
     attributes.add(new Attribute("Integer", "i"));
@@ -100,7 +102,7 @@ public class UsageTest extends AbstractSymtabTest {
   
   @Test
   public void testGenerateToStringInTemplate(){
-    String s = Template.generate();
+    String s = Template.generate("bubu", 5);
     assertNotNull(s);
   }
   
@@ -113,6 +115,5 @@ public class UsageTest extends AbstractSymtabTest {
       e.printStackTrace();
     }
     return null;
-    
   }
 }
