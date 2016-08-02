@@ -293,7 +293,7 @@ public class MontiCoreNodeIdentifierHelper implements IASTNodeIdentHelper {
     else if (ast instanceof ASTRuleReference) {
       return getIdentifier((ASTRuleReference) ast);
     }
-    return format(className(ast));
+    return format(nodeName(ast));
   }
   
 }
