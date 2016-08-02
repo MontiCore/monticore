@@ -168,7 +168,7 @@ public class MontiCoreNodeIdentifierHelper implements IASTNodeIdentHelper {
   }
   
   private static String getIdentifier(ASTGrammarReference ast) {
-    return format(Names.getQualifiedName(ast.getNames()), nodeName(ast));
+    return format(Names.getSimpleName(ast.getNames()), nodeName(ast));
   }
   
   private static String getIdentifier(ASTITerminal ast) {
@@ -180,7 +180,7 @@ public class MontiCoreNodeIdentifierHelper implements IASTNodeIdentHelper {
   }
   
   private static String getIdentifier(ASTMCGrammar ast) {
-    return format(Names.getQualifiedName(ast.getPackage(), ast.getName()), nodeName(ast));
+    return format(ast.getName(), nodeName(ast));
   }
   
   private static String getIdentifier(ASTMethod ast) {
