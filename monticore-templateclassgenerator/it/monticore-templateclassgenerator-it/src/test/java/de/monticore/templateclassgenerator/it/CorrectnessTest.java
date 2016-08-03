@@ -13,28 +13,25 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import javax.xml.transform.Templates;
+
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import setup.TemplateStorage;
 import de.monticore.java.symboltable.JavaMethodSymbol;
 import de.monticore.java.symboltable.JavaTypeSymbol;
 import de.monticore.symboltable.Scope;
 
 /**
- * TODO: Write me!
+ * Tests the correctness of the generated template classes methods
  *
- * @author  (last commit) $Author$
- * @version $Revision$,
- *          $Date$
- * @since   TODO: add version number
- *
+ * @author Jerome Pfeiffer
  */
-public class CorrectnessTest extends AbstractSymtabTest{
+public class CorrectnessTest extends AbstractSymtabTest {
   
-private static Path outputDirectory = Paths.get("target/generated-sources/templateClasses");
-  
-  private static Path modelPath = Paths.get("src/test/resources/templates/a");
+  private static Path outputDirectory = Paths.get("target/generated-sources/templateClasses");
   
   private static CorrectnessTest theInstance = new CorrectnessTest();
   
@@ -50,50 +47,60 @@ private static Path outputDirectory = Paths.get("target/generated-sources/templa
     symTab = createJavaSymTab(outputDirectory);
   }
   
+  /**
+   * Tests completely empty template
+   */
   @Ignore
   @Test
-  public void testEmptyTemplate(){
-    JavaTypeSymbol emptyTemplateClass = symTab.<JavaTypeSymbol> resolve("_templates.templates.a.EmptyTemplateTemplate", JavaTypeSymbol.KIND).orElse(null);
+  public void testEmptyTemplate() {
+    JavaTypeSymbol emptyTemplateClass = symTab.<JavaTypeSymbol> resolve(
+        "_templates.templates.a.EmptyTemplate", JavaTypeSymbol.KIND).orElse(null);
     assertNotNull(emptyTemplateClass);
     
     boolean hasCorrectGenerate = false;
     boolean hasCorrectToString = false;
     
     List<JavaMethodSymbol> methods = emptyTemplateClass.getMethods();
-    assertEquals(2, methods.size());;
-    for(JavaMethodSymbol method :methods){
-      if(method.getName().equals("generate")){
-        assertEquals(2, method.getParameters().size());
+    assertEquals(6, methods.size());
+    
+    for (JavaMethodSymbol method : methods) {
+      if (method.getName().equals("generate") && method.getReturnType().getName().equals("void")) {
+        assertEquals(3, method.getParameters().size());
         hasCorrectGenerate = true;
       }
       
-      if(method.getName().equals("generate")){
-        assertEquals(0, method.getParameters().size());
+      if (method.getName().equals("generate") && method.getReturnType().getName().equals("String")) {
+        assertEquals(1, method.getParameters().size());
         hasCorrectToString = true;
       }
+      
     }
     assertTrue(hasCorrectGenerate);
     assertTrue(hasCorrectToString);
   }
   
-  @Ignore
+  /**
+   * Tests template with tc.params but without tc.result
+   */
   @Test
-  public void testTemplateWithoutResult(){
-    JavaTypeSymbol templateWithoutResultClass = symTab.<JavaTypeSymbol> resolve("_templates.templates.a.TemplateWithoutResultTemplate", JavaTypeSymbol.KIND).orElse(null);
-    assertNotNull(templateWithoutResultClass);  
+  public void testTemplateWithoutResult() {
+    JavaTypeSymbol templateWithoutResultClass = symTab.<JavaTypeSymbol> resolve(
+        "_templates.templates.a.TemplateWithoutResult", JavaTypeSymbol.KIND).orElse(null);
+    assertNotNull(templateWithoutResultClass);
     
     boolean hasCorrectGenerate = false;
     boolean hasCorrectToString = false;
     
     List<JavaMethodSymbol> methods = templateWithoutResultClass.getMethods();
-    assertEquals(2, methods.size());;
-    for(JavaMethodSymbol method :methods){
-      if(method.getName().equals("generate")){
+    assertEquals(6, methods.size());
+    ;
+    for (JavaMethodSymbol method : methods) {
+      if (method.getName().equals("generate") && method.getReturnType().getName().equals("void")) {
         assertEquals(4, method.getParameters().size());
         hasCorrectGenerate = true;
       }
       
-      if(method.getName().equals("generate")){
+      if (method.getName().equals("generate") && method.getReturnType().getName().equals("String")) {
         assertEquals(2, method.getParameters().size());
         hasCorrectToString = true;
       }
@@ -103,27 +110,29 @@ private static Path outputDirectory = Paths.get("target/generated-sources/templa
   }
   
   /**
- * Ignored because generate methods have all the same name. They are only distinguishable by name if they have a return type.
- */
+   * Template that does not contain a signature, but template code
+   */
   @Ignore
   @Test
-  public void testTemplateWithoutSignature(){
-    JavaTypeSymbol templateWithoutSignature= symTab.<JavaTypeSymbol> resolve("_templates.templates.a.TemplateWithoutSignatureTemplate", JavaTypeSymbol.KIND).orElse(null);
-    assertNotNull(templateWithoutSignature);  
+  public void testTemplateWithoutSignature() {
+    JavaTypeSymbol templateWithoutSignature = symTab.<JavaTypeSymbol> resolve(
+        "_templates.templates.a.TemplateWithoutSignature", JavaTypeSymbol.KIND)
+        .orElse(null);
+    assertNotNull(templateWithoutSignature);
     
     boolean hasCorrectGenerate = false;
     boolean hasCorrectToString = false;
     
     List<JavaMethodSymbol> methods = templateWithoutSignature.getMethods();
-    assertEquals(2, methods.size());;
-    for(JavaMethodSymbol method :methods){
-      if(method.getName().equals("generate")){
-        assertEquals(2, method.getParameters().size());
+    assertEquals(6, methods.size());
+    for (JavaMethodSymbol method : methods) {
+      if (method.getName().equals("generate") && method.getReturnType().getName().equals("void")) {
+        assertEquals(3, method.getParameters().size());
         hasCorrectGenerate = true;
       }
       
-      if(method.getName().equals("generate")){
-        assertEquals(0, method.getParameters().size());
+      if (method.getName().equals("generate") && method.getReturnType().getName().equals("String")) {
+        assertEquals(1, method.getParameters().size());
         hasCorrectToString = true;
       }
     }
@@ -132,32 +141,34 @@ private static Path outputDirectory = Paths.get("target/generated-sources/templa
     
   }
   
-  @Ignore
+  /**
+   * Tests template with tc.params and tc.result
+   */
   @Test
-  public void testTemplateWithResult(){
-    JavaTypeSymbol templateWithResult = symTab.<JavaTypeSymbol> resolve("_templates.templates.a.TemplateWithResultTemplate", JavaTypeSymbol.KIND).orElse(null);
-    assertNotNull(templateWithResult);  
+  public void testTemplateWithResult() {
+    JavaTypeSymbol templateWithResult = symTab.<JavaTypeSymbol> resolve(
+        "_templates.templates.a.TemplateWithResult", JavaTypeSymbol.KIND).orElse(null);
+    assertNotNull(templateWithResult);
     
     boolean hasCorrectGenerate = false;
     boolean hasCorrectToString = false;
     boolean hasCorrectToResult = false;
     
     List<JavaMethodSymbol> methods = templateWithResult.getMethods();
-    assertEquals(3, methods.size());;
-    for(JavaMethodSymbol method :methods){
-      if(method.getName().equals("generateInteger")){
+    assertEquals(8, methods.size());
+    for (JavaMethodSymbol method : methods) {
+      if (method.getName().equals("generate") && method.getReturnType().getName().equals("void")) {
         assertEquals(4, method.getParameters().size());
         hasCorrectGenerate = true;
       }
       
-      if(method.getName().equals("generateInteger")){
+      if (method.getName().equals("generate") && method.getReturnType().getName().equals("String")) {
         assertEquals(2, method.getParameters().size());
         hasCorrectToString = true;
       }
       
-      if(method.getName().equals("generateInteger")){
+      if (method.getName().equals("generate") && method.getReturnType().getName().equals("Integer")) {
         assertEquals(3, method.getParameters().size());
-        assertEquals("Integer", method.getReturnType().getName());
         hasCorrectToResult = true;
       }
     }

@@ -19,11 +19,10 @@
 package types;
 
 /**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
+ * Used for testing
+ * 
+ * @author Jerome Pfeiffer
+ * 
  */
 public class Attribute {
   

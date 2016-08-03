@@ -30,7 +30,7 @@ import de.monticore.symboltable.Scope;
 /**
  * Common methods for symboltable tests
  *
- * @author Robert Heim
+ * @author Jerome Pfeiffer
  */
 public class AbstractSymtabTest {
   protected static Scope createSymTab(Path modelPath) {
@@ -44,11 +44,7 @@ public class AbstractSymtabTest {
   
   protected static Scope createJavaSymTab(Path... modelPath) {
     ModelingLanguageFamily fam = new ModelingLanguageFamily();
-    // fam.addModelingLanguage(new MontiArcLanguage());
     fam.addModelingLanguage(new JavaDSLLanguage());
-    // Java2Arc
-    // fam.addResolver(new Java2ArcResolver());
-    
     final ModelPath mp = new ModelPath(modelPath);
     GlobalScope scope = new GlobalScope(mp, fam);
     return scope;

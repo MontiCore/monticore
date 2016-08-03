@@ -93,12 +93,10 @@ public class ExtendedTemplateController extends TemplateController {
                 && Number.class.isAssignableFrom(argumentClass);
           }
         }
-        if (!isAssignable || !javaLibraryType.isPresent()) {
-          checkArgument(true, "0xA5301 Template '"
-              + getTemplatename() + "': passed argument type (" +
-              argumentClassName +
-              ") and type of signature parameter (" + paramType + " " + paramName + ") mismatch.");
-        }
+        checkArgument(isAssignable, "0xA5301 Template '"
+            + getTemplatename() + "': passed argument type (" +
+            argumentClassName +
+            ") and type of signature parameter (" + paramType + " " + paramName + ") mismatch.");
       }
       
       // Case 1: No Signature -> we have to signature the paramnames

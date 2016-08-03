@@ -21,11 +21,10 @@ package types;
 import java.util.List;
 
 /**
- * TODO: Write me!
+ * Used for testing
  *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
+ * @author Jerome Pfeiffer
+ * 
  */
 public class Helper {
   

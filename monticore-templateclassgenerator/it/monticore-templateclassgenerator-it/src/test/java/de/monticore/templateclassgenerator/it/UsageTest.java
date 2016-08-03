@@ -32,6 +32,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import setup.GeneratorConfig;
+import setup.TemplateStorage;
 import types.Attribute;
 import types.Helper;
 import _templates.templates.b.Constructor;
@@ -40,6 +41,7 @@ import _templates.templates.b.Template;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.ExtendedGeneratorEngine;
+import de.monticore.generating.templateengine.freemarker.MontiCoreFreeMarkerException;
 import de.monticore.java.javadsl._ast.ASTConstructorDeclaration;
 import de.monticore.java.javadsl._parser.JavaDSLParser;
 import de.monticore.java.symboltable.JavaTypeSymbol;
@@ -63,13 +65,16 @@ public class UsageTest extends AbstractSymtabTest {
     symTab = createJavaSymTab(outputDirectory);
   }
   
+  /**
+   * Tests template classes generate to file method
+   */
   @Test
   public void testJavaClassTemplateClass() {
     final GeneratorSetup setup = new GeneratorSetup(outputDirectory.toFile());
-//    GlobalExtensionManagement g = new GlobalExtensionManagement();
-//    g.defineGlobalValue("a.b.TemplateTemplate", new TemplateTemplate());
-//    g.defineGlobalValue("bubu", "einString");
-//    setup.setGlex(g);
+    // GlobalExtensionManagement g = new GlobalExtensionManagement();
+    // g.defineGlobalValue("a.b.TemplateTemplate", new TemplateTemplate());
+    // g.defineGlobalValue("bubu", "einString");
+    // setup.setGlex(g);
     GeneratorConfig.init(setup);
     String classname = "Test1";
     List<Attribute> attributes = new ArrayList<>();
@@ -84,6 +89,12 @@ public class UsageTest extends AbstractSymtabTest {
     ASTNode node = new EmptyNode();
   }
   
+  /**
+   * Tests the m2m like method when tc.result is defined in the template
+   * 
+   * @throws RecognitionException
+   * @throws IOException
+   */
   @Test
   public void testReturnMethod() throws RecognitionException, IOException {
     final GeneratorSetup setup = new GeneratorSetup(outputDirectory.toFile());
@@ -92,28 +103,25 @@ public class UsageTest extends AbstractSymtabTest {
     attributes.add(new Attribute("Integer", "i"));
     attributes.add(new Attribute("String", "s"));
     Function<String, ASTConstructorDeclaration> function = (String s) -> parseToASTConstructorDecl(s);
-    ASTConstructorDeclaration meth = Constructor.generate("Test2", attributes, new Helper(), function);
-    
+    ASTConstructorDeclaration meth = Constructor.generate("Test2", attributes, new Helper(),
+        function);
     
     assertNotNull(meth);
   }
   
+  /**
+   * Tests including Templates over their template class
+   */
   @Test
   public void testToStringMethod() {
     final GeneratorSetup setup = new GeneratorSetup(outputDirectory.toFile());
     ExtendedGeneratorEngine generator = new ExtendedGeneratorEngine(setup);
+    TemplateStorage t = new TemplateStorage();
     String classname = "Test1";
     List<Attribute> attributes = new ArrayList<>();
     attributes.add(new Attribute("Integer", "i"));
     attributes.add(new Attribute("String", "s"));
     String s = JavaClass.generate("test", classname, attributes);
-    assertNotNull(s);
-  }
-  
-  
-  @Test
-  public void testGenerateToStringInTemplate(){
-    String s = Template.generate();
     assertNotNull(s);
   }
   
@@ -126,6 +134,32 @@ public class UsageTest extends AbstractSymtabTest {
       e.printStackTrace();
     }
     return null;
-    
+  }
+  
+  /**
+   * Checks wrong argument type
+   */
+  @Test(expected=MontiCoreFreeMarkerException.class)
+  public void testDynamicTypeCheck() {
+    String s = "first";
+    String s2 = "second";
+    String s3 = "third";
+    GeneratorSetup setup = new GeneratorSetup(outputDirectory.toFile());
+    GeneratorConfig.init(setup);
+    ExtendedGeneratorEngine ge = GeneratorConfig.getGeneratorEngine();
+    ge.generateToString("templates/b/Constructor.ftl", s, s2, s3);
+  }
+  
+  /**
+   * Checks wrong argument number
+   */
+  @Test(expected=MontiCoreFreeMarkerException.class)
+  public void testDynamicTypeCheck2() {
+    String s = "first";
+    String s2 = "second";
+    GeneratorSetup setup = new GeneratorSetup(outputDirectory.toFile());
+    GeneratorConfig.init(setup);
+    ExtendedGeneratorEngine ge = GeneratorConfig.getGeneratorEngine();
+    ge.generateToString("templates/b/Constructor.ftl", s, s2);
   }
 }
