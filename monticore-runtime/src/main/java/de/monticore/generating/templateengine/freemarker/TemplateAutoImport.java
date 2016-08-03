@@ -9,7 +9,7 @@ import java.nio.file.Path;
  * @see http://freemarker.org/docs/ref_directive_import.html
  * @author Robert Heim
  */
-public class TempalateAutoImport {
+public class TemplateAutoImport {
   private Path templatePath;
   
   private String namespaceHash;
@@ -21,7 +21,7 @@ public class TempalateAutoImport {
    * @param namespaceHash The name of the hash variable by which the namespace of the included
    * template can be accessed. See http://freemarker.org/docs/ref_directive_import.html
    */
-  public TempalateAutoImport(Path templatePath, String namespaceHash) {
+  public TemplateAutoImport(Path templatePath, String namespaceHash) {
     this.templatePath = templatePath;
     this.namespaceHash = namespaceHash;
   }

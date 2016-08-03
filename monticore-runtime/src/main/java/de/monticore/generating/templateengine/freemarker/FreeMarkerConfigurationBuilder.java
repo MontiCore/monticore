@@ -43,7 +43,7 @@ public class FreeMarkerConfigurationBuilder {
   
   private List<File> additionalTemplatePaths = new ArrayList<>();
   
-  private Collection<TempalateAutoImport> autoImports = new ArrayList<>();
+  private Collection<TemplateAutoImport> autoImports = new ArrayList<>();
   
   public FreeMarkerConfigurationBuilder classLoader(ClassLoader classLoader) {
     this.classLoader = classLoader;
@@ -56,7 +56,7 @@ public class FreeMarkerConfigurationBuilder {
     return this;
   }
   
-  public FreeMarkerConfigurationBuilder autoImports(Collection<TempalateAutoImport> autoImports) {
+  public FreeMarkerConfigurationBuilder autoImports(Collection<TemplateAutoImport> autoImports) {
     this.autoImports = autoImports;
     return this;
   }
@@ -90,7 +90,7 @@ public class FreeMarkerConfigurationBuilder {
         }
       }
       
-      for (TempalateAutoImport i : autoImports) {
+      for (TemplateAutoImport i : autoImports) {
         config.addAutoImport(i.getNamespaceHash(), i.getTemplatePath().toString());
       }
       
