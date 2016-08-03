@@ -182,7 +182,7 @@ public class TemplateControllerSignatureUsageTest {
     String templateOutput = tc.includeArgs(TEMPLATE_PACKAGE + "ArgumentsAreOnlyVisibleInIncludedTemplate",
         Lists.<Object>newArrayList("Charly"));
     
-    assertEquals("Hello Charly\r\nSorry, what was your name?", templateOutput);
+    assertEquals("Hello Charly\nSorry, what was your name?", templateOutput);
   }
     
   @Test
@@ -190,8 +190,8 @@ public class TemplateControllerSignatureUsageTest {
     String templateOutput = tc.include(TEMPLATE_PACKAGE + "ParameterizedInclusionUsage");
     
     assertEquals(
-        "Name is Charly\r\n" +
-        "Name is Charly, age is 30, city is Aachen\r\n" +
+        "Name is Charly\n" +
+        "Name is Charly, age is 30, city is Aachen\n" +
         "Name=Charly, age=30, city=Aachen, zip=52062, job=Engineer, friends=No friends"
         , templateOutput);
   }
