@@ -70,10 +70,6 @@ public class UsageTest extends AbstractSymtabTest {
   @Test
   public void testJavaClassTemplateClass() {
     final GeneratorSetup setup = new GeneratorSetup(outputDirectory.toFile());
-    // GlobalExtensionManagement g = new GlobalExtensionManagement();
-    // g.defineGlobalValue("a.b.TemplateTemplate", new TemplateTemplate());
-    // g.defineGlobalValue("bubu", "einString");
-    // setup.setGlex(g);
     GeneratorConfig.init(setup);
     String classname = "Test1";
     List<Attribute> attributes = new ArrayList<>();

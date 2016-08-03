@@ -58,7 +58,8 @@ public class ExtendedTemplateController extends TemplateController {
    * Compares types of the passed params with the arguments passed in the
    * template call. Additionally signatures the names of the parameters. Method
    * is important for inter Template calls and for users who do not use the
-   * generated template class with its static generate method.
+   * generated template class with its static generate method. All types that
+   * are no java library types have to be defined fully qualified.
    * 
    * @param params
    */
@@ -67,11 +68,14 @@ public class ExtendedTemplateController extends TemplateController {
         "0xA5297 Template '" + getTemplatename() + "': tried to invoke params() twice");
     List<Object> arguments = getArguments();
     List<String> names = getSignature();
+    // throws error when argument size != param size
     checkArgument(params.length == arguments.size(),
         "0xA5298 Template '" + getTemplatename() + "': Parameter size (#" +
             params.length +
             ") and number of arguments (#" + arguments.size() + ") mismatch.");
     List<String> toSignature = new ArrayList<String>();
+    
+    // compares params and args
     for (int i = 0; i < arguments.size(); i++) {
       Object argument = arguments.get(i);
       String parameter = params[i];
@@ -83,11 +87,14 @@ public class ExtendedTemplateController extends TemplateController {
       Class argumentClass = argument.getClass();
       String argumentClassName = argumentClass.getName();
       
+      // checks whether argument type and param type are equal try with java
+      // library types otherwise
       if (!paramType.equals(argumentClassName)) {
         Optional<Class> javaLibraryType = getJavaLibraryType(paramType);
         boolean isAssignable = false;
         if (javaLibraryType.isPresent()) {
           isAssignable = javaLibraryType.get().isAssignableFrom(argumentClass);
+          // if it is not assignable with java library type it might be a number
           if (!isAssignable) {
             isAssignable = Number.class.isAssignableFrom(javaLibraryType.get())
                 && Number.class.isAssignableFrom(argumentClass);
@@ -122,12 +129,13 @@ public class ExtendedTemplateController extends TemplateController {
   }
   
   /**
-   * TODO: Write me!
+   * Loads java library types to the passed {@link paramType}
    *
    * @param argumentClass
    * @return
    */
   private Optional<Class> getJavaLibraryType(String paramType) {
+    // maps primitive data types to wrapper classes
     Map<String, String> primitiveTypes = new HashMap<String, String>();
     primitiveTypes.put("long", "java.lang.Long");
     primitiveTypes.put("int", "java.lang.Integer");
@@ -138,6 +146,15 @@ public class ExtendedTemplateController extends TemplateController {
     primitiveTypes.put("char", "java.lang.Character");
     primitiveTypes.put("boolean", "java.lang.Boolean");
     
+    // 1. tries to load the passed type
+    try {
+      Class c = Class.forName(paramType);
+      return Optional.of(c);
+    }
+    catch (ClassNotFoundException e) {
+    }
+    
+    // 2. this packages are searched to find the fqn of the passed paramType
     String[] packagesToSearch = { "java.lang", "java.util" };
     Optional<Class> fqnLibraryType = Optional.empty();
     for (String _package : packagesToSearch) {
@@ -149,13 +166,8 @@ public class ExtendedTemplateController extends TemplateController {
         
       }
     }
-    try {
-      Class c = Class.forName(paramType);
-      return Optional.of(c);
-    }
-    catch (ClassNotFoundException e) {
-    }
     
+    // 3. try primitive types
     if (primitiveTypes.containsKey(paramType)) {
       Class c;
       try {
