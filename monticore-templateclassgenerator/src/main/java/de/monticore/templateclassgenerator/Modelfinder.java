@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import jline.internal.Log;
+
 import org.apache.commons.io.FileUtils;
 
 /**
@@ -46,7 +48,7 @@ public class Modelfinder {
     Collection<File> files = FileUtils.listFiles(modelPath, extension, true);
     for (File f : files) {
       String model = getDotSeperatedFQNModelName(modelPath.getPath(), f.getPath(), fileExtension);
-      System.out.println("[Modelfinder] found model: " + model);
+      Log.info("Found model: " + model, "Modelfinder");
       models.add(model);
     }
     return models;

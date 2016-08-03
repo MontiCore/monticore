@@ -105,7 +105,7 @@ public class TemplateClassGeneratorScript extends Script implements GroovyRunner
     List<String> foundTemplates = Modelfinder.getModelsInModelPath(
         Paths.get(modelPath.getAbsolutePath()).toFile(), "ftl");
     for (String template : foundTemplates) {
-      System.out.println("[TypesafetyScript] generates model: " + template);
+      Log.info("Generates model: " + template, "TemplateClassGeneratorScript");
       String simpleName = Names.getSimpleName(template);
       String fileName = Names.getPathFromQualifiedName(template) + File.separator + simpleName
           + ".ftl";
