@@ -24,6 +24,7 @@ import static de.monticore.generating.templateengine.reporting.commons.Layouter.
 
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.reporting.commons.IASTNodeIdentHelper;
+import de.monticore.grammar.LexNamer;
 import de.monticore.grammar.grammar._ast.ASTAntlrOption;
 import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
 import de.monticore.grammar.grammar._ast.ASTConcept;
@@ -64,7 +65,7 @@ public class MontiCoreNodeIdentifierHelper implements IASTNodeIdentHelper {
   public static final String LAYOUT_FULL = "<<%s:%s>>";
   
   public static final String LAYOUT_TYPE = "<<:%s>>";
-  
+    
   protected static final String format(String id, String type) {
     return String.format(LAYOUT_FULL, id, type);
   }
@@ -172,7 +173,20 @@ public class MontiCoreNodeIdentifierHelper implements IASTNodeIdentHelper {
   }
   
   private static String getIdentifier(ASTITerminal ast) {
-    return format(ast.getName(), nodeName(ast));
+    // return a regular "Name"
+    String name = ast.getName();
+    if ((name.length()) == 1 && !name.matches("[a-zA-Z0-9_$]")) {
+      // Replace special character by the corresponding name (; -> SEMI)
+      name = LexNamer.createGoodName(name);
+    } else {
+      // Replace all special characters by _
+      name = name.replaceAll("[^a-zA-Z0-9_$]", "_");
+      if (name.matches("[0-9].*")) {
+        // if the name starts with a digit ...
+        name = "_".concat(name);
+      }
+    }
+    return format(name, nodeName(ast));
   }
   
   private static String getIdentifier(ASTLexNonTerminal ast) {
