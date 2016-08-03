@@ -47,7 +47,6 @@ public class CorrectnessTest extends AbstractSymtabTest {
   /**
    * Tests completely empty template
    */
-  @Ignore
   @Test
   public void testEmptyTemplate() {
     JavaTypeSymbol emptyTemplateClass = symTab.<JavaTypeSymbol> resolve(
@@ -109,7 +108,6 @@ public class CorrectnessTest extends AbstractSymtabTest {
   /**
    * Template that does not contain a signature, but template code
    */
-  @Ignore
   @Test
   public void testTemplateWithoutSignature() {
     JavaTypeSymbol templateWithoutSignature = symTab.<JavaTypeSymbol> resolve(

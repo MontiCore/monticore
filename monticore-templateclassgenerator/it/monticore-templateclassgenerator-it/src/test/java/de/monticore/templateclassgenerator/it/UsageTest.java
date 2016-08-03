@@ -143,7 +143,7 @@ public class UsageTest extends AbstractSymtabTest {
     GeneratorSetup setup = new GeneratorSetup(outputDirectory.toFile());
     GeneratorConfig.init(setup);
     ExtendedGeneratorEngine ge = GeneratorConfig.getGeneratorEngine();
-    ge.generateToString("templates/b/Constructor.ftl", s, s2, s3);
+    ge.generate("templates/b/Constructor.ftl", s, s2, s3);
   }
   
   /**
@@ -156,6 +156,6 @@ public class UsageTest extends AbstractSymtabTest {
     GeneratorSetup setup = new GeneratorSetup(outputDirectory.toFile());
     GeneratorConfig.init(setup);
     ExtendedGeneratorEngine ge = GeneratorConfig.getGeneratorEngine();
-    ge.generateToString("templates/b/Constructor.ftl", s, s2);
+    ge.generate("templates/b/Constructor.ftl", s, s2);
   }
 }
