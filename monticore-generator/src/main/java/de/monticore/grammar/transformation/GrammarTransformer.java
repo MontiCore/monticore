@@ -202,13 +202,6 @@ public class GrammarTransformer {
       if (parser.hasErrors()) {
         Log.error("0xA0362 RecognitionException during parsing " + extendedList);
       }
-      else {
-        // Add old source position for nonterminals (needed by check for left recursion)
-        ASTNodes.getSuccessors(block.get(), ASTNonTerminal.class).
-            forEach(
-                nonTerminal -> nonTerminal.set_SourcePositionStart(nonTerminalSep
-                    .get_SourcePositionStart()));
-      }
     }
     catch (IOException e) {
       Log.error("0xA0361 IOException during parsing " + extendedList);
