@@ -114,7 +114,7 @@ public class ${classname} <#t>
   }
   
   protected String doGenerate(<#if !hasSignature>${defaultParam}<#else>${printedParams}</#if>) {
-    return GeneratorConfig.getGeneratorEngine().generateToString("${fqnTemplateName?replace("\\","/")}"<#if parameters?has_content || !hasSignature>, </#if><#if !hasSignature>${defaultParamName}<#else>${printedParamNames}</#if>);
+    return GeneratorConfig.getGeneratorEngine().generate("${fqnTemplateName?replace("\\","/")}"<#if parameters?has_content || !hasSignature>, </#if><#if !hasSignature>${defaultParamName}<#else>${printedParamNames}</#if>);
   }
   
   <#if result.isPresent()>
