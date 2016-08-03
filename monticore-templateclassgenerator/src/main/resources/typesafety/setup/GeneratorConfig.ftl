@@ -50,7 +50,6 @@ public class GeneratorConfig {
   
   private static ExtendedGeneratorEngine generator;
   
-  private static final String DEFAULT_OUTPUT_FOLDER = "/target/generated-sources/gen";
   
   public static ExtendedGeneratorEngine getGeneratorEngine() {
     if (null == generator) {
@@ -65,8 +64,7 @@ public class GeneratorConfig {
   
   private static GeneratorSetup init(Optional<GeneratorSetup> setupOpt) {
     String workingDir = System.getProperty("user.dir");
-    GeneratorSetup setup = setupOpt.orElse(new GeneratorSetup(new File(workingDir
-        + DEFAULT_OUTPUT_FOLDER)));
+    GeneratorSetup setup = setupOpt.orElse(new GeneratorSetup(new File(TemplateClassGeneratorConstants.DEFAULT_OUTPUT_FOLDER)));
     
     GlobalExtensionManagement glex = setup.getGlex().orElse(new GlobalExtensionManagement());
     glex.defineGlobalValue(TemplateClassGeneratorConstants.TEMPLATES_ALIAS, new TemplateAccessor());

@@ -54,4 +54,6 @@ public class TemplateClassGeneratorConstants {
    */
   public static final String RESULT_METHOD = "tc.result";
   
+  public static final String DEFAULT_OUTPUT_FOLDER = "out";
+  
 }
