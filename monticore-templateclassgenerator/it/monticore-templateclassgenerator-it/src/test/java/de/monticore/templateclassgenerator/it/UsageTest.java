@@ -32,15 +32,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import setup.GeneratorConfig;
-import setup.TemplateStorage;
+import setup.TemplateAccessor;
 import types.Attribute;
 import types.Helper;
 import _templates.templates.b.Constructor;
 import _templates.templates.b.JavaClass;
-import _templates.templates.b.Template;
 import de.monticore.ast.ASTNode;
-import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.ExtendedGeneratorEngine;
+import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.freemarker.MontiCoreFreeMarkerException;
 import de.monticore.java.javadsl._ast.ASTConstructorDeclaration;
 import de.monticore.java.javadsl._parser.JavaDSLParser;
@@ -114,9 +113,6 @@ public class UsageTest extends AbstractSymtabTest {
    */
   @Test
   public void testToStringMethod() {
-    final GeneratorSetup setup = new GeneratorSetup(outputDirectory.toFile());
-    ExtendedGeneratorEngine generator = new ExtendedGeneratorEngine(setup);
-    TemplateStorage t = new TemplateStorage();
     String classname = "Test1";
     List<Attribute> attributes = new ArrayList<>();
     attributes.add(new Attribute("Integer", "i"));

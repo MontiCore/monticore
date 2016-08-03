@@ -144,7 +144,7 @@ public class TemplateClassGenerator {
     String mp = modelPath.getPath();
     List<File> nodes = TemplateClassHelper.walkTree(modelPath);
     List<String> templates = foundTemplates;
-    generator.generate("typesafety.setup.TemplateStorage", Paths.get(filePath + "TemplateStorage.java"),
+    generator.generate("typesafety.setup.TemplateAccessor", Paths.get(filePath + "TemplateAccessor.java"),
         new EmptyNode(),
         packageName, templates, mp, new TemplateClassHelper());
     generator.generate("typesafety.setup.Setup", Paths.get(filePath + "Setup.ftl"),

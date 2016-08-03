@@ -13,13 +13,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import javax.xml.transform.Templates;
-
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import setup.TemplateStorage;
 import de.monticore.java.symboltable.JavaMethodSymbol;
 import de.monticore.java.symboltable.JavaTypeSymbol;
 import de.monticore.symboltable.Scope;

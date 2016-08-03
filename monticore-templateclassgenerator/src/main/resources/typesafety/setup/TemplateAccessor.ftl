@@ -34,7 +34,7 @@ ${tc.params("String package", "java.util.List<String> templates", "String modelP
 
 package ${package};
 
-public class TemplateStorage {
+public class TemplateAccessor {
 
   <#list templates as template>
     

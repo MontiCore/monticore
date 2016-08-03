@@ -69,7 +69,7 @@ public class GeneratorConfig {
         + DEFAULT_OUTPUT_FOLDER)));
     
     GlobalExtensionManagement glex = setup.getGlex().orElse(new GlobalExtensionManagement());
-    glex.defineGlobalValue(TemplateClassGeneratorConstants.TEMPLATES_ALIAS, new TemplateStorage());
+    glex.defineGlobalValue(TemplateClassGeneratorConstants.TEMPLATES_ALIAS, new TemplateAccessor());
     setup.setGlex(glex);
     List<TemplateAutoImport> imports = new ArrayList<>();
     TemplateAutoImport ta = new TemplateAutoImport(Paths.get("Setup.ftl"), "${glex.getGlobalValue("TemplateClassPackage")}");
