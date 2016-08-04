@@ -52,6 +52,8 @@ import de.se_rwth.commons.logging.Log;
  */
 public class AstEmfGeneratorHelper extends AstGeneratorHelper {
   
+  public static final String JAVA_MAP = "java.util.Map";
+  
   public AstEmfGeneratorHelper(ASTCDCompilationUnit topAst, GlobalScope symbolTable) {
     super(topAst, symbolTable);
   }
@@ -114,11 +116,6 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
     return attribute.printType();
   }
   
-  public static boolean istJavaList(ASTCDAttribute attribute) {
-    return TypesPrinter.printTypeWithoutTypeArgumentsAndDimension(attribute.getType())
-        .equals(JAVA_LIST);
-  }
-  
   public List<String> getASTESuperPackages() {
     List<String> ePackages = new ArrayList<>();
     for (String superGrammar : getSuperGrammarCds()) {
@@ -128,11 +125,6 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
       ePackages.add(ASTENodePackage.class.getName());
     }
     return ePackages;
-  }
-  
-  public static String getEPackageName(String qualifiedSuperGrammar) {
-    return qualifiedSuperGrammar.toLowerCase() + "._ast."
-        + StringTransformations.capitalize(Names.getSimpleName(qualifiedSuperGrammar)) + "Package";
   }
   
   /**
@@ -152,7 +144,7 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
   public boolean attributeDefinedInOtherCd(ASTCDAttribute attribute) {
     String definedGrammar = getDefinedGrammarName(attribute);
     return !definedGrammar.isEmpty()
-        && !definedGrammar.equals(getQualifiedCdName().toLowerCase());
+        && !definedGrammar.equalsIgnoreCase(getQualifiedCdName());
   }
   
   public String getDefinedGrammarName(ASTCDAttribute attribute) {
@@ -173,7 +165,7 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
    */
   public List<CDTypeSymbol> getAllSuperTypesEmfOrder(ASTCDType type) {
     if (!type.getSymbol().isPresent()) {
-      Log.error("0xABC123 Could not load symbol information for " + type.getName() + ".");
+      Log.error("0xA4097 Could not load symbol information for " + type.getName() + ".");
     }
     
     CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol().get();
@@ -210,7 +202,7 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
    */
   public List<CDTypeSymbol> getAllTypesEmfOrder(ASTCDType type) {
     if (!type.getSymbol().isPresent()) {
-      Log.error("0xABC123 Could not load symbol information for " + type.getName() + ".");
+      Log.error("0xA4098 Could not load symbol information for " + type.getName() + ".");
     }
     CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol().get();
     List<CDTypeSymbol> types = getAllSuperTypesEmfOrder(sym);
@@ -227,7 +219,7 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
   public Collection<CDFieldSymbol> getAllVisibleFields(ASTCDType type) {
     List<CDFieldSymbol> allSuperTypeFields = new ArrayList<>();
     if (!type.getSymbol().isPresent()) {
-      Log.error("0xABC123 Could not load symbol information for " + type.getName() + ".");
+      Log.error("0xA4099 Could not load symbol information for " + type.getName() + ".");
       return new ArrayList<>();
     }
     CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol().get();
@@ -276,13 +268,66 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
     }
   }
   
+  public static String getEPackageName(String qualifiedSuperGrammar) {
+    return qualifiedSuperGrammar.toLowerCase() + "._ast."
+        + StringTransformations.capitalize(Names.getSimpleName(qualifiedSuperGrammar)) + "Package";
+  }
+  
   public String getIdentifierName(String qualifiedName) {
     return Names.getSimpleName(qualifiedName) + "_"
         + Names.getQualifier(qualifiedName).replace('.', '_');
   }
   
+  public static boolean istJavaList(ASTCDAttribute attribute) {
+    return TypesPrinter.printTypeWithoutTypeArgumentsAndDimension(attribute.getType())
+        .equals(JAVA_LIST);
+  }
+  
   public static String getEmfRuntimePackage() {
     return "de.monticore.emf._ast";
+  }
+  
+  public static String getEDataType(String typeName) {
+    switch (typeName) {
+      case JAVA_LIST:
+        return "Elist";
+      case JAVA_MAP:
+        return "EMap";
+      case "boolean":
+        return "EBoolean";
+      case "Boolean":
+        return "EBooleanObject";
+      case "int":
+        return "EInt";
+      case "Integer":
+        return "EIntegerObject";
+      case "byte":
+        return "EByte";
+      case "Byte":
+        return "EByteObject";
+      case "short":
+        return "EShort";
+      case "Short":
+        return "EShortObject";
+      case "long":
+        return "ELong";
+      case "Long":
+        return "ELongObject";
+      case "double":
+        return "EDouble";
+      case "Double":
+        return "EDoubleObject";
+      case "float":
+        return "EFloat";
+      case "Float":
+        return "EFloatObject";
+      case "char":
+        return "EChar";
+      case "Character":
+        return "ECharacterObject";
+      default:
+        return "E" + typeName;
+    }
   }
   
   public static String getSuperClass(ASTCDClass clazz) {

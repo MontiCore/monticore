@@ -5,10 +5,8 @@
  */
 package de.monticore.codegen.emf;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
 import java.io.IOException;
 
 import org.junit.BeforeClass;
@@ -22,12 +20,11 @@ import de.se_rwth.commons.logging.Slf4jLog;
 /**
  * TODO: Write me!
  *
- * @author  (last commit) $Author$
- * @version $Revision$,
- *          $Date$
- *
+ * @author (last commit) $Author$
+ * @version $Revision$, $Date$
  */
 public class ASTNodeTest {
+  
   @BeforeClass
   public static void setup() {
     Slf4jLog.init();
@@ -40,33 +37,15 @@ public class ASTNodeTest {
    * @param args
    */
   @Test
-  public  void test() {
-     
+  public void testSerializing() {
+    
     try {
       AST2ModelFiles.get().serializeAST(ASTENodePackage.eINSTANCE);
     }
     catch (IOException e) {
       fail("Should not reach this, but: " + e);
     }
-      
-//      String path1 = "de/monticore/emf/Automaton.mc4";
-//      String path2 = "de/monticore/emf/Automaton2.mc4";
-//      Optional<ASTMCGrammar> transB = new Grammar_WithConceptsParser().parse("src/test/resources/" + path1);
-//      if (transB.isPresent()) {
-//        MCGrammarResourceController.getInstance().serializeASTClassInstance(transB.get(), "models/Automaton_mc4");
-//      }
-//      else {
-//        System.err.println("Missed");
-//      }
-//      
-//      Optional<ASTMCGrammar> transC = new Grammar_WithConceptsParser().parse("src/test/resources/" + path2);
-//      if (transB.isPresent()) {
-//        MCGrammarResourceController.getInstance().serializeASTClassInstance(transB.get(), "models/Automaton2_mc4");
-//      }
-//      else {
-//        System.err.println("Missed");
-//      }
-      
+    
   }
   
 }

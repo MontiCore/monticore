@@ -28,7 +28,6 @@ import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 /**
  * The Factory for the model object {@link ASTENode}
- *
  */
 public class ASTENodeFactoryImpl extends EFactoryImpl implements ASTENodeFactory {
   
@@ -49,20 +48,15 @@ public class ASTENodeFactoryImpl extends EFactoryImpl implements ASTENodeFactory
   
   @Override
   public EObject create(EClass eClass) {
-    switch (eClass.getClassifierID()) {
-      default:
-        throw new IllegalArgumentException("The class '" + eClass.getName()
-            + "' is not a valid classifier");
-    }
+    throw new IllegalArgumentException("The class '" + eClass.getName()
+        + "' is not a valid classifier");
   }
   
   @Override
   public Object createFromString(EDataType eDataType, String initialValue) {
     switch (eDataType.getClassifierID()) {
-
       case ASTENodePackage.CONSTANTSASTENODE:
         return createConstantsASTENodeFromString(eDataType, initialValue);
-        
       default:
         throw new IllegalArgumentException("The datatype '" + eDataType.getName()
             + "' is not a valid classifier");
@@ -72,10 +66,8 @@ public class ASTENodeFactoryImpl extends EFactoryImpl implements ASTENodeFactory
   @Override
   public String convertToString(EDataType eDataType, Object instanceValue) {
     switch (eDataType.getClassifierID()) {
-
       case ASTENodePackage.CONSTANTSASTENODE:
         return convertConstantsASTENodeToString(eDataType, instanceValue);
-        
       default:
         throw new IllegalArgumentException("The datatype '" + eDataType.getName()
             + "' is not a valid classifier");
@@ -88,11 +80,7 @@ public class ASTENodeFactoryImpl extends EFactoryImpl implements ASTENodeFactory
   
   public ASTENodeLiterals createConstantsASTENodeFromString(EDataType eDataType,
       String initialValue) {
-    ASTENodeLiterals result = ASTENodeLiterals.valueOf(initialValue);
-    if (result == null)
-      throw new IllegalArgumentException("The value '" + initialValue
-          + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-    return result;
+    return ASTENodeLiterals.valueOf(initialValue);
   }
   
   public String convertConstantsASTENodeToString(EDataType eDataType, Object instanceValue) {

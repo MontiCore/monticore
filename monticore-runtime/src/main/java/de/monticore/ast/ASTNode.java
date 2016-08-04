@@ -202,7 +202,7 @@ public interface ASTNode {
    * @param _postcomments list of comments
    */
   void set_PostComments(List<Comment> postcomments);
-  
+ 
   /**
    * @returns a collection of all child nodes of this node
    */

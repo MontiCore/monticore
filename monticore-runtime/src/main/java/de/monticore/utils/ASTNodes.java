@@ -25,6 +25,7 @@ import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
 import de.se_rwth.commons.Util;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -88,6 +89,21 @@ public final class ASTNodes {
   public static <T extends ASTNode> List<T> getSuccessors(ASTNode ancestor, Class<T> nodeType) {
     Iterable<ASTNode> successors = Util.preOrder(ancestor, ASTNode::get_Children);
     Iterable<T> successorsWithMatchingType = Iterables.filter(successors, nodeType);
+    return Lists.newArrayList(successorsWithMatchingType);
+  }
+
+  /**
+   * Gathers a list of all successor nodes of an ASTNode with a specified type.
+   *
+   * @param ancestor the ancestor node of which successors with the specified type are to be
+   *                 gathered
+   * @param nodeType the type of successors to be gathered
+   * @return the list of successors of the ancestor node with the specified type, ordered according
+   * to a pre-order traversal
+   */
+  public static List<ASTNode> getSuccessors(ASTNode ancestor, Collection<Class<? extends ASTNode>> types) {
+    Iterable<ASTNode> successors = Util.preOrder(ancestor, ASTNode::get_Children);
+    Iterable<ASTNode> successorsWithMatchingType = Iterables.filter(successors, successor -> types.contains(successor.getClass()));
     return Lists.newArrayList(successorsWithMatchingType);
   }
 

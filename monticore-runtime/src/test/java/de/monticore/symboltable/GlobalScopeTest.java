@@ -23,8 +23,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.LinkedHashSet;
 
 import de.monticore.ModelingLanguage;
 import de.monticore.io.paths.ModelPath;
@@ -51,9 +49,6 @@ public class GlobalScopeTest {
   public void testLoadTopLevelSymbol() {
     ModelingLanguage entityLanguage = new EntityLanguage();
     
-    Collection<ModelingLanguage> languages = new LinkedHashSet<>();
-    languages.add(entityLanguage);
-
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/modelloader/modelpath"));
 
     ResolverConfiguration resolverConfig = new ResolverConfiguration();

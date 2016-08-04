@@ -107,7 +107,7 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
   public Optional<? extends Symbol> getSymbol() {
     return symbol;
   }
-  
+
   @Override
   public void setSpannedScope(Scope spannedScope) {
     this.spannedScope = Optional.ofNullable(spannedScope);

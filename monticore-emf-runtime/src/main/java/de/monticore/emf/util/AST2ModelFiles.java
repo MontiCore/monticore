@@ -37,6 +37,7 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import de.monticore.emf._ast.ASTENode;
 import de.monticore.emf._ast.ASTEPackage;
 import de.se_rwth.commons.Names;
+import de.se_rwth.commons.logging.Log;
 
 /**
  * The utility class for serialization and deserialization of AST models and
@@ -86,13 +87,14 @@ public class AST2ModelFiles {
     // Add instance of package to the contents.
     resource.getContents().add(astNode);
     // Save the contents of the resource to the file system.
-    Map options = new HashMap();
+    Map<String, Object> options = new HashMap<>();
     options.put(XMLResource.OPTION_SCHEMA_LOCATION, Boolean.TRUE);
     try {
       resource.save(options);
     }
     catch (IOException e) {
-      e.printStackTrace();
+      Log.error("0xA5004 A problem occupied while the saving of the " + astNode
+          + "\nCatched exception: " + e);
     }
   }
   
@@ -115,15 +117,15 @@ public class AST2ModelFiles {
     // Initialize the model
     eInstance.eClass();
     
-    ResourceSet resourceSet = new ResourceSetImpl();
-    resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
-        .put(Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl());
-        
     URI fileURI = URI
         .createFileURI(new File(packageName + fileName + ".xmi")
             .getAbsolutePath());
             
     Resource resource = resourceSet.getResource(fileURI, true);
+    if (resource.getContents().isEmpty()) {
+      throw new IllegalArgumentException(
+          "0xA5005 A problem occupied while the deserialising of the " + fileName);
+    }
     return resource.getContents().get(0);
   }
   
@@ -159,7 +161,7 @@ public class AST2ModelFiles {
     }
     
     // Save the contents of the resources to the file system.
-    resource.save(Collections.EMPTY_MAP);
+    resource.save(Collections.emptyMap());
   }
   
 }

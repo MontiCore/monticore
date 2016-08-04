@@ -1,0 +1,22 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>de.monticore</groupId>
+    <artifactId>monticore</artifactId>
+    <version>4.4.1-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>monticore-editor</artifactId>
+  <name>Monticore Editor</name>
+
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>texteditor-core</module>
+    <module>graphicaleditor-core</module>
+    <module>grammar-editor</module>
+    <module>editor-updatesite</module>
+  </modules>
+
+</project>

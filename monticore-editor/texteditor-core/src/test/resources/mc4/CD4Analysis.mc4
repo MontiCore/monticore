@@ -1,0 +1,239 @@
+package de.cd4analysis;
+
+/*
+   MCG for CD 4 Analysis, Version Feb 11th, 2015
+*/
+
+grammar CD4Analysis extends de.monticore.types.Types {
+
+  /** ASTCDCompilationUnit represents the complete Diagram
+    @attribute package          The package declaration of this Classdiagram
+    @attribute importStatements List of imported elements
+    @attribute cDDefinition   
+  */
+  CDCompilationUnit =
+    ("package" Package:(Name& || ".")+ ";")? 
+    (ImportStatements:ImportStatement)*
+    CDDefinition;
+
+
+  /** ASTCDDefinition represents a Classdiagram
+    @attribute name           Name of this Classdiagram
+    @attribute cDClasses      List of Classes of this Classdiagram
+    @attribute cDInterfaces   List of Interfaces of this Classdiagram
+    @attribute cDEnums        List of Enums of this Classdiagram
+    @attribute cDAssociations List of Associations of this Classdiagram
+  */
+  CDDefinition = "classdiagram" Name "{"
+  (   cDClasses:CDClass
+    | cDInterfaces:CDInterface
+    | cDEnums:CDEnum
+    | cDAssociations:CDAssociation)* "}";
+  
+
+  /** ASTCDClass represents a Class in a Classdiagram
+    @attribute modifier       Optional Modifier of this Class
+    @attribute name           Name of this Class
+    @attribute superclass     Optional Superclass of this Class
+    @attribute interfaces     List of Interfaces implemented by this Class
+    @attribute cDConstructors List of Constructors of this Class
+    @attribute cDMethods      List of Methods of this Class
+    @attribute cDAttributes   List of Attributes of this Class
+  */
+  CDClass = Modifier?  "class" Name
+  ( "extends"  superclass:ReferenceType)?
+  ( "implements" interfaces:(ReferenceType || ",")+ )?
+  ( "{" 
+    ( cDAttributes:CDAttribute
+    | cDConstructors:CDConstructor
+    | cDMethods:CDMethod )*
+    "}" 
+  | ";" );
+  
+ 
+  /** ASTCDInterface represents an Interface in a Classdiagram
+    @attribute modifier       Optional Modifier of this Interface
+    @attribute name           Name of this Interface
+    @attribute interfaces     List of Interfaces extended by this Interface
+    @attribute cDMethods      List of Methods of this Interface
+    @attribute cDAttributes   List of Attributes of this Interface
+  */
+  CDInterface = Modifier? "interface" Name
+    ( "extends" interfaces:(ReferenceType || ",")+ )? ( "{" 
+      ( cDAttributes:CDAttribute
+      | cDMethods:CDMethod )*
+      "}" 
+    | ";" );
+    
+    
+  /** ASTCDEnum represents an Enumeration (enum type) in a Classdiagram
+    @attribute modifier        Optional Modifier of this Enum
+    @attribute name            Name of this Enum
+    @attribute interfaces      List of Interfaces implemented by this Enum
+    @attribute cDEnumConstants List of the Enum Constants
+    @attribute cDConstructors  List of Constructors of this Enum
+    @attribute cDMethods       List of Methods of this Enum
+    @attribute cDAttributes    List of Attributes of this Enum
+  */
+  CDEnum = Modifier? "enum" Name
+    ( "implements" interfaces:(ReferenceType || ",")+ )?
+    ( "{"
+        cDEnumConstants:(CDEnumConstant || ",")* ";" 
+        ( cDConstructors:CDConstructor | cDMethods:CDMethod)*
+      "}"
+    | ";" );
+  
+ 
+  /** ASTCDAttribute represents an Attribute of a Class or Interface
+    @attribute modifier Modifier of this Attribute
+    @attribute type     Type of this Attribute
+    @attribute name     Name of this Attribute
+    @attribute value    Value of this Attribute
+  */
+  CDAttribute = Modifier? Type Name ("=" Value)? ";"; 
+   
+  /** ASTCDEnumConstant represents a Constant of an Enumeration (enum type)
+      in a Classdiagram
+      @attribute name             Name of this Constant
+      @attribute cDEnumParameters List of optional parameters of this Constant
+  */
+  CDEnumConstant = Name ( "(" cDEnumParameters:(CDEnumParameter || ",")+ ")" )?;
+  
+ 
+  /** ASTCDEnumParameter represents a Parameter of an Enumeration Constant
+    @attribute Value Value of this Parameter
+  */
+  CDEnumParameter = Value;
+  
+
+  /** ASTCDConstructor represents a Constructor of a Class or Interface
+    @attribute name           Name of this Constructor
+    @attribute cDParameters   List of Parameters of this Constructor
+    @attribute exceptions     List of Exceptions thrown by this Constructor
+  */
+  CDConstructor =
+    Modifier
+     Name "(" cDParameters:(CDParameter || ",")* ")"
+    ("throws" exceptions:(QualifiedName || "," )+)?
+    ";";
+        
+ 
+  /** ASTCDMethod represents a Method of a Class or Interface
+      @attribute modifier       Modifier of this Method
+      @attribute returnType     Return-Type of the return value of this Method
+      @attribute name           Name of this Method
+      @attribute cDParameters   List of Parameters of this Method
+      @attribute exceptions     List of Exceptions thrown by this Method
+  */
+  CDMethod =
+    Modifier
+    ReturnType
+     Name "(" cDParameters:(CDParameter || ",")* ")"
+    ("throws" exceptions:(QualifiedName || ",")+)?
+    ";";
+  
+ 
+  /** ASTCDParameter represents a Parameter of a Constructor or Method
+    @attribute type Type of this Parameter
+    @attribute ellipsis Optional indicator for a variable Parameter length
+    @attribute name Name of this Parameter
+  */
+  CDParameter =
+  Type (Ellipsis:["..."])? Name;
+        
+
+  /** ASTCDAssociation represents an Association between Classes or Interfaces
+    @attribute stereotype         Optional Stereotype
+    @attribute Association        True if Association is of type "association"
+    @attribute Composition        True if Association is of type "composition"
+    @attribute derived            True if this is a derived Association
+    @attribute name               Name of this Association
+    @attribute leftModifier       Optional left side Modifier
+    @attribute leftCardinality    Cardinality of the left side of this
+                                  Association
+    @attribute leftReferenceName  Name of the Class or Interface on the left
+                                  side of this Association
+    @attribute leftQualifier      Qualifier of the left side of this
+                                  Association
+    @attribute leftRole           Role of the Class or Interface on the left
+                                  side of this Association
+    @attribute leftToRight        True if Association is navigable from 
+                                  left to right ("->")
+    @attribute rightToLeft        True if Association is navigable from 
+                                  right to left ("<-")
+    @attribute bidirectional      True if Association is navigable in 
+                                  both directions ("<->")
+    @attribute simple             True if navigation of Association is 
+                                  not specified  ("--")
+    @attribute rightRole          Role of the Class or Interface on the right
+                                  side of this Association
+    @attribute rightQualifier     Qualifier of the right side of this
+                                  Association
+    @attribute rightReferenceName Name of the Class or Interface on the right
+                                  side of this Association
+    @attribute rightCardinality   Cardinality of the right side of this
+                                  Association
+    @attribute rightModifier      Optional right side Modifier
+  */
+  CDAssociation = Stereotype? 
+    (["association"] | ["composition"])
+    (Derived:[DERIVED:"/"])?  Name?
+    leftModifier:Modifier?
+    leftCardinality:Cardinality?
+    leftReferenceName:QualifiedName
+    ("[" leftQualifier:CDQualifier "]")?
+    ("(" leftRole:Name ")")?
+    (   leftToRight:["->"]
+      | rightToLeft:["<-"]
+      | bidirectional:["<->"]
+      | simple:["--"] )
+    ("(" rightRole:Name ")")?
+    ("[" rightQualifier:CDQualifier "]")?
+    rightReferenceName:QualifiedName
+    rightCardinality:Cardinality?
+    rightModifier:Modifier? ";" ;
+  
+ 
+  Modifier = Stereotype?
+    (["abstract"]
+      | ["final"]
+      | ["static"]
+      | Private:["private"] | Private:[PRIVATE:"-"]  // TODO: Vereinfachung (Bug)
+      | Protected:["protected"] | Protected:[PROTECTED:"#"]
+      | Public:["public"] | Public:[PUBLIC:"+"]
+      | Derived:["derived"] | Derived:[DERIVED:"/"] )*;
+    
+
+  /** ASTCardinality represents a Cardinality in a Classdiagram
+    @attribute many          True if "*" is set as Cardinality
+    @attribute one           True if [1] is set as Cardinality
+    @attribute oneToMany     True if [1..*] is set as Cardinality
+    @attribute optional      True if [0..1] is set as Cardinality
+  */
+  Cardinality = many:["[*]"] | one:["[1]"] | oneToMany:["[1..*]"] | optional:["[0..1]"];
+   
+
+  /** ASTQualifier represents a Qualifier of an Association
+    @attribute name     Abstract name of the Qualifier if not a type
+    @attribute type     Type of the Qualifier if not an abstract name
+  */
+  CDQualifier = Name | Type;
+    
+
+  /** ASTStereotype represents Stereotypes in a Classdiagram
+    @attribute values List of Values of this Stereotype
+  */
+  Stereotype = "<<" values:(StereoValue || ",")+ ">>";
+    
+
+  /** ASTStereoValue represents a Value of a Stereotype in a Classdiagram
+      @attribute name  Name of the Stereotype-Value
+  */
+  StereoValue = Name;
+
+  /** ASTValue represents a Value
+      @attribute literal  Value
+  */
+  Value = Literal;
+    
+}

@@ -1,0 +1,8 @@
+package mc.feature.interfaces;
+
+grammar Sub extends mc.feature.interfaces.Sup {
+
+  interface I;
+  
+  A implements I;
+}

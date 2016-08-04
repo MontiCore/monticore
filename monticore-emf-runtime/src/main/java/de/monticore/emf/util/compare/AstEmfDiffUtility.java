@@ -96,7 +96,7 @@ public class AstEmfDiffUtility {
     Iterator<DiffElement> it = diff.getSubDiffElements().iterator();
     while (it.hasNext()) {
       DiffElement dw = it.next();
-      if (dw.getSubDiffElements().size() != 0) {
+      if (!dw.getSubDiffElements().isEmpty()) {
         printDiff(dw, ls + 2);
       }
       else {
@@ -104,5 +104,7 @@ public class AstEmfDiffUtility {
       }
     }
   }
+  
+  private AstEmfDiffUtility() {}
   
 }

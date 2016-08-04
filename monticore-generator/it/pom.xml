@@ -5,7 +5,7 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore</artifactId>
-    <version>4.4.0.1</version>
+    <version>4.4.1</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -114,7 +114,7 @@
           <plugin>
             <groupId>de.monticore.mojo</groupId>
             <artifactId>monticore-maven-plugin</artifactId>
-            <version>4.4.0.1</version><!--$NO-MVN-MAN-VER$ -->
+            <version>4.4.1</version><!--$NO-MVN-MAN-VER$ -->
             <configuration>
               <skip>false</skip>
               <addOutputDirectoryToModelPath>true</addOutputDirectoryToModelPath>
@@ -157,8 +157,8 @@
                 <grammar>src/main/grammars/mc/feature/semanticpredicate/SemPredWithInterface.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/inheritence/Inheritence.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/followoption/FollowOption.mc4</grammar>
-                <!-- TODO SO grammar>src/main/grammars/mc/feature/mcenum/Enums.mc4</grammar> 
-                  <grammar>src/main/grammars/mc/feature/mcenum/SubEnum.mc4</grammar -->
+                <grammar>src/main/grammars/mc/feature/mcenum/Enums.mc4</grammar> 
+                <grammar>src/main/grammars/mc/feature/mcenum/SubEnum.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/lexerformat/KleenePlus.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/lexerformat/LexerFormat.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/expression/Expression.mc4</grammar>
@@ -176,7 +176,6 @@
                 <grammar>src/main/grammars/mc/feature/namecollision/NameCollision.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/newcomments/CommentTest.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/sourcepositions/SourcePosition.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/statechart/StatechartDSL.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/fautomaton/action/Expression.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/fautomaton/automaton/FlatAutomaton.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/fautomaton/automatonwithaction/ActionAutomaton.mc4</grammar> <!-- TODO SO: uncomment TransitionWithAction rule -->
@@ -185,6 +184,9 @@
                 <grammar>src/main/grammars/mc/feature/visitor/inheritance/A.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/visitor/inheritance/B.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/visitor/inheritance/C.mc4</grammar>
+                <grammar>src/main/grammars/mc/feature/interfaces/Sup.mc4</grammar>
+                <grammar>src/main/grammars/mc/feature/interfaces/Sub.mc4</grammar>
+                
 
                 <!-- MontiCore grammars -->
                 <grammar>src/main/grammars/mc/grammar/lexicals/Lexicals.mc4</grammar>
@@ -195,6 +197,9 @@
                 <grammar>src/main/grammars/mc/grammar/Grammar_WithConcepts.mc4</grammar>
                 <grammar>src//main/grammars/mc/grammar/concepts/visualoutline/Common.mc4</grammar>
                 <grammar>src//main/grammars/mc/grammar/concepts/visualoutline/Outline.mc4</grammar>
+                
+                <!-- Handwritten ast code -->
+                <grammar>src/main/grammars/mc/feature/hwc</grammar>
 
                 <!-- MontiCore Examples -->
                 <grammar>src/main/grammars/mc/examples</grammar>

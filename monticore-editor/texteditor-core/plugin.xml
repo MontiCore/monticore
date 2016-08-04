@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="language" name="Language" schema="schema/language.exsd"/>
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup
+            class="de.se_rwth.langeditor.global.Startup">
+      </startup>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="de.se_rwth.langeditor.texteditor.TextEditorImpl"
+            default="false"
+            icon="src/main/resources/icons/search_decl_obj.gif"
+            id="de.se_rwth.langeditor"
+            name="LanguageEditor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.jdt.core.classpathContainerInitializer">
+      <classpathContainerInitializer
+            class="de.se_rwth.langeditor.modelpath.ModelPathContainerInitializer"
+            id="texteditor-core.modelpath">
+      </classpathContainerInitializer>
+   </extension>
+   <extension
+         point="org.eclipse.jdt.ui.classpathContainerPage">
+      <classpathContainerPage
+            class="de.se_rwth.langeditor.modelpath.ModelPathContainerPage"
+            id="texteditor-core.modelpath"
+            name="Modelpath">
+      </classpathContainerPage>
+   </extension>
+   <extension
+         point="org.eclipse.jdt.core.compilationParticipant">
+      <compilationParticipant
+            class="de.se_rwth.langeditor.global.LanguageProjectBuilder"
+            id="texteditor-core.compilationParticipant">
+      </compilationParticipant>
+   </extension>
+   
+
+</plugin>

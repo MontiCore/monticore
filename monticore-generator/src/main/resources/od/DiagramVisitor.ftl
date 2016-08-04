@@ -78,7 +78,7 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
             <#elseif genHelper.isListType(field.getType())  && !genHelper.isListAstNode(field)>
             {
               String sep = "";
-              pp.print("${field.getName()}" + " = {");
+              pp.print("${field.getName()}" + " = [");
               <#if genHelper.isListOfString(field)>
                 String str = "\"";
               <#else>
@@ -90,7 +90,7 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
                 pp.print(str + String.valueOf(it.next()) + str);
                 sep = ", ";
               }
-              pp.println("};");
+              pp.println("];");
             }
             <#elseif !genHelper.isListType(field.getType()) && !genHelper.isOptional(field)>
               <#assign fieldType = field.getType()>
@@ -121,7 +121,7 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
   
   private void printObject(String objName, String objType) {
     pp.print(objName);
-    pp.print(": ");
+    pp.print(":");
     pp.print(Names.getSimpleName(objType));
     pp.println(" {");
   }
