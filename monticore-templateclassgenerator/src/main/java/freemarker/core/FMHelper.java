@@ -80,7 +80,9 @@ public class FMHelper {
     for (String s : params) {
       s = s.replace("\"", "");
       String type = s.substring(0, s.indexOf(" "));
+      type = type.trim();
       String name = s.substring(s.indexOf(" ") + 1);
+      name = name.trim();
       Parameter a = new Parameter(type, name);
       ret.add(a);
     }

@@ -80,6 +80,7 @@ public class ExtendedTemplateController extends TemplateController {
       Object argument = arguments.get(i);
       String parameter = params[i];
       String paramType = parameter.substring(0, parameter.indexOf(" "));
+      paramType = paramType.trim();
       if (paramType.contains("<")) {
         paramType = paramType.substring(0, paramType.indexOf("<"));
       }
