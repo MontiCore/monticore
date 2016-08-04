@@ -124,7 +124,7 @@ public class GeneratorEngine {
    * @param templateName the template to be processes
    * @param templateArguments additional template arguments (if needed).
    */
-  public String generateToString(String templateName,
+  public String generate(String templateName,
       Object... templateArguments) {
     TemplateController tc = this.templateControllerFactory.create(this.templateControllerConfig,
         templateName);
