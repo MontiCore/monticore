@@ -45,13 +45,14 @@ import de.monticore.types.types._ast.ASTWildcardType;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * Common methods for working with the JTypes-framework.
+ * Common methods for working with the {@link JTypeSymbol}s symbol table framework. E.g., they are
+ * handy for creating symbol tables based on {@link JTypeSymbol}s.
  *
  * @author Robert Heim
  */
-public class JTypesHelper {
+public class JTypeSymbolsHelper {
   
-  private JTypesHelper() {
+  private JTypeSymbolsHelper() {
     // static class
   }
   
@@ -87,8 +88,8 @@ public class JTypesHelper {
   }
   
   /**
-   * A factory to create types. Implementations ensure the specific kinds of the created types. If
-   * sufficient consider using the {@link CommonJTypeReferenceFactory}.
+   * A factory to create {@link JTypeSymbol}s. Implementations ensure the specific kinds of the
+   * created types.
    *
    * @author Robert Heim
    */
