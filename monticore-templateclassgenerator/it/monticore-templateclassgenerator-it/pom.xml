@@ -16,7 +16,6 @@
 	<!-- == PROJECT DEPENDENCIES ============================================= -->
 
 	<dependencies>
-
 		<dependency>
 			<groupId>de.se_rwth.commons</groupId>
 			<artifactId>se-commons-groovy</artifactId>
@@ -27,8 +26,6 @@
 			<artifactId>monticore-templateclassgenerator</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
-
 
 		<!-- .. Test Libraries ............................................... -->
 		<dependency>
@@ -42,7 +39,6 @@
 			<artifactId>logback-classic</artifactId>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
 
 	<build>

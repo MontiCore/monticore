@@ -10,14 +10,11 @@
 		<version>4.4.2-SNAPSHOT</version>
 	</parent>
 
-
-
 	<artifactId>monticore-templateclassgenerator</artifactId>
 
 	<!-- == PROJECT DEPENDENCIES ============================================= -->
 
 	<dependencies>
-
 		<dependency>
 			<groupId>de.se_rwth.commons</groupId>
 			<artifactId>se-commons-groovy</artifactId>
@@ -47,7 +44,6 @@
 			<artifactId>logback-classic</artifactId>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
 
 </project>
