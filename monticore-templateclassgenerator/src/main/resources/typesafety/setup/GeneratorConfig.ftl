@@ -63,7 +63,6 @@ public class GeneratorConfig {
   }
   
   private static GeneratorSetup init(Optional<GeneratorSetup> setupOpt) {
-    String workingDir = System.getProperty("user.dir");
     GeneratorSetup setup = setupOpt.orElse(new GeneratorSetup(new File(TemplateClassGeneratorConstants.DEFAULT_OUTPUT_FOLDER)));
     
     GlobalExtensionManagement glex = setup.getGlex().orElse(new GlobalExtensionManagement());
@@ -75,16 +74,7 @@ public class GeneratorConfig {
     setup.setAutoImports(imports);
     List<File> files = new ArrayList<>();
     
-    String outDir = "${outputDirectory}";
-    if(!outDir.endsWith(File.separator)){
-    	outDir+=File.separator;
-    }
-    if(outDir.contains(workingDir)){
-      outDir = workingDir + outDir;
-    }
-    outDir = outDir.replace("/",File.separator);
-    outDir+="setup"+File.separator;
-    File f = Paths.get(outDir).toFile();
+    File f = Paths.get("${outputDirectory}"+"/"+"${glex.getGlobalValue("TemplateClassPackage")}"+"/_setup/").toFile();
     files.add(f);
     setup.setAdditionalTemplatePaths(files);
     GeneratorConfig.generator = new ExtendedGeneratorEngine(setup);

@@ -31,10 +31,9 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import setup.GeneratorConfig;
-import setup.TemplateAccessor;
 import types.Attribute;
 import types.Helper;
+import _templates._setup.GeneratorConfig;
 import _templates.templates.b.Constructor;
 import _templates.templates.b.JavaClass;
 import de.monticore.ast.ASTNode;
