@@ -89,7 +89,7 @@ public class ${className} extends de.monticore.symboltable.CommonSymbolTableCrea
   */
   public Scope createFromAST(${topAstName} rootNode) {
     Log.errorIfNull(rootNode, "0xA7004${genHelper.getGeneratedErrorCode(ast)} Error by creating of the ${className} symbol table: top ast node is null");
-    rootNode.accept(this);
+    rootNode.accept(realThis);
     return getFirstCreatedScope();
   }
 
