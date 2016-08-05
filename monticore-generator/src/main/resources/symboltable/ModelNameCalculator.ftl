@@ -55,7 +55,7 @@ public class ${className} extends de.monticore.CommonModelNameCalculator {
 
   <#list ruleNames as ruleName>
       if (${ruleName?cap_first}Symbol.KIND.isKindOf(kind)) {
-        calculatedModelNames.addAll(calculateModelNameFor${ruleName?cap_first}(name));
+        calculatedModelNames.addAll(calculateModelNamesFor${ruleName?cap_first}(name));
       }
   </#list>
 
@@ -63,7 +63,7 @@ public class ${className} extends de.monticore.CommonModelNameCalculator {
   }
 
   <#list ruleNames as ruleName>
-  protected Set<String> calculateModelNameFor${ruleName?cap_first}(String name) {
+  protected Set<String> calculateModelNamesFor${ruleName?cap_first}(String name) {
     final Set<String> modelNames = new LinkedHashSet<>();
     modelNames.add(name);
     return modelNames;
