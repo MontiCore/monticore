@@ -19,19 +19,19 @@
 
 package de.monticore.symboltable.references;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Strings.emptyToNull;
-import static com.google.common.base.Strings.isNullOrEmpty;
-
-import java.util.Optional;
-import java.util.function.Predicate;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.Optional;
+import java.util.function.Predicate;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Strings.emptyToNull;
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
  * Default implementation of {@link SymbolReference}.
@@ -108,8 +108,7 @@ public class CommonSymbolReference<T extends Symbol> implements SymbolReference<
 
     Log.debug("Load full information of '" + referencedName + "' (Kind " + referencedKind.getName() + ").",
         SymbolReference.class.getSimpleName());
-    // TODO PN resolve with access modifier predicate
-    Optional<T> resolvedSymbol = enclosingScope.resolve(referencedName, referencedKind);
+    Optional<T> resolvedSymbol = enclosingScope.resolve(referencedName, referencedKind, accessModifier, predicate);
 
     if (resolvedSymbol.isPresent()) {
       Log.debug("Loaded full information of '" + referencedName + "' successfully.",
