@@ -19,7 +19,15 @@
 
 package de.monticore.symboltable;
 
-import static java.util.Objects.requireNonNull;
+import com.google.common.collect.FluentIterable;
+import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.symboltable.names.CommonQualifiedNamesCalculator;
+import de.monticore.symboltable.names.QualifiedNamesCalculator;
+import de.monticore.symboltable.resolving.ResolvingInfo;
+import de.se_rwth.commons.Joiners;
+import de.se_rwth.commons.Names;
+import de.se_rwth.commons.Splitters;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,15 +38,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import com.google.common.collect.FluentIterable;
-import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.symboltable.names.CommonQualifiedNamesCalculator;
-import de.monticore.symboltable.names.QualifiedNamesCalculator;
-import de.monticore.symboltable.resolving.ResolvingInfo;
-import de.se_rwth.commons.Joiners;
-import de.se_rwth.commons.Names;
-import de.se_rwth.commons.Splitters;
-import de.se_rwth.commons.logging.Log;
+import static java.util.Objects.requireNonNull;
 
 /**
  * @author Pedram Mir Seyed Nazari
@@ -147,15 +147,14 @@ public class ArtifactScope extends CommonScope {
   @Override
   protected boolean checkIfContinueAsSubScope(String symbolName, SymbolKind kind) {
     if(this.exportsSymbols()) {
-      final String packageCU = this.getPackageName();
       final String symbolQualifier = Names.getQualifier(symbolName);
 
       final List<String> symbolQualifierParts = Splitters.DOT.splitToList(symbolQualifier);
-      final List<String> packageParts = Splitters.DOT.splitToList(packageCU);
+      final List<String> packageParts = Splitters.DOT.splitToList(packageName);
 
       boolean symbolNameStartsWithPackage = true;
 
-      if (packageCU.isEmpty()) {
+      if (packageName.isEmpty()) {
         // symbol qualifier always contains default package (i.e., empty string)
         symbolNameStartsWithPackage = true;
       }
@@ -170,9 +169,7 @@ public class ArtifactScope extends CommonScope {
       else {
         symbolNameStartsWithPackage = false;
       }
-
       return symbolNameStartsWithPackage;
-
     }
     return false;
   }

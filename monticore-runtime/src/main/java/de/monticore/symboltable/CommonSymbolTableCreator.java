@@ -19,13 +19,14 @@
 
 package de.monticore.symboltable;
 
+import de.monticore.ast.ASTNode;
+import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.symboltable.references.SymbolReference;
+import de.se_rwth.commons.logging.Log;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Optional;
-
-import de.monticore.ast.ASTNode;
-import de.monticore.symboltable.references.SymbolReference;
-import de.se_rwth.commons.logging.Log;
 
 /**
  * Base class for all symbol table creators.
@@ -182,6 +183,10 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
 
   @Override
   public final Optional<? extends MutableScope> removeCurrentScope() {
+    if (!scopeStack.isEmpty() && scopeStack.getLast().equals(getFirstCreatedScope())) {
+      Reporting.reportSymbolTableScope(scopeStack.getLast());
+    }
+
     return Optional.of(scopeStack.pollLast());
   }
   
