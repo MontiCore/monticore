@@ -69,12 +69,12 @@ public class GeneratorConfig {
     glex.defineGlobalValue(TemplateClassGeneratorConstants.TEMPLATES_ALIAS, new TemplateAccessor());
     setup.setGlex(glex);
     List<TemplateAutoImport> imports = new ArrayList<>();
-    TemplateAutoImport ta = new TemplateAutoImport(Paths.get("Setup.ftl"), "${glex.getGlobalValue("TemplateClassPackage")}");
+    TemplateAutoImport ta = new TemplateAutoImport(Paths.get("Setup.ftl"), TemplateClassGeneratorConstants.TEMPLATE_CLASSES_PACKAGE);
     imports.add(ta);
     setup.setAutoImports(imports);
     List<File> files = new ArrayList<>();
     
-    File f = Paths.get("${outputDirectory}"+"/"+"${glex.getGlobalValue("TemplateClassPackage")}"+"/_setup/").toFile();
+    File f = Paths.get("${outputDirectory}"+"/"+TemplateClassGeneratorConstants.TEMPLATE_CLASSES_PACKAGE+"/"+TemplateClassGeneratorConstants.TEMPLATE_CLASSES_SETUP_PACKAGE+"/").toFile();
     files.add(f);
     setup.setAdditionalTemplatePaths(files);
     GeneratorConfig.generator = new ExtendedGeneratorEngine(setup);

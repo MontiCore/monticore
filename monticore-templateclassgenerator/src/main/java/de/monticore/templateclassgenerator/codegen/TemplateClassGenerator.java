@@ -132,7 +132,7 @@ public class TemplateClassGenerator {
    */
   public static void generateTemplateSetup(File targetFilepath, File modelPath,
       List<String> foundTemplates) {
-    String packageName = TemplateClassGeneratorConstants.TEMPLATE_CLASSES_PACKAGE+"."+"_setup";
+    String packageName = TemplateClassGeneratorConstants.TEMPLATE_CLASSES_PACKAGE+"."+TemplateClassGeneratorConstants.TEMPLATE_CLASSES_SETUP_PACKAGE;
     final GeneratorSetup setup = new GeneratorSetup(targetFilepath);
     setup.setTracing(false);
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
