@@ -18,6 +18,7 @@
     <module>monticore-maven</module>
     <module>monticore-runtime</module>
     <module>monticore-emf-runtime</module>
+	<module>monticore-templateclassgenerator</module>
   </modules>
 
   <!-- == PROJECT PROPERTIES ============================================== -->

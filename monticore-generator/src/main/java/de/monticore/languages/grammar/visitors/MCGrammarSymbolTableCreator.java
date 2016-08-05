@@ -28,12 +28,28 @@ import de.monticore.grammar.cocos.GrammarInheritanceCycle;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
-import de.monticore.languages.grammar.*;
+import de.monticore.languages.grammar.MCClassRuleSymbol;
+import de.monticore.languages.grammar.MCEnumRuleSymbol;
+import de.monticore.languages.grammar.MCExternalTypeSymbol;
+import de.monticore.languages.grammar.MCGrammarSymbol;
+import de.monticore.languages.grammar.MCGrammarSymbolsFactory;
+import de.monticore.languages.grammar.MCInterfaceOrAbstractRuleSymbol;
+import de.monticore.languages.grammar.MCLexRuleSymbol;
+import de.monticore.languages.grammar.MCRuleComponentSymbol;
+import de.monticore.languages.grammar.MCRuleSymbol;
+import de.monticore.languages.grammar.MCTypeSymbol;
+import de.monticore.languages.grammar.PredicatePair;
 import de.monticore.languages.grammar.symbolreferences.MCExternalTypeSymbolReference;
 import de.monticore.languages.grammar.symbolreferences.MCGrammarSymbolReference;
 import de.monticore.languages.grammar.symbolreferences.MCRuleSymbolReference;
 import de.monticore.languages.grammar.symbolreferences.MCTypeSymbolReference;
-import de.monticore.symboltable.*;
+import de.monticore.symboltable.ArtifactScope;
+import de.monticore.symboltable.CommonSymbolTableCreator;
+import de.monticore.symboltable.ImportStatement;
+import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
@@ -189,11 +205,12 @@ public class MCGrammarSymbolTableCreator extends CommonSymbolTableCreator implem
     // visitors now
     
     // Build up Attributes from concepts
-    
-    removeCurrentScope();
-    
 
-    
+    // remove grammar scope
+    removeCurrentScope();
+
+    // remove artifact scope
+    removeCurrentScope();
   }
   
   /**
