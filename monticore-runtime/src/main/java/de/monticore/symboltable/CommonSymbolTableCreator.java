@@ -158,8 +158,7 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
     scope.setAstNode(astNode);
 
     // ast -> scope
-    // TODO PN uncomment as soon as ASTNode has been updated
-    // astNode.setSpannedScope(scope);
+    astNode.setSpannedScope(scope);
   }
 
   /**
