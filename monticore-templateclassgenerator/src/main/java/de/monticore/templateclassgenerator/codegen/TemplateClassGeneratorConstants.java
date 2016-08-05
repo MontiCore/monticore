@@ -38,6 +38,11 @@ public class TemplateClassGeneratorConstants {
   public static final String TEMPLATE_CLASSES_PACKAGE = "_templates";
   
   /**
+   * The package where the template classes' setup is generated to
+   */
+  public static final String TEMPLATE_CLASSES_SETUP_PACKAGE = "_setup";
+    
+  /**
    * Postfix for the name of templateclasses
    */
   public static final String TEMPLATE_CLASSES_POSTFIX = "";

@@ -23,20 +23,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import jline.internal.Log;
-
 import org.apache.commons.io.FileUtils;
+
+import de.monticore.templateclassgenerator.codegen.TemplateClassGeneratorConstants;
+import de.se_rwth.commons.logging.Log;
 
 /**
  * Class that finds all models with a given file extension in a modelpath.
  *
- * @author  Jerome Pfeiffer
- *          
+ * @author Jerome Pfeiffer
  */
 public class Modelfinder {
   
   /**
-   * Finds all models with a certain {@code fileExtension} in the given {@code modelPath}
+   * Finds all models with a certain {@code fileExtension} in the given
+   * {@code modelPath}
    * 
    * @param modelPath
    * @param fileExtension
@@ -48,8 +49,15 @@ public class Modelfinder {
     Collection<File> files = FileUtils.listFiles(modelPath, extension, true);
     for (File f : files) {
       String model = getDotSeperatedFQNModelName(modelPath.getPath(), f.getPath(), fileExtension);
-      Log.info("Found model: " + model, "Modelfinder");
-      models.add(model);
+      if (model.startsWith(TemplateClassGeneratorConstants.TEMPLATE_CLASSES_SETUP_PACKAGE)) {
+        Log.error("0xA700 ATemplate '" + model + "' must not lay in topfolder '"
+            + TemplateClassGeneratorConstants.TEMPLATE_CLASSES_SETUP_PACKAGE + "'");
+      }
+      
+      else {
+        Log.info("Found model: " + model, "Modelfinder");
+        models.add(model);
+      }
     }
     return models;
   }

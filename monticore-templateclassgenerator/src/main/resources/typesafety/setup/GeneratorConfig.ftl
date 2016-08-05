@@ -63,28 +63,18 @@ public class GeneratorConfig {
   }
   
   private static GeneratorSetup init(Optional<GeneratorSetup> setupOpt) {
-    String workingDir = System.getProperty("user.dir");
     GeneratorSetup setup = setupOpt.orElse(new GeneratorSetup(new File(TemplateClassGeneratorConstants.DEFAULT_OUTPUT_FOLDER)));
     
     GlobalExtensionManagement glex = setup.getGlex().orElse(new GlobalExtensionManagement());
     glex.defineGlobalValue(TemplateClassGeneratorConstants.TEMPLATES_ALIAS, new TemplateAccessor());
     setup.setGlex(glex);
     List<TemplateAutoImport> imports = new ArrayList<>();
-    TemplateAutoImport ta = new TemplateAutoImport(Paths.get("Setup.ftl"), "${glex.getGlobalValue("TemplateClassPackage")}");
+    TemplateAutoImport ta = new TemplateAutoImport(Paths.get("Setup.ftl"), TemplateClassGeneratorConstants.TEMPLATE_CLASSES_PACKAGE);
     imports.add(ta);
     setup.setAutoImports(imports);
     List<File> files = new ArrayList<>();
     
-    String outDir = "${outputDirectory}";
-    if(!outDir.endsWith(File.separator)){
-    	outDir+=File.separator;
-    }
-    if(outDir.contains(workingDir)){
-      outDir = workingDir + outDir;
-    }
-    outDir = outDir.replace("/",File.separator);
-    outDir+="setup"+File.separator;
-    File f = Paths.get(outDir).toFile();
+    File f = Paths.get("${outputDirectory}"+"/"+TemplateClassGeneratorConstants.TEMPLATE_CLASSES_PACKAGE+"/"+TemplateClassGeneratorConstants.TEMPLATE_CLASSES_SETUP_PACKAGE+"/").toFile();
     files.add(f);
     setup.setAdditionalTemplatePaths(files);
     GeneratorConfig.generator = new ExtendedGeneratorEngine(setup);
