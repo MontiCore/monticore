@@ -41,7 +41,7 @@ package ${package};
 
 import java.nio.file.Path;
 import de.monticore.ast.ASTNode;
-import ${glex.getGlobalValue("TemplateClassPackage")}._setup.GeneratorConfig;
+import ${glex.getGlobalValue("TemplateClassPackage")}.${glex.getGlobalValue("TemplateClassSetupPackage")}.GeneratorConfig;
 
 /**
  * @date ${helper.getTimeNow()}<br>

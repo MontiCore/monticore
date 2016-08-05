@@ -106,6 +106,7 @@ public class TemplateClassGenerator {
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
     glex.setGlobalValue("TemplateClassPackage",
         TemplateClassGeneratorConstants.TEMPLATE_CLASSES_PACKAGE);
+    glex.setGlobalValue("TemplateClassSetupPackage", TemplateClassGeneratorConstants.TEMPLATE_CLASSES_SETUP_PACKAGE);
     setup.setGlex(glex);
     TemplateClassHelper helper = new TemplateClassHelper();
     final ExtendedGeneratorEngine generator = new ExtendedGeneratorEngine(setup);
