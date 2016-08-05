@@ -103,6 +103,11 @@ public class TemplateClassGenerator {
   private static void doGenerateTemplateClass(File targetFilepath, String fqnTemplateName, String targetName,
       List<Parameter> params, Optional<String> result, boolean hasSignature) {
     final GeneratorSetup setup = new GeneratorSetup(targetFilepath);
+    GlobalExtensionManagement glex = new GlobalExtensionManagement();
+    glex.setGlobalValue("TemplateClassPackage",
+        TemplateClassGeneratorConstants.TEMPLATE_CLASSES_PACKAGE);
+    glex.setGlobalValue("TemplateClassSetupPackage", TemplateClassGeneratorConstants.TEMPLATE_CLASSES_SETUP_PACKAGE);
+    setup.setGlex(glex);
     TemplateClassHelper helper = new TemplateClassHelper();
     final ExtendedGeneratorEngine generator = new ExtendedGeneratorEngine(setup);
     ASTNode node = new EmptyNode();
@@ -128,7 +133,7 @@ public class TemplateClassGenerator {
    */
   public static void generateTemplateSetup(File targetFilepath, File modelPath,
       List<String> foundTemplates) {
-    String packageName = "setup";
+    String packageName = TemplateClassGeneratorConstants.TEMPLATE_CLASSES_PACKAGE+"."+TemplateClassGeneratorConstants.TEMPLATE_CLASSES_SETUP_PACKAGE;
     final GeneratorSetup setup = new GeneratorSetup(targetFilepath);
     setup.setTracing(false);
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
@@ -153,7 +158,21 @@ public class TemplateClassGenerator {
         new TemplateClassHelper(), new ArrayList<File>());
     generator.generate("typesafety.setup.GeneratorConfig",
         Paths.get(filePath + "GeneratorConfig.java"),
-        new EmptyNode(), packageName, setup.getOutputDirectory().toString().replace("\\", "/"));
+        new EmptyNode(), packageName,getRelativeTargetPath(setup.getOutputDirectory().getAbsolutePath()) );
+  }
+  
+  private static String getRelativeTargetPath(String absolutePath) {
+    String homeDir = Paths.get("").toFile().getAbsolutePath();
+    if(absolutePath.contains(homeDir)){
+      String relPath = absolutePath.replace(homeDir, "");
+      if(relPath.startsWith(File.separator)){
+        relPath = relPath.substring(1);
+      }
+      return relPath.replace(File.separator, "/");
+    }
+    return absolutePath.replace(File.separator, "/");
+    
+    
   }
   
 }
