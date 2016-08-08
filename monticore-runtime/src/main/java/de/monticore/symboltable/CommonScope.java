@@ -19,19 +19,6 @@
 
 package de.monticore.symboltable;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.base.Strings.nullToEmpty;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -45,6 +32,19 @@ import de.monticore.symboltable.visibility.IsShadowedBySymbol;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.base.Strings.nullToEmpty;
 
 // TODO PN Doc resolve[Down|Up|Many|Locally] methods
 
@@ -197,6 +197,11 @@ public class CommonScope implements MutableScope {
   @Override
   public <T extends Symbol> Optional<T> resolve(String name, SymbolKind kind, AccessModifier modifier) {
     return getResolvedOrThrowException(resolveMany(name, kind, modifier));
+  }
+
+  @Override
+  public <T extends Symbol> Optional<T> resolve(String name, SymbolKind kind, AccessModifier modifier, Predicate<Symbol> predicate) {
+    return getResolvedOrThrowException(resolveMany(name, kind, modifier, predicate));
   }
 
   @Override
@@ -458,8 +463,6 @@ public class CommonScope implements MutableScope {
         this.<T>resolveManyLocally(new ResolvingInfo(getResolvingFilters()), name, kind, AccessModifier.ALL_INCLUSION, x -> true));
   }
 
-  // TODO PN add resolveManyLocally(String name, SymbolKind kind)
-
   protected <T extends Symbol> Set<T> resolveManyLocally(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier,
       Predicate<Symbol> predicate) {
     Log.errorIfNull(resolvingInfo);
@@ -522,12 +525,22 @@ public class CommonScope implements MutableScope {
 
   @Override
   public <T extends Symbol> Optional<T> resolveDown(String name, SymbolKind kind, AccessModifier modifier) {
-    return getResolvedOrThrowException(resolveDownMany(new ResolvingInfo(getResolvingFilters()), name, kind, modifier, x -> true));
+    return getResolvedOrThrowException(resolveDownMany(name, kind, modifier));
+  }
+
+  @Override
+  public <T extends Symbol> Optional<T> resolveDown(String name, SymbolKind kind, AccessModifier modifier, Predicate<Symbol> predicate) {
+    return getResolvedOrThrowException(resolveDownMany(name, kind, modifier, predicate));
   }
 
   @Override
   public <T extends Symbol> Collection<T> resolveDownMany(String name, SymbolKind kind, AccessModifier modifier) {
     return resolveDownMany(new ResolvingInfo(getResolvingFilters()), name, kind, modifier, x -> true);
+  }
+
+  @Override
+  public <T extends Symbol> Collection<T> resolveDownMany(String name, SymbolKind kind, AccessModifier modifier, Predicate<Symbol> predicate) {
+    return resolveDownMany(new ResolvingInfo(getResolvingFilters()), name, kind, modifier, predicate);
   }
 
   @Override

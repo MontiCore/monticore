@@ -30,7 +30,7 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-${signature("className", "ruleNames")}
+${signature("className", "ruleNames", "existsHW")}
 
 <#assign genHelper = glex.getGlobalValue("stHelper")>
 <#assign grammarName = ast.getName()?cap_first>
@@ -76,10 +76,12 @@ public abstract class ${className} extends de.monticore.CommonModelingLanguage {
     return (${grammarName}ModelLoader) super.getModelLoader();
   }
 
-  //@Override
-  //protected ${grammarName}ModelLoader provideModelLoader() {
-  //  return new ${grammarName}ModelLoader(this);
-  //}
+  <#if existsHW>/*</#if>
+  @Override
+  protected ${grammarName}ModelLoader provideModelLoader() {
+    return new ${grammarName}ModelLoader(this);
+  }
+  <#if existsHW>*/</#if>
 
   protected void initResolvingFilters() {
     <#list ruleNames as ruleName>

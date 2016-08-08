@@ -418,13 +418,14 @@ public class CdEmfDecorator extends CdDecorator {
   void addSetter(ASTCDClass clazz, AstEmfGeneratorHelper astHelper) {
     for (EmfAttribute attribute : getEmfAttributes(clazz)) {
       ASTCDAttribute cdAttribute = attribute.getCdAttribute();
-      if (GeneratorHelper.isInherited(cdAttribute)) {
+      String typeName = TypesHelper.printSimpleRefType(cdAttribute.getType());
+      if (!AstGeneratorHelper.generateSetter(clazz, cdAttribute, typeName)) {
         continue;
       }
+      String methodName = GeneratorHelper.getPlainSetter(cdAttribute);
       String attributeName = cdAttribute.getName();
       boolean isOptional = GeneratorHelper.isOptional(cdAttribute);
-      String typeName = TypesHelper.printSimpleRefType(cdAttribute.getType());
-      String toParse = "public void " + GeneratorHelper.getPlainSetter(cdAttribute) + "("
+      String toParse = "public void " + methodName + "("
           + typeName + " " + attributeName + ") ;";
       HookPoint methodBody = new TemplateHookPoint("ast_emf.additionalmethods.Set",
           astHelper.getCdName(),
@@ -789,7 +790,7 @@ public class CdEmfDecorator extends CdDecorator {
       }
       int i = 0;
       String typeName = "E" + simpleType;
-     // String typeName = AstEmfGeneratorHelper.getEDataType(simpleType);
+      // String typeName = AstEmfGeneratorHelper.getEDataType(simpleType);
       while (externalTypes.values().contains(typeName)) {
         typeName = typeName + i;
         i++;

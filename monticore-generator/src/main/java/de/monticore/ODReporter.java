@@ -46,13 +46,16 @@ public class ODReporter extends AReporter {
   
   @Override
   protected void writeHeader() {
-    writeLine("========================================================== Object diagram");
+    writeLine("/*");
+    writeLine(" * ========================================================== Object diagram");
+    writeLine(" */");
   }
   
   private void writeFooter() {
-    writeLine("========================================================== Explanation");
-    writeLine("Shows the AST with all attributes as object diagram");
-    writeLine("(EOF)");
+    writeLine("/*");
+    writeLine(" * ========================================================== Explanation");
+    writeLine(" * Shows the AST with all attributes as object diagram");
+    writeLine(" */");
   }
   
   @Override

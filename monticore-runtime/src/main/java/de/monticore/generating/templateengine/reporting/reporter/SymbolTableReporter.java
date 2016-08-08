@@ -19,12 +19,17 @@
 
 package de.monticore.generating.templateengine.reporting.reporter;
 
-import java.io.File;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.reporting.commons.AReporter;
 import de.monticore.generating.templateengine.reporting.commons.Layouter;
 import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
+import de.monticore.symboltable.ArtifactScope;
+import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.ScopeSpanningSymbol;
+import de.monticore.symboltable.Symbol;
+import de.se_rwth.commons.Names;
+
+import java.io.File;
 
 /**
  * @author BM
@@ -32,8 +37,15 @@ import de.monticore.generating.templateengine.reporting.commons.ReportingConstan
 public class SymbolTableReporter extends AReporter {
   
   final static String SIMPLE_FILE_NAME = "13_SymbolTable";
-  
-  final static String INDENT = Layouter.getSpaceString(40);
+
+  final static int NUM_SPACE = 3;
+
+  final static String INDENT = Layouter.getSpaceString(NUM_SPACE);
+  final static String SHORT_INDENT = Layouter.getSpaceString(NUM_SPACE-1);
+  final static String SCOPE_START = "+--";
+  final static String SYMBOL_START = "<SYM> ";
+
+  private int currentIndentLevel = 0;
   
   public SymbolTableReporter(
       String outputDir,
@@ -59,5 +71,55 @@ public class SymbolTableReporter extends AReporter {
     writeFooter();
     super.flush(ast);
   }
-  
+
+  private String getIndent() {
+    String ret = "";
+    for (int i = 0; i < currentIndentLevel; i++) {
+      if (i > 0) {
+        ret += "|" + SHORT_INDENT;
+      }
+      else {
+        ret += INDENT;
+      }
+    }
+    return ret;
+  }
+
+  @Override
+  public void reportSymbolTableScope(Scope scope) {
+    String line = getIndent();
+    line += SCOPE_START;
+
+    if (scope instanceof ArtifactScope) {
+      line += "ArtifactScope";
+    }
+    else {
+      line += scope.getName().orElse("<unnamed> " + scope.getClass().getSimpleName() + ":: ");
+
+      if (scope.isSpannedBySymbol()) {
+        final ScopeSpanningSymbol spanningSymbol = scope.getSpanningSymbol().get();
+        line += " (spanning kind " + Names.getSimpleName(spanningSymbol.getKind().getName()) + ")";
+      }
+    }
+
+    writeLine(line);
+
+    currentIndentLevel++;
+
+    scope.getSymbols().stream()
+        .filter(sym -> !(sym instanceof ScopeSpanningSymbol))
+        .forEach(this::reportSymbol);
+
+
+    scope.getSubScopes().forEach(this::reportSymbolTableScope);
+    currentIndentLevel--;
+  }
+
+  private void reportSymbol(Symbol sym) {
+    String line = getIndent();
+    line += SYMBOL_START;
+
+    line += sym.getName() + " (kind " + Names.getSimpleName(sym.getKind().getName()) + ")";
+    writeLine(line);
+  }
 }

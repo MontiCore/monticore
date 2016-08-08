@@ -19,9 +19,12 @@
 
 package de.monticore.symboltable.types;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Strings.isNullOrEmpty;
-import static de.monticore.symboltable.Symbols.sortSymbolsByPosition;
+import com.google.common.collect.ImmutableList;
+import de.monticore.symboltable.CommonScopeSpanningSymbol;
+import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.modifiers.BasicAccessModifier;
+import de.monticore.symboltable.types.references.JTypeReference;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,12 +32,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.ImmutableList;
-import de.monticore.symboltable.CommonScopeSpanningSymbol;
-import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.modifiers.BasicAccessModifier;
-import de.monticore.symboltable.types.references.JTypeReference;
-import de.se_rwth.commons.logging.Log;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static de.monticore.symboltable.Symbols.sortSymbolsByPosition;
 
 /**
  *
@@ -78,7 +78,7 @@ public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JAttri
 
   @Override
   public boolean isGeneric() {
-    return getFormalTypeParameters().isEmpty();
+    return !getFormalTypeParameters().isEmpty();
   }
 
   public void addFormalTypeParameter(T formalTypeParameter) {

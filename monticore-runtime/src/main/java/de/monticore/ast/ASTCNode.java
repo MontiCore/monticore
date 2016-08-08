@@ -19,14 +19,14 @@
 
 package de.monticore.ast;
 
-import java.util.List;
-import java.util.Optional;
-
 import com.google.common.collect.Lists;
-
 import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.ScopeSpanningSymbol;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.SourcePosition;
+
+import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -115,6 +115,16 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
 
   @Override
   public Optional<? extends Scope> getSpannedScope() {
-    return spannedScope;
+    if (spannedScope.isPresent()) {
+      return spannedScope;
+    }
+
+    Optional<? extends Scope> result = Optional.empty();
+    if (getSymbol().isPresent() && (getSymbol().get() instanceof ScopeSpanningSymbol)) {
+      final ScopeSpanningSymbol sym = (ScopeSpanningSymbol) getSymbol().get();
+      result = Optional.of(sym.getSpannedScope());
+    }
+
+    return result;
   }
 }

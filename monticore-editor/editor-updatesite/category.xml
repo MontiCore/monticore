@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <bundle id="editor-bundle" version="4.4.1.qualifier">
+   <bundle id="editor-bundle" version="4.4.2.qualifier">
       <category name="grammar-editor"/>
    </bundle>
-   <bundle id="texteditor-core" version="4.4.1.qualifier">
+   <bundle id="texteditor-core" version="4.4.2.qualifier">
       <category name="grammar-editor"/>
    </bundle>
-   <bundle id="graphicaleditor-core" version="4.4.1.qualifier">
+   <bundle id="graphicaleditor-core" version="4.4.2.qualifier">
       <category name="grammar-editor"/>
    </bundle>
-   <bundle id="grammar-editor" version="4.4.1.qualifier">
+   <bundle id="grammar-editor" version="4.4.2.qualifier">
       <category name="grammar-editor"/>
    </bundle>
    <category-def name="grammar-editor" label="Grammar Editor"/>

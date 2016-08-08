@@ -39,7 +39,6 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.utils.Link;
-import de.se_rwth.commons.Names;
 
 /**
  * Translates Methods belonging to ASTRules into CDMethods and attaches them to
@@ -86,13 +85,10 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
     ASTCDMethod cdMethod = CD4AnalysisNodeFactory.createASTCDMethod();
     cdMethod.setModifier(TransformationHelper.createPublicModifier());
     cdMethod.setName(method.getName());
-    // TODO SO,GV Add  generics
-    String dotSeparatedName = Names.getQualifiedName(method.getReturnType()
-        .getNames());
+    String dotSeparatedName = TransformationHelper.typeReferenceToString(method.getReturnType());
     cdMethod.setReturnType(TransformationHelper.createSimpleReference(dotSeparatedName));
     for (ASTMethodParameter param: method.getMethodParameters()) {
-      // TODO SO,GV Add  generics
-      String typeName = Names.getQualifiedName(param.getType().getNames());
+      String typeName = TransformationHelper.typeReferenceToString(param.getType());
       cdMethod.getCDParameters().add(TransformationHelper.createParameter(typeName, param.getName()));
     }
     if (method.getBody() instanceof ASTAction) {
