@@ -58,16 +58,16 @@ import de.se_rwth.commons.logging.Log;
  * Static facade for the transformation of MC AST.
  */
 public class GrammarTransformer {
-  
+
   private GrammarTransformer() {
     // noninstantiable
   }
-  
+
   public static void transform(ASTMCGrammar grammar) {
     removeNonTerminalSeparators(grammar);
     changeNamesOfMultivaluedAttributes(grammar);
   }
-  
+
   /**
    * The shortcut NonTerminalSeparator is replaced by the detailed description. Example:
    * List(Element || ',')* ==> (List:Element (',' List:Element)+)
@@ -76,10 +76,10 @@ public class GrammarTransformer {
     Map<ASTNonTerminalSeparator, ASTAlt> map = new HashMap<ASTNonTerminalSeparator, ASTAlt>();
     RuleComponentListFinder componentListTransformer = new RuleComponentListFinder(map);
     ASTTraverser traverser = new ASTTraverser(componentListTransformer);
-    
+
     // execute the search
     traverser.traverse(grammar);
-    
+
     // execute the transformation
     for (Entry<ASTNonTerminalSeparator, ASTAlt> entry : map.entrySet()) {
       Log.debug("Find NonTerminalSeparator", GrammarTransformer.class.getName());
@@ -99,28 +99,28 @@ public class GrammarTransformer {
       }
     }
   }
-  
+
   /**
    * Append suffix 's' to the names of multi-valued att   * Append suffix 's' to the names of multi-valued attributes (NonTerminals
    * and attributesinAst) if no usage names were set.
-   *  Examples: 
-   *             Name ("." Name&)* ==>  names:Name ("." names:Name&)* 
+   *  Examples:
+   *             Name ("." Name&)* ==>  names:Name ("." names:Name&)*
    *            (State | Transition)* ==> (states:State | transitions:Transition)*
    */
   public static void changeNamesOfMultivaluedAttributes(ASTMCGrammar grammar) {
     grammar.getClassProds().forEach(c -> transformNonTerminals(grammar, c));
     grammar.getASTRules().forEach(c -> transformAttributesInAST(c));
   }
-  
+
   private static void transformNonTerminals(ASTMCGrammar grammar,
       ASTClassProd classProd) {
     Set<ASTNonTerminal> components = new LinkedHashSet<>();
-    
+
     ASTNodes.getSuccessors(classProd, ASTNonTerminal.class).stream()
         .filter(nonTerminal -> getMultiplicity(grammar, nonTerminal) == Multiplicity.LIST)
         .filter(nonTerminal -> !nonTerminal.getUsageName().isPresent())
         .forEach(components::add);
-    
+
     ASTNodes.getSuccessors(classProd, ASTNonTerminal.class).stream()
         .filter(nonTerminal -> multiplicityByDuplicates(grammar, nonTerminal) == Multiplicity.LIST)
         .filter(nonTerminal -> !nonTerminal.getUsageName().isPresent())
@@ -133,7 +133,7 @@ public class GrammarTransformer {
           , GrammarTransformer.class.getName());
       changedNames.add(s.getName());
     });
-    
+
     // Change corresponding ASTRules
     grammar.getASTRules().forEach(
         astRule -> {
@@ -152,9 +152,9 @@ public class GrammarTransformer {
                   }
                 });
           }
-        }); 
+        });
   }
-  
+
   private static void transformAttributesInAST(ASTASTRule astRule) {
     ASTNodes
         .getSuccessors(astRule, ASTAttributeInAST.class)
@@ -170,10 +170,10 @@ public class GrammarTransformer {
                   GrammarTransformer.class.getName());
             });
   }
-  
-  
+
+
   /**
-   * @param key
+   * @param nonTerminalSep
    * @return
    */
   private static Optional<ASTBlock> transform(ASTNonTerminalSeparator nonTerminalSep) {
@@ -181,19 +181,16 @@ public class GrammarTransformer {
     if (nonTerminalSep.getUsageName().isPresent()) {
       name = nonTerminalSep.getUsageName().get() + ":";
     }
-    if (nonTerminalSep.getVariableName().isPresent()) {
-      name = nonTerminalSep.getVariableName().get() + "=";
-    }
     String plusKeywords = (nonTerminalSep.isPlusKeywords()) ? "&" : "";
     String iteration = (nonTerminalSep.getIteration() == ASTConstantsGrammar.STAR) ? "?" : "";
-    
+
     String extendedList = "(%usageName% %nonTerminal% %plusKeywords% (\"%terminal%\" %usageName% %nonTerminal% %plusKeywords%)*)%iterator%";
     extendedList = extendedList.replaceAll("%usageName%", name);
     extendedList = extendedList.replaceAll("%nonTerminal%", nonTerminalSep.getName());
     extendedList = extendedList.replaceAll("%plusKeywords%", plusKeywords);
     extendedList = extendedList.replaceAll("%terminal%", nonTerminalSep.getSeparator());
     extendedList = extendedList.replaceAll("%iterator%", iteration);
-    
+
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTBlock> block = null;
     try {
@@ -208,7 +205,7 @@ public class GrammarTransformer {
     }
     return block;
   }
-  
+
   private static Multiplicity getMultiplicity(ASTMCGrammar grammar,
       ASTNonTerminal nonTerminal) {
     Multiplicity byAlternative = multiplicityByAlternative(grammar,

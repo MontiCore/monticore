@@ -39,22 +39,22 @@ import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
 public class ASTConstructionActions {
-  
+
   private final static String DEFAULT_RETURN_PARAM = "ret";
-  
+
   protected ParserGeneratorHelper parserGenHelper;
-  
+
   protected MCGrammarSymbol symbolTable;
-  
+
   public ASTConstructionActions(ParserGeneratorHelper parserGenHelper) {
     this.parserGenHelper = parserGenHelper;
     this.symbolTable = parserGenHelper.getGrammarSymbol();
   }
-  
+
   public String getConstantInConstantGroupMultipleEntries(ASTConstant constant,
       ASTConstantGroup constgroup) {
     String tmp = "";
-    if (constgroup.getUsageName().isPresent() || constgroup.getVariableName().isPresent()) {
+    if (constgroup.getUsageName().isPresent()) {
       String constfile;
       String constantname;
       Optional<MCRuleSymbol> rule = parserGenHelper.getMCRuleForThisComponent(constgroup
@@ -68,34 +68,25 @@ public class ASTConstructionActions {
         constfile = symbolTable.getConstantClassName();
         constantname = symbolTable.getConstantNameForConstant(constant);
       }
-      
-      if (constgroup.getUsageName().isPresent()) {
-        // Add as attribute to AST
-        tmp = "_aNode.set%uname%(%constfile%.%constantname%);";
-        
-        tmp = tmp.replaceAll("%uname%",
-            StringTransformations.capitalize(constgroup.getUsageName().get()));
-      }
-      else {
-        // Set variable to true
-        tmp = "%name% = %constfile%.%constantname%;";
-        
-        tmp = tmp.replaceAll("%name%",
-            StringTransformations.capitalize(constgroup.getVariableName().get()));
-      }
-      
+
+      // Add as attribute to AST
+      tmp = "_aNode.set%uname%(%constfile%.%constantname%);";
+
+      tmp = tmp.replaceAll("%uname%",
+          StringTransformations.capitalize(constgroup.getUsageName().get()));
+
       tmp = tmp.replaceAll("%constfile%", constfile);
-      
+
       tmp = tmp.replaceAll("%constantname%", constantname);
     }
-    
+
     return tmp;
   }
-  
+
   public String getActionAfterConstantInEnumProdSingle(ASTConstant c) {
     return "ret = true ;";
   }
-  
+
   public String getActionAfterConstantInEnumProdIterated(ASTConstant c) {
     String constfile;
     String constantname;
@@ -109,27 +100,20 @@ public class ASTConstructionActions {
       constfile = symbolTable.getConstantClassName();
       constantname = symbolTable.getConstantNameForConstant(c);
     }
-    
+
     return "ret = " + constfile + "." + constantname + ";";
   }
-  
+
   public String getConstantInConstantGroupSingleEntry(ASTConstant constant,
       ASTConstantGroup constgroup) {
     String tmp = "";
-    
+
     if (constgroup.getUsageName().isPresent()) {
       // Add as attribute to AST
       tmp = "_aNode.set%uname%(true);";
-      
+
       tmp = tmp.replaceAll("%uname%",
           StringTransformations.capitalize(constgroup.getUsageName().get()));
-    }
-    else if (constgroup.getVariableName().isPresent()) {
-      // Set variable to true
-      tmp = "%name% = true;";
-      
-      tmp = tmp.replaceAll("%name%",
-          StringTransformations.capitalize(constgroup.getVariableName().get()));
     }
     else {
       if (constgroup.getConstants().size() == 1) {
@@ -142,10 +126,10 @@ public class ASTConstructionActions {
         // both == null and #constants > 1 -> user wants to ignore token in AST
       }
     }
-    
+
     return tmp;
   }
-  
+
   public String getActionForRuleBeforeRuleBody(ASTClassProd a) {
     StringBuilder b = new StringBuilder();
     String type = symbolTable.getRuleWithInherited(HelperGrammar.getRuleName(a)).getDefinedType()
@@ -162,84 +146,82 @@ public class ASTConstructionActions {
         +
         Names.getSimpleName(type) + "();\n");
     b.append("$ret=_aNode;\n");
-    
+
     // List of all used temporary variables
     b.append(getCodeForTmpVars(a));
-    
+
     return b.toString();
   }
-  
+
   public String getActionForRuleBeforeRuleBodyExplicitReturnClass(ASTClassProd a) {
-    
+
     StringBuilder b = new StringBuilder();
-    
+
     String type = symbolTable.getRuleWithInherited(HelperGrammar.getRuleName(a)).getDefinedType()
         .getQualifiedName();
-    
+
     // Setup return value
     b.append("// ret is normally returned, a can be instanciated later\n");
     b.append(type + " _aNode = null;\n");
-    
+
     // List of all used temporary variables
     b.append(getCodeForTmpVars(a));
-    
+
     return b.toString();
-    
+
   }
-  
+
   public String getActionForLexerRuleNotIteratedAttribute(ASTNonTerminal a) {
-    
+
     String tmp = "_aNode.set%u_usage%(convert" + a.getName() + "($%tmp%));";
-    
+
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%",
         StringTransformations.capitalize(HelperGrammar.getUsuageName(a)));
     tmp = tmp.replaceAll("%tmp%", parserGenHelper.getTmpVarNameForAntlrCode(a));
-    
+
     return tmp;
-    
+
   }
-  
+
   public String getActionForLexerRuleNotIteratedHandedOn(ASTNonTerminal a) {
-    
+
     String tmp = "%handontmp% = convert" + a.getName() + "$%tmp%);";
-    
+
     // Replace templates
-    tmp = tmp.replaceAll("%handontmp%", a.getVariableName().orElse(""));
     tmp = tmp.replaceAll("%tmp%", parserGenHelper.getTmpVarNameForAntlrCode(a));
-    
+
     return tmp;
   }
-  
+
   public String getActionForLexerRuleIteratedAttribute(ASTNonTerminal a) {
-    
+
     String tmpname = parserGenHelper.getTmpVarNameForAntlrCode(a);
     String tmp = " addToIteratedAttributeIfNotNull(_aNode.get%u_usage%(), convert" + a.getName() + "($%tmp%));";
-    
+
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%",
         StringTransformations.capitalize(HelperGrammar.getUsuageName(a)));
     tmp = tmp.replaceAll("%tmp%", tmpname);
-    
+
     return tmp;
   }
-  
+
   public String getActionForLexerRuleIteratedHandedOn(ASTNonTerminal a) {
-    
+
     String tmp = "addToIteratedAttributeIfNotNull(%handontmp%, convert" + a.getName() + "($%tmp%));";
-    
+
     // Replace templates
-    tmp = tmp.replaceAll("%handontmp%", a.getVariableName().orElse(null));
     tmp = tmp.replaceAll("%tmp%", parserGenHelper.getTmpVarNameForAntlrCode(a));
-    
+
     return tmp;
-    
+
   }
-  
+
   public String getActionForInternalRuleIteratedAttribute(ASTNonTerminal a) {
-    
+
     String tmp = "addToIteratedAttributeIfNotNull(_aNode.get%u_usage%(), _localctx.%tmp%.ret);";
-    
+
     if (symbolTable.getRuleWithInherited(a.getName()).getType().getKindOfType()
         .equals(MCTypeSymbol.KindType.CONST)
         ||
@@ -247,46 +229,30 @@ public class ASTConstructionActions {
             .equals(MCTypeSymbol.KindType.ENUM)) {
       tmp = "addToIteratedAttributeIfNotNull(_aNode.get%u_usage%(), _localctx.%tmp%.ret);";
     }
-    
+
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%",
         StringTransformations.capitalize(HelperGrammar.getUsuageName(a)));
     tmp = tmp.replaceAll("%tmp%", parserGenHelper.getTmpVarNameForAntlrCode(a));
-    
+
     return tmp;
   }
-  
+
   public String getActionForInternalRuleNotIteratedAttribute(ASTNonTerminal a) {
-    
+
     String tmp = "_aNode.set%u_usage%(_localctx.%tmp%.ret);";
-    
+
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%",
         StringTransformations.capitalize(HelperGrammar.getUsuageName(a)));
     tmp = tmp.replaceAll("%tmp%", parserGenHelper.getTmpVarNameForAntlrCode(a));
-    
+
     return tmp;
   }
-  
-  public String getActionForInternalRuleNotIteratedHandedOn(ASTNonTerminal a) {
-    
-    String tmp = "%handontmp% = _localctx.%tmp%.ret;";
-    if (!a.getVariableName().isPresent()) {
-      return "";
-    }
-    if (a.getVariableName().get().equals(DEFAULT_RETURN_PARAM)) {
-      tmp = tmp.replaceAll("%handontmp%", "_localctx." + a.getVariableName().get());
-    }
-    else {
-      tmp = tmp.replaceAll("%handontmp%", a.getVariableName().get());
-    }
-    tmp = tmp.replaceAll("%tmp%", parserGenHelper.getTmpVarNameForAntlrCode(a));
-    
-    return tmp;
-  }
-  
+
+
   public String getActionForInternalRuleNotIteratedLeftRecursiveAttribute(ASTNonTerminal a) {
-    
+
     String type = symbolTable.getRuleWithInherited(a.getName()).getDefinedType().getQualifiedName();
     String name = symbolTable.getRuleWithInherited(a.getName()).getGrammarSymbol().getSimpleName();
     SourcePositionActions sourcePositionBuilder = new SourcePositionActions();
@@ -300,75 +266,74 @@ public class ASTConstructionActions {
     b.append("$ret=_aNode;\n");
     return b.toString();
   }
-  
+
   /**
    * Nothing to do for ignore
    */
   public String getActionForTerminalIgnore(ASTTerminal a) {
     return "";
   }
-  
+
   public String getActionForTerminalNotIteratedAttribute(ASTTerminal a) {
-    
+
     String tmp = "_aNode.set%u_usage%(\"%text%\");";
-    
+
     if (!a.getUsageName().isPresent()) {
       return "";
     }
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%", StringTransformations.capitalize(a.getUsageName().get()));
     tmp = tmp.replaceAll("%text%", a.getName());
-    
+
     return tmp;
-    
+
   }
-  
+
   public String getActionForTerminalIteratedAttribute(ASTTerminal a) {
-    
+
     if (!a.getUsageName().isPresent()) {
       return "";
     }
-    
+
     String tmp = "_aNode.get%u_usage%().add(\"%text%\");";
-    
+
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%", StringTransformations.capitalize(a.getUsageName().get()));
     tmp = tmp.replaceAll("%text%", a.getName());
-    
+
     return tmp;
   }
-  
+
   public String getActionForTerminalNotIteratedVariable(ASTTerminal a) {
     if (!a.getVariableName().isPresent()) {
       return "";
     }
-    
+
     String tmp = "%handontmp%= \"" + a.getName() + "\";";
-    
+
     // Replace templates
     tmp = tmp.replaceAll("%handontmp%", a.getVariableName().get());
     tmp = tmp.replaceAll("%tmp%", a.getName());
-    
+
     return tmp;
   }
-  
+
   public String getActionForTerminalIteratedVariable(ASTTerminal a) {
     if (!a.getVariableName().isPresent()) {
       return "";
     }
-    
+
     String tmp = "%handontmp%.add(\"" + a.getName() + "\");";
-    
+
     // Replace templates
     tmp = tmp.replaceAll("%handontmp%", a.getVariableName().get());
-    
+
     return tmp;
   }
-    
+
   /**
    * Create temporary variable for all parser and interface rules
-   * 
-   * @param b StringBuilder used for printing
+   *
    * @param rule Current rule
    * @param element ASTNonTerminal to create var for
    * @param usedTmp
@@ -377,41 +342,23 @@ public class ASTConstructionActions {
    */
   private String getTempVarDeclaration(MCRuleSymbol rule, ASTNonTerminal element,
       Set<String> usedTmp) {
-    
+
     StringBuilder code = new StringBuilder();
     MCRuleSymbol ruleByName = symbolTable.getRuleWithInherited(element.getName());
     if (ruleByName == null) {
       Log.error("0xA0921 Error by parser generation: there is no rule for " + element.getName());
       return code.toString();
     }
-    
-    MCTypeSymbol ruleType = ruleByName.getType();
-    // Create variable
-    if (element.getVariableName().isPresent()) {
-      String type;
-      if (HelperGrammar.isIterated(element)) {
-        type = ruleType.getListType();
-      }
-      else {
-        type = ruleType.getQualifiedName();
-      }
-      
-      String tmp = element.getVariableName().get();
-      if (!usedTmp.contains(tmp)) {
-        usedTmp.add(tmp);
-        // Pattern: '%Type% %tmp% = null;'
-        code.append(type).append(" ").append(tmp).append(" = null;\n");
-      }
-    }
-    
+
+
     return code.toString();
   }
-  
+
   private String getCodeForTmpVars(ASTClassProd ast) {
     MCRuleSymbol rule = symbolTable.getRuleWithInherited(ast.getName());
     StringBuilder code = new StringBuilder();
     Set<String> usedTmp = new LinkedHashSet<>();
-    
+
     // Declare tmp-Variables for NonTerminals
     for (ASTNonTerminal element : ASTNodes.getSuccessors(ast, ASTNonTerminal.class)) {
       // LexerRule do not need temporary variables, but all parser rules,
@@ -419,9 +366,9 @@ public class ASTConstructionActions {
       // Pattern: '%Type% %tmp% = null;'
       code.append(getTempVarDeclaration(rule, element, usedTmp));
     }
-        
+
     return code.toString();
-    
+
   }
-  
+
 }

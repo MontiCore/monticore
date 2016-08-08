@@ -11,7 +11,7 @@
   </parent>
 
   <artifactId>monticore-grammar</artifactId>
-  
+
   <!-- == PROJECT METAINFORMATION ========================================= -->
 
   <name>MontiCore: Grammar</name>
@@ -26,8 +26,8 @@
       <groupId>de.monticore</groupId>
       <artifactId>monticore-emf-runtime</artifactId>
     </dependency>
-    
-    
+
+
        <!-- EMF dependencies -->
       <dependency>
         <groupId>org.mod4j.org.eclipse.emf</groupId>
@@ -41,8 +41,8 @@
         <groupId>org.mod4j.org.eclipse.emf</groupId>
         <artifactId>common</artifactId>
       </dependency>
-      
-    
+
+
 
     <dependency>
       <groupId>de.se_rwth.commons</groupId>

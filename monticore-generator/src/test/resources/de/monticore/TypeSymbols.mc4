@@ -2,7 +2,7 @@ package de.monticore;
 
 grammar TypeSymbols {
 
-    A = "a" C r:D* F+ ret=G;
+    A = "a" C r:D* F+;
 
     C;
     D;
