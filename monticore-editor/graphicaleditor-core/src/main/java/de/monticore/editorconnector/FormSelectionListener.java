@@ -131,7 +131,7 @@ public class FormSelectionListener implements ISelectionListener {
         setSelection(ss, ((GenericFormEditor) part).getTextEditor());
       }
       else if (part instanceof ContentOutline) {
-        // selection originates from an OutlinePage
+        // selection originates from agraphical OutlinePage
         ContentOutline co = (ContentOutline) part;
         IEditorPart activeE = co.getViewSite().getPage().getActiveEditor();
         if (activeE instanceof TextEditorImpl) {
@@ -149,8 +149,8 @@ public class FormSelectionListener implements ISelectionListener {
         setSelection(ts, (GenericFormEditor) part);
       }
       else if (part instanceof ContentOutline) {
-        // selection originates from an OutlinePage
-        ContentOutline co = (ContentOutline) part;
+        // selection originates from a textual OutlinePage
+        // Nothing to do: Handled in OutlinePage
       }
     }
   }
