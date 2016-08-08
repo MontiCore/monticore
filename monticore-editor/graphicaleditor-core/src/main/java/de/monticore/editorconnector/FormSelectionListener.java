@@ -38,7 +38,6 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
-import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.genericgraphics.GenericFormEditor;
@@ -129,11 +128,15 @@ public class FormSelectionListener implements ISelectionListener {
         if (file == null || !file.equals(ownFile)) {
           return;
         }
-        setSelection(ss, (GenericFormEditor) part);
+        setSelection(ss, ((GenericFormEditor) part).getTextEditor());
       }
-      else if (part instanceof IContentOutlinePage) {
+      else if (part instanceof ContentOutline) {
         // selection originates from an OutlinePage
         ContentOutline co = (ContentOutline) part;
+        IEditorPart activeE = co.getViewSite().getPage().getActiveEditor();
+        if (activeE instanceof TextEditorImpl) {
+          setSelection(ss, (TextEditorImpl) activeE);
+        }
       }
     }
     else if (selection instanceof ITextSelection) {
@@ -145,7 +148,7 @@ public class FormSelectionListener implements ISelectionListener {
         }
         setSelection(ts, (GenericFormEditor) part);
       }
-      else if (part instanceof IContentOutlinePage) {
+      else if (part instanceof ContentOutline) {
         // selection originates from an OutlinePage
         ContentOutline co = (ContentOutline) part;
       }
@@ -246,7 +249,7 @@ public class FormSelectionListener implements ISelectionListener {
    * @param editor The {@link TextEditorImpl} to set the text selection in.
    */
   @SuppressWarnings("unchecked")
-  private void setSelection(IStructuredSelection ss, GenericFormEditor editor) {
+  private void setSelection(IStructuredSelection ss, TextEditorImpl editor) {
     List<Object> selectionList = ss.toList();
     
     // if there is more than one element selected select all
@@ -280,8 +283,7 @@ public class FormSelectionListener implements ISelectionListener {
       }
     }
     if (setOnce) {
-      selectText(editor.getTextEditor(),
-          new TextPosition(startLine, startOffset, endLine, endOffset));
+      selectText(editor, new TextPosition(startLine, startOffset, endLine, endOffset));
     }
   }
   

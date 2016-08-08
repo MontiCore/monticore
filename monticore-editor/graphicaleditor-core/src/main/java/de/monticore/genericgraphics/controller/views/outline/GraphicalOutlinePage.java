@@ -84,6 +84,7 @@ public class GraphicalOutlinePage extends ContentOutlinePage {
       }
       else {
         getViewer().createControl(parent);
+        editDomain.addViewer(getViewer());
         getViewer().configure();
         // hookGraphicalViewer()
         getSite().setSelectionProvider(getViewer());
