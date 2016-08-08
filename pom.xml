@@ -32,7 +32,6 @@
 
     <se-commons.version>1.7.6</se-commons.version>
     <antlr.version>4.5.1</antlr.version>
-    <od.version>0.2.1-SNAPSHOT</od.version>
     <commons.io.version>2.4</commons.io.version>
     <doxia-sink-api.version>1.6</doxia-sink-api.version>
     <doxia-site-renderer.version>1.6</doxia-site-renderer.version>
@@ -359,12 +358,6 @@
         <groupId>de.monticore.lang</groupId>
         <artifactId>cd4analysis</artifactId>
         <version>${cd4analysis.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>de.monticore.lang</groupId>
-        <artifactId>od</artifactId>
-        <version>${od.version}</version>
       </dependency>
 
       <!-- .. Test Libraries ............................................... -->
