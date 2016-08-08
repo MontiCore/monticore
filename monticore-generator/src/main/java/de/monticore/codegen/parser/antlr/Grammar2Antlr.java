@@ -19,52 +19,15 @@
 
 package de.monticore.codegen.parser.antlr;
 
-import static de.monticore.codegen.parser.ParserGeneratorHelper.getMCRuleForThisComponent;
-import static de.monticore.codegen.parser.ParserGeneratorHelper.getTmpVarNameForAntlrCode;
-import static de.monticore.codegen.parser.ParserGeneratorHelper.printIteration;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.DirectLeftRecursionDetector;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.MCGrammarInfo;
-import de.monticore.grammar.grammar._ast.ASTAlt;
-import de.monticore.grammar.grammar._ast.ASTAnything;
-import de.monticore.grammar.grammar._ast.ASTBlock;
-import de.monticore.grammar.grammar._ast.ASTClassProd;
-import de.monticore.grammar.grammar._ast.ASTConstant;
-import de.monticore.grammar.grammar._ast.ASTConstantGroup;
-import de.monticore.grammar.grammar._ast.ASTEnumProd;
-import de.monticore.grammar.grammar._ast.ASTEof;
-import de.monticore.grammar.grammar._ast.ASTLexActionOrPredicate;
-import de.monticore.grammar.grammar._ast.ASTLexAlt;
-import de.monticore.grammar.grammar._ast.ASTLexBlock;
-import de.monticore.grammar.grammar._ast.ASTLexChar;
-import de.monticore.grammar.grammar._ast.ASTLexCharRange;
-import de.monticore.grammar.grammar._ast.ASTLexNonTerminal;
-import de.monticore.grammar.grammar._ast.ASTLexOption;
-import de.monticore.grammar.grammar._ast.ASTLexProd;
-import de.monticore.grammar.grammar._ast.ASTLexSimpleIteration;
-import de.monticore.grammar.grammar._ast.ASTLexString;
-import de.monticore.grammar.grammar._ast.ASTMCAnything;
-import de.monticore.grammar.grammar._ast.ASTNonTerminal;
-import de.monticore.grammar.grammar._ast.ASTOptionValue;
-import de.monticore.grammar.grammar._ast.ASTProd;
-import de.monticore.grammar.grammar._ast.ASTSemanticpredicateOrAction;
-import de.monticore.grammar.grammar._ast.ASTTerminal;
-import de.monticore.grammar.grammar._ast.GrammarNodeFactory;
+import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
 import de.monticore.languages.grammar.MCAttributeSymbol;
@@ -76,8 +39,17 @@ import de.monticore.languages.grammar.MCTypeSymbol;
 import de.monticore.languages.grammar.MCTypeSymbol.KindType;
 import de.monticore.languages.grammar.PredicatePair;
 import de.monticore.symboltable.Symbol;
-import de.monticore.utils.ASTNodes;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
+
+import static de.monticore.codegen.parser.ParserGeneratorHelper.getMCRuleForThisComponent;
+import static de.monticore.codegen.parser.ParserGeneratorHelper.getTmpVarNameForAntlrCode;
+import static de.monticore.codegen.parser.ParserGeneratorHelper.printIteration;
 
 /**
  * TODO: Write me!
@@ -147,9 +119,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     // Add init action
     if (ast.getInitAction().isPresent()) {
-      if (ast.getInitAction().isPresent()) {
-        addToCodeSection("{", ParserGeneratorHelper.getText(ast.getInitAction().get()), "\n}");
-      }
+      addToCodeSection("{", ParserGeneratorHelper.getText(ast.getInitAction().get()), "\n}");
     }
     endCodeSection();
 
@@ -841,20 +811,11 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     // AntLR2 -> AntLR4: Replace : by =
     // tmp = "( %tmp%=%rulename% %initaction% %actions%";
 
-    // TODO PN:
-    // de.monticore.symboltable.resolving.ResolvedSeveralEntriesException
     addToCodeSection(getTmpVarNameForAntlrCode(ast), "=", ast.getName());
-
-    // In star enviroment use add-method, else use set methods
-    // Do not build up ast in predicates
-
-    boolean iteratedItself = HelperGrammar.isIterated(ast);
 
     // Add Actions
     startAction();
 
-    // TODO PN:
-    // de.monticore.symboltable.resolving.ResolvedSeveralEntriesException
     Optional<MCRuleSymbol> scope = getMCRuleForThisComponent(ast);
 
     if (scope.isPresent()) {
