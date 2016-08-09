@@ -16,48 +16,35 @@
  *******************************************************************************/
 package de.monticore.editorconnector.menus;
 
-import org.eclipse.jface.action.ContributionItem;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
-import de.monticore.genericgraphics.GenericFormEditor;
 import de.monticore.genericgraphics.GenericGraphicsViewer;
+import de.monticore.genericgraphics.controller.views.outline.CombinedGraphicsOutlinePage;
 
-public class GenerateLayoutContextContribution extends ContributionItem {
-
+public class GenerateLayoutContextContribution  extends AbstractHandler {  
+  
+  /**
+   * Toggles the current outline type of the textual and graphical editor
+   * (graphical/textual outline).
+   */
   @Override
-  public void fill(Menu menu, int index) {
-    IWorkbench workbench = PlatformUI.getWorkbench();
-    IWorkbenchWindow window = (workbench != null) ? workbench.getActiveWorkbenchWindow() : null;
-    final IWorkbenchPage page = (window != null) ? window.getActivePage() : null;
-    IEditorPart editor = (page != null) ? page.getActiveEditor() : null;
-    
-    if (editor instanceof GenericFormEditor) {
-      MenuItem item = new MenuItem(menu, SWT.PUSH, index);
-      item.setText("Generate Layout");
-      
-      item.addSelectionListener(new SelectionAdapter() {
-        @Override
-        public void widgetSelected(SelectionEvent event) {
-          IWorkbench workbench = PlatformUI.getWorkbench();
-          IWorkbenchWindow window = (workbench != null) ? workbench.getActiveWorkbenchWindow() : null;
-          final IWorkbenchPage page = (window != null) ? window.getActivePage() : null;
-          GenericFormEditor activeE = (page != null) ? (GenericFormEditor) page.getActiveEditor() : null;
-          
-          GenericGraphicsViewer viewer = activeE.getGraphicalEditor().getGraphicalViewer();
-          if(viewer != null) {
-            viewer.applyGeneratedLayout();
-          }
-        }
-      });
+  public Object execute(ExecutionEvent event) throws ExecutionException {
+    IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+
+    IContentOutlinePage combinedGrOutline = null;
+    combinedGrOutline = activeEditor.getAdapter(IContentOutlinePage.class);
+ 
+    if (combinedGrOutline instanceof CombinedGraphicsOutlinePage) {
+      GenericGraphicsViewer viewer = ((CombinedGraphicsOutlinePage) combinedGrOutline).getGraphicalOutline().getViewer();
+      viewer.applyGeneratedLayout();
     }
+
+    return null;
   }
+  
 }

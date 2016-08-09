@@ -16,11 +16,15 @@
          name="Export As Image">
    </command>
    <command
+         defaultHandler="de.monticore.editorconnector.menus.GenerateLayoutContextContribution"
+         id="cdGraphics.commands.GenerateLayout"
+         name="Generate Layout">
+   </command>
+   <command
          defaultHandler="de.monticore.editorconnector.EditorConnector"
          id="cdGraphics.commands.SwitchOutline"
          name="Switch Outline">
-   </command>
-</extension>
+   </command></extension>
 <extension
       point="org.eclipse.ui.menus">
    <menuContribution
@@ -46,10 +50,12 @@
    <menuContribution
          allPopups="false"
          locationURI="popup:outlineGraphicalContext">
-      <dynamic
-            class="de.monticore.editorconnector.menus.GenerateLayoutContextContribution"
-            id="de.monticore.editorconnector.GenerateLayoutMenuItem">
-      </dynamic>
+      <command
+            commandId="cdGraphics.commands.GenerateLayout"
+            id="generateLayout"
+            label="Generate Layout"
+            style="push">
+      </command>
    </menuContribution>
 </extension>
 <extension
