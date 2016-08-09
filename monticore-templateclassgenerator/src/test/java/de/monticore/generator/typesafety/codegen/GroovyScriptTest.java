@@ -79,7 +79,7 @@ public class GroovyScriptTest {
       new TemplateClassGeneratorScript().run(script, configuration);
     }
     catch (IOException e) {
-      Log.error("0xA1018 AstGeneratorTest failed: ", e);
+      Log.error("0xA1029 AstGeneratorTest failed: ", e);
     }
   }
   

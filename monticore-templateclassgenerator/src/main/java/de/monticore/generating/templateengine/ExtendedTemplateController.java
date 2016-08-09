@@ -65,12 +65,12 @@ public class ExtendedTemplateController extends TemplateController {
    */
   public void params(String... params) {
     checkArgument(!parametrized,
-        "0xA5297 Template '" + getTemplatename() + "': tried to invoke params() twice");
+        "0xA5299 Template '" + getTemplatename() + "': tried to invoke params() twice");
     List<Object> arguments = getArguments();
     List<String> names = getSignature();
     // throws error when argument size != param size
     checkArgument(params.length == arguments.size(),
-        "0xA5298 Template '" + getTemplatename() + "': Parameter size (#" +
+        "0xA5296 Template '" + getTemplatename() + "': Parameter size (#" +
             params.length +
             ") and number of arguments (#" + arguments.size() + ") mismatch.");
     List<String> toSignature = new ArrayList<String>();
@@ -190,7 +190,7 @@ public class ExtendedTemplateController extends TemplateController {
    */
   public void result(String result) {
     checkArgument(!resultized,
-        "0xA5301 Template '" + getTemplatename() + "': tried to invoke result() twice");
+        "0xA5302 Template '" + getTemplatename() + "': tried to invoke result() twice");
     resultized = true;
     
   }

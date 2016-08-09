@@ -904,7 +904,7 @@ public class GeneratorHelper extends TypesHelper {
    */
   public List<CDTypeSymbol> getAllSuperInterfaces(ASTCDType type) {
     if (!type.getSymbol().isPresent()) {
-      Log.error("0xA5008 Could not load symbol information for " + type.getName() + ".");
+      Log.error("0xA5001 Could not load symbol information for " + type.getName() + ".");
     }
     
     CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol().get();
