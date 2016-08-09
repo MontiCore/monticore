@@ -16,12 +16,12 @@
          name="Export As Image">
    </command>
    <command
-         defaultHandler="de.monticore.editorconnector.menus.GenerateLayoutContextContribution"
+         defaultHandler="de.monticore.editorconnector.menus.GenerateLayoutCommand"
          id="cdGraphics.commands.GenerateLayout"
          name="Generate Layout">
    </command>
    <command
-         defaultHandler="de.monticore.editorconnector.EditorConnector"
+         defaultHandler="de.monticore.editorconnector.menus.SwitchOutlineCommand"
          id="cdGraphics.commands.SwitchOutline"
          name="Switch Outline">
    </command></extension>

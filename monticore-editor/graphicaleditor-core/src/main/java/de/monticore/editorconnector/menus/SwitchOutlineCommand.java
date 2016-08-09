@@ -23,10 +23,17 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
-import de.monticore.genericgraphics.GenericGraphicsViewer;
 import de.monticore.genericgraphics.controller.views.outline.CombinedGraphicsOutlinePage;
 
-public class GenerateLayoutContextContribution  extends AbstractHandler {  
+/**
+
+ * This class acts as a command handler for the "Switch Outline" command.
+ * <br><br>
+ * 
+ * @author Philipp Kehrbusch
+ *
+ */
+public class SwitchOutlineCommand extends AbstractHandler {  
   
   /**
    * Toggles the current outline type of the textual and graphical editor
@@ -40,8 +47,7 @@ public class GenerateLayoutContextContribution  extends AbstractHandler {
     combinedGrOutline = activeEditor.getAdapter(IContentOutlinePage.class);
  
     if (combinedGrOutline instanceof CombinedGraphicsOutlinePage) {
-      GenericGraphicsViewer viewer = ((CombinedGraphicsOutlinePage) combinedGrOutline).getGraphicalOutline().getViewer();
-      viewer.applyGeneratedLayout();
+      ((CombinedGraphicsOutlinePage) combinedGrOutline).changeOutlineType();
     }
 
     return null;

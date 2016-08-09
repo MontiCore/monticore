@@ -86,7 +86,7 @@ import de.se_rwth.langeditor.texteditor.TextEditorImpl;
  * 
  * @author Tim Enger
  */
-public class FormSelectionListener implements ISelectionListener {
+public class GraphicalSelectionListener implements ISelectionListener {
   
   private GenericGraphicsViewer viewer;
   
@@ -111,7 +111,7 @@ public class FormSelectionListener implements ISelectionListener {
    * @param viewer The {@link GraphicalViewer} this listener is based on.
    * @throws SelectionSyncException
    */
-  public FormSelectionListener(IFile ownFile, GenericGraphicsViewer viewer) {
+  public GraphicalSelectionListener(IFile ownFile, GenericGraphicsViewer viewer) {
     this.viewer = viewer;
     this.ownFile = ownFile;
   }
