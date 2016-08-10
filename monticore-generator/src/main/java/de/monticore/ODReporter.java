@@ -27,6 +27,7 @@ import de.monticore.generating.templateengine.reporting.commons.ReportingConstan
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
 import de.monticore.grammar.grammar._ast.ASTGrammarNode;
 import de.monticore.prettyprint.IndentPrinter;
+import de.se_rwth.commons.Names;
 
 public class ODReporter extends AReporter {
   
@@ -73,7 +74,7 @@ public class ODReporter extends AReporter {
       ASTGrammarNode mcNode = (ASTGrammarNode) ast;
       IndentPrinter pp = new IndentPrinter();
       GrammarWithConcepts2OD odPrinter = new GrammarWithConcepts2OD(pp, reporting);
-      odPrinter.printObjectDiagram(modelName, mcNode);
+      odPrinter.printObjectDiagram(Names.getSimpleName(modelName), mcNode);
       writeLine(pp.getContent());
     }
   }
