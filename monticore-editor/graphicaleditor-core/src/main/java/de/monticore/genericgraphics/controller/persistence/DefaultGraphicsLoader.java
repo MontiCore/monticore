@@ -16,13 +16,6 @@
  *******************************************************************************/
 package de.monticore.genericgraphics.controller.persistence;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,7 +24,6 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gef.EditPart;
@@ -132,7 +124,7 @@ public class DefaultGraphicsLoader implements IGraphicsLoader {
   @Override
   public List<IViewElement> loadViewData() {
     if (getViewFile() == null) {
-      Log.error("AbstractPersistanceHandler: View File is null, cannot load view data");
+      Log.error("0xA1107 AbstractPersistanceHandler: View File is null, cannot load view data");
       return Collections.emptyList();
     }
     if (vFile.exists()) {
@@ -142,7 +134,7 @@ public class DefaultGraphicsLoader implements IGraphicsLoader {
       // }
     }
     else {
-      Log.error("view data file does not exist and thus cannot be loaded!");
+      Log.error("0xA1108 view data file does not exist and thus cannot be loaded!");
     }
     return loadedVes;
   }
@@ -243,53 +235,7 @@ public class DefaultGraphicsLoader implements IGraphicsLoader {
   protected static String getProjectFolder(IFile file) {
     return file.getProject().getLocation().toString();
   }
-  
-  private String getText() {
-    String text = "";
-    try {
-      if (getModelFile() != null) {
-        text = convertStreamToString(getModelFile().getContents());
-      }
-      else {
-        Log.error("AbstractPersistanceHandler: cannot load from model file. Model file is null");
-      }
-    }
-    catch (IOException e) {
-      e.printStackTrace();
-    }
-    catch (CoreException e) {
-      e.printStackTrace();
-    }
-    return text;
-  }
-  
-  /**
-   * Convert a {@link InputStream} to a {@link String}.
-   * 
-   * @param is The {@link InputStream} to convert from
-   * @return The {@link String}
-   * @throws IOException
-   */
-  private String convertStreamToString(InputStream is) throws IOException {
-    if (is != null) {
-      Writer writer = new StringWriter();
-      char[] buffer = new char[1024];
-      try {
-        Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-        int n;
-        while ((n = reader.read(buffer)) != -1) {
-          writer.write(buffer, 0, n);
-        }
-      }
-      finally {
-        is.close();
-      }
-      return writer.toString();
-    }
-    else {
-      return "";
-    }
-  }
+    
   
   @Override
   public IPersistenceUtil getPersistenceUtil() {

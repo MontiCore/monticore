@@ -27,6 +27,9 @@ import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.editparts.ScalableRootEditPart;
 import org.eclipse.gef.ui.parts.ContentOutlinePage;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.DisposeEvent;
@@ -51,9 +54,7 @@ import de.monticore.genericgraphics.GenericGraphicsViewer;
  * @author Philipp Kehrbusch
  */
 public class GraphicalOutlinePage extends ContentOutlinePage {
-  
-  private GenericGraphicsViewer viewer;
-  
+    
   private DefaultEditDomain editDomain;
   
   private ScrollableThumbnail thumbnail;
@@ -62,32 +63,45 @@ public class GraphicalOutlinePage extends ContentOutlinePage {
   
   private LightweightSystem lws;
   
+  private boolean externalViewer;
+  
   private SashForm sash;
   
   private Canvas canvas;
   
   public GraphicalOutlinePage(GenericGraphicsViewer viewer, IFile input) {
     super(viewer);
-    this.viewer = viewer;
     editDomain = new DefaultEditDomain(null);
   }
   
   @Override
   public void createControl(Composite parent) {
-    if (viewer != null) {
-      createOverview(parent);
-      createPopupMenu(canvas);
+    if (getViewer() != null) {
+      if (getViewer().getControl() != null) {
+        externalViewer = false;
+        createOverview(parent);
+        refreshContents();
+      }
+      else {
+        getViewer().createControl(parent);
+        editDomain.addViewer(getViewer());
+        getViewer().configure();
+        // hookGraphicalViewer()
+        getSite().setSelectionProvider(getViewer());
+        externalViewer = true;
+      }
+      createPopupMenu(getControl());
     }
   }
-  
+
   /**
    * Assigns a model file to this OutlinePage's viewer
    * 
    * @param file File containing the model data
    */
   public void setInputFile(IFile file) {
-    if (viewer != null) {
-      viewer.setInput(file);
+    if (getViewer() != null) {
+      getViewer().setInput(file);
     }
   }
   
@@ -95,39 +109,35 @@ public class GraphicalOutlinePage extends ContentOutlinePage {
     sash = new SashForm(parent, SWT.VERTICAL);
     canvas = new Canvas(sash, SWT.NONE);
     lws = new LightweightSystem(canvas);
-    
-    refreshContents();
   }
   
   private void refreshContents() {
-    if (viewer != null) {
-      // miniature view
-      if (viewer.getRootEditPart() instanceof ScalableRootEditPart) {
-        thumbnail = new ScrollableThumbnail(
-            (Viewport) ((ScalableRootEditPart) viewer.getRootEditPart()).getFigure());
-        thumbnail.setSource(((ScalableRootEditPart) viewer.getRootEditPart())
-            .getLayer(LayerConstants.PRINTABLE_LAYERS));
-      }
-      else if (viewer.getRootEditPart() instanceof ScalableFreeformRootEditPart) {
-        thumbnail = new ScrollableThumbnail(
-            (Viewport) ((ScalableFreeformRootEditPart) viewer.getRootEditPart()).getFigure());
-        thumbnail.setSource(((ScalableFreeformRootEditPart) viewer.getRootEditPart())
-            .getLayer(LayerConstants.PRINTABLE_LAYERS));
-      }
-      
-      lws.setContents(thumbnail);
-      disposeListener = new DisposeListener() {
-        
-        @Override
-        public void widgetDisposed(DisposeEvent e) {
-          if (thumbnail != null) {
-            thumbnail.deactivate();
-            thumbnail = null;
-          }
-        }
-      };
-      viewer.getControl().addDisposeListener(disposeListener);
+    // miniature view
+    if (getViewer().getRootEditPart() instanceof ScalableRootEditPart) {
+      thumbnail = new ScrollableThumbnail(
+          (Viewport) ((ScalableRootEditPart) getViewer().getRootEditPart()).getFigure());
+      thumbnail.setSource(((ScalableRootEditPart) getViewer().getRootEditPart())
+          .getLayer(LayerConstants.PRINTABLE_LAYERS));
     }
+    else if (getViewer().getRootEditPart() instanceof ScalableFreeformRootEditPart) {
+      thumbnail = new ScrollableThumbnail(
+          (Viewport) ((ScalableFreeformRootEditPart) getViewer().getRootEditPart()).getFigure());
+      thumbnail.setSource(((ScalableFreeformRootEditPart) getViewer().getRootEditPart())
+          .getLayer(LayerConstants.PRINTABLE_LAYERS));
+    }
+    
+    lws.setContents(thumbnail);
+    disposeListener = new DisposeListener() {
+      
+      @Override
+      public void widgetDisposed(DisposeEvent e) {
+        if (thumbnail != null) {
+          thumbnail.deactivate();
+          thumbnail = null;
+        }
+      }
+    };
+    getViewer().getControl().addDisposeListener(disposeListener);
   }
   
   /**
@@ -151,19 +161,23 @@ public class GraphicalOutlinePage extends ContentOutlinePage {
   
   @Override
   public Control getControl() {
-    return sash;
+    if (!externalViewer) {
+      return sash;
+    } else {
+      return getViewer().getControl();
+    }
   }
   
   @Override
   public void dispose() {
-    if (viewer != null) {
-      if (viewer.getControl() != null && !viewer.getControl().isDisposed()) {
+    if (getViewer() != null) {
+      if (getViewer().getControl() != null && !getViewer().getControl().isDisposed()) {
         if (disposeListener != null) {
-          viewer.getControl().removeDisposeListener(disposeListener);
+          getViewer().getControl().removeDisposeListener(disposeListener);
         }
       }
       
-      viewer.dispose();
+      getViewer().dispose();
     }
     super.dispose();
   }
@@ -176,13 +190,14 @@ public class GraphicalOutlinePage extends ContentOutlinePage {
   }
   
   public GenericGraphicsViewer getViewer() {
-    return viewer;
+    return (GenericGraphicsViewer) super.getViewer();
   }
   
   public CommandStack getCommandStack() {
     if (editDomain != null) {
       return editDomain.getCommandStack();
-    } else {
+    }
+    else {
       return null;
     }
   }

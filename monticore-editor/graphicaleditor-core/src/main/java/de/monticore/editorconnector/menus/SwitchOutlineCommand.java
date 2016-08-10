@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package de.monticore.editorconnector;
+package de.monticore.editorconnector.menus;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -33,7 +33,7 @@ import de.monticore.genericgraphics.controller.views.outline.CombinedGraphicsOut
  * @author Philipp Kehrbusch
  *
  */
-public class EditorConnector extends AbstractHandler {  
+public class SwitchOutlineCommand extends AbstractHandler {  
   
   /**
    * Toggles the current outline type of the textual and graphical editor

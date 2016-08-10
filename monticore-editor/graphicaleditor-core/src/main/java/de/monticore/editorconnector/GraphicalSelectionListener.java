@@ -38,7 +38,6 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
-import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.genericgraphics.GenericFormEditor;
@@ -87,7 +86,7 @@ import de.se_rwth.langeditor.texteditor.TextEditorImpl;
  * 
  * @author Tim Enger
  */
-public class FormSelectionListener implements ISelectionListener {
+public class GraphicalSelectionListener implements ISelectionListener {
   
   private GenericGraphicsViewer viewer;
   
@@ -112,7 +111,7 @@ public class FormSelectionListener implements ISelectionListener {
    * @param viewer The {@link GraphicalViewer} this listener is based on.
    * @throws SelectionSyncException
    */
-  public FormSelectionListener(IFile ownFile, GenericGraphicsViewer viewer) {
+  public GraphicalSelectionListener(IFile ownFile, GenericGraphicsViewer viewer) {
     this.viewer = viewer;
     this.ownFile = ownFile;
   }
@@ -129,11 +128,15 @@ public class FormSelectionListener implements ISelectionListener {
         if (file == null || !file.equals(ownFile)) {
           return;
         }
-        setSelection(ss, (GenericFormEditor) part);
+        setSelection(ss, ((GenericFormEditor) part).getTextEditor());
       }
-      else if (part instanceof IContentOutlinePage) {
-        // selection originates from an OutlinePage
+      else if (part instanceof ContentOutline) {
+        // selection originates from agraphical OutlinePage
         ContentOutline co = (ContentOutline) part;
+        IEditorPart activeE = co.getViewSite().getPage().getActiveEditor();
+        if (activeE instanceof TextEditorImpl) {
+          setSelection(ss, (TextEditorImpl) activeE);
+        }
       }
     }
     else if (selection instanceof ITextSelection) {
@@ -145,9 +148,9 @@ public class FormSelectionListener implements ISelectionListener {
         }
         setSelection(ts, (GenericFormEditor) part);
       }
-      else if (part instanceof IContentOutlinePage) {
-        // selection originates from an OutlinePage
-        ContentOutline co = (ContentOutline) part;
+      else if (part instanceof ContentOutline) {
+        // selection originates from a textual OutlinePage
+        // Nothing to do: Handled in OutlinePage
       }
     }
   }
@@ -246,7 +249,7 @@ public class FormSelectionListener implements ISelectionListener {
    * @param editor The {@link TextEditorImpl} to set the text selection in.
    */
   @SuppressWarnings("unchecked")
-  private void setSelection(IStructuredSelection ss, GenericFormEditor editor) {
+  private void setSelection(IStructuredSelection ss, TextEditorImpl editor) {
     List<Object> selectionList = ss.toList();
     
     // if there is more than one element selected select all
@@ -280,8 +283,7 @@ public class FormSelectionListener implements ISelectionListener {
       }
     }
     if (setOnce) {
-      selectText(editor.getTextEditor(),
-          new TextPosition(startLine, startOffset, endLine, endOffset));
+      selectText(editor, new TextPosition(startLine, startOffset, endLine, endOffset));
     }
   }
   
@@ -328,7 +330,7 @@ public class FormSelectionListener implements ISelectionListener {
       length--;
     }
     catch (BadLocationException e) {
-      Log.error("Text Selection failed due to the following exception: " + e);
+      Log.error("0xA1101 Text Selection failed due to the following exception: " + e);
       return;
     }
     
@@ -364,7 +366,7 @@ public class FormSelectionListener implements ISelectionListener {
       endOffset = ts.getOffset() + ts.getLength() - doc.getLineOffset(endLine);
     }
     catch (BadLocationException e) {
-      Log.error("Text Selection failed due to the following exception: " + e);
+      Log.error("0xA1102 Text Selection failed due to the following exception: " + e);
       return;
     }
     

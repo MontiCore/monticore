@@ -17,7 +17,6 @@
 package de.se_rwth.langeditor.texteditor.contentassist;
 
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.core.resources.IStorage;
@@ -34,7 +33,6 @@ import com.google.inject.Inject;
 
 import de.monticore.ast.ASTNode;
 import de.se_rwth.langeditor.injection.TextEditorScoped;
-import de.se_rwth.langeditor.modelstates.ModelState;
 import de.se_rwth.langeditor.modelstates.Nodes;
 import de.se_rwth.langeditor.modelstates.ObservableModelStates;
 import de.se_rwth.langeditor.util.antlr.ParseTrees;
@@ -42,12 +40,10 @@ import de.se_rwth.langeditor.util.antlr.ParseTrees;
 @TextEditorScoped
 public class ContentAssistProcessorImpl implements IContentAssistProcessor {
   
-  private final Supplier<Optional<ModelState>> currentModelState;
   
   @Inject
   public ContentAssistProcessorImpl(IStorage storage,
       ObservableModelStates observableModelStates) {
-    this.currentModelState = () -> observableModelStates.findModelState(storage);
   }
   
   @Override
