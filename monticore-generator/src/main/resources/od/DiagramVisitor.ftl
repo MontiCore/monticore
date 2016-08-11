@@ -73,7 +73,7 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
           <#if !genHelper.isAstNode(field)>
             <#if genHelper.isOptional(field) && !genHelper.isOptionalAstNode(field)>
               if (node.${genHelper.getPlainGetter(field)}().isPresent()) {
-               printAttribute("${field.getName()}", String.valueOf(node.${genHelper.getPlainGetter(field)}().get()));
+               printAttribute("${field.getName()}", "\"" + String.valueOf(node.${genHelper.getPlainGetter(field)}().get()) + "\"");
               }
             <#elseif genHelper.isListType(field.getType())  && !genHelper.isListAstNode(field)>
             {
