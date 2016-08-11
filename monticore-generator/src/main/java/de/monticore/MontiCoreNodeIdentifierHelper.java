@@ -19,7 +19,6 @@
 
 package de.monticore;
 
-import static de.monticore.generating.templateengine.reporting.commons.Layouter.className;
 import static de.monticore.generating.templateengine.reporting.commons.Layouter.nodeName;
 
 import de.monticore.ast.ASTNode;
@@ -62,9 +61,9 @@ import de.se_rwth.commons.Names;
  */
 public class MontiCoreNodeIdentifierHelper implements IASTNodeIdentHelper {
 
-  public static final String LAYOUT_FULL = "<<%s:%s>>";
+  public static final String LAYOUT_FULL = "@%s:%s";
 
-  public static final String LAYOUT_TYPE = "<<:%s>>";
+  public static final String LAYOUT_TYPE = "@:%s";
 
   protected static final String format(String id, String type) {
     return String.format(LAYOUT_FULL, id, type);
