@@ -6,9 +6,6 @@
    <bundle id="texteditor-core" version="4.4.2.qualifier">
       <category name="mc-editor"/>
    </bundle>
-   <bundle id="graphicaleditor-core" version="4.4.2.qualifier">
-      <category name="mc-editor"/>
-   </bundle>
    <bundle id="grammar-editor" version="4.4.2.qualifier">
       <category name="mc-editor"/>
    </bundle>
