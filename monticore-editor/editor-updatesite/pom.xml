@@ -25,12 +25,6 @@
     
     <dependency>
       <groupId>de.monticore</groupId>
-      <artifactId>graphicaleditor-core</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>de.monticore</groupId>
       <artifactId>grammar-editor</artifactId>
       <version>${project.version}</version>
     </dependency>
