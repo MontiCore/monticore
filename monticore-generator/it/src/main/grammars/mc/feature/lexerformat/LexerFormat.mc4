@@ -1,6 +1,6 @@
 package mc.feature.lexerformat;
 
-grammar LexerFormat {
+grammar LexerFormat {  
 
 token NUMBER = 
 	 ('0'..'9')+  : x ->  int  :  { return Integer.parseInt(x.getText()); };
@@ -20,9 +20,12 @@ token NUMBERFLOAT =
 token CARD =
 	 (('0'..'9')+ | '*' )
 	 : card; // support String (default), boolean, char, int, float, double, long, card 
+	 
+token COMMENT =
+	 "<<" .*? ">>";
 	 	 
 Test = 
-  a:NUMBER | b:BOOLEAN | c:CHAR | d:NUMBERFLOAT | e:CARD ;
+  a:NUMBER | b:BOOLEAN | c:CHAR | d:NUMBERFLOAT | e:CARD | f:COMMENT;
 	
 // TODO SO 	 
 /* 

@@ -20,6 +20,7 @@
 package mc.feature.lexerformat;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -28,6 +29,7 @@ import java.util.Optional;
 
 import org.junit.Test;
 
+import de.monticore.antlr4.MCConcreteParser.ParserExecution;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.lexerformat.lexerformat._ast.ASTTest;
 import mc.feature.lexerformat.lexerformat._ast.ASTTest2;
@@ -123,5 +125,20 @@ public class LexerTest extends GeneratorIntegrationsTest {
     LexerFormatParser p = new LexerFormatParser();
     Optional<ASTTest2> ast = p.parseTest2(new StringReader("1;1"));
     assertTrue(ast.isPresent());
+  }
+  
+  @Test
+  public void test6() throws IOException {    
+    LexerFormatParser p = new LexerFormatParser();
+    Optional<ASTTest> ast = p.parseTest(new StringReader("<<ddfdfd>>"));
+    assertTrue(ast.isPresent());
+  }
+  
+  @Test
+  public void test7() throws IOException {    
+    LexerFormatParser p = new LexerFormatParser();
+    p.setParserTarget(ParserExecution.EOF);
+    Optional<ASTTest> ast = p.parseTest(new StringReader("<<ddfd>>fd>>"));
+    assertTrue(p.hasErrors());
   }
 }

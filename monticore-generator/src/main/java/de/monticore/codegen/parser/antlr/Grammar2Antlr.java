@@ -379,7 +379,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
       addToCodeSection(")");
     }
-
+    
     endCodeSection(ast);
   }
 
@@ -443,7 +443,8 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
   @Override
   public void handle(ASTLexSimpleIteration ast) {
-
+    startCodeSection();
+    
     // Start of Block
     addToAntlrCode("(");
 
@@ -457,14 +458,17 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     else if (ast.getLexNonTerminal().isPresent()) {
       ast.getLexNonTerminal().get().accept(getRealThis());
     }
+    else if (ast.getLexAnyChar().isPresent()) {
+      ast.getLexAnyChar().get().accept(getRealThis());
+    }
 
-    // Close block and print iteration
-    startCodeSection();
-
+    // Close block and print iteration   
     addToCodeSection(")\n", printIteration(ast.getIteration()));
-
     endCodeSection();
-
+    
+    if (ast.isQuestion()) {
+      addToAntlrCode("?");
+    }
   }
 
   /**
@@ -588,6 +592,13 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     endCodeSection();
   }
 
+  @Override
+  public void visit(ASTLexAnyChar a) {
+    startCodeSection();
+    addToCodeSection(".");
+    endCodeSection();
+  }
+  
   @Override
   public void visit(ASTLexString a) {
     startCodeSection();

@@ -562,6 +562,9 @@ component grammar Grammar extends de.monticore.literals.Literals {
   LexChar implements LexComponent =
     (negate:["~"])? Char ;
 
+  LexAnyChar implements LexComponent =
+    ".";
+
   LexString implements LexComponent =
     string:String ;
 
@@ -573,7 +576,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
     Name ;
 
   LexSimpleIteration implements LexComponent =
-    (LexNonTerminal | LexString | LexChar) iteration:["?"|"*"|"+"];
+    (LexNonTerminal | LexString | LexChar | LexAnyChar) iteration:["?"|"*"|"+"] (question:["?"])?;
 
   LexOption =
     "options" "{" iD:Name "=" value:Name ";" "}";

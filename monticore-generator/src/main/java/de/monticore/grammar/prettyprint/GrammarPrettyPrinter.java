@@ -43,6 +43,7 @@ import de.monticore.grammar.grammar._ast.ASTGrammarReference;
 import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
 import de.monticore.grammar.grammar._ast.ASTLexActionOrPredicate;
 import de.monticore.grammar.grammar._ast.ASTLexAlt;
+import de.monticore.grammar.grammar._ast.ASTLexAnyChar;
 import de.monticore.grammar.grammar._ast.ASTLexBlock;
 import de.monticore.grammar.grammar._ast.ASTLexChar;
 import de.monticore.grammar.grammar._ast.ASTLexCharRange;
@@ -786,6 +787,15 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
 
     getPrinter().print("'" + a.getChar() + "'");
 
+    CommentPrettyPrinter.printPostComments(a, getPrinter());
+  }
+
+  @Override
+  public void handle(ASTLexAnyChar a) {
+    CommentPrettyPrinter.printPreComments(a, getPrinter());
+
+    getPrinter().print(".");
+    
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
