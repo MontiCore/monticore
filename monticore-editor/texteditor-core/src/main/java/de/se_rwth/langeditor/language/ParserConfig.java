@@ -28,8 +28,9 @@ import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
-import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.TokenStream;
+
+import de.se_rwth.commons.SourcePosition;
 
 public final class ParserConfig<P extends Parser> {
   
@@ -56,14 +57,14 @@ public final class ParserConfig<P extends Parser> {
     return startingRule.apply(setupParser(document));
   }
   
-  public ParserRuleContext parse(String document, BiConsumer<Token, String> errorListener) {
+  public ParserRuleContext parse(String document, BiConsumer<SourcePosition, String> errorListener) {
     P parser = setupParser(document);
     parser.addErrorListener(new BaseErrorListener() {
       
       @Override
       public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
           int line, int charPositionInLine, String msg, RecognitionException e) {
-        errorListener.accept((Token) offendingSymbol, msg);
+        errorListener.accept(new SourcePosition(line,  charPositionInLine), msg);
       }
     });
     return startingRule.apply(parser);

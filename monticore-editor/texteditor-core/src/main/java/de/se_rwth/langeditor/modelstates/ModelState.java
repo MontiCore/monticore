@@ -25,13 +25,13 @@ import java.util.Optional;
 import javax.annotation.Nullable;
 
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.misc.Interval;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IStorage;
 
 import com.google.common.collect.ImmutableMultimap;
 
 import de.monticore.ast.ASTNode;
+import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.langeditor.language.Language;
 
@@ -51,7 +51,7 @@ public final class ModelState {
     
     private Optional<ParserRuleContext> rootContext = Optional.empty();
     
-    private Optional<ImmutableMultimap<Interval, String>> syntaxErrors = Optional.empty();
+    private Optional<ImmutableMultimap<SourcePosition, String>> syntaxErrors = Optional.empty();
     
     private ModelState lastModelState;
     
@@ -75,7 +75,7 @@ public final class ModelState {
       return rootNode;
     }
     
-    public Optional<ImmutableMultimap<Interval, String>> getSyntaxErrors() {
+    public Optional<ImmutableMultimap<SourcePosition, String>> getSyntaxErrors() {
       return syntaxErrors;
     }
     
@@ -119,7 +119,7 @@ public final class ModelState {
       return this;
     }
     
-    public ModelStateBuilder setSyntaxErrors(ImmutableMultimap<Interval, String> syntaxErrors) {
+    public ModelStateBuilder setSyntaxErrors(ImmutableMultimap<SourcePosition, String> syntaxErrors) {
       checkState(!this.syntaxErrors.isPresent());
       this.syntaxErrors = Optional.of(syntaxErrors);
       return this;
@@ -149,7 +149,7 @@ public final class ModelState {
   
   private final ParserRuleContext rootContext;
   
-  private final ImmutableMultimap<Interval, String> syntaxErrors;
+  private final ImmutableMultimap<SourcePosition, String> syntaxErrors;
   
   private final List<Finding> additionalErrors = new ArrayList<>();
   
@@ -162,7 +162,7 @@ public final class ModelState {
       Language language,
       ASTNode rootNode,
       ParserRuleContext rootContext,
-      ImmutableMultimap<Interval, String> syntaxErrors,
+      ImmutableMultimap<SourcePosition, String> syntaxErrors,
       @Nullable ModelState lastState) {
     this.storage = storage;
     this.project = project;
@@ -214,7 +214,7 @@ public final class ModelState {
       lastLegalState.flatMap(ModelState::getLastLegalRootContext);
   }
   
-  public ImmutableMultimap<Interval, String> getSyntaxErrors() {
+  public ImmutableMultimap<SourcePosition, String> getSyntaxErrors() {
     return syntaxErrors;
   }
   
