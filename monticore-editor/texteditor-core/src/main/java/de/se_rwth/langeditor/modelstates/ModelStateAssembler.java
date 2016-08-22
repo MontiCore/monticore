@@ -25,7 +25,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.misc.Interval;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -36,6 +35,7 @@ import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.langeditor.global.LanguageLocator;
 import de.se_rwth.langeditor.language.Language;
 import de.se_rwth.langeditor.modelstates.ModelState.ModelStateBuilder;
@@ -139,11 +139,11 @@ public class ModelStateAssembler {
   private ModelState createNewModelState(
       IStorage storage, IProject project, String content, Language language) {
     
-    ImmutableMultimap.Builder<Interval, String> syntaxErrorBuilder = ImmutableMultimap.builder();
+    ImmutableMultimap.Builder<SourcePosition, String> syntaxErrorBuilder = ImmutableMultimap.builder();
     
     ParserRuleContext rootContext = language.getParserConfig().parse(content,
-        (token, message) -> syntaxErrorBuilder.put(
-            new Interval(token.getStartIndex(), token.getStopIndex() + 1), message));
+        (pos, message) -> syntaxErrorBuilder.put(
+            pos, message));
     
     nodes.addNodes(rootContext);
     
