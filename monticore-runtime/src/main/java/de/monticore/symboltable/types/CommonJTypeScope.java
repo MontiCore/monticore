@@ -19,15 +19,6 @@
 
 package de.monticore.symboltable.types;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION;
-import static de.monticore.symboltable.modifiers.BasicAccessModifier.PACKAGE_LOCAL;
-import static de.monticore.symboltable.modifiers.BasicAccessModifier.PRIVATE;
-import static de.monticore.symboltable.modifiers.BasicAccessModifier.PROTECTED;
-
-import java.util.Collection;
-import java.util.Optional;
-
 import de.monticore.symboltable.CommonScope;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ScopeSpanningSymbol;
@@ -38,6 +29,15 @@ import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.resolving.ResolvingInfo;
 import de.monticore.symboltable.types.references.JTypeReference;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.Collection;
+import java.util.Optional;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION;
+import static de.monticore.symboltable.modifiers.BasicAccessModifier.PACKAGE_LOCAL;
+import static de.monticore.symboltable.modifiers.BasicAccessModifier.PRIVATE;
+import static de.monticore.symboltable.modifiers.BasicAccessModifier.PROTECTED;
 
 /**
  * @author Pedram Mir Seyed Nazari
@@ -140,6 +140,7 @@ public class CommonJTypeScope extends CommonScope {
   }
 
   @Override
+  @Deprecated
   public Optional<? extends Symbol> resolve(final SymbolPredicate predicate) {
     Optional<? extends Symbol> resolvedSymbol = super.resolve(predicate);
 

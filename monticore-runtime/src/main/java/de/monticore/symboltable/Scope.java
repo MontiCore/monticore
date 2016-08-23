@@ -244,4 +244,12 @@ public interface Scope {
    * @return the corresponding ast node
    */
   Optional<? extends ASTNode> getAstNode();
+
+  /**
+   * Returns this scope as a {@link MutableScope}. Note that each scope must
+   * implement {@link MutableScope}.
+   *
+   * @return this scope as a {@link MutableScope}.
+   */
+  MutableScope getAsMutableScope();
 }

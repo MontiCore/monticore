@@ -19,14 +19,14 @@
 
 package de.monticore.symboltable;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.Optional;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Optional;
 
 /**
  * @author Pedram Mir Seyed Nazari
@@ -144,7 +144,7 @@ public abstract class CommonSymbol implements Symbol {
   protected String determineFullName() {
     if (enclosingScope == null) {
       // There should not be a symbol that is not defined in any scope. This case should only
-      // occur while the symbol is build (by the symbol table creator). So, here the fullName
+      // occur while the symbol is built (by the symbol table creator). So, here the full name
       // should not be cached yet.
       return name;
     }

@@ -403,6 +403,11 @@ public class CommonScope implements MutableScope {
     return Optional.ofNullable(astNode);
   }
 
+  @Override
+  public MutableScope getAsMutableScope() {
+    return this;
+  }
+
   public void setAstNode(ASTNode astNode) {
     this.astNode = astNode;
   }
