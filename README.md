@@ -15,3 +15,6 @@ Please make sure that your complete workspace only uses UNIX line endings (LF) a
 On Windows you should configure git to not automatically replace LF with CRLF during checkout by executing the following configuration:
 
     git config --global core.autocrlf input
+
+
+# copright: see Manifesto
