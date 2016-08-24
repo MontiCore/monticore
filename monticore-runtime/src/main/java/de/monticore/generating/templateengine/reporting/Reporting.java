@@ -43,25 +43,25 @@ import de.se_rwth.commons.logging.Slf4jLog;
  * @version $Revision$, $Date$
  */
 public class Reporting extends Slf4jLog {
-  
+
   /**
    * Map of model names to actual report managers.
    */
   private Map<String, ReportManager> reportManagers = new HashMap<>();
-  
+
   /**
    * Where reports will be written to.
    */
   private String outputDirectory;
-  
+
   /**
    * For creating report managers on-demand for newly processed models.
    */
   private ReportManagerFactory factory;
-  
+
   /**
    * Constructor for de.monticore.generating.templateengine.reporting.Reporting
-   * 
+   *
    * @param outputDirectory for storing the reports
    * @param factory for creating specific report manager configurations
    */
@@ -69,19 +69,19 @@ public class Reporting extends Slf4jLog {
     this.outputDirectory = outputDirectory;
     this.factory = factory;
   }
-  
+
   private Map<String, ReportManager> getReportManagers() {
     return this.reportManagers;
   }
-  
+
   private String getOutputDirectory() {
     return this.outputDirectory;
   }
-  
+
   private ReportManagerFactory getFactory() {
     return this.factory;
   }
-  
+
   private ReportManager getReportManager(String modelName) {
     if (!this.getReportManagers().containsKey(modelName)) {
       ReportManager repoMan = this.getFactory().provide(modelName);
@@ -89,10 +89,10 @@ public class Reporting extends Slf4jLog {
     }
     return this.getReportManagers().get(modelName);
   }
-  
+
   // #########################
   // some log overriding magic
-  
+
   /**
    * @see de.se_rwth.commons.logging.ILog#warn(java.lang.String)
    */
@@ -101,7 +101,7 @@ public class Reporting extends Slf4jLog {
     reportWarning(msg);
     super.doWarn(msg);
   }
-  
+
   /**
    * @see de.se_rwth.commons.logging.ILog#warn(java.lang.String,
    * java.lang.Throwable)
@@ -111,7 +111,7 @@ public class Reporting extends Slf4jLog {
     reportWarning(msg);
     super.doWarn(msg, t);
   }
-  
+
   /**
    * @see de.se_rwth.commons.logging.ILog#error(java.lang.String)
    */
@@ -119,7 +119,7 @@ public class Reporting extends Slf4jLog {
   public void doError(String msg) {
     this.doError(msg, Optional.empty());
   }
-  
+
   /**
    * @see de.se_rwth.commons.logging.ILog#error(java.lang.String,
    * java.lang.Throwable)
@@ -128,7 +128,7 @@ public class Reporting extends Slf4jLog {
   public void doError(String msg, Throwable t) {
     this.doError(msg, Optional.ofNullable(t));
   }
-  
+
   private void doError(String msg, Optional<Throwable> t) {
     // we need to know whether we wanted to fail immediately
     boolean wantsToFailQuick = Log.isFailQuickEnabled();
@@ -145,7 +145,7 @@ public class Reporting extends Slf4jLog {
     else {
       super.doError(msg);
     }
-    
+
     // now if we wanted to fail quick, we need to flush the reports without
     // causing a crash, i.e., we need to catch exceptions
     if (wantsToFailQuick) {
@@ -159,32 +159,32 @@ public class Reporting extends Slf4jLog {
         super.doDebug("Error during error reporting", e, ReportManager.class.getName());
       }
     }
-    
+
     // eventually, if we wanted to fail quick we do it now
     if (wantsToFailQuick) {
       Log.enableFailQuick(true);
     }
   }
-  
+
   // end of the log overriding magic
   // #########################
-  
+
   /* the singleton */
   private static Reporting singleton;
-  
+
   /* whether reporting is enabled at the moment */
   private static boolean enabled = false;
-  
+
   /* the currently active model for which reporting takes place */
   private static String currentModel;
-  
+
   /**
    * @return the single reporting instance
    */
   private static Reporting get() {
     return singleton;
   }
-  
+
   public static void init(String outputDirectory, ReportManagerFactory factory) {
     if (outputDirectory == null || outputDirectory.isEmpty()) {
       Log.error("0xA4050 Output directory must not be null or empty.");
@@ -195,7 +195,7 @@ public class Reporting extends Slf4jLog {
     singleton = new Reporting(outputDirectory, factory);
     Log.setLog(singleton);
   }
-  
+
   /**
    * @return whether reporting was properly initialized
    * @see Reporting#init(String, ReportManagerFactory)
@@ -203,7 +203,7 @@ public class Reporting extends Slf4jLog {
   public static boolean isInitialized() {
     return get() != null;
   }
-  
+
   /**
    * @return whether reporting is currently enabled
    */
@@ -214,10 +214,10 @@ public class Reporting extends Slf4jLog {
     // if it's not initialized it's also not enabled
     return false;
   }
-  
+
   /**
    * Enable reporting for the given model name.
-   * 
+   *
    * @param modelName for which to enable reporting
    * @return whether reporting is enabled or not (reporting will not be enabled
    * if reporting was not previously initialized)
@@ -230,15 +230,15 @@ public class Reporting extends Slf4jLog {
       Log.warn("0xA4053 You must initialize reporting before enabling it.");
       return false;
     }
-    
+
     currentModel = modelName;
     enabled = true;
     return enabled;
   }
-  
+
   /**
    * Disable reporting entirely.
-   * 
+   *
    * @return the currently active model name for which reporting was active
    */
   public static String off() {
@@ -250,7 +250,7 @@ public class Reporting extends Slf4jLog {
     }
     return "";
   }
-  
+
   /**
    * @return the currently active/responsible report manager instance
    */
@@ -258,40 +258,83 @@ public class Reporting extends Slf4jLog {
     // must only be used internally and with preceeding checks fo initialization
     return get().getReportManager(currentModel);
   }
-  
+
   public static void reportTransformationStart(String transformationName) {
     if (isEnabled()) {
       getReportManager().reportTransformationStart(transformationName);
     }
   }
-  
-  public static void reportTransformationObjectChange(String transformationName, ASTNode ast) {
+
+  public static void reportTransformationObjectMatch(String transformationName, ASTNode ast) {
     if (isEnabled()) {
-      getReportManager().reportTransformationObjectChange(transformationName, ast);
+      getReportManager().reportTransformationObjectMatch(transformationName, ast);
     }
   }
-  
+
+  public static void reportTransformationOldValue(String transformationName, ASTNode ast){
+    if (isEnabled()) {
+      getReportManager().reportTransformationOldValue(transformationName, ast);
+    }
+  }
+
+  public static void reportTransformationNewValue(String transformationName, ASTNode ast){
+    if (isEnabled()) {
+      getReportManager().reportTransformationNewValue(transformationName, ast);
+    }
+  }
+  public static void reportTransformationOldValue(String transformationName, String value){
+    if (isEnabled()) {
+      getReportManager().reportTransformationOldValue(transformationName, value);
+    }
+  }
+
+  public static void reportTransformationNewValue(String transformationName, String value){
+    if (isEnabled()) {
+      getReportManager().reportTransformationNewValue(transformationName, value);
+    }
+  }
+
+  public static void reportTransformationOldValue(String transformationName, boolean value){
+    if (isEnabled()) {
+      getReportManager().reportTransformationOldValue(transformationName, value);
+    }
+  }
+
+  public static void reportTransformationNewValue(String transformationName, boolean value){
+    if (isEnabled()) {
+      getReportManager().reportTransformationNewValue(transformationName, value);
+    }
+  }
+
+  public static void reportTransformationObjectChange(String transformationName, ASTNode ast, String attributeName) {
+    if (isEnabled()) {
+      getReportManager().reportTransformationObjectChange(transformationName, ast, attributeName);
+    }
+  }
+
   public static void reportTransformationObjectCreation(String transformationName, ASTNode ast) {
     if (isEnabled()) {
       getReportManager().reportTransformationObjectCreation(transformationName, ast);
     }
   }
-  
+
   public static void reportTransformationObjectDeletion(String transformationName, ASTNode ast) {
     if (isEnabled()) {
       getReportManager().reportTransformationObjectDeletion(transformationName, ast);
     }
   }
-  
+
   public static void reportModelStart(ASTNode ast, String modelName, String fileName) {
     if (isEnabled()) {
       getReportManager().reportModelStart(ast, modelName, fileName);
     }
   }
-  
+
+
+
   /**
    * Reports the execution of templates
-   * 
+   *
    * @param templateName
    * @param ast
    */
@@ -302,14 +345,14 @@ public class Reporting extends Slf4jLog {
       getReportManager().reportTemplateStart(templateName, ast);
     }
   }
-  
+
   /**
    * Reports the execution of a standard template that is wrapped into a
    * template hook point via the
    * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#getTemplateForwardings(String , ASTNode)
    * getTemplateForwardings} method. The template is wrapped into the template
    * hook point only if there is no other template forwarding.
-   * 
+   *
    * @param templateName
    * @param ast
    */
@@ -318,14 +361,14 @@ public class Reporting extends Slf4jLog {
       getReportManager().reportExecuteStandardTemplate(templateName, ast);
     }
   }
-  
+
   /**
    * Reports a template based file creation via the
    * {@link de.monticore.generating.templateengine.TemplateController#writeArgs(String, String, String, ASTNode, List)
    * writeArgs} method of the
    * {@link de.monticore.generating.templateengine.TemplateController
    * TemplateController}.
-   * 
+   *
    * @param templateName
    * @param path
    * @param ast
@@ -335,10 +378,10 @@ public class Reporting extends Slf4jLog {
       getReportManager().reportFileCreation(templateName, path, ast);
     }
   }
-  
+
   /**
    * Reports the end of a file creation (file finalization).
-   * 
+   *
    * @param templateName
    * @param path
    * @param ast
@@ -348,10 +391,10 @@ public class Reporting extends Slf4jLog {
       getReportManager().reportFileFinalization(templateName, path, ast);
     }
   }
-  
+
   /**
    * Reports a template based file creation.
-   * 
+   *
    * @param templateName
    * @param qualifiedFilename
    * @param fileExtension
@@ -363,10 +406,10 @@ public class Reporting extends Slf4jLog {
       getReportManager().reportFileCreation(templateName, qualifiedFilename, fileExtension, ast);
     }
   }
-  
+
   /**
    * Reports the end of a file creation (file finalization).
-   * 
+   *
    * @param templateName
    * @param qualifiedFilename
    * @param fileExtension
@@ -379,10 +422,10 @@ public class Reporting extends Slf4jLog {
           .reportFileFinalization(templateName, qualifiedFilename, fileExtension, ast);
     }
   }
-  
+
   /**
    * Reports the end of a template execution.
-   * 
+   *
    * @param templateName
    * @param ast
    */
@@ -391,37 +434,37 @@ public class Reporting extends Slf4jLog {
       getReportManager().reportTemplateEnd(templateName, ast);
     }
   }
-  
+
   public static void reportModelEnd(String modelName, String fileName) {
     if (isEnabled()) {
       getReportManager().reportModelEnd(modelName, fileName);
     }
   }
-  
+
   public static void reportModelLoad(String qualifiedName) {
     if (isEnabled()) {
       getReportManager().reportModelLoad(qualifiedName);
     }
   }
-  
+
   public static void reportSetValue(String name, Object value) {
     if (isEnabled()) {
       getReportManager().reportSetValue(name, value);
     }
   }
-  
+
   public static void reportInstantiate(String className, List<Object> params) {
     if (isEnabled()) {
       getReportManager().reportInstantiate(className, params);
     }
   }
-  
+
   public static void reportMethodCall(String className, String methodName, List<Object> params) {
     if (isEnabled()) {
       getReportManager().reportMethodCall(className, methodName, params);
     }
   }
-  
+
   /**
    * Reports the template inclusion via the
    * {@link de.monticore.generating.templateengine.TemplateController#logTemplateCallOrInclude(String, ASTNode)
@@ -430,7 +473,7 @@ public class Reporting extends Slf4jLog {
    * processTemplate} method of the
    * {@link de.monticore.generating.templateengine.TemplateController
    * TemplateController} after calculating all forwardings.
-   * 
+   *
    * @param templateName
    * @param ast
    */
@@ -439,7 +482,7 @@ public class Reporting extends Slf4jLog {
       getReportManager().reportTemplateInclude(templateName, ast);
     }
   }
-  
+
   /**
    * Reports the template write via the
    * {@link de.monticore.generating.templateengine.TemplateController#logTemplateCallOrInclude(String, ASTNode)
@@ -449,7 +492,7 @@ public class Reporting extends Slf4jLog {
    * {@link de.monticore.generating.templateengine.TemplateController
    * TemplateController}. TemplateWrite does not calculate forwardings, it
    * processes the template instantly.
-   * 
+   *
    * @param templateName
    * @param ast
    */
@@ -458,14 +501,14 @@ public class Reporting extends Slf4jLog {
       getReportManager().reportTemplateWrite(templateName, ast);
     }
   }
-  
+
   /**
    * Reports the registration of a hook point via the
    * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#setHookPoint(String, HookPoint)
    * setHookPoint} method of the
    * {@link de.monticore.generating.templateengine.GlobalExtensionManagement
    * GlobalExtensionManagement}.
-   * 
+   *
    * @param hookName
    * @param hp
    */
@@ -474,14 +517,14 @@ public class Reporting extends Slf4jLog {
       getReportManager().reportSetHookPoint(hookName, hp);
     }
   }
-  
+
   /**
    * Reports the execution of a hook point via the
    * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#callHookPoint(TemplateController, String, ASTNode)
    * callHookPoint} method. This does not include the execution of hook points
    * registered by the setBefore, setAfter or replaceTemplate Methods, nor the
    * execution of AST specific hook points.
-   * 
+   *
    * @param oldTemplate
    * @param beforeHps
    * @param ast
@@ -491,12 +534,12 @@ public class Reporting extends Slf4jLog {
       getReportManager().reportCallHookPointStart(hookName, hp, ast);
     }
   }
-  
+
   /**
    * Reports the end of the execution of a hook point via the
    * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#callHookPoint(TemplateController, String, ASTNode)
    * callHookPoint} method.
-   * 
+   *
    * @param hookName
    */
   public static void reportCallHookPointEnd(String hookName) {
@@ -504,7 +547,7 @@ public class Reporting extends Slf4jLog {
       getReportManager().reportCallHookPointEnd(hookName);
     }
   }
-  
+
   /**
    * Reports the execution of hook points via the
    * {@link de.monticore.generating.templateengine.TemplateController#include(List, List)
@@ -518,7 +561,7 @@ public class Reporting extends Slf4jLog {
    * getTemplateForwardings} method triggered by the
    * {@link de.monticore.generating.templateengine.TemplateController#processTemplate(String, ASTNode, List)
    * processTemplate} method.
-   * 
+   *
    * @param oldTemplate
    * @param afterHps
    * @param ast
@@ -529,7 +572,7 @@ public class Reporting extends Slf4jLog {
       getReportManager().reportCallAfterHookPoint(oldTemplate, afterHps, ast);
     }
   }
-  
+
   /**
    * Reports the execution of hook points via the
    * {@link de.monticore.generating.templateengine.TemplateController#include(List, List)
@@ -543,7 +586,7 @@ public class Reporting extends Slf4jLog {
    * getTemplateForwardings} method triggered by the
    * {@link de.monticore.generating.templateengine.TemplateController#processTemplate(String, ASTNode, List)
    * processTemplate} method.
-   * 
+   *
    * @param oldTemplate
    * @param beforeHps
    * @param ast
@@ -554,7 +597,7 @@ public class Reporting extends Slf4jLog {
       getReportManager().reportCallBeforeHookPoint(oldTemplate, beforeHps, ast);
     }
   }
-  
+
   /**
    * Reports the execution of hook points via the
    * {@link de.monticore.generating.templateengine.TemplateController#include(List, List)
@@ -569,7 +612,7 @@ public class Reporting extends Slf4jLog {
    * getTemplateForwardingsX} method triggered by the
    * {@link de.monticore.generating.templateengine.TemplateController#processTemplate(String, ASTNode, List)
    * processTemplate} method.
-   * 
+   *
    * @param oldTemplate
    * @param hps
    * @param ast
@@ -580,7 +623,7 @@ public class Reporting extends Slf4jLog {
       getReportManager().reportCallReplacementHookPoint(oldTemplate, hps, ast);
     }
   }
-  
+
   /**
    * Reports the execution of hook points via the
    * {@link de.monticore.generating.templateengine.TemplateController#include(List, List)
@@ -594,7 +637,7 @@ public class Reporting extends Slf4jLog {
    * getTemplateForwardings} method triggered by the
    * {@link de.monticore.generating.templateengine.TemplateController#processTemplate(String, ASTNode, List)
    * processTemplate} method.
-   * 
+   *
    * @param oldTemplate
    * @param hps
    * @param ast
@@ -605,7 +648,7 @@ public class Reporting extends Slf4jLog {
       getReportManager().reportCallSpecificReplacementHookPoint(oldTemplate, hps, ast);
     }
   }
-  
+
   /**
    * Reports the replacement of a template by an AST hook point via the
    * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#replaceTemplate(String , ASTNode , HookPoint )
@@ -613,7 +656,7 @@ public class Reporting extends Slf4jLog {
    * {@link de.monticore.generating.templateengine.GlobalExtensionManagement
    * GlobalExtensionManagement}. This does not include any other assignment or
    * replacement.
-   * 
+   *
    * @param oldTemplate
    * @param node
    * @param newHp
@@ -624,7 +667,7 @@ public class Reporting extends Slf4jLog {
       getReportManager().reportASTSpecificTemplateReplacement(oldTemplate, node, newHp);
     }
   }
-  
+
   /**
    * Reports the replacement of a template by hook points via the
    * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#replaceTemplate(String , List )
@@ -632,7 +675,7 @@ public class Reporting extends Slf4jLog {
    * {@link de.monticore.generating.templateengine.GlobalExtensionManagement
    * GlobalExtensionManagement}. This does not include any other assignment or
    * replacement.
-   * 
+   *
    * @param oldTemplate
    * @param newHps
    */
@@ -641,12 +684,12 @@ public class Reporting extends Slf4jLog {
       getReportManager().reportTemplateReplacement(oldTemplate, newHps);
     }
   }
-  
+
   /**
    * Reports the assignment of hook points to a template via
    * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#setBeforeTemplate(String , List )}
    * . This does not include any other assignment or replacement.
-   * 
+   *
    * @param template
    * @param beforeHps
    */
@@ -655,12 +698,12 @@ public class Reporting extends Slf4jLog {
       getReportManager().reportSetBeforeTemplate(template, beforeHps);
     }
   }
-  
+
   /**
    * Reports the assignment of hook points to a template via
    * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#setAfterTemplate(String , List )}
    * . This does not include any other assignment or replacement.
-   * 
+   *
    * @param template
    * @param afterHps
    */
@@ -669,22 +712,22 @@ public class Reporting extends Slf4jLog {
       getReportManager().reportSetAfterTemplate(template, afterHps);
     }
   }
-  
+
   public static void reportUseHandwrittenCodeFile(Path parentDir, Path fileName) {
     if (isEnabled()) {
       getReportManager().reportUseHandwrittenCodeFile(parentDir, fileName);
     }
   }
-  
+
   public static void reportAddValue(String name, Object value, int size) {
     if (isEnabled()) {
       getReportManager().reportAddValue(name, value, size);
     }
   }
-  
+
   /**
    * Invoking this method causes a report of value to DetailedReporter.
-   * 
+   *
    * @param line that will be reported in DetailedReporter
    */
   public static void reportToDetailed(String value) {
@@ -692,12 +735,12 @@ public class Reporting extends Slf4jLog {
       getReportManager().reportDetailed(value);
     }
   }
-  
+
   /**
    * This method is called when an input file is opened which is obtained via
    * model resolution. Such files typically are dependency models (e.g., super
    * grammars, super CDs, ...).
-   * 
+   *
    * @param parentPath
    * @param file
    */
@@ -706,13 +749,13 @@ public class Reporting extends Slf4jLog {
       getReportManager().reportOpenInputFile(parentPath, file);
     }
   }
-  
+
   /**
    * This method is called when an input file is parsed; i.e., this report hook
    * point is designed for the main input artifacts only. E.g., files that are
    * loaded on demand during further processing should not report using this
    * method but {@link #reportOpenInputFile(Path, Path)} instead.
-   * 
+   *
    * @param inputFilePath
    * @param modelName
    */
@@ -721,11 +764,11 @@ public class Reporting extends Slf4jLog {
       getReportManager().reportParseInputFile(inputFilePath, modelName);
     }
   }
-  
+
   /**
    * This method is called to report the content of the symbol table. The method
    * should only be called once during the execution of the generator.
-   * 
+   *
    * @param scope
    */
   public static void reportSymbolTableScope(Scope scope) {
@@ -733,11 +776,11 @@ public class Reporting extends Slf4jLog {
       getReportManager().reportSymbolTableScope(scope);
     }
   }
-  
+
   /**
    * Invoking this method causes all AReporter to close their files and all
    * OneTimeReporter to write their content into files.
-   * 
+   *
    * @param ast the root node of the reported ast
    */
   public static void flush(ASTNode ast) {
@@ -745,19 +788,19 @@ public class Reporting extends Slf4jLog {
       getReportManager().flush(ast);
     }
   }
-  
+
   public static void reportWarning(String message) {
     if (isEnabled()) {
       getReportManager().reportWarning(message);
     }
   }
-  
+
   public static void reportError(String msg) {
     if (isEnabled()) {
       getReportManager().reportError(msg);
     }
   }
-  
+
   public static String getOutputDir() {
     if (isInitialized()) {
       return get().getOutputDirectory();
