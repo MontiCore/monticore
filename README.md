@@ -10,11 +10,11 @@ This product includes the following software:
 * [AntLR](http://www.antlr.org/)
 * [FreeMarker](http://freemarker.org/)
 
-#Build
+#Build 
 Please make sure that your complete workspace only uses UNIX line endings (LF) and all files are UTF-8 without BOM.
 On Windows you should configure git to not automatically replace LF with CRLF during checkout by executing the following configuration:
 
-    git config --global core.autocrlf input
+     git config --global core.autocrlf input
 
 
 # copright: see Manifesto
