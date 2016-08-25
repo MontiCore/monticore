@@ -1,0 +1,9 @@
+package cocos.invalid.A2026;
+
+grammar A2026 {
+
+  a;
+
+  A;
+
+}
