@@ -60,121 +60,121 @@ import de.se_rwth.commons.Names;
  * @version $Revision$, $Date$
  */
 public class MontiCoreNodeIdentifierHelper implements IASTNodeIdentHelper {
-
+  
   public static final String LAYOUT_FULL = "@%s:%s";
-
+  
   public static final String LAYOUT_TYPE = "@:%s";
-
+  
   protected static final String format(String id, String type) {
     return String.format(LAYOUT_FULL, id, type);
   }
-
+  
   protected static final String format(String type) {
     return String.format(LAYOUT_TYPE, type);
   }
-
+  
   // ##############
   // Identifier helper for Literals (could be moved into the grammars module?)
   // TODO: discuss this (with BR?): what do we want identifiers for in the end?
   // until then they remain unused
   // ##############
-
+  
   private static String getIdentifier(ASTBooleanLiteral ast) {
     return format(Boolean.toString(ast.getValue()), nodeName(ast));
   }
-
+  
   private static String getIdentifier(ASTCharLiteral ast) {
     return format(Character.toString(ast.getValue()), nodeName(ast));
   }
-
+  
   private static String getIdentifier(ASTDoubleLiteral ast) {
     return format(Double.toString(ast.getValue()), nodeName(ast));
   }
-
+  
   private static String getIdentifier(ASTFloatLiteral ast) {
     return format(Float.toString(ast.getValue()), nodeName(ast));
   }
-
+  
   private static String getIdentifier(ASTIntLiteral ast) {
     return format(Integer.toString(ast.getValue()), nodeName(ast));
   }
-
+  
   private static String getIdentifier(ASTLongLiteral ast) {
     return format(Long.toString(ast.getValue()), nodeName(ast));
   }
-
+  
   private static String getIdentifier(ASTNullLiteral ast) {
     return format("null", nodeName(ast));
   }
-
+  
   private static String getIdentifier(ASTStringLiteral ast) {
     return format(ast.getValue(), nodeName(ast));
   }
-
+  
   // ##############
   // Identifier helper for Types (could be moved into the grammars module?)
   // TODO: incomplete by now; only those added here which "seem" to have a name
   // ##############
-
+  
   private static String getIdentifier(ASTQualifiedName ast) {
     return format(ast.toString(), nodeName(ast));
   }
-
+  
   private static String getIdentifier(ASTSimpleReferenceType ast) {
     return format(Names.getQualifiedName(ast.getNames()), nodeName(ast));
   }
-
+  
   private static String getIdentifier(ASTTypeVariableDeclaration ast) {
     return format(ast.getName(), nodeName(ast));
   }
-
-
+  
   // ##############
   // Identifier helper for Grammar
   // TODO: incomplete by now; only those added here which "seem" to have a name
   // ##############
-
+  
   private static String getIdentifier(ASTAntlrOption ast) {
     return format(ast.getName(), nodeName(ast));
   }
-
+  
   private static String getIdentifier(ASTAttributeInAST ast) {
     if (ast.nameIsPresent()) {
       return format(ast.getName().get(), nodeName(ast));
     }
     return format(nodeName(ast));
   }
-
+  
   private static String getIdentifier(ASTConcept ast) {
     return format(ast.getName(), nodeName(ast));
   }
-
+  
   private static String getIdentifier(ASTConstantGroup ast) {
     if (ast.usageNameIsPresent()) {
       return format(ast.getUsageName().get(), nodeName(ast));
     }
     return format(nodeName(ast));
   }
-
+  
   private static String getIdentifier(ASTFollowOption ast) {
     return format(ast.getProdName(), nodeName(ast));
   }
-
+  
   private static String getIdentifier(ASTGenericType ast) {
     return format(Names.getQualifiedName(ast.getNames()), nodeName(ast));
   }
-
+  
   private static String getIdentifier(ASTGrammarReference ast) {
     return format(Names.getSimpleName(ast.getNames()), nodeName(ast));
   }
-
+  
   private static String getIdentifier(ASTITerminal ast) {
     // return a regular "Name"
     String name = ast.getName();
-    if ((name.length()) == 1 && !name.matches("[a-zA-Z0-9_$]")) {
+    if ((name.length()) < 4 && !name.matches("[a-zA-Z0-9_$]*")) {
       // Replace special character by the corresponding name (; -> SEMI)
-      name = LexNamer.createGoodName(name);
-    } else {
+      name = createGoodName(name);
+    }
+    else {
       // Replace all special characters by _
       name = name.replaceAll("[^a-zA-Z0-9_$]", "_");
       if (name.matches("[0-9].*")) {
@@ -184,39 +184,39 @@ public class MontiCoreNodeIdentifierHelper implements IASTNodeIdentHelper {
     }
     return format(name, nodeName(ast));
   }
-
+  
   private static String getIdentifier(ASTLexNonTerminal ast) {
     return format(ast.getName(), nodeName(ast));
   }
-
+  
   private static String getIdentifier(ASTMCGrammar ast) {
     return format(ast.getName(), nodeName(ast));
   }
-
+  
   private static String getIdentifier(ASTMethod ast) {
     return format(ast.getName(), nodeName(ast));
   }
-
+  
   private static String getIdentifier(ASTMethodParameter ast) {
     return format(ast.getName(), nodeName(ast));
   }
-
+  
   private static String getIdentifier(ASTNonTerminal ast) {
     return format(ast.getName(), nodeName(ast));
   }
-
+  
   private static String getIdentifier(ASTNonTerminalSeparator ast) {
     return format(ast.getName(), nodeName(ast));
   }
-
+  
   private static String getIdentifier(ASTProd ast) {
     return format(ast.getName(), nodeName(ast));
   }
-
+  
   private static String getIdentifier(ASTRuleReference ast) {
     return format(ast.getName(), nodeName(ast));
   }
-
+  
   /**
    * @see de.monticore.generating.templateengine.reporting.commons.IASTNodeIdentHelper#getIdent(de.monticore.ast.ASTNode)
    */
@@ -305,5 +305,23 @@ public class MontiCoreNodeIdentifierHelper implements IASTNodeIdentHelper {
     }
     return format(nodeName(ast));
   }
-
+  
+  private static String createGoodName(String x) {
+    StringBuilder ret = new StringBuilder();
+    
+    for (int i = 0; i < x.length(); i++) {
+      
+      String substring = x.substring(i, i + 1);
+      if (LexNamer.getGoodNames().containsKey(substring)) {
+        ret.append(LexNamer.getGoodNames().get(substring));
+      }
+      else {
+        ret.append(substring);
+      }
+    }
+    
+    return ret.toString();
+    
+  }
+  
 }
