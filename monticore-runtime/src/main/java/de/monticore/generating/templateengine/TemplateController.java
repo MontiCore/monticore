@@ -47,6 +47,7 @@ import freemarker.template.SimpleHash;
 import freemarker.template.Template;
 import freemarker.template.TemplateModelException;
 
+  // TODO: describe methods better for JavaDoc 
 
 /**
  * Provides methods for manipulating the content of templates, mainly for
@@ -487,6 +488,7 @@ public class TemplateController {
     initAliases();
     
     // Load template
+    // TODO:
     // It's pretty inefficient each time to create a new instance of the
     // FreeMarker configuration by FreeMarkerTemplateEngine.loadTemplate(...)
     // method
@@ -641,6 +643,7 @@ public class TemplateController {
     }
   }
   
+  // TODO: can we remove this one?
   public String defineHookPoint(String hookName) {
     return glex.defineHookPoint(this, hookName, getAST());
   }
@@ -676,7 +679,7 @@ public class TemplateController {
   List<Macro> getAliases() {
     return aliases;
   }
-  
+ 
   public boolean existsHWC(String fileName) {
     return existsHWC(fileName, DEFAULT_FILE_EXTENSION);
   }
