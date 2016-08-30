@@ -163,7 +163,7 @@ public class GeneratorEngine {
    * @param filePath the file path in which the content is to be written
    * @param handcodedPath the path for the handwritten code
    * @param node the ast node
-   * @param templateArguments additional template arguments (if needed).
+   * @param templateArguments additional template arguments (if needed)
    */
   public void generateAndConsiderHWC(String templateName, Path filePath, IterablePath handcodedPath,
       ASTNode node,
