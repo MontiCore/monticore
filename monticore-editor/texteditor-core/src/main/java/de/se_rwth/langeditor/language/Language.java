@@ -17,6 +17,7 @@
 package de.se_rwth.langeditor.language;
 
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -24,8 +25,13 @@ import org.eclipse.core.resources.IProject;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.symboltable.GlobalScope;
+import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.SymbolKind;
+import de.monticore.symboltable.types.JTypeSymbol;
 import de.se_rwth.langeditor.modelstates.ModelState;
 
 public interface Language {
@@ -76,6 +82,13 @@ public interface Language {
   }
   
   /**
+   * @return the set of elements that should be listed in the outline of each file
+   */
+  default Collection<? extends SymbolKind> getCompletionKinds() {
+    return Sets.newHashSet(JTypeSymbol.KIND);
+  }
+
+  /**
    * The outer Optional indicates whether resolving should be attempted (this dictates whether a
    * hyperlink will be displayed). The inner Optional is the result of an attempted resolving
    * process. This is an instance of the proxy pattern.
@@ -85,6 +98,22 @@ public interface Language {
    * preconfigured with the destination).
    */
   default Optional<Supplier<Optional<ASTNode>>> createResolver(ASTNode astNode) {
+    return Optional.empty();
+  }
+  
+  default Optional<GlobalScope> getScope(ASTNode node) {
+    if (node.getEnclosingScope().isPresent()) {
+      if (node.getEnclosingScope().get() instanceof GlobalScope) {
+        return Optional.of((GlobalScope) node.getEnclosingScope().get());
+      }
+      Optional<? extends Scope> scope = node.getEnclosingScope().get().getEnclosingScope();
+      if (scope.isPresent() && scope.get() instanceof GlobalScope) {
+        return Optional.of((GlobalScope) scope.get());
+      }
+      if (scope.get().getAstNode().isPresent()) {
+        return getScope(scope.get().getAstNode().get());
+      }
+    }
     return Optional.empty();
   }
 }
