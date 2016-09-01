@@ -19,6 +19,7 @@ package de.se_rwth.monticoreeditor;
 import static de.se_rwth.langeditor.util.Misc.loadImage;
 
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -26,6 +27,7 @@ import org.eclipse.core.resources.IProject;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.grammar.cocos.GrammarCoCos;
@@ -39,6 +41,8 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsAntlrLexer;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsAntlrParser;
+import de.monticore.languages.grammar.MCTypeSymbol;
+import de.monticore.symboltable.SymbolKind;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.langeditor.language.Language;
 import de.se_rwth.langeditor.language.OutlineElementSet;
@@ -50,6 +54,15 @@ public final class MonticoreLanguage implements Language {
   
   private final Resolving resolving = new Resolving();
   
+  private final Collection<? extends SymbolKind> completionKinds = Sets
+      .newHashSet(MCTypeSymbol.KIND);
+      
+  private final ImmutableList<String> keywords = ImmutableList.of("component", "package", "grammar",
+      "options", "astimplements",
+      "astextends",
+      "interface", "enum", "implements", "external", "fragment",
+      "extends", "returns", "ast", "token", "protected");
+      
   @Override
   public String getExtension() {
     return "mc4";
@@ -88,10 +101,15 @@ public final class MonticoreLanguage implements Language {
   
   @Override
   public ImmutableList<String> getKeywords() {
-    return ImmutableList.of("component", "package", "grammar", "options", "astimplements",
-        "astextends",
-        "interface", "enum", "implements", "external", "fragment",
-        "extends", "returns", "ast", "token", "protected");
+    return keywords;
+  }
+  
+  /**
+   * @see de.se_rwth.langeditor.language.Language#getCompletionKinds()
+   */
+  @Override
+  public Collection<? extends SymbolKind> getCompletionKinds() {
+    return completionKinds;
   }
   
   @Override
@@ -135,4 +153,5 @@ public final class MonticoreLanguage implements Language {
       modelState.addAdditionalError(finding);
     });
   }
+
 }
