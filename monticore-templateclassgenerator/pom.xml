@@ -14,7 +14,7 @@
 
   <!-- == PROJECT METAINFORMATION ========================================= -->
 
-  <name>MontiCore: Tempalte Class Generator</name>
+  <name>MontiCore: Template Class Generator</name>
   <description>Generates Java Classes from Templates to Enable Static Type-safe Template Calls</description>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
