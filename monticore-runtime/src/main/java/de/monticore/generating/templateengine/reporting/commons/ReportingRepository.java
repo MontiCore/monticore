@@ -151,8 +151,7 @@ public class ReportingRepository {
       }
       // do not print <...>!1!
       if (nodeWithSource2Ident.get(a) != 1) {
-        String ret = nodeWithSource2Name.get(a).replace(Layouter.END_TAG, "!" + nodeWithSource2Ident.get(a) + Layouter.END_TAG);
-        return ret;
+        return nodeWithSource2Name.get(a).replace(Layouter.END_TAG, "!" + nodeWithSource2Ident.get(a) + Layouter.END_TAG);
       }
       // instead <<...>> if identifier is '1'
       else {
