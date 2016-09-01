@@ -170,13 +170,13 @@ public class MontiCoreNodeIdentifierHelper implements IASTNodeIdentHelper {
   private static String getIdentifier(ASTITerminal ast) {
     // return a regular "Name"
     String name = ast.getName();
-    if ((name.length()) < 4 && !name.matches("[a-zA-Z0-9_$]*")) {
+    if ((name.length()) < 4 && !name.matches("[a-zA-Z0-9_$\\-+]*")) {
       // Replace special character by the corresponding name (; -> SEMI)
       name = createGoodName(name);
     }
     else {
       // Replace all special characters by _
-      name = name.replaceAll("[^a-zA-Z0-9_$]", "_");
+      name = name.replaceAll("[^a-zA-Z0-9_$\\-+]", "_");
       if (name.matches("[0-9].*")) {
         // if the name starts with a digit ...
         name = "_".concat(name);
