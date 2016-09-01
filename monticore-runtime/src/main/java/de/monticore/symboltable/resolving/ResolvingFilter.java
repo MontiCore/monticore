@@ -19,14 +19,15 @@
 
 package de.monticore.symboltable.resolving;
 
+import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.SymbolKind;
+
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.SymbolKind;
 
 /**
  * TODO: Write me!
@@ -39,7 +40,14 @@ public interface ResolvingFilter<S extends Symbol> {
 
   SymbolKind getTargetKind();
 
+  /**
+   * @deprecated use {@link #filter(ResolvingInfo, String, Map)} instead
+   */
+  @Deprecated
   Optional<Symbol> filter(ResolvingInfo resolvingInfo, String name, List<Symbol> symbols);
+
+
+  Optional<Symbol> filter(ResolvingInfo resolvingInfo, String name, Map<String, List<Symbol>> symbols);
 
   Collection<Symbol> filter(ResolvingInfo resolvingInfo, List<Symbol> symbols);
 

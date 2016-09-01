@@ -19,15 +19,16 @@
 
 package de.monticore.symboltable.resolving;
 
+import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.SymbolKind;
+
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.SymbolKind;
 
 /**
  * TODO: Write me!
@@ -49,6 +50,43 @@ public abstract class TransitiveAdaptedResolvingFilter<S extends Symbol>
 
   @Override
   public Optional<Symbol> filter(ResolvingInfo resolvingInfo, String symbolName, List<Symbol> symbols) {
+    // This checks prevents circular dependencies in adapted resolving filters, e.g.,
+    // A -> B (i.e., A is resolved and adapted to B) and B -> A would lead to a circular dependency:
+    // A -> B -> A -> B -> A -> ...
+    if (resolvingInfo.isTargetKindHandled(getTargetKind())) {
+      return Optional.empty();
+    }
+
+    // Prevents circular dependencies. Note that the handled target kind is removed at the end of
+    // this method.
+    resolvingInfo.addHandledTargetKind(getTargetKind());
+
+    final Set<Symbol> resolvedSymbols = new LinkedHashSet<>();
+
+    final Collection<ResolvingFilter<? extends Symbol>> filtersForTargetKind = ResolvingFilter.
+        getFiltersForTargetKind(resolvingInfo.getResolvingFilters(), getSourceKind());
+
+
+
+    for (ResolvingFilter<? extends Symbol> resolvingFilter : filtersForTargetKind) {
+
+      Optional<? extends Symbol> optSymbol = resolvingFilter.filter(resolvingInfo, symbolName, symbols);
+
+      // TODO PN Remove this whole if-statement, if adaptors should be created eager.
+      if (optSymbol.isPresent()) {
+        resolvedSymbols.add(createAdapter(optSymbol.get()));
+      }
+    }
+
+    // Removes the handled target kind. This is important, since other resolving
+    // filters may handle this kind
+    resolvingInfo.removeTargetKind(getTargetKind());
+
+    return ResolvingFilter.getResolvedOrThrowException(resolvedSymbols);
+  }
+
+  @Override
+  public Optional<Symbol> filter(ResolvingInfo resolvingInfo, String symbolName, Map<String, List<Symbol>> symbols) {
     // This checks prevents circular dependencies in adapted resolving filters, e.g.,
     // A -> B (i.e., A is resolved and adapted to B) and B -> A would lead to a circular dependency:
     // A -> B -> A -> B -> A -> ...

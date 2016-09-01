@@ -30,6 +30,8 @@ import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.Names;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author BM
@@ -106,7 +108,10 @@ public class SymbolTableReporter extends AReporter {
 
     currentIndentLevel++;
 
-    scope.getSymbols().stream()
+    final List<Symbol> symb = new ArrayList<>();
+    scope.getSymbols().values().forEach(symb::addAll);
+
+    symb.stream()
         .filter(sym -> !(sym instanceof ScopeSpanningSymbol))
         .forEach(this::reportSymbol);
 

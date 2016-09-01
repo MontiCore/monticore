@@ -19,16 +19,6 @@
 
 package de.monticore.symboltable;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Optional;
-
 import de.monticore.ModelingLanguage;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.mocks.languages.entity.ActionSymbol;
@@ -41,6 +31,16 @@ import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.monticore.symboltable.types.JTypeSymbol;
 import de.monticore.symboltable.types.references.CommonJTypeReference;
 import org.junit.Test;
+
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Optional;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * @author Pedram Mir Seyed Nazari
@@ -58,7 +58,7 @@ public class ResolvingTest {
     localScope.add(entity);
     localScope.add(entity);
 
-    assertEquals(2, localScope.getSymbols().size());
+    assertEquals(2, localScope.getSymbols().get(entity.getName()).size());
 
     try {
       // Although the same symbol is stored twice in the scope, it is

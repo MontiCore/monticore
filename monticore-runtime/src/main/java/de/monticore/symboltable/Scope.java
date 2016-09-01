@@ -25,6 +25,7 @@ import de.monticore.symboltable.resolving.ResolvingFilter;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -193,7 +194,7 @@ public interface Scope {
    *
    * @return all symbols directly defined/contained in this scope (not in enclosing scope).
    */
-  List<Symbol> getSymbols();
+  Map<String, List<Symbol>> getSymbols();
 
   /**
    * @return number of symbols directly defined/contained in this scope (not in enclosing scope).

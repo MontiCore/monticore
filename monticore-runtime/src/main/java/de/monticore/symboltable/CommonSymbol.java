@@ -114,7 +114,7 @@ public abstract class CommonSymbol implements Symbol {
   }
 
   public void setFullName(String fullName) {
-    this.fullName = Log.errorIfNull(fullName);
+    this.fullName = fullName;
   }
 
   @Override
