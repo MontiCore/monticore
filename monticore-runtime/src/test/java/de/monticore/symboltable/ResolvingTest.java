@@ -58,7 +58,7 @@ public class ResolvingTest {
     localScope.add(entity);
     localScope.add(entity);
 
-    assertEquals(2, localScope.getSymbols().get(entity.getName()).size());
+    assertEquals(2, localScope.getLocalSymbols().get(entity.getName()).size());
 
     try {
       // Although the same symbol is stored twice in the scope, it is

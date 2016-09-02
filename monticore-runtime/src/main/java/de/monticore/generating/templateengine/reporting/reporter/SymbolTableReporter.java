@@ -109,7 +109,7 @@ public class SymbolTableReporter extends AReporter {
     currentIndentLevel++;
 
     final List<Symbol> symb = new ArrayList<>();
-    scope.getSymbols().values().forEach(symb::addAll);
+    scope.getLocalSymbols().values().forEach(symb::addAll);
 
     symb.stream()
         .filter(sym -> !(sym instanceof ScopeSpanningSymbol))

@@ -59,7 +59,7 @@ import static com.google.common.base.Strings.nullToEmpty;
  */
 public class CommonScope implements MutableScope {
 
-  private final Map<String, List<Symbol>> symbols = new LinkedHashMap<>();
+  private final Map<String, Collection<Symbol>> symbols = new LinkedHashMap<>();
   private final List<MutableScope> subScopes = new ArrayList<>();
 
   private Boolean exportsSymbols = null;
@@ -302,7 +302,7 @@ public class CommonScope implements MutableScope {
   @Deprecated
   @Override
   public Optional<? extends Symbol> resolve(SymbolPredicate predicate) {
-    final List<Symbol> allSymbols = getSymbolsAsList();
+    final Collection<Symbol> allSymbols = getSymbolsAsCollection();
 
     Set<Symbol> result = new LinkedHashSet<>(allSymbols.stream().filter(predicate).collect(Collectors.toSet()));
 
@@ -318,8 +318,8 @@ public class CommonScope implements MutableScope {
     return getResolvedOrThrowException(result);
   }
 
-  private List<Symbol> getSymbolsAsList() {
-    final List<Symbol> allSymbols = new ArrayList<>();
+  private Collection<Symbol> getSymbolsAsCollection() {
+    final Set<Symbol> allSymbols = new LinkedHashSet<>();
     symbols.values().forEach(allSymbols::addAll);
     return allSymbols;
   }
@@ -360,8 +360,14 @@ public class CommonScope implements MutableScope {
   }
 
   @Override
-  public Map<String, List<Symbol>> getSymbols() {
+  public Map<String, Collection<Symbol>> getLocalSymbols() {
     return ImmutableMap.copyOf(symbols);
+  }
+
+  @Override
+  @Deprecated
+  public Map<String, Collection<Symbol>> getSymbols() {
+    return getLocalSymbols();
   }
 
   @Override
@@ -532,7 +538,7 @@ public class CommonScope implements MutableScope {
 
     final Collection<T> resolvedSymbols = new LinkedHashSet<>();
 
-    final List<Symbol> symbolsAsList = getSymbolsAsList();
+    final Collection<Symbol> symbolsAsList = getSymbolsAsCollection();
 
     for (ResolvingFilter<? extends Symbol> resolvingFilter : resolversForKind) {
       final ResolvingInfo resolvingInfo = new ResolvingInfo(getResolvingFilters());

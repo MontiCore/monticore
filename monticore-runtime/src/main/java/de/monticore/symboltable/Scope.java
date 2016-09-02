@@ -194,7 +194,12 @@ public interface Scope {
    *
    * @return all symbols directly defined/contained in this scope (not in enclosing scope).
    */
-  Map<String, List<Symbol>> getSymbols();
+  Map<String, Collection<Symbol>> getLocalSymbols();
+
+  /**
+   * @deprecated use {@link #getLocalSymbols()} instead
+   */
+  Map<String, Collection<Symbol>> getSymbols();
 
   /**
    * @return number of symbols directly defined/contained in this scope (not in enclosing scope).

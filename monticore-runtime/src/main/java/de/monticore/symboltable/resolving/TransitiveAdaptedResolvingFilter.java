@@ -86,7 +86,7 @@ public abstract class TransitiveAdaptedResolvingFilter<S extends Symbol>
   }
 
   @Override
-  public Optional<Symbol> filter(ResolvingInfo resolvingInfo, String symbolName, Map<String, List<Symbol>> symbols) {
+  public Optional<Symbol> filter(ResolvingInfo resolvingInfo, String symbolName, Map<String, Collection<Symbol>> symbols) {
     // This checks prevents circular dependencies in adapted resolving filters, e.g.,
     // A -> B (i.e., A is resolved and adapted to B) and B -> A would lead to a circular dependency:
     // A -> B -> A -> B -> A -> ...

@@ -59,8 +59,7 @@ public abstract class CommonAdaptedResolvingFilter<S extends Symbol>
   protected abstract Symbol createAdapter(Symbol s);
 
   @Override
-  @Deprecated
-  public Optional<Symbol> filter(ResolvingInfo resolvingInfo, String symbolName, List<Symbol> symbols) {
+  public Optional<Symbol> filter(ResolvingInfo resolvingInfo, String symbolName, Map<String, Collection<Symbol>> symbols) {
     final Set<Symbol> resolvedSymbols = new LinkedHashSet<>();
 
     final Collection<ResolvingFilter<? extends Symbol>> filtersWithoutAdapters =
@@ -83,7 +82,8 @@ public abstract class CommonAdaptedResolvingFilter<S extends Symbol>
   }
 
   @Override
-  public Optional<Symbol> filter(ResolvingInfo resolvingInfo, String symbolName, Map<String, List<Symbol>> symbols) {
+  @Deprecated
+  public Optional<Symbol> filter(ResolvingInfo resolvingInfo, String symbolName, List<Symbol> symbols) {
     final Set<Symbol> resolvedSymbols = new LinkedHashSet<>();
 
     final Collection<ResolvingFilter<? extends Symbol>> filtersWithoutAdapters =

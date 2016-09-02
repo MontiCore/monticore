@@ -25,8 +25,8 @@ import de.monticore.symboltable.resolving.CommonResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingInfo;
 
+import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -38,7 +38,7 @@ public class MCGrammarResolvingFilter<S extends Symbol> extends CommonResolvingF
   }
 
   @Override
-  public Optional<Symbol> filter(ResolvingInfo resolvingInfo, String name, Map<String, List<Symbol>> symbols) {
+  public Optional<Symbol> filter(ResolvingInfo resolvingInfo, String name, Map<String, Collection<Symbol>> symbols) {
     final Set<Symbol> resolvedSymbols = new LinkedHashSet<>();
 
     if (symbols.containsKey(name)) {
