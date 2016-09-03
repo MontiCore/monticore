@@ -302,7 +302,7 @@ public class CommonScope implements MutableScope {
   @Deprecated
   @Override
   public Optional<? extends Symbol> resolve(SymbolPredicate predicate) {
-    final Collection<Symbol> allSymbols = getSymbolsAsCollection();
+    final Collection<Symbol> allSymbols = Scopes.getLocalSymbolsAsCollection(this);
 
     Set<Symbol> result = new LinkedHashSet<>(allSymbols.stream().filter(predicate).collect(Collectors.toSet()));
 
@@ -316,12 +316,6 @@ public class CommonScope implements MutableScope {
     }
 
     return getResolvedOrThrowException(result);
-  }
-
-  private Collection<Symbol> getSymbolsAsCollection() {
-    final Set<Symbol> allSymbols = new LinkedHashSet<>();
-    symbols.values().forEach(allSymbols::addAll);
-    return allSymbols;
   }
 
   protected Optional<? extends Symbol> continueWithEnclosingScope(SymbolPredicate predicate, Set<Symbol> result) {
@@ -538,7 +532,7 @@ public class CommonScope implements MutableScope {
 
     final Collection<T> resolvedSymbols = new LinkedHashSet<>();
 
-    final Collection<Symbol> symbolsAsList = getSymbolsAsCollection();
+    final Collection<Symbol> symbolsAsList = Scopes.getLocalSymbolsAsCollection(this);
 
     for (ResolvingFilter<? extends Symbol> resolvingFilter : resolversForKind) {
       final ResolvingInfo resolvingInfo = new ResolvingInfo(getResolvingFilters());

@@ -26,12 +26,12 @@ import de.monticore.generating.templateengine.reporting.commons.ReportingConstan
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ScopeSpanningSymbol;
+import de.monticore.symboltable.Scopes;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.Names;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author BM
@@ -108,8 +108,7 @@ public class SymbolTableReporter extends AReporter {
 
     currentIndentLevel++;
 
-    final List<Symbol> symb = new ArrayList<>();
-    scope.getLocalSymbols().values().forEach(symb::addAll);
+    final Collection<Symbol> symb = Scopes.getLocalSymbolsAsCollection(scope);
 
     symb.stream()
         .filter(sym -> !(sym instanceof ScopeSpanningSymbol))
