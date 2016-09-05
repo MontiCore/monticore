@@ -38,6 +38,7 @@ import com.google.inject.Inject;
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.Scopes;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.langeditor.injection.TextEditorScoped;
 import de.se_rwth.langeditor.language.Language;
@@ -105,7 +106,7 @@ public class ContentAssistProcessorImpl implements IContentAssistProcessor {
   private List<String> getSymbols(Scope rootScope) {
     Collection<String> names = new HashSet<>();
     if (rootScope.exportsSymbols()) {
-      for (Symbol symbol : rootScope.getSymbols()) {
+      for (Symbol symbol: Scopes.getLocalSymbolsAsCollection(rootScope) ){
         if (language.getCompletionKinds().contains(symbol.getKind())) {
           names.add(symbol.getName());
         }
