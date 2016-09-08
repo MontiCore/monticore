@@ -22,23 +22,7 @@ package de.monticore;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager.ReportManagerFactory;
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
-import de.monticore.generating.templateengine.reporting.reporter.ArtifactGVReporter;
-import de.monticore.generating.templateengine.reporting.reporter.ArtifactGmlReporter;
-import de.monticore.generating.templateengine.reporting.reporter.DetailedReporter;
-import de.monticore.generating.templateengine.reporting.reporter.GeneratedFilesReporter;
-import de.monticore.generating.templateengine.reporting.reporter.HandWrittenCodeReporter;
-import de.monticore.generating.templateengine.reporting.reporter.HookPointReporter;
-import de.monticore.generating.templateengine.reporting.reporter.InputOutputFilesReporter;
-import de.monticore.generating.templateengine.reporting.reporter.InstantiationsReporter;
-import de.monticore.generating.templateengine.reporting.reporter.NodeTreeDecoratedReporter;
-import de.monticore.generating.templateengine.reporting.reporter.NodeTreeReporter;
-import de.monticore.generating.templateengine.reporting.reporter.NodeTypesReporter;
-import de.monticore.generating.templateengine.reporting.reporter.SummaryReporter;
-import de.monticore.generating.templateengine.reporting.reporter.SymbolTableReporter;
-import de.monticore.generating.templateengine.reporting.reporter.TemplateTreeReporter;
-import de.monticore.generating.templateengine.reporting.reporter.TemplatesReporter;
-import de.monticore.generating.templateengine.reporting.reporter.TransformationReporter;
-import de.monticore.generating.templateengine.reporting.reporter.VariablesReporter;
+import de.monticore.generating.templateengine.reporting.reporter.*;
 import de.monticore.io.paths.IterablePath;
 
 /**
@@ -98,7 +82,7 @@ public class MontiCoreReports implements ReportManagerFactory {
     NodeTreeDecoratedReporter nodeTreeDecorated = new NodeTreeDecoratedReporter(
         this.outputDirectory, modelName, repository);
     NodeTypesReporter nodeTypes = new NodeTypesReporter(this.outputDirectory, modelName);
-    SymbolTableReporter symbolTable = new SymbolTableReporter(this.outputDirectory, modelName);
+    SymbolTableReporter symbolTable = new SymbolTableReporter(this.outputDirectory, modelName, repository);
     TransformationReporter transformations = new TransformationReporter(this.outputDirectory,
         modelName, repository);
     ArtifactGmlReporter artifactGml = new ArtifactGmlReporter(this.outputDirectory, modelName);

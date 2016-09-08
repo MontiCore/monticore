@@ -115,9 +115,9 @@ public class SymbolTableReporter extends AReporter {
 
     currentIndentLevel++;
 
-    final Collection<Symbol> symb = Scopes.getLocalSymbolsAsCollection(scope);
+    final Collection<Symbol> symbols = Scopes.getLocalSymbolsAsCollection(scope);
 
-    symb.stream()
+    symbols.stream()
         .filter(sym -> !(sym instanceof ScopeSpanningSymbol))
         .forEach(this::reportSymbol);
 
@@ -132,5 +132,18 @@ public class SymbolTableReporter extends AReporter {
 
     line += sym.getName() + " (kind " + Names.getSimpleName(sym.getKind().getName()) + ")";
     writeLine(line);
+
+    reportAst(sym);
+  }
+
+  private void reportAst(Symbol sym) {
+    if (sym.getAstNode().isPresent()) {
+      currentIndentLevel++;
+      String line = getIndent();
+      line += "--> AST-Node: ";
+      line += repository.getASTNodeNameFormatted(sym.getAstNode().get());
+      writeLine(line);
+      currentIndentLevel--;
+    }
   }
 }
