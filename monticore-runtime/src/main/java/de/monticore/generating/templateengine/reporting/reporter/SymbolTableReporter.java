@@ -23,6 +23,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.reporting.commons.AReporter;
 import de.monticore.generating.templateengine.reporting.commons.Layouter;
 import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
+import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ScopeSpanningSymbol;
@@ -46,15 +47,21 @@ public class SymbolTableReporter extends AReporter {
   final static String SHORT_INDENT = Layouter.getSpaceString(NUM_SPACE-1);
   final static String SCOPE_START = "+--";
   final static String SYMBOL_START = "<SYM> ";
+  private final String outputDir;
+  private final String modelName;
+  private final ReportingRepository repository;
 
   private int currentIndentLevel = 0;
   
   public SymbolTableReporter(
       String outputDir,
-      String modelName) {
+      String modelName, ReportingRepository repository) {
     super(outputDir + File.separator + ReportingConstants.REPORTING_DIR + File.separator
         + modelName,
         SIMPLE_FILE_NAME, ReportingConstants.REPORT_FILE_EXTENSION);
+    this.outputDir = outputDir;
+    this.modelName = modelName;
+    this.repository = repository;
   }
   
   @Override
