@@ -223,7 +223,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
     |
       "astextends" aSTSuperInterface:(GenericType || ",")+
     )*
-    ";";
+   ("=" alts:(Alt || "|")+ )? ";";
 
 
   /** An ASTAbstractprod represents an abstract production in a context free grammar
@@ -243,8 +243,8 @@ component grammar Grammar extends de.monticore.literals.Literals {
       "astextends" aSTSuperClass:(GenericType || ",")+
     |
       "astimplements" aSTSuperInterface:(GenericType || ",")+
-    )*  ";";
-
+    )* 
+    ("=" alts:(Alt || "|")+ )? ";";
 
   /** A rule represents a rule (production) in a context free grammar.
   @attribute name Name of the rule
