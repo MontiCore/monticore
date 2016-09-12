@@ -1,0 +1,50 @@
+package de.monticore;
+
+component grammar InterfaceRules  extends mc.grammars.lexicals.TestLexicals {
+      
+   interface Prod = simpleName:Name Name* optionalName:Name?;
+   
+    /** Used for embedding actions */
+  external Action;
+ 
+     interface ParserProd extends Prod;   
+    
+  MCGrammar =
+    (["component"])? "grammar" Name       
+   
+      "{"
+         (
+              |
+           LexProd
+         |
+           ClassProd
+        
+         )*
+      "}" ;
+      
+  LexProd implements Prod =
+    (["fragment"] | ["comment"]  )*
+    ("token") Name
+    (
+      (
+        ("{" initAction:Action "}")? // Statements
+      |
+        "{" initAction:Action "}"
+      )?
+         
+      (":" ("{" endAction:Action  "}")? (variable:Name&
+        ("->" type:Name+ (":" "{" block:Action "}" )? )? )? // Statements
+      )? 
+    )
+    ";";
+    
+  ClassProd implements ParserProd =
+    Name 
+          
+    ("{" Action "}")?    // Statements
+  ";";
+
+  ast ClassProd =
+    method public String toString() { return name; } ;
+ 
+ }
