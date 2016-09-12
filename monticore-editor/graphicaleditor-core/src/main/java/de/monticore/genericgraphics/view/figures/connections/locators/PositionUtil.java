@@ -64,7 +64,7 @@ public class PositionUtil {
       return PositionConstants.NORTH;
     }
     
-    Log.error("PositionUtil> Should not happen: fig: " + figBounds + " loc: " + location);
+    Log.error("0xA1112 PositionUtil: Should not happen: fig: " + figBounds + " loc: " + location);
     return 0;
   }
   

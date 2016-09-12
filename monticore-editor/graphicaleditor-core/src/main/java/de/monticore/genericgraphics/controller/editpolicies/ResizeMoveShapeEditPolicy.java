@@ -56,7 +56,7 @@ public class ResizeMoveShapeEditPolicy extends XYLayoutEditPolicy {
   @Override
   protected Command createChangeConstraintCommand(ChangeBoundsRequest request, EditPart child, Object constraint) {
     if (!(child instanceof IMCViewElementEditPart)) {
-      Log.error("ResizeMoveShapeViewElementEditPolicy> Error! ViewElement is not a IShapeViewElement: " + child);
+      Log.error("0xA1105 ResizeMoveShapeViewElementEditPolicy> Error! ViewElement is not a IShapeViewElement: " + child);
       return super.createChangeConstraintCommand(request, child, constraint);
     }
     
@@ -64,7 +64,7 @@ public class ResizeMoveShapeEditPolicy extends XYLayoutEditPolicy {
     IViewElement ve = ep.getViewElement();
     
     if (!(ve instanceof IShapeViewElement)) {
-      Log.error("ResizeMoveShapeViewElementEditPolicy> Error! EditPart is not a IMCViewElementEditPart: " + child);
+      Log.error("0xA1106 ResizeMoveShapeViewElementEditPolicy> Error! EditPart is not a IMCViewElementEditPart: " + child);
       return super.createChangeConstraintCommand(request, child, constraint);
     }
     

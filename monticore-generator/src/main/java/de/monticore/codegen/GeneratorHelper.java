@@ -19,26 +19,9 @@
 
 package de.monticore.codegen;
 
-import static de.monticore.codegen.mc2cd.TransformationHelper.createSimpleReference;
-import static de.monticore.codegen.mc2cd.transl.ConstantsTranslation.CONSTANTS_ENUM;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.ast_emf.AstEmfGeneratorHelper;
@@ -80,6 +63,22 @@ import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static de.monticore.codegen.mc2cd.TransformationHelper.createSimpleReference;
+import static de.monticore.codegen.mc2cd.transl.ConstantsTranslation.CONSTANTS_ENUM;
 
 /**
  * TODO: Write me!
@@ -905,7 +904,7 @@ public class GeneratorHelper extends TypesHelper {
    */
   public List<CDTypeSymbol> getAllSuperInterfaces(ASTCDType type) {
     if (!type.getSymbol().isPresent()) {
-      Log.error("0xA5008 Could not load symbol information for " + type.getName() + ".");
+      Log.error("0xA5001 Could not load symbol information for " + type.getName() + ".");
     }
     
     CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol().get();
@@ -1209,13 +1208,16 @@ public class GeneratorHelper extends TypesHelper {
   
   public static String getSimpleTypeNameToGenerate(String simpleName, String packageName,
       IterablePath targetPath) {
-    if (TransformationHelper.existsHandwrittenClass(targetPath, getDotPackageName(packageName)
-        + simpleName)) {
+    if (existsHandwrittenClass(simpleName, packageName, targetPath)) {
       return simpleName + TransformationHelper.GENERATED_CLASS_SUFFIX;
     }
     return simpleName;
   }
-  
+
+  public static boolean existsHandwrittenClass(String simpleName, String packageName, IterablePath targetPath) {
+    return TransformationHelper.existsHandwrittenClass(targetPath, getDotPackageName(packageName) + simpleName);
+  }
+
   /**
    * TODO: Gets not transformed attribute name according to the original name in
    * MC grammar

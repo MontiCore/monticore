@@ -180,7 +180,7 @@ public class ASTNodeProblemReportHandler {
       file.deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
     }
     catch (CoreException e) {
-      Log.error("ASTNPRH> Deleting markers failed: " + e);
+      Log.error("0xA1110 ASTNodeProblemReportHandler: Deleting markers failed: " + e);
     }
     
     // set new markers

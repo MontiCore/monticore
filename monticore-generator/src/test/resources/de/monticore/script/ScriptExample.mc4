@@ -9,26 +9,26 @@ grammar ScriptExample {
     |  '\r' '\n' // DOS
     | '\r'       // Macintosh
     | '\n'       // Unix
-    ) :{_channel = HIDDEN;}; 
+    ) :{_channel = HIDDEN;};
   //-- endfile gen/WhiteSpaces.x
-  
+
   //-- extractfile gen/Token.x
   token Name = ('a'..'z'|'A'..'Z')+ ;
-  
+
   token SIMPLESTRING = '\"' ('a'..'z'|'A'..'Z')*'\"';
   //-- endfile gen/Token.x
-  
+
   //-- extractfile gen/LexicalsFragment.x
-  token NUM_INT = 
+  token NUM_INT =
     ('0'..'9')+ (EXPONENT)? (SUFFIX)? ;
-    
-  fragment token SUFFIX = 
+
+  fragment token SUFFIX =
     'f'|'F'|'d'|'D' ;
-    
+
   fragment token EXPONENT =
     ('e'|'E') ('+'|'-')? ('0'..'9')+ ;
   //-- endfile gen/LexicalsFragment.x
-  
+
   //-- extractfile gen/LexicalsAction.x
   token STRING = '"'
     ( ESC
@@ -37,13 +37,13 @@ grammar ScriptExample {
 	  '"'
     :{setText(getText().substring(1, getText().length() - 1));};
   //-- endfile gen/LexicalsActions.x
-  
+
   //-- extractfile gen/LexicalsAdaptedTypes1.x
   A = b:Name c:Name;
-  
+
   token NUMBER =
   	('0'..'9')* '.' ('0'..'9')* 'f': float;
-  	
+
   A = b:NUMBER c:NUMBER*;
   //-- endfile gen/LexicalsAdaptedTypes1.x
 
@@ -57,14 +57,14 @@ grammar ScriptExample {
                  else
                    return Integer.parseInt(x.getText());
                };
-               
+
   //-- endfile gen/LexicalsAdaptedTypes2.x
-  
+
   //-- extractfile gen/Terminals.x
   A = "Hello"
     (who: "World" | who: "Tom")
     "!";
-  
+
   B = ["initial"]?;
   //-- endfile gen/Terminals.x
 
@@ -92,16 +92,16 @@ grammar ScriptExample {
   Automaton =
    "automaton" Name "{"
      ( State | Transition )*
-   "}";  
+   "}";
   //-- endfile gen/AutomaticNaming2.x
-  
+
   //-- extractfile gen/Sequence.x
   A;
-  
+
   S = x:A y:A*;
   S = x:A "::=" y:A ("," y:A)*;
   //-- endfile gen/Sequence.x
-  
+
   //-- extractfile gen/Interfaces.x
   interface I;
   A implements I = "...1";
@@ -112,7 +112,7 @@ grammar ScriptExample {
   //-- extractfile gen/InterfacesEquiv.x
   I = A | B;
   A = "...1";
-  B = "...2"
+  B = "...2";
   C = I "...";
   //-- endfile gen/InterfacesEquiv.x
 
@@ -130,7 +130,7 @@ grammar ScriptExample {
   	  return reachableStates.contains(s);
   	};
   //-- endfile gen/ASTRule.x
-  
+
   //-- extractfile gen/AbstractProd.x
     abstract AutomatonElement;
 
@@ -144,7 +144,7 @@ grammar ScriptExample {
 
   State =  "state" Name
     Invariant
-    ( "<<" ["initial"] ">>" | "<<" ["final"] ">>" )* ";" ; 
+    ( "<<" ["initial"] ">>" | "<<" ["final"] ">>" )* ";" ;
   //-- endfile gen/ExternalProd.x
 
   //-- extractfile gen/OptionalNTs.x
@@ -155,6 +155,5 @@ grammar ScriptExample {
   E = "z";
   //-- endfile gen/OptionalNTs.x
 
-  
+
 }
-  

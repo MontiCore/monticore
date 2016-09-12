@@ -31,6 +31,9 @@ import de.se_rwth.commons.SourcePosition;
  * @author rumpe
  */
 public class Layouter {
+  
+  static final String START_TAG = "(";
+  static final String END_TAG = ")";
 
 	/**
 	 * Performs a right padding (= fills up with spaces) If s is too long, it
@@ -68,7 +71,7 @@ public class Layouter {
 	public static String sourcePos(ASTNode a) {
 		SourcePosition sp = a.get_SourcePositionStart();
 		if (sp != null) {
-			return String.format("<%d,%d>", sp.getLine(), sp.getColumn());
+			return String.format(START_TAG + "%d,%d" + END_TAG, sp.getLine(), sp.getColumn());
 		} else {
 			return "";
 		}

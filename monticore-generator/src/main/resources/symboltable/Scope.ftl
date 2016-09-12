@@ -46,6 +46,14 @@ import de.monticore.symboltable.MutableScope;
 
 public class ${className} extends de.monticore.symboltable.CommonScope {
 
+  public ${className}() {
+    super();
+  }
+
+  public ${className}(boolean isShadowingScope) {
+    super(isShadowingScope);
+  }
+
   public ${className}(Optional<MutableScope> enclosingScope) {
     super(enclosingScope, true);
   }

@@ -19,7 +19,6 @@
 
 package de.monticore;
 
-import static de.monticore.generating.templateengine.reporting.commons.Layouter.className;
 import static de.monticore.generating.templateengine.reporting.commons.Layouter.nodeName;
 
 import de.monticore.ast.ASTNode;
@@ -62,10 +61,10 @@ import de.se_rwth.commons.Names;
  */
 public class MontiCoreNodeIdentifierHelper implements IASTNodeIdentHelper {
   
-  public static final String LAYOUT_FULL = "<<%s:%s>>";
+  public static final String LAYOUT_FULL = "@%s!%s";
   
-  public static final String LAYOUT_TYPE = "<<:%s>>";
-    
+  public static final String LAYOUT_TYPE = "@!%s";
+  
   protected static final String format(String id, String type) {
     return String.format(LAYOUT_FULL, id, type);
   }
@@ -129,7 +128,6 @@ public class MontiCoreNodeIdentifierHelper implements IASTNodeIdentHelper {
     return format(ast.getName(), nodeName(ast));
   }
   
-  
   // ##############
   // Identifier helper for Grammar
   // TODO: incomplete by now; only those added here which "seem" to have a name
@@ -154,9 +152,6 @@ public class MontiCoreNodeIdentifierHelper implements IASTNodeIdentHelper {
     if (ast.usageNameIsPresent()) {
       return format(ast.getUsageName().get(), nodeName(ast));
     }
-    if (ast.variableNameIsPresent()) {
-      return format(ast.getVariableName().get(), nodeName(ast));
-    }
     return format(nodeName(ast));
   }
   
@@ -175,12 +170,13 @@ public class MontiCoreNodeIdentifierHelper implements IASTNodeIdentHelper {
   private static String getIdentifier(ASTITerminal ast) {
     // return a regular "Name"
     String name = ast.getName();
-    if ((name.length()) == 1 && !name.matches("[a-zA-Z0-9_$]")) {
+    if ((name.length()) < 4 && !name.matches("[a-zA-Z0-9_$\\-+]*")) {
       // Replace special character by the corresponding name (; -> SEMI)
-      name = LexNamer.createGoodName(name);
-    } else {
+      name = createGoodName(name);
+    }
+    else {
       // Replace all special characters by _
-      name = name.replaceAll("[^a-zA-Z0-9_$]", "_");
+      name = name.replaceAll("[^a-zA-Z0-9_$\\-+]", "_");
       if (name.matches("[0-9].*")) {
         // if the name starts with a digit ...
         name = "_".concat(name);
@@ -308,6 +304,24 @@ public class MontiCoreNodeIdentifierHelper implements IASTNodeIdentHelper {
       return getIdentifier((ASTRuleReference) ast);
     }
     return format(nodeName(ast));
+  }
+  
+  private static String createGoodName(String x) {
+    StringBuilder ret = new StringBuilder();
+    
+    for (int i = 0; i < x.length(); i++) {
+      
+      String substring = x.substring(i, i + 1);
+      if (LexNamer.getGoodNames().containsKey(substring)) {
+        ret.append(LexNamer.getGoodNames().get(substring));
+      }
+      else {
+        ret.append(substring);
+      }
+    }
+    
+    return ret.toString();
+    
   }
   
 }

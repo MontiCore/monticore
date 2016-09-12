@@ -19,14 +19,16 @@
 
 package de.monticore.symboltable.resolving;
 
+import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.SymbolKind;
+import de.se_rwth.commons.Names;
+
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
-import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.SymbolKind;
 
 /**
  * Default implementation for {@link ResolvingFilter}.
@@ -64,11 +66,43 @@ public class CommonResolvingFilter<S extends Symbol> implements ResolvingFilter<
   }
 
   @Override
+  public Optional<Symbol> filter(ResolvingInfo resolvingInfo, String name, Map<String, Collection<Symbol>> symbols) {
+    final Set<Symbol> resolvedSymbols = new LinkedHashSet<>();
+
+    final String simpleName = Names.getSimpleName(name);
+
+    if (symbols.containsKey(simpleName)) {
+      for (Symbol symbol : symbols.get(simpleName)) {
+        if (symbol.isKindOf(targetKind)) {
+          if (symbol.getName().equals(name) || symbol.getFullName().equals(name)) {
+            resolvedSymbols.add(symbol);
+          }
+        }
+      }
+    }
+
+    return ResolvingFilter.getResolvedOrThrowException(resolvedSymbols);
+  }
+
+  @Override
+  public Collection<Symbol> filter(ResolvingInfo resolvingInfo, Collection<Symbol> symbols) {
+    final Collection<Symbol> foundSymbols = new LinkedHashSet<>();
+
+    for (Symbol symbol : symbols) {
+      if (symbol.isKindOf(targetKind)) {
+        foundSymbols.add(symbol);
+      }
+    }
+
+    return foundSymbols;
+  }
+
+  @Override
+  @Deprecated
   public Optional<Symbol> filter(ResolvingInfo resolvingInfo, String name, final List<Symbol> symbols) {
     final Set<Symbol> resolvedSymbols = new LinkedHashSet<>();
 
     for (Symbol symbol : symbols) {
-      // TODO PN in eigene Methode auslagern, damit Unterklassen das überschreiben können.
       if (symbol.isKindOf(targetKind)) {
 
         if (symbol.getName().equals(name) || symbol.getFullName().equals(name)) {
@@ -81,17 +115,16 @@ public class CommonResolvingFilter<S extends Symbol> implements ResolvingFilter<
   }
 
   @Override
+  @Deprecated
   public Collection<Symbol> filter(ResolvingInfo resolvingInfo, List<Symbol> symbols) {
-      // TODO PN  create new LinkedHashSet<>() instead
       final Collection<Symbol> foundSymbols = new LinkedHashSet<>();
 
       for (Symbol symbol : symbols) {
-        // TODO PN in eigene Methode auslagern, damit Unterklassen das überschreiben können.
         if (symbol.isKindOf(targetKind)) {
           foundSymbols.add(symbol);
         }
       }
-      
+
       return foundSymbols;
   }
 

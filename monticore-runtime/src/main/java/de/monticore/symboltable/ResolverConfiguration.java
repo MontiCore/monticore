@@ -19,15 +19,15 @@
 
 package de.monticore.symboltable;
 
+import com.google.common.collect.ImmutableSet;
+import de.monticore.symboltable.resolving.ResolvingFilter;
+
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
-
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Table;
-import de.monticore.symboltable.resolving.ResolvingFilter;
 
 /**
  * Maintains a mapping from names and kinds of symbols to {@link ResolvingFilter}s.
@@ -35,58 +35,79 @@ import de.monticore.symboltable.resolving.ResolvingFilter;
  * @author Pedram Mir Seyed Nazari, Sebastian Oberhoff
  */
 // TODO PN rename to ResolvingConfiguration.
-// TODO PN refactor: Filter should be set for scope name, not for symbol name and kind.
 public final class ResolverConfiguration {
   
-  private final Table<String, SymbolKind, Set<ResolvingFilter<? extends Symbol>>> resolverTable = HashBasedTable
-      .create();
-  
-  private final Set<ResolvingFilter<? extends Symbol>> topScopeResolvingFilters = new LinkedHashSet<>();
+  private final Map<String, Set<ResolvingFilter<? extends Symbol>>> specificFilters = new HashMap<>();
+
+  private final Set<ResolvingFilter<? extends Symbol>> defaultFilters = new LinkedHashSet<>();
   
   /**
-   * Adds a resolver to the set of resolvers for the specified symbol name and kind. Constructing a
-   * new set if no resolvers were previously added for that combination of name and kind.
+   * Adds a resolving filter to the set of filters for the specified scope name.
    * 
-   * @param symbolName the name of the symbol
-   * @param symbolKind the kind of the symbol
-   * @param resolvingFilter the resolver to add to that combination of name and kind
+   * @param scopeName the name of the scope
+   * @param resolvingFilter the filter to add for the specified scope
    */
-  public void addResolver(String symbolName, SymbolKind symbolKind,
+  public void addResolver(String scopeName,
       ResolvingFilter<? extends Symbol> resolvingFilter) {
-    if (resolverTable.get(symbolName, symbolKind) == null) {
-      resolverTable.put(symbolName, symbolKind, new LinkedHashSet<>());
+    if (!specificFilters.containsKey(scopeName)) {
+      specificFilters.put(scopeName, new LinkedHashSet<>());
     }
-    resolverTable.get(symbolName, symbolKind).add(resolvingFilter);
+    specificFilters.get(scopeName).add(resolvingFilter);
   }
   
   /**
-   * Retrieves the resolvers associated with the name and kind of the specified symbol.
+   * Retrieves the resolving filters associated with the scope having the specified name.
    * 
-   * @param symbol the symbol who's resolvers should be retrieved
-   * @return the set of resolvers added for the given symbol
+   * @param scopeName the name of the scope who's filters should be retrieved
+   * @return the set of filters added for the scope
    */
-  // TODO PN resolver should be configured by scope not by symbol.
-  public Set<ResolvingFilter<? extends Symbol>> getResolver(Symbol symbol) {
-    Set<ResolvingFilter<? extends Symbol>> resolvingFilters = resolverTable.get(symbol.getName(),
-        symbol.getKind());
+  public Set<ResolvingFilter<? extends Symbol>> getFilters(String scopeName) {
+    Set<ResolvingFilter<? extends Symbol>> resolvingFilters = specificFilters.get(scopeName);
     return resolvingFilters != null ? resolvingFilters : Collections.emptySet();
   }
-  
+
   /**
-   * @param topScopeResolvingFilter the topScopeResolver to add
+   * @param defaultFilter the default filter to add
    */
-  public void addTopScopeResolver(ResolvingFilter<? extends Symbol> topScopeResolvingFilter) {
-    this.topScopeResolvingFilters.add(topScopeResolvingFilter);
+  public void addDefaultFilter(ResolvingFilter<? extends Symbol> defaultFilter) {
+    this.defaultFilters.add(defaultFilter);
   }
 
+  /**
+   * @param defaultFilters the default filters to add
+   */
+  public void addDefaultFilters(Collection<ResolvingFilter<? extends Symbol>> defaultFilters) {
+    this.defaultFilters.addAll(defaultFilters);
+  }
+
+  /**
+   * @return the set of default filters
+   */
+  public Set<ResolvingFilter<? extends Symbol>> getDefaultFilters() {
+    return ImmutableSet.copyOf(defaultFilters);
+  }
+
+  /**
+   * @deprecated use {@link #addDefaultFilter(ResolvingFilter)} instead
+   */
+  @Deprecated
+  public void addTopScopeResolver(ResolvingFilter<? extends Symbol> topScopeResolvingFilter) {
+    this.addDefaultFilter(topScopeResolvingFilter);
+  }
+
+  /**
+   * @deprecated use {@link #addDefaultFilters(Collection)} instead
+   */
+  @Deprecated
   public void addTopScopeResolvers(Collection<ResolvingFilter<? extends Symbol>> topScopeResolvingFilters) {
-    this.topScopeResolvingFilters.addAll(topScopeResolvingFilters);
+    this.addDefaultFilters(topScopeResolvingFilters);
   }
   
   /**
-   * @return the Set of top scope resolvers constructed through.
+   * @deprecated use {@link #getDefaultFilters()} instead
    */
+  @Deprecated
   public Set<ResolvingFilter<? extends Symbol>> getTopScopeResolvingFilters() {
-    return ImmutableSet.copyOf(topScopeResolvingFilters);
+    return this.getDefaultFilters();
   }
 }

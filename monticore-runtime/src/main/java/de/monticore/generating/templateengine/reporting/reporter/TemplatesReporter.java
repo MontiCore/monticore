@@ -67,6 +67,7 @@ public class TemplatesReporter extends AReporter {
   
   @Override
   protected void writeHeader() {
+    // Write empty header
   }
   
   private void writeContent() {

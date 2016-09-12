@@ -30,6 +30,15 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.freemarker.TemplateAutoImport;
 import de.monticore.io.paths.IterablePath;
 
+// TODO Optional values werden inkonsistent gesetzt:
+// glex wird weder ein default gesezt, noch als parameter im
+// Konstruktor verlangt, aber beim getter ein Optional geliefert
+// additionalTemplatePaths: hat einen default
+// In den comments wird Defalt gespeichert als Optional.absent
+// etc.
+// ausserdem fehlt eine Begründung warum das alles hier hängen muss
+// und nicht zB Kommentare values in glex sind.
+
 /**
  * Setup for generator (see {@link GeneratorEngine}).
  *

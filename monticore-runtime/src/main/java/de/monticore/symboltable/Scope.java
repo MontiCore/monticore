@@ -19,15 +19,16 @@
 
 package de.monticore.symboltable;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Predicate;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.resolving.ResolvingFilter;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * Super type of all scopes in the symbol table. A scope defines/contains a collection of symbols
@@ -100,6 +101,8 @@ public interface Scope {
    * symbol is resolved.
    */
   <T extends Symbol> Optional<T> resolve(String name, SymbolKind kind, AccessModifier modifier);
+
+  <T extends Symbol> Optional<T> resolve(String name, SymbolKind kind, AccessModifier modifier, Predicate<Symbol> predicate);
 
   /**
    * Resolves only explicitly imported symbols (i.e., symbols from imported scopes) and locally defined symbols.
@@ -177,18 +180,26 @@ public interface Scope {
 
   <T extends Symbol> Optional<T> resolveDown(String name, SymbolKind kind);
 
-  <T extends Symbol> Collection<T> resolveDownMany(String name, SymbolKind kind);
-
-
   <T extends Symbol> Optional<T> resolveDown(String name, SymbolKind kind, AccessModifier modifier);
 
+  <T extends Symbol> Optional<T> resolveDown(String name, SymbolKind kind, AccessModifier modifier, Predicate<Symbol> predicate);
+
+  <T extends Symbol> Collection<T> resolveDownMany(String name, SymbolKind kind);
+
   <T extends Symbol> Collection<T> resolveDownMany(String name, SymbolKind kind, AccessModifier modifier);
+
+  <T extends Symbol> Collection<T> resolveDownMany(String name, SymbolKind kind, AccessModifier modifier, Predicate<Symbol> predicate);
 
   /**
    *
    * @return all symbols directly defined/contained in this scope (not in enclosing scope).
    */
-  List<Symbol> getSymbols();
+  Map<String, Collection<Symbol>> getLocalSymbols();
+
+  /**
+   * @deprecated use {@link #getLocalSymbols()} instead
+   */
+  Map<String, Collection<Symbol>> getSymbols();
 
   /**
    * @return number of symbols directly defined/contained in this scope (not in enclosing scope).
@@ -239,4 +250,12 @@ public interface Scope {
    * @return the corresponding ast node
    */
   Optional<? extends ASTNode> getAstNode();
+
+  /**
+   * Returns this scope as a {@link MutableScope}. Note that each scope must
+   * implement {@link MutableScope}.
+   *
+   * @return this scope as a {@link MutableScope}.
+   */
+  MutableScope getAsMutableScope();
 }

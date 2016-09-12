@@ -19,10 +19,10 @@
 
 package de.monticore.symboltable.mocks.languages.entity;
 
-import java.util.Optional;
-
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.types.CommonJMethodSymbol;
+
+import java.util.Optional;
 
 public class ActionSymbol extends CommonJMethodSymbol<EntitySymbol, EntitySymbolReference, PropertySymbol> {
   
@@ -48,7 +48,7 @@ public class ActionSymbol extends CommonJMethodSymbol<EntitySymbol, EntitySymbol
   
   @Override
   public String toString() {
-    return "method " + super.toString() + ":" + getSpannedScope().getSymbols();
+    return "method " + super.toString() + ":" + getSpannedScope().getLocalSymbols();
   }
 
 }

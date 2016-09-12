@@ -81,6 +81,7 @@ public class GrammarCoCos {
     checker.addCoCo(new UsedNTNotDefined());
     checker.addCoCo(new KeywordAlternativeName());
     checker.addCoCo(new NTDefinedByAtmostOneProduction());
+    checker.addCoCo(new NTUniqueIgnoreCase());
     checker.addCoCo(new ReferencedNTNotDefined());
     checker.addCoCo(new KeywordInvalidName());
     checker.addCoCo(new LexNTsNotEmpty());

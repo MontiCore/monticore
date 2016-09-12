@@ -36,9 +36,8 @@ import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.editparts.ScalableRootEditPart;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.views.contentoutline.ContentOutline;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 import com.google.common.collect.BiMap;
 
@@ -67,6 +66,7 @@ import de.cau.cs.kieler.kiml.ui.diagram.LayoutMapping;
 import de.cau.cs.kieler.kiml.util.KimlUtil;
 import de.monticore.genericgraphics.GenericFormEditor;
 import de.monticore.genericgraphics.GenericGraphicsEditor;
+import de.monticore.genericgraphics.GenericGraphicsViewer;
 import de.monticore.genericgraphics.controller.editparts.IMCConnectionEdgeEditPart;
 import de.monticore.genericgraphics.controller.editparts.IMCEditPart;
 import de.monticore.genericgraphics.controller.editparts.IMCGraphicalEditPart;
@@ -75,6 +75,7 @@ import de.monticore.genericgraphics.controller.editparts.IMCShapeEditPart;
 import de.monticore.genericgraphics.controller.editparts.IMCViewElementEditPart;
 import de.monticore.genericgraphics.controller.editparts.connections.IMCConnectionEditPart;
 import de.monticore.genericgraphics.controller.editparts.intern.TextConnectionLabelEditPart;
+import de.monticore.genericgraphics.controller.views.outline.CombinedGraphicsOutlinePage;
 import de.monticore.genericgraphics.model.ITextConnectionLabel;
 import de.monticore.genericgraphics.model.graphics.IEdgeViewElement;
 import de.monticore.genericgraphics.model.graphics.IShapeViewElement;
@@ -146,7 +147,7 @@ import de.se_rwth.commons.logging.Log;
 public class MCDiagramLayoutManager implements IDiagramLayoutManager<IMCEditPart> {
   
   /** editor part of the currently layouted diagram. */
-  private IProperty<GenericGraphicsEditor> GENERIC_EDITOR = new Property<GenericGraphicsEditor>("de.monticore.genericgraphics.GenericGraphicsEditor");
+  private IProperty<GenericGraphicsViewer> GENERIC_VIEWER = new Property<GenericGraphicsViewer>("de.monticore.genericgraphics.GenericGraphicsViewer");
   
   /**
    * the volatile layout config for static properties such as minimal node
@@ -175,7 +176,7 @@ public class MCDiagramLayoutManager implements IDiagramLayoutManager<IMCEditPart
     return true;
   }
   
-  @SuppressWarnings("rawtypes")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   public Class[] getAdapterList() {
     return new Class<?>[] { IMCEditPart.class };
@@ -201,6 +202,9 @@ public class MCDiagramLayoutManager implements IDiagramLayoutManager<IMCEditPart
         }
         else if (object instanceof GenericFormEditor) {
           return ((GenericFormEditor) object).getGraphicalEditor().getContentEditPart();
+        }
+        else if (object instanceof CombinedGraphicsOutlinePage) {
+          return ((CombinedGraphicsOutlinePage) object).getGraphicalOutline().getViewer().getContentEditPart();
         }
         else if (object instanceof RootEditPart) {
           return ((RootEditPart) object).getContents();
@@ -228,30 +232,27 @@ public class MCDiagramLayoutManager implements IDiagramLayoutManager<IMCEditPart
     mapping.setProperty(STATIC_CONFIG, new VolatileLayoutConfig(MCLayoutConfig.PRIORITY - 1));
     mapping.setProperty(CONNECTIONS, new ArrayList<IMCNodeEditPart>());
     
-    GenericGraphicsEditor editor = null;
-
-    // get the generic graphics editor part
+    GenericGraphicsViewer viewer = null;
+    // get the generic graphics viewer part
     if (workbenchPart instanceof GenericGraphicsEditor) {
-      editor = (GenericGraphicsEditor) workbenchPart;
-    }
-    
-    // check if this is an outline view which belongs to an TextEditorImpl/GenericGraphicsEditor
-    // and hence displays a GenericGraphicsViewer
-    if(workbenchPart instanceof ContentOutline) {
-      IEditorPart activeE = workbenchPart.getSite().getPage().getActiveEditor();
-      if (activeE instanceof GenericFormEditor) {
-        editor = ((GenericFormEditor) activeE).getGraphicalEditor();
+      viewer = ((GenericGraphicsEditor) workbenchPart).getGraphicalViewer();
+    } else if (workbenchPart instanceof GenericFormEditor) {
+      viewer = ((GenericFormEditor) workbenchPart).getGraphicalEditor().getGraphicalViewer();
+    } else {
+      IContentOutlinePage outline = workbenchPart.getAdapter(IContentOutlinePage.class);
+      if (outline instanceof CombinedGraphicsOutlinePage) {
+        viewer = ((CombinedGraphicsOutlinePage) outline).getGraphicalOutline().getViewer();
       }
     }
-   
+    
     // choose the layout root edit part
     IMCEditPart layoutRootPart = null;
     if (diagramPart instanceof IMCEditPart) {
       layoutRootPart = (IMCEditPart) diagramPart;
     }
     
-    if (layoutRootPart == null && editor != null) {
-      layoutRootPart = editor.getContentEditPart();
+    if (layoutRootPart == null && viewer != null) {
+      layoutRootPart = viewer.getContentEditPart();
     }
      
     if (layoutRootPart == null) {
@@ -259,8 +260,8 @@ public class MCDiagramLayoutManager implements IDiagramLayoutManager<IMCEditPart
     }
     
     // set optional diagram editor
-    if (editor != null) {
-      mapping.setProperty(GENERIC_EDITOR, editor);
+    if (viewer != null) {
+      mapping.setProperty(GENERIC_VIEWER, viewer);
     }
     
     // set top level element
@@ -373,13 +374,13 @@ public class MCDiagramLayoutManager implements IDiagramLayoutManager<IMCEditPart
     // use relative bendpoints
     Command applyCommand = new ApplyLayoutCommand(mapping, false, scale);
     
-    GenericGraphicsEditor editor = mapping.getProperty(GENERIC_EDITOR);
+    GenericGraphicsViewer viewer = mapping.getProperty(GENERIC_VIEWER);
     
-    if (editor != null) {
-      CommandStack cStack = (CommandStack) editor.getAdapter(CommandStack.class);
+    if (viewer != null) {
+      CommandStack cStack = viewer.getEditDomain().getCommandStack();
       cStack.execute(applyCommand);
     } else {
-      Log.error("MCDLM> no Editor was found! Cannot execute apply layout command!");
+      Log.error("0xA1113 MCDiagramLayoutManager: no Editor was found! Cannot execute apply layout command!");
     }
   }
   

@@ -19,13 +19,14 @@
 
 package de.monticore.symboltable;
 
+import de.monticore.ast.ASTNode;
+import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.symboltable.references.SymbolReference;
+import de.se_rwth.commons.logging.Log;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Optional;
-
-import de.monticore.ast.ASTNode;
-import de.monticore.symboltable.references.SymbolReference;
-import de.se_rwth.commons.logging.Log;
 
 /**
  * Base class for all symbol table creators.
@@ -35,7 +36,7 @@ import de.se_rwth.commons.logging.Log;
  */
 public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
 
-  private final ResolverConfiguration resolverConfig;
+  private final ResolverConfiguration resolvingConfig;
   protected Deque<MutableScope> scopeStack;
 
   /**
@@ -44,18 +45,18 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
    */
   private MutableScope firstCreatedScope;
 
-  public CommonSymbolTableCreator(final ResolverConfiguration resolverConfig,
+  public CommonSymbolTableCreator(final ResolverConfiguration resolvingConfig,
       final MutableScope enclosingScope) {
-    this(resolverConfig, new ArrayDeque<>());
+    this(resolvingConfig, new ArrayDeque<>());
 
     // TODO PN  allow enclosingScope to be null?
     putOnStack(Log.errorIfNull(enclosingScope));
   }
 
-  public CommonSymbolTableCreator(final ResolverConfiguration resolverConfig,
+  public CommonSymbolTableCreator(final ResolverConfiguration resolvingConfig,
       final Deque<MutableScope> scopeStack) {
     this.scopeStack = Log.errorIfNull(scopeStack);
-    this.resolverConfig = Log.errorIfNull(resolverConfig);
+    this.resolvingConfig = Log.errorIfNull(resolvingConfig);
   }
 
   @Override
@@ -87,28 +88,26 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
   }
 
   /**
-   * Sets the resolving filters that are available for the <code>scope</code>. If no resolvers are
-   * explicitly defined for the <code>scope</code>, the resolvers of the enclosing scope are used.
+   * Sets the resolving filters that are available for the <code>scope</code>. If no filters are
+   * explicitly defined for the <code>scope</code>, the filters of the enclosing scope are used.
    *
    * @param scope the scope
    */
   private void setResolvingFiltersForScope(final MutableScope scope) {
-    // Look for resolvers that are registered for that scope
-    if (scope.isSpannedBySymbol()) {
-      final Symbol symbol = scope.getSpanningSymbol().get();
-      
-      scope.setResolvingFilters(resolverConfig.getResolver(symbol));
+    // Look for filters that are registered for that scope (in case it is named).
+    if (scope.getName().isPresent()) {
+      scope.setResolvingFilters(resolvingConfig.getFilters(scope.getName().get()));
     }
 
-    // If no resolvers are defined for the scope, take the ones from the enclosing scope.
+    // If no resolving filters are defined for the scope, take the ones from the enclosing scope.
     if (scope.getResolvingFilters().isEmpty()) {
       if (currentScope().isPresent()) {
         final Scope enclosingScope = currentScope().get();
         scope.setResolvingFilters(enclosingScope.getResolvingFilters());
       }
       else {
-        // scope is the top scope
-        scope.setResolvingFilters(resolverConfig.getTopScopeResolvingFilters());
+        // Scope is the top scope, hence, use the default filters.
+        scope.setResolvingFilters(resolvingConfig.getDefaultFilters());
       }
       
     }
@@ -157,8 +156,7 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
     scope.setAstNode(astNode);
 
     // ast -> scope
-    // TODO PN uncomment as soon as ASTNode has been updated
-    // astNode.setSpannedScope(scope);
+    astNode.setSpannedScope(scope);
   }
 
   /**
@@ -182,6 +180,10 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
 
   @Override
   public final Optional<? extends MutableScope> removeCurrentScope() {
+    if (!scopeStack.isEmpty() && scopeStack.getLast().equals(getFirstCreatedScope())) {
+      Reporting.reportSymbolTableScope(scopeStack.getLast());
+    }
+
     return Optional.of(scopeStack.pollLast());
   }
   

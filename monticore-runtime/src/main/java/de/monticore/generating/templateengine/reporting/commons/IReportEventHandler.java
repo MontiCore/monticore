@@ -50,7 +50,7 @@ public interface IReportEventHandler {
 
 	/**
 	 * TODO: Write me!
-	 * 
+	 *
 	 * @param templatename
 	 * @param ast
 	 */
@@ -58,7 +58,7 @@ public interface IReportEventHandler {
 
 	/**
 	 * TODO: Write me!
-	 * 
+	 *
 	 * @param modelname
 	 * @param filename
 	 */
@@ -66,14 +66,14 @@ public interface IReportEventHandler {
 
 	/**
 	 * TODO: Write me!
-	 * 
+	 *
 	 * @param qualifiedName
 	 */
 	public void reportModelLoad(String qualifiedName);
 
 	/**
 	 * TODO: Write me!
-	 * 
+	 *
 	 * @param name
 	 * @param value
 	 */
@@ -81,7 +81,7 @@ public interface IReportEventHandler {
 
 	/**
 	 * TODO: Write me!
-	 * 
+	 *
 	 * @param name
 	 * @param value
 	 * @param size
@@ -90,7 +90,7 @@ public interface IReportEventHandler {
 
 	/**
 	 * TODO: Write me!
-	 * 
+	 *
 	 * @param className
 	 * @param params
 	 */
@@ -98,7 +98,7 @@ public interface IReportEventHandler {
 
 	/**
 	 * TODO: Write me!
-	 * 
+	 *
 	 * @param templateName
 	 * @param ast
 	 */
@@ -106,7 +106,7 @@ public interface IReportEventHandler {
 
 	/**
 	 * TODO: Write me!
-	 * 
+	 *
 	 * @param templateName
 	 * @param ast
 	 */
@@ -114,7 +114,7 @@ public interface IReportEventHandler {
 
 	/**
 	 * TODO: Write me!
-	 * 
+	 *
 	 * @param hookName
 	 * @param hp
 	 */
@@ -122,7 +122,7 @@ public interface IReportEventHandler {
 
 	/**
 	 * TODO: Write me!
-	 * 
+	 *
 	 * @param hookName
 	 * @param hp
 	 * @param ast
@@ -132,14 +132,14 @@ public interface IReportEventHandler {
 
 	/**
 	 * TODO: Write me!
-	 * 
+	 *
 	 * @param hookName
 	 */
 	public void reportCallHookPointEnd(String hookName);
 
 	/**
 	 * TODO: Write me!
-	 * 
+	 *
 	 * @param oldTemplate
 	 * @param node
 	 * @param newHp
@@ -149,7 +149,7 @@ public interface IReportEventHandler {
 
 	/**
 	 * TODO: Write me!
-	 * 
+	 *
 	 * @param hp
 	 * @param ast
 	 */
@@ -158,7 +158,7 @@ public interface IReportEventHandler {
 
 	/**
 	 * TODO: Write me!
-	 * 
+	 *
 	 * @param hp
 	 * @param ast
 	 */
@@ -167,7 +167,7 @@ public interface IReportEventHandler {
 
 	/**
 	 * TODO: Write me!
-	 * 
+	 *
 	 * @param hp
 	 * @param ast
 	 */
@@ -176,7 +176,7 @@ public interface IReportEventHandler {
 
 	/**
 	 * TODO: Write me!
-	 * 
+	 *
 	 * @param hp
 	 * @param ast
 	 */
@@ -185,7 +185,7 @@ public interface IReportEventHandler {
 
 	/**
 	 * TODO: Write me!
-	 * 
+	 *
 	 * @param oldTemplate
 	 * @param newHps
 	 */
@@ -194,7 +194,7 @@ public interface IReportEventHandler {
 
 	/**
 	 * TODO: Write me!
-	 * 
+	 *
 	 * @param template
 	 * @param beforeHps
 	 */
@@ -203,7 +203,7 @@ public interface IReportEventHandler {
 
 	/**
 	 * TODO: Write me!
-	 * 
+	 *
 	 * @param template
 	 * @param afterHps
 	 */
@@ -212,7 +212,7 @@ public interface IReportEventHandler {
 
 	/**
 	 * TODO: Write me!
-	 * 
+	 *
 	 * @param transformationName
 	 */
 	public void reportTransformationStart(String transformationName);
@@ -221,36 +221,37 @@ public interface IReportEventHandler {
 
 	/**
 	 * TODO: Write me!
-	 * 
+	 *
 	 * @param fileName
 	 */
 	public void reportUseHandwrittenCodeFile(Path parentDir, Path fileName);
 
 	/**
 	 * TODO: Write me!
-	 * 
+	 *
 	 * @param message
 	 */
 	public void reportWarning(String message);
 
 	/**
 	 * TODO: Write me!
-	 * 
+	 *
 	 * @param message
 	 */
 	public void reportError(String message);
 
 	/**
 	 * TODO: Write me!
-	 * 
+	 *
 	 * @param transformationName
+	 * @param attributeName
 	 */
 	public void reportTransformationObjectChange(String transformationName,
-			ASTNode ast);
+			ASTNode ast, String attributeName);
 
 	/**
 	 * TODO: Write me!
-	 * 
+	 *
 	 * @param transformationName
 	 */
 	public void reportTransformationObjectCreation(String transformationName,
@@ -258,7 +259,7 @@ public interface IReportEventHandler {
 
 	/**
 	 * TODO: Write me!
-	 * 
+	 *
 	 * @param transformationName
 	 * @param ast
 	 */
@@ -268,7 +269,7 @@ public interface IReportEventHandler {
 	public void reportDetailed(String value);
 
 	public void reportOpenInputFile(Path parentPath, Path file);
-	
+
 	void reportParseInputFile(Path inputFilePath, String modelName);
 
   /**
@@ -285,4 +286,17 @@ public interface IReportEventHandler {
    */
   public void reportMethodCall(String className, String methodName, List<Object> params);
 
+	public void reportTransformationObjectMatch(String transformationName, ASTNode ast);
+
+	public void reportTransformationOldValue(String transformationName, ASTNode ast);
+
+	public void reportTransformationNewValue(String transformationName, ASTNode ast);
+
+	public void reportTransformationOldValue(String transformationName, String value);
+
+	public void reportTransformationNewValue(String transformationName, String value);
+
+	public void reportTransformationOldValue(String transformationName, boolean value);
+
+	public void reportTransformationNewValue(String transformationName, boolean value);
 }

@@ -19,21 +19,9 @@
 
 package de.monticore.symboltable;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.base.Strings.nullToEmpty;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.modifiers.AccessModifier;
@@ -46,6 +34,21 @@ import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.base.Strings.nullToEmpty;
+
 // TODO PN Doc resolve[Down|Up|Many|Locally] methods
 
 /**
@@ -56,7 +59,7 @@ import de.se_rwth.commons.logging.Log;
  */
 public class CommonScope implements MutableScope {
 
-  private final List<Symbol> symbols = new ArrayList<>();
+  private final Map<String, Collection<Symbol>> symbols = new LinkedHashMap<>();
   private final List<MutableScope> subScopes = new ArrayList<>();
 
   private Boolean exportsSymbols = null;
@@ -140,20 +143,23 @@ public class CommonScope implements MutableScope {
   public void add(Symbol symbol) {
     Log.errorIfNull(symbol);
 
-    // TODO PN is this check really needed? Some languages allow multiple definitions of symbol (names)
-    if (symbols.contains(symbol)) {
-      Log.warn("0xA1040 Symbol " + symbol.getName() + " (Kind: " + symbol.getKind() + ") is already "
-          + "defined in scope " + getName());
+    final String symbolName = symbol.getName();
+    if (!symbols.containsKey(symbolName)) {
+      symbols.put(symbolName, new ArrayList<>());
     }
-    symbols.add(symbol);
+
+    symbols.get(symbolName).add(symbol);
+
     symbol.setEnclosingScope(this);
   }
 
   @Override
   public void remove(Symbol symbol) {
-    if (symbols.contains(symbol)) {
-      symbols.remove(symbol);
-      symbol.setEnclosingScope(null);
+    if (symbols.containsKey(symbol.getName())) {
+      final boolean symbolRemoved = symbols.get(symbol.getName()).remove(symbol);
+      if (symbolRemoved) {
+        symbol.setEnclosingScope(null);
+      }
     }
   }
 
@@ -197,6 +203,11 @@ public class CommonScope implements MutableScope {
   @Override
   public <T extends Symbol> Optional<T> resolve(String name, SymbolKind kind, AccessModifier modifier) {
     return getResolvedOrThrowException(resolveMany(name, kind, modifier));
+  }
+
+  @Override
+  public <T extends Symbol> Optional<T> resolve(String name, SymbolKind kind, AccessModifier modifier, Predicate<Symbol> predicate) {
+    return getResolvedOrThrowException(resolveMany(name, kind, modifier, predicate));
   }
 
   @Override
@@ -291,7 +302,9 @@ public class CommonScope implements MutableScope {
   @Deprecated
   @Override
   public Optional<? extends Symbol> resolve(SymbolPredicate predicate) {
-    Set<Symbol> result = new LinkedHashSet<>(symbols.stream().filter(predicate).collect(Collectors.toSet()));
+    final Collection<Symbol> allSymbols = Scopes.getLocalSymbolsAsCollection(this);
+
+    Set<Symbol> result = new LinkedHashSet<>(allSymbols.stream().filter(predicate).collect(Collectors.toSet()));
 
     // TODO PN Combine with adaptors. For this: add filter(SymbolPredicate) to
     //         AdaptedResolvingFilter (maybe ResolvingFilter too). Then, run pass
@@ -341,8 +354,14 @@ public class CommonScope implements MutableScope {
   }
 
   @Override
-  public List<Symbol> getSymbols() {
-    return ImmutableList.copyOf(symbols);
+  public Map<String, Collection<Symbol>> getLocalSymbols() {
+    return ImmutableMap.copyOf(symbols);
+  }
+
+  @Override
+  @Deprecated
+  public Map<String, Collection<Symbol>> getSymbols() {
+    return getLocalSymbols();
   }
 
   @Override
@@ -396,6 +415,11 @@ public class CommonScope implements MutableScope {
   @Override
   public Optional<ASTNode> getAstNode() {
     return Optional.ofNullable(astNode);
+  }
+
+  @Override
+  public MutableScope getAsMutableScope() {
+    return this;
   }
 
   public void setAstNode(ASTNode astNode) {
@@ -458,8 +482,6 @@ public class CommonScope implements MutableScope {
         this.<T>resolveManyLocally(new ResolvingInfo(getResolvingFilters()), name, kind, AccessModifier.ALL_INCLUSION, x -> true));
   }
 
-  // TODO PN add resolveManyLocally(String name, SymbolKind kind)
-
   protected <T extends Symbol> Set<T> resolveManyLocally(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier,
       Predicate<Symbol> predicate) {
     Log.errorIfNull(resolvingInfo);
@@ -510,10 +532,12 @@ public class CommonScope implements MutableScope {
 
     final Collection<T> resolvedSymbols = new LinkedHashSet<>();
 
+    final Collection<Symbol> symbolsAsList = Scopes.getLocalSymbolsAsCollection(this);
+
     for (ResolvingFilter<? extends Symbol> resolvingFilter : resolversForKind) {
       final ResolvingInfo resolvingInfo = new ResolvingInfo(getResolvingFilters());
       resolvingInfo.addInvolvedScope(this);
-      Collection<T> filtered = (Collection<T>) resolvingFilter.filter(resolvingInfo, symbols);
+      Collection<T> filtered = (Collection<T>) resolvingFilter.filter(resolvingInfo, symbolsAsList);
       resolvedSymbols.addAll(filtered);
     }
 
@@ -522,12 +546,22 @@ public class CommonScope implements MutableScope {
 
   @Override
   public <T extends Symbol> Optional<T> resolveDown(String name, SymbolKind kind, AccessModifier modifier) {
-    return getResolvedOrThrowException(resolveDownMany(new ResolvingInfo(getResolvingFilters()), name, kind, modifier, x -> true));
+    return getResolvedOrThrowException(resolveDownMany(name, kind, modifier));
+  }
+
+  @Override
+  public <T extends Symbol> Optional<T> resolveDown(String name, SymbolKind kind, AccessModifier modifier, Predicate<Symbol> predicate) {
+    return getResolvedOrThrowException(resolveDownMany(name, kind, modifier, predicate));
   }
 
   @Override
   public <T extends Symbol> Collection<T> resolveDownMany(String name, SymbolKind kind, AccessModifier modifier) {
     return resolveDownMany(new ResolvingInfo(getResolvingFilters()), name, kind, modifier, x -> true);
+  }
+
+  @Override
+  public <T extends Symbol> Collection<T> resolveDownMany(String name, SymbolKind kind, AccessModifier modifier, Predicate<Symbol> predicate) {
+    return resolveDownMany(new ResolvingInfo(getResolvingFilters()), name, kind, modifier, predicate);
   }
 
   @Override

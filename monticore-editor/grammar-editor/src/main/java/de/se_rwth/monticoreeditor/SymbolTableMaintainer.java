@@ -34,6 +34,7 @@ import de.monticore.languages.grammar.MontiCoreGrammarModelLoader;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.ResolverConfiguration;
 import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.Scopes;
 import de.monticore.symboltable.references.FailedLoadingSymbol;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.langeditor.modelstates.ModelState;
@@ -75,7 +76,7 @@ final class SymbolTableMaintainer {
   
   private void removeOldScope(ASTMCGrammar mcGrammar) {
     globalScope.getSubScopes().stream()
-        .filter(scope -> scope.getSymbols().stream()
+        .filter(scope -> Scopes.getLocalSymbolsAsCollection(scope).stream()
             .filter(MCGrammarSymbol.class::isInstance)
             .map(MCGrammarSymbol.class::cast)
             .map(MCGrammarSymbol::getName)
@@ -85,13 +86,13 @@ final class SymbolTableMaintainer {
   
   private void setNewSuperGrammarScope(Scope newScope) {
     List<MCGrammarSymbol> existingGrammarSymbols = globalScope.getSubScopes().stream()
-        .map(Scope::getSymbols)
+        .map(scope -> Scopes.getLocalSymbolsAsCollection(scope))
         .flatMap(Collection::stream)
         .filter(MCGrammarSymbol.class::isInstance)
         .map(MCGrammarSymbol.class::cast)
         .collect(Collectors.toList());
     
-    List<MCGrammarSymbol> newGrammarSymbols = newScope.getSymbols().stream()
+    List<MCGrammarSymbol> newGrammarSymbols = Scopes.getLocalSymbolsAsCollection(newScope).stream()
         .filter(MCGrammarSymbol.class::isInstance)
         .map(MCGrammarSymbol.class::cast)
         .collect(Collectors.toList());
@@ -103,7 +104,7 @@ final class SymbolTableMaintainer {
         }
         catch (Exception e) {
           Log.error(
-              "Error while updating supergrammar references for " + existingGrammarSymbol.getName(),
+              "0xA1100 Error while updating supergrammar references for " + existingGrammarSymbol.getName(),
               e);
         }
       }

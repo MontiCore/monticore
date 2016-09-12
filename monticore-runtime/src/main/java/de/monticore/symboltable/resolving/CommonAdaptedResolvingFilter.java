@@ -19,15 +19,16 @@
 
 package de.monticore.symboltable.resolving;
 
+import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.SymbolKind;
+
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.SymbolKind;
 
 /**
  * TODO: Write me!
@@ -58,6 +59,30 @@ public abstract class CommonAdaptedResolvingFilter<S extends Symbol>
   protected abstract Symbol createAdapter(Symbol s);
 
   @Override
+  public Optional<Symbol> filter(ResolvingInfo resolvingInfo, String symbolName, Map<String, Collection<Symbol>> symbols) {
+    final Set<Symbol> resolvedSymbols = new LinkedHashSet<>();
+
+    final Collection<ResolvingFilter<? extends Symbol>> filtersWithoutAdapters =
+        ResolvingFilter.getFiltersForTargetKind(resolvingInfo.getResolvingFilters(), getSourceKind())
+            .stream()
+            .filter(resolvingFilter -> !(resolvingFilter instanceof AdaptedResolvingFilter))
+            .collect(Collectors.toSet());
+
+    for (ResolvingFilter<? extends Symbol> resolvingFilter : filtersWithoutAdapters) {
+
+      Optional<? extends Symbol> optSymbol = resolvingFilter.filter(resolvingInfo, symbolName, symbols);
+
+      // remove the following if-statement, if adaptors should be created eager.
+      if (optSymbol.isPresent()) {
+        resolvedSymbols.add(createAdapter(optSymbol.get()));
+      }
+    }
+
+    return ResolvingFilter.getResolvedOrThrowException(resolvedSymbols);
+  }
+
+  @Override
+  @Deprecated
   public Optional<Symbol> filter(ResolvingInfo resolvingInfo, String symbolName, List<Symbol> symbols) {
     final Set<Symbol> resolvedSymbols = new LinkedHashSet<>();
 

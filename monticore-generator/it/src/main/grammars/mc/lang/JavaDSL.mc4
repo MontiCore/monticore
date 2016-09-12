@@ -19,8 +19,8 @@ ImportDeclaration
 interface Modifier ;
 
 PrimitiveModifier implements Modifier =
-        Modifier:["private" | "public" | "protected" | "static" | "transient" 
-        | "final" | "abstract" | "native" | "threadsafe" | "synchronized" 
+        Modifier:["private" | "public" | "protected" | "static" | "transient"
+        | "final" | "abstract" | "native" | "threadsafe" | "synchronized"
         | "const" | "volatile" | "strictfp"]
     ;
 
@@ -42,7 +42,7 @@ ClassDeclaration implements TypeDeclaration
 ClassBody
     =   "{" ClassBodyDeclaration* "}"
     ;
-    
+
 interface ClassBodyDeclaration ;
 
 InterfaceDeclaration implements TypeDeclaration
@@ -408,8 +408,8 @@ Expression implements ElementValue, VariableInitializer
         rightExpression:Expression
     |   leftExpression:Expression
         (   comparison:"<="
-        |   comparison:">=" 
-        |   comparison:">" 
+        |   comparison:">="
+        |   comparison:">"
         |   comparison:"<"
         )
         rightExpression:Expression
@@ -458,34 +458,34 @@ interface Creator ;
 AnonymousClass implements Creator
     =   "new" NonWildcardTypeArguments? CreatedName ClassCreatorRest
     ;
-    
+
 ArrayCreator implements Creator
     =   "new" CreatedName ArrayDimensionSpecifier
     ;
 
 interface ArrayDimensionSpecifier ;
-    
+
 ArrayDimensionByInitializer implements ArrayDimensionSpecifier
     =   ("[" "]")+ ArrayInitializer
     ;
-    
+
 ArrayDimensionByExpression implements ArrayDimensionSpecifier
     =   ("[" Expression "]")+ (dim:"[" "]")*
     ;
-    
+
 CreatedName
     =   (IdentifierAndTypeArgumentsOrDiamond || ".")+
     |   PrimitiveType
     ;
 
-IdentifierAndTypeArgumentsOrDiamond =
+IdentifierAndTypeArgumentsOrDiamond
     =   Name& TypeArgumentsOrDiamond?
     ;
-    
+
 InnerCreator
     =   "new" NonWildcardTypeArguments? Name& NonWildcardTypeArgumentsOrDiamond? ClassCreatorRest
     ;
-    
+
 ClassCreatorRest
     =   Arguments ClassBody?
     ;
@@ -493,12 +493,12 @@ ClassCreatorRest
 ExplicitGenericInvocation
     =   NonWildcardTypeArguments ExplicitGenericInvocationSuffix
     ;
-    
+
 ExplicitGenericInvocationSuffix
     =   "super" SuperSuffix
     |   Name Arguments
     ;
-    
+
 interface NonWildcardTypeArgumentsOrDiamond ;
 
 NonWildcardTypeArguments implements NonWildcardTypeArgumentsOrDiamond
