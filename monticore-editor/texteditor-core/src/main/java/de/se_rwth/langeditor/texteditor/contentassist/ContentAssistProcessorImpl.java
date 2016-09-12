@@ -18,11 +18,14 @@ package de.se_rwth.langeditor.texteditor.contentassist;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.Trees;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -33,6 +36,7 @@ import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 import de.monticore.ast.ASTNode;
@@ -43,7 +47,9 @@ import de.monticore.symboltable.Symbol;
 import de.se_rwth.langeditor.injection.TextEditorScoped;
 import de.se_rwth.langeditor.language.Language;
 import de.se_rwth.langeditor.modelstates.ModelState;
+import de.se_rwth.langeditor.modelstates.Nodes;
 import de.se_rwth.langeditor.modelstates.ObservableModelStates;
+import de.se_rwth.langeditor.util.antlr.ParseTrees;
 
 @TextEditorScoped
 public class ContentAssistProcessorImpl implements IContentAssistProcessor {
@@ -76,11 +82,12 @@ public class ContentAssistProcessorImpl implements IContentAssistProcessor {
         ASTNode rootNode = currentModelState.get().getLastLegalRootNode().get();
         Optional<GlobalScope> scope = language.getScope(rootNode);
         if (scope.isPresent()) {
-          for (String symbol : getSymbols(scope.get())) {
-            if (findMatch(incomplete, symbol)) {
+          Optional<? extends Scope> enclosingScope = getEnclosingASTNode(offset);
+          for (Symbol symbol : getSymbols(scope.get())) {
+            if (findMatch(incomplete, symbol, enclosingScope)) {
               proposalList
-                  .add(new CompletionProposal(symbol, start, incomplete.length(),
-                      symbol.length()));
+                  .add(new CompletionProposal(symbol.getName(), start, incomplete.length(),
+                      symbol.getName().length()));
             }
           }
         }
@@ -103,12 +110,12 @@ public class ContentAssistProcessorImpl implements IContentAssistProcessor {
    * @param rootNode
    * @return
    */
-  private List<String> getSymbols(Scope rootScope) {
-    Collection<String> names = new HashSet<>();
+  private List<Symbol> getSymbols(Scope rootScope) {
+    Collection<Symbol> names = new HashSet<>();
     if (rootScope.exportsSymbols()) {
       for (Symbol symbol: Scopes.getLocalSymbolsAsCollection(rootScope) ){
         if (language.getCompletionKinds().contains(symbol.getKind())) {
-          names.add(symbol.getName());
+          names.add(symbol);
         }
       }
     }
@@ -125,10 +132,41 @@ public class ContentAssistProcessorImpl implements IContentAssistProcessor {
     }
   }
   
+  private boolean findMatch(String incomplete, Symbol proposal, Optional<? extends Scope> scope) {
+    if (proposal.getName().startsWith(incomplete)) {
+      if (scope.isPresent()) {
+        return scope.get().resolve(proposal.getName(), proposal.getKind()).isPresent();
+      } else {
+        return true;
+      }
+    }
+    return false;
+  }
+  
   private boolean findMatch(String incomplete, String proposal) {
     return proposal.startsWith(incomplete);
   }
   
+  private Optional<? extends Scope> getEnclosingASTNode(int offset) {
+    if (currentModelState.isPresent()) {
+      Optional<ASTNode> node = ParseTrees.getTerminalBySourceCharIndex(currentModelState.get().getRootContext(), offset)
+        .map(Trees::getAncestors)
+        .map(ancestors -> Lists.reverse(ancestors))
+        .orElse(Collections.emptyList())
+        .stream()
+        .filter(ParseTree.class::isInstance)
+        .map(ParseTree.class::cast)
+        .map(Nodes::getAstNode)
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .findFirst();
+        if (node.isPresent()) {
+          return node.get().getEnclosingScope();
+        }
+    }
+    return Optional.empty();
+  }
+
   @Override
   public IContextInformation[] computeContextInformation(ITextViewer viewer, int offset) {
     return null;
