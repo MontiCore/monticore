@@ -46,122 +46,122 @@ import de.monticore.io.paths.IterablePath;
  * @version $Revision$, $Date$
  */
 public class GeneratorSetup {
-  
+
   private final File outputDirectory;
-  
+
   private ClassLoader classLoader;
-  
+
   private GlobalExtensionManagement glex;
-  
+
   /**
    * The path for the handwritten code
    */
   private IterablePath handcodedPath;
-  
+
   /**
    * Additional path as the source of templates
    */
   private List<File> additionalTemplatePaths = new ArrayList<>();
-  
+
   /**
    * Template to include automatically at beginning.
    */
   private List<TemplateAutoImport> autoImports = new ArrayList<>();
-  
+
   /**
    * Defines if tracing infos are added to the result as comments
    */
   private boolean tracing = true;
-  
+
   /**
    * The characters for the start of a comment. Usually same as the target language.
    */
   private Optional<String> commentStart = Optional.empty();
-  
+
   /**
    * The characters for the end of a comment. Usually same as the target language.
    */
   private Optional<String> commentEnd = Optional.empty();
-  
+
   public GeneratorSetup(File outputDirectory) {
     this.outputDirectory = outputDirectory;
     this.classLoader = getClass().getClassLoader();
   }
-  
+
   public File getOutputDirectory() {
     return outputDirectory;
   }
-  
+
   public void setClassLoader(ClassLoader classLoader) {
     this.classLoader = classLoader;
   }
-  
+
   public ClassLoader getClassLoader() {
     return classLoader;
   }
-  
+
   public void setGlex(GlobalExtensionManagement glex) {
     this.glex = glex;
   }
-  
+
   public Optional<GlobalExtensionManagement> getGlex() {
     return Optional.ofNullable(glex);
   }
-  
+
   public void setAdditionalTemplatePaths(List<File> additionalTemplatePaths) {
     this.additionalTemplatePaths = new ArrayList<>(additionalTemplatePaths);
   }
-  
+
   public List<File> getAdditionalTemplatePaths() {
     return ImmutableList.copyOf(additionalTemplatePaths);
   }
-  
+
   public void setAutoImports(List<TemplateAutoImport> autoImports) {
     this.autoImports = new ArrayList<>(autoImports);
   }
-  
+
   /**
    * @return the templates to include automatically at the beginning
    */
   public List<TemplateAutoImport> getAutoTemplateImports() {
     return ImmutableList.copyOf(autoImports);
   }
-  
+
   /**
    * @return targetPath
    */
   public IterablePath getHandcodedPath() {
     return this.handcodedPath;
   }
-  
+
   /**
    * @param hwcpath the handcoded path to set
    */
   public void setHandcodedPath(IterablePath hwcPath) {
     this.handcodedPath = hwcPath;
   }
-  
+
   /**
    * @param tracing defines if tracing infos are added to the result as comments.
    */
   public void setTracing(boolean tracing) {
     this.tracing = tracing;
   }
-  
+
   /**
    * @return true, if tracing infos are added to the result as comments.
    */
   public boolean isTracing() {
     return tracing;
   }
-  
+
   /**
    * @return the characters for the start of a comment. Usually same as the target language.
    */
   public Optional<String> getCommentStart() {
     return commentStart;
   }
-  
+
   /**
    * @param commentStart the characters for the start of a comment. Usually same as the target
    * language.
@@ -169,14 +169,14 @@ public class GeneratorSetup {
   public void setCommentStart(Optional<String> commentStart) {
     this.commentStart = commentStart;
   }
-  
+
   /**
    * @return the characters for the end of a comment. Usually same as the target language.
    */
   public Optional<String> getCommentEnd() {
     return commentEnd;
   }
-  
+
   /**
    * @param commentEnd the characters for the end of a comment. Usually same as the target language.
    */

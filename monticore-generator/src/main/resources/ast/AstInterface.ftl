@@ -39,7 +39,7 @@ SUCH DAMAGE.
 -->
 ${tc.signature("visitorPackage", "visitorType")}
 
-<#assign genHelper = glex.getGlobalValue("astHelper")>
+<#assign genHelper = glex.getGlobalVar("astHelper")>
 ${tc.defineHookPoint("InterfaceContent:addComment")}
 <#-- set package -->
 package ${genHelper.getAstPackage()};

@@ -31,7 +31,7 @@ SUCH DAMAGE.
 ***************************************************************************************
 -->
 ${tc.signature("ast","type")}
-<#assign genHelper = glex.getGlobalValue("astHelper")>
+<#assign genHelper = glex.getGlobalVar("astHelper")>
   <#list type.getAllVisibleFields() as field>
     <#assign attrGetter = genHelper.getPlainGetter(field)>
     <#assign attrSetter = genHelper.getPlainSetter(field)>

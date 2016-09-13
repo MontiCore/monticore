@@ -32,8 +32,8 @@ SUCH DAMAGE.
 -->
 ${tc.signature("ast", "qualifiedCdName", "superGrammars")}
 
-<#assign genHelper = glex.getGlobalValue("astHelper")>
-<#assign nameHelper = glex.getGlobalValue("nameHelper")>
+<#assign genHelper = glex.getGlobalVar("astHelper")>
+<#assign nameHelper = glex.getGlobalVar("nameHelper")>
 
 package ${genHelper.getAstPackage()};
 

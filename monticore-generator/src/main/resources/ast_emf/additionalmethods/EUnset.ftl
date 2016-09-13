@@ -31,8 +31,8 @@ SUCH DAMAGE.
 ***************************************************************************************
 -->
  ${tc.signature("ast", "grammarName", "fields")}
-  <#assign genHelper = glex.getGlobalValue("astHelper")>
-  <#assign nameHelper = glex.getGlobalValue("nameHelper")>
+  <#assign genHelper = glex.getGlobalVar("astHelper")>
+  <#assign nameHelper = glex.getGlobalVar("nameHelper")>
   <#assign packageName = grammarName + "Package">
     switch (featureID) {
     <#list fields as field>

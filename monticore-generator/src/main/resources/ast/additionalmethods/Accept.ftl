@@ -31,7 +31,7 @@ SUCH DAMAGE.
 ***************************************************************************************
 -->
 ${tc.signature("ast", "astType")}
-<#assign genHelper = glex.getGlobalValue("astHelper")>
+<#assign genHelper = glex.getGlobalVar("astHelper")>
 <#if genHelper.isSupertypeOfHWType(astType.getName())>
   <#assign plainName = genHelper.getPlainName(astType)>
     // We allow a down cast here, because the subclass ${plainName} must exist

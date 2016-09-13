@@ -31,7 +31,7 @@ SUCH DAMAGE.
 ***************************************************************************************
 -->
   ${tc.signature("grammarName", "superGrammars", "astClasses", "emfAttributes", "externalTypes", "literals")}
-  <#assign genHelper = glex.getGlobalValue("astHelper")>
+  <#assign genHelper = glex.getGlobalVar("astHelper")>
 /**
  * Complete the initialization of the package and its meta-model.  This
  * method is guarded to have no affect on any invocation but its first.

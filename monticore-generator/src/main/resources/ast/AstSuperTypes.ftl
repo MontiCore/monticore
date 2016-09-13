@@ -30,5 +30,5 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-<#assign genHelper = glex.getGlobalValue("astHelper")>
+<#assign genHelper = glex.getGlobalVar("astHelper")>
 ${genHelper.getSuperClass(ast)} implements ${tc.include("ast.AstSuperInterfaces")} ${genHelper.getASTNodeBaseType()}

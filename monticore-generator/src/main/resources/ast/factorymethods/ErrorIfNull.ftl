@@ -31,7 +31,7 @@ SUCH DAMAGE.
 ***************************************************************************************
 -->
 ${tc.signature("parameters")}
-<#assign genHelper = glex.getGlobalValue("astHelper")>
+<#assign genHelper = glex.getGlobalVar("astHelper")>
 <#list parameters as checkedParameter>
   <#assign type = checkedParameter.getType()>
   <#if genHelper.isNullable(type)>
