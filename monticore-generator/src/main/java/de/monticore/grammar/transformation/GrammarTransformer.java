@@ -43,11 +43,11 @@ import de.monticore.grammar.grammar._ast.ASTASTRule;
 import de.monticore.grammar.grammar._ast.ASTAlt;
 import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
 import de.monticore.grammar.grammar._ast.ASTBlock;
-import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTConstantsGrammar;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTNonTerminalSeparator;
+import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.monticore.utils.ASTNodes;
 import de.monticore.utils.ASTTraverser;
@@ -109,11 +109,12 @@ public class GrammarTransformer {
    */
   public static void changeNamesOfMultivaluedAttributes(ASTMCGrammar grammar) {
     grammar.getClassProds().forEach(c -> transformNonTerminals(grammar, c));
+    grammar.getInterfaceProds().forEach(c -> transformNonTerminals(grammar, c));
     grammar.getASTRules().forEach(c -> transformAttributesInAST(c));
   }
 
   private static void transformNonTerminals(ASTMCGrammar grammar,
-      ASTClassProd classProd) {
+      ASTProd classProd) {
     Set<ASTNonTerminal> components = new LinkedHashSet<>();
 
     ASTNodes.getSuccessors(classProd, ASTNonTerminal.class).stream()

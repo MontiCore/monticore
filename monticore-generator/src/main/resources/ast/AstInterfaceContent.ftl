@@ -42,6 +42,7 @@ ${tc.signature("visitorPackage", "visitorType")}
 <#assign genHelper = glex.getGlobalValue("astHelper")>
 
 import ${visitorPackage}.${visitorType};
+import java.util.Optional;
 
 public interface ${ast.getName()} extends ${tc.include("ast.AstExtendedInterfaces")} ${genHelper.getASTNodeBaseType()} {
   <#-- generate all methods -->

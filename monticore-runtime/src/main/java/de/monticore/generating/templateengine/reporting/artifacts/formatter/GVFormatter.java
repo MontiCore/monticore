@@ -115,9 +115,6 @@ public class GVFormatter extends AFormatter {
     return lines;
   }
   
-  public void print(RootPkg rootPkg) {
-
-  }
   
   /**
    * Get the dotgraph shape of a type

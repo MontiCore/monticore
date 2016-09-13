@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import de.se_rwth.commons.logging.Log;
+
 /**
  * This class adds the signature methods tc.params(...) and tc.result(...) to
  * the existing TemplateController.
@@ -153,6 +155,7 @@ public class ExtendedTemplateController extends TemplateController {
       return Optional.of(c);
     }
     catch (ClassNotFoundException e) {
+      Log.info("Class " + paramType + " not found!", "ExtendedTemplateController");
     }
     
     // 2. this packages are searched to find the fqn of the passed paramType
@@ -164,7 +167,7 @@ public class ExtendedTemplateController extends TemplateController {
         return Optional.of(c);
       }
       catch (ClassNotFoundException e) {
-        
+        Log.info("Class " + _package + "." + paramType + " not found!", "ExtendedTemplateController");
       }
     }
     
@@ -177,6 +180,7 @@ public class ExtendedTemplateController extends TemplateController {
         
       }
       catch (ClassNotFoundException e) {
+        Log.info("Class " + primitiveTypes.get(paramType) + " not found!", "ExtendedTemplateController");
       }
       
     }

@@ -232,6 +232,7 @@ public class ArtifactReporter extends AReporter {
    */
   @Override
   protected void writeHeader() {
+    // Write empty header
   }
   
 }
