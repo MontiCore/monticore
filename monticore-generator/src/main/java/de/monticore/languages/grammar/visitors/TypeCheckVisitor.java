@@ -56,7 +56,7 @@ public class TypeCheckVisitor implements Grammar_WithConceptsVisitor {
   @Override
   public void visit(ASTRuleReference a) {
     if (grammarSymbol.getRuleWithInherited(a.getName()) == null) {
-      Log.error( a.get_SourcePositionStart() + ": " + "0xA0273 Undefined rule: " + a.getName());
+      Log.error("0xA0273 Undefined rule: " + a.getName(), a.get_SourcePositionStart());
       fatalError = true;
     }
   }
@@ -66,7 +66,7 @@ public class TypeCheckVisitor implements Grammar_WithConceptsVisitor {
 
     MCRuleSymbol ruleByName = grammarSymbol.getRuleWithInherited(a.getName());
     if (ruleByName == null) {
-      Log.error(a.get_SourcePositionStart() + ": " + "0xA0274 Undefined rule: " + a.getName());
+      Log.error("0xA0274 Undefined rule: " + a.getName(), a.get_SourcePositionStart());
       fatalError = true;
     }
     else {
@@ -79,8 +79,8 @@ public class TypeCheckVisitor implements Grammar_WithConceptsVisitor {
         
         List<PredicatePair> subRulesForParsing = grammarSymbol.getSubRulesForParsing(a.getName());
         if (subRulesForParsing == null || subRulesForParsing.size() == 0) {
-          Log.error(a.get_SourcePositionStart() + ": " + "0xA0275 Rule '" + a.getName() + "' has no body and can therefore not be "
-              + "referenced.");
+          Log.error("0xA0275 Rule '" + a.getName() + "' has no body and can therefore not be "
+              + "referenced.", a.get_SourcePositionStart());
           fatalError = true;
         }
       }
