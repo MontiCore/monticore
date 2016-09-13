@@ -17,11 +17,15 @@
 package de.se_rwth.langeditor.language;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.templates.TemplateProposal;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -116,4 +120,9 @@ public interface Language {
     }
     return Optional.empty();
   }
+  
+  default List<TemplateProposal> getTemplateProposals(ITextViewer viewer, int offset) {
+    return new ArrayList<>();
+  }
+  
 }

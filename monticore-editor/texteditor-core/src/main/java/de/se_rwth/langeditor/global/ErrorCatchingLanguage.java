@@ -18,10 +18,13 @@ package de.se_rwth.langeditor.global;
 
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.templates.TemplateProposal;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -122,4 +125,14 @@ final class ErrorCatchingLanguage implements Language {
   public Optional<GlobalScope> getScope(ASTNode node) {
     return language.getScope(node);
   }
+
+  /**
+   * @see de.se_rwth.langeditor.language.Language#getTemplateProposals(org.eclipse.jface.text.ITextViewer, int)
+   */
+  @Override
+  public List<TemplateProposal> getTemplateProposals(ITextViewer viewer, int offset) {
+    return language.getTemplateProposals(viewer, offset);
+  }
+  
+  
 }

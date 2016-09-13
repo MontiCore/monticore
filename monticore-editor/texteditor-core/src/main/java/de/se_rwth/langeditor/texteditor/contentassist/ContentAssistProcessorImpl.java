@@ -17,12 +17,9 @@
 package de.se_rwth.langeditor.texteditor.contentassist;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.Trees;
@@ -94,6 +91,9 @@ public class ContentAssistProcessorImpl implements IContentAssistProcessor {
       }
     }
     
+    // Add templates
+    proposalList.addAll(language.getTemplateProposals(viewer, offset));
+    
     // Add keywords
     for (String keyword : language.getKeywords()) {
       if (findMatch(incomplete, keyword)) {
@@ -111,7 +111,7 @@ public class ContentAssistProcessorImpl implements IContentAssistProcessor {
    * @return
    */
   private List<Symbol> getSymbols(Scope rootScope) {
-    Collection<Symbol> names = new HashSet<>();
+    List<Symbol> names = new ArrayList<>();
     if (rootScope.exportsSymbols()) {
       for (Symbol symbol: Scopes.getLocalSymbolsAsCollection(rootScope) ){
         if (language.getCompletionKinds().contains(symbol.getKind())) {
@@ -123,7 +123,7 @@ public class ContentAssistProcessorImpl implements IContentAssistProcessor {
     for (Scope scope : subScopes) {
       names.addAll(getSymbols(scope));
     }
-    return names.stream().sorted().collect(Collectors.toList());
+    return names;
   }
   
   private void acceptModelState(ModelState modelState) {
