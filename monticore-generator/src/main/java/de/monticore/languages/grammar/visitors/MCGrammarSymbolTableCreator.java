@@ -326,7 +326,7 @@ public class MCGrammarSymbolTableCreator extends CommonSymbolTableCreator implem
   }
 
   private void undefinedRuleError(String name, SourcePosition pos) {
-    Log.error("0xA0964 Undefined rule: " + name + " Pos: " + pos);
+    Log.error(pos + ": " + "0xA0964 Undefined rule: " + name);
   }
 
   /**
