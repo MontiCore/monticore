@@ -18,7 +18,6 @@ package de.se_rwth.langeditor.util.antlr;
 
 import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.getLast;
-import static org.antlr.v4.runtime.tree.Trees.descendants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +81,7 @@ public final class ParseTrees {
   
   public static Optional<TerminalNode> getTerminalBySourceCharIndex(ParseTree parseTree,
       int documentOffset) {
-    List<TerminalNode> terminals = Trees.descendants(parseTree).stream()
+    List<TerminalNode> terminals = Trees.getDescendants(parseTree).stream()
         .filter(TerminalNode.class::isInstance)
         .map(TerminalNode.class::cast)
         .collect(Collectors.toList());
@@ -98,7 +97,7 @@ public final class ParseTrees {
   
   public static Optional<TerminalNode> getTerminalByLineAndColumn(ParseTree parseTree,
       int line, int column) {
-    List<TerminalNode> terminals = Trees.descendants(parseTree).stream()
+    List<TerminalNode> terminals = Trees.getDescendants(parseTree).stream()
         .filter(TerminalNode.class::isInstance)
         .map(TerminalNode.class::cast)
         .collect(Collectors.toList());
@@ -113,14 +112,14 @@ public final class ParseTrees {
   }
   
   public static Optional<TerminalNode> getFirstTerminal(ParseTree parseTree) {
-    return descendants(parseTree).stream()
+    return Trees.getDescendants(parseTree).stream()
         .filter(TerminalNode.class::isInstance)
         .map(TerminalNode.class::cast)
         .findFirst();
   }
   
   public static Optional<TerminalNode> getLastTerminal(ParseTree parseTree) {
-    TerminalNode lastTerminal = getLast(filter(descendants(parseTree), TerminalNode.class), null);
+    TerminalNode lastTerminal = getLast(filter(Trees.getDescendants(parseTree), TerminalNode.class), null);
     return Optional.ofNullable(lastTerminal);
   }
   
@@ -138,7 +137,7 @@ public final class ParseTrees {
   
   public static ImmutableSet<ParseTree> filterContexts(ParseTree parseTree,
       ImmutableSet<Class<? extends ParseTree>> types) {
-    Set<ParserRuleContext> matchingRules = Trees.descendants(parseTree).stream()
+    Set<ParserRuleContext> matchingRules = Trees.getDescendants(parseTree).stream()
         .filter(descendant -> types.contains(descendant.getClass()))
         .map(ParserRuleContext.class::cast)
         .collect(Collectors.toSet());
