@@ -19,16 +19,6 @@
 
 package de.monticore.symboltable;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
 import de.monticore.ModelNameCalculator;
 import de.monticore.ModelingLanguage;
 import de.monticore.ModelingLanguageFamily;
@@ -40,6 +30,16 @@ import de.monticore.symboltable.resolving.AdaptedResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingInfo;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * @author Pedram Mir Seyed Nazari
@@ -112,7 +112,7 @@ public final class GlobalScope extends CommonScope {
     // to resolveDown again
     loadModels(resolvingInfo.getResolvingFilters(), symbolName, kind);
 
-    // Maybe the symbol now exists in this scope (resp. its sub scopes). So, resolve down, again.
+    // Maybe the symbol now exists in this scope (or its sub scopes). So, resolve down, again.
     resolvedSymbol = resolveDownMany(new ResolvingInfo(getResolvingFilters()), symbolName, kind, modifier, predicate);
 
     return resolvedSymbol;
@@ -136,7 +136,7 @@ public final class GlobalScope extends CommonScope {
             cache(modelLoader, calculatedModelNames.iterator().next());
           }
           else {
-            Log.debug("Model for '" + symbolName + "' already exists. No need to load it.", GlobalScope.class.getSimpleName());
+            Log.debug("Already tried to load model for '" + symbolName + "'. If model exists, continue with cached version.", GlobalScope.class.getSimpleName());
           }
         }
       }
