@@ -1,0 +1,21 @@
+package de.monticore;
+
+component grammar InterfaceRules  extends mc.grammars.lexicals.TestLexicals {
+      
+   interface IProd = simpleName:Name Name* optionalName:Name?;
+   
+   abstract AProd implements IProd = anotherName:Name;
+   
+   Prod extends AProd;
+      
+   ast AProd =
+   method public String toString() { 
+     java.util.List<String> tmp1 = getNames();
+     java.util.Optional<String> tmp2 = getOptionalName();
+     return getSimpleName(); 
+   };
+    
+   ast Prod =
+   method public String toString() { return getAnotherName(); } ;
+ 
+ }

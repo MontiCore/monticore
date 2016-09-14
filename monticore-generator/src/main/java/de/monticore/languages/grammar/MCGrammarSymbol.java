@@ -614,7 +614,7 @@ public class MCGrammarSymbol extends CommonScopeSpanningSymbol {
     MCRuleSymbol ruleByName = getRuleWithInherited(ruleName);
 
     if (ruleByName == null) {
-      Log.error("0xA0247 " + ruleName + " does not exist. Position: " + x);
+      Log.error("0xA0247 " + ruleName + " does not exist.", x);
       return false;
     }
     return true;
@@ -635,8 +635,7 @@ public class MCGrammarSymbol extends CommonScopeSpanningSymbol {
 
       MCAttributeSymbol attribute = ruleByName.getDefinedType().getAttribute(attributename);
       if (attribute == null) {
-        Log.error("0xA0248 " + attributename + " is a non-existing attribute of rule " + rulename
-            + "!. Position: " + position);
+        Log.error("0xA0248 " + attributename + " is a non-existing attribute of rule " + rulename, position);
         return false;
       }
       return true;

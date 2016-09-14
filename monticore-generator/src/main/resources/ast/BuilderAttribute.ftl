@@ -37,7 +37,7 @@ SUCH DAMAGE.
   @result    
   
 -->
-  <#assign genHelper = glex.getGlobalValue("astHelper")>
+  <#assign genHelper = glex.getGlobalVar("astHelper")>
   <#assign typeHelper = tc.instantiate("de.monticore.types.TypesHelper")>
   <#assign attributeValue = genHelper.getAstAttributeValueForBuilder(ast)>
     ${ast.printModifier()} ${typeHelper.printSimpleRefType(ast.getType())} ${ast.getName()}<#if attributeValue?has_content> = ${attributeValue}</#if>;

@@ -30,7 +30,7 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-  <#assign nameHelper = glex.getGlobalValue("javaNameHelper")>
+  <#assign nameHelper = glex.getGlobalVar("javaNameHelper")>
   ${tc.signature("constructorParameters")}
     <#assign del = "">
     <#list constructorParameters as parameter>    ${del}this.${nameHelper.javaAttribute(parameter.getName())} 

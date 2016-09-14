@@ -1,6 +1,6 @@
 ${tc.signature("astPackage")}
 
-<#assign genHelper = glex.getGlobalValue("coCoHelper")>
+<#assign genHelper = glex.getGlobalVar("coCoHelper")>
 <#assign astName = genHelper.getPlainName(ast)>
 
 package ${genHelper.getCoCoPackage()};

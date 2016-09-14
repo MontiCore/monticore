@@ -38,13 +38,13 @@ public class TemplateAccessor {
 
   <#list templates as template>
     
-  private ${glex.getGlobalValue("TemplateClassPackage")}.${template}${glex.getGlobalValue("TemplatePostfix")} ${helper.replaceDotsWithUnderscores(template)} = new ${helper.replaceDotsWithUnderscores(template)?cap_first}_Extended();
+  private ${glex.getGlobalVar("TemplateClassPackage")}.${template}${glex.getGlobalVar("TemplatePostfix")} ${helper.replaceDotsWithUnderscores(template)} = new ${helper.replaceDotsWithUnderscores(template)?cap_first}_Extended();
   
-  public ${glex.getGlobalValue("TemplateClassPackage")}.${template}${glex.getGlobalValue("TemplatePostfix")} get${helper.replaceDotsWithUnderscores(template)?cap_first}() {
+  public ${glex.getGlobalVar("TemplateClassPackage")}.${template}${glex.getGlobalVar("TemplatePostfix")} get${helper.replaceDotsWithUnderscores(template)?cap_first}() {
     return this.${helper.replaceDotsWithUnderscores(template)};
   }
   
-  private class ${helper.replaceDotsWithUnderscores(template)?cap_first}_Extended extends ${glex.getGlobalValue("TemplateClassPackage")}.${template}${glex.getGlobalValue("TemplatePostfix")} {
+  private class ${helper.replaceDotsWithUnderscores(template)?cap_first}_Extended extends ${glex.getGlobalVar("TemplateClassPackage")}.${template}${glex.getGlobalVar("TemplatePostfix")} {
     protected ${helper.replaceDotsWithUnderscores(template)?cap_first}_Extended () {}
   } 
   

@@ -70,7 +70,7 @@ public class TemplateLoggerTest {
         .fileHandler(fileHandler)
         .classLoader(getClass().getClassLoader())
         .externalTemplatePaths(new File[] {})
-        .targetDir(TARGET_DIR)
+        .outputDirectory(TARGET_DIR)
         .tracing(false)
         .build();
     

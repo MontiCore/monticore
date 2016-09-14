@@ -32,7 +32,7 @@ SUCH DAMAGE.
 -->
 ${signature("className", "directSuperCds")}
 
-<#assign genHelper = glex.getGlobalValue("stHelper")>
+<#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign grammarName = ast.getName()?cap_first>
 <#assign fqn = genHelper.getQualifiedGrammarName()?lower_case>
 <#assign package = genHelper.getTargetPackage()?lower_case>

@@ -37,6 +37,6 @@ SUCH DAMAGE.
   @result    
   
 -->
-  <#assign genHelper = glex.getGlobalValue("astHelper")>
+  <#assign genHelper = glex.getGlobalVar("astHelper")>
   <#assign attributeValue = genHelper.getAstAttributeValue(ast)>
   ${ast.printModifier()} ${ast.printType()} ${ast.getName()}<#if attributeValue?has_content> = ${attributeValue}</#if>;

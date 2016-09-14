@@ -54,7 +54,7 @@ import freemarker.core.Macro;
 public class TemplateAliasingTest {
 
   private static final File TARGET_DIR = new File("target");
-  private static final int NUMBER_ALIASES = 8;
+  private static final int NUMBER_ALIASES = 18;
   public static final String ALIASES_PACKAGE = "de.monticore.generating.templateengine.templates.aliases.";
 
 
@@ -81,7 +81,7 @@ public class TemplateAliasingTest {
                                                     .freeMarkerTemplateEngine(freeMarkerTemplateEngine)
                                                     .fileHandler(fileHandler)
                                                     .classLoader(getClass().getClassLoader())
-                                                    .targetDir(TARGET_DIR)
+                                                    .outputDirectory(TARGET_DIR)
                                                     .tracing(false)
                                                     .build();
     tc = new TemplateControllerMock(config, "");
