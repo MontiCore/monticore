@@ -83,6 +83,11 @@ public class GeneratorSetup {
    */
   private Optional<String> commentEnd = Optional.empty();
   
+  /**
+   * The model name
+   */
+  private Optional<String> modelName = Optional.empty();
+  
   public GeneratorSetup(File outputDirectory) {
     this.outputDirectory = outputDirectory;
     this.classLoader = getClass().getClassLoader();
@@ -182,5 +187,19 @@ public class GeneratorSetup {
    */
   public void setCommentEnd(Optional<String> commentEnd) {
     this.commentEnd = commentEnd;
+  }
+  
+  /**
+   * @return modelName
+   */
+  public Optional<String> getModelName() {
+    return this.modelName;
+  }
+
+  /**
+   * @param modelName the modelName to set
+   */
+  public void setModelName(String modelName) {
+    this.modelName = Optional.ofNullable(modelName);
   }
 }

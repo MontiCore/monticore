@@ -24,6 +24,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Strings.nullToEmpty;
 
 import java.io.File;
+import java.util.Optional;
 
 import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.io.FileReaderWriter;
@@ -56,7 +57,7 @@ public class TemplateControllerConfiguration {
   /** the path for the handwritten code */
   private IterablePath handcodedPath;
 
-  private String modelName;
+  private Optional<String> modelName = Optional.empty();
   
   /**
    * Defines if tracing infos are added to the result as comments
@@ -182,12 +183,12 @@ public class TemplateControllerConfiguration {
     this.targetDir = targetDir;
   }
   
-  public String getModelName() {
+  public Optional<String> getModelName() {
     return modelName;
   }
   
   void setModelName(String modelName) {
-    this.modelName = modelName;
+    this.modelName = Optional.ofNullable(modelName);
   }
   
   public File[] getExternalTemplatePath() {
