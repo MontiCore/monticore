@@ -47,9 +47,9 @@ public class MCProdComponentSymbol extends CommonSymbol {
   private String usageName = "";
 
   /**
-   * Only for nonterminals. E.g., in u:R R is the name of the referenced rule.
+   * Only for nonterminals. E.g., in u:R R is the name of the referenced prod.
    */
-  private String referencedRuleName = "";
+  private MCProdSymbolReference referencedProd;
 
   /**
    * E.g., in from:Name@State State is the referenced symbol name
@@ -71,6 +71,45 @@ public class MCProdComponentSymbol extends CommonSymbol {
     super(name, KIND);
   }
 
+  public void setNonterminal(boolean nonterminal) {
+    isNonterminal = nonterminal;
+  }
+
+  public boolean isNonterminal() {
+    return isNonterminal;
+  }
+
+  public boolean isTerminal() {
+    return isTerminal;
+  }
+
+  public void setTerminal(boolean terminal) {
+    isTerminal = terminal;
+  }
+
+  public boolean isConstantGroup() {
+    return isConstantGroup;
+  }
+
+  public void setConstantGroup(boolean constantGroup) {
+    isConstantGroup = constantGroup;
+  }
+
+  public boolean isConstant() {
+    return isConstant;
+  }
+
+  public void setConstant(boolean constant) {
+    isConstant = constant;
+  }
+
+  public boolean isLexerNonterminal() {
+    return isLexerNonterminal;
+  }
+
+  public void setLexerNonterminal(boolean lexerNonterminal) {
+    isLexerNonterminal = lexerNonterminal;
+  }
 
   /**
    * @return true, if rule is used as a list, i.e. '+' or '*'.
@@ -116,12 +155,12 @@ public class MCProdComponentSymbol extends CommonSymbol {
     return this.usageName;
   }
 
-  public void setReferencedRuleName(String referencedRuleName) {
-    this.referencedRuleName = nullToEmpty(referencedRuleName);
+  public void setReferencedProd(MCProdSymbolReference referencedProd) {
+    this.referencedProd = referencedProd;
   }
 
-  public String getReferencedRuleName() {
-    return referencedRuleName;
+  public Optional<MCProdSymbolReference> getReferencedProd() {
+    return Optional.ofNullable(referencedProd);
   }
 
   public Optional<String> getReferencedSymbolName() {

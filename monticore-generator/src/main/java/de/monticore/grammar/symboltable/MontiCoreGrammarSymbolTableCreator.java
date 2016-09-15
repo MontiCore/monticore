@@ -20,12 +20,7 @@
 package de.monticore.grammar.symboltable;
 
 import com.google.common.collect.Sets;
-import de.monticore.grammar.grammar._ast.ASTGrammarReference;
-import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._ast.ASTMCImportStatement;
-import de.monticore.grammar.grammar._ast.ASTProd;
-import de.monticore.grammar.grammar._ast.ASTSymbolDefinition;
+import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.symboltable.ArtifactScope;
@@ -42,6 +37,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static de.se_rwth.commons.Names.getQualifiedName;
 
 /**
@@ -194,28 +190,168 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
     MCProdSymbol prodSymbol = new MCProdSymbol(ast.getName());
     prodSymbol.setInterface(true);
 
-    if (ast.getSymbolDefinition().isPresent()) {
-      setSymbolDefinition(prodSymbol, ast.getSymbolDefinition().get());
-    }
+    setSymbolDefinitionIfExists(prodSymbol, ast.getSymbolDefinition().orElse(null));
 
     addToScopeAndLinkWithNode(prodSymbol, ast);
   }
 
-  private void setSymbolDefinition(MCProdSymbol prodSymbol, ASTSymbolDefinition symbolDefinition) {
-    String symbolKindName = prodSymbol.getName();
+  private void setSymbolDefinitionIfExists(MCProdSymbol prodSymbol, ASTSymbolDefinition symbolDefinition) {
+    if (symbolDefinition != null) {
+      String symbolKindName = prodSymbol.getName();
 
-    if(symbolDefinition.getSymbolKind().isPresent() && !symbolDefinition.getSymbolKind().get().isEmpty()) {
-      symbolKindName = symbolDefinition.getSymbolKind().get();
+      if (symbolDefinition.getSymbolKind().isPresent() && !symbolDefinition.getSymbolKind().get().isEmpty()) {
+        symbolKindName = symbolDefinition.getSymbolKind().get();
+      }
+
+      MCProdSymbolReference prodReference = new MCProdSymbolReference(symbolKindName, prodSymbol.getSpannedScope());
+      prodSymbol.setProdDefiningSymbolKind(prodReference);
     }
-
-    MCProdSymbolReference prodReference =
-        new MCProdSymbolReference(symbolKindName, prodSymbol.getSpannedScope())
-    prodSymbol.setProdDefiningSymbolKind(prodReference);
   }
 
   @Override
   public void endVisit(ASTInterfaceProd astInterfaceProd) {
     removeCurrentScope();
+  }
+
+  @Override
+  public void visit(ASTLexProd ast) {
+    final MCProdSymbol prodSymbol = new MCProdSymbol(ast.getName());
+    prodSymbol.setLexerProd(true);
+
+    addToScopeAndLinkWithNode(prodSymbol, ast);
+  }
+
+  @Override
+  public void endVisit(ASTLexProd astLexProd) {
+    removeCurrentScope();
+  }
+
+  @Override
+  public void visit(ASTClassProd ast) {
+    final MCProdSymbol prodSymbol = new MCProdSymbol(ast.getName());
+
+    setSymbolDefinitionIfExists(prodSymbol, ast.getSymbolDefinition().orElse(null));
+
+    addToScopeAndLinkWithNode(prodSymbol, ast);
+  }
+
+  public void endVisit(ASTClassProd astClassProd) {
+    removeCurrentScope();
+  }
+
+  @Override
+  public void visit(ASTAbstractProd ast) {
+    MCProdSymbol prodSymbol = new MCProdSymbol(ast.getName());
+    prodSymbol.setAbstract(true);
+
+    final Scope enclosingScope = currentScope().get();
+
+    setSymbolDefinitionIfExists(prodSymbol, ast.getSymbolDefinition().orElse(null));
+
+    // Setup superclasses and superinterfaces
+    // A extends B
+    for (ASTRuleReference astSuperProd : ast.getSuperRule()) {
+      MCProdSymbolReference superProd = new MCProdSymbolReference(astSuperProd.getTypeName(), enclosingScope);
+      prodSymbol.addSuperProd(superProd);
+    }
+
+    // A astextends B
+    for (ASTGenericType astSuperClass : ast.getASTSuperClass()) {
+      MCProdOrTypeReference superClass =
+          new MCProdOrTypeReference(astSuperClass.getTypeName(), enclosingScope);
+      prodSymbol.addAstSuperClass(superClass);
+    }
+
+    // A implements B
+    for (ASTRuleReference astInterface : ast.getSuperInterfaceRule()) {
+      MCProdSymbolReference superProd = new MCProdSymbolReference(astInterface.getTypeName(), enclosingScope);
+      prodSymbol.addSuperInterfaceProd(superProd);
+    }
+
+    // A astimplements B
+    for (ASTGenericType astInterface : ast.getASTSuperInterface()) {
+      MCProdOrTypeReference superClass =
+          new MCProdOrTypeReference(astInterface.getTypeName(), enclosingScope);
+      prodSymbol.addAstSuperInterface(superClass);
+    }
+
+    addToScopeAndLinkWithNode(prodSymbol, ast);
+  }
+
+  @Override
+  public void endVisit(ASTAbstractProd astAbstractProd) {
+    removeCurrentScope();
+  }
+
+  @Override
+  public void visit(ASTExternalProd ast) {
+    final MCProdSymbol prodSymbol = new MCProdSymbol(ast.getName());
+    prodSymbol.setExternal(true);
+
+    setSymbolDefinitionIfExists(prodSymbol, ast.getSymbolDefinition().orElse(null));
+
+    addToScopeAndLinkWithNode(prodSymbol, ast);
+  }
+
+  @Override
+  public void endVisit(ASTExternalProd astExternalProd) {
+    removeCurrentScope();
+  }
+
+  @Override
+  public void visit(ASTEnumProd ast) {
+    final MCProdSymbol prodSymbol = new MCProdSymbol(ast.getName());
+    prodSymbol.setEnum(true);
+
+    addToScopeAndLinkWithNode(prodSymbol, ast);
+  }
+
+  @Override
+  public void endVisit(ASTEnumProd astEnumProd) {
+    removeCurrentScope();
+  }
+
+  @Override
+  public void visit(ASTTerminal ast) {
+    // TODO do we need symbols for nonterminals?
+
+    final String usageName = ast.getUsageName().orElse(null);
+    final String symbolName = isNullOrEmpty(usageName) ? ast.getName() : usageName;
+
+    MCProdComponentSymbol terminalSymbol = new MCProdComponentSymbol(symbolName);
+    terminalSymbol.setTerminal(true);
+
+    setComponentMultiplicity(terminalSymbol, ast.getIteration());
+
+    addToScopeAndLinkWithNode(terminalSymbol, ast);
+  }
+
+  @Override
+  public void visit(ASTNonTerminal ast) {
+    final String usageName = ast.getUsageName().orElse(null);
+    final String symbolName = isNullOrEmpty(usageName) ? ast.getName() : usageName;
+
+    MCProdComponentSymbol ntSymbol = new MCProdComponentSymbol(symbolName);
+
+    ntSymbol.setUsageName(ast.getUsageName().orElse(null));
+    ntSymbol.setNonterminal(true);
+
+    ntSymbol.setReferencedProd(new MCProdSymbolReference(ast.getName(), currentScope().orElse(null)));
+    ntSymbol.setReferencedSymbolName(ast.getReferencedSymbol().orElse(""));
+    setComponentMultiplicity(ntSymbol, ast.getIteration());
+  }
+
+  void setComponentMultiplicity(MCProdComponentSymbol prod, int iteration) {
+    if (prod == null) {
+      return;
+    }
+
+    if ((iteration == ASTConstantsGrammar.PLUS) || (iteration == ASTConstantsGrammar.STAR)) {
+      prod.setList(true);
+    }
+    else if (iteration == ASTConstantsGrammar.QUESTION) {
+      prod.setOptional(true);
+    }
   }
 
 }

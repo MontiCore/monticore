@@ -19,10 +19,14 @@
 
 package de.monticore.grammar.symboltable;
 
+import com.google.common.collect.ImmutableList;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
 import de.monticore.symboltable.SymbolKind;
+import de.se_rwth.commons.logging.Log;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
@@ -36,18 +40,37 @@ public class MCProdSymbol extends CommonScopeSpanningSymbol {
 
   private boolean isStartProd = false;
 
-  private boolean isParserProd;
-  private boolean isLexerProd;
-
   private boolean isInterface;
   private boolean isAbstract;
   private boolean isExternal;
   private boolean isEnum;
 
+  private boolean isLexerProd;
+
   /**
    * the producution that defines the symbol kind of the current prod symbol (only if isSymbolDefinition is true)
    */
   private MCProdSymbolReference prodDefiningSymbolKind = null;
+
+  /**
+   * A extends B, C = ...
+   */
+  private final List<MCProdSymbolReference> superProds = new ArrayList<>();
+
+  /**
+   * A implements B, C = ...
+   */
+  private final List<MCProdSymbolReference> superInterfaceProds = new ArrayList<>();
+
+  /**
+   * A astextends B, C, external.java.Type
+   */
+  private List<MCProdOrTypeReference> astSuperClasses = new ArrayList<>();
+
+  /**
+   * A implements B, C, external.java.Type
+   */
+  private List<MCProdOrTypeReference> astSuperInterfaces = new ArrayList<>();
 
 
   public MCProdSymbol(String name) {
@@ -83,6 +106,45 @@ public class MCProdSymbol extends CommonScopeSpanningSymbol {
     return getSpannedScope().resolveLocally(componentName, MCProdComponentSymbol.KIND);
   }
 
+  public void addSuperProd(MCProdSymbolReference superProdRef) {
+    this.superProds.add(Log.errorIfNull(superProdRef));
+  }
+
+  public List<MCProdSymbolReference> getSuperProds() {
+    return ImmutableList.copyOf(superProds);
+  }
+
+  public void addSuperInterfaceProd(MCProdSymbolReference superInterfaceProdRef) {
+    this.superInterfaceProds.add(Log.errorIfNull(superInterfaceProdRef));
+  }
+
+  public List<MCProdSymbolReference> getSuperInterfaceProds() {
+    return ImmutableList.copyOf(superInterfaceProds);
+  }
+
+  public void addAstSuperClass(MCProdOrTypeReference ref) {
+    astSuperClasses.add(Log.errorIfNull(ref));
+  }
+
+  public List<MCProdOrTypeReference> getAstSuperClasses() {
+    return ImmutableList.copyOf(astSuperClasses);
+  }
+
+  public void addAstSuperInterface(MCProdOrTypeReference ref) {
+    astSuperInterfaces.add(Log.errorIfNull(ref));
+  }
+
+  public List<MCProdOrTypeReference> getAstSuperInterfaces() {
+    return ImmutableList.copyOf(astSuperInterfaces);
+  }
+
+  /**
+   * @return true, if production is a class production (which is the default)
+   */
+  public boolean isClass() {
+    return !isInterface() && !isAbstract() && !isExternal() && !isEnum();
+  }
+
   public void setInterface(boolean anInterface) {
     isInterface = anInterface;
   }
@@ -114,6 +176,19 @@ public class MCProdSymbol extends CommonScopeSpanningSymbol {
   public boolean isEnum() {
     return isEnum;
   }
+
+  public boolean isParserProd() {
+    return !isLexerProd();
+  }
+
+  public void setLexerProd(boolean lexerProd) {
+    isLexerProd = lexerProd;
+  }
+
+  public boolean isLexerProd() {
+    return isLexerProd;
+  }
+
 
   public static class MCProdKind implements SymbolKind {
 
