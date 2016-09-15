@@ -31,8 +31,8 @@ SUCH DAMAGE.
 ***************************************************************************************
 -->
   ${tc.signature("ast", "structuralMethod", "interfaces")}
-  <#assign genHelper = glex.getGlobalValue("astHelper")>
-  <#assign nameHelper = glex.getGlobalValue("nameHelper")>
+  <#assign genHelper = glex.getGlobalVar("astHelper")>
+  <#assign nameHelper = glex.getGlobalVar("nameHelper")>
   <#assign packageName = genHelper.getCdName() + "Package">
   <#list interfaces as interface>
     <#if genHelper.getVisibleFields(interface)?has_content>

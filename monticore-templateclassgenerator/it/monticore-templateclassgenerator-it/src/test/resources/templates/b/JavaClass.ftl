@@ -39,7 +39,7 @@ public class ${classname} {
     super();
   }
   
-  <#-- private String ${glex.getGlobalValue("a.b.TemplateTemplate").generateToString("hello")}; -->
+  <#-- private String ${glex.getGlobalVar("a.b.TemplateTemplate").generateToString("hello")}; -->
   <#-- private String ${bubu}; -->
 
 

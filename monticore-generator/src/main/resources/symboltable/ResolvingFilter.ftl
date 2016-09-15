@@ -32,7 +32,7 @@ SUCH DAMAGE.
 -->
 ${signature("className", "ruleName")}
 
-<#assign genHelper = glex.getGlobalValue("stHelper")>
+<#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign symbolName = ruleName?cap_first+"Symbol">
 
 <#-- Copyright -->

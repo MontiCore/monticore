@@ -31,7 +31,7 @@ SUCH DAMAGE.
 ***************************************************************************************
 -->
 ${tc.signature("ruleSymbol")}
-<#assign genHelper = glex.getGlobalValue("parserHelper")>
+<#assign genHelper = glex.getGlobalVar("parserHelper")>
 <#assign parseRuleName = genHelper.getParseRuleName(ruleSymbol)>
 <#assign astClassName = genHelper.getASTClassName(ruleSymbol)>
 <#assign grammar = genHelper.getGrammarSymbol()>

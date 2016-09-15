@@ -31,7 +31,7 @@ SUCH DAMAGE.
 ***************************************************************************************
 -->
 ${signature("ruleSymbol")}
-<#assign genHelper = glex.getGlobalValue("stHelper")>
+<#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign fields = genHelper.ruleComponents2JavaFields(ruleSymbol)>
 
 <#list fields?keys as fname>

@@ -32,7 +32,7 @@ SUCH DAMAGE.
 -->
 ${signature("className")}
 
-<#assign genHelper = glex.getGlobalValue("stHelper")>
+<#assign genHelper = glex.getGlobalVar("stHelper")>
 
 <#-- Copyright -->
 ${tc.defineHookPoint("JavaCopyright")}

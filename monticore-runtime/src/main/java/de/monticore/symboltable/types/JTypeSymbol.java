@@ -19,11 +19,11 @@
 
 package de.monticore.symboltable.types;
 
-import java.util.List;
-import java.util.Optional;
-
 import de.monticore.symboltable.ScopeSpanningSymbol;
 import de.monticore.symboltable.types.references.JTypeReference;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Pedram Mir Seyed Nazari
@@ -56,6 +56,9 @@ public interface JTypeSymbol extends TypeSymbol, ScopeSpanningSymbol {
 
   Optional<? extends JTypeSymbol> getInnerType(String innerTypeName);
 
+  /**
+   * @return true, if type is an abstract class or an interface
+   */
   boolean isAbstract();
 
   boolean isFinal();

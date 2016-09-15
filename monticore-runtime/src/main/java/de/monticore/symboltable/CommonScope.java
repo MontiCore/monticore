@@ -25,7 +25,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.symboltable.modifiers.IncludesAccessModifierPredicate;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingInfo;
@@ -184,7 +183,7 @@ public class CommonScope implements MutableScope {
   }
 
   protected <T extends Symbol> Set<T> filterSymbolsByAccessModifier(AccessModifier modifier, Set<T> resolvedUnfiltered) {
-    return new LinkedHashSet<>(resolvedUnfiltered.stream().filter(new IncludesAccessModifierPredicate(modifier)).collect(Collectors.toSet()));
+    return Scopes.filterSymbolsByAccessModifier(modifier, resolvedUnfiltered);
   }
 
   /**

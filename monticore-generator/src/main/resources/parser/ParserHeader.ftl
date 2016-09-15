@@ -31,7 +31,7 @@ SUCH DAMAGE.
 ***************************************************************************************
 -->
 <#-- Write parser header -->
-<#assign genHelper = glex.getGlobalValue("parserHelper")>
+<#assign genHelper = glex.getGlobalVar("parserHelper")>
 grammar ${ast.getName()}Antlr;
 @parser::header {
 package ${genHelper.getParserPackage()};
