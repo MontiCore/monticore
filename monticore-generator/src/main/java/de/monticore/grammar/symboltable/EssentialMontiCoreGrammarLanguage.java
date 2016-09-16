@@ -47,7 +47,7 @@ public class EssentialMontiCoreGrammarLanguage extends CommonModelingLanguage {
     
     prettyPrinter = new Grammar_WithConceptsPrettyPrinter(new IndentPrinter());
 
-    addResolver(CommonResolvingFilter.create(MontiCoreGrammarSymbol.KIND));
+    addResolver(CommonResolvingFilter.create(EssentialMCGrammarSymbol.KIND));
     addResolver(CommonResolvingFilter.create(MCProdSymbol.KIND));
     addResolver(CommonResolvingFilter.create(MCProdComponentSymbol.KIND));
   }

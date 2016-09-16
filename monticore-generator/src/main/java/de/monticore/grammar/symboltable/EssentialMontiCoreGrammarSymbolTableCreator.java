@@ -35,6 +35,7 @@ import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -52,7 +53,7 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
 
   private String packageName = "";
 
-  private MontiCoreGrammarSymbol grammarSymbol;
+  private EssentialMCGrammarSymbol grammarSymbol;
 
   public EssentialMontiCoreGrammarSymbolTableCreator(
       ResolverConfiguration resolverConfig,
@@ -96,7 +97,7 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
     final ArtifactScope scope = new ArtifactScope(Optional.empty(), packageName, imports);
     putOnStack(scope);
 
-    grammarSymbol = new MontiCoreGrammarSymbol(astGrammar.getName());
+    grammarSymbol = new EssentialMCGrammarSymbol(astGrammar.getName());
     grammarSymbol.setComponent(astGrammar.isComponent());
 
     addToScopeAndLinkWithNode(grammarSymbol, astGrammar);
@@ -104,12 +105,12 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
     addSuperGrammars(astGrammar, grammarSymbol);
   }
 
-  private void addSuperGrammars(ASTMCGrammar astGrammar, MontiCoreGrammarSymbol grammarSymbol) {
+  private void addSuperGrammars(ASTMCGrammar astGrammar, EssentialMCGrammarSymbol grammarSymbol) {
     for (ASTGrammarReference ref : astGrammar.getSupergrammar()) {
       final String superGrammarName = getQualifiedName(ref.getNames());
 
-     final MontiCoreGrammarSymbolReference superGrammar =
-         new MontiCoreGrammarSymbolReference(superGrammarName, currentScope().orElse(null));
+     final EssentialMCGrammarSymbolReference superGrammar =
+         new EssentialMCGrammarSymbolReference(superGrammarName, currentScope().orElse(null));
 
       grammarSymbol.addSuperGrammar(superGrammar);
     }
@@ -195,6 +196,9 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
 
     setSymbolDefinitionIfExists(prodSymbol, ast.getSymbolDefinition().orElse(null));
 
+    setSuperProdsAndTypes(prodSymbol, Collections.emptyList(),
+        Collections.emptyList(), ast.getSuperInterfaceRule(), ast.getASTSuperInterface());
+
     addToScopeAndLinkWithNode(prodSymbol, ast);
   }
 
@@ -237,6 +241,9 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
 
     setSymbolDefinitionIfExists(prodSymbol, ast.getSymbolDefinition().orElse(null));
 
+    setSuperProdsAndTypes(prodSymbol, ast.getSuperRule(),
+        ast.getASTSuperClass(), ast.getSuperInterfaceRule(), ast.getASTSuperInterface());
+
     addToScopeAndLinkWithNode(prodSymbol, ast);
   }
 
@@ -249,40 +256,45 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
     MCProdSymbol prodSymbol = new MCProdSymbol(ast.getName());
     prodSymbol.setAbstract(true);
 
-    final Scope enclosingScope = currentScope().get();
-
     setSymbolDefinitionIfExists(prodSymbol, ast.getSymbolDefinition().orElse(null));
 
-    // Setup superclasses and superinterfaces
+    setSuperProdsAndTypes(prodSymbol, ast.getSuperRule(),
+        ast.getASTSuperClass(), ast.getSuperInterfaceRule(), ast.getASTSuperInterface());
+
+    addToScopeAndLinkWithNode(prodSymbol, ast);
+  }
+
+  private void setSuperProdsAndTypes(MCProdSymbol prodSymbol, List<ASTRuleReference> superProds,
+      List<ASTGenericType> astSuperClasses, List<ASTRuleReference> superInterfaceProds, List<ASTGenericType> astSuperInterfaces) {
+    final Scope enclosingScope = currentScope().get();
+
     // A extends B
-    for (ASTRuleReference astSuperProd : ast.getSuperRule()) {
+    for (ASTRuleReference astSuperProd : superProds) {
       MCProdSymbolReference superProd =
           new MCProdSymbolReference(astSuperProd.getTypeName(), enclosingScope);
       prodSymbol.addSuperProd(superProd);
     }
 
     // A astextends B
-    for (ASTGenericType astSuperClass : ast.getASTSuperClass()) {
+    for (ASTGenericType astSuperClass : astSuperClasses) {
       MCProdOrTypeReference superClass =
           new MCProdOrTypeReference(astSuperClass.getTypeName(), enclosingScope);
       prodSymbol.addAstSuperClass(superClass);
     }
 
     // A implements B
-    for (ASTRuleReference astInterface : ast.getSuperInterfaceRule()) {
+    for (ASTRuleReference astInterface : superInterfaceProds) {
       MCProdSymbolReference superProd =
           new MCProdSymbolReference(astInterface.getTypeName(), enclosingScope);
       prodSymbol.addSuperInterfaceProd(superProd);
     }
 
     // A astimplements B
-    for (ASTGenericType astInterface : ast.getASTSuperInterface()) {
+    for (ASTGenericType astInterface : astSuperInterfaces) {
       MCProdOrTypeReference superClass =
           new MCProdOrTypeReference(astInterface.getTypeName(), enclosingScope);
       prodSymbol.addAstSuperInterface(superClass);
     }
-
-    addToScopeAndLinkWithNode(prodSymbol, ast);
   }
 
   @Override
@@ -336,16 +348,22 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
   @Override
   public void visit(ASTNonTerminal ast) {
     final String usageName = ast.getUsageName().orElse(null);
-    final String symbolName = isNullOrEmpty(usageName) ? ast.getName() : usageName;
 
-    MCProdComponentSymbol ntSymbol = new MCProdComponentSymbol(symbolName);
+    final Optional<MCProdComponentSymbol> ntSymbol =
+        addRuleComponent(ast.getName(), ast, usageName);
 
-    ntSymbol.setUsageName(ast.getUsageName().orElse(null));
-    ntSymbol.setNonterminal(true);
+    if (ntSymbol.isPresent()) {
+      final MCProdComponentSymbol sym = ntSymbol.get();
+      sym.setUsageName(ast.getUsageName().orElse(null));
+      sym.setNonterminal(true);
 
-    ntSymbol.setReferencedProd(new MCProdSymbolReference(ast.getName(), currentScope().orElse(null)));
-    ntSymbol.setReferencedSymbolName(ast.getReferencedSymbol().orElse(""));
-    setComponentMultiplicity(ntSymbol, ast.getIteration());
+      sym.setReferencedProd(new MCProdSymbolReference(ast.getName(), currentScope().orElse(null)));
+      sym.setReferencedSymbolName(ast.getReferencedSymbol().orElse(""));
+      setComponentMultiplicity(sym, ast.getIteration());
+    }
+
+
+
   }
 
   void setComponentMultiplicity(MCProdComponentSymbol prod, int iteration) {

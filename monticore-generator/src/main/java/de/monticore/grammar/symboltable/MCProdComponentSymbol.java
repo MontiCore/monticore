@@ -159,10 +159,19 @@ public class MCProdComponentSymbol extends CommonSymbol {
     this.referencedProd = referencedProd;
   }
 
+  /**
+   * @return A reference to the defining production of this component, e.g.,  the
+   * defining prod for the nonterminal <code>... = s:A</code> is the production
+   * <code>A = ...</code>.
+   */
   public Optional<MCProdSymbolReference> getReferencedProd() {
     return Optional.ofNullable(referencedProd);
   }
 
+  /**
+   * @return the name of the symbol referenced by this component (via the
+   * <code>@</code> notation)
+   */
   public Optional<String> getReferencedSymbolName() {
     return referencedSymbolName;
   }

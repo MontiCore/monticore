@@ -36,11 +36,11 @@ import java.util.Set;
 /**
  * @author  Pedram Mir Seyed Nazari
  */
-public class MontiCoreGrammarSymbol extends CommonScopeSpanningSymbol {
+public class EssentialMCGrammarSymbol extends CommonScopeSpanningSymbol {
 
-  public static final MontiCoreGrammarKind KIND = new MontiCoreGrammarKind();
+  public static final EssentialMCGrammarKind KIND = new EssentialMCGrammarKind();
 
-  private final List<MontiCoreGrammarSymbolReference> superGrammars = new ArrayList<>();
+  private final List<EssentialMCGrammarSymbolReference> superGrammars = new ArrayList<>();
 
   /**
    * Is the grammar abstract?
@@ -51,7 +51,7 @@ public class MontiCoreGrammarSymbol extends CommonScopeSpanningSymbol {
   private MCProdSymbol startRule;
 
 
-  public MontiCoreGrammarSymbol(String name) {
+  public EssentialMCGrammarSymbol(String name) {
     super(name, KIND);
   }
 
@@ -80,11 +80,11 @@ public class MontiCoreGrammarSymbol extends CommonScopeSpanningSymbol {
     this.isComponent = isComponent;
   }
 
-  public List<MontiCoreGrammarSymbolReference> getSuperGrammars() {
+  public List<EssentialMCGrammarSymbolReference> getSuperGrammars() {
     return ImmutableList.copyOf(superGrammars);
   }
 
-  public void addSuperGrammar(MontiCoreGrammarSymbolReference superGrammarRef) {
+  public void addSuperGrammar(EssentialMCGrammarSymbolReference superGrammarRef) {
     this.superGrammars.add(Log.errorIfNull(superGrammarRef));
   }
 
@@ -109,7 +109,7 @@ public class MontiCoreGrammarSymbol extends CommonScopeSpanningSymbol {
 
   public Optional<MCProdSymbol> getProdWithInherited(String ruleName) {
     Optional<MCProdSymbol> mcProd = getProd(ruleName);
-    Iterator<MontiCoreGrammarSymbolReference> itSuperGrammars = superGrammars.iterator();
+    Iterator<EssentialMCGrammarSymbolReference> itSuperGrammars = superGrammars.iterator();
 
     while (!mcProd.isPresent() && itSuperGrammars.hasNext()) {
       mcProd = itSuperGrammars.next().getReferencedSymbol().getProdWithInherited(ruleName);
@@ -119,11 +119,11 @@ public class MontiCoreGrammarSymbol extends CommonScopeSpanningSymbol {
   }
 
 
-  public static class MontiCoreGrammarKind implements  SymbolKind {
+  public static class EssentialMCGrammarKind implements  SymbolKind {
 
-    private static final String NAME = MontiCoreGrammarKind.class.getName();
+    private static final String NAME = EssentialMCGrammarKind.class.getName();
 
-    protected MontiCoreGrammarKind() {
+    protected EssentialMCGrammarKind() {
     }
 
     @Override
