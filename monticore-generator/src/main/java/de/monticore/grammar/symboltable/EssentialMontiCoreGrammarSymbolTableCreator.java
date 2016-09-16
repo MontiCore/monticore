@@ -332,17 +332,18 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
 
   @Override
   public void visit(ASTTerminal ast) {
-    // TODO do we need symbols for nonterminals?
+    // TODO do we need symbols for terminals?
 
     final String usageName = ast.getUsageName().orElse(null);
-    final String symbolName = isNullOrEmpty(usageName) ? ast.getName() : usageName;
 
-    MCProdComponentSymbol terminalSymbol = new MCProdComponentSymbol(symbolName);
-    terminalSymbol.setTerminal(true);
+    final Optional<MCProdComponentSymbol> tSymbol =
+        addRuleComponent(ast.getName(), ast, usageName);
 
-    setComponentMultiplicity(terminalSymbol, ast.getIteration());
-
-    addToScopeAndLinkWithNode(terminalSymbol, ast);
+    if (tSymbol.isPresent()) {
+      final MCProdComponentSymbol sym = tSymbol.get();
+      sym.setTerminal(true);
+      setComponentMultiplicity(sym, ast.getIteration());
+    }
   }
 
   @Override
@@ -354,16 +355,12 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
 
     if (ntSymbol.isPresent()) {
       final MCProdComponentSymbol sym = ntSymbol.get();
-      sym.setUsageName(ast.getUsageName().orElse(null));
       sym.setNonterminal(true);
 
       sym.setReferencedProd(new MCProdSymbolReference(ast.getName(), currentScope().orElse(null)));
       sym.setReferencedSymbolName(ast.getReferencedSymbol().orElse(""));
       setComponentMultiplicity(sym, ast.getIteration());
     }
-
-
-
   }
 
   void setComponentMultiplicity(MCProdComponentSymbol prod, int iteration) {

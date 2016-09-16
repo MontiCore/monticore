@@ -29,6 +29,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 
 /**
@@ -90,6 +92,16 @@ public class MCProdSymbol extends CommonScopeSpanningSymbol {
     return prodDefiningSymbolKind != null;
   }
 
+  public Optional<String> getSymbolDefinitionKind() {
+    if (isSymbolDefinition()) {
+      if (prodDefiningSymbolKind.getReferencedSymbol() == this) {
+        return of(getName());
+      }
+      return prodDefiningSymbolKind.getReferencedSymbol().getSymbolDefinitionKind();
+    }
+    return empty();
+  }
+
   public Optional<MCProdSymbolReference> getProdDefiningSymbolKind() {
     return ofNullable(prodDefiningSymbolKind);
   }
@@ -98,19 +110,19 @@ public class MCProdSymbol extends CommonScopeSpanningSymbol {
     this.prodDefiningSymbolKind = prodDefiningSymbolKind;
   }
 
-  public void addProdComponent(MCProdComponentSymbol prodComponent) {
-    Log.errorIfNull(prodComponent);
+  public void addProdComponent(MCProdComponentSymbol prodComp) {
+    Log.errorIfNull(prodComp);
 
-    MCProdComponentSymbol prodComp = getProdComponent(prodComponent.getName()).orElse(null);
+    MCProdComponentSymbol prevProdComp = getProdComponent(prodComp.getName()).orElse(null);
 
-    if (prodComp != null) {
+    if (prevProdComp != null) {
       // TODO NN <- PN handle the case: (a:A a:B), i.e. two different non-terminals have the same usage name
       // a prod component is a list (*), if at list one of the prod components is a list
       // TODO NN <- PN what about (a:A) | (a:A)? | (a:A)+ is the prod component a:A optional? a list? etc.
-      prodComp.setList(prodComp.isList() || prodComponent.isList());
+      prevProdComp.setList(prevProdComp.isList() || prodComp.isList());
     }
     else {
-      getMutableSpannedScope().add(prodComponent);
+      getMutableSpannedScope().add(prodComp);
     }
   }
 
