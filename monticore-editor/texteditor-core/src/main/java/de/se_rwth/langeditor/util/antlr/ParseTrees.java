@@ -95,6 +95,33 @@ public final class ParseTrees {
     return Optional.empty();
   }
   
+  /** Find smallest subtree of t enclosing range start..stop
+   *  inclusively using postorder traversal.  Recursive depth-first-search.
+   *
+   *  @since 4.5.1
+   */
+  public static ParserRuleContext getRootOfSubtreeEnclosingRegion(ParseTree t,
+                                  int start, // inclusive
+                                  int stop)  // inclusive
+  {
+    int n = t.getChildCount();
+    for (int i = 0; i<n; i++) {
+      ParseTree child = t.getChild(i);
+      ParserRuleContext r = getRootOfSubtreeEnclosingRegion(child, start, stop);
+      if ( r!=null ) return r;
+    }
+    if ( t instanceof ParserRuleContext ) {
+      ParserRuleContext r = (ParserRuleContext) t;
+      if ( start>=r.getStart().getStartIndex() && // is range fully contained in t?
+         (r.getStop()==null || stop<=r.getStop().getStopIndex()) )
+      {
+        // note: r.getStop()==null likely implies that we bailed out of parser and there's nothing to the right
+        return r;
+      }
+    }
+    return null;
+  }
+  
   public static Optional<TerminalNode> getTerminalByLineAndColumn(ParseTree parseTree,
       int line, int column) {
     List<TerminalNode> terminals = Trees.getDescendants(parseTree).stream()
