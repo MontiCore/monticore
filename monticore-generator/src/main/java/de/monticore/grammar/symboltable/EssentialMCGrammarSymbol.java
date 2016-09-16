@@ -22,14 +22,17 @@ package de.monticore.grammar.symboltable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
+import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.SymbolKind;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -48,16 +51,20 @@ public class EssentialMCGrammarSymbol extends CommonScopeSpanningSymbol {
   private boolean isComponent = false;
 
   // the start production of the grammar
-  private MCProdSymbol startRule;
+  private MCProdSymbol startProd;
 
 
   public EssentialMCGrammarSymbol(String name) {
     super(name, KIND);
   }
 
+  @Override
+  protected MutableScope createSpannedScope() {
+    return new EssentialMCGrammarScope(Optional.empty());
+  }
 
   public void setStartProd(MCProdSymbol startRule) {
-    this.startRule = startRule;
+    this.startProd = startRule;
   }
 
   /**
@@ -65,8 +72,8 @@ public class EssentialMCGrammarSymbol extends CommonScopeSpanningSymbol {
    *
    * @return the start production of the grammar, if not a component grammar
    */
-  public Optional<MCProdSymbol> getStartRule() {
-    return Optional.ofNullable(startRule);
+  public Optional<MCProdSymbol> getStartProd() {
+    return Optional.ofNullable(startProd);
   }
 
   /**
@@ -116,6 +123,24 @@ public class EssentialMCGrammarSymbol extends CommonScopeSpanningSymbol {
     }
 
     return mcProd;
+  }
+
+  public Map<String, MCProdSymbol> getProdsWithInherited() {
+    final Map<String, MCProdSymbol> ret = new LinkedHashMap<>();
+
+    for (int i = superGrammars.size() - 1; i >= 0; i--) {
+      final EssentialMCGrammarSymbolReference superGrammarRef = superGrammars.get(i);
+
+      if (superGrammarRef.existsReferencedSymbol()) {
+        ret.putAll(superGrammarRef.getReferencedSymbol().getProdsWithInherited());
+      }
+    }
+
+    for (final MCProdSymbol prodSymbol : getProds()) {
+      ret.put(prodSymbol.getName(), prodSymbol);
+    }
+
+    return ret;
   }
 
 

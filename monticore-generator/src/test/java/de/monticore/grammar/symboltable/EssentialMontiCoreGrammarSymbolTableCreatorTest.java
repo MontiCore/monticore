@@ -68,7 +68,7 @@ public class EssentialMontiCoreGrammarSymbolTableCreatorTest {
     assertEquals("de.monticore.statechart", grammar.getPackageName());
     assertEquals("de.monticore.statechart.Statechart", grammar.getFullName());
     assertTrue(grammar.getKind().isSame(EssentialMCGrammarSymbol.KIND));
-    assertTrue(grammar.getStartRule().isPresent());
+    assertTrue(grammar.getStartProd().isPresent());
 
     assertTrue(grammar.isComponent());
     assertEquals(1, grammar.getSuperGrammars().size());
@@ -282,35 +282,50 @@ public class EssentialMontiCoreGrammarSymbolTableCreatorTest {
 //    assertNotNull(p);*/
 //  }
 //
-//  @Test
-//  public void testSuperGrammar() {
-//    GlobalScope globalScope = GrammarGlobalScopeTestFactory.create();
-//
-//    MCGrammarSymbol grammar = globalScope.<MCGrammarSymbol> resolve("de.monticore.statechart.sub.SubStatechart",
-//        MCGrammarSymbol.KIND).orElse(null);
-//    assertNotNull(grammar);
-//    assertEquals("de.monticore.statechart.sub.SubStatechart", grammar.getFullName());
-//    assertTrue(grammar.getStartRule().isPresent());
-//
-//    assertEquals(1, grammar.getSuperGrammars().size());
-//    MCGrammarSymbol superGrammar = grammar.getSuperGrammars().get(0);
-//    testGrammarSymbolOfStatechart(superGrammar);
-//
-//    MCRuleSymbol firstRule = grammar.getRule("First");
-//    assertNotNull(firstRule);
-//    assertTrue(firstRule.isStartRule());
-//    assertSame(grammar.getStartRule().get(), firstRule);
-//
-//    MCRuleSymbol secondRule = grammar.getRule("Second");
-//    assertNotNull(secondRule);
-//    assertFalse(secondRule.isStartRule());
-//
-//    assertEquals(2, grammar.getRuleNames().size());
-//    assertEquals(19, grammar.getRulesWithInherited().size());
-//
-//    assertNotNull(grammar.getRuleWithInherited("EntryAction"));
-//
-//  }
+  @Test
+  public void testSuperGrammar() {
+    final Scope globalScope = GrammarGlobalScopeTestFactory.createUsingEssentialMCLanguage();
+
+    EssentialMCGrammarSymbol grammar = globalScope.<EssentialMCGrammarSymbol> resolve("de.monticore.statechart.sub.SubStatechart",
+        EssentialMCGrammarSymbol.KIND).orElse(null);
+    assertNotNull(grammar);
+    assertEquals("de.monticore.statechart.sub.SubStatechart", grammar.getFullName());
+    assertTrue(grammar.getStartProd().isPresent());
+
+    assertEquals(1, grammar.getSuperGrammars().size());
+    EssentialMCGrammarSymbolReference superGrammarRef = grammar.getSuperGrammars().get(0);
+    assertEquals("de.monticore.statechart.Statechart", superGrammarRef.getName());
+    assertTrue(superGrammarRef.existsReferencedSymbol());
+    testGrammarSymbolOfStatechart(superGrammarRef.getReferencedSymbol());
+
+    MCProdSymbol firstProd = grammar.getProd("First").orElse(null);
+    assertNotNull(firstProd);
+    assertTrue(firstProd.isStartProd());
+    assertSame(grammar.getStartProd().get(), firstProd);
+
+    MCProdSymbol secondProd = grammar.getProd("Second").orElse(null);
+    assertNotNull(secondProd);
+    assertFalse(secondProd.isStartProd());
+
+    assertEquals(2, grammar.getProdNames().size());
+    assertEquals(19, grammar.getProdsWithInherited().size());
+
+    // get prod of super grammar
+    assertFalse(grammar.getProd("State").isPresent());
+    final MCProdSymbol stateProd = grammar.getProdWithInherited("State").orElse(null);
+    assertNotNull(stateProd);
+    assertEquals("de.monticore.statechart.Statechart.State", stateProd.getFullName());
+
+    // generic vs. specific search in super grammar
+    Optional<MCProdSymbol> resolvedProd = grammar.getSpannedScope().resolve("State", MCProdSymbol.KIND);
+    assertTrue(resolvedProd.isPresent());
+    assertSame(stateProd, resolvedProd.get());
+
+    Optional<MCProdSymbol> resolvedProd2 = firstProd.getEnclosingScope().resolve("State", MCProdSymbol.KIND);
+    assertTrue(resolvedProd2.isPresent());
+    assertSame(stateProd, resolvedProd2.get());
+
+  }
 //
 //  @Test
 //  public void testMontiCoreGrammar() {

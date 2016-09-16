@@ -20,7 +20,6 @@
 
 package de.monticore.grammar.symboltable;
 
-import de.monticore.languages.grammar.MCGrammarSymbol;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.references.CommonSymbolReference;
 
@@ -30,6 +29,6 @@ import de.monticore.symboltable.references.CommonSymbolReference;
 public class EssentialMCGrammarSymbolReference extends CommonSymbolReference<EssentialMCGrammarSymbol> {
 
   public EssentialMCGrammarSymbolReference(String referencedSymbolName,Scope enclosingScopeOfReference) {
-    super(referencedSymbolName, MCGrammarSymbol.KIND, enclosingScopeOfReference);
+    super(referencedSymbolName, EssentialMCGrammarSymbol.KIND, enclosingScopeOfReference);
   }
 }
