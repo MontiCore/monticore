@@ -106,6 +106,7 @@ public class MontiCoreTemplateExceptionHandler implements TemplateExceptionHandl
           writer.append(COMMENT_START + te.getMessage() + COMMENT_END);
         }
         catch (IOException e) {
+          Log.info("IOException during appending a message", "MontiCoreTemplateExceptionHandler");
         }
         throw te;
       case CONTINUE:
@@ -124,6 +125,7 @@ public class MontiCoreTemplateExceptionHandler implements TemplateExceptionHandl
           writer.append(COMMENT_START + "0xA0357 " + te.getMessage() + COMMENT_END);
         }
         catch (IOException e) {
+          Log.info("IOException during appending a message", "MontiCoreTemplateExceptionHandler");
         }
         break;
     }

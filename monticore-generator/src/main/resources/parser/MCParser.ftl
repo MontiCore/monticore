@@ -31,7 +31,7 @@ SUCH DAMAGE.
 ***************************************************************************************
 -->
 ${tc.signature("ast", "suffix", "methods")}
-<#assign genHelper = glex.getGlobalValue("parserHelper")>
+<#assign genHelper = glex.getGlobalVar("parserHelper")>
 <#assign grammar = genHelper.getGrammarSymbol()>
 <#assign parserName = grammar.getSimpleName()?cap_first>
 <#assign startRule = genHelper.getStartRuleName()>
@@ -71,7 +71,7 @@ public class ${ast.getName()}Parser${suffix} extends MCConcreteParser {
     CommonTokenStream tokens = new CommonTokenStream(lexer);
     ${parserName}AntlrParser parser = new ${parserName}AntlrParser(tokens);
     lexer.setMCParser(parser);  
-    parser.setFilename("Reader");
+    parser.setFilename("StringReader");
     setError(false);
     return parser;
   }

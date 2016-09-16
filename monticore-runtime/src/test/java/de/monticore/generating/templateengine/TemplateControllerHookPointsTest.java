@@ -56,7 +56,7 @@ public class TemplateControllerHookPointsTest {
                                                 .fileHandler(new FileReaderWriterMock())
                                                 .classLoader(getClass().getClassLoader())
                                                 .externalTemplatePaths(new File[]{})
-                                                .targetDir(new File("dummy"))
+                                                .outputDirectory(new File("dummy"))
                                                 .tracing(false)
                                                 .build();
     

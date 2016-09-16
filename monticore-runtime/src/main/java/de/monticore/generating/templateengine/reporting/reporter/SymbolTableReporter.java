@@ -23,13 +23,16 @@ import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.reporting.commons.AReporter;
 import de.monticore.generating.templateengine.reporting.commons.Layouter;
 import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
+import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ScopeSpanningSymbol;
+import de.monticore.symboltable.Scopes;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.Names;
 
 import java.io.File;
+import java.util.Collection;
 
 /**
  * @author BM
@@ -44,15 +47,21 @@ public class SymbolTableReporter extends AReporter {
   final static String SHORT_INDENT = Layouter.getSpaceString(NUM_SPACE-1);
   final static String SCOPE_START = "+--";
   final static String SYMBOL_START = "<SYM> ";
+  private final String outputDir;
+  private final String modelName;
+  private final ReportingRepository repository;
 
   private int currentIndentLevel = 0;
   
   public SymbolTableReporter(
       String outputDir,
-      String modelName) {
+      String modelName, ReportingRepository repository) {
     super(outputDir + File.separator + ReportingConstants.REPORTING_DIR + File.separator
         + modelName,
         SIMPLE_FILE_NAME, ReportingConstants.REPORT_FILE_EXTENSION);
+    this.outputDir = outputDir;
+    this.modelName = modelName;
+    this.repository = repository;
   }
   
   @Override
@@ -106,7 +115,9 @@ public class SymbolTableReporter extends AReporter {
 
     currentIndentLevel++;
 
-    scope.getSymbols().stream()
+    final Collection<Symbol> symbols = Scopes.getLocalSymbolsAsCollection(scope);
+
+    symbols.stream()
         .filter(sym -> !(sym instanceof ScopeSpanningSymbol))
         .forEach(this::reportSymbol);
 
@@ -121,5 +132,18 @@ public class SymbolTableReporter extends AReporter {
 
     line += sym.getName() + " (kind " + Names.getSimpleName(sym.getKind().getName()) + ")";
     writeLine(line);
+
+    reportAst(sym);
+  }
+
+  private void reportAst(Symbol sym) {
+    if (sym.getAstNode().isPresent()) {
+      currentIndentLevel++;
+      String line = getIndent();
+      line += "--> AST-Node: ";
+      line += repository.getASTNodeNameFormatted(sym.getAstNode().get());
+      writeLine(line);
+      currentIndentLevel--;
+    }
   }
 }

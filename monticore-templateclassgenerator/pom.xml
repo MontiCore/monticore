@@ -7,14 +7,14 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore</artifactId>
-    <version>4.4.2-SNAPSHOT</version>
+    <version>4.4.3-SNAPSHOT</version>
   </parent>
 
   <artifactId>monticore-templateclassgenerator</artifactId>
 
   <!-- == PROJECT METAINFORMATION ========================================= -->
 
-  <name>MontiCore: Tempalte Class Generator</name>
+  <name>MontiCore: Template Class Generator</name>
   <description>Generates Java Classes from Templates to Enable Static Type-safe Template Calls</description>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->

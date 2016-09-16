@@ -72,3 +72,54 @@ SUCH DAMAGE.
 <#function error msg>
 	<#return log.error(msg)>
 </#function>
+
+<#-- Aliases for global vars methods -->
+
+<#function defineGlobalVar name value>
+	<#return glex.defineGlobalVar(name, value)>
+</#function>
+
+<#function defineGlobalVar name>
+	<#return glex.defineGlobalVar(name)>
+</#function>
+
+<#function defineGlobalVars name...>
+	<#return glex.defineGlobalVars(name)>
+</#function>
+
+<#function changeGlobalVar name value>
+	<#return glex.changeGlobalVar(name, value)>
+</#function>
+
+<#function addToGlobalVar name value>
+	<#return glex.addToGlobalVar(name, value)>
+</#function>
+
+<#function getGlobalVar name>
+	<#return glex.getGlobalVar(name)>
+</#function>
+
+<#function requiredGlobalVar name>
+	<#return glex.requiredGlobalVar(name)>
+</#function>
+
+<#function requiredGlobalVars name...>
+	<#return glex.requiredGlobalVars(name)>
+</#function>
+
+<#-- Aliases for hook points methods -->
+<#function bindHookPoint name hp>
+	<#return glex.bindHookPoint(name, hp)>
+</#function>
+
+<#function defineHookPoint tc name ast>
+	<#return glex.defineHookPoint(tc, name, ast)>
+</#function>
+
+<#function defineHookPoint tc name>
+	<#return glex.defineHookPoint(tc, name)>
+</#function>
+
+<#function existsHookPoint name>
+	<#return glex.existsHookPoint(name)>
+</#function>

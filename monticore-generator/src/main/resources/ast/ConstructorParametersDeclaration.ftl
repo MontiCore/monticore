@@ -30,7 +30,7 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-  <#assign nameHelper = glex.getGlobalValue("javaNameHelper")>
+  <#assign nameHelper = glex.getGlobalVar("javaNameHelper")>
   <#assign typeHelper = tc.instantiate("de.monticore.types.TypesHelper")>
   <#assign del = "">
   <#list ast.getCDParameters() as parameter>   ${del}${typeHelper.printSimpleRefType(parameter.getType())} ${nameHelper.javaAttribute(parameter.getName())} 

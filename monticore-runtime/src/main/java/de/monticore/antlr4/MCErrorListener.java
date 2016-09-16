@@ -38,7 +38,7 @@ public class MCErrorListener extends BaseErrorListener {
   @Override
   public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
 
-    Log.error(parser.getFilename() + ": " + msg, new SourcePosition(line, charPositionInLine));
+    Log.error(msg, new SourcePosition(line, charPositionInLine, parser.getFilename()));
 
     parser.setErrors(true);
   }

@@ -1,5 +1,5 @@
 ${tc.signature("astType", "astPackage", "checkerType", "visitorPackage", "cd", "allCds")}
-<#assign genHelper = glex.getGlobalValue("coCoHelper")>
+<#assign genHelper = glex.getGlobalVar("coCoHelper")>
 
 <#-- Copyright -->
 ${tc.defineHookPoint("JavaCopyright")}

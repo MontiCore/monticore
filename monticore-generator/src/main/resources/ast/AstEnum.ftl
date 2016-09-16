@@ -37,7 +37,7 @@ SUCH DAMAGE.
   @result    mc.javadsl.JavaDSL.CompilationUnit
   
 -->
-<#assign genHelper = glex.getGlobalValue("astHelper")>
+<#assign genHelper = glex.getGlobalVar("astHelper")>
 ${tc.defineHookPoint("EnumContent:addComment")}
 <#-- set package -->
 package ${genHelper.getAstPackage()};

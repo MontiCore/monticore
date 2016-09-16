@@ -19,10 +19,6 @@
 
 package de.monticore.languages.grammar;
 
-import java.util.Optional;
-
-import javax.annotation.Nullable;
-
 import de.monticore.CommonModelingLanguage;
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.ast.ASTNode;
@@ -33,7 +29,9 @@ import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolverConfiguration;
-import de.monticore.symboltable.resolving.CommonResolvingFilter;
+
+import javax.annotation.Nullable;
+import java.util.Optional;
 
 public class MontiCoreGrammarLanguage extends CommonModelingLanguage {
   
@@ -42,15 +40,15 @@ public class MontiCoreGrammarLanguage extends CommonModelingLanguage {
   private final Grammar_WithConceptsPrettyPrinter prettyPrinter;
   
   public MontiCoreGrammarLanguage() {
-    super("Grammar Language", FILE_ENDING, MCGrammarSymbol.KIND);
+    super("Grammar Language", FILE_ENDING);
     
     prettyPrinter = new Grammar_WithConceptsPrettyPrinter(new IndentPrinter());
 
-    addResolver(new CommonResolvingFilter<>(MCGrammarSymbol.class, MCGrammarSymbol.KIND));
-    addResolver(new CommonResolvingFilter<>(MCTypeSymbol.class, MCTypeSymbol.KIND));
-    addResolver(new CommonResolvingFilter<>(MCAttributeSymbol.class, MCAttributeSymbol.KIND));
-    addResolver(new CommonResolvingFilter<>(MCRuleSymbol.class, MCRuleSymbol.KIND));
-    addResolver(new CommonResolvingFilter<>(MCRuleComponentSymbol.class, MCRuleComponentSymbol.KIND));
+    addResolver(new MCGrammarResolvingFilter<>(MCGrammarSymbol.KIND));
+    addResolver(new MCGrammarResolvingFilter<>(MCTypeSymbol.KIND));
+    addResolver(new MCGrammarResolvingFilter<>(MCAttributeSymbol.KIND));
+    addResolver(new MCGrammarResolvingFilter<>(MCRuleSymbol.KIND));
+    addResolver(new MCGrammarResolvingFilter<>(MCRuleComponentSymbol.KIND));
   }
   
   @Override

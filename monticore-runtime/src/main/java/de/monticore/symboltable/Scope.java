@@ -25,6 +25,7 @@ import de.monticore.symboltable.resolving.ResolvingFilter;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -193,7 +194,12 @@ public interface Scope {
    *
    * @return all symbols directly defined/contained in this scope (not in enclosing scope).
    */
-  List<Symbol> getSymbols();
+  Map<String, Collection<Symbol>> getLocalSymbols();
+
+  /**
+   * @deprecated use {@link #getLocalSymbols()} instead
+   */
+  Map<String, Collection<Symbol>> getSymbols();
 
   /**
    * @return number of symbols directly defined/contained in this scope (not in enclosing scope).
@@ -244,4 +250,12 @@ public interface Scope {
    * @return the corresponding ast node
    */
   Optional<? extends ASTNode> getAstNode();
+
+  /**
+   * Returns this scope as a {@link MutableScope}. Note that each scope must
+   * implement {@link MutableScope}.
+   *
+   * @return this scope as a {@link MutableScope}.
+   */
+  MutableScope getAsMutableScope();
 }

@@ -30,6 +30,7 @@ import com.google.common.collect.ImmutableSet;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTNonTerminalSeparator;
 import de.monticore.symboltable.Symbol;
@@ -60,15 +61,24 @@ class Resolving {
   }
   
   Optional<Supplier<Optional<ASTNode>>> createResolver(ASTNode astNode) {
-    Optional<Supplier<Optional<ASTNode>>> resolveByNonTerminal =
-        getEnclosingASTNode(astNode, ASTNonTerminal.class)
+    Optional<Supplier<Optional<ASTNode>>> resolveByNonTerminal = getEnclosingASTNode(astNode,
+        ASTNonTerminal.class)
             .map(nonTerminal -> createSupplier(nonTerminal, nonTerminal.getName()));
+    if (resolveByNonTerminal.isPresent()) {
+      return resolveByNonTerminal;
+    }
     
-    Optional<Supplier<Optional<ASTNode>>> resolveByNonTerminalSeparator =
-        getEnclosingASTNode(astNode, ASTNonTerminalSeparator.class)
-            .map(separator -> createSupplier(separator, separator.getName()));
+    Optional<ASTNonTerminalSeparator> nonTerminalSep = getEnclosingASTNode(astNode,
+        ASTNonTerminalSeparator.class);
+    if (nonTerminalSep.isPresent()) {
+      Optional<ASTMCGrammar> grammarNode = getEnclosingASTNode(nonTerminalSep.get(), ASTMCGrammar.class);
+      if (grammarNode.isPresent()) {
+        return Optional.of(createSupplier(grammarNode.get(),
+            nonTerminalSep.get().getName()));
+      }   
+    }
     
-    return resolveByNonTerminal.map(Optional::of).orElse(resolveByNonTerminalSeparator);
+    return Optional.empty();
   }
   
   private Supplier<Optional<ASTNode>> createSupplier(ASTNode astNode, String name) {
@@ -94,23 +104,26 @@ class Resolving {
   private ModelStatesInProject getModelStatesInProject(IProject project) {
     if (!modelStatesInProjects.containsKey(project)) {
       ModelStatesInProject astMapper = new ModelStatesInProject();
-      modelStatesInProjects.put(project, astMapper);      
+      modelStatesInProjects.put(project, astMapper);
     }
     return modelStatesInProjects.get(project);
   }
   
   private SymbolTableMaintainer getSymbolTableMaintainer(IProject project) {
     if (!symbolTableMaintainers.containsKey(project)) {
-      SymbolTableMaintainer symbolTableMaintainer = new SymbolTableMaintainer(getModelStatesInProject(project), ResourceLocator.assembleModelPath(project) );
-      symbolTableMaintainers.put(project, symbolTableMaintainer);      
+      SymbolTableMaintainer symbolTableMaintainer = new SymbolTableMaintainer(
+          getModelStatesInProject(project), ResourceLocator.assembleModelPath(project));
+      symbolTableMaintainers.put(project, symbolTableMaintainer);
     }
     return symbolTableMaintainers.get(project);
   }
   
-  private SymbolTableMaintainer getSymbolTableMaintainer(IProject project, ImmutableList<Path> modelPath) {
+  private SymbolTableMaintainer getSymbolTableMaintainer(IProject project,
+      ImmutableList<Path> modelPath) {
     if (!symbolTableMaintainers.containsKey(project)) {
-      SymbolTableMaintainer symbolTableMaintainer = new SymbolTableMaintainer(getModelStatesInProject(project), modelPath);
-      symbolTableMaintainers.put(project, symbolTableMaintainer);      
+      SymbolTableMaintainer symbolTableMaintainer = new SymbolTableMaintainer(
+          getModelStatesInProject(project), modelPath);
+      symbolTableMaintainers.put(project, symbolTableMaintainer);
     }
     return symbolTableMaintainers.get(project);
   }

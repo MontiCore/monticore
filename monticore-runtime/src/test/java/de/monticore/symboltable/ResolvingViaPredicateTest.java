@@ -19,20 +19,19 @@
 
 package de.monticore.symboltable;
 
-import static de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Collection;
-import java.util.function.Predicate;
-
 import de.monticore.symboltable.mocks.languages.entity.ActionSymbol;
 import de.monticore.symboltable.mocks.languages.entity.EntitySymbol;
 import de.monticore.symboltable.mocks.languages.entity.EntitySymbolReference;
 import de.monticore.symboltable.mocks.languages.entity.PropertySymbol;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 import org.junit.Test;
+
+import java.util.Collection;
+import java.util.function.Predicate;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Pedram Mir Seyed Nazari
@@ -53,13 +52,13 @@ public class ResolvingViaPredicateTest {
 
     assertTrue(spannedScope.resolve("p", PropertySymbol.KIND).isPresent());
 
-    assertEquals(1, spannedScope.resolveMany("p", PropertySymbol.KIND, ALL_INCLUSION, new PropertyTypePredicate(DUMMY_TYPE_REF.getName())).size());
-    assertEquals(0, spannedScope.resolveMany("p", PropertySymbol.KIND, ALL_INCLUSION, new PropertyTypePredicate("OTHERTTYPE")).size());
+    assertEquals(1, spannedScope.resolveMany("p", PropertySymbol.KIND, new PropertyTypePredicate(DUMMY_TYPE_REF.getName())).size());
+    assertEquals(0, spannedScope.resolveMany("p", PropertySymbol.KIND, new PropertyTypePredicate("OTHERTTYPE")).size());
 
     entitySymbol.addProperty(new PropertySymbol("p", DUMMY_TYPE_REF2));
     entitySymbol.addProperty(new PropertySymbol("p", DUMMY_TYPE_REF));
 
-    assertEquals(2, spannedScope.resolveMany("p", PropertySymbol.KIND, ALL_INCLUSION, new PropertyTypePredicate(DUMMY_TYPE_REF.getName())).size());
+    assertEquals(2, spannedScope.resolveMany("p", PropertySymbol.KIND, new PropertyTypePredicate(DUMMY_TYPE_REF.getName())).size());
   }
 
   @Test

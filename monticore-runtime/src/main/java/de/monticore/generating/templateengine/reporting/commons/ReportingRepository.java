@@ -149,9 +149,9 @@ public class ReportingRepository {
         MapUtil.incMapValue(name2maxidSourcePos, out + pos); // increase current
                                                              // value
       }
-      // do not print <<...>>!1!
+      // do not print <...>!1!
       if (nodeWithSource2Ident.get(a) != 1) {
-        return nodeWithSource2Name.get(a) + "!" + nodeWithSource2Ident.get(a) + "!";
+        return nodeWithSource2Name.get(a).replace(Layouter.END_TAG, "!" + nodeWithSource2Ident.get(a) + Layouter.END_TAG);
       }
       // instead <<...>> if identifier is '1'
       else {

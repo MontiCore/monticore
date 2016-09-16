@@ -19,10 +19,7 @@
 
 package de.monticore.generating.templateengine;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import de.monticore.ast.ASTNode;
 
@@ -46,60 +43,60 @@ import freemarker.template.TemplateModelException;
  * @author Pedram Nazari, Alexander Roth
  */
 public class GlobalExtensionManagement {
-  
+
   private SimpleHash globalData = SimpleHashFactory.getInstance().createSimpleHash();
-  
+
   // use these list to handle replacements aka template forwardings
   private final Multimap<String, HookPoint> before = ArrayListMultimap.create();
-  
+
   private final Multimap<String, HookPoint> replace = ArrayListMultimap.create();
-  
+
   private final Multimap<String, HookPoint> after = ArrayListMultimap.create();
-  
+
   private final Map<String, Map<ASTNode, HookPoint>> specificReplacement = Maps.newHashMap();
-  
+
   /**
    * Map of all hook points
    */
   private final Map<String, HookPoint> hookPoints = Maps.newHashMap();
-  
+
   public GlobalExtensionManagement() {
   }
-  
+
   /**
    * Set a list of global data. The parameter should not be null.
-   * 
+   *
    * @param data list of global data
    */
   public void setGlobalData(SimpleHash data) {
     Log.errorIfNull(data);
-    
+
     this.globalData = data;
   }
-  
+
   /**
    * Retrieve a list of all global data
    */
   SimpleHash getGlobalData(){
-	  return this.globalData;
+    return this.globalData;
   }
-  
+
   /**
    * Returns a list of all registered global value names
-   * 
+   *
    * @return collection of all names of defined values.
    */
   public TemplateCollectionModel getGlobalValueNames() {
     return globalData.keys();
   }
-  
+
   /**
    * Checks whether a value with the given name is defined and is not null
-   * 
+   *
    * @param name of the value to check
    * @return true if a variable exists and its value is not null
    */
-  public boolean hasGlobalValue(String name) {
+  public boolean hasGlobalVar(String name) {
     try {
       return globalData.get(name) != null;
     }
@@ -108,89 +105,132 @@ public class GlobalExtensionManagement {
       return false;
     }
   }
-  
+
   /**
    * Sets a new value which can be accessed with the given name in the
    * templates. If the name is already in use an error is reported the previous
    * value is overridden.
-   * 
+   *
    * @param name of the value to set
    * @param value the actual content
    */
   public void setGlobalValue(String name, Object value) {
     Log.errorIfNull(name);
-    
+
     Reporting.reportSetValue(name, value);
     globalData.put(name, value);
   }
-  
+
   /**
    * Defines a new value which can be accessed with the given name in the
    * templates. If the name is already in use an error is reported.
-   * 
+   *
    * @param name of the value to set
    * @param value the actual content
    */
-  public void defineGlobalValue(String name, Object value) {
-    if (hasGlobalValue(name)) {
+  public void defineGlobalVar(String name, Object value) {
+    if (hasGlobalVar(name)) {
       // TODO: in which template? hinzufügen
       Log.error("0xA0122 Global Value '" + name + "' has already been set.\n Old value: " +
-          getGlobalValue(name) + "\n New value: " + value);
+          getGlobalVar(name) + "\n New value: " + value);
     }
     setGlobalValue(name, value);
   }
-  
+
+  /**
+   * Defines a new global variable with no value set.
+   * If the name is already in use an error is reported.
+   *
+   * @param name of the value to set
+   */
+  public void defineGlobalVar(String name) {
+    setGlobalValue(name, null); // TODO: clarify what the default value is!
+  }
+
+  /**
+   * Defines a list of global variables with the given name in the
+   * templates. If the name is already in use an error is reported.
+   *
+   * @param names list of names to set
+   */
+  public void defineGlobalVars(List<String> names) {
+    names.forEach(this::defineGlobalVar);
+  }
+
+  /**
+   * Changes the value of an existing global variable. If the name is
+   * not in use an error is reported.
+   *
+   * @param name of the value to set
+   * @param value the actual content
+   */
+  public void changeGlobalVar(String name, Object value) {
+    if (!hasGlobalVar(name)) {
+      Log.error("0xA0124 Global Value '" + name + "' has not been defined."); // TODO: identify valid error code
+    } else {
+      setGlobalValue(name, value);
+    }
+  }
+
   /**
    * Adds a new value to the given name. It converts a single value into a list
    * if necessary.
-   * 
+   *
    * @param name of the value to set
    * @param value the actual content
    */
   @SuppressWarnings({ "unchecked", "deprecation" })
-  public void addGlobalValue(String name, Object value) {
-    Object currentValue = null;
-    try {
-      currentValue = BeansWrapper.getDefaultInstance().unwrap(globalData.get(name));
-    }
-    catch (TemplateModelException e) {
-      // addValue is robust: if the key doesn't exist it acts like setValue, but
-      // still:
-      Log.error("0xA8123 Internal Error on global value for \"" + name + "\"");
-    }
-    if (currentValue != null) {
+  public void addToGlobalVar(String name, Object value) {
+    if (hasGlobalVar(name)){
+      Object currentValue = null;
+      try {
+        currentValue = BeansWrapper.getDefaultInstance().unwrap(globalData.get(name));
+      }
+      catch (TemplateModelException e) {
+        Log.error("0xA8123 Internal Error on global value for \"" + name + "\"");
+      }
+
       Collection<Object> newValue = new ArrayList<>();
-      if (currentValue instanceof Collection<?>) {
-        newValue.addAll((Collection<Object>) currentValue);
+      // the global variable has already a value assigned
+      if (currentValue != null) {
+        if (currentValue instanceof Collection<?>) {
+          newValue.addAll((Collection<Object>) currentValue);
+        }
+        else {
+          newValue.add(currentValue);
+        }
+        if (value instanceof Collection<?>) {
+          newValue.addAll((Collection<Object>) value);
+          Reporting.reportAddValue(name, value, newValue.size());
+        }
+        else {
+          newValue.add(value);
+          Reporting.reportAddValue(name, value, 1);
+        }
+        setGlobalValue(name, newValue);
       }
+      // the variable has been defined but it has no value assigned
       else {
-        newValue.add(currentValue);
+        if (value instanceof Collection<?>) {
+          newValue.addAll((Collection<Object>) value);
+        }else {
+          newValue.add(value);
+        }
+        setGlobalValue(name, newValue);
       }
-      if (value instanceof Collection<?>) {
-        newValue.addAll((Collection<Object>) value);
-        // TODO: GenLogger ersetzen (Überall)
-        // Dieser existiert noch nicht (AR)
-        Reporting.reportAddValue(name, value, newValue.size());
-      }
-      else {
-        newValue.add(value);
-        Reporting.reportAddValue(name, value, 1);
-      }
-      setGlobalValue(name, newValue);
-    }
-    else {
-      setGlobalValue(name, value);
+    } else {
+      Log.error("0xA8124 Global value with name \"" + name + "\" does not exist!");
     }
   }
-  
+
   /**
    * Returns the value of the given name.
-   * 
+   *
    * @param name of the value
    * @return the value
    */
   @SuppressWarnings("deprecation")
-  public Object getGlobalValue(String name) {
+  public Object getGlobalVar(String name) {
     try {
       return BeansWrapper.getDefaultInstance().unwrap(globalData.get(name));
     }
@@ -199,54 +239,34 @@ public class GlobalExtensionManagement {
     }
     return null;
   }
-  
+
   /**
    * check whether the variable name (parameter) is defined: if not issue an
    * error and continue
-   * 
+   *
    * @param name variable name
    */
-  public void requiredGlobalVars(String name) {
-    if (getGlobalValue(name) == null) {
+  public void requiredGlobalVar(String name) {
+    if (getGlobalVar(name) == null) {
       // TODO: in which template? hinzufügen
       // Sollte dieser Fehler kommen, dann wird auch das Template ausgeworfen,
       // das zuletzt verarbeitet wurde (also den Fehler produziert hat)
       Log.error("0xA0126 Missing required value \"" + name + "\"");
     }
   }
-  
+
   /**
    * check whether the list of variable names (parameter) is defined: if not
    * issue an error and continue
-   * 
+   *
    * @param names list of variable names
    */
-  public void requiredGlobalVars(List<String> names) {
-    names.forEach(this::requiredGlobalVars);
-  }
-  
-  /**
-   * if the listed variable does not exist, it is initialized with an empty
-   * string
-   * 
-   * @param name variable name
-   */
-  public void setOptionalGlobalVars(String name) {
-    if (getGlobalValue(name) == null) {
-      globalData.put(name, "");
+  public void requiredGlobalVars(String... names) {
+    for (int i = 0; i < names.length; i++){
+      requiredGlobalVar(names[i]);
     }
   }
-  
-  /**
-   * if the listed variables do not exist, each is initialized with an empty
-   * string
-   * 
-   * @param names list of variable names
-   */
-  public void setOptionalGlobalVars(List<String> names) {
-    names.forEach(this::setOptionalGlobalVars);
-  }
-  
+
   /**
    * @param hookName name of the hook point
    * @param hp
@@ -256,7 +276,7 @@ public class GlobalExtensionManagement {
     warnIfHookPointExists(hookName);
     hookPoints.put(hookName, hp);
   }
-  
+
   /**
    * @param hookName name of the hook point
    * @return the (processed) value of the hook point
@@ -264,22 +284,38 @@ public class GlobalExtensionManagement {
   public String defineHookPoint(TemplateController controller, String hookName, ASTNode ast) {
     String result = null;
     HookPoint hp = hookPoints.get(hookName);
-        
+
     Reporting.reportCallHookPointStart(hookName, hp, ast);
     if (hookPoints.containsKey(hookName)) {
       result = hp.processValue(controller, ast);
     }
     Reporting.reportCallHookPointEnd(hookName);
-    
-    
+
+
     return Strings.nullToEmpty(result);
   }
-  
+
+  /**
+   * @param hookName name of the hook point
+   * @return the (processed) value of the hook point
+   */
+  public String defineHookPoint(TemplateController controller, String hookName) {
+    return defineHookPoint(controller, hookName, controller.getAST());
+  }
+
+  /**
+   * @param hookName name of the hook point
+   * @return the (processed) value of the hook point
+   */
+  public boolean existsHookPoint(String hookName) {
+    return hookPoints.containsKey(hookName);
+  }
+
   /**
    * Returns a set of templates that have been defined to replace the template
    * <code>templateName</code>. If no template forwardings have been defined,
    * then <code>templateName</code> is returned.
-   * 
+   *
    * @param templateName The name of the template
    * @return A list of templates that have been defined to replace the
    * 'templateNames' templates
@@ -288,12 +324,12 @@ public class GlobalExtensionManagement {
     List<HookPoint> replacements = Lists.newArrayList();
     Collection<HookPoint> before = this.before.get(templateName);
     Collection<HookPoint> after = this.after.get(templateName);
-    
+
     if (before != null) {
       replacements.addAll(before);
       Reporting.reportCallBeforeHookPoint(templateName, before, ast);
     }
-    
+
     List<HookPoint> hps = getSpecificReplacement(templateName, ast);
     if(hps != null){
       Reporting.reportCallSpecificReplacementHookPoint(templateName, hps, ast);
@@ -302,14 +338,14 @@ public class GlobalExtensionManagement {
       hps = getTemplateForwardingsX(templateName, ast);
     }
     replacements.addAll(hps);
-    
+
     if (after != null) {
       replacements.addAll(after);
       Reporting.reportCallAfterHookPoint(templateName, after, ast);
     }
     return replacements;
   }
-  
+
   protected List<HookPoint> getSpecificReplacement(String templateName, ASTNode ast) {
     Map<ASTNode, HookPoint> replacedTemplates = this.specificReplacement.get(templateName);
     if (replacedTemplates != null && replacedTemplates.containsKey(ast)) {
@@ -317,19 +353,19 @@ public class GlobalExtensionManagement {
     }
     return null;
   }
-  
+
   /**
    * Returns a set of templates that have been defined to replace the
    * 'templateName' template. If no template forwardings have been defined, then
    * the 'templateName' template is returned.
-   * 
+   *
    * @param templateName The name of the template
    * @return A list of templats that have been defined to replace the
    * 'templateName' template
    */
   protected List<HookPoint> getTemplateForwardingsX(String templateName, ASTNode ast) {
     List<HookPoint> forwardings = Lists.newArrayList();
-    
+
     if (containsTemplateForwarding(templateName)) {
       if(this.replace.containsKey(templateName)){
         forwardings.addAll(this.replace.get(templateName));
@@ -344,33 +380,33 @@ public class GlobalExtensionManagement {
     }
     return forwardings;
   }
-  
+
   private boolean containsTemplateForwarding(String templateName) {
     return this.before.containsKey(templateName)
         | this.replace.containsKey(templateName)
         | this.after.containsKey(templateName);
   }
-  
+
   /**
    * Future inclusion of 'oldTemplate' will be replaced by 'newTemplate'. NOTE:
    * This replacement has only an effect if 'oldTemplate' is included directly.
-   * 
+   *
    * @param oldTemplate qualified name of template to be replaced
    */
   public void replaceTemplate(String oldTemplate, HookPoint hp) {
     replaceTemplate(oldTemplate, Lists.newArrayList(hp));
   }
-  
+
   /**
    * Future inclusion of 'oldTemplate' will be replaced by list of
    * 'newTemplates'. NOTE: This replacement has only an effect if 'oldTemplate'
    * is included directly.
-   * 
+   *
    * @param oldTemplate qualified name of template to be replaced
    */
   public void replaceTemplate(String oldTemplate, List<? extends HookPoint> newHps) {
     Reporting.reportTemplateReplacement(oldTemplate, newHps);
-    
+
     if (!newHps.isEmpty()) {
       // remove all previous replacements
       this.replace.removeAll(oldTemplate);
@@ -380,10 +416,10 @@ public class GlobalExtensionManagement {
       this.replace.removeAll(oldTemplate);
     }
   }
-  
+
   public void replaceTemplate(String oldTemplate, ASTNode node, HookPoint newHp) {
     Reporting.reportASTSpecificTemplateReplacement(oldTemplate, node, newHp);
-    
+
     Map<ASTNode, HookPoint> replacedTemplates = this.specificReplacement.get(oldTemplate);
     if (replacedTemplates != null && !replacedTemplates.containsKey(node)) {
       replacedTemplates.put(node, newHp);
@@ -394,63 +430,63 @@ public class GlobalExtensionManagement {
       this.specificReplacement.put(oldTemplate, specificTemplate);
     }
   }
-  
+
   /**
    * Everytime 'template' is included directly (e.g. by
    * {@link TemplateController#include(String, ASTNode)}), 'beforeTemplate' will
    * be included before it.
-   * 
+   *
    * @param template qualified name of the template
    */
   public void setBeforeTemplate(String template, HookPoint beforeHp) {
     setBeforeTemplate(template, Lists.newArrayList(beforeHp));
   }
-  
+
   /**
    * Everytime 'template' is included directly (e.g. by
    * {@link TemplateController#include(String, ASTNode)}), the templates in
    * 'beforeTemplate' will be included before it.
-   * 
+   *
    * @param template qualified name of the template
    */
   public void setBeforeTemplate(String template, List<? extends HookPoint> beforeHps) {
     Reporting.reportSetBeforeTemplate(template, beforeHps);
-    
+
     // remove all previous replacements
     this.before.removeAll(template);
     if (!beforeHps.isEmpty()) {
       this.before.putAll(template, beforeHps);
     }
   }
-  
+
   /**
    * Everytime 'template' is included directly (e.g. by
    * {@link TemplateController#include(String, ASTNode)}), 'afterTemplate' will
    * be included after it.
-   * 
+   *
    * @param template qualified name of the template
    */
   public void setAfterTemplate(String template, HookPoint afterHp) {
     setAfterTemplate(template, Lists.newArrayList(afterHp));
   }
-  
+
   /**
    * Everytime 'template' is included directly (e.g. by
    * {@link TemplateController#include(String, ASTNode)}), the templates in
    * 'afterTemplate' will be included after it.
-   * 
+   *
    * @param template qualified name of the template
    */
   public void setAfterTemplate(String template, List<? extends HookPoint> afterHps) {
     Reporting.reportSetAfterTemplate(template, afterHps);
-    
+
     // remove all previous replacements
     this.after.removeAll(template);
     if (!afterHps.isEmpty()) {
       this.after.putAll(template, afterHps);
     }
   }
-  
+
   private void warnIfHookPointExists(String hookName) {
     if (hookPoints.containsKey(hookName)) {
       Log.warn("0xA1036 Hook point '" + hookName + "' is already defined. It will be overwritten.");

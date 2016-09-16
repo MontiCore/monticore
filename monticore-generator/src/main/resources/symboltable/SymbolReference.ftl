@@ -31,7 +31,7 @@ SUCH DAMAGE.
 ***************************************************************************************
 -->
 ${signature("className", "ruleSymbol", "isScopeSpanningSymbol")}
-<#assign genHelper = glex.getGlobalValue("stHelper")>
+<#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign ruleName = ruleSymbol.getName()?cap_first>
 <#assign referencedSymbol = ruleName+"Symbol">
 <#assign package = genHelper.getTargetPackage()?lower_case>

@@ -31,7 +31,7 @@ SUCH DAMAGE.
 ***************************************************************************************
 -->
 ${tc.signature("ast", "type")}
-  <#assign genHelper = glex.getGlobalValue("astHelper")>
+  <#assign genHelper = glex.getGlobalVar("astHelper")>
     java.util.LinkedList<de.monticore.ast.ASTNode> result = new java.util.LinkedList<de.monticore.ast.ASTNode>();
     <#list type.getAllVisibleFields() as field>
       <#assign attrGetter = genHelper.getPlainGetter(field)>

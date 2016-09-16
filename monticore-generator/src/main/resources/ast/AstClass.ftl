@@ -39,7 +39,7 @@ SUCH DAMAGE.
   
 -->
 ${tc.signature("ast", "astBuilder")}
-<#assign genHelper = glex.getGlobalValue("astHelper")>
+<#assign genHelper = glex.getGlobalVar("astHelper")>
   
 <#-- set package -->
 package ${genHelper.getAstPackage()};

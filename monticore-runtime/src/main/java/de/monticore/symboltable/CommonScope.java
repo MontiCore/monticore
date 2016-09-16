@@ -21,10 +21,10 @@ package de.monticore.symboltable;
 
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.symboltable.modifiers.IncludesAccessModifierPredicate;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingInfo;
@@ -36,8 +36,11 @@ import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -56,7 +59,7 @@ import static com.google.common.base.Strings.nullToEmpty;
  */
 public class CommonScope implements MutableScope {
 
-  private final List<Symbol> symbols = new ArrayList<>();
+  private final Map<String, Collection<Symbol>> symbols = new LinkedHashMap<>();
   private final List<MutableScope> subScopes = new ArrayList<>();
 
   private Boolean exportsSymbols = null;
@@ -140,20 +143,23 @@ public class CommonScope implements MutableScope {
   public void add(Symbol symbol) {
     Log.errorIfNull(symbol);
 
-    // TODO PN is this check really needed? Some languages allow multiple definitions of symbol (names)
-    if (symbols.contains(symbol)) {
-      Log.warn("0xA1040 Symbol " + symbol.getName() + " (Kind: " + symbol.getKind() + ") is already "
-          + "defined in scope " + getName());
+    final String symbolName = symbol.getName();
+    if (!symbols.containsKey(symbolName)) {
+      symbols.put(symbolName, new ArrayList<>());
     }
-    symbols.add(symbol);
+
+    symbols.get(symbolName).add(symbol);
+
     symbol.setEnclosingScope(this);
   }
 
   @Override
   public void remove(Symbol symbol) {
-    if (symbols.contains(symbol)) {
-      symbols.remove(symbol);
-      symbol.setEnclosingScope(null);
+    if (symbols.containsKey(symbol.getName())) {
+      final boolean symbolRemoved = symbols.get(symbol.getName()).remove(symbol);
+      if (symbolRemoved) {
+        symbol.setEnclosingScope(null);
+      }
     }
   }
 
@@ -178,7 +184,7 @@ public class CommonScope implements MutableScope {
   }
 
   protected <T extends Symbol> Set<T> filterSymbolsByAccessModifier(AccessModifier modifier, Set<T> resolvedUnfiltered) {
-    return new LinkedHashSet<>(resolvedUnfiltered.stream().filter(new IncludesAccessModifierPredicate(modifier)).collect(Collectors.toSet()));
+    return Scopes.filterSymbolsByAccessModifier(modifier, resolvedUnfiltered);
   }
 
   /**
@@ -296,7 +302,9 @@ public class CommonScope implements MutableScope {
   @Deprecated
   @Override
   public Optional<? extends Symbol> resolve(SymbolPredicate predicate) {
-    Set<Symbol> result = new LinkedHashSet<>(symbols.stream().filter(predicate).collect(Collectors.toSet()));
+    final Collection<Symbol> allSymbols = Scopes.getLocalSymbolsAsCollection(this);
+
+    Set<Symbol> result = new LinkedHashSet<>(allSymbols.stream().filter(predicate).collect(Collectors.toSet()));
 
     // TODO PN Combine with adaptors. For this: add filter(SymbolPredicate) to
     //         AdaptedResolvingFilter (maybe ResolvingFilter too). Then, run pass
@@ -346,13 +354,23 @@ public class CommonScope implements MutableScope {
   }
 
   @Override
-  public List<Symbol> getSymbols() {
-    return ImmutableList.copyOf(symbols);
+  public Map<String, Collection<Symbol>> getLocalSymbols() {
+    return ImmutableMap.copyOf(symbols);
+  }
+
+  @Override
+  @Deprecated
+  public Map<String, Collection<Symbol>> getSymbols() {
+    return getLocalSymbols();
   }
 
   @Override
   public int getSymbolsSize() {
-    return symbols.size();
+    int size = 0;
+    for (Entry<String, Collection<Symbol>> entry: symbols.entrySet()) {
+      size += entry.getValue().size();
+    }
+    return size;
   }
 
   @Override
@@ -401,6 +419,11 @@ public class CommonScope implements MutableScope {
   @Override
   public Optional<ASTNode> getAstNode() {
     return Optional.ofNullable(astNode);
+  }
+
+  @Override
+  public MutableScope getAsMutableScope() {
+    return this;
   }
 
   public void setAstNode(ASTNode astNode) {
@@ -513,10 +536,12 @@ public class CommonScope implements MutableScope {
 
     final Collection<T> resolvedSymbols = new LinkedHashSet<>();
 
+    final Collection<Symbol> symbolsAsList = Scopes.getLocalSymbolsAsCollection(this);
+
     for (ResolvingFilter<? extends Symbol> resolvingFilter : resolversForKind) {
       final ResolvingInfo resolvingInfo = new ResolvingInfo(getResolvingFilters());
       resolvingInfo.addInvolvedScope(this);
-      Collection<T> filtered = (Collection<T>) resolvingFilter.filter(resolvingInfo, symbols);
+      Collection<T> filtered = (Collection<T>) resolvingFilter.filter(resolvingInfo, symbolsAsList);
       resolvedSymbols.addAll(filtered);
     }
 

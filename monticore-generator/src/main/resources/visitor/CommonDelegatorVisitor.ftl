@@ -31,7 +31,7 @@ SUCH DAMAGE.
 ***************************************************************************************
 -->
 ${tc.signature("astType", "astPackage", "allCds")}
-<#assign genHelper = glex.getGlobalValue("visitorHelper")>
+<#assign genHelper = glex.getGlobalVar("visitorHelper")>
 
 <#-- Copyright -->
 ${tc.defineHookPoint("JavaCopyright")}

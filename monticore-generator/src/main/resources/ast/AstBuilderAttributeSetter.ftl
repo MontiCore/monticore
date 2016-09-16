@@ -30,7 +30,7 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-    <#assign genHelper = glex.getGlobalValue("astHelper")>
+    <#assign genHelper = glex.getGlobalVar("astHelper")>
     <#assign attributeName = genHelper.getJavaConformName(ast.getName())>
     <#assign typeHelper = tc.instantiate("de.monticore.types.TypesHelper")>
     public Builder ${attributeName}(${typeHelper.printSimpleRefType(ast.getType())} ${attributeName}) {
