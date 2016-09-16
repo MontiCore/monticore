@@ -85,4 +85,64 @@ public class GrammarSerDeserTest {
     }
   }
   
+//  @Test
+//  public void testSerializeDesirializeASTMCGrammarInstance1() {
+//    try {
+//      
+//      String path1 = "de/monticore/emf/Family.mc4";
+//      Optional<ASTMCGrammar> automatonGrammar = new Grammar_WithConceptsParser()
+//          .parse("src/test/resources/" + path1);
+//      assertTrue(automatonGrammar.isPresent());
+//      AST2ModelFiles.get().serializeASTInstance(automatonGrammar.get(), "Family");
+//      
+//      EObject deserAutomatonGrammar = AST2ModelFiles.get().deserializeASTInstance("ASTMCGrammar_Family",
+//          GrammarPackage.eINSTANCE);
+//      assertNotNull(deserAutomatonGrammar);
+//      assertTrue(deserAutomatonGrammar instanceof ASTMCGrammar);
+//      
+//      assertTrue(automatonGrammar.get().deepEquals(deserAutomatonGrammar));
+//      assertEquals("Family", ((ASTMCGrammar) deserAutomatonGrammar).getName());
+//      
+//      List<DiffElement> diffs = AstEmfDiffUtility.getAllAstDiffs(automatonGrammar.get(),
+//          (ASTMCGrammar) deserAutomatonGrammar);
+//      assertTrue(diffs.isEmpty());
+//    }
+//    catch (RecognitionException | IOException e) {
+//      fail("Should not reach this, but: " + e);
+//    }
+//    catch (InterruptedException e) {
+//      fail("Should not reach this, but: " + e);
+//    }
+//  }
+  
+//  //@Test
+//  public void testSerializeDesirializeASTMCGrammarInstance2() {
+//    try {
+//      
+//      String path1 = "de/monticore/emf/Family.mc4";
+//      Optional<ASTMCGrammar> automatonGrammar = new Grammar_WithConceptsParser()
+//          .parse("src/test/resources/" + path1);
+//      assertTrue(automatonGrammar.isPresent());
+//      AST2ModelFiles.get().serializeAST(FamilyPackage.eINSTANCE);
+//      
+//      EObject deserAutomatonGrammar = AST2ModelFiles.get().deserializeASTInstance("Mysample-Families",
+//          FamilyPackage.eINSTANCE);
+//      assertNotNull(deserAutomatonGrammar);
+////      assertTrue(deserAutomatonGrammar instanceof ASTMCGrammar);
+////      
+////      assertTrue(automatonGrammar.get().deepEquals(deserAutomatonGrammar));
+////      assertEquals("Family", ((ASTMCGrammar) deserAutomatonGrammar).getName());
+////      
+////      List<DiffElement> diffs = AstEmfDiffUtility.getAllAstDiffs(automatonGrammar.get(),
+////          (ASTMCGrammar) deserAutomatonGrammar);
+////      assertTrue(diffs.isEmpty());
+//    }
+//    catch (RecognitionException | IOException e) {
+//      fail("Should not reach this, but: " + e);
+//    }
+////    catch (InterruptedException e) {
+////      fail("Should not reach this, but: " + e);
+////    }
+//  }
+  
 }

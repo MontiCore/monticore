@@ -24,6 +24,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Strings.nullToEmpty;
 
 import java.io.File;
+import java.util.Optional;
 
 import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.io.FileReaderWriter;
@@ -65,7 +66,7 @@ public class TemplateControllerConfigurationBuilder {
 
   private IterablePath handcodedPath;
 
-  private String modelName;
+  private Optional<String> modelName = Optional.empty();
 
   private ClassLoader classLoader;
 
@@ -96,7 +97,7 @@ public class TemplateControllerConfigurationBuilder {
     return this;
   }
 
-  public TemplateControllerConfigurationBuilder modelName(String modelName) {
+  public TemplateControllerConfigurationBuilder modelName(Optional<String> modelName) {
     this.modelName = modelName;
     return this;
   }
@@ -121,7 +122,8 @@ public class TemplateControllerConfigurationBuilder {
     return this;
   }
 
-  public TemplateControllerConfigurationBuilder externalTemplatePaths(File[] externalTemplatePaths) {
+  public TemplateControllerConfigurationBuilder externalTemplatePaths(
+      File[] externalTemplatePaths) {
     this.externalTemplatePaths = externalTemplatePaths;
     return this;
   }
@@ -166,7 +168,9 @@ public class TemplateControllerConfigurationBuilder {
     config.setExternalTemplatePath(externalTemplatePaths);
     config.setOutputDirectory(outputDirectory);
     config.setHandcodedPath(handcodedPath);
-    config.setModelName(modelName);
+    if (modelName.isPresent()) {
+      config.setModelName(modelName.get());
+    }
     config.setDefaultFileExtension(defaultFileExtension);
     config.setCommentStart(commentStart);
     config.setCommentEnd(commentEnd);

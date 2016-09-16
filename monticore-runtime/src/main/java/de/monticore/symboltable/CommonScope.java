@@ -40,6 +40,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -365,7 +366,11 @@ public class CommonScope implements MutableScope {
 
   @Override
   public int getSymbolsSize() {
-    return symbols.size();
+    int size = 0;
+    for (Entry<String, Collection<Symbol>> entry: symbols.entrySet()) {
+      size += entry.getValue().size();
+    }
+    return size;
   }
 
   @Override
