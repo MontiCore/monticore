@@ -98,6 +98,22 @@ public class MCProdSymbol extends CommonScopeSpanningSymbol {
     this.prodDefiningSymbolKind = prodDefiningSymbolKind;
   }
 
+  public void addProdComponent(MCProdComponentSymbol prodComponent) {
+    Log.errorIfNull(prodComponent);
+
+    MCProdComponentSymbol prodComp = getProdComponent(prodComponent.getName()).orElse(null);
+
+    if (prodComp != null) {
+      // TODO NN <- PN handle the case: (a:A a:B), i.e. two different non-terminals have the same usage name
+      // a prod component is a list (*), if at list one of the prod components is a list
+      // TODO NN <- PN what about (a:A) | (a:A)? | (a:A)+ is the prod component a:A optional? a list? etc.
+      prodComp.setList(prodComp.isList() || prodComponent.isList());
+    }
+    else {
+      getMutableSpannedScope().add(prodComponent);
+    }
+  }
+
   public Collection<MCProdComponentSymbol> getProdComponents() {
     return getSpannedScope().resolveLocally(MCProdComponentSymbol.KIND);
   }
