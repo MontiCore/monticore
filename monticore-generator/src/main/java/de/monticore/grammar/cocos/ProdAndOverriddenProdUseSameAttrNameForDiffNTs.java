@@ -36,33 +36,38 @@ import de.se_rwth.commons.logging.Log;
  * @author KH
  */
 public class ProdAndOverriddenProdUseSameAttrNameForDiffNTs implements GrammarASTNonTerminalCoCo {
-
+  
   public static final String ERROR_CODE = "0xA4025";
-
+  
   public static final String ERROR_MSG_FORMAT = " The overriding production %s must not use " +
-          "the name %s for the nonterminal %s as the overridden production uses this name for the nonterminal %s";
-
+      "the name %s for the nonterminal %s as the overridden production uses this name for the nonterminal %s";
+      
   @Override
   public void check(ASTNonTerminal a) {
     if (a.getUsageName().isPresent()) {
       String attributename = a.getUsageName().get();
-      Optional<MCRuleComponentSymbol> componentSymbol = a.getEnclosingScope().get().resolve(attributename, MCRuleComponentSymbol.KIND);
+      Optional<MCRuleComponentSymbol> componentSymbol = a.getEnclosingScope().get()
+          .resolve(attributename, MCRuleComponentSymbol.KIND);
       if (componentSymbol.isPresent()) {
         MCRuleSymbol rule = componentSymbol.get().getEnclosingRule();
         MCGrammarSymbol grammarSymbol = rule.getGrammarSymbol();
         List<MCGrammarSymbol> grammarSymbols = grammarSymbol.getSuperGrammars();
         for (MCGrammarSymbol g : grammarSymbols) {
-          ASTClassProd prod = (ASTClassProd) rule.getAstNode().get();
-          MCRuleSymbol ruleSymbol = g.getRule(prod.getName());
-          if (ruleSymbol != null) {
-            Optional<MCRuleComponentSymbol> rcs = ruleSymbol.getSpannedScope().resolve(attributename, MCRuleComponentSymbol.KIND);
-            if (rcs.isPresent() && !rcs.get().getReferencedRuleName().equals(componentSymbol.get().getReferencedRuleName())) {
-              Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT,
-                              prod.getName(),
-                              attributename,
-                              componentSymbol.get().getReferencedRuleName(),
-                              rcs.get().getReferencedRuleName()),
-                      a.get_SourcePositionStart());
+          if (rule.getAstNode().get() instanceof ASTClassProd) {
+            ASTClassProd prod = (ASTClassProd) rule.getAstNode().get();
+            MCRuleSymbol ruleSymbol = g.getRule(prod.getName());
+            if (ruleSymbol != null) {
+              Optional<MCRuleComponentSymbol> rcs = ruleSymbol.getSpannedScope()
+                  .resolve(attributename, MCRuleComponentSymbol.KIND);
+              if (rcs.isPresent() && !rcs.get().getReferencedRuleName()
+                  .equals(componentSymbol.get().getReferencedRuleName())) {
+                Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT,
+                    prod.getName(),
+                    attributename,
+                    componentSymbol.get().getReferencedRuleName(),
+                    rcs.get().getReferencedRuleName()),
+                    a.get_SourcePositionStart());
+              }
             }
           }
         }
