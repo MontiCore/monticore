@@ -250,6 +250,8 @@ public class TemplateControllerConfiguration {
    *
    * @since 4.0.1
    */
+  // TODO: entfernen 
+  // z:. weil unnötig, oder die Methoden in den templatecontroller einsetzen
   public class TemplateLogger {
 
     private TemplateLogger() {

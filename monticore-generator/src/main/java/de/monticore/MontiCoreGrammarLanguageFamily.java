@@ -1,7 +1,7 @@
 /*
  * ******************************************************************************
  * MontiCore Language Workbench
- * Copyright (c) 2015, MontiCore, All rights reserved.
+ * Copyright (c) 2016, MontiCore, All rights reserved.
  *
  * This project is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,30 +20,15 @@
 package de.monticore;
 
 import de.monticore.grammar.symboltable.EssentialMontiCoreGrammarLanguage;
-import de.monticore.io.paths.ModelPath;
 import de.monticore.languages.grammar.MontiCoreGrammarLanguage;
-import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.ResolverConfiguration;
 
-import java.nio.file.Paths;
+/**
+ * @author  Pedram Mir Seyed Nazari
+ */
+public class MontiCoreGrammarLanguageFamily extends ModelingLanguageFamily {
 
-public class GrammarGlobalScopeTestFactory {
-
-  public static GlobalScope create() {
-    return create(new MontiCoreGrammarLanguage());
+  public MontiCoreGrammarLanguageFamily() {
+    addModelingLanguage(new MontiCoreGrammarLanguage());
+    addModelingLanguage(new EssentialMontiCoreGrammarLanguage());
   }
-
-  public static GlobalScope createUsingEssentialMCLanguage() {
-    return create(new EssentialMontiCoreGrammarLanguage());
-  }
-
-
-  private static GlobalScope create(ModelingLanguage grammarLanguage) {
-    final ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
-    resolverConfiguration.addDefaultFilters(grammarLanguage.getResolvers());
-
-    return  new GlobalScope(new ModelPath(Paths.get("src/test/resources")),
-        grammarLanguage, resolverConfiguration);
-  }
-
 }
