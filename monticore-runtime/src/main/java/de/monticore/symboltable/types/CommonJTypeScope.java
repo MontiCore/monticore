@@ -65,10 +65,8 @@ public class CommonJTypeScope extends CommonScope {
     return this.resolve(symbolName, kind, ALL_INCLUSION);
   }
 
-  // TODO PN override resolve(ResolvingInfo, String, kind, AccessModifiier) instead?
   @Override
   public <T extends Symbol> Optional<T> resolve(String name, SymbolKind kind, AccessModifier modifier) {
-    // TODO PN rather resolveLocally, then in the super types, and finally in enclosing scope
     Optional<T> resolvedSymbol = this.resolveImported(name, kind, modifier);
 
     if (!resolvedSymbol.isPresent()) {
@@ -102,7 +100,7 @@ public class CommonJTypeScope extends CommonScope {
 
         // Stop as soon as symbol is found in an interface. Note that the other option is to
         // search in all interfaces and throw an ambiguous exception if more than one symbol is
-        // found. => TODO PN discuss it!
+        // found. => TODO discuss it!
         if (resolvedSymbol.isPresent()) {
           break;
         }
@@ -119,11 +117,8 @@ public class CommonJTypeScope extends CommonScope {
         .getSimpleName());
     // Private symbols cannot be resolved from the super class. So, the modifier must at
     // least be protected when searching in the super class scope
-    // TODO PN use default modifier instead of protected?
     AccessModifier modifierForSuperClass = getModifierForSuperClass(modifier, superType);
 
-    // TODO PN forward current ResolverInfo?
-    // TODO PN only resolve locally?
     return superType.getSpannedScope().resolveImported(name, kind, modifierForSuperClass);
   }
 
