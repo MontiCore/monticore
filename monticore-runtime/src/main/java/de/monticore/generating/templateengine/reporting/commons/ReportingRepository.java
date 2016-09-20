@@ -173,7 +173,7 @@ public class ReportingRepository {
     
     // do not print <<...>>!1!
     if (node2Ident.get(a) != 1) {
-      return node2Name.get(a) + "!" + node2Ident.get(a) + "!";
+      return node2Name.get(a) + Layouter.START_TAG + "!" + node2Ident.get(a) + Layouter.END_TAG;
     }
     // instead <<...>> if identifier is '1'
     else {
