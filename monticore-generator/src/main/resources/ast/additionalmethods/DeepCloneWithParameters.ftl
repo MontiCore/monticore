@@ -39,7 +39,7 @@ SUCH DAMAGE.
       <#assign attrType = attribute.getType()>
       <#assign typeName = genHelper.printType(attribute.getType())>
       <#if genHelper.isAstNode(attribute)>
-      result.set${genHelper.getNativeAttributeName(attribute.getName())?cap_first}((${typeName}) this.${attributeName}.deepClone());
+    result.set${genHelper.getNativeAttributeName(attribute.getName())?cap_first}((${typeName}) this.${attributeName}.deepClone());
       <#elseif genHelper.isPrimitive(attribute.getType())> 
     result.${attributeName} = this.${attributeName};
       <#elseif genHelper.isOptional(attribute)>
@@ -55,15 +55,16 @@ SUCH DAMAGE.
     result.${attributeName} = this.${attributeName}.isPresent()? Optional.ofNullable((${referenceName})this.${attributeName}.get()${clone}) : Optional.empty();
       <#else>  
         <#if genHelper.isString(typeName) || genHelper.isAttributeOfTypeEnum(attribute)> 
-      result.${attributeName} = this.${attributeName};
+    result.${attributeName} = this.${attributeName};
         <#elseif genHelper.isListAstNode(attribute)>
-      result.${attributeName} = com.google.common.collect.Lists.newArrayList();
-      this.${attributeName}.forEach(s -> result.${attributeName}.add(s.deepClone()));
+    result.${attributeName} = com.google.common.collect.Lists.newArrayList();
+    this.${attributeName}.forEach(s -> result.${attributeName}.add(s.deepClone()));
         <#elseif genHelper.isListType(typeName)>
-      result.${attributeName} = com.google.common.collect.Lists.newArrayList(this.${attributeName});
+    result.${attributeName} = com.google.common.collect.Lists.newArrayList(this.${attributeName});
         <#else>
-      result.${attributeName} = (${typeName}) this.${attributeName}.clone();
+    result.${attributeName} = (${typeName}) this.${attributeName}.clone();
         </#if>
       </#if>    
     </#list>
+    
     return result;

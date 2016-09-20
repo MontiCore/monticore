@@ -41,14 +41,9 @@ public interface ASTNode {
    * @return Clone of current ASTNode with a parent which is equal to null
    */
   default public ASTNode deepClone(ASTNode result) {
-    Log.errorIfNull(result, "0xA4040 Parameter 'result' must not be null.");
-    
-    result.set_SourcePositionStart(new de.se_rwth.commons.SourcePosition(
-        get_SourcePositionStart().getLine(), get_SourcePositionStart()
-            .getColumn()));
-    result.set_SourcePositionEnd(new de.se_rwth.commons.SourcePosition(
-        get_SourcePositionEnd().getLine(), get_SourcePositionEnd()
-            .getColumn()));
+    Log.errorIfNull(result, "0xA4040 The argument ASTNode of the 'deepClone' method must not be null.");
+    result.set_SourcePositionStart(get_SourcePositionStart().clone());
+    result.set_SourcePositionEnd(get_SourcePositionEnd().clone());
     for (de.monticore.ast.Comment x : get_PreComments()) {
       result.get_PreComments().add(new de.monticore.ast.Comment(x.getText()));
     }
