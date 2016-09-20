@@ -206,22 +206,6 @@ public class CdDecoratorTest {
     assertEquals(2, nodeFactoryClass.get().getCDAttributes().size());
   }
   
-  /** {@link CdDecorator#addAdditionalAttributes(ASTCDClass, AstGeneratorHelper)  */
-  @Test
-  public void additionalAttributes() {
-    for (ASTCDClass clazz : cdDefinition.getCDClasses()) {
-      cdDecorator.addAdditionalAttributes(clazz, astHelper);
-    }
-    
-    for (ASTCDClass clazz : cdDefinition.getCDClasses()) {
-      assertEquals(3, clazz.getCDAttributes().size());
-      assertEquals(AstAdditionalAttributes.symbol.toString(), clazz.getCDAttributes().get(1)
-          .getName());
-      assertEquals(AstAdditionalAttributes.enclosingScope.toString(), clazz.getCDAttributes()
-          .get(2).getName());
-    }
-  }
-  
   /** {@link CdDecorator#additionalMethods(ASTCDClass, AstGeneratorHelper)  */
   @Test
   public void additionalMethods() {

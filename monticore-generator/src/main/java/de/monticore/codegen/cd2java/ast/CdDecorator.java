@@ -143,7 +143,7 @@ public class CdDecorator {
     for (ASTCDClass clazz : nativeClasses) {
       addConstructors(clazz, astHelper);
       addAdditionalMethods(clazz, astHelper);
-      addAdditionalAttributes(clazz, astHelper);
+    //  addAdditionalAttributes(clazz, astHelper);
       addGetter(clazz, astHelper);
       addSetter(clazz, astHelper);
       addSymbolGetter(clazz, astHelper);

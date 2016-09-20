@@ -32,8 +32,6 @@ SUCH DAMAGE.
 -->
 import java.util.Optional;
 import java.util.Iterator;
-import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;

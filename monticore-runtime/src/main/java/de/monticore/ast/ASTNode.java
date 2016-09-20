@@ -229,6 +229,11 @@ public interface ASTNode {
   Optional<? extends Scope> getEnclosingScope();
   
   /**
+   * @return true if the enclosing scope is present
+   */
+  boolean enclosingScopeIsPresent();
+  
+  /**
    * Sets the corresponding symbol of this ast node.
    *
    * @param symbol the corresponding symbol of this ast node..
@@ -239,6 +244,11 @@ public interface ASTNode {
    * @return the corresponding symbol of this ast node.
    */
   Optional<? extends Symbol> getSymbol();
+  
+  /**
+   * @return true if the symbol is present
+   */
+  boolean symbolIsPresent();
 
   /**
    * Sets the spanned scope of this ast node.
@@ -253,5 +263,11 @@ public interface ASTNode {
   default Optional<? extends Scope> getSpannedScope() {
     return Optional.empty();
   }
+  
+  /**
+   * 
+   *  @return true if the spanned scope is present
+   */
+  boolean spannedScopeIsPresent();
   
 }

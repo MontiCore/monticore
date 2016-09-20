@@ -38,12 +38,6 @@ import mc.feature.featuredsl._ast.FeatureDSLNodeFactory;
 public class ASTTest {
   
   @Test
-  public void testNpeDeepClone() {
-    mc.feature.automaton.automaton._ast.ASTAutomaton a = AutomatonNodeFactory.createASTAutomaton();
-    assertNull(a.deepClone().getName());
-  }
-  
-  @Test
   public void testGet_ChildNodes1() {
     List<ASTA> aList = new ArrayList<>();
     ASTA a = FeatureDSLNodeFactory.createASTA();

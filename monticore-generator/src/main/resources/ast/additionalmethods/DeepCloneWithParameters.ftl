@@ -39,9 +39,7 @@ SUCH DAMAGE.
       <#assign attrType = attribute.getType()>
       <#assign typeName = genHelper.printType(attribute.getType())>
       <#if genHelper.isAstNode(attribute)>
-    if (this.${attributeName} != null) {
       result.set${genHelper.getNativeAttributeName(attribute.getName())?cap_first}((${typeName}) this.${attributeName}.deepClone());
-    }
       <#elseif genHelper.isPrimitive(attribute.getType())> 
     result.${attributeName} = this.${attributeName};
       <#elseif genHelper.isOptional(attribute)>
@@ -56,7 +54,6 @@ SUCH DAMAGE.
         </#if>
     result.${attributeName} = this.${attributeName}.isPresent()? Optional.ofNullable((${referenceName})this.${attributeName}.get()${clone}) : Optional.empty();
       <#else>  
-    if (this.${attributeName} != null) {
         <#if genHelper.isString(typeName) || genHelper.isAttributeOfTypeEnum(attribute)> 
       result.${attributeName} = this.${attributeName};
         <#elseif genHelper.isListAstNode(attribute)>
@@ -67,7 +64,6 @@ SUCH DAMAGE.
         <#else>
       result.${attributeName} = (${typeName}) this.${attributeName}.clone();
         </#if>
-    }
       </#if>    
     </#list>
     return result;
