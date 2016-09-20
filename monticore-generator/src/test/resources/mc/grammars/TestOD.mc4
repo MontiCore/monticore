@@ -184,7 +184,8 @@ grammar TestOD extends mc.grammars.common.TestCommon {
       "[" values:Value ("," values:Value)* "]" ;
           
     token ODName = '@'
-    	( 'a'..'z' | 'A'..'Z' | '0'..'9' )* 
+    	( 'a'..'z' | 'A'..'Z' | '0'..'9'	
+    	| 'ä' | 'Ä' | 'ö' | 'Ö' | 'ü' | 'Ü' | 'ß')* 
     	('('.*?')')?;
         
 }
