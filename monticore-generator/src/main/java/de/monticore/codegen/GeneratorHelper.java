@@ -1421,24 +1421,28 @@ public class GeneratorHelper extends TypesHelper {
   public Set<String> getSuperGrammarCdsUsed(ASTCDClass clazz) {
     Set<String> ret = new LinkedHashSet<>();
     
+    List<String> superTypes = new ArrayList<>();
+    // superclass
     if (clazz.getSuperclass().isPresent()) {
       ASTReferenceType ref = clazz.getSuperclass().get();
-      String supertype = TypesPrinter.printReferenceType(ref);
-      // is it from any of the supergrammars?
-      for (String superGrammar : getSuperGrammarCds()) {
-        String superGrammarPackage = Names.getQualifier(superGrammar);
-        if (supertype.startsWith(superGrammarPackage)) {
-          ret.add(superGrammar);
-        }
-      }
+      String superType = TypesPrinter.printReferenceType(ref);
+      superTypes.add(superType);
     }
+    // interfaces
     for (ASTReferenceType ref : clazz.getInterfaces()) {
-      String supertype = TypesPrinter.printReferenceType(ref);
-      // is it from any of the supergrammars?
-      for (String superGrammar : getSuperGrammarCds()) {
-        String superGrammarPackage = Names.getQualifier(superGrammar);
-        if (supertype.startsWith(superGrammarPackage)) {
-          ret.add(superGrammar);
+      String superType = TypesPrinter.printReferenceType(ref);
+      superTypes.add(superType);
+    }
+    // check if any of the supertypes stems from a different CD
+    // and if so add it as return value.
+    if (!superTypes.isEmpty()) {
+      List<CDSymbol> superCDs = getAllSuperCds(cdSymbol);
+      for (String superType : superTypes) {
+        for (CDSymbol superCD : superCDs) {
+          String superGrammarPackage = cdSymbol.getPackageName();
+          if (superType.startsWith(superGrammarPackage)) {
+            ret.add(superCD.getFullName());
+          }
         }
       }
     }
