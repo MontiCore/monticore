@@ -226,7 +226,7 @@ public class CdDecorator {
       replaceMethodBodyTemplate(clazz, methodSignatur, new TemplateHookPoint(
           "ast.additionalmethods.Accept"));
           
-      // node needs to accept visitors from all languages that it uses nodes of.
+      // node needs to accept visitors from all super languages
       for (CDSymbol cdSym : astHelper.getAllSuperCds(astHelper.getCd())) {
         String superGrammarName = Names.getSimpleName(cdSym.getFullName());
         String visitorType = superGrammarName + "Visitor";
