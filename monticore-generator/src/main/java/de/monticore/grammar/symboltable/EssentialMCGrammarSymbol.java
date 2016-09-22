@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author  Pedram Mir Seyed Nazari
@@ -89,6 +90,12 @@ public class EssentialMCGrammarSymbol extends CommonScopeSpanningSymbol {
 
   public List<EssentialMCGrammarSymbolReference> getSuperGrammars() {
     return ImmutableList.copyOf(superGrammars);
+  }
+  
+  public List<EssentialMCGrammarSymbol> getSuperGrammarSymbols() {
+    return ImmutableList.copyOf(superGrammars.stream().filter(g -> g.getReferencedSymbol() != null)
+        .map(g -> g.getReferencedSymbol())
+        .collect(Collectors.toList()));
   }
 
   public void addSuperGrammar(EssentialMCGrammarSymbolReference superGrammarRef) {

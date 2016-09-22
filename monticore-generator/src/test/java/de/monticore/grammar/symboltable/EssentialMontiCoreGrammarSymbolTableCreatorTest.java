@@ -68,7 +68,6 @@ public class EssentialMontiCoreGrammarSymbolTableCreatorTest {
     assertNotNull(grammar);
     assertEquals("de.monticore.statechart.Statechart", grammar.getFullName());
     assertEquals("de.monticore.statechart", grammar.getPackageName());
-    assertEquals("de.monticore.statechart.Statechart", grammar.getFullName());
     assertTrue(grammar.getKind().isSame(EssentialMCGrammarSymbol.KIND));
     assertTrue(grammar.getStartProd().isPresent());
 
