@@ -1411,45 +1411,6 @@ public class GeneratorHelper extends TypesHelper {
   }
   
   /**
-   * Finds the supergrammars CDs that clazz uses (e.g. extending a node,
-   * implementing an interface). This e.g. allows to determine whether the
-   * corresponding ASTNode must accept visitors of the super grammar or not.
-   *
-   * @param clazz
-   * @return list of FQN of supergrammars CDs from which elements are used.
-   */
-  public Set<String> getSuperGrammarCdsUsed(ASTCDClass clazz) {
-    Set<String> ret = new LinkedHashSet<>();
-    
-    List<String> superTypes = new ArrayList<>();
-    // superclass
-    if (clazz.getSuperclass().isPresent()) {
-      ASTReferenceType ref = clazz.getSuperclass().get();
-      String superType = TypesPrinter.printReferenceType(ref);
-      superTypes.add(superType);
-    }
-    // interfaces
-    for (ASTReferenceType ref : clazz.getInterfaces()) {
-      String superType = TypesPrinter.printReferenceType(ref);
-      superTypes.add(superType);
-    }
-    // check if any of the supertypes stems from a different CD
-    // and if so add it as return value.
-    if (!superTypes.isEmpty()) {
-      List<CDSymbol> superCDs = getAllSuperCds(cdSymbol);
-      for (String superType : superTypes) {
-        for (CDSymbol superCD : superCDs) {
-          String superGrammarPackage = cdSymbol.getPackageName();
-          if (superType.startsWith(superGrammarPackage)) {
-            ret.add(superCD.getFullName());
-          }
-        }
-      }
-    }
-    return ret;
-  }
-  
-  /**
    * Resolves the CD of the given qualified name
    * 
    * @param qualifiedCdName full qualified name to resolve the CD for

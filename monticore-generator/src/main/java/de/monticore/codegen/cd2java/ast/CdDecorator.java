@@ -211,7 +211,7 @@ public class CdDecorator {
   /**
    * Adds common ast methods to the all classes in the class diagram
    * 
-   * @param clazz2 - each entry contains a class diagram class and a respective
+   * @param clazz - each entry contains a class diagram class and a respective
    * builder class
    * @param astHelper
    * @throws ANTLRException
@@ -227,10 +227,10 @@ public class CdDecorator {
           "ast.additionalmethods.Accept"));
           
       // node needs to accept visitors from all languages that it uses nodes of.
-      for (String usedSupergrammarFQN : astHelper.getSuperGrammarCdsUsed(clazz)) {
-        String superGrammarName = Names.getSimpleName(usedSupergrammarFQN);
+      for (CDSymbol cdSym : astHelper.getAllSuperCds(astHelper.getCd())) {
+        String superGrammarName = Names.getSimpleName(cdSym.getFullName());
         String visitorType = superGrammarName + "Visitor";
-        String visitorPackage = VisitorGeneratorHelper.getVisitorPackage(usedSupergrammarFQN);
+        String visitorPackage = VisitorGeneratorHelper.getVisitorPackage(cdSym.getFullName());
         
         additionalMethod = AstAdditionalMethods.accept;
         String superVisitorTypeFQN = visitorPackage + "." + visitorType;
