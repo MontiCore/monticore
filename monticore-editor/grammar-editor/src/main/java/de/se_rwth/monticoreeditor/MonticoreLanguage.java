@@ -19,11 +19,15 @@ package de.se_rwth.monticoreeditor;
 import static de.se_rwth.langeditor.util.Misc.loadImage;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.templates.TemplateProposal;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -49,6 +53,7 @@ import de.se_rwth.langeditor.language.OutlineElementSet;
 import de.se_rwth.langeditor.language.OutlineElementSet.Builder;
 import de.se_rwth.langeditor.language.ParserConfig;
 import de.se_rwth.langeditor.modelstates.ModelState;
+import de.se_rwth.monticoreeditor.templates.ProdTemplate;
 
 public final class MonticoreLanguage implements Language {
   
@@ -154,4 +159,16 @@ public final class MonticoreLanguage implements Language {
     });
   }
 
+  /**
+   * @see de.se_rwth.langeditor.language.Language#getTemplateProposals(org.eclipse.jface.text.ITextViewer, int, java.lang.String)
+   */
+  @Override
+  public List<TemplateProposal> getTemplateProposals(ITextViewer viewer, int offset,
+      String prefix) {
+    List<TemplateProposal> templates = new ArrayList<>();
+    templates.addAll(new ProdTemplate().getTemplateProposals(viewer, offset, prefix));
+    return templates;
+  }
+
+  
 }
