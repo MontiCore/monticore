@@ -50,6 +50,7 @@ public class EssentialMontiCoreGrammarLanguage extends CommonModelingLanguage {
     addResolver(CommonResolvingFilter.create(EssentialMCGrammarSymbol.KIND));
     addResolver(CommonResolvingFilter.create(MCProdSymbol.KIND));
     addResolver(CommonResolvingFilter.create(MCProdComponentSymbol.KIND));
+    addResolver(CommonResolvingFilter.create(EssentialMCAttributeSymbol.KIND));
   }
   
   @Override

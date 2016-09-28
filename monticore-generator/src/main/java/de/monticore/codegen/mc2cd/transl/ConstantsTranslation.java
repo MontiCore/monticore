@@ -21,7 +21,7 @@ package de.monticore.codegen.mc2cd.transl;
 
 import java.util.function.UnaryOperator;
 
-import de.monticore.codegen.mc2cd.TransformationHelper;
+import de.monticore.codegen.mc2cd.EssentialTransformationHelper;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDEnum;
@@ -47,7 +47,7 @@ public class ConstantsTranslation implements
     ASTCDEnum constantsEnum = CD4AnalysisNodeFactory.createASTCDEnum();
     constantsEnum.setName(rootLink.source().getName() + CONSTANTS_ENUM);
     rootLink.target().getCDDefinition().getCDEnums().add(constantsEnum);
-    for (String grammarConstant : TransformationHelper.getAllGrammarConstants(rootLink.source())) {
+    for (String grammarConstant : EssentialTransformationHelper.getAllGrammarConstants(rootLink.source())) {
       ASTCDEnumConstant constant = CD4AnalysisNodeFactory.createASTCDEnumConstant();
       constant.setName(grammarConstant);
       constantsEnum.getCDEnumConstants().add(constant);

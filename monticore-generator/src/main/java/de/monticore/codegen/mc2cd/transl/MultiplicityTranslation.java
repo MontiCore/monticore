@@ -19,8 +19,8 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import static de.monticore.codegen.mc2cd.TransformationHelper.createSimpleReference;
-import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
+import static de.monticore.codegen.mc2cd.EssentialTransformationHelper.createSimpleReference;
+import static de.monticore.codegen.mc2cd.EssentialTransformationHelper.typeToString;
 import static de.monticore.grammar.Multiplicity.determineMultiplicity;
 
 import java.util.List;
@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 import com.google.common.collect.Maps;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.types.types._ast.ASTConstantsTypes;
@@ -43,7 +42,6 @@ import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.utils.Link;
-import de.se_rwth.commons.Names;
 
 
 /**

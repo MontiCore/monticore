@@ -19,19 +19,20 @@
 
 package de.monticore.grammar.symboltable;
 
-import com.google.common.collect.ImmutableList;
-import de.monticore.symboltable.CommonScopeSpanningSymbol;
-import de.monticore.symboltable.SymbolKind;
-import de.se_rwth.commons.logging.Log;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
-import static java.util.Optional.ofNullable;
+import com.google.common.collect.ImmutableList;
+
+import de.monticore.symboltable.CommonScopeSpanningSymbol;
+import de.monticore.symboltable.SymbolKind;
+import de.se_rwth.commons.logging.Log;
 
 /**
  * @author  Pedram Mir Seyed Nazari
@@ -73,6 +74,11 @@ public class MCProdSymbol extends CommonScopeSpanningSymbol {
    * A implements B, C, external.java.Type
    */
   private List<MCProdOrTypeReference> astSuperInterfaces = new ArrayList<>();
+  
+  /**
+   *  ast A = b:B c:external.java.Type;
+   */
+  private List<EssentialMCAttributeSymbol> astAttributes = new ArrayList<>();
 
 
   public MCProdSymbol(String name) {
@@ -164,6 +170,14 @@ public class MCProdSymbol extends CommonScopeSpanningSymbol {
 
   public List<MCProdOrTypeReference> getAstSuperInterfaces() {
     return ImmutableList.copyOf(astSuperInterfaces);
+  }
+  
+  public void addAstAttribute(EssentialMCAttributeSymbol ref) {
+    astAttributes.add(Log.errorIfNull(ref));
+  }
+
+  public List<EssentialMCAttributeSymbol> getAstAttributes() {
+    return ImmutableList.copyOf(astAttributes);
   }
 
   /**

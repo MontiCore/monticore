@@ -25,7 +25,7 @@ import java.util.stream.StreamSupport;
 
 import com.google.common.collect.Iterables;
 
-import de.monticore.codegen.mc2cd.TransformationHelper;
+import de.monticore.codegen.mc2cd.EssentialTransformationHelper;
 import de.monticore.types.types._ast.ASTReferenceType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;

@@ -19,7 +19,9 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import de.monticore.codegen.mc2cd.TransformationHelper;
+import java.util.function.UnaryOperator;
+
+import de.monticore.codegen.mc2cd.EssentialTransformationHelper;
 import de.monticore.grammar.grammar._ast.ASTASTRule;
 import de.monticore.grammar.grammar._ast.ASTGenericType;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
@@ -27,8 +29,6 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
 import de.monticore.utils.Link;
-
-import java.util.function.UnaryOperator;
 
 /**
  * Checks if the source astrules were extending or implementing other rules
@@ -63,28 +63,28 @@ public class ASTRuleInheritanceTranslation implements
       ASTMCGrammar astGrammar) {
     // translates "astextends"
     for (ASTGenericType superInterface : rule.getASTSuperClass()) {
-      String qualifiedSuperInterface = TransformationHelper
+      String qualifiedSuperInterface = EssentialTransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(superInterface, astGrammar, cdInterface);
 
       cdInterface.getInterfaces().add(
-          TransformationHelper.createSimpleReference(qualifiedSuperInterface));
+          EssentialTransformationHelper.createSimpleReference(qualifiedSuperInterface));
     }
   }
 
   private void translateClassProd(ASTASTRule rule, ASTCDClass cdClass, ASTMCGrammar astGrammar) {
     // translates "astextends"
     for (ASTGenericType superClass : rule.getASTSuperClass()) {
-      String qualifiedSuperClass = TransformationHelper
+      String qualifiedSuperClass = EssentialTransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(superClass, astGrammar, cdClass);
-      cdClass.setSuperclass(TransformationHelper.createSimpleReference(qualifiedSuperClass));
+      cdClass.setSuperclass(EssentialTransformationHelper.createSimpleReference(qualifiedSuperClass));
     }
 
     // translates "astimplements"
     for (ASTGenericType superInterface : rule.getASTSuperInterface()) {
-      String qualifiedSuperInterface = TransformationHelper
+      String qualifiedSuperInterface = EssentialTransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(superInterface, astGrammar, cdClass);
       cdClass.getInterfaces()
-          .add(TransformationHelper.createSimpleReference(qualifiedSuperInterface));
+          .add(EssentialTransformationHelper.createSimpleReference(qualifiedSuperInterface));
     }
   }
 }

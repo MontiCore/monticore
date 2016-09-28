@@ -30,8 +30,8 @@ import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.mc2cd.TransformationHelper.getName;
-import static de.monticore.codegen.mc2cd.TransformationHelper.getUsageName;
+import static de.monticore.codegen.mc2cd.EssentialTransformationHelper.getName;
+import static de.monticore.codegen.mc2cd.EssentialTransformationHelper.getUsageName;
 
 /**
  * The CDAttributes generated from AttributeInASTs completely hide any CDAttributes derived from

@@ -19,12 +19,20 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.grammar.grammar._ast.*;
-import de.monticore.languages.grammar.MCExternalRuleSymbol;
-import de.monticore.languages.grammar.MCLexRuleSymbol;
-import de.monticore.languages.grammar.MCRuleSymbol;
-import de.monticore.languages.grammar.MCTypeSymbol;
+import static de.monticore.codegen.mc2cd.EssentialTransformationHelper.createSimpleReference;
+import static de.monticore.codegen.mc2cd.EssentialTransformationHelper.getAstPackageName;
+
+import java.util.Optional;
+import java.util.function.UnaryOperator;
+
+import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
+import de.monticore.codegen.mc2cd.EssentialTransformationHelper;
+import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
+import de.monticore.grammar.grammar._ast.ASTGenericType;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar._ast.ASTNonTerminal;
+import de.monticore.grammar.grammar._ast.ASTTerminal;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.types.types._ast.ASTConstantsTypes;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.types.types._ast.TypesNodeFactory;
@@ -32,87 +40,81 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.utils.Link;
 
-import java.util.Optional;
-import java.util.function.UnaryOperator;
-
-import static de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper.resolveRule;
-import static de.monticore.codegen.mc2cd.TransformationHelper.createSimpleReference;
-import static de.monticore.codegen.mc2cd.TransformationHelper.getAstPackageName;
-
 /**
- * Infers the type that ASTCDAttributes should have according to what kind of rule the original
- * nonterminals were referring to.
+ * Infers the type that ASTCDAttributes should have according to what kind of
+ * rule the original nonterminals were referring to.
  *
  * @author Sebastian Oberhoff
  */
 public class ReferenceTypeTranslation implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
-
+  
   @Override
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(
       Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
-
+    
     for (Link<ASTNonTerminal, ASTCDAttribute> link : rootLink.getLinks(ASTNonTerminal.class,
         ASTCDAttribute.class)) {
       link.target().setType(determineTypeToSet(link.source().getName(), rootLink.source()));
     }
-
+    
     for (Link<ASTTerminal, ASTCDAttribute> link : rootLink.getLinks(ASTTerminal.class,
         ASTCDAttribute.class)) {
       link.target().setType(createSimpleReference("String"));
     }
-
+    
     for (Link<ASTAttributeInAST, ASTCDAttribute> link : rootLink.getLinks(ASTAttributeInAST.class,
         ASTCDAttribute.class)) {
       ASTType type = determineTypeToSetForAttributeInAST(
           link.source().getGenericType(), rootLink.source());
       link.target().setType(type);
     }
-
+    
     return rootLink;
   }
-
-  private ASTType ruleSymbolToType(MCRuleSymbol ruleSymbol, String typeName) {
-    if (ruleSymbol instanceof MCLexRuleSymbol) {
-      return determineConstantsType(ruleSymbol.getType().getLexType())
+  
+  private ASTType ruleSymbolToType(MCProdSymbol ruleSymbol, String typeName) {
+    if (ruleSymbol.isLexerProd()) {
+      return determineConstantsType(ruleSymbol.getName())
           .map(lexType -> (ASTType) TypesNodeFactory.createASTPrimitiveType(lexType))
           .orElse(createSimpleReference("String"));
     }
-    else if (ruleSymbol instanceof MCExternalRuleSymbol) {
+    else if (ruleSymbol.isExternal()) {
       return createSimpleReference("AST" + typeName + "Ext");
     }
     else {
-      String qualifiedASTNodeName = getAstPackageName(ruleSymbol.getType().getGrammarSymbol())
-          + "AST" + ruleSymbol.getType().getName();
+      String qualifiedASTNodeName = getAstPackageName(ruleSymbol)
+          + "AST" + ruleSymbol.getName();
       return createSimpleReference(qualifiedASTNodeName);
     }
   }
-
+  
   private ASTType determineTypeToSetForAttributeInAST(ASTGenericType astGenericType,
       ASTMCGrammar astMCGrammar) {
-    Optional<MCRuleSymbol> ruleSymbol = TransformationHelper.resolveAstRuleType(astGenericType);
+    Optional<MCProdSymbol> ruleSymbol = EssentialTransformationHelper
+        .resolveAstRuleType(astGenericType);
     if (!ruleSymbol.isPresent()) {
       return determineTypeToSet(astGenericType.getTypeName(), astMCGrammar);
     }
-    else if (ruleSymbol.get() instanceof MCExternalRuleSymbol) {
+    else if (ruleSymbol.get().isExternal()) {
       return createSimpleReference(astGenericType + "Ext");
     }
     else {
-      MCTypeSymbol typeSymbol = ruleSymbol.get().getType();
-      String qualifiedASTNodeName =
-          getAstPackageName(typeSymbol.getGrammarSymbol()) + "AST" + typeSymbol.getName();
+      String qualifiedASTNodeName = EssentialTransformationHelper
+          .getAstPackageName(ruleSymbol.get()) + "AST" + ruleSymbol.get().getName();
       return createSimpleReference(qualifiedASTNodeName);
     }
   }
-
+  
   private ASTType determineTypeToSet(String typeName, ASTMCGrammar astMCGrammar) {
-    Optional<ASTType> byReference = resolveRule(astMCGrammar, typeName)
+    Optional<ASTType> byReference = EssentialMCGrammarSymbolTableHelper
+        .resolveRule(astMCGrammar, typeName)
         .map(ruleSymbol -> ruleSymbolToType(ruleSymbol, typeName));
     Optional<ASTType> byPrimitive = determineConstantsType(typeName)
         .map(TypesNodeFactory::createASTPrimitiveType);
     return byReference.orElse(byPrimitive.orElse(createSimpleReference(typeName)));
   }
-
+  
   private Optional<Integer> determineConstantsType(String typeName) {
     switch (typeName) {
       case "int":

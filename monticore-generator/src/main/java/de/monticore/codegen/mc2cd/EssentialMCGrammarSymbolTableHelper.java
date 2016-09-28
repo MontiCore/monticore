@@ -21,6 +21,7 @@ package de.monticore.codegen.mc2cd;
 
 import static de.se_rwth.commons.Util.listTillNull;
 
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,6 +36,8 @@ import de.monticore.grammar.symboltable.EssentialMontiCoreGrammarLanguage;
 import de.monticore.grammar.symboltable.EssentialMontiCoreGrammarSymbolTableCreator;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.languages.grammar.MCGrammarSymbol;
+import de.monticore.languages.grammar.MCTypeSymbol;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.MutableScope;
@@ -105,5 +108,32 @@ public class EssentialMCGrammarSymbolTableHelper {
         .filter(Optional::isPresent)
         .map(Optional::get)
         .collect(Collectors.toSet());
+  }
+  
+  // TODO GV:
+  /**
+   * Returns the STType associated with this name Use "super." as a prefix to
+   * explicitly access the type of supergrammars this grammar overriddes.
+   * Native/external types are types that are not defined in the grammar but are
+   * refered from it. These types are indicated by the suffix "/" in the grammar
+   * and refer to regular Java types. To access these type use the prefix "/"
+   * e.g. "/String" or "/int"
+   *
+   * @param name Name of the type
+   * @return Symboltable entry for this type
+   */
+  public static Optional<MCProdSymbol> getTypeWithInherited(String name, EssentialMCGrammarSymbol gramamrSymbol) {
+    Optional<MCProdSymbol> ret = Optional.empty();
+    if (name.startsWith("super.")) {
+      name = name.substring(6);
+    }
+    else {
+      ret = gramamrSymbol.getProd(name);
+    }
+
+    if (!ret.isPresent()) {
+      ret = gramamrSymbol.getProdWithInherited(name);
+    }
+    return ret;
   }
 }
