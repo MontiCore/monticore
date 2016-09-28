@@ -66,7 +66,7 @@ public class GeneratorConfig {
     GeneratorSetup setup = setupOpt.orElse(new GeneratorSetup(new File(TemplateClassGeneratorConstants.DEFAULT_OUTPUT_FOLDER)));
     
     GlobalExtensionManagement glex = setup.getGlex().orElse(new GlobalExtensionManagement());
-    glex.defineGlobalValue(TemplateClassGeneratorConstants.TEMPLATES_ALIAS, new TemplateAccessor());
+    glex.defineGlobalVar(TemplateClassGeneratorConstants.TEMPLATES_ALIAS, new TemplateAccessor());
     setup.setGlex(glex);
     List<TemplateAutoImport> imports = new ArrayList<>();
     TemplateAutoImport ta = new TemplateAutoImport(Paths.get("Setup.ftl"), TemplateClassGeneratorConstants.TEMPLATE_CLASSES_PACKAGE);
@@ -74,7 +74,7 @@ public class GeneratorConfig {
     setup.setAutoImports(imports);
     List<File> files = new ArrayList<>();
     
-    File f = Paths.get("${outputDirectory}"+"/"+TemplateClassGeneratorConstants.TEMPLATE_CLASSES_PACKAGE+"/"+TemplateClassGeneratorConstants.TEMPLATE_CLASSES_SETUP_PACKAGE+"/").toFile();
+    File f = Paths.get(getRelativeTargetPath()+"/"+TemplateClassGeneratorConstants.TEMPLATE_CLASSES_PACKAGE+"/"+TemplateClassGeneratorConstants.TEMPLATE_CLASSES_SETUP_PACKAGE+"/").toFile();
     files.add(f);
     setup.setAdditionalTemplatePaths(files);
     GeneratorConfig.generator = new ExtendedGeneratorEngine(setup);
@@ -84,6 +84,20 @@ public class GeneratorConfig {
   
   public static void init(GeneratorSetup setup) {
     GeneratorConfig.generator = new ExtendedGeneratorEngine(init(Optional.of(setup)));
+  }
+  
+  private static String getRelativeTargetPath() {
+    String workingDir = GeneratorConfig.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+    if (workingDir.contains(File.separator)){
+      workingDir = workingDir.replace(File.separator, "/");
+    }
+    workingDir = workingDir.substring(0,workingDir.lastIndexOf("/target"));
+    workingDir = workingDir.substring(workingDir.lastIndexOf("/"));    
+    String relPath = "${outputDirectory}";
+    if(relPath.contains(workingDir)){
+      relPath = relPath.substring(relPath.lastIndexOf(workingDir));
+    }
+    return relPath;    
   }
     
 }
