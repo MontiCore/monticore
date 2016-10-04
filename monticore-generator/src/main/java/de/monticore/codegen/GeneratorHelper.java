@@ -419,10 +419,8 @@ public class GeneratorHelper extends TypesHelper {
   public Collection<String> getASTNodeBaseTypes() {
     Set<String> baseNodesNames = new LinkedHashSet<>();
     
-    // current cd
-    baseNodesNames.add(getASTNodeBaseType());
-    // super cds
-    for (String qualifiedCdName : getSuperGrammarCds()) {
+    for (CDSymbol cd : getAllCds(getCd())) {
+      String qualifiedCdName = cd.getFullName();
       String simpleCdName = getCdName(qualifiedCdName);
       String baseNodeName = getASTNodeBaseType(simpleCdName);
       String astPackage = AstGeneratorHelper.getAstPackage(qualifiedCdName);
