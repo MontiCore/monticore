@@ -19,12 +19,15 @@
 
 package de.monticore.symboltable;
 
+import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.symboltable.modifiers.IncludesAccessModifierPredicate;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Provides helper methods for {@link de.monticore.symboltable.Scope}.
@@ -138,6 +141,10 @@ public final class Scopes {
     final Set<Symbol> allSymbols = new LinkedHashSet<>();
     scope.getLocalSymbols().values().forEach(allSymbols::addAll);
     return allSymbols;
+  }
+
+  public static <T extends Symbol> Set<T> filterSymbolsByAccessModifier(AccessModifier modifier, Collection<T> resolvedUnfiltered) {
+    return new LinkedHashSet<>(resolvedUnfiltered.stream().filter(new IncludesAccessModifierPredicate(modifier)).collect(Collectors.toSet()));
   }
 
 

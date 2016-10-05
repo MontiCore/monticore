@@ -31,7 +31,7 @@ SUCH DAMAGE.
 ***************************************************************************************
 -->
 ${tc.signature("antlrGenerator")}
-<#assign genHelper = glex.getGlobalValue("parserHelper")>
+<#assign genHelper = glex.getGlobalVar("parserHelper")>
 <#assign symbolTable = genHelper.getGrammarSymbol()>
 // Generated antlr file
 

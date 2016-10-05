@@ -31,7 +31,7 @@ SUCH DAMAGE.
 ***************************************************************************************
 -->
 ${tc.signature("ast","astType")}
-   <#assign genHelper = glex.getGlobalValue("astHelper")>
+   <#assign genHelper = glex.getGlobalVar("astHelper")>
    <#assign astName = genHelper.getPlainName(astType)>
       ${astName} comp;
     if ((o instanceof ${astName})) {

@@ -31,7 +31,7 @@ SUCH DAMAGE.
 ***************************************************************************************
 -->
   ${tc.signature("grammarName", "emfAttributes")}
-  <#assign genHelper = glex.getGlobalValue("astHelper")>
+  <#assign genHelper = glex.getGlobalVar("astHelper")>
     if (eIsProxy()) {
       return super.toString();
     }

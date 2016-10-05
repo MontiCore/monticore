@@ -32,11 +32,11 @@ SUCH DAMAGE.
 -->
 ${signature("className")}
 
-<#assign genHelper = glex.getGlobalValue("stHelper")>
+<#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign grammarName = ast.getName()?cap_first>
 <#assign package = genHelper.getTargetPackage()?lower_case>
 <#assign topAstName = genHelper.getQualifiedStartRuleName()>
-<#assign skipSTGen = glex.getGlobalValue("skipSTGen")>
+<#assign skipSTGen = glex.getGlobalVar("skipSTGen")>
 
 <#-- Copyright -->
 ${tc.defineHookPoint("JavaCopyright")}

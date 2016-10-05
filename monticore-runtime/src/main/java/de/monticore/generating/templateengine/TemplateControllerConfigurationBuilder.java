@@ -24,6 +24,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Strings.nullToEmpty;
 
 import java.io.File;
+import java.util.Optional;
 
 import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.io.FileReaderWriter;
@@ -37,143 +38,145 @@ import de.se_rwth.commons.logging.Log;
  * @version $Revision$, $Date$
  */
 public class TemplateControllerConfigurationBuilder {
-  
+
   private GlobalExtensionManagement glex;
-  
+
   private FreeMarkerTemplateEngine freeMarkerTemplateEngine;
-  
+
   private ITemplateControllerFactory templateControllerFactory;
-  
+
   private FileReaderWriter fileHandler;
-  
+
   public static final String DEFAULT_COMMENT_START = "/*";
-  
+
   public static final String DEFAULT_COMMENT_END = "*/";
-  
+
   /**
    * Defines if tracing infos are added to the result as comments
    */
   private boolean tracing = true;
-  
+
   private String commentStart = DEFAULT_COMMENT_START;
-  
+
   private String commentEnd = DEFAULT_COMMENT_END;
-  
+
   private String defaultFileExtension = "java";
-  
-  private File targetDir;
-  
+
+  private File outputDirectory;
+
   private IterablePath handcodedPath;
-  
-  private String modelName;
-  
+
+  private Optional<String> modelName = Optional.empty();
+
   private ClassLoader classLoader;
-  
+
   /**
    * Additional path as the source of templates
    */
   private File[] externalTemplatePaths;
-  
+
   public TemplateControllerConfigurationBuilder glex(GlobalExtensionManagement glex) {
     this.glex = glex;
     return this;
   }
-  
+
   public TemplateControllerConfigurationBuilder freeMarkerTemplateEngine(
       FreeMarkerTemplateEngine freeMarkerTemplateEngine) {
     this.freeMarkerTemplateEngine = freeMarkerTemplateEngine;
     return this;
   }
-  
+
   public TemplateControllerConfigurationBuilder templateControllerFactory(
       ITemplateControllerFactory templateControllerFactory) {
     this.templateControllerFactory = templateControllerFactory;
     return this;
   }
-  
+
   public TemplateControllerConfigurationBuilder tracing(boolean tracing) {
     this.tracing = tracing;
     return this;
   }
-  
-  public TemplateControllerConfigurationBuilder modelName(String modelName) {
+
+  public TemplateControllerConfigurationBuilder modelName(Optional<String> modelName) {
     this.modelName = modelName;
     return this;
   }
-  
+
   public TemplateControllerConfigurationBuilder commentStart(String commentStart) {
     this.commentStart = commentStart;
     return this;
   }
-  
+
   public TemplateControllerConfigurationBuilder commentEnd(String commentEnd) {
     this.commentEnd = commentEnd;
     return this;
   }
-  
+
   public TemplateControllerConfigurationBuilder defaultFileExtension(String defaultFileExtension) {
     this.defaultFileExtension = defaultFileExtension;
     return this;
   }
-  
+
   public TemplateControllerConfigurationBuilder classLoader(ClassLoader classLoader) {
     this.classLoader = classLoader;
     return this;
   }
-  
-  public TemplateControllerConfigurationBuilder externalTemplatePaths(File[] externalTemplatePaths) {
+
+  public TemplateControllerConfigurationBuilder externalTemplatePaths(
+      File[] externalTemplatePaths) {
     this.externalTemplatePaths = externalTemplatePaths;
     return this;
   }
-  
+
   public TemplateControllerConfigurationBuilder handcodedPath(IterablePath hwcPath) {
     this.handcodedPath = hwcPath;
     return this;
   }
-  
-  public TemplateControllerConfigurationBuilder targetDir(File targetDir) {
-    this.targetDir = targetDir;
+
+  public TemplateControllerConfigurationBuilder outputDirectory(File targetDir) {
+    this.outputDirectory = targetDir;
     return this;
   }
-  
+
   public TemplateControllerConfigurationBuilder fileHandler(FileReaderWriter fileHandler) {
     this.fileHandler = fileHandler;
     return this;
   }
-  
+
   public TemplateControllerConfiguration build() {
     Log.errorIfNull(glex);
     Log.errorIfNull(freeMarkerTemplateEngine);
     Log.errorIfNull(fileHandler);
     Log.errorIfNull(classLoader);
-    Log.errorIfNull(targetDir);
-    
+    Log.errorIfNull(outputDirectory);
+
     checkArgument(!isNullOrEmpty(defaultFileExtension));
     if (defaultFileExtension.startsWith(".")) {
       defaultFileExtension = defaultFileExtension.substring(1);
     }
-    
+
     if (templateControllerFactory == null) {
       templateControllerFactory = TemplateControllerFactory.getInstance();
     }
-    
+
     commentStart = nullToEmpty(commentStart);
     commentEnd = nullToEmpty(commentEnd);
-    
+
     TemplateControllerConfiguration config = new TemplateControllerConfiguration(glex, fileHandler);
     config.setFreeMarkerTemplateEngine(freeMarkerTemplateEngine);
-    config.setClassLoader(classLoader);
     config.setTemplateControllerFactory(templateControllerFactory);
     config.setExternalTemplatePath(externalTemplatePaths);
-    config.setTargetDir(targetDir);
+    config.setOutputDirectory(outputDirectory);
     config.setHandcodedPath(handcodedPath);
-    config.setModelName(modelName);
+    if (modelName.isPresent()) {
+      config.setModelName(modelName.get());
+    }
     config.setDefaultFileExtension(defaultFileExtension);
     config.setCommentStart(commentStart);
     config.setCommentEnd(commentEnd);
     config.setTracing(tracing);
-    
+
     return config;
   }
-  
+
 }

@@ -64,6 +64,19 @@ public class AstGeneratorTest extends GeneratorTest {
   }
   
   @Test
+  public void testOD() {
+    testCorrectWithDependencies("mc/grammars/TestOD.mc4",
+        "mc/grammars/literals/TestLiterals.mc4", "mc/grammars/lexicals/TestLexicals.mc4", 
+        "mc/grammars/types/TestTypes.mc4", "mc/grammars/common/TestCommon.mc4");
+  }
+  
+  @Test
+  public void testCommon() {
+    testCorrectWithDependencies("mc/grammars/common/TestCommon.mc4",
+        "mc/grammars/literals/TestLiterals.mc4", "mc/grammars/lexicals/TestLexicals.mc4", "mc/grammars/types/TestTypes.mc4");
+  }
+  
+  @Test
   public void testInterfaceAttributes() {
     testCorrectWithDependencies("de/monticore/InterfaceAttributes.mc4",
         "mc/grammars/lexicals/TestLexicals.mc4");

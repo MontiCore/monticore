@@ -31,7 +31,7 @@ SUCH DAMAGE.
 ***************************************************************************************
 -->
 ${tc.signature("ast", "attribute", "cDAndJavaConformName")}
-  <#assign genHelper = glex.getGlobalValue("astHelper")>
+  <#assign genHelper = glex.getGlobalVar("astHelper")>
   <#if genHelper.isOptional(attribute)>
     this.${cDAndJavaConformName} = Optional.ofNullable(${cDAndJavaConformName});
   <#else>

@@ -28,7 +28,6 @@ import de.se_rwth.commons.SourcePosition;
 import java.util.List;
 import java.util.Optional;
 
-
 /**
  * Foundation class of all AST-classes Shouldn't be used in an implementation,
  * all AST-classes also share the interface ASTNode
@@ -48,9 +47,9 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
   protected Optional<? extends Symbol> symbol = Optional.empty();
   
   protected Optional<? extends Scope> enclosingScope = Optional.empty();
-
+  
   protected Optional<? extends Scope> spannedScope = Optional.empty();
-
+  
   public abstract ASTNode deepClone();
   
   public SourcePosition get_SourcePositionEnd() {
@@ -91,40 +90,57 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
     this.postcomments = postcomments;
   }
   
- 
+  @Override
   public void setEnclosingScope(Scope enclosingScope) {
     this.enclosingScope = Optional.ofNullable(enclosingScope);
   }
   
+  @Override
   public Optional<? extends Scope> getEnclosingScope() {
     return enclosingScope;
   }
   
+  @Override
+  public boolean enclosingScopeIsPresent() {
+    return enclosingScope.isPresent();
+  }
+  
+  @Override
   public void setSymbol(Symbol symbol) {
     this.symbol = Optional.ofNullable(symbol);
   }
   
+  @Override
   public Optional<? extends Symbol> getSymbol() {
     return symbol;
   }
-
+  
+  @Override
+  public boolean symbolIsPresent() {
+    return symbol.isPresent();
+  }
+  
   @Override
   public void setSpannedScope(Scope spannedScope) {
     this.spannedScope = Optional.ofNullable(spannedScope);
   }
-
+  
   @Override
   public Optional<? extends Scope> getSpannedScope() {
     if (spannedScope.isPresent()) {
       return spannedScope;
     }
-
+    
     Optional<? extends Scope> result = Optional.empty();
     if (getSymbol().isPresent() && (getSymbol().get() instanceof ScopeSpanningSymbol)) {
       final ScopeSpanningSymbol sym = (ScopeSpanningSymbol) getSymbol().get();
       result = Optional.of(sym.getSpannedScope());
     }
-
+    
     return result;
+  }
+  
+  public boolean spannedScopeIsPresent() {
+    return spannedScope.isPresent();
   }
 }

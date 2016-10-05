@@ -77,7 +77,7 @@ public class GeneratorEngineMock extends GeneratorEngine {
                                                 .fileHandler(fileHandler)
                                                 .classLoader(getClass().getClassLoader())
                                                 .externalTemplatePaths(new File[]{})
-                                                .targetDir(generatorSetup.getOutputDirectory())
+                                                .outputDirectory(generatorSetup.getOutputDirectory())
                                                 .tracing(false)
                                                 .build();
     

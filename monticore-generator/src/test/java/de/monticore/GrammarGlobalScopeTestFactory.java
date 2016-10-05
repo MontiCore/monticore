@@ -19,20 +19,28 @@
 
 package de.monticore;
 
-import java.nio.file.Paths;
-
+import de.monticore.grammar.symboltable.EssentialMontiCoreGrammarLanguage;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.languages.grammar.MontiCoreGrammarLanguage;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.ResolverConfiguration;
 
+import java.nio.file.Paths;
+
 public class GrammarGlobalScopeTestFactory {
 
   public static GlobalScope create() {
-    final ModelingLanguage grammarLanguage = new MontiCoreGrammarLanguage();
+    return create(new MontiCoreGrammarLanguage());
+  }
 
+  public static GlobalScope createUsingEssentialMCLanguage() {
+    return create(new EssentialMontiCoreGrammarLanguage());
+  }
+
+
+  private static GlobalScope create(ModelingLanguage grammarLanguage) {
     final ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
-    resolverConfiguration.addTopScopeResolvers(grammarLanguage.getResolvers());
+    resolverConfiguration.addDefaultFilters(grammarLanguage.getResolvers());
 
     return  new GlobalScope(new ModelPath(Paths.get("src/test/resources")),
         grammarLanguage, resolverConfiguration);

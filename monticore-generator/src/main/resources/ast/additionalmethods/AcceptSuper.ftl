@@ -31,7 +31,7 @@ SUCH DAMAGE.
 ***************************************************************************************
 -->
 ${tc.signature("astType", "qualifiedCDName", "visitorTypeFQN", "superVisitorTypeFQN")}
-<#assign genHelper = glex.getGlobalValue("astHelper")>
+<#assign genHelper = glex.getGlobalVar("astHelper")>
 <#assign plainName = genHelper.getPlainName(astType)>
     <#-- when overriding nonterminals we might have a visitor calling this
          method even if it is a sublanguage visitor, see #1708 -->

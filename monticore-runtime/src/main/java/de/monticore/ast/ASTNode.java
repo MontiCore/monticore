@@ -41,14 +41,9 @@ public interface ASTNode {
    * @return Clone of current ASTNode with a parent which is equal to null
    */
   default public ASTNode deepClone(ASTNode result) {
-    Log.errorIfNull(result, "0xA4040 Parameter 'result' must not be null.");
-    
-    result.set_SourcePositionStart(new de.se_rwth.commons.SourcePosition(
-        get_SourcePositionStart().getLine(), get_SourcePositionStart()
-            .getColumn()));
-    result.set_SourcePositionEnd(new de.se_rwth.commons.SourcePosition(
-        get_SourcePositionEnd().getLine(), get_SourcePositionEnd()
-            .getColumn()));
+    Log.errorIfNull(result, "0xA4040 The argument ASTNode of the 'deepClone' method must not be null.");
+    result.set_SourcePositionStart(get_SourcePositionStart().clone());
+    result.set_SourcePositionEnd(get_SourcePositionEnd().clone());
     for (de.monticore.ast.Comment x : get_PreComments()) {
       result.get_PreComments().add(new de.monticore.ast.Comment(x.getText()));
     }
@@ -229,6 +224,11 @@ public interface ASTNode {
   Optional<? extends Scope> getEnclosingScope();
   
   /**
+   * @return true if the enclosing scope is present
+   */
+  boolean enclosingScopeIsPresent();
+  
+  /**
    * Sets the corresponding symbol of this ast node.
    *
    * @param symbol the corresponding symbol of this ast node..
@@ -239,6 +239,11 @@ public interface ASTNode {
    * @return the corresponding symbol of this ast node.
    */
   Optional<? extends Symbol> getSymbol();
+  
+  /**
+   * @return true if the symbol is present
+   */
+  boolean symbolIsPresent();
 
   /**
    * Sets the spanned scope of this ast node.
@@ -253,5 +258,11 @@ public interface ASTNode {
   default Optional<? extends Scope> getSpannedScope() {
     return Optional.empty();
   }
+  
+  /**
+   * 
+   *  @return true if the spanned scope is present
+   */
+  boolean spannedScopeIsPresent();
   
 }

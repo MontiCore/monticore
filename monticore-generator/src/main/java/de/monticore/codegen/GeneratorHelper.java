@@ -419,10 +419,8 @@ public class GeneratorHelper extends TypesHelper {
   public Collection<String> getASTNodeBaseTypes() {
     Set<String> baseNodesNames = new LinkedHashSet<>();
     
-    // current cd
-    baseNodesNames.add(getASTNodeBaseType());
-    // super cds
-    for (String qualifiedCdName : getSuperGrammarCds()) {
+    for (CDSymbol cd : getAllCds(getCd())) {
+      String qualifiedCdName = cd.getFullName();
       String simpleCdName = getCdName(qualifiedCdName);
       String baseNodeName = getASTNodeBaseType(simpleCdName);
       String astPackage = AstGeneratorHelper.getAstPackage(qualifiedCdName);
@@ -1408,41 +1406,6 @@ public class GeneratorHelper extends TypesHelper {
   
   public String getCdName() {
     return cdDefinition.getName();
-  }
-  
-  /**
-   * Finds the supergrammars CDs that clazz uses (e.g. extending a node,
-   * implementing an interface). This e.g. allows to determine whether the
-   * corresponding ASTNode must accept visitors of the super grammar or not.
-   *
-   * @param clazz
-   * @return list of FQN of supergrammars CDs from which elements are used.
-   */
-  public Set<String> getSuperGrammarCdsUsed(ASTCDClass clazz) {
-    Set<String> ret = new LinkedHashSet<>();
-    
-    if (clazz.getSuperclass().isPresent()) {
-      ASTReferenceType ref = clazz.getSuperclass().get();
-      String supertype = TypesPrinter.printReferenceType(ref);
-      // is it from any of the supergrammars?
-      for (String superGrammar : getSuperGrammarCds()) {
-        String superGrammarPackage = Names.getQualifier(superGrammar);
-        if (supertype.startsWith(superGrammarPackage)) {
-          ret.add(superGrammar);
-        }
-      }
-    }
-    for (ASTReferenceType ref : clazz.getInterfaces()) {
-      String supertype = TypesPrinter.printReferenceType(ref);
-      // is it from any of the supergrammars?
-      for (String superGrammar : getSuperGrammarCds()) {
-        String superGrammarPackage = Names.getQualifier(superGrammar);
-        if (supertype.startsWith(superGrammarPackage)) {
-          ret.add(superGrammar);
-        }
-      }
-    }
-    return ret;
   }
   
   /**

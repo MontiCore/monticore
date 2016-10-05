@@ -19,14 +19,8 @@
 
 package de.monticore.codegen.mc2cd.manipul;
 
-import com.google.common.collect.Iterables;
-import de.monticore.codegen.mc2cd.AttributeCategory;
-import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.types.types._ast.ASTSimpleReferenceType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.utils.ASTNodes;
+import static de.monticore.codegen.mc2cd.AttributeCategory.determineCategory;
+import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
 
 import java.util.Iterator;
 import java.util.List;
@@ -35,8 +29,16 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.StreamSupport;
 
-import static de.monticore.codegen.mc2cd.AttributeCategory.determineCategory;
-import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
+import com.google.common.collect.Iterables;
+
+import de.monticore.codegen.mc2cd.AttributeCategory;
+import de.monticore.codegen.mc2cd.TransformationHelper;
+import de.monticore.types.types._ast.ASTSimpleReferenceType;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
+import de.monticore.utils.ASTNodes;
 
 /**
  * Removes duplicate attributes that may result from rules having multiple nonterminals referencing
@@ -49,6 +51,9 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
   @Override
   public ASTCDCompilationUnit apply(ASTCDCompilationUnit cdCompilationUnit) {
     for (ASTCDClass cdClass : ASTNodes.getSuccessors(cdCompilationUnit, ASTCDClass.class)) {
+      removeRedundantAttributes(cdClass.getCDAttributes());
+    }
+    for (ASTCDInterface cdClass : ASTNodes.getSuccessors(cdCompilationUnit, ASTCDInterface.class)) {
       removeRedundantAttributes(cdClass.getCDAttributes());
     }
     return cdCompilationUnit;

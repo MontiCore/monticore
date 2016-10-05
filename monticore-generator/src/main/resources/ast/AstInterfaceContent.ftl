@@ -39,7 +39,7 @@ SUCH DAMAGE.
 -->
 ${tc.signature("visitorPackage", "visitorType")}
 
-<#assign genHelper = glex.getGlobalValue("astHelper")>
+<#assign genHelper = glex.getGlobalVar("astHelper")>
 
 import ${visitorPackage}.${visitorType};
 import java.util.Optional;

@@ -14,26 +14,18 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package de.monticore.visualoutline.runtime.gef;
 
-import org.eclipse.gef.EditPart;
-import org.eclipse.gef.EditPartFactory;
+package de.se_rwth.langeditor.texteditor.contentassist;
 
-import de.monticore.visualoutline.runtime.InstanceRegistry;
 
-public class TextFigureEditPartFactory implements EditPartFactory {
-	final private InstanceRegistry instanceRegistry;
-	final private String style;
-	
-	public TextFigureEditPartFactory(InstanceRegistry ir, String style) {
-		this.instanceRegistry = ir;
-		this.style = style;
-	} 
-	
-	@Override
-	public EditPart createEditPart(EditPart context, Object model) {
-		EditPart ep = new TextFigureEditPart(this.instanceRegistry, style);
-		ep.setModel(model);
-		return ep;
-	}
+/**
+ * TODO: Write me!
+ *
+ * @author  (last commit) $Author$
+ * @version $Revision$, $Date$
+ * @since   TODO: add version number
+ *
+ */
+public interface IContext {
+
 }

@@ -25,7 +25,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.symboltable.modifiers.IncludesAccessModifierPredicate;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingInfo;
@@ -41,6 +40,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -184,7 +184,7 @@ public class CommonScope implements MutableScope {
   }
 
   protected <T extends Symbol> Set<T> filterSymbolsByAccessModifier(AccessModifier modifier, Set<T> resolvedUnfiltered) {
-    return new LinkedHashSet<>(resolvedUnfiltered.stream().filter(new IncludesAccessModifierPredicate(modifier)).collect(Collectors.toSet()));
+    return Scopes.filterSymbolsByAccessModifier(modifier, resolvedUnfiltered);
   }
 
   /**
@@ -366,7 +366,11 @@ public class CommonScope implements MutableScope {
 
   @Override
   public int getSymbolsSize() {
-    return symbols.size();
+    int size = 0;
+    for (Entry<String, Collection<Symbol>> entry: symbols.entrySet()) {
+      size += entry.getValue().size();
+    }
+    return size;
   }
 
   @Override

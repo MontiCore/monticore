@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Language Graphical Editor Core
 Bundle-SymbolicName: graphicaleditor-core;singleton:=true
-Bundle-Version: 4.4.2.qualifier
+Bundle-Version: 4.5.0
 Require-Bundle: org.eclipse.jface.text,
  org.eclipse.ui.editors,
  org.eclipse.ui.views,
@@ -52,12 +52,6 @@ Export-Package: de.monticore.editorconnector,
  de.monticore.genericgraphics.view.figures.layout,
  de.monticore.genericgraphics.view.icons,
  de.monticore.genericgraphics.view.layout,
- de.monticore.genericgraphics.view.layout.kieler,
- de.monticore.visualoutline,
- de.monticore.visualoutline.figures,
- de.monticore.visualoutline.helper,
- de.monticore.visualoutline.runtime,
- de.monticore.visualoutline.runtime.gef,
- de.monticore.visualoutline.runtime.model
+ de.monticore.genericgraphics.view.layout.kieler
  
 

@@ -70,7 +70,7 @@ public abstract class MCParser extends Parser {
     }
     int line = token.getLine();
     int column = token.getCharPositionInLine();
-    return new de.se_rwth.commons.SourcePosition(line, column);
+    return new de.se_rwth.commons.SourcePosition(line, column, getFilename());
   }
   
   public SourcePosition computeEndPosition(SourcePosition start, String text) {   

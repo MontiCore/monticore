@@ -326,7 +326,7 @@ public class MCGrammarSymbolTableCreator extends CommonSymbolTableCreator implem
   }
 
   private void undefinedRuleError(String name, SourcePosition pos) {
-    Log.error("0xA0964 Undefined rule: " + name + " Pos: " + pos);
+    Log.error(pos + ": " + "0xA0964 Undefined rule: " + name);
   }
 
   /**
@@ -454,7 +454,7 @@ public class MCGrammarSymbolTableCreator extends CommonSymbolTableCreator implem
         // Check that new rule does not add superclasses
         if (type.getAllSuperclasses().size() > 0) {
           Log.error("0xA0241 The overridden type " + type.getName() + " cannot have superTypes, "
-              + "but: " + type.getAllSuperclasses().get(0) + ". Pos:" + type.getSourcePosition());
+              + "but: " + type.getAllSuperclasses().get(0) + ". ", type.getSourcePosition());
         }
 
         // Add superclass or super interface
@@ -469,8 +469,8 @@ public class MCGrammarSymbolTableCreator extends CommonSymbolTableCreator implem
 
         if (!superType.getKindOfType().equals(type.getKindOfType())) {
           Log.error("0xA0242 Overridden rule must remain same type: " + type.getName() + " (" +
-              type.getKindOfType() + " vs. " + superType.getKindOfType() + "). Pos: "
-              + type.getSourcePosition());
+              type.getKindOfType() + " vs. " + superType.getKindOfType() + "). ",
+              type.getSourcePosition());
         }
       }
     }
