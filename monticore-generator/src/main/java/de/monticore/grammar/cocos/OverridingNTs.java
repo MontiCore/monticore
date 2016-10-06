@@ -20,6 +20,7 @@
 package de.monticore.grammar.cocos;
 
 import java.util.List;
+import java.util.Optional;
 
 import de.monticore.grammar.grammar._ast.ASTAbstractProd;
 import de.monticore.grammar.grammar._ast.ASTEnumProd;
@@ -28,8 +29,8 @@ import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
 import de.monticore.grammar.grammar._ast.ASTLexProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
-import de.monticore.languages.grammar.MCGrammarSymbol;
-import de.monticore.languages.grammar.MCTypeSymbol;
+import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -46,31 +47,31 @@ public class OverridingNTs implements GrammarASTMCGrammarCoCo {
   
   @Override
   public void check(ASTMCGrammar a) {
-    MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol().get();
-    List<MCGrammarSymbol> grammarSymbols =  grammarSymbol.getSuperGrammars();
+    EssentialMCGrammarSymbol grammarSymbol = (EssentialMCGrammarSymbol) a.getSymbol().get();
+    List<EssentialMCGrammarSymbol> grammarSymbols =  grammarSymbol.getSuperGrammarSymbols();
 
-    for(MCGrammarSymbol s: grammarSymbols) {
+    for(EssentialMCGrammarSymbol s: grammarSymbols) {
       for (ASTEnumProd p : a.getEnumProds()) {
-          doCheck(s.getType(p.getName()), "enum");
+          doCheck(s.getProd(p.getName()), "enum");
       }
       for (ASTExternalProd p : a.getExternalProds()) {
-          doCheck(s.getType(p.getName()), "external");
+          doCheck(s.getProd(p.getName()), "external");
       }
       for (ASTInterfaceProd p : a.getInterfaceProds()) {
-          doCheck(s.getType(p.getName()), "interface");
+          doCheck(s.getProd(p.getName()), "interface");
       }
       for (ASTLexProd p : a.getLexProds()) {
-          doCheck(s.getType(p.getName()), "lexical");
+          doCheck(s.getProd(p.getName()), "lexical");
       }
       for (ASTAbstractProd p : a.getAbstractProds()) {
-        doCheck(s.getType(p.getName()), "abstract");
+        doCheck(s.getProd(p.getName()), "abstract");
       }
     }
   }
 
-  private void doCheck(MCTypeSymbol typeSymbol, String type) {
-    if (typeSymbol != null && typeSymbol.getKindOfType().equals(MCTypeSymbol.KindType.CLASS) && !typeSymbol.isAbstract()) {
-      Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, typeSymbol.getName(), type));
+  private void doCheck(Optional<MCProdSymbol> typeSymbol, String type) {
+    if (typeSymbol.isPresent() && typeSymbol.get().isClass() && !typeSymbol.get().isAbstract()) {
+      Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, typeSymbol.get().getName(), type));
     }
   }
 

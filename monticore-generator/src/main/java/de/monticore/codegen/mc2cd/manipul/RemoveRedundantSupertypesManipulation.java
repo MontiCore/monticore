@@ -66,7 +66,7 @@ public class RemoveRedundantSupertypesManipulation implements UnaryOperator<ASTC
       Iterable<ASTReferenceType> remainingReferences) {
     return StreamSupport.stream(remainingReferences.spliterator(), false)
         .anyMatch(
-            ref -> TransformationHelper.typeToString(inspectedReference).equals(
-                TransformationHelper.typeToString(ref)));
+            ref -> EssentialTransformationHelper.typeToString(inspectedReference).equals(
+                EssentialTransformationHelper.typeToString(ref)));
   }
 }

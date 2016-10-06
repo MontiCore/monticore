@@ -19,14 +19,15 @@
 
 package de.monticore.grammar.cocos;
 
+import java.util.List;
+import java.util.Optional;
+
 import de.monticore.grammar.grammar._ast.ASTLexProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
-import de.monticore.languages.grammar.MCGrammarSymbol;
-import de.monticore.languages.grammar.MCLexRuleSymbol;
+import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.se_rwth.commons.logging.Log;
-
-import java.util.List;
 
 /**
  * Checks that nonterminals or only overridden by normal nonterminals.
@@ -34,28 +35,30 @@ import java.util.List;
  * @author KH
  */
 public class OverridingLexNTs implements GrammarASTMCGrammarCoCo {
-
+  
   public static final String ERROR_CODE = "0xA4026";
-
+  
   public static final String ERROR_MSG_FORMAT = " The lexical production %s must not use a different type to "
       + "store the token than the overridden production.";
-
+  
   @Override
   public void check(ASTMCGrammar a) {
-    MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol().get();
-    List<MCGrammarSymbol> grammarSymbols =  grammarSymbol.getSuperGrammars();
-
-    for(MCGrammarSymbol s: grammarSymbols) {
+    EssentialMCGrammarSymbol grammarSymbol = (EssentialMCGrammarSymbol) a.getSymbol().get();
+    List<EssentialMCGrammarSymbol> grammarSymbols = grammarSymbol.getSuperGrammarSymbols();
+    
+    for (EssentialMCGrammarSymbol s : grammarSymbols) {
       for (ASTLexProd p : a.getLexProds()) {
-          doCheck((MCLexRuleSymbol) s.getRuleWithInherited(p.getName()), p);
+        doCheck(s.getProdWithInherited(p.getName()), p);
       }
     }
   }
-
-  private void doCheck(MCLexRuleSymbol ruleSymbol, ASTLexProd lexProd) {
-    if (ruleSymbol != null && !ruleSymbol.getRuleNode().getType().equals(lexProd.getType())) {
+  
+  private void doCheck(Optional<MCProdSymbol> prodSymbol, ASTLexProd lexProd) {
+    if (prodSymbol.isPresent() && prodSymbol.get().isLexerProd()
+        && !((ASTLexProd) prodSymbol.get().getAstNode().get()).getType()
+            .equals(lexProd.getType())) {
       Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, lexProd.getName()));
     }
   }
-
+  
 }

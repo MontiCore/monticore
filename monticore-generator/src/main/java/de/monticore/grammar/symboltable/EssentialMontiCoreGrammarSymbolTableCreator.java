@@ -203,7 +203,7 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
     if (firstProduction != null) {
       Optional<MCProdSymbol> prod = grammarSymbol.getProdWithInherited(firstProduction.getName());
       if (!prod.isPresent()) {
-        Log.error("0xA2074 Prod " + firstProduction.getName() + " couldn't be found! Pos: "
+        Log.error("0xA2174 Prod " + firstProduction.getName() + " couldn't be found! Pos: "
             + firstProduction.get_SourcePositionStart());
       }
       else {

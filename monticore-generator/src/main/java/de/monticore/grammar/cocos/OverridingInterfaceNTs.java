@@ -21,12 +21,13 @@ package de.monticore.grammar.cocos;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
-import de.monticore.languages.grammar.MCGrammarSymbol;
-import de.monticore.languages.grammar.MCTypeSymbol;
+import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -48,18 +49,18 @@ public class OverridingInterfaceNTs implements GrammarASTMCGrammarCoCo {
     prods.addAll(a.getInterfaceProds());
     prods.addAll(a.getEnumProds());
     prods.addAll(a.getAbstractProds());
-    MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol().get();
-    List<MCGrammarSymbol> grammarSymbols =  grammarSymbol.getSuperGrammars();
-
-    for(ASTProd p : prods){
-      for(MCGrammarSymbol s: grammarSymbols){
-        MCTypeSymbol typeSymbol = s.getType(p.getName());
-        if(typeSymbol!= null && typeSymbol.isInterface() ){
-          Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, typeSymbol.getName()));
+    EssentialMCGrammarSymbol grammarSymbol = (EssentialMCGrammarSymbol) a.getSymbol().get();
+    List<EssentialMCGrammarSymbol> grammarSymbols = grammarSymbol.getSuperGrammarSymbols();
+    
+    for (ASTProd p : prods) {
+      for (EssentialMCGrammarSymbol s : grammarSymbols) {
+        Optional<MCProdSymbol> typeSymbol = s.getProd(p.getName());
+        if (typeSymbol.isPresent() && typeSymbol.get().isInterface()) {
+          Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, typeSymbol.get().getName()));
         }
       }
     }
-
+    
   }
-
+  
 }

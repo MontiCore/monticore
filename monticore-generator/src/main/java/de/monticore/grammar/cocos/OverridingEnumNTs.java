@@ -21,12 +21,13 @@ package de.monticore.grammar.cocos;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
-import de.monticore.languages.grammar.MCGrammarSymbol;
-import de.monticore.languages.grammar.MCTypeSymbol;
+import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -35,11 +36,11 @@ import de.se_rwth.commons.logging.Log;
  * @author KH
  */
 public class OverridingEnumNTs implements GrammarASTMCGrammarCoCo {
-
+  
   public static final String ERROR_CODE = "0xA4027";
-
+  
   public static final String ERROR_MSG_FORMAT = " The production for the enum nonterminal %s must not be overridden.";
-
+  
   @Override
   public void check(ASTMCGrammar a) {
     List<ASTProd> prods = new ArrayList<>(a.getClassProds());
@@ -48,18 +49,16 @@ public class OverridingEnumNTs implements GrammarASTMCGrammarCoCo {
     prods.addAll(a.getInterfaceProds());
     prods.addAll(a.getEnumProds());
     prods.addAll(a.getAbstractProds());
-    MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol().get();
-    List<MCGrammarSymbol> grammarSymbols =  grammarSymbol.getSuperGrammars();
-
-    for(ASTProd p : prods){
-      for(MCGrammarSymbol s: grammarSymbols){
-        MCTypeSymbol typeSymbol = s.getType(p.getName());
-        if(typeSymbol!= null && typeSymbol.getKindOfType().equals(MCTypeSymbol.KindType.ENUM) ){
-          Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, typeSymbol.getName()));
-        }
+    
+    EssentialMCGrammarSymbol grammarSymbol = (EssentialMCGrammarSymbol) a.getSymbol().get();
+    
+    for (ASTProd p : prods) {
+      Optional<MCProdSymbol> typeSymbol = grammarSymbol.getInheritedProd(p.getName());
+      if (typeSymbol.isPresent() && typeSymbol.get().isEnum()) {
+        Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName()));
       }
     }
-
+    
   }
-
+  
 }

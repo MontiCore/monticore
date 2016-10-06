@@ -56,6 +56,9 @@ import de.monticore.generating.templateengine.reporting.reporter.InputOutputFile
 import de.monticore.grammar.cocos.GrammarCoCos;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
+import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.EssentialMontiCoreGrammarLanguage;
+import de.monticore.grammar.symboltable.EssentialMontiCoreGrammarSymbolTableCreator;
 import de.monticore.incremental.IncrementalChecker;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
@@ -195,7 +198,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     enableReporting();
     this.grammarIterator = configuration.getGrammars().getResolvedPaths();
     this.glex = new GlobalExtensionManagement();
-    this.symbolTable = initSymbolTable(configuration.getModelPath());
+  //  this.symbolTable = initSymbolTable(configuration.getModelPath());
+    this.symbolTable = initNewSymbolTable(configuration.getModelPath());
     this.firstPassGrammars = new LinkedHashMap<>();
   }
   
@@ -302,6 +306,49 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param ast
    * @return
    */
+  public ASTMCGrammar createNewSymbolsFromAST(GlobalScope globalScope, ASTMCGrammar ast) {
+    // Build grammar symbol table (if not already built)
+    String qualifiedGrammarName = Names.getQualifiedName(ast.getPackage(), ast.getName());
+    Optional<EssentialMCGrammarSymbol> grammarSymbol = globalScope
+        .<EssentialMCGrammarSymbol> resolveDown(qualifiedGrammarName, EssentialMCGrammarSymbol.KIND);
+        
+    ASTMCGrammar result = ast;
+    
+    if (grammarSymbol.isPresent()) {
+      result = (ASTMCGrammar) grammarSymbol.get().getAstNode().get();
+    }
+    else {
+      EssentialMontiCoreGrammarLanguage language = new EssentialMontiCoreGrammarLanguage();
+      
+      ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
+      resolverConfiguration.addDefaultFilters(language.getResolvers());
+      
+      EssentialMontiCoreGrammarSymbolTableCreator stCreator = language.getSymbolTableCreator(resolverConfiguration,
+          globalScope).get();
+      stCreator.createFromAST(result);
+      globalScope.cache(language.getModelLoader(), qualifiedGrammarName);
+    }
+    
+    EssentialMCGrammarSymbol symbol = (EssentialMCGrammarSymbol) result.getSymbol().get();
+    for (EssentialMCGrammarSymbol it : symbol.getSuperGrammarSymbols()) {
+      if (!it.getFullName().equals(symbol.getFullName())) {
+        Reporting.reportOpenInputFile(null,
+            Paths.get(it.getFullName().replaceAll("\\.", "/").concat(".mc4")));
+        Reporting.reportOpenInputFile(null,
+            Paths.get(it.getFullName().replaceAll("\\.", "/").concat(".cd")));
+            
+      }
+    }
+    
+    return result;
+  }
+  
+  /**
+   * TODO: Write me! TODO: doc that the grammar AST reference might change
+   *
+   * @param ast
+   * @return
+   */
   public ASTCDCompilationUnit createSymbolsFromAST(GlobalScope globalScope,
       ASTCDCompilationUnit ast) {
     // Build grammar symbol table (if not already built)
@@ -338,6 +385,17 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     final ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
     resolverConfiguration.addTopScopeResolvers(mcLanguage.getResolvers());
     resolverConfiguration.addTopScopeResolvers(cd4AnalysisLanguage.getResolvers());
+    
+    return new GlobalScope(modelPath, Arrays.asList(mcLanguage, cd4AnalysisLanguage),
+        resolverConfiguration);
+  }
+
+  public GlobalScope initNewSymbolTable(ModelPath modelPath) {
+    final ModelingLanguage mcLanguage = new EssentialMontiCoreGrammarLanguage();
+    
+    final ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
+    resolverConfiguration.addDefaultFilters(mcLanguage.getResolvers());
+    resolverConfiguration.addDefaultFilters(cd4AnalysisLanguage.getResolvers());
     
     return new GlobalScope(modelPath, Arrays.asList(mcLanguage, cd4AnalysisLanguage),
         resolverConfiguration);

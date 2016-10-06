@@ -43,7 +43,7 @@ public class MCGrammarLanguageFamilySymbolTableTest {
     Log.enableFailQuick(false);
   }
 
-  @Test
+  // @Test
   public void testSymbolTableOfGrammarStatechartDSL() {
     final ModelingLanguageFamily family = new MontiCoreGrammarLanguageFamily();
     final GlobalScope globalScope = new GlobalScope(new ModelPath(Paths.get("src/test/resources")), family);

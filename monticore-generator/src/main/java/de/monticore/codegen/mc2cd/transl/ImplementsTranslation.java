@@ -66,9 +66,9 @@ public class ImplementsTranslation implements
   
   private void translateClassProd(ASTClassProd classProd,
       ASTCDClass cdClass, ASTMCGrammar astGrammar) {
+    EssentialMCGrammarSymbol grammarSymbol = (EssentialMCGrammarSymbol) astGrammar.getSymbol().get();
     // translates "implements"
     for (ASTRuleReference ruleReference : classProd.getSuperInterfaceRule()) {
-      EssentialMCGrammarSymbol grammarSymbol = (EssentialMCGrammarSymbol) astGrammar.getSymbol().get();
       Optional<MCProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(ruleReference.getName());
       Preconditions.checkState(ruleSymbol.isPresent());
       cdClass.getInterfaces().add(

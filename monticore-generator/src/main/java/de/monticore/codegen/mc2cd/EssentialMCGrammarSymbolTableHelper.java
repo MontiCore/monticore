@@ -21,7 +21,6 @@ package de.monticore.codegen.mc2cd;
 
 import static de.se_rwth.commons.Util.listTillNull;
 
-import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -30,14 +29,13 @@ import java.util.stream.Stream;
 import de.monticore.ModelingLanguage;
 import de.monticore.ast.ASTNode;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
 import de.monticore.grammar.symboltable.EssentialMontiCoreGrammarLanguage;
 import de.monticore.grammar.symboltable.EssentialMontiCoreGrammarSymbolTableCreator;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.languages.grammar.MCGrammarSymbol;
-import de.monticore.languages.grammar.MCTypeSymbol;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.MutableScope;
@@ -91,6 +89,16 @@ public class EssentialMCGrammarSymbolTableHelper {
         .map(Optional::get)
         .filter(EssentialMCGrammarSymbol.class::isInstance)
         .map(EssentialMCGrammarSymbol.class::cast)
+        .findFirst();
+  }
+  
+  public static Optional<MCProdSymbol> getEnclosingRule(ASTNode astNode) {
+    return getAllScopes(astNode).stream()
+        .map(Scope::getSpanningSymbol)
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .filter(MCProdSymbol.class::isInstance)
+        .map(MCProdSymbol.class::cast)
         .findFirst();
   }
 
