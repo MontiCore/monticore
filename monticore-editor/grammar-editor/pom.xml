@@ -7,7 +7,7 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore-editor</artifactId>
-    <version>4.4.3-SNAPSHOT</version>
+    <version>4.5.1-SNAPSHOT</version>
   </parent>
 
   <dependencies>

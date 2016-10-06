@@ -57,7 +57,7 @@ public class SourceViewerConfigurationImpl extends SourceViewerConfiguration {
   
   @Override
   public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
-    return new String[] { "__dftl_partition_content_type" };
+    return new String[] {IDocument.DEFAULT_CONTENT_TYPE};
   }
   
   @Override
@@ -83,7 +83,7 @@ public class SourceViewerConfigurationImpl extends SourceViewerConfiguration {
   @Override
   public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
     ContentAssistant contentAssistant = new ContentAssistant();
-    contentAssistant.setContentAssistProcessor(contentAssistProcessor, "__dftl_partition_content_type");
+    contentAssistant.setContentAssistProcessor(contentAssistProcessor, IDocument.DEFAULT_CONTENT_TYPE);
     return contentAssistant;
   }
 }
