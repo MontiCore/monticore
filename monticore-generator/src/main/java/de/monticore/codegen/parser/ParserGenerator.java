@@ -34,6 +34,7 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.languages.grammar.MCGrammarSymbol;
 import de.monticore.symboltable.Scope;
@@ -75,8 +76,8 @@ public class ParserGenerator {
     String qualifiedGrammarName = astGrammar.getPackage().isEmpty() ? astGrammar.getName() :
       Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackage()),
           astGrammar.getName());
-    MCGrammarSymbol grammarSymbol = symbolTable.<MCGrammarSymbol> resolve(
-        qualifiedGrammarName, MCGrammarSymbol.KIND).orElse(null);
+    EssentialMCGrammarSymbol grammarSymbol = symbolTable.<EssentialMCGrammarSymbol> resolve(
+        qualifiedGrammarName, EssentialMCGrammarSymbol.KIND).orElse(null);
     Log.errorIfNull(grammarSymbol, "0xA4034 Grammar " + qualifiedGrammarName
         + " can't be resolved in the scope " + symbolTable);
     

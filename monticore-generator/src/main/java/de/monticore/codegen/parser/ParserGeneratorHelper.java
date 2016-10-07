@@ -46,6 +46,7 @@ import de.monticore.grammar.grammar_withconcepts._ast.ASTExpressionPredicate;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTGrammar_WithConceptsNode;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTJavaCode;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
+import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
 import de.monticore.java.javadsl._ast.ASTBlockStatement;
 import de.monticore.java.javadsl._ast.ASTClassMemberDeclaration;
 import de.monticore.languages.grammar.MCClassRuleSymbol;
@@ -84,12 +85,12 @@ public class ParserGeneratorHelper {
 
   private String qualifiedGrammarName;
 
-  private MCGrammarSymbol grammarSymbol;
+  private EssentialMCGrammarSymbol grammarSymbol;
 
   /**
    * Constructor for de.monticore.codegen.parser.ParserGeneratorHelper
    */
-  public ParserGeneratorHelper(ASTMCGrammar ast, MCGrammarSymbol grammarSymbol) {
+  public ParserGeneratorHelper(ASTMCGrammar ast, EssentialMCGrammarSymbol grammarSymbol) {
     Log.errorIfNull(ast);
     this.astGrammar = ast;
     this.qualifiedGrammarName = astGrammar.getPackage().isEmpty() ? astGrammar.getName() :
@@ -103,7 +104,7 @@ public class ParserGeneratorHelper {
   /**
    * @return grammarSymbol
    */
-  public MCGrammarSymbol getGrammarSymbol() {
+  public EssentialMCGrammarSymbol getGrammarSymbol() {
     return this.grammarSymbol;
   }
 
