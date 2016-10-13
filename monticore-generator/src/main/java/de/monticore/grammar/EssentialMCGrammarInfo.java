@@ -29,6 +29,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import de.monticore.ast.ASTNode;
@@ -39,13 +41,13 @@ import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrParserAction;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTJavaCodeExt;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTConstant;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar._ast.ASTRuleComponent;
+import de.monticore.grammar.grammar._ast.ASTRuleReference;
 import de.monticore.grammar.grammar._ast.ASTTerminal;
 import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
-import de.monticore.languages.grammar.MCGrammarSymbol;
-import de.monticore.languages.grammar.MCLexRuleSymbol;
-import de.monticore.languages.grammar.MCRuleSymbol;
-import de.monticore.languages.grammar.lexpatterns.LexPatternHelper;
+import de.monticore.languages.grammar.PredicatePair;
 import de.monticore.utils.ASTNodes;
 import de.se_rwth.commons.logging.Log;
 
@@ -78,18 +80,114 @@ public class EssentialMCGrammarInfo {
   private List<String> additionalLexerJavaCode = new ArrayList<String>();
   
   /**
+   * Predicates
+   */
+  private ArrayListMultimap<String, PredicatePair> predicats = ArrayListMultimap.create();
+  
+  /**
+   * Internal: LexNamer for naming lexer symbols in the antlr source code
+   */
+  private LexNamer lexNamer = new LexNamer();
+  
+  /**
    * The symbol of the processed grammar
    */
   private EssentialMCGrammarSymbol grammarSymbol;
   
+  /**
+   * The AST of the processed grammar
+   */
+  private ASTMCGrammar astGrammar;
+  
   public EssentialMCGrammarInfo(EssentialMCGrammarSymbol grammarSymbol) {
     this.grammarSymbol = grammarSymbol;
+    if (!grammarSymbol.getAstNode().isPresent()
+        || !(grammarSymbol.getAstNode().get() instanceof ASTMCGrammar)) {
+      Log.error(String.format("0xA2109 ASTNode of the grammar symbol %s is not set.",
+          grammarSymbol.getName()));
+    }
+    astGrammar = (ASTMCGrammar) grammarSymbol.getAstNode().get();
     buildLexPatterns();
     findAllKeywords();
+    addSubRules();
     addHWAntlrCode();
   }
   
   // ------------- Handling of the antlr concept -----------------------------
+  
+  /**
+   * Add all sub/superule-relations to the symbol table form the perspective of
+   * the super rule by using addSubrule
+   *
+   * @param classProds Rule
+   */
+  private void addSubRules() {
+    for (ASTClassProd classProd : astGrammar.getClassProds()) {
+      for (ASTRuleReference superRule : classProd.getSuperRule()) {
+        Optional<MCProdSymbol> prodByName = grammarSymbol
+            .getProdWithInherited(superRule.getTypeName());
+        if (prodByName.isPresent()) {
+          addSubrule(prodByName.get().getName(), HelperGrammar.getRuleName(classProd), superRule);
+        }
+        else {
+          Log.error("0xA2110 Undefined rule: " + superRule.getTypeName(),
+              superRule.get_SourcePositionStart());
+        }
+      }
+      
+      for (ASTRuleReference ruleref : classProd.getSuperInterfaceRule()) {
+        Optional<MCProdSymbol> prodByName = grammarSymbol
+            .getProdWithInherited(ruleref.getTypeName());
+        if (prodByName != null) {
+          addSubrule(ruleref.getTypeName(), HelperGrammar.getRuleName(classProd), ruleref);
+        }
+        else {
+          Log.error("0xA2111 Undefined rule: " + ruleref.getTypeName(),
+              ruleref.get_SourcePositionStart());
+        }
+      }
+    }
+    
+  }
+  
+  private void addSubrule(String superrule, String subrule, ASTRuleReference ruleReference) {
+    ASTRuleComponent component = null;
+    if (ruleReference.getSemanticpredicateOrAction().isPresent()) {
+      if (ruleReference.getSemanticpredicateOrAction().get().isPredicate()) {
+        component = ruleReference.getSemanticpredicateOrAction().get();
+      }
+    }
+    PredicatePair subclassPredicatePair = new PredicatePair(subrule, component);
+    predicats.put(superrule, subclassPredicatePair);
+  }
+  
+  /**
+   * @return grammarSymbol
+   */
+  public EssentialMCGrammarSymbol getGrammarSymbol() {
+    return this.grammarSymbol;
+  }
+  
+  /**
+   * @param grammarSymbol the grammarSymbol to set
+   */
+  public void setGrammarSymbol(EssentialMCGrammarSymbol grammarSymbol) {
+    this.grammarSymbol = grammarSymbol;
+  }
+  
+  /**
+   * @return java code
+   */
+  public List<String> getAdditionalParserJavaCode() {
+    return this.additionalParserJavaCode;
+  }
+  
+  /**
+   * @return java code
+   */
+  public List<String> getAdditionalLexerJavaCode() {
+    return this.additionalLexerJavaCode;
+  }
   
   private void addHWAntlrCode() {
     // Get Antlr hwc
@@ -105,20 +203,6 @@ public class EssentialMCGrammarInfo {
             a -> addAdditionalLexerJavaCode(a.getText()));
       }
     }
-  }
-  
-  /**
-   * @return java code
-   */
-  public List<String> getAdditionalParserJavaCode() {
-    return this.additionalParserJavaCode;
-  }
-  
-  /**
-   * @return java code
-   */
-  public List<String> getAdditionalLexerJavaCode() {
-    return this.additionalLexerJavaCode;
   }
   
   /**
@@ -166,7 +250,7 @@ public class EssentialMCGrammarInfo {
         if (p.matcher(name).matches()) {
           matches = true;
           Log.debug(name + " is considered as a keyword because it matches " + p + " "
-              + "(grammarsymtab)", MCGrammarSymbol.class.getSimpleName());
+              + "(grammarsymtab)", EssentialMCGrammarSymbol.class.getSimpleName());
           break;
         }
         
@@ -175,6 +259,44 @@ public class EssentialMCGrammarInfo {
     
     return matches;
   }
+  
+  public List<PredicatePair> getSubRulesForParsing(String ruleName) {
+    // Consider superclass
+    Optional<MCProdSymbol> ruleByName = grammarSymbol.getProdWithInherited(ruleName);
+    List<PredicatePair> predicateList = Lists.newArrayList();
+    if (!ruleByName.isPresent()) {
+      return predicateList;
+    }
+    
+    if (predicats.containsKey(ruleName)) {
+      predicateList.addAll(predicats.get(ruleName));
+    }
+    
+    // TODO GV
+    for (EssentialMCGrammarSymbol superGrammar : grammarSymbol.getSuperGrammarSymbols()) {
+      //
+      // List<PredicatePair> subRulesForParsing =
+      // superGrammar.getSubRulesForParsing(ruleName);
+      // if (subRulesForParsing != null) {
+      // for (PredicatePair predicate : subRulesForParsing) {
+      //
+      // if (!predicateList.contains(predicate)) {
+      // predicateList.add(predicate);
+      // }
+      // }
+      // }
+    }
+    
+    return predicateList;
+  }
+  
+  /**
+   * @return lexNamer
+   */
+  public LexNamer getLexNamer() {
+    return this.lexNamer;
+  }
+
   
   /**
    * Iterates over all Rules to find all keywords
@@ -220,7 +342,8 @@ public class EssentialMCGrammarInfo {
     for (MCProdSymbol rule : grammar.getProdsWithInherited().values()) {
       if (rule.isLexerProd()) {
         if (!EssentialMCGrammarSymbolTableHelper.isFragment(rule.getAstNode())) {
-          Optional<Pattern> lexPattern = LexPatternHelper.calculateLexPattern(grammar,
+          Optional<Pattern> lexPattern = EssentialMCGrammarSymbolTableHelper.calculateLexPattern(
+              grammar,
               rule.getAstNode());
           
           if (lexPattern.isPresent()) {

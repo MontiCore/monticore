@@ -19,17 +19,18 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.nio.file.Paths;
+
+import org.junit.Test;
+
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.types.types._ast.ASTReferenceType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import org.junit.Test;
-
-import java.nio.file.Paths;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class ExternalImplementationTest {
 
@@ -45,7 +46,7 @@ public class ExternalImplementationTest {
   public void testExternalImplementation() {
     ASTReferenceType cdInterface = astZ.getInterfaces().get(0);
     assertTrue(cdInterface != null);
-    String name = TransformationHelper.typeToString(cdInterface);
+    String name = EssentialTransformationHelper.typeToString(cdInterface);
     assertEquals("mc2cdtransformation.Supergrammar.ASTZExt", name);
   }
 }

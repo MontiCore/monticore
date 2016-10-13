@@ -31,11 +31,11 @@ debug("Handcoded path : " + _configuration.getHandcodedPathAsStrings())
 // Parse grammar
 astGrammars = parseGrammars(grammars)
 
-symbolTable = initSymbolTable(modelPath)
+symbolTable = initNewSymbolTable(modelPath)
 
 for (astGrammar in astGrammars) {  
   
-  astGrammar = createSymbolsFromAST(symbolTable, astGrammar)
+  astGrammar = createNewSymbolsFromAST(symbolTable, astGrammar)
   
   // Generate parser
   generateParser(astGrammar, symbolTable, handcodedPath, out)

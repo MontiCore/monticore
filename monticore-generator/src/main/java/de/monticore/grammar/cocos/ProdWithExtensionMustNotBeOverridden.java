@@ -49,7 +49,7 @@ public class ProdWithExtensionMustNotBeOverridden implements GrammarASTProdCoCo 
         .getMCGrammarSymbol(a);
     
     boolean isOverriding = false;
-    for (EssentialMCGrammarSymbol sup : grammarSymbol.get().getSuperGrammarSymbols()) {
+    for (EssentialMCGrammarSymbol sup : EssentialMCGrammarSymbolTableHelper.getAllSuperGrammars(grammarSymbol.get())) {
       if (sup.getProd(a.getName()).isPresent()) {
         isOverriding = true;
         break;

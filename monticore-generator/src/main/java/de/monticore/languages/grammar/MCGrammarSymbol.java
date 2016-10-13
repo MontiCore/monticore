@@ -430,8 +430,8 @@ public class MCGrammarSymbol extends CommonScopeSpanningSymbol {
    */
   public String getLexSymbolName(String x) {
     Log.errorIfNull(x);
-    
-    return lexNamer.getLexName(getRuleNames(), x);
+    return "";
+  //  return lexNamer.getLexName(getRuleNames(), x);
   }
 
   /**

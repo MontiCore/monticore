@@ -41,7 +41,7 @@ import de.monticore.codegen.cd2java.ast.AstAdditionalAttributes;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.ast.CdDecorator;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
-import de.monticore.codegen.mc2cd.TransformationHelper;
+import de.monticore.codegen.mc2cd.EssentialTransformationHelper;
 import de.monticore.codegen.mc2cd.transl.ConstantsTranslation;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
@@ -229,10 +229,10 @@ public class CdEmfDecorator extends CdDecorator {
     String factoryName = cdDef.getName() + EFACTORY;
     
     // Check if a handwritten node factory exists
-    if (TransformationHelper.existsHandwrittenClass(targetPath,
-        TransformationHelper.getAstPackageName(cdCompilationUnit)
+    if (EssentialTransformationHelper.existsHandwrittenClass(targetPath,
+        EssentialTransformationHelper.getAstPackageName(cdCompilationUnit)
             + factoryName)) {
-      factoryName += TransformationHelper.GENERATED_CLASS_SUFFIX;
+      factoryName += EssentialTransformationHelper.GENERATED_CLASS_SUFFIX;
     }
     factory.setName(factoryName);
     cdDef.getCDInterfaces().add(factory);
@@ -262,10 +262,10 @@ public class CdEmfDecorator extends CdDecorator {
     String factoryClassName = cdDef.getName() + EFACTORY_IMPL;
     
     // Check if a handwritten node factory exists
-    if (TransformationHelper.existsHandwrittenClass(targetPath,
-        TransformationHelper.getAstPackageName(cdCompilationUnit)
+    if (EssentialTransformationHelper.existsHandwrittenClass(targetPath,
+        EssentialTransformationHelper.getAstPackageName(cdCompilationUnit)
             + factoryClassName)) {
-      factoryClassName += TransformationHelper.GENERATED_CLASS_SUFFIX;
+      factoryClassName += EssentialTransformationHelper.GENERATED_CLASS_SUFFIX;
     }
     factoryClass.setName(factoryClassName);
     
@@ -290,10 +290,10 @@ public class CdEmfDecorator extends CdDecorator {
     String interfaceName = cdDef.getName() + EPACKAGE;
     
     // Check if a handwritten node factory exists
-    if (TransformationHelper.existsHandwrittenClass(targetPath,
-        TransformationHelper.getAstPackageName(cdCompilationUnit)
+    if (EssentialTransformationHelper.existsHandwrittenClass(targetPath,
+        EssentialTransformationHelper.getAstPackageName(cdCompilationUnit)
             + interfaceName)) {
-      interfaceName += TransformationHelper.GENERATED_CLASS_SUFFIX;
+      interfaceName += EssentialTransformationHelper.GENERATED_CLASS_SUFFIX;
     }
     packageInterface.setName(interfaceName);
     cdDef.getCDInterfaces().add(packageInterface);
@@ -354,10 +354,10 @@ public class CdEmfDecorator extends CdDecorator {
     String className = cdDef.getName() + EPACKAGE_IMPL;
     
     // Check if a handwritten node factory exists
-    if (TransformationHelper.existsHandwrittenClass(targetPath,
-        TransformationHelper.getAstPackageName(cdCompilationUnit)
+    if (EssentialTransformationHelper.existsHandwrittenClass(targetPath,
+        EssentialTransformationHelper.getAstPackageName(cdCompilationUnit)
             + className)) {
-      className += TransformationHelper.GENERATED_CLASS_SUFFIX;
+      className += EssentialTransformationHelper.GENERATED_CLASS_SUFFIX;
     }
     packageImpl.setName(className);
     

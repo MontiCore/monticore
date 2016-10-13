@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -121,13 +122,13 @@ public class LexNamer {
    * @param sym lexer symbol
    * @return Human-Readable, antlr conformed name for a lexsymbols
    */
-  public String getLexName(Collection<String> ruleNames, String sym) {
+  public String getLexName(EssentialMCGrammarSymbol grammarSymbol, String sym) {
     if (usedLex.containsKey(sym)) {
       return usedLex.get(sym);
     }
     
     String goodName = createGoodName(sym);
-    if (goodName != null && !ruleNames.contains(goodName)) {
+    if (goodName != null && !grammarSymbol.getProd(goodName).isPresent()) {
       usedLex.put(sym, goodName);
       Log.debug("Using lexer symbol " + goodName + " for symbol '" + sym + "'", "LexNamer");
       return goodName;

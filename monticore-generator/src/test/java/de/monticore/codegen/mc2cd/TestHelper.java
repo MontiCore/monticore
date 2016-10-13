@@ -19,6 +19,10 @@
 
 package de.monticore.codegen.mc2cd;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
+
 import de.monticore.MontiCoreScript;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
@@ -31,10 +35,6 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
 import de.se_rwth.commons.Names;
 import parser.MCGrammarParser;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Optional;
 
 /**
  * @author Sebastian Oberhoff
@@ -73,7 +73,7 @@ public class TestHelper {
   }
 
   public static boolean isListOfType(ASTType typeRef, String typeArg) {
-    if (!TransformationHelper.typeToString(typeRef).equals("java.util.List")) {
+    if (!EssentialTransformationHelper.typeToString(typeRef).equals("java.util.List")) {
       return false;
     }
     if (!(typeRef instanceof ASTSimpleReferenceType)) {

@@ -19,18 +19,20 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
+import static org.junit.Assert.assertEquals;
+
+import java.nio.file.Paths;
+
+import org.junit.Test;
+
 import com.google.common.collect.Iterables;
+
+import de.monticore.codegen.mc2cd.EssentialTransformationHelper;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.utils.ASTNodes;
-import org.junit.Test;
-
-import java.nio.file.Paths;
-
-import static org.junit.Assert.assertEquals;
 
 public class TerminalWithUsageNameTest {
   
@@ -52,6 +54,6 @@ public class TerminalWithUsageNameTest {
         ASTCDAttribute.class));
     
     assertEquals("testname", cdAttribute.getName());
-    assertEquals("String", TransformationHelper.typeToString(cdAttribute.getType()));
+    assertEquals("String", EssentialTransformationHelper.typeToString(cdAttribute.getType()));
   }
 }

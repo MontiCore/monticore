@@ -21,11 +21,9 @@ package de.monticore;
 
 import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.languages.grammar.MCGrammarSymbol;
 import de.monticore.symboltable.GlobalScope;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -48,8 +46,8 @@ public class MCGrammarLanguageFamilySymbolTableTest {
     final ModelingLanguageFamily family = new MontiCoreGrammarLanguageFamily();
     final GlobalScope globalScope = new GlobalScope(new ModelPath(Paths.get("src/test/resources")), family);
 
-    final Optional<MCGrammarSymbol> oldGrammar =
-        globalScope.resolve("de.monticore.statechart.Statechart", MCGrammarSymbol.KIND);
+    final Optional<EssentialMCGrammarSymbol> oldGrammar =
+        globalScope.resolve("de.monticore.statechart.Statechart", EssentialMCGrammarSymbol.KIND);
     assertTrue(oldGrammar.isPresent());
 
 

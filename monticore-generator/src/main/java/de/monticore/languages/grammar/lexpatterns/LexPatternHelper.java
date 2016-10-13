@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import de.monticore.grammar.grammar._ast.ASTLexProd;
-import de.monticore.languages.grammar.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
 import de.se_rwth.commons.logging.Log;
 
 public class LexPatternHelper {
@@ -32,14 +32,14 @@ public class LexPatternHelper {
   private LexPatternHelper() {
   }
 
-  private static String getLexString(MCGrammarSymbol grammar, ASTLexProd lexNode) {
+  private static String getLexString(EssentialMCGrammarSymbol grammar, ASTLexProd lexNode) {
     StringBuilder builder = new StringBuilder();
     RegExpBuilder regExp = new RegExpBuilder(builder, grammar);
     regExp.handle(lexNode);
     return builder.toString();
   }
 
-  public static Optional<Pattern> calculateLexPattern(MCGrammarSymbol grammar, ASTLexProd lexNode) {
+  public static Optional<Pattern> calculateLexPattern(EssentialMCGrammarSymbol grammar, ASTLexProd lexNode) {
     Pattern ret = null;
 
     final String lexString = getLexString(grammar, lexNode);

@@ -19,15 +19,14 @@
 
 package de.monticore.grammar.cocos;
 
-import java.util.List;
 import java.util.Optional;
 
-import de.monticore.grammar.grammar._ast.ASTClassProd;
+import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._cocos.GrammarASTNonTerminalCoCo;
-import de.monticore.languages.grammar.MCGrammarSymbol;
-import de.monticore.languages.grammar.MCRuleComponentSymbol;
-import de.monticore.languages.grammar.MCRuleSymbol;
+import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCProdComponentSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -41,34 +40,40 @@ public class ProdAndOverriddenProdUseSameAttrNameForDiffNTs implements GrammarAS
   
   public static final String ERROR_MSG_FORMAT = " The overriding production %s must not use " +
       "the name %s for the nonterminal %s as the overridden production uses this name for the nonterminal %s";
-      
+  
   @Override
   public void check(ASTNonTerminal a) {
     if (a.getUsageName().isPresent()) {
       String attributename = a.getUsageName().get();
-      Optional<MCRuleComponentSymbol> componentSymbol = a.getEnclosingScope().get()
-          .resolve(attributename, MCRuleComponentSymbol.KIND);
-      if (componentSymbol.isPresent()) {
-        MCRuleSymbol rule = componentSymbol.get().getEnclosingRule();
-        MCGrammarSymbol grammarSymbol = rule.getGrammarSymbol();
-        List<MCGrammarSymbol> grammarSymbols = grammarSymbol.getSuperGrammars();
-        for (MCGrammarSymbol g : grammarSymbols) {
-          if (rule.getAstNode().get() instanceof ASTClassProd) {
-            ASTClassProd prod = (ASTClassProd) rule.getAstNode().get();
-            MCRuleSymbol ruleSymbol = g.getRule(prod.getName());
-            if (ruleSymbol != null) {
-              Optional<MCRuleComponentSymbol> rcs = ruleSymbol.getSpannedScope()
-                  .resolve(attributename, MCRuleComponentSymbol.KIND);
-              if (rcs.isPresent() && !rcs.get().getReferencedRuleName()
-                  .equals(componentSymbol.get().getReferencedRuleName())) {
-                Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT,
-                    prod.getName(),
-                    attributename,
-                    componentSymbol.get().getReferencedRuleName(),
-                    rcs.get().getReferencedRuleName()),
-                    a.get_SourcePositionStart());
-              }
-            }
+      Optional<MCProdComponentSymbol> componentSymbol = a.getEnclosingScope().get()
+          .resolve(attributename, MCProdComponentSymbol.KIND);
+      if (!componentSymbol.isPresent()) {
+        Log.error("0xA1124 ASTNonterminal " + a.getName() + " couldn't be resolved.");
+      }
+      Optional<MCProdSymbol> rule = EssentialMCGrammarSymbolTableHelper.getEnclosingRule(a);
+      if (!rule.isPresent()) {
+        Log.error("0xA1125 Symbol for enclosing produktion of the component " + a.getName()
+            + " couldn't be resolved.");
+      }
+      Optional<EssentialMCGrammarSymbol> grammarSymbol = EssentialMCGrammarSymbolTableHelper
+          .getMCGrammarSymbol(a);
+      if (!grammarSymbol.isPresent()) {
+        Log.error(
+            "0xA1126 grammar symbol for the component " + a.getName() + " couldn't be resolved.");
+      }
+      for (EssentialMCGrammarSymbol g : grammarSymbol.get().getSuperGrammarSymbols()) {
+        Optional<MCProdSymbol> ruleSymbol = g.getProd(rule.get().getName());
+        if (ruleSymbol.isPresent()) {
+          Optional<MCProdComponentSymbol> rcs = ruleSymbol.get().getSpannedScope()
+              .resolve(attributename, MCProdComponentSymbol.KIND);
+          if (rcs.isPresent() && !ruleSymbol.get().getName()
+              .equals(rule.get().getName())) {
+            Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT,
+                ruleSymbol.get().getName(),
+                attributename,
+                rule.get().getName(),
+                ruleSymbol.get().getName()),
+                a.get_SourcePositionStart());
           }
         }
       }

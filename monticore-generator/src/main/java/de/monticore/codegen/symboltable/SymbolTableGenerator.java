@@ -27,8 +27,8 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
 import de.monticore.io.paths.IterablePath;
-import de.monticore.languages.grammar.MCGrammarSymbol;
 import de.monticore.languages.grammar.MCRuleComponentSymbol;
 import de.monticore.languages.grammar.MCRuleSymbol;
 import de.se_rwth.commons.Names;
@@ -77,7 +77,7 @@ public class SymbolTableGenerator {
   public void generate(ASTMCGrammar astGrammar, SymbolTableGeneratorHelper genHelper,
       File outputPath, final IterablePath handCodedPath) {
 
-    MCGrammarSymbol grammarSymbol = genHelper.getGrammarSymbol();
+    EssentialMCGrammarSymbol grammarSymbol = genHelper.getGrammarSymbol();
 
     // TODO PN also generate for components grammars everything that is possible and useful.
     if (grammarSymbol.isComponent()) {

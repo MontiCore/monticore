@@ -19,14 +19,33 @@
 
 package de.monticore.codegen;
 
+import static de.monticore.codegen.mc2cd.EssentialTransformationHelper.createSimpleReference;
+import static de.monticore.codegen.mc2cd.transl.ConstantsTranslation.CONSTANTS_ENUM;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.ast_emf.AstEmfGeneratorHelper;
+import de.monticore.codegen.mc2cd.EssentialTransformationHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
-import de.monticore.codegen.mc2cd.TransformationHelper;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.java.prettyprint.JavaDSLPrettyPrinter;
@@ -37,7 +56,6 @@ import de.monticore.symboltable.types.references.ActualTypeArgument;
 import de.monticore.types.TypesHelper;
 import de.monticore.types.TypesPrinter;
 import de.monticore.types.types._ast.ASTImportStatement;
-import de.monticore.types.types._ast.ASTReferenceType;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.CD4AnalysisHelper;
@@ -63,22 +81,6 @@ import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static de.monticore.codegen.mc2cd.TransformationHelper.createSimpleReference;
-import static de.monticore.codegen.mc2cd.transl.ConstantsTranslation.CONSTANTS_ENUM;
 
 /**
  * TODO: Write me!
@@ -155,7 +157,7 @@ public class GeneratorHelper extends TypesHelper {
   protected List<String> superGrammarCds = new ArrayList<>();
   
   protected GlobalScope symbolTable;
-
+  
   protected CDSymbol cdSymbol;
   
   public GeneratorHelper(ASTCDCompilationUnit topAst, GlobalScope symbolTable) {
@@ -665,7 +667,7 @@ public class GeneratorHelper extends TypesHelper {
     }
     CDTypeSymbolReference attrType = ((CDFieldSymbol) attr.getSymbol()
         .get()).getType();
-        
+    
     List<ActualTypeArgument> typeArgs = attrType.getActualTypeArguments();
     if (typeArgs.size() > 1) {
       return false;
@@ -709,7 +711,6 @@ public class GeneratorHelper extends TypesHelper {
         .collect(Collectors.toList()).contains(cdAttribute.getName());
   }
   
- 
   /**
    * TODO: Write me!
    * 
@@ -742,7 +743,7 @@ public class GeneratorHelper extends TypesHelper {
     final Set<CDFieldSymbol> allVisibleSuperTypeFields = allSuperTypeFields.stream()
         .filter(field -> !field.isPrivate())
         .collect(Collectors.toCollection(LinkedHashSet::new));
-        
+    
     return ImmutableSet.copyOf(allVisibleSuperTypeFields);
   }
   
@@ -863,7 +864,7 @@ public class GeneratorHelper extends TypesHelper {
     List<CDTypeSymbol> allSuperTypes = getSuperTypes(sym);
     List<String> theSuperTypes = allSuperTypes.stream().map(t -> t.getFullName())
         .collect(Collectors.toList());
-        
+    
     // transform to java types
     theSuperTypes = theSuperTypes.stream()
         .map(s -> AstGeneratorHelper.getAstPackage(Names.getQualifier(s)) + Names.getSimpleName(s))
@@ -886,7 +887,7 @@ public class GeneratorHelper extends TypesHelper {
     List<CDTypeSymbol> allSuperTypes = getSuperTypes(sym);
     List<String> theSuperTypes = allSuperTypes.stream().map(t -> t.getFullName())
         .collect(Collectors.toList());
-        
+    
     // transform to java types
     theSuperTypes = theSuperTypes.stream()
         .map(s -> AstGeneratorHelper.getAstPackage(Names.getQualifier(s)) + Names.getSimpleName(s))
@@ -1021,7 +1022,7 @@ public class GeneratorHelper extends TypesHelper {
   
   public static boolean isSupertypeOfHWType(String className) {
     return className.startsWith(AST_PREFIX)
-        && className.endsWith(TransformationHelper.GENERATED_CLASS_SUFFIX);
+        && className.endsWith(EssentialTransformationHelper.GENERATED_CLASS_SUFFIX);
   }
   
   public static String getJavaConformName(String name) {
@@ -1066,7 +1067,7 @@ public class GeneratorHelper extends TypesHelper {
     if (isOptional(attribute)) {
       return TypesHelper
           .printType(TypesHelper.getSimpleReferenceTypeFromOptional(attribute.getType()));
-          
+      
     }
     return attribute.printType();
   }
@@ -1142,7 +1143,7 @@ public class GeneratorHelper extends TypesHelper {
   public static String getPlainName(ASTCDType type) {
     String name = type.getName();
     if (isSupertypeOfHWType(name)) {
-      return name.substring(0, name.lastIndexOf(TransformationHelper.GENERATED_CLASS_SUFFIX));
+      return name.substring(0, name.lastIndexOf(EssentialTransformationHelper.GENERATED_CLASS_SUFFIX));
     }
     return name;
   }
@@ -1150,7 +1151,7 @@ public class GeneratorHelper extends TypesHelper {
   public static String getPlainName(ASTCDInterface clazz) {
     String name = clazz.getName();
     if (isSupertypeOfHWType(name)) {
-      return name.substring(0, name.lastIndexOf(TransformationHelper.GENERATED_CLASS_SUFFIX));
+      return name.substring(0, name.lastIndexOf(EssentialTransformationHelper.GENERATED_CLASS_SUFFIX));
     }
     return name;
   }
@@ -1204,18 +1205,28 @@ public class GeneratorHelper extends TypesHelper {
         + "." + suffix;
   }
   
+  public static String getPackageName(ASTMCGrammar astGrammar, String suffix) {
+    String qualifiedGrammarName = astGrammar.getPackage().isEmpty()
+        ? astGrammar.getName()
+        : Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackage()),
+            astGrammar.getName());
+    return Joiner.on('.').join(qualifiedGrammarName.toLowerCase(), suffix);
+  }
+  
   public static String getSimpleTypeNameToGenerate(String simpleName, String packageName,
       IterablePath targetPath) {
     if (existsHandwrittenClass(simpleName, packageName, targetPath)) {
-      return simpleName + TransformationHelper.GENERATED_CLASS_SUFFIX;
+      return simpleName + EssentialTransformationHelper.GENERATED_CLASS_SUFFIX;
     }
     return simpleName;
   }
-
-  public static boolean existsHandwrittenClass(String simpleName, String packageName, IterablePath targetPath) {
-    return TransformationHelper.existsHandwrittenClass(targetPath, getDotPackageName(packageName) + simpleName);
+  
+  public static boolean existsHandwrittenClass(String simpleName, String packageName,
+      IterablePath targetPath) {
+    return EssentialTransformationHelper.existsHandwrittenClass(targetPath,
+        getDotPackageName(packageName) + simpleName);
   }
-
+  
   /**
    * TODO: Gets not transformed attribute name according to the original name in
    * MC grammar
@@ -1397,9 +1408,9 @@ public class GeneratorHelper extends TypesHelper {
     }
     String nameToResolve = clazz.getName().contains(".") ? clazz.getName() : qualifiedName + "."
         + clazz.getName();
-    if (nameToResolve.endsWith(TransformationHelper.GENERATED_CLASS_SUFFIX)) {
+    if (nameToResolve.endsWith(EssentialTransformationHelper.GENERATED_CLASS_SUFFIX)) {
       nameToResolve = nameToResolve.substring(0,
-          nameToResolve.lastIndexOf(TransformationHelper.GENERATED_CLASS_SUFFIX));
+          nameToResolve.lastIndexOf(EssentialTransformationHelper.GENERATED_CLASS_SUFFIX));
     }
     return resolveCdType(nameToResolve).isPresent();
   }

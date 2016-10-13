@@ -33,15 +33,18 @@ import com.google.common.collect.ImmutableSet;
 
 import de.monticore.ModelingLanguage;
 import de.monticore.ast.ASTNode;
+import de.monticore.codegen.GeneratorHelper;
+import de.monticore.grammar.HelperGrammar;
+import de.monticore.grammar.grammar._ast.ASTLexActionOrPredicate;
 import de.monticore.grammar.grammar._ast.ASTLexProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
 import de.monticore.grammar.symboltable.EssentialMontiCoreGrammarLanguage;
 import de.monticore.grammar.symboltable.EssentialMontiCoreGrammarSymbolTableCreator;
+import de.monticore.grammar.symboltable.MCProdComponentSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.languages.grammar.MCGrammarSymbol;
 import de.monticore.languages.grammar.lexpatterns.RegExpBuilder;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.GlobalScope;
@@ -49,6 +52,7 @@ import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolverConfiguration;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
+import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.Util;
 import de.se_rwth.commons.logging.Log;
 
@@ -101,6 +105,15 @@ public class EssentialMCGrammarSymbolTableHelper {
         .findFirst();
   }
   
+  public static Optional<EssentialMCGrammarSymbol> getMCGrammarSymbol(
+      Optional<MCProdSymbol> symbol) {
+    return symbol.isPresent()
+        ? symbol.get().getSpannedScope().getSpanningSymbol()
+            .filter(EssentialMCGrammarSymbol.class::isInstance)
+            .map(EssentialMCGrammarSymbol.class::cast)
+        : Optional.empty();
+  }
+  
   public static Optional<MCProdSymbol> getEnclosingRule(ASTNode astNode) {
     return getAllScopes(astNode).stream()
         .map(Scope::getSpanningSymbol)
@@ -109,6 +122,11 @@ public class EssentialMCGrammarSymbolTableHelper {
         .filter(MCProdSymbol.class::isInstance)
         .map(MCProdSymbol.class::cast)
         .findFirst();
+  }
+  
+  public static Optional<MCProdSymbol> getEnclosingRule(MCProdComponentSymbol prod) {
+    return prod.getEnclosingScope().getSpanningSymbol().filter(MCProdSymbol.class::isInstance)
+        .map(MCProdSymbol.class::cast);
   }
   
   /**
@@ -147,28 +165,34 @@ public class EssentialMCGrammarSymbolTableHelper {
         .collect(Collectors.toSet());
   }
   
-  private static String getLexString(MCGrammarSymbol grammar, ASTLexProd lexNode) {
+  private static String getLexString(EssentialMCGrammarSymbol grammar, ASTLexProd lexNode) {
     StringBuilder builder = new StringBuilder();
     RegExpBuilder regExp = new RegExpBuilder(builder, grammar);
     regExp.handle(lexNode);
     return builder.toString();
   }
-
-  public static Optional<Pattern> calculateLexPattern(MCGrammarSymbol grammar, ASTLexProd lexNode) {
-    Pattern ret = null;
-
-    final String lexString = getLexString(grammar, lexNode);
+  
+  public static Optional<Pattern> calculateLexPattern(EssentialMCGrammarSymbol grammar,
+      Optional<ASTNode> lexNode) {
+    Optional<Pattern> ret = Optional.empty();
+    
+    if (!lexNode.isPresent() || !(lexNode.get() instanceof ASTLexProd)) {
+      return ret;
+    }
+    final String lexString = getLexString(grammar, (ASTLexProd) lexNode.get());
     try {
       if ("[[]".equals(lexString)) {
-        ret = Pattern.compile("[\\[]");
-      } else  {
-        ret = Pattern.compile(lexString);
+        return Optional.ofNullable(Pattern.compile("[\\[]"));
+      }
+      else {
+        return Optional.ofNullable(Pattern.compile(lexString));
       }
     }
     catch (PatternSyntaxException e) {
-      Log.error("0xA0913 Internal error with pattern handling for lex rules. Pattern: " + lexString + "\n", e);
+      Log.error("0xA0913 Internal error with pattern handling for lex rules. Pattern: " + lexString
+          + "\n", e);
     }
-    return Optional.ofNullable(ret);
+    return ret;
   }
   
   private static Set<Symbol> getAllSubSymbols(ASTNode astNode) {
@@ -206,4 +230,81 @@ public class EssentialMCGrammarSymbolTableHelper {
     }
     return ret;
   }
+  
+  /**
+   * @return the qualified name for this type
+   */
+  // TODO GV: change implementation
+  public static String getQualifiedName(MCProdSymbol symbol) {
+    if (!symbol.getAstNode().isPresent()) {
+      return "UNKNOWN_TYPE";
+    }
+    if (symbol.isLexerProd()) {
+      return getLexType(symbol.getAstNode());
+    }
+    if (symbol.isEnum()) {
+      return "int";
+      //TODO GV:
+      //return getConstantType();
+    }
+    return getQualifiedName(symbol.getAstNode().get(), symbol, GeneratorHelper.AST_PREFIX, "");
+  }
+  
+  private static String getLexType(Optional<ASTNode> node) {
+    if (node.isPresent()) {
+      if (node.get() instanceof ASTLexProd) {
+        return HelperGrammar.createConvertType((ASTLexProd) node.get());
+      }
+      if (node.get() instanceof ASTLexActionOrPredicate) {
+        return "String";
+      }
+    }
+    return "UNKNOWN_TYPE";
+    
+  }
+  
+  public static String getQualifiedName(ASTNode astNode, MCProdSymbol symbol, String prefix,
+      String suffix) {
+    if (symbol.isExternal()) {
+      return symbol.getName();
+    }
+    else {
+      Optional<EssentialMCGrammarSymbol> grammarSymbol = getMCGrammarSymbol(astNode);
+      String string = grammarSymbol.isPresent()
+          ? grammarSymbol.get().getFullName().toLowerCase()
+          : ""
+              + GeneratorHelper.AST_PACKAGE_SUFFIX_DOT + "." + prefix +
+              StringTransformations.capitalize(symbol.getName() + suffix);
+      
+      if (string.startsWith(".")) {
+        string = string.substring(1);
+      }
+      return string;
+    }
+  }
+  
+  public static String getDefaultValue(MCProdSymbol symbol) {
+    String name = getQualifiedName(symbol);
+    if ("int".equals(name)) {
+      return "0";
+    }
+    if ("boolean".equals(name)) {
+      return "false";
+    }
+    return "null";
+  }
+  
+//  public String getListType() {
+//    if (isASTNode()) {
+//      return getQualifiedName() + "List";
+//    }
+//    else {
+//      return "java.util.List<" + getQualifiedName() + ">";
+//    }
+//  }
+  
+//  private String getConstantType() {
+//    return (this.getEnumValues().size() > 1) ? "int" : "boolean";
+//  }
+  
 }

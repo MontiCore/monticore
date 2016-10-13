@@ -37,8 +37,8 @@ import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
+import de.monticore.codegen.mc2cd.EssentialTransformationHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
-import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.mc2cd.manipul.BaseInterfaceAddingManipulation;
 import de.monticore.codegen.mc2cd.transl.ConstantsTranslation;
 import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
@@ -460,10 +460,10 @@ public class CdDecorator {
     String nodeFactoryName = cdDef.getName() + NODE_FACTORY;
     
     // Check if a handwritten node factory exists
-    if (TransformationHelper.existsHandwrittenClass(targetPath,
-        TransformationHelper.getAstPackageName(cdCompilationUnit)
+    if (EssentialTransformationHelper.existsHandwrittenClass(targetPath,
+        EssentialTransformationHelper.getAstPackageName(cdCompilationUnit)
             + nodeFactoryName)) {
-      nodeFactoryName += TransformationHelper.GENERATED_CLASS_SUFFIX;
+      nodeFactoryName += EssentialTransformationHelper.GENERATED_CLASS_SUFFIX;
     }
     nodeFactoryClass.setName(nodeFactoryName);
     
@@ -720,7 +720,7 @@ public class CdDecorator {
       AstGeneratorHelper astHelper) {
     ASTCDConstructor emptyConstructor = CD4AnalysisNodeFactory.createASTCDConstructor();
     emptyConstructor.setName(clazz.getName());
-    emptyConstructor.setModifier(TransformationHelper.createProtectedModifier());
+    emptyConstructor.setModifier(EssentialTransformationHelper.createProtectedModifier());
     clazz.getCDConstructors().add(emptyConstructor);
     
     // Only one constructor
@@ -827,7 +827,7 @@ public class CdDecorator {
     }
     ASTCDInterface baseInterface = stream.get(0);
     baseInterface.getInterfaces().add(
-        TransformationHelper.createSimpleReference(GeneratorHelper.AST_NODE));
+        EssentialTransformationHelper.createSimpleReference(GeneratorHelper.AST_NODE));
     glex.replaceTemplate(
         "ast.AstInterfaceContent",
         baseInterface,
@@ -842,7 +842,7 @@ public class CdDecorator {
    * @param cdCompilationUnit
    */
   protected void transformCdTypeNamesForHWTypes(ASTCDCompilationUnit cdCompilationUnit) {
-    String packageName = TransformationHelper.getAstPackageName(cdCompilationUnit);
+    String packageName = EssentialTransformationHelper.getAstPackageName(cdCompilationUnit);
     
     cdCompilationUnit
         .getCDDefinition()

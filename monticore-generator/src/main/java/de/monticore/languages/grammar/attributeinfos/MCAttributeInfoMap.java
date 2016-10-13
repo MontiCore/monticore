@@ -39,7 +39,7 @@ public class MCAttributeInfoMap {
   /**
    * e.g., A = variable=B
    */
-  private HashMap<String, MCAttributeInfo> variables = new LinkedHashMap<>();
+//  private HashMap<String, MCAttributeInfo> variables = new LinkedHashMap<>();
 
   public static MCAttributeInfoMap getEmptyMap() {
     return new MCAttributeInfoMap();
@@ -57,9 +57,9 @@ public class MCAttributeInfoMap {
    * Adds an attribute to the map. Use this method in cases like <code>A = attr:B</code>
    * (equality sign between <code>attr</code> and <code>B</code>).
    */
-  public MCAttributeInfo putVariable(MCAttributeInfo attr) {
-    return variables.put(attr.getName(), attr);
-  }
+//  public MCAttributeInfo putVariable(MCAttributeInfo attr) {
+//    return variables.put(attr.getName(), attr);
+//  }
 
   public MCAttributeInfoMap sequence(MCAttributeInfoMap otherMap) {
     MCAttributeInfoMap resultingMap = new MCAttributeInfoMap();
@@ -77,18 +77,18 @@ public class MCAttributeInfoMap {
       
     }
     
-    resultingMap.variables.putAll(variables);
-    for (Entry<String, MCAttributeInfo> e : otherMap.variables.entrySet()) {
-      
-      if (resultingMap.variables.containsKey(e.getKey())) {
-        MCAttributeInfo var = resultingMap.variables.get(e.getKey()).sequence(e.getValue());
-        resultingMap.putVariable(var);
-      }
-      else {
-        resultingMap.variables.put(e.getKey(), e.getValue());
-      }
-      
-    }
+//    resultingMap.variables.putAll(variables);
+//    for (Entry<String, MCAttributeInfo> e : otherMap.variables.entrySet()) {
+//      
+//      if (resultingMap.variables.containsKey(e.getKey())) {
+//        MCAttributeInfo var = resultingMap.variables.get(e.getKey()).sequence(e.getValue());
+//        resultingMap.putVariable(var);
+//      }
+//      else {
+//        resultingMap.variables.put(e.getKey(), e.getValue());
+//      }
+//      
+ //   }
         
     return resultingMap;
     
@@ -142,7 +142,7 @@ public class MCAttributeInfoMap {
       m.putAttribute(e.getValue().iterateStar());
     }
     
-    m.variables.putAll(variables);
+  //  m.variables.putAll(variables);
     
     return m;
     
@@ -156,7 +156,7 @@ public class MCAttributeInfoMap {
       m.putAttribute(e.getValue().iteratePlus());
     }
     
-    m.variables.putAll(variables);
+//    m.variables.putAll(variables);
     
     return m;
   }
@@ -169,7 +169,7 @@ public class MCAttributeInfoMap {
       m.putAttribute(e.getValue().iterateOptional());
     }
     
-    m.variables.putAll(variables);
+ //  m.variables.putAll(variables);
     
     return m;
   }
@@ -186,9 +186,9 @@ public class MCAttributeInfoMap {
       ret.append(e.getValue()).append("\n");
     }
     
-    for (Entry<String, MCAttributeInfo> e : variables.entrySet()) {
-      ret.append(e.getValue()).append("\n");
-    }
+//    for (Entry<String, MCAttributeInfo> e : variables.entrySet()) {
+//      ret.append(e.getValue()).append("\n");
+//    }
     
     return ret.toString();
   }

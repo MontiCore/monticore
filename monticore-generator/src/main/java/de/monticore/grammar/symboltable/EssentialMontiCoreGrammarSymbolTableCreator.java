@@ -32,6 +32,8 @@ import java.util.Set;
 import com.google.common.collect.Sets;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.codegen.GeneratorHelper;
+import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.grammar._ast.ASTASTRule;
 import de.monticore.grammar.grammar._ast.ASTAbstractProd;
 import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
@@ -44,6 +46,7 @@ import de.monticore.grammar.grammar._ast.ASTExternalProd;
 import de.monticore.grammar.grammar._ast.ASTGenericType;
 import de.monticore.grammar.grammar._ast.ASTGrammarReference;
 import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
+import de.monticore.grammar.grammar._ast.ASTLexActionOrPredicate;
 import de.monticore.grammar.grammar._ast.ASTLexNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTLexProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
@@ -55,6 +58,7 @@ import de.monticore.grammar.grammar._ast.ASTSymbolDefinition;
 import de.monticore.grammar.grammar._ast.ASTTerminal;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
+import de.monticore.languages.grammar.MCTypeSymbol.KindType;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.CommonSymbolTableCreator;
 import de.monticore.symboltable.ImportStatement;
@@ -502,6 +506,41 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
       astAttributeSymbol.setIterated(true);
     }
     
+  }
+  
+  
+  /**
+   * Create entry for an implicit rule defined in another lexrule by using an
+   * action and changing the type of the token
+   */
+  @Override
+  public void visit(ASTLexActionOrPredicate action) {
+
+    List<String> types = HelperGrammar.findImplicitTypes(action, prettyPrinter);
+    for (String typeName : types) {
+      // Create type if not already created
+   //   final MCTypeSymbol mcType = getOrCreateType(typeName, false, action);
+
+//      mcType.setConvertFunction(HelperGrammar.createStringConvertFunction(typeName));
+//      mcType.setLexType("String");
+//      mcType.setKindOfType(MCTypeSymbol.KindType.IDENT);
+
+  //    grammarSymbol.addType(mcType);
+
+      // Create rule if needed
+      Optional<MCProdSymbol> rule = grammarSymbol.getProd(typeName);
+      if (!rule.isPresent()) {
+        // Create entry for an implicit rule
+        final MCProdSymbol prodSymbol = new MCProdSymbol(typeName);
+        prodSymbol.setLexerProd(true);
+        
+//        MCRuleSymbol stLexRule = MCGrammarSymbolsFactory.createMCLexProdSymbol(typeName);
+//        grammarSymbol.addRule(stLexRule);
+//        // set type
+//        stLexRule.setType(mcType);
+      }
+    }
+
   }
   
 }

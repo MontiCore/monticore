@@ -19,7 +19,6 @@
 
 package de.monticore.codegen.mc2cd;
 
-import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
 import de.monticore.types.types._ast.ASTPrimitiveType;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
@@ -61,12 +60,12 @@ public enum AttributeCategory {
   
   private static boolean isGenericList(ASTCDAttribute cdAttribute) {
     boolean hasGenerics = ((ASTSimpleReferenceType) cdAttribute.getType()).getTypeArguments() != null;
-    return "java.util.List".equals(TransformationHelper.typeToString(cdAttribute.getType()))
+    return "java.util.List".equals(EssentialTransformationHelper.typeToString(cdAttribute.getType()))
         && hasGenerics;
   }
   
   private static boolean isOptional(ASTCDAttribute cdAttribute) {
-    return "Optional".equals(TransformationHelper.typeToString(cdAttribute.getType()));
+    return "Optional".equals(EssentialTransformationHelper.typeToString(cdAttribute.getType()));
   }
   
 }

@@ -66,7 +66,7 @@ public class CoCoGeneratorTest extends AstDependentGeneratorTest {
   }
   
   @Ignore("not ready yet")
-  @Test
+ // @Test
   public void test() {
     String grammarToTest = "src/test/resources/Automaton.mc4";
     
@@ -77,7 +77,7 @@ public class CoCoGeneratorTest extends AstDependentGeneratorTest {
         grammarToTest).getAbsolutePath());
     
     MontiCoreScript mc = new MontiCoreScript();
-    GlobalScope symbolTable = mc.initSymbolTable(modelPath);
+    GlobalScope symbolTable = mc.initNewSymbolTable(modelPath);
     IterablePath targetPath = IterablePath.from(new File("src/test/resource"), "java");
     Optional<ASTMCGrammar> ast = mc.parseGrammar(model);
     assertTrue(ast.isPresent());
@@ -98,7 +98,7 @@ public class CoCoGeneratorTest extends AstDependentGeneratorTest {
     Log.info("Runs CoCoGenerator test for the model " + model, LOG);
     
     MontiCoreScript mc = new MontiCoreScript();
-    GlobalScope symbolTable = mc.initSymbolTable(modelPath);
+    GlobalScope symbolTable = mc.initNewSymbolTable(modelPath);
     glex = new GlobalExtensionManagement();
     Optional<ASTMCGrammar> ast = mc.parseGrammar(Paths.get(new File(model).getAbsolutePath()));
     assertTrue(ast.isPresent());
