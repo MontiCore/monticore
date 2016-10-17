@@ -27,9 +27,6 @@ import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
-import de.monticore.languages.grammar.MCAttributeSymbol;
-import de.monticore.languages.grammar.MCRuleSymbol;
-import de.monticore.languages.grammar.MCTypeSymbol;
 
 /**
  *
@@ -143,17 +140,18 @@ public class AttributeCardinalityConstraint {
     return ret.toString();
   }
 
-  private String format(int minFor) {
-    if (minFor == MCAttributeSymbol.UNDEF) {
-      return "undef";
-    }
-    else if (minFor == MCAttributeSymbol.STAR) {
-      return "*";
-    }
-    else {
-      return Integer.toString(minFor);
-    }
-  }
+  // TODO GV:
+//  private String format(int minFor) {
+//    if (minFor == MCAttributeSymbol.UNDEF) {
+//      return "undef";
+//    }
+//    else if (minFor == MCAttributeSymbol.STAR) {
+//      return "*";
+//    }
+//    else {
+//      return Integer.toString(minFor);
+//    }
+//  }
 
   private String getCounterName(String name) {
     return "_mccounter" + name;

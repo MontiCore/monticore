@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
 import de.monticore.ModelingLanguage;
 import de.monticore.ast.ASTNode;
@@ -51,6 +52,7 @@ import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolverConfiguration;
 import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.ScopeSpanningSymbol;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.Util;
@@ -96,13 +98,21 @@ public class EssentialMCGrammarSymbolTableHelper {
   }
   
   public static Optional<EssentialMCGrammarSymbol> getMCGrammarSymbol(ASTNode astNode) {
-    return getAllScopes(astNode).stream()
-        .map(Scope::getSpanningSymbol)
-        .filter(Optional::isPresent)
-        .map(Optional::get)
-        .filter(EssentialMCGrammarSymbol.class::isInstance)
-        .map(EssentialMCGrammarSymbol.class::cast)
-        .findFirst();
+    Set<Scope> scopes = getAllScopes(astNode);
+    for (Scope s : scopes) {
+      Optional<? extends ScopeSpanningSymbol> symbol = s.getSpanningSymbol();
+      if (symbol.isPresent() && symbol.get() instanceof EssentialMCGrammarSymbol) {
+        return Optional.of((EssentialMCGrammarSymbol)symbol.get());
+      }
+    }
+    return Optional.empty();
+//    return getAllScopes(astNode).stream()
+//        .map(Scope::getSpanningSymbol)
+//        .filter(Optional::isPresent)
+//        .map(Optional::get)
+//        .filter(EssentialMCGrammarSymbol.class::isInstance)
+//        .map(EssentialMCGrammarSymbol.class::cast)
+//        .findFirst();
   }
   
   public static Optional<EssentialMCGrammarSymbol> getMCGrammarSymbol(
@@ -157,12 +167,20 @@ public class EssentialMCGrammarSymbolTableHelper {
   }
   
   private static Set<Scope> getAllScopes(ASTNode astNode) {
-    return getAllSubSymbols(astNode).stream()
-        .map(Symbol::getEnclosingScope)
-        .flatMap(
-            scope -> listTillNull(scope, childScope -> childScope.getEnclosingScope().orElse(null))
-                .stream())
-        .collect(Collectors.toSet());
+    Set<Scope> ret = Sets.newHashSet();
+    for (Symbol s : getAllSubSymbols(astNode)) {
+      for (Scope l : listTillNull(s.getEnclosingScope(), childScope -> childScope.getEnclosingScope().orElse(null))) {
+        ret.add(l);
+      }
+    }
+    
+    return  ret;
+//    return getAllSubSymbols(astNode).stream()
+//        .map(Symbol::getEnclosingScope)
+//        .flatMap(
+//            scope -> listTillNull(scope, childScope -> childScope.getEnclosingScope().orElse(null))
+//                .stream())
+//        .collect(Collectors.toSet());
   }
   
   private static String getLexString(EssentialMCGrammarSymbol grammar, ASTLexProd lexNode) {
@@ -196,11 +214,18 @@ public class EssentialMCGrammarSymbolTableHelper {
   }
   
   private static Set<Symbol> getAllSubSymbols(ASTNode astNode) {
-    return Util.preOrder(astNode, ASTNode::get_Children).stream()
+    Set<Symbol> symbols = Util.preOrder(astNode, ASTNode::get_Children).stream()
         .map(ASTNode::getSymbol)
         .filter(Optional::isPresent)
         .map(Optional::get)
         .collect(Collectors.toSet());
+    
+return symbols;
+//    return Util.preOrder(astNode, ASTNode::get_Children).stream()
+//        .map(ASTNode::getSymbol)
+//        .filter(Optional::isPresent)
+//        .map(Optional::get)
+//        .collect(Collectors.toSet());
   }
   
   // TODO GV:

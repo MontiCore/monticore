@@ -25,7 +25,7 @@ import java.util.Optional;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
 import de.monticore.grammar.grammar._cocos.GrammarASTClassProdCoCo;
-import de.monticore.languages.grammar.MCRuleSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -37,26 +37,29 @@ public class NTNotExtendInterfaceOrExternalNTs implements GrammarASTClassProdCoC
   
   public static final String ERROR_CODE = "0xA2103";
   
-  public static final String ERROR_MSG_FORMAT = " The nonterminal %s must not extend the %s nonterminal %s. " +
-                                      "Nonterminals may only extend abstract or normal nonterminals.";
+  public static final String ERROR_MSG_FORMAT = " The nonterminal %s must not extend the %s nonterminal %s. "
+      +
+      "Nonterminals may only extend abstract or normal nonterminals.";
   
   @Override
   public void check(ASTClassProd a) {
     if (!a.getSuperRule().isEmpty()) {
       List<ASTRuleReference> superRules = a.getSuperRule();
-      for(ASTRuleReference sr : superRules){
-        Optional<MCRuleSymbol> ruleSymbol = a.getEnclosingScope().get().resolve(sr.getName(), MCRuleSymbol.KIND);
-        if(ruleSymbol.isPresent()){
-          MCRuleSymbol r = ruleSymbol.get();
-          boolean isInterface = r.getType().isInterface();
-          boolean isExternal =  r.getType().isExternal();
-          if(isInterface || isExternal){
-            Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName(), isInterface? "interface": "external", r.getName()),
-                    a.get_SourcePositionStart());
+      for (ASTRuleReference sr : superRules) {
+        Optional<MCProdSymbol> ruleSymbol = a.getEnclosingScope().get().resolve(sr.getName(),
+            MCProdSymbol.KIND);
+        if (ruleSymbol.isPresent()) {
+          MCProdSymbol r = ruleSymbol.get();
+          boolean isInterface = r.isInterface();
+          boolean isExternal = r.isExternal();
+          if (isInterface || isExternal) {
+            Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName(),
+                isInterface ? "interface" : "external", r.getName()),
+                a.get_SourcePositionStart());
           }
         }
       }
     }
   }
-
+  
 }

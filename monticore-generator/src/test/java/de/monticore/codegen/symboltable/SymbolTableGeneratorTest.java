@@ -26,21 +26,22 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
+
 import de.monticore.ModelingLanguage;
 import de.monticore.MontiCoreScript;
 import de.monticore.codegen.AstDependentGeneratorTest;
 import de.monticore.codegen.parser.ParserGeneratorTest;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.symboltable.EssentialMontiCoreGrammarLanguage;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.languages.grammar.MontiCoreGrammarLanguage;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.ResolverConfiguration;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
 
 /**
  * @author Pedram Mir Seyed Nazari
@@ -108,10 +109,10 @@ public class SymbolTableGeneratorTest extends AstDependentGeneratorTest {
 
     final File outputPath = new File(OUTPUT_FOLDER);
 
-    final ModelingLanguage grammarLanguage = new MontiCoreGrammarLanguage();
+    final ModelingLanguage grammarLanguage = new EssentialMontiCoreGrammarLanguage();
 
     final ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
-    resolverConfiguration.addTopScopeResolvers(grammarLanguage.getResolvers());
+    resolverConfiguration.addDefaultFilters(grammarLanguage.getResolvers());
 
     GlobalScope globalScope = new GlobalScope(new ModelPath(Paths.get(modelPath.getAbsolutePath())),
         grammarLanguage, resolverConfiguration);

@@ -36,7 +36,7 @@ import de.monticore.grammar.grammar._ast.ASTNonTerminalSeparator;
 import de.monticore.grammar.grammar._ast.ASTRuleComponent;
 import de.monticore.grammar.grammar._ast.ASTSemanticpredicateOrAction;
 import de.monticore.grammar.grammar._ast.ASTTerminal;
-import de.monticore.languages.grammar.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
@@ -49,7 +49,7 @@ import de.se_rwth.commons.logging.Log;
 */
 public class MCAttributeInfoCalculator {
 
-  public static MCAttributeInfoMap calculateRuleComponentAttributes(ASTRuleComponent ruleComponent, MCGrammarSymbol grammar) {
+  public static MCAttributeInfoMap calculateRuleComponentAttributes(ASTRuleComponent ruleComponent, EssentialMCGrammarSymbol grammar) {
     Log.errorIfNull(ruleComponent);
 
     if (ruleComponent instanceof ASTAnything) {
@@ -86,7 +86,7 @@ public class MCAttributeInfoCalculator {
     throw new IllegalArgumentException("0xA4079 Unknown rule component type '" + ruleComponent.getClass() + "'.");
   }
 
-  public static MCAttributeInfoMap calculateAttributes(ASTClassProd a, MCGrammarSymbol grammar) {
+  public static MCAttributeInfoMap calculateAttributes(ASTClassProd a, EssentialMCGrammarSymbol grammar) {
     MCAttributeInfoMap m = null;
 
     for (ASTAlt r : a.getAlts()) {
@@ -106,7 +106,7 @@ public class MCAttributeInfoCalculator {
     return m;
   }
 
-  public static MCAttributeInfoMap calculateAttributes(ASTBlock block, MCGrammarSymbol grammar) {
+  public static MCAttributeInfoMap calculateAttributes(ASTBlock block, EssentialMCGrammarSymbol grammar) {
     MCAttributeInfoMap m = new MCAttributeInfoMap();
 
     for (ASTAlt r : block.getAlts()) {
@@ -126,7 +126,7 @@ public class MCAttributeInfoCalculator {
     return m;
   }
 
-  public static MCAttributeInfoMap calculateAttributes(ASTAlt alt, MCGrammarSymbol grammar) {
+  public static MCAttributeInfoMap calculateAttributes(ASTAlt alt, EssentialMCGrammarSymbol grammar) {
     MCAttributeInfoMap m = new MCAttributeInfoMap();
 
     for (ASTRuleComponent r : alt.getComponents()) {

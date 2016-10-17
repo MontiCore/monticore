@@ -30,7 +30,6 @@ import de.monticore.codegen.mc2cd.EssentialTransformationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
-import de.monticore.languages.grammar.MCRuleSymbol;
 import de.se_rwth.commons.Names;
 
 /**

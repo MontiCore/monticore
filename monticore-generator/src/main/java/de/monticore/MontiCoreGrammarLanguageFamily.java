@@ -20,7 +20,6 @@
 package de.monticore;
 
 import de.monticore.grammar.symboltable.EssentialMontiCoreGrammarLanguage;
-import de.monticore.languages.grammar.MontiCoreGrammarLanguage;
 
 /**
  * @author  Pedram Mir Seyed Nazari

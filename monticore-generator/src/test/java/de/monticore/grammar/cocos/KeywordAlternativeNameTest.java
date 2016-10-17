@@ -24,11 +24,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 import de.monticore.GrammarGlobalScopeTestFactory;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import de.monticore.languages.grammar.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
@@ -55,7 +54,7 @@ public class KeywordAlternativeNameTest extends CocoTest {
 
     // test grammar symbol
     try {
-      globalScope.resolve(grammar,  MCGrammarSymbol.KIND).orElse(null);
+      globalScope.resolve(grammar,  EssentialMCGrammarSymbol.KIND).orElse(null);
       fail("IllegalArgumentException expected");
     } catch (IllegalArgumentException e) {
 

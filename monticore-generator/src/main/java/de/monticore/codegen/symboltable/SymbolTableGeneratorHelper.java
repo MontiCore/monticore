@@ -38,12 +38,11 @@ import com.google.common.collect.ImmutableList;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
+import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCProdComponentSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
-import de.monticore.languages.grammar.MCGrammarSymbol;
-import de.monticore.languages.grammar.MCRuleComponentSymbol;
-import de.monticore.languages.grammar.MCRuleSymbol;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
@@ -130,40 +129,40 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     return ImmutableList.copyOf(ruleSymbolsWithName);
   }
 
-  public Map<String, String> ruleComponents2JavaFields(MCRuleSymbol ruleSymbol) {
+  public Map<String, String> ruleComponents2JavaFields(MCProdSymbol ruleSymbol) {
     Log.errorIfNull(ruleSymbol);
 
     // fieldName -> fieldType
     final Map<String, String> fields = new HashMap<>();
-
-    for (MCRuleComponentSymbol componentSymbol : ruleSymbol.getRuleComponents()) {
-
+    
+    for (MCProdComponentSymbol componentSymbol : ruleSymbol.getProdComponents()) {
+      
       checkArgument(componentSymbol.getAstNode().isPresent());
-
-      switch (componentSymbol.getKindOfRuleComponent()) {
-        case NONTERMINAL:
-          nonterminal2JavaField(componentSymbol, fields);
-          break;
-        case CONSTANT:
-          constant2JavaField(componentSymbol, fields);
-          break;
-        case CONSTANTGROUP:
-          // TODO PN handle this case
-          break;
-        case TERMINAL:
-          // ignore terminals
-          break;
-        default:
-          // TODO PN remove this exception
-          throw new RuntimeException("0xA4078 TODO PN implement in " + SymbolTableGeneratorHelper.class.getSimpleName());
+      
+      if (componentSymbol.isNonterminal()) {
+        nonterminal2JavaField(componentSymbol, fields);
       }
-
+      else if (componentSymbol.isConstant()) {
+        constant2JavaField(componentSymbol, fields);
+      }
+      else if (componentSymbol.isConstantGroup()) {
+        // TODO PN handle this case
+      }
+      else if (componentSymbol.isTerminal()) {
+        // ignore terminals
+      }
+      else {
+        // TODO PN remove this exception
+        throw new RuntimeException(
+            "0xA4078 TODO PN implement in " + SymbolTableGeneratorHelper.class.getSimpleName());
+      }
+      
     }
 
     return fields;
   }
 
-  private void nonterminal2JavaField(MCRuleComponentSymbol componentSymbol, Map<String, String> fields) {
+  private void nonterminal2JavaField(MCProdComponentSymbol componentSymbol, Map<String, String> fields) {
     final Optional<String> componentName = getRuleComponentName(componentSymbol);
     if (componentName.isPresent()) {
       if (componentSymbol.isSymbolReference()) {
@@ -176,14 +175,14 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
 
 
 
-  private void constant2JavaField(MCRuleComponentSymbol componentSymbol, Map<String, String> fields) {
+  private void constant2JavaField(MCProdComponentSymbol componentSymbol, Map<String, String> fields) {
     final Optional<String> componentName = getRuleComponentName(componentSymbol);
     if (componentName.isPresent()) {
       fields.put(componentName.get(), "boolean");
     }
   }
 
-  private Optional<String> getRuleComponentName(MCRuleComponentSymbol componentSymbol) {
+  private Optional<String> getRuleComponentName(MCProdComponentSymbol componentSymbol) {
     if (canBeTransformedToValidJavaName(componentSymbol.getName())) {
       return Optional.of(componentSymbol.getName());
     }
@@ -194,20 +193,18 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     return Optional.empty();
   }
 
-  public Map<String, String> symbolRuleComponents2JavaFields(MCRuleSymbol ruleSymbol) {
+  public Map<String, String> symbolRuleComponents2JavaFields(MCProdSymbol ruleSymbol) {
     Log.errorIfNull(ruleSymbol);
 
     // fieldName -> fieldType
     final Map<String, String> fields = new HashMap<>();
 
-    for (MCRuleComponentSymbol componentSymbol : ruleSymbol.getRuleComponents()) {
+    for (MCProdComponentSymbol componentSymbol : ruleSymbol.getProdComponents()) {
 
       checkArgument(componentSymbol.getAstNode().isPresent());
 
-      switch (componentSymbol.getKindOfRuleComponent()) {
-        case NONTERMINAL:
+      if (componentSymbol.isNonterminal()) {
           symbolNonTerminal2JavaField(componentSymbol, fields);
-          break;
       }
 
     }
@@ -215,11 +212,11 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     return fields;
   }
 
-  private void symbolNonTerminal2JavaField(MCRuleComponentSymbol componentSymbol, Map<String, String> fields) {
+  private void symbolNonTerminal2JavaField(MCProdComponentSymbol componentSymbol, Map<String, String> fields) {
     final Optional<String> componentName = getRuleComponentName(componentSymbol);
     if (componentName.isPresent()) {
       // the case: Automaton = Name ... State* ..., i.e., the containment of another symbol
-      final Optional<MCProdSymbol> referencedRule = grammarSymbol.getProd(componentSymbol.getReferencedRuleName());
+      final Optional<MCProdSymbol> referencedRule = EssentialMCGrammarSymbolTableHelper.getEnclosingRule(componentSymbol);
       if ((referencedRule.isPresent()) && referencedRule.get().isSymbolDefinition()) {
         fields.put(componentName.get(), referencedRule.get().getName() + "Symbol");
       }

@@ -19,15 +19,13 @@
 
 package de.monticore.grammar.cocos;
 
+import java.util.Optional;
+
 import de.monticore.grammar.grammar._ast.ASTASTRule;
 import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
 import de.monticore.grammar.grammar._cocos.GrammarASTASTRuleCoCo;
-import de.monticore.languages.grammar.MCRuleComponentSymbol;
-import de.monticore.languages.grammar.MCRuleSymbol;
-import de.monticore.languages.grammar.MCTypeSymbol;
-import de.se_rwth.commons.logging.Log;
-
-import java.util.Optional;
+import de.monticore.grammar.symboltable.MCProdComponentSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 
 /**
  *
@@ -45,20 +43,21 @@ public class ASTRuleAndNTUseSameAttrNameForDiffNTs implements GrammarASTASTRuleC
 
   @Override
   public void check(ASTASTRule a) {
-    MCRuleSymbol symbol = (MCRuleSymbol) a.getEnclosingScope().get().resolve(a.getType(),
-        MCRuleSymbol.KIND).get();
+    MCProdSymbol symbol = (MCProdSymbol) a.getEnclosingScope().get().resolve(a.getType(),
+        MCProdSymbol.KIND).get();
     for(ASTAttributeInAST attr : a.getAttributeInASTs()) {
-      Optional<MCRuleComponentSymbol> rc = symbol.getRuleComponent(attr.getName().orElse(""));
+      Optional<MCProdComponentSymbol> rc = symbol.getProdComponent(attr.getName().orElse(""));
       if (rc.isPresent()) {
-        if (!attr.getGenericType().getTypeName().endsWith(rc.get().getReferencedRuleName())) {
-          MCTypeSymbol attrType = (MCTypeSymbol) a.getEnclosingScope().get()
-              .resolve(attr.getGenericType().getTypeName(), MCTypeSymbol.KIND).orElse(null);
-          MCTypeSymbol compType = (MCTypeSymbol) a.getEnclosingScope().get()
-              .resolve(rc.get().getReferencedRuleName(), MCTypeSymbol.KIND).orElse(null);
-          if (attrType != null && compType != null && !compType.isSubtypeOf(attrType)) {
-            Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getType(), attr.getName().get(), attr.getGenericType().getTypeName(), attr.getGenericType().getTypeName(), rc.get().getReferencedRuleName()),
-                a.get_SourcePositionStart());
-          }
+        if (!attr.getGenericType().getTypeName().endsWith(rc.get().getReferencedSymbolName().get())) {
+          // TODO GV:
+//          MCTypeSymbol attrType = (MCTypeSymbol) a.getEnclosingScope().get()
+//              .resolve(attr.getGenericType().getTypeName(), MCTypeSymbol.KIND).orElse(null);
+//          MCTypeSymbol compType = (MCTypeSymbol) a.getEnclosingScope().get()
+//              .resolve(rc.get().getReferencedRuleName(), MCTypeSymbol.KIND).orElse(null);
+//          if (attrType != null && compType != null && !compType.isSubtypeOf(attrType)) {
+//            Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getType(), attr.getName().get(), attr.getGenericType().getTypeName(), attr.getGenericType().getTypeName(), rc.get().getReferencedRuleName()),
+//                a.get_SourcePositionStart());
+//          }
         }
       }
     }

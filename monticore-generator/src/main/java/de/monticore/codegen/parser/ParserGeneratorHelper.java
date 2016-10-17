@@ -57,9 +57,6 @@ import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.java.javadsl._ast.ASTBlockStatement;
 import de.monticore.java.javadsl._ast.ASTClassMemberDeclaration;
-import de.monticore.languages.grammar.MCClassRuleSymbol;
-import de.monticore.languages.grammar.MCInterfaceOrAbstractRuleSymbol;
-import de.monticore.languages.grammar.MCRuleSymbol;
 import de.monticore.languages.grammar.PredicatePair;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.JavaNamesHelper;
@@ -163,16 +160,15 @@ public class ParserGeneratorHelper {
    * @param rule
    * @return
    */
-  public boolean generateParserForRule(MCRuleSymbol rule) {
+  public boolean generateParserForRule(MCProdSymbol rule) {
     boolean generateParserForRule = false;
     String ruleName = rule.getName();
     
-    if (rule instanceof MCClassRuleSymbol) {
-      MCClassRuleSymbol classRule = (MCClassRuleSymbol) rule;
-      generateParserForRule = classRule.getNoParam() == 0;
+    if (rule.isClass()) {
+      generateParserForRule = rule.getProdComponents().size() != 0;
     }
     
-    if (rule instanceof MCInterfaceOrAbstractRuleSymbol) {
+    if (rule.isAbstract() || rule.isInterface()) {
       List<PredicatePair> subRules = grammarInfo.getSubRulesForParsing(ruleName);
       generateParserForRule = !subRules.isEmpty();
     }

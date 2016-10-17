@@ -19,10 +19,12 @@
 
 package de.monticore.grammar.cocos;
 
+import java.util.List;
+
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTProdCoCo;
-import de.monticore.languages.grammar.MCRuleSymbol;
-import de.monticore.languages.grammar.MCTypeSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbolReference;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -39,11 +41,11 @@ public class NoNTInheritanceCycle implements GrammarASTProdCoCo {
 
   @Override
   public void check(ASTProd a) {
-    if (a.getSymbol().get() instanceof MCRuleSymbol){
-      MCTypeSymbol typeSymbol = ((MCRuleSymbol) a.getSymbol().get()).getType();
-      for(MCTypeSymbol sr : typeSymbol.getAllSuperTypes()){
-        if(sr.getFullName().equals(typeSymbol.getFullName())){
-          Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, typeSymbol.getFullName()),
+    if (a.getSymbol().get() instanceof MCProdSymbol){
+      List<MCProdSymbolReference> superProds = ((MCProdSymbol) a.getSymbol().get()).getSuperProds();
+      for(MCProdSymbolReference sr : superProds){
+        if(sr.getReferencedSymbol().getFullName().equals(a.getSymbol().get().getFullName())){
+          Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getSymbol().get().getFullName()),
               a.get_SourcePositionStart());
         }
       }

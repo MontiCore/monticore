@@ -19,7 +19,7 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
+import static de.monticore.codegen.mc2cd.EssentialTransformationHelper.typeToString;
 import static org.junit.Assert.assertEquals;
 
 import java.nio.file.Paths;

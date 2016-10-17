@@ -23,9 +23,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
 import de.monticore.GrammarGlobalScopeTestFactory;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import de.monticore.languages.grammar.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
@@ -42,13 +43,13 @@ public abstract class CocoTest {
 
 
     // test grammar symbol
-    final MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) globalScope.resolve(grammar,
-            MCGrammarSymbol.KIND).orElse(null);
+    final EssentialMCGrammarSymbol grammarSymbol = (EssentialMCGrammarSymbol) globalScope.resolve(grammar,
+        EssentialMCGrammarSymbol.KIND).orElse(null);
     assertNotNull(grammarSymbol);
-    assertNotNull(grammarSymbol.getASTGrammar());
+    assertTrue(grammarSymbol.getAstGrammar().isPresent());
 
     Log.getFindings().clear();
-    checker.handle(grammarSymbol.getASTGrammar());
+    checker.handle(grammarSymbol.getAstGrammar().get());
 
 
     assertTrue(Log.getFindings().isEmpty());
@@ -59,13 +60,13 @@ public abstract class CocoTest {
 
 
     // test grammar symbol
-    final MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) globalScope.resolve(grammar,
-            MCGrammarSymbol.KIND).orElse(null);
+    final EssentialMCGrammarSymbol grammarSymbol = (EssentialMCGrammarSymbol) globalScope.resolve(grammar,
+        EssentialMCGrammarSymbol.KIND).orElse(null);
     assertNotNull(grammarSymbol);
-    assertNotNull(grammarSymbol.getASTGrammar());
+    assertTrue(grammarSymbol.getAstGrammar().isPresent());
 
     Log.getFindings().clear();
-    checker.handle(grammarSymbol.getASTGrammar());
+    checker.handle(grammarSymbol.getAstGrammar().get());
 
 
     assertFalse(Log.getFindings().isEmpty());

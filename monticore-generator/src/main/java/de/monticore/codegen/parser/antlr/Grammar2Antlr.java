@@ -66,9 +66,8 @@ import de.monticore.grammar.grammar._ast.GrammarNodeFactory;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
 import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCProdComponentSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
-import de.monticore.languages.grammar.MCRuleComponentSymbol;
-import de.monticore.languages.grammar.MCRuleSymbol;
 import de.monticore.languages.grammar.PredicatePair;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
@@ -780,21 +779,21 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
    * Write extra Rules for Interfaces Example A implements C = zz ; B implements
    * C = zz ; results in an extra rule C : A | B;
    */
-  public List<String> createAntlrCodeForInterface(MCRuleSymbol interfaceRule) {
+  public List<String> createAntlrCodeForInterface(MCProdSymbol interfaceRule) {
 
     clearAntlrCode();
 
     String interfacename = interfaceRule.getName();
     // Dummy rules
     String ruleName = HelperGrammar.getRuleNameForAntlr(interfacename);
-    String usageName = interfaceRule.getType().getQualifiedName();
+    String usageName = EssentialMCGrammarSymbolTableHelper.getQualifiedName(interfaceRule);
 
     startCodeSection(interfaceRule.getName());
 
     addDummyRules(interfacename, ruleName, usageName);
 
     addToAntlrCode(HelperGrammar.getRuleNameForAntlr(interfacename) + " returns ["
-        + interfaceRule.getType().getQualifiedName() + " ret]: (");
+        + usageName + " ret]: (");
 
     String del = "";
 
@@ -897,10 +896,10 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
         term.setUsageName(HelperGrammar.getUsuageName(ast));
 
         Optional<? extends Symbol> ruleComponent = ast.getSymbol();
-        if (ruleComponent.isPresent() && ruleComponent.get() instanceof MCRuleComponentSymbol) {
-          MCRuleSymbol rule = ((MCRuleComponentSymbol) ruleComponent.get()).getEnclosingRule();
-          if (rule != null) {
-            addActionForKeyword(term, rule);
+        if (ruleComponent.isPresent() && ruleComponent.get() instanceof MCProdComponentSymbol) {
+          Optional<MCProdSymbol> rule = EssentialMCGrammarSymbolTableHelper.getEnclosingRule((MCProdComponentSymbol) ruleComponent.get());
+          if (rule.isPresent()) {
+            addActionForKeyword(term, rule.get());
           }
         }
       }
@@ -973,7 +972,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
   }
 
-  private void addActionForKeyword(ASTTerminal keyword, MCRuleSymbol rule) {
+  private void addActionForKeyword(ASTTerminal keyword, MCProdSymbol rule) {
 
     startCodeSection();
 
@@ -1003,7 +1002,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       }
     }
     else if (isAttribute) {
-      if (rule.getDefinedType().getAttribute(keyword.getUsageName().get()).isIterated()) {
+      if (iteratedItself) {
         addToAction(astActions.getActionForTerminalIteratedAttribute(keyword));
       }
       else {

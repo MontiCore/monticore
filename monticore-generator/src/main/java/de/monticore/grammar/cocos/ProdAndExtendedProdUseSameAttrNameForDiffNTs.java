@@ -21,12 +21,13 @@ package de.monticore.grammar.cocos;
 
 import java.util.Optional;
 
+import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
 import de.monticore.grammar.grammar._cocos.GrammarASTNonTerminalCoCo;
-import de.monticore.languages.grammar.MCRuleComponentSymbol;
-import de.monticore.languages.grammar.MCRuleSymbol;
+import de.monticore.grammar.symboltable.MCProdComponentSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -41,34 +42,34 @@ public class ProdAndExtendedProdUseSameAttrNameForDiffNTs implements GrammarASTN
   public static final String ERROR_MSG_FORMAT = " The production %s extending the production %s must not use the\n"
       +
       "name %s for the nonterminal %s as %s already uses this name for the nonterminal %s.";
-      
+  
   @Override
   public void check(ASTNonTerminal a) {
     if (a.getUsageName().isPresent()) {
       String attributename = a.getUsageName().get();
-      Optional<MCRuleComponentSymbol> componentSymbol = a.getEnclosingScope().get()
-          .resolve(attributename, MCRuleComponentSymbol.KIND);
+      Optional<MCProdComponentSymbol> componentSymbol = a.getEnclosingScope().get()
+          .resolve(attributename, MCProdComponentSymbol.KIND);
       if (componentSymbol.isPresent()) {
-        MCRuleSymbol rule = componentSymbol.get().getEnclosingRule();
-        if (rule.getAstNode().get() instanceof ASTClassProd) {
-          ASTClassProd prod = (ASTClassProd) rule.getAstNode().get();
+        Optional<MCProdSymbol> rule = EssentialMCGrammarSymbolTableHelper.getEnclosingRule(a);
+        if (rule.isPresent() && rule.get().getAstNode().get() instanceof ASTClassProd) {
+          ASTClassProd prod = (ASTClassProd) rule.get().getAstNode().get();
           if (!prod.getSuperRule().isEmpty()) {
             ASTRuleReference type = prod.getSuperRule().get(0);
             String typename = type.getTypeName();
-            Optional<MCRuleSymbol> ruleSymbol = type.getEnclosingScope().get().getEnclosingScope()
-                .get().resolve(typename, MCRuleSymbol.KIND);
-            if (ruleSymbol.isPresent() && ruleSymbol.get().getKind().equals(MCRuleSymbol.KIND)) {
-              Optional<MCRuleComponentSymbol> rcs = ruleSymbol.get().getSpannedScope()
-                  .resolve(attributename, MCRuleComponentSymbol.KIND);
-              if (rcs.isPresent() && !rcs.get().getReferencedRuleName()
-                  .equals(componentSymbol.get().getReferencedRuleName())) {
+            Optional<MCProdSymbol> ruleSymbol = type.getEnclosingScope().get().getEnclosingScope()
+                .get().resolve(typename, MCProdSymbol.KIND);
+            if (ruleSymbol.isPresent()) {
+              Optional<MCProdComponentSymbol> rcs = ruleSymbol.get().getSpannedScope()
+                  .resolve(attributename, MCProdComponentSymbol.KIND);
+              if (rcs.isPresent() && !rcs.get().getReferencedSymbolName().get()
+                  .equals(componentSymbol.get().getReferencedSymbolName().get())) {
                 Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT,
                     prod.getName(),
                     ruleSymbol.get().getName(),
                     attributename,
-                    componentSymbol.get().getReferencedRuleName(),
+                    componentSymbol.get().getReferencedSymbolName().get(),
                     ruleSymbol.get().getName(),
-                    rcs.get().getReferencedRuleName()),
+                    rcs.get().getReferencedSymbolName().get()),
                     a.get_SourcePositionStart());
               }
             }

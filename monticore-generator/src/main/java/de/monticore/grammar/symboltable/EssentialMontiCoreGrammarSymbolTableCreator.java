@@ -32,7 +32,6 @@ import java.util.Set;
 import com.google.common.collect.Sets;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.grammar._ast.ASTASTRule;
 import de.monticore.grammar.grammar._ast.ASTAbstractProd;
@@ -58,7 +57,6 @@ import de.monticore.grammar.grammar._ast.ASTSymbolDefinition;
 import de.monticore.grammar.grammar._ast.ASTTerminal;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
-import de.monticore.languages.grammar.MCTypeSymbol.KindType;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.CommonSymbolTableCreator;
 import de.monticore.symboltable.ImportStatement;
@@ -378,7 +376,9 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
   @Override
   public void visit(ASTNonTerminal ast) {
     final String usageName = ast.getUsageName().orElse(null);
-    
+    if (usageName != null && usageName.equals("arguments")) {
+      System.err.println(" Aufbau of " + ast.getName() + " it. " + ast.getIteration());
+    }
     final Optional<MCProdComponentSymbol> ntSymbol = addRuleComponent(ast.getName(), ast,
         usageName);
     
@@ -450,13 +450,14 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
     
     if (currentSymbol != null) {
       final String symbolName = isNullOrEmpty(usageName) ? name : usageName;
-      final MCProdComponentSymbol prodComponent = new MCProdComponentSymbol(symbolName);
+      MCProdComponentSymbol prodComponent = new MCProdComponentSymbol(symbolName);
       
       prodComponent.setUsageName(usageName);
       
       if (currentSymbol instanceof MCProdSymbol) {
         MCProdSymbol surroundingProd = (MCProdSymbol) currentSymbol;
-        surroundingProd.addProdComponent(prodComponent);
+        //TODO GV: check
+        prodComponent = surroundingProd.addProdComponent(prodComponent);
       }
       else {
         addToScope(prodComponent);
