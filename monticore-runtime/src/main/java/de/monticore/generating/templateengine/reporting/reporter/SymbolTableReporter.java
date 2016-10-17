@@ -33,6 +33,7 @@ import de.se_rwth.commons.Names;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * @author BM
@@ -71,12 +72,15 @@ public class SymbolTableReporter extends AReporter {
   
   private void writeFooter() {
     writeLine("========================================================== Explanation");
-    writeLine("Reporter is not implemented yet.");
     writeLine("Shows symbol table after finishing the generation process.");
   }
   
   @Override
   public void flush(ASTNode ast) {
+    Optional<? extends Scope> scope = ast.getSpannedScope();
+    if (scope.isPresent()) {
+      reportSymbolTableScope(scope.get());
+    }
     writeFooter();
     super.flush(ast);
   }
