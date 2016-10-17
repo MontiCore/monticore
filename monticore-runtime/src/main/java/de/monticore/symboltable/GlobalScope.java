@@ -108,8 +108,6 @@ public final class GlobalScope extends CommonScope {
 
 
     // Symbol not found: try to load corresponding model and build its symbol table
-    // TODO PN Optimize: if no further models have been loaded, we can stop here. There is no need
-    // to resolveDown again
     loadModels(resolvingInfo.getResolvingFilters(), symbolName, kind);
 
     // Maybe the symbol now exists in this scope (or its sub scopes). So, resolve down, again.
@@ -154,7 +152,6 @@ public final class GlobalScope extends CommonScope {
         .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
-  // TODO PN write tests
   public void cache(ModelingLanguageModelLoader<? extends ASTNode> modelLoader, String calculatedModelName) {
     if (modelName2ModelLoaderCache.containsKey(calculatedModelName)) {
       modelName2ModelLoaderCache.get(calculatedModelName).add(modelLoader);
@@ -188,12 +185,8 @@ public final class GlobalScope extends CommonScope {
   }
 
   /**
-   * // TODO PN update doc. Seems not to be fully correct
-   *
-   * Only if the model name differs from the symbol name, we need to proceed, since we
-   * already handled the symbol name. For example, for class diagrams the symbol name is a.CD.Person
-   * but the model name is a.CD. In contrast, the model name of java.lang.String is also
-   * java.lang.String.
+   * Model loading continues with the given <code>modelLoader</code>, if
+   * <code>calculatedModelName</code> has not been already loaded with that loader.
    *
    * @return true, if it should be continued with the model loader
    */

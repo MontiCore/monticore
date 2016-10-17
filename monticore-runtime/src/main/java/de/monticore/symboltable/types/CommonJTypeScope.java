@@ -139,8 +139,6 @@ public class CommonJTypeScope extends CommonScope {
   public Optional<? extends Symbol> resolve(final SymbolPredicate predicate) {
     Optional<? extends Symbol> resolvedSymbol = super.resolve(predicate);
 
-    // TODO PN resolve in super types
-
     if (!resolvedSymbol.isPresent()) {
       final JTypeSymbol spanningSymbol = getSpanningSymbol().get();
       final Optional<? extends JTypeReference<? extends JTypeSymbol>> optSuperClass = spanningSymbol.getSuperClass();

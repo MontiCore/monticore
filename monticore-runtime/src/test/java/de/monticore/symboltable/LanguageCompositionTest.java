@@ -54,8 +54,6 @@ import static org.junit.Assert.assertTrue;
  */
 public class LanguageCompositionTest {
 
-  // TODO PN This tests use mocked parser which does not work correctly anymore. Use "real" parsers instead.
-
 //  @Test
   public void testLanguageFamily() {
     final ModelingLanguageFamily languageFamily = new ScAndEntityLanguageFamily();
@@ -139,7 +137,6 @@ public class LanguageCompositionTest {
 
   }
 
-  // TODO PN use global scope in test
   @Test
   public void testLanguageInheritance() {
     StateChartSymbol sc = new StateChartSymbol("SC");

@@ -29,10 +29,11 @@ import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingInfo;
 
 /**
+ * Provides methods for manipulating a scope.
+ *
  * @author Pedram Mir Seyed Nazari
  */
 public interface MutableScope extends Scope {
-  // TODO PN DOC
 
   /**
    *
@@ -110,8 +111,8 @@ public interface MutableScope extends Scope {
   /**
    * @param node the corresponding ast node
    */
-  // TODO PN rename to setSpanningAstNode
   void setAstNode(ASTNode node);
+  
 
   /**
    * @param name of the scope

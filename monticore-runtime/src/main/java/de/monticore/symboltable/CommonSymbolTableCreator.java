@@ -49,7 +49,6 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
       final MutableScope enclosingScope) {
     this(resolvingConfig, new ArrayDeque<>());
 
-    // TODO PN  allow enclosingScope to be null?
     putOnStack(Log.errorIfNull(enclosingScope));
   }
 
@@ -129,8 +128,7 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
         currentScope().get().add(symbol);
       }
       else {
-        // TODO PN add error id
-        Log.warn("Symbol cannot be added to current scope, since no scope exists.");
+        Log.warn("0xA50212 Symbol cannot be added to current scope, since no scope exists.");
       }
     }
   }

@@ -35,7 +35,6 @@ public abstract class CommonSymbol implements Symbol {
 
   private final String name;
   private String packageName;
-  // TODO PN create setter
   private String fullName;
 
   private Scope enclosingScope;
@@ -44,16 +43,13 @@ public abstract class CommonSymbol implements Symbol {
 
   private SymbolKind kind;
 
-  // TODO PN getter should return an Optional value
   private AccessModifier accessModifier = AccessModifier.ALL_INCLUSION;
 
   public CommonSymbol(String name, SymbolKind kind) {
-    // TODO PN if name is qualified: this.name = simple(name) and this.packageName = qualifier (name)?
     this.name = Log.errorIfNull(name);
     this.kind = Log.errorIfNull(kind);
   }
 
-  // TODO PN pull-up?
   public void setPackageName(String packageName) {
     this.packageName = Log.errorIfNull(packageName);
   }
@@ -177,7 +173,7 @@ public abstract class CommonSymbol implements Symbol {
             if (currentScope.getName().isPresent()) {
               nameParts.addFirst(currentScope.getName().get());
             }
-            // TODO PN else stop? If one of the enclosing scopes is unnamed,
+            // ...else stop? If one of the enclosing scopes is unnamed,
             //         the full name is same as the simple name.
           }
       }

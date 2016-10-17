@@ -24,10 +24,10 @@ import java.util.Optional;
 import de.monticore.ast.ASTNode;
 
 /**
+ * Provides useful methods for building up a symbol table.
+ *
  * @author Pedram Mir Seyed Nazari
  */
-// TODO PN doc
-// TODO PN use generics <T extends ASTNode> and add method createFromAST(T node)
 public interface SymbolTableCreator {
 
   void putSpannedScopeOnStack(ScopeSpanningSymbol symbol);

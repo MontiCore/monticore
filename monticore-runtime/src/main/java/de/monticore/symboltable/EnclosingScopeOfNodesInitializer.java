@@ -59,26 +59,6 @@ public class EnclosingScopeOfNodesInitializer implements CommonVisitor {
     if (!scopeStack.isEmpty()) {
       scopeStack.pollLast();
     }
-
-    // TODO PN include the spanned symbol in the check below
-//    if (node.getEnclosingScope().isPresent() && scopeStack.isEmpty()) {
-//      // TODO PN add error code
-//      Log.error("Scope should contain at least the enclosing scope of the node.");
-//    }
-//    else if (!node.getEnclosingScope().isPresent() && !scopeStack.isEmpty()) {
-//      // TODO PN add error code
-//      Log.error("The node does not have an enclosing scope. So, the stack is expected to be empty.");
-//    }
-//
-//    if (node.getEnclosingScope().isPresent() && !scopeStack.isEmpty()) {
-//      if (node.getEnclosingScope().get() == scopeStack.peekLast()) {
-//        scopeStack.pollLast();
-//      }
-//      else {
-//        // TODO PN add error code
-//        Log.error("The enclosing scope of the node and the current scope of the stack should be the same");
-//      }
-//    }
   }
 
 }

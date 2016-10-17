@@ -38,7 +38,6 @@ import de.se_rwth.commons.logging.Log;
  * @author Pedram Mir Nazari
  */
 public abstract class EmbeddingModelingLanguage extends CommonModelingLanguage {
-  // TODO PN by default, use file extension of host language
 
   protected ModelingLanguage hostLanguage;
   protected final Collection<ModelingLanguage> embeddedLanguages = new ArrayList<>();
@@ -122,7 +121,4 @@ public abstract class EmbeddingModelingLanguage extends CommonModelingLanguage {
   public ModelNameCalculator getModelNameCalculator() {
     return super.getModelNameCalculator();
   }
-
-
-
 }

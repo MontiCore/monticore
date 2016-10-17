@@ -32,8 +32,6 @@ import de.monticore.symboltable.resolving.CommonResolvingFilter;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
 
-// TODO PN This tests use mocked parser which does not work correctly anymore. Use "real" parsers instead.
-
 /**
  *
  * @author Pedram Mir Seyed Nazari

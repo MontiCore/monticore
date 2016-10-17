@@ -40,13 +40,12 @@ import de.monticore.symboltable.ResolverConfiguration;
 import de.se_rwth.commons.Names;
 
 /**
- * This class is responsible for loading models from the model path (
- * {@link de.monticore.io.paths.ModelPath}).
+ * This class is responsible for loading models from the model path
+ * ({@link de.monticore.io.paths.ModelPath}).
  *
  * @author Pedram Mir Seyed Nazari
  */
 
-// TODO PN update doc
 // TODO PN extract CommonModelLoader
 // TODO PN rename to ModelLoader
 public abstract class ModelingLanguageModelLoader<T extends ASTNode> {
@@ -115,7 +114,6 @@ public abstract class ModelingLanguageModelLoader<T extends ASTNode> {
     final Collection<T> asts = loadModels(qualifiedModelName, modelPath);
 
     for (T ast : asts) {
-      // TODO PN add here a general hook, to allow further processing of the asts
       createSymbolTableFromAST(ast, qualifiedModelName, enclosingScope, resolverConfiguration);
     }
 
@@ -188,5 +186,4 @@ public abstract class ModelingLanguageModelLoader<T extends ASTNode> {
     return modelingLanguage;
   }
 
-  // TODO PN add equals+hash method
 }

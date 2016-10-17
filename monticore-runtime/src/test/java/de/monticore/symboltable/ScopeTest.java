@@ -160,9 +160,6 @@ public class ScopeTest {
 
   @Test
   public void testGetAllEncapsulatedSymbols(){
-    // TODO PN mit GlobalScope
-//    final GlobalScope gs = new GlobalScope();
-
     final MutableScope scope1 = new CommonScope(false);
     final StateSymbol symbol11 = new StateSymbol("s11");
     scope1.add(symbol11);

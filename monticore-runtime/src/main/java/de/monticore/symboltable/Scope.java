@@ -49,8 +49,6 @@ public interface Scope {
    */
   Optional<String> getName();
 
-  // TODO PN add method getFullName() analogous to symbol.getFullName()?
-
   /**
    * @return the enclosing scope. In Java, for example, the enclosing scope of a method scope is
    * the class scope that defines the method.
@@ -130,10 +128,8 @@ public interface Scope {
    */
   <T extends Symbol> Optional<T> resolveImported(String name, SymbolKind kind, AccessModifier modifier);
 
-  // TODO PN Doc
   <T extends Symbol> Collection<T> resolveMany(String name, SymbolKind kind);
 
-  // TODO PN Doc
   <T extends Symbol> Collection<T> resolveMany(String name, SymbolKind kind, AccessModifier modifier);
 
   <T extends Symbol> Collection<T> resolveMany(String name, SymbolKind kind, Predicate<Symbol> predicate);
@@ -205,8 +201,6 @@ public interface Scope {
    * @return number of symbols directly defined/contained in this scope (not in enclosing scope).
    */
   int getSymbolsSize();
-
-  // TODO PN  add method hasSymbol(String, SymbolKind)
 
   /**
     * @return true, if this scope shadows symbols of the enclosing scope. By default, named scopes

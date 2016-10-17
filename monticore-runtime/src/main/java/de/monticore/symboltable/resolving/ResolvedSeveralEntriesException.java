@@ -26,8 +26,6 @@ import com.google.common.collect.ImmutableList;
 import de.monticore.symboltable.Symbol;
 
 /**
- * TODO: Write me!
- *
  * @author Pedram Mir Seyed Nazari
  *
  */

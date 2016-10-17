@@ -21,8 +21,6 @@ package de.monticore.symboltable;
 
 
 /**
- * TODO: Write me!
- *
  * @author Pedram Mir Seyed Nazari
  *
  */
