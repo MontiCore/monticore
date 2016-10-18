@@ -30,7 +30,7 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-${signature("className", "directSuperCds")}
+${signature("className", "directSuperCds", "rules")}
 
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign grammarName = ast.getName()?cap_first>
@@ -87,7 +87,7 @@ public class ${className} extends de.monticore.symboltable.CommonSymbolTableCrea
   * @param rootNode the root node
   * @return the first scope that was created
   */
-  public Scope createFromAST(${topAstName} rootNode) {
+  public Scope createFromAST(${fqn}._ast.AST${grammarName}Node rootNode) {
     Log.errorIfNull(rootNode, "0xA7004${genHelper.getGeneratedErrorCode(ast)} Error by creating of the ${className} symbol table: top ast node is null");
     rootNode.accept(realThis);
     return getFirstCreatedScope();
@@ -106,5 +106,16 @@ public class ${className} extends de.monticore.symboltable.CommonSymbolTableCrea
       visitor.setRealThis(realThis);
     }
   }
+
+<#list rules as r>
+  <#if genHelper.isScopeSpanningSymbol(r)>
+  // ${r.getName()} sssymbol
+  <#elseif genHelper.isSymbol(r)>
+  // ${r.getName()} symbol
+  <#elseif genHelper.spansScope(r)>
+  // ${r.getName()} scope
+  </#if>
+
+</#list>
 
 }
