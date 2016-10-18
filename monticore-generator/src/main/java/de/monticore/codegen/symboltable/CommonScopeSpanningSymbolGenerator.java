@@ -19,18 +19,18 @@
 
 package de.monticore.codegen.symboltable;
 
-import static de.monticore.codegen.GeneratorHelper.getPackageName;
-import static de.monticore.codegen.GeneratorHelper.getSimpleTypeNameToGenerate;
-import static de.se_rwth.commons.Names.getSimpleName;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.languages.grammar.MCRuleSymbol;
 import de.se_rwth.commons.Names;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static de.monticore.codegen.GeneratorHelper.getPackageName;
+import static de.monticore.codegen.GeneratorHelper.getSimpleTypeNameToGenerate;
+import static de.se_rwth.commons.Names.getSimpleName;
 
 /**
  * @author Pedram Mir Seyed Nazari
@@ -47,7 +47,7 @@ public class CommonScopeSpanningSymbolGenerator implements ScopeSpanningSymbolGe
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
 
     generateEmpty(genEngine, genHelper, handCodedPath, ruleSymbol);
-    genEngine.generate("symboltable.ScopeSpanningSymbol", filePath, ruleSymbol.getAstNode().get(), className, ruleSymbol);
+    genEngine.generate("symboltable.ScopeSpanningSymbol", filePath, ruleSymbol.getAstNode().get(), className, getScopeClassName(ruleSymbol), ruleSymbol);
     generateScope(genEngine, genHelper, handCodedPath, ruleSymbol);
   }
 
@@ -64,7 +64,7 @@ public class CommonScopeSpanningSymbolGenerator implements ScopeSpanningSymbolGe
 
   protected void generateScope(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper, IterablePath handCodedPath,
       MCRuleSymbol ruleSymbol) {
-    final String className = ruleSymbol.getName() + "Scope";
+    final String className = getScopeClassName(ruleSymbol);
     final String qualifiedClassName = getPackageName(genHelper.getTargetPackage(), "") + className;
 
     if(TransformationHelper.existsHandwrittenClass(handCodedPath, qualifiedClassName)) {
@@ -77,6 +77,10 @@ public class CommonScopeSpanningSymbolGenerator implements ScopeSpanningSymbolGe
     if (ruleSymbol.getAstNode().isPresent()) {
       genEngine.generate("symboltable.Scope", filePath, ruleSymbol.getAstNode().get(), className);
     }
+  }
+
+  private String getScopeClassName(MCRuleSymbol ruleSymbol) {
+    return ruleSymbol.getName() + "Scope";
   }
 
 }

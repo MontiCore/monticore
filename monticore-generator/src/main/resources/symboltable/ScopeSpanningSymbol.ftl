@@ -30,7 +30,7 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-${signature("className", "ruleSymbol")}
+${signature("className", "scopeClassName", "ruleSymbol")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign ruleName = ruleSymbol.getName()?cap_first>
 
@@ -53,6 +53,11 @@ public class ${className} extends ${ruleName}SymbolEMPTY {
  ${includeArgs("symboltable.symbols.Attributes", ruleSymbol)}
 
  ${includeArgs("symboltable.symbols.GetterSetter", ruleSymbol)}
+
+  @Override
+  protected ${scopeClassName} createSpannedScope() {
+    return new ${scopeClassName}();
+  }
 
 
   <#-- Get methods for  containing symbols -->
