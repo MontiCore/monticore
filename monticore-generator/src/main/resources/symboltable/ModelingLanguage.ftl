@@ -56,6 +56,9 @@ public abstract class ${className} extends de.monticore.CommonModelingLanguage {
     super(langName, fileEnding);
 
     initResolvingFilters();
+<#if !skipSTGen>
+    setModelNameCalculator(new ${grammarName}ModelNameCalculator());
+</#if>
   }
 
   @Override
