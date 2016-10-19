@@ -23,6 +23,18 @@ import de.monticore.ast.ASTNode;
 
 public interface IASTNodeIdentHelper {
 
+  public static final String LAYOUT_FULL = "@%s!%s";
+  
+  public static final String LAYOUT_TYPE = "@!%s";
+  
+  default String format(String id, String type) {
+    return String.format(LAYOUT_FULL, id, type);
+  }
+  
+  default String format(String type) {
+    return String.format(LAYOUT_TYPE, type);
+  }
+  
 	public String getIdent(ASTNode ast);
 
 }

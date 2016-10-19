@@ -1,7 +1,8 @@
-/*******************************************************************************
+/*
+ * ******************************************************************************
  * MontiCore Language Workbench
- * Copyright (c) 2015, 2016, MontiCore, All rights reserved.
- *  
+ * Copyright (c) 2016, MontiCore, All rights reserved.
+ *
  * This project is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -13,22 +14,21 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- *******************************************************************************/
-package de.monticore.visualoutline.figures;
+ * ******************************************************************************
+ */
 
-import org.eclipse.draw2d.FreeformLayer;
-import org.eclipse.draw2d.FreeformLayout;
+package de.monticore;
+
+import de.monticore.grammar.symboltable.EssentialMontiCoreGrammarLanguage;
+import de.monticore.languages.grammar.MontiCoreGrammarLanguage;
 
 /**
- * Default figure for all containers.
- * 
- * @author Dennis Birkholz
+ * @author  Pedram Mir Seyed Nazari
  */
-public class DefinitionFigure extends FreeformLayer {
-	public DefinitionFigure(Object model) {
-	    FreeformLayout layout = new FreeformLayout();
-	    layout.setPositiveCoordinates(true);
-	    
-	    this.setLayoutManager(layout);
-	}
+public class MontiCoreGrammarLanguageFamily extends ModelingLanguageFamily {
+
+  public MontiCoreGrammarLanguageFamily() {
+    addModelingLanguage(new MontiCoreGrammarLanguage());
+    addModelingLanguage(new EssentialMontiCoreGrammarLanguage());
+  }
 }

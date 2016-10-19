@@ -165,11 +165,11 @@ public class CollectionTest {
   public void testDeepClone() {
     ASTParent p1 = ListsNodeFactory.createASTParent();
     
-    ASTSon s1 = ListsNodeFactory.createASTSon();
+    ASTSon s1 = ListsNodeFactory.createASTSon("myname1");
     Comment c1 = new Comment();
     c1.setText("mycomment");
     s1.get_PreComments().add(c1);
-    ASTSon s2 = ListsNodeFactory.createASTSon();
+    ASTSon s2 = ListsNodeFactory.createASTSon("myname2");
     
     p1.getSons().add(s1);
     p1.getSons().add(s2);
@@ -183,11 +183,11 @@ public class CollectionTest {
   public void testClone() {
     ASTParent p1 = ListsNodeFactory.createASTParent();
     
-    ASTSon s1 = ListsNodeFactory.createASTSon();
+    ASTSon s1 = ListsNodeFactory.createASTSon("myname1");
     Comment c1 = new Comment();
     c1.setText("mycomment");
     s1.get_PreComments().add(c1);
-    ASTSon s2 = ListsNodeFactory.createASTSon();
+    ASTSon s2 = ListsNodeFactory.createASTSon("myname1");
     
     p1.getSons().add(s1);
     p1.getSons().add(s2);

@@ -148,4 +148,28 @@ public abstract class ForwardingASTNode<T extends ASTNode> extends ForwardingObj
   public Optional<? extends Symbol> getSymbol() {
     return delegate().getSymbol();
   }
+  
+  /**
+   * @see de.monticore.ast.ASTNode#enclosingScopeIsPresent()
+   */
+  @Override
+  public boolean enclosingScopeIsPresent() {
+    return delegate().enclosingScopeIsPresent();
+  }
+
+  /**
+   * @see de.monticore.ast.ASTNode#symbolIsPresent()
+   */
+  @Override
+  public boolean symbolIsPresent() {
+    return delegate().symbolIsPresent();
+  }
+
+  /**
+   * @see de.monticore.ast.ASTNode#spannedScopeIsPresent()
+   */
+  @Override
+  public boolean spannedScopeIsPresent() {
+    return delegate().spannedScopeIsPresent();
+  }
 }

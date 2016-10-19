@@ -40,7 +40,7 @@ public class MontiCoreGrammarLanguage extends CommonModelingLanguage {
   private final Grammar_WithConceptsPrettyPrinter prettyPrinter;
   
   public MontiCoreGrammarLanguage() {
-    super("Grammar Language", FILE_ENDING, MCGrammarSymbol.KIND);
+    super("Grammar Language", FILE_ENDING);
     
     prettyPrinter = new Grammar_WithConceptsPrettyPrinter(new IndentPrinter());
 

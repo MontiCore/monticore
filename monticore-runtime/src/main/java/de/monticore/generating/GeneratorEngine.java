@@ -112,8 +112,9 @@ public class GeneratorEngine {
         .commentEnd(
             generatorSetup.getCommentEnd().orElse(
                 TemplateControllerConfigurationBuilder.DEFAULT_COMMENT_END))
+        .modelName(generatorSetup.getModelName())
         .build();
-
+    
     return tcConfig;
   }
 

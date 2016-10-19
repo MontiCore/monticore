@@ -20,15 +20,20 @@
 package mc.feature.ast;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import org.apache.commons.io.FilenameUtils;
 import org.junit.Test;
 
-import mc.feature.automaton.automaton._ast.AutomatonNodeFactory;
+import de.monticore.MontiCoreScript;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import mc.feature.delete.deletetest._ast.ASTChild;
 import mc.feature.delete.deletetest._ast.ASTParent;
 import mc.feature.delete.deletetest._ast.DeleteTestNodeFactory;
@@ -36,12 +41,6 @@ import mc.feature.featuredsl._ast.ASTA;
 import mc.feature.featuredsl._ast.FeatureDSLNodeFactory;
 
 public class ASTTest {
-  
-  @Test
-  public void testNpeDeepClone() {
-    mc.feature.automaton.automaton._ast.ASTAutomaton a = AutomatonNodeFactory.createASTAutomaton();
-    assertNull(a.deepClone().getName());
-  }
   
   @Test
   public void testGet_ChildNodes1() {
@@ -61,4 +60,20 @@ public class ASTTest {
     assertEquals(1, p.get_Children().size());
     assertTrue(p.get_Children().contains(s));
   }
+  
+  @Test
+  public void testFileNameInSourcePosition() {
+    String grammarToTest = "src/test/resources/mc/grammar/SimpleGrammarWithConcept.mc4";
+    
+    Path model = Paths.get(new File(
+        grammarToTest).getAbsolutePath());
+    
+    MontiCoreScript mc = new MontiCoreScript();
+    Optional<ASTMCGrammar> ast = mc.parseGrammar(model);
+    assertTrue(ast.isPresent());
+    ASTMCGrammar clonedAst = ast.get().deepClone();
+    assertTrue(clonedAst.get_SourcePositionStart().getFileName().isPresent());
+    assertEquals("SimpleGrammarWithConcept.mc4", FilenameUtils.getName(clonedAst.get_SourcePositionStart().getFileName().get()));
+  }
+  
 }

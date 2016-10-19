@@ -30,6 +30,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.ast.Comment;
 import de.monticore.prettyprint.AstPrettyPrinter;
 import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.ScopeSpanningSymbol;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.SourcePosition;
 
@@ -51,6 +52,8 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   protected Optional<? extends Symbol> symbol = Optional.empty();
   
   protected Optional<? extends Scope> enclosingScope = Optional.empty();
+  
+  protected Optional<? extends Scope> spannedScope = Optional.empty();
   
   protected Optional<AstPrettyPrinter<ASTNode>> prettyPrinter = Optional.empty();
   
@@ -94,21 +97,62 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
     this.postcomments = postcomments;
   }
   
+  @Override
   public void setEnclosingScope(Scope enclosingScope) {
     this.enclosingScope = Optional.ofNullable(enclosingScope);
   }
   
+  @Override
   public Optional<? extends Scope> getEnclosingScope() {
     return enclosingScope;
   }
   
+  @Override
   public void setSymbol(Symbol symbol) {
     this.symbol = Optional.ofNullable(symbol);
   }
   
+  @Override
   public Optional<? extends Symbol> getSymbol() {
     return symbol;
   }
+  
+  @Override
+  public boolean spannedScopeIsPresent() {
+    return spannedScope.isPresent();
+  }
+  
+  @Override
+  public boolean symbolIsPresent() {
+    return symbol.isPresent();
+  }
+  
+  @Override
+  public boolean enclosingScopeIsPresent() {
+    return enclosingScope.isPresent();
+  }
+  
+  @Override
+  public Optional<? extends Scope> getSpannedScope() {
+    if (spannedScope.isPresent()) {
+      return spannedScope;
+    }
+    
+    Optional<? extends Scope> result = Optional.empty();
+    if (getSymbol().isPresent() && (getSymbol().get() instanceof ScopeSpanningSymbol)) {
+      final ScopeSpanningSymbol sym = (ScopeSpanningSymbol) getSymbol().get();
+      result = Optional.of(sym.getSpannedScope());
+    }
+    
+    return result;
+  }
+  
+  @Override
+  public void setSpannedScope(Scope spannedScope) {
+    this.spannedScope = Optional.ofNullable(spannedScope);
+  }
+  
+  
   
   /**
    * @return prettyPrinter

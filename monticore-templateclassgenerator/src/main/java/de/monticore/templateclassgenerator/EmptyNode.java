@@ -233,5 +233,29 @@ public class EmptyNode implements ASTNode {
     // TODO Auto-generated method stub
     return null;
   }
+
+  /**
+   * @see de.monticore.ast.ASTNode#enclosingScopeIsPresent()
+   */
+  @Override
+  public boolean enclosingScopeIsPresent() {
+    return false;
+  }
+
+  /**
+   * @see de.monticore.ast.ASTNode#symbolIsPresent()
+   */
+  @Override
+  public boolean symbolIsPresent() {
+    return false;
+  }
+
+  /**
+   * @see de.monticore.ast.ASTNode#spannedScopeIsPresent()
+   */
+  @Override
+  public boolean spannedScopeIsPresent() {
+    return false;
+  }
   
 }

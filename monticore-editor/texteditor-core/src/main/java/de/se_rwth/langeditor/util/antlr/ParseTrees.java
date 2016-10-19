@@ -18,7 +18,6 @@ package de.se_rwth.langeditor.util.antlr;
 
 import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.getLast;
-import static org.antlr.v4.runtime.tree.Trees.descendants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +81,7 @@ public final class ParseTrees {
   
   public static Optional<TerminalNode> getTerminalBySourceCharIndex(ParseTree parseTree,
       int documentOffset) {
-    List<TerminalNode> terminals = Trees.descendants(parseTree).stream()
+    List<TerminalNode> terminals = Trees.getDescendants(parseTree).stream()
         .filter(TerminalNode.class::isInstance)
         .map(TerminalNode.class::cast)
         .collect(Collectors.toList());
@@ -96,9 +95,36 @@ public final class ParseTrees {
     return Optional.empty();
   }
   
+  /** Find smallest subtree of t enclosing range start..stop
+   *  inclusively using postorder traversal.  Recursive depth-first-search.
+   *
+   *  @since 4.5.1
+   */
+  public static ParserRuleContext getRootOfSubtreeEnclosingRegion(ParseTree t,
+                                  int start, // inclusive
+                                  int stop)  // inclusive
+  {
+    int n = t.getChildCount();
+    for (int i = 0; i<n; i++) {
+      ParseTree child = t.getChild(i);
+      ParserRuleContext r = getRootOfSubtreeEnclosingRegion(child, start, stop);
+      if ( r!=null ) return r;
+    }
+    if ( t instanceof ParserRuleContext ) {
+      ParserRuleContext r = (ParserRuleContext) t;
+      if ( start>=r.getStart().getStartIndex() && // is range fully contained in t?
+         (r.getStop()==null || stop<=r.getStop().getStopIndex()) )
+      {
+        // note: r.getStop()==null likely implies that we bailed out of parser and there's nothing to the right
+        return r;
+      }
+    }
+    return null;
+  }
+  
   public static Optional<TerminalNode> getTerminalByLineAndColumn(ParseTree parseTree,
       int line, int column) {
-    List<TerminalNode> terminals = Trees.descendants(parseTree).stream()
+    List<TerminalNode> terminals = Trees.getDescendants(parseTree).stream()
         .filter(TerminalNode.class::isInstance)
         .map(TerminalNode.class::cast)
         .collect(Collectors.toList());
@@ -113,14 +139,14 @@ public final class ParseTrees {
   }
   
   public static Optional<TerminalNode> getFirstTerminal(ParseTree parseTree) {
-    return descendants(parseTree).stream()
+    return Trees.getDescendants(parseTree).stream()
         .filter(TerminalNode.class::isInstance)
         .map(TerminalNode.class::cast)
         .findFirst();
   }
   
   public static Optional<TerminalNode> getLastTerminal(ParseTree parseTree) {
-    TerminalNode lastTerminal = getLast(filter(descendants(parseTree), TerminalNode.class), null);
+    TerminalNode lastTerminal = getLast(filter(Trees.getDescendants(parseTree), TerminalNode.class), null);
     return Optional.ofNullable(lastTerminal);
   }
   
@@ -138,7 +164,7 @@ public final class ParseTrees {
   
   public static ImmutableSet<ParseTree> filterContexts(ParseTree parseTree,
       ImmutableSet<Class<? extends ParseTree>> types) {
-    Set<ParserRuleContext> matchingRules = Trees.descendants(parseTree).stream()
+    Set<ParserRuleContext> matchingRules = Trees.getDescendants(parseTree).stream()
         .filter(descendant -> types.contains(descendant.getClass()))
         .map(ParserRuleContext.class::cast)
         .collect(Collectors.toSet());
