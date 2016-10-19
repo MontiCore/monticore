@@ -118,10 +118,10 @@ public class ${className} extends de.monticore.symboltable.CommonSymbolTableCrea
   ${includeArgs("symboltable.symboltablecreators.SymbolMethods", ruleSymbol)}
   <#elseif genHelper.spansScope(ruleSymbol)>
   ${includeArgs("symboltable.symboltablecreators.ScopeMethods", ruleSymbol)}
-  <#else>
+  <#elseif genHelper.isStartRule(ruleSymbol)>
   @Override
   public void endVisit(${astPrefix}${ruleName} ast) {
-    ${includeArgs("symboltable.symboltablecreators.SetEnclosingScopeOfNodes", ruleSymbol)}
+    setEnclosingScopeOfNodes(ast);
   }
   </#if>
 </#list>

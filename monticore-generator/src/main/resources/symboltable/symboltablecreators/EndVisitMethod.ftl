@@ -40,5 +40,7 @@ ${signature("ruleSymbol")}
   @Override
   public void endVisit(${astPrefix}${ruleName} ast) {
     removeCurrentScope();
-    ${includeArgs("symboltable.symboltablecreators.SetEnclosingScopeOfNodes", ruleSymbol)}
+    <#if genHelper.isStartRule(ruleSymbol)>
+    setEnclosingScopeOfNodes(ast);
+    </#if>
   }

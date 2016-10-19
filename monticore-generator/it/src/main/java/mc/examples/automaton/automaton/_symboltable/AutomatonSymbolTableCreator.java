@@ -5,18 +5,19 @@
  */
 package mc.examples.automaton.automaton._symboltable;
 
-import static java.util.Objects.requireNonNull;
-
-import java.util.ArrayList;
-import java.util.Optional;
-
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolverConfiguration;
 import de.monticore.symboltable.Scope;
 import mc.examples.automaton.automaton._ast.ASTAutomaton;
+import mc.examples.automaton.automaton._ast.ASTAutomatonNode;
 import mc.examples.automaton.automaton._ast.ASTState;
 import mc.examples.automaton.automaton._ast.ASTTransition;
+
+import java.util.ArrayList;
+import java.util.Optional;
+
+import static java.util.Objects.requireNonNull;
 
 public class AutomatonSymbolTableCreator extends AutomatonSymbolTableCreatorTOP {
   
@@ -27,7 +28,7 @@ public class AutomatonSymbolTableCreator extends AutomatonSymbolTableCreatorTOP 
   }
 
   @Override
-  public Scope createFromAST(ASTAutomaton rootNode) {
+  public Scope createFromAST(ASTAutomatonNode rootNode) {
       requireNonNull(rootNode);
 
       final ArtifactScope artifactScope = new ArtifactScope(Optional.empty(), "", new ArrayList<>());
