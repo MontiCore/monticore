@@ -108,47 +108,22 @@ public class ${className} extends de.monticore.symboltable.CommonSymbolTableCrea
     }
   }
 
-<#list rules as r>
-  <#assign ruleName = r.getName()>
-  <#assign ruleNameLower = r.getName()?uncap_first>
+<#list rules as ruleSymbol>
+  <#assign ruleName = ruleSymbol.getName()>
+  <#assign ruleNameLower = ruleSymbol.getName()?uncap_first>
   <#assign symbolName = ruleName + "Symbol">
-  <#if genHelper.isScopeSpanningSymbol(r)>
-  ${includeArgs("symboltable.symboltablecreators.ScopeSpanningSymbolMethods", r)}
-  <#elseif genHelper.isSymbol(r)>
-  ${includeArgs("symboltable.symboltablecreators.SymbolMethods", r)}
-  <#elseif genHelper.spansScope(r)>
-  @Override
-  public void visit(${astPrefix}${ruleName} ast) {
-    MutableScope scope = create_${ruleName}(ast);
-    initialize_${ruleName}(scope, ast);
-    putOnStack(scope);
-    setLinkBetweenSpannedScopeAndNode(scope, ast);
-  }
-
-  protected MutableScope create_${ruleName}(${astPrefix}${ruleName} ast) {
-    <#if !genHelper.isNamed(r)>
-    // creates new visibility scope
-    return new de.monticore.symboltable.CommonScope(false);
-    <#else>
-    // creates new shadowing scope
-    return new de.monticore.symboltable.CommonScope(true);
-    </#if>
-  }
-
-  protected void initialize_${ruleName}(MutableScope scope, ${astPrefix}${ruleName} ast) {
-    <#if !genHelper.isNamed(r)>
-    // e.g., scope.setName(ast.getName())
-    <#else>
-    scope.setName(ast.getName());
-    </#if>
-  }
-
+  <#if genHelper.isScopeSpanningSymbol(ruleSymbol)>
+  ${includeArgs("symboltable.symboltablecreators.ScopeSpanningSymbolMethods", ruleSymbol)}
+  <#elseif genHelper.isSymbol(ruleSymbol)>
+  ${includeArgs("symboltable.symboltablecreators.SymbolMethods", ruleSymbol)}
+  <#elseif genHelper.spansScope(ruleSymbol)>
+  ${includeArgs("symboltable.symboltablecreators.ScopeMethods", ruleSymbol)}
+  <#else>
   @Override
   public void endVisit(${astPrefix}${ruleName} ast) {
-    removeCurrentScope();
+    ${includeArgs("symboltable.symboltablecreators.SetEnclosingScopeOfNodes", ruleSymbol)}
   }
   </#if>
-
 </#list>
 
 }

@@ -37,6 +37,8 @@ ${signature("ruleSymbol")}
 <#assign fqn = genHelper.getQualifiedGrammarName()?lower_case>
 <#assign astPrefix = fqn + "._ast.AST">
 
-  ${includeArgs("symboltable.symboltablecreators.SymbolMethods", ruleSymbol)}
-
-  ${includeArgs("symboltable.symboltablecreators.EndVisitMethod", ruleSymbol)}
+  @Override
+  public void endVisit(${astPrefix}${ruleName} ast) {
+    removeCurrentScope();
+    ${includeArgs("symboltable.symboltablecreators.SetEnclosingScopeOfNodes", ruleSymbol)}
+  }
