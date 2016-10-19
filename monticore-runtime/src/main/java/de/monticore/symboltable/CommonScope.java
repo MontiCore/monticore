@@ -19,19 +19,8 @@
 
 package de.monticore.symboltable;
 
-import com.google.common.collect.FluentIterable;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import de.monticore.ast.ASTNode;
-import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
-import de.monticore.symboltable.resolving.ResolvingFilter;
-import de.monticore.symboltable.resolving.ResolvingInfo;
-import de.monticore.symboltable.visibility.IsShadowedBySymbol;
-import de.se_rwth.commons.Joiners;
-import de.se_rwth.commons.Splitters;
-import de.se_rwth.commons.logging.Log;
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.base.Strings.nullToEmpty;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,8 +35,20 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.base.Strings.nullToEmpty;
+import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+
+import de.monticore.ast.ASTNode;
+import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
+import de.monticore.symboltable.resolving.ResolvingFilter;
+import de.monticore.symboltable.resolving.ResolvingInfo;
+import de.monticore.symboltable.visibility.IsShadowedBySymbol;
+import de.se_rwth.commons.Joiners;
+import de.se_rwth.commons.Splitters;
+import de.se_rwth.commons.logging.Log;
 
 // TODO PN Doc resolve[Down|Up|Many|Locally] methods
 
@@ -490,7 +491,6 @@ public class CommonScope implements MutableScope {
       Predicate<Symbol> predicate) {
     Log.errorIfNull(resolvingInfo);
     resolvingInfo.addInvolvedScope(this);
-
     Collection<ResolvingFilter<? extends Symbol>> resolversForKind =
         getResolvingFiltersForTargetKind(resolvingInfo.getResolvingFilters(), kind);
 
@@ -501,6 +501,7 @@ public class CommonScope implements MutableScope {
       try {
         Optional<T> resolvedSymbol = (Optional<T>) resolvingFilter.filter(resolvingInfo, name, symbols);
         if (resolvedSymbol.isPresent()) {
+          System.err.println(" resolvedSymbol " + resolvedSymbol.get());
           // TODO add resolvedSymbols to resolvingInfo?
           if (resolvedSymbols.contains(resolvedSymbol.get())) {
             // TODO PN do not add to list in this case?
@@ -571,6 +572,7 @@ public class CommonScope implements MutableScope {
   @Override
   public <T extends Symbol> Collection<T> resolveDownMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier,
       Predicate<Symbol> predicate) {
+  //  System.err.println("New Call for " + name);
     // 1. Conduct search locally in the current scope
     final Set<T> resolved = this.resolveManyLocally(resolvingInfo, name, kind, modifier, predicate);
 
@@ -578,16 +580,28 @@ public class CommonScope implements MutableScope {
         + "\") in scope \"" + getName() + "\"";
     Log.trace("START " + resolveCall + ". Found #" + resolved.size() + " (local)", "");
 
+  //  System.err.println("START " + resolveCall + ". Found #" + resolved.size() + " (local)");
+    
     // If no matching symbols have been found...
     if (resolved.isEmpty()) {
       // 2. Continue search in sub scopes and ...
       for (MutableScope subScope : getSubScopes()) {
+        if (!resolved.isEmpty()) {
+   //       System.err.println(" resolved: " + resolved);
+        }
         final Collection<T> resolvedFromSub = subScope.continueAsSubScope(resolvingInfo, name, kind, modifier, predicate);
+     //   System.err.println(" name " + name  + " resolvedFromSub " + resolvedFromSub);
         // 3. unify results
         resolved.addAll(resolvedFromSub);
       }
     }
-
+  //  System.err.println("END " + resolveCall + ". Found #" + resolved.size());
+//    if (resolved.size() == 2) {
+//      CommonSymbol s1 = (CommonSymbol)((LinkedHashSet<CommonSymbol>)resolved).toArray()[0];
+//      CommonSymbol s2 = (CommonSymbol)((LinkedHashSet<CommonSymbol>)resolved).toArray()[1];
+//      System.err.println("0: " + s1.getFullName() + "  " + s1.getEnclosingScope().getName() + " astNode " + s1.getAstNode());
+//      System.err.println("1: " + s2.getFullName() + "  " + s2.getEnclosingScope().getName() + " astNode " + s2.getAstNode());
+//    }
     Log.trace("END " + resolveCall + ". Found #" + resolved.size() , "");
 
     return resolved;

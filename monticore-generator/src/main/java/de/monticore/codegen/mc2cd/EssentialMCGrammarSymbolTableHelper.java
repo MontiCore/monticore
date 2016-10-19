@@ -298,7 +298,7 @@ return symbols;
       String string = grammarSymbol.isPresent()
           ? grammarSymbol.get().getFullName().toLowerCase()
           : ""
-              + GeneratorHelper.AST_PACKAGE_SUFFIX_DOT + "." + prefix +
+              + GeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT + prefix +
               StringTransformations.capitalize(symbol.getName() + suffix);
       
       if (string.startsWith(".")) {

@@ -102,7 +102,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
    */
   public static String getAstPackage(String qualifiedName) {
     Log.errorIfNull(qualifiedName);
-    return Joiners.DOT.join(qualifiedName.toLowerCase(), getAstPackageSuffix());
+    return Joiners.DOT.join(qualifiedName.toLowerCase(), AST_PACKAGE_SUFFIX_DOT1);
   }
   
   /**
@@ -142,7 +142,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
   
   public static String getConstantClassName(EssentialMCGrammarSymbol grammarSymbol) {
     return grammarSymbol.getFullName().toLowerCase() +
-        GeneratorHelper.AST_PACKAGE_SUFFIX_DOT + "."
+        GeneratorHelper.AST_DOT_PACKAGE_SUFFIX + "."
         + getConstantClassSimpleName(grammarSymbol);
     
   }

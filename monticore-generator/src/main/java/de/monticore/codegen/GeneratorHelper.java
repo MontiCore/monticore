@@ -106,7 +106,9 @@ public class GeneratorHelper extends TypesHelper {
   
   public static final String PARSER_PACKAGE_SUFFIX = "._parser";
   
-  public static final String AST_PACKAGE_SUFFIX_DOT = "._ast";
+  public static final String AST_DOT_PACKAGE_SUFFIX = "._ast";
+  
+  public static final String AST_PACKAGE_SUFFIX_DOT1 = "_ast.";
   
   public static final String AST_DOT_PACKAGE_SUFFIX_DOT = "._ast.";
   
@@ -1430,7 +1432,7 @@ public class GeneratorHelper extends TypesHelper {
   }
   
   public Optional<CDTypeSymbol> resolveCdType(String type) {
-    Log.trace("Resolve: " + type + " -> " + symbolTable.resolve(type, CDTypeSymbol.KIND), LOG_NAME);
+  //  Log.trace("Resolve: " + type + " -> " + symbolTable.resolve(type, CDTypeSymbol.KIND), LOG_NAME);
     return symbolTable.resolve(type, CDTypeSymbol.KIND);
   }
   
