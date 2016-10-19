@@ -30,13 +30,14 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-${signature("className", "directSuperCds", "rules")}
+${signature("className", "directSuperCds", "rules", "hcPath")}
 
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign grammarName = ast.getName()?cap_first>
 <#assign fqn = genHelper.getQualifiedGrammarName()?lower_case>
 <#assign package = genHelper.getTargetPackage()?lower_case>
 <#assign topAstName = genHelper.getQualifiedStartRuleName()>
+<#assign astPrefix = fqn + "._ast.AST">
 
 <#-- Copyright -->
 ${tc.defineHookPoint("JavaCopyright")}
@@ -87,7 +88,7 @@ public class ${className} extends de.monticore.symboltable.CommonSymbolTableCrea
   * @param rootNode the root node
   * @return the first scope that was created
   */
-  public Scope createFromAST(${fqn}._ast.AST${grammarName}Node rootNode) {
+  public Scope createFromAST(${astPrefix}${grammarName}Node rootNode) {
     Log.errorIfNull(rootNode, "0xA7004${genHelper.getGeneratedErrorCode(ast)} Error by creating of the ${className} symbol table: top ast node is null");
     rootNode.accept(realThis);
     return getFirstCreatedScope();
@@ -108,12 +109,44 @@ public class ${className} extends de.monticore.symboltable.CommonSymbolTableCrea
   }
 
 <#list rules as r>
+  <#assign ruleName = r.getName()>
+  <#assign ruleNameLower = r.getName()?uncap_first>
+  <#assign symbolName = ruleName + "Symbol">
   <#if genHelper.isScopeSpanningSymbol(r)>
-  // ${r.getName()} sssymbol
+  ${includeArgs("symboltable.symboltablecreators.ScopeSpanningSymbolMethods", r)}
   <#elseif genHelper.isSymbol(r)>
-  // ${r.getName()} symbol
+  ${includeArgs("symboltable.symboltablecreators.SymbolMethods", r)}
   <#elseif genHelper.spansScope(r)>
-  // ${r.getName()} scope
+  @Override
+  public void visit(${astPrefix}${ruleName} ast) {
+    MutableScope scope = create_${ruleName}(ast);
+    initialize_${ruleName}(scope, ast);
+    putOnStack(scope);
+    setLinkBetweenSpannedScopeAndNode(scope, ast);
+  }
+
+  protected MutableScope create_${ruleName}(${astPrefix}${ruleName} ast) {
+    <#if !genHelper.isNamed(r)>
+    // creates new visibility scope
+    return new de.monticore.symboltable.CommonScope(false);
+    <#else>
+    // creates new shadowing scope
+    return new de.monticore.symboltable.CommonScope(true);
+    </#if>
+  }
+
+  protected void initialize_${ruleName}(MutableScope scope, ${astPrefix}${ruleName} ast) {
+    <#if !genHelper.isNamed(r)>
+    // e.g., scope.setName(ast.getName())
+    <#else>
+    scope.setName(ast.getName());
+    </#if>
+  }
+
+  @Override
+  public void endVisit(${astPrefix}${ruleName} ast) {
+    removeCurrentScope();
+  }
   </#if>
 
 </#list>
