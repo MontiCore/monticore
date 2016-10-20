@@ -82,7 +82,7 @@ public class MontiCoreReports implements ReportManagerFactory {
     NodeTreeDecoratedReporter nodeTreeDecorated = new NodeTreeDecoratedReporter(
         this.outputDirectory, modelName, repository);
     NodeTypesReporter nodeTypes = new NodeTypesReporter(this.outputDirectory, modelName);
-    SymbolTableReporter symbolTable = new SymbolTableReporter(this.outputDirectory, modelName, repository);
+    SymbolTableReporter symbolTable = new MCSymbolTableReporter(this.outputDirectory, modelName, repository);
     TransformationReporter transformations = new TransformationReporter(this.outputDirectory,
         modelName, repository);
     ArtifactGmlReporter artifactGml = new ArtifactGmlReporter(this.outputDirectory, modelName);
