@@ -136,7 +136,8 @@ public class SymbolTableReporter extends AReporter {
       type = type.substring(0, i);
     }
     
-    printer.println(StringTransformations.uncapitalize(sym.getName()) + ": " + type + " {");    
+    String symName = "@" + StringTransformations.uncapitalize(sym.getName()) + "!Symbol";
+    printer.println(symName + ": " + type + " {");    
     printer.indent();  
     reportAttributes(sym, printer);
     printer.unindent();   

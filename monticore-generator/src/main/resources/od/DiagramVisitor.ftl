@@ -69,6 +69,10 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
         String name = StringTransformations.uncapitalize(reporting.getASTNodeNameFormatted(node));
         printObject(name, "${astName}");
         pp.indent();
+        if (node.getSymbol().isPresent() && !node.getSymbol().get().getName().isEmpty()) {
+          String symName = "@" + StringTransformations.uncapitalize(node.getSymbol().get().getName()) + "!Symbol";
+          pp.println("symbol = " + symName + ";");
+        }
         <#list type.getAllVisibleFields() as field>
  
           <#if genHelper.isAstNode(field) || genHelper.isOptionalAstNode(field) >
