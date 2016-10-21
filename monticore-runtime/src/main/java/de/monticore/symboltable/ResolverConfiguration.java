@@ -40,14 +40,23 @@ public final class ResolverConfiguration {
   private final Map<String, Set<ResolvingFilter<? extends Symbol>>> specificFilters = new HashMap<>();
 
   private final Set<ResolvingFilter<? extends Symbol>> defaultFilters = new LinkedHashSet<>();
-  
+
+  /**
+   * @deprecated use {@link #addFilter(String, ResolvingFilter)} instead
+   */
+  @Deprecated
+  public void addResolver(String scopeName,
+      ResolvingFilter<? extends Symbol> resolvingFilter) {
+    addFilter(scopeName, resolvingFilter);
+  }
+
   /**
    * Adds a resolving filter to the set of filters for the specified scope name.
-   * 
+   *
    * @param scopeName the name of the scope
    * @param resolvingFilter the filter to add for the specified scope
    */
-  public void addResolver(String scopeName,
+  public void addFilter(String scopeName,
       ResolvingFilter<? extends Symbol> resolvingFilter) {
     if (!specificFilters.containsKey(scopeName)) {
       specificFilters.put(scopeName, new LinkedHashSet<>());
