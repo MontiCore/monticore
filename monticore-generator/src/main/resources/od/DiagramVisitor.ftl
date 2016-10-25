@@ -70,7 +70,7 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
         printObject(name, "${astName}");
         pp.indent();
         if (node.getSymbol().isPresent() && !node.getSymbol().get().getName().isEmpty()) {
-          String symName = "@" + StringTransformations.uncapitalize(node.getSymbol().get().getName()) + "!Symbol";
+          String symName = "@" + node.getSymbol().get().getName() + "!Symbol";
           pp.println("symbol = " + symName + ";");
         }
         <#list type.getAllVisibleFields() as field>

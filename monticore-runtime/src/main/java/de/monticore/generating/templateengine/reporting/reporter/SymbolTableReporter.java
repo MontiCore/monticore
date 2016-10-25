@@ -34,7 +34,6 @@ import de.monticore.symboltable.Scopes;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.se_rwth.commons.Names;
-import de.se_rwth.commons.StringTransformations;
 
 /**
  * @author BM
@@ -42,6 +41,8 @@ import de.se_rwth.commons.StringTransformations;
 public class SymbolTableReporter extends AReporter {
   
   final static String SIMPLE_FILE_NAME = "13_SymbolTable";
+  
+  public static final String LAYOUT_FULL = "@%s!Symbol";
     
   private final String outputDir;
   
@@ -93,8 +94,9 @@ public class SymbolTableReporter extends AReporter {
     }
     else {
       type = Names.getSimpleName(scope.getClass().getName());
-    }    
-    printer.println(StringTransformations.uncapitalize(scope.getName().orElse("")) + ": " + type + "{");
+    }
+    String scopeName = format(scope.getName().orElse(""));
+    printer.println(scopeName + ": " + type + "{");
     printer.indent();
     
     if (scope.getSpanningSymbol().isPresent()) {
@@ -136,7 +138,7 @@ public class SymbolTableReporter extends AReporter {
       type = type.substring(0, i);
     }
     
-    String symName = "@" + StringTransformations.uncapitalize(sym.getName()) + "!Symbol";
+    String symName = format(sym.getName());
     printer.println(symName + ": " + type + " {");    
     printer.indent();  
     reportAttributes(sym, printer);
@@ -154,6 +156,10 @@ public class SymbolTableReporter extends AReporter {
     if (!sym.getAccessModifier().equals(AccessModifier.ALL_INCLUSION)) {
       printer.println("accesModifier = \"" + sym.getAccessModifier().toString() + "\";");
     }
-    
   }
+  
+  protected String format(String name) {
+    return String.format(LAYOUT_FULL, name);
+  }
+  
 }
