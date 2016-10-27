@@ -34,7 +34,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
-import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.KeyHandler;
 import org.eclipse.gef.KeyStroke;
 import org.eclipse.gef.MouseWheelHandler;
@@ -272,14 +271,16 @@ public abstract class GenericGraphicsViewer extends ScrollingGraphicalViewer {
     
     ILayoutAlgorithm layoutAlgo = layout;
     
-    if (!(getDisplayingPart() instanceof GenericGraphicsEditor)) {
+ /*
+  * Don't allow moving etc in the outline view
+  *    if (!(getDisplayingPart() instanceof GenericGraphicsEditor)) {
       for (EditPart ep : new ArrayList<EditPart>(this.getEditPartRegistry().values())) {
         ep.removeEditPolicy(EditPolicy.DIRECT_EDIT_ROLE);
         ep.removeEditPolicy(EditPolicy.LAYOUT_ROLE);
         ep.removeEditPolicy(EditPolicy.CONNECTION_BENDPOINTS_ROLE);
       }
     }
-    
+*/    
     boolean newLayout = gLoader.combineModelViewData(
         new ArrayList<EditPart>(this.getEditPartRegistry().values()), layoutAlgo);
         
