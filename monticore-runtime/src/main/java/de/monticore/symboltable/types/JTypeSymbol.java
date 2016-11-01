@@ -42,9 +42,9 @@ public interface JTypeSymbol extends TypeSymbol, ScopeSpanningSymbol {
 
   List<? extends JTypeReference<? extends JTypeSymbol>> getSuperTypes();
 
-  List<? extends JAttributeSymbol> getFields();
+  List<? extends JFieldSymbol> getFields();
 
-  Optional<? extends JAttributeSymbol> getField(String attributeName);
+  Optional<? extends JFieldSymbol> getField(String attributeName);
 
   List<? extends JMethodSymbol> getMethods();
 
