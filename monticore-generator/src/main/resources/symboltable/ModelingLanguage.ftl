@@ -69,7 +69,7 @@ public abstract class ${className} extends de.monticore.CommonModelingLanguage {
   <#if !skipSTGen>
   @Override
   public Optional<${grammarName}SymbolTableCreator> getSymbolTableCreator(
-      ResolverConfiguration resolvingConfiguration, MutableScope enclosingScope) {
+      ResolvingConfiguration resolvingConfiguration, MutableScope enclosingScope) {
     return Optional.of(new ${grammarName}SymbolTableCreator(resolvingConfiguration, enclosingScope));
   }
   </#if>
@@ -88,7 +88,7 @@ public abstract class ${className} extends de.monticore.CommonModelingLanguage {
 
   protected void initResolvingFilters() {
     <#list ruleNames as ruleName>
-    addResolver(new ${ruleName?cap_first}ResolvingFilter());
+    addResolvingFilter(new ${ruleName?cap_first}ResolvingFilter());
     </#list>
   }
 }

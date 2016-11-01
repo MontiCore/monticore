@@ -61,7 +61,7 @@ public class ${className} extends de.monticore.modelloader.ModelingLanguageModel
 
   @Override
   protected void createSymbolTableFromAST(final ${topAstName} ast, final String modelName,
-    final MutableScope enclosingScope, final ResolverConfiguration resolvingConfiguration) {
+    final MutableScope enclosingScope, final ResolvingConfiguration resolvingConfiguration) {
     <#if !skipSTGen>
     final ${grammarName}SymbolTableCreator symbolTableCreator =
             getModelingLanguage().getSymbolTableCreator(resolvingConfiguration, enclosingScope).orElse(null);
