@@ -19,11 +19,9 @@
 
 package mc.embedding.composite._symboltable;
 
-import java.util.Deque;
-
 import de.monticore.symboltable.CommonSymbolTableCreator;
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 import mc.embedding.composite._visitor.CommonCompositeDelegatorVisitor;
@@ -33,6 +31,8 @@ import mc.embedding.embedded._symboltable.EmbeddedSymbolTableCreator;
 import mc.embedding.host._ast.ASTHost;
 import mc.embedding.host._symboltable.HostSymbolTableCreator;
 
+import java.util.Deque;
+
 public class CompositeSymbolTableCreator extends CommonSymbolTableCreator implements CompositeVisitor {
 
   private final HostSymbolTableCreator hostSymbolTableCreator;
@@ -41,7 +41,7 @@ public class CompositeSymbolTableCreator extends CommonSymbolTableCreator implem
 
   private CompositeVisitor realThis = this;
 
-  public CompositeSymbolTableCreator(final ResolverConfiguration resolverConfig,
+  public CompositeSymbolTableCreator(final ResolvingConfiguration resolverConfig,
       final MutableScope enclosingScope) {
     super(resolverConfig, enclosingScope);
 
@@ -54,7 +54,7 @@ public class CompositeSymbolTableCreator extends CommonSymbolTableCreator implem
         new EmbeddedSymbolTableCreator(resolverConfig, scopeStack));
   }
 
-  public CompositeSymbolTableCreator(final ResolverConfiguration resolverConfig,
+  public CompositeSymbolTableCreator(final ResolvingConfiguration resolverConfig,
       final Deque<MutableScope> scopeStack) {
     super(resolverConfig, scopeStack);
 

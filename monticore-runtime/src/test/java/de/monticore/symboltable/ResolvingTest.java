@@ -116,11 +116,11 @@ public class ResolvingTest {
 
 
     final ModelingLanguage modelingLanguage = new EntityLanguage();
-    final ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
-    resolverConfiguration.addTopScopeResolvers(modelingLanguage.getResolvers());
+    final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
+    resolvingConfiguration.addTopScopeResolvers(modelingLanguage.getResolvers());
     final ModelPath modelPath = new ModelPath(Paths.get(""));
 
-    final GlobalScope globalScope = new GlobalScope(modelPath, modelingLanguage, resolverConfiguration);
+    final GlobalScope globalScope = new GlobalScope(modelPath, modelingLanguage, resolvingConfiguration);
     globalScope.add(entity);
 
     assertTrue(globalScope.resolve("Entity", EntitySymbol.KIND).isPresent());
@@ -146,11 +146,11 @@ public class ResolvingTest {
 
 
     final ModelingLanguage modelingLanguage = new EntityLanguage();
-    final ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
-    resolverConfiguration.addTopScopeResolvers(modelingLanguage.getResolvers());
+    final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
+    resolvingConfiguration.addTopScopeResolvers(modelingLanguage.getResolvers());
     final ModelPath modelPath = new ModelPath(Paths.get(""));
 
-    final GlobalScope globalScope = new GlobalScope(modelPath, modelingLanguage, resolverConfiguration);
+    final GlobalScope globalScope = new GlobalScope(modelPath, modelingLanguage, resolvingConfiguration);
     globalScope.addSubScope(artifactScope);
 
     assertTrue(globalScope.resolve("p.q.Entity", EntitySymbol.KIND).isPresent());
@@ -165,14 +165,14 @@ public class ResolvingTest {
 
   @Test
   public void testCannotResolveInnerSymbolViaPartialName() {
-    final ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
-    resolverConfiguration.addTopScopeResolvers(new EntityLanguage().getResolvers());
+    final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
+    resolvingConfiguration.addTopScopeResolvers(new EntityLanguage().getResolvers());
 
     final ArtifactScope artifactScope = new ArtifactScope(Optional.empty(), "p", new ArrayList<>());
-    artifactScope.setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
+    artifactScope.setResolvingFilters(resolvingConfiguration.getTopScopeResolvingFilters());
 
     final EntitySymbol entity = new EntitySymbol("Entity");
-    entity.getMutableSpannedScope().setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
+    entity.getMutableSpannedScope().setResolvingFilters(resolvingConfiguration.getTopScopeResolvingFilters());
     artifactScope.add(entity);
 
     final ActionSymbol action = new ActionSymbol("action");

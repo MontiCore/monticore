@@ -19,23 +19,23 @@
 
 package de.monticore.symboltable;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import de.monticore.io.paths.ModelPath;
+import de.monticore.symboltable.mocks.languages.entity.EntitySymbol;
+import de.monticore.symboltable.resolving.CommonResolvingFilter;
+import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Optional;
 
-import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.mocks.languages.entity.EntitySymbol;
-import de.monticore.symboltable.resolving.CommonResolvingFilter;
-import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * @author Pedram Mir Seyed Nazari
@@ -46,7 +46,7 @@ public class ArtifactScopeTest {
   public void testArtifactScopeWithoutImportStatements() {
     final CommonResolvingFilter<EntitySymbol> classResolver = new CommonResolvingFilter<>(EntitySymbol.KIND);
 
-    final MutableScope globalScope = new GlobalScope(new ModelPath(), new LinkedHashSet<>(), new ResolverConfiguration());
+    final MutableScope globalScope = new GlobalScope(new ModelPath(), new LinkedHashSet<>(), new ResolvingConfiguration());
     globalScope.addResolver(classResolver);
 
     ArtifactScope artifactScope1 = new ArtifactScope(Optional.of(globalScope), "p", new ArrayList<>());
@@ -87,7 +87,7 @@ public class ArtifactScopeTest {
   public void testArtifactScopeWithImportStatements() {
     final CommonResolvingFilter<EntitySymbol> classResolver = new CommonResolvingFilter<>(EntitySymbol.KIND);
 
-    final MutableScope globalScope = new GlobalScope(new ModelPath(), new LinkedHashSet<>(), new ResolverConfiguration());
+    final MutableScope globalScope = new GlobalScope(new ModelPath(), new LinkedHashSet<>(), new ResolvingConfiguration());
     globalScope.addResolver(classResolver);
 
     ArtifactScope artifactScope1 = new ArtifactScope(Optional.of(globalScope), "p", Arrays.asList(
@@ -140,7 +140,7 @@ public class ArtifactScopeTest {
   public void testResolveUnqualifiedSymbolInSamePackage() {
     final CommonResolvingFilter<EntitySymbol> classResolver = new CommonResolvingFilter<>(EntitySymbol.KIND);
 
-    final MutableScope globalScope = new GlobalScope(new ModelPath(), new LinkedHashSet<>(), new ResolverConfiguration());
+    final MutableScope globalScope = new GlobalScope(new ModelPath(), new LinkedHashSet<>(), new ResolvingConfiguration());
     globalScope.addResolver(classResolver);
 
     ArtifactScope artifactScope1 = new ArtifactScope(Optional.of(globalScope), "p", new ArrayList<>());
@@ -165,7 +165,7 @@ public class ArtifactScopeTest {
   public void testPackageNameMustBePrefixOfQualifiedSymbolName() {
     final CommonResolvingFilter<EntitySymbol> classResolver = new CommonResolvingFilter<>(EntitySymbol.KIND);
 
-    final MutableScope globalScope = new GlobalScope(new ModelPath(), new LinkedHashSet<>(), new ResolverConfiguration());
+    final MutableScope globalScope = new GlobalScope(new ModelPath(), new LinkedHashSet<>(), new ResolvingConfiguration());
     globalScope.addResolver(classResolver);
 
     ArtifactScope artifactScope1 = new ArtifactScope(Optional.of(globalScope), "p", new ArrayList<>());
@@ -188,7 +188,7 @@ public class ArtifactScopeTest {
   public void testResolveInDefaultPackage() {
     final CommonResolvingFilter<EntitySymbol> classResolver = new CommonResolvingFilter<>(EntitySymbol.KIND);
 
-    final MutableScope globalScope = new GlobalScope(new ModelPath(), new LinkedHashSet<>(), new ResolverConfiguration());
+    final MutableScope globalScope = new GlobalScope(new ModelPath(), new LinkedHashSet<>(), new ResolvingConfiguration());
     globalScope.addResolver(classResolver);
 
     ArtifactScope artifactScope1 = new ArtifactScope(Optional.of(globalScope), "", new ArrayList<>());

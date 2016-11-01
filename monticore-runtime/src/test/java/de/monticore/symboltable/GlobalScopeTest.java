@@ -19,11 +19,6 @@
 
 package de.monticore.symboltable;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.nio.file.Paths;
-
 import de.monticore.ModelingLanguage;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.mocks.languages.entity.EntityLanguage;
@@ -31,6 +26,11 @@ import de.monticore.symboltable.mocks.languages.entity.EntitySymbol;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
+
+import java.nio.file.Paths;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  *
@@ -49,7 +49,7 @@ public class GlobalScopeTest {
     
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/modelloader/modelpath"));
 
-    ResolverConfiguration resolverConfig = new ResolverConfiguration();
+    ResolvingConfiguration resolverConfig = new ResolvingConfiguration();
     resolverConfig.addTopScopeResolver(CommonResolvingFilter.create(EntitySymbol.KIND));
 
     final MutableScope globalScope =

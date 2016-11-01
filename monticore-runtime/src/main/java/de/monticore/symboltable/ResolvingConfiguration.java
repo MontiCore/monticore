@@ -34,8 +34,7 @@ import java.util.Set;
  *
  * @author Pedram Mir Seyed Nazari, Sebastian Oberhoff
  */
-// TODO PN rename to ResolvingConfiguration.
-public final class ResolverConfiguration {
+public final class ResolvingConfiguration {
   
   private final Map<String, Set<ResolvingFilter<? extends Symbol>>> specificFilters = new HashMap<>();
 

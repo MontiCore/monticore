@@ -19,14 +19,12 @@
 
 package de.monticore.symboltable.mocks.languages.scandentity;
 
-import java.util.Optional;
-
 import de.monticore.CommonModelingLanguage;
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.ast.ASTNode;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.mocks.languages.entity.ActionSymbol;
 import de.monticore.symboltable.mocks.languages.entity.EntityLanguage;
 import de.monticore.symboltable.mocks.languages.entity.EntitySymbol;
@@ -35,6 +33,8 @@ import de.monticore.symboltable.mocks.languages.statechart.StateChartSymbol;
 import de.monticore.symboltable.mocks.languages.statechart.StateSymbol;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.Optional;
 
 public class EntityEmbeddingScLanguage extends CommonModelingLanguage {
   
@@ -64,9 +64,8 @@ public class EntityEmbeddingScLanguage extends CommonModelingLanguage {
   }
   
   @Override
-  public Optional<CompositeScAndEntitySymbolTableCreator> getSymbolTableCreator(ResolverConfiguration
-      resolverConfiguration, MutableScope enclosingScope) {
-    return Optional.of(new CompositeScAndEntitySymbolTableCreator(resolverConfiguration,
+  public Optional<CompositeScAndEntitySymbolTableCreator> getSymbolTableCreator(ResolvingConfiguration resolvingConfiguration, MutableScope enclosingScope) {
+    return Optional.of(new CompositeScAndEntitySymbolTableCreator(resolvingConfiguration,
         enclosingScope));
   }
   

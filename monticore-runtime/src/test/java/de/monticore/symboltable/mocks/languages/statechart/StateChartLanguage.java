@@ -19,14 +19,14 @@
 
 package de.monticore.symboltable.mocks.languages.statechart;
 
-import java.util.Optional;
-
 import de.monticore.CommonModelingLanguage;
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.Optional;
 
 public class StateChartLanguage extends CommonModelingLanguage {
   
@@ -46,8 +46,8 @@ public class StateChartLanguage extends CommonModelingLanguage {
 
   @Override
   public Optional<StateChartLanguageSymbolTableCreator> getSymbolTableCreator(
-      final ResolverConfiguration resolverConfiguration, final MutableScope enclosingScope) {
-    return Optional.of(new CommonStateChartSymbolTableCreator(Log.errorIfNull(resolverConfiguration),
+      final ResolvingConfiguration resolvingConfiguration, final MutableScope enclosingScope) {
+    return Optional.of(new CommonStateChartSymbolTableCreator(Log.errorIfNull(resolvingConfiguration),
         Log.errorIfNull(enclosingScope)));
   }
 

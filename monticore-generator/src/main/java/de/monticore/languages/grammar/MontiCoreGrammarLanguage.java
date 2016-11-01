@@ -28,7 +28,7 @@ import de.monticore.languages.grammar.visitors.MCGrammarSymbolTableCreator;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -58,8 +58,8 @@ public class MontiCoreGrammarLanguage extends CommonModelingLanguage {
   
   @Override
   public Optional<MCGrammarSymbolTableCreator> getSymbolTableCreator(
-      ResolverConfiguration resolverConfiguration, @Nullable MutableScope enclosingScope) {
-    return Optional.of(new MCGrammarSymbolTableCreator(resolverConfiguration, enclosingScope,
+      ResolvingConfiguration resolvingConfiguration, @Nullable MutableScope enclosingScope) {
+    return Optional.of(new MCGrammarSymbolTableCreator(resolvingConfiguration, enclosingScope,
         prettyPrinter));
   }
 

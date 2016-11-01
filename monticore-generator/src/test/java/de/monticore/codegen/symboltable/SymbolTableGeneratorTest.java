@@ -19,13 +19,6 @@
 
 package de.monticore.codegen.symboltable;
 
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Optional;
-
 import de.monticore.ModelingLanguage;
 import de.monticore.MontiCoreScript;
 import de.monticore.codegen.AstDependentGeneratorTest;
@@ -34,13 +27,20 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.languages.grammar.MontiCoreGrammarLanguage;
 import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Pedram Mir Seyed Nazari
@@ -110,11 +110,11 @@ public class SymbolTableGeneratorTest extends AstDependentGeneratorTest {
 
     final ModelingLanguage grammarLanguage = new MontiCoreGrammarLanguage();
 
-    final ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
-    resolverConfiguration.addTopScopeResolvers(grammarLanguage.getResolvers());
+    final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
+    resolvingConfiguration.addTopScopeResolvers(grammarLanguage.getResolvers());
 
     GlobalScope globalScope = new GlobalScope(new ModelPath(Paths.get(modelPath.getAbsolutePath())),
-        grammarLanguage, resolverConfiguration);
+        grammarLanguage, resolvingConfiguration);
 
 
 //TODO    decoreate and create cdInfos

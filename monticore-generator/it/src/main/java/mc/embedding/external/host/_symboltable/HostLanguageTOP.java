@@ -25,10 +25,10 @@
 
 package mc.embedding.external.host._symboltable;
 
-import java.util.Optional;
-
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
+
+import java.util.Optional;
 
 public abstract class HostLanguageTOP extends de.monticore.CommonModelingLanguage {
 
@@ -40,8 +40,8 @@ public abstract class HostLanguageTOP extends de.monticore.CommonModelingLanguag
 
   @Override
   public Optional<HostSymbolTableCreator> getSymbolTableCreator(
-      ResolverConfiguration resolverConfiguration, MutableScope enclosingScope) {
-    return Optional.of(new HostSymbolTableCreator(resolverConfiguration, enclosingScope));
+      ResolvingConfiguration resolvingConfiguration, MutableScope enclosingScope) {
+    return Optional.of(new HostSymbolTableCreator(resolvingConfiguration, enclosingScope));
   }
 
   @Override

@@ -7,7 +7,7 @@ package mc.examples.automaton.automaton._symboltable;
 
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import mc.examples.automaton.automaton._ast.ASTAutomaton;
 import mc.examples.automaton.automaton._ast.ASTAutomatonNode;
@@ -22,7 +22,7 @@ import static java.util.Objects.requireNonNull;
 public class AutomatonSymbolTableCreator extends AutomatonSymbolTableCreatorTOP {
   
   public AutomatonSymbolTableCreator(
-      final ResolverConfiguration resolverConfig,
+      final ResolvingConfiguration resolverConfig,
       final MutableScope enclosingScope) {
     super(resolverConfig, enclosingScope);
   }
