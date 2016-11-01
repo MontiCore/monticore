@@ -272,7 +272,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       MontiCoreGrammarLanguage language = new MontiCoreGrammarLanguage();
       
       ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-      resolvingConfiguration.addTopScopeResolvers(language.getResolvers());
+      resolvingConfiguration.addTopScopeResolvers(language.getResolvingFilters());
       
       MCGrammarSymbolTableCreator stCreator = language.getSymbolTableCreator(resolvingConfiguration,
           globalScope).get();
@@ -318,7 +318,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     }
     else {
       ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-      resolvingConfiguration.addTopScopeResolvers(cd4AnalysisLanguage.getResolvers());
+      resolvingConfiguration.addTopScopeResolvers(cd4AnalysisLanguage.getResolvingFilters());
       
       CD4AnalysisSymbolTableCreator stCreator = cd4AnalysisLanguage.getSymbolTableCreator(resolvingConfiguration,
           globalScope).get();
@@ -333,8 +333,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     final MontiCoreGrammarLanguage mcLanguage = new MontiCoreGrammarLanguage();
     
     final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addTopScopeResolvers(mcLanguage.getResolvers());
-    resolvingConfiguration.addTopScopeResolvers(cd4AnalysisLanguage.getResolvers());
+    resolvingConfiguration.addTopScopeResolvers(mcLanguage.getResolvingFilters());
+    resolvingConfiguration.addTopScopeResolvers(cd4AnalysisLanguage.getResolvingFilters());
     
     return new GlobalScope(modelPath, Arrays.asList(mcLanguage, cd4AnalysisLanguage), resolvingConfiguration);
   }

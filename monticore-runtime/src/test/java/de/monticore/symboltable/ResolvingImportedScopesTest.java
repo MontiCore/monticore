@@ -46,7 +46,7 @@ public class ResolvingImportedScopesTest {
   public void testOnlyConsiderExplicitlyImportedScopesWhenResolvingInImportedScope() {
     final ModelingLanguage language = new EntityLanguage();
     final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addTopScopeResolvers(language.getResolvers());
+    resolvingConfiguration.addTopScopeResolvers(language.getResolvingFilters());
 
     final GlobalScope gs = new GlobalScope(new ModelPath(), language, resolvingConfiguration);
     final ArtifactScope as = new ArtifactScope(Optional.empty(), "p", new ArrayList<>());
@@ -86,7 +86,7 @@ public class ResolvingImportedScopesTest {
   public void testSymbolInImportedScopeHasHigherPriorityThanSymbolInEnclosingScope() {
     final ModelingLanguage language = new EntityLanguage();
     final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addTopScopeResolvers(language.getResolvers());
+    resolvingConfiguration.addTopScopeResolvers(language.getResolvingFilters());
 
     final GlobalScope gs = new GlobalScope(new ModelPath(), language, resolvingConfiguration);
     final ArtifactScope as = new ArtifactScope(Optional.empty(), "", new ArrayList<>());
@@ -120,7 +120,7 @@ public class ResolvingImportedScopesTest {
   public void testResolutionContinuesWIthPackageLocalModifierIfSuperTypeIsInSamePackage() {
     final ModelingLanguage language = new EntityLanguage();
     final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addTopScopeResolvers(language.getResolvers());
+    resolvingConfiguration.addTopScopeResolvers(language.getResolvingFilters());
 
     final GlobalScope gs = new GlobalScope(new ModelPath(), language, resolvingConfiguration);
     final ArtifactScope asSub = new ArtifactScope(Optional.empty(), "p.q", new ArrayList<>());
@@ -154,7 +154,7 @@ public class ResolvingImportedScopesTest {
   public void testResolutionContinuesWithProtectedModifierIfSuperTypeIsInDifferentPackage() {
     final ModelingLanguage language = new EntityLanguage();
     final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addTopScopeResolvers(language.getResolvers());
+    resolvingConfiguration.addTopScopeResolvers(language.getResolvingFilters());
 
     final GlobalScope gs = new GlobalScope(new ModelPath(), language, resolvingConfiguration);
     final ArtifactScope asSub = new ArtifactScope(Optional.empty(), "p.q",  singletonList(new ImportStatement("x.y", true)));

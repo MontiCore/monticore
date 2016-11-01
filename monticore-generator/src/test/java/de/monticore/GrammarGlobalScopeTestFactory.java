@@ -40,7 +40,7 @@ public class GrammarGlobalScopeTestFactory {
 
   private static GlobalScope create(ModelingLanguage grammarLanguage) {
     final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addDefaultFilters(grammarLanguage.getResolvers());
+    resolvingConfiguration.addDefaultFilters(grammarLanguage.getResolvingFilters());
 
     return  new GlobalScope(new ModelPath(Paths.get("src/test/resources")),
         grammarLanguage, resolvingConfiguration);

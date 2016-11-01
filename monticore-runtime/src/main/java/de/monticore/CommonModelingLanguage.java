@@ -102,6 +102,11 @@ public abstract class CommonModelingLanguage implements ModelingLanguage {
 
   @Override
   public Collection<ResolvingFilter<? extends Symbol>> getResolvers() {
+    return getResolvingFilters();
+  }
+
+  @Override
+  public Collection<ResolvingFilter<? extends Symbol>> getResolvingFilters() {
     return ImmutableList.copyOf(resolvingFilters);
   }
 

@@ -117,7 +117,7 @@ public class ResolvingTest {
 
     final ModelingLanguage modelingLanguage = new EntityLanguage();
     final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addTopScopeResolvers(modelingLanguage.getResolvers());
+    resolvingConfiguration.addTopScopeResolvers(modelingLanguage.getResolvingFilters());
     final ModelPath modelPath = new ModelPath(Paths.get(""));
 
     final GlobalScope globalScope = new GlobalScope(modelPath, modelingLanguage, resolvingConfiguration);
@@ -147,7 +147,7 @@ public class ResolvingTest {
 
     final ModelingLanguage modelingLanguage = new EntityLanguage();
     final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addTopScopeResolvers(modelingLanguage.getResolvers());
+    resolvingConfiguration.addTopScopeResolvers(modelingLanguage.getResolvingFilters());
     final ModelPath modelPath = new ModelPath(Paths.get(""));
 
     final GlobalScope globalScope = new GlobalScope(modelPath, modelingLanguage, resolvingConfiguration);
@@ -166,7 +166,7 @@ public class ResolvingTest {
   @Test
   public void testCannotResolveInnerSymbolViaPartialName() {
     final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addTopScopeResolvers(new EntityLanguage().getResolvers());
+    resolvingConfiguration.addTopScopeResolvers(new EntityLanguage().getResolvingFilters());
 
     final ArtifactScope artifactScope = new ArtifactScope(Optional.empty(), "p", new ArrayList<>());
     artifactScope.setResolvingFilters(resolvingConfiguration.getTopScopeResolvingFilters());

@@ -115,7 +115,7 @@ public class LanguageCompositionTest {
     language.setParser(new ParserMock(astEntityCompilationUnit));
 
     final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addTopScopeResolvers(language.getResolvers());
+    resolvingConfiguration.addTopScopeResolvers(language.getResolvingFilters());
 
 
     final ModelPath modelPath = new ModelPath(Paths.get

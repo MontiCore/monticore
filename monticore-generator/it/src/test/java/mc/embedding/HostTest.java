@@ -38,7 +38,7 @@ public class HostTest extends GeneratorIntegrationsTest {
   public void test() {
     final HostLanguage language = new HostLanguage();
     final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addTopScopeResolvers(language.getResolvers());
+    resolvingConfiguration.addTopScopeResolvers(language.getResolvingFilters());
 
     final ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/embedding"));
 

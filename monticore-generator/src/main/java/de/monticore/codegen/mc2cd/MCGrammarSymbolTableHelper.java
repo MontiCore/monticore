@@ -50,7 +50,7 @@ public class MCGrammarSymbolTableHelper {
     ModelingLanguage grammarLanguage = new MontiCoreGrammarLanguage();
 
     ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addTopScopeResolvers(grammarLanguage.getResolvers());
+    resolvingConfiguration.addTopScopeResolvers(grammarLanguage.getResolvingFilters());
 
     Grammar_WithConceptsPrettyPrinter prettyPrinter = new Grammar_WithConceptsPrettyPrinter(new IndentPrinter());
 

@@ -50,7 +50,7 @@ public class EssentialMCGrammarSymbolTableHelper {
     ModelingLanguage grammarLanguage = new EssentialMontiCoreGrammarLanguage();
 
     ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addDefaultFilters(grammarLanguage.getResolvers());
+    resolvingConfiguration.addDefaultFilters(grammarLanguage.getResolvingFilters());
 
     Grammar_WithConceptsPrettyPrinter prettyPrinter = new Grammar_WithConceptsPrettyPrinter(new IndentPrinter());
 

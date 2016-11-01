@@ -111,7 +111,7 @@ public class SymbolTableGeneratorTest extends AstDependentGeneratorTest {
     final ModelingLanguage grammarLanguage = new MontiCoreGrammarLanguage();
 
     final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addTopScopeResolvers(grammarLanguage.getResolvers());
+    resolvingConfiguration.addTopScopeResolvers(grammarLanguage.getResolvingFilters());
 
     GlobalScope globalScope = new GlobalScope(new ModelPath(Paths.get(modelPath.getAbsolutePath())),
         grammarLanguage, resolvingConfiguration);

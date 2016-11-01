@@ -56,10 +56,15 @@ public interface ModelingLanguage {
   MCConcreteParser getParser();
 
   /**
-   * @return default resolvers for this language
+   * use {@link #getResolvingFilters()} instead
    */
-  // TODO PN rename to getResolvingFilters
+  @Deprecated
   Collection<ResolvingFilter<? extends Symbol>> getResolvers();
+
+  /**
+   * @return default resolvering filters for this language
+   */
+  Collection<ResolvingFilter<? extends Symbol>> getResolvingFilters();
 
   /**
    *

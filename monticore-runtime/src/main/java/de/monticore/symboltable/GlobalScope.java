@@ -77,7 +77,7 @@ public final class GlobalScope extends CommonScope {
   public GlobalScope(final ModelPath modelPath, final ModelingLanguage language) {
     this(modelPath, language, new ResolvingConfiguration());
 
-    resolvingConfiguration.addTopScopeResolvers(language.getResolvers());
+    resolvingConfiguration.addTopScopeResolvers(language.getResolvingFilters());
     setResolvingFilters(resolvingConfiguration.getTopScopeResolvingFilters());
   }
 
