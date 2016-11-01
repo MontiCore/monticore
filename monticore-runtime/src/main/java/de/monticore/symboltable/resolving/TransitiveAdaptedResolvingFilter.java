@@ -74,7 +74,7 @@ public abstract class TransitiveAdaptedResolvingFilter<S extends Symbol>
 
       // NOTE: Remove this whole if-statement, if adaptors should be created eager.
       if (optSymbol.isPresent()) {
-        resolvedSymbols.add(createAdapter(optSymbol.get()));
+        resolvedSymbols.add(translate(optSymbol.get()));
       }
     }
 
@@ -111,7 +111,7 @@ public abstract class TransitiveAdaptedResolvingFilter<S extends Symbol>
 
       // NOTE: Remove this whole if-statement, if adaptors should be created eager.
       if (optSymbol.isPresent()) {
-        resolvedSymbols.add(createAdapter(optSymbol.get()));
+        resolvedSymbols.add(translate(optSymbol.get()));
       }
     }
 

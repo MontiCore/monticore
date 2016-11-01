@@ -55,9 +55,6 @@ public abstract class CommonAdaptedResolvingFilter<S extends Symbol>
     return sourceKind;
   }
 
-  // TODO PN rename to translate(Symbol s)
-  protected abstract Symbol createAdapter(Symbol s);
-
   @Override
   public Optional<Symbol> filter(ResolvingInfo resolvingInfo, String symbolName, Map<String, Collection<Symbol>> symbols) {
     final Set<Symbol> resolvedSymbols = new LinkedHashSet<>();
@@ -74,11 +71,17 @@ public abstract class CommonAdaptedResolvingFilter<S extends Symbol>
 
       // remove the following if-statement, if adaptors should be created eager.
       if (optSymbol.isPresent()) {
-        resolvedSymbols.add(createAdapter(optSymbol.get()));
+        resolvedSymbols.add(translate(optSymbol.get()));
       }
     }
 
     return ResolvingFilter.getResolvedOrThrowException(resolvedSymbols);
+  }
+
+  @Override
+  public Collection<Symbol> filter(ResolvingInfo resolvingInfo, Collection<Symbol> symbols) {
+    // TODO override method
+    return super.filter(resolvingInfo, symbols);
   }
 
   @Override
@@ -98,17 +101,11 @@ public abstract class CommonAdaptedResolvingFilter<S extends Symbol>
 
       // remove the following if-statement, if adaptors should be created eager.
       if (optSymbol.isPresent()) {
-        resolvedSymbols.add(createAdapter(optSymbol.get()));
+        resolvedSymbols.add(translate(optSymbol.get()));
       }
     }
 
     return ResolvingFilter.getResolvedOrThrowException(resolvedSymbols);
-  }
-
-  @Override
-  public Collection<Symbol> filter(ResolvingInfo resolvingInfo, List<Symbol> symbols) {
-    // TODO PN override implementation
-    return super.filter(resolvingInfo, symbols);
   }
 
   public static Collection<CommonAdaptedResolvingFilter<? extends Symbol>> getFiltersForSourceKind
