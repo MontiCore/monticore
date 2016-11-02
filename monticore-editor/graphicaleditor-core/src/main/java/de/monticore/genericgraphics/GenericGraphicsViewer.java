@@ -422,6 +422,8 @@ public abstract class GenericGraphicsViewer extends ScrollingGraphicalViewer {
   }
     
   public void dispose() {
+    // Save without monitoring
+    doSave(null);
     // dispose resourcetracker
     if (resourceListener != null) {
       file.getWorkspace().removeResourceChangeListener(resourceListener);
