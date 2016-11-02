@@ -20,7 +20,7 @@
 package de.monticore.symboltable.modifiers;
 
 /**
- * TODO: Write me!
+ * Super type for access modifiers, such as <code>public</code> and <code>protected</code>.
  *
  * @author Pedram Mir Seyed Nazari
  *

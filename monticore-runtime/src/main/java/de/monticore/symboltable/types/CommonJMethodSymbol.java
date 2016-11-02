@@ -19,24 +19,24 @@
 
 package de.monticore.symboltable.types;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static de.monticore.symboltable.Symbols.sortSymbolsByPosition;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.google.common.collect.ImmutableList;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.symboltable.types.references.JTypeReference;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static de.monticore.symboltable.Symbols.sortSymbolsByPosition;
+
 /**
  * @author Pedram Mir Seyed Nazari
  */
-public abstract class CommonJMethodSymbol <U extends JTypeSymbol, T extends JTypeReference<? extends U>, S extends JAttributeSymbol>
+public abstract class CommonJMethodSymbol <U extends JTypeSymbol, T extends JTypeReference<? extends U>, S extends JFieldSymbol>
     extends CommonScopeSpanningSymbol implements JMethodSymbol {
 
   private boolean isAbstract = false;

@@ -19,21 +19,21 @@
 
 package mc.embedding.embedded._symboltable;
 
-import static java.util.Optional.empty;
+import de.monticore.symboltable.ArtifactScope;
+import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.ResolvingConfiguration;
+import mc.embedding.embedded._ast.ASTText;
+import mc.embedding.embedded._visitor.EmbeddedVisitor;
 
 import java.util.ArrayList;
 import java.util.Deque;
 
-import de.monticore.symboltable.ArtifactScope;
-import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
-import mc.embedding.embedded._ast.ASTText;
-import mc.embedding.embedded._visitor.EmbeddedVisitor;
+import static java.util.Optional.empty;
 
 public class EmbeddedSymbolTableCreator extends EmbeddedSymbolTableCreatorTOP {
   private EmbeddedVisitor realThis = this;
 
-  public EmbeddedSymbolTableCreator(ResolverConfiguration resolverConfig, MutableScope enclosingScope) {
+  public EmbeddedSymbolTableCreator(ResolvingConfiguration resolverConfig, MutableScope enclosingScope) {
     super(resolverConfig, enclosingScope);
 
     final ArtifactScope artifactScope = new ArtifactScope(empty(), "", new ArrayList<>());
@@ -41,7 +41,7 @@ public class EmbeddedSymbolTableCreator extends EmbeddedSymbolTableCreatorTOP {
     putOnStack(artifactScope);
   }
 
-  public EmbeddedSymbolTableCreator(ResolverConfiguration resolverConfig,
+  public EmbeddedSymbolTableCreator(ResolvingConfiguration resolverConfig,
       Deque<MutableScope> scopeStack) {
     super(resolverConfig, scopeStack);
   }

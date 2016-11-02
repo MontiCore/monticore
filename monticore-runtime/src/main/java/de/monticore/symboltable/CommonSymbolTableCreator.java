@@ -36,7 +36,7 @@ import java.util.Optional;
  */
 public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
 
-  private final ResolverConfiguration resolvingConfig;
+  private final ResolvingConfiguration resolvingConfig;
   protected Deque<MutableScope> scopeStack;
 
   /**
@@ -45,15 +45,14 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
    */
   private MutableScope firstCreatedScope;
 
-  public CommonSymbolTableCreator(final ResolverConfiguration resolvingConfig,
+  public CommonSymbolTableCreator(final ResolvingConfiguration resolvingConfig,
       final MutableScope enclosingScope) {
     this(resolvingConfig, new ArrayDeque<>());
 
-    // TODO PN  allow enclosingScope to be null?
     putOnStack(Log.errorIfNull(enclosingScope));
   }
 
-  public CommonSymbolTableCreator(final ResolverConfiguration resolvingConfig,
+  public CommonSymbolTableCreator(final ResolvingConfiguration resolvingConfig,
       final Deque<MutableScope> scopeStack) {
     this.scopeStack = Log.errorIfNull(scopeStack);
     this.resolvingConfig = Log.errorIfNull(resolvingConfig);
@@ -129,8 +128,7 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
         currentScope().get().add(symbol);
       }
       else {
-        // TODO PN add error id
-        Log.warn("Symbol cannot be added to current scope, since no scope exists.");
+        Log.warn("0xA50212 Symbol cannot be added to current scope, since no scope exists.");
       }
     }
   }

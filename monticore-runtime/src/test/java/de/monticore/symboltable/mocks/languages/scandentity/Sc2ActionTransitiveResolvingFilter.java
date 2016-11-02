@@ -19,12 +19,12 @@
 
 package de.monticore.symboltable.mocks.languages.scandentity;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.mocks.languages.entity.ActionSymbol;
 import de.monticore.symboltable.mocks.languages.statechart.StateChartSymbol;
 import de.monticore.symboltable.resolving.TransitiveAdaptedResolvingFilter;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * TODO: Write me!
@@ -45,10 +45,10 @@ public class Sc2ActionTransitiveResolvingFilter extends TransitiveAdaptedResolvi
   
 
   /**
-   * @see de.monticore.symboltable.resolving.CommonAdaptedResolvingFilter#createAdapter(de.monticore.symboltable.Symbol)
+   * @see de.monticore.symboltable.resolving.CommonAdaptedResolvingFilter#translate(de.monticore.symboltable.Symbol)
    */
   @Override
-  protected ActionSymbol createAdapter(Symbol s) {
+  public ActionSymbol translate(Symbol s) {
     checkArgument(s instanceof StateChartSymbol);
 
     return new Sc2ActionAdapter((StateChartSymbol) s);

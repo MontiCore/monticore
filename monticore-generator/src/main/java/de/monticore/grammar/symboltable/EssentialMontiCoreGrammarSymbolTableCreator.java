@@ -28,7 +28,7 @@ import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.CommonSymbolTableCreator;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.SourcePosition;
@@ -56,7 +56,7 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
   private EssentialMCGrammarSymbol grammarSymbol;
 
   public EssentialMontiCoreGrammarSymbolTableCreator(
-      ResolverConfiguration resolverConfig,
+      ResolvingConfiguration resolverConfig,
       MutableScope enclosingScope,
       Grammar_WithConceptsPrettyPrinter prettyPrinter) {
     super(resolverConfig, enclosingScope);

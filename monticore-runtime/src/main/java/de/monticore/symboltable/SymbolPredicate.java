@@ -24,9 +24,6 @@ import java.util.function.Predicate;
 /**
  * @author Pedram Mir Seyed Nazari
  */
-// TODO PN use fp of Java 1.8 instead
-// Note by SO: Unless this interface is supposed to define additional methods, subclasses might as
-// well just implement Predicate<Symbol> instead, making this interface redundant.
 public interface SymbolPredicate extends Predicate<Symbol> {
 
   @Override

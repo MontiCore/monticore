@@ -22,7 +22,7 @@ package de.monticore.symboltable.mocks.languages.entity;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.mocks.languages.entity.asts.ASTEntityCompilationUnit;
 import de.se_rwth.commons.logging.Log;
@@ -35,9 +35,9 @@ public class EntityLanguageModelLoader extends ModelingLanguageModelLoader<ASTEn
 
   @Override
   protected void createSymbolTableFromAST(final ASTEntityCompilationUnit ast, final String modelName,
-      final MutableScope enclosingScope, final ResolverConfiguration resolverConfiguration) {
+      final MutableScope enclosingScope, final ResolvingConfiguration resolvingConfiguration) {
     final EntityLanguageSymbolTableCreator symbolTableCreator = getModelingLanguage().getSymbolTableCreator
-        (resolverConfiguration, enclosingScope).orElse(null);
+        (resolvingConfiguration, enclosingScope).orElse(null);
 
     if (symbolTableCreator != null) {
       Log.debug("Start creation of symbol table for model \"" + modelName + "\".",

@@ -19,13 +19,6 @@
 
 package de.monticore.codegen.mc2cd;
 
-import static de.se_rwth.commons.Util.listTillNull;
-
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import de.monticore.ModelingLanguage;
 import de.monticore.ast.ASTNode;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
@@ -38,10 +31,17 @@ import de.monticore.languages.grammar.visitors.MCGrammarSymbolTableCreator;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.Util;
+
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static de.se_rwth.commons.Util.listTillNull;
 
 
 public class MCGrammarSymbolTableHelper {
@@ -49,14 +49,14 @@ public class MCGrammarSymbolTableHelper {
   public static void initializeSymbolTable(ASTMCGrammar rootNode, ModelPath modelPath) {
     ModelingLanguage grammarLanguage = new MontiCoreGrammarLanguage();
 
-    ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
-    resolverConfiguration.addTopScopeResolvers(grammarLanguage.getResolvers());
+    ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
+    resolvingConfiguration.addTopScopeResolvers(grammarLanguage.getResolvingFilters());
 
     Grammar_WithConceptsPrettyPrinter prettyPrinter = new Grammar_WithConceptsPrettyPrinter(new IndentPrinter());
 
-    MutableScope globalScope = new GlobalScope(modelPath, grammarLanguage, resolverConfiguration);
+    MutableScope globalScope = new GlobalScope(modelPath, grammarLanguage, resolvingConfiguration);
     MCGrammarSymbolTableCreator symbolTableCreator = new MCGrammarSymbolTableCreator
-        (resolverConfiguration, globalScope, prettyPrinter);
+        (resolvingConfiguration, globalScope, prettyPrinter);
 
     // Create Symbol Table
     symbolTableCreator.createFromAST(rootNode);

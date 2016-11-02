@@ -30,7 +30,7 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-${signature("className", "ruleSymbol", "isScopeSpanningSymbol")}
+${signature("className", "ruleSymbol", "isScopeSpanningSymbol", "hwSymbolExists")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign ruleName = ruleSymbol.getName()?cap_first>
 <#assign referencedSymbol = ruleName+"Symbol">
@@ -115,18 +115,23 @@ public class ${className} extends ${referencedSymbol} implements SymbolReference
     getReferencedSymbol().setAccessModifier(accessModifier);
   }
 
-<#-- TODO PN the methode could lead to type incompatibility, e.g., if
-             the referenced symbol returns a specific Scope or MutableScope.
--->
+
+<#if !hwSymbolExists>
+
+<#-- the method could lead to type incompatibility, e.g., if
+     the referenced symbol returns a specific Scope or MutableScope. -->
+
 <#if isScopeSpanningSymbol>
   /*
    * Methods of ScopeSpanningSymbol interface
    */
-  //@Override
-  //public Scope getSpannedScope() {
-  //  return getReferencedSymbol().getSpannedScope();
-  //}
+  @Override
+  public Scope getSpannedScope() {
+    return getReferencedSymbol().getSpannedScope();
+  }
 </#if>
+
+
 
   /*
   * Methods of ${referencedSymbol} class
@@ -160,6 +165,7 @@ public class ${className} extends ${referencedSymbol} implements SymbolReference
   }
 
   </#list>
+</#if>
 </#if>
 
 }

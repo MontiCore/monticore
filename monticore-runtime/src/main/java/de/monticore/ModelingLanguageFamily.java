@@ -96,7 +96,7 @@ public class ModelingLanguageFamily {
     allResolvingFilters.addAll(resolvingFilters);
 
     for (ModelingLanguage language : modelingLanguages) {
-      allResolvingFilters.addAll(language.getResolvers());
+      allResolvingFilters.addAll(language.getResolvingFilters());
     }
 
     return allResolvingFilters;
@@ -106,7 +106,7 @@ public class ModelingLanguageFamily {
    * Adds a {@link de.monticore.symboltable.resolving.ResolvingFilter} directly to this language family.
    * Usually, only {@link de.monticore.symboltable.resolving.CommonAdaptedResolvingFilter}s
    * need to be added, since the modeling languages already define their default resolvers (see
-   * {@link ModelingLanguage#getResolvers()}).
+   * {@link ModelingLanguage#getResolvingFilters()}).
    *
    * @param resolvingFilter the resolver to be added
    */

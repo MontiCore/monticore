@@ -25,7 +25,7 @@ import de.monticore.modelloader.FileBasedAstProvider;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
@@ -46,10 +46,10 @@ public class EssentialMontiCoreGrammarModelLoader extends ModelingLanguageModelL
 
   @Override
   protected void createSymbolTableFromAST(ASTMCGrammar ast, String modelName, MutableScope
-      enclosingScope, ResolverConfiguration resolverConfiguration) {
+      enclosingScope, ResolvingConfiguration resolvingConfiguration) {
 
     final EssentialMontiCoreGrammarSymbolTableCreator symbolTableCreator =
-        getModelingLanguage().getSymbolTableCreator(resolverConfiguration, enclosingScope).orElse(null);
+        getModelingLanguage().getSymbolTableCreator(resolvingConfiguration, enclosingScope).orElse(null);
 
     if (symbolTableCreator != null) {
       Log.debug("Start creation of symbol table for model \"" + modelName + "\".",

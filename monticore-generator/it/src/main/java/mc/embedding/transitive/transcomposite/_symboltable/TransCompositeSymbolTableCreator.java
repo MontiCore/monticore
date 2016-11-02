@@ -19,19 +19,19 @@
 
 package mc.embedding.transitive.transcomposite._symboltable;
 
-import java.util.Deque;
-
+import de.monticore.symboltable.CommonSymbolTableCreator;
+import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.ResolvingConfiguration;
+import de.monticore.symboltable.Scope;
+import de.se_rwth.commons.logging.Log;
 import mc.embedding.composite._symboltable.CompositeSymbolTableCreator;
 import mc.embedding.transitive.transcomposite._visitor.CommonTransCompositeDelegatorVisitor;
 import mc.embedding.transitive.transcomposite._visitor.TransCompositeDelegatorVisitor;
 import mc.embedding.transitive.transcomposite._visitor.TransCompositeVisitor;
 import mc.embedding.transitive.transhost._ast.ASTTransStart;
 import mc.embedding.transitive.transhost._symboltable.TransHostSymbolTableCreator;
-import de.monticore.symboltable.CommonSymbolTableCreator;
-import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
-import de.monticore.symboltable.Scope;
-import de.se_rwth.commons.logging.Log;
+
+import java.util.Deque;
 
 public class TransCompositeSymbolTableCreator extends CommonSymbolTableCreator implements
     TransCompositeVisitor {
@@ -42,7 +42,7 @@ public class TransCompositeSymbolTableCreator extends CommonSymbolTableCreator i
   
   private TransCompositeVisitor realThis = this;
   
-  public TransCompositeSymbolTableCreator(final ResolverConfiguration resolverConfig,
+  public TransCompositeSymbolTableCreator(final ResolvingConfiguration resolverConfig,
       final MutableScope enclosingScope) {
     super(resolverConfig, enclosingScope);
     
@@ -57,7 +57,7 @@ public class TransCompositeSymbolTableCreator extends CommonSymbolTableCreator i
         .set_mc_embedding_transitive_transhost__visitor_TransHostVisitor(this.hostSymbolTableCreator);
   }
   
-  public TransCompositeSymbolTableCreator(final ResolverConfiguration resolverConfig,
+  public TransCompositeSymbolTableCreator(final ResolvingConfiguration resolverConfig,
       final Deque<MutableScope> scopeStack) {
     super(resolverConfig, scopeStack);
     
