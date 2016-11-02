@@ -77,7 +77,7 @@ public class GeneratorConfig {
     setup.setAutoImports(imports);
    
     File f = new File("${outputDirectory}");
-    if(!f.exists()){   
+    if(f.exists()){   
       IterablePath ip = IterablePath.from(f, "ftl");
       setup.setAdditionalTemplatePaths(ip.getPaths().stream().map(Path::toFile).collect(Collectors.toList()));
     }
