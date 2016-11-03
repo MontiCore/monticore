@@ -50,7 +50,7 @@ import ${fqn}._visitor.${genHelper.getVisitorType()};
 import ${fqn}._visitor.${genHelper.getDelegatorVisitorType()};
 import ${fqn}._visitor.${genHelper.getCommonDelegatorVisitorType()};
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import java.util.Deque;
 
@@ -61,12 +61,12 @@ public class ${className} extends de.monticore.symboltable.CommonSymbolTableCrea
   private final ${genHelper.getDelegatorVisitorType()} visitor = new ${genHelper.getCommonDelegatorVisitorType()}();
 
   public ${className}(
-    final ResolverConfiguration resolvingConfig, final MutableScope enclosingScope) {
+    final ResolvingConfiguration resolvingConfig, final MutableScope enclosingScope) {
     super(resolvingConfig, enclosingScope);
     initSuperSTC();
   }
 
-  public ${className}(final ResolverConfiguration resolvingConfig, final Deque<MutableScope> scopeStack) {
+  public ${className}(final ResolvingConfiguration resolvingConfig, final Deque<MutableScope> scopeStack) {
     super(resolvingConfig, scopeStack);
     initSuperSTC();
   }
