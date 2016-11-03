@@ -5,7 +5,7 @@ import ${package}.mydsl._ast.ASTMyModel;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
@@ -17,9 +17,9 @@ public class MyDSLModelLoader extends ModelingLanguageModelLoader<ASTMyModel> {
   
   @Override
   protected void createSymbolTableFromAST(final ASTMyModel ast, final String modelName,
-      final MutableScope enclosingScope, final ResolverConfiguration resolverConfiguration) {
+      final MutableScope enclosingScope, final ResolvingConfiguration resolvingConfiguration) {
     final MyDSLSymbolTableCreator symbolTableCreator = getModelingLanguage()
-        .getSymbolTableCreator(resolverConfiguration, enclosingScope).orElse(null);
+        .getSymbolTableCreator(resolvingConfiguration, enclosingScope).orElse(null);
     
     if (symbolTableCreator != null) {
       Log.info("Start creation of symbol table for model \"" + modelName + "\".",

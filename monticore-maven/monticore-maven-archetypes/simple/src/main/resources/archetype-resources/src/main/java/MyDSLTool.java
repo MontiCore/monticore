@@ -19,7 +19,7 @@ import ${package}.symboltable.MyElementSymbol;
 import ${package}.visitors.CountMyElements;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
@@ -114,13 +114,13 @@ public class MyDSLTool {
    * @return
    */
   public static Scope createSymbolTable(MyDSLLanguage lang, ASTMyModel ast) {
-    final ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
-    resolverConfiguration.addTopScopeResolvers(lang.getResolvers());
+    final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
+    resolvingConfiguration.addTopScopeResolvers(lang.getResolvers());
     
-    GlobalScope globalScope = new GlobalScope(new ModelPath(), lang, resolverConfiguration);
+    GlobalScope globalScope = new GlobalScope(new ModelPath(), lang, resolvingConfiguration);
     
     Optional<MyDSLSymbolTableCreator> symbolTable = lang.getSymbolTableCreator(
-        resolverConfiguration, globalScope);
+        resolvingConfiguration, globalScope);
     return symbolTable.get().createFromAST(ast);
   }
   
