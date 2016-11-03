@@ -112,11 +112,11 @@ SUCH DAMAGE.
 	<#return glex.bindHookPoint(name, hp)>
 </#function>
 
-<#function defineHookPoint tc name ast>
+<#function defineHookPoint name ast>
 	<#return glex.defineHookPoint(tc, name, ast)>
 </#function>
 
-<#function defineHookPoint tc name>
+<#function defineHookPoint name>
 	<#return glex.defineHookPoint(tc, name)>
 </#function>
 
