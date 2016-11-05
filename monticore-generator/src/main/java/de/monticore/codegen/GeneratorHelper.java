@@ -99,6 +99,8 @@ public class GeneratorHelper extends TypesHelper {
   public static final String AST_PACKAGE_SUFFIX = "_ast";
   
   public static final String VISITOR_PACKAGE_SUFFIX = "_visitor";
+
+  public static final String TYPERESOLVER_PACKAGE_SUFFIX = "_types";
   
   public static final String COCOS_PACKAGE_SUFFIX = "_cocos";
   
@@ -453,6 +455,19 @@ public class GeneratorHelper extends TypesHelper {
    */
   public static String getASTNodeBaseType(String languageName) {
     return AST_PREFIX + languageName + BASE;
+  }
+
+  public String getTypeResolverPackage() {
+    return getTypeResolverPackage(getPackageName());
+  }
+
+  public static String getTypeResolverPackage(String qualifiedLanguageName) {
+    return getPackageName(qualifiedLanguageName.toLowerCase(),
+        getTypeResolverPackageSuffix());
+  }
+
+  public static String getTypeResolverPackageSuffix() {
+    return GeneratorHelper.TYPERESOLVER_PACKAGE_SUFFIX;
   }
   
   public String getVisitorPackage() {
