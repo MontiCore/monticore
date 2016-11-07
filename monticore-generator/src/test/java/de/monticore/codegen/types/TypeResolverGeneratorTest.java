@@ -1,7 +1,18 @@
 package de.monticore.codegen.types;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
+
 import de.monticore.MontiCoreConfiguration;
 import de.monticore.MontiCoreScript;
 import de.monticore.codegen.AstDependentGeneratorTest;
@@ -14,16 +25,6 @@ import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-
-import static org.junit.Assert.assertTrue;
 /**
  * Created by Odgrlb on 01.11.2016.
  */
@@ -31,6 +32,18 @@ public class TypeResolverGeneratorTest extends AstDependentGeneratorTest {
 
   private ParserGeneratorTest parserTest = new ParserGeneratorTest();
   private SymbolTableGeneratorTest symbolTest = new SymbolTableGeneratorTest();
+
+  @Override
+  protected void dependencies(String... dependencies) {
+    for (String dependency : dependencies) {
+      if (!Files.exists(getPathToGeneratedCode(dependency))) {
+        astTest.testCorrect(dependency, false);
+        parserTest.testCorrect(dependency, false);
+        symbolTest.testCorrect(dependency, false);
+        doGenerate(dependency);
+      }
+    }
+  }
 
   @Test
   public void testAutomaton2() {
@@ -87,9 +100,6 @@ public class TypeResolverGeneratorTest extends AstDependentGeneratorTest {
     testCorrect(grammarPath);
   }
 
-  /**
-   * must run before literals grammar
-   */
   @Test
   public void testLexicals() {
     final String grammarPath = "de/monticore/lexicals/Lexicals.mc4";
@@ -100,12 +110,12 @@ public class TypeResolverGeneratorTest extends AstDependentGeneratorTest {
   }
 
   /**
-   * must run before types grammar
    * is dependent on the lexicals grammar
    */
   @Test
   public void testLiterals() {
     final String grammarPath = "de/monticore/literals/Literals.mc4";
+    dependencies("de/monticore/lexicals/Lexicals.mc4");
     astTest.testCorrect(grammarPath, false);
     parserTest.testCorrect(grammarPath, false);
     symbolTest.testCorrect(grammarPath, false);
@@ -113,12 +123,12 @@ public class TypeResolverGeneratorTest extends AstDependentGeneratorTest {
   }
 
   /**
-   * must run before javadsl and common grammar
    * is dependent on the literals grammar
    */
   @Test
   public void testTypes() {
     final String grammarPath = "de/monticore/types/Types.mc4";
+    dependencies("de/monticore/lexicals/Lexicals.mc4", "de/monticore/literals/Literals.mc4");
     astTest.testCorrect(grammarPath, false);
     parserTest.testCorrect(grammarPath, false);
     symbolTest.testCorrect(grammarPath, false);
@@ -131,6 +141,7 @@ public class TypeResolverGeneratorTest extends AstDependentGeneratorTest {
   @Test
   public void testJavaDSL() {
     final String grammarPath = "de/monticore/java/JavaDSL.mc4";
+    dependencies("de/monticore/lexicals/Lexicals.mc4", "de/monticore/literals/Literals.mc4", "de/monticore/types/Types.mc4");
     astTest.testCorrect(grammarPath, false);
     parserTest.testCorrect(grammarPath, false);
     symbolTest.testCorrect(grammarPath, false);
@@ -143,6 +154,7 @@ public class TypeResolverGeneratorTest extends AstDependentGeneratorTest {
   @Test
   public void testCommon() {
     final String grammarPath = "de/monticore/common/Common.mc4";
+    dependencies("de/monticore/lexicals/Lexicals.mc4", "de/monticore/literals/Literals.mc4", "de/monticore/types/Types.mc4");
     astTest.testCorrect(grammarPath, false);
     parserTest.testCorrect(grammarPath, false);
     symbolTest.testCorrect(grammarPath, false);
