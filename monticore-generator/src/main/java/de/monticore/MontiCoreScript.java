@@ -63,7 +63,7 @@ import de.se_rwth.commons.logging.Log;
 import groovy.lang.Script;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import parser.MCGrammarParser;
-
+import de.monticore.codegen.cd2java.types.TypeResolverGenerator;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -249,6 +249,19 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     SymbolTableGeneratorHelper genHelper = new SymbolTableGeneratorHelper(astGrammar, symbolTable, astCd);
     SymbolTableGenerator symbolTableGenerator = new SymbolTableGeneratorBuilder().build();
     symbolTableGenerator.generate(astGrammar, genHelper, outputDirectory, handcodedPath);
+  }
+
+  /**
+   * @param astClassDiagram
+   * @param glex
+   * @param globalScope
+   * @param outputDirectory
+   * @param templatePath
+   */
+  public void generateTypeResolvers(GlobalExtensionManagement glex, GlobalScope globalScope,
+      ASTCDCompilationUnit astClassDiagram, File outputDirectory, IterablePath templatePath) {
+    VisitorGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
+    TypeResolverGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
   }
   
   /**
