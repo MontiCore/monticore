@@ -17,7 +17,6 @@ import de.monticore.MontiCoreConfiguration;
 import de.monticore.MontiCoreScript;
 import de.monticore.codegen.AstDependentGeneratorTest;
 import de.monticore.codegen.cd2java.types.TypeResolverGenerator;
-import de.monticore.codegen.parser.ParserGeneratorTest;
 import de.monticore.codegen.symboltable.SymbolTableGeneratorTest;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.cli.CLIArguments;
@@ -30,7 +29,6 @@ import de.se_rwth.commons.logging.Slf4jLog;
  */
 public class TypeResolverGeneratorTest extends AstDependentGeneratorTest {
 
-  private ParserGeneratorTest parserTest = new ParserGeneratorTest();
   private SymbolTableGeneratorTest symbolTest = new SymbolTableGeneratorTest();
 
   @Override
@@ -38,7 +36,6 @@ public class TypeResolverGeneratorTest extends AstDependentGeneratorTest {
     for (String dependency : dependencies) {
       if (!Files.exists(getPathToGeneratedCode(dependency))) {
         astTest.testCorrect(dependency, false);
-        parserTest.testCorrect(dependency, false);
         symbolTest.testCorrect(dependency, false);
         doGenerate(dependency);
       }
@@ -48,8 +45,8 @@ public class TypeResolverGeneratorTest extends AstDependentGeneratorTest {
   @Test
   public void testAutomaton2() {
     final String grammarPath = "de/monticore/emf/Automaton2.mc4";
+    dependencies("mc/grammars/lexicals/TestLexicals.mc4");
     astTest.testCorrect(grammarPath, false);
-    parserTest.testCorrect(grammarPath, false);
     symbolTest.testCorrect(grammarPath, false);
     testCorrect(grammarPath);
   }
@@ -57,8 +54,8 @@ public class TypeResolverGeneratorTest extends AstDependentGeneratorTest {
   @Test
   public void testAutomaton() {
     final String grammarPath = "de/monticore/emf/Automaton.mc4";
+    dependencies("mc/grammars/lexicals/TestLexicals.mc4");
     astTest.testCorrect(grammarPath, false);
-    parserTest.testCorrect(grammarPath, false);
     symbolTest.testCorrect(grammarPath, false);
     testCorrect(grammarPath);
   }
@@ -68,7 +65,6 @@ public class TypeResolverGeneratorTest extends AstDependentGeneratorTest {
   public void testFautomaton() {
     final String grammarPath = "de/monticore/fautomaton/action/Expression.mc4";
     astTest.testCorrect(grammarPath, false);
-    parserTest.testCorrect(grammarPath, false);
     symbolTest.testCorrect(grammarPath, false);
     testCorrect(grammarPath);
   }
@@ -77,7 +73,6 @@ public class TypeResolverGeneratorTest extends AstDependentGeneratorTest {
   public void testStateChart() {
     final String grammarPath = "de/monticore/statechart/Statechart.mc4";
     astTest.testCorrect(grammarPath, false);
-    parserTest.testCorrect(grammarPath, false);
     symbolTest.testCorrect(grammarPath, false);
     testCorrect(grammarPath);
   }
@@ -86,7 +81,6 @@ public class TypeResolverGeneratorTest extends AstDependentGeneratorTest {
   public void testSubgrammar() {
     final String grammarPath = "de/monticore/inherited/sub/Subgrammar.mc4";
     astTest.testCorrect(grammarPath, false);
-    parserTest.testCorrect(grammarPath, false);
     symbolTest.testCorrect(grammarPath, false);
     testCorrect(grammarPath);
   }
@@ -95,16 +89,14 @@ public class TypeResolverGeneratorTest extends AstDependentGeneratorTest {
   public void testSuperGrammar() {
     final String grammarPath = "de/monticore/inherited/Supergrammar.mc4";
     astTest.testCorrect(grammarPath, false);
-    parserTest.testCorrect(grammarPath, false);
     symbolTest.testCorrect(grammarPath, false);
     testCorrect(grammarPath);
   }
 
   @Test
   public void testLexicals() {
-    final String grammarPath = "de/monticore/lexicals/Lexicals.mc4";
+    final String grammarPath = "mc/grammars/lexicals/TestLexicals.mc4";
     astTest.testCorrect(grammarPath, false);
-    parserTest.testCorrect(grammarPath, false);
     symbolTest.testCorrect(grammarPath, false);
     testCorrect(grammarPath);
   }
@@ -114,10 +106,9 @@ public class TypeResolverGeneratorTest extends AstDependentGeneratorTest {
    */
   @Test
   public void testLiterals() {
-    final String grammarPath = "de/monticore/literals/Literals.mc4";
-    dependencies("de/monticore/lexicals/Lexicals.mc4");
+    final String grammarPath = "mc/grammars/literals/TestLiterals.mc4";
+    dependencies("mc/grammars/lexicals/TestLexicals.mc4");
     astTest.testCorrect(grammarPath, false);
-    parserTest.testCorrect(grammarPath, false);
     symbolTest.testCorrect(grammarPath, false);
     testCorrect(grammarPath);
   }
@@ -127,10 +118,9 @@ public class TypeResolverGeneratorTest extends AstDependentGeneratorTest {
    */
   @Test
   public void testTypes() {
-    final String grammarPath = "de/monticore/types/Types.mc4";
-    dependencies("de/monticore/lexicals/Lexicals.mc4", "de/monticore/literals/Literals.mc4");
+    final String grammarPath = "mc/grammars/types/TestTypes.mc4";
+    dependencies("mc/grammars/lexicals/TestLexicals.mc4", "mc/grammars/literals/TestLiterals.mc4");
     astTest.testCorrect(grammarPath, false);
-    parserTest.testCorrect(grammarPath, false);
     symbolTest.testCorrect(grammarPath, false);
     testCorrect(grammarPath);
   }
@@ -140,10 +130,9 @@ public class TypeResolverGeneratorTest extends AstDependentGeneratorTest {
    */
   @Test
   public void testJavaDSL() {
-    final String grammarPath = "de/monticore/java/JavaDSL.mc4";
-    dependencies("de/monticore/lexicals/Lexicals.mc4", "de/monticore/literals/Literals.mc4", "de/monticore/types/Types.mc4");
+    final String grammarPath = "mc/grammars/TestJavaDSL.mc4";
+    dependencies("mc/grammars/lexicals/TestLexicals.mc4", "mc/grammars/literals/TestLiterals.mc4", "mc/grammars/types/TestTypes.mc4");
     astTest.testCorrect(grammarPath, false);
-    parserTest.testCorrect(grammarPath, false);
     symbolTest.testCorrect(grammarPath, false);
     testCorrect(grammarPath);
   }
@@ -153,10 +142,9 @@ public class TypeResolverGeneratorTest extends AstDependentGeneratorTest {
    */
   @Test
   public void testCommon() {
-    final String grammarPath = "de/monticore/common/Common.mc4";
-    dependencies("de/monticore/lexicals/Lexicals.mc4", "de/monticore/literals/Literals.mc4", "de/monticore/types/Types.mc4");
+    final String grammarPath = "mc/grammars/common/TestCommon.mc4";
+    dependencies("mc/grammars/lexicals/TestLexicals.mc4", "mc/grammars/literals/TestLiterals.mc4", "mc/grammars/types/TestTypes.mc4");
     astTest.testCorrect(grammarPath, false);
-    parserTest.testCorrect(grammarPath, false);
     symbolTest.testCorrect(grammarPath, false);
     testCorrect(grammarPath);
   }

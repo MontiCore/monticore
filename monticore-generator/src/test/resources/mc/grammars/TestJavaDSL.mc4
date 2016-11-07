@@ -1,6 +1,6 @@
-package de.monticore.java;
+package mc.grammars;
 
-grammar JavaDSL extends de.monticore.types.Types {
+grammar TestJavaDSL extends mc.grammars.types.TestTypes {
 
 // starting point for parsing a java file
 CompilationUnit
