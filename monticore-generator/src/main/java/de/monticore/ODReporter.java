@@ -40,7 +40,7 @@ public class ODReporter extends AReporter {
   public ODReporter(String outputDir, String modelName, ReportingRepository reporting) {
     super(outputDir + File.separator + ReportingConstants.REPORTING_DIR + File.separator
         + modelName,
-        SIMPLE_FILE_NAME, ReportingConstants.REPORT_FILE_EXTENSION);
+        Names.getSimpleName(modelName) + "_AST", ReportingConstants.OD_FILE_EXTENSION);
     this.modelName = modelName;
     this.reporting = reporting;
   }
@@ -74,7 +74,7 @@ public class ODReporter extends AReporter {
       ASTGrammarNode mcNode = (ASTGrammarNode) ast;
       IndentPrinter pp = new IndentPrinter();
       GrammarWithConcepts2OD odPrinter = new GrammarWithConcepts2OD(pp, reporting);
-      odPrinter.printObjectDiagram(Names.getSimpleName(modelName), mcNode);
+      odPrinter.printObjectDiagram(Names.getSimpleName(modelName) + "_AST", mcNode);
       writeLine(pp.getContent());
     }
   }

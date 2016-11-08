@@ -22,6 +22,7 @@ package de.monticore.generating.templateengine.reporting.reporter;
 import java.io.File;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.reporting.commons.AReporter;
@@ -41,22 +42,20 @@ import de.se_rwth.commons.Names;
 public class SymbolTableReporter extends AReporter {
   
   final static String SIMPLE_FILE_NAME = "13_SymbolTable";
-  
-  public static final String LAYOUT_FULL = "@%s!Symbol";
     
-  private final String outputDir;
+  protected final String outputDir;
   
-  private final String modelName;
+  protected final String modelName;
   
-  private final ReportingRepository repository;
-    
+  protected final ReportingRepository repository;
+  
   public SymbolTableReporter(
       String outputDir,
       String modelName,
       ReportingRepository repository) {
     super(outputDir + File.separator + ReportingConstants.REPORTING_DIR + File.separator
         + modelName,
-        SIMPLE_FILE_NAME, ReportingConstants.REPORT_FILE_EXTENSION);
+        Names.getSimpleName(modelName) + "_ST", ReportingConstants.OD_FILE_EXTENSION);
     this.outputDir = outputDir;
     this.modelName = modelName;
     this.repository = repository;
@@ -81,21 +80,23 @@ public class SymbolTableReporter extends AReporter {
     writeFooter();
     super.flush(ast);
   }
-    
-  protected void reportScope(Scope scope, IndentPrinter printer) {    
+  
+  protected void reportScope(Scope scope, IndentPrinter printer) {
     final Collection<Symbol> symbols = Scopes.getLocalSymbolsAsCollection(scope);
     String type;
+    String scopeName;
     if (scope.getSpanningSymbol().isPresent()) {
+      scopeName = repository.getSymbolNameFormatted(scope.getSpanningSymbol().get());
       type = Names.getSimpleName(scope.getSpanningSymbol().get().getKind().getName());
       int i = type.indexOf('$');
       if (i > 0) {
         type = type.substring(0, i);
-      }      
+      }
     }
     else {
+      scopeName = repository.getScopeNameFormatted(scope);
       type = Names.getSimpleName(scope.getClass().getName());
     }
-    String scopeName = format(scope.getName().orElse(""));
     printer.println(scopeName + ": " + type + "{");
     printer.indent();
     
@@ -103,17 +104,42 @@ public class SymbolTableReporter extends AReporter {
       reportAttributes(scope.getSpanningSymbol().get(), printer);
     }
     
-    for (Symbol symbol : symbols) {
+    Collection<Symbol> reportedSymbols = symbols.stream()
+        .filter(sym -> !(sym instanceof ScopeSpanningSymbol)).collect(Collectors.toList());
+    if (!reportedSymbols.isEmpty()) {
+      printer.println("symbols =");
+      printer.indent();
+      printer.print("// *size: " + reportedSymbols.size());
+    }
+    String sep = "";
+    for (Symbol symbol : reportedSymbols) {
       if (!(symbol instanceof ScopeSpanningSymbol)) {
+        printer.println(sep);
+        sep = ",";
         reportSymbol(symbol, printer);
       }
     }
-    
-    for (Scope subScope : scope.getSubScopes()) {
-      reportScope(subScope, printer);
+    if (!reportedSymbols.isEmpty()) {
       printer.println(";");
+      printer.unindent();
     }
     
+    if (!scope.getSubScopes().isEmpty()) {
+      printer.println("scopes =");
+      printer.indent();
+      printer.print("// *size: " + scope.getSubScopes().size());      
+    }
+    sep = "";
+    for (Scope subScope : scope.getSubScopes()) {
+      printer.println(sep);
+      sep = ",";
+      reportScope(subScope, printer);
+    }
+    if (!scope.getSubScopes().isEmpty()) {
+      printer.println(";");
+      printer.unindent();
+    }
+  
     printer.unindent();
     printer.print("}");
   }
@@ -121,8 +147,7 @@ public class SymbolTableReporter extends AReporter {
   @Override
   public void reportSymbolTableScope(Scope scope) {
     IndentPrinter printer = new IndentPrinter();
-    String name = scope.getName().orElse("");
-    printer.println("objectdiagram " + name + " {");
+    printer.println("objectdiagram " + Names.getSimpleName(modelName) + "_ST {");
     printer.indent();
     reportScope(scope, printer);
     printer.println();
@@ -138,12 +163,12 @@ public class SymbolTableReporter extends AReporter {
       type = type.substring(0, i);
     }
     
-    String symName = format(sym.getName());
-    printer.println(symName + ": " + type + " {");    
-    printer.indent();  
+    String symName = repository.getSymbolNameFormatted(sym);
+    printer.println(symName + ": " + type + " {");
+    printer.indent();
     reportAttributes(sym, printer);
-    printer.unindent();   
-    printer.println("};");    
+    printer.unindent();
+    printer.print("}");
   }
   
   protected void reportAttributes(Symbol sym, IndentPrinter printer) {
@@ -156,10 +181,6 @@ public class SymbolTableReporter extends AReporter {
     if (!sym.getAccessModifier().equals(AccessModifier.ALL_INCLUSION)) {
       printer.println("accesModifier = \"" + sym.getAccessModifier().toString() + "\";");
     }
-  }
-  
-  protected String format(String name) {
-    return String.format(LAYOUT_FULL, name);
   }
   
 }

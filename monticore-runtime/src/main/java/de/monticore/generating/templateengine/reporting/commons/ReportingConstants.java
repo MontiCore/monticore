@@ -41,4 +41,6 @@ public interface ReportingConstants {
 	public final static int COLUMN = 35;
 
 	public final static String TEMPLATE_FILE_EXTENSION = "ftl";
+	
+	public final String OD_FILE_EXTENSION = "od";
 }

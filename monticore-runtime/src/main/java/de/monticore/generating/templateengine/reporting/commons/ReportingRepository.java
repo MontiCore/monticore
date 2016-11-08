@@ -38,6 +38,8 @@ import com.google.common.collect.Sets;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
@@ -52,17 +54,17 @@ public class ReportingRepository {
   
   private IASTNodeIdentHelper astNodeIdentHelper;
   
-  // save nodes that have no position
-  private Map<ASTNode, Integer> node2Ident = Maps.newHashMap();
+  // save objects that have no position
+  private Map<Object, Integer> node2Ident = Maps.newHashMap();
   
-  private Map<ASTNode, String> node2Name = Maps.newHashMap();
+  private Map<Object, String> node2Name = Maps.newHashMap();
   
   // save nodes that have a position
   private Map<String, Integer> name2maxidSourcePos = Maps.newHashMap();
   
-  private Map<ASTNode, Integer> nodeWithSource2Ident = Maps.newHashMap();
+  private Map<Object, Integer> nodeWithSource2Ident = Maps.newHashMap();
   
-  private Map<ASTNode, String> nodeWithSource2Name = Maps.newHashMap();
+  private Map<Object, String> nodeWithSource2Name = Maps.newHashMap();
   
   // save current maxID for aSTNode string
   private Map<String, Integer> name2maxid = Maps.newHashMap();
@@ -72,7 +74,7 @@ public class ReportingRepository {
   private Set<String> allHWJavaNames = Sets.newLinkedHashSet();
   
   private Set<String> allHWTemplateNames = Sets.newLinkedHashSet();
-  
+    
   public ReportingRepository(IASTNodeIdentHelper astNodeIdentHelper) {
     this.astNodeIdentHelper = astNodeIdentHelper;
   }
@@ -122,10 +124,59 @@ public class ReportingRepository {
     this.allTemplateNames = helper.getResources(Pattern.compile(".*\\.ftl"));
   }
   
+  private String getNameFormatted(Object obj, String out, SourcePosition sourcePos) {
+    String pos = Layouter.sourcePos(sourcePos);
+    // node has a source position
+    if (sourcePos.equals(
+        SourcePosition.getDefaultSourcePosition())) {
+      if (!nodeWithSource2Ident.containsKey(obj)) {
+        // set output name for node
+        nodeWithSource2Name.put(obj, out + pos);
+        // name map has no identifier
+        if (!name2maxidSourcePos.containsKey(out + pos)) {
+          // init map
+          MapUtil.incMapValue(name2maxidSourcePos, out + pos); // value is 1
+        }
+        nodeWithSource2Ident.put(obj, name2maxidSourcePos.get(out + pos));
+        MapUtil.incMapValue(name2maxidSourcePos, out + pos); // increase current
+                                                             // value
+      }
+      // do not print <...>!1!
+      if (nodeWithSource2Ident.get(obj) != 1) {
+        return nodeWithSource2Name.get(obj).replace(Layouter.END_TAG, "!" + nodeWithSource2Ident.get(obj) + Layouter.END_TAG);
+      }
+      // instead <<...>> if identifier is '1'
+      else {
+        return nodeWithSource2Name.get(obj);
+      }
+    }
+    // first time this node
+    if (!node2Ident.containsKey(obj)) {
+      // set output name for node
+      node2Name.put(obj, out);
+      // name map has no identifier
+      if (!name2maxid.containsKey(out)) {
+        // init map
+        MapUtil.incMapValue(name2maxid, out);
+      }
+      node2Ident.put(obj, name2maxid.get(out));
+      MapUtil.incMapValue(name2maxid, out);
+    }
+    
+    // do not print <<...>>!1!
+    if (node2Ident.get(obj) != 1) {
+      return node2Name.get(obj) + Layouter.START_TAG + "!" + node2Ident.get(obj) + Layouter.END_TAG;
+    }
+    // instead <<...>> if identifier is '1'
+    else {
+      return node2Name.get(obj);
+    }
+  }
+  
   /**
    * Method that converts the ASTNode into a formatted string with a source
    * position if this is possible. The structure of the string is
-   * <<nodeName:nodeType>><x,y> or <<nodeName:nodeType>> !ID!.
+   * @nodeName!nodeType(x,y) or @nodeName!nodeType(!ID).
    * 
    * @param ASTNode that should be converted into unique String
    * @return representation of the ASTNode that contains either the position or
@@ -133,54 +184,37 @@ public class ReportingRepository {
    */
   public String getASTNodeNameFormatted(ASTNode a) {
     String out = astNodeIdentHelper.getIdent(a);
-    String pos = Layouter.sourcePos(a);
-    // node has a source position
-    if (!a.get_SourcePositionStart().equals(
-        SourcePosition.getDefaultSourcePosition())) {
-      if (!nodeWithSource2Ident.containsKey(a)) {
-        // set output name for node
-        nodeWithSource2Name.put(a, out + pos);
-        // name map has no identifier
-        if (!name2maxidSourcePos.containsKey(out + pos)) {
-          // init map
-          MapUtil.incMapValue(name2maxidSourcePos, out + pos); // value is 1
-        }
-        nodeWithSource2Ident.put(a, name2maxidSourcePos.get(out + pos));
-        MapUtil.incMapValue(name2maxidSourcePos, out + pos); // increase current
-                                                             // value
-      }
-      // do not print <...>!1!
-      if (nodeWithSource2Ident.get(a) != 1) {
-        return nodeWithSource2Name.get(a).replace(Layouter.END_TAG, "!" + nodeWithSource2Ident.get(a) + Layouter.END_TAG);
-      }
-      // instead <<...>> if identifier is '1'
-      else {
-        return nodeWithSource2Name.get(a);
-      }
-    }
-    // first time this node
-    if (!node2Ident.containsKey(a)) {
-      // set output name for node
-      node2Name.put(a, out);
-      // name map has no identifier
-      if (!name2maxid.containsKey(out)) {
-        // init map
-        MapUtil.incMapValue(name2maxid, out);
-      }
-      node2Ident.put(a, name2maxid.get(out));
-      MapUtil.incMapValue(name2maxid, out);
-    }
-    
-    // do not print <<...>>!1!
-    if (node2Ident.get(a) != 1) {
-      return node2Name.get(a) + Layouter.START_TAG + "!" + node2Ident.get(a) + Layouter.END_TAG;
-    }
-    // instead <<...>> if identifier is '1'
-    else {
-      return node2Name.get(a);
-    }
+    return getNameFormatted(a, out, a.get_SourcePositionStart());
   }
   
+  /**
+   * Method that converts the Symbol into a formatted string with a source
+   * position if this is possible. The structure of the string is
+   * @symbolName!symbolType(x,y) or @symbolName!symbolType(!ID).
+   * 
+   * @param symbol The symbol that should be converted into unique String
+   * @return representation of the ASTNode that contains either the position or
+   * a unique identification number for the object
+   */
+  public String getSymbolNameFormatted(Symbol symbol) {
+    String name = astNodeIdentHelper.getIdent(symbol);
+    return getNameFormatted(symbol, name, symbol.getSourcePosition());
+  }
+  
+  /**
+   * Method that converts the Symbol into a formatted string with a source
+   * position if this is possible. The structure of the string is
+   * @symbolName!symbolType(x,y) or @symbolName!symbolType(!ID).
+   * 
+   * @param symbol The symbol that should be converted into unique String
+   * @return representation of the ASTNode that contains either the position or
+   * a unique identification number for the object
+   */
+  public String getScopeNameFormatted(Scope scope) {
+    String name = astNodeIdentHelper.getIdent(scope);
+    return getNameFormatted(scope, name, SourcePosition.getDefaultSourcePosition());
+  }
+
   public Set<String> getAllTemplateNames() {
     return allTemplateNames;
   }
