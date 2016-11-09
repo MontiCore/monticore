@@ -26,8 +26,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import de.monticore.MontiCoreConfiguration;
+import de.se_rwth.commons.cli.CLIArguments;
 import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.configuration.ConfigurationContributorChainBuilder;
+import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
 import de.se_rwth.commons.configuration.DelegatingConfigurationContributor;
 
 /**
@@ -47,7 +50,7 @@ public class TemplateClassGeneratorConfiguration implements Configuration {
    */
   public enum Options {
     
-    MODELPATH("modelPath"), MODELPATH_SHORT("mp"),
+    TEMPLATEPATH("templatepath"), TEMPLATEPATH_SHORT("tp"),
     OUT("out"), OUT_SHORT("o");
     
     String name;
@@ -76,6 +79,10 @@ public class TemplateClassGeneratorConfiguration implements Configuration {
     return new TemplateClassGeneratorConfiguration(configuration);
   }
   
+  public static TemplateClassGeneratorConfiguration fromArguments(CLIArguments arguments) {
+    return new TemplateClassGeneratorConfiguration(arguments);
+  }
+  
   /**
    * Constructor for {@link TemplateClassGeneratorConfiguration}
    */
@@ -83,6 +90,11 @@ public class TemplateClassGeneratorConfiguration implements Configuration {
     this.configuration = ConfigurationContributorChainBuilder.newChain()
         .add(DelegatingConfigurationContributor.with(internal))
         .build();
+  }
+  
+  private TemplateClassGeneratorConfiguration(CLIArguments arguments) {
+    Configuration internal = ConfigurationPropertiesMapContributor.fromSplitMap(arguments.asMap());
+    this.configuration = TemplateClassGeneratorConfiguration.withConfiguration(internal);
   }
   
   /**
@@ -223,12 +235,12 @@ public class TemplateClassGeneratorConfiguration implements Configuration {
   
   
   public File getModelPath() {
-    Optional<String> modelPath = getAsString(Options.MODELPATH);
+    Optional<String> modelPath = getAsString(Options.TEMPLATEPATH);
     if(modelPath.isPresent()){
       Path mp = Paths.get(modelPath.get());
       return mp.toFile();
     }
-    modelPath = getAsString(Options.MODELPATH_SHORT);
+    modelPath = getAsString(Options.TEMPLATEPATH_SHORT);
     if(modelPath.isPresent()){
       Path mp = Paths.get(modelPath.get());
       return mp.toFile();

@@ -50,7 +50,7 @@
           <baseClass>de.monticore.templateclassgenerator.TemplateClassGeneratorScript</baseClass>
           <arguments>
             <out>${basedir}/target/generated-sources/templateClasses/</out>
-            <modelPath>${basedir}/src/test/resources/</modelPath>
+            <templatepath>${basedir}/src/test/resources/</templatepath>
           </arguments>
           <script>de/monticore/templateclassgenerator/templateclassgenerator.groovy</script>
         </configuration>

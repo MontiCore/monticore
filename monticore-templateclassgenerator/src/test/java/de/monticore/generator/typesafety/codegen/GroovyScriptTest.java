@@ -54,7 +54,7 @@ public class GroovyScriptTest {
    */
   private List<String> generatorArguments = Lists
       .newArrayList(
-          getConfigProperty(TemplateClassGeneratorConfiguration.Options.MODELPATH.toString()), MODEL_PATH,
+          getConfigProperty(TemplateClassGeneratorConfiguration.Options.TEMPLATEPATH.toString()), MODEL_PATH,
           getConfigProperty(TemplateClassGeneratorConfiguration.Options.OUT.toString()), OUTPUT_FOLDER);
   
   protected static final String LOG = "GeneratorTest";

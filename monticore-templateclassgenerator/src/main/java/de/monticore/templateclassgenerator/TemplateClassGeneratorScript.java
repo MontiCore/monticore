@@ -70,7 +70,7 @@ public class TemplateClassGeneratorScript extends Script implements GroovyRunner
     // after adding everything we override a couple of known variable
     // bindings
     // to have them properly typed in the script
-    builder.addVariable(TemplateClassGeneratorConfiguration.Options.MODELPATH.toString(),
+    builder.addVariable(TemplateClassGeneratorConfiguration.Options.TEMPLATEPATH.toString(),
         config.getModelPath());
     builder.addVariable(TemplateClassGeneratorConfiguration.Options.OUT.toString(),
         config.getOut());
