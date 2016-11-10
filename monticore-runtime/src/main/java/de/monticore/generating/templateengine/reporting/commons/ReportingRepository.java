@@ -127,7 +127,7 @@ public class ReportingRepository {
   private String getNameFormatted(Object obj, String out, SourcePosition sourcePos) {
     String pos = Layouter.sourcePos(sourcePos);
     // node has a source position
-    if (sourcePos.equals(
+    if (!sourcePos.equals(
         SourcePosition.getDefaultSourcePosition())) {
       if (!nodeWithSource2Ident.containsKey(obj)) {
         // set output name for node
