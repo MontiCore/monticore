@@ -66,7 +66,7 @@ public class GeneratorConfig {
   }
   
   private static GeneratorSetup init(Optional<GeneratorSetup> setupOpt) {
-    GeneratorSetup setup = setupOpt.orElse(new GeneratorSetup(new File(TemplateClassGeneratorConstants.DEFAULT_OUTPUT_FOLDER)));
+    GeneratorSetup setup = setupOpt.orElse(new GeneratorSetup(Paths.get(TemplateClassGeneratorConstants.DEFAULT_OUTPUT_FOLDER).toAbsolutePath().toFile()));
     
     GlobalExtensionManagement glex = setup.getGlex().orElse(new GlobalExtensionManagement());
     glex.defineGlobalVar(TemplateClassGeneratorConstants.TEMPLATES_ALIAS, new TemplateAccessor());

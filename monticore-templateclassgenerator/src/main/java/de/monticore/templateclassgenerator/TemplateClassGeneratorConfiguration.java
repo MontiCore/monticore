@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import de.monticore.MontiCoreConfiguration;
+import de.monticore.templateclassgenerator.codegen.TemplateClassGeneratorConstants;
 import de.se_rwth.commons.cli.CLIArguments;
 import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.configuration.ConfigurationContributorChainBuilder;
@@ -39,11 +39,8 @@ import de.se_rwth.commons.configuration.DelegatingConfigurationContributor;
  * @author Jerome Pfeiffer
  */
 public class TemplateClassGeneratorConfiguration implements Configuration {
-
-  public static final String CONFIGURATION_PROPERTY = "_configuration";
-  public static final String DEFAULT_OUTPUT_DIRECTORY = "out";
   
-
+  public static final String CONFIGURATION_PROPERTY = "_configuration";
   
   /**
    * The names of the specific MontiArc options used in this configuration.
@@ -68,7 +65,6 @@ public class TemplateClassGeneratorConfiguration implements Configuration {
     }
     
   }
-  
   
   private final Configuration configuration;
   
@@ -233,27 +229,33 @@ public class TemplateClassGeneratorConfiguration implements Configuration {
     return getValues(key.toString());
   }
   
-  
-  public File getModelPath() {
+  /**
+   * Getter for the template path stored in this configuration. A fallback
+   * default is looked up in {@link TemplateClassGeneratorConstants}
+   * 
+   * @return template path as File
+   */
+  public File getTemplatePath() {
     Optional<String> modelPath = getAsString(Options.TEMPLATEPATH);
-    if(modelPath.isPresent()){
+    if (modelPath.isPresent()) {
       Path mp = Paths.get(modelPath.get());
       return mp.toFile();
     }
     modelPath = getAsString(Options.TEMPLATEPATH_SHORT);
-    if(modelPath.isPresent()){
+    if (modelPath.isPresent()) {
       Path mp = Paths.get(modelPath.get());
       return mp.toFile();
     }
-    return null;
+    
+    return Paths.get(TemplateClassGeneratorConstants.DEFAULT_TEMPLATEPATH).toAbsolutePath()
+        .toFile();
   }
   
-
   /**
    * Getter for the output directory stored in this configuration. A fallback
-   * default is "out".
+   * default is looked up in {@link TemplateClassGeneratorConstants}.
    * 
-   * @return output directory file
+   * @return output directory File
    */
   public File getOut() {
     Optional<String> out = getAsString(Options.OUT);
@@ -265,9 +267,9 @@ public class TemplateClassGeneratorConfiguration implements Configuration {
       return new File(out.get());
     }
     // fallback default is "out"
-    return new File(DEFAULT_OUTPUT_DIRECTORY);
+    return Paths.get(TemplateClassGeneratorConstants.DEFAULT_OUTPUT_FOLDER).toAbsolutePath()
+        .toFile();
   }
-  
   
   /**
    * @param files as String names to convert
@@ -276,12 +278,12 @@ public class TemplateClassGeneratorConfiguration implements Configuration {
   protected static List<File> toFileList(List<String> files) {
     return files.stream().collect(Collectors.mapping(file -> new File(file), Collectors.toList()));
   }
-
+  
   /**
    * @see de.se_rwth.commons.configuration.Configuration#hasProperty(java.lang.String)
    */
   @Override
   public boolean hasProperty(String key) {
-   return this.configuration.hasProperty(key);
+    return this.configuration.hasProperty(key);
   }
 }

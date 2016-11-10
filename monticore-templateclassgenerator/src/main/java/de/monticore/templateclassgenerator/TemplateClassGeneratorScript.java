@@ -43,9 +43,10 @@ import de.se_rwth.commons.logging.Log;
  */
 public class TemplateClassGeneratorScript extends Script implements GroovyRunner {
   
+ 
   protected static final String[] DEFAULT_IMPORTS = { "de.monticore.lang.montiarc.montiarc._ast" };
   
-  protected static final String LOG = "TypesafetyScript";
+  protected static final String LOG = "TCGScript";
   
   /**
    * @see de.se_rwth.commons.groovy.GroovyRunner#run(java.lang.String,
@@ -71,7 +72,7 @@ public class TemplateClassGeneratorScript extends Script implements GroovyRunner
     // bindings
     // to have them properly typed in the script
     builder.addVariable(TemplateClassGeneratorConfiguration.Options.TEMPLATEPATH.toString(),
-        config.getModelPath());
+        config.getTemplatePath());
     builder.addVariable(TemplateClassGeneratorConfiguration.Options.OUT.toString(),
         config.getOut());
     GroovyInterpreter g = builder.build();
