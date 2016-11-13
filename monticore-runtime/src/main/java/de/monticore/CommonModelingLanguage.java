@@ -19,18 +19,18 @@
 
 package de.monticore;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Strings.isNullOrEmpty;
-
-import java.util.Collection;
-import java.util.LinkedHashSet;
-
 import com.google.common.collect.ImmutableList;
 import de.monticore.ast.ASTNode;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.resolving.ResolvingFilter;
+
+import java.util.Collection;
+import java.util.LinkedHashSet;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
  * Base class for modeling languages. Provides access to grammarlanguage-related functionality,
@@ -102,15 +102,35 @@ public abstract class CommonModelingLanguage implements ModelingLanguage {
 
   @Override
   public Collection<ResolvingFilter<? extends Symbol>> getResolvers() {
+    return getResolvingFilters();
+  }
+
+  @Override
+  public Collection<ResolvingFilter<? extends Symbol>> getResolvingFilters() {
     return ImmutableList.copyOf(resolvingFilters);
   }
 
-  public void addResolver(final ResolvingFilter<? extends Symbol> resolvingFilter) {
+  public void addResolvingFilter(final ResolvingFilter<? extends Symbol> resolvingFilter) {
     resolvingFilters.add(resolvingFilter);
   }
 
-  public void addResolvers(final Collection<ResolvingFilter<? extends Symbol>> resolvingFilters) {
+  public void addResolvingFilters(final Collection<ResolvingFilter<? extends Symbol>> resolvingFilters) {
     this.resolvingFilters.addAll(resolvingFilters);
+  }
+
+  /**
+   * @deprecated use {@link #addResolvingFilter(ResolvingFilter)} instead
+   */
+  @Deprecated
+  public void addResolver(final ResolvingFilter<? extends Symbol> resolvingFilter) {
+    addResolvingFilter(resolvingFilter);
+  }
+
+  /**
+   * @deprecated use {@link #addResolvingFilters(Collection)} instead
+   */
+  public void addResolvers(final Collection<ResolvingFilter<? extends Symbol>> resolvingFilters) {
+    addResolvingFilters(resolvingFilters);
   }
 
   @Override

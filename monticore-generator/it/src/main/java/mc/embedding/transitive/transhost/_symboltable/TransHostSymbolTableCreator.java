@@ -25,23 +25,23 @@
 
 package mc.embedding.transitive.transhost._symboltable;
 
-import java.util.Deque;
-
+import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.ResolvingConfiguration;
 import mc.embedding.transitive.transhost._ast.ASTTransStart;
 import mc.embedding.transitive.transhost._visitor.TransHostVisitor;
-import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
+
+import java.util.Deque;
 
 public class TransHostSymbolTableCreator extends TransHostSymbolTableCreatorTOP {
 
   private TransHostVisitor realThis = this;
   
   public TransHostSymbolTableCreator(
-    final ResolverConfiguration resolverConfig, final MutableScope enclosingScope) {
+    final ResolvingConfiguration resolverConfig, final MutableScope enclosingScope) {
     super(resolverConfig, enclosingScope);
   }
 
-  public TransHostSymbolTableCreator(final ResolverConfiguration resolverConfig, final Deque<MutableScope> scopeStack) {
+  public TransHostSymbolTableCreator(final ResolvingConfiguration resolverConfig, final Deque<MutableScope> scopeStack) {
     super(resolverConfig, scopeStack);
   }
 

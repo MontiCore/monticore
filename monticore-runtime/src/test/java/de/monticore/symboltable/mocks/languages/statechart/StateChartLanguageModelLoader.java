@@ -22,7 +22,7 @@ package de.monticore.symboltable.mocks.languages.statechart;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.mocks.languages.statechart.asts.ASTStateChartCompilationUnit;
 import de.se_rwth.commons.logging.Log;
@@ -34,9 +34,9 @@ public class StateChartLanguageModelLoader extends ModelingLanguageModelLoader<A
   }
 
   @Override
-  protected void createSymbolTableFromAST(ASTStateChartCompilationUnit ast, String modelName, MutableScope enclosingScope, ResolverConfiguration resolverConfiguration) {
+  protected void createSymbolTableFromAST(ASTStateChartCompilationUnit ast, String modelName, MutableScope enclosingScope, ResolvingConfiguration resolvingConfiguration) {
     final StateChartLanguageSymbolTableCreator symbolTableCreator = getModelingLanguage().getSymbolTableCreator
-        (resolverConfiguration, enclosingScope).orElse(null);
+        (resolvingConfiguration, enclosingScope).orElse(null);
 
     if (symbolTableCreator != null) {
       Log.debug("Start creation of symbol table for model \"" + modelName + "\".",

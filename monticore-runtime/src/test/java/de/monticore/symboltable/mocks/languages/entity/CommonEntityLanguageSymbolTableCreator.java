@@ -21,7 +21,7 @@ package de.monticore.symboltable.mocks.languages.entity;
 
 import de.monticore.symboltable.CommonSymbolTableCreator;
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
 
 /**
  * TODO: Write me!
@@ -33,7 +33,7 @@ import de.monticore.symboltable.ResolverConfiguration;
  */
 public class CommonEntityLanguageSymbolTableCreator extends CommonSymbolTableCreator implements EntityLanguageSymbolTableCreator {
 
-  public CommonEntityLanguageSymbolTableCreator(final ResolverConfiguration resolverConfig, final
+  public CommonEntityLanguageSymbolTableCreator(final ResolvingConfiguration resolverConfig, final
   MutableScope enclosingScope) {
     super(resolverConfig, enclosingScope);
   }

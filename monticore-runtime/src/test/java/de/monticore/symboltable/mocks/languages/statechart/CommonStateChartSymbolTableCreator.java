@@ -21,7 +21,7 @@ package de.monticore.symboltable.mocks.languages.statechart;
 
 import de.monticore.symboltable.CommonSymbolTableCreator;
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
 
 /**
  * TODO: Write me!
@@ -34,7 +34,7 @@ import de.monticore.symboltable.ResolverConfiguration;
 public class CommonStateChartSymbolTableCreator extends CommonSymbolTableCreator implements StateChartLanguageSymbolTableCreator {
 
 
-  public CommonStateChartSymbolTableCreator(ResolverConfiguration resolverConfig, MutableScope
+  public CommonStateChartSymbolTableCreator(ResolvingConfiguration resolverConfig, MutableScope
       enclosingScope) {
     super(resolverConfig, enclosingScope);
   }

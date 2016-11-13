@@ -25,24 +25,24 @@
 
 package mc.embedding.external.host._symboltable;
 
+import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.ResolvingConfiguration;
+import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
-
 import mc.embedding.external.host._ast.ASTHost;
 import mc.embedding.external.host._visitor.HostVisitor;
-import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
-import de.monticore.symboltable.Scope;
+
 import java.util.Deque;
 
 public class HostSymbolTableCreatorTOP extends de.monticore.symboltable.CommonSymbolTableCreator
          implements HostVisitor {
 
   public HostSymbolTableCreatorTOP(
-    final ResolverConfiguration resolverConfig, final MutableScope enclosingScope) {
+    final ResolvingConfiguration resolverConfig, final MutableScope enclosingScope) {
     super(resolverConfig, enclosingScope);
   }
 
-  public HostSymbolTableCreatorTOP(final ResolverConfiguration resolverConfig, final Deque<MutableScope> scopeStack) {
+  public HostSymbolTableCreatorTOP(final ResolvingConfiguration resolverConfig, final Deque<MutableScope> scopeStack) {
     super(resolverConfig, scopeStack);
   }
 

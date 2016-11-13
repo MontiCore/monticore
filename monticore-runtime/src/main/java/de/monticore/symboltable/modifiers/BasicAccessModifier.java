@@ -20,57 +20,79 @@
 package de.monticore.symboltable.modifiers;
 
 /**
- *
  * Contains constants for basic access modifiers that exist in Java, i.e., public, protected,
- * package-local and private. Additional, the  constant {@link #ABSENT} represents the absent
- * of modifiers.
+ * package-local and private. Additional, the constant {@link #ABSENT} represents the absent of
+ * modifiers.
  *
  * @author Pedram Mir Seyed Nazari
  */
 public enum BasicAccessModifier implements AccessModifier {
-
+  
   PUBLIC {
+    
     @Override
-    public boolean includes (AccessModifier modifier){
+    public boolean includes(AccessModifier modifier) {
       return modifier.equals(PUBLIC);
     }
+    
+    @Override
+    public String toString() {
+      return "public";
+    }
   },
-
+  
   PROTECTED {
+    
     @Override
     public boolean includes(AccessModifier modifier) {
       return (modifier.equals(PUBLIC) || modifier.equals(PROTECTED));
     }
+    
+    @Override
+    public String toString() {
+      return "protected";
+    }
   },
-
+  
   PACKAGE_LOCAL {
+    
     @Override
     public boolean includes(AccessModifier modifier) {
       return (modifier.equals(PUBLIC)
           || modifier.equals(PROTECTED)
           || modifier.equals(PACKAGE_LOCAL));
     }
+    
+    @Override
+    public String toString() {
+      return "package_local";
+    }   
   },
-
+  
   PRIVATE {
+    
     public boolean includes(AccessModifier modifier) {
       return (modifier.equals(PUBLIC)
           || modifier.equals(PROTECTED)
           || modifier.equals(PACKAGE_LOCAL)
           || modifier.equals(PRIVATE));
     }
-  },
 
+    @Override
+    public String toString() {
+      return "private";
+    }    
+ },
+  
   /**
    * Represents the absence of an access modifier, i.e., a kind of null object. This is especially
-   * for
-   * languages that do not support access modifiers. Note that this constant is different from the
-   * {@link #PACKAGE_LOCAL}, which, e.g., in Java, is only SYNTACTICALLY absent.
+   * for languages that do not support access modifiers. Note that this constant is different from
+   * the {@link #PACKAGE_LOCAL}, which, e.g., in Java, is only SYNTACTICALLY absent.
    *
    * @deprecated use {@link AccessModifier#ALL_INCLUSION} instead
    */
-  @Deprecated
-  ABSENT {
+  @Deprecated ABSENT {
+    
     @Override
     public boolean includes(AccessModifier modifier) {
       return true;

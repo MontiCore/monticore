@@ -114,14 +114,14 @@ public class LanguageCompositionTest {
     final EntityEmbeddingScLanguage language = new EntityEmbeddingScLanguage();
     language.setParser(new ParserMock(astEntityCompilationUnit));
 
-    final ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
-    resolverConfiguration.addTopScopeResolvers(language.getResolvers());
+    final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
+    resolvingConfiguration.addTopScopeResolvers(language.getResolvingFilters());
 
 
     final ModelPath modelPath = new ModelPath(Paths.get
         ("src/test/resources/de/monticore/symboltable/languagecomposition"));
 
-    final Scope globalScope = new GlobalScope(modelPath, language, resolverConfiguration);
+    final Scope globalScope = new GlobalScope(modelPath, language, resolvingConfiguration);
 
     final EntitySymbol entity = globalScope.<EntitySymbol>resolve("embedding.Entity",
         EntitySymbol.KIND).orElse(null);

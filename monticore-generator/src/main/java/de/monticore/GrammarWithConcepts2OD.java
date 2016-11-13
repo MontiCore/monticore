@@ -59,7 +59,7 @@ public class GrammarWithConcepts2OD extends Grammar_WithConcepts2OD {
   public String printObjectDiagram(String modelName, ASTGrammarNode a) {
     printer.clearBuffer();
     printer.setIndentLength(2);
-    printer.print("astobjectdiagram ");
+    printer.print("objectdiagram ");
     printer.print(modelName);
     printer.println(" {");
     printer.indent();

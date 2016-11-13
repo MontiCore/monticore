@@ -19,14 +19,13 @@
 
 package de.monticore.symboltable;
 
-import de.monticore.ast.ASTNode;
-import de.monticore.generating.templateengine.reporting.Reporting;
-import de.monticore.symboltable.references.SymbolReference;
-import de.se_rwth.commons.logging.Log;
-
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Optional;
+
+import de.monticore.ast.ASTNode;
+import de.monticore.symboltable.references.SymbolReference;
+import de.se_rwth.commons.logging.Log;
 
 /**
  * Base class for all symbol table creators.
@@ -36,7 +35,7 @@ import java.util.Optional;
  */
 public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
 
-  private final ResolverConfiguration resolvingConfig;
+  private final ResolvingConfiguration resolvingConfig;
   protected Deque<MutableScope> scopeStack;
 
   /**
@@ -45,14 +44,14 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
    */
   private MutableScope firstCreatedScope;
 
-  public CommonSymbolTableCreator(final ResolverConfiguration resolvingConfig,
+  public CommonSymbolTableCreator(final ResolvingConfiguration resolvingConfig,
       final MutableScope enclosingScope) {
     this(resolvingConfig, new ArrayDeque<>());
 
     putOnStack(Log.errorIfNull(enclosingScope));
   }
 
-  public CommonSymbolTableCreator(final ResolverConfiguration resolvingConfig,
+  public CommonSymbolTableCreator(final ResolvingConfiguration resolvingConfig,
       final Deque<MutableScope> scopeStack) {
     this.scopeStack = Log.errorIfNull(scopeStack);
     this.resolvingConfig = Log.errorIfNull(resolvingConfig);
@@ -178,10 +177,6 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
 
   @Override
   public final Optional<? extends MutableScope> removeCurrentScope() {
-    if (!scopeStack.isEmpty() && scopeStack.getLast().equals(getFirstCreatedScope())) {
-      Reporting.reportSymbolTableScope(scopeStack.getLast());
-    }
-
     return Optional.of(scopeStack.pollLast());
   }
   

@@ -30,8 +30,7 @@ import de.monticore.symboltable.types.references.JTypeReference;
  * @author Pedram Mir Seyed Nazari
  *
  */
-// TODO PN rename to JFieldSymbol
-public interface JAttributeSymbol extends Symbol {
+public interface JFieldSymbol extends Symbol {
 
   JAttributeSymbolKind KIND = new JAttributeSymbolKind();
 

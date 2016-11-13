@@ -69,6 +69,10 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
         String name = StringTransformations.uncapitalize(reporting.getASTNodeNameFormatted(node));
         printObject(name, "${astName}");
         pp.indent();
+        if (node.getSymbol().isPresent() && !node.getSymbol().get().getName().isEmpty()) {
+          String symName = StringTransformations.uncapitalize(reporting.getSymbolNameFormatted(node.getSymbol().get()));
+          pp.println("symbol = " + symName + ";");
+        }
         <#list type.getAllVisibleFields() as field>
  
           <#if genHelper.isAstNode(field) || genHelper.isOptionalAstNode(field) >
@@ -98,6 +102,7 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
        			pp.print("${field.getName()}");
    			    pp.println(" = ");
    			    pp.indent();
+   			    pp.println("// *size: " + node.${attrGetter}().size());
    			    isEmpty = false;
               }
               boolean isFirst = true;
@@ -174,7 +179,7 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
   public String printObjectDiagram(String modelName, ${genHelper.getASTNodeBaseType()} node) {
     pp.clearBuffer();
     pp.setIndentLength(2);
-    pp.print("astobjectdiagram ");
+    pp.print("objectdiagram ");
     pp.print(modelName);
     pp.println(" {");
     pp.indent();

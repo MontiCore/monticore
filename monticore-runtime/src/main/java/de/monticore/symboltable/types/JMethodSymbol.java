@@ -19,10 +19,10 @@
 
 package de.monticore.symboltable.types;
 
-import java.util.List;
-
 import de.monticore.symboltable.ScopeSpanningSymbol;
 import de.monticore.symboltable.types.references.JTypeReference;
+
+import java.util.List;
 
 /**
  * @author Pedram Mir Seyed Nazari
@@ -33,7 +33,7 @@ public interface JMethodSymbol extends ScopeSpanningSymbol {
 
   JTypeReference<? extends JTypeSymbol> getReturnType();
 
-  List<? extends JAttributeSymbol> getParameters();
+  List<? extends JFieldSymbol> getParameters();
 
   List<? extends JTypeSymbol> getFormalTypeParameters();
 

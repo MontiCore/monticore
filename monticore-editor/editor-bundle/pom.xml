@@ -85,6 +85,7 @@
               !*.xsd,
               !*.dtd,
               !org.eclipse.*,
+              !org.slf4j.*,
               !java.*,
               *;
             </_exportcontents>

@@ -20,9 +20,12 @@
 package de.monticore.generating.templateengine.reporting.commons;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.references.SymbolReference;
 
 public interface IASTNodeIdentHelper {
-
+  
   public static final String LAYOUT_FULL = "@%s!%s";
   
   public static final String LAYOUT_TYPE = "@!%s";
@@ -35,6 +38,19 @@ public interface IASTNodeIdentHelper {
     return String.format(LAYOUT_TYPE, type);
   }
   
-	public String getIdent(ASTNode ast);
-
+  public String getIdent(ASTNode ast);
+  
+  default public String getIdent(Symbol symbol) {
+    if (symbol instanceof SymbolReference) {
+      return format(symbol.getName(), "SymbolReference");
+    }
+    else {
+      return format(symbol.getName(), "Symbol");
+    }
+  }
+  
+  default public String getIdent(Scope scope) {
+    return format(scope.getName().orElse(""), "Scope");
+  }
+  
 }

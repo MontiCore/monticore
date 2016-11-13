@@ -19,12 +19,6 @@
 
 package de.monticore.symboltable;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-
-import java.util.ArrayList;
-
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.mocks.asts.ASTSymbolReference;
 import de.monticore.symboltable.mocks.languages.entity.ActionSymbol;
@@ -39,6 +33,12 @@ import de.monticore.symboltable.mocks.languages.entity.asts.ASTEntity;
 import de.monticore.symboltable.mocks.languages.entity.asts.ASTEntityCompilationUnit;
 import de.monticore.symboltable.mocks.languages.entity.asts.ASTProperty;
 import org.junit.Test;
+
+import java.util.ArrayList;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 
 /**
  *
@@ -86,12 +86,12 @@ public class SymbolTableCreatorTest {
     astProperty.setReference(astReference2);
 
     
-    final ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
-    resolverConfiguration.addTopScopeResolvers(new EntityLanguage().getResolvers());
+    final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
+    resolvingConfiguration.addTopScopeResolvers(new EntityLanguage().getResolvingFilters());
 
-    final MutableScope globalScope = new GlobalScope(new ModelPath(), new ArrayList<>(), resolverConfiguration);
+    final MutableScope globalScope = new GlobalScope(new ModelPath(), new ArrayList<>(), resolvingConfiguration);
 
-    EntityLanguageSymbolTableCreator creator = new CommonEntityLanguageSymbolTableCreator(resolverConfiguration, globalScope);
+    EntityLanguageSymbolTableCreator creator = new CommonEntityLanguageSymbolTableCreator(resolvingConfiguration, globalScope);
 
     Scope globals = creator.createFromAST(classCompilationUnit);
 
