@@ -1,7 +1,5 @@
 package de.monticore.generating.templateengine.freemarker;
 
-import java.nio.file.Path;
-
 /**
  * Represents a template that is automatically imported..
  * 
@@ -10,7 +8,7 @@ import java.nio.file.Path;
  * @author Robert Heim
  */
 public class TemplateAutoImport {
-  private Path templatePath;
+  private String templatePath;
   
   private String namespaceHash;
   
@@ -21,16 +19,16 @@ public class TemplateAutoImport {
    * @param namespaceHash The name of the hash variable by which the namespace of the included
    * template can be accessed. See http://freemarker.org/docs/ref_directive_import.html
    */
-  public TemplateAutoImport(Path templatePath, String namespaceHash) {
+  public TemplateAutoImport(String templatePath, String namespaceHash) {
     this.templatePath = templatePath;
     this.namespaceHash = namespaceHash;
   }
   
-  public Path getTemplatePath() {
+  public String getTemplatePath() {
     return templatePath;
   }
   
-  public void setTemplatePath(Path templatePath) {
+  public void setTemplatePath(String templatePath) {
     this.templatePath = templatePath;
   }
   
