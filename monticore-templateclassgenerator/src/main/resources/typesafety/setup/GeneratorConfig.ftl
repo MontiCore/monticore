@@ -72,7 +72,7 @@ public class GeneratorConfig {
     glex.defineGlobalVar(TemplateClassGeneratorConstants.TEMPLATES_ALIAS, new TemplateAccessor());
     setup.setGlex(glex);
     List<TemplateAutoImport> imports = new ArrayList<>();
-    TemplateAutoImport ta = new TemplateAutoImport(Paths.get(TemplateClassGeneratorConstants.TEMPLATE_CLASSES_PACKAGE+"/"+TemplateClassGeneratorConstants.TEMPLATE_CLASSES_SETUP_PACKAGE+"/Setup.ftl"), TemplateClassGeneratorConstants.TEMPLATE_CLASSES_PACKAGE);
+    TemplateAutoImport ta = new TemplateAutoImport(TemplateClassGeneratorConstants.TEMPLATE_CLASSES_PACKAGE+"/"+TemplateClassGeneratorConstants.TEMPLATE_CLASSES_SETUP_PACKAGE+"/Setup.ftl", TemplateClassGeneratorConstants.TEMPLATE_CLASSES_PACKAGE);
     imports.add(ta);
     setup.setAutoImports(imports);
    
