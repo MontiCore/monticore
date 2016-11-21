@@ -54,17 +54,23 @@ public class GroovyScriptTest {
    */
   private List<String> generatorArguments = Lists
       .newArrayList(
-          getConfigProperty(TemplateClassGeneratorConfiguration.Options.MODELPATH.toString()), MODEL_PATH,
+          getConfigProperty(TemplateClassGeneratorConfiguration.Options.TEMPLATEPATH.toString()), MODEL_PATH,
           getConfigProperty(TemplateClassGeneratorConfiguration.Options.OUT.toString()), OUTPUT_FOLDER);
   
   protected static final String LOG = "GeneratorTest";
   
   @Test
-  public void testMultipleModels(){
-    doGenerate();
+  public void testWithArgs(){
+    doGenerate(getCLIArguments());
+  }
+  
+  @Test
+  public void testWithoutArgs(){
+    String[] emptyArgs = new String[0];
+    doGenerate(emptyArgs);
   }
 
-  private void doGenerate() {
+  private void doGenerate(String[] args) {
     Log.info("Runs AST generator test" , LOG);
     ClassLoader l = GroovyScriptTest.class.getClassLoader();
     try {
@@ -74,7 +80,7 @@ public class GroovyScriptTest {
       
       Configuration configuration =
           ConfigurationPropertiesMapContributor.fromSplitMap(CLIArguments.forArguments(
-              getCLIArguments())
+              args)
               .asMap());
       new TemplateClassGeneratorScript().run(script, configuration);
     }
