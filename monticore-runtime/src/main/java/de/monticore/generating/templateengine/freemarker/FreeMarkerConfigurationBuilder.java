@@ -95,7 +95,7 @@ public class FreeMarkerConfigurationBuilder {
     }
     
     for (TemplateAutoImport i : autoImports) {
-      config.addAutoImport(i.getNamespaceHash(), i.getTemplatePath().toString());
+      config.addAutoImport(i.getNamespaceHash(), i.getTemplatePath());
     }
     
     config.setTemplateExceptionHandler(new MontiCoreTemplateExceptionHandler(

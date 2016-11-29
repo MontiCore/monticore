@@ -55,10 +55,20 @@ public class TemplateClassGeneratorConstants {
   public static final String PARAM_METHOD = "tc.params";
   
   /**
-   * Signature methode to define template result.
+   * Signature method to define template result.
    */
   public static final String RESULT_METHOD = "tc.result";
   
-  public static final String DEFAULT_OUTPUT_FOLDER = "out";
+  
+  
+  /**
+   * Default path where TCG looks for Templates.
+   */
+  public static final String DEFAULT_TEMPLATEPATH = "src/main/resources";
+  
+  /**
+   * Default path TCG generates template classes to.
+   */
+  public static final String DEFAULT_OUTPUT_FOLDER = "gen";
   
 }
