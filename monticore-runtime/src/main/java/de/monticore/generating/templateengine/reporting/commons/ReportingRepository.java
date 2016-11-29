@@ -40,6 +40,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.references.SymbolReference;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
@@ -199,6 +200,20 @@ public class ReportingRepository {
   public String getSymbolNameFormatted(Symbol symbol) {
     String name = astNodeIdentHelper.getIdent(symbol);
     return getNameFormatted(symbol, name, symbol.getSourcePosition());
+  }
+  
+  /**
+   * Method that converts the SymbolReference into a formatted string with a source
+   * position if this is possible. The structure of the string is
+   * @symbolName!symbolType(x,y) or @symbolName!symbolType(!ID).
+   * 
+   * @param symbol The symbol that should be converted into unique String
+   * @return representation of the ASTNode that contains either the position or
+   * a unique identification number for the object
+   */
+  public String getSymbolNameFormatted(SymbolReference symbolReference) {
+    String name = astNodeIdentHelper.getIdent(symbolReference);
+    return getNameFormatted(symbolReference, name, SourcePosition.getDefaultSourcePosition());
   }
   
   /**

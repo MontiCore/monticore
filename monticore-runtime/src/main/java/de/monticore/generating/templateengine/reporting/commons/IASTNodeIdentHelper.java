@@ -41,12 +41,11 @@ public interface IASTNodeIdentHelper {
   public String getIdent(ASTNode ast);
   
   default public String getIdent(Symbol symbol) {
-    if (symbol instanceof SymbolReference) {
-      return format(symbol.getName(), "SymbolReference");
-    }
-    else {
-      return format(symbol.getName(), "Symbol");
-    }
+    return format(symbol.getName(), "Symbol");
+  }
+  
+  default public String getIdent(SymbolReference<?> symbol) {
+    return format(symbol.getName(), "SymbolReference");
   }
   
   default public String getIdent(Scope scope) {

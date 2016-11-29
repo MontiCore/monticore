@@ -34,6 +34,13 @@ import de.monticore.symboltable.ScopeSpanningSymbol;
 import de.monticore.symboltable.Scopes;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.symboltable.types.CommonJFieldSymbol;
+import de.monticore.symboltable.types.CommonJMethodSymbol;
+import de.monticore.symboltable.types.CommonJTypeSymbol;
+import de.monticore.symboltable.types.JFieldSymbol;
+import de.monticore.symboltable.types.JMethodSymbol;
+import de.monticore.symboltable.types.JTypeSymbol;
+import de.monticore.symboltable.types.references.JTypeReference;
 import de.se_rwth.commons.Names;
 
 /**
@@ -41,8 +48,8 @@ import de.se_rwth.commons.Names;
  */
 public class SymbolTableReporter extends AReporter {
   
-  final static String SIMPLE_FILE_NAME = "13_SymbolTable";
-    
+  static final String SIMPLE_FILE_NAME = "13_SymbolTable";
+  
   protected final String outputDir;
   
   protected final String modelName;
@@ -127,7 +134,7 @@ public class SymbolTableReporter extends AReporter {
     if (!scope.getSubScopes().isEmpty()) {
       printer.println("scopes =");
       printer.indent();
-      printer.print("// *size: " + scope.getSubScopes().size());      
+      printer.print("// *size: " + scope.getSubScopes().size());
     }
     sep = "";
     for (Scope subScope : scope.getSubScopes()) {
@@ -139,7 +146,7 @@ public class SymbolTableReporter extends AReporter {
       printer.println(";");
       printer.unindent();
     }
-  
+    
     printer.unindent();
     printer.print("}");
   }
@@ -180,6 +187,59 @@ public class SymbolTableReporter extends AReporter {
     }
     if (!sym.getAccessModifier().equals(AccessModifier.ALL_INCLUSION)) {
       printer.println("accesModifier = \"" + sym.getAccessModifier().toString() + "\";");
+    }
+  }
+  
+  protected void reportFieldAttributes(
+      CommonJFieldSymbol<? extends JTypeReference<? extends JTypeSymbol>> sym,
+      IndentPrinter printer) {
+    printer.println("isFinal = " + sym.isFinal() + ";");
+    printer.println("isParameter = " + sym.isParameter() + ";");
+    printer.println("isStatic = " + sym.isStatic() + ";");
+  }
+  
+  protected void reportMethodAttributes(
+      CommonJMethodSymbol<? extends JTypeSymbol, ? extends JTypeReference<? extends JTypeSymbol>, ? extends JFieldSymbol> sym,
+      IndentPrinter printer) {
+    printer.println("isFinal = " + sym.isFinal() + ";");
+    printer.println("isStatic = " + sym.isStatic() + ";");
+    printer.println("isAbstract = " + sym.isAbstract() + ";");
+    printer.println("isConstructor = " + sym.isConstructor() + ";");
+    printer.println("isEllipsisParameterMethod = " + sym.isEllipsisParameterMethod() + ";");
+    printer.println("returnType = "
+        + repository.getSymbolNameFormatted(sym.getReturnType()) + ";");
+    reportListOfReferences("exceptions", sym.getExceptions(), printer);
+  }
+  
+  protected void reportTypeAttributes(
+      CommonJTypeSymbol<? extends JTypeSymbol, ? extends JFieldSymbol, ? extends JMethodSymbol, ? extends JTypeReference<? extends JTypeSymbol>> sym,
+      IndentPrinter printer) {
+    printer.println("isFinal = " + sym.isFinal() + ";");
+    printer.println("isAbstract = " + sym.isAbstract() + ";");
+    printer.println("isEnum = " + sym.isEnum() + ";");
+    printer.println("isFormalTypeParameter = " + sym.isFormalTypeParameter() + ";");
+    printer.println("isInnerType = " + sym.isInnerType() + ";");
+    printer.println("isInterface = " + sym.isInterface() + ";");
+    if (sym.getSuperClass().isPresent()) {
+      printer.println("superClass = "
+          + repository.getSymbolNameFormatted(sym.getSuperClass().get())
+          + ";");
+    }
+    if (!sym.getInterfaces().isEmpty()) {
+    
+    }
+  }
+  
+  protected void reportListOfReferences(String name, Collection<? extends JTypeReference<? extends JTypeSymbol>> refs, IndentPrinter printer) {    
+    if (!refs.isEmpty()) {
+      printer.print(name + " = [");
+      String delim = "";
+      for (JTypeReference<? extends JTypeSymbol> anno: refs) {
+        printer.print(delim);
+        printer.print(repository.getSymbolNameFormatted(anno));
+        delim = ", ";
+      }
+      printer.println("];");
     }
   }
   
