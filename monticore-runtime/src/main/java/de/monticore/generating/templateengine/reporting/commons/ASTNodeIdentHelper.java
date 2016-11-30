@@ -32,7 +32,7 @@ public class ASTNodeIdentHelper implements IASTNodeIdentHelper {
         name = name.substring(3);
       }
     }
-    return name;
+    return format(name);
   }
   
 }
