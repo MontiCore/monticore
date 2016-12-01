@@ -71,8 +71,10 @@
             </manifest>
           </archive>
           <descriptorRefs>
-            <descriptorRef>cli</descriptorRef>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
           </descriptorRefs>
+          <finalName>${project.artifactId}-${project.version}-cli</finalName>
+          <appendAssemblyId>false</appendAssemblyId>
         </configuration>
         <executions>
           <execution>
@@ -86,17 +88,4 @@
       </plugin>
     </plugins>
   </build>
-
-  <distributionManagement>
-    <repository>
-      <id>se-nexus</id>
-      <url>https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/</url>
-    </repository>
-    <snapshotRepository>
-      <id>se-nexus</id>
-      <url>https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/</url>
-    </snapshotRepository>
-  </distributionManagement>
-
-
 </project>
