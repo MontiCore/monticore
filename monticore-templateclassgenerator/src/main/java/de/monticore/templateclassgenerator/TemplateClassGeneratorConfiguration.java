@@ -266,7 +266,7 @@ public class TemplateClassGeneratorConfiguration implements Configuration {
     if (out.isPresent()) {
       return new File(out.get());
     }
-    // fallback default is "out"
+    // fallback default is "gen"
     return Paths.get(TemplateClassGeneratorConstants.DEFAULT_OUTPUT_FOLDER).toAbsolutePath()
         .toFile();
   }
