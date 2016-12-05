@@ -114,7 +114,7 @@ public class SymbolTableReporter extends AReporter {
     Collection<Symbol> reportedSymbols = symbols.stream()
         .filter(sym -> !(sym instanceof ScopeSpanningSymbol)).collect(Collectors.toList());
     if (!reportedSymbols.isEmpty()) {
-      printer.println("symbols =");
+      printer.print("symbols = ");
       printer.indent();
       printer.print("// *size: " + reportedSymbols.size());
     }
@@ -132,7 +132,7 @@ public class SymbolTableReporter extends AReporter {
     }
     
     if (!scope.getSubScopes().isEmpty()) {
-      printer.println("scopes =");
+      printer.print("scopes = ");
       printer.indent();
       printer.print("// *size: " + scope.getSubScopes().size());
     }
@@ -206,8 +206,10 @@ public class SymbolTableReporter extends AReporter {
     printer.println("isAbstract = " + sym.isAbstract() + ";");
     printer.println("isConstructor = " + sym.isConstructor() + ";");
     printer.println("isEllipsisParameterMethod = " + sym.isEllipsisParameterMethod() + ";");
-    printer.println("returnType = "
+    if (!sym.isConstructor()) {
+      printer.println("returnType = "
         + repository.getSymbolNameFormatted(sym.getReturnType()) + ";");
+    }
     reportListOfReferences("exceptions", sym.getExceptions(), printer);
   }
   
