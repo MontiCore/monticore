@@ -1,91 +1,91 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-	<!-- == PROJECT COORDINATES ============================================= -->
+  <!-- == PROJECT COORDINATES ============================================= -->
 
-	<parent>
-		<groupId>de.monticore</groupId>
-		<artifactId>monticore</artifactId>
-		<version>4.5.1-SNAPSHOT</version>
-	</parent>
+  <parent>
+    <groupId>de.monticore</groupId>
+    <artifactId>monticore</artifactId>
+    <version>4.5.1-SNAPSHOT</version>
+  </parent>
 
-	<artifactId>monticore-templateclassgenerator</artifactId>
+  <artifactId>monticore-templateclassgenerator</artifactId>
 
-	<!-- == PROJECT METAINFORMATION ========================================= -->
+  <!-- == PROJECT METAINFORMATION ========================================= -->
 
-	<name>MontiCore: Template Class Generator</name>
-	<description>Generates Java Classes from Templates to Enable Static Type-safe Template Calls</description>
+  <name>MontiCore: Template Class Generator</name>
+  <description>Generates Java Classes from Templates to Enable Static Type-safe Template Calls</description>
 
-	<!-- == PROJECT DEPENDENCIES ============================================= -->
+  <!-- == PROJECT DEPENDENCIES ============================================= -->
 
-	<dependencies>
-		<dependency>
-			<groupId>de.se_rwth.commons</groupId>
-			<artifactId>se-commons-groovy</artifactId>
-		</dependency>
+  <dependencies>
+    <dependency>
+      <groupId>de.se_rwth.commons</groupId>
+      <artifactId>se-commons-groovy</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>de.monticore</groupId>
-			<version>${project.version}</version>
-			<artifactId>monticore-cli</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>de.monticore</groupId>
+      <version>${project.version}</version>
+      <artifactId>monticore-cli</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>de.monticore</groupId>
-			<artifactId>monticore-runtime</artifactId>
-		</dependency>
-
-
-		<!-- .. Test Libraries ............................................... -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
-
-	<build>
-		<sourceDirectory>src/main/java</sourceDirectory>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>de.monticore.templateclassgenerator.TemplateClassGenerator</mainClass>
-						</manifest>
-					</archive>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+    <dependency>
+      <groupId>de.monticore</groupId>
+      <artifactId>monticore-runtime</artifactId>
+    </dependency>
 
 
+    <!-- .. Test Libraries ............................................... -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <sourceDirectory>src/main/java</sourceDirectory>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>de.monticore.templateclassgenerator.TemplateClassGenerator</mainClass>
+            </manifest>
+          </archive>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+          <finalName>${project.artifactId}-${project.version}-cli</finalName>
+          <appendAssemblyId>false</appendAssemblyId>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
