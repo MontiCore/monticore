@@ -174,7 +174,6 @@ public class CommonPrettyPrinterConcreteVisitor extends TypesPrettyPrinterConcre
    */
   @Override
   public CommonVisitor getRealThis() {
-    // TODO Auto-generated method stub
     return realThis;
   }
     

@@ -37,14 +37,14 @@ public class TypesNodeIdentHelper extends ASTNodeIdentHelper {
   }
   
   public String getIdent(ASTSimpleReferenceType a) {
-    String name = "";
+    StringBuilder name = new StringBuilder();
     for (int i = 0; i < a.getNames().size(); i++) {
-      name += a.getNames().get(i);
+      name.append(a.getNames().get(i));
       if (i != a.getNames().size() - 1) {
-        name += ".";
+        name.append(".");
       }
     }
-    return format(name, Layouter.nodeName(a));
+    return format(name.toString(), Layouter.nodeName(a));
   }
   
   public String getIdent(ASTTypeParameters a) {
@@ -54,10 +54,10 @@ public class TypesNodeIdentHelper extends ASTNodeIdentHelper {
       n = "??";
     }
     else {
-      if (l.size() == 0) {
+      if (l.isEmpty()) {
         n += "-";
       }
-      if (l.size() > 0) {
+      if (!l.isEmpty()) {
         n += l.get(0).getName();
       }
       if (l.size() > 1) {
@@ -67,7 +67,6 @@ public class TypesNodeIdentHelper extends ASTNodeIdentHelper {
     return format(n, Layouter.nodeName(a));
   }
   
-  // TODO: TGr
   public String getIdent(ASTIntLiteral a) {
     return format(a.getSource(), Layouter.nodeName(a));
   }
