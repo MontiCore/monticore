@@ -94,7 +94,7 @@ public class SymbolTableReporter extends AReporter {
     String scopeName;
     if (scope.getSpanningSymbol().isPresent()) {
       scopeName = repository.getSymbolNameFormatted(scope.getSpanningSymbol().get());
-      type = Names.getSimpleName(scope.getSpanningSymbol().get().getKind().getName());
+      type = scope.getSpanningSymbol().get().getClass().getSimpleName();
       int i = type.indexOf('$');
       if (i > 0) {
         type = type.substring(0, i);
@@ -164,7 +164,7 @@ public class SymbolTableReporter extends AReporter {
   }
   
   protected void reportSymbol(Symbol sym, IndentPrinter printer) {
-    String type = Names.getSimpleName(sym.getKind().getName());
+    String type = Names.getSimpleName(sym.getClass().getSimpleName());
     int i = type.indexOf('$');
     if (i > 0) {
       type = type.substring(0, i);
