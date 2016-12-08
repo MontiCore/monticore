@@ -100,7 +100,7 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
               boolean isEmpty = true;
               if (iter_${field.getName()}.hasNext()) {
        			pp.print("${field.getName()}");
-   			    pp.println(" = ");
+   			    pp.print(" = ");
    			    pp.indent();
    			    pp.println("// *size: " + node.${attrGetter}().size());
    			    isEmpty = false;

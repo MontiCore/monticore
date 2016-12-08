@@ -35,12 +35,6 @@ import de.monticore.types.types._ast.ASTTypeArgument;
 import de.monticore.types.types._ast.ASTWildcardType;
 import de.se_rwth.commons.Names;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- */
 // TODO: improve implementations
 public class TypesHelper {
   
@@ -84,7 +78,7 @@ public class TypesHelper {
     }
     Preconditions.checkArgument(reference instanceof ASTSimpleReferenceType);
     List<String> names = ((ASTSimpleReferenceType) reference).getNames();
-    return (names.isEmpty()) ? "" : names.get(names.size() - 1);
+    return names.isEmpty() ? "" : names.get(names.size() - 1);
   }
   
   public static String getQualifiedReferenceNameFromOptional(ASTType type) {
@@ -98,7 +92,7 @@ public class TypesHelper {
     }
     Preconditions.checkArgument(reference instanceof ASTSimpleReferenceType);
     List<String> names = ((ASTSimpleReferenceType) reference).getNames();
-    return (names.isEmpty()) ? "" : Names.getQualifiedName(names);
+    return names.isEmpty() ? "" : Names.getQualifiedName(names);
   }
   
   public static boolean isGenericTypeWithOneTypeArgument(ASTType type, String simpleRefTypeName) {
