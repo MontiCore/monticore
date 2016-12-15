@@ -101,8 +101,8 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
               if (iter_${field.getName()}.hasNext()) {
        			pp.print("${field.getName()}");
    			    pp.print(" = ");
-   			    pp.indent();
    			    pp.println("// *size: " + node.${attrGetter}().size());
+				pp.indent();
    			    isEmpty = false;
               }
               boolean isFirst = true;
