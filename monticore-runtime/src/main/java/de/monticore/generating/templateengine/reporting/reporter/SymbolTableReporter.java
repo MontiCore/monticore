@@ -80,9 +80,11 @@ public class SymbolTableReporter extends AReporter {
   
   @Override
   public void flush(ASTNode ast) {
-    Optional<? extends Scope> scope = ast.getSpannedScope();
-    if (scope.isPresent()) {
-      reportSymbolTableScope(scope.get());
+    if (ast != null) {
+      Optional<? extends Scope> scope = ast.getSpannedScope();
+      if (scope.isPresent()) {
+        reportSymbolTableScope(scope.get());
+      }
     }
     writeFooter();
     super.flush(ast);
