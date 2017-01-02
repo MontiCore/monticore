@@ -31,12 +31,12 @@ grammar FlatAutomaton extends mc.common.Basics {
 	  
 	  interface A0;
 	
-	ast A0 = VarnameA0:Name ;
+	ast A0 = varnameA0:Name ;
 	
 	interface A1 extends A0;
 	
-	ast A1 = VarnameA1:Name;
+	ast A1 = varnameA1:Name;
 	
-	M implements A1 = VarnameM:Name;
+	M implements A1 = varnameM:Name;
 	  	
 }
