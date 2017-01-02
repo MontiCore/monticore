@@ -19,9 +19,26 @@
 
 package de.monticore.codegen;
 
+import static de.monticore.codegen.mc2cd.TransformationHelper.createSimpleReference;
+import static de.monticore.codegen.mc2cd.transl.ConstantsTranslation.CONSTANTS_ENUM;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.ast_emf.AstEmfGeneratorHelper;
@@ -37,7 +54,6 @@ import de.monticore.symboltable.types.references.ActualTypeArgument;
 import de.monticore.types.TypesHelper;
 import de.monticore.types.TypesPrinter;
 import de.monticore.types.types._ast.ASTImportStatement;
-import de.monticore.types.types._ast.ASTReferenceType;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.CD4AnalysisHelper;
@@ -63,22 +79,6 @@ import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static de.monticore.codegen.mc2cd.TransformationHelper.createSimpleReference;
-import static de.monticore.codegen.mc2cd.transl.ConstantsTranslation.CONSTANTS_ENUM;
 
 /**
  * TODO: Write me!
@@ -563,10 +563,8 @@ public class GeneratorHelper extends TypesHelper {
       return true;
     }
     if (!type.getAstNode().isPresent()) {
-      // TODO this is an error, but for AST_X_List, AST_X_Ext, Optional (and
-      // probably all other built-in types) the ast node is not set
-      Log.warn(String.format("0xA5008 ASTNode of cd type symbol %s is not set.",
-          type.getName()));
+      Log.debug(String.format("ASTNode of cd type symbol %s is not set.",
+          type.getName()), LOG_NAME);
       return false;
     }
     ASTNode node = type.getAstNode().get();
