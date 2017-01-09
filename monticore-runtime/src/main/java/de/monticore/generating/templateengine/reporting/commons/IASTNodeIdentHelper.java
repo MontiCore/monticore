@@ -20,6 +20,8 @@
 package de.monticore.generating.templateengine.reporting.commons;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.symboltable.ArtifactScope;
+import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.references.SymbolReference;
@@ -49,7 +51,15 @@ public interface IASTNodeIdentHelper {
   }
   
   default public String getIdent(Scope scope) {
-    return format(scope.getName().orElse(""), "Scope");
+    String type;
+    if (scope instanceof ArtifactScope) {
+      type = "ArtifactScope";
+    } else if (scope instanceof GlobalScope) {
+      type = "GlobalScope";
+    } else {
+      type = "Scope";
+    }
+    return format(scope.getName().orElse(""), type);
   }
   
 }

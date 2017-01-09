@@ -73,6 +73,14 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
           String symName = StringTransformations.uncapitalize(reporting.getSymbolNameFormatted(node.getSymbol().get()));
           pp.println("symbol = " + symName + ";");
         }
+        if (node.getEnclosingScope().isPresent()) {
+          String scopeName = StringTransformations.uncapitalize(reporting.getScopeNameFormatted(node.getEnclosingScope().get()));
+          pp.println("enclosingScope = " + scopeName + ";");
+        }
+        if (node.getSpannedScope().isPresent()) {
+          String scopeName = StringTransformations.uncapitalize(reporting.getScopeNameFormatted(node.getSpannedScope().get()));
+          pp.println("spanningScope = " + scopeName + ";");
+        }
         <#list type.getAllVisibleFields() as field>
  
           <#if genHelper.isAstNode(field) || genHelper.isOptionalAstNode(field) >
