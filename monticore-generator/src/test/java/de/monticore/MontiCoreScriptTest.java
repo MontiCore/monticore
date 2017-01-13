@@ -119,7 +119,7 @@ public class MontiCoreScriptTest {
     assertNotNull(grammar);
     MontiCoreScript mc = new MontiCoreScript();
     GlobalScope symbolTable = mc.initNewSymbolTable(modelPath);
-    mc.generateParser(grammar, symbolTable, IterablePath.empty(), new File("target/generated-sources/monticore/testcode"));
+    mc.generateParser(glex, grammar, symbolTable, IterablePath.empty(), new File("target/generated-sources/monticore/testcode"));
   }
   
   /** {@link MontiCoreScript#transformAstGrammarToAstCd(mc.grammar._ast.ASTCDCompilationUnit)} */
