@@ -60,7 +60,7 @@ public class ASTConstructionActions {
       Optional<MCProdSymbol> rule = EssentialMCGrammarSymbolTableHelper
           .getEnclosingRule(constgroup);
       Optional<EssentialMCGrammarSymbol> ruleGrammar = EssentialMCGrammarSymbolTableHelper
-          .getMCGrammarSymbol(rule);
+          .getMCGrammarSymbol(constgroup);
       if (ruleGrammar.isPresent()) {
         constfile = AstGeneratorHelper.getConstantClassName(ruleGrammar.get());
         constantname = parserGenHelper.getConstantNameForConstant(constant);
@@ -93,7 +93,7 @@ public class ASTConstructionActions {
     String constantname;
     Optional<MCProdSymbol> rule = EssentialMCGrammarSymbolTableHelper.getEnclosingRule(c);
     Optional<EssentialMCGrammarSymbol> ruleGrammar = EssentialMCGrammarSymbolTableHelper
-        .getMCGrammarSymbol(rule);
+        .getMCGrammarSymbol(c);
     if (ruleGrammar.isPresent()) {
       constfile = AstGeneratorHelper.getConstantClassName(ruleGrammar.get());
       constantname = parserGenHelper.getConstantNameForConstant(c);
@@ -233,7 +233,7 @@ public class ASTConstructionActions {
     
     String tmp = "addToIteratedAttributeIfNotNull(_aNode.get%u_usage%(), _localctx.%tmp%.ret);";
     // TODO GV: || isConst()
-    if (symbolTable.getProdWithInherited(a.getName()).get().isEnum()) {
+    if (symbolTable.getProdWithInherited(a.getName()).get().isEnum() ) {
       tmp = "addToIteratedAttributeIfNotNull(_aNode.get%u_usage%(), _localctx.%tmp%.ret);";
     }
     
