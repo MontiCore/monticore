@@ -20,7 +20,9 @@
 package de.monticore.grammar.cocos;
 
 import java.util.List;
+import java.util.Set;
 
+import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTProdCoCo;
 import de.monticore.grammar.symboltable.MCProdSymbol;
@@ -33,19 +35,19 @@ import de.se_rwth.commons.logging.Log;
  * @author KH
  */
 public class NoNTInheritanceCycle implements GrammarASTProdCoCo {
-
+  
   public static final String ERROR_CODE = "0xA4022";
-
+  
   public static final String ERROR_MSG_FORMAT = " The production %s introduces an inheritance"
       + " cycle. Inheritance may not be cyclic.";
-
+  
   @Override
   public void check(ASTProd a) {
-    if (a.getSymbol().get() instanceof MCProdSymbol){
-      List<MCProdSymbolReference> superProds = ((MCProdSymbol) a.getSymbol().get()).getSuperProds();
-      for(MCProdSymbolReference sr : superProds){
-        if(sr.getReferencedSymbol().getFullName().equals(a.getSymbol().get().getFullName())){
-          Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getSymbol().get().getFullName()),
+    if (a.getSymbol().get() instanceof MCProdSymbol) {
+      MCProdSymbol symbol = (MCProdSymbol) a.getSymbol().get();
+      for (MCProdSymbol sr : EssentialMCGrammarSymbolTableHelper.getAllSuperProds(symbol)) {
+        if (sr.getFullName().equals(symbol.getFullName())) {
+          Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, symbol.getFullName()),
               a.get_SourcePositionStart());
         }
       }

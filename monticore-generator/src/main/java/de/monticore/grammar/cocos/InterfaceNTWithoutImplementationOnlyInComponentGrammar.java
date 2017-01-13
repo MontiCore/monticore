@@ -25,8 +25,8 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
-import de.monticore.grammar.symboltable.MCProdOrTypeReference;
 import de.monticore.grammar.symboltable.MCProdSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbolReference;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -53,8 +53,9 @@ public class InterfaceNTWithoutImplementationOnlyInComponentGrammar
         entryLoop: for (Map.Entry<String, MCProdSymbol> entry : grammarSymbol
             .getProdsWithInherited().entrySet()) {
           MCProdSymbol rs = (MCProdSymbol) entry.getValue();
-          for (MCProdOrTypeReference typeSymbol : rs.getAstSuperInterfaces()) {
-            if (p.getName().equals(typeSymbol.getProdRef().getName())) {
+          // TODO GV: getAllSuperInterfaces()?
+          for (MCProdSymbolReference typeSymbol : rs.getSuperInterfaceProds()) {
+            if (p.getName().equals(typeSymbol.getName())) {
               extensionFound = true;
               break entryLoop;
             }

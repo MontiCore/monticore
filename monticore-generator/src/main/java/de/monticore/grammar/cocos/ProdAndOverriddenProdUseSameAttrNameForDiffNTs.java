@@ -66,13 +66,13 @@ public class ProdAndOverriddenProdUseSameAttrNameForDiffNTs implements GrammarAS
         if (ruleSymbol.isPresent()) {
           Optional<MCProdComponentSymbol> rcs = ruleSymbol.get().getSpannedScope()
               .resolve(attributename, MCProdComponentSymbol.KIND);
-          if (rcs.isPresent() && !ruleSymbol.get().getName()
-              .equals(rule.get().getName())) {
+          if (rcs.isPresent() && !rcs.get().getReferencedProd().get().getName()
+              .equals(componentSymbol.get().getReferencedProd().get().getName())) {
             Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT,
-                ruleSymbol.get().getName(),
-                attributename,
                 rule.get().getName(),
-                ruleSymbol.get().getName()),
+                attributename,
+                componentSymbol.get().getReferencedProd().get().getName(),
+                rcs.get().getReferencedProd().get().getName()),
                 a.get_SourcePositionStart());
           }
         }

@@ -48,8 +48,7 @@ public class UsedLexNTNotDefined implements GrammarASTLexNonTerminalCoCo {
     Optional<MCProdSymbol> ruleSymbol = EssentialMCGrammarSymbolTableHelper.getEnclosingRule(a);
     String ruleName = ruleSymbol.isPresent() ? ruleSymbol.get().getName() : "";
     if (grammarSymbol.isPresent()
-        && grammarSymbol.get().getProdWithInherited(a.getName()).isPresent() &&
-        grammarSymbol.get().getProdWithInherited(a.getName()).get().isLexerProd()) {
+        && !grammarSymbol.get().getProdWithInherited(a.getName()).isPresent()) {
       Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, ruleName, a.getName(), a.getName()),
           a.get_SourcePositionStart());
     }

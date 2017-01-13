@@ -34,65 +34,66 @@ import de.se_rwth.commons.logging.Log;
  * @author KH
  */
 public class ReferencedNTNotDefined implements GrammarASTMCGrammarCoCo {
-
+  
   public static final String ERROR_CODE = "0xA2030";
-
+  
   public static final String ERROR_MSG_FORMAT = " The production %s must not reference the " +
-          "%snonterminal %s because there exists no defining production for %s.";
-
+      "%snonterminal %s because there exists no defining production for %s.";
+  
   @Override
   public void check(ASTMCGrammar a) {
     EssentialMCGrammarSymbol grammarSymbol = (EssentialMCGrammarSymbol) a.getSymbol().get();
-    for(ASTClassProd p :a.getClassProds()) {
-        if (!p.getSuperRule().isEmpty() && p.getSymbol().isPresent()) {
-          for (ASTRuleReference sr : p.getSuperRule()) {
-            if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
-              Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "", sr.getName(), sr.getName()),
-                      p.get_SourcePositionStart());
-            }
-        }
-        if (!p.getSuperInterfaceRule().isEmpty()) {
-          for (ASTRuleReference sr : p.getSuperInterfaceRule()) {
-            if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
-              Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "interface ", sr.getName(), sr.getName()),
-                      p.get_SourcePositionStart());
-            }
+    for (ASTClassProd p : a.getClassProds()) {
+      if (!p.getSuperRule().isEmpty() && p.getSymbol().isPresent()) {
+        for (ASTRuleReference sr : p.getSuperRule()) {
+          if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
+            Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "", sr.getName(),
+                sr.getName()),
+                p.get_SourcePositionStart());
           }
         }
-
       }
-    }
-    for(ASTAbstractProd p: a.getAbstractProds()){
-        if (!p.getSuperRule().isEmpty() && p.getSymbol().isPresent()) {
-          for (ASTRuleReference sr : p.getSuperRule()) {
-            if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
-              Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "", sr.getName(), sr.getName()),
-                      p.get_SourcePositionStart());
-            }
-        }
-        if (!p.getSuperInterfaceRule().isEmpty() && p.getSymbol().isPresent()) {
-          for (ASTRuleReference sr : p.getSuperInterfaceRule()) {
-            if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
-              Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "interface ", sr.getName(), sr.getName()),
-                      p.get_SourcePositionStart());
-            }
+      if (!p.getSuperInterfaceRule().isEmpty()) {
+        for (ASTRuleReference sr : p.getSuperInterfaceRule()) {
+          if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
+            Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "interface ",
+                sr.getName(), sr.getName()),
+                p.get_SourcePositionStart());
           }
         }
-
       }
-
     }
-    for(ASTInterfaceProd p : a.getInterfaceProds()){
+    for (ASTAbstractProd p : a.getAbstractProds()) {
+      if (!p.getSuperRule().isEmpty() && p.getSymbol().isPresent()) {
+        for (ASTRuleReference sr : p.getSuperRule()) {
+          if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
+            Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "", sr.getName(),
+                sr.getName()),
+                p.get_SourcePositionStart());
+          }
+        }
+      }
       if (!p.getSuperInterfaceRule().isEmpty() && p.getSymbol().isPresent()) {
-          for (ASTRuleReference sr : p.getSuperInterfaceRule()) {
-            if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
-              Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "interface ", sr.getName(), sr.getName()),
-                      p.get_SourcePositionStart());
-            }
+        for (ASTRuleReference sr : p.getSuperInterfaceRule()) {
+          if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
+            Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "interface ",
+                sr.getName(), sr.getName()),
+                p.get_SourcePositionStart());
           }
-
+        }
+      }
+    }
+    for (ASTInterfaceProd p : a.getInterfaceProds()) {
+      if (!p.getSuperInterfaceRule().isEmpty() && p.getSymbol().isPresent()) {
+        for (ASTRuleReference sr : p.getSuperInterfaceRule()) {
+          if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
+            Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "interface ",
+                sr.getName(), sr.getName()),
+                p.get_SourcePositionStart());
+          }
+        }
       }
     }
   }
-
+  
 }

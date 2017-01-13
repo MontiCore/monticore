@@ -50,6 +50,7 @@ public class ProdAndExtendedProdUseSameAttrNameForDiffNTs implements GrammarASTN
       Optional<MCProdComponentSymbol> componentSymbol = a.getEnclosingScope().get()
           .resolve(attributename, MCProdComponentSymbol.KIND);
       if (componentSymbol.isPresent()) {
+        System.err.println(" componentSymbol " + componentSymbol.get().getName());
         Optional<MCProdSymbol> rule = EssentialMCGrammarSymbolTableHelper.getEnclosingRule(a);
         if (rule.isPresent() && rule.get().getAstNode().get() instanceof ASTClassProd) {
           ASTClassProd prod = (ASTClassProd) rule.get().getAstNode().get();
@@ -61,15 +62,15 @@ public class ProdAndExtendedProdUseSameAttrNameForDiffNTs implements GrammarASTN
             if (ruleSymbol.isPresent()) {
               Optional<MCProdComponentSymbol> rcs = ruleSymbol.get().getSpannedScope()
                   .resolve(attributename, MCProdComponentSymbol.KIND);
-              if (rcs.isPresent() && !rcs.get().getReferencedSymbolName().get()
-                  .equals(componentSymbol.get().getReferencedSymbolName().get())) {
+              if (rcs.isPresent() && !rcs.get().getReferencedProd().get().getName()
+                  .equals(componentSymbol.get().getReferencedProd().get().getName())) {
                 Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT,
                     prod.getName(),
                     ruleSymbol.get().getName(),
                     attributename,
-                    componentSymbol.get().getReferencedSymbolName().get(),
+                    componentSymbol.get().getReferencedProd().get().getName(),
                     ruleSymbol.get().getName(),
-                    rcs.get().getReferencedSymbolName().get()),
+                    rcs.get().getReferencedProd().get().getName()),
                     a.get_SourcePositionStart());
               }
             }
