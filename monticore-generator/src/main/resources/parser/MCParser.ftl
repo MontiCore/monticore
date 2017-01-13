@@ -33,7 +33,7 @@ SUCH DAMAGE.
 ${tc.signature("ast", "suffix", "methods")}
 <#assign genHelper = glex.getGlobalVar("parserHelper")>
 <#assign grammar = genHelper.getGrammarSymbol()>
-<#assign parserName = grammar.getSimpleName()?cap_first>
+<#assign parserName = grammar.getName()?cap_first>
 <#assign startRule = genHelper.getStartRuleName()>
 <#assign qualifiedStartRule = genHelper.getQualifiedStartRuleName()>
  
