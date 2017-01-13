@@ -88,13 +88,11 @@ public class EssentialMCGrammarScope extends CommonScope {
     Optional<T> resolvedSymbol = Optional.empty();
 
     final EssentialMCGrammarSymbol spanningSymbol = getSpanningSymbol().get();
-
     for (EssentialMCGrammarSymbolReference superGrammarRef : spanningSymbol.getSuperGrammars()) {
       if (checkIfContinueWithSuperGrammar(name, superGrammarRef.getName())
           && (superGrammarRef.existsReferencedSymbol())) {
         final EssentialMCGrammarSymbol superGrammar = superGrammarRef.getReferencedSymbol();
         resolvedSymbol = resolveInSuperGrammar(name, kind, superGrammar);
-
         // Stop as soon as symbol is found in a super grammar.
         if (resolvedSymbol.isPresent()) {
           break;
@@ -120,10 +118,13 @@ public class EssentialMCGrammarScope extends CommonScope {
           // checks cases 2) and 3)
           (isQualifiedName(superGrammarName) != isQualifiedName(name))) {
         return false;
+      } else {
+        // case 5)
+        return true;
       }
     }
-    // case 5) or names have different simple names
-    return true;
+    // names have different simple names and the name isn't qualified (A and p.B)
+    return isQualifiedName(superGrammarName) && !isQualifiedName(name);
   }
 
   private <T extends Symbol> Optional<T> resolveInSuperGrammar(String name, SymbolKind kind,
@@ -138,7 +139,6 @@ public class EssentialMCGrammarScope extends CommonScope {
   @Override
   public <T extends Symbol> Optional<T> resolveImported(String name, SymbolKind kind, AccessModifier modifier) {
     final Collection<T> resolvedSymbols = resolveManyLocally(new ResolvingInfo(getResolvingFilters()), name, kind, modifier, x -> true);
-
     if (resolvedSymbols.isEmpty()) {
       return resolveInSuperGrammars(name, kind, modifier);
     }
