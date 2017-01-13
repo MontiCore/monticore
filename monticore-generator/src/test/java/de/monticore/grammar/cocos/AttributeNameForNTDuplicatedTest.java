@@ -19,15 +19,10 @@
 
 package de.monticore.grammar.cocos;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -35,40 +30,30 @@ import de.se_rwth.commons.logging.Log;
  *
  * @author KH
  */
-public class AttributeNameForNTDuplicatedTest extends CocoTest{
-
+public class AttributeNameForNTDuplicatedTest extends CocoTest {
+  
   private final String CODE = "xA4006";
+  
   private final String MESSAGE = " The production C must not use the attribute name a for different nonterminals.";
+  
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
+  
   private final String grammar = "cocos.invalid.A4006.A4006";
-
+  
   @BeforeClass
   public static void disableFailQuick() {
     Log.enableFailQuick(false);
   }
-
+  
   @Test
-  public void testDuplicatedAttribute(){
+  public void testDuplicatedAttribute() {
     Log.getFindings().clear();
-    try {
-      testInvalidGrammar(grammar, "0" + CODE, MESSAGE, checker);
-      fail("NullPointerException expected");
-    } catch (NullPointerException e) {
-
-      assertFalse(Log.getFindings().isEmpty());
-      assertEquals(1, Log.getFindings().size());
-      for (Finding f : Log.getFindings()) {
-        assertEquals("0" + CODE + MESSAGE, f.getMsg());
-      }
-    }
-
-
+    testInvalidGrammarKeepFindings(grammar, "0" + CODE, MESSAGE, checker);
   }
-
-
+  
   @Test
-  public void testAttributes(){
+  public void testAttributes() {
     testValidGrammar("cocos.valid.Attributes", checker);
   }
-
+  
 }

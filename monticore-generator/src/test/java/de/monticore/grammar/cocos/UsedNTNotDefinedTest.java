@@ -51,18 +51,14 @@ public class UsedNTNotDefinedTest extends CocoTest {
 
   @Test
   public void testInvalid() {
-    try{
     testInvalidGrammar(grammar, UsedNTNotDefined.ERROR_CODE, MESSAGE, checker);
-      fail("expected NullPointerException");
-    } catch (NullPointerException e){
-      assertFalse(Log.getFindings().isEmpty());
-      assertEquals(5, Log.getFindings().size());
-      boolean found = false;
-      for (Finding f: Log.getFindings()) {
-        found |= f.getMsg().equals(UsedNTNotDefined.ERROR_CODE + MESSAGE);
-      }
-      assertTrue(found);
+    assertFalse(Log.getFindings().isEmpty());
+    assertEquals(1, Log.getFindings().size());
+    boolean found = false;
+    for (Finding f : Log.getFindings()) {
+      found |= f.getMsg().equals(UsedNTNotDefined.ERROR_CODE + MESSAGE);
     }
+    assertTrue(found);
   }
 
   @Test

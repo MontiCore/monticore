@@ -19,16 +19,10 @@
 
 package de.monticore.grammar.cocos;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
-import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -37,37 +31,28 @@ import de.se_rwth.commons.logging.Log;
  * @author KH
  */
 public class NTDefinedByAtmostOneProductionTest extends CocoTest {
-
+  
   private final String MESSAGE = " The nonterminal A must not be defined by more than one production.";
+  
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
+  
   private final String grammar = "cocos.invalid.A2025.A2025";
-
+  
   @BeforeClass
   public static void disableFailQuick() {
     Log.enableFailQuick(false);
-    checker.addCoCo(new ProdAndExtendedProdUseSameAttrNameForDiffNTs());
+    checker.addCoCo(new NTDefinedByAtmostOneProduction());
   }
-
+  
   @Test
   public void testInvalid() {
     Log.getFindings().clear();
-    try {
-      testInvalidGrammar(grammar, NTDefinedByAtmostOneProduction.ERROR_CODE, MESSAGE, checker);
-      fail("expected ResolvedSeveralEntriesException");
-    }
-    catch (ResolvedSeveralEntriesException e) {
-      
-      assertFalse(Log.getFindings().isEmpty());
-      assertEquals(11, Log.getFindings().size());
-      for (Finding f : Log.getFindings()) {
-        assertEquals(NTDefinedByAtmostOneProduction.ERROR_CODE + MESSAGE, f.getMsg());
-      }
-    }
+    testInvalidGrammar(grammar, NTDefinedByAtmostOneProduction.ERROR_CODE, MESSAGE, checker, 11);
   }
-
+  
   @Test
-  public void testCorrect(){
+  public void testCorrect() {
     testValidGrammar("cocos.valid.Attributes", checker);
   }
-
+  
 }
