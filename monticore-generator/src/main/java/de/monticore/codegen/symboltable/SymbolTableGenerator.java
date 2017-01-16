@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -130,7 +131,9 @@ public class SymbolTableGenerator {
           ruleNames);
       symbolTableCreatorGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol);
       
+      System.err.println(" grammar " + grammarSymbol.getName());
       for (MCProdSymbol ruleSymbol : allSymbolDefiningRules) {
+        System.err.println(" ruleSymbol " + ruleSymbol.getName());
         generateSymbolOrScopeSpanningSymbol(genEngine, genHelper, ruleSymbol, handCodedPath);
         symbolKindGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol);
         symbolReferenceGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol,
@@ -158,13 +161,16 @@ public class SymbolTableGenerator {
   private boolean isScopeSpanningSymbol(SymbolTableGeneratorHelper genHelper,
       final MCProdSymbol rule) {
     for (MCProdComponentSymbol ruleComponent : rule.getProdComponents()) {
-      final Optional<MCProdSymbol> referencedRule = genHelper.getGrammarSymbol()
-          .getProd(ruleComponent.getReferencedSymbolName().get());
-      if (referencedRule.isPresent() && referencedRule.get().isSymbolDefinition()) {
-        return true;
+      if (ruleComponent.getReferencedProd().isPresent()) {
+        // the case: Automaton = Name ... State* ..., i.e., the containment of
+        // another symbol
+        final Optional<MCProdSymbol> referencedRule = genHelper.getGrammarSymbol()
+            .getProd(ruleComponent.getReferencedProd().get().getName());
+        if (referencedRule.isPresent() && referencedRule.get().isSymbolDefinition()) {
+          return true;
+        }
       }
     }
-    
     return false;
   }
   

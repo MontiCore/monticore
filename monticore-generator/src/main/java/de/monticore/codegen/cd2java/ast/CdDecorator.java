@@ -218,7 +218,6 @@ public class CdDecorator {
    */
   protected void addAdditionalMethods(ASTCDClass clazz,
       AstGeneratorHelper astHelper) {
-    System.err.println(" addAdditionalMethods " + clazz.getName());
     if (astHelper.isAstClass(clazz)) {
       AstAdditionalMethods additionalMethod = AstAdditionalMethods.accept;
       String visitorTypeFQN = VisitorGeneratorHelper.getQualifiedVisitorType(

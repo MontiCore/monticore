@@ -44,7 +44,6 @@ import de.monticore.codegen.cd2java.ast_emf.CdEmfDecorator;
 import de.monticore.codegen.cd2java.cocos.CoCoGenerator;
 import de.monticore.codegen.cd2java.od.ODGenerator;
 import de.monticore.codegen.cd2java.visitor.VisitorGenerator;
-import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.MC2CDTransformation;
 import de.monticore.codegen.parser.ParserGenerator;
 import de.monticore.codegen.symboltable.SymbolTableGenerator;
@@ -251,8 +250,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       File outputDirectory, IterablePath handcodedPath) {
     Log.errorIfNull(astGrammar);
     SymbolTableGeneratorHelper genHelper = new SymbolTableGeneratorHelper(astGrammar, symbolTable, astCd);
- //   SymbolTableGenerator symbolTableGenerator = new SymbolTableGeneratorBuilder().build();
- //   symbolTableGenerator.generate(astGrammar, genHelper, outputDirectory, handcodedPath);
+    SymbolTableGenerator symbolTableGenerator = new SymbolTableGeneratorBuilder().build();
+    symbolTableGenerator.generate(astGrammar, genHelper, outputDirectory, handcodedPath);
   }
   
   /**

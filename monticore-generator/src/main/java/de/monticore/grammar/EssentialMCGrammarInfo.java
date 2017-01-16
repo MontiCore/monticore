@@ -41,6 +41,7 @@ import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrParserAction;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTJavaCodeExt;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTConstant;
+import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTRuleComponent;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
@@ -110,6 +111,7 @@ public class EssentialMCGrammarInfo {
     buildLexPatterns();
     findAllKeywords();
     addSubRules();
+    addSubRulesToInterface();
     addHWAntlrCode();
   }
   
@@ -122,32 +124,66 @@ public class EssentialMCGrammarInfo {
    * @param classProds Rule
    */
   private void addSubRules() {
-    for (ASTClassProd classProd : astGrammar.getClassProds()) {
-      for (ASTRuleReference superRule : classProd.getSuperRule()) {
-        Optional<MCProdSymbol> prodByName = grammarSymbol
-            .getProdWithInherited(superRule.getTypeName());
-        if (prodByName.isPresent()) {
-          addSubrule(prodByName.get().getName(), HelperGrammar.getRuleName(classProd), superRule);
+    Set<EssentialMCGrammarSymbol> grammarsToHandle = Sets
+        .newLinkedHashSet(Arrays.asList(grammarSymbol));
+    grammarsToHandle.addAll(EssentialMCGrammarSymbolTableHelper.getAllSuperGrammars(grammarSymbol));
+    for (EssentialMCGrammarSymbol grammar : grammarsToHandle) {
+      for (ASTClassProd classProd : ((ASTMCGrammar) grammar.getAstNode().get())
+          .getClassProds()) {
+        for (ASTRuleReference superRule : classProd.getSuperRule()) {
+          Optional<MCProdSymbol> prodByName = grammarSymbol
+              .getProdWithInherited(superRule.getTypeName());
+          if (prodByName.isPresent()) {
+            addSubrule(prodByName.get().getName(), HelperGrammar.getRuleName(classProd), superRule);
+          }
+          else {
+            Log.error("0xA2110 Undefined rule: " + superRule.getTypeName(),
+                superRule.get_SourcePositionStart());
+          }
         }
-        else {
-          Log.error("0xA2110 Undefined rule: " + superRule.getTypeName(),
-              superRule.get_SourcePositionStart());
-        }
-      }
-      
-      for (ASTRuleReference ruleref : classProd.getSuperInterfaceRule()) {
-        Optional<MCProdSymbol> prodByName = grammarSymbol
-            .getProdWithInherited(ruleref.getTypeName());
-        if (prodByName != null) {
-          addSubrule(ruleref.getTypeName(), HelperGrammar.getRuleName(classProd), ruleref);
-        }
-        else {
-          Log.error("0xA2111 Undefined rule: " + ruleref.getTypeName(),
-              ruleref.get_SourcePositionStart());
+        
+        for (ASTRuleReference ruleref : classProd.getSuperInterfaceRule()) {
+          Optional<MCProdSymbol> prodByName = grammarSymbol
+              .getProdWithInherited(ruleref.getTypeName());
+          if (prodByName.isPresent()) {
+            addSubrule(prodByName.get().getName(), HelperGrammar.getRuleName(classProd), ruleref);
+          }
+          else {
+            Log.error("0xA2111 Undefined rule: " + ruleref.getTypeName(),
+                ruleref.get_SourcePositionStart());
+          }
         }
       }
     }
     
+  }
+  
+  /**
+   * Add all sub/superule-realtions to the symboltable form the perspective of
+   * the superrule by using addSubrule
+   *
+   * @param interfaceProdList Rule
+   */
+  private void addSubRulesToInterface() {
+    Set<EssentialMCGrammarSymbol> grammarsToHandle = Sets
+        .newLinkedHashSet(Arrays.asList(grammarSymbol));
+    grammarsToHandle.addAll(EssentialMCGrammarSymbolTableHelper.getAllSuperGrammars(grammarSymbol));
+    for (EssentialMCGrammarSymbol grammar : grammarsToHandle) {
+      for (ASTInterfaceProd interfaceProd : ((ASTMCGrammar) grammar.getAstNode().get())
+          .getInterfaceProds()) {
+        for (ASTRuleReference superRule : interfaceProd.getSuperInterfaceRule()) {
+          Optional<MCProdSymbol> prodByName = grammar
+              .getProdWithInherited(superRule.getTypeName());
+          if (prodByName.isPresent()) {
+            addSubrule(prodByName.get().getName(), interfaceProd.getName(), superRule);
+          }
+          else {
+            Log.error("0xA2111 Undefined rule: " + superRule.getTypeName(),
+                superRule.get_SourcePositionStart());
+          }
+        }
+      }
+    }
   }
   
   private void addSubrule(String superrule, String subrule, ASTRuleReference ruleReference) {
@@ -274,17 +310,17 @@ public class EssentialMCGrammarInfo {
     
     // TODO GV
     for (EssentialMCGrammarSymbol superGrammar : grammarSymbol.getSuperGrammarSymbols()) {
-      //
-      // List<PredicatePair> subRulesForParsing =
-      // superGrammar.getSubRulesForParsing(ruleName);
-      // if (subRulesForParsing != null) {
-      // for (PredicatePair predicate : subRulesForParsing) {
-      //
-      // if (!predicateList.contains(predicate)) {
-      // predicateList.add(predicate);
-      // }
-      // }
-      // }
+      
+//       List<PredicatePair> subRulesForParsing =
+//       superGrammar.getSubRulesForParsing(ruleName);
+//       if (subRulesForParsing != null) {
+//       for (PredicatePair predicate : subRulesForParsing) {
+//      
+//       if (!predicateList.contains(predicate)) {
+//       predicateList.add(predicate);
+//       }
+//       }
+//       }
     }
     
     return predicateList;

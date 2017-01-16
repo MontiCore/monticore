@@ -19,7 +19,6 @@
 
 package de.monticore.grammar;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -41,6 +40,8 @@ public class LexNamer {
   private Map<String, String> usedConstants = new HashMap<String, String>();
   
   private static Map<String, String> goodNames = null;
+  
+  public LexNamer() {}
   
   public static Map<String, String> getGoodNames() {
     if (goodNames == null) {

@@ -20,7 +20,7 @@
 package de.monticore.codegen.mc2cd.transl;
 
 import static de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper.resolveRule;
-import static de.monticore.codegen.mc2cd.EssentialTransformationHelper.getAstPackage;
+import static de.monticore.codegen.mc2cd.EssentialTransformationHelper.getPackageName;
 
 import java.util.function.UnaryOperator;
 
@@ -73,9 +73,9 @@ public class ExtendsTranslation implements
     // translates "extends"
     for (ASTRuleReference ruleReference : classProd.getSuperRule()) {
       MCProdSymbol ruleSymbol = resolveRule(astGrammar, ruleReference.getName()).get();
-      String astPackageName = getAstPackage(ruleSymbol);
+      String packageName = getPackageName(ruleSymbol);
       cdClass.setSuperclass(EssentialTransformationHelper.createSimpleReference(
-          astPackageName + "AST" + ruleReference.getName()));
+          packageName + "AST" + ruleReference.getName()));
     }
 
     // translates "astextends"
@@ -91,9 +91,9 @@ public class ExtendsTranslation implements
     // translates "extends"
     for (ASTRuleReference ruleReference : abstractProd.getSuperRule()) {
       MCProdSymbol ruleSymbol = resolveRule(astGrammar, ruleReference.getName()).get();
-      String astPackageName = getAstPackage(ruleSymbol);
+      String packageName = getPackageName(ruleSymbol);
       cdClass.setSuperclass(EssentialTransformationHelper.createSimpleReference(
-          astPackageName + "AST" + ruleReference.getName()));
+          packageName + "AST" + ruleReference.getName()));
     }
 
     // translates "astextends"
@@ -110,9 +110,9 @@ public class ExtendsTranslation implements
     // translates "extends"
     for (ASTRuleReference ruleReference : interfaceProd.getSuperInterfaceRule()) {
       MCProdSymbol ruleSymbol = resolveRule(astGrammar, ruleReference.getName()).get();
-      String astPackageName = getAstPackage(ruleSymbol);
+      String packageName = getPackageName(ruleSymbol);
       cdInterface.getInterfaces().add(EssentialTransformationHelper.createSimpleReference(
-          astPackageName + "AST" + ruleReference.getName()));
+          packageName + "AST" + ruleReference.getName()));
     }
 
     // translates "astextends"

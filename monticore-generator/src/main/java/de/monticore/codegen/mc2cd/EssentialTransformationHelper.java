@@ -30,8 +30,10 @@ import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -43,13 +45,16 @@ import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
+import de.monticore.grammar.grammar._ast.ASTConstant;
 import de.monticore.grammar.grammar._ast.ASTConstantGroup;
+import de.monticore.grammar.grammar._ast.ASTEnumProd;
 import de.monticore.grammar.grammar._ast.ASTGenericType;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTNonTerminalSeparator;
 import de.monticore.grammar.grammar._ast.ASTTerminal;
 import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCProdComponentSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.prettyprint.IndentPrinter;
@@ -234,18 +239,13 @@ public final class EssentialTransformationHelper {
     return TypesNodeFactory.createASTVoidType();
   }
   
-  public static String getAstPackageName(EssentialMCGrammarSymbol grammar) {
-    // return grammar.getName().toLowerCase() + AST_DOT_PACKAGE_SUFFIX_DOT;
-    return getPackageName(grammar);
-  }
-  
-  public static String getAstPackageName(MCProdSymbol symbol) {
-    // return grammar.getName().toLowerCase() + AST_DOT_PACKAGE_SUFFIX_DOT;
-    return getGrammarName(symbol).toLowerCase() + AST_DOT_PACKAGE_SUFFIX_DOT;
-  }
-  
-  public static String getPackageName(EssentialMCGrammarSymbol grammar) {
+  public static String grammarName2PackageName(EssentialMCGrammarSymbol grammar) {
     return grammar.getFullName() + ".";
+  }
+  
+  public static String getPackageName(MCProdSymbol symbol) {
+    // return grammar.getName().toLowerCase() + AST_DOT_PACKAGE_SUFFIX_DOT;
+    return getGrammarName(symbol) + ".";
   }
   
   public static String getAstPackageName(
@@ -281,16 +281,33 @@ public final class EssentialTransformationHelper {
     EssentialMCGrammarSymbol grammarSymbol = EssentialMCGrammarSymbolTableHelper
         .getMCGrammarSymbol(grammar).get();
     Preconditions.checkState(grammarSymbol != null);
-//    for (MCProdSymbol type : grammarSymbol.getProds()) {
-//      if (type.getKindOfType().equals(KindType.ENUM)
-//          || type.getKindOfType().equals(KindType.CONST)) {
-//        for (String enumValue : type.getEnumValues()) {
-//          if (!constants.contains(enumValue)) {
-//            constants.add(enumValue);
-//          }
-//        }
-//      }
-//    }
+    for (MCProdComponentSymbol component : grammarSymbol.getProds().stream()
+        .flatMap(p -> p.getProdComponents().stream()).collect(Collectors.toSet())) {
+      if (component.isConstantGroup()/* && ((ASTConstantGroup)
+                                      * component.getAstNode().get()).
+                                      * usageNameIsPresent() */) {
+        Collection<MCProdComponentSymbol> subComponents = component.getSubProdComponents();
+        for (MCProdComponentSymbol subComponent : subComponents) {
+          if (subComponent.isConstant() && !constants.contains(subComponent.getName())) {
+            constants.add(subComponent.getName());
+          }
+        }
+      }
+    }
+    for (MCProdSymbol type : grammarSymbol.getProds()) {
+      if (type.isEnum() && type.getAstNode().isPresent()
+          && type.getAstNode().get() instanceof ASTEnumProd) {
+        for (ASTConstant enumValue : ((ASTEnumProd) type.getAstNode().get()).getConstants()) {
+          String humanName = enumValue.getHumanName().orElse(null);
+          if (humanName == null) {
+            humanName = enumValue.getName();
+          }
+          if (!constants.contains(humanName)) {
+            constants.add(humanName);
+          }
+        }
+      }
+    }
     return constants;
   }
   
@@ -369,8 +386,9 @@ public final class EssentialTransformationHelper {
       if (!simpleName.startsWith(AST_PREFIX)) {
         return Optional.empty();
       }
-      Optional<MCProdSymbol> ruleSymbol = EssentialMCGrammarSymbolTableHelper.resolveRule(type, simpleName
-          .substring(AST_PREFIX.length()));
+      Optional<MCProdSymbol> ruleSymbol = EssentialMCGrammarSymbolTableHelper.resolveRule(type,
+          simpleName
+              .substring(AST_PREFIX.length()));
       if (ruleSymbol.isPresent() && istPartOfGrammar(ruleSymbol.get())) {
         return ruleSymbol;
       }
@@ -392,6 +410,10 @@ public final class EssentialTransformationHelper {
     return Names.getQualifier(rule.getFullName());
   }
   
+  public static String getGrammarNameAsPackage(MCProdSymbol rule) {
+    return getGrammarName(rule) + ".";
+  }
+  
   public static boolean checkIfExternal(ASTGenericType type) {
     return !resolveAstRuleType(type).isPresent();
   }
@@ -410,7 +432,7 @@ public final class EssentialTransformationHelper {
         && grammar.getSymbol().get().getFullName().equals(refGrammarName)) {
       return type.getTypeName();
     }
-    return AstGeneratorHelper.getAstPackage(refGrammarName) + type.getTypeName();
+    return refGrammarName + "." + type.getTypeName();
   }
   
   public static void addStereoType(ASTCDClass type, String stereotypeName,

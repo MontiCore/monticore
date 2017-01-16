@@ -20,15 +20,17 @@
 package de.monticore.codegen.mc2cd.transl;
 
 import static de.monticore.codegen.mc2cd.EssentialTransformationHelper.createSimpleReference;
-import static de.monticore.codegen.mc2cd.EssentialTransformationHelper.getAstPackageName;
+import static de.monticore.codegen.mc2cd.EssentialTransformationHelper.getPackageName;
 
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.EssentialTransformationHelper;
+import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
 import de.monticore.grammar.grammar._ast.ASTGenericType;
+import de.monticore.grammar.grammar._ast.ASTLexProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTTerminal;
@@ -75,7 +77,10 @@ public class ReferenceTypeTranslation implements
   
   private ASTType ruleSymbolToType(MCProdSymbol ruleSymbol, String typeName) {
     if (ruleSymbol.isLexerProd()) {
-      return determineConstantsType(ruleSymbol.getName())
+      if (!ruleSymbol.getAstNode().isPresent() || !(ruleSymbol.getAstNode().get() instanceof ASTLexProd)) {
+        return createSimpleReference("String");
+      }
+      return determineConstantsType(HelperGrammar.createConvertType((ASTLexProd)ruleSymbol.getAstNode().get()))
           .map(lexType -> (ASTType) TypesNodeFactory.createASTPrimitiveType(lexType))
           .orElse(createSimpleReference("String"));
     }
@@ -83,7 +88,7 @@ public class ReferenceTypeTranslation implements
       return createSimpleReference("AST" + typeName + "Ext");
     }
     else {
-      String qualifiedASTNodeName = getAstPackageName(ruleSymbol)
+      String qualifiedASTNodeName = getPackageName(ruleSymbol)
           + "AST" + ruleSymbol.getName();
       return createSimpleReference(qualifiedASTNodeName);
     }
@@ -101,7 +106,7 @@ public class ReferenceTypeTranslation implements
     }
     else {
       String qualifiedASTNodeName = EssentialTransformationHelper
-          .getAstPackageName(ruleSymbol.get()) + "AST" + ruleSymbol.get().getName();
+          .getPackageName(ruleSymbol.get()) + "AST" + ruleSymbol.get().getName();
       return createSimpleReference(qualifiedASTNodeName);
     }
   }

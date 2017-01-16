@@ -32,14 +32,15 @@ import java.util.Set;
 import com.google.common.collect.Sets;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
 import de.monticore.grammar.HelperGrammar;
+import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.ASTASTRule;
 import de.monticore.grammar.grammar._ast.ASTAbstractProd;
 import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTConstant;
 import de.monticore.grammar.grammar._ast.ASTConstantGroup;
-import de.monticore.grammar.grammar._ast.ASTConstantsGrammar;
 import de.monticore.grammar.grammar._ast.ASTEnumProd;
 import de.monticore.grammar.grammar._ast.ASTExternalProd;
 import de.monticore.grammar.grammar._ast.ASTGenericType;
@@ -64,7 +65,6 @@ import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolverConfiguration;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
-import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
@@ -80,12 +80,13 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
   
   private EssentialMCGrammarSymbol grammarSymbol;
   
+  private ASTMCGrammar astGrammar;
+  
   public EssentialMontiCoreGrammarSymbolTableCreator(
       ResolverConfiguration resolverConfig,
       MutableScope enclosingScope,
       Grammar_WithConceptsPrettyPrinter prettyPrinter) {
     super(resolverConfig, enclosingScope);
-    
     this.prettyPrinter = prettyPrinter;
   }
   
@@ -109,6 +110,7 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
         EssentialMontiCoreGrammarSymbolTableCreator.class.getSimpleName());
     
     packageName = getQualifiedName(astGrammar.getPackage());
+    this.astGrammar = astGrammar;
     
     final List<ImportStatement> imports = new ArrayList<>();
     if (astGrammar.getImportStatements() != null) {
@@ -142,6 +144,9 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
   
   @Override
   public void endVisit(ASTMCGrammar astGrammar) {
+    
+    setComponentsCardinality();
+    
     setEnclosingScopeOfNodes(astGrammar);
     
     computeStartParserProd(astGrammar);
@@ -153,8 +158,27 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
     removeCurrentScope();
   }
   
-  private void undefinedRuleError(String name, SourcePosition pos) {
-    Log.error(pos + ": " + "0xA0964 Undefined rule: " + name);
+  /**
+   * Set cardinality of all grammar's nonterminals
+   */
+  private void setComponentsCardinality() {
+    for (MCProdSymbol prodSymbol : grammarSymbol.getProdsWithInherited().values()) {
+      List<EssentialMCAttributeSymbol> astAttributes = prodSymbol.getAstAttributes();
+      for (MCProdComponentSymbol component : prodSymbol.getProdComponents()) {
+        if (component.isNonterminal()) {
+          setComponentMultiplicity(component, component.getAstNode().get());
+          Optional<EssentialMCAttributeSymbol> attribute = astAttributes.stream()
+              .filter(a -> a.getName().equals(component.getName())).findAny();
+          if (attribute.isPresent()) {
+            Multiplicity multiplicity = Multiplicity
+                .multiplicityOfAttributeInAST(
+                    (ASTAttributeInAST) attribute.get().getAstNode().get());
+            component.setList(multiplicity == Multiplicity.LIST);
+            component.setOptional(multiplicity == Multiplicity.OPTIONAL);
+          }
+        }
+      }
+    }
   }
   
   private void computeStartParserProd(ASTMCGrammar astGrammar) {
@@ -246,6 +270,11 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
   
   @Override
   public void endVisit(ASTInterfaceProd astInterfaceProd) {
+    removeCurrentScope();
+  }
+  
+  @Override
+  public void endVisit(ASTConstantGroup astConstantGroup) {
     removeCurrentScope();
   }
   
@@ -360,35 +389,80 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
   
   @Override
   public void visit(ASTTerminal ast) {
-    // TODO do we need symbols for terminals?
-    
     final String usageName = ast.getUsageName().orElse(null);
+    final Symbol currentSymbol = currentSymbol().orElse(null);
     
-    final Optional<MCProdComponentSymbol> tSymbol = addRuleComponent(ast.getName(), ast, usageName);
-    
-    if (tSymbol.isPresent()) {
-      final MCProdComponentSymbol sym = tSymbol.get();
-      sym.setTerminal(true);
-      setComponentMultiplicity(sym, ast.getIteration());
+    if (currentSymbol != null) {
+      final String symbolName = isNullOrEmpty(usageName) ? ast.getName() : usageName;
+      MCProdComponentSymbol prodComponent = new MCProdComponentSymbol(symbolName);
+      
+      prodComponent.setUsageName(usageName);
+      
+      if (currentSymbol instanceof MCProdSymbol) {
+        MCProdSymbol surroundingProd = (MCProdSymbol) currentSymbol;
+        setComponentMultiplicity(prodComponent, ast);
+        prodComponent = surroundingProd.addProdComponent(prodComponent);
+      }
+      else {
+        addToScope(prodComponent);
+      }
+      
+      setLinkBetweenSymbolAndNode(prodComponent, ast);
+      prodComponent.setTerminal(true);
+      setComponentMultiplicity(prodComponent, ast);
     }
   }
   
   @Override
   public void visit(ASTNonTerminal ast) {
     final String usageName = ast.getUsageName().orElse(null);
-    if (usageName != null && usageName.equals("arguments")) {
-      System.err.println(" Aufbau of " + ast.getName() + " it. " + ast.getIteration());
-    }
-    final Optional<MCProdComponentSymbol> ntSymbol = addRuleComponent(ast.getName(), ast,
-        usageName);
+    final Symbol currentSymbol = currentSymbol().orElse(null);
     
-    if (ntSymbol.isPresent()) {
-      final MCProdComponentSymbol sym = ntSymbol.get();
-      sym.setNonterminal(true);
+    if (currentSymbol != null) {
+      final String symbolName = isNullOrEmpty(usageName) ? ast.getName() : usageName;
+      MCProdComponentSymbol prodComponent = new MCProdComponentSymbol(symbolName);
       
-      sym.setReferencedProd(new MCProdSymbolReference(ast.getName(), currentScope().orElse(null)));
-      sym.setReferencedSymbolName(ast.getReferencedSymbol().orElse(""));
-      setComponentMultiplicity(sym, ast.getIteration());
+      prodComponent.setUsageName(usageName);
+      MCProdSymbolReference symRef = new MCProdSymbolReference(ast.getName(),
+          currentScope().orElse(null));
+      prodComponent.setReferencedProd(symRef);
+      
+      if (currentSymbol instanceof MCProdSymbol) {
+        MCProdSymbol surroundingProd = (MCProdSymbol) currentSymbol;
+        
+        MCProdComponentSymbol prevProdComp = surroundingProd
+            .getProdComponent(prodComponent.getName()).orElse(null);
+        
+        Optional<MCProdSymbol> byReference = EssentialMCGrammarSymbolTableHelper
+            .resolveRule(astGrammar, ast.getName());
+        if (!byReference.isPresent() || !byReference.get().isLexerProd()) {
+          
+          if (prevProdComp != null && prevProdComp.getReferencedProd().isPresent()) {
+            boolean sameType = prevProdComp.getReferencedProd().get().getName()
+                .equals(ast.getName());
+            if (!sameType) {
+              boolean subType = EssentialMCGrammarSymbolTableHelper
+                  .isSubType(prevProdComp.getReferencedProd().get(),
+                      symRef)
+                  || EssentialMCGrammarSymbolTableHelper
+                      .isSubType(symRef, prevProdComp.getReferencedProd().get());
+              if (!subType) {
+                Log.error("0xA4006 The production " + surroundingProd.getName()
+                    + " must not use the attribute name " + symbolName +
+                    " for different nonterminals.");
+              }
+            }
+          }
+        }
+        prodComponent = surroundingProd.addProdComponent(prodComponent);
+      }
+      else {
+        addToScope(prodComponent);
+      }
+      
+      setLinkBetweenSymbolAndNode(prodComponent, ast);
+      prodComponent.setNonterminal(true);
+      prodComponent.setReferencedSymbolName(ast.getReferencedSymbol().orElse(""));
     }
   }
   
@@ -396,20 +470,21 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
   public void visit(ASTASTRule ast) {
     final Optional<MCProdSymbol> prodSymbol = grammarSymbol.getProdWithInherited(ast.getType());
     if (!prodSymbol.isPresent()) {
-      Log.error("0xA2081 Undefined rule type " + ast.getType(), ast.get_SourcePositionStart());
+      Log.error(
+          "0xA4021 There must not exist an AST rule for the nonterminal " + ast.getType()
+              + " because there exists no production defining " + ast.getType(),
+          ast.get_SourcePositionStart());
     }
     ast.getAttributeInASTs().forEach(a -> addAttributeInAST(prodSymbol.get(), a));
   }
   
-  void setComponentMultiplicity(MCProdComponentSymbol prod, int iteration) {
-    if (prod == null) {
-      return;
-    }
-    
-    if ((iteration == ASTConstantsGrammar.PLUS) || (iteration == ASTConstantsGrammar.STAR)) {
+  void setComponentMultiplicity(MCProdComponentSymbol prod, ASTNode ast) {
+    Multiplicity multiplicity = Multiplicity
+        .determineMultiplicity(astGrammar, ast);
+    if (multiplicity == Multiplicity.LIST) {
       prod.setList(true);
     }
-    else if (iteration == ASTConstantsGrammar.QUESTION) {
+    else if (multiplicity == Multiplicity.OPTIONAL) {
       prod.setOptional(true);
     }
   }
@@ -426,21 +501,74 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
   
   @Override
   public void visit(ASTConstantGroup astNode) {
-    final Optional<MCProdComponentSymbol> sym = addRuleComponent(astNode.getUsageName().orElse(""),
-        astNode, astNode.getUsageName().orElse(null));
+    Optional<String> attrName = EssentialMCGrammarSymbolTableHelper.getConstantName(astNode,
+        currentSymbol());
     
-    if (sym.isPresent()) {
-      sym.get().setConstantGroup(true);
+    final String usageName = astNode.getUsageName().orElse(null);
+    final Symbol currentSymbol = currentSymbol().orElse(null);
+    
+    if (currentSymbol != null && attrName.isPresent()) {
+      System.err.println("currentSymbol " + currentSymbol);
+      MCProdComponentSymbol prodComponent = new MCProdComponentSymbol(attrName.get());
+      prodComponent.setConstantGroup(true);
+      prodComponent.setUsageName(usageName);
+      
+      if (currentSymbol instanceof MCProdSymbol) {
+        MCProdSymbol surroundingProd = (MCProdSymbol) currentSymbol;
+        final String symbolName = isNullOrEmpty(usageName)
+            ? attrName.get()
+            : usageName;
+        Optional<MCProdComponentSymbol> prevProdComp = surroundingProd
+            .getProdComponent(symbolName);
+        
+        if (prevProdComp.isPresent() && !prevProdComp.get().isConstantGroup()) {
+          Log.error("0xA4006 The production " + surroundingProd.getName()
+              + " must not use the attribute name " + attrName.get() +
+              " for constant group and nonterminals.");
+        }
+        if (prevProdComp.isPresent()) {
+          prodComponent = prevProdComp.get();
+          prodComponent.setList(true);
+          setLinkBetweenSymbolAndNode(prodComponent, astNode);
+          putSpannedScopeOnStack(prodComponent);
+          System.err.println(" ASTConstantGroup 1 " + " prodComponent " + prodComponent);
+        }
+        else {
+          final Optional<MCProdComponentSymbol> sym = addRuleComponent(attrName.orElse(""),
+              astNode, astNode.getUsageName().orElse(null));
+          System.err.println(" ASTConstantGroup 2 " + " sym " + sym);
+          if (sym.isPresent()) {
+            sym.get().setConstantGroup(true);
+            addToScopeAndLinkWithNode(sym.get(), astNode);
+          }
+        }
+      }
     }
   }
   
   @Override
   public void visit(ASTConstant astNode) {
-    final Optional<MCProdComponentSymbol> sym = addRuleComponent(astNode.getName(), astNode,
-        astNode.getHumanName().orElse(null));
-    
-    if (sym.isPresent()) {
-      sym.get().setConstant(true);
+    final Symbol currentSymbol = currentSymbol().orElse(null);
+    if (currentSymbol != null) {
+      final String symbolName = astNode.getHumanName().isPresent()
+          ? astNode.getHumanName().get()
+          : astNode.getName();
+      MCProdComponentSymbol prodComponent = new MCProdComponentSymbol(symbolName);
+      prodComponent.setConstant(true);
+      prodComponent.setUsageName(astNode.getHumanName().orElse(null));
+      
+      if (currentSymbol instanceof MCProdSymbol) {
+        MCProdSymbol surroundingProd = (MCProdSymbol) currentSymbol;
+        prodComponent = surroundingProd.addProdComponent(prodComponent);
+      }
+      else if (currentSymbol instanceof MCProdComponentSymbol) {
+        MCProdComponentSymbol surroundingProd = (MCProdComponentSymbol) currentSymbol;
+        surroundingProd.addSubProdComponent(prodComponent);
+      }
+      else {
+        addToScope(prodComponent);
+      }
+      setLinkBetweenSymbolAndNode(prodComponent, astNode);
     }
   }
   
@@ -456,18 +584,14 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
       
       if (currentSymbol instanceof MCProdSymbol) {
         MCProdSymbol surroundingProd = (MCProdSymbol) currentSymbol;
-        //TODO GV: check
         prodComponent = surroundingProd.addProdComponent(prodComponent);
       }
       else {
         addToScope(prodComponent);
       }
-      
       setLinkBetweenSymbolAndNode(prodComponent, node);
-      
       return Optional.of(prodComponent);
     }
-    
     return Optional.empty();
     
   }
@@ -489,9 +613,13 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
     astAttributeSymbol.setReferencedProd(attributeType);
     
     mcProdSymbol.addAstAttribute(astAttributeSymbol);
+    //
+    // Optional<MCProdComponentSymbol> mcComponent =
+    // mcProdSymbol.getProdComponent(attributeName);
+    // astAttributeSymbol.setReferencedComponent(mcComponent);
     
     setLinkBetweenSymbolAndNode(astAttributeSymbol, astAttribute);
-
+    
     // Cardinality of the attribute
     astAttributeSymbol.setUnordered(astAttribute.isUnordered());
     if (astAttribute.getCard().isPresent() && astAttribute.getCard().get().getMin().isPresent()) {
@@ -509,25 +637,25 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
     
   }
   
-  
   /**
    * Create entry for an implicit rule defined in another lexrule by using an
    * action and changing the type of the token
    */
   @Override
   public void visit(ASTLexActionOrPredicate action) {
-
+    
     List<String> types = HelperGrammar.findImplicitTypes(action, prettyPrinter);
+    System.err.println("IMPLICIT TYPRS " + types);
     for (String typeName : types) {
       // Create type if not already created
-   //   final MCTypeSymbol mcType = getOrCreateType(typeName, false, action);
-
-//      mcType.setConvertFunction(HelperGrammar.createStringConvertFunction(typeName));
-//      mcType.setLexType("String");
-//      mcType.setKindOfType(MCTypeSymbol.KindType.IDENT);
-
-  //    grammarSymbol.addType(mcType);
-
+      // final MCTypeSymbol mcType = getOrCreateType(typeName, false, action);
+      
+      // mcType.setConvertFunction(HelperGrammar.createStringConvertFunction(typeName));
+      // mcType.setLexType("String");
+      // mcType.setKindOfType(MCTypeSymbol.KindType.IDENT);
+      
+      // grammarSymbol.addType(mcType);
+      
       // Create rule if needed
       Optional<MCProdSymbol> rule = grammarSymbol.getProd(typeName);
       if (!rule.isPresent()) {
@@ -535,13 +663,14 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
         final MCProdSymbol prodSymbol = new MCProdSymbol(typeName);
         prodSymbol.setLexerProd(true);
         
-//        MCRuleSymbol stLexRule = MCGrammarSymbolsFactory.createMCLexProdSymbol(typeName);
-//        grammarSymbol.addRule(stLexRule);
-//        // set type
-//        stLexRule.setType(mcType);
+        // MCRuleSymbol stLexRule =
+        // MCGrammarSymbolsFactory.createMCLexProdSymbol(typeName);
+        // grammarSymbol.addRule(stLexRule);
+        // // set type
+        // stLexRule.setType(mcType);
       }
     }
-
+    
   }
   
 }

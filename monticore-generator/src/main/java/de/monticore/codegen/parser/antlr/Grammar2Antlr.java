@@ -196,8 +196,10 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
         classnameFromRulenameorInterfacename);
     
     String options = "";
+    
+    List<ASTAlt> alts = parserHelper.getAlternatives(ast);
     // Antlr4: new syntax
-    if (ast.getAlts().isEmpty()) {
+    if (alts.isEmpty()) {
       options = "@rulecatch{}";
     }
     
@@ -269,7 +271,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     }
     
     // Iterate over all Components
-    createAntlrCodeForAlts(ast.getAlts());
+    createAntlrCodeForAlts(alts);
     
     addToAntlrCode(";");
     
@@ -329,23 +331,10 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     startCodeSection(ast);
     
     boolean iterated = false;
-    // TODO GV:
-    // if (ast.getUsageName().isPresent()) {
-    // Optional<MCProdSymbol> ruleSymbol =
-    // EssentialMCGrammarSymbolTableHelper.getEnclosingRule(ast);
-    // if (ruleSymbol.isPresent() && ruleSymbol.get().getDefinedType() != null)
-    // {
-    // MCAttributeSymbol attribute = ruleSymbol.get().getDefinedType()
-    // .getAttribute(ast.getUsageName().get());
-    // MCTypeSymbol type = attribute.getType();
-    // if ("int".equals(type.getQualifiedName()) ||
-    // (type.getKindOfType().equals(KindType.CONST) &&
-    // type.getEnumValues().size() > 1)) {
-    // iterated = true;
-    // }
-    // }
-    // }
-    iterated = ast.getConstants().size() > 1;
+    if (ast.getSymbol().isPresent() && ast.getSymbol().get() instanceof MCProdComponentSymbol) {
+      iterated = EssentialMCGrammarSymbolTableHelper
+          .isConstGroupIterated((MCProdComponentSymbol) ast.getSymbol().get());
+    }
     
     // One entry leads to boolean isMethods
     if (!iterated) {
@@ -878,10 +867,10 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       // if
       // (scope.get().getDefinedType().getAttribute(attributename).isIterated())
       // {
-  //    if (HelperGrammar.isIterated(ast)) {
+      // if (HelperGrammar.isIterated(ast)) {
       String attributename = HelperGrammar.getUsuageName(ast);
-        if (scope.isPresent() && scope.get().getProdComponent(attributename).isPresent()
-            && scope.get().getProdComponent(attributename).get().isList()) {
+      if (scope.isPresent() && scope.get().getProdComponent(attributename).isPresent()
+          && scope.get().getProdComponent(attributename).get().isList()) {
         addToAction(astActions.getActionForLexerRuleIteratedAttribute(ast));
       }
       else {

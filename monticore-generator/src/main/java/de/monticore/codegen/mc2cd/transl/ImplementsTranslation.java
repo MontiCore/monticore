@@ -73,7 +73,7 @@ public class ImplementsTranslation implements
       Preconditions.checkState(ruleSymbol.isPresent());
       cdClass.getInterfaces().add(
           EssentialTransformationHelper.createSimpleReference(EssentialTransformationHelper
-              .getAstPackage(ruleSymbol.get())
+              .getPackageName(ruleSymbol.get())
               + "AST"
               + ruleReference.getName()));
     }
@@ -99,7 +99,7 @@ public class ImplementsTranslation implements
       Preconditions.checkState(ruleSymbol.isPresent());
       cdClass.getInterfaces().add(
           EssentialTransformationHelper.createSimpleReference(EssentialTransformationHelper
-              .getAstPackage(ruleSymbol.get())
+              .getPackageName(ruleSymbol.get())
               + "AST"
               + ruleReference.getName()));
     }

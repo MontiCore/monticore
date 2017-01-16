@@ -52,7 +52,7 @@ public class OverridingClassProdTranslation implements
               rootLink.source(),
               link.source().getName());
       if (ruleSymbol.isPresent() && !ruleSymbol.get().isExternal()) {
-        String qualifiedASTNodeName = EssentialTransformationHelper.getAstPackageName(ruleSymbol.get()) + "AST"
+        String qualifiedASTNodeName = EssentialTransformationHelper.getPackageName(ruleSymbol.get()) + "AST"
             + ruleSymbol.get().getName();
         link.target().setSuperclass(
             EssentialTransformationHelper.createSimpleReference(qualifiedASTNodeName));

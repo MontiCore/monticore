@@ -42,7 +42,6 @@ public class RegExpBuilder implements Grammar_WithConceptsVisitor {
   public RegExpBuilder(StringBuilder b, EssentialMCGrammarSymbol st) {
     this.b = b;
     this.st = st;
-    
   }
   
   /**
@@ -150,18 +149,13 @@ public class RegExpBuilder implements Grammar_WithConceptsVisitor {
   }
   
   private boolean needsEscapeChar(String x) {
-    if ("^".equals(x)) {
-      return true;
-    }
-    return false;
+    return "^".equals(x);
   }
   
   @Override
   public void visit(ASTLexNonTerminal a) {
-    
     Optional<MCProdSymbol> lexrule = st.getProd(a.getName());
-    
-    b.append("TODO 1" + lexrule.get().getName());
+    b.append(lexrule.isPresent()? lexrule.get().getName():"");
     
   }
   

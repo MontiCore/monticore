@@ -24,6 +24,7 @@ import java.util.function.UnaryOperator;
 
 import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
+import de.monticore.grammar.grammar._ast.ASTConstantGroup;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.symboltable.MCProdComponentSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
@@ -54,57 +55,32 @@ public class CreateConstantAttributeTranslation implements
   
   // TODO SO <- GV : please change and move to the ConstantTypeTranslation
   private void createConstantAttributes(Link<ASTClassProd, ASTCDClass> link) {
-    Optional<MCProdSymbol> typeProd = EssentialMCGrammarSymbolTableHelper.getMCGrammarSymbol(link.source()).get()
+    Optional<MCProdSymbol> typeProd = EssentialMCGrammarSymbolTableHelper
+        .getMCGrammarSymbol(link.source()).get()
         .getSpannedScope()
         .resolve(link.source().getName(), MCProdSymbol.KIND);
     if (!typeProd.isPresent()) {
       Log.debug("Unknown type of the grammar rule "
           + link.source().getName() + " in the grammar "
-          + EssentialMCGrammarSymbolTableHelper.getMCGrammarSymbol(link.source()).get().getFullName()
+          + EssentialMCGrammarSymbolTableHelper.getMCGrammarSymbol(link.source()).get()
+              .getFullName()
           + "\n Check if this a kind of rule A:B=... ",
           CreateConstantAttributeTranslation.class.getName());
       return;
     }
-    if (!typeProd.get().isEnum()) {
-      return;
-    }
-    boolean iterated = typeProd.get().getProdComponents().size() > 1;
+    
     MCProdSymbol prodSymbol = typeProd.get();
-    for (MCProdComponentSymbol grammarAttribute : prodSymbol.getProdComponents()) {
-      if (!grammarAttribute.getReferencedProd().isPresent()) {
-        Log.error("0xA1005 Unknown type of the grammar rule "
-            + grammarAttribute);
-        return;
-      }
-      
-//      if (!grammarAttribute.isDerived()
-//          && grammarAttribute.getType().getKindOfType()
-//              .equals(KindType.CONST)) {
-      if (/*!grammarAttribute.isDerived()
-          && */ grammarAttribute.isConstant()) {
-        
+    for (MCProdComponentSymbol prodComponent : prodSymbol.getProdComponents()) {
+      if (prodComponent.isConstantGroup() && prodComponent.getAstNode().isPresent()
+          && prodComponent.getAstNode().get() instanceof ASTConstantGroup) {
+        boolean iterated = EssentialMCGrammarSymbolTableHelper.isConstGroupIterated(prodComponent);
         ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory
             .createASTCDAttribute();
-        cdAttribute.setName(grammarAttribute.getName());
-        
-        if (!grammarAttribute.isList()) {
-          if (iterated) {
-            cdAttribute.setType(TypesNodeFactory
-                .createASTPrimitiveType(ASTConstantsTypes.INT));
-          }
-          else {
-            cdAttribute.setType(TypesNodeFactory
-                .createASTPrimitiveType(ASTConstantsTypes.BOOLEAN));
-          }
-        }
-        else {
-          if (iterated) {
-            // cdAttribute.setType("java.util.List<Integer>");
-          }
-          else {
-            // cdAttribute.setType("java.util.List<Integer>");
-          }
-        }
+        cdAttribute
+            .setName(EssentialMCGrammarSymbolTableHelper.getConstantName(prodComponent).orElse(""));
+        int constantType = iterated ? ASTConstantsTypes.INT : ASTConstantsTypes.BOOLEAN;
+        cdAttribute.setType(TypesNodeFactory
+            .createASTPrimitiveType(constantType));
         link.target().getCDAttributes().add(cdAttribute);
       }
     }

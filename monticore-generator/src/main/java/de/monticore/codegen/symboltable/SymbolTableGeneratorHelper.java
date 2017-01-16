@@ -103,11 +103,11 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   /**
    * @return the name of the top ast, i.e., the ast of the start rule.
    */
-  //TODO GV:
   public String getQualifiedStartRuleName() {
-//    if (grammarSymbol.getStartRule().isPresent()) {
-//      return grammarSymbol.getStartRule().get().getType().getQualifiedName();
-//    }
+    if (grammarSymbol.getStartProd().isPresent()) {
+      return EssentialMCGrammarSymbolTableHelper
+          .getQualifiedName(grammarSymbol.getStartProd().get());
+    }
     return "";
   }
 
@@ -131,24 +131,32 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
 
   public Map<String, String> ruleComponents2JavaFields(MCProdSymbol ruleSymbol) {
     Log.errorIfNull(ruleSymbol);
-
+    System.err.println(" ruleSymbol " + ruleSymbol.getName());
     // fieldName -> fieldType
     final Map<String, String> fields = new HashMap<>();
     
     for (MCProdComponentSymbol componentSymbol : ruleSymbol.getProdComponents()) {
       
       checkArgument(componentSymbol.getAstNode().isPresent());
-      
+      System.err.println(" componentSymbol dd " + componentSymbol.getName());
       if (componentSymbol.isNonterminal()) {
+        System.err.println(" componentSymbol isNonterminal ");
         nonterminal2JavaField(componentSymbol, fields);
       }
       else if (componentSymbol.isConstant()) {
+        System.err.println(" componentSymbol isConstant ");
         constant2JavaField(componentSymbol, fields);
       }
       else if (componentSymbol.isConstantGroup()) {
+        System.err.println(" componentSymbol isConstantGroup ");
+        String attrName = EssentialMCGrammarSymbolTableHelper.getConstantName(componentSymbol).orElse("");
+        if (canBeTransformedToValidJavaName(attrName)) {
+          fields.put(attrName, "boolean");
+        }
         // TODO PN handle this case
       }
       else if (componentSymbol.isTerminal()) {
+        System.err.println(" componentSymbol isTerminal ");
         // ignore terminals
       }
       else {
@@ -177,6 +185,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
 
   private void constant2JavaField(MCProdComponentSymbol componentSymbol, Map<String, String> fields) {
     final Optional<String> componentName = getRuleComponentName(componentSymbol);
+    System.err.println("constant2JavaField componentName " + componentName);
     if (componentName.isPresent()) {
       fields.put(componentName.get(), "boolean");
     }
@@ -200,13 +209,12 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     final Map<String, String> fields = new HashMap<>();
 
     for (MCProdComponentSymbol componentSymbol : ruleSymbol.getProdComponents()) {
-
+      System.err.println("AAAAAA componentSymbol " + componentSymbol.getName());
       checkArgument(componentSymbol.getAstNode().isPresent());
-
       if (componentSymbol.isNonterminal()) {
+        System.err.println("isNonterminal! " + componentSymbol.getName());
           symbolNonTerminal2JavaField(componentSymbol, fields);
       }
-
     }
 
     return fields;
@@ -214,10 +222,10 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
 
   private void symbolNonTerminal2JavaField(MCProdComponentSymbol componentSymbol, Map<String, String> fields) {
     final Optional<String> componentName = getRuleComponentName(componentSymbol);
-    if (componentName.isPresent()) {
+    if (componentName.isPresent() && componentSymbol.getReferencedProd().isPresent()) {
       // the case: Automaton = Name ... State* ..., i.e., the containment of another symbol
-      final Optional<MCProdSymbol> referencedRule = EssentialMCGrammarSymbolTableHelper.getEnclosingRule(componentSymbol);
-      if ((referencedRule.isPresent()) && referencedRule.get().isSymbolDefinition()) {
+      final Optional<MCProdSymbol> referencedRule = grammarSymbol.getProd(componentSymbol.getReferencedProd().get().getName());
+      if (referencedRule.isPresent() && referencedRule.get().isSymbolDefinition()) {
         fields.put(componentName.get(), referencedRule.get().getName() + "Symbol");
       }
     }

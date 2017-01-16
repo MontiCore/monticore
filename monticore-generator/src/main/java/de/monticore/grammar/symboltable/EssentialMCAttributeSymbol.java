@@ -40,7 +40,7 @@ public class EssentialMCAttributeSymbol extends CommonSymbol {
   private boolean maxCheckedDuringParsing = false;
   
   private MCProdOrTypeReference referencedProd;
-  
+
   public EssentialMCAttributeSymbol(String name) {
     super(name, KIND);
   }

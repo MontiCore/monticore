@@ -45,7 +45,7 @@ public class ExternalImplementationTranslation implements
           rootLink.source(), name);
       if (ruleSymbol.isPresent() && ruleSymbol.get().isExternal()) {
         link.target().getInterfaces().add(
-            EssentialTransformationHelper.createSimpleReference(EssentialTransformationHelper.getAstPackage(
+            EssentialTransformationHelper.createSimpleReference(EssentialTransformationHelper.getGrammarNameAsPackage(
                 ruleSymbol.get()) + "AST" + name + "Ext"));
       }
     }

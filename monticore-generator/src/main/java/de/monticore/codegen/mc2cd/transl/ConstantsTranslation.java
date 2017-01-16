@@ -19,9 +19,12 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
+import java.util.Set;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 
 import de.monticore.codegen.mc2cd.EssentialTransformationHelper;
+import de.monticore.grammar.LexNamer;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDEnum;
@@ -40,6 +43,17 @@ public class ConstantsTranslation implements
   
   public static final String CONSTANTS_ENUM = "Literals";
   
+  private LexNamer lexNamer;
+  
+  /**
+   * Constructor for de.monticore.codegen.mc2cd.transl.ConstantsTranslation
+   * 
+   * @param lexNamer
+   */
+  public ConstantsTranslation(LexNamer lexNamer) {
+    this.lexNamer = lexNamer;
+  }
+  
   @Override
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(
       Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
@@ -47,12 +61,15 @@ public class ConstantsTranslation implements
     ASTCDEnum constantsEnum = CD4AnalysisNodeFactory.createASTCDEnum();
     constantsEnum.setName(rootLink.source().getName() + CONSTANTS_ENUM);
     rootLink.target().getCDDefinition().getCDEnums().add(constantsEnum);
-    for (String grammarConstant : EssentialTransformationHelper.getAllGrammarConstants(rootLink.source())) {
+    Set<String> grammarConstants = EssentialTransformationHelper
+        .getAllGrammarConstants(rootLink.source()).stream().map(c -> lexNamer.getConstantName(c))
+        .collect(Collectors.toSet());
+    for (String grammarConstant : grammarConstants) {
       ASTCDEnumConstant constant = CD4AnalysisNodeFactory.createASTCDEnumConstant();
       constant.setName(grammarConstant);
       constantsEnum.getCDEnumConstants().add(constant);
     }
-
+    
     return rootLink;
   }
   

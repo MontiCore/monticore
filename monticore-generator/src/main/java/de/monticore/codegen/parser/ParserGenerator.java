@@ -56,11 +56,12 @@ public class ParserGenerator {
   
   /**
    * Code generation from grammar ast to an antlr compatible file format
+   * @param glex 
    * 
    * @param astGrammar - grammar AST
    * @param targetFile - target file
    */
-  public static void generateParser(ASTMCGrammar astGrammar, Scope symbolTable,
+  public static void generateParser(GlobalExtensionManagement glex, ASTMCGrammar astGrammar, Scope symbolTable,
       IterablePath handcodedPath, File targetFile) {
     if (astGrammar.isComponent()) {
       Log.info("No parser generation for the grammar " + astGrammar.getName(), LOG);
@@ -68,7 +69,6 @@ public class ParserGenerator {
     }
     Log.debug("Start parser generation for the grammar " + astGrammar.getName(), LOG);
     final GeneratorSetup setup = new GeneratorSetup(targetFile);
-    GlobalExtensionManagement glex = new GlobalExtensionManagement();
     
     String qualifiedGrammarName = astGrammar.getPackage().isEmpty()
         ? astGrammar.getName()
@@ -106,17 +106,17 @@ public class ParserGenerator {
   
   /**
    * Code generation from grammar ast to an antlr compatible file format
+   * @param glex 
    * 
    * @param astGrammar - grammar AST
    * @param targetFile - target file
    */
-  public static void generateParserWrappers(ASTMCGrammar astGrammar, Scope symbolTable,
+  public static void generateParserWrappers(GlobalExtensionManagement glex, ASTMCGrammar astGrammar, Scope symbolTable,
       IterablePath handcodedPath, File targetFile) {
     if (astGrammar.isComponent()) {
       return;
     }
     final GeneratorSetup setup = new GeneratorSetup(targetFile);
-    GlobalExtensionManagement glex = new GlobalExtensionManagement();
     
     String qualifiedGrammarName = astGrammar.getPackage().isEmpty()
         ? astGrammar.getName()

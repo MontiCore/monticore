@@ -43,7 +43,7 @@ public class HelperGrammar {
    * @return true iff ASTConstantGroup is iterated
    */
   public static boolean isIterated(ASTTerminal a) {
-    return ((a.getIteration() == ASTConstantsGrammar.PLUS) || (a.getIteration() == ASTConstantsGrammar.STAR));
+    return (a.getIteration() == ASTConstantsGrammar.PLUS) || (a.getIteration() == ASTConstantsGrammar.STAR);
     
   }
   
@@ -89,6 +89,7 @@ public class HelperGrammar {
   }
   
   public static boolean isIterated(ASTNonTerminal a) {
+  //  System.err.println(" a " + a.getName() + " iter. " + a.getIteration());
     return ((a.getIteration() == ASTConstantsGrammar.PLUS) || (a.getIteration() == ASTConstantsGrammar.STAR));
   }
     

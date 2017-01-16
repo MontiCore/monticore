@@ -102,7 +102,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
    */
   public static String getAstPackage(String qualifiedName) {
     Log.errorIfNull(qualifiedName);
-    return Joiners.DOT.join(qualifiedName.toLowerCase(), AST_PACKAGE_SUFFIX_DOT1);
+    return Joiners.DOT.join(qualifiedName.toLowerCase(), AST_PACKAGE_SUFFIX_DOT);
   }
   
   /**
