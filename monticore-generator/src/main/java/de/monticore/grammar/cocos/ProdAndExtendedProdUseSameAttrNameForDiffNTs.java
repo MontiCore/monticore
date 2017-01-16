@@ -50,7 +50,6 @@ public class ProdAndExtendedProdUseSameAttrNameForDiffNTs implements GrammarASTN
       Optional<MCProdComponentSymbol> componentSymbol = a.getEnclosingScope().get()
           .resolve(attributename, MCProdComponentSymbol.KIND);
       if (componentSymbol.isPresent()) {
-        System.err.println(" componentSymbol " + componentSymbol.get().getName());
         Optional<MCProdSymbol> rule = EssentialMCGrammarSymbolTableHelper.getEnclosingRule(a);
         if (rule.isPresent() && rule.get().getAstNode().get() instanceof ASTClassProd) {
           ASTClassProd prod = (ASTClassProd) rule.get().getAstNode().get();

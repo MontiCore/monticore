@@ -501,7 +501,6 @@ public class CommonScope implements MutableScope {
       try {
         Optional<T> resolvedSymbol = (Optional<T>) resolvingFilter.filter(resolvingInfo, name, symbols);
         if (resolvedSymbol.isPresent()) {
-          System.err.println(" resolvedSymbol " + resolvedSymbol.get());
           // TODO add resolvedSymbols to resolvingInfo?
           if (resolvedSymbols.contains(resolvedSymbol.get())) {
             // TODO PN do not add to list in this case?

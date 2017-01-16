@@ -508,7 +508,6 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
     final Symbol currentSymbol = currentSymbol().orElse(null);
     
     if (currentSymbol != null && attrName.isPresent()) {
-      System.err.println("currentSymbol " + currentSymbol);
       MCProdComponentSymbol prodComponent = new MCProdComponentSymbol(attrName.get());
       prodComponent.setConstantGroup(true);
       prodComponent.setUsageName(usageName);
@@ -531,12 +530,10 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
           prodComponent.setList(true);
           setLinkBetweenSymbolAndNode(prodComponent, astNode);
           putSpannedScopeOnStack(prodComponent);
-          System.err.println(" ASTConstantGroup 1 " + " prodComponent " + prodComponent);
         }
         else {
           final Optional<MCProdComponentSymbol> sym = addRuleComponent(attrName.orElse(""),
               astNode, astNode.getUsageName().orElse(null));
-          System.err.println(" ASTConstantGroup 2 " + " sym " + sym);
           if (sym.isPresent()) {
             sym.get().setConstantGroup(true);
             addToScopeAndLinkWithNode(sym.get(), astNode);
@@ -643,34 +640,15 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
    */
   @Override
   public void visit(ASTLexActionOrPredicate action) {
-    
-    List<String> types = HelperGrammar.findImplicitTypes(action, prettyPrinter);
-    System.err.println("IMPLICIT TYPRS " + types);
-    for (String typeName : types) {
-      // Create type if not already created
-      // final MCTypeSymbol mcType = getOrCreateType(typeName, false, action);
-      
-      // mcType.setConvertFunction(HelperGrammar.createStringConvertFunction(typeName));
-      // mcType.setLexType("String");
-      // mcType.setKindOfType(MCTypeSymbol.KindType.IDENT);
-      
-      // grammarSymbol.addType(mcType);
-      
+    for (String typeName : HelperGrammar.findImplicitTypes(action, prettyPrinter)) {
       // Create rule if needed
       Optional<MCProdSymbol> rule = grammarSymbol.getProd(typeName);
       if (!rule.isPresent()) {
         // Create entry for an implicit rule
         final MCProdSymbol prodSymbol = new MCProdSymbol(typeName);
         prodSymbol.setLexerProd(true);
-        
-        // MCRuleSymbol stLexRule =
-        // MCGrammarSymbolsFactory.createMCLexProdSymbol(typeName);
-        // grammarSymbol.addRule(stLexRule);
-        // // set type
-        // stLexRule.setType(mcType);
       }
     }
-    
   }
   
 }

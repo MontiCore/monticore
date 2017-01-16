@@ -131,9 +131,7 @@ public class SymbolTableGenerator {
           ruleNames);
       symbolTableCreatorGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol);
       
-      System.err.println(" grammar " + grammarSymbol.getName());
       for (MCProdSymbol ruleSymbol : allSymbolDefiningRules) {
-        System.err.println(" ruleSymbol " + ruleSymbol.getName());
         generateSymbolOrScopeSpanningSymbol(genEngine, genHelper, ruleSymbol, handCodedPath);
         symbolKindGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol);
         symbolReferenceGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol,

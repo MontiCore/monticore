@@ -126,10 +126,6 @@ public class MCProdComponentSymbol extends CommonScopeSpanningSymbol {
    * @param isList true, if rule is used as a list, i.e. '+' or '*'.
    */
   public void setList(boolean isList) {
-    if (isList) {
-      System.err.println(this.getName() + "TRUE");
-     // new Exception().printStackTrace();
-    }
     this.isList = isList;
   }
   

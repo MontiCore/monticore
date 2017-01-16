@@ -64,16 +64,27 @@ public class AstGeneratorTest extends GeneratorTest {
   }
   
   @Test
+  public void testExpression() {
+    testCorrect("de/monticore/expression/Expression.mc4");
+  }
+  
+  @Test
+  public void testFeatureDSL() {
+    testCorrect("de/monticore/FeatureDSL.mc4");
+  }
+  
+  @Test
   public void testOD() {
     testCorrectWithDependencies("mc/grammars/TestOD.mc4",
-        "mc/grammars/literals/TestLiterals.mc4", "mc/grammars/lexicals/TestLexicals.mc4", 
+        "mc/grammars/literals/TestLiterals.mc4", "mc/grammars/lexicals/TestLexicals.mc4",
         "mc/grammars/types/TestTypes.mc4", "mc/grammars/common/TestCommon.mc4");
   }
   
   @Test
   public void testCommon() {
     testCorrectWithDependencies("mc/grammars/common/TestCommon.mc4",
-        "mc/grammars/literals/TestLiterals.mc4", "mc/grammars/lexicals/TestLexicals.mc4", "mc/grammars/types/TestTypes.mc4");
+        "mc/grammars/literals/TestLiterals.mc4", "mc/grammars/lexicals/TestLexicals.mc4",
+        "mc/grammars/types/TestTypes.mc4");
   }
   
   @Test
@@ -89,8 +100,20 @@ public class AstGeneratorTest extends GeneratorTest {
   }
   
   @Test
+  public void testSubStatechart() {
+    testCorrectWithDependencies("de/monticore/statechart/sub/SubStatechart.mc4",
+        "mc/grammars/lexicals/TestLexicals.mc4", "de/monticore/statechart/Statechart.mc4");
+  }
+  
+  @Test
   public void testCdAttributes() {
     testCorrect("de/monticore/CdAttributes.mc4");
+  }
+  
+  @Test
+  public void testInterfaces() {
+    testCorrectWithDependencies("de/monticore/interfaces/Sub.mc4",
+        "de/monticore/interfaces/Sup.mc4", "mc/grammars/lexicals/TestLexicals.mc4");
   }
   
   @Test
@@ -134,22 +157,25 @@ public class AstGeneratorTest extends GeneratorTest {
   public void testInherited() {
     doGenerate("de/monticore/inherited/Supergrammar.mc4");
     doGenerate("de/monticore/inherited/sub/Subgrammar.mc4");
-   // doGenerate("de/monticore/inherited/subsub/Subsubgrammar.mc4");
+    // doGenerate("de/monticore/inherited/subsub/Subsubgrammar.mc4");
     Path path = Paths.get(OUTPUT_FOLDER, Names.getPathFromFilename("de/monticore/inherited/"));
-   // assertTrue("There are compile errors in generated code for the models in grammars/inherited.",
+    // assertTrue("There are compile errors in generated code for the models in
+    // grammars/inherited.",
     // compile(path));
   }
-
+  
   @Test
   public void testInherited2() {
     doGenerate("de/monticore/fautomaton/action/Expression.mc4");
     doGenerate("de/monticore/fautomaton/automaton/FlatAutomaton.mc4");
     doGenerate("de/monticore/fautomaton/automatonwithaction/ActionAutomaton.mc4");
-    Path path = Paths.get(OUTPUT_FOLDER, Names.getPathFromFilename("de/monticore/mc/fautomaton/"));
-//    assertTrue("There are compile errors in generated code for the models in grammars/inherited.",
-//     compile(path));
+    // Path path = Paths.get(OUTPUT_FOLDER,
+    // Names.getPathFromFilename("de/monticore/mc/fautomaton/"));
+    // assertTrue("There are compile errors in generated code for the models in
+    // grammars/inherited.",
+    // compile(path));
   }
-
+  
   @Test
   public void testAction() {
     testCorrect("de/monticore/Action.mc4");
@@ -181,12 +207,12 @@ public class AstGeneratorTest extends GeneratorTest {
     ClassLoader l = ParserGeneratorTest.class.getClassLoader();
     try {
       String script = Resources.asCharSource(
-         // l.getResource("de/monticore/groovy/monticoreOnlyAst_emf.groovy"),
+          // l.getResource("de/monticore/groovy/monticoreOnlyAst_emf.groovy"),
           l.getResource("de/monticore/groovy/monticoreOnlyAst.groovy"),
           Charset.forName("UTF-8")).read();
       
-      Configuration configuration =
-          ConfigurationPropertiesMapContributor.fromSplitMap(CLIArguments.forArguments(
+      Configuration configuration = ConfigurationPropertiesMapContributor
+          .fromSplitMap(CLIArguments.forArguments(
               getCLIArguments("src/test/resources/" + model))
               .asMap());
       new MontiCoreScript().run(script, configuration);
@@ -210,8 +236,8 @@ public class AstGeneratorTest extends GeneratorTest {
   /**
    * If there is no generated code for dependencies then generate and compile.
    * If ast code is tested then generate and compile ast code, if code dependent
-   * on ast is tested, check if ast code exists. If not, generate. 
-   * Then generate code that has to be tested (e.g. parser- or symboltable-code)
+   * on ast is tested, check if ast code exists. If not, generate. Then generate
+   * code that has to be tested (e.g. parser- or symboltable-code)
    * 
    * @param model
    * @param dependencies

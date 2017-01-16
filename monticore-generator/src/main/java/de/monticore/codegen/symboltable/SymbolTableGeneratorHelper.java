@@ -131,32 +131,25 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
 
   public Map<String, String> ruleComponents2JavaFields(MCProdSymbol ruleSymbol) {
     Log.errorIfNull(ruleSymbol);
-    System.err.println(" ruleSymbol " + ruleSymbol.getName());
     // fieldName -> fieldType
     final Map<String, String> fields = new HashMap<>();
     
     for (MCProdComponentSymbol componentSymbol : ruleSymbol.getProdComponents()) {
       
       checkArgument(componentSymbol.getAstNode().isPresent());
-      System.err.println(" componentSymbol dd " + componentSymbol.getName());
       if (componentSymbol.isNonterminal()) {
-        System.err.println(" componentSymbol isNonterminal ");
         nonterminal2JavaField(componentSymbol, fields);
       }
       else if (componentSymbol.isConstant()) {
-        System.err.println(" componentSymbol isConstant ");
         constant2JavaField(componentSymbol, fields);
       }
       else if (componentSymbol.isConstantGroup()) {
-        System.err.println(" componentSymbol isConstantGroup ");
         String attrName = EssentialMCGrammarSymbolTableHelper.getConstantName(componentSymbol).orElse("");
         if (canBeTransformedToValidJavaName(attrName)) {
           fields.put(attrName, "boolean");
         }
-        // TODO PN handle this case
       }
       else if (componentSymbol.isTerminal()) {
-        System.err.println(" componentSymbol isTerminal ");
         // ignore terminals
       }
       else {
@@ -185,7 +178,6 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
 
   private void constant2JavaField(MCProdComponentSymbol componentSymbol, Map<String, String> fields) {
     final Optional<String> componentName = getRuleComponentName(componentSymbol);
-    System.err.println("constant2JavaField componentName " + componentName);
     if (componentName.isPresent()) {
       fields.put(componentName.get(), "boolean");
     }
@@ -209,10 +201,8 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     final Map<String, String> fields = new HashMap<>();
 
     for (MCProdComponentSymbol componentSymbol : ruleSymbol.getProdComponents()) {
-      System.err.println("AAAAAA componentSymbol " + componentSymbol.getName());
       checkArgument(componentSymbol.getAstNode().isPresent());
       if (componentSymbol.isNonterminal()) {
-        System.err.println("isNonterminal! " + componentSymbol.getName());
           symbolNonTerminal2JavaField(componentSymbol, fields);
       }
     }
