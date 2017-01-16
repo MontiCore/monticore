@@ -571,36 +571,21 @@ public class CommonScope implements MutableScope {
   @Override
   public <T extends Symbol> Collection<T> resolveDownMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier,
       Predicate<Symbol> predicate) {
-  //  System.err.println("New Call for " + name);
     // 1. Conduct search locally in the current scope
     final Set<T> resolved = this.resolveManyLocally(resolvingInfo, name, kind, modifier, predicate);
 
     final String resolveCall = "resolveDownMany(\"" + name + "\", \"" + kind.getName()
         + "\") in scope \"" + getName() + "\"";
     Log.trace("START " + resolveCall + ". Found #" + resolved.size() + " (local)", "");
-
-  //  System.err.println("START " + resolveCall + ". Found #" + resolved.size() + " (local)");
-    
     // If no matching symbols have been found...
     if (resolved.isEmpty()) {
       // 2. Continue search in sub scopes and ...
       for (MutableScope subScope : getSubScopes()) {
-        if (!resolved.isEmpty()) {
-   //       System.err.println(" resolved: " + resolved);
-        }
         final Collection<T> resolvedFromSub = subScope.continueAsSubScope(resolvingInfo, name, kind, modifier, predicate);
-     //   System.err.println(" name " + name  + " resolvedFromSub " + resolvedFromSub);
         // 3. unify results
         resolved.addAll(resolvedFromSub);
       }
     }
-  //  System.err.println("END " + resolveCall + ". Found #" + resolved.size());
-//    if (resolved.size() == 2) {
-//      CommonSymbol s1 = (CommonSymbol)((LinkedHashSet<CommonSymbol>)resolved).toArray()[0];
-//      CommonSymbol s2 = (CommonSymbol)((LinkedHashSet<CommonSymbol>)resolved).toArray()[1];
-//      System.err.println("0: " + s1.getFullName() + "  " + s1.getEnclosingScope().getName() + " astNode " + s1.getAstNode());
-//      System.err.println("1: " + s2.getFullName() + "  " + s2.getEnclosingScope().getName() + " astNode " + s2.getAstNode());
-//    }
     Log.trace("END " + resolveCall + ". Found #" + resolved.size() , "");
 
     return resolved;

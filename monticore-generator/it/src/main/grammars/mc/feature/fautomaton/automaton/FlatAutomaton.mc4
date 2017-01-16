@@ -28,15 +28,4 @@ grammar FlatAutomaton extends mc.common.Basics {
     */
 	Transition =
 	  from:Name "-" activate:Name ">" to:Name ";"  ;
-	  
-	  interface A0;
-	
-	ast A0 = VarnameA0:Name ;
-	
-	interface A1 extends A0;
-	
-	ast A1 = VarnameA1:Name;
-	
-	M implements A1 = VarnameM:Name;
-	  	
 }
