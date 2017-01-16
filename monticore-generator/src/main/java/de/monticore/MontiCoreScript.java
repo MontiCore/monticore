@@ -196,7 +196,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     this.grammarIterator = configuration.getGrammars().getResolvedPaths();
     this.glex = new GlobalExtensionManagement();
   //  this.symbolTable = initSymbolTable(configuration.getModelPath());
-    this.symbolTable = initNewSymbolTable(configuration.getModelPath());
+    this.symbolTable = initSymbolTable(configuration.getModelPath());
     this.firstPassGrammars = new LinkedHashMap<>();
   }
   
@@ -260,7 +260,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param ast
    * @return
    */
-  public ASTMCGrammar createNewSymbolsFromAST(GlobalScope globalScope, ASTMCGrammar ast) {
+  public ASTMCGrammar createSymbolsFromAST(GlobalScope globalScope, ASTMCGrammar ast) {
     // Build grammar symbol table (if not already built)
     String qualifiedGrammarName = Names.getQualifiedName(ast.getPackage(), ast.getName());
     Optional<EssentialMCGrammarSymbol> grammarSymbol = globalScope
@@ -333,7 +333,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return result;
   }
   
-  public GlobalScope initNewSymbolTable(ModelPath modelPath) {
+  public GlobalScope initSymbolTable(ModelPath modelPath) {
     final ModelingLanguage mcLanguage = new EssentialMontiCoreGrammarLanguage();
     
     final ResolverConfiguration resolverConfiguration = new ResolverConfiguration();

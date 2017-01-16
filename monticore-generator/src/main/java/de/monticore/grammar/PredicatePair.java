@@ -17,7 +17,7 @@
  * ******************************************************************************
  */
 
-package de.monticore.languages.grammar;
+package de.monticore.grammar;
 
 import java.util.Optional;
 

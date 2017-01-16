@@ -17,11 +17,10 @@
  * ******************************************************************************
  */
 
-package de.monticore.languages.grammar.lexpatterns;
+package de.monticore.grammar;
 
 import java.util.Optional;
 
-import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.grammar._ast.ASTLexAlt;
 import de.monticore.grammar.grammar._ast.ASTLexBlock;
 import de.monticore.grammar.grammar._ast.ASTLexChar;

@@ -52,7 +52,7 @@ while (grammarIterator.hasNext()) {
       startReportingFor(astGrammar, input)
       
       // M3: populate symbol table
-      astGrammar = createNewSymbolsFromAST(symbolTable, astGrammar)
+      astGrammar = createSymbolsFromAST(symbolTable, astGrammar)
       
       // M4: execute context conditions
       runGrammarCoCos(astGrammar, symbolTable)

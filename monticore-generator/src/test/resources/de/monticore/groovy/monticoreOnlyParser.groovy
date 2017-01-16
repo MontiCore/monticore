@@ -31,11 +31,11 @@ debug("Handcoded path : " + _configuration.getHandcodedPathAsStrings())
 // Parse grammar
 astGrammars = parseGrammars(grammars)
 glex = new GlobalExtensionManagement()
-symbolTable = initNewSymbolTable(modelPath)
+symbolTable = initSymbolTable(modelPath)
 
 for (astGrammar in astGrammars) {  
   
-  astGrammar = createNewSymbolsFromAST(symbolTable, astGrammar)
+  astGrammar = createSymbolsFromAST(symbolTable, astGrammar)
   
   // Generate parser
   generateParser(glex, astGrammar, symbolTable, handcodedPath, out)

@@ -53,8 +53,8 @@ public class TestHelper {
       return Optional.empty();
     }
     MontiCoreScript mc = new MontiCoreScript();
-    GlobalScope symbolTable = mc.initNewSymbolTable(new ModelPath(Paths.get("src/test/resources")));
-    mc.createNewSymbolsFromAST(symbolTable, grammar.get());
+    GlobalScope symbolTable = mc.initSymbolTable(new ModelPath(Paths.get("src/test/resources")));
+    mc.createSymbolsFromAST(symbolTable, grammar.get());
     ASTCDCompilationUnit cdCompilationUnit = new MC2CDTransformation(
         new GlobalExtensionManagement()).apply(grammar.get());
     return Optional.of(cdCompilationUnit);

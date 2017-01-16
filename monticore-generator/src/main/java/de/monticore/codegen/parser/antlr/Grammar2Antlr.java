@@ -37,6 +37,7 @@ import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.DirectLeftRecursionDetector;
 import de.monticore.grammar.EssentialMCGrammarInfo;
 import de.monticore.grammar.HelperGrammar;
+import de.monticore.grammar.PredicatePair;
 import de.monticore.grammar.grammar._ast.ASTAlt;
 import de.monticore.grammar.grammar._ast.ASTAnything;
 import de.monticore.grammar.grammar._ast.ASTBlock;
@@ -68,7 +69,6 @@ import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVi
 import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdComponentSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
-import de.monticore.languages.grammar.PredicatePair;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
 
