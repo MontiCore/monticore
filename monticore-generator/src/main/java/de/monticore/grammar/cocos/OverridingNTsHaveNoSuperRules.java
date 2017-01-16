@@ -29,7 +29,7 @@ import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * Checks that overriding abstract nonterminals do not have super rules or
+ * Checks that overriding nonterminals do not have super rules or
  * classes.
  *
  * @author KH
@@ -57,7 +57,7 @@ public class OverridingNTsHaveNoSuperRules implements GrammarASTClassProdCoCo {
         extendedType = a.getASTSuperClass().get(0).getTypeName();
       }
       for (EssentialMCGrammarSymbol s : grammarSymbols) {
-        if (s.getProd(a.getName()) != null) {
+        if (s.getProd(a.getName()).isPresent()) {
           Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName(), extendedType),
               a.get_SourcePositionStart());
         }
