@@ -29,6 +29,7 @@ import de.monticore.generating.templateengine.reporting.commons.AReporter;
 import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ScopeSpanningSymbol;
 import de.monticore.symboltable.Scopes;
@@ -56,6 +57,10 @@ public class SymbolTableReporter extends AReporter {
   
   protected final ReportingRepository repository;
   
+  protected boolean printEmptyOptional = false;
+  
+  protected boolean printEmptyList = false;
+  
   public SymbolTableReporter(
       String outputDir,
       String modelName,
@@ -82,6 +87,9 @@ public class SymbolTableReporter extends AReporter {
   public void flush(ASTNode ast) {
     if (ast != null) {
       Optional<? extends Scope> scope = ast.getSpannedScope();
+      while (scope.isPresent() && !(scope.get() instanceof GlobalScope)) {
+        scope = scope.get().getEnclosingScope();
+      }
       if (scope.isPresent()) {
         reportSymbolTableScope(scope.get());
       }
@@ -94,24 +102,22 @@ public class SymbolTableReporter extends AReporter {
     final Collection<Symbol> symbols = Scopes.getLocalSymbolsAsCollection(scope);
     String type;
     String scopeName;
-    if (scope.getSpanningSymbol().isPresent()) {
-      scopeName = repository.getSymbolNameFormatted(scope.getSpanningSymbol().get());
-      type = scope.getSpanningSymbol().get().getClass().getSimpleName();
-    }
-    else {
-      scopeName = repository.getScopeNameFormatted(scope);
-      type = Names.getSimpleName(scope.getClass().getName());
-    }
+    scopeName = repository.getScopeNameFormatted(scope);
+    type = Names.getSimpleName(scope.getClass().getName());    
     printer.println(scopeName + ": " + type + "{");
     printer.indent();
     
     if (scope.getSpanningSymbol().isPresent()) {
-      reportAttributes(scope.getSpanningSymbol().get(), printer);
+      printer.print("spanningSymbol = ");
+      reportSymbol(scope.getSpanningSymbol().get(), printer);
+      printer.println(";");
+    } else if (printEmptyOptional) {
+      printer.println("spanningSymbol = Optional.empty;");
     }
     
     Collection<Symbol> reportedSymbols = symbols.stream()
         .filter(sym -> !(sym instanceof ScopeSpanningSymbol)).collect(Collectors.toList());
-    if (!reportedSymbols.isEmpty()) {
+    if (!reportedSymbols.isEmpty() || printEmptyList) {
       printer.print("symbols = ");
       printer.println("// *size: " + reportedSymbols.size());
       printer.indent();
@@ -124,13 +130,13 @@ public class SymbolTableReporter extends AReporter {
         reportSymbol(symbol, printer);
       }
     }
-    if (!reportedSymbols.isEmpty()) {
+    if (!reportedSymbols.isEmpty() || printEmptyList) {
       printer.println(";");
       printer.unindent();
     }
     
-    if (!scope.getSubScopes().isEmpty()) {
-      printer.print("scopes = ");
+    if (!scope.getSubScopes().isEmpty() || printEmptyList) {
+      printer.print("subScopes = ");
       printer.println("// *size: " + scope.getSubScopes().size());
       printer.indent();
     }
@@ -140,7 +146,7 @@ public class SymbolTableReporter extends AReporter {
       sep = ",\n";
       reportScope(subScope, printer);
     }
-    if (!scope.getSubScopes().isEmpty()) {
+    if (!scope.getSubScopes().isEmpty() || printEmptyList) {
       printer.println(";");
       printer.unindent();
     }
@@ -162,7 +168,7 @@ public class SymbolTableReporter extends AReporter {
   }
   
   protected void reportSymbol(Symbol sym, IndentPrinter printer) {
-    String type = Names.getSimpleName(sym.getClass().getSimpleName());  
+    String type = Names.getSimpleName(sym.getClass().getSimpleName());
     String symName = repository.getSymbolNameFormatted(sym);
     printer.println(symName + ": " + type + " {");
     printer.indent();
@@ -178,6 +184,14 @@ public class SymbolTableReporter extends AReporter {
       printer.print("astNode = ");
       printer.print(repository.getASTNodeNameFormatted(sym.getAstNode().get()));
       printer.println(";");
+    }
+    else if (printEmptyOptional) {
+      printer.print("astNode = Optional.empty;");
+    }
+    if (sym instanceof ScopeSpanningSymbol) {
+      ScopeSpanningSymbol spanningSym = (ScopeSpanningSymbol) sym;
+      printer.println("spannedScope = "
+          + repository.getScopeNameFormatted(spanningSym.getSpannedScope()) + ";");
     }
     if (!sym.getAccessModifier().equals(AccessModifier.ALL_INCLUSION)) {
       printer.println("accesModifier = \"" + sym.getAccessModifier().toString() + "\";");
@@ -202,7 +216,7 @@ public class SymbolTableReporter extends AReporter {
     printer.println("isEllipsisParameterMethod = " + sym.isEllipsisParameterMethod() + ";");
     if (!sym.isConstructor()) {
       printer.println("returnType = "
-        + repository.getSymbolNameFormatted(sym.getReturnType()) + ";");
+          + repository.getSymbolNameFormatted(sym.getReturnType()) + ";");
     }
     reportListOfReferences("exceptions", sym.getExceptions(), printer);
   }
@@ -221,20 +235,55 @@ public class SymbolTableReporter extends AReporter {
           + repository.getSymbolNameFormatted(sym.getSuperClass().get())
           + ";");
     }
+    else if (printEmptyOptional) {
+      printer.print("superClass = Optional.empty;");
+    }
     reportListOfReferences("interfaces", sym.getInterfaces(), printer);
   }
   
-  protected void reportListOfReferences(String listName, Collection<? extends JTypeReference<? extends JTypeSymbol>> refs, IndentPrinter printer) {    
-    if (!refs.isEmpty()) {
+  protected void reportListOfReferences(String listName,
+      Collection<? extends JTypeReference<? extends JTypeSymbol>> refs, IndentPrinter printer) {
+    if (!refs.isEmpty() || printEmptyList) {
       printer.print(listName + " = ");
       String delim = "";
-      for (JTypeReference<? extends JTypeSymbol> anno: refs) {
+      for (JTypeReference<? extends JTypeSymbol> anno : refs) {
         printer.print(delim);
         printer.print(repository.getSymbolNameFormatted(anno));
         delim = ", ";
       }
       printer.println(";");
     }
+  }
+  
+  /**
+   * @return the printEmptyOptional
+   */
+  public boolean isPrintEmptyOptional() {
+    return this.printEmptyOptional;
+  }
+
+  
+  /**
+   * @param printEmptyOptional the printEmptyOptional to set
+   */
+  public void setPrintEmptyOptional(boolean printEmptyOptional) {
+    this.printEmptyOptional = printEmptyOptional;
+  }
+
+  
+  /**
+   * @return the printEmptyList
+   */
+  public boolean isPrintEmptyList() {
+    return this.printEmptyList;
+  }
+
+  
+  /**
+   * @param printEmptyList the printEmptyList to set
+   */
+  public void setPrintEmptyList(boolean printEmptyList) {
+    this.printEmptyList = printEmptyList;
   }
   
 }

@@ -51,9 +51,13 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
       
   private ${genHelper.getCdName()}Visitor realThis = this;
   
-  private IndentPrinter pp;
+  protected IndentPrinter pp;
   
-  private ReportingRepository reporting;
+  protected ReportingRepository reporting;
+  
+  protected boolean printEmptyOptional = false;
+  
+  protected boolean printEmptyList = false;
     
   public ${genHelper.getCdName()}2OD(IndentPrinter printer, ReportingRepository reporting) {
     this.reporting = reporting;
@@ -69,17 +73,23 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
         String name = StringTransformations.uncapitalize(reporting.getASTNodeNameFormatted(node));
         printObject(name, "${astName}");
         pp.indent();
-        if (node.getSymbol().isPresent() && !node.getSymbol().get().getName().isEmpty()) {
+        if (node.getSymbol().isPresent()) {
           String symName = StringTransformations.uncapitalize(reporting.getSymbolNameFormatted(node.getSymbol().get()));
           pp.println("symbol = " + symName + ";");
+        } else if (printEmptyOptional) {
+          pp.println("symbol = Optional.emtpy;");
         }
         if (node.getEnclosingScope().isPresent()) {
           String scopeName = StringTransformations.uncapitalize(reporting.getScopeNameFormatted(node.getEnclosingScope().get()));
           pp.println("enclosingScope = " + scopeName + ";");
+        } else if (printEmptyOptional) {
+          pp.println("enclosingScope = Optional.emtpy;");
         }
         if (node.getSpannedScope().isPresent()) {
           String scopeName = StringTransformations.uncapitalize(reporting.getScopeNameFormatted(node.getSpannedScope().get()));
           pp.println("spanningScope = " + scopeName + ";");
+        } else if (printEmptyOptional) {
+          pp.println("spannedScope = Optional.emtpy;");
         }
         <#list type.getAllVisibleFields() as field>
  
@@ -91,6 +101,8 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
    			    pp.print(" = ");
                 node.${attrGetter}().get().accept(getRealThis());
                 pp.println(";");
+              } else if (printEmptyOptional) {
+                pp.println("${field.getName()} = Optional.emtpy;");
               }
             <#else>
               if (null != node.${attrGetter}()) {          
@@ -106,7 +118,7 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
             {
               Iterator<${astChildTypeName}> iter_${field.getName()} = node.${attrGetter}().iterator();
               boolean isEmpty = true;
-              if (iter_${field.getName()}.hasNext()) {
+              if (iter_${field.getName()}.hasNext() || printEmptyList) {
        			pp.print("${field.getName()}");
    			    pp.print(" = ");
    			    pp.println("// *size: " + node.${attrGetter}().size());
@@ -130,6 +142,8 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
           <#elseif genHelper.isOptional(field)>
             if (node.${genHelper.getPlainGetter(field)}().isPresent()) {
               printAttribute("${field.getName()}", "\"" + String.valueOf(node.${genHelper.getPlainGetter(field)}().get()) + "\"");
+            } else if (printEmptyOptional) {
+              pp.println("${field.getName()} = Optional.emtpy;");
             }
           <#elseif genHelper.isListType(field.getType())>
             {
@@ -141,7 +155,7 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
               </#if>
               Iterator<?> it = node.${genHelper.getPlainGetter(field)}().iterator();
               boolean isEmpty = true;
-              if (it.hasNext()) {
+              if (it.hasNext() || printEmptyList) {
                 pp.print("${field.getName()}" + " = [");
                 isEmpty = false;
               }
@@ -205,6 +219,37 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
   @Override
   public ${genHelper.getCdName()}Visitor getRealThis() {
     return realThis;
+  }
+  
+  /**
+   * @return the printEmptyOptional
+   */
+  public boolean isPrintEmptyOptional() {
+    return this.printEmptyOptional;
+  }
+
+  
+  /**
+   * @param printEmptyOptional the printEmptyOptional to set
+   */
+  public void setPrintEmptyOptional(boolean printEmptyOptional) {
+    this.printEmptyOptional = printEmptyOptional;
+  }
+
+  
+  /**
+   * @return the printEmptyList
+   */
+  public boolean isPrintEmptyList() {
+    return this.printEmptyList;
+  }
+
+  
+  /**
+   * @param printEmptyList the printEmptyList to set
+   */
+  public void setPrintEmptyList(boolean printEmptyList) {
+    this.printEmptyList = printEmptyList;
   }
   
 }
