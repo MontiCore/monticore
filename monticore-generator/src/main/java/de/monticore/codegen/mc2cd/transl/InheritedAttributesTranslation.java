@@ -39,7 +39,7 @@ import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTProd;
-import de.monticore.grammar.symboltable.MCAttributeSymbol;
+import de.monticore.grammar.symboltable.MCProdAttributeSymbol;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.symboltable.Symbol;
@@ -76,9 +76,9 @@ public class InheritedAttributesTranslation implements
   }
   
   private void handleInheritedAttributeInASTs(Link<ASTClassProd, ASTCDClass> link) {
-    for (Entry<ASTProd, List<MCAttributeSymbol>> entry : getInheritedAttributeInASTs(
+    for (Entry<ASTProd, List<MCProdAttributeSymbol>> entry : getInheritedAttributeInASTs(
         link.source()).entrySet()) {
-      for (MCAttributeSymbol attributeInAST : entry.getValue()) {
+      for (MCProdAttributeSymbol attributeInAST : entry.getValue()) {
         ASTCDAttribute cdAttribute = createCDAttribute(link.source(), entry.getKey());
         link.target().getCDAttributes().add(cdAttribute);
         if (attributeInAST.getAstNode().isPresent()) {
@@ -104,7 +104,7 @@ public class InheritedAttributesTranslation implements
     return cdAttribute;
   }
   
-  private Map<ASTProd, List<MCAttributeSymbol>> getInheritedAttributeInASTs(
+  private Map<ASTProd, List<MCProdAttributeSymbol>> getInheritedAttributeInASTs(
       ASTNode astNode) {
     return GeneratorHelper.getAllSuperProds(astNode).stream()
         .distinct()

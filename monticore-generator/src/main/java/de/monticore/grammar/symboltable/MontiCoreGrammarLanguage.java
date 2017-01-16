@@ -50,7 +50,7 @@ public class MontiCoreGrammarLanguage extends CommonModelingLanguage {
     addResolver(CommonResolvingFilter.create(MCGrammarSymbol.KIND));
     addResolver(CommonResolvingFilter.create(MCProdSymbol.KIND));
     addResolver(CommonResolvingFilter.create(MCProdComponentSymbol.KIND));
-    addResolver(CommonResolvingFilter.create(MCAttributeSymbol.KIND));
+    addResolver(CommonResolvingFilter.create(MCProdAttributeSymbol.KIND));
   }
   
   @Override

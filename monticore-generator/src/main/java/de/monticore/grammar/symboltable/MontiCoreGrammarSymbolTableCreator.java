@@ -163,11 +163,11 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
    */
   private void setComponentsCardinality() {
     for (MCProdSymbol prodSymbol : grammarSymbol.getProdsWithInherited().values()) {
-      List<MCAttributeSymbol> astAttributes = prodSymbol.getAstAttributes();
+      List<MCProdAttributeSymbol> astAttributes = prodSymbol.getAstAttributes();
       for (MCProdComponentSymbol component : prodSymbol.getProdComponents()) {
         if (component.isNonterminal()) {
           setComponentMultiplicity(component, component.getAstNode().get());
-          Optional<MCAttributeSymbol> attribute = astAttributes.stream()
+          Optional<MCProdAttributeSymbol> attribute = astAttributes.stream()
               .filter(a -> a.getName().equals(component.getName())).findAny();
           if (attribute.isPresent()) {
             Multiplicity multiplicity = Multiplicity
@@ -603,12 +603,10 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
     String attributeName = astAttribute.getName()
         .orElse(StringTransformations.uncapitalize(astAttribute.getGenericType().getTypeName()));
     
-    MCAttributeSymbol astAttributeSymbol = new MCAttributeSymbol(attributeName);
-    
+    MCProdAttributeSymbol astAttributeSymbol = new MCProdAttributeSymbol(attributeName);
     MCProdOrTypeReference attributeType = new MCProdOrTypeReference(
         astAttribute.getGenericType().getTypeName(), mcProdSymbol.getSpannedScope());
     astAttributeSymbol.setReferencedProd(attributeType);
-    
     mcProdSymbol.addAstAttribute(astAttributeSymbol);
     //
     // Optional<MCProdComponentSymbol> mcComponent =
@@ -616,21 +614,6 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
     // astAttributeSymbol.setReferencedComponent(mcComponent);
     
     setLinkBetweenSymbolAndNode(astAttributeSymbol, astAttribute);
-    
-    // Cardinality of the attribute
-    astAttributeSymbol.setUnordered(astAttribute.isUnordered());
-    if (astAttribute.getCard().isPresent() && astAttribute.getCard().get().getMin().isPresent()) {
-      astAttributeSymbol.setMin(astAttribute.getCard().get().getMin().get());
-      astAttributeSymbol.setMinCheckedDuringParsing(true);
-    }
-    if (astAttribute.getCard().isPresent() && astAttribute.getCard().get().getMax().isPresent()) {
-      astAttributeSymbol.setMax(astAttribute.getCard().get().getMax().get());
-      astAttributeSymbol.setIterated(astAttributeSymbol.getMax() > 1);
-      astAttributeSymbol.setMaxCheckedDuringParsing(true);
-    }
-    if (astAttribute.getCard().isPresent() && astAttribute.getCard().get().isUnbounded()) {
-      astAttributeSymbol.setIterated(true);
-    }
     
   }
   

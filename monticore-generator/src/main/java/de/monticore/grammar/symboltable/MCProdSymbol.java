@@ -82,7 +82,7 @@ public class MCProdSymbol extends CommonScopeSpanningSymbol {
   /**
    * ast A = b:B c:external.java.Type;
    */
-  private List<MCAttributeSymbol> astAttributes = new ArrayList<>();
+  private List<MCProdAttributeSymbol> astAttributes = new ArrayList<>();
   
   public MCProdSymbol(String name) {
     super(name, KIND);
@@ -175,11 +175,11 @@ public class MCProdSymbol extends CommonScopeSpanningSymbol {
     return ImmutableList.copyOf(astSuperInterfaces);
   }
   
-  public void addAstAttribute(MCAttributeSymbol ref) {
+  public void addAstAttribute(MCProdAttributeSymbol ref) {
     astAttributes.add(Log.errorIfNull(ref));
   }
   
-  public List<MCAttributeSymbol> getAstAttributes() {
+  public List<MCProdAttributeSymbol> getAstAttributes() {
     return ImmutableList.copyOf(astAttributes);
   }
   
