@@ -21,7 +21,7 @@ package de.monticore;
 
 import java.nio.file.Paths;
 
-import de.monticore.grammar.symboltable.EssentialMontiCoreGrammarLanguage;
+import de.monticore.grammar.symboltable.MontiCoreGrammarLanguage;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.ResolverConfiguration;
@@ -29,11 +29,11 @@ import de.monticore.symboltable.ResolverConfiguration;
 public class GrammarGlobalScopeTestFactory {
 
   public static GlobalScope create() {
-    return create(new EssentialMontiCoreGrammarLanguage());
+    return create(new MontiCoreGrammarLanguage());
   }
 
   public static GlobalScope createUsingEssentialMCLanguage() {
-    return create(new EssentialMontiCoreGrammarLanguage());
+    return create(new MontiCoreGrammarLanguage());
   }
 
 

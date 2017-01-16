@@ -25,7 +25,7 @@ import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -42,7 +42,7 @@ public class ReferencedNTNotDefined implements GrammarASTMCGrammarCoCo {
   
   @Override
   public void check(ASTMCGrammar a) {
-    EssentialMCGrammarSymbol grammarSymbol = (EssentialMCGrammarSymbol) a.getSymbol().get();
+    MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol().get();
     for (ASTClassProd p : a.getClassProds()) {
       if (!p.getSuperRule().isEmpty() && p.getSymbol().isPresent()) {
         for (ASTRuleReference sr : p.getSuperRule()) {

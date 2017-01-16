@@ -17,7 +17,7 @@ import de.se_rwth.commons.logging.Log;
  * @author (last commit) $Author$
  * @version $Revision$, $Date$
  */
-public class EssentialMCAttributeSymbol extends CommonSymbol {
+public class MCAttributeSymbol extends CommonSymbol {
   
   public static final MCProdAttributeKind KIND = new MCProdAttributeKind();
   
@@ -41,7 +41,7 @@ public class EssentialMCAttributeSymbol extends CommonSymbol {
   
   private MCProdOrTypeReference referencedProd;
 
-  public EssentialMCAttributeSymbol(String name) {
+  public MCAttributeSymbol(String name) {
     super(name, KIND);
   }
   

@@ -36,21 +36,21 @@ import java.util.Optional;
 /**
  * @author  Pedram Mir Seyed Nazari
  */
-public class EssentialMontiCoreGrammarLanguage extends CommonModelingLanguage {
+public class MontiCoreGrammarLanguage extends CommonModelingLanguage {
 
   public static final String FILE_ENDING = "mc4";
 
   private final Grammar_WithConceptsPrettyPrinter prettyPrinter;
 
-  public EssentialMontiCoreGrammarLanguage() {
+  public MontiCoreGrammarLanguage() {
     super("Essential Grammar Language", FILE_ENDING);
     
     prettyPrinter = new Grammar_WithConceptsPrettyPrinter(new IndentPrinter());
 
-    addResolver(CommonResolvingFilter.create(EssentialMCGrammarSymbol.KIND));
+    addResolver(CommonResolvingFilter.create(MCGrammarSymbol.KIND));
     addResolver(CommonResolvingFilter.create(MCProdSymbol.KIND));
     addResolver(CommonResolvingFilter.create(MCProdComponentSymbol.KIND));
-    addResolver(CommonResolvingFilter.create(EssentialMCAttributeSymbol.KIND));
+    addResolver(CommonResolvingFilter.create(MCAttributeSymbol.KIND));
   }
   
   @Override
@@ -59,14 +59,14 @@ public class EssentialMontiCoreGrammarLanguage extends CommonModelingLanguage {
   }
   
   @Override
-  public Optional<EssentialMontiCoreGrammarSymbolTableCreator> getSymbolTableCreator(
+  public Optional<MontiCoreGrammarSymbolTableCreator> getSymbolTableCreator(
       ResolverConfiguration resolverConfiguration, @Nullable MutableScope enclosingScope) {
-    return Optional.of(new EssentialMontiCoreGrammarSymbolTableCreator(
+    return Optional.of(new MontiCoreGrammarSymbolTableCreator(
         resolverConfiguration, enclosingScope, prettyPrinter));
   }
 
   @Override
   protected ModelingLanguageModelLoader<? extends ASTNode> provideModelLoader() {
-    return new EssentialMontiCoreGrammarModelLoader(this);
+    return new MontiCoreGrammarModelLoader(this);
   }
 }

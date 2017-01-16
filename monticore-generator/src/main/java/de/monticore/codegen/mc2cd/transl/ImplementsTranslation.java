@@ -30,7 +30,7 @@ import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTGenericType;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
@@ -66,7 +66,7 @@ public class ImplementsTranslation implements
   
   private void translateClassProd(ASTClassProd classProd,
       ASTCDClass cdClass, ASTMCGrammar astGrammar) {
-    EssentialMCGrammarSymbol grammarSymbol = (EssentialMCGrammarSymbol) astGrammar.getSymbol().get();
+    MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) astGrammar.getSymbol().get();
     // translates "implements"
     for (ASTRuleReference ruleReference : classProd.getSuperInterfaceRule()) {
       Optional<MCProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(ruleReference.getName());
@@ -94,7 +94,7 @@ public class ImplementsTranslation implements
     // translates "implements"
     for (ASTRuleReference ruleReference : abstractProd
         .getSuperInterfaceRule()) {
-      EssentialMCGrammarSymbol grammarSymbol = (EssentialMCGrammarSymbol) astGrammar.getSymbol().get();
+      MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) astGrammar.getSymbol().get();
       Optional<MCProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(ruleReference.getName());
       Preconditions.checkState(ruleSymbol.isPresent());
       cdClass.getInterfaces().add(

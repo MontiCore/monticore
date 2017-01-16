@@ -71,18 +71,18 @@ import de.se_rwth.commons.logging.Log;
 /**
  * @author Pedram Mir Seyed Nazari
  */
-public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
+public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
     implements Grammar_WithConceptsVisitor {
   
   private final Grammar_WithConceptsPrettyPrinter prettyPrinter;
   
   private String packageName = "";
   
-  private EssentialMCGrammarSymbol grammarSymbol;
+  private MCGrammarSymbol grammarSymbol;
   
   private ASTMCGrammar astGrammar;
   
-  public EssentialMontiCoreGrammarSymbolTableCreator(
+  public MontiCoreGrammarSymbolTableCreator(
       ResolverConfiguration resolverConfig,
       MutableScope enclosingScope,
       Grammar_WithConceptsPrettyPrinter prettyPrinter) {
@@ -107,7 +107,7 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
   @Override
   public void visit(ASTMCGrammar astGrammar) {
     Log.debug("Building Symboltable for Grammar: " + astGrammar.getName(),
-        EssentialMontiCoreGrammarSymbolTableCreator.class.getSimpleName());
+        MontiCoreGrammarSymbolTableCreator.class.getSimpleName());
     
     packageName = getQualifiedName(astGrammar.getPackage());
     this.astGrammar = astGrammar;
@@ -123,7 +123,7 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
     final ArtifactScope scope = new ArtifactScope(Optional.empty(), packageName, imports);
     putOnStack(scope);
     
-    grammarSymbol = new EssentialMCGrammarSymbol(astGrammar.getName());
+    grammarSymbol = new MCGrammarSymbol(astGrammar.getName());
     grammarSymbol.setComponent(astGrammar.isComponent());
     
     addToScopeAndLinkWithNode(grammarSymbol, astGrammar);
@@ -131,11 +131,11 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
     addSuperGrammars(astGrammar, grammarSymbol);
   }
   
-  private void addSuperGrammars(ASTMCGrammar astGrammar, EssentialMCGrammarSymbol grammarSymbol) {
+  private void addSuperGrammars(ASTMCGrammar astGrammar, MCGrammarSymbol grammarSymbol) {
     for (ASTGrammarReference ref : astGrammar.getSupergrammar()) {
       final String superGrammarName = getQualifiedName(ref.getNames());
       
-      final EssentialMCGrammarSymbolReference superGrammar = new EssentialMCGrammarSymbolReference(
+      final MCGrammarSymbolReference superGrammar = new MCGrammarSymbolReference(
           superGrammarName, currentScope().orElse(null));
       
       grammarSymbol.addSuperGrammar(superGrammar);
@@ -163,11 +163,11 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
    */
   private void setComponentsCardinality() {
     for (MCProdSymbol prodSymbol : grammarSymbol.getProdsWithInherited().values()) {
-      List<EssentialMCAttributeSymbol> astAttributes = prodSymbol.getAstAttributes();
+      List<MCAttributeSymbol> astAttributes = prodSymbol.getAstAttributes();
       for (MCProdComponentSymbol component : prodSymbol.getProdComponents()) {
         if (component.isNonterminal()) {
           setComponentMultiplicity(component, component.getAstNode().get());
-          Optional<EssentialMCAttributeSymbol> attribute = astAttributes.stream()
+          Optional<MCAttributeSymbol> attribute = astAttributes.stream()
               .filter(a -> a.getName().equals(component.getName())).findAny();
           if (attribute.isPresent()) {
             Multiplicity multiplicity = Multiplicity
@@ -603,7 +603,7 @@ public class EssentialMontiCoreGrammarSymbolTableCreator extends CommonSymbolTab
     String attributeName = astAttribute.getName()
         .orElse(StringTransformations.uncapitalize(astAttribute.getGenericType().getTypeName()));
     
-    EssentialMCAttributeSymbol astAttributeSymbol = new EssentialMCAttributeSymbol(attributeName);
+    MCAttributeSymbol astAttributeSymbol = new MCAttributeSymbol(attributeName);
     
     MCProdOrTypeReference attributeType = new MCProdOrTypeReference(
         astAttribute.getGenericType().getTypeName(), mcProdSymbol.getSpannedScope());

@@ -19,7 +19,7 @@
 
 package de.monticore;
 
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
 import de.se_rwth.commons.logging.Log;
@@ -46,13 +46,13 @@ public class MCGrammarLanguageFamilySymbolTableTest {
     final ModelingLanguageFamily family = new MontiCoreGrammarLanguageFamily();
     final GlobalScope globalScope = new GlobalScope(new ModelPath(Paths.get("src/test/resources")), family);
 
-    final Optional<EssentialMCGrammarSymbol> oldGrammar =
-        globalScope.resolve("de.monticore.statechart.Statechart", EssentialMCGrammarSymbol.KIND);
+    final Optional<MCGrammarSymbol> oldGrammar =
+        globalScope.resolve("de.monticore.statechart.Statechart", MCGrammarSymbol.KIND);
     assertTrue(oldGrammar.isPresent());
 
 
-    final Optional<EssentialMCGrammarSymbol> newGrammar =
-        globalScope.resolve("de.monticore.statechart.Statechart", EssentialMCGrammarSymbol.KIND);
+    final Optional<MCGrammarSymbol> newGrammar =
+        globalScope.resolve("de.monticore.statechart.Statechart", MCGrammarSymbol.KIND);
     assertTrue(newGrammar.isPresent());
 
     // 4 = 2x Statechart grammar symbol and 2x TestLexicals grammar symbol (super grammar of Statechart)

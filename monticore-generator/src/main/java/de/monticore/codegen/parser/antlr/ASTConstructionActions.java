@@ -32,7 +32,7 @@ import de.monticore.grammar.grammar._ast.ASTConstant;
 import de.monticore.grammar.grammar._ast.ASTConstantGroup;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTTerminal;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.utils.ASTNodes;
 import de.se_rwth.commons.Names;
@@ -44,7 +44,7 @@ public class ASTConstructionActions {
   
   protected ParserGeneratorHelper parserGenHelper;
   
-  protected EssentialMCGrammarSymbol symbolTable;
+  protected MCGrammarSymbol symbolTable;
   
   public ASTConstructionActions(ParserGeneratorHelper parserGenHelper) {
     this.parserGenHelper = parserGenHelper;
@@ -59,7 +59,7 @@ public class ASTConstructionActions {
       String constantname;
       Optional<MCProdSymbol> rule = EssentialMCGrammarSymbolTableHelper
           .getEnclosingRule(constgroup);
-      Optional<EssentialMCGrammarSymbol> ruleGrammar = EssentialMCGrammarSymbolTableHelper
+      Optional<MCGrammarSymbol> ruleGrammar = EssentialMCGrammarSymbolTableHelper
           .getMCGrammarSymbol(constgroup);
       if (ruleGrammar.isPresent()) {
         constfile = AstGeneratorHelper.getConstantClassName(ruleGrammar.get());
@@ -92,7 +92,7 @@ public class ASTConstructionActions {
     String constfile;
     String constantname;
     Optional<MCProdSymbol> rule = EssentialMCGrammarSymbolTableHelper.getEnclosingRule(c);
-    Optional<EssentialMCGrammarSymbol> ruleGrammar = EssentialMCGrammarSymbolTableHelper
+    Optional<MCGrammarSymbol> ruleGrammar = EssentialMCGrammarSymbolTableHelper
         .getMCGrammarSymbol(c);
     if (ruleGrammar.isPresent()) {
       constfile = AstGeneratorHelper.getConstantClassName(ruleGrammar.get());
@@ -136,7 +136,7 @@ public class ASTConstructionActions {
     StringBuilder b = new StringBuilder();
     String type = EssentialMCGrammarSymbolTableHelper
         .getQualifiedName(symbolTable.getProdWithInherited(HelperGrammar.getRuleName(a)).get());
-    Optional<EssentialMCGrammarSymbol> grammar = EssentialMCGrammarSymbolTableHelper
+    Optional<MCGrammarSymbol> grammar = EssentialMCGrammarSymbolTableHelper
         .getMCGrammarSymbol(a);
     String name = grammar.isPresent()
         ? grammar.get().getName()

@@ -46,7 +46,7 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTRuleComponent;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
 import de.monticore.grammar.grammar._ast.ASTTerminal;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.utils.ASTNodes;
 import de.se_rwth.commons.logging.Log;
@@ -55,7 +55,7 @@ import de.se_rwth.commons.logging.Log;
  * Contains information about a grammar which is required for the parser
  * generation
  */
-public class EssentialMCGrammarInfo {
+public class MCGrammarInfo {
   
   /**
    * Keywords of the processed grammar and its super grammars
@@ -65,7 +65,7 @@ public class EssentialMCGrammarInfo {
   /**
    * Lexer patterns
    */
-  private Map<EssentialMCGrammarSymbol, List<Pattern>> lexerPatterns = new HashMap<>();
+  private Map<MCGrammarSymbol, List<Pattern>> lexerPatterns = new HashMap<>();
   
   /**
    * Additional java code for parser defined in antlr concepts of the processed
@@ -92,14 +92,14 @@ public class EssentialMCGrammarInfo {
   /**
    * The symbol of the processed grammar
    */
-  private EssentialMCGrammarSymbol grammarSymbol;
+  private MCGrammarSymbol grammarSymbol;
   
   /**
    * The AST of the processed grammar
    */
   private ASTMCGrammar astGrammar;
   
-  public EssentialMCGrammarInfo(EssentialMCGrammarSymbol grammarSymbol) {
+  public MCGrammarInfo(MCGrammarSymbol grammarSymbol) {
     this.grammarSymbol = grammarSymbol;
     if (!grammarSymbol.getAstNode().isPresent()
         || !(grammarSymbol.getAstNode().get() instanceof ASTMCGrammar)) {
@@ -123,10 +123,10 @@ public class EssentialMCGrammarInfo {
    * @param classProds Rule
    */
   private void addSubRules() {
-    Set<EssentialMCGrammarSymbol> grammarsToHandle = Sets
+    Set<MCGrammarSymbol> grammarsToHandle = Sets
         .newLinkedHashSet(Arrays.asList(grammarSymbol));
     grammarsToHandle.addAll(EssentialMCGrammarSymbolTableHelper.getAllSuperGrammars(grammarSymbol));
-    for (EssentialMCGrammarSymbol grammar : grammarsToHandle) {
+    for (MCGrammarSymbol grammar : grammarsToHandle) {
       for (ASTClassProd classProd : ((ASTMCGrammar) grammar.getAstNode().get())
           .getClassProds()) {
         for (ASTRuleReference superRule : classProd.getSuperRule()) {
@@ -164,10 +164,10 @@ public class EssentialMCGrammarInfo {
    * @param interfaceProdList Rule
    */
   private void addSubRulesToInterface() {
-    Set<EssentialMCGrammarSymbol> grammarsToHandle = Sets
+    Set<MCGrammarSymbol> grammarsToHandle = Sets
         .newLinkedHashSet(Arrays.asList(grammarSymbol));
     grammarsToHandle.addAll(EssentialMCGrammarSymbolTableHelper.getAllSuperGrammars(grammarSymbol));
-    for (EssentialMCGrammarSymbol grammar : grammarsToHandle) {
+    for (MCGrammarSymbol grammar : grammarsToHandle) {
       for (ASTInterfaceProd interfaceProd : ((ASTMCGrammar) grammar.getAstNode().get())
           .getInterfaceProds()) {
         for (ASTRuleReference superRule : interfaceProd.getSuperInterfaceRule()) {
@@ -199,14 +199,14 @@ public class EssentialMCGrammarInfo {
   /**
    * @return grammarSymbol
    */
-  public EssentialMCGrammarSymbol getGrammarSymbol() {
+  public MCGrammarSymbol getGrammarSymbol() {
     return this.grammarSymbol;
   }
   
   /**
    * @param grammarSymbol the grammarSymbol to set
    */
-  public void setGrammarSymbol(EssentialMCGrammarSymbol grammarSymbol) {
+  public void setGrammarSymbol(MCGrammarSymbol grammarSymbol) {
     this.grammarSymbol = grammarSymbol;
   }
   
@@ -226,10 +226,10 @@ public class EssentialMCGrammarInfo {
   
   private void addHWAntlrCode() {
     // Get Antlr hwc
-    Set<EssentialMCGrammarSymbol> grammarsToHandle = Sets
+    Set<MCGrammarSymbol> grammarsToHandle = Sets
         .newLinkedHashSet(Arrays.asList(grammarSymbol));
     grammarsToHandle.addAll(EssentialMCGrammarSymbolTableHelper.getAllSuperGrammars(grammarSymbol));
-    for (EssentialMCGrammarSymbol grammar : grammarsToHandle) {
+    for (MCGrammarSymbol grammar : grammarsToHandle) {
       if (grammar.getAstNode().isPresent()) {
         // Add additional java code for lexer and parser
         ASTNodes.getSuccessors(grammar.getAstNode().get(), ASTAntlrParserAction.class).forEach(
@@ -268,7 +268,7 @@ public class EssentialMCGrammarInfo {
    * @return true, if the terminal or constant <code>name</code> is a and has to
    * be defined in the parser.
    */
-  public boolean isKeyword(String name, EssentialMCGrammarSymbol grammar) {
+  public boolean isKeyword(String name, MCGrammarSymbol grammar) {
     boolean matches = false;
     boolean found = false;
     
@@ -285,7 +285,7 @@ public class EssentialMCGrammarInfo {
         if (p.matcher(name).matches()) {
           matches = true;
           Log.debug(name + " is considered as a keyword because it matches " + p + " "
-              + "(grammarsymtab)", EssentialMCGrammarSymbol.class.getSimpleName());
+              + "(grammarsymtab)", MCGrammarSymbol.class.getSimpleName());
           break;
         }
         
@@ -308,7 +308,7 @@ public class EssentialMCGrammarInfo {
     }
     
     // TODO GV
-    for (EssentialMCGrammarSymbol superGrammar : grammarSymbol.getSuperGrammarSymbols()) {
+    for (MCGrammarSymbol superGrammar : grammarSymbol.getSuperGrammarSymbols()) {
       
 //       List<PredicatePair> subRulesForParsing =
 //       superGrammar.getSubRulesForParsing(ruleName);
@@ -341,7 +341,7 @@ public class EssentialMCGrammarInfo {
       if (ruleSymbol.isParserProd()) {
         Optional<ASTNode> astProd = ruleSymbol.getAstNode();
         if (astProd.isPresent() && astProd.get() instanceof ASTClassProd) {
-          Optional<EssentialMCGrammarSymbol> refGrammarSymbol = EssentialMCGrammarSymbolTableHelper
+          Optional<MCGrammarSymbol> refGrammarSymbol = EssentialMCGrammarSymbolTableHelper
               .getMCGrammarSymbol(astProd.get());
           boolean isRefGrammarSymbol = refGrammarSymbol.isPresent();
           for (ASTTerminal keyword : ASTNodes.getSuccessors(astProd.get(), ASTTerminal.class)) {
@@ -367,7 +367,7 @@ public class EssentialMCGrammarInfo {
     grammarSymbol.getSuperGrammarSymbols().forEach(g -> buildLexPatterns(g));
   }
   
-  private void buildLexPatterns(EssentialMCGrammarSymbol grammar) {
+  private void buildLexPatterns(MCGrammarSymbol grammar) {
     List<Pattern> patterns = lexerPatterns.get(grammar);
     if (patterns == null) {
       patterns = new ArrayList<>();
@@ -389,7 +389,7 @@ public class EssentialMCGrammarInfo {
     }
   }
   
-  private boolean mustBeKeyword(String rule, EssentialMCGrammarSymbol grammar) {
+  private boolean mustBeKeyword(String rule, MCGrammarSymbol grammar) {
     return keywords.contains(rule);
   }
   

@@ -29,7 +29,7 @@ import org.junit.Test;
 
 import de.monticore.GrammarGlobalScopeTestFactory;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
@@ -61,8 +61,8 @@ public class NoNTInheritanceCycleTest extends CocoTest{
     final Scope globalScope = GrammarGlobalScopeTestFactory.create();
 
     // test grammar symbol
-    final EssentialMCGrammarSymbol grammarSymbol = (EssentialMCGrammarSymbol) globalScope.resolve(grammar+ "b",
-        EssentialMCGrammarSymbol.KIND).orElse(null);
+    final MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) globalScope.resolve(grammar+ "b",
+        MCGrammarSymbol.KIND).orElse(null);
     assertNotNull(grammarSymbol);
     assertTrue(grammarSymbol.getAstGrammar().isPresent());
 

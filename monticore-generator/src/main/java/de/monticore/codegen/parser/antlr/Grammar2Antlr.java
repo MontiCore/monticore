@@ -35,7 +35,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.DirectLeftRecursionDetector;
-import de.monticore.grammar.EssentialMCGrammarInfo;
+import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.PredicatePair;
 import de.monticore.grammar.grammar._ast.ASTAlt;
@@ -66,7 +66,7 @@ import de.monticore.grammar.grammar._ast.ASTTerminal;
 import de.monticore.grammar.grammar._ast.GrammarNodeFactory;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdComponentSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.symboltable.Symbol;
@@ -80,7 +80,7 @@ import de.se_rwth.commons.logging.Log;
  */
 public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
   
-  private EssentialMCGrammarSymbol grammarEntry;
+  private MCGrammarSymbol grammarEntry;
   
   /**
    * This list is used for the detection of the left recursion
@@ -101,13 +101,13 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
   
   private StringBuilder action;
   
-  private EssentialMCGrammarInfo grammarInfo;
+  private MCGrammarInfo grammarInfo;
   
   private ParserGeneratorHelper parserHelper;
   
   public Grammar2Antlr(
       ParserGeneratorHelper parserGeneratorHelper,
-      EssentialMCGrammarInfo grammarInfo) {
+      MCGrammarInfo grammarInfo) {
     Preconditions.checkArgument(parserGeneratorHelper.getGrammarSymbol() != null);
     this.grammarEntry = parserGeneratorHelper.getGrammarSymbol();
     this.grammarInfo = grammarInfo;

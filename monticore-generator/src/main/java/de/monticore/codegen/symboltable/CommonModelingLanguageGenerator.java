@@ -28,7 +28,7 @@ import java.nio.file.Paths;
 import java.util.Collection;
 
 import de.monticore.generating.GeneratorEngine;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.se_rwth.commons.Names;
 
@@ -39,7 +39,7 @@ public class CommonModelingLanguageGenerator implements ModelingLanguageGenerato
 
   @Override
   public void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
-      IterablePath handCodedPath, EssentialMCGrammarSymbol grammarSymbol, Collection<String> grammarRuleNames) {
+      IterablePath handCodedPath, MCGrammarSymbol grammarSymbol, Collection<String> grammarRuleNames) {
     final String className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName() + "Language"),
         genHelper.getTargetPackage(), handCodedPath);
 

@@ -32,9 +32,9 @@ import de.monticore.codegen.parser.antlr.Grammar2Antlr;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.grammar.EssentialMCGrammarInfo;
+import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Names;
@@ -74,13 +74,13 @@ public class ParserGenerator {
         ? astGrammar.getName()
         : Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackage()),
             astGrammar.getName());
-    EssentialMCGrammarSymbol grammarSymbol = symbolTable.<EssentialMCGrammarSymbol> resolve(
-        qualifiedGrammarName, EssentialMCGrammarSymbol.KIND).orElse(null);
+    MCGrammarSymbol grammarSymbol = symbolTable.<MCGrammarSymbol> resolve(
+        qualifiedGrammarName, MCGrammarSymbol.KIND).orElse(null);
     Log.errorIfNull(grammarSymbol, "0xA4034 Grammar " + qualifiedGrammarName
         + " can't be resolved in the scope " + symbolTable);
     
     // TODO: grammarInfo as parameter for this method?
-    EssentialMCGrammarInfo grammarInfo = new EssentialMCGrammarInfo(grammarSymbol);
+    MCGrammarInfo grammarInfo = new MCGrammarInfo(grammarSymbol);
     
     ParserGeneratorHelper genHelper = new ParserGeneratorHelper(astGrammar, grammarInfo);
     glex.setGlobalValue("parserHelper", genHelper);
@@ -122,8 +122,8 @@ public class ParserGenerator {
         ? astGrammar.getName()
         : Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackage()),
             astGrammar.getName());
-    EssentialMCGrammarSymbol grammarSymbol = symbolTable.<EssentialMCGrammarSymbol> resolve(
-        qualifiedGrammarName, EssentialMCGrammarSymbol.KIND).orElse(null);
+    MCGrammarSymbol grammarSymbol = symbolTable.<MCGrammarSymbol> resolve(
+        qualifiedGrammarName, MCGrammarSymbol.KIND).orElse(null);
     Log.errorIfNull(grammarSymbol, "0xA4035 Grammar " + qualifiedGrammarName
         + " can't be resolved in the scope " + symbolTable);
     // ParserGeneratorHelper genHelper = new ParserGeneratorHelper(astGrammar,

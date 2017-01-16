@@ -24,7 +24,7 @@ import java.util.Optional;
 import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._cocos.GrammarASTNonTerminalCoCo;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdComponentSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.symboltable.ScopeSpanningSymbol;
@@ -44,7 +44,7 @@ public class UsedNTNotDefined implements GrammarASTNonTerminalCoCo {
   
   @Override
   public void check(ASTNonTerminal a) {
-    Optional<EssentialMCGrammarSymbol> grammarSymbol = EssentialMCGrammarSymbolTableHelper
+    Optional<MCGrammarSymbol> grammarSymbol = EssentialMCGrammarSymbolTableHelper
         .getMCGrammarSymbol(a);
     Optional<MCProdSymbol> ruleSymbol = EssentialMCGrammarSymbolTableHelper.getEnclosingRule(a);
     String ruleName = ruleSymbol.isPresent()? ruleSymbol.get().getName() : "";

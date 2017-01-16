@@ -26,7 +26,7 @@ import java.util.Optional;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
@@ -50,7 +50,7 @@ public class OverridingEnumNTs implements GrammarASTMCGrammarCoCo {
     prods.addAll(a.getEnumProds());
     prods.addAll(a.getAbstractProds());
     
-    EssentialMCGrammarSymbol grammarSymbol = (EssentialMCGrammarSymbol) a.getSymbol().get();
+    MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol().get();
     
     for (ASTProd p : prods) {
       Optional<MCProdSymbol> typeSymbol = grammarSymbol.getInheritedProd(p.getName());

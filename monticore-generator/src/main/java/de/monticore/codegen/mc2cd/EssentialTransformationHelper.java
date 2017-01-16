@@ -53,7 +53,7 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTNonTerminalSeparator;
 import de.monticore.grammar.grammar._ast.ASTTerminal;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdComponentSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
@@ -239,7 +239,7 @@ public final class EssentialTransformationHelper {
     return TypesNodeFactory.createASTVoidType();
   }
   
-  public static String grammarName2PackageName(EssentialMCGrammarSymbol grammar) {
+  public static String grammarName2PackageName(MCGrammarSymbol grammar) {
     return grammar.getFullName() + ".";
   }
   
@@ -278,7 +278,7 @@ public final class EssentialTransformationHelper {
   // TODO GV
   public static List<String> getAllGrammarConstants(ASTMCGrammar grammar) {
     List<String> constants = new ArrayList<>();
-    EssentialMCGrammarSymbol grammarSymbol = EssentialMCGrammarSymbolTableHelper
+    MCGrammarSymbol grammarSymbol = EssentialMCGrammarSymbolTableHelper
         .getMCGrammarSymbol(grammar).get();
     Preconditions.checkState(grammarSymbol != null);
     for (MCProdComponentSymbol component : grammarSymbol.getProds().stream()

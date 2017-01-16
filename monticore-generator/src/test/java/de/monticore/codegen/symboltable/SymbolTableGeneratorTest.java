@@ -35,7 +35,7 @@ import de.monticore.MontiCoreScript;
 import de.monticore.codegen.AstDependentGeneratorTest;
 import de.monticore.codegen.parser.ParserGeneratorTest;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.symboltable.EssentialMontiCoreGrammarLanguage;
+import de.monticore.grammar.symboltable.MontiCoreGrammarLanguage;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.ResolverConfiguration;
@@ -109,7 +109,7 @@ public class SymbolTableGeneratorTest extends AstDependentGeneratorTest {
 
     final File outputPath = new File(OUTPUT_FOLDER);
 
-    final ModelingLanguage grammarLanguage = new EssentialMontiCoreGrammarLanguage();
+    final ModelingLanguage grammarLanguage = new MontiCoreGrammarLanguage();
 
     final ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
     resolverConfiguration.addDefaultFilters(grammarLanguage.getResolvers());

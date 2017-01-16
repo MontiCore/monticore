@@ -29,7 +29,7 @@ import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
 import de.monticore.grammar.grammar._ast.ASTLexProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
@@ -47,10 +47,10 @@ public class OverridingNTs implements GrammarASTMCGrammarCoCo {
   
   @Override
   public void check(ASTMCGrammar a) {
-    EssentialMCGrammarSymbol grammarSymbol = (EssentialMCGrammarSymbol) a.getSymbol().get();
-    List<EssentialMCGrammarSymbol> grammarSymbols =  grammarSymbol.getSuperGrammarSymbols();
+    MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol().get();
+    List<MCGrammarSymbol> grammarSymbols =  grammarSymbol.getSuperGrammarSymbols();
 
-    for(EssentialMCGrammarSymbol s: grammarSymbols) {
+    for(MCGrammarSymbol s: grammarSymbols) {
       for (ASTEnumProd p : a.getEnumProds()) {
           doCheck(s.getProd(p.getName()), "enum");
       }

@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue;
 
 import de.monticore.GrammarGlobalScopeTestFactory;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
@@ -42,9 +42,9 @@ public abstract class CocoTest {
     final Scope globalScope = GrammarGlobalScopeTestFactory.create();
     
     // test grammar symbol
-    final EssentialMCGrammarSymbol grammarSymbol = (EssentialMCGrammarSymbol) globalScope
+    final MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) globalScope
         .resolve(grammar,
-            EssentialMCGrammarSymbol.KIND)
+            MCGrammarSymbol.KIND)
         .orElse(null);
     assertNotNull(grammarSymbol);
     assertTrue(grammarSymbol.getAstGrammar().isPresent());
@@ -65,9 +65,9 @@ public abstract class CocoTest {
     final Scope globalScope = GrammarGlobalScopeTestFactory.create();
     
     // test grammar symbol
-    final EssentialMCGrammarSymbol grammarSymbol = (EssentialMCGrammarSymbol) globalScope
+    final MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) globalScope
         .resolve(grammar,
-            EssentialMCGrammarSymbol.KIND)
+            MCGrammarSymbol.KIND)
         .orElse(null);
     assertNotNull(grammarSymbol);
     assertTrue(grammarSymbol.getAstGrammar().isPresent());
@@ -87,9 +87,9 @@ public abstract class CocoTest {
     final Scope globalScope = GrammarGlobalScopeTestFactory.create();
     
     // test grammar symbol
-    final EssentialMCGrammarSymbol grammarSymbol = (EssentialMCGrammarSymbol) globalScope
+    final MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) globalScope
         .resolve(grammar,
-            EssentialMCGrammarSymbol.KIND)
+            MCGrammarSymbol.KIND)
         .orElse(null);
     assertNotNull(grammarSymbol);
     assertTrue(grammarSymbol.getAstGrammar().isPresent());

@@ -53,9 +53,9 @@ import de.monticore.grammar.grammar._ast.ASTLexActionOrPredicate;
 import de.monticore.grammar.grammar._ast.ASTLexProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
-import de.monticore.grammar.symboltable.EssentialMontiCoreGrammarLanguage;
-import de.monticore.grammar.symboltable.EssentialMontiCoreGrammarSymbolTableCreator;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MontiCoreGrammarLanguage;
+import de.monticore.grammar.symboltable.MontiCoreGrammarSymbolTableCreator;
 import de.monticore.grammar.symboltable.MCProdComponentSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbolReference;
@@ -76,7 +76,7 @@ public class EssentialMCGrammarSymbolTableHelper {
   private static Optional<? extends ScopeSpanningSymbol> c;
   
   public static void initializeSymbolTable(ASTMCGrammar rootNode, ModelPath modelPath) {
-    ModelingLanguage grammarLanguage = new EssentialMontiCoreGrammarLanguage();
+    ModelingLanguage grammarLanguage = new MontiCoreGrammarLanguage();
     
     ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
     resolverConfiguration.addDefaultFilters(grammarLanguage.getResolvers());
@@ -85,7 +85,7 @@ public class EssentialMCGrammarSymbolTableHelper {
         new IndentPrinter());
     
     MutableScope globalScope = new GlobalScope(modelPath, grammarLanguage, resolverConfiguration);
-    EssentialMontiCoreGrammarSymbolTableCreator symbolTableCreator = new EssentialMontiCoreGrammarSymbolTableCreator(
+    MontiCoreGrammarSymbolTableCreator symbolTableCreator = new MontiCoreGrammarSymbolTableCreator(
         resolverConfiguration, globalScope, prettyPrinter);
     
     // Create Symbol Table
@@ -93,7 +93,7 @@ public class EssentialMCGrammarSymbolTableHelper {
   }
   
   public static Optional<MCProdSymbol> resolveRule(ASTNode astNode, String name) {
-    Optional<EssentialMCGrammarSymbol> grammarSymbol = getMCGrammarSymbol(astNode);
+    Optional<MCGrammarSymbol> grammarSymbol = getMCGrammarSymbol(astNode);
     if (!grammarSymbol.isPresent()) {
       return Optional.empty();
     }
@@ -101,9 +101,9 @@ public class EssentialMCGrammarSymbolTableHelper {
   }
   
   public static Optional<MCProdSymbol> resolveRuleInSupersOnly(ASTNode astNode, String name) {
-    Optional<EssentialMCGrammarSymbol> grammarSymbol = getMCGrammarSymbol(astNode);
-    Stream<EssentialMCGrammarSymbol> superGrammars = grammarSymbol
-        .map(symbol -> Util.preOrder(symbol, EssentialMCGrammarSymbol::getSuperGrammarSymbols)
+    Optional<MCGrammarSymbol> grammarSymbol = getMCGrammarSymbol(astNode);
+    Stream<MCGrammarSymbol> superGrammars = grammarSymbol
+        .map(symbol -> Util.preOrder(symbol, MCGrammarSymbol::getSuperGrammarSymbols)
             .stream())
         .orElse(Stream.empty()).skip(1);
     return superGrammars.map(superGrammar -> superGrammar.getProd(name))
@@ -112,12 +112,12 @@ public class EssentialMCGrammarSymbolTableHelper {
         .findFirst();
   }
   
-  public static Optional<EssentialMCGrammarSymbol> getMCGrammarSymbol(ASTNode astNode) {
+  public static Optional<MCGrammarSymbol> getMCGrammarSymbol(ASTNode astNode) {
     Set<Scope> scopes = getAllScopes(astNode);
     for (Scope s : scopes) {
       Optional<? extends ScopeSpanningSymbol> symbol = s.getSpanningSymbol();
-      if (symbol.isPresent() && symbol.get() instanceof EssentialMCGrammarSymbol) {
-        return Optional.of((EssentialMCGrammarSymbol) symbol.get());
+      if (symbol.isPresent() && symbol.get() instanceof MCGrammarSymbol) {
+        return Optional.of((MCGrammarSymbol) symbol.get());
       }
     }
     return Optional.empty();
@@ -150,14 +150,14 @@ public class EssentialMCGrammarSymbolTableHelper {
    *
    * @return
    */
-  public static Set<EssentialMCGrammarSymbol> getAllSuperGrammars(
-      EssentialMCGrammarSymbol grammarSymbol) {
-    Set<EssentialMCGrammarSymbol> allSuperGrammars = new LinkedHashSet<>();
-    Set<EssentialMCGrammarSymbol> tmpList = new LinkedHashSet<>();
+  public static Set<MCGrammarSymbol> getAllSuperGrammars(
+      MCGrammarSymbol grammarSymbol) {
+    Set<MCGrammarSymbol> allSuperGrammars = new LinkedHashSet<>();
+    Set<MCGrammarSymbol> tmpList = new LinkedHashSet<>();
     allSuperGrammars.addAll(grammarSymbol.getSuperGrammarSymbols());
     boolean modified = false;
     do {
-      for (EssentialMCGrammarSymbol curGrammar : allSuperGrammars) {
+      for (MCGrammarSymbol curGrammar : allSuperGrammars) {
         tmpList.addAll(curGrammar.getSuperGrammarSymbols());
       }
       modified = allSuperGrammars.addAll(tmpList);
@@ -191,14 +191,14 @@ public class EssentialMCGrammarSymbolTableHelper {
     // .collect(Collectors.toSet());
   }
   
-  private static String getLexString(EssentialMCGrammarSymbol grammar, ASTLexProd lexNode) {
+  private static String getLexString(MCGrammarSymbol grammar, ASTLexProd lexNode) {
     StringBuilder builder = new StringBuilder();
     RegExpBuilder regExp = new RegExpBuilder(builder, grammar);
     regExp.handle(lexNode);
     return builder.toString();
   }
   
-  public static Optional<Pattern> calculateLexPattern(EssentialMCGrammarSymbol grammar,
+  public static Optional<Pattern> calculateLexPattern(MCGrammarSymbol grammar,
       Optional<ASTNode> lexNode) {
     Optional<Pattern> ret = Optional.empty();
     
@@ -249,7 +249,7 @@ public class EssentialMCGrammarSymbolTableHelper {
    * @return Symboltable entry for this type
    */
   public static Optional<MCProdSymbol> getTypeWithInherited(String name,
-      EssentialMCGrammarSymbol gramamrSymbol) {
+      MCGrammarSymbol gramamrSymbol) {
     Optional<MCProdSymbol> ret = Optional.empty();
     if (name.startsWith("super.")) {
       name = name.substring(6);
@@ -315,7 +315,7 @@ public class EssentialMCGrammarSymbolTableHelper {
       return symbol.getName();
     }
     else {
-      Optional<EssentialMCGrammarSymbol> grammarSymbol = getMCGrammarSymbol(astNode);
+      Optional<MCGrammarSymbol> grammarSymbol = getMCGrammarSymbol(astNode);
       String string = (grammarSymbol.isPresent()
           ? grammarSymbol.get().getFullName().toLowerCase()
           : "")

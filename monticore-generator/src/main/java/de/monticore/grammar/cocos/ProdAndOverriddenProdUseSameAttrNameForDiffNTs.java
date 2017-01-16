@@ -24,7 +24,7 @@ import java.util.Optional;
 import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._cocos.GrammarASTNonTerminalCoCo;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdComponentSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.se_rwth.commons.logging.Log;
@@ -55,13 +55,13 @@ public class ProdAndOverriddenProdUseSameAttrNameForDiffNTs implements GrammarAS
         Log.error("0xA1125 Symbol for enclosing produktion of the component " + a.getName()
             + " couldn't be resolved.");
       }
-      Optional<EssentialMCGrammarSymbol> grammarSymbol = EssentialMCGrammarSymbolTableHelper
+      Optional<MCGrammarSymbol> grammarSymbol = EssentialMCGrammarSymbolTableHelper
           .getMCGrammarSymbol(a);
       if (!grammarSymbol.isPresent()) {
         Log.error(
             "0xA1126 grammar symbol for the component " + a.getName() + " couldn't be resolved.");
       }
-      for (EssentialMCGrammarSymbol g : grammarSymbol.get().getSuperGrammarSymbols()) {
+      for (MCGrammarSymbol g : grammarSymbol.get().getSuperGrammarSymbols()) {
         Optional<MCProdSymbol> ruleSymbol = g.getProd(rule.get().getName());
         if (ruleSymbol.isPresent()) {
           Optional<MCProdComponentSymbol> rcs = ruleSymbol.get().getSpannedScope()

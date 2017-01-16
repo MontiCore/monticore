@@ -25,7 +25,7 @@ import java.util.Optional;
 import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTProdCoCo;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbolReference;
 import de.se_rwth.commons.logging.Log;
@@ -45,11 +45,11 @@ public class ProdWithExtensionMustNotBeOverridden implements GrammarASTProdCoCo 
   @Override
   public void check(ASTProd a) {
     
-    Optional<EssentialMCGrammarSymbol> grammarSymbol = EssentialMCGrammarSymbolTableHelper
+    Optional<MCGrammarSymbol> grammarSymbol = EssentialMCGrammarSymbolTableHelper
         .getMCGrammarSymbol(a);
     
     boolean isOverriding = false;
-    for (EssentialMCGrammarSymbol sup : EssentialMCGrammarSymbolTableHelper.getAllSuperGrammars(grammarSymbol.get())) {
+    for (MCGrammarSymbol sup : EssentialMCGrammarSymbolTableHelper.getAllSuperGrammars(grammarSymbol.get())) {
       if (sup.getProd(a.getName()).isPresent()) {
         isOverriding = true;
         break;

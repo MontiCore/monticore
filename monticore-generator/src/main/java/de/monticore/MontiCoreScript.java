@@ -56,9 +56,9 @@ import de.monticore.generating.templateengine.reporting.reporter.InputOutputFile
 import de.monticore.grammar.cocos.GrammarCoCos;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
-import de.monticore.grammar.symboltable.EssentialMontiCoreGrammarLanguage;
-import de.monticore.grammar.symboltable.EssentialMontiCoreGrammarSymbolTableCreator;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MontiCoreGrammarLanguage;
+import de.monticore.grammar.symboltable.MontiCoreGrammarSymbolTableCreator;
 import de.monticore.incremental.IncrementalChecker;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
@@ -263,8 +263,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   public ASTMCGrammar createSymbolsFromAST(GlobalScope globalScope, ASTMCGrammar ast) {
     // Build grammar symbol table (if not already built)
     String qualifiedGrammarName = Names.getQualifiedName(ast.getPackage(), ast.getName());
-    Optional<EssentialMCGrammarSymbol> grammarSymbol = globalScope
-        .<EssentialMCGrammarSymbol> resolveDown(qualifiedGrammarName, EssentialMCGrammarSymbol.KIND);
+    Optional<MCGrammarSymbol> grammarSymbol = globalScope
+        .<MCGrammarSymbol> resolveDown(qualifiedGrammarName, MCGrammarSymbol.KIND);
         
     ASTMCGrammar result = ast;
     
@@ -272,12 +272,12 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       result = (ASTMCGrammar) grammarSymbol.get().getAstNode().get();
     }
     else {
-      EssentialMontiCoreGrammarLanguage language = new EssentialMontiCoreGrammarLanguage();
+      MontiCoreGrammarLanguage language = new MontiCoreGrammarLanguage();
       
       ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
       resolverConfiguration.addDefaultFilters(language.getResolvers());
       
-      EssentialMontiCoreGrammarSymbolTableCreator stCreator = language.getSymbolTableCreator(resolverConfiguration,
+      MontiCoreGrammarSymbolTableCreator stCreator = language.getSymbolTableCreator(resolverConfiguration,
           globalScope).get();
       stCreator.createFromAST(result);
       globalScope.cache(language.getModelLoader(), qualifiedGrammarName);
@@ -334,7 +334,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
   
   public GlobalScope initSymbolTable(ModelPath modelPath) {
-    final ModelingLanguage mcLanguage = new EssentialMontiCoreGrammarLanguage();
+    final ModelingLanguage mcLanguage = new MontiCoreGrammarLanguage();
     
     final ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
     resolverConfiguration.addDefaultFilters(mcLanguage.getResolvers());

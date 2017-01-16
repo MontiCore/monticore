@@ -20,7 +20,7 @@
 package de.monticore.codegen.symboltable;
 
 import de.monticore.generating.GeneratorEngine;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.io.paths.IterablePath;
 
 /**
@@ -29,6 +29,6 @@ import de.monticore.io.paths.IterablePath;
 public interface SymbolTableCreatorGenerator {
 
   void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
-      IterablePath handCodedPath, EssentialMCGrammarSymbol grammarSymbol);
+      IterablePath handCodedPath, MCGrammarSymbol grammarSymbol);
 
 }

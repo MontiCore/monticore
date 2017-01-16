@@ -29,16 +29,16 @@ import de.monticore.grammar.grammar._ast.ASTLexNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTLexProd;
 import de.monticore.grammar.grammar._ast.ASTLexString;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 
 public class RegExpBuilder implements Grammar_WithConceptsVisitor {
   
   private StringBuilder b;
   
-  private EssentialMCGrammarSymbol st;
+  private MCGrammarSymbol st;
   
-  public RegExpBuilder(StringBuilder b, EssentialMCGrammarSymbol st) {
+  public RegExpBuilder(StringBuilder b, MCGrammarSymbol st) {
     this.b = b;
     this.st = st;
   }

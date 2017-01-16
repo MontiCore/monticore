@@ -42,11 +42,11 @@ import de.se_rwth.commons.logging.Log;
 /**
  * @author Pedram Mir Seyed Nazari
  */
-public class EssentialMCGrammarSymbol extends CommonScopeSpanningSymbol {
+public class MCGrammarSymbol extends CommonScopeSpanningSymbol {
   
   public static final EssentialMCGrammarKind KIND = new EssentialMCGrammarKind();
   
-  private final List<EssentialMCGrammarSymbolReference> superGrammars = new ArrayList<>();
+  private final List<MCGrammarSymbolReference> superGrammars = new ArrayList<>();
   
   /**
    * Is the grammar abstract?
@@ -56,13 +56,13 @@ public class EssentialMCGrammarSymbol extends CommonScopeSpanningSymbol {
   // the start production of the grammar
   private MCProdSymbol startProd;
   
-  public EssentialMCGrammarSymbol(String name) {
+  public MCGrammarSymbol(String name) {
     super(name, KIND);
   }
   
   @Override
   protected MutableScope createSpannedScope() {
-    return new EssentialMCGrammarScope(Optional.empty());
+    return new MCGrammarScope(Optional.empty());
   }
   
   public void setStartProd(MCProdSymbol startRule) {
@@ -90,17 +90,17 @@ public class EssentialMCGrammarSymbol extends CommonScopeSpanningSymbol {
     this.isComponent = isComponent;
   }
   
-  public List<EssentialMCGrammarSymbolReference> getSuperGrammars() {
+  public List<MCGrammarSymbolReference> getSuperGrammars() {
     return ImmutableList.copyOf(superGrammars);
   }
   
-  public List<EssentialMCGrammarSymbol> getSuperGrammarSymbols() {
+  public List<MCGrammarSymbol> getSuperGrammarSymbols() {
     return ImmutableList.copyOf(superGrammars.stream().filter(g -> g.getReferencedSymbol() != null)
         .map(g -> g.getReferencedSymbol())
         .collect(Collectors.toList()));
   }
   
-  public void addSuperGrammar(EssentialMCGrammarSymbolReference superGrammarRef) {
+  public void addSuperGrammar(MCGrammarSymbolReference superGrammarRef) {
     this.superGrammars.add(Log.errorIfNull(superGrammarRef));
   }
   
@@ -124,7 +124,7 @@ public class EssentialMCGrammarSymbol extends CommonScopeSpanningSymbol {
   
   public Optional<MCProdSymbol> getProdWithInherited(String ruleName) {
     Optional<MCProdSymbol> mcProd = getProd(ruleName);
-    Iterator<EssentialMCGrammarSymbolReference> itSuperGrammars = superGrammars.iterator();
+    Iterator<MCGrammarSymbolReference> itSuperGrammars = superGrammars.iterator();
     
     while (!mcProd.isPresent() && itSuperGrammars.hasNext()) {
       mcProd = itSuperGrammars.next().getReferencedSymbol().getProdWithInherited(ruleName);
@@ -135,7 +135,7 @@ public class EssentialMCGrammarSymbol extends CommonScopeSpanningSymbol {
   
   public Optional<MCProdSymbol> getInheritedProd(String ruleName) {
     Optional<MCProdSymbol> mcProd = Optional.empty();
-    Iterator<EssentialMCGrammarSymbolReference> itSuperGrammars = superGrammars.iterator();
+    Iterator<MCGrammarSymbolReference> itSuperGrammars = superGrammars.iterator();
     
     while (!mcProd.isPresent() && itSuperGrammars.hasNext()) {
       mcProd = itSuperGrammars.next().getReferencedSymbol().getProdWithInherited(ruleName);
@@ -148,7 +148,7 @@ public class EssentialMCGrammarSymbol extends CommonScopeSpanningSymbol {
     final Map<String, MCProdSymbol> ret = new LinkedHashMap<>();
     
     for (int i = superGrammars.size() - 1; i >= 0; i--) {
-      final EssentialMCGrammarSymbolReference superGrammarRef = superGrammars.get(i);
+      final MCGrammarSymbolReference superGrammarRef = superGrammars.get(i);
       
       if (superGrammarRef.existsReferencedSymbol()) {
         ret.putAll(superGrammarRef.getReferencedSymbol().getProdsWithInherited());

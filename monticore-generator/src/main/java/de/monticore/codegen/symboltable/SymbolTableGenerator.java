@@ -29,7 +29,7 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdComponentSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
@@ -87,7 +87,7 @@ public class SymbolTableGenerator {
   public void generate(ASTMCGrammar astGrammar, SymbolTableGeneratorHelper genHelper,
       File outputPath, final IterablePath handCodedPath) {
     
-    EssentialMCGrammarSymbol grammarSymbol = genHelper.getGrammarSymbol();
+    MCGrammarSymbol grammarSymbol = genHelper.getGrammarSymbol();
     
     // TODO PN also generate for components grammars everything that is possible
     // and useful.

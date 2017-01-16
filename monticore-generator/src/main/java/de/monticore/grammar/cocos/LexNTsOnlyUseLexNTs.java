@@ -24,7 +24,7 @@ import java.util.Optional;
 import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTLexNonTerminal;
 import de.monticore.grammar.grammar._cocos.GrammarASTLexNonTerminalCoCo;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
@@ -44,7 +44,7 @@ public class LexNTsOnlyUseLexNTs implements GrammarASTLexNonTerminalCoCo {
   
   @Override
   public void check(ASTLexNonTerminal a) {
-    Optional<EssentialMCGrammarSymbol> grammarSymbol = EssentialMCGrammarSymbolTableHelper
+    Optional<MCGrammarSymbol> grammarSymbol = EssentialMCGrammarSymbolTableHelper
         .getMCGrammarSymbol(a);
     
     Optional<MCProdSymbol> ruleSymbol = EssentialMCGrammarSymbolTableHelper.getEnclosingRule(a);

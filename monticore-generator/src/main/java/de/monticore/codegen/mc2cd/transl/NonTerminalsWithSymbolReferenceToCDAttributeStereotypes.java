@@ -27,7 +27,7 @@ import de.monticore.codegen.mc2cd.EssentialTransformationHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
@@ -51,7 +51,7 @@ class NonTerminalsWithSymbolReferenceToCDAttributeStereotypes implements
       final ASTCDAttribute cdAttribute = link.target();
       
       if (nonTerminal.referencedSymbolIsPresent()) {
-        final Optional<EssentialMCGrammarSymbol> grammarSymbol = EssentialMCGrammarSymbolTableHelper
+        final Optional<MCGrammarSymbol> grammarSymbol = EssentialMCGrammarSymbolTableHelper
             .getMCGrammarSymbol(nonTerminal);
         if (grammarSymbol.isPresent()) {
           final Optional<MCProdSymbol> referencedSymbol = grammarSymbol.get()

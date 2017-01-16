@@ -26,7 +26,7 @@ import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 
 /**
  *
@@ -37,7 +37,7 @@ public class AttributeCardinalityConstraint {
 
   protected ParserGeneratorHelper parserGenHelper;
 
-  protected EssentialMCGrammarSymbol symbolTable;
+  protected MCGrammarSymbol symbolTable;
 
   public AttributeCardinalityConstraint(ParserGeneratorHelper parserGenHelper) {
     this.parserGenHelper = parserGenHelper;

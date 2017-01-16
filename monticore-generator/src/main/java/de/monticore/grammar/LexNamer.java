@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -123,7 +123,7 @@ public class LexNamer {
    * @param sym lexer symbol
    * @return Human-Readable, antlr conformed name for a lexsymbols
    */
-  public String getLexName(EssentialMCGrammarSymbol grammarSymbol, String sym) {
+  public String getLexName(MCGrammarSymbol grammarSymbol, String sym) {
     if (usedLex.containsKey(sym)) {
       return usedLex.get(sym);
     }

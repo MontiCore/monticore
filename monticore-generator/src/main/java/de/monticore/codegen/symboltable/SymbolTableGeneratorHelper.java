@@ -40,7 +40,7 @@ import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
 import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdComponentSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.symboltable.GlobalScope;
@@ -59,7 +59,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
 
   private final String qualifiedGrammarName;
   private final ASTMCGrammar astGrammar;
-  private final EssentialMCGrammarSymbol grammarSymbol;
+  private final MCGrammarSymbol grammarSymbol;
 
   // TODO PN refactor
   public SymbolTableGeneratorHelper(ASTMCGrammar ast, GlobalScope globalScope, ASTCDCompilationUnit astCd) {
@@ -70,15 +70,15 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
         Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackage()),
             astGrammar.getName());
 
-    grammarSymbol = globalScope.<EssentialMCGrammarSymbol> resolve(
-        qualifiedGrammarName, EssentialMCGrammarSymbol.KIND).orElse(null);
+    grammarSymbol = globalScope.<MCGrammarSymbol> resolve(
+        qualifiedGrammarName, MCGrammarSymbol.KIND).orElse(null);
     Log.errorIfNull(grammarSymbol, "0xA4036 Grammar " + qualifiedGrammarName
         + " can't be resolved in the scope " + globalScope);
 
     checkState(qualifiedGrammarName.equals(grammarSymbol.getFullName()));
   }
 
-  public EssentialMCGrammarSymbol getGrammarSymbol() {
+  public MCGrammarSymbol getGrammarSymbol() {
     return grammarSymbol;
   }
 

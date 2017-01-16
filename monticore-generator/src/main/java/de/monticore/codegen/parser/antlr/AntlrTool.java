@@ -30,7 +30,7 @@ import org.stringtemplate.v4.ST;
 
 import com.google.common.base.Preconditions;
 
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.StringTransformations;
@@ -44,9 +44,9 @@ import de.se_rwth.commons.logging.Log;
  */
 public class AntlrTool extends Tool {
   
-  private EssentialMCGrammarSymbol grammarSymbol;
+  private MCGrammarSymbol grammarSymbol;
   
-  public AntlrTool(String[] args, EssentialMCGrammarSymbol grammarSymbol, Path outputDir) {
+  public AntlrTool(String[] args, MCGrammarSymbol grammarSymbol, Path outputDir) {
     super(args);
     this.grammarSymbol = grammarSymbol;
     Preconditions.checkArgument(outputDir.toFile().exists(),

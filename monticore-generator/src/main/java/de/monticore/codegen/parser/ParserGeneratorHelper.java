@@ -36,7 +36,7 @@ import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
-import de.monticore.grammar.EssentialMCGrammarInfo;
+import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.PredicatePair;
 import de.monticore.grammar.grammar._ast.ASTAlt;
@@ -58,8 +58,8 @@ import de.monticore.grammar.grammar_withconcepts._ast.ASTExpressionPredicate;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTGrammar_WithConceptsNode;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTJavaCode;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbolReference;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbolReference;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.java.javadsl._ast.ASTBlockStatement;
 import de.monticore.java.javadsl._ast.ASTClassMemberDeclaration;
@@ -86,9 +86,9 @@ public class ParserGeneratorHelper {
   
   private String qualifiedGrammarName;
   
-  private EssentialMCGrammarSymbol grammarSymbol;
+  private MCGrammarSymbol grammarSymbol;
   
-  private EssentialMCGrammarInfo grammarInfo;
+  private MCGrammarInfo grammarInfo;
   
   private Map<ASTNode, String> tmpVariables = new HashMap<>();
   
@@ -97,7 +97,7 @@ public class ParserGeneratorHelper {
   /**
    * Constructor for de.monticore.codegen.parser.ParserGeneratorHelper
    */
-  public ParserGeneratorHelper(ASTMCGrammar ast, EssentialMCGrammarInfo grammarInfo) {
+  public ParserGeneratorHelper(ASTMCGrammar ast, MCGrammarInfo grammarInfo) {
     Log.errorIfNull(ast);
     this.astGrammar = ast;
     this.qualifiedGrammarName = astGrammar.getPackage().isEmpty()
@@ -112,7 +112,7 @@ public class ParserGeneratorHelper {
   /**
    * @return grammarSymbol
    */
-  public EssentialMCGrammarSymbol getGrammarSymbol() {
+  public MCGrammarSymbol getGrammarSymbol() {
     return this.grammarSymbol;
   }
   
@@ -454,7 +454,7 @@ public class ParserGeneratorHelper {
     if (!ast.getAlts().isEmpty()) {
       return ast.getAlts();
     }
-    for (EssentialMCGrammarSymbolReference g : grammarSymbol.getSuperGrammars()) {
+    for (MCGrammarSymbolReference g : grammarSymbol.getSuperGrammars()) {
       final Optional<MCProdSymbol> ruleByName = g.getReferencedSymbol().getProdWithInherited(ast.getName());
       if (ruleByName.isPresent() && ruleByName.get().isClass()) {
         Optional<ASTNode> astProd = ruleByName.get().getAstNode();

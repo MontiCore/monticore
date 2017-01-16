@@ -27,7 +27,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import de.monticore.generating.GeneratorEngine;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.Names;
@@ -39,7 +39,7 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
 
   @Override
   public void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
-      IterablePath handCodedPath, EssentialMCGrammarSymbol grammarSymbol) {
+      IterablePath handCodedPath, MCGrammarSymbol grammarSymbol) {
     final String className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName() + "SymbolTableCreator"),
         genHelper.getTargetPackage(), handCodedPath);
 

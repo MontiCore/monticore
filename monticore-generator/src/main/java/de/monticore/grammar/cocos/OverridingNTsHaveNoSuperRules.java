@@ -25,7 +25,7 @@ import java.util.Optional;
 import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTClassProdCoCo;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -44,9 +44,9 @@ public class OverridingNTsHaveNoSuperRules implements GrammarASTClassProdCoCo {
   
   @Override
   public void check(ASTClassProd a) {
-    Optional<EssentialMCGrammarSymbol> grammarSymbol = EssentialMCGrammarSymbolTableHelper
+    Optional<MCGrammarSymbol> grammarSymbol = EssentialMCGrammarSymbolTableHelper
         .getMCGrammarSymbol(a);
-    List<EssentialMCGrammarSymbol> grammarSymbols = grammarSymbol.get().getSuperGrammarSymbols();
+    List<MCGrammarSymbol> grammarSymbols = grammarSymbol.get().getSuperGrammarSymbols();
     
     if (!a.getSuperRule().isEmpty() || !a.getASTSuperClass().isEmpty()) {
       String extendedType;
@@ -56,7 +56,7 @@ public class OverridingNTsHaveNoSuperRules implements GrammarASTClassProdCoCo {
       else {
         extendedType = a.getASTSuperClass().get(0).getTypeName();
       }
-      for (EssentialMCGrammarSymbol s : grammarSymbols) {
+      for (MCGrammarSymbol s : grammarSymbols) {
         if (s.getProd(a.getName()).isPresent()) {
           Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName(), extendedType),
               a.get_SourcePositionStart());

@@ -40,22 +40,22 @@ import static de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION;
 /**
  * @author Pedram Mir Seyed Nazari
  */
-public class EssentialMCGrammarScope extends CommonScope {
+public class MCGrammarScope extends CommonScope {
 
-  public EssentialMCGrammarScope(Optional<MutableScope> enclosingScope) {
+  public MCGrammarScope(Optional<MutableScope> enclosingScope) {
     super(enclosingScope, true);
   }
 
   @Override
   public void setSpanningSymbol(ScopeSpanningSymbol symbol) {
-    checkArgument(symbol instanceof EssentialMCGrammarSymbol);
+    checkArgument(symbol instanceof MCGrammarSymbol);
     super.setSpanningSymbol(symbol);
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public Optional<EssentialMCGrammarSymbol> getSpanningSymbol() {
-    return (Optional<EssentialMCGrammarSymbol>) super.getSpanningSymbol();
+  public Optional<MCGrammarSymbol> getSpanningSymbol() {
+    return (Optional<MCGrammarSymbol>) super.getSpanningSymbol();
   }
 
   public <T extends Symbol> Collection<T> resolveMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier,
@@ -87,11 +87,11 @@ public class EssentialMCGrammarScope extends CommonScope {
   protected <T extends Symbol> Optional<T> resolveInSuperGrammars(String name, SymbolKind kind, AccessModifier modifier) {
     Optional<T> resolvedSymbol = Optional.empty();
 
-    final EssentialMCGrammarSymbol spanningSymbol = getSpanningSymbol().get();
-    for (EssentialMCGrammarSymbolReference superGrammarRef : spanningSymbol.getSuperGrammars()) {
+    final MCGrammarSymbol spanningSymbol = getSpanningSymbol().get();
+    for (MCGrammarSymbolReference superGrammarRef : spanningSymbol.getSuperGrammars()) {
       if (checkIfContinueWithSuperGrammar(name, superGrammarRef.getName())
           && (superGrammarRef.existsReferencedSymbol())) {
-        final EssentialMCGrammarSymbol superGrammar = superGrammarRef.getReferencedSymbol();
+        final MCGrammarSymbol superGrammar = superGrammarRef.getReferencedSymbol();
         resolvedSymbol = resolveInSuperGrammar(name, kind, superGrammar);
         // Stop as soon as symbol is found in a super grammar.
         if (resolvedSymbol.isPresent()) {
@@ -128,10 +128,10 @@ public class EssentialMCGrammarScope extends CommonScope {
   }
 
   private <T extends Symbol> Optional<T> resolveInSuperGrammar(String name, SymbolKind kind,
-      EssentialMCGrammarSymbol superGrammar) {
+      MCGrammarSymbol superGrammar) {
 
     Log.trace("Continue in scope of super grammar " + superGrammar.getName(),
-        EssentialMCGrammarScope.class.getSimpleName());
+        MCGrammarScope.class.getSimpleName());
 
     return superGrammar.getSpannedScope().resolveImported(name, kind, ALL_INCLUSION);
   }

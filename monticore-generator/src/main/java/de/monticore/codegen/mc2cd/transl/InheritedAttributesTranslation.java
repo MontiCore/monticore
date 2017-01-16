@@ -39,8 +39,8 @@ import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTProd;
-import de.monticore.grammar.symboltable.EssentialMCAttributeSymbol;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCAttributeSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.symboltable.Symbol;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
@@ -76,9 +76,9 @@ public class InheritedAttributesTranslation implements
   }
   
   private void handleInheritedAttributeInASTs(Link<ASTClassProd, ASTCDClass> link) {
-    for (Entry<ASTProd, List<EssentialMCAttributeSymbol>> entry : getInheritedAttributeInASTs(
+    for (Entry<ASTProd, List<MCAttributeSymbol>> entry : getInheritedAttributeInASTs(
         link.source()).entrySet()) {
-      for (EssentialMCAttributeSymbol attributeInAST : entry.getValue()) {
+      for (MCAttributeSymbol attributeInAST : entry.getValue()) {
         ASTCDAttribute cdAttribute = createCDAttribute(link.source(), entry.getKey());
         link.target().getCDAttributes().add(cdAttribute);
         if (attributeInAST.getAstNode().isPresent()) {
@@ -93,7 +93,7 @@ public class InheritedAttributesTranslation implements
         inheritingNode);
     
     String superGrammarName = EssentialMCGrammarSymbolTableHelper.getMCGrammarSymbol(definingNode)
-        .map(EssentialMCGrammarSymbol::getFullName)
+        .map(MCGrammarSymbol::getFullName)
         .orElse("");
     
     ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
@@ -104,7 +104,7 @@ public class InheritedAttributesTranslation implements
     return cdAttribute;
   }
   
-  private Map<ASTProd, List<EssentialMCAttributeSymbol>> getInheritedAttributeInASTs(
+  private Map<ASTProd, List<MCAttributeSymbol>> getInheritedAttributeInASTs(
       ASTNode astNode) {
     return GeneratorHelper.getAllSuperProds(astNode).stream()
         .distinct()
