@@ -304,33 +304,6 @@ public class ASTConstructionActions {
     return tmp;
   }
 
-  public String getActionForTerminalNotIteratedVariable(ASTTerminal a) {
-    if (!a.getVariableName().isPresent()) {
-      return "";
-    }
-
-    String tmp = "%handontmp%= \"" + a.getName() + "\";";
-
-    // Replace templates
-    tmp = tmp.replaceAll("%handontmp%", a.getVariableName().get());
-    tmp = tmp.replaceAll("%tmp%", a.getName());
-
-    return tmp;
-  }
-
-  public String getActionForTerminalIteratedVariable(ASTTerminal a) {
-    if (!a.getVariableName().isPresent()) {
-      return "";
-    }
-
-    String tmp = "%handontmp%.add(\"" + a.getName() + "\");";
-
-    // Replace templates
-    tmp = tmp.replaceAll("%handontmp%", a.getVariableName().get());
-
-    return tmp;
-  }
-
   /**
    * Create temporary variable for all parser and interface rules
    *

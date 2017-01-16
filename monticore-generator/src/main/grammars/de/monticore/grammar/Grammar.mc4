@@ -391,7 +391,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
 
   /** A Terminal is usually something like "," or "start" */
   Terminal implements RuleComponent, ITerminal =
-    (variableName:Name& "=" | usageName:Name&  ":")?
+    (usageName:Name&  ":")?
     name:String
     (iteration:["?"|"*"|"+"])*;
 

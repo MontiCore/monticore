@@ -529,21 +529,11 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     // Template engine cannot be used for substition in rare cases
     addToCodeSection(rulename); // + " %initaction% %actions% ) %iteration% ";
 
-    boolean iteratedItself = HelperGrammar.isIterated(ast);
-    boolean isVariable = (ast.getVariableName().isPresent());
     boolean isAttribute = (ast.getUsageName().isPresent());
 
     // Add Actions
     startAction();
-    if (isVariable) {
-      if (iteratedItself) {
-        addToAction(astActions.getActionForTerminalIteratedVariable(ast));
-      }
-      else {
-        addToAction(astActions.getActionForTerminalNotIteratedVariable(ast));
-      }
-    }
-    else if (isAttribute) {
+    if (isAttribute) {
       Optional<MCRuleSymbol> scope = getMCRuleForThisComponent(
           ast.getName(), ast);
       if (!scope.isPresent()) {
@@ -950,22 +940,12 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     // Template engine cannot be used for substition in rare cases
     addToCodeSection(rulename); // + " %initaction% %actions% ) %iteration% ";
 
-    boolean iteratedItself = HelperGrammar.isIterated(keyword);
-    boolean isVariable = (keyword.getVariableName().isPresent());
     boolean isAttribute = (keyword.getUsageName().isPresent());
 
     // Add Actions
     startAction();
 
-    if (isVariable) {
-      if (iteratedItself) {
-        addToAction(astActions.getActionForTerminalIteratedVariable(keyword));
-      }
-      else {
-        addToAction(astActions.getActionForTerminalNotIteratedVariable(keyword));
-      }
-    }
-    else if (isAttribute) {
+    if (isAttribute) {
       if (rule.getDefinedType().getAttribute(keyword.getUsageName().get()).isIterated()) {
         addToAction(astActions.getActionForTerminalIteratedAttribute(keyword));
       }
