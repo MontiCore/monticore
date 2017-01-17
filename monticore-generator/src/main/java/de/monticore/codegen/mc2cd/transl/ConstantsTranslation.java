@@ -19,7 +19,11 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
@@ -61,10 +65,12 @@ public class ConstantsTranslation implements
     ASTCDEnum constantsEnum = CD4AnalysisNodeFactory.createASTCDEnum();
     constantsEnum.setName(rootLink.source().getName() + CONSTANTS_ENUM);
     rootLink.target().getCDDefinition().getCDEnums().add(constantsEnum);
-    List<String> grammarConstants = TransformationHelper
+    Set<String> grammarConstants = TransformationHelper
         .getAllGrammarConstants(rootLink.source()).stream().map(c -> lexNamer.getConstantName(c))
-        .collect(Collectors.toList());
-    for (String grammarConstant : grammarConstants) {
+        .collect(Collectors.toSet());
+    Collection<String> sortedConstants = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+    sortedConstants.addAll(grammarConstants);
+    for (String grammarConstant : sortedConstants) {
       ASTCDEnumConstant constant = CD4AnalysisNodeFactory.createASTCDEnumConstant();
       constant.setName(grammarConstant);
       constantsEnum.getCDEnumConstants().add(constant);

@@ -259,8 +259,7 @@ public class GeneratorHelper extends TypesHelper {
     if (symbol.isPresent()) {
       CDTypeSymbol cdType = symbol.get();
       Log.trace("CD Type: " + cdType, LOG_NAME);
-      // TODO GV: if use cd4analysis 1.3.1 cdType.getModelName()
-      String typeName = Names.getQualifier(cdType.getFullName()).toLowerCase()
+      String typeName = cdType.getModelName().toLowerCase()
           + packageSuffix
           + cdType.getName();
       if (!genericType.isEmpty()) {
@@ -330,8 +329,7 @@ public class GeneratorHelper extends TypesHelper {
     if (symbol.isPresent()) {
       CDTypeSymbol cdType = symbol.get();
       Log.trace("CD Type: " + cdType, LOG_NAME);
-      // TODO GV: if use cd4analysis 1.3.1 cdType.getModelName()
-      String typeName = Names.getQualifier(cdType.getFullName()).toLowerCase()
+      String typeName = cdType.getModelName().toLowerCase()
           + packageSuffix
           + cdType.getName();
       if (!genericType.isEmpty()) {
@@ -393,8 +391,7 @@ public class GeneratorHelper extends TypesHelper {
     if (symbol.isPresent()) {
       CDTypeSymbol cdType = symbol.get();
       Log.trace("CD Type: " + cdType, LOG_NAME);
-      // TODO GV: if use cd4analysis 1.3.1 cdType.getModelName()
-      String typeName = Names.getQualifier(cdType.getFullName()).toLowerCase()
+      String typeName = cdType.getModelName().toLowerCase()
           + packageSuffix
           + cdType.getName();
       if (!genericType.isEmpty()) {
@@ -1112,7 +1109,6 @@ public class GeneratorHelper extends TypesHelper {
   }
   
   public static boolean isBuilderClass(ASTCDClass clazz) {
-    // TODO GV;
     return clazz.getName().startsWith("Builder_");
   }
   

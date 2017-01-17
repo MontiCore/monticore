@@ -306,22 +306,7 @@ public class MCGrammarInfo {
     if (predicats.containsKey(ruleName)) {
       predicateList.addAll(predicats.get(ruleName));
     }
-    
-    // TODO GV
-    for (MCGrammarSymbol superGrammar : grammarSymbol.getSuperGrammarSymbols()) {
-      
-//       List<PredicatePair> subRulesForParsing =
-//       superGrammar.getSubRulesForParsing(ruleName);
-//       if (subRulesForParsing != null) {
-//       for (PredicatePair predicate : subRulesForParsing) {
-//      
-//       if (!predicateList.contains(predicate)) {
-//       predicateList.add(predicate);
-//       }
-//       }
-//       }
-    }
-    
+
     return predicateList;
   }
   

@@ -141,8 +141,6 @@ public class ASTConstructionActions {
     String name = grammar.isPresent()
         ? grammar.get().getName()
         : symbolTable.getProdWithInherited(HelperGrammar.getRuleName(a)).get().getName();
-    // name =
-    // symbolTable.getProdWithInherited(HelperGrammar.getRuleName(a)).getDefinedType().getName();
     
     // Setup return value
     b.append(
@@ -152,11 +150,6 @@ public class ASTConstructionActions {
         +
         Names.getSimpleName(type) + "();\n");
     b.append("$ret=_aNode;\n");
-    
-    // List of all used temporary variables
-    // TODO GV: don't need it anymore?
-    
-    // b.append(getCodeForTmpVars(a));
     
     return b.toString();
   }
@@ -171,11 +164,6 @@ public class ASTConstructionActions {
     // Setup return value
     b.append("// ret is normally returned, a can be instanciated later\n");
     b.append(type + " _aNode = null;\n");
-    
-    // List of all used temporary variables
-    // TODO GV: don't need it anymore?
-    // b.append(getCodeForTmpVars(a));
-    
     return b.toString();
     
   }
@@ -338,54 +326,6 @@ public class ASTConstructionActions {
     tmp = tmp.replaceAll("%handontmp%", a.getVariableName().get());
     
     return tmp;
-  }
-  
-  /**
-   * Create temporary variable for all parser and interface rules
-   *
-   * @param rule Current rule
-   * @param element ASTNonTerminal to create var for
-   * @param usedTmp
-   * @return
-   * @return
-   */
-  // TODO GV: don't need it anymore?
-  
-  // private String getTempVarDeclaration(MCRuleSymbol rule, ASTNonTerminal
-  // element,
-  // Set<String> usedTmp) {
-  //
-  // StringBuilder code = new StringBuilder();
-  // Optional<MCProdSymbol> ruleByName =
-  // symbolTable.getProdWithInherited(element.getName());
-  // if (!ruleByName.isPresent()) {
-  // Log.error("0xA0921 Error by parser generation: there is no rule for " +
-  // element.getName());
-  // return code.toString();
-  // }
-  //
-  // return code.toString();
-  // }
-  
-  // TODO GV: don't need it anymore?
-  
-  private String getCodeForTmpVars(ASTClassProd ast) {
-    Optional<MCProdSymbol> rule = symbolTable.getProdWithInherited(ast.getName());
-    StringBuilder code = new StringBuilder();
-    Set<String> usedTmp = new LinkedHashSet<>();
-    
-    // Declare tmp-Variables for NonTerminals
-    for (ASTNonTerminal element : ASTNodes.getSuccessors(ast, ASTNonTerminal.class)) {
-      // LexerRule do not need temporary variables, but all parser rules,
-      // interface rules and hole rules do (even when used as variable)
-      // Pattern: '%Type% %tmp% = null;'
-      // TODO GV: don't need it anymore?
-      
-      // code.append(getTempVarDeclaration(rule, element, usedTmp));
-    }
-    
-    return code.toString();
-    
   }
   
 }

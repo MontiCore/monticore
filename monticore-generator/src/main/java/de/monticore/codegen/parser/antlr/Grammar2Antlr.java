@@ -861,13 +861,6 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     
     if (scope.isPresent()) {
       addToAction(attributeConstraints.addActionForNonTerminal(ast));
-      // TODO GV:
-      // String attributename = HelperGrammar.getUsuageName(ast);
-      
-      // if
-      // (scope.get().getDefinedType().getAttribute(attributename).isIterated())
-      // {
-      // if (HelperGrammar.isIterated(ast)) {
       String attributename = HelperGrammar.getUsuageName(ast);
       if (scope.isPresent() && scope.get().getProdComponent(attributename).isPresent()
           && scope.get().getProdComponent(attributename).get().isList()) {

@@ -30,10 +30,10 @@ import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
@@ -276,17 +276,16 @@ public final class TransformationHelper {
         + GeneratorHelper.getASTNodeBaseType(cdCompilationUnit.getCDDefinition().getName());
   }
   
-  public static List<String> getAllGrammarConstants(ASTMCGrammar grammar) {
-    List<String> constants = new ArrayList<>();
+  public static Set<String> getAllGrammarConstants(ASTMCGrammar grammar) {
+    Set<String> constants = new HashSet<>();
     MCGrammarSymbol grammarSymbol = MCGrammarSymbolTableHelper
         .getMCGrammarSymbol(grammar).get();
     Preconditions.checkState(grammarSymbol != null);
     for (MCProdComponentSymbol component : grammarSymbol.getProds().stream()
         .flatMap(p -> p.getProdComponents().stream()).collect(Collectors.toSet())) {
       if (component.isConstantGroup()) {
-        Collection<MCProdComponentSymbol> subComponents = component.getSubProdComponents();
-        for (MCProdComponentSymbol subComponent : subComponents) {
-          if (subComponent.isConstant() && !constants.contains(subComponent.getName())) {
+        for (MCProdComponentSymbol subComponent : component.getSubProdComponents()) {
+          if (subComponent.isConstant()) {
             constants.add(subComponent.getName());
           }
         }
@@ -296,17 +295,13 @@ public final class TransformationHelper {
       if (type.isEnum() && type.getAstNode().isPresent()
           && type.getAstNode().get() instanceof ASTEnumProd) {
         for (ASTConstant enumValue : ((ASTEnumProd) type.getAstNode().get()).getConstants()) {
-          String humanName = enumValue.getHumanName().orElse(null);
-          if (humanName == null) {
-            humanName = enumValue.getName();
-          }
-          if (!constants.contains(humanName)) {
-            constants.add(humanName);
-          }
+          String humanName = enumValue.getHumanName().isPresent()
+              ? enumValue.getHumanName().get()
+              : enumValue.getName();
+          constants.add(humanName);
         }
       }
     }
-    Collections.sort(constants);
     return constants;
   }
   
