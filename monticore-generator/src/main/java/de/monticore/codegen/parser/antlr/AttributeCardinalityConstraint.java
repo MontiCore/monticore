@@ -26,8 +26,8 @@ import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
 import de.monticore.languages.grammar.MCAttributeSymbol;
+import de.monticore.languages.grammar.MCGrammarSymbol;
 import de.monticore.languages.grammar.MCRuleSymbol;
 import de.monticore.languages.grammar.MCTypeSymbol;
 
@@ -40,7 +40,7 @@ public class AttributeCardinalityConstraint {
 
   protected ParserGeneratorHelper parserGenHelper;
 
-  protected EssentialMCGrammarSymbol symbolTable;
+  protected MCGrammarSymbol symbolTable;
 
   public AttributeCardinalityConstraint(ParserGeneratorHelper parserGenHelper) {
     this.parserGenHelper = parserGenHelper;
@@ -49,75 +49,75 @@ public class AttributeCardinalityConstraint {
 
   public String addActionForRuleBeforeRuleBody(ASTClassProd ast) {
     StringBuilder ret = new StringBuilder();
-//    MCTypeSymbol definedType = symbolTable.getProdWithInherited(ast).getDefinedType();
-//
-//    for (MCAttributeSymbol att : definedType.getAttributes()) {
-//      String usageName = att.getName();
-//      if (att.isMinCheckedDuringParsing() || att.isMaxCheckedDuringParsing()) {
-//        if (att.getMin() != MCAttributeSymbol.UNDEF || att.getMax() != MCAttributeSymbol.UNDEF) {
-//          ret.append("\n" + "int " + getCounterName(usageName) + "=0;");
-//        }
-//      }
-//    }
+    MCTypeSymbol definedType = symbolTable.getRuleWithInherited(ast).getDefinedType();
+
+    for (MCAttributeSymbol att : definedType.getAttributes()) {
+      String usageName = att.getName();
+      if (att.isMinCheckedDuringParsing() || att.isMaxCheckedDuringParsing()) {
+        if (att.getMin() != MCAttributeSymbol.UNDEF || att.getMax() != MCAttributeSymbol.UNDEF) {
+          ret.append("\n" + "int " + getCounterName(usageName) + "=0;");
+        }
+      }
+    }
 
     return ret.toString();
   }
 
   public String addActionForRuleAfterRuleBody(ASTClassProd ast) {
     StringBuilder ret = new StringBuilder();
-//    MCTypeSymbol definedType = symbolTable.getRuleWithInherited(ast).getDefinedType();
-//    for (MCAttributeSymbol att : definedType.getAttributes()) {
-//
-//      String usageName = att.getName();
-//
-//      if ((att.getMin() != MCAttributeSymbol.UNDEF || att.getMax() != MCAttributeSymbol.UNDEF)) {
-//        if (att.getMin() != MCAttributeSymbol.UNDEF) {
-//
-//          if (att.isMinCheckedDuringParsing()) {
-//            String runtimemessage = "\"Invalid minimal occurence for %attributename% in rule %rulename% : Should be %reference% but is \"+%value%+\"!\"";
-//
-//            runtimemessage = runtimemessage.replaceAll("%attributename%", usageName);
-//            runtimemessage = runtimemessage.replaceAll("%rulename%", HelperGrammar.getRuleName(ast));
-//            runtimemessage = runtimemessage.replaceAll("%value%", getCounterName(usageName));
-//            runtimemessage = runtimemessage.replaceAll("%reference%", format(att.getMin()));
-//
-//            String message = "if (!checkMin("
-//                + getCounterName(usageName)
-//                + ","
-//                + att.getMin()
-//                + ")) { String message = "
-//                + runtimemessage
-//                + ";\n"
-//                + "de.se_rwth.commons.logging.Log.error(message);\nsetErrors(true);}\n";
-//            ret.append("\n" + message);
-//          }
-//        }
-//
-//        if (att.getMax() != MCAttributeSymbol.UNDEF && att.getMax() != MCAttributeSymbol.STAR) {
-//
-//          if (att.isMaxCheckedDuringParsing()) {
-//
-//            String runtimemessage = "\"Invalid maximal occurence for %attributename% in rule %rulename% : Should be %reference% but is \"+%value%+\"!\"";
-//
-//            runtimemessage = runtimemessage.replaceAll("%attributename%", usageName);
-//            runtimemessage = runtimemessage.replaceAll("%rulename%", HelperGrammar.getRuleName(ast));
-//            runtimemessage = runtimemessage.replaceAll("%value%", getCounterName(usageName));
-//            runtimemessage = runtimemessage.replaceAll("%reference%", format(att.getMax()));
-//
-//            String message = "if (!checkMax("
-//                + getCounterName(usageName)
-//                + ","
-//                + att.getMax()
-//                + ")) {"
-//                + " String message = "
-//                + runtimemessage
-//                + ";\n"
-//                + "de.se_rwth.commons.logging.Log.error(message);setErrors(true);}\n";
-//            ret.append("\n" + message);
-//          }
-//        }
-//      }
-//    }
+    MCTypeSymbol definedType = symbolTable.getRuleWithInherited(ast).getDefinedType();
+    for (MCAttributeSymbol att : definedType.getAttributes()) {
+
+      String usageName = att.getName();
+
+      if ((att.getMin() != MCAttributeSymbol.UNDEF || att.getMax() != MCAttributeSymbol.UNDEF)) {
+        if (att.getMin() != MCAttributeSymbol.UNDEF) {
+
+          if (att.isMinCheckedDuringParsing()) {
+            String runtimemessage = "\"Invalid minimal occurence for %attributename% in rule %rulename% : Should be %reference% but is \"+%value%+\"!\"";
+
+            runtimemessage = runtimemessage.replaceAll("%attributename%", usageName);
+            runtimemessage = runtimemessage.replaceAll("%rulename%", HelperGrammar.getRuleName(ast));
+            runtimemessage = runtimemessage.replaceAll("%value%", getCounterName(usageName));
+            runtimemessage = runtimemessage.replaceAll("%reference%", format(att.getMin()));
+
+            String message = "if (!checkMin("
+                + getCounterName(usageName)
+                + ","
+                + att.getMin()
+                + ")) { String message = "
+                + runtimemessage
+                + ";\n"
+                + "de.se_rwth.commons.logging.Log.error(message);\nsetErrors(true);}\n";
+            ret.append("\n" + message);
+          }
+        }
+
+        if (att.getMax() != MCAttributeSymbol.UNDEF && att.getMax() != MCAttributeSymbol.STAR) {
+
+          if (att.isMaxCheckedDuringParsing()) {
+
+            String runtimemessage = "\"Invalid maximal occurence for %attributename% in rule %rulename% : Should be %reference% but is \"+%value%+\"!\"";
+
+            runtimemessage = runtimemessage.replaceAll("%attributename%", usageName);
+            runtimemessage = runtimemessage.replaceAll("%rulename%", HelperGrammar.getRuleName(ast));
+            runtimemessage = runtimemessage.replaceAll("%value%", getCounterName(usageName));
+            runtimemessage = runtimemessage.replaceAll("%reference%", format(att.getMax()));
+
+            String message = "if (!checkMax("
+                + getCounterName(usageName)
+                + ","
+                + att.getMax()
+                + ")) {"
+                + " String message = "
+                + runtimemessage
+                + ";\n"
+                + "de.se_rwth.commons.logging.Log.error(message);setErrors(true);}\n";
+            ret.append("\n" + message);
+          }
+        }
+      }
+    }
 
     return ret.toString();
   }
@@ -125,20 +125,20 @@ public class AttributeCardinalityConstraint {
   public String addActionForNonTerminal(ASTNonTerminal ast) {
     StringBuilder ret = new StringBuilder();
 
-//      String usageName = HelperGrammar.getUsuageName(ast);
-//
-//      Optional<MCRuleSymbol> rule = parserGenHelper.getMCRuleForThisComponent(ast);
-//      if (!rule.isPresent()) {
-//        return ret.toString();
-//      }
-//
-//      MCAttributeSymbol att = rule.get().getDefinedType().getAttribute(usageName);
-//
-//      if (att.isMinCheckedDuringParsing() || att.isMaxCheckedDuringParsing()) {
-//        if (att.getMin() != MCAttributeSymbol.UNDEF || att.getMax() != MCAttributeSymbol.UNDEF) {
-//          ret.append(getCounterName(usageName) + "++;");
-//        }
-//      }
+      String usageName = HelperGrammar.getUsuageName(ast);
+
+      Optional<MCRuleSymbol> rule = parserGenHelper.getMCRuleForThisComponent(ast);
+      if (!rule.isPresent()) {
+        return ret.toString();
+      }
+
+      MCAttributeSymbol att = rule.get().getDefinedType().getAttribute(usageName);
+
+      if (att.isMinCheckedDuringParsing() || att.isMaxCheckedDuringParsing()) {
+        if (att.getMin() != MCAttributeSymbol.UNDEF || att.getMax() != MCAttributeSymbol.UNDEF) {
+          ret.append(getCounterName(usageName) + "++;");
+        }
+      }
 
     return ret.toString();
   }

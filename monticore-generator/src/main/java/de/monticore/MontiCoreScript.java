@@ -19,24 +19,9 @@
 
 package de.monticore;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import org.codehaus.groovy.control.customizers.ImportCustomizer;
-
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
-
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstGenerator;
 import de.monticore.codegen.cd2java.ast.CdDecorator;
@@ -44,7 +29,6 @@ import de.monticore.codegen.cd2java.ast_emf.CdEmfDecorator;
 import de.monticore.codegen.cd2java.cocos.CoCoGenerator;
 import de.monticore.codegen.cd2java.od.ODGenerator;
 import de.monticore.codegen.cd2java.visitor.VisitorGenerator;
-import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.MC2CDTransformation;
 import de.monticore.codegen.parser.ParserGenerator;
 import de.monticore.codegen.symboltable.SymbolTableGenerator;
@@ -57,14 +41,14 @@ import de.monticore.generating.templateengine.reporting.reporter.InputOutputFile
 import de.monticore.grammar.cocos.GrammarCoCos;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
-import de.monticore.grammar.symboltable.EssentialMontiCoreGrammarLanguage;
-import de.monticore.grammar.symboltable.EssentialMontiCoreGrammarSymbolTableCreator;
 import de.monticore.incremental.IncrementalChecker;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.languages.grammar.MCGrammarSymbol;
+import de.monticore.languages.grammar.MontiCoreGrammarLanguage;
+import de.monticore.languages.grammar.visitors.MCGrammarSymbolTableCreator;
 import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.umlcd4a.CD4AnalysisLanguage;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.symboltable.CD4AnalysisSymbolTableCreator;
@@ -77,7 +61,20 @@ import de.se_rwth.commons.groovy.GroovyRunner;
 import de.se_rwth.commons.groovy.GroovyRunnerBase;
 import de.se_rwth.commons.logging.Log;
 import groovy.lang.Script;
+import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import parser.MCGrammarParser;
+import de.monticore.codegen.cd2java.types.TypeResolverGenerator;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * The actual top level functional implementation of MontiCore. This is the
@@ -196,8 +193,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     enableReporting();
     this.grammarIterator = configuration.getGrammars().getResolvedPaths();
     this.glex = new GlobalExtensionManagement();
-  //  this.symbolTable = initSymbolTable(configuration.getModelPath());
-    this.symbolTable = initNewSymbolTable(configuration.getModelPath());
+    this.symbolTable = initSymbolTable(configuration.getModelPath());
     this.firstPassGrammars = new LinkedHashMap<>();
   }
   
@@ -254,6 +250,19 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     SymbolTableGenerator symbolTableGenerator = new SymbolTableGeneratorBuilder().build();
     symbolTableGenerator.generate(astGrammar, genHelper, outputDirectory, handcodedPath);
   }
+
+  /**
+   * @param astClassDiagram
+   * @param glex
+   * @param globalScope
+   * @param outputDirectory
+   * @param templatePath
+   */
+  public void generateTypeResolvers(GlobalExtensionManagement glex, GlobalScope globalScope,
+      ASTCDCompilationUnit astClassDiagram, File outputDirectory, IterablePath templatePath) {
+    VisitorGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
+    TypeResolverGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
+  }
   
   /**
    * TODO: Write me! TODO: doc that the grammar AST reference might change
@@ -261,31 +270,31 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param ast
    * @return
    */
-  public ASTMCGrammar createNewSymbolsFromAST(GlobalScope globalScope, ASTMCGrammar ast) {
+  public ASTMCGrammar createSymbolsFromAST(GlobalScope globalScope, ASTMCGrammar ast) {
     // Build grammar symbol table (if not already built)
     String qualifiedGrammarName = Names.getQualifiedName(ast.getPackage(), ast.getName());
-    Optional<EssentialMCGrammarSymbol> grammarSymbol = globalScope
-        .<EssentialMCGrammarSymbol> resolveDown(qualifiedGrammarName, EssentialMCGrammarSymbol.KIND);
+    Optional<MCGrammarSymbol> grammarSymbol = globalScope
+        .<MCGrammarSymbol> resolveDown(qualifiedGrammarName, MCGrammarSymbol.KIND);
         
     ASTMCGrammar result = ast;
     
     if (grammarSymbol.isPresent()) {
-      result = (ASTMCGrammar) grammarSymbol.get().getAstNode().get();
+      result = grammarSymbol.get().getASTGrammar();
     }
     else {
-      EssentialMontiCoreGrammarLanguage language = new EssentialMontiCoreGrammarLanguage();
+      MontiCoreGrammarLanguage language = new MontiCoreGrammarLanguage();
       
-      ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
-      resolverConfiguration.addDefaultFilters(language.getResolvers());
+      ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
+      resolvingConfiguration.addTopScopeResolvers(language.getResolvingFilters());
       
-      EssentialMontiCoreGrammarSymbolTableCreator stCreator = language.getSymbolTableCreator(resolverConfiguration,
+      MCGrammarSymbolTableCreator stCreator = language.getSymbolTableCreator(resolvingConfiguration,
           globalScope).get();
       stCreator.createFromAST(result);
       globalScope.cache(language.getModelLoader(), qualifiedGrammarName);
     }
     
-    EssentialMCGrammarSymbol symbol = (EssentialMCGrammarSymbol) result.getSymbol().get();
-    for (EssentialMCGrammarSymbol it : EssentialMCGrammarSymbolTableHelper.getAllSuperGrammars(symbol)) {
+    MCGrammarSymbol symbol = (MCGrammarSymbol) result.getSymbol().get();
+    for (MCGrammarSymbol it : symbol.getAllSuperGrammars()) {
       if (!it.getFullName().equals(symbol.getFullName())) {
         Reporting.reportOpenInputFile(null,
             Paths.get(it.getFullName().replaceAll("\\.", "/").concat(".mc4")));
@@ -321,11 +330,10 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       info("Used present symbol table for " + cdSymbol.get().getFullName());
     }
     else {
-      ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
-      resolverConfiguration.addDefaultFilters(cd4AnalysisLanguage.getResolvers());
+      ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
+      resolvingConfiguration.addTopScopeResolvers(cd4AnalysisLanguage.getResolvingFilters());
       
-      CD4AnalysisSymbolTableCreator stCreator = cd4AnalysisLanguage.getSymbolTableCreator(
-          resolverConfiguration,
+      CD4AnalysisSymbolTableCreator stCreator = cd4AnalysisLanguage.getSymbolTableCreator(resolvingConfiguration,
           globalScope).get();
       stCreator.createFromAST(result);
       globalScope.cache(cd4AnalysisLanguage.getModelLoader(), qualifiedCDName);
@@ -334,15 +342,14 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return result;
   }
   
-  public GlobalScope initNewSymbolTable(ModelPath modelPath) {
-    final ModelingLanguage mcLanguage = new EssentialMontiCoreGrammarLanguage();
+  public GlobalScope initSymbolTable(ModelPath modelPath) {
+    final MontiCoreGrammarLanguage mcLanguage = new MontiCoreGrammarLanguage();
     
-    final ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
-    resolverConfiguration.addDefaultFilters(mcLanguage.getResolvers());
-    resolverConfiguration.addDefaultFilters(cd4AnalysisLanguage.getResolvers());
+    final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
+    resolvingConfiguration.addTopScopeResolvers(mcLanguage.getResolvingFilters());
+    resolvingConfiguration.addTopScopeResolvers(cd4AnalysisLanguage.getResolvingFilters());
     
-    return new GlobalScope(modelPath, Arrays.asList(mcLanguage, cd4AnalysisLanguage),
-        resolverConfiguration);
+    return new GlobalScope(modelPath, Arrays.asList(mcLanguage, cd4AnalysisLanguage), resolvingConfiguration);
   }
   
   /**

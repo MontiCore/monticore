@@ -25,19 +25,9 @@ import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 
 /**
  * Adds source code positions building up code to the parsers
+ * 
  */
-public class SourcePositionActions {
-  
-  private ParserGeneratorHelper parserGenHelper;
-  
-  /**
-   * Constructor for de.monticore.codegen.parser.antlr.SourcePositionActions
-   * 
-   * @param parserGenHelper
-   */
-  public SourcePositionActions(ParserGeneratorHelper parserGenHelper) {
-    this.parserGenHelper = parserGenHelper;
-  }
+public class SourcePositionActions {  
   
   /**
    * Create a mc.ast.SourcePosition at the beginning of a rule
@@ -52,14 +42,14 @@ public class SourcePositionActions {
   }
   
   public String startPositionForLeftRecursiveRule(ASTNonTerminal a) {
-    return "_aNode.set_SourcePositionStart(_localctx."
-        + parserGenHelper.getTmpVarName(a)
+    return "_aNode.set_SourcePositionStart(_localctx." 
+        + ParserGeneratorHelper.getTmpVarNameForAntlrCode(a)
         + ".ret.get_SourcePositionStart());\n";
   }
   
   public String endPositionForLeftRecursiveRule(ASTNonTerminal a) {
-    return "_localctx."
-        + parserGenHelper.getTmpVarName(a)
+    return "_localctx." 
+        + ParserGeneratorHelper.getTmpVarNameForAntlrCode(a) 
         + ".ret.set_SourcePositionEnd( computeStartPosition(_input.LT(1)));\n";
   }
 }

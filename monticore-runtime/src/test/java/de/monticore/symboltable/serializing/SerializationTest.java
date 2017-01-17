@@ -38,15 +38,11 @@ import java.nio.file.Paths;
 import static org.junit.Assert.*;
 
 /**
- * TODO: Write me!
- *
  * @author  Pedram Mir Seyed Nazari
  *
  */
 public class SerializationTest {
 
-  // TODO PN test symbol reference (only name und kind)
-  
   @Before
   public void setup() {
     Path p = Paths.get("target/serialization");

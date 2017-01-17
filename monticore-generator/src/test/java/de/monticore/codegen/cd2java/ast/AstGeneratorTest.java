@@ -181,8 +181,7 @@ public class AstGeneratorTest extends GeneratorTest {
     ClassLoader l = ParserGeneratorTest.class.getClassLoader();
     try {
       String script = Resources.asCharSource(
-         // l.getResource("de/monticore/groovy/monticoreOnlyAst_emf.groovy"),
-          l.getResource("de/monticore/groovy/monticoreOnlyAst.groovy"),
+          l.getResource("de/monticore/groovy/monticoreOnlyAst_emf.groovy"),
           Charset.forName("UTF-8")).read();
       
       Configuration configuration =

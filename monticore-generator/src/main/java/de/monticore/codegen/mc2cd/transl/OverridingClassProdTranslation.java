@@ -22,18 +22,18 @@ package de.monticore.codegen.mc2cd.transl;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 
-import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
-import de.monticore.codegen.mc2cd.EssentialTransformationHelper;
+import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.symboltable.MCProdSymbol;
+import de.monticore.languages.grammar.MCRuleSymbol;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.utils.Link;
 
 /**
- * Adds the CDClass corresponding to another rule 'X' as a superclass to the
- * CDClass corresponding to 'Y' if 'Y' overwrites 'X'.
+ * Adds the CDClass corresponding to another rule 'X' as a superclass to the CDClass corresponding
+ * to 'Y' if 'Y' overwrites 'X'.
  * 
  * @author Sebastian Oberhoff
  */
@@ -47,15 +47,14 @@ public class OverridingClassProdTranslation implements
     for (Link<ASTClassProd, ASTCDClass> link : rootLink.getLinks(ASTClassProd.class,
         ASTCDClass.class)) {
       
-      Optional<MCProdSymbol> ruleSymbol = EssentialMCGrammarSymbolTableHelper
-          .resolveRuleInSupersOnly(
-              rootLink.source(),
-              link.source().getName());
-      if (ruleSymbol.isPresent() && !ruleSymbol.get().isExternal()) {
-        String qualifiedASTNodeName = EssentialTransformationHelper.getAstPackageName(ruleSymbol.get()) + "AST"
-            + ruleSymbol.get().getName();
+      Optional<MCRuleSymbol> ruleSymbol = MCGrammarSymbolTableHelper.resolveRuleInSupersOnly(
+          rootLink.source(),
+          link.source().getName());
+      if (ruleSymbol.isPresent() && !ruleSymbol.get().getDefinedType().isExternal()) {
+        String qualifiedASTNodeName = TransformationHelper.getAstPackageName(ruleSymbol.get()
+            .getGrammarSymbol()) + "AST" + ruleSymbol.get().getName();
         link.target().setSuperclass(
-            EssentialTransformationHelper.createSimpleReference(qualifiedASTNodeName));
+            TransformationHelper.createSimpleReference(qualifiedASTNodeName));
       }
       
     }

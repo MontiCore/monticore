@@ -221,7 +221,9 @@ public class InputOutputFilesReporter extends AReporter {
   
   public static final String MISSING = "not found";
   
-  private void writeContent() {
+  public static final String GEN_ERROR = "error during generation";
+  
+  private void writeContent(ASTNode ast) {
     
     // the magic TODO AHo: document
     for (Path lateOne : filesThatMatterButAreNotThereInTime) {
@@ -238,9 +240,14 @@ public class InputOutputFilesReporter extends AReporter {
     Collections.sort(outputFiles);
     
     if (inputFile != null && !inputFile.isEmpty()) {
-      String checkSum = IncrementalChecker.getChecksum(inputFile);
-      writeLine(inputFile + INPUT_STATE_SEPARATOR + checkSum);
-      
+      String checkSum;
+      if (ast != null) {
+        checkSum = IncrementalChecker.getChecksum(inputFile);
+        writeLine(inputFile + INPUT_STATE_SEPARATOR + checkSum);
+      } else {
+        writeLine(inputFile + INPUT_STATE_SEPARATOR + GEN_ERROR);
+      }
+
       for (String s : inputFiles) {
         if (s.contains(PARENT_FILE_SEPARATOR)) {
           String[] elements = s.split(PARENT_FILE_SEPARATOR);
@@ -295,7 +302,7 @@ public class InputOutputFilesReporter extends AReporter {
   
   @Override
   public void flush(ASTNode ast) {
-    writeContent();
+    writeContent(ast);
     writeFooter();
     super.flush(ast);
   }

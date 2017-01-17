@@ -131,17 +131,6 @@ public class EssentialMCGrammarSymbol extends CommonScopeSpanningSymbol {
 
     return mcProd;
   }
-  
-  public Optional<MCProdSymbol> getInheritedProd(String ruleName) {
-    Optional<MCProdSymbol> mcProd = Optional.empty();
-    Iterator<EssentialMCGrammarSymbolReference> itSuperGrammars = superGrammars.iterator();
-
-    while (!mcProd.isPresent() && itSuperGrammars.hasNext()) {
-      mcProd = itSuperGrammars.next().getReferencedSymbol().getProdWithInherited(ruleName);
-    }
-
-    return mcProd;
-  }
 
   public Map<String, MCProdSymbol> getProdsWithInherited() {
     final Map<String, MCProdSymbol> ret = new LinkedHashMap<>();

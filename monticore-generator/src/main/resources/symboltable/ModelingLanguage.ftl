@@ -48,7 +48,7 @@ import java.util.Optional;
 
 import ${fqn}._parser.${grammarName}Parser;
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
 
 public abstract class ${className} extends de.monticore.CommonModelingLanguage {
 
@@ -56,6 +56,9 @@ public abstract class ${className} extends de.monticore.CommonModelingLanguage {
     super(langName, fileEnding);
 
     initResolvingFilters();
+<#if !skipSTGen>
+    setModelNameCalculator(new ${grammarName}ModelNameCalculator());
+</#if>
   }
 
   @Override
@@ -66,8 +69,8 @@ public abstract class ${className} extends de.monticore.CommonModelingLanguage {
   <#if !skipSTGen>
   @Override
   public Optional<${grammarName}SymbolTableCreator> getSymbolTableCreator(
-      ResolverConfiguration resolverConfiguration, MutableScope enclosingScope) {
-    return Optional.of(new ${grammarName}SymbolTableCreator(resolverConfiguration, enclosingScope));
+      ResolvingConfiguration resolvingConfiguration, MutableScope enclosingScope) {
+    return Optional.of(new ${grammarName}SymbolTableCreator(resolvingConfiguration, enclosingScope));
   }
   </#if>
 
@@ -85,7 +88,7 @@ public abstract class ${className} extends de.monticore.CommonModelingLanguage {
 
   protected void initResolvingFilters() {
     <#list ruleNames as ruleName>
-    addResolver(new ${ruleName?cap_first}ResolvingFilter());
+    addResolvingFilter(new ${ruleName?cap_first}ResolvingFilter());
     </#list>
   }
 }

@@ -19,14 +19,6 @@
 
 package de.monticore;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.Collections.singletonList;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import com.google.common.collect.ImmutableList;
 import de.monticore.ast.ASTNode;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
@@ -34,11 +26,18 @@ import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Collections.singletonList;
+
 /**
  * @author Pedram Mir Nazari
  */
 public abstract class EmbeddingModelingLanguage extends CommonModelingLanguage {
-  // TODO PN by default, use file extension of host language
 
   protected ModelingLanguage hostLanguage;
   protected final Collection<ModelingLanguage> embeddedLanguages = new ArrayList<>();
@@ -78,21 +77,21 @@ public abstract class EmbeddingModelingLanguage extends CommonModelingLanguage {
    * @return all resolvers specified directly in this language, the host language and
    * all embedded languages.
    *
-   * @see CommonModelingLanguage#getResolvers()
+   * @see CommonModelingLanguage#getResolvingFilters()
    */
   @Override
-  public Collection<ResolvingFilter<? extends Symbol>> getResolvers() {
+  public Collection<ResolvingFilter<? extends Symbol>> getResolvingFilters() {
     final Set<ResolvingFilter<? extends Symbol>> resolvingFilters = new LinkedHashSet<>();
 
     // resolving filters directly stored in this (composite) language, e.g., adapters.
-    resolvingFilters.addAll(super.getResolvers());
+    resolvingFilters.addAll(super.getResolvingFilters());
 
     // Resolving filters of the host language and the embedded language are added
-    resolvingFilters.addAll(hostLanguage.getResolvers());
+    resolvingFilters.addAll(hostLanguage.getResolvingFilters());
 
     // If further embedded languages exists, their resolving filters are added too.
     for (ModelingLanguage language : embeddedLanguages) {
-      resolvingFilters.addAll(language.getResolvers());
+      resolvingFilters.addAll(language.getResolvingFilters());
     }
 
     return resolvingFilters;
@@ -122,7 +121,4 @@ public abstract class EmbeddingModelingLanguage extends CommonModelingLanguage {
   public ModelNameCalculator getModelNameCalculator() {
     return super.getModelNameCalculator();
   }
-
-
-
 }

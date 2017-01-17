@@ -27,7 +27,7 @@ import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 
 import javax.annotation.Nullable;
@@ -50,7 +50,6 @@ public class EssentialMontiCoreGrammarLanguage extends CommonModelingLanguage {
     addResolver(CommonResolvingFilter.create(EssentialMCGrammarSymbol.KIND));
     addResolver(CommonResolvingFilter.create(MCProdSymbol.KIND));
     addResolver(CommonResolvingFilter.create(MCProdComponentSymbol.KIND));
-    addResolver(CommonResolvingFilter.create(EssentialMCAttributeSymbol.KIND));
   }
   
   @Override
@@ -60,9 +59,8 @@ public class EssentialMontiCoreGrammarLanguage extends CommonModelingLanguage {
   
   @Override
   public Optional<EssentialMontiCoreGrammarSymbolTableCreator> getSymbolTableCreator(
-      ResolverConfiguration resolverConfiguration, @Nullable MutableScope enclosingScope) {
-    return Optional.of(new EssentialMontiCoreGrammarSymbolTableCreator(
-        resolverConfiguration, enclosingScope, prettyPrinter));
+      ResolvingConfiguration resolvingConfiguration, @Nullable MutableScope enclosingScope) {
+    return Optional.of(new EssentialMontiCoreGrammarSymbolTableCreator(resolvingConfiguration, enclosingScope, prettyPrinter));
   }
 
   @Override

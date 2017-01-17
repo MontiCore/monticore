@@ -21,7 +21,7 @@ package mc.embedding.external.composite._symboltable;
 
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 import mc.embedding.external.host._ast.ASTHost;
@@ -32,9 +32,9 @@ public class CompositeModelLoader extends de.monticore.modelloader.ModelingLangu
     super(language);
   }
 
-  protected void createSymbolTableFromAST(ASTHost ast, String modelName, MutableScope enclosingScope, ResolverConfiguration resolverConfiguration) {
+  protected void createSymbolTableFromAST(ASTHost ast, String modelName, MutableScope enclosingScope, ResolvingConfiguration resolvingConfiguration) {
     final CompositeSymbolTableCreator symbolTableCreator =
-        getModelingLanguage().getSymbolTableCreator(resolverConfiguration, enclosingScope).orElse(null);
+        getModelingLanguage().getSymbolTableCreator(resolvingConfiguration, enclosingScope).orElse(null);
 
     if (symbolTableCreator != null) {
       Log.debug("Start creation of symbol table for model \"" + modelName + "\".",

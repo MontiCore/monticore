@@ -19,17 +19,17 @@
 
 package mc.embedding.composite._symboltable;
 
-import java.util.Optional;
-
 import de.monticore.EmbeddingModelingLanguage;
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.ast.ASTNode;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
 import mc.embedding.composite._parser.CompositeParser;
 import mc.embedding.embedded._symboltable.EmbeddedLanguage;
 import mc.embedding.host._symboltable.HostLanguage;
+
+import java.util.Optional;
 
 public class CompositeLanguage extends EmbeddingModelingLanguage {
 
@@ -47,8 +47,8 @@ public class CompositeLanguage extends EmbeddingModelingLanguage {
   }
 
   @Override public Optional<CompositeSymbolTableCreator> getSymbolTableCreator(
-      ResolverConfiguration resolverConfiguration, MutableScope enclosingScope) {
-    return Optional.of(new CompositeSymbolTableCreator(resolverConfiguration, enclosingScope));
+      ResolvingConfiguration resolvingConfiguration, MutableScope enclosingScope) {
+    return Optional.of(new CompositeSymbolTableCreator(resolvingConfiguration, enclosingScope));
   }
 
   @Override protected ModelingLanguageModelLoader<? extends ASTNode> provideModelLoader() {

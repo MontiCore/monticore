@@ -19,7 +19,27 @@
 
 package de.monticore.codegen.parser.antlr;
 
-import static de.monticore.codegen.parser.ParserGeneratorHelper.printIteration;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import de.monticore.ast.ASTNode;
+import de.monticore.codegen.parser.ParserGeneratorHelper;
+import de.monticore.grammar.DirectLeftRecursionDetector;
+import de.monticore.grammar.HelperGrammar;
+import de.monticore.grammar.MCGrammarInfo;
+import de.monticore.grammar.grammar._ast.*;
+import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
+import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
+import de.monticore.languages.grammar.MCAttributeSymbol;
+import de.monticore.languages.grammar.MCGrammarSymbol;
+import de.monticore.languages.grammar.MCRuleComponentSymbol;
+import de.monticore.languages.grammar.MCRuleSymbol;
+import de.monticore.languages.grammar.MCRuleSymbol.KindSymbolRule;
+import de.monticore.languages.grammar.MCTypeSymbol;
+import de.monticore.languages.grammar.MCTypeSymbol.KindType;
+import de.monticore.languages.grammar.PredicatePair;
+import de.monticore.symboltable.Symbol;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,51 +47,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-
-import de.monticore.ast.ASTNode;
-import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
-import de.monticore.codegen.parser.ParserGeneratorHelper;
-import de.monticore.grammar.DirectLeftRecursionDetector;
-import de.monticore.grammar.EssentialMCGrammarInfo;
-import de.monticore.grammar.HelperGrammar;
-import de.monticore.grammar.grammar._ast.ASTAlt;
-import de.monticore.grammar.grammar._ast.ASTAnything;
-import de.monticore.grammar.grammar._ast.ASTBlock;
-import de.monticore.grammar.grammar._ast.ASTClassProd;
-import de.monticore.grammar.grammar._ast.ASTConstant;
-import de.monticore.grammar.grammar._ast.ASTConstantGroup;
-import de.monticore.grammar.grammar._ast.ASTEnumProd;
-import de.monticore.grammar.grammar._ast.ASTEof;
-import de.monticore.grammar.grammar._ast.ASTLexActionOrPredicate;
-import de.monticore.grammar.grammar._ast.ASTLexAlt;
-import de.monticore.grammar.grammar._ast.ASTLexAnyChar;
-import de.monticore.grammar.grammar._ast.ASTLexBlock;
-import de.monticore.grammar.grammar._ast.ASTLexChar;
-import de.monticore.grammar.grammar._ast.ASTLexCharRange;
-import de.monticore.grammar.grammar._ast.ASTLexNonTerminal;
-import de.monticore.grammar.grammar._ast.ASTLexOption;
-import de.monticore.grammar.grammar._ast.ASTLexProd;
-import de.monticore.grammar.grammar._ast.ASTLexSimpleIteration;
-import de.monticore.grammar.grammar._ast.ASTLexString;
-import de.monticore.grammar.grammar._ast.ASTMCAnything;
-import de.monticore.grammar.grammar._ast.ASTNonTerminal;
-import de.monticore.grammar.grammar._ast.ASTOptionValue;
-import de.monticore.grammar.grammar._ast.ASTProd;
-import de.monticore.grammar.grammar._ast.ASTSemanticpredicateOrAction;
-import de.monticore.grammar.grammar._ast.ASTTerminal;
-import de.monticore.grammar.grammar._ast.GrammarNodeFactory;
-import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
-import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
-import de.monticore.grammar.symboltable.MCProdSymbol;
-import de.monticore.languages.grammar.MCRuleComponentSymbol;
-import de.monticore.languages.grammar.MCRuleSymbol;
-import de.monticore.languages.grammar.PredicatePair;
-import de.monticore.symboltable.Symbol;
-import de.se_rwth.commons.logging.Log;
+import static de.monticore.codegen.parser.ParserGeneratorHelper.getMCRuleForThisComponent;
+import static de.monticore.codegen.parser.ParserGeneratorHelper.getTmpVarNameForAntlrCode;
+import static de.monticore.codegen.parser.ParserGeneratorHelper.printIteration;
 
 /**
  * TODO: Write me!
@@ -81,7 +59,7 @@ import de.se_rwth.commons.logging.Log;
  */
 public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
-  private EssentialMCGrammarSymbol grammarEntry;
+  private MCGrammarSymbol grammarEntry;
 
   /**
    * This list is used for the detection of the left recursion
@@ -90,7 +68,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
   private DirectLeftRecursionDetector leftRecursionDetector = new DirectLeftRecursionDetector();
 
-  private SourcePositionActions positionActions;
+  private SourcePositionActions positionActions = new SourcePositionActions();
 
   private AttributeCardinalityConstraint attributeConstraints;
 
@@ -102,19 +80,15 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
   private StringBuilder action;
 
-  private EssentialMCGrammarInfo grammarInfo;
+  private MCGrammarInfo grammarInfo;
 
-  private ParserGeneratorHelper parserHelper;
-
-  public Grammar2Antlr(ParserGeneratorHelper parserGeneratorHelper, EssentialMCGrammarInfo grammarInfo) {
+  public Grammar2Antlr(ParserGeneratorHelper parserGeneratorHelper, MCGrammarInfo grammarInfo) {
     Preconditions.checkArgument(parserGeneratorHelper.getGrammarSymbol() != null);
     this.grammarEntry = parserGeneratorHelper.getGrammarSymbol();
     this.grammarInfo = grammarInfo;
-    this.parserHelper = parserGeneratorHelper;
 
     astActions = new ASTConstructionActions(parserGeneratorHelper);
     attributeConstraints = new AttributeCardinalityConstraint(parserGeneratorHelper);
-    positionActions = new SourcePositionActions(parserGeneratorHelper);
 
   }
 
@@ -175,11 +149,10 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     // Create eof and dummy rules
     String ruleName = HelperGrammar.getRuleNameForAntlr(ast);
-    Optional<MCProdSymbol> ruleByName = grammarEntry
-        .getProdWithInherited(HelperGrammar.getRuleName(ast));
-//    String classnameFromRulenameorInterfacename = ruleByName.getType()
-//        .getQualifiedName();
-    String classnameFromRulenameorInterfacename = ruleByName.get().getFullName();
+    MCRuleSymbol ruleByName = grammarEntry
+        .getRuleWithInherited(HelperGrammar.getRuleName(ast));
+    String classnameFromRulenameorInterfacename = ruleByName.getType()
+        .getQualifiedName();
 
     // Head of Rule
     // Pattern:
@@ -201,7 +174,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     // Start code codeSection for rules
     addToCodeSection(ruleName, " returns [", classnameFromRulenameorInterfacename, " ret = ",
-        EssentialMCGrammarSymbolTableHelper.getDefaultValue(ruleByName.get()), "]\n", options);
+        ruleByName.getType().getDefaultValue(), "]\n", options);
 
     startAction();
     // Add actions
@@ -239,7 +212,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     startCodeSection();
     addToCodeSection("\n : ");
 
-    List<PredicatePair> subRules = grammarInfo
+    List<PredicatePair> subRules = grammarEntry
         .getSubRulesForParsing(HelperGrammar.getRuleName(ast));
     if (subRules != null && !subRules.isEmpty()) {
 
@@ -282,13 +255,13 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     // Create eof and dummy rules
     String ruleName = HelperGrammar.getRuleNameForAntlr(ast.getName());
-    Optional<MCProdSymbol> ruleByName = grammarEntry.getProdWithInherited(ast
+    MCRuleSymbol ruleByName = grammarEntry.getRuleWithInherited(ast
         .getName());
 
     // Head of Rule
     addToCodeSection(ruleName + " returns ["
-        + EssentialMCGrammarSymbolTableHelper.getQualifiedName(ruleByName.get()) + " ret = "
-        + EssentialMCGrammarSymbolTableHelper.getDefaultValue(ruleByName.get()) + "] ");
+        + ruleByName.getType().getQualifiedName() + " ret = "
+        + ruleByName.getType().getDefaultValue() + "] ");
 
     addToCodeSection("\n: ");
 
@@ -299,12 +272,12 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
         addToCodeSection("\n'" + c.getName() + "'");
       }
       else {
-        addToCodeSection("\n", parserHelper.getLexSymbolName(c.getName()));
+        addToCodeSection("\n", grammarEntry.getLexSymbolName(c.getName()));
       }
 
       String temp1 = "";
-      temp1 += "$ret = " + EssentialMCGrammarSymbolTableHelper.getQualifiedName(ruleByName.get()) + "."
-          + parserHelper.getConstantNameForConstant(c) + ";";
+      temp1 += "$ret = " + ruleByName.getType().getQualifiedName() + "."
+          + grammarEntry.getConstantNameForConstant(c) + ";";
 
       if (!temp1.isEmpty()) {
         addToCodeSection("\n{" + temp1 + "}");
@@ -326,26 +299,25 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     startCodeSection(ast);
 
     boolean iterated = false;
-    // TODO GV:
-//    if (ast.getUsageName().isPresent()) {
-//      Optional<MCProdSymbol> ruleSymbol = EssentialMCGrammarSymbolTableHelper.getEnclosingRule(ast);
-//      if (ruleSymbol.isPresent() && ruleSymbol.get().getDefinedType() != null) {
-//        MCAttributeSymbol attribute = ruleSymbol.get().getDefinedType()
-//            .getAttribute(ast.getUsageName().get());
-//        MCTypeSymbol type = attribute.getType();
-//        if ("int".equals(type.getQualifiedName()) ||
-//            (type.getKindOfType().equals(KindType.CONST) && type.getEnumValues().size() > 1)) {
-//          iterated = true;
-//        }
-//      }
- //   }
-    iterated = ast.getConstants().size() > 1;
-    
+    if (ast.getUsageName().isPresent()) {
+      Optional<MCRuleSymbol> ruleSymbol = getMCRuleForThisComponent(ast
+          .getUsageName().get(), ast);
+      if (ruleSymbol.isPresent() && ruleSymbol.get().getDefinedType() != null) {
+        MCAttributeSymbol attribute = ruleSymbol.get().getDefinedType()
+            .getAttribute(ast.getUsageName().get());
+        MCTypeSymbol type = attribute.getType();
+        if ("int".equals(type.getQualifiedName()) ||
+            (type.getKindOfType().equals(KindType.CONST) && type.getEnumValues().size() > 1)) {
+          iterated = true;
+        }
+      }
+    }
+
     // One entry leads to boolean isMethods
     if (!iterated) {
       ASTConstant x = ast.getConstants().get(0);
       if (!grammarInfo.isKeyword(x.getName(), grammarEntry)) {
-        addToCodeSection(parserHelper.getLexSymbolName(x.getName()));
+        addToCodeSection(grammarEntry.getLexSymbolName(x.getName()));
       }
       else {
         addToCodeSection("'" + x.getName() + "'");
@@ -381,7 +353,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
            * grammarEntry.getLexSymbolName(x.getName())); } else { tmp =
            * tmp.replaceAll("%constantname%", (x.getHumanName().toUpperCase()));
            * } */
-          addToCodeSection(parserHelper.getLexSymbolName(x.getName()));
+          addToCodeSection(grammarEntry.getLexSymbolName(x.getName()));
         }
         else {
           /* // Template //
@@ -550,35 +522,24 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       rulename = "'" + ast.getName() + "'";
     }
     else {
-      rulename = parserHelper.getLexSymbolName(ast.getName().intern());
+      rulename = grammarEntry.getLexSymbolName(ast.getName().intern());
     }
 
     // No actions in predicates
     // Template engine cannot be used for substition in rare cases
     addToCodeSection(rulename); // + " %initaction% %actions% ) %iteration% ";
 
-    boolean iteratedItself = HelperGrammar.isIterated(ast);
-    boolean isVariable = (ast.getVariableName().isPresent());
     boolean isAttribute = (ast.getUsageName().isPresent());
 
     // Add Actions
     startAction();
-    if (isVariable) {
-      if (iteratedItself) {
-        addToAction(astActions.getActionForTerminalIteratedVariable(ast));
+    if (isAttribute) {
+      Optional<MCRuleSymbol> scope = getMCRuleForThisComponent(
+          ast.getName(), ast);
+      if (!scope.isPresent()) {
+        return;
       }
-      else {
-        addToAction(astActions.getActionForTerminalNotIteratedVariable(ast));
-      }
-    }
-    else if (isAttribute) {
-      //TODO GV:
-//      Optional<MCProdSymbol> scope = EssentialMCGrammarSymbolTableHelper.getEnclosingRule(ast);
-//      if (!scope.isPresent()) {
-//        return;
-//      }
-//      if (scope.get().getDefinedType().getAttribute(ast.getUsageName().get()).isIterated()) {
-      if (iteratedItself) {
+      if (scope.get().getDefinedType().getAttribute(ast.getUsageName().get()).isIterated()) {
         addToAction(astActions.getActionForTerminalIteratedAttribute(ast));
       }
       else {
@@ -702,25 +663,21 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
   public void visit(ASTNonTerminal ast) {
     startCodeSection();
 
-    parserHelper.resetTmpVarNames();
-    
-    Optional<MCProdSymbol> prod = grammarEntry.getProdWithInherited(ast.getName());
-    if (!prod.isPresent()) {
-      Log.error("0xA2201 Production symbol for  " + ast.getName() + "couldn't be resolved.", ast.get_SourcePositionStart());
-    }
-    
     // Lexer Rule
-    if (prod.get().isLexerProd()) {
+    if (grammarEntry.getRuleWithInherited(ast.getName()).getKindSymbolRule()
+        .equals(KindSymbolRule.LEXERRULE)) {
+
       addCodeForLexerRule(ast);
     }
     // Other Rule called
-    else if (prod.get().isParserProd() 
+    else if (grammarEntry.getRuleWithInherited(ast.getName()).getKindSymbolRule()
+        .equals(KindSymbolRule.PARSERRULE)
         ||
-        prod.get().isInterface()
+        grammarEntry.getRuleWithInherited(ast.getName()).getKindSymbolRule()
+            .equals(KindSymbolRule.INTERFACEORABSTRACTRULE)
         ||
-        prod.get().isAbstract()
-        ||
-        prod.get().isEnum()) {
+        grammarEntry.getRuleWithInherited(ast.getName()).getKindSymbolRule()
+            .equals(KindSymbolRule.ENUMRULE)) {
 
       addCodeForRuleReference(ast);
     }
@@ -799,9 +756,9 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     String del = "";
 
     int count = 0;
-    for (PredicatePair interf : grammarInfo.getSubRulesForParsing(interfacename)) {
+    for (PredicatePair interf : grammarEntry.getSubRulesForParsing(interfacename)) {
       addToAntlrCode(del);
-      Optional<MCProdSymbol> prod = grammarEntry.getProdWithInherited(interf.getClassname());
+      MCRuleSymbol r = grammarEntry.getRuleWithInherited(interf.getClassname());
 
       if (interf.getComponent().isPresent()) {
         interf.getComponent().get().accept(getRealThis());
@@ -810,19 +767,18 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       startCodeSection();
       addToCodeSection("tmp" + count + "="
           + HelperGrammar.getRuleNameForAntlr(interf.getClassname()));
-      // TODO GV: don't need it anymore?
-//      int size = 0;
-//      if (prod != null) {
-//        size = prod.getNoParam();
-//      }
-//
-//      if (size > 0) {
-//        addToCodeSection("[null");
-//        for (int j = 1; j < size; j++) {
-//          addToCodeSection(",null");
-//        }
-//        addToCodeSection("]");
-//      }
+      int size = 0;
+      if (r != null) {
+        size = r.getNoParam();
+      }
+
+      if (size > 0) {
+        addToCodeSection("[null");
+        for (int j = 1; j < size; j++) {
+          addToCodeSection(",null");
+        }
+        addToCodeSection("]");
+      }
 
       // Action for AntLR4
       addToCodeSection("\n{$ret=$tmp" + count + ".ret;}");
@@ -856,20 +812,18 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     // AntLR2 -> AntLR4: Replace : by =
     // tmp = "( %tmp%=%rulename% %initaction% %actions%";
 
-    addToCodeSection(parserHelper.getTmpVarName(ast), "=", ast.getName());
+    addToCodeSection(getTmpVarNameForAntlrCode(ast), "=", ast.getName());
 
     // Add Actions
     startAction();
 
-    Optional<MCProdSymbol> scope = EssentialMCGrammarSymbolTableHelper.getEnclosingRule(ast);
+    Optional<MCRuleSymbol> scope = getMCRuleForThisComponent(ast);
 
     if (scope.isPresent()) {
       addToAction(attributeConstraints.addActionForNonTerminal(ast));
-      //TODO GV:
-  //    String attributename = HelperGrammar.getUsuageName(ast);
-  
-//      if (scope.get().getDefinedType().getAttribute(attributename).isIterated()) {
-      if (HelperGrammar.isIterated(ast)) {
+
+      String attributename = HelperGrammar.getUsuageName(ast);
+      if (scope.get().getDefinedType().getAttribute(attributename).isIterated()) {
         addToAction(astActions.getActionForLexerRuleIteratedAttribute(ast));
       }
       else {
@@ -923,7 +877,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
    * @return
    */
   private void addCodeForRuleReference(ASTNonTerminal ast) {
-    Optional<MCProdSymbol> scope = EssentialMCGrammarSymbolTableHelper.getEnclosingRule(ast);
+    Optional<MCRuleSymbol> scope = getMCRuleForThisComponent(ast);
 
     boolean isLeftRecursive = false;
     if (scope.isPresent() && scope.get().getName().equals(ast.getName())
@@ -942,7 +896,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     String braceopen = iteration.isEmpty() ? "" : "(";
     String braceclose = iteration.isEmpty() ? "" : ")";
 
-    String tmpVarName = parserHelper.getTmpVarName(ast);
+    String tmpVarName = getTmpVarNameForAntlrCode(ast);
 
     addToCodeSection(braceopen, " ", tmpVarName, "=", HelperGrammar.getRuleNameForAntlr(ast));
 
@@ -953,11 +907,10 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
           .getActionForInternalRuleNotIteratedLeftRecursiveAttribute(ast));
     }
     addToAction(attributeConstraints.addActionForNonTerminal(ast));
-// TODO GV:
-//    String attributename = HelperGrammar.getUsuageName(ast);
-//    if (scope.isPresent()
-//        && scope.get().getDefinedType().getAttribute(attributename).isIterated()) {
-    if (HelperGrammar.isIterated(ast)) {
+
+    String attributename = HelperGrammar.getUsuageName(ast);
+    if (scope.isPresent()
+        && scope.get().getDefinedType().getAttribute(attributename).isIterated()) {
       addToAction(astActions.getActionForInternalRuleIteratedAttribute(ast));
     }
     else {
@@ -987,22 +940,12 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     // Template engine cannot be used for substition in rare cases
     addToCodeSection(rulename); // + " %initaction% %actions% ) %iteration% ";
 
-    boolean iteratedItself = HelperGrammar.isIterated(keyword);
-    boolean isVariable = (keyword.getVariableName().isPresent());
     boolean isAttribute = (keyword.getUsageName().isPresent());
 
     // Add Actions
     startAction();
 
-    if (isVariable) {
-      if (iteratedItself) {
-        addToAction(astActions.getActionForTerminalIteratedVariable(keyword));
-      }
-      else {
-        addToAction(astActions.getActionForTerminalNotIteratedVariable(keyword));
-      }
-    }
-    else if (isAttribute) {
+    if (isAttribute) {
       if (rule.getDefinedType().getAttribute(keyword.getUsageName().get()).isIterated()) {
         addToAction(astActions.getActionForTerminalIteratedAttribute(keyword));
       }
@@ -1030,19 +973,20 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     String follow = "EOF";
     String end = " ;\n\n";
 
-    Optional<ASTAlt> follow2 = parserHelper.getAlternativeForFollowOption(rulenameInternal);
-    if (!follow2.isPresent()) {
+    MCRuleSymbol ruleByName = grammarEntry.getRuleWithInherited(rulenameInternal);
+    ASTAlt follow2 = ruleByName.getFollow();
+    if (follow2 == null) {
       addToCodeSection(follow, end);
       endCodeSection();
       return;
     }
     endCodeSection();
 
-    follow2.get().accept(getRealThis());
+    follow2.accept(getRealThis());
 
     addToAntlrCode(end);
   }
-  
+
   // ----------------------------------------------------------
 
   /**

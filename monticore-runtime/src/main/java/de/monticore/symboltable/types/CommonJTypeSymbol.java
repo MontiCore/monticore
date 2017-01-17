@@ -42,7 +42,7 @@ import static de.monticore.symboltable.Symbols.sortSymbolsByPosition;
  * @param <T>
  * @param <S>
  */
-public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JAttributeSymbol, U extends JMethodSymbol, V extends JTypeReference<T>>
+public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JFieldSymbol, U extends JMethodSymbol, V extends JTypeReference<T>>
     extends CommonScopeSpanningSymbol implements JTypeSymbol {
 
   private final JAttributeSymbolKind attributeKind;
@@ -68,7 +68,7 @@ public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JAttri
   }
 
   protected CommonJTypeSymbol(String name) {
-    this(name, JTypeSymbol.KIND, JAttributeSymbol.KIND, JMethodSymbol.KIND);
+    this(name, JTypeSymbol.KIND, JFieldSymbol.KIND, JMethodSymbol.KIND);
   }
 
   @Override

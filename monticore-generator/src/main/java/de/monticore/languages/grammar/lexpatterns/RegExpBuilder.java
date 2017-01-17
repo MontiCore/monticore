@@ -19,8 +19,6 @@
 
 package de.monticore.languages.grammar.lexpatterns;
 
-import java.util.Optional;
-
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.grammar._ast.ASTLexAlt;
 import de.monticore.grammar.grammar._ast.ASTLexBlock;
@@ -30,16 +28,16 @@ import de.monticore.grammar.grammar._ast.ASTLexNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTLexProd;
 import de.monticore.grammar.grammar._ast.ASTLexString;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
-import de.monticore.grammar.symboltable.MCProdSymbol;
+import de.monticore.languages.grammar.MCGrammarSymbol;
+import de.monticore.languages.grammar.MCLexRuleSymbol;
 
 public class RegExpBuilder implements Grammar_WithConceptsVisitor {
   
   private StringBuilder b;
   
-  private EssentialMCGrammarSymbol st;
+  private MCGrammarSymbol st;
   
-  public RegExpBuilder(StringBuilder b, EssentialMCGrammarSymbol st) {
+  public RegExpBuilder(StringBuilder b, MCGrammarSymbol st) {
     this.b = b;
     this.st = st;
     
@@ -159,9 +157,9 @@ public class RegExpBuilder implements Grammar_WithConceptsVisitor {
   @Override
   public void visit(ASTLexNonTerminal a) {
     
-    Optional<MCProdSymbol> lexrule = st.getProd(a.getName());
+    MCLexRuleSymbol lexrule = (MCLexRuleSymbol) st.getRule(a.getName());
     
-    b.append("TODO 1" + lexrule.get().getName());
+    b.append(lexrule);
     
   }
   

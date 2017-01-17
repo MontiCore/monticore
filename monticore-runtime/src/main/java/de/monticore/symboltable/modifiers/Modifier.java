@@ -20,8 +20,6 @@
 package de.monticore.symboltable.modifiers;
 
 /**
- * TODO: Write me!
- *
  * @author Pedram Mir Seyed Nazari
  *
  */

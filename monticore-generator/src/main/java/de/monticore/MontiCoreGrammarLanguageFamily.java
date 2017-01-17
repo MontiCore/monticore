@@ -28,7 +28,7 @@ import de.monticore.languages.grammar.MontiCoreGrammarLanguage;
 public class MontiCoreGrammarLanguageFamily extends ModelingLanguageFamily {
 
   public MontiCoreGrammarLanguageFamily() {
-  //  addModelingLanguage(new MontiCoreGrammarLanguage());
+    addModelingLanguage(new MontiCoreGrammarLanguage());
     addModelingLanguage(new EssentialMontiCoreGrammarLanguage());
   }
 }

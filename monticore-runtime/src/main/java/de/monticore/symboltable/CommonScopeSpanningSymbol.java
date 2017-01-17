@@ -24,8 +24,7 @@ package de.monticore.symboltable;
  */
 public abstract class CommonScopeSpanningSymbol extends CommonSymbol implements ScopeSpanningSymbol {
 
-  // TODO PN make field private (after bootstrapping is conducted)
-  protected final MutableScope spannedScope;
+  private final MutableScope spannedScope;
 
   /**
    * @see CommonSymbol#CommonSymbol(String, SymbolKind)

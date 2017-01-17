@@ -25,14 +25,14 @@
 
 package mc.embedding.transitive.transcomposite._symboltable;
 
-import java.util.Optional;
-
 import de.monticore.EmbeddingModelingLanguage;
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
 import mc.embedding.composite._symboltable.CompositeLanguage;
 import mc.embedding.transitive.transcomposite._parser.TransCompositeParser;
 import mc.embedding.transitive.transhost._symboltable.TransHostLanguage;
+
+import java.util.Optional;
 
 public class TransCompositeLanguage extends EmbeddingModelingLanguage {
 
@@ -63,12 +63,12 @@ public class TransCompositeLanguage extends EmbeddingModelingLanguage {
   }
 
   /**
-   * @see de.monticore.ModelingLanguage#getSymbolTableCreator(de.monticore.symboltable.ResolverConfiguration, de.monticore.symboltable.MutableScope)
+   * @see de.monticore.ModelingLanguage#getSymbolTableCreator(ResolvingConfiguration, de.monticore.symboltable.MutableScope)
    */
   @Override
   public Optional<TransCompositeSymbolTableCreator> getSymbolTableCreator(
-      ResolverConfiguration resolverConfiguration, MutableScope enclosingScope) {
-    return Optional.of(new TransCompositeSymbolTableCreator(resolverConfiguration, enclosingScope));
+      ResolvingConfiguration resolvingConfiguration, MutableScope enclosingScope) {
+    return Optional.of(new TransCompositeSymbolTableCreator(resolvingConfiguration, enclosingScope));
   }
 
   /**

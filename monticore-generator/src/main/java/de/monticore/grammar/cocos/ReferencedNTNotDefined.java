@@ -19,13 +19,16 @@
 
 package de.monticore.grammar.cocos;
 
+import java.util.Optional;
+
 import de.monticore.grammar.grammar._ast.ASTAbstractProd;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
+import de.monticore.languages.grammar.MCGrammarSymbol;
+import de.monticore.languages.grammar.MCRuleSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -42,18 +45,21 @@ public class ReferencedNTNotDefined implements GrammarASTMCGrammarCoCo {
 
   @Override
   public void check(ASTMCGrammar a) {
-    EssentialMCGrammarSymbol grammarSymbol = (EssentialMCGrammarSymbol) a.getSymbol().get();
+    MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol().get();
     for(ASTClassProd p :a.getClassProds()) {
-        if (!p.getSuperRule().isEmpty() && p.getSymbol().isPresent()) {
+      Optional<MCRuleSymbol> ruleSymbol = (Optional<MCRuleSymbol>) p.getSymbol();
+      if (ruleSymbol.isPresent()) {
+        if (!p.getSuperRule().isEmpty()) {
           for (ASTRuleReference sr : p.getSuperRule()) {
-            if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
+            if (grammarSymbol.getRuleWithInherited(sr.getName()) == null) {
               Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "", sr.getName(), sr.getName()),
                       p.get_SourcePositionStart());
             }
+          }
         }
         if (!p.getSuperInterfaceRule().isEmpty()) {
           for (ASTRuleReference sr : p.getSuperInterfaceRule()) {
-            if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
+            if (grammarSymbol.getRuleWithInherited(sr.getName()) == null) {
               Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "interface ", sr.getName(), sr.getName()),
                       p.get_SourcePositionStart());
             }
@@ -63,16 +69,19 @@ public class ReferencedNTNotDefined implements GrammarASTMCGrammarCoCo {
       }
     }
     for(ASTAbstractProd p: a.getAbstractProds()){
-        if (!p.getSuperRule().isEmpty() && p.getSymbol().isPresent()) {
+      Optional<MCRuleSymbol> ruleSymbol = (Optional<MCRuleSymbol>) p.getSymbol();
+      if (ruleSymbol.isPresent()) {
+        if (!p.getSuperRule().isEmpty()) {
           for (ASTRuleReference sr : p.getSuperRule()) {
-            if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
+            if (grammarSymbol.getRuleWithInherited(sr.getName()) == null) {
               Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "", sr.getName(), sr.getName()),
                       p.get_SourcePositionStart());
             }
+          }
         }
-        if (!p.getSuperInterfaceRule().isEmpty() && p.getSymbol().isPresent()) {
+        if (!p.getSuperInterfaceRule().isEmpty()) {
           for (ASTRuleReference sr : p.getSuperInterfaceRule()) {
-            if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
+            if (grammarSymbol.getRuleWithInherited(sr.getName()) == null) {
               Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "interface ", sr.getName(), sr.getName()),
                       p.get_SourcePositionStart());
             }
@@ -83,13 +92,16 @@ public class ReferencedNTNotDefined implements GrammarASTMCGrammarCoCo {
 
     }
     for(ASTInterfaceProd p : a.getInterfaceProds()){
-      if (!p.getSuperInterfaceRule().isEmpty() && p.getSymbol().isPresent()) {
+      Optional<MCRuleSymbol> ruleSymbol = (Optional<MCRuleSymbol>) p.getSymbol();
+      if (ruleSymbol.isPresent()) {
+        if (!p.getSuperInterfaceRule().isEmpty()) {
           for (ASTRuleReference sr : p.getSuperInterfaceRule()) {
-            if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
+            if (grammarSymbol.getRuleWithInherited(sr.getName()) == null) {
               Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "interface ", sr.getName(), sr.getName()),
                       p.get_SourcePositionStart());
             }
           }
+        }
 
       }
     }

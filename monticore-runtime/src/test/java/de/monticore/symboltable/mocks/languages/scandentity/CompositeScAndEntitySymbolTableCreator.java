@@ -19,21 +19,21 @@
 
 package de.monticore.symboltable.mocks.languages.scandentity;
 
+import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.CommonSymbolTableCreator;
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.mocks.languages.entity.EntityLanguageSymbolTableCreator;
 import de.monticore.symboltable.mocks.languages.entity.asts.ASTEntity;
 import de.monticore.symboltable.mocks.languages.entity.asts.ASTEntityBase;
 import de.monticore.symboltable.mocks.languages.statechart.StateChartLanguageSymbolTableCreator;
 import de.monticore.symboltable.mocks.languages.statechart.asts.ASTStateChartBase;
-import de.monticore.ast.ASTNode;
 
 // TODO PN implement generic CompositeSymbolTableCreator?
 public class CompositeScAndEntitySymbolTableCreator extends CommonSymbolTableCreator implements
     EntityLanguageSymbolTableCreator, StateChartLanguageSymbolTableCreator {
 
-  public CompositeScAndEntitySymbolTableCreator(ResolverConfiguration resolverConfig, MutableScope enclosingScope) {
+  public CompositeScAndEntitySymbolTableCreator(ResolvingConfiguration resolverConfig, MutableScope enclosingScope) {
     super(resolverConfig, enclosingScope);
   }
 

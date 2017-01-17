@@ -30,7 +30,6 @@
  * @author  Pedram Mir Seyed Nazari
  *
  */
-// TODO PN create an technical interface analogous to Scope and ScopeManipulationApi?
 public interface Symbol {
 
   /**
@@ -58,8 +57,6 @@ public interface Symbol {
   String getFullName();
 
 
-  // TODO getPackageName() and getQualifiedName() => getName() should return simple name
-
   /**
    * @return the symbol kind
    */
@@ -79,7 +76,6 @@ public interface Symbol {
    * the symbol does not have any access modifier. Note that this is not the same as the (implicit) access
    * modifier {@link de.monticore.symboltable.modifiers.BasicAccessModifier#PACKAGE_LOCAL} of Java.
    */
-  // TODO PN return Optional instead
   default AccessModifier getAccessModifier() {
     return AccessModifier.ALL_INCLUSION;
   }
@@ -98,7 +94,6 @@ public interface Symbol {
   /**
    * @return the corresponding ast node
    */
-  // TODO PN doc we don't use <? extends ASTNode> since this could lead to problems with symbol composition
   Optional<ASTNode> getAstNode();
 
   /**
@@ -107,7 +102,6 @@ public interface Symbol {
    *
    * @see #getAstNode()
    */
-  // TODO PN make source position optional
   default SourcePosition getSourcePosition() {
     if (getAstNode().isPresent()) {
       return getAstNode().get().get_SourcePositionStart();

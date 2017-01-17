@@ -114,11 +114,11 @@ public class MontiCoreScriptTest {
   }
   
   /** {@link MontiCoreScript#generateParser(ASTMCGrammar, String)} */
-//  @Test
+  @Test
   public void testGenerateParser() {
     assertNotNull(grammar);
     MontiCoreScript mc = new MontiCoreScript();
-    GlobalScope symbolTable = mc.initNewSymbolTable(modelPath);
+    GlobalScope symbolTable = mc.initSymbolTable(modelPath);
     mc.generateParser(grammar, symbolTable, IterablePath.empty(), new File("target/generated-sources/monticore/testcode"));
   }
   
@@ -126,8 +126,8 @@ public class MontiCoreScriptTest {
   @Test
   public void testTransformAstGrammarToAstCd() {
     MontiCoreScript mc = new MontiCoreScript();
-    GlobalScope symbolTable = mc.initNewSymbolTable(modelPath);
-    mc.createNewSymbolsFromAST(symbolTable, grammar);
+    GlobalScope symbolTable = mc.initSymbolTable(modelPath);
+    mc.createSymbolsFromAST(symbolTable, grammar);
     cdCompilationUnit = mc.transformAstGrammarToAstCd(
         new GlobalExtensionManagement(), grammar, symbolTable, targetPath);
     assertNotNull(cdCompilationUnit);
@@ -139,8 +139,8 @@ public class MontiCoreScriptTest {
   @Test
   public void testDecorateCd() {
     MontiCoreScript mc = new MontiCoreScript();
-    GlobalScope symbolTable = mc.initNewSymbolTable(modelPath);
-    mc.createNewSymbolsFromAST(symbolTable, grammar);
+    GlobalScope symbolTable = mc.initSymbolTable(modelPath);
+    mc.createSymbolsFromAST(symbolTable, grammar);
     cdCompilationUnit = mc.transformAstGrammarToAstCd(new GlobalExtensionManagement(),
         grammar, symbolTable, targetPath);
     assertNotNull(cdCompilationUnit);
@@ -181,8 +181,8 @@ public class MontiCoreScriptTest {
   @Test
   public void testGenerate() {
     MontiCoreScript mc = new MontiCoreScript();
-    GlobalScope symbolTable = mc.initNewSymbolTable(modelPath);
-    mc.createNewSymbolsFromAST(symbolTable, grammar);
+    GlobalScope symbolTable = mc.initSymbolTable(modelPath);
+    mc.createSymbolsFromAST(symbolTable, grammar);
     cdCompilationUnit = mc.transformAstGrammarToAstCd(new GlobalExtensionManagement(),
         grammar, symbolTable, targetPath);
     mc.storeInCdFile(cdCompilationUnit, outputPath);

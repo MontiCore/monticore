@@ -21,13 +21,11 @@ package de.monticore.grammar.cocos;
 
 import java.util.Optional;
 
-import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._cocos.GrammarASTNonTerminalCoCo;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
-import de.monticore.grammar.symboltable.MCProdComponentSymbol;
-import de.monticore.grammar.symboltable.MCProdSymbol;
-import de.monticore.symboltable.ScopeSpanningSymbol;
+import de.monticore.languages.grammar.MCGrammarSymbol;
+import de.monticore.languages.grammar.MCRuleComponentSymbol;
+import de.monticore.languages.grammar.MCRuleSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -36,22 +34,20 @@ import de.se_rwth.commons.logging.Log;
  * @author KH
  */
 public class UsedNTNotDefined implements GrammarASTNonTerminalCoCo {
-  
+
   public static final String ERROR_CODE = "0xA2031";
-  
+
   public static final String ERROR_MSG_FORMAT = " The production %s must not use the nonterminal " +
-      "%s because there exists no production defining %s.";
-  
+          "%s because there exists no production defining %s.";
+
   @Override
   public void check(ASTNonTerminal a) {
-    Optional<EssentialMCGrammarSymbol> grammarSymbol = EssentialMCGrammarSymbolTableHelper
-        .getMCGrammarSymbol(a);
-    Optional<MCProdSymbol> ruleSymbol = EssentialMCGrammarSymbolTableHelper.getEnclosingRule(a);
-    String ruleName = ruleSymbol.isPresent()? ruleSymbol.get().getName() : "";
-    if (grammarSymbol.isPresent() && !grammarSymbol.get().getProdWithInherited(a.getName()).isPresent()) {
-      Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, ruleName, a.getName(),
-          a.getName()),
-          a.get_SourcePositionStart());
+    Optional<MCRuleComponentSymbol> ruleComponentSymbol = (Optional<MCRuleComponentSymbol>) a.getSymbol();
+    MCGrammarSymbol grammarSymbol = ruleComponentSymbol.get().getGrammarSymbol();
+    MCRuleSymbol ruleSymbol= ruleComponentSymbol.get().getEnclosingRule();
+    if(grammarSymbol.getRuleWithInherited(a.getName()) == null ){
+      Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, ruleSymbol.getName(), a.getName(), a.getName()),
+              a.get_SourcePositionStart());
     }
   }
 }

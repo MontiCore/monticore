@@ -19,12 +19,8 @@
 
 package de.monticore.types;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.types.CommonJAttributeSymbol;
+import de.monticore.symboltable.types.CommonJFieldSymbol;
 import de.monticore.symboltable.types.CommonJMethodSymbol;
 import de.monticore.symboltable.types.CommonJTypeSymbol;
 import de.monticore.symboltable.types.JMethodSymbol;
@@ -43,6 +39,10 @@ import de.monticore.types.types._ast.ASTTypeParameters;
 import de.monticore.types.types._ast.ASTTypeVariableDeclaration;
 import de.monticore.types.types._ast.ASTWildcardType;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Common methods for working with the {@link JTypeSymbol}s symbol table framework. E.g., they are
@@ -336,8 +336,8 @@ public class JTypeSymbolsHelper {
    */
   public static <Y extends JTypeReference<?>> void initializeJAttributeSymbol(
       // TODO introduce MutableJAttributeSymbol to prevent enforcing engineers to subclass
-      // CommonJAttributeSymbol?
-      CommonJAttributeSymbol<Y> jAttributeSymbol, ASTType astType, int additionalDimensions,
+      // CommonJFieldSymbol?
+      CommonJFieldSymbol<Y> jAttributeSymbol, ASTType astType, int additionalDimensions,
       Scope definingScope, JTypeReferenceFactory<Y> typeRefFactory) {
     final String fieldTypeName = TypesPrinter.printTypeWithoutTypeArgumentsAndDimension(astType);
     Y fieldTypeReference = typeRefFactory.create(fieldTypeName, definingScope,

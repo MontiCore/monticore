@@ -196,12 +196,7 @@ public class MCAttributeInfoCalculator {
     att.setReferencesConstantTerminal(true);
 
     final MCAttributeInfoMap attrMap = new MCAttributeInfoMap();
-// TODO GV:
-//    if (a.getVariableName().isPresent()) {
-//      att.setName(a.getVariableName().get());
-//      attrMap.putVariable(att);
-//    }
-//    else
+
     if (a.getUsageName().isPresent()) {
       att.setName(a.getUsageName().get());
       attrMap.putAttribute(att);

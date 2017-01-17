@@ -24,8 +24,8 @@ import java.util.Map;
 import de.monticore.grammar.grammar._ast.ASTASTRule;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
-import de.monticore.grammar.symboltable.MCProdSymbol;
+import de.monticore.languages.grammar.MCGrammarSymbol;
+import de.monticore.languages.grammar.MCRuleSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -42,13 +42,13 @@ public class NTForASTRuleExists implements GrammarASTMCGrammarCoCo {
   
   @Override
   public void check(ASTMCGrammar a) {
-    EssentialMCGrammarSymbol grammarSymbol = (EssentialMCGrammarSymbol) a.getSymbol().get();
+    MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol().get();
     boolean prodFound = false;
     for(ASTASTRule astrule : a.getASTRules()){
-      if(grammarSymbol.getProdWithInherited(astrule.getType()) == null){
-        for(Map.Entry<String, MCProdSymbol> entry : grammarSymbol.getProdsWithInherited().entrySet()){
-          MCProdSymbol rs = (MCProdSymbol) entry.getValue();
-            if (astrule.getType().equals(rs.getName())) {
+      if(grammarSymbol.getRuleWithInherited(astrule.getType()) == null){
+        for(Map.Entry entry : grammarSymbol.getRulesWithInherited().entrySet()){
+          MCRuleSymbol rs = (MCRuleSymbol) entry.getValue();
+            if (astrule.getType().equals(rs.getType().getName())) {
               prodFound = true;
               break ;
           }

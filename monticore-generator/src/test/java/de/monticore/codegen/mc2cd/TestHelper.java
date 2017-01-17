@@ -19,10 +19,6 @@
 
 package de.monticore.codegen.mc2cd;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Optional;
-
 import de.monticore.MontiCoreScript;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
@@ -35,6 +31,10 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
 import de.se_rwth.commons.Names;
 import parser.MCGrammarParser;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
 
 /**
  * @author Sebastian Oberhoff
@@ -53,8 +53,8 @@ public class TestHelper {
       return Optional.empty();
     }
     MontiCoreScript mc = new MontiCoreScript();
-    GlobalScope symbolTable = mc.initNewSymbolTable(new ModelPath(Paths.get("src/test/resources")));
-    mc.createNewSymbolsFromAST(symbolTable, grammar.get());
+    GlobalScope symbolTable = mc.initSymbolTable(new ModelPath(Paths.get("src/test/resources")));
+    mc.createSymbolsFromAST(symbolTable, grammar.get());
     ASTCDCompilationUnit cdCompilationUnit = new MC2CDTransformation(
         new GlobalExtensionManagement()).apply(grammar.get());
     return Optional.of(cdCompilationUnit);
@@ -73,7 +73,7 @@ public class TestHelper {
   }
 
   public static boolean isListOfType(ASTType typeRef, String typeArg) {
-    if (!EssentialTransformationHelper.typeToString(typeRef).equals("java.util.List")) {
+    if (!TransformationHelper.typeToString(typeRef).equals("java.util.List")) {
       return false;
     }
     if (!(typeRef instanceof ASTSimpleReferenceType)) {

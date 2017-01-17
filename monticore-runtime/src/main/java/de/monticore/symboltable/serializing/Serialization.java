@@ -26,8 +26,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 /**
- * TODO: Write me!
- *
  * @author  Pedram Mir Seyed Nazari
  *
  */

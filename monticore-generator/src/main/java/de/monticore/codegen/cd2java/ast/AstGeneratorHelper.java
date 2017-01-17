@@ -22,7 +22,6 @@ package de.monticore.codegen.cd2java.ast;
 import java.util.Optional;
 
 import de.monticore.codegen.GeneratorHelper;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.TypesHelper;
 import de.monticore.types.TypesPrinter;
@@ -123,8 +122,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
     return AST_BUILDER + getPlainName(astClass);
   }
   
-  public static boolean generateSetter(ASTCDClass clazz, ASTCDAttribute cdAttribute,
-      String typeName) {
+  public static boolean generateSetter(ASTCDClass clazz, ASTCDAttribute cdAttribute, String typeName) {
     if (GeneratorHelper.isInherited(cdAttribute)) {
       return false;
     }
@@ -138,17 +136,6 @@ public class AstGeneratorHelper extends GeneratorHelper {
       return false;
     }
     return true;
-  }
-  
-  public static String getConstantClassName(EssentialMCGrammarSymbol grammarSymbol) {
-    return grammarSymbol.getFullName().toLowerCase() +
-        GeneratorHelper.AST_PACKAGE_SUFFIX_DOT + "."
-        + getConstantClassSimpleName(grammarSymbol);
-    
-  }
-  
-  public static String getConstantClassSimpleName(EssentialMCGrammarSymbol grammarSymbol) {
-    return "ASTConstants" + grammarSymbol.getName();
   }
   
 }

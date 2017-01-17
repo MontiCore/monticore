@@ -26,7 +26,7 @@ import java.util.function.UnaryOperator;
 
 import com.google.common.collect.Maps;
 
-import de.monticore.codegen.mc2cd.EssentialTransformationHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.types.types._ast.ASTReferenceType;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
@@ -50,7 +50,7 @@ public class AddAttributesOfExtendedInterfacesManipulation implements
     for (ASTCDInterface cdInterface : ASTNodes.getSuccessors(cdCompilationUnit,
         ASTCDInterface.class)) {
       cDInterfaces.put(
-          EssentialTransformationHelper.getPackageName(cdCompilationUnit) + cdInterface.getName(),
+          TransformationHelper.getPackageName(cdCompilationUnit) + cdInterface.getName(),
           cdInterface);
     }
   }

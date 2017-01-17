@@ -25,14 +25,13 @@
 
 package mc.embedding.transitive.transcomposite._symboltable;
 
-import mc.embedding.composite._symboltable.CompositeModelLoader;
-import mc.embedding.transitive.transcomposite._ast.ASTTransHost;
-import mc.embedding.transitive.transhost._ast.ASTTransStart;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
+import mc.embedding.composite._symboltable.CompositeModelLoader;
+import mc.embedding.transitive.transhost._ast.ASTTransStart;
 
 public class TransCompositeModelLoader extends de.monticore.modelloader.ModelingLanguageModelLoader<ASTTransStart> {
 
@@ -42,10 +41,10 @@ public class TransCompositeModelLoader extends de.monticore.modelloader.Modeling
 
   @Override
   protected void createSymbolTableFromAST(final ASTTransStart ast, final String modelName,
-    final MutableScope enclosingScope, final ResolverConfiguration resolverConfiguration) {
+    final MutableScope enclosingScope, final ResolvingConfiguration resolvingConfiguration) {
     
     final TransCompositeSymbolTableCreator symbolTableCreator =
-        getModelingLanguage().getSymbolTableCreator(resolverConfiguration, enclosingScope).orElse(null);
+        getModelingLanguage().getSymbolTableCreator(resolvingConfiguration, enclosingScope).orElse(null);
 
     if (symbolTableCreator != null) {
       Log.debug("Start creation of symbol table for model \"" + modelName + "\".",

@@ -25,11 +25,12 @@ import com.google.common.collect.ImmutableSet;
 import de.monticore.symboltable.SymbolKind;
 
 /**
+ * Provides a default implementation for {@link ModelNameCalculator}.
+ *
  * @author Pedram Mir Nazari
  *
  * @see ModelNameCalculator
  */
-// TODO PN doc
 public class CommonModelNameCalculator implements ModelNameCalculator {
 
   @Override

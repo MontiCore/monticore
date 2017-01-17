@@ -23,8 +23,6 @@ import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolPredicate;
 
 /**
- * TODO: Write me!
- *
  * @author Pedram Mir Seyed Nazari
  *
  */

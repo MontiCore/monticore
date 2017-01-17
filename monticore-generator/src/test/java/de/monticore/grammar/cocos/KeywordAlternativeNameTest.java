@@ -47,7 +47,7 @@ public class KeywordAlternativeNameTest extends CocoTest {
     Log.enableFailQuick(false);
   }
 
-  //  @Test
+  @Test
   public void testKeywordAlternativeWithoutName() throws IllegalArgumentException {
     final Scope globalScope = GrammarGlobalScopeTestFactory.create();
 
@@ -67,7 +67,7 @@ public class KeywordAlternativeNameTest extends CocoTest {
     }
   }
 
-  // @Test
+  @Test
   public void testSingleKeyword(){
     Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
     checker.addCoCo(new KeywordAlternativeName());

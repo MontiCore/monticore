@@ -5,7 +5,7 @@ grammar AutomatonWithSTInfo2 extends mc.common.Basics {
   Automaton@! =
     "automaton" Name "{" AutomatonElement* "}" ;
 
-  interface AutomatonElement@!;
+  interface AutomatonElement@! = Name;
 
   State implements AutomatonElement =
     "state" Name

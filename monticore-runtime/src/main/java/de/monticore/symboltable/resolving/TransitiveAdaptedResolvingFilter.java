@@ -72,9 +72,9 @@ public abstract class TransitiveAdaptedResolvingFilter<S extends Symbol>
 
       Optional<? extends Symbol> optSymbol = resolvingFilter.filter(resolvingInfo, symbolName, symbols);
 
-      // TODO PN Remove this whole if-statement, if adaptors should be created eager.
+      // NOTE: Remove this whole if-statement, if adaptors should be created eager.
       if (optSymbol.isPresent()) {
-        resolvedSymbols.add(createAdapter(optSymbol.get()));
+        resolvedSymbols.add(translate(optSymbol.get()));
       }
     }
 
@@ -109,9 +109,9 @@ public abstract class TransitiveAdaptedResolvingFilter<S extends Symbol>
 
       Optional<? extends Symbol> optSymbol = resolvingFilter.filter(resolvingInfo, symbolName, symbols);
 
-      // TODO PN Remove this whole if-statement, if adaptors should be created eager.
+      // NOTE: Remove this whole if-statement, if adaptors should be created eager.
       if (optSymbol.isPresent()) {
-        resolvedSymbols.add(createAdapter(optSymbol.get()));
+        resolvedSymbols.add(translate(optSymbol.get()));
       }
     }
 

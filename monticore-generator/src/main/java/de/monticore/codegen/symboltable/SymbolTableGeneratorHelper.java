@@ -19,28 +19,13 @@
 
 package de.monticore.codegen.symboltable;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.base.Strings.nullToEmpty;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.regex.Pattern;
-
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
-import de.monticore.grammar.symboltable.MCProdSymbol;
+import de.monticore.io.paths.IterablePath;
 import de.monticore.languages.grammar.MCGrammarSymbol;
 import de.monticore.languages.grammar.MCRuleComponentSymbol;
 import de.monticore.languages.grammar.MCRuleSymbol;
@@ -51,6 +36,21 @@ import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.base.Strings.nullToEmpty;
+
 /**
  * @author Pedram Mir Seyed Nazari
  */
@@ -60,7 +60,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
 
   private final String qualifiedGrammarName;
   private final ASTMCGrammar astGrammar;
-  private final EssentialMCGrammarSymbol grammarSymbol;
+  private final MCGrammarSymbol grammarSymbol;
 
   // TODO PN refactor
   public SymbolTableGeneratorHelper(ASTMCGrammar ast, GlobalScope globalScope, ASTCDCompilationUnit astCd) {
@@ -71,15 +71,15 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
         Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackage()),
             astGrammar.getName());
 
-    grammarSymbol = globalScope.<EssentialMCGrammarSymbol> resolve(
-        qualifiedGrammarName, EssentialMCGrammarSymbol.KIND).orElse(null);
+    grammarSymbol = globalScope.<MCGrammarSymbol> resolve(
+        qualifiedGrammarName, MCGrammarSymbol.KIND).orElse(null);
     Log.errorIfNull(grammarSymbol, "0xA4036 Grammar " + qualifiedGrammarName
         + " can't be resolved in the scope " + globalScope);
 
     checkState(qualifiedGrammarName.equals(grammarSymbol.getFullName()));
   }
 
-  public EssentialMCGrammarSymbol getGrammarSymbol() {
+  public MCGrammarSymbol getGrammarSymbol() {
     return grammarSymbol;
   }
 
@@ -101,15 +101,22 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     return getPackageName(packageName, SymbolTableGenerator.PACKAGE) + "." + symbolName;
   }
 
+  public static String getAstPackageName(String packageName) {
+    return getPackageName(packageName, GeneratorHelper.AST_PACKAGE_SUFFIX);
+  }
+
   /**
    * @return the name of the top ast, i.e., the ast of the start rule.
    */
-  //TODO GV:
   public String getQualifiedStartRuleName() {
-//    if (grammarSymbol.getStartRule().isPresent()) {
-//      return grammarSymbol.getStartRule().get().getType().getQualifiedName();
-//    }
+    if (grammarSymbol.getStartRule().isPresent()) {
+      return grammarSymbol.getStartRule().get().getType().getQualifiedName();
+    }
     return "";
+  }
+
+  public boolean isStartRule(MCRuleSymbol ruleSymbol) {
+    return grammarSymbol.getStartRule().isPresent() && grammarSymbol.getStartRule().get().equals(ruleSymbol);
   }
 
   /**
@@ -117,17 +124,28 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
    * it must be <code>name</code> (case insenstive), e.g. <code>name:Name</code> or
    * <code>Name:Name</code>.
    */
-  public Collection<MCProdSymbol> getAllSymbolDefiningRules() {
-    final Set<MCProdSymbol> ruleSymbolsWithName = new LinkedHashSet<>();
+  public Collection<MCRuleSymbol> getAllSymbolDefiningRules() {
+    final Set<MCRuleSymbol> rules = new LinkedHashSet<>();
 
-    // TODO PN include inherited rules?
-    for (final MCProdSymbol rule : grammarSymbol.getProds()) {
-      if (rule.isSymbolDefinition()) {
-        ruleSymbolsWithName.add(rule);
+    for (final MCRuleSymbol rule : grammarSymbol.getRules()) {
+      if (isSymbol(rule)) {
+        rules.add(rule);
       }
     }
 
-    return ImmutableList.copyOf(ruleSymbolsWithName);
+    return ImmutableList.copyOf(rules);
+  }
+
+  public Collection<MCRuleSymbol> getAllScopeSpanningRules() {
+    final Set<MCRuleSymbol> rules = new LinkedHashSet<>();
+
+    for (final MCRuleSymbol rule : grammarSymbol.getRules()) {
+      if (!rule.isSymbolDefinition() && spansScope(rule)) {
+        rules.add(rule);
+      }
+    }
+
+    return ImmutableList.copyOf(rules);
   }
 
   public Map<String, String> ruleComponents2JavaFields(MCRuleSymbol ruleSymbol) {
@@ -148,14 +166,11 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
           constant2JavaField(componentSymbol, fields);
           break;
         case CONSTANTGROUP:
-          // TODO PN handle this case
+          // TODO handle this case?
           break;
         case TERMINAL:
           // ignore terminals
           break;
-        default:
-          // TODO PN remove this exception
-          throw new RuntimeException("0xA4078 TODO PN implement in " + SymbolTableGeneratorHelper.class.getSimpleName());
       }
 
     }
@@ -171,7 +186,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
         fields.put(componentName.get(), componentSymbol.getReferencedSymbolName().get() + "Symbol");
       }
     }
-    // TODO PN else, do something?
+    // ... else, do something?
   }
 
 
@@ -219,11 +234,51 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     final Optional<String> componentName = getRuleComponentName(componentSymbol);
     if (componentName.isPresent()) {
       // the case: Automaton = Name ... State* ..., i.e., the containment of another symbol
-      final Optional<MCProdSymbol> referencedRule = grammarSymbol.getProd(componentSymbol.getReferencedRuleName());
-      if ((referencedRule.isPresent()) && referencedRule.get().isSymbolDefinition()) {
-        fields.put(componentName.get(), referencedRule.get().getName() + "Symbol");
+      final MCRuleSymbol referencedRule = grammarSymbol.getRule(componentSymbol.getReferencedRuleName());
+      if ((referencedRule != null) && referencedRule.isSymbolDefinition()) {
+        fields.put(componentName.get(), referencedRule.getName() + "Symbol");
       }
     }
+  }
+
+  public Map<String, String> symbolReferenceRuleComponents2JavaFields(MCRuleSymbol ruleSymbol) {
+    Log.errorIfNull(ruleSymbol);
+
+    // fieldName -> fieldType
+    final Map<String, String> fields = new HashMap<>();
+
+    for (MCRuleComponentSymbol componentSymbol : ruleSymbol.getRuleComponents()) {
+
+      checkArgument(componentSymbol.getAstNode().isPresent());
+
+      switch (componentSymbol.getKindOfRuleComponent()) {
+        case NONTERMINAL:
+          nonterminal2JavaField(componentSymbol, fields);
+          break;
+      }
+
+    }
+
+    return fields;
+  }
+
+  public Map<String, String> ruleComponentsWithoutSymbolReferences2JavaFields(final MCRuleSymbol ruleSymbol) {
+    final Map<String, String> all = ruleComponents2JavaFields(ruleSymbol);
+    final Map<String, String> symbolReferences = symbolReferenceRuleComponents2JavaFields(ruleSymbol);
+
+    final Map<String, String> withoutSymbolReferences = new LinkedHashMap<>();
+
+    for (Map.Entry<String, String> entry : all.entrySet()) {
+      if (!symbolReferences.containsKey(entry.getKey())) {
+        withoutSymbolReferences.put(entry.getKey(), entry.getValue());
+      }
+    }
+
+    return withoutSymbolReferences;
+  }
+
+  public Map<String, String> nonSymbolFields(MCRuleSymbol ruleSymbol) {
+    return null; // TODO PN implement
   }
 
   public static String getterPrefix(final String type) {
@@ -319,4 +374,40 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   public String getQualifiedVisitorType(CDSymbol cd) {
     return VisitorGeneratorHelper.getQualifiedVisitorType(cd.getFullName());
   }
+
+  public boolean spansScope(final MCRuleSymbol rule) {
+    for (MCRuleComponentSymbol ruleComponent : rule.getRuleComponents()) {
+      final MCRuleSymbol referencedRule = this.getGrammarSymbol().getRule(ruleComponent.getReferencedRuleName());
+      if ((referencedRule != null) && referencedRule.isSymbolDefinition()) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  public boolean isSymbol(final MCRuleSymbol rule) {
+    return rule.isSymbolDefinition();
+  }
+
+  public boolean isScopeSpanningSymbol(final MCRuleSymbol rule) {
+    return isSymbol(rule) && spansScope(rule);
+  }
+
+  public boolean isNamed(final MCRuleSymbol rule) {
+    for (MCRuleComponentSymbol comp : rule.getRuleComponents()) {
+      // TODO check full name?
+      if (comp.getName().equals(NAME_NONTERMINAL) &&
+          (isNullOrEmpty(comp.getUsageName()) || comp.getUsageName().equalsIgnoreCase(NAME_NONTERMINAL))) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean existsHandwrittenSymbolClass(MCRuleSymbol ruleSymbol, IterablePath handCodedPath) {
+    return existsHandwrittenClass(Names.getSimpleName(ruleSymbol.getName() + "Symbol"), getTargetPackage(), handCodedPath);
+  }
+
+
 }

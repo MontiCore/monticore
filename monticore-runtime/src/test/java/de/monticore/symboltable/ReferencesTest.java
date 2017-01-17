@@ -19,11 +19,6 @@
 
 package de.monticore.symboltable;
 
-import static org.junit.Assert.assertSame;
-
-import java.util.ArrayList;
-import java.util.Optional;
-
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.mocks.languages.JTypeSymbolMock;
 import de.monticore.symboltable.mocks.languages.entity.EntitySymbol;
@@ -33,6 +28,11 @@ import de.monticore.symboltable.resolving.CommonResolvingFilter;
 import de.monticore.symboltable.types.CommonJTypeSymbol;
 import de.monticore.symboltable.types.references.CommonJTypeReference;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Optional;
+
+import static org.junit.Assert.assertSame;
 
 /**
  *
@@ -61,11 +61,11 @@ public class ReferencesTest {
     PropertySymbol fieldOfD = new PropertySymbol("fieldOfD", new CommonJTypeReference<>("int", JTypeSymbolMock.KIND, c.getSpannedScope()));
     d.addProperty(fieldOfD);
 
-    ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
-    resolverConfiguration.addTopScopeResolver(CommonResolvingFilter.create(CommonJTypeSymbol.KIND));
-    resolverConfiguration.addTopScopeResolver(CommonResolvingFilter.create(PropertySymbol.KIND));
+    ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
+    resolvingConfiguration.addTopScopeResolver(CommonResolvingFilter.create(CommonJTypeSymbol.KIND));
+    resolvingConfiguration.addTopScopeResolver(CommonResolvingFilter.create(PropertySymbol.KIND));
 
-    final MutableScope globalScope = new GlobalScope(new ModelPath(), new ArrayList<>(), resolverConfiguration);
+    final MutableScope globalScope = new GlobalScope(new ModelPath(), new ArrayList<>(), resolvingConfiguration);
 
     globalScope.add(c);
     globalScope.add(d);

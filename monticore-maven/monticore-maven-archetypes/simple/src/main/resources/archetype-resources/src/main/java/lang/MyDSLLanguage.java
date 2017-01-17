@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 
 import de.monticore.CommonModelingLanguage;
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 import ${package}.mydsl._parser.MyDSLParser;
 import ${package}.symboltable.MyDSLModelLoader;
@@ -34,9 +34,9 @@ public class MyDSLLanguage extends CommonModelingLanguage {
   
   @Override
   public Optional<MyDSLSymbolTableCreator> getSymbolTableCreator(
-      ResolverConfiguration resolverConfiguration, @Nullable MutableScope enclosingScope) {
+      ResolvingConfiguration resolvingConfiguration, @Nullable MutableScope enclosingScope) {
     return Optional
-        .of(new MyDSLSymbolTableCreator(resolverConfiguration, enclosingScope));
+        .of(new MyDSLSymbolTableCreator(resolvingConfiguration, enclosingScope));
   }
   
   @Override

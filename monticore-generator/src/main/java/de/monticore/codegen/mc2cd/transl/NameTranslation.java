@@ -26,7 +26,7 @@ import de.monticore.utils.Link;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 
-import static de.monticore.codegen.mc2cd.EssentialTransformationHelper.*;
+import static de.monticore.codegen.mc2cd.TransformationHelper.*;
 
 /**
  * This function copies over names from source to target nodes.

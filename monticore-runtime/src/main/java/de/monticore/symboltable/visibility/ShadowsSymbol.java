@@ -26,8 +26,6 @@ import de.monticore.symboltable.SymbolPredicate;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * TODO: Write me!
- *
  * @author Pedram Mir Seyed Nazari
  *
  */
@@ -47,7 +45,7 @@ public class ShadowsSymbol implements SymbolPredicate {
     final Scope shadowedScope = symbol.getEnclosingScope();
     
     if (shadowingScope == shadowedScope) {
-      // TODO PN implement: Symbole sind beide im selben Scope
+      // Something to do here?
     }
     else if (Scopes.getFirstShadowingScope(shadowingScope).isPresent()) {
       final Scope firstShadowingScope = Scopes.getFirstShadowingScope(shadowingScope).get();

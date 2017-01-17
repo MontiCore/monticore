@@ -26,8 +26,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import de.monticore.generating.GeneratorEngine;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.languages.grammar.MCGrammarSymbol;
 import de.se_rwth.commons.Names;
 
 /**
@@ -37,7 +37,7 @@ public class CommonModelLoaderGenerator implements ModelLoaderGenerator {
 
   @Override
   public void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
-      IterablePath handCodedPath, EssentialMCGrammarSymbol grammarSymbol) {
+      IterablePath handCodedPath, MCGrammarSymbol grammarSymbol) {
     final String className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName() + "ModelLoader"),
         genHelper.getTargetPackage(), handCodedPath);
 

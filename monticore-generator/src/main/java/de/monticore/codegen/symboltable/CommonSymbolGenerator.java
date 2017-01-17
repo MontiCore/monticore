@@ -20,14 +20,15 @@
 package de.monticore.codegen.symboltable;
 
 import static de.monticore.codegen.GeneratorHelper.getSimpleTypeNameToGenerate;
+import static de.monticore.languages.grammar.MCRuleSymbol.KindSymbolRule.INTERFACEORABSTRACTRULE;
 import static de.se_rwth.commons.Names.getSimpleName;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import de.monticore.generating.GeneratorEngine;
-import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.languages.grammar.MCRuleSymbol;
 import de.se_rwth.commons.Names;
 
 /**
@@ -40,23 +41,23 @@ public class CommonSymbolGenerator implements SymbolGenerator {
 
   @Override
   public void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
-      IterablePath handCodedPath, MCProdSymbol ruleSymbol) {
+      IterablePath handCodedPath, MCRuleSymbol ruleSymbol) {
     final String className = getSimpleTypeNameToGenerate(getSimpleName(ruleSymbol.getName() + "Symbol"),
         genHelper.getTargetPackage(), handCodedPath);
 
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
 
     generateEmpty(genEngine, genHelper, handCodedPath, ruleSymbol);
-    if (!ruleSymbol.isAbstract() && !ruleSymbol.isInterface()) {
+    if (!(INTERFACEORABSTRACTRULE.equals(ruleSymbol.getKindSymbolRule()))) {
       genEngine.generate("symboltable.Symbol", filePath, ruleSymbol.getAstNode().get(), className, ruleSymbol);
     }
   }
 
   protected void generateEmpty(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
-      IterablePath handCodedPath, MCProdSymbol ruleSymbol) {
+      IterablePath handCodedPath, MCRuleSymbol ruleSymbol) {
     // Interface and abstract rules both do not have any content. Hence, only the empty symbol interface must be generated.
     // In that case, the suffix is just "Symbol" instead of "SymbolEMPTY".
-    final String suffix = ruleSymbol.isAbstract() || ruleSymbol.isInterface()
+    final String suffix = INTERFACEORABSTRACTRULE.equals(ruleSymbol.getKindSymbolRule())
         ? SYMBOL_SUFFIX : EMPTY_SYMBOL_SUFFIX;
 
     final String className = getSimpleTypeNameToGenerate(getSimpleName(ruleSymbol.getName() + suffix),

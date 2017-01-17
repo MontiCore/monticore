@@ -32,7 +32,7 @@ import de.monticore.languages.grammar.MCGrammarSymbol;
 import de.monticore.languages.grammar.MontiCoreGrammarLanguage;
 import de.monticore.languages.grammar.MontiCoreGrammarModelLoader;
 import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Scopes;
 import de.monticore.symboltable.references.FailedLoadingSymbol;
@@ -60,7 +60,7 @@ final class SymbolTableMaintainer {
       try {
         ASTMCGrammar mcGrammar = (ASTMCGrammar) rootNode;
         if (!mcGrammar.getSymbol().isPresent()) {
-          grammarLanguage.getSymbolTableCreator(new ResolverConfiguration(), globalScope)
+          grammarLanguage.getSymbolTableCreator(new ResolvingConfiguration(), globalScope)
               .ifPresent(symbolTableCreator -> {
                 removeOldScope(mcGrammar);
                 Scope newScope = symbolTableCreator.createFromAST(mcGrammar);

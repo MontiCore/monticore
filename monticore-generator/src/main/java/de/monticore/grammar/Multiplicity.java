@@ -31,8 +31,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static de.monticore.codegen.mc2cd.EssentialTransformationHelper.getName;
-import static de.monticore.codegen.mc2cd.EssentialTransformationHelper.getUsageName;
+import static de.monticore.codegen.mc2cd.TransformationHelper.getName;
+import static de.monticore.codegen.mc2cd.TransformationHelper.getUsageName;
 import static de.monticore.utils.ASTNodes.getIntermediates;
 import static de.monticore.utils.ASTNodes.getSuccessors;
 import static java.util.Collections.max;

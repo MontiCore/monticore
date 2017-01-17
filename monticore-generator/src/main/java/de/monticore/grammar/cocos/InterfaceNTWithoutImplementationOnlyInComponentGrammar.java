@@ -24,37 +24,33 @@ import java.util.Map;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
-import de.monticore.grammar.symboltable.MCProdOrTypeReference;
-import de.monticore.grammar.symboltable.MCProdSymbol;
+import de.monticore.languages.grammar.MCGrammarSymbol;
+import de.monticore.languages.grammar.MCRuleSymbol;
+import de.monticore.languages.grammar.MCTypeSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * Checks that abstract nonterminals witheout extending productions only occur
- * in a component grammar.
+ * Checks that abstract nonterminals witheout extending productions only occur in a component grammar.
  *
  * @author KH
  */
-public class InterfaceNTWithoutImplementationOnlyInComponentGrammar
-    implements GrammarASTMCGrammarCoCo {
-  
+public class InterfaceNTWithoutImplementationOnlyInComponentGrammar implements GrammarASTMCGrammarCoCo {
+
   public static final String ERROR_CODE = "0xA0278";
-  
-  public static final String ERROR_MSG_FORMAT = " The interface nonterminal %s must not be used without nonterminals "
-      +
-      "implementing it in a grammar not marked as a grammar component.";
-  
+
+  public static final String ERROR_MSG_FORMAT = " The interface nonterminal %s must not be used without nonterminals " +
+          "implementing it in a grammar not marked as a grammar component.";
+
   @Override
   public void check(ASTMCGrammar a) {
-    EssentialMCGrammarSymbol grammarSymbol = (EssentialMCGrammarSymbol) a.getSymbol().get();
+    MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol().get();
     if (!a.isComponent()) {
       for (ASTProd p : a.getInterfaceProds()) {
         boolean extensionFound = false;
-        entryLoop: for (Map.Entry<String, MCProdSymbol> entry : grammarSymbol
-            .getProdsWithInherited().entrySet()) {
-          MCProdSymbol rs = (MCProdSymbol) entry.getValue();
-          for (MCProdOrTypeReference typeSymbol : rs.getAstSuperInterfaces()) {
-            if (p.getName().equals(typeSymbol.getProdRef().getName())) {
+        entryLoop: for(Map.Entry entry : grammarSymbol.getRulesWithInherited().entrySet()){
+          MCRuleSymbol rs = (MCRuleSymbol) entry.getValue();
+          for(MCTypeSymbol typeSymbol : rs.getType().getAllSuperInterfaces()){
+            if (p.getName().equals(typeSymbol.getName())) {
               extensionFound = true;
               break entryLoop;
             }
@@ -62,10 +58,10 @@ public class InterfaceNTWithoutImplementationOnlyInComponentGrammar
         }
         if (!extensionFound) {
           Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName()),
-              a.get_SourcePositionStart());
+                  a.get_SourcePositionStart());
         }
       }
     }
   }
-  
+
 }

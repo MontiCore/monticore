@@ -31,7 +31,7 @@ debug("Handcoded path : " + _configuration.getHandcodedPathAsStrings())
 grammarIterator = grammars.getResolvedPaths()
 // Create object for managing hook points, features and global variables
 glex = new GlobalExtensionManagement()
-symbolTable = initNewSymbolTable(modelPath)
+symbolTable = initSymbolTable(modelPath)
 
 while (grammarIterator.hasNext()) {
   // Parse grammar
@@ -40,7 +40,7 @@ while (grammarIterator.hasNext()) {
   if (astGrammar.isPresent()) {
     astGrammar = astGrammar.get();
     
-    astGrammar = createNewSymbolsFromAST(symbolTable, astGrammar)
+    astGrammar = createSymbolsFromAST(symbolTable, astGrammar)
     
     // Transform AST-Grammar -> AST-CD
     astClassDiagram = transformAstGrammarToAstCd(glex, astGrammar, symbolTable, handcodedPath)

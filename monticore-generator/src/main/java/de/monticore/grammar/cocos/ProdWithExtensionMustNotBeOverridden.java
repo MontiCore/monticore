@@ -19,15 +19,14 @@
 
 package de.monticore.grammar.cocos;
 
+import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 
-import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTProdCoCo;
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
-import de.monticore.grammar.symboltable.MCProdSymbol;
-import de.monticore.grammar.symboltable.MCProdSymbolReference;
+import de.monticore.languages.grammar.MCGrammarSymbol;
+import de.monticore.languages.grammar.MCRuleSymbol;
+import de.monticore.languages.grammar.MCTypeSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -36,34 +35,32 @@ import de.se_rwth.commons.logging.Log;
  * @author KH
  */
 public class ProdWithExtensionMustNotBeOverridden implements GrammarASTProdCoCo {
-  
+
   public static final String ERROR_CODE = "0xA4010";
-  
+
   public static final String ERROR_MSG_FORMAT = " The production %s must not be overridden because there"
       + " already exist productions extending it.";
-  
+
   @Override
   public void check(ASTProd a) {
-    
-    Optional<EssentialMCGrammarSymbol> grammarSymbol = EssentialMCGrammarSymbolTableHelper
-        .getMCGrammarSymbol(a);
-    
-    boolean isOverriding = false;
-    for (EssentialMCGrammarSymbol sup : EssentialMCGrammarSymbolTableHelper.getAllSuperGrammars(grammarSymbol.get())) {
-      if (sup.getProd(a.getName()).isPresent()) {
+
+    MCRuleSymbol ruleSymbol = (MCRuleSymbol) a.getSymbol().get();
+    MCGrammarSymbol grammarSymbol = ruleSymbol.getGrammarSymbol();
+    boolean isOverriding  = false;
+    for(MCGrammarSymbol sup : grammarSymbol.getAllSuperGrammars()){
+      if(sup.getRule(a.getName()) != null){
         isOverriding = true;
         break;
       }
     }
-    if (!isOverriding) {
+    if(!isOverriding) {
       return;
     }
-    
+
     boolean extensionFound = false;
-    entryLoop: for (Entry<String, MCProdSymbol> entry : grammarSymbol.get().getProdsWithInherited()
-        .entrySet()) {
-      MCProdSymbol rs = entry.getValue();
-      for (MCProdSymbolReference typeSymbol : rs.getSuperProds()) {
+    entryLoop: for(Entry<String, MCRuleSymbol> entry : grammarSymbol.getRulesWithInherited().entrySet()){
+      MCRuleSymbol rs = entry.getValue();
+      for(MCTypeSymbol typeSymbol : rs.getType().getAllSuperclasses()){
         if (a.getName().equals(typeSymbol.getName())) {
           extensionFound = true;
           break entryLoop;

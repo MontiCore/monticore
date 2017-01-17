@@ -239,11 +239,6 @@ public final class EssentialTransformationHelper {
     return getPackageName(grammar);
   }
   
-  public static String getAstPackageName(MCProdSymbol symbol) {
-    // return grammar.getName().toLowerCase() + AST_DOT_PACKAGE_SUFFIX_DOT;
-    return getGrammarName(symbol).toLowerCase() + AST_DOT_PACKAGE_SUFFIX_DOT;
-  }
-  
   public static String getPackageName(EssentialMCGrammarSymbol grammar) {
     return grammar.getFullName() + ".";
   }

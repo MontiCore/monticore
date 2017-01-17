@@ -19,17 +19,18 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import java.util.Optional;
-import java.util.function.UnaryOperator;
-
-import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
-import de.monticore.codegen.mc2cd.EssentialTransformationHelper;
+import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.symboltable.MCProdSymbol;
+import de.monticore.languages.grammar.MCExternalRuleSymbol;
+import de.monticore.languages.grammar.MCRuleSymbol;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.utils.Link;
+
+import java.util.Optional;
+import java.util.function.UnaryOperator;
 
 public class ExternalImplementationTranslation implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
@@ -41,12 +42,12 @@ public class ExternalImplementationTranslation implements
     for (Link<ASTClassProd, ASTCDClass> link : rootLink.getLinks(ASTClassProd.class,
         ASTCDClass.class)) {
       String name = link.source().getName();
-      Optional<MCProdSymbol> ruleSymbol = EssentialMCGrammarSymbolTableHelper.resolveRuleInSupersOnly(
+      Optional<MCRuleSymbol> ruleSymbol = MCGrammarSymbolTableHelper.resolveRuleInSupersOnly(
           rootLink.source(), name);
-      if (ruleSymbol.isPresent() && ruleSymbol.get().isExternal()) {
+      if (ruleSymbol.isPresent() && ruleSymbol.get() instanceof MCExternalRuleSymbol) {
         link.target().getInterfaces().add(
-            EssentialTransformationHelper.createSimpleReference(EssentialTransformationHelper.getAstPackage(
-                ruleSymbol.get()) + "AST" + name + "Ext"));
+            TransformationHelper.createSimpleReference(TransformationHelper.getAstPackageName(
+                ruleSymbol.get().getGrammarSymbol()) + "AST" + name + "Ext"));
       }
     }
 
