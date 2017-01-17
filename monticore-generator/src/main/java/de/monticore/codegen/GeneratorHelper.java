@@ -20,7 +20,7 @@
 package de.monticore.codegen;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static de.monticore.codegen.mc2cd.EssentialTransformationHelper.createSimpleReference;
+import static de.monticore.codegen.mc2cd.TransformationHelper.createSimpleReference;
 import static de.monticore.codegen.mc2cd.transl.ConstantsTranslation.CONSTANTS_ENUM;
 import static de.monticore.grammar.Multiplicity.multiplicityByAlternative;
 import static de.monticore.grammar.Multiplicity.multiplicityByIteration;
@@ -50,8 +50,8 @@ import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.ast_emf.AstEmfGeneratorHelper;
-import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
-import de.monticore.codegen.mc2cd.EssentialTransformationHelper;
+import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
@@ -152,6 +152,8 @@ public class GeneratorHelper extends TypesHelper {
   public static final String ARRAY_LIST = "ArrayList";
   
   public static final String JAVA_LIST = "java.util.List";
+  
+  public static final int STAR = -1;
   
   protected static final String LOG_NAME = "GeneratorHelper";
   
@@ -1041,7 +1043,7 @@ public class GeneratorHelper extends TypesHelper {
   
   public static boolean isSupertypeOfHWType(String className) {
     return className.startsWith(AST_PREFIX)
-        && className.endsWith(EssentialTransformationHelper.GENERATED_CLASS_SUFFIX);
+        && className.endsWith(TransformationHelper.GENERATED_CLASS_SUFFIX);
   }
   
   public static String getJavaConformName(String name) {
@@ -1162,7 +1164,7 @@ public class GeneratorHelper extends TypesHelper {
   public static String getPlainName(ASTCDType type) {
     String name = type.getName();
     if (isSupertypeOfHWType(name)) {
-      return name.substring(0, name.lastIndexOf(EssentialTransformationHelper.GENERATED_CLASS_SUFFIX));
+      return name.substring(0, name.lastIndexOf(TransformationHelper.GENERATED_CLASS_SUFFIX));
     }
     return name;
   }
@@ -1170,7 +1172,7 @@ public class GeneratorHelper extends TypesHelper {
   public static String getPlainName(ASTCDInterface clazz) {
     String name = clazz.getName();
     if (isSupertypeOfHWType(name)) {
-      return name.substring(0, name.lastIndexOf(EssentialTransformationHelper.GENERATED_CLASS_SUFFIX));
+      return name.substring(0, name.lastIndexOf(TransformationHelper.GENERATED_CLASS_SUFFIX));
     }
     return name;
   }
@@ -1235,14 +1237,14 @@ public class GeneratorHelper extends TypesHelper {
   public static String getSimpleTypeNameToGenerate(String simpleName, String packageName,
       IterablePath targetPath) {
     if (existsHandwrittenClass(simpleName, packageName, targetPath)) {
-      return simpleName + EssentialTransformationHelper.GENERATED_CLASS_SUFFIX;
+      return simpleName + TransformationHelper.GENERATED_CLASS_SUFFIX;
     }
     return simpleName;
   }
   
   public static boolean existsHandwrittenClass(String simpleName, String packageName,
       IterablePath targetPath) {
-    return EssentialTransformationHelper.existsHandwrittenClass(targetPath,
+    return TransformationHelper.existsHandwrittenClass(targetPath,
         getDotPackageName(packageName) + simpleName);
   }
   
@@ -1427,9 +1429,9 @@ public class GeneratorHelper extends TypesHelper {
     }
     String nameToResolve = clazz.getName().contains(".") ? clazz.getName() : qualifiedName + "."
         + clazz.getName();
-    if (nameToResolve.endsWith(EssentialTransformationHelper.GENERATED_CLASS_SUFFIX)) {
+    if (nameToResolve.endsWith(TransformationHelper.GENERATED_CLASS_SUFFIX)) {
       nameToResolve = nameToResolve.substring(0,
-          nameToResolve.lastIndexOf(EssentialTransformationHelper.GENERATED_CLASS_SUFFIX));
+          nameToResolve.lastIndexOf(TransformationHelper.GENERATED_CLASS_SUFFIX));
     }
     return resolveCdType(nameToResolve).isPresent();
   }
@@ -1529,7 +1531,7 @@ public class GeneratorHelper extends TypesHelper {
       ASTNode nodeWithSymbol) {
     List<ASTProd> superRuleNodes = new ArrayList<>();
     for (ASTRuleReference superRule : ruleReferences) {
-      Optional<MCProdSymbol> symbol = EssentialMCGrammarSymbolTableHelper.resolveRule(nodeWithSymbol,
+      Optional<MCProdSymbol> symbol = MCGrammarSymbolTableHelper.resolveRule(nodeWithSymbol,
           superRule.getName());
       if (symbol.isPresent() && symbol.get().getAstNode().isPresent()) {
         superRuleNodes.add((ASTProd) symbol.get().getAstNode().get());

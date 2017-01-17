@@ -19,12 +19,12 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import static de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper.resolveRule;
-import static de.monticore.codegen.mc2cd.EssentialTransformationHelper.getPackageName;
+import static de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper.resolveRule;
+import static de.monticore.codegen.mc2cd.TransformationHelper.getPackageName;
 
 import java.util.function.UnaryOperator;
 
-import de.monticore.codegen.mc2cd.EssentialTransformationHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.ASTAbstractProd;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTGenericType;
@@ -74,15 +74,15 @@ public class ExtendsTranslation implements
     for (ASTRuleReference ruleReference : classProd.getSuperRule()) {
       MCProdSymbol ruleSymbol = resolveRule(astGrammar, ruleReference.getName()).get();
       String packageName = getPackageName(ruleSymbol);
-      cdClass.setSuperclass(EssentialTransformationHelper.createSimpleReference(
+      cdClass.setSuperclass(TransformationHelper.createSimpleReference(
           packageName + "AST" + ruleReference.getName()));
     }
 
     // translates "astextends"
     for (ASTGenericType typeReference : classProd.getASTSuperClass()) {
-      String qualifiedRuleName = EssentialTransformationHelper.getQualifiedTypeNameAndMarkIfExternal(
+      String qualifiedRuleName = TransformationHelper.getQualifiedTypeNameAndMarkIfExternal(
           typeReference, astGrammar, cdClass);
-      cdClass.setSuperclass(EssentialTransformationHelper.createSimpleReference(qualifiedRuleName));
+      cdClass.setSuperclass(TransformationHelper.createSimpleReference(qualifiedRuleName));
     }
   }
 
@@ -92,16 +92,16 @@ public class ExtendsTranslation implements
     for (ASTRuleReference ruleReference : abstractProd.getSuperRule()) {
       MCProdSymbol ruleSymbol = resolveRule(astGrammar, ruleReference.getName()).get();
       String packageName = getPackageName(ruleSymbol);
-      cdClass.setSuperclass(EssentialTransformationHelper.createSimpleReference(
+      cdClass.setSuperclass(TransformationHelper.createSimpleReference(
           packageName + "AST" + ruleReference.getName()));
     }
 
     // translates "astextends"
     String qualifiedRuleName;
     for (ASTGenericType typeReference : abstractProd.getASTSuperClass()) {
-      qualifiedRuleName = EssentialTransformationHelper.getQualifiedTypeNameAndMarkIfExternal(
+      qualifiedRuleName = TransformationHelper.getQualifiedTypeNameAndMarkIfExternal(
           typeReference, astGrammar, cdClass);
-      cdClass.setSuperclass(EssentialTransformationHelper.createSimpleReference(qualifiedRuleName));
+      cdClass.setSuperclass(TransformationHelper.createSimpleReference(qualifiedRuleName));
     }
   }
 
@@ -111,17 +111,17 @@ public class ExtendsTranslation implements
     for (ASTRuleReference ruleReference : interfaceProd.getSuperInterfaceRule()) {
       MCProdSymbol ruleSymbol = resolveRule(astGrammar, ruleReference.getName()).get();
       String packageName = getPackageName(ruleSymbol);
-      cdInterface.getInterfaces().add(EssentialTransformationHelper.createSimpleReference(
+      cdInterface.getInterfaces().add(TransformationHelper.createSimpleReference(
           packageName + "AST" + ruleReference.getName()));
     }
 
     // translates "astextends"
     String qualifiedRuleName;
     for (ASTGenericType typeReference : interfaceProd.getASTSuperInterface()) {
-      qualifiedRuleName = EssentialTransformationHelper.getQualifiedTypeNameAndMarkIfExternal(
+      qualifiedRuleName = TransformationHelper.getQualifiedTypeNameAndMarkIfExternal(
           typeReference, astGrammar, cdInterface);
       cdInterface.getInterfaces().add(
-          EssentialTransformationHelper.createSimpleReference(qualifiedRuleName));
+          TransformationHelper.createSimpleReference(qualifiedRuleName));
     }
   }
 }

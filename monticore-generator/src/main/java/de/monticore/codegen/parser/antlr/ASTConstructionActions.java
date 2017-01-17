@@ -24,7 +24,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
-import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
+import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
@@ -57,9 +57,9 @@ public class ASTConstructionActions {
     if (constgroup.getUsageName().isPresent()) {
       String constfile;
       String constantname;
-      Optional<MCProdSymbol> rule = EssentialMCGrammarSymbolTableHelper
+      Optional<MCProdSymbol> rule = MCGrammarSymbolTableHelper
           .getEnclosingRule(constgroup);
-      Optional<MCGrammarSymbol> ruleGrammar = EssentialMCGrammarSymbolTableHelper
+      Optional<MCGrammarSymbol> ruleGrammar = MCGrammarSymbolTableHelper
           .getMCGrammarSymbol(constgroup);
       if (ruleGrammar.isPresent()) {
         constfile = AstGeneratorHelper.getConstantClassName(ruleGrammar.get());
@@ -91,8 +91,8 @@ public class ASTConstructionActions {
   public String getActionAfterConstantInEnumProdIterated(ASTConstant c) {
     String constfile;
     String constantname;
-    Optional<MCProdSymbol> rule = EssentialMCGrammarSymbolTableHelper.getEnclosingRule(c);
-    Optional<MCGrammarSymbol> ruleGrammar = EssentialMCGrammarSymbolTableHelper
+    Optional<MCProdSymbol> rule = MCGrammarSymbolTableHelper.getEnclosingRule(c);
+    Optional<MCGrammarSymbol> ruleGrammar = MCGrammarSymbolTableHelper
         .getMCGrammarSymbol(c);
     if (ruleGrammar.isPresent()) {
       constfile = AstGeneratorHelper.getConstantClassName(ruleGrammar.get());
@@ -134,9 +134,9 @@ public class ASTConstructionActions {
   
   public String getActionForRuleBeforeRuleBody(ASTClassProd a) {
     StringBuilder b = new StringBuilder();
-    String type = EssentialMCGrammarSymbolTableHelper
+    String type = MCGrammarSymbolTableHelper
         .getQualifiedName(symbolTable.getProdWithInherited(HelperGrammar.getRuleName(a)).get());
-    Optional<MCGrammarSymbol> grammar = EssentialMCGrammarSymbolTableHelper
+    Optional<MCGrammarSymbol> grammar = MCGrammarSymbolTableHelper
         .getMCGrammarSymbol(a);
     String name = grammar.isPresent()
         ? grammar.get().getName()
@@ -165,7 +165,7 @@ public class ASTConstructionActions {
     
     StringBuilder b = new StringBuilder();
     
-    String type = EssentialMCGrammarSymbolTableHelper
+    String type = MCGrammarSymbolTableHelper
         .getQualifiedName(symbolTable.getProdWithInherited(HelperGrammar.getRuleName(a)).get());
     
     // Setup return value
@@ -259,11 +259,11 @@ public class ASTConstructionActions {
   
   public String getActionForInternalRuleNotIteratedLeftRecursiveAttribute(ASTNonTerminal a) {
     
-    String type = EssentialMCGrammarSymbolTableHelper
+    String type = MCGrammarSymbolTableHelper
         .getQualifiedName(symbolTable.getProdWithInherited(a.getName()).get()); // TODO
                                                                                 // GV:
                                                                                 // getDefinedType().getQualifiedName()
-    String name = EssentialMCGrammarSymbolTableHelper.getMCGrammarSymbol(a).get().getName();
+    String name = MCGrammarSymbolTableHelper.getMCGrammarSymbol(a).get().getName();
     SourcePositionActions sourcePositionBuilder = new SourcePositionActions(parserGenHelper);
     StringBuilder b = new StringBuilder();
     b.append("// Action code for left recursive rule \n");

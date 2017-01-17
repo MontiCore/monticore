@@ -26,7 +26,7 @@ import java.nio.file.Paths;
 import com.google.common.base.Joiner;
 
 import de.monticore.codegen.GeneratorHelper;
-import de.monticore.codegen.mc2cd.EssentialTransformationHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.parser.antlr.AntlrTool;
 import de.monticore.codegen.parser.antlr.Grammar2Antlr;
 import de.monticore.generating.GeneratorEngine;
@@ -134,10 +134,10 @@ public class ParserGenerator {
     
     final GeneratorEngine generator = new GeneratorEngine(setup);
     // Generate wrapper
-    String parserWrapperSuffix = EssentialTransformationHelper.existsHandwrittenClass(handcodedPath,
+    String parserWrapperSuffix = TransformationHelper.existsHandwrittenClass(handcodedPath,
         GeneratorHelper.getDotPackageName(
             GeneratorHelper.getPackageName(astGrammar, PARSER_PACKAGE)) + astGrammar.getName()
-            + PARSER_WRAPPER) ? EssentialTransformationHelper.GENERATED_CLASS_SUFFIX : "";
+            + PARSER_WRAPPER) ? TransformationHelper.GENERATED_CLASS_SUFFIX : "";
     final Path path = Paths.get(
         Names.getPathFromPackage(GeneratorHelper.getPackageName(astGrammar, PARSER_PACKAGE)),
         astGrammar.getName() + "Parser" + parserWrapperSuffix + ".java");

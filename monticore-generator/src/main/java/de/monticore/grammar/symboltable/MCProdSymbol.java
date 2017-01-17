@@ -79,11 +79,6 @@ public class MCProdSymbol extends CommonScopeSpanningSymbol {
    */
   private List<MCProdOrTypeReference> astSuperInterfaces = new ArrayList<>();
   
-  /**
-   * ast A = b:B c:external.java.Type;
-   */
-  private List<MCProdAttributeSymbol> astAttributes = new ArrayList<>();
-  
   public MCProdSymbol(String name) {
     super(name, KIND);
   }
@@ -143,6 +138,19 @@ public class MCProdSymbol extends CommonScopeSpanningSymbol {
     return getSpannedScope().resolveLocally(componentName, MCProdComponentSymbol.KIND);
   }
   
+  public void addProdAttribute(MCProdAttributeSymbol attributeSymbol) {
+    Log.errorIfNull(attributeSymbol);
+    getMutableSpannedScope().add(attributeSymbol);
+  }
+  
+  public Collection<MCProdAttributeSymbol> getProdAttributes() {
+    return getSpannedScope().resolveLocally(MCProdAttributeSymbol.KIND);
+  }
+  
+  public Optional<MCProdAttributeSymbol> getProdAttribute(String attributeName) {
+    return getSpannedScope().resolveLocally(attributeName, MCProdAttributeSymbol.KIND);
+  }
+  
   public void addSuperProd(MCProdSymbolReference superProdRef) {
     this.superProds.add(Log.errorIfNull(superProdRef));
   }
@@ -173,14 +181,6 @@ public class MCProdSymbol extends CommonScopeSpanningSymbol {
   
   public List<MCProdOrTypeReference> getAstSuperInterfaces() {
     return ImmutableList.copyOf(astSuperInterfaces);
-  }
-  
-  public void addAstAttribute(MCProdAttributeSymbol ref) {
-    astAttributes.add(Log.errorIfNull(ref));
-  }
-  
-  public List<MCProdAttributeSymbol> getAstAttributes() {
-    return ImmutableList.copyOf(astAttributes);
   }
   
   /**

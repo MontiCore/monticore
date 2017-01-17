@@ -26,7 +26,7 @@ import static de.se_rwth.commons.Names.getSimpleName;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import de.monticore.codegen.mc2cd.EssentialTransformationHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
@@ -67,7 +67,7 @@ public class CommonScopeSpanningSymbolGenerator implements ScopeSpanningSymbolGe
     final String className = ruleSymbol.getName() + "Scope";
     final String qualifiedClassName = getPackageName(genHelper.getTargetPackage(), "") + className;
 
-    if(EssentialTransformationHelper.existsHandwrittenClass(handCodedPath, qualifiedClassName)) {
+    if(TransformationHelper.existsHandwrittenClass(handCodedPath, qualifiedClassName)) {
       // Scope classes are very simple and small. Hence, skip their generation
       // if handwritten class exists.
       return;

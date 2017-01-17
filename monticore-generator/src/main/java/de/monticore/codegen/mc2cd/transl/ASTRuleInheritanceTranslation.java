@@ -21,7 +21,7 @@ package de.monticore.codegen.mc2cd.transl;
 
 import java.util.function.UnaryOperator;
 
-import de.monticore.codegen.mc2cd.EssentialTransformationHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.ASTASTRule;
 import de.monticore.grammar.grammar._ast.ASTGenericType;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
@@ -63,28 +63,28 @@ public class ASTRuleInheritanceTranslation implements
       ASTMCGrammar astGrammar) {
     // translates "astextends"
     for (ASTGenericType superInterface : rule.getASTSuperClass()) {
-      String qualifiedSuperInterface = EssentialTransformationHelper
+      String qualifiedSuperInterface = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(superInterface, astGrammar, cdInterface);
 
       cdInterface.getInterfaces().add(
-          EssentialTransformationHelper.createSimpleReference(qualifiedSuperInterface));
+          TransformationHelper.createSimpleReference(qualifiedSuperInterface));
     }
   }
 
   private void translateClassProd(ASTASTRule rule, ASTCDClass cdClass, ASTMCGrammar astGrammar) {
     // translates "astextends"
     for (ASTGenericType superClass : rule.getASTSuperClass()) {
-      String qualifiedSuperClass = EssentialTransformationHelper
+      String qualifiedSuperClass = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(superClass, astGrammar, cdClass);
-      cdClass.setSuperclass(EssentialTransformationHelper.createSimpleReference(qualifiedSuperClass));
+      cdClass.setSuperclass(TransformationHelper.createSimpleReference(qualifiedSuperClass));
     }
 
     // translates "astimplements"
     for (ASTGenericType superInterface : rule.getASTSuperInterface()) {
-      String qualifiedSuperInterface = EssentialTransformationHelper
+      String qualifiedSuperInterface = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(superInterface, astGrammar, cdClass);
       cdClass.getInterfaces()
-          .add(EssentialTransformationHelper.createSimpleReference(qualifiedSuperInterface));
+          .add(TransformationHelper.createSimpleReference(qualifiedSuperInterface));
     }
   }
 }

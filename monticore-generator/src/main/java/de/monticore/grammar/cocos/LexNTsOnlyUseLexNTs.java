@@ -21,7 +21,7 @@ package de.monticore.grammar.cocos;
 
 import java.util.Optional;
 
-import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
+import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTLexNonTerminal;
 import de.monticore.grammar.grammar._cocos.GrammarASTLexNonTerminalCoCo;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
@@ -44,10 +44,10 @@ public class LexNTsOnlyUseLexNTs implements GrammarASTLexNonTerminalCoCo {
   
   @Override
   public void check(ASTLexNonTerminal a) {
-    Optional<MCGrammarSymbol> grammarSymbol = EssentialMCGrammarSymbolTableHelper
+    Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
         .getMCGrammarSymbol(a);
     
-    Optional<MCProdSymbol> ruleSymbol = EssentialMCGrammarSymbolTableHelper.getEnclosingRule(a);
+    Optional<MCProdSymbol> ruleSymbol = MCGrammarSymbolTableHelper.getEnclosingRule(a);
     String ruleName = ruleSymbol.isPresent() ? ruleSymbol.get().getName() : "";
     if (grammarSymbol.isPresent()
         && grammarSymbol.get().getProdWithInherited(a.getName()).isPresent() &&

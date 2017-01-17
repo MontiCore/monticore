@@ -19,8 +19,8 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import static de.monticore.codegen.mc2cd.EssentialTransformationHelper.createSimpleReference;
-import static de.monticore.codegen.mc2cd.EssentialTransformationHelper.typeToString;
+import static de.monticore.codegen.mc2cd.TransformationHelper.createSimpleReference;
+import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
 import static de.monticore.grammar.Multiplicity.determineMultiplicity;
 
 import java.util.List;

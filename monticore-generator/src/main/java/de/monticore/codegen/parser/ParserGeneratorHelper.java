@@ -35,7 +35,7 @@ import com.google.common.collect.Lists;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
-import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
+import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.PredicatePair;
@@ -139,7 +139,7 @@ public class ParserGeneratorHelper {
    */
   public String getQualifiedStartRuleName() {
     if (grammarSymbol.getStartProd().isPresent()) {
-      return EssentialMCGrammarSymbolTableHelper
+      return MCGrammarSymbolTableHelper
           .getQualifiedName(grammarSymbol.getStartProd().get());
     }
     return "";
@@ -416,7 +416,7 @@ public class ParserGeneratorHelper {
   }
   
   public String getTmpVarNameForAntlrCode(ASTNonTerminal node) {
-    Optional<MCProdSymbol> prod = EssentialMCGrammarSymbolTableHelper.getEnclosingRule(node);
+    Optional<MCProdSymbol> prod = MCGrammarSymbolTableHelper.getEnclosingRule(node);
     if (!prod.isPresent()) {
       Log.error("0xA1006 ASTNonterminal " + node.getName() + "(usageName: " + node.getUsageName()
           + ") can't be resolved.");
@@ -426,7 +426,7 @@ public class ParserGeneratorHelper {
   }
   
   public String getTmpVarNameForAntlrCode(ASTLexNonTerminal node) {
-    Optional<MCProdSymbol> prod = EssentialMCGrammarSymbolTableHelper.getEnclosingRule(node);
+    Optional<MCProdSymbol> prod = MCGrammarSymbolTableHelper.getEnclosingRule(node);
     if (!prod.isPresent()) {
       Log.error("0xA1007 ASTNonterminal " + node.getName() + " can't be resolved.");
       return "";
@@ -435,7 +435,7 @@ public class ParserGeneratorHelper {
   }
   
   public String getTmpVarNameForAntlrCode(String name, ASTNode node) {
-    Optional<MCProdSymbol> prod = EssentialMCGrammarSymbolTableHelper.getEnclosingRule(node);
+    Optional<MCProdSymbol> prod = MCGrammarSymbolTableHelper.getEnclosingRule(node);
     if (!prod.isPresent()) {
       Log.error("0xA1008 ASTNonterminal " + name + " can't be resolved.");
       return "";
@@ -467,7 +467,7 @@ public class ParserGeneratorHelper {
   }
   
   public static String getASTClassName(MCProdSymbol rule) {
-    return EssentialMCGrammarSymbolTableHelper.getQualifiedName(rule);
+    return MCGrammarSymbolTableHelper.getQualifiedName(rule);
   }
   
   public static Grammar_WithConceptsPrettyPrinter getPrettyPrinter() {
@@ -525,10 +525,6 @@ public class ParserGeneratorHelper {
     return StringTransformations.capitalize(JavaNamesHelper.getNonReservedName(rule.getName()));
   }
   
-  // public static String getASTClassName(MCProdSymbol rule) {
-  // return EssentialMCGrammarSymbolTableHelper.getQualifiedName(rule);
-  // }
-  
   /**
    * @return the qualified name for this type
    */
@@ -546,7 +542,7 @@ public class ParserGeneratorHelper {
       // TODO GV:
       // return getConstantType();
     }
-    return EssentialMCGrammarSymbolTableHelper.getQualifiedName(symbol.getAstNode().get(), symbol,
+    return MCGrammarSymbolTableHelper.getQualifiedName(symbol.getAstNode().get(), symbol,
         GeneratorHelper.AST_PREFIX, "");
   }
   
@@ -572,6 +568,16 @@ public class ParserGeneratorHelper {
     }
     return "UNKNOWN_TYPE";
     
+  }
+  
+  public static String formatAttributeValue(Optional<Integer> value) {
+    if (!value.isPresent()) {
+      return "undef";
+    }
+    else if (value.get() == GeneratorHelper.STAR) {
+      return "*";
+    }
+    return Integer.toString(value.get());
   }
 
 }

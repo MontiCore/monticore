@@ -24,7 +24,7 @@ import java.util.function.UnaryOperator;
 
 import com.google.common.base.Preconditions;
 
-import de.monticore.codegen.mc2cd.EssentialTransformationHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.ASTAbstractProd;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTGenericType;
@@ -72,7 +72,7 @@ public class ImplementsTranslation implements
       Optional<MCProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(ruleReference.getName());
       Preconditions.checkState(ruleSymbol.isPresent());
       cdClass.getInterfaces().add(
-          EssentialTransformationHelper.createSimpleReference(EssentialTransformationHelper
+          TransformationHelper.createSimpleReference(TransformationHelper
               .getPackageName(ruleSymbol.get())
               + "AST"
               + ruleReference.getName()));
@@ -81,11 +81,11 @@ public class ImplementsTranslation implements
     // translates "astimplements"
     String qualifiedRuleName;
     for (ASTGenericType typeReference : classProd.getASTSuperInterface()) {
-      qualifiedRuleName = EssentialTransformationHelper
+      qualifiedRuleName = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(
               typeReference, astGrammar, cdClass);
       cdClass.getInterfaces().add(
-          EssentialTransformationHelper.createSimpleReference(qualifiedRuleName));
+          TransformationHelper.createSimpleReference(qualifiedRuleName));
     }
   }
   
@@ -98,7 +98,7 @@ public class ImplementsTranslation implements
       Optional<MCProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(ruleReference.getName());
       Preconditions.checkState(ruleSymbol.isPresent());
       cdClass.getInterfaces().add(
-          EssentialTransformationHelper.createSimpleReference(EssentialTransformationHelper
+          TransformationHelper.createSimpleReference(TransformationHelper
               .getPackageName(ruleSymbol.get())
               + "AST"
               + ruleReference.getName()));
@@ -107,11 +107,11 @@ public class ImplementsTranslation implements
     // translates "astimplements"
     String qualifiedRuleName;
     for (ASTGenericType typeReference : abstractProd.getASTSuperInterface()) {
-      qualifiedRuleName = EssentialTransformationHelper
+      qualifiedRuleName = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(
               typeReference, astGrammar, cdClass);
       cdClass.getInterfaces().add(
-          EssentialTransformationHelper.createSimpleReference(qualifiedRuleName));
+          TransformationHelper.createSimpleReference(qualifiedRuleName));
     }
   }
   

@@ -47,6 +47,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.RegExpBuilder;
+import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
 import de.monticore.grammar.grammar._ast.ASTConstant;
 import de.monticore.grammar.grammar._ast.ASTConstantGroup;
 import de.monticore.grammar.grammar._ast.ASTLexActionOrPredicate;
@@ -54,11 +55,12 @@ import de.monticore.grammar.grammar._ast.ASTLexProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
-import de.monticore.grammar.symboltable.MontiCoreGrammarLanguage;
-import de.monticore.grammar.symboltable.MontiCoreGrammarSymbolTableCreator;
+import de.monticore.grammar.symboltable.MCProdAttributeSymbol;
 import de.monticore.grammar.symboltable.MCProdComponentSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbolReference;
+import de.monticore.grammar.symboltable.MontiCoreGrammarLanguage;
+import de.monticore.grammar.symboltable.MontiCoreGrammarSymbolTableCreator;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.GlobalScope;
@@ -71,9 +73,7 @@ import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.Util;
 import de.se_rwth.commons.logging.Log;
 
-public class EssentialMCGrammarSymbolTableHelper {
-  
-  private static Optional<? extends ScopeSpanningSymbol> c;
+public class MCGrammarSymbolTableHelper {
   
   public static void initializeSymbolTable(ASTMCGrammar rootNode, ModelPath modelPath) {
     ModelingLanguage grammarLanguage = new MontiCoreGrammarLanguage();
@@ -566,9 +566,10 @@ public class EssentialMCGrammarSymbolTableHelper {
     MCProdSymbol type2 = ref2.getReferencedSymbol();
     return areSameTypes(type1, type2) || isSubtype(type1, type2) || isSubtype(type2, type1);
   }
-
+  
   /**
    * TODO: Write me!
+   * 
    * @param prodComponent
    * @return
    */
@@ -582,7 +583,99 @@ public class EssentialMCGrammarSymbolTableHelper {
     for (MCProdComponentSymbol component : prodComponent.getSubProdComponents()) {
       set.add(component.getName());
     }
-    return set.size() > 1 ;
+    return set.size() > 1;
+  }
+  
+  public static boolean isAttributeDerived(MCProdAttributeSymbol attrSymbol) {
+    return attrSymbol.getAstNode().isPresent()
+        && attrSymbol.getAstNode().get() instanceof ASTAttributeInAST
+        && isAttributeDerived((ASTAttributeInAST) attrSymbol.getAstNode().get());
+  }
+  
+  /**
+   * TODO: Write me!
+   * 
+   * @param ast
+   * @return
+   */
+  public static boolean isAttributeDerived(ASTAttributeInAST ast) {
+    return ast.isDerived() && ast.getBody().isPresent();
+  }
+  
+  public static boolean isAttributeIterated(MCProdAttributeSymbol attrSymbol) {
+    return attrSymbol.getAstNode().isPresent()
+        && attrSymbol.getAstNode().get() instanceof ASTAttributeInAST
+        && isAttributeIterated((ASTAttributeInAST) attrSymbol.getAstNode().get());
+  }
+  
+  /**
+   * TODO: Write me!
+   * 
+   * @param ast
+   * @return
+   */
+  public static boolean isAttributeIterated(ASTAttributeInAST ast) {
+    if (!ast.getCard().isPresent()) {
+      return false;
+    }
+    if (ast.getCard().get().isUnbounded()) {
+      return true;
+    }
+    Optional<Integer> max = getMax(ast);
+    return max.isPresent() && (max.get() == GeneratorHelper.STAR || max.get() > 1);
+  }
+  
+  public static Optional<Integer> getMax(MCProdAttributeSymbol attrSymbol) {
+    if (!attrSymbol.getAstNode().isPresent()
+        || !(attrSymbol.getAstNode().get() instanceof ASTAttributeInAST)) {
+      return Optional.empty();
+    }
+    return getMax((ASTAttributeInAST) attrSymbol.getAstNode().get());
+  }
+  
+  public static Optional<Integer> getMax(ASTAttributeInAST ast) {
+    if (ast.getCard().isPresent()
+        && ast.getCard().get().getMax().isPresent()) {
+      String max = ast.getCard().get().getMax().get();
+      if ("*".equals(max)) {
+        return Optional.of(GeneratorHelper.STAR);
+      }
+      else {
+        try {
+          int x = Integer.parseInt(max);
+          return Optional.of(x);
+        }
+        catch (NumberFormatException ignored) {
+          Log.warn("0xA0140 Failed to parse an integer value of max of ASTAttributeInAST "
+              + ast.getName() + " from string " + max);
+        }
+      }
+    }
+    return Optional.empty();
+  }
+  
+  public static Optional<Integer> getMin(MCProdAttributeSymbol attrSymbol) {
+    if (!attrSymbol.getAstNode().isPresent()
+        || !(attrSymbol.getAstNode().get() instanceof ASTAttributeInAST)) {
+      return Optional.empty();
+    }
+    return getMin((ASTAttributeInAST) attrSymbol.getAstNode().get());
+  }
+  
+  public static Optional<Integer> getMin(ASTAttributeInAST ast) {
+    if (ast.getCard().isPresent()
+        && ast.getCard().get().getMin().isPresent()) {
+      String min = ast.getCard().get().getMin().get();
+      try {
+        int x = Integer.parseInt(min);
+        return Optional.of(x);
+      }
+      catch (NumberFormatException ignored) {
+        Log.warn("0xA0141 Failed to parse an integer value of max of ASTAttributeInAST "
+            + ast.getName() + " from string " + min);
+      }
+    }
+    return Optional.empty();
   }
   
   // public String getListType() {

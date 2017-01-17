@@ -32,7 +32,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
+import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.DirectLeftRecursionDetector;
 import de.monticore.grammar.MCGrammarInfo;
@@ -180,7 +180,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
         .getProdWithInherited(HelperGrammar.getRuleName(ast));
     // String classnameFromRulenameorInterfacename = ruleByName.getType()
     // .getQualifiedName();
-    String classnameFromRulenameorInterfacename = EssentialMCGrammarSymbolTableHelper
+    String classnameFromRulenameorInterfacename = MCGrammarSymbolTableHelper
         .getQualifiedName(ruleByName.get());
     
     // Head of Rule
@@ -205,7 +205,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     
     // Start code codeSection for rules
     addToCodeSection(ruleName, " returns [", classnameFromRulenameorInterfacename, " ret = ",
-        EssentialMCGrammarSymbolTableHelper.getDefaultValue(ruleByName.get()), "]\n", options);
+        MCGrammarSymbolTableHelper.getDefaultValue(ruleByName.get()), "]\n", options);
     
     startAction();
     // Add actions
@@ -291,8 +291,8 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     
     // Head of Rule
     addToCodeSection(ruleName + " returns ["
-        + EssentialMCGrammarSymbolTableHelper.getQualifiedName(ruleByName.get()) + " ret = "
-        + EssentialMCGrammarSymbolTableHelper.getDefaultValue(ruleByName.get()) + "] ");
+        + MCGrammarSymbolTableHelper.getQualifiedName(ruleByName.get()) + " ret = "
+        + MCGrammarSymbolTableHelper.getDefaultValue(ruleByName.get()) + "] ");
     
     addToCodeSection("\n: ");
     
@@ -307,7 +307,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       }
       
       String temp1 = "";
-      temp1 += "$ret = " + EssentialMCGrammarSymbolTableHelper.getQualifiedName(ruleByName.get())
+      temp1 += "$ret = " + MCGrammarSymbolTableHelper.getQualifiedName(ruleByName.get())
           + "."
           + parserHelper.getConstantNameForConstant(c) + ";";
       
@@ -332,7 +332,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     
     boolean iterated = false;
     if (ast.getSymbol().isPresent() && ast.getSymbol().get() instanceof MCProdComponentSymbol) {
-      iterated = EssentialMCGrammarSymbolTableHelper
+      iterated = MCGrammarSymbolTableHelper
           .isConstGroupIterated((MCProdComponentSymbol) ast.getSymbol().get());
     }
     
@@ -783,7 +783,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     String interfacename = interfaceRule.getName();
     // Dummy rules
     String ruleName = HelperGrammar.getRuleNameForAntlr(interfacename);
-    String usageName = EssentialMCGrammarSymbolTableHelper.getQualifiedName(interfaceRule);
+    String usageName = MCGrammarSymbolTableHelper.getQualifiedName(interfaceRule);
     
     startCodeSection(interfaceRule.getName());
     
@@ -857,7 +857,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     // Add Actions
     startAction();
     
-    Optional<MCProdSymbol> scope = EssentialMCGrammarSymbolTableHelper.getEnclosingRule(ast);
+    Optional<MCProdSymbol> scope = MCGrammarSymbolTableHelper.getEnclosingRule(ast);
     
     if (scope.isPresent()) {
       addToAction(attributeConstraints.addActionForNonTerminal(ast));
@@ -900,7 +900,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
         Optional<? extends Symbol> ruleComponent = ast.getSymbol();
         if (ruleComponent.isPresent() && ruleComponent.get() instanceof MCProdComponentSymbol) {
           MCProdComponentSymbol componentSymbol = (MCProdComponentSymbol)ruleComponent.get();
-          Optional<MCProdSymbol> rule = EssentialMCGrammarSymbolTableHelper
+          Optional<MCProdSymbol> rule = MCGrammarSymbolTableHelper
               .getEnclosingRule(componentSymbol);
           if (rule.isPresent()) {
             addActionForKeyword(term, rule.get(), componentSymbol.isList());
@@ -926,7 +926,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
    * @return
    */
   private void addCodeForRuleReference(ASTNonTerminal ast) {
-    Optional<MCProdSymbol> scope = EssentialMCGrammarSymbolTableHelper.getEnclosingRule(ast);
+    Optional<MCProdSymbol> scope = MCGrammarSymbolTableHelper.getEnclosingRule(ast);
     
     boolean isLeftRecursive = false;
     if (scope.isPresent() && scope.get().getName().equals(ast.getName())

@@ -19,14 +19,14 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import static de.monticore.codegen.mc2cd.EssentialTransformationHelper.createSimpleReference;
-import static de.monticore.codegen.mc2cd.EssentialTransformationHelper.getPackageName;
+import static de.monticore.codegen.mc2cd.TransformationHelper.createSimpleReference;
+import static de.monticore.codegen.mc2cd.TransformationHelper.getPackageName;
 
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 
-import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
-import de.monticore.codegen.mc2cd.EssentialTransformationHelper;
+import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
 import de.monticore.grammar.grammar._ast.ASTGenericType;
@@ -96,7 +96,7 @@ public class ReferenceTypeTranslation implements
   
   private ASTType determineTypeToSetForAttributeInAST(ASTGenericType astGenericType,
       ASTMCGrammar astMCGrammar) {
-    Optional<MCProdSymbol> ruleSymbol = EssentialTransformationHelper
+    Optional<MCProdSymbol> ruleSymbol = TransformationHelper
         .resolveAstRuleType(astGenericType);
     if (!ruleSymbol.isPresent()) {
       return determineTypeToSet(astGenericType.getTypeName(), astMCGrammar);
@@ -105,14 +105,14 @@ public class ReferenceTypeTranslation implements
       return createSimpleReference(astGenericType + "Ext");
     }
     else {
-      String qualifiedASTNodeName = EssentialTransformationHelper
+      String qualifiedASTNodeName = TransformationHelper
           .getPackageName(ruleSymbol.get()) + "AST" + ruleSymbol.get().getName();
       return createSimpleReference(qualifiedASTNodeName);
     }
   }
   
   private ASTType determineTypeToSet(String typeName, ASTMCGrammar astMCGrammar) {
-    Optional<ASTType> byReference = EssentialMCGrammarSymbolTableHelper
+    Optional<ASTType> byReference = MCGrammarSymbolTableHelper
         .resolveRule(astMCGrammar, typeName)
         .map(ruleSymbol -> ruleSymbolToType(ruleSymbol, typeName));
     Optional<ASTType> byPrimitive = determineConstantsType(typeName)

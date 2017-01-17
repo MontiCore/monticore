@@ -73,7 +73,7 @@ public class TestHelper {
   }
 
   public static boolean isListOfType(ASTType typeRef, String typeArg) {
-    if (!EssentialTransformationHelper.typeToString(typeRef).equals("java.util.List")) {
+    if (!TransformationHelper.typeToString(typeRef).equals("java.util.List")) {
       return false;
     }
     if (!(typeRef instanceof ASTSimpleReferenceType)) {

@@ -20,7 +20,7 @@
 package de.monticore.codegen.mc2cd.manipul;
 
 import static de.monticore.codegen.mc2cd.AttributeCategory.determineCategory;
-import static de.monticore.codegen.mc2cd.EssentialTransformationHelper.typeToString;
+import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
 
 import java.util.Iterator;
 import java.util.List;
@@ -32,7 +32,7 @@ import java.util.stream.StreamSupport;
 import com.google.common.collect.Iterables;
 
 import de.monticore.codegen.mc2cd.AttributeCategory;
-import de.monticore.codegen.mc2cd.EssentialTransformationHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
@@ -109,7 +109,7 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
         return firstArgument.get();
       }
     }
-    return EssentialTransformationHelper.typeToString(cdAttribute.getType());
+    return TransformationHelper.typeToString(cdAttribute.getType());
   }
 
   private static Optional<String> getFirstTypeArgument(ASTCDAttribute cdAttribute) {

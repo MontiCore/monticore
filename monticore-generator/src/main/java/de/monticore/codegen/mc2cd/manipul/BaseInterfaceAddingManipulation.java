@@ -21,7 +21,7 @@ package de.monticore.codegen.mc2cd.manipul;
 
 import java.util.function.UnaryOperator;
 
-import de.monticore.codegen.mc2cd.EssentialTransformationHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDDefinition;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
@@ -44,7 +44,7 @@ public final class BaseInterfaceAddingManipulation implements UnaryOperator<ASTC
   }
   
   public static String getBaseInterfaceName(ASTCDDefinition astcdDefinition) {
-    return EssentialTransformationHelper.AST_PREFIX + astcdDefinition.getName() + "Node";
+    return TransformationHelper.AST_PREFIX + astcdDefinition.getName() + "Node";
   }
   
 }

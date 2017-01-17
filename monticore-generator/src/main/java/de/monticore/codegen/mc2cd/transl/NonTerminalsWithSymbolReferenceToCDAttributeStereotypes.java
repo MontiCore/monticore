@@ -22,8 +22,8 @@ package de.monticore.codegen.mc2cd.transl;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 
-import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
-import de.monticore.codegen.mc2cd.EssentialTransformationHelper;
+import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
@@ -51,17 +51,17 @@ class NonTerminalsWithSymbolReferenceToCDAttributeStereotypes implements
       final ASTCDAttribute cdAttribute = link.target();
       
       if (nonTerminal.referencedSymbolIsPresent()) {
-        final Optional<MCGrammarSymbol> grammarSymbol = EssentialMCGrammarSymbolTableHelper
+        final Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
             .getMCGrammarSymbol(nonTerminal);
         if (grammarSymbol.isPresent()) {
           final Optional<MCProdSymbol> referencedSymbol = grammarSymbol.get()
               .getProdWithInherited(nonTerminal.getReferencedSymbol().get());
           if (referencedSymbol.isPresent()) {
-            final String referencedSymbolName = EssentialTransformationHelper
+            final String referencedSymbolName = TransformationHelper
                 .getGrammarName(referencedSymbol.get()) + "." + referencedSymbol.get().getName()
                 + "Symbol";
             
-            EssentialTransformationHelper.addStereoType(cdAttribute,
+            TransformationHelper.addStereoType(cdAttribute,
                 MC2CDStereotypes.REFERENCED_SYMBOL.toString(), referencedSymbolName);
           }
           

@@ -22,8 +22,8 @@ package de.monticore.codegen.mc2cd.transl;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 
-import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
-import de.monticore.codegen.mc2cd.EssentialTransformationHelper;
+import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.symboltable.MCProdSymbol;
@@ -41,11 +41,11 @@ public class ExternalImplementationTranslation implements
     for (Link<ASTClassProd, ASTCDClass> link : rootLink.getLinks(ASTClassProd.class,
         ASTCDClass.class)) {
       String name = link.source().getName();
-      Optional<MCProdSymbol> ruleSymbol = EssentialMCGrammarSymbolTableHelper.resolveRuleInSupersOnly(
+      Optional<MCProdSymbol> ruleSymbol = MCGrammarSymbolTableHelper.resolveRuleInSupersOnly(
           rootLink.source(), name);
       if (ruleSymbol.isPresent() && ruleSymbol.get().isExternal()) {
         link.target().getInterfaces().add(
-            EssentialTransformationHelper.createSimpleReference(EssentialTransformationHelper.getGrammarNameAsPackage(
+            TransformationHelper.createSimpleReference(TransformationHelper.getGrammarNameAsPackage(
                 ruleSymbol.get()) + "AST" + name + "Ext"));
       }
     }

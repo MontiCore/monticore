@@ -21,7 +21,7 @@ package de.monticore.grammar.cocos;
 
 import java.util.Optional;
 
-import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
+import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._cocos.GrammarASTNonTerminalCoCo;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
@@ -50,12 +50,12 @@ public class ProdAndOverriddenProdUseSameAttrNameForDiffNTs implements GrammarAS
       if (!componentSymbol.isPresent()) {
         Log.error("0xA1124 ASTNonterminal " + a.getName() + " couldn't be resolved.");
       }
-      Optional<MCProdSymbol> rule = EssentialMCGrammarSymbolTableHelper.getEnclosingRule(a);
+      Optional<MCProdSymbol> rule = MCGrammarSymbolTableHelper.getEnclosingRule(a);
       if (!rule.isPresent()) {
         Log.error("0xA1125 Symbol for enclosing produktion of the component " + a.getName()
             + " couldn't be resolved.");
       }
-      Optional<MCGrammarSymbol> grammarSymbol = EssentialMCGrammarSymbolTableHelper
+      Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
           .getMCGrammarSymbol(a);
       if (!grammarSymbol.isPresent()) {
         Log.error(

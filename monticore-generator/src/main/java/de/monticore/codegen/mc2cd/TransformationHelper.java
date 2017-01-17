@@ -79,7 +79,7 @@ import de.monticore.utils.ASTNodes;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
-public final class EssentialTransformationHelper {
+public final class TransformationHelper {
   
   public static final String DEFAULT_FILE_EXTENSION = ".java";
   
@@ -89,7 +89,7 @@ public final class EssentialTransformationHelper {
   
   public static final String AST_PACKAGE_SUFFIX = "_ast";
   
-  private EssentialTransformationHelper() {
+  private TransformationHelper() {
     // noninstantiable
   }
   
@@ -183,7 +183,7 @@ public final class EssentialTransformationHelper {
       String parameterName) {
     ASTCDParameter parameter = CD4AnalysisNodeFactory
         .createASTCDParameter();
-    parameter.setType(EssentialTransformationHelper.createSimpleReference(typeName));
+    parameter.setType(TransformationHelper.createSimpleReference(typeName));
     parameter.setName(parameterName);
     return parameter;
   }
@@ -275,17 +275,14 @@ public final class EssentialTransformationHelper {
         + GeneratorHelper.getASTNodeBaseType(cdCompilationUnit.getCDDefinition().getName());
   }
   
-  // TODO GV
   public static List<String> getAllGrammarConstants(ASTMCGrammar grammar) {
     List<String> constants = new ArrayList<>();
-    MCGrammarSymbol grammarSymbol = EssentialMCGrammarSymbolTableHelper
+    MCGrammarSymbol grammarSymbol = MCGrammarSymbolTableHelper
         .getMCGrammarSymbol(grammar).get();
     Preconditions.checkState(grammarSymbol != null);
     for (MCProdComponentSymbol component : grammarSymbol.getProds().stream()
         .flatMap(p -> p.getProdComponents().stream()).collect(Collectors.toSet())) {
-      if (component.isConstantGroup()/* && ((ASTConstantGroup)
-                                      * component.getAstNode().get()).
-                                      * usageNameIsPresent() */) {
+      if (component.isConstantGroup()) {
         Collection<MCProdComponentSymbol> subComponents = component.getSubProdComponents();
         for (MCProdComponentSymbol subComponent : subComponents) {
           if (subComponent.isConstant() && !constants.contains(subComponent.getName())) {
@@ -333,7 +330,7 @@ public final class EssentialTransformationHelper {
         + DEFAULT_FILE_EXTENSION);
     Log.debug("Checking existence of handwritten class " + qualifiedName
         + " by searching for "
-        + handwrittenFile.toString(), EssentialTransformationHelper.class.getName());
+        + handwrittenFile.toString(), TransformationHelper.class.getName());
     boolean result = targetPath.exists(handwrittenFile);
     if (result) {
       Reporting.reportUseHandwrittenCodeFile(targetPath.getResolvedPath(handwrittenFile).get(),
@@ -386,7 +383,7 @@ public final class EssentialTransformationHelper {
       if (!simpleName.startsWith(AST_PREFIX)) {
         return Optional.empty();
       }
-      Optional<MCProdSymbol> ruleSymbol = EssentialMCGrammarSymbolTableHelper.resolveRule(type,
+      Optional<MCProdSymbol> ruleSymbol = MCGrammarSymbolTableHelper.resolveRule(type,
           simpleName
               .substring(AST_PREFIX.length()));
       if (ruleSymbol.isPresent() && istPartOfGrammar(ruleSymbol.get())) {

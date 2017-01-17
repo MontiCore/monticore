@@ -27,7 +27,7 @@ import org.junit.Test;
 
 import com.google.common.collect.Iterables;
 
-import de.monticore.codegen.mc2cd.EssentialTransformationHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
@@ -54,6 +54,6 @@ public class TerminalWithUsageNameTest {
         ASTCDAttribute.class));
     
     assertEquals("testname", cdAttribute.getName());
-    assertEquals("String", EssentialTransformationHelper.typeToString(cdAttribute.getType()));
+    assertEquals("String", TransformationHelper.typeToString(cdAttribute.getType()));
   }
 }

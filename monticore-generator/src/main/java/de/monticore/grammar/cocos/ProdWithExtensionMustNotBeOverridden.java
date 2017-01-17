@@ -22,7 +22,7 @@ package de.monticore.grammar.cocos;
 import java.util.Map.Entry;
 import java.util.Optional;
 
-import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
+import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTProdCoCo;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
@@ -45,11 +45,11 @@ public class ProdWithExtensionMustNotBeOverridden implements GrammarASTProdCoCo 
   @Override
   public void check(ASTProd a) {
     
-    Optional<MCGrammarSymbol> grammarSymbol = EssentialMCGrammarSymbolTableHelper
+    Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
         .getMCGrammarSymbol(a);
     
     boolean isOverriding = false;
-    for (MCGrammarSymbol sup : EssentialMCGrammarSymbolTableHelper.getAllSuperGrammars(grammarSymbol.get())) {
+    for (MCGrammarSymbol sup : MCGrammarSymbolTableHelper.getAllSuperGrammars(grammarSymbol.get())) {
       if (sup.getProd(a.getName()).isPresent()) {
         isOverriding = true;
         break;

@@ -20,6 +20,7 @@
 package de.monticore.codegen.mc2cd.transl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -31,16 +32,16 @@ import java.util.stream.Collectors;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
-import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
-import de.monticore.codegen.mc2cd.EssentialTransformationHelper;
+import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTProd;
-import de.monticore.grammar.symboltable.MCProdAttributeSymbol;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCProdAttributeSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.symboltable.Symbol;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
@@ -76,7 +77,7 @@ public class InheritedAttributesTranslation implements
   }
   
   private void handleInheritedAttributeInASTs(Link<ASTClassProd, ASTCDClass> link) {
-    for (Entry<ASTProd, List<MCProdAttributeSymbol>> entry : getInheritedAttributeInASTs(
+    for (Entry<ASTProd, Collection<MCProdAttributeSymbol>> entry : getInheritedAttributeInASTs(
         link.source()).entrySet()) {
       for (MCProdAttributeSymbol attributeInAST : entry.getValue()) {
         ASTCDAttribute cdAttribute = createCDAttribute(link.source(), entry.getKey());
@@ -92,25 +93,25 @@ public class InheritedAttributesTranslation implements
     List<ASTInterfaceProd> interfacesWithoutImplementation = getAllInterfacesWithoutImplementation(
         inheritingNode);
     
-    String superGrammarName = EssentialMCGrammarSymbolTableHelper.getMCGrammarSymbol(definingNode)
+    String superGrammarName = MCGrammarSymbolTableHelper.getMCGrammarSymbol(definingNode)
         .map(MCGrammarSymbol::getFullName)
         .orElse("");
     
     ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
     if (!interfacesWithoutImplementation.contains(definingNode)) {
-      EssentialTransformationHelper.addStereoType(
+      TransformationHelper.addStereoType(
           cdAttribute, MC2CDStereotypes.INHERITED.toString(), superGrammarName);
     }
     return cdAttribute;
   }
   
-  private Map<ASTProd, List<MCProdAttributeSymbol>> getInheritedAttributeInASTs(
+  private Map<ASTProd, Collection<MCProdAttributeSymbol>> getInheritedAttributeInASTs(
       ASTNode astNode) {
     return GeneratorHelper.getAllSuperProds(astNode).stream()
         .distinct()
         .collect(Collectors.toMap(Function.identity(), astProd -> astProd.getSymbol()
             .flatMap(this::getTypeSymbol)
-            .map(MCProdSymbol::getAstAttributes)
+            .map(MCProdSymbol::getProdAttributes)
             .orElse(Collections.emptyList())));
   }
   

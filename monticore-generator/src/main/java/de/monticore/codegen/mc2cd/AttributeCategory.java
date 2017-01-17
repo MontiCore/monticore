@@ -60,12 +60,12 @@ public enum AttributeCategory {
   
   private static boolean isGenericList(ASTCDAttribute cdAttribute) {
     boolean hasGenerics = ((ASTSimpleReferenceType) cdAttribute.getType()).getTypeArguments() != null;
-    return "java.util.List".equals(EssentialTransformationHelper.typeToString(cdAttribute.getType()))
+    return "java.util.List".equals(TransformationHelper.typeToString(cdAttribute.getType()))
         && hasGenerics;
   }
   
   private static boolean isOptional(ASTCDAttribute cdAttribute) {
-    return "Optional".equals(EssentialTransformationHelper.typeToString(cdAttribute.getType()));
+    return "Optional".equals(TransformationHelper.typeToString(cdAttribute.getType()));
   }
   
 }

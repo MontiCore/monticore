@@ -38,7 +38,7 @@ import com.google.common.collect.ImmutableList;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
-import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
+import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdComponentSymbol;
@@ -105,7 +105,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
    */
   public String getQualifiedStartRuleName() {
     if (grammarSymbol.getStartProd().isPresent()) {
-      return EssentialMCGrammarSymbolTableHelper
+      return MCGrammarSymbolTableHelper
           .getQualifiedName(grammarSymbol.getStartProd().get());
     }
     return "";
@@ -144,7 +144,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
         constant2JavaField(componentSymbol, fields);
       }
       else if (componentSymbol.isConstantGroup()) {
-        String attrName = EssentialMCGrammarSymbolTableHelper.getConstantName(componentSymbol).orElse("");
+        String attrName = MCGrammarSymbolTableHelper.getConstantName(componentSymbol).orElse("");
         if (canBeTransformedToValidJavaName(attrName)) {
           fields.put(attrName, "boolean");
         }

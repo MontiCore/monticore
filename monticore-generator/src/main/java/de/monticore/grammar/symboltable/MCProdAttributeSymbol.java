@@ -7,7 +7,10 @@ package de.monticore.grammar.symboltable;
 
 import java.util.Optional;
 
+import de.monticore.ast.ASTNode;
+import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
 import de.monticore.symboltable.CommonSymbol;
+import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
 
 /**
@@ -20,14 +23,14 @@ public class MCProdAttributeSymbol extends CommonSymbol {
   
   public static final MCProdAttributeKind KIND = new MCProdAttributeKind();
   
-  private MCProdOrTypeReference referencedProd;
+  private MCProdOrTypeReference typeReference;
 
   public MCProdAttributeSymbol(String name) {
     super(name, KIND);
   }
   
-  public void setReferencedProd(MCProdOrTypeReference referencedProd) {
-    this.referencedProd = referencedProd;
+  public void setTypeReference(MCProdOrTypeReference referencedProd) {
+    this.typeReference = referencedProd;
   }
   
   /**
@@ -35,8 +38,8 @@ public class MCProdAttributeSymbol extends CommonSymbol {
    * defining prod for the nonterminal <code>... = s:A</code> is the production
    * <code>A = ...</code>.
    */
-  public Optional<MCProdOrTypeReference> getReferencedProd() {
-    return Optional.ofNullable(referencedProd);
+  public Optional<MCProdOrTypeReference> getTypeReference() {
+    return Optional.ofNullable(typeReference);
   }
   
   public static class MCProdAttributeKind implements SymbolKind {

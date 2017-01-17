@@ -21,7 +21,7 @@ package de.monticore.grammar.cocos;
 
 import java.util.Optional;
 
-import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
+import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTASTRule;
 import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
 import de.monticore.grammar.grammar._cocos.GrammarASTASTRuleCoCo;
@@ -55,7 +55,7 @@ public class ASTRuleAndNTUseSameAttrNameForDiffNTs implements GrammarASTASTRuleC
           Optional<MCProdSymbol> compType = a.getEnclosingScope().get()
               .resolve(rc.get().getReferencedProd().get().getName(), MCProdSymbol.KIND);
           if (attrType.isPresent() && compType.isPresent()
-              && !EssentialMCGrammarSymbolTableHelper.isSubtype(compType.get(), attrType.get())) {
+              && !MCGrammarSymbolTableHelper.isSubtype(compType.get(), attrType.get())) {
             Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getType(),
                 attr.getName().get(), attr.getGenericType().getTypeName(),
                 attr.getGenericType().getTypeName(), rc.get().getReferencedProd().get().getName()),

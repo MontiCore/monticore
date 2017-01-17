@@ -27,7 +27,7 @@ import org.junit.Test;
 
 import java.nio.file.Paths;
 
-import static de.monticore.codegen.mc2cd.EssentialTransformationHelper.typeToString;
+import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 

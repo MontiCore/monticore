@@ -22,7 +22,7 @@ package de.monticore.grammar.cocos;
 import java.util.List;
 import java.util.Optional;
 
-import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
+import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTAbstractProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTAbstractProdCoCo;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
@@ -45,7 +45,7 @@ public class OverridingAbstractNTsHaveNoSuperRules implements GrammarASTAbstract
   
   @Override
   public void check(ASTAbstractProd a) {
-    Optional<MCGrammarSymbol> grammarSymbol = EssentialMCGrammarSymbolTableHelper
+    Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
         .getMCGrammarSymbol(a);
     List<MCGrammarSymbol> grammarSymbols = grammarSymbol.get().getSuperGrammarSymbols();
     

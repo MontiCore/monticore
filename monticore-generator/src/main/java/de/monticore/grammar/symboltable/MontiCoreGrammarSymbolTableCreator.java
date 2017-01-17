@@ -24,6 +24,7 @@ import static com.google.common.base.Strings.nullToEmpty;
 import static de.se_rwth.commons.Names.getQualifiedName;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +33,7 @@ import java.util.Set;
 import com.google.common.collect.Sets;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
+import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.ASTASTRule;
@@ -163,7 +164,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
    */
   private void setComponentsCardinality() {
     for (MCProdSymbol prodSymbol : grammarSymbol.getProdsWithInherited().values()) {
-      List<MCProdAttributeSymbol> astAttributes = prodSymbol.getAstAttributes();
+      Collection<MCProdAttributeSymbol> astAttributes = prodSymbol.getProdAttributes();
       for (MCProdComponentSymbol component : prodSymbol.getProdComponents()) {
         if (component.isNonterminal()) {
           setComponentMultiplicity(component, component.getAstNode().get());
@@ -433,7 +434,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
         MCProdComponentSymbol prevProdComp = surroundingProd
             .getProdComponent(prodComponent.getName()).orElse(null);
         
-        Optional<MCProdSymbol> byReference = EssentialMCGrammarSymbolTableHelper
+        Optional<MCProdSymbol> byReference = MCGrammarSymbolTableHelper
             .resolveRule(astGrammar, ast.getName());
         if (!byReference.isPresent() || !byReference.get().isLexerProd()) {
           
@@ -441,10 +442,10 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
             boolean sameType = prevProdComp.getReferencedProd().get().getName()
                 .equals(ast.getName());
             if (!sameType) {
-              boolean subType = EssentialMCGrammarSymbolTableHelper
+              boolean subType = MCGrammarSymbolTableHelper
                   .isSubType(prevProdComp.getReferencedProd().get(),
                       symRef)
-                  || EssentialMCGrammarSymbolTableHelper
+                  || MCGrammarSymbolTableHelper
                       .isSubType(symRef, prevProdComp.getReferencedProd().get());
               if (!subType) {
                 Log.error("0xA4006 The production " + surroundingProd.getName()
@@ -501,7 +502,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
   
   @Override
   public void visit(ASTConstantGroup astNode) {
-    Optional<String> attrName = EssentialMCGrammarSymbolTableHelper.getConstantName(astNode,
+    Optional<String> attrName = MCGrammarSymbolTableHelper.getConstantName(astNode,
         currentSymbol());
     
     final String usageName = astNode.getUsageName().orElse(null);
@@ -606,8 +607,9 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
     MCProdAttributeSymbol astAttributeSymbol = new MCProdAttributeSymbol(attributeName);
     MCProdOrTypeReference attributeType = new MCProdOrTypeReference(
         astAttribute.getGenericType().getTypeName(), mcProdSymbol.getSpannedScope());
-    astAttributeSymbol.setReferencedProd(attributeType);
-    mcProdSymbol.addAstAttribute(astAttributeSymbol);
+    astAttributeSymbol.setTypeReference(attributeType);
+    
+    mcProdSymbol.addProdAttribute(astAttributeSymbol);
     //
     // Optional<MCProdComponentSymbol> mcComponent =
     // mcProdSymbol.getProdComponent(attributeName);

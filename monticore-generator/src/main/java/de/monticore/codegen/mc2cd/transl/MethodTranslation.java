@@ -23,7 +23,7 @@ import java.util.function.UnaryOperator;
 
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.CdDecorator;
-import de.monticore.codegen.mc2cd.EssentialTransformationHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -83,13 +83,13 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
   
   private ASTCDMethod translateASTMethodToASTCDMethod(ASTMethod method) {
     ASTCDMethod cdMethod = CD4AnalysisNodeFactory.createASTCDMethod();
-    cdMethod.setModifier(EssentialTransformationHelper.createPublicModifier());
+    cdMethod.setModifier(TransformationHelper.createPublicModifier());
     cdMethod.setName(method.getName());
-    String dotSeparatedName = EssentialTransformationHelper.typeReferenceToString(method.getReturnType());
-    cdMethod.setReturnType(EssentialTransformationHelper.createSimpleReference(dotSeparatedName));
+    String dotSeparatedName = TransformationHelper.typeReferenceToString(method.getReturnType());
+    cdMethod.setReturnType(TransformationHelper.createSimpleReference(dotSeparatedName));
     for (ASTMethodParameter param: method.getMethodParameters()) {
-      String typeName = EssentialTransformationHelper.typeReferenceToString(param.getType());
-      cdMethod.getCDParameters().add(EssentialTransformationHelper.createParameter(typeName, param.getName()));
+      String typeName = TransformationHelper.typeReferenceToString(param.getType());
+      cdMethod.getCDParameters().add(TransformationHelper.createParameter(typeName, param.getName()));
     }
     if (method.getBody() instanceof ASTAction) {
       StringBuilder code = new StringBuilder();

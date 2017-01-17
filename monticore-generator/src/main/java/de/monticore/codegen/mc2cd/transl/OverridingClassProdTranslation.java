@@ -22,8 +22,8 @@ package de.monticore.codegen.mc2cd.transl;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 
-import de.monticore.codegen.mc2cd.EssentialMCGrammarSymbolTableHelper;
-import de.monticore.codegen.mc2cd.EssentialTransformationHelper;
+import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.symboltable.MCProdSymbol;
@@ -47,15 +47,15 @@ public class OverridingClassProdTranslation implements
     for (Link<ASTClassProd, ASTCDClass> link : rootLink.getLinks(ASTClassProd.class,
         ASTCDClass.class)) {
       
-      Optional<MCProdSymbol> ruleSymbol = EssentialMCGrammarSymbolTableHelper
+      Optional<MCProdSymbol> ruleSymbol = MCGrammarSymbolTableHelper
           .resolveRuleInSupersOnly(
               rootLink.source(),
               link.source().getName());
       if (ruleSymbol.isPresent() && !ruleSymbol.get().isExternal()) {
-        String qualifiedASTNodeName = EssentialTransformationHelper.getPackageName(ruleSymbol.get()) + "AST"
+        String qualifiedASTNodeName = TransformationHelper.getPackageName(ruleSymbol.get()) + "AST"
             + ruleSymbol.get().getName();
         link.target().setSuperclass(
-            EssentialTransformationHelper.createSimpleReference(qualifiedASTNodeName));
+            TransformationHelper.createSimpleReference(qualifiedASTNodeName));
       }
       
     }
