@@ -30,25 +30,59 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-${tc.params("String package", "java.util.List<String> templates", "String modelPath", "de.monticore.templateclassgenerator.codegen.TemplateClassHelper helper")}
+${tc.params("String mainTemplateName", "String package")}
 
 package ${package};
 
-public class TemplateAccessor {
+public class ${mainTemplateName}Factory {
 
-  <#list templates as template>
-    
-  private ${glex.getGlobalVar("TemplateClassPackage")}.${template}${glex.getGlobalVar("TemplatePostfix")} ${helper.replaceDotsWithUnderscores(template)} = new ${helper.replaceDotsWithUnderscores(template)?cap_first}_Extended();
+  /** Factory singleton instance */
+  protected static ${mainTemplateName}Factory instance;
   
-  public ${glex.getGlobalVar("TemplateClassPackage")}.${template}${glex.getGlobalVar("TemplatePostfix")} get${helper.replaceDotsWithUnderscores(template)?cap_first}() {
-    return this.${helper.replaceDotsWithUnderscores(template)};
+  /**Protected default constructor */
+  protected ${mainTemplateName}Factory() {}
+  
+  /**
+  * Registers a concrete factory instance that is used to produce
+  * instances of ${mainTemplateName}.
+  *
+  * @param factory the factory instance that is to be used
+  */
+  public static void register(${mainTemplateName}Factory factory) {
+    if(instance == null || instance.getClass().equals(${mainTemplateName}Factory.class)) {
+      instance = factory;
+    }
+    else {
+      throw new RuntimeException("More then one concrete factory registered for ${mainTemplateName}Factory. Current factory class is: " +
+                  instance.getClass().getName() + ", factory class to register: " + factory.getClass().getName());
+    }
   }
   
-  private class ${helper.replaceDotsWithUnderscores(template)?cap_first}_Extended extends ${glex.getGlobalVar("TemplateClassPackage")}.${template}${glex.getGlobalVar("TemplatePostfix")}<#if helper.isMainTemplate(template)>Impl</#if> {
-    protected ${helper.replaceDotsWithUnderscores(template)?cap_first}_Extended () {}
-  } 
+  /**
+  * Resets the ${mainTemplateName}Factory to use its default factory.
+  */
+  public static void reset() {
+    instance = new ${mainTemplateName}Factory();
+  }
   
-  </#list>
+  /**
+  *
+  * @return a new ${mainTemplateName} instance.
+  */
+  public static ${mainTemplateName} create() {
+    if(instance == null) {
+      instance = new ${mainTemplateName}Factory();
+    }
+    return instance.doCreate();
+  }
   
-
+  /**
+  *
+  * @return a new ${mainTemplateName} instance.
+  */  
+  protected ${mainTemplateName} doCreate() {
+    return new ${mainTemplateName}Impl();
+  }
+  
 }
+  
