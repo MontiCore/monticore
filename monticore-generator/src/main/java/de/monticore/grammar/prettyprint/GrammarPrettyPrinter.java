@@ -186,9 +186,6 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     if (a.getUsageName().isPresent()) {
       print("" + a.getUsageName().get() + ":");
     }
-    if (a.getVariableName().isPresent()) {
-      print("" + a.getVariableName().get() + "=");
-    }
     /* if (a.isKeyword()) { output("!" + QUOTE + a.getName() + QUOTE + " "); } else { */
 
     // Transfering to new version

@@ -342,13 +342,13 @@
       <!-- Java -->
       <dependency>
         <groupId>de.monticore</groupId>
-        <artifactId>de.monticore.java</artifactId>
+        <artifactId>javaDSL</artifactId>
         <version>${mc.java.version}</version>
       </dependency>
 
       <dependency>
         <groupId>de.monticore</groupId>
-        <artifactId>de.monticore.java</artifactId>
+        <artifactId>javaDSL</artifactId>
         <classifier>${grammars.classifier}</classifier>
         <version>${mc.java.version}</version>
         <scope>provided</scope>
