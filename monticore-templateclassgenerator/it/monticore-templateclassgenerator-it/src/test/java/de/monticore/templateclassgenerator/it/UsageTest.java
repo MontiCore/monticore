@@ -19,7 +19,9 @@
 package de.monticore.templateclassgenerator.it;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -36,6 +38,7 @@ import types.Helper;
 import _templates._setup.GeneratorConfig;
 import _templates.templates.b.Constructor;
 import _templates.templates.b.JavaClass;
+import _templates.templates.maintemplates.HelloMainImpl;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.ExtendedGeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -43,8 +46,10 @@ import de.monticore.generating.templateengine.freemarker.MontiCoreFreeMarkerExce
 import de.monticore.java.javadsl._ast.ASTConstructorDeclaration;
 import de.monticore.java.javadsl._parser.JavaDSLParser;
 import de.monticore.java.symboltable.JavaTypeSymbol;
+import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.Scope;
 import de.monticore.templateclassgenerator.EmptyNode;
+import de.monticore.templateclassgenerator.util.GeneratorInterface;
 
 /**
  * TODO: Write me!
@@ -114,6 +119,13 @@ public class UsageTest extends AbstractSymtabTest {
     attributes.add(new Attribute("String", "s"));
     String s = JavaClass.generate("test", classname, attributes);
     assertNotNull(s);
+  }
+  
+  @Test
+  public void testMainTemplate() {
+    GeneratorInterface gi = new HelloMainImpl();
+    gi.generate(Paths.get("Test.txt"), new EmptyNode(), new JavaTypeSymbol("ts"));
+    assertTrue(Paths.get("gen"+File.separator+"Test.txt").toFile().exists());
   }
   
   private ASTConstructorDeclaration parseToASTConstructorDecl(String s) {
