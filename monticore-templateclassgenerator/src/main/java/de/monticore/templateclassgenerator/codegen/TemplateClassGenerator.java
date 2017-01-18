@@ -118,9 +118,25 @@ public class TemplateClassGenerator {
         + File.separator
         + Names.getPathFromFilename(fqnTemplateName);
     String packageNameWithDots = Names.getPackageFromPath(packageNameWithSeperators);
+    boolean isMainTemplate = targetName.endsWith("Main");
+    
+    if (isMainTemplate) {
+      generateMainTemplateFactory(generator, packageNameWithSeperators, targetName,
+          node, packageNameWithDots);
+    }
+    
     generator.generate("typesafety.TemplateClass",
         Paths.get(packageNameWithSeperators, targetName + ".java"), node,
-        packageNameWithDots, fqnTemplateName, targetName, params, result, hasSignature, helper);
+        packageNameWithDots, fqnTemplateName, targetName, params, result, hasSignature,
+        isMainTemplate, helper);
+  }
+  
+  public static void generateMainTemplateFactory(ExtendedGeneratorEngine generator,
+      String packageNameWithSeperators, String targetName, ASTNode node,
+      String packageNameWithDots) {
+    generator.generate("typesafety.MainTemplateFactory",
+        Paths.get(packageNameWithSeperators, targetName + "Factory.java"), node, targetName,
+        packageNameWithDots);
   }
   
   /**
@@ -149,12 +165,12 @@ public class TemplateClassGenerator {
     setup.setGlex(glex);
     final ExtendedGeneratorEngine generator = new ExtendedGeneratorEngine(setup);
     
-    String basedir = getBasedirFromModelAndTargetPath(modelPath.getAbsolutePath(), targetFilepath.getAbsolutePath());
+    String basedir = getBasedirFromModelAndTargetPath(modelPath.getAbsolutePath(),
+        targetFilepath.getAbsolutePath());
     String relativePath = getRelativePathFromAbsolute(basedir, targetFilepath.getAbsolutePath());
-    if(relativePath.contains(File.separator)){
+    if (relativePath.contains(File.separator)) {
       relativePath = relativePath.replace(File.separator, "/");
     }
-    
     
     String filePath = Names.getPathFromPackage(packageName) + File.separator;
     String mp = modelPath.getPath();
@@ -172,8 +188,6 @@ public class TemplateClassGenerator {
         Paths.get(filePath + "GeneratorConfig.java"),
         new EmptyNode(), packageName, relativePath);
   }
-  
-  
   
   /**
    * Compares the two paths and returns the common path. The common path is the
