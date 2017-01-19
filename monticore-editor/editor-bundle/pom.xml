@@ -4,7 +4,7 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore-editor</artifactId>
-    <version>4.5.1.devNewSTGenerator</version>
+    <version>4.5.1.devNewST</version>
   </parent>
 
   <artifactId>editor-bundle</artifactId>
