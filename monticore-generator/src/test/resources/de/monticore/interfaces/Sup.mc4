@@ -1,0 +1,9 @@
+package de.monticore.interfaces;
+
+grammar Sup extends mc.grammars.lexicals.TestLexicals {
+
+  A = "Hello" B;
+  
+  B = firstName:Name lastName: Name;
+
+}

@@ -41,13 +41,11 @@ public class ConnectionLabelMoveEditPolicy extends ResizableEditPolicy {
   
   @Override
   public Command getCommand(Request request) {
-    System.err.println("get COMMAND: " + request + " return: " + super.getCommand(request));
     return super.getCommand(request);
   }
   
   @Override
   public Command getMoveCommand(ChangeBoundsRequest request) {
-    System.err.println("GET MOVE COMMAND");
     TextConnectionLabelEditPart host = (TextConnectionLabelEditPart) getHost();
     IShapeViewElement sve = host.getViewElement();
     IFigure parentFig = ((GraphicalEditPart) host.getParent()).getFigure();
@@ -58,16 +56,11 @@ public class ConnectionLabelMoveEditPolicy extends ResizableEditPolicy {
   
   @Override
   protected Command getOrphanCommand(Request req) {
-    System.err.println("GET ORPHAN COMMAND");
-    
     if (!(req instanceof ChangeBoundsRequest)) {
       return super.getOrphanCommand(req);
     }
     
     ChangeBoundsRequest request = (ChangeBoundsRequest) req;
-    
-    System.err.println(request.getSizeDelta());
-    
     AbstractConnectionLabelEditPart host = (AbstractConnectionLabelEditPart) getHost();
     IShapeViewElement sve = host.getViewElement();
     IFigure parentFig = ((GraphicalEditPart) host.getParent()).getFigure();

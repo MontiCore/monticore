@@ -24,8 +24,8 @@ import java.util.Map;
 import de.monticore.grammar.grammar._ast.ASTASTRule;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
-import de.monticore.languages.grammar.MCGrammarSymbol;
-import de.monticore.languages.grammar.MCRuleSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -38,17 +38,17 @@ public class NTForASTRuleExists implements GrammarASTMCGrammarCoCo {
   public static final String ERROR_CODE = "0xA4021";
   
   public static final String ERROR_MSG_FORMAT = " There must not exist an AST rule for the nonterminal %s" +
-          " because there exists no production defining %s.";
+          " because there exists no production defining %s";
   
   @Override
   public void check(ASTMCGrammar a) {
     MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol().get();
     boolean prodFound = false;
     for(ASTASTRule astrule : a.getASTRules()){
-      if(grammarSymbol.getRuleWithInherited(astrule.getType()) == null){
-        for(Map.Entry entry : grammarSymbol.getRulesWithInherited().entrySet()){
-          MCRuleSymbol rs = (MCRuleSymbol) entry.getValue();
-            if (astrule.getType().equals(rs.getType().getName())) {
+      if(!grammarSymbol.getProdWithInherited(astrule.getType()).isPresent()){
+        for(Map.Entry<String, MCProdSymbol> entry : grammarSymbol.getProdsWithInherited().entrySet()){
+          MCProdSymbol rs = (MCProdSymbol) entry.getValue();
+            if (astrule.getType().equals(rs.getName())) {
               prodFound = true;
               break ;
           }

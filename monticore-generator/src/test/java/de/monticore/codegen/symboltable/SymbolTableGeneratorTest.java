@@ -19,21 +19,22 @@
 
 package de.monticore.codegen.symboltable;
 
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
+
 import de.monticore.ModelingLanguage;
 import de.monticore.MontiCoreScript;
 import de.monticore.codegen.AstDependentGeneratorTest;
 import de.monticore.codegen.parser.ParserGeneratorTest;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.symboltable.MontiCoreGrammarLanguage;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.languages.grammar.MontiCoreGrammarLanguage;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
 
 import java.io.File;
 import java.nio.file.Path;

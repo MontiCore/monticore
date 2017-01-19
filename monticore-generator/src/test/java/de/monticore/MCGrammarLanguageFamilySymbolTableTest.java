@@ -19,19 +19,19 @@
 
 package de.monticore;
 
-import de.monticore.grammar.symboltable.EssentialMCGrammarSymbol;
-import de.monticore.io.paths.ModelPath;
-import de.monticore.languages.grammar.MCGrammarSymbol;
-import de.monticore.symboltable.GlobalScope;
-import de.se_rwth.commons.logging.Log;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.io.paths.ModelPath;
+import de.monticore.symboltable.GlobalScope;
+import de.se_rwth.commons.logging.Log;
 
 /**
  * @author  Pedram Mir Seyed Nazari
@@ -53,12 +53,12 @@ public class MCGrammarLanguageFamilySymbolTableTest {
     assertTrue(oldGrammar.isPresent());
 
 
-    final Optional<EssentialMCGrammarSymbol> newGrammar =
-        globalScope.resolve("de.monticore.statechart.Statechart", EssentialMCGrammarSymbol.KIND);
+    final Optional<MCGrammarSymbol> newGrammar =
+        globalScope.resolve("de.monticore.statechart.Statechart", MCGrammarSymbol.KIND);
     assertTrue(newGrammar.isPresent());
 
-    // 4 = 2x Statechart grammar symbol and 2x TestLexicals grammar symbol (super grammar of Statechart)
-    assertEquals(4, globalScope.getSubScopes().size());
+    // 2 = Statechart grammar symbol and TestLexicals grammar symbol (super grammar of Statechart)
+    assertEquals(2, globalScope.getSubScopes().size());
   }
 
 

@@ -19,6 +19,8 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
+import java.util.function.UnaryOperator;
+
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.ASTASTRule;
 import de.monticore.grammar.grammar._ast.ASTGenericType;

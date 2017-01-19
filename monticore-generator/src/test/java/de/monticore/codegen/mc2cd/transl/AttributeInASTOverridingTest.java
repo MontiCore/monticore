@@ -27,6 +27,7 @@ import java.util.List;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;

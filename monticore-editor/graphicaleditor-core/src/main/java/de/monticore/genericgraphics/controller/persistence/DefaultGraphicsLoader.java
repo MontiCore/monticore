@@ -129,9 +129,6 @@ public class DefaultGraphicsLoader implements IGraphicsLoader {
     }
     if (vFile.exists()) {
       loadedVes = util.importViewElements(vFile);
-      // for (IViewElement ve : loadedVes) {
-      // System.err.println("loaded: " + ve);
-      // }
     }
     else {
       Log.error("0xA1108 view data file does not exist and thus cannot be loaded!");

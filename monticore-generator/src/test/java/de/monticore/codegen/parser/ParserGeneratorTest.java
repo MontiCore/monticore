@@ -67,6 +67,19 @@ public class ParserGeneratorTest extends AstDependentGeneratorTest {
   }
   
   @Test
+  public void testExpression() {
+    astTest.testExpression();
+    testCorrect("de/monticore/expression/Expression.mc4");
+  }
+  
+  @Test
+  public void testInterfaces() {
+    astTest.testInterfaces();
+    doGenerate("de/monticore/interfaces/Sup.mc4");
+    doGenerate("de/monticore/interfaces/Sub.mc4");
+  }
+  
+  @Test
   public void testInterfaceAttributes() {
     astTest.testStatechart();
     testCorrect("de/monticore/InterfaceAttributes.mc4");
@@ -77,7 +90,7 @@ public class ParserGeneratorTest extends AstDependentGeneratorTest {
     astTest.testStatechart();
     testCorrect("de/monticore/statechart/Statechart.mc4");
   }
-  
+   
   @Test
   public void testCdAttributes() {
     astTest.testCdAttributes();

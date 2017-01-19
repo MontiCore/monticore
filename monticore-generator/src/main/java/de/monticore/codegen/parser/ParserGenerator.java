@@ -34,8 +34,8 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.io.paths.IterablePath;
-import de.monticore.languages.grammar.MCGrammarSymbol;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -43,10 +43,8 @@ import de.se_rwth.commons.logging.Log;
 /**
  * TODO: Write me!
  *
- * @author  (last commit) $Author$
- * @version $Revision$,
- *          $Date$
- *
+ * @author (last commit) $Author$
+ * @version $Revision$, $Date$
  */
 public class ParserGenerator {
   
@@ -58,11 +56,12 @@ public class ParserGenerator {
   
   /**
    * Code generation from grammar ast to an antlr compatible file format
+   * @param glex 
    * 
    * @param astGrammar - grammar AST
    * @param targetFile - target file
    */
-  public static void generateParser(ASTMCGrammar astGrammar, Scope symbolTable,
+  public static void generateParser(GlobalExtensionManagement glex, ASTMCGrammar astGrammar, Scope symbolTable,
       IterablePath handcodedPath, File targetFile) {
     if (astGrammar.isComponent()) {
       Log.info("No parser generation for the grammar " + astGrammar.getName(), LOG);
@@ -70,34 +69,36 @@ public class ParserGenerator {
     }
     Log.debug("Start parser generation for the grammar " + astGrammar.getName(), LOG);
     final GeneratorSetup setup = new GeneratorSetup(targetFile);
-    GlobalExtensionManagement glex = new GlobalExtensionManagement();
     
-    String qualifiedGrammarName = astGrammar.getPackage().isEmpty() ? astGrammar.getName() :
-      Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackage()),
-          astGrammar.getName());
+    String qualifiedGrammarName = astGrammar.getPackage().isEmpty()
+        ? astGrammar.getName()
+        : Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackage()),
+            astGrammar.getName());
     MCGrammarSymbol grammarSymbol = symbolTable.<MCGrammarSymbol> resolve(
         qualifiedGrammarName, MCGrammarSymbol.KIND).orElse(null);
     Log.errorIfNull(grammarSymbol, "0xA4034 Grammar " + qualifiedGrammarName
         + " can't be resolved in the scope " + symbolTable);
     
-    ParserGeneratorHelper genHelper = new ParserGeneratorHelper(astGrammar, grammarSymbol);
+    // TODO: grammarInfo as parameter for this method?
+    MCGrammarInfo grammarInfo = new MCGrammarInfo(grammarSymbol);
+    
+    ParserGeneratorHelper genHelper = new ParserGeneratorHelper(astGrammar, grammarInfo);
     glex.setGlobalValue("parserHelper", genHelper);
     glex.setGlobalValue("nameHelper", new Names());
     setup.setGlex(glex);
     
-    // TODO: grammarInfo as parameter for this method?
-    MCGrammarInfo grammarInfo = new MCGrammarInfo(genHelper.getGrammarSymbol());
-    
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getParserPackage()),
         astGrammar.getName() + "Antlr.g4");
-    new GeneratorEngine(setup).generate("parser.Parser", filePath, astGrammar, new Grammar2Antlr(genHelper,
-        grammarInfo));
+    new GeneratorEngine(setup).generate("parser.Parser", filePath, astGrammar,
+        new Grammar2Antlr(genHelper,
+            grammarInfo));
     
-    // construct parser, lexer, ... (antlr), 
+    // construct parser, lexer, ... (antlr),
     String gFile = Paths.get(targetFile.getAbsolutePath(), filePath.toString()).toString();
     Log.debug("Start Antlr generation for the antlr file " + gFile, LOG);
-    AntlrTool antlrTool = new AntlrTool(new String[]{}, grammarSymbol,
-        Paths.get(targetFile.getAbsolutePath(), Names.getPathFromPackage(genHelper.getParserPackage())));
+    AntlrTool antlrTool = new AntlrTool(new String[] {}, grammarSymbol,
+        Paths.get(targetFile.getAbsolutePath(),
+            Names.getPathFromPackage(genHelper.getParserPackage())));
     
     antlrTool.createParser(gFile);
     Log.debug("End parser generation for the grammar " + astGrammar.getName(), LOG);
@@ -105,38 +106,43 @@ public class ParserGenerator {
   
   /**
    * Code generation from grammar ast to an antlr compatible file format
+   * @param glex 
    * 
    * @param astGrammar - grammar AST
    * @param targetFile - target file
    */
-  public static void generateParserWrappers(ASTMCGrammar astGrammar, Scope symbolTable,
+  public static void generateParserWrappers(GlobalExtensionManagement glex, ASTMCGrammar astGrammar, Scope symbolTable,
       IterablePath handcodedPath, File targetFile) {
     if (astGrammar.isComponent()) {
       return;
     }
     final GeneratorSetup setup = new GeneratorSetup(targetFile);
-    GlobalExtensionManagement glex = new GlobalExtensionManagement();
     
-    String qualifiedGrammarName = astGrammar.getPackage().isEmpty() ? astGrammar.getName() :
-      Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackage()),
-          astGrammar.getName());
+    String qualifiedGrammarName = astGrammar.getPackage().isEmpty()
+        ? astGrammar.getName()
+        : Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackage()),
+            astGrammar.getName());
     MCGrammarSymbol grammarSymbol = symbolTable.<MCGrammarSymbol> resolve(
         qualifiedGrammarName, MCGrammarSymbol.KIND).orElse(null);
-        Log.errorIfNull(grammarSymbol, "0xA4035 Grammar " + qualifiedGrammarName
+    Log.errorIfNull(grammarSymbol, "0xA4035 Grammar " + qualifiedGrammarName
         + " can't be resolved in the scope " + symbolTable);
-    ParserGeneratorHelper genHelper = new ParserGeneratorHelper(astGrammar, grammarSymbol);
-    glex.setGlobalValue("parserHelper", genHelper);
+    // ParserGeneratorHelper genHelper = new ParserGeneratorHelper(astGrammar,
+    // grammarSymbol);
+    // glex.setGlobalValue("parserHelper", genHelper);
     glex.setGlobalValue("nameHelper", new Names());
     setup.setGlex(glex);
     
     final GeneratorEngine generator = new GeneratorEngine(setup);
     // Generate wrapper
     String parserWrapperSuffix = TransformationHelper.existsHandwrittenClass(handcodedPath,
-        GeneratorHelper.getDotPackageName(genHelper.getParserPackage()) + astGrammar.getName()
+        GeneratorHelper.getDotPackageName(
+            GeneratorHelper.getPackageName(astGrammar, PARSER_PACKAGE)) + astGrammar.getName()
             + PARSER_WRAPPER) ? TransformationHelper.GENERATED_CLASS_SUFFIX : "";
-    final Path path = Paths.get(Names.getPathFromPackage(genHelper.getParserPackage()), astGrammar.getName() + "Parser" + parserWrapperSuffix + ".java");
-    generator.generate("parser.MCParser", path, astGrammar, astGrammar, 
-        parserWrapperSuffix, genHelper.getGrammarSymbol().getRulesWithInherited().values());
+    final Path path = Paths.get(
+        Names.getPathFromPackage(GeneratorHelper.getPackageName(astGrammar, PARSER_PACKAGE)),
+        astGrammar.getName() + "Parser" + parserWrapperSuffix + ".java");
+    generator.generate("parser.MCParser", path, astGrammar, astGrammar,
+        parserWrapperSuffix, grammarSymbol.getProdsWithInherited().values());
   }
   
   private ParserGenerator() {

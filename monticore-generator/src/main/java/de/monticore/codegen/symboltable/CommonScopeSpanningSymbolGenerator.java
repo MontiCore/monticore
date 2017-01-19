@@ -19,18 +19,18 @@
 
 package de.monticore.codegen.symboltable;
 
-import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.generating.GeneratorEngine;
-import de.monticore.io.paths.IterablePath;
-import de.monticore.languages.grammar.MCRuleSymbol;
-import de.se_rwth.commons.Names;
+import static de.monticore.codegen.GeneratorHelper.getPackageName;
+import static de.monticore.codegen.GeneratorHelper.getSimpleTypeNameToGenerate;
+import static de.se_rwth.commons.Names.getSimpleName;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static de.monticore.codegen.GeneratorHelper.getPackageName;
-import static de.monticore.codegen.GeneratorHelper.getSimpleTypeNameToGenerate;
-import static de.se_rwth.commons.Names.getSimpleName;
+import de.monticore.codegen.mc2cd.TransformationHelper;
+import de.monticore.generating.GeneratorEngine;
+import de.monticore.grammar.symboltable.MCProdSymbol;
+import de.monticore.io.paths.IterablePath;
+import de.se_rwth.commons.Names;
 
 /**
  * @author Pedram Mir Seyed Nazari
@@ -40,7 +40,7 @@ public class CommonScopeSpanningSymbolGenerator implements ScopeSpanningSymbolGe
   public static final String EMPTY_SYMBOL_SUFFIX = "SymbolEMPTY";
 
   public void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
-      IterablePath handCodedPath, MCRuleSymbol ruleSymbol) {
+      IterablePath handCodedPath, MCProdSymbol ruleSymbol) {
     final String className = getSimpleTypeNameToGenerate(getSimpleName(ruleSymbol.getName() + "Symbol"),
         genHelper.getTargetPackage(), handCodedPath);
 
@@ -52,7 +52,7 @@ public class CommonScopeSpanningSymbolGenerator implements ScopeSpanningSymbolGe
   }
 
   protected void generateEmpty(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
-      IterablePath handCodedPath, MCRuleSymbol ruleSymbol) {
+      IterablePath handCodedPath, MCProdSymbol ruleSymbol) {
     final String className = getSimpleTypeNameToGenerate(getSimpleName(ruleSymbol.getName() + EMPTY_SYMBOL_SUFFIX),
         genHelper.getTargetPackage(), handCodedPath);
 
@@ -63,7 +63,7 @@ public class CommonScopeSpanningSymbolGenerator implements ScopeSpanningSymbolGe
   }
 
   protected void generateScope(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper, IterablePath handCodedPath,
-      MCRuleSymbol ruleSymbol) {
+      MCProdSymbol ruleSymbol) {
     final String className = getScopeClassName(ruleSymbol);
     final String qualifiedClassName = getPackageName(genHelper.getTargetPackage(), "") + className;
 
@@ -79,7 +79,7 @@ public class CommonScopeSpanningSymbolGenerator implements ScopeSpanningSymbolGe
     }
   }
 
-  private String getScopeClassName(MCRuleSymbol ruleSymbol) {
+  private String getScopeClassName(MCProdSymbol ruleSymbol) {
     return ruleSymbol.getName() + "Scope";
   }
 

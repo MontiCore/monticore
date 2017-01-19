@@ -32,7 +32,6 @@ SUCH DAMAGE.
 -->
 ${tc.signature("antlrGenerator")}
 <#assign genHelper = glex.getGlobalVar("parserHelper")>
-<#assign symbolTable = genHelper.getGrammarSymbol()>
 // Generated antlr file
 
 // Parser header
@@ -45,7 +44,7 @@ ${tc.include("parser.ParserHeader")}
 
 // Convert functions
 <#list genHelper.getIdentsToGenerate() as ident>
-  ${ident.getConvertFunction()}
+  ${genHelper.getConvertFunction(ident)}
 </#list>  
 }
 
@@ -69,8 +68,8 @@ ${tc.includeArgs("parser.LexerMember", [antlrGenerator])}
 </#list>
  
 // Lexer symbols
-<#list symbolTable.getLexSymbolsWithInherited() as lexSymbol>
-  ${symbolTable.getLexSymbolName(lexSymbol)} : '${lexSymbol}';
+<#list genHelper.getLexSymbolsWithInherited() as lexSymbol>
+  ${genHelper.getLexSymbolName(lexSymbol)} : '${lexSymbol}';
 </#list>
  
 // Lexer rules 

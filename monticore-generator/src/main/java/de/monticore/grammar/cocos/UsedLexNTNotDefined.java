@@ -21,11 +21,11 @@ package de.monticore.grammar.cocos;
 
 import java.util.Optional;
 
+import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTLexNonTerminal;
 import de.monticore.grammar.grammar._cocos.GrammarASTLexNonTerminalCoCo;
-import de.monticore.languages.grammar.MCGrammarSymbol;
-import de.monticore.languages.grammar.MCRuleComponentSymbol;
-import de.monticore.languages.grammar.MCRuleSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -42,12 +42,15 @@ public class UsedLexNTNotDefined implements GrammarASTLexNonTerminalCoCo {
 
   @Override
   public void check(ASTLexNonTerminal a) {
-    Optional<MCRuleComponentSymbol> ruleComponentSymbol = (Optional<MCRuleComponentSymbol>) a.getSymbol();
-    MCGrammarSymbol grammarSymbol = ruleComponentSymbol.get().getGrammarSymbol();
-    MCRuleSymbol ruleSymbol= ruleComponentSymbol.get().getEnclosingRule();
-    if(grammarSymbol.getRuleWithInherited(a.getName()) == null ){
-      Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, ruleSymbol.getName(), a.getName(), a.getName()),
-              a.get_SourcePositionStart());
+    Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
+        .getMCGrammarSymbol(a);
+    
+    Optional<MCProdSymbol> ruleSymbol = MCGrammarSymbolTableHelper.getEnclosingRule(a);
+    String ruleName = ruleSymbol.isPresent() ? ruleSymbol.get().getName() : "";
+    if (grammarSymbol.isPresent()
+        && !grammarSymbol.get().getProdWithInherited(a.getName()).isPresent()) {
+      Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, ruleName, a.getName(), a.getName()),
+          a.get_SourcePositionStart());
     }
   }
 }

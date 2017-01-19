@@ -20,15 +20,17 @@
 package de.monticore.grammar.cocos;
 
 import java.util.List;
+import java.util.Optional;
 
+import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTClassProdCoCo;
-import de.monticore.languages.grammar.MCGrammarSymbol;
-import de.monticore.languages.grammar.MCRuleSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * Checks that overriding abstract nonterminals do not have super rules or classes.
+ * Checks that overriding nonterminals do not have super rules or
+ * classes.
  *
  * @author KH
  */
@@ -42,11 +44,11 @@ public class OverridingNTsHaveNoSuperRules implements GrammarASTClassProdCoCo {
   
   @Override
   public void check(ASTClassProd a) {
-    MCRuleSymbol ruleSymbol = (MCRuleSymbol) a.getSymbol().get();
-    MCGrammarSymbol grammarSymbol = ruleSymbol.getGrammarSymbol();
-    List<MCGrammarSymbol> grammarSymbols =  grammarSymbol.getSuperGrammars();
-
-    if(!a.getSuperRule().isEmpty() || !a.getASTSuperClass().isEmpty()) {
+    Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
+        .getMCGrammarSymbol(a);
+    List<MCGrammarSymbol> grammarSymbols = grammarSymbol.get().getSuperGrammarSymbols();
+    
+    if (!a.getSuperRule().isEmpty() || !a.getASTSuperClass().isEmpty()) {
       String extendedType;
       if (!a.getSuperRule().isEmpty()){
         extendedType = a.getSuperRule().get(0).getName();
@@ -55,9 +57,9 @@ public class OverridingNTsHaveNoSuperRules implements GrammarASTClassProdCoCo {
         extendedType = a.getASTSuperClass().get(0).getTypeName();
       }
       for (MCGrammarSymbol s : grammarSymbols) {
-        if (s.getType(a.getName()) != null ) {
-          Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName(), extendedType ),
-                  a.get_SourcePositionStart());
+        if (s.getProd(a.getName()).isPresent()) {
+          Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName(), extendedType),
+              a.get_SourcePositionStart());
         }
       }
     }

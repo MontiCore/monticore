@@ -62,8 +62,8 @@ while (grammarIterator.hasNext()) {
       storeInCdFile(astClassDiagramWithST, out)
       
       // M5 + M6: generate parser
-      generateParser(astGrammar, symbolTable, handcodedPath, out)
-      generateParserWrappers(astGrammar, symbolTable, handcodedPath, out)
+      generateParser(glex, astGrammar, symbolTable, handcodedPath, out)
+      generateParserWrappers(glex, astGrammar, symbolTable, handcodedPath, out)
       
       // store result of the first pass
       storeCDForGrammar(astGrammar, astClassDiagramWithST)

@@ -19,17 +19,34 @@
 
 package de.monticore;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.codehaus.groovy.control.customizers.ImportCustomizer;
+
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
+
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstGenerator;
 import de.monticore.codegen.cd2java.ast.CdDecorator;
 import de.monticore.codegen.cd2java.ast_emf.CdEmfDecorator;
 import de.monticore.codegen.cd2java.cocos.CoCoGenerator;
 import de.monticore.codegen.cd2java.od.ODGenerator;
+import de.monticore.codegen.cd2java.types.TypeResolverGenerator;
 import de.monticore.codegen.cd2java.visitor.VisitorGenerator;
 import de.monticore.codegen.mc2cd.MC2CDTransformation;
+import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.parser.ParserGenerator;
 import de.monticore.codegen.symboltable.SymbolTableGenerator;
 import de.monticore.codegen.symboltable.SymbolTableGeneratorBuilder;
@@ -41,12 +58,12 @@ import de.monticore.generating.templateengine.reporting.reporter.InputOutputFile
 import de.monticore.grammar.cocos.GrammarCoCos;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MontiCoreGrammarLanguage;
+import de.monticore.grammar.symboltable.MontiCoreGrammarSymbolTableCreator;
 import de.monticore.incremental.IncrementalChecker;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.languages.grammar.MCGrammarSymbol;
-import de.monticore.languages.grammar.MontiCoreGrammarLanguage;
-import de.monticore.languages.grammar.visitors.MCGrammarSymbolTableCreator;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.umlcd4a.CD4AnalysisLanguage;
@@ -61,20 +78,7 @@ import de.se_rwth.commons.groovy.GroovyRunner;
 import de.se_rwth.commons.groovy.GroovyRunnerBase;
 import de.se_rwth.commons.logging.Log;
 import groovy.lang.Script;
-import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import parser.MCGrammarParser;
-import de.monticore.codegen.cd2java.types.TypeResolverGenerator;
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * The actual top level functional implementation of MontiCore. This is the
@@ -111,7 +115,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   public void run(Configuration configuration) {
     try {
       ClassLoader l = MontiCoreScript.class.getClassLoader();
-      String script = Resources.asCharSource(l.getResource("de/monticore/monticore_emf.groovy"),
+      String script = Resources.asCharSource(l.getResource("de/monticore/monticore_noemf.groovy"),
           Charset.forName("UTF-8")).read();
       run(script, configuration);
     }
@@ -225,12 +229,12 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param symbolTable
    * @param outputDirectory output directory for generated Java code
    */
-  public void generateParser(ASTMCGrammar grammar, GlobalScope symbolTable,
+  public void generateParser(GlobalExtensionManagement glex, ASTMCGrammar grammar, GlobalScope symbolTable,
       IterablePath handcodedPath, File outputDirectory) {
     Log.errorIfNull(
         grammar,
         "0xA4038 Parser generation can't be processed: the reference to the grammar ast is null");
-    ParserGenerator.generateParser(grammar, symbolTable, handcodedPath, outputDirectory);
+    ParserGenerator.generateParser(glex, grammar, symbolTable, handcodedPath, outputDirectory);
   }
   
   /**
@@ -279,7 +283,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ASTMCGrammar result = ast;
     
     if (grammarSymbol.isPresent()) {
-      result = grammarSymbol.get().getASTGrammar();
+      result = (ASTMCGrammar) grammarSymbol.get().getAstNode().get();
     }
     else {
       MontiCoreGrammarLanguage language = new MontiCoreGrammarLanguage();
@@ -287,14 +291,14 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
       resolvingConfiguration.addTopScopeResolvers(language.getResolvingFilters());
       
-      MCGrammarSymbolTableCreator stCreator = language.getSymbolTableCreator(resolvingConfiguration,
+      MontiCoreGrammarSymbolTableCreator stCreator = language.getSymbolTableCreator(resolvingConfiguration,
           globalScope).get();
       stCreator.createFromAST(result);
       globalScope.cache(language.getModelLoader(), qualifiedGrammarName);
     }
     
     MCGrammarSymbol symbol = (MCGrammarSymbol) result.getSymbol().get();
-    for (MCGrammarSymbol it : symbol.getAllSuperGrammars()) {
+    for (MCGrammarSymbol it : MCGrammarSymbolTableHelper.getAllSuperGrammars(symbol)) {
       if (!it.getFullName().equals(symbol.getFullName())) {
         Reporting.reportOpenInputFile(null,
             Paths.get(it.getFullName().replaceAll("\\.", "/").concat(".mc4")));
@@ -372,13 +376,13 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param globalScope TODO
    * @param outputDirectory TODO
    */
-  public void generateParserWrappers(ASTMCGrammar grammar, GlobalScope globalScope,
+  public void generateParserWrappers(GlobalExtensionManagement glex, ASTMCGrammar grammar, GlobalScope globalScope,
       IterablePath targetPath,
       File outputDirectory) {
     Log.errorIfNull(
         grammar,
         "0xA4037 Generation of parser wrappers can't be processed: the reference to the grammar ast is null");
-    ParserGenerator.generateParserWrappers(grammar, globalScope, targetPath, outputDirectory);
+    ParserGenerator.generateParserWrappers(glex, grammar, globalScope, targetPath, outputDirectory);
   }
   
   /**

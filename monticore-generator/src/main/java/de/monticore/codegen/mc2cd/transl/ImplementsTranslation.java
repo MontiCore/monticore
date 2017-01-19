@@ -19,6 +19,7 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
+import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 import com.google.common.base.Preconditions;
@@ -29,8 +30,8 @@ import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTGenericType;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
-import de.monticore.languages.grammar.MCGrammarSymbol;
-import de.monticore.languages.grammar.MCRuleSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.utils.Link;
@@ -65,16 +66,14 @@ public class ImplementsTranslation implements
   
   private void translateClassProd(ASTClassProd classProd,
       ASTCDClass cdClass, ASTMCGrammar astGrammar) {
+    MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) astGrammar.getSymbol().get();
     // translates "implements"
     for (ASTRuleReference ruleReference : classProd.getSuperInterfaceRule()) {
-      MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) astGrammar.getSymbol().get();
-      MCRuleSymbol ruleSymbol = grammarSymbol.getRuleWithInherited(ruleReference.getName());
-      Preconditions.checkState(ruleSymbol != null
-          && ruleSymbol.getGrammarSymbol() != null);
+      Optional<MCProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(ruleReference.getName());
+      Preconditions.checkState(ruleSymbol.isPresent());
       cdClass.getInterfaces().add(
           TransformationHelper.createSimpleReference(TransformationHelper
-              .getAstPackageName(
-              ruleSymbol.getGrammarSymbol())
+              .getPackageName(ruleSymbol.get())
               + "AST"
               + ruleReference.getName()));
     }
@@ -96,13 +95,11 @@ public class ImplementsTranslation implements
     for (ASTRuleReference ruleReference : abstractProd
         .getSuperInterfaceRule()) {
       MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) astGrammar.getSymbol().get();
-      MCRuleSymbol ruleSymbol = grammarSymbol.getRuleWithInherited(ruleReference.getName());
-      Preconditions.checkState(ruleSymbol != null
-          && ruleSymbol.getGrammarSymbol() != null);
+      Optional<MCProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(ruleReference.getName());
+      Preconditions.checkState(ruleSymbol.isPresent());
       cdClass.getInterfaces().add(
           TransformationHelper.createSimpleReference(TransformationHelper
-              .getAstPackageName(
-              ruleSymbol.getGrammarSymbol())
+              .getPackageName(ruleSymbol.get())
               + "AST"
               + ruleReference.getName()));
     }

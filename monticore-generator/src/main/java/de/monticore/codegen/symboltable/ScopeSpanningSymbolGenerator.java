@@ -20,8 +20,8 @@
 package de.monticore.codegen.symboltable;
 
 import de.monticore.generating.GeneratorEngine;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
-import de.monticore.languages.grammar.MCRuleSymbol;
 
 /**
  * @author Pedram Mir Seyed Nazari
@@ -29,6 +29,6 @@ import de.monticore.languages.grammar.MCRuleSymbol;
 public interface ScopeSpanningSymbolGenerator {
 
   void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
-      IterablePath handCodedPath, MCRuleSymbol ruleSymbol);
+      IterablePath handCodedPath, MCProdSymbol ruleSymbol);
 
 }
