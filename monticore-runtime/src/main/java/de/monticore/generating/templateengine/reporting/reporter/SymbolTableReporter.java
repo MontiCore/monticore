@@ -112,15 +112,17 @@ public class SymbolTableReporter extends AReporter {
       reportSymbol(scope.getSpanningSymbol().get(), printer);
       printer.println(";");
     } else if (printEmptyOptional) {
-      printer.println("spanningSymbol = Optional.empty;");
+      printer.println("spanningSymbol = Optional_empty;");
     }
     
     Collection<Symbol> reportedSymbols = symbols.stream()
         .filter(sym -> !(sym instanceof ScopeSpanningSymbol)).collect(Collectors.toList());
-    if (!reportedSymbols.isEmpty() || printEmptyList) {
+    if (!reportedSymbols.isEmpty()) {
       printer.print("symbols = ");
       printer.println("// *size: " + reportedSymbols.size());
       printer.indent();
+    } else if (printEmptyList) {
+      printer.println("symbols = []; // *size: 0");
     }
     String sep = "";
     for (Symbol symbol : reportedSymbols) {
@@ -130,15 +132,17 @@ public class SymbolTableReporter extends AReporter {
         reportSymbol(symbol, printer);
       }
     }
-    if (!reportedSymbols.isEmpty() || printEmptyList) {
+    if (!reportedSymbols.isEmpty()) {
       printer.println(";");
       printer.unindent();
     }
     
-    if (!scope.getSubScopes().isEmpty() || printEmptyList) {
+    if (!scope.getSubScopes().isEmpty()) {
       printer.print("subScopes = ");
       printer.println("// *size: " + scope.getSubScopes().size());
       printer.indent();
+    } else if (printEmptyList) {
+      printer.println("subScopes = []; // *size = 0");   
     }
     sep = "";
     for (Scope subScope : scope.getSubScopes()) {
@@ -146,7 +150,7 @@ public class SymbolTableReporter extends AReporter {
       sep = ",\n";
       reportScope(subScope, printer);
     }
-    if (!scope.getSubScopes().isEmpty() || printEmptyList) {
+    if (!scope.getSubScopes().isEmpty()) {
       printer.println(";");
       printer.unindent();
     }
@@ -186,7 +190,7 @@ public class SymbolTableReporter extends AReporter {
       printer.println(";");
     }
     else if (printEmptyOptional) {
-      printer.print("astNode = Optional.empty;");
+      printer.print("astNode = Optional_empty;");
     }
     if (sym instanceof ScopeSpanningSymbol) {
       ScopeSpanningSymbol spanningSym = (ScopeSpanningSymbol) sym;
@@ -236,14 +240,14 @@ public class SymbolTableReporter extends AReporter {
           + ";");
     }
     else if (printEmptyOptional) {
-      printer.print("superClass = Optional.empty;");
+      printer.print("superClass = Optional_empty;");
     }
     reportListOfReferences("interfaces", sym.getInterfaces(), printer);
   }
   
   protected void reportListOfReferences(String listName,
       Collection<? extends JTypeReference<? extends JTypeSymbol>> refs, IndentPrinter printer) {
-    if (!refs.isEmpty() || printEmptyList) {
+    if (!refs.isEmpty()) {
       printer.print(listName + " = ");
       String delim = "";
       for (JTypeReference<? extends JTypeSymbol> anno : refs) {
@@ -252,6 +256,8 @@ public class SymbolTableReporter extends AReporter {
         delim = ", ";
       }
       printer.println(";");
+    } else if (printEmptyList) {
+      printer.println(listName + " = [];");
     }
   }
   
