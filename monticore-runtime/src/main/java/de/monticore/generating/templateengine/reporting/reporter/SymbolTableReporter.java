@@ -112,7 +112,7 @@ public class SymbolTableReporter extends AReporter {
       reportSymbol(scope.getSpanningSymbol().get(), printer);
       printer.println(";");
     } else if (printEmptyOptional) {
-      printer.println("spanningSymbol = Optional_empty;");
+      printer.println("spanningSymbol = Optional.Empty;");
     }
     
     Collection<Symbol> reportedSymbols = symbols.stream()
@@ -190,7 +190,7 @@ public class SymbolTableReporter extends AReporter {
       printer.println(";");
     }
     else if (printEmptyOptional) {
-      printer.print("astNode = Optional_empty;");
+      printer.print("astNode = Optional.Empty;");
     }
     if (sym instanceof ScopeSpanningSymbol) {
       ScopeSpanningSymbol spanningSym = (ScopeSpanningSymbol) sym;
@@ -240,7 +240,7 @@ public class SymbolTableReporter extends AReporter {
           + ";");
     }
     else if (printEmptyOptional) {
-      printer.print("superClass = Optional_empty;");
+      printer.print("superClass = Optional.Empty;");
     }
     reportListOfReferences("interfaces", sym.getInterfaces(), printer);
   }
