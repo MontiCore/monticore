@@ -49,8 +49,6 @@ import java.util.stream.Collectors;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Strings.nullToEmpty;
 
-// TODO PN Doc resolve[Down|Up|Many|Locally] methods
-
 /**
  * Default implementation of {@link Scope} and {@link MutableScope}.
  * Usually, all other scopes should be sub classes of this class.
@@ -193,7 +191,7 @@ public class CommonScope implements MutableScope {
   protected <T extends Symbol> Collection<T> continueWithEnclosingScope(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier,
       Predicate<Symbol> predicate) {
 
-    if (checkIfContinueWithEnclosing(resolvingInfo.areSymbolsFound()) && (getEnclosingScope().isPresent())) {
+    if (checkIfContinueWithEnclosingScope(resolvingInfo.areSymbolsFound()) && (getEnclosingScope().isPresent())) {
       return getEnclosingScope().get().resolveMany(resolvingInfo, name, kind, modifier, predicate);
     }
 
@@ -259,7 +257,6 @@ public class CommonScope implements MutableScope {
    *
    * @return the predicate that checks symbol hiding.
    */
-  // TODO PN add symbol kind-based shadowing predicate
   protected IsShadowedBySymbol createIsShadowingByPredicate(Symbol shadowedSymbol) {
     return new IsShadowedBySymbol(shadowedSymbol);
   }
@@ -273,12 +270,6 @@ public class CommonScope implements MutableScope {
   protected Collection<ResolvingFilter<? extends Symbol>> getResolvingFiltersForTargetKind
   (final Collection<ResolvingFilter<? extends Symbol>> resolvingFilters, final SymbolKind
       targetKind) {
-    // TODO PN move this warning to the top of all resolve() methods of the Scope interface
-    //    if (noResolversRegistered()) {
-    //      Log.warn(BaseScope.class.getSimpleName() + "0xA1041 No resolvers registered in scope \""
-    //          + getScopeName() +"\"");
-    //    }
-
 
     final Collection<ResolvingFilter<? extends Symbol>> resolversForKind = ResolvingFilter
         .getFiltersForTargetKind(resolvingFilters, targetKind);
@@ -306,10 +297,6 @@ public class CommonScope implements MutableScope {
 
     Set<Symbol> result = new LinkedHashSet<>(allSymbols.stream().filter(predicate).collect(Collectors.toSet()));
 
-    // TODO PN Combine with adaptors. For this: add filter(SymbolPredicate) to
-    //         AdaptedResolvingFilter (maybe ResolvingFilter too). Then, run pass
-    //         resolved symbols to all filters.
-
     final Optional<? extends Symbol> resolvedFromEnclosing = continueWithEnclosingScope(predicate, result);
     if (resolvedFromEnclosing.isPresent()) {
       result.add(resolvedFromEnclosing.get());
@@ -327,7 +314,7 @@ public class CommonScope implements MutableScope {
   }
 
   protected Optional<? extends Symbol> continueWithScope(MutableScope scope, SymbolPredicate predicate, Set<Symbol> result) {
-    if (checkIfContinueWithEnclosing(!result.isEmpty()/* TODO PN || resolvingInfo.areSymbolsFound())*/)) {
+    if (checkIfContinueWithEnclosingScope(!result.isEmpty())) {
       Optional<? extends Symbol> resolvedFromParent = scope.resolve(predicate);
 
       if (resolvedFromParent.isPresent() && isNotSymbolShadowed(result, resolvedFromParent.get())) {
@@ -346,11 +333,18 @@ public class CommonScope implements MutableScope {
    *                         the current resolving process.
    * @return true, if resolving should continue
    */
-  // TODO PN rename to ...Scope
-  protected boolean checkIfContinueWithEnclosing(boolean foundSymbols) {
+  protected boolean checkIfContinueWithEnclosingScope(boolean foundSymbols) {
     // If this scope shadows its enclosing scope and already some symbols are found,
     // there is no need to continue searching.
     return !(foundSymbols && isShadowingScope());
+  }
+
+  /**
+   * @deprecated use {@link #checkIfContinueWithEnclosingScope(boolean)} instead
+   */
+  @Deprecated
+  protected boolean checkIfContinueWithEnclosing(boolean foundSymbols) {
+    return checkIfContinueWithEnclosingScope(foundSymbols);
   }
 
   @Override
@@ -501,9 +495,7 @@ public class CommonScope implements MutableScope {
       try {
         Optional<T> resolvedSymbol = (Optional<T>) resolvingFilter.filter(resolvingInfo, name, symbols);
         if (resolvedSymbol.isPresent()) {
-          // TODO add resolvedSymbols to resolvingInfo?
           if (resolvedSymbols.contains(resolvedSymbol.get())) {
-            // TODO PN do not add to list in this case?
             Log.debug("The symbol " + resolvedSymbol.get().getName() + " has already been resolved.",
                 CommonScope.class.getSimpleName());
           }
@@ -528,9 +520,7 @@ public class CommonScope implements MutableScope {
    * @see Scope#resolveLocally(SymbolKind)
    */
   @Override
-  // TODO PN Test that symbols are returned in the right order
   public <T extends Symbol> List<T> resolveLocally(SymbolKind kind) {
-    // TODO PN if no resolvingFilters registered, get from enclosing scope?
     final Collection<ResolvingFilter<? extends Symbol>> resolversForKind =
         getResolvingFiltersForTargetKind(resolvingFilters, kind);
 

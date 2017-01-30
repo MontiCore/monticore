@@ -89,13 +89,13 @@ public class FreeMarkerConfigurationBuilder {
           Log.error("0xA1020 Unable to load templates from path " + file.getPath(), e);
         }
       }
-      
-      for (TemplateAutoImport i : autoImports) {
-        config.addAutoImport(i.getNamespaceHash(), i.getTemplatePath().toString());
-      }
-      
+            
       config.setTemplateLoader(new MultiTemplateLoader(loaders.toArray(new TemplateLoader[loaders
           .size()])));
+    }
+    
+    for (TemplateAutoImport i : autoImports) {
+      config.addAutoImport(i.getNamespaceHash(), i.getTemplatePath());
     }
     
     config.setTemplateExceptionHandler(new MontiCoreTemplateExceptionHandler(

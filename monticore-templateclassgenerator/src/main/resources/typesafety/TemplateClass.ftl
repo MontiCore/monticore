@@ -31,7 +31,7 @@ SUCH DAMAGE.
 ***************************************************************************************
 -->
 ${tc.params("String package", "String fqnTemplateName", "String classname", "java.util.List<freemarker.core.Parameter> parameters",
-"Optional<String> result", "Boolean hasSignature", "de.monticore.templateclassgenerator.codegen.TemplateClassHelper helper")}
+"Optional<String> result", "Boolean hasSignature", "Boolean isMainTemplate", "de.monticore.templateclassgenerator.codegen.TemplateClassHelper helper")}
 
 <#-- Copyright -->
 ${tc.defineHookPoint("JavaCopyright")}
@@ -42,18 +42,25 @@ package ${package};
 import java.nio.file.Path;
 import de.monticore.ast.ASTNode;
 import ${glex.getGlobalVar("TemplateClassPackage")}.${glex.getGlobalVar("TemplateClassSetupPackage")}.GeneratorConfig;
+import de.monticore.templateclassgenerator.util.GeneratorInterface;
+import de.monticore.symboltable.CommonSymbol;
+
 
 /**
  * @date ${helper.getTimeNow()}<br>
  */
-public class ${classname} <#t>
+public <#if isMainTemplate>abstract</#if> class ${classname} <#if isMainTemplate>implements GeneratorInterface </#if><#t>
 {
 
   static ${classname} ${classname?uncap_first};
   
   static ${classname} get${classname}() {
     if (${classname?uncap_first} == null){
+    <#if isMainTemplate>
+      ${classname?uncap_first} = ${classname}Factory.create();
+    <#else>
       ${classname?uncap_first} = new ${classname}();
+    </#if>
     }
     return ${classname?uncap_first};
   }
@@ -69,6 +76,25 @@ public class ${classname} <#t>
   
   }
   
+  <#if isMainTemplate>
+   /* Abstract generation method for templates with suffix "Main". Method has
+   * to be implemented in Implementation class with name of the template and 
+   * suffix "Impl".
+   *
+   * @param filepath
+   * @param node
+   * @param symbol
+   */
+  public abstract void doGenerate(Path filepath, ASTNode node, CommonSymbol symbol);
+
+  /**
+   * @see de.monticore.templateclassgenerator.util.GeneratorInterface#generate(java.nio.file.Path, de.monticore.ast.ASTNode, de.monticore.symboltable.CommonSymbol)
+   */
+  @Override
+  public void generate(Path filepath, ASTNode node, CommonSymbol symbol) {
+    doGenerate(filepath, node, symbol);
+  }
+  </#if>
 
   /**
   * Generates Template with given parameters to File filePath.
@@ -82,8 +108,7 @@ public class ${classname} <#t>
   </#list>
   </#if>
   *
-  */
-  
+  */  
   <#assign printedParams = helper.printParameters(parameters)>
   <#assign printedParamNames = helper.printParameterNames(parameters)>
   <#assign defaultParam = "Object... args">

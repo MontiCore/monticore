@@ -202,4 +202,8 @@ public class TemplateClassHelper {
     }
     return packageName;
   }
+  
+  public static boolean isMainTemplate(String template) {
+    return template.endsWith("Main");
+  }
 }

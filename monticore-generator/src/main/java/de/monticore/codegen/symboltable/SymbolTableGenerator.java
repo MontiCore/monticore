@@ -19,20 +19,19 @@
 
 package de.monticore.codegen.symboltable;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.stream.Collectors;
-
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.languages.grammar.MCGrammarSymbol;
-import de.monticore.languages.grammar.MCRuleComponentSymbol;
 import de.monticore.languages.grammar.MCRuleSymbol;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
+
+import java.io.File;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 /**
  * @author Pedram Mir Seyed Nazari
@@ -145,14 +144,7 @@ public class SymbolTableGenerator {
   }
 
   private boolean isScopeSpanningSymbol(SymbolTableGeneratorHelper genHelper, final MCRuleSymbol rule) {
-    for (MCRuleComponentSymbol ruleComponent : rule.getRuleComponents()) {
-      final MCRuleSymbol referencedRule = genHelper.getGrammarSymbol().getRule(ruleComponent.getReferencedRuleName());
-      if ((referencedRule != null) && referencedRule.isSymbolDefinition()) {
-        return true;
-      }
-    }
-
-    return false;
+    return genHelper.spansScope(rule);
   }
 
 }

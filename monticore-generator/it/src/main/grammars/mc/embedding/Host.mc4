@@ -4,6 +4,6 @@ grammar Host extends mc.grammar.lexicals.Lexicals {
 
    Host@! = Name "content" Content;
 
-   Content@!;
+   Content@! = Name;
 
 }

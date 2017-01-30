@@ -68,8 +68,7 @@ public class Layouter {
 	 * 
 	 * @param a
 	 */
-	public static String sourcePos(ASTNode a) {
-		SourcePosition sp = a.get_SourcePositionStart();
+	public static String sourcePos(SourcePosition sp) {
 		if (sp != null) {
 			return String.format(START_TAG + "%d,%d" + END_TAG, sp.getLine(), sp.getColumn());
 		} else {

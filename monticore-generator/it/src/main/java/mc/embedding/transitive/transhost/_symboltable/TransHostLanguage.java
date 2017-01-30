@@ -25,10 +25,10 @@
 
 package mc.embedding.transitive.transhost._symboltable;
 
-import java.util.Optional;
-
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
+
+import java.util.Optional;
 
 public class TransHostLanguage extends TransHostLanguageTOP {
 
@@ -39,8 +39,8 @@ public class TransHostLanguage extends TransHostLanguageTOP {
 
   @Override
   public Optional<TransHostSymbolTableCreator> getSymbolTableCreator(
-      ResolverConfiguration resolverConfiguration, MutableScope enclosingScope) {
-    return Optional.of(new TransHostSymbolTableCreator(resolverConfiguration, enclosingScope));
+      ResolvingConfiguration resolvingConfiguration, MutableScope enclosingScope) {
+    return Optional.of(new TransHostSymbolTableCreator(resolvingConfiguration, enclosingScope));
   }
 
   @Override

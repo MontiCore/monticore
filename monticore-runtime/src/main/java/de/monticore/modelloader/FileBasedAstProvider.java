@@ -50,7 +50,6 @@ public final class FileBasedAstProvider<T extends ASTNode> implements AstProvide
           ModelingLanguageModelLoader.class.getSimpleName());
 
       Reader reader = new InputStreamReader(modelCoordinate.getLocation().openStream());
-      // TODO PN remove this cast as soon as the parsers return a specific ast node type.
       ast = (Optional<T>) modelingLanguage.getParser().parse(reader);
 
       if (ast.isPresent()) {

@@ -87,7 +87,8 @@ public class TemplateClassGenerator {
       result = Optional.of(cleanResult);
     }
     
-    doGenerateTemplateClass(targetFilepath, fqnTemplateName, targetName, params, result, hasSignature);
+    doGenerateTemplateClass(targetFilepath, fqnTemplateName, targetName, params, result,
+        hasSignature);
   }
   
   /**
@@ -100,13 +101,15 @@ public class TemplateClassGenerator {
    * @param params
    * @param result
    */
-  private static void doGenerateTemplateClass(File targetFilepath, String fqnTemplateName, String targetName,
+  private static void doGenerateTemplateClass(File targetFilepath, String fqnTemplateName,
+      String targetName,
       List<Parameter> params, Optional<String> result, boolean hasSignature) {
     final GeneratorSetup setup = new GeneratorSetup(targetFilepath);
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
     glex.setGlobalValue("TemplateClassPackage",
         TemplateClassGeneratorConstants.TEMPLATE_CLASSES_PACKAGE);
-    glex.setGlobalValue("TemplateClassSetupPackage", TemplateClassGeneratorConstants.TEMPLATE_CLASSES_SETUP_PACKAGE);
+    glex.setGlobalValue("TemplateClassSetupPackage",
+        TemplateClassGeneratorConstants.TEMPLATE_CLASSES_SETUP_PACKAGE);
     setup.setGlex(glex);
     TemplateClassHelper helper = new TemplateClassHelper();
     final ExtendedGeneratorEngine generator = new ExtendedGeneratorEngine(setup);
@@ -115,9 +118,25 @@ public class TemplateClassGenerator {
         + File.separator
         + Names.getPathFromFilename(fqnTemplateName);
     String packageNameWithDots = Names.getPackageFromPath(packageNameWithSeperators);
+    boolean isMainTemplate = targetName.endsWith("Main");
+    
+    if (isMainTemplate) {
+      generateMainTemplateFactory(generator, packageNameWithSeperators, targetName,
+          node, packageNameWithDots);
+    }
+    
     generator.generate("typesafety.TemplateClass",
         Paths.get(packageNameWithSeperators, targetName + ".java"), node,
-        packageNameWithDots, fqnTemplateName, targetName, params, result, hasSignature, helper);
+        packageNameWithDots, fqnTemplateName, targetName, params, result, hasSignature,
+        isMainTemplate, helper);
+  }
+  
+  public static void generateMainTemplateFactory(ExtendedGeneratorEngine generator,
+      String packageNameWithSeperators, String targetName, ASTNode node,
+      String packageNameWithDots) {
+    generator.generate("typesafety.MainTemplateFactory",
+        Paths.get(packageNameWithSeperators, targetName + "Factory.java"), node, targetName,
+        packageNameWithDots);
   }
   
   /**
@@ -133,7 +152,8 @@ public class TemplateClassGenerator {
    */
   public static void generateTemplateSetup(File targetFilepath, File modelPath,
       List<String> foundTemplates) {
-    String packageName = TemplateClassGeneratorConstants.TEMPLATE_CLASSES_PACKAGE+"."+TemplateClassGeneratorConstants.TEMPLATE_CLASSES_SETUP_PACKAGE;
+    String packageName = TemplateClassGeneratorConstants.TEMPLATE_CLASSES_PACKAGE + "."
+        + TemplateClassGeneratorConstants.TEMPLATE_CLASSES_SETUP_PACKAGE;
     final GeneratorSetup setup = new GeneratorSetup(targetFilepath);
     setup.setTracing(false);
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
@@ -145,11 +165,19 @@ public class TemplateClassGenerator {
     setup.setGlex(glex);
     final ExtendedGeneratorEngine generator = new ExtendedGeneratorEngine(setup);
     
+    String basedir = getBasedirFromModelAndTargetPath(modelPath.getAbsolutePath(),
+        targetFilepath.getAbsolutePath());
+    String relativePath = getRelativePathFromAbsolute(basedir, targetFilepath.getAbsolutePath());
+    if (relativePath.contains(File.separator)) {
+      relativePath = relativePath.replace(File.separator, "/");
+    }
+    
     String filePath = Names.getPathFromPackage(packageName) + File.separator;
     String mp = modelPath.getPath();
     List<File> nodes = TemplateClassHelper.walkTree(modelPath);
     List<String> templates = foundTemplates;
-    generator.generate("typesafety.setup.TemplateAccessor", Paths.get(filePath + "TemplateAccessor.java"),
+    generator.generate("typesafety.setup.TemplateAccessor",
+        Paths.get(filePath + "TemplateAccessor.java"),
         new EmptyNode(),
         packageName, templates, mp, new TemplateClassHelper());
     generator.generate("typesafety.setup.Setup", Paths.get(filePath + "Setup.ftl"),
@@ -158,21 +186,45 @@ public class TemplateClassGenerator {
         new TemplateClassHelper(), new ArrayList<File>());
     generator.generate("typesafety.setup.GeneratorConfig",
         Paths.get(filePath + "GeneratorConfig.java"),
-        new EmptyNode(), packageName,getRelativeTargetPath(setup.getOutputDirectory().getAbsolutePath()) );
+        new EmptyNode(), packageName, relativePath);
   }
   
-  private static String getRelativeTargetPath(String absolutePath) {
-    String homeDir = Paths.get("").toFile().getAbsolutePath();
-    if(absolutePath.contains(homeDir)){
-      String relPath = absolutePath.replace(homeDir, "");
-      if(relPath.startsWith(File.separator)){
-        relPath = relPath.substring(1);
+  /**
+   * Compares the two paths and returns the common path. The common path is the
+   * basedir.
+   * 
+   * @param modelPath
+   * @param targetPath
+   * @return
+   */
+  private static String getBasedirFromModelAndTargetPath(String modelPath, String targetPath) {
+    String basedir = "";
+    
+    for (int i = 0; i < modelPath.length(); i++) {
+      if (modelPath.charAt(i) == targetPath.charAt(i)) {
+        basedir += modelPath.charAt(i);
       }
-      return relPath.replace(File.separator, "/");
+      else {
+        break;
+      }
+      
     }
-    return absolutePath.replace(File.separator, "/");
+    return basedir;
     
-    
+  }
+  
+  /**
+   * Replaces the basedir in the absolute Path -> path gets relative
+   * 
+   * @param basedir
+   * @param absolutePath
+   * @return
+   */
+  private static String getRelativePathFromAbsolute(String basedir, String absolutePath) {
+    if (absolutePath.contains(basedir)) {
+      return absolutePath.replace(basedir, "");
+    }
+    return absolutePath;
   }
   
 }

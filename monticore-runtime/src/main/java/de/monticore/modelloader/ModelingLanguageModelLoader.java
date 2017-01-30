@@ -19,15 +19,6 @@
 
 package de.monticore.modelloader;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Strings.isNullOrEmpty;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
-
 import de.monticore.AmbiguityException;
 import de.monticore.ModelingLanguage;
 import de.monticore.ast.ASTNode;
@@ -36,17 +27,25 @@ import de.monticore.io.paths.ModelCoordinate;
 import de.monticore.io.paths.ModelCoordinates;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
 import de.se_rwth.commons.Names;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Strings.isNullOrEmpty;
+
 /**
- * This class is responsible for loading models from the model path (
- * {@link de.monticore.io.paths.ModelPath}).
+ * This class is responsible for loading models from the model path
+ * ({@link de.monticore.io.paths.ModelPath}).
  *
  * @author Pedram Mir Seyed Nazari
  */
 
-// TODO PN update doc
 // TODO PN extract CommonModelLoader
 // TODO PN rename to ModelLoader
 public abstract class ModelingLanguageModelLoader<T extends ASTNode> {
@@ -87,15 +86,15 @@ public abstract class ModelingLanguageModelLoader<T extends ASTNode> {
   }
 
   /**
-   * @deprecated use {@link #loadModelsIntoScope(String, ModelPath, MutableScope, ResolverConfiguration)}
+   * @deprecated use {@link #loadModelsIntoScope(String, ModelPath, MutableScope, ResolvingConfiguration)}
    * instead.
    */
   @Deprecated
   public Collection<T> loadAmbiguousModelAndCreateSymbolTable(final String qualifiedModelName,
       final ModelPath modelPath, final MutableScope enclosingScope,
-      final ResolverConfiguration resolverConfiguration) {
+      final ResolvingConfiguration resolvingConfiguration) {
 
-    return loadModelsIntoScope(qualifiedModelName, modelPath, enclosingScope, resolverConfiguration);
+    return loadModelsIntoScope(qualifiedModelName, modelPath, enclosingScope, resolvingConfiguration);
   }
 
   /**
@@ -105,18 +104,17 @@ public abstract class ModelingLanguageModelLoader<T extends ASTNode> {
    * @param qualifiedModelName the qualified name of the model(s) to be loaded
    * @param modelPath the model path
    * @param enclosingScope the enclosing scope for each scope graph of the loaded models
-   * @param resolverConfiguration the configuration of the resolving filters
+   * @param resolvingConfiguration the configuration of the resolving filters
    * @return the asts of the loaded models (mapped to the corresponding symbol table elements)
    */
   public Collection<T> loadModelsIntoScope(final String qualifiedModelName,
       final ModelPath modelPath, final MutableScope enclosingScope,
-      final ResolverConfiguration resolverConfiguration) {
+      final ResolvingConfiguration resolvingConfiguration) {
 
     final Collection<T> asts = loadModels(qualifiedModelName, modelPath);
 
     for (T ast : asts) {
-      // TODO PN add here a general hook, to allow further processing of the asts
-      createSymbolTableFromAST(ast, qualifiedModelName, enclosingScope, resolverConfiguration);
+      createSymbolTableFromAST(ast, qualifiedModelName, enclosingScope, resolvingConfiguration);
     }
 
     return asts;
@@ -132,7 +130,7 @@ public abstract class ModelingLanguageModelLoader<T extends ASTNode> {
    */
   protected abstract void createSymbolTableFromAST(T ast, String modelName,
       MutableScope enclosingScope,
-      ResolverConfiguration resolverConfiguration);
+      ResolvingConfiguration resolvingConfiguration);
 
   /**
    * @deprecated use {@link #loadModels(String, ModelPath)} instead.
@@ -188,5 +186,4 @@ public abstract class ModelingLanguageModelLoader<T extends ASTNode> {
     return modelingLanguage;
   }
 
-  // TODO PN add equals+hash method
 }

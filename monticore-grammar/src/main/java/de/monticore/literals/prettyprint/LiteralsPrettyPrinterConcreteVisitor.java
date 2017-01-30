@@ -39,6 +39,9 @@ public class LiteralsPrettyPrinterConcreteVisitor implements LiteralsVisitor {
   
   private LiteralsVisitor realThis = this;
   
+  // printer to use
+  protected IndentPrinter printer = null;
+  
   /**
    * Constructor for de.monticore.literals.prettyprint.LiteralsPrettyPrinterConcreteVisitor.
    * @param printer
@@ -48,10 +51,6 @@ public class LiteralsPrettyPrinterConcreteVisitor implements LiteralsVisitor {
     this.printer = printer;
   }
 
-  // printer to use
-  protected IndentPrinter printer = null;
-  
-  
   /**
    * @return the printer
    */

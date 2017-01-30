@@ -19,9 +19,26 @@
 
 package de.monticore.codegen;
 
+import static de.monticore.codegen.mc2cd.TransformationHelper.createSimpleReference;
+import static de.monticore.codegen.mc2cd.transl.ConstantsTranslation.CONSTANTS_ENUM;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.ast_emf.AstEmfGeneratorHelper;
@@ -37,7 +54,6 @@ import de.monticore.symboltable.types.references.ActualTypeArgument;
 import de.monticore.types.TypesHelper;
 import de.monticore.types.TypesPrinter;
 import de.monticore.types.types._ast.ASTImportStatement;
-import de.monticore.types.types._ast.ASTReferenceType;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.CD4AnalysisHelper;
@@ -64,22 +80,6 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static de.monticore.codegen.mc2cd.TransformationHelper.createSimpleReference;
-import static de.monticore.codegen.mc2cd.transl.ConstantsTranslation.CONSTANTS_ENUM;
-
 /**
  * TODO: Write me!
  *
@@ -99,6 +99,8 @@ public class GeneratorHelper extends TypesHelper {
   public static final String AST_PACKAGE_SUFFIX = "_ast";
   
   public static final String VISITOR_PACKAGE_SUFFIX = "_visitor";
+
+  public static final String TYPERESOLVER_PACKAGE_SUFFIX = "_types";
   
   public static final String COCOS_PACKAGE_SUFFIX = "_cocos";
   
@@ -134,10 +136,15 @@ public class GeneratorHelper extends TypesHelper {
   
   protected static final String LOG_NAME = "GeneratorHelper";
   
-  // TODO: generate keywords from the grammar
-  private static List<String> reservedCdNames = Arrays.asList(new String[] { "derived",
+  // TODO: reserve names of the base grammars like CD4A, Types, Common ...
+  private static List<String> reservedCdNames = Arrays.asList(new String[] {
+      // CD4A
+      "derived",
       "association",
-      "composition" });
+      "composition",
+      // Common.mc4 
+      "local",
+      "readonly"});
   
   static JavaDSLPrettyPrinter javaPrettyPrinter;
   
@@ -454,6 +461,19 @@ public class GeneratorHelper extends TypesHelper {
   public static String getASTNodeBaseType(String languageName) {
     return AST_PREFIX + languageName + BASE;
   }
+
+  public String getTypeResolverPackage() {
+    return getTypeResolverPackage(getPackageName());
+  }
+
+  public static String getTypeResolverPackage(String qualifiedLanguageName) {
+    return getPackageName(qualifiedLanguageName.toLowerCase(),
+        getTypeResolverPackageSuffix());
+  }
+
+  public static String getTypeResolverPackageSuffix() {
+    return GeneratorHelper.TYPERESOLVER_PACKAGE_SUFFIX;
+  }
   
   public String getVisitorPackage() {
     return getVisitorPackage(getPackageName());
@@ -548,10 +568,8 @@ public class GeneratorHelper extends TypesHelper {
       return true;
     }
     if (!type.getAstNode().isPresent()) {
-      // TODO this is an error, but for AST_X_List, AST_X_Ext, Optional (and
-      // probably all other built-in types) the ast node is not set
-      Log.warn(String.format("0xA5008 ASTNode of cd type symbol %s is not set.",
-          type.getName()));
+      Log.debug(String.format("ASTNode of cd type symbol %s is not set.",
+          type.getName()), LOG_NAME);
       return false;
     }
     ASTNode node = type.getAstNode().get();

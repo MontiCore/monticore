@@ -264,7 +264,7 @@ grammar Types extends de.monticore.literals.Literals {
     TypeParameters =
          (
            "<" (TypeVariableDeclaration || ",")+ ">"
-         )?;
+         );
     
     /** ASTTypeVariableDeclaration represents the generic variable declaration
         in '<'...'>' (e.g., in front of method or constructor declarations or

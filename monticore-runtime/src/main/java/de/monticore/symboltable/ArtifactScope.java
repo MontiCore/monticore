@@ -41,9 +41,10 @@ import java.util.function.Predicate;
 import static java.util.Objects.requireNonNull;
 
 /**
+ * Represents the scope of the whole artifact (i.e., file or compilation unit).
+ *
  * @author Pedram Mir Seyed Nazari
  */
-// TODO PN Doc
 public class ArtifactScope extends CommonScope {
 
   private final String packageName;
@@ -113,7 +114,7 @@ public class ArtifactScope extends CommonScope {
       final SymbolKind kind, final AccessModifier modifier, final Predicate<Symbol> predicate) {
     final Collection<T> result = new LinkedHashSet<>();
 
-    if (checkIfContinueWithEnclosing(resolvingInfo.areSymbolsFound()) && (getEnclosingScope().isPresent())) {
+    if (checkIfContinueWithEnclosingScope(resolvingInfo.areSymbolsFound()) && (getEnclosingScope().isPresent())) {
       if (!(enclosingScope instanceof GlobalScope)) {
         Log.warn("0xA1039 An artifact scope should have the global scope as enclosing scope or no "
             + "enclosing scope at all.");

@@ -19,7 +19,7 @@
 
 package de.monticore.symboltable.mocks.languages.entity;
 
-import de.monticore.symboltable.types.CommonJAttributeSymbol;
+import de.monticore.symboltable.types.CommonJFieldSymbol;
 import de.monticore.symboltable.types.JTypeSymbol;
 import de.monticore.symboltable.types.references.JTypeReference;
 
@@ -31,7 +31,7 @@ import de.monticore.symboltable.types.references.JTypeReference;
  *          $Date$
  *
  */
-public class PropertySymbol extends CommonJAttributeSymbol<JTypeReference<JTypeSymbol>> {
+public class PropertySymbol extends CommonJFieldSymbol<JTypeReference<JTypeSymbol>> {
   
   public static final PropertySymbolKind KIND = new PropertySymbolKind();
 

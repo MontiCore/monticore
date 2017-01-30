@@ -43,6 +43,4 @@ public class Symbols {
     return ImmutableList.copyOf(sortedSymbols);
   }
 
-  // TODO PN boolean shadows(Symbol shadowing, Symbol shadowed)
-
 }

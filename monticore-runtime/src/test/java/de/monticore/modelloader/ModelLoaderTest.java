@@ -37,8 +37,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * TODO: Write me!
- *
  * @author (last commit) $Author$
  * @version $Revision$, $Date$
  */

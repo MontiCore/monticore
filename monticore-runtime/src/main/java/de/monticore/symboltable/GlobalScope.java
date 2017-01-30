@@ -47,18 +47,18 @@ import java.util.stream.Collectors;
 public final class GlobalScope extends CommonScope {
 
   private final ModelPath modelPath;
-  private final ResolverConfiguration resolverConfiguration;
+  private final ResolvingConfiguration resolvingConfiguration;
 
   private final Set<ModelingLanguage> modelingLanguages = new LinkedHashSet<>();
 
   private final Map<String, Set<ModelingLanguageModelLoader<? extends ASTNode>>> modelName2ModelLoaderCache = new HashMap<>();
 
   public GlobalScope(final ModelPath modelPath, final Collection <ModelingLanguage> modelingLanguages,
-      final ResolverConfiguration resolverConfiguration) {
+      final ResolvingConfiguration resolvingConfiguration) {
     super(Optional.empty(), true);
 
     this.modelPath = Log.errorIfNull(modelPath);
-    this.resolverConfiguration = Log.errorIfNull(resolverConfiguration);
+    this.resolvingConfiguration = Log.errorIfNull(resolvingConfiguration);
     this.modelingLanguages.addAll(Log.errorIfNull(modelingLanguages));
 
     if (modelingLanguages.isEmpty()) {
@@ -66,26 +66,26 @@ public final class GlobalScope extends CommonScope {
           + "loading of models.");
     }
 
-    setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
+    setResolvingFilters(resolvingConfiguration.getTopScopeResolvingFilters());
   }
 
   public GlobalScope(final ModelPath modelPath, final ModelingLanguage language,
-      ResolverConfiguration resolverConfiguration) {
-    this(modelPath, Collections.singletonList(language), resolverConfiguration);
+      ResolvingConfiguration resolvingConfiguration) {
+    this(modelPath, Collections.singletonList(language), resolvingConfiguration);
   }
 
   public GlobalScope(final ModelPath modelPath, final ModelingLanguage language) {
-    this(modelPath, language, new ResolverConfiguration());
+    this(modelPath, language, new ResolvingConfiguration());
 
-    resolverConfiguration.addTopScopeResolvers(language.getResolvers());
-    setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
+    resolvingConfiguration.addTopScopeResolvers(language.getResolvingFilters());
+    setResolvingFilters(resolvingConfiguration.getTopScopeResolvingFilters());
   }
 
   public GlobalScope(final ModelPath modelPath, ModelingLanguageFamily languageFamily) {
-    this(modelPath, languageFamily.getModelingLanguages(), new ResolverConfiguration());
+    this(modelPath, languageFamily.getModelingLanguages(), new ResolvingConfiguration());
 
-    resolverConfiguration.addTopScopeResolvers(languageFamily.getAllResolvers());
-    setResolvingFilters(resolverConfiguration.getTopScopeResolvingFilters());
+    resolvingConfiguration.addTopScopeResolvers(languageFamily.getAllResolvers());
+    setResolvingFilters(resolvingConfiguration.getTopScopeResolvingFilters());
   }
 
 
@@ -108,8 +108,6 @@ public final class GlobalScope extends CommonScope {
 
 
     // Symbol not found: try to load corresponding model and build its symbol table
-    // TODO PN Optimize: if no further models have been loaded, we can stop here. There is no need
-    // to resolveDown again
     loadModels(resolvingInfo.getResolvingFilters(), symbolName, kind);
 
     // Maybe the symbol now exists in this scope (or its sub scopes). So, resolve down, again.
@@ -132,7 +130,7 @@ public final class GlobalScope extends CommonScope {
 
         for (String calculatedModelName : calculatedModelNames) {
           if (continueWithModelLoader(calculatedModelName, modelLoader)) {
-            modelLoader.loadModelsIntoScope(calculatedModelName, modelPath, this, resolverConfiguration);
+            modelLoader.loadModelsIntoScope(calculatedModelName, modelPath, this, resolvingConfiguration);
             cache(modelLoader, calculatedModelNames.iterator().next());
           }
           else {
@@ -154,7 +152,6 @@ public final class GlobalScope extends CommonScope {
         .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
-  // TODO PN write tests
   public void cache(ModelingLanguageModelLoader<? extends ASTNode> modelLoader, String calculatedModelName) {
     if (modelName2ModelLoaderCache.containsKey(calculatedModelName)) {
       modelName2ModelLoaderCache.get(calculatedModelName).add(modelLoader);
@@ -188,12 +185,8 @@ public final class GlobalScope extends CommonScope {
   }
 
   /**
-   * // TODO PN update doc. Seems not to be fully correct
-   *
-   * Only if the model name differs from the symbol name, we need to proceed, since we
-   * already handled the symbol name. For example, for class diagrams the symbol name is a.CD.Person
-   * but the model name is a.CD. In contrast, the model name of java.lang.String is also
-   * java.lang.String.
+   * Model loading continues with the given <code>modelLoader</code>, if
+   * <code>calculatedModelName</code> has not been already loaded with that loader.
    *
    * @return true, if it should be continued with the model loader
    */

@@ -20,12 +20,9 @@
 package de.monticore.symboltable.references;
 
 /**
- * TODO: Write me!
- *
  * @author Pedram Mir Seyed Nazari
  *
  */
-// TODO PN rename to SymbolNotFound?
 public class FailedLoadingSymbol extends RuntimeException {
 
   private static final long serialVersionUID = -440642819643689797L;

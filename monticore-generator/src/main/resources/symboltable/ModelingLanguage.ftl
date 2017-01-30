@@ -56,6 +56,9 @@ public abstract class ${className} extends de.monticore.CommonModelingLanguage {
     super(langName, fileEnding);
 
     initResolvingFilters();
+<#if !skipSTGen>
+    setModelNameCalculator(new ${grammarName}ModelNameCalculator());
+</#if>
   }
 
   @Override
@@ -85,7 +88,7 @@ public abstract class ${className} extends de.monticore.CommonModelingLanguage {
 
   protected void initResolvingFilters() {
     <#list ruleNames as ruleName>
-    addResolver(new ${ruleName?cap_first}ResolvingFilter());
+    addResolvingFilter(new ${ruleName?cap_first}ResolvingFilter());
     </#list>
   }
 }

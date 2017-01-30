@@ -46,6 +46,6 @@ import de.monticore.symboltable.resolving.CommonResolvingFilter;
 public class ${className} extends CommonResolvingFilter<${symbolName}> {
 
   public ${className}() {
-    super(${symbolName}.class, ${symbolName}.KIND);
+    super(${symbolName}.KIND);
   }
 }

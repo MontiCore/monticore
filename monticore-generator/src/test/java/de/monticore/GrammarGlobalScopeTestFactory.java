@@ -23,7 +23,9 @@ import de.monticore.grammar.symboltable.EssentialMontiCoreGrammarLanguage;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.languages.grammar.MontiCoreGrammarLanguage;
 import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
+
+import java.nio.file.Paths;
 
 import java.nio.file.Paths;
 
@@ -39,11 +41,11 @@ public class GrammarGlobalScopeTestFactory {
 
 
   private static GlobalScope create(ModelingLanguage grammarLanguage) {
-    final ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
-    resolverConfiguration.addDefaultFilters(grammarLanguage.getResolvers());
+    final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
+    resolvingConfiguration.addDefaultFilters(grammarLanguage.getResolvingFilters());
 
     return  new GlobalScope(new ModelPath(Paths.get("src/test/resources")),
-        grammarLanguage, resolverConfiguration);
+        grammarLanguage, resolvingConfiguration);
   }
 
 }

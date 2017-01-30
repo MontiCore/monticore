@@ -44,7 +44,7 @@ public class TemplateAccessor {
     return this.${helper.replaceDotsWithUnderscores(template)};
   }
   
-  private class ${helper.replaceDotsWithUnderscores(template)?cap_first}_Extended extends ${glex.getGlobalVar("TemplateClassPackage")}.${template}${glex.getGlobalVar("TemplatePostfix")} {
+  private class ${helper.replaceDotsWithUnderscores(template)?cap_first}_Extended extends ${glex.getGlobalVar("TemplateClassPackage")}.${template}${glex.getGlobalVar("TemplatePostfix")}<#if helper.isMainTemplate(template)>Impl</#if> {
     protected ${helper.replaceDotsWithUnderscores(template)?cap_first}_Extended () {}
   } 
   

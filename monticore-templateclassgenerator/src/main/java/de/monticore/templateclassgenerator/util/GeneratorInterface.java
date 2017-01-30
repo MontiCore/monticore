@@ -1,7 +1,7 @@
 /*
  * ******************************************************************************
  * MontiCore Language Workbench
- * Copyright (c) 2015, MontiCore, All rights reserved.
+ * Copyright (c) 2016, MontiCore, All rights reserved.
  *
  * This project is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,37 +16,23 @@
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * ******************************************************************************
  */
+package de.monticore.templateclassgenerator.util;
 
-package de.monticore.symboltable.types;/*
- * Copyright (c) 2015 RWTH Aachen. All rights reserved.
- *
- * http://www.se-rwth.de/
- */
+import java.nio.file.Path;
 
-import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.types.references.JTypeReference;
+import de.monticore.ast.ASTNode;
+import de.monticore.symboltable.CommonSymbol;
 
 /**
- * @author Pedram Mir Seyed Nazari
+ * Every generated main template class implements this interface.
+ *
+ * @author  Jerome Pfeiffer
+ * @version $Revision$,
+ *          $Date$
  *
  */
-// TODO PN rename to JFieldSymbol
-public interface JAttributeSymbol extends Symbol {
-
-  JAttributeSymbolKind KIND = new JAttributeSymbolKind();
-
-  JTypeReference<? extends JTypeSymbol> getType();
-
-  boolean isStatic();
-
-  boolean isFinal();
-
-  boolean isParameter();
-
-  boolean isPrivate();
-
-  boolean isProtected();
-
-  boolean isPublic();
-
+public interface GeneratorInterface {
+  
+  public void generate(Path filepath, ASTNode node, CommonSymbol symbol);
+  
 }

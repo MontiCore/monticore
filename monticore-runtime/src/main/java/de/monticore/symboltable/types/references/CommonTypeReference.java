@@ -27,6 +27,7 @@ import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.references.CommonSymbolReference;
 import de.monticore.symboltable.types.TypeSymbol;
+import de.monticore.symboltable.types.TypeSymbolKind;
 
 /**
  * Default implementation of {@link TypeReference}.
@@ -40,7 +41,6 @@ public class CommonTypeReference<T extends TypeSymbol> extends CommonSymbolRefer
 
   private int dimension = 0;
 
-  // TODO PN use TypeSymbolKind instead of SymbolKind?
   public CommonTypeReference(String referencedSymbolName, SymbolKind referencedSymbolKind, Scope definingScopeOfReference) {
     super(referencedSymbolName, referencedSymbolKind, definingScopeOfReference);
   }

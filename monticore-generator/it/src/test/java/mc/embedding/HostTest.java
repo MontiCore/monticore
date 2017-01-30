@@ -19,30 +19,30 @@
 
 package mc.embedding;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.nio.file.Paths;
-
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
 import mc.GeneratorIntegrationsTest;
 import mc.embedding.host._symboltable.HostLanguage;
 import mc.embedding.host._symboltable.HostSymbol;
 import org.junit.Test;
+
+import java.nio.file.Paths;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class HostTest extends GeneratorIntegrationsTest {
 
   @Test
   public void test() {
     final HostLanguage language = new HostLanguage();
-    final ResolverConfiguration resolverConfiguration = new ResolverConfiguration();
-    resolverConfiguration.addTopScopeResolvers(language.getResolvers());
+    final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
+    resolvingConfiguration.addTopScopeResolvers(language.getResolvingFilters());
 
     final ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/embedding"));
 
-    final GlobalScope scope = new GlobalScope(modelPath, language, resolverConfiguration);
+    final GlobalScope scope = new GlobalScope(modelPath, language, resolvingConfiguration);
 
     HostSymbol hostSymbol = scope.<HostSymbol>resolve("H", HostSymbol.KIND).orElse(null);
     assertNotNull(hostSymbol);

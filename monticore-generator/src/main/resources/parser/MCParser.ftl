@@ -46,6 +46,7 @@ package ${genHelper.getParserPackage()};
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 
 import java.util.Optional;
 import de.monticore.antlr4.MCConcreteParser;
@@ -57,7 +58,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 public class ${ast.getName()}Parser${suffix} extends MCConcreteParser {
 
   protected ${parserName}AntlrParser create(String filename) throws IOException {
-    ${parserName}AntlrLexer lexer = new ${parserName}AntlrLexer(new  ANTLRFileStream(filename));
+    ${parserName}AntlrLexer lexer = new ${parserName}AntlrLexer(new  ANTLRFileStream(filename, StandardCharsets.UTF_8.name()));
     CommonTokenStream tokens = new CommonTokenStream(lexer);
     ${parserName}AntlrParser parser = new ${parserName}AntlrParser(tokens);
     lexer.setMCParser(parser);  

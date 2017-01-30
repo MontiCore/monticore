@@ -1,3 +1,35 @@
+/*
+***************************************************************************************
+Copyright (c) 2015, MontiCore
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation and/or
+other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its contributors
+may be used to endorse or promote products derived from this software
+without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGE.
+***************************************************************************************
+*/
 package mc.grammars.types;
 
 /**
@@ -8,38 +40,21 @@ package mc.grammars.types;
  * dimensions, reference types, generics, and type parameters.
  *
  * @author Martin Schindler
+ *
+ * version 27.01.2016;
 */
 grammar TestTypes extends mc.grammars.literals.TestLiterals {
 
     /*========================================================================*/
-    /*============================== OPTIONS =================================*/
+    /*======================= AST Definition =================================*/
     /*========================================================================*/
-    
-    concept antlr {
-        parser java {
-            /**
-             * Counts the number of LT of type parameters and type arguments.
-             * It is used in semantic predicates to ensure the right number
-             * of closing '>' characters; which actually may have been
-             * either GT, SR (GTGT), or BSR (GTGTGT) tokens.
-             */
-            public int ltCounter = 0;
-            public int cmpCounter = 0;
-            
-        }
-    }
-    
-    
-    /*========================================================================*/
-    /*======================= INTERFACE DEFINITIONS ==========================*/
-    /*========================================================================*/
-    
+
     ast QualifiedName =
         method public String toString(){
           return de.se_rwth.commons.Names.getQualifiedName(
               this.getParts());
         };
-    
+
     ast PrimitiveType =
         method public String toString(){
           if (isBoolean()){
@@ -92,47 +107,51 @@ grammar TestTypes extends mc.grammars.literals.TestLiterals {
         method public boolean isDouble(){
           return this.getPrimitive()==ASTConstantsTestTypes.DOUBLE;
         };
-    
+
     ast ReferenceType astextends ASTType;
-    
+
     ast ArrayType astimplements ASTReferenceType =
-        componentType:Type
+        componentType:ASTType
         dimensions:int;
-    
+
+    /*========================================================================*/
+    /*======================= INTERFACE DEFINITIONS ==========================*/
+    /*========================================================================*/
+
     /** ASTType defines types like primitives, Set, List, Collection, or
         class types. It might also be an array or generic type.
     */
     interface Type extends TypeArgument, ReturnType;
-    
+
     /** ASTReferenceType defines a reference type like arrays or complex types.
     */
     interface ReferenceType;
-    
+
     /** ASTTypeArgument represents a type argument (generics).
     */
     interface TypeArgument;
-    
+
     /** ASTReturnType represents return types.
     */
     interface ReturnType;
-    
-    
+
+
     /*========================================================================*/
     /*============================ PARSER RULES ==============================*/
     /*========================================================================*/
-    
+
     /** The ASTQualifiedName represents a possibly qualified name in the AST.
         The different parts of a qualified name are separated by '.'; they are
         stored in an ASTStringList.
         @attribute parts A List of ASTStringList concludes all name parts
     */
     QualifiedName =
-        parts:Name& ("." parts:Name&)*;
-        
+        parts:(Name& || ".")+;
+
     /** The ASTAbstractArrayType represents array of Type
     */
     abstract ArrayType implements Type;
-    
+
     /** The ASTArrayType represents an array of any type. The rule
         ComplexArrayType itself treats all arrays except the primitive
         ones. Especially it treats generic types.
@@ -140,7 +159,7 @@ grammar TestTypes extends mc.grammars.literals.TestLiterals {
                                  Could be every complex type.
         @attribute dimensions    Counts the number of '[]'
     */
-    ComplexArrayType extends ArrayType implements Type 
+    ComplexArrayType extends ArrayType implements Type
     =
         // Things are getting ugly. We have to disambiguate between
         // Class<List<Anything>>[]
@@ -156,11 +175,11 @@ grammar TestTypes extends mc.grammars.literals.TestLiterals {
           (
             (
               "[" "]"
-              {a.setDimensions(a.getDimensions()+1);}
+              {_aNode.setDimensions(_aNode.getDimensions()+1);}
             )+
           )
         );
-    
+
     /** The ASTArrayType represents an array of any type. The rule
         PrimitiveArrayType itself treats arrays of primitive types, such as
         'int[]'.
@@ -172,21 +191,21 @@ grammar TestTypes extends mc.grammars.literals.TestLiterals {
         componentType:PrimitiveType
           (
             "[" "]"
-            {a.setDimensions(a.getDimensions()+1);}
+            {_aNode.setDimensions(_aNode.getDimensions()+1);}
           )+;
-    
+
     /** ASTVoidType represents the return type "void".
     */
     VoidType implements ReturnType =
         "void";
-    
+
     /** ASTPrimitiveType represents every primitive type supported by Java.
         @attribute primitive BOOLEAN, BYTE, CHAR, SHORT, INT, FLOAT, LONG,
                              or DOUBLE
     */
     PrimitiveType implements Type =
         primitive: ["boolean" | "byte" | "short" | "int" | "long" | "char" |"float" | "double"];
-        
+
     /** ASTSimpleReferenceType represents types like class or interface types
         which could have a qualified name like this: a.b.c<Arg>. The
         qualification stored in the name (a.b) could be package or a type name.
@@ -203,7 +222,7 @@ grammar TestTypes extends mc.grammars.literals.TestLiterals {
         Name
         ("." Name&)*
         (TypeArguments)?;
-    
+
     /** ASTComplexReferenceType represents types like class or interface types which
         always have  ASTSimpleReferenceType as
         qualification.
@@ -213,41 +232,20 @@ grammar TestTypes extends mc.grammars.literals.TestLiterals {
         @attribute typeArguments The types between '<...>'
         @attribute qualification Another ASTQualifiedType or
                                  ASTSimpleReferenceType.
-    */        
+    */
     ComplexReferenceType implements ReferenceType, Type =
-        SimpleReferenceType ("." SimpleReferenceType)*;
-    
+        (SimpleReferenceType || ".")+;
+
     /** ASTTypeArguments represents a list of generic arguments parenthesized
         by '<...>'. It is also possible to nest type arguments in each other
         like this <A<B<C>>>.
         @attribute typeArguments List of arguments
     */
-    TypeArguments {int ltLevel = 0;} =
-        {ltLevel = ltCounter;}
+    TypeArguments =
         (
-          "<" {ltCounter++;}
-          typeArguments:TypeArgument
-          (
-                "," typeArguments:TypeArgument
-          )*
-          (
-            /*
-             * The token stream contains GT, GTGT, or GTGTGT tokens,
-             * so the parser has to expect one of these three possibilities.
-             * Furthermore the angle brackets are counted to check if there 
-             * are some left open. After parsing the ltCounter has to be 0,
-             * what is checked by the predicate below.
-             */
-            ">" {ltCounter-=1;}
-            | ">>" {ltCounter-=2;}
-            | ">>>" {ltCounter-=3;}
-          )?
-        )
-       // This predicate checks if we have a valid angle bracket structure.
-        {cmpCounter = ltLevel;}
-        {(cmpCounter != 0) || ltCounter == cmpCounter}?;
+          "<" (TypeArgument || ",")* ">"
+        );
 
-    
     /** ASTWildcardType represents a wildcard type in a type argument (generics)
         It could also contain an upper- or lower bound.
         @attribute upperBound Supertye of the type argument
@@ -257,32 +255,17 @@ grammar TestTypes extends mc.grammars.literals.TestLiterals {
         "?" (
               ("extends" upperBound:Type) | ("super" lowerBound:Type)
             )?;
-    
+
     /** ASTTypeParameters represents a list of generic parameter parenthesized
         by '<...>' in type declarations (e.g., class-, interface-, method-, or
         constructor declarations).
         @attribute typeVariableDeclarations List of parameters
     */
-    TypeParameters {int ltLevel = 0;} =
-        {ltLevel = ltCounter;}
-        (
-          "<" {ltCounter++;}
-          typeVariableDeclarations:TypeVariableDeclaration
-          (
-            "," typeVariableDeclarations:TypeVariableDeclaration
-          )*
-          ( // inlined typeArgumentsEnd
-            ">" {ltCounter-=1;}
-            | ">>" {ltCounter-=2;}
-            | ">>>" {ltCounter-=3;}
-          )?
-        )
-        {cmpCounter = ltLevel;}
-        // This predicate checks if we have a valid angle bracket structure
-        // (if we are at the "top level" of nested TypeArgument productions).
-        {(cmpCounter != 0) || ltCounter == cmpCounter}?
-        | /* nothing! (instead of optionality) */;
-    
+    TypeParameters =
+         (
+           "<" (TypeVariableDeclaration || ",")+ ">"
+         )?;
+
     /** ASTTypeVariableDeclaration represents the generic variable declaration
         in '<'...'>' (e.g., in front of method or constructor declarations or
         behind the class or interface name).
@@ -293,13 +276,12 @@ grammar TestTypes extends mc.grammars.literals.TestLiterals {
     TypeVariableDeclaration =
         Name
         (
-          "extends" upperBounds:ComplexReferenceType
-          ("&" upperBounds:ComplexReferenceType)*
+          "extends" upperBounds:(ComplexReferenceType || "&")+
         )?;
 
-  /** ImportStatement represents the import list for diagrams
-      E.g.: import A.b;
-      E.g.: import A.*;
-  */
-    ImportStatement = "import" ImportList:Name& ( "." ImportList:Name&)* ("." Star:["*"])? ";" ;
+	/** ImportStatement represents the import list for diagrams
+	    E.g.: import A.b;
+	    E.g.: import A.*;
+	*/
+    ImportStatement = "import" importList:(Name& || ".")+ ("." Star:["*"])? ";" ;
 }

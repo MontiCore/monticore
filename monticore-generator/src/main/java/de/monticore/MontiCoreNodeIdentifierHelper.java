@@ -22,7 +22,6 @@ package de.monticore;
 import static de.monticore.generating.templateengine.reporting.commons.Layouter.nodeName;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.generating.templateengine.reporting.commons.IASTNodeIdentHelper;
 import de.monticore.grammar.LexNamer;
 import de.monticore.grammar.grammar._ast.ASTAntlrOption;
 import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
@@ -48,6 +47,7 @@ import de.monticore.literals.literals._ast.ASTIntLiteral;
 import de.monticore.literals.literals._ast.ASTLongLiteral;
 import de.monticore.literals.literals._ast.ASTNullLiteral;
 import de.monticore.literals.literals._ast.ASTStringLiteral;
+import de.monticore.types.TypesNodeIdentHelper;
 import de.monticore.types.types._ast.ASTQualifiedName;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.types.types._ast.ASTTypeVariableDeclaration;
@@ -59,7 +59,7 @@ import de.se_rwth.commons.Names;
  * @author (last commit) $Author$
  * @version $Revision$, $Date$
  */
-public class MontiCoreNodeIdentifierHelper implements IASTNodeIdentHelper {
+public class MontiCoreNodeIdentifierHelper extends TypesNodeIdentHelper {
   
   // ##############
   // Identifier helper for Literals (could be moved into the grammars module?)
@@ -67,95 +67,48 @@ public class MontiCoreNodeIdentifierHelper implements IASTNodeIdentHelper {
   // until then they remain unused
   // ##############
   
-  private String getIdentifier(ASTBooleanLiteral ast) {
-    return format(Boolean.toString(ast.getValue()), nodeName(ast));
-  }
   
-  private String getIdentifier(ASTCharLiteral ast) {
-    return format(Character.toString(ast.getValue()), nodeName(ast));
-  }
-  
-  private String getIdentifier(ASTDoubleLiteral ast) {
-    return format(Double.toString(ast.getValue()), nodeName(ast));
-  }
-  
-  private String getIdentifier(ASTFloatLiteral ast) {
-    return format(Float.toString(ast.getValue()), nodeName(ast));
-  }
-  
-  private String getIdentifier(ASTIntLiteral ast) {
-    return format(Integer.toString(ast.getValue()), nodeName(ast));
-  }
-  
-  private String getIdentifier(ASTLongLiteral ast) {
-    return format(Long.toString(ast.getValue()), nodeName(ast));
-  }
-  
-  private String getIdentifier(ASTNullLiteral ast) {
-    return format("null", nodeName(ast));
-  }
-  
-  private String getIdentifier(ASTStringLiteral ast) {
-    return format(ast.getValue(), nodeName(ast));
-  }
-  
-  // ##############
-  // Identifier helper for Types (could be moved into the grammars module?)
-  // TODO: incomplete by now; only those added here which "seem" to have a name
-  // ##############
-  
-  private String getIdentifier(ASTQualifiedName ast) {
-    return format(ast.toString(), nodeName(ast));
-  }
-  
-  private String getIdentifier(ASTSimpleReferenceType ast) {
-    return format(Names.getQualifiedName(ast.getNames()), nodeName(ast));
-  }
-  
-  private String getIdentifier(ASTTypeVariableDeclaration ast) {
-    return format(ast.getName(), nodeName(ast));
-  }
-  
+    
   // ##############
   // Identifier helper for Grammar
   // TODO: incomplete by now; only those added here which "seem" to have a name
   // ##############
   
-  private String getIdentifier(ASTAntlrOption ast) {
+  public String getIdent(ASTAntlrOption ast) {
     return format(ast.getName(), nodeName(ast));
   }
   
-  private String getIdentifier(ASTAttributeInAST ast) {
+  public String getIdent(ASTAttributeInAST ast) {
     if (ast.nameIsPresent()) {
       return format(ast.getName().get(), nodeName(ast));
     }
     return format(nodeName(ast));
   }
   
-  private String getIdentifier(ASTConcept ast) {
+  public String getIdent(ASTConcept ast) {
     return format(ast.getName(), nodeName(ast));
   }
   
-  private String getIdentifier(ASTConstantGroup ast) {
+  public String getIdent(ASTConstantGroup ast) {
     if (ast.usageNameIsPresent()) {
       return format(ast.getUsageName().get(), nodeName(ast));
     }
     return format(nodeName(ast));
   }
   
-  private String getIdentifier(ASTFollowOption ast) {
+  public String getIdent(ASTFollowOption ast) {
     return format(ast.getProdName(), nodeName(ast));
   }
   
-  private String getIdentifier(ASTGenericType ast) {
+  public String getIdent(ASTGenericType ast) {
     return format(Names.getQualifiedName(ast.getNames()), nodeName(ast));
   }
   
-  private String getIdentifier(ASTGrammarReference ast) {
+  public String getIdent(ASTGrammarReference ast) {
     return format(Names.getSimpleName(ast.getNames()), nodeName(ast));
   }
   
-  private String getIdentifier(ASTITerminal ast) {
+  public String getIdent(ASTITerminal ast) {
     // return a regular "Name"
     String name = ast.getName();
     if ((name.length()) < 4 && !name.matches("[a-zA-Z0-9_$\\-+]*")) {
@@ -173,35 +126,35 @@ public class MontiCoreNodeIdentifierHelper implements IASTNodeIdentHelper {
     return format(name, nodeName(ast));
   }
   
-  private String getIdentifier(ASTLexNonTerminal ast) {
+  public String getIdent(ASTLexNonTerminal ast) {
     return format(ast.getName(), nodeName(ast));
   }
   
-  private String getIdentifier(ASTMCGrammar ast) {
+  public String getIdent(ASTMCGrammar ast) {
     return format(ast.getName(), nodeName(ast));
   }
   
-  private String getIdentifier(ASTMethod ast) {
+  public String getIdent(ASTMethod ast) {
     return format(ast.getName(), nodeName(ast));
   }
   
-  private String getIdentifier(ASTMethodParameter ast) {
+  public String getIdent(ASTMethodParameter ast) {
     return format(ast.getName(), nodeName(ast));
   }
   
-  private String getIdentifier(ASTNonTerminal ast) {
+  public String getIdent(ASTNonTerminal ast) {
     return format(ast.getName(), nodeName(ast));
   }
   
-  private String getIdentifier(ASTNonTerminalSeparator ast) {
+  public String getIdent(ASTNonTerminalSeparator ast) {
     return format(ast.getName(), nodeName(ast));
   }
   
-  private String getIdentifier(ASTProd ast) {
+  public String getIdent(ASTProd ast) {
     return format(ast.getName(), nodeName(ast));
   }
   
-  private String getIdentifier(ASTRuleReference ast) {
+  public String getIdent(ASTRuleReference ast) {
     return format(ast.getName(), nodeName(ast));
   }
   
@@ -211,90 +164,90 @@ public class MontiCoreNodeIdentifierHelper implements IASTNodeIdentHelper {
   @Override
   public String getIdent(ASTNode ast) {
     if (ast instanceof ASTBooleanLiteral) {
-      return getIdentifier((ASTBooleanLiteral) ast);
+      return getIdent((ASTBooleanLiteral) ast);
     }
     else if (ast instanceof ASTCharLiteral) {
-      return getIdentifier((ASTCharLiteral) ast);
+      return getIdent((ASTCharLiteral) ast);
     }
     else if (ast instanceof ASTDoubleLiteral) {
-      return getIdentifier((ASTDoubleLiteral) ast);
+      return getIdent((ASTDoubleLiteral) ast);
     }
     else if (ast instanceof ASTFloatLiteral) {
-      return getIdentifier((ASTFloatLiteral) ast);
+      return getIdent((ASTFloatLiteral) ast);
     }
     else if (ast instanceof ASTIntLiteral) {
-      return getIdentifier((ASTIntLiteral) ast);
+      return getIdent((ASTIntLiteral) ast);
     }
     else if (ast instanceof ASTLongLiteral) {
-      return getIdentifier((ASTLongLiteral) ast);
+      return getIdent((ASTLongLiteral) ast);
     }
     else if (ast instanceof ASTNullLiteral) {
-      return getIdentifier((ASTNullLiteral) ast);
+      return getIdent((ASTNullLiteral) ast);
     }
     else if (ast instanceof ASTStringLiteral) {
-      return getIdentifier((ASTStringLiteral) ast);
+      return getIdent((ASTStringLiteral) ast);
     }
     else if (ast instanceof ASTQualifiedName) {
-      return getIdentifier((ASTQualifiedName) ast);
+      return getIdent((ASTQualifiedName) ast);
     }
     else if (ast instanceof ASTSimpleReferenceType) {
-      return getIdentifier((ASTSimpleReferenceType) ast);
+      return getIdent((ASTSimpleReferenceType) ast);
     }
     else if (ast instanceof ASTTypeVariableDeclaration) {
-      return getIdentifier((ASTTypeVariableDeclaration) ast);
+      return getIdent((ASTTypeVariableDeclaration) ast);
     }
     else if (ast instanceof ASTAntlrOption) {
-      return getIdentifier((ASTAntlrOption) ast);
+      return getIdent((ASTAntlrOption) ast);
     }
     else if (ast instanceof ASTAttributeInAST) {
-      return getIdentifier((ASTAttributeInAST) ast);
+      return getIdent((ASTAttributeInAST) ast);
     }
     else if (ast instanceof ASTConcept) {
-      return getIdentifier((ASTConcept) ast);
+      return getIdent((ASTConcept) ast);
     }
     else if (ast instanceof ASTConstantGroup) {
-      return getIdentifier((ASTConstantGroup) ast);
+      return getIdent((ASTConstantGroup) ast);
     }
     else if (ast instanceof ASTFollowOption) {
-      return getIdentifier((ASTFollowOption) ast);
+      return getIdent((ASTFollowOption) ast);
     }
     else if (ast instanceof ASTGenericType) {
-      return getIdentifier((ASTGenericType) ast);
+      return getIdent((ASTGenericType) ast);
     }
     else if (ast instanceof ASTGrammarReference) {
-      return getIdentifier((ASTGrammarReference) ast);
+      return getIdent((ASTGrammarReference) ast);
     }
     else if (ast instanceof ASTITerminal) {
-      return getIdentifier((ASTITerminal) ast);
+      return getIdent((ASTITerminal) ast);
     }
     else if (ast instanceof ASTLexNonTerminal) {
-      return getIdentifier((ASTLexNonTerminal) ast);
+      return getIdent((ASTLexNonTerminal) ast);
     }
     else if (ast instanceof ASTMCGrammar) {
-      return getIdentifier((ASTMCGrammar) ast);
+      return getIdent((ASTMCGrammar) ast);
     }
     else if (ast instanceof ASTMethod) {
-      return getIdentifier((ASTMethod) ast);
+      return getIdent((ASTMethod) ast);
     }
     else if (ast instanceof ASTMethodParameter) {
-      return getIdentifier((ASTMethodParameter) ast);
+      return getIdent((ASTMethodParameter) ast);
     }
     else if (ast instanceof ASTNonTerminal) {
-      return getIdentifier((ASTNonTerminal) ast);
+      return getIdent((ASTNonTerminal) ast);
     }
     else if (ast instanceof ASTNonTerminalSeparator) {
-      return getIdentifier((ASTNonTerminalSeparator) ast);
+      return getIdent((ASTNonTerminalSeparator) ast);
     }
     else if (ast instanceof ASTProd) {
-      return getIdentifier((ASTProd) ast);
+      return getIdent((ASTProd) ast);
     }
     else if (ast instanceof ASTRuleReference) {
-      return getIdentifier((ASTRuleReference) ast);
+      return getIdent((ASTRuleReference) ast);
     }
     return format(nodeName(ast));
   }
   
-  private static String createGoodName(String x) {
+  public static String createGoodName(String x) {
     StringBuilder ret = new StringBuilder();
     
     for (int i = 0; i < x.length(); i++) {

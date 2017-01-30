@@ -7,7 +7,7 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore</artifactId>
-    <version>4.5.0.1</version>
+    <version>4.5.1</version>
   </parent>
 
   <artifactId>monticore-templateclassgenerator</artifactId>
@@ -51,4 +51,46 @@
     </dependency>
   </dependencies>
 
+  <build>
+    <sourceDirectory>src/main/java</sourceDirectory>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>monticore-templateclassgenerator-cli assembly</id>
+            <configuration>
+              <archive>
+                <manifest>
+                  <mainClass>de.monticore.templateclassgenerator.TemplateClassGenerator</mainClass>
+                </manifest>
+              </archive>
+              <descriptorRefs>
+                <descriptorRef>jar-with-dependencies</descriptorRef>
+              </descriptorRefs>
+              <finalName>${project.artifactId}-${project.version}-cli</finalName>
+              <appendAssemblyId>false</appendAssemblyId>
+            </configuration>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>grammars</id>
+            <!-- we skip this as this project has no grammars -->
+            <phase />
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

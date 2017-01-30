@@ -32,7 +32,8 @@ import de.monticore.symboltable.SymbolKind;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * TODO: Write me!
+ * Provides useful information of the current resolution process, e.g., the
+ * scope that started the process.
  *
  * @author Pedram Mir Seyed Nazari
  *
@@ -53,7 +54,6 @@ public class ResolvingInfo {
     this.resolvingFilters.addAll(Log.errorIfNull(resolvingFilters));
   }
 
-  // TODO PN should the found symbols also be stored here? If yes, areSymbolsFound == !found.isEmpty()
   public boolean areSymbolsFound() {
     return areSymbolsFound;
   }

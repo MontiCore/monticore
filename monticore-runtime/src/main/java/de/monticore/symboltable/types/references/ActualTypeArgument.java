@@ -32,10 +32,10 @@ public class ActualTypeArgument {
   private final boolean isLowerBound;
   private final boolean isUpperBound;
 
-  // TODO PN Handle the case List<? extends Bla & Blub>: This is just ONE type argument with several upper bounds
+  // TODO Handle the case List<? extends Bla & Blub>: This is just ONE type argument with several upper bounds
   private final TypeReference<? extends TypeSymbol> type;
 
-  // TODO PN make generic, <T extends TypeSymbol>
+  // TODO make generic, <T extends TypeSymbol>
   public ActualTypeArgument(boolean isLowerBound, boolean isUpperBound, TypeReference<? extends TypeSymbol> type) {
     this.isLowerBound = isLowerBound;
     this.isUpperBound = isUpperBound;

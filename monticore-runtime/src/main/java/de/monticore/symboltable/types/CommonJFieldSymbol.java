@@ -26,8 +26,7 @@ import de.monticore.symboltable.types.references.JTypeReference;
 /**
  * @author Pedram Mir Seyed Nazari
  */
-// TODO PN rename to CommonJFieldSymbol
-public abstract class CommonJAttributeSymbol<T extends JTypeReference<? extends JTypeSymbol>> extends CommonSymbol implements JAttributeSymbol {
+public abstract class CommonJFieldSymbol<T extends JTypeReference<? extends JTypeSymbol>> extends CommonSymbol implements JFieldSymbol {
 
   private T type;
 
@@ -35,7 +34,7 @@ public abstract class CommonJAttributeSymbol<T extends JTypeReference<? extends 
   private boolean isStatic;
   private boolean isParameter = false;
 
-  public CommonJAttributeSymbol(String name, JAttributeSymbolKind kind, T type) {
+  public CommonJFieldSymbol(String name, JAttributeSymbolKind kind, T type) {
     super(name, kind);
     this.type = type;
   }

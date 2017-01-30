@@ -10,16 +10,16 @@ import ${package}.mydsl._visitor.MyDSLVisitor;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.CommonSymbolTableCreator;
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolverConfiguration;
+import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
 public class MyDSLSymbolTableCreator extends CommonSymbolTableCreator implements MyDSLVisitor {
 
   public MyDSLSymbolTableCreator(
-      final ResolverConfiguration resolverConfig,
+      final ResolvingConfiguration resolvingConfig,
       final MutableScope enclosingScope) {
-    super(resolverConfig, enclosingScope);
+    super(resolvingConfig, enclosingScope);
   }
 
   /**
