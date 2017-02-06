@@ -171,7 +171,9 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
       else if (componentSymbol.isConstantGroup()) {
         String attrName = MCGrammarSymbolTableHelper.getConstantName(componentSymbol).orElse("");
         if (canBeTransformedToValidJavaName(attrName)) {
-          fields.put(attrName, "boolean");
+          boolean iterated = MCGrammarSymbolTableHelper.isConstGroupIterated(componentSymbol);
+          String constGroupType = iterated? "int" : "boolean";
+          fields.put(attrName, constGroupType);
         }
       }
       else if (componentSymbol.isTerminal()) {
