@@ -1,0 +1,10 @@
+package cocos.invalid.A4047;
+
+grammar A4047b {
+  
+  interface A = C;
+  
+  abstract B implements A;
+  
+  C;
+}
