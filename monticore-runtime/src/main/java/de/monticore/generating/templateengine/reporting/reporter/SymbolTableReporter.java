@@ -20,6 +20,7 @@
 package de.monticore.generating.templateengine.reporting.reporter;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,12 +30,13 @@ import de.monticore.generating.templateengine.reporting.commons.AReporter;
 import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.GlobalScope;
+import de.monticore.symboltable.ImportStatement;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ScopeSpanningSymbol;
 import de.monticore.symboltable.Scopes;
 import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.types.CommonJFieldSymbol;
 import de.monticore.symboltable.types.CommonJMethodSymbol;
 import de.monticore.symboltable.types.CommonJTypeSymbol;
@@ -44,9 +46,7 @@ import de.monticore.symboltable.types.JTypeSymbol;
 import de.monticore.symboltable.types.references.JTypeReference;
 import de.se_rwth.commons.Names;
 
-/**
- * @author BM
- */
+
 public class SymbolTableReporter extends AReporter {
   
   static final String SIMPLE_FILE_NAME = "13_SymbolTable";
@@ -58,6 +58,8 @@ public class SymbolTableReporter extends AReporter {
   protected final ReportingRepository repository;
   
   protected boolean printEmptyOptional = false;
+  
+  protected boolean printAllFieldsCommented = false;
   
   protected boolean printEmptyList = false;
   
@@ -103,16 +105,63 @@ public class SymbolTableReporter extends AReporter {
     String type;
     String scopeName;
     scopeName = repository.getScopeNameFormatted(scope);
-    type = Names.getSimpleName(scope.getClass().getName());    
+    type = Names.getSimpleName(scope.getClass().getName());
     printer.println(scopeName + ": " + type + "{");
     printer.indent();
+    reportAllFields(scope.getClass(), printer);
+    
+    if (scope.getName().isPresent()) {
+      printer.println("name = \"" + scope.getName().get() + "\";");
+    } else if (printEmptyOptional) {
+      printer.println("name = Optional.Empty;");
+    }
+
+    if (scope instanceof ArtifactScope) {
+      ArtifactScope artifactScope = (ArtifactScope) scope;
+      if (!artifactScope.getImports().isEmpty()) {
+        printer.print("imports = [\"");
+        String sep = "";
+        for (ImportStatement imp: artifactScope.getImports()) {
+          printer.print(sep);
+          sep = ", ";
+          printer.print(imp.getStatement());
+          printer.print("\"");
+        }
+        printer.println("];");
+      } else if (printEmptyList) {
+        printer.println("imports = [];");
+      }
+      
+      printer.println("packageName = \"" + artifactScope.getPackageName() + "\";");
+    }
+
+    printer.println("isShadowingScope = " + scope.isShadowingScope() + ";");
+    printer.println("exportsSymbols = " + scope.exportsSymbols() + ";");
+    
+    if (scope.getAstNode().isPresent()) {
+      printer.print("astNode = ");
+      printer.print(repository.getASTNodeNameFormatted(scope.getAstNode().get()));
+      printer.println(";");      
+    } else if (printEmptyOptional) {
+      printer.println("astNode = Optional.Empty;");
+    }
     
     if (scope.getSpanningSymbol().isPresent()) {
       printer.print("spanningSymbol = ");
       reportSymbol(scope.getSpanningSymbol().get(), printer);
       printer.println(";");
-    } else if (printEmptyOptional) {
+    }
+    else if (printEmptyOptional) {
       printer.println("spanningSymbol = Optional.Empty;");
+    }
+    
+    if (scope.getEnclosingScope().isPresent()) {
+      printer.print("enclosingScope = ");
+      printer.print(repository.getScopeNameFormatted(scope.getEnclosingScope().get()));
+      printer.println(";");
+    }
+    else if (printEmptyOptional) {
+      printer.println("enclosingScope = Optional.Empty;");
     }
     
     Collection<Symbol> reportedSymbols = symbols.stream()
@@ -121,8 +170,9 @@ public class SymbolTableReporter extends AReporter {
       printer.print("symbols = ");
       printer.println("// *size: " + reportedSymbols.size());
       printer.indent();
-    } else if (printEmptyList) {
-      printer.println("symbols = []; // *size: 0");
+    }
+    else if (printEmptyList) {
+      printer.println("symbols = [];");
     }
     String sep = "";
     for (Symbol symbol : reportedSymbols) {
@@ -141,8 +191,9 @@ public class SymbolTableReporter extends AReporter {
       printer.print("subScopes = ");
       printer.println("// *size: " + scope.getSubScopes().size());
       printer.indent();
-    } else if (printEmptyList) {
-      printer.println("subScopes = []; // *size = 0");   
+    }
+    else if (printEmptyList) {
+      printer.println("subScopes = [];");
     }
     sep = "";
     for (Scope subScope : scope.getSubScopes()) {
@@ -182,8 +233,9 @@ public class SymbolTableReporter extends AReporter {
   }
   
   protected void reportAttributes(Symbol sym, IndentPrinter printer) {
+    reportAllFields(sym.getClass(), printer);
     printer.println("name = \"" + sym.getName() + "\";");
-    printer.println("kind = \"" + sym.getKind().getName() + "\";");
+    printer.println("KIND = \"" + sym.getKind() + "\";");
     if (sym.getAstNode().isPresent()) {
       printer.print("astNode = ");
       printer.print(repository.getASTNodeNameFormatted(sym.getAstNode().get()));
@@ -197,9 +249,13 @@ public class SymbolTableReporter extends AReporter {
       printer.println("spannedScope = "
           + repository.getScopeNameFormatted(spanningSym.getSpannedScope()) + ";");
     }
-    if (!sym.getAccessModifier().equals(AccessModifier.ALL_INCLUSION)) {
-      printer.println("accesModifier = \"" + sym.getAccessModifier().toString() + "\";");
-    }
+
+    printer.print("enclosingScope = ");
+    printer.print(repository.getScopeNameFormatted(sym.getEnclosingScope()));
+    printer.println(";");
+    
+    printer.println("accesModifier = \"" + sym.getAccessModifier().toString() + "\";");
+    
   }
   
   protected void reportCommonJFieldAttributes(
@@ -256,7 +312,8 @@ public class SymbolTableReporter extends AReporter {
         delim = ", ";
       }
       printer.println(";");
-    } else if (printEmptyList) {
+    }
+    else if (printEmptyList) {
       printer.println(listName + " = [];");
     }
   }
@@ -267,7 +324,6 @@ public class SymbolTableReporter extends AReporter {
   public boolean isPrintEmptyOptional() {
     return this.printEmptyOptional;
   }
-
   
   /**
    * @param printEmptyOptional the printEmptyOptional to set
@@ -275,7 +331,6 @@ public class SymbolTableReporter extends AReporter {
   public void setPrintEmptyOptional(boolean printEmptyOptional) {
     this.printEmptyOptional = printEmptyOptional;
   }
-
   
   /**
    * @return the printEmptyList
@@ -283,13 +338,45 @@ public class SymbolTableReporter extends AReporter {
   public boolean isPrintEmptyList() {
     return this.printEmptyList;
   }
+  
+  
+  /**
+   * @return the printAllFieldsCommented
+   */
+  public boolean isPrintAllFieldsCommented() {
+    return this.printAllFieldsCommented;
+  }
 
   
+  /**
+   * @param printAllFieldsCommented the printAllFieldsCommented to set
+   */
+  public void setPrintAllFieldsCommented(boolean printAllFieldsCommented) {
+    this.printAllFieldsCommented = printAllFieldsCommented;
+  }
+
   /**
    * @param printEmptyList the printEmptyList to set
    */
   public void setPrintEmptyList(boolean printEmptyList) {
     this.printEmptyList = printEmptyList;
+  }
+  
+  protected void reportAllFields(Class<?> clazz, IndentPrinter printer) {
+    if (!isPrintAllFieldsCommented()) {
+      return;
+    }
+    printer.print("/* fields = ");
+    for (Field field : clazz.getDeclaredFields()) {
+      printer.print(field.getName() + " ");
+    }
+    while (clazz.getSuperclass() != null) {
+      clazz = clazz.getSuperclass();
+      for (Field field : clazz.getDeclaredFields()) {
+        printer.print(field.getName() + " ");
+      }      
+    }
+    printer.println("*/");
   }
   
 }
