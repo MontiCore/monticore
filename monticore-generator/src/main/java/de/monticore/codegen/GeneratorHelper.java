@@ -157,10 +157,15 @@ public class GeneratorHelper extends TypesHelper {
   
   protected static final String LOG_NAME = "GeneratorHelper";
   
-  // TODO: generate keywords from the grammar
-  private static List<String> reservedCdNames = Arrays.asList(new String[] { "derived",
+  // TODO: reserve names of the base grammars like CD4A, Types, Common ...
+  private static List<String> reservedCdNames = Arrays.asList(new String[] {
+      // CD4A
+      "derived",
       "association",
-      "composition" });
+      "composition",
+      // Common.mc4 
+      "local",
+      "readonly"});
   
   static JavaDSLPrettyPrinter javaPrettyPrinter;
   

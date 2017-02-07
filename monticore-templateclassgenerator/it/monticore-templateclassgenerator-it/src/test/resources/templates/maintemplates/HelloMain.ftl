@@ -30,25 +30,6 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-${tc.params("String package", "java.util.List<String> templates", "String modelPath", "de.monticore.templateclassgenerator.codegen.TemplateClassHelper helper")}
+${tc.params("String s", "int i", "double d")}
 
-package ${package};
-
-public class TemplateAccessor {
-
-  <#list templates as template>
-    
-  private ${glex.getGlobalVar("TemplateClassPackage")}.${template}${glex.getGlobalVar("TemplatePostfix")} ${helper.replaceDotsWithUnderscores(template)} = new ${helper.replaceDotsWithUnderscores(template)?cap_first}_Extended();
-  
-  public ${glex.getGlobalVar("TemplateClassPackage")}.${template}${glex.getGlobalVar("TemplatePostfix")} get${helper.replaceDotsWithUnderscores(template)?cap_first}() {
-    return this.${helper.replaceDotsWithUnderscores(template)};
-  }
-  
-  private class ${helper.replaceDotsWithUnderscores(template)?cap_first}_Extended extends ${glex.getGlobalVar("TemplateClassPackage")}.${template}${glex.getGlobalVar("TemplatePostfix")}<#if helper.isMainTemplate(template)>Impl</#if> {
-    protected ${helper.replaceDotsWithUnderscores(template)?cap_first}_Extended () {}
-  } 
-  
-  </#list>
-  
-
-}
+Hello ${s}.
