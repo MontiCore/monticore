@@ -211,7 +211,7 @@ public class ReportingRepository {
    * @return representation of the ASTNode that contains either the position or
    * a unique identification number for the object
    */
-  public String getSymbolNameFormatted(SymbolReference symbolReference) {
+  public String getSymbolNameFormatted(SymbolReference<?> symbolReference) {
     String name = astNodeIdentHelper.getIdent(symbolReference);
     return getNameFormatted(symbolReference, name, SourcePosition.getDefaultSourcePosition());
   }

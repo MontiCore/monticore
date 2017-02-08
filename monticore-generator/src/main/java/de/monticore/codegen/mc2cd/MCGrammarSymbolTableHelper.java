@@ -112,6 +112,16 @@ public class MCGrammarSymbolTableHelper {
         .findFirst();
   }
   
+  public static Optional<MCGrammarSymbol> getGrammarSymbol(ASTMCGrammar astNode) {
+    if (!astNode.getSymbol().isPresent()) {
+      return Optional.empty();
+    }
+    if (!(astNode.getSymbol().get() instanceof MCGrammarSymbol)) {
+      return Optional.empty();
+    }
+    return Optional.of((MCGrammarSymbol) astNode.getSymbol().get());
+  }
+  
   public static Optional<MCGrammarSymbol> getMCGrammarSymbol(ASTNode astNode) {
     Set<Scope> scopes = getAllScopes(astNode);
     for (Scope s : scopes) {
@@ -409,6 +419,10 @@ public class MCGrammarSymbolTableHelper {
       supersNextRound.clear();
     }
     return ImmutableSet.copyOf(supersHandled);
+  }
+  
+  public static Set<MCProdSymbol> getAllSuperInterfaces(MCProdSymbol prod) {
+    return getAllSuperProds(prod).stream().filter(p -> p.isInterface()).collect(Collectors.toSet());
   }
   
   /**

@@ -7,7 +7,7 @@
   <parent>
     <groupId>de.monticore.mojo</groupId>
     <artifactId>monticore-maven-archetypes</artifactId>
-    <version>4.5.1.devNewST</version>
+    <version>4.5.3-SNAPSHOT</version>
   </parent>
 
   <artifactId>blank-archetype</artifactId>

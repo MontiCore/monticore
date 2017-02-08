@@ -1,0 +1,16 @@
+package cocos.invalid.A4047;
+
+grammar A4047c {
+  
+  interface A = E;
+  
+  interface B extends A;
+  
+  interface C extends B = F;
+  
+  D implements C = F;
+  
+  E;
+  
+  F;
+}
