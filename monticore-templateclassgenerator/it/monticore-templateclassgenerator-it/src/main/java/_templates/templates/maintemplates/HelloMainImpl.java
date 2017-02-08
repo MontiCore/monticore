@@ -38,7 +38,7 @@ public class HelloMainImpl extends HelloMain{
    * @see _templates.templates.maintemplates.HelloMain#doGenerate(java.nio.file.Path, de.monticore.ast.ASTNode, de.monticore.symboltable.CommonSymbol)
    */
   @Override
-  public void doGenerate(Path filepath, ASTNode node, CommonSymbol symbol) {
+  public void generate(Path filepath, ASTNode node, CommonSymbol symbol) {
     generate(filepath, node, "s", 2, 2.1);
   }
 
