@@ -10,7 +10,6 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import de.monticore.emf._ast.ASTENodePackage;
@@ -37,7 +36,6 @@ public class ASTNodeTest {
    * 
    * @param args
    */
-  @Ignore
   @Test
   public void testSerializing() {
     

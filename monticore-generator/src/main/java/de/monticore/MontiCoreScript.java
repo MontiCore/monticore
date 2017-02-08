@@ -115,7 +115,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   public void run(Configuration configuration) {
     try {
       ClassLoader l = MontiCoreScript.class.getClassLoader();
-      String script = Resources.asCharSource(l.getResource("de/monticore/monticore_noemf.groovy"),
+      String script = Resources.asCharSource(l.getResource("de/monticore/monticore_emf.groovy"),
           Charset.forName("UTF-8")).read();
       run(script, configuration);
     }
