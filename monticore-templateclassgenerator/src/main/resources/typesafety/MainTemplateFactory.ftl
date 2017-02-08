@@ -77,10 +77,17 @@ public class ${mainTemplateName}Factory {
   }
   
   /**
-  *
+  * ${mainTemplateName} is a main template and implements the 
+  * @see{@link de.monticore.templateclassgenerator.util.GeneratorInterface}.
+  * The generator developer has to provide a class named 
+  * ${mainTemplateName}Impl where the methods of GeneratorInterface 
+  * are implemented in.
+  *  
   * @return a new ${mainTemplateName} instance.
   */  
   protected ${mainTemplateName} doCreate() {
+    // class has to be written by hand and has to be located in
+    // ${package}.
     return new ${mainTemplateName}Impl();
   }
   
