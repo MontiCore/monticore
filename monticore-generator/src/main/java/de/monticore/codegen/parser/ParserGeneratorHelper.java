@@ -21,20 +21,32 @@ package de.monticore.codegen.parser;
 
 import static com.google.common.base.Preconditions.checkState;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.codegen.GeneratorHelper;
+import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.grammar.MCGrammarInfo;
+import de.monticore.grammar.HelperGrammar;
+import de.monticore.grammar.PredicatePair;
+import de.monticore.grammar.grammar._ast.ASTAlt;
 import de.monticore.grammar.grammar._ast.ASTBlock;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
+import de.monticore.grammar.grammar._ast.ASTConstant;
 import de.monticore.grammar.grammar._ast.ASTConstantGroup;
 import de.monticore.grammar.grammar._ast.ASTConstantsGrammar;
+import de.monticore.grammar.grammar._ast.ASTFollowOption;
+import de.monticore.grammar.grammar._ast.ASTLexActionOrPredicate;
 import de.monticore.grammar.grammar._ast.ASTLexNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTLexProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
@@ -46,22 +58,12 @@ import de.monticore.grammar.grammar_withconcepts._ast.ASTExpressionPredicate;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTGrammar_WithConceptsNode;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTJavaCode;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbolReference;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.java.javadsl._ast.ASTBlockStatement;
 import de.monticore.java.javadsl._ast.ASTClassMemberDeclaration;
-import de.monticore.languages.grammar.MCClassRuleSymbol;
-import de.monticore.languages.grammar.MCEnumRuleSymbol;
-import de.monticore.languages.grammar.MCExternalTypeSymbol;
-import de.monticore.languages.grammar.MCGrammarSymbol;
-import de.monticore.languages.grammar.MCInterfaceOrAbstractRuleSymbol;
-import de.monticore.languages.grammar.MCLexRuleSymbol;
-import de.monticore.languages.grammar.MCRuleComponentSymbol;
-import de.monticore.languages.grammar.MCRuleSymbol;
-import de.monticore.languages.grammar.MCRuleSymbol.KindSymbolRule;
-import de.monticore.languages.grammar.MCTypeSymbol;
-import de.monticore.languages.grammar.MCTypeSymbol.KindType;
-import de.monticore.languages.grammar.PredicatePair;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
@@ -71,7 +73,7 @@ import de.se_rwth.commons.logging.Log;
  * This is a helper class for the parser generation
  */
 public class ParserGeneratorHelper {
-
+  
   public static final String MONTICOREANYTHING = "MONTICOREANYTHING";
 
   public static final String RIGHTASSOC = "<assoc=right>";
@@ -83,23 +85,30 @@ public class ParserGeneratorHelper {
   private ASTMCGrammar astGrammar;
 
   private String qualifiedGrammarName;
-
+  
   private MCGrammarSymbol grammarSymbol;
-
+  
+  private MCGrammarInfo grammarInfo;
+  
+  private Map<ASTNode, String> tmpVariables = new HashMap<>();
+  
+  private int tmp_counter = 0;
+  
   /**
    * Constructor for de.monticore.codegen.parser.ParserGeneratorHelper
    */
-  public ParserGeneratorHelper(ASTMCGrammar ast, MCGrammarSymbol grammarSymbol) {
+  public ParserGeneratorHelper(ASTMCGrammar ast, MCGrammarInfo grammarInfo) {
     Log.errorIfNull(ast);
     this.astGrammar = ast;
-    this.qualifiedGrammarName = astGrammar.getPackage().isEmpty() ? astGrammar.getName() :
-        Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackage()),
+    this.qualifiedGrammarName = astGrammar.getPackage().isEmpty()
+        ? astGrammar.getName()
+        : Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackage()),
             astGrammar.getName());
-
+    this.grammarInfo = grammarInfo;
+    this.grammarSymbol = grammarInfo.getGrammarSymbol();
     checkState(qualifiedGrammarName.equals(grammarSymbol.getFullName()));
-    this.grammarSymbol = grammarSymbol;
   }
-
+  
   /**
    * @return grammarSymbol
    */
@@ -118,93 +127,106 @@ public class ParserGeneratorHelper {
    * @return the name of the start rule
    */
   public String getStartRuleName() {
-    if (grammarSymbol.getStartRule().isPresent()) {
-      return grammarSymbol.getStartRule().get().getName();
+    if (grammarSymbol.getStartProd().isPresent()) {
+      return grammarSymbol.getStartProd().get().getName();
     }
-
+    
     return "";
   }
-
+  
   /**
    * @return the qualified name of the top ast, i.e., the ast of the start rule.
    */
   public String getQualifiedStartRuleName() {
-    if (grammarSymbol.getStartRule().isPresent()) {
-      return getASTClassName(grammarSymbol.getStartRule().get());
+    if (grammarSymbol.getStartProd().isPresent()) {
+      return MCGrammarSymbolTableHelper
+          .getQualifiedName(grammarSymbol.getStartProd().get());
     }
     return "";
   }
-
+  
   /**
    * @return the package for the generated parser files
    */
   public String getParserPackage() {
     return getQualifiedGrammarName().toLowerCase() + "." + ParserGenerator.PARSER_PACKAGE;
   }
-
+  
+  /**
+   * @return the name for a lexsymbol that should be used in an Antlr-File
+   */
+  public String getLexSymbolName(String constName) {
+    Log.errorIfNull(constName);
+    return grammarInfo.getLexNamer().getLexName(grammarSymbol, constName);
+  }
+  
+  /**
+   * Get all used LexSymbols, different form information in AST, as inherited
+   * ones are integrated as well
+   *
+   * @return Keys of all lex symbols
+   */
+  public Set<String> getLexSymbolsWithInherited() {
+    return grammarInfo.getLexNamer().getLexnames();
+  }
+  
   /**
    * checks if parser must be generated for this rule
    *
    * @param rule
    * @return
    */
-  public boolean generateParserForRule(MCRuleSymbol rule) {
+  public boolean generateParserForRule(MCProdSymbol rule) {
     boolean generateParserForRule = false;
     String ruleName = rule.getName();
-
-    if (rule instanceof MCClassRuleSymbol) {
-      MCClassRuleSymbol classRule = (MCClassRuleSymbol) rule;
-      generateParserForRule = classRule.getNoParam() == 0;
+    
+    if (rule.isClass()) {
+      generateParserForRule = true;
     }
-
-    if (rule instanceof MCInterfaceOrAbstractRuleSymbol) {
-      List<PredicatePair> subRules = grammarSymbol.getSubRulesForParsing(ruleName);
-      generateParserForRule = subRules != null && !subRules.isEmpty();
+    
+    if (rule.isAbstract() || rule.isInterface()) {
+      List<PredicatePair> subRules = grammarInfo.getSubRulesForParsing(ruleName);
+      generateParserForRule = !subRules.isEmpty();
     }
     return generateParserForRule;
   }
-
+  
   /**
    * Gets all interface rules which were not excluded from the generation
    *
    * @return List of interface rules
    */
-  public List<MCRuleSymbol> getInterfaceRulesToGenerate() {
-    List<MCRuleSymbol> interfaceRules = Lists.newArrayList();
-
-    for (MCRuleSymbol ruleSymbol : grammarSymbol.getRulesWithInherited()
+  public List<MCProdSymbol> getInterfaceRulesToGenerate() {
+    List<MCProdSymbol> interfaceRules = Lists.newArrayList();
+    for (MCProdSymbol ruleSymbol : grammarSymbol.getProdsWithInherited()
         .values()) {
-      if (ruleSymbol.getKindSymbolRule().equals(KindSymbolRule.INTERFACEORABSTRACTRULE)) {
-
-        List<PredicatePair> subRules = grammarSymbol
+      if (ruleSymbol.isAbstract() || ruleSymbol.isInterface()) {
+        List<PredicatePair> subRules = grammarInfo
             .getSubRulesForParsing(ruleSymbol.getName());
-
-        if (subRules != null && !subRules.isEmpty()) {
+        if (!subRules.isEmpty()) {
           interfaceRules.add(ruleSymbol);
         }
       }
     }
-
     return interfaceRules;
   }
-
+  
   /**
    * Gets all non external idents
    *
    * @return List of ident types
    */
-  public List<MCTypeSymbol> getIdentsToGenerate() {
-    List<MCTypeSymbol> idents = Lists.newArrayList();
-    for (MCTypeSymbol typeSymbol : grammarSymbol.getTypesWithInherited()
-        .values()) {
-      if (typeSymbol.getKindOfType().equals(KindType.IDENT)
-          && !(typeSymbol instanceof MCExternalTypeSymbol)) {
-        idents.add(typeSymbol);
-      }
-    }
-    return idents;
+  public List<MCProdSymbol> getIdentsToGenerate() {
+    return grammarSymbol.getProdsWithInherited().values().stream()
+        .filter(r -> r.isLexerProd() && !r.isExternal()).collect(Collectors.toList());
   }
-
+  
+  public static String getConvertFunction(MCProdSymbol symbol) {
+    Optional<ASTLexProd> ast = symbol.getAstNode().filter(ASTLexProd.class::isInstance)
+    .map(ASTLexProd.class::cast);
+    return ast.isPresent()? HelperGrammar.createConvertFunction(ast.get(), prettyPrinter):"";
+  }
+  
   /**
    * Gets parser rules
    *
@@ -212,61 +234,74 @@ public class ParserGeneratorHelper {
    */
   public List<ASTProd> getParserRulesToGenerate() {
     // Iterate over all Rules
-    List<ASTProd> prods = Lists.newArrayList();
-    for (MCRuleSymbol ruleSymbol : grammarSymbol.getRulesWithInherited()
-        .values()) {
-      if (ruleSymbol.getKindSymbolRule().equals(
-          KindSymbolRule.PARSERRULE)) {
-        Optional<ASTClassProd> astProd = ((MCClassRuleSymbol) ruleSymbol)
-            .getRuleNode();
-        if (astProd.isPresent()) {
-          prods.add(astProd.get());
-        }
-      }
-      else if (ruleSymbol.getKindSymbolRule().equals(
-          KindSymbolRule.ENUMRULE)) {
-        prods.add(((MCEnumRuleSymbol) ruleSymbol).getRule());
-      }
-    }
-    return prods;
+   return grammarSymbol.getProdsWithInherited().values().stream()
+        .filter(r -> (r.isParserProd() || r.isEnum())).map(r -> r.getAstNode())
+        .filter(Optional::isPresent).map(Optional::get).filter(ASTProd.class::isInstance)
+        .map(ASTProd.class::cast).collect(Collectors.toList());
   }
-
+  
   public List<ASTLexProd> getLexerRulesToGenerate() {
     // Iterate over all LexRules
     List<ASTLexProd> prods = Lists.newArrayList();
-    MCLexRuleSymbol mcanything = null;
-    final Map<String, MCRuleSymbol> rules = new LinkedHashMap<>();
-
+    MCProdSymbol mcanything = null;
+    final Map<String, MCProdSymbol> rules = new LinkedHashMap<>();
+    
     // Don't use grammarSymbol.getRulesWithInherited because of changed order
-    for (final MCRuleSymbol ruleSymbol : grammarSymbol.getRules()) {
+    for (final MCProdSymbol ruleSymbol : grammarSymbol.getProds()) {
       rules.put(ruleSymbol.getName(), ruleSymbol);
     }
     for (int i = grammarSymbol.getSuperGrammars().size() - 1; i >= 0; i--) {
-      rules.putAll(grammarSymbol.getSuperGrammars().get(i).getRulesWithInherited());
+      rules.putAll(grammarSymbol.getSuperGrammarSymbols().get(i).getProdsWithInherited());
     }
-
-    for (Entry<String, MCRuleSymbol> ruleSymbol :rules.entrySet()) {
-      if (ruleSymbol.getValue().getKindSymbolRule().equals(KindSymbolRule.LEXERRULE)) {
-        MCLexRuleSymbol lexRule = (MCLexRuleSymbol) ruleSymbol.getValue();
-
+    
+    for (Entry<String, MCProdSymbol> ruleSymbol : rules.entrySet()) {
+      if (ruleSymbol.getValue().isLexerProd()) {
+        MCProdSymbol lexProd = ruleSymbol.getValue();
         // MONTICOREANYTHING must be last rule
-        if (lexRule.getName().equals(MONTICOREANYTHING)) {
-          mcanything = lexRule;
+        if (lexProd.getName().equals(MONTICOREANYTHING)) {
+          mcanything = lexProd;
         }
         else {
-          prods.add(lexRule.getRuleNode());
+          prods.add((ASTLexProd) lexProd.getAstNode().get());
         }
       }
     }
     if (mcanything != null) {
-      prods.add(mcanything.getRuleNode());
+      prods.add((ASTLexProd) mcanything.getAstNode().get());
     }
     return prods;
   }
-
-
+  
+  public String getConstantNameForConstant(ASTConstant x) {
+    String name;
+    if (x.getHumanName().isPresent()) {
+      name = x.getHumanName().get();
+    }
+    else {
+      name = grammarInfo.getLexNamer().getConstantName(x.getName());
+    }
+    
+    return name.toUpperCase();
+  }
+  
+  public String getTmpVarName(ASTNode a) {
+    if (!tmpVariables.containsKey(a)) {
+      tmpVariables.put(a, getNewTmpVar());
+    }
+    return tmpVariables.get(a);
+  }
+  
+  private String getNewTmpVar() {
+    return "tmp" + (Integer.valueOf(tmp_counter++)).toString();
+  }
+  
+  public void resetTmpVarNames() {
+    tmpVariables.clear();
+    tmp_counter = 0;
+  }
+  
   // ----------------------------------------------------
-
+  
   /**
    * The result is true iff ASTTerminal is iterated
    *
@@ -277,7 +312,7 @@ public class ParserGeneratorHelper {
     return ast.getIteration() == ASTConstantsGrammar.PLUS || ast
         .getIteration() == ASTConstantsGrammar.STAR;
   }
-
+  
   /**
    * The result is true iff ASTOrGroup is iterated
    *
@@ -379,35 +414,62 @@ public class ParserGeneratorHelper {
   public static String getRuleNameForAntlr(ASTClassProd rule) {
     return getRuleNameForAntlr(getRuleName(rule));
   }
-
-  public static String getTmpVarNameForAntlrCode(ASTNonTerminal node) {
-    Optional<MCRuleSymbol> prod = getMCRuleForThisComponent(node);
+  
+  public String getTmpVarNameForAntlrCode(ASTNonTerminal node) {
+    Optional<MCProdSymbol> prod = MCGrammarSymbolTableHelper.getEnclosingRule(node);
     if (!prod.isPresent()) {
       Log.error("0xA1006 ASTNonterminal " + node.getName() + "(usageName: " + node.getUsageName()
           + ") can't be resolved.");
       return "";
     }
-    return prod.get().getTmpVarName(node);
+    return getTmpVarName(node);
   }
-
-  public static String getTmpVarNameForAntlrCode(ASTLexNonTerminal node) {
-    Optional<MCRuleSymbol> prod = getMCRuleForThisComponent(node);
+  
+  public String getTmpVarNameForAntlrCode(ASTLexNonTerminal node) {
+    Optional<MCProdSymbol> prod = MCGrammarSymbolTableHelper.getEnclosingRule(node);
     if (!prod.isPresent()) {
-      Log.error("0xA1007 ASTNonterminal " + node.getName() +" can't be resolved.");
+      Log.error("0xA1007 ASTNonterminal " + node.getName() + " can't be resolved.");
       return "";
     }
-    return prod.get().getTmpVarName(node);
+    return getTmpVarName(node);
   }
-
-  public static String getTmpVarNameForAntlrCode(String name, ASTNode node) {
-    Optional<MCRuleSymbol> prod = getMCRuleForThisComponent(name, node);
+  
+  public String getTmpVarNameForAntlrCode(String name, ASTNode node) {
+    Optional<MCProdSymbol> prod = MCGrammarSymbolTableHelper.getEnclosingRule(node);
     if (!prod.isPresent()) {
       Log.error("0xA1008 ASTNonterminal " + name + " can't be resolved.");
       return "";
     }
-    return prod.get().getTmpVarName(node);
+    return getTmpVarName(node);
   }
-
+  
+  public Optional<ASTAlt> getAlternativeForFollowOption(String prodName) {
+    return astGrammar.getGrammarOptions().isPresent()
+        ? astGrammar.getGrammarOptions().get().getFollowOptions().stream()
+            .filter(f -> f.getProdName().equals(prodName)).map(ASTFollowOption::getAlt).findFirst()
+        : Optional.empty();
+  }
+  
+  public List<ASTAlt> getAlternatives(ASTClassProd ast) {
+    if (!ast.getAlts().isEmpty()) {
+      return ast.getAlts();
+    }
+    for (MCGrammarSymbolReference g : grammarSymbol.getSuperGrammars()) {
+      final Optional<MCProdSymbol> ruleByName = g.getReferencedSymbol().getProdWithInherited(ast.getName());
+      if (ruleByName.isPresent() && ruleByName.get().isClass()) {
+        Optional<ASTNode> astProd = ruleByName.get().getAstNode();
+        if (astProd.isPresent() && astProd.get() instanceof ASTClassProd) {
+          return ((ASTClassProd)astProd.get()).getAlts();
+        }
+      }
+    }
+    return Lists.newArrayList();
+  }
+  
+  public static String getASTClassName(MCProdSymbol rule) {
+    return MCGrammarSymbolTableHelper.getQualifiedName(rule);
+  }
+  
   public static Grammar_WithConceptsPrettyPrinter getPrettyPrinter() {
     if (prettyPrinter == null) {
       prettyPrinter = new Grammar_WithConceptsPrettyPrinter(new IndentPrinter());
@@ -428,21 +490,22 @@ public class ParserGeneratorHelper {
 
     if (node instanceof ASTAction) {
       StringBuilder buffer = new StringBuilder();
-      for (ASTBlockStatement action: ((ASTAction) node).getBlockStatements()) {
+      for (ASTBlockStatement action : ((ASTAction) node).getBlockStatements()) {
         buffer.append(getPrettyPrinter().prettyprint(action));
       }
       return buffer.toString();
     }
     if (node instanceof ASTJavaCode) {
       StringBuilder buffer = new StringBuilder();
-      for (ASTClassMemberDeclaration action: ((ASTJavaCode) node).getClassMemberDeclarations()) {
+      for (ASTClassMemberDeclaration action : ((ASTJavaCode) node).getClassMemberDeclarations()) {
         buffer.append(getPrettyPrinter().prettyprint(action));
-
+        
       }
       return buffer.toString();
     }
     if (node instanceof ASTExpressionPredicate) {
-      String exprPredicate = getPrettyPrinter().prettyprint(((ASTExpressionPredicate) node).getExpression());
+      String exprPredicate = getPrettyPrinter()
+          .prettyprint(((ASTExpressionPredicate) node).getExpression());
       Log.debug("ASTExpressionPredicate:\n" + exprPredicate, ParserGenerator.LOG);
       return exprPredicate;
     }
@@ -453,43 +516,68 @@ public class ParserGeneratorHelper {
     }
     return "";
   }
-
-
-  public static String getParseRuleName(MCRuleSymbol rule) {
+  
+  public static String getParseRuleName(MCProdSymbol rule) {
     return JavaNamesHelper.getNonReservedName(StringTransformations.uncapitalize(rule.getName()));
   }
-
-  public static String getMCParserWrapperName(MCRuleSymbol rule) {
-    return StringTransformations.capitalize(JavaNamesHelper.
-        getNonReservedName(rule.getName()));
+  
+  public static String getMCParserWrapperName(MCProdSymbol rule) {
+    return StringTransformations.capitalize(JavaNamesHelper.getNonReservedName(rule.getName()));
   }
-
-  public static String getASTClassName(MCRuleSymbol rule) {
-    return rule.getType().getQualifiedName();
-  }
-
-  public static Optional<MCRuleSymbol> getMCRuleForThisComponent(String name, ASTNode node) {
-    Optional<? extends Symbol> ruleComponent = node.getSymbol();
-    if (ruleComponent.isPresent() && ruleComponent.get() instanceof MCRuleComponentSymbol) {
-      return Optional.ofNullable(((MCRuleComponentSymbol) ruleComponent.get()).getEnclosingRule());
+  
+  /**
+   * @return the qualified name for this type
+   */
+  // TODO GV: change implementation
+  public static String getQualifiedName(MCProdSymbol symbol) {
+    if (!symbol.getAstNode().isPresent()) {
+      return "UNKNOWN_TYPE";
     }
-    return Optional.<MCRuleSymbol> empty();
-  }
-
-  public static Optional<MCRuleSymbol> getMCRuleForThisComponent(ASTNonTerminal node) {
-    Optional<? extends Symbol> ruleComponent = node.getSymbol();
-    if (ruleComponent.isPresent() && ruleComponent.get() instanceof MCRuleComponentSymbol) {
-      return Optional.ofNullable(((MCRuleComponentSymbol) ruleComponent.get()).getEnclosingRule());
+    if (symbol.isLexerProd()) {
+      return getLexType(symbol.getAstNode());
     }
-    return Optional.<MCRuleSymbol> empty();
-  }
-
-  public static Optional<MCRuleSymbol> getMCRuleForThisComponent(ASTLexNonTerminal node) {
-    Optional<? extends Symbol> ruleComponent = node.getSymbol();
-    if (ruleComponent.isPresent() && ruleComponent.get() instanceof MCRuleComponentSymbol) {
-      return Optional.ofNullable(((MCRuleComponentSymbol) ruleComponent.get()).getEnclosingRule());
+    if (symbol.isEnum()) {
+      
+      return "int";
+      // TODO GV:
+      // return getConstantType();
     }
-    return Optional.<MCRuleSymbol> empty();
+    return MCGrammarSymbolTableHelper.getQualifiedName(symbol.getAstNode().get(), symbol,
+        GeneratorHelper.AST_PREFIX, "");
+  }
+  
+  public static String getDefaultValue(MCProdSymbol symbol) {
+    String name = getQualifiedName(symbol);
+    if ("int".equals(name)) {
+      return "0";
+    }
+    if ("boolean".equals(name)) {
+      return "false";
+    }
+    return "null";
+  }
+  
+  private static String getLexType(Optional<ASTNode> node) {
+    if (node.isPresent()) {
+      if (node.get() instanceof ASTLexProd) {
+        return HelperGrammar.createConvertType((ASTLexProd) node.get());
+      }
+      if (node.get() instanceof ASTLexActionOrPredicate) {
+        return "String";
+      }
+    }
+    return "UNKNOWN_TYPE";
+    
+  }
+  
+  public static String formatAttributeValue(Optional<Integer> value) {
+    if (!value.isPresent()) {
+      return "undef";
+    }
+    else if (value.get() == GeneratorHelper.STAR) {
+      return "*";
+    }
+    return Integer.toString(value.get());
   }
 
 }

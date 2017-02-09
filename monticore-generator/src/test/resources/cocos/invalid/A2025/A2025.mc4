@@ -2,6 +2,8 @@ package cocos.invalid.A2025;
 
 grammar A2025 {
 
+  B;
+
   A;
 
   abstract A;

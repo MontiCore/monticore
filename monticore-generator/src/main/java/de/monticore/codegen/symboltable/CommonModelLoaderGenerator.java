@@ -26,8 +26,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import de.monticore.generating.GeneratorEngine;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.io.paths.IterablePath;
-import de.monticore.languages.grammar.MCGrammarSymbol;
 import de.se_rwth.commons.Names;
 
 /**

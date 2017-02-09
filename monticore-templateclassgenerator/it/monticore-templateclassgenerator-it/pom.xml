@@ -4,12 +4,12 @@
 
 	<!-- == PROJECT COORDINATES ============================================= -->
 
-	<parent>
-		<groupId>de.monticore</groupId>
-		<artifactId>monticore</artifactId>
-		<version>4.5.1</version>
-		<relativePath>../../pom.xml</relativePath>
-	</parent>
+  <parent>
+    <groupId>de.monticore</groupId>
+    <artifactId>monticore</artifactId>
+    <version>4.5.2</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
 
 	<artifactId>monticore-templateclassgenerator-it</artifactId>
 

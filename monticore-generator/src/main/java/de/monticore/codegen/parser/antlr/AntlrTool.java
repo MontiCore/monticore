@@ -20,6 +20,7 @@
 package de.monticore.codegen.parser.antlr;
 
 import java.nio.file.Path;
+import java.util.Optional;
 
 import org.antlr.v4.Tool;
 import org.antlr.v4.tool.ANTLRMessage;
@@ -29,8 +30,8 @@ import org.stringtemplate.v4.ST;
 
 import com.google.common.base.Preconditions;
 
-import de.monticore.languages.grammar.MCGrammarSymbol;
-import de.monticore.languages.grammar.MCRuleSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -117,11 +118,11 @@ public class AntlrTool extends Tool {
     for (int i = 0; i < args.length; i++) {
       if (args[i] instanceof String) {
         String name = StringTransformations.capitalize((String) args[i]);
-        MCRuleSymbol rule = grammarSymbol.getRule(name);
-        if (rule != null) {
+        Optional<MCProdSymbol> rule = grammarSymbol.getProd(name);
+        if (rule.isPresent()) {
           args[i] = name;
           if (i == 0) {
-            position = rule.getSourcePosition();
+            position = rule.get().getSourcePosition();
           }
         }
       }

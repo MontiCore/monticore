@@ -134,7 +134,7 @@ public final class MontiCoreCLI {
     try {
       // since this is the default we load the default script
       ClassLoader l = MontiCoreScript.class.getClassLoader();
-      String script = Resources.asCharSource(l.getResource("de/monticore/monticore_emf.groovy"),
+      String script = Resources.asCharSource(l.getResource("de/monticore/monticore_noemf.groovy"),
           Charset.forName("UTF-8")).read();
       
       // BUT if the user specifies another script to use, we check if it is

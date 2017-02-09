@@ -52,7 +52,7 @@ public class NTDefinedByAtmostOneProduction implements GrammarASTMCGrammarCoCo {
     for(ASTProd p: prods){
       if(prodnames.contains(p.getName())){
         Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName()),
-                a.get_SourcePositionStart());
+                p.get_SourcePositionStart());
       } else {
         prodnames.add(p.getName());
       }

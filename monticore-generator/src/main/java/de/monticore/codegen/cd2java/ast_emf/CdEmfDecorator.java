@@ -373,7 +373,6 @@ public class CdEmfDecorator extends CdDecorator {
       List<EmfAttribute> allEmfAttrbutes = getNotInheritedEmfAttributes(type, astHelper);
       for (int i = 0; i < allEmfAttrbutes.size(); i++) {
         EmfAttribute emfAttribute = allEmfAttrbutes.get(i);
-        // TODO GV: replace StringHookPoint by TemplaeHookPoint
         String toParse = "public " + emfAttribute.getEmfType() + " get" + emfAttribute.getFullName()
             + "();";
         HookPoint getMethodBody = new StringHookPoint("return (" + emfAttribute.getEmfType() + ")"

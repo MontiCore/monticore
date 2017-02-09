@@ -25,7 +25,7 @@ import java.util.Optional;
 import de.monticore.grammar.grammar._ast.ASTAbstractProd;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
 import de.monticore.grammar.grammar._cocos.GrammarASTAbstractProdCoCo;
-import de.monticore.languages.grammar.MCRuleSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -37,20 +37,22 @@ public class AbstractNTOnlyImplementInterfaceNTs implements GrammarASTAbstractPr
   
   public static final String ERROR_CODE = "0xA2106";
   
-  public static final String ERROR_MSG_FORMAT = " The abstract nonterminal %s must not implement the nonterminal %s. " +
-                                      "Abstract nonterminals may only implement interface nonterminals.";
+  public static final String ERROR_MSG_FORMAT = " The abstract nonterminal %s must not implement the nonterminal %s. "
+      +
+      "Abstract nonterminals may only implement interface nonterminals.";
   
   @Override
   public void check(ASTAbstractProd a) {
     if (!a.getSuperInterfaceRule().isEmpty()) {
       List<ASTRuleReference> interfaces = a.getSuperInterfaceRule();
-      for(ASTRuleReference i : interfaces){
-        Optional<MCRuleSymbol> ruleSymbol = a.getEnclosingScope().get().resolve(i.getName(), MCRuleSymbol.KIND);
-        if(ruleSymbol.isPresent()){
-          MCRuleSymbol r = ruleSymbol.get();
-          if(!r.getType().isInterface()){
+      for (ASTRuleReference i : interfaces) {
+        Optional<MCProdSymbol> ruleSymbol = a.getEnclosingScope().get().resolve(i.getName(),
+            MCProdSymbol.KIND);
+        if (ruleSymbol.isPresent()) {
+          MCProdSymbol r = ruleSymbol.get();
+          if (!r.isInterface()) {
             Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName(), r.getName()),
-                    a.get_SourcePositionStart());
+                a.get_SourcePositionStart());
           }
         }
       }

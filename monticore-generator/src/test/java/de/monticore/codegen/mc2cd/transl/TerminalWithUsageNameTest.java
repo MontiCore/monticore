@@ -20,6 +20,8 @@
 package de.monticore.codegen.mc2cd.transl;
 
 import com.google.common.collect.Iterables;
+
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;

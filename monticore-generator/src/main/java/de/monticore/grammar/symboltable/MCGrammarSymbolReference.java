@@ -26,9 +26,9 @@ import de.monticore.symboltable.references.CommonSymbolReference;
 /**
  * @author  Pedram Mir Seyed Nazari
  */
-public class EssentialMCGrammarSymbolReference extends CommonSymbolReference<EssentialMCGrammarSymbol> {
+public class MCGrammarSymbolReference extends CommonSymbolReference<MCGrammarSymbol> {
 
-  public EssentialMCGrammarSymbolReference(String referencedSymbolName,Scope enclosingScopeOfReference) {
-    super(referencedSymbolName, EssentialMCGrammarSymbol.KIND, enclosingScopeOfReference);
+  public MCGrammarSymbolReference(String referencedSymbolName,Scope enclosingScopeOfReference) {
+    super(referencedSymbolName, MCGrammarSymbol.KIND, enclosingScopeOfReference);
   }
 }

@@ -27,8 +27,7 @@ import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
-import de.monticore.languages.grammar.MCGrammarSymbol;
-import de.monticore.languages.grammar.MCRuleSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -37,74 +36,66 @@ import de.se_rwth.commons.logging.Log;
  * @author KH
  */
 public class ReferencedNTNotDefined implements GrammarASTMCGrammarCoCo {
-
+  
   public static final String ERROR_CODE = "0xA2030";
-
+  
   public static final String ERROR_MSG_FORMAT = " The production %s must not reference the " +
-          "%snonterminal %s because there exists no defining production for %s.";
-
+      "%snonterminal %s because there exists no defining production for %s.";
+  
   @Override
   public void check(ASTMCGrammar a) {
     MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol().get();
-    for(ASTClassProd p :a.getClassProds()) {
-      Optional<MCRuleSymbol> ruleSymbol = (Optional<MCRuleSymbol>) p.getSymbol();
-      if (ruleSymbol.isPresent()) {
-        if (!p.getSuperRule().isEmpty()) {
-          for (ASTRuleReference sr : p.getSuperRule()) {
-            if (grammarSymbol.getRuleWithInherited(sr.getName()) == null) {
-              Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "", sr.getName(), sr.getName()),
-                      p.get_SourcePositionStart());
-            }
+    for (ASTClassProd p : a.getClassProds()) {
+      if (!p.getSuperRule().isEmpty() && p.getSymbol().isPresent()) {
+        for (ASTRuleReference sr : p.getSuperRule()) {
+          if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
+            Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "", sr.getName(),
+                sr.getName()),
+                p.get_SourcePositionStart());
           }
         }
-        if (!p.getSuperInterfaceRule().isEmpty()) {
-          for (ASTRuleReference sr : p.getSuperInterfaceRule()) {
-            if (grammarSymbol.getRuleWithInherited(sr.getName()) == null) {
-              Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "interface ", sr.getName(), sr.getName()),
-                      p.get_SourcePositionStart());
-            }
+      }
+      if (!p.getSuperInterfaceRule().isEmpty()) {
+        for (ASTRuleReference sr : p.getSuperInterfaceRule()) {
+          if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
+            Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "interface ",
+                sr.getName(), sr.getName()),
+                p.get_SourcePositionStart());
           }
         }
-
       }
     }
-    for(ASTAbstractProd p: a.getAbstractProds()){
-      Optional<MCRuleSymbol> ruleSymbol = (Optional<MCRuleSymbol>) p.getSymbol();
-      if (ruleSymbol.isPresent()) {
-        if (!p.getSuperRule().isEmpty()) {
-          for (ASTRuleReference sr : p.getSuperRule()) {
-            if (grammarSymbol.getRuleWithInherited(sr.getName()) == null) {
-              Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "", sr.getName(), sr.getName()),
-                      p.get_SourcePositionStart());
-            }
+    for (ASTAbstractProd p : a.getAbstractProds()) {
+      if (!p.getSuperRule().isEmpty() && p.getSymbol().isPresent()) {
+        for (ASTRuleReference sr : p.getSuperRule()) {
+          if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
+            Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "", sr.getName(),
+                sr.getName()),
+                p.get_SourcePositionStart());
           }
         }
-        if (!p.getSuperInterfaceRule().isEmpty()) {
-          for (ASTRuleReference sr : p.getSuperInterfaceRule()) {
-            if (grammarSymbol.getRuleWithInherited(sr.getName()) == null) {
-              Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "interface ", sr.getName(), sr.getName()),
-                      p.get_SourcePositionStart());
-            }
-          }
-        }
-
       }
-
-    }
-    for(ASTInterfaceProd p : a.getInterfaceProds()){
-      Optional<MCRuleSymbol> ruleSymbol = (Optional<MCRuleSymbol>) p.getSymbol();
-      if (ruleSymbol.isPresent()) {
-        if (!p.getSuperInterfaceRule().isEmpty()) {
-          for (ASTRuleReference sr : p.getSuperInterfaceRule()) {
-            if (grammarSymbol.getRuleWithInherited(sr.getName()) == null) {
-              Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "interface ", sr.getName(), sr.getName()),
-                      p.get_SourcePositionStart());
-            }
+      if (!p.getSuperInterfaceRule().isEmpty() && p.getSymbol().isPresent()) {
+        for (ASTRuleReference sr : p.getSuperInterfaceRule()) {
+          if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
+            Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "interface ",
+                sr.getName(), sr.getName()),
+                p.get_SourcePositionStart());
           }
         }
-
+      }
+    }
+    for (ASTInterfaceProd p : a.getInterfaceProds()) {
+      if (!p.getSuperInterfaceRule().isEmpty() && p.getSymbol().isPresent()) {
+        for (ASTRuleReference sr : p.getSuperInterfaceRule()) {
+          if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
+            Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "interface ",
+                sr.getName(), sr.getName()),
+                p.get_SourcePositionStart());
+          }
+        }
       }
     }
   }
-
+  
 }

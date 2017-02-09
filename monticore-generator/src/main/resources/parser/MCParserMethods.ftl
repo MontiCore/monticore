@@ -35,7 +35,7 @@ ${tc.signature("ruleSymbol")}
 <#assign parseRuleName = genHelper.getParseRuleName(ruleSymbol)>
 <#assign astClassName = genHelper.getASTClassName(ruleSymbol)>
 <#assign grammar = genHelper.getGrammarSymbol()>
-<#assign parserName = grammar.getSimpleName()?cap_first>
+<#assign parserName = grammar.getName()?cap_first>
 
   /** Parses a file. 
    * 
