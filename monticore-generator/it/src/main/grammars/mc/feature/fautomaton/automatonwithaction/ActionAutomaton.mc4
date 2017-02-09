@@ -21,8 +21,6 @@ component grammar ActionAutomaton extends mc.feature.fautomaton.automaton.FlatAu
 	Counter =
 	  "counter" Name ("," Name)* ";" ;
 	  
-	   A2 implements A1 = VarnameA0:Name VarnameA1:Name VarnameA2:Name;
-
     /** A transition in a finite automaton with embedded action
     @attribute from The source of the transition
     @attribute activate Character that triggers the transition
