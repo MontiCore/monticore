@@ -19,11 +19,9 @@
 
 package de.monticore.grammar.cocos;
 
-import java.util.Optional;
-
+import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTConstantGroup;
 import de.monticore.grammar.grammar._cocos.GrammarASTConstantGroupCoCo;
-import de.monticore.languages.grammar.MCRuleComponentSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -40,12 +38,9 @@ public class KeywordAlternativeName implements GrammarASTConstantGroupCoCo {
   @Override
   public void check(ASTConstantGroup a) {
     if (!a.getUsageName().isPresent()&& a.getConstants().size() >1) {
-        Optional<MCRuleComponentSymbol> componentSymbol = (Optional<MCRuleComponentSymbol>) a.getSymbol();
-        if(componentSymbol.isPresent()){
-          String rulename = componentSymbol.get().getEnclosingRule().getName();
+          String rulename = MCGrammarSymbolTableHelper.getEnclosingRule(a).get().getName();
           Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, rulename),
                   a.get_SourcePositionStart());
-        }
 
     }
   }

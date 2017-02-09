@@ -32,9 +32,9 @@ import de.se_rwth.commons.logging.Log;
 /**
  * @author  Pedram Mir Seyed Nazari
  */
-public class EssentialMontiCoreGrammarModelLoader extends ModelingLanguageModelLoader<ASTMCGrammar> {
+public class MontiCoreGrammarModelLoader extends ModelingLanguageModelLoader<ASTMCGrammar> {
 
-  public EssentialMontiCoreGrammarModelLoader(EssentialMontiCoreGrammarLanguage modelingLanguage) {
+  public MontiCoreGrammarModelLoader(MontiCoreGrammarLanguage modelingLanguage) {
     super(modelingLanguage);
     FileBasedAstProvider<ASTMCGrammar> astProvider = new FileBasedAstProvider<>(modelingLanguage);
     setAstProvider(modelCoordinate -> {
@@ -43,17 +43,22 @@ public class EssentialMontiCoreGrammarModelLoader extends ModelingLanguageModelL
       return mcGrammar;
     });
   }
+  
+  @Override
+  public MontiCoreGrammarLanguage getModelingLanguage() {
+    return (MontiCoreGrammarLanguage) super.getModelingLanguage();
+  }
 
   @Override
   protected void createSymbolTableFromAST(ASTMCGrammar ast, String modelName, MutableScope
       enclosingScope, ResolvingConfiguration resolvingConfiguration) {
 
-    final EssentialMontiCoreGrammarSymbolTableCreator symbolTableCreator =
+    final MontiCoreGrammarSymbolTableCreator symbolTableCreator =
         getModelingLanguage().getSymbolTableCreator(resolvingConfiguration, enclosingScope).orElse(null);
 
     if (symbolTableCreator != null) {
       Log.debug("Start creation of symbol table for model \"" + modelName + "\".",
-          EssentialMontiCoreGrammarSymbolTableCreator.class.getSimpleName());
+          MontiCoreGrammarSymbolTableCreator.class.getSimpleName());
       final Scope scope = symbolTableCreator.createFromAST(ast);
 
       if (!(scope instanceof ArtifactScope)) {
@@ -61,7 +66,7 @@ public class EssentialMontiCoreGrammarModelLoader extends ModelingLanguageModelL
             + " is scope \"" + scope.getName() + "\"");
       }
 
-      Log.debug("Created symbol table for model \"" + modelName + "\".", EssentialMontiCoreGrammarSymbolTableCreator.class
+      Log.debug("Created symbol table for model \"" + modelName + "\".", MontiCoreGrammarSymbolTableCreator.class
           .getSimpleName());
     }
     else {
@@ -71,8 +76,4 @@ public class EssentialMontiCoreGrammarModelLoader extends ModelingLanguageModelL
 
   }
 
-  @Override
-  public EssentialMontiCoreGrammarLanguage getModelingLanguage() {
-    return (EssentialMontiCoreGrammarLanguage) super.getModelingLanguage();
-  }
 }

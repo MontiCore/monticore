@@ -1,0 +1,14 @@
+/* Sinnfreise Sprache um MontiCore zu testen */
+package de.monticore.expression;
+
+grammar Expression { 
+
+  token NumericLiteral = ('0'..'9')+;
+
+  Expr = <rightassoc> left:Expr op:["^"] right:Expr |
+         left:Expr (op:["*"]|op:["/"]) right:Expr |
+         left:Expr (op:["+"]|op:["-"]) right:Expr |
+         "(" Expr ")" |  
+         NumericLiteral; 
+  
+}      

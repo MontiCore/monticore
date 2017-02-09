@@ -19,11 +19,11 @@
 
 package de.monticore.grammar;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -40,6 +40,8 @@ public class LexNamer {
   private Map<String, String> usedConstants = new HashMap<String, String>();
   
   private static Map<String, String> goodNames = null;
+  
+  public LexNamer() {}
   
   public static Map<String, String> getGoodNames() {
     if (goodNames == null) {
@@ -121,13 +123,13 @@ public class LexNamer {
    * @param sym lexer symbol
    * @return Human-Readable, antlr conformed name for a lexsymbols
    */
-  public String getLexName(Collection<String> ruleNames, String sym) {
+  public String getLexName(MCGrammarSymbol grammarSymbol, String sym) {
     if (usedLex.containsKey(sym)) {
       return usedLex.get(sym);
     }
     
     String goodName = createGoodName(sym);
-    if (goodName != null && !ruleNames.contains(goodName)) {
+    if (goodName != null && !grammarSymbol.getProd(goodName).isPresent()) {
       usedLex.put(sym, goodName);
       Log.debug("Using lexer symbol " + goodName + " for symbol '" + sym + "'", "LexNamer");
       return goodName;

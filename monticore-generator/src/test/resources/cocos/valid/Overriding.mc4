@@ -10,7 +10,7 @@ grammar Overriding extends mc.grammars.types.TestTypes {
       interface Literal extends Expression;
 
       Expression;
-
-
+      
+      A extends Name;
 
 }

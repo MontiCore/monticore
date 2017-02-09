@@ -21,6 +21,9 @@ package de.monticore.codegen;
 
 import static de.monticore.codegen.mc2cd.TransformationHelper.createSimpleReference;
 import static de.monticore.codegen.mc2cd.transl.ConstantsTranslation.CONSTANTS_ENUM;
+import static de.monticore.grammar.Multiplicity.multiplicityByAlternative;
+import static de.monticore.grammar.Multiplicity.multiplicityByIteration;
+import static java.util.Collections.max;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -28,13 +31,17 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -43,7 +50,16 @@ import de.monticore.ast.ASTNode;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.ast_emf.AstEmfGeneratorHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
+import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
+import de.monticore.grammar.Multiplicity;
+import de.monticore.grammar.grammar._ast.ASTClassProd;
+import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar._ast.ASTNonTerminal;
+import de.monticore.grammar.grammar._ast.ASTProd;
+import de.monticore.grammar.grammar._ast.ASTRuleReference;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.java.prettyprint.JavaDSLPrettyPrinter;
@@ -75,6 +91,7 @@ import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
 import de.monticore.umlcd4a.symboltable.CDTypes;
 import de.monticore.umlcd4a.symboltable.Stereotype;
 import de.monticore.umlcd4a.symboltable.references.CDTypeSymbolReference;
+import de.monticore.utils.ASTNodes;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
@@ -106,7 +123,9 @@ public class GeneratorHelper extends TypesHelper {
   
   public static final String PARSER_PACKAGE_SUFFIX = "._parser";
   
-  public static final String AST_PACKAGE_SUFFIX_DOT = "._ast";
+  public static final String AST_DOT_PACKAGE_SUFFIX = "._ast";
+  
+  public static final String AST_PACKAGE_SUFFIX_DOT = "_ast.";
   
   public static final String AST_DOT_PACKAGE_SUFFIX_DOT = "._ast.";
   
@@ -133,6 +152,8 @@ public class GeneratorHelper extends TypesHelper {
   public static final String ARRAY_LIST = "ArrayList";
   
   public static final String JAVA_LIST = "java.util.List";
+  
+  public static final int STAR = -1;
   
   protected static final String LOG_NAME = "GeneratorHelper";
   
@@ -243,8 +264,7 @@ public class GeneratorHelper extends TypesHelper {
     if (symbol.isPresent()) {
       CDTypeSymbol cdType = symbol.get();
       Log.trace("CD Type: " + cdType, LOG_NAME);
-      // TODO GV: if use cd4analysis 1.3.1 cdType.getModelName()
-      String typeName = Names.getQualifier(cdType.getFullName()).toLowerCase()
+      String typeName = cdType.getModelName().toLowerCase()
           + packageSuffix
           + cdType.getName();
       if (!genericType.isEmpty()) {
@@ -314,8 +334,7 @@ public class GeneratorHelper extends TypesHelper {
     if (symbol.isPresent()) {
       CDTypeSymbol cdType = symbol.get();
       Log.trace("CD Type: " + cdType, LOG_NAME);
-      // TODO GV: if use cd4analysis 1.3.1 cdType.getModelName()
-      String typeName = Names.getQualifier(cdType.getFullName()).toLowerCase()
+      String typeName = cdType.getModelName().toLowerCase()
           + packageSuffix
           + cdType.getName();
       if (!genericType.isEmpty()) {
@@ -377,8 +396,7 @@ public class GeneratorHelper extends TypesHelper {
     if (symbol.isPresent()) {
       CDTypeSymbol cdType = symbol.get();
       Log.trace("CD Type: " + cdType, LOG_NAME);
-      // TODO GV: if use cd4analysis 1.3.1 cdType.getModelName()
-      String typeName = Names.getQualifier(cdType.getFullName()).toLowerCase()
+      String typeName = cdType.getModelName().toLowerCase()
           + packageSuffix
           + cdType.getName();
       if (!genericType.isEmpty()) {
@@ -543,7 +561,7 @@ public class GeneratorHelper extends TypesHelper {
       return AST_NODE_CLASS_NAME;
     }
     String arg = typeArgs.get(0).getType().getReferencedSymbol().getFullName();
-    return AstGeneratorHelper.getAstPackage(Names.getQualifier(arg)) + "."
+    return AstGeneratorHelper.getAstPackage(Names.getQualifier(arg))
         + Names.getSimpleName(arg);
   }
   
@@ -1053,6 +1071,10 @@ public class GeneratorHelper extends TypesHelper {
     return name.intern();
   }
   
+  public static boolean isQualified(String name) {
+    return name.contains(".");
+  }
+  
   public static String getJavaAndCdConformName(String name) {
     Log.errorIfNull(name);
     return getCdLanguageConformName(getJavaConformName(name));
@@ -1108,7 +1130,6 @@ public class GeneratorHelper extends TypesHelper {
   }
   
   public static boolean isBuilderClass(ASTCDClass clazz) {
-    // TODO GV;
     return clazz.getName().startsWith("Builder_");
   }
   
@@ -1222,6 +1243,14 @@ public class GeneratorHelper extends TypesHelper {
         + "." + suffix;
   }
   
+  public static String getPackageName(ASTMCGrammar astGrammar, String suffix) {
+    String qualifiedGrammarName = astGrammar.getPackage().isEmpty()
+        ? astGrammar.getName()
+        : Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackage()),
+            astGrammar.getName());
+    return Joiner.on('.').join(qualifiedGrammarName.toLowerCase(), suffix);
+  }
+  
   public static String getSimpleTypeNameToGenerate(String simpleName, String packageName,
       IterablePath targetPath) {
     if (existsHandwrittenClass(simpleName, packageName, targetPath)) {
@@ -1229,9 +1258,11 @@ public class GeneratorHelper extends TypesHelper {
     }
     return simpleName;
   }
-
-  public static boolean existsHandwrittenClass(String simpleName, String packageName, IterablePath targetPath) {
-    return TransformationHelper.existsHandwrittenClass(targetPath, getDotPackageName(packageName) + simpleName);
+  
+  public static boolean existsHandwrittenClass(String simpleName, String packageName,
+      IterablePath targetPath) {
+    return TransformationHelper.existsHandwrittenClass(targetPath,
+        getDotPackageName(packageName) + simpleName);
   }
 
   /**
@@ -1437,7 +1468,7 @@ public class GeneratorHelper extends TypesHelper {
   }
   
   public Optional<CDTypeSymbol> resolveCdType(String type) {
-    Log.trace("Resolve: " + type + " -> " + symbolTable.resolve(type, CDTypeSymbol.KIND), LOG_NAME);
+  //  Log.trace("Resolve: " + type + " -> " + symbolTable.resolve(type, CDTypeSymbol.KIND), LOG_NAME);
     return symbolTable.resolve(type, CDTypeSymbol.KIND);
   }
   
@@ -1463,12 +1494,74 @@ public class GeneratorHelper extends TypesHelper {
    * @return [astPackage of the type].[type.getName()]
    */
   public static String getJavaASTName(CDTypeSymbol type) {
-    return AstGeneratorHelper.getAstPackage(Names.getQualifier(type.getFullName())) + "."
-        + type.getName();
+    return AstGeneratorHelper.getAstPackage(Names.getQualifier(type.getFullName())) + type.getName();
   }
   
   public static String qualifiedJavaTypeToName(String type) {
     return type.replace('.', '_');
+  }
+  
+  public static Multiplicity getMultiplicity(ASTMCGrammar grammar,
+      ASTNode nonTerminal) {
+    Multiplicity byAlternative = multiplicityByAlternative(grammar,
+        nonTerminal);
+    Multiplicity byIteration = multiplicityByIteration(grammar,
+        nonTerminal);
+    return max(Lists.newArrayList(byIteration,
+        byAlternative));
+  }
+  
+  /**
+   * @return the super productions defined in all super grammars (including transitive super grammars)
+   */
+  public static List<ASTProd> getAllSuperProds(ASTNode astNode) {
+    List<ASTProd> directSuperRules = getDirectSuperProds(astNode);
+    List<ASTProd> allSuperRules = new ArrayList<>();
+    for (ASTProd superRule : directSuperRules) {
+      allSuperRules.addAll(getAllSuperProds(superRule));
+    }
+    allSuperRules.addAll(directSuperRules);
+    return allSuperRules;
+  }
+  
+  /**
+   * @return the super productions defined in direct super grammars
+   */
+  public static List<ASTProd> getDirectSuperProds(ASTNode astNode) {
+    if (astNode instanceof ASTClassProd) {
+      List<ASTProd> directSuperProds = resolveRuleReferences(
+          ((ASTClassProd) astNode).getSuperRule(), astNode);
+      directSuperProds.addAll(
+          resolveRuleReferences(((ASTClassProd) astNode).getSuperInterfaceRule(), astNode));
+      return directSuperProds;
+    }
+    else if (astNode instanceof ASTInterfaceProd) {
+      return resolveRuleReferences(((ASTInterfaceProd) astNode).getSuperInterfaceRule(), astNode);
+    }
+    return Collections.emptyList();
+  }
+  
+  /**
+   * @return the production definitions of B & C in "A extends B, C"
+   */
+  public static List<ASTProd> resolveRuleReferences(List<ASTRuleReference> ruleReferences,
+      ASTNode nodeWithSymbol) {
+    List<ASTProd> superRuleNodes = new ArrayList<>();
+    for (ASTRuleReference superRule : ruleReferences) {
+      Optional<MCProdSymbol> symbol = MCGrammarSymbolTableHelper.resolveRule(nodeWithSymbol,
+          superRule.getName());
+      if (symbol.isPresent() && symbol.get().getAstNode().isPresent()) {
+        superRuleNodes.add((ASTProd) symbol.get().getAstNode().get());
+      }
+    }
+    return superRuleNodes;
+  }
+  
+  public static  Map<ASTProd, List<ASTNonTerminal>> getInheritedNonTerminals(ASTProd sourceNode) {
+    return GeneratorHelper.getAllSuperProds(sourceNode).stream()
+        .distinct()
+        .collect(Collectors.toMap(Function.identity(),
+            astProd -> ASTNodes.getSuccessors(astProd, ASTNonTerminal.class)));
   }
   
   /**

@@ -1,11 +1,12 @@
 package cocos.valid;
 
 grammar ImplementInterfaceNTs {
-  interface A = B;
+  interface A = D;
 
-  B;
+  B implements A = D;
 
-  abstract C implements A = B;
+  abstract C implements A = D;
 
+D;
 }
 

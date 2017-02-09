@@ -17,9 +17,10 @@
  * ******************************************************************************
  */
 
-package de.monticore.languages.grammar.lexpatterns;
+package de.monticore.grammar;
 
-import de.monticore.grammar.HelperGrammar;
+import java.util.Optional;
+
 import de.monticore.grammar.grammar._ast.ASTLexAlt;
 import de.monticore.grammar.grammar._ast.ASTLexBlock;
 import de.monticore.grammar.grammar._ast.ASTLexChar;
@@ -28,8 +29,8 @@ import de.monticore.grammar.grammar._ast.ASTLexNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTLexProd;
 import de.monticore.grammar.grammar._ast.ASTLexString;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
-import de.monticore.languages.grammar.MCGrammarSymbol;
-import de.monticore.languages.grammar.MCLexRuleSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 
 public class RegExpBuilder implements Grammar_WithConceptsVisitor {
   
@@ -40,7 +41,6 @@ public class RegExpBuilder implements Grammar_WithConceptsVisitor {
   public RegExpBuilder(StringBuilder b, MCGrammarSymbol st) {
     this.b = b;
     this.st = st;
-    
   }
   
   /**
@@ -148,18 +148,13 @@ public class RegExpBuilder implements Grammar_WithConceptsVisitor {
   }
   
   private boolean needsEscapeChar(String x) {
-    if ("^".equals(x)) {
-      return true;
-    }
-    return false;
+    return "^".equals(x);
   }
   
   @Override
   public void visit(ASTLexNonTerminal a) {
-    
-    MCLexRuleSymbol lexrule = (MCLexRuleSymbol) st.getRule(a.getName());
-    
-    b.append(lexrule);
+    Optional<MCProdSymbol> lexrule = st.getProd(a.getName());
+    b.append(lexrule.isPresent()? lexrule.get().getName():"");
     
   }
   

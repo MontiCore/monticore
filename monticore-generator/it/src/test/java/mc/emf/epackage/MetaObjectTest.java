@@ -61,7 +61,7 @@ public class MetaObjectTest extends GeneratorIntegrationsTest {
   
   @Test
   public void testEAttribute() {
-    EAttribute varName = ExpressionPackage.eINSTANCE.getASTExpression_Varname(); 
+    EAttribute varName = ExpressionPackage.eINSTANCE.getASTExpression_Varname();
     
     assertEquals(varName.getFeatureID(),
         ExpressionPackage.ASTDecreaseExpression_Varname);

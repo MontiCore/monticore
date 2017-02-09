@@ -25,7 +25,7 @@ import java.util.Optional;
 import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
 import de.monticore.grammar.grammar._cocos.GrammarASTInterfaceProdCoCo;
-import de.monticore.languages.grammar.MCRuleSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -37,26 +37,29 @@ public class InterfaceNTOnlyExtendInterfaceNTs implements GrammarASTInterfacePro
   
   public static final String ERROR_CODE = "0xA2116";
   
-  public static final String ERROR_MSG_FORMAT = " The interface nonterminal %s must not extend the%s nonterminal %s. " +
-                                      "Interface nonterminals may only extend interface nonterminals.";
+  public static final String ERROR_MSG_FORMAT = " The interface nonterminal %s must not extend the%s nonterminal %s. "
+      +
+      "Interface nonterminals may only extend interface nonterminals.";
   
   @Override
   public void check(ASTInterfaceProd a) {
     if (!a.getSuperInterfaceRule().isEmpty()) {
       List<ASTRuleReference> superRules = a.getSuperInterfaceRule();
-      for(ASTRuleReference sr : superRules){
-        Optional<MCRuleSymbol> ruleSymbol = a.getEnclosingScope().get().resolve(sr.getName(), MCRuleSymbol.KIND);
-        if(ruleSymbol.isPresent()){
-          MCRuleSymbol r = ruleSymbol.get();
-          boolean isAbstract = r.getType().isAbstract();
-          boolean isExternal =  r.getType().isExternal();
-          if(!r.getType().isInterface()){
-            Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName(), isAbstract? " abstract": isExternal?" external": "", r.getName()),
-                    a.get_SourcePositionStart());
+      for (ASTRuleReference sr : superRules) {
+        Optional<MCProdSymbol> ruleSymbol = a.getEnclosingScope().get().resolve(sr.getName(),
+            MCProdSymbol.KIND);
+        if (ruleSymbol.isPresent()) {
+          MCProdSymbol r = ruleSymbol.get();
+          boolean isAbstract = r.isAbstract();
+          boolean isExternal = r.isExternal();
+          if (!r.isInterface()) {
+            Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName(),
+                isAbstract ? " abstract" : isExternal ? " external" : "", r.getName()),
+                a.get_SourcePositionStart());
           }
         }
       }
     }
   }
-
+  
 }

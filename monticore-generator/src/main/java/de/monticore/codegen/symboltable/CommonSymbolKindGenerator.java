@@ -26,8 +26,8 @@ import java.nio.file.Paths;
 
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.GeneratorEngine;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
-import de.monticore.languages.grammar.MCRuleSymbol;
 import de.se_rwth.commons.Names;
 
 /**
@@ -37,7 +37,7 @@ public class CommonSymbolKindGenerator implements SymbolKindGenerator {
 
   @Override
   public void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
-      IterablePath handCodedPath, MCRuleSymbol ruleSymbol) {
+      IterablePath handCodedPath, MCProdSymbol ruleSymbol) {
     final String className = ruleSymbol.getName() + "Kind";
     final String qualifiedClassName = getPackageName(genHelper.getTargetPackage(), "") + className;
 

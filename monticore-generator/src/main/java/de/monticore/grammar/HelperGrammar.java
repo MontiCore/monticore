@@ -43,7 +43,8 @@ public class HelperGrammar {
    * @return true iff ASTConstantGroup is iterated
    */
   public static boolean isIterated(ASTTerminal a) {
-    return ((a.getIteration() == ASTConstantsGrammar.PLUS) || (a.getIteration() == ASTConstantsGrammar.STAR));
+    return (a.getIteration() == ASTConstantsGrammar.PLUS)
+        || (a.getIteration() == ASTConstantsGrammar.STAR);
     
   }
   
@@ -54,9 +55,10 @@ public class HelperGrammar {
    * @return true iff ASTOrGroup is iterated
    */
   public static boolean isIterated(ASTBlock a) {
-    return ((a.getIteration() == ASTConstantsGrammar.PLUS) || (a.getIteration() == ASTConstantsGrammar.STAR));
+    return ((a.getIteration() == ASTConstantsGrammar.PLUS)
+        || (a.getIteration() == ASTConstantsGrammar.STAR));
   }
-    
+  
   /**
    * Returns the name of a rule
    * 
@@ -78,20 +80,21 @@ public class HelperGrammar {
     
     String name;
     if (a.getUsageName().isPresent()) {
-      name =a.getUsageName().get();
+      name = a.getUsageName().get();
     }
     else {
       // Use Nonterminal name as attribute name starting with lower case
       // latter
       name = StringTransformations.uncapitalize(a.getName());
     }
-     return name;
+    return name;
   }
   
   public static boolean isIterated(ASTNonTerminal a) {
-    return ((a.getIteration() == ASTConstantsGrammar.PLUS) || (a.getIteration() == ASTConstantsGrammar.STAR));
+    return ((a.getIteration() == ASTConstantsGrammar.PLUS)
+        || (a.getIteration() == ASTConstantsGrammar.STAR));
   }
-    
+  
   public static String getTypeNameForEnum(String surroundtype, ASTConstantGroup a) {
     return "[enum." + surroundtype + "." + a.getUsageName();
   }
@@ -102,95 +105,97 @@ public class HelperGrammar {
    * @param a
    * @return
    */
-  public static String createConvertFunction(ASTLexProd a, Grammar_WithConceptsPrettyPrinter prettyPrinter) {
-
+  public static String createConvertFunction(ASTLexProd a,
+      Grammar_WithConceptsPrettyPrinter prettyPrinter) {
+    
     String name = a.getName();
     // simple String
     if (!a.getVariable().isPresent()) {
       return createStringConvertFunction(name);
     }
-
+    
     // default functions
     else if (a.getType() == null || a.getType().isEmpty()) {
       String variable = a.getVariable().get();
-
+      
       if ("int".equals(variable)) {
         String function = "private int convert%name%(Token t) {\n"
-
-          + "  return Integer.parseInt(t.getText());\n"
-          + " }\n";
+            
+            + "  return Integer.parseInt(t.getText());\n"
+            + " }\n";
         return createConvertFunction(name, function);
       }
       else if ("boolean".equals(variable)) {
         return createConvertFunction(
             name,
             "private boolean convert"
-            + name
-            + "(Token t) {\n"
-            + "    if (t.getText().equals(\"1\")||t.getText().equals(\"start\")||t.getText().equals(\"on\")||t.getText().equals(\"true\")){return true;}else{return false;} \n"
-            + "}\n");
+                + name
+                + "(Token t) {\n"
+                + "    if (t.getText().equals(\"1\")||t.getText().equals(\"start\")||t.getText().equals(\"on\")||t.getText().equals(\"true\")){return true;}else{return false;} \n"
+                + "}\n");
       }
       else if ("byte".equals(variable)) {
         String function = "private byte convert%name%(Token t) {\n"
-          + "  return Byte.parseByte(t.getText());\n"
-          + " }\n";
+            + "  return Byte.parseByte(t.getText());\n"
+            + " }\n";
         return createConvertFunction(name, function);
       }
       else if ("char".equals(variable)) {
-        return createConvertFunction(name, "private char convert" + name + "(Token t) " + "{\n" + "  return t.getText().charAt(0); \n" + "}\n");
+        return createConvertFunction(name, "private char convert" + name + "(Token t) " + "{\n"
+            + "  return t.getText().charAt(0); \n" + "}\n");
       }
       else if ("float".equals(variable)) {
         String function = "private float convert%name%(Token t) {\n"
-          + "  return Float.parseFloat(t.getText());\n"
-          + " }\n";
+            + "  return Float.parseFloat(t.getText());\n"
+            + " }\n";
         return createConvertFunction(name, function);
       }
       else if ("double".equals(variable)) {
         String function = "private double convert%name%(Token t) {\n"
-          + "  return Double.parseDouble(t.getText());\n"
-          + " }\n";
+            + "  return Double.parseDouble(t.getText());\n"
+            + " }\n";
         return createConvertFunction(name, function);
       }
       else if ("long".equals(variable)) {
         String function = "private long convert%name%(Token t) {\n"
-          + "  return Long.parseLong(t.getText());\n"
-          + " }\n";
+            + "  return Long.parseLong(t.getText());\n"
+            + " }\n";
         return createConvertFunction(name, function);
       }
       else if ("short".equals(variable)) {
         String function = "private short convert%name%(Token t) {\n"
-          + "return Short.parseShort(t.getText());\n"
-          + " }\n";
+            + "return Short.parseShort(t.getText());\n"
+            + " }\n";
         return createConvertFunction(name, function);
       }
       else if ("card".equals(variable)) {
         String function = "private int convert%name%(Token t) {\n"
-          + "   if (t.getText().equals(\"*\")) return -1; else return Integer.parseInt(t.getText());\n"
-          + " }\n";
+            + "   if (t.getText().equals(\"*\")) return -1; else return Integer.parseInt(t.getText());\n"
+            + " }\n";
         return createConvertFunction(name, function);
       }
       else {
-        Log.warn("0xA1061 No function for " + a.getVariable() + " registered, will treat it as string!");
+        Log.warn(
+            "0xA1061 No function for " + a.getVariable() + " registered, will treat it as string!");
         return createStringConvertFunction(name);
       }
-
+      
     }
     // specific function
     else {
       if (a.getBlock().isPresent()) {
         StringBuilder buffer = new StringBuilder();
         buffer.append(prettyPrinter.prettyprint(a.getBlock().get()));
-        String createConvertFunction = createConvertFunction(name, "private " + Names.getQualifiedName(a.getType()) + " convert" + name
-         + "(Token " + a.getVariable().get() + ")" + " {\n" + buffer.toString() + "}\n");
+        String createConvertFunction = createConvertFunction(name,
+            "private " + Names.getQualifiedName(a.getType()) + " convert" + name
+                + "(Token " + a.getVariable().get() + ")" + " {\n" + buffer.toString() + "}\n");
         return createConvertFunction;
       }
     }
     return "";
-
+    
   }
-
-
-
+  
   private static String createConvertFunction(String name, String function) {
     String f = function.replaceAll("%name%", name);
     
@@ -200,7 +205,8 @@ public class HelperGrammar {
   
   public static String createStringConvertFunction(String name) {
     
-    String t = "private String convert" + name + "(Token t)  {\n" + "    return t.getText();\n" + "}\n";
+    String t = "private String convert" + name + "(Token t)  {\n" + "    return t.getText();\n"
+        + "}\n";
     
     return "// convert function for " + name + "\n" + t;
   }
@@ -218,7 +224,8 @@ public class HelperGrammar {
     // default functions
     if (a.getType() == null || a.getType().isEmpty()) {
       
-      if ("int".equals(variable) || "boolean".equals(variable) || "char".equals(variable) || "float".equals(variable) || "double".equals(variable)
+      if ("int".equals(variable) || "boolean".equals(variable) || "char".equals(variable)
+          || "float".equals(variable) || "double".equals(variable)
           || "long".equals(variable) || "byte".equals(variable) || "short".equals(variable)) {
         return variable;
       }
@@ -226,7 +233,8 @@ public class HelperGrammar {
         return "int";
       }
       else {
-        Log.warn("0xA1032 No function for " + a.getVariable() + " registered, will treat it as string!");
+        Log.warn(
+            "0xA1032 No function for " + a.getVariable() + " registered, will treat it as string!");
         return createStringConvertFunction(name);
       }
       
@@ -256,7 +264,7 @@ public class HelperGrammar {
         return "";
     }
   }
-
+  
   public static String printGenericType(ASTGenericType genericType) {
     
     StringBuilder b = new StringBuilder();
@@ -377,8 +385,9 @@ public class HelperGrammar {
     
     return s;
   }
-
-  public static List<String> findImplicitTypes(ASTLexActionOrPredicate action, Grammar_WithConceptsPrettyPrinter prettyPrinter) {
+  
+  public static List<String> findImplicitTypes(ASTLexActionOrPredicate action,
+      Grammar_WithConceptsPrettyPrinter prettyPrinter) {
     List<String> ret = Lists.newArrayList();
     StringBuilder buffer = new StringBuilder();
     buffer.append(prettyPrinter.prettyprint(action.getExpressionPredicate()));
@@ -415,6 +424,5 @@ public class HelperGrammar {
     }
     return ret;
   }
-  
   
 }

@@ -17,49 +17,41 @@
  * ******************************************************************************
  */
 
-package de.monticore.languages.grammar;
+package de.monticore.grammar;
 
-import de.monticore.grammar.grammar._ast.ASTEnumProd;
+import java.util.Optional;
 
-/**
- * This class represents a symbol for an enum rule (resp. production). E.g., in
- * <code>enum E = "t" | "s"</code>, <code>E</code> is the enum rule.
- *
- * @author  Pedram Mir Seyed Nazari
- * @version $Revision$,
- *          $Date$
- *
- */
-public class MCEnumRuleSymbol extends MCRuleSymbol {
+import de.monticore.grammar.grammar._ast.ASTRuleComponent;
+
+public class PredicatePair {
+  private String classname;
   
-  private ASTEnumProd rule;
+  private Optional<ASTRuleComponent> component;
   
-  protected MCEnumRuleSymbol(ASTEnumProd rule) {
-    this(rule.getName());
-    this.rule = rule;
-  } 
-  
-  protected MCEnumRuleSymbol(String name) {
-    super(name);
+  public Optional<ASTRuleComponent> getComponent() {
+    return component;
   }
-
-  @Override
-  public void setDefinedType(MCTypeSymbol definedType) {
-    setType(definedType);
+  
+  public void setBlock(ASTRuleComponent block) {
+    this.component = Optional.ofNullable(block);
   }
-
-  @Override
-  public MCTypeSymbol getDefinedType() {
-    return getType();
+  
+  public String getClassname() {
+    return classname;
+  }
+  
+  public PredicatePair(String classname, ASTRuleComponent block) {
+    this.classname = classname;
+    this.component = Optional.ofNullable(block);
   }
   
   @Override
-  public KindSymbolRule getKindSymbolRule() {
-    return KindSymbolRule.ENUMRULE;
+  public boolean equals(Object o) {
+    return (o instanceof PredicatePair) && classname.equals(((PredicatePair) o).classname);
   }
   
-  public ASTEnumProd getRule() {
-    return rule;
+  @Override
+  public int hashCode() {
+    return classname.hashCode();
   }
-
 }

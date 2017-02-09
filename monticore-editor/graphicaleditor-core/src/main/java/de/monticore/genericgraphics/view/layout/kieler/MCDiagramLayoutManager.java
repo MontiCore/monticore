@@ -185,8 +185,6 @@ public class MCDiagramLayoutManager implements IDiagramLayoutManager<IMCEditPart
   @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   public Object getAdapter(Object object, Class adapterType) {
-    // System.err.println("GET: " + adapterType + " object: " + (object == null
-    // ? "null" : object.getClass()));
     try {
       if (adapterType.isAssignableFrom(ILayoutConfig.class)) {
         return layoutConfig;

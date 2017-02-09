@@ -24,9 +24,9 @@ import java.util.Map;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
-import de.monticore.languages.grammar.MCGrammarSymbol;
-import de.monticore.languages.grammar.MCRuleSymbol;
-import de.monticore.languages.grammar.MCTypeSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbolReference;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -47,9 +47,11 @@ public class InterfaceNTWithoutImplementationOnlyInComponentGrammar implements G
     if (!a.isComponent()) {
       for (ASTProd p : a.getInterfaceProds()) {
         boolean extensionFound = false;
-        entryLoop: for(Map.Entry entry : grammarSymbol.getRulesWithInherited().entrySet()){
-          MCRuleSymbol rs = (MCRuleSymbol) entry.getValue();
-          for(MCTypeSymbol typeSymbol : rs.getType().getAllSuperInterfaces()){
+        entryLoop: for (Map.Entry<String, MCProdSymbol> entry : grammarSymbol
+            .getProdsWithInherited().entrySet()) {
+          MCProdSymbol rs = (MCProdSymbol) entry.getValue();
+          // TODO GV: getAllSuperInterfaces()?
+          for (MCProdSymbolReference typeSymbol : rs.getSuperInterfaceProds()) {
             if (p.getName().equals(typeSymbol.getName())) {
               extensionFound = true;
               break entryLoop;

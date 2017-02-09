@@ -22,8 +22,8 @@ package de.monticore.codegen.symboltable;
 import java.util.Collection;
 
 import de.monticore.generating.GeneratorEngine;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.io.paths.IterablePath;
-import de.monticore.languages.grammar.MCGrammarSymbol;
 
 /**
  * @author Pedram Mir Seyed Nazari

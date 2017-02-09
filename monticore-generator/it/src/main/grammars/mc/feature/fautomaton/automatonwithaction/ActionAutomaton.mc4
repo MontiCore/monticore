@@ -20,7 +20,7 @@ component grammar ActionAutomaton extends mc.feature.fautomaton.automaton.FlatAu
     */
 	Counter =
 	  "counter" Name ("," Name)* ";" ;
-
+	  
     /** A transition in a finite automaton with embedded action
     @attribute from The source of the transition
     @attribute activate Character that triggers the transition
