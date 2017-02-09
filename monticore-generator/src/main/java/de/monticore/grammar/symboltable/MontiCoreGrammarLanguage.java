@@ -48,10 +48,10 @@ public class MontiCoreGrammarLanguage extends CommonModelingLanguage {
     
     prettyPrinter = new Grammar_WithConceptsPrettyPrinter(new IndentPrinter());
 
-    addResolver(CommonResolvingFilter.create(MCGrammarSymbol.KIND));
-    addResolver(CommonResolvingFilter.create(MCProdSymbol.KIND));
-    addResolver(CommonResolvingFilter.create(MCProdComponentSymbol.KIND));
-    addResolver(CommonResolvingFilter.create(MCProdAttributeSymbol.KIND));
+    addResolvingFilter(CommonResolvingFilter.create(MCGrammarSymbol.KIND));
+    addResolvingFilter(CommonResolvingFilter.create(MCProdSymbol.KIND));
+    addResolvingFilter(CommonResolvingFilter.create(MCProdComponentSymbol.KIND));
+    addResolvingFilter(CommonResolvingFilter.create(MCProdAttributeSymbol.KIND));
   }
   
   @Override

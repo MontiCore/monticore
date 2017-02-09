@@ -1071,6 +1071,10 @@ public class GeneratorHelper extends TypesHelper {
     return name.intern();
   }
   
+  public static boolean isQualified(String name) {
+    return name.contains(".");
+  }
+  
   public static String getJavaAndCdConformName(String name) {
     Log.errorIfNull(name);
     return getCdLanguageConformName(getJavaConformName(name));

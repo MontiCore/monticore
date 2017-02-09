@@ -132,17 +132,6 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
     addSuperGrammars(astGrammar, grammarSymbol);
   }
   
-  private void addSuperGrammars(ASTMCGrammar astGrammar, MCGrammarSymbol grammarSymbol) {
-    for (ASTGrammarReference ref : astGrammar.getSupergrammar()) {
-      final String superGrammarName = getQualifiedName(ref.getNames());
-      
-      final MCGrammarSymbolReference superGrammar = new MCGrammarSymbolReference(
-          superGrammarName, currentScope().orElse(null));
-      
-      grammarSymbol.addSuperGrammar(superGrammar);
-    }
-  }
-  
   @Override
   public void endVisit(ASTMCGrammar astGrammar) {
     
@@ -159,87 +148,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
     removeCurrentScope();
   }
   
-  /**
-   * Set cardinality of all grammar's nonterminals
-   */
-  private void setComponentsCardinality() {
-    for (MCProdSymbol prodSymbol : grammarSymbol.getProdsWithInherited().values()) {
-      Collection<MCProdAttributeSymbol> astAttributes = prodSymbol.getProdAttributes();
-      for (MCProdComponentSymbol component : prodSymbol.getProdComponents()) {
-        if (component.isNonterminal()) {
-          setComponentMultiplicity(component, component.getAstNode().get());
-          Optional<MCProdAttributeSymbol> attribute = astAttributes.stream()
-              .filter(a -> a.getName().equals(component.getName())).findAny();
-          if (attribute.isPresent()) {
-            Multiplicity multiplicity = Multiplicity
-                .multiplicityOfAttributeInAST(
-                    (ASTAttributeInAST) attribute.get().getAstNode().get());
-            component.setList(multiplicity == Multiplicity.LIST);
-            component.setOptional(multiplicity == Multiplicity.OPTIONAL);
-          }
-        }
-      }
-    }
-  }
-  
-  private void computeStartParserProd(ASTMCGrammar astGrammar) {
-    if (astGrammar.getStartRules().isPresent()) {
-      String name = astGrammar.getStartRules().get().getRuleReference().getName();
-      Optional<MCProdSymbol> prod = grammarSymbol.getProdWithInherited(name);
-      if (!prod.isPresent()) {
-        Log.error("0xA0243 Rule " + name + " couldn't be found!");
-      }
-      else {
-        prod.get().setStartProd(true);
-        grammarSymbol.setStartProd(prod.get());
-      }
-    }
-    else {
-      final Set<ASTProd> firstProductions = Sets.newLinkedHashSet();
-      // The start rule for parsing is the first occurring Interface-, Abstract-
-      // or Class-Production in this grammar
-      if (astGrammar.getClassProds().size() != 0) {
-        firstProductions.add(astGrammar.getClassProds().get(0));
-      }
-      if (astGrammar.getInterfaceProds().size() != 0) {
-        firstProductions.add(astGrammar.getInterfaceProds().get(0));
-      }
-      if (astGrammar.getAbstractProds().size() != 0) {
-        firstProductions.add(astGrammar.getAbstractProds().get(0));
-      }
-      setStartProd(firstProductions);
-    }
-  }
-  
-  /**
-   * Set start parser production
-   */
-  private void setStartProd(Set<ASTProd> firstProductions) {
-    // Set start parser rule
-    ASTProd firstProduction = null;
-    for (ASTProd prod : firstProductions) {
-      // TODO: add a common interface to the MC grammar for all these
-      // productions and remove this hack
-      if ((firstProduction == null)
-          || (firstProduction.get_SourcePositionStart()
-              .compareTo(prod.get_SourcePositionStart()) > 0)) {
-        firstProduction = prod;
-      }
-    }
     
-    if (firstProduction != null) {
-      Optional<MCProdSymbol> prod = grammarSymbol.getProdWithInherited(firstProduction.getName());
-      if (!prod.isPresent()) {
-        Log.error("0xA2174 Prod " + firstProduction.getName() + " couldn't be found! Pos: "
-            + firstProduction.get_SourcePositionStart());
-      }
-      else {
-        prod.get().setStartProd(true);
-        grammarSymbol.setStartProd(prod.get());
-      }
-    }
-  }
-  
   @Override
   public void visit(ASTInterfaceProd ast) {
     MCProdSymbol prodSymbol = new MCProdSymbol(ast.getName());
@@ -251,22 +160,6 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
         Collections.emptyList(), ast.getSuperInterfaceRule(), ast.getASTSuperInterface());
     
     addToScopeAndLinkWithNode(prodSymbol, ast);
-  }
-  
-  private void setSymbolDefinitionIfExists(MCProdSymbol prodSymbol,
-      ASTSymbolDefinition symbolDefinition) {
-    if (symbolDefinition != null) {
-      String symbolKindName = prodSymbol.getName();
-      
-      if (symbolDefinition.getSymbolKind().isPresent()
-          && !symbolDefinition.getSymbolKind().get().isEmpty()) {
-        symbolKindName = symbolDefinition.getSymbolKind().get();
-      }
-      
-      MCProdSymbolReference prodReference = new MCProdSymbolReference(symbolKindName,
-          prodSymbol.getSpannedScope());
-      prodSymbol.setProdDefiningSymbolKind(prodReference);
-    }
   }
   
   @Override
@@ -319,40 +212,6 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
         ast.getASTSuperClass(), ast.getSuperInterfaceRule(), ast.getASTSuperInterface());
     
     addToScopeAndLinkWithNode(prodSymbol, ast);
-  }
-  
-  private void setSuperProdsAndTypes(MCProdSymbol prodSymbol, List<ASTRuleReference> superProds,
-      List<ASTGenericType> astSuperClasses, List<ASTRuleReference> superInterfaceProds,
-      List<ASTGenericType> astSuperInterfaces) {
-    final Scope enclosingScope = currentScope().get();
-    
-    // A extends B
-    for (ASTRuleReference astSuperProd : superProds) {
-      MCProdSymbolReference superProd = new MCProdSymbolReference(astSuperProd.getTypeName(),
-          enclosingScope);
-      prodSymbol.addSuperProd(superProd);
-    }
-    
-    // A astextends B
-    for (ASTGenericType astSuperClass : astSuperClasses) {
-      MCProdOrTypeReference superClass = new MCProdOrTypeReference(astSuperClass.getTypeName(),
-          enclosingScope);
-      prodSymbol.addAstSuperClass(superClass);
-    }
-    
-    // A implements B
-    for (ASTRuleReference astInterface : superInterfaceProds) {
-      MCProdSymbolReference superProd = new MCProdSymbolReference(astInterface.getTypeName(),
-          enclosingScope);
-      prodSymbol.addSuperInterfaceProd(superProd);
-    }
-    
-    // A astimplements B
-    for (ASTGenericType astInterface : astSuperInterfaces) {
-      MCProdOrTypeReference superClass = new MCProdOrTypeReference(astInterface.getTypeName(),
-          enclosingScope);
-      prodSymbol.addAstSuperInterface(superClass);
-    }
   }
   
   @Override
@@ -570,6 +429,23 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
     }
   }
   
+  /**
+   * Create entry for an implicit rule defined in another lexrule by using an
+   * action and changing the type of the token
+   */
+  @Override
+  public void visit(ASTLexActionOrPredicate action) {
+    for (String typeName : HelperGrammar.findImplicitTypes(action, prettyPrinter)) {
+      // Create rule if needed
+      Optional<MCProdSymbol> rule = grammarSymbol.getProd(typeName);
+      if (!rule.isPresent()) {
+        // Create entry for an implicit rule
+        final MCProdSymbol prodSymbol = new MCProdSymbol(typeName);
+        prodSymbol.setLexerProd(true);
+      }
+    }
+  }
+  
   private Optional<MCProdComponentSymbol> addRuleComponent(String name, ASTNode node,
       String usageName) {
     final Symbol currentSymbol = currentSymbol().orElse(null);
@@ -594,6 +470,149 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
     
   }
   
+  private void addSuperGrammars(ASTMCGrammar astGrammar, MCGrammarSymbol grammarSymbol) {
+    for (ASTGrammarReference ref : astGrammar.getSupergrammar()) {
+      final String superGrammarName = getQualifiedName(ref.getNames());
+      
+      final MCGrammarSymbolReference superGrammar = new MCGrammarSymbolReference(
+          superGrammarName, currentScope().orElse(null));
+      
+      grammarSymbol.addSuperGrammar(superGrammar);
+    }
+  }
+  
+  private void setSuperProdsAndTypes(MCProdSymbol prodSymbol, List<ASTRuleReference> superProds,
+      List<ASTGenericType> astSuperClasses, List<ASTRuleReference> superInterfaceProds,
+      List<ASTGenericType> astSuperInterfaces) {
+    final Scope enclosingScope = currentScope().get();
+    
+    // A extends B
+    for (ASTRuleReference astSuperProd : superProds) {
+      MCProdSymbolReference superProd = new MCProdSymbolReference(astSuperProd.getTypeName(),
+          enclosingScope);
+      prodSymbol.addSuperProd(superProd);
+    }
+    
+    // A astextends B
+    for (ASTGenericType astSuperClass : astSuperClasses) {
+      MCProdOrTypeReference superClass = new MCProdOrTypeReference(astSuperClass.getTypeName(),
+          enclosingScope);
+      prodSymbol.addAstSuperClass(superClass);
+    }
+    
+    // A implements B
+    for (ASTRuleReference astInterface : superInterfaceProds) {
+      MCProdSymbolReference superProd = new MCProdSymbolReference(astInterface.getTypeName(),
+          enclosingScope);
+      prodSymbol.addSuperInterfaceProd(superProd);
+    }
+    
+    // A astimplements B
+    for (ASTGenericType astInterface : astSuperInterfaces) {
+      MCProdOrTypeReference superClass = new MCProdOrTypeReference(astInterface.getTypeName(),
+          enclosingScope);
+      prodSymbol.addAstSuperInterface(superClass);
+    }
+  }
+  
+  /**
+   * Set cardinality of all grammar's nonterminals
+   */
+  private void setComponentsCardinality() {
+    for (MCProdSymbol prodSymbol : grammarSymbol.getProdsWithInherited().values()) {
+      Collection<MCProdAttributeSymbol> astAttributes = prodSymbol.getProdAttributes();
+      for (MCProdComponentSymbol component : prodSymbol.getProdComponents()) {
+        if (component.isNonterminal()) {
+          setComponentMultiplicity(component, component.getAstNode().get());
+          Optional<MCProdAttributeSymbol> attribute = astAttributes.stream()
+              .filter(a -> a.getName().equals(component.getName())).findAny();
+          if (attribute.isPresent()) {
+            Multiplicity multiplicity = Multiplicity
+                .multiplicityOfAttributeInAST(
+                    (ASTAttributeInAST) attribute.get().getAstNode().get());
+            component.setList(multiplicity == Multiplicity.LIST);
+            component.setOptional(multiplicity == Multiplicity.OPTIONAL);
+          }
+        }
+      }
+    }
+  }
+  
+  private void setSymbolDefinitionIfExists(MCProdSymbol prodSymbol,
+      ASTSymbolDefinition symbolDefinition) {
+    if (symbolDefinition != null) {
+      String symbolKindName = prodSymbol.getName();
+      
+      if (symbolDefinition.getSymbolKind().isPresent()
+          && !symbolDefinition.getSymbolKind().get().isEmpty()) {
+        symbolKindName = symbolDefinition.getSymbolKind().get();
+      }
+      
+      MCProdSymbolReference prodReference = new MCProdSymbolReference(symbolKindName,
+          prodSymbol.getSpannedScope());
+      prodSymbol.setProdDefiningSymbolKind(prodReference);
+    }
+  }
+  
+  private void computeStartParserProd(ASTMCGrammar astGrammar) {
+    if (astGrammar.getStartRules().isPresent()) {
+      String name = astGrammar.getStartRules().get().getRuleReference().getName();
+      Optional<MCProdSymbol> prod = grammarSymbol.getProdWithInherited(name);
+      if (!prod.isPresent()) {
+        Log.error("0xA0243 Rule " + name + " couldn't be found!");
+      }
+      else {
+        prod.get().setStartProd(true);
+        grammarSymbol.setStartProd(prod.get());
+      }
+    }
+    else {
+      final Set<ASTProd> firstProductions = Sets.newLinkedHashSet();
+      // The start rule for parsing is the first occurring Interface-, Abstract-
+      // or Class-Production in this grammar
+      if (astGrammar.getClassProds().size() != 0) {
+        firstProductions.add(astGrammar.getClassProds().get(0));
+      }
+      if (astGrammar.getInterfaceProds().size() != 0) {
+        firstProductions.add(astGrammar.getInterfaceProds().get(0));
+      }
+      if (astGrammar.getAbstractProds().size() != 0) {
+        firstProductions.add(astGrammar.getAbstractProds().get(0));
+      }
+      setStartProd(firstProductions);
+    }
+  }
+  
+  /**
+   * Set start parser production
+   */
+  private void setStartProd(Set<ASTProd> firstProductions) {
+    // Set start parser rule
+    ASTProd firstProduction = null;
+    for (ASTProd prod : firstProductions) {
+      // TODO: add a common interface to the MC grammar for all these
+      // productions and remove this hack
+      if ((firstProduction == null)
+          || (firstProduction.get_SourcePositionStart()
+              .compareTo(prod.get_SourcePositionStart()) > 0)) {
+        firstProduction = prod;
+      }
+    }
+    
+    if (firstProduction != null) {
+      Optional<MCProdSymbol> prod = grammarSymbol.getProdWithInherited(firstProduction.getName());
+      if (!prod.isPresent()) {
+        Log.error("0xA2174 Prod " + firstProduction.getName() + " couldn't be found! Pos: "
+            + firstProduction.get_SourcePositionStart());
+      }
+      else {
+        prod.get().setStartProd(true);
+        grammarSymbol.setStartProd(prod.get());
+      }
+    }
+  }
+
+  
   /**
    * TODO: Write me!
    * 
@@ -617,23 +636,6 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
     
     setLinkBetweenSymbolAndNode(astAttributeSymbol, astAttribute);
     
-  }
-  
-  /**
-   * Create entry for an implicit rule defined in another lexrule by using an
-   * action and changing the type of the token
-   */
-  @Override
-  public void visit(ASTLexActionOrPredicate action) {
-    for (String typeName : HelperGrammar.findImplicitTypes(action, prettyPrinter)) {
-      // Create rule if needed
-      Optional<MCProdSymbol> rule = grammarSymbol.getProd(typeName);
-      if (!rule.isPresent()) {
-        // Create entry for an implicit rule
-        final MCProdSymbol prodSymbol = new MCProdSymbol(typeName);
-        prodSymbol.setLexerProd(true);
-      }
-    }
   }
   
 }

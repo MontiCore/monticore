@@ -43,6 +43,11 @@ public class MontiCoreGrammarModelLoader extends ModelingLanguageModelLoader<AST
       return mcGrammar;
     });
   }
+  
+  @Override
+  public MontiCoreGrammarLanguage getModelingLanguage() {
+    return (MontiCoreGrammarLanguage) super.getModelingLanguage();
+  }
 
   @Override
   protected void createSymbolTableFromAST(ASTMCGrammar ast, String modelName, MutableScope
@@ -71,8 +76,4 @@ public class MontiCoreGrammarModelLoader extends ModelingLanguageModelLoader<AST
 
   }
 
-  @Override
-  public MontiCoreGrammarLanguage getModelingLanguage() {
-    return (MontiCoreGrammarLanguage) super.getModelingLanguage();
-  }
 }
