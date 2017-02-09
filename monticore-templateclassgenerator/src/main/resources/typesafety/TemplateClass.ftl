@@ -76,25 +76,6 @@ public <#if isMainTemplate>abstract</#if> class ${classname} <#if isMainTemplate
   
   }
   
-  <#if isMainTemplate>
-   /* Abstract generation method for templates with suffix "Main". Method has
-   * to be implemented in Implementation class with name of the template and 
-   * suffix "Impl".
-   *
-   * @param filepath
-   * @param node
-   * @param symbol
-   */
-  public abstract void doGenerate(Path filepath, ASTNode node, CommonSymbol symbol);
-
-  /**
-   * @see de.monticore.templateclassgenerator.util.GeneratorInterface#generate(java.nio.file.Path, de.monticore.ast.ASTNode, de.monticore.symboltable.CommonSymbol)
-   */
-  @Override
-  public void generate(Path filepath, ASTNode node, CommonSymbol symbol) {
-    doGenerate(filepath, node, symbol);
-  }
-  </#if>
 
   /**
   * Generates Template with given parameters to File filePath.

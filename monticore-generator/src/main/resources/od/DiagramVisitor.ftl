@@ -126,7 +126,7 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
    			    isEmpty = false;
               } else if (printEmptyList) {
                 pp.print("${field.getName()}");
-                pp.println(" = []; // *size: 0");
+                pp.println(" = [];");
               }
               boolean isFirst = true;
               while (iter_${field.getName()}.hasNext()) {

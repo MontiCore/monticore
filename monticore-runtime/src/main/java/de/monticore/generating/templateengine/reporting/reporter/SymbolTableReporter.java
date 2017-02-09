@@ -37,7 +37,6 @@ import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ScopeSpanningSymbol;
 import de.monticore.symboltable.Scopes;
 import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.types.CommonJFieldSymbol;
 import de.monticore.symboltable.types.CommonJMethodSymbol;
 import de.monticore.symboltable.types.CommonJTypeSymbol;
@@ -47,9 +46,7 @@ import de.monticore.symboltable.types.JTypeSymbol;
 import de.monticore.symboltable.types.references.JTypeReference;
 import de.se_rwth.commons.Names;
 
-/**
- * @author BM
- */
+
 public class SymbolTableReporter extends AReporter {
   
   static final String SIMPLE_FILE_NAME = "13_SymbolTable";
@@ -61,6 +58,8 @@ public class SymbolTableReporter extends AReporter {
   protected final ReportingRepository repository;
   
   protected boolean printEmptyOptional = false;
+  
+  protected boolean printAllFieldsCommented = false;
   
   protected boolean printEmptyList = false;
   
@@ -173,7 +172,7 @@ public class SymbolTableReporter extends AReporter {
       printer.indent();
     }
     else if (printEmptyList) {
-      printer.println("symbols = []; // *size: 0");
+      printer.println("symbols = [];");
     }
     String sep = "";
     for (Symbol symbol : reportedSymbols) {
@@ -194,7 +193,7 @@ public class SymbolTableReporter extends AReporter {
       printer.indent();
     }
     else if (printEmptyList) {
-      printer.println("subScopes = []; // *size = 0");
+      printer.println("subScopes = [];");
     }
     sep = "";
     for (Scope subScope : scope.getSubScopes()) {
@@ -340,6 +339,22 @@ public class SymbolTableReporter extends AReporter {
     return this.printEmptyList;
   }
   
+  
+  /**
+   * @return the printAllFieldsCommented
+   */
+  public boolean isPrintAllFieldsCommented() {
+    return this.printAllFieldsCommented;
+  }
+
+  
+  /**
+   * @param printAllFieldsCommented the printAllFieldsCommented to set
+   */
+  public void setPrintAllFieldsCommented(boolean printAllFieldsCommented) {
+    this.printAllFieldsCommented = printAllFieldsCommented;
+  }
+
   /**
    * @param printEmptyList the printEmptyList to set
    */
@@ -348,6 +363,9 @@ public class SymbolTableReporter extends AReporter {
   }
   
   protected void reportAllFields(Class<?> clazz, IndentPrinter printer) {
+    if (!isPrintAllFieldsCommented()) {
+      return;
+    }
     printer.print("/* fields = ");
     for (Field field : clazz.getDeclaredFields()) {
       printer.print(field.getName() + " ");
