@@ -19,6 +19,15 @@
 
 package de.monticore.grammar.symboltable;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static de.monticore.codegen.GeneratorHelper.isQualified;
+import static de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION;
+
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Optional;
+import java.util.function.Predicate;
+
 import de.monticore.symboltable.CommonScope;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ScopeSpanningSymbol;
@@ -28,14 +37,6 @@ import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.resolving.ResolvingInfo;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
-
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Optional;
-import java.util.function.Predicate;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION;
 
 /**
  * @author Pedram Mir Seyed Nazari
@@ -56,6 +57,16 @@ public class MCGrammarScope extends CommonScope {
   @SuppressWarnings("unchecked")
   public Optional<MCGrammarSymbol> getSpanningSymbol() {
     return (Optional<MCGrammarSymbol>) super.getSpanningSymbol();
+  }
+  
+  @Override
+  public <T extends Symbol> Optional<T> resolveImported(String name, SymbolKind kind, AccessModifier modifier) {
+    final Collection<T> resolvedSymbols = resolveManyLocally(new ResolvingInfo(getResolvingFilters()), name, kind, modifier, x -> true);
+    if (resolvedSymbols.isEmpty()) {
+      return resolveInSuperGrammars(name, kind, modifier);
+    }
+
+    return getResolvedOrThrowException(resolvedSymbols);
   }
 
   public <T extends Symbol> Collection<T> resolveMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier,
@@ -78,10 +89,6 @@ public class MCGrammarScope extends CommonScope {
     }
 
     return resolvedSymbols;
-  }
-
-  private boolean isQualifiedName(String name) {
-    return name.contains(".");
   }
 
   protected <T extends Symbol> Optional<T> resolveInSuperGrammars(String name, SymbolKind kind, AccessModifier modifier) {
@@ -116,7 +123,7 @@ public class MCGrammarScope extends CommonScope {
       // checks cases 1) and 4)
       if (superGrammarName.equals(name) ||
           // checks cases 2) and 3)
-          (isQualifiedName(superGrammarName) != isQualifiedName(name))) {
+          (isQualified(superGrammarName) != isQualified(name))) {
         return false;
       } else {
         // case 5)
@@ -124,7 +131,7 @@ public class MCGrammarScope extends CommonScope {
       }
     }
     // names have different simple names and the name isn't qualified (A and p.B)
-    return isQualifiedName(superGrammarName) && !isQualifiedName(name);
+    return isQualified(superGrammarName) && !isQualified(name);
   }
 
   private <T extends Symbol> Optional<T> resolveInSuperGrammar(String name, SymbolKind kind,
@@ -136,13 +143,4 @@ public class MCGrammarScope extends CommonScope {
     return superGrammar.getSpannedScope().resolveImported(name, kind, ALL_INCLUSION);
   }
 
-  @Override
-  public <T extends Symbol> Optional<T> resolveImported(String name, SymbolKind kind, AccessModifier modifier) {
-    final Collection<T> resolvedSymbols = resolveManyLocally(new ResolvingInfo(getResolvingFilters()), name, kind, modifier, x -> true);
-    if (resolvedSymbols.isEmpty()) {
-      return resolveInSuperGrammars(name, kind, modifier);
-    }
-
-    return getResolvedOrThrowException(resolvedSymbols);
-  }
 }

@@ -34,6 +34,7 @@ import de.monticore.symboltable.types.references.JTypeReference;
 public class MCProdOrTypeReference {
 
   private final MCProdSymbolReference prodRef;
+  
   private final JTypeReference<JTypeSymbol> typeRef;
 
   public MCProdOrTypeReference(String referencedSymbolName, Scope enclosingScopeOfReference) {

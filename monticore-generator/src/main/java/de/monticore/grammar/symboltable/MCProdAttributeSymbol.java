@@ -7,10 +7,7 @@ package de.monticore.grammar.symboltable;
 
 import java.util.Optional;
 
-import de.monticore.ast.ASTNode;
-import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
 import de.monticore.symboltable.CommonSymbol;
-import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
 
 /**
@@ -24,7 +21,7 @@ public class MCProdAttributeSymbol extends CommonSymbol {
   public static final MCProdAttributeKind KIND = new MCProdAttributeKind();
   
   private MCProdOrTypeReference typeReference;
-
+  
   public MCProdAttributeSymbol(String name) {
     super(name, KIND);
   }
