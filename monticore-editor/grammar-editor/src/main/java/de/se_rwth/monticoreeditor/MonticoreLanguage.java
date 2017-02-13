@@ -45,7 +45,7 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsAntlrLexer;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsAntlrParser;
-import de.monticore.languages.grammar.MCTypeSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.symboltable.SymbolKind;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.langeditor.language.Language;
@@ -60,7 +60,7 @@ public final class MonticoreLanguage implements Language {
   private final Resolving resolving = new Resolving();
   
   private final Collection<? extends SymbolKind> completionKinds = Sets
-      .newHashSet(MCTypeSymbol.KIND);
+      .newHashSet(MCProdSymbol.KIND);
       
   private final ImmutableList<String> keywords = ImmutableList.of("component", "package", "grammar",
       "options", "astimplements",

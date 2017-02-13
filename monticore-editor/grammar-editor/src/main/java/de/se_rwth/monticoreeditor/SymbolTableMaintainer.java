@@ -17,7 +17,6 @@
 package de.se_rwth.monticoreeditor;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,10 +26,10 @@ import com.google.common.collect.ImmutableList;
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.ast.ASTNode;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MontiCoreGrammarLanguage;
+import de.monticore.grammar.symboltable.MontiCoreGrammarModelLoader;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.languages.grammar.MCGrammarSymbol;
-import de.monticore.languages.grammar.MontiCoreGrammarLanguage;
-import de.monticore.languages.grammar.MontiCoreGrammarModelLoader;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
@@ -113,12 +112,13 @@ final class SymbolTableMaintainer {
   
   private void replaceSuperGrammar(MCGrammarSymbol existingGrammarSymbol,
       MCGrammarSymbol newGrammarSymbol) {
-    List<MCGrammarSymbol> superGrammars = new ArrayList<>(existingGrammarSymbol.getSuperGrammars());
-    boolean wasSuperGrammar = superGrammars.removeIf(superGrammar ->
-        superGrammar.getFullName().equals(newGrammarSymbol.getFullName()));
-    if (wasSuperGrammar) {
-      superGrammars.add(newGrammarSymbol);
-    }
-    existingGrammarSymbol.setSuperGrammars(superGrammars);
+    // TODO MB Check new symbol table
+//    List<MCGrammarSymbol> superGrammars = new ArrayList<>(existingGrammarSymbol.getSuperGrammars());
+//    boolean wasSuperGrammar = superGrammars.removeIf(superGrammar ->
+//        superGrammar.getFullName().equals(newGrammarSymbol.getFullName()));
+//    if (wasSuperGrammar) {
+//      superGrammars.add(newGrammarSymbol);
+//    }
+//    existingGrammarSymbol.setSuperGrammars(superGrammars);
   }
 }
