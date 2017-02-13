@@ -89,13 +89,18 @@ grammar Literals extends de.monticore.lexicals.Lexicals {
 
   ast SignedIntLiteral = 
     method public int getValue() {
-      if (negative) {
-        return -super.getValue();
+      try {
+        if (negative) {
+          return - de.monticore.literals.LiteralsHelper.getInstance().decodeInt(getSource());
+        }
+        return de.monticore.literals.LiteralsHelper.getInstance().decodeInt(getSource());
+       }
+      catch (NumberFormatException e) {
+        return 0;
       }
-      return super.getValue();
     }
   ;
-
+  
   ast LongLiteral = 
     method public long getValue() {
       try {
@@ -109,10 +114,15 @@ grammar Literals extends de.monticore.lexicals.Lexicals {
 
   ast SignedLongLiteral = 
     method public long getValue() {
-      if (negative) {
-        return -super.getValue();
+      try {
+        if (negative) {
+          return -de.monticore.literals.LiteralsHelper.getInstance().decodeLong(getSource());
+        }
+        return de.monticore.literals.LiteralsHelper.getInstance().decodeLong(getSource());
       }
-      return super.getValue();
+      catch (NumberFormatException e) {
+        return 0;
+      }
     }
   ;
 
@@ -129,10 +139,15 @@ grammar Literals extends de.monticore.lexicals.Lexicals {
 
   ast SignedFloatLiteral = 
     method public float getValue() {
-      if (negative) {
-        return -super.getValue();
+      try {
+        if (negative) {
+          return -de.monticore.literals.LiteralsHelper.getInstance().decodeFloat(getSource());
+        }
+        return de.monticore.literals.LiteralsHelper.getInstance().decodeFloat(getSource());
+       }
+      catch (NumberFormatException e) {
+        return 0f;
       }
-      return super.getValue();
     }
   ;
 
@@ -149,11 +164,16 @@ grammar Literals extends de.monticore.lexicals.Lexicals {
 
   ast SignedDoubleLiteral = 
     method public double getValue() {
-      if (negative) {
-        return -super.getValue();
+      try {
+        if (negative) {
+          return -de.monticore.literals.LiteralsHelper.getInstance().decodeDouble(getSource());
+        }
+        return de.monticore.literals.LiteralsHelper.getInstance().decodeDouble(getSource());
       }
-      return super.getValue();
-    }
+      catch (NumberFormatException e) {
+        return 0d;
+      } 
+   }
   ;
 
 
@@ -229,7 +249,7 @@ grammar Literals extends de.monticore.lexicals.Lexicals {
   /** ASTSignedIntLiteral represents a positive or negative Integer number.
         @attribute source String-representation (including '"').
     */
-  SignedIntLiteral extends IntLiteral implements SignedNumericLiteral =
+  SignedIntLiteral implements SignedNumericLiteral =
     (negative:["-"])? source:Num_Int;
 
 
@@ -243,7 +263,7 @@ grammar Literals extends de.monticore.lexicals.Lexicals {
   /** ASTSignedLongLiteral represents a positive or negative Long number.
         @attribute source String-representation (including '"').
     */
-  SignedLongLiteral extends LongLiteral implements SignedNumericLiteral =
+  SignedLongLiteral implements SignedNumericLiteral =
     (negative:["-"])? source:Num_Long;
 
 
@@ -257,7 +277,7 @@ grammar Literals extends de.monticore.lexicals.Lexicals {
   /** ASTSignedFloatLiteral represents a positive or negative Float number.
         @attribute source String-representation (including '"').
     */
-  SignedFloatLiteral extends FloatLiteral implements SignedNumericLiteral =
+  SignedFloatLiteral implements SignedNumericLiteral =
     (negative:["-"])? source:Num_Float;
 
 
@@ -271,7 +291,7 @@ grammar Literals extends de.monticore.lexicals.Lexicals {
   /** ASTSignedDoubleLiteral represents a positive or negative Double number.
         @attribute source String-representation (including '"').
     */
-  SignedDoubleLiteral extends DoubleLiteral implements SignedNumericLiteral =
+  SignedDoubleLiteral implements SignedNumericLiteral =
     (negative:["-"])? source:Num_Double;
 
 
