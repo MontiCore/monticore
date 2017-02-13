@@ -2,10 +2,10 @@ package de.monticore.symboltable;
 
 grammar GrammarWithSymbolTableInfo extends mc.grammars.lexicals.TestLexicals {
 
- Automaton@! =
+ Automaton symbol =
      "automaton" Name "{" (states:State | transitions:Transition)* "}";
 
- State@! =
+ State symbol =
      (Ellipsis:["..."])?
      (initial:["initial"] | ["final"])? Name;
 

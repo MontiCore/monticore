@@ -56,7 +56,7 @@ grammar TestOD extends mc.grammars.common.TestCommon {
       @attribute oDObjects    List of Objects of this Objectdiagram
       @attribute oDLinks      List of Links of this Objectdiagram
     */
-    ODDefinition@! =
+    ODDefinition symbol =
       Completeness?
       Stereotype?
       ("objectdiagram" | "astobjectdiagram") Name
@@ -76,7 +76,7 @@ grammar TestOD extends mc.grammars.common.TestCommon {
       @attribute type         Optional Type of this Object
       @attribute oDAttributes List of Attributes of this Object
     */
-    ODObject@! extends ODElement implements ODCommonObject=
+    ODObject symbol extends ODElement implements ODCommonObject=
       Completeness?
       Modifier?
 	  ( (Name | name:ODName) (":" type:ReferenceType)? | (":" type:ReferenceType))
@@ -170,7 +170,7 @@ grammar TestOD extends mc.grammars.common.TestCommon {
       @attribute type         Optional Type of this Object
       @attribute oDAttributes List of Attributes of this Object
     */
-    ODInnerObject@! implements ODCommonObject=
+    ODInnerObject symbol implements ODCommonObject=
       Completeness?
       Modifier?
 	  ( (Name | name:ODName) (":" type:ReferenceType)? | (":" type:ReferenceType))

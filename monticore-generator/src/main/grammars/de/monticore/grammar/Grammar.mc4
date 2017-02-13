@@ -585,6 +585,6 @@ component grammar Grammar extends de.monticore.literals.Literals {
   // Symbol Table
 
   SymbolDefinition =
-    "@!" symbolKind:Name?;
+    "symbol" symbolKind:Name?;
 
 }
