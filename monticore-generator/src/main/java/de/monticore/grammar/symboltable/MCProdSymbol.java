@@ -52,6 +52,8 @@ public class MCProdSymbol extends CommonScopeSpanningSymbol {
   
   private boolean isLexerProd;
   
+  private boolean isScope = false;
+  
   /**
    * the producution that defines the symbol kind of the current prod symbol
    * (only if isSymbolDefinition is true)
@@ -92,6 +94,14 @@ public class MCProdSymbol extends CommonScopeSpanningSymbol {
   
   public boolean isSymbolDefinition() {
     return prodDefiningSymbolKind != null;
+  }
+  
+  public boolean isScopeDefinition() {
+    return isScope;
+  }
+
+  public void setScopeDefinition(boolean isScope) {
+    this.isScope = isScope;
   }
   
   public Optional<String> getSymbolDefinitionKind() {

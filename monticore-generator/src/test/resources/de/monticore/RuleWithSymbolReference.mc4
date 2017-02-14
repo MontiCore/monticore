@@ -4,15 +4,15 @@ component grammar RuleWithSymbolReference {
 
   Name;
 
-  interface S symbol;
+  interface symbol S;
 
-  interface T symbol S;
+  interface symbol(S) T;
 
-  A symbol T = "a";
+  symbol(T) A = "a";
 
   B = an:Name@A;
 
-  external E symbol;
-  abstract R symbol;
+  external symbol E;
+  abstract symbol R;
 
 }

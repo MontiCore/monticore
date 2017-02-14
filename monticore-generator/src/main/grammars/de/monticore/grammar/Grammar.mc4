@@ -206,7 +206,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
   @attribute genericType External type used for this hole rule
   */
   ExternalProd implements Prod =
-    "external" Name SymbolDefinition? GenericType? ";";
+    "external" SymbolDefinition Name GenericType? ";";
 
 
   /** An ASTInterfaceProd represents an explicit definition for an interface production
@@ -217,7 +217,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
   @attribute aSTSuperInterface Super interfaces abstract syntax only
   */
   InterfaceProd implements ParserProd =
-    "interface" Name SymbolDefinition?
+    "interface" SymbolDefinition Name 
     (
       "extends" superInterfaceRule:(RuleReference || "," )+
     |
@@ -234,7 +234,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
   @attribute aSTSuperInterface Super interfaces  (abstract syntax only)
   */
   AbstractProd implements Prod =
-    "abstract" Name SymbolDefinition?
+    "abstract" SymbolDefinition Name 
     (
       "extends" superRule:(RuleReference || ",")+
     |
@@ -257,7 +257,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
   @attribute alts List of alternatives representing the body of the rule
   */
   ClassProd implements ParserProd =
-    Name SymbolDefinition?
+    SymbolDefinition Name
     (
        "extends" superRule:(RuleReference || ",")+
     |
@@ -585,6 +585,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
   // Symbol Table
 
   SymbolDefinition =
-    "symbol" symbolKind:Name?;
+    (genSymbol:[Symbol:"symbol"] ("("symbolKind:Name ")")? )? 
+    (genScope:["scope"])? ;
 
 }

@@ -1,6 +1,6 @@
 package de.monticore.symboltable;
 
-grammar GrammarWithoutClassRules {
+component grammar GrammarWithoutClassRules {
 
  token HELLO = "Hello World";
 

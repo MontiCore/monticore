@@ -385,18 +385,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   }
   
   public boolean spansScope(final MCProdSymbol rule) {
-    for (MCProdComponentSymbol ruleComponent : rule.getProdComponents()) {
-      if (ruleComponent.getReferencedProd().isPresent()) {
-        // the case: Automaton = Name ... State* ..., i.e., the containment of
-        // another symbol
-        final Optional<MCProdSymbol> referencedRule = getGrammarSymbol()
-            .getProd(ruleComponent.getReferencedProd().get().getName());
-        if (referencedRule.isPresent() && referencedRule.get().isSymbolDefinition()) {
-          return true;
-        }
-      }
-    }
-    return false;
+    return rule.isScopeDefinition();
   }
   
   public boolean isSymbol(final MCProdSymbol rule) {

@@ -2,6 +2,6 @@ package mc.embedding;
 
 grammar Embedded extends mc.grammar.lexicals.Lexicals {
 
-   Text@! = "text" Name;
+   symbol Text = "text" Name;
 
 }

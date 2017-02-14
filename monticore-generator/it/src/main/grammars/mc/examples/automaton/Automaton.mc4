@@ -2,7 +2,7 @@ package mc.examples.automaton;
 
 grammar Automaton extends mc.grammar.lexicals.Lexicals {
 
-Automaton@! =
+symbol scope Automaton =
   "automaton" Name "{" (State | Transition)* "}" ;
 
 /** A ASTState represents a state of a finite automaton
@@ -12,7 +12,7 @@ Automaton@! =
     @attribute States List of states
     @attribute Transitions List of transitions
 */
-State@! =
+symbol scope State =
   "state" Name
   
   (("<<" ["initial"] ">>" ) | ("<<" ["final"] ">>" ))*

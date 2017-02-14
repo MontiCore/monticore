@@ -2,9 +2,9 @@ package de.monticore.symboltable;
 
 grammar GrammarWithSymbolTableInfo2 {
 
-  interface I@!;
+  interface symbol I;
 
   // Has no effect on the symbol structure, i.e., symbol of S does not extends symbol of I
-  S@! implements I = "s";
+  symbol S implements I = "s";
 
 }
