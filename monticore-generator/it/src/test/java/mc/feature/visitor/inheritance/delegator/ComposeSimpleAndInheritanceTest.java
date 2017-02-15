@@ -24,7 +24,6 @@ import mc.feature.visitor.inheritance.a._ast.ASTXA;
 import mc.feature.visitor.inheritance.a._visitor.AVisitor;
 import mc.feature.visitor.inheritance.b._ast.ASTXB;
 import mc.feature.visitor.inheritance.b._visitor.BVisitor;
-import mc.feature.visitor.inheritance.c._visitor.CDelegatorVisitor;
 import mc.feature.visitor.inheritance.c._visitor.CVisitor;
 import mc.feature.visitor.inheritance.c._visitor.CommonCDelegatorVisitor;
 
@@ -39,7 +38,7 @@ import org.junit.Test;
 public class ComposeSimpleAndInheritanceTest extends CommonVisitorTest {
   
   // the composer
-  private CDelegatorVisitor v = new CommonCDelegatorVisitor();
+  private CommonCDelegatorVisitor v = new CommonCDelegatorVisitor();
   
   // the visitors about to compose
   private AVisitor aVis = new SimpleAVisitor(run);

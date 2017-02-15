@@ -419,6 +419,18 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     return false;
   }
   
+  public boolean isOptionalNamed(final MCProdSymbol rule) {
+    for (MCProdComponentSymbol comp : rule.getProdComponents()) {
+      // TODO check full name?
+      if (comp.getName().equals(NAME_NONTERMINAL) &&
+          (isNullOrEmpty(comp.getUsageName())
+              || comp.getUsageName().equalsIgnoreCase(NAME_NONTERMINAL)) && comp.isOptional()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public boolean existsHandwrittenSymbolClass(MCProdSymbol ruleSymbol, IterablePath handCodedPath) {
     return existsHandwrittenClass(Names.getSimpleName(ruleSymbol.getName() + "Symbol"),
         getTargetPackage(), handCodedPath);

@@ -48,7 +48,6 @@ package ${package};
 import de.se_rwth.commons.logging.Log;
 
 import ${fqn}._visitor.${genHelper.getVisitorType()};
-import ${fqn}._visitor.${genHelper.getDelegatorVisitorType()};
 import ${fqn}._visitor.${genHelper.getCommonDelegatorVisitorType()};
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
@@ -59,7 +58,7 @@ public class ${className} extends de.monticore.symboltable.CommonSymbolTableCrea
          implements ${grammarName}Visitor {
 
   // TODO doc
-  private final ${genHelper.getDelegatorVisitorType()} visitor = new ${genHelper.getCommonDelegatorVisitorType()}();
+  private final ${genHelper.getCommonDelegatorVisitorType()} visitor = new ${genHelper.getCommonDelegatorVisitorType()}();
 
   public ${className}(
     final ResolvingConfiguration resolvingConfig, final MutableScope enclosingScope) {
