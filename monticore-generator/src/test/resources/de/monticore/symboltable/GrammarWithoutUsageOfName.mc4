@@ -1,7 +1,0 @@
-package de.monticore.symboltable;
-
-grammar GrammarWithoutUsageOfName {
-
- S = "s";
-
-}

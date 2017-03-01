@@ -23,15 +23,12 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 
-import de.monticore.MontiCoreConfiguration;
 import de.monticore.MontiCoreScript;
 import de.monticore.codegen.AstDependentGeneratorTest;
 import de.se_rwth.commons.Names;
@@ -81,7 +78,7 @@ public class ParserGeneratorTest extends AstDependentGeneratorTest {
   
   @Test
   public void testInterfaceAttributes() {
-    astTest.testStatechart();
+    astTest.testInterfaceAttributes();;
     testCorrect("de/monticore/InterfaceAttributes.mc4");
   }
   
@@ -163,13 +160,6 @@ public class ParserGeneratorTest extends AstDependentGeneratorTest {
         ? grammar.substring(0, grammar.indexOf(GRAMMAR_EXTENSION))
         : grammar;
     return Paths.get(OUTPUT_FOLDER, garmmarPath.toLowerCase());
-  }
-  
-  private String[] getCLIArguments(String grammar) {
-    List<String> args = Lists.newArrayList(getGeneratorArguments());
-    args.add(getConfigProperty(MontiCoreConfiguration.Options.GRAMMARS.toString()));
-    args.add(grammar);
-    return args.toArray(new String[0]);
   }
   
 }
