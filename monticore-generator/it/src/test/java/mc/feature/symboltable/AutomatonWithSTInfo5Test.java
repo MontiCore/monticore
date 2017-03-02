@@ -19,6 +19,9 @@
 
 package mc.feature.symboltable;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Collection;
 
 import mc.GeneratorIntegrationsTest;
@@ -44,17 +47,21 @@ import mc.feature.symboltable.automatonwithstinfo5._symboltable.TransitionSymbol
 import mc.feature.symboltable.automatonwithstinfo5._symboltable.TransitionSymbolReference;
 import org.junit.Test;
 
+import de.monticore.symboltable.ScopeSpanningSymbol;
+
 public class AutomatonWithSTInfo5Test extends GeneratorIntegrationsTest {
 
   /**
    * This test ensures that all expected classes are generated. Otherwise, the test will not compile
    */
+  @SuppressWarnings("unused")
   @Test
   public void test() {
     AutomatonKind automatonKind;
     AutomatonResolvingFilter automatonResolvingFilter;
     AutomatonScope automatonScope;
     AutomatonSymbol automatonSymbol = new AutomatonSymbol("A");
+    assertTrue(automatonSymbol instanceof ScopeSpanningSymbol);
     AutomatonSymbolEMPTY automatonSymbolEMPTY;
     AutomatonSymbolReference automatonSymbolReference;
     AutomatonWithSTInfo5Language automatonWithSTInfo5Language;
@@ -64,12 +71,14 @@ public class AutomatonWithSTInfo5Test extends GeneratorIntegrationsTest {
     StateKind stateKind;
     StateResolvingFilter stateResolvingFilter;
     StateSymbol stateSymbol;
-    StateSymbolEMPTY stateSymbolEMPTY;
+    StateSymbolEMPTY stateSymbolEMPTY = new StateSymbolEMPTY("A");
+    assertFalse(stateSymbolEMPTY instanceof ScopeSpanningSymbol);
     StateSymbolReference stateSymbolReference;
     TransitionKind transitionKind;
     TransitionResolvingFilter transitionResolvingFilter;
     TransitionSymbol transitionSymbol = new TransitionSymbol("T");
-    TransitionSymbolEMPTY transitionSymbolEMPTY;
+    TransitionSymbolEMPTY transitionSymbolEMPTY = new TransitionSymbolEMPTY("A");
+    assertFalse(transitionSymbolEMPTY instanceof ScopeSpanningSymbol);
     TransitionSymbolReference transitionSymbolReference;
 
     Collection<StateSymbol> stateSymbols = automatonSymbol.getStates();

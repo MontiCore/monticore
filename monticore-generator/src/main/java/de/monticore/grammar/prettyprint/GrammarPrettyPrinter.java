@@ -62,6 +62,7 @@ import de.monticore.grammar.grammar._ast.ASTNonTerminalSeparator;
 import de.monticore.grammar.grammar._ast.ASTOptionValue;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
 import de.monticore.grammar.grammar._ast.ASTSemanticpredicateOrAction;
+import de.monticore.grammar.grammar._ast.ASTSymbolDefinition;
 import de.monticore.grammar.grammar._ast.ASTTerminal;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor;
 import de.monticore.literals.prettyprint.LiteralsPrettyPrinterConcreteVisitor;
@@ -124,9 +125,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     print("external ");
 
     getPrinter().print(a.getName());
-    if (a.getSymbolDefinition().isPresent()) {
-      getPrinter().print("@!");
-    }
+    a.getSymbolDefinition().accept(getRealThis());
 
     if (a.getGenericType().isPresent()) {
       getPrinter().print(" " + a.getGenericType().get().getTypeName());
@@ -305,9 +304,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
 
     print("interface ");
     print(a.getName());
-    if (a.getSymbolDefinition().isPresent()) {
-      getPrinter().print("@!");
-    }
+    a.getSymbolDefinition().accept(getRealThis());
 
     if (!a.getSuperInterfaceRule().isEmpty()) {
       getPrinter().print(" extends ");
@@ -876,9 +873,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
 
     getPrinter().print("abstract ");
     getPrinter().print(a.getName() + " ");
-    if (a.getSymbolDefinition().isPresent()) {
-      getPrinter().print("@!");
-    }
+    a.getSymbolDefinition().accept(getRealThis());
     if (!a.getSuperRule().isEmpty()) {
       getPrinter().print("extends ");
       printList(a.getSuperRule().iterator(), " ");
@@ -953,6 +948,22 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     print("MCA ");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
+  }
+
+  /**
+   * @see de.monticore.grammar.grammar._visitor.GrammarVisitor#handle(de.monticore.grammar.grammar._ast.ASTSymbolDefinition)
+   */
+  @Override
+  public void handle(ASTSymbolDefinition node) {  
+    if (node.isGenSymbol()) {
+      getPrinter().print(" symbol ");
+      if (node.getSymbolKind().isPresent()) {
+        getPrinter().print(node.getSymbolKind().get() + " ");
+      }
+    }
+    if (node.isGenScope()) {
+      getPrinter().print(" scope ");
+    }
   }
 
   public String prettyprint(ASTGrammarNode a) {

@@ -6,7 +6,7 @@ grammar Automaton extends mc.grammars.lexicals.TestLexicals {
     @attribute States List of states
     @attribute Transitions List of transitions
 */
-Automaton =
+symbol scope Automaton =
   "automaton" Name "{" (State | Transition)* "}" ;
 
 /** A ASTState represents a state of a finite automaton
@@ -16,7 +16,7 @@ Automaton =
     @attribute States List of sub states
     @attribute Transitions List of transitions
 */
-State =
+symbol State =
   "state" Name
   
   (("<<" ["initial"] ">>" ) | ("<<" ["final"] ">>" ))*

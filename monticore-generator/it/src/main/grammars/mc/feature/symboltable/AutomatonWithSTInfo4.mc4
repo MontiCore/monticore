@@ -4,12 +4,12 @@ grammar AutomatonWithSTInfo4 extends mc.common.Basics {
 
   // AutomatonElement and State are both declared as symbols
 
-  Automaton@! =
+  symbol scope Automaton =
     "automaton" Name "{" AutomatonElement* "}" ;
 
-  interface AutomatonElement@! = Name;
+  interface symbol AutomatonElement = Name;
 
-  State@! implements AutomatonElement =
+  symbol State implements AutomatonElement =
     "state" Name
     (("<<" ["initial"] ">>" ) | ("<<" ["final"] ">>" ))*;
 

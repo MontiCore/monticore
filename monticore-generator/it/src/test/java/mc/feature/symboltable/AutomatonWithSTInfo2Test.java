@@ -20,6 +20,7 @@
 package mc.feature.symboltable;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 
@@ -45,6 +46,7 @@ public class AutomatonWithSTInfo2Test extends GeneratorIntegrationsTest {
   /**
    * This test ensures that all expected classes are generated. Otherwise, the test will not compile
    */
+  @SuppressWarnings("unused")
   @Test
   public void test() {
     AutomatonElementKind automatonElementKind;
@@ -55,6 +57,7 @@ public class AutomatonWithSTInfo2Test extends GeneratorIntegrationsTest {
     AutomatonResolvingFilter automatonResolvingFilter;
     AutomatonScope automatonScope;
     AutomatonSymbol automatonSymbol = new AutomatonSymbol("A");
+    assertTrue(automatonSymbol instanceof ScopeSpanningSymbol);
     Collection<AutomatonElementSymbol> automatonElementSymbols = automatonSymbol.getAutomatonElements();
     AutomatonSymbolEMPTY automatonSymbolEMPTY;
     AutomatonSymbolReference automatonSymbolReference;

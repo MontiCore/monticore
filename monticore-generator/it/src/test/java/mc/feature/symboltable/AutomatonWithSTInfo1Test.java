@@ -49,6 +49,7 @@ public class AutomatonWithSTInfo1Test extends GeneratorIntegrationsTest {
   /**
    * This test ensures that all expected classes are generated. Otherwise, the test will not compile
    */
+  @SuppressWarnings("unused")
   @Test
   public void test() {
     AutomatonKind automatonKind;

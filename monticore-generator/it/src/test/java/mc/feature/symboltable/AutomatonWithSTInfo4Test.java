@@ -20,6 +20,7 @@
 package mc.feature.symboltable;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.AutomatonElementKind;
@@ -43,22 +44,27 @@ import mc.feature.symboltable.automatonwithstinfo4._symboltable.StateSymbolEMPTY
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.StateSymbolReference;
 import org.junit.Test;
 
+import de.monticore.symboltable.ScopeSpanningSymbol;
+
 public class AutomatonWithSTInfo4Test extends GeneratorIntegrationsTest {
 
   /**
    * This test ensures that all expected classes are generated. Otherwise, the test will not compile
    */
+  @SuppressWarnings("unused")
   @Test
   public void test() {
     AutomatonElementKind automatonElementKind;
     AutomatonElementResolvingFilter automatonElementResolvingFilter;
-    AutomatonElementSymbol automatonElementSymbol;
+    AutomatonElementSymbol automatonElementSymbol = new AutomatonElementSymbol("A");
+    assertFalse(automatonElementSymbol instanceof ScopeSpanningSymbol);
     AutomatonElementSymbolReference automatonElementSymbolReference;
     AutomatonKind automatonKind;
     AutomatonResolvingFilter automatonResolvingFilter;
     AutomatonScope automatonScope;
     AutomatonSymbol automatonSymbol;
-    AutomatonSymbolEMPTY automatonSymbolEMPTY;
+    AutomatonSymbolEMPTY automatonSymbolEMPTY = new AutomatonSymbolEMPTY("A");
+    assertTrue(automatonSymbolEMPTY instanceof ScopeSpanningSymbol);
     AutomatonSymbolReference automatonSymbolReference;
     AutomatonWithSTInfo4Language automatonWithSTInfo4Language;
     AutomatonWithSTInfo4ModelLoader automatonWithSTInfo4ModelLoader;
@@ -67,7 +73,8 @@ public class AutomatonWithSTInfo4Test extends GeneratorIntegrationsTest {
     StateKind stateKind;
     StateResolvingFilter stateResolvingFilter;
     StateSymbol stateSymbol = new StateSymbol("S");
-    StateSymbolEMPTY stateSymbolEMPTY;
+    StateSymbolEMPTY stateSymbolEMPTY = new StateSymbolEMPTY("A");
+    assertFalse(stateSymbolEMPTY instanceof ScopeSpanningSymbol);
     StateSymbolReference stateSymbolReference;
 
     // StateSymbol is no (sub-)kind of AutomatonElementSymbol, even though the State rule implements AutomatonElement

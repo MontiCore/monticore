@@ -1,11 +1,11 @@
 package mc.feature.symboltable;
 
-grammar AutomatonWithSTInfo5 extends mc.common.Basics {
+grammar AutomatonWithSTInfo6 extends mc.common.Basics {
 
-  // Transition is a symbol and refers to states
+  // Block is a scope 
 
   symbol scope Automaton =
-    "automaton" Name "{" (State | Transition)* "}" ;
+    "automaton" Name "{" (State | Transition | Block)* "}" ;
 
   symbol State =
     "state" Name
@@ -14,5 +14,7 @@ grammar AutomatonWithSTInfo5 extends mc.common.Basics {
 
   symbol Transition =
     from:Name@State "-" Name ">" to:Name@State ";" ;
+    
+  scope Block = "{" (State | Transition | Block)* "}" ;
 
 }

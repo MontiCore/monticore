@@ -2,10 +2,10 @@ package mc.feature.symboltable;
 
 grammar AutomatonWithSTInfo2 extends mc.common.Basics {
 
-  Automaton@! =
+  symbol scope Automaton =
     "automaton" Name "{" AutomatonElement* "}" ;
 
-  interface AutomatonElement@! = Name;
+  interface symbol AutomatonElement = Name;
 
   State implements AutomatonElement =
     "state" Name

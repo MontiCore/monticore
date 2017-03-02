@@ -2,8 +2,8 @@ package mc.embedding;
 
 grammar Host extends mc.grammar.lexicals.Lexicals {
 
-   Host@! = Name "content" Content;
+   symbol scope Host = Name "content" Content;
 
-   Content@! = Name;
+   symbol Content = Name;
 
 }

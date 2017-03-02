@@ -154,7 +154,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
     MCProdSymbol prodSymbol = new MCProdSymbol(ast.getName());
     prodSymbol.setInterface(true);
     
-    setSymbolDefinitionIfExists(prodSymbol, ast.getSymbolDefinition().orElse(null));
+    setSymbolDefinition(prodSymbol, ast.getSymbolDefinition());
     
     setSuperProdsAndTypes(prodSymbol, Collections.emptyList(),
         Collections.emptyList(), ast.getSuperInterfaceRule(), ast.getASTSuperInterface());
@@ -189,7 +189,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
   public void visit(ASTClassProd ast) {
     final MCProdSymbol prodSymbol = new MCProdSymbol(ast.getName());
     
-    setSymbolDefinitionIfExists(prodSymbol, ast.getSymbolDefinition().orElse(null));
+    setSymbolDefinition(prodSymbol, ast.getSymbolDefinition());
     
     setSuperProdsAndTypes(prodSymbol, ast.getSuperRule(),
         ast.getASTSuperClass(), ast.getSuperInterfaceRule(), ast.getASTSuperInterface());
@@ -206,7 +206,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
     MCProdSymbol prodSymbol = new MCProdSymbol(ast.getName());
     prodSymbol.setAbstract(true);
     
-    setSymbolDefinitionIfExists(prodSymbol, ast.getSymbolDefinition().orElse(null));
+    setSymbolDefinition(prodSymbol, ast.getSymbolDefinition());
     
     setSuperProdsAndTypes(prodSymbol, ast.getSuperRule(),
         ast.getASTSuperClass(), ast.getSuperInterfaceRule(), ast.getASTSuperInterface());
@@ -224,7 +224,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
     final MCProdSymbol prodSymbol = new MCProdSymbol(ast.getName());
     prodSymbol.setExternal(true);
     
-    setSymbolDefinitionIfExists(prodSymbol, ast.getSymbolDefinition().orElse(null));
+    setSymbolDefinition(prodSymbol, ast.getSymbolDefinition());
     
     addToScopeAndLinkWithNode(prodSymbol, ast);
   }
@@ -538,9 +538,9 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
     }
   }
   
-  private void setSymbolDefinitionIfExists(MCProdSymbol prodSymbol,
+  private void setSymbolDefinition(MCProdSymbol prodSymbol,
       ASTSymbolDefinition symbolDefinition) {
-    if (symbolDefinition != null) {
+    if (symbolDefinition.isGenSymbol()) {
       String symbolKindName = prodSymbol.getName();
       
       if (symbolDefinition.getSymbolKind().isPresent()
@@ -552,6 +552,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
           prodSymbol.getSpannedScope());
       prodSymbol.setProdDefiningSymbolKind(prodReference);
     }
+    prodSymbol.setScopeDefinition(symbolDefinition.isGenScope());
   }
   
   private void computeStartParserProd(ASTMCGrammar astGrammar) {

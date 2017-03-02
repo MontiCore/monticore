@@ -2,10 +2,10 @@ package mc.feature.symboltable;
 
 grammar AutomatonWithSTInfo1 extends mc.common.Basics {
 
-  Automaton@! =
+  symbol scope Automaton =
     "automaton" Name "{" (State | Transition)* "}" ;
 
-  State@! =
+  symbol scope State =
     "state" Name
     (("<<" ["initial"] ">>" ) | ("<<" ["final"] ">>" ))*
     ( ("{" (State | Transition)* "}") | ";") ;
