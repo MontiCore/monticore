@@ -45,8 +45,9 @@ ${tc.defineHookPoint("JavaCopyright")}
 package ${package};
 
 import java.util.Optional;
-
+<#if !stHelper.getGrammarSymbol().isComponent()>
 import ${fqn}._parser.${grammarName}Parser;
+</#if>
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 
@@ -61,10 +62,12 @@ public abstract class ${className} extends de.monticore.CommonModelingLanguage {
 </#if>
   }
 
+  <#if !stHelper.getGrammarSymbol().isComponent()>
   @Override
   public ${grammarName}Parser getParser() {
     return new ${grammarName}Parser();
   }
+  </#if>
 
   <#if !skipSTGen>
   @Override

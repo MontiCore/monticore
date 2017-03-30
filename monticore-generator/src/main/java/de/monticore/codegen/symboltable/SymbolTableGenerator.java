@@ -86,12 +86,6 @@ public class SymbolTableGenerator {
     
     MCGrammarSymbol grammarSymbol = genHelper.getGrammarSymbol();
     
-    // TODO PN also generate for components grammars everything that is possible
-    // and useful.
-    if (grammarSymbol.isComponent()) {
-      return;
-    }
-    
     // Skip generation if no rules are defined in the grammar, since no top asts
     // will be generated.
     if (!grammarSymbol.getStartProd().isPresent()) {
