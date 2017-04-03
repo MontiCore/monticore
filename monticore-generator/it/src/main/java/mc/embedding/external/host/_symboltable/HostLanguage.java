@@ -47,5 +47,9 @@ public class HostLanguage extends HostLanguageTOP {
     return null;
   }
 
-
+  @Override
+  protected void initResolvingFilters() {
+    addResolver(new ContentResolvingFilter());
+    addResolver(new HostResolvingFilter());
+  }
 }

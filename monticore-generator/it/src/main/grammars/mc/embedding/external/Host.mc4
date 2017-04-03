@@ -4,6 +4,6 @@ component grammar Host extends mc.grammar.lexicals.Lexicals {
 
    symbol scope Host = Name "content" Content;
 
-   external scope Content;
+   external  Content;
 
 }
