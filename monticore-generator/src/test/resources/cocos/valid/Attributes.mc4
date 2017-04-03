@@ -30,7 +30,7 @@ grammar Attributes  {
       @attribute States List of sub states
       @attribute Transitions List of transitions
   */
-  State =
+  symbol State =
     "state" Name
 
     (("<<" ["initial"] ">>" ) | ("<<" ["final"] ">>" ))*

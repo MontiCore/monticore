@@ -66,6 +66,8 @@ public class GrammarCoCos {
     checker.addCoCo(new OverridingLexNTs());
     checker.addCoCo(new GrammarInheritanceCycle());
     checker.addCoCo(new LeftRecursiveRulesInBlock());
+    checker.addCoCo(new DuplicatedSymbolDefinitionInClassProd());
+
     // checker.addCoCo(new NoNTInheritanceCycle());
 
     return checker;

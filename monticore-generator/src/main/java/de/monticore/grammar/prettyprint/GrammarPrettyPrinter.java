@@ -125,7 +125,8 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     print("external ");
 
     getPrinter().print(a.getName());
-    a.getSymbolDefinition().accept(getRealThis());
+    
+    printList(a.getSymbolDefinitions().iterator(), " ");
 
     if (a.getGenericType().isPresent()) {
       getPrinter().print(" " + a.getGenericType().get().getTypeName());
@@ -304,7 +305,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
 
     print("interface ");
     print(a.getName());
-    a.getSymbolDefinition().accept(getRealThis());
+    printList(a.getSymbolDefinitions().iterator(), " ");
 
     if (!a.getSuperInterfaceRule().isEmpty()) {
       getPrinter().print(" extends ");
@@ -873,7 +874,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
 
     getPrinter().print("abstract ");
     getPrinter().print(a.getName() + " ");
-    a.getSymbolDefinition().accept(getRealThis());
+    printList(a.getSymbolDefinitions().iterator(), " ");
     if (!a.getSuperRule().isEmpty()) {
       getPrinter().print("extends ");
       printList(a.getSuperRule().iterator(), " ");

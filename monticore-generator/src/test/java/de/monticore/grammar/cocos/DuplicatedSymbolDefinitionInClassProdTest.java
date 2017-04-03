@@ -30,21 +30,21 @@ import de.se_rwth.commons.logging.Log;
  *
  * @author KH
  */
-public class LeftRecursiveRulesInBlockTest extends CocoTest {
+public class DuplicatedSymbolDefinitionInClassProdTest extends CocoTest {
 
-  private final String MESSAGE = " The left recursive rule A is not allowed in blocks, because it doesn't work in Antlr. ";
+  private final String MESSAGE = " Symbol or scope is mentioned more than once in the class declaration 'A'.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
-  private final String grammar = "cocos.invalid.A4056.A4056";
+  private final String grammar = "cocos.invalid.A4041.A4041";
 
   @BeforeClass
   public static void disableFailQuick() {
     Log.enableFailQuick(false);
-    checker.addCoCo(new LeftRecursiveRulesInBlock());
+    checker.addCoCo(new DuplicatedSymbolDefinitionInClassProd());
   }
 
   @Test
-  public void testSimpleLeftRecursion() {
-    testInvalidGrammar(grammar, LeftRecursiveRulesInBlock.ERROR_CODE,
+  public void testDuplicatedSymbolDefinition() {
+    testInvalidGrammar(grammar, DuplicatedSymbolDefinitionInClassProd.ERROR_CODE,
         String.format(MESSAGE, "interface"), checker);
   }
   

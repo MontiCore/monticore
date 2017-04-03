@@ -19,38 +19,33 @@
 
 package de.monticore.grammar.cocos;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
+import de.monticore.grammar.grammar._ast.ASTClassProd;
+import de.monticore.grammar.grammar._ast.ASTSymbolDefinition;
+import de.monticore.grammar.grammar._cocos.GrammarASTClassProdCoCo;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * Created by
+ * Checks that nonterminal names start lower-case.
  *
  * @author KH
  */
-public class LeftRecursiveRulesInBlockTest extends CocoTest {
-
-  private final String MESSAGE = " The left recursive rule A is not allowed in blocks, because it doesn't work in Antlr. ";
-  private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
-  private final String grammar = "cocos.invalid.A4056.A4056";
-
-  @BeforeClass
-  public static void disableFailQuick() {
-    Log.enableFailQuick(false);
-    checker.addCoCo(new LeftRecursiveRulesInBlock());
-  }
-
-  @Test
-  public void testSimpleLeftRecursion() {
-    testInvalidGrammar(grammar, LeftRecursiveRulesInBlock.ERROR_CODE,
-        String.format(MESSAGE, "interface"), checker);
+public class DuplicatedSymbolDefinitionInClassProd implements GrammarASTClassProdCoCo {
+  
+  public static final String ERROR_CODE = "0xA4041";
+  
+  public static final String ERROR_MSG_FORMAT = " Symbol or scope is mentioned more than once in the class declaration '%s'.";
+    
+  @Override
+  public void check(ASTClassProd a) {
+    boolean isScope = false;
+    boolean isSymbol = false;
+    for (ASTSymbolDefinition c : a.getSymbolDefinitions()) {
+      if ((c.isGenScope() && isScope) || (c.isGenSymbol() && isSymbol)) {
+        Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName()), a.get_SourcePositionStart());
+      }
+      isScope |= c.isGenScope();
+      isSymbol |= c.isGenSymbol();
+    }
   }
   
-  @Test
-  public void testCorrect(){
-    testValidGrammar("cocos.valid.Attributes", checker);
-  }
-
 }

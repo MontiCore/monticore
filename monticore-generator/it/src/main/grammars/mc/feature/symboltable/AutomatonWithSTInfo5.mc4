@@ -1,6 +1,6 @@
 package mc.feature.symboltable;
 
-grammar AutomatonWithSTInfo5 extends mc.common.Basics {
+component grammar AutomatonWithSTInfo5 extends mc.common.Basics {
 
   // Transition is a symbol and refers to states
 

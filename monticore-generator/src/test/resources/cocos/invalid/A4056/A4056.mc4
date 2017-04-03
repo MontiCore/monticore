@@ -1,0 +1,7 @@
+package cocos.invalid.A4056;
+
+grammar A4056 {
+
+  A = (A "*" A);
+
+}
