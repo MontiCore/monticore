@@ -19,38 +19,33 @@
 
 package de.monticore.grammar.cocos;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
+import de.monticore.grammar.grammar._ast.ASTProd;
+import de.monticore.grammar.grammar._ast.ASTSymbolDefinition;
+import de.monticore.grammar.grammar._cocos.GrammarASTProdCoCo;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * Created by
+ * Checks that Prods have one symbol and one scope keyword at most
  *
- * @author KH
+ * @author MB
  */
-public class DuplicatedSymbolDefinitionInClassProdTest extends CocoTest {
-
-  private final String MESSAGE = " Symbol or scope is mentioned more than once in the class declaration 'A'.";
-  private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
-  private final String grammar = "cocos.invalid.A4041.A4041";
-
-  @BeforeClass
-  public static void disableFailQuick() {
-    Log.enableFailQuick(false);
-    checker.addCoCo(new DuplicatedSymbolDefinitionInClassProd());
-  }
-
-  @Test
-  public void testDuplicatedSymbolDefinition() {
-    testInvalidGrammar(grammar, DuplicatedSymbolDefinitionInClassProd.ERROR_CODE,
-        String.format(MESSAGE, "interface"), checker);
+public class DuplicatedSymbolDefinitionInProd implements GrammarASTProdCoCo {
+  
+  public static final String ERROR_CODE = "0xA4041";
+  
+  public static final String ERROR_MSG_FORMAT = " Symbol or scope is mentioned more than once in the declaration '%s'.";
+    
+  @Override
+  public void check(ASTProd a) {
+    boolean isScope = false;
+    boolean isSymbol = false;
+    for (ASTSymbolDefinition c : a.getSymbolDefinitions()) {
+      if ((c.isGenScope() && isScope) || (c.isGenSymbol() && isSymbol)) {
+        Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName()), a.get_SourcePositionStart());
+      }
+      isScope |= c.isGenScope();
+      isSymbol |= c.isGenSymbol();
+    }
   }
   
-  @Test
-  public void testCorrect(){
-    testValidGrammar("cocos.valid.Attributes", checker);
-  }
-
 }

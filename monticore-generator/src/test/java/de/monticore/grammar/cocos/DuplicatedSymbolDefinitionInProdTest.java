@@ -19,33 +19,37 @@
 
 package de.monticore.grammar.cocos;
 
-import de.monticore.grammar.grammar._ast.ASTClassProd;
-import de.monticore.grammar.grammar._ast.ASTSymbolDefinition;
-import de.monticore.grammar.grammar._cocos.GrammarASTClassProdCoCo;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * Checks that nonterminal names start lower-case.
+ * Created by
  *
- * @author KH
+ * @author MB
  */
-public class DuplicatedSymbolDefinitionInClassProd implements GrammarASTClassProdCoCo {
-  
-  public static final String ERROR_CODE = "0xA4041";
-  
-  public static final String ERROR_MSG_FORMAT = " Symbol or scope is mentioned more than once in the class declaration '%s'.";
-    
-  @Override
-  public void check(ASTClassProd a) {
-    boolean isScope = false;
-    boolean isSymbol = false;
-    for (ASTSymbolDefinition c : a.getSymbolDefinitions()) {
-      if ((c.isGenScope() && isScope) || (c.isGenSymbol() && isSymbol)) {
-        Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName()), a.get_SourcePositionStart());
-      }
-      isScope |= c.isGenScope();
-      isSymbol |= c.isGenSymbol();
-    }
+public class DuplicatedSymbolDefinitionInProdTest extends CocoTest {
+
+  private final String MESSAGE = " Symbol or scope is mentioned more than once in the declaration 'A'.";
+  private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
+  private final String grammar = "cocos.invalid.A4041.A4041";
+
+  @BeforeClass
+  public static void disableFailQuick() {
+    Log.enableFailQuick(false);
+    checker.addCoCo(new DuplicatedSymbolDefinitionInProd());
+  }
+
+  @Test
+  public void testDuplicatedSymbolDefinition() {
+    testInvalidGrammar(grammar, DuplicatedSymbolDefinitionInProd.ERROR_CODE, MESSAGE, checker);
   }
   
+  @Test
+  public void testCorrect(){
+    testValidGrammar("cocos.valid.Attributes", checker);
+  }
+
 }
