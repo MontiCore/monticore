@@ -411,8 +411,8 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   public boolean isOptionalNamed(final MCProdSymbol rule) {
     for (MCProdComponentSymbol comp : rule.getProdComponents()) {
       // TODO check full name?
-      if ((comp.getName().equals(NAME_NONTERMINAL) &&
-          isNullOrEmpty(comp.getUsageName())
+      if (comp.getName().equals(NAME_NONTERMINAL) &&
+          (isNullOrEmpty(comp.getUsageName())
               || comp.getUsageName().equalsIgnoreCase(NAME_NONTERMINAL)) && comp.isOptional()) {
         return true;
       }

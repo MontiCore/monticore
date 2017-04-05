@@ -62,13 +62,6 @@ public class VisitorGeneratorHelper extends GeneratorHelper {
     List<String> superVisitors = new ArrayList<>();
     // delegators are always an inheritance visitor of the own language
     superVisitors.add(getInheritanceVisitorType());
-    // and extend all direct superlanguages delegator visitors to inherit all
-    // their setters for delegates.
-    for (String superGrammar : getSuperGrammarCds()) {
-      String visitorType = getDelegatorVisitorType(Names.getSimpleName(superGrammar));
-      String visitorPackage = getPackageName(superGrammar.toLowerCase(), getVisitorPackageSuffix());
-      superVisitors.add(Joiners.DOT.join(visitorPackage, visitorType));
-    }
     return superVisitors;
   }
   
@@ -91,7 +84,7 @@ public class VisitorGeneratorHelper extends GeneratorHelper {
     if (superVisitorInterfaces.isEmpty()) {
       return "";
     }
-    return " extends " + Joiner.on(", ").join(superVisitorInterfaces);
+    return " implements " + Joiner.on(", ").join(superVisitorInterfaces);
   }
   
   public String getVisitorPackage() {

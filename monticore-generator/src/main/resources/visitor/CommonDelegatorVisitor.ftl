@@ -40,6 +40,7 @@ ${tc.defineHookPoint("JavaCopyright")}
 package ${genHelper.getVisitorPackage()};
 
 import java.util.Optional;
+import de.monticore.ast.ASTNode;
 
 import de.se_rwth.commons.logging.Log;
 
@@ -47,19 +48,18 @@ import de.se_rwth.commons.logging.Log;
  * Common delegator visitor for the <code>${genHelper.getCdName()}</code>
  * language.<br/>
  * <br/>
- * @see ${genHelper.getDelegatorVisitorType()}
  */
-public class Common${genHelper.getDelegatorVisitorType()} implements ${genHelper.getDelegatorVisitorType()} {
+public class Common${genHelper.getDelegatorVisitorType()}  implements ${genHelper.getInheritanceVisitorType()} {
 
-  private ${genHelper.getDelegatorVisitorType()} realThis = this;
+  private Common${genHelper.getDelegatorVisitorType()} realThis = this;
 
   @Override
   public void setRealThis(${genHelper.getVisitorType()} realThis) {
     if (this.realThis != realThis) {
-      if (!(realThis instanceof ${genHelper.getDelegatorVisitorType()})) {
-          Log.error("0xA7111${genHelper.getGeneratedErrorCode(ast)} realThis of ${genHelper.getDelegatorVisitorType()} must be ${genHelper.getDelegatorVisitorType()} itself.");
+      if (!(realThis instanceof Common${genHelper.getDelegatorVisitorType()})) {
+          Log.error("0xA7111${genHelper.getGeneratedErrorCode(ast)} realThis of Common${genHelper.getDelegatorVisitorType()} must be ${genHelper.getDelegatorVisitorType()} itself.");
       }
-      this.realThis = (${genHelper.getDelegatorVisitorType()}) realThis;
+      this.realThis = (Common${genHelper.getDelegatorVisitorType()}) realThis;
       // register the known delegates to the realThis (and therby also set their new realThis)
       <#list allCds as cd>
         <#assign delegate = genHelper.getQualifiedVisitorNameAsJavaName(cd)>
@@ -70,8 +70,7 @@ public class Common${genHelper.getDelegatorVisitorType()} implements ${genHelper
     }
   }
 
-  @Override
-  public ${genHelper.getDelegatorVisitorType()} getRealThis() {
+  public Common${genHelper.getDelegatorVisitorType()} getRealThis() {
     return realThis;
   }
 
@@ -99,5 +98,62 @@ public class Common${genHelper.getDelegatorVisitorType()} implements ${genHelper
       return ${delegate};
     }
 
+    <#list cd.getTypes() as type>
+      <#if type.isClass() || type.isInterface() >
+        <#assign astName = genHelper.getJavaASTName(type)>
+        @Override
+        public void handle(${astName} node) {
+          if (getRealThis().get_${delegate}().isPresent()) {
+            getRealThis().get_${delegate}().get().handle(node);
+          }
+        }
+  
+        <#if !type.isInterface() && !type.isAbstract()>
+          @Override
+          public void traverse(${astName} node) {
+            if (getRealThis().get_${delegate}().isPresent()) {
+              getRealThis().get_${delegate}().get().traverse(node);
+            }
+          }
+        </#if>
+ 
+        @Override
+        public void visit(${astName} node) {
+          if (getRealThis().get_${delegate}().isPresent()) {
+            getRealThis().get_${delegate}().get().visit(node);
+          }
+        }
+
+        @Override
+        public void endVisit(${astName} node) {
+          if (getRealThis().get_${delegate}().isPresent()) {
+            getRealThis().get_${delegate}().get().endVisit(node);
+          }
+        }
+      </#if>
+    </#list>
   </#list>
+  
+  <#-- all delegates are fed when ASTNode is visited (e.g., all inheritance
+       visitors are interested in this -->
+
+  public void visit(ASTNode node) {
+    // delegate to all present delegates
+    <#list allCds as cd>
+      <#assign delegate = genHelper.getQualifiedVisitorNameAsJavaName(cd)>
+      if (getRealThis().get_${delegate}().isPresent()) {
+        getRealThis().get_${delegate}().get().visit(node);
+      }
+    </#list>
+  }
+
+  public void endVisit(ASTNode node) {
+    // delegate to all present delegates 
+    <#list allCds?reverse as cd>
+      <#assign delegate = genHelper.getQualifiedVisitorNameAsJavaName(cd)>
+      if (getRealThis().get_${delegate}().isPresent()) {
+        getRealThis().get_${delegate}().get().endVisit(node);
+      }
+    </#list>
+    }
 }

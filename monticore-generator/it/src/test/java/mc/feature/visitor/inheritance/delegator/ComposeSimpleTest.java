@@ -32,7 +32,6 @@ import mc.feature.visitor.inheritance.b._ast.ASTZB;
 import mc.feature.visitor.inheritance.b._visitor.BVisitor;
 import mc.feature.visitor.inheritance.c._ast.ASTXC;
 import mc.feature.visitor.inheritance.c._ast.ASTYC;
-import mc.feature.visitor.inheritance.c._visitor.CDelegatorVisitor;
 import mc.feature.visitor.inheritance.c._visitor.CVisitor;
 import mc.feature.visitor.inheritance.c._visitor.CommonCDelegatorVisitor;
 
@@ -46,7 +45,7 @@ import mc.feature.visitor.inheritance.c._visitor.CommonCDelegatorVisitor;
 public class ComposeSimpleTest extends CommonVisitorTest {
   
   // the composer
-  private CDelegatorVisitor v = new CommonCDelegatorVisitor();
+  private CommonCDelegatorVisitor v = new CommonCDelegatorVisitor();
   
   // the simple visitors about to compose
   private AVisitor aVis = new SimpleAVisitor(run);

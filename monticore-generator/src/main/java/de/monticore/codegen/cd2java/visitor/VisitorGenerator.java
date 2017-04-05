@@ -87,13 +87,6 @@ public class VisitorGenerator {
     
     Collection<CDSymbol> allCds = visitorHelper.getAllCds(cd);
     
-    // delegator visitor interface
-    final Path delegatorVisitorFilePath = Paths.get(path, visitorHelper.getDelegatorVisitorType()
-        + ".java");
-    generator.generate("visitor.DelegatorVisitor", delegatorVisitorFilePath, astClassDiagram,
-        astClassDiagram.getCDDefinition(), astPackage, allCds);
-    Log.trace(LOGGER_NAME, "Generated delegator visitor interface for the diagram: " + diagramName);
-    
     // common delegator visitor
     final Path commonDelegatorVisitorFilePath = Paths.get(path,
         "Common" + visitorHelper.getDelegatorVisitorType() + ".java");

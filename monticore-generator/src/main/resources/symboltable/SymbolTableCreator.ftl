@@ -48,7 +48,6 @@ package ${package};
 import de.se_rwth.commons.logging.Log;
 
 import ${fqn}._visitor.${genHelper.getVisitorType()};
-import ${fqn}._visitor.${genHelper.getDelegatorVisitorType()};
 import ${fqn}._visitor.${genHelper.getCommonDelegatorVisitorType()};
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
@@ -58,27 +57,16 @@ import java.util.Deque;
 public class ${className} extends de.monticore.symboltable.CommonSymbolTableCreator
          implements ${grammarName}Visitor {
 
-  // TODO doc
-  private final ${genHelper.getDelegatorVisitorType()} visitor = new ${genHelper.getCommonDelegatorVisitorType()}();
-
   public ${className}(
     final ResolvingConfiguration resolvingConfig, final MutableScope enclosingScope) {
     super(resolvingConfig, enclosingScope);
-    initSuperSTC();
   }
 
   public ${className}(final ResolvingConfiguration resolvingConfig, final Deque<MutableScope> scopeStack) {
     super(resolvingConfig, scopeStack);
-    initSuperSTC();
   }
 
   private void initSuperSTC() {
-    // TODO doc
-    <#list directSuperCds as cd>
-      <#assign delegate = genHelper.getQualifiedVisitorNameAsJavaName(cd)>
-      <#assign delegateType = genHelper.getQualifiedVisitorType(cd)>
-      // visitor.set_${delegate}(${genHelper.getQualifiedSymTabCreator(cd.getFullName())}(resolvingConfig, scopeStack));
-    </#list>
   }
 
   /**
@@ -104,7 +92,6 @@ public class ${className} extends de.monticore.symboltable.CommonSymbolTableCrea
   public void setRealThis(${genHelper.getVisitorType()} realThis) {
     if (this.realThis != realThis) {
       this.realThis = realThis;
-      visitor.setRealThis(realThis);
     }
   }
 

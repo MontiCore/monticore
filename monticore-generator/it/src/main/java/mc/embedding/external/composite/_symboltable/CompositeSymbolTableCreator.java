@@ -25,7 +25,6 @@ import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 import mc.embedding.external.composite._visitor.CommonCompositeDelegatorVisitor;
-import mc.embedding.external.composite._visitor.CompositeDelegatorVisitor;
 import mc.embedding.external.composite._visitor.CompositeVisitor;
 import mc.embedding.external.embedded._symboltable.EmbeddedSymbolTableCreator;
 import mc.embedding.external.host._ast.ASTHost;
@@ -37,7 +36,7 @@ public class CompositeSymbolTableCreator extends CommonSymbolTableCreator implem
 
   private final HostSymbolTableCreator hostSymbolTableCreator;
 
-  public final CompositeDelegatorVisitor visitor;
+  public final CommonCompositeDelegatorVisitor visitor;
 
   private CompositeVisitor realThis = this;
 
