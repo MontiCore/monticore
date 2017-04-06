@@ -22,6 +22,9 @@ package mc.feature.symboltable;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Test;
+
+import de.monticore.symboltable.ScopeSpanningSymbol;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.AutomatonElementKind;
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.AutomatonElementResolvingFilter;
@@ -31,7 +34,6 @@ import mc.feature.symboltable.automatonwithstinfo4._symboltable.AutomatonKind;
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.AutomatonResolvingFilter;
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.AutomatonScope;
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.AutomatonSymbol;
-import mc.feature.symboltable.automatonwithstinfo4._symboltable.AutomatonSymbolEMPTY;
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.AutomatonSymbolReference;
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.AutomatonWithSTInfo4Language;
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.AutomatonWithSTInfo4ModelLoader;
@@ -40,11 +42,7 @@ import mc.feature.symboltable.automatonwithstinfo4._symboltable.AutomatonWithSTI
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.StateKind;
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.StateResolvingFilter;
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.StateSymbol;
-import mc.feature.symboltable.automatonwithstinfo4._symboltable.StateSymbolEMPTY;
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.StateSymbolReference;
-import org.junit.Test;
-
-import de.monticore.symboltable.ScopeSpanningSymbol;
 
 public class AutomatonWithSTInfo4Test extends GeneratorIntegrationsTest {
 
@@ -62,9 +60,8 @@ public class AutomatonWithSTInfo4Test extends GeneratorIntegrationsTest {
     AutomatonKind automatonKind;
     AutomatonResolvingFilter automatonResolvingFilter;
     AutomatonScope automatonScope;
-    AutomatonSymbol automatonSymbol;
-    AutomatonSymbolEMPTY automatonSymbolEMPTY = new AutomatonSymbolEMPTY("A");
-    assertTrue(automatonSymbolEMPTY instanceof ScopeSpanningSymbol);
+    AutomatonSymbol automatonSymbol= new AutomatonSymbol("A");
+    assertTrue(automatonSymbol instanceof ScopeSpanningSymbol);
     AutomatonSymbolReference automatonSymbolReference;
     AutomatonWithSTInfo4Language automatonWithSTInfo4Language;
     AutomatonWithSTInfo4ModelLoader automatonWithSTInfo4ModelLoader;
@@ -73,8 +70,7 @@ public class AutomatonWithSTInfo4Test extends GeneratorIntegrationsTest {
     StateKind stateKind;
     StateResolvingFilter stateResolvingFilter;
     StateSymbol stateSymbol = new StateSymbol("S");
-    StateSymbolEMPTY stateSymbolEMPTY = new StateSymbolEMPTY("A");
-    assertFalse(stateSymbolEMPTY instanceof ScopeSpanningSymbol);
+    assertFalse(stateSymbol instanceof ScopeSpanningSymbol);
     StateSymbolReference stateSymbolReference;
 
     // StateSymbol is no (sub-)kind of AutomatonElementSymbol, even though the State rule implements AutomatonElement

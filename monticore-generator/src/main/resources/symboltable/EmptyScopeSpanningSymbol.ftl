@@ -30,7 +30,7 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-${signature("className", "ruleSymbol")}
+${signature("className", "scopeClassName", "ruleSymbol")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign ruleName = ruleSymbol.getName()?cap_first>
 
@@ -52,4 +52,27 @@ public class ${className} extends de.monticore.symboltable.CommonScopeSpanningSy
     super(name, KIND);
   }
 
+
+  ${includeArgs("symboltable.symbols.Attributes", ruleSymbol)}
+
+  ${includeArgs("symboltable.symbols.GetterSetter", ruleSymbol)}
+
+  @Override
+  protected ${scopeClassName} createSpannedScope() {
+    return new ${scopeClassName}();
+  }
+
+
+  <#-- Get methods for  containing symbols -->
+
+  <#assign fields = genHelper.symbolRuleComponents2JavaFields(ruleSymbol)>
+
+  <#list fields?keys as fname>
+    <#assign type = fields[fname]>
+
+  public Collection<${type}> get${fname?cap_first}() {
+    return sortSymbolsByPosition(getSpannedScope().resolveLocally(${type}.KIND));
+  }
+  </#list>
+  
 }

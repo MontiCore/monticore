@@ -39,15 +39,6 @@ ${signature("ruleSymbol")}
 <#assign fqn = genHelper.getQualifiedGrammarName()?lower_case>
 <#assign astPrefix = fqn + "._ast.AST">
 
-    <#-- generates fields that are not symbol references -->
-    <#assign fields = genHelper.ruleComponentsWithoutSymbolReferences2JavaFields(ruleSymbol)>
-    <#list fields?keys as fname>
-      <#assign nonReservedName = genHelper.nonReservedName(fname)>
-      <#assign type = fields[fname]>
-      <#assign getterPrefix = genHelper.getterPrefix(type)>
-      ${ruleNameLower}.set${fname?cap_first}(ast.${getterPrefix}${fname?cap_first}());
-    </#list>
-    <#t>
     <#-- generates fields that are symbol references -->
     <#assign symbolFields = genHelper.symbolReferenceRuleComponents2JavaFields(ruleSymbol)>
     <#list symbolFields?keys as fname>

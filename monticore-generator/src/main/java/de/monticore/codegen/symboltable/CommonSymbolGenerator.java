@@ -36,28 +36,16 @@ import de.se_rwth.commons.Names;
 public class CommonSymbolGenerator implements SymbolGenerator {
 
   public static final String SYMBOL_SUFFIX = "Symbol";
-  public static final String EMPTY_SYMBOL_SUFFIX = "SymbolEMPTY";
 
   @Override
   public void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
       IterablePath handCodedPath, MCProdSymbol ruleSymbol) {
-    final String className = getSimpleTypeNameToGenerate(getSimpleName(ruleSymbol.getName() + "Symbol"),
-        genHelper.getTargetPackage(), handCodedPath);
-
-    final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
-
     generateEmpty(genEngine, genHelper, handCodedPath, ruleSymbol);
-    if (!ruleSymbol.isAbstract() && !ruleSymbol.isInterface()) {
-      genEngine.generate("symboltable.Symbol", filePath, ruleSymbol.getAstNode().get(), className, ruleSymbol);
-    }
   }
 
   protected void generateEmpty(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
       IterablePath handCodedPath, MCProdSymbol ruleSymbol) {
-    // Interface and abstract rules both do not have any content. Hence, only the empty symbol interface must be generated.
-    // In that case, the suffix is just "Symbol" instead of "SymbolEMPTY".
-    final String suffix = ruleSymbol.isAbstract() || ruleSymbol.isInterface()
-        ? SYMBOL_SUFFIX : EMPTY_SYMBOL_SUFFIX;
+    final String suffix = SYMBOL_SUFFIX;
 
     final String className = getSimpleTypeNameToGenerate(getSimpleName(ruleSymbol.getName() + suffix),
         genHelper.getTargetPackage(), handCodedPath);

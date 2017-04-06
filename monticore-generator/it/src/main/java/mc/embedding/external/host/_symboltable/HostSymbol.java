@@ -28,7 +28,7 @@ import static de.monticore.symboltable.Symbols.sortSymbolsByPosition;
 
 import java.util.Collection;
 
-public class HostSymbol extends HostSymbolEMPTY {
+public class HostSymbol extends HostSymbolTOP {
 
   public HostSymbol(String name) {
     super(name);

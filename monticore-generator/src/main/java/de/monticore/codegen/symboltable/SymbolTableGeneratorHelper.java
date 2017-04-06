@@ -168,6 +168,8 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
       else if (componentSymbol.isConstant()) {
         constant2JavaField(componentSymbol, fields);
       }
+      // Ignore other fields
+      /*
       else if (componentSymbol.isConstantGroup()) {
         String attrName = MCGrammarSymbolTableHelper.getConstantName(componentSymbol).orElse("");
         if (canBeTransformedToValidJavaName(attrName)) {
@@ -179,12 +181,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
       else if (componentSymbol.isTerminal()) {
         // ignore terminals
       }
-      else {
-        // TODO PN remove this exception
-        throw new RuntimeException(
-            "0xA4078 TODO PN implement in " + SymbolTableGeneratorHelper.class.getSimpleName());
-      }
-      
+      */      
     }
     
     return fields;

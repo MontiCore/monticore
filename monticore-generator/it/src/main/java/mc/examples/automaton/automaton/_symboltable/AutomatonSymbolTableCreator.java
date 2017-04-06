@@ -54,9 +54,6 @@ public class AutomatonSymbolTableCreator extends AutomatonSymbolTableCreatorTOP 
   public void visit(final ASTState stateNode) {
     final StateSymbol stateSymbol = new StateSymbol(stateNode.getName());
     
-    stateSymbol.setInitial(stateNode.isInitial());
-    stateSymbol.setFinal(stateNode.isFinal());
-
     addToScopeAndLinkWithNode(stateSymbol, stateNode);
   }
 

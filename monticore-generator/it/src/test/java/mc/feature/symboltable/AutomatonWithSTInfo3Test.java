@@ -21,12 +21,13 @@ package mc.feature.symboltable;
 
 import static org.junit.Assert.assertFalse;
 
+import org.junit.Test;
+
 import de.monticore.symboltable.ScopeSpanningSymbol;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.symboltable.automatonwithstinfo3._symboltable.AutomatonKind;
 import mc.feature.symboltable.automatonwithstinfo3._symboltable.AutomatonResolvingFilter;
 import mc.feature.symboltable.automatonwithstinfo3._symboltable.AutomatonSymbol;
-import mc.feature.symboltable.automatonwithstinfo3._symboltable.AutomatonSymbolEMPTY;
 import mc.feature.symboltable.automatonwithstinfo3._symboltable.AutomatonSymbolReference;
 import mc.feature.symboltable.automatonwithstinfo3._symboltable.AutomatonWithSTInfo3Language;
 import mc.feature.symboltable.automatonwithstinfo3._symboltable.AutomatonWithSTInfo3ModelLoader;
@@ -35,9 +36,7 @@ import mc.feature.symboltable.automatonwithstinfo3._symboltable.AutomatonWithSTI
 import mc.feature.symboltable.automatonwithstinfo3._symboltable.StateKind;
 import mc.feature.symboltable.automatonwithstinfo3._symboltable.StateResolvingFilter;
 import mc.feature.symboltable.automatonwithstinfo3._symboltable.StateSymbol;
-import mc.feature.symboltable.automatonwithstinfo3._symboltable.StateSymbolEMPTY;
 import mc.feature.symboltable.automatonwithstinfo3._symboltable.StateSymbolReference;
-import org.junit.Test;
 
 public class AutomatonWithSTInfo3Test extends GeneratorIntegrationsTest {
 
@@ -49,9 +48,8 @@ public class AutomatonWithSTInfo3Test extends GeneratorIntegrationsTest {
   public void test() {
     AutomatonKind automatonKind;
     AutomatonResolvingFilter automatonResolvingFilter;
-    AutomatonSymbol automatonSymbol;
-    AutomatonSymbolEMPTY automatonSymbolEMPTY = new AutomatonSymbolEMPTY("A");
-    assertFalse(automatonSymbolEMPTY instanceof ScopeSpanningSymbol);
+    AutomatonSymbol automatonSymbol = new AutomatonSymbol("A");
+    assertFalse(automatonSymbol instanceof ScopeSpanningSymbol);
     AutomatonSymbolReference automatonSymbolReference;
     AutomatonWithSTInfo3Language automatonWithSTInfo3Language;
     AutomatonWithSTInfo3ModelLoader automatonWithSTInfo3ModelLoader;
@@ -59,9 +57,8 @@ public class AutomatonWithSTInfo3Test extends GeneratorIntegrationsTest {
     AutomatonWithSTInfo3SymbolTableCreator automatonWithSTInfo3SymbolTableCreator;
     StateKind stateKind;
     StateResolvingFilter stateResolvingFilter;
-    StateSymbol stateSymbol;
-    StateSymbolEMPTY stateSymbolEMPTY = new StateSymbolEMPTY("S");
-    assertFalse(stateSymbolEMPTY instanceof ScopeSpanningSymbol);
+    StateSymbol stateSymbol = new StateSymbol("S");
+    assertFalse(stateSymbol instanceof ScopeSpanningSymbol);
     StateSymbolReference stateSymbolReference;
   }
 

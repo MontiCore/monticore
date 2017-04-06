@@ -24,6 +24,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 
+import org.junit.Test;
+
 import de.monticore.symboltable.ScopeSpanningSymbol;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.symboltable.automatonwithstinfo2._symboltable.AutomatonElementKind;
@@ -33,13 +35,11 @@ import mc.feature.symboltable.automatonwithstinfo2._symboltable.AutomatonKind;
 import mc.feature.symboltable.automatonwithstinfo2._symboltable.AutomatonResolvingFilter;
 import mc.feature.symboltable.automatonwithstinfo2._symboltable.AutomatonScope;
 import mc.feature.symboltable.automatonwithstinfo2._symboltable.AutomatonSymbol;
-import mc.feature.symboltable.automatonwithstinfo2._symboltable.AutomatonSymbolEMPTY;
 import mc.feature.symboltable.automatonwithstinfo2._symboltable.AutomatonSymbolReference;
 import mc.feature.symboltable.automatonwithstinfo2._symboltable.AutomatonWithSTInfo2Language;
 import mc.feature.symboltable.automatonwithstinfo2._symboltable.AutomatonWithSTInfo2ModelLoader;
 import mc.feature.symboltable.automatonwithstinfo2._symboltable.AutomatonWithSTInfo2ModelNameCalculator;
 import mc.feature.symboltable.automatonwithstinfo2._symboltable.AutomatonWithSTInfo2SymbolTableCreator;
-import org.junit.Test;
 
 public class AutomatonWithSTInfo2Test extends GeneratorIntegrationsTest {
 
@@ -59,7 +59,6 @@ public class AutomatonWithSTInfo2Test extends GeneratorIntegrationsTest {
     AutomatonSymbol automatonSymbol = new AutomatonSymbol("A");
     assertTrue(automatonSymbol instanceof ScopeSpanningSymbol);
     Collection<AutomatonElementSymbol> automatonElementSymbols = automatonSymbol.getAutomatonElements();
-    AutomatonSymbolEMPTY automatonSymbolEMPTY;
     AutomatonSymbolReference automatonSymbolReference;
     AutomatonWithSTInfo2Language automatonWithSTInfo2Language;
     AutomatonWithSTInfo2ModelLoader automatonWithSTInfo2ModelLoader;

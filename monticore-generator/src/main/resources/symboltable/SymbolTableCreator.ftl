@@ -48,7 +48,6 @@ package ${package};
 import de.se_rwth.commons.logging.Log;
 
 import ${fqn}._visitor.${genHelper.getVisitorType()};
-import ${fqn}._visitor.${genHelper.getCommonDelegatorVisitorType()};
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;

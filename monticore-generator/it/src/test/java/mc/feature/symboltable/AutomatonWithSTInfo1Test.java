@@ -19,18 +19,17 @@
 
 package mc.feature.symboltable;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 
-import de.monticore.symboltable.ScopeSpanningSymbol;
+import org.junit.Test;
+
 import mc.GeneratorIntegrationsTest;
 import mc.feature.symboltable.automatonwithstinfo1._symboltable.AutomatonKind;
 import mc.feature.symboltable.automatonwithstinfo1._symboltable.AutomatonResolvingFilter;
 import mc.feature.symboltable.automatonwithstinfo1._symboltable.AutomatonScope;
 import mc.feature.symboltable.automatonwithstinfo1._symboltable.AutomatonSymbol;
-import mc.feature.symboltable.automatonwithstinfo1._symboltable.AutomatonSymbolEMPTY;
 import mc.feature.symboltable.automatonwithstinfo1._symboltable.AutomatonSymbolReference;
 import mc.feature.symboltable.automatonwithstinfo1._symboltable.AutomatonWithSTInfo1Language;
 import mc.feature.symboltable.automatonwithstinfo1._symboltable.AutomatonWithSTInfo1ModelLoader;
@@ -40,9 +39,7 @@ import mc.feature.symboltable.automatonwithstinfo1._symboltable.StateKind;
 import mc.feature.symboltable.automatonwithstinfo1._symboltable.StateResolvingFilter;
 import mc.feature.symboltable.automatonwithstinfo1._symboltable.StateScope;
 import mc.feature.symboltable.automatonwithstinfo1._symboltable.StateSymbol;
-import mc.feature.symboltable.automatonwithstinfo1._symboltable.StateSymbolEMPTY;
 import mc.feature.symboltable.automatonwithstinfo1._symboltable.StateSymbolReference;
-import org.junit.Test;
 
 public class AutomatonWithSTInfo1Test extends GeneratorIntegrationsTest {
 
@@ -55,10 +52,7 @@ public class AutomatonWithSTInfo1Test extends GeneratorIntegrationsTest {
     AutomatonKind automatonKind;
     AutomatonResolvingFilter automatonResolvingFilter;
     AutomatonScope automatonScope;
-    AutomatonSymbolEMPTY automatonSymbolEMPTY = new AutomatonSymbolEMPTY("E");
-    assertTrue(automatonSymbolEMPTY instanceof ScopeSpanningSymbol);
     AutomatonSymbol automatonSymbol = new AutomatonSymbol("A");
-    assertTrue(automatonSymbol instanceof AutomatonSymbolEMPTY);
     Collection<StateSymbol> stateSymbols = automatonSymbol.getStates();
     AutomatonSymbolReference automatonSymbolReference;
     AutomatonWithSTInfo1Language automatonWithSTInfo1Language;
@@ -68,16 +62,10 @@ public class AutomatonWithSTInfo1Test extends GeneratorIntegrationsTest {
     StateKind stateKind;
     StateResolvingFilter stateResolvingFilter;
     StateScope stateScope;
-    StateSymbolEMPTY stateSymbolEMPTY = new StateSymbolEMPTY("T");
-    assertTrue(stateSymbolEMPTY instanceof ScopeSpanningSymbol);
     StateSymbol stateSymbol = new StateSymbol("S");
-    assertTrue(stateSymbol instanceof StateSymbolEMPTY);
+    assertTrue(stateSymbol instanceof StateSymbol);
     Collection<StateSymbol> stateSymbols2 = stateSymbol.getStates();
-    assertFalse(stateSymbol.isFinal());
-    stateSymbol.setFinal(true);
-    assertTrue(stateSymbol.isFinal());
-    stateSymbol.isInitial();
-    stateSymbol.setInitial(true);
+
     StateSymbolReference stateSymbolReference;
   }
 

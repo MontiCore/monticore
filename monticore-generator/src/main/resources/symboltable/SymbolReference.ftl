@@ -132,40 +132,6 @@ public class ${className} extends ${referencedSymbol} implements SymbolReference
 </#if>
 
 
-
-  /*
-  * Methods of ${referencedSymbol} class
-  */
- <#assign fields = genHelper.ruleComponents2JavaFields(ruleSymbol)>
-
-<#list fields?keys as fname>
-  <#assign nonReservedName = genHelper.nonReservedName(fname)>
-  <#assign type = fields[fname]>
-  <#assign setter = "set"+fname?cap_first>
-  <#assign getter = genHelper.getterPrefix(type) + fname?cap_first>
-  @Override
-  public void ${setter}(${type} ${nonReservedName}) {
-    getReferencedSymbol().${setter}(${nonReservedName});
-  }
-
-  @Override
-  public ${type} ${getter}() {
-    return getReferencedSymbol().${getter}();
-  }
-</#list>
-
-<#if isScopeSpanningSymbol>
-  <#assign fields = genHelper.symbolRuleComponents2JavaFields(ruleSymbol)>
-  <#list fields?keys as fname>
-    <#assign type = fields[fname]>
-    <#assign getter = "get"+fname?cap_first>
-  @Override
-  public Collection<${type}> ${getter}() {
-    return getReferencedSymbol().${getter}();
-  }
-
-  </#list>
-</#if>
 </#if>
 
 }

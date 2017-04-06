@@ -48,4 +48,7 @@ public class ${className} extends de.monticore.symboltable.CommonSymbol {
     super(name, KIND);
   }
 
+  ${includeArgs("symboltable.symbols.Attributes", ruleSymbol)}
+
+  ${includeArgs("symboltable.symbols.GetterSetter", ruleSymbol)}
 }
