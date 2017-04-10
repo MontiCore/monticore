@@ -77,19 +77,19 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
           String symName = StringTransformations.uncapitalize(reporting.getSymbolNameFormatted(node.getSymbol().get()));
           pp.println("symbol = " + symName + ";");
         } else if (printEmptyOptional) {
-          pp.println("symbol = Optional.Empty;");
+          pp.println("symbol = absent;");
         }
         if (node.getEnclosingScope().isPresent()) {
           String scopeName = StringTransformations.uncapitalize(reporting.getScopeNameFormatted(node.getEnclosingScope().get()));
           pp.println("enclosingScope = " + scopeName + ";");
         } else if (printEmptyOptional) {
-          pp.println("enclosingScope = Optional.Empty;");
+          pp.println("enclosingScope = absent;");
         }
         if (node.getSpannedScope().isPresent()) {
           String scopeName = StringTransformations.uncapitalize(reporting.getScopeNameFormatted(node.getSpannedScope().get()));
           pp.println("spanningScope = " + scopeName + ";");
         } else if (printEmptyOptional) {
-          pp.println("spannedScope = Optional.Empty;");
+          pp.println("spannedScope = absent;");
         }
         <#list type.getAllVisibleFields() as field>
  
@@ -102,7 +102,7 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
                 node.${attrGetter}().get().accept(getRealThis());
                 pp.println(";");
               } else if (printEmptyOptional) {
-                pp.println("${field.getName()} = Optional.Empty;");
+                pp.println("${field.getName()} = absent;");
               }
             <#else>
               if (null != node.${attrGetter}()) {          
@@ -146,7 +146,7 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
             if (node.${genHelper.getPlainGetter(field)}().isPresent()) {
               printAttribute("${field.getName()}", "\"" + String.valueOf(node.${genHelper.getPlainGetter(field)}().get()) + "\"");
             } else if (printEmptyOptional) {
-              pp.println("${field.getName()} = Optional.Empty;");
+              pp.println("${field.getName()} = absent;");
             }
           <#elseif genHelper.isListType(field.getType())>
             {
@@ -209,6 +209,7 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
     pp.println(" {");
     pp.indent();
     node.accept(getRealThis());
+    pp.print(";");
     pp.unindent();
     pp.println("}");
     return pp.getContent();

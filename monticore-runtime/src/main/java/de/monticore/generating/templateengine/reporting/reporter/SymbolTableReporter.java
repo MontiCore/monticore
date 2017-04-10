@@ -113,7 +113,7 @@ public class SymbolTableReporter extends AReporter {
     if (scope.getName().isPresent()) {
       printer.println("name = \"" + scope.getName().get() + "\";");
     } else if (printEmptyOptional) {
-      printer.println("name = Optional.Empty;");
+      printer.println("name = absent;");
     }
 
     if (scope instanceof ArtifactScope) {
@@ -143,7 +143,7 @@ public class SymbolTableReporter extends AReporter {
       printer.print(repository.getASTNodeNameFormatted(scope.getAstNode().get()));
       printer.println(";");      
     } else if (printEmptyOptional) {
-      printer.println("astNode = Optional.Empty;");
+      printer.println("astNode = absent;");
     }
     
     if (scope.getSpanningSymbol().isPresent()) {
@@ -152,7 +152,7 @@ public class SymbolTableReporter extends AReporter {
       printer.println(";");
     }
     else if (printEmptyOptional) {
-      printer.println("spanningSymbol = Optional.Empty;");
+      printer.println("spanningSymbol = absent;");
     }
     
     if (scope.getEnclosingScope().isPresent()) {
@@ -161,13 +161,13 @@ public class SymbolTableReporter extends AReporter {
       printer.println(";");
     }
     else if (printEmptyOptional) {
-      printer.println("enclosingScope = Optional.Empty;");
+      printer.println("enclosingScope = absent;");
     }
     
     Collection<Symbol> reportedSymbols = symbols.stream()
         .filter(sym -> !(sym instanceof ScopeSpanningSymbol)).collect(Collectors.toList());
     if (!reportedSymbols.isEmpty()) {
-      printer.print("symbols = ");
+      printer.print("symbols = [");
       printer.println("// *size: " + reportedSymbols.size());
       printer.indent();
     }
@@ -183,12 +183,12 @@ public class SymbolTableReporter extends AReporter {
       }
     }
     if (!reportedSymbols.isEmpty()) {
-      printer.println(";");
+      printer.println("];");
       printer.unindent();
     }
     
     if (!scope.getSubScopes().isEmpty()) {
-      printer.print("subScopes = ");
+      printer.print("subScopes = [");
       printer.println("// *size: " + scope.getSubScopes().size());
       printer.indent();
     }
@@ -202,7 +202,7 @@ public class SymbolTableReporter extends AReporter {
       reportScope(subScope, printer);
     }
     if (!scope.getSubScopes().isEmpty()) {
-      printer.println(";");
+      printer.println("];");
       printer.unindent();
     }
     
@@ -216,6 +216,7 @@ public class SymbolTableReporter extends AReporter {
     printer.println("objectdiagram " + Names.getSimpleName(modelName) + "_ST {");
     printer.indent();
     reportScope(scope, printer);
+    printer.println(";");
     printer.println();
     printer.unindent();
     printer.println("}");
@@ -242,7 +243,7 @@ public class SymbolTableReporter extends AReporter {
       printer.println(";");
     }
     else if (printEmptyOptional) {
-      printer.print("astNode = Optional.Empty;");
+      printer.print("astNode = absent;");
     }
     if (sym instanceof ScopeSpanningSymbol) {
       ScopeSpanningSymbol spanningSym = (ScopeSpanningSymbol) sym;
@@ -296,7 +297,7 @@ public class SymbolTableReporter extends AReporter {
           + ";");
     }
     else if (printEmptyOptional) {
-      printer.print("superClass = Optional.Empty;");
+      printer.print("superClass = absent;");
     }
     reportListOfReferences("interfaces", sym.getInterfaces(), printer);
   }
