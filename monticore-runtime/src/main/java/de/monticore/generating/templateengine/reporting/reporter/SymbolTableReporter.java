@@ -37,6 +37,7 @@ import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ScopeSpanningSymbol;
 import de.monticore.symboltable.Scopes;
 import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.types.CommonJFieldSymbol;
 import de.monticore.symboltable.types.CommonJMethodSymbol;
 import de.monticore.symboltable.types.CommonJTypeSymbol;
@@ -233,10 +234,19 @@ public class SymbolTableReporter extends AReporter {
     printer.print("}");
   }
   
+  protected void reportKind(SymbolKind kind, IndentPrinter printer) {
+    String type = kind.getClass().getSimpleName();
+    printer.println("KIND = :" + type + "{" );
+    printer.indent();
+    printer.println("name = \"" + kind.getName()+ "\";");
+    printer.unindent();
+    printer.println("};");    
+  }
+  
   protected void reportAttributes(Symbol sym, IndentPrinter printer) {
     reportAllFields(sym.getClass(), printer);
     printer.println("name = \"" + sym.getName() + "\";");
-    printer.println("KIND = \"" + sym.getKind() + "\";");
+    reportKind(sym.getKind(), printer);
     if (sym.getAstNode().isPresent()) {
       printer.print("astNode = ");
       printer.print(repository.getASTNodeNameFormatted(sym.getAstNode().get()));
