@@ -7,7 +7,7 @@ package mc.feature.hwc;
  */
 grammar Tagging2 extends de.monticore.common.Common {
 
-  symbol TaggingUnit =
+  scope TaggingUnit =
     ("package" package:(Name& || ".")+ ";")? 
     (ImportStatement)*
     "conforms" "to" (QualifiedName || ",")+ ";"

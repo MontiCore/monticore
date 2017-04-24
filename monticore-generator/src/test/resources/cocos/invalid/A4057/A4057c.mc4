@@ -1,0 +1,8 @@
+package cocos.invalid.A4057;
+
+grammar A4057c {
+
+  symbol A = "Hello" name:B;
+  
+  B = "B";
+}

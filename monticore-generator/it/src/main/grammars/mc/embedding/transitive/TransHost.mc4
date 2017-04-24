@@ -4,6 +4,6 @@ grammar TransHost extends mc.grammar.lexicals.Lexicals {
 
    symbol scope TransStart = Name "host" TransHost;
 
-   symbol TransHost;
+   symbol TransHost = Name;
 
 }
