@@ -295,6 +295,12 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
   @Override
   public void handle(ASTAlt a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
+    if (a.isRightAssoc()) {
+      getPrinter().print(" <rightassoc> ");
+    }
+    if (a.getPrio().isPresent()) {
+      getPrinter().print(" <" + a.getPrio().get()+ "> ");
+    }
     printList(a.getComponents().iterator(), " ");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }

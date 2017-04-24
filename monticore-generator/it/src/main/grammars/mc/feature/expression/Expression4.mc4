@@ -1,0 +1,30 @@
+/* Sinnfreise Sprache um MontiCore zu testen */
+package mc.feature.expression;
+component grammar Expression4 extends mc.common.Basics { 
+
+  token NumericLiteral = ('0'..'9')+;
+
+  // Exression with hierarchical interfaces
+  // Does not work!
+  interface Expr;
+  
+  interface IAddExpr extends Expr;
+  
+  interface IMultExpr extends Expr;
+  	
+  MultExpr implements IMultExpr = 
+  	<9>  left:Expr (op:["*"]|op:["/"]) right:Expr;
+  	
+  AddExpr implements IAddExpr =
+  	<8>  left:Expr (op:["+"]|op:["-"]) right:Expr;
+  
+  PowerExpr implements Expr= 
+  	<rightassoc> <10> left:Expr op:["^"] right:Expr;
+  
+  BracketExpr implements Expr =
+  	<7> "(" Expr ")";
+  	
+  PrimaryExpr implements Expr =
+  	<1> NumericLiteral;
+
+}

@@ -80,4 +80,25 @@ public class DirectLeftRecursionDetector {
     
     return false;
   }
+  
+  public boolean isAlternativeLeftRecursive(final ASTAlt productionAlternative,
+      final Collection<String> names) {
+    Collection<Class<? extends ASTNode>> types = new HashSet<>(
+        Arrays.asList(ASTNonTerminal.class, ASTTerminal.class, ASTConstant.class));
+    final List<ASTNode> nodes = ASTNodes.getSuccessors(productionAlternative, types);
+    
+    if (nodes.isEmpty()) {
+      return false;
+    }
+    
+    if (nodes.get(0) instanceof ASTNonTerminal) {
+      ASTNonTerminal leftmostNonterminal = (ASTNonTerminal) nodes.get(0);
+      if (names.contains(leftmostNonterminal.getName())) {
+        return true;
+      }
+    }
+    
+    return false;
+  }
+  
 }

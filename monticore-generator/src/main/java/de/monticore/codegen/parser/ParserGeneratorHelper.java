@@ -36,8 +36,8 @@ import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
-import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.HelperGrammar;
+import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.PredicatePair;
 import de.monticore.grammar.grammar._ast.ASTAlt;
 import de.monticore.grammar.grammar._ast.ASTBlock;
@@ -181,7 +181,9 @@ public class ParserGeneratorHelper {
     String ruleName = rule.getName();
     
     if (rule.isClass()) {
-      generateParserForRule = true;
+      if (!grammarInfo.isProdLeftRecursive(rule.getName())) {
+        generateParserForRule = true;
+      }
     }
     
     if (rule.isAbstract() || rule.isInterface()) {

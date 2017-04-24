@@ -25,19 +25,17 @@ import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.HelperGrammar;
+import de.monticore.grammar.grammar._ast.ASTAlt;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTConstant;
 import de.monticore.grammar.grammar._ast.ASTConstantGroup;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTTerminal;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
-import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 
 public class ASTConstructionActions {
-
-  private final static String DEFAULT_RETURN_PARAM = "ret";
 
   protected ParserGeneratorHelper parserGenHelper;
   
@@ -54,8 +52,6 @@ public class ASTConstructionActions {
     if (constgroup.getUsageName().isPresent()) {
       String constfile;
       String constantname;
-      Optional<MCProdSymbol> rule = MCGrammarSymbolTableHelper
-          .getEnclosingRule(constgroup);
       Optional<MCGrammarSymbol> ruleGrammar = MCGrammarSymbolTableHelper
           .getMCGrammarSymbol(constgroup);
       if (ruleGrammar.isPresent()) {
@@ -83,24 +79,6 @@ public class ASTConstructionActions {
   
   public String getActionAfterConstantInEnumProdSingle(ASTConstant c) {
     return "ret = true ;";
-  }
-  
-  public String getActionAfterConstantInEnumProdIterated(ASTConstant c) {
-    String constfile;
-    String constantname;
-    Optional<MCProdSymbol> rule = MCGrammarSymbolTableHelper.getEnclosingRule(c);
-    Optional<MCGrammarSymbol> ruleGrammar = MCGrammarSymbolTableHelper
-        .getMCGrammarSymbol(c);
-    if (ruleGrammar.isPresent()) {
-      constfile = AstGeneratorHelper.getConstantClassName(ruleGrammar.get());
-      constantname = parserGenHelper.getConstantNameForConstant(c);
-    }
-    else {
-      constfile = AstGeneratorHelper.getConstantClassName(symbolTable);
-      constantname = parserGenHelper.getConstantNameForConstant(c);
-    }
-    
-    return "ret = " + constfile + "." + constantname + ";";
   }
   
   public String getConstantInConstantGroupSingleEntry(ASTConstant constant,
@@ -151,19 +129,28 @@ public class ASTConstructionActions {
         return b.toString();
       }
 
-  public String getActionForRuleBeforeRuleBodyExplicitReturnClass(ASTClassProd a) {
-    
+  public String getActionForAltBeforeRuleBody(String className, ASTAlt a) {
     StringBuilder b = new StringBuilder();
-    
     String type = MCGrammarSymbolTableHelper
-        .getQualifiedName(symbolTable.getProdWithInherited(HelperGrammar.getRuleName(a)).get());
+        .getQualifiedName(symbolTable.getProdWithInherited(className).get());
+    Optional<MCGrammarSymbol> grammar = MCGrammarSymbolTableHelper
+        .getMCGrammarSymbol(a);
+    String name = grammar.isPresent()
+        ? grammar.get().getName()
+        : symbolTable.getProdWithInherited(className).get().getName();
     
-    // Setup return value
-    b.append("// ret is normally returned, a can be instanciated later\n");
-    b.append(type + " _aNode = null;\n");
-    return b.toString();
-    
-  }
+        // Setup return value
+        b.append(
+            "// ret is normally returned, a is used to be compatible with rule using the return construct\n");
+        b.append(type + " _aNode = null;\n");
+        b.append("_aNode=" + Names.getQualifier(type) + "." + name + "NodeFactory.create"
+            +
+            Names.getSimpleName(type) + "();\n");
+        b.append("$ret=_aNode;\n");
+        
+        return b.toString();
+      }
+
   
   public String getActionForLexerRuleNotIteratedAttribute(ASTNonTerminal a) {
 
@@ -178,16 +165,6 @@ public class ASTConstructionActions {
     
   }
   
-  public String getActionForLexerRuleNotIteratedHandedOn(ASTNonTerminal a) {
-
-    String tmp = "%handontmp% = convert" + a.getName() + "$%tmp%);";
-
-    // Replace templates
-    tmp = tmp.replaceAll("%tmp%", parserGenHelper.getTmpVarNameForAntlrCode(a));
-
-    return tmp;
-  }
-
   public String getActionForLexerRuleIteratedAttribute(ASTNonTerminal a) {
 
     String tmpname = parserGenHelper.getTmpVarNameForAntlrCode(a);
@@ -200,18 +177,6 @@ public class ASTConstructionActions {
     tmp = tmp.replaceAll("%tmp%", tmpname);
     
     return tmp;
-  }
-  
-  public String getActionForLexerRuleIteratedHandedOn(ASTNonTerminal a) {
-    
-    String tmp = "addToIteratedAttributeIfNotNull(%handontmp%, convert" + a.getName()
-        + "($%tmp%));";
-    
-    // Replace templates
-    tmp = tmp.replaceAll("%tmp%", parserGenHelper.getTmpVarNameForAntlrCode(a));
-    
-    return tmp;
-    
   }
   
   public String getActionForInternalRuleIteratedAttribute(ASTNonTerminal a) {

@@ -21,5 +21,5 @@ package de.monticore
 
 info("--------------------------------")
 info("MontiCore IT Facade")
-enableFailQuick(false)
+enableFailQuick(true)
 run(_configuration)

@@ -19,8 +19,8 @@
 
 package de.monticore.codegen.parser.antlr;
 
+import de.monticore.ast.ASTNode;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
-import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 
 /**
@@ -42,11 +42,11 @@ public class SourcePositionActions {
   /**
    * Create a mc.ast.SourcePosition at the beginning of a rule
    */
-  public String startPosition(ASTClassProd a) {
+  public String startPosition(ASTNode a) {
     return "_aNode.set_SourcePositionStart( computeStartPosition(_input.LT(1)));\n";
   }
   
-  public String endPosition(ASTClassProd a) {
+  public String endPosition(ASTNode a) {
     // Fetch last token to determine position
     return "_aNode.set_SourcePositionEnd(computeEndPosition(_input.LT(-1)));";
   }

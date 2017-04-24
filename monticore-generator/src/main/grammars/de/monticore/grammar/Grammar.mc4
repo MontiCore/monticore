@@ -311,7 +311,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
   @attribute Components List of the rule components of this alternative
   */
   Alt =
-    ([rightAssoc:"<rightassoc>"])? components:RuleComponent* ;
+    ([rightAssoc:"<rightassoc>"])? ("<"prio:Num_Int">")? components:RuleComponent* ;
 
 
   /** RuleComponents are parts of the alternatives

@@ -21,8 +21,10 @@ package de.monticore.grammar;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -34,20 +36,24 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrLexerAction;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrParserAction;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTJavaCodeExt;
+import de.monticore.grammar.grammar._ast.ASTAlt;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTConstant;
 import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._ast.ASTRuleComponent;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
 import de.monticore.grammar.grammar._ast.ASTTerminal;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbolReference;
 import de.monticore.utils.ASTNodes;
 import de.se_rwth.commons.logging.Log;
 
@@ -66,6 +72,8 @@ public class MCGrammarInfo {
    * Lexer patterns
    */
   private Map<MCGrammarSymbol, List<Pattern>> lexerPatterns = new HashMap<>();
+  
+  private Collection<String> leftRecursiveRules = new HashSet<>();
   
   /**
    * Additional java code for parser defined in antlr concepts of the processed
@@ -94,24 +102,14 @@ public class MCGrammarInfo {
    */
   private MCGrammarSymbol grammarSymbol;
   
-  /**
-   * The AST of the processed grammar
-   */
-  private ASTMCGrammar astGrammar;
-  
   public MCGrammarInfo(MCGrammarSymbol grammarSymbol) {
     this.grammarSymbol = grammarSymbol;
-    if (!grammarSymbol.getAstNode().isPresent()
-        || !(grammarSymbol.getAstNode().get() instanceof ASTMCGrammar)) {
-      Log.error(String.format("0xA2109 ASTNode of the grammar symbol %s is not set.",
-          grammarSymbol.getName()));
-    }
-    astGrammar = (ASTMCGrammar) grammarSymbol.getAstNode().get();
     buildLexPatterns();
     findAllKeywords();
     addSubRules();
     addSubRulesToInterface();
     addHWAntlrCode();
+    addLeftRecursiveRules();
   }
   
   // ------------- Handling of the antlr concept -----------------------------
@@ -194,6 +192,42 @@ public class MCGrammarInfo {
     }
     PredicatePair subclassPredicatePair = new PredicatePair(subrule, component);
     predicats.put(superrule, subclassPredicatePair);
+  }
+  
+
+  private boolean isProdLeftRecursive(MCProdSymbol ruleByName, ASTClassProd ast) {
+    List<ASTProd> superProds = GeneratorHelper.getAllSuperProds(ast);
+    Collection<String> names = new ArrayList<>();
+    superProds.forEach(s -> names.add(s.getName()));
+    DirectLeftRecursionDetector detector = new DirectLeftRecursionDetector();
+    for (ASTAlt alt : ast.getAlts()) {
+      if (detector.isAlternativeLeftRecursive(alt, names)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  private void addLeftRecursiveRules() {
+    Set<MCGrammarSymbol> grammarsToHandle = Sets
+        .newLinkedHashSet(Arrays.asList(grammarSymbol));
+    grammarsToHandle.addAll(MCGrammarSymbolTableHelper.getAllSuperGrammars(grammarSymbol));
+    Collection<MCProdSymbol> basicRecursiveRules = new HashSet<>();
+    for (MCGrammarSymbol grammar : grammarsToHandle) {
+      for (ASTClassProd classProd : ((ASTMCGrammar) grammar.getAstNode().get()).getClassProds()) {
+        MCProdSymbol rule = (MCProdSymbol) classProd.getSymbol().get();
+        if (isProdLeftRecursive((MCProdSymbol) classProd.getSymbol().get(), classProd)) {
+          basicRecursiveRules.add(rule);
+        }
+      }
+      
+      for (MCProdSymbol rule: basicRecursiveRules) {
+        leftRecursiveRules.add(rule.getName());
+        rule.getSuperInterfaceProds().stream().forEach(s -> leftRecursiveRules.add(s.getName()));
+        rule.getSuperProds().stream().forEach(s -> leftRecursiveRules.add(s.getName()));
+      }
+    }
+    
   }
   
   /**
@@ -293,6 +327,10 @@ public class MCGrammarInfo {
     }
     
     return matches;
+  }
+  
+  public boolean isProdLeftRecursive(String name) {
+    return leftRecursiveRules.contains(name);
   }
   
   public List<PredicatePair> getSubRulesForParsing(String ruleName) {

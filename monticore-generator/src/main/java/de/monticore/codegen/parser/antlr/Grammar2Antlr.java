@@ -23,8 +23,11 @@ import static de.monticore.codegen.parser.ParserGeneratorHelper.printIteration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.google.common.base.Preconditions;
@@ -35,8 +38,8 @@ import de.monticore.ast.ASTNode;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.DirectLeftRecursionDetector;
-import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.HelperGrammar;
+import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.PredicatePair;
 import de.monticore.grammar.grammar._ast.ASTAlt;
 import de.monticore.grammar.grammar._ast.ASTAnything;
@@ -99,7 +102,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
   
   private StringBuilder codeSection;
   
-  private StringBuilder action;
+  private StringBuilder action = new StringBuilder();
   
   private MCGrammarInfo grammarInfo;
   
@@ -177,9 +180,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     String ruleName = HelperGrammar.getRuleNameForAntlr(ast);
     Optional<MCProdSymbol> ruleByName = grammarEntry
         .getProdWithInherited(HelperGrammar.getRuleName(ast));
-    // String classnameFromRulenameorInterfacename = ruleByName.getType()
-    // .getQualifiedName();
-    String classnameFromRulenameorInterfacename = MCGrammarSymbolTableHelper
+     String classnameFromRulenameorInterfacename = MCGrammarSymbolTableHelper
         .getQualifiedName(ruleByName.get());
     
     // Head of Rule
@@ -187,20 +188,26 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     // String tmp =
     // "%name% returns [%uname% ret = %defaultvalue%] %options% ";
     
+    String options = "";
+    
+    if (grammarInfo.isProdLeftRecursive(ast.getName())) {
+      addToCodeSection("// No code generation because of indirect left recursive rules");
+      endCodeSection();
+      return;     
+    }
+  
+    // Antlr4: new syntax
+    List<ASTAlt> alts = parserHelper.getAlternatives(ast);
+    if (alts.isEmpty()) {
+      options = "@rulecatch{}";
+    }
+    
     // TODO: Antlr4 Dies war die Alternative, wenn es keine Parameter
     // gibt.
     // Ist aber wahrscheinlich so korrekt,
     // erzeugt bestimmt Default für ret ...
     addDummyRules(HelperGrammar.getRuleName(ast), ruleName,
         classnameFromRulenameorInterfacename);
-    
-    String options = "";
-    
-    List<ASTAlt> alts = parserHelper.getAlternatives(ast);
-    // Antlr4: new syntax
-    if (alts.isEmpty()) {
-      options = "@rulecatch{}";
-    }
     
     // Start code codeSection for rules
     addToCodeSection(ruleName, " returns [", classnameFromRulenameorInterfacename, " ret = ",
@@ -410,9 +417,9 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
    *
    * @param ast
    */
-  public void createAntlrCodeForAlts(List<ASTAlt> ast) {
+  public void createAntlrCodeForAlts(List<ASTAlt> alts) {
     String del = "";
-    for (Iterator<ASTAlt> iter = ast.iterator(); iter.hasNext();) {
+    for (Iterator<ASTAlt> iter = alts.iterator(); iter.hasNext();) {
       addToAntlrCode(del);
       
       iter.next().accept(getRealThis());
@@ -780,46 +787,67 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     addDummyRules(interfacename, ruleName, usageName);
     
     addToAntlrCode(HelperGrammar.getRuleNameForAntlr(interfacename) + " returns ["
-        + usageName + " ret]: (");
+        + usageName + " ret]: ");
     
+    List<ASTAlt> alts = new ArrayList<>();
+    Map<ASTAlt, String> maps = new HashMap<>();
     String del = "";
-    
-    int count = 0;
-    for (PredicatePair interf : grammarInfo.getSubRulesForParsing(interfacename)) {
-      addToAntlrCode(del);
+    DirectLeftRecursionDetector detector = new DirectLeftRecursionDetector();
+    // Get all implementing/extending interfaces
+    List<PredicatePair> interfaces = grammarInfo.getSubRulesForParsing(interfacename);
+    for (PredicatePair interf: interfaces) {
+      Optional<MCProdSymbol> symbol = grammarEntry.getSpannedScope().<MCProdSymbol>resolve(interf.getClassname(), MCProdSymbol.KIND);
+      if (!symbol.isPresent()) {
+        continue;
+      }
+      MCProdSymbol prodSymbol = symbol.get();
+      if (!prodSymbol.getAstNode().isPresent()) {
+        continue;
+      }
+      ASTNode astNode = prodSymbol.getAstNode().get();
+      if (grammarInfo.isProdLeftRecursive(prodSymbol.getName())) {
+        if (prodSymbol.isClass()) {
+          List<ASTAlt> localAlts = ((ASTClassProd )astNode).getAlts();
+          alts.addAll(localAlts);  
+          localAlts.forEach(alt -> maps.put(alt, prodSymbol.getName()));
+          continue;
+        }
+      }
       
+      // Append action for "normal" rules (not left recursice)
+      addToAntlrCode(del);
       if (interf.getComponent().isPresent()) {
         interf.getComponent().get().accept(getRealThis());
       }
-      
       startCodeSection();
-      addToCodeSection("tmp" + count + "="
-          + HelperGrammar.getRuleNameForAntlr(interf.getClassname()));
-      // TODO GV: don't need it anymore?
-      // int size = 0;
-      // if (prod != null) {
-      // size = prod.getNoParam();
-      // }
-      //
-      // if (size > 0) {
-      // addToCodeSection("[null");
-      // for (int j = 1; j < size; j++) {
-      // addToCodeSection(",null");
-      // }
-      // addToCodeSection("]");
-      // }
-      
-
+      String tmpVar = parserHelper.getTmpVarName(prodSymbol.getAstNode().get());
+      addToCodeSection(tmpVar + "="
+          + HelperGrammar.getRuleNameForAntlr(prodSymbol.getName()));
       // Action for AntLR4
-      addToCodeSection("\n{$ret=$tmp" + count + ".ret;}");
-      
-      count++;
-      del = " | ";
-      
+      addToCodeSection("\n{$ret=$" + tmpVar + ".ret;}");   
       endCodeSection();
+      del = "|";
     }
     
-    addToAntlrCode(");");
+    // Append sorted aternatives for left recursive rules
+    Collections.sort(alts, (alt2, alt1) -> new Integer(alt1.getPrio().orElse("0")).compareTo(new Integer(alt2.getPrio().orElse("0"))));
+    for (ASTAlt alt: alts) {
+      addToAntlrCode(del);
+      
+      String className = maps.get(alt);
+      // Generate code for left recursive alternatives        
+      addToAction(astActions.getActionForAltBeforeRuleBody(className, alt));
+      // Action for determining positions
+      addToAction(positionActions.startPosition(alt));
+      // Action for determining positions of comments (First set position)
+      addToAction("setActiveASTNode(_aNode);\n");       
+      alt.accept(getRealThis());
+      endAction();
+      
+      del = "|";
+    }
+ 
+    addToAntlrCode(";");
     
     return getAntlrCode();
   }
@@ -1114,7 +1142,6 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
    * Starts parser action
    */
   private void startAction() {
-    action = new StringBuilder();
   }
   
   /**
@@ -1142,7 +1169,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
    * Clears code for parser action
    */
   private void clearAction() {
-    action = new StringBuilder();
+    action.setLength(0);
   }
   
   private boolean isActionEmpty() {

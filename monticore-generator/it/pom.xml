@@ -161,7 +161,6 @@
                 <grammar>src/main/grammars/mc/feature/mcenum/SubEnum.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/lexerformat/KleenePlus.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/lexerformat/LexerFormat.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/expression/Expression.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/grammarinherit/sub/FeatureDSLgrammarinherit.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/grammarinherit/sup/FeatureDSLgrammarinherit.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/javasql/java/Java.mc4</grammar>
@@ -187,6 +186,8 @@
                 <grammar>src/main/grammars/mc/feature/interfaces/Sup.mc4</grammar>
                 <grammar>src/main/grammars/mc/feature/interfaces/Sub.mc4</grammar>
                 
+                <!-- Expression grammars -->
+                <grammar>src/main/grammars/mc/feature/expression</grammar>
 
                 <!-- MontiCore grammars -->
                 <grammar>src/main/grammars/mc/grammar/lexicals/Lexicals.mc4</grammar>
