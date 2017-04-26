@@ -34,9 +34,9 @@ import de.se_rwth.commons.logging.Log;
  */
 public class SymbolWithoutName implements GrammarASTProdCoCo {
   
-  public static final String ERROR_CODE = "0xA4057";
+  public static final String ERROR_CODE = "0xA4058";
   
-  public static final String ERROR_MSG_FORMAT = " The symbol %s must contain the component 'Name'.";
+  public static final String ERROR_MSG_FORMAT = " Ensure that the symbol %s contains a 'Name'.";
     
   @Override
   public void check(ASTProd a) {
@@ -49,7 +49,7 @@ public class SymbolWithoutName implements GrammarASTProdCoCo {
         }
 
         if (!ref.isPresent() || ref.get().isList() || (ref.get().getReferencedProd().isPresent() && !ref.get().getReferencedProd().get().getName().equals("Name"))) {
-          Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, symbol.getName()),
+          Log.warn(String.format(ERROR_CODE + ERROR_MSG_FORMAT, symbol.getName()),
               a.get_SourcePositionStart());
         }
       }

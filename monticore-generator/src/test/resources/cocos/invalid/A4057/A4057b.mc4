@@ -1,7 +1,0 @@
-package cocos.invalid.A4057;
-
-grammar A4057b {
-
-  symbol A = "Hello" name:Name*;
-  
-}

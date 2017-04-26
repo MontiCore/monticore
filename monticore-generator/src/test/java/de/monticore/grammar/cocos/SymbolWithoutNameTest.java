@@ -32,9 +32,9 @@ import de.se_rwth.commons.logging.Log;
  */
 public class SymbolWithoutNameTest extends CocoTest {
 
-  private final String MESSAGE = " The symbol A must contain the component 'Name'.";
+  private final String MESSAGE = " Ensure that the symbol A contains a 'Name'.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
-  private final String grammar = "cocos.invalid.A4057.A4057";
+  private final String grammar = "cocos.invalid.A4058.A4058";
 
   @BeforeClass
   public static void disableFailQuick() {
