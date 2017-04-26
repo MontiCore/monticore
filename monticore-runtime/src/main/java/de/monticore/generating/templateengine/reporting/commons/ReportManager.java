@@ -270,6 +270,13 @@ public class ReportManager implements IReportEventHandler {
   }
 
   @Override
+  public void reportUserSpecificTemplate(Path parentDir, Path fileName) {
+    for (IReportEventHandler handler : this.reportEventHandlers) {
+      handler.reportUserSpecificTemplate(parentDir, fileName);
+    }
+  }
+
+  @Override
   public void reportTransformationStart(String transformationName) {
     for (IReportEventHandler handler : this.reportEventHandlers) {
       handler.reportTransformationStart(transformationName);

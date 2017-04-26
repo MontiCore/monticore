@@ -227,6 +227,15 @@ public class DefaultReportEventHandler implements IReportEventHandler {
   }
 
   /**
+   * @see de.monticore.generating.templateengine.reporting.commons.IReportEventHandler#reportUserSpecificTemplate(java.nio.file.Path, java.nio.file.Path)
+   */
+  @Override
+  public void reportUserSpecificTemplate(Path parentDir, Path fileName) {
+    // TODO Auto-generated method stub
+
+  }
+
+  /**
    * @see mc.codegen.reporting.commons.IReportEventHandler#reportWarning(java.lang.String)
    */
   @Override

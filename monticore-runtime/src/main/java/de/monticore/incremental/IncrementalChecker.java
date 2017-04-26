@@ -83,7 +83,7 @@ public class IncrementalChecker {
    * context based on the current configuration
    */
   public static boolean isUpToDate(Path inputPath, File outputDirectory,
-      ModelPath modelPath, IterablePath hwcPath) {
+      ModelPath modelPath, IterablePath templatePath, IterablePath hwcPath) {
     if (inputPath == null) {
       throw new IllegalArgumentException(
           "0xA4062 Input path to check for incremental regeneration must not be null.");
@@ -92,9 +92,13 @@ public class IncrementalChecker {
       throw new IllegalArgumentException(
           "0xA4064 Model path for checking incremental regeneration must not be null.");
     }
+    if (templatePath == null) {
+      throw new IllegalArgumentException(
+          "0xA4065 User template path for checking incremental regeneration must not be null.");
+    }
     if (hwcPath == null) {
       throw new IllegalArgumentException(
-          "0xA4065 Handwritten code path for checking incremental regeneration must not be null.");
+          "0xA4075 Handwritten code path for checking incremental regeneration must not be null.");
     }
     if (!outputDirectory.exists()) {
       Log.debug("Output directory does not exist.", IncrementalChecker.class.getName());
@@ -130,7 +134,14 @@ public class IncrementalChecker {
       return false;
     }
     
-    // check if handwritten files changed
+    // check if user templates changed
+    if (userTemplatesChanged(story.get().templateStories, templatePath)) {
+      Log.info("Changes detected for " + inputPath.toString() + ". Regenerating...",
+          IncrementalChecker.class.getName());
+      return false;
+    }
+    
+   // check if handwritten files changed
     if (handwrittenCodeChanged(story.get().hwcStories, hwcPath)) {
       Log.info("Changes detected for " + inputPath.toString() + ". Regenerating...",
           IncrementalChecker.class.getName());
@@ -257,6 +268,37 @@ public class IncrementalChecker {
     return false;
   }
   
+  /**
+   * Checks whether any of the user templates of the last execution
+   * changed, i.e., whether a user template which was there the last time
+   * is missing this time or has been changed.
+   * 
+   * @param stories
+   * @param templatePath
+   * @return whether the altogether state of handwritten artifacts changed
+   */
+  protected static boolean userTemplatesChanged(Set<String> stories, IterablePath templatePath) {
+    for (String template : stories) {
+      Optional<InputStory> inputStory = parseInput(template);
+      if (inputStory.isPresent()) {
+        String fileName = calculateInputFileNameFrom(inputStory.get().parentPath,
+            inputStory.get().inputPath);
+        File file = new File(fileName);
+        String currentState = file.exists()
+            ? IncrementalChecker.getChecksum(fileName)
+            : InputOutputFilesReporter.MISSING;
+        if (!currentState.equals(inputStory.get().state)) {
+          Log.debug("The template " + fileName + " has changed.",
+              IncrementalChecker.class.getName());
+          Log.debug("  Previous state was " + inputStory.get().state, IncrementalChecker.class.getName());
+          Log.debug("  Current state is " + currentState, IncrementalChecker.class.getName());
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   /**
    * Checks whether any of the handwritten artifacts of the last execution
    * changed, i.e., whether a handwritten artifact which was there the last time
@@ -402,6 +444,9 @@ public class IncrementalChecker {
     /* All other input dependencies of the main model. */
     private final Map<String, InputStory> inputStories;
     
+    /* All user template stories of the main model. */
+    private final Set<String> templateStories;
+    
     /* All handwritten file stories of the main model. */
     private final Set<String> hwcStories;
     
@@ -414,10 +459,12 @@ public class IncrementalChecker {
     protected InputOutputStory(
         InputStory mainInputStory,
         Map<String, InputStory> inputStories,
+        Set<String> templateStories,
         Set<String> hwcStories,
         Set<String> outputStories) {
       this.mainInputStory = mainInputStory;
       this.inputStories = inputStories;
+      this.templateStories = templateStories;
       this.hwcStories = hwcStories;
       this.outputStories = outputStories;
     }
@@ -575,12 +622,13 @@ public class IncrementalChecker {
     
     InputStory mainInputStory = null;
     Map<String, InputStory> inputStories = new HashMap<>();
+    Set<String> templateStories = new LinkedHashSet<>();
     Set<String> hwcStories = new LinkedHashSet<>();
     Set<String> outputStories = new LinkedHashSet<>();
     
     it.next(); // skip first line (it's the input heading)
     String line = it.next();
-    if (line.equals(InputOutputFilesReporter.HWC_FILE_HEADING)) {
+    if (line.equals(InputOutputFilesReporter.USER_TEMPLATE_HEADING)) {
       Log.warn("0xA4066 Empty input section in report " + report.toString());
       return;
     }
@@ -594,7 +642,7 @@ public class IncrementalChecker {
     }
     
     // collect all the input files mentioned in the report
-    while (!line.equals(InputOutputFilesReporter.HWC_FILE_HEADING) && it.hasNext()) {
+    while (!line.equals(InputOutputFilesReporter.USER_TEMPLATE_HEADING) && it.hasNext()) {
       Optional<InputStory> inputStory = parseInput(line);
       if (inputStory.isPresent()) {
         String input = calculateInputFileNameFrom(inputStory.get().parentPath,
@@ -604,6 +652,17 @@ public class IncrementalChecker {
       line = it.next();
     }
     
+    // again we skip a line (here it's the user template heading)
+    if (it.hasNext()) {
+      line = it.next();
+    }
+    
+    // collect all the hwc files associated with the input file(s)
+    while (!line.equals(InputOutputFilesReporter.HWC_FILE_HEADING) && it.hasNext()) {
+      templateStories.add(line);
+      line = it.next();
+    }
+
     // again we skip a line (here it's the hwc heading)
     if (it.hasNext()) {
       line = it.next();
@@ -627,7 +686,7 @@ public class IncrementalChecker {
     }
     
     inputOutputMap.put(mainInputStory.inputPath, new InputOutputStory(mainInputStory, inputStories,
-        hwcStories, outputStories));
+        templateStories, hwcStories, outputStories));
   }
   
   /**

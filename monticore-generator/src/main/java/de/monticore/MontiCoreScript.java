@@ -215,7 +215,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   
   public boolean isUpToDate(Path grammar) {
     return IncrementalChecker.isUpToDate(grammar, __configuration.getOut(),
-        __configuration.getModelPath(), __configuration.getHandcodedPath());
+        __configuration.getModelPath(), __configuration.getTemplatePath(), __configuration.getHandcodedPath());
   }
   
   public void cleanUp(Path grammar) {

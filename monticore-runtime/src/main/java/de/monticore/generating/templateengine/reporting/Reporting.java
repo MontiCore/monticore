@@ -719,6 +719,12 @@ public class Reporting extends Slf4jLog {
     }
   }
 
+  public static void reportUserSpecificTemplate(Path parentDir, Path fileName) {
+    if (isEnabled()) {
+      getReportManager().reportUserSpecificTemplate(parentDir, fileName);
+    }    
+  }
+  
   public static void reportAddValue(String name, Object value, int size) {
     if (isEnabled()) {
       getReportManager().reportAddValue(name, value, size);
