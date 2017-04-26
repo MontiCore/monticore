@@ -38,6 +38,7 @@ import de.monticore.symboltable.ScopeSpanningSymbol;
 import de.monticore.symboltable.Scopes;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
+import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.types.CommonJFieldSymbol;
 import de.monticore.symboltable.types.CommonJMethodSymbol;
 import de.monticore.symboltable.types.CommonJTypeSymbol;
@@ -243,6 +244,11 @@ public class SymbolTableReporter extends AReporter {
     printer.println("};");    
   }
   
+  protected void reportAccessModifier(AccessModifier modifier, IndentPrinter printer) {
+    String type = modifier.getClass().getSimpleName();
+    printer.println("accessModifier = :" + type + "{};" );
+  }
+
   protected void reportAttributes(Symbol sym, IndentPrinter printer) {
     reportAllFields(sym.getClass(), printer);
     printer.println("name = \"" + sym.getName() + "\";");
@@ -265,8 +271,7 @@ public class SymbolTableReporter extends AReporter {
     printer.print(repository.getScopeNameFormatted(sym.getEnclosingScope()));
     printer.println(";");
     
-    printer.println("accesModifier = \"" + sym.getAccessModifier().toString() + "\";");
-    
+    reportAccessModifier(sym.getAccessModifier(), printer);    
   }
   
   protected void reportCommonJFieldAttributes(
