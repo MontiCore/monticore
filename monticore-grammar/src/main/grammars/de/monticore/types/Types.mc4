@@ -200,6 +200,8 @@ grammar Types extends de.monticore.literals.Literals {
         "void";
     
     /** ASTPrimitiveType represents every primitive type supported by Java.
+    	The type is not realized by an enumeration, because enumerations cannot 
+    	be extended.
         @attribute primitive BOOLEAN, BYTE, CHAR, SHORT, INT, FLOAT, LONG,
                              or DOUBLE
     */
