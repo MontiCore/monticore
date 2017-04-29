@@ -79,7 +79,7 @@ while (grammarIterator.hasNext()) {
 // local super grammars etc.
 for (astGrammar in getParsedGrammars()) {
   // make sure to use the right report manager again
-  reportingFor(astGrammar)
+  reportingFor(astGrammar, out)
   
   astClassDiagram = getCDOfParsedGrammar(astGrammar)
   

@@ -37,7 +37,6 @@ import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
-import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.mc2cd.manipul.BaseInterfaceAddingManipulation;
@@ -68,7 +67,6 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTModifier;
 import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
-import de.monticore.umlcd4a.cd4analysis._visitor.CD4AnalysisInheritanceVisitor;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
 import de.se_rwth.commons.Names;
@@ -125,7 +123,7 @@ public class CdDecorator {
     List<ASTCDClass> nativeClasses = Lists.newArrayList(cdDefinition.getCDClasses());
     
     // Run over classdiagramm and converts cd types to mc-java types
-    new Cd2JavaTypeConverter(astHelper).handle(cdDefinition);
+    astHelper.transformCdTypes2Java();
     
     // Interface for all ast nodes of the language
     decorateBaseInterface(cdDefinition);
@@ -879,27 +877,6 @@ public class CdDecorator {
     Preconditions.checkArgument(astMethod.isPresent());
     glex.replaceTemplate(EMPTY_BODY_TEMPLATE, astMethod.get(), hookPoint);
     return astMethod.get();
-  }
-  
-  /**
-   * Converts all CD types [(qualified)Classdiagramm.Type] to MontiCore-Java
-   * types [qualified AST-Type] e.g. Literals.ASTIntLiteral (oder
-   * de.monticore.literals.Literals.ASTIntLiteral) will be converted to
-   * de.monticore.literals.literals._ast.ASTIntLiteral
-   */
-  public class Cd2JavaTypeConverter implements CD4AnalysisInheritanceVisitor {
-    
-    private AstGeneratorHelper astHelper;
-    
-    public Cd2JavaTypeConverter(AstGeneratorHelper astHelper) {
-      this.astHelper = astHelper;
-    }
-    
-    @Override
-    public void visit(ASTSimpleReferenceType ast) {
-      astHelper.transformTypeCd2Java(ast, GeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT);
-    }
-    
   }
   
 }

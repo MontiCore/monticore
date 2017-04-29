@@ -39,6 +39,7 @@ import com.google.common.io.Resources;
 
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstGenerator;
+import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.ast.CdDecorator;
 import de.monticore.codegen.cd2java.ast_emf.CdEmfDecorator;
 import de.monticore.codegen.cd2java.cocos.CoCoGenerator;
@@ -414,17 +415,33 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     // we also store the class diagram fully qualified such that we can later on
     // resolve it properly for the generation of sub languages
     String subDir = Joiner.on(File.separator).join(astCd.getPackage());
-    String reportSubDir = Joiners.DOT.join(astCd.getPackage());
-    reportSubDir = reportSubDir.isEmpty()
-        ? astCd.getCDDefinition().getName()
-        : reportSubDir.concat(".").concat(astCd.getCDDefinition().getName());
-    GeneratorHelper.prettyPrintAstCd(astCd, outputDirectory, ReportingConstants.REPORTING_DIR
-        + File.separator + reportSubDir);
     GeneratorHelper.prettyPrintAstCd(astCd, outputDirectory, subDir);
     
     String fqn = Names.getQualifiedName(astCd.getPackage(), astCd.getCDDefinition().getName());
     Reporting.reportOpenInputFile(outputDirectory.toPath().toAbsolutePath(),
         Paths.get(fqn.replaceAll("\\.", "/").concat(".cd")));
+  }
+  
+  /**
+   * Prints Cd4Analysis AST to the CD-file (*.cd) in the reporting directory
+   * {@link MontiCoreScript#DIR_REPORTS}
+   *
+   * @param astCd - the top node of the Cd4Analysis AST
+   * @param outputDirectory - output directory
+   */
+  public void reportGrammarCd(ASTCDCompilationUnit astCd, File outputDirectory) {
+    // we also store the class diagram fully qualified such that we can later on
+    // resolve it properly for the generation of sub languages
+    String reportSubDir = Joiners.DOT.join(astCd.getPackage());
+    reportSubDir = reportSubDir.isEmpty()
+        ? astCd.getCDDefinition().getName()
+        : reportSubDir.concat(".").concat(astCd.getCDDefinition().getName());
+    
+    // Write reporting CD
+    ASTCDCompilationUnit astCdForReporting = new AstGeneratorHelper(astCd, symbolTable).getASTCDForReporting();
+    GeneratorHelper.prettyPrintAstCd(astCdForReporting, outputDirectory, ReportingConstants.REPORTING_DIR
+        + File.separator + reportSubDir);
+    
   }
   
   /**
@@ -672,7 +689,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param grammar to report for after invokation of this method
    * @return
    */
-  public boolean reportingFor(ASTMCGrammar grammar) {
+  public boolean reportingFor(ASTMCGrammar grammar, File outputDirectory) {
+    reportGrammarCd(getCDOfParsedGrammar(grammar), outputDirectory);
     String fqn = Names.getQualifiedName(grammar.getPackage(), grammar.getName());
     return Reporting.on(fqn);
   }

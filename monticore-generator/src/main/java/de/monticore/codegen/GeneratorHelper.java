@@ -116,7 +116,7 @@ public class GeneratorHelper extends TypesHelper {
   public static final String AST_PACKAGE_SUFFIX = "_ast";
   
   public static final String VISITOR_PACKAGE_SUFFIX = "_visitor";
-
+  
   public static final String TYPERESOLVER_PACKAGE_SUFFIX = "_types";
   
   public static final String COCOS_PACKAGE_SUFFIX = "_cocos";
@@ -163,9 +163,9 @@ public class GeneratorHelper extends TypesHelper {
       "derived",
       "association",
       "composition",
-      // Common.mc4 
+      // Common.mc4
       "local",
-      "readonly"});
+      "readonly" });
   
   static JavaDSLPrettyPrinter javaPrettyPrinter;
   
@@ -183,11 +183,16 @@ public class GeneratorHelper extends TypesHelper {
   protected List<String> superGrammarCds = new ArrayList<>();
   
   protected GlobalScope symbolTable;
-
+  
   protected CDSymbol cdSymbol;
+  
+  protected ASTCDCompilationUnit topAst;
   
   public GeneratorHelper(ASTCDCompilationUnit topAst, GlobalScope symbolTable) {
     Preconditions.checkArgument(topAst.getCDDefinition() != null);
+    
+    this.topAst = topAst;
+    
     cdDefinition = topAst.getCDDefinition();
     
     this.symbolTable = symbolTable;
@@ -411,6 +416,81 @@ public class GeneratorHelper extends TypesHelper {
   }
   
   /**
+   * Converts CD types defined in this- or in one of the super CDs to simple CD Types
+   * 
+   * @param type
+   * @param packageSuffix
+   */
+  public void transformQualifiedToSimpleIfPossible(ASTSimpleReferenceType astType,
+      String packageSuffix) {
+    Log.trace("Converted Cd or Java type: " + TypesPrinter.printType(astType), LOG_NAME);
+    String genericType = "";
+    ASTSimpleReferenceType convertedType = astType;
+    if (isOptional(astType)) {
+      Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
+          .getFirstTypeArgumentOfOptional(astType);
+      if (!typeArgument.isPresent()) {
+        return;
+      }
+      convertedType = typeArgument.get();
+      genericType = OPTIONAL;
+    }
+    else if (TypesHelper.isGenericTypeWithOneTypeArgument(astType, ARRAY_LIST)) {
+      Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
+          .getFirstTypeArgumentOfGenericType(astType, ARRAY_LIST);
+      if (!typeArgument.isPresent()) {
+        return;
+      }
+      convertedType = typeArgument.get();
+      genericType = ARRAY_LIST;
+    }
+    else if (TypesHelper.isGenericTypeWithOneTypeArgument(astType, JAVA_LIST)) {
+      Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
+          .getFirstTypeArgumentOfGenericType(astType, JAVA_LIST);
+      if (!typeArgument.isPresent()) {
+        return;
+      }
+      convertedType = typeArgument.get();
+      astType.setNames(Arrays.asList("List"));
+      genericType = JAVA_LIST;
+    }
+    
+    String convertedTypeName = TypesPrinter.printType(convertedType);
+    // Resolve only qualified types
+    if (!convertedTypeName.contains(".")) {
+      return;
+    }
+    
+    // TODO: GV, PN: path converter by resolving
+    if (convertedTypeName.contains("<")) {
+      return;
+    }
+    
+    Optional<CDTypeSymbol> symbol = resolveCdType(convertedTypeName);
+    if (symbol.isPresent()) {
+      CDTypeSymbol cdType = symbol.get();
+      String typeName = cdType.getName();
+      if (superGrammarCds.contains(cdType.getModelName())) {
+        typeName = Joiner.on('.').join(Names.getSimpleName(cdType.getModelName()),
+            cdType.getName());
+      } else if (!cdSymbol.getFullName().equals(cdType.getModelName())) {
+        typeName = cdType.getModelName().toLowerCase()
+            + packageSuffix
+            + cdType.getName();
+      }
+      if (!genericType.isEmpty()) {
+        convertedType.setNames(Arrays.asList(typeName.split("\\.")));
+        return;
+      }
+      astType.setNames(Arrays.asList(typeName.split("\\.")));
+    }
+    else {
+      Log.debug("CD or Java type couldn't be resolved: " + convertedTypeName, LOG_NAME);
+    }
+    return;
+  }
+  
+  /**
    * TODO: Write me!
    * 
    * @param genericType
@@ -479,16 +559,16 @@ public class GeneratorHelper extends TypesHelper {
   public static String getASTNodeBaseType(String languageName) {
     return AST_PREFIX + languageName + BASE;
   }
-
+  
   public String getTypeResolverPackage() {
     return getTypeResolverPackage(getPackageName());
   }
-
+  
   public static String getTypeResolverPackage(String qualifiedLanguageName) {
     return getPackageName(qualifiedLanguageName.toLowerCase(),
         getTypeResolverPackageSuffix());
   }
-
+  
   public static String getTypeResolverPackageSuffix() {
     return GeneratorHelper.TYPERESOLVER_PACKAGE_SUFFIX;
   }
@@ -701,7 +781,7 @@ public class GeneratorHelper extends TypesHelper {
     }
     CDTypeSymbolReference attrType = ((CDFieldSymbol) attr.getSymbol()
         .get()).getType();
-        
+    
     List<ActualTypeArgument> typeArgs = attrType.getActualTypeArguments();
     if (typeArgs.size() > 1) {
       return false;
@@ -745,7 +825,6 @@ public class GeneratorHelper extends TypesHelper {
         .collect(Collectors.toList()).contains(cdAttribute.getName());
   }
   
- 
   /**
    * TODO: Write me!
    * 
@@ -778,7 +857,7 @@ public class GeneratorHelper extends TypesHelper {
     final Set<CDFieldSymbol> allVisibleSuperTypeFields = allSuperTypeFields.stream()
         .filter(field -> !field.isPrivate())
         .collect(Collectors.toCollection(LinkedHashSet::new));
-        
+    
     return ImmutableSet.copyOf(allVisibleSuperTypeFields);
   }
   
@@ -899,7 +978,7 @@ public class GeneratorHelper extends TypesHelper {
     List<CDTypeSymbol> allSuperTypes = getSuperTypes(sym);
     List<String> theSuperTypes = allSuperTypes.stream().map(t -> t.getFullName())
         .collect(Collectors.toList());
-        
+    
     // transform to java types
     theSuperTypes = theSuperTypes.stream()
         .map(s -> AstGeneratorHelper.getAstPackage(Names.getQualifier(s)) + Names.getSimpleName(s))
@@ -922,7 +1001,7 @@ public class GeneratorHelper extends TypesHelper {
     List<CDTypeSymbol> allSuperTypes = getSuperTypes(sym);
     List<String> theSuperTypes = allSuperTypes.stream().map(t -> t.getFullName())
         .collect(Collectors.toList());
-        
+    
     // transform to java types
     theSuperTypes = theSuperTypes.stream()
         .map(s -> AstGeneratorHelper.getAstPackage(Names.getQualifier(s)) + Names.getSimpleName(s))
@@ -1106,7 +1185,7 @@ public class GeneratorHelper extends TypesHelper {
     if (isOptional(attribute)) {
       return TypesHelper
           .printType(TypesHelper.getSimpleReferenceTypeFromOptional(attribute.getType()));
-          
+      
     }
     return attribute.printType();
   }
@@ -1264,7 +1343,7 @@ public class GeneratorHelper extends TypesHelper {
     return TransformationHelper.existsHandwrittenClass(targetPath,
         getDotPackageName(packageName) + simpleName);
   }
-
+  
   /**
    * TODO: Gets not transformed attribute name according to the original name in
    * MC grammar
@@ -1468,7 +1547,8 @@ public class GeneratorHelper extends TypesHelper {
   }
   
   public Optional<CDTypeSymbol> resolveCdType(String type) {
-  //  Log.trace("Resolve: " + type + " -> " + symbolTable.resolve(type, CDTypeSymbol.KIND), LOG_NAME);
+    // Log.trace("Resolve: " + type + " -> " + symbolTable.resolve(type,
+    // CDTypeSymbol.KIND), LOG_NAME);
     return symbolTable.resolve(type, CDTypeSymbol.KIND);
   }
   
@@ -1494,7 +1574,8 @@ public class GeneratorHelper extends TypesHelper {
    * @return [astPackage of the type].[type.getName()]
    */
   public static String getJavaASTName(CDTypeSymbol type) {
-    return AstGeneratorHelper.getAstPackage(Names.getQualifier(type.getFullName())) + type.getName();
+    return AstGeneratorHelper.getAstPackage(Names.getQualifier(type.getFullName()))
+        + type.getName();
   }
   
   public static String qualifiedJavaTypeToName(String type) {
@@ -1512,7 +1593,8 @@ public class GeneratorHelper extends TypesHelper {
   }
   
   /**
-   * @return the super productions defined in all super grammars (including transitive super grammars)
+   * @return the super productions defined in all super grammars (including
+   * transitive super grammars)
    */
   public static List<ASTProd> getAllSuperProds(ASTNode astNode) {
     List<ASTProd> directSuperRules = getDirectSuperProds(astNode);
@@ -1557,7 +1639,7 @@ public class GeneratorHelper extends TypesHelper {
     return superRuleNodes;
   }
   
-  public static  Map<ASTProd, List<ASTNonTerminal>> getInheritedNonTerminals(ASTProd sourceNode) {
+  public static Map<ASTProd, List<ASTNonTerminal>> getInheritedNonTerminals(ASTProd sourceNode) {
     return GeneratorHelper.getAllSuperProds(sourceNode).stream()
         .distinct()
         .collect(Collectors.toMap(Function.identity(),

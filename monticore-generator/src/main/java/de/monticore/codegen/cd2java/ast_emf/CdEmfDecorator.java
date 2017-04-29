@@ -119,7 +119,7 @@ public class CdEmfDecorator extends CdDecorator {
         .collect(Collectors.toList());
         
     // Run over classdiagramm and converts cd types to mc-java types
-    new Cd2JavaTypeConverter(astHelper).handle(cdDefinition);
+    astHelper.transformCdTypes2Java();
     
     createEmfAttributes(astHelper, emfCollector, nativeTypes);
     
