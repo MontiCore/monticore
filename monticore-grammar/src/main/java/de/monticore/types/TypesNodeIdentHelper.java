@@ -62,7 +62,7 @@ public class TypesNodeIdentHelper extends LiteralsNodeIdentHelper {
   
   public String getIdent(ASTTypeParameters a) {
     List<ASTTypeVariableDeclaration> l = a.getTypeVariableDeclarations();
-    String n = "-"; 
+    String n = ""; 
     if (l.isEmpty()) {
       n += "-";
     }
