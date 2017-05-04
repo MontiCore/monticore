@@ -9,8 +9,8 @@ grammar AutomatonWithSTInfo3 extends mc.common.Basics {
 
   symbol State implements AutomatonElement =
     "state" Name
-    (("<<" ["initial"] ">>" ) | ("<<" ["final"] ">>" ))*;
-
+    (("<<" ["initial"] ">>" ) | ("<<" ["final"] ">>" ))*
+    ( ("{" (State | Transition)* "}") | ";") ;
 
   Transition implements AutomatonElement =
     from:Name "-" input:Name ">" to:Name ";" ;

@@ -40,10 +40,10 @@ public class CommonSymbolGenerator implements SymbolGenerator {
   @Override
   public void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
       IterablePath handCodedPath, MCProdSymbol ruleSymbol) {
-    generateEmpty(genEngine, genHelper, handCodedPath, ruleSymbol);
+    generateSymbol(genEngine, genHelper, handCodedPath, ruleSymbol);
   }
 
-  protected void generateEmpty(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
+  protected void generateSymbol(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
       IterablePath handCodedPath, MCProdSymbol ruleSymbol) {
     final String suffix = SYMBOL_SUFFIX;
 
@@ -52,7 +52,7 @@ public class CommonSymbolGenerator implements SymbolGenerator {
 
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
     if (ruleSymbol.getAstNode().isPresent()) {
-      genEngine.generate("symboltable.EmptySymbol", filePath, ruleSymbol.getAstNode().get(), className, ruleSymbol);
+      genEngine.generate("symboltable.Symbol", filePath, ruleSymbol.getAstNode().get(), className, ruleSymbol);
     }
   }
 }
