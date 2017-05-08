@@ -29,6 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -278,6 +279,13 @@ public class IncrementalChecker {
    * @return whether the altogether state of handwritten artifacts changed
    */
   protected static boolean userTemplatesChanged(Set<String> stories, IterablePath templatePath) {
+    List<File> templateNames = new ArrayList<>();
+    templatePath.getResolvedPaths().forEachRemaining(p -> templateNames.add(p.toFile()));
+    if (templateNames.isEmpty() && !stories.isEmpty()) {
+      Log.debug("The user template path is empty.",
+          IncrementalChecker.class.getName());
+      return  true;
+    }
     for (String template : stories) {
       Optional<InputStory> inputStory = parseInput(template);
       if (inputStory.isPresent()) {
@@ -294,9 +302,10 @@ public class IncrementalChecker {
           Log.debug("  Current state is " + currentState, IncrementalChecker.class.getName());
           return true;
         }
+        templateNames.remove(file);
       }
     }
-    return false;
+    return !templateNames.isEmpty();
   }
 
   /**
