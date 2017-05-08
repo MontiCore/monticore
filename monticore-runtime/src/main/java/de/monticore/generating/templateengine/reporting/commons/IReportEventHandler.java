@@ -226,7 +226,14 @@ public interface IReportEventHandler {
 	 */
 	public void reportUseHandwrittenCodeFile(Path parentDir, Path fileName);
 
-	/**
+  /**
+   * TODO: Write me!
+   *
+   * @param fileName
+   */
+  public void reportUserSpecificTemplate(Path parentDir, Path fileName);
+
+  /**
 	 * TODO: Write me!
 	 *
 	 * @param message

@@ -52,8 +52,8 @@ import de.monticore.incremental.IncrementalChecker;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * This report is used to enable incremental generation. It reports the name of
- * all input and output files.
+ * This report is used to enable incremental generation. It reports the name of all input and output
+ * files.
  *
  * @author (last commit) $Author$
  * @version $Revision$, $Date$
@@ -69,6 +69,8 @@ public class InputOutputFilesReporter extends AReporter {
   private List<String> hwcFiles = Lists.newArrayList();
   
   private List<String> outputFiles = Lists.newArrayList();
+  
+  private List<String> userTemplates = Lists.newArrayList();
   
   /**
    * Constructor for de.monticore.generating.templateengine.reporting.reporter.
@@ -90,8 +92,14 @@ public class InputOutputFilesReporter extends AReporter {
     writeLine(INPUT_FILE_HEADING);
   }
   
-  public static final String HWC_FILE_HEADING = "====================================================== Handwritten files";
+  public static final String USER_TEMPLATE_HEADING = "====================================================== User templates";
   
+  protected void writeUserTemplateHeading() {
+    writeLine(USER_TEMPLATE_HEADING);
+  }
+  
+  public static final String HWC_FILE_HEADING = "====================================================== Handwritten files";
+
   protected void writeHWCFileHeading() {
     writeLine(HWC_FILE_HEADING);
   }
@@ -188,6 +196,7 @@ public class InputOutputFilesReporter extends AReporter {
     inputFiles.clear();
     hwcFiles.clear();
     outputFiles.clear();
+    userTemplates.clear();
     filesThatMatterButAreNotThereInTime.clear();
     inputFile = inputFilePath.toString();
     
@@ -219,6 +228,17 @@ public class InputOutputFilesReporter extends AReporter {
     hwcFiles.add(hwcLine);
   }
   
+  /**
+   * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportUserSpecificTemplate(java.nio.file.Path,
+   * java.nio.file.Path)
+   */
+  @Override
+  public void reportUserSpecificTemplate(Path parentDir, Path fileName) {
+    if (parentDir != null) {
+      userTemplates.add(parentDir.toString() + PARENT_FILE_SEPARATOR + fileName.toString());
+    }
+  }
+  
   public static final String MISSING = "not found";
   
   public static final String GEN_ERROR = "error during generation";
@@ -244,10 +264,11 @@ public class InputOutputFilesReporter extends AReporter {
       if (ast != null) {
         checkSum = IncrementalChecker.getChecksum(inputFile);
         writeLine(inputFile + INPUT_STATE_SEPARATOR + checkSum);
-      } else {
+      }
+      else {
         writeLine(inputFile + INPUT_STATE_SEPARATOR + GEN_ERROR);
       }
-
+      
       for (String s : inputFiles) {
         if (s.contains(PARENT_FILE_SEPARATOR)) {
           String[] elements = s.split(PARENT_FILE_SEPARATOR);
@@ -285,6 +306,24 @@ public class InputOutputFilesReporter extends AReporter {
         else {
           checkSum = IncrementalChecker.getChecksum(s);
           writeLine(s + INPUT_STATE_SEPARATOR + checkSum);
+        }
+      }
+      
+      writeUserTemplateHeading();
+      for (String s : userTemplates) {
+        if (s.contains(PARENT_FILE_SEPARATOR)) {
+          String[] elements = s.split(PARENT_FILE_SEPARATOR);
+          File inputFile = new File(elements[0].concat(File.separator).concat(elements[1]));
+          if (inputFile.exists()) {
+            checkSum = IncrementalChecker.getChecksum(inputFile.toString());
+            writeLine(s + INPUT_STATE_SEPARATOR + checkSum);
+          }
+          else {
+            writeLine(s + INPUT_STATE_SEPARATOR + MISSING);
+          }
+        }
+        else {
+          writeLine(s + INPUT_STATE_SEPARATOR + MISSING);
         }
       }
       

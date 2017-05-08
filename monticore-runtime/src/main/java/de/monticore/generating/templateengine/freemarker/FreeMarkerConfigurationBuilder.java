@@ -76,10 +76,6 @@ public class FreeMarkerConfigurationBuilder {
     else {
       List<TemplateLoader> loaders = new ArrayList<>();
       
-      // this loader is added first such that all "built-in" templates located on the classpath are
-      // taking precedence over any other templates
-      loaders.add(mcClassLoader);
-      
       for (File file : additionalTemplatePaths) {
         // add file loaders. IO checks by FileTemplateLoader constructor
         try {
@@ -90,7 +86,11 @@ public class FreeMarkerConfigurationBuilder {
         }
       }
             
-      config.setTemplateLoader(new MultiTemplateLoader(loaders.toArray(new TemplateLoader[loaders
+      // this loader is added last such that all "built-in" templates located on the additionaltemplatepath are
+      // taking precedence over this one
+      loaders.add(mcClassLoader);
+      
+     config.setTemplateLoader(new MultiTemplateLoader(loaders.toArray(new TemplateLoader[loaders
           .size()])));
     }
     

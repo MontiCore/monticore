@@ -21,7 +21,9 @@ package de.monticore.generating.templateengine.freemarker;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 
+import de.monticore.generating.templateengine.reporting.Reporting;
 import de.se_rwth.commons.logging.Log;
 import freemarker.cache.FileTemplateLoader;
 
@@ -40,8 +42,9 @@ public class MontiCoreFileTemplateLoader extends FileTemplateLoader {
   public java.lang.Object findTemplateSource(String templateName) throws java.io.IOException {
     Log.debug("Looking for template " + templateName, MontiCoreFileTemplateLoader.class.getName());
     
-    Object template = super.findTemplateSource(templateName.replace('.', '/').concat(
-        FreeMarkerTemplateEngine.FM_FILE_EXTENSION));
+    String completeName = templateName.replace('.', '/').concat(
+        FreeMarkerTemplateEngine.FM_FILE_EXTENSION);
+    Object template = super.findTemplateSource(completeName);
     if (template == null) {
       if (templateName.endsWith(FreeMarkerTemplateEngine.FM_FILE_EXTENSION)) {
         template = super.findTemplateSource(templateName);
@@ -50,6 +53,9 @@ public class MontiCoreFileTemplateLoader extends FileTemplateLoader {
         template = super.findTemplateSource(templateName
             .concat(FreeMarkerTemplateEngine.FM_FILE_EXTENSION));
       }
+    }
+    if (template != null) {
+      Reporting.reportUserSpecificTemplate(getBaseDirectory().toPath(), Paths.get(completeName));
     }
     return template;
   }
