@@ -333,9 +333,6 @@ public final class TransformationHelper {
       Reporting.reportUseHandwrittenCodeFile(targetPath.getResolvedPath(handwrittenFile).get(),
           handwrittenFile);
     }
-    else {
-      Reporting.reportUseHandwrittenCodeFile(null, handwrittenFile);
-    }
     return result;
   }
   
