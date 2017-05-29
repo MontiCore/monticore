@@ -67,7 +67,6 @@ import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.ResolvingConfiguration;
-import de.monticore.types.types._ast.ASTImportStatement;
 import de.monticore.umlcd4a.CD4AnalysisLanguage;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.symboltable.CD4AnalysisSymbolTableCreator;
@@ -419,7 +418,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     GeneratorHelper.prettyPrintAstCd(astCd, outputDirectory, subDir);
     
     String fqn = Names.getQualifiedName(astCd.getPackage(), astCd.getCDDefinition().getName());
-    Reporting.reportOpenInputFile(outputDirectory.toPath().toAbsolutePath(),
+    Reporting.reportFileCreation(outputDirectory.toPath().toAbsolutePath(),
         Paths.get(fqn.replaceAll("\\.", "/").concat(".cd")));
   }
   

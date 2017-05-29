@@ -58,6 +58,15 @@ public class DefaultReportEventHandler implements IReportEventHandler {
     // TODO Auto-generated method stub
 
   }
+  
+  /**
+   * @see mc.codegen.reporting.commons.IReportEventHandler#reportFileCreation(Path,
+   * Path)
+   */
+  @Override
+  public void reportFileCreation(Path parentPath, Path file) {
+    // TODO Auto-generated method stub
+  }
 
   /**
    * @see mc.codegen.reporting.commons.IReportEventHandler#reportFileFinalization(java.lang.String,

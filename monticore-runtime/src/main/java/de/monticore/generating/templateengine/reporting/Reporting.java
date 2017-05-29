@@ -378,6 +378,20 @@ public class Reporting extends Slf4jLog {
       getReportManager().reportFileCreation(templateName, path, ast);
     }
   }
+  
+  /**
+   * This method is called when an input file is opened which is obtained via
+   * model resolution. Such files typically are dependency models (e.g., super
+   * grammars, super CDs, ...).
+   *
+   * @param parentPath
+   * @param file
+   */
+  public static void reportFileCreation(Path parentPath, Path file) {
+    if (isEnabled()) {
+      getReportManager().reportFileCreation(parentPath, file);
+    }
+  }
 
   /**
    * Reports the end of a file creation (file finalization).
