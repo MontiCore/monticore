@@ -8,21 +8,21 @@ grammar Expression3 extends mc.common.Basics {
   // Exression with interfaces and two alternatives for implementing rules (MultExpr and AddExpr)
   interface Expr; 
   	
-  MultExpr implements Expr = 
-  	<9>  left:Expr star:["*"] right:Expr
-  	| <9>  left:Expr div:["/"] right:Expr;
+  MultExpr implements Expr <9> = 
+  	left:Expr star:["*"] right:Expr
+  	| left:Expr div:["/"] right:Expr;
   	
-  AddExpr implements Expr =
-  	<8>  left:Expr plus:["+"] right:Expr
-  	| <8>  left:Expr minus:["-"] right:Expr;
+  AddExpr implements Expr <8> =
+  	left:Expr plus:["+"] right:Expr
+  	| left:Expr minus:["-"] right:Expr;
   
-  PowerExpr implements Expr= 
-  	<rightassoc> <10> left:Expr op:["^"] right:Expr;
+  PowerExpr implements Expr <10> = 
+  	<rightassoc> left:Expr op:["^"] right:Expr;
   
-  BracketExpr implements Expr =
-  	<7> "(" Expr ")";
+  BracketExpr implements Expr <7> =
+  	"(" Expr ")";
   	
-  PrimaryExpr implements Expr =
-  	<1> NumericLiteral;
+  PrimaryExpr implements Expr <1> =
+  	NumericLiteral;
 
 }

@@ -140,7 +140,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
   @attribute ruleReference name of the start rule
   */
   StartRule =
-    "start" RuleReference ";";
+    "start" Name ";";
 
   // ------------------------------------------------------------------------------
   // Productions
@@ -291,7 +291,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
   /** A RuleReference refers to another production
   */
   RuleReference  =
-    SemanticpredicateOrAction? Name ;
+    SemanticpredicateOrAction? Name ("<"prio:Num_Int">")? ;
 
   ast RuleReference =
     method public String getTypeName() {
@@ -311,7 +311,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
   @attribute Components List of the rule components of this alternative
   */
   Alt =
-    ([rightAssoc:"<rightassoc>"])? ("<"prio:Num_Int">")? components:RuleComponent* ;
+    ([rightAssoc:"<rightassoc>"])? components:RuleComponent* ;
 
 
   /** RuleComponents are parts of the alternatives

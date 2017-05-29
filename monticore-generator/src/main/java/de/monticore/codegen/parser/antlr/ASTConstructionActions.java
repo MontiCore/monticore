@@ -140,8 +140,6 @@ public class ASTConstructionActions {
         : symbolTable.getProdWithInherited(className).get().getName();
     
         // Setup return value
-        b.append(
-            "// ret is normally returned, a is used to be compatible with rule using the return construct\n");
         b.append(type + " _aNode = null;\n");
         b.append("_aNode=" + Names.getQualifier(type) + "." + name + "NodeFactory.create"
             +

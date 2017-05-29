@@ -184,13 +184,7 @@ public class MCGrammarInfo {
   }
   
   private void addSubrule(String superrule, String subrule, ASTRuleReference ruleReference) {
-    ASTRuleComponent component = null;
-    if (ruleReference.getSemanticpredicateOrAction().isPresent()) {
-      if (ruleReference.getSemanticpredicateOrAction().get().isPredicate()) {
-        component = ruleReference.getSemanticpredicateOrAction().get();
-      }
-    }
-    PredicatePair subclassPredicatePair = new PredicatePair(subrule, component);
+    PredicatePair subclassPredicatePair = new PredicatePair(subrule, ruleReference);
     predicats.put(superrule, subclassPredicatePair);
   }
   

@@ -24,10 +24,8 @@ import static de.monticore.codegen.parser.ParserGeneratorHelper.printIteration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import com.google.common.base.Preconditions;
@@ -49,6 +47,7 @@ import de.monticore.grammar.grammar._ast.ASTConstant;
 import de.monticore.grammar.grammar._ast.ASTConstantGroup;
 import de.monticore.grammar.grammar._ast.ASTEnumProd;
 import de.monticore.grammar.grammar._ast.ASTEof;
+import de.monticore.grammar.grammar._ast.ASTGrammarNode;
 import de.monticore.grammar.grammar._ast.ASTLexActionOrPredicate;
 import de.monticore.grammar.grammar._ast.ASTLexAlt;
 import de.monticore.grammar.grammar._ast.ASTLexAnyChar;
@@ -64,6 +63,7 @@ import de.monticore.grammar.grammar._ast.ASTMCAnything;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTOptionValue;
 import de.monticore.grammar.grammar._ast.ASTProd;
+import de.monticore.grammar.grammar._ast.ASTRuleReference;
 import de.monticore.grammar.grammar._ast.ASTSemanticpredicateOrAction;
 import de.monticore.grammar.grammar._ast.ASTTerminal;
 import de.monticore.grammar.grammar._ast.GrammarNodeFactory;
@@ -213,7 +213,6 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     addToCodeSection(ruleName, " returns [", classnameFromRulenameorInterfacename, " ret = ",
         MCGrammarSymbolTableHelper.getDefaultValue(ruleByName.get()), "]\n", options);
     
-    startAction();
     // Add actions
     if (ast.getAction().isPresent() && ast.getAction().get() instanceof ASTAction) {
       addToAction(ParserGeneratorHelper.getText(ast.getAction().get()));
@@ -230,17 +229,16 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     
     if (!isActionEmpty()) {
       addToCodeSection("@init");
-      endAction();
+      addActionToCodeSection();
     }
     
     // Action at end of rule
-    startAction();
     addToAction(positionActions.endPosition(ast));
     addToAction(attributeConstraints.addActionForRuleAfterRuleBody(ast));
     
     if (!isActionEmpty()) {
       addToCodeSection("\n@after");
-      endAction();
+      addActionToCodeSection();
     }
     
     endCodeSection();
@@ -259,9 +257,11 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       int i = 0;
       for (PredicatePair x : subRules) {
         
-        if (x.getComponent().isPresent()) {
-          x.getComponent().get().accept(getRealThis());
+        ASTRuleReference ruleRef = x.getRuleReference();
+        if (ruleRef.getSemanticpredicateOrAction().isPresent() && ruleRef.getSemanticpredicateOrAction().get().isPredicate()) {
+          ruleRef.getSemanticpredicateOrAction().get().accept(getRealThis());
         }
+        
         
         startCodeSection();
         String subRuleVar = "subRuleVar" + i;
@@ -352,9 +352,8 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
         addToCodeSection("'" + x.getName() + "'");
       }
       
-      startAction();
       addToAction(astActions.getConstantInConstantGroupSingleEntry(x, ast));
-      endActionNewLine();
+      addActionToCodeSectionWithNewLine();
     }
     
     // More than one entry leads to an int
@@ -399,9 +398,8 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
           addToCodeSection("'" + x.getName() + "'");
         }
         
-        startAction();
         addToAction(astActions.getConstantInConstantGroupMultipleEntries(x, ast));
-        endActionNewLine();
+        addActionToCodeSectionWithNewLine();
         
         del = "|\n";
       }
@@ -568,8 +566,6 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       isList = componentSymbol.isList();
     }
     // Add Actions
-    startAction();
-
     if (isAttribute) {
       if (isList) {
         addToAction(astActions.getActionForTerminalIteratedAttribute(ast));
@@ -582,7 +578,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       addToAction(astActions.getActionForTerminalIgnore(ast));
     }
     
-    endAction();
+    addActionToCodeSection();
     
     addToCodeSection(")", printIteration(ast.getIteration()));
     
@@ -769,6 +765,35 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     return getAntlrCode();
   }
   
+  class NodePair {
+    ASTGrammarNode alternative;
+    PredicatePair pp;
+    
+    /**
+     * Constructor for de.monticore.codegen.parser.antlr.NodePair.
+     * @param alternative
+     * @param ruleReference
+     */
+    public NodePair(ASTGrammarNode alternative, PredicatePair pp) {
+      this.alternative = alternative;
+      this.pp = pp;
+    }
+    
+    /**
+     * @return the alternative
+     */
+    public ASTGrammarNode getAlternative() {
+      return this.alternative;
+    }
+    
+    /**
+     * @return the ruleReference
+     */
+    public PredicatePair getPredicatePair() {
+      return this.pp;
+    }
+  }
+  
   /**
    * Write extra Rules for Interfaces Example A implements C = zz ; B implements
    * C = zz ; results in an extra rule C : A | B;
@@ -789,12 +814,11 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     addToAntlrCode(HelperGrammar.getRuleNameForAntlr(interfacename) + " returns ["
         + usageName + " ret]: ");
     
-    List<ASTAlt> alts = new ArrayList<>();
-    Map<ASTAlt, String> maps = new HashMap<>();
+    List<NodePair> alts = new ArrayList<>();
     String del = "";
-    DirectLeftRecursionDetector detector = new DirectLeftRecursionDetector();
     // Get all implementing/extending interfaces
     List<PredicatePair> interfaces = grammarInfo.getSubRulesForParsing(interfacename);
+    boolean left = false;
     for (PredicatePair interf: interfaces) {
       Optional<MCProdSymbol> symbol = grammarEntry.getSpannedScope().<MCProdSymbol>resolve(interf.getClassname(), MCProdSymbol.KIND);
       if (!symbol.isPresent()) {
@@ -806,47 +830,71 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       }
       ASTNode astNode = prodSymbol.getAstNode().get();
       if (grammarInfo.isProdLeftRecursive(prodSymbol.getName())) {
+        left = true;
         if (prodSymbol.isClass()) {
           List<ASTAlt> localAlts = ((ASTClassProd )astNode).getAlts();
-          alts.addAll(localAlts);  
-          localAlts.forEach(alt -> maps.put(alt, prodSymbol.getName()));
-          continue;
+          for (ASTAlt alt: localAlts) {
+            alts.add(new NodePair(alt, interf));
+          }
+        }
+      } else {
+        alts.add(new NodePair((ASTGrammarNode) astNode, interf));
+      }
+    }
+    // Append sorted alternatives
+    Collections.sort(alts, (p2, p1) -> new Integer(p1.getPredicatePair().getRuleReference().getPrio().orElse("0")).compareTo(new Integer(p2.getPredicatePair().getRuleReference().getPrio().orElse("0"))));
+    for (NodePair entry: alts) {
+      addToAntlrCode(del);
+      
+      // Append semantic predicates for rules
+      if (entry.getPredicatePair().getRuleReference().getSemanticpredicateOrAction().isPresent()) {
+        ASTSemanticpredicateOrAction semPredicate = entry.getPredicatePair().getRuleReference().getSemanticpredicateOrAction().get();
+        if (semPredicate.isPredicate()) {
+          semPredicate.accept(getRealThis());
         }
       }
       
-      // Append action for "normal" rules (not left recursice)
-      addToAntlrCode(del);
-      if (interf.getComponent().isPresent()) {
-        interf.getComponent().get().accept(getRealThis());
+      if (entry.getAlternative() instanceof ASTAlt) {
+        // Left recursive rule
+        ASTAlt alt = (ASTAlt) entry.getAlternative();
+        String className = entry.getPredicatePair().getClassname();
+        // Generate code for left recursive alternatives        
+        addToAction(astActions.getActionForAltBeforeRuleBody(className, alt));
+        // Action for determining positions
+        addToAction(positionActions.startPosition(alt));
+        // Action for determining positions of comments (First set position)
+        addToAction("setActiveASTNode(_aNode);\n");       
+        alt.accept(getRealThis());
+        addActionToCodeSection();
+      } else {
+        if (left && entry.getAlternative() instanceof ASTClassProd && ((ASTClassProd)entry.getAlternative()).getAlts().size()==1) {
+          ASTAlt alt = ((ASTClassProd)entry.getAlternative()).getAlts().get(0);
+          String className = entry.getPredicatePair().getClassname();
+          // Generate code for left recursive alternatives        
+          addToAction(astActions.getActionForAltBeforeRuleBody(className, alt));
+          // Action for determining positions
+          addToAction(positionActions.startPosition(alt));
+          // Action for determining positions of comments (First set position)
+          addToAction("setActiveASTNode(_aNode);\n");       
+          startCodeSection();
+          addActionToCodeSection();
+          endCodeSection();
+          alt.accept(getRealThis());
+        } else {
+          // normal rule
+          startCodeSection();
+          String tmpVar = parserHelper.getTmpVarName(entry.getAlternative());
+          addToCodeSection(tmpVar + "="
+              + HelperGrammar.getRuleNameForAntlr(entry.getPredicatePair().getClassname()));
+          // Action for AntLR4
+          addToCodeSection("\n{$ret=$" + tmpVar + ".ret;}");   
+          endCodeSection();      
+        }
       }
-      startCodeSection();
-      String tmpVar = parserHelper.getTmpVarName(prodSymbol.getAstNode().get());
-      addToCodeSection(tmpVar + "="
-          + HelperGrammar.getRuleNameForAntlr(prodSymbol.getName()));
-      // Action for AntLR4
-      addToCodeSection("\n{$ret=$" + tmpVar + ".ret;}");   
-      endCodeSection();
+      
       del = "|";
     }
     
-    // Append sorted aternatives for left recursive rules
-    Collections.sort(alts, (alt2, alt1) -> new Integer(alt1.getPrio().orElse("0")).compareTo(new Integer(alt2.getPrio().orElse("0"))));
-    for (ASTAlt alt: alts) {
-      addToAntlrCode(del);
-      
-      String className = maps.get(alt);
-      // Generate code for left recursive alternatives        
-      addToAction(astActions.getActionForAltBeforeRuleBody(className, alt));
-      // Action for determining positions
-      addToAction(positionActions.startPosition(alt));
-      // Action for determining positions of comments (First set position)
-      addToAction("setActiveASTNode(_aNode);\n");       
-      alt.accept(getRealThis());
-      endAction();
-      
-      del = "|";
-    }
- 
     addToAntlrCode(";");
     
     return getAntlrCode();
@@ -873,8 +921,6 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     addToCodeSection(parserHelper.getTmpVarName(ast), "=", ast.getName());
     
     // Add Actions
-    startAction();
-    
     Optional<MCProdSymbol> scope = MCGrammarSymbolTableHelper.getEnclosingRule(ast);
     
     if (scope.isPresent()) {
@@ -889,7 +935,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       }
     }
     
-    endAction();
+    addActionToCodeSection();
     
     addToCodeSection("\n");
     
@@ -960,8 +1006,6 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     
     addToCodeSection(braceopen, " ", tmpVarName, "=", HelperGrammar.getRuleNameForAntlr(ast));
     
-    startAction();
-    
     if (isLeftRecursive) {
       addToAction(astActions
           .getActionForInternalRuleNotIteratedLeftRecursiveAttribute(ast));
@@ -978,7 +1022,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     }
     
     // TODO GV: replaceAll("..", ".")); is deprecated?
-    endAction();
+    addActionToCodeSection();
     
     addToCodeSection(braceclose, " ", iteration, " ");
     
@@ -1003,8 +1047,6 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     boolean isAttribute = (keyword.getUsageName().isPresent());
     
     // Add Actions
-    startAction();
-    
     if (isAttribute) {
       if (isList) {
         addToAction(astActions.getActionForTerminalIteratedAttribute(keyword));
@@ -1017,7 +1059,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       addToAction(astActions.getActionForTerminalIgnore(keyword));
     }
     
-    endAction();
+    addActionToCodeSection();
     
     addToCodeSection(")", printIteration(keyword.getIteration()));
     
@@ -1139,15 +1181,9 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
   }
   
   /**
-   * Starts parser action
-   */
-  private void startAction() {
-  }
-  
-  /**
    * Adds code for parser action to the current code codeSection
    */
-  private void endAction() {
+  private void addActionToCodeSection() {
     if (action.length() != 0) {
       addToCodeSection("{", action.toString(), "}");
       clearAction();
@@ -1158,7 +1194,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
    * Adds code for parser action to the current code codeSection starting and
    * ending with a new line
    */
-  private void endActionNewLine() {
+  private void addActionToCodeSectionWithNewLine() {
     if (action.length() != 0) {
       addToCodeSection("{\n", action.toString(), "\n}");
       clearAction();

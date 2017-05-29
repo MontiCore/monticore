@@ -21,28 +21,28 @@ package de.monticore.grammar;
 
 import java.util.Optional;
 
-import de.monticore.grammar.grammar._ast.ASTRuleComponent;
+import de.monticore.grammar.grammar._ast.ASTRuleReference;
 
 public class PredicatePair {
   private String classname;
   
-  private Optional<ASTRuleComponent> component;
+  private ASTRuleReference ruleReference;
   
-  public Optional<ASTRuleComponent> getComponent() {
-    return component;
+  public ASTRuleReference getRuleReference() {
+    return ruleReference;
   }
   
-  public void setBlock(ASTRuleComponent block) {
-    this.component = Optional.ofNullable(block);
+  public void setRuleReference(ASTRuleReference ruleReference) {
+    this.ruleReference = ruleReference;
   }
   
   public String getClassname() {
     return classname;
   }
   
-  public PredicatePair(String classname, ASTRuleComponent block) {
+  public PredicatePair(String classname, ASTRuleReference ruleReference) {
     this.classname = classname;
-    this.component = Optional.ofNullable(block);
+    this.ruleReference = ruleReference;
   }
   
   @Override

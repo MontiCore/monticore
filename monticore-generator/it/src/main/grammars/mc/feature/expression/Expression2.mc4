@@ -8,19 +8,19 @@ grammar Expression2 extends mc.common.Basics {
   // Exression with interfaces
   interface Expr; 
   	
-  MultExpr implements Expr = 
-  	<9>  left:Expr (op:["*"]|op:["/"]) right:Expr;
+  MultExpr implements Expr <9> = 
+    left:Expr (op:["*"]|op:["/"]) right:Expr;
   	
-  AddExpr implements Expr =
-  	<8>  left:Expr (op:["+"]|op:["-"]) right:Expr;
+  AddExpr implements Expr <8> =
+  	left:Expr (op:["+"]|op:["-"]) right:Expr;
   
-  PowerExpr implements Expr= 
-  	<rightassoc> <10> left:Expr op:["^"] right:Expr;
+  PowerExpr implements Expr <10> = 
+  	<rightassoc> left:Expr op:["^"] right:Expr;
   
-  BracketExpr implements Expr =
-  	<7> "(" Expr ")";
+  BracketExpr implements Expr <7> =
+  	"(" Expr ")";
   	
-  PrimaryExpr implements Expr =
-  	<1> NumericLiteral;
+  PrimaryExpr implements Expr <1> =
+  	NumericLiteral;
 
 }
