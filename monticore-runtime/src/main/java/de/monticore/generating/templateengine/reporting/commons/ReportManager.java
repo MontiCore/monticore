@@ -113,6 +113,11 @@ public class ReportManager implements IReportEventHandler {
   public void reportFileCreation(Path parentPath, Path file) {
     this.reportEventHandlers.forEach(h -> h.reportFileCreation(parentPath, file));
   }
+  
+  @Override
+  public void reportFileExistenceChecking(Path parentPath, Path file) {
+    this.reportEventHandlers.forEach(h -> h.reportFileCreation(parentPath, file));
+  }
 
   @Override
   public void reportFileFinalization(String templateName,

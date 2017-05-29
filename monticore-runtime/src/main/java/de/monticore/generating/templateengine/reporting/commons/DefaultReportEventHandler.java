@@ -127,7 +127,16 @@ public class DefaultReportEventHandler implements IReportEventHandler {
     // TODO Auto-generated method stub
 
   }
-
+  
+  /**
+   * @see mc.codegen.reporting.commons.IReportEventHandler#reportFileExistenceChecking(Path,
+   * Path)
+   */
+  @Override
+  public void reportFileExistenceChecking(Path parentPath, Path file) {
+    // TODO Auto-generated method stub
+  }
+  
   /**
    * @see mc.codegen.reporting.commons.IReportEventHandler#reportTemplateInclude(java.lang.String,
    * de.monticore.ast.ASTNode)

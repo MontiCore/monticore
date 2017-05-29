@@ -308,4 +308,6 @@ public interface IReportEventHandler {
 	public void reportTransformationOldValue(String transformationName, boolean value);
 
 	public void reportTransformationNewValue(String transformationName, boolean value);
+
+  void reportFileExistenceChecking(Path parentPath, Path file);
 }

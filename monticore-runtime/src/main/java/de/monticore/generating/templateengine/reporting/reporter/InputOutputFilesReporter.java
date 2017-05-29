@@ -136,6 +136,21 @@ public class InputOutputFilesReporter extends AReporter {
     outputFiles.add(filePath + "." + fileextension);
   }
   
+  /**
+   * @see mc.codegen.reporting.commons.IReportEventHandler#reportFileCreation(java.lang.String,
+   * java.lang.String, java.lang.String, de.monticore.ast.ASTNode)
+   */
+  @Override
+  public void reportFileCreation(Path parentPath, Path file) {
+    if (file.compareTo(qualifiedInputFile) == 0) {
+      return;
+    }
+    String filePath = parentPath != null
+        ? parentPath.toString() + PARENT_FILE_SEPARATOR + file.toString()
+        : file.toString();
+    outputFiles.add(filePath);
+  }
+  
   public static final String PARENT_FILE_SEPARATOR = " sub ";
   
   public static final String INPUT_STATE_SEPARATOR = " state ";

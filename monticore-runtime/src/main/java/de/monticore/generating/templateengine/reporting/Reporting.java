@@ -380,9 +380,7 @@ public class Reporting extends Slf4jLog {
   }
   
   /**
-   * This method is called when an input file is opened which is obtained via
-   * model resolution. Such files typically are dependency models (e.g., super
-   * grammars, super CDs, ...).
+   * Reports a file creation via 
    *
    * @param parentPath
    * @param file
@@ -434,6 +432,19 @@ public class Reporting extends Slf4jLog {
     if (isEnabled()) {
       getReportManager()
           .reportFileFinalization(templateName, qualifiedFilename, fileExtension, ast);
+    }
+  }
+  
+  /**
+   * Reports a checking of file existence 
+   *
+   * @param parentPath
+   * @param file
+   */
+  public void reportFileExistenceChecking(Path parentPath, Path file) {
+    if (isEnabled()) {
+      getReportManager()
+          .reportFileExistenceChecking(parentPath, file);
     }
   }
 
