@@ -49,7 +49,7 @@ public class SymbolWithoutName implements GrammarASTProdCoCo {
         }
 
         if (!ref.isPresent() || ref.get().isList() || (ref.get().getReferencedProd().isPresent() && !ref.get().getReferencedProd().get().getName().equals("Name"))) {
-          Log.warn(String.format(ERROR_CODE + ERROR_MSG_FORMAT, symbol.getName()),
+          Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, symbol.getName()),
               a.get_SourcePositionStart());
         }
       }

@@ -53,7 +53,7 @@ public class AutomatonWithSTInfo1Test extends GeneratorIntegrationsTest {
     AutomatonResolvingFilter automatonResolvingFilter;
     AutomatonScope automatonScope;
     AutomatonSymbol automatonSymbol = new AutomatonSymbol("A");
-    Collection<StateSymbol> stateSymbols = automatonSymbol.getStates();
+//    Collection<StateSymbol> stateSymbols = automatonSymbol.getStates();
     AutomatonSymbolReference automatonSymbolReference;
     AutomatonWithSTInfo1Language automatonWithSTInfo1Language;
     AutomatonWithSTInfo1ModelLoader automatonWithSTInfo1ModelLoader;
@@ -64,7 +64,7 @@ public class AutomatonWithSTInfo1Test extends GeneratorIntegrationsTest {
     StateScope stateScope;
     StateSymbol stateSymbol = new StateSymbol("S");
     assertTrue(stateSymbol instanceof StateSymbol);
-    Collection<StateSymbol> stateSymbols2 = stateSymbol.getStates();
+//    Collection<StateSymbol> stateSymbols2 = stateSymbol.getStates();
 
     StateSymbolReference stateSymbolReference;
   }

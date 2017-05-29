@@ -44,8 +44,4 @@ public interface ${interfaceName} extends de.monticore.symboltable.Symbol {
 
   ${includeArgs("symboltable.symbols.KindConstantDeclaration", ruleName)}
   
-  ${includeArgs("symboltable.symbols.Attributes", ruleSymbol)}
-
-  ${includeArgs("symboltable.symbols.GetterSetter", ruleSymbol)}
-
 }

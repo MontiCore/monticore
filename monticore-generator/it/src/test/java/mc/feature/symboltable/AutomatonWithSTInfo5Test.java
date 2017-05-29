@@ -75,11 +75,11 @@ public class AutomatonWithSTInfo5Test extends GeneratorIntegrationsTest {
     assertFalse(transitionSymbol instanceof ScopeSpanningSymbol);
     TransitionSymbolReference transitionSymbolReference;
 
-    Collection<StateSymbol> stateSymbols = automatonSymbol.getStates();
-    Collection<TransitionSymbol> transitionSymbols = automatonSymbol.getTransitions();
-
-    StateSymbol from = transitionSymbol.getFrom();
-    StateSymbol to = transitionSymbol.getTo();
+//    Collection<StateSymbol> stateSymbols = automatonSymbol.getStates();
+//    Collection<TransitionSymbol> transitionSymbols = automatonSymbol.getTransitions();
+//
+//    StateSymbol from = transitionSymbol.getFrom();
+//    StateSymbol to = transitionSymbol.getTo();
 
   }
 

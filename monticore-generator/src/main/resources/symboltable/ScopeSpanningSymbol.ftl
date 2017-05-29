@@ -52,20 +52,15 @@ public class ${className} extends de.monticore.symboltable.CommonScopeSpanningSy
     super(name, KIND);
   }
 
-  ${includeArgs("symboltable.symbols.Attributes", ruleSymbol)}
-
-  ${includeArgs("symboltable.symbols.GetterSetter", ruleSymbol)}
 
   @Override
   protected ${scopeClassName} createSpannedScope() {
     return new ${scopeClassName}();
   }
 
-
   <#-- Get methods for  containing symbols -->
-
   <#assign fields = genHelper.symbolRuleComponents2JavaFields(ruleSymbol)>
-
+  /* Possible methods for containinig symbols
   <#list fields?keys as fname>
     <#assign type = fields[fname]>
 
@@ -73,5 +68,5 @@ public class ${className} extends de.monticore.symboltable.CommonScopeSpanningSy
     return sortSymbolsByPosition(getSpannedScope().resolveLocally(${type}.KIND));
   }
   </#list>
-  
+  */
 }

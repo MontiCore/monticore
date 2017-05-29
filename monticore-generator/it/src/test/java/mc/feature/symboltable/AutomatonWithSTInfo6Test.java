@@ -78,11 +78,11 @@ public class AutomatonWithSTInfo6Test extends GeneratorIntegrationsTest {
     assertFalse(transitionSymbol instanceof ScopeSpanningSymbol);
     TransitionSymbolReference transitionSymbolReference;
 
-    Collection<StateSymbol> stateSymbols = automatonSymbol.getStates();
-    Collection<TransitionSymbol> transitionSymbols = automatonSymbol.getTransitions();
-
-    StateSymbol from = transitionSymbol.getFrom();
-    StateSymbol to = transitionSymbol.getTo();
+//    Collection<StateSymbol> stateSymbols = automatonSymbol.getStates();
+//    Collection<TransitionSymbol> transitionSymbols = automatonSymbol.getTransitions();
+//
+//    StateSymbol from = transitionSymbol.getFrom();
+//    StateSymbol to = transitionSymbol.getTo();
     
     class STCreator extends AutomatonWithSTInfo6SymbolTableCreator {
       public STCreator(ResolvingConfiguration resolvingConfig, MutableScope enclosingScope) {

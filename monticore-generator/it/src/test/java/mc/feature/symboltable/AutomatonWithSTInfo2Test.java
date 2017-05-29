@@ -58,7 +58,7 @@ public class AutomatonWithSTInfo2Test extends GeneratorIntegrationsTest {
     AutomatonScope automatonScope;
     AutomatonSymbol automatonSymbol = new AutomatonSymbol("A");
     assertTrue(automatonSymbol instanceof ScopeSpanningSymbol);
-    Collection<AutomatonElementSymbol> automatonElementSymbols = automatonSymbol.getAutomatonElements();
+//    Collection<AutomatonElementSymbol> automatonElementSymbols = automatonSymbol.getAutomatonElements();
     AutomatonSymbolReference automatonSymbolReference;
     AutomatonWithSTInfo2Language automatonWithSTInfo2Language;
     AutomatonWithSTInfo2ModelLoader automatonWithSTInfo2ModelLoader;
