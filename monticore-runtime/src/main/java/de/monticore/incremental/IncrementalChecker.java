@@ -339,7 +339,14 @@ public class IncrementalChecker {
    */
   protected static boolean outputFilesChanged(Set<String> outputFiles) {
     for (String output : outputFiles) {
-      if (!new File(outputDirectory, output).exists()) {
+      String[] line = output.split(InputOutputFilesReporter.PARENT_FILE_SEPARATOR);
+      File file;
+      if (line.length == 2) {
+        file = new File(line[0], line[1]);
+      } else {
+        file = new File(outputDirectory, output);
+      }
+      if (!file.exists()) {
         Log.debug("The output file " + output + " was deleted.", IncrementalChecker.class.getName());
         return true;
       }
@@ -357,7 +364,13 @@ public class IncrementalChecker {
     Optional<InputOutputStory> story = getStoryFor(inputPath);
     if (story.isPresent()) {
       for (String output : story.get().outputStories) {
-        File outputFile = new File(outputDirectory, output);
+        String[] line = output.split(InputOutputFilesReporter.PARENT_FILE_SEPARATOR);
+        File outputFile;
+        if (line.length == 2) {
+          outputFile = new File(line[0], line[1]);
+        } else {
+          outputFile = new File(outputDirectory, output);
+        }
         Path toDelete = Paths.get(outputFile.toString());
         try {
           Files.deleteIfExists(toDelete);
