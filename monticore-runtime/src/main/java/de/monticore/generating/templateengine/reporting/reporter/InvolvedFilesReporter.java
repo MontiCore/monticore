@@ -50,7 +50,7 @@ public class InvolvedFilesReporter extends AReporter {
   
   public final static String INDENT = Layouter.getSpaceString(40);
   
-  public static final String PARENT_FILE_SEPARATOR = "\\";
+  public static final String PARENT_FILE_SEPARATOR = "!/";
   
   private List<String> inputFiles = Lists.newArrayList();
   
@@ -124,23 +124,6 @@ public class InvolvedFilesReporter extends AReporter {
    * java.lang.String, java.lang.String, de.monticore.ast.ASTNode)
    */
   @Override
-  public void reportFileCreation(Path parentPath, Path file) {
-    if (qualifiedInputFile.isPresent() && qualifiedInputFile.get().compareTo(file) == 0) {
-      return;
-    }
-    String filePath = parentPath != null
-        ? parentPath.toString() + PARENT_FILE_SEPARATOR + file.toString()
-        : file.toString();
-    if (!outputFiles.contains(filePath)) {
-      outputFiles.add(filePath);
-    }
-  }
-  
-  /**
-   * @see mc.codegen.reporting.commons.IReportEventHandler#reportFileCreation(java.lang.String,
-   * java.lang.String, java.lang.String, de.monticore.ast.ASTNode)
-   */
-  @Override
   public void reportFileExistenceChecking(List<Path> parentPath, Path file) {
     parentPath.forEach(p -> checkedFiles
         .add(p != null ? p.toString() + PARENT_FILE_SEPARATOR + file.toString() : file.toString()));
@@ -163,6 +146,7 @@ public class InvolvedFilesReporter extends AReporter {
       toAdd = modelToArtifactMap.get(file).toString() + PARENT_FILE_SEPARATOR
           + file.toString();
     }
+    toAdd = format(toAdd);
     if (!toAdd.isEmpty() && !inputFiles.contains(toAdd)) {
       inputFiles.add(toAdd);
     }
@@ -173,6 +157,7 @@ public class InvolvedFilesReporter extends AReporter {
    */
   @Override
   public void reportOpenInputFile(String fileName) {
+    fileName = format(fileName);
     if (!inputFiles.contains(fileName)) {
       inputFiles.add(fileName);
     }
@@ -216,9 +201,14 @@ public class InvolvedFilesReporter extends AReporter {
     }
   }
   
+  private String format(String fileName) {
+    fileName = fileName.replace('\\', '/');
+    return fileName.startsWith("file:/") ? fileName.substring(6) : fileName;
+  }
+  
   private void writeContent(ASTNode ast) {
     writeInputFilesHeading();
-    inputFiles.forEach(f -> writeLine(f.startsWith("file:/") ? f.substring(6) : f));
+    inputFiles.forEach(f -> writeLine(f));
     
     Collections.sort(outputFiles);
     writeOutputFileHeading();

@@ -439,7 +439,6 @@ public class TemplateController {
       completeFilePath = Paths.get(config.getOutputDirectory().getAbsolutePath(), filePath.toString());
     }
 
-    Reporting.reportFileCreation(completeFilePath.toString());
     Reporting.reportFileCreation(qualifiedTemplateName, filePath, ast);
 
     fileHandler.storeInFile(completeFilePath, content.toString());

@@ -21,7 +21,7 @@ package de.monticore.generating.templateengine.freemarker;
 
 import java.net.URL;
 
-import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.logging.Log;
 import freemarker.cache.URLTemplateLoader;
 
@@ -61,13 +61,13 @@ public class MontiCoreTemplateLoader extends URLTemplateLoader {
   @Override
   protected URL getURL(String templateName) {
     Log.debug("Requested template " + templateName, MontiCoreTemplateLoader.class.getName());
+    FileReaderWriter ioWrapper = new FileReaderWriter();
     
     // Since the input is almost always dot separated, this method just goes ahead and converts it
     // without checking, only in the rare case that this procedure is unsuccessful are
     // alternatives considered
-    URL result = classLoader.getResource(templateName.replace('.', '/').concat(FreeMarkerTemplateEngine.FM_FILE_EXTENSION));
+    URL result = ioWrapper.getResource(classLoader, templateName.replace('.', '/').concat(FreeMarkerTemplateEngine.FM_FILE_EXTENSION));
     if (result != null) {
-      Reporting.reportOpenInputFile(result.getFile());
       return result;
     }
     // if the search was still unsuccessful the method tries once more and checks if the problem
@@ -77,11 +77,10 @@ public class MontiCoreTemplateLoader extends URLTemplateLoader {
     if (templateName.endsWith(FreeMarkerTemplateEngine.FM_FILE_EXTENSION)) {
       String newName = templateName.substring(0,
           templateName.length() - FreeMarkerTemplateEngine.FM_FILE_EXTENSION.length());
-      result = classLoader.getResource(newName.replace('.', '/').concat(FreeMarkerTemplateEngine.FM_FILE_EXTENSION));
+      result = ioWrapper.getResource(classLoader, newName.replace('.', '/').concat(FreeMarkerTemplateEngine.FM_FILE_EXTENSION));
     } else {
-      result = classLoader.getResource(templateName);
+      result = ioWrapper.getResource(classLoader, templateName);
     }
-    Reporting.reportOpenInputFile(result.getFile());
     return result;
   }
   

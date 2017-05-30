@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Iterables;
 import de.monticore.AmbiguityException;
+import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -104,9 +105,10 @@ public final class ModelPath {
   public ModelCoordinate resolveModel(ModelCoordinate qualifiedModel) {
     String fixedPath = qualifiedModel.getQualifiedPath().toString()
         .replaceAll("\\" + File.separator, "/");
+    FileReaderWriter ioWrapper = new FileReaderWriter();
 
     List<URL> resolvedURLS = classloaderMap.keySet().stream()
-        .map(classloader -> classloader.getResource(fixedPath))
+        .map(classloader -> ioWrapper.getResource(classloader, fixedPath))
         .filter(url -> url != null)
         .collect(Collectors.toList());
 
