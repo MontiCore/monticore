@@ -23,6 +23,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import de.monticore.ast.ASTNode;
@@ -115,8 +116,13 @@ public class ReportManager implements IReportEventHandler {
   }
   
   @Override
-  public void reportFileExistenceChecking(Path parentPath, Path file) {
-    this.reportEventHandlers.forEach(h -> h.reportFileCreation(parentPath, file));
+  public void reportFileCreation(String fileName) {
+    this.reportEventHandlers.forEach(h -> h.reportFileCreation(fileName));
+  }
+  
+  @Override
+  public void reportFileExistenceChecking(List<Path> parentPath, Path file) {
+    this.reportEventHandlers.forEach(h -> h.reportFileExistenceChecking(parentPath, file));
   }
 
   @Override
@@ -405,7 +411,7 @@ public class ReportManager implements IReportEventHandler {
   }
 
   @Override
-  public void reportOpenInputFile(Path parentPath, Path file) {
+  public void reportOpenInputFile(Optional<Path> parentPath, Path file) {
     for (IReportEventHandler handler : this.reportEventHandlers) {
       handler.reportOpenInputFile(parentPath, file);
     }
@@ -417,7 +423,7 @@ public class ReportManager implements IReportEventHandler {
       handler.reportParseInputFile(inputFilePath, modelName);
     }
   }
-
+  
   @Override
   public void reportSymbolTableScope(Scope scope) {
     for (IReportEventHandler handler : this.reportEventHandlers) {
@@ -462,6 +468,9 @@ public class ReportManager implements IReportEventHandler {
     }
   }
 
-
+  @Override
+  public void reportOpenInputFile(String fileName) {
+    this.reportEventHandlers.forEach(h -> h.reportOpenInputFile(fileName));
+  }
 
 }

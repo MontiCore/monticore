@@ -21,6 +21,7 @@ package de.monticore.generating.templateengine.freemarker;
 
 import java.net.URL;
 
+import de.monticore.generating.templateengine.reporting.Reporting;
 import de.se_rwth.commons.logging.Log;
 import freemarker.cache.URLTemplateLoader;
 
@@ -66,6 +67,7 @@ public class MontiCoreTemplateLoader extends URLTemplateLoader {
     // alternatives considered
     URL result = classLoader.getResource(templateName.replace('.', '/').concat(FreeMarkerTemplateEngine.FM_FILE_EXTENSION));
     if (result != null) {
+      Reporting.reportOpenInputFile(result.getFile());
       return result;
     }
     // if the search was still unsuccessful the method tries once more and checks if the problem
@@ -79,6 +81,7 @@ public class MontiCoreTemplateLoader extends URLTemplateLoader {
     } else {
       result = classLoader.getResource(templateName);
     }
+    Reporting.reportOpenInputFile(result.getFile());
     return result;
   }
   

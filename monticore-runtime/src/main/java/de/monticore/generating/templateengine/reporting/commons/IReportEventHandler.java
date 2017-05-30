@@ -22,6 +22,7 @@ package de.monticore.generating.templateengine.reporting.commons;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.HookPoint;
@@ -277,7 +278,7 @@ public interface IReportEventHandler {
 
 	public void reportDetailed(String value);
 
-	public void reportOpenInputFile(Path parentPath, Path file);
+	public void reportOpenInputFile(Optional<Path> parentPath, Path file);
 
 	void reportParseInputFile(Path inputFilePath, String modelName);
 
@@ -309,5 +310,9 @@ public interface IReportEventHandler {
 
 	public void reportTransformationNewValue(String transformationName, boolean value);
 
-  void reportFileExistenceChecking(Path parentPath, Path file);
+  void reportFileCreation(String fileName);
+
+  void reportOpenInputFile(String fileName);
+
+  void reportFileExistenceChecking(List<Path> parentPath, Path file);
 }

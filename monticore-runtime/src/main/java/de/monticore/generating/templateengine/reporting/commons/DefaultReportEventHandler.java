@@ -22,6 +22,7 @@ package de.monticore.generating.templateengine.reporting.commons;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.HookPoint;
@@ -129,11 +130,11 @@ public class DefaultReportEventHandler implements IReportEventHandler {
   }
   
   /**
-   * @see mc.codegen.reporting.commons.IReportEventHandler#reportFileExistenceChecking(Path,
+   * @see mc.codegen.reporting.commons.IReportEventHandler#reportFileExistenceChecking(List<Path>,
    * Path)
    */
   @Override
-  public void reportFileExistenceChecking(Path parentPath, Path file) {
+  public void reportFileExistenceChecking(List<Path> parentPath, Path file) {
     // TODO Auto-generated method stub
   }
   
@@ -388,7 +389,7 @@ public class DefaultReportEventHandler implements IReportEventHandler {
   }
 
   @Override
-  public void reportOpenInputFile(Path parentPath, Path file) {
+  public void reportOpenInputFile(Optional<Path> parentPath, Path file) {
     // TODO Auto-generated method stub
 
   }
@@ -448,6 +449,19 @@ public class DefaultReportEventHandler implements IReportEventHandler {
 
   @Override
   public void reportTransformationNewValue(String transformationName, boolean value) {
+    // TODO Auto-generated method stub
+  }
+
+  @Override
+  public void reportFileCreation(String fileName) {
+    // TODO Auto-generated method stub
+  }
+
+  /**
+   * @see de.monticore.generating.templateengine.reporting.commons.IReportEventHandler#reportOpenInputFile(java.lang.String)
+   */
+  @Override
+  public void reportOpenInputFile(String fileName) {
     // TODO Auto-generated method stub
   }
 
