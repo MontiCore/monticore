@@ -693,7 +693,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     
     Optional<MCProdSymbol> prod = grammarEntry.getProdWithInherited(ast.getName());
     if (!prod.isPresent()) {
-      Log.error("0xA2201 Production symbol for  " + ast.getName() + "couldn't be resolved.",
+      Log.error("0xA2201 Production symbol for " + ast.getName() + " couldn't be resolved.",
           ast.get_SourcePositionStart());
     }
     // Lexer Rule
