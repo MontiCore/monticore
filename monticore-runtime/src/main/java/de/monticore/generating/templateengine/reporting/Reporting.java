@@ -380,7 +380,7 @@ public class Reporting extends Slf4jLog {
   }
   
   /**
-   * Reports a file creation via 
+   * Reports a file creation
    *
    * @param parentPath
    * @param file
@@ -388,6 +388,17 @@ public class Reporting extends Slf4jLog {
   public static void reportFileCreation(Path parentPath, Path file) {
     if (isEnabled()) {
       getReportManager().reportFileCreation(parentPath, file);
+    }
+  }
+  
+  /**
+   * Reports a file creation
+   *
+   * @param fileName
+   */
+  public static void reportFileCreation(String fileName) {
+    if (isEnabled()) {
+      getReportManager().reportFileCreation(fileName);
     }
   }
 
@@ -441,13 +452,13 @@ public class Reporting extends Slf4jLog {
    * @param parentPath
    * @param file
    */
-  public void reportFileExistenceChecking(Path parentPath, Path file) {
+  public static void reportFileExistenceChecking(List<Path> parentPath, Path file) {
     if (isEnabled()) {
       getReportManager()
           .reportFileExistenceChecking(parentPath, file);
     }
   }
-
+  
   /**
    * Reports the end of a template execution.
    *
@@ -775,9 +786,23 @@ public class Reporting extends Slf4jLog {
    * @param parentPath
    * @param file
    */
-  public static void reportOpenInputFile(Path parentPath, Path file) {
+  public static void reportOpenInputFile(Optional<Path> parentPath, Path file) {
     if (isEnabled()) {
       getReportManager().reportOpenInputFile(parentPath, file);
+    }
+  }
+  
+  /**
+   * This method is called when an input file is opened which is obtained via
+   * model resolution. Such files typically are dependency models (e.g., super
+   * grammars, super CDs, ...).
+   *
+   * @param parentPath
+   * @param file
+   */
+  public static void reportOpenInputFile(String fileName) {
+    if (isEnabled()) {
+      getReportManager().reportOpenInputFile(fileName);
     }
   }
 
@@ -785,7 +810,7 @@ public class Reporting extends Slf4jLog {
    * This method is called when an input file is parsed; i.e., this report hook
    * point is designed for the main input artifacts only. E.g., files that are
    * loaded on demand during further processing should not report using this
-   * method but {@link #reportOpenInputFile(Path, Path)} instead.
+   * method but {@link #reportOpenInputFile(Optional<Path>, Path)} instead.
    *
    * @param inputFilePath
    * @param modelName
@@ -838,4 +863,5 @@ public class Reporting extends Slf4jLog {
     }
     return "";
   }
+
 }

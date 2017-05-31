@@ -20,13 +20,17 @@
 package de.monticore.io;
 
 import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.apache.commons.io.FileUtils;
 
 import com.google.common.base.Charsets;
+import com.google.common.collect.Lists;
 
+import de.monticore.generating.templateengine.reporting.Reporting;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -83,6 +87,7 @@ public class FileReaderWriter {
    */
   public void storeInFile(Path targetPath, String content) {
     try {
+      Reporting.reportFileCreation(targetPath.toString());
       FileUtils.write(targetPath.toFile(), content, this.charset);
     }
     catch (IOException e) {
@@ -103,6 +108,7 @@ public class FileReaderWriter {
   public String readFromFile(Path sourcePath) {
     String content = null;
     try {
+      Reporting.reportOpenInputFile(sourcePath.toString());
       content = FileUtils.readFileToString(sourcePath.toFile(), this.charset);
     }
     catch (IOException e) {
@@ -112,6 +118,16 @@ public class FileReaderWriter {
     }
     Log.errorIfNull(content);
     return content;
+  }
+  
+  public URL getResource(ClassLoader classLoader, String name) {
+    URL result = classLoader.getResource(name);
+    if (result != null) {
+      Reporting.reportOpenInputFile(result.getFile());
+    } else {
+      Reporting.reportFileExistenceChecking(Lists.newArrayList(), Paths.get(name));
+    }
+    return result;
   }
   
 }

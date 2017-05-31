@@ -21,7 +21,12 @@ package de.monticore.generating.templateengine.freemarker;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.Optional;
+
+import com.google.common.collect.Lists;
 
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.se_rwth.commons.logging.Log;
@@ -55,7 +60,14 @@ public class MontiCoreFileTemplateLoader extends FileTemplateLoader {
       }
     }
     if (template != null) {
+      Reporting.reportOpenInputFile(Optional.of(getBaseDirectory().toPath()), Paths.get(completeName));
       Reporting.reportUserSpecificTemplate(getBaseDirectory().toPath(), Paths.get(completeName));
+    }
+    else {
+      List<Path> pathes = Lists.newArrayList();
+      pathes.add(Paths.get(getBaseDirectory().getAbsolutePath()));
+      Reporting.reportFileExistenceChecking(pathes,
+          Paths.get(completeName));
     }
     return template;
   }

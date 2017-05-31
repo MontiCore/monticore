@@ -159,14 +159,14 @@ public class InputOutputFilesReporter extends AReporter {
    * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportOpenInputFile(java.nio.file.Path)
    */
   @Override
-  public void reportOpenInputFile(Path parentPath, Path file) {
+  public void reportOpenInputFile(Optional<Path> parentPath, Path file) {
     if (file.compareTo(qualifiedInputFile) == 0) {
       return;
     }
     String toAdd = "";
-    if (parentPath != null) {
-      toAdd = parentPath.toString() + PARENT_FILE_SEPARATOR + file.toString();
-      modelToArtifactMap.put(file, parentPath);
+    if (parentPath.isPresent()) {
+      toAdd = parentPath.get().toString() + PARENT_FILE_SEPARATOR + file.toString();
+      modelToArtifactMap.put(file, parentPath.get());
     }
     else {
       if (modelToArtifactMap.keySet().contains(file)) {

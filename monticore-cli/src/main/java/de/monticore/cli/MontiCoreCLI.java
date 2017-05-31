@@ -34,16 +34,17 @@ import java.util.Map;
 
 import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.core.joran.spi.JoranException;
-
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
 import de.monticore.MontiCoreConfiguration;
 import de.monticore.MontiCoreScript;
+import de.monticore.generating.templateengine.reporting.Reporting;
 import de.se_rwth.commons.cli.CLIArguments;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
@@ -140,6 +141,8 @@ public final class MontiCoreCLI {
       // BUT if the user specifies another script to use, we check if it is
       // there and load its content
       if (configuration.getScript().isPresent()) {
+        Reporting.reportFileExistenceChecking(Lists.newArrayList(),
+            configuration.getScript().get().toPath().toAbsolutePath());
         if (!configuration.getScript().get().exists()) {
           System.clearProperty(MC_OUT);
           Log.error("0xA1001 Custom script \"" + configuration.getScript().get().getPath()
@@ -176,6 +179,8 @@ public final class MontiCoreCLI {
       // instead of silently failing custom configuration (e.g. not existing
       // configuration file) we test if it is present and fall back to default
       File userLogFile = new File(userFile);
+      Reporting.reportFileExistenceChecking(Lists.newArrayList(),
+          userLogFile.toPath().toAbsolutePath());
       if (!userLogFile.exists() || !userLogFile.isFile()) {
         // fall back to user configuration
         useUserLoggingConfiguration();

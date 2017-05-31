@@ -19,6 +19,15 @@
 
 package de.monticore.modelloader;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Strings.isNullOrEmpty;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
+
 import de.monticore.AmbiguityException;
 import de.monticore.ModelingLanguage;
 import de.monticore.ast.ASTNode;
@@ -29,15 +38,6 @@ import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.se_rwth.commons.Names;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
  * This class is responsible for loading models from the model path
@@ -159,7 +159,7 @@ public abstract class ModelingLanguageModelLoader<T extends ASTNode> {
     final ModelCoordinate resolvedCoordinate = resolve(qualifiedModelName, modelPath);
     if (resolvedCoordinate.hasLocation()) {
       final T ast = astProvider.getRootNode(resolvedCoordinate);
-      Reporting.reportOpenInputFile(resolvedCoordinate.getParentDirectoryPath(),
+      Reporting.reportOpenInputFile(Optional.of(resolvedCoordinate.getParentDirectoryPath()),
           resolvedCoordinate.getQualifiedPath());
       foundModels.add(ast);
     }

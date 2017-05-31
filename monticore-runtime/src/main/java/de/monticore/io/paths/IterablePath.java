@@ -40,6 +40,7 @@ import org.apache.commons.io.FilenameUtils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import de.monticore.generating.templateengine.reporting.Reporting;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -287,6 +288,7 @@ public final class IterablePath {
    * @return
    */
   public boolean exists(Path path) {
+    Reporting.reportFileExistenceChecking(getPaths(), path);
     return this.pathMap.containsKey(path);
   }
   

@@ -301,9 +301,9 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     MCGrammarSymbol symbol = (MCGrammarSymbol) result.getSymbol().get();
     for (MCGrammarSymbol it : MCGrammarSymbolTableHelper.getAllSuperGrammars(symbol)) {
       if (!it.getFullName().equals(symbol.getFullName())) {
-        Reporting.reportOpenInputFile(null,
+        Reporting.reportOpenInputFile(Optional.empty(),
             Paths.get(it.getFullName().replaceAll("\\.", "/").concat(".mc4")));
-        Reporting.reportOpenInputFile(null,
+        Reporting.reportOpenInputFile(Optional.empty(),
             Paths.get(it.getFullName().replaceAll("\\.", "/").concat(".cd")));
             
       }
