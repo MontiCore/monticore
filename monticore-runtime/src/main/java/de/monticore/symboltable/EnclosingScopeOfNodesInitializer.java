@@ -26,39 +26,43 @@ import de.monticore.ast.ASTNode;
 import de.monticore.visitor.CommonVisitor;
 
 /**
- * Sets the enclosing scope of all AST nodes, if not already set.
- * Uses a stack-based approach in order to access information of
- * parent nodes
+ * Sets the enclosing scope of all AST nodes, if not already set. Uses a stack-based approach in
+ * order to access information of parent nodes
  *
  * @author Pedram Mir Seyed Nazari
  */
 public class EnclosingScopeOfNodesInitializer implements CommonVisitor {
-
+  
   private final Deque<Scope> scopeStack = new ArrayDeque<>();
-
+  
   @Override
   public void visit(ASTNode node) {
     if (!node.getEnclosingScope().isPresent() && !scopeStack.isEmpty()) {
       node.setEnclosingScope(scopeStack.peekLast());
     }
-
+    
     if (node.getSymbol().isPresent()) {
-      if(node.getSymbol().get() instanceof ScopeSpanningSymbol) {
+      if (node.getSymbol().get() instanceof ScopeSpanningSymbol) {
         scopeStack.addLast(((ScopeSpanningSymbol) node.getSymbol().get()).getSpannedScope());
         return;
       }
     }
-
+    
+    if (node.getSpannedScope().isPresent()) {
+      scopeStack.addLast(node.getSpannedScope().get());
+      return;
+    }
+    
     if (node.getEnclosingScope().isPresent()) {
       scopeStack.addLast(node.getEnclosingScope().get());
     }
   }
-
+  
   @Override
   public void endVisit(ASTNode node) {
     if (!scopeStack.isEmpty()) {
       scopeStack.pollLast();
     }
   }
-
+  
 }
