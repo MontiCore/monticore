@@ -66,7 +66,7 @@ public final class MonticoreLanguage implements Language {
       "options", "astimplements",
       "astextends",
       "interface", "enum", "implements", "external", "fragment",
-      "extends", "returns", "ast", "token", "protected");
+      "extends", "returns", "ast", "token", "protected", "scope", "symbol");
       
   @Override
   public String getExtension() {
