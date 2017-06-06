@@ -23,7 +23,6 @@ import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrNode;
 import de.monticore.grammar.grammar._ast.ASTGrammarNode;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTGrammar_WithConceptsNode;
 import de.monticore.grammar.grammar_withconcepts._visitor.CommonGrammar_WithConceptsDelegatorVisitor;
-import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsDelegatorVisitor;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
 import de.monticore.java.javadsl._ast.ASTJavaDSLNode;
 import de.monticore.java.prettyprint.JavaDSLPrettyPrinter;
@@ -37,7 +36,7 @@ public class Grammar_WithConceptsPrettyPrinter implements Grammar_WithConceptsVi
   
   private Grammar_WithConceptsVisitor realThis = this;
   
-  public final Grammar_WithConceptsDelegatorVisitor visitor;
+  public final CommonGrammar_WithConceptsDelegatorVisitor visitor;
 
   public Grammar_WithConceptsPrettyPrinter(IndentPrinter out) {
     printer = out;

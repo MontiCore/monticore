@@ -11,7 +11,6 @@ import de.monticore.grammar.grammar._ast.ASTGrammarNode;
 import de.monticore.grammar.grammar._od.Grammar2OD;
 import de.monticore.grammar.grammar_withconcepts._od.Grammar_WithConcepts2OD;
 import de.monticore.grammar.grammar_withconcepts._visitor.CommonGrammar_WithConceptsDelegatorVisitor;
-import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsDelegatorVisitor;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
 import de.monticore.java.javadsl._od.JavaDSL2OD;
 import de.monticore.literals.literals._od.Literals2OD;
@@ -23,7 +22,7 @@ public class GrammarWithConcepts2OD extends Grammar_WithConcepts2OD {
     
   private Grammar_WithConceptsVisitor realThis = this;
   
-  private final Grammar_WithConceptsDelegatorVisitor visitor;
+  private final CommonGrammar_WithConceptsDelegatorVisitor visitor;
   
   private IndentPrinter printer;
   
