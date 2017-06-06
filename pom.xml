@@ -6,7 +6,7 @@
 
   <groupId>de.monticore</groupId>
   <artifactId>monticore</artifactId>
-  <version>4.5.3-SNAPSHOT</version>
+  <version>4.5.3</version>
   <packaging>pom</packaging>
 
   <!-- == PROJECT MODULES ================================================= -->
@@ -27,8 +27,8 @@
 
     <!-- .. Libraries ..................................................... -->
 
-    <mc.java.version>4.3.8</mc.java.version>
-    <cd4analysis.version>1.3.10-SNAPSHOT</cd4analysis.version>
+    <mc.java.version>4.3.9</mc.java.version>
+    <cd4analysis.version>1.3.10</cd4analysis.version>
 
     <se-commons.version>1.7.7</se-commons.version>
     <antlr.version>4.5.1</antlr.version>
