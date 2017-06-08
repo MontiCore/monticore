@@ -714,7 +714,7 @@
               <artifact>
                 <groupId>de.se_rwth.eclipse</groupId>
                 <artifactId>de.se_rwth.eclipse.targetplatform.mars</artifactId>
-                <version>1.0.2</version>
+                <version>1.0.3-SNAPSHOT</version>
               </artifact>
             </target>
             <pomDependencies>consider</pomDependencies>
