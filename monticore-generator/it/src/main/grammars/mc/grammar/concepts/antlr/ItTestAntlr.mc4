@@ -1,6 +1,6 @@
 package mc.grammar.concepts.antlr;
 
-component grammar Antlr extends mc.grammar.lexicals.Lexicals { 
+component grammar ItTestAntlr extends mc.grammar.lexicals.ItTestLexicals { 
 
     /** Used for embedding java declarations */
 	external AntlrCode;

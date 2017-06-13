@@ -1,6 +1,6 @@
 package mc.grammar.concepts.texteditor;
 
-component grammar TextEditor extends mc.grammars.literals.Literals {
+component grammar ItTestTextEditor extends mc.grammars.literals.ItTestLiterals {
 		TextEditorConcept =
 		 "{" 
 		   ( "texteditorname" ":" Name "for" RootName:String ";"  |

@@ -19,6 +19,7 @@
 
 package de.monticore.grammar.prettyprint;
 
+import de.monticore.expressions.mcexpressions._ast.ASTMCExpressionsNode;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrNode;
 import de.monticore.grammar.grammar._ast.ASTGrammarNode;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTGrammar_WithConceptsNode;

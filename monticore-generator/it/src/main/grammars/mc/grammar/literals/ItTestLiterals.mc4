@@ -9,14 +9,14 @@ package mc.grammar.literals;
  * @author Martin Schindler
 */
 
-grammar Literals extends mc.grammar.lexicals.Lexicals {
+grammar ItTestLiterals extends mc.grammar.lexicals.ItTestLexicals {
 
   /*========================================================================*/
   /*======================= AST DEFINITIONS ================================*/
   /*========================================================================*/
   ast BooleanLiteral =
     method public boolean getValue() {
-      return this.source == ASTConstantsLiterals.TRUE;
+      return this.source == ASTConstantsItTestLiterals.TRUE;
     }
   ;
 

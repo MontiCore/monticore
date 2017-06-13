@@ -1,6 +1,6 @@
 package mc.embedding.external;
 
-component grammar Host extends mc.grammar.lexicals.Lexicals {
+component grammar Host extends mc.grammar.lexicals.ItTestLexicals {
 
    symbol scope Host = Name "content" Content;
 

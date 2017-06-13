@@ -190,14 +190,14 @@
                 <grammar>src/main/grammars/mc/feature/expression</grammar>
 
                 <!-- MontiCore grammars -->
-                <grammar>src/main/grammars/mc/grammar/lexicals/Lexicals.mc4</grammar>
-                <grammar>src/main/grammars/mc/grammar/literals/Literals.mc4</grammar>
-                <grammar>src/main/grammars/mc/grammar/types/Types.mc4</grammar>
-                <grammar>src/main/grammars/mc/grammar/Grammar.mc4</grammar>
-                <grammar>src/main/grammars/mc/grammar/concepts/antlr/Antlr.mc4</grammar>
-                <grammar>src/main/grammars/mc/grammar/Grammar_WithConcepts.mc4</grammar>
-                <grammar>src//main/grammars/mc/grammar/concepts/visualoutline/Common.mc4</grammar>
-                <grammar>src//main/grammars/mc/grammar/concepts/visualoutline/Outline.mc4</grammar>
+                <grammar>src/main/grammars/mc/grammar/lexicals/ItTestLexicals.mc4</grammar>
+                <grammar>src/main/grammars/mc/grammar/literals/ItTestLiterals.mc4</grammar>
+                <grammar>src/main/grammars/mc/grammar/types/ItTestTypes.mc4</grammar>
+                <grammar>src/main/grammars/mc/grammar/ItTestGrammar.mc4</grammar>
+                <grammar>src/main/grammars/mc/grammar/concepts/antlr/ItTestAntlr.mc4</grammar>
+                <grammar>src/main/grammars/mc/grammar/ItTestGrammar_WithConcepts.mc4</grammar>
+                <grammar>src//main/grammars/mc/grammar/concepts/visualoutline/ItTestCommon.mc4</grammar>
+                <grammar>src//main/grammars/mc/grammar/concepts/visualoutline/ItTestOutline.mc4</grammar>
                 
                 <!-- Handwritten ast code -->
                 <grammar>src/main/grammars/mc/feature/hwc</grammar>

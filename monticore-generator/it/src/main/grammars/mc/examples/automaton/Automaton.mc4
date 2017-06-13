@@ -1,6 +1,6 @@
 package mc.examples.automaton;
 
-grammar Automaton extends mc.grammar.lexicals.Lexicals {
+grammar Automaton extends mc.grammar.lexicals.ItTestLexicals {
 
 symbol scope Automaton =
   "automaton" Name "{" (State | Transition)* "}" ;

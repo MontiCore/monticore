@@ -5,7 +5,7 @@
  */
 package org.nest.commons;
 
-grammar Commons extends mc.grammar.types.Types {
+grammar Commons extends mc.grammar.types.ItTestTypes {
 
   token SL_COMMENT =
       "#" (~('\n' |

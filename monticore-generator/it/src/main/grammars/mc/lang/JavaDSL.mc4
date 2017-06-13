@@ -1,6 +1,6 @@
 package mc.lang;
 
-grammar JavaDSL extends mc.grammar.types.Types {
+grammar JavaDSL extends mc.grammar.types.ItTestTypes {
 
 // starting point for parsing a java file
 CompilationUnit

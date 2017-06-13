@@ -1,6 +1,6 @@
 package mc.embedding.transitive;
 
-grammar TransHost extends mc.grammar.lexicals.Lexicals {
+grammar TransHost extends mc.grammar.lexicals.ItTestLexicals {
 
    symbol scope TransStart = Name "host" TransHost;
 

@@ -9,7 +9,7 @@ package mc.grammar.types;
  *
  * @author Martin Schindler
 */
-grammar Types extends mc.grammar.literals.Literals {
+grammar ItTestTypes extends mc.grammar.literals.ItTestLiterals {
 
     /*========================================================================*/
     /*============================== OPTIONS =================================*/
@@ -69,28 +69,28 @@ grammar Types extends mc.grammar.literals.Literals {
           return "";
         }
         method public boolean isBoolean(){
-          return this.getPrimitive()==ASTConstantsTypes.BOOLEAN;
+          return this.getPrimitive()==ASTConstantsItTestTypes.BOOLEAN;
         }
         method public boolean isByte(){
-          return this.getPrimitive()==ASTConstantsTypes.BYTE;
+          return this.getPrimitive()==ASTConstantsItTestTypes.BYTE;
         }
         method public boolean isChar(){
-          return this.getPrimitive()==ASTConstantsTypes.CHAR;
+          return this.getPrimitive()==ASTConstantsItTestTypes.CHAR;
         }
         method public boolean isShort(){
-          return this.getPrimitive()==ASTConstantsTypes.SHORT;
+          return this.getPrimitive()==ASTConstantsItTestTypes.SHORT;
         }
         method public boolean isInt(){
-          return this.getPrimitive()==ASTConstantsTypes.INT;
+          return this.getPrimitive()==ASTConstantsItTestTypes.INT;
         }
         method public boolean isFloat(){
-          return this.getPrimitive()==ASTConstantsTypes.FLOAT;
+          return this.getPrimitive()==ASTConstantsItTestTypes.FLOAT;
         }
         method public boolean isLong(){
-          return this.getPrimitive()==ASTConstantsTypes.LONG;
+          return this.getPrimitive()==ASTConstantsItTestTypes.LONG;
         }
         method public boolean isDouble(){
-          return this.getPrimitive()==ASTConstantsTypes.DOUBLE;
+          return this.getPrimitive()==ASTConstantsItTestTypes.DOUBLE;
         };
     
     ast ReferenceType astextends ASTType;

@@ -4,7 +4,7 @@ package mc.grammar.concepts.visualoutline;
 /**
 	The actual language to define the visual editor behaviour
 */
-component grammar Outline extends mc.grammar.concepts.visualoutline.Common {
+component grammar ItTestOutline extends mc.grammar.concepts.visualoutline.ItTestCommon {
 	/**
 		The root element to parse, everything is in common
 	*/
