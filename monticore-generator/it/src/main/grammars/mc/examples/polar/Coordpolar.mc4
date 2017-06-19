@@ -1,6 +1,6 @@
 package mc.examples.polar;
 
-grammar Coordpolar extends mc.grammar.lexicals.Lexicals {
+grammar Coordpolar extends mc.grammar.lexicals.ItTestLexicals {
 
     token REAL = ('0'..'9')+('.'('0'..'9')+)?: double;
 

@@ -1,6 +1,6 @@
 package mc.grammar.concepts.texteditoringrammar;
 
-component grammar TextEditorInGrammar extends mc.grammars.literals.Literals {
+component grammar ItTestTextEditorInGrammar extends mc.grammars.literals.ItTestLiterals {
 			
      token NUM = ('0'..'9')+;
 

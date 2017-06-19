@@ -19,8 +19,8 @@
 
 package mc.grammar;
 
-import mc.grammar.grammar._ast.ASTGenericType;
 import de.se_rwth.commons.Names;
+import mc.grammar.ittestgrammar._ast.ASTGenericType;
 
 /**
  * Some helper methods for GrammarDSL

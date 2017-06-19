@@ -1,6 +1,6 @@
 package mc.grammar.concepts.attributes;
 
-component grammar Attributes  extends mc.grammars.lexicals.Lexicals {
+component grammar ItTestAttributes  extends mc.grammars.lexicals.ItTestLexicals {
 
 	/**
 	 * This concepts consists of AttributeDefinitions and AttributeConcretion

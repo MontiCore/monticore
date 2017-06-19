@@ -1,6 +1,6 @@
 package mc.grammar.lexicals;
 
-component grammar Lexicals {
+component grammar ItTestLexicals {
  
   token Name =
         ( 'a'..'z' | 'A'..'Z' | '_' | '$' )( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '$' )*;

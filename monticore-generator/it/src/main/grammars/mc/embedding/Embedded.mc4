@@ -1,6 +1,6 @@
 package mc.embedding;
 
-grammar Embedded extends mc.grammar.lexicals.Lexicals {
+grammar Embedded extends mc.grammar.lexicals.ItTestLexicals {
 
    symbol Text = "text" Name;
 

@@ -1,6 +1,6 @@
 package mc.examples.automaton.renaming;
 
-grammar Renaming extends mc.grammar.lexicals.Lexicals {
+grammar Renaming extends mc.grammar.lexicals.ItTestLexicals {
 
 /** A ASTRename represents a renaming script 
 	@attribute Name Name of the renaming script

@@ -1,0 +1,174 @@
+package de.monticore.expressions;
+
+component grammar MCExpressions extends de.monticore.types.Types {
+
+interface Expression;
+
+QualifiedNameExpression implements Expression <290> = 
+	Expression "." Name;
+	
+ThisExpression implements Expression <280> =
+	Expression "." ["this"];
+	
+SuperExpression implements Expression <270> =
+	Expression "." "super" SuperSuffix;
+	
+GenericInvocationExpression implements Expression <260> =
+	Expression "." PrimaryGenericInvocationExpression;
+	
+ArrayExpression implements Expression <250> =
+	Expression "[" indexExpression:Expression "]";
+	
+CallExpression implements Expression <240> =
+	Expression Arguments;
+	
+TypeCastExpression implements Expression <230> =
+	"(" Type ")" Expression;
+	
+SuffixExpression implements Expression <220> =
+	Expression
+        (   suffixOp:"++"
+        |   suffixOp:"--"
+        );
+        
+PrefixExpression implements Expression <210> =
+	(   prefixOp:"+"
+        |   prefixOp:"-"
+        |   prefixOp:"++"
+        |   prefixOp:"--"
+        )
+        Expression;
+        
+BooleanNotExpression implements Expression <200> =
+	"~"  Expression;
+	
+LogicalNotExpression implements Expression <200> =
+	"!" Expression;
+	
+MultExpression implements Expression <190> =
+	leftExpression:Expression
+        (   multiplicativeOp:"*"
+        |   multiplicativeOp:"/"
+        |   multiplicativeOp:"%"
+        )
+        rightExpression:Expression;
+        
+AddExpression implements Expression <180> =
+	leftExpression:Expression
+        (   additiveOp:"+"
+        |   additiveOp:"-"
+        )
+		rightExpression:Expression;
+		
+ShiftExpression implements Expression <170> =
+	leftExpression:Expression
+	    // It is not possible to define "<<", ">>" or ">>>".
+        // Parsing generic typs like "List<List<String>>" leads to problems.
+        (   shiftOp:"<" "<"
+          {((_input.LT(-2).getLine()==_input.LT(-1).getLine()) && 
+          	(_input.LT(-1).getCharPositionInLine()==_input.LT(-2).getCharPositionInLine()+1))}?
+          {_aNode.setShiftOp("<<");}     
+        |   shiftOp:">" ">" ">"
+          {((_input.LT(-2).getLine()==_input.LT(-1).getLine()) && 
+            (_input.LT(-3).getLine()==_input.LT(-2).getLine()) &&
+            (_input.LT(-2).getCharPositionInLine()==_input.LT(-3).getCharPositionInLine()+1) &&
+          	(_input.LT(-1).getCharPositionInLine()==_input.LT(-2).getCharPositionInLine()+1))}?        
+         {_aNode.setShiftOp(">>>");}      
+        |   shiftOp:">" ">"
+         {((_input.LT(-2).getLine()==_input.LT(-1).getLine()) && 
+          	(_input.LT(-1).getCharPositionInLine()==_input.LT(-2).getCharPositionInLine()+1))}?
+         {_aNode.setShiftOp(">>");}      
+        )
+        rightExpression:Expression;
+        
+ComparisonExpression implements Expression <160> =
+	leftExpression:Expression
+        (   comparison:"<="
+        |   comparison:">=" 
+        |   comparison:">" 
+        |   comparison:"<"
+        )
+        rightExpression:Expression;
+        
+InstanceofExpression implements Expression <150> =
+	Expression "instanceof" Type;
+	
+IdentityExpression implements Expression <140> =
+	leftExpression:Expression
+        (   identityTest:"=="
+        |   identityTest:"!="
+        )
+        rightExpression:Expression;
+        
+BinaryAndOpExpression implements Expression <130> =
+	leftExpression:Expression "&"  rightExpression:Expression;
+	
+BinaryXorOpExpression implements Expression <120> =
+	leftExpression:Expression "^"  rightExpression:Expression;
+	
+BinaryOrOpExpression implements Expression <110> =
+	leftExpression:Expression "|"  rightExpression:Expression;
+	
+BooleanAndOpExpression implements Expression <100> =
+	leftExpression:Expression "&&" rightExpression:Expression;
+	
+BooleanOrOpExpression implements Expression <90> =
+	leftExpression:Expression "||" rightExpression:Expression;
+	
+ConditionalExpression implements Expression <80> =
+	condition:Expression "?" trueExpression:Expression ":" falseExpression:Expression;
+	
+AssignmentExpression implements Expression <70> = <rightassoc>
+	leftExpression:Expression
+        (   assignment:"="
+        |   assignment:"+="
+        |   assignment:"-="
+        |   assignment:"*="
+        |   assignment:"/="
+        |   assignment:"&="
+        |   assignment:"|="
+        |   assignment:"^="
+        |   assignment:">>="
+        |   assignment:">>>="
+        |   assignment:"<<="
+        |   assignment:"%="
+        )
+        rightExpression:Expression;
+
+BracketExpression implements Expression <300>
+    =  "(" Expression ")";
+    
+PrimaryThisExpression implements Expression <300>
+	= "this";
+
+PrimarySuperExpression implements Expression <300>
+	= "super";
+	
+LiteralExpression implements Expression <300>
+    = Literal;
+    
+NameExpression implements Expression <300>
+    = Name;
+    
+ClassExpression implements Expression <300>
+    = ReturnType "." "class";
+   
+PrimaryGenericInvocationExpression implements Expression <300>
+    = TypeArguments GenericInvocationSuffix
+    ;
+    
+GenericInvocationSuffix
+    =   ["super"] SuperSuffix
+    |   ["this"] Arguments
+    |   Name Arguments
+    ;
+    
+SuperSuffix
+    =   Arguments
+    |   "." TypeArguments? Name Arguments?
+    ;
+
+Arguments
+    =   "(" (Expression || ",")* ")"
+    ;
+}
