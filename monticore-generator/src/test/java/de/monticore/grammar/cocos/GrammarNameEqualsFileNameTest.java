@@ -49,7 +49,7 @@ public class GrammarNameEqualsFileNameTest {
 
     assertFalse(Log.getFindings().isEmpty());
     for(Finding f : Log.getFindings()){
-      assertEquals("0"+"xA4003 The grammar name A4002 must not differ from the file name"
+      assertEquals("0"+"xA4003 The grammar name A4002 must be identical to the file name"
           + " A4003 of the grammar (without its file extension).", f.getMsg());
     }
   }
