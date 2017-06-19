@@ -226,7 +226,7 @@ public class ParserGeneratorHelper {
   public static String getConvertFunction(MCProdSymbol symbol) {
     Optional<ASTLexProd> ast = symbol.getAstNode().filter(ASTLexProd.class::isInstance)
     .map(ASTLexProd.class::cast);
-    return ast.isPresent()? HelperGrammar.createConvertFunction(ast.get(), prettyPrinter):"";
+    return ast.isPresent()? HelperGrammar.createConvertFunction(ast.get(), getPrettyPrinter()):"";
   }
   
   /**
