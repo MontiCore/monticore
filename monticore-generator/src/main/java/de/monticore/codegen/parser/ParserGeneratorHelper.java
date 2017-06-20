@@ -130,7 +130,11 @@ public class ParserGeneratorHelper {
     if (grammarSymbol.getStartProd().isPresent()) {
       return grammarSymbol.getStartProd().get().getName();
     }
-    
+    for (MCGrammarSymbol g: grammarSymbol.getSuperGrammarSymbols()) {
+      if (g.getStartProd().isPresent()) {
+        return g.getStartProd().get().getName();
+      }
+    }
     return "";
   }
   
@@ -141,6 +145,12 @@ public class ParserGeneratorHelper {
     if (grammarSymbol.getStartProd().isPresent()) {
       return MCGrammarSymbolTableHelper
           .getQualifiedName(grammarSymbol.getStartProd().get());
+    }
+    for (MCGrammarSymbol g: grammarSymbol.getSuperGrammarSymbols()) {
+      if (g.getStartProd().isPresent()) {
+        return MCGrammarSymbolTableHelper
+            .getQualifiedName(g.getStartProd().get());
+      }
     }
     return "";
   }

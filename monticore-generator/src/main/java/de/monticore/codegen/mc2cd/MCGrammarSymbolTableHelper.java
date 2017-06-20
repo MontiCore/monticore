@@ -184,6 +184,7 @@ public class MCGrammarSymbolTableHelper {
   
   private static Set<Scope> getAllScopes(ASTNode astNode) {
     Set<Scope> ret = Sets.newHashSet();
+    astNode.getSpannedScope().ifPresent(s -> ret.add(s));
     for (Symbol s : getAllSubSymbols(astNode)) {
       for (Scope l : listTillNull(s.getEnclosingScope(),
           childScope -> childScope.getEnclosingScope().orElse(null))) {
