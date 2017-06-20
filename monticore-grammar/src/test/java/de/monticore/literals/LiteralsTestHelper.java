@@ -25,7 +25,7 @@ import java.util.Optional;
 
 import de.monticore.literals.literals._ast.ASTLiteral;
 import de.monticore.literals.literals._ast.ASTSignedLiteral;
-import de.monticore.literals.literals._parser.LiteralsParser;
+import de.monticore.literals.testliterals._parser.TestLiteralsParser;
 import junit.framework.TestCase;
 
 /**
@@ -66,7 +66,7 @@ public class LiteralsTestHelper {
    * @throws IOException
    */
   public ASTLiteral parseLiteral(String input) throws IOException {
-    LiteralsParser parser = new LiteralsParser();
+    TestLiteralsParser parser = new TestLiteralsParser();
     Optional<ASTLiteral> res = parser.parseLiteral(new StringReader(input));
     TestCase.assertTrue(res.isPresent());
     return res.get();
@@ -81,7 +81,7 @@ public class LiteralsTestHelper {
    */
   public ASTSignedLiteral parseSignedLiteral(String input)
       throws IOException {
-    LiteralsParser parser = new LiteralsParser();
+    TestLiteralsParser parser = new TestLiteralsParser();
     Optional<ASTSignedLiteral> res = parser.parseSignedLiteral(new StringReader(input));
     TestCase.assertTrue(res.isPresent());
     return res.get();

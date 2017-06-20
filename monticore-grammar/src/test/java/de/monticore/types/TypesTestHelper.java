@@ -26,11 +26,11 @@ import java.util.Optional;
 import de.monticore.antlr4.MCConcreteParser.ParserExecution;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.prettyprint.TypesPrettyPrinterConcreteVisitor;
+import de.monticore.types.testtypes._parser.TestTypesParser;
 import de.monticore.types.types._ast.ASTPrimitiveType;
 import de.monticore.types.types._ast.ASTReturnType;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.types.types._ast.ASTTypeParameters;
-import de.monticore.types.types._parser.TypesParser;
 import junit.framework.TestCase;
 
 /**
@@ -122,7 +122,7 @@ public class TypesTestHelper {
    * @throws IOException
    */
   public ASTType parseType(String input) throws IOException {
-    TypesParser parser = new TypesParser();
+    TestTypesParser parser = new TestTypesParser();
     parser.setParserTarget(ParserExecution.EOF);
     Optional<ASTType> res = parser.parseType(new StringReader(input));
     if (parser.hasErrors()) {
@@ -142,7 +142,7 @@ public class TypesTestHelper {
    * not be parsed.
    */
   public ASTReturnType parseReturnType(String input) throws IOException {
-    TypesParser parser = new TypesParser();
+    TestTypesParser parser = new TestTypesParser();
     Optional<ASTReturnType> res = parser.parseReturnType(new StringReader(input));
     TestCase.assertTrue(res.isPresent());
     TestCase.assertTrue(res.get() instanceof ASTReturnType);
@@ -157,7 +157,7 @@ public class TypesTestHelper {
    * @throws IOException
    */
   public ASTTypeParameters parseTypeParameters(String input) throws IOException {
-    TypesParser parser = new TypesParser();
+    TestTypesParser parser = new TestTypesParser();
     parser.setParserTarget(ParserExecution.EOF);
     Optional<ASTTypeParameters> res = parser.parseTypeParameters(new StringReader(input));
     if (parser.hasErrors()) {
@@ -176,7 +176,7 @@ public class TypesTestHelper {
    * @throws IOException
    */
   public ASTPrimitiveType parseBooleanType(String input) throws IOException {
-    TypesParser parser = new TypesParser();
+    TestTypesParser parser = new TestTypesParser();
     Optional<ASTPrimitiveType> res = parser.parsePrimitiveType(new StringReader(input));
     TestCase.assertTrue(res.isPresent());
     TestCase.assertTrue(res.get() instanceof ASTPrimitiveType);
@@ -191,7 +191,7 @@ public class TypesTestHelper {
    * @throws IOException
    */
   public ASTPrimitiveType parseIntegralType(String input) throws IOException {
-    TypesParser parser = new TypesParser();
+    TestTypesParser parser = new TestTypesParser();
     Optional<ASTPrimitiveType> res = parser.parsePrimitiveType(new StringReader(input));
     TestCase.assertTrue(res.isPresent());
     TestCase.assertTrue(res.get() instanceof ASTPrimitiveType);
@@ -206,7 +206,7 @@ public class TypesTestHelper {
    * @throws IOException
    */
   public ASTPrimitiveType parseFloatingPointType(String input) throws IOException {
-    TypesParser parser = new TypesParser();
+    TestTypesParser parser = new TestTypesParser();
     Optional<ASTPrimitiveType> res = parser.parsePrimitiveType(new StringReader(input));
     TestCase.assertTrue(res.isPresent());
     TestCase.assertTrue(res.get() instanceof ASTPrimitiveType);
@@ -221,7 +221,7 @@ public class TypesTestHelper {
    * @throws IOException
    */
   public ASTPrimitiveType parseNumericType(String input) throws IOException {
-    TypesParser parser = new TypesParser();
+    TestTypesParser parser = new TestTypesParser();
     Optional<ASTPrimitiveType> res = parser.parsePrimitiveType(new StringReader(input));
     TestCase.assertTrue(res.isPresent());
     TestCase.assertTrue(res.get() instanceof ASTPrimitiveType);

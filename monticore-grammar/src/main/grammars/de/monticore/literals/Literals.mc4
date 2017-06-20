@@ -43,7 +43,7 @@ package de.monticore.literals;
  * Version Aug. 31rd, 2015
 */
 
-grammar Literals extends de.monticore.lexicals.Lexicals {
+component grammar Literals extends de.monticore.lexicals.Lexicals {
 
   /*========================================================================*/
   /*======================= AST DEFINITIONS ================================*/

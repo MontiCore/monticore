@@ -37,7 +37,7 @@ package de.monticore.common;
  *
  * @author Martin Schindler, Marita Breuer
  */
-grammar Common extends de.monticore.types.Types {
+component grammar Common extends de.monticore.types.Types {
     /*========================================================================*/
     /*======================= INTERFACE DEFINITIONS ==========================*/
     /*========================================================================*/

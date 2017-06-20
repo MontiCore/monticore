@@ -1,0 +1,8 @@
+package de.monticore.common;
+
+grammar TestCommon extends de.monticore.common.Common {
+
+// TODO MB: Remove the rule with new MC generator > 4.5.3
+A = "";
+
+}

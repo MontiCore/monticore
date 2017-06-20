@@ -1,0 +1,8 @@
+package de.monticore.literals;
+
+grammar TestLiterals extends de.monticore.literals.Literals {
+
+// TODO MB: Remove the rule with new MC generator > 4.5.3
+A = "";
+
+}

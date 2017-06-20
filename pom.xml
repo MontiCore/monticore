@@ -69,6 +69,7 @@
     <archetype.plugin>2.3</archetype.plugin>
     <assembly.plugin>2.5.4</assembly.plugin>
     <compiler.plugin>3.3</compiler.plugin>
+    <build.helper.plugin>3.0.0</build.helper.plugin>
     <dependency.plugin>2.10</dependency.plugin>
     <deploy.plugin>2.8.2</deploy.plugin>
     <invoker.plugin>1.10</invoker.plugin>
@@ -607,6 +608,12 @@
           <configuration>
             <runOrder>alphabetical</runOrder>
           </configuration>
+        </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>${build.helper.plugin}</version>
         </plugin>
 
         <!-- Monticore Generation -->
