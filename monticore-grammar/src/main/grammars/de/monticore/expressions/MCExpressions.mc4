@@ -42,10 +42,10 @@ PrefixExpression implements Expression <210> =
 BooleanNotExpression implements Expression <200> =
 	"~"  Expression;
 	
-LogicalNotExpression implements Expression <200> =
+LogicalNotExpression implements Expression <190> =
 	"!" Expression;
 	
-MultExpression implements Expression <190> =
+MultExpression implements Expression <180> =
 	leftExpression:Expression
         (   multiplicativeOp:"*"
         |   multiplicativeOp:"/"
@@ -53,14 +53,14 @@ MultExpression implements Expression <190> =
         )
         rightExpression:Expression;
         
-AddExpression implements Expression <180> =
+AddExpression implements Expression <170> =
 	leftExpression:Expression
         (   additiveOp:"+"
         |   additiveOp:"-"
         )
 		rightExpression:Expression;
 		
-ShiftExpression implements Expression <170> =
+ShiftExpression implements Expression <160> =
 	leftExpression:Expression
 	    // It is not possible to define "<<", ">>" or ">>>".
         // Parsing generic typs like "List<List<String>>" leads to problems.
@@ -81,7 +81,7 @@ ShiftExpression implements Expression <170> =
         )
         rightExpression:Expression;
         
-ComparisonExpression implements Expression <160> =
+ComparisonExpression implements Expression <150> =
 	leftExpression:Expression
         (   comparison:"<="
         |   comparison:">=" 
@@ -90,35 +90,35 @@ ComparisonExpression implements Expression <160> =
         )
         rightExpression:Expression;
         
-InstanceofExpression implements Expression <150> =
+InstanceofExpression implements Expression <140> =
 	Expression "instanceof" Type;
 	
-IdentityExpression implements Expression <140> =
+IdentityExpression implements Expression <130> =
 	leftExpression:Expression
         (   identityTest:"=="
         |   identityTest:"!="
         )
         rightExpression:Expression;
         
-BinaryAndOpExpression implements Expression <130> =
+BinaryAndOpExpression implements Expression <120> =
 	leftExpression:Expression "&"  rightExpression:Expression;
 	
-BinaryXorOpExpression implements Expression <120> =
+BinaryXorOpExpression implements Expression <110> =
 	leftExpression:Expression "^"  rightExpression:Expression;
 	
-BinaryOrOpExpression implements Expression <110> =
+BinaryOrOpExpression implements Expression <100> =
 	leftExpression:Expression "|"  rightExpression:Expression;
 	
-BooleanAndOpExpression implements Expression <100> =
+BooleanAndOpExpression implements Expression <90> =
 	leftExpression:Expression "&&" rightExpression:Expression;
 	
-BooleanOrOpExpression implements Expression <90> =
+BooleanOrOpExpression implements Expression <80> =
 	leftExpression:Expression "||" rightExpression:Expression;
 	
-ConditionalExpression implements Expression <80> =
+ConditionalExpression implements Expression <70> =
 	condition:Expression "?" trueExpression:Expression ":" falseExpression:Expression;
 	
-AssignmentExpression implements Expression <70> = <rightassoc>
+AssignmentExpression implements Expression <60> = <rightassoc>
 	leftExpression:Expression
         (   assignment:"="
         |   assignment:"+="
@@ -135,25 +135,25 @@ AssignmentExpression implements Expression <70> = <rightassoc>
         )
         rightExpression:Expression;
 
-BracketExpression implements Expression <300>
+BracketExpression implements Expression <310>
     =  "(" Expression ")";
     
-PrimaryThisExpression implements Expression <300>
+PrimaryThisExpression implements Expression <320>
 	= "this";
 
-PrimarySuperExpression implements Expression <300>
+PrimarySuperExpression implements Expression <330>
 	= "super";
 	
-LiteralExpression implements Expression <300>
+LiteralExpression implements Expression <340>
     = Literal;
     
-NameExpression implements Expression <300>
+NameExpression implements Expression <350>
     = Name;
     
-ClassExpression implements Expression <300>
+ClassExpression implements Expression <360>
     = ReturnType "." "class";
    
-PrimaryGenericInvocationExpression implements Expression <300>
+PrimaryGenericInvocationExpression implements Expression <370>
     = TypeArguments GenericInvocationSuffix
     ;
     
