@@ -115,7 +115,7 @@ public class CommonSymbolReference<T extends Symbol> implements SymbolReference<
           SymbolReference.class.getSimpleName());
     }
     else {
-      Log.warn("0xA1038 " + SymbolReference.class.getSimpleName() + " Could not load full information of '" +
+      Log.error("0xA1038 " + SymbolReference.class.getSimpleName() + " Could not load full information of '" +
           referencedName + "' (Kind " + referencedKind.getName() + ").");
     }
 
