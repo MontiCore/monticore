@@ -104,7 +104,7 @@
     <dependency>
       <groupId>de.monticore.lang</groupId>
       <artifactId>automaton</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>0.0.2-SNAPSHOT</version>
       <scope>runtime</scope>
       <classifier>automaton-example</classifier>
       <exclusions>
