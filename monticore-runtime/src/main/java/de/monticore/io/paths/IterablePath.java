@@ -193,7 +193,7 @@ public final class IterablePath {
       }
     }
     else {
-      Log.warn("0xA4074 The supplied path " + path.toString() + " does not exist.");
+      Log.warn("0xA4074 The requested path " + path.toString() + " does not exist.");
       return Stream.empty();
     }
   }

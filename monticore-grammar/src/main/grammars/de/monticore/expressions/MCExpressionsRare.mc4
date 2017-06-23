@@ -78,7 +78,7 @@ AddExpression implements Expression <170> =
         (   additiveOp:"+"
         |   additiveOp:"-"
         )
-		rightExpression:Expression;
+	rightExpression:Expression;
 		
 ShiftExpression implements Expression <160> =
 	leftExpression:Expression

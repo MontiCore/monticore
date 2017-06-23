@@ -216,7 +216,7 @@ public final class MontiCoreCLI {
       // e.printStackTrace();
       // this should not happen as we use this mechanism for the built-in
       // configurations only (i.e. user.logging.xml and developer.logging.xml)
-      System.err.println("Failed to load default logback configuration for users.");
+      Log.error("0xA6734 Failed to load default logback configuration for users.");
     }
   }
   
@@ -229,7 +229,7 @@ public final class MontiCoreCLI {
       // e.printStackTrace();
       // this should not happen as we use this mechanism for the built-in
       // configurations only (i.e. user.logging.xml and developer.logging.xml)
-      System.err.println("Failed to load default logback configuration for developers.");
+      Log.error("0xA6735 Failed to load default logback configuration for developers.");
     }
   }
   
