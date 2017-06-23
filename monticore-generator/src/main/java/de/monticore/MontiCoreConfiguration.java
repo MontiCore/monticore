@@ -21,6 +21,8 @@ package de.monticore;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -262,6 +264,16 @@ public final class MontiCoreConfiguration implements Configuration {
     return hasProperty(key.toString());
   }
 
+  private boolean checkPath(List<String> grammars) {
+    for (String g: grammars) {
+      Path p = Paths.get(g);
+      if (!Files.exists(p)) {
+        Log.error("0xA1019 The requested path " + p.toString() + " does not exist.");
+        return false;
+      }
+    }
+    return true;
+  }
   /**
    * Getter for the {@link IterablePath} consisting of grammar files stored in
    * this configuration.
@@ -270,11 +282,11 @@ public final class MontiCoreConfiguration implements Configuration {
    */
   public IterablePath getGrammars() {
     Optional<List<String>> grammars = getAsStrings(Options.GRAMMARS);
-    if (grammars.isPresent()) {
+    if (grammars.isPresent() && checkPath(grammars.get())) {
       return IterablePath.from(toFileList(grammars.get()), MC4_EXTENSIONS);
     }
     grammars = getAsStrings(Options.GRAMMARS_SHORT);
-    if (grammars.isPresent()) {
+    if (grammars.isPresent() && checkPath(grammars.get())) {
       return IterablePath.from(toFileList(grammars.get()), MC4_EXTENSIONS);
     }
     // no default; must specify grammar files/directories to process
