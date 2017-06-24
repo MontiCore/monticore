@@ -1651,7 +1651,7 @@ public class GeneratorHelper extends TypesHelper {
    * there is an ast-name then always the same error code will be generated.
    *
    * @param ast
-   * @return generated error code suffix in format "_ddd" where d is a decimal.
+   * @return generated error code suffix in format "xddd" where d is a decimal.
    */
   public static String getGeneratedErrorCode(ASTNode ast) {
     int hashCode = 0;
@@ -1664,7 +1664,7 @@ public class GeneratorHelper extends TypesHelper {
       hashCode = Math.abs(ast.toString().hashCode());
     }
     String errorCodeSuffix = String.valueOf(hashCode);
-    return "_" + (hashCode < 1000 ? errorCodeSuffix : errorCodeSuffix
+    return "x" + (hashCode < 1000 ? errorCodeSuffix : errorCodeSuffix
         .substring(errorCodeSuffix.length() - 3));
   }
   
