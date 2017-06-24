@@ -56,8 +56,23 @@ public class ParserGenerator {
   
   /**
    * Code generation from grammar ast to an antlr compatible file format
+   * @param astGrammar - grammar AST
+   * @param symbolTable - symbol table already derived from grammar AST
+   * @param targetFile - target file
+   */
+  public static void generateParser(ASTMCGrammar astGrammar,
+				    Scope symbolTable,
+				    IterablePath handcodedPath,
+				    File targetFile)
+  {
+     generateParser(new GlobalExtensionManagement(),
+     		    astGrammar,symbolTable,handcodedPath,targetFile);
+  }
+  
+  /**
+   * Code generation from grammar ast to an antlr compatible file format
    * @param glex 
-   * 
+   * @param symbolTable - symbol table already derived from grammar AST
    * @param astGrammar - grammar AST
    * @param targetFile - target file
    */
