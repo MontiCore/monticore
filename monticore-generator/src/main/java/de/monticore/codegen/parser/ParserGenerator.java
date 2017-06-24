@@ -61,8 +61,12 @@ public class ParserGenerator {
    * @param astGrammar - grammar AST
    * @param targetFile - target file
    */
-  public static void generateParser(GlobalExtensionManagement glex, ASTMCGrammar astGrammar, Scope symbolTable,
-      IterablePath handcodedPath, File targetFile) {
+  public static void generateParser(GlobalExtensionManagement glex,
+                                    ASTMCGrammar astGrammar,
+				    Scope symbolTable,
+				    IterablePath handcodedPath,
+				    File targetFile)
+  {
     if (astGrammar.isComponent()) {
       Log.info("No parser generation for the grammar " + astGrammar.getName(), LOG);
       return;
