@@ -141,15 +141,24 @@ public final class MontiCoreCLI {
       // BUT if the user specifies another script to use, we check if it is
       // there and load its content
       if (configuration.getScript().isPresent()) {
+        File f = new File(configuration.getScript().get());
         Reporting.reportFileExistenceChecking(Lists.newArrayList(),
-            configuration.getScript().get().toPath().toAbsolutePath());
-        if (!configuration.getScript().get().exists()) {
-          System.clearProperty(MC_OUT);
-          Log.error("0xA1001 Custom script \"" + configuration.getScript().get().getPath()
-              + "\" not found!");
-          return;
+            f.toPath().toAbsolutePath());
+        
+        if (!f.exists()) {
+          if (l.getResource(configuration.getScript().get()) != null) {
+            script = Resources.asCharSource(l.getResource(configuration.getScript().get()),
+                Charset.forName("UTF-8")).read();
+          }
+          else {
+            System.clearProperty(MC_OUT);
+            Log.error("0xA1001 Custom script \"" + configuration.getScript().get()
+                + "\" not found!");
+            return;            
+          }
+        } else {
+          script = Files.toString(f, Charset.forName("UTF-8"));
         }
-        script = Files.toString(configuration.getScript().get(), Charset.forName("UTF-8"));
       }
       
       // execute the scripts (either default or custom)
