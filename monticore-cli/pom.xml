@@ -168,6 +168,26 @@
           </execution>
         </executions>
       </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>wagon-maven-plugin</artifactId>
+        <version>${wagon.plugin}</version>
+        <executions>
+          <execution>
+            <id>deploy-repository</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>upload-single</goal>
+            </goals>
+            <configuration>
+              <fromFile>${project.build.directory}/monticore-cli-${project.version}.zip</fromFile>
+              <serverId>se-nexus</serverId>
+              <url>https://nexus.se.rwth-aachen.de/service/local/repositories/monticore-snapshots/content-compressed</url>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
