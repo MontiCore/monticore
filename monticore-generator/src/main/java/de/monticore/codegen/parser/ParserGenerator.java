@@ -56,19 +56,38 @@ public class ParserGenerator {
   
   /**
    * Code generation from grammar ast to an antlr compatible file format
-   * @param glex 
-   * 
    * @param astGrammar - grammar AST
-   * @param targetFile - target file
+   * @param symbolTable - symbol table already derived from grammar AST
+   * @param targetDir - target dir
    */
-  public static void generateParser(GlobalExtensionManagement glex, ASTMCGrammar astGrammar, Scope symbolTable,
-      IterablePath handcodedPath, File targetFile) {
+  public static void generateParser(ASTMCGrammar astGrammar,
+				    Scope symbolTable,
+				    IterablePath handcodedPath,
+				    File targetDir)
+  {
+     generateParser(new GlobalExtensionManagement(),
+     		    astGrammar,symbolTable,handcodedPath,targetDir);
+  }
+  
+  /**
+   * Code generation from grammar ast to an antlr compatible file format
+   * @param glex 
+   * @param symbolTable - symbol table already derived from grammar AST
+   * @param astGrammar - grammar AST
+   * @param targetDir - target file
+   */
+  public static void generateParser(GlobalExtensionManagement glex,
+                                    ASTMCGrammar astGrammar,
+				    Scope symbolTable,
+				    IterablePath handcodedPath,
+				    File targetDir)
+  {
     if (astGrammar.isComponent()) {
       Log.info("No parser generation for the grammar " + astGrammar.getName(), LOG);
       return;
     }
     Log.debug("Start parser generation for the grammar " + astGrammar.getName(), LOG);
-    final GeneratorSetup setup = new GeneratorSetup(targetFile);
+    final GeneratorSetup setup = new GeneratorSetup(targetDir);
     
     String qualifiedGrammarName = astGrammar.getPackage().isEmpty()
         ? astGrammar.getName()
@@ -94,10 +113,10 @@ public class ParserGenerator {
             grammarInfo));
     
     // construct parser, lexer, ... (antlr),
-    String gFile = Paths.get(targetFile.getAbsolutePath(), filePath.toString()).toString();
+    String gFile = Paths.get(targetDir.getAbsolutePath(), filePath.toString()).toString();
     Log.debug("Start Antlr generation for the antlr file " + gFile, LOG);
     AntlrTool antlrTool = new AntlrTool(new String[] {}, grammarSymbol,
-        Paths.get(targetFile.getAbsolutePath(),
+        Paths.get(targetDir.getAbsolutePath(),
             Names.getPathFromPackage(genHelper.getParserPackage())));
     
     antlrTool.createParser(gFile);
@@ -109,14 +128,14 @@ public class ParserGenerator {
    * @param glex 
    * 
    * @param astGrammar - grammar AST
-   * @param targetFile - target file
+   * @param targetDir - target dir
    */
   public static void generateParserWrappers(GlobalExtensionManagement glex, ASTMCGrammar astGrammar, Scope symbolTable,
-      IterablePath handcodedPath, File targetFile) {
+      IterablePath handcodedPath, File targetDir) {
     if (astGrammar.isComponent()) {
       return;
     }
-    final GeneratorSetup setup = new GeneratorSetup(targetFile);
+    final GeneratorSetup setup = new GeneratorSetup(targetDir);
     
     String qualifiedGrammarName = astGrammar.getPackage().isEmpty()
         ? astGrammar.getName()
