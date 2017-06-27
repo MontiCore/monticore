@@ -22,6 +22,7 @@ package de.monticore.codegen.parser;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 import com.google.common.base.Joiner;
 
@@ -36,7 +37,9 @@ import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.Scopes;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
@@ -61,12 +64,20 @@ public class ParserGenerator {
    * @param targetDir - target dir
    */
   public static void generateParser(ASTMCGrammar astGrammar,
-				    Scope symbolTable,
-				    IterablePath handcodedPath,
-				    File targetDir)
-  {
-     generateParser(new GlobalExtensionManagement(),
-     		    astGrammar,symbolTable,handcodedPath,targetDir);
+      IterablePath handcodedPath,
+      File targetDir) {
+    Optional<GlobalScope> symbolTable;
+    if (!astGrammar.getEnclosingScope().isPresent()) {
+      Log.error("0xA0135 Cannot generate the parser because the symbol table does not exist.");
+      return;
+    }
+    symbolTable = Scopes.getGlobalScope(astGrammar.getEnclosingScope().get());
+    if (!symbolTable.isPresent()) {
+      Log.error("0xA0136 Cannot generate the parser because the global scope does not exist.");
+      return;
+    }
+    generateParser(new GlobalExtensionManagement(),
+        astGrammar,symbolTable.get(),handcodedPath,targetDir);
   }
   
   /**

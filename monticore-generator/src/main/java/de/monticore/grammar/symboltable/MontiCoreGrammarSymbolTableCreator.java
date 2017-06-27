@@ -59,6 +59,7 @@ import de.monticore.grammar.grammar._ast.ASTSymbolDefinition;
 import de.monticore.grammar.grammar._ast.ASTTerminal;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.CommonSymbolTableCreator;
 import de.monticore.symboltable.ImportStatement;
@@ -74,9 +75,7 @@ import de.se_rwth.commons.logging.Log;
  */
 public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
     implements Grammar_WithConceptsVisitor {
-  
-  private final Grammar_WithConceptsPrettyPrinter prettyPrinter;
-  
+    
   private String packageName = "";
   
   private MCGrammarSymbol grammarSymbol;
@@ -85,10 +84,8 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
   
   public MontiCoreGrammarSymbolTableCreator(
       ResolvingConfiguration resolvingConfig,
-      MutableScope enclosingScope,
-      Grammar_WithConceptsPrettyPrinter prettyPrinter) {
+      MutableScope enclosingScope) {
     super(resolvingConfig, enclosingScope);
-    this.prettyPrinter = prettyPrinter;
   }
   
   /**
@@ -308,7 +305,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
                   || MCGrammarSymbolTableHelper
                       .isSubType(symRef, prevProdComp.getReferencedProd().get());
               if (!subType) {
-                Log.error("0xA4006 The production " + surroundingProd.getName()
+                Log.error("0xA4077 The production " + surroundingProd.getName()
                     + " must not use the attribute name " + symbolName +
                     " for different nonterminals.");
               }
@@ -332,7 +329,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
     final Optional<MCProdSymbol> prodSymbol = grammarSymbol.getProdWithInherited(ast.getType());
     if (!prodSymbol.isPresent()) {
       Log.error(
-          "0xA4021 There must not exist an AST rule for the nonterminal " + ast.getType()
+          "0xA4076 There must not exist an AST rule for the nonterminal " + ast.getType()
               + " because there exists no production defining " + ast.getType(),
           ast.get_SourcePositionStart());
     }
@@ -436,6 +433,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
    */
   @Override
   public void visit(ASTLexActionOrPredicate action) {
+    Grammar_WithConceptsPrettyPrinter prettyPrinter = new Grammar_WithConceptsPrettyPrinter(new IndentPrinter());
     for (String typeName : HelperGrammar.findImplicitTypes(action, prettyPrinter)) {
       // Create rule if needed
       Optional<MCProdSymbol> rule = grammarSymbol.getProd(typeName);

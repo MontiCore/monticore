@@ -53,7 +53,6 @@ import de.monticore.grammar.grammar._ast.ASTConstantGroup;
 import de.monticore.grammar.grammar._ast.ASTLexActionOrPredicate;
 import de.monticore.grammar.grammar._ast.ASTLexProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdAttributeSymbol;
 import de.monticore.grammar.symboltable.MCProdComponentSymbol;
@@ -62,7 +61,6 @@ import de.monticore.grammar.symboltable.MCProdSymbolReference;
 import de.monticore.grammar.symboltable.MontiCoreGrammarLanguage;
 import de.monticore.grammar.symboltable.MontiCoreGrammarSymbolTableCreator;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
@@ -81,12 +79,9 @@ public class MCGrammarSymbolTableHelper {
     ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
     resolvingConfiguration.addDefaultFilters(grammarLanguage.getResolvingFilters());
     
-    Grammar_WithConceptsPrettyPrinter prettyPrinter = new Grammar_WithConceptsPrettyPrinter(
-        new IndentPrinter());
-    
     MutableScope globalScope = new GlobalScope(modelPath, grammarLanguage, resolvingConfiguration);
     MontiCoreGrammarSymbolTableCreator symbolTableCreator = new MontiCoreGrammarSymbolTableCreator(
-        resolvingConfiguration, globalScope, prettyPrinter);
+        resolvingConfiguration, globalScope);
     
     // Create Symbol Table
     symbolTableCreator.createFromAST(rootNode);
