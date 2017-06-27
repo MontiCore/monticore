@@ -146,7 +146,7 @@ public class ParserGeneratorTest extends AstDependentGeneratorTest {
       new MontiCoreScript().run(script, configuration);
     }
     catch (IOException e) {
-      Log.error("0xA1019 ParserGeneratorTest failed: ", e);
+      Log.error("0xA1010 ParserGeneratorTest failed: ", e);
     }
     
   }

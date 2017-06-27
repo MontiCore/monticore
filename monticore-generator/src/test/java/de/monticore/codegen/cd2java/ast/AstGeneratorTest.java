@@ -218,7 +218,7 @@ public class AstGeneratorTest extends GeneratorTest {
       new MontiCoreScript().run(script, configuration);
     }
     catch (IOException e) {
-      Log.error("0xA1018 AstGeneratorTest failed: ", e);
+      Log.error("0xA1017 AstGeneratorTest failed: ", e);
     }
   }
   

@@ -32,7 +32,7 @@ import de.se_rwth.commons.logging.Log;
  */
 public class AttributeNameForNTDuplicatedTest extends CocoTest {
   
-  private final String CODE = "xA4006";
+  private final String CODE = "xA4077";
   
   private final String MESSAGE = " The production C must not use the attribute name a for different nonterminals.";
   

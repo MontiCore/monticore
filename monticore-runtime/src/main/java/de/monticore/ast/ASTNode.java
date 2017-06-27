@@ -59,7 +59,7 @@ public interface ASTNode {
       return false;
     }
     throw new CompareNotSupportedException(
-        "0xA4041 Method equalAttributes is not implemented properly in class: "
+        "0xA4078 Method equalAttributes is not implemented properly in class: "
             + o.getClass().getName());
   }
   

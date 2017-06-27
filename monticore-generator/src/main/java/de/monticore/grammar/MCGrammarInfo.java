@@ -146,7 +146,7 @@ public class MCGrammarInfo {
             addSubrule(prodByName.get().getName(), HelperGrammar.getRuleName(classProd), ruleref);
           }
           else {
-            Log.error("0xA2111 Undefined rule: " + ruleref.getTypeName(),
+            Log.error("0xA2112 Undefined rule: " + ruleref.getTypeName(),
                 ruleref.get_SourcePositionStart());
           }
         }

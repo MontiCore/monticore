@@ -76,7 +76,7 @@ public class SymbolTableGeneratorTest extends AstDependentGeneratorTest {
       new MontiCoreScript().run(script, configuration);
     }
     catch (IOException e) {
-      Log.error("0xA1018 SymbolTableGeneratorTest failed: ", e);
+      Log.error("0xA1016 SymbolTableGeneratorTest failed: ", e);
     }
   }
 
