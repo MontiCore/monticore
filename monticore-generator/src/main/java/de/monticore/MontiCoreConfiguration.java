@@ -64,8 +64,15 @@ public final class MontiCoreConfiguration implements Configuration {
 
   public static final String CONFIGURATION_PROPERTY = "_configuration";
 
-  public static final String DEFAULT_OUTPUT_DIRECTORY = "out";
+  public static final String DEFAULT_OUTPUT_PATH = "target/sourcecode";
+  
+  public static final String DEFAULT_HANDCODED_JAVA_PATH = "java";
 
+  public static final String DEFAULT_HANDCODED_TEMPLATE_PATH = "resources";
+
+  public static final String DEFAULT_GRAMMAR_PATH = "grammars";
+
+  
   /**
    * The names of the specific MontiCore options used in this configuration.
    */
@@ -396,8 +403,8 @@ public final class MontiCoreConfiguration implements Configuration {
     if (out.isPresent()) {
       return new File(out.get());
     }
-    // fallback default is "out"
-    return new File(DEFAULT_OUTPUT_DIRECTORY);
+    // fallback default is "target/sourcecode"
+    return new File(DEFAULT_OUTPUT_PATH);
   }
 
   /**
@@ -414,8 +421,14 @@ public final class MontiCoreConfiguration implements Configuration {
     if (handcodedPath.isPresent()) {
       return IterablePath.from(toFileList(handcodedPath.get()), HWC_EXTENSIONS);
     }
-    // default handcoded path is empty
-    return IterablePath.empty();
+    // default handcoded path is "java"
+    File defaultFile = new File(DEFAULT_HANDCODED_JAVA_PATH);
+    if (!defaultFile.exists()) {
+      Log.warn(
+          "0xA6002 The default handcoded path " + DEFAULT_HANDCODED_JAVA_PATH + " does not exist.");
+      return IterablePath.empty();
+    }
+    return IterablePath.from(new File(DEFAULT_HANDCODED_JAVA_PATH), HWC_EXTENSIONS);
   }
 
   /**
@@ -453,8 +466,14 @@ public final class MontiCoreConfiguration implements Configuration {
     if (templatePath.isPresent()) {
       return IterablePath.from(toFileList(templatePath.get()), FTL_EXTENSIONS);
     }
-    // default template path is empty
-    return IterablePath.empty();
+    // default handcoded template path is "resources"
+    File defaultFile = new File(DEFAULT_HANDCODED_TEMPLATE_PATH);
+    if (!defaultFile.exists()) {
+      Log.warn("0xA6001 The default handcoded template path " + DEFAULT_HANDCODED_TEMPLATE_PATH
+          + " does not exist.");
+      return IterablePath.empty();
+    }
+    return IterablePath.from(new File(DEFAULT_HANDCODED_TEMPLATE_PATH), FTL_EXTENSIONS);
   }
 
   /**
