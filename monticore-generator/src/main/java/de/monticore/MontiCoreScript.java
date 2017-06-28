@@ -371,22 +371,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
   
   /**
-   * TODO: write me!
-   *
-   * @param grammar TODO
-   * @param globalScope TODO
-   * @param outputDirectory TODO
-   */
-  public void generateParserWrappers(GlobalExtensionManagement glex, ASTMCGrammar grammar, GlobalScope globalScope,
-      IterablePath targetPath,
-      File outputDirectory) {
-    Log.errorIfNull(
-        grammar,
-        "0xA4037 Generation of parser wrappers can't be processed: the reference to the grammar ast is null");
-    ParserGenerator.generateParserWrappers(glex, grammar, globalScope, targetPath, outputDirectory);
-  }
-  
-  /**
    * Transforms grammar AST to class diagram AST.
    *
    * @param astGrammar - grammar AST
