@@ -65,8 +65,9 @@ public class ParserGenerator {
    * @param targetDir - target dir
    */
   public static void generateFullParser(ASTMCGrammar astGrammar,
-      IterablePath handcodedPath,
-      File targetDir) {
+                                        IterablePath handcodedPath,
+                                        File targetDir)
+  {
     Optional<GlobalScope> symbolTable;
     if (!astGrammar.getEnclosingScope().isPresent()) {
       Log.error("0xA0163 Cannot generate the parser because the symbol table does not exist.");
