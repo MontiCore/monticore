@@ -64,7 +64,7 @@ public final class MontiCoreConfiguration implements Configuration {
 
   public static final String CONFIGURATION_PROPERTY = "_configuration";
 
-  public static final String DEFAULT_OUTPUT_PATH = "target/sourcecode";
+  public static final String DEFAULT_OUTPUT_PATH = "out";
   
   public static final String DEFAULT_HANDCODED_JAVA_PATH = "java";
 
@@ -403,7 +403,7 @@ public final class MontiCoreConfiguration implements Configuration {
     if (out.isPresent()) {
       return new File(out.get());
     }
-    // fallback default is "target/sourcecode"
+    // fallback default is "out"
     return new File(DEFAULT_OUTPUT_PATH);
   }
 
@@ -424,8 +424,6 @@ public final class MontiCoreConfiguration implements Configuration {
     // default handcoded path is "java"
     File defaultFile = new File(DEFAULT_HANDCODED_JAVA_PATH);
     if (!defaultFile.exists()) {
-      Log.warn(
-          "0xA6002 The default handcoded path " + DEFAULT_HANDCODED_JAVA_PATH + " does not exist.");
       return IterablePath.empty();
     }
     return IterablePath.from(new File(DEFAULT_HANDCODED_JAVA_PATH), HWC_EXTENSIONS);
@@ -469,8 +467,6 @@ public final class MontiCoreConfiguration implements Configuration {
     // default handcoded template path is "resources"
     File defaultFile = new File(DEFAULT_HANDCODED_TEMPLATE_PATH);
     if (!defaultFile.exists()) {
-      Log.warn("0xA6001 The default handcoded template path " + DEFAULT_HANDCODED_TEMPLATE_PATH
-          + " does not exist.");
       return IterablePath.empty();
     }
     return IterablePath.from(new File(DEFAULT_HANDCODED_TEMPLATE_PATH), FTL_EXTENSIONS);
