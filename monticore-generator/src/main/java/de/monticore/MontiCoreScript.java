@@ -235,7 +235,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     Log.errorIfNull(
         grammar,
         "0xA4038 Parser generation can't be processed: the reference to the grammar ast is null");
-    ParserGenerator.generateParser(glex, grammar, symbolTable, handcodedPath, outputDirectory);
+    ParserGenerator.generateFullParser(glex, grammar, symbolTable, handcodedPath, outputDirectory);
   }
   
   /**
@@ -368,22 +368,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     Grammar_WithConceptsCoCoChecker checker = new GrammarCoCos().getCoCoChecker();
     checker.handle(ast);
     return;
-  }
-  
-  /**
-   * TODO: write me!
-   *
-   * @param grammar TODO
-   * @param globalScope TODO
-   * @param outputDirectory TODO
-   */
-  public void generateParserWrappers(GlobalExtensionManagement glex, ASTMCGrammar grammar, GlobalScope globalScope,
-      IterablePath targetPath,
-      File outputDirectory) {
-    Log.errorIfNull(
-        grammar,
-        "0xA4037 Generation of parser wrappers can't be processed: the reference to the grammar ast is null");
-    ParserGenerator.generateParserWrappers(glex, grammar, globalScope, targetPath, outputDirectory);
   }
   
   /**

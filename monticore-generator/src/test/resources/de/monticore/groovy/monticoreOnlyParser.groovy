@@ -39,8 +39,5 @@ for (astGrammar in astGrammars) {
   
   // Generate parser
   generateParser(glex, astGrammar, symbolTable, handcodedPath, out)
-  
-  // Generate wrappers for parser rules
-  generateParserWrappers(glex, astGrammar, symbolTable, handcodedPath, out)
-  
+    
 }
