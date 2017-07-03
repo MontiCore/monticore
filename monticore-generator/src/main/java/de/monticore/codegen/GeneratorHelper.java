@@ -59,6 +59,8 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbolReference;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.IterablePath;
@@ -1150,10 +1152,28 @@ public class GeneratorHelper extends TypesHelper {
     return name.intern();
   }
   
-  public static boolean isQualified(String name) {
-    return name.contains(".");
+  public static boolean isQualified(MCGrammarSymbolReference grammarRef) {
+    if (grammarRef.getName().contains(".")) {
+      return true;
+    }
+    if (grammarRef.existsReferencedSymbol()) {
+      MCGrammarSymbol grammarSymbol = grammarRef.getReferencedSymbol();
+      if (!grammarSymbol.getFullName().contains(".")) {
+        // The complete name has no package name, therefore the grammarRefName
+        // without "." is qualified
+        return true;
+      }
+    }
+    return false;
   }
   
+  public static boolean isQualified(String name) {
+    if (name.contains(".")) {
+      return true;
+    }
+    return false;
+  }
+
   public static String getJavaAndCdConformName(String name) {
     Log.errorIfNull(name);
     return getCdLanguageConformName(getJavaConformName(name));

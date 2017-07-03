@@ -96,7 +96,7 @@ public class MCGrammarScope extends CommonScope {
 
     final MCGrammarSymbol spanningSymbol = getSpanningSymbol().get();
     for (MCGrammarSymbolReference superGrammarRef : spanningSymbol.getSuperGrammars()) {
-      if (checkIfContinueWithSuperGrammar(name, superGrammarRef.getName())
+      if (checkIfContinueWithSuperGrammar(name, superGrammarRef)
           && (superGrammarRef.existsReferencedSymbol())) {
         final MCGrammarSymbol superGrammar = superGrammarRef.getReferencedSymbol();
         resolvedSymbol = resolveInSuperGrammar(name, kind, superGrammar);
@@ -110,7 +110,7 @@ public class MCGrammarScope extends CommonScope {
     return resolvedSymbol;
   }
 
-  private boolean checkIfContinueWithSuperGrammar(String name, String superGrammarName) {
+  private boolean checkIfContinueWithSuperGrammar(String name, MCGrammarSymbolReference superGrammar) {
     // checks cases:
     // 1) A   and A
     // 2) c.A and A
@@ -118,12 +118,13 @@ public class MCGrammarScope extends CommonScope {
     // 4) p.A and p.A
     // 5) c.A and p.A // <-- only continue with this case, since we can be sure,
     //                       that we are not searching for the super grammar itself.
+    String superGrammarName = superGrammar.getName();
     if (Names.getSimpleName(superGrammarName).equals(Names.getSimpleName(name))) {
 
       // checks cases 1) and 4)
       if (superGrammarName.equals(name) ||
           // checks cases 2) and 3)
-          (isQualified(superGrammarName) != isQualified(name))) {
+          (isQualified(superGrammar) != isQualified(name))) {
         return false;
       } else {
         // case 5)
@@ -131,7 +132,7 @@ public class MCGrammarScope extends CommonScope {
       }
     }
     // names have different simple names and the name isn't qualified (A and p.B)
-    return isQualified(superGrammarName) && !isQualified(name);
+    return isQualified(superGrammar) && !isQualified(name);
   }
 
   private <T extends Symbol> Optional<T> resolveInSuperGrammar(String name, SymbolKind kind,
