@@ -93,7 +93,13 @@ public class MCGrammarScope extends CommonScope {
 
   protected <T extends Symbol> Optional<T> resolveInSuperGrammars(String name, SymbolKind kind, AccessModifier modifier) {
     Optional<T> resolvedSymbol = Optional.empty();
-
+    
+    // TODO (GV, MB)
+    // Die Methode muss überarbeitet werden. GrammarSymbols sollen nicht gefunden werden? Dann braucht man u.U. 
+    // checkIfContinueWithSuperGrammar gar nicht mehr ...
+    if (kind.equals(MCGrammarSymbol.KIND)) {
+      return resolvedSymbol;
+    }
     final MCGrammarSymbol spanningSymbol = getSpanningSymbol().get();
     for (MCGrammarSymbolReference superGrammarRef : spanningSymbol.getSuperGrammars()) {
       if (checkIfContinueWithSuperGrammar(name, superGrammarRef)
