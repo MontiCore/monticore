@@ -172,7 +172,6 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>wagon-maven-plugin</artifactId>
-        <version>${wagon.plugin}</version>
         <executions>
           <execution>
             <id>deploy-repository</id>
