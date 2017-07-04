@@ -94,7 +94,7 @@ public class ${ast.getName()}Parser${suffix} extends MCConcreteParser {
   }
   
   public Optional<${qualifiedStartRule}> parse_String(String str) throws IOException {
-    return parseString_${startRule}(str);
+    return parse_String${startRule}(str);
   }
  
 <#-- generate all methods -->

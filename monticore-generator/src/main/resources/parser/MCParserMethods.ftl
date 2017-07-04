@@ -85,7 +85,7 @@ ${tc.signature("ruleSymbol")}
    * @return Resulting AST
    * @throws IOException 
    * */
-  public  Optional<${astClassName}> parseString_${parseRuleName?cap_first}(String str) throws IOException {
+  public  Optional<${astClassName}> parse_String${parseRuleName?cap_first}(String str) throws IOException {
     return parse${parseRuleName?cap_first}(new StringReader(str));
   }
   
