@@ -22,6 +22,7 @@ package de.monticore.cli;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import de.monticore.MontiCoreConfiguration;
@@ -147,6 +148,7 @@ public class MontiCoreCLITest {
     assertTrue(!false);
   }
   
+  @Ignore
   @Test
   public void testArgsWithNoGrammars() {
     MontiCoreCLI.main(argsWithNoGrammars);
