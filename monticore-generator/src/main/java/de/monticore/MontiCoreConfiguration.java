@@ -68,7 +68,7 @@ public final class MontiCoreConfiguration implements Configuration {
   
   public static final String DEFAULT_HANDCODED_JAVA_PATH = "java";
 
-  public static final String DEFAULT_HANDCODED_TEMPLATE_PATH = "resources";
+  public static final String DEFAULT_HANDCODED_TEMPLATE_PATH = "resource";
 
   public static final String DEFAULT_GRAMMAR_PATH = "grammars";
 
@@ -464,7 +464,7 @@ public final class MontiCoreConfiguration implements Configuration {
     if (templatePath.isPresent()) {
       return IterablePath.from(toFileList(templatePath.get()), FTL_EXTENSIONS);
     }
-    // default handcoded template path is "resources"
+    // default handcoded template path is "resource"
     File defaultFile = new File(DEFAULT_HANDCODED_TEMPLATE_PATH);
     if (!defaultFile.exists()) {
       return IterablePath.empty();
