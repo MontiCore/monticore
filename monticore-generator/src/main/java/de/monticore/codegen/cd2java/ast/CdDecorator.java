@@ -295,7 +295,7 @@ public class CdDecorator {
       stringToParse = String.format(AstAdditionalMethods._construct.getDeclaration(),
           plainClassName);
       replaceMethodBodyTemplate(clazz, stringToParse,
-          new StringHookPoint("return new " + plainClassName + "();\n"));
+          new StringHookPoint("return " + astHelper.getCdName() + "NodeFactory.create" + plainClassName + "();\n"));
     }
   }
   
