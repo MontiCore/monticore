@@ -105,6 +105,10 @@ public class MontiCoreCLITest {
       "-" + MontiCoreConfiguration.Options.OUT, "target/test-run",
       "-" + MontiCoreConfiguration.Options.HANDCODEDPATH, "src/test/java" };
   
+  static String[] help = {
+      "-" + MontiCoreCLIConfiguration.Options.HELP
+  };
+  
   @BeforeClass
   public static void deactivateFailQuick() {
     Log.enableFailQuick(false);
@@ -147,6 +151,13 @@ public class MontiCoreCLITest {
     
     assertTrue(!false);
   }
+  
+  @Test
+  public void testHelp() {
+    MontiCoreCLI.main(help);
+
+    assertTrue(!false);
+}
   
   @Ignore
   @Test

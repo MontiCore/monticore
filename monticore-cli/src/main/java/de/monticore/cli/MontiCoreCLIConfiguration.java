@@ -41,7 +41,7 @@ public final class MontiCoreCLIConfiguration implements Configuration {
   public enum Options {
     
     DEV("dev"), DEV_SHORT("d"), CUSTOMLOG("customLog"), CUSTOMLOG_SHORT("cl"), SCRIPT("script"),
-    SCRIPT_SHORT("s");
+    SCRIPT_SHORT("s"), HELP("help"), HELP_SHORT("h");
     
     String name;
     

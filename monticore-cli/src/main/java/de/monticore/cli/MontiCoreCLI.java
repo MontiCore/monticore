@@ -73,8 +73,7 @@ public final class MontiCoreCLI {
   public static void main(String[] args) {
     if (args.length == 0) {
       // the only required input are the grammar file(s)/directories
-      System.out
-          .println("MontiCore CLI Usage: java -jar monticore-cli.jar <grammar files> <options>");
+      printHelp();
       return;
     }
     // check if the input model(s) are specified without option and add it for
@@ -87,6 +86,12 @@ public final class MontiCoreCLI {
     
     CLIArguments arguments = CLIArguments.forArguments(args);
     MontiCoreCLIConfiguration configuration = MontiCoreCLIConfiguration.fromArguments(arguments);
+    
+    if (arguments.asMap().containsKey(MontiCoreCLIConfiguration.Options.HELP.toString()) || 
+        arguments.asMap().containsKey(MontiCoreCLIConfiguration.Options.HELP_SHORT.toString())) {
+      printHelp();
+      return;
+    }
     
     // this will be CLI's default model path if none is specified
     Iterable<String> mp = Arrays.asList("monticore-cli.jar");
@@ -257,6 +262,23 @@ public final class MontiCoreCLI {
   }
   
   private MontiCoreCLI() {
+  }
+  
+  protected static void printHelp() {
+    System.out
+    .println("MontiCore CLI Usage: java -jar monticore-cli.jar <grammar files> <options>");
+    System.out.println();
+    System.out.println("Options:");
+    System.out.println("-o, -out <path>              Optional output directory for all generated code; defaults to out");
+    System.out.println("-mp, -modelpath <paths>      Optional list of directories or files to include for reference resolution");
+    System.out.println("-hcp, -handcodedpath <paths> Optional list of directories to look for handwritten code to integrate");
+    System.out.println("-s, -script <script>         Optional script to control the generation workflow");
+    System.out.println("-g, -grammars <path>         Instead of individual grammars: handle all grammars found");
+    System.out.println("-fp, -templatePath <paths>   Optional list of directories to look for handwritten templates to integrate");
+    System.out.println("-otm, -addOutToModelpath     Specifies whether the output directory should be added to the model path (default is true)");
+    System.out.println("-f, -force                    Secifies whether the code generation should be enforced, i.e. disable incremental code generation (default is false)");
+    System.out.println("-d, -dev                     Specifies whether developer level logging should be used (default is false)");
+    System.out.println("-cl, -customLog <file>       Optional logging configuration file to customize the logger");
   }
   
 }
