@@ -8,7 +8,7 @@ grammar CdAttributes {
     
     D = DDerived:[DDERIVED:"/"];
     
-    A =  Derived:["derived"] ;
+    A =  Readonly:["readonly"] ;
     
     B =  Derived:[DERIVED:"/"];
 }    

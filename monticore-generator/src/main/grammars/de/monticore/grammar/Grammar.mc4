@@ -494,19 +494,14 @@ component grammar Grammar extends de.monticore.literals.Literals {
   /** An attribute to be added to a certain ASTClass
   @attribute name Name of the attribute
   @attribute genericType Name of the referring type
-  @attribute unordered Defines whether a collection is ordered or unordered
   @attribute card Cardinality
-  @attribute derived True indicates that the attribute is derived as specified in body
-  @attribute body Specification of derived attribute
   */
   AttributeInAST =
     (Name  ":")?
-    ([unordered:"<<unordered>>"])?
     GenericType
-    Card?
-    (["derived"] "{" body:Action "}")? ;  // Statements
-
-
+    Card?;
+ 
+ 
   /**
   A GenericType represents an generic java type
   @attribute name List containing the name of the type

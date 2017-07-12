@@ -17,7 +17,7 @@
  * ******************************************************************************
  */
 
-package mc.feature.astlist.unordered;
+package mc.feature.astlist;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

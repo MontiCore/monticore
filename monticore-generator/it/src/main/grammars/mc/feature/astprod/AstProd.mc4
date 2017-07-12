@@ -9,6 +9,6 @@ grammar AstProd extends mc.common.Basics {
  
 
   ast Start = 
-  	Name derived {return "test";} ;
+  	Name;
   	
 }

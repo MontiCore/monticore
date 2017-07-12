@@ -495,9 +495,6 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
       getPrinter().print(a.getName().get());
     }
     getPrinter().print(":");
-    if (a.isUnordered()) {
-      getPrinter().print("<<unordered>> ");
-    }
     a.getGenericType().accept(getRealThis());
     if (a.getCard().isPresent() && a.getCard().get().getMin().isPresent()) {
       print(" min = " + a.getCard().get().getMin().get());
