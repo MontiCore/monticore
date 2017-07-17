@@ -46,11 +46,7 @@ ${tc.signature("ruleSymbol")}
   public Optional<${astClassName}> parse${parseRuleName?cap_first}(String filename) throws IOException {   
     ${parserName}AntlrParser parser = create(filename);    
 	${astClassName} ast;
-    if (getParserTarget().equals(MCConcreteParser.ParserExecution.NORMAL)) {
-      ast = parser.${parseRuleName}().ret;
-    } else {
-      ast = parser.${parseRuleName}_eof().ret;
-    }
+    ast = parser.${parseRuleName}_eof().ret;
     if (parser.hasErrors()) {
       setError(true);
       return Optional.<${astClassName}> empty();
@@ -67,11 +63,7 @@ ${tc.signature("ruleSymbol")}
   public  Optional<${astClassName}> parse${parseRuleName?cap_first}(Reader reader) throws IOException {
  	${parserName}AntlrParser parser = create(reader);
 	${astClassName} ast;
-    if (getParserTarget().equals(MCConcreteParser.ParserExecution.NORMAL)) {
-      ast = parser.${parseRuleName}().ret;
-    } else {
-      ast = parser.${parseRuleName}_eof().ret;
-    }
+    ast = parser.${parseRuleName}_eof().ret;
     if (parser.hasErrors()) {
       setError(true);
       return Optional.<${astClassName}> empty();

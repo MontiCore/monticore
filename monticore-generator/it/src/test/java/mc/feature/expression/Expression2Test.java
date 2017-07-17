@@ -30,7 +30,6 @@ import java.util.Optional;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.monticore.antlr4.MCConcreteParser.ParserExecution;
 import de.se_rwth.commons.logging.Log;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.expression.expression2._ast.ASTAddExpr;
@@ -51,7 +50,6 @@ public class Expression2Test extends GeneratorIntegrationsTest {
   
   public Optional<ASTExpr> parse(String input) throws IOException {
     Expression2Parser parser = new Expression2Parser();
-    parser.setParserTarget(ParserExecution.EOF);
     Optional<ASTExpr> res = parser.parseExpr(new StringReader(input));
     return res;
   }
