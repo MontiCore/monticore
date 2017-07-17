@@ -276,6 +276,7 @@ public class CdDecorator {
         new TemplateHookPoint("ast.additionalmethods.RemoveChild", clazz, symbol.get()));
         
     if (!AstGeneratorHelper.isSupertypeOfHWType(clazz.getName())
+        && !AstGeneratorHelper.isSuperClassExternal(clazz)
         && (!modifier.isPresent() || !modifier.get().isAbstract())) {
       replaceMethodBodyTemplate(clazz, AstAdditionalMethods.getBuilder.getDeclaration(),
           new StringHookPoint("return new Builder();\n"));

@@ -22,6 +22,7 @@ package de.monticore.codegen.cd2java.ast;
 import java.util.Optional;
 
 import de.monticore.codegen.GeneratorHelper;
+import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.TypesHelper;
@@ -96,6 +97,13 @@ public class AstGeneratorHelper extends GeneratorHelper {
       return simpleName.equals(type);
     }
     return false;
+  }
+  
+  public static boolean isSuperClassExternal(ASTCDClass clazz) {
+    return clazz.superclassIsPresent()
+        && hasStereotype(clazz, MC2CDStereotypes.EXTERNAL_TYPE.toString())
+        && getStereotypeValues(clazz, MC2CDStereotypes.EXTERNAL_TYPE.toString())
+            .contains(clazz.printSuperClass());
   }
   
   /**
