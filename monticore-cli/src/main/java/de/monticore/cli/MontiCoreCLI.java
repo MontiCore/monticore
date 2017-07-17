@@ -128,6 +128,9 @@ public final class MontiCoreCLI {
               + System.getProperty(LOGBACK_CONFIGURATIONFILE), MontiCoreCLI.class.getName());
     }
     
+    // terminate with exit code 1 on errors
+    Log.enableNonZeroExit(true);
+    
     // before we launch MontiCore we check if there are any ".mc4" files in the
     // input argument (source path)
     Iterator<Path> inputPaths = configuration.getInternal().getGrammars().getResolvedPaths();
