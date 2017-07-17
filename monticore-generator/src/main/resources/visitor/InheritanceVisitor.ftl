@@ -58,13 +58,15 @@ import de.monticore.ast.ASTNode;
       <#assign astName = genHelper.getJavaASTName(type)>
       default public void handle(${astName} node) {
         getRealThis().visit((ASTNode) node);
+        getRealThis().visit((AST${genHelper.getCdName()}Node) node);
         <#list genHelper.getSuperTypes(type)?reverse as superType>
-          getRealThis().visit((${genHelper.getJavaASTName(superType)}) node);
+        getRealThis().visit((${genHelper.getJavaASTName(superType)}) node);
         </#list>
         ${genHelper.getVisitorType()}.super.handle(node);
         <#list genHelper.getSuperTypes(type) as superType>
-          getRealThis().endVisit((${genHelper.getJavaASTName(superType)}) node);
+        getRealThis().endVisit((${genHelper.getJavaASTName(superType)}) node);
         </#list>
+        getRealThis().endVisit((AST${genHelper.getCdName()}Node) node);
         getRealThis().endVisit((ASTNode) node);
       }
       </#if>
