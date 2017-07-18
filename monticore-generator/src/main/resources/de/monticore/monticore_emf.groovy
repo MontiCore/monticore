@@ -19,17 +19,18 @@
 
 package de.monticore
 
+
 // M1: configuration object "_configuration" prepared externally
-debug("--------------------------------")
-debug("MontiCore")
-debug(" - eating your models since 2005")
-debug("--------------------------------")
-debug("Grammar argument    : " + _configuration.getGrammarsAsStrings())
-debug("Grammar files       : " + grammars)
-debug("Modelpath           : " + modelPath)
-debug("Output dir          : " + out)
-debug("Handcoded argument  : " + _configuration.getHandcodedPathAsStrings())
-debug("Handcoded files     : " + handcodedPath)
+debug("--------------------------------", LOG_ID)
+Log.debug("MontiCore", LOG_ID)
+Log.debug(" - eating your models since 2005", LOG_ID)
+Log.debug("--------------------------------", LOG_ID)
+Log.debug("Grammar argument    : " + _configuration.getGrammarsAsStrings(), LOG_ID)
+Log.debug("Grammar files       : " + grammars, LOG_ID)
+Log.debug("Modelpath           : " + modelPath, LOG_ID)
+Log.debug("Output dir          : " + out, LOG_ID)
+Log.debug("Handcoded argument  : " + _configuration.getHandcodedPathAsStrings(), LOG_ID)
+Log.debug("Handcoded files     : " + handcodedPath, LOG_ID)
 
 // ############################################################
 // M1: basic setup and initialization; enabling of reporting
@@ -40,34 +41,34 @@ initGlobals(_configuration)
 // the first pass processes all input grammars up to transformation to CD and storage of the resulting CD to disk
 while (grammarIterator.hasNext()) {
   input = grammarIterator.next()
-  if (force || !isUpToDate(input)) {
+  if (force || !isUpToDate(input, out, modelPath, templatePath, handcodedPath )) {
     cleanUp(input)
-    
+
     // M2: parse grammar
     astGrammar = parseGrammar(input)
-    
+
     if (astGrammar.isPresent()) {
       astGrammar = astGrammar.get()
-      
+
       startReportingFor(astGrammar, input)
-      
+
       // M3: populate symbol table
       astGrammar = createSymbolsFromAST(symbolTable, astGrammar)
-      
+
       // M4: execute context conditions
       runGrammarCoCos(astGrammar, symbolTable)
-      
+
       // M7: transform grammar AST into Class Diagram AST
       astClassDiagram = transformAstGrammarToAstCd(glex, astGrammar, symbolTable, handcodedPath)
-      
+
       astClassDiagramWithST = createSymbolsFromAST(symbolTable, astClassDiagram)
-      
+
       // write Class Diagram AST to the CD-file (*.cd)
       storeInCdFile(astClassDiagramWithST, out)
-      
+
       // M5 + M6: generate parser and wrapper
       generateParser(glex, astGrammar, symbolTable, handcodedPath, out)
-      
+
       // store result of the first pass
       storeCDForGrammar(astGrammar, astClassDiagramWithST)
     }
@@ -83,20 +84,20 @@ while (grammarIterator.hasNext()) {
 for (astGrammar in getParsedGrammars()) {
   // make sure to use the right report manager again
   reportingFor(astGrammar, out)
-  
+
   astClassDiagram = getCDOfParsedGrammar(astGrammar)
-  
+
   // M8: decorate Class Diagram AST
   decorateEmfCd(glex, astClassDiagram, symbolTable, handcodedPath)
-  
+
   // M?: generate symbol table
   generateSymbolTable(astGrammar, symbolTable, astClassDiagram, out, handcodedPath)
-  
+
   // M9: generate AST classes
   generateEmfCompatible(glex, symbolTable, astClassDiagram, out, templatePath)
-  
-  info("Grammar " + astGrammar.getName() + " processed successfully!")
-  
+
+  Log.info("Grammar " + astGrammar.getName() + " processed successfully!", LOG_ID)
+
   // M10: flush reporting
-  flushReporting(astGrammar)
+  Reporting.flush(astGrammar)
 }
