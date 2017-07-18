@@ -595,22 +595,6 @@ public class MCGrammarSymbolTableHelper {
     return set.size() > 1;
   }
   
-  public static boolean isAttributeDerived(MCProdAttributeSymbol attrSymbol) {
-    return attrSymbol.getAstNode().isPresent()
-        && attrSymbol.getAstNode().get() instanceof ASTAttributeInAST
-        && isAttributeDerived((ASTAttributeInAST) attrSymbol.getAstNode().get());
-  }
-  
-  /**
-   * TODO: Write me!
-   * 
-   * @param ast
-   * @return
-   */
-  public static boolean isAttributeDerived(ASTAttributeInAST ast) {
-    return ast.isDerived() && ast.getBody().isPresent();
-  }
-  
   public static boolean isAttributeIterated(MCProdAttributeSymbol attrSymbol) {
     return attrSymbol.getAstNode().isPresent()
         && attrSymbol.getAstNode().get() instanceof ASTAttributeInAST

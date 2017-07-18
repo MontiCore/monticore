@@ -33,7 +33,7 @@ import mc.feature.visitor.inheritance.b._visitor.BVisitor;
 import mc.feature.visitor.inheritance.c._ast.ASTXC;
 import mc.feature.visitor.inheritance.c._ast.ASTYC;
 import mc.feature.visitor.inheritance.c._visitor.CVisitor;
-import mc.feature.visitor.inheritance.c._visitor.CommonCDelegatorVisitor;
+import mc.feature.visitor.inheritance.c._visitor.CDelegatorVisitor;
 
 /**
  * Tests composing simple visiors using the delegator visitor. The
@@ -45,7 +45,7 @@ import mc.feature.visitor.inheritance.c._visitor.CommonCDelegatorVisitor;
 public class ComposeSimpleTest extends CommonVisitorTest {
   
   // the composer
-  private CommonCDelegatorVisitor v = new CommonCDelegatorVisitor();
+  private CDelegatorVisitor v = new CDelegatorVisitor();
   
   // the simple visitors about to compose
   private AVisitor aVis = new SimpleAVisitor(run);
@@ -62,9 +62,9 @@ public class ComposeSimpleTest extends CommonVisitorTest {
     expectedRun.setLength(0);
     if (!setUpDone) {
       setUpDone = true;
-      v.set_mc_feature_visitor_inheritance_a__visitor_AVisitor(aVis);
-      v.set_mc_feature_visitor_inheritance_b__visitor_BVisitor(bVis);
-      v.set_mc_feature_visitor_inheritance_c__visitor_CVisitor(cVis);
+      v.setAVisitor(aVis);
+      v.setBVisitor(bVis);
+      v.setCVisitor(cVis);
     }
   }
   

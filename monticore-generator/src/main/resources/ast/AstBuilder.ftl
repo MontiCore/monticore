@@ -35,18 +35,35 @@ ${tc.signature("ast", "astType")}
  /**
    * Builder for {@link ${astType.getName()}}.
    */
-  public static class Builder <#if astType.getSuperclass().isPresent()>extends ${genHelper.getSuperClassForBuilder(astType)}.Builder</#if> {
+ 
+  <#assign abstract = "">
+  <#if (astType.getSuperclass().isPresent() && genHelper.isSuperClassExternal(astType))
+   || (astType.getModifier().isPresent() && astType.getModifier().get().isAbstract())>
+    <#assign abstract = "abstract">
+  </#if>
+  <#assign extends = "">
+  <#if astType.getSuperclass().isPresent() && !genHelper.isSuperClassExternal(astType)>
+    <#assign extends = "extends " + genHelper.getSuperClassForBuilder(astType) + ".Builder">
+  </#if>
+  public ${abstract} static class Builder ${extends} {
   <#list astType.getCDAttributes() as attribute>
     <#if !genHelper.isInherited(attribute) && !genHelper.isAdditionalAttribute(attribute)>
     ${tc.include("ast.BuilderAttribute", attribute)}
     </#if>
   </#list>
-    <#if astType.getModifier().isPresent() && !astType.getModifier().get().isAbstract()>
-    <#assign typeName = genHelper.getPlainName(astType)>
+  <#assign typeName = genHelper.getPlainName(astType)>
+  <#if (!astType.getSuperclass().isPresent() || !genHelper.isSuperClassExternal(astType))
+   && astType.getModifier().isPresent() && !astType.getModifier().get().isAbstract()>
     public ${typeName} build() {
       return new ${typeName} (${tc.include("ast.ParametersDeclaration", ast)}
       );
     }
+    <#else>
+    protected Builder() {};
+    
+    public abstract ${typeName} build();
+    </#if> 
+    
     ${tc.include("ast.AstBuilderAttributeSetter", genHelper.getNativeCDAttributes(astType))}
-    </#if>  
+    
   }    

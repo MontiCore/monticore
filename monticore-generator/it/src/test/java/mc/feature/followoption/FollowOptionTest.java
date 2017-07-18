@@ -26,7 +26,6 @@ import java.io.StringReader;
 
 import org.junit.Test;
 
-import de.monticore.antlr4.MCConcreteParser.ParserExecution;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.followoption.followoption._parser.FollowOptionParser;
 
@@ -37,7 +36,6 @@ public class FollowOptionTest extends GeneratorIntegrationsTest {
     
     //-- extractfile gen/FollowOptionTest.x
     FollowOptionParser simpleAParser = new FollowOptionParser();
-    simpleAParser.setParserTarget(ParserExecution.EOF);
     simpleAParser.parseA(new StringReader("test ,"));
     assertEquals(false, simpleAParser.hasErrors());
     //-- endfile gen/FollowOptionTest.x
@@ -48,7 +46,6 @@ public class FollowOptionTest extends GeneratorIntegrationsTest {
     //-- extractfile gen/FollowOptionTest.x
 
     FollowOptionParser simpleBParser = new FollowOptionParser();
-    simpleBParser.setParserTarget(ParserExecution.EOF);
     simpleBParser.parseB(new StringReader("test ,"));
     assertEquals(true, simpleBParser.hasErrors());
     //-- endfile gen/FollowOptionTest.x
@@ -63,8 +60,6 @@ public class FollowOptionTest extends GeneratorIntegrationsTest {
   public void test3() throws IOException {
     
     FollowOptionParser simpleParser = new FollowOptionParser();
-    
-    simpleParser.setParserTarget(ParserExecution.EOF);
     simpleParser.parseB(new StringReader(","));
     
     assertEquals(true, simpleParser.hasErrors());
@@ -74,8 +69,6 @@ public class FollowOptionTest extends GeneratorIntegrationsTest {
   public void test4() throws IOException {
     
     FollowOptionParser simpleAParser = new FollowOptionParser();
-    
-    simpleAParser.setParserTarget(ParserExecution.EOF);
     simpleAParser.parseA(new StringReader("test ."));
 
     assertEquals(true, simpleAParser.hasErrors());

@@ -810,6 +810,33 @@ public class GeneratorHelper extends TypesHelper {
     return typeArgument.existsReferencedSymbol() && typeArgument.isEnum();
   }
   
+  public static boolean hasStereotype(ASTCDType ast,
+      String stereotypeName) {
+    if (!ast.getModifier().isPresent()
+        || !ast.getModifier().get().getStereotype().isPresent()) {
+      return false;
+    }
+    ASTStereotype stereotype = ast.getModifier().get().getStereotype()
+        .get();
+    return stereotype.getValues().stream()
+        .filter(v -> v.getName().equals(stereotypeName)).findAny()
+        .isPresent();
+  }
+
+  public static List<String> getStereotypeValues(ASTCDType ast,
+      String stereotypeName) {
+    List<String> values = Lists.newArrayList();
+    if (ast.getModifier().isPresent()
+        && ast.getModifier().get().getStereotype().isPresent()) {
+      ast.getModifier().get().getStereotype().get().getValues().stream()
+          .filter(value -> value.getName().equals(stereotypeName))
+          .filter(value -> value.getValue().isPresent())
+          .forEach(value -> values.add(value.getValue().get()));
+    }
+    return values;
+  }
+  
+  
   /**
    * TODO: Write me!
    * 

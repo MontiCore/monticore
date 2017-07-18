@@ -123,6 +123,7 @@ public class TypesTestHelper {
    */
   public ASTType parseType(String input) throws IOException {
     TestTypesParser parser = new TestTypesParser();
+    // TODO MB: Remove after Release 4.5.4
     parser.setParserTarget(ParserExecution.EOF);
     Optional<ASTType> res = parser.parseType(new StringReader(input));
     if (parser.hasErrors()) {
@@ -158,6 +159,7 @@ public class TypesTestHelper {
    */
   public ASTTypeParameters parseTypeParameters(String input) throws IOException {
     TestTypesParser parser = new TestTypesParser();
+    // TODO MB: Remove after Release 4.5.4
     parser.setParserTarget(ParserExecution.EOF);
     Optional<ASTTypeParameters> res = parser.parseTypeParameters(new StringReader(input));
     if (parser.hasErrors()) {

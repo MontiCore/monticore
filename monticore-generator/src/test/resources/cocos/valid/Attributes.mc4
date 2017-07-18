@@ -13,8 +13,6 @@ grammar Attributes  {
 
   E extends B implements C = "e";
 
-  F = unordered:["<<unordered>>"];
-
   /** A ASTAutomaton represents a finite automaton
       @attribute Name Name of the automaton
       @attribute States List of states

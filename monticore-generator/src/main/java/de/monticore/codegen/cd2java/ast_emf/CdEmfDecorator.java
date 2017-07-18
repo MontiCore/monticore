@@ -148,6 +148,8 @@ public class CdEmfDecorator extends CdDecorator {
       glex.replaceTemplate("ast.AstImports", clazz, new TemplateHookPoint("ast_emf.AstEImports"));
     }
     
+    cdDefinition.getCDClasses().forEach(c -> makeAbstractIfHWC(c));
+    
     for (ASTCDInterface interf : cdDefinition.getCDInterfaces()) {
       addGetter(interf);
     }

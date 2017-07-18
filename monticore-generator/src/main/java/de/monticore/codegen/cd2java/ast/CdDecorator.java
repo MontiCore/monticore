@@ -136,7 +136,7 @@ public class CdDecorator {
     // Check if handwritten ast types exist
     transformCdTypeNamesForHWTypes(cdCompilationUnit);
     
-    cdDefinition.getCDClasses().stream().forEach(c -> addSuperInterfaces(c));
+    cdDefinition.getCDClasses().forEach(c -> addSuperInterfaces(c));
     
     // Decorate with additional methods and attributes
     for (ASTCDClass clazz : nativeClasses) {
@@ -147,6 +147,8 @@ public class CdDecorator {
       addSetter(clazz, astHelper);
       addSymbolGetter(clazz, astHelper);
     }
+    
+    cdDefinition.getCDClasses().forEach(c -> makeAbstractIfHWC(c));
     
     for (ASTCDInterface interf : cdDefinition.getCDInterfaces()) {
       addGetter(interf);
@@ -273,9 +275,13 @@ public class CdDecorator {
     replaceMethodBodyTemplate(clazz, AstAdditionalMethods.remove_Child.getDeclaration(),
         new TemplateHookPoint("ast.additionalmethods.RemoveChild", clazz, symbol.get()));
         
-    replaceMethodBodyTemplate(clazz, AstAdditionalMethods.getBuilder.getDeclaration(),
-        new StringHookPoint("return new Builder();\n"));
-        
+    if (!AstGeneratorHelper.isSupertypeOfHWType(clazz.getName())
+        && !AstGeneratorHelper.isSuperClassExternal(clazz)
+        && (!modifier.isPresent() || !modifier.get().isAbstract())) {
+      replaceMethodBodyTemplate(clazz, AstAdditionalMethods.getBuilder.getDeclaration(),
+          new StringHookPoint("return new Builder();\n"));
+    }
+    
     String stringToParse = String.format(AstAdditionalMethods.deepClone.getDeclaration(),
         plainClassName);
     replaceMethodBodyTemplate(clazz, stringToParse,
@@ -318,6 +324,22 @@ public class CdDecorator {
     if (!interfaces.isEmpty()) {
       glex.replaceTemplate("ast.AstSuperInterfaces", clazz,
           new StringHookPoint(interfaces + DEL));
+    }
+  }
+  
+  /**
+   * Makes the AST class abstract if it's a super class of an HW type
+   * @param clazz
+   */
+  protected void makeAbstractIfHWC(ASTCDClass clazz) {
+    if (AstGeneratorHelper.isSupertypeOfHWType(clazz.getName())) {
+      Optional<ASTModifier> previousModifier = clazz.getModifier();
+      ASTModifier newModifier = previousModifier.isPresent()
+          ? previousModifier.get()
+          : CD4AnalysisNodeFactory
+              .createASTModifier();
+      newModifier.setAbstract(true);
+      clazz.setModifier(newModifier);
     }
   }
   

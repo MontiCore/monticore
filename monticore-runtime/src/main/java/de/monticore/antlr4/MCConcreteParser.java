@@ -81,6 +81,7 @@ public abstract class MCConcreteParser {
    * Indicates what should be parsed: The Rule or the rule followed by an EOF
    * (End Of File)
    */
+  @Deprecated // MB: Remove after Release 4.5.4
   public enum ParserExecution {
     NORMAL, EOF
   }
@@ -93,6 +94,7 @@ public abstract class MCConcreteParser {
    * 
    * @return Parser.EOF iff rule is parsed with followed EOF
    */
+  @Deprecated // MB: Remove after Release 4.5.4
   public ParserExecution getParserTarget() {
     return parserTarget;
   }
@@ -102,6 +104,7 @@ public abstract class MCConcreteParser {
    * 
    * @param parserTarget
    */
+  @Deprecated // MB: Remove after Release 4.5.4
   public void setParserTarget(ParserExecution parserTarget) {
     this.parserTarget = parserTarget;
   }

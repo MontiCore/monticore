@@ -24,7 +24,7 @@ import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
-import mc.embedding.external.composite._visitor.CommonCompositeDelegatorVisitor;
+import mc.embedding.external.composite._visitor.CompositeDelegatorVisitor;
 import mc.embedding.external.composite._visitor.CompositeVisitor;
 import mc.embedding.external.embedded._symboltable.EmbeddedSymbolTableCreator;
 import mc.embedding.external.host._ast.ASTHost;
@@ -36,7 +36,7 @@ public class CompositeSymbolTableCreator extends CommonSymbolTableCreator implem
 
   private final HostSymbolTableCreator hostSymbolTableCreator;
 
-  public final CommonCompositeDelegatorVisitor visitor;
+  public final CompositeDelegatorVisitor visitor;
 
   private CompositeVisitor realThis = this;
 
@@ -46,10 +46,10 @@ public class CompositeSymbolTableCreator extends CommonSymbolTableCreator implem
 
     this.hostSymbolTableCreator = new HostSymbolTableCreator(resolverConfig, scopeStack);
 
-    visitor = new CommonCompositeDelegatorVisitor();
-    visitor.set_mc_embedding_external_composite__visitor_CompositeVisitor(this);
-    visitor.set_mc_embedding_external_host__visitor_HostVisitor(this.hostSymbolTableCreator);
-    visitor.set_mc_embedding_external_embedded__visitor_EmbeddedVisitor(
+    visitor = new CompositeDelegatorVisitor();
+    visitor.setCompositeVisitor(this);
+    visitor.setHostVisitor(this.hostSymbolTableCreator);
+    visitor.setEmbeddedVisitor(
         new EmbeddedSymbolTableCreator(resolverConfig, scopeStack));
   }
 
@@ -59,10 +59,10 @@ public class CompositeSymbolTableCreator extends CommonSymbolTableCreator implem
 
     this.hostSymbolTableCreator = new HostSymbolTableCreator(resolverConfig, scopeStack);
 
-    visitor = new CommonCompositeDelegatorVisitor();
-    visitor.set_mc_embedding_external_composite__visitor_CompositeVisitor(this);
-    visitor.set_mc_embedding_external_host__visitor_HostVisitor(this.hostSymbolTableCreator);
-    visitor.set_mc_embedding_external_embedded__visitor_EmbeddedVisitor(
+    visitor = new CompositeDelegatorVisitor();
+    visitor.setCompositeVisitor(this);
+    visitor.setHostVisitor(this.hostSymbolTableCreator);
+    visitor.setEmbeddedVisitor(
         new EmbeddedSymbolTableCreator(resolverConfig, scopeStack));
   }
 
