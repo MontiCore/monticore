@@ -32,7 +32,6 @@ import de.monticore.symboltable.Scope;
  * TODO: Write me!
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  * @since TODO: add version number
  */
 public interface IReportEventHandler {

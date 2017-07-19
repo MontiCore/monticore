@@ -31,7 +31,6 @@ import de.monticore.generating.templateengine.TemplateControllerConfiguration;
  * TODO: Write me!
  *
  * @author  (last commit) $Author$
- * @version $Revision$,
  *          $Date$
  *
  */

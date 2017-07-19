@@ -56,7 +56,6 @@ import de.se_rwth.commons.logging.Log;
  * files.
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public class InputOutputFilesReporter extends AReporter {
   

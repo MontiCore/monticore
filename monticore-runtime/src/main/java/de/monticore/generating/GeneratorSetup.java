@@ -43,7 +43,6 @@ import de.monticore.io.paths.IterablePath;
  * Setup for generator (see {@link GeneratorEngine}).
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public class GeneratorSetup {
 

@@ -36,7 +36,6 @@ import static org.junit.Assert.assertEquals;
  * Tests for {@link GlobalExtensionManagement}.
  *
  * @author (last commit) $Author$
- * @version $Revision$,
  *          $Date$
  */
 public class GlobalExtensionManagementGlobalVarsTest {

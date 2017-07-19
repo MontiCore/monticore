@@ -42,7 +42,6 @@ import de.monticore.generating.templateengine.reporting.commons.ReportingConstan
  * files which existence was checked.
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public class InvolvedFilesReporter extends AReporter {
   

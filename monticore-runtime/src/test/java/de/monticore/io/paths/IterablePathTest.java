@@ -38,7 +38,6 @@ import com.google.common.collect.Iterators;
  * Unit tests for IterablePath.
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public class IterablePathTest {
   

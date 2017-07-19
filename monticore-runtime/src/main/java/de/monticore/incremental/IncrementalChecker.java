@@ -61,7 +61,6 @@ import de.se_rwth.commons.logging.Log;
  * realization of incremental model processing.
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  * @since 4.1.5
  */
 public class IncrementalChecker {
@@ -456,7 +455,6 @@ public class IncrementalChecker {
    * report.
    *
    * @author (last commit) $Author$
-   * @version $Revision$, $Date$
    */
   protected static class InputOutputStory {
     
@@ -498,7 +496,6 @@ public class IncrementalChecker {
    * individually.
    *
    * @author (last commit) $Author$
-   * @version $Revision$, $Date$
    */
   protected static class InputStory {
     

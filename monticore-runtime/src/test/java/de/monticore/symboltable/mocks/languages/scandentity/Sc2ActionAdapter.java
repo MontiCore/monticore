@@ -28,7 +28,6 @@ import de.se_rwth.commons.logging.Log;
  * TODO: Write me!
  *
  * @author  (last commit) $Author$
- * @version $Revision$,
  *          $Date$
  *
  */

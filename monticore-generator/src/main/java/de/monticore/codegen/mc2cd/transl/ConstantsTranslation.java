@@ -40,7 +40,6 @@ import de.monticore.utils.Link;
  * TODO: Write me!
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public class ConstantsTranslation implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {

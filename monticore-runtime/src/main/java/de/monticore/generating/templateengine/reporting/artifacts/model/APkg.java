@@ -31,7 +31,6 @@ import de.monticore.generating.templateengine.reporting.artifacts.ReportingNameH
  * TODO: Write me!
  * 
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public abstract class APkg {
      

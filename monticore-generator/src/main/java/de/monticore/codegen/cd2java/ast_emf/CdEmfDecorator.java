@@ -78,7 +78,6 @@ import transformation.ast.ASTCDRawTransformation;
  * compatible ast files
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public class CdEmfDecorator extends CdDecorator {
   

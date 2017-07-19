@@ -32,7 +32,6 @@ import de.monticore.utils.ASTTraverser;
  * TODO: Write me!
  *
  * @author  (last commit) $Author$
- * @version $Revision$, $Date: 2014-12-22 11:03:30 +0100 (Mo, 22 Dez 2014) $
  * @since   TODO: add version number
  *
  */

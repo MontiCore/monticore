@@ -53,7 +53,6 @@ import de.se_rwth.commons.logging.Slf4jLog;
  * Command line interface for MontiCore.
  * 
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public final class MontiCoreCLI {
   

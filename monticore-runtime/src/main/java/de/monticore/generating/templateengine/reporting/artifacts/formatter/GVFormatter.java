@@ -37,7 +37,6 @@ import de.monticore.generating.templateengine.reporting.artifacts.model.RootPkg;
  * TODO: Write me!
  * 
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public class GVFormatter extends AFormatter {
   

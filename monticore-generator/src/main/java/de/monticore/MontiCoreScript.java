@@ -709,7 +709,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * The actual Groovy runner used by MontiCore.
    *
    * @author (last commit) $Author$
-   * @version $Revision$, $Date$
    */
   public static class Runner extends GroovyRunnerBase {
     

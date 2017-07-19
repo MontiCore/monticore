@@ -35,7 +35,6 @@ import freemarker.template.DefaultObjectWrapper;
  * Builder for FreeMarker configuration (see {@link Configuration}).
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public class FreeMarkerConfigurationBuilder {
   

@@ -26,7 +26,6 @@ import de.monticore.symboltable.mocks.languages.statechart.StateChartSymbol;
  * TODO: Write me!
  *
  * @author  (last commit) $Author$
- * @version $Revision$,
  *          $Date$
  *
  */

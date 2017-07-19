@@ -50,7 +50,6 @@ import static de.monticore.MontiCoreConfiguration.Options.*;
  * Invokes {@link MontiCore} using the given configuration parameters.
  * 
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 @Mojo(name = "generate",
     defaultPhase = LifecyclePhase.GENERATE_SOURCES,

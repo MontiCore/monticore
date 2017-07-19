@@ -27,7 +27,6 @@ import de.monticore.symboltable.CommonSymbol;
  * Every generated main template class implements this interface.
  *
  * @author  Jerome Pfeiffer
- * @version $Revision$,
  *          $Date$
  *
  */

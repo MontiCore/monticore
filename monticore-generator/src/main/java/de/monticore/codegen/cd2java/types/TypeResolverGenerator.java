@@ -14,7 +14,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 /**
- * Created by Odgrlb on 06.11.2016.
+ *  on 06.11.2016.
  */
 public class TypeResolverGenerator {
   private final static String LOGGER_NAME = TypeResolverGenerator.class.getName();

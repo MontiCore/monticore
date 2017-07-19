@@ -42,7 +42,6 @@ import de.monticore.generating.templateengine.reporting.commons.TreePrintVisitor
  * TODO: Write me!
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  * @since TODO: add version number
  */
 public class NodeTreeReporter extends AReporter {

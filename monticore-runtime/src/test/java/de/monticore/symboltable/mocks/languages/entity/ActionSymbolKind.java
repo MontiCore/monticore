@@ -26,7 +26,6 @@ import de.monticore.symboltable.types.JMethodSymbolKind;
  * TODO: Write me!
  *
  * @author  (last commit) $Author$
- * @version $Revision$,
  *          $Date$
  *
  */

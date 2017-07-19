@@ -54,7 +54,6 @@ import freemarker.template.TemplateModelException;
  * calling and including of templates.
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 // TODO PN check if all method docs are up to date.
 public class TemplateController {

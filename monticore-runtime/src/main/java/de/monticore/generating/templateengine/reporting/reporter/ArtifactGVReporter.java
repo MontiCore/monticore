@@ -30,7 +30,6 @@ import de.monticore.generating.templateengine.reporting.commons.ReportingConstan
  * TODO: Write me!
  *
  * @author  (last commit) $Author$
- * @version $Revision$,
  *          $Date$
  * @since   TODO: add version number
  *

@@ -40,7 +40,6 @@ import de.se_rwth.commons.logging.Log;
  * ANTLR parser generator
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public class AntlrTool extends Tool {
   

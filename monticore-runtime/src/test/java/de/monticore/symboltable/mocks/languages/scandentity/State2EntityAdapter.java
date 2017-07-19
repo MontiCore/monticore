@@ -27,7 +27,6 @@ import de.monticore.symboltable.resolving.SymbolAdapter;
  * TODO: Write me!
  *
  * @author  (last commit) $Author$
- * @version $Revision$,
  *          $Date$
  *
  */

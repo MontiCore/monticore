@@ -21,7 +21,7 @@ import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
 /**
- * Created by Odgrlb on 01.11.2016.
+ *  on 01.11.2016.
  */
 public class TypeResolverGeneratorTest extends AstDependentGeneratorTest {
 

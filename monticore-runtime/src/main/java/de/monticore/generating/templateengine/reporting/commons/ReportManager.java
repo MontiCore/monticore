@@ -36,7 +36,6 @@ import de.se_rwth.commons.logging.Log;
  * TODO: Write me!
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  * @since TODO: add version number
  */
 public class ReportManager implements IReportEventHandler {
@@ -437,7 +436,6 @@ public class ReportManager implements IReportEventHandler {
    * A factory for providing tool specific report managers.
    *
    * @author (last commit) $Author$
-   * @version $Revision$, $Date$
    */
   public static interface ReportManagerFactory {
 

@@ -36,7 +36,6 @@ import de.monticore.generating.templateengine.reporting.commons.AReporter;
  * printers.
  * 
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public class ArtifactReporter extends AReporter {
 

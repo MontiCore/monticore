@@ -32,7 +32,6 @@ import de.monticore.io.FileReaderWriter;
  * TODO: Write me!
  *
  * @author  (last commit) $Author$
- * @version $Revision$,
  *          $Date$
  *
  */

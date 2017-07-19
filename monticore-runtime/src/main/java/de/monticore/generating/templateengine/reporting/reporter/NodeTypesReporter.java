@@ -38,7 +38,6 @@ import de.se_rwth.commons.SourcePosition;
  * TODO: Write me!
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  * @since TODO: add version number
  */
 public class NodeTypesReporter extends AReporter {

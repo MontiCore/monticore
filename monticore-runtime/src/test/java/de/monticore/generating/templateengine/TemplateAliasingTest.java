@@ -47,7 +47,6 @@ import freemarker.core.Macro;
  * TODO: Write me!
  *
  * @author  (last commit) $Author$
- * @version $Revision$,
  *          $Date$
  *
  */

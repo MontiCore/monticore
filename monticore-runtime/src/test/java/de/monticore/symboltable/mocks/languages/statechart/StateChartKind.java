@@ -25,7 +25,6 @@ import de.monticore.symboltable.SymbolKind;
  * TODO: Write me!
  *
  * @author  (last commit) $Author$
- * @version $Revision$,
  *          $Date$
  *
  */

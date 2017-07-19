@@ -27,7 +27,6 @@ import de.monticore.symboltable.CommonSymbol;
  * TODO: Write me!
  *
  * @author  (last commit) $Author$
- * @version $Revision$,
  *          $Date$
  * @since   TODO: add version number
  *

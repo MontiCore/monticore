@@ -35,7 +35,6 @@ import de.monticore.utils.ASTNodes;
  * Checks if a MC production is a left directly left recursive: e.g. of the form A -> A.*
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public class DirectLeftRecursionDetector {
   

@@ -30,7 +30,6 @@ import static com.google.common.base.Preconditions.checkArgument;
  * TODO: Write me!
  *
  * @author (last commit) $Author$
- * @version $Revision$,
  *          $Date$
  */
 public class Entity2StateTransitiveResolvingFilter extends TransitiveAdaptedResolvingFilter<StateSymbol> {

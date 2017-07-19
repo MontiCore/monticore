@@ -31,7 +31,6 @@ import com.google.common.collect.Lists;
  * Mock for ASTCNode.
  *
  * @author  (last commit) $Author$
- * @version $Revision$,
  *          $Date$
  *
  */

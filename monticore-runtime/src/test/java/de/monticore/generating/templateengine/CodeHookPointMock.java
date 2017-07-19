@@ -29,7 +29,6 @@ import de.monticore.ast.ASTNode;
  * Mock for {@link CodeHookPoint}
  *
  * @author  (last commit) $Author$
- * @version $Revision$,
  *          $Date$
  *
  */

@@ -50,7 +50,6 @@ import freemarker.template.Configuration;
  * generating.
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public class GeneratorEngine {
 

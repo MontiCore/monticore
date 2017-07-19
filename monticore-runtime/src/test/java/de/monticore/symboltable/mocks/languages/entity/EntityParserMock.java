@@ -33,7 +33,6 @@ import de.se_rwth.commons.Names;
  * TODO: Write me!
  *
  * @author  Pedram Mir Seyed Nazari
- * @version $Revision$,
  *          $Date$
  *
  */

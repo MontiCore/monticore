@@ -25,7 +25,6 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
  * Contains all attribute properties needed by emf generator
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public class EmfAttribute {
   

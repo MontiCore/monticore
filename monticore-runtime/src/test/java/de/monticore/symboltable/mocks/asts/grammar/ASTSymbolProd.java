@@ -25,7 +25,6 @@ import de.monticore.ast.ASTNode;
  * TODO: Write me!
  *
  * @author  (last commit) $Author$
- * @version $Revision$,
  *          $Date$
  *
  */

@@ -29,7 +29,6 @@ import com.google.common.collect.Lists;
  * passed to it; for configuration in POM.
  * 
  * @author (last commit) $Author: ahorst $
- * @version $Revision: 18023 $, $Date: 2014-04-14 14:13:57 +0200 (Mo, 14 Apr
  * 2014) $
  */
 public class Executable {

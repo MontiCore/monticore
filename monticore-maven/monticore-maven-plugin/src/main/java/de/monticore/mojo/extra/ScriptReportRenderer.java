@@ -35,7 +35,6 @@ import de.monticore.mojo.ReportRenderer;
  * TODO: Write me!
  * 
  * @author (last commit) $Author: ahorst $
- * @version $Revision: 15852 $, $Date: 2013-07-10 14:27:57 +0200 (Mi, 10 Jul 2013) $
  */
 public class ScriptReportRenderer extends AbstractMavenReportRenderer {
   

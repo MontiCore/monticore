@@ -35,7 +35,6 @@ import com.google.common.io.Files;
  * output directory.
  * 
  * @author (last commit) $Author: ahorst $
- * @version $Revision: 16782 $, $Date: 2013-11-15 15:02:30 +0100 (Fr, 15 Nov
  * 2013) $
  */
 public class Execution {

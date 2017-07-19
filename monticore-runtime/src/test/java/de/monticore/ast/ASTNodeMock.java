@@ -34,7 +34,6 @@ import java.util.List;
  * Mock for ASTNode. DOES NOT IMPLEMENT ANY OF THE METHODS.
  *
  * @author  (last commit) $Author$
- * @version $Revision$,
  *          $Date$
  *
  */

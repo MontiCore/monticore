@@ -35,7 +35,6 @@ import freemarker.template.Template;
  * <code>${tc.write(...)}</code>, are not invoked.
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public class FreeMarkerTemplateEngineMock extends FreeMarkerTemplateEngine {
   

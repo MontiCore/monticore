@@ -34,7 +34,6 @@ import de.monticore.symboltable.Scope;
  * directly if not all methods are overwritten.
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  * @since TODO: add version number
  */
 public class DefaultReportEventHandler implements IReportEventHandler {

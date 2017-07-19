@@ -45,7 +45,6 @@ import org.apache.maven.reporting.MavenReportException;
  * on the parent directory structure) and then aggregated in this report.
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  * @since 4.1.7
  */
 @Mojo(name = "reporting-report", defaultPhase = LifecyclePhase.SITE)

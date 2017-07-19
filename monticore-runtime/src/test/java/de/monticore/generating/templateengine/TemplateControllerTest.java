@@ -37,7 +37,6 @@ import static org.junit.Assert.*;
  * Tests for {@link TemplateController}.
  *
  * @author  (last commit) $Author$
- * @version $Revision$,
  *          $Date$
  *
  */

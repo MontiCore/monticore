@@ -47,7 +47,6 @@ import de.monticore.io.paths.IterablePath;
  * reporting framework.
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public class MontiCoreReports implements ReportManagerFactory {
   

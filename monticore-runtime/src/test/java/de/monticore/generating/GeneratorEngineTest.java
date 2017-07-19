@@ -36,7 +36,6 @@ import static org.junit.Assert.assertTrue;
  * Tests for {@link de.monticore.generating.GeneratorEngine}.
  *
  * @author  (last commit) $Author$
- * @version $Revision$,
  *          $Date$
  *
  */

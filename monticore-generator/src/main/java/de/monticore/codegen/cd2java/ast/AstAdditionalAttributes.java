@@ -23,7 +23,6 @@ package de.monticore.codegen.cd2java.ast;
  * TODO: Write me!
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public enum AstAdditionalAttributes {
   

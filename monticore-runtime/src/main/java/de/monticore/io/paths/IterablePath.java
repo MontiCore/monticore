@@ -60,7 +60,6 @@ import de.se_rwth.commons.logging.Log;
  * are logged with level DEBUG).
  * 
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public final class IterablePath {
   

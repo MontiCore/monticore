@@ -2,7 +2,7 @@ package de.monticore.types;
 
 import java.util.Optional;
 /**
- * Created by Odgrlb on 06.11.2016.
+ *  on 06.11.2016.
  */
 public class TypeResolver<T> {
   Optional<T> result;

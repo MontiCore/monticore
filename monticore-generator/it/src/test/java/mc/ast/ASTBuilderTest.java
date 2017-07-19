@@ -36,7 +36,6 @@ import com.google.common.collect.Lists;
  * TODO: Write me!
  *
  * @author  (last commit) $Author$
- * @version $Revision$,
  *          $Date$
  *
  */

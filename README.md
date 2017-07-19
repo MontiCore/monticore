@@ -3,7 +3,7 @@
 
 #Licenses
 * [LGPL V3.0](https://github.com/MontiCore/monticore/tree/master/00.org/Licenses/LICENSE-LGPL.md) (for handwritten Java code)
-* [BSD-3-Clause](https://github.com/MontiCore/monticore/tree/master/00.org/Licenses/LICENSE-BSD3CLAUSE.md) (for templates and generated Java code)
+* [BSD-3-Clause](https://github.com/MontiCore/monticore/tree/master/00.org/Licenses/LICENSE-BSD3CLAUSE.md) (for templates and all generated artifacts)
 
 #Release Notes
 This product includes the following software:

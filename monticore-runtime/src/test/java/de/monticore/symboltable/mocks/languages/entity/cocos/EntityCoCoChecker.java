@@ -32,7 +32,6 @@ import de.monticore.symboltable.mocks.languages.entity.asts.EntityLanguageVisito
  * TODO: Write me!
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  * @since TODO: add version number
  */
 public class EntityCoCoChecker implements EntityLanguageVisitor {

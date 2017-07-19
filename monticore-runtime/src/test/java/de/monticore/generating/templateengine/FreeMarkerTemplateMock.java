@@ -30,7 +30,6 @@ import freemarker.template.Template;
  * Mock for FreeMarker templates (see {@link Template}).
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public class FreeMarkerTemplateMock extends Template {
   

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 RWTH Aachen. All rights reserved.
+ * Copyright (c) 2017 RWTH Aachen. All rights reserved.
  *
  * http://www.se-rwth.de/
  */
@@ -25,7 +25,6 @@ import mc.feature.fautomaton.automaton.flatautomaton._parser.FlatAutomatonParser
  * TODO: Write me!
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public class EmfDiffTest extends GeneratorIntegrationsTest {
   

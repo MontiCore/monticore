@@ -44,7 +44,6 @@ import de.se_rwth.commons.logging.Slf4jLog;
  * TODO: Write me!
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public class MCGrammarParserTest {
   

@@ -39,7 +39,6 @@ import java.util.Map;
  * of {@link GeneratorEngine}.
  *
  * @author  (last commit) $Author$
- * @version $Revision$,
  *          $Date$
  *
  */

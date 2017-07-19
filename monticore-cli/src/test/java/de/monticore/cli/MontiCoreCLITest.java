@@ -33,7 +33,6 @@ import de.se_rwth.commons.logging.Log;
  * combinations and hence designed to not fail.
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date: 2015-09-03 19:22:26 +0200 (Do, 03 Sep 2015) $
  * @since 4.0.0
  */
 public class MontiCoreCLITest {

@@ -79,7 +79,6 @@ import transformation.ast.ASTCDTransformation;
  * files
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public class CdDecorator {
   

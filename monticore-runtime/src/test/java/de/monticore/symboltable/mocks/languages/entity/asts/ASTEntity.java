@@ -25,7 +25,6 @@ import de.monticore.symboltable.mocks.asts.ASTSymbol;
  * TODO: Write me!
  *
  * @author  (last commit) $Author$
- * @version $Revision$,
  *          $Date$
  *
  */

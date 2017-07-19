@@ -24,7 +24,6 @@ package de.monticore.symboltable.mocks.asts;
  * TODO: Write me!
  *
  * @author  (last commit) $Author$
- * @version $Revision$,
  *          $Date$
  *
  */

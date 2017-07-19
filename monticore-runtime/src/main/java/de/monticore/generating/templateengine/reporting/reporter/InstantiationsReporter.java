@@ -37,7 +37,6 @@ import de.se_rwth.commons.Names;
  * TODO: Write me!
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  * @since TODO: add version number
  */
 public class InstantiationsReporter extends AReporter {

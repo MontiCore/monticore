@@ -25,7 +25,6 @@ import java.io.Serializable;
  * TODO: Write me!
  *
  * @author  Pedram Mir Seyed Nazari
- * @version $Revision$,
  *          $Date$
  *
  */

@@ -23,7 +23,6 @@ package de.monticore.generating.templateengine.freemarker;
  * TODO: Write me!
  * 
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public class MontiCoreFreeMarkerException extends RuntimeException {
   

@@ -26,7 +26,6 @@ import de.monticore.symboltable.types.JTypeSymbolKind;
  * TODO: Write me!
  *
  * @author  (last commit) $Author$
- * @version $Revision$,
  *          $Date$
  *
  */

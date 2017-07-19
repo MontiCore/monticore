@@ -42,7 +42,6 @@ import de.se_rwth.commons.Names;
  * TODO: Write me!
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public class AstGenerator {
   

@@ -40,7 +40,6 @@ import de.se_rwth.commons.logging.Slf4jLog;
  * AReporter implementing this method to execute it.
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public class Reporting extends Slf4jLog {
 

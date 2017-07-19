@@ -44,7 +44,6 @@ import de.se_rwth.commons.logging.Log;
  * implemented yet).
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public final class MontiCoreConfiguration implements Configuration {
 

@@ -34,7 +34,6 @@ import de.monticore.ast.ASTCNode;
  * TODO: Write me!
  *
  * @author  Pedram Mir Seyed Nazari
- * @version $Revision$,
  *          $Date$
  *
  */

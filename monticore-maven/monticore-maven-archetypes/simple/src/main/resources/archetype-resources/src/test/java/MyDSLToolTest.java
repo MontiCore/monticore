@@ -8,7 +8,6 @@ import org.junit.Test;
  * A simple test for MyDSL tool.
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public class MyDSLToolTest {
   

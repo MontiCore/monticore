@@ -23,7 +23,6 @@ package de.monticore.generating.templateengine;
  * TODO: Write me!
  *
  * @author  (last commit) $Author$
- * @version $Revision$,
  *          $Date$
  *
  */

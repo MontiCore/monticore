@@ -34,7 +34,6 @@ import org.apache.maven.reporting.AbstractMavenReportRenderer;
  * Creates a composite report containing all gathered MontiCore reports per processed grammar.
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  * @since 4.1.7
  */
 public class ReportsRenderer extends AbstractMavenReportRenderer {

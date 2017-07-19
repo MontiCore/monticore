@@ -4,7 +4,7 @@ import de.monticore.codegen.GeneratorHelper;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 /**
- * Created by Odgrlb on 06.11.2016.
+ *  on 06.11.2016.
  */
 public class TypeResolverGeneratorHelper extends GeneratorHelper {
 

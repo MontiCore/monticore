@@ -39,7 +39,6 @@ import de.monticore.utils.ASTNodes;
  * TODO: Write me!
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public class AddAttributesOfExtendedInterfacesManipulation implements
     UnaryOperator<ASTCDCompilationUnit> {

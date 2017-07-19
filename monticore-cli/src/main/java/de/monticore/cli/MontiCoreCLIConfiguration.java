@@ -35,7 +35,6 @@ import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
  * TODO: Write me!
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date: 2015-09-03 19:22:26 +0200 (Do, 03 Sep 2015) $
  */
 public final class MontiCoreCLIConfiguration implements Configuration {
   

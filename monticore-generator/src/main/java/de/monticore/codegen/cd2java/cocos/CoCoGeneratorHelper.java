@@ -30,7 +30,6 @@ import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
  * TODO: Write me!
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public class CoCoGeneratorHelper extends GeneratorHelper {
   
