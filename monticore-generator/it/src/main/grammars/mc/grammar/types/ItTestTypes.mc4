@@ -16,7 +16,7 @@ grammar ItTestTypes extends mc.grammar.literals.ItTestLiterals {
     /*========================================================================*/
     
     concept antlr {
-        parser java {
+        parser_java {
             /**
              * Counts the number of LT of type parameters and type arguments.
              * It is used in semantic predicates to ensure the right number

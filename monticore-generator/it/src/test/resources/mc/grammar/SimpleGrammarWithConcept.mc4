@@ -1,13 +1,10 @@
-package mc.grammar;
 
 grammar SimpleGrammarWithConcept {
-
-    concept antlr {
-      parser java {
-        boolean first = true;
-      }
-    }
-    
-    A = "Hello";
-    
- }
+concept antlr {
+  parser_java {
+  boolean first = true;
+}
+}
+A = "Hello";   
+}
+ 

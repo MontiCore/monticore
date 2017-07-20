@@ -494,10 +494,10 @@ component grammar ItTestGrammar extends mc.grammar.literals.ItTestLiterals {
   ast GenericType =
     Dimension:int
     method public String toString() {
-      return mc.grammar.TestGrammarPrinter.printGenericType(this);
+      return mc.grammars.TestGrammarPrinter.printGenericType(this);
     }
     method public String getTypeName() {
-      return mc.grammar.TestGrammarPrinter.printGenericType(this);
+      return mc.grammars.TestGrammarPrinter.printGenericType(this);
     }
     method public boolean isExternal() { 
         return true;

@@ -6,7 +6,7 @@ grammar FeatureDSLgrammarinherit extends mc.feature.grammarinherit.sup.FeatureDS
   // Works with inherited field a
   concept antlr { 
 		
-	 parser java {
+	 parser_java{
 			public int b=this.a;
 		}
 	}

@@ -493,10 +493,10 @@ component grammar TestGrammar extends mc.grammars.literals.TestLiterals {
   ast GenericType =
     Dimension:int
     method public String toString() {
-      return  de.monticore.grammar.HelperGrammar.printGenericType(this); 
+      return  de.monticore._grammar.HelperGrammar.printGenericType(this); 
     }
     method public String getTypeName() {
-      return de.monticore.grammar.HelperGrammar.printGenericType(this); 
+      return de.monticore._grammar.HelperGrammar.printGenericType(this); 
     }
     method public boolean isExternal() { 
         return true;

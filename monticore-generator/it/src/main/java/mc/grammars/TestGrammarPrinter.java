@@ -17,7 +17,7 @@
  * ******************************************************************************
  */
 
-package mc.grammar;
+package mc.grammars;
 
 import de.se_rwth.commons.Names;
 import mc.grammar.ittestgrammar._ast.ASTGenericType;

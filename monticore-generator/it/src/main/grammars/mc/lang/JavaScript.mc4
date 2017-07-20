@@ -820,7 +820,7 @@ grammar JavaScript /*extends mc.grammar.lexicals.Lexicals*/ {
 	/***** Concepts ******/
 	
 	concept antlr {
-    	lexer java {
+    	lexer_java {
     		// The most recently produced token.
    			private Token lastToken = null;
 
@@ -863,7 +863,7 @@ grammar JavaScript /*extends mc.grammar.lexicals.Lexicals*/ {
     		}
     	}
 		
-		parser java {
+		parser_java {
 			/**
 			* This method searches backward in the token stream to find a line terminator token.
 			*/

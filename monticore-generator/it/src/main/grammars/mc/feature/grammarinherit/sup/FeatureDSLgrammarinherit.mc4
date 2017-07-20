@@ -6,7 +6,7 @@ grammar FeatureDSLgrammarinherit extends mc.common.Basics {
 	// Checks if java code is inherited to sub grammars
 	concept antlr { 
 		
-		parser java {
+		parser_java {
 			public int a=0;
 		}
 	

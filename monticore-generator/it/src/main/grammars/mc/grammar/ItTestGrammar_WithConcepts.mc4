@@ -13,6 +13,6 @@ grammar ItTestGrammar_WithConcepts extends mc.grammar.ItTestGrammar, mc.lang.Jav
     
   ActionAntlr = ClassMemberDeclaration*;
   
-  AntlrCode = ClassMemberDeclaration*;
+  JavaCode = ClassMemberDeclaration*;
   
 }

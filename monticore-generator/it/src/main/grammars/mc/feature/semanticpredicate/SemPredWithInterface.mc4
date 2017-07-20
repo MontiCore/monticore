@@ -3,7 +3,7 @@ package mc.feature.semanticpredicate;
 grammar SemPredWithInterface extends mc.common.Basics {
 
     concept antlr {
-      parser java {
+      parser_java {
         boolean first = true;
       }
     }
