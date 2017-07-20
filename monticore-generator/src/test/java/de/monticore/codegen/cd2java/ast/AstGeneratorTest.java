@@ -1,6 +1,6 @@
 /*
  * ******************************************************************************
- * MontiCore Language Workbench
+ * MontiCore Language Workbench, www.monticore.de
  * Copyright (c) 2017, MontiCore, All rights reserved.
  *
  * This project is free software; you can redistribute it and/or
