@@ -6,7 +6,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.m2e.jdt,
  org.eclipse.m2e.maven.runtime,
  org.eclipse.ui
-Bundle-Vendor: Department of Software Engineering
+Bundle-Vendor: SE RWTH Aachen
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 4.5.3
 Bundle-Name: m2e Extension for the MontiCore Maven Plugin
