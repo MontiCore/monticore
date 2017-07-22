@@ -34,6 +34,7 @@ SUCH DAMAGE.
 <#list ast.getCDParameters() as checkedParameter>
   <#assign type = checkedParameter.getType()>
   <#if genHelper.isNullable(type) && !genHelper.isOptional(type)>
-    Log.errorIfNull(${genHelper.getJavaAndCdConformName(checkedParameter.getName())}, "0xA7006${genHelper.getGeneratedErrorCode(checkedParameter)} Parameter '${checkedParameter.getName()}' must not be null.");
-  </#if> 
+    // MontiCore generally assumes that null is not used, but if you are unsure override template ast.ErrorIfNull
+    // Log.errorIfNull(${genHelper.getJavaAndCdConformName(checkedParameter.getName())}, "0xA7006${genHelper.getGeneratedErrorCode(checkedParameter)} Parameter '${checkedParameter.getName()}' must not be null.");
+  </#if>
 </#list> 
