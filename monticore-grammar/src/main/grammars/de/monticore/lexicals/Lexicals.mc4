@@ -46,7 +46,7 @@ component grammar Lexicals {
   token WS =
     (' ' | 
     '\t' |
-     '\r' '\n' |
+    '\r' |
     '\r' |
     '\n' ) :{_channel = HIDDEN;};
     
