@@ -16,8 +16,18 @@ grammar ASTRules {
 
  D implements B;
 
-   E = d:D;
+ E = d:D;
 
-   ast E = d:B;
+ ast E = d:B;
+   
+ F astextends ASTD;
+ 
+ G;
+ 
+ ast G astextends ASTD;
+ 
+ interface H;
+ 
+ ast H astextends java.util.Observer;
 
 }

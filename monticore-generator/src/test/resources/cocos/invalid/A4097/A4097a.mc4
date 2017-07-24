@@ -1,0 +1,6 @@
+package cocos.invalid.A4097;
+
+grammar A4097a {
+
+  A astextends java.util.Observer;
+}

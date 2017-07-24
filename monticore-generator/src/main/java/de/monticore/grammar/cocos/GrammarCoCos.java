@@ -38,12 +38,13 @@ public class GrammarCoCos {
     checker.addCoCo(new DuplicatedEnumConstant());
     checker.addCoCo(new NTAndASTRuleExtendType());
     checker.addCoCo(new NoASTRuleForEnumNTs());
-     checker.addCoCo(new NTForASTRuleExists());
+    checker.addCoCo(new NTForASTRuleExists());
     checker.addCoCo(new MultipleASTRules());
+    checker.addCoCo(new NoASTExtendsForClasses());
     checker.addCoCo(new LexNTsOnlyUseLexNTs());
     checker.addCoCo(new UsedLexNTNotDefined());
     checker.addCoCo(new UsedNTNotDefined());
-     checker.addCoCo(new InterfaceNTWithoutImplementationOnlyInComponentGrammar());
+    checker.addCoCo(new InterfaceNTWithoutImplementationOnlyInComponentGrammar());
     checker.addCoCo(new ExternalNTOnlyInComponentGrammar());
     checker.addCoCo(new AbstractNTWithoutExtensionOnlyInComponentGrammar());
     checker.addCoCo(new ProdAndExtendedProdUseSameAttrNameForDiffNTs());
