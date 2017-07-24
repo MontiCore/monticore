@@ -20,7 +20,7 @@
 package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -36,6 +36,7 @@ public class ASTRuleAndNTUseSameAttrNameForDiffNTsTest extends CocoTest{
 
   @BeforeClass
   public static void disableFailQuick() {
+    LogStub.init();
     Log.enableFailQuick(false);
     checker.addCoCo(new ASTRuleAndNTUseSameAttrNameForDiffNTs());
   }

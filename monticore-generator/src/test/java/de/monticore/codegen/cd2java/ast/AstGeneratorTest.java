@@ -42,7 +42,7 @@ import de.se_rwth.commons.cli.CLIArguments;
 import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.Slf4jLog;
+import de.se_rwth.commons.logging.LogStub;
 
 /**
  * Test for the MontiCore generator. Generates ast files for the example
@@ -59,7 +59,7 @@ public class AstGeneratorTest extends GeneratorTest {
   
   @BeforeClass
   public static void setup() {
-    Slf4jLog.init();
+    LogStub.init();
     Log.enableFailQuick(false);
   }
   

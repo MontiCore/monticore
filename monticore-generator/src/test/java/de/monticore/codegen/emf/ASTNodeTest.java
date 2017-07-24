@@ -15,7 +15,7 @@ import org.junit.Test;
 import de.monticore.emf._ast.ASTENodePackage;
 import de.monticore.emf.util.AST2ModelFiles;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.Slf4jLog;
+import de.se_rwth.commons.logging.LogStub;
 
 /**
  * TODO: Write me!
@@ -27,7 +27,7 @@ public class ASTNodeTest {
   
   @BeforeClass
   public static void setup() {
-    Slf4jLog.init();
+    LogStub.init();
     Log.enableFailQuick(false);
   }
   

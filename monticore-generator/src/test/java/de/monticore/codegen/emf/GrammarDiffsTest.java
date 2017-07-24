@@ -35,7 +35,7 @@ import de.monticore.emf.util.compare.AstEmfDiffUtility;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.Slf4jLog;
+import de.se_rwth.commons.logging.LogStub;
 
 /**
  * TODO: Write me!
@@ -47,7 +47,7 @@ public class GrammarDiffsTest {
   
   @BeforeClass
   public static void setup() {
-    Slf4jLog.init();
+    LogStub.init();
     Log.enableFailQuick(false);
   }
   
@@ -64,7 +64,7 @@ public class GrammarDiffsTest {
       
         List<DiffElement> diffs = AstEmfDiffUtility.getAllAstDiffs(grammar2.get(), grammar1.get());
         
-        AstEmfDiffUtility.printAstDiffsHierarchical(grammar2.get(), grammar1.get());
+        // AstEmfDiffUtility.printAstDiffsHierarchical(grammar2.get(), grammar1.get());
         
         assertEquals(5, diffs.size());
         

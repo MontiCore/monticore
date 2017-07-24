@@ -41,6 +41,7 @@ import de.monticore.symboltable.GlobalScope;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 
 /**
  * TODO: Write me!
@@ -61,7 +62,7 @@ public class CoCoGeneratorTest extends AstDependentGeneratorTest {
   
   @BeforeClass
   public static void setup() {
-    // Slf4jLog.init();
+    LogStub.init();
     Log.enableFailQuick(false);
   }
   

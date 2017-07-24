@@ -52,7 +52,7 @@ import de.se_rwth.commons.cli.CLIArguments;
 import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.Slf4jLog;
+import de.se_rwth.commons.logging.LogStub;
 
 /**
  * Test for the {@link MontiCoreScript} class.
@@ -89,7 +89,7 @@ public class MontiCoreScriptTest {
   
   @BeforeClass
   public static void setup() {
-    Slf4jLog.init();
+    LogStub.init();
     Log.enableFailQuick(false);
     for (AstAdditionalMethods additionalMethod : AstAdditionalMethods.class.getEnumConstants()) {
       additionalMethods.add(additionalMethod.name());
