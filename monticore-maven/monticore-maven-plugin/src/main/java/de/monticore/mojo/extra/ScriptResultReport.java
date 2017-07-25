@@ -1,7 +1,7 @@
 /*
  * ******************************************************************************
- * MontiCore Language Workbench
- * Copyright (c) 2015, MontiCore, All rights reserved.
+ * MontiCore Language Workbench, www.monticore.de
+ * Copyright (c) 2017, MontiCore, All rights reserved.
  *
  * This project is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -40,7 +40,6 @@ import com.google.common.collect.Lists;
  * This report MOJO collects and provides the output of certain analysis scripts as a fancy report.
  * 
  * @author (last commit) $Author: ahorst $
- * @version $Revision: 22515 $, $Date: 2015-03-22 13:10:54 +0100 (So, 22 Mär 2015) $
  */
 @Mojo(name = "script-report", defaultPhase = LifecyclePhase.SITE)
 public class ScriptResultReport extends AbstractMavenReport {

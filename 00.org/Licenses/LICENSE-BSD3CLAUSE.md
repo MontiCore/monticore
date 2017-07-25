@@ -1,4 +1,4 @@
-Copyright (c) 2016, MontiCore*, All rights reserved.
+Copyright (c) 2017, MontiCore*, All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -26,4 +26,4 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGE.
 
-\* belongs to [RIT](http://www.rumpe.eu/)
+\* belongs to [RIDT](http://www.rumpe.eu/)

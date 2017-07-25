@@ -1,7 +1,7 @@
 /*
  * ******************************************************************************
- * MontiCore Language Workbench
- * Copyright (c) 2015, MontiCore, All rights reserved.
+ * MontiCore Language Workbench, www.monticore.de
+ * Copyright (c) 2017, MontiCore, All rights reserved.
  *
  * This project is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -54,7 +54,6 @@ import freemarker.template.TemplateModelException;
  * calling and including of templates.
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 // TODO PN check if all method docs are up to date.
 public class TemplateController {

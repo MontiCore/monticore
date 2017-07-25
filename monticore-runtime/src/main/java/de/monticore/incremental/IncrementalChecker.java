@@ -1,7 +1,7 @@
 /*
  * ******************************************************************************
- * MontiCore Language Workbench
- * Copyright (c) 2015, MontiCore, All rights reserved.
+ * MontiCore Language Workbench, www.monticore.de
+ * Copyright (c) 2017, MontiCore, All rights reserved.
  *
  * This project is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -61,7 +61,6 @@ import de.se_rwth.commons.logging.Log;
  * realization of incremental model processing.
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  * @since 4.1.5
  */
 public class IncrementalChecker {
@@ -456,7 +455,6 @@ public class IncrementalChecker {
    * report.
    *
    * @author (last commit) $Author$
-   * @version $Revision$, $Date$
    */
   protected static class InputOutputStory {
     
@@ -498,7 +496,6 @@ public class IncrementalChecker {
    * individually.
    *
    * @author (last commit) $Author$
-   * @version $Revision$, $Date$
    */
   protected static class InputStory {
     

@@ -1,7 +1,7 @@
 /*
  * ******************************************************************************
- * MontiCore Language Workbench
- * Copyright (c) 2015, MontiCore, All rights reserved.
+ * MontiCore Language Workbench, www.monticore.de
+ * Copyright (c) 2017, MontiCore, All rights reserved.
  *
  * This project is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -32,7 +32,6 @@ import com.google.common.io.Files;
  * A very basic report renderer that creates a verbatim report taking the contents of a given file.
  * 
  * @author (last commit) $Author: ahorst $
- * @version $Revision: 15086 $, $Date: 2013-04-30 15:41:49 +0200 (Di, 30 Apr 2013) $
  */
 public class ReportRenderer extends AbstractMavenReportRenderer {
   

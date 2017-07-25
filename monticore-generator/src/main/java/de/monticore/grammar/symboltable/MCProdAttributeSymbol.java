@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 RWTH Aachen. All rights reserved.
+ * Copyright (c) 2017, MontiCore. All rights reserved.
  *
  * http://www.se-rwth.de/
  */
@@ -14,7 +14,6 @@ import de.monticore.symboltable.SymbolKind;
  * TODO: Write me!
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public class MCProdAttributeSymbol extends CommonSymbol {
   

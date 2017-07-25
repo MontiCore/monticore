@@ -1,7 +1,7 @@
 /*
  * ******************************************************************************
- * MontiCore Language Workbench
- * Copyright (c) 2015, MontiCore, All rights reserved.
+ * MontiCore Language Workbench, www.monticore.de
+ * Copyright (c) 2017, MontiCore, All rights reserved.
  *
  * This project is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -33,7 +33,6 @@ import de.se_rwth.commons.Names;
  * TODO: Write me!
  *
  * @author Pedram Mir Seyed Nazari
- * @version $Revision$, $Date$
  */
 public class StateChartParserMock extends MCConcreteParser {
 

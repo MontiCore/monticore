@@ -1,7 +1,7 @@
 /*
  * ******************************************************************************
- * MontiCore Language Workbench
- * Copyright (c) 2015, MontiCore, All rights reserved.
+ * MontiCore Language Workbench, www.monticore.de
+ * Copyright (c) 2017, MontiCore, All rights reserved.
  *
  * This project is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -47,7 +47,6 @@ import freemarker.core.Macro;
  * TODO: Write me!
  *
  * @author  (last commit) $Author$
- * @version $Revision$,
  *          $Date$
  *
  */
@@ -93,7 +92,6 @@ public class TemplateAliasingTest {
   public void testIncludeAlias() {
     String templateOutput =
         tc.include(ALIASES_PACKAGE + "IncludeAlias");
-
     assertEquals("Plain is included.", templateOutput);
   }
 

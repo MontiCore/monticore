@@ -1,7 +1,7 @@
 /*
  * ******************************************************************************
- * MontiCore Language Workbench
- * Copyright (c) 2015, MontiCore, All rights reserved.
+ * MontiCore Language Workbench, www.monticore.de
+ * Copyright (c) 2017, MontiCore, All rights reserved.
  *
  * This project is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -35,7 +35,6 @@ import com.google.common.io.Files;
  * output directory.
  * 
  * @author (last commit) $Author: ahorst $
- * @version $Revision: 16782 $, $Date: 2013-11-15 15:02:30 +0100 (Fr, 15 Nov
  * 2013) $
  */
 public class Execution {

@@ -1,7 +1,7 @@
 /*
  * ******************************************************************************
- * MontiCore Language Workbench
- * Copyright (c) 2015, MontiCore, All rights reserved.
+ * MontiCore Language Workbench, www.monticore.de
+ * Copyright (c) 2017, MontiCore, All rights reserved.
  *
  * This project is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -35,7 +35,6 @@ import static org.junit.Assert.assertNotNull;
  * A simple unit test invoking a template which uses the new template logger.
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date: 2015-09-03 19:22:26 +0200 (Do, 03 Sep 2015) $
  * @since 4.0.1
  */
 public class TemplateLoggerTest {

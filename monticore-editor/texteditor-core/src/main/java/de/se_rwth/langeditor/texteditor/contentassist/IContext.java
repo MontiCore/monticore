@@ -1,6 +1,6 @@
 /*******************************************************************************
- * MontiCore Language Workbench
- * Copyright (c) 2015, 2016, MontiCore, All rights reserved.
+ * MontiCore Language Workbench, www.monticore.de
+ * Copyright (c) 2017, MontiCore, All rights reserved.
  *  
  * This project is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,7 +22,6 @@ package de.se_rwth.langeditor.texteditor.contentassist;
  * TODO: Write me!
  *
  * @author  (last commit) $Author$
- * @version $Revision$, $Date$
  * @since   TODO: add version number
  *
  */

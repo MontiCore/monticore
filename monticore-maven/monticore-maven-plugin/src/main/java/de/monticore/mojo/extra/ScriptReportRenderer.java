@@ -1,7 +1,7 @@
 /*
  * ******************************************************************************
- * MontiCore Language Workbench
- * Copyright (c) 2015, MontiCore, All rights reserved.
+ * MontiCore Language Workbench, www.monticore.de
+ * Copyright (c) 2017, MontiCore, All rights reserved.
  *
  * This project is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -35,7 +35,6 @@ import de.monticore.mojo.ReportRenderer;
  * TODO: Write me!
  * 
  * @author (last commit) $Author: ahorst $
- * @version $Revision: 15852 $, $Date: 2013-07-10 14:27:57 +0200 (Mi, 10 Jul 2013) $
  */
 public class ScriptReportRenderer extends AbstractMavenReportRenderer {
   

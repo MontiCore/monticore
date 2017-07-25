@@ -1,7 +1,7 @@
 /*
  * ******************************************************************************
- * MontiCore Language Workbench
- * Copyright (c) 2015, MontiCore, All rights reserved.
+ * MontiCore Language Workbench, www.monticore.de
+ * Copyright (c) 2017, MontiCore, All rights reserved.
  *
  * This project is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,7 +29,6 @@ import org.eclipse.m2e.core.project.configurator.MojoExecutionBuildParticipant;
  * An {@link MojoExecutionBuildParticipant} for the monticore-maven-plugin.
  * 
  * @author (last commit) $Author: ahorst $
- * @version $Revision: 15882 $, $Date: 2013-07-10 18:17:48 +0200 (Mi, 10 Jul
  * 2013) $
  */
 public class MontiCoreBuildParticipant extends MojoExecutionBuildParticipant {

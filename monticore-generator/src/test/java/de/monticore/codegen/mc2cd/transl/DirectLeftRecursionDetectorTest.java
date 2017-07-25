@@ -1,7 +1,7 @@
 /*
  * ******************************************************************************
- * MontiCore Language Workbench
- * Copyright (c) 2015, MontiCore, All rights reserved.
+ * MontiCore Language Workbench, www.monticore.de
+ * Copyright (c) 2017, MontiCore, All rights reserved.
  *
  * This project is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -38,7 +38,6 @@ import parser.MCGrammarParser;
  * Tests the helper class on a concrete grammar containing left recursive and normal rules.
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public class DirectLeftRecursionDetectorTest {
 

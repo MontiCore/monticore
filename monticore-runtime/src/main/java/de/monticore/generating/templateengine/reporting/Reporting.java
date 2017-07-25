@@ -1,7 +1,7 @@
 /*
  * ******************************************************************************
- * MontiCore Language Workbench
- * Copyright (c) 2015, MontiCore, All rights reserved.
+ * MontiCore Language Workbench, www.monticore.de
+ * Copyright (c) 2017, MontiCore, All rights reserved.
  *
  * This project is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -40,7 +40,6 @@ import de.se_rwth.commons.logging.Slf4jLog;
  * AReporter implementing this method to execute it.
  *
  * @author (last commit) $Author$
- * @version $Revision$, $Date$
  */
 public class Reporting extends Slf4jLog {
 

@@ -117,7 +117,7 @@
   <inceptionYear>2005</inceptionYear>
 
   <organization>
-    <name>Department of Software Engineering, RWTH Aachen University</name>
+    <name>SE RWTH Aachen</name>
     <url>http://www.se-rwth.de/</url>
   </organization>
 
@@ -125,7 +125,7 @@
     <developer>
       <name>Robert Heim</name>
       <email>heim@se-rwth.de</email>
-      <id>Department of Software Engineering, RWTH Aachen University</id>
+      <id>SE RWTH Aachen</id>
       <url>http://www.se-rwth.de/</url>
       <roles>
         <role>architect</role>
@@ -135,7 +135,7 @@
     <developer>
       <name>Andreas Horst</name>
       <email>horst@se-rwth.de</email>
-      <id>Department of Software Engineering, RWTH Aachen University</id>
+      <id>SE RWTH Aachen</id>
       <url>http://www.se-rwth.de/</url>
       <roles>
         <role>architect</role>
@@ -145,7 +145,7 @@
     <developer>
       <name>Pedram Mir Seyed Nazari</name>
       <email>nazari@se-rwth.de</email>
-      <id>Department of Software Engineering, RWTH Aachen University</id>
+      <id>SE RWTH Aachen</id>
       <url>http://www.se-rwth.de/</url>
       <roles>
         <role>architect</role>
@@ -155,7 +155,7 @@
     <developer>
       <name>Antonio Navarro Pérez</name>
       <email>perez@se-rwth.de</email>
-      <id>Department of Software Engineering, RWTH Aachen University</id>
+      <id>SE RWTH Aachen</id>
       <url>http://www.se-rwth.de/</url>
       <roles>
         <role>architect</role>
