@@ -966,7 +966,7 @@
     <profile>
       <id>run-its</id>
       <properties>
-        <archetype.test.skip>false</archetype.test.skip>
+<!--         <archetype.test.skip>false</archetype.test.skip> -->
         <invoker.skip>false</invoker.skip>
       </properties>
     </profile>

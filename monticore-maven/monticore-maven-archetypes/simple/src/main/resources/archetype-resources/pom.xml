@@ -24,7 +24,7 @@
     <!-- .. Plugins ....................................................... -->
     <assembly.plugin>2.5.4</assembly.plugin>
     <compiler.plugin>3.3</compiler.plugin>
-    <monticore.plugin>4.5.4-SNAPSHOT</monticore.plugin>
+    <monticore.plugin>4.5.3</monticore.plugin>
 
     <!-- Classifiers -->
     <grammars.classifier>grammars</grammars.classifier>
