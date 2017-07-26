@@ -263,16 +263,16 @@ component grammar MCLiterals extends de.monticore.MCBasics {
   token Num_Long
     = (DecimalIntegerLiteral IntegerTypeSuffix) | (HexIntegerLiteral IntegerTypeSuffix) | (OctalIntegerLiteral IntegerTypeSuffix) | (BinaryIntegerLiteral IntegerTypeSuffix);
 
-  fragment token DecimalIntegerLiteral
+  token DecimalIntegerLiteral
     = DecimalNumeral;
 
-  fragment token HexIntegerLiteral
+  token HexIntegerLiteral
     = HexNumeral;
 
-  fragment token OctalIntegerLiteral
+  token OctalIntegerLiteral
     = OctalNumeral;
 
-  fragment token BinaryIntegerLiteral
+  token BinaryIntegerLiteral
     = BinaryNumeral;
 
   fragment token IntegerTypeSuffix
@@ -341,10 +341,10 @@ component grammar MCLiterals extends de.monticore.MCBasics {
   token Num_Double
     = DecimalDoublePointLiteral | HexadecimalDoublePointLiteral;
 
-  fragment token DecimalDoublePointLiteral
+  token DecimalDoublePointLiteral
     = Digits '.' (Digits)? (ExponentPart)? (DoubleTypeSuffix)? | '.' Digits (ExponentPart)? (DoubleTypeSuffix)? | Digits ExponentPart (DoubleTypeSuffix)? | Digits DoubleTypeSuffix;
 
-  fragment token DecimalFloatingPointLiteral
+  token DecimalFloatingPointLiteral
     = Digits '.' (Digits)? (ExponentPart)? (FloatTypeSuffix) | '.' Digits (ExponentPart)? (FloatTypeSuffix) | Digits ExponentPart (FloatTypeSuffix) | Digits FloatTypeSuffix;
 
   fragment token ExponentPart
@@ -365,10 +365,10 @@ component grammar MCLiterals extends de.monticore.MCBasics {
   fragment token DoubleTypeSuffix
     = 'd' | 'D';
 
-  fragment token HexadecimalDoublePointLiteral
+  token HexadecimalDoublePointLiteral
     = HexSignificand BinaryExponent (DoubleTypeSuffix)?;
 
-  fragment token HexadecimalFloatingPointLiteral
+  token HexadecimalFloatingPointLiteral
     = HexSignificand BinaryExponent (FloatTypeSuffix);
 
   fragment token HexSignificand
