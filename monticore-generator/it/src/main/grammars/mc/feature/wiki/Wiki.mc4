@@ -30,7 +30,7 @@ interface SatzElement;
 Wordtt implements SatzElement = 
    (text:WORD | text:WS | text:"=" | text:"*" | text:"-" | text:":" | text:";" | text:"[" | text:"]" | text:"#");
 
-ast Wordtt =
+astrule Wordtt =
 	text:WORD
 ;
 

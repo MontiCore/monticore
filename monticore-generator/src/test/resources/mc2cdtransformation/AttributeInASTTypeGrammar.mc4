@@ -23,6 +23,6 @@ grammar AttributeInASTTypeGrammar {
 
   A;
   
-  ast A = attribute:int;
+  astrule A = attribute:int;
   
 }      

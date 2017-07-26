@@ -35,7 +35,7 @@ grammar ItTestTypes extends mc.grammar.literals.ItTestLiterals {
     /*========================================================================*/
     
     concept antlr {
-        parser_java {
+        parserjava {
             /**
              * Counts the number of LT of type parameters and type arguments.
              * It is used in semantic predicates to ensure the right number
@@ -53,13 +53,13 @@ grammar ItTestTypes extends mc.grammar.literals.ItTestLiterals {
     /*======================= INTERFACE DEFINITIONS ==========================*/
     /*========================================================================*/
     
-    ast QualifiedName =
+    astrule QualifiedName =
         method public String toString(){
           return de.se_rwth.commons.Names.getQualifiedName(
               this.getParts());
         };
     
-    ast PrimitiveType =
+    astrule PrimitiveType =
         method public String toString(){
           if (isBoolean()){
             return "boolean";
@@ -112,9 +112,9 @@ grammar ItTestTypes extends mc.grammar.literals.ItTestLiterals {
           return this.getPrimitive()==ASTConstantsItTestTypes.DOUBLE;
         };
     
-    ast ReferenceType astextends ASTType;
+    astrule ReferenceType astextends ASTType;
     
-    ast ArrayType astimplements ASTReferenceType =
+    astrule ArrayType astimplements ASTReferenceType =
         componentType:ASTType
         dimensions:int;
     

@@ -143,7 +143,7 @@ grammar ScriptExample {
 
   //-- extractfile gen/ASTRule.x
   State;
-  ast State =
+  astrule State =
 	  reachableStates:State*
     method public boolean isReachable(State s) {
   	  return reachableStates.contains(s);

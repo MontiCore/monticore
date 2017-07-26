@@ -27,7 +27,7 @@ grammar AstProd extends mc.common.Basics {
      "start" ;  	
  
 
-  ast Start = 
+  astrule Start = 
   	Name;
   	
 }

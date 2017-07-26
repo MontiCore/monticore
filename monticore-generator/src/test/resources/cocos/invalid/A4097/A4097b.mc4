@@ -3,5 +3,5 @@ package cocos.invalid.A4097;
 grammar A4097b {
   A;
   
-  ast A astextends java.util.Observer;
+  astrule A astextends java.util.Observer;
 }

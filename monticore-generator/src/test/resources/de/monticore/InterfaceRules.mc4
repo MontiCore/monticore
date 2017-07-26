@@ -27,14 +27,14 @@ component grammar InterfaceRules  extends mc.grammars.lexicals.TestLexicals {
    
    Prod extends AProd;
       
-   ast AProd =
+   astrule AProd =
    method public String toString() { 
      java.util.List<String> tmp1 = getNames();
      java.util.Optional<String> tmp2 = getOptionalName();
      return getSimpleName(); 
    };
     
-   ast Prod =
+   astrule Prod =
    method public String toString() { return getAnotherName(); } ;
  
  }

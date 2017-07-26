@@ -77,7 +77,7 @@ component grammar ItTestGrammar extends mc.grammar.literals.ItTestLiterals {
   MCImportStatement = "import" importList:Name& ( "." importList:Name&)* ("." star:["*"])? ";" ;
 
   // One OptionBlock only 
-  ast MCGrammar =
+  astrule MCGrammar =
     ASTGrammarOption max=1 ;
    
  
@@ -126,7 +126,7 @@ component grammar ItTestGrammar extends mc.grammar.literals.ItTestLiterals {
   */      
   interface Prod;
  
-  ast Prod =
+  astrule Prod =
     Name ;
   
  
@@ -259,7 +259,7 @@ component grammar ItTestGrammar extends mc.grammar.literals.ItTestLiterals {
     ("{" Action "}")?    // Statements
     ("=" alts:(Alt || "|")+ )? ";";
 
-  ast ClassProd =
+  astrule ClassProd =
     method public String toString() { return name; } ;
  
  
@@ -285,7 +285,7 @@ component grammar ItTestGrammar extends mc.grammar.literals.ItTestLiterals {
   RuleReference  =
     SemanticpredicateOrAction? Name ;
      
-  ast RuleReference =
+  astrule RuleReference =
     method public String getTypeName() {
       return getName(); 
     }
@@ -373,7 +373,7 @@ component grammar ItTestGrammar extends mc.grammar.literals.ItTestLiterals {
  
   interface ITerminal;
   
-  ast ITerminal =
+  astrule ITerminal =
       Name;
  
   /** A Terminal is usually something like "," or "start" */
@@ -510,7 +510,7 @@ component grammar ItTestGrammar extends mc.grammar.literals.ItTestLiterals {
     {_aNode.setDimension(0);} ("[" "]"
       {_aNode.setDimension(_aNode.getDimension()+1);} )*;
  
-  ast GenericType =
+  astrule GenericType =
     Dimension:int
     method public String toString() {
       return mc.grammars.TestGrammarPrinter.printGenericType(this);

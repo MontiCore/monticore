@@ -86,7 +86,7 @@ grammar FeatureDSL extends mc.grammars.lexicals.TestLexicals {
   	;	 
  
    /** Kommentar am Interface interfacewithspicelevel  */
-  ast Spices3 =
+  astrule Spices3 =
   	Rek2:Name
   	Rek3:Name*
   ;
@@ -99,7 +99,7 @@ grammar FeatureDSL extends mc.grammars.lexicals.TestLexicals {
   	(rek:Spices3)* spicelevel:["none"|"garlic"|salt:"pepper"|mint:"%"] ;
   
   
-  ast Spices4 =
+  astrule Spices4 =
   	Rek2:Name
   	Rek3:Name*
   ;
@@ -108,7 +108,7 @@ grammar FeatureDSL extends mc.grammars.lexicals.TestLexicals {
  
  
  /** Kommentar am Interface interfacewithspicelevel  */
-  ast Interfacewithspicelevel =
+  astrule Interfacewithspicelevel =
     Spicelevel:int 
   	Rek:Spices3*
   	Rek2:Name

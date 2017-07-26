@@ -21,7 +21,7 @@ package mc.feature.compilationunit;
 
 grammar Compunit extends mc.common.Basics { 
 
-	ast Cu = name : String;
+	astrule Cu = name : String;
 
 	interface Cu;
 	

@@ -23,7 +23,7 @@ grammar Lists extends mc.common.Basics {
 
     Parent = sons:Son*;
     
-    ast Parent =
+    astrule Parent =
         sons: Son*;
 
     

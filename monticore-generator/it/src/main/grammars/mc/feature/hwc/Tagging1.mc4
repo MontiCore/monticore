@@ -24,7 +24,7 @@ package mc.feature.hwc;
  *
  * @author Michael von Wenckstern
  */
-grammar Tagging1 extends de.monticore.common.Common { 
+grammar Tagging1 extends mc.grammar.types.ItTestTypes { 
 
   scope TaggingUnit =
     ("package" package:(Name& || ".")+ ";")? 
@@ -45,20 +45,20 @@ grammar Tagging1 extends de.monticore.common.Common {
 	// grammar ComponentTags extends MontiArc, Tagging {
 	//   ComponentScope implements Scope = Component; }
 	interface Scope;
-	ast Scope =
+	astrule Scope =
 	  method public String getScopeKind() {
 	    return "undefined";
 	  };
 
 	// this one is only defined here, to get Parser Tags
 	NameScope implements Scope = QualifiedName;
-	ast NameScope =  
+	astrule NameScope =  
 	  method public String getScopeKind() {
   	  return "NameScope";
   	};
 
 	ConnectorScope extends NameScope = source:QualifiedName "->" QualifiedName;
-  ast ConnectorScope =
+  astrule ConnectorScope =
     method public String getScopeKind() {
       return "ConnectorScope";
     };
@@ -70,7 +70,7 @@ grammar Tagging1 extends de.monticore.common.Common {
 	TargetElement implements TagElement = "tag" (Scope || ",")+ "with" (Tag || ",")+ ";" ;
 	
 	interface Tag;
-/*	ast Tag =
+/*	astrule Tag =
 	  method public String getName() {
 	   return ""; 
 	  }
@@ -79,25 +79,25 @@ grammar Tagging1 extends de.monticore.common.Common {
 	  };*/   
 	
 	SimpleTag implements Tag = Name;
-	ast SimpleTag =
+	astrule SimpleTag =
 	  method public String getTagKind() {
   	    return "SimpleTag";
   	};
 	
 	ValuedTag implements Tag = Name "=" TagValue;
-	ast ValuedTag =
+	astrule ValuedTag =
   	method public String getTagKind() {
        return "ValuedTag";
     };
 	
 	ComplexTag implements Tag = Name "{" (Tag || ",")+ ";" "}";
-	ast ComplexTag =
+	astrule ComplexTag =
     method public String getTagKind() {
       return "ComplexTag";
     };
 
 	 RegexTag implements Tag = Name "=" regex:Regex ;
-	 ast RegexTag =
+	 astrule RegexTag =
      method public String getTagKind() {
        return "RegexTag";
      };
@@ -105,25 +105,25 @@ grammar Tagging1 extends de.monticore.common.Common {
    token Regex = '[' (~('[' | ']') | String | Regex)+ ']';
 	
 	interface TagValue;
-	ast TagValue =
+	astrule TagValue =
 	  method public String getValueKind() {
 	    return "undefined";
 	  };
 	
 	StringTagValue implements TagValue = String;
-	ast StringTagValue =
+	astrule StringTagValue =
 	  method public String getValueKind() {
       return "StringValue";
     };
 
 	NumericTagValue implements TagValue = NumericLiteral;
-	ast NumericTagValue =
+	astrule NumericTagValue =
 	  method public String getValueKind() {
 	    return "NumericValue";
 	  };
 
 	UnitTagValue implements TagValue = NumericLiteral unit:Name;
-	ast UnitTagValue =
+	astrule UnitTagValue =
 	  method public String getValueKind() {
 	    return "UnitValue";
 	  };

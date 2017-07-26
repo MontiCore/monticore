@@ -36,7 +36,7 @@ Composite implements Component =
 Leaf implements Component =
   "leaf" value:STRING ;
 
-ast Composite =
+astrule Composite =
   method public int getDepth() {
     int maxDepth = 0; 
     for (ASTComponent child: getChildren()) {
@@ -49,13 +49,13 @@ ast Composite =
   }
 ;
 
-ast Leaf = 
+astrule Leaf = 
  Children:Component*
  method public int getDepth() { return 0;}
 ;
 
 interface Component;
-ast Component =
+astrule Component =
   children:Component*
   method public int getDepth() {}
 ;

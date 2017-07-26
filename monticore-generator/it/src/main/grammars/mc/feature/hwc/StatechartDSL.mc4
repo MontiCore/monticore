@@ -43,14 +43,14 @@ component grammar StatechartDSL extends mc.common.Basics {
     
   interface SCStructure; 
   
-  ast SCStructure =
+  astrule SCStructure =
   	Name
   	states:State*
   	transitions:Transition*
   	method public String toString() {{return name;}} 
   ;
   
-  ast State = 
+  astrule State = 
   	method public String toString() {
   		return name; 
   	} ;

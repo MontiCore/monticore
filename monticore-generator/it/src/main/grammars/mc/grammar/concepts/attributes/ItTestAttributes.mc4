@@ -32,7 +32,7 @@ component grammar ItTestAttributes  extends mc.grammars.lexicals.ItTestLexicals 
 	ConceptAttributes =
 		"{" (AttributeDefinition:AttributeDefinition | AttributeConcretion:AttributeConcretion)* "}";
 	
-	ast ConceptAttributes =
+	astrule ConceptAttributes =
 		method public String toString() {
 			return " attributes";
 		};
@@ -63,7 +63,7 @@ component grammar ItTestAttributes  extends mc.grammars.lexicals.ItTestLexicals 
 	Calculation =
 		((Name:Name | Name:"grammar" | Name:"ast") ("." (Name:Name | Name:"grammar" | Name:"ast"))*) ("=" CalculationClass:ExternalAttributeType)?;
 	
-	ast Calculation =
+	astrule Calculation =
 		method public String getGrammarname() {
 			String name = new String();
 			if (getName().size() > 1) {
@@ -123,7 +123,7 @@ component grammar ItTestAttributes  extends mc.grammars.lexicals.ItTestLexicals 
 	ExternalAttributeType implements ReferenceInAttributes = 
 		"/" GenericAttributeType ;
 	  
-	ast ExternalAttributeType =
+	astrule ExternalAttributeType =
 		method public String getTypeName() {
 			return "/"+ getGenericAttributeType().toString();	
 		}
@@ -134,11 +134,11 @@ component grammar ItTestAttributes  extends mc.grammars.lexicals.ItTestLexicals 
 	GenericAttributeType  = 
 		(Name:Name | Name:"grammar" | Name:"ast") ("." (Name:Name | Name:"grammar" | Name:"ast") )* ("<" Generic:GenericAttributeType ("," Generic:GenericAttributeType)*  ">")? {_aNode.setDimension(0);}  ("[""]"{_aNode.setDimension(_aNode.getDimension()+1);} )*;
 
-	ast GenericAttributeType =
+	astrule GenericAttributeType =
 		method public String toString() {
 			return  de.monticore.grammar.HelperGrammar.printGenericType(this);
 		};
 
-	ast GenericAttributeType =
+	astrule GenericAttributeType =
 		Dimension: /int;  
 }

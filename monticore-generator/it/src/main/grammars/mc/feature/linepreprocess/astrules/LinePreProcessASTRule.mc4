@@ -28,7 +28,7 @@ grammar LinePreProcessASTRule {
   Component = "foo";
 
   // create additional members in the class ASTRule  
-  ast RuleX = 
+  astrule RuleX = 
     // create an attribute ExtraComponent of type ASTComponent
     ExtraComponent:Component 
   

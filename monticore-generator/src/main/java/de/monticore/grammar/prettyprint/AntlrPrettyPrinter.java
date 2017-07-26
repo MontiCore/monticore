@@ -47,7 +47,7 @@ public class AntlrPrettyPrinter implements AntlrVisitor {
   @Override
   public void handle(ASTAntlrLexerAction a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    getPrinter().print("lexer java ");
+    getPrinter().print("lexerjava ");
     getPrinter().print(" {");
     getPrinter().println();
     getPrinter().indent();
@@ -60,7 +60,7 @@ public class AntlrPrettyPrinter implements AntlrVisitor {
   @Override
   public void handle(ASTAntlrParserAction a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    getPrinter().print("parser java ");
+    getPrinter().print("parserjava ");
     getPrinter().print(" {");
     getPrinter().println();
     getPrinter().indent();

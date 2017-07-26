@@ -35,7 +35,7 @@ component grammar ItTestAntlr extends mc.grammar.lexicals.ItTestLexicals {
 		   (AntlrParserAction | AntlrLexerAction)*
 		"}";
 		
-	ast ConceptAntlr =
+	astrule ConceptAntlr =
 		method public String toString() {
 			return "";
 		};
@@ -44,7 +44,7 @@ component grammar ItTestAntlr extends mc.grammar.lexicals.ItTestLexicals {
 	@attribute Text	Java Code
 	*/		
 	AntlrParserAction= 
-		"parser_java" "{" text:JavaCode "}";
+		"parserjava" "{" text:JavaCode "}";
 		
 	/** Additional Additional Java code for the lexer
 	@attribute Text	Java Code

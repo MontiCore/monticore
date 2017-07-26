@@ -363,7 +363,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
   @Override
   public void handle(ASTASTRule a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    print("ast ");
+    print("astrule ");
     
     print(a.getType());
     

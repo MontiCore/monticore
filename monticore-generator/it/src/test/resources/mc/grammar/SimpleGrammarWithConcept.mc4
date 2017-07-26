@@ -22,7 +22,7 @@ package mc.grammar;
 grammar SimpleGrammarWithConcept {
 
   concept antlr {
-    parser_java {
+    parserjava {
       boolean first = true;
     }
   }

@@ -31,15 +31,15 @@ package mc.grammar.literals;
 grammar ItTestLiterals extends mc.grammar.lexicals.ItTestLexicals {
 
   /*========================================================================*/
-  /*======================= AST DEFINITIONS ================================*/
+  /*======================= astrule DEFINITIONS ================================*/
   /*========================================================================*/
-  ast BooleanLiteral =
+  astrule BooleanLiteral =
     method public boolean getValue() {
       return this.source == ASTConstantsItTestLiterals.TRUE;
     }
   ;
 
-  ast CharLiteral = 
+  astrule CharLiteral = 
     method public char getValue() {
       try {
         return de.monticore.literals.LiteralsHelper.getInstance().decodeChar(getSource());
@@ -50,7 +50,7 @@ grammar ItTestLiterals extends mc.grammar.lexicals.ItTestLexicals {
     }
   ;
 
-  ast StringLiteral = 
+  astrule StringLiteral = 
     method public String getValue() {
       try {
         return de.monticore.literals.LiteralsHelper.getInstance().decodeString(getSource());
@@ -61,7 +61,7 @@ grammar ItTestLiterals extends mc.grammar.lexicals.ItTestLexicals {
     }
   ;
 
-  ast IntLiteral = 
+  astrule IntLiteral = 
     method public int getValue() {
       try {
         return de.monticore.literals.LiteralsHelper.getInstance().decodeInt(getSource());
@@ -72,7 +72,7 @@ grammar ItTestLiterals extends mc.grammar.lexicals.ItTestLexicals {
     }
   ;
 
-  ast SignedIntLiteral = 
+  astrule SignedIntLiteral = 
     method public int getValue() {
       if (negative) {
         return -super.getValue();
@@ -81,7 +81,7 @@ grammar ItTestLiterals extends mc.grammar.lexicals.ItTestLexicals {
     }
   ;
 
-  ast LongLiteral = 
+  astrule LongLiteral = 
     method public long getValue() {
       try {
         return de.monticore.literals.LiteralsHelper.getInstance().decodeLong(getSource());
@@ -92,7 +92,7 @@ grammar ItTestLiterals extends mc.grammar.lexicals.ItTestLexicals {
     }
   ;
 
-  ast SignedLongLiteral = 
+  astrule SignedLongLiteral = 
     method public long getValue() {
       if (negative) {
         return -super.getValue();
@@ -101,7 +101,7 @@ grammar ItTestLiterals extends mc.grammar.lexicals.ItTestLexicals {
     }
   ;
 
-  ast FloatLiteral = 
+  astrule FloatLiteral = 
     method public float getValue() {
       try {
         return de.monticore.literals.LiteralsHelper.getInstance().decodeFloat(getSource());
@@ -112,7 +112,7 @@ grammar ItTestLiterals extends mc.grammar.lexicals.ItTestLexicals {
     }
   ;
 
-  ast SignedFloatLiteral = 
+  astrule SignedFloatLiteral = 
     method public float getValue() {
       if (negative) {
         return -super.getValue();
@@ -121,7 +121,7 @@ grammar ItTestLiterals extends mc.grammar.lexicals.ItTestLexicals {
     }
   ;
 
-  ast DoubleLiteral = 
+  astrule DoubleLiteral = 
     method public double getValue() {
       try {
         return de.monticore.literals.LiteralsHelper.getInstance().decodeDouble(getSource());
@@ -132,7 +132,7 @@ grammar ItTestLiterals extends mc.grammar.lexicals.ItTestLexicals {
     }
   ;
 
-  ast SignedDoubleLiteral = 
+  astrule SignedDoubleLiteral = 
     method public double getValue() {
       if (negative) {
         return -super.getValue();

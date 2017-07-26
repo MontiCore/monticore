@@ -27,7 +27,7 @@ grammar A4028 {
 
   E = a:A;
 
-  ast E = a:B;
+  astrule E = a:B;
 
 
 }

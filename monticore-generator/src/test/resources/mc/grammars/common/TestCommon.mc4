@@ -42,7 +42,7 @@ grammar TestCommon extends mc.grammars.types.TestTypes {
     /*======================= INTERFACE DEFINITIONS ==========================*/
     /*========================================================================*/
     
-    ast Stereotype =
+    astrule Stereotype =
         method public boolean containsStereoValue(String name) {
           return (getStereoValue(name) != null);
         }
@@ -64,7 +64,7 @@ grammar TestCommon extends mc.grammars.types.TestTypes {
           return null;
         };
     
-    ast StereoValue =
+    astrule StereoValue =
         method public String getValue() {
           try {
             if (source.isPresent()) {
@@ -82,7 +82,7 @@ grammar TestCommon extends mc.grammars.types.TestTypes {
           this.source = Optional.of('"' + value + '"');
         };
     
-    ast Cardinality =
+    astrule Cardinality =
         lowerBound:int
         upperBound:int;
          

@@ -28,10 +28,10 @@ grammar Expression {
         ( 'a'..'z' | 'A'..'Z' | '_' | '$' )( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '$' )*;
 	
 	interface Expression; // = IncreaseExpression | Assignment | DecreaseExpression;
-	ast Expression = Varname:Name ;
+	astrule Expression = Varname:Name ;
 	
 	interface Value; 
-	ast Value = A:NUMBER;
+	astrule Value = A:NUMBER;
 	
 	IncreaseExpression implements Expression = varname:Name "++";
 	
@@ -40,5 +40,5 @@ grammar Expression {
 	Assignment implements Expression = varname:Name "=" (rHS:Name | value:NUMBER );
 	
 	ComplexAssigment extends Assignment implements Value= a:NUMBER ;
-    ast ComplexAssigment = Bds:java.util.Vector;
+    astrule ComplexAssigment = Bds:java.util.Vector;
 }

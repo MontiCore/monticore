@@ -39,7 +39,7 @@ component grammar ItTestTextEditor extends mc.grammars.literals.ItTestLiterals {
 		   )*
 		"}";
 	
-	ast TextEditorConcept =
+	astrule TextEditorConcept =
 		Name  max=1
 		RootName:String  max=1
 		Extension:Name  max=1

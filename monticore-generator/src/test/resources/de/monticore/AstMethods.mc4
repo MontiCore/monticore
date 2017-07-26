@@ -27,21 +27,21 @@ grammar AstMethods extends mc.grammars.lexicals.TestLexicals {
    
    C = Name;
   
-   ast A = method public Optional<ASTB> getB() { return Optional.empty(); };
+   astrule A = method public Optional<ASTB> getB() { return Optional.empty(); };
    
-   ast A = method public ASTC getC() { return c; };
+   astrule A = method public ASTC getC() { return c; };
   
    
-   ast A = method public void setB(ASTB newB) { this.b = Optional.ofNullable(newB); };
+   astrule A = method public void setB(ASTB newB) { this.b = Optional.ofNullable(newB); };
 
-   ast A = method public void setC(ASTC newC) { this.c = newC; };
+   astrule A = method public void setC(ASTC newC) { this.c = newC; };
    
-   ast B = method void setNames(java.util.List<String> name) { this.names = name; };
+   astrule B = method void setNames(java.util.List<String> name) { this.names = name; };
    
-   ast C = method public Optional<ASTB> getName(String name) { return Optional.empty(); };
+   astrule C = method public Optional<ASTB> getName(String name) { return Optional.empty(); };
    
-   ast C = method public void setName() {};
+   astrule C = method public void setName() {};
    
-   ast C = method public void setName(int i) {};
+   astrule C = method public void setName(int i) {};
   
 }    

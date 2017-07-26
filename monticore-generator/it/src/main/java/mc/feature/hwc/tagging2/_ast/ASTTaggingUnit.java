@@ -18,10 +18,10 @@
  */
 package mc.feature.hwc.tagging2._ast;
 
-import de.monticore.types.types._ast.ASTImportStatement;
-import de.monticore.types.types._ast.ASTQualifiedName;
-
 import java.util.List;
+
+import mc.grammar.types.ittesttypes._ast.ASTImportStatement;
+import mc.grammar.types.ittesttypes._ast.ASTQualifiedName;
 
 public class ASTTaggingUnit extends ASTTaggingUnitTOP {
 

@@ -39,7 +39,7 @@ component grammar TestAntlr extends mc.grammars.lexicals.TestLexicals {
 		    AntlrLexerCode:AntlrLexerCode | AntlrLexerAction:AntlrLexerAction)*
 		"}";
 		
-	ast ConceptAntlr =
+	astrule ConceptAntlr =
 		method public String toString() {
 			return "";
 		};

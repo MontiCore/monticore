@@ -71,7 +71,7 @@ grammar ScopesExample extends mc.grammars.lexicals.TestLexicals {
 	
 	//create places for type infos filled while parsing...
 	//not used at the moment cause classgenwithingrammar cannot generate attributes of any type :(
-	ast Assignement =
+	astrule Assignement =
 		Type:Name;
 
 }

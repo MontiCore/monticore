@@ -33,14 +33,14 @@ grammar AstRule extends mc2cdtransformation.super.Supergrammar {
    
    interface E;
    
-   ast A astextends ASTExternalProd;
+   astrule A astextends ASTExternalProd;
   
-   ast C astextends ASTA;
+   astrule C astextends ASTA;
   
-   ast D astextends ASTSuperProd astimplements ASTB, ASTSuperInterface, java.io.Serializable;
+   astrule D astextends ASTSuperProd astimplements ASTB, ASTSuperInterface, java.io.Serializable;
    
-   ast F astextends java.util.Observable;
+   astrule F astextends java.util.Observable;
    
-   ast E astextends ASTB, ASTSuperInterface, ASTExternalInterface, java.io.Serializable;
+   astrule E astextends ASTB, ASTSuperInterface, ASTExternalInterface, java.io.Serializable;
   
 }      
