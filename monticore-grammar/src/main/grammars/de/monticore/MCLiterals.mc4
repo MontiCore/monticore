@@ -342,7 +342,7 @@ component grammar MCLiterals extends de.monticore.MCBasics {
     = DecimalDoublePointLiteral | HexadecimalDoublePointLiteral;
 
   token DecimalDoublePointLiteral
-    = Digits '.' (Digits)? (ExponentPart)? (DoubleTypeSuffix)? | '.' Digits (ExponentPart)? (DoubleTypeSuffix)? | Digits ExponentPart (DoubleTypeSuffix)? | Digits DoubleTypeSuffix;
+    = Digits '.' (Digits)? (ExponentPart)? (DoubleTypeSuffix)? {_input.LA(1)!='.'}? | '.' Digits (ExponentPart)? (DoubleTypeSuffix)? | Digits ExponentPart (DoubleTypeSuffix)? | Digits DoubleTypeSuffix;
 
   token DecimalFloatingPointLiteral
     = Digits '.' (Digits)? (ExponentPart)? (FloatTypeSuffix) | '.' Digits (ExponentPart)? (FloatTypeSuffix) | Digits ExponentPart (FloatTypeSuffix) | Digits FloatTypeSuffix;
