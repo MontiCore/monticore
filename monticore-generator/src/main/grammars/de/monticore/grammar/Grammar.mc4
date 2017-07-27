@@ -449,7 +449,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
   @attribute attributeInAST Attributes to be added to the class generation
   */
   ASTRule =
-     "astrule" type:Name
+     ("astrule" | "ast" /* TODO (BOOTSTRAP): MB ast is deprecated: Remove in version 4.5.4 */ ) type:Name
     (
       "astextends" aSTSuperClass:(GenericType || ",")+
     |
