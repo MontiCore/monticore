@@ -56,73 +56,73 @@ component grammar MCLiterals extends de.monticore.MCBasics {
 
   ast CharLiteral = 
     method public char getValue() {
-      return de.monticore.MCLiteralsDecoder.getInstance().decodeChar(getSource());
+      return de.monticore.MCLiteralsDecoder.decodeChar(getSource());
     }
   ;
 
   ast StringLiteral = 
     method public String getValue() {
-      return de.monticore.MCLiteralsDecoder.getInstance().decodeString(getSource());
+      return de.monticore.MCLiteralsDecoder.decodeString(getSource());
     }
   ;
 
   ast IntLiteral = 
     method public int getValue() {
-      return de.monticore.MCLiteralsDecoder.getInstance().decodeInt(getSource());
+      return de.monticore.MCLiteralsDecoder.decodeInt(getSource());
     }
   ;
 
   ast SignedIntLiteral = 
     method public int getValue() {
       if (negative) {
-        return - de.monticore.MCLiteralsDecoder.getInstance().decodeInt(getSource());
+        return - de.monticore.MCLiteralsDecoder.decodeInt(getSource());
       }
-      return de.monticore.MCLiteralsDecoder.getInstance().decodeInt(getSource());
+      return de.monticore.MCLiteralsDecoder.decodeInt(getSource());
     }
   ;
   
   ast LongLiteral = 
     method public long getValue() {
-      return de.monticore.MCLiteralsDecoder.getInstance().decodeLong(getSource());
+      return de.monticore.MCLiteralsDecoder.decodeLong(getSource());
     }
   ;
 
   ast SignedLongLiteral = 
     method public long getValue() {
       if (negative) {
-        return -de.monticore.MCLiteralsDecoder.getInstance().decodeLong(getSource());
+        return -de.monticore.MCLiteralsDecoder.decodeLong(getSource());
       }
-      return de.monticore.MCLiteralsDecoder.getInstance().decodeLong(getSource());
+      return de.monticore.MCLiteralsDecoder.decodeLong(getSource());
     }
   ;
 
   ast FloatLiteral = 
     method public float getValue() {
-      return de.monticore.MCLiteralsDecoder.getInstance().decodeFloat(getSource());
+      return de.monticore.MCLiteralsDecoder.decodeFloat(getSource());
     }
   ;
 
   ast SignedFloatLiteral = 
     method public float getValue() {
       if (negative) {
-        return -de.monticore.MCLiteralsDecoder.getInstance().decodeFloat(getSource());
+        return -de.monticore.MCLiteralsDecoder.decodeFloat(getSource());
       }
-      return de.monticore.MCLiteralsDecoder.getInstance().decodeFloat(getSource());
+      return de.monticore.MCLiteralsDecoder.decodeFloat(getSource());
     }
   ;
 
   ast DoubleLiteral = 
     method public double getValue() {
-      return de.monticore.MCLiteralsDecoder.getInstance().decodeDouble(getSource());
+      return de.monticore.MCLiteralsDecoder.decodeDouble(getSource());
     }
   ;
 
   ast SignedDoubleLiteral = 
     method public double getValue() {
       if (negative) {
-        return -de.monticore.MCLiteralsDecoder.getInstance().decodeDouble(getSource());
+        return -de.monticore.MCLiteralsDecoder.decodeDouble(getSource());
       }
-      return de.monticore.MCLiteralsDecoder.getInstance().decodeDouble(getSource());
+      return de.monticore.MCLiteralsDecoder.decodeDouble(getSource());
     }
   ;
 

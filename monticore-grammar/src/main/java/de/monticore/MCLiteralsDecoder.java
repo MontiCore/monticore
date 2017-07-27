@@ -29,27 +29,7 @@ import de.se_rwth.commons.logging.Log;
  * @author Martin Schindler
  */
 public class MCLiteralsDecoder {
-  
-  private static MCLiteralsDecoder instance;
-  
-  /**
-   * We have a singleton.
-   */
-  private MCLiteralsDecoder() {
-  }
-  
-  /**
-   * Returns the singleton instance.
-   * 
-   * @return The instance.
-   */
-  public static MCLiteralsDecoder getInstance() {
-    if (instance == null) {
-      instance = new MCLiteralsDecoder();
-    }
-    return instance;
-  }
-  
+      
   /**
    * Decodes a char literal into a char
    * 
@@ -57,7 +37,7 @@ public class MCLiteralsDecoder {
    * @return decoded char
    * @throws CharConversionException
    */
-  public char decodeChar(String s) {
+  public static char decodeChar(String s) {
     if (s.length() == 1) { // single char
       return s.charAt(0);
     }
@@ -97,7 +77,7 @@ public class MCLiteralsDecoder {
    * @return decoded string
    * @throws CharConversionException 
    */
-  public String decodeString(String s) {
+  public static String decodeString(String s) {
     StringBuilder ret = new StringBuilder();
     String in = s;
     
@@ -126,7 +106,7 @@ public class MCLiteralsDecoder {
    * @param s int literal as string including '"'
    * @return decoded int
    */
-  public int decodeInt(String s) {
+  public static int decodeInt(String s) {
     int radix = 10;
     if (s.startsWith("0") && s.length() > 1) {
       if (s.startsWith("0x") || s.startsWith("0X")) {
@@ -145,7 +125,7 @@ public class MCLiteralsDecoder {
    * @param s long literal as string including '"'
    * @return decoded long
    */
-  public long decodeLong(String s) {
+  public static long decodeLong(String s) {
     int radix = 10;
     String in = s;
     if (s.startsWith("0") && s.length() > 2) {
@@ -166,7 +146,7 @@ public class MCLiteralsDecoder {
    * @param s float literal as string including '"'
    * @return decoded float
    */
-  public float decodeFloat(String s) {
+  public static float decodeFloat(String s) {
     // workaround as parseFloat() does not parse 0xp1F correctly
     if (s.toLowerCase().startsWith("0xp")) {
       return Float.parseFloat("0x0p" + s.substring(3)); // 0xp1F == 0x0p1F == 0.0
@@ -180,7 +160,7 @@ public class MCLiteralsDecoder {
    * @param s double literal as string including '"'
    * @return decoded double
    */
-  public double decodeDouble(String s) {
+  public static double decodeDouble(String s) {
     // workaround as parseDouble() does not parse 0xp1 correctly
     if (s.toLowerCase().startsWith("0xp")) {
       return Double.parseDouble("0x0p" + s.substring(3)); // 0xp1 == 0x0p1 == 0.0
