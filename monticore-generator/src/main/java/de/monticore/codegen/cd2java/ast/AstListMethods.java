@@ -51,9 +51,7 @@ public enum AstListMethods {
   
   size("public int size%s();"),
   
-  toArray("public ASTNode[] toArray();"),
-  
-  toArraySpecified("public %s[] toArray%s(%s[] array);"),
+  toArray("public %s[] toArray%s(%s[] array);"),
   
   // ----------- java.util.Collection since 1.8 --------------------
   
@@ -61,7 +59,7 @@ public enum AstListMethods {
   
   spliterator("public Spliterator<%s> spliterator%s();"),
   
-  stream("public Stream<%s> stream%s());"),
+  stream("public Stream<%s> stream%s();"),
   
   parallelStream("public Stream<%s> parallelStream%s();"),
   
@@ -71,9 +69,9 @@ public enum AstListMethods {
   
   // ----------- java.util.List -------------------------------------
   
-  addIndex(" public void add%s(int index, %s element);"),
+  add_(" public void add%s(int index, %s element);"),
   
-  addAllIndex("public boolean addAll%s(int index, Collection<? extends %s> collection);"),
+  addAll_("public boolean addAll%s(int index, Collection<? extends %s> collection);"),
   
   get("public %s get%s(int index);"),
   
@@ -81,15 +79,15 @@ public enum AstListMethods {
   
   lastIndexOf("public int lastIndexOf%s(ASTNode element);"),
   
-  equals("public boolean equals(ASTNode o);"),
+  equals("public boolean equals%s(ASTNode o);"),
   
-  hashCode("public int hashCode()"),
+  hashCode("public int hashCode%s();"),
   
   listIterator("public ListIterator<%s> listIterator%s();"),
   
-  listIteratorIndex("public ListIterator<%s> listIterator%s(int index);"),
+  listIterator_("public ListIterator<%s> listIterator%s(int index);"),
   
-  removeIndex("%s remove%s(int index);"),
+  remove_("%s remove%s(int index);"),
   
   subList("List<%s> subList%s(int start, int end);"),
   
@@ -107,7 +105,12 @@ public enum AstListMethods {
     this.methodDeclaration = header;
   }
   
-  public String getDeclaration() {
+  public String getMethodName() {
+    int pos = this.toString().lastIndexOf("_");
+    return pos > 0 ? this.toString().substring(0, pos) : this.toString();
+  }
+  
+  public String getMethodDeclaration() {
     return methodDeclaration;
   }
   
