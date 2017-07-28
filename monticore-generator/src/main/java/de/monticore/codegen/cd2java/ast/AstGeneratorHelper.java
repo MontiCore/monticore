@@ -28,9 +28,11 @@ import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.TypesHelper;
 import de.monticore.types.TypesPrinter;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
+import de.monticore.types.types._ast.ASTVoidType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
 import de.monticore.umlcd4a.cd4analysis._visitor.CD4AnalysisVisitor;
 import de.se_rwth.commons.Joiners;
@@ -157,6 +159,10 @@ public class AstGeneratorHelper extends GeneratorHelper {
   
   public static String getConstantClassSimpleName(MCGrammarSymbol grammarSymbol) {
     return "ASTConstants" + grammarSymbol.getName();
+  }
+  
+  public static boolean hasReturnTypeVoid(ASTCDMethod method) {
+    return method.getReturnType() instanceof ASTVoidType;
   }
   
   /**

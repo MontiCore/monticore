@@ -140,6 +140,7 @@ public class CdEmfDecorator extends CdDecorator {
     for (ASTCDClass clazz : nativeClasses) {
       addConstructors(clazz, astHelper);
       addAdditionalMethods(clazz, astHelper);
+      addListMethods(clazz, astHelper);
  //     addAdditionalAttributes(clazz, astHelper);
       addGetter(clazz, astHelper);
       addSetter(clazz, astHelper);
