@@ -68,16 +68,16 @@ component grammar MCLiterals extends de.monticore.MCBasics {
 
   ast IntLiteral = 
     method public int getValue() {
-      return de.monticore.MCLiteralsDecoder.decodeInt(getSource());
+      return de.monticore.MCLiteralsDecoder.decodeInt(getSource().get());
     }
   ;
 
   ast SignedIntLiteral = 
     method public int getValue() {
       if (negative) {
-        return - de.monticore.MCLiteralsDecoder.decodeInt(getSource());
+        return - de.monticore.MCLiteralsDecoder.decodeInt(getSource().get());
       }
-      return de.monticore.MCLiteralsDecoder.decodeInt(getSource());
+      return de.monticore.MCLiteralsDecoder.decodeInt(getSource().get());
     }
   ;
   
@@ -98,31 +98,31 @@ component grammar MCLiterals extends de.monticore.MCBasics {
 
   ast FloatLiteral = 
     method public float getValue() {
-      return de.monticore.MCLiteralsDecoder.decodeFloat(getSource());
+      return de.monticore.MCLiteralsDecoder.decodeFloat(getSource().get());
     }
   ;
 
   ast SignedFloatLiteral = 
     method public float getValue() {
       if (negative) {
-        return -de.monticore.MCLiteralsDecoder.decodeFloat(getSource());
+        return -de.monticore.MCLiteralsDecoder.decodeFloat(getSource().get());
       }
-      return de.monticore.MCLiteralsDecoder.decodeFloat(getSource());
+      return de.monticore.MCLiteralsDecoder.decodeFloat(getSource().get());
     }
   ;
 
   ast DoubleLiteral = 
     method public double getValue() {
-      return de.monticore.MCLiteralsDecoder.decodeDouble(getSource());
+      return de.monticore.MCLiteralsDecoder.decodeDouble(getSource().get());
     }
   ;
 
   ast SignedDoubleLiteral = 
     method public double getValue() {
       if (negative) {
-        return -de.monticore.MCLiteralsDecoder.decodeDouble(getSource());
+        return -de.monticore.MCLiteralsDecoder.decodeDouble(getSource().get());
       }
-      return de.monticore.MCLiteralsDecoder.decodeDouble(getSource());
+      return de.monticore.MCLiteralsDecoder.decodeDouble(getSource().get());
     }
   ;
 
@@ -188,19 +188,18 @@ component grammar MCLiterals extends de.monticore.MCBasics {
   StringLiteral implements Literal, SignedLiteral =
     source:String;
 
-
   /** ASTIntLiteral represents a positive Integer number.
         @attribute source String-representation (including '"').
     */
   IntLiteral implements NumericLiteral =
-    source:Num_Int;
+    (source:DecimalIntegerLiteral | source:HexIntegerLiteral | source:OctalIntegerLiteral | source:BinaryIntegerLiteral);
 
 
   /** ASTSignedIntLiteral represents a positive or negative Integer number.
         @attribute source String-representation (including '"').
     */
   SignedIntLiteral implements SignedNumericLiteral =
-    (negative:["-"])? source:Num_Int;
+    (negative:["-"])? (source:DecimalIntegerLiteral | source:HexIntegerLiteral | source:OctalIntegerLiteral | source:BinaryIntegerLiteral);
 
 
   /** ASTLongLiteral represents a positive Long number.
@@ -221,28 +220,28 @@ component grammar MCLiterals extends de.monticore.MCBasics {
         @attribute source String-representation (including '"').
     */
   FloatLiteral implements NumericLiteral =
-    source:Num_Float;
+    source:DecimalFloatingPointLiteral | source:HexadecimalFloatingPointLiteral;
 
 
   /** ASTSignedFloatLiteral represents a positive or negative Float number.
         @attribute source String-representation (including '"').
     */
   SignedFloatLiteral implements SignedNumericLiteral =
-    (negative:["-"])? source:Num_Float;
+    (negative:["-"])? (source:DecimalFloatingPointLiteral | source:HexadecimalFloatingPointLiteral);
 
 
   /** ASTDoubleLiteral represents a positive Double number.
         @attribute source String-representation (including '"').
     */
   DoubleLiteral implements NumericLiteral =
-    source:Num_Double;
+    source:DecimalDoublePointLiteral | source:HexadecimalDoublePointLiteral;
 
 
   /** ASTSignedDoubleLiteral represents a positive or negative Double number.
         @attribute source String-representation (including '"').
     */
   SignedDoubleLiteral implements SignedNumericLiteral =
-    (negative:["-"])? source:Num_Double;
+    (negative:["-"])? (source:DecimalDoublePointLiteral | source:HexadecimalDoublePointLiteral);
 
 
   /*========================================================================*/
@@ -257,14 +256,11 @@ component grammar MCLiterals extends de.monticore.MCBasics {
   
   // §3.10.1 Integer Literals
 
-  token Num_Int
-    = DecimalIntegerLiteral | HexIntegerLiteral | OctalIntegerLiteral | BinaryIntegerLiteral;
+  token DecimalIntegerLiteral
+    = DecimalNumeral;
 
   token Num_Long
     = (DecimalIntegerLiteral IntegerTypeSuffix) | (HexIntegerLiteral IntegerTypeSuffix) | (OctalIntegerLiteral IntegerTypeSuffix) | (BinaryIntegerLiteral IntegerTypeSuffix);
-
-  token DecimalIntegerLiteral
-    = DecimalNumeral;
 
   token HexIntegerLiteral
     = HexNumeral;
@@ -335,12 +331,6 @@ component grammar MCLiterals extends de.monticore.MCBasics {
 
   // §3.10.2 Floating-Point Literals
   
-  token Num_Float
-    = DecimalFloatingPointLiteral | HexadecimalFloatingPointLiteral;
-
-  token Num_Double
-    = DecimalDoublePointLiteral | HexadecimalDoublePointLiteral;
-
   token DecimalDoublePointLiteral
     = Digits '.' (Digits)? (ExponentPart)? (DoubleTypeSuffix)? {_input.LA(1)!='.'}? | '.' Digits (ExponentPart)? (DoubleTypeSuffix)? | Digits ExponentPart (DoubleTypeSuffix)? | Digits DoubleTypeSuffix;
 
