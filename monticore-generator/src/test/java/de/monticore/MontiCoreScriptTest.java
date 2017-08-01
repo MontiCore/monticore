@@ -19,26 +19,11 @@
 
 package de.monticore;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstAdditionalMethods;
+import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.io.paths.IterablePath;
@@ -53,6 +38,18 @@ import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import static org.junit.Assert.*;
 
 /**
  * Test for the {@link MontiCoreScript} class.
@@ -113,20 +110,20 @@ public class MontiCoreScriptTest {
     assertEquals("Statechart", grammar.getName());
   }
   
-  /** {@link MontiCoreScript#generateParser(ASTMCGrammar, String)} */
+  /** {@link MontiCoreScript#generateParser(GlobalExtensionManagement, ASTMCGrammar, GlobalScope, IterablePath, File)} */
   @Test
   public void testGenerateParser() {
     assertNotNull(grammar);
     MontiCoreScript mc = new MontiCoreScript();
-    GlobalScope symbolTable = mc.initSymbolTable(modelPath);
+    GlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
     mc.generateParser(glex, grammar, symbolTable, IterablePath.empty(), new File("target/generated-sources/monticore/testcode"));
   }
   
-  /** {@link MontiCoreScript#transformAstGrammarToAstCd(mc.grammar._ast.ASTCDCompilationUnit)} */
+  /** {@link MontiCoreScript#transformAstGrammarToAstCd(GlobalExtensionManagement, ASTMCGrammar, GlobalScope, IterablePath)} */
   @Test
   public void testTransformAstGrammarToAstCd() {
     MontiCoreScript mc = new MontiCoreScript();
-    GlobalScope symbolTable = mc.initSymbolTable(modelPath);
+    GlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
     mc.createSymbolsFromAST(symbolTable, grammar);
     cdCompilationUnit = mc.transformAstGrammarToAstCd(
         new GlobalExtensionManagement(), grammar, symbolTable, targetPath);
@@ -135,11 +132,11 @@ public class MontiCoreScriptTest {
     assertEquals("Statechart", cdCompilationUnit.getCDDefinition().getName());
   }
   
-  /** {@link MontiCoreScript#decorateCd(GlobalExtensionManagement, ASTCDCompilationUnit)} */
+  /** {@link MontiCoreScript#decorateCd(GlobalExtensionManagement, ASTCDCompilationUnit, GlobalScope, IterablePath)}  */
   @Test
   public void testDecorateCd() {
     MontiCoreScript mc = new MontiCoreScript();
-    GlobalScope symbolTable = mc.initSymbolTable(modelPath);
+    GlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
     mc.createSymbolsFromAST(symbolTable, grammar);
     cdCompilationUnit = mc.transformAstGrammarToAstCd(new GlobalExtensionManagement(),
         grammar, symbolTable, targetPath);
@@ -177,11 +174,11 @@ public class MontiCoreScriptTest {
     
   }
   
-  /** {@link MontiCoreScript#generate(GlobalExtensionManagement, ASTCDCompilationUnit, java.util.Map)} */
+  /** {@link MontiCoreScript#generate(GlobalExtensionManagement, GlobalScope, ASTCDCompilationUnit, File, IterablePath)} */
   @Test
   public void testGenerate() {
     MontiCoreScript mc = new MontiCoreScript();
-    GlobalScope symbolTable = mc.initSymbolTable(modelPath);
+    GlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
     mc.createSymbolsFromAST(symbolTable, grammar);
     cdCompilationUnit = mc.transformAstGrammarToAstCd(new GlobalExtensionManagement(),
         grammar, symbolTable, targetPath);
@@ -189,9 +186,9 @@ public class MontiCoreScriptTest {
     mc.generate(glex, symbolTable, cdCompilationUnit, outputPath, templatePath);
   }
   
-  /** {@link MontiCoreScript#run(MontiCoreConfiguration)} */
+  /** {@link MontiCoreScript#run(Configuration)} */
   @Test
-  public void testDefaultScript() {    
+  public void testDefaultScript() {
     Configuration configuration =
         ConfigurationPropertiesMapContributor
             .fromSplitMap(CLIArguments.forArguments(simpleArgs).asMap());
@@ -200,5 +197,6 @@ public class MontiCoreScriptTest {
     
     assertTrue(!false);
   }
+  
   
 }

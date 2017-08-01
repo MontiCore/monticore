@@ -22,10 +22,13 @@ package de.monticore.codegen.mc2cd;
 import de.monticore.MontiCoreScript;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.symboltable.MontiCoreGrammarLanguage;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
+import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.types.types._ast.ASTType;
+import de.monticore.umlcd4a.CD4AnalysisLanguage;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
@@ -34,6 +37,7 @@ import parser.MCGrammarParser;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -53,11 +57,22 @@ public class TestHelper {
       return Optional.empty();
     }
     MontiCoreScript mc = new MontiCoreScript();
-    GlobalScope symbolTable = mc.initSymbolTable(new ModelPath(Paths.get("src/test/resources")));
+    GlobalScope symbolTable = createGlobalScope(new ModelPath(Paths.get("src/test/resources")));
     mc.createSymbolsFromAST(symbolTable, grammar.get());
     ASTCDCompilationUnit cdCompilationUnit = new MC2CDTransformation(
         new GlobalExtensionManagement()).apply(grammar.get());
     return Optional.of(cdCompilationUnit);
+  }
+  
+  public static GlobalScope createGlobalScope(ModelPath modelPath) {
+    final MontiCoreGrammarLanguage mcLanguage = new MontiCoreGrammarLanguage();
+    
+    final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
+    resolvingConfiguration.addTopScopeResolvers(mcLanguage.getResolvingFilters());
+    final CD4AnalysisLanguage cd4AnalysisLanguage = new CD4AnalysisLanguage();
+    resolvingConfiguration.addTopScopeResolvers(cd4AnalysisLanguage.getResolvingFilters());
+    
+    return new GlobalScope(modelPath, Arrays.asList(mcLanguage, cd4AnalysisLanguage), resolvingConfiguration);
   }
 
   public static Optional<ASTCDClass> getCDClass(ASTCDCompilationUnit cdCompilationUnit, String cdClassName) {

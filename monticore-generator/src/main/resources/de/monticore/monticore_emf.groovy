@@ -21,7 +21,7 @@ package de.monticore
 
 
 // M1: configuration object "_configuration" prepared externally
-debug("--------------------------------", LOG_ID)
+Log.debug("--------------------------------", LOG_ID)
 Log.debug("MontiCore", LOG_ID)
 Log.debug(" - eating your models since 2005", LOG_ID)
 Log.debug("--------------------------------", LOG_ID)
@@ -33,16 +33,21 @@ Log.debug("Handcoded argument  : " + _configuration.getHandcodedPathAsStrings(),
 Log.debug("Handcoded files     : " + handcodedPath, LOG_ID)
 
 // ############################################################
+// M0 Incremental Generation, init global scope
+IncrementalChecker.initialize(out)
+InputOutputFilesReporter.resetModelToArtifactMap()
+globalScope = createGlobalScope(modelPath)
+
 // M1: basic setup and initialization; enabling of reporting
-initGlobals(_configuration)
+Reporting.init(out.getAbsolutePath(), reportManagerFactory)
 // ############################################################
 
 // ############################################################
 // the first pass processes all input grammars up to transformation to CD and storage of the resulting CD to disk
 while (grammarIterator.hasNext()) {
   input = grammarIterator.next()
-  if (force || !isUpToDate(input, out, modelPath, templatePath, handcodedPath )) {
-    cleanUp(input)
+  if (force || !IncrementalChecker.isUpToDate(input, out, modelPath, templatePath, handcodedPath )) {
+    IncrementalChecker.cleanUp(input)
 
     // M2: parse grammar
     astGrammar = parseGrammar(input)
@@ -50,24 +55,27 @@ while (grammarIterator.hasNext()) {
     if (astGrammar.isPresent()) {
       astGrammar = astGrammar.get()
 
-      startReportingFor(astGrammar, input)
+      // start reporting
+      grammarName = Names.getQualifiedName(astGrammar.getPackage(), astGrammar.getName())
+      Reporting.on(grammarName)
+      Reporting.reportParseInputFile(input, grammarName)
 
       // M3: populate symbol table
-      astGrammar = createSymbolsFromAST(symbolTable, astGrammar)
+      astGrammar = createSymbolsFromAST(globalScope, astGrammar)
 
       // M4: execute context conditions
-      runGrammarCoCos(astGrammar, symbolTable)
+      runGrammarCoCos(astGrammar, globalScope)
 
       // M7: transform grammar AST into Class Diagram AST
-      astClassDiagram = transformAstGrammarToAstCd(glex, astGrammar, symbolTable, handcodedPath)
+      astClassDiagram = transformAstGrammarToAstCd(glex, astGrammar, globalScope, handcodedPath)
 
-      astClassDiagramWithST = createSymbolsFromAST(symbolTable, astClassDiagram)
+      astClassDiagramWithST = createSymbolsFromAST(globalScope, astClassDiagram)
 
       // write Class Diagram AST to the CD-file (*.cd)
       storeInCdFile(astClassDiagramWithST, out)
 
       // M5 + M6: generate parser and wrapper
-      generateParser(glex, astGrammar, symbolTable, handcodedPath, out)
+      generateParser(glex, astGrammar, globalScope, handcodedPath, out)
 
       // store result of the first pass
       storeCDForGrammar(astGrammar, astClassDiagramWithST)
@@ -83,18 +91,19 @@ while (grammarIterator.hasNext()) {
 // local super grammars etc.
 for (astGrammar in getParsedGrammars()) {
   // make sure to use the right report manager again
-  reportingFor(astGrammar, out)
+  Reporting.on(Names.getQualifiedName(astGrammar.getPackage(), astGrammar.getName()))
+  reportGrammarCd(astGrammar, globalScope, out)
 
   astClassDiagram = getCDOfParsedGrammar(astGrammar)
 
   // M8: decorate Class Diagram AST
-  decorateEmfCd(glex, astClassDiagram, symbolTable, handcodedPath)
+  decorateEmfCd(glex, astClassDiagram, globalScope, handcodedPath)
 
   // M?: generate symbol table
-  generateSymbolTable(astGrammar, symbolTable, astClassDiagram, out, handcodedPath)
+  generateSymbolTable(astGrammar, globalScope, astClassDiagram, out, handcodedPath)
 
   // M9: generate AST classes
-  generateEmfCompatible(glex, symbolTable, astClassDiagram, out, templatePath)
+  generateEmfCompatible(glex, globalScope, astClassDiagram, out, templatePath)
 
   Log.info("Grammar " + astGrammar.getName() + " processed successfully!", LOG_ID)
 

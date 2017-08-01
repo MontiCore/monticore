@@ -28,16 +28,16 @@ debug("Modelpath      : " + _configuration.getModelPathAsStrings(), LOG_ID)
 debug("Output dir     : " + out, LOG_ID)
 debug("Handcoded path : " + _configuration.getHandcodedPathAsStrings(), LOG_ID)
 
+globalScope = createGlobalScope(modelPath)
+
 // Parse grammar
 astGrammars = parseGrammars(grammars)
-glex = new GlobalExtensionManagement()
-symbolTable = initSymbolTable(modelPath)
 
 for (astGrammar in astGrammars) {
 
-  astGrammar = createSymbolsFromAST(symbolTable, astGrammar)
+  astGrammar = createSymbolsFromAST(globalScope, astGrammar)
 
   // Generate parser
-  generateParser(glex, astGrammar, symbolTable, handcodedPath, out)
+  generateParser(glex, astGrammar, globalScope, handcodedPath, out)
 
 }
