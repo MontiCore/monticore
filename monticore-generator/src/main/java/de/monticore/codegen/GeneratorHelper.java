@@ -1316,6 +1316,21 @@ public class GeneratorHelper extends TypesHelper {
   }
   
   /**
+   * Prints the type argument of the list-values ast type otherwise prints the
+   * given type.
+   */
+  public static String printTypeArgumentOfAstList(ASTType type) {
+    if (isGenericTypeWithOneTypeArgument(type, JAVA_LIST)) {
+      Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
+          .getFirstTypeArgumentOfGenericType(type, JAVA_LIST);
+      if (typeArgument.isPresent()) {
+        return printSimpleRefType(typeArgument.get());
+      }
+    }
+    return printSimpleRefType(type);
+  }
+  
+  /**
    * Checks if the node is part of the current language (or one of its super
    * languages) or if it is external (e.g. String, List, etc.)
    * 
