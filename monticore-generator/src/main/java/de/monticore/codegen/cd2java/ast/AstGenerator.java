@@ -80,7 +80,7 @@ public class AstGenerator {
       if (astHelper.isAstClass(clazz)) {
         generator.generate("ast.AstClass", filePath, clazz, clazz, astHelper.getASTBuilder(clazz));
       }
-      else if (!AstGeneratorHelper.isBuilderClass(clazz)) {
+      else if (!AstGeneratorHelper.isBuilderClass(astClassDiagram.getCDDefinition(), clazz)) {
         generator.generate("ast.Class", filePath, clazz);
       }
     }

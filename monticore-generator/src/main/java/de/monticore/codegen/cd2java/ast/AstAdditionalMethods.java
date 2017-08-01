@@ -44,17 +44,11 @@ public enum AstAdditionalMethods {
   // %s the ast-class name as return and input parameter type
   deepCloneWithOrder("public %s deepClone(%s result);"),
   
-  get_Children("public java.util.Collection<de.monticore.ast.ASTNode> get_Children();"),
-  
-  remove_Child("public void remove_Child(de.monticore.ast.ASTNode child);"),
-  
   // %s the ast-class name as return type
   _construct("protected %s _construct();"),
   
   // %s the language specific visitor-type as full-qualified-name
-  accept("public void accept(%s visitor);"),
-  
-  getBuilder("public static Builder getBuilder();");
+  accept("public void accept(%s visitor);");
   
   private String methodDeclaration;
   

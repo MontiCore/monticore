@@ -130,6 +130,8 @@ public class CdEmfDecorator extends CdDecorator {
     
     addNodeFactoryClass(cdCompilationUnit, astNotAbstractClasses, astHelper);
     
+    addMillClass(cdCompilationUnit, nativeClasses, astHelper);
+    
     // Check if handwritten ast types exist
     transformCdTypeNamesForHWTypes(cdCompilationUnit);
     

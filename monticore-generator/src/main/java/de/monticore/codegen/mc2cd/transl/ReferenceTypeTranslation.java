@@ -97,7 +97,7 @@ public class ReferenceTypeTranslation implements
   private ASTType determineTypeToSetForAttributeInAST(ASTGenericType astGenericType,
       ASTMCGrammar astMCGrammar) {
     Optional<MCProdSymbol> ruleSymbol = TransformationHelper
-        .resolveAstRuleType(astGenericType);
+        .resolveAstRuleType(astMCGrammar, astGenericType);
     if (!ruleSymbol.isPresent()) {
       return determineTypeToSet(astGenericType.getTypeName(), astMCGrammar);
     }

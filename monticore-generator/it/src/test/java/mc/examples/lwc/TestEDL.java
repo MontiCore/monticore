@@ -34,10 +34,7 @@ import com.google.common.collect.Lists;
 import mc.GeneratorIntegrationsTest;
 import mc.examples.lwc.edl.edl._ast.ASTEDLCompilationUnit;
 import mc.examples.lwc.edl.edl._ast.ASTEntity;
-import mc.examples.lwc.edl.edl._ast.ASTIntLiteral;
-import mc.examples.lwc.edl.edl._ast.ASTQualifiedName;
-import mc.examples.lwc.edl.edl._ast.ASTReferenceType;
-import mc.examples.lwc.edl.edl._ast.ASTStringLiteral;
+import mc.examples.lwc.edl.edl._ast.EDLMill;
 import mc.examples.lwc.edl.edl._parser.EDLParser;
 
 public class TestEDL extends GeneratorIntegrationsTest {
@@ -58,23 +55,23 @@ public class TestEDL extends GeneratorIntegrationsTest {
     
     assertEquals(entity.getPropertys().get(0).getName(), "brand");
     assertTrue(entity.getPropertys().get(0).getType()
-        .deepEquals(ASTStringLiteral.getBuilder().build()));
+        .deepEquals(EDLMill.stringLiteralBuilder().build()));
     
     assertEquals(entity.getPropertys().get(1).getName(), "model");
     assertTrue(entity.getPropertys().get(1).getType()
-        .deepEquals(ASTStringLiteral.getBuilder().build()));
+        .deepEquals(EDLMill.stringLiteralBuilder().build()));
     
     assertEquals(entity.getPropertys().get(2).getName(), "price");
     assertTrue(entity.getPropertys().get(2).getType()
-        .deepEquals(ASTIntLiteral.getBuilder().build()));
+        .deepEquals(EDLMill.intLiteralBuilder().build()));
     
     assertEquals(entity.getPropertys().get(3).getName(), "age");
     assertTrue(entity.getPropertys().get(3).getType()
-        .deepEquals(ASTIntLiteral.getBuilder().build()));
+        .deepEquals(EDLMill.intLiteralBuilder().build()));
     
     assertEquals(entity.getPropertys().get(4).getName(), "doors");
     assertTrue(entity.getPropertys().get(4).getType()
-        .deepEquals(ASTIntLiteral.getBuilder().build()));
+        .deepEquals(EDLMill.intLiteralBuilder().build()));
     
     assertEquals(entity.getPropertys().get(5).getName(), "myself");
     assertTrue(entity
@@ -82,10 +79,9 @@ public class TestEDL extends GeneratorIntegrationsTest {
         .get(5)
         .getType()
         .deepEquals(
-            ASTReferenceType
-                .getBuilder()
+            EDLMill.referenceTypeBuilder()
                 .qualifiedName(
-                    ASTQualifiedName.getBuilder().names(Lists.newArrayList("Car")).build()).build()));
+                    EDLMill.qualifiedNameBuilder().names(Lists.newArrayList("Car")).build()).build()));
     
     assertEquals(entity.getPropertys().get(6).getName(), "owner");
     assertTrue(entity
@@ -93,10 +89,9 @@ public class TestEDL extends GeneratorIntegrationsTest {
         .get(6)
         .getType()
         .deepEquals(
-            ASTReferenceType
-                .getBuilder()
+            EDLMill.referenceTypeBuilder()
                 .qualifiedName(
-                    ASTQualifiedName.getBuilder().names(Lists.newArrayList("lwc", "edl", "Person"))
+                    EDLMill.qualifiedNameBuilder().names(Lists.newArrayList("lwc", "edl", "Person"))
                         .build()).build()));
     
   }

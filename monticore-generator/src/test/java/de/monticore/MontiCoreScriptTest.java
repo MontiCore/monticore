@@ -151,7 +151,7 @@ public class MontiCoreScriptTest {
     
     mc.decorateCd(glex, cdCompilationUnit, symbolTable, targetPath);
     // Added Builder classes to the each not list class
-    assertEquals(18, cdDefinition.getCDClasses().size());
+    assertEquals(19, cdDefinition.getCDClasses().size());
     
     // Check if there are all additional methods defined in the given CD class
     List<String> methods = Lists.newArrayList();

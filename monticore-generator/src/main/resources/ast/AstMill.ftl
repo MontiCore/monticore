@@ -30,12 +30,23 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
+${tc.signature("ast", "astImports")}
+<#assign genHelper = glex.getGlobalVar("astHelper")>
+  
+<#-- Copyright -->
+${tc.defineHookPoint("JavaCopyright")}
 
-${tc.signature("ast", "name")}
-    <#assign genHelper = glex.getGlobalVar("astHelper")>
-    <#assign attributeName = genHelper.getJavaConformName(ast.getName())>
-    <#assign typeHelper = tc.instantiate("de.monticore.types.TypesHelper")>
-    public ${name} ${attributeName}(${typeHelper.printSimpleRefType(ast.getType())} ${attributeName}) {
-      this.${attributeName} = ${attributeName};
-      return this;
-    }
+<#-- set package -->
+package ${genHelper.getAstPackage()};
+
+<#list astImports as astImport>
+import ${astImport};
+</#list>
+
+public class ${ast.getName()} {
+
+<#list ast.getCDMethods() as method>
+  ${tc.includeArgs("ast.ClassMethod", [method, ast])}
+</#list>
+
+}
