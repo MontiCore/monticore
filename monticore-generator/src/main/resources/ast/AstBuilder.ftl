@@ -37,24 +37,24 @@ ${tc.signature("ast", "astType")}
    */
  
   <#assign abstract = "">
-  <#if (astType.getSuperclass().isPresent() && genHelper.isSuperClassExternal(astType))
-   || (astType.getModifier().isPresent() && astType.getModifier().get().isAbstract() && !genHelper.isSupertypeOfHWType(astType.getName()))>
+  <#if genHelper.isBuilderClassAbstarct(astType)>
     <#assign abstract = "abstract">
   </#if>
   <#assign extends = "">
   <#if astType.getSuperclass().isPresent() && !genHelper.isSuperClassExternal(astType)>
-    <#assign extends = "extends " + genHelper.getSuperClassForBuilder(astType) + ".Builder">
+    <#assign extends = "extends " + genHelper.getSuperClassName(astType) + "." + genHelper.getSuperClassForBuilder(astType) + "Builder">
   </#if>
-  public ${abstract} static class Builder ${extends} {
+  public ${abstract} static class ${ast.getName()} ${extends} {
   <#list astType.getCDAttributes() as attribute>
     <#if !genHelper.isInherited(attribute) && !genHelper.isAdditionalAttribute(attribute)>
     ${tc.include("ast.BuilderAttribute", attribute)}
     </#if>
   </#list>
   <#assign typeName = genHelper.getPlainName(astType)>
+ 
+    protected ${ast.getName()}() {};
+
   <#if abstract?has_content>
-    protected Builder() {};
-    
     public abstract ${typeName} build();
   <#else>
     public ${typeName} build() {
@@ -63,6 +63,7 @@ ${tc.signature("ast", "astType")}
     }
     </#if>
     
-    ${tc.include("ast.AstBuilderAttributeSetter", genHelper.getNativeCDAttributes(astType))}
-    
+    <#list genHelper.getNativeCDAttributes(astType) as attribute>
+      ${tc.includeArgs("ast.AstBuilderAttributeSetter", [attribute, ast.getName()])}
+    </#list> 
   }    

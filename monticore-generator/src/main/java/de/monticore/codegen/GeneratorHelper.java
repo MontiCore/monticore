@@ -1059,7 +1059,7 @@ public class GeneratorHelper extends TypesHelper {
     return clazz.printSuperClass();
   }
   
-  public static String getSuperClassForBuilder(ASTCDClass clazz) {
+  public static String getSuperClassName(ASTCDClass clazz) {
     if (!clazz.getSuperclass().isPresent()) {
       return "";
     }
@@ -1252,10 +1252,6 @@ public class GeneratorHelper extends TypesHelper {
     return convertTypeCd2Java(
         (CDTypeSymbolReference) type.getActualTypeArguments().get(0).getType(),
         AST_DOT_PACKAGE_SUFFIX_DOT);
-  }
-  
-  public static boolean isBuilderClass(ASTCDClass clazz) {
-    return clazz.getName().startsWith("Builder_");
   }
   
   public static String getPlainGetter(ASTCDAttribute ast) {

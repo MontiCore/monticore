@@ -24,13 +24,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import mc.GeneratorIntegrationsTest;
-import mc.feature.featuredsl._ast.ASTTransition;
-import mc.feature.featuredsl._ast.FeatureDSLNodeFactory;
-
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
+
+import mc.GeneratorIntegrationsTest;
+import mc.feature.featuredsl._ast.ASTTransition;
+import mc.feature.featuredsl._ast.FeatureDSLMill;
+import mc.feature.featuredsl._ast.FeatureDSLNodeFactory;
 
 /**
  * TODO: Write me!
@@ -48,7 +49,7 @@ public class ASTBuilderTest extends GeneratorIntegrationsTest {
     String to = "toAttr";
     
     // Create ASTTransition by Builder
-    ASTTransition transition = ASTTransition.getBuilder().
+    ASTTransition transition = FeatureDSLMill.transitionBuilder().
         from(from).
         activate(activate).
         to(to).build();

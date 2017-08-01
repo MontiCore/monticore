@@ -52,9 +52,7 @@ public enum AstAdditionalMethods {
   _construct("protected %s _construct();"),
   
   // %s the language specific visitor-type as full-qualified-name
-  accept("public void accept(%s visitor);"),
-  
-  getBuilder("public static Builder getBuilder();");
+  accept("public void accept(%s visitor);");
   
   private String methodDeclaration;
   
