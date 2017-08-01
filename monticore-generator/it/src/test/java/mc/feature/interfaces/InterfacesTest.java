@@ -43,7 +43,6 @@ public class InterfacesTest extends GeneratorIntegrationsTest {
     assertTrue(ast.get() instanceof ASTA);
     ASTA astA = ast.get();
     assertNotNull(astA.getB());
-    assertTrue(astA.get_Children().size()==1);
   }
   
 }

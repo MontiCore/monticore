@@ -19,6 +19,7 @@
 
 package de.monticore.ast;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -200,16 +201,26 @@ public interface ASTNode {
  
   /**
    * @returns a collection of all child nodes of this node
+   * 
+   * Use new additional methods for list-values attributes instead
+   * 
    */
-  Collection<ASTNode> get_Children();
+  @Deprecated
+  default Collection<ASTNode> get_Children() {
+    return new ArrayList<ASTNode>();
+  }
   
   /**
    * This method removes the reference from this node to a child node, no matter
    * in which attribute it is stored.
    * 
    * @param child the target node of the reference to be removed
+   * 
+   * Use new additional methods for list-values attributes instead
+   * 
    */
-  void remove_Child(ASTNode child);
+  @Deprecated
+  default void remove_Child(ASTNode child) {}
   
   /**
    * Sets the enclosing scope of this ast node.

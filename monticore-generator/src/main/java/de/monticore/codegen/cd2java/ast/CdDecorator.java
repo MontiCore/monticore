@@ -276,12 +276,6 @@ public class CdDecorator {
     replaceMethodBodyTemplate(clazz, AstAdditionalMethods.equalsWithComments.getDeclaration(),
         new TemplateHookPoint("ast.additionalmethods.EqualsWithComments"));
         
-    replaceMethodBodyTemplate(clazz, AstAdditionalMethods.get_Children.getDeclaration(),
-        new TemplateHookPoint("ast.additionalmethods.GetChildren", clazz, symbol.get()));
-        
-    replaceMethodBodyTemplate(clazz, AstAdditionalMethods.remove_Child.getDeclaration(),
-        new TemplateHookPoint("ast.additionalmethods.RemoveChild", clazz, symbol.get()));
-        
     String stringToParse = String.format(AstAdditionalMethods.deepClone.getDeclaration(),
         plainClassName);
     replaceMethodBodyTemplate(clazz, stringToParse,
