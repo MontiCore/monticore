@@ -139,21 +139,25 @@
     
   </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>de.monticore.mojo</groupId>
-        <artifactId>monticore-maven-plugin</artifactId>
-      </plugin>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>de.monticore.mojo</groupId>
+				<artifactId>monticore-maven-plugin</artifactId>
+				<configuration>
+					<skip>false</skip>
+					<templatePaths>${basedir}/src/test/resources/</templatePaths>
+				</configuration>
+			</plugin>
 
-      <plugin>
-        <artifactId>maven-invoker-plugin</artifactId>
-      </plugin>
+			<plugin>
+				<artifactId>maven-invoker-plugin</artifactId>
+			</plugin>
 
-      <plugin>
-        <artifactId>maven-source-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
+			<plugin>
+				<artifactId>maven-source-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>
