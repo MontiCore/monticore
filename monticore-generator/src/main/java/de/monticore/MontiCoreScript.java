@@ -40,14 +40,12 @@ import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
-import de.monticore.generating.templateengine.reporting.reporter.InputOutputFilesReporter;
 import de.monticore.grammar.cocos.GrammarCoCos;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MontiCoreGrammarLanguage;
 import de.monticore.grammar.symboltable.MontiCoreGrammarSymbolTableCreator;
-import de.monticore.incremental.IncrementalChecker;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
@@ -157,7 +155,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * grammar files to be parsed
    * @return list of all successfully created grammar ASTs
    */
-  public List<ASTMCGrammar> parseGrammars(IterablePath grammarPath) {
+   public List<ASTMCGrammar> parseGrammars(IterablePath grammarPath) {
     List<ASTMCGrammar> result = Lists.newArrayList();
 
     Iterator<Path> grammarPathIt = grammarPath.getResolvedPaths();
@@ -177,23 +175,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
   protected MontiCoreConfiguration __configuration;
 
-  protected Iterator<Path> grammarIterator;
 
-  protected GlobalExtensionManagement glex;
-
-  protected GlobalScope symbolTable;
-
-  protected Map<ASTMCGrammar, ASTCDCompilationUnit> firstPassGrammars;
-
-  public void initGlobals(MontiCoreConfiguration configuration) {
-    this.__configuration = configuration;
-    IncrementalChecker.initialize(configuration.getOut());
-    enableReporting();
-    this.grammarIterator = configuration.getGrammars().getResolvedPaths();
-    this.glex = new GlobalExtensionManagement();
-    this.symbolTable = initSymbolTable(configuration.getModelPath());
-    this.firstPassGrammars = new LinkedHashMap<>();
-  }
+  protected Map<ASTMCGrammar, ASTCDCompilationUnit> firstPassGrammars = new LinkedHashMap<>();
 
   protected void storeCDForGrammar(ASTMCGrammar grammar, ASTCDCompilationUnit cdAst) {
     this.firstPassGrammars.put(grammar, cdAst);
@@ -214,7 +197,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param symbolTable
    * @param outputDirectory output directory for generated Java code
    */
-  public void generateParser(GlobalExtensionManagement glex, ASTMCGrammar grammar, GlobalScope symbolTable,
+  public void generateParser(GlobalExtensionManagement glex, ASTMCGrammar grammar,
+      GlobalScope symbolTable,
       IterablePath handcodedPath, File outputDirectory) {
     Log.errorIfNull(
         grammar,
@@ -247,7 +231,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param outputDirectory
    * @param templatePath
    */
-  public void generateTypeResolvers(GlobalExtensionManagement glex, GlobalScope globalScope,
+  public void generateTypeResolvers(GlobalExtensionManagement glex,
+      GlobalScope globalScope,
       ASTCDCompilationUnit astClassDiagram, File outputDirectory, IterablePath templatePath) {
     VisitorGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
     TypeResolverGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
@@ -331,15 +316,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return result;
   }
 
-  public GlobalScope initSymbolTable(ModelPath modelPath) {
-    final MontiCoreGrammarLanguage mcLanguage = new MontiCoreGrammarLanguage();
-
-    final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addTopScopeResolvers(mcLanguage.getResolvingFilters());
-    resolvingConfiguration.addTopScopeResolvers(cd4AnalysisLanguage.getResolvingFilters());
-
-    return new GlobalScope(modelPath, Arrays.asList(mcLanguage, cd4AnalysisLanguage), resolvingConfiguration);
-  }
+  
 
   /**
    * TODO: Write me!
@@ -397,16 +374,17 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param astCd - the top node of the Cd4Analysis AST
    * @param outputDirectory - output directory
    */
-  public void reportGrammarCd(ASTCDCompilationUnit astCd, File outputDirectory) {
+  public void reportGrammarCd(ASTMCGrammar astCd, GlobalScope globalScope, File outputDirectory) {
+    ASTCDCompilationUnit cd = getCDOfParsedGrammar(astCd);
     // we also store the class diagram fully qualified such that we can later on
     // resolve it properly for the generation of sub languages
     String reportSubDir = Joiners.DOT.join(astCd.getPackage());
     reportSubDir = reportSubDir.isEmpty()
-        ? astCd.getCDDefinition().getName()
-        : reportSubDir.concat(".").concat(astCd.getCDDefinition().getName());
+        ? cd.getCDDefinition().getName()
+        : reportSubDir.concat(".").concat(cd.getCDDefinition().getName());
 
     // Write reporting CD
-    ASTCDCompilationUnit astCdForReporting = new AstGeneratorHelper(astCd, symbolTable).getASTCDForReporting();
+    ASTCDCompilationUnit astCdForReporting = new AstGeneratorHelper(cd, globalScope).getASTCDForReporting();
     // No star imports in reporting CDs
     astCdForReporting.getImportStatements().forEach(s -> s.setStar(false));
     GeneratorHelper.prettyPrintAstCd(astCdForReporting, outputDirectory, ReportingConstants.REPORTING_DIR
@@ -470,7 +448,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param astClassDiagram - class diagram AST
    * @param outputDirectory TODO
    */
-  public void generateEmfCompatible(GlobalExtensionManagement glex, GlobalScope globalScope,
+  public void generateEmfCompatible(GlobalExtensionManagement glex,
+      GlobalScope globalScope,
       ASTCDCompilationUnit astClassDiagram, File outputDirectory, IterablePath templatePath) {
     boolean emfCompatible = true;
     AstGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory, templatePath,
@@ -496,54 +475,15 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     }
     return new CdDecorator(glex, symbolTable, targetPath);
   }
-
-
-
-  // #######################
-  // log functions
-  // #######################
-
-  /**
-   * The global reporting initialization. This method configures reporting
-   * (i.e., configuring the output directory and all active reporters).
-   *
-   */
-  public void enableReporting() {
-    // TODO AHo: document!
-    InputOutputFilesReporter.resetModelToArtifactMap();
-    // ##
-    MontiCoreReports reports = new MontiCoreReports(__configuration.getOut().getAbsolutePath(),
-        __configuration.getHandcodedPath(), __configuration.getTemplatePath());
-    Reporting.init(__configuration.getOut().getAbsolutePath(), reports);
-  }
-
-  /**
-   * Initializes reporting for a particular model (in this case grammar). This
-   * method also serves as an initial reporting hook for reporting the parsing
-   * of the main model (grammar) file.
-   *
-   * @param grammar for which to report
-   * @param grammarInput path to the artifact containing the grammar
-   * @return whether reporting is activated
-   */
-  public boolean startReportingFor(ASTMCGrammar grammar, Path grammarInput) {
-    String fqn = Names.getQualifiedName(grammar.getPackage(), grammar.getName());
-    boolean result = Reporting.on(fqn);
-    Reporting.reportParseInputFile(grammarInput, fqn);
-    return result;
-  }
-
-  /**
-   * Reporting is done per model (in this case grammar). This method provides
-   * the switch to determine for which model (grammar) reporting should occur.
-   *
-   * @param grammar to report for after invokation of this method
-   * @return
-   */
-  public boolean reportingFor(ASTMCGrammar grammar, File outputDirectory) {
-    reportGrammarCd(getCDOfParsedGrammar(grammar), outputDirectory);
-    String fqn = Names.getQualifiedName(grammar.getPackage(), grammar.getName());
-    return Reporting.on(fqn);
+  
+  public GlobalScope createGlobalScope(ModelPath modelPath) {
+    final MontiCoreGrammarLanguage mcLanguage = new MontiCoreGrammarLanguage();
+    
+    final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
+    resolvingConfiguration.addTopScopeResolvers(mcLanguage.getResolvingFilters());
+    resolvingConfiguration.addTopScopeResolvers(cd4AnalysisLanguage.getResolvingFilters());
+    
+    return new GlobalScope(modelPath, Arrays.asList(mcLanguage, cd4AnalysisLanguage), resolvingConfiguration);
   }
 
   /**
@@ -572,12 +512,16 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         "de.monticore.languages.grammar",
         "de.se_rwth.commons.logging",
         "de.monticore.generating.templateengine.reporting",
-        "de.se_rwth.commons"};
+        "de.se_rwth.commons",
+        "de.monticore.generating.templateengine.reporting.reporter",
+        "de.monticore.incremental"};
 
     public static final String[] DEFAULT_STATIC_IMPORTS = {
         "de.se_rwth.commons.logging.Log",
         "de.monticore.generating.templateengine.reporting.Reporting",
-        "de.monticore.incremental.IncrementalChecker"};
+        "de.monticore.incremental.IncrementalChecker",
+        "de.monticore.generating.templateengine.reporting.reporter.InputOutputFilesReporter",
+        "de.se_rwth.commons.Names"};
 
 
 
@@ -617,12 +561,15 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         builder.addVariable(MontiCoreConfiguration.Options.TEMPLATEPATH.toString(),
             mcConfig.getTemplatePath());
         builder.addVariable("LOG_ID", LOG_ID);
+        builder.addVariable("glex", new GlobalExtensionManagement());
+        builder.addVariable("grammarIterator", mcConfig.getGrammars().getResolvedPaths());
+        builder.addVariable("reportManagerFactory", new MontiCoreReports(mcConfig.getOut().getAbsolutePath(),
+            mcConfig.getHandcodedPath(), mcConfig.getTemplatePath()));
       }
 
       GroovyInterpreter g = builder.build();
       g.evaluate(script);
     }
-
   }
 
 }

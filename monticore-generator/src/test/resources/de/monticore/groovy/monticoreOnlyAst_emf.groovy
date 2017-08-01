@@ -30,10 +30,7 @@ debug("Output dir          : " + out, LOG_ID)
 debug("Handcoded argument  : " + _configuration.getHandcodedPathAsStrings(), LOG_ID)
 debug("Handcoded files     : " + handcodedPath, LOG_ID)
 
-grammarIterator = grammars.getResolvedPaths()
-// Create object for managing hook points, features and global variables
-glex = new GlobalExtensionManagement()
-symbolTable = initSymbolTable(modelPath)
+globalScope = createGlobalScope(modelPath)
 
 while (grammarIterator.hasNext()) {
   // Parse grammar
@@ -42,20 +39,20 @@ while (grammarIterator.hasNext()) {
   if (astGrammar.isPresent()) {
     astGrammar = astGrammar.get();
 
-    astGrammar = createSymbolsFromAST(symbolTable, astGrammar)
+    astGrammar = createSymbolsFromAST(globalScope, astGrammar)
 
     // Transform AST-Grammar -> AST-CD
-    astClassDiagram = transformAstGrammarToAstCd(glex, astGrammar, symbolTable, handcodedPath)
+    astClassDiagram = transformAstGrammarToAstCd(glex, astGrammar, globalScope, handcodedPath)
 
-    astClassDiagramWithST = createSymbolsFromAST(symbolTable, astClassDiagram)
+    astClassDiagramWithST = createSymbolsFromAST(globalScope, astClassDiagram)
 
     // Writes Class Diagram AST to the CD-file (*.cd)
     storeInCdFile(astClassDiagramWithST, out)
 
     // Decorate AST-CD
-    decorateEmfCd(glex, astClassDiagramWithST, symbolTable, handcodedPath)
+    decorateEmfCd(glex, astClassDiagramWithST, globalScope, handcodedPath)
 
     // Generate AST files
-    generateEmfCompatible(glex, symbolTable, astClassDiagramWithST, out, templatePath)
+    generateEmfCompatible(glex, globalScope, astClassDiagramWithST, out, templatePath)
   }
 }
