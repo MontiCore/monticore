@@ -81,6 +81,21 @@ component grammar MCLiterals extends de.monticore.MCBasics {
     }
   ;
   
+   ast NatLiteral = 
+    method public int getValue() {
+      return de.monticore.MCLiteralsDecoder.decodeInt(getSource());
+    }
+  ;
+
+  ast SignedNatLiteral = 
+    method public int getValue() {
+      if (negative) {
+        return - de.monticore.MCLiteralsDecoder.decodeInt(getSource());
+      }
+      return de.monticore.MCLiteralsDecoder.decodeInt(getSource());
+    }
+  ;
+ 
   ast LongLiteral = 
     method public long getValue() {
       return de.monticore.MCLiteralsDecoder.decodeLong(getSource());
@@ -201,6 +216,18 @@ component grammar MCLiterals extends de.monticore.MCBasics {
   SignedIntLiteral implements SignedNumericLiteral =
     (negative:["-"])? (source:DecimalIntegerLiteral | source:HexIntegerLiteral | source:OctalIntegerLiteral | source:BinaryIntegerLiteral);
 
+
+  /** ASTNatLiteral represents a positive Decimal number.
+        @attribute source String-representation (including '"').
+    */
+  NatLiteral implements NumericLiteral =
+    source:DecimalIntegerLiteral;
+
+  /** ASTSignedNatLiteral represents a positive or negative Decimal number.
+        @attribute source String-representation (including '"').
+    */
+  SignedNatLiteral implements SignedNumericLiteral =
+     (negative:["-"])? source:DecimalIntegerLiteral;
 
   /** ASTLongLiteral represents a positive Long number.
         @attribute source String-representation (including '"').
