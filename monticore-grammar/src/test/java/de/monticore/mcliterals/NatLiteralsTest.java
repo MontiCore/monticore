@@ -26,13 +26,20 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.util.Optional;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.monticore.mcliterals._ast.ASTNatLiteral;
 import de.monticore.testmcliterals._parser.TestMCLiteralsParser;
+import de.se_rwth.commons.logging.Log;
 
 public class NatLiteralsTest {
   
+  @BeforeClass
+  public static void disableFailQuick() {
+    Log.enableFailQuick(false);
+  }
+
   private void checkNatLiteral(int i, String s) throws IOException {
     TestMCLiteralsParser parser = new TestMCLiteralsParser();
     Optional<ASTNatLiteral> ast = parser.parseString_NatLiteral(s);
@@ -40,6 +47,12 @@ public class NatLiteralsTest {
     assertEquals(i, ast.get().getValue());
   }
   
+  private void negativeNatLiteral(String s) throws IOException {
+    TestMCLiteralsParser parser = new TestMCLiteralsParser();
+    parser.parseString_NatLiteral(s);
+    assertTrue(parser.hasErrors());    
+  }
+
   @Test
   public void testDoubleLiterals() {
     try {
@@ -48,6 +61,17 @@ public class NatLiteralsTest {
       checkNatLiteral(123, "123");
       checkNatLiteral(10, "10");
       checkNatLiteral(5, "5");
+    }
+    catch (IOException e) {
+      fail(e.getMessage());
+    }
+  }
+  
+  @Test
+  public void testNegativeNatLiteral() throws IOException {
+    try {
+      negativeNatLiteral("0x5");
+      negativeNatLiteral("-5");
     }
     catch (IOException e) {
       fail(e.getMessage());
