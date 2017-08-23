@@ -189,6 +189,12 @@ public class AstGeneratorHelper extends GeneratorHelper {
     return GeneratorHelper.getPlainName(type).substring(GeneratorHelper.AST_PREFIX.length());
   }
   
+  public static String getASTClassNameWithoutPrefix(String type) {
+    return type.startsWith(GeneratorHelper.AST_PREFIX)
+        ? type.substring(GeneratorHelper.AST_PREFIX.length())
+        : type;
+  }
+  
   public static boolean isBuilderClassAbstarct(ASTCDClass astType) {
     return (astType.getSuperclass().isPresent() && isSuperClassExternal(astType))
         || (astType.getModifier().isPresent() && astType.getModifier().get().isAbstract()

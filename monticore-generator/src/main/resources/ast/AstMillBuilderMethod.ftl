@@ -30,38 +30,11 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
-${tc.signature("ast", "astImports")}
-<#assign genHelper = glex.getGlobalVar("astHelper")>
-  
-<#-- Copyright -->
-${tc.defineHookPoint("JavaCopyright")}
-
-<#-- set package -->
-package ${genHelper.getAstPackage()};
-
-<#list astImports as astImport>
-import ${astImport};
-</#list>
-
-public class ${ast.getName()} {
-
-  private static ${ast.getName()} getMill() {
-    if (mill == null) {
-      mill = new ${ast.getName()}();
-    }
-    return mill;
-  }
-  
-  protected static ${ast.getName()} mill = null;
-
-<#list ast.getCDAttributes() as attribute>
- ${tc.includeArgs("ast.Attribute", [attribute, ast])}
-</#list>
-
-  protected ${ast.getName()} () {}
-
-<#list ast.getCDMethods() as method>
- ${tc.includeArgs("ast.ClassMethod", [method, ast])}
-</#list>
-
-}
+${tc.signature("ast", "astNodeName")}
+     {
+       if (mill${astNodeName} == null) {
+         mill${astNodeName} = getMill();
+       }
+       
+       return mill${astNodeName}.do${astNodeName}Builder();
+     }

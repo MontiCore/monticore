@@ -654,8 +654,13 @@ public class CdDecorator {
   protected void addMillClass(ASTCDCompilationUnit cdCompilationUnit,
       List<ASTCDClass> nativeClasses, AstGeneratorHelper astHelper) {
     
+    // Add factory-attributes for all ast classes
+    Set<String> astClasses = new LinkedHashSet<>();
+    nativeClasses.stream()
+        .forEach(e -> astClasses.add(GeneratorHelper.getPlainName(e)));
+    
     ASTCDClass millClass = createMillClass(cdCompilationUnit, nativeClasses,
-        astHelper);
+        astHelper, astClasses);
     
     String packageName = Names.getQualifiedName(cdCompilationUnit.getPackage());
     String importPrefix = "static " + (packageName.isEmpty() ? "" : packageName + ".")
@@ -674,7 +679,7 @@ public class CdDecorator {
   }
   
   protected ASTCDClass createMillClass(ASTCDCompilationUnit cdCompilationUnit,
-      List<ASTCDClass> nativeClasses, AstGeneratorHelper astHelper) {
+      List<ASTCDClass> nativeClasses, AstGeneratorHelper astHelper, Set<String> astClasses) {
     ASTCDDefinition cdDef = cdCompilationUnit.getCDDefinition();
     
     ASTCDClass millClass = CD4AnalysisNodeFactory.createASTCDClass();
@@ -688,6 +693,12 @@ public class CdDecorator {
     }
     millClass.setName(millClassName);
     
+    for (String clazz : astClasses) {
+      String toParse = "protected static " + millClassName + " mill"
+          + AstGeneratorHelper.getASTClassNameWithoutPrefix(clazz) + " = null;";
+      cdTransformation.addCdAttributeUsingDefinition(millClass, toParse);
+    }
+    
     // Add builder-creating methods
     for (ASTCDClass clazz : nativeClasses) {
       if (AstGeneratorHelper.isBuilderClassAbstarct(clazz)
@@ -698,6 +709,12 @@ public class CdDecorator {
       String toParse = "public static " + className + "Builder "
           + StringTransformations.uncapitalize(className)
           + AstGeneratorHelper.AST_BUILDER + "() ;";
+      
+      HookPoint methodBody = new TemplateHookPoint("ast.AstMillBuilderMethod", clazz, className);
+      replaceMethodBodyTemplate(millClass, toParse, methodBody);
+      
+      toParse = "protected " + className + "Builder do"
+          + className + AstGeneratorHelper.AST_BUILDER + "() ;";
       replaceMethodBodyTemplate(millClass, toParse,
           new StringHookPoint("return new " + className + "Builder();\n"));
     }
