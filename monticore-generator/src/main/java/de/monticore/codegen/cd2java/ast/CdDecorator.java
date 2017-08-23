@@ -706,15 +706,16 @@ public class CdDecorator {
         continue;
       }
       String className = AstGeneratorHelper.getASTClassNameWithoutPrefix(clazz);
+      String methodName = StringTransformations.uncapitalize(className);
       String toParse = "public static " + className + "Builder "
-          + StringTransformations.uncapitalize(className)
+          + methodName
           + AstGeneratorHelper.AST_BUILDER + "() ;";
       
-      HookPoint methodBody = new TemplateHookPoint("ast.AstMillBuilderMethod", clazz, className);
+      HookPoint methodBody = new TemplateHookPoint("ast.AstMillBuilderMethod", clazz, className, methodName);
       replaceMethodBodyTemplate(millClass, toParse, methodBody);
       
-      toParse = "protected " + className + "Builder do"
-          + className + AstGeneratorHelper.AST_BUILDER + "() ;";
+      toParse = "protected " + className + "Builder _"
+          + methodName + AstGeneratorHelper.AST_BUILDER + "() ;";
       replaceMethodBodyTemplate(millClass, toParse,
           new StringHookPoint("return new " + className + "Builder();\n"));
     }

@@ -30,11 +30,11 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
-${tc.signature("ast", "astNodeName")}
+${tc.signature("ast", "astNodeName", "methodName")}
      {
        if (mill${astNodeName} == null) {
          mill${astNodeName} = getMill();
        }
        
-       return mill${astNodeName}.do${astNodeName}Builder();
+       return mill${astNodeName}._${methodName}Builder();
      }
