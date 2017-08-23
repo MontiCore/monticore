@@ -26,9 +26,10 @@ import de.monticore.ast.Comment;
 
 
 /**
- * Class represents a comment (contains the comment and the start- and end-position)
+ * This is the workaround for the ast-keyword bootstrap problem.
  *
  */
+//TODO: handle this after the next releasing of MontiCore (4.5.4)
 public class CommentExt extends Comment {
   
   public CommentExt() {}
