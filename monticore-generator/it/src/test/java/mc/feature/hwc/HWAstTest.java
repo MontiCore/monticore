@@ -65,4 +65,15 @@ public class HWAstTest extends GeneratorIntegrationsTest {
     ASTTransition b = StatechartDSLNodeFactory.createASTTransition();
     assertNull(b.getFrom());
   }
+  
+  @Test
+  public void testHWAstMill() {
+    // Call the method of the HW mill class
+    ASTStatechart a = StatechartDSLNodeFactory.createASTStatechart();
+    assertEquals("default", a.getName());
+    
+    // Call the method of the generated node factory
+    ASTTransition b = StatechartDSLNodeFactory.createASTTransition();
+    assertNull(b.getFrom());
+  }
 }
