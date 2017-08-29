@@ -47,14 +47,14 @@ public class NatLiteralsTest {
     assertEquals(i, ast.get().getValue());
   }
   
-  private void negativeNatLiteral(String s) throws IOException {
+  private void checkFailingNatLiteral(String s) throws IOException {
     TestMCLiteralsParser parser = new TestMCLiteralsParser();
     parser.parseString_NatLiteral(s);
     assertTrue(parser.hasErrors());    
   }
 
   @Test
-  public void testDoubleLiterals() {
+  public void testNatLiterals() {
     try {
       // decimal number
       checkNatLiteral(0, "0");
@@ -68,10 +68,10 @@ public class NatLiteralsTest {
   }
   
   @Test
-  public void testNegativeNatLiteral() throws IOException {
+  public void testFailingNatLiterals() throws IOException {
     try {
-      negativeNatLiteral("0x5");
-      negativeNatLiteral("-5");
+      checkFailingNatLiteral("0x5");
+      checkFailingNatLiteral("-5");
     }
     catch (IOException e) {
       fail(e.getMessage());
