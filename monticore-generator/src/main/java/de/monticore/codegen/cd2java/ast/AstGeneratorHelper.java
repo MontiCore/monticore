@@ -87,7 +87,8 @@ public class AstGeneratorHelper extends GeneratorHelper {
     }
     String className = AST_PREFIX
         + clazz.getName().substring(0, clazz.getName().indexOf(AST_BUILDER));
-    return cdDefinition.getCDClasses().stream().filter(c -> className.equals(c.getName())).findAny()
+    return cdDefinition.getCDClasses().stream()
+        .filter(c -> className.equals(GeneratorHelper.getPlainName(c))).findAny()
         .isPresent();
   }
   
