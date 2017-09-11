@@ -32,7 +32,8 @@ software, even if advised of the possibility of such damage.
 -->
 ${tc.signature("ast", "astImports")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
-  
+<#assign plainName = genHelper.getPlainName(ast, "")>
+
 <#-- Copyright -->
 ${tc.defineHookPoint("JavaCopyright")}
 
@@ -45,14 +46,14 @@ import ${astImport};
 
 public class ${ast.getName()} {
 
-  private static ${ast.getName()} getMill() {
+  private static ${plainName} getMill() {
     if (mill == null) {
-      mill = new ${ast.getName()}();
+      mill = new ${plainName}();
     }
     return mill;
   }
   
-  protected static ${ast.getName()} mill = null;
+  protected static ${plainName} mill = null;
 
 <#list ast.getCDAttributes() as attribute>
  ${tc.includeArgs("ast.Attribute", [attribute, ast])}

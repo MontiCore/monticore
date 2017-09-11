@@ -16,54 +16,51 @@
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * ******************************************************************************
  */
-
 package mc.feature.hwc;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
+import java.io.IOException;
+
+import org.antlr.v4.runtime.RecognitionException;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-import mc.GeneratorIntegrationsTest;
+import de.se_rwth.commons.logging.Log;
 import mc.feature.hwc.statechartdsl._ast.ASTState;
 import mc.feature.hwc.statechartdsl._ast.ASTStatechart;
 import mc.feature.hwc.statechartdsl._ast.ASTTransition;
-import mc.feature.hwc.statechartdsl._ast.StatechartDSLNodeFactory;
+import mc.feature.hwc.statechartdsl._ast.StatechartDSLMill;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
-public class HWAstTest extends GeneratorIntegrationsTest {
+public class BuildersTest {
   
-  @Test
-  public void testHWAstNodeClass() {
-    ASTStatechart a = StatechartDSLNodeFactory.createASTStatechart();
-    a.setName("a");
-    assertEquals("My statechart is a", a.toString());
+  @BeforeClass
+  public static void init() {
+    Log.enableFailQuick(false);
+  }
+  
+  @Before
+  public void setUp() throws RecognitionException, IOException {
+    Log.getFindings().clear();
   }
   
   @Test
-  public void testHWInterfaceAstBaseNode() {
-    ASTStatechart a = StatechartDSLNodeFactory.createASTStatechart();
-    assertEquals("ASTStatechart", a.foo());
-    
-    ASTState b = StatechartDSLNodeFactory.createASTState();
-    assertEquals("ASTState", b.foo());
+  public void testMyTransitionBuilder() throws IOException {
+    ASTTransition transition = StatechartDSLMill.transitionBuilder().from("setByGenBuilder").from("xxxx").to("setByGenBuilder").build();
+    assertEquals("xxxxSuf2", transition.getFrom());
   }
   
   @Test
-  public void testHWAstNodeFactory() {
-    // Call the method of the HW node factory
-    ASTStatechart a = StatechartDSLNodeFactory.createASTStatechart();
-    assertEquals("default", a.getName());
-    
-    // Call the method of the generated node factory
-    ASTTransition b = StatechartDSLNodeFactory.createASTTransition();
-    assertNull(b.getFrom());
+  public void testHWCClassGeneratedBuilder() throws IOException {
+    ASTStatechart aut = StatechartDSLMill.statechartBuilder().name("setByGeneratedBuilder").build();
+    assertEquals("setByGeneratedBuilder", aut.getName());
+  }
+  
+  @Test
+  public void testHWCClassHWCBuilder() throws IOException {
+    ASTState state = StatechartDSLMill.stateBuilder().name("x2").r__final(true).name("state1").build();
+    assertEquals(state.getName(), "state1Suf1");
   }
   
 }

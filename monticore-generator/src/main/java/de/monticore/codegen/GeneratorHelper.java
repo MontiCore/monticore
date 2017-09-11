@@ -1163,7 +1163,11 @@ public class GeneratorHelper extends TypesHelper {
   }
   
   public static boolean isSupertypeOfHWType(String className) {
-    return className.startsWith(AST_PREFIX)
+    return isSupertypeOfHWType(className, AST_PREFIX);
+  }
+  
+  public static boolean isSupertypeOfHWType(String className, String prefix) {
+    return (prefix.isEmpty() || className.startsWith(prefix))
         && className.endsWith(TransformationHelper.GENERATED_CLASS_SUFFIX);
   }
   
@@ -1307,9 +1311,15 @@ public class GeneratorHelper extends TypesHelper {
     return name;
   }
   
-  public static String getPlainName(ASTCDInterface clazz) {
-    String name = clazz.getName();
-    if (isSupertypeOfHWType(name)) {
+  /**
+   * Returns name without suffix for HW classes
+   * 
+   * @param type
+   * @return
+   */
+  public static String getPlainName(ASTCDType type, String prefix) {
+    String name = type.getName();
+    if (isSupertypeOfHWType(name, prefix)) {
       return name.substring(0, name.lastIndexOf(TransformationHelper.GENERATED_CLASS_SUFFIX));
     }
     return name;
