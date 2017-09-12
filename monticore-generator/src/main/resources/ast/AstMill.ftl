@@ -30,7 +30,7 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
-${tc.signature("ast", "astImports")}
+${tc.signature("ast", "isTop", "astImports")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
 <#assign plainName = genHelper.getPlainName(ast, "")>
 
@@ -44,7 +44,7 @@ package ${genHelper.getAstPackage()};
 import ${astImport};
 </#list>
 
-public class ${ast.getName()} {
+public <#if isTop>abstract </#if> class ${ast.getName()} {
 
   private static ${plainName} getMill() {
     if (mill == null) {

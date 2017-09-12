@@ -675,7 +675,9 @@ public class CdDecorator {
         .collect(Collectors.toList());
     
     glex.replaceTemplate(CLASS_CONTENT_TEMPLATE, millClass, new TemplateHookPoint(
-        "ast.AstMill", millClass, imports));
+        "ast.AstMill", millClass,
+        millClass.getModifier().isPresent() && millClass.getModifier().get().isAbstract(),
+        imports));
   }
   
   protected ASTCDClass createMillClass(ASTCDCompilationUnit cdCompilationUnit,
@@ -691,6 +693,7 @@ public class CdDecorator {
         TransformationHelper.getAstPackageName(cdCompilationUnit)
             + millClassName)) {
       millClassName += TransformationHelper.GENERATED_CLASS_SUFFIX;
+      millClass.setModifier(TransformationHelper.createAbstractModifier());
     }
     millClass.setName(millClassName);
     

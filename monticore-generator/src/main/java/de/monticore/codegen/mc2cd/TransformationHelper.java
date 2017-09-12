@@ -201,6 +201,13 @@ public final class TransformationHelper {
     return modifier;
   }
   
+  public static ASTModifier createAbstractModifier() {
+    ASTModifier modifier = CD4AnalysisNodeFactory.createASTModifier();
+    modifier.setAbstract(true);
+    return modifier;
+  }
+  
+  
   public static ASTModifier createProtectedModifier() {
     ASTModifier modifier = CD4AnalysisNodeFactory.createASTModifier();
     modifier.setProtected(true);
