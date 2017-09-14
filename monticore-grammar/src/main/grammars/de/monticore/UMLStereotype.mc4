@@ -68,7 +68,7 @@ component grammar UMLStereotype extends de.monticore.MCLiterals {
         };
     
     ast StereoValue =
-	// Caution: decoded value is in cash: so change of value leads 
+	// Caution: decoded value is in cache: so change of value leads 
 	// to outdated result in getValue()
 	content:String
         method public String getValue() {
