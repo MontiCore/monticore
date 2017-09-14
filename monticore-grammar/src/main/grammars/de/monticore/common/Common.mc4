@@ -35,6 +35,10 @@ package de.monticore.common;
 /**
  * Grammar for common elements of the UML/P-Language-Family
  *
+ * DEPRECATED: There are new versions of these nonterminals
+ * that can be found in MCCommon.mc4 respectively its subgrammars
+ * (the grammars are almost directly replabceable)
+ *
  * @author Martin Schindler, Marita Breuer
  */
 component grammar Common extends de.monticore.types.Types {
