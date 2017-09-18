@@ -256,15 +256,16 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   // Nachweis dass Cardinality zZ auch Hex und negatives als Integer akzeptiert
   // XXX BUG, BR -- zu beheben
+  // MB: Kardinalität umdefiniert
   @Test
   public void testHex() throws IOException {
     Optional<ASTCardinality> oast = parser.parseString_Cardinality(
     		"[0x34..0x15]");
-    // XXX SOLL:  assertEquals(false, oast.isPresent());
-    ASTCardinality ast = oast.get();
-    assertEquals(false, ast.isMany());
-    assertEquals(3*16+4, ast.getLowerBound());
-    assertEquals(1*16+5, ast.getUpperBound());
+    assertEquals(false, oast.isPresent());
+//    ASTCardinality ast = oast.get();
+//    assertEquals(false, ast.isMany());
+//    assertEquals(3*16+4, ast.getLowerBound());
+//    assertEquals(1*16+5, ast.getUpperBound());
   }
 
 

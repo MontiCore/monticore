@@ -63,7 +63,7 @@ component grammar Cardinality extends de.monticore.MCLiterals {
         ( 
           many:["*"] {_aNode.setLowerBound(0);_aNode.setUpperBound(0);}
           |
-          lowerBoundLit:IntLiteral
+          lowerBoundLit:NatLiteral
           {
             _aNode.setLowerBound(_aNode.getLowerBoundLit().get().getValue());
             _aNode.setUpperBound(_aNode.getLowerBound());
@@ -71,7 +71,7 @@ component grammar Cardinality extends de.monticore.MCLiterals {
           (
             ".."
             (
-              upperBoundLit:IntLiteral
+              upperBoundLit:NatLiteral
               ({_aNode.setUpperBound(_aNode.getUpperBoundLit().get().getValue());})
               |
               noUpperLimit:["*"] {_aNode.setUpperBound(0);}
