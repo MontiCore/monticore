@@ -40,5 +40,7 @@ component grammar MCCommon extends de.monticore.Cardinality,
 	de.monticore.UMLStereotype
 {
 	// Just a grouping of existing grammars
+	// TODO: Remove after Release of MC Version 4.5.4
+	DummyRule = "";
 
 }
