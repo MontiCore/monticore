@@ -1,0 +1,101 @@
+/*
+***************************************************************************************
+Copyright (c) 2017, MontiCore
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation and/or
+other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its contributors
+may be used to endorse or promote products derived from this software
+without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGE.
+***************************************************************************************
+*/
+package de.monticore;
+
+/**
+ * This grammar defines several additional literals for Numbers,
+ * which ar enot based on decimals, but other formats common in computing,
+ * such as hexadecimals.
+ * The scope of this grammar is to
+ * ease the reuse of literals structures in Java-like sublanguages, e.g., by 
+ * grammar inheritance or grammar embedment.
+*/
+
+component grammar MCHexNumbers extends 
+		de.monticore.MCNumbers, de.monticore.MCBasics {
+
+  /*========================================================================*/
+  /*== Hexadecimal =========================================================*/
+  /*========================================================================*/
+
+  /** ASTHexadecimal represents a positive Hexadecimal number.
+      These numbers start with "0x".
+        @attribute source String-representation.
+    */
+  Hexadecimal implements Number =
+    source:HexadecimalToken;
+
+  ast Hexadecimal =
+    method public int getValueInt() {
+      return Integer.parseInt(getSource().substring(2),16);
+    }
+    method public long getValue() {
+      return Long.parseLong(getSource().substring(2),16);
+    }
+  ;
+
+  token HexadecimalToken
+    = '0' ('x' | 'X') HexDigit HexDigit*;
+
+  fragment token HexDigit
+    = '0'..'9'  | 'a'..'f'  | 'A'..'F' ;
+
+  /*========================================================================*/
+  /*== Hexadezimal with negative number ====================================*/
+  /*========================================================================*/
+
+  /** ASTHexInteger represents a positive or negative Hexadecimal number.
+      These numbers start with "0x" or "-0x".
+        @attribute source String-representation.
+    */
+  HexInteger implements Number =
+     (negative:["-"])? hexadecimalpart:HexadecimalToken;
+
+  ast HexInteger =
+    method public int getValueInt() {
+      int a = Integer.parseInt(getHexadecimalpart().substring(2),16);
+      return negative ? -a : a;
+    }
+    method public long getValue() {
+      long a = Long.parseLong(getHexadecimalpart().substring(2),16);
+      return negative ? -a : a;
+    }
+    // source is handcoded: it adds the "-"
+    method public String getSource() {
+      String s = getHexadecimalpart();
+      return (negative ? "-" +s : s);
+    }
+  ;
+
+}
+

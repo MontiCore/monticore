@@ -1,0 +1,117 @@
+/*
+***************************************************************************************
+Copyright (c) 2017, MontiCore
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation and/or
+other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its contributors
+may be used to endorse or promote products derived from this software
+without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGE.
+***************************************************************************************
+*/
+package de.monticore;
+
+/**
+ * This grammar defines several literals for Integer.
+ * The scope of this grammar is to
+ * ease the reuse of literals structures in Java-like sublanguages, e.g., by 
+ * grammar inheritance or grammar embedment.
+*/
+
+component grammar MCNumbers extends de.monticore.MCBasics {
+
+  /*========================================================================*/
+  /*== Number ==============================================================*/
+  /*========================================================================*/
+
+  /** ASTNumber is the interface for longs 
+        @method getSource() String-representation.
+        @method getValueInt() decoded value as int
+        @method getValue() decoded value as long
+    */
+  interface Number;
+
+  ast Number = 
+    method public String getSource()
+    { throw new UnsupportedOperationException(); }
+    method public int getValueInt()
+    { throw new UnsupportedOperationException(); }
+    method public long getValue()
+    { throw new UnsupportedOperationException(); }
+  ;
+
+  /*========================================================================*/
+  /*== Decimal =============================================================*/
+  /*========================================================================*/
+
+  /** ASTDecimal represents a positive Decimal number.
+        @attribute source String-representation.
+    */
+  Decimal implements Number =
+    source:DecimalToken;
+
+  ast Decimal =
+    method public int getValueInt() {
+      return Integer.parseInt(getSource());
+    }
+    method public long getValue() {
+      return Long.parseLong(getSource());
+    }
+  ;
+
+  token DecimalToken
+    = '0' | (NonZeroDigit Digit*);
+
+  fragment token Digit = '0'..'9' ;
+
+  fragment token NonZeroDigit = '1'..'9' ;
+
+  /*========================================================================*/
+  /*== Integer =============================================================*/
+  /*========================================================================*/
+
+  /** ASTInteger represents a positive or negative Decimal number.
+        @attribute source String-representation.
+    */
+  Integer implements Number =
+     (negative:["-"])? decimalpart:DecimalToken;
+
+  ast Integer =
+    method public int getValueInt() {
+      int a = Integer.parseInt(getDecimalpart());
+      return negative ? -a : a;
+    }
+    method public long getValue() {
+      long a = Long.parseLong(getDecimalpart());
+      return negative ? -a : a;
+    }
+    // source is handcoded: it adds the "-"
+    method public String getSource() {
+      String s = getDecimalpart();
+      return (negative ? "-" +s : s);
+    }
+  ;
+
+}
+

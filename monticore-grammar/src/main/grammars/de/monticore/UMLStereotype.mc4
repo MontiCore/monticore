@@ -35,7 +35,7 @@ package de.monticore;
 /**
  * Grammar for common elements of the UML/P-Language-Family
  */
-component grammar UMLStereotype extends de.monticore.MCLiterals {
+component grammar UMLStereotype extends de.monticore.StringLiterals {
 
     /*========================================================================*/
     /*======================= AST extension ================================*/
@@ -73,8 +73,9 @@ component grammar UMLStereotype extends de.monticore.MCLiterals {
 	content:String
         method public String getValue() {
 	  if(content == null) {
-	    if (source.isPresent()) {
-	      content = de.monticore.MCLiteralsDecoder.decodeString(source.get());
+	    if (text.isPresent()) {
+	      content = de.monticore.MCLiteralsDecoder.decodeString(
+	      			text.get().getValue());
 	    } else {
 	      content = "";   // absent value
 	    }
@@ -99,10 +100,10 @@ component grammar UMLStereotype extends de.monticore.MCLiterals {
     
     /** ASTStereoValue represents a Value of a Stereotype in the UML/P
         @attribute name  Name of the Stereotype-Value
-        @attribute source Source of the Stereotype (String including '"';
+        @attribute text Content of the Stereotype (String including '"';
                           use getValue() for decoded String)
     */
     StereoValue =
-        Name& ("=" source:String)?;
+        Name& ("=" text:StringLiteral)?;
     
 }

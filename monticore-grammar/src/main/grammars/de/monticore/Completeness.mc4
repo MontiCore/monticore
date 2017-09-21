@@ -57,8 +57,7 @@ component grammar Completeness {
           [complete:"(c)"] 
           | ("(" [incomplete:"..."] ")") //separate brackets to avoid
                                                  //lexer-symbol clash with SD/SC
-          | [incomplete:"(...,...)"] 
-	  | [complete:"(c,c)"]
+          | [incomplete:"(...,...)"] | [complete:"(c,c)"]
           | [rightComplete:"(...,c)"] 
           | [leftComplete:"(c,...)"];
 }

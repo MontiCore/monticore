@@ -35,7 +35,10 @@ package de.monticore;
 /**
  * Grammar to describe Cardinalities
  */
-component grammar Cardinality extends de.monticore.MCLiterals {
+component grammar Cardinality extends
+	de.monticore.MCBasics, 
+	de.monticore.MCNumbers 
+{
     
     /** 
       A Cardinality Object stores the bounds as integers.
@@ -63,16 +66,16 @@ component grammar Cardinality extends de.monticore.MCLiterals {
         ( 
           many:["*"] {_aNode.setLowerBound(0);_aNode.setUpperBound(0);}
           |
-          lowerBoundLit:NatLiteral
+          lowerBoundLit:Decimal
           {
-            _aNode.setLowerBound(_aNode.getLowerBoundLit().get().getValue());
+            _aNode.setLowerBound(_aNode.getLowerBoundLit().get().getValueInt());
             _aNode.setUpperBound(_aNode.getLowerBound());
           }
           (
             ".."
             (
-              upperBoundLit:NatLiteral
-              ({_aNode.setUpperBound(_aNode.getUpperBoundLit().get().getValue());})
+              upperBoundLit:Decimal
+              ({_aNode.setUpperBound(_aNode.getUpperBoundLit().get().getValueInt());})
               |
               noUpperLimit:["*"] {_aNode.setUpperBound(0);}
             )
