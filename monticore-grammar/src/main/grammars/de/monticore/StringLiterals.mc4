@@ -80,7 +80,8 @@ component grammar StringLiterals extends de.monticore.MCBasics {
     content:String
     method public String getValue() {
       if(content == null) {
-        content = de.monticore.MCLiteralsDecoder.decodeString(getSource());
+        content =
+	  de.monticore.MCLiteralsDecoder.decodeString(getSource());
       }
       return content;
     };

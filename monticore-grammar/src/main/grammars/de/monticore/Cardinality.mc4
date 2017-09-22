@@ -40,47 +40,37 @@ component grammar Cardinality extends
 	de.monticore.MCNumbers 
 {
     
-    /** 
-      A Cardinality Object stores the bounds as integers.
-     */
-
-    ast Cardinality =
-        lowerBound:int
-        upperBound:int;
-         
-    /*========================================================================*/
-    /*============================== GRAMMAR =================================*/
-    /*========================================================================*/
-    
-    /** ASTCardinality represents a Cardinality in the UML/P
-        @attribute many          True if "*" is set as Cardinality
-        @attribute lowerBound    Minimum number of associated Classes/Objects
-        @attribute upperBound    Maximum number of associated Classes/Objects;
+  /** ASTCardinality represents a Cardinality in the UML/P
+    @attribute many          True if "*" is set as Cardinality
+    @attribute lowerBound    Minimum number of associated Classes/Objects
+    @attribute upperBound    Maximum number of associated Classes/Objects;
 				 zero denotes that there is no upper bound set.
-        @attribute lowerBoundLit Lower bound as Literal
-        @attribute upperBoundLit Upper bound as Literal
-        @attribute noUpperLimit  True if a lower, but no upper bound exists
-    */
-    Cardinality =
-        "["
-        ( 
-          many:["*"] {_aNode.setLowerBound(0);_aNode.setUpperBound(0);}
-          |
-          lowerBoundLit:Decimal
-          {
-            _aNode.setLowerBound(_aNode.getLowerBoundLit().get().getValueInt());
-            _aNode.setUpperBound(_aNode.getLowerBound());
-          }
-          (
-            ".."
-            (
-              upperBoundLit:Decimal
-              ({_aNode.setUpperBound(_aNode.getUpperBoundLit().get().getValueInt());})
-              |
-              noUpperLimit:["*"] {_aNode.setUpperBound(0);}
-            )
-          )?
-        )
-        "]";
-    
+    @attribute lowerBoundLit Lower bound as Literal
+    @attribute upperBoundLit Upper bound as Literal
+    @attribute noUpperLimit  True if a lower, but no upper bound exists
+  */
+  Cardinality =
+    "["
+    ( many:["*"] {_aNode.setLowerBound(0);_aNode.setUpperBound(0);}
+      | lowerBoundLit:Decimal
+        { _aNode.setLowerBound(
+             _aNode.getLowerBoundLit().get().getValueInt());
+          _aNode.setUpperBound(_aNode.getLowerBound()); }
+      ( ".." (
+        upperBoundLit:Decimal
+        ( {_aNode.setUpperBound(
+	     _aNode.getUpperBoundLit().get().getValueInt());})
+        |
+        noUpperLimit:["*"] {_aNode.setUpperBound(0);} ) )?
+    ) "]";
+  
+
+  /** 
+    A Cardinality Object stores the bounds as integers.
+   */
+
+  ast Cardinality =
+    lowerBound:int
+    upperBound:int;
+       
 }

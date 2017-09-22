@@ -54,11 +54,14 @@ component grammar MCNumbers extends de.monticore.MCBasics {
 
   ast Number = 
     method public String getSource()
-    { throw new UnsupportedOperationException(); }
+    { throw new UnsupportedOperationException(
+    	"0xFF230 Method not implemented"); }
     method public int getValueInt()
-    { throw new UnsupportedOperationException(); }
+    { throw new UnsupportedOperationException(
+    	"0xFF231 Method not implemented"); }
     method public long getValue()
-    { throw new UnsupportedOperationException(); }
+    { throw new UnsupportedOperationException(
+    	"0xFF232 Method not implemented"); }
   ;
 
   /*========================================================================*/
