@@ -61,13 +61,13 @@ component grammar UMLModifier extends de.monticore.UMLStereotype {
     */
     Modifier =
         Stereotype?
-        (   ["public"]       | [public:"+"]   //type modifier
+        (   ["public"]       | [public:"+"]
           | ["private"]      | [private:"-"]
           | ["protected"]    | [protected:"#"]
           | ["final"]
           | ["abstract"]
           | ["local"]
-          | ["derived"]      | [derived:"/"] //attribute modifier
+          | ["derived"]      | [derived:"/"]
           | ["readonly"]     | [readonly:"?"]
           | ["static"]
         )*;

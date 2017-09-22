@@ -111,10 +111,13 @@ component grammar StringLiterals extends de.monticore.MCBasics {
 
   // §3.10.6 Escape Sequences for Character and String Literals
   fragment token EscapeSequence
-    = '\\' ('b' | 't' | 'n' | 'f' | 'r' | '"' | '\'' | '\\') | OctalEscape | UnicodeEscape;
+    = '\\' ('b' | 't' | 'n' | 'f' | 'r' | '"' | '\'' | '\\')
+      | OctalEscape | UnicodeEscape;
 
   fragment token OctalEscape
-    = '\\' OctalDigit | '\\' OctalDigit OctalDigit | '\\' ZeroToThree OctalDigit OctalDigit;
+    = '\\' OctalDigit
+      | '\\' OctalDigit OctalDigit
+      | '\\' ZeroToThree OctalDigit OctalDigit;
 
   fragment token UnicodeEscape
     = '\\' 'u' HexDigit HexDigit HexDigit HexDigit;

@@ -51,13 +51,15 @@ component grammar Completeness {
         @attribute rightComplete true if only right side is complete (...,c)
         @attribute leftComplete  true if only left is complete (c,...)
     */
-    Completeness =
+  Completeness =
         //the following complex lexer symbol construction is to prevent clash
         //with ident "c"
-          [complete:"(c)"] 
-          | ("(" [incomplete:"..."] ")") //separate brackets to avoid
-                                                 //lexer-symbol clash with SD/SC
-          | [incomplete:"(...,...)"] | [complete:"(c,c)"]
-          | [rightComplete:"(...,c)"] 
-          | [leftComplete:"(c,...)"];
+     [complete:"(c)"] 
+	  //separate brackets to avoid
+          //lexer-symbol clash with SD/SC
+     | ("(" [incomplete:"..."] ")")
+     | [incomplete:"(...,...)"]
+     | [complete:"(c,c)"]
+     | [rightComplete:"(...,c)"] 
+     | [leftComplete:"(c,...)"];
 }
