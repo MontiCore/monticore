@@ -31,6 +31,8 @@ import org.junit.Test;
 
 import de.monticore.cardinality._ast.ASTCardinality;
 import de.monticore.completeness._ast.ASTCompleteness;
+import de.monticore.mcnumbers._ast.ASTDecimal;
+import de.monticore.stringliterals._ast.ASTStringLiteral;
 import de.monticore.testmccommon._parser.TestMCCommonParser;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
@@ -48,6 +50,7 @@ public class MCCommonUnitTest {
   public static void init() {
     // replace log by a sideffect free variant
     LogStub.init();
+    Log.enableFailQuick(false);
   }
   
 
@@ -56,6 +59,23 @@ public class MCCommonUnitTest {
     Log.getFindings().clear();
   }
   
+  // --------------------------------------------------------------------
+  // Numbers: Nat
+  // --------------------------------------------------------------------
+
+  // --------------------------------------------------------------------
+  @Test
+  public void testNat1() throws IOException {
+    ASTDecimal ast = parser.parseString_Decimal( " 9" ).get();
+    assertEquals("9", ast.getSource());
+    assertEquals(9, ast.getValue());
+  }
+  @Test
+  public void testNat4() throws IOException {
+    ASTDecimal ast = parser.parseString_Decimal( " 42 " ).get();
+    assertEquals("42", ast.getSource());
+    assertEquals(42, ast.getValue());
+  }
 
   // --------------------------------------------------------------------
   // UMLStereotype
@@ -95,9 +115,9 @@ public class MCCommonUnitTest {
   public void testStereoValue() throws IOException {
     ASTStereoValue ast = parser.parseString_StereoValue( "bla=\"17\"" ).get();
     assertEquals("bla", ast.getName());
-    Optional<String> os = ast.getSource();
+    Optional<ASTStringLiteral> os = ast.getText();
     assertEquals(true, os.isPresent());
-    assertEquals("17", os.get());
+    assertEquals("17", os.get().getValue());
     assertEquals("17", ast.getValue());
   }
 
@@ -107,12 +127,8 @@ public class MCCommonUnitTest {
   public void testStereoValue2() throws IOException {
     ASTStereoValue ast = parser.parseString_StereoValue( "cc" ).get();
     assertEquals("cc", ast.getName());
-    Optional<String> os = ast.getSource();
+    Optional<ASTStringLiteral> os = ast.getText();
     assertEquals(false, os.isPresent());
-    try {
-      assertEquals("", os.get());
-      fail("Expected an Exception to be thrown");
-    } catch (java.util.NoSuchElementException ex) { }
     assertEquals("", ast.getValue());
   }
 
@@ -254,18 +270,13 @@ public class MCCommonUnitTest {
 
 
   // --------------------------------------------------------------------
-  // Nachweis dass Cardinality zZ auch Hex und negatives als Integer akzeptiert
-  // XXX BUG, BR -- zu beheben
-  // MB: Kardinalität umdefiniert
+  // Nachweis dass Cardinality Hex und negatives als Cardinality nicht
+  // akzeptiert
   @Test
   public void testHex() throws IOException {
     Optional<ASTCardinality> oast = parser.parseString_Cardinality(
     		"[0x34..0x15]");
     assertEquals(false, oast.isPresent());
-//    ASTCardinality ast = oast.get();
-//    assertEquals(false, ast.isMany());
-//    assertEquals(3*16+4, ast.getLowerBound());
-//    assertEquals(1*16+5, ast.getUpperBound());
   }
 
 
