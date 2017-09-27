@@ -16,7 +16,7 @@
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * ******************************************************************************
  */
-package de.monticore.mccommon;
+package de.monticore;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
