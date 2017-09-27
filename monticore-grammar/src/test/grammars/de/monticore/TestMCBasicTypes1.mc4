@@ -1,0 +1,22 @@
+package de.monticore;
+
+grammar TestMCBasicTypes1 extends
+	de.monticore.MCBasicTypes1
+	{
+
+ QualifiedNameList = "["  (QualifiedName | ",")* "]" ;
+
+ ImportStatementList = "["  (ImportStatement | ",")* "]" ;
+
+ TypeList = "["  (Type | ",")* "]" ;
+
+ PrimitiveTypeList = "["  (PrimitiveType | ",")* "]" ;
+
+ CharTypeList = "["  (CharType | ",")* "]" ;
+
+ NameAsReferenceTypeList = "["  (NameAsReferenceType | ",")* "]" ;
+
+ ReturnTypeList = "["  (ReturnType | ",")* "]" ;
+
+
+}
