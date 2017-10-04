@@ -113,12 +113,17 @@ public final class ModelPath {
         .collect(Collectors.toList());
 
     if (1 < resolvedURLS.size()) {
-      String[] ambiguitiyArray = resolvedURLS.stream()
-          .map(URL::toString)
-          .toArray(size -> new String[size]);
-      throw new AmbiguityException(
-          "Multiple matching entries where located in the modelpath for the model "
-              + fixedPath, ambiguitiyArray);
+      StringBuffer ambiguitiyArray = new StringBuffer("{");
+      String sep = "";
+      for (URL url: resolvedURLS) {
+        ambiguitiyArray.append(sep);
+        sep = ",\n";
+        ambiguitiyArray.append(url.toString());      
+      }
+      ambiguitiyArray.append("}");
+      Log.error(
+          "0xA1294 Multiple matching entries where located in the modelpath for the model "
+              + fixedPath + "\n" + ambiguitiyArray.toString());
     }
     if (1 == resolvedURLS.size()) {
       qualifiedModel.setLocation(Iterables.getOnlyElement(resolvedURLS));
