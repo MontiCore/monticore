@@ -37,6 +37,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Iterables;
+
 import de.monticore.AmbiguityException;
 import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.logging.Log;
@@ -113,7 +114,7 @@ public final class ModelPath {
         .collect(Collectors.toList());
 
     if (1 < resolvedURLS.size()) {
-      StringBuffer ambiguitiyArray = new StringBuffer("{");
+      StringBuilder ambiguitiyArray = new StringBuilder("{");
       String sep = "";
       for (URL url: resolvedURLS) {
         ambiguitiyArray.append(sep);
