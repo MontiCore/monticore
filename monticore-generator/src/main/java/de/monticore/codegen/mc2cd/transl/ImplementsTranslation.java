@@ -33,7 +33,7 @@ import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.utils.Link;
-import jline.internal.Log;
+import de.se_rwth.commons.logging.Log;
 
 /**
  * Checks if the source rules were implementing interface rules and sets the
@@ -70,7 +70,7 @@ public class ImplementsTranslation implements
     for (ASTRuleReference ruleReference : classProd.getSuperInterfaceRule()) {
       Optional<MCProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(ruleReference.getName());
       if (!ruleSymbol.isPresent()) {
-        Log.error("0xA0137 The rule '" + ruleReference.getName() + "' does not exist!");
+        Log.error("0xA0137 The rule '" + ruleReference.getName() + "' does not exist!", ruleReference.get_SourcePositionStart());
       }
       cdClass.getInterfaces().add(
           TransformationHelper.createSimpleReference(TransformationHelper
