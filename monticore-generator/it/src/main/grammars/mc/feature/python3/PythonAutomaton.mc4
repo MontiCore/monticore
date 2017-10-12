@@ -1,0 +1,65 @@
+/*
+ * ******************************************************************************
+ * MontiCore Language Workbench, www.monticore.de
+ * Copyright (c) 2017, MontiCore, All rights reserved.
+ *
+ * This project is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * ******************************************************************************
+ */
+
+package mc.feature.python3;
+
+grammar PythonAutomaton extends mc.common.Basics {
+
+/** A ASTAutomaton represents a finite automaton
+	@attribute Name Name of the automaton
+*/
+Automaton =
+  "automaton" Name body:Body ;
+
+
+/** Body of an Automaton or State
+	@attribute States List of states
+	@attribute Transitions List of transitions
+	*/
+Body =
+  "{" (states:State | transitions:Transition)* "}" ;
+
+/** A ASTState represents a state of a finite automaton
+	@attribute Name Name of state
+	@attribute start True if state is start state<
+	@attribute final True if state is a final state
+*/
+State =
+  "state" Name
+
+  (("<<" initial:["initial"] ">>" ) | ("<<" final:["final"] ">>" ))*
+
+  (body:Body | ";") ;
+
+
+
+/** A ASTTransition represents a transition
+	@attribute From Name of the state from which the transitions starts
+	@attribute Activate Activation signal for this transition
+	@attribute To Name of the state to which the transitions goes
+*/
+Transition =
+  from:Name "-" activate:Name ">" to:Name ";" ;
+
+
+
+SubTransition extends Transition =
+	"sub" from:Name "-" activate:Name ">" to:Name ";" ;
+
+}

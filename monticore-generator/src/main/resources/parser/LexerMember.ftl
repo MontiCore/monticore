@@ -39,6 +39,7 @@ ${tc.signature("antlrGenerator")}
   ${javaCode}
 </#list>
 
+<#if antlrGenerator.embeddedJavaCode>
 private de.monticore.antlr4.MCParser _monticore_parser;
 protected de.monticore.antlr4.MCParser getCompiler() {
    return _monticore_parser;
@@ -46,4 +47,5 @@ protected de.monticore.antlr4.MCParser getCompiler() {
 public void setMCParser(de.monticore.antlr4.MCParser in) {
   this._monticore_parser = in;
 }
+</#if>
 }

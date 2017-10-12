@@ -33,6 +33,7 @@ import de.monticore.codegen.cd2java.types.TypeResolverGenerator;
 import de.monticore.codegen.cd2java.visitor.VisitorGenerator;
 import de.monticore.codegen.mc2cd.MC2CDTransformation;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.codegen.parser.Languages;
 import de.monticore.codegen.parser.ParserGenerator;
 import de.monticore.codegen.symboltable.SymbolTableGenerator;
 import de.monticore.codegen.symboltable.SymbolTableGeneratorBuilder;
@@ -204,6 +205,22 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         grammar,
         "0xA4038 Parser generation can't be processed: the reference to the grammar ast is null");
     ParserGenerator.generateFullParser(glex, grammar, symbolTable, handcodedPath, outputDirectory);
+  }
+
+  /**
+   * Generates the parser for the given grammar.
+   *
+   * @param grammar to generate the parser for
+   * @param symbolTable
+   * @param outputDirectory output directory for generated Java code
+   */
+  public void generateParser(GlobalExtensionManagement glex, ASTMCGrammar grammar,
+                             GlobalScope symbolTable,
+                             IterablePath handcodedPath, File outputDirectory, boolean embeddedJavaCode, Languages lang) {
+    Log.errorIfNull(
+            grammar,
+            "0xA4038 Parser generation can't be processed: the reference to the grammar ast is null");
+    ParserGenerator.generateParser(glex, grammar, symbolTable, handcodedPath, outputDirectory, embeddedJavaCode, lang);
   }
 
   /**

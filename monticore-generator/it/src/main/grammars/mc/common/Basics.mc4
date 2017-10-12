@@ -35,20 +35,21 @@ grammar Basics {
     '\t' |
      '\r' '\n' |
     '\r' |
-    '\n' ) :{_channel = HIDDEN;};
+    '\n' ) :skip -> skip;
     
   token SL_COMMENT =
     "//" (~('\n' |
       '\r' )
     )*
-    : {_channel = HIDDEN;
+    : {
     if (getCompiler() != null) {
       de.monticore.CommentExt _comment = new de.monticore.CommentExt(getText());
       de.se_rwth.commons.SourcePosition startPos = new de.se_rwth.commons.SourcePosition(_tokenStartLine, _tokenStartCharPositionInLine);
       _comment.set_SourcePositionStart(startPos);
       _comment.set_SourcePositionEnd(getCompiler().computeEndPosition(startPos, getText()));
       getCompiler().addComment(_comment);
-  }};
+  }}
+  skip -> skip;
 
   token ML_COMMENT =
     "/*" ({_input.LA(2) != '/'}?'*' |
@@ -57,14 +58,15 @@ grammar Basics {
       '\n' |
       '\r' )
     )*
-    "*/" : {_channel = HIDDEN;
+    "*/" : {
     if (getCompiler() != null) {
       de.monticore.CommentExt _comment = new de.monticore.CommentExt(getText());
       de.se_rwth.commons.SourcePosition startPos = new de.se_rwth.commons.SourcePosition(_tokenStartLine, _tokenStartCharPositionInLine);
       _comment.set_SourcePositionStart(startPos);
       _comment.set_SourcePositionEnd(getCompiler().computeEndPosition(startPos, getText()));
       getCompiler().addComment(_comment);
-  }};
+  }}
+  skip -> skip;
 
   fragment token ESC =
     '\\' ('n' |
