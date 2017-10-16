@@ -44,7 +44,7 @@ ${tc.include("parser.ParserHeader")}
 </#list>  
 }
 
-${tc.includeArgs("parser.LexerMember", [antlrGenerator])}
+${tc.includeArgs("parser.LexerMember", [antlrGenerator, parserHelper.getGrammarSymbol().getName()])}
 
 <#list genHelper.getParserRulesToGenerate() as parserProd>
   <#list antlrGenerator.createAntlrCode(parserProd) as parserRule>

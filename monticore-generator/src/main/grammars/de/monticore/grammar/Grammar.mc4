@@ -181,7 +181,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
       )?
       "=" alts:(LexAlt || "|")+
 
-      (":" ("{" endAction:Action  "}")? (variable:Name&
+      (":"  ("->" lexerCommand:Name)? ("{" endAction:Action  "}")? (variable:Name&
         ("->" type:( Name& || ".")+ (":" "{" block:Action "}" )? )? )? // Statements
       )?
     )

@@ -181,8 +181,8 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       addToCodeSection("{", ParserGeneratorHelper.getText(ast.getEndAction().get()), "\n}");
     }
 
-    for (String text : ast.getType()) {
-      addToCodeSection("->", text, "\n");
+    if (ast.getLexerCommand().isPresent()) {
+      addToCodeSection("->", ast.getLexerCommand().get(), "\n");
     }
 
     addToCodeSection(";");
