@@ -19,7 +19,6 @@
 
 package de.monticore
 
-
 // M1: configuration object "_configuration" prepared externally
 Log.debug("--------------------------------", LOG_ID)
 Log.debug("MontiCore", LOG_ID)
@@ -33,12 +32,11 @@ Log.debug("Handcoded argument  : " + _configuration.getHandcodedPathAsStrings(),
 Log.debug("Handcoded files     : " + handcodedPath, LOG_ID)
 
 // ############################################################
-// M0 Incremental Generation, init global scope
+// M1  basic setup and initialization:
+// initialize incremental generation; enabling of reporting; create global scope
 IncrementalChecker.initialize(out)
 InputOutputFilesReporter.resetModelToArtifactMap()
 globalScope = createGlobalScope(modelPath)
-
-// M1: basic setup and initialization; enabling of reporting
 Reporting.init(out.getAbsolutePath(), reportManagerFactory)
 // ############################################################
 
@@ -66,19 +64,15 @@ while (grammarIterator.hasNext()) {
       // M4: execute context conditions
       runGrammarCoCos(astGrammar, globalScope)
 
-      // M7: transform grammar AST into Class Diagram AST
+      // M5: transform grammar AST into Class Diagram AST
       astClassDiagram = transformAstGrammarToAstCd(glex, astGrammar, globalScope, handcodedPath)
-
       astClassDiagramWithST = createSymbolsFromAST(globalScope, astClassDiagram)
 
       // write Class Diagram AST to the CD-file (*.cd)
       storeInCdFile(astClassDiagramWithST, out)
 
-      // M5 + M6: generate parser and wrapper
+      // M6: generate parser and wrapper
       generateParser(glex, astGrammar, globalScope, handcodedPath, out)
-
-      // store result of the first pass
-      storeCDForGrammar(astGrammar, astClassDiagramWithST)
     }
   }
 }
@@ -96,13 +90,13 @@ for (astGrammar in getParsedGrammars()) {
 
   astClassDiagram = getCDOfParsedGrammar(astGrammar)
 
-  // M8: decorate Class Diagram AST
+  // M7: decorate Class Diagram AST
   decorateEmfCd(glex, astClassDiagram, globalScope, handcodedPath)
-
-  // M?: generate symbol table
+  
+  // M8: generate symbol table
   generateSymbolTable(astGrammar, globalScope, astClassDiagram, out, handcodedPath)
-
-  // M9: generate AST classes
+  
+  // M9 Generate ast classes, visitor and context condition
   generateEmfCompatible(glex, globalScope, astClassDiagram, out, templatePath)
 
   Log.info("Grammar " + astGrammar.getName() + " processed successfully!", LOG_ID)

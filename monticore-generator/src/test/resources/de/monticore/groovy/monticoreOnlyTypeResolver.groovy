@@ -19,6 +19,8 @@
 
 package de.monticore.groovy
 
+import de.monticore.codegen.cd2java.types.TypeResolverGenerator
+
 debug("--------------------------------", LOG_ID)
 debug("MontiCore", LOG_ID)
 debug(" - eating your models since 2005", LOG_ID)
@@ -45,6 +47,6 @@ while (grammarIterator.hasNext()) {
         astClassDiagramWithST = createSymbolsFromAST(globalScope, astClassDiagram)
 
         // Generate Visitor And Type Resolver
-        generateTypeResolvers(glex, globalScope, astClassDiagramWithST, out, templatePath);
+        TypeResolverGenerator.generate(glex, globalScope, astClassDiagramWithST, out)
     }
 }
