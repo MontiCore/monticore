@@ -242,20 +242,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   /**
-   * @param astClassDiagram
-   * @param glex
-   * @param globalScope
-   * @param outputDirectory
-   * @param templatePath
-   */
-  public void generateTypeResolvers(GlobalExtensionManagement glex,
-      GlobalScope globalScope,
-      ASTCDCompilationUnit astClassDiagram, File outputDirectory, IterablePath templatePath) {
-    VisitorGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
-    TypeResolverGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
-  }
-
-  /**
    * TODO: Write me! TODO: doc that the grammar AST reference might change
    *
    * @param ast
@@ -362,6 +348,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     // transformation
     ASTCDCompilationUnit compUnit = new MC2CDTransformation(glex)
         .apply(astGrammar);
+    
+    storeCDForGrammar(astGrammar, compUnit);
 
     return compUnit;
   }
