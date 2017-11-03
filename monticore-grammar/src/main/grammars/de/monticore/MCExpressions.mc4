@@ -96,19 +96,11 @@ ShiftExpression implements Expression <160> =
 	leftExpression:Expression
 	    // It is not possible to define "<<", ">>" or ">>>".
         // Parsing generic typs like "List<List<String>>" leads to problems.
-        (   shiftOp:"<" "<"
-          {((_input.LT(-2).getLine()==_input.LT(-1).getLine()) && 
-          	(_input.LT(-1).getCharPositionInLine()==_input.LT(-2).getCharPositionInLine()+1))}?
+        (   shiftOp:"<" "<" {noSpace()}?
           {_aNode.setShiftOp("<<");}     
-        |   shiftOp:">" ">" ">"
-          {((_input.LT(-2).getLine()==_input.LT(-1).getLine()) && 
-            (_input.LT(-3).getLine()==_input.LT(-2).getLine()) &&
-            (_input.LT(-2).getCharPositionInLine()==_input.LT(-3).getCharPositionInLine()+1) &&
-          	(_input.LT(-1).getCharPositionInLine()==_input.LT(-2).getCharPositionInLine()+1))}?        
+        |   shiftOp:">" ">" {noSpace()}? ">" {noSpace()}?      
          {_aNode.setShiftOp(">>>");}      
-        |   shiftOp:">" ">"
-         {((_input.LT(-2).getLine()==_input.LT(-1).getLine()) && 
-          	(_input.LT(-1).getCharPositionInLine()==_input.LT(-2).getCharPositionInLine()+1))}?
+        |   shiftOp:">" ">" {noSpace()}?
          {_aNode.setShiftOp(">>");}      
         )
         rightExpression:Expression;
