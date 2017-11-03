@@ -1410,6 +1410,10 @@ public class GeneratorHelper extends TypesHelper {
     return TransformationHelper.existsHandwrittenClass(targetPath,
         getDotPackageName(packageName) + simpleName);
   }
+
+  public String getAstPackage() {
+    return getPackageName(getPackageName(), AST_PACKAGE_SUFFIX);
+  }
   
   /**
    * TODO: Gets not transformed attribute name according to the original name in

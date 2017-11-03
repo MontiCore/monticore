@@ -43,6 +43,7 @@ package ${genHelper.getTargetPackage()};
 import static de.monticore.symboltable.Symbols.sortSymbolsByPosition;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public class ${className} extends de.monticore.symboltable.CommonScopeSpanningSymbol {
 
@@ -69,4 +70,8 @@ public class ${className} extends de.monticore.symboltable.CommonScopeSpanningSy
   }
   </#list>
   */
+
+  ${includeArgs("symboltable.symbols.GetAstNodeMethod", ruleName)}
+
+  ${includeArgs("symboltable.SymbolBuilder", className)}
 }

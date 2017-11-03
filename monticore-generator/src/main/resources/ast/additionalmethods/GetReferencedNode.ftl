@@ -30,28 +30,12 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
-${signature("className", "ruleSymbol")}
-<#assign genHelper = glex.getGlobalVar("stHelper")>
-<#assign ruleName = ruleSymbol.getName()?cap_first>
+${tc.signature("ast", "attributeName", "referencedSymbol", "referencedNode")}
+<#assign symbol = attributeName + "Symbol">
+  Optional<${referencedSymbol}> ${symbol} = get${symbol?cap_first}();
 
-<#-- Copyright -->
-${tc.defineHookPoint("JavaCopyright")}
-
-<#-- set package -->
-package ${genHelper.getTargetPackage()};
-
-import java.util.Optional;
-
-public class ${className} extends de.monticore.symboltable.CommonSymbol {
-
-  ${includeArgs("symboltable.symbols.KindConstantDeclaration", ruleName)}
-
-  public ${className}(String name) {
-    super(name, KIND);
+  if (${symbol}.isPresent() && ${symbol}.get().getAstNode().isPresent()) {
+    return Optional.of((${referencedNode}) ${symbol}.get().getAstNode().get());
   }
 
-  ${includeArgs("symboltable.symbols.GetAstNodeMethod", ruleName)}
-
-  ${includeArgs("symboltable.SymbolBuilder", className)}
-
-}
+  return Optional.empty();

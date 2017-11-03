@@ -152,6 +152,7 @@ public class CdDecorator {
       addGetter(clazz, astHelper);
       addSetter(clazz, astHelper);
       addSymbolGetter(clazz, astHelper);
+      addNodeGetter(clazz, astHelper);
     }
     
     cdDefinition.getCDClasses().forEach(c -> makeAbstractIfHWC(c));
@@ -212,6 +213,39 @@ public class CdDecorator {
       HookPoint getMethodBody = new TemplateHookPoint(
           "ast.additionalmethods.GetReferencedSymbol", clazz,
           attribute.getName(), referencedSymbol);
+      replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
+    }
+  }
+
+  protected void addNodeGetter(ASTCDClass clazz, AstGeneratorHelper astHelper) {
+    List<ASTCDAttribute> attributes = Lists.newArrayList(clazz.getCDAttributes());
+    for (ASTCDAttribute attribute : attributes) {
+      if (GeneratorHelper.isInherited(attribute)
+        || !CD4AnalysisHelper.hasStereotype(attribute,
+        MC2CDStereotypes.REFERENCED_SYMBOL.toString())) {
+        continue;
+      }
+
+      String referencedSymbol = CD4AnalysisHelper.getStereotypeValues(attribute,
+        MC2CDStereotypes.REFERENCED_SYMBOL.toString()).get(0);
+      String symbolName = getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf("Symbol"));
+      String referencedNode = GeneratorHelper.AST_PREFIX + symbolName;
+      referencedNode = GeneratorHelper.getPackageName(astHelper.getAstPackage(), referencedNode);
+
+      if (!getQualifier(referencedSymbol).isEmpty()) {
+        referencedSymbol = SymbolTableGeneratorHelper
+          .getQualifiedSymbolType(getQualifier(referencedSymbol)
+            .toLowerCase(), getSimpleName(referencedSymbol));
+      }
+
+      String returnType = "Optional<" + referencedNode + ">";
+      String nameSuffix = "Node";
+
+      String toParse = "public " + returnType + " "
+        + GeneratorHelper.getPlainGetter(attribute) + nameSuffix + "() ;";
+      HookPoint getMethodBody = new TemplateHookPoint(
+        "ast.additionalmethods.GetReferencedNode", clazz,
+        attribute.getName(), referencedSymbol, referencedNode);
       replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
     }
   }

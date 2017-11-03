@@ -30,28 +30,18 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
-${signature("className", "ruleSymbol")}
-<#assign genHelper = glex.getGlobalVar("stHelper")>
-<#assign ruleName = ruleSymbol.getName()?cap_first>
 
-<#-- Copyright -->
-${tc.defineHookPoint("JavaCopyright")}
+  ${tc.signature("className", "attribute", "builderName")}
+  <#assign millName = "mill" + attribute>
 
-<#-- set package -->
-package ${genHelper.getTargetPackage()};
+  public static ${builderName} ${builderName?uncap_first}() {
+    if(${millName} == null) {
+      ${millName} = getMill();
+    }
 
-import java.util.Optional;
-
-public class ${className} extends de.monticore.symboltable.CommonSymbol {
-
-  ${includeArgs("symboltable.symbols.KindConstantDeclaration", ruleName)}
-
-  public ${className}(String name) {
-    super(name, KIND);
+    return ${millName}._${builderName?uncap_first}();
   }
 
-  ${includeArgs("symboltable.symbols.GetAstNodeMethod", ruleName)}
-
-  ${includeArgs("symboltable.SymbolBuilder", className)}
-
-}
+  protected ${builderName} _${builderName?uncap_first}() {
+    return new ${builderName}();
+  }

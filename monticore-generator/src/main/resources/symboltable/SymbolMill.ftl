@@ -30,9 +30,8 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
-${signature("className", "ruleSymbol")}
+${tc.signature("className", "builder", "imports")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
-<#assign ruleName = ruleSymbol.getName()?cap_first>
 
 <#-- Copyright -->
 ${tc.defineHookPoint("JavaCopyright")}
@@ -40,18 +39,30 @@ ${tc.defineHookPoint("JavaCopyright")}
 <#-- set package -->
 package ${genHelper.getTargetPackage()};
 
-import java.util.Optional;
+<#list imports as import>
+import ${import};
+</#list>
 
-public class ${className} extends de.monticore.symboltable.CommonSymbol {
+public class ${className} {
 
-  ${includeArgs("symboltable.symbols.KindConstantDeclaration", ruleName)}
-
-  public ${className}(String name) {
-    super(name, KIND);
+  private static ${className} getMill() {
+    if (mill == null) {
+      mill = new ${className}();
+    }
+    return mill;
   }
 
-  ${includeArgs("symboltable.symbols.GetAstNodeMethod", ruleName)}
+  protected static ${className} mill = null;
 
-  ${includeArgs("symboltable.SymbolBuilder", className)}
+  <#list builder?keys as attribute>
+    ${tc.includeArgs("symboltable.mill.Attribute", [className, attribute])}
+  </#list>
+
+  protected ${className}() {}
+
+  <#list builder?keys as attribute>
+    <#assign builderName = builder[attribute]>
+    ${tc.includeArgs("symboltable.mill.Method", [className, attribute, builderName])}
+  </#list>
 
 }

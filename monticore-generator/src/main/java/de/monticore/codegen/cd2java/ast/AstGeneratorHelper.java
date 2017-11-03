@@ -92,10 +92,6 @@ public class AstGeneratorHelper extends GeneratorHelper {
         .isPresent();
   }
   
-  public String getAstPackage() {
-    return getPackageName(getPackageName(), getAstPackageSuffix());
-  }
-  
   public Optional<ASTCDClass> getASTBuilder(ASTCDClass clazz) {
     return getCdDefinition().getCDClasses().stream()
         .filter(c -> c.getName().equals(getNameOfBuilderClass(clazz))).findAny();

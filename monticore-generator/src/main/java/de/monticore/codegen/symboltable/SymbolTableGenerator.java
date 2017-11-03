@@ -59,6 +59,8 @@ public class SymbolTableGenerator {
   private final SymbolReferenceGenerator symbolReferenceGenerator;
   
   private final SymbolTableCreatorGenerator symbolTableCreatorGenerator;
+
+  private final SymbolMillGenerator symbolMillGenerator;
   
   protected SymbolTableGenerator(
       ModelingLanguageGenerator modelingLanguageGenerator,
@@ -69,7 +71,8 @@ public class SymbolTableGenerator {
       SymbolKindGenerator symbolKindGenerator,
       ScopeSpanningSymbolGenerator scopeSpanningSymbolGenerator,
       SymbolReferenceGenerator symbolReferenceGenerator,
-      SymbolTableCreatorGenerator symbolTableCreatorGenerator) {
+      SymbolTableCreatorGenerator symbolTableCreatorGenerator,
+      SymbolMillGenerator symbolMillGenerator) {
     this.modelingLanguageGenerator = modelingLanguageGenerator;
     this.modelLoaderGenerator = modelLoaderGenerator;
     this.modelNameCalculatorGenerator = modelNameCalculatorGenerator;
@@ -79,6 +82,7 @@ public class SymbolTableGenerator {
     this.scopeSpanningSymbolGenerator = scopeSpanningSymbolGenerator;
     this.symbolReferenceGenerator = symbolReferenceGenerator;
     this.symbolTableCreatorGenerator = symbolTableCreatorGenerator;
+    this.symbolMillGenerator = symbolMillGenerator;
   }
   
   public void generate(ASTMCGrammar astGrammar, SymbolTableGeneratorHelper genHelper,
@@ -121,6 +125,7 @@ public class SymbolTableGenerator {
       modelNameCalculatorGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol,
           ruleNames);
       symbolTableCreatorGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol);
+      symbolMillGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol, allSymbolDefiningRules);
       
       for (MCProdSymbol ruleSymbol : allSymbolDefiningRules) {
         generateSymbolOrScopeSpanningSymbol(genEngine, genHelper, ruleSymbol, handCodedPath);
