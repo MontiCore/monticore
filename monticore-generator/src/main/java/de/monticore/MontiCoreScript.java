@@ -31,6 +31,9 @@ import de.monticore.codegen.cd2java.cocos.CoCoGenerator;
 import de.monticore.codegen.cd2java.od.ODGenerator;
 import de.monticore.codegen.cd2java.types.TypeResolverGenerator;
 import de.monticore.codegen.cd2java.visitor.VisitorGenerator;
+import de.monticore.codegen.cd2python.ast.AstPythonGenerator;
+import de.monticore.codegen.cd2python.ast.PythonCdDecorator;
+import de.monticore.codegen.cd2python.visitor.PythonVisitorGenerator;
 import de.monticore.codegen.mc2cd.MC2CDTransformation;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.parser.Languages;
@@ -463,6 +466,48 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     CoCoGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
     ODGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
   }
+
+  /**
+   * Creates an instance of the {@link PythonCdDecorator}
+   * @param glex - object for managing hook points, features and global
+   * @param symbolTable
+   * @param targetPath the path where the target shall be generated
+   * @return
+   */
+  private PythonCdDecorator createPythonCdDecorator(GlobalExtensionManagement glex, GlobalScope symbolTable,
+                                                    IterablePath targetPath){
+    return new PythonCdDecorator(glex, symbolTable, targetPath);
+  }
+
+
+  /**
+   * Generates ast files for the given class diagram AST in python
+   * @param glex - object for managing hook points, features and global
+   * @param astClassDiagram
+   * @param symbolTable
+   * @param targetPath the path where the target shall be generated
+   */
+  public void decoratePythonCd(GlobalExtensionManagement glex,
+                               ASTCDCompilationUnit astClassDiagram, GlobalScope symbolTable, IterablePath targetPath){
+    createPythonCdDecorator(glex, symbolTable, targetPath).decorate(astClassDiagram);
+  }
+
+  /**
+   * Generates a python diagram decorated as required to enrich the model with additional properties.
+   * @param glex - object for managing hook points, features and global
+   * @param globalScope
+   * @param astClassDiagram
+   * @param outputDirectory
+   * @param templatePath the path where the target shall be generated
+   */
+  public void generatePython(GlobalExtensionManagement glex, GlobalScope globalScope,
+                             ASTCDCompilationUnit astClassDiagram, File outputDirectory, IterablePath templatePath){
+    boolean emfCompatible = false;
+    AstPythonGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory, templatePath,
+            emfCompatible);
+    PythonVisitorGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
+  }
+
 
   /**
    * Creates instance of the {@link CdDecorator}

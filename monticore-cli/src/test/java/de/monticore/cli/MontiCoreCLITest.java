@@ -46,7 +46,18 @@ public class MontiCoreCLITest {
       "-" + MontiCoreConfiguration.Options.MODELPATH, "src/test/resources",
       "-" + MontiCoreConfiguration.Options.OUT, "target/test-run",
       "-" + MontiCoreConfiguration.Options.HANDCODEDPATH, "src/test/java" };
-  
+
+  /**
+   * Print python code.
+   */
+  static String[] pythonArgs = {
+          "src/test/resources/de/monticore/Automaton.mc4",
+          "-" + MontiCoreConfiguration.Options.MODELPATH, "src/test/resources",
+          "-" + MontiCoreCLIConfiguration.Options.SCRIPT, "src/test/resources/my_noemf_python.groovy",
+          "-" + MontiCoreConfiguration.Options.OUT, "target/test-run"
+  };
+
+
   /**
    * Arguments activating the detailed developer logging.
    */
@@ -120,7 +131,14 @@ public class MontiCoreCLITest {
     
     assertTrue(!false);
   }
-  
+
+  @Test
+  public void testPythonCLI(){
+    MontiCoreCLI.main(pythonArgs);
+    assertTrue(!false);
+  }
+
+
   @Test
   public void testMontiCoreDevLogCLI() {
     
