@@ -189,8 +189,13 @@ public class ParserGenerator {
     // construct parser, lexer, ... (antlr),
     String gFile = Paths.get(targetDir.getAbsolutePath(), filePath.toString()).toString();
     String outputLang = "-Dlanguage=" + lang.getLanguage();
+    // for python's generated visitor, the abstract visitor shall be generated
+    String visitorOption = "";
+    if (lang.equals(Languages.PYTHON_2) || lang.equals(Languages.PYTHON_3)){
+      visitorOption = "-visitor";
+    }
     Log.debug("Start Antlr generation for the antlr file " + gFile, LOG);
-    AntlrTool antlrTool = new AntlrTool(new String[] { outputLang }, grammarSymbol,
+    AntlrTool antlrTool = new AntlrTool(new String[] { outputLang,visitorOption}, grammarSymbol,
              Paths.get(targetDir.getAbsolutePath(),
                     Names.getPathFromPackage(genHelper.getParserPackage())));
     antlrTool.createParser(gFile);
