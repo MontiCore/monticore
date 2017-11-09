@@ -245,7 +245,7 @@ public class CdDecorator {
         + GeneratorHelper.getPlainGetter(attribute) + nameSuffix + "() ;";
       HookPoint getMethodBody = new TemplateHookPoint(
         "ast.additionalmethods.GetReferencedNode", clazz,
-        attribute.getName(), referencedSymbol, referencedNode);
+        attribute.getName(), referencedSymbol, symbolName);
       replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
     }
   }

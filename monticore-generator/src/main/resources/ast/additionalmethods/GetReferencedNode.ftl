@@ -30,12 +30,12 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
-${tc.signature("ast", "attributeName", "referencedSymbol", "referencedNode")}
+${tc.signature("ast", "attributeName", "referencedSymbol", "symbolName")}
 <#assign symbol = attributeName + "Symbol">
   Optional<${referencedSymbol}> ${symbol} = get${symbol?cap_first}();
 
-  if (${symbol}.isPresent() && ${symbol}.get().getAstNode().isPresent()) {
-    return Optional.of((${referencedNode}) ${symbol}.get().getAstNode().get());
+  if (${symbol}.isPresent()) {
+    return ${symbol}.get().get${symbolName}Node();
   }
 
   return Optional.empty();
