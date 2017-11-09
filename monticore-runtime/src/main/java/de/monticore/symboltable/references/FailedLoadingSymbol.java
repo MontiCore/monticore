@@ -23,6 +23,7 @@ package de.monticore.symboltable.references;
  * @author Pedram Mir Seyed Nazari
  *
  */
+@Deprecated
 public class FailedLoadingSymbol extends RuntimeException {
 
   private static final long serialVersionUID = -440642819643689797L;
