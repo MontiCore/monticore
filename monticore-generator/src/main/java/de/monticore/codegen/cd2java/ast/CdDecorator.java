@@ -153,6 +153,7 @@ public class CdDecorator {
       addSetter(clazz, astHelper);
       addSymbolGetter(clazz, astHelper);
       addNodeGetter(clazz, astHelper);
+
     }
     
     cdDefinition.getCDClasses().forEach(c -> makeAbstractIfHWC(c));

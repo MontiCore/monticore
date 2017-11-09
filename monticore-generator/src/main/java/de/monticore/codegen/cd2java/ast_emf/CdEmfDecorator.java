@@ -148,6 +148,7 @@ public class CdEmfDecorator extends CdDecorator {
       addSetter(clazz, astHelper);
       addSymbolGetter(clazz, astHelper);
       addNodeGetter(clazz, astHelper);
+      
       glex.replaceTemplate("ast.AstImports", clazz, new TemplateHookPoint("ast_emf.AstEImports"));
     }
     
