@@ -22,6 +22,8 @@ package de.monticore.codegen.parser;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import com.google.common.base.Joiner;
@@ -190,12 +192,14 @@ public class ParserGenerator {
     String gFile = Paths.get(targetDir.getAbsolutePath(), filePath.toString()).toString();
     String outputLang = "-Dlanguage=" + lang.getLanguage();
     // for python's generated visitor, the abstract visitor shall be generated
-    String visitorOption = "";
+    List<String> toolsParameter = new ArrayList<>();
+    toolsParameter.add(outputLang);
     if (lang.equals(Languages.PYTHON_2) || lang.equals(Languages.PYTHON_3)){
-      visitorOption = "-visitor";
+      toolsParameter.add("-visitor");
     }
+
     Log.debug("Start Antlr generation for the antlr file " + gFile, LOG);
-    AntlrTool antlrTool = new AntlrTool(new String[] { outputLang,visitorOption}, grammarSymbol,
+    AntlrTool antlrTool = new AntlrTool((String[]) toolsParameter.toArray(new String[0]), grammarSymbol,
              Paths.get(targetDir.getAbsolutePath(),
                     Names.getPathFromPackage(genHelper.getParserPackage())));
     antlrTool.createParser(gFile);
