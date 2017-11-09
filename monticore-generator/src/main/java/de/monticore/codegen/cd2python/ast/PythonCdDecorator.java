@@ -52,6 +52,8 @@ import groovyjarjarantlr.ANTLRException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.google.common.collect.Lists.newArrayList;
+
 
 public class PythonCdDecorator extends CdDecorator{
 
@@ -70,6 +72,10 @@ public class PythonCdDecorator extends CdDecorator{
         // Interface for all ast nodes of the language
         decorateBaseInterface(cdDefinition);
 
+        // Decorate with builder pattern
+        addBuilders(cdDefinition, astHelper);
+
+        // Decorate with the factory pattern
         addNodeFactoryClass(cdCompilationUnit, nativeClasses, astHelper);
 
         // Check if handwritten ast types exist
@@ -458,6 +464,22 @@ public class PythonCdDecorator extends CdDecorator{
                     "ast_python.factorymethods.ErrorIfNull", parameters));
         }
 
+    }
+
+
+    /**
+     * Decorates class diagram with builder pattern for all classes excepting
+     * lists
+     *
+     * @param cdDefinition
+     * @param astHelper
+     * @throws ANTLRException
+     */
+    protected void addBuilders(ASTCDDefinition cdDefinition, AstGeneratorHelper astHelper) {
+        newArrayList(cdDefinition.getCDClasses()).stream()
+                .forEach(c -> cdTransformation.addCdClassUsingDefinition(
+                        cdDefinition,
+                        "public static class " + AstGeneratorHelper.getNameOfBuilderClass(c) + " ;"));
     }
 
     /**

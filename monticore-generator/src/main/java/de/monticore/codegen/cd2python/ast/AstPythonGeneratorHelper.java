@@ -34,7 +34,7 @@ import java.util.Optional;
 
 public class AstPythonGeneratorHelper extends AstEmfGeneratorHelper {
 
-    protected static final String AST_BUILDER = "Builder_";
+    protected static final String AST_BUILDER = "Builder";
     public static final String PARAMETER_PREFIX = "_";
 
     public AstPythonGeneratorHelper(ASTCDCompilationUnit topAst, GlobalScope symbolTable) {
@@ -81,12 +81,13 @@ public class AstPythonGeneratorHelper extends AstEmfGeneratorHelper {
     }
 
     public Optional<ASTCDClass> getASTBuilder(ASTCDClass clazz) {
-        return getCdDefinition().getCDClasses().stream()
+        Optional<ASTCDClass> ret = getCdDefinition().getCDClasses().stream()
                 .filter(c -> c.getName().equals(getNameOfBuilderClass(clazz))).findAny();
+        return ret;
     }
 
     public static String getNameOfBuilderClass(ASTCDClass astClass) {
-        return AST_BUILDER + getPlainName(astClass);
+        return getASTClassNameWithoutPrefix(astClass) + AST_BUILDER;
     }
 
 
