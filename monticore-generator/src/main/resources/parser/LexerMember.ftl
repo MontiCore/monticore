@@ -34,7 +34,7 @@ ${tc.signature("antlrGenerator", "parserName")}
 
 @lexer::members {
 
-// Add additional Java Code to lexer
+
 <#list antlrGenerator.getHWLexerJavaCode() as javaCode>
   ${javaCode}
 </#list>
