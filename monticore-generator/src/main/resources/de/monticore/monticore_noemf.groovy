@@ -56,6 +56,8 @@ while (grammarIterator.hasNext()) {
       // start reporting
       grammarName = Names.getQualifiedName(astGrammar.getPackage(), astGrammar.getName())
       Reporting.on(grammarName)
+	  Reporting.reportModelStart(astGrammar, grammarName, "")
+	  
       Reporting.reportParseInputFile(input, grammarName)
 
       // M3: populate symbol table
@@ -102,5 +104,6 @@ for (astGrammar in getParsedGrammars()) {
   Log.info("Grammar " + astGrammar.getName() + " processed successfully!", LOG_ID)
 
   // M10: flush reporting
+  Reporting.reportModelEnd(astGrammar.getName(), "")
   Reporting.flush(astGrammar)
 }

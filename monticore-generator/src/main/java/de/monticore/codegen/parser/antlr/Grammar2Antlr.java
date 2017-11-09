@@ -860,13 +860,11 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
         continue;
       }
       ASTNode astNode = prodSymbol.getAstNode().get();
-      if (grammarInfo.isProdLeftRecursive(prodSymbol.getName())) {
+      if (prodSymbol.isClass() && grammarInfo.isProdLeftRecursive(prodSymbol.getName())) {
         left = true;
-        if (prodSymbol.isClass()) {
-          List<ASTAlt> localAlts = ((ASTClassProd) astNode).getAlts();
-          for(ASTAlt alt : localAlts) {
-            alts.add(new NodePair(alt, interf));
-          }
+        List<ASTAlt> localAlts = ((ASTClassProd) astNode).getAlts();
+        for(ASTAlt alt : localAlts) {
+          alts.add(new NodePair(alt, interf));
         }
       } else {
         alts.add(new NodePair((ASTGrammarNode) astNode, interf));

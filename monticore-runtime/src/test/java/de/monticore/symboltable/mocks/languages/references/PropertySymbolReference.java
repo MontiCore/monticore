@@ -24,12 +24,12 @@ import java.util.Optional;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.mocks.languages.entity.EntitySymbol;
 import de.monticore.symboltable.mocks.languages.entity.PropertySymbol;
-import de.monticore.symboltable.references.FailedLoadingSymbol;
 import de.monticore.symboltable.references.SymbolReference;
 import de.monticore.symboltable.types.CommonJTypeSymbol;
 import de.monticore.symboltable.types.TypeSymbol;
 import de.monticore.symboltable.types.references.CommonTypeReference;
 import de.monticore.symboltable.types.references.TypeReference;
+import de.se_rwth.commons.logging.Log;
 
 public class PropertySymbolReference extends PropertySymbol implements
     SymbolReference<PropertySymbol> {
@@ -59,10 +59,10 @@ public class PropertySymbolReference extends PropertySymbol implements
       referencedSymbol = entitySymbol.getProperty(getName()).orElse(null);
 
       if (!isReferencedSymbolLoaded()) {
-        throw new FailedLoadingSymbol(getName());
+        Log.error("0xA1045 " + SymbolReference.class.getSimpleName() + " Could not load full information of '" +
+            getName() + "' (Kind " + getKind() + ").");
       }
     }
-
     return referencedSymbol;
   }
 
@@ -71,15 +71,8 @@ public class PropertySymbolReference extends PropertySymbol implements
     if (isReferencedSymbolLoaded()) {
       return true;
     }
-
-    try {
-      getReferencedSymbol();
-    }
-    catch (FailedLoadingSymbol e) {
-      return false;
-    }
-
-    return true;
+    final EntitySymbol entitySymbol = (EntitySymbol) typeReference.getReferencedSymbol();
+    return entitySymbol.getProperty(getName()).isPresent();
   }
 
   @Override
