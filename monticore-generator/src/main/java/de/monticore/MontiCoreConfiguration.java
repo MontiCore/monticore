@@ -53,11 +53,13 @@ public final class MontiCoreConfiguration implements Configuration {
 
   public static final String JAVA_EXTENSION = "java";
 
+  public static final String PYTHON_EXTENSION = "py";
+
   public static final String FTL_EXTENSION = "ftl";
 
   public static final Set<String> MC4_EXTENSIONS = Sets.newHashSet(MC4_EXTENSION);
 
-  public static final Set<String> HWC_EXTENSIONS = Sets.newHashSet(JAVA_EXTENSION);
+  public static final Set<String> HWC_EXTENSIONS = Sets.newHashSet(JAVA_EXTENSION,PYTHON_EXTENSION);
 
   public static final Set<String> FTL_EXTENSIONS = Sets.newHashSet(FTL_EXTENSION);
 

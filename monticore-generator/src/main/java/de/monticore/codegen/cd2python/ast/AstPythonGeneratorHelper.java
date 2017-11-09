@@ -21,13 +21,20 @@ package de.monticore.codegen.cd2python.ast;
 
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast_emf.AstEmfGeneratorHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
+import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.io.paths.IterablePath;
 import de.monticore.literals.literals._ast.ASTNullLiteral;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.TypesPrinter;
 import de.monticore.types.types._ast.ASTPrimitiveType;
 import de.monticore.types.types._ast.ASTReferenceType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
+import de.se_rwth.commons.Names;
+import de.se_rwth.commons.logging.Log;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +42,7 @@ import java.util.Optional;
 public class AstPythonGeneratorHelper extends AstEmfGeneratorHelper {
 
     protected static final String AST_BUILDER = "Builder";
+    private static final String PYTHON_EXTENSION = ".py";
     public static final String PARAMETER_PREFIX = "_";
 
     public AstPythonGeneratorHelper(ASTCDCompilationUnit topAst, GlobalScope symbolTable) {
@@ -81,9 +89,8 @@ public class AstPythonGeneratorHelper extends AstEmfGeneratorHelper {
     }
 
     public Optional<ASTCDClass> getASTBuilder(ASTCDClass clazz) {
-        Optional<ASTCDClass> ret = getCdDefinition().getCDClasses().stream()
+        return getCdDefinition().getCDClasses().stream()
                 .filter(c -> c.getName().equals(getNameOfBuilderClass(clazz))).findAny();
-        return ret;
     }
 
     public static String getNameOfBuilderClass(ASTCDClass astClass) {
@@ -266,7 +273,42 @@ public class AstPythonGeneratorHelper extends AstEmfGeneratorHelper {
         return astcdClass.getModifier().isPresent() && astcdClass.getModifier().get().isAbstract();
     }
 
+    public static String getSimpleTypeNameToGenerate(String simpleName, String packageName,
+                                                     IterablePath targetPath) {
+        if (existsHandwrittenClass(simpleName, packageName, targetPath)) {
+            return simpleName + TransformationHelper.GENERATED_CLASS_SUFFIX;
+        }
+        return simpleName;
+    }
 
+    public static boolean existsHandwrittenClass(String simpleName, String packageName,
+                                                 IterablePath targetPath) {
+        return existsHandwrittenClass(targetPath,
+                getDotPackageName(packageName) + simpleName);
+    }
+
+    /**
+     * Checks if a handwritten class with the given qualifiedName (dot-separated)
+     * exists on the target path
+     *
+     * @param qualifiedName name of the class to search for
+     * @return true if a handwritten class with the qualifiedName exists
+     */
+    public static boolean existsHandwrittenClass(IterablePath targetPath,
+                                                 String qualifiedName) {
+        Path handwrittenFile = Paths.get(Names
+                .getPathFromPackage(qualifiedName)
+                + PYTHON_EXTENSION);
+        Log.debug("Checking existence of handwritten class " + qualifiedName
+                + " by searching for "
+                + handwrittenFile.toString(), TransformationHelper.class.getName());
+        boolean result = targetPath.exists(handwrittenFile);
+        if (result) {
+            Reporting.reportUseHandwrittenCodeFile(targetPath.getResolvedPath(handwrittenFile).get(),
+                    handwrittenFile);
+        }
+        return result;
+    }
 
 }
 

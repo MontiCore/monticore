@@ -27,6 +27,7 @@ import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstListMethods;
 import de.monticore.codegen.cd2java.ast.CdDecorator;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.mc2cd.transl.ConstantsTranslation;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
@@ -466,6 +467,35 @@ public class PythonCdDecorator extends CdDecorator{
 
     }
 
+    protected ASTCDClass createNodeFactoryClass(ASTCDCompilationUnit cdCompilationUnit,
+                                                List<ASTCDClass> nativeClasses, AstGeneratorHelper astHelper, Set<String> astClasses) {
+        ASTCDDefinition cdDef = cdCompilationUnit.getCDDefinition();
+        ASTCDClass nodeFactoryClass = CD4AnalysisNodeFactory.createASTCDClass();
+        String nodeFactoryName = cdDef.getName() + NODE_FACTORY;
+
+        // Check if a handwritten node factory exists, use the modified version which supports python
+        if (AstPythonGeneratorHelper.existsHandwrittenClass(targetPath,
+                TransformationHelper.getAstPackageName(cdCompilationUnit)
+                        + nodeFactoryName)) {
+            nodeFactoryName += TransformationHelper.GENERATED_CLASS_SUFFIX;
+        }
+        nodeFactoryClass.setName(nodeFactoryName);
+
+        for (String clazz : astClasses) {
+            String toParse = "protected static " + nodeFactoryName + " factory" + clazz + " = null;";
+            cdTransformation.addCdAttributeUsingDefinition(nodeFactoryClass, toParse);
+        }
+
+        // Add ast-creating methods
+        for (ASTCDClass clazz : nativeClasses) {
+            addMethodsToNodeFactory(clazz, nodeFactoryClass, astHelper);
+        }
+
+        cdDef.getCDClasses().add(nodeFactoryClass);
+
+        return nodeFactoryClass;
+    }
+
 
     /**
      * Decorates class diagram with builder pattern for all classes excepting
@@ -504,6 +534,34 @@ public class PythonCdDecorator extends CdDecorator{
         glex.replaceTemplate(EMPTY_BODY_TEMPLATE, astMethod.get(), hookPoint);
         glex.replaceTemplate(ERROR_IFNULL_TEMPLATE, astMethod.get(), new StringHookPoint(""));
         return astMethod.get();
+    }
+
+    /**
+     * Updates the names of the classes if the corresponding handwritten code is available.
+     *
+     * @param cdCompilationUnit
+     */
+    protected void transformCdTypeNamesForHWTypes(ASTCDCompilationUnit cdCompilationUnit) {
+        String packageName = TransformationHelper.getAstPackageName(cdCompilationUnit);
+
+        cdCompilationUnit
+                .getCDDefinition()
+                .getCDClasses()
+                .forEach(
+                        c -> c.setName(AstPythonGeneratorHelper.getSimpleTypeNameToGenerate(c.getName(), packageName,
+                                targetPath)));
+        cdCompilationUnit
+                .getCDDefinition()
+                .getCDInterfaces()
+                .forEach(
+                        c -> c.setName(AstPythonGeneratorHelper.getSimpleTypeNameToGenerate(c.getName(), packageName,
+                                targetPath)));
+        cdCompilationUnit
+                .getCDDefinition()
+                .getCDEnums()
+                .forEach(
+                        c -> c.setName(AstPythonGeneratorHelper.getSimpleTypeNameToGenerate(c.getName(), packageName,
+                                targetPath)));
     }
 
 }
