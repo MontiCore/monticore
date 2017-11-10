@@ -106,9 +106,6 @@ public class AstPythonGeneratorHelper extends AstEmfGeneratorHelper {
     @SuppressWarnings("unused")//used in the template
     public String getSuperClassesAsString(ASTCDClass astcdClass){
         StringBuilder builder = new StringBuilder();
-        //AstNode is always a superclass of each node
-        builder.append("AstNode");
-        builder.append(",");
         if (astcdClass.getSuperclass().isPresent()){
             builder.append(astcdClass.getSuperclass().get().toString());
             builder.append(',');
@@ -120,8 +117,6 @@ public class AstPythonGeneratorHelper extends AstEmfGeneratorHelper {
     @SuppressWarnings("unused")//used in the template
     public List<String> getSuperClasses(ASTCDClass astcdClass){
         List<String> ret = new ArrayList<>();
-        //AstNode is always a superclass of each node
-        ret.add("AstNode");
         if (astcdClass.getSuperclass().isPresent()){
             ret.add(astcdClass.getSuperclass().get().toString());
         }

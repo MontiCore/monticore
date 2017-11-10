@@ -39,8 +39,8 @@ ${tc.signature("ast", "astType")}
         # and only this subclass may exist in the AST and hence, only this class may
         # be handled by a visitor. All other cases are invalid an throw an exception!
         # This decision was made during MC Sprint Review on 16.03.2015.
-        if instanceof (self,${plainName}):
-            _visitor.handle((${plainName}) this)
+        if isinstance (self,${plainName}):
+            _visitor.handle(self)
         else:
             raise Exception("0xA7010${genHelper.getGeneratedErrorCode(ast)} Only handwritten class ${plainName} is supported for the visitor")
 <#else>

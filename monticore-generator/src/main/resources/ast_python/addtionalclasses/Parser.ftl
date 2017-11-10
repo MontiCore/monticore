@@ -38,6 +38,7 @@ from ${name}AntlrParser import ${name}AntlrParser
 from ${name}AntlrLexer import ${name}AntlrLexer
 from AstBuilderVisitor import AstBuilderVisitor
 
+
 class Parser(object):
     """
     This class contains several method used to parse handed over models and returns them as one or more AST trees.

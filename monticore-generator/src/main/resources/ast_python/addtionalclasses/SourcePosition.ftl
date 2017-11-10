@@ -44,9 +44,9 @@ class SourcePosition(object):
         :return
         :rtype SourcePosition
         """
-        return cls(0,0)
+        return cls(0, 0)
 
-    def __init__(self, _line = None, _column = None, _fileName = None ):
+    def __init__(self, _line=None, _column=None, _fileName=None ):
         """
         :param _line
         :type _line: int
@@ -66,7 +66,7 @@ class SourcePosition(object):
         """
         return self.__line
 
-    def setLine(self, _line = None):
+    def setLine(self, _line=None):
         """
         :param _line:
         :type _line: int
@@ -80,7 +80,7 @@ class SourcePosition(object):
         """
         return self.__column
 
-    def setColumn(self, _column = None):
+    def setColumn(self, _column=None):
         """
         :param _column:
         :type _column: int
@@ -94,14 +94,14 @@ class SourcePosition(object):
         """
         return self.__fileName
 
-    def setFileName(self, _fileName = None):
+    def setFileName(self, _fileName=None):
         """
         :param _fileName:
         :type _fileName: str
         """
         self.__fileName = _fileName
 
-    def equals(self, _o = None):
+    def equals(self, _o=None):
         """
         :param _o:
         :type _o: object
@@ -123,13 +123,14 @@ class SourcePosition(object):
         else:
             return '<' + str(self.__line) + ',' + str(self.__column) + '>'
 
-    def compareTo(self, _o = None):
+    def compareTo(self, _o=None):
         """
-        :param _o
-        :type _o: object
-        :return
+        :param _o a source position object
+        :type _o: SourcePosition
+        :return difference between the positions
         :rtype int
         """
+        assert (_o is not None and isinstance(SourcePosition))
         if self.__fileName is not None and _o.getFileName() is not None:
             if self.compareToValues(self.__fileName,_o.getFileName()) == 0:
                 if self.__line - _o.getLine() == 0:
