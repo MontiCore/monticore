@@ -291,6 +291,9 @@ public class CdDecorator {
       Log.error("0xA1062 CdDecorator error: Can't find symbol for class " + plainClassName);
     }
     
+    replaceMethodBodyTemplate(clazz, AstAdditionalMethods.get_Children.getDeclaration(),
+        new TemplateHookPoint("ast.additionalmethods.GetChildren", clazz, symbol.get()));
+        
     replaceMethodBodyTemplate(clazz, AstAdditionalMethods.deepEqualsWithOrder.getDeclaration(),
         new TemplateHookPoint("ast.additionalmethods.DeepEqualsWithOrder"));
         
