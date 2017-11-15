@@ -47,7 +47,7 @@ public class TemplateControllerConfiguration {
 
   private FreeMarkerTemplateEngine freeMarkerTemplateEngine;
 
-  private ITemplateControllerFactory templateControllerFactory;
+  private TemplateControllerFactory templateControllerFactory;
 
   /** the target directory for generated files */
   private File outputDirectory;
@@ -232,11 +232,11 @@ public class TemplateControllerConfiguration {
     this.handcodedPath = handcodedPath;
   }
 
-  void setTemplateControllerFactory(ITemplateControllerFactory templateControllerFactory) {
+  void setTemplateControllerFactory(TemplateControllerFactory templateControllerFactory) {
     this.templateControllerFactory = templateControllerFactory;
   }
 
-  public ITemplateControllerFactory getTemplateControllerFactory() {
+  public TemplateControllerFactory getTemplateControllerFactory() {
     return this.templateControllerFactory;
   }
 

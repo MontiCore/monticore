@@ -24,7 +24,7 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
-import de.monticore.generating.templateengine.ITemplateControllerFactory;
+import de.monticore.generating.templateengine.TemplateControllerFactory;
 import de.monticore.generating.templateengine.TemplateControllerConfiguration;
 
 /**
@@ -34,7 +34,7 @@ import de.monticore.generating.templateengine.TemplateControllerConfiguration;
  *          $Date$
  *
  */
-public class TemplateControllerMockFactory implements ITemplateControllerFactory {
+public class TemplateControllerMockFactory extends TemplateControllerFactory {
   
   private List<TemplateControllerMock> createdTemplateControllers = Lists.newArrayList();
   
@@ -42,7 +42,7 @@ public class TemplateControllerMockFactory implements ITemplateControllerFactory
   }
   
   /**
-   * @see mc.codegen.ITemplateControllerFactory#create(mc.codegen.TemplateControllerConfiguration, java.lang.String)
+   * @see mc.codegen.TemplateControllerFactory#create(mc.codegen.TemplateControllerConfiguration, java.lang.String)
    */
   @Override
   public TemplateControllerMock create(TemplateControllerConfiguration config, String templateName) {

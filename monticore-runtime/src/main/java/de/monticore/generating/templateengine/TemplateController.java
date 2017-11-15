@@ -66,7 +66,7 @@ public class TemplateController {
 
   private final FreeMarkerTemplateEngine freeMarkerTemplateEngine;
 
-  private ITemplateControllerFactory tcFactory;
+  private TemplateControllerFactory tcFactory;
 
   private final String currPackage;
 
@@ -590,7 +590,7 @@ public class TemplateController {
    * @param tcFactory the factory that should be used when new template
    * controllers are created.
    */
-  public void setTemplateControllerFactory(ITemplateControllerFactory tcFactory) {
+  public void setTemplateControllerFactory(TemplateControllerFactory tcFactory) {
     this.tcFactory = tcFactory;
   }
 

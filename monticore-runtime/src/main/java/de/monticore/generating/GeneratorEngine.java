@@ -31,7 +31,7 @@ import de.monticore.ast.ASTNode;
 import com.google.common.base.Joiner;
 
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.ITemplateControllerFactory;
+import de.monticore.generating.templateengine.TemplateControllerFactory;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.TemplateControllerConfiguration;
 import de.monticore.generating.templateengine.TemplateControllerConfigurationBuilder;
@@ -46,22 +46,21 @@ import de.se_rwth.commons.logging.Log;
 import freemarker.template.Configuration;
 
 /**
- * Represents the whole generator engine component. Clients usually need only this class when
- * generating.
+ * Represents the whole generator engine component.
+ * Clients usually need only this class when generating.
  *
- * @author (last commit) $Author$
  */
 public class GeneratorEngine {
 
   private final TemplateControllerConfiguration templateControllerConfig;
 
-  private final ITemplateControllerFactory templateControllerFactory;
+  private final TemplateControllerFactory templateControllerFactory;
 
   public final static String GENERATED_CLASS_SUFFIX = "TOP";
 
   public GeneratorEngine(
       GeneratorSetup generatorSetup,
-      ITemplateControllerFactory templateControllerFactory,
+      TemplateControllerFactory templateControllerFactory,
       FileReaderWriter fileHandler) {
     Log.errorIfNull(generatorSetup);
 
@@ -75,7 +74,7 @@ public class GeneratorEngine {
   }
 
   /* package visibility */TemplateControllerConfiguration createTemplateControllerConfiguration(
-      GeneratorSetup generatorSetup, ITemplateControllerFactory templateControllerFactory,
+      GeneratorSetup generatorSetup, TemplateControllerFactory templateControllerFactory,
       FileReaderWriter fileHandler) {
     if (templateControllerFactory == null) {
       templateControllerFactory = TemplateControllerFactory.getInstance();
