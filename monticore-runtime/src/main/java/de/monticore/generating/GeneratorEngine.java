@@ -52,15 +52,19 @@ import freemarker.template.Configuration;
  */
 public class GeneratorEngine {
 
+// Ziel MB, TODO,  XXX
+// verschwindet:
   private final TemplateControllerConfiguration templateControllerConfig;
 
+// Ziel MB, TODO,  XXX
+// verschwindet:
   private final TemplateControllerFactory templateControllerFactory;
 
   public final static String GENERATED_CLASS_SUFFIX = "TOP";
 
 // Ziel MB, TODO,  XXX
 // signatur und layout wie folgt:
-//  public GeneratorEngine(TemplateControllerConfiguration tcc)
+//  public GeneratorEngine(GeneratorSetup gs)
 //  {
 
   public GeneratorEngine(
