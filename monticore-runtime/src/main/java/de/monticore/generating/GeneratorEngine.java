@@ -58,6 +58,11 @@ public class GeneratorEngine {
 
   public final static String GENERATED_CLASS_SUFFIX = "TOP";
 
+// Ziel MB, TODO,  XXX
+// signatur und layout wie folgt:
+//  public GeneratorEngine(TemplateControllerConfiguration tcc)
+//  {
+
   public GeneratorEngine(
       GeneratorSetup generatorSetup,
       TemplateControllerFactory templateControllerFactory,
@@ -69,10 +74,17 @@ public class GeneratorEngine {
     this.templateControllerFactory = templateControllerConfig.getTemplateControllerFactory();
   }
 
+// Ziel MB, TODO,  XXX
+// Löschbar, oder?
   public GeneratorEngine(GeneratorSetup generatorSetup) {
     this(generatorSetup, null, null);
   }
 
+// Ziel MB, TODO,  XXX
+// anstatt "create" kann man das hier verschieben zur TCC-Builder-Klasse
+// die das als default instantiations nutzt, wenn die gebaut wird und
+// manche Werte nicht gesetzt sind
+//
   /* package visibility */TemplateControllerConfiguration createTemplateControllerConfiguration(
       GeneratorSetup generatorSetup, TemplateControllerFactory templateControllerFactory,
       FileReaderWriter fileHandler) {
@@ -141,8 +153,12 @@ public class GeneratorEngine {
    * @param node the ast node
    * @param templateArguments additional template arguments (if needed).
    */
-  public void generate(String templateName, Path filePath, ASTNode node,
-                       Object... templateArguments) {
+  public
+  void generate(String templateName,
+                Path filePath,
+		ASTNode node,
+                Object... templateArguments)
+  {
     Log.errorIfNull(node);
     checkArgument(!isNullOrEmpty(templateName));
     Log.errorIfNull(filePath);
@@ -164,9 +180,13 @@ public class GeneratorEngine {
    * @param node the ast node
    * @param templateArguments additional template arguments (if needed)
    */
-  public void generateAndConsiderHWC(String templateName, Path filePath, IterablePath handcodedPath,
-                                     ASTNode node,
-                                     Object... templateArguments) {
+  public
+  void generateAndConsiderHWC(String templateName,
+  			      Path filePath,
+			      IterablePath handcodedPath,
+                              ASTNode node,
+                              Object... templateArguments)
+  {
     Log.errorIfNull(filePath);
     if (handcodedPath.exists(filePath)) {
       Reporting.reportUseHandwrittenCodeFile(handcodedPath.getResolvedPath(filePath).get(),
