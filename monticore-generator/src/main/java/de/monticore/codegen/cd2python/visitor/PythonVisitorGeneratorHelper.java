@@ -21,6 +21,7 @@ package de.monticore.codegen.cd2python.visitor;
 
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.symboltable.GlobalScope;
+import de.monticore.symboltable.SymbolKind;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.symboltable.CDFieldSymbol;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
@@ -53,6 +54,23 @@ public class PythonVisitorGeneratorHelper extends GeneratorHelper{
      */
     public boolean isListNode(CDFieldSymbol cdFieldSymbol){
         return isListAstNode(cdFieldSymbol);
+    }
+
+    /**
+     * Removes the AST prefix as required to be conform to antlr.
+     * @param name the name of a class
+     * @return the name without prefix
+     */
+    public String getAntlrConformName(String name){
+        if (name != null){
+            return name.replaceFirst("^AST", "");
+        }else{
+            return "";
+        }
+    }
+
+    public String getNameSingular(CDFieldSymbol fieldSymbol){
+        return fieldSymbol.getName().substring(0,fieldSymbol.getName().length()-1);
     }
 
 }

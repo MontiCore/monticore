@@ -50,20 +50,21 @@ class AstBuilderVisitor(ParseTreeVisitor):
     <#list cd.getTypes() as type>
     <#if type.isClass() && !type.isAbstract()>
     <#assign astName = type.getName()>
-    def visit${astName}(self, ctx):
+    def visit${pythonHelper.getAntlrConformName(type.getName())}(self, ctx):
         <#-- first collect all values from the parse tree -->
         <#list type.getAllVisibleFields() as field >
             <#if pythonHelper.isListNode(field)>
         _${field.getName()} = list()
-        if callable(ctx.${field.getName()}):
-            for node in ctx.${field.getName()}():
+            <#assign name = pythonHelper.getNameSingular(field) >
+        if callable(ctx.${name}):
+            for node in ctx.${name}():
                 <#if pythonHelper.hasSubRule(field,cd)>
                 _${field.getName()}.append(self.visit(node))
                 <#else>
                 _${field.getName()}.append(node)
                 </#if>
         else:
-            for node in ctx.${field.getName()}:
+            for node in ctx.${name}:
                 <#if pythonHelper.hasSubRule(field,cd)>
                 _${field.getName()}.append(self.visit(node))
                 <#else>

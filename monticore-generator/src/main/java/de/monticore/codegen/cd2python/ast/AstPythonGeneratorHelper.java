@@ -23,6 +23,7 @@ import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast_emf.AstEmfGeneratorHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.literals.literals._ast.ASTNullLiteral;
 import de.monticore.symboltable.GlobalScope;
@@ -35,9 +36,12 @@ import de.se_rwth.commons.logging.Log;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.cert.TrustAnchor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static de.se_rwth.commons.StringTransformations.uncapitalize;
 
 public class AstPythonGeneratorHelper extends AstEmfGeneratorHelper {
 
@@ -303,6 +307,28 @@ public class AstPythonGeneratorHelper extends AstEmfGeneratorHelper {
                     handwrittenFile);
         }
         return result;
+    }
+
+
+    /**
+     * Returns the name of the start rule of a given grammar.
+     * @param grammarSymbol a grammar stored as a grammar object.
+     * @return the name of the rule
+     */
+    String getStartRuleName(MCGrammarSymbol grammarSymbol){
+        if (grammarSymbol.getStartProd().isPresent()) {
+            return uncapitalize(grammarSymbol.getStartProd().get().getName());
+        }
+        for (MCGrammarSymbol g: grammarSymbol.getSuperGrammarSymbols()) {
+            if (g.getStartProd().isPresent()) {
+                return uncapitalize(g.getStartProd().get().getName().toLowerCase());
+            }
+        }
+        return "";
+    }
+
+    public boolean isListAttribute(ASTCDAttribute astcdAttribute){
+        return isListType(TypesPrinter.printType(astcdAttribute.getType()));
     }
 
 }

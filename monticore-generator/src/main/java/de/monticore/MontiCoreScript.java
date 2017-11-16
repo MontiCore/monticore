@@ -501,10 +501,11 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param templatePath the path where the target shall be generated
    */
   public void generatePython(GlobalExtensionManagement glex, GlobalScope globalScope,
-                             ASTCDCompilationUnit astClassDiagram, File outputDirectory, IterablePath templatePath){
+                             ASTCDCompilationUnit astClassDiagram, File outputDirectory,
+                             IterablePath templatePath, ASTMCGrammar grammar){
     boolean emfCompatible = false;
     AstPythonGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory, templatePath,
-            emfCompatible);
+            emfCompatible, grammar);
     PythonVisitorGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
   }
 

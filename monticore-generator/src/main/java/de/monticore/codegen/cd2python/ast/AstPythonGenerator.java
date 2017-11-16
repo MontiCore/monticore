@@ -19,11 +19,17 @@
 
 package de.monticore.codegen.cd2python.ast;
 
+import com.google.common.base.Joiner;
+import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
+import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.grammar.MCGrammarInfo;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
@@ -31,6 +37,7 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDEnum;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
 import de.se_rwth.commons.Names;
+import de.se_rwth.commons.logging.Log;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -52,7 +59,7 @@ public class AstPythonGenerator {
      * @param outputDirectory - target directory
      */
     public static void generate(GlobalExtensionManagement glex, GlobalScope globalScope, ASTCDCompilationUnit astClassDiagram,
-                                File outputDirectory, IterablePath templatePath, boolean emfCompatible) {
+                                File outputDirectory, IterablePath templatePath, boolean emfCompatible, ASTMCGrammar astGrammar) {
         final String diagramName = astClassDiagram.getCDDefinition().getName();
         final GeneratorSetup setup = new GeneratorSetup(outputDirectory);
         setup.setModelName(diagramName);
@@ -60,6 +67,19 @@ public class AstPythonGenerator {
         AstPythonGeneratorHelper astHelper = new AstPythonGeneratorHelper(astClassDiagram, globalScope);
         glex.setGlobalValue("astHelper", astHelper);
         glex.setGlobalValue("pythonNameHelper", new PythonNamesHelper());
+
+        //TODO by KP: The following part is not really nice: In order to get the starting rule we have
+        //TODO by KP: to resolve the whole symbol...
+        String qualifiedGrammarName = astGrammar.getPackage().isEmpty()
+                ? astGrammar.getName()
+                : Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackage()),
+                astGrammar.getName());
+        MCGrammarSymbol grammarSymbol = globalScope.<MCGrammarSymbol> resolve(
+                qualifiedGrammarName, MCGrammarSymbol.KIND).orElse(null);
+        Log.errorIfNull(grammarSymbol, "0xA4034 Grammar " + qualifiedGrammarName
+                + " can't be resolved in the scope " + globalScope);
+        // TODO: grammarInfo as parameter for this method?
+        MCGrammarInfo grammarInfo = new MCGrammarInfo(grammarSymbol);
 
         setup.setGlex(glex);
         // we deactivate tracing in order to preserve the sensitive syntax of python
@@ -77,10 +97,12 @@ public class AstPythonGenerator {
                     Names.getSimpleName(clazz.getName()) + PYTHON_EXTENSION);
             if (astHelper.isAstClass(clazz)) {
                 generator.generate("ast_python.AstClass", filePath, clazz, clazz, astHelper.getASTBuilder(clazz));
+                moduleInitList.add(clazz.getName());
             }
             else if (!AstGeneratorHelper.isBuilderClass(astClassDiagram.getCDDefinition(), clazz)) {
                 generator.generate("ast_python.Class", filePath, clazz);
             }
+
         }
         //interfaces are per-se not a part of python contract system, and are therefore implemented as abstract classes
         for (ASTCDInterface interf : astClassDiagram.getCDDefinition().getCDInterfaces()) {
@@ -110,15 +132,19 @@ public class AstPythonGenerator {
                 "SourcePosition" + PYTHON_EXTENSION);
         generator.generate("ast_python.addtionalclasses.SourcePosition", filePath,
                 astClassDiagram.getCDDefinition().getCDEnums().get(0));// the last argument in order to meed the signature
-        //generate the parser module
+        //TODO by KP: currently not supported: generate the parser module
+        /*
         filePath = Paths.get(Names.getPathFromPackage(astPackage),
                 "Parser" + PYTHON_EXTENSION);
         String name = astClassDiagram.getCDDefinition().getName();
         generator.generate("ast_python.addtionalclasses.Parser", filePath,
-                astClassDiagram.getCDDefinition().getCDEnums().get(0),name);
+                astClassDiagram.getCDDefinition().getCDEnums().get(0),name,
+                astHelper.getStartRuleName(grammarInfo.getGrammarSymbol()));
+        */
         //add the remaining pre-generated files to the list of inits
         moduleInitList.add("Comment");
-        moduleInitList.add("Parser");
+        //TODO by KP:The Parser is currently not supported
+        // moduleInitList.add("Parser");
         moduleInitList.add("SourcePosition");
         //and generate the init file finally
         filePath = Paths.get(Names.getPathFromPackage(astPackage),

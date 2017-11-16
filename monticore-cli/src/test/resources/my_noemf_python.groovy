@@ -76,7 +76,7 @@ while (grammarIterator.hasNext()) {
             storeInCdFile(astClassDiagramWithST, out)
 
             // M5 + M6: generate parser and wrapper
-            generateParser(glex, astGrammar, globalScope, handcodedPath, out,false,Languages.PYTHON_2)
+            generateParser(glex, astGrammar, globalScope, handcodedPath, out,true,Languages.PYTHON_2)
 
             // store result of the first pass
             storeCDForGrammar(astGrammar, astClassDiagramWithST)
@@ -103,8 +103,8 @@ for (astGrammar in getParsedGrammars()) {
     // M?: generate symbol table
     // This is currently not available for Python as target.
 
-    // M9: generate AST classes
-    generatePython(glex, globalScope, astClassDiagram, out, templatePath)
+    // M9: generate AST classes, grammar has to be provided to find the first rule
+    generatePython(glex, globalScope, astClassDiagram, out, templatePath, astGrammar)
 
     Log.info("Grammar " + astGrammar.getName() + " processed successfully!", LOG_ID)
 

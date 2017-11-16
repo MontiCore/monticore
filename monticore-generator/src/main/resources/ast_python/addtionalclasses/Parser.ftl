@@ -31,7 +31,7 @@ software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
 <#-- This template generates a single parser for the corresponding language -->
-${tc.signature("name")}
+${tc.signature("name","startRule")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
 from antlr4 import *
 from ${name}AntlrParser import ${name}AntlrParser
@@ -66,4 +66,4 @@ class Parser(object):
         parser = ${name}AntlrParser(stream)
         # create a new visitor and return the new AST
         astBuilderVisitor = AstBuilderVisitor()
-        return astBuilderVisitor.visit(parser.${name}())
+        return astBuilderVisitor.visit(parser.${startRule}())

@@ -40,13 +40,13 @@ class AstNode(object):
     """
     Foundation class for all arbitrary AST classes.
     """
+    __metaclass__ = ABCMeta
     start = None
     end = None
     precomments = list()
     postcomments = list()
 
-
-    def __init__(_start=None, _end=None, _precomments = list(), _postcomments = list()):
+    def __init__(self, _start=None, _end=None, _precomments=list(), _postcomments=list()):
         self.start = _start
         self.end = _end
         self.precomments = _precomments
@@ -63,7 +63,7 @@ class AstNode(object):
         else:
             return SourcePosition.getDefaultSourcePosition()
 
-    def setSourcePositionEnd(self, _end = None):
+    def setSourcePositionEnd(self, _end=None):
         """
         Sets the end position of this ASTNode
         :param _end end position of this ASTNode
@@ -83,7 +83,7 @@ class AstNode(object):
         else:
             return SourcePosition.getDefaultSourcePosition()
 
-    def setSourcePositionStart(self, _start = None):
+    def setSourcePositionStart(self, _start=None):
         """
         Sets the start position of this ASTNode
         :param _start: start position of this ASTNode
@@ -101,7 +101,7 @@ class AstNode(object):
         """
         return self.precomments
 
-    def setPreComments(self, _precomments = None):
+    def setPreComments(self, _precomments=None):
         """
         Sets list of all comments which are associated with this ASTNode and are
         prior to the ASTNode in the input file
@@ -120,7 +120,7 @@ class AstNode(object):
         """
         return self.postcomments
 
-    def setPostComments(self, _postcomments = None):
+    def setPostComments(self, _postcomments=None):
         """
         Sets list of all comments which are associated with this ASTNode and can be
         found after the ASTNode in the input file.
@@ -130,7 +130,7 @@ class AstNode(object):
         assert (_postcomments is not None and isinstance(_postcomments, list)), 'Not a valid postcomments collection object!'
         self.postcomments = _postcomments
 
-    def deepClone(self, _result = None ):
+    def deepClone(self, _result=None):
         """
         Performs a deep clone of this ASTNode and all of its successors
         :return Clone of current ASTNode with a parent which is equal to null
@@ -151,7 +151,7 @@ class AstNode(object):
         else:
             pass
 
-    def equalAttributes(self, _o = None):
+    def equalAttributes(self, _o=None):
         """
         :param _o: an arbitrary object
         :type _o: object
@@ -162,7 +162,7 @@ class AstNode(object):
             return False
         raise CompareNotSupportedException("0xA4041 Method equalAttributes is not implemented properly in class: " + str(type(_o)))
 
-    def equalsWithComments(self, _o = None ):
+    def equalsWithComments(self, _o=None ):
         """
         :param _o: a single object
         :type _o: object
@@ -173,7 +173,7 @@ class AstNode(object):
             return False
         raise CompareNotSupportedException("0xA4042 Method equalsWithComments is not implemented properly in class: "+ str(type(_o)))
 
-    def deepEquals(self, _o = None, _forceSameOrder = False ):
+    def deepEquals(self, _o=None, _forceSameOrder=False):
         """
         Compare this object to another Object. Do not take comments into account.
         :param _o: the object to compare this node to
@@ -186,7 +186,7 @@ class AstNode(object):
             return False
         raise CompareNotSupportedException("0xA4045 Method deepEquals is not implemented properly in class: " + str(type(_o)))
 
-    def deepEqualsWithComments(self, _o = None, _forceSameOrder = False ):
+    def deepEqualsWithComments(self, _o=None, _forceSameOrder=False ):
         """
         Compare this object to another Object. Take comments into account. This
         method returns the same value as <tt>deepEqualsWithComment(Object o, boolean forceSameOrder)</tt> method

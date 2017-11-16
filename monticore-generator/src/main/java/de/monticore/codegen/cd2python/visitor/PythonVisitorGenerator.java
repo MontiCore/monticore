@@ -25,6 +25,9 @@ import de.monticore.codegen.cd2python.visitor.PythonVisitorGeneratorHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.grammar.grammar._ast.ASTASTRule;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
@@ -66,10 +69,10 @@ public class PythonVisitorGenerator {
         final Path simpleVisitorFilePath = Paths.get(path, visitorHelper.getVisitorType() + ".py");
         generator.generate("visitor_python.SimpleVisitor", simpleVisitorFilePath, astClassDiagram,
                 astClassDiagram.getCDDefinition(), astPackage, cd);
-        // and the ast builder
-        final Path astBuilderVisitorFilePath = Paths.get(path, "AstBuilderVisitor" + ".py");
-        generator.generate("visitor_python.AstBuilderVisitor", astBuilderVisitorFilePath , astClassDiagram,
-                astClassDiagram.getCDDefinition(), astPackage, cd);
+        //TODO by KP: currently not supported due to bugs in ParserGenerator: and the ast builder
+        //final Path astBuilderVisitorFilePath = Paths.get(path, "AstBuilderVisitor" + ".py");
+        //generator.generate("visitor_python.AstBuilderVisitor", astBuilderVisitorFilePath , astClassDiagram,
+        //        astClassDiagram.getCDDefinition(), astPackage, cd );
 
         Log.trace(LOGGER_NAME, "Generated python visitors for the diagram: " + diagramName);
     }
