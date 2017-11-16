@@ -250,7 +250,13 @@ public class TemplateControllerConfiguration {
    *
    * @since 4.0.1
    */
-  // TODO: entfernen 
+// Ziel MB, TODO,  XXX
+// Diese Innere Klasse ist unnötig: entfernen
+// getLog() kommt weg.
+// Und wenn das benutzt sein würde, dann 
+// die Methoden trace, debug etc. direkt in den TemplateController einsetzen
+// (nicht in die TCConfig)
+ // TODO: entfernen 
   // z:. weil unnötig, oder die Methoden in den templatecontroller einsetzen
   public class TemplateLogger {
 
