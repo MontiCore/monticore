@@ -41,18 +41,20 @@ class SourcePosition(object):
     @classmethod
     def getDefaultSourcePosition(cls):
         """
-        :return
+        Returns a standard source position of (0,0);
+        :return a source position object
         :rtype SourcePosition
         """
         return cls(0, 0)
 
     def __init__(self, _line=None, _column=None, _fileName=None ):
         """
-        :param _line
+        Constructor of this class.
+        :param _line the line position
         :type _line: int
-        :param _column:
+        :param _column: the column position
         :type _column: int
-        :param _fileName:
+        :param _fileName: the name of the artifact
         :type _fileName: str
         """
         self.__line = _line
@@ -61,51 +63,58 @@ class SourcePosition(object):
 
     def getLine(self):
         """
-        :return
+        Returns the line of this position.
+        :return the line of this position
         :rtype int
         """
         return self.__line
 
     def setLine(self, _line=None):
         """
-        :param _line:
+        Sets the line of this position.
+        :param _line: the new line
         :type _line: int
         """
         self.__line = _line
 
     def getColumn(self):
         """
-        :return
+        Returns the column of this position
+        :return the column of this position
         :rtype int
         """
         return self.__column
 
     def setColumn(self, _column=None):
         """
-        :param _column:
+        Sets the column of this position
+        :param _column: the new column
         :type _column: int
         """
         self.__column = _column
 
     def getFileName(self):
         """
-        :return
+        Return the name of artifact of this source position.
+        :return the name of the artifact
         :rtype None or str
         """
         return self.__fileName
 
     def setFileName(self, _fileName=None):
         """
-        :param _fileName:
+        Sets the name of the artifact of this source position.
+        :param _fileName: the new name
         :type _fileName: str
         """
         self.__fileName = _fileName
 
     def equals(self, _o=None):
         """
-        :param _o:
+        The equals method.
+        :param _o: a different object
         :type _o: object
-        :return
+        :return True if equal, otherwise False.
         :rtype bool
         """
         if not isinstance(_o,SourcePosition):
@@ -113,7 +122,7 @@ class SourcePosition(object):
         else:
             return (self.__line == _o.getLine()) and (self.__column == _o.getColumn()) and (self.__fileName == _o.getFileName())
 
-    def toString(self):
+    def __str__(self):
         """
         :return
         :rtype str
@@ -147,7 +156,8 @@ class SourcePosition(object):
 
     def clone(self):
         """
-        :return
+        Creates a new source position object with the same position.
+        :return a new source position obect.
         :rtype SourcePosition
         """
         if self.__fileName is not None:
@@ -157,7 +167,8 @@ class SourcePosition(object):
 
     def compareToValues(self, _this=None, _that=None):
         """
-        :return
+        A compare to method as used to compare two objects
+        :return the difference between the two objects.
         :rtype int
         """
         return ((_this > _that) - (_this < _that))
