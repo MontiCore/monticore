@@ -69,10 +69,9 @@ public class PythonVisitorGenerator {
         final Path simpleVisitorFilePath = Paths.get(path, visitorHelper.getVisitorType() + ".py");
         generator.generate("visitor_python.SimpleVisitor", simpleVisitorFilePath, astClassDiagram,
                 astClassDiagram.getCDDefinition(), astPackage, cd);
-        //TODO by KP: currently not supported due to bugs in ParserGenerator: and the ast builder
-        //final Path astBuilderVisitorFilePath = Paths.get(path, "AstBuilderVisitor" + ".py");
-        //generator.generate("visitor_python.AstBuilderVisitor", astBuilderVisitorFilePath , astClassDiagram,
-        //        astClassDiagram.getCDDefinition(), astPackage, cd );
+        final Path astBuilderVisitorFilePath = Paths.get(path, "AstBuilderVisitor" + ".py");
+        generator.generate("visitor_python.AstBuilderVisitor", astBuilderVisitorFilePath , astClassDiagram,
+                astClassDiagram.getCDDefinition(), astPackage, cd );
 
         Log.trace(LOGGER_NAME, "Generated python visitors for the diagram: " + diagramName);
     }

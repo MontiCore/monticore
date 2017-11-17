@@ -68,20 +68,6 @@ public class AstPythonGenerator {
         AstPythonGeneratorHelper astHelper = new AstPythonGeneratorHelper(astClassDiagram, globalScope);
         glex.setGlobalValue("astHelper", astHelper);
         glex.setGlobalValue("pythonNameHelper", new PythonNamesHelper());
-
-        //TODO by KP: The following part is not really nice: In order to get the starting rule we have
-        //TODO by KP: to resolve the whole symbol...
-        String qualifiedGrammarName = astGrammar.getPackage().isEmpty()
-                ? astGrammar.getName()
-                : Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackage()),
-                astGrammar.getName());
-        MCGrammarSymbol grammarSymbol = globalScope.<MCGrammarSymbol> resolve(
-                qualifiedGrammarName, MCGrammarSymbol.KIND).orElse(null);
-        Log.errorIfNull(grammarSymbol, "0xA4034 Grammar " + qualifiedGrammarName
-                + " can't be resolved in the scope " + globalScope);
-        // TODO: grammarInfo as parameter for this method?
-        MCGrammarInfo grammarInfo = new MCGrammarInfo(grammarSymbol);
-
         setup.setGlex(glex);
         // we deactivate tracing in order to preserve the sensitive syntax of python
         setup.setTracing(false);
@@ -136,8 +122,6 @@ public class AstPythonGenerator {
                 "SourcePosition" + PYTHON_EXTENSION);
         generator.generate("ast_python.addtionalclasses.SourcePosition", filePath,
                 astClassDiagram.getCDDefinition().getCDEnums().get(0));// the last argument in order to meed the signature
-        //TODO by KP: currently not supported: generate the parser module
-
         filePath = Paths.get(Names.getPathFromPackage(astPackage),
                 "Parser" + PYTHON_EXTENSION);
         // the name of the overall language, it is required to have a correct link to the generated Lexer/Parser
@@ -146,8 +130,7 @@ public class AstPythonGenerator {
                 filePath,astClassDiagram.getCDDefinition().getCDEnums().get(0), name,parsableClasses);
         //add the remaining pre-generated files to the list of inits
         moduleInitList.add("Comment");
-        //TODO by KP:The Parser is currently not supported
-        // moduleInitList.add("Parser");
+        moduleInitList.add("Parser");
         moduleInitList.add("SourcePosition");
         //and generate the init file finally
         filePath = Paths.get(Names.getPathFromPackage(astPackage),

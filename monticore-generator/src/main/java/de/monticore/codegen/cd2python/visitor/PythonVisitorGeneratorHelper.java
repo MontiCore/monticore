@@ -65,7 +65,7 @@ public class PythonVisitorGeneratorHelper extends GeneratorHelper{
      */
     public static String getAntlrConformName(String name){
         if (name != null){
-            return uncapitalize(name.replaceFirst("^AST", ""));
+            return name.replaceFirst("^AST", "");
         }else{
             return "";
         }

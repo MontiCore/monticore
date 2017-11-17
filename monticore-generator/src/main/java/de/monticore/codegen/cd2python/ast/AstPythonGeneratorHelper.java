@@ -273,6 +273,12 @@ public class AstPythonGeneratorHelper extends AstEmfGeneratorHelper {
         return astcdClass.getModifier().isPresent() && astcdClass.getModifier().get().isAbstract();
     }
 
+    @SuppressWarnings("unused")//used in the template
+    public boolean isListAttribute(ASTCDAttribute astcdAttribute){
+        return isListType(TypesPrinter.printType(astcdAttribute.getType()));
+    }
+
+
     public static String getSimpleTypeNameToGenerate(String simpleName, String packageName,
                                                      IterablePath targetPath) {
         if (existsHandwrittenClass(simpleName, packageName, targetPath)) {
@@ -328,20 +334,18 @@ public class AstPythonGeneratorHelper extends AstEmfGeneratorHelper {
         return "";
     }
 
-    public boolean isListAttribute(ASTCDAttribute astcdAttribute){
-        return isListType(TypesPrinter.printType(astcdAttribute.getType()));
-    }
-
     /**
      * Removes the AST prefix as required to be conform to antlr.
      * @param name the name of a class
      * @return the name without prefix
      */
     public static String getAntlrConformName(String name){
-        return PythonVisitorGeneratorHelper.getAntlrConformName(name);
+        return uncapitalize(PythonVisitorGeneratorHelper.getAntlrConformName(name));
     }
 
 }
+
+
 
 
 
