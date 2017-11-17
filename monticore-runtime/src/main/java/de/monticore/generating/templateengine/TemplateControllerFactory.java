@@ -39,10 +39,6 @@ public class TemplateControllerFactory {
     return instance;
   }
   
-  /**
-   * @see de.monticore.generating.templateengine.TemplateControllerFactory#create(de.monticore.generating.templateengine.TemplateControllerConfiguration, java.lang.String)
-   */
-  @Override
   public TemplateController create(TemplateControllerConfiguration config, String templateName) {
     return new TemplateController(config, templateName);
   }
