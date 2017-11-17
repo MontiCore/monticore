@@ -22,11 +22,8 @@ package de.monticore.generating.templateengine;
 /**
  * TODO: Write me!
  *
- * @author  (last commit) $Author$
- *          $Date$
- *
  */
-public class TemplateControllerFactory implements ITemplateControllerFactory {
+public class TemplateControllerFactory {
   
   protected static TemplateControllerFactory instance;
   
@@ -42,10 +39,6 @@ public class TemplateControllerFactory implements ITemplateControllerFactory {
     return instance;
   }
   
-  /**
-   * @see de.monticore.generating.templateengine.ITemplateControllerFactory#create(de.monticore.generating.templateengine.TemplateControllerConfiguration, java.lang.String)
-   */
-  @Override
   public TemplateController create(TemplateControllerConfiguration config, String templateName) {
     return new TemplateController(config, templateName);
   }

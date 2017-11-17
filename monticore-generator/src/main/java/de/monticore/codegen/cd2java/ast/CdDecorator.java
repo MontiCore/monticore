@@ -153,6 +153,7 @@ public class CdDecorator {
       addSetter(clazz, astHelper);
       addSymbolGetter(clazz, astHelper);
       addNodeGetter(clazz, astHelper);
+
     }
     
     cdDefinition.getCDClasses().forEach(c -> makeAbstractIfHWC(c));
@@ -245,7 +246,7 @@ public class CdDecorator {
         + GeneratorHelper.getPlainGetter(attribute) + nameSuffix + "() ;";
       HookPoint getMethodBody = new TemplateHookPoint(
         "ast.additionalmethods.GetReferencedNode", clazz,
-        attribute.getName(), referencedSymbol, referencedNode);
+        attribute.getName(), referencedSymbol, symbolName);
       replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
     }
   }
@@ -290,6 +291,9 @@ public class CdDecorator {
       Log.error("0xA1062 CdDecorator error: Can't find symbol for class " + plainClassName);
     }
     
+    replaceMethodBodyTemplate(clazz, AstAdditionalMethods.get_Children.getDeclaration(),
+        new TemplateHookPoint("ast.additionalmethods.GetChildren", clazz, symbol.get()));
+        
     replaceMethodBodyTemplate(clazz, AstAdditionalMethods.deepEqualsWithOrder.getDeclaration(),
         new TemplateHookPoint("ast.additionalmethods.DeepEqualsWithOrder"));
         

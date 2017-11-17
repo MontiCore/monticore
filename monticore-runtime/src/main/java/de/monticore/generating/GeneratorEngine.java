@@ -31,7 +31,7 @@ import de.monticore.ast.ASTNode;
 import com.google.common.base.Joiner;
 
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.ITemplateControllerFactory;
+import de.monticore.generating.templateengine.TemplateControllerFactory;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.TemplateControllerConfiguration;
 import de.monticore.generating.templateengine.TemplateControllerConfigurationBuilder;
@@ -46,22 +46,30 @@ import de.se_rwth.commons.logging.Log;
 import freemarker.template.Configuration;
 
 /**
- * Represents the whole generator engine component. Clients usually need only this class when
- * generating.
+ * Represents the whole generator engine component.
+ * Clients usually need only this class when generating.
  *
- * @author (last commit) $Author$
  */
 public class GeneratorEngine {
 
+// Ziel MB, TODO,  XXX
+// verschwindet:
   private final TemplateControllerConfiguration templateControllerConfig;
 
-  private final ITemplateControllerFactory templateControllerFactory;
+// Ziel MB, TODO,  XXX
+// verschwindet:
+  private final TemplateControllerFactory templateControllerFactory;
 
   public final static String GENERATED_CLASS_SUFFIX = "TOP";
 
+// Ziel MB, TODO,  XXX
+// signatur und layout wie folgt:
+//  public GeneratorEngine(GeneratorSetup gs)
+//  {
+
   public GeneratorEngine(
       GeneratorSetup generatorSetup,
-      ITemplateControllerFactory templateControllerFactory,
+      TemplateControllerFactory templateControllerFactory,
       FileReaderWriter fileHandler) {
     Log.errorIfNull(generatorSetup);
 
@@ -70,12 +78,19 @@ public class GeneratorEngine {
     this.templateControllerFactory = templateControllerConfig.getTemplateControllerFactory();
   }
 
+// Ziel MB, TODO,  XXX
+// Löschbar, oder?
   public GeneratorEngine(GeneratorSetup generatorSetup) {
     this(generatorSetup, null, null);
   }
 
+// Ziel MB, TODO,  XXX
+// anstatt "create" kann man das hier verschieben zur TCC-Builder-Klasse
+// die das als default instantiations nutzt, wenn die gebaut wird und
+// manche Werte nicht gesetzt sind
+//
   /* package visibility */TemplateControllerConfiguration createTemplateControllerConfiguration(
-      GeneratorSetup generatorSetup, ITemplateControllerFactory templateControllerFactory,
+      GeneratorSetup generatorSetup, TemplateControllerFactory templateControllerFactory,
       FileReaderWriter fileHandler) {
     if (templateControllerFactory == null) {
       templateControllerFactory = TemplateControllerFactory.getInstance();
@@ -142,8 +157,12 @@ public class GeneratorEngine {
    * @param node the ast node
    * @param templateArguments additional template arguments (if needed).
    */
-  public void generate(String templateName, Path filePath, ASTNode node,
-                       Object... templateArguments) {
+  public
+  void generate(String templateName,
+                Path filePath,
+		ASTNode node,
+                Object... templateArguments)
+  {
     Log.errorIfNull(node);
     checkArgument(!isNullOrEmpty(templateName));
     Log.errorIfNull(filePath);
@@ -165,9 +184,13 @@ public class GeneratorEngine {
    * @param node the ast node
    * @param templateArguments additional template arguments (if needed)
    */
-  public void generateAndConsiderHWC(String templateName, Path filePath, IterablePath handcodedPath,
-                                     ASTNode node,
-                                     Object... templateArguments) {
+  public
+  void generateAndConsiderHWC(String templateName,
+  			      Path filePath,
+			      IterablePath handcodedPath,
+                              ASTNode node,
+                              Object... templateArguments)
+  {
     Log.errorIfNull(filePath);
     if (handcodedPath.exists(filePath)) {
       Reporting.reportUseHandwrittenCodeFile(handcodedPath.getResolvedPath(filePath).get(),

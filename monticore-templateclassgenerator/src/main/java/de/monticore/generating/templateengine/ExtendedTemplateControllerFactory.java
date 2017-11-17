@@ -18,7 +18,7 @@
  */
 package de.monticore.generating.templateengine;
 
-import de.monticore.generating.templateengine.ITemplateControllerFactory;
+import de.monticore.generating.templateengine.TemplateControllerFactory;
 import de.monticore.generating.templateengine.TemplateControllerConfiguration;
 
 /**
@@ -26,10 +26,10 @@ import de.monticore.generating.templateengine.TemplateControllerConfiguration;
  * @author  Jerome Pfeiffer
  *
  */
-public class ExtendedTemplateControllerFactory implements ITemplateControllerFactory{
+public class ExtendedTemplateControllerFactory extends TemplateControllerFactory{
 
   /**
-   * @see de.monticore.generating.templateengine.ITemplateControllerFactory#create(de.monticore.generating.templateengine.TemplateControllerConfiguration, java.lang.String)
+   * @see de.monticore.generating.templateengine.TemplateControllerFactory#create(de.monticore.generating.templateengine.TemplateControllerConfiguration, java.lang.String)
    */
   @Override
   public ExtendedTemplateController create(TemplateControllerConfiguration config, String templateName) {

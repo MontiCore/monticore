@@ -212,7 +212,7 @@ public class CdDecoratorTest {
     }
     
     for (ASTCDClass clazz : cdDefinition.getCDClasses()) {
-      assertEquals(10, clazz.getCDMethods().size());
+      assertEquals(11, clazz.getCDMethods().size());
     }
     
     // Check if there are all additional methods defined in the given CD class

@@ -29,7 +29,6 @@ import java.util.Optional;
 import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.IterablePath;
-import de.se_rwth.commons.logging.Log;
 
 /**
  * Holds settings for {@link TemplateController}. These settings are usually set
@@ -47,7 +46,7 @@ public class TemplateControllerConfiguration {
 
   private FreeMarkerTemplateEngine freeMarkerTemplateEngine;
 
-  private ITemplateControllerFactory templateControllerFactory;
+  private TemplateControllerFactory templateControllerFactory;
 
   /** the target directory for generated files */
   private File outputDirectory;
@@ -232,66 +231,13 @@ public class TemplateControllerConfiguration {
     this.handcodedPath = handcodedPath;
   }
 
-  void setTemplateControllerFactory(ITemplateControllerFactory templateControllerFactory) {
+  void setTemplateControllerFactory(TemplateControllerFactory templateControllerFactory) {
     this.templateControllerFactory = templateControllerFactory;
   }
 
-  public ITemplateControllerFactory getTemplateControllerFactory() {
+  public TemplateControllerFactory getTemplateControllerFactory() {
     return this.templateControllerFactory;
   }
 
-  private TemplateLogger log = new TemplateLogger();
-  public TemplateLogger getLog(){
-    return log;
-  }
-
-  /**
-   * Provides logging for templates.
-   *
-   * @since 4.0.1
-   */
-  // TODO: entfernen 
-  // z:. weil unnötig, oder die Methoden in den templatecontroller einsetzen
-  public class TemplateLogger {
-
-    private TemplateLogger() {
-    }
-
-    /**
-     * @see de.se_rwth.commons.logging.Log#trace(String, String)
-     */
-    public void trace(String msg, String logName) {
-      Log.trace(msg, logName);
-    }
-
-    /**
-     * @see de.se_rwth.commons.logging.Log#debug(String, String)
-     */
-    public void debug(String msg, String logName) {
-      Log.debug(msg, logName);
-    }
-
-    /**
-     * @see de.se_rwth.commons.logging.Log#info(String, String)
-     */
-    public void info(String msg, String logName) {
-      Log.info(msg, logName);
-    }
-
-    /**
-     * @see de.se_rwth.commons.logging.Log#warn(String)
-     */
-    public void warn(String msg) {
-      Log.warn(msg);
-    }
-
-    /**
-     * @see de.se_rwth.commons.logging.Log#error(String)
-     */
-    public void error(String msg) {
-      Log.error(msg);
-    }
-
-  }
 
 }

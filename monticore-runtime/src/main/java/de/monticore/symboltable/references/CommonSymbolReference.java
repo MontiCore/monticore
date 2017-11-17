@@ -76,7 +76,8 @@ public class CommonSymbolReference<T extends Symbol> implements SymbolReference<
       referencedSymbol = loadReferencedSymbol().orElse(null);
 
       if (!isReferencedSymbolLoaded()) {
-        throw new FailedLoadingSymbol(referencedName);
+        Log.error("0xA1038 " + SymbolReference.class.getSimpleName() + " Could not load full information of '" +
+            referencedName + "' (Kind " + referencedKind.getName() + ").");
       }
     }
     else {
@@ -115,11 +116,9 @@ public class CommonSymbolReference<T extends Symbol> implements SymbolReference<
           SymbolReference.class.getSimpleName());
     }
     else {
-      Log.error("0xA1038 " + SymbolReference.class.getSimpleName() + " Could not load full information of '" +
-          referencedName + "' (Kind " + referencedKind.getName() + ").");
+      Log.debug("Cannot load full information of '" + referencedName,
+          SymbolReference.class.getSimpleName());
     }
-
-
     return resolvedSymbol;
   }
 

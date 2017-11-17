@@ -42,7 +42,7 @@ public class TemplateControllerConfigurationBuilder {
 
   private FreeMarkerTemplateEngine freeMarkerTemplateEngine;
 
-  private ITemplateControllerFactory templateControllerFactory;
+  private TemplateControllerFactory templateControllerFactory;
 
   private FileReaderWriter fileHandler;
 
@@ -86,7 +86,7 @@ public class TemplateControllerConfigurationBuilder {
   }
 
   public TemplateControllerConfigurationBuilder templateControllerFactory(
-      ITemplateControllerFactory templateControllerFactory) {
+      TemplateControllerFactory templateControllerFactory) {
     this.templateControllerFactory = templateControllerFactory;
     return this;
   }

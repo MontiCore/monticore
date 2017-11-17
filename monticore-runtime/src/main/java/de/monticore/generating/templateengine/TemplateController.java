@@ -58,15 +58,28 @@ import freemarker.template.TemplateModelException;
 // TODO PN check if all method docs are up to date.
 public class TemplateController {
 
+  /**
+   * Variable name for the current node (used in the templates)
+   **/
+  public static final String AST = "ast";
+
+  /**
+   * Variable name for the current TemplateController (used in the templates)
+   **/
+  public static final String TC = "tc";
+
+  /**
+   * Variable name for the GLEX object (used in the templates)
+   **/
+  public static final String GLEX = "glex";
+
+  /**
+   * Variable name for the logging object (used in the templates)
+   **/
+  public static final String LOG = "log";
+
+
   private final TemplateControllerConfiguration config;
-
-  private final GlobalExtensionManagement glex;
-
-  private final FileReaderWriter fileHandler;
-
-  private final FreeMarkerTemplateEngine freeMarkerTemplateEngine;
-
-  private ITemplateControllerFactory tcFactory;
 
   private final String currPackage;
 
@@ -92,14 +105,9 @@ public class TemplateController {
 
   protected TemplateController(TemplateControllerConfiguration tcConfig, String templatename) {
     this.config = tcConfig;
-    this.glex = tcConfig.getGlEx();
-    this.fileHandler = tcConfig.getFileHandler();
-    this.freeMarkerTemplateEngine = tcConfig.getFreeMarkerTemplateEngine();
 
     this.templatename = templatename;
     this.currPackage = Names.getQualifier(templatename);
-
-    this.tcFactory = tcConfig.getTemplateControllerFactory();
 
     // TODO PN blocker
     // GenLogger.updateTemplateOperator(this);
@@ -145,7 +153,7 @@ public class TemplateController {
     StringBuilder ret = new StringBuilder();
     for (String template : templatenames) {
       for (ASTNode ast : astlist) {
-        List<HookPoint> templateForwardings = glex.getTemplateForwardings(template, ast);
+        List<HookPoint> templateForwardings = config.getGlEx().getTemplateForwardings(template, ast);
         for (HookPoint templateHp : templateForwardings) {
           ret.append(templateHp.processValue(this, ast));
         }
@@ -292,7 +300,7 @@ public class TemplateController {
   public String includeArgs(String templateName, List<Object> templateArguments) {
     setIncludeRunning(true);
     StringBuilder ret = new StringBuilder();
-    List<HookPoint> templateForwardings = glex.getTemplateForwardings(templateName, getAST());
+    List<HookPoint> templateForwardings = config.getGlEx().getTemplateForwardings(templateName, getAST());
     for (HookPoint tn : templateForwardings) {
       ret.append(tn.processValue(this, templateArguments));
     }
@@ -440,7 +448,7 @@ public class TemplateController {
 
     Reporting.reportFileCreation(qualifiedTemplateName, filePath, ast);
 
-    fileHandler.storeInFile(completeFilePath, content.toString());
+    config.getFileHandler().storeInFile(completeFilePath, content.toString());
 
     Log.debug(completeFilePath + " written successfully!", this.getClass().getName());
 
@@ -491,7 +499,7 @@ public class TemplateController {
     // Template t = FreeMarkerTemplateEngine.loadTemplate(templatename,
     // classLoader, MontiCoreTemplateExceptionHandler.THROW_ERROR,
     // externalTemplatePath);
-    Template template = freeMarkerTemplateEngine.loadTemplate(templateName);
+    Template template = config.getFreeMarkerTemplateEngine().loadTemplate(templateName);
 
     // add static functions to template
     for (Macro macro : aliases) {
@@ -510,7 +518,7 @@ public class TemplateController {
     if (aliases == null) {
       aliases = newArrayList();
 
-      Template aliasesTemplate = freeMarkerTemplateEngine.loadTemplate(
+      Template aliasesTemplate = config.getFreeMarkerTemplateEngine().loadTemplate(
           TemplateControllerConfiguration.ALIASES_TEMPLATE);
 
       Set macros = aliasesTemplate.getMacros().entrySet();
@@ -534,17 +542,15 @@ public class TemplateController {
       }
 
       TemplateController tc = createTemplateController(template.getName());
-      tc.tcFactory = this.tcFactory;
 
       SimpleHash d = SimpleHashFactory.getInstance().createSimpleHash();
-      d.put(TemplateControllerConstants.AST, ast);
-      d.put(TemplateControllerConstants.TC, tc);
-      d.put(TemplateControllerConstants.GLEX, glex);
-      d.put(TemplateControllerConstants.LOG, config.getLog());
+      d.put(AST, ast);
+      d.put(TC, tc);
+      d.put(GLEX, config.getGlEx());
 
       // add all global data to be accessible in the template
       try {
-        d.putAll(glex.getGlobalData().toMap());
+        d.putAll(config.getGlEx().getGlobalData().toMap());
       }
       catch (TemplateModelException e) {
         String usage = this.templatename != null ? " (" + this.templatename + ")" : "";
@@ -561,7 +567,7 @@ public class TemplateController {
       }
 
       // Run template with data to create output
-      freeMarkerTemplateEngine.run(ret, d, template);
+      config.getFreeMarkerTemplateEngine().run(ret, d, template);
     }
     else {
       // no template
@@ -583,17 +589,17 @@ public class TemplateController {
   }
 
   protected TemplateController createTemplateController(String templateName) {
-    return tcFactory.create(this.config, templateName);
+    return config.getTemplateControllerFactory().create(this.config, templateName);
   }
 
   /**
    * @param tcFactory the factory that should be used when new template
    * controllers are created.
    */
-  public void setTemplateControllerFactory(ITemplateControllerFactory tcFactory) {
-    this.tcFactory = tcFactory;
+  public void setTemplateControllerFactory(TemplateControllerFactory tcFactory) {
+    config.setTemplateControllerFactory(tcFactory);
   }
-
+  
   /**
    * checks if the name seems to be already qualified: if not, adds the current
    * package (of the template it operates on)
@@ -611,7 +617,7 @@ public class TemplateController {
   ASTNode getAST() {
     ASTNode ast = null;
 
-    Object o = getValueFromData(TemplateControllerConstants.AST);
+    Object o = getValueFromData(AST);
     if ((o != null) && (o instanceof ASTNode)) {
       ast = (ASTNode) o;
     }
@@ -641,7 +647,7 @@ public class TemplateController {
 
   // TODO: can we remove this one?
   public String defineHookPoint(String hookName) {
-    return glex.defineHookPoint(this, hookName, getAST());
+    return config.getGlEx().defineHookPoint(this, hookName, getAST());
   }
 
   // TODO AR <- PN Actually,the plan was to move both instantiate() methods to
@@ -699,6 +705,41 @@ public class TemplateController {
   public Object instantiate(String className, List<Object> params) {
     Reporting.reportInstantiate(className, params);
     return ObjectFactory.createObject(completeQualifiedName(className), params);
+  }
+  
+  /**
+   * @see de.se_rwth.commons.logging.Log#trace(String, String)
+   */
+  public void trace(String msg, String logName) {
+    Log.trace(msg, logName);
+  }
+
+  /**
+   * @see de.se_rwth.commons.logging.Log#debug(String, String)
+   */
+  public void debug(String msg, String logName) {
+    Log.debug(msg, logName);
+  }
+
+  /**
+   * @see de.se_rwth.commons.logging.Log#info(String, String)
+   */
+  public void info(String msg, String logName) {
+    Log.info(msg, logName);
+  }
+
+  /**
+   * @see de.se_rwth.commons.logging.Log#warn(String)
+   */
+  public void warn(String msg) {
+    Log.warn(msg);
+  }
+
+  /**
+   * @see de.se_rwth.commons.logging.Log#error(String)
+   */
+  public void error(String msg) {
+    Log.error(msg);
   }
 
 }

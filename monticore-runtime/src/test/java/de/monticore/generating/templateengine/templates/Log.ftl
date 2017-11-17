@@ -30,6 +30,6 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
-${log.info("A message from a template.", "a.template")}
+${tc.info("A message from a template.", "a.template")}
 A
-${log.warn("A warning from a template.")}
+${tc.warn("A warning from a template.")}
