@@ -31,7 +31,7 @@ software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
 <#-- This template generates a single parser for the corresponding language -->
-${tc.signature("name","startRule")}
+${tc.signature("name","classes")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
 from antlr4 import *
 from ${name}AntlrParser import ${name}AntlrParser
@@ -44,20 +44,20 @@ class Parser(object):
     This class contains several method used to parse handed over models and returns them as one or more AST trees.
     """
 
+    <#list classes as class>
     @classmethod
-    def parseModel(cls, file_path=None):
+    def parse${class.getName()}(cls, _element=None):
         """
         Parses a handed over model and returns the ast representation of it.
-        :param file_path: the path to the file which shall be parsed.
-        :type file_path: str
+        :param _element: the path to the file which shall be parsed or a string representing the element to parse
+        :type _element: str
         :return a new ast
         :rtype AST${name}
         """
         try:
-            inputFile = FileStream(file_path)
+            inputFile = FileStream(_element)
         except IOError:
-            print('(Parser) File ' + str(file_path) + ' not found. Processing is stopped!')
-            return
+            inputFile = InputStream(_element)
         # create a lexer and hand over the input
         lexer = ${name}AntlrLexer(inputFile)
         # create a token stream
@@ -66,4 +66,6 @@ class Parser(object):
         parser = ${name}AntlrParser(stream)
         # create a new visitor and return the new AST
         astBuilderVisitor = AstBuilderVisitor()
-        return astBuilderVisitor.visit(parser.${startRule}())
+        return astBuilderVisitor.visit(parser.${genHelper.getAntlrConformName(class.getName())}())
+
+    </#list>

@@ -26,6 +26,8 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.symboltable.CDFieldSymbol;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
 
+import static de.se_rwth.commons.StringTransformations.uncapitalize;
+
 public class PythonVisitorGeneratorHelper extends GeneratorHelper{
 
 
@@ -61,9 +63,9 @@ public class PythonVisitorGeneratorHelper extends GeneratorHelper{
      * @param name the name of a class
      * @return the name without prefix
      */
-    public String getAntlrConformName(String name){
+    public static String getAntlrConformName(String name){
         if (name != null){
-            return name.replaceFirst("^AST", "");
+            return uncapitalize(name.replaceFirst("^AST", ""));
         }else{
             return "";
         }

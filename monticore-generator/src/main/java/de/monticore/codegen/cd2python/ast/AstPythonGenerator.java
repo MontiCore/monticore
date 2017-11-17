@@ -20,6 +20,7 @@
 package de.monticore.codegen.cd2python.ast;
 
 import com.google.common.base.Joiner;
+import de.monticore.cdattributes._ast.ASTCD;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
@@ -91,6 +92,8 @@ public class AstPythonGenerator {
         final String astPackage = astHelper.getAstPackage();
         final String visitorPackage = AstGeneratorHelper.getPackageName(astHelper.getPackageName(),
                 VisitorGeneratorHelper.getVisitorPackageSuffix());
+        //we have to store all classes where conrete instance can be created
+        final List<ASTCDClass> parsableClasses = new ArrayList<>();
 
         for (ASTCDClass clazz : astClassDiagram.getCDDefinition().getCDClasses()) {
             final Path filePath = Paths.get(Names.getPathFromPackage(astPackage),
@@ -98,6 +101,7 @@ public class AstPythonGenerator {
             if (astHelper.isAstClass(clazz)) {
                 generator.generate("ast_python.AstClass", filePath, clazz, clazz, astHelper.getASTBuilder(clazz));
                 moduleInitList.add(clazz.getName());
+                parsableClasses.add(clazz);
             }
             else if (!AstGeneratorHelper.isBuilderClass(astClassDiagram.getCDDefinition(), clazz)) {
                 generator.generate("ast_python.Class", filePath, clazz);
@@ -133,14 +137,13 @@ public class AstPythonGenerator {
         generator.generate("ast_python.addtionalclasses.SourcePosition", filePath,
                 astClassDiagram.getCDDefinition().getCDEnums().get(0));// the last argument in order to meed the signature
         //TODO by KP: currently not supported: generate the parser module
-        /*
+
         filePath = Paths.get(Names.getPathFromPackage(astPackage),
                 "Parser" + PYTHON_EXTENSION);
+        // the name of the overall language, it is required to have a correct link to the generated Lexer/Parser
         String name = astClassDiagram.getCDDefinition().getName();
-        generator.generate("ast_python.addtionalclasses.Parser", filePath,
-                astClassDiagram.getCDDefinition().getCDEnums().get(0),name,
-                astHelper.getStartRuleName(grammarInfo.getGrammarSymbol()));
-        */
+        generator.generate("ast_python.addtionalclasses.Parser",
+                filePath,astClassDiagram.getCDDefinition().getCDEnums().get(0), name,parsableClasses);
         //add the remaining pre-generated files to the list of inits
         moduleInitList.add("Comment");
         //TODO by KP:The Parser is currently not supported

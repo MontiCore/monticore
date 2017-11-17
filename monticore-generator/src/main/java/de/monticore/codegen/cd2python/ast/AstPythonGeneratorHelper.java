@@ -21,6 +21,7 @@ package de.monticore.codegen.cd2python.ast;
 
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast_emf.AstEmfGeneratorHelper;
+import de.monticore.codegen.cd2python.visitor.PythonVisitorGeneratorHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
@@ -329,6 +330,15 @@ public class AstPythonGeneratorHelper extends AstEmfGeneratorHelper {
 
     public boolean isListAttribute(ASTCDAttribute astcdAttribute){
         return isListType(TypesPrinter.printType(astcdAttribute.getType()));
+    }
+
+    /**
+     * Removes the AST prefix as required to be conform to antlr.
+     * @param name the name of a class
+     * @return the name without prefix
+     */
+    public static String getAntlrConformName(String name){
+        return PythonVisitorGeneratorHelper.getAntlrConformName(name);
     }
 
 }
