@@ -29,7 +29,6 @@ import java.util.Optional;
 import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.IterablePath;
-import de.se_rwth.commons.logging.Log;
 
 /**
  * Holds settings for {@link TemplateController}. These settings are usually set
@@ -240,64 +239,5 @@ public class TemplateControllerConfiguration {
     return this.templateControllerFactory;
   }
 
-  private TemplateLogger log = new TemplateLogger();
-  public TemplateLogger getLog(){
-    return log;
-  }
-
-  /**
-   * Provides logging for templates.
-   *
-   * @since 4.0.1
-   */
-// Ziel MB, TODO,  XXX
-// Diese Innere Klasse ist unnötig: entfernen
-// getLog() kommt weg.
-// Und wenn das benutzt sein würde, dann 
-// die Methoden trace, debug etc. direkt in den TemplateController einsetzen
-// (nicht in die TCConfig)
- // TODO: entfernen 
-  // z:. weil unnötig, oder die Methoden in den templatecontroller einsetzen
-  public class TemplateLogger {
-
-    private TemplateLogger() {
-    }
-
-    /**
-     * @see de.se_rwth.commons.logging.Log#trace(String, String)
-     */
-    public void trace(String msg, String logName) {
-      Log.trace(msg, logName);
-    }
-
-    /**
-     * @see de.se_rwth.commons.logging.Log#debug(String, String)
-     */
-    public void debug(String msg, String logName) {
-      Log.debug(msg, logName);
-    }
-
-    /**
-     * @see de.se_rwth.commons.logging.Log#info(String, String)
-     */
-    public void info(String msg, String logName) {
-      Log.info(msg, logName);
-    }
-
-    /**
-     * @see de.se_rwth.commons.logging.Log#warn(String)
-     */
-    public void warn(String msg) {
-      Log.warn(msg);
-    }
-
-    /**
-     * @see de.se_rwth.commons.logging.Log#error(String)
-     */
-    public void error(String msg) {
-      Log.error(msg);
-    }
-
-  }
 
 }

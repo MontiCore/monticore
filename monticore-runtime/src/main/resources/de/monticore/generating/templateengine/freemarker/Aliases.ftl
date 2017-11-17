@@ -54,23 +54,23 @@ software, even if advised of the possibility of such damage.
 <#-- Aliases for logging methods -->
 
 <#function trace msg logger>
-	<#return log.trace(msg, logger)>
+	<#return tc.trace(msg, logger)>
 </#function>
 
 <#function debug msg logger>
-	<#return log.debug(msg, logger)>
+	<#return tc.debug(msg, logger)>
 </#function>
 
 <#function info msg logger>
-	<#return log.info(msg, logger)>
+	<#return tc.info(msg, logger)>
 </#function>
 
 <#function warn msg>
-	<#return log.warn(msg)>
+	<#return tc.warn(msg)>
 </#function>
 
 <#function error msg>
-	<#return log.error(msg)>
+	<#return tc.error(msg)>
 </#function>
 
 <#-- Aliases for global vars methods -->
