@@ -58,6 +58,27 @@ import freemarker.template.TemplateModelException;
 // TODO PN check if all method docs are up to date.
 public class TemplateController {
 
+  /**
+   * Variable name for the current node (used in the templates)
+   **/
+  public static final String AST = "ast";
+
+  /**
+   * Variable name for the current TemplateController (used in the templates)
+   **/
+  public static final String TC = "tc";
+
+  /**
+   * Variable name for the GLEX object (used in the templates)
+   **/
+  public static final String GLEX = "glex";
+
+  /**
+   * Variable name for the logging object (used in the templates)
+   **/
+  public static final String LOG = "log";
+
+
   private final TemplateControllerConfiguration config;
 
   private final GlobalExtensionManagement glex;
@@ -66,7 +87,7 @@ public class TemplateController {
 
   private final FreeMarkerTemplateEngine freeMarkerTemplateEngine;
 
-  private ITemplateControllerFactory tcFactory;
+  private TemplateControllerFactory tcFactory;
 
   private final String currPackage;
 
@@ -537,10 +558,10 @@ public class TemplateController {
       tc.tcFactory = this.tcFactory;
 
       SimpleHash d = SimpleHashFactory.getInstance().createSimpleHash();
-      d.put(TemplateControllerConstants.AST, ast);
-      d.put(TemplateControllerConstants.TC, tc);
-      d.put(TemplateControllerConstants.GLEX, glex);
-      d.put(TemplateControllerConstants.LOG, config.getLog());
+      d.put(AST, ast);
+      d.put(TC, tc);
+      d.put(GLEX, glex);
+      d.put(LOG, config.getLog());
 
       // add all global data to be accessible in the template
       try {
@@ -590,7 +611,7 @@ public class TemplateController {
    * @param tcFactory the factory that should be used when new template
    * controllers are created.
    */
-  public void setTemplateControllerFactory(ITemplateControllerFactory tcFactory) {
+  public void setTemplateControllerFactory(TemplateControllerFactory tcFactory) {
     this.tcFactory = tcFactory;
   }
 
@@ -611,7 +632,7 @@ public class TemplateController {
   ASTNode getAST() {
     ASTNode ast = null;
 
-    Object o = getValueFromData(TemplateControllerConstants.AST);
+    Object o = getValueFromData(AST);
     if ((o != null) && (o instanceof ASTNode)) {
       ast = (ASTNode) o;
     }

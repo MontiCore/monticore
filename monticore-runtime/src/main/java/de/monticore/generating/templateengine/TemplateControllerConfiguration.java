@@ -47,7 +47,7 @@ public class TemplateControllerConfiguration {
 
   private FreeMarkerTemplateEngine freeMarkerTemplateEngine;
 
-  private ITemplateControllerFactory templateControllerFactory;
+  private TemplateControllerFactory templateControllerFactory;
 
   /** the target directory for generated files */
   private File outputDirectory;
@@ -232,11 +232,11 @@ public class TemplateControllerConfiguration {
     this.handcodedPath = handcodedPath;
   }
 
-  void setTemplateControllerFactory(ITemplateControllerFactory templateControllerFactory) {
+  void setTemplateControllerFactory(TemplateControllerFactory templateControllerFactory) {
     this.templateControllerFactory = templateControllerFactory;
   }
 
-  public ITemplateControllerFactory getTemplateControllerFactory() {
+  public TemplateControllerFactory getTemplateControllerFactory() {
     return this.templateControllerFactory;
   }
 
@@ -250,7 +250,13 @@ public class TemplateControllerConfiguration {
    *
    * @since 4.0.1
    */
-  // TODO: entfernen 
+// Ziel MB, TODO,  XXX
+// Diese Innere Klasse ist unnötig: entfernen
+// getLog() kommt weg.
+// Und wenn das benutzt sein würde, dann 
+// die Methoden trace, debug etc. direkt in den TemplateController einsetzen
+// (nicht in die TCConfig)
+ // TODO: entfernen 
   // z:. weil unnötig, oder die Methoden in den templatecontroller einsetzen
   public class TemplateLogger {
 

@@ -22,7 +22,7 @@ package de.monticore.generating;
 import com.google.common.collect.Maps;
 import de.monticore.generating.templateengine.FreeMarkerTemplateEngineMock;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.ITemplateControllerFactory;
+import de.monticore.generating.templateengine.TemplateControllerFactory;
 import de.monticore.generating.templateengine.TemplateControllerConfiguration;
 import de.monticore.generating.templateengine.TemplateControllerConfigurationBuilder;
 import de.monticore.generating.templateengine.TemplateControllerMockFactory;
@@ -49,7 +49,7 @@ public class GeneratorEngineMock extends GeneratorEngine {
   private Map<ASTNode, List<String>> handledNodesAndTemplates = Maps.newHashMap();
 
 
-  public GeneratorEngineMock(GeneratorSetup generatorSetup, ITemplateControllerFactory
+  public GeneratorEngineMock(GeneratorSetup generatorSetup, TemplateControllerFactory
       templateControllerFactory) {
     super(generatorSetup, templateControllerFactory, new FileReaderWriterMock());
   }
@@ -57,10 +57,10 @@ public class GeneratorEngineMock extends GeneratorEngine {
 
   /**
    * @see de.monticore.generating.GeneratorEngine#createTemplateControllerConfiguration
-   * (GeneratorSetup, de.monticore.generating.templateengine.ITemplateControllerFactory, de.monticore.io.FileReaderWriter)
+   * (GeneratorSetup, de.monticore.generating.templateengine.TemplateControllerFactory, de.monticore.io.FileReaderWriter)
    */
   @Override
-  TemplateControllerConfiguration createTemplateControllerConfiguration(GeneratorSetup generatorSetup, ITemplateControllerFactory templateControllerFactory, FileReaderWriter fileHandler) {
+  TemplateControllerConfiguration createTemplateControllerConfiguration(GeneratorSetup generatorSetup, TemplateControllerFactory templateControllerFactory, FileReaderWriter fileHandler) {
     if (templateControllerFactory == null) {
       templateControllerFactory = new TemplateControllerMockFactory();
     }
