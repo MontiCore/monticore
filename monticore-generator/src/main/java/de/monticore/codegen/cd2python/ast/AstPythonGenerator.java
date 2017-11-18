@@ -19,18 +19,12 @@
 
 package de.monticore.codegen.cd2python.ast;
 
-import com.google.common.base.Joiner;
-import de.monticore.cdattributes._ast.ASTCD;
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
-import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
@@ -38,7 +32,6 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDEnum;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
 import de.se_rwth.commons.Names;
-import de.se_rwth.commons.logging.Log;
 
 import java.io.File;
 import java.nio.file.Path;

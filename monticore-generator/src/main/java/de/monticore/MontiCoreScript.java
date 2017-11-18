@@ -227,6 +227,28 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   /**
+   * Generates the parser for the given grammar.
+   *
+   * @param grammar to generate the parser for
+   * @param symbolTable
+   * @param outputDirectory output directory for generated Java code
+   * @param withVisitor indicates whether visitor should be generated
+   */
+  public void generateParser(GlobalExtensionManagement glex, ASTMCGrammar grammar,
+                             GlobalScope symbolTable,
+                             IterablePath handcodedPath, File outputDirectory,
+                             boolean embeddedJavaCode,
+                             Languages lang,
+                             boolean withVisitor) {
+    Log.errorIfNull(
+            grammar,
+            "0xA4038 Parser generation can't be processed: the reference to the grammar ast is null");
+    ParserGenerator.generateParser(glex, grammar, symbolTable, handcodedPath,
+            outputDirectory, embeddedJavaCode, lang, withVisitor);
+  }
+
+
+  /**
    * Generates the model language infrastructure for the given grammar (e.g.,
    * modeling language, model loader, symbols, symbol kinds, etc.)
    *

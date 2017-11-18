@@ -76,7 +76,7 @@ while (grammarIterator.hasNext()) {
             storeInCdFile(astClassDiagramWithST, out)
 
             // M5 + M6: generate parser and wrapper
-            generateParser(glex, astGrammar, globalScope, handcodedPath, out,true,Languages.PYTHON_2)
+            generateParser(glex, astGrammar, globalScope, handcodedPath, out,true,Languages.PYTHON_2,true)
 
             // store result of the first pass
             storeCDForGrammar(astGrammar, astClassDiagramWithST)

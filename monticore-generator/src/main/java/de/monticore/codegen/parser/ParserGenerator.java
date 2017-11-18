@@ -32,11 +32,13 @@ import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.parser.antlr.AntlrTool;
 import de.monticore.codegen.parser.antlr.Grammar2Antlr;
+import de.monticore.codegen.parser.antlr.Grammar2PythonAntlr;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.symboltable.GlobalScope;
@@ -57,6 +59,8 @@ public class ParserGenerator {
   public static final String PARSER_WRAPPER = "Parser";
 
   public static final String LOG = "ParserGenerator";
+
+  public static boolean WITH_VISITOR = false;
 
   /**
    * Code generation from grammar ast to an antlr compatible file format and wrapper parser
@@ -141,6 +145,30 @@ public class ParserGenerator {
     generateParser(glex, astGrammar, symbolTable, handcodedPath, targetDir, true, Languages.JAVA);
   }
 
+  /**
+   * Code generation from grammar ast to an antlr compatible file format
+   *
+   * @param glex
+   * @param symbolTable - symbol table already derived from grammar AST
+   * @param astGrammar - grammar AST
+   * @param targetDir - target file
+   * @param embeddedJavaCode - should java code be embedded
+   * @param lang - the target language
+   * @param withVisitor - indicates whether an visitor should be generated
+   */
+  public static void generateParser(GlobalExtensionManagement glex,
+                                    ASTMCGrammar astGrammar,
+                                    Scope symbolTable,
+                                    IterablePath handcodedPath,
+                                    File targetDir,
+                                    boolean embeddedJavaCode,
+                                    Languages lang,
+                                    boolean withVisitor) {
+    WITH_VISITOR = withVisitor;
+    generateParser(glex, astGrammar, symbolTable, handcodedPath, targetDir, embeddedJavaCode, lang);
+  }
+
+
 
   /**
    * Code generation from grammar ast to an antlr compatible file format
@@ -177,24 +205,32 @@ public class ParserGenerator {
     // TODO: grammarInfo as parameter for this method?
     MCGrammarInfo grammarInfo = new MCGrammarInfo(grammarSymbol);
 
-    ParserGeneratorHelper genHelper = new ParserGeneratorHelper(astGrammar, grammarInfo, embeddedJavaCode, lang);
+    ParserGeneratorHelper genHelper = new ParserGeneratorHelper(astGrammar, grammarInfo,
+            embeddedJavaCode && lang.equals(Languages.JAVA), lang);
+
     glex.setGlobalValue("parserHelper", genHelper);
     glex.setGlobalValue("nameHelper", new Names());
     setup.setGlex(glex);
 
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getParserPackage()),
             astGrammar.getName() + "Antlr.g4");
-    new GeneratorEngine(setup).generate("parser.Parser", filePath, astGrammar,
-            new Grammar2Antlr(genHelper,
-                    grammarInfo, embeddedJavaCode));
+    Grammar_WithConceptsVisitor g2a;
+    if(lang.equals(Languages.PYTHON_2) || lang.equals(Languages.PYTHON_3)){
+      g2a = new Grammar2PythonAntlr(genHelper,grammarInfo,true);
+    }else{
+      g2a = new Grammar2Antlr(genHelper,grammarInfo, embeddedJavaCode);
+    }
+
+    new GeneratorEngine(setup).generate("parser.Parser", filePath, astGrammar,g2a);
 
     // construct parser, lexer, ... (antlr),
     String gFile = Paths.get(targetDir.getAbsolutePath(), filePath.toString()).toString();
     String outputLang = "-Dlanguage=" + lang.getLanguage();
-    // for python's generated visitor, the abstract visitor shall be generated
+
+    // check if visitor should also be geerated
     List<String> toolsParameter = new ArrayList<>();
     toolsParameter.add(outputLang);
-    if (lang.equals(Languages.PYTHON_2) || lang.equals(Languages.PYTHON_3)){
+    if (WITH_VISITOR){
       toolsParameter.add("-visitor");
     }
 

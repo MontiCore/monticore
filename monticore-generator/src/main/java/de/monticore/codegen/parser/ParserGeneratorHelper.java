@@ -91,7 +91,7 @@ public class ParserGeneratorHelper {
 
   private boolean embeddedJavaCode;
 
-  private boolean isJava;
+  private Languages lang;
 
   /**
    * Constructor for de.monticore.codegen.parser.ParserGeneratorHelper
@@ -107,7 +107,8 @@ public class ParserGeneratorHelper {
     this.grammarSymbol = grammarInfo.getGrammarSymbol();
     checkState(qualifiedGrammarName.equals(grammarSymbol.getFullName()));
     this.embeddedJavaCode = true;
-    this.isJava = true;
+    this.lang = Languages.JAVA;
+    tmpVariables = new HashMap<>();
   }
 
   public ParserGeneratorHelper(ASTMCGrammar ast, MCGrammarInfo grammarInfo, boolean embeddedJavaCode, Languages lang) {
@@ -121,7 +122,8 @@ public class ParserGeneratorHelper {
     this.grammarSymbol = grammarInfo.getGrammarSymbol();
     checkState(qualifiedGrammarName.equals(grammarSymbol.getFullName()));
     this.embeddedJavaCode = embeddedJavaCode;
-    this.isJava = Languages.JAVA.equals(lang);
+    this.lang = lang;
+    tmpVariables = new HashMap<>();
   }
 
   /**
@@ -612,6 +614,6 @@ public class ParserGeneratorHelper {
   }
 
   public boolean isJava() {
-    return this.isJava;
+    return this.lang.equals(Languages.JAVA);
   }
 }

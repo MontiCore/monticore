@@ -19,55 +19,22 @@
 
 package de.monticore.codegen.parser.antlr;
 
-import static de.monticore.codegen.parser.ParserGeneratorHelper.printIteration;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.parser.Languages;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
+import de.monticore.codegen.parser.antlr.ASTConstructionActions;
+import de.monticore.codegen.parser.antlr.AttributeCardinalityConstraint;
+import de.monticore.codegen.parser.antlr.Grammar2Antlr;
+import de.monticore.codegen.parser.antlr.SourcePositionActions;
 import de.monticore.grammar.DirectLeftRecursionDetector;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.PredicatePair;
-import de.monticore.grammar.grammar._ast.ASTAlt;
-import de.monticore.grammar.grammar._ast.ASTAnything;
-import de.monticore.grammar.grammar._ast.ASTBlock;
-import de.monticore.grammar.grammar._ast.ASTClassProd;
-import de.monticore.grammar.grammar._ast.ASTConstant;
-import de.monticore.grammar.grammar._ast.ASTConstantGroup;
-import de.monticore.grammar.grammar._ast.ASTEnumProd;
-import de.monticore.grammar.grammar._ast.ASTEof;
-import de.monticore.grammar.grammar._ast.ASTGrammarNode;
-import de.monticore.grammar.grammar._ast.ASTLexActionOrPredicate;
-import de.monticore.grammar.grammar._ast.ASTLexAlt;
-import de.monticore.grammar.grammar._ast.ASTLexAnyChar;
-import de.monticore.grammar.grammar._ast.ASTLexBlock;
-import de.monticore.grammar.grammar._ast.ASTLexChar;
-import de.monticore.grammar.grammar._ast.ASTLexCharRange;
-import de.monticore.grammar.grammar._ast.ASTLexNonTerminal;
-import de.monticore.grammar.grammar._ast.ASTLexOption;
-import de.monticore.grammar.grammar._ast.ASTLexProd;
-import de.monticore.grammar.grammar._ast.ASTLexSimpleIteration;
-import de.monticore.grammar.grammar._ast.ASTLexString;
-import de.monticore.grammar.grammar._ast.ASTMCAnything;
-import de.monticore.grammar.grammar._ast.ASTNonTerminal;
-import de.monticore.grammar.grammar._ast.ASTOptionValue;
-import de.monticore.grammar.grammar._ast.ASTProd;
-import de.monticore.grammar.grammar._ast.ASTRuleReference;
-import de.monticore.grammar.grammar._ast.ASTSemanticpredicateOrAction;
-import de.monticore.grammar.grammar._ast.ASTTerminal;
-import de.monticore.grammar.grammar._ast.GrammarNodeFactory;
+import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
@@ -76,13 +43,16 @@ import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.*;
+
+import static de.monticore.codegen.parser.ParserGeneratorHelper.printIteration;
+
 /**
  * TODO: Write me!
  *
  * @author (last commit) $Author$
  */
-public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
-
+public class Grammar2PythonAntlr implements Grammar_WithConceptsVisitor {
   private MCGrammarSymbol grammarEntry;
 
   /**
@@ -108,14 +78,12 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
   private ParserGeneratorHelper parserHelper;
 
-  private boolean embeddedJavaCode;
-
   private boolean embeddedCode;
 
-  private Languages targetLanguage;
+  //TODO by KP: refactor me, I am no longer required
+  private boolean embeddedJavaCode = false;
 
-
-  public Grammar2Antlr(
+  public Grammar2PythonAntlr(
           ParserGeneratorHelper parserGeneratorHelper,
           MCGrammarInfo grammarInfo) {
     Preconditions.checkArgument(parserGeneratorHelper.getGrammarSymbol() != null);
@@ -126,14 +94,12 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     astActions = new ASTConstructionActions(parserGeneratorHelper);
     attributeConstraints = new AttributeCardinalityConstraint(parserGeneratorHelper);
     positionActions = new SourcePositionActions(parserGeneratorHelper);
-
-    this.embeddedJavaCode = true;
   }
 
-  public Grammar2Antlr(
+  public Grammar2PythonAntlr(
           ParserGeneratorHelper parserGeneratorHelper,
           MCGrammarInfo grammarInfo,
-          boolean embeddedJavaCode) {
+          boolean embeddedCode) {
     Preconditions.checkArgument(parserGeneratorHelper.getGrammarSymbol() != null);
     this.grammarEntry = parserGeneratorHelper.getGrammarSymbol();
     this.grammarInfo = grammarInfo;
@@ -142,31 +108,8 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     astActions = new ASTConstructionActions(parserGeneratorHelper);
     attributeConstraints = new AttributeCardinalityConstraint(parserGeneratorHelper);
     positionActions = new SourcePositionActions(parserGeneratorHelper);
+    this.embeddedCode = embeddedCode;
 
-    this.embeddedJavaCode = embeddedJavaCode;
-  }
-
-  public Grammar2Antlr(
-          ParserGeneratorHelper parserGeneratorHelper,
-          MCGrammarInfo grammarInfo,
-          boolean embeddedJavaCode,
-          Languages language) {
-    Preconditions.checkArgument(parserGeneratorHelper.getGrammarSymbol() != null);
-    this.grammarEntry = parserGeneratorHelper.getGrammarSymbol();
-    this.grammarInfo = grammarInfo;
-    this.parserHelper = parserGeneratorHelper;
-
-    astActions = new ASTConstructionActions(parserGeneratorHelper);
-    attributeConstraints = new AttributeCardinalityConstraint(parserGeneratorHelper);
-    positionActions = new SourcePositionActions(parserGeneratorHelper);
-
-    this.targetLanguage = language;
-    if (embeddedJavaCode && language.equals(Languages.JAVA)){
-      this.embeddedJavaCode = embeddedJavaCode;
-    }
-    else if(embeddedJavaCode){
-      this.embeddedCode = embeddedJavaCode;
-    }
   }
 
   /**
@@ -176,32 +119,6 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
   public void setUseEmbeddedCode(final boolean useEmbeddedCode){
     this.embeddedCode = useEmbeddedCode;
   }
-
-  /**
-   * Indicates whether embedded code regardless of the target is used.
-   * @return true if embedded code is used.
-   */
-  public boolean getUseEmbeddedCode(){
-    return this.embeddedCode;
-  }
-
-
-  /**
-   * Should java embedded code be used or not.
-   * @param useEmbeddedJavaCode
-   */
-  public void setUseEmbeddedJavaCode(final boolean useEmbeddedJavaCode){
-    this.embeddedJavaCode = useEmbeddedJavaCode;
-  }
-
-  /**
-   * Indicates whether embedded java code shall be used.
-   * @return True if embedded code is used
-   */
-  public boolean getUsedEmbeddedJavaCode(){
-    return this.embeddedJavaCode;
-  }
-
 
   /**
    * Prints Lexer rule
@@ -228,11 +145,6 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     startCodeSection();
     addToCodeSection("\n:");
 
-    if (embeddedJavaCode && ast.getInitAction().isPresent()) {
-      // Add init action
-      addToCodeSection("{", ParserGeneratorHelper.getText(ast.getInitAction().get()), "\n}");
-    }
-
     endCodeSection();
 
     createAntlrCodeForLexAlts(ast.getAlts());
@@ -240,7 +152,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     // Add Action
     startCodeSection();
 
-    if ((embeddedJavaCode || embeddedCode) && ast.getEndAction().isPresent()) {
+    if (embeddedCode && ast.getEndAction().isPresent()) {
       addToCodeSection("{", ParserGeneratorHelper.getText(ast.getEndAction().get()), "\n}");
     }
 
@@ -252,6 +164,8 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     endCodeSection(ast);
   }
+
+
 
   /**
    * Prints Parser rule
@@ -906,7 +820,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     }
     addToAntlrCode(": ");
 
-    List<NodePair> alts = new ArrayList<>();
+    List<Grammar2PythonAntlr.NodePair> alts = new ArrayList<>();
     String del = "";
     // Get all implementing/extending interfaces
     List<PredicatePair> interfaces = grammarInfo.getSubRulesForParsing(interfacename);
@@ -925,15 +839,15 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
         left = true;
         List<ASTAlt> localAlts = ((ASTClassProd) astNode).getAlts();
         for(ASTAlt alt : localAlts) {
-          alts.add(new NodePair(alt, interf));
+          alts.add(new Grammar2PythonAntlr.NodePair(alt, interf));
         }
       } else {
-        alts.add(new NodePair((ASTGrammarNode) astNode, interf));
+        alts.add(new Grammar2PythonAntlr.NodePair((ASTGrammarNode) astNode, interf));
       }
     }
     // Append sorted alternatives
     Collections.sort(alts, (p2, p1) -> new Integer(p1.getPredicatePair().getRuleReference().getPrio().orElse("0")).compareTo(new Integer(p2.getPredicatePair().getRuleReference().getPrio().orElse("0"))));
-    for(NodePair entry : alts) {
+    for(Grammar2PythonAntlr.NodePair entry : alts) {
       addToAntlrCode(del);
 
       // Append semantic predicates for rules
@@ -1016,7 +930,9 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     // AntLR2 -> AntLR4: Replace : by =
     // tmp = "( %tmp%=%rulename% %initaction% %actions%";
 
-    addToCodeSection(parserHelper.getTmpVarName(ast), "=", ast.getName());
+    //TODO by KP
+    addToCodeSection(ast.getUsageName().isPresent()?ast.getUsageName().get():ast.getName(),
+            "=", ast.getName());
 
     if (embeddedJavaCode) {
       // Add Actions
@@ -1101,7 +1017,12 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     String braceopen = iteration.isEmpty() ? "" : "(";
     String braceclose = iteration.isEmpty() ? "" : ")";
 
-    String tmpVarName = parserHelper.getTmpVarName(ast);
+    String tmpVarName;
+    if (ast.getUsageName().isPresent()){
+      tmpVarName = ast.getUsageName().get();
+    }else{
+      tmpVarName = ast.getName().toUpperCase();
+    }
 
     addToCodeSection(braceopen, " ", tmpVarName, "=", HelperGrammar.getRuleNameForAntlr(ast));
 
@@ -1208,7 +1129,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
    *
    * @return
    */
-  private List<String> getAntlrCode() {
+  protected List<String> getAntlrCode() {
     return ImmutableList.copyOf(productionAntlrCode);
   }
 
@@ -1217,14 +1138,14 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
    *
    * @param code
    */
-  private void addToAntlrCode(String code) {
+  protected void addToAntlrCode(String code) {
     productionAntlrCode.add(code);
   }
 
   /**
    * Clears antlr code
    */
-  private void clearAntlrCode() {
+  protected void clearAntlrCode() {
     productionAntlrCode.clear();
   }
 
@@ -1233,21 +1154,21 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
    *
    * @param code
    */
-  private void addToAntlrCode(StringBuilder code) {
+  protected void addToAntlrCode(StringBuilder code) {
     addToAntlrCode(code.toString());
   }
 
   /**
    * Starts codeSection of the parser code
    */
-  private void startCodeSection() {
+  protected void startCodeSection() {
     codeSection = new StringBuilder();
   }
 
   /**
    * Adds the current code codeSection to antlr
    */
-  private void endCodeSection() {
+  protected void endCodeSection() {
     addToAntlrCode(codeSection);
     codeSection = new StringBuilder();
   }
@@ -1257,14 +1178,14 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
    *
    * @param ast
    */
-  private void startCodeSection(ASTNode ast) {
+  protected void startCodeSection(ASTNode ast) {
     startCodeSection(ast.getClass().getSimpleName());
   }
 
   /**
    * Starts antlr code for the production with the given name
    */
-  private void startCodeSection(String text) {
+  protected void startCodeSection(String text) {
     codeSection = new StringBuilder("\n // Start of '" + text + "'\n");
   }
 
@@ -1273,7 +1194,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
    *
    * @param ast
    */
-  private void endCodeSection(ASTNode ast) {
+  protected void endCodeSection(ASTNode ast) {
     codeSection.append("// End of '" + ast.getClass().getSimpleName() + "'\n");
     endCodeSection();
   }
@@ -1281,7 +1202,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
   /**
    * Adds the given code to the current codeSection
    */
-  private void addToCodeSection(String... code) {
+  protected void addToCodeSection(String... code) {
     Arrays.asList(code).forEach(s -> codeSection.append(s));
   }
 
@@ -1295,7 +1216,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
   /**
    * Adds code for parser action to the current code codeSection
    */
-  private void addActionToCodeSection() {
+  protected void addActionToCodeSection() {
     if (action.length() != 0) {
       if (embeddedJavaCode) {
         addToCodeSection("{", action.toString(), "}");
@@ -1308,7 +1229,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
    * Adds code for parser action to the current code codeSection starting and
    * ending with a new line
    */
-  private void addActionToCodeSectionWithNewLine() {
+  protected void addActionToCodeSectionWithNewLine() {
     if (action.length() != 0) {
       if (embeddedJavaCode) {
         addToCodeSection("{\n", action.toString(), "\n}");
@@ -1320,11 +1241,11 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
   /**
    * Clears code for parser action
    */
-  private void clearAction() {
+  protected void clearAction() {
     action.setLength(0);
   }
 
-  private boolean isActionEmpty() {
+  protected boolean isActionEmpty() {
     return action.length() == 0;
   }
 
@@ -1338,15 +1259,9 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
   /**
    * Adds code to the parser action
    */
-  private void addToAction(String... code) {
+  protected void addToAction(String... code) {
     Arrays.asList(code).forEach(s -> action.append(s));
   }
 
-  /**
-   * Indicates whether java is the target of code generation.
-   * @return true if java is target
-   */
-  public boolean targetIsJava(){
-    return this.targetLanguage.equals(Languages.JAVA);
-  }
+
 }

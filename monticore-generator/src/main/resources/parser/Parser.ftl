@@ -41,7 +41,7 @@ ${tc.include("parser.ParserHeader")}
 
 <#list genHelper.getIdentsToGenerate() as ident>
   ${genHelper.getConvertFunction(ident)}
-</#list>  
+</#list>
 }
 
 ${tc.includeArgs("parser.LexerMember", [antlrGenerator, parserHelper.getGrammarSymbol().getName()])}

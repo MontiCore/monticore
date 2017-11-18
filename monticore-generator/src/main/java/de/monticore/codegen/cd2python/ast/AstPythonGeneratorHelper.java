@@ -343,6 +343,12 @@ public class AstPythonGeneratorHelper extends AstEmfGeneratorHelper {
         return uncapitalize(PythonVisitorGeneratorHelper.getAntlrConformName(name));
     }
 
+    public static String getTmpNameFromName(){
+        return "TODO";
+    }
+
+
+
 }
 
 

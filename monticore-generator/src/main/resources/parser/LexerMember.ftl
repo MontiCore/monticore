@@ -31,13 +31,13 @@ ${tc.signature("antlrGenerator", "parserName")}
 
 
 <#list antlrGenerator.getHWLexerJavaCode() as javaCode>
-  ${javaCode}
+    ${javaCode}
 </#list>
 
 <#if antlrGenerator.embeddedJavaCode>
 private ${parserName}AntlrParser _monticore_parser;
 protected ${parserName}AntlrParser getCompiler() {
-   return _monticore_parser;
+    return _monticore_parser;
 }
 public void setMCParser(${parserName}AntlrParser in) {
   this._monticore_parser = in;
