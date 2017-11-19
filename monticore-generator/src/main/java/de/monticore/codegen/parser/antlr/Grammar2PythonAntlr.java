@@ -46,6 +46,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.*;
 
 import static de.monticore.codegen.parser.ParserGeneratorHelper.printIteration;
+import static de.se_rwth.commons.StringTransformations.uncapitalize;
 
 /**
  * TODO: Write me!
@@ -559,6 +560,12 @@ public class Grammar2PythonAntlr implements Grammar_WithConceptsVisitor {
 
     if(ast.getUsageName().isPresent()){
       rulename = ast.getUsageName().get() + "=" + rulename;
+    }else {
+      //if (grammarInfo.isKeyword(ast.getName(), grammarEntry)) {
+      //  rulename = uncapitalize(ast.getName()) + "=" + rulename;
+      //} else {
+      //  rulename = uncapitalize(parserHelper.getLexSymbolName(ast.getName().intern())) + "=" + rulename;
+      //}
     }
 
     // No actions in predicates
@@ -936,10 +943,11 @@ public class Grammar2PythonAntlr implements Grammar_WithConceptsVisitor {
     // AntLR2 -> AntLR4: Replace : by =
     // tmp = "( %tmp%=%rulename% %initaction% %actions%";
 
-    if (ast.getUsageName().isPresent()){
-      addToCodeSection(ast.getUsageName().get(),"=", ast.getName());
+    if (ast.getUsageName().isPresent()) {
+      addToCodeSection(ast.getUsageName().get(), "=", ast.getName());
+    }else if(ast.getSymbol().isPresent()){
+      addToCodeSection(uncapitalize(ast.getSymbol().get().getName()), "=", ast.getName());
     }else{
-
       addToCodeSection(ast.getName());
     }
 

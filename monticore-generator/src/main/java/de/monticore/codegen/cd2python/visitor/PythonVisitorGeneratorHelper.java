@@ -46,7 +46,7 @@ public class PythonVisitorGeneratorHelper extends GeneratorHelper{
         if (cdFieldSymbol.getType().getActualTypeArguments().size() > 0){
             return cdSymbol.getType(cdFieldSymbol.getType().getActualTypeArguments().get(0).getType().getName()).isPresent();
         }
-        return false;
+        return cdFieldSymbol.getType().isReferencedSymbolLoaded();
     }
 
     /**

@@ -56,31 +56,36 @@ class AstBuilderVisitor(ParseTreeVisitor):
             <#if pythonHelper.isListNode(field)>
         _${field.getName()} = list()
             <#assign name = pythonHelper.getNameSingular(field) >
-        if callable(ctx.${name}):
-            for node in ctx.${name}():
-                <#if pythonHelper.hasSubRule(field,cd)>
-                _${field.getName()}.append(self.visit(node))
-                <#else>
-                _${field.getName()}.append(node)
-                </#if>
-        else:
-            for node in ctx.${name}:
-                <#if pythonHelper.hasSubRule(field,cd)>
-                _${field.getName()}.append(self.visit(node))
-                <#else>
-                _${field.getName()}.append(node)
-                </#if>
+        if ctx.${name} is not None:
+            if callable(ctx.${name}):
+                for node in ctx.${name}():
+                    <#if pythonHelper.hasSubRule(field,cd)>
+                    _${field.getName()}.append(self.visit(node))
+                    <#else>
+                    _${field.getName()}.append(node.text)
+                    </#if>
+            else:
+                for node in ctx.${name}:
+                    <#if pythonHelper.hasSubRule(field,cd)>
+                    _${field.getName()}.append(self.visit(node))
+                    <#else>
+                    _${field.getName()}.append(node.text)
+                    </#if>
             <#else>
                 <#if pythonHelper.hasSubRule(field,cd)>
-        if callable(ctx.${field.getName()}):
-            _${field.getName()} = self.visit(ctx.${field.getName()}()) if ctx.${field.getName()}() is not None else None
-        else:
-            _${field.getName()} = self.visit(ctx.${field.getName()})
+        _${field.getName()} = None
+        if ctx.${field.getName()} is not None:
+            if callable(ctx.${field.getName()}):
+                _${field.getName()} = self.visit(ctx.${field.getName()}()) if ctx.${field.getName()}() is not None else None
+            else:
+                _${field.getName()} = self.visit(ctx.${field.getName()})
                 <#else>
-        if callable(ctx.${field.getName()}):
-            _${field.getName()} = ctx.${field.getName()}() if ctx.${field.getName()}() is not None else None
-        else:
-            _${field.getName()} = ctx.${field.getName()}
+        _${field.getName()} = None
+        if ctx.${field.getName()} is not None:
+            if callable(ctx.${field.getName()}):
+                _${field.getName()} = ctx.${field.getName()}().text if ctx.${field.getName()}() is not None else None
+            else:
+                _${field.getName()} = ctx.${field.getName()}.text
                 </#if>
             </#if>
         </#list>
@@ -88,8 +93,8 @@ class AstBuilderVisitor(ParseTreeVisitor):
         <#-- now create a new object of the corresponding type -->
         ret = ${astName}(<#list type.getAllVisibleFields() as field>_${field.getName()}<#if (field?index < type.getAllVisibleFields()?size -1)>, </#if></#list>)
         # update the source position
-        ret.setSourcePositionStart(SourcePosition(ctx.start.line,ctx.start.column))
-        ret.setSourcePositionEnd(SourcePosition(ctx.stop.line,ctx.stop.column))
+        ret.setSourcePositionStart(SourcePosition(ctx.start.line, ctx.start.column))
+        ret.setSourcePositionEnd(SourcePosition(ctx.stop.line, ctx.stop.column))
         return ret
 
     </#if>

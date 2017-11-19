@@ -95,7 +95,7 @@ class ${genHelper.getVisitorType()}:
     # ------------------------------------------------------------------------
 
 
-    def visit(self, _node = None):
+    def visit(self, _node=None):
         """
         Python does not allow overloading of methods, thus a special visit method is used which
         delegates according to the type.
@@ -104,12 +104,12 @@ class ${genHelper.getVisitorType()}:
         """
         <#list cd.getTypes() as type>
         <#if type.isClass() && !type.isAbstract()>
-        if isinstance( _node , ${type} ):
+        if isinstance(_node, ${type}):
             self.visit${type}(_node)
         </#if>
         </#list>
 
-    def traverse(self, _node = None):
+    def traverse(self, _node=None):
         """
         Python does not allow overloading of methods, thus a special visit method is used which
         delegates according to the type.
@@ -118,13 +118,13 @@ class ${genHelper.getVisitorType()}:
         """
         <#list cd.getTypes() as type>
         <#if type.isClass() && !type.isAbstract()>
-        if isinstance( _node , ${type} ):
+        if isinstance(_node, ${type}):
             self.traverse${type}(_node)
         </#if>
         </#list>
 
 
-    def endVisit(self, _node = None):
+    def endVisit(self, _node=None):
         """
         Python does not allow overloading of methods, thus a special visit method is used which
         delegates according to the type.
@@ -133,8 +133,22 @@ class ${genHelper.getVisitorType()}:
         """
         <#list cd.getTypes() as type>
         <#if type.isClass() && !type.isAbstract()>
-        if isinstance( _node , ${type} ):
+        if isinstance(_node, ${type}):
             self.endVisit${type}(_node)
+        </#if>
+        </#list>
+
+    def handle(self, _node=None):
+        """
+        Python does not allow overloading of methods, thus a special visit method is used which
+        delegates according to the type.
+
+        :param _node: the node that is entered
+        """
+        <#list cd.getTypes() as type>
+        <#if type.isClass() && !type.isAbstract()>
+        if isinstance(_node, ${type}):
+            self.handle${type}(_node)
         </#if>
         </#list>
 
@@ -145,13 +159,13 @@ class ${genHelper.getVisitorType()}:
     <#if type.isClass() || type.isInterface() >
     <#assign astName = type.getName()>
 
-    def visit${astName}(self, _node = None ):
+    def visit${astName}(self, _node=None):
         pass
 
-    def endVisit${astName}(self, _node = None ):
+    def endVisit${astName}(self, _node=None):
         pass
 
-    def handle${astName}(self, _node = None ):
+    def handle${astName}(self, _node=None):
         self.getRealThis().visit(_node)
         <#if type.isInterface() || type.isEnum()>
         # no traverse() for interfaces and enums, only concrete classes are traversed
@@ -164,7 +178,7 @@ class ${genHelper.getVisitorType()}:
     </#if>
 
     <#if type.isClass() && !type.isAbstract()>
-    def traverse${astName}(self, _node = None ):
+    def traverse${astName}(self, _node=None):
         # One might think that we could call traverse(subelement) immediately,
         # but this is not true for interface-types where we do not know the
         # concrete type of the element.

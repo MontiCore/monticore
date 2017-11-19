@@ -43,10 +43,13 @@ software, even if advised of the possibility of such damage.
         <#list ast.getCDAttributes() as attribute>
             <#if genHelper.isListAttribute(attribute)>
         ret += '${attribute.getName()}' + ':'
-        for i in <#if genHelper.isStaticAttribute(attribute)>cls<#else>self</#if>.${attribute.getName()}:
-            ret += str(i) + " "
+        if <#if genHelper.isStaticAttribute(attribute)>cls<#else>self</#if>.${attribute.getName()} is not None:
+            ret += '\n'
+            for i in <#if genHelper.isStaticAttribute(attribute)>cls<#else>self</#if>.${attribute.getName()}:
+                ret += str(i) + "\n"
             <#else>
-        ret += '${attribute.getName()}' + ':' + str(<#if genHelper.isStaticAttribute(attribute)>cls<#else>self</#if>.${attribute.getName()}) + " "
+        if str(<#if genHelper.isStaticAttribute(attribute)>cls<#else>self</#if>.${attribute.getName()}) is not None:
+            ret += '${attribute.getName()}' + ':' + str(<#if genHelper.isStaticAttribute(attribute)>cls<#else>self</#if>.${attribute.getName()}) + "\n"
             </#if>
         </#list>
         return ret
