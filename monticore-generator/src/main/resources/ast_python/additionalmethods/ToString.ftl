@@ -44,9 +44,9 @@ software, even if advised of the possibility of such damage.
             <#if genHelper.isListAttribute(attribute)>
         ret += '${attribute.getName()}' + ':'
         for i in <#if genHelper.isStaticAttribute(attribute)>cls<#else>self</#if>.${attribute.getName()}:
-            ret += str(i)
+            ret += str(i) + " "
             <#else>
-        ret += '${attribute.getName()}' + ':' + str(<#if genHelper.isStaticAttribute(attribute)>cls<#else>self</#if>.${attribute.getName()})
+        ret += '${attribute.getName()}' + ':' + str(<#if genHelper.isStaticAttribute(attribute)>cls<#else>self</#if>.${attribute.getName()}) + " "
             </#if>
         </#list>
         return ret

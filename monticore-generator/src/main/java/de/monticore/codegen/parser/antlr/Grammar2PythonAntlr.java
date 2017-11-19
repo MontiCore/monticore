@@ -555,6 +555,12 @@ public class Grammar2PythonAntlr implements Grammar_WithConceptsVisitor {
       rulename = parserHelper.getLexSymbolName(ast.getName().intern());
     }
 
+    //regard the usage name
+
+    if(ast.getUsageName().isPresent()){
+      rulename = ast.getUsageName().get() + "=" + rulename;
+    }
+
     // No actions in predicates
     // Template engine cannot be used for substition in rare cases
     addToCodeSection(rulename); // + " %initaction% %actions% ) %iteration% ";
@@ -930,9 +936,12 @@ public class Grammar2PythonAntlr implements Grammar_WithConceptsVisitor {
     // AntLR2 -> AntLR4: Replace : by =
     // tmp = "( %tmp%=%rulename% %initaction% %actions%";
 
-    //TODO by KP
-    addToCodeSection(ast.getUsageName().isPresent()?ast.getUsageName().get():ast.getName(),
-            "=", ast.getName());
+    if (ast.getUsageName().isPresent()){
+      addToCodeSection(ast.getUsageName().get(),"=", ast.getName());
+    }else{
+
+      addToCodeSection(ast.getName());
+    }
 
     if (embeddedJavaCode) {
       // Add Actions
@@ -1021,7 +1030,7 @@ public class Grammar2PythonAntlr implements Grammar_WithConceptsVisitor {
     if (ast.getUsageName().isPresent()){
       tmpVarName = ast.getUsageName().get();
     }else{
-      tmpVarName = ast.getName().toUpperCase();
+      tmpVarName = ast.getName();
     }
 
     addToCodeSection(braceopen, " ", tmpVarName, "=", HelperGrammar.getRuleNameForAntlr(ast));
