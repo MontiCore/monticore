@@ -130,4 +130,9 @@ public class FileReaderWriter {
     return result;
   }
   
+  public boolean existsFile(Path sourcePath) {
+    Reporting.reportFileExistenceChecking(Lists.newArrayList(), sourcePath);
+    return sourcePath.toFile().exists();
+  }
+  
 }
