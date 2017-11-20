@@ -34,7 +34,6 @@ import com.google.common.collect.Lists;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
-import de.monticore.codegen.parser.Languages;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.DirectLeftRecursionDetector;
 import de.monticore.grammar.HelperGrammar;
@@ -110,11 +109,6 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
   private boolean embeddedJavaCode;
 
-  private boolean embeddedCode;
-
-  private Languages targetLanguage;
-
-
   public Grammar2Antlr(
           ParserGeneratorHelper parserGeneratorHelper,
           MCGrammarInfo grammarInfo) {
@@ -145,63 +139,6 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     this.embeddedJavaCode = embeddedJavaCode;
   }
-
-  public Grammar2Antlr(
-          ParserGeneratorHelper parserGeneratorHelper,
-          MCGrammarInfo grammarInfo,
-          boolean embeddedJavaCode,
-          Languages language) {
-    Preconditions.checkArgument(parserGeneratorHelper.getGrammarSymbol() != null);
-    this.grammarEntry = parserGeneratorHelper.getGrammarSymbol();
-    this.grammarInfo = grammarInfo;
-    this.parserHelper = parserGeneratorHelper;
-
-    astActions = new ASTConstructionActions(parserGeneratorHelper);
-    attributeConstraints = new AttributeCardinalityConstraint(parserGeneratorHelper);
-    positionActions = new SourcePositionActions(parserGeneratorHelper);
-
-    this.targetLanguage = language;
-    if (embeddedJavaCode && language.equals(Languages.JAVA)){
-      this.embeddedJavaCode = embeddedJavaCode;
-    }
-    else if(embeddedJavaCode){
-      this.embeddedCode = embeddedJavaCode;
-    }
-  }
-
-  /**
-   * Should embedded code be used or not.
-   * @param useEmbeddedCode
-   */
-  public void setUseEmbeddedCode(final boolean useEmbeddedCode){
-    this.embeddedCode = useEmbeddedCode;
-  }
-
-  /**
-   * Indicates whether embedded code regardless of the target is used.
-   * @return true if embedded code is used.
-   */
-  public boolean getUseEmbeddedCode(){
-    return this.embeddedCode;
-  }
-
-
-  /**
-   * Should java embedded code be used or not.
-   * @param useEmbeddedJavaCode
-   */
-  public void setUseEmbeddedJavaCode(final boolean useEmbeddedJavaCode){
-    this.embeddedJavaCode = useEmbeddedJavaCode;
-  }
-
-  /**
-   * Indicates whether embedded java code shall be used.
-   * @return True if embedded code is used
-   */
-  public boolean getUsedEmbeddedJavaCode(){
-    return this.embeddedJavaCode;
-  }
-
 
   /**
    * Prints Lexer rule
@@ -240,7 +177,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     // Add Action
     startCodeSection();
 
-    if ((embeddedJavaCode || embeddedCode) && ast.getEndAction().isPresent()) {
+    if (embeddedJavaCode && ast.getEndAction().isPresent()) {
       addToCodeSection("{", ParserGeneratorHelper.getText(ast.getEndAction().get()), "\n}");
     }
 
@@ -301,6 +238,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     if (embeddedJavaCode) {
       addToCodeSection(" returns [", classnameFromRulenameorInterfacename, " ret = ",
               MCGrammarSymbolTableHelper.getDefaultValue(ruleByName.get()), "]\n", options);
+
       // Add actions
       if (ast.getAction().isPresent() && ast.getAction().get() instanceof ASTAction) {
         addToAction(ParserGeneratorHelper.getText(ast.getAction().get()));
@@ -719,6 +657,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
   @Override
   public void visit(ASTLexActionOrPredicate a) {
     startCodeSection();
+
     addToCodeSection("{");
     addToCodeSection(ParserGeneratorHelper.getText(a.getExpressionPredicate()), "}");
     if (a.isPredicate()) {
@@ -1342,11 +1281,4 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     Arrays.asList(code).forEach(s -> action.append(s));
   }
 
-  /**
-   * Indicates whether java is the target of code generation.
-   * @return true if java is target
-   */
-  public boolean targetIsJava(){
-    return this.targetLanguage.equals(Languages.JAVA);
-  }
 }

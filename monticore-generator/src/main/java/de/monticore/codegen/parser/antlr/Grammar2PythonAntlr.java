@@ -146,6 +146,11 @@ public class Grammar2PythonAntlr implements Grammar_WithConceptsVisitor {
     startCodeSection();
     addToCodeSection("\n:");
 
+    if (embeddedCode && ast.getInitAction().isPresent()) {
+      // Add init action
+      addToCodeSection("{", ParserGeneratorHelper.getText(ast.getInitAction().get()), "\n}");
+    }
+
     endCodeSection();
 
     createAntlrCodeForLexAlts(ast.getAlts());
@@ -212,37 +217,14 @@ public class Grammar2PythonAntlr implements Grammar_WithConceptsVisitor {
 
     // Start code codeSection for rules
     addToCodeSection(ruleName);
+    // Add actions
 
-    if (embeddedJavaCode) {
-      addToCodeSection(" returns [", classnameFromRulenameorInterfacename, " ret = ",
-              MCGrammarSymbolTableHelper.getDefaultValue(ruleByName.get()), "]\n", options);
-      // Add actions
-      if (ast.getAction().isPresent() && ast.getAction().get() instanceof ASTAction) {
-        addToAction(ParserGeneratorHelper.getText(ast.getAction().get()));
-      }
-
-      // Action at beginning of rule @init
-      addToAction(astActions.getActionForRuleBeforeRuleBody(ast));
-      // Action for determining positions
-      addToAction(positionActions.startPosition(ast));
-      // Action for determining positions of comments (First set position)
-      addToAction("setActiveASTNode(_aNode);\n");
-
-      addToAction(attributeConstraints.addActionForRuleBeforeRuleBody(ast));
-
-      if (!isActionEmpty()) {
-        addToCodeSection("@init");
-        addActionToCodeSection();
-      }
-
-      // Action at end of rule
-      addToAction(positionActions.endPosition(ast));
-      addToAction(attributeConstraints.addActionForRuleAfterRuleBody(ast));
-
-      if (!isActionEmpty()) {
-        addToCodeSection("\n@after");
-        addActionToCodeSection();
-      }
+    if (embeddedCode && ast.getAction().isPresent() && ast.getAction().get() instanceof ASTAction) {
+      addToAction(ParserGeneratorHelper.getText(ast.getAction().get()));
+    }
+    if (!isActionEmpty()) {
+      addToCodeSection("@init");
+      addActionToCodeSection();
     }
 
     endCodeSection();
@@ -271,9 +253,6 @@ public class Grammar2PythonAntlr implements Grammar_WithConceptsVisitor {
         String subRuleVar = "subRuleVar" + i;
         addToCodeSection("(" + subRuleVar + " = "
                 + HelperGrammar.getRuleNameForAntlr(x.getClassname()));
-        if (embeddedJavaCode) {
-          addToCodeSection(" {$ret = $" + subRuleVar + ".ret;}");
-        }
         addToCodeSection(") | \n// end subrules");
         endCodeSection();
       }
@@ -316,16 +295,6 @@ public class Grammar2PythonAntlr implements Grammar_WithConceptsVisitor {
         addToCodeSection("\n", parserHelper.getLexSymbolName(c.getName()));
       }
 
-      if (embeddedJavaCode) {
-        String temp1 = "";
-        temp1 += "$ret = " + MCGrammarSymbolTableHelper.getQualifiedName(ruleByName.get())
-                + "."
-                + parserHelper.getConstantNameForConstant(c) + ";";
-
-        if (!temp1.isEmpty()) {
-          addToCodeSection("\n{" + temp1 + "}");
-        }
-      }
       sep = "|";
     }
     addToCodeSection(";\n");
@@ -357,10 +326,6 @@ public class Grammar2PythonAntlr implements Grammar_WithConceptsVisitor {
         addToCodeSection("'" + x.getName() + "'");
       }
 
-      if (embeddedJavaCode) {
-        addToAction(astActions.getConstantInConstantGroupSingleEntry(x, ast));
-        addActionToCodeSectionWithNewLine();
-      }
     }
 
     // More than one entry leads to an int
@@ -402,11 +367,6 @@ public class Grammar2PythonAntlr implements Grammar_WithConceptsVisitor {
            * tmp = tmp.replaceAll("%constantname%",
            * (x.getName().toUpperCase())); */
           addToCodeSection("'" + x.getName() + "'");
-        }
-
-        if (embeddedJavaCode) {
-          addToAction(astActions.getConstantInConstantGroupMultipleEntries(x, ast));
-          addActionToCodeSectionWithNewLine();
         }
 
         del = "|\n";
@@ -459,7 +419,7 @@ public class Grammar2PythonAntlr implements Grammar_WithConceptsVisitor {
       addToCodeSection("\noptions {", ast.getOption().get().getID(), "=", ast.getOption().get()
               .getValue(), ";}");
     }
-    if (embeddedJavaCode && ast.getInitAction().isPresent()) {
+    if (embeddedCode && ast.getInitAction().isPresent()) {
       addToCodeSection("{", ParserGeneratorHelper.getText(ast.getInitAction().get()), "}");
     }
     endCodeSection();
@@ -527,7 +487,7 @@ public class Grammar2PythonAntlr implements Grammar_WithConceptsVisitor {
     }
 
     // Print init actions
-    if (embeddedJavaCode && a.getInitAction().isPresent()) {
+    if (embeddedCode && a.getInitAction().isPresent()) {
       addToCodeSection("{" + ParserGeneratorHelper.getText(a.getInitAction().get()) + "}");
     }
 
@@ -571,28 +531,6 @@ public class Grammar2PythonAntlr implements Grammar_WithConceptsVisitor {
     // No actions in predicates
     // Template engine cannot be used for substition in rare cases
     addToCodeSection(rulename); // + " %initaction% %actions% ) %iteration% ";
-
-    if (embeddedJavaCode) {
-      boolean iteratedItself = HelperGrammar.isIterated(ast);
-      boolean isAttribute = ast.getUsageName().isPresent();
-
-      boolean isList = iteratedItself;
-      Optional<? extends Symbol> ruleComponent = ast.getSymbol();
-      if (ruleComponent.isPresent() && ruleComponent.get() instanceof MCProdComponentSymbol) {
-        MCProdComponentSymbol componentSymbol = (MCProdComponentSymbol) ruleComponent.get();
-        isList = componentSymbol.isList();
-      }
-      // Add Actions
-      if (isAttribute) {
-        if (isList) {
-          addToAction(astActions.getActionForTerminalIteratedAttribute(ast));
-        } else {
-          addToAction(astActions.getActionForTerminalNotIteratedAttribute(ast));
-        }
-      } else {
-        addToAction(astActions.getActionForTerminalIgnore(ast));
-      }
-    }
 
     addActionToCodeSection();
 
@@ -678,7 +616,7 @@ public class Grammar2PythonAntlr implements Grammar_WithConceptsVisitor {
    */
   @Override
   public void visit(ASTSemanticpredicateOrAction ast) {
-    if(embeddedJavaCode) {
+    if(embeddedCode) {
       startCodeSection();
 
       addToCodeSection("{");
@@ -828,9 +766,6 @@ public class Grammar2PythonAntlr implements Grammar_WithConceptsVisitor {
     addDummyRules(interfacename, ruleName, usageName);
 
     addToAntlrCode(HelperGrammar.getRuleNameForAntlr(interfacename));
-    if (embeddedJavaCode) {
-      addToAntlrCode(" returns [" + usageName + " ret]");
-    }
     addToAntlrCode(": ");
 
     List<Grammar2PythonAntlr.NodePair> alts = new ArrayList<>();
@@ -875,33 +810,11 @@ public class Grammar2PythonAntlr implements Grammar_WithConceptsVisitor {
         // Left recursive rule
         ASTAlt alt = (ASTAlt) entry.getAlternative();
         String className = entry.getPredicatePair().getClassname();
-        if (embeddedJavaCode) {
-          // Generate code for left recursive alternatives
-          addToAction(astActions.getActionForAltBeforeRuleBody(className, alt));
-          // Action for determining positions
-          addToAction(positionActions.startPosition(alt));
-          // Action for determining positions of comments (First set position)
-          addToAction("setActiveASTNode(_aNode);\n");
-        }
         alt.accept(getRealThis());
-        if (embeddedJavaCode) {
-          addActionToCodeSection();
-        }
       } else {
         if (left && entry.getAlternative() instanceof ASTClassProd && ((ASTClassProd) entry.getAlternative()).getAlts().size() == 1) {
           ASTAlt alt = ((ASTClassProd) entry.getAlternative()).getAlts().get(0);
           String className = entry.getPredicatePair().getClassname();
-          if (embeddedJavaCode) {
-            // Generate code for left recursive alternatives
-            addToAction(astActions.getActionForAltBeforeRuleBody(className, alt));
-            // Action for determining positions
-            addToAction(positionActions.startPosition(alt));
-            // Action for determining positions of comments (First set position)
-            addToAction("setActiveASTNode(_aNode);\n");
-            startCodeSection();
-            addActionToCodeSection();
-            endCodeSection();
-          }
           alt.accept(getRealThis());
         } else {
           // normal rule
@@ -909,10 +822,6 @@ public class Grammar2PythonAntlr implements Grammar_WithConceptsVisitor {
           String tmpVar = parserHelper.getTmpVarName(entry.getAlternative());
           addToCodeSection(tmpVar + "="
                   + HelperGrammar.getRuleNameForAntlr(entry.getPredicatePair().getClassname()));
-          if (embeddedJavaCode) {
-            // Action for AntLR4
-            addToCodeSection("\n{$ret=$" + tmpVar + ".ret;}");
-          }
           endCodeSection();
         }
       }
@@ -949,24 +858,6 @@ public class Grammar2PythonAntlr implements Grammar_WithConceptsVisitor {
       addToCodeSection(uncapitalize(ast.getSymbol().get().getName()), "=", ast.getName());
     }else{
       addToCodeSection(ast.getName());
-    }
-
-    if (embeddedJavaCode) {
-      // Add Actions
-      Optional<MCProdSymbol> scope = MCGrammarSymbolTableHelper.getEnclosingRule(ast);
-
-      if (scope.isPresent()) {
-        addToAction(attributeConstraints.addActionForNonTerminal(ast));
-        String attributename = HelperGrammar.getUsuageName(ast);
-        if (scope.isPresent() && scope.get().getProdComponent(attributename).isPresent()
-                && scope.get().getProdComponent(attributename).get().isList()) {
-          addToAction(astActions.getActionForLexerRuleIteratedAttribute(ast));
-        } else {
-          addToAction(astActions.getActionForLexerRuleNotIteratedAttribute(ast));
-        }
-      }
-
-      addActionToCodeSection();
     }
 
     addToCodeSection("\n");
@@ -1043,25 +934,6 @@ public class Grammar2PythonAntlr implements Grammar_WithConceptsVisitor {
 
     addToCodeSection(braceopen, " ", tmpVarName, "=", HelperGrammar.getRuleNameForAntlr(ast));
 
-    if (embeddedJavaCode) {
-      if (isLeftRecursive) {
-        addToAction(astActions
-                .getActionForInternalRuleNotIteratedLeftRecursiveAttribute(ast));
-      }
-      addToAction(attributeConstraints.addActionForNonTerminal(ast));
-      // TODO GV:
-      String attributename = HelperGrammar.getUsuageName(ast);
-      if (scope.isPresent() && scope.get().getProdComponent(attributename).isPresent()
-              && scope.get().getProdComponent(attributename).get().isList()) {
-        addToAction(astActions.getActionForInternalRuleIteratedAttribute(ast));
-      } else {
-        addToAction(astActions.getActionForInternalRuleNotIteratedAttribute(ast));
-      }
-
-      // TODO GV: replaceAll("..", ".")); is deprecated?
-      addActionToCodeSection();
-    }
-
     addToCodeSection(braceclose, " ", iteration, " ");
 
     endCodeSection();
@@ -1082,23 +954,6 @@ public class Grammar2PythonAntlr implements Grammar_WithConceptsVisitor {
     // Template engine cannot be used for substition in rare cases
     addToCodeSection(rulename); // + " %initaction% %actions% ) %iteration% ";
 
-    if (embeddedJavaCode) {
-      boolean isAttribute = (keyword.getUsageName().isPresent());
-
-      // Add Actions
-      if (isAttribute) {
-        if (isList) {
-          addToAction(astActions.getActionForTerminalIteratedAttribute(keyword));
-        } else {
-          addToAction(astActions.getActionForTerminalNotIteratedAttribute(keyword));
-        }
-      } else {
-        addToAction(astActions.getActionForTerminalIgnore(keyword));
-      }
-
-      addActionToCodeSection();
-    }
-
     addToCodeSection(")", printIteration(keyword.getIteration()));
 
     endCodeSection();
@@ -1110,13 +965,7 @@ public class Grammar2PythonAntlr implements Grammar_WithConceptsVisitor {
 
     addToCodeSection("\n\n", ruleName, "_eof");
 
-    if (embeddedJavaCode) {
-      addToCodeSection(" returns [", usageName, " ret = null] :\n  tmp = ",
-              ruleName, " {$ret = $tmp.ret;} ");
-    }
-    else {
-      addToCodeSection(" :\n tmp = ", ruleName, " ");
-    }
+    addToCodeSection(" :\n tmp = ", ruleName, " ");
 
     String follow = "EOF";
     String end = " ;\n\n";
@@ -1235,7 +1084,7 @@ public class Grammar2PythonAntlr implements Grammar_WithConceptsVisitor {
    */
   protected void addActionToCodeSection() {
     if (action.length() != 0) {
-      if (embeddedJavaCode) {
+      if (embeddedCode) {
         addToCodeSection("{", action.toString(), "}");
       }
       clearAction();
@@ -1248,7 +1097,7 @@ public class Grammar2PythonAntlr implements Grammar_WithConceptsVisitor {
    */
   protected void addActionToCodeSectionWithNewLine() {
     if (action.length() != 0) {
-      if (embeddedJavaCode) {
+      if (embeddedCode) {
         addToCodeSection("{\n", action.toString(), "\n}");
       }
       clearAction();

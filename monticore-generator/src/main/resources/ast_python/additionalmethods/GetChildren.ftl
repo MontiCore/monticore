@@ -45,7 +45,8 @@ ${tc.signature("ast", "type")}
             result.append(self.${attrGetter}())
 
       <#elseif genHelper.isListAstNode(field)>
-        result.extend(self.${attrGetter}())
+        if self.${attrGetter}() is not None:
+            result.extend(self.${attrGetter}())
       </#if>
     </#list>
         return result
