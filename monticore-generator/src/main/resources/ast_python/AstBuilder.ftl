@@ -44,7 +44,7 @@ class Builder(object):
     def build(cls):
         return ${typeName}<@compress single_line=true>(<#list astType.getCDAttributes() as attribute>
                                <#if !genHelper.isInherited(attribute) && !genHelper.isAdditionalAttribute(attribute)>
-                               cls.${attribute.getName()}<#if (attribute?index < astType.getCDAttributes()?size -1 )>, </#if>
+                               cls._${attribute.getName()}<#if (attribute?index < astType.getCDAttributes()?size -1 )>, </#if>
                                </#if></#list>)</@compress>
 
     ${tc.include("ast_python.AstBuilderAttributeSetter", genHelper.getNativeCDAttributes(astType))}

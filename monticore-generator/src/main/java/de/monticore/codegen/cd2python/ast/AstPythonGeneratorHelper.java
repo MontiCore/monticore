@@ -31,7 +31,11 @@ import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.TypesPrinter;
 import de.monticore.types.types._ast.ASTPrimitiveType;
 import de.monticore.types.types._ast.ASTReferenceType;
+import de.monticore.types.types._ast.ASTSimpleReferenceType;
+import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
+import de.monticore.umlcd4a.symboltable.CDFieldSymbol;
+import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
@@ -343,10 +347,27 @@ public class AstPythonGeneratorHelper extends AstEmfGeneratorHelper {
         return uncapitalize(PythonVisitorGeneratorHelper.getAntlrConformName(name));
     }
 
-    public static String getTmpNameFromName(){
-        return "TODO";
-    }
+    /**
+     * Indicates whether the handed over type is primitive or an AST class reference.
+     * @param type a single type object.
+     * @return
+     */
+    public static boolean isPrimitive(ASTType type){
 
+        if(type instanceof ASTSimpleReferenceType){
+           if (((ASTSimpleReferenceType) type).getTypeArguments().isPresent() &&
+                   ((ASTSimpleReferenceType) type).getTypeArguments().get().getTypeArguments().size()>0){
+               return ((ASTSimpleReferenceType) type).getTypeArguments().get().symbolIsPresent();
+           }
+        }
+        /*
+        if (cdFieldSymbol.getType().getActualTypeArguments().size() > 0){
+            return cdSymbol.getType(cdFieldSymbol.getType().getActualTypeArguments().get(0).getType().getName()).isPresent();
+        }
+        type.getSymbol().isPresent()
+        return type.getSymbol().isReferencedSymbolLoaded();*/
+        return false;
+    }
 
 
 }

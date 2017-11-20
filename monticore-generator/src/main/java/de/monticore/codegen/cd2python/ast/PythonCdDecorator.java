@@ -327,10 +327,10 @@ public class PythonCdDecorator extends CdDecorator{
         replaceMethodBodyTemplate(clazz, AstAdditionalMethods.equalsWithComments.getDeclaration(),
                 new TemplateHookPoint("ast_python.additionalmethods.EqualsWithComments"));
 
-        replaceMethodBodyTemplate(clazz, "public java.util.Collection<de.monticore.ast.ASTNode> get_Children();",
+        replaceMethodBodyTemplate(clazz, "public java.util.Collection<de.monticore.ast.ASTNode> getChildren();",
                 new TemplateHookPoint("ast_python.additionalmethods.GetChildren", clazz, symbol.get()));
 
-        replaceMethodBodyTemplate(clazz, "public void remove_Child(de.monticore.ast.ASTNode child);",
+        replaceMethodBodyTemplate(clazz, "public void removeChild(de.monticore.ast.ASTNode child);",
                 new TemplateHookPoint("ast_python.additionalmethods.RemoveChild", clazz, symbol.get()));
 
         String stringToParse = String.format(AstAdditionalMethods.deepClone.getDeclaration(),

@@ -58,19 +58,19 @@ ${tc.signature("ast","astType")}
 	  </#if>  
     </#list --> 
         # comparing comments
-        if len(self.get_PreComments()) == len(comp.get_PreComments()):
-            one = self.get_PreComments()
-            two = comp.get_PreComments()
-            for i in range(0,len(self.get_PreComments())):
+        if len(self.getPreComments()) == len(comp.getPreComments()):
+            one = self.getPreComments()
+            two = comp.getPreComments()
+            for i in range(0, len(self.getPreComments())):
                 if not one[i].equals(two[i]):
                     return False
         else:
             return False
 
-        if len(self.get_PostComments()) == len(comp.get_PostComments()):
-            one = self.get_PostComments()
-            two = comp.get_PostComments()
-            for i in range(0,len(self.get_PostComments())):
+        if len(self.getPostComments()) == len(comp.getPostComments()):
+            one = self.getPostComments()
+            two = comp.getPostComments()
+            for i in range(0, len(self.getPostComments())):
                 if not one[i].equals(two[i]):
                     return False
         else:

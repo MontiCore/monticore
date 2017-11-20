@@ -39,5 +39,5 @@ software, even if advised of the possibility of such damage.
         <#if genHelper.isBoolean(ast)>
         assert (_${attributeName} is not None and isinstance(_${attributeName},bool)),'${genHelper.printPrefixedNamed(ast)} must be of type bool!'
         </#if>
-        cls.${attributeName} = ${genHelper.printPrefixedNamed(ast)}
+        cls._${attributeName} = ${genHelper.printPrefixedNamed(ast)}
         return cls

@@ -46,17 +46,40 @@ ${tc.signature("ast","astType")}
     <#assign attributeName = genHelper.getJavaConformName(attribute.getName())>
     <#if !genHelper.isAstNode(attribute) && !genHelper.isOptionalAstNode(attribute) && !genHelper.isListAstNode(attribute)>
         # comparing ${attributeName}
+    <#if genHelper.isListAttribute(attribute)>
+        if not self.${attributeName} is None == comp.${attributeName} is None:
+            return False
+        if self.${attributeName} is not None:
+            if len(self.${attributeName}) != len(comp.${attributeName}):
+                return False
+    <#if genHelper.isPrimitive(attribute.getType())>
+            for i in range(0, len(self.${attributeName})):
+                if not self.${attributeName}[i] == comp.${attributeName}[i]:
+                    return False
+    <#elseif genHelper.isOptional(attribute)>
+            for i in range(0, len(self.${attributeName})):
+                if (self.${attributeName}[i] is not None != comp.${attributeName}[i] is not None) or \
+                        (self.${attributeName}[i] is not None and not self.${attributeName}[i] == comp.${attributeName}[i]):
+                    return False
+    <#else>
+            for i in range(0, len(self.${attributeName})):
+                if (self.${attributeName}[i] is None and comp.${attributeName}[i] is not None) or \
+                        (self.${attributeName}[i] is not None and not self.${attributeName}[i] == comp.${attributeName}[i]):
+                    return False
+    </#if>
+    <#else>
     <#if genHelper.isPrimitive(attribute.getType())>
         if not self.${attributeName} == comp.${attributeName}:
             return False
     <#elseif genHelper.isOptional(attribute)>
-        if (self.${attributeName} is not None != comp.${attributeName} is not None) or \
-            (self.${attributeName} is not None and not self.${attributeName}.equals(comp.${attributeName})):
+        if (self.${attributeName} is not None) != (comp.${attributeName} is not None) or \
+                (self.${attributeName} is not None and not self.${attributeName} == comp.${attributeName}):
             return False
     <#else>
-        if (self.${attributeName} is None and comp.${attributeName} is not None) or \
-            (self.${attributeName} is not None and not self.${attributeName}.equals(comp.${attributeName})):
+        if (self.${attributeName} is None) and (comp.${attributeName} is not None) or \
+              (self.${attributeName} is not None and not self.${attributeName} == comp.${attributeName}):
             return False
+    </#if>
     </#if>
     </#if>
     </#list>

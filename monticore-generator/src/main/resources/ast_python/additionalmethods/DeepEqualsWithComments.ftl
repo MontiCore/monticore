@@ -49,13 +49,13 @@ ${tc.signature("ast","astType")}
         <#assign attrName = genHelper.getJavaConformName(attribute.getName())>
         <#if genHelper.isOptionalAstNode(attribute)>
         # comparing ${attrName}
-        if (self.${attrName} is not None != comp.${attrName} is not None) or \
-            (self.${attrName} is not None and not self.${attrName}.get().deepEqualsWithComments(comp.${attrName}.get())):
+        if (self.${attrName} is not None) != (comp.${attrName} is not None) or \
+                (self.${attrName} is not None and not self.${attrName}.deepEqualsWithComments(comp.${attrName})):
             return False
         <#elseif genHelper.isAstNode(attribute)>
         # comparing ${attrName}
         if (self.${attrName} is None and comp.${attrName} is not None) or \
-            (self.${attrName} is not None and not self.${attrName}.deepEqualsWithComments(comp.${attrName})):
+                (self.${attrName} is not None and not self.${attrName}.deepEqualsWithComments(comp.${attrName})):
             return False
         <#elseif genHelper.isListAstNode(attribute)>
         # comparing ${attrName}
