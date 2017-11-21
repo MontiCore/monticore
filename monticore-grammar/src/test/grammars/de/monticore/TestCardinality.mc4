@@ -1,0 +1,7 @@
+package de.monticore;
+
+grammar TestCardinality extends de.monticore.Cardinality {
+
+	A = "";
+
+}

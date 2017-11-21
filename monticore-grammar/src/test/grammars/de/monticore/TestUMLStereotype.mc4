@@ -1,0 +1,8 @@
+package de.monticore;
+
+grammar TestUMLStereotype extends de.monticore.UMLStereotype {
+
+	StereotypeList = "["  (Stereotype | ",")* "]" ;
+	StereoValueList = "["  (StereoValue | ",")* "]" ;
+
+}

@@ -1,0 +1,7 @@
+package de.monticore;
+
+grammar TestCompleteness extends de.monticore.Completeness {
+
+	CompletenessList = "["  (Completeness | ",")* "]" ;
+
+}

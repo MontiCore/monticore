@@ -1,0 +1,8 @@
+package de.monticore;
+
+grammar TestStringLiterals extends de.monticore.StringLiterals {
+
+	CharLiteralList = "["  (CharLiteral | ",")* "]" ;
+	StringLiteralList = "["  (StringLiteral | ",")* "]" ;
+
+}

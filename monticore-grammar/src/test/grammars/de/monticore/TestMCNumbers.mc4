@@ -1,0 +1,7 @@
+package de.monticore;
+
+grammar TestMCNumbers extends de.monticore.MCNumbers {
+
+	A = "";
+
+}
