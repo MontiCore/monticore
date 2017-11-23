@@ -1,0 +1,100 @@
+/*
+***************************************************************************************
+Copyright (c) 2017, MontiCore
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation and/or
+other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its contributors
+may be used to endorse or promote products derived from this software
+without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGE.
+***************************************************************************************
+*/
+
+package de.monticore;
+
+component grammar CommonExpressions extends de.monticore.ExpressionsBasis {
+
+interface InfixExpression extends Expression = leftExpression:Expression rightExpression:Expression;
+  
+CallExpression implements Expression <240> =
+	Expression Arguments;
+	        
+BooleanNotExpression implements Expression <200> =
+	"~"  Expression;
+	
+LogicalNotExpression implements Expression <190> =
+	"!" Expression;
+
+MultExpression implements Expression <180>, InfixExpression =
+	leftExpression:Expression "*" rightExpression:Expression;
+
+DivideExpression implements Expression <180>, InfixExpression =
+	leftExpression:Expression "/" rightExpression:Expression;
+
+ModuloExpression implements Expression <180>, InfixExpression =
+	leftExpression:Expression "%" rightExpression:Expression;
+    
+PlusExpression implements Expression <170>, InfixExpression =
+	leftExpression:Expression "+" rightExpression:Expression;
+        
+MinusExpression implements Expression <170>, InfixExpression =
+	leftExpression:Expression "-" rightExpression:Expression;
+
+LessEqualExpression implements Expression <150>, InfixExpression =
+	leftExpression:Expression "<=" rightExpression:Expression;
+	
+GreaterEqualExpression implements Expression <150>, InfixExpression =
+	leftExpression:Expression ">=" rightExpression:Expression;
+	
+LessThanExpression implements Expression <150>, InfixExpression =
+	leftExpression:Expression "<" rightExpression:Expression;
+	
+GreaterThanExpression implements Expression <150>, InfixExpression =
+	leftExpression:Expression ">" rightExpression:Expression;
+	        
+EqualsExpression implements Expression <130>, InfixExpression =
+	leftExpression:Expression "==" rightExpression:Expression;
+	
+NotEqualsExpression implements Expression <130>, InfixExpression =
+	leftExpression:Expression "!=" rightExpression:Expression;
+	        
+BooleanAndOpExpression implements Expression <90>, InfixExpression =
+	leftExpression:Expression "&&" rightExpression:Expression;
+	
+BooleanOrOpExpression implements Expression <80>, InfixExpression =
+	leftExpression:Expression "||" rightExpression:Expression;
+	
+ConditionalExpression implements Expression <70> =
+	condition:Expression "?" trueExpression:Expression ":" falseExpression:Expression;
+	
+SimpleAssignmentExpression implements Expression <60>, InfixExpression = <rightassoc>
+	leftExpression:Expression "+=" rightExpression:Expression;
+
+BracketExpression implements Expression <310>
+    =  "(" Expression ")";
+    
+Arguments
+    =   "(" (Expression || ",")* ")";
+    
+}
