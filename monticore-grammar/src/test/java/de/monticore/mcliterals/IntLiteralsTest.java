@@ -25,15 +25,31 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.monticore.mcliterals._ast.ASTIntLiteral;
 import de.monticore.mcliterals._ast.ASTLiteral;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 
 /**
  * @author Martin Schindler
  */
 public class IntLiteralsTest {
+  
+  @BeforeClass
+  public static void init() {
+    // replace log by a sideffect free variant
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
+  @Before
+  public void setUp() {
+    Log.getFindings().clear();
+  }
   
   private void checkIntLiteral(int i, String s) throws IOException {
     ASTLiteral lit = MCLiteralsTestHelper.getInstance().parseLiteral(s);
@@ -66,6 +82,22 @@ public class IntLiteralsTest {
       checkIntLiteral(00, "00");
       checkIntLiteral(076543210, "076543210");
       checkIntLiteral(00017, "00017");
+      
+      //binary number
+      checkIntLiteral(0b0, "0b0");
+      checkIntLiteral(0b01010, "0b01010");
+      checkIntLiteral(0b00001, "0b00001");
+      checkIntLiteral(0b1111, "0b1111");
+      
+      //underscores 
+      checkIntLiteral(0257, "02_57");
+      checkIntLiteral(0370744, "0370__744");
+      checkIntLiteral(123456, "123_456");
+      checkIntLiteral(876543210, "87__65_43210");
+      checkIntLiteral(0b010101, "0b010_101");
+      checkIntLiteral(0x27af489, "0x27_af_489");
+      checkIntLiteral(0X27d48e9, "0X27d4_8e9");
+      
     }
     catch (IOException e) {
       fail(e.getMessage());

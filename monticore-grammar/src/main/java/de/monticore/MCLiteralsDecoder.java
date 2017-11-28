@@ -20,7 +20,6 @@
 package de.monticore;
 
 import java.io.CharConversionException;
-
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -29,7 +28,7 @@ import de.se_rwth.commons.logging.Log;
  * @author Martin Schindler
  */
 public class MCLiteralsDecoder {
-      
+  
   /**
    * Decodes a char literal into a char
    * 
@@ -75,7 +74,7 @@ public class MCLiteralsDecoder {
    * 
    * @param s string literal excluding '"'
    * @return decoded string
-   * @throws CharConversionException 
+   * @throws CharConversionException
    */
   public static String decodeString(String s) {
     StringBuilder ret = new StringBuilder();
@@ -97,7 +96,7 @@ public class MCLiteralsDecoder {
         in = in.substring(1);
       }
     }
-    return ret.toString();    
+    return ret.toString();
   }
   
   /**
@@ -108,15 +107,19 @@ public class MCLiteralsDecoder {
    */
   public static int decodeInt(String s) {
     int radix = 10;
-    if (s.startsWith("0") && s.length() > 1) {
-      if (s.startsWith("0x") || s.startsWith("0X")) {
-        return Integer.parseInt(s.substring(2), 16);
+    String in = removeUnderscores(s);
+    if (in.startsWith("0") && in.length() > 1) {
+      if (in.startsWith("0x") || in.startsWith("0X")) {
+        return Integer.parseInt(in.substring(2), 16);
+      }
+      else if (in.startsWith("0b") || in.startsWith("0B")) {
+        return Integer.parseInt(in.substring(2), 2);
       }
       else {
         radix = 8;
       }
     }
-    return Integer.parseInt(s, radix);
+    return Integer.parseInt(in, radix);
   }
   
   /**
@@ -127,17 +130,22 @@ public class MCLiteralsDecoder {
    */
   public static long decodeLong(String s) {
     int radix = 10;
-    String in = s;
-    if (s.startsWith("0") && s.length() > 2) {
-      if (s.startsWith("0x") || s.startsWith("0X")) {
+    s = s.substring(0, s.length() - 1);
+    String in = removeUnderscores(s);
+    if (in.startsWith("0") && in.length() > 2) {
+      if (in.startsWith("0x") || in.startsWith("0X")) {
         radix = 16;
-        in = s.substring(2);
+        in = in.substring(2);
+      }
+      else if (in.startsWith("0b") || in.startsWith("0B")) {
+        radix = 2;
+        in = in.substring(2);
       }
       else {
         radix = 8;
       }
     }
-    return Long.parseLong(in.substring(0, in.length() - 1), radix);
+    return Long.parseLong(in, radix);
   }
   
   /**
@@ -147,6 +155,11 @@ public class MCLiteralsDecoder {
    * @return decoded float
    */
   public static float decodeFloat(String s) {
+    s = s.substring(0, s.length() - 1);
+    s = removeUnderscores(s);
+    if (s.startsWith("0x") || s.startsWith("0X")) {
+      return Float.valueOf(s);
+    }
     // workaround as parseFloat() does not parse 0xp1F correctly
     if (s.toLowerCase().startsWith("0xp")) {
       return Float.parseFloat("0x0p" + s.substring(3)); // 0xp1F == 0x0p1F == 0.0
@@ -161,11 +174,54 @@ public class MCLiteralsDecoder {
    * @return decoded double
    */
   public static double decodeDouble(String s) {
+    if (s.endsWith("d") || s.endsWith("D")) {
+      s = s.substring(0, s.length() - 1);
+    }
+    s = removeUnderscores(s);
+    if (s.startsWith("0x") || s.startsWith("0X")) {
+      return Double.valueOf(s);
+    }
     // workaround as parseDouble() does not parse 0xp1 correctly
     if (s.toLowerCase().startsWith("0xp")) {
       return Double.parseDouble("0x0p" + s.substring(3)); // 0xp1 == 0x0p1 == 0.0
     }
     return Double.parseDouble(s);
+  }
+  
+  private static String removeUnderscores(String s) {
+    if (s.contains("_")) {
+      
+      if (s.indexOf("_") == 0) {
+        Log.error("0xA4081 Do not put underscores at the beginning of the Number " + s);
+      }
+      
+      if (s.contains("e")
+          && (s.indexOf("_") == s.indexOf("e") - 1 || s.indexOf("_") == s.indexOf("e") + 1)) {
+        Log.error("0xA4082 Do not put underscores before or after an 'e' in the Number" + s);
+      }
+      
+      if (s.contains("p")
+          && (s.indexOf("_") == s.indexOf("p") - 1 || s.indexOf("_") == s.indexOf("p") + 1)) {
+        Log.error("0xA4083 Do not put underscores before or after an 'p' in the Number" + s);
+      }
+      
+      if (s.contains(".")
+          && (s.indexOf("_") == s.indexOf(".") - 1 || s.indexOf("_") == s.indexOf(".") + 1)) {
+        Log.error("0xA4084 Do not put underscores before or after an '.' in the Number" + s);
+      }
+      
+      if (s.startsWith("0x") || s.startsWith("0X") || s.startsWith("0b") || s.startsWith("0B")) {
+        if (s.indexOf("_") == 2) {
+          Log.error("0xA4081 Do not put underscores at the beginning of the Number " + s);
+        }
+      }
+      if (s.endsWith("_")) {
+        Log.error("0xA4081 Do not put underscores at the end of the Number " + s);
+      }
+      s = s.replaceAll("_", "");
+    }
+    
+    return s;
   }
   
 }

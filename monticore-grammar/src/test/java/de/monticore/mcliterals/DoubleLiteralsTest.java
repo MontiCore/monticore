@@ -25,15 +25,31 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.monticore.mcliterals._ast.ASTDoubleLiteral;
 import de.monticore.mcliterals._ast.ASTLiteral;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 
 /**
  * @author Martin Schindler
  */
 public class DoubleLiteralsTest {
+  
+  @BeforeClass
+  public static void init() {
+    // replace log by a sideffect free variant
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
+  @Before
+  public void setUp() {
+    Log.getFindings().clear();
+  }
   
   private void checkDoubleLiteral(double d, String s) throws IOException {
     ASTLiteral lit = MCLiteralsTestHelper.getInstance().parseLiteral(s);
@@ -91,6 +107,13 @@ public class DoubleLiteralsTest {
       checkDoubleLiteral(3.14, "3.14");
       checkDoubleLiteral(1e-9d, "1e-9d");
       checkDoubleLiteral(1e137, "1e137");
+      
+      //underscores 
+      checkDoubleLiteral(678910.9978d, "678_910.997_8d");
+      checkDoubleLiteral(16780e14, "16_780e1_4");
+      checkDoubleLiteral(2.7898765444D, "2.789___8765444D");
+      checkDoubleLiteral(0x0.8645p1, "0x0.864_5p1");
+      checkDoubleLiteral(0xefab.abcdp67d, "0xef_ab.abcdp6_7d");
     }
     catch (IOException e) {
       fail(e.getMessage());

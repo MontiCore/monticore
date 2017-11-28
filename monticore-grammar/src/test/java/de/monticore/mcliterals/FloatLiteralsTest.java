@@ -25,15 +25,31 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.monticore.mcliterals._ast.ASTFloatLiteral;
 import de.monticore.mcliterals._ast.ASTLiteral;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 
 /**
  * @author Martin Schindler
  */
 public class FloatLiteralsTest {
+  
+  @BeforeClass
+  public static void init() {
+    // replace log by a sideffect free variant
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
+  @Before
+  public void setUp() {
+    Log.getFindings().clear();
+  }
   
   private void checkFloatLiteral(float f, String s) throws IOException {
     ASTLiteral lit = MCLiteralsTestHelper.getInstance().parseLiteral(s);
@@ -89,9 +105,16 @@ public class FloatLiteralsTest {
       checkFloatLiteral(0f, "0f");
       checkFloatLiteral(3.14f, "3.14f");
       checkFloatLiteral(6.022137e+23f, "6.022137e+23f");
+      
+      // underscores
+      checkFloatLiteral(678910.9978f, "678_910.997_8f");
+      checkFloatLiteral(16780e14F, "16_780e1_4F");
+      checkFloatLiteral(2.7898765444f, "2.789___8765444f");
+      checkFloatLiteral(0x0.8645p1F, "0x0.864_5p1F");
+      checkFloatLiteral(0xefab.abcdp67f, "0xef_ab.abcdp6_7f");
+      
     }
-    catch (IOException e)
-    {
+    catch (IOException e) {
       fail(e.getMessage());
     }
   }
