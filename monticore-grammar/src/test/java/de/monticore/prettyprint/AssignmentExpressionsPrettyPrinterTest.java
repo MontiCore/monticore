@@ -70,12 +70,11 @@ public class AssignmentExpressionsPrettyPrinterTest extends AssignmentExpression
   @Test
   public void testIncSuffixExpression() throws IOException {
     TestAssignmentExpressionsParser parser = new TestAssignmentExpressionsParser();
-    ASTExpression ast = parser.parseString_Expression("//Commentar\nexp++").orElse(null);
+    ASTExpression ast = parser.parseString_Expression("nexp++").orElse(null);
     assertNotNull(ast);
     AssignmentExpressionsPrettyPrinterTest printer = new AssignmentExpressionsPrettyPrinterTest();
     ast.accept(printer);
-    System.out.println(printer.toString());
-    assertEquals("//Commentar\nexp++", printer.toString());
+    assertEquals("nexp++", printer.toString());
   }
   
   @Test

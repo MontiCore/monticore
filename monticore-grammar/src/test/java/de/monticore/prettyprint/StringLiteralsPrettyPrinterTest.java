@@ -106,7 +106,6 @@ public class StringLiteralsPrettyPrinterTest {
     StringLiteralsPrettyPrinter prettyPrinter = new StringLiteralsPrettyPrinter(
         new IndentPrinter());
     String output = prettyPrinter.prettyprint(sliteral);
-    System.out.println(output);
     result = parser.parseStringLiteral(new StringReader(output));
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
