@@ -43,6 +43,11 @@ external OCLNestedContainer;
         "implies"
         rightExpression:Expression;
 
+	SingleLogicalORExpr implements OCLExpression <210> =
+		left:Expression
+		"|"
+		right:Expression;
+
     /** ASTForAllExpr defines a quantified expression for collections e.g.
         "forall x in Y : ...".
         @attribute OCLCollectionVarDeclaration
