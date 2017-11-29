@@ -37,6 +37,7 @@ component grammar OCLLogicExpressions extends de.monticore.ExpressionsBasis, de.
 
 external OCLCollectionVarDeclaration;
 external OCLNestedContainer;
+external OCLDeclaration;
 
     ImpliesExpression implements Expression <200> =
         leftExpression:Expression
@@ -60,7 +61,6 @@ external OCLNestedContainer;
                    The body of forall iteration as an expression.
 
     */
-
     ForallExpr implements Expression <100> =
         "forall"
         OCLCollectionVarDeclaration?
@@ -82,7 +82,6 @@ external OCLNestedContainer;
                    The body of forall iteration as an expression.
 
     */
-
     ExistsExpr implements Expression <100> =
         "exists"
         OCLCollectionVarDeclaration?
@@ -92,4 +91,55 @@ external OCLNestedContainer;
         Expression
         ;
 
+    /** ASTOCLAnyExpr defines iterations with all objects of a collection e.g.
+        any x in set or any Auction.
+        @attribute OCLExpression
+                   A collection defined by an expression.
+    */
+    AnyExpr implements Expression <90> =
+        "any" Expression;
+
+    /** ASTOCLLetinExpr are used to define local vars or methods. The defined
+        vars and methods are visible in the in-expression.
+        @attribute declarations
+                   A list of variable or method declarations.
+        @attribute OCLExpression
+                   An expression where previous declarations are used.
+    */
+    LetinExpr implements Expression <120> =
+        "let" (declarations:OCLDeclaration ";")+
+        "in" Expression
+        |
+        "(" LetinExpr  ")"
+        ;
+
+    /** ASTOCLLetDeclaration represents a list of let-declarations inside of a
+        let-statement. This contains variable- or method-declarations.
+        @attribute declarations
+               List of variable- or method-declarations.
+    */
+    LetDeclaration implements Expression <120> =
+        "let" (declarations:OCLDeclaration ";")+;
+
+
+    /** ASTOCLIterateExpr is used to iterate collections. It differs from
+        Java5-Iterator.
+        Example:
+            iterate{ elem in Auction; int acc=0 : acc = acc+elem.numberOfBids }.
+        @attribute iterationDeclarator
+                   The elements of a collection that will be iterated as an
+                   OCLCollectionVarDeclaration.
+        @attribute initDeclarator
+                   Definiton of a accumulation variable as an OCLDeclaration.
+        @attribute accumulatorName
+                   Name of the accumulation assignment variable.
+        @attribute accumulatorValue
+                   Right hand of the accumulation as an expression.
+    */
+    IterateExpr implements Expression <110> =
+        "iterate" "{"
+        iterationDeclarator:OCLCollectionVarDeclaration ";"
+        initDeclarator:OCLDeclaration ":"
+        accumulatorName:Name "=" accumulatorValue:Expression
+        "}";
 }
