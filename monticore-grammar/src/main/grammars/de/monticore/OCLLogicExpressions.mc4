@@ -83,7 +83,7 @@ external OCLNestedContainer;
 
     */
 
-    ExistsExpr implements Expression =
+    ExistsExpr implements Expression <100> =
         "exists"
         OCLCollectionVarDeclaration?
         OCLNestedContainer?
