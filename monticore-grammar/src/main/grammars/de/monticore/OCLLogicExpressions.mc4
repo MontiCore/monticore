@@ -44,7 +44,7 @@ external OCLDeclaration;
         "implies"
         rightExpression:Expression;
 
-	SingleLogicalORExpr implements OCLExpression <210> =
+	SingleLogicalORExpr implements Expression <210> =
 		left:Expression
 		"|"
 		right:Expression;
