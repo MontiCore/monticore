@@ -848,28 +848,8 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     List<NodePair> alts = new ArrayList<>();
     String del = "";
     // Get all implementing/extending interfaces
-    List<PredicatePair> interfaces = grammarInfo.getSubRulesForParsing(interfacename);
-    boolean left = false;
-    for(PredicatePair interf : interfaces) {
-      Optional<MCProdSymbol> symbol = grammarEntry.getSpannedScope().<MCProdSymbol>resolve(interf.getClassname(), MCProdSymbol.KIND);
-      if (!symbol.isPresent()) {
-        continue;
-      }
-      MCProdSymbol prodSymbol = symbol.get();
-      if (!prodSymbol.getAstNode().isPresent()) {
-        continue;
-      }
-      ASTNode astNode = prodSymbol.getAstNode().get();
-      if (prodSymbol.isClass() && grammarInfo.isProdLeftRecursive(prodSymbol.getName())) {
-        left = true;
-        List<ASTAlt> localAlts = ((ASTClassProd) astNode).getAlts();
-        for(ASTAlt alt : localAlts) {
-          alts.add(new NodePair(alt, interf));
-        }
-      } else {
-        alts.add(new NodePair((ASTGrammarNode) astNode, interf));
-      }
-    }
+    boolean left = addAlternatives(interfaceRule, alts);
+
     // Append sorted alternatives
     Collections.sort(alts, (p2, p1) -> new Integer(p1.getPredicatePair().getRuleReference().getPrio().orElse("0")).compareTo(new Integer(p2.getPredicatePair().getRuleReference().getPrio().orElse("0"))));
     for(NodePair entry : alts) {
@@ -935,6 +915,40 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     addToAntlrCode(";");
 
     return getAntlrCode();
+  }
+
+  /**
+   * @param prodSymbol
+   * @param alts
+   */
+  private boolean addAlternatives(MCProdSymbol prodSymbol, List<NodePair> alts) {
+    boolean isLeft = false;
+    List<PredicatePair> interfaces = grammarInfo.getSubRulesForParsing(prodSymbol.getName());
+    for(PredicatePair interf : interfaces) {
+      Optional<MCProdSymbol> symbol = grammarEntry.getSpannedScope().<MCProdSymbol>resolve(interf.getClassname(), MCProdSymbol.KIND);
+      if (!symbol.isPresent()) {
+        continue;
+      }
+      MCProdSymbol superSymbol = symbol.get();
+      if (!prodSymbol.getAstNode().isPresent()) {
+        continue;
+      }
+      ASTNode astNode = superSymbol.getAstNode().get();
+      if (grammarInfo.isProdLeftRecursive(superSymbol.getName())) {
+        isLeft = true;
+        if (superSymbol.isClass()) {
+          List<ASTAlt> localAlts = ((ASTClassProd) astNode).getAlts();
+          for(ASTAlt alt : localAlts) {
+            alts.add(new NodePair(alt, interf));
+          }
+        } else if (prodSymbol.isInterface()) {
+          addAlternatives(superSymbol, alts);
+        }
+      } else {
+        alts.add(new NodePair((ASTGrammarNode) astNode, interf));
+      }
+    }
+    return isLeft;
   }
 
   public List<String> getHWParserJavaCode() {
