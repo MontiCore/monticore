@@ -23,7 +23,7 @@
       <!-- to the specified nexus repository -->
       <id>se-nexus</id>
       <mirrorOf>external:*,!se-nexus-p2, !tesla</mirrorOf>
-      <url>http://lab11.se.rwth-aachen.de/nexus/content/groups/se</url>
+      <url>https://nexus.se.rwth-aachen.de/content/groups/public</url>
     </mirror>
   </mirrors>
   
