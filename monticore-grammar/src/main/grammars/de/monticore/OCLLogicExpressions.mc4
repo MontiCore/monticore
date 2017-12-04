@@ -108,10 +108,7 @@ external OCLDeclaration;
     */
     LetinExpr implements Expression <120> =
         "let" (declarations:OCLDeclaration ";")+
-        "in" Expression
-        |
-        "(" LetinExpr  ")"
-        ;
+        "in" Expression;
 
     /** ASTOCLLetDeclaration represents a list of let-declarations inside of a
         let-statement. This contains variable- or method-declarations.

@@ -3,4 +3,9 @@ package de.monticore;
 grammar TestOCLLogicExpressions extends de.monticore.OCLLogicExpressions, de.monticore.CommonExpressions {
 	PrimaryExpression implements Expression<20000> = 
 	  Name;
+	  OCLCollectionVarDeclaration implements Expression = varName:Name "in" collection:Name;
+	  
+	  OCLNestedContainer implements Expression = varName:Name "in List <" imput:Name ">";
+	  
+	  OCLDeclaration implements Expression = (public:"public" | private:"private")? type:Name varName:Name;
 }
