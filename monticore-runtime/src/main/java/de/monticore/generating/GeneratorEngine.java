@@ -93,7 +93,7 @@ public class GeneratorEngine {
       GeneratorSetup generatorSetup, TemplateControllerFactory templateControllerFactory,
       FileReaderWriter fileHandler) {
     if (templateControllerFactory == null) {
-      templateControllerFactory = TemplateControllerFactory.getInstance();
+      templateControllerFactory = new TemplateControllerFactory();
     }
 
     if (fileHandler == null) {

@@ -26,6 +26,9 @@ import java.util.Optional;
 
 import com.google.common.collect.ImmutableList;
 
+import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
+import de.monticore.io.FileReaderWriter;
+
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.freemarker.TemplateAutoImport;
 import de.monticore.io.paths.IterablePath;
@@ -88,6 +91,9 @@ public class GeneratorSetup {
    */
   private String commentEnd = "*/";
 
+  // TODO MB: Unklar wieso ein FileReaderWriter und ein ClassLoader 
+  // notwendig sind. Kann der ClassLoader gestrichen werden?
+  
   /**
    * Used for loading all sorts of files (mainly templates)
    */
@@ -101,7 +107,62 @@ public class GeneratorSetup {
    * and then the according tracing info is not printed at all.
    */
   private Optional<String> modelName = Optional.empty();
-  
+
+  /**
+   * The handler for File IO (also manages reporting)
+   */
+  private FileReaderWriter fileHandler;
+
+  /**
+   * The real engine provided by FreeMarker
+   */
+  private FreeMarkerTemplateEngine freeMarkerTemplateEngine;
+
+  /**
+   * Each template receives its own controller.
+   * The controlle factory instantiates TemplateControllers 
+   * on demand.
+   * Overriding TemplateControllers should be done by 
+   * providing a different factory
+   */
+  private TemplateControllerFactory templateControllerFactory;
+
+
+  /*******************************************************/
+  public void setFileHandler(FileReaderWriter o) {
+    this.fileHandler = o;
+  }
+
+  public FileReaderWriter getFileHandler() {
+    if (this.fileHandler == null) 
+        this.fileHandler = new FileReaderWriter(); //default
+    return fileHandler;
+  }
+
+  /*******************************************************/
+  public void setFreeMarkerTemplateEngine(FreeMarkerTemplateEngine o) {
+    this.freeMarkerTemplateEngine = o;
+  }
+
+  public FreeMarkerTemplateEngine getFreeMarkerTemplateEngine() {
+    // KEIN default
+    return freeMarkerTemplateEngine;
+  }
+
+  /*******************************************************/
+  public void setTemplateControllerFactory(TemplateControllerFactory o) {
+    this.templateControllerFactory = o;
+  }
+
+  public TemplateControllerFactory getTemplateControllerFactory() {
+    if (this.templateControllerFactory == null) 
+        this.templateControllerFactory =
+			new TemplateControllerFactory(); //default
+    return templateControllerFactory;
+  }
+
+
+  /*******************************************************/
   /*******************************************************/
 
   /**
@@ -109,6 +170,8 @@ public class GeneratorSetup {
    */
   public GeneratorSetup() {
   }
+
+  /*******************************************************/
 
   public void setOutputDirectory(File outputDirectory) {
     this.outputDirectory = outputDirectory;

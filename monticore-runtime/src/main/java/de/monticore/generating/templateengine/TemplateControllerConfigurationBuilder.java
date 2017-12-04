@@ -155,7 +155,7 @@ public class TemplateControllerConfigurationBuilder {
     }
 
     if (templateControllerFactory == null) {
-      templateControllerFactory = TemplateControllerFactory.getInstance();
+      templateControllerFactory = new TemplateControllerFactory();
     }
 
     commentStart = nullToEmpty(commentStart);

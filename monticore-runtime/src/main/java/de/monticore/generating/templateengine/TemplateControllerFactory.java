@@ -20,25 +20,20 @@
 package de.monticore.generating.templateengine;
 
 /**
- * TODO: Write me!
- *
+ * Creates instances of TemplateController's.
+ * (and is itself part of the TC'configuration to allow
+ * recursive creation of instances)
  */
 public class TemplateControllerFactory {
   
-  protected static TemplateControllerFactory instance;
-  
-  
-  protected TemplateControllerFactory() {
-    
+  public TemplateControllerFactory() {
   }
   
-  public static TemplateControllerFactory getInstance() {
-    if (instance == null) {
-      instance = new TemplateControllerFactory();
-    }
-    return instance;
-  }
-  
+  /**
+   * create new template controllers and hand them the
+   * two imporant arguments: next template to call and
+   * it's stable configuration data.
+   */
   public TemplateController create(TemplateControllerConfiguration config, String templateName) {
     return new TemplateController(config, templateName);
   }
