@@ -106,8 +106,7 @@ public class GeneratorEngine {
         .autoImports(generatorSetup.getAutoTemplateImports())
         .build();
 
-    GlobalExtensionManagement glex = generatorSetup.getGlex().orElse(
-        new GlobalExtensionManagement());
+    GlobalExtensionManagement glex = generatorSetup.getGlex();
 
     FreeMarkerTemplateEngine freeMarkerTemplateEngine = new FreeMarkerTemplateEngine(
         freemarkerConfig);

@@ -50,9 +50,10 @@ public class GeneratorSetup {
   private File outputDirectory = "out";
 
   /**
-   * Used for handling variables and hook points
+   * Used for handling variables and hook points;
+   * Default is only created with first get-access.
    */
-  private GlobalExtensionManagement glex;
+  private GlobalExtensionManagement glex = null;
 
   /**
    * The path for the handwritten code
@@ -125,8 +126,10 @@ public class GeneratorSetup {
     this.glex = glex;
   }
 
-  public Optional<GlobalExtensionManagement> getGlex() {
-    return Optional.ofNullable(glex);
+  public GlobalExtensionManagement getGlex() {
+    if (glex == null) 
+    	glex = new GlobalExtensionManagement();  //default
+    return glex;
   }
 
   public void setAdditionalTemplatePaths(List<File> additionalTemplatePaths) {

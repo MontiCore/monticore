@@ -70,7 +70,7 @@ public class GeneratorConfig {
     	new GeneratorSetup().setup.setOutputDirectory(
 	   Paths.get(TemplateClassGeneratorConstants.DEFAULT_OUTPUT_FOLDER).toAbsolutePath().toFile()));
     
-    GlobalExtensionManagement glex = setup.getGlex().orElse(new GlobalExtensionManagement());
+    GlobalExtensionManagement glex = setup.getGlex();
     glex.defineGlobalVar(TemplateClassGeneratorConstants.TEMPLATES_ALIAS, new TemplateAccessor());
     setup.setGlex(glex);
     List<TemplateAutoImport> imports = new ArrayList<>();
