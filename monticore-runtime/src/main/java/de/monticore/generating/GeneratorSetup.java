@@ -57,6 +57,7 @@ public class GeneratorSetup {
 
   /**
    * The path for the handwritten code
+   * Default is only created with first get-access.
    */
   private IterablePath handcodedPath;
 
@@ -127,9 +128,9 @@ public class GeneratorSetup {
   }
 
   public GlobalExtensionManagement getGlex() {
-    if (glex == null) 
-    	glex = new GlobalExtensionManagement();  //default
-    return glex;
+    if (this.glex == null) 
+    	this.glex = new GlobalExtensionManagement();  //default
+    return this.glex;
   }
 
   public void setAdditionalTemplatePaths(List<File> additionalTemplatePaths) {
@@ -155,6 +156,8 @@ public class GeneratorSetup {
    * @return targetPath
    */
   public IterablePath getHandcodedPath() {
+    if (this.handcodedPath == null) 
+    	this.handcodedPath = new XXXX();  //default
     return this.handcodedPath;
   }
 
