@@ -40,47 +40,47 @@ public class TemplateControllerConfiguration {
 
   public static final String ALIASES_TEMPLATE = "de.monticore.generating.templateengine.freemarker.Aliases";
 
-  private final GlobalExtensionManagement glex;
+//OLD  private final GlobalExtensionManagement glex;
 
-  private FileReaderWriter fileHandler;
+//OLD  private FileReaderWriter fileHandler;
 
-  private FreeMarkerTemplateEngine freeMarkerTemplateEngine;
+//OLD  private FreeMarkerTemplateEngine freeMarkerTemplateEngine;
 
-  private TemplateControllerFactory templateControllerFactory;
+//OLD  private TemplateControllerFactory templateControllerFactory;
 
   /** the target directory for generated files */
-  private File outputDirectory;
+//OLD  private File outputDirectory;
 
   /** the path for the handwritten code */
-  private IterablePath handcodedPath;
+//OLD  private IterablePath handcodedPath;
 
-  private Optional<String> modelName = Optional.empty();
+//OLD  private Optional<String> modelName = Optional.empty();
 
   /**
    * Defines if tracing infos are added to the result as comments
    */
-  private boolean tracing;
+//OLD  private boolean tracing;
 
   /**
    * The characters for the start of a comment. Usually same as the target
    * language.
    */
-  private String commentStart;
+//OLD  private String commentStart;
 
   /**
    * The characters for the end of a comment. Usually same as the target
    * language.
    */
-  private String commentEnd;
+//OLD  private String commentEnd;
 
-  private String defaultFileExtension;
+//OLD  private String defaultFileExtension;
 
-  private ClassLoader classLoader;
+//OLD  private ClassLoader classLoader;
 
   /**
    * Additional path as the source of templates
    */
-  private File[] externalTemplatePath;
+//UNUSED!  private File[] externalTemplatePath;
 
   TemplateControllerConfiguration(GlobalExtensionManagement glex, FileReaderWriter fileHandler) {
     this.glex = glex;
