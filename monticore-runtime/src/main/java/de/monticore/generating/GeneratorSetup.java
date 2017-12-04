@@ -41,15 +41,17 @@ import de.monticore.io.paths.IterablePath;
 
 /**
  * Setup for generator (see {@link GeneratorEngine}).
- *
- * @author (last commit) $Author$
  */
 public class GeneratorSetup {
 
-  private final File outputDirectory;
+  /**
+   * Where to store all files (e.g. "gen" or "out")
+   */
+  private File outputDirectory;
 
-  private ClassLoader classLoader;
-
+  /**
+   * Used for handling variables and hook points
+   */
   private GlobalExtensionManagement glex;
 
   /**
@@ -73,20 +75,32 @@ public class GeneratorSetup {
   private boolean tracing = true;
 
   /**
-   * The characters for the start of a comment. Usually same as the target language.
+   * The characters for the start of a comment.
+   * Usually these are the comments of the target language.
    */
   private Optional<String> commentStart = Optional.empty();
 
   /**
-   * The characters for the end of a comment. Usually same as the target language.
+   * The characters for the end of a comment.
+   * Usually these are the comments of the target language.
    */
   private Optional<String> commentEnd = Optional.empty();
+
+  /**
+   * Used for loading all sorts of files (mainly templates)
+   */
+  private ClassLoader classLoader;
 
   /**
    * The model name
    */
   private Optional<String> modelName = Optional.empty();
   
+  /*******************************************************/
+
+  /**
+   * Construtor
+   */
   public GeneratorSetup(File outputDirectory) {
     this.outputDirectory = outputDirectory;
     this.classLoader = getClass().getClassLoader();
