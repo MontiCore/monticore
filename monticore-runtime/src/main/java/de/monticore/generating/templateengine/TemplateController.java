@@ -434,7 +434,7 @@ public class TemplateController {
 
     // add trace to source-model:
     if (config.isTracing() && config.getModelName().isPresent()) {
-      content.insert(0, config.getCommentStart() + " generated from model " + config.getModelName().get()
+      content.insert(0, config.getCommentStart() + " generated from model " + config.getModelName().get() + " " 
           + config.getCommentEnd() + "\n");
     }
 

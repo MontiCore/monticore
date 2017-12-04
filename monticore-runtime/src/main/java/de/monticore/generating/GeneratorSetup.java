@@ -95,6 +95,10 @@ public class GeneratorSetup {
 
   /**
    * The model name
+   * (if the arftifacts are generated from one model, this could 
+   * be an identifier of this model)
+   * By default the model name is absent -- 
+   * and then the according tracing info is not printed at all.
    */
   private Optional<String> modelName = Optional.empty();
   
@@ -104,7 +108,6 @@ public class GeneratorSetup {
    * Construtor
    */
   public GeneratorSetup() {
-    this.classLoader = getClass().getClassLoader();
   }
 
   public void setOutputDirectory(File outputDirectory) {
@@ -120,6 +123,8 @@ public class GeneratorSetup {
   }
 
   public ClassLoader getClassLoader() {
+    if (this.classLoader == null) 
+        this.classLoader = getClass().getClassLoader(); //default
     return classLoader;
   }
 
