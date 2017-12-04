@@ -80,13 +80,13 @@ public class GeneratorSetup {
    * The characters for the start of a comment.
    * Usually these are the comments of the target language.
    */
-  private Optional<String> commentStart = Optional.empty();
+  private String commentStart = "/*";
 
   /**
    * The characters for the end of a comment.
    * Usually these are the comments of the target language.
    */
-  private Optional<String> commentEnd = Optional.empty();
+  private String commentEnd = "*/";
 
   /**
    * Used for loading all sorts of files (mainly templates)
@@ -138,7 +138,7 @@ public class GeneratorSetup {
   }
 
   public List<File> getAdditionalTemplatePaths() {
-    return ImmutableList.copyOf(additionalTemplatePaths);
+    return additionalTemplatePaths;
   }
 
   public void setAutoImports(List<TemplateAutoImport> autoImports) {
@@ -157,7 +157,7 @@ public class GeneratorSetup {
    */
   public IterablePath getHandcodedPath() {
     if (this.handcodedPath == null) 
-    	this.handcodedPath = new XXXX();  //default
+    	this.handcodedPath = IterablePath.empty();  //default
     return this.handcodedPath;
   }
 
@@ -185,7 +185,7 @@ public class GeneratorSetup {
   /**
    * @return the characters for the start of a comment. Usually same as the target language.
    */
-  public Optional<String> getCommentStart() {
+  public String getCommentStart() {
     return commentStart;
   }
 
@@ -193,21 +193,21 @@ public class GeneratorSetup {
    * @param commentStart the characters for the start of a comment. Usually same as the target
    * language.
    */
-  public void setCommentStart(Optional<String> commentStart) {
+  public void setCommentStart(String commentStart) {
     this.commentStart = commentStart;
   }
 
   /**
    * @return the characters for the end of a comment. Usually same as the target language.
    */
-  public Optional<String> getCommentEnd() {
+  public String getCommentEnd() {
     return commentEnd;
   }
 
   /**
    * @param commentEnd the characters for the end of a comment. Usually same as the target language.
    */
-  public void setCommentEnd(Optional<String> commentEnd) {
+  public void setCommentEnd(String commentEnd) {
     this.commentEnd = commentEnd;
   }
   

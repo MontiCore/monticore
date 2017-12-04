@@ -120,11 +120,9 @@ public class GeneratorEngine {
         .freeMarkerTemplateEngine(freeMarkerTemplateEngine)
         .tracing(generatorSetup.isTracing())
         .commentStart(
-            generatorSetup.getCommentStart().orElse(
-                TemplateControllerConfigurationBuilder.DEFAULT_COMMENT_START))
+            generatorSetup.getCommentStart())
         .commentEnd(
-            generatorSetup.getCommentEnd().orElse(
-                TemplateControllerConfigurationBuilder.DEFAULT_COMMENT_END))
+            generatorSetup.getCommentEnd())
         .modelName(generatorSetup.getModelName())
         .build();
     
