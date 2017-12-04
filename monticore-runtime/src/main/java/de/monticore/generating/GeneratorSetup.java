@@ -47,7 +47,7 @@ public class GeneratorSetup {
   /**
    * Where to store all files (e.g. "gen" or "out")
    */
-  private File outputDirectory;
+  private File outputDirectory = "out";
 
   /**
    * Used for handling variables and hook points
@@ -101,9 +101,12 @@ public class GeneratorSetup {
   /**
    * Construtor
    */
-  public GeneratorSetup(File outputDirectory) {
-    this.outputDirectory = outputDirectory;
+  public GeneratorSetup() {
     this.classLoader = getClass().getClassLoader();
+  }
+
+  public void setOutputDirectory(File outputDirectory) {
+    this.outputDirectory = outputDirectory;
   }
 
   public File getOutputDirectory() {
