@@ -46,7 +46,9 @@ public class GeneratorEngineTest {
   public void testGenerateInFile() {
     ASTNodeMock node = new ASTNodeMock();
 
-    GeneratorEngineMock generatorEngine = new GeneratorEngineMock(new GeneratorSetup(new File("target1")), new
+    final GeneratorSetup setup = new GeneratorSetup();
+    setup.setOutputDirectory(new File("target1"));
+    GeneratorEngineMock generatorEngine = new GeneratorEngineMock(setup, new
         TemplateControllerMockFactory());
 
     generatorEngine.generate("the.Template", Paths.get("a/GenerateInFile.test"), node);

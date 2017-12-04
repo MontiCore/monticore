@@ -54,7 +54,8 @@ public class CoCoGenerator {
   public static void generate(GlobalExtensionManagement glex,
       GlobalScope globalScope,
       ASTCDCompilationUnit astClassDiagram, File outputDirectory) {
-    final GeneratorSetup setup = new GeneratorSetup(outputDirectory);
+    final GeneratorSetup setup = new GeneratorSetup();
+    setup.setOutputDirectory(outputDirectory);
     CoCoGeneratorHelper coCoHelper = new CoCoGeneratorHelper(astClassDiagram, globalScope);
     glex.setGlobalValue("coCoHelper", coCoHelper);
     setup.setGlex(glex);

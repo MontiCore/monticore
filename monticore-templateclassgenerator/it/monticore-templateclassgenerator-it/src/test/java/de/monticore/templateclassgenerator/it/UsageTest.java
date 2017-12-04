@@ -72,7 +72,8 @@ public class UsageTest extends AbstractSymtabTest {
    */
   @Test
   public void testJavaClassTemplateClass() {
-    final GeneratorSetup setup = new GeneratorSetup(outputDirectory.toFile());
+    final GeneratorSetup setup = new GeneratorSetup();
+    setup.setOutputDirectory(outputDirectory.toFile());
     GeneratorConfig.init(setup);
     String classname = "Test1";
     List<Attribute> attributes = new ArrayList<>();
@@ -95,7 +96,8 @@ public class UsageTest extends AbstractSymtabTest {
    */
   @Test
   public void testReturnMethod() throws RecognitionException, IOException {
-    final GeneratorSetup setup = new GeneratorSetup(outputDirectory.toFile());
+    final GeneratorSetup setup = new GeneratorSetup();
+    setup.setOutputDirectory(outputDirectory.toFile());
     ExtendedGeneratorEngine generator = new ExtendedGeneratorEngine(setup);
     List<Attribute> attributes = new ArrayList<>();
     attributes.add(new Attribute("Integer", "i"));
@@ -146,7 +148,8 @@ public class UsageTest extends AbstractSymtabTest {
     String s = "first";
     String s2 = "second";
     String s3 = "third";
-    GeneratorSetup setup = new GeneratorSetup(outputDirectory.toFile());
+    GeneratorSetup setup = new GeneratorSetup();
+    setup.setOutputDirectory(outputDirectory.toFile());
     GeneratorConfig.init(setup);
     ExtendedGeneratorEngine ge = GeneratorConfig.getGeneratorEngine();
     ge.generate("templates/b/Constructor.ftl", s, s2, s3);
@@ -159,7 +162,8 @@ public class UsageTest extends AbstractSymtabTest {
   public void testDynamicTypeCheck2() {
     String s = "first";
     String s2 = "second";
-    GeneratorSetup setup = new GeneratorSetup(outputDirectory.toFile());
+    GeneratorSetup setup = new GeneratorSetup();
+    setup.setOutputDirectory(outputDirectory.toFile());
     GeneratorConfig.init(setup);
     ExtendedGeneratorEngine ge = GeneratorConfig.getGeneratorEngine();
     ge.generate("templates/b/Constructor.ftl", s, s2);

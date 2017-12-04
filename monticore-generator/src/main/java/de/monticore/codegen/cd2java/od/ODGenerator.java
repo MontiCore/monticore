@@ -45,7 +45,8 @@ public class ODGenerator {
   public static void generate(GlobalExtensionManagement glex, GlobalScope globalScope,
       ASTCDCompilationUnit astClassDiagram,
       File outputDirectory) {
-    final GeneratorSetup setup = new GeneratorSetup(outputDirectory);
+    final GeneratorSetup setup = new GeneratorSetup();
+    setup.setOutputDirectory(outputDirectory);
     GeneratorHelper odHelper = new GeneratorHelper(astClassDiagram, globalScope);
     glex.setGlobalValue("odHelper", odHelper);
     setup.setGlex(glex);

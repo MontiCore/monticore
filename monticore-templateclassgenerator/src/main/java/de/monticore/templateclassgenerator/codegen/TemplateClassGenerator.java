@@ -104,7 +104,8 @@ public class TemplateClassGenerator {
   private static void doGenerateTemplateClass(File targetFilepath, String fqnTemplateName,
       String targetName,
       List<Parameter> params, Optional<String> result, boolean hasSignature) {
-    final GeneratorSetup setup = new GeneratorSetup(targetFilepath);
+    final GeneratorSetup setup = new GeneratorSetup();
+    setup.setOutputDirectory(targetFilepath);
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
     glex.setGlobalValue("TemplateClassPackage",
         TemplateClassGeneratorConstants.TEMPLATE_CLASSES_PACKAGE);
@@ -154,7 +155,8 @@ public class TemplateClassGenerator {
       List<String> foundTemplates) {
     String packageName = TemplateClassGeneratorConstants.TEMPLATE_CLASSES_PACKAGE + "."
         + TemplateClassGeneratorConstants.TEMPLATE_CLASSES_SETUP_PACKAGE;
-    final GeneratorSetup setup = new GeneratorSetup(targetFilepath);
+    final GeneratorSetup setup = new GeneratorSetup();
+    setup.setOutputDirectory(targetFilepath);
     setup.setTracing(false);
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
     glex.setGlobalValue("TemplatePostfix",
