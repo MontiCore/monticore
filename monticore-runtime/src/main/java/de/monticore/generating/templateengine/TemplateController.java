@@ -252,6 +252,21 @@ public class TemplateController {
   }
 
   /**
+   * Includes a template without an explicit ast. (ast is current ast node)
+   * Execute each of the templates on the ASTNode. Concatenate the results
+   * together in one big String and include that into the currently processed
+   * output. We iterate on the templates. Template filename may be qualified
+   * (using "."). When it is not qualified, the filename is taken from the
+   * current package (same as the calling template).
+   *
+   * @param templateNames list of filenames, qualified or not
+   * @return produced output
+   */
+  public String include(List<String> templateNames) {
+    return include(templateNames, newArrayList(getAST()));
+  }
+
+  /**
    * Execute each of the templates on the ASTNode. Concatenate the results
    * together in one big String and include that into the currently processed
    * output. We iterate on the templates. Template filename may be qualified
