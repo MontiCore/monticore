@@ -6,5 +6,5 @@ grammar TestJavaClassExpressions extends de.monticore.JavaClassExpressions {
 	ELiteral implements Expression = Name;
 	EType implements Expression = (int:"int" | double:"double" | float:"float" | long:"long");
 	EReturnType implements Expression = (EType | void:"void");
-	ETypeArguments implements Expression = "<" Name ">";
+	ETypeArguments implements Expression = "<"(Name)+ ">";
 }

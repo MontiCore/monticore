@@ -23,6 +23,8 @@ import de.monticore.javaclassexpressions._ast.ASTArguments;
 import de.monticore.javaclassexpressions._ast.ASTClassExpression;
 import de.monticore.javaclassexpressions._ast.ASTGenericInvocationExpression;
 import de.monticore.javaclassexpressions._ast.ASTGenericSuperInvocationSuffix;
+import de.monticore.javaclassexpressions._ast.ASTInstanceofExpression;
+import de.monticore.javaclassexpressions._ast.ASTNameExpression;
 import de.monticore.javaclassexpressions._ast.ASTPrimarySuperExpression;
 import de.monticore.javaclassexpressions._ast.ASTSuperExpression;
 import de.monticore.javaclassexpressions._ast.ASTSuperSuffix;
@@ -119,6 +121,18 @@ public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVi
     node.getExpression().accept(this);
     sb.append(".");
     handle(node.getPrimaryGenericInvocationExpression());
+  }
+  
+  @Override
+  public void handle(ASTNameExpression node) {
+   sb.append(node.getName());
+  }
+  
+  @Override
+  public void handle(ASTInstanceofExpression node) {
+    node.getExpression().accept(this);
+    sb.append(" instanceof ");
+    node.getEType().accept(this);
   }
   
 }

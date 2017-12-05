@@ -34,6 +34,7 @@ import de.monticore.javaclassexpressions._ast.ASTArguments;
 import de.monticore.javaclassexpressions._ast.ASTClassExpression;
 import de.monticore.javaclassexpressions._ast.ASTGenericSuperInvocationSuffix;
 import de.monticore.javaclassexpressions._ast.ASTLiteralExpression;
+import de.monticore.javaclassexpressions._ast.ASTNameExpression;
 import de.monticore.javaclassexpressions._ast.ASTPrimaryGenericInvocationExpression;
 import de.monticore.javaclassexpressions._ast.ASTPrimarySuperExpression;
 import de.monticore.javaclassexpressions._ast.ASTSuperSuffix;
@@ -108,8 +109,11 @@ public class JavaClassExpressionsPrettyPrinterTest extends JavaClassExpressionsP
   
   @Override
   public void visit(ASTETypeArguments node) {
-    sb.append("<" + node.getName() + ">");
-    
+    sb.append("<");
+    for (String s : node.getNames()) {
+      sb.append(s);
+    }
+    sb.append(">");
   }
   
   @Test
@@ -223,5 +227,25 @@ public class JavaClassExpressionsPrettyPrinterTest extends JavaClassExpressionsP
     JavaClassExpressionsPrettyPrinterTest printer = new JavaClassExpressionsPrettyPrinterTest();
     ast.accept(printer);
     assertEquals("exp.<Arg>super(a,b,c)", printer.toString());
+  }
+  
+  @Test
+  public void testNameExpression() throws IOException {
+    TestJavaClassExpressionsParser parser = new TestJavaClassExpressionsParser();
+    ASTNameExpression ast = parser.parseString_NameExpression("Name").orElse(null);
+    assertNotNull(ast);
+    JavaClassExpressionsPrettyPrinterTest printer = new JavaClassExpressionsPrettyPrinterTest();
+    ast.accept(printer);
+    assertEquals("Name", printer.toString());
+  }
+  
+  @Test
+  public void testInstanceofExpression() throws IOException {
+    TestJavaClassExpressionsParser parser = new TestJavaClassExpressionsParser();
+    ASTExpression ast = parser.parseString_Expression("a instanceof int").orElse(null);
+    assertNotNull(ast);
+    JavaClassExpressionsPrettyPrinterTest printer = new JavaClassExpressionsPrettyPrinterTest();
+    ast.accept(printer);
+    assertEquals("a instanceof int", printer.toString());
   }
 }
