@@ -108,10 +108,6 @@ public class TemplateController {
     this.config = tcConfig;
 
     this.templatename = templatename;
-
-// TODO: entfernbar?
-    // TODO PN blocker
-    // GenLogger.updateTemplateOperator(this);
   }
 
   public String getTemplatename() {
