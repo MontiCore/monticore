@@ -145,8 +145,15 @@ public class TemplateController {
    * Execute each of the templates on each ASTNode of the list. Concatenate the
    * results together in one big String and include that into the currently
    * processed output. We iterate on the templates and ASTNodes. In case order
-   * is important: The iteration goes like this for ( templates ) { for (
-   * ASTNodes ) {...} } Template filename may be qualified (using "."). When it
+   * is important: The iteration goes like this:
+   * 
+   *   for ( templates ) { 
+   *     for ( ASTNodes ) {...}
+   *   } 
+   *
+   * Inside the inner loop, it is checked whether Hookpoints are to be called.
+   *
+   * Template filename may be qualified (using "."). When it
    * is not qualified, the filename is taken from the current package (same as
    * the calling template).
    *
