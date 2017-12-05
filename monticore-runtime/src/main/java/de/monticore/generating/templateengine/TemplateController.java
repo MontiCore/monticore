@@ -82,9 +82,6 @@ public class TemplateController {
    */
   private String templatename;
 
-// TODO: delete
-  private boolean isIncludeRunning = false;
-
   /**
    * According to FreemArker, templates don't have a "signature"
    * We can mimic such a signature through method calls:
@@ -126,22 +123,6 @@ public class TemplateController {
   }
 
   /**
-   * @return isIncludeRunning
-   */
-// TODO: delete
-  protected boolean isIncludeRunning() {
-    return this.isIncludeRunning;
-  }
-
-  /**
-   * @param isIncludeRunning the isIncludeRunning to set
-   */
-// TODO: delete
-  protected void setIncludeRunning(boolean isIncludeRunning) {
-    this.isIncludeRunning = isIncludeRunning;
-  }
-
-  /**
    * Execute each of the templates on each ASTNode of the list. Concatenate the
    * results together in one big String and include that into the currently
    * processed output. We iterate on the templates and ASTNodes. In case order
@@ -162,7 +143,6 @@ public class TemplateController {
    * @return produced output
    */
   public String include(List<String> templatenames, List<ASTNode> astlist) {
-    setIncludeRunning(true);
     StringBuilder ret = new StringBuilder();
     for (String template : templatenames) {
       for (ASTNode ast : astlist) {
@@ -173,7 +153,6 @@ public class TemplateController {
       }
     }
 
-    setIncludeRunning(false);
     return ret.toString();
   }
 
@@ -186,10 +165,8 @@ public class TemplateController {
    * @return produced output
    */
   String includeWithoutForwarding(String templateName, ASTNode ast) {
-    setIncludeRunning(true);
     StringBuilder ret = new StringBuilder();
     ret.append(processTemplate(templateName, ast, new ArrayList<>()));
-    setIncludeRunning(false);
     return ret.toString();
   }
 
@@ -326,14 +303,12 @@ public class TemplateController {
    * @return output for the file (may be part of a file only)
    */
   public String includeArgs(String templateName, List<Object> templateArguments) {
-    setIncludeRunning(true);
     StringBuilder ret = new StringBuilder();
     List<HookPoint> templateForwardings = config.getGlEx().getTemplateForwardings(templateName, getAST());
     for (HookPoint tn : templateForwardings) {
       ret.append(tn.processValue(this, templateArguments));
     }
 
-    setIncludeRunning(false);
     return ret.toString();
   }
 
@@ -346,12 +321,10 @@ public class TemplateController {
    * @return
    */
   String includeArgsWithoutForwarding(String templateName, List<Object> templateArguments) {
-    setIncludeRunning(true);
     StringBuilder ret = new StringBuilder();
 
     ret.append(processTemplate(templateName, getAST(), templateArguments));
 
-    setIncludeRunning(false);
     return ret.toString();
   }
 
