@@ -649,16 +649,6 @@ public class TemplateController {
     return null;
   }
 
-// TODO: delete
-  protected void logTemplateCallOrInclude(String templateName, ASTNode ast) {
-    if (isIncludeRunning()) {
-      Reporting.reportTemplateInclude(templateName, ast);
-    }
-    else {
-      Reporting.reportTemplateWrite(templateName, ast);
-    }
-  }
-
   // TODO: can we remove this one?
   public String defineHookPoint(String hookName) {
     return config.getGlEx().defineHookPoint(this, hookName, getAST());
