@@ -47,15 +47,11 @@ import freemarker.template.SimpleHash;
 import freemarker.template.Template;
 import freemarker.template.TemplateModelException;
 
-// TODO: describe methods better for JavaDoc
-
 /**
  * Provides methods for manipulating the content of templates, mainly for
  * calling and including of templates.
  *
- * @author (last commit) $Author$
  */
-// TODO PN check if all method docs are up to date.
 public class TemplateController {
 
   /**
@@ -74,19 +70,28 @@ public class TemplateController {
   public static final String GLEX = "glex";
 
   /**
-   * Variable name for the logging object (used in the templates)
-   **/
-  public static final String LOG = "log";
-
-
+   * General config variables that hold for all template executions
+   */
+// TODO: This variable will be deleted:
   private final TemplateControllerConfiguration config;
+// TODO and this one will contain all relevant information (even with the same methods):
+//  private final GeneratorSetup config;
 
-  private final String currPackage;
-
+  /**
+   * Name of the current template (usually fully qualified)
+   */
   private String templatename;
 
+// TODO: delete
   private boolean isIncludeRunning = false;
 
+  /**
+   * According to FreemArker, templates don't have a "signature"
+   * We can mimic such a signature through method calls:
+   * The signature(...) method defines a list of variables.
+   * And the include call allows a list of arguments that are bound to
+   * these variables, when the template is executed.
+   */
   boolean signatureInitialized = false;
 
   private List<String> signature = newArrayList();
@@ -107,7 +112,6 @@ public class TemplateController {
     this.config = tcConfig;
 
     this.templatename = templatename;
-    this.currPackage = Names.getQualifier(templatename);
 
     // TODO PN blocker
     // GenLogger.updateTemplateOperator(this);
@@ -124,6 +128,7 @@ public class TemplateController {
   /**
    * @return isIncludeRunning
    */
+// TODO: delete
   protected boolean isIncludeRunning() {
     return this.isIncludeRunning;
   }
@@ -131,6 +136,7 @@ public class TemplateController {
   /**
    * @param isIncludeRunning the isIncludeRunning to set
    */
+// TODO: delete
   protected void setIncludeRunning(boolean isIncludeRunning) {
     this.isIncludeRunning = isIncludeRunning;
   }
@@ -217,11 +223,11 @@ public class TemplateController {
   }
 
   List<String> getSignature() {
-    return ImmutableList.copyOf(signature);
+    return signature;
   }
 
   List<Object> getArguments() {
-    return ImmutableList.copyOf(arguments);
+    return arguments;
   }
 
   boolean isSignatureInitialized() {
@@ -611,7 +617,7 @@ public class TemplateController {
       return name;
     }
 
-    return currPackage + "." + name;
+    return Names.getQualifier(templatename) + "." + name;
   }
 
   ASTNode getAST() {
@@ -636,6 +642,7 @@ public class TemplateController {
     return null;
   }
 
+// TODO: delete
   protected void logTemplateCallOrInclude(String templateName, ASTNode ast) {
     if (isIncludeRunning()) {
       Reporting.reportTemplateInclude(templateName, ast);
@@ -683,6 +690,8 @@ public class TemplateController {
   }
 
   public boolean existsHWC(String fileName) {
+// TODO: wird folgendes werden:
+//    return existsHWC(fileName, config.getDefaultFileExtension());
     return existsHWC(fileName, DEFAULT_FILE_EXTENSION);
   }
 

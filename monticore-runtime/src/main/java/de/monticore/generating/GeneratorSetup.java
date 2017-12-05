@@ -127,6 +127,32 @@ public class GeneratorSetup {
    */
   private TemplateControllerFactory templateControllerFactory;
 
+  /**
+   * Desired default file extension, e.g. "java"
+   */
+  private String defaultFileExtension = "java";
+
+
+  /*******************************************************/
+  /**
+   * Sets the default file extension used for the generated files, e.g. java or
+   * .java (with leading dot).
+   *
+   * @param o the file extension, e.g. java or .java (with leading
+   * dot)
+   */
+  public void setDefaultFileExtension(String o) {
+    if (o.startsWith(".")) {
+      this.defaultFileExtension = o.substring(1);
+    }
+    else {
+      this.defaultFileExtension = o;
+    }
+  }
+
+  public String getDefaultFileExtension() {
+    return defaultFileExtension;
+  }
 
   /*******************************************************/
   public void setFileHandler(FileReaderWriter o) {
