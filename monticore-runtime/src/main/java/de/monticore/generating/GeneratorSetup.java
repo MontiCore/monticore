@@ -50,7 +50,7 @@ public class GeneratorSetup {
   /**
    * Where to store all files (e.g. "gen" or "out")
    */
-  private File outputDirectory = "out";
+  private File outputDirectory = new File("out");
 
   /**
    * Used for handling variables and hook points;
@@ -119,15 +119,6 @@ public class GeneratorSetup {
   private FreeMarkerTemplateEngine freeMarkerTemplateEngine;
 
   /**
-   * Each template receives its own controller.
-   * The controlle factory instantiates TemplateControllers 
-   * on demand.
-   * Overriding TemplateControllers should be done by 
-   * providing a different factory
-   */
-  private TemplateControllerFactory templateControllerFactory;
-
-  /**
    * Desired default file extension, e.g. "java"
    */
   private String defaultFileExtension = "java";
@@ -174,19 +165,6 @@ public class GeneratorSetup {
     // KEIN default
     return freeMarkerTemplateEngine;
   }
-
-  /*******************************************************/
-  public void setTemplateControllerFactory(TemplateControllerFactory o) {
-    this.templateControllerFactory = o;
-  }
-
-  public TemplateControllerFactory getTemplateControllerFactory() {
-    if (this.templateControllerFactory == null) 
-        this.templateControllerFactory =
-			new TemplateControllerFactory(); //default
-    return templateControllerFactory;
-  }
-
 
   /*******************************************************/
   /*******************************************************/
