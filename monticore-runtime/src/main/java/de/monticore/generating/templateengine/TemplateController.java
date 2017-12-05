@@ -98,8 +98,7 @@ public class TemplateController {
 
   private List<Object> arguments = newArrayList();
 
-  public static final String DEFAULT_FILE_EXTENSION = "java";
-
+// TODO: das müsste man auslagern können in GeneratorSetup
   /**
    * A list of all freemarker functions that serve as aliases for Java methods,
    * e.g. 'include' as alias for 'tc.include'
@@ -113,6 +112,7 @@ public class TemplateController {
 
     this.templatename = templatename;
 
+// TODO: entfernbar?
     // TODO PN blocker
     // GenLogger.updateTemplateOperator(this);
   }
@@ -692,7 +692,7 @@ public class TemplateController {
   public boolean existsHWC(String fileName) {
 // TODO: wird folgendes werden:
 //    return existsHWC(fileName, config.getDefaultFileExtension());
-    return existsHWC(fileName, DEFAULT_FILE_EXTENSION);
+    return existsHWC(fileName, "java");
   }
 
   public boolean existsHWC(String fileName, String extension) {
