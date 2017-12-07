@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import de.monticore.generating.GeneratorSetup;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -52,8 +53,8 @@ public class ExtendedTemplateController extends TemplateController {
    * @param tcConfig
    * @param templatename
    */
-  public ExtendedTemplateController(TemplateControllerConfiguration tcConfig, String templatename) {
-    super(tcConfig, templatename);
+  public ExtendedTemplateController(GeneratorSetup setup, String templatename) {
+    super(setup, templatename);
   }
   
   /**

@@ -31,15 +31,12 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.generating.templateengine.freemarker.SimpleHashFactory;
 import de.monticore.generating.templateengine.reporting.Reporting;
-import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import freemarker.core.Macro;
@@ -606,7 +603,6 @@ public class TemplateController {
   }
 
   // TODO: can we remove this one?
-  // MB: Nein, Die Methode wird in den Templates genutzt z.B fpr JavaCopyright, Importe, ...
   public String defineHookPoint(String hookName) {
     return config.getGlex().defineHookPoint(this, hookName, getAST());
   }
