@@ -20,6 +20,8 @@
 package de.monticore.generating.templateengine;
 
 import com.google.common.collect.Lists;
+
+import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.freemarker.FreeMarkerConfigurationBuilder;
 import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.io.FileReaderWriterMock;
@@ -45,20 +47,15 @@ public class GlobalExtensionManagementGlobalVarsTest {
 
   @Before
   public void setup() {
-    glex = new GlobalExtensionManagement();
-
     FreeMarkerTemplateEngine freeMarkerTemplateEngine = new FreeMarkerTemplateEngine(new FreeMarkerConfigurationBuilder().build());
-
-    TemplateControllerConfiguration config = new TemplateControllerConfigurationBuilder()
-        .glex(glex)
-        .freeMarkerTemplateEngine(freeMarkerTemplateEngine)
-        .fileHandler(new FileReaderWriterMock())
-        .classLoader(getClass().getClassLoader())
-        .externalTemplatePaths(new File[]{})
-        .outputDirectory(new File("dummy"))
-        .tracing(false)
-        .build();
-
+    glex = new GlobalExtensionManagement();
+    
+    GeneratorSetup config = new GeneratorSetup();
+    config.setFreeMarkerTemplateEngine(freeMarkerTemplateEngine);
+    config.setGlex(glex);
+    config.setFileHandler(new FileReaderWriterMock());
+    config.setOutputDirectory(new File("dummy"));
+    config.setTracing(false);
     tc = new TemplateControllerMock(config, "");
   }
 

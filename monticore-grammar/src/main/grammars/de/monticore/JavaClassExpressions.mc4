@@ -79,4 +79,10 @@ SuperSuffix
 Arguments
     =   "(" (Expression || ",")* ")"
     ;
+    
+NameExpression implements Expression <350>
+    = Name;
+    
+InstanceofExpression implements Expression <140> 
+	= Expression "instanceof" EType;
 }

@@ -35,7 +35,7 @@ package de.monticore;
 
 component grammar CommonExpressions extends de.monticore.ExpressionsBasis {
 
-interface InfixExpression extends Expression = leftExpression:Expression rightExpression:Expression;
+interface InfixExpression extends Expression = leftExpression:Expression operator:Name rightExpression:Expression;
   
 CallExpression implements Expression <240> =
 	Expression Arguments;
@@ -47,49 +47,49 @@ LogicalNotExpression implements Expression <190> =
 	"!" Expression;
 
 MultExpression implements Expression <180>, InfixExpression =
-	leftExpression:Expression "*" rightExpression:Expression;
+	leftExpression:Expression operator:"*" rightExpression:Expression;
 
 DivideExpression implements Expression <180>, InfixExpression =
-	leftExpression:Expression "/" rightExpression:Expression;
+	leftExpression:Expression operator:"/" rightExpression:Expression;
 
 ModuloExpression implements Expression <180>, InfixExpression =
-	leftExpression:Expression "%" rightExpression:Expression;
+	leftExpression:Expression operator:"%" rightExpression:Expression;
     
 PlusExpression implements Expression <170>, InfixExpression =
-	leftExpression:Expression "+" rightExpression:Expression;
+	leftExpression:Expression operator:"+" rightExpression:Expression;
         
 MinusExpression implements Expression <170>, InfixExpression =
-	leftExpression:Expression "-" rightExpression:Expression;
+	leftExpression:Expression operator:"-" rightExpression:Expression;
 
 LessEqualExpression implements Expression <150>, InfixExpression =
-	leftExpression:Expression "<=" rightExpression:Expression;
+	leftExpression:Expression operator:"<=" rightExpression:Expression;
 	
 GreaterEqualExpression implements Expression <150>, InfixExpression =
-	leftExpression:Expression ">=" rightExpression:Expression;
+	leftExpression:Expression operator:">=" rightExpression:Expression;
 	
 LessThanExpression implements Expression <150>, InfixExpression =
-	leftExpression:Expression "<" rightExpression:Expression;
+	leftExpression:Expression operator:"<" rightExpression:Expression;
 	
 GreaterThanExpression implements Expression <150>, InfixExpression =
-	leftExpression:Expression ">" rightExpression:Expression;
+	leftExpression:Expression operator:">" rightExpression:Expression;
 	        
 EqualsExpression implements Expression <130>, InfixExpression =
-	leftExpression:Expression "==" rightExpression:Expression;
+	leftExpression:Expression operator:"==" rightExpression:Expression;
 	
 NotEqualsExpression implements Expression <130>, InfixExpression =
-	leftExpression:Expression "!=" rightExpression:Expression;
+	leftExpression:Expression operator:"!=" rightExpression:Expression;
 	        
 BooleanAndOpExpression implements Expression <90>, InfixExpression =
-	leftExpression:Expression "&&" rightExpression:Expression;
+	leftExpression:Expression operator:"&&" rightExpression:Expression;
 	
 BooleanOrOpExpression implements Expression <80>, InfixExpression =
-	leftExpression:Expression "||" rightExpression:Expression;
+	leftExpression:Expression operator:"||" rightExpression:Expression;
 	
 ConditionalExpression implements Expression <70> =
 	condition:Expression "?" trueExpression:Expression ":" falseExpression:Expression;
 	
 SimpleAssignmentExpression implements Expression <60>, InfixExpression = <rightassoc>
-	leftExpression:Expression "+=" rightExpression:Expression;
+	leftExpression:Expression operator:"+=" rightExpression:Expression;
 
 BracketExpression implements Expression <310>
     =  "(" Expression ")";
