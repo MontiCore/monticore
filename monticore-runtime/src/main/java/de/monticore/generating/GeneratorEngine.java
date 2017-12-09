@@ -26,24 +26,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
-import de.monticore.ast.ASTNode;
-
 import com.google.common.base.Joiner;
 
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.TemplateControllerFactory;
+import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.TemplateController;
-import de.monticore.generating.templateengine.TemplateControllerConfiguration;
-import de.monticore.generating.templateengine.TemplateControllerConfigurationBuilder;
-import de.monticore.generating.templateengine.TemplateControllerFactory;
-import de.monticore.generating.templateengine.freemarker.FreeMarkerConfigurationBuilder;
-import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.generating.templateengine.reporting.Reporting;
-import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.IterablePath;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
-import freemarker.template.Configuration;
 
 /**
  * Represents the whole generator engine component.
@@ -52,36 +42,12 @@ import freemarker.template.Configuration;
  */
 public class GeneratorEngine {
 
-// Ziel MB, TODO,  XXX
-// verschwindet:
-  private final TemplateControllerConfiguration templateControllerConfig;
-
-// Ziel MB, TODO,  XXX
-// verschwindet:
-  private final TemplateControllerFactory templateControllerFactory;
-
   public final static String GENERATED_CLASS_SUFFIX = "TOP";
+  private GeneratorSetup setup;
 
-// Ziel MB, TODO,  XXX
-// signatur und layout wie folgt:
-//  public GeneratorEngine(GeneratorSetup gs)
-//  {
-
-  public GeneratorEngine(
-      GeneratorSetup generatorSetup,
-      TemplateControllerFactory templateControllerFactory,
-      FileReaderWriter fileHandler) {
-    Log.errorIfNull(generatorSetup);
-
-    this.templateControllerConfig = createTemplateControllerConfiguration(generatorSetup,
-        templateControllerFactory, fileHandler);
-    this.templateControllerFactory = templateControllerConfig.getTemplateControllerFactory();
-  }
-
-// Ziel MB, TODO,  XXX
-// Löschbar, oder?
   public GeneratorEngine(GeneratorSetup generatorSetup) {
-    this(generatorSetup, null, null);
+    Log.errorIfNull(generatorSetup);
+    this.setup = generatorSetup;
   }
 
 // Ziel MB, TODO,  XXX
@@ -89,7 +55,7 @@ public class GeneratorEngine {
 // die das als default instantiations nutzt, wenn die gebaut wird und
 // manche Werte nicht gesetzt sind
 //
-  /* package visibility */TemplateControllerConfiguration createTemplateControllerConfiguration(
+  /* package visibility TemplateControllerConfiguration createTemplateControllerConfiguration(
       GeneratorSetup generatorSetup, TemplateControllerFactory templateControllerFactory,
       FileReaderWriter fileHandler) {
     if (templateControllerFactory == null) {
@@ -127,7 +93,7 @@ public class GeneratorEngine {
         .build();
     
     return tcConfig;
-  }
+  } */
 
   /**
    * Processes the template <code>templateName</code> with the given <code>templateArguments</code>
@@ -138,8 +104,7 @@ public class GeneratorEngine {
    */
   public String generate(String templateName,
                          Object... templateArguments) {
-    TemplateController tc = this.templateControllerFactory.create(this.templateControllerConfig,
-        templateName);
+    TemplateController tc = setup.getNewTemplateController(templateName);
     return tc.includeArgs(templateName, Arrays.asList(templateArguments));
   }
 
@@ -159,17 +124,16 @@ public class GeneratorEngine {
    * @param node the ast node
    * @param templateArguments additional template arguments (if needed).
    */
-  public
-  void generate(String templateName,
-                Path filePath,
-		ASTNode node,
-                Object... templateArguments)
+  public void generate(String templateName,
+      Path filePath,
+      ASTNode node,
+      Object... templateArguments)
   {
     Log.errorIfNull(node);
     checkArgument(!isNullOrEmpty(templateName));
     Log.errorIfNull(filePath);
 
-    TemplateController tc = templateControllerFactory.create(templateControllerConfig, "");
+    TemplateController tc = setup.getNewTemplateController("");
     tc.writeArgs(templateName, filePath, node, Arrays.asList(templateArguments));
   }
 

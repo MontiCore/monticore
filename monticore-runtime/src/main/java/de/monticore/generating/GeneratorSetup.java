@@ -25,13 +25,17 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
+import de.monticore.generating.templateengine.freemarker.FreeMarkerConfigurationBuilder;
 import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.io.FileReaderWriter;
 
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.freemarker.TemplateAutoImport;
 import de.monticore.io.paths.IterablePath;
+import freemarker.core.Macro;
 
 // TODO Optional values werden inkonsistent gesetzt:
 // glex wird weder ein default gesezt, noch als parameter im
@@ -122,6 +126,14 @@ public class GeneratorSetup {
    * Desired default file extension, e.g. "java"
    */
   private String defaultFileExtension = "java";
+  
+  /**
+   * A list of all freemarker functions that serve as aliases for Java methods,
+   * e.g. 'include' as alias for 'tc.include'
+   */
+  private List<Macro> aliases = Lists.newArrayList();
+
+  public static final String ALIASES_TEMPLATE = "de.monticore.generating.templateengine.freemarker.Aliases";
 
 
   /*******************************************************/
@@ -162,7 +174,10 @@ public class GeneratorSetup {
   }
 
   public FreeMarkerTemplateEngine getFreeMarkerTemplateEngine() {
-    // KEIN default
+    if (this.freeMarkerTemplateEngine == null) {
+      this.freeMarkerTemplateEngine =  new FreeMarkerTemplateEngine(new
+          FreeMarkerConfigurationBuilder().build());
+    }
     return freeMarkerTemplateEngine;
   }
 
@@ -296,4 +311,29 @@ public class GeneratorSetup {
   public void setModelName(String modelName) {
     this.modelName = Optional.ofNullable(modelName);
   }
+
+  
+  /**
+   * @return the aliases
+   */
+  public List<Macro> getAliases() {
+    return this.aliases;
+  }
+
+  
+  /**
+   * @param aliases the aliases to set
+   */
+  public void setAliases(List<Macro> aliases) {
+    this.aliases = aliases;
+  }
+  
+  public void addAlias(Macro alias) {
+    this.aliases.add(alias);
+  }
+  
+  public TemplateController getNewTemplateController(String templateName) {
+    return new TemplateController(this, templateName);
+  }
+  
 }

@@ -31,14 +31,12 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
+import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.freemarker.SimpleHashFactory;
 import de.monticore.generating.templateengine.reporting.Reporting;
-import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import freemarker.core.Macro;
@@ -72,10 +70,7 @@ public class TemplateController {
   /**
    * General config variables that hold for all template executions
    */
-// TODO: This variable will be deleted:
-  private final TemplateControllerConfiguration config;
-// TODO and this one will contain all relevant information (even with the same methods):
-//  private final GeneratorSetup config;
+  private final GeneratorSetup config;
 
   /**
    * Name of the current template (usually fully qualified)
@@ -95,18 +90,10 @@ public class TemplateController {
 
   private List<Object> arguments = newArrayList();
 
-// TODO: das müsste man auslagern können in GeneratorSetup
-  /**
-   * A list of all freemarker functions that serve as aliases for Java methods,
-   * e.g. 'include' as alias for 'tc.include'
-   */
-  private List<Macro> aliases;
-
   private SimpleHash data = SimpleHashFactory.getInstance().createSimpleHash();
 
-  protected TemplateController(TemplateControllerConfiguration tcConfig, String templatename) {
-    this.config = tcConfig;
-
+  public TemplateController(GeneratorSetup setup, String templatename) {
+    this.config = setup;
     this.templatename = templatename;
   }
 
@@ -142,7 +129,7 @@ public class TemplateController {
     StringBuilder ret = new StringBuilder();
     for (String template : templatenames) {
       for (ASTNode ast : astlist) {
-        List<HookPoint> templateForwardings = config.getGlEx().getTemplateForwardings(template, ast);
+        List<HookPoint> templateForwardings = config.getGlex().getTemplateForwardings(template, ast);
         for (HookPoint templateHp : templateForwardings) {
           ret.append(templateHp.processValue(this, ast));
         }
@@ -300,7 +287,7 @@ public class TemplateController {
    */
   public String includeArgs(String templateName, List<Object> templateArguments) {
     StringBuilder ret = new StringBuilder();
-    List<HookPoint> templateForwardings = config.getGlEx().getTemplateForwardings(templateName, getAST());
+    List<HookPoint> templateForwardings = config.getGlex().getTemplateForwardings(templateName, getAST());
     for (HookPoint tn : templateForwardings) {
       ret.append(tn.processValue(this, templateArguments));
     }
@@ -499,7 +486,7 @@ public class TemplateController {
     Template template = config.getFreeMarkerTemplateEngine().loadTemplate(templateName);
 
     // add static functions to template
-    for (Macro macro : aliases) {
+    for (Macro macro : config.getAliases()) {
       template.addMacro(macro);
     }
 
@@ -512,17 +499,15 @@ public class TemplateController {
    */
   @SuppressWarnings("rawtypes")
   protected void initAliases() {
-    if (aliases == null) {
-      aliases = newArrayList();
-
+    if (config.getAliases().isEmpty()) {
       Template aliasesTemplate = config.getFreeMarkerTemplateEngine().loadTemplate(
-          TemplateControllerConfiguration.ALIASES_TEMPLATE);
+          config.ALIASES_TEMPLATE);
 
       Set macros = aliasesTemplate.getMacros().entrySet();
       for (Object o : macros) {
         Entry e = (Entry) o;
         Macro macro = (Macro) e.getValue();
-        aliases.add(macro);
+        config.addAlias(macro);
       }
     }
   }
@@ -538,16 +523,16 @@ public class TemplateController {
         ast = getAST();
       }
 
-      TemplateController tc = createTemplateController(template.getName());
+      TemplateController tc = config.getNewTemplateController(template.getName());
 
       SimpleHash d = SimpleHashFactory.getInstance().createSimpleHash();
       d.put(AST, ast);
       d.put(TC, tc);
-      d.put(GLEX, config.getGlEx());
+      d.put(GLEX, config.getGlex());
 
       // add all global data to be accessible in the template
       try {
-        d.putAll(config.getGlEx().getGlobalData().toMap());
+        d.putAll(config.getGlex().getGlobalData().toMap());
       }
       catch (TemplateModelException e) {
         String usage = this.templatename != null ? " (" + this.templatename + ")" : "";
@@ -558,10 +543,6 @@ public class TemplateController {
 
       tc.data = d;
       tc.arguments = newArrayList(passedArguments);
-
-      if (aliases != null) {
-        tc.setAliases(aliases);
-      }
 
       // Run template with data to create output
       config.getFreeMarkerTemplateEngine().run(ret, d, template);
@@ -583,18 +564,6 @@ public class TemplateController {
     }
 
     return ret;
-  }
-
-  protected TemplateController createTemplateController(String templateName) {
-    return config.getTemplateControllerFactory().create(this.config, templateName);
-  }
-
-  /**
-   * @param tcFactory the factory that should be used when new template
-   * controllers are created.
-   */
-  public void setTemplateControllerFactory(TemplateControllerFactory tcFactory) {
-    config.setTemplateControllerFactory(tcFactory);
   }
   
   /**
@@ -635,7 +604,7 @@ public class TemplateController {
 
   // TODO: can we remove this one?
   public String defineHookPoint(String hookName) {
-    return config.getGlEx().defineHookPoint(this, hookName, getAST());
+    return config.getGlex().defineHookPoint(this, hookName, getAST());
   }
 
   // TODO AR <- PN Actually,the plan was to move both instantiate() methods to
@@ -654,20 +623,6 @@ public class TemplateController {
   public Object instantiate(String className) {
     Reporting.reportInstantiate(className, new ArrayList<>());
     return ObjectFactory.createObject(completeQualifiedName(className));
-  }
-
-  /**
-   * @param aliases the staticFunctions to set
-   */
-  public void setAliases(List<Macro> aliases) {
-    this.aliases = newArrayList(aliases);
-  }
-
-  /**
-   * @return aliases
-   */
-  List<Macro> getAliases() {
-    return aliases;
   }
 
   public boolean existsHWC(String fileName) {

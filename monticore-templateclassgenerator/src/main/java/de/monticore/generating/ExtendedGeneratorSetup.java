@@ -16,28 +16,27 @@
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * ******************************************************************************
  */
+package de.monticore.generating;
 
-package de.monticore.generating.templateengine;
+import de.monticore.generating.templateengine.ExtendedTemplateController;
+import de.monticore.generating.templateengine.TemplateController;
 
 /**
- * Creates instances of TemplateController's.
- * (and is itself part of the TC'configuration to allow
- * recursive creation of instances)
+ * TODO: Write me!
+ *
+ * @author  (last commit) $Author$
+ * @version $Revision$, $Date$
+ * @since   TODO: add version number
+ *
  */
-public class TemplateControllerFactory {
-  
-// XXX, TODO MB: Diese Klasse entfernen
-//
-  public TemplateControllerFactory() {
-  }
-  
+public class ExtendedGeneratorSetup extends GeneratorSetup {
+
   /**
-   * create new template controllers and hand them the
-   * two imporant arguments: next template to call and
-   * it's stable configuration data.
+   * @see de.monticore.generating.GeneratorSetup#getNewTemplateController(java.lang.String)
    */
-  public TemplateController create(TemplateControllerConfiguration config, String templateName) {
-    return new TemplateController(config, templateName);
+  @Override
+  public TemplateController getNewTemplateController(String templateName) {
+    return new ExtendedTemplateController(this, templateName);
   }
   
 }

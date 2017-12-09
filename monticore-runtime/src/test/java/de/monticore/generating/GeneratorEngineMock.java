@@ -19,20 +19,12 @@
 
 package de.monticore.generating;
 
-import com.google.common.collect.Maps;
-import de.monticore.generating.templateengine.FreeMarkerTemplateEngineMock;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.TemplateControllerFactory;
-import de.monticore.generating.templateengine.TemplateControllerConfiguration;
-import de.monticore.generating.templateengine.TemplateControllerConfigurationBuilder;
-import de.monticore.generating.templateengine.TemplateControllerMockFactory;
-import de.monticore.io.FileReaderWriter;
-import de.monticore.io.FileReaderWriterMock;
-import de.monticore.ast.ASTNode;
-
-import java.io.File;
 import java.util.List;
 import java.util.Map;
+
+import com.google.common.collect.Maps;
+
+import de.monticore.ast.ASTNode;
 
 /**
  * Mock for {@link GeneratorEngine}. Can always be used instead
@@ -44,55 +36,13 @@ import java.util.Map;
  */
 public class GeneratorEngineMock extends GeneratorEngine {
   
-  private FreeMarkerTemplateEngineMock freeMarkerTemplateEngine;
-  private FileReaderWriterMock fileHandler;
   private Map<ASTNode, List<String>> handledNodesAndTemplates = Maps.newHashMap();
 
 
-  public GeneratorEngineMock(GeneratorSetup generatorSetup, TemplateControllerFactory
-      templateControllerFactory) {
-    super(generatorSetup, templateControllerFactory, new FileReaderWriterMock());
+  public GeneratorEngineMock(GeneratorSetup generatorSetup) {
+    super(generatorSetup);
   }
-  
-
-  /**
-   * @see de.monticore.generating.GeneratorEngine#createTemplateControllerConfiguration
-   * (GeneratorSetup, de.monticore.generating.templateengine.TemplateControllerFactory, de.monticore.io.FileReaderWriter)
-   */
-  @Override
-  TemplateControllerConfiguration createTemplateControllerConfiguration(GeneratorSetup generatorSetup, TemplateControllerFactory templateControllerFactory, FileReaderWriter fileHandler) {
-    if (templateControllerFactory == null) {
-      templateControllerFactory = new TemplateControllerMockFactory();
-    }
-    
-    GlobalExtensionManagement glex = new GlobalExtensionManagement();
-
-    freeMarkerTemplateEngine = new FreeMarkerTemplateEngineMock();
-    
-    TemplateControllerConfiguration config = new TemplateControllerConfigurationBuilder()
-                                                .glex(glex)
-                                                .templateControllerFactory(templateControllerFactory)
-                                                .freeMarkerTemplateEngine(freeMarkerTemplateEngine)
-                                                .fileHandler(fileHandler)
-                                                .classLoader(getClass().getClassLoader())
-                                                .externalTemplatePaths(new File[]{})
-                                                .outputDirectory(generatorSetup.getOutputDirectory())
-                                                .tracing(false)
-                                                .build();
-    
-    this.fileHandler = (FileReaderWriterMock) fileHandler;
-    
-    return config;
-  }
-  
-  public FreeMarkerTemplateEngineMock getFreeMarkerTemplateEngine() {
-    return this.freeMarkerTemplateEngine;
-  }
-  
-  public FileReaderWriterMock getFileHandler() {
-    return this.fileHandler;
-  }
-  
+   
 
   public Map<ASTNode, List<String>> getHandledNodesAndTemplates() {
     return this.handledNodesAndTemplates;

@@ -19,6 +19,8 @@
 
 package de.monticore.generating.templateengine;
 
+import de.monticore.generating.GeneratorSetup;
+
 /**
  * This class helps to test internals of {@link TemplateController}.
  *
@@ -27,32 +29,24 @@ package de.monticore.generating.templateengine;
  */
 public class TemplateControllerMock extends TemplateController {
 
-  private TemplateControllerMock subController;
-  private TemplateControllerConfiguration tcConfig;
   
   /**
    * Constructor for mc.codegen.ExtendedTemplateControllerForTesting
    * @param tcConfig
    * @param templatename
    */
-  protected TemplateControllerMock(TemplateControllerConfiguration tcConfig, String templatename) {
-    super(tcConfig, templatename);
-    this.tcConfig = tcConfig;
-    setTemplateControllerFactory(new TemplateControllerMockFactory());
+  protected TemplateControllerMock(GeneratorSetup setup, String templatename) {
+    super(setup, templatename);
   }
-  
+
   /**
-   * @see mc.codegen.TemplateController#createTemplateController(java.lang.String)
+   * TODO: Write me!
+   * @return
    */
-  @Override
-  protected TemplateControllerMock createTemplateController(String templateName) {
-        subController = new TemplateControllerMock(tcConfig, templateName);
-        
-        return subController;
+  public TemplateControllerMock getSubController() {
+    // TODO Auto-generated method stub
+    return null;
   }
   
-  TemplateControllerMock getSubController() {
-    return subController;
-  }
   
 }

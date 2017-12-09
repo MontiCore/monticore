@@ -18,22 +18,24 @@
  */
 package de.monticore.generating.templateengine;
 
-import de.monticore.generating.templateengine.TemplateControllerFactory;
-import de.monticore.generating.templateengine.TemplateControllerConfiguration;
+import de.monticore.generating.GeneratorSetup;
 
 /**
- * 
- * @author  Jerome Pfeiffer
+ * TODO: Write me!
+ *
+ * @author  (last commit) $Author$
+ * @version $Revision$, $Date$
+ * @since   TODO: add version number
  *
  */
-public class ExtendedTemplateControllerFactory extends TemplateControllerFactory{
+public class GeneratorSetupMock extends GeneratorSetup {
 
   /**
-   * @see de.monticore.generating.templateengine.TemplateControllerFactory#create(de.monticore.generating.templateengine.TemplateControllerConfiguration, java.lang.String)
+   * @see de.monticore.generating.GeneratorSetup#getNewTemplateController(java.lang.String)
    */
   @Override
-  public ExtendedTemplateController create(TemplateControllerConfiguration config, String templateName) {
-    return new ExtendedTemplateController(config, templateName);  
+  public TemplateControllerMock getNewTemplateController(String templateName) {
+    return new TemplateControllerMock(this, templateName);
   }
   
 }
