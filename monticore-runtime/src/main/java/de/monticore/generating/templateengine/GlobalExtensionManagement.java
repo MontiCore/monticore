@@ -229,6 +229,8 @@ public class GlobalExtensionManagement {
    * @param name of the value
    * @return the value
    */
+// TODO, XXX MB:
+// Umbenenneen in getGlobalValue
   @SuppressWarnings("deprecation")
   public Object getGlobalVar(String name) {
     try {
@@ -239,6 +241,24 @@ public class GlobalExtensionManagement {
     }
     return null;
   }
+
+  /**
+   * Returns the value of the given name.
+   *
+   * @param name of the value
+   * @param default replaces if the variable is not present
+   * @return the value or the default
+   */
+  public Object getGlobalValue(String name, Object default) {
+    try {
+      return BeansWrapper.getDefaultInstance().unwrap(globalData.get(name));
+    }
+    catch (TemplateModelException e) {
+      Log.error("0xA0123 Internal Error on global value for \"" + name + "\"");
+    }
+    return default;
+  }
+
 
   /**
    * check whether the variable name (parameter) is defined: if not issue an

@@ -143,6 +143,11 @@ public class GeneratorEngine {
     return tc.includeArgs(templateName, Arrays.asList(templateArguments));
   }
 
+// TODO (BR, 12/17): Es fehlt eine Methode
+// public String generate(String templateName,
+//                ASTNode node,
+//                Object... templateArguments)
+
   /**
    * Processes the template <code>templateName</code> with the <code>node</code> and the given
    * <code>templateArguments</code> and writes the content into the <code>filePath</code>. Note:
