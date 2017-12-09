@@ -339,6 +339,12 @@ public class GeneratorSetup {
     this.aliases.add(alias);
   }
   
+  /**
+   * This is the Method that creates TemplateControllers
+   * (it is used afresh for each template that is called)
+   * HotSPOT: If a different Template Controller shall be used
+   * then override this method in a subclass
+   */
   public TemplateController getNewTemplateController(String templateName) {
     return new TemplateController(this, templateName);
   }
