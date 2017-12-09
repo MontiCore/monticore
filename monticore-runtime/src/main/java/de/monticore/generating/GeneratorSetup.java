@@ -37,15 +37,6 @@ import de.monticore.generating.templateengine.freemarker.TemplateAutoImport;
 import de.monticore.io.paths.IterablePath;
 import freemarker.core.Macro;
 
-// TODO Optional values werden inkonsistent gesetzt:
-// glex wird weder ein default gesezt, noch als parameter im
-// Konstruktor verlangt, aber beim getter ein Optional geliefert
-// additionalTemplatePaths: hat einen default
-// In den comments wird Defalt gespeichert als Optional.absent
-// etc.
-// ausserdem fehlt eine Begründung warum das alles hier hängen muss
-// und nicht zB Kommentare values in glex sind.
-
 /**
  * Setup for generator (see {@link GeneratorEngine}).
  */
@@ -95,7 +86,7 @@ public class GeneratorSetup {
    */
   private String commentEnd = "*/";
 
-  // TODO MB: Unklar wieso ein FileReaderWriter und ein ClassLoader 
+  // TODO MB: !! Unklar wieso ein FileReaderWriter und ein ClassLoader 
   // notwendig sind. Kann der ClassLoader gestrichen werden?
   
   /**
@@ -127,6 +118,9 @@ public class GeneratorSetup {
    */
   private String defaultFileExtension = "java";
   
+// TODO, XXX MB: unklar, ob die aliases überhaupt einen
+// Sinn machen. Ggf. entfernen? oder erklären (an BR oder 
+// im RefMan, Kap 12)
   /**
    * A list of all freemarker functions that serve as aliases for Java methods,
    * e.g. 'include' as alias for 'tc.include'
