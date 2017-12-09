@@ -21,18 +21,15 @@ package de.monticore.generating.templateengine;
 
 /**
  * Creates instances of TemplateController's.
- * (and is itself part of the TC'configuration to allow
- * recursive creation of instances)
+ * This class is used by the GeneratorSetup mainly.
  */
-public class TemplateControllerFactory {
+public class TemplateControllerSource {
   
-// XXX, TODO MB: Diese Klasse entfernen
-//
-  public TemplateControllerFactory() {
+  public TemplateControllerSource() {
   }
   
   /**
-   * create new template controllers and hand them the
+   * create new template controller and hand them the
    * two imporant arguments: next template to call and
    * it's stable configuration data.
    */
