@@ -57,6 +57,11 @@ public class GeneratorSetup {
    * The path for the handwritten code
    * Default is only created with first get-access.
    */
+// TODO, XXX MB: (von BR 12/2017)
+// Diese Klasse handcodedPath klann doch durch eine List<String> ersetzt werden?
+// Oder auch was anderes, aber wir haben zuviele Lösungen für dasselbe ...
+// siehe auch TemplateAutoImport und additionalTemplatePaths
+// Vereinheitlichung!
   private IterablePath handcodedPath;
 
   /**
@@ -67,6 +72,8 @@ public class GeneratorSetup {
   /**
    * Template to include automatically at beginning.
    */
+// TODO, XXX MB: (von BR 12/2017)
+// Dieses Attribut wird einmal gesetzt und nie benutzt! --> entfernen
   private List<TemplateAutoImport> autoImports = new ArrayList<>();
 
   /**

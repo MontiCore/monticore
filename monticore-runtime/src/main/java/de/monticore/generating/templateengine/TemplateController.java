@@ -130,7 +130,8 @@ public class TemplateController {
     StringBuilder ret = new StringBuilder();
     for (String template : templatenames) {
       for (ASTNode ast : astlist) {
-        List<HookPoint> templateForwardings = config.getGlex().getTemplateForwardings(template, ast);
+        List<HookPoint> templateForwardings =
+			  config.getGlex().getTemplateForwardings(template, ast);
         for (HookPoint templateHp : templateForwardings) {
           ret.append(templateHp.processValue(this, ast));
         }

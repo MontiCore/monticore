@@ -67,10 +67,25 @@ public class GeneratorEngine {
     return tc.includeArgs(templateName, Arrays.asList(templateArguments));
   }
 
-// TODO (BR, 12/17): Es fehlt eine Methode
-// public String generate(String templateName,
-//                ASTNode node,
-//                Object... templateArguments)
+  /**
+   * Processes the template <code>templateName</code> with the the <code>node</code> and
+   * the given <code>templateArguments</code>
+   * and returns the content as String.
+   *
+   * @param templateName the template to be processes
+   * @param node the ast node
+   * @param templateArguments additional template arguments (if needed).
+   */
+// TODO, XXX MB (BR, 12/17): Es fehlen Methoden (weil auch die dazu gehörende includeArgs fehlt
+//
+// TODO  public String generate(String templateName,
+// TODO      			 ASTNode node,
+// TODO                         Object... templateArguments)
+
+// TODO   public void generate(String templateName,
+// TODO       Path filePath,
+// TODO       Object... templateArguments)
+//
 
   /**
    * Processes the template <code>templateName</code> with the <code>node</code> and the given
