@@ -168,6 +168,9 @@ public class GeneratorEngine {
     tc.writeArgs(templateName, filePath, node, Arrays.asList(templateArguments));
   }
 
+// TODO (BR, 12/17): Diese Methode ist unbenutzt: also raus.
+// // Insbesondere weil es nichts bringt einfach den Path zu ändern 
+// und dann innendrin einen falschen Klassennamen zu haben.
   /**
    * Processes the template <code>templateName</code> with the <code>node</code> and the given
    * <code>templateArguments</code> and writes the content into the <code>filePath</code>. If there
