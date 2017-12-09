@@ -117,6 +117,12 @@ public class GeneratorSetup {
    * Desired default file extension, e.g. "java"
    */
   private String defaultFileExtension = "java";
+
+  /**
+   * Additional Suffix for a generated Class, if the 
+   * class itself already exists.
+   */
+  public final static String GENERATED_CLASS_SUFFIX = "TOP";
   
 // TODO, XXX MB: unklar, ob die aliases überhaupt einen
 // Sinn machen. Ggf. entfernen? oder erklären (an BR oder 

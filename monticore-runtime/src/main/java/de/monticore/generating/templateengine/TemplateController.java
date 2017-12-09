@@ -125,6 +125,7 @@ public class TemplateController {
    * @param astlist where we execute the template on in an iteration
    * @return produced output
    */
+// TODO, XXX MB:  StringBuffer waere als result sinnvoller & effizienter
   public String include(List<String> templatenames, List<ASTNode> astlist) {
     StringBuilder ret = new StringBuilder();
     for (String template : templatenames) {
