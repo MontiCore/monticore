@@ -258,9 +258,6 @@ public class GlobalExtensionManagement {
    */
   public void requiredGlobalVar(String name) {
     if (getGlobalVar(name) == null) {
-      // TODO: in which template? hinzufügen
-      // Sollte dieser Fehler kommen, dann wird auch das Template ausgeworfen,
-      // das zuletzt verarbeitet wurde (also den Fehler produziert hat)
       Log.error("0xA0126 Missing required value \"" + name + "\"");
     }
   }
