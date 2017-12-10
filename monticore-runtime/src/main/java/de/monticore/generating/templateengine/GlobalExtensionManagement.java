@@ -130,31 +130,10 @@ public class GlobalExtensionManagement {
    */
   public void defineGlobalVar(String name, Object value) {
     if (hasGlobalVar(name)) {
-      // TODO: in which template? hinzufügen
       Log.error("0xA0122 Global Value '" + name + "' has already been set.\n Old value: " +
           getGlobalVar(name) + "\n New value: " + value);
     }
     setGlobalValue(name, value);
-  }
-
-  /**
-   * Defines a new global variable with no value set.
-   * If the name is already in use an error is reported.
-   *
-   * @param name of the value to set
-   */
-  public void defineGlobalVar(String name) {
-    setGlobalValue(name, null); // TODO: clarify what the default value is!
-  }
-
-  /**
-   * Defines a list of global variables with the given name in the
-   * templates. If the name is already in use an error is reported.
-   *
-   * @param names list of names to set
-   */
-  public void defineGlobalVars(List<String> names) {
-    names.forEach(this::defineGlobalVar);
   }
 
   /**
@@ -166,7 +145,7 @@ public class GlobalExtensionManagement {
    */
   public void changeGlobalVar(String name, Object value) {
     if (!hasGlobalVar(name)) {
-      Log.error("0xA0124 Global Value '" + name + "' has not been defined."); // TODO: identify valid error code
+      Log.error("0xA0124 Global Value '" + name + "' has not been defined.");
     } else {
       setGlobalValue(name, value);
     }
@@ -229,10 +208,8 @@ public class GlobalExtensionManagement {
    * @param name of the value
    * @return the value
    */
-// TODO, XXX MB:
-// Umbenenneen in getGlobalValue
   @SuppressWarnings("deprecation")
-  public Object getGlobalVar(String name) {
+  public Object getGlobalValue(String name) {
     try {
       return BeansWrapper.getDefaultInstance().unwrap(globalData.get(name));
     }
@@ -240,6 +217,19 @@ public class GlobalExtensionManagement {
       Log.error("0xA0123 Internal Error on global value for \"" + name + "\"");
     }
     return null;
+  }
+
+  /**
+   * Returns the value of the given name.
+   *
+   * @param name of the value
+   * @return the value
+   */
+// TODO, XXX MB:
+// löschen sobald wie möglich (alte Fassung des Namens)
+  @SuppressWarnings("deprecation")
+  public Object getGlobalVar(String name) {
+    return getGlobalValue(name);
   }
 
   /**
