@@ -35,6 +35,7 @@ public class TemplateHookPoint extends HookPoint {
 
   private final String templateName;
 
+// XXX BUG TODO, MB:  zu löschen
   private List<Object> templateArguments = Lists.newArrayList();
 
   public TemplateHookPoint(String templateName) {
@@ -42,15 +43,14 @@ public class TemplateHookPoint extends HookPoint {
     this.templateName = templateName;
   }
 
+// XXX BUG TODO, MB:  zu löschen
+// templateArguments werden grundsätzlich nicht beim HookPoint gesetzt sondern
+// beim Include durchgeschleift !!!
+// --> das mit dem Durchschleifen beim Include ist aber noch zu realisieren
   public TemplateHookPoint(String templateName, Object... templateArguments) {
     super();
     this.templateName = templateName;
     this.templateArguments = Lists.newArrayList(templateArguments);
-  }
-
-  @Deprecated
-  public void addArgument(Object o) {
-    this.templateArguments.add(o);
   }
 
   /**
@@ -60,6 +60,11 @@ public class TemplateHookPoint extends HookPoint {
     return this.templateName;
   }
 
+// XXX BUG TODO, MB:  zu ändern
+// templateArguments werden grundsätzlich nicht beim HookPoint gesetzt sondern
+// beim Include durchgeschleift !!!
+// --> das mit dem Durchschleifen beim Include ist aber noch zu realisieren
+// ( die include Argumente müssten daher hier wohl als Argumente mitgereicht werden
   @Override
   public String processValue(TemplateController controller, ASTNode ast) {
     if (this.templateArguments.size() > 0) {
@@ -68,6 +73,11 @@ public class TemplateHookPoint extends HookPoint {
     return controller.includeWithoutForwarding(templateName, ast);
   }
 
+// XXX BUG TODO, MB:  zu ändern
+// templateArguments werden grundsätzlich nicht beim HookPoint gesetzt sondern
+// beim Include durchgeschleift !!!
+// --> das mit dem Durchschleifen beim Include ist aber noch zu realisieren
+// ( die include Argumente müssten daher hier wohl als Argumente mitgereicht werden
   @Override
   public String processValue(TemplateController controller, List<Object> args) {
     if (this.templateArguments.size() > 0) {

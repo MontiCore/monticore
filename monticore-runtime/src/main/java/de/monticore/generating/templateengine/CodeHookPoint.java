@@ -34,4 +34,7 @@ public abstract class CodeHookPoint extends HookPoint {
   @Override
   public abstract String processValue(TemplateController controller, ASTNode ast);
   
+  // BUG XXX TODO MB: warum steht hier die andere Methode nicht, aber eine schon?
+  // Konsistenz!
+  //
 }
