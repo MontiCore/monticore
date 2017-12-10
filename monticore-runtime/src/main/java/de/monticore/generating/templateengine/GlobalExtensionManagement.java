@@ -82,15 +82,6 @@ public class GlobalExtensionManagement {
   }
 
   /**
-   * Returns a list of all registered global value names
-   *
-   * @return collection of all names of defined values.
-   */
-  public TemplateCollectionModel getGlobalValueNames() {
-    return globalData.keys();
-  }
-
-  /**
    * Checks whether a value with the given name is defined and is not null
    *
    * @param name of the value to check
@@ -203,13 +194,13 @@ public class GlobalExtensionManagement {
   }
 
   /**
-   * Returns the value of the given name.
+   * Returns the value of the given variable.
    *
-   * @param name of the value
+   * @param name of the variable
    * @return the value
    */
   @SuppressWarnings("deprecation")
-  public Object getGlobalValue(String name) {
+  public Object getGlobalVar(String name) {
     try {
       return BeansWrapper.getDefaultInstance().unwrap(globalData.get(name));
     }
@@ -220,26 +211,13 @@ public class GlobalExtensionManagement {
   }
 
   /**
-   * Returns the value of the given name.
+   * Returns the value of the given variable.
    *
-   * @param name of the value
-   * @return the value
-   */
-// TODO, XXX MB:
-// löschen sobald wie möglich (alte Fassung des Namens)
-  @SuppressWarnings("deprecation")
-  public Object getGlobalVar(String name) {
-    return getGlobalValue(name);
-  }
-
-  /**
-   * Returns the value of the given name.
-   *
-   * @param name of the value
+   * @param name of the variable
    * @param default replaces if the variable is not present
    * @return the value or the default
    */
-  public Object getGlobalValue(String name, Object default) {
+  public Object getGlobalVar(String name, Object default) {
     try {
       return BeansWrapper.getDefaultInstance().unwrap(globalData.get(name));
     }
@@ -274,6 +252,28 @@ public class GlobalExtensionManagement {
     }
   }
 
+  
+  // ----------------------------------------------------------------------
+  // Section on Hook Points
+  // ----------------------------------------------------------------------
+
+
+  /**
+   * @param hookName name of the hook point
+   * @param content String to be used as hook point
+   */
+  public void bindStringHookPoint(String hookName, String content) {
+    bindHookPoint(hookName, new StringHookPoint(content));
+  }
+
+  /**
+   * @param hookName name of the hook point
+   * @param tpl Template to be used as hook point
+   */
+  public void bindTemplateHookPoint(String hookName, String tpl) {
+    bindHookPoint(hookName, new TemplateHookPoint(tpl));
+  }
+
   /**
    * @param hookName name of the hook point
    * @param hp
@@ -289,15 +289,16 @@ public class GlobalExtensionManagement {
    * @return the (processed) value of the hook point
    */
   public String defineHookPoint(TemplateController controller, String hookName, ASTNode ast) {
+    Reporting.reportCallHookPointStart(hookName, hp, ast);
+
     String result = null;
     HookPoint hp = hookPoints.get(hookName);
 
-    Reporting.reportCallHookPointStart(hookName, hp, ast);
     if (hookPoints.containsKey(hookName)) {
       result = hp.processValue(controller, ast);
     }
-    Reporting.reportCallHookPointEnd(hookName);
 
+    Reporting.reportCallHookPointEnd(hookName);
 
     return Strings.nullToEmpty(result);
   }
