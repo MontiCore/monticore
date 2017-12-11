@@ -34,7 +34,7 @@ ${tc.params("String package", "String fqnTemplateName", "String classname", "jav
 "Optional<String> result", "Boolean hasSignature", "Boolean isMainTemplate", "de.monticore.templateclassgenerator.codegen.TemplateClassHelper helper")}
 
 <#-- Copyright -->
-${tc.defineHookPoint("JavaCopyright")}
+${defineHookPoint("JavaCopyright")}
 
 package ${package};
 

@@ -33,7 +33,7 @@ software, even if advised of the possibility of such damage.
 <#assign genHelper = glex.getGlobalVar("astHelper")>
   
 <#-- Copyright -->
-${tc.defineHookPoint("JavaCopyright")}
+${defineHookPoint("JavaCopyright")}
 
 ${tc.signature("ast", "grammarName", "packageURI", "astTypes")}
 

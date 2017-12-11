@@ -35,7 +35,7 @@ ${tc.signature("ast", "isTop", "astImports")}
 <#assign plainName = genHelper.getPlainName(ast, "")>
 
 <#-- Copyright -->
-${tc.defineHookPoint("JavaCopyright")}
+${defineHookPoint("JavaCopyright")}
 
 <#-- set package -->
 package ${genHelper.getAstPackage()};

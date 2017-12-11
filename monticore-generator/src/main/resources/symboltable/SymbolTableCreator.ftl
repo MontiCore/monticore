@@ -40,7 +40,7 @@ ${signature("className", "directSuperCds", "rules", "hcPath")}
 <#assign astPrefix = fqn + "._ast.AST">
 
 <#-- Copyright -->
-${tc.defineHookPoint("JavaCopyright")}
+${defineHookPoint("JavaCopyright")}
 
 <#-- set package -->
 package ${package};

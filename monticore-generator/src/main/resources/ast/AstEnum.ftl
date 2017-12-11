@@ -38,11 +38,11 @@ software, even if advised of the possibility of such damage.
   
 -->
 <#assign genHelper = glex.getGlobalVar("astHelper")>
-${tc.defineHookPoint("EnumContent:addComment")}
+${defineHookPoint("EnumContent:addComment")}
 <#-- set package -->
 package ${genHelper.getAstPackage()};
 <#-- Imports hook --> 
-${tc.defineHookPoint("<Block>?EnumContent:addImports")}
+${defineHookPoint("<Block>?EnumContent:addImports")}
 
 <#assign interfaces = ast.printInterfaces()>
 

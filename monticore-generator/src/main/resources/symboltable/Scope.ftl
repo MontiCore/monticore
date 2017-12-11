@@ -35,7 +35,7 @@ ${signature("className")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 
 <#-- Copyright -->
-${tc.defineHookPoint("JavaCopyright")}
+${defineHookPoint("JavaCopyright")}
 
 <#-- set package -->
 package ${genHelper.getTargetPackage()};

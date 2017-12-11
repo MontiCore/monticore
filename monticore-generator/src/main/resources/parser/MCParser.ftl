@@ -38,7 +38,7 @@ ${tc.signature("ast", "suffix", "methods")}
 <#assign qualifiedStartRule = genHelper.getQualifiedStartRuleName()>
  
 <#-- Copyright -->
-${tc.defineHookPoint("JavaCopyright")}
+${defineHookPoint("JavaCopyright")}
 
 <#-- set package -->
 package ${genHelper.getParserPackage()};

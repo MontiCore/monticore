@@ -19,20 +19,21 @@
 
 package de.monticore.generating.templateengine;
 
-import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.freemarker.FreeMarkerConfigurationBuilder;
-import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
-import de.monticore.io.FileReaderWriterMock;
-import org.junit.Before;
-import org.junit.Test;
+import static de.monticore.generating.templateengine.TestConstants.TEMPLATE_PACKAGE;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-import static de.monticore.generating.templateengine.TestConstants.TEMPLATE_PACKAGE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import org.junit.Before;
+import org.junit.Test;
+
+import de.monticore.generating.GeneratorSetup;
+import de.monticore.generating.templateengine.freemarker.FreeMarkerConfigurationBuilder;
+import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
+import de.monticore.io.FileReaderWriterMock;
 
 /**
  * Tests hook point methods of {@link TemplateController}
@@ -62,7 +63,7 @@ public class TemplateControllerHookPointsTest {
   
   @Test
   public void testUndefinedHookReturnsEmptyString() {
-    assertEquals("", tc.defineHookPoint("hp1"));
+    assertEquals("", glex.defineHookPoint(tc, "hp1"));
   }
   
   @Test
@@ -72,23 +73,23 @@ public class TemplateControllerHookPointsTest {
     
     // define new hook point hp1
     glex.bindHookPoint("hp1", new StringHookPoint("value of hp1"));
-    hpValue = tc.defineHookPoint("hp1");
+    hpValue = glex.defineHookPoint(tc, "hp1");
     assertNotNull(hpValue);
     assertEquals("value of hp1", hpValue);
     
     // overwrite value of hook point hp1
     glex.bindHookPoint("hp1", new StringHookPoint("new value of hp1"));
-    hpValue = tc.defineHookPoint("hp1");
+    hpValue = glex.defineHookPoint(tc, "hp1");
     assertNotNull(hpValue);
     assertEquals("new value of hp1", hpValue);
     
     // define new hook point hp2
     glex.bindHookPoint("hp2", new StringHookPoint("value of hp2"));
-    hpValue = tc.defineHookPoint("hp2");
+    hpValue = glex.defineHookPoint(tc, "hp2");
     assertNotNull(hpValue);
     assertEquals("value of hp2", hpValue);
     // hp1 still exists
-    assertEquals("new value of hp1", tc.defineHookPoint("hp1"));
+    assertEquals("new value of hp1", glex.defineHookPoint(tc, "hp1"));
   }
   
   
@@ -98,23 +99,23 @@ public class TemplateControllerHookPointsTest {
     
     // define new hook point hp1
     glex.bindHookPoint("hp1", new TemplateHookPoint(TEMPLATE_PACKAGE + "HelloWorld"));
-    hpValue = tc.defineHookPoint("hp1");
+    hpValue = glex.defineHookPoint(tc, "hp1");
     assertNotNull(hpValue);
     assertEquals("Hello World!", hpValue);
     
     // overwrite value of hook point hp1
     glex.bindHookPoint("hp1", new TemplateHookPoint(TEMPLATE_PACKAGE + "HowAreYou"));
-    hpValue = tc.defineHookPoint("hp1");
+    hpValue = glex.defineHookPoint(tc, "hp1");
     assertNotNull(hpValue);
     assertEquals("How Are You?", hpValue);
     
     // define new hook point hp2
     glex.bindHookPoint("hp2", new TemplateHookPoint(TEMPLATE_PACKAGE + "HelloWorld"));
-    hpValue = tc.defineHookPoint("hp2");
+    hpValue = glex.defineHookPoint(tc, "hp2");
     assertNotNull(hpValue);
     assertEquals("Hello World!", hpValue);
     // hp1 still exists
-    assertEquals("How Are You?", tc.defineHookPoint("hp1"));
+    assertEquals("How Are You?", glex.defineHookPoint(tc, "hp1"));
   }
   
   @Test
@@ -124,25 +125,25 @@ public class TemplateControllerHookPointsTest {
     // define new hook point hp1
     CodeHookPointMock command = new CodeHookPointMock("command1");
     glex.bindHookPoint("hp1", command);
-    hpValue = tc.defineHookPoint("hp1");
+    hpValue = glex.defineHookPoint(tc, "hp1");
     assertNotNull(hpValue);
     assertEquals("command1", hpValue);
     
     // overwrite value of hook point hp1
     command = new CodeHookPointMock("command2");
     glex.bindHookPoint("hp1", command);
-    hpValue = tc.defineHookPoint("hp1");
+    hpValue = glex.defineHookPoint(tc, "hp1");
     assertNotNull(hpValue);
     assertEquals("command2", hpValue);
     
     // overwrite value of hook point hp1
     command = new CodeHookPointMock("command3");
     glex.bindHookPoint("hp2", command);
-    hpValue = tc.defineHookPoint("hp2");
+    hpValue = glex.defineHookPoint(tc, "hp2");
     assertNotNull(hpValue);
     assertEquals("command3", hpValue);
     // hp1 still exists
-    assertEquals("command2", tc.defineHookPoint("hp1"));
+    assertEquals("command2", glex.defineHookPoint(tc, "hp1"));
   }
   
   @Test
@@ -150,20 +151,20 @@ public class TemplateControllerHookPointsTest {
     final String hp = "hp";
     
     glex.bindHookPoint(hp, new StringHookPoint("StringHook"));
-    assertEquals("StringHook", tc.defineHookPoint(hp));
+    assertEquals("StringHook", glex.defineHookPoint(tc, hp));
     
     glex.bindHookPoint(hp, new TemplateHookPoint(TEMPLATE_PACKAGE + "A"));
-    assertEquals("A", tc.defineHookPoint(hp));
+    assertEquals("A", glex.defineHookPoint(tc, hp));
     
     CodeHookPointMock command = new CodeHookPointMock("command");
     glex.bindHookPoint(hp, command);
-    assertEquals("command", tc.defineHookPoint(hp));
+    assertEquals("command", glex.defineHookPoint(tc, hp));
     
     glex.bindHookPoint(hp, new TemplateHookPoint(TEMPLATE_PACKAGE + "A"));
-    assertEquals("A", tc.defineHookPoint(hp));
+    assertEquals("A", glex.defineHookPoint(tc, hp));
     
     glex.bindHookPoint(hp, new StringHookPoint("StringHook"));
-    assertEquals("StringHook", tc.defineHookPoint(hp));
+    assertEquals("StringHook", glex.defineHookPoint(tc, hp));
   }
   
   @Test
@@ -279,7 +280,7 @@ public class TemplateControllerHookPointsTest {
   public void testTemplateStringHook() throws IOException{
     // define new hook point hp1
     glex.bindHookPoint("hp1", new TemplateStringHookPoint("<#if true>true</#if>"));
-    String hpValue = tc.defineHookPoint("hp1");
+    String hpValue = glex.defineHookPoint(tc, "hp1");
     assertNotNull(hpValue);
     assertEquals("true", hpValue);
   }
