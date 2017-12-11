@@ -21,10 +21,14 @@ package de.monticore.generating.templateengine;
 
 import com.google.common.collect.Lists;
 
+import de.monticore.ast.ASTNodeMock;
+import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.freemarker.FreeMarkerConfigurationBuilder;
 import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.io.FileReaderWriterMock;
+import de.se_rwth.commons.logging.Log;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -61,15 +65,15 @@ public class GlobalExtensionManagementGlobalVarsTest {
 
   @Test
   public void testGlobalVars() {
-    glex.defineGlobalVar("test", "");
+    glex.defineGlobalVar("test", "test");
     glex.defineGlobalVar("asd", new String("asd"));
 
     String output = tc.include(TEMPLATE_PACKAGE + "GlobalVars");
-    assertEquals("asd", output.replaceAll("\\s+", ""));
+    assertEquals("testasd", output.replaceAll("\\s+", ""));
 
     glex.changeGlobalVar("asd", new String("aaa"));
     output = tc.include(TEMPLATE_PACKAGE + "GlobalVars");
-    assertEquals("aaa", output.replaceAll("\\s+", ""));
+    assertEquals("testaaa", output.replaceAll("\\s+", ""));
 
     glex.defineGlobalVar("liste", new ArrayList<>());
     glex.addToGlobalVar("liste", new String("a"));
@@ -78,4 +82,18 @@ public class GlobalExtensionManagementGlobalVarsTest {
     output = tc.include(TEMPLATE_PACKAGE + "GlobalListVars");
     assertEquals("abc", output.replaceAll("\\s+", ""));
   }
+  
+  @Test
+  public void testVariables4() {
+    GeneratorSetup s = new GeneratorSetup();
+    s.setTracing(false);
+    GeneratorEngine ge = new GeneratorEngine(s);
+    ASTNodeMock ast = new ASTNodeMock();
+
+    // override same variable
+    String res = ge.generate(TEMPLATE_PACKAGE + "TestVariables4", ast);
+
+    assertEquals("\n\nA:16\nB:38\nC:555\n", res);
+  }
+
 }

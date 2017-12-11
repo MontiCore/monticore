@@ -220,11 +220,13 @@ public class GlobalExtensionManagement {
    */
   @SuppressWarnings("deprecation")
   public Object getGlobalVar(String name, Object defaultObject) {
-    try {
-      return BeansWrapper.getDefaultInstance().unwrap(globalData.get(name));
-    }
-    catch (TemplateModelException e) {
-      Log.error("0xA0123 Internal Error on global value for \"" + name + "\"");
+    if (hasGlobalVar(name)) {
+      try {
+        return BeansWrapper.getDefaultInstance().unwrap(globalData.get(name));
+      }
+        catch (TemplateModelException e) {
+          Log.error("0xA0123 Internal Error on global value for \"" + name + "\"");
+        }
     }
     return defaultObject;
   }
