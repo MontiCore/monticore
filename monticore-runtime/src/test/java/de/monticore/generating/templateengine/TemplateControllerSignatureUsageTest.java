@@ -88,7 +88,7 @@ public class TemplateControllerSignatureUsageTest {
   @Ignore
   @Test
   public void testSignatureWithOneParameter() {
-    String output = tc.includeArgs(TEMPLATE_PACKAGE + "SignatureWithOneParameter", Lists.<Object>newArrayList("Charly"));
+    StringBuilder output = tc.includeArgs(TEMPLATE_PACKAGE + "SignatureWithOneParameter", Lists.<Object>newArrayList("Charly"));
     
     TemplateController tcChild = tc.getSubController();
     assertNotNull(tcChild);
@@ -100,13 +100,13 @@ public class TemplateControllerSignatureUsageTest {
     assertEquals(1, tcChild.getArguments().size());
     assertEquals("Charly", tcChild.getArguments().get(0));
     
-    assertEquals("Name is Charly", output);
+    assertEquals("Name is Charly", output.toString());
   }
   
   @Ignore
   @Test
   public void testSignatureWithThreeParameters() {
-    String output = tc.includeArgs(TEMPLATE_PACKAGE + "SignatureWithThreeParameters", 
+    StringBuilder output = tc.includeArgs(TEMPLATE_PACKAGE + "SignatureWithThreeParameters", 
         Lists.<Object>newArrayList("Charly", "30", "Aachen"));
     
     TemplateController tcChild = tc.getSubController();
@@ -123,13 +123,13 @@ public class TemplateControllerSignatureUsageTest {
     assertEquals("30", tcChild.getArguments().get(1));
     assertEquals("Aachen", tcChild.getArguments().get(2));
     
-    assertEquals("Name is Charly, age is 30, city is Aachen", output);
+    assertEquals("Name is Charly, age is 30, city is Aachen", output.toString());
   }
   
   @Ignore
   @Test
   public void testSignatureWithManyParameters() {
-    String output = tc.includeArgs(TEMPLATE_PACKAGE + "SignatureWithManyParameters", 
+    StringBuilder output = tc.includeArgs(TEMPLATE_PACKAGE + "SignatureWithManyParameters", 
         Lists.<Object>newArrayList("Charly", "30", "Aachen", "52062", "Engineer", "No friends"));
     
     TemplateController tcChild = tc.getSubController();
@@ -152,15 +152,15 @@ public class TemplateControllerSignatureUsageTest {
     assertEquals("Engineer", tcChild.getArguments().get(4));
     assertEquals("No friends", tcChild.getArguments().get(5));
     
-    assertEquals("Name=Charly, age=30, city=Aachen, zip=52062, job=Engineer, friends=No friends", output);
+    assertEquals("Name=Charly, age=30, city=Aachen, zip=52062, job=Engineer, friends=No friends", output.toString());
   }
   
   @Test
   public void testNestedSignatureCalls() {
-    String output = tc.includeArgs(TEMPLATE_PACKAGE + "NestedSignatureCalls", 
+    StringBuilder output = tc.includeArgs(TEMPLATE_PACKAGE + "NestedSignatureCalls", 
         Lists.<Object>newArrayList("T1"));
     
-    assertEquals("T1 -> Name is T2", output);
+    assertEquals("T1 -> Name is T2", output.toString());
   }
     
   
@@ -178,20 +178,20 @@ public class TemplateControllerSignatureUsageTest {
   
   @Test
   public void testArgumentsAreOnlyVisibleInIncludedTemplate() {
-    String templateOutput = tc.includeArgs(TEMPLATE_PACKAGE + "ArgumentsAreOnlyVisibleInIncludedTemplate",
+    StringBuilder templateOutput = tc.includeArgs(TEMPLATE_PACKAGE + "ArgumentsAreOnlyVisibleInIncludedTemplate",
         Lists.<Object>newArrayList("Charly"));
     
-    assertEquals("Hello Charly\nSorry, what was your name?", templateOutput);
+    assertEquals("Hello Charly\nSorry, what was your name?", templateOutput.toString());
   }
     
   @Test
   public void testParameterizedInclusionUsage() {
-    String templateOutput = tc.include(TEMPLATE_PACKAGE + "ParameterizedInclusionUsage");
+    StringBuilder templateOutput = tc.include(TEMPLATE_PACKAGE + "ParameterizedInclusionUsage");
     
     assertEquals(
         "Name is Charly\n" +
         "Name is Charly, age is 30, city is Aachen\n" +
         "Name=Charly, age=30, city=Aachen, zip=52062, job=Engineer, friends=No friends"
-        , templateOutput);
+        , templateOutput.toString());
   }
 }

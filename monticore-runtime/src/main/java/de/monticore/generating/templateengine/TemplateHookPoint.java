@@ -70,7 +70,7 @@ public class TemplateHookPoint extends HookPoint {
     if (this.templateArguments.size() > 0) {
       return processValue(controller, this.templateArguments);
     }
-    return controller.includeWithoutForwarding(templateName, ast);
+    return controller.includeWithoutForwarding(templateName, ast).toString();
   }
 
 // XXX BUG TODO, MB:  zu ändern
@@ -82,9 +82,9 @@ public class TemplateHookPoint extends HookPoint {
   public String processValue(TemplateController controller, List<Object> args) {
     if (this.templateArguments.size() > 0) {
       return controller.includeArgsWithoutForwarding(templateName,
-          this.templateArguments);
+          this.templateArguments).toString();
     }
-    return controller.includeArgsWithoutForwarding(templateName, args);
+    return controller.includeArgsWithoutForwarding(templateName, args).toString();
   }
   
   @Override

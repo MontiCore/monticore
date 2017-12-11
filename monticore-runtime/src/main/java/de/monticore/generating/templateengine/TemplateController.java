@@ -132,8 +132,7 @@ public class TemplateController {
    * @param astlist where we execute the template on in an iteration
    * @return produced output
    */
-// TODO, XXX MB:  StringBuffer waere als result sinnvoller & effizienter
-  public String include(List<String> templatenames, List<ASTNode> astlist) {
+  public StringBuilder include(List<String> templatenames, List<ASTNode> astlist) {
     StringBuilder ret = new StringBuilder();
     for (String template : templatenames) {
       for (ASTNode ast : astlist) {
@@ -145,7 +144,7 @@ public class TemplateController {
       }
     }
 
-    return ret.toString();
+    return ret;
   }
 
   /**
@@ -156,10 +155,10 @@ public class TemplateController {
    * @param ast the ast node
    * @return produced output
    */
-  String includeWithoutForwarding(String templateName, ASTNode ast) {
+  StringBuilder includeWithoutForwarding(String templateName, ASTNode ast) {
     StringBuilder ret = new StringBuilder();
     ret.append(processTemplate(templateName, ast, new ArrayList<>()));
-    return ret.toString();
+    return ret;
   }
 
   /**
@@ -216,7 +215,7 @@ public class TemplateController {
    * @param templateName
    * @return
    */
-  public String include(String templateName) {
+  public StringBuilder include(String templateName) {
     return include(newArrayList(templateName), newArrayList(getAST()));
   }
 
@@ -231,7 +230,7 @@ public class TemplateController {
    * @param templateNames list of filenames, qualified or not
    * @return produced output
    */
-  public String include(List<String> templateNames) {
+  public StringBuilder include(List<String> templateNames) {
     return include(templateNames, newArrayList(getAST()));
   }
 
@@ -246,7 +245,7 @@ public class TemplateController {
    * @param ast ast-node the template is operating on
    * @return produced output
    */
-  public String include(List<String> templateNames, ASTNode ast) {
+  public StringBuilder include(List<String> templateNames, ASTNode ast) {
     return include(templateNames, newArrayList(ast));
   }
 
@@ -261,7 +260,7 @@ public class TemplateController {
    * @param astlist where we execute the template on in an iteration
    * @return produced output
    */
-  public String include(String templateName, List<ASTNode> astlist) {
+  public StringBuilder include(String templateName, List<ASTNode> astlist) {
     return include(newArrayList(templateName), astlist);
   }
 
@@ -277,7 +276,7 @@ public class TemplateController {
    * @param ast ast-node the template is operating on
    * @return output for the file (may be part of a file only)
    */
-  public String include(String templateName, ASTNode ast) {
+  public StringBuilder include(String templateName, ASTNode ast) {
     return include(newArrayList(templateName), newArrayList(ast));
   }
 
@@ -294,14 +293,14 @@ public class TemplateController {
    * template
    * @return output for the file (may be part of a file only)
    */
-  public String includeArgs(String templateName, List<Object> templateArguments) {
+  public StringBuilder includeArgs(String templateName, List<Object> templateArguments) {
     StringBuilder ret = new StringBuilder();
     List<HookPoint> templateForwardings = config.getGlex().getTemplateForwardings(templateName, getAST());
     for (HookPoint tn : templateForwardings) {
       ret.append(tn.processValue(this, templateArguments));
     }
 
-    return ret.toString();
+    return ret;
   }
 
   /**
@@ -312,18 +311,18 @@ public class TemplateController {
    * @param templateArguments the template arguments
    * @return
    */
-  String includeArgsWithoutForwarding(String templateName, List<Object> templateArguments) {
+  StringBuilder includeArgsWithoutForwarding(String templateName, List<Object> templateArguments) {
     StringBuilder ret = new StringBuilder();
 
     ret.append(processTemplate(templateName, getAST(), templateArguments));
 
-    return ret.toString();
+    return ret;
   }
 
   /**
    * Delegates to {@link #includeArgs(String, List)}
    */
-  public String includeArgs(String templateName, String... templateArgument) {
+  public StringBuilder includeArgs(String templateName, String... templateArgument) {
     return includeArgs(templateName, Lists.newArrayList(templateArgument));
   }
 
@@ -510,7 +509,7 @@ public class TemplateController {
   protected void initAliases() {
     if (config.getAliases().isEmpty()) {
       Template aliasesTemplate = config.getFreeMarkerTemplateEngine().loadTemplate(
-          config.ALIASES_TEMPLATE);
+          GeneratorSetup.ALIASES_TEMPLATE);
 
       Set macros = aliasesTemplate.getMacros().entrySet();
       for (Object o : macros) {

@@ -168,111 +168,111 @@ public class TemplateControllerHookPointsTest {
   
   @Test
   public void testStringHookInSubtemplate() {
-    assertEquals("TopStringHook Hello Brave New World!", tc.include(TEMPLATE_PACKAGE + "TopStringHook"));
+    assertEquals("TopStringHook Hello Brave New World!", tc.include(TEMPLATE_PACKAGE + "TopStringHook").toString());
   }
   
   @Test
   public void testTemplateHookInSubtemplate() {
-    assertEquals("TopTemplateHook A", tc.include(TEMPLATE_PACKAGE + "TopTemplateHook"));
+    assertEquals("TopTemplateHook A", tc.include(TEMPLATE_PACKAGE + "TopTemplateHook").toString());
   }
   
   @Test
   public void testBeforeTemplates() {
-    assertEquals("A", tc.include(TEMPLATE_PACKAGE + "A"));
+    assertEquals("A", tc.include(TEMPLATE_PACKAGE + "A").toString());
     
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
-    assertEquals("BA", tc.include(TEMPLATE_PACKAGE + "A"));
+    assertEquals("BA", tc.include(TEMPLATE_PACKAGE + "A").toString());
     
     // previously set template is overwritten
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    assertEquals("CA", tc.include(TEMPLATE_PACKAGE + "A"));
+    assertEquals("CA", tc.include(TEMPLATE_PACKAGE + "A").toString());
     
     // pass a list of templates
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", Arrays.asList(
         new TemplateHookPoint(TEMPLATE_PACKAGE + "B"), 
         new TemplateHookPoint(TEMPLATE_PACKAGE + "C")));
-    assertEquals("BCA", tc.include(TEMPLATE_PACKAGE + "A"));
+    assertEquals("BCA", tc.include(TEMPLATE_PACKAGE + "A").toString());
   }
 
   @Test
   public void testAfterTemplates() {
-    assertEquals("A", tc.include(TEMPLATE_PACKAGE + "A"));
+    assertEquals("A", tc.include(TEMPLATE_PACKAGE + "A").toString());
     
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
-    assertEquals("AB", tc.include(TEMPLATE_PACKAGE + "A"));
+    assertEquals("AB", tc.include(TEMPLATE_PACKAGE + "A").toString());
     
     // previously set template is overwritten
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    assertEquals("AC", tc.include(TEMPLATE_PACKAGE + "A"));
+    assertEquals("AC", tc.include(TEMPLATE_PACKAGE + "A").toString());
     
     // pass a list of templates
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", Arrays.asList(
         new TemplateHookPoint(TEMPLATE_PACKAGE + "B"), 
         new TemplateHookPoint(TEMPLATE_PACKAGE + "C")));
-    assertEquals("ABC", tc.include(TEMPLATE_PACKAGE + "A"));
+    assertEquals("ABC", tc.include(TEMPLATE_PACKAGE + "A").toString());
   }
   
   @Test
   public void testReplaceTemplate() {
-    String r = tc.include(TEMPLATE_PACKAGE + "A");
-    assertEquals("A", r);
+    StringBuilder r = tc.include(TEMPLATE_PACKAGE + "A");
+    assertEquals("A", r.toString());
     
     // self-replacement
     glex.replaceTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "A"));
     r = tc.include(TEMPLATE_PACKAGE + "A");
-    assertEquals("A", r);
+    assertEquals("A", r.toString());
     
     glex.replaceTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
     r = tc.include(TEMPLATE_PACKAGE + "A");
-    assertEquals("B", r);
+    assertEquals("B", r.toString());
     
     // previously set template is overwritten
     glex.replaceTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
     r = tc.include(TEMPLATE_PACKAGE + "A");
-    assertEquals("C", r);
+    assertEquals("C", r.toString());
     
     // pass a list of templates
     glex.replaceTemplate(TEMPLATE_PACKAGE + "A", Arrays.asList(
         new TemplateHookPoint(TEMPLATE_PACKAGE + "B"), 
         new TemplateHookPoint(TEMPLATE_PACKAGE + "C")));
     r = tc.include(TEMPLATE_PACKAGE + "A");
-    assertEquals("BC", r);
+    assertEquals("BC", r.toString());
   }
   
   @Test
   public void testBeforeReplaceAfterCombinations() {
-    assertEquals("A", tc.include(TEMPLATE_PACKAGE + "A"));
+    assertEquals("A", tc.include(TEMPLATE_PACKAGE + "A").toString());
     
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
-    assertEquals("BA", tc.include(TEMPLATE_PACKAGE + "A"));
+    assertEquals("BA", tc.include(TEMPLATE_PACKAGE + "A").toString());
     
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    assertEquals("BAC", tc.include(TEMPLATE_PACKAGE + "A"));
+    assertEquals("BAC", tc.include(TEMPLATE_PACKAGE + "A").toString());
     
     glex.replaceTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    assertEquals("BCC", tc.include(TEMPLATE_PACKAGE + "A"));
+    assertEquals("BCC", tc.include(TEMPLATE_PACKAGE + "A").toString());
     
     glex.replaceTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
-    assertEquals("BBC", tc.include(TEMPLATE_PACKAGE + "A"));
+    assertEquals("BBC", tc.include(TEMPLATE_PACKAGE + "A").toString());
     
     // replacing B has no effect on A
     glex.replaceTemplate(TEMPLATE_PACKAGE + "B", new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    assertEquals("BBC", tc.include(TEMPLATE_PACKAGE + "A"));
+    assertEquals("BBC", tc.include(TEMPLATE_PACKAGE + "A").toString());
   }
   
   
   @Test
   public void testBeforeReplaceAfterInSubtemplates() {
-    assertEquals("TopA A", tc.include(TEMPLATE_PACKAGE + "TopA"));
+    assertEquals("TopA A", tc.include(TEMPLATE_PACKAGE + "TopA").toString());
     
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
-    assertEquals("TopA BA", tc.include(TEMPLATE_PACKAGE + "TopA"));
+    assertEquals("TopA BA", tc.include(TEMPLATE_PACKAGE + "TopA").toString());
     
     glex.replaceTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    assertEquals("TopA BC", tc.include(TEMPLATE_PACKAGE + "TopA"));
+    assertEquals("TopA BC", tc.include(TEMPLATE_PACKAGE + "TopA").toString());
     
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
-    assertEquals("TopA BCB", tc.include(TEMPLATE_PACKAGE + "TopA"));
+    assertEquals("TopA BCB", tc.include(TEMPLATE_PACKAGE + "TopA").toString());
   }
   
   @Test

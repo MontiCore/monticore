@@ -90,16 +90,16 @@ public class TemplateAliasingTest {
 
   @Test
   public void testIncludeAlias() {
-    String templateOutput =
+    StringBuilder templateOutput =
         tc.include(ALIASES_PACKAGE + "IncludeAlias");
-    assertEquals("Plain is included.", templateOutput);
+    assertEquals("Plain is included.", templateOutput.toString());
   }
 
   @Ignore
   @Test
   public void testIncludeArgsAndSignatureAlias() {
     assertTrue(config.getAliases().isEmpty());
-    String templateOutput =
+    StringBuilder templateOutput =
         tc.include(ALIASES_PACKAGE + "IncludeArgsAndSignatureAlias");
     TemplateController tcChild = tc.getSubController().getSubController();
     assertNotNull(tcChild);
@@ -115,7 +115,7 @@ public class TemplateAliasingTest {
     assertEquals("30", tcChild.getArguments().get(1));
     assertEquals("Aachen", tcChild.getArguments().get(2));
     
-    assertEquals("Name is Charly, age is 30, city is Aachen", templateOutput);
+    assertEquals("Name is Charly, age is 30, city is Aachen", templateOutput.toString());
     
     assertAliases(tcChild, config.getAliases().size()
     );

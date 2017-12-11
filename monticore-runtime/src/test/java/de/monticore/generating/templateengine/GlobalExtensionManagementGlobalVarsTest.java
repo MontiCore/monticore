@@ -68,19 +68,19 @@ public class GlobalExtensionManagementGlobalVarsTest {
     glex.defineGlobalVar("test", "test");
     glex.defineGlobalVar("asd", new String("asd"));
 
-    String output = tc.include(TEMPLATE_PACKAGE + "GlobalVars");
-    assertEquals("testasd", output.replaceAll("\\s+", ""));
+    StringBuilder output = tc.include(TEMPLATE_PACKAGE + "GlobalVars");
+    assertEquals("testasd", output.toString().replaceAll("\\s+", ""));
 
     glex.changeGlobalVar("asd", new String("aaa"));
     output = tc.include(TEMPLATE_PACKAGE + "GlobalVars");
-    assertEquals("testaaa", output.replaceAll("\\s+", ""));
+    assertEquals("testaaa", output.toString().replaceAll("\\s+", ""));
 
     glex.defineGlobalVar("liste", new ArrayList<>());
     glex.addToGlobalVar("liste", new String("a"));
     glex.addToGlobalVar("liste", new String("b"));
     glex.addToGlobalVar("liste", new String("c"));
     output = tc.include(TEMPLATE_PACKAGE + "GlobalListVars");
-    assertEquals("abc", output.replaceAll("\\s+", ""));
+    assertEquals("abc", output.toString().replaceAll("\\s+", ""));
   }
   
   @Test

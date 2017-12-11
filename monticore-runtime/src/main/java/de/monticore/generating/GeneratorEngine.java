@@ -23,16 +23,10 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
-
-import com.google.common.base.Joiner;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.TemplateController;
-import de.monticore.generating.templateengine.reporting.Reporting;
-import de.monticore.io.paths.IterablePath;
-import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -64,7 +58,7 @@ public class GeneratorEngine {
   {
     checkArgument(!isNullOrEmpty(templateName));
     TemplateController tc = setup.getNewTemplateController(templateName);
-    return tc.includeArgs(templateName, Arrays.asList(templateArguments));
+    return tc.includeArgs(templateName, Arrays.asList(templateArguments)).toString();
   }
 
   /**

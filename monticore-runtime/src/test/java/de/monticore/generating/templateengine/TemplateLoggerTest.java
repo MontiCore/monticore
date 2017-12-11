@@ -79,9 +79,9 @@ public class TemplateLoggerTest {
    */
   @Test
   public void demonstrateTemplateLogging() {
-    String result = tc.include(TEMPLATE_PACKAGE + "Log");
+    StringBuilder result = tc.include(TEMPLATE_PACKAGE + "Log");
     assertNotNull(result);
-    assertEquals("A", result.trim());
+    assertEquals("A", result.toString().trim());
   }
   
 }
