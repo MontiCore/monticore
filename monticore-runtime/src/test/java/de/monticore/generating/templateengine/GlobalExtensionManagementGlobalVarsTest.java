@@ -61,8 +61,7 @@ public class GlobalExtensionManagementGlobalVarsTest {
 
   @Test
   public void testGlobalVars() {
-    glex.defineGlobalVar("test");
-    glex.defineGlobalVars(Lists.newArrayList("a", "b"));
+    glex.defineGlobalVar("test", "");
     glex.defineGlobalVar("asd", new String("asd"));
 
     String output = tc.include(TEMPLATE_PACKAGE + "GlobalVars");

@@ -19,9 +19,10 @@
 
 package de.monticore.generating.templateengine;
 
-import java.util.*;
-
-import de.monticore.ast.ASTNode;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
@@ -29,12 +30,12 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 
+import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.freemarker.SimpleHashFactory;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.se_rwth.commons.logging.Log;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.SimpleHash;
-import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateModelException;
 
 /**
@@ -217,14 +218,15 @@ public class GlobalExtensionManagement {
    * @param default replaces if the variable is not present
    * @return the value or the default
    */
-  public Object getGlobalVar(String name, Object default) {
+  @SuppressWarnings("deprecation")
+  public Object getGlobalVar(String name, Object defaultObject) {
     try {
       return BeansWrapper.getDefaultInstance().unwrap(globalData.get(name));
     }
     catch (TemplateModelException e) {
       Log.error("0xA0123 Internal Error on global value for \"" + name + "\"");
     }
-    return default;
+    return defaultObject;
   }
 
 
@@ -289,10 +291,10 @@ public class GlobalExtensionManagement {
    * @return the (processed) value of the hook point
    */
   public String defineHookPoint(TemplateController controller, String hookName, ASTNode ast) {
-    Reporting.reportCallHookPointStart(hookName, hp, ast);
 
     String result = null;
     HookPoint hp = hookPoints.get(hookName);
+    Reporting.reportCallHookPointStart(hookName, hp, ast);
 
     if (hookPoints.containsKey(hookName)) {
       result = hp.processValue(controller, ast);

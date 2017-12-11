@@ -100,14 +100,9 @@ public class TemplateController {
   /**
    * getters and setters for the relevant attributes
    */
-  public String getGeneratorSetup() {
+  public GeneratorSetup getGeneratorSetup() {
     return config;
   }
-
-  protected void setGeneratorSetup(String config) {
-    this.config = config;
-  }
-
 
   public String getTemplatename() {
     return templatename;
