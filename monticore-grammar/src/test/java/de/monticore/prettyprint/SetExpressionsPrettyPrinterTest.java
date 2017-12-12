@@ -18,10 +18,12 @@
  */
 package de.monticore.prettyprint;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.io.StringReader;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -38,8 +40,7 @@ import de.se_rwth.commons.logging.LogStub;
 /**
  * @author npichler
  */
-public class SetExpressionsPrettyPrinterTest extends SetExpressionsPrettyPrinter
-    implements TestSetExpressionsVisitor {
+public class SetExpressionsPrettyPrinterTest {
   
   @BeforeClass
   public static void init() {
@@ -52,82 +53,131 @@ public class SetExpressionsPrettyPrinterTest extends SetExpressionsPrettyPrinter
     Log.getFindings().clear();
   }
   
-  public SetExpressionsPrettyPrinterTest() {
-    super();
+  static class PrimaryPrettyPrinter extends SetExpressionsPrettyPrinter
+      implements TestSetExpressionsVisitor {
+    
+    private TestSetExpressionsVisitor realThis;
+    
+    @Override
+    public void visit(ASTPrimaryExpression node) {
+      getPrinter().print((node.getName()));
+    }
+    
+    public PrimaryPrettyPrinter(IndentPrinter printer) {
+      super(printer);
+      realThis = this;
+    }
+    
+    @Override
+    public TestSetExpressionsVisitor getRealThis() {
+      return realThis;
+    }
   }
   
-  @Override
-  public void visit(ASTPrimaryExpression node) {
-    sb.append(node.getName());
-  }
+  
   
   @Test
   public void testIsInExpression() throws IOException {
     TestSetExpressionsParser parser = new TestSetExpressionsParser();
-    ASTExpression ast = parser.parseString_Expression("a isin b").orElse(null);
-    assertNotNull(ast);
-    SetExpressionsPrettyPrinterTest printer = new SetExpressionsPrettyPrinterTest();
-    ast.accept(printer);
-    assertEquals("a isin b", printer.toString());
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("a isin b"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseExpression(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
   }
   
   @Test
   public void testSetAndExpression() throws IOException {
     TestSetExpressionsParser parser = new TestSetExpressionsParser();
-    ASTExpression ast = parser.parseString_Expression("a setand b").orElse(null);
-    assertNotNull(ast);
-    SetExpressionsPrettyPrinterTest printer = new SetExpressionsPrettyPrinterTest();
-    ast.accept(printer);
-    assertEquals("a setand b", printer.toString());
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("a setand b"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseExpression(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
   }
   
   @Test
   public void testUnionExpression() throws IOException {
     TestSetExpressionsParser parser = new TestSetExpressionsParser();
-    ASTExpression ast = parser.parseString_Expression("a union b").orElse(null);
-    assertNotNull(ast);
-    SetExpressionsPrettyPrinterTest printer = new SetExpressionsPrettyPrinterTest();
-    ast.accept(printer);
-    assertEquals("a union b", printer.toString());
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("a union b"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseExpression(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
   }
   
   @Test
   public void testSetInExpression() throws IOException {
     TestSetExpressionsParser parser = new TestSetExpressionsParser();
-    ASTExpression ast = parser.parseString_Expression("a in b").orElse(null);
-    assertNotNull(ast);
-    SetExpressionsPrettyPrinterTest printer = new SetExpressionsPrettyPrinterTest();
-    ast.accept(printer);
-    assertEquals("a in b", printer.toString());
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("a in b"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseExpression(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
   }
   
   @Test
   public void testIntersectionExpression() throws IOException {
     TestSetExpressionsParser parser = new TestSetExpressionsParser();
-    ASTExpression ast = parser.parseString_Expression("a intersect b").orElse(null);
-    assertNotNull(ast);
-    SetExpressionsPrettyPrinterTest printer = new SetExpressionsPrettyPrinterTest();
-    ast.accept(printer);
-    assertEquals("a intersect b", printer.toString());
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("a intersect b"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseExpression(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
   }
   
   @Test
   public void testSetOrExpression() throws IOException {
     TestSetExpressionsParser parser = new TestSetExpressionsParser();
-    ASTExpression ast = parser.parseString_Expression("a setor b").orElse(null);
-    assertNotNull(ast);
-    SetExpressionsPrettyPrinterTest printer = new SetExpressionsPrettyPrinterTest();
-    ast.accept(printer);
-    assertEquals("a setor b", printer.toString());
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("a setor b"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseExpression(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
   }
   
   @Test
   public void testSetXOrExpression() throws IOException {
     TestSetExpressionsParser parser = new TestSetExpressionsParser();
-    ASTExpression ast = parser.parseString_Expression("a setxor b").orElse(null);
-    assertNotNull(ast);
-    SetExpressionsPrettyPrinterTest printer = new SetExpressionsPrettyPrinterTest();
-    ast.accept(printer);
-    assertEquals("a setxor b", printer.toString());
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("a setxor b"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseExpression(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
   }
 }

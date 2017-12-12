@@ -58,7 +58,7 @@ RightShiftExpression implements Expression <160>, ShiftExpression =
 	shiftOp:">" ">" {noSpace()}? {_aNode.setShiftOp(">>");}        
     rightExpression:Expression;
 
-LogiaclRightShiftExpression implements Expression <160>, ShiftExpression =
+LogicalRightShiftExpression implements Expression <160>, ShiftExpression =
 	leftExpression:Expression 
 	shiftOp:">" ">" {noSpace()}? ">" {noSpace()}? {_aNode.setShiftOp(">>>");}        
     rightExpression:Expression;

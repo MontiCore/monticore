@@ -3,17 +3,17 @@
  * MontiCore Language Workbench
  * Copyright (c) 2015, MontiCore, All rights reserved.
  *
- * This project is free software; you can redistribute it and/or
+ * getRealThis() project is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
+ * getRealThis() library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * License along with getRealThis() project. If not, see <http://www.gnu.org/licenses/>.
  * ******************************************************************************
  */
 package de.monticore.expressions.prettyprint;
@@ -29,15 +29,19 @@ import de.monticore.assignmentexpressions._ast.ASTDivideAssignmentExpression;
 import de.monticore.assignmentexpressions._ast.ASTIncPrefixExpression;
 import de.monticore.assignmentexpressions._ast.ASTIncSuffixExpression;
 import de.monticore.assignmentexpressions._ast.ASTLeftShiftAssignmentExpression;
-import de.monticore.assignmentexpressions._ast.ASTLogiaclRightShiftExpression;
+import de.monticore.assignmentexpressions._ast.ASTLogicalRightAssignmentExpression;
 import de.monticore.assignmentexpressions._ast.ASTMinusPrefixExpression;
 import de.monticore.assignmentexpressions._ast.ASTModuloAssignmentExpression;
 import de.monticore.assignmentexpressions._ast.ASTMultAssignmentExpression;
 import de.monticore.assignmentexpressions._ast.ASTOrAssignmentExpression;
 import de.monticore.assignmentexpressions._ast.ASTPlusAssignmentExpression;
 import de.monticore.assignmentexpressions._ast.ASTPlusPrefixExpression;
+import de.monticore.assignmentexpressions._ast.ASTRegularAssignmentExpression;
 import de.monticore.assignmentexpressions._ast.ASTRightShiftAssignmentExpression;
 import de.monticore.assignmentexpressions._visitor.AssignmentExpressionsVisitor;
+import de.monticore.expressionsbasis._ast.ASTExpression;
+import de.monticore.prettyprint.CommentPrettyPrinter;
+import de.monticore.prettyprint.IndentPrinter;
 
 /**
  * @author npichler
@@ -45,141 +49,208 @@ import de.monticore.assignmentexpressions._visitor.AssignmentExpressionsVisitor;
 
 public class AssignmentExpressionsPrettyPrinter implements AssignmentExpressionsVisitor {
   
-  protected StringBuilder sb;
+  protected AssignmentExpressionsVisitor realThis;
   
-  public AssignmentExpressionsPrettyPrinter() {
-    sb = new StringBuilder();
-  }
+  protected IndentPrinter printer;
   
-  public String toString() {
-    return sb.toString();
+  public AssignmentExpressionsPrettyPrinter(IndentPrinter printer) {
+    this.printer=printer;
+    realThis = this;
   }
   
   @Override
   public void handle(ASTIncSuffixExpression node) {
-    node.getExpression().accept(this);
-    sb.append("++");
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    node.getExpression().accept(getRealThis());
+    getPrinter().print("++");
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTDecSuffixExpression node) {
-    node.getExpression().accept(this);
-    sb.append("--");
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    node.getExpression().accept(getRealThis());
+    getPrinter().print("--");
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTPlusPrefixExpression node) {
-    sb.append("+");
-    node.getExpression().accept(this);
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    getPrinter().print("+");
+    node.getExpression().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTMinusPrefixExpression node) {
-    sb.append("-");
-    node.getExpression().accept(this);
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    getPrinter().print("-");
+    node.getExpression().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTIncPrefixExpression node) {
-    sb.append("++");
-    node.getExpression().accept(this);
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    getPrinter().print("++");
+    node.getExpression().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTDecPrefixExpression node) {
-    sb.append("--");
-    node.getExpression().accept(this);
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    getPrinter().print("--");
+    node.getExpression().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTBinaryAndExpression node) {
-    node.getLeftExpression().accept(this);
-    sb.append("&");
-    node.getRightExpression().accept(this);
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    node.getLeftExpression().accept(getRealThis());
+    getPrinter().print("&");
+    node.getRightExpression().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTBinaryXorExpression node) {
-    node.getLeftExpression().accept(this);
-    sb.append("^");
-    node.getRightExpression().accept(this);
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    node.getLeftExpression().accept(getRealThis());
+    getPrinter().print("^");
+    node.getRightExpression().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTBinaryOrOpExpression node) {
-    node.getLeftExpression().accept(this);
-    sb.append("|");
-    node.getRightExpression().accept(this);
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    node.getLeftExpression().accept(getRealThis());
+    getPrinter().print("|");
+    node.getRightExpression().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
+  }
+  
+  @Override
+  public void handle(ASTRegularAssignmentExpression node) {
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    node.getLeftExpression().accept(getRealThis());
+    getPrinter().print("=");
+    node.getRightExpression().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTPlusAssignmentExpression node) {
-    node.getLeftExpression().accept(this);
-    sb.append("+=");
-    node.getRightExpression().accept(this);
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    node.getLeftExpression().accept(getRealThis());
+    getPrinter().print("+=");
+    node.getRightExpression().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTMultAssignmentExpression node) {
-    node.getLeftExpression().accept(this);
-    sb.append("*=");
-    node.getRightExpression().accept(this);
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    node.getLeftExpression().accept(getRealThis());
+    getPrinter().print("*=");
+    node.getRightExpression().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTDivideAssignmentExpression node) {
-    node.getLeftExpression().accept(this);
-    sb.append("/=");
-    node.getRightExpression().accept(this);
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    node.getLeftExpression().accept(getRealThis());
+    getPrinter().print("/=");
+    node.getRightExpression().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTAndAssignmentExpression node) {
-    node.getLeftExpression().accept(this);
-    sb.append("&=");
-    node.getRightExpression().accept(this);
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    node.getLeftExpression().accept(getRealThis());
+    getPrinter().print("&=");
+    node.getRightExpression().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTOrAssignmentExpression node) {
-    node.getLeftExpression().accept(this);
-    sb.append("|=");
-    node.getRightExpression().accept(this);
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    node.getLeftExpression().accept(getRealThis());
+    getPrinter().print("|=");
+    node.getRightExpression().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTBinaryXorAssignmentExpression node) {
-    node.getLeftExpression().accept(this);
-    sb.append("^=");
-    node.getRightExpression().accept(this);
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    node.getLeftExpression().accept(getRealThis());
+    getPrinter().print("^=");
+    node.getRightExpression().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTRightShiftAssignmentExpression node) {
-    node.getLeftExpression().accept(this);
-    sb.append(">>=");
-    node.getRightExpression().accept(this);
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    node.getLeftExpression().accept(getRealThis());
+    getPrinter().print(">>=");
+    node.getRightExpression().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
-  public void handle(ASTLogiaclRightShiftExpression node) {
-    node.getLeftExpression().accept(this);
-    sb.append(">>>=");
-    node.getRightExpression().accept(this);
+  public void handle(ASTLogicalRightAssignmentExpression node) {
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    node.getLeftExpression().accept(getRealThis());
+    getPrinter().print(">>>=");
+    node.getRightExpression().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTLeftShiftAssignmentExpression node) {
-    node.getLeftExpression().accept(this);
-    sb.append("<<=");
-    node.getRightExpression().accept(this);
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    node.getLeftExpression().accept(getRealThis());
+    getPrinter().print("<<=");
+    node.getRightExpression().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTModuloAssignmentExpression node) {
-    node.getLeftExpression().accept(this);
-    sb.append("%=");
-    node.getRightExpression().accept(this);
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    node.getLeftExpression().accept(getRealThis());
+    getPrinter().print("%=");
+    node.getRightExpression().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
+  
+  public IndentPrinter getPrinter() {
+    return this.printer;
+  }
+  
+  public String prettyprint(ASTExpression node) {
+    getPrinter().clearBuffer();
+    node.accept(getRealThis());
+    return getPrinter().getContent();
+  }
+  
+  @Override
+  public void setRealThis(AssignmentExpressionsVisitor realThis) {
+    this.realThis = realThis;
+  }
+  
+  @Override
+  public AssignmentExpressionsVisitor getRealThis() {
+    return realThis;
+  }
+ 
   
 }

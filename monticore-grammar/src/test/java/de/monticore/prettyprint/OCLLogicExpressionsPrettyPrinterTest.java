@@ -18,10 +18,12 @@
  */
 package de.monticore.prettyprint;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.io.StringReader;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -41,8 +43,7 @@ import de.se_rwth.commons.logging.LogStub;
 /**
  * @author npichler
  */
-public class OCLLogicExpressionsPrettyPrinterTest extends OCLLogicExpressionsPrettyPrinter
-    implements TestOCLLogicExpressionsVisitor {
+public class OCLLogicExpressionsPrettyPrinterTest{
   
   @BeforeClass
   public static void init() {
@@ -55,157 +56,229 @@ public class OCLLogicExpressionsPrettyPrinterTest extends OCLLogicExpressionsPre
     Log.getFindings().clear();
   }
   
-  public OCLLogicExpressionsPrettyPrinterTest() {
-    super();
-  }
-  
-  @Override
-  public void visit(ASTPrimaryExpression node) {
-    sb.append(node.getName());
-  }
-  
-  @Override
-  public void visit(ASTOCLCollectionVarDeclaration node) {
-    sb.append(node.getVarName() + " in " + node.getCollection());
-  }
-  
-  @Override
-  public void visit(ASTOCLNestedContainer node) {
-    sb.append(node.getVarName() + " in List <" + node.getImput() + ">");
-  }
-  
-  @Override
-  public void visit(ASTOCLDeclaration node) {
-    if (node.getPublic().isPresent()) {
-      sb.append(node.getPublic().get() + " ");
+  static class PrimaryPrettyPrinter extends OCLLogicExpressionsPrettyPrinter
+      implements TestOCLLogicExpressionsVisitor {
+    
+    private TestOCLLogicExpressionsVisitor realThis;
+    
+    @Override
+    public void visit(ASTPrimaryExpression node) {
+      getPrinter().print((node.getName()));
     }
-    if (node.getPrivate().isPresent()) {
-      sb.append(node.getPrivate().get() + " ");
+    
+    public PrimaryPrettyPrinter(IndentPrinter printer) {
+      super(printer);
+      realThis = this;
     }
-    sb.append(node.getType() + " " + node.getVarName());
+    
+    @Override
+    public TestOCLLogicExpressionsVisitor getRealThis() {
+      return realThis;
+    }
+   
+    @Override
+    public void visit(ASTOCLCollectionVarDeclaration node) {
+      getPrinter().print(node.getVarName() + " in " + node.getCollection());
+    }
+    
+    @Override
+    public void visit(ASTOCLNestedContainer node) {
+      getPrinter().print(node.getVarName() + " in List <" + node.getImput() + ">");
+    }
+    
+    @Override
+    public void visit(ASTOCLDeclaration node) {
+      if (node.getPublic().isPresent()) {
+        getPrinter().print(node.getPublic().get() + " ");
+      }
+      if (node.getPrivate().isPresent()) {
+        getPrinter().print(node.getPrivate().get() + " ");
+      }
+      getPrinter().print(node.getType() + " " + node.getVarName());
+    }
   }
+  
+  
+ 
   
   @Test
   public void testImpliesExpression() throws IOException {
     TestOCLLogicExpressionsParser parser = new TestOCLLogicExpressionsParser();
-    ASTExpression ast = parser.parseString_Expression("a implies b").orElse(null);
-    assertNotNull(ast);
-    OCLLogicExpressionsPrettyPrinterTest printer = new OCLLogicExpressionsPrettyPrinterTest();
-    ast.accept(printer);
-    assertEquals("a implies b", printer.toString());
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("a implies b"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseExpression(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
   }
   
   @Test
   public void testSingleLogicalORExpr() throws IOException {
     TestOCLLogicExpressionsParser parser = new TestOCLLogicExpressionsParser();
-    ASTExpression ast = parser.parseString_Expression("a | b").orElse(null);
-    assertNotNull(ast);
-    OCLLogicExpressionsPrettyPrinterTest printer = new OCLLogicExpressionsPrettyPrinterTest();
-    ast.accept(printer);
-    assertEquals("a | b", printer.toString());
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("a | b"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseExpression(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
   }
   
   @Test
   public void testForallExpr1() throws IOException {
     TestOCLLogicExpressionsParser parser = new TestOCLLogicExpressionsParser();
-    ASTExpression ast = parser.parseString_Expression("forall : exp").orElse(null);
-    assertNotNull(ast);
-    OCLLogicExpressionsPrettyPrinterTest printer = new OCLLogicExpressionsPrettyPrinterTest();
-    ast.accept(printer);
-    assertEquals("forall :exp", printer.toString());
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("forall:exp"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseExpression(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
   }
   
   @Test
   public void testForallExpr2() throws IOException {
     TestOCLLogicExpressionsParser parser = new TestOCLLogicExpressionsParser();
-    ASTExpression ast = parser.parseString_Expression("forall a in A: exp").orElse(null);
-    assertNotNull(ast);
-    OCLLogicExpressionsPrettyPrinterTest printer = new OCLLogicExpressionsPrettyPrinterTest();
-    ast.accept(printer);
-    assertEquals("forall a in A:exp", printer.toString());
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("forall a in A :exp"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseExpression(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
   }
   
   @Test
   public void testForallExpr3() throws IOException {
     TestOCLLogicExpressionsParser parser = new TestOCLLogicExpressionsParser();
-    ASTExpression ast = parser.parseString_Expression("forall a in List <Abc>: exp").orElse(null);
-    assertNotNull(ast);
-    OCLLogicExpressionsPrettyPrinterTest printer = new OCLLogicExpressionsPrettyPrinterTest();
-    ast.accept(printer);
-    assertEquals("forall a in List <Abc>:exp", printer.toString());
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("forall a in List <Abc>: exp"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseExpression(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
   }
   
   @Test
   public void testExistsExpr1() throws IOException {
     TestOCLLogicExpressionsParser parser = new TestOCLLogicExpressionsParser();
-    ASTExpression ast = parser.parseString_Expression("exists : exp").orElse(null);
-    assertNotNull(ast);
-    OCLLogicExpressionsPrettyPrinterTest printer = new OCLLogicExpressionsPrettyPrinterTest();
-    ast.accept(printer);
-    assertEquals("exists :exp", printer.toString());
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("exists :exp"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseExpression(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
   }
   
   @Test
   public void testExistsExpr2() throws IOException {
     TestOCLLogicExpressionsParser parser = new TestOCLLogicExpressionsParser();
-    ASTExpression ast = parser.parseString_Expression("exists a in A: exp").orElse(null);
-    assertNotNull(ast);
-    OCLLogicExpressionsPrettyPrinterTest printer = new OCLLogicExpressionsPrettyPrinterTest();
-    ast.accept(printer);
-    assertEquals("exists a in A:exp", printer.toString());
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("exists a in A:exp"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseExpression(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
   }
   
   @Test
   public void testExistsExpr3() throws IOException {
     TestOCLLogicExpressionsParser parser = new TestOCLLogicExpressionsParser();
-    ASTExpression ast = parser.parseString_Expression("exists a in List <Abc>: exp").orElse(null);
-    assertNotNull(ast);
-    OCLLogicExpressionsPrettyPrinterTest printer = new OCLLogicExpressionsPrettyPrinterTest();
-    ast.accept(printer);
-    assertEquals("exists a in List <Abc>:exp", printer.toString());
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("exists a in List <Abc> : exp"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseExpression(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
   }
   
   @Test
   public void testAnyExpr() throws IOException {
     TestOCLLogicExpressionsParser parser = new TestOCLLogicExpressionsParser();
-    ASTExpression ast = parser.parseString_Expression("any exp").orElse(null);
-    assertNotNull(ast);
-    OCLLogicExpressionsPrettyPrinterTest printer = new OCLLogicExpressionsPrettyPrinterTest();
-    ast.accept(printer);
-    assertEquals("any exp", printer.toString());
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("any exp"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseExpression(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
   }
   
   @Test
   public void testLetinExpr1() throws IOException {
     TestOCLLogicExpressionsParser parser = new TestOCLLogicExpressionsParser();
-    ASTExpression ast = parser.parseString_Expression("let public Int A; private Double B; in exp")
-        .orElse(null);
-    assertNotNull(ast);
-    OCLLogicExpressionsPrettyPrinterTest printer = new OCLLogicExpressionsPrettyPrinterTest();
-    ast.accept(printer);
-    assertEquals("let public Int A; private Double B; in exp", printer.toString());
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("let public Int A; private Double B; in exp"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseExpression(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
   }
   
   @Test
   public void testLetDeclaration() throws IOException {
     TestOCLLogicExpressionsParser parser = new TestOCLLogicExpressionsParser();
-    ASTExpression ast = parser.parseString_Expression("let public Int A; private Double B;")
-        .orElse(null);
-    assertNotNull(ast);
-    OCLLogicExpressionsPrettyPrinterTest printer = new OCLLogicExpressionsPrettyPrinterTest();
-    ast.accept(printer);
-    assertEquals("let public Int A;private Double B;", printer.toString());
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("let public Int A;private Double B;"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseExpression(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
   }
   
   @Test
-  public void testIterateExpr() throws IOException {
+  public void testIterateExpr() throws IOException {    
     TestOCLLogicExpressionsParser parser = new TestOCLLogicExpressionsParser();
-    ASTExpression ast = parser
-        .parseString_Expression("iterate { B in A; public Int A : Name = Value }").orElse(null);
-    assertNotNull(ast);
-    OCLLogicExpressionsPrettyPrinterTest printer = new OCLLogicExpressionsPrettyPrinterTest();
-    ast.accept(printer);
-    assertEquals("iterate { B in A; public Int A : Name = Value }", printer.toString());
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("iterate { B in A; public Int A : Name = Value }"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseExpression(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
   }
   
 }
