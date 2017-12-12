@@ -28,7 +28,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.function.Predicate;
 import java.util.Set;
 
 import com.google.common.base.Strings;
@@ -38,9 +37,6 @@ import de.monticore.ast.ASTNode;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.freemarker.SimpleHashFactory;
 import de.monticore.generating.templateengine.reporting.Reporting;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.SymbolKind;
-import de.monticore.symboltable.SymbolPredicate;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import freemarker.core.Macro;
@@ -642,9 +638,7 @@ public class TemplateController {
   }
 
   public boolean existsHWC(String fileName) {
-// TODO: wird folgendes werden:
-//    return existsHWC(fileName, config.getDefaultFileExtension());
-    return existsHWC(fileName, "java");
+    return existsHWC(fileName, config.getDefaultFileExtension());
   }
 
   public boolean existsHWC(String fileName, String extension) {
