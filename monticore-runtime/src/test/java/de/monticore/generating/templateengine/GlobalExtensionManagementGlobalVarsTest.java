@@ -19,7 +19,14 @@
 
 package de.monticore.generating.templateengine;
 
-import com.google.common.collect.Lists;
+import static de.monticore.generating.templateengine.TestConstants.TEMPLATE_PACKAGE;
+import static org.junit.Assert.assertEquals;
+
+import java.io.File;
+import java.util.ArrayList;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import de.monticore.ast.ASTNodeMock;
 import de.monticore.generating.GeneratorEngine;
@@ -27,16 +34,6 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.freemarker.FreeMarkerConfigurationBuilder;
 import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.io.FileReaderWriterMock;
-import de.se_rwth.commons.logging.Log;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import java.io.File;
-import java.util.ArrayList;
-
-import static de.monticore.generating.templateengine.TestConstants.TEMPLATE_PACKAGE;
-import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for {@link GlobalExtensionManagement}.
@@ -91,7 +88,7 @@ public class GlobalExtensionManagementGlobalVarsTest {
     ASTNodeMock ast = new ASTNodeMock();
 
     // override same variable
-    String res = ge.generate(TEMPLATE_PACKAGE + "TestVariables4", ast);
+    String res = ge.generate(TEMPLATE_PACKAGE + "TestVariables4", ast).toString();
 
     assertEquals("\n\nA:16\nB:38\nC:555\n", res);
   }

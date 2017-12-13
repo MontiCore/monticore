@@ -19,11 +19,12 @@
 
 package de.monticore.generating.templateengine;
 
+import java.util.List;
+
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import de.monticore.ast.ASTNode;
 
-import java.util.List;
+import de.monticore.ast.ASTNode;
 
 /**
  * Represents a template hook.

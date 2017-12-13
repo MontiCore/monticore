@@ -293,6 +293,29 @@ public class TemplateController {
    * template
    * @return output for the file (may be part of a file only)
    */
+  public StringBuilder includeArgs(String templateName, ASTNode node, List<Object> templateArguments) {
+    StringBuilder ret = new StringBuilder();
+    List<HookPoint> templateForwardings = config.getGlex().getTemplateForwardings(templateName, node);
+    for (HookPoint tn : templateForwardings) {
+      ret.append(tn.processValue(this, templateArguments));
+    }
+
+    return ret;
+  }
+
+  /**
+   * Include the template into the currently processed output. Remark: even
+   * though the name suggests to run several templates, this is the version that
+   * executes on a single template given as string. We only handle one template
+   * on one node. Template filename may be qualified (using "."). When it is not
+   * qualified, the filename is taken from the current package (same as the
+   * calling template).
+   *
+   * @param templateName name of the template to be executed, qualified or not
+   * @param templateArguments additional data that is passed to the called
+   * template
+   * @return output for the file (may be part of a file only)
+   */
   public StringBuilder includeArgs(String templateName, List<Object> templateArguments) {
     StringBuilder ret = new StringBuilder();
     List<HookPoint> templateForwardings = config.getGlex().getTemplateForwardings(templateName, getAST());
@@ -420,7 +443,7 @@ public class TemplateController {
     StringBuilder content = new StringBuilder();
     content.append(processTemplate(qualifiedTemplateName, ast, templateArguments));
 
-    if (Strings.isNullOrEmpty(content.toString())) {
+    if (content.length()==0) {
       Log.error("0xA4057 Template " + qualifiedTemplateName + " produced no content for.");
     }
 
@@ -446,7 +469,7 @@ public class TemplateController {
 
     Reporting.reportFileFinalization(qualifiedTemplateName, filePath, ast);
   }
-
+  
   /**
    * Include a template with additional data: We only handle one template on one
    * node. This method allows to parameterize templates. Template filename may

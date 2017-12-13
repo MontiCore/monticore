@@ -27,13 +27,12 @@ import java.util.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
-import de.monticore.generating.templateengine.freemarker.FreeMarkerConfigurationBuilder;
-import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
-import de.monticore.io.FileReaderWriter;
-
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateController;
+import de.monticore.generating.templateengine.freemarker.FreeMarkerConfigurationBuilder;
+import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.generating.templateengine.freemarker.TemplateAutoImport;
+import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.IterablePath;
 import freemarker.core.Macro;
 

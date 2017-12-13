@@ -17,35 +17,17 @@
  * ******************************************************************************
  */
 
-package de.monticore.generating.templateengine;
+package de.monticore.ast;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.List;
 
-import com.google.common.collect.Lists;
+public class ASTNodeNull extends ASTCNode {
 
-import de.monticore.ast.ASTNode;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-
-public class TemplateStringHookPoint extends HookPoint {
-  private Template template;
-
-  public TemplateStringHookPoint(String statement) throws IOException {
-    super();
-    template = new Template("template", new StringReader(statement),
-        new Configuration());
+  /**
+   * @see de.monticore.ast.ASTCNode#deepClone()
+   */
+  @Override
+  public ASTNode deepClone() {
+    return new ASTNodeNull();
   }
   
-  @Override
-  public String processValue(TemplateController controller, ASTNode ast) {
-    return controller.runInEngine(Lists.newArrayList(), template, ast).toString();
-  }
-
-  @Override
-  public String processValue(TemplateController controller, List<Object> args) {
-    return controller.runInEngine(Lists.newArrayList(), template, null).toString();
-  }
-
 }

@@ -68,4 +68,27 @@ public class GeneratorEngineTest {
 
   }
 
+  @Test
+  public void testGenerateStringBuilder() {
+    final GeneratorSetup setup = new GeneratorSetup();
+    FreeMarkerTemplateEngineMock freeMarkerTemplateEngine = new FreeMarkerTemplateEngineMock();
+    setup.setFreeMarkerTemplateEngine(freeMarkerTemplateEngine);
+    FileReaderWriterMock fileHandler = new FileReaderWriterMock();
+    setup.setFileHandler(fileHandler);
+    
+    GeneratorEngineMock generatorEngine = new GeneratorEngineMock(setup);
+
+    StringBuilder sb = generatorEngine.generate("the.Template");
+    assertTrue(sb.length()>0);
+
+    assertEquals(1, freeMarkerTemplateEngine.getProcessedTemplates().size());
+    FreeMarkerTemplateMock template = freeMarkerTemplateEngine.getProcessedTemplates().iterator().next();
+    assertTrue(template.isProcessed());
+    assertEquals("the.Template", template.getName());
+
+    assertEquals(0, fileHandler.getStoredFilesAndContents().size());
+   
+
+  }
+
 }
