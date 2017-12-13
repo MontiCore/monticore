@@ -100,7 +100,7 @@ public class GeneratorEngine {
    * specified in the {@link de.monticore.generating.GeneratorSetup}.
    *
    * @param templateName the template to be processes
-   * @param filePath the file path in which the content is to be written
+   * @param writer the writer in which the content is to be written
    * @param node the ast node
    * @param templateArguments additional template arguments (if needed).
    */
@@ -129,7 +129,7 @@ public class GeneratorEngine {
    * specified in the {@link de.monticore.generating.GeneratorSetup}.
    *
    * @param templateName the template to be processes
-   * @param filePath the file path in which the content is to be written
+   * @param filePath the writer in which the content is to be written
    * @param templateArguments additional template arguments (if needed).
    */
   public void generate(String templateName,
@@ -154,6 +154,7 @@ public class GeneratorEngine {
    * and returns the content as StringBuilder.
    *
    * @param templateName the template to be processes
+   * @param node the ast node
    * @param templateArguments additional template arguments (if needed).
    */
   public StringBuilder generate(String templateName,
