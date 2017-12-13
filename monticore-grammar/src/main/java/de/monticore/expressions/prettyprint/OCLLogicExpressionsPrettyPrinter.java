@@ -18,6 +18,7 @@
  */
 package de.monticore.expressions.prettyprint;
 
+import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.ocllogicexpressions._ast.ASTAnyExpr;
 import de.monticore.ocllogicexpressions._ast.ASTExistsExpr;
 import de.monticore.ocllogicexpressions._ast.ASTForallExpr;
@@ -28,6 +29,8 @@ import de.monticore.ocllogicexpressions._ast.ASTLetinExpr;
 import de.monticore.ocllogicexpressions._ast.ASTOCLDeclarationExt;
 import de.monticore.ocllogicexpressions._ast.ASTSingleLogicalORExpr;
 import de.monticore.ocllogicexpressions._visitor.OCLLogicExpressionsVisitor;
+import de.monticore.prettyprint.CommentPrettyPrinter;
+import de.monticore.prettyprint.IndentPrinter;
 
 /**
  * @author npichler
@@ -35,92 +38,129 @@ import de.monticore.ocllogicexpressions._visitor.OCLLogicExpressionsVisitor;
 
 public class OCLLogicExpressionsPrettyPrinter implements OCLLogicExpressionsVisitor {
   
-  protected StringBuilder sb;
+ protected OCLLogicExpressionsVisitor realThis;
   
-  public OCLLogicExpressionsPrettyPrinter() {
-    sb = new StringBuilder();
-  }
+  protected IndentPrinter printer;
   
-  public String toString() {
-    return sb.toString();
+  
+  public OCLLogicExpressionsPrettyPrinter(IndentPrinter printer) {
+    this.printer = printer;
+    realThis = this;
   }
   
   @Override
   public void handle(ASTImpliesExpression node) {
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getLeftExpression().accept(this);
-    sb.append(" implies ");
+     getPrinter().print(" implies ");
     node.getRightExpression().accept(this);
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTSingleLogicalORExpr node) {
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getLeft().accept(this);
-    sb.append(" | ");
+     getPrinter().print(" | ");
     node.getRight().accept(this);
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTForallExpr node) {
-    sb.append("forall ");
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+     getPrinter().print("forall ");
     if (node.getOCLCollectionVarDeclaration().isPresent()) {
       node.getOCLCollectionVarDeclaration().get().accept(this);
     }
     if (node.getOCLNestedContainer().isPresent()) {
       node.getOCLNestedContainer().get().accept(this);
     }
-    sb.append(":");
+     getPrinter().print(":");
     node.getExpression().accept(this);
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTExistsExpr node) {
-    sb.append("exists ");
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+     getPrinter().print("exists ");
     if (node.getOCLCollectionVarDeclaration().isPresent()) {
       node.getOCLCollectionVarDeclaration().get().accept(this);
     }
     if (node.getOCLNestedContainer().isPresent()) {
       node.getOCLNestedContainer().get().accept(this);
     }
-    sb.append(":");
+     getPrinter().print(":");
     node.getExpression().accept(this);
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTAnyExpr node) {
-    sb.append("any ");
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+     getPrinter().print("any ");
     node.getExpression().accept(this);
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTLetinExpr node) {
-    sb.append("let ");
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+     getPrinter().print("let ");
     for (ASTOCLDeclarationExt ast : node.getDeclarations()) {
       ast.accept(this);
-      sb.append("; ");
+       getPrinter().print("; ");
     }
-    sb.append("in ");
+     getPrinter().print("in ");
     node.getExpression().accept(this);
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTLetDeclaration node) {
-    sb.append("let ");
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+     getPrinter().print("let ");
     for (ASTOCLDeclarationExt ast : node.getDeclarations()) {
       ast.accept(this);
-      sb.append(";");
+       getPrinter().print(";");
     }
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTIterateExpr node) {
-    sb.append("iterate { ");
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+     getPrinter().print("iterate { ");
     node.getIterationDeclarator().accept(this);
-    sb.append("; ");
+     getPrinter().print("; ");
     node.getInitDeclarator().accept(this);
-    sb.append(" : ");
-    sb.append(node.getAccumulatorName() + " = ");
+     getPrinter().print(" : ");
+     getPrinter().print(node.getAccumulatorName() + " = ");
     node.getAccumulatorValue().accept(this);
-    sb.append(" }");
+     getPrinter().print(" }");
+     CommentPrettyPrinter.printPostComments(node, getPrinter());
+  }
+  
+
+  public IndentPrinter getPrinter() {
+    return this.printer;
+  }
+  
+  public String prettyprint(ASTExpression node) {
+    getPrinter().clearBuffer();
+    node.accept(getRealThis());
+    return getPrinter().getContent();
+  }
+  
+  @Override
+  public void setRealThis(OCLLogicExpressionsVisitor realThis) {
+    this.realThis = realThis;
+  }
+  
+  @Override
+  public OCLLogicExpressionsVisitor getRealThis() {
+    return realThis;
   }
   
 }
