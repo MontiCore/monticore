@@ -57,5 +57,13 @@ public class CodeHookPointMock extends CodeHookPoint {
   public String processValue(TemplateController controller, List<Object> args) {
     return returnValue;
   }
+
+  /**
+   * @see de.monticore.generating.templateengine.HookPoint#processValue(de.monticore.generating.templateengine.TemplateController, de.monticore.ast.ASTNode, java.util.List)
+   */
+  @Override
+  public String processValue(TemplateController controller, ASTNode node, List<Object> args) {
+    return returnValue;
+  }
   
 }
