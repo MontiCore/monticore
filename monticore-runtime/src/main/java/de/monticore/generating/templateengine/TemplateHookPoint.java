@@ -92,4 +92,16 @@ public class TemplateHookPoint extends HookPoint {
   public String toString() {
     return Strings.isNullOrEmpty(templateName)? super.toString() : templateName;
   }
+
+  /**
+   * @see de.monticore.generating.templateengine.HookPoint#processValue(de.monticore.generating.templateengine.TemplateController, de.monticore.ast.ASTNode, java.util.List)
+   */
+  @Override
+  public String processValue(TemplateController controller, ASTNode node, List<Object> args) {
+    if (this.templateArguments.size() > 0) {
+      return controller.includeArgsWithoutForwarding(templateName,
+          this.templateArguments).toString();
+    }
+    return controller.includeArgsWithoutForwarding(templateName, node, args).toString();
+  }
 }

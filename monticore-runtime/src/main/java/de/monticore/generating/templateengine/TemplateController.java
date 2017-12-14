@@ -297,7 +297,7 @@ public class TemplateController {
     StringBuilder ret = new StringBuilder();
     List<HookPoint> templateForwardings = config.getGlex().getTemplateForwardings(templateName, node);
     for (HookPoint tn : templateForwardings) {
-      ret.append(tn.processValue(this, templateArguments));
+      ret.append(tn.processValue(this, node, templateArguments));
     }
 
     return ret;
@@ -338,6 +338,22 @@ public class TemplateController {
     StringBuilder ret = new StringBuilder();
 
     ret.append(processTemplate(templateName, getAST(), templateArguments));
+
+    return ret;
+  }
+
+  /**
+   * Processes the template with a list of additional arguments. This method is
+   * package default and should only be called by the TemplateHookPoint class.
+   *
+   * @param templateName the template name
+   * @param templateArguments the template arguments
+   * @return
+   */
+  StringBuilder includeArgsWithoutForwarding(String templateName, ASTNode node, List<Object> templateArguments) {
+    StringBuilder ret = new StringBuilder();
+
+    ret.append(processTemplate(templateName, node, templateArguments));
 
     return ret;
   }

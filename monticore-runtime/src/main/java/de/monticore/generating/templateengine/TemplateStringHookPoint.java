@@ -45,7 +45,12 @@ public class TemplateStringHookPoint extends HookPoint {
 
   @Override
   public String processValue(TemplateController controller, List<Object> args) {
-    return controller.runInEngine(Lists.newArrayList(), template, null).toString();
+    return controller.runInEngine(args, template, null).toString();
+  }
+
+   @Override
+  public String processValue(TemplateController controller, ASTNode node, List<Object> args) {
+     return controller.runInEngine(args, template, node).toString();
   }
 
 }

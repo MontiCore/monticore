@@ -36,5 +36,10 @@ public abstract class HookPoint {
   public abstract
   String processValue(TemplateController controller,
                       List<Object> args);
-  
+
+  public abstract
+  String processValue(TemplateController controller,
+                      ASTNode node,
+                      List<Object> args);
+
 }
