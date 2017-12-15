@@ -56,4 +56,5 @@ public class SubrulesUseInterfaceNTsTest extends CocoTest {
   public void testCorrect() {
     testValidGrammar("cocos.valid.ImplementInterfaceNTs", checker);
   }
+
 }
