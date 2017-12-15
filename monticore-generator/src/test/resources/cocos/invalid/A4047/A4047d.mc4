@@ -24,4 +24,5 @@ grammar A4047d {
     interface A = "Foo";
 
     B implements A;
+
 }

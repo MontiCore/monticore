@@ -69,6 +69,7 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
         logError(prodSymbol, interfaceSymbol, interfaceComponent);
         continue;
       }
+
       Optional<MCProdSymbolReference> prodComponentRefOpt = prodComponent.get().getReferencedProd();
       Optional<MCProdSymbolReference> interfaceComponentRefOpt = interfaceComponent.getReferencedProd();
 
