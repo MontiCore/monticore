@@ -33,7 +33,7 @@ SUCH DAMAGE.
 
 package de.monticore;
 
-component grammar JavaClassExpressions extends de.monticore.ExpressionsBasis {
+component grammar JavaClassExpressions extends de.monticore.CommonExpressions{
 	
 external ELiteral;
 
@@ -65,18 +65,20 @@ PrimaryGenericInvocationExpression implements Expression <370>
     = ETypeArguments GenericInvocationSuffix
     ;
 
-interface GenericInvocationSuffix;
-
-GenericSuperInvocationSuffix implements GenericInvocationSuffix
+GenericInvocationSuffix
     =   ["super"] SuperSuffix
+    |   ["this"] Arguments
+    |   Name Arguments
     ;
     
 SuperSuffix
     =   Arguments
     |   "." ETypeArguments? Name Arguments?
     ;
-
-Arguments
-    =   "(" (Expression || ",")* ")"
-    ;
+    
+NameExpression implements Expression <350>
+    = Name;
+    
+InstanceofExpression implements Expression <140> 
+	= Expression "instanceof" EType;
 }

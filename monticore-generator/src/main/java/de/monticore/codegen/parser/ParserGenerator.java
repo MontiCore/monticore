@@ -161,7 +161,8 @@ public class ParserGenerator {
       return;
     }
     Log.debug("Start parser generation for the grammar " + astGrammar.getName(), LOG);
-    final GeneratorSetup setup = new GeneratorSetup(targetDir);
+    final GeneratorSetup setup = new GeneratorSetup();
+    setup.setOutputDirectory(targetDir);
 
     String qualifiedGrammarName = astGrammar.getPackage().isEmpty()
             ? astGrammar.getName()
@@ -209,7 +210,8 @@ public class ParserGenerator {
     if (astGrammar.isComponent()) {
       return;
     }
-    final GeneratorSetup setup = new GeneratorSetup(targetDir);
+    final GeneratorSetup setup = new GeneratorSetup();
+    setup.setOutputDirectory(targetDir);
 
     String qualifiedGrammarName = astGrammar.getPackage().isEmpty()
             ? astGrammar.getName()

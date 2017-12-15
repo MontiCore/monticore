@@ -34,7 +34,7 @@ ${tc.signature("astType", "astPackage", "allCds")}
 <#assign genHelper = glex.getGlobalVar("visitorHelper")>
 
 <#-- Copyright -->
-${tc.defineHookPoint("JavaCopyright")}
+${defineHookPoint("JavaCopyright")}
 
 <#-- set package -->
 package ${genHelper.getVisitorPackage()};

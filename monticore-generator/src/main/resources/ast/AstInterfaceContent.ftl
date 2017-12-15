@@ -67,5 +67,5 @@ public interface ${ast.getName()} extends ${tc.include("ast.AstExtendedInterface
   public void accept(${visitorType} visitor);
    
   <#-- member HOOK -->
-  ${tc.defineHookPoint("<Block>?InterfaceContent:Members")}
+  ${defineHookPoint("<Block>?InterfaceContent:Members")}
 }

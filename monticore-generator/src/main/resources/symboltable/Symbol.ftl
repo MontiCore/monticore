@@ -35,7 +35,7 @@ ${signature("className", "ruleSymbol")}
 <#assign ruleName = ruleSymbol.getName()?cap_first>
 
 <#-- Copyright -->
-${tc.defineHookPoint("JavaCopyright")}
+${defineHookPoint("JavaCopyright")}
 
 <#-- set package -->
 package ${genHelper.getTargetPackage()};

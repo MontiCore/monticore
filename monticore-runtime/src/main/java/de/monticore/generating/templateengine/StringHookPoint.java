@@ -48,8 +48,18 @@ public class StringHookPoint extends HookPoint {
     return value;
   }
   
+  /**
+   * @see de.monticore.generating.templateengine.HookPoint#processValue(de.monticore.generating.templateengine.TemplateController, de.monticore.ast.ASTNode, java.util.List)
+   */
+  @Override
+  public String processValue(TemplateController controller, ASTNode node, List<Object> args) {
+    return value;
+  }
+  
   public String getValue() {
 	  return value;
   }
+
+ 
   
 }

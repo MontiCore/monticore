@@ -19,11 +19,12 @@
 
 package de.monticore.generating.templateengine;
 
+import java.util.List;
+
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import de.monticore.ast.ASTNode;
 
-import java.util.List;
+import de.monticore.ast.ASTNode;
 
 /**
  * Represents a template hook.
@@ -35,6 +36,7 @@ public class TemplateHookPoint extends HookPoint {
 
   private final String templateName;
 
+// XXX BUG TODO, MB:  zu löschen
   private List<Object> templateArguments = Lists.newArrayList();
 
   public TemplateHookPoint(String templateName) {
@@ -42,15 +44,14 @@ public class TemplateHookPoint extends HookPoint {
     this.templateName = templateName;
   }
 
+// XXX BUG TODO, MB:  zu löschen
+// templateArguments werden grundsätzlich nicht beim HookPoint gesetzt sondern
+// beim Include durchgeschleift !!!
+// --> das mit dem Durchschleifen beim Include ist aber noch zu realisieren
   public TemplateHookPoint(String templateName, Object... templateArguments) {
     super();
     this.templateName = templateName;
     this.templateArguments = Lists.newArrayList(templateArguments);
-  }
-
-  @Deprecated
-  public void addArgument(Object o) {
-    this.templateArguments.add(o);
   }
 
   /**
@@ -60,25 +61,47 @@ public class TemplateHookPoint extends HookPoint {
     return this.templateName;
   }
 
+// XXX BUG TODO, MB:  zu ändern
+// templateArguments werden grundsätzlich nicht beim HookPoint gesetzt sondern
+// beim Include durchgeschleift !!!
+// --> das mit dem Durchschleifen beim Include ist aber noch zu realisieren
+// ( die include Argumente müssten daher hier wohl als Argumente mitgereicht werden
   @Override
   public String processValue(TemplateController controller, ASTNode ast) {
     if (this.templateArguments.size() > 0) {
       return processValue(controller, this.templateArguments);
     }
-    return controller.includeWithoutForwarding(templateName, ast);
+    return controller.includeWithoutForwarding(templateName, ast).toString();
   }
 
+// XXX BUG TODO, MB:  zu ändern
+// templateArguments werden grundsätzlich nicht beim HookPoint gesetzt sondern
+// beim Include durchgeschleift !!!
+// --> das mit dem Durchschleifen beim Include ist aber noch zu realisieren
+// ( die include Argumente müssten daher hier wohl als Argumente mitgereicht werden
   @Override
   public String processValue(TemplateController controller, List<Object> args) {
     if (this.templateArguments.size() > 0) {
       return controller.includeArgsWithoutForwarding(templateName,
-          this.templateArguments);
+          this.templateArguments).toString();
     }
-    return controller.includeArgsWithoutForwarding(templateName, args);
+    return controller.includeArgsWithoutForwarding(templateName, args).toString();
   }
   
   @Override
   public String toString() {
     return Strings.isNullOrEmpty(templateName)? super.toString() : templateName;
+  }
+
+  /**
+   * @see de.monticore.generating.templateengine.HookPoint#processValue(de.monticore.generating.templateengine.TemplateController, de.monticore.ast.ASTNode, java.util.List)
+   */
+  @Override
+  public String processValue(TemplateController controller, ASTNode node, List<Object> args) {
+    if (this.templateArguments.size() > 0) {
+      return controller.includeArgsWithoutForwarding(templateName,
+          this.templateArguments).toString();
+    }
+    return controller.includeArgsWithoutForwarding(templateName, node, args).toString();
   }
 }

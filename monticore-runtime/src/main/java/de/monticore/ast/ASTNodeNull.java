@@ -17,30 +17,17 @@
  * ******************************************************************************
  */
 
-package de.monticore.generating.templateengine;
+package de.monticore.ast;
 
-/**
- * TODO: Write me!
- *
- */
-public class TemplateControllerFactory {
-  
-  protected static TemplateControllerFactory instance;
-  
-  
-  protected TemplateControllerFactory() {
-    
-  }
-  
-  public static TemplateControllerFactory getInstance() {
-    if (instance == null) {
-      instance = new TemplateControllerFactory();
-    }
-    return instance;
-  }
-  
-  public TemplateController create(TemplateControllerConfiguration config, String templateName) {
-    return new TemplateController(config, templateName);
+
+public class ASTNodeNull extends ASTCNode {
+
+  /**
+   * @see de.monticore.ast.ASTCNode#deepClone()
+   */
+  @Override
+  public ASTNode deepClone() {
+    return new ASTNodeNull();
   }
   
 }

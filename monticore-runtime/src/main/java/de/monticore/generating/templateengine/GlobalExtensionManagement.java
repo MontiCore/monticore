@@ -19,9 +19,10 @@
 
 package de.monticore.generating.templateengine;
 
-import java.util.*;
-
-import de.monticore.ast.ASTNode;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
@@ -29,12 +30,12 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 
+import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.freemarker.SimpleHashFactory;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.se_rwth.commons.logging.Log;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.SimpleHash;
-import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateModelException;
 
 /**
@@ -82,15 +83,6 @@ public class GlobalExtensionManagement {
   }
 
   /**
-   * Returns a list of all registered global value names
-   *
-   * @return collection of all names of defined values.
-   */
-  public TemplateCollectionModel getGlobalValueNames() {
-    return globalData.keys();
-  }
-
-  /**
    * Checks whether a value with the given name is defined and is not null
    *
    * @param name of the value to check
@@ -130,31 +122,10 @@ public class GlobalExtensionManagement {
    */
   public void defineGlobalVar(String name, Object value) {
     if (hasGlobalVar(name)) {
-      // TODO: in which template? hinzufügen
       Log.error("0xA0122 Global Value '" + name + "' has already been set.\n Old value: " +
           getGlobalVar(name) + "\n New value: " + value);
     }
     setGlobalValue(name, value);
-  }
-
-  /**
-   * Defines a new global variable with no value set.
-   * If the name is already in use an error is reported.
-   *
-   * @param name of the value to set
-   */
-  public void defineGlobalVar(String name) {
-    setGlobalValue(name, null); // TODO: clarify what the default value is!
-  }
-
-  /**
-   * Defines a list of global variables with the given name in the
-   * templates. If the name is already in use an error is reported.
-   *
-   * @param names list of names to set
-   */
-  public void defineGlobalVars(List<String> names) {
-    names.forEach(this::defineGlobalVar);
   }
 
   /**
@@ -166,7 +137,7 @@ public class GlobalExtensionManagement {
    */
   public void changeGlobalVar(String name, Object value) {
     if (!hasGlobalVar(name)) {
-      Log.error("0xA0124 Global Value '" + name + "' has not been defined."); // TODO: identify valid error code
+      Log.error("0xA0124 Global Value '" + name + "' has not been defined.");
     } else {
       setGlobalValue(name, value);
     }
@@ -224,9 +195,9 @@ public class GlobalExtensionManagement {
   }
 
   /**
-   * Returns the value of the given name.
+   * Returns the value of the given variable.
    *
-   * @param name of the value
+   * @param name of the variable
    * @return the value
    */
   @SuppressWarnings("deprecation")
@@ -241,6 +212,27 @@ public class GlobalExtensionManagement {
   }
 
   /**
+   * Returns the value of the given variable.
+   *
+   * @param name of the variable
+   * @param default replaces if the variable is not present
+   * @return the value or the default
+   */
+  @SuppressWarnings("deprecation")
+  public Object getGlobalVar(String name, Object defaultObject) {
+    if (hasGlobalVar(name)) {
+      try {
+        return BeansWrapper.getDefaultInstance().unwrap(globalData.get(name));
+      }
+        catch (TemplateModelException e) {
+          Log.error("0xA0123 Internal Error on global value for \"" + name + "\"");
+        }
+    }
+    return defaultObject;
+  }
+
+
+  /**
    * check whether the variable name (parameter) is defined: if not issue an
    * error and continue
    *
@@ -248,9 +240,6 @@ public class GlobalExtensionManagement {
    */
   public void requiredGlobalVar(String name) {
     if (getGlobalVar(name) == null) {
-      // TODO: in which template? hinzufügen
-      // Sollte dieser Fehler kommen, dann wird auch das Template ausgeworfen,
-      // das zuletzt verarbeitet wurde (also den Fehler produziert hat)
       Log.error("0xA0126 Missing required value \"" + name + "\"");
     }
   }
@@ -265,6 +254,28 @@ public class GlobalExtensionManagement {
     for (int i = 0; i < names.length; i++){
       requiredGlobalVar(names[i]);
     }
+  }
+
+  
+  // ----------------------------------------------------------------------
+  // Section on Hook Points
+  // ----------------------------------------------------------------------
+
+
+  /**
+   * @param hookName name of the hook point
+   * @param content String to be used as hook point
+   */
+  public void bindStringHookPoint(String hookName, String content) {
+    bindHookPoint(hookName, new StringHookPoint(content));
+  }
+
+  /**
+   * @param hookName name of the hook point
+   * @param tpl Template to be used as hook point
+   */
+  public void bindTemplateHookPoint(String hookName, String tpl) {
+    bindHookPoint(hookName, new TemplateHookPoint(tpl));
   }
 
   /**
@@ -282,15 +293,16 @@ public class GlobalExtensionManagement {
    * @return the (processed) value of the hook point
    */
   public String defineHookPoint(TemplateController controller, String hookName, ASTNode ast) {
+
     String result = null;
     HookPoint hp = hookPoints.get(hookName);
-
     Reporting.reportCallHookPointStart(hookName, hp, ast);
+
     if (hookPoints.containsKey(hookName)) {
       result = hp.processValue(controller, ast);
     }
-    Reporting.reportCallHookPointEnd(hookName);
 
+    Reporting.reportCallHookPointEnd(hookName);
 
     return Strings.nullToEmpty(result);
   }

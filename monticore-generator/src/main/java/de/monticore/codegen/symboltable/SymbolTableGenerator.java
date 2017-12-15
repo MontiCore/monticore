@@ -108,7 +108,8 @@ public class SymbolTableGenerator {
      * ResolvingFilter */
     final boolean skipSymbolTableGeneration = allSymbolDefiningRules.isEmpty();
     
-    final GeneratorSetup setup = new GeneratorSetup(outputPath);
+    final GeneratorSetup setup = new GeneratorSetup();
+    setup.setOutputDirectory(outputPath);
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
     glex.setGlobalValue("stHelper", genHelper);
     glex.setGlobalValue("nameHelper", new Names());

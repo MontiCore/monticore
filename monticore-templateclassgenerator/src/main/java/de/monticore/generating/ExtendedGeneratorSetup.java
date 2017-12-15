@@ -16,24 +16,27 @@
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * ******************************************************************************
  */
-package de.monticore.generating.templateengine;
+package de.monticore.generating;
 
-import de.monticore.generating.templateengine.TemplateControllerFactory;
-import de.monticore.generating.templateengine.TemplateControllerConfiguration;
+import de.monticore.generating.templateengine.ExtendedTemplateController;
+import de.monticore.generating.templateengine.TemplateController;
 
 /**
- * 
- * @author  Jerome Pfeiffer
+ * TODO: Write me!
+ *
+ * @author  (last commit) $Author$
+ * @version $Revision$, $Date$
+ * @since   TODO: add version number
  *
  */
-public class ExtendedTemplateControllerFactory extends TemplateControllerFactory{
+public class ExtendedGeneratorSetup extends GeneratorSetup {
 
   /**
-   * @see de.monticore.generating.templateengine.TemplateControllerFactory#create(de.monticore.generating.templateengine.TemplateControllerConfiguration, java.lang.String)
+   * @see de.monticore.generating.GeneratorSetup#getNewTemplateController(java.lang.String)
    */
   @Override
-  public ExtendedTemplateController create(TemplateControllerConfiguration config, String templateName) {
-    return new ExtendedTemplateController(config, templateName);  
+  public TemplateController getNewTemplateController(String templateName) {
+    return new ExtendedTemplateController(this, templateName);
   }
   
 }

@@ -16,44 +16,26 @@
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * ******************************************************************************
  */
-
 package de.monticore.generating.templateengine;
 
-import java.util.List;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-
-import de.monticore.generating.templateengine.TemplateControllerFactory;
-import de.monticore.generating.templateengine.TemplateControllerConfiguration;
+import de.monticore.generating.GeneratorSetup;
 
 /**
  * TODO: Write me!
  *
  * @author  (last commit) $Author$
- *          $Date$
+ * @version $Revision$, $Date$
+ * @since   TODO: add version number
  *
  */
-public class TemplateControllerMockFactory extends TemplateControllerFactory {
-  
-  private List<TemplateControllerMock> createdTemplateControllers = Lists.newArrayList();
-  
-  public TemplateControllerMockFactory() {
-  }
-  
+public class GeneratorSetupMock extends GeneratorSetup {
+
   /**
-   * @see mc.codegen.TemplateControllerFactory#create(mc.codegen.TemplateControllerConfiguration, java.lang.String)
+   * @see de.monticore.generating.GeneratorSetup#getNewTemplateController(java.lang.String)
    */
   @Override
-  public TemplateControllerMock create(TemplateControllerConfiguration config, String templateName) {
-    TemplateControllerMock mock = new TemplateControllerMock(config, templateName);
-    createdTemplateControllers.add(mock);
-    
-    return mock;
-  }
-  
-  public List<TemplateControllerMock> getCreatedTemplateControllers() {
-    return ImmutableList.copyOf(this.createdTemplateControllers);
+  public TemplateControllerMock getNewTemplateController(String templateName) {
+    return new TemplateControllerMock(this, templateName);
   }
   
 }

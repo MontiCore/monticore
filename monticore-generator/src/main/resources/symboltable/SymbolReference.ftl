@@ -37,7 +37,7 @@ ${signature("className", "ruleSymbol", "isScopeSpanningSymbol", "hwSymbolExists"
 <#assign package = genHelper.getTargetPackage()?lower_case>
 
 <#-- Copyright -->
-${tc.defineHookPoint("JavaCopyright")}
+${defineHookPoint("JavaCopyright")}
 
 <#-- set package -->
 package ${package};

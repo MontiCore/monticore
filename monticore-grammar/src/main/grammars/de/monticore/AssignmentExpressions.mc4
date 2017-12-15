@@ -52,44 +52,49 @@ IncPrefixExpression implements Expression <210> =
 
 DecPrefixExpression implements Expression <210> =
 	"--" Expression;
-
+	
 BinaryAndExpression implements Expression <120> =
-	leftExpression:Expression "&"  rightExpression:Expression;
+	leftExpression:Expression operator:"&"  rightExpression:Expression;
 	
 BinaryXorExpression implements Expression <110> =
-	leftExpression:Expression "^"  rightExpression:Expression;
+	leftExpression:Expression operator:"^"  rightExpression:Expression;
 	
 BinaryOrOpExpression implements Expression <100> =
-	leftExpression:Expression "|"  rightExpression:Expression;
+	leftExpression:Expression operator:"|"  rightExpression:Expression;
 	
-PlusAssignmentExpression implements Expression <60> = <rightassoc>
-	leftExpression:Expression "+=" rightExpression:Expression;
+interface AssignmentExpression extends Expression = leftExpression:Expression operator:Name rightExpression:Expression;
 
-MultAssignmentExpression implements Expression <60> = <rightassoc>
-	leftExpression:Expression "*=" rightExpression:Expression;
+RegularAssignmentExpression implements Expression <60>, AssignmentExpression =
+	leftExpression:Expression operator:"="  rightExpression:Expression;
+	
+PlusAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+	leftExpression:Expression operator:"+=" rightExpression:Expression;
 
-DivideAssignmentExpression implements Expression <60> = <rightassoc>
-	leftExpression:Expression "/=" rightExpression:Expression;
+MultAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+	leftExpression:Expression operator:"*=" rightExpression:Expression;
 
-AndAssignmentExpression implements Expression <60> = <rightassoc>
-	leftExpression:Expression "&=" rightExpression:Expression;
+DivideAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+	leftExpression:Expression operator:"/=" rightExpression:Expression;
 
-OrAssignmentExpression implements Expression <60> = <rightassoc>
-	leftExpression:Expression "|=" rightExpression:Expression;
+AndAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+	leftExpression:Expression operator:"&=" rightExpression:Expression;
 
-BinaryXorAssignmentExpression implements Expression <60> = <rightassoc>
-	leftExpression:Expression "^=" rightExpression:Expression;
+OrAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+	leftExpression:Expression operator:"|=" rightExpression:Expression;
 
-RightShiftAssignmentExpression implements Expression <60> = <rightassoc>
-	leftExpression:Expression ">>=" rightExpression:Expression;
+BinaryXorAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+	leftExpression:Expression operator:"^=" rightExpression:Expression;
 
-LogiaclRightShiftExpression implements Expression <60> = <rightassoc>
-	leftExpression:Expression ">>>=" rightExpression:Expression;
+RightShiftAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+	leftExpression:Expression operator:">>=" rightExpression:Expression;
 
-LeftShiftAssignmentExpression implements Expression <60> = <rightassoc>
+LogicalRightAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+	leftExpression:Expression operator:">>>=" rightExpression:Expression;
+
+LeftShiftAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
 	leftExpression:Expression "<<=" rightExpression:Expression;
 
-ModuloAssignmentExpression implements Expression <60> = <rightassoc>
-	leftExpression:Expression "%=" rightExpression:Expression;
+ModuloAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+	leftExpression:Expression operator:"%=" rightExpression:Expression;
 
 }

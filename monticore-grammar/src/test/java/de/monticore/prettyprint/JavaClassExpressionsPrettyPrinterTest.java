@@ -19,10 +19,12 @@
 
 package de.monticore.prettyprint;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.io.StringReader;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -30,14 +32,8 @@ import org.junit.Test;
 
 import de.monticore.expressions.prettyprint.JavaClassExpressionsPrettyPrinter;
 import de.monticore.expressionsbasis._ast.ASTExpression;
-import de.monticore.javaclassexpressions._ast.ASTArguments;
-import de.monticore.javaclassexpressions._ast.ASTClassExpression;
-import de.monticore.javaclassexpressions._ast.ASTGenericSuperInvocationSuffix;
-import de.monticore.javaclassexpressions._ast.ASTLiteralExpression;
-import de.monticore.javaclassexpressions._ast.ASTPrimaryGenericInvocationExpression;
-import de.monticore.javaclassexpressions._ast.ASTPrimarySuperExpression;
+import de.monticore.javaclassexpressions._ast.ASTGenericInvocationSuffix;
 import de.monticore.javaclassexpressions._ast.ASTSuperSuffix;
-import de.monticore.javaclassexpressions._ast.ASTTypeCastExpression;
 import de.monticore.testjavaclassexpressions._ast.ASTELiteral;
 import de.monticore.testjavaclassexpressions._ast.ASTEReturnType;
 import de.monticore.testjavaclassexpressions._ast.ASTEType;
@@ -52,8 +48,7 @@ import de.se_rwth.commons.logging.LogStub;
  * @author npichler
  */
 
-public class JavaClassExpressionsPrettyPrinterTest extends JavaClassExpressionsPrettyPrinter
-    implements TestJavaClassExpressionsVisitor {
+public class JavaClassExpressionsPrettyPrinterTest{
   
   @BeforeClass
   public static void init() {
@@ -66,162 +61,280 @@ public class JavaClassExpressionsPrettyPrinterTest extends JavaClassExpressionsP
     Log.getFindings().clear();
   }
   
-  public JavaClassExpressionsPrettyPrinterTest() {
-    super();
-  }
-  
-  @Override
-  public void visit(ASTPrimaryExpression node) {
-    sb.append(node.getName());
-  }
-  
-  @Override
-  public void visit(ASTELiteral node) {
-    sb.append(node.getName());
-  }
-  
-  @Override
-  public void visit(ASTEType node) {
-    if (node.getDouble().isPresent()) {
-      sb.append(node.getDouble().get());
-    }
-    if (node.getInt().isPresent()) {
-      sb.append(node.getInt().get());
-    }
-    if (node.getLong().isPresent()) {
-      sb.append(node.getLong().get());
-    }
-    if (node.getFloat().isPresent()) {
-      sb.append(node.getFloat().get());
-    }
-  }
-  
-  @Override
-  public void handle(ASTEReturnType node) {
-    if (node.getEType().isPresent()) {
-      node.getEType().get().accept(this);
-    }
-    if (node.getVoid().isPresent()) {
-      sb.append(node.getVoid().get());
-    }
-  }
-  
-  @Override
-  public void visit(ASTETypeArguments node) {
-    sb.append("<" + node.getName() + ">");
+  static class PrimaryPrettyPrinter extends JavaClassExpressionsPrettyPrinter
+      implements TestJavaClassExpressionsVisitor {
     
+    private TestJavaClassExpressionsVisitor realThis;
+    
+    @Override
+    public void visit(ASTPrimaryExpression node) {
+      getPrinter().print((node.getName()));
+    }
+    
+    public PrimaryPrettyPrinter(IndentPrinter printer) {
+      super(printer);
+      realThis = this;
+    }
+    
+    @Override
+    public TestJavaClassExpressionsVisitor getRealThis() {
+      return realThis;
+    }
+    
+    @Override
+    public void visit(ASTELiteral node) {
+      getPrinter().print(node.getName());
+    }
+    
+    @Override
+    public void visit(ASTEType node) {
+      if (node.getDouble().isPresent()) {
+        getPrinter().print(node.getDouble().get());
+      }
+      if (node.getInt().isPresent()) {
+        getPrinter().print(node.getInt().get());
+      }
+      if (node.getLong().isPresent()) {
+        getPrinter().print(node.getLong().get());
+      }
+      if (node.getFloat().isPresent()) {
+        getPrinter().print(node.getFloat().get());
+      }
+    }
+    
+    @Override
+    public void handle(ASTEReturnType node) {
+      if (node.getEType().isPresent()) {
+        node.getEType().get().accept(this);
+      }
+      if (node.getVoid().isPresent()) {
+        getPrinter().print(node.getVoid().get());
+      }
+    }
+    
+    @Override
+    public void visit(ASTETypeArguments node) {
+      getPrinter().print("<");
+      for (String s : node.getNames()) {
+        getPrinter().print(s);
+      }
+      getPrinter().print(">");
+    }
   }
+  
+ 
   
   @Test
   public void testPrimarySuperExpression() throws IOException {
     TestJavaClassExpressionsParser parser = new TestJavaClassExpressionsParser();
-    ASTPrimarySuperExpression ast = parser.parseString_PrimarySuperExpression("super").orElse(null);
-    assertNotNull(ast);
-    JavaClassExpressionsPrettyPrinterTest printer = new JavaClassExpressionsPrettyPrinterTest();
-    ast.accept(printer);
-    assertEquals("super", printer.toString());
-  }
-  
-  @Test
-  public void testArguments() throws IOException {
-    TestJavaClassExpressionsParser parser = new TestJavaClassExpressionsParser();
-    ASTArguments ast = parser.parseString_Arguments("(a,b,c)").orElse(null);
-    assertNotNull(ast);
-    JavaClassExpressionsPrettyPrinterTest printer = new JavaClassExpressionsPrettyPrinterTest();
-    ast.accept(printer);
-    assertEquals("(a,b,c)", printer.toString());
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("super"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseExpression(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
   }
   
   @Test
   public void testSuperSuffixArguments() throws IOException {
     TestJavaClassExpressionsParser parser = new TestJavaClassExpressionsParser();
-    ASTSuperSuffix ast = parser.parseString_SuperSuffix("(a,b,c)").orElse(null);
-    assertNotNull(ast);
-    JavaClassExpressionsPrettyPrinterTest printer = new JavaClassExpressionsPrettyPrinterTest();
-    ast.accept(printer);
-    assertEquals("(a,b,c)", printer.toString());
+    Optional<ASTSuperSuffix> ast = parser.parseSuperSuffix(new StringReader("(a,b,c)"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTSuperSuffix assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseSuperSuffix(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
   }
   
   @Test
   public void testSuperSuffixETypeArguments() throws IOException {
     TestJavaClassExpressionsParser parser = new TestJavaClassExpressionsParser();
-    ASTSuperSuffix ast = parser.parseString_SuperSuffix(".<Arg>Name(a,b,c)").orElse(null);
-    assertNotNull(ast);
-    JavaClassExpressionsPrettyPrinterTest printer = new JavaClassExpressionsPrettyPrinterTest();
-    ast.accept(printer);
-    assertEquals(".<Arg>Name(a,b,c)", printer.toString());
+    Optional<ASTSuperSuffix> ast = parser.parseSuperSuffix(new StringReader(".<Arg>Name(a,b,c)"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTSuperSuffix assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseSuperSuffix(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
   }
   
   @Test
   public void testSuperExpression() throws IOException {
     TestJavaClassExpressionsParser parser = new TestJavaClassExpressionsParser();
-    ASTExpression ast = parser.parseString_Expression("expression.super(a,b,c)").orElse(null);
-    assertNotNull(ast);
-    JavaClassExpressionsPrettyPrinterTest printer = new JavaClassExpressionsPrettyPrinterTest();
-    ast.accept(printer);
-    assertEquals("expression.super(a,b,c)", printer.toString());
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("expression.super(a,b,c)"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseExpression(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
   }
   
   @Test
   public void testLiteralExpression() throws IOException {
     TestJavaClassExpressionsParser parser = new TestJavaClassExpressionsParser();
-    ASTLiteralExpression ast = parser.parseString_LiteralExpression("Ename").orElse(null);
-    assertNotNull(ast);
-    JavaClassExpressionsPrettyPrinterTest printer = new JavaClassExpressionsPrettyPrinterTest();
-    ast.accept(printer);
-    assertEquals("Ename", printer.toString());
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("Ename"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseExpression(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
   }
   
   @Test
   public void testClassExpression() throws IOException {
     TestJavaClassExpressionsParser parser = new TestJavaClassExpressionsParser();
-    ASTClassExpression ast = parser.parseString_ClassExpression("void.class").orElse(null);
-    assertNotNull(ast);
-    JavaClassExpressionsPrettyPrinterTest printer = new JavaClassExpressionsPrettyPrinterTest();
-    ast.accept(printer);
-    assertEquals("void.class", printer.toString());
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("void.class"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseExpression(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
   }
   
   @Test
   public void testGenericSuperInvocationSuffix() throws IOException {
     TestJavaClassExpressionsParser parser = new TestJavaClassExpressionsParser();
-    ASTGenericSuperInvocationSuffix ast = parser
-        .parseString_GenericSuperInvocationSuffix("super(a,b,c)").orElse(null);
-    assertNotNull(ast);
-    JavaClassExpressionsPrettyPrinterTest printer = new JavaClassExpressionsPrettyPrinterTest();
-    ast.accept(printer);
-    assertEquals("super(a,b,c)", printer.toString());
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("super(a,b,c)"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseExpression(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
+  }
+  
+  @Test
+  public void testGenericThisInvocationSuffix() throws IOException {
+    TestJavaClassExpressionsParser parser = new TestJavaClassExpressionsParser();
+    Optional<ASTGenericInvocationSuffix> ast = parser.parseGenericInvocationSuffix(new StringReader("this(a,b,c)"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTGenericInvocationSuffix assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseGenericInvocationSuffix(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
+  }
+  
+  @Test
+  public void testGenericNameInvocationSuffix() throws IOException {
+    TestJavaClassExpressionsParser parser = new TestJavaClassExpressionsParser();
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("Name(a,b,c)"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseExpression(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
   }
   
   @Test
   public void testTypeCastExpression() throws IOException {
     TestJavaClassExpressionsParser parser = new TestJavaClassExpressionsParser();
-    ASTTypeCastExpression ast = parser.parseString_TypeCastExpression("(int)expression")
-        .orElse(null);
-    assertNotNull(ast);
-    JavaClassExpressionsPrettyPrinterTest printer = new JavaClassExpressionsPrettyPrinterTest();
-    ast.accept(printer);
-    assertEquals("(int)expression", printer.toString());
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("(int)expression"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseExpression(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
   }
   
   @Test
-  public void testPrimaryGenericInvocationExpression() throws IOException {
+  public void testPrimaryGenericInvocationExpression() throws IOException {    
     TestJavaClassExpressionsParser parser = new TestJavaClassExpressionsParser();
-    ASTPrimaryGenericInvocationExpression ast = parser
-        .parseString_PrimaryGenericInvocationExpression("<Arg>super(a,b,c)").orElse(null);
-    assertNotNull(ast);
-    JavaClassExpressionsPrettyPrinterTest printer = new JavaClassExpressionsPrettyPrinterTest();
-    ast.accept(printer);
-    assertEquals("<Arg>super(a,b,c)", printer.toString());
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("<Arg>super(a,b,c)"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseExpression(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
   }
   
   @Test
   public void testGenericInvocationExpression() throws IOException {
     TestJavaClassExpressionsParser parser = new TestJavaClassExpressionsParser();
-    ASTExpression ast = parser.parseString_Expression("exp.<Arg>super(a,b,c)").orElse(null);
-    assertNotNull(ast);
-    JavaClassExpressionsPrettyPrinterTest printer = new JavaClassExpressionsPrettyPrinterTest();
-    ast.accept(printer);
-    assertEquals("exp.<Arg>super(a,b,c)", printer.toString());
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("exp.<Arg>super(a,b,c)"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseExpression(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
+    
+    
   }
+  
+  @Test
+  public void testNameExpression() throws IOException {
+    TestJavaClassExpressionsParser parser = new TestJavaClassExpressionsParser();
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("Name"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseExpression(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
+  }
+  
+  @Test
+  public void testInstanceofExpression() throws IOException {
+    TestJavaClassExpressionsParser parser = new TestJavaClassExpressionsParser();
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("a instanceof int"));
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parseExpression(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(assignment.deepEquals(ast.get()));
+  }
+  
+ 
 }

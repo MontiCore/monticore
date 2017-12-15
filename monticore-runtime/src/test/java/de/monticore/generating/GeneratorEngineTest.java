@@ -19,18 +19,18 @@
 
 package de.monticore.generating;
 
-import de.monticore.ast.ASTNodeMock;
-import de.monticore.generating.templateengine.FreeMarkerTemplateEngineMock;
-import de.monticore.generating.templateengine.FreeMarkerTemplateMock;
-import de.monticore.generating.templateengine.TemplateControllerMockFactory;
-import de.monticore.io.FileReaderWriterMock;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.nio.file.Paths;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+
+import de.monticore.ast.ASTNodeMock;
+import de.monticore.generating.templateengine.FreeMarkerTemplateEngineMock;
+import de.monticore.generating.templateengine.FreeMarkerTemplateMock;
+import de.monticore.io.FileReaderWriterMock;
 
 /**
  * Tests for {@link de.monticore.generating.GeneratorEngine}.
@@ -46,22 +46,48 @@ public class GeneratorEngineTest {
   public void testGenerateInFile() {
     ASTNodeMock node = new ASTNodeMock();
 
-    GeneratorEngineMock generatorEngine = new GeneratorEngineMock(new GeneratorSetup(new File("target1")), new
-        TemplateControllerMockFactory());
+    final GeneratorSetup setup = new GeneratorSetup();
+    setup.setOutputDirectory(new File("target1"));
+    FreeMarkerTemplateEngineMock freeMarkerTemplateEngine = new FreeMarkerTemplateEngineMock();
+    setup.setFreeMarkerTemplateEngine(freeMarkerTemplateEngine);
+    FileReaderWriterMock fileHandler = new FileReaderWriterMock();
+    setup.setFileHandler(fileHandler);
+    
+    GeneratorEngineMock generatorEngine = new GeneratorEngineMock(setup);
 
     generatorEngine.generate("the.Template", Paths.get("a/GenerateInFile.test"), node);
-
-    FreeMarkerTemplateEngineMock freeMarkerTemplateEngine = generatorEngine.getFreeMarkerTemplateEngine();
 
     assertEquals(1, freeMarkerTemplateEngine.getProcessedTemplates().size());
     FreeMarkerTemplateMock template = freeMarkerTemplateEngine.getProcessedTemplates().iterator().next();
     assertTrue(template.isProcessed());
     assertEquals("the.Template", template.getName());
 
-    FileReaderWriterMock fileHandler = generatorEngine.getFileHandler();
     assertEquals(1, fileHandler.getStoredFilesAndContents().size());
     assertTrue(fileHandler.getStoredFilesAndContents().containsKey(Paths.get
         (new File("target1/a/GenerateInFile.test").getAbsolutePath())));
+
+  }
+
+  @Test
+  public void testGenerateStringBuilder() {
+    final GeneratorSetup setup = new GeneratorSetup();
+    FreeMarkerTemplateEngineMock freeMarkerTemplateEngine = new FreeMarkerTemplateEngineMock();
+    setup.setFreeMarkerTemplateEngine(freeMarkerTemplateEngine);
+    FileReaderWriterMock fileHandler = new FileReaderWriterMock();
+    setup.setFileHandler(fileHandler);
+    
+    GeneratorEngineMock generatorEngine = new GeneratorEngineMock(setup);
+
+    StringBuilder sb = generatorEngine.generate("the.Template");
+    assertTrue(sb.length()>0);
+
+    assertEquals(1, freeMarkerTemplateEngine.getProcessedTemplates().size());
+    FreeMarkerTemplateMock template = freeMarkerTemplateEngine.getProcessedTemplates().iterator().next();
+    assertTrue(template.isProcessed());
+    assertEquals("the.Template", template.getName());
+
+    assertEquals(0, fileHandler.getStoredFilesAndContents().size());
+   
 
   }
 
