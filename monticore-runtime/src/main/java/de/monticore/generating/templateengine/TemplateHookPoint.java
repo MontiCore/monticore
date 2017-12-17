@@ -36,7 +36,6 @@ public class TemplateHookPoint extends HookPoint {
 
   private final String templateName;
 
-// XXX BUG TODO, MB:  zu löschen
   private List<Object> templateArguments = Lists.newArrayList();
 
   public TemplateHookPoint(String templateName) {
@@ -44,10 +43,10 @@ public class TemplateHookPoint extends HookPoint {
     this.templateName = templateName;
   }
 
-// XXX BUG TODO, MB:  zu löschen
+// XXX BUG TODO, MB:  anzupassen
 // templateArguments werden grundsätzlich nicht beim HookPoint gesetzt sondern
 // beim Include durchgeschleift !!!
-// --> das mit dem Durchschleifen beim Include ist aber noch zu realisieren
+// Für die hier angegebenen Argumente gibt es eine Methode hpsignature("arg1", ...)
   public TemplateHookPoint(String templateName, Object... templateArguments) {
     super();
     this.templateName = templateName;
@@ -62,10 +61,7 @@ public class TemplateHookPoint extends HookPoint {
   }
 
 // XXX BUG TODO, MB:  zu ändern
-// templateArguments werden grundsätzlich nicht beim HookPoint gesetzt sondern
-// beim Include durchgeschleift !!!
-// --> das mit dem Durchschleifen beim Include ist aber noch zu realisieren
-// ( die include Argumente müssten daher hier wohl als Argumente mitgereicht werden
+//
   @Override
   public String processValue(TemplateController controller, ASTNode ast) {
     if (this.templateArguments.size() > 0) {
@@ -75,10 +71,8 @@ public class TemplateHookPoint extends HookPoint {
   }
 
 // XXX BUG TODO, MB:  zu ändern
-// templateArguments werden grundsätzlich nicht beim HookPoint gesetzt sondern
-// beim Include durchgeschleift !!!
-// --> das mit dem Durchschleifen beim Include ist aber noch zu realisieren
-// ( die include Argumente müssten daher hier wohl als Argumente mitgereicht werden
+// HookPoint argumente werden per hpsignature weiteregegeben
+// templateArguments werden durchgeschleift !!!
   @Override
   public String processValue(TemplateController controller, List<Object> args) {
     if (this.templateArguments.size() > 0) {

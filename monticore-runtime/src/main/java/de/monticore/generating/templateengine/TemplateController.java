@@ -77,18 +77,21 @@ public class TemplateController {
    */
   private String templatename;
 
-  /**
+   /**
    * According to FreemArker, templates don't have a "signature"
    * We can mimic such a signature through method calls:
    * The signature(...) method defines a list of variables.
    * And the include call allows a list of arguments that are bound to
    * these variables, when the template is executed.
    */
-  boolean signatureInitialized = false;
-
-  private List<String> signature = newArrayList();
-
   private List<Object> arguments = newArrayList();
+
+  /**
+   * In Addition to the direct signature of templates, the TemplateHookPoint
+   * can have additional arguments: They are stored and retrieved via
+   * the hpsignature command
+   */
+  private List<Object> hparguments = newArrayList();
 
   private SimpleHash data = SimpleHashFactory.getInstance().createSimpleHash();
 
@@ -161,7 +164,7 @@ public class TemplateController {
     return ret;
   }
 
-  /**
+    /**
    * Defines the signature of a template. <br />
    * <br />
    * Note that, due to technical constraints, at first, the current template is
@@ -170,16 +173,11 @@ public class TemplateController {
    * @param parameterNames the list of the parameter names (=signature)
    */
   public void signature(List<String> parameterNames) {
-    checkArgument(!signatureInitialized,
-        "0xA5297 Template '" + templatename + "': tried to invoke signature() twice");
-
     Log.errorIfNull(parameterNames);
 
     checkArgument(parameterNames.size() == arguments.size(),
         "0xA5298 Template '" + templatename + "': Signature size (#" + parameterNames.size() +
             ") and number of arguments (#" + arguments.size() + ") mismatch.");
-
-    this.signature = newArrayList(parameterNames);
 
     // bind values (arguments) to names (parameters/signature)
     // and inject into template
@@ -187,7 +185,6 @@ public class TemplateController {
       data.put(parameterNames.get(i), arguments.get(i));
     }
 
-    signatureInitialized = true;
   }
 
   /**
@@ -197,16 +194,48 @@ public class TemplateController {
     signature(Lists.newArrayList(parameterName));
   }
 
-  List<String> getSignature() {
-    return signature;
+
+  /**
+   * Defines the hpsignature of a template. <br />
+   * <br />
+   * Note that, due to technical constraints, at first, the current template is
+   * included and the arguments are passed. Second, the hpsignature is defined.
+   *
+   * @param parameterNames the list of the parameter names (=hpsignature)
+   */
+  public void hpsignature(List<String> parameterNames) {
+    Log.errorIfNull(parameterNames);
+
+    checkArgument(parameterNames.size() == hparguments.size(),
+        "0xA6298 Template '" + templatename + "': HookPoint-Signature size (#" + parameterNames.size() +
+            ") and number of hook point arguments (#" + hparguments.size() + ") mismatch.");
+
+    this.hpsignature = newArrayList(parameterNames);
+
+    // bind values (hparguments) to names (parameters/hpsignature)
+    // and inject into template
+    for (int i = 0; i < parameterNames.size(); i++) {
+      data.put(parameterNames.get(i), hparguments.get(i));
+    }
+
+  }
+
+  /**
+   * Delegates to {@link #hpsignature(List)}.
+   */
+  public void hpsignature(String... parameterName) {
+    hpsignature(Lists.newArrayList(parameterName));
   }
 
   List<Object> getArguments() {
     return arguments;
   }
 
-  boolean isSignatureInitialized() {
-    return signatureInitialized;
+  /**
+   * get the arguments that had been provided by the TemplateHookPoint
+   */
+  List<Object> getHpArguments() {
+    return hparguments;
   }
 
   /**
