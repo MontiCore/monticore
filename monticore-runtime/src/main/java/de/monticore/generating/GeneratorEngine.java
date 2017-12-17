@@ -60,7 +60,7 @@ public class GeneratorEngine {
    * @param node the ast node
    * @param templateArguments additional template arguments (if needed).
    */
-  public void generate(String templateName, Path filePath,
+  public void generateA(String templateName, Path filePath,
                        ASTNode node, Object... templateArguments) {
     Log.errorIfNull(node);
     checkArgument(!isNullOrEmpty(templateName));
@@ -102,7 +102,7 @@ public class GeneratorEngine {
    */
 // TODO MB: wäre nicht java.io.Writer besser
 // Wir wollen ja auch in Strings schreiben können
-  public void generate(String templateName, FileWriter writer,
+  public void generateA(String templateName, FileWriter writer,
                 ASTNode node, Object... templateArguments) {
     Log.errorIfNull(node);
     checkArgument(!isNullOrEmpty(templateName));
@@ -152,7 +152,7 @@ public class GeneratorEngine {
    * @param node the ast node
    * @param templateArguments additional template arguments (if needed).
    */
-  public StringBuilder generate(String templateName, ASTNode node, Object... templateArguments) {
+  public StringBuilder generateA(String templateName, ASTNode node, Object... templateArguments) {
     checkArgument(!isNullOrEmpty(templateName));
     TemplateController tc = setup.getNewTemplateController(templateName);
     return tc.includeArgs(templateName, node, Arrays.asList(templateArguments));
