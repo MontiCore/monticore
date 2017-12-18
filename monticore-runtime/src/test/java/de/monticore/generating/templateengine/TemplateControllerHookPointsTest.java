@@ -31,8 +31,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.freemarker.FreeMarkerConfigurationBuilder;
-import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.io.FileReaderWriterMock;
 
 /**
@@ -49,12 +47,9 @@ public class TemplateControllerHookPointsTest {
   @Before
   public void setup() {
     glex = new GlobalExtensionManagement();
-    
-    FreeMarkerTemplateEngine freeMarkerTemplateEngine = new FreeMarkerTemplateEngine(new FreeMarkerConfigurationBuilder().build());
-    
+        
     GeneratorSetup config = new GeneratorSetup();
     config.setGlex(glex);
-    config.setFreeMarkerTemplateEngine(freeMarkerTemplateEngine);
     config.setFileHandler(new FileReaderWriterMock());
     config.setOutputDirectory(new File("dummy"));
     config.setTracing(false);

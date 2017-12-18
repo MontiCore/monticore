@@ -30,14 +30,12 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import org.junit.Ignore;
+import org.junit.Test;
 
 import com.google.common.base.Joiner;
 
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.freemarker.FreeMarkerConfigurationBuilder;
-import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.io.FileReaderWriterMock;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
@@ -71,14 +69,10 @@ public class TemplateAliasingTest {
 
   @Before
   public void setup() {
-    FreeMarkerTemplateEngine freeMarkerTemplateEngine = new FreeMarkerTemplateEngine(new
-        FreeMarkerConfigurationBuilder().build());
 
     FileReaderWriterMock fileHandler = new FileReaderWriterMock();
 
-
     config = new GeneratorSetup();
-    config.setFreeMarkerTemplateEngine(freeMarkerTemplateEngine);
     config.setFileHandler(fileHandler);
     config.setOutputDirectory(TARGET_DIR);
     config.setTracing(false);

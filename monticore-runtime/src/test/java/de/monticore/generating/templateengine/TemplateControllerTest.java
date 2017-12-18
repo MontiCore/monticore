@@ -36,7 +36,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import de.monticore.ast.ASTNodeMock;
-import de.monticore.generating.templateengine.freemarker.FreeMarkerConfigurationBuilder;
 import de.monticore.io.FileReaderWriterMock;
 
 /**
@@ -56,11 +55,12 @@ public class TemplateControllerTest {
   
   @Before
   public void setup() {
-    freeMarkerTemplateEngine = new FreeMarkerTemplateEngineMock(new FreeMarkerConfigurationBuilder().build());
-    
-    fileHandler = new FileReaderWriterMock();
- 
+   
     final GeneratorSetupMock setup = new GeneratorSetupMock();
+    
+    freeMarkerTemplateEngine = new FreeMarkerTemplateEngineMock(setup.getConfig());
+    fileHandler = new FileReaderWriterMock();
+
     setup.setOutputDirectory(TARGET_DIR);
     setup.setFreeMarkerTemplateEngine(freeMarkerTemplateEngine);
     setup.setFileHandler(fileHandler);

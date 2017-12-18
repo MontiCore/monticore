@@ -20,21 +20,27 @@
 package de.monticore.generating;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateController;
-import de.monticore.generating.templateengine.freemarker.FreeMarkerConfigurationBuilder;
 import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
-import de.monticore.generating.templateengine.freemarker.TemplateAutoImport;
+import de.monticore.generating.templateengine.freemarker.MontiCoreFileTemplateLoader;
+import de.monticore.generating.templateengine.freemarker.MontiCoreTemplateExceptionHandler;
+import de.monticore.generating.templateengine.freemarker.MontiCoreTemplateLoader;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.IterablePath;
+import de.se_rwth.commons.logging.Log;
+import freemarker.cache.MultiTemplateLoader;
+import freemarker.cache.TemplateLoader;
 import freemarker.core.Macro;
+import freemarker.template.Configuration;
+import freemarker.template.DefaultObjectWrapper;
 
 /**
  * Setup for generator (see {@link GeneratorEngine}).
@@ -68,12 +74,6 @@ public class GeneratorSetup {
    */
   private List<File> additionalTemplatePaths = new ArrayList<>();
 
-  /**
-   * Template to include automatically at beginning.
-   */
-// TODO, XXX MB: (von BR 12/2017)
-// Dieses Attribut wird einmal gesetzt und nie benutzt! --> entfernen
-  private List<TemplateAutoImport> autoImports = new ArrayList<>();
 
   /**
    * Defines if tracing infos are added to the result as comments
@@ -140,6 +140,45 @@ public class GeneratorSetup {
   private List<Macro> aliases = Lists.newArrayList();
 
   public static final String ALIASES_TEMPLATE = "de.monticore.generating.templateengine.freemarker.Aliases";
+  
+  public  Configuration getConfig() {
+    Configuration config = new Configuration(Configuration.VERSION_2_3_23);
+    
+    config.setObjectWrapper(new DefaultObjectWrapper(Configuration.VERSION_2_3_23));
+    // don't look for templateName.de.ftl when templateName.ftl requested
+    config.setLocalizedLookup(false);
+    
+    MontiCoreTemplateLoader mcClassLoader = new MontiCoreTemplateLoader(getClassLoader());
+    
+    if (additionalTemplatePaths.isEmpty()) {
+      config.setTemplateLoader(mcClassLoader);
+    }
+    else {
+      List<TemplateLoader> loaders = new ArrayList<>();
+      
+      for (File file : additionalTemplatePaths) {
+        // add file loaders. IO checks by FileTemplateLoader constructor
+        try {
+          loaders.add(new MontiCoreFileTemplateLoader(file));
+        }
+        catch (IOException e) {
+          Log.error("0xA1020 Unable to load templates from path " + file.getPath(), e);
+        }
+      }
+            
+      // this loader is added last such that all "built-in" templates located on the additionaltemplatepath are
+      // taking precedence over this one
+      loaders.add(mcClassLoader);
+      
+     config.setTemplateLoader(new MultiTemplateLoader(loaders.toArray(new TemplateLoader[loaders
+          .size()])));
+    }
+    
+    config.setTemplateExceptionHandler(new MontiCoreTemplateExceptionHandler(
+        MontiCoreTemplateExceptionHandler.THROW_ERROR));
+        
+    return config;
+  }
 
 
   /*******************************************************/
@@ -181,8 +220,7 @@ public class GeneratorSetup {
 
   public FreeMarkerTemplateEngine getFreeMarkerTemplateEngine() {
     if (this.freeMarkerTemplateEngine == null) {
-      this.freeMarkerTemplateEngine =  new FreeMarkerTemplateEngine(new
-          FreeMarkerConfigurationBuilder().build());
+      this.freeMarkerTemplateEngine =  new FreeMarkerTemplateEngine(getConfig());
     }
     return freeMarkerTemplateEngine;
   }
@@ -232,17 +270,6 @@ public class GeneratorSetup {
 
   public List<File> getAdditionalTemplatePaths() {
     return additionalTemplatePaths;
-  }
-
-  public void setAutoImports(List<TemplateAutoImport> autoImports) {
-    this.autoImports = new ArrayList<>(autoImports);
-  }
-
-  /**
-   * @return the templates to include automatically at the beginning
-   */
-  public List<TemplateAutoImport> getAutoTemplateImports() {
-    return ImmutableList.copyOf(autoImports);
   }
 
   /**

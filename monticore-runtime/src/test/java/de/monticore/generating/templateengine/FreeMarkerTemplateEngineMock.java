@@ -23,7 +23,6 @@ import java.util.Set;
 
 import com.google.common.collect.Sets;
 
-import de.monticore.generating.templateengine.freemarker.FreeMarkerConfigurationBuilder;
 import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -39,10 +38,6 @@ import freemarker.template.Template;
 public class FreeMarkerTemplateEngineMock extends FreeMarkerTemplateEngine {
   
   private Set<FreeMarkerTemplateMock> processedTemplates = Sets.newLinkedHashSet();
-  
-  public FreeMarkerTemplateEngineMock() {
-    super(new FreeMarkerConfigurationBuilder().build());
-  }
   
   public FreeMarkerTemplateEngineMock(Configuration configuration) {
     super(configuration);

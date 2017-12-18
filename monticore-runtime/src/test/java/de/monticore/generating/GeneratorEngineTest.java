@@ -48,7 +48,7 @@ public class GeneratorEngineTest {
 
     final GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(new File("target1"));
-    FreeMarkerTemplateEngineMock freeMarkerTemplateEngine = new FreeMarkerTemplateEngineMock();
+    FreeMarkerTemplateEngineMock freeMarkerTemplateEngine = new FreeMarkerTemplateEngineMock(setup.getConfig());
     setup.setFreeMarkerTemplateEngine(freeMarkerTemplateEngine);
     FileReaderWriterMock fileHandler = new FileReaderWriterMock();
     setup.setFileHandler(fileHandler);
@@ -71,7 +71,7 @@ public class GeneratorEngineTest {
   @Test
   public void testGenerateStringBuilder() {
     final GeneratorSetup setup = new GeneratorSetup();
-    FreeMarkerTemplateEngineMock freeMarkerTemplateEngine = new FreeMarkerTemplateEngineMock();
+    FreeMarkerTemplateEngineMock freeMarkerTemplateEngine = new FreeMarkerTemplateEngineMock(setup.getConfig());
     setup.setFreeMarkerTemplateEngine(freeMarkerTemplateEngine);
     FileReaderWriterMock fileHandler = new FileReaderWriterMock();
     setup.setFileHandler(fileHandler);

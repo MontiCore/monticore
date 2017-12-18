@@ -31,8 +31,6 @@ import org.junit.Test;
 import de.monticore.ast.ASTNodeMock;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.freemarker.FreeMarkerConfigurationBuilder;
-import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.io.FileReaderWriterMock;
 
 /**
@@ -48,11 +46,9 @@ public class GlobalExtensionManagementGlobalVarsTest {
 
   @Before
   public void setup() {
-    FreeMarkerTemplateEngine freeMarkerTemplateEngine = new FreeMarkerTemplateEngine(new FreeMarkerConfigurationBuilder().build());
     glex = new GlobalExtensionManagement();
     
     GeneratorSetup config = new GeneratorSetup();
-    config.setFreeMarkerTemplateEngine(freeMarkerTemplateEngine);
     config.setGlex(glex);
     config.setFileHandler(new FileReaderWriterMock());
     config.setOutputDirectory(new File("dummy"));

@@ -34,8 +34,6 @@ import org.junit.Test;
 import com.google.common.collect.Lists;
 
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.freemarker.FreeMarkerConfigurationBuilder;
-import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.generating.templateengine.freemarker.MontiCoreFreeMarkerException;
 import de.monticore.io.FileReaderWriterMock;
 
@@ -57,11 +55,8 @@ public class TemplateControllerSignatureUsageTest {
   public void setup() {
     glex = new GlobalExtensionManagement();
     
-    FreeMarkerTemplateEngine freeMarkerTemplateEngine = new FreeMarkerTemplateEngine(new FreeMarkerConfigurationBuilder().build());
-    
     GeneratorSetup config = new GeneratorSetup();
     config.setGlex(glex);
-    config.setFreeMarkerTemplateEngine(freeMarkerTemplateEngine);
     config.setFileHandler(new FileReaderWriterMock());
     config.setOutputDirectory(new File("dummy"));
     config.setTracing(false);

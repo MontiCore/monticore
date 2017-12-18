@@ -19,18 +19,18 @@
 
 package de.monticore.generating.templateengine;
 
-import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.freemarker.FreeMarkerConfigurationBuilder;
-import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
-import de.monticore.io.FileReaderWriterMock;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.io.File;
-
 import static de.monticore.generating.templateengine.TestConstants.TEMPLATE_PACKAGE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+
+import java.io.File;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import de.monticore.generating.GeneratorSetup;
+import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
+import de.monticore.io.FileReaderWriterMock;
 
 /**
  * A simple unit test invoking a template which uses the new template logger.
@@ -45,9 +45,7 @@ public class TemplateLoggerTest {
   private TemplateControllerMock tc;
   
   private GlobalExtensionManagement glex;
-  
-  private FreeMarkerTemplateEngine freeMarkerTemplateEngine;
-  
+    
   private FileReaderWriterMock fileHandler;
   
   /**
@@ -59,14 +57,10 @@ public class TemplateLoggerTest {
   @Before
   public void setup() {
     glex = new GlobalExtensionManagement();
-    
-    freeMarkerTemplateEngine = new FreeMarkerTemplateEngine(
-        new FreeMarkerConfigurationBuilder().build());
-    
+ 
     fileHandler = new FileReaderWriterMock();
     GeneratorSetup config = new GeneratorSetup();
     config.setGlex(glex);
-    config.setFreeMarkerTemplateEngine(freeMarkerTemplateEngine);
     config.setFileHandler(fileHandler);
     config.setOutputDirectory(TARGET_DIR);
     config.setTracing(false);
