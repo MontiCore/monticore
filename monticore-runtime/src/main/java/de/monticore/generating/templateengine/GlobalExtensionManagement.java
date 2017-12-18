@@ -46,6 +46,14 @@ import freemarker.template.TemplateModelException;
  */
 public class GlobalExtensionManagement {
 
+
+// TODO MB:
+// Auch hier wird eine künstliche Unterscheidung zwischen Hook Points mit
+// explizitem Namen und Templates gemacht.
+// Dabei ist das so einfach und systematisch:
+// Hookpoint hat einen namen! (= String oder Template name, was ja auch ein String ist)
+// In before, after und replace wird nachgesehen, wie im text beschrieben
+//
   private SimpleHash globalData = SimpleHashFactory.getInstance().createSimpleHash();
 
   // use these list to handle replacements aka template forwardings
@@ -269,6 +277,14 @@ public class GlobalExtensionManagement {
    */
   public void bindStringHookPoint(String hookName, String content) {
     bindHookPoint(hookName, new StringHookPoint(content));
+  }
+
+  /**
+   * @param hookName name of the hook point
+   * @param content Template-content to be used as hook point
+   */
+  public void bindTemplateStringHookPoint(String hookName, String content) {
+    bindHookPoint(hookName, new TemplateStringHookPoint(content));
   }
 
   /**
