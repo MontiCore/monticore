@@ -62,16 +62,16 @@ public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVi
     if (node.getName().isPresent()) {
       getPrinter().print(".");
       if (node.getETypeArguments().isPresent()) {
-        node.getETypeArguments().get().accept(this);
+        node.getETypeArguments().get().accept(getRealThis());
       }
       getPrinter().print(node.getName().get());
       if (node.getArguments().isPresent()) {
-        node.getArguments().get().accept(this);
+        node.getArguments().get().accept(getRealThis());
         ;
       }
     }
     else {
-      node.getArguments().get().accept(this);
+      node.getArguments().get().accept(getRealThis());
       ;
     }
     CommentPrettyPrinter.printPostComments(node, getPrinter());
@@ -80,16 +80,16 @@ public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVi
   @Override
   public void handle(ASTSuperExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getExpression().accept(this);
+    node.getExpression().accept(getRealThis());
     getPrinter().print(".super");
-    node.getSuperSuffix().accept(this);
+    node.getSuperSuffix().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTClassExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getEReturnType().accept(this);
+    node.getEReturnType().accept(getRealThis());
     getPrinter().print(".class");
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
@@ -98,9 +98,9 @@ public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVi
   public void handle(ASTTypeCastExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     getPrinter().print("(");
-    node.getEType().accept(this);
+    node.getEType().accept(getRealThis());
     getPrinter().print(")");
-    node.getExpression().accept(this);
+    node.getExpression().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
@@ -111,15 +111,15 @@ public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVi
       if (node.isSuper()) {
         getPrinter().print("super");
       }
-      node.getSuperSuffix().get().accept(this);;
+      node.getSuperSuffix().get().accept(getRealThis());;
     }else if(node.getName().isPresent()) {
       getPrinter().print(node.getName().get());
-      node.getArguments().get().accept(this);
+      node.getArguments().get().accept(getRealThis());
     }else {
       if (node.isThis()) {
         getPrinter().print("this");
       }
-      node.getArguments().get().accept(this);
+      node.getArguments().get().accept(getRealThis());
       CommentPrettyPrinter.printPostComments(node, getPrinter());
     }
     
@@ -128,7 +128,7 @@ public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVi
   @Override
   public void handle(ASTGenericInvocationExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getExpression().accept(this);
+    node.getExpression().accept(getRealThis());
     getPrinter().print(".");
     handle(node.getPrimaryGenericInvocationExpression());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
@@ -144,9 +144,9 @@ public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVi
   @Override
   public void handle(ASTInstanceofExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getExpression().accept(this);
+    node.getExpression().accept(getRealThis());
     getPrinter().print(" instanceof ");
-    node.getEType().accept(this);
+    node.getEType().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
@@ -160,7 +160,7 @@ public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVi
         if (count > 0) {
           getPrinter().print(",");
         }
-        ast.accept(this);
+        ast.accept(getRealThis());
         count++;
       }
     }

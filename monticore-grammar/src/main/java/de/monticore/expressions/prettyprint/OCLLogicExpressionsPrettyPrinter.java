@@ -51,18 +51,18 @@ public class OCLLogicExpressionsPrettyPrinter implements OCLLogicExpressionsVisi
   @Override
   public void handle(ASTImpliesExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(this);
+    node.getLeftExpression().accept(getRealThis());
      getPrinter().print(" implies ");
-    node.getRightExpression().accept(this);
+    node.getRightExpression().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTSingleLogicalORExpr node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeft().accept(this);
+    node.getLeft().accept(getRealThis());
      getPrinter().print(" | ");
-    node.getRight().accept(this);
+    node.getRight().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
@@ -71,13 +71,13 @@ public class OCLLogicExpressionsPrettyPrinter implements OCLLogicExpressionsVisi
     CommentPrettyPrinter.printPreComments(node, getPrinter());
      getPrinter().print("forall ");
     if (node.getOCLCollectionVarDeclaration().isPresent()) {
-      node.getOCLCollectionVarDeclaration().get().accept(this);
+      node.getOCLCollectionVarDeclaration().get().accept(getRealThis());
     }
     if (node.getOCLNestedContainer().isPresent()) {
-      node.getOCLNestedContainer().get().accept(this);
+      node.getOCLNestedContainer().get().accept(getRealThis());
     }
      getPrinter().print(":");
-    node.getExpression().accept(this);
+    node.getExpression().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
@@ -86,13 +86,13 @@ public class OCLLogicExpressionsPrettyPrinter implements OCLLogicExpressionsVisi
     CommentPrettyPrinter.printPreComments(node, getPrinter());
      getPrinter().print("exists ");
     if (node.getOCLCollectionVarDeclaration().isPresent()) {
-      node.getOCLCollectionVarDeclaration().get().accept(this);
+      node.getOCLCollectionVarDeclaration().get().accept(getRealThis());
     }
     if (node.getOCLNestedContainer().isPresent()) {
-      node.getOCLNestedContainer().get().accept(this);
+      node.getOCLNestedContainer().get().accept(getRealThis());
     }
      getPrinter().print(":");
-    node.getExpression().accept(this);
+    node.getExpression().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
@@ -100,7 +100,7 @@ public class OCLLogicExpressionsPrettyPrinter implements OCLLogicExpressionsVisi
   public void handle(ASTAnyExpr node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
      getPrinter().print("any ");
-    node.getExpression().accept(this);
+    node.getExpression().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
@@ -109,11 +109,11 @@ public class OCLLogicExpressionsPrettyPrinter implements OCLLogicExpressionsVisi
     CommentPrettyPrinter.printPreComments(node, getPrinter());
      getPrinter().print("let ");
     for (ASTOCLDeclarationExt ast : node.getDeclarations()) {
-      ast.accept(this);
+      ast.accept(getRealThis());
        getPrinter().print("; ");
     }
      getPrinter().print("in ");
-    node.getExpression().accept(this);
+    node.getExpression().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
@@ -122,7 +122,7 @@ public class OCLLogicExpressionsPrettyPrinter implements OCLLogicExpressionsVisi
     CommentPrettyPrinter.printPreComments(node, getPrinter());
      getPrinter().print("let ");
     for (ASTOCLDeclarationExt ast : node.getDeclarations()) {
-      ast.accept(this);
+      ast.accept(getRealThis());
        getPrinter().print(";");
     }
     CommentPrettyPrinter.printPostComments(node, getPrinter());
@@ -132,12 +132,12 @@ public class OCLLogicExpressionsPrettyPrinter implements OCLLogicExpressionsVisi
   public void handle(ASTIterateExpr node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
      getPrinter().print("iterate { ");
-    node.getIterationDeclarator().accept(this);
+    node.getIterationDeclarator().accept(getRealThis());
      getPrinter().print("; ");
-    node.getInitDeclarator().accept(this);
+    node.getInitDeclarator().accept(getRealThis());
      getPrinter().print(" : ");
      getPrinter().print(node.getAccumulatorName() + " = ");
-    node.getAccumulatorValue().accept(this);
+    node.getAccumulatorValue().accept(getRealThis());
      getPrinter().print(" }");
      CommentPrettyPrinter.printPostComments(node, getPrinter());
   }

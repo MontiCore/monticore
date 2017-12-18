@@ -3,17 +3,17 @@
  * MontiCore Language Workbench
  * Copyright (c) 2015, MontiCore, All rights reserved.
  *
- * getRealThis() project is free software; you can redistribute it and/or
+ * This project is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- * getRealThis() library is distributed in the hope that it will be useful,
+ * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with getRealThis() project. If not, see <http://www.gnu.org/licenses/>.
+ * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * ******************************************************************************
  */
 package de.monticore.expressions.prettyprint;
@@ -30,6 +30,7 @@ import de.monticore.assignmentexpressions._ast.ASTIncPrefixExpression;
 import de.monticore.assignmentexpressions._ast.ASTIncSuffixExpression;
 import de.monticore.assignmentexpressions._ast.ASTLeftShiftAssignmentExpression;
 import de.monticore.assignmentexpressions._ast.ASTLogicalRightAssignmentExpression;
+import de.monticore.assignmentexpressions._ast.ASTMinusAssignmentExpression;
 import de.monticore.assignmentexpressions._ast.ASTMinusPrefixExpression;
 import de.monticore.assignmentexpressions._ast.ASTModuloAssignmentExpression;
 import de.monticore.assignmentexpressions._ast.ASTMultAssignmentExpression;
@@ -147,6 +148,15 @@ public class AssignmentExpressionsPrettyPrinter implements AssignmentExpressions
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getLeftExpression().accept(getRealThis());
     getPrinter().print("+=");
+    node.getRightExpression().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
+  }
+  
+  @Override
+  public void handle(ASTMinusAssignmentExpression node) {
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    node.getLeftExpression().accept(getRealThis());
+    getPrinter().print("-=");
     node.getRightExpression().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
