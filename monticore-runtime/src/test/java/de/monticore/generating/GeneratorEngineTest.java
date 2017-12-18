@@ -78,7 +78,7 @@ public class GeneratorEngineTest {
     
     GeneratorEngineMock generatorEngine = new GeneratorEngineMock(setup);
 
-    StringBuilder sb = generatorEngine.generate("the.Template");
+    StringBuilder sb = generatorEngine.generateNoA("the.Template");
     assertTrue(sb.length()>0);
 
     assertEquals(1, freeMarkerTemplateEngine.getProcessedTemplates().size());

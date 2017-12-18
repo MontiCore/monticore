@@ -103,12 +103,11 @@ public class TemplateAliasingTest {
         tc.include(ALIASES_PACKAGE + "IncludeArgsAndSignatureAlias");
     TemplateController tcChild = tc.getSubController().getSubController();
     assertNotNull(tcChild);
-    assertTrue(tcChild.isSignatureInitialized());
     
-    assertEquals(3, tcChild.getSignature().size());
-    assertEquals("name", tcChild.getSignature().get(0));
-    assertEquals("age", tcChild.getSignature().get(1));
-    assertEquals("city", tcChild.getSignature().get(2));
+    assertEquals(3, tcChild.getArguments().size());
+    assertEquals("name", tcChild.getArguments().get(0));
+    assertEquals("age", tcChild.getArguments().get(1));
+    assertEquals("city", tcChild.getArguments().get(2));
     
     assertEquals(3, tcChild.getArguments().size());
     assertEquals("Charly", tcChild.getArguments().get(0));

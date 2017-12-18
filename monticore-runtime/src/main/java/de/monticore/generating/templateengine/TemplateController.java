@@ -210,7 +210,7 @@ public class TemplateController {
         "0xA6298 Template '" + templatename + "': HookPoint-Signature size (#" + parameterNames.size() +
             ") and number of hook point arguments (#" + hparguments.size() + ") mismatch.");
 
-    this.hpsignature = newArrayList(parameterNames);
+    this.hparguments = newArrayList(parameterNames);
 
     // bind values (hparguments) to names (parameters/hpsignature)
     // and inject into template

@@ -65,21 +65,6 @@ public class TemplateControllerSignatureUsageTest {
     tc = new TemplateControllerMock(config, "");
   }
   
-  @Test
-  public void testSignatureMethodInvokedSeveralTimes() {
-    tc.signature();
-    assertTrue(tc.isSignatureInitialized());
-    
-    try {
-      tc.signature();
-      fail("An exception is expected here, because signature() is called more than once.");
-    }
-    catch (IllegalArgumentException e) {
-      // everything's fine
-    }
-  }
-  
-  
   
   // =================================================
   // Tests with templates
@@ -92,10 +77,9 @@ public class TemplateControllerSignatureUsageTest {
     
     TemplateController tcChild = tc.getSubController();
     assertNotNull(tcChild);
-    assertTrue(tcChild.isSignatureInitialized());
     
-    assertEquals(1, tcChild.getSignature().size());
-    assertEquals("name", tcChild.getSignature().get(0));
+    assertEquals(1, tcChild.getArguments().size());
+    assertEquals("name", tcChild.getArguments().get(0));
     
     assertEquals(1, tcChild.getArguments().size());
     assertEquals("Charly", tcChild.getArguments().get(0));
@@ -111,12 +95,11 @@ public class TemplateControllerSignatureUsageTest {
     
     TemplateController tcChild = tc.getSubController();
     assertNotNull(tcChild);
-    assertTrue(tcChild.isSignatureInitialized());
     
-    assertEquals(3, tcChild.getSignature().size());
-    assertEquals("name", tcChild.getSignature().get(0));
-    assertEquals("age", tcChild.getSignature().get(1));
-    assertEquals("city", tcChild.getSignature().get(2));
+    assertEquals(3, tcChild.getArguments().size());
+    assertEquals("name", tcChild.getArguments().get(0));
+    assertEquals("age", tcChild.getArguments().get(1));
+    assertEquals("city", tcChild.getArguments().get(2));
     
     assertEquals(3, tcChild.getArguments().size());
     assertEquals("Charly", tcChild.getArguments().get(0));
@@ -134,15 +117,14 @@ public class TemplateControllerSignatureUsageTest {
     
     TemplateController tcChild = tc.getSubController();
     assertNotNull(tcChild);
-    assertTrue(tcChild.isSignatureInitialized());
     
-    assertEquals(6, tcChild.getSignature().size());
-    assertEquals("name", tcChild.getSignature().get(0));
-    assertEquals("age", tcChild.getSignature().get(1));
-    assertEquals("city", tcChild.getSignature().get(2));
-    assertEquals("zip", tcChild.getSignature().get(3));
-    assertEquals("job", tcChild.getSignature().get(4));
-    assertEquals("friends", tcChild.getSignature().get(5));
+    assertEquals(6, tcChild.getArguments().size());
+    assertEquals("name", tcChild.getArguments().get(0));
+    assertEquals("age", tcChild.getArguments().get(1));
+    assertEquals("city", tcChild.getArguments().get(2));
+    assertEquals("zip", tcChild.getArguments().get(3));
+    assertEquals("job", tcChild.getArguments().get(4));
+    assertEquals("friends", tcChild.getArguments().get(5));
     
     assertEquals(6, tcChild.getArguments().size());
     assertEquals("Charly", tcChild.getArguments().get(0));

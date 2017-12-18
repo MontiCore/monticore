@@ -19,6 +19,7 @@
 
 package de.monticore.generating.templateengine;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -284,7 +285,12 @@ public class GlobalExtensionManagement {
    * @param content Template-content to be used as hook point
    */
   public void bindTemplateStringHookPoint(String hookName, String content) {
-    bindHookPoint(hookName, new TemplateStringHookPoint(content));
+    try {
+      bindHookPoint(hookName, new TemplateStringHookPoint(content));
+    }
+    catch (IOException e) {
+      Log.error("0xA7124 Cannot bind hookpoint " + hookName);
+    }
   }
 
   /**
