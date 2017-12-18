@@ -20,6 +20,7 @@
 package de.monticore.generating.templateengine;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -300,6 +301,44 @@ public class GlobalExtensionManagement {
 
     if (hookPoints.containsKey(hookName)) {
       result = hp.processValue(controller, ast);
+    }
+
+    Reporting.reportCallHookPointEnd(hookName);
+
+    return Strings.nullToEmpty(result);
+  }
+
+  /**
+   * @param hookName name of the hook point
+   * @return the (processed) value of the hook point
+   */
+  public String defineHookPoint(TemplateController controller, String hookName, ASTNode ast, Object... args) {
+
+    String result = null;
+    HookPoint hp = hookPoints.get(hookName);
+    Reporting.reportCallHookPointStart(hookName, hp, ast);
+
+    if (hookPoints.containsKey(hookName)) {
+      result = hp.processValue(controller, ast, Arrays.asList(args));
+    }
+
+    Reporting.reportCallHookPointEnd(hookName);
+
+    return Strings.nullToEmpty(result);
+  }
+
+  /**
+   * @param hookName name of the hook point
+   * @return the (processed) value of the hook point
+   */
+  public String defineHookPoint(TemplateController controller, String hookName, Object... args) {
+
+    String result = null;
+    HookPoint hp = hookPoints.get(hookName);
+    Reporting.reportCallHookPointStart(hookName, hp, controller.getAST());
+
+    if (hookPoints.containsKey(hookName)) {
+      result = hp.processValue(controller, Arrays.asList(args));
     }
 
     Reporting.reportCallHookPointEnd(hookName);
