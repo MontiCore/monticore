@@ -48,7 +48,7 @@ public class ShiftExpressionsPrettyPrinter implements ShiftExpressionsVisitor{
   @Override
   public void handle(ASTQualifiedNameExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getExpression().accept(this);
+    node.getExpression().accept(getRealThis());
     getPrinter().print("." + node.getName());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
@@ -56,7 +56,7 @@ public class ShiftExpressionsPrettyPrinter implements ShiftExpressionsVisitor{
   @Override
   public void handle(ASTThisExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getExpression().accept(this);
+    node.getExpression().accept(getRealThis());
     getPrinter().print(".");
     if (node.isThis()) {
       getPrinter().print("this");
@@ -67,9 +67,9 @@ public class ShiftExpressionsPrettyPrinter implements ShiftExpressionsVisitor{
   @Override
   public void handle(ASTArrayExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getExpression().accept(this);
+    node.getExpression().accept(getRealThis());
     getPrinter().print("[");
-    node.getIndexExpression().accept(this);
+    node.getIndexExpression().accept(getRealThis());
     ;
     getPrinter().print("]");
     CommentPrettyPrinter.printPostComments(node, getPrinter());
@@ -78,27 +78,27 @@ public class ShiftExpressionsPrettyPrinter implements ShiftExpressionsVisitor{
   @Override
   public void handle(ASTLeftShiftExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(this);
+    node.getLeftExpression().accept(getRealThis());
     getPrinter().print("<<");
-    node.getRightExpression().accept(this);
+    node.getRightExpression().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTRightShiftExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(this);
+    node.getLeftExpression().accept(getRealThis());
     getPrinter().print(">>");
-    node.getRightExpression().accept(this);
+    node.getRightExpression().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTLogicalRightShiftExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(this);
+    node.getLeftExpression().accept(getRealThis());
     getPrinter().print(">>>");
-    node.getRightExpression().accept(this);
+    node.getRightExpression().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   

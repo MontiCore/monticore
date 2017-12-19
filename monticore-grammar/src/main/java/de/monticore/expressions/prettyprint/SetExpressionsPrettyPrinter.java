@@ -47,63 +47,63 @@ public class SetExpressionsPrettyPrinter implements SetExpressionsVisitor {
   @Override
   public void handle(ASTIsInExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(this);
+    node.getLeftExpression().accept(getRealThis());
     getPrinter().print(" isin ");
-    node.getRightExpression().accept(this);
+    node.getRightExpression().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTSetInExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(this);
+    node.getLeftExpression().accept(getRealThis());
     getPrinter().print(" in ");
-    node.getRightExpression().accept(this);
+    node.getRightExpression().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTUnionExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(this);
+    node.getLeftExpression().accept(getRealThis());
     getPrinter().print(" union ");
-    node.getRightExpression().accept(this);
+    node.getRightExpression().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTIntersectionExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(this);
+    node.getLeftExpression().accept(getRealThis());
     getPrinter().print(" intersect ");
-    node.getRightExpression().accept(this);
+    node.getRightExpression().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTSetAndExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(this);
+    node.getLeftExpression().accept(getRealThis());
     getPrinter().print(" setand ");
-    node.getRightExpression().accept(this);
+    node.getRightExpression().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTSetOrExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(this);
+    node.getLeftExpression().accept(getRealThis());
     getPrinter().print(" setor ");
-    node.getRightExpression().accept(this);
+    node.getRightExpression().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTSetXOrExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(this);
+    node.getLeftExpression().accept(getRealThis());
     getPrinter().print(" setxor ");
-    node.getRightExpression().accept(this);
+    node.getRightExpression().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   

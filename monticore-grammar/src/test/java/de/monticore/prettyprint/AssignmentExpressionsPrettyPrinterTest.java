@@ -244,6 +244,23 @@ public class AssignmentExpressionsPrettyPrinterTest {
   }
   
   @Test
+  public void testMinusAssignmentExpression() throws IOException {
+    TestAssignmentExpressionsParser parser = new TestAssignmentExpressionsParser();
+    Optional<ASTExpression> ast = parser.parseString_Expression("a-=b");
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTExpression assignment = ast.get();
+    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    
+    ast = parser.parseString_Expression(output);
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    
+    assertTrue(assignment.deepEquals(ast.get()));
+  }
+  
+  @Test
   public void testMultAssignmentExpression() throws IOException {
     TestAssignmentExpressionsParser parser = new TestAssignmentExpressionsParser();
     Optional<ASTExpression> ast = parser.parseString_Expression("a*=b");
