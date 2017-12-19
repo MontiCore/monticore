@@ -22,8 +22,8 @@ package de.monticore.generating;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.nio.file.Path;
 import java.util.Arrays;
 
@@ -100,9 +100,7 @@ public class GeneratorEngine {
    * @param node the ast node
    * @param templateArguments additional template arguments (if needed).
    */
-// TODO MB: wäre nicht java.io.Writer besser
-// Wir wollen ja auch in Strings schreiben können
-  public void generate(String templateName, FileWriter writer,
+  public void generate(String templateName, Writer writer,
                 ASTNode node, Object... templateArguments) {
     Log.errorIfNull(node);
     checkArgument(!isNullOrEmpty(templateName));
@@ -128,8 +126,7 @@ public class GeneratorEngine {
    * @param filePath the writer in which the content is to be written
    * @param templateArguments additional template arguments (if needed).
    */
-// TODO MB: wäre nicht java.io.Writer besser
-  public void generateNoA(String templateName, FileWriter writer, Object... templateArguments) {
+  public void generateNoA(String templateName, Writer writer, Object... templateArguments) {
     checkArgument(!isNullOrEmpty(templateName));
     Log.errorIfNull(writer);
 

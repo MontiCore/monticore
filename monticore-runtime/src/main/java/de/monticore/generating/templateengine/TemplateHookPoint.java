@@ -93,7 +93,7 @@ public class TemplateHookPoint extends HookPoint {
   @Override
   public String processValue(TemplateController controller, ASTNode node, List<Object> args) {
     if (this.templateArguments.size() > 0) {
-      return controller.includeArgsWithoutForwarding(templateName,
+      return controller.includeArgsWithoutForwarding(templateName, node,
           this.templateArguments).toString();
     }
     return controller.includeArgsWithoutForwarding(templateName, node, args).toString();
