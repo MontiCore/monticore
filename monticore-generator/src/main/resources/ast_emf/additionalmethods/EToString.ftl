@@ -30,7 +30,7 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
-  ${tc.signature("grammarName", "emfAttributes")}
+  ${tc.signature("method", "clazz", "grammarName", "emfAttributes")}
   <#assign genHelper = glex.getGlobalVar("astHelper")>
     if (eIsProxy()) {
       return super.toString();

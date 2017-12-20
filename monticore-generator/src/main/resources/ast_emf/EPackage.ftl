@@ -35,7 +35,7 @@ software, even if advised of the possibility of such damage.
 <#-- Copyright -->
 ${defineHookPoint("JavaCopyright")}
 
-${tc.signature("ast", "grammarName", "packageURI", "astTypes")}
+${tc.signature("visitorPackage", "visitorType", "ast", "grammarName", "packageURI", "astTypes")}
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;

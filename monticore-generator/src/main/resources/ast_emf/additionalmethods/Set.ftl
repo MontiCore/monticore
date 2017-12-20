@@ -30,7 +30,7 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
-${tc.signature("grammarName", "emfAttribute", "cDAndJavaConformName")}
+${tc.signature("method", "ast", "grammarName", "emfAttribute", "cDAndJavaConformName")}
   <#assign genHelper = glex.getGlobalVar("astHelper")>
   <#if emfAttribute.isOptional()>
     ${astHelper.getTypeNameWithoutOptional(emfAttribute.getCdAttribute())} old${cDAndJavaConformName?cap_first} = this.${cDAndJavaConformName}.isPresent()? this.${cDAndJavaConformName}.get() : null;

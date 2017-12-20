@@ -30,7 +30,7 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
-${tc.signature("ast", "attribute", "cDAndJavaConformName")}
+${tc.signature("method", "ast", "attribute", "cDAndJavaConformName")}
   <#assign genHelper = glex.getGlobalVar("astHelper")>
   <#if genHelper.isOptional(attribute)>
     this.${cDAndJavaConformName} = Optional.ofNullable(${cDAndJavaConformName});

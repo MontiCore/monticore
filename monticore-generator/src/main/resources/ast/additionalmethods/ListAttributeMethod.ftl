@@ -30,5 +30,5 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-${tc.signature("ast", "attributeName", "methodName", "return", "parameters")}
+${tc.signature("d1", "ast", "attributeName", "methodName", "return", "parameters")}
      <#if return>return </#if>this.${attributeName}.${methodName}(${parameters});

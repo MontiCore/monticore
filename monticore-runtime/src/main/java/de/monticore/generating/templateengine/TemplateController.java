@@ -86,13 +86,6 @@ public class TemplateController {
    */
   private List<Object> arguments = newArrayList();
 
-  /**
-   * In Addition to the direct signature of templates, the TemplateHookPoint
-   * can have additional arguments: They are stored and retrieved via
-   * the hpsignature command
-   */
-  private List<Object> hparguments = newArrayList();
-
   private SimpleHash data = SimpleHashFactory.getInstance().createSimpleHash();
 
   public TemplateController(GeneratorSetup setup, String templatename) {
@@ -194,49 +187,10 @@ public class TemplateController {
     signature(Lists.newArrayList(parameterName));
   }
 
-
-  /**
-   * Defines the hpsignature of a template. <br />
-   * <br />
-   * Note that, due to technical constraints, at first, the current template is
-   * included and the arguments are passed. Second, the hpsignature is defined.
-   *
-   * @param parameterNames the list of the parameter names (=hpsignature)
-   */
-  public void hpsignature(List<String> parameterNames) {
-    Log.errorIfNull(parameterNames);
-
-    checkArgument(parameterNames.size() == hparguments.size(),
-        "0xA6298 Template '" + templatename + "': HookPoint-Signature size (#" + parameterNames.size() +
-            ") and number of hook point arguments (#" + hparguments.size() + ") mismatch.");
-
-    this.hparguments = newArrayList(parameterNames);
-
-    // bind values (hparguments) to names (parameters/hpsignature)
-    // and inject into template
-    for (int i = 0; i < parameterNames.size(); i++) {
-      data.put(parameterNames.get(i), hparguments.get(i));
-    }
-
-  }
-
-  /**
-   * Delegates to {@link #hpsignature(List)}.
-   */
-  public void hpsignature(String... parameterName) {
-    hpsignature(Lists.newArrayList(parameterName));
-  }
-
   List<Object> getArguments() {
     return arguments;
   }
 
-  /**
-   * get the arguments that had been provided by the TemplateHookPoint
-   */
-  List<Object> getHpArguments() {
-    return hparguments;
-  }
 
   /**
    * Includes a template without an explicit ast. (ast is current ast node)

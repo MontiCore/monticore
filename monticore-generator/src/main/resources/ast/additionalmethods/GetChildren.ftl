@@ -30,7 +30,7 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
-${tc.signature("ast", "type")}
+${tc.signature("method", "ast", "type")}
   <#assign genHelper = glex.getGlobalVar("astHelper")>
     java.util.LinkedList<de.monticore.ast.ASTNode> result = new java.util.LinkedList<de.monticore.ast.ASTNode>();
     <#list type.getAllVisibleFields() as field>

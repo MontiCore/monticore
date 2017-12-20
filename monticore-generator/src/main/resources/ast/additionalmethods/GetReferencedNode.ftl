@@ -30,7 +30,7 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
-${tc.signature("ast", "attributeName", "referencedSymbol", "symbolName")}
+${tc.signature("method", "ast", "attributeName", "referencedSymbol", "symbolName")}
 <#assign symbol = attributeName + "Symbol">
   Optional<${referencedSymbol}> ${symbol} = get${symbol?cap_first}();
 

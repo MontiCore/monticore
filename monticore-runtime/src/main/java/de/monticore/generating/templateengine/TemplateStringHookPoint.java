@@ -35,7 +35,7 @@ public class TemplateStringHookPoint extends HookPoint {
   public TemplateStringHookPoint(String statement) throws IOException {
     super();
     template = new Template("template", new StringReader(statement),
-        new Configuration());
+        new Configuration(Configuration.VERSION_2_3_23));
   }
   
   @Override

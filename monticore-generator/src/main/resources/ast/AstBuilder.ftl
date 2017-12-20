@@ -58,7 +58,7 @@ ${tc.signature("ast", "astType")}
     public abstract ${typeName} build();
   <#else>
     public ${typeName} build() {
-      return new ${typeName} (${tc.include("ast.ParametersDeclaration", ast)}
+      return new ${typeName} (${tc.include("ast.ParametersDeclaration")}
       );
     }
     </#if>

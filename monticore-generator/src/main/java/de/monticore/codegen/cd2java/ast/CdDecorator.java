@@ -212,7 +212,7 @@ public class CdDecorator {
       String toParse = "public " + returnType + " "
           + GeneratorHelper.getPlainGetter(attribute) + nameSuffix + "() ;";
       HookPoint getMethodBody = new TemplateHookPoint(
-          "ast.additionalmethods.GetReferencedSymbol", clazz,
+          "ast.additionalmethods.GetReferencedSymbol",
           attribute.getName(), referencedSymbol);
       replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
     }
@@ -245,7 +245,7 @@ public class CdDecorator {
       String toParse = "public " + returnType + " "
         + GeneratorHelper.getPlainGetter(attribute) + nameSuffix + "() ;";
       HookPoint getMethodBody = new TemplateHookPoint(
-        "ast.additionalmethods.GetReferencedNode", clazz,
+        "ast.additionalmethods.GetReferencedNode",
         attribute.getName(), referencedSymbol, symbolName);
       replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
     }
@@ -279,7 +279,7 @@ public class CdDecorator {
         String superVisitorTypeFQN = visitorPackage + "." + visitorType;
         methodSignatur = String.format(additionalMethod.getDeclaration(), superVisitorTypeFQN);
         replaceMethodBodyTemplate(clazz, methodSignatur, new TemplateHookPoint(
-            "ast.additionalmethods.AcceptSuper", clazz, astHelper.getQualifiedCdName(),
+            "ast.additionalmethods.AcceptSuper", astHelper.getQualifiedCdName(),
             visitorTypeFQN, superVisitorTypeFQN));
       }
     }
@@ -292,7 +292,7 @@ public class CdDecorator {
     }
     
     replaceMethodBodyTemplate(clazz, AstAdditionalMethods.get_Children.getDeclaration(),
-        new TemplateHookPoint("ast.additionalmethods.GetChildren", clazz, symbol.get()));
+        new TemplateHookPoint("ast.additionalmethods.GetChildren", symbol.get()));
         
     replaceMethodBodyTemplate(clazz, AstAdditionalMethods.deepEqualsWithOrder.getDeclaration(),
         new TemplateHookPoint("ast.additionalmethods.DeepEqualsWithOrder"));
@@ -593,7 +593,7 @@ public class CdDecorator {
       }
       String toParse = "public " + TypesPrinter.printType(attribute.getType()) + " "
           + methodName + "() ;";
-      HookPoint getMethodBody = new TemplateHookPoint("ast.additionalmethods.Get", clazz,
+      HookPoint getMethodBody = new TemplateHookPoint("ast.additionalmethods.Get",
           attribute.getName());
       replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
     }
@@ -641,7 +641,7 @@ public class CdDecorator {
       
       String toParse = "public void " + methodName + "("
           + typeName + " " + attributeName + ") ;";
-      HookPoint methodBody = new TemplateHookPoint("ast.additionalmethods.Set", clazz,
+      HookPoint methodBody = new TemplateHookPoint("ast.additionalmethods.Set", 
           attribute, attributeName);
       ASTCDMethod setMethod = replaceMethodBodyTemplate(clazz, toParse, methodBody);
       
@@ -753,7 +753,7 @@ public class CdDecorator {
           + methodName
           + AstGeneratorHelper.AST_BUILDER + "() ;";
       
-      HookPoint methodBody = new TemplateHookPoint("ast.AstMillBuilderMethod", clazz, className, methodName);
+      HookPoint methodBody = new TemplateHookPoint("ast.AstMillBuilderMethod", className, methodName);
       replaceMethodBodyTemplate(millClass, toParse, methodBody);
       
       toParse = "protected " + className + "Builder _"
@@ -839,11 +839,11 @@ public class CdDecorator {
     }
     String className = GeneratorHelper.getPlainName(clazz);
     String toParse = "public static " + className + " create" + className + "() ;";
-    HookPoint methodBody = new TemplateHookPoint("ast.factorymethods.Create", clazz, className);
+    HookPoint methodBody = new TemplateHookPoint("ast.factorymethods.Create", className);
     replaceMethodBodyTemplate(nodeFactoryClass, toParse, methodBody);
     
     toParse = "protected " + className + " doCreate" + className + "() ;";
-    methodBody = new TemplateHookPoint("ast.factorymethods.DoCreate", clazz, className);
+    methodBody = new TemplateHookPoint("ast.factorymethods.DoCreate", className);
     replaceMethodBodyTemplate(nodeFactoryClass, toParse, methodBody);
     
     // No create methods with parameters
@@ -914,13 +914,13 @@ public class CdDecorator {
     glex.replaceTemplate("ast.ParametersDeclaration", createMethod, new TemplateHookPoint(
         "ast.ConstructorParametersDeclaration"));
     glex.replaceTemplate(EMPTY_BODY_TEMPLATE, createMethod, new TemplateHookPoint(
-        "ast.factorymethods.CreateWithParams", clazz, className, paramCall.toString()));
+        "ast.factorymethods.CreateWithParams", className, paramCall.toString()));
         
     // doCreate() method
     glex.replaceTemplate("ast.ParametersDeclaration", doCreateMethod, new TemplateHookPoint(
         "ast.ConstructorParametersDeclaration"));
     glex.replaceTemplate(EMPTY_BODY_TEMPLATE, doCreateMethod, new TemplateHookPoint(
-        "ast.factorymethods.DoCreateWithParams", clazz, className, paramCall.toString()));
+        "ast.factorymethods.DoCreateWithParams", className, paramCall.toString()));
         
     if (parameters.size() != createMethod.getCDParameters().size()) {
       glex.replaceTemplate(ERROR_IFNULL_TEMPLATE, createMethod, new TemplateHookPoint(
@@ -1063,7 +1063,7 @@ public class CdDecorator {
     clazz.getCDConstructors().add(fullConstructor);
     
     glex.replaceTemplate("ast.ParametersDeclaration", fullConstructor, new TemplateHookPoint(
-        "ast.ConstructorParametersDeclaration"));
+        "ast.ConstructorParametersDeclaration", Lists.newArrayList()));
     glex.replaceTemplate("ast.EmptyMethodBody", fullConstructor, new TemplateHookPoint(
         "ast.ConstructorAttributesSetter"));
     Optional<ASTCDClass> clazzBuilder = astHelper.getASTBuilder(clazz);
@@ -1208,7 +1208,7 @@ public class CdDecorator {
     String callParameters = Joiners.COMMA
         .join(parameters.stream().map(ASTCDParameter::getName).collect(Collectors.toList()));
     HookPoint hookPoint = new TemplateHookPoint(
-        "ast.additionalmethods.ListAttributeMethod", clazz, attribute.getName(), callMethod,
+        "ast.additionalmethods.ListAttributeMethod", attribute.getName(), callMethod,
         !AstGeneratorHelper.hasReturnTypeVoid(astMethod.get()), callParameters);
     glex.replaceTemplate(EMPTY_BODY_TEMPLATE, astMethod.get(), hookPoint);
     glex.replaceTemplate(ERROR_IFNULL_TEMPLATE, astMethod.get(), new StringHookPoint(""));
