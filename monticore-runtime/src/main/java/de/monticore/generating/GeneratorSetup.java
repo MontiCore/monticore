@@ -91,15 +91,7 @@ public class GeneratorSetup {
    * Usually these are the comments of the target language.
    */
   private String commentEnd = "*/";
-
-  // TODO MB: !! Unklar wieso ein FileReaderWriter und ein ClassLoader 
-  // notwendig sind. Kann der ClassLoader gestrichen werden?
   
-  /**
-   * Used for loading all sorts of files (mainly templates)
-   */
-  private ClassLoader classLoader;
-
   /**
    * The model name
    * (if the arftifacts are generated from one model, this could 
@@ -130,9 +122,6 @@ public class GeneratorSetup {
    */
   public final static String GENERATED_CLASS_SUFFIX = "TOP";
   
-// TODO, XXX MB: unklar, ob die aliases überhaupt einen
-// Sinn machen. Ggf. entfernen? oder erklären (an BR oder 
-// im RefMan, Kap 12)
   /**
    * A list of all freemarker functions that serve as aliases for Java methods,
    * e.g. 'include' as alias for 'tc.include'
@@ -244,14 +233,9 @@ public class GeneratorSetup {
     return outputDirectory;
   }
 
-  public void setClassLoader(ClassLoader classLoader) {
-    this.classLoader = classLoader;
-  }
 
-  public ClassLoader getClassLoader() {
-    if (this.classLoader == null) 
-        this.classLoader = getClass().getClassLoader(); //default
-    return classLoader;
+  protected ClassLoader getClassLoader() {
+    return getClass().getClassLoader();
   }
 
   public void setGlex(GlobalExtensionManagement glex) {
