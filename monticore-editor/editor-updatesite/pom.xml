@@ -4,7 +4,7 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore-editor</artifactId>
-    <version>4.5.4-SNAPSHOT</version>
+    <version>4.5.5-SNAPSHOT</version>
   </parent>
 
   <artifactId>grammar-editor-updatesite</artifactId>
