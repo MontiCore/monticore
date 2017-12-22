@@ -32,7 +32,6 @@ import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.parser.antlr.AntlrTool;
 import de.monticore.codegen.parser.antlr.Grammar2Antlr;
-import de.monticore.codegen.parser.antlr.Grammar2PythonAntlr;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -216,7 +215,7 @@ public class ParserGenerator {
             astGrammar.getName() + "Antlr.g4");
     Grammar_WithConceptsVisitor g2a;
     if(lang.equals(Languages.PYTHON_2) || lang.equals(Languages.PYTHON_3)){
-      g2a = new Grammar2PythonAntlr(genHelper,grammarInfo,true);
+      g2a = new Grammar2Antlr(genHelper,grammarInfo,true,Languages.PYTHON_2);
     }else{
       g2a = new Grammar2Antlr(genHelper,grammarInfo, embeddedJavaCode);
     }

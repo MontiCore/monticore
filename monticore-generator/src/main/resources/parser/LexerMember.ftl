@@ -34,7 +34,7 @@ ${tc.signature("antlrGenerator", "parserName")}
     ${javaCode}
 </#list>
 
-<#if antlrGenerator.embeddedJavaCode>
+<#if (antlrGenerator.hasEmbeddedCode() && antlrGenerator.isJavaTarget())>
 private ${parserName}AntlrParser _monticore_parser;
 protected ${parserName}AntlrParser getCompiler() {
     return _monticore_parser;
