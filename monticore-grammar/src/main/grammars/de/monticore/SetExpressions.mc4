@@ -33,42 +33,45 @@ SUCH DAMAGE.
 
 package de.monticore;
 
-component grammar SetExpressions extends de.monticore.ExpressionsBasis {
+component grammar SetExpressions extends de.monticore.CommonExpressions {
 
-
-    IsInExpression implements Expression <190> =
+    IsInExpression implements InfixExpression <10> =
         leftExpression:Expression
-        "isin"
+        operator:"isin"
         rightExpression:Expression;
 
-    SetInExpression implements Expression <190> =
+    SetInExpression implements InfixExpression <10> =
         leftExpression:Expression
-        "in"
+        operator:"in"
         rightExpression:Expression;
 
-    UnionExpression implements Expression <180> =
+    UnionExpressionInfix implements Expression <180> =
         leftExpression:Expression
         "union"
         rightExpression:Expression;
 
-    IntersectionExpression implements Expression <180> =
+    IntersectionExpressionInfix implements Expression <180> =
         leftExpression:Expression
         "intersect"
         rightExpression:Expression;
 
+    UnionExpressionPrefix implements Expression <170> =
+        "union"
+	    set:Expression;
+
+    IntersectionExpressionPrefix implements Expression <170> =
+        "intersect"
+        set:Expression;
+
     SetAndExpression implements Expression <130> =
-        leftExpression:Expression
         "setand"
-        rightExpression:Expression;
+        set:Expression;
 
     SetOrExpression implements Expression <130> =
-        leftExpression:Expression
         "setor"
-        rightExpression:Expression;
+        set:Expression;
 
     SetXOrExpression implements Expression <130> =
-        leftExpression:Expression
         "setxor"
-        rightExpression:Expression;
-
+        set:Expression;
 }

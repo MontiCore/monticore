@@ -29,7 +29,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.monticore.expressions.prettyprint.OCLLogicExpressionsPrettyPrinter;
+import de.monticore.expressions.prettyprint.OCLExpressionsPrettyPrinter;
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.testocllogicexpressions._ast.ASTOCLCollectionVarDeclaration;
 import de.monticore.testocllogicexpressions._ast.ASTOCLDeclaration;
@@ -56,7 +56,7 @@ public class OCLLogicExpressionsPrettyPrinterTest{
     Log.getFindings().clear();
   }
   
-  static class PrimaryPrettyPrinter extends OCLLogicExpressionsPrettyPrinter
+  static class PrimaryPrettyPrinter extends OCLExpressionsPrettyPrinter
       implements TestOCLLogicExpressionsVisitor {
     
     private TestOCLLogicExpressionsVisitor realThis;
