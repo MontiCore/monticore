@@ -586,16 +586,27 @@ public class CdDecorator {
         continue;
       }
       String methodName = GeneratorHelper.getPlainGetter(attribute);
-      if (clazz.getCDMethods().stream()
+      if (!clazz.getCDMethods().stream()
           .filter(m -> methodName.equals(m.getName()) && m.getCDParameters().isEmpty()).findAny()
-          .isPresent()) {
-        continue;
+          .isPresent()) {     
+        String toParse = "public " + TypesPrinter.printType(attribute.getType()) + " "
+            + methodName + "() ;";
+        HookPoint getMethodBody = new TemplateHookPoint("ast.additionalmethods.Get",
+            attribute.getName());
+        replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
       }
-      String toParse = "public " + TypesPrinter.printType(attribute.getType()) + " "
-          + methodName + "() ;";
-      HookPoint getMethodBody = new TemplateHookPoint("ast.additionalmethods.Get",
-          attribute.getName());
-      replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
+      
+      if (GeneratorHelper.isOptional(attribute)) {
+        String methodName2 = methodName.replaceFirst(GeneratorHelper.GET_PREFIX_OPTINAL, GeneratorHelper.GET_PREFIX);
+        if (!clazz.getCDMethods().stream()
+            .filter(m -> methodName2.equals(m.getName()) && m.getCDParameters().isEmpty()).findAny()
+            .isPresent()) {     
+          String returnType = TypesPrinter.printType(TypesHelper.getFirstTypeArgumentOfOptional(attribute.getType()).get());
+          String toParse = "public " + returnType + " " + methodName2 + "() ;";
+          HookPoint getMethodBody = new TemplateHookPoint("ast.additionalmethods.GetForOpt", methodName);
+          replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
+        }
+      }
     }
   }
   

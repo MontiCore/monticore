@@ -68,8 +68,8 @@ public class ExpressionTest extends GeneratorIntegrationsTest {
       Optional<ASTExpr> res = parse("1");
       assertTrue(res.isPresent());
       ASTExpr ast = res.get();
-      assertTrue(ast.getNumericLiteral().isPresent());
-      assertEquals("1", ast.getNumericLiteral().get());
+      assertTrue(ast.getOptNumericLiteral().isPresent());
+      assertEquals("1", ast.getOptNumericLiteral().get());
     }
     catch (Exception e) {
       fail(e.getMessage());
@@ -95,7 +95,7 @@ public class ExpressionTest extends GeneratorIntegrationsTest {
       Optional<ASTExpr> res = parse("(1*2)");
       assertTrue(res.isPresent());
       ASTExpr ast = res.get();
-      assertTrue(ast.getExpr().isPresent());
+      assertTrue(ast.getOptExpr().isPresent());
     }
     catch (Exception e) {
       fail(e.getMessage());
@@ -146,9 +146,9 @@ public class ExpressionTest extends GeneratorIntegrationsTest {
     try {
       Optional<ASTExpr> res = parse("2^3^4");
       assertTrue(res.isPresent());
-      Optional<ASTExpr> left = res.get().getLeft();
+      Optional<ASTExpr> left = res.get().getOptLeft();
       assertTrue(left.isPresent());
-      assertTrue(left.get().getNumericLiteral().isPresent());
+      assertTrue(left.get().getOptNumericLiteral().isPresent());
     }
     catch (Exception e) {
       fail(e.getMessage());

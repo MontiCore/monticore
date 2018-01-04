@@ -59,12 +59,12 @@ public class ExpressionSourcePositionsTest extends GeneratorIntegrationsTest {
       // Start position of expression node coincides with the start position of
       // the left child
       ASTExpr leftChild = null;
-      if (node.getLeft().isPresent()) {
-        leftChild = node.getLeft().get();
+      if (node.getOptLeft().isPresent()) {
+        leftChild = node.getOptLeft().get();
         assertTrue(node.get_SourcePositionStart().compareTo(leftChild.get_SourcePositionStart()) == 0);
         
-        if (node.getRight().isPresent()) {
-          ASTExpr rightChild = node.getRight().get();
+        if (node.getOptRight().isPresent()) {
+          ASTExpr rightChild = node.getOptRight().get();
           
           // End position of expression node coincides with the end position of
           // the right child
