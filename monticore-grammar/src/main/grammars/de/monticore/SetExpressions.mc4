@@ -35,12 +35,13 @@ package de.monticore;
 
 component grammar SetExpressions extends de.monticore.CommonExpressions {
 
-    IsInExpression implements InfixExpression <10> =
+
+    IsInExpression implements Expression <190> =
         leftExpression:Expression
         operator:"isin"
         rightExpression:Expression;
 
-    SetInExpression implements InfixExpression <10> =
+    SetInExpression implements Expression <190> =
         leftExpression:Expression
         operator:"in"
         rightExpression:Expression;

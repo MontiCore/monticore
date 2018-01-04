@@ -56,22 +56,22 @@ public class SetExpressionsPrettyPrinterTest {
   static class PrimaryPrettyPrinter extends SetExpressionsPrettyPrinter
       implements TestSetExpressionsVisitor {
     
-    private TestSetExpressionsVisitor realThis;
-    
-    @Override
-    public void visit(ASTPrimaryExpression node) {
-      getPrinter().print((node.getName()));
-    }
-    
-    public PrimaryPrettyPrinter(IndentPrinter printer) {
-      super(printer);
-      realThis = this;
-    }
-    
-    @Override
-    public TestSetExpressionsVisitor getRealThis() {
-      return realThis;
-    }
+  private TestSetExpressionsVisitor realThis;
+
+  @Override
+  public void visit(ASTPrimaryExpression node) {
+  getPrinter().print((node.getName()));
+  }
+
+  public PrimaryPrettyPrinter(IndentPrinter printer) {
+    super(printer);
+    realThis = this;
+  }
+
+  @Override
+  public TestSetExpressionsVisitor getRealThis() {
+  return realThis;
+  }
   }
   
   
@@ -79,7 +79,7 @@ public class SetExpressionsPrettyPrinterTest {
   @Test
   public void testIsInExpression() throws IOException {
     TestSetExpressionsParser parser = new TestSetExpressionsParser();
-    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("a isin b"));
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("a in b"));
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
     ASTExpression assignment = ast.get();
@@ -94,7 +94,7 @@ public class SetExpressionsPrettyPrinterTest {
   @Test
   public void testSetAndExpression() throws IOException {
     TestSetExpressionsParser parser = new TestSetExpressionsParser();
-    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("a setand b"));
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("setand b"));
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
     ASTExpression assignment = ast.get();
@@ -154,7 +154,7 @@ public class SetExpressionsPrettyPrinterTest {
   @Test
   public void testSetOrExpression() throws IOException {
     TestSetExpressionsParser parser = new TestSetExpressionsParser();
-    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("a setor b"));
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("setor b"));
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
     ASTExpression assignment = ast.get();
@@ -169,7 +169,7 @@ public class SetExpressionsPrettyPrinterTest {
   @Test
   public void testSetXOrExpression() throws IOException {
     TestSetExpressionsParser parser = new TestSetExpressionsParser();
-    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("a setxor b"));
+    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("setxor b"));
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
     ASTExpression assignment = ast.get();

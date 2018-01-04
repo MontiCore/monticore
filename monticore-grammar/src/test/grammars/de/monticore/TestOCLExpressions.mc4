@@ -1,11 +1,13 @@
 package de.monticore;
 
-grammar TestOCLExpressions extends de.monticore.OCLExpressions, de.monticore.CommonExpressions {
-	PrimaryExpression implements Expression<20000> = 
-	  Name;
-	  OCLCollectionVarDeclaration implements Expression = varName:Name "in" collection:Name;
-	  
-	  OCLNestedContainer implements Expression = varName:Name "in List <" imput:Name ">";
-	  
-	  OCLDeclaration implements Expression = (public:"public" | private:"private")? type:Name varName:Name;
+grammar TestOCLExpressions extends de.monticore.OCLExpressions {
+
+	PrimaryExpression implements Expression<20000> =
+	     Name;
+
+	PrimaryNestedExpression implements Expression<20000> =
+	     Name "<" Name ">";
+
+    EDeclaration implements Expression =
+        (public:"public" | private:"private")? type:Name varName:Name;
 }
