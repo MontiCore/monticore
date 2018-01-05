@@ -1,0 +1,277 @@
+
+/*
+***************************************************************************************
+Copyright (c) 2017, MontiCore
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation and/or
+other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its contributors
+may be used to endorse or promote products derived from this software
+without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGE.
+***************************************************************************************
+*/
+
+package de.monticore;
+
+component grammar OCLExpressions extends de.monticore.common.Common, de.monticore.CommonExpressions,
+                                            de.monticore.SetExpressions, de.monticore.ShiftExpressions {
+
+external EDeclaration;
+
+    InstanceOfExpression implements Expression <50> =
+        leftExpression:Expression operator:"instanceof" Type;
+
+    TypeIfExpr implements Expression <100> =
+        "typeif" condition:Expression
+        "then" thenExpression:Expression
+        "else" elseExpression:Expression;
+
+    IfThenElseExpr implements Expression <100> =
+        "if" condition:Expression
+        "then" thenExpression:Expression
+        "else" elseExpression:Expression;
+
+    ImpliesExpression implements Expression <60> =
+        leftExpression:Expression
+        "implies"
+        rightExpression:Expression;
+
+	SingleLogicalORExpr implements Expression <80> =
+		left:Expression
+		"|"
+		right:Expression;
+
+    /** ASTForAllExpr defines a quantified expression for collections e.g.
+        "forall x in Y : ...".
+        @attribute InExpr
+                   List of collection variable declarations, e.g:
+                   "forall a in A: ..."
+                   "forall a in List <..> : ..."
+                   "forall a: ..."
+        @attribute OCLExpression
+                   The body of forall iteration as an expression.
+
+    */
+    ForallExpr implements Expression <90> =
+        "forall"
+        (InExpr || ",")+
+        ":"
+        Expression
+        ;
+
+    /** ASTExistsExpr defines a quantified expression for collections e.g.
+        "exists x in Y : ...".
+        @attribute InExpr
+                   List of collection variable declarations, e.g:
+                    "exists a in A: ..."
+                    "exists a in List <..> : ..."
+                    "exists a: ..."
+        @attribute OCLExpression
+                   The body of exists iteration as an expression.
+
+    */
+    ExistsExpr implements Expression <90> =
+        "exists"
+        (InExpr || ",")+
+        ":"
+        Expression
+        ;
+
+    /** ASTOCLAnyExpr defines iterations with all objects of a collection e.g.
+        any x in set or any Auction.
+        @attribute OCLExpression
+                   A collection defined by an expression.
+    */
+    AnyExpr implements Expression <100> =
+        "any" Expression;
+
+    /** ASTOCLLetinExpr are used to define local vars or methods. The defined
+        vars and methods are visible in the in-expression.
+        @attribute declarations
+                   A list of variable or method declarations.
+        @attribute OCLExpression
+                   An expression where previous declarations are used.
+    */
+    LetinExpr implements Expression <100> =
+        "let" (declarations:EDeclaration ";")+
+        "in" Expression;
+
+    /** ASTOCLLetDeclaration represents a list of let-declarations inside of a
+        let-statement. This contains variable- or method-declarations.
+        @attribute declarations
+               List of variable- or method-declarations.
+    */
+    LetDeclaration implements Expression <100> =
+        "let" (declarations:EDeclaration ";")+;
+
+    /** ASTOCLIterateExpr is used to iterate collections. It differs from
+        Java5-Iterator.
+        Example:
+            iterate{ elem in Auction; int acc=0 : acc = acc+elem.numberOfBids }.
+        @attribute iterationDeclarator
+                   The elements of a collection that will be iterated as an
+                   OCLCollectionVarDeclaration.
+        @attribute initDeclarator
+                   Definiton of a accumulation variable as an EDeclaration.
+        @attribute accumulatorName
+                   Name of the accumulation assignment variable.
+        @attribute accumulatorValue
+                   Right hand of the accumulation as an expression.
+    */
+    IterateExpr implements Expression <100> =
+        "iterate" "{"
+        iterationDeclarator:InExpr ";"
+        initDeclarator:EDeclaration ":"
+        accumulatorName:Name "=" accumulatorValue:Expression
+        "}";
+
+    TypeCastExpression implements Expression <200> =
+    	"(" Type ")" Expression;
+
+    ParenthizedExpression implements Expression <10> =
+        "(" Expression ")"
+        ("." qualification:OCLPrimary)?;
+
+    /** ASTInExpr defines a collection like "int x in y" or "Auction a" as
+        shortform of "Auction a in Auction.allInstances").
+    */
+    InExpr implements Expression <50> =
+		Type?
+		varNames:(Name || ",")+
+		("in" Expression)?
+        ;
+
+
+    /*============================= OCL PRIMARYS =============================*/
+
+    /** ASTOCLPrimary defines primaries of OCL.
+    */
+    interface OCLPrimary extends Expression <10>;
+
+    OCLIsNewPrimary implements OCLPrimary <100> =
+        "isnew" "(" Expression ")";
+
+    OCLDefinedPrimary implements OCLPrimary <100> =
+        "defined" "(" Expression ")";
+
+    /** ASTOCLQualifiedPrimary represents qualified identifier.
+        @attribute qualifications
+                   List of names of qualified identifier.
+        @attribute postfixQualification
+                   Optional argument-, array- or atpre, **-qualifcation.
+        @attribute OCLQualifiedPrimary
+                   Optional recursive linkage of qualified primary.
+
+        example: name.name.name(argument).nextQualifiedPrimary
+                 name.name[expr]
+                 name**
+                 name@pre
+    */
+    OCLQualifiedPrimary implements OCLPrimary <50> =
+        (Name || ".")+
+        postfixQualification:OCLQualification?
+        ("." OCLQualifiedPrimary)?
+        ;
+
+
+
+    /** ASTOCLQualification defines qualification postfixes of a qualified
+        primary. A qualification is one of the three kinds:
+            - x[0] (ArrayQualification)
+            - x(y) (ArgumentQualification)
+            - x**  (TransitivQualification)
+            - x@pre (AtPreQualification)
+    */
+    interface OCLQualification;
+
+    OCLArrayQualification implements OCLQualification =
+        ("[" arguments:Expression "]")+;
+
+    OCLArgumentQualification implements OCLQualification =
+        "(" (Expression || "," )* ")";
+
+    OCLAtPreQualification implements OCLQualification =
+        atpre:["@pre"];
+
+    OCLTransitivQualification implements OCLQualification =
+        transitive:["**"];
+
+
+    /*============================= OCL Comprehensions =============================*/
+
+    /** ASTOCLComprehensionPrimary represents comprehensions.
+        @attribute SimpleReferenceType
+                   Optional type of comprehension, e.g. Set, List or Collection.
+        @attribute expression
+                   Expression of comprehension.
+        @attribute qualification
+                   Optional Qualification.
+    */
+    OCLComprehensionPrimary implements OCLPrimary  <40> =
+        Type?
+        "{" expression:OCLComprehensionExpr? "}"
+        ("." qualification:OCLPrimary)?
+        ;
+
+    /** ASTOCLComprehensionExpr defines comprehension kinds.
+        e.g.:
+            - {x * x | x in y} (OCLComprehensionExpressionStyle)
+            - {1..3, x..10, y} (OCLComprehensionEnumerationStyle)
+    */
+    interface OCLComprehensionExpr;
+
+ 	/** ASTOCLComprehensionExpressionStyle defines a comprehension with given
+        characteristic.
+        @attribute expression
+                   An expression (e.g. "x*x" or "x in Y").
+        @attribute comprehensionItems
+                   Characterization of comprehension as a list of
+                   comprehension-items. This can be generators, vardefinitions
+                   or filters.
+        Note that we assume at least one generator (e.g. x in Y) in this AST.
+    */
+    OCLComprehensionExpressionStyle implements OCLComprehensionExpr <20> =
+    	Expression "|"
+    	(OCLComprehensionItem || ",")+
+    	;
+
+    OCLComprehensionItem =
+        EDeclaration | Expression;
+
+    /** ASTOCLComprehensionEnumerationStyle is used for an enumeration of
+        comprehension elements. Note that collection items are optional.
+        @attribute collectionItems
+                   Enumerated elements as a list separated by , (comma).
+                   (e.g.: "1..3, x, y..z")
+    */
+    OCLComprehensionEnumerationStyle implements OCLComprehensionExpr <10> =
+    	OCLCollectionItem* (",")?
+    	;
+
+    OCLCollectionItem =
+        (Expression  ".."  Expression)
+        |
+        (Expression ("," Expression)*)
+        ;
+}

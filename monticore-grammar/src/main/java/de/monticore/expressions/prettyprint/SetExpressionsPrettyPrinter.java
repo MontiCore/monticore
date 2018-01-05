@@ -21,13 +21,13 @@ package de.monticore.expressions.prettyprint;
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.setexpressions._ast.ASTIntersectionExpression;
+import de.monticore.setexpressions._ast.ASTIntersectionExpressionInfix;
 import de.monticore.setexpressions._ast.ASTIsInExpression;
 import de.monticore.setexpressions._ast.ASTSetAndExpression;
 import de.monticore.setexpressions._ast.ASTSetInExpression;
 import de.monticore.setexpressions._ast.ASTSetOrExpression;
 import de.monticore.setexpressions._ast.ASTSetXOrExpression;
-import de.monticore.setexpressions._ast.ASTUnionExpression;
+import de.monticore.setexpressions._ast.ASTUnionExpressionInfix;
 import de.monticore.setexpressions._visitor.SetExpressionsVisitor;
 
 /**
@@ -63,7 +63,7 @@ public class SetExpressionsPrettyPrinter implements SetExpressionsVisitor {
   }
   
   @Override
-  public void handle(ASTUnionExpression node) {
+  public void handle(ASTUnionExpressionInfix node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getLeftExpression().accept(getRealThis());
     getPrinter().print(" union ");
@@ -72,7 +72,7 @@ public class SetExpressionsPrettyPrinter implements SetExpressionsVisitor {
   }
   
   @Override
-  public void handle(ASTIntersectionExpression node) {
+  public void handle(ASTIntersectionExpressionInfix node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getLeftExpression().accept(getRealThis());
     getPrinter().print(" intersect ");
@@ -83,27 +83,24 @@ public class SetExpressionsPrettyPrinter implements SetExpressionsVisitor {
   @Override
   public void handle(ASTSetAndExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(getRealThis());
-    getPrinter().print(" setand ");
-    node.getRightExpression().accept(getRealThis());
+    getPrinter().print("setand ");
+    node.getSet().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTSetOrExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(getRealThis());
-    getPrinter().print(" setor ");
-    node.getRightExpression().accept(getRealThis());
+    getPrinter().print("setor ");
+    node.getSet().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTSetXOrExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(getRealThis());
     getPrinter().print(" setxor ");
-    node.getRightExpression().accept(getRealThis());
+    node.getSet().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
