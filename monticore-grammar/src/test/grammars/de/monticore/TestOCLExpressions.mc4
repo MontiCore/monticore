@@ -10,4 +10,6 @@ grammar TestOCLExpressions extends de.monticore.OCLExpressions {
 
     EDeclaration implements Expression =
         (public:"public" | private:"private")? type:Name varName:Name;
+
+    EType = Name;
 }
