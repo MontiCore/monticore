@@ -39,6 +39,7 @@ software, even if advised of the possibility of such damage.
 -->
   ${tc.signature("ast", "astType")}
   <#assign genHelper = glex.getGlobalVar("astHelper")>
+  ${ast.printAnnotation()}
   ${ast.printModifier()} ${ast.printReturnType()} ${ast.getName()}(${ast.printParametersDecl()}) ${ast.printThrowsDecl()}<#if genHelper.isAbstract(ast, astType)>;
   <#else>
   { 
