@@ -54,8 +54,8 @@ public class OCLExpressionsPrettyPrinter implements OCLExpressionsVisitor {
     @Override
     public void handle(ASTInExpr node) {
         CommentPrettyPrinter.printPreComments(node, getPrinter());
-        if(node.typeIsPresent())
-            node.getType().get().accept(getRealThis());
+        if(node.eTypeIsPresent())
+            node.getEType().get().accept(getRealThis());
 
         Iterator iter = node.getVarNames().iterator();
         getPrinter().print(iter.next());

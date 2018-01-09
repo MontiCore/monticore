@@ -34,13 +34,14 @@ SUCH DAMAGE.
 
 package de.monticore;
 
-component grammar OCLExpressions extends de.monticore.common.Common, de.monticore.CommonExpressions,
-                                            de.monticore.SetExpressions, de.monticore.ShiftExpressions {
+component grammar OCLExpressions extends de.monticore.CommonExpressions,
+                           de.monticore.SetExpressions, de.monticore.ShiftExpressions {
 
 external EDeclaration;
+external EType;
 
     InstanceOfExpression implements Expression <50> =
-        leftExpression:Expression operator:"instanceof" Type;
+        leftExpression:Expression operator:"instanceof" EType;
 
     TypeIfExpr implements Expression <100> =
         "typeif" condition:Expression
@@ -147,7 +148,7 @@ external EDeclaration;
         "}";
 
     TypeCastExpression implements Expression <200> =
-    	"(" Type ")" Expression;
+    	"(" EType ")" Expression;
 
     ParenthizedExpression implements Expression <10> =
         "(" Expression ")"
@@ -157,11 +158,10 @@ external EDeclaration;
         shortform of "Auction a in Auction.allInstances").
     */
     InExpr implements Expression <50> =
-		Type?
+		EType?
 		varNames:(Name || ",")+
 		("in" Expression)?
         ;
-
 
     /*============================= OCL PRIMARYS =============================*/
 
@@ -229,7 +229,7 @@ external EDeclaration;
                    Optional Qualification.
     */
     OCLComprehensionPrimary implements OCLPrimary  <40> =
-        Type?
+        EType?
         "{" expression:OCLComprehensionExpr? "}"
         ("." qualification:OCLPrimary)?
         ;
