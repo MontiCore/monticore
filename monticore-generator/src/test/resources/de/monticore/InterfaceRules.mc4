@@ -30,7 +30,7 @@ component grammar InterfaceRules  extends mc.grammars.lexicals.TestLexicals {
    astrule AProd =
    method public String toString() { 
      java.util.List<String> tmp1 = getNames();
-     java.util.Optional<String> tmp2 = getOptOptionalName();
+     java.util.Optional<String> tmp2 = getOptionalNameOpt();
      return getSimpleName(); 
    };
     

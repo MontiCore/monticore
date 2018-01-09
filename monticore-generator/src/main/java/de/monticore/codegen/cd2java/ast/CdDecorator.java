@@ -609,7 +609,7 @@ public class CdDecorator {
       }
       
       if (GeneratorHelper.isOptional(attribute)) {
-        String methodName2 = methodName.replaceFirst(GeneratorHelper.GET_PREFIX_OPTINAL, GeneratorHelper.GET_PREFIX);
+        String methodName2 = methodName.substring(0, methodName.length()-GeneratorHelper.GET_SUFFIX_OPTINAL.length());
         if (!clazz.getCDMethods().stream()
             .filter(m -> methodName2.equals(m.getName()) && m.getCDParameters().isEmpty()).findAny()
             .isPresent()) {     
