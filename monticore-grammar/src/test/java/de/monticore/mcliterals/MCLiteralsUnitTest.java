@@ -29,6 +29,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.monticore.antlr4.MCConcreteParser.ParserExecution;
+import de.monticore.literals.literals._ast.ASTIntLiteral;
 import de.monticore.mcnumbers._ast.ASTDecimal;
 import de.monticore.mcnumbers._ast.ASTInteger;
 import de.monticore.mcnumbers._ast.ASTNumber;
@@ -261,28 +262,6 @@ public class MCLiteralsUnitTest {
     assertEquals('o', ast.getCharLiterals().get(7).getValue());
   }
 
-  // --------------------------------------------------------------------
-  @Test
-  public void testCharOct1() throws IOException {
-    ASTCharLiteral ast = parser.parseString_CharLiteral(
-    	"'" + "\\" + "105" + "'" ).get();
-    // XXX BUG, MB: Octals are not decoded
-    assertEquals('\40', ast.getValue());  // this is wrong
-    // should be: assertEquals('E', ast.getValue());
-    //            assertEquals("\7", ast.getSource());
-  }
-
-  // --------------------------------------------------------------------
-  @Test
-  public void testCharOct2() throws IOException {
-    ASTCharList ast = parser.parseString_CharList( 
-     "['\\0', '\\7', '\\244', 'o']" ).get();
-    // XXX BUG, MB : Octals
-    // assertEquals('\0', ast.getCharLiterals(0).getValue());
-    // assertEquals('\7', ast.getCharLiterals(1).getValue());
-    // assertEquals('\244', ast.getCharLiterals(2).getValue());
-    assertEquals('o', ast.getCharLiterals().get(3).getValue());
-  }
 
   // --------------------------------------------------------------------
   // --------------------------------------------------------------------

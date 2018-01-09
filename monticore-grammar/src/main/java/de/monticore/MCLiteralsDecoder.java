@@ -66,7 +66,8 @@ public class MCLiteralsDecoder {
       return (char) Integer.parseInt(s.substring(2), 16);
     }
     Log.error("0xA4080 Unable to convert String " + s + " to char.");
-    return ' ';
+    // Noramlly this statement is not reachable
+    throw new IllegalStateException();
   }
   
   /**
