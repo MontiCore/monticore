@@ -33,10 +33,6 @@ software, even if advised of the possibility of such damage.
  <#assign genHelper = glex.getGlobalVar("astHelper")>
   {
   <#list ast.getCDParameters() as attribute>
-    <#if genHelper.isOptional(attribute.getType())>
-	  set${genHelper.getNativeAttributeName(attribute.getName())?cap_first}(${attribute.getName()}.orElse(null));
-	<#else>
-      set${genHelper.getNativeAttributeName(attribute.getName())?cap_first}(${attribute.getName()});
-    </#if>
+    set${genHelper.getNativeAttributeName(attribute.getName())?cap_first}(${attribute.getName()});
   </#list>
   }

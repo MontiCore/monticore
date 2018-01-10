@@ -28,7 +28,6 @@ import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.TypesHelper;
 import de.monticore.types.TypesPrinter;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
-import de.monticore.types.types._ast.ASTType;
 import de.monticore.types.types._ast.ASTVoidType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
@@ -231,10 +230,6 @@ public class AstGeneratorHelper extends GeneratorHelper {
     }.handle(ast);
     
     return ast;
-  }
-  
-  public String printFullType(ASTType ast) {
-    return TypesPrinter.printType(ast);
   }
   
   public class Cd2JavaTypeConverter implements CD4AnalysisVisitor {}
