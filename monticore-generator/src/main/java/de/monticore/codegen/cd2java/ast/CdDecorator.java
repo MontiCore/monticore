@@ -898,12 +898,7 @@ public class CdDecorator {
       }
       ASTCDParameter param = CD4AnalysisNodeFactory.createASTCDParameter();
       ASTType type = attr.getType();
-      if (TypesHelper.isOptional(type)) {
-        type = TypesHelper.getSimpleReferenceTypeFromOptional(type);
-      }
-      else {
-        parameters.add(attr);
-      }
+      parameters.add(attr);
       param.setType(type);
       String javaAttrName = GeneratorHelper.getJavaAndCdConformName(attr.getName());
       param.setName(javaAttrName);
@@ -917,12 +912,7 @@ public class CdDecorator {
     for (ASTCDAttribute attr : inheritedAttributes) {
       ASTCDParameter param = CD4AnalysisNodeFactory.createASTCDParameter();
       ASTType type = attr.getType();
-      if (TypesHelper.isOptional(type)) {
-        type = TypesHelper.getSimpleReferenceTypeFromOptional(type);
-      }
-      else {
-        parameters.add(attr);
-      }
+      parameters.add(attr);
       param.setType(type);
       String javaAttrName = GeneratorHelper.getJavaAndCdConformName(attr.getName());
       param.setName(javaAttrName);
@@ -1003,9 +993,6 @@ public class CdDecorator {
       }
       ASTCDParameter param = CD4AnalysisNodeFactory.createASTCDParameter();
       ASTType type = attr.getType();
-      if (TypesHelper.isOptional(type)) {
-        type = TypesHelper.getSimpleReferenceTypeFromOptional(type);
-      }
       if (type instanceof ASTSimpleReferenceType) {
         type = astHelper.convertTypeCd2Java((ASTSimpleReferenceType) type,
             AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT);
@@ -1020,9 +1007,6 @@ public class CdDecorator {
     for (ASTCDAttribute attr : inheritedAttributes) {
       ASTCDParameter param = CD4AnalysisNodeFactory.createASTCDParameter();
       ASTType type = attr.getType();
-      if (TypesHelper.isOptional(type)) {
-        type = TypesHelper.getSimpleReferenceTypeFromOptional(type);
-      }
       if (type instanceof ASTSimpleReferenceType) {
         type = astHelper.convertTypeCd2Java((ASTSimpleReferenceType) type,
             AstGeneratorHelper.AST_PACKAGE_SUFFIX);
