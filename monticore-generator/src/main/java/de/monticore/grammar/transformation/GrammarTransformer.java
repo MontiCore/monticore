@@ -116,16 +116,16 @@ public class GrammarTransformer {
     ASTNodes.getSuccessors(classProd, ASTNonTerminal.class).stream()
         .filter(nonTerminal -> GeneratorHelper.getMultiplicity(grammar,
             nonTerminal) == Multiplicity.LIST)
-        .filter(nonTerminal -> !nonTerminal.getUsageName().isPresent())
+        //.filter(nonTerminal -> !nonTerminal.getUsageName().isPresent())
         .forEach(components::add);
     
     ASTNodes.getSuccessors(classProd, ASTNonTerminal.class).stream()
         .filter(nonTerminal -> multiplicityByDuplicates(grammar, nonTerminal) == Multiplicity.LIST)
-        .filter(nonTerminal -> !nonTerminal.getUsageName().isPresent())
+       // .filter(nonTerminal -> !nonTerminal.getUsageName().isPresent())
         .forEach(components::add);
     Collection<String> changedNames = new LinkedHashSet<>();
     components.forEach(s -> {
-      s.setUsageName(StringTransformations.uncapitalize(s.getName()) + 's');
+      s.setUsageName(s.getUsageName().orElse(StringTransformations.uncapitalize(s.getName())) + 's');
       Log.debug("Change the name of " + classProd.getName()
           + " list-attribute: " + s.getName(), GrammarTransformer.class.getName());
       changedNames.add(s.getName());

@@ -21,7 +21,7 @@ package de.monticore;
 
 grammar NonTerminalsWithSameName {
 
-    Transition = (Arguments:Argument ( "," Arguments:Argument)*);
+    Transition = (arg:Argument ( "," arg:Argument)*);
 
     Argument = "arg";
 

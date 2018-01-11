@@ -146,7 +146,7 @@ grammar TestTypes extends mc.grammars.literals.TestLiterals {
         @attribute parts A List of ASTStringList concludes all name parts
     */
     QualifiedName =
-        parts:(Name& || ".")+;
+        part:(Name& || ".")+;
 
     /** The ASTAbstractArrayType represents array of Type
     */
