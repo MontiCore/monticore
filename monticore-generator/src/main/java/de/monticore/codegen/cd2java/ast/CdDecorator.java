@@ -811,6 +811,7 @@ public class CdDecorator {
     // Add ast-creating methods
     for (ASTCDClass clazz : nativeClasses) {
       addMethodsToNodeFactory(clazz, nodeFactoryClass, astHelper);
+      addDeprecatedMethodsToNodeFactory(clazz, nodeFactoryClass, astHelper);
     }
     
     cdDef.getCDClasses().add(nodeFactoryClass);
@@ -946,6 +947,107 @@ public class CdDecorator {
     
   }
   
+  // TODO MB: Remove after Release 4.5.5
+  protected void addDeprecatedMethodsToNodeFactory(ASTCDClass clazz, ASTCDClass nodeFactoryClass,
+      AstGeneratorHelper astHelper) {
+    boolean hasOptional=false;
+    for (ASTCDAttribute attr : clazz.getCDAttributes()) {
+      if (TypesHelper.isOptional(attr.getType())) {
+        hasOptional = true;
+      }
+    }
+    if (!hasOptional) {
+      return;
+    }
+    if (!clazz.getModifier().isPresent() || clazz.getModifier().get().isAbstract()) {
+      return;
+    }
+    String className = GeneratorHelper.getPlainName(clazz);
+    
+    String toParse = "public static " + className + " create" + className + "() ;";
+    
+    Optional<ASTCDMethod> astMethod = cdTransformation.addCdMethodUsingDefinition(
+        nodeFactoryClass, toParse);
+    Preconditions.checkArgument(astMethod.isPresent());
+    ASTCDMethod createMethod = astMethod.get();
+    
+    toParse = "protected " + className + " doCreate" + className + "() ;";
+    astMethod = cdTransformation.addCdMethodUsingDefinition(
+        nodeFactoryClass, toParse);
+    Preconditions.checkArgument(astMethod.isPresent());
+    ASTCDMethod doCreateMethod = astMethod.get();
+    
+    StringBuilder paramCall = new StringBuilder();
+    StringBuilder paramCall2 = new StringBuilder();
+    List<ASTCDAttribute> parameters = Lists.newArrayList();
+    String del = "";
+    List<ASTCDAttribute> inheritedAttributes = Lists.newArrayList();
+    for (ASTCDAttribute attr : clazz.getCDAttributes()) {
+      if (GeneratorHelper.isInherited(attr)) {
+        inheritedAttributes.add(attr);
+        continue;
+      }
+      ASTCDParameter param = CD4AnalysisNodeFactory.createASTCDParameter();
+      ASTType type = attr.getType();
+      if (TypesHelper.isOptional(type)) {
+        type = TypesHelper.getSimpleReferenceTypeFromOptional(type);
+      }
+      else {
+        parameters.add(attr);
+      }
+      param.setType(type);
+      String javaAttrName = GeneratorHelper.getJavaAndCdConformName(attr.getName());
+      param.setName(javaAttrName);
+      ASTCDParameter doParam = param.deepClone();
+      createMethod.getCDParameters().add(param);
+      doCreateMethod.getCDParameters().add(doParam);
+      paramCall.append(del + javaAttrName);
+      if (TypesHelper.isOptional(attr.getType())) {
+        paramCall2.append(del + "Optional.ofNullable(" + javaAttrName + ")");
+      } else {
+        paramCall2.append(del + javaAttrName);
+      }
+      del = DEL;
+    }
+    
+    for (ASTCDAttribute attr : inheritedAttributes) {
+      ASTCDParameter param = CD4AnalysisNodeFactory.createASTCDParameter();
+      ASTType type = attr.getType();
+      if (TypesHelper.isOptional(type)) {
+        type = TypesHelper.getSimpleReferenceTypeFromOptional(type);
+      }
+      else {
+        parameters.add(attr);
+      }
+      param.setType(type);
+      String javaAttrName = GeneratorHelper.getJavaAndCdConformName(attr.getName());
+      param.setName(javaAttrName);
+      ASTCDParameter doParam = param.deepClone();
+      createMethod.getCDParameters().add(param);
+      doCreateMethod.getCDParameters().add(doParam);
+      paramCall.append(del + javaAttrName);
+      if (TypesHelper.isOptional(attr.getType())) {
+        paramCall2.append(del + "Optional.ofNullable(" + javaAttrName + ")");
+      } else {
+        paramCall2.append(del + javaAttrName);
+      }
+      del = DEL;
+    }
+    
+    // create() method
+    glex.replaceTemplate("ast.ParametersDeclaration", createMethod, new TemplateHookPoint(
+        "ast.ConstructorParametersDeclaration2"));
+    glex.replaceTemplate(EMPTY_BODY_TEMPLATE, createMethod, new TemplateHookPoint(
+        "ast.factorymethods.CreateWithParams", className, paramCall.toString()));
+        
+    // doCreate() method
+    glex.replaceTemplate("ast.ParametersDeclaration", doCreateMethod, new TemplateHookPoint(
+        "ast.ConstructorParametersDeclaration2"));
+    glex.replaceTemplate(EMPTY_BODY_TEMPLATE, doCreateMethod, new TemplateHookPoint(
+        "ast.factorymethods.DoCreateWithParams", className, paramCall2.toString()));
+            
+  }
+  
   /**
    * TODO: Write me!
    * 
@@ -1001,7 +1103,12 @@ public class CdDecorator {
       String javaAttrName = GeneratorHelper.getJavaAndCdConformName(attr.getName());
       param.setName(javaAttrName);
       createMethod.getCDParameters().add(param);
-      paramCall.append(del + javaAttrName);
+      if (TypesHelper.isOptional(attr.getType())) {
+        // TODO MB: Remove this after MC Release 4.5.5
+        paramCall.append(del + javaAttrName + ".orElse(null)");
+      } else {
+        paramCall.append(del + javaAttrName);
+      }
       del = DEL;
     }
     for (ASTCDAttribute attr : inheritedAttributes) {
@@ -1015,7 +1122,12 @@ public class CdDecorator {
       String javaAttrName = GeneratorHelper.getJavaAndCdConformName(attr.getName());
       param.setName(javaAttrName);
       createMethod.getCDParameters().add(param);
-      paramCall.append(del + javaAttrName);
+      if (TypesHelper.isOptional(attr.getType())) {
+        // TODO MB: Remove this after MC Release 4.5.5
+        paramCall.append(del + javaAttrName + ".orElse(null)");
+      } else {
+        paramCall.append(del + javaAttrName);
+      }
       del = DEL;
     }
     
