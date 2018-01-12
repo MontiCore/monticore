@@ -91,11 +91,10 @@ component grammar UMLStereotype extends de.monticore.StringLiterals {
         @attribute values List of Values of this Stereotype
     */
     Stereotype =
-        "<<" values:(StereoValue || ",")+ ">" ">" {noSpace()}?
-            // It is not possible to define ">>".
-            // Parsing generic typs like "List<List<String>>"
-	    	// leads to problems.
-            ;
+         "<<" values:(StereoValue || ",")+ ">" ">" {noSpace()}? ;
+        // It is not possible to define ">>" in one string.
+        // Parsing generic types like "List<List<String>>"
+        // is then not working.
     
     /** ASTStereoValue represents a Value of a Stereotype in the UML/P
         @attribute name  Name of the Stereotype-Value

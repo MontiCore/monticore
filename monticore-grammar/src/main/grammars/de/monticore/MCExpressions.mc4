@@ -91,11 +91,11 @@ AddExpression implements Expression <170> =
         |   additiveOp:"-"
         )
 		rightExpression:Expression;
-		
+
 ShiftExpression implements Expression <160> =
-	leftExpression:Expression
-	    // It is not possible to define "<<", ">>" or ">>>".
-        // Parsing generic typs like "List<List<String>>" leads to problems.
+        // It is not possible to define "<<", ">>" or ">>>"
+        // in one string. Parsing generic types like
+        // "List<List<String>>" is then not working.
         (   shiftOp:"<" "<" {noSpace()}?
           {_aNode.setShiftOp("<<");}     
         |   shiftOp:">" ">" {noSpace()}? ">" {noSpace()}?      
