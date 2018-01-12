@@ -27,7 +27,7 @@ grammar AstMethods extends mc.grammars.lexicals.TestLexicals {
    
    C = Name;
   
-   astrule A = method public Optional<ASTB> getB() { return Optional.empty(); };
+   astrule A = method public Optional<ASTB> getOptB() { return Optional.empty(); };
    
    astrule A = method public ASTC getC() { return c; };
   

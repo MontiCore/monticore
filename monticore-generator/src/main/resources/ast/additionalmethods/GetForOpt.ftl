@@ -30,20 +30,11 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
-<#--
-  Generates a Java method
-  
-  @params    ASTCDMethod     $ast
-  @result    
-  
--->
-  ${tc.signature("ast", "astType")}
-  <#assign genHelper = glex.getGlobalVar("astHelper")>
-  ${ast.printAnnotation()}
-  ${ast.printModifier()} ${ast.printReturnType()} ${ast.getName()}(${ast.printParametersDecl()}) ${ast.printThrowsDecl()}<#if genHelper.isAbstract(ast, astType)>;
-  <#else>
-  { 
-     ${tc.include("ast.ErrorIfNull")}
-     ${tc.includeArgs("ast.EmptyMethodBody", [ast, astType])}
-  } 
-  </#if>
+${tc.signature("method", "ast", "methodName")}
+<#assign genHelper = glex.getGlobalVar("astHelper")>
+  if (${methodName}().isPresent()) {
+     return ${methodName}().get();
+  }
+  Log.error("0xA7003 ${genHelper.getGeneratedErrorCode(ast)} ${methodName} can't return a value. It is empty.");
+  // Normally this statement is not reachable
+  throw new IllegalStateException();

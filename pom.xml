@@ -28,7 +28,7 @@
     <!-- .. Libraries ..................................................... -->
 
     <mc.java.version>4.3.10-SNAPSHOT</mc.java.version>
-    <cd4analysis.version>1.3.10</cd4analysis.version>
+    <cd4analysis.version>1.3.11-SNAPSHOT</cd4analysis.version>
 
     <se-commons.version>1.7.8-SNAPSHOT</se-commons.version>
     <antlr.version>4.5.1</antlr.version>

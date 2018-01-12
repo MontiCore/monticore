@@ -66,6 +66,8 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTModifier;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTStereoValue;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTStereotype;
 import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.umlcd4a.prettyprint.AstPrinter;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
@@ -291,8 +293,18 @@ public class CdDecorator {
       Log.error("0xA1062 CdDecorator error: Can't find symbol for class " + plainClassName);
     }
     
-    replaceMethodBodyTemplate(clazz, AstAdditionalMethods.get_Children.getDeclaration(),
+    ASTCDMethod meth = replaceMethodBodyTemplate(clazz, AstAdditionalMethods.get_Children.getDeclaration(),
         new TemplateHookPoint("ast.additionalmethods.GetChildren", symbol.get()));
+    
+     ASTStereotype stereo;
+     if (meth.getModifier().getStereotype().isPresent()) {
+       stereo = meth.getModifier().getStereotype().get();
+     } else {
+       stereo = ASTStereotype.getBuilder().build();
+       meth.getModifier().setStereotype(stereo);
+     }
+     ASTStereoValue value = ASTStereoValue.getBuilder().name("@Deprecated").build();
+     stereo.getValues().add(value);
         
     replaceMethodBodyTemplate(clazz, AstAdditionalMethods.deepEqualsWithOrder.getDeclaration(),
         new TemplateHookPoint("ast.additionalmethods.DeepEqualsWithOrder"));
@@ -586,16 +598,27 @@ public class CdDecorator {
         continue;
       }
       String methodName = GeneratorHelper.getPlainGetter(attribute);
-      if (clazz.getCDMethods().stream()
+      if (!clazz.getCDMethods().stream()
           .filter(m -> methodName.equals(m.getName()) && m.getCDParameters().isEmpty()).findAny()
-          .isPresent()) {
-        continue;
+          .isPresent()) {     
+        String toParse = "public " + TypesPrinter.printType(attribute.getType()) + " "
+            + methodName + "() ;";
+        HookPoint getMethodBody = new TemplateHookPoint("ast.additionalmethods.Get",
+            attribute.getName());
+        replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
       }
-      String toParse = "public " + TypesPrinter.printType(attribute.getType()) + " "
-          + methodName + "() ;";
-      HookPoint getMethodBody = new TemplateHookPoint("ast.additionalmethods.Get",
-          attribute.getName());
-      replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
+      
+      if (GeneratorHelper.isOptional(attribute)) {
+        String methodName2 = methodName.substring(0, methodName.length()-GeneratorHelper.GET_SUFFIX_OPTINAL.length());
+        if (!clazz.getCDMethods().stream()
+            .filter(m -> methodName2.equals(m.getName()) && m.getCDParameters().isEmpty()).findAny()
+            .isPresent()) {     
+          String returnType = TypesPrinter.printType(TypesHelper.getFirstTypeArgumentOfOptional(attribute.getType()).get());
+          String toParse = "public " + returnType + " " + methodName2 + "() ;";
+          HookPoint getMethodBody = new TemplateHookPoint("ast.additionalmethods.GetForOpt", methodName);
+          replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
+        }
+      }
     }
   }
   

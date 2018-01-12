@@ -19,35 +19,58 @@
 package de.monticore.expressions.prettyprint;
 
 import de.monticore.expressionsbasis._ast.ASTExpression;
-import de.monticore.ocllogicexpressions._ast.ASTAnyExpr;
-import de.monticore.ocllogicexpressions._ast.ASTExistsExpr;
-import de.monticore.ocllogicexpressions._ast.ASTForallExpr;
-import de.monticore.ocllogicexpressions._ast.ASTImpliesExpression;
-import de.monticore.ocllogicexpressions._ast.ASTIterateExpr;
-import de.monticore.ocllogicexpressions._ast.ASTLetDeclaration;
-import de.monticore.ocllogicexpressions._ast.ASTLetinExpr;
-import de.monticore.ocllogicexpressions._ast.ASTOCLDeclarationExt;
-import de.monticore.ocllogicexpressions._ast.ASTSingleLogicalORExpr;
-import de.monticore.ocllogicexpressions._visitor.OCLLogicExpressionsVisitor;
+import de.monticore.oclexpressions._ast.ASTAnyExpr;
+import de.monticore.oclexpressions._ast.ASTExistsExpr;
+import de.monticore.oclexpressions._ast.ASTForallExpr;
+import de.monticore.oclexpressions._ast.ASTImpliesExpression;
+import de.monticore.oclexpressions._ast.ASTIterateExpr;
+import de.monticore.oclexpressions._ast.ASTLetDeclaration;
+import de.monticore.oclexpressions._ast.ASTLetinExpr;
+import de.monticore.oclexpressions._ast.ASTEDeclarationExt;
+import de.monticore.oclexpressions._ast.ASTSingleLogicalORExpr;
+import de.monticore.oclexpressions._ast.ASTInExpr;
+import de.monticore.oclexpressions._visitor.OCLExpressionsVisitor;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
+
+import java.util.Iterator;
 
 /**
  * @author npichler
  */
 
-public class OCLLogicExpressionsPrettyPrinter implements OCLLogicExpressionsVisitor {
+public class OCLExpressionsPrettyPrinter implements OCLExpressionsVisitor {
   
- protected OCLLogicExpressionsVisitor realThis;
+ protected OCLExpressionsVisitor realThis;
   
   protected IndentPrinter printer;
   
   
-  public OCLLogicExpressionsPrettyPrinter(IndentPrinter printer) {
+  public OCLExpressionsPrettyPrinter(IndentPrinter printer) {
     this.printer = printer;
     realThis = this;
   }
-  
+
+    @Override
+    public void handle(ASTInExpr node) {
+        CommentPrettyPrinter.printPreComments(node, getPrinter());
+        if(node.typeIsPresent())
+            node.getType().get().accept(getRealThis());
+
+        Iterator iter = node.getVarNames().iterator();
+        getPrinter().print(iter.next());
+        while (iter.hasNext()) {
+            getPrinter().print(", ");
+            getPrinter().print(iter.next());
+        }
+
+        if(node.expressionIsPresent()) {
+            getPrinter().print(" in ");
+            node.getExpression().get().accept(getRealThis());
+        }
+        CommentPrettyPrinter.printPostComments(node, getPrinter());
+    }
+
   @Override
   public void handle(ASTImpliesExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
@@ -68,32 +91,24 @@ public class OCLLogicExpressionsPrettyPrinter implements OCLLogicExpressionsVisi
   
   @Override
   public void handle(ASTForallExpr node) {
-    CommentPrettyPrinter.printPreComments(node, getPrinter());
-     getPrinter().print("forall ");
-    if (node.getOCLCollectionVarDeclaration().isPresent()) {
-      node.getOCLCollectionVarDeclaration().get().accept(getRealThis());
-    }
-    if (node.getOCLNestedContainer().isPresent()) {
-      node.getOCLNestedContainer().get().accept(getRealThis());
-    }
-     getPrinter().print(":");
-    node.getExpression().accept(getRealThis());
-    CommentPrettyPrinter.printPostComments(node, getPrinter());
+      CommentPrettyPrinter.printPreComments(node, getPrinter());
+      getPrinter().print("forall ");
+      node.getInExprs().forEach(e -> e.accept(getRealThis()));
+
+      getPrinter().print(":");
+      node.getExpression().accept(getRealThis());
+      CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTExistsExpr node) {
-    CommentPrettyPrinter.printPreComments(node, getPrinter());
-     getPrinter().print("exists ");
-    if (node.getOCLCollectionVarDeclaration().isPresent()) {
-      node.getOCLCollectionVarDeclaration().get().accept(getRealThis());
-    }
-    if (node.getOCLNestedContainer().isPresent()) {
-      node.getOCLNestedContainer().get().accept(getRealThis());
-    }
-     getPrinter().print(":");
-    node.getExpression().accept(getRealThis());
-    CommentPrettyPrinter.printPostComments(node, getPrinter());
+      CommentPrettyPrinter.printPreComments(node, getPrinter());
+      getPrinter().print("exists ");
+      node.getInExprs().forEach(e -> e.accept(getRealThis()));
+
+      getPrinter().print(":");
+      node.getExpression().accept(getRealThis());
+      CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
@@ -106,22 +121,22 @@ public class OCLLogicExpressionsPrettyPrinter implements OCLLogicExpressionsVisi
   
   @Override
   public void handle(ASTLetinExpr node) {
-    CommentPrettyPrinter.printPreComments(node, getPrinter());
+     CommentPrettyPrinter.printPreComments(node, getPrinter());
      getPrinter().print("let ");
-    for (ASTOCLDeclarationExt ast : node.getDeclarations()) {
-      ast.accept(getRealThis());
-       getPrinter().print("; ");
-    }
+     for (ASTEDeclarationExt ast : node.getDeclarations()) {
+        ast.accept(getRealThis());
+        getPrinter().print("; ");
+     }
      getPrinter().print("in ");
-    node.getExpression().accept(getRealThis());
-    CommentPrettyPrinter.printPostComments(node, getPrinter());
+     node.getExpression().accept(getRealThis());
+     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTLetDeclaration node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
      getPrinter().print("let ");
-    for (ASTOCLDeclarationExt ast : node.getDeclarations()) {
+    for (ASTEDeclarationExt ast : node.getDeclarations()) {
       ast.accept(getRealThis());
        getPrinter().print(";");
     }
@@ -154,12 +169,12 @@ public class OCLLogicExpressionsPrettyPrinter implements OCLLogicExpressionsVisi
   }
   
   @Override
-  public void setRealThis(OCLLogicExpressionsVisitor realThis) {
+  public void setRealThis(OCLExpressionsVisitor realThis) {
     this.realThis = realThis;
   }
   
   @Override
-  public OCLLogicExpressionsVisitor getRealThis() {
+  public OCLExpressionsVisitor getRealThis() {
     return realThis;
   }
   

@@ -145,8 +145,10 @@ public class GeneratorHelper extends TypesHelper {
   public static final String CD_EXTENSION = ".cd";
   
   public static final String GET_PREFIX_BOOLEAN = "is";
-  
-  public static final String GET_PREFIX_NOT_BOOLEAN = "get";
+    
+  public static final String GET_SUFFIX_OPTINAL = "Opt";
+
+  public static final String GET_PREFIX = "get";
   
   public static final String SET_PREFIX = "set";
   
@@ -1259,11 +1261,18 @@ public class GeneratorHelper extends TypesHelper {
   }
   
   public static String getPlainGetter(ASTCDAttribute ast) {
-    StringBuilder getPrefix = CDTypes.isBoolean(printType(ast.getType()))
-        ? new StringBuilder(GET_PREFIX_BOOLEAN)
-        : new StringBuilder(GET_PREFIX_NOT_BOOLEAN);
-    return getPrefix
-        .append(StringTransformations.capitalize(getNativeAttributeName(ast.getName()))).toString();
+    String astType = printType(ast.getType());
+    StringBuilder sb = new StringBuilder();
+    if (CDTypes.isBoolean(astType)) {
+      sb.append(GET_PREFIX_BOOLEAN);
+    } else {  
+      sb.append(GET_PREFIX);
+    }
+    sb.append(StringTransformations.capitalize(getNativeAttributeName(ast.getName())));
+    if (isOptional(ast)) {
+      sb.append(GET_SUFFIX_OPTINAL);
+    }
+    return sb.toString();
   }
   
   public static String getPlainName(ASTCDAttribute ast) {
@@ -1271,12 +1280,19 @@ public class GeneratorHelper extends TypesHelper {
   }
   
   public static String getPlainGetter(CDFieldSymbol field) {
-    StringBuilder getPrefix = CDTypes.isBoolean(field.getType().getName())
-        ? new StringBuilder(GET_PREFIX_BOOLEAN)
-        : new StringBuilder(GET_PREFIX_NOT_BOOLEAN);
-    return getPrefix
-        .append(StringTransformations.capitalize(getNativeAttributeName(field.getName())))
-        .toString();
+    String astType = field.getType().getName();
+    StringBuilder sb = new StringBuilder();
+    if (CDTypes.isBoolean(astType)) {
+      sb.append(GET_PREFIX_BOOLEAN);
+    }
+    else {
+      sb.append(GET_PREFIX);
+    }
+    sb.append(StringTransformations.capitalize(getNativeAttributeName(field.getName())));
+    if (isOptional(field)) {
+      sb.append(GET_SUFFIX_OPTINAL);
+    }
+    return sb.toString();
   }
   
   /**
