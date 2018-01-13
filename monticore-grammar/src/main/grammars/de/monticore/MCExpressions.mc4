@@ -96,6 +96,7 @@ ShiftExpression implements Expression <160> =
         // It is not possible to define "<<", ">>" or ">>>"
         // in one string. Parsing generic types like
         // "List<List<String>>" is then not working.
+	leftExpression:Expression
         (   shiftOp:"<" "<" {noSpace()}?
           {_aNode.setShiftOp("<<");}     
         |   shiftOp:">" ">" {noSpace()}? ">" {noSpace()}?      
