@@ -73,12 +73,11 @@ component grammar MCBasicTypes1 extends de.monticore.MCBasics {
         E.g.: import A.*;
     */
     ImportStatement =
-    		"import" importList:(Name || ".")+ ("." Star:["*"])? ";" ;
+    		"import" QualifiedName ("." Star:["*"])? ";" ;
 
     ast ImportStatement =
         method public String getQName(){
-          return de.se_rwth.commons.Names.getQualifiedName(
-              this.getImportList());
+          return getQualifiedName().getQName();
         };
 
 
