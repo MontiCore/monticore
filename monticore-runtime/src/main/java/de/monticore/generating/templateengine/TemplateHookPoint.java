@@ -34,17 +34,17 @@ public class TemplateHookPoint extends HookPoint {
   
   private final String templateName;
   
-  private List<Object> additionalArguments = Lists.newArrayList();
+  private List<Object> templateArguments = Lists.newArrayList();
   
   public TemplateHookPoint(String templateName) {
     super();
     this.templateName = templateName;
   }
   
-  public TemplateHookPoint(String templateName, Object... additionalArguments) {
+  public TemplateHookPoint(String templateName, Object... templateArguments) {
     super();
     this.templateName = templateName;
-    this.additionalArguments = Lists.newArrayList(additionalArguments);
+    this.templateArguments = Lists.newArrayList(templateArguments);
   }
   
   /**
@@ -56,14 +56,14 @@ public class TemplateHookPoint extends HookPoint {
   
   @Override
   public String processValue(TemplateController controller, ASTNode ast) {
-    return controller.processTemplate(templateName, ast, this.additionalArguments).toString();   
+    return controller.processTemplate(templateName, ast, this.templateArguments).toString();   
   }
   
   @Override
   public String processValue(TemplateController controller, List<Object> args) {
-    if (this.additionalArguments.size() > 0) {
+    if (this.templateArguments.size() > 0) {
       ArrayList<Object> l = Lists.newArrayList(args);
-      l.addAll(this.additionalArguments);
+      l.addAll(this.templateArguments);
       return controller.processTemplate(templateName, controller.getAST(), l).toString();
     }
     return controller.processTemplate(templateName, controller.getAST(), args).toString();
@@ -80,9 +80,9 @@ public class TemplateHookPoint extends HookPoint {
    */
   @Override
   public String processValue(TemplateController controller, ASTNode node, List<Object> args) {
-    if (this.additionalArguments.size() > 0) {
+    if (this.templateArguments.size() > 0) {
       ArrayList<Object> l = Lists.newArrayList(args);
-      l.addAll(this.additionalArguments);
+      l.addAll(this.templateArguments);
       return controller.processTemplate(templateName, node, l).toString();
     }
     return controller.processTemplate(templateName, node, args).toString();
