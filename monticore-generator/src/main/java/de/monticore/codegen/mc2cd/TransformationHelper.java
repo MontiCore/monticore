@@ -90,6 +90,8 @@ public final class TransformationHelper {
   
   public static final String AST_PACKAGE_SUFFIX = "_ast";
   
+  public static final String LIST_SUFFIX = "List";
+  
   private TransformationHelper() {
     // noninstantiable
   }

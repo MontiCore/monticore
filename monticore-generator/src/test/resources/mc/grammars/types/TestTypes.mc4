@@ -52,7 +52,7 @@ grammar TestTypes extends mc.grammars.literals.TestLiterals {
     astrule QualifiedName =
         method public String toString(){
           return de.se_rwth.commons.Names.getQualifiedName(
-              this.getParts());
+              this.getPartList());
         };
 
     astrule PrimitiveType =

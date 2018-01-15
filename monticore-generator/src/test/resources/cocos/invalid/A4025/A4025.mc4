@@ -21,6 +21,6 @@ package cocos.invalid.A4025;
 
 grammar A4025 extends mc.grammars.types.TestTypes {
   QualifiedName =
-          parts:StringLiteral;
+          partList:StringLiteral;
 
 }

@@ -66,7 +66,7 @@ public class ASTTest {
     ASTChild s = DeleteTestNodeFactory.createASTChild();
     p.addChildList(s);
     p.setSon(s);
-    assertEquals(1, p.getChildList().size());
+    assertEquals(1, p.getChildListList().size());
     assertTrue(p.containsChildList(s));
   }
   

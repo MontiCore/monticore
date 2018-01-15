@@ -36,7 +36,7 @@ grammar AstMethods extends mc.grammars.lexicals.TestLexicals {
 
    astrule A = method public void setC(ASTC newC) { this.c = newC; };
    
-   astrule B = method void setNames(java.util.List<String> name) { this.names = name; };
+   astrule B = method void setNames(java.util.List<String> name) { this.nameList = name; };
    
    astrule C = method public Optional<ASTB> getName(String name) { return Optional.empty(); };
    

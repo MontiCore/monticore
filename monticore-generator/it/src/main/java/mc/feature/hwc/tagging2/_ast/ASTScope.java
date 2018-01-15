@@ -29,6 +29,6 @@ import mc.grammar.types.ittesttypes._ast.ASTQualifiedName;
 public interface ASTScope extends ASTScopeTOP {
   ASTQualifiedName getQualifiedName();
   default String getQualifiedNameAsString() {
-    return Joiners.DOT.join(getQualifiedName().getParts());
+    return Joiners.DOT.join(getQualifiedName().getPartList());
   }
 }

@@ -1279,6 +1279,14 @@ public class GeneratorHelper extends TypesHelper {
     return StringTransformations.capitalize(getNativeAttributeName(ast.getName()));
   }
   
+  public static String getSimpleListName(ASTCDAttribute ast) {
+    String name = ast.getName();
+    if (name.endsWith(TransformationHelper.LIST_SUFFIX)) {
+      name = name.substring(0, name.length() - TransformationHelper.LIST_SUFFIX.length());
+    }
+    return StringTransformations.capitalize(name);
+  }
+
   public static String getPlainGetter(CDFieldSymbol field) {
     String astType = field.getType().getName();
     StringBuilder sb = new StringBuilder();

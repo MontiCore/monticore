@@ -41,17 +41,17 @@ public class CollectionTest {
     ASTSon s3 = ListsNodeFactory.createASTSon();
     ASTSon s4 = ListsNodeFactory.createASTSon();
     
-    p1.getSons().add(s1);
-    p1.getSons().add(s2);
-    p2.getSons().add(s3);
-    p2.getSons().add(s4);
+    p1.getSonsList().add(s1);
+    p1.getSonsList().add(s2);
+    p2.getSonsList().add(s3);
+    p2.getSonsList().add(s4);
     
     assertTrue(p1.deepEquals(p1, true));
     assertTrue(p2.deepEquals(p2, true));
     assertTrue(p1.deepEquals(p2, true));
     assertTrue(p2.deepEquals(p1, true));
     
-    p1.getSons().remove(s1);
+    p1.getSonsList().remove(s1);
     assertFalse(p1.deepEquals(p2, true));
     assertFalse(p2.deepEquals(p1, true));
   }
@@ -70,10 +70,10 @@ public class CollectionTest {
     ASTSon s4 = ListsNodeFactory.createASTSon();
     s4.setName("foo");
     
-    p1.getSons().add(s1);
-    p1.getSons().add(s2);
-    p2.getSons().add(s3);
-    p2.getSons().add(s4);
+    p1.getSonsList().add(s1);
+    p1.getSonsList().add(s2);
+    p2.getSonsList().add(s3);
+    p2.getSonsList().add(s4);
     
     assertTrue(p1.deepEquals(p1));
     assertFalse(p1.deepEquals(p2));
@@ -93,17 +93,17 @@ public class CollectionTest {
     ASTSon s3 = ListsNodeFactory.createASTSon();
     ASTSon s4 = ListsNodeFactory.createASTSon();
     
-    p1.getSons().add(s1);
-    p1.getSons().add(s2);
-    p2.getSons().add(s3);
-    p2.getSons().add(s4);
+    p1.getSonsList().add(s1);
+    p1.getSonsList().add(s2);
+    p2.getSonsList().add(s3);
+    p2.getSonsList().add(s4);
     
     assertTrue(p1.deepEqualsWithComments(p1));
     assertTrue(p2.deepEqualsWithComments(p2));
     assertTrue(p1.deepEqualsWithComments(p2));
     assertTrue(p2.deepEqualsWithComments(p1));
     
-    p1.getSons().remove(s1);
+    p1.getSonsList().remove(s1);
     assertFalse(p1.deepEqualsWithComments(p2));
     assertFalse(p2.deepEqualsWithComments(p1));
   }
@@ -122,10 +122,10 @@ public class CollectionTest {
     ASTSon s4 = ListsNodeFactory.createASTSon();
     s4.setName("foo");
     
-    p1.getSons().add(s1);
-    p1.getSons().add(s2);
-    p2.getSons().add(s3);
-    p2.getSons().add(s4);
+    p1.getSonsList().add(s1);
+    p1.getSonsList().add(s2);
+    p2.getSonsList().add(s3);
+    p2.getSonsList().add(s4);
     
     assertFalse(p1.deepEqualsWithComments(p2));
     assertFalse(p2.deepEqualsWithComments(p1));
@@ -147,10 +147,10 @@ public class CollectionTest {
     s3.get_PreComments().add(c2);
     ASTSon s4 = ListsNodeFactory.createASTSon();
     
-    p1.getSons().add(s1);
-    p1.getSons().add(s2);
-    p2.getSons().add(s3);
-    p2.getSons().add(s4);
+    p1.getSonsList().add(s1);
+    p1.getSonsList().add(s2);
+    p2.getSonsList().add(s3);
+    p2.getSonsList().add(s4);
     
     assertTrue(p1.deepEqualsWithComments(p2));
     assertTrue(p2.deepEqualsWithComments(p1));
@@ -171,8 +171,8 @@ public class CollectionTest {
     s1.get_PreComments().add(c1);
     ASTSon s2 = ListsNodeFactory.createASTSon("myname2");
     
-    p1.getSons().add(s1);
-    p1.getSons().add(s2);
+    p1.getSonsList().add(s1);
+    p1.getSonsList().add(s2);
     
     ASTParent p2 = p1.deepClone();
     
@@ -189,8 +189,8 @@ public class CollectionTest {
     s1.get_PreComments().add(c1);
     ASTSon s2 = ListsNodeFactory.createASTSon("myname1");
     
-    p1.getSons().add(s1);
-    p1.getSons().add(s2);
+    p1.getSonsList().add(s1);
+    p1.getSonsList().add(s2);
     
     ASTParent p2 = p1.deepClone();
     

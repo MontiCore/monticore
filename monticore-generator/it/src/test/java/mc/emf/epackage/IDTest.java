@@ -61,8 +61,8 @@ public class IDTest extends GeneratorIntegrationsTest {
     assertEquals(FlatAutomatonPackage.eINSTANCE.getASTAutomaton_Name(), FlatAutomatonPackage.eINSTANCE
         .getAutomaton().getEAllStructuralFeatures().get(FlatAutomatonPackage.ASTAutomaton_Name));
         
-    assertEquals(FlatAutomatonPackage.eINSTANCE.getASTAutomaton_States(),
+    assertEquals(FlatAutomatonPackage.eINSTANCE.getASTAutomaton_StateList(),
         FlatAutomatonPackage.eINSTANCE.getAutomaton().getEAllStructuralFeatures()
-            .get(FlatAutomatonPackage.ASTAutomaton_States));
+            .get(FlatAutomatonPackage.ASTAutomaton_StateList));
   }
 }

@@ -39,7 +39,7 @@ Leaf implements Component =
 astrule Composite =
   method public int getDepth() {
     int maxDepth = 0; 
-    for (ASTComponent child: getChildren()) {
+    for (ASTComponent child: getChildrenList()) {
       int depth = child.getDepth() + 1;
       if (depth>maxDepth) {
         maxDepth = depth;

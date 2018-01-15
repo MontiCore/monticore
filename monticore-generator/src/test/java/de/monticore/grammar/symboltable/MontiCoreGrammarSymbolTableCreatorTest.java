@@ -348,7 +348,7 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     assertNotNull(transition);
     
     try {
-      Optional<MCProdComponentSymbol> r = transition.getSpannedScope().resolve("args",
+      Optional<MCProdComponentSymbol> r = transition.getSpannedScope().resolve("argList",
           MCProdComponentSymbol.KIND);
       assertTrue(r.isPresent());
     }

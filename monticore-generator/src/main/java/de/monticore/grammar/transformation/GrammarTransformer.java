@@ -24,16 +24,15 @@ import static de.monticore.grammar.Multiplicity.multiplicityOfAttributeInAST;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
 import de.monticore.codegen.GeneratorHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.ASTASTRule;
 import de.monticore.grammar.grammar._ast.ASTAlt;
@@ -47,6 +46,7 @@ import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.monticore.utils.ASTNodes;
 import de.monticore.utils.ASTTraverser;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
@@ -97,7 +97,7 @@ public class GrammarTransformer {
   }
   
   /**
-   * Append suffix 's' to the names of multi-valued att * Append suffix 's' to
+   * Append suffix "List" to the names of multi-valued att * Append suffix "List" to
    * the names of multi-valued attributes (NonTerminals and attributesinAst) if
    * no usage names were set. Examples: Name ("." Name&)* ==> names:Name ("."
    * names:Name&)* (State | Transition)* ==> (states:State |
@@ -123,32 +123,12 @@ public class GrammarTransformer {
         .filter(nonTerminal -> multiplicityByDuplicates(grammar, nonTerminal) == Multiplicity.LIST)
        // .filter(nonTerminal -> !nonTerminal.getUsageName().isPresent())
         .forEach(components::add);
-    Collection<String> changedNames = new LinkedHashSet<>();
     components.forEach(s -> {
-      s.setUsageName(s.getUsageName().orElse(StringTransformations.uncapitalize(s.getName())) + 's');
+      s.setUsageName(s.getUsageName().orElse(StringTransformations.uncapitalize(s.getName())) + TransformationHelper.LIST_SUFFIX);
       Log.debug("Change the name of " + classProd.getName()
           + " list-attribute: " + s.getName(), GrammarTransformer.class.getName());
-      changedNames.add(s.getName());
     });
     
-    // Change corresponding ASTRules
-    grammar.getASTRules().forEach(
-        astRule -> {
-          if (astRule.getType().equals(classProd.getName())) {
-            astRule.getAttributeInASTs().forEach(
-                astAttr -> {
-                  String name = astAttr.getGenericType().getTypeName();
-                  if (name.startsWith(GeneratorHelper.AST_PREFIX)) {
-                    name = name.substring(GeneratorHelper.AST_PREFIX.length());
-                  }
-                  if (!astAttr.getName().isPresent() && changedNames.contains(name)) {
-                    astAttr.setName(StringTransformations.uncapitalize(name) + 's');
-                    Log.debug("Change the name of " + classProd.getName()
-                        + " astRule " + name, GrammarTransformer.class.getName());
-                  }
-                });
-          }
-        });
   }
   
   private static void transformAttributesInAST(ASTASTRule astRule) {
@@ -156,11 +136,11 @@ public class GrammarTransformer {
         .getSuccessors(astRule, ASTAttributeInAST.class)
         .stream()
         .filter(attributeInAST -> multiplicityOfAttributeInAST(attributeInAST) == Multiplicity.LIST)
-        .filter(attributeInAST -> !attributeInAST.getName().isPresent())
         .forEach(
             attributeInAST -> {
-              List<String> typeName = attributeInAST.getGenericType().getNames();
-              attributeInAST.setName(typeName.get(typeName.size() - 1) + 's');
+              String typeName = StringTransformations.uncapitalize(Names.getSimpleName(attributeInAST.getGenericType().getNames()));
+              
+              attributeInAST.setName(attributeInAST.getName().orElse(typeName)+ TransformationHelper.LIST_SUFFIX);
               Log.debug("Change the name of ast-rule " + astRule.getType()
                   + " list-attribute: " + attributeInAST.getGenericType(),
                   GrammarTransformer.class.getName());

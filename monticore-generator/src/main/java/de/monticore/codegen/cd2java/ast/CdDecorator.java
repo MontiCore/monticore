@@ -372,153 +372,154 @@ public class CdDecorator {
           continue;
         }
         String typeName = new AstPrinter().printType(type.get());
+        String attrName = GeneratorHelper.getSimpleListName(attribute);
+        String listName = StringTransformations.capitalize(attribute.getName());
         
-        String methodSignatur = String.format(AstListMethods.clear.getMethodDeclaration(),
-            StringTransformations.capitalize(attribute.getName()));
+        String methodSignatur = String.format(AstListMethods.clear.getMethodDeclaration(), listName);
         
         additionalMethodForListAttribute(clazz, AstListMethods.clear.getMethodName(), attribute,
             methodSignatur);
         
         methodSignatur = String.format(AstListMethods.add.getMethodDeclaration(),
-            StringTransformations.capitalize(attribute.getName()), typeName);
+            attrName, typeName);
         additionalMethodForListAttribute(clazz, AstListMethods.add.getMethodName(), attribute,
             methodSignatur);
         
         methodSignatur = String.format(AstListMethods.addAll.getMethodDeclaration(),
-            StringTransformations.capitalize(attribute.getName()), typeName);
+            listName, typeName);
         additionalMethodForListAttribute(clazz, AstListMethods.addAll.getMethodName(), attribute,
             methodSignatur);
         
         methodSignatur = String.format(AstListMethods.contains.getMethodDeclaration(),
-            StringTransformations.capitalize(attribute.getName()));
+            attrName);
         additionalMethodForListAttribute(clazz, AstListMethods.contains.getMethodName(), attribute,
             methodSignatur);
         
         methodSignatur = String.format(AstListMethods.containsAll.getMethodDeclaration(),
-            StringTransformations.capitalize(attribute.getName()));
+            listName);
         additionalMethodForListAttribute(clazz, AstListMethods.containsAll.getMethodName(),
             attribute,
             methodSignatur);
         
         methodSignatur = String.format(AstListMethods.isEmpty.getMethodDeclaration(),
-            StringTransformations.capitalize(attribute.getName()));
+            listName);
         additionalMethodForListAttribute(clazz, AstListMethods.isEmpty.getMethodName(), attribute,
             methodSignatur);
   
         methodSignatur = String.format(AstListMethods.iterator.getMethodDeclaration(),
-            typeName, StringTransformations.capitalize(attribute.getName()));
+            typeName, listName);
         additionalMethodForListAttribute(clazz, AstListMethods.iterator.getMethodName(), attribute,
             methodSignatur);
         
         methodSignatur = String.format(AstListMethods.remove.getMethodDeclaration(),
-            StringTransformations.capitalize(attribute.getName()));
+            attrName);
         additionalMethodForListAttribute(clazz, AstListMethods.remove.getMethodName(), attribute,
             methodSignatur);
         
         methodSignatur = String.format(AstListMethods.removeAll.getMethodDeclaration(),
-            StringTransformations.capitalize(attribute.getName()));
+            listName);
         additionalMethodForListAttribute(clazz, AstListMethods.removeAll.getMethodName(), attribute,
             methodSignatur);
         
         methodSignatur = String.format(AstListMethods.retainAll.getMethodDeclaration(),
-            StringTransformations.capitalize(attribute.getName()));
+            listName);
         additionalMethodForListAttribute(clazz, AstListMethods.retainAll.getMethodName(), attribute,
             methodSignatur);
             
         methodSignatur = String.format(AstListMethods.size.getMethodDeclaration(),
-            StringTransformations.capitalize(attribute.getName()));
+            listName);
         additionalMethodForListAttribute(clazz, AstListMethods.size.getMethodName(), attribute,
             methodSignatur);
         
         methodSignatur = String.format(AstListMethods.toArray.getMethodDeclaration(),
-            typeName, StringTransformations.capitalize(attribute.getName()), typeName);
+            typeName, listName, typeName);
         additionalMethodForListAttribute(clazz, AstListMethods.toArray.getMethodName(), attribute,
             methodSignatur);
         
         methodSignatur = String.format(AstListMethods.removeIf.getMethodDeclaration(),
-            StringTransformations.capitalize(attribute.getName()), typeName);
+            attrName, typeName);
         additionalMethodForListAttribute(clazz, AstListMethods.removeIf.getMethodName(), attribute,
             methodSignatur);
         
         methodSignatur = String.format(AstListMethods.spliterator.getMethodDeclaration(),
-            typeName, StringTransformations.capitalize(attribute.getName()));
+            typeName, listName);
         additionalMethodForListAttribute(clazz, AstListMethods.spliterator.getMethodName(),
             attribute,
             methodSignatur);
         methodSignatur = String.format(AstListMethods.stream.getMethodDeclaration(),
-            typeName, StringTransformations.capitalize(attribute.getName()));
+            typeName, listName);
         additionalMethodForListAttribute(clazz, AstListMethods.stream.getMethodName(), attribute,
             methodSignatur);
         methodSignatur = String.format(AstListMethods.parallelStream.getMethodDeclaration(),
-            typeName, StringTransformations.capitalize(attribute.getName()));
+            typeName, listName);
         additionalMethodForListAttribute(clazz, AstListMethods.parallelStream.getMethodName(),
             attribute,
             methodSignatur);
       
         methodSignatur = String.format(AstListMethods.forEach.getMethodDeclaration(),
-            StringTransformations.capitalize(attribute.getName()), typeName);
+            listName, typeName);
         additionalMethodForListAttribute(clazz, AstListMethods.forEach.getMethodName(), attribute,
             methodSignatur);
         
         methodSignatur = String.format(AstListMethods.add_.getMethodDeclaration(),
-            StringTransformations.capitalize(attribute.getName()), typeName);
+            attrName, typeName);
         additionalMethodForListAttribute(clazz, AstListMethods.add_.getMethodName(), attribute,
             methodSignatur);
         
         methodSignatur = String.format(AstListMethods.addAll_.getMethodDeclaration(),
-            StringTransformations.capitalize(attribute.getName()), typeName);
+            listName, typeName);
         additionalMethodForListAttribute(clazz, AstListMethods.addAll_.getMethodName(), attribute,
             methodSignatur);
         
         methodSignatur = String.format(AstListMethods.get.getMethodDeclaration(),
-            typeName, StringTransformations.capitalize(attribute.getName()));
+            typeName, attrName);
         additionalMethodForListAttribute(clazz, AstListMethods.get.getMethodName(), attribute,
             methodSignatur);
         
         methodSignatur = String.format(AstListMethods.indexOf.getMethodDeclaration(),
-            StringTransformations.capitalize(attribute.getName()), typeName);
+            attrName, typeName);
         additionalMethodForListAttribute(clazz, AstListMethods.indexOf.getMethodName(), attribute,
             methodSignatur);
         methodSignatur = String.format(AstListMethods.lastIndexOf.getMethodDeclaration(),
-            StringTransformations.capitalize(attribute.getName()));
+            attrName);
         additionalMethodForListAttribute(clazz, AstListMethods.lastIndexOf.getMethodName(),
             attribute,
             methodSignatur);
         
         methodSignatur = String.format(AstListMethods.equals.getMethodDeclaration(),
-            StringTransformations.capitalize(attribute.getName()));
+            listName);
         additionalMethodForListAttribute(clazz, AstListMethods.equals.getMethodName(), attribute,
             methodSignatur);
         
         methodSignatur = String.format(AstListMethods.hashCode.getMethodDeclaration(),
-            StringTransformations.capitalize(attribute.getName()));
+            listName);
         additionalMethodForListAttribute(clazz, AstListMethods.hashCode.getMethodName(), attribute,
             methodSignatur);
         
         methodSignatur = String.format(AstListMethods.listIterator.getMethodDeclaration(),
-            typeName, StringTransformations.capitalize(attribute.getName()));
+            typeName, listName);
         additionalMethodForListAttribute(clazz, AstListMethods.listIterator.getMethodName(),
             attribute,
             methodSignatur);
             
         methodSignatur = String.format(AstListMethods.remove_.getMethodDeclaration(),
-            typeName, StringTransformations.capitalize(attribute.getName()));
+            typeName, attrName);
         additionalMethodForListAttribute(clazz, AstListMethods.remove_.getMethodName(), attribute,
             methodSignatur);
         
         methodSignatur = String.format(AstListMethods.subList.getMethodDeclaration(),
-            typeName, StringTransformations.capitalize(attribute.getName()));
+            typeName, listName);
         additionalMethodForListAttribute(clazz, AstListMethods.subList.getMethodName(), attribute,
             methodSignatur);
         
         methodSignatur = String.format(AstListMethods.replaceAll.getMethodDeclaration(),
-            StringTransformations.capitalize(attribute.getName()), typeName);
+            listName, typeName);
         additionalMethodForListAttribute(clazz, AstListMethods.replaceAll.getMethodName(),
             attribute,
             methodSignatur);
         
         methodSignatur = String.format(AstListMethods.sort.getMethodDeclaration(),
-            StringTransformations.capitalize(attribute.getName()), typeName);
+            listName, typeName);
         additionalMethodForListAttribute(clazz, AstListMethods.sort.getMethodName(), attribute,
             methodSignatur);
       }
