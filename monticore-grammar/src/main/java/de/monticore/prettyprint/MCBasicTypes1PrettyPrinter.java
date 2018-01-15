@@ -55,9 +55,9 @@ public class MCBasicTypes1PrettyPrinter implements MCBasicTypes1Visitor {
 	public void handle(ASTImportStatement node) {
 		int count = 1;
 		getPrinter().print("import ");
-		for (String s : node.getImportList()) {
+		for (String s : node.getQualifiedName().getParts()) {
 			getPrinter().print(s);
-			if (node.getImportList().size() > count) {
+			if (node.getQualifiedName().getParts().size() > count) {
 				getPrinter().print(".");
 			}
 			count++;
