@@ -148,6 +148,8 @@ public class GeneratorHelper extends TypesHelper {
     
   public static final String GET_SUFFIX_OPTINAL = "Opt";
 
+  public static final String GET_SUFFIX_LIST = "List";
+  
   public static final String GET_PREFIX = "get";
   
   public static final String SET_PREFIX = "set";
@@ -1271,6 +1273,13 @@ public class GeneratorHelper extends TypesHelper {
     sb.append(StringTransformations.capitalize(getNativeAttributeName(ast.getName())));
     if (isOptional(ast)) {
       sb.append(GET_SUFFIX_OPTINAL);
+    } else if (isListType(astType)) {
+      if (ast.getName().endsWith(TransformationHelper.LIST_SUFFIX)) {
+        sb.replace(sb.length()-TransformationHelper.LIST_SUFFIX.length(), 
+            sb.length(), GET_SUFFIX_LIST);
+      } else {
+        sb.append(GET_SUFFIX_LIST);
+      }
     }
     return sb.toString();
   }
@@ -1299,6 +1308,13 @@ public class GeneratorHelper extends TypesHelper {
     sb.append(StringTransformations.capitalize(getNativeAttributeName(field.getName())));
     if (isOptional(field)) {
       sb.append(GET_SUFFIX_OPTINAL);
+    } else if (isListType(astType)) {
+      if (field.getName().endsWith(TransformationHelper.LIST_SUFFIX)) {
+        sb.replace(sb.length()-TransformationHelper.LIST_SUFFIX.length(), 
+            sb.length(), GET_SUFFIX_LIST);
+      } else {
+        sb.append(GET_SUFFIX_LIST);
+      }
     }
     return sb.toString();
   }
@@ -1307,18 +1323,34 @@ public class GeneratorHelper extends TypesHelper {
    * Returns the plain getter for the given attribute
    */
   public static String getPlainSetter(ASTCDAttribute ast) {
-    return new StringBuilder(SET_PREFIX).append(
-        StringTransformations.capitalize(getNativeAttributeName(ast.getName())))
-        .toString();
+    StringBuilder sb = new StringBuilder(SET_PREFIX).append(
+        StringTransformations.capitalize(getNativeAttributeName(ast.getName())));
+    String astType = printType(ast.getType());
+    if (isListType(astType))
+      if (ast.getName().endsWith(TransformationHelper.LIST_SUFFIX)) {
+        sb.replace(sb.length()-TransformationHelper.LIST_SUFFIX.length(), 
+            sb.length(), GET_SUFFIX_LIST);
+      } else {
+        sb.append(GET_SUFFIX_LIST);
+      }
+    return sb.toString();
   }
   
   /**
    * Returns the plain getter for the given attribute
    */
   public static String getPlainSetter(CDFieldSymbol field) {
-    return new StringBuilder(SET_PREFIX).append(
-        StringTransformations.capitalize(getNativeAttributeName(field.getName())))
-        .toString();
+    StringBuilder sb = new StringBuilder(SET_PREFIX).append(
+        StringTransformations.capitalize(getNativeAttributeName(field.getName())));
+    if (isListType(field.getType().getName())) {
+      if (field.getName().endsWith(TransformationHelper.LIST_SUFFIX)) {
+        sb.replace(sb.length()-TransformationHelper.LIST_SUFFIX.length(), 
+            sb.length(), GET_SUFFIX_LIST);
+      } else {
+        sb.append(GET_SUFFIX_LIST);
+      }
+    }
+    return sb.toString();
   }
   
   /**

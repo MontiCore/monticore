@@ -47,7 +47,7 @@ grammar TestCommon extends mc.grammars.types.TestTypes {
           return (getStereoValue(name) != null);
         }
         method public boolean containsStereoValue(String name, String value) {
-          for (ASTStereoValue sv : valueList) {
+          for (ASTStereoValue sv : values) {
             if (sv.getName() != null && sv.getName().equals(name) 
                 && sv.getValue() != null && sv.getValue().equals(value)) {
               return true;
@@ -56,7 +56,7 @@ grammar TestCommon extends mc.grammars.types.TestTypes {
           return false;
         }
         method public ASTStereoValue getStereoValue(String name) {
-          for (ASTStereoValue sv : valueList) {
+          for (ASTStereoValue sv : values) {
             if (sv.getName() != null && sv.getName().equals(name)) {
               return sv;
             }

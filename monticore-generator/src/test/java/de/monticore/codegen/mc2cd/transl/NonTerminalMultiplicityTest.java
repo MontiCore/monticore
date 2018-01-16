@@ -83,7 +83,7 @@ public class NonTerminalMultiplicityTest {
   @Test
   public void testNonTerminalName() {
     List<ASTCDAttribute> attributes = astA.getCDAttributes();
-    assertEquals("xList", attributes.get(0).getName());
+    assertEquals("xs", attributes.get(0).getName());
   }
   
   /**

@@ -32,10 +32,14 @@ software, even if advised of the possibility of such damage.
 -->
  <#assign genHelper = glex.getGlobalVar("astHelper")>
   {
+  <#-- TODO: MB Use method getPlainSetter -->
   <#list ast.getCDParameters() as attribute>
     <#if genHelper.isOptional(attribute.getType())>
 	  set${genHelper.getNativeAttributeName(attribute.getName())?cap_first}(${attribute.getName()}.orElse(null));
-	<#else>
+    <#elseif genHelper.isListType(astHelper.printType(attribute.getType()))>
+      <#assign name=genHelper.getNativeAttributeName(attribute.getName())?cap_first>     
+      set${name?keep_before_last("s")}List(${attribute.getName()});
+    <#else>
       set${genHelper.getNativeAttributeName(attribute.getName())?cap_first}(${attribute.getName()});
     </#if>
   </#list>
