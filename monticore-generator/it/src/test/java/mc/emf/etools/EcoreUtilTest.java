@@ -95,9 +95,9 @@ public class EcoreUtilTest extends GeneratorIntegrationsTest {
     ASTState state1 = FlatAutomatonNodeFactory.createASTState();
     ASTState state2 = FlatAutomatonNodeFactory.createASTState();
     aut.setName("aut1");
-    aut.getTransitions().add(trans);
-    aut.getStates().add(state1);
-    aut.getStates().add(state2);
+    aut.getTransitionList().add(trans);
+    aut.getStateList().add(state1);
+    aut.getStateList().add(state2);
     state1.setName("state1");
     state2.setName("state2");
     
@@ -113,9 +113,9 @@ public class EcoreUtilTest extends GeneratorIntegrationsTest {
     ASTState state1a = FlatAutomatonNodeFactory.createASTState();
     ASTState state2a = FlatAutomatonNodeFactory.createASTState();
     aut2.setName("aut1");
-    aut2.getTransitions().add(trans2);
-    aut2.getStates().add(state1a);
-    aut2.getStates().add(state2a);
+    aut2.getTransitionList().add(trans2);
+    aut2.getStateList().add(state1a);
+    aut2.getStateList().add(state2a);
     state1a.setName("state1");
     state2a.setName("state2");
     

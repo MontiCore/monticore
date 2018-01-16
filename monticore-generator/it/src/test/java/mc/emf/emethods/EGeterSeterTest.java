@@ -53,9 +53,9 @@ public class EGeterSeterTest extends GeneratorIntegrationsTest {
     
     transition = FlatAutomatonNodeFactory.createASTTransition();
     
-    aut.getStates().add(state1);
-    aut.getStates().add(state2);
-    aut.getTransitions().add(transition);
+    aut.getStateList().add(state1);
+    aut.getStateList().add(state2);
+    aut.getTransitionList().add(transition);
     
     state1.setName("state1");
     state2.setName("state2");
@@ -67,7 +67,7 @@ public class EGeterSeterTest extends GeneratorIntegrationsTest {
   @Test
   public void testEGet() {
     String expectedName = "aut1";
-    List<ASTState> expectedState = aut.getStates();
+    List<ASTState> expectedState = aut.getStateList();
     
     // Get name of automaton with reflective methods
     String nameFromID = (String) aut.eGet(
@@ -76,9 +76,9 @@ public class EGeterSeterTest extends GeneratorIntegrationsTest {
         .eGet(FlatAutomatonPackage.eINSTANCE.getASTAutomaton_Name());
         
     List<ASTState> stateFromID = (List<ASTState>) aut.eGet(
-        FlatAutomatonPackage.ASTAutomaton_States, false, false);
+        FlatAutomatonPackage.ASTAutomaton_StateList, false, false);
     List<ASTState> stateFromMetaObject = (List<ASTState>) aut
-        .eGet(FlatAutomatonPackage.eINSTANCE.getASTAutomaton_States());
+        .eGet(FlatAutomatonPackage.eINSTANCE.getASTAutomaton_StateList());
         
     assertEquals(expectedName, nameFromID);
     assertEquals(expectedName, nameFromMetaObject);
@@ -99,8 +99,8 @@ public class EGeterSeterTest extends GeneratorIntegrationsTest {
   
   @Test
   public void testEUnSet() {
-    aut.eUnset(FlatAutomatonPackage.ASTAutomaton_States);
-    assertTrue(aut.getStates().isEmpty());
+    aut.eUnset(FlatAutomatonPackage.ASTAutomaton_StateList);
+    assertTrue(aut.getStateList().isEmpty());
     
     assign.eUnset(ExpressionPackage.ASTAssignment_Value);
     assertFalse(assign.getValueOpt().isPresent());
@@ -110,7 +110,7 @@ public class EGeterSeterTest extends GeneratorIntegrationsTest {
   public void testEIsSet() {
    // assertFalse(aut.eIsSet(FlatAutomatonPackage.ASTAutomaton_States));
   //  assertFalse(assign.eIsSet(ExpressionPackage.ASTAssignment_Value));
-    assertTrue(aut.eIsSet(FlatAutomatonPackage.ASTAutomaton_Transitions));
+    assertTrue(aut.eIsSet(FlatAutomatonPackage.ASTAutomaton_TransitionList));
   }
   
 }

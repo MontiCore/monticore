@@ -93,7 +93,7 @@ public class ASTModelSerialDeserialTest extends GeneratorIntegrationsTest {
     assertEquals(expectedFirstSuperType,
             serializedTransitionWithAction.getESuperTypes().get(0).getName());
     assertEquals(expectedNameOfAction,
-            serializedTransitionWithAction.getEAllStructuralFeatures().get(ActionAutomatonPackage.ASTCounter_Names).getName());
+            serializedTransitionWithAction.getEAllStructuralFeatures().get(ActionAutomatonPackage.ASTCounter_NameList).getName());
   }
   
   public void testECoreFileOFASTENode() {

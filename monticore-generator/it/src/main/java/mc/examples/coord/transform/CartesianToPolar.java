@@ -73,7 +73,7 @@ public class CartesianToPolar implements CoordcartesianVisitor {
     // angle = atan2(y,x)
     double angle = Math.atan2(a.getY(), a.getX());
     
-    result.getCoordinates().add(CoordpolarNodeFactory.createASTCoordinate(d, angle));
+    result.getCoordinateList().add(CoordpolarNodeFactory.createASTCoordinate(d, angle));
   }
   
   public void transform(ASTCoordinateFile ast) {

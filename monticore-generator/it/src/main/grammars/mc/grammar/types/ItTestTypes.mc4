@@ -56,7 +56,7 @@ grammar ItTestTypes extends mc.grammar.literals.ItTestLiterals {
     astrule QualifiedName =
         method public String toString(){
           return de.se_rwth.commons.Names.getQualifiedName(
-              this.getParts());
+              this.getPartList());
         };
     
     astrule PrimitiveType =
@@ -146,7 +146,7 @@ grammar ItTestTypes extends mc.grammar.literals.ItTestLiterals {
         @attribute parts A List of ASTStringList concludes all name parts
     */
     QualifiedName =
-        parts:Name& ("." parts:Name&)*;
+        part:Name& ("." part:Name&)*;
         
     /** The ASTAbstractArrayType represents array of Type
     */

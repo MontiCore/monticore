@@ -47,7 +47,7 @@ grammar TestCommon extends mc.grammars.types.TestTypes {
           return (getStereoValue(name) != null);
         }
         method public boolean containsStereoValue(String name, String value) {
-          for (ASTStereoValue sv : values) {
+          for (ASTStereoValue sv : valueList) {
             if (sv.getName() != null && sv.getName().equals(name) 
                 && sv.getValue() != null && sv.getValue().equals(value)) {
               return true;
@@ -56,7 +56,7 @@ grammar TestCommon extends mc.grammars.types.TestTypes {
           return false;
         }
         method public ASTStereoValue getStereoValue(String name) {
-          for (ASTStereoValue sv : values) {
+          for (ASTStereoValue sv : valueList) {
             if (sv.getName() != null && sv.getName().equals(name)) {
               return sv;
             }
@@ -94,7 +94,7 @@ grammar TestCommon extends mc.grammars.types.TestTypes {
         @attribute values List of Values of this Stereotype
     */
     Stereotype =
-        "<<" values:(StereoValue || ",")+ ">" ">" 
+        "<<" value:(StereoValue || ",")+ ">" ">" 
             // It is not possible to define ">>".
             // Parsing generic typs like "List<List<String>>" leads to problems.
             {((_input.LT(-2).getLine()==_input.LT(-1).getLine()) && (_input.LT(-1).getCharPositionInLine()==_input.LT(-2).getCharPositionInLine()+1))}?;

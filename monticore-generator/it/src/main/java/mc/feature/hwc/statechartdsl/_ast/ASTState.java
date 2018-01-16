@@ -20,6 +20,7 @@
 package mc.feature.hwc.statechartdsl._ast;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ASTState extends mc.feature.hwc.statechartdsl._ast.ASTStateTOP {
   
@@ -28,8 +29,8 @@ public class ASTState extends mc.feature.hwc.statechartdsl._ast.ASTStateTOP {
   }
   
   protected ASTState(
-      ASTEntryAction entryAction,
-      ASTExitAction exitAction,
+      Optional<ASTEntryAction> entryAction,
+      Optional<ASTExitAction> exitAction,
       boolean initial,
       boolean r_final,
       String name,

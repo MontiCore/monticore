@@ -31,8 +31,9 @@ software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
   <#assign nameHelper = glex.getGlobalVar("javaNameHelper")>
+  <#assign astHelper = glex.getGlobalVar("astHelper")>
   <#assign typeHelper = tc.instantiate("de.monticore.types.TypesHelper")>
   <#assign del = "">
-  <#list ast.getCDParameters() as parameter>   ${del}${typeHelper.printSimpleRefType(parameter.getType())} ${nameHelper.javaAttribute(parameter.getName())} 
+  <#list ast.getCDParameters() as parameter>   ${del}${astHelper.printFullType(parameter.getType())} ${nameHelper.javaAttribute(parameter.getName())} 
       <#assign del = " ,\n     ">
   </#list>

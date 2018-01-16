@@ -30,15 +30,6 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
-  <#assign nameHelper = glex.getGlobalVar("javaNameHelper")>
-  <#assign genHelper = glex.getGlobalVar("astHelper")>
-  ${tc.signature("constructorParameters")}
-    <#assign del = "">
-    <#list constructorParameters as parameter>
-	  <#if genHelper.isOptional(parameter.getType())>
-        ${del}Optional.ofNullable(this.${nameHelper.javaAttribute(parameter.getName())})
-      <#else>
-         ${del}this.${nameHelper.javaAttribute(parameter.getName())} 
-     </#if>
-      <#assign del = ",">
-    </#list> 
+${tc.signature("method", "ast", "methodName")}
+<#assign genHelper = glex.getGlobalVar("astHelper")>
+  return ${methodName}().isPresent();
