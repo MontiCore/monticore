@@ -153,6 +153,7 @@ public class CdDecorator {
       addListMethods(clazz, astHelper);
       addGetter(clazz, astHelper);
       addSetter(clazz, astHelper);
+      addOptionalMethods(clazz, astHelper);
       addSymbolGetter(clazz, astHelper);
       addNodeGetter(clazz, astHelper);
 
@@ -527,6 +528,40 @@ public class CdDecorator {
   }
   
   /**
+   * Adds common ast methods to the all classes in the class diagram
+   * 
+   * @param clazz - each entry contains a class diagram class and a respective
+   * builder class
+   * @param astHelper
+   * @throws ANTLRException
+   */
+  protected void addOptionalMethods(ASTCDClass clazz,
+      AstGeneratorHelper astHelper) {
+    for (ASTCDAttribute attribute: clazz.getCDAttributes()) {
+      if (astHelper.isInherited(attribute) || !astHelper.isOptional(attribute)) {
+        continue;
+      }
+
+      String methodName = GeneratorHelper.getPlainGetter(attribute);
+      String methodNameOpt = methodName.substring(0, methodName.length()-GeneratorHelper.GET_SUFFIX_OPTINAL.length());
+      String returnType = TypesPrinter.printType(TypesHelper.getFirstTypeArgumentOfOptional(attribute.getType()).get());
+      String toParse = "public " + returnType + " " + methodNameOpt + "() ;";
+      HookPoint getMethodBody = new TemplateHookPoint("ast.additionalmethods.GetForOpt", methodName);
+      replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
+ 
+      String methodIsPresent = "is" + StringTransformations.capitalize(attribute.getName()) + "Present";
+      toParse = "public boolean " + methodIsPresent + "() ;";
+      getMethodBody = new TemplateHookPoint("ast.additionalmethods.IsPresent", methodName);
+      replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
+
+      String methodSetAbsent = "set" + StringTransformations.capitalize(attribute.getName()) + "Absent";
+      toParse = "public void " + methodSetAbsent + "() ;";
+      getMethodBody = new TemplateHookPoint("ast.additionalmethods.SetAbsent", GeneratorHelper.getJavaAndCdConformName(attribute.getName()));
+      replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
+   }   
+  }
+
+  /**
    * Decorates class diagram with builder pattern for all classes excepting
    * lists
    * 
@@ -607,18 +642,6 @@ public class CdDecorator {
         HookPoint getMethodBody = new TemplateHookPoint("ast.additionalmethods.Get",
             attribute.getName());
         replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
-      }
-      
-      if (GeneratorHelper.isOptional(attribute)) {
-        String methodName2 = methodName.substring(0, methodName.length()-GeneratorHelper.GET_SUFFIX_OPTINAL.length());
-        if (!clazz.getCDMethods().stream()
-            .filter(m -> methodName2.equals(m.getName()) && m.getCDParameters().isEmpty()).findAny()
-            .isPresent()) {     
-          String returnType = TypesPrinter.printType(TypesHelper.getFirstTypeArgumentOfOptional(attribute.getType()).get());
-          String toParse = "public " + returnType + " " + methodName2 + "() ;";
-          HookPoint getMethodBody = new TemplateHookPoint("ast.additionalmethods.GetForOpt", methodName);
-          replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
-        }
       }
     }
   }
