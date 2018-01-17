@@ -35,19 +35,19 @@ public enum AstListMethods {
   
   addAll("public boolean addAll%s(Collection<? extends %s> collection);"),
   
-  contains("public boolean contains%s(ASTNode element);"),
+  contains("public boolean contains%s(Object element);"),
   
-  containsAll("public boolean containsAll%s(Collection<ASTNode> collection);"),
+  containsAll("public boolean containsAll%s(Collection<?> collection);"),
   
   isEmpty("public boolean isEmpty%s();"),
   
   iterator("public Iterator<%s> iterator%s();"),
   
-  remove("public boolean remove%s(ASTNode element);"),
+  remove("public boolean remove%s(Object element);"),
   
-  removeAll("public boolean removeAll%s(Collection<ASTNode> collection);"),
+  removeAll("public boolean removeAll%s(Collection<?> collection);"),
   
-  retainAll("public boolean retainAll%s(Collection<ASTNode> collection);"),
+  retainAll("public boolean retainAll%s(Collection<?> collection);"),
   
   size("public int size%s();"),
   
@@ -75,11 +75,11 @@ public enum AstListMethods {
   
   get("public %s get%s(int index);"),
   
-  indexOf("public int indexOf%s(ASTNode element);"),
+  indexOf("public int indexOf%s(Object element);"),
   
-  lastIndexOf("public int lastIndexOf%s(ASTNode element);"),
+  lastIndexOf("public int lastIndexOf%s(Object element);"),
   
-  equals("public boolean equals%s(ASTNode o);"),
+  equals("public boolean equals%s(Object o);"),
   
   hashCode("public int hashCode%s();"),
   
