@@ -696,11 +696,6 @@ public class CdDecorator {
         glex.replaceTemplate(ERROR_IFNULL_TEMPLATE, setMethod, new StringHookPoint(""));
       }
       
-      if (isOptional) {
-        toParse = "public boolean " + attributeName + "IsPresent() ;";
-        methodBody = new StringHookPoint("  return " + attributeName + ".isPresent(); \n");
-        replaceMethodBodyTemplate(clazz, toParse, methodBody);
-      }
     }
   }
   

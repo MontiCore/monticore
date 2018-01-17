@@ -90,7 +90,7 @@ public class HelperGrammar {
       // latter
       name = StringTransformations.uncapitalize(a.getName());
     }
-    return StringTransformations.capitalize(name);
+    return name;
   }
   
   public static String getListName(ASTNonTerminal a) {
@@ -99,7 +99,7 @@ public class HelperGrammar {
     if (a.getUsageName().isPresent()) {
       name = a.getUsageName().get();
       if (name.endsWith(TransformationHelper.LIST_SUFFIX)) {
-        name = name.substring(name.length()-TransformationHelper.LIST_SUFFIX.length()-1)
+        name = name.substring(0, name.length()-TransformationHelper.LIST_SUFFIX.length())
             + GeneratorHelper.GET_SUFFIX_LIST;
       }
     }

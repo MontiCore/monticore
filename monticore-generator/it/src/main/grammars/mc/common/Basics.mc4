@@ -17,7 +17,7 @@
  * ******************************************************************************
  */
 
-package mc.common;
+package mc.common; 
 
 grammar Basics {
  
@@ -86,6 +86,6 @@ token STRING =
     )*
 '"': {setText(getText().substring(1, getText().length() - 1));};
 
-MCImportStatement = "import" importList:Name& ( "." importList:Name&)* ("." Star:["*"])? ";" ;
+MCImportStatement = "import" import:Name& ( "." import:Name&)* ("." Star:["*"])? ";" ;
      
 }

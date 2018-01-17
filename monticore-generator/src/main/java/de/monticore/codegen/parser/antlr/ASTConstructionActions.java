@@ -21,8 +21,10 @@ package de.monticore.codegen.parser.antlr;
 
 import java.util.Optional;
 
+import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.grammar._ast.ASTAlt;
@@ -171,7 +173,7 @@ public class ASTConstructionActions {
     
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%",
-        StringTransformations.capitalize(HelperGrammar.getUsuageName(a)));
+        StringTransformations.capitalize(HelperGrammar.getListName(a)));
     tmp = tmp.replaceAll("%tmp%", tmpname);
     
     return tmp;
@@ -187,7 +189,7 @@ public class ASTConstructionActions {
     
     // Replace templates
     tmp = tmp.replaceAll("%u_usage%",
-        StringTransformations.capitalize(HelperGrammar.getUsuageName(a)));
+        StringTransformations.capitalize(HelperGrammar.getListName(a)));
     tmp = tmp.replaceAll("%tmp%", parserGenHelper.getTmpVarNameForAntlrCode(a));
     
     return tmp;
@@ -255,7 +257,12 @@ public class ASTConstructionActions {
     String tmp = "_aNode.get%u_usage%().add(\"%text%\");";
 
     // Replace templates
-    tmp = tmp.replaceAll("%u_usage%", StringTransformations.capitalize(a.getUsageName().get()));
+    // TODO MB : Find better solution
+    String usageName = StringTransformations.capitalize(a.getUsageName().get());
+    if (usageName.endsWith(TransformationHelper.LIST_SUFFIX)) {
+      usageName = usageName.substring(0, usageName.length()-TransformationHelper.LIST_SUFFIX.length());    
+    }
+    tmp = tmp.replaceAll("%u_usage%", StringTransformations.capitalize(usageName+ GeneratorHelper.GET_SUFFIX_LIST));
     tmp = tmp.replaceAll("%text%", a.getName());
 
     return tmp;

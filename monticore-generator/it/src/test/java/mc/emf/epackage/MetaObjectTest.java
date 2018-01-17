@@ -90,11 +90,11 @@ public class MetaObjectTest extends GeneratorIntegrationsTest {
   
   @Test
   public void testEReference() {
-    EReference state = FlatAutomatonPackage.eINSTANCE.getASTAutomaton_StateList();
+    EReference state = FlatAutomatonPackage.eINSTANCE.getASTAutomaton_States();
     
     // check feature ids
     assertEquals(state.getFeatureID(),
-        FlatAutomatonPackage.ASTAutomaton_StateList);
+        FlatAutomatonPackage.ASTAutomaton_States);
         
     assertEquals(FlatAutomatonPackage.eINSTANCE.getState(), state
         .getEReferenceType());

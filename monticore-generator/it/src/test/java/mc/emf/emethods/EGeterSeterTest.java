@@ -76,9 +76,9 @@ public class EGeterSeterTest extends GeneratorIntegrationsTest {
         .eGet(FlatAutomatonPackage.eINSTANCE.getASTAutomaton_Name());
         
     List<ASTState> stateFromID = (List<ASTState>) aut.eGet(
-        FlatAutomatonPackage.ASTAutomaton_StateList, false, false);
+        FlatAutomatonPackage.ASTAutomaton_States, false, false);
     List<ASTState> stateFromMetaObject = (List<ASTState>) aut
-        .eGet(FlatAutomatonPackage.eINSTANCE.getASTAutomaton_StateList());
+        .eGet(FlatAutomatonPackage.eINSTANCE.getASTAutomaton_States());
         
     assertEquals(expectedName, nameFromID);
     assertEquals(expectedName, nameFromMetaObject);
@@ -99,7 +99,7 @@ public class EGeterSeterTest extends GeneratorIntegrationsTest {
   
   @Test
   public void testEUnSet() {
-    aut.eUnset(FlatAutomatonPackage.ASTAutomaton_StateList);
+    aut.eUnset(FlatAutomatonPackage.ASTAutomaton_States);
     assertTrue(aut.getStateList().isEmpty());
     
     assign.eUnset(ExpressionPackage.ASTAssignment_Value);
@@ -110,7 +110,7 @@ public class EGeterSeterTest extends GeneratorIntegrationsTest {
   public void testEIsSet() {
    // assertFalse(aut.eIsSet(FlatAutomatonPackage.ASTAutomaton_States));
   //  assertFalse(assign.eIsSet(ExpressionPackage.ASTAssignment_Value));
-    assertTrue(aut.eIsSet(FlatAutomatonPackage.ASTAutomaton_TransitionList));
+    assertTrue(aut.eIsSet(FlatAutomatonPackage.ASTAutomaton_Transitions));
   }
   
 }

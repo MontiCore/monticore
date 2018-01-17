@@ -46,13 +46,13 @@ public class ExternalTest extends GeneratorIntegrationsTest {
   
   @Test
   public void testMetaObject() {
-    EReference transition = FlatAutomatonPackage.eINSTANCE.getASTAutomaton_TransitionList();
+    EReference transition = FlatAutomatonPackage.eINSTANCE.getASTAutomaton_Transitions();
     
     EClass expectedExternalType = FlatAutomatonPackage.eINSTANCE.getTransition();
     
     assertTrue(transition.isMany());
     assertEquals(expectedExternalType, transition.getEReferenceType());
-    assertEquals(FlatAutomatonPackage.ASTAutomaton_TransitionList,
+    assertEquals(FlatAutomatonPackage.ASTAutomaton_Transitions,
         transition.getFeatureID());
   }
   

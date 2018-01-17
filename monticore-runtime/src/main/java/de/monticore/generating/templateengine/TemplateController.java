@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.io.FilenameUtils;
+
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
@@ -659,15 +661,75 @@ public class TemplateController {
     return ObjectFactory.createObject(completeQualifiedName(className));
   }
 
-  public boolean existsHWC(String fileName) {
-    return existsHWC(fileName, config.getDefaultFileExtension());
+  /**
+   * Checks if a file with the default extension exists in the HWV directory.
+   * 
+   * @param filename Path of the file to search for
+   * @return true if file exists
+   */
+  public boolean existsHandwrittenFile(String filename) {
+    checkArgument(!isNullOrEmpty(filename));
+    
+    Path path = Paths.get(filename);
+    if (FilenameUtils.getExtension(filename).isEmpty()) {
+      path = Paths.get(filename + "." + config.getDefaultFileExtension());
+    }
+    
+    Log.debug("Checking existence of handwritten code " + FilenameUtils.getName(filename)
+        + " by searching for "
+        + path.toString(), TemplateController.class.getName());
+    
+    boolean result = config.getHandcodedPath().exists(path);
+    if (result) {
+      Reporting.reportUseHandwrittenCodeFile(config.getHandcodedPath().getResolvedPath(path).get(),
+          path);
+    }
+    
+    return result;
   }
-
-  public boolean existsHWC(String fileName, String extension) {
-    checkArgument(!isNullOrEmpty(fileName));
-    checkArgument(!isNullOrEmpty(extension));
-    Path filePath = Paths.get(Names.getFileName(Names.getPathFromPackage(fileName), extension));
-    return config.getHandcodedPath().exists(filePath);
+  
+  /**
+   * Checks if a handwritten class with the given qualifiedName (dot-separated)
+   * exists on the target path.
+   * 
+   * @param qualifiedName name of the class to search for
+   * @param extension extension of file to search for
+   * @return true if a handwritten class with the qualifiedName exists
+   */
+  public boolean existsHandwrittenClass(String qualifiedName,
+      String extension) {
+    checkArgument(!isNullOrEmpty(qualifiedName));
+    
+    if (Strings.nullToEmpty(extension).isEmpty()) {
+      extension = config.getDefaultFileExtension();
+    }
+    
+    Path handwrittenFile = Paths.get(Names
+        .getPathFromPackage(qualifiedName)
+        + "." + extension);
+    Log.debug("Checking existence of handwritten class " + qualifiedName
+        + " by searching for "
+        + handwrittenFile.toString(), TemplateController.class.getName());
+    
+    boolean result = config.getHandcodedPath().exists(handwrittenFile);
+    if (result) {
+      Reporting.reportUseHandwrittenCodeFile(
+          config.getHandcodedPath().getResolvedPath(handwrittenFile).get(),
+          handwrittenFile);
+    }
+    
+    return result;
+  }
+  
+  /**
+   * Checks if a handwritten class with the given qualifiedName (dot-separated)
+   * exists on the target path.
+   * 
+   * @param qualifiedName name of the class to search for
+   * @return true if a handwritten class with the qualifiedName exists
+   */
+  public boolean existsHandwrittenClass(String qualifiedName) {
+    return existsHandwrittenClass(qualifiedName, "");
   }
 
   /**

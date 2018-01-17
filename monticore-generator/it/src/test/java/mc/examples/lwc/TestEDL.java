@@ -81,7 +81,7 @@ public class TestEDL extends GeneratorIntegrationsTest {
         .deepEquals(
             EDLMill.referenceTypeBuilder()
                 .qualifiedName(
-                    EDLMill.qualifiedNameBuilder().nameList(Lists.newArrayList("Car")).build()).build()));
+                    EDLMill.qualifiedNameBuilder().names(Lists.newArrayList("Car")).build()).build()));
     
     assertEquals(entity.getPropertyList().get(6).getName(), "owner");
     assertTrue(entity
@@ -91,7 +91,7 @@ public class TestEDL extends GeneratorIntegrationsTest {
         .deepEquals(
             EDLMill.referenceTypeBuilder()
                 .qualifiedName(
-                    EDLMill.qualifiedNameBuilder().nameList(Lists.newArrayList("lwc", "edl", "Person"))
+                    EDLMill.qualifiedNameBuilder().names(Lists.newArrayList("lwc", "edl", "Person"))
                         .build()).build()));
     
   }

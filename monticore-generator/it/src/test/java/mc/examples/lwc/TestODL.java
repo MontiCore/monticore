@@ -55,7 +55,7 @@ public class TestODL extends GeneratorIntegrationsTest {
     
     assertEquals(instances.getObjectList().get(0).getName(), "person");
     assertTrue(instances.getObjectList().get(0).getType().deepEquals(
-        ODLMill.qualifiedNameBuilder().nameList(Lists.newArrayList("Person")).build()));
+        ODLMill.qualifiedNameBuilder().names(Lists.newArrayList("Person")).build()));
     
     assertEquals(instances.getObjectList().get(0).getAssignmentList().size(), 4);
     assertEquals(instances.getObjectList().get(0).getAssignmentList().get(0).getName(), "birthday");
@@ -104,7 +104,7 @@ public class TestODL extends GeneratorIntegrationsTest {
     
     assertEquals(instances.getObjectList().get(1).getName(), "car");
     assertTrue(instances.getObjectList().get(1).getType().deepEquals(
-        ODLMill.qualifiedNameBuilder().nameList(Lists.newArrayList("lwc", "edl", "Car")).build()));
+        ODLMill.qualifiedNameBuilder().names(Lists.newArrayList("lwc", "edl", "Car")).build()));
   }
   
 }

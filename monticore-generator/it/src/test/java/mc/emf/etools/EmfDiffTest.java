@@ -47,7 +47,7 @@ public class EmfDiffTest extends GeneratorIntegrationsTest {
         assertEquals("Attribute Name in Testautomat has changed from Testautomat2 to Testautomat",
             diffs.get(0).toString());
         
-        assertEquals("The order of the values of reference StateList have been changed",
+        assertEquals("The order of the values of reference States have been changed",
             diffs.get(1).toString());
         
         assertEquals("Attribute Initial in a has changed from true to false", diffs.get(2).toString());
