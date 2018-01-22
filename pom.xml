@@ -621,6 +621,24 @@
           <groupId>de.monticore.mojo</groupId>
           <artifactId>monticore-maven-plugin</artifactId>
           <version>${monticore.plugin}</version>
+          <!-- TODO: MB Check dependencies in monticore-maven-plugin and delete this -->
+          <dependencies>
+            <dependency>
+              <groupId>de.se_rwth.commons</groupId>
+              <artifactId>se-commons-groovy</artifactId>
+              <version>1.7.7</version>
+            </dependency>
+            <dependency>
+              <groupId>de.monticore.lang</groupId>
+              <artifactId>cd4analysis</artifactId>
+              <version>1.3.10</version>
+            </dependency>
+            <dependency>
+              <groupId>de.monticore</groupId>
+              <artifactId>javaDSL</artifactId>
+              <version>4.3.9</version>
+            </dependency>
+          </dependencies>
             <!-- <configuration>
             <skip>false</skip>
             <script>de/monticore/monticore_noemf.groovy</script>
