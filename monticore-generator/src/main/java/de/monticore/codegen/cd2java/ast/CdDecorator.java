@@ -364,7 +364,7 @@ public class CdDecorator {
     if (astHelper.isAstClass(clazz)) {
       List<ASTCDAttribute> attributes = Lists.newArrayList(clazz.getCDAttributes());
       for (ASTCDAttribute attribute : attributes) {
-        if (GeneratorHelper.isInherited(attribute) || !astHelper.isListAstNode(attribute)) {
+        if (GeneratorHelper.isInherited(attribute) || !astHelper.isListType(TypesPrinter.printType(attribute.getType()))) {
           continue;
         }
         Optional<ASTSimpleReferenceType> type = TypesHelper
