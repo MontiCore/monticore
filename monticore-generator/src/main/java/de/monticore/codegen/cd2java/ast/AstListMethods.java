@@ -53,6 +53,8 @@ public enum AstListMethods {
   
   toArray("public %s[] toArray%s(%s[] array);"),
   
+  toArray_("public Object[] toArray%s();"),
+  
   // ----------- java.util.Collection since 1.8 --------------------
   
   removeIf("public boolean removeIf%s(Predicate<? super %s> filter);"),
@@ -88,6 +90,8 @@ public enum AstListMethods {
   listIterator_("public ListIterator<%s> listIterator%s(int index);"),
   
   remove_("public %s remove%s(int index);"),
+  
+  set_("public %s set%s(int index, %s element);"),
   
   subList("public List<%s> subList%s(int start, int end);"),
   

@@ -437,6 +437,11 @@ public class CdDecorator {
         additionalMethodForListAttribute(clazz, AstListMethods.toArray.getMethodName(), attribute,
             methodSignatur);
         
+        methodSignatur = String.format(AstListMethods.toArray_.getMethodDeclaration(),
+            listName);
+        additionalMethodForListAttribute(clazz, AstListMethods.toArray_.getMethodName(), attribute,
+            methodSignatur);
+        
         methodSignatur = String.format(AstListMethods.removeIf.getMethodDeclaration(),
             attrName, typeName);
         additionalMethodForListAttribute(clazz, AstListMethods.removeIf.getMethodName(), attribute,
@@ -503,9 +508,20 @@ public class CdDecorator {
             attribute,
             methodSignatur);
             
+        methodSignatur = String.format(AstListMethods.listIterator_.getMethodDeclaration(),
+            typeName, listName);
+        additionalMethodForListAttribute(clazz, AstListMethods.listIterator_.getMethodName(),
+            attribute,
+            methodSignatur);
+
         methodSignatur = String.format(AstListMethods.remove_.getMethodDeclaration(),
             typeName, attrName);
         additionalMethodForListAttribute(clazz, AstListMethods.remove_.getMethodName(), attribute,
+            methodSignatur);
+        
+        methodSignatur = String.format(AstListMethods.set_.getMethodDeclaration(),
+            typeName, attrName, typeName);
+        additionalMethodForListAttribute(clazz, AstListMethods.set_.getMethodName(), attribute,
             methodSignatur);
         
         methodSignatur = String.format(AstListMethods.subList.getMethodDeclaration(),
