@@ -562,7 +562,7 @@ public class CdDecorator {
       String methodNameOpt = methodName.substring(0, methodName.length()-GeneratorHelper.GET_SUFFIX_OPTINAL.length());
       String returnType = TypesPrinter.printType(TypesHelper.getFirstTypeArgumentOfOptional(attribute.getType()).get());
       String toParse = "public " + returnType + " " + methodNameOpt + "() ;";
-      HookPoint getMethodBody = new TemplateHookPoint("ast.additionalmethods.GetForOpt", methodName);
+      HookPoint getMethodBody = new TemplateHookPoint("ast.additionalmethods.GetOpt", methodName);
       replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
  
       String methodIsPresent = "is" + StringTransformations.capitalize(attribute.getName()) + "Present";
@@ -574,7 +574,12 @@ public class CdDecorator {
       toParse = "public void " + methodSetAbsent + "() ;";
       getMethodBody = new TemplateHookPoint("ast.additionalmethods.SetAbsent", GeneratorHelper.getJavaAndCdConformName(attribute.getName()));
       replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
-   }   
+
+      String methodSetOpt = "set" + StringTransformations.capitalize(attribute.getName()) + "Opt";
+      toParse = "public void " + methodSetOpt + "(" + TypesPrinter.printType(attribute.getType()) + " value) ;";
+      getMethodBody = new TemplateHookPoint("ast.additionalmethods.SetOpt", GeneratorHelper.getJavaAndCdConformName(attribute.getName()));
+      replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
+  }   
   }
 
   /**
