@@ -87,9 +87,9 @@ public enum AstListMethods {
   
   listIterator_("public ListIterator<%s> listIterator%s(int index);"),
   
-  remove_("%s remove%s(int index);"),
+  remove_("public %s remove%s(int index);"),
   
-  subList("List<%s> subList%s(int start, int end);"),
+  subList("public List<%s> subList%s(int start, int end);"),
   
   // ----------- java.util.List since 1.8 --------------------------
   
