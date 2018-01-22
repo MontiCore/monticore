@@ -146,6 +146,7 @@ public class CdEmfDecorator extends CdDecorator {
  //     addAdditionalAttributes(clazz, astHelper);
       addGetter(clazz, astHelper);
       addSetter(clazz, astHelper);
+      addOptionalMethods(clazz, astHelper);
       addSymbolGetter(clazz, astHelper);
       addNodeGetter(clazz, astHelper);
       
@@ -441,11 +442,6 @@ public class CdEmfDecorator extends CdDecorator {
         glex.replaceTemplate(ERROR_IFNULL_TEMPLATE, setMethod, new StringHookPoint(""));
       }
       
-      if (isOptional) {
-        toParse = "public boolean " + attributeName + "IsPresent() ;";
-        methodBody = new StringHookPoint("  return " + attributeName + ".isPresent(); \n");
-        replaceMethodBodyTemplate(clazz, toParse, methodBody);
-      }
     }
   }
   
