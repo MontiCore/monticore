@@ -115,6 +115,24 @@
             <groupId>de.monticore.mojo</groupId>
             <artifactId>monticore-maven-plugin</artifactId>
             <version>4.5.5-SNAPSHOT</version><!--$NO-MVN-MAN-VER$ -->
+            <!-- TODO: MB Remove after next version 4.5.5 -->
+           <dependencies>
+            <dependency>
+              <groupId>de.se_rwth.commons</groupId>
+              <artifactId>se-commons-groovy</artifactId>
+              <version>${se-commons.version}</version>
+            </dependency>
+             <dependency>
+              <groupId>de.monticore.lang</groupId>
+              <artifactId>cd4analysis</artifactId>
+              <version>${cd4analysis.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>de.monticore</groupId>
+              <artifactId>javaDSL</artifactId>
+              <version>${mc.java.version}</version>
+            </dependency>
+           </dependencies>
             <executions>
               <execution>
                 <configuration>
