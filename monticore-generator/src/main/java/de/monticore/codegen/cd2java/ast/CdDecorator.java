@@ -564,18 +564,18 @@ public class CdDecorator {
       String toParse = "public " + returnType + " " + methodNameOpt + "() ;";
       HookPoint getMethodBody = new TemplateHookPoint("ast.additionalmethods.GetOpt", methodName);
       replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
- 
-      String methodIsPresent = "is" + StringTransformations.capitalize(attribute.getName()) + "Present";
+      String nativeName = StringTransformations.capitalize(GeneratorHelper.getNativeAttributeName(attribute.getName()));
+      String methodIsPresent = "is" +nativeName + "Present";
       toParse = "public boolean " + methodIsPresent + "() ;";
       getMethodBody = new TemplateHookPoint("ast.additionalmethods.IsPresent", methodName);
       replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
 
-      String methodSetAbsent = "set" + StringTransformations.capitalize(attribute.getName()) + "Absent";
+      String methodSetAbsent = "set" + nativeName + "Absent";
       toParse = "public void " + methodSetAbsent + "() ;";
       getMethodBody = new TemplateHookPoint("ast.additionalmethods.SetAbsent", GeneratorHelper.getJavaAndCdConformName(attribute.getName()));
       replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
 
-      String methodSetOpt = "set" + StringTransformations.capitalize(attribute.getName()) + "Opt";
+      String methodSetOpt = "set" + nativeName + "Opt";
       toParse = "public void " + methodSetOpt + "(" + TypesPrinter.printType(attribute.getType()) + " value) ;";
       getMethodBody = new TemplateHookPoint("ast.additionalmethods.SetOpt", GeneratorHelper.getJavaAndCdConformName(attribute.getName()));
       replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
