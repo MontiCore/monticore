@@ -5,7 +5,7 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore</artifactId>
-    <version>4.5.5-SNAPSHOT</version>
+    <version>4.5.5.Gen</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -114,8 +114,8 @@
           <plugin>
             <groupId>de.monticore.mojo</groupId>
             <artifactId>monticore-maven-plugin</artifactId>
-            <version>4.5.5-SNAPSHOT</version><!--$NO-MVN-MAN-VER$ -->
-            <!-- TODO: MB Remove after next version 4.5.5 -->
+            <version>4.5.5.Gen</version><!--$NO-MVN-MAN-VER$ -->
+            <!-- TODO: MB Remove after next version 4.5.5.Gen -->
            <dependencies>
             <dependency>
               <groupId>de.se_rwth.commons</groupId>
