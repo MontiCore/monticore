@@ -76,7 +76,7 @@ public class ExtendsTranslation implements
   private void translateClassProd(ASTClassProd classProd, ASTCDClass cdClass,
       ASTMCGrammar astGrammar) {
     // translates "extends"
-    for (ASTRuleReference ruleReference : classProd.getSuperRule()) {
+    for (ASTRuleReference ruleReference : classProd.getSuperRuleList()) {
       MCProdSymbol ruleSymbol = resolveRule(astGrammar, ruleReference.getName()).get();
       String packageName = getPackageName(ruleSymbol);
       cdClass.setSuperclass(TransformationHelper.createSimpleReference(
@@ -84,7 +84,7 @@ public class ExtendsTranslation implements
     }
 
     // translates "astextends"
-    for (ASTGenericType typeReference : classProd.getASTSuperClass()) {
+    for (ASTGenericType typeReference : classProd.getASTSuperClassList()) {
       String qualifiedRuleName = TransformationHelper.getQualifiedTypeNameAndMarkIfExternal(
           typeReference, astGrammar, cdClass);
       cdClass.setSuperclass(TransformationHelper.createSimpleReference(qualifiedRuleName));
@@ -94,7 +94,7 @@ public class ExtendsTranslation implements
   private void translateAbstractProd(ASTAbstractProd abstractProd,
       ASTCDClass cdClass, ASTMCGrammar astGrammar) {
     // translates "extends"
-    for (ASTRuleReference ruleReference : abstractProd.getSuperRule()) {
+    for (ASTRuleReference ruleReference : abstractProd.getSuperRuleList()) {
       MCProdSymbol ruleSymbol = resolveRule(astGrammar, ruleReference.getName()).get();
       String packageName = getPackageName(ruleSymbol);
       cdClass.setSuperclass(TransformationHelper.createSimpleReference(
@@ -103,7 +103,7 @@ public class ExtendsTranslation implements
 
     // translates "astextends"
     String qualifiedRuleName;
-    for (ASTGenericType typeReference : abstractProd.getASTSuperClass()) {
+    for (ASTGenericType typeReference : abstractProd.getASTSuperClassList()) {
       qualifiedRuleName = TransformationHelper.getQualifiedTypeNameAndMarkIfExternal(
           typeReference, astGrammar, cdClass);
       cdClass.setSuperclass(TransformationHelper.createSimpleReference(qualifiedRuleName));
@@ -113,19 +113,19 @@ public class ExtendsTranslation implements
   private void translateInterfaceProd(ASTInterfaceProd interfaceProd,
       ASTCDInterface cdInterface, ASTMCGrammar astGrammar) {
     // translates "extends"
-    for (ASTRuleReference ruleReference : interfaceProd.getSuperInterfaceRule()) {
+    for (ASTRuleReference ruleReference : interfaceProd.getSuperInterfaceRuleList()) {
       MCProdSymbol ruleSymbol = resolveRule(astGrammar, ruleReference.getName()).get();
       String packageName = getPackageName(ruleSymbol);
-      cdInterface.getInterfaces().add(TransformationHelper.createSimpleReference(
+      cdInterface.getInterfaceList().add(TransformationHelper.createSimpleReference(
           packageName + "AST" + ruleReference.getName()));
     }
 
     // translates "astextends"
     String qualifiedRuleName;
-    for (ASTGenericType typeReference : interfaceProd.getASTSuperInterface()) {
+    for (ASTGenericType typeReference : interfaceProd.getASTSuperInterfaceList()) {
       qualifiedRuleName = TransformationHelper.getQualifiedTypeNameAndMarkIfExternal(
           typeReference, astGrammar, cdInterface);
-      cdInterface.getInterfaces().add(
+      cdInterface.getInterfaceList().add(
           TransformationHelper.createSimpleReference(qualifiedRuleName));
     }
   }

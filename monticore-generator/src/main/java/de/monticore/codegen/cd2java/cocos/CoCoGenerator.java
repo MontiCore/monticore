@@ -73,7 +73,7 @@ public class CoCoGenerator {
     // code
     
     // concrete coco interfaces for AST classes
-    for (ASTCDClass clazz : astClassDiagram.getCDDefinition().getCDClasses()) {
+    for (ASTCDClass clazz : astClassDiagram.getCDDefinition().getCDClassList()) {
       if (coCoHelper.isAstClass(clazz)) {
         final Path cocoFilePath = Paths.get(Names.getPathFromPackage(cocosPackage),
             diagramName + CoCoGeneratorHelper.getPlainName(clazz) + "CoCo.java");
@@ -81,7 +81,7 @@ public class CoCoGenerator {
       }
     }
     // concrete coco interfaces for AST interfaces classes
-    for (ASTCDInterface interf : astClassDiagram.getCDDefinition().getCDInterfaces()) {
+    for (ASTCDInterface interf : astClassDiagram.getCDDefinition().getCDInterfaceList()) {
       final Path cocoFilePath = Paths.get(Names.getPathFromPackage(cocosPackage),
           diagramName + CoCoGeneratorHelper.getPlainName(interf) + "CoCo.java");
       generator.generate("cocos.CoCoInterface", cocoFilePath, interf, astPackage);

@@ -72,7 +72,7 @@ public class InheritanceTest {
    */
   @Test
   public void testExtends() {
-    java.util.Optional<ASTReferenceType> superClasses = astA.getSuperclass();
+    java.util.Optional<ASTReferenceType> superClasses = astA.getSuperclassOpt();
     assertTrue(superClasses.isPresent());
     String name = typeToString(superClasses.get());
     assertEquals("mc2cdtransformation.InheritanceGrammar.ASTextendedProd", name);
@@ -84,7 +84,7 @@ public class InheritanceTest {
    */
   @Test
   public void testImplements() {
-    List<ASTReferenceType> superInterfaces = astB.getInterfaces();
+    List<ASTReferenceType> superInterfaces = astB.getInterfaceList();
     assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
     assertEquals("mc2cdtransformation.InheritanceGrammar.ASTimplementedProd", name);
@@ -96,7 +96,7 @@ public class InheritanceTest {
    */
   @Test
   public void testAstextends() {
-    java.util.Optional<ASTReferenceType> superClasses = astC.getSuperclass();
+    java.util.Optional<ASTReferenceType> superClasses = astC.getSuperclassOpt();
     assertTrue(superClasses.isPresent());
     String name = typeToString(superClasses.get());
     assertEquals("AstExtendedType", name);
@@ -108,7 +108,7 @@ public class InheritanceTest {
    */
   @Test
   public void testAstimplements() {
-    List<ASTReferenceType> superInterfaces = astD.getInterfaces();
+    List<ASTReferenceType> superInterfaces = astD.getInterfaceList();
     assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
     assertEquals("AstImplementedType", name);
@@ -120,7 +120,7 @@ public class InheritanceTest {
    */
   @Test
   public void testAstextendsQualified() {
-    java.util.Optional<ASTReferenceType> superClasses = astE.getSuperclass();
+    java.util.Optional<ASTReferenceType> superClasses = astE.getSuperclassOpt();
     assertTrue(superClasses.isPresent());
     String name = typeToString(superClasses.get());
     assertEquals("java.util.Observable", name);
@@ -132,7 +132,7 @@ public class InheritanceTest {
    */
   @Test
   public void testAstimplementsQualified() {
-    List<ASTReferenceType> superInterfaces = astF.getInterfaces();
+    List<ASTReferenceType> superInterfaces = astF.getInterfaceList();
     assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
     assertEquals("java.io.Serializable", name);

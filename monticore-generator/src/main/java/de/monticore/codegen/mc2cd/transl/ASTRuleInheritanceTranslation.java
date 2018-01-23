@@ -64,28 +64,28 @@ public class ASTRuleInheritanceTranslation implements
   private void translateInterfaceProd(ASTASTRule rule, ASTCDInterface cdInterface,
       ASTMCGrammar astGrammar) {
     // translates "astextends"
-    for (ASTGenericType superInterface : rule.getASTSuperClass()) {
+    for (ASTGenericType superInterface : rule.getASTSuperClassList()) {
       String qualifiedSuperInterface = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(superInterface, astGrammar, cdInterface);
 
-      cdInterface.getInterfaces().add(
+      cdInterface.getInterfaceList().add(
           TransformationHelper.createSimpleReference(qualifiedSuperInterface));
     }
   }
 
   private void translateClassProd(ASTASTRule rule, ASTCDClass cdClass, ASTMCGrammar astGrammar) {
     // translates "astextends"
-    for (ASTGenericType superClass : rule.getASTSuperClass()) {
+    for (ASTGenericType superClass : rule.getASTSuperClassList()) {
       String qualifiedSuperClass = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(superClass, astGrammar, cdClass);
       cdClass.setSuperclass(TransformationHelper.createSimpleReference(qualifiedSuperClass));
     }
 
     // translates "astimplements"
-    for (ASTGenericType superInterface : rule.getASTSuperInterface()) {
+    for (ASTGenericType superInterface : rule.getASTSuperInterfaceList()) {
       String qualifiedSuperInterface = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(superInterface, astGrammar, cdClass);
-      cdClass.getInterfaces()
+      cdClass.getInterfaceList()
           .add(TransformationHelper.createSimpleReference(qualifiedSuperInterface));
     }
   }

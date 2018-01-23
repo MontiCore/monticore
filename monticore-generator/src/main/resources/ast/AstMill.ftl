@@ -55,13 +55,13 @@ public <#if isTop>abstract </#if> class ${ast.getName()} {
   
   protected static ${plainName} mill = null;
 
-<#list ast.getCDAttributes() as attribute>
+<#list ast.getCDAttributeList() as attribute>
  ${tc.includeArgs("ast.Attribute", [attribute, ast])}
 </#list>
 
   protected ${ast.getName()} () {}
 
-<#list ast.getCDMethods() as method>
+<#list ast.getCDMethodList() as method>
  ${tc.includeArgs("ast.ClassMethod", [method, ast])}
 </#list>
 

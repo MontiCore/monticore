@@ -43,8 +43,8 @@ public class InterfaceNTOnlyExtendInterfaceNTs implements GrammarASTInterfacePro
   
   @Override
   public void check(ASTInterfaceProd a) {
-    if (!a.getSuperInterfaceRule().isEmpty()) {
-      List<ASTRuleReference> superRules = a.getSuperInterfaceRule();
+    if (!a.getSuperInterfaceRuleList().isEmpty()) {
+      List<ASTRuleReference> superRules = a.getSuperInterfaceRuleList();
       for (ASTRuleReference sr : superRules) {
         Optional<MCProdSymbol> ruleSymbol = a.getEnclosingScope().get().resolve(sr.getName(),
             MCProdSymbol.KIND);

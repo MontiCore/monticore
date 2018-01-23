@@ -45,9 +45,9 @@ public class ReferencedNTNotDefined implements GrammarASTMCGrammarCoCo {
   @Override
   public void check(ASTMCGrammar a) {
     MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol().get();
-    for (ASTClassProd p : a.getClassProds()) {
-      if (!p.getSuperRule().isEmpty() && p.getSymbol().isPresent()) {
-        for (ASTRuleReference sr : p.getSuperRule()) {
+    for (ASTClassProd p : a.getClassProdList()) {
+      if (!p.getSuperRuleList().isEmpty() && p.getSymbol().isPresent()) {
+        for (ASTRuleReference sr : p.getSuperRuleList()) {
           if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
             Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "", sr.getName(),
                 sr.getName()),
@@ -55,8 +55,8 @@ public class ReferencedNTNotDefined implements GrammarASTMCGrammarCoCo {
           }
         }
       }
-      if (!p.getSuperInterfaceRule().isEmpty()) {
-        for (ASTRuleReference sr : p.getSuperInterfaceRule()) {
+      if (!p.getSuperInterfaceRuleList().isEmpty()) {
+        for (ASTRuleReference sr : p.getSuperInterfaceRuleList()) {
           if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
             Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "interface ",
                 sr.getName(), sr.getName()),
@@ -65,9 +65,9 @@ public class ReferencedNTNotDefined implements GrammarASTMCGrammarCoCo {
         }
       }
     }
-    for (ASTAbstractProd p : a.getAbstractProds()) {
-      if (!p.getSuperRule().isEmpty() && p.getSymbol().isPresent()) {
-        for (ASTRuleReference sr : p.getSuperRule()) {
+    for (ASTAbstractProd p : a.getAbstractProdList()) {
+      if (!p.getSuperRuleList().isEmpty() && p.getSymbol().isPresent()) {
+        for (ASTRuleReference sr : p.getSuperRuleList()) {
           if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
             Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "", sr.getName(),
                 sr.getName()),
@@ -75,8 +75,8 @@ public class ReferencedNTNotDefined implements GrammarASTMCGrammarCoCo {
           }
         }
       }
-      if (!p.getSuperInterfaceRule().isEmpty() && p.getSymbol().isPresent()) {
-        for (ASTRuleReference sr : p.getSuperInterfaceRule()) {
+      if (!p.getSuperInterfaceRuleList().isEmpty() && p.getSymbol().isPresent()) {
+        for (ASTRuleReference sr : p.getSuperInterfaceRuleList()) {
           if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
             Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "interface ",
                 sr.getName(), sr.getName()),
@@ -85,9 +85,9 @@ public class ReferencedNTNotDefined implements GrammarASTMCGrammarCoCo {
         }
       }
     }
-    for (ASTInterfaceProd p : a.getInterfaceProds()) {
-      if (!p.getSuperInterfaceRule().isEmpty() && p.getSymbol().isPresent()) {
-        for (ASTRuleReference sr : p.getSuperInterfaceRule()) {
+    for (ASTInterfaceProd p : a.getInterfaceProdList()) {
+      if (!p.getSuperInterfaceRuleList().isEmpty() && p.getSymbol().isPresent()) {
+        for (ASTRuleReference sr : p.getSuperInterfaceRuleList()) {
           if (!grammarSymbol.getProdWithInherited(sr.getName()).isPresent()) {
             Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), "interface ",
                 sr.getName(), sr.getName()),

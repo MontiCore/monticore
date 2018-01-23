@@ -64,16 +64,16 @@ component grammar MCLiterals extends de.monticore.MCBasics {
 
   ast IntLiteral = 
     method public int getValue() {
-      return de.monticore.MCLiteralsDecoder.decodeInt(getSource().get());
+      return de.monticore.MCLiteralsDecoder.decodeInt(getSource());
     }
   ;
 
   ast SignedIntLiteral = 
     method public int getValue() {
       if (negative) {
-        return - de.monticore.MCLiteralsDecoder.decodeInt(getSource().get());
+        return - de.monticore.MCLiteralsDecoder.decodeInt(getSource());
       }
-      return de.monticore.MCLiteralsDecoder.decodeInt(getSource().get());
+      return de.monticore.MCLiteralsDecoder.decodeInt(getSource());
     }
   ;
   
@@ -109,31 +109,31 @@ component grammar MCLiterals extends de.monticore.MCBasics {
 
   ast FloatLiteral = 
     method public float getValue() {
-      return de.monticore.MCLiteralsDecoder.decodeFloat(getSource().get());
+      return de.monticore.MCLiteralsDecoder.decodeFloat(getSource());
     }
   ;
 
   ast SignedFloatLiteral = 
     method public float getValue() {
       if (negative) {
-        return -de.monticore.MCLiteralsDecoder.decodeFloat(getSource().get());
+        return -de.monticore.MCLiteralsDecoder.decodeFloat(getSource());
       }
-      return de.monticore.MCLiteralsDecoder.decodeFloat(getSource().get());
+      return de.monticore.MCLiteralsDecoder.decodeFloat(getSource());
     }
   ;
 
   ast DoubleLiteral = 
     method public double getValue() {
-      return de.monticore.MCLiteralsDecoder.decodeDouble(getSource().get());
+      return de.monticore.MCLiteralsDecoder.decodeDouble(getSource());
     }
   ;
 
   ast SignedDoubleLiteral = 
     method public double getValue() {
       if (negative) {
-        return -de.monticore.MCLiteralsDecoder.decodeDouble(getSource().get());
+        return -de.monticore.MCLiteralsDecoder.decodeDouble(getSource());
       }
-      return de.monticore.MCLiteralsDecoder.decodeDouble(getSource().get());
+      return de.monticore.MCLiteralsDecoder.decodeDouble(getSource());
     }
   ;
 

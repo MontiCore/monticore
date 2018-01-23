@@ -81,7 +81,7 @@ public class CreateConstantAttributeTranslation implements
         int constantType = iterated ? ASTConstantsTypes.INT : ASTConstantsTypes.BOOLEAN;
         cdAttribute.setType(TypesNodeFactory
             .createASTPrimitiveType(constantType));
-        link.target().getCDAttributes().add(cdAttribute);
+        link.target().getCDAttributeList().add(cdAttribute);
       }
     }
   }

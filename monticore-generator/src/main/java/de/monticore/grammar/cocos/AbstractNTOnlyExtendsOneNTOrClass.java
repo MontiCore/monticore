@@ -36,11 +36,11 @@ public class AbstractNTOnlyExtendsOneNTOrClass implements GrammarASTAbstractProd
 
   @Override
   public void check(ASTAbstractProd a) {
-    if (a.getSuperRule().size()>1) {
+    if (a.getSuperRuleList().size()>1) {
       Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName(), "extend", "nonterminal"),
               a.get_SourcePositionStart());
     }
-    if(a.getASTSuperClass().size()>1){
+    if(a.getASTSuperClassList().size()>1){
       Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName(), "astextend", "class"),
               a.get_SourcePositionStart());
     }

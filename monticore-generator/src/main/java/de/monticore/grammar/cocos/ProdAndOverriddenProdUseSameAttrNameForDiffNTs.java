@@ -19,7 +19,6 @@
 
 package de.monticore.grammar.cocos;
 
-import java.util.List;
 import java.util.Optional;
 
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
@@ -44,8 +43,8 @@ public class ProdAndOverriddenProdUseSameAttrNameForDiffNTs implements GrammarAS
       
   @Override
   public void check(ASTNonTerminal a) {
-    if (a.getUsageName().isPresent()) {
-      String attributename = a.getUsageName().get();
+    if (a.isUsageNamePresent()) {
+      String attributename = a.getUsageName();
       Optional<MCProdComponentSymbol> componentSymbol = a.getEnclosingScope().get()
           .resolve(attributename, MCProdComponentSymbol.KIND);
       if (!componentSymbol.isPresent()) {

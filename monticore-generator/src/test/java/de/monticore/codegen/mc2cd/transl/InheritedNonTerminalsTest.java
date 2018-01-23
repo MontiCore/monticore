@@ -43,7 +43,7 @@ public class InheritedNonTerminalsTest {
     Optional<ASTCDCompilationUnit> cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/InheritedNonTerminalsGrammar.mc4"));
     assertTrue(cdCompilationUnit.isPresent());
-    List<ASTCDClass> classList = cdCompilationUnit.get().getCDDefinition().getCDClasses();
+    List<ASTCDClass> classList = cdCompilationUnit.get().getCDDefinition().getCDClassList();
     astA = classList.get(0);
     astB = classList.get(1);
   }
@@ -56,7 +56,7 @@ public class InheritedNonTerminalsTest {
   
   @Test
   public void testSuperGrammarResolving() {
-    String name = typeToString(astA.getCDAttributes().get(0).getType());
+    String name = typeToString(astA.getCDAttributeList().get(0).getType());
     assertEquals("mc2cdtransformation.Supergrammar.ASTX", name);
   }
 }

@@ -74,9 +74,9 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     super(astCd, globalScope);
     Log.errorIfNull(ast);
     this.astGrammar = ast;
-    this.qualifiedGrammarName = astGrammar.getPackage().isEmpty()
+    this.qualifiedGrammarName = astGrammar.getPackageList().isEmpty()
         ? astGrammar.getName()
-        : Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackage()),
+        : Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackageList()),
             astGrammar.getName());
     
     grammarSymbol = globalScope.<MCGrammarSymbol> resolve(

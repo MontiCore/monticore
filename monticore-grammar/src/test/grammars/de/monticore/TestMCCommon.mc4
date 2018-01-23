@@ -1,8 +1,5 @@
 package de.monticore;
 
 grammar TestMCCommon extends de.monticore.MCCommon {
-
-// TODO MB: Remove the rule with new MC generator > 4.5.3
-A = "";
-
+  A = Stereotype Modifier Completeness;
 }

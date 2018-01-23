@@ -54,12 +54,12 @@ component grammar Cardinality extends
     ( many:["*"] {_aNode.setLowerBound(0);_aNode.setUpperBound(0);}
       | lowerBoundLit:Decimal
         { _aNode.setLowerBound(
-             _aNode.getLowerBoundLit().get().getValueInt());
+             _aNode.getLowerBoundLit().getValueInt());
           _aNode.setUpperBound(_aNode.getLowerBound()); }
       ( ".." (
         upperBoundLit:Decimal
         ( {_aNode.setUpperBound(
-	     _aNode.getUpperBoundLit().get().getValueInt());})
+	     _aNode.getUpperBoundLit().getValueInt());})
         |
         noUpperLimit:["*"] {_aNode.setUpperBound(0);} ) )?
     ) "]";

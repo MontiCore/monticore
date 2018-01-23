@@ -39,7 +39,7 @@ public class ExternalNTOnlyInComponentGrammar implements GrammarASTMCGrammarCoCo
   @Override
   public void check(ASTMCGrammar a) {
     if (!a.isComponent()) {
-      for (ASTProd p : a.getExternalProds()) {
+      for (ASTProd p : a.getExternalProdList()) {
         Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName()),
                 a.get_SourcePositionStart());
       }

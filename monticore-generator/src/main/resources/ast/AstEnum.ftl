@@ -48,7 +48,7 @@ ${defineHookPoint("<Block>?EnumContent:addImports")}
 
 public enum ${ast.getName()}<#if interfaces?has_content> implements ${interfaces}</#if> {
   <#assign count = 0>
-  <#list ast.getCDEnumConstants() as constant>
+  <#list ast.getCDEnumConstantList() as constant>
     <#if count == 0>
       ${constant.getName()}(ASTConstants${genHelper.getCdName()}.${constant.getName()}) 
     <#else>
@@ -68,7 +68,7 @@ public enum ${ast.getName()}<#if interfaces?has_content> implements ${interfaces
     return intValue;
   }
   
-<#list ast.getCDMethods() as method>
+<#list ast.getCDMethodList() as method>
   ${tc.includeArgs("ast.ClassMethod", [method, ast])}
 </#list>
 }

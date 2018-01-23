@@ -62,7 +62,7 @@ final class VisibilityManipulation implements UnaryOperator<ASTCDCompilationUnit
    * Sets the visibility of every attribute to protected.
    */
   private void setProtectedVisibility(ASTCDAttribute cdAttribute) {
-    Optional<ASTModifier> previousModifier = cdAttribute.getModifier();
+    Optional<ASTModifier> previousModifier = cdAttribute.getModifierOpt();
     ASTModifier newModifier = previousModifier.isPresent()
         ? previousModifier.get()
         : CD4AnalysisNodeFactory
@@ -75,7 +75,7 @@ final class VisibilityManipulation implements UnaryOperator<ASTCDCompilationUnit
    * Sets the visibility of every class to public.
    */
   private void setClassVisibilityPublic(ASTCDClass cdClass) {
-    Optional<ASTModifier> previousModifier = cdClass.getModifier();
+    Optional<ASTModifier> previousModifier = cdClass.getModifierOpt();
     ASTModifier newModifier = previousModifier.isPresent()
         ? previousModifier.get()
         : CD4AnalysisNodeFactory
@@ -88,7 +88,7 @@ final class VisibilityManipulation implements UnaryOperator<ASTCDCompilationUnit
    * Sets the visibility of every interface to public.
    */
   private void setInterfaceVisibilityPublic(ASTCDInterface cdInterface) {
-    Optional<ASTModifier> previousModifier = cdInterface.getModifier();
+    Optional<ASTModifier> previousModifier = cdInterface.getModifierOpt();
     ASTModifier newModifier = previousModifier.isPresent()
         ? previousModifier.get()
         : CD4AnalysisNodeFactory

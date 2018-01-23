@@ -59,7 +59,7 @@ public class InterfaceProdTest {
    */
   @Test
   public void testExtends() {
-    List<ASTReferenceType> superInterfaces = astA.getInterfaces();
+    List<ASTReferenceType> superInterfaces = astA.getInterfaceList();
     assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
     assertEquals("mc2cdtransformation.InterfaceProd.ASTextendedProd", name);
@@ -71,7 +71,7 @@ public class InterfaceProdTest {
    */
   @Test
   public void testAstextends() {
-    List<ASTReferenceType> superInterfaces = astB.getInterfaces();
+    List<ASTReferenceType> superInterfaces = astB.getInterfaceList();
     assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
     assertEquals("AstExtendedType", name);
@@ -83,7 +83,7 @@ public class InterfaceProdTest {
    */
   @Test
   public void testAstimplementsQualified() {
-    List<ASTReferenceType> superInterfaces = astC.getInterfaces();
+    List<ASTReferenceType> superInterfaces = astC.getInterfaceList();
     assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
     assertEquals("java.io.Serializable", name);

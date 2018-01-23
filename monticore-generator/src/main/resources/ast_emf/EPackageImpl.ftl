@@ -169,7 +169,7 @@ public class ${ast.getName()} extends EPackageImpl implements ${grammarName}Pack
   </#list>
    
   <#-- generate all methods -->  
-  <#list ast.getCDMethods() as method>
+  <#list ast.getCDMethodList() as method>
   ${tc.includeArgs("ast.ClassMethod", [method, ast])}
   </#list>  
    

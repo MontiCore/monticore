@@ -36,7 +36,7 @@ public class NTOnlyExtendOrAstextendNTOrClass implements GrammarASTClassProdCoCo
 
   @Override
   public void check(ASTClassProd a) {
-    if (!a.getSuperRule().isEmpty() && !a.getASTSuperClass().isEmpty()) {
+    if (!a.getSuperRuleList().isEmpty() && !a.getASTSuperClassList().isEmpty()) {
       Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName()),
               a.get_SourcePositionStart());
     }

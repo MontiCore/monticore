@@ -46,26 +46,26 @@ public class NTAndASTRuleExtendType implements GrammarASTMCGrammarCoCo {
   @Override
   public void check(ASTMCGrammar a) {
     MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol().get();
-    for (ASTASTRule rule : a.getASTRules()) {
-      if (!rule.getASTSuperClass().isEmpty()) {
+    for (ASTASTRule rule : a.getASTRuleList()) {
+      if (!rule.getASTSuperClassList().isEmpty()) {
         Optional<MCProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(rule.getType());
         if (ruleSymbol.isPresent()) {
           if (ruleSymbol.get().isClass()) {
             Optional<ASTNode> prod = ruleSymbol.get().getAstNode();
             if (prod.isPresent() && prod.get() instanceof ASTClassProd
-                && (!((ASTClassProd) prod.get()).getASTSuperClass().isEmpty()
-                    || !((ASTClassProd) prod.get()).getSuperRule().isEmpty())) {
+                && (!((ASTClassProd) prod.get()).getASTSuperClassList().isEmpty()
+                    || !((ASTClassProd) prod.get()).getSuperRuleList().isEmpty())) {
               Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, rule.getType(),
-                  rule.getASTSuperClass().get(0).getTypeName()),
+                  rule.getASTSuperClassList().get(0).getTypeName()),
                   rule.get_SourcePositionStart());
             }
           }
           else if (ruleSymbol.get().getAstNode().isPresent()
               && ruleSymbol.get().getAstNode().get() instanceof ASTAbstractProd) {
             ASTAbstractProd prod = (ASTAbstractProd) ruleSymbol.get().getAstNode().get();
-            if (!prod.getASTSuperClass().isEmpty() || !prod.getSuperRule().isEmpty()) {
+            if (!prod.getASTSuperClassList().isEmpty() || !prod.getSuperRuleList().isEmpty()) {
               Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, rule.getType(),
-                  rule.getASTSuperClass().get(0).getTypeName()),
+                  rule.getASTSuperClassList().get(0).getTypeName()),
                   rule.get_SourcePositionStart());
             }
           }

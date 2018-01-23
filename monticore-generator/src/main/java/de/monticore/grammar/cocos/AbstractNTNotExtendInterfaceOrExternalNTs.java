@@ -42,8 +42,8 @@ public class AbstractNTNotExtendInterfaceOrExternalNTs implements GrammarASTAbst
   
   @Override
   public void check(ASTAbstractProd a) {
-    if (!a.getSuperRule().isEmpty()) {
-      List<ASTRuleReference> superRules = a.getSuperRule();
+    if (!a.getSuperRuleList().isEmpty()) {
+      List<ASTRuleReference> superRules = a.getSuperRuleList();
       for(ASTRuleReference sr : superRules){
         Optional<MCProdSymbol> ruleSymbol = a.getEnclosingScope().get().resolve(sr.getName(), MCProdSymbol.KIND);
         if(ruleSymbol.isPresent()){

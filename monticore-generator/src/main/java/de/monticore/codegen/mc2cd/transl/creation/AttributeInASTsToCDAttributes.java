@@ -44,7 +44,7 @@ public class AttributeInASTsToCDAttributes implements
       for (ASTAttributeInAST attributeInAST : ASTNodes.getSuccessors(link.source(),
           ASTAttributeInAST.class)) {
         ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-        link.target().getCDAttributes().add(cdAttribute);
+        link.target().getCDAttributeList().add(cdAttribute);
         new Link<>(attributeInAST, cdAttribute, link);
       }
     }
@@ -54,7 +54,7 @@ public class AttributeInASTsToCDAttributes implements
       for (ASTAttributeInAST attributeInAST : ASTNodes.getSuccessors(link.source(),
           ASTAttributeInAST.class)) {
         ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-        link.target().getCDAttributes().add(cdAttribute);
+        link.target().getCDAttributeList().add(cdAttribute);
         new Link<>(attributeInAST, cdAttribute, link);
       }
     }

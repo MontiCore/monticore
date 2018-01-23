@@ -34,7 +34,7 @@ software, even if advised of the possibility of such damage.
   <#assign genHelper = glex.getGlobalVar("astHelper")>
     super.deepClone(result);
     
-    <#list astType.getCDAttributes() as attribute> 
+    <#list astType.getCDAttributeList() as attribute> 
       <#assign attributeName = genHelper.getJavaConformName(attribute.getName())>
       <#assign attrType = attribute.getType()>
       <#assign typeName = genHelper.printType(attribute.getType())>

@@ -47,12 +47,12 @@ public final class AstRuleInheritanceTest {
 
   @Test
   public void testAstRuleInheritance() {
-    assertEquals("dimensions", astC.getCDAttributes().get(0).getName());
+    assertEquals("dimensions", astC.getCDAttributeList().get(0).getName());
   }
 
   @Test
   public void testAstRuleDoubleInheritance() {
-    assertEquals(2, impl.getCDAttributes().size());
+    assertEquals(2, impl.getCDAttributeList().size());
   }
   
 }

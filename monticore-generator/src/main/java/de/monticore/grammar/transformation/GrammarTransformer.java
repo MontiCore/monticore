@@ -82,12 +82,12 @@ public class GrammarTransformer {
       Optional<ASTBlock> block = transform(entry.getKey());
       if (block.isPresent()) {
         ASTAlt parent = entry.getValue();
-        int ind = parent.getComponents().indexOf(entry.getKey());
+        int ind = parent.getComponentList().indexOf(entry.getKey());
         if (ind >= 0) {
           Log.debug("Remove NonTerminalSeparator", GrammarTransformer.class.getName());
-          parent.getComponents().remove(ind);
+          parent.getComponentList().remove(ind);
           Log.debug("Added new generated block", GrammarTransformer.class.getName());
-          parent.getComponents().add(ind, block.get());
+          parent.getComponentList().add(ind, block.get());
         }
         else {
           Log.error("0xA1009 Can't transform grammar");
@@ -104,9 +104,9 @@ public class GrammarTransformer {
    * transitions:Transition)*
    */
   public static void changeNamesOfMultivaluedAttributes(ASTMCGrammar grammar) {
-    grammar.getClassProds().forEach(c -> transformNonTerminals(grammar, c));
-    grammar.getInterfaceProds().forEach(c -> transformNonTerminals(grammar, c));
-    grammar.getASTRules().forEach(c -> transformAttributesInAST(c));
+    grammar.getClassProdList().forEach(c -> transformNonTerminals(grammar, c));
+    grammar.getInterfaceProdList().forEach(c -> transformNonTerminals(grammar, c));
+    grammar.getASTRuleList().forEach(c -> transformAttributesInAST(c));
   }
   
   private static void transformNonTerminals(ASTMCGrammar grammar,
@@ -124,7 +124,7 @@ public class GrammarTransformer {
        // .filter(nonTerminal -> !nonTerminal.getUsageName().isPresent())
         .forEach(components::add);
     components.forEach(s -> {
-      s.setUsageName(s.getUsageName().orElse(StringTransformations.uncapitalize(s.getName())) + TransformationHelper.LIST_SUFFIX);
+      s.setUsageName(s.getUsageNameOpt().orElse(StringTransformations.uncapitalize(s.getName())) + TransformationHelper.LIST_SUFFIX);
       Log.debug("Change the name of " + classProd.getName()
           + " list-attribute: " + s.getName(), GrammarTransformer.class.getName());
     });
@@ -138,9 +138,9 @@ public class GrammarTransformer {
         .filter(attributeInAST -> multiplicityOfAttributeInAST(attributeInAST) == Multiplicity.LIST)
         .forEach(
             attributeInAST -> {
-              String typeName = StringTransformations.uncapitalize(Names.getSimpleName(attributeInAST.getGenericType().getNames()));
+              String typeName = StringTransformations.uncapitalize(Names.getSimpleName(attributeInAST.getGenericType().getNameList()));
               
-              attributeInAST.setName(attributeInAST.getName().orElse(typeName)+ TransformationHelper.LIST_SUFFIX);
+              attributeInAST.setName(attributeInAST.getNameOpt().orElse(typeName)+ TransformationHelper.LIST_SUFFIX);
               Log.debug("Change the name of ast-rule " + astRule.getType()
                   + " list-attribute: " + attributeInAST.getGenericType(),
                   GrammarTransformer.class.getName());
@@ -153,8 +153,8 @@ public class GrammarTransformer {
    */
   private static Optional<ASTBlock> transform(ASTNonTerminalSeparator nonTerminalSep) {
     String name = "";
-    if (nonTerminalSep.getUsageName().isPresent()) {
-      name = nonTerminalSep.getUsageName().get() + ":";
+    if (nonTerminalSep.isUsageNamePresent()) {
+      name = nonTerminalSep.getUsageName() + ":";
     }
     String plusKeywords = (nonTerminalSep.isPlusKeywords()) ? "&" : "";
     String iteration = (nonTerminalSep.getIteration() == ASTConstantsGrammar.STAR) ? "?" : "";

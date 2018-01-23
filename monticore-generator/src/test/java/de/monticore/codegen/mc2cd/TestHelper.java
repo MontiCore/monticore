@@ -76,13 +76,13 @@ public class TestHelper {
   }
 
   public static Optional<ASTCDClass> getCDClass(ASTCDCompilationUnit cdCompilationUnit, String cdClassName) {
-    return cdCompilationUnit.getCDDefinition().getCDClasses().stream()
+    return cdCompilationUnit.getCDDefinition().getCDClassList().stream()
         .filter(cdClass -> cdClass.getName().equals(cdClassName))
         .findAny();
   }
 
   public static Optional<ASTCDInterface> getCDInterface(ASTCDCompilationUnit cdCompilationUnit, String cdInterfaceName) {
-    return cdCompilationUnit.getCDDefinition().getCDInterfaces().stream()
+    return cdCompilationUnit.getCDDefinition().getCDInterfaceList().stream()
         .filter(cdClass -> cdClass.getName().equals(cdInterfaceName))
         .findAny();
   }
@@ -95,19 +95,19 @@ public class TestHelper {
       return false;
     }
     ASTSimpleReferenceType type = (ASTSimpleReferenceType) typeRef;
-    if (!type.getTypeArguments().isPresent()) {
+    if (!type.isTypeArgumentsPresent()) {
       return false;
     }
-    if (type.getTypeArguments().get().getTypeArguments().size() != 1) {
+    if (type.getTypeArguments().getTypeArgumentList().size() != 1) {
       return false;
     }
-    if (!(type.getTypeArguments().get().getTypeArguments()
+    if (!(type.getTypeArguments().getTypeArgumentList()
         .get(0) instanceof ASTSimpleReferenceType)) {
       return false;
     }
     return Names.getQualifiedName(
-        ((ASTSimpleReferenceType) type.getTypeArguments().get().getTypeArguments().get(0))
-            .getNames())
+        ((ASTSimpleReferenceType) type.getTypeArguments().getTypeArgumentList().get(0))
+            .getNameList())
         .equals(typeArg);
   }
 }

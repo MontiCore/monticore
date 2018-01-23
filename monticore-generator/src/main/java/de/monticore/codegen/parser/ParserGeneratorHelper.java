@@ -99,9 +99,9 @@ public class ParserGeneratorHelper {
   public ParserGeneratorHelper(ASTMCGrammar ast, MCGrammarInfo grammarInfo) {
     Log.errorIfNull(ast);
     this.astGrammar = ast;
-    this.qualifiedGrammarName = astGrammar.getPackage().isEmpty()
+    this.qualifiedGrammarName = astGrammar.getPackageList().isEmpty()
             ? astGrammar.getName()
-            : Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackage()),
+            : Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackageList()),
             astGrammar.getName());
     this.grammarInfo = grammarInfo;
     this.grammarSymbol = grammarInfo.getGrammarSymbol();
@@ -113,9 +113,9 @@ public class ParserGeneratorHelper {
   public ParserGeneratorHelper(ASTMCGrammar ast, MCGrammarInfo grammarInfo, boolean embeddedJavaCode, Languages lang) {
     Log.errorIfNull(ast);
     this.astGrammar = ast;
-    this.qualifiedGrammarName = astGrammar.getPackage().isEmpty()
+    this.qualifiedGrammarName = astGrammar.getPackageList().isEmpty()
             ? astGrammar.getName()
-            : Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackage()),
+            : Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackageList()),
             astGrammar.getName());
     this.grammarInfo = grammarInfo;
     this.grammarSymbol = grammarInfo.getGrammarSymbol();
@@ -301,8 +301,8 @@ public class ParserGeneratorHelper {
 
   public String getConstantNameForConstant(ASTConstant x) {
     String name;
-    if (x.getHumanName().isPresent()) {
-      name = x.getHumanName().get();
+    if (x.isHumanNamePresent()) {
+      name = x.getHumanName();
     }
     else {
       name = grammarInfo.getLexNamer().getConstantName(x.getName());
@@ -370,8 +370,8 @@ public class ParserGeneratorHelper {
 
   public static String getUsuageName(ASTNonTerminal ast) {
     // Use Nonterminal name as attribute name starting with lower case latter
-    if (ast.getUsageName().isPresent()) {
-      return ast.getUsageName().get();
+    if (ast.isUsageNamePresent()) {
+      return ast.getUsageName();
     }
     else {
       return StringTransformations.uncapitalize(ast.getName());
@@ -471,22 +471,22 @@ public class ParserGeneratorHelper {
   }
 
   public Optional<ASTAlt> getAlternativeForFollowOption(String prodName) {
-    return astGrammar.getGrammarOptions().isPresent()
-            ? astGrammar.getGrammarOptions().get().getFollowOptions().stream()
+    return !astGrammar.getGrammarOptionList().isEmpty()
+            ? astGrammar.getGrammarOptionList().get(0).getFollowOptionList().stream()
             .filter(f -> f.getProdName().equals(prodName)).map(ASTFollowOption::getAlt).findFirst()
             : Optional.empty();
   }
 
   public List<ASTAlt> getAlternatives(ASTClassProd ast) {
-    if (!ast.getAlts().isEmpty()) {
-      return ast.getAlts();
+    if (!ast.getAltList().isEmpty()) {
+      return ast.getAltList();
     }
     for (MCGrammarSymbolReference g : grammarSymbol.getSuperGrammars()) {
       final Optional<MCProdSymbol> ruleByName = g.getReferencedSymbol().getProdWithInherited(ast.getName());
       if (ruleByName.isPresent() && ruleByName.get().isClass()) {
         Optional<ASTNode> astProd = ruleByName.get().getAstNode();
         if (astProd.isPresent() && astProd.get() instanceof ASTClassProd) {
-          return ((ASTClassProd)astProd.get()).getAlts();
+          return ((ASTClassProd)astProd.get()).getAltList();
         }
       }
     }
@@ -517,14 +517,14 @@ public class ParserGeneratorHelper {
 
     if (node instanceof ASTAction) {
       StringBuilder buffer = new StringBuilder();
-      for (ASTBlockStatement action : ((ASTAction) node).getBlockStatements()) {
+      for (ASTBlockStatement action : ((ASTAction) node).getBlockStatementList()) {
         buffer.append(getPrettyPrinter().prettyprint(action));
       }
       return buffer.toString();
     }
     if (node instanceof ASTJavaCode) {
       StringBuilder buffer = new StringBuilder();
-      for (ASTClassMemberDeclaration action : ((ASTJavaCode) node).getClassMemberDeclarations()) {
+      for (ASTClassMemberDeclaration action : ((ASTJavaCode) node).getClassMemberDeclarationList()) {
         buffer.append(getPrettyPrinter().prettyprint(action));
 
       }

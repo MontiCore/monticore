@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-  <feature url="features/de.monticore.m2e.feature_4.5.5-SNAPSHOT.jar"
-    id="de.monticore.m2e.feature" version="4.5.5-SNAPSHOT">
+  <feature url="features/de.monticore.m2e.feature_4.5.5.jar"
+    id="de.monticore.m2e.feature" version="4.5.5">
     <category name="de.monticore.m2e.site" />
   </feature>
   <category-def name="de.monticore.m2e.site" label="M2E Extensions" />

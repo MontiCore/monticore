@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 public interface ASTProd extends ASTProdTOP {
   
-  default java.util.List<ASTSymbolDefinition> getSymbolDefinitions()  { 
+  default java.util.List<ASTSymbolDefinition> getSymbolDefinitionList()  { 
     return new ArrayList<ASTSymbolDefinition>();
  } 
     

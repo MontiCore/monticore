@@ -45,7 +45,7 @@ public class InterfaceNTWithoutImplementationOnlyInComponentGrammar implements G
   public void check(ASTMCGrammar a) {
     MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol().get();
     if (!a.isComponent()) {
-      for (ASTProd p : a.getInterfaceProds()) {
+      for (ASTProd p : a.getInterfaceProdList()) {
         boolean extensionFound = false;
         entryLoop: for (Map.Entry<String, MCProdSymbol> entry : grammarSymbol
             .getProdsWithInherited().entrySet()) {

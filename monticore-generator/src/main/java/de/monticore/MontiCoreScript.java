@@ -249,7 +249,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    */
   public ASTMCGrammar createSymbolsFromAST(GlobalScope globalScope, ASTMCGrammar ast) {
     // Build grammar symbol table (if not already built)
-    String qualifiedGrammarName = Names.getQualifiedName(ast.getPackage(), ast.getName());
+    String qualifiedGrammarName = Names.getQualifiedName(ast.getPackageList(), ast.getName());
     Optional<MCGrammarSymbol> grammarSymbol = globalScope
         .<MCGrammarSymbol> resolveDown(qualifiedGrammarName, MCGrammarSymbol.KIND);
 
@@ -294,7 +294,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       ASTCDCompilationUnit ast) {
     // Build grammar symbol table (if not already built)
 
-    final String qualifiedCDName = Names.getQualifiedName(ast.getPackage(), ast.getCDDefinition()
+    final String qualifiedCDName = Names.getQualifiedName(ast.getPackageList(), ast.getCDDefinition()
         .getName());
     Optional<CDSymbol> cdSymbol = globalScope.<CDSymbol> resolveDown(
         qualifiedCDName,
@@ -364,10 +364,10 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   public void storeInCdFile(ASTCDCompilationUnit astCd, File outputDirectory) {
     // we also store the class diagram fully qualified such that we can later on
     // resolve it properly for the generation of sub languages
-    String subDir = Joiner.on(File.separator).join(astCd.getPackage());
+    String subDir = Joiner.on(File.separator).join(astCd.getPackageList());
     GeneratorHelper.prettyPrintAstCd(astCd, outputDirectory, subDir);
 
-    String fqn = Names.getQualifiedName(astCd.getPackage(), astCd.getCDDefinition().getName());
+    String fqn = Names.getQualifiedName(astCd.getPackageList(), astCd.getCDDefinition().getName());
     Reporting.reportFileCreation(outputDirectory.toPath().toAbsolutePath(),
         Paths.get(fqn.replaceAll("\\.", "/").concat(".cd")));
   }
@@ -383,7 +383,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ASTCDCompilationUnit cd = getCDOfParsedGrammar(astCd);
     // we also store the class diagram fully qualified such that we can later on
     // resolve it properly for the generation of sub languages
-    String reportSubDir = Joiners.DOT.join(astCd.getPackage());
+    String reportSubDir = Joiners.DOT.join(astCd.getPackageList());
     reportSubDir = reportSubDir.isEmpty()
         ? cd.getCDDefinition().getName()
         : reportSubDir.concat(".").concat(cd.getCDDefinition().getName());
@@ -391,7 +391,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     // Write reporting CD
     ASTCDCompilationUnit astCdForReporting = new AstGeneratorHelper(cd, globalScope).getASTCDForReporting();
     // No star imports in reporting CDs
-    astCdForReporting.getImportStatements().forEach(s -> s.setStar(false));
+    astCdForReporting.getImportStatementList().forEach(s -> s.setStar(false));
     GeneratorHelper.prettyPrintAstCd(astCdForReporting, outputDirectory, ReportingConstants.REPORTING_DIR
         + File.separator + reportSubDir);
 

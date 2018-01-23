@@ -43,7 +43,7 @@ public class ExternalImplementationTest {
 
   @Test
   public void testExternalImplementation() {
-    ASTReferenceType cdInterface = astZ.getInterfaces().get(0);
+    ASTReferenceType cdInterface = astZ.getInterfaceList().get(0);
     assertTrue(cdInterface != null);
     String name = TransformationHelper.typeToString(cdInterface);
     assertEquals("mc2cdtransformation.Supergrammar.ASTZExt", name);

@@ -43,6 +43,6 @@ public class EnumProdTest {
 
   @Test
   public void testExist() {
-    assertEquals(4, cdCompilationUnit.getCDDefinition().getCDEnums().size());
+    assertEquals(4, cdCompilationUnit.getCDDefinition().getCDEnumList().size());
   }
 }

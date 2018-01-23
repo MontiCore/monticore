@@ -37,10 +37,10 @@ public class AttributeNameLowerCase implements GrammarASTNonTerminalCoCo {
   
   @Override
   public void check(ASTNonTerminal a) {
-    if (a.getUsageName().isPresent()) {
-      if (!Character.isLowerCase(a.getUsageName().get().charAt(0))) {
+    if (a.isUsageNamePresent()) {
+      if (!Character.isLowerCase(a.getUsageName().charAt(0))) {
         String rulename   =  a.getEnclosingScope().get().getSpanningSymbol().get().getName();
-        Log.warn(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getUsageName().get(), a.getName(), rulename),
+        Log.warn(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getUsageName(), a.getName(), rulename),
                 a.get_SourcePositionStart());
       }
 
