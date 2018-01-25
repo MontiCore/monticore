@@ -23,7 +23,7 @@ package mc.lang;
    MCG for CD 4 Analysis, Version Mar. 23th, 2015
 */
 
-grammar CD4Analysis extends mc.grammar.types.Types {
+grammar CD4Analysis extends mc.grammar.types.ItTestTypes {
 
   /** ASTCDCompilationUnit represents the complete Diagram
     @attribute package          The package declaration of this Classdiagram

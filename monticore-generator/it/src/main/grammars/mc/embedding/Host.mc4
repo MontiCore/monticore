@@ -19,7 +19,7 @@
 
 package mc.embedding;
 
-grammar Host extends mc.grammar.lexicals.Lexicals {
+grammar Host extends mc.grammar.lexicals.ItTestLexicals {
 
    symbol scope Host = Name "content" Content;
 

@@ -42,7 +42,7 @@ import de.se_rwth.commons.cli.CLIArguments;
 import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.Slf4jLog;
+import de.se_rwth.commons.logging.LogStub;
 
 /**
  * Test for the MontiCore generator. Generates ast files for the example
@@ -59,7 +59,7 @@ public class AstGeneratorTest extends GeneratorTest {
   
   @BeforeClass
   public static void setup() {
-    Slf4jLog.init();
+    //LogStub.init();
     Log.enableFailQuick(false);
   }
   
@@ -208,7 +208,7 @@ public class AstGeneratorTest extends GeneratorTest {
     try {
       String script = Resources.asCharSource(
           // l.getResource("de/monticore/groovy/monticoreOnlyAst_emf.groovy"),
-          l.getResource("de/monticore/groovy/monticoreOnlyAst_emf.groovy"),
+          l.getResource("de/monticore/groovy/monticoreOnlyAst.groovy"),
           Charset.forName("UTF-8")).read();
       
       Configuration configuration = ConfigurationPropertiesMapContributor
@@ -218,7 +218,7 @@ public class AstGeneratorTest extends GeneratorTest {
       new MontiCoreScript().run(script, configuration);
     }
     catch (IOException e) {
-      Log.error("0xA1018 AstGeneratorTest failed: ", e);
+      Log.error("0xA1017 AstGeneratorTest failed: ", e);
     }
   }
   

@@ -30,7 +30,6 @@ import java.util.Optional;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.monticore.antlr4.MCConcreteParser.ParserExecution;
 import de.se_rwth.commons.logging.Log;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.expression.expression._ast.ASTConstantsExpression;
@@ -46,7 +45,6 @@ public class ExpressionTest extends GeneratorIntegrationsTest {
   
   public Optional<ASTExpr> parse(String input) throws IOException {
     ExpressionParser parser = new ExpressionParser();
-    parser.setParserTarget(ParserExecution.EOF);
     Optional<ASTExpr> res = parser.parseExpr(new StringReader(input));
     return res;
   }
@@ -70,8 +68,8 @@ public class ExpressionTest extends GeneratorIntegrationsTest {
       Optional<ASTExpr> res = parse("1");
       assertTrue(res.isPresent());
       ASTExpr ast = res.get();
-      assertTrue(ast.getNumericLiteral().isPresent());
-      assertEquals("1", ast.getNumericLiteral().get());
+      assertTrue(ast.getNumericLiteralOpt().isPresent());
+      assertEquals("1", ast.getNumericLiteralOpt().get());
     }
     catch (Exception e) {
       fail(e.getMessage());
@@ -97,7 +95,7 @@ public class ExpressionTest extends GeneratorIntegrationsTest {
       Optional<ASTExpr> res = parse("(1*2)");
       assertTrue(res.isPresent());
       ASTExpr ast = res.get();
-      assertTrue(ast.getExpr().isPresent());
+      assertTrue(ast.getExprOpt().isPresent());
     }
     catch (Exception e) {
       fail(e.getMessage());
@@ -148,9 +146,9 @@ public class ExpressionTest extends GeneratorIntegrationsTest {
     try {
       Optional<ASTExpr> res = parse("2^3^4");
       assertTrue(res.isPresent());
-      Optional<ASTExpr> left = res.get().getLeft();
+      Optional<ASTExpr> left = res.get().getLeftOpt();
       assertTrue(left.isPresent());
-      assertTrue(left.get().getNumericLiteral().isPresent());
+      assertTrue(left.get().getNumericLiteralOpt().isPresent());
     }
     catch (Exception e) {
       fail(e.getMessage());

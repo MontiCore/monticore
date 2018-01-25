@@ -59,9 +59,9 @@ public class ExternalTest extends GeneratorIntegrationsTest {
   @Test
   public void testMethods() {
     ASTCounter counter = ActionAutomatonNodeFactory.createASTCounter();
-    aut.setCounters(Lists.newArrayList(counter));
+    aut.setCounterList(Lists.newArrayList(counter));
     
-    assertTrue(aut.getCounters().contains(counter));
+    assertTrue(aut.getCounterList().contains(counter));
   }
   
 }

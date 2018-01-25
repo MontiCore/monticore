@@ -41,11 +41,8 @@ public class SimpleHashFactory {
   private static SimpleHashFactory theInstance;
   
   private SimpleHashFactory() {
-    try {
-      Logger.selectLoggerLibrary(Logger.LIBRARY_NONE);
-    }
-    catch (ClassNotFoundException e) {
-    }
+    // use empty logger to suppress default free marker log behaviour
+    System.setProperty(Logger.SYSTEM_PROPERTY_NAME_LOGGER_LIBRARY, Logger.LIBRARY_NAME_NONE);
   }
   
   public static SimpleHashFactory getInstance() {

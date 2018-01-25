@@ -23,11 +23,11 @@ grammar AttributeInASTOverridingGrammar {
 
     A = overrridden:X ;
     
-    ast A = overrridden:Y ;
+    astrule A = overrridden:Y ;
     
     B = X;
     
-    ast B = additional:X;
+    astrule B = additional:X;
     
     X;
     

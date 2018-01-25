@@ -59,19 +59,19 @@ public class ParserTest extends GeneratorIntegrationsTest {
     assertEquals(false, p.hasErrors());
     assertEquals("a", ast.getName());
     
-    assertEquals(true, ((ASTConstants) ast.getWired().get(0)).isPubblic());
-    assertEquals(false, ((ASTConstants) ast.getWired().get(0)).isPrivate());
+    assertEquals(true, ((ASTConstants) ast.getWiredList().get(0)).isPubblic());
+    assertEquals(false, ((ASTConstants) ast.getWiredList().get(0)).isPrivate());
     
-    assertEquals(true, ((ASTConstants) ast.getWired().get(1)).isPubblic());
-    assertEquals(false, ((ASTConstants) ast.getWired().get(1)).isPrivate());
+    assertEquals(true, ((ASTConstants) ast.getWiredList().get(1)).isPubblic());
+    assertEquals(false, ((ASTConstants) ast.getWiredList().get(1)).isPrivate());
     
-    assertEquals(false, ((ASTConstants) ast.getWired().get(2)).isPubblic());
-    assertEquals(true, ((ASTConstants) ast.getWired().get(2)).isPrivate());
+    assertEquals(false, ((ASTConstants) ast.getWiredList().get(2)).isPubblic());
+    assertEquals(true, ((ASTConstants) ast.getWiredList().get(2)).isPrivate());
     
-    assertEquals(true, ((ASTSpices1) ast.getWired().get(3)).isCarlique());
-    assertEquals(true, ((ASTSpices1) ast.getWired().get(3)).isPepper());
+    assertEquals(true, ((ASTSpices1) ast.getWiredList().get(3)).isCarlique());
+    assertEquals(true, ((ASTSpices1) ast.getWiredList().get(3)).isPepper());
     
-    assertEquals(ASTConstantsFeatureDSL.NONE, ((ASTSpices2) ((ASTAutomaton) ast).getWired().get(4)).getSpicelevel());
+    assertEquals(ASTConstantsFeatureDSL.NONE, ((ASTSpices2) ((ASTAutomaton) ast).getWiredList().get(4)).getSpicelevel());
     
   }
   
@@ -109,7 +109,7 @@ public class ParserTest extends GeneratorIntegrationsTest {
     assertEquals(false, p.hasErrors());
     assertTrue(ast.isPresent());
     assertEquals(true, ast.get().getA() instanceof ASTA);
-    assertEquals(true, ast.get().getB() instanceof List);
+    assertEquals(true, ast.get().getBList() instanceof List);
     
   }
   
@@ -131,7 +131,7 @@ public class ParserTest extends GeneratorIntegrationsTest {
     
     assertTrue(ast.isPresent());
     assertEquals(false, p.hasErrors());
-    assertEquals(true, ast.get().getA() instanceof List);
+    assertEquals(true, ast.get().getAList() instanceof List);
     
   }
   

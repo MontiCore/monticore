@@ -23,9 +23,9 @@ grammar A4020 {
 
  A;
 
- ast A;
+ astrule A;
 
- ast A;
+ astrule A;
 
 
 }

@@ -146,7 +146,7 @@ public class MCGrammarInfo {
             addSubrule(prodByName.get().getName(), HelperGrammar.getRuleName(classProd), ruleref);
           }
           else {
-            Log.error("0xA2111 Undefined rule: " + ruleref.getTypeName(),
+            Log.error("0xA2112 Undefined rule: " + ruleref.getTypeName(),
                 ruleref.get_SourcePositionStart());
           }
         }
@@ -189,39 +189,29 @@ public class MCGrammarInfo {
   }
   
 
-  private boolean isProdLeftRecursive(MCProdSymbol ruleByName, ASTClassProd ast) {
+  private Collection<String> addLeftRecursiveRuleForProd(ASTClassProd ast) {
     List<ASTProd> superProds = GeneratorHelper.getAllSuperProds(ast);
     Collection<String> names = new ArrayList<>();
     superProds.forEach(s -> names.add(s.getName()));
     DirectLeftRecursionDetector detector = new DirectLeftRecursionDetector();
     for (ASTAlt alt : ast.getAlts()) {
       if (detector.isAlternativeLeftRecursive(alt, names)) {
-        return true;
+        names.add(ast.getName());
+        return names;
       }
     }
-    return false;
+    return Lists.newArrayList();
   }
   
   private void addLeftRecursiveRules() {
     Set<MCGrammarSymbol> grammarsToHandle = Sets
         .newLinkedHashSet(Arrays.asList(grammarSymbol));
     grammarsToHandle.addAll(MCGrammarSymbolTableHelper.getAllSuperGrammars(grammarSymbol));
-    Collection<MCProdSymbol> basicRecursiveRules = new HashSet<>();
     for (MCGrammarSymbol grammar : grammarsToHandle) {
       for (ASTClassProd classProd : ((ASTMCGrammar) grammar.getAstNode().get()).getClassProds()) {
-        MCProdSymbol rule = (MCProdSymbol) classProd.getSymbol().get();
-        if (isProdLeftRecursive((MCProdSymbol) classProd.getSymbol().get(), classProd)) {
-          basicRecursiveRules.add(rule);
-        }
-      }
-      
-      for (MCProdSymbol rule: basicRecursiveRules) {
-        leftRecursiveRules.add(rule.getName());
-        rule.getSuperInterfaceProds().stream().forEach(s -> leftRecursiveRules.add(s.getName()));
-        rule.getSuperProds().stream().forEach(s -> leftRecursiveRules.add(s.getName()));
+        leftRecursiveRules.addAll(addLeftRecursiveRuleForProd(classProd));
       }
     }
-    
   }
   
   /**

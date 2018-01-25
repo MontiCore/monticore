@@ -19,28 +19,25 @@
 
 package de.monticore.groovy
 
-debug("--------------------------------")
-debug("MontiCore")
-debug(" - eating your models since 2005")
-debug("--------------------------------")
-debug("Input files    : " + _configuration.getGrammarsAsStrings())
-debug("Modelpath      : " + _configuration.getModelPathAsStrings())
-debug("Output dir     : " + out)
-debug("Handcoded path : " + _configuration.getHandcodedPathAsStrings())
+debug("--------------------------------", LOG_ID)
+debug("MontiCore", LOG_ID)
+debug(" - eating your models since 2005", LOG_ID)
+debug("--------------------------------", LOG_ID)
+debug("Input files    : " + _configuration.getGrammarsAsStrings(), LOG_ID)
+debug("Modelpath      : " + _configuration.getModelPathAsStrings(), LOG_ID)
+debug("Output dir     : " + out, LOG_ID)
+debug("Handcoded path : " + _configuration.getHandcodedPathAsStrings(), LOG_ID)
+
+globalScope = createGlobalScope(modelPath)
 
 // Parse grammar
 astGrammars = parseGrammars(grammars)
-glex = new GlobalExtensionManagement()
-symbolTable = initSymbolTable(modelPath)
 
-for (astGrammar in astGrammars) {  
-  
-  astGrammar = createSymbolsFromAST(symbolTable, astGrammar)
-  
+for (astGrammar in astGrammars) {
+
+  astGrammar = createSymbolsFromAST(globalScope, astGrammar)
+
   // Generate parser
-  generateParser(glex, astGrammar, symbolTable, handcodedPath, out)
-  
-  // Generate wrappers for parser rules
-  generateParserWrappers(glex, astGrammar, symbolTable, handcodedPath, out)
-  
+  generateParser(glex, astGrammar, globalScope, handcodedPath, out)
+
 }

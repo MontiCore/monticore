@@ -5,7 +5,7 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore</artifactId>
-    <version>4.5.3</version>
+    <version>4.5.5.Gen</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -114,121 +114,159 @@
           <plugin>
             <groupId>de.monticore.mojo</groupId>
             <artifactId>monticore-maven-plugin</artifactId>
-            <version>4.5.3</version><!--$NO-MVN-MAN-VER$ -->
-            <configuration>
-              <skip>false</skip>
-              <addOutputDirectoryToModelPath>true</addOutputDirectoryToModelPath>
-              <grammars>
-                <grammar>src/main/grammars/mc/common/Basics.mc4</grammar>
-                <grammar>src/main/grammars/HelloWorld.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/abc/ABC.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/abc/RealABC.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/abstractgrammar/AbstractGrammar.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/abstractgrammar/Implementation.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/abstractprod/AbstractProd.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/addkeywords/AddKeywords.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/astcomparison/Comparison.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/astident/AstIdent.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/astprod/AstProd.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/aststring/Aststring.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/automaton/Automaton.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/classgenwithingrammar/Type.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/cocochecker/A.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/cocochecker/B.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/cocochecker/C.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/comments/CommentTest.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/comments/CommentTypesTest.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/compilationunit/Compunit.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/constantsshortform/ConstantsShortForm.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/delete/DeleteTest.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/FeatureDSL.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/embedding/inner/FeatureinnerDSL.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/embedding/outer/FeatureouterDSL.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/example/nointerface/SimpleSCWithoutInterface.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/example/useinterface/SimpleSCWithInterface.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/wiki/Wiki.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/dsltoolstandalone/DSLToolTest.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/embedding/inner/Inner.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/embedding/outer/Featureembedded.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/embedding/outer/Outer.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/embedding/outer/Embedded.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/list/Lists.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/listrule/ListRule.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/semanticpredicate/SemPredWithInterface.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/inheritence/Inheritence.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/followoption/FollowOption.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/mcenum/Enums.mc4</grammar> 
-                <grammar>src/main/grammars/mc/feature/mcenum/SubEnum.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/lexerformat/KleenePlus.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/lexerformat/LexerFormat.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/grammarinherit/sub/FeatureDSLgrammarinherit.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/grammarinherit/sup/FeatureDSLgrammarinherit.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/javasql/java/Java.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/javasql/javasql/JavaSQL.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/javasql/sql/SQL.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/linepreprocess/embedding/Automaton.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/linepreprocess/embedding/AutomatonWithAction.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/linepreprocess/astrules/LinePreProcessASTRule.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/linepreprocess/SampleGrammar.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/linepreprocess/synpred/SynPred.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/linepreprocess/synpred_llk/SynPred_LLk.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/namecollision/NameCollision.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/newcomments/CommentTest.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/sourcepositions/SourcePosition.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/fautomaton/action/Expression.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/fautomaton/automaton/FlatAutomaton.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/fautomaton/automatonwithaction/ActionAutomaton.mc4</grammar> <!-- TODO SO: uncomment TransitionWithAction rule -->
-                <grammar>src/main/grammars/mc/feature/visitor/Sub.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/visitor/Sup.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/visitor/inheritance/A.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/visitor/inheritance/B.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/visitor/inheritance/C.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/interfaces/Sup.mc4</grammar>
-                <grammar>src/main/grammars/mc/feature/interfaces/Sub.mc4</grammar>
-                
-                <!-- Expression grammars -->
-                <grammar>src/main/grammars/mc/feature/expression</grammar>
-
-                <!-- MontiCore grammars -->
-                <grammar>src/main/grammars/mc/grammar/lexicals/Lexicals.mc4</grammar>
-                <grammar>src/main/grammars/mc/grammar/literals/Literals.mc4</grammar>
-                <grammar>src/main/grammars/mc/grammar/types/Types.mc4</grammar>
-                <grammar>src/main/grammars/mc/grammar/Grammar.mc4</grammar>
-                <grammar>src/main/grammars/mc/grammar/concepts/antlr/Antlr.mc4</grammar>
-                <grammar>src/main/grammars/mc/grammar/Grammar_WithConcepts.mc4</grammar>
-                <grammar>src//main/grammars/mc/grammar/concepts/visualoutline/Common.mc4</grammar>
-                <grammar>src//main/grammars/mc/grammar/concepts/visualoutline/Outline.mc4</grammar>
-                
-                <!-- Handwritten ast code -->
-                <grammar>src/main/grammars/mc/feature/hwc</grammar>
-
-                <!-- MontiCore Examples -->
-                <grammar>src/main/grammars/mc/examples</grammar>
-
-                <!-- MontiCore Languages -->
-                <grammar>src/main/grammars/mc/lang</grammar>
-
-                <!-- Language Embedding -->
-                <grammar>src/main/grammars/mc/embedding/</grammar>
-
-                <!-- Symbol Table Generation -->
-                <grammar>src/main/grammars/mc/feature/symboltable/</grammar>
-
-                <!-- NestML (Left Recursion) -->
-                <grammar>src/main/grammars/org/nest/commons/Commons.mc4</grammar>
-                <grammar>src/main/grammars/org/nest/spl/SPL.mc4</grammar>
-                <grammar>src/main/grammars/org/nest/nestml/NESTML.mc4</grammar>
-              </grammars>
-              <modelPaths>
-                <modelPath>src/main/grammars</modelPath>
-              </modelPaths>
-              <handcodedPaths>
-                <handcodedPath>src/main/java</handcodedPath>
-              </handcodedPaths>
-              <script>it.groovy</script>
-            </configuration>
+            <version>4.5.5.Gen</version><!--$NO-MVN-MAN-VER$ -->
+            <!-- TODO: MB Remove after next version 4.5.5.Gen -->
+           <dependencies>
+            <dependency>
+              <groupId>de.se_rwth.commons</groupId>
+              <artifactId>se-commons-groovy</artifactId>
+              <version>${se-commons.version}</version>
+            </dependency>
+             <dependency>
+              <groupId>de.monticore.lang</groupId>
+              <artifactId>cd4analysis</artifactId>
+              <version>${cd4analysis.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>de.monticore</groupId>
+              <artifactId>javaDSL</artifactId>
+              <version>${mc.java.version}</version>
+            </dependency>
+           </dependencies>
             <executions>
               <execution>
+                <configuration>
+                  <skip>false</skip>
+                  <addOutputDirectoryToModelPath>true</addOutputDirectoryToModelPath>
+                  <grammars>
+                    <grammar>src/main/grammars/mc/common/Basics.mc4</grammar>
+                    <grammar>src/main/grammars/HelloWorld.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/abc/ABC.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/abc/RealABC.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/abstractgrammar/AbstractGrammar.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/abstractgrammar/Implementation.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/abstractprod/AbstractProd.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/addkeywords/AddKeywords.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/astcomparison/Comparison.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/astident/AstIdent.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/astprod/AstProd.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/aststring/Aststring.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/automaton/Automaton.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/classgenwithingrammar/Type.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/cocochecker/A.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/cocochecker/B.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/cocochecker/C.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/comments/CommentTest.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/comments/CommentTypesTest.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/compilationunit/Compunit.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/constantsshortform/ConstantsShortForm.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/delete/DeleteTest.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/FeatureDSL.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/embedding/inner/FeatureinnerDSL.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/embedding/outer/FeatureouterDSL.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/example/nointerface/SimpleSCWithoutInterface.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/example/useinterface/SimpleSCWithInterface.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/wiki/Wiki.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/dsltoolstandalone/DSLToolTest.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/embedding/inner/Inner.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/embedding/outer/Featureembedded.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/embedding/outer/Outer.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/embedding/outer/Embedded.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/list/Lists.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/listrule/ListRule.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/semanticpredicate/SemPredWithInterface.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/inheritence/Inheritence.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/followoption/FollowOption.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/mcenum/Enums.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/mcenum/SubEnum.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/lexerformat/KleenePlus.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/lexerformat/LexerFormat.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/grammarinherit/sub/FeatureDSLgrammarinherit.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/grammarinherit/sup/FeatureDSLgrammarinherit.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/javasql/java/Java.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/javasql/javasql/JavaSQL.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/javasql/sql/SQL.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/linepreprocess/embedding/Automaton.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/linepreprocess/embedding/AutomatonWithAction.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/linepreprocess/astrules/LinePreProcessASTRule.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/linepreprocess/SampleGrammar.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/linepreprocess/synpred/SynPred.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/linepreprocess/synpred_llk/SynPred_LLk.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/namecollision/NameCollision.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/newcomments/CommentTest.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/sourcepositions/SourcePosition.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/fautomaton/action/Expression.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/fautomaton/automaton/FlatAutomaton.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/fautomaton/automatonwithaction/ActionAutomaton.mc4</grammar> <!-- TODO SO: uncomment TransitionWithAction rule -->
+                    <grammar>src/main/grammars/mc/feature/visitor/Sub.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/visitor/Sup.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/visitor/inheritance/A.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/visitor/inheritance/B.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/visitor/inheritance/C.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/interfaces/Sup.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/interfaces/Sub.mc4</grammar>
+
+                    <!-- Expression grammars -->
+                    <grammar>src/main/grammars/mc/feature/expression</grammar>
+
+                    <!-- MontiCore grammars -->
+                    <grammar>src/main/grammars/mc/grammar/lexicals/ItTestLexicals.mc4</grammar>
+                    <grammar>src/main/grammars/mc/grammar/literals/ItTestLiterals.mc4</grammar>
+                    <grammar>src/main/grammars/mc/grammar/types/ItTestTypes.mc4</grammar>
+                    <grammar>src/main/grammars/mc/grammar/ItTestGrammar.mc4</grammar>
+                    <grammar>src/main/grammars/mc/grammar/concepts/antlr/ItTestAntlr.mc4</grammar>
+                    <grammar>src/main/grammars/mc/grammar/ItTestGrammar_WithConcepts.mc4</grammar>
+                    <grammar>src//main/grammars/mc/grammar/concepts/visualoutline/ItTestCommon.mc4</grammar>
+                    <grammar>src//main/grammars/mc/grammar/concepts/visualoutline/ItTestOutline.mc4</grammar>
+
+                    <!-- Handwritten ast code -->
+                    <grammar>src/main/grammars/mc/feature/hwc</grammar>
+
+                    <!-- MontiCore Examples -->
+                    <grammar>src/main/grammars/mc/examples</grammar>
+
+                    <!-- MontiCore Languages -->
+                    <grammar>src/main/grammars/mc/lang</grammar>
+
+                    <!-- Language Embedding -->
+                    <grammar>src/main/grammars/mc/embedding/</grammar>
+
+                    <!-- Symbol Table Generation -->
+                    <grammar>src/main/grammars/mc/feature/symboltable/</grammar>
+
+                    <!-- NestML (Left Recursion) -->
+                    <grammar>src/main/grammars/org/nest/commons/Commons.mc4</grammar>
+                    <grammar>src/main/grammars/org/nest/spl/SPL.mc4</grammar>
+                    <grammar>src/main/grammars/org/nest/nestml/NESTML.mc4</grammar>
+                  </grammars>
+                  <modelPaths>
+                    <modelPath>src/main/grammars</modelPath>
+                  </modelPaths>
+                  <handcodedPaths>
+                    <handcodedPath>src/main/java</handcodedPath>
+                  </handcodedPaths>
+                  <script>it.groovy</script>
+                </configuration>
+                <goals>
+                  <goal>generate</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>it-python</id>
+                <configuration>
+                  <skip>false</skip>
+                  <addOutputDirectoryToModelPath>true</addOutputDirectoryToModelPath>
+                  <grammars>
+                    <grammar>src/main/grammars/mc/feature/python3/PythonAutomaton.mc4</grammar>
+                  </grammars>
+                  <modelPaths>
+                    <modelPath>src/main/grammars</modelPath>
+                  </modelPaths>
+                  <handcodedPaths>
+                    <handcodedPath>src/main/java</handcodedPath>
+                  </handcodedPaths>
+                  <script>it-python.groovy</script>
+                </configuration>
                 <goals>
                   <goal>generate</goal>
                 </goals>

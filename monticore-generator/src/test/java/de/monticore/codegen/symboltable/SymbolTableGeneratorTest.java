@@ -37,7 +37,7 @@ import de.se_rwth.commons.cli.CLIArguments;
 import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.Slf4jLog;
+import de.se_rwth.commons.logging.LogStub;
 
 /**
  * @author Pedram Mir Seyed Nazari
@@ -48,7 +48,7 @@ public class SymbolTableGeneratorTest extends AstDependentGeneratorTest {
 
   @BeforeClass
   public static void setup() {
-    Slf4jLog.init();
+    LogStub.init();
     Log.enableFailQuick(false);
   }
 
@@ -76,7 +76,7 @@ public class SymbolTableGeneratorTest extends AstDependentGeneratorTest {
       new MontiCoreScript().run(script, configuration);
     }
     catch (IOException e) {
-      Log.error("0xA1018 SymbolTableGeneratorTest failed: ", e);
+      Log.error("0xA1016 SymbolTableGeneratorTest failed: ", e);
     }
   }
 

@@ -94,13 +94,9 @@ public class ModelLoaderTest {
         Paths.get("src/test/resources/modelloader/modelpath"),
         Paths.get("src/test/resources/modelloader/modelpath2"));
     
-    try {
-      entityModelLoader.loadModels("models.D", modelPath);
-      fail("Expected AmbiguityException");
-    }
-    catch (AmbiguityException e) {
-      // everything's fine
-    }
+    entityModelLoader.loadModels("models.D", modelPath);
+    
+    assertEquals(2, Log.getErrorCount());
   }
   
   @Test

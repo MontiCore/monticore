@@ -19,11 +19,12 @@
 
 package de.monticore.grammar.prettyprint;
 
+import de.monticore.mcexpressions._ast.ASTMCExpressionsNode;
+import de.monticore.expressions.prettyprint.MCExpressionsPrettyPrinter;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrNode;
 import de.monticore.grammar.grammar._ast.ASTGrammarNode;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTGrammar_WithConceptsNode;
 import de.monticore.grammar.grammar_withconcepts._visitor.CommonGrammar_WithConceptsDelegatorVisitor;
-import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsDelegatorVisitor;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
 import de.monticore.java.javadsl._ast.ASTJavaDSLNode;
 import de.monticore.java.prettyprint.JavaDSLPrettyPrinter;
@@ -37,7 +38,7 @@ public class Grammar_WithConceptsPrettyPrinter implements Grammar_WithConceptsVi
   
   private Grammar_WithConceptsVisitor realThis = this;
   
-  public final Grammar_WithConceptsDelegatorVisitor visitor;
+  public final CommonGrammar_WithConceptsDelegatorVisitor visitor;
 
   public Grammar_WithConceptsPrettyPrinter(IndentPrinter out) {
     printer = out;
@@ -48,6 +49,7 @@ public class Grammar_WithConceptsPrettyPrinter implements Grammar_WithConceptsVi
     visitor.set_de_monticore_grammar_grammar__visitor_GrammarVisitor(new GrammarPrettyPrinter(out));
     visitor.set_de_monticore_java_javadsl__visitor_JavaDSLVisitor(new JavaDSLPrettyPrinter(out));
     visitor.set_de_monticore_literals_literals__visitor_LiteralsVisitor(new LiteralsPrettyPrinterConcreteVisitor(out));
+    visitor.set_de_monticore_mcexpressions__visitor_MCExpressionsVisitor(new MCExpressionsPrettyPrinter(out));
     visitor.set_de_monticore_types_types__visitor_TypesVisitor(new TypesPrettyPrinterConcreteVisitor(out));
   }
   
@@ -82,6 +84,12 @@ public class Grammar_WithConceptsPrettyPrinter implements Grammar_WithConceptsVi
   }
  
   public String prettyprint(ASTJavaDSLNode a) {
+    printer.clearBuffer();
+    a.accept(getRealThis());
+    return printer.getContent();
+  }
+
+  public String prettyprint(ASTMCExpressionsNode a) {
     printer.clearBuffer();
     a.accept(getRealThis());
     return printer.getContent();

@@ -19,19 +19,16 @@
 
 package de.monticore.groovy
 
-debug("--------------------------------")
-debug("MontiCore")
-debug(" - eating your models since 2005")
-debug("--------------------------------")
-debug("Input files    : " + _configuration.getGrammarsAsStrings())
-debug("Modelpath      : " + _configuration.getModelPathAsStrings())
-debug("Output dir     : " + out)
-debug("Handcoded path : " + _configuration.getHandcodedPathAsStrings())
+debug("--------------------------------", LOG_ID)
+debug("MontiCore", LOG_ID)
+debug(" - eating your models since 2005", LOG_ID)
+debug("--------------------------------", LOG_ID)
+debug("Input files    : " + _configuration.getGrammarsAsStrings(), LOG_ID)
+debug("Modelpath      : " + _configuration.getModelPathAsStrings(), LOG_ID)
+debug("Output dir     : " + out, LOG_ID)
+debug("Handcoded path : " + _configuration.getHandcodedPathAsStrings(), LOG_ID)
 
-grammarIterator = grammars.getResolvedPaths()
-// Create object for managing hook points, features and global variables
-glex = new GlobalExtensionManagement()
-symbolTable = initSymbolTable(modelPath)
+globalScope = createGlobalScope(modelPath)
 
 while (grammarIterator.hasNext()) {
     // Parse grammar
@@ -40,14 +37,14 @@ while (grammarIterator.hasNext()) {
     if (astGrammar.isPresent()) {
         astGrammar = astGrammar.get();
 
-        astGrammar = createSymbolsFromAST(symbolTable, astGrammar)
+        astGrammar = createSymbolsFromAST(globalScope, astGrammar)
 
         // Transform AST-Grammar -> AST-CD
-        astClassDiagram = transformAstGrammarToAstCd(glex, astGrammar, symbolTable, handcodedPath)
+        astClassDiagram = transformAstGrammarToAstCd(glex, astGrammar, globalScope, handcodedPath)
 
-        astClassDiagramWithST = createSymbolsFromAST(symbolTable, astClassDiagram)
+        astClassDiagramWithST = createSymbolsFromAST(globalScope, astClassDiagram)
 
         // Generate symbol table
-        generateSymbolTable(astGrammar, symbolTable, astClassDiagram, out, handcodedPath)
+        generateSymbolTable(astGrammar, globalScope, astClassDiagram, out, handcodedPath)
     }
 }

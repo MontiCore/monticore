@@ -72,8 +72,7 @@ public final class MontiCoreCLI {
   public static void main(String[] args) {
     if (args.length == 0) {
       // the only required input are the grammar file(s)/directories
-      System.out
-          .println("MontiCore CLI Usage: java -jar monticore-cli.jar <grammar files> <options>");
+      printHelp();
       return;
     }
     // check if the input model(s) are specified without option and add it for
@@ -86,6 +85,12 @@ public final class MontiCoreCLI {
     
     CLIArguments arguments = CLIArguments.forArguments(args);
     MontiCoreCLIConfiguration configuration = MontiCoreCLIConfiguration.fromArguments(arguments);
+    
+    if (arguments.asMap().containsKey(MontiCoreCLIConfiguration.Options.HELP.toString()) || 
+        arguments.asMap().containsKey(MontiCoreCLIConfiguration.Options.HELP_SHORT.toString())) {
+      printHelp();
+      return;
+    }
     
     // this will be CLI's default model path if none is specified
     Iterable<String> mp = Arrays.asList("monticore-cli.jar");
@@ -122,6 +127,9 @@ public final class MontiCoreCLI {
               + System.getProperty(LOGBACK_CONFIGURATIONFILE), MontiCoreCLI.class.getName());
     }
     
+    // terminate with exit code 1 on errors
+    Log.enableNonZeroExit(true);
+    
     // before we launch MontiCore we check if there are any ".mc4" files in the
     // input argument (source path)
     Iterator<Path> inputPaths = configuration.getInternal().getGrammars().getResolvedPaths();
@@ -134,21 +142,30 @@ public final class MontiCoreCLI {
     try {
       // since this is the default we load the default script
       ClassLoader l = MontiCoreScript.class.getClassLoader();
-      String script = Resources.asCharSource(l.getResource("de/monticore/monticore_emf.groovy"),
+      String script = Resources.asCharSource(l.getResource("de/monticore/monticore_noemf.groovy"),
           Charset.forName("UTF-8")).read();
       
       // BUT if the user specifies another script to use, we check if it is
       // there and load its content
       if (configuration.getScript().isPresent()) {
+        File f = new File(configuration.getScript().get());
         Reporting.reportFileExistenceChecking(Lists.newArrayList(),
-            configuration.getScript().get().toPath().toAbsolutePath());
-        if (!configuration.getScript().get().exists()) {
-          System.clearProperty(MC_OUT);
-          Log.error("0xA1001 Custom script \"" + configuration.getScript().get().getPath()
-              + "\" not found!");
-          return;
+            f.toPath().toAbsolutePath());
+        
+        if (!f.exists()) {
+          if (l.getResource(configuration.getScript().get()) != null) {
+            script = Resources.asCharSource(l.getResource(configuration.getScript().get()),
+                Charset.forName("UTF-8")).read();
+          }
+          else {
+            System.clearProperty(MC_OUT);
+            Log.error("0xA1001 Custom script \"" + configuration.getScript().get()
+                + "\" not found!");
+            return;            
+          }
+        } else {
+          script = Files.toString(f, Charset.forName("UTF-8"));
         }
-        script = Files.toString(configuration.getScript().get(), Charset.forName("UTF-8"));
       }
       
       // execute the scripts (either default or custom)
@@ -215,7 +232,7 @@ public final class MontiCoreCLI {
       // e.printStackTrace();
       // this should not happen as we use this mechanism for the built-in
       // configurations only (i.e. user.logging.xml and developer.logging.xml)
-      System.err.println("Failed to load default logback configuration for users.");
+      Log.error("0xA6734 Failed to load default logback configuration for users.");
     }
   }
   
@@ -228,7 +245,7 @@ public final class MontiCoreCLI {
       // e.printStackTrace();
       // this should not happen as we use this mechanism for the built-in
       // configurations only (i.e. user.logging.xml and developer.logging.xml)
-      System.err.println("Failed to load default logback configuration for developers.");
+      Log.error("0xA6735 Failed to load default logback configuration for developers.");
     }
   }
   
@@ -247,6 +264,23 @@ public final class MontiCoreCLI {
   }
   
   private MontiCoreCLI() {
+  }
+  
+  protected static void printHelp() {
+    System.out
+    .println("MontiCore CLI Usage: java -jar monticore-cli.jar <grammar files> <options>");
+    System.out.println();
+    System.out.println("Options:");
+    System.out.println("-o, -out <path>              Optional output directory for all generated code; defaults to out");
+    System.out.println("-mp, -modelpath <paths>      Optional list of directories or files to include for reference resolution");
+    System.out.println("-hcp, -handcodedpath <paths> Optional list of directories to look for handwritten code to integrate");
+    System.out.println("-s, -script <script>         Optional script to control the generation workflow");
+    System.out.println("-g, -grammars <path>         Instead of individual grammars: handle all grammars found");
+    System.out.println("-fp, -templatePath <paths>   Optional list of directories to look for handwritten templates to integrate");
+    System.out.println("-otm, -addOutToModelpath     Specifies whether the output directory should be added to the model path (default is true)");
+    System.out.println("-f, -force                    Secifies whether the code generation should be enforced, i.e. disable incremental code generation (default is false)");
+    System.out.println("-d, -dev                     Specifies whether developer level logging should be used (default is false)");
+    System.out.println("-cl, -customLog <file>       Optional logging configuration file to customize the logger");
   }
   
 }

@@ -31,7 +31,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.monticore.common.common._ast.ASTStereotype;
-import de.monticore.common.common._parser.CommonParser;
+import de.monticore.common.testcommon._parser.TestCommonParser;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -45,7 +45,7 @@ public class StereotypeTest {
   }
   
   private ASTStereotype parseStereotype(String s) throws IOException {
-    CommonParser parser = new CommonParser();
+    TestCommonParser parser = new TestCommonParser();
     Optional<ASTStereotype> ast = parser.parseStereotype(new StringReader(s));
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
@@ -66,7 +66,7 @@ public class StereotypeTest {
   @Test
   public void parseNegativeStereotype() {
     try {
-      CommonParser parser = new CommonParser();
+      TestCommonParser parser = new TestCommonParser();
       parser.parseStereotype(new StringReader("<<s1> >"));
       assertTrue(parser.hasErrors());
     }
@@ -79,7 +79,7 @@ public class StereotypeTest {
   public void parseGenericType() {
     // Check if handling of ">>" in generic tpyes is correct
     try {
-      CommonParser parser = new CommonParser();
+      TestCommonParser parser = new TestCommonParser();
       parser.parseType(new StringReader("List<List<String>>"));
       assertFalse(parser.hasErrors());
     }

@@ -30,7 +30,7 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
-${tc.signature("astType", "qualifiedCDName", "visitorTypeFQN", "superVisitorTypeFQN")}
+${tc.signature("d1", "astType", "qualifiedCDName", "visitorTypeFQN", "superVisitorTypeFQN")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
 <#assign plainName = genHelper.getPlainName(astType)>
     <#-- when overriding nonterminals we might have a visitor calling this

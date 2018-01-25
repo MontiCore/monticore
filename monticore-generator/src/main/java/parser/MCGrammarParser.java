@@ -55,7 +55,7 @@ public class MCGrammarParser {
         String simpleFileName = Files.getNameWithoutExtension(grammarFile.toString());
         String modelName = ast.get().getName();
         if (!modelName.equals(simpleFileName)) {
-          Log.error("0xA4003 The grammar name " + modelName + " must not differ from the file name "
+          Log.error("0xA4003 The grammar name " + modelName + " must be identical to the file name "
               + simpleFileName + " of "
               + "the grammar (without its file extension).");
         }

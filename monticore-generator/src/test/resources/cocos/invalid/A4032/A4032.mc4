@@ -23,6 +23,6 @@ grammar A4032 {
 
  enum A = "a";
 
- ast A;
+ astrule A;
 
 }

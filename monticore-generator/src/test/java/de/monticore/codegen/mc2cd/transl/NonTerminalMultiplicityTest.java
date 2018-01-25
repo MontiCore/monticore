@@ -33,7 +33,7 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.Slf4jLog;
+import de.se_rwth.commons.logging.LogStub;
 
 /**
  * Test for the proper transformation of NonTerminals to corresponding ASTCDAttributes
@@ -61,7 +61,7 @@ public class NonTerminalMultiplicityTest {
   private ASTCDClass astJ;
 
   public NonTerminalMultiplicityTest() {
-    Slf4jLog.init();
+    LogStub.init();
     Log.enableFailQuick(false);
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/NonTerminalMultiplicityGrammar.mc4")).get();

@@ -30,5 +30,5 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
-${tc.signature("factory", "astNodeName")}
+${tc.signature("method", "clazz", "factory", "astNodeName")}
    return ${factory}.create${astNodeName}();

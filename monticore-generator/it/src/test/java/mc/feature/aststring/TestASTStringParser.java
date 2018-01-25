@@ -46,20 +46,20 @@ public class TestASTStringParser extends GeneratorIntegrationsTest {
     assertEquals(false, p.hasErrors());
     
     // Test parsing
-    assertEquals("ah", ast.getA().get(0));
-    assertEquals("be", ast.getA().get(1));
-    assertEquals("ce", ast.getA().get(2));
-    assertEquals("oh", ast.getB().get(0));
-    assertEquals("pe", ast.getB().get(1));
-    assertEquals("qu", ast.getB().get(2));
-    assertEquals("x", ast.getC().get(0));
-    assertEquals("y", ast.getC().get(1));
-    assertEquals("z", ast.getC().get(2));
-    assertEquals("de", ast.getD().get(0));
-    assertEquals("eh", ast.getD().get(1));
+    assertEquals("ah", ast.getAList().get(0));
+    assertEquals("be", ast.getAList().get(1));
+    assertEquals("ce", ast.getAList().get(2));
+    assertEquals("oh", ast.getBList().get(0));
+    assertEquals("pe", ast.getBList().get(1));
+    assertEquals("qu", ast.getBList().get(2));
+    assertEquals("x", ast.getCList().get(0));
+    assertEquals("y", ast.getCList().get(1));
+    assertEquals("z", ast.getCList().get(2));
+    assertEquals("de", ast.getDList().get(0));
+    assertEquals("eh", ast.getDList().get(1));
     
     // Test toString method
-    assertEquals("ef", ast.getD().get(2).toString());
+    assertEquals("ef", ast.getDList().get(2).toString());
     
   }
   

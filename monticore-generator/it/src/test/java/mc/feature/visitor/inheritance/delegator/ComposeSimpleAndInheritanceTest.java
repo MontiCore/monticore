@@ -20,15 +20,16 @@
 package mc.feature.visitor.inheritance.delegator;
 
 import static org.junit.Assert.assertEquals;
-import mc.feature.visitor.inheritance.a._ast.ASTXA;
-import mc.feature.visitor.inheritance.a._visitor.AVisitor;
-import mc.feature.visitor.inheritance.b._ast.ASTXB;
-import mc.feature.visitor.inheritance.b._visitor.BVisitor;
-import mc.feature.visitor.inheritance.c._visitor.CVisitor;
-import mc.feature.visitor.inheritance.c._visitor.CommonCDelegatorVisitor;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import mc.feature.visitor.inheritance.a._ast.AMill;
+import mc.feature.visitor.inheritance.a._visitor.AVisitor;
+import mc.feature.visitor.inheritance.b._ast.BMill;
+import mc.feature.visitor.inheritance.b._visitor.BVisitor;
+import mc.feature.visitor.inheritance.c._visitor.CDelegatorVisitor;
+import mc.feature.visitor.inheritance.c._visitor.CVisitor;
 
 /**
  * Tests composing of simple visitors with inheritance visitors.
@@ -38,7 +39,7 @@ import org.junit.Test;
 public class ComposeSimpleAndInheritanceTest extends CommonVisitorTest {
   
   // the composer
-  private CommonCDelegatorVisitor v = new CommonCDelegatorVisitor();
+  private CDelegatorVisitor v = new CDelegatorVisitor();
   
   // the visitors about to compose
   private AVisitor aVis = new SimpleAVisitor(run);
@@ -56,15 +57,15 @@ public class ComposeSimpleAndInheritanceTest extends CommonVisitorTest {
     expectedRun.setLength(0);
     if (!setUpDone) {
       setUpDone = true;
-      v.set_mc_feature_visitor_inheritance_a__visitor_AVisitor(aVis);
-      v.set_mc_feature_visitor_inheritance_b__visitor_BVisitor(bVis);
-      v.set_mc_feature_visitor_inheritance_c__visitor_CVisitor(cVis);
+      v.setAVisitor(aVis);
+      v.setBVisitor(bVis);
+      v.setCVisitor(cVis);
     }
   }
   
   @Test
   public void testSimpleWithInhertiance() {
-    v.handle(ASTXA.getBuilder().build());
+    v.handle(AMill.xABuilder().build());
     assertEquals("SimpleAVisitor.hXASimpleAVisitor.vXASimpleAVisitor.tXASimpleAVisitor.eXA",
         run.toString());
   }
@@ -95,7 +96,7 @@ public class ComposeSimpleAndInheritanceTest extends CommonVisitorTest {
     expectedRun.append("");
     
     // actual
-    v.handle(ASTXB.getBuilder().build());
+    v.handle(BMill.xBBuilder().build());
     
     assertEquals(expectedRun.toString(), run.toString());
   }

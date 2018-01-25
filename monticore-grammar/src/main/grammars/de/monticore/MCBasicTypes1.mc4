@@ -1,0 +1,133 @@
+/*
+***************************************************************************************
+Copyright (c) 2017, MontiCore
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation and/or
+other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its contributors
+may be used to endorse or promote products derived from this software
+without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGE.
+***************************************************************************************
+*/
+package de.monticore;
+
+/**
+ * This grammar defines a set of types. The scope of this grammar is to
+ * ease the reuse of type structures in languages similar to Java,
+ * but potentials simpliefied, e.g. without generics
+ * by grammar inheritance or grammar embedment.
+ * The grammar contains types from Java, e.g., primitives, void, 
+ * classes (reference types).
+ * It does not contain generics or arrays (which can be added 
+ * in grammar extensions).
+ *
+*/
+component grammar MCBasicTypes1 extends de.monticore.MCBasics {
+
+    /*========================================================================*/
+    /*= Qualified Names ======================================================*/
+    /*========================================================================*/
+    
+    /** The ASTQualifiedName represents a possibly qualified name in the AST.
+        The different parts of a qualified name are separated by '.'; they are
+        stored in an ASTStringList.
+        @attribute parts A List of ASTStringList concludes all name parts
+    */
+    QualifiedName =
+        parts:(Name || ".")+;
+
+    ast QualifiedName =
+        method public String getQName(){
+          return de.se_rwth.commons.Names.getQualifiedName(
+              this.getParts());
+        };
+    
+
+    /*========================================================================*/
+    /*= ImportStatement ======================================================*/
+    /*========================================================================*/
+    
+    /** ImportStatement represents the import list for diagrams
+        E.g.: import A.b;
+        E.g.: import A.*;
+    */
+    ImportStatement =
+    		"import" QualifiedName ("." Star:["*"])? ";" ;
+
+    ast ImportStatement =
+        method public String getQName(){
+          return getQualifiedName().getQName();
+        };
+
+
+    /*========================================================================*/
+    /*= The Type Interfaces ==================================================*/
+    /*========================================================================*/
+    
+    interface Type;
+
+    interface PrimitiveType extends Type;
+
+
+    /*========================================================================*/
+    /*= Primitives ===========================================================*/
+    /*========================================================================*/
+    
+    BooleanType implements PrimitiveType = "boolean" ;
+       ByteType implements PrimitiveType = "byte" ;
+       CharType implements PrimitiveType = "char" ;
+      ShortType implements PrimitiveType = "short" ;
+        IntType implements PrimitiveType = "int" ;
+      FloatType implements PrimitiveType = "float" ;
+       LongType implements PrimitiveType = "long" ;
+     DoubleType implements PrimitiveType = "double" ;
+
+
+    /*========================================================================*/
+    /*= Reference Types (Classes, Interfaces in OO) ==========================*/
+    /*========================================================================*/
+    
+    interface ReferenceType extends Type;
+    
+    NameAsReferenceType implements ReferenceType =
+    	(Name || ".")+;
+
+    ast NameAsReferenceType =
+        method public String getQName(){
+          return de.se_rwth.commons.Names.getQualifiedName(
+              this.getNames());
+        };
+
+
+    /*========================================================================*/
+    /*= ReturnTypes and void =================================================*/
+    /*========================================================================*/
+    
+    ReturnType = VoidType | Type;
+
+    /** ASTVoidType represents the return type "void".
+    */
+    VoidType = "void";
+
+}

@@ -30,10 +30,25 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
+
+${tc.signature("ast", "name")}
     <#assign genHelper = glex.getGlobalVar("astHelper")>
     <#assign attributeName = genHelper.getJavaConformName(ast.getName())>
     <#assign typeHelper = tc.instantiate("de.monticore.types.TypesHelper")>
-    public Builder ${attributeName}(${typeHelper.printSimpleRefType(ast.getType())} ${attributeName}) {
+    <#assign plainName = genHelper.getPlainName(ast)>
+    public ${name} ${attributeName}(${typeHelper.printSimpleRefType(ast.getType())} ${attributeName}) {
       this.${attributeName} = ${attributeName};
       return this;
     }
+    
+<#if genHelper.isListAstNode(ast)>
+    public ${name} ${attributeName}Add(${genHelper.printTypeArgumentOfAstList(ast.getType())} element) {
+      this.${attributeName}.add(element);
+      return this;
+    }
+    
+    public ${name} ${attributeName}AddAll(${typeHelper.printSimpleRefType(ast.getType())} ${attributeName}) {
+      this.${attributeName}.addAll(${attributeName});
+      return this;
+    }
+</#if>    

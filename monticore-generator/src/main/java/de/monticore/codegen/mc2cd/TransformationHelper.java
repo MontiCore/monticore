@@ -90,6 +90,8 @@ public final class TransformationHelper {
   
   public static final String AST_PACKAGE_SUFFIX = "_ast";
   
+  public static final String LIST_SUFFIX = "s";
+  
   private TransformationHelper() {
     // noninstantiable
   }
@@ -200,6 +202,13 @@ public final class TransformationHelper {
     modifier.setStatic(true);
     return modifier;
   }
+  
+  public static ASTModifier createAbstractModifier() {
+    ASTModifier modifier = CD4AnalysisNodeFactory.createASTModifier();
+    modifier.setAbstract(true);
+    return modifier;
+  }
+  
   
   public static ASTModifier createProtectedModifier() {
     ASTModifier modifier = CD4AnalysisNodeFactory.createASTModifier();
@@ -340,7 +349,7 @@ public final class TransformationHelper {
       ASTGenericType ruleReference,
       ASTMCGrammar grammar, ASTCDClass cdClass) {
     
-    Optional<MCProdSymbol> typeSymbol = resolveAstRuleType(ruleReference);
+    Optional<MCProdSymbol> typeSymbol = resolveAstRuleType(grammar, ruleReference);
     
     String qualifiedRuleName = getQualifiedAstName(
         typeSymbol, ruleReference, grammar);
@@ -358,7 +367,7 @@ public final class TransformationHelper {
       ASTGenericType ruleReference,
       ASTMCGrammar grammar, ASTCDInterface interf) {
     
-    Optional<MCProdSymbol> typeSymbol = resolveAstRuleType(ruleReference);
+    Optional<MCProdSymbol> typeSymbol = resolveAstRuleType(grammar, ruleReference);
     
     String qualifiedRuleName = getQualifiedAstName(
         typeSymbol, ruleReference, grammar);
@@ -371,13 +380,13 @@ public final class TransformationHelper {
     return qualifiedRuleName;
   }
   
-  public static Optional<MCProdSymbol> resolveAstRuleType(ASTGenericType type) {
+  public static Optional<MCProdSymbol> resolveAstRuleType(ASTNode node, ASTGenericType type) {
     if (!type.getNames().isEmpty()) {
       String simpleName = type.getNames().get(type.getNames().size() - 1);
       if (!simpleName.startsWith(AST_PREFIX)) {
         return Optional.empty();
       }
-      Optional<MCProdSymbol> ruleSymbol = MCGrammarSymbolTableHelper.resolveRule(type,
+      Optional<MCProdSymbol> ruleSymbol = MCGrammarSymbolTableHelper.resolveRule(node,
           simpleName
               .substring(AST_PREFIX.length()));
       if (ruleSymbol.isPresent() && istPartOfGrammar(ruleSymbol.get())) {
@@ -405,8 +414,8 @@ public final class TransformationHelper {
     return getGrammarName(rule) + ".";
   }
   
-  public static boolean checkIfExternal(ASTGenericType type) {
-    return !resolveAstRuleType(type).isPresent();
+  public static boolean checkIfExternal(ASTNode node, ASTGenericType type) {
+    return !resolveAstRuleType(node, type).isPresent();
   }
   
   public static String getQualifiedAstName(

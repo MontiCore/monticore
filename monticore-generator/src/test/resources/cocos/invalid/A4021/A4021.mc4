@@ -22,7 +22,7 @@ package cocos.invalid.A4021;
 grammar A4021 {
 
 
- ast A;
+ astrule A;
 
 
 }

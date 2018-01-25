@@ -46,19 +46,19 @@ public class KleenePlusTest extends GeneratorIntegrationsTest {
     
     ast = p.parseKPStart(new StringReader("a"));
     assertTrue(ast.isPresent());
-    assertEquals("a", ast.get().getKleene().get());
+    assertEquals("a", ast.get().getKleeneOpt().get());
     
     ast = p.parseKPStart(new StringReader("ab"));
     assertTrue(ast.isPresent());
-    assertEquals("ab", ast.get().getKleene().get());
+    assertEquals("ab", ast.get().getKleeneOpt().get());
     
     ast = p.parseKPStart(new StringReader("abb"));
     assertTrue(ast.isPresent());
-    assertEquals("abb", ast.get().getKleene().get());
+    assertEquals("abb", ast.get().getKleeneOpt().get());
     
     ast = p.parseKPStart(new StringReader("abbbb"));
     assertTrue(ast.isPresent());
-    assertEquals("abbbb", ast.get().getKleene().get());
+    assertEquals("abbbb", ast.get().getKleeneOpt().get());
     
     ast = p.parseKPStart(new StringReader("b"));
     assertFalse(ast.isPresent());
@@ -75,19 +75,19 @@ public class KleenePlusTest extends GeneratorIntegrationsTest {
     
     ast = p.parseKPStart(new StringReader("c"));
     assertTrue(ast.isPresent());
-    assertEquals("c", ast.get().getSimpleKleene().get());
+    assertEquals("c", ast.get().getSimpleKleeneOpt().get());
     
     ast = p.parseKPStart(new StringReader("cd"));
     assertTrue(ast.isPresent());
-    assertEquals("cd", ast.get().getSimpleKleene().get());
+    assertEquals("cd", ast.get().getSimpleKleeneOpt().get());
     
     ast = p.parseKPStart(new StringReader("cdd"));
     assertTrue(ast.isPresent());
-    assertEquals("cdd", ast.get().getSimpleKleene().get());
+    assertEquals("cdd", ast.get().getSimpleKleeneOpt().get());
     
     ast = p.parseKPStart(new StringReader("cdddd"));
     assertTrue(ast.isPresent());
-    assertEquals("cdddd", ast.get().getSimpleKleene().get());
+    assertEquals("cdddd", ast.get().getSimpleKleeneOpt().get());
     
     ast = p.parseKPStart(new StringReader("d"));
     assertFalse(ast.isPresent());
@@ -104,19 +104,19 @@ public class KleenePlusTest extends GeneratorIntegrationsTest {
     
     ast = p.parseKPStart(new StringReader("ee"));
     assertTrue(ast.isPresent());
-    assertEquals("ee", ast.get().getSimpleKleeneString().get());
+    assertEquals("ee", ast.get().getSimpleKleeneStringOpt().get());
     
     ast = p.parseKPStart(new StringReader("eefg"));
     assertTrue(ast.isPresent());
-    assertEquals("eefg", ast.get().getSimpleKleeneString().get());
+    assertEquals("eefg", ast.get().getSimpleKleeneStringOpt().get());
     
     ast = p.parseKPStart(new StringReader("eefgfg"));
     assertTrue(ast.isPresent());
-    assertEquals("eefgfg", ast.get().getSimpleKleeneString().get());
+    assertEquals("eefgfg", ast.get().getSimpleKleeneStringOpt().get());
     
     ast = p.parseKPStart(new StringReader("eefgfgfgfg"));
     assertTrue(ast.isPresent());
-    assertEquals("eefgfgfgfg", ast.get().getSimpleKleeneString().get());
+    assertEquals("eefgfgfgfg", ast.get().getSimpleKleeneStringOpt().get());
     
     ast = p.parseKPStart(new StringReader("fg"));
     assertFalse(ast.isPresent());
@@ -136,15 +136,15 @@ public class KleenePlusTest extends GeneratorIntegrationsTest {
     
     ast = p.parseKPStart(new StringReader("gh"));
     assertTrue(ast.isPresent());
-    assertEquals("gh", ast.get().getPlus().get());
+    assertEquals("gh", ast.get().getPlusOpt().get());
     
     ast = p.parseKPStart(new StringReader("ghh"));
     assertTrue(ast.isPresent());
-    assertEquals("ghh", ast.get().getPlus().get());
+    assertEquals("ghh", ast.get().getPlusOpt().get());
     
     ast = p.parseKPStart(new StringReader("ghhhh"));
     assertTrue(ast.isPresent());
-   assertEquals("ghhhh", ast.get().getPlus().get());
+   assertEquals("ghhhh", ast.get().getPlusOpt().get());
     
     ast = p.parseKPStart(new StringReader("h"));
     assertFalse(ast.isPresent());
@@ -164,15 +164,15 @@ public class KleenePlusTest extends GeneratorIntegrationsTest {
     
     ast = p.parseKPStart(new StringReader("ij"));
     assertTrue(ast.isPresent());
-    assertEquals("ij", ast.get().getSimplePlus().get());
+    assertEquals("ij", ast.get().getSimplePlusOpt().get());
     
     ast = p.parseKPStart(new StringReader("ijj"));
     assertTrue(ast.isPresent());
-    assertEquals("ijj", ast.get().getSimplePlus().get());
+    assertEquals("ijj", ast.get().getSimplePlusOpt().get());
     
     ast = p.parseKPStart(new StringReader("ijjjj"));
     assertTrue(ast.isPresent());
-    assertEquals("ijjjj", ast.get().getSimplePlus().get());
+    assertEquals("ijjjj", ast.get().getSimplePlusOpt().get());
     
     ast = p.parseKPStart(new StringReader("j"));
     assertFalse(ast.isPresent());
@@ -194,15 +194,15 @@ public class KleenePlusTest extends GeneratorIntegrationsTest {
     
     ast = p.parseKPStart(new StringReader("kklm"));
     assertTrue(ast.isPresent());
-    assertEquals("kklm", ast.get().getSimplePlusString().get());
+    assertEquals("kklm", ast.get().getSimplePlusStringOpt().get());
     
     ast = p.parseKPStart(new StringReader("kklmlm"));
     assertTrue(ast.isPresent());
-    assertEquals("kklmlm", ast.get().getSimplePlusString().get());
+    assertEquals("kklmlm", ast.get().getSimplePlusStringOpt().get());
     
     ast = p.parseKPStart(new StringReader("kklmlmlmlm"));
     assertTrue(ast.isPresent());
-    assertEquals("kklmlmlmlm", ast.get().getSimplePlusString().get());
+    assertEquals("kklmlmlmlm", ast.get().getSimplePlusStringOpt().get());
     
     ast = p.parseKPStart(new StringReader("lm"));
     assertFalse(ast.isPresent());

@@ -59,6 +59,8 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbolReference;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.IterablePath;
@@ -143,8 +145,12 @@ public class GeneratorHelper extends TypesHelper {
   public static final String CD_EXTENSION = ".cd";
   
   public static final String GET_PREFIX_BOOLEAN = "is";
+    
+  public static final String GET_SUFFIX_OPTINAL = "Opt";
+
+  public static final String GET_SUFFIX_LIST = "List";
   
-  public static final String GET_PREFIX_NOT_BOOLEAN = "get";
+  public static final String GET_PREFIX = "get";
   
   public static final String SET_PREFIX = "set";
   
@@ -807,6 +813,33 @@ public class GeneratorHelper extends TypesHelper {
     return typeArgument.existsReferencedSymbol() && typeArgument.isEnum();
   }
   
+  public static boolean hasStereotype(ASTCDType ast,
+      String stereotypeName) {
+    if (!ast.getModifier().isPresent()
+        || !ast.getModifier().get().getStereotype().isPresent()) {
+      return false;
+    }
+    ASTStereotype stereotype = ast.getModifier().get().getStereotype()
+        .get();
+    return stereotype.getValues().stream()
+        .filter(v -> v.getName().equals(stereotypeName)).findAny()
+        .isPresent();
+  }
+
+  public static List<String> getStereotypeValues(ASTCDType ast,
+      String stereotypeName) {
+    List<String> values = Lists.newArrayList();
+    if (ast.getModifier().isPresent()
+        && ast.getModifier().get().getStereotype().isPresent()) {
+      ast.getModifier().get().getStereotype().get().getValues().stream()
+          .filter(value -> value.getName().equals(stereotypeName))
+          .filter(value -> value.getValue().isPresent())
+          .forEach(value -> values.add(value.getValue().get()));
+    }
+    return values;
+  }
+  
+  
   /**
    * TODO: Write me!
    * 
@@ -1016,7 +1049,7 @@ public class GeneratorHelper extends TypesHelper {
    */
   public List<CDTypeSymbol> getAllSuperInterfaces(ASTCDType type) {
     if (!type.getSymbol().isPresent()) {
-      Log.error("0xA5001 Could not load symbol information for " + type.getName() + ".");
+      Log.error("0xA4079 Could not load symbol information for " + type.getName() + ".");
     }
     
     CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol().get();
@@ -1030,7 +1063,7 @@ public class GeneratorHelper extends TypesHelper {
     return clazz.printSuperClass();
   }
   
-  public static String getSuperClassForBuilder(ASTCDClass clazz) {
+  public static String getSuperClassName(ASTCDClass clazz) {
     if (!clazz.getSuperclass().isPresent()) {
       return "";
     }
@@ -1134,7 +1167,11 @@ public class GeneratorHelper extends TypesHelper {
   }
   
   public static boolean isSupertypeOfHWType(String className) {
-    return className.startsWith(AST_PREFIX)
+    return isSupertypeOfHWType(className, AST_PREFIX);
+  }
+  
+  public static boolean isSupertypeOfHWType(String className, String prefix) {
+    return (prefix.isEmpty() || className.startsWith(prefix))
         && className.endsWith(TransformationHelper.GENERATED_CLASS_SUFFIX);
   }
   
@@ -1149,10 +1186,28 @@ public class GeneratorHelper extends TypesHelper {
     return name.intern();
   }
   
-  public static boolean isQualified(String name) {
-    return name.contains(".");
+  public static boolean isQualified(MCGrammarSymbolReference grammarRef) {
+    if (grammarRef.getName().contains(".")) {
+      return true;
+    }
+    if (grammarRef.existsReferencedSymbol()) {
+      MCGrammarSymbol grammarSymbol = grammarRef.getReferencedSymbol();
+      if (!grammarSymbol.getFullName().contains(".")) {
+        // The complete name has no package name, therefore the grammarRefName
+        // without "." is qualified
+        return true;
+      }
+    }
+    return false;
   }
   
+  public static boolean isQualified(String name) {
+    if (name.contains(".")) {
+      return true;
+    }
+    return false;
+  }
+
   public static String getJavaAndCdConformName(String name) {
     Log.errorIfNull(name);
     return getCdLanguageConformName(getJavaConformName(name));
@@ -1207,47 +1262,95 @@ public class GeneratorHelper extends TypesHelper {
         AST_DOT_PACKAGE_SUFFIX_DOT);
   }
   
-  public static boolean isBuilderClass(ASTCDClass clazz) {
-    return clazz.getName().startsWith("Builder_");
-  }
-  
   public static String getPlainGetter(ASTCDAttribute ast) {
-    StringBuilder getPrefix = CDTypes.isBoolean(printType(ast.getType()))
-        ? new StringBuilder(GET_PREFIX_BOOLEAN)
-        : new StringBuilder(GET_PREFIX_NOT_BOOLEAN);
-    return getPrefix
-        .append(StringTransformations.capitalize(getNativeAttributeName(ast.getName()))).toString();
+    String astType = printType(ast.getType());
+    StringBuilder sb = new StringBuilder();
+    if (CDTypes.isBoolean(astType)) {
+      sb.append(GET_PREFIX_BOOLEAN);
+    } else {  
+      sb.append(GET_PREFIX);
+    }
+    sb.append(StringTransformations.capitalize(getNativeAttributeName(ast.getName())));
+    if (isOptional(ast)) {
+      sb.append(GET_SUFFIX_OPTINAL);
+    } else if (isListType(astType)) {
+      if (ast.getName().endsWith(TransformationHelper.LIST_SUFFIX)) {
+        sb.replace(sb.length()-TransformationHelper.LIST_SUFFIX.length(), 
+            sb.length(), GET_SUFFIX_LIST);
+      } else {
+        sb.append(GET_SUFFIX_LIST);
+      }
+    }
+    return sb.toString();
   }
   
   public static String getPlainName(ASTCDAttribute ast) {
     return StringTransformations.capitalize(getNativeAttributeName(ast.getName()));
   }
   
+  public static String getSimpleListName(ASTCDAttribute ast) {
+    String name = ast.getName();
+    if (name.endsWith(TransformationHelper.LIST_SUFFIX)) {
+      name = name.substring(0, name.length() - TransformationHelper.LIST_SUFFIX.length());
+    }
+    return StringTransformations.capitalize(name);
+  }
+
   public static String getPlainGetter(CDFieldSymbol field) {
-    StringBuilder getPrefix = CDTypes.isBoolean(field.getType().getName())
-        ? new StringBuilder(GET_PREFIX_BOOLEAN)
-        : new StringBuilder(GET_PREFIX_NOT_BOOLEAN);
-    return getPrefix
-        .append(StringTransformations.capitalize(getNativeAttributeName(field.getName())))
-        .toString();
+    String astType = field.getType().getName();
+    StringBuilder sb = new StringBuilder();
+    if (CDTypes.isBoolean(astType)) {
+      sb.append(GET_PREFIX_BOOLEAN);
+    }
+    else {
+      sb.append(GET_PREFIX);
+    }
+    sb.append(StringTransformations.capitalize(getNativeAttributeName(field.getName())));
+    if (isOptional(field)) {
+      sb.append(GET_SUFFIX_OPTINAL);
+    } else if (isListType(astType)) {
+      if (field.getName().endsWith(TransformationHelper.LIST_SUFFIX)) {
+        sb.replace(sb.length()-TransformationHelper.LIST_SUFFIX.length(), 
+            sb.length(), GET_SUFFIX_LIST);
+      } else {
+        sb.append(GET_SUFFIX_LIST);
+      }
+    }
+    return sb.toString();
   }
   
   /**
    * Returns the plain getter for the given attribute
    */
   public static String getPlainSetter(ASTCDAttribute ast) {
-    return new StringBuilder(SET_PREFIX).append(
-        StringTransformations.capitalize(getNativeAttributeName(ast.getName())))
-        .toString();
+    StringBuilder sb = new StringBuilder(SET_PREFIX).append(
+        StringTransformations.capitalize(getNativeAttributeName(ast.getName())));
+    String astType = printType(ast.getType());
+    if (isListType(astType))
+      if (ast.getName().endsWith(TransformationHelper.LIST_SUFFIX)) {
+        sb.replace(sb.length()-TransformationHelper.LIST_SUFFIX.length(), 
+            sb.length(), GET_SUFFIX_LIST);
+      } else {
+        sb.append(GET_SUFFIX_LIST);
+      }
+    return sb.toString();
   }
   
   /**
    * Returns the plain getter for the given attribute
    */
   public static String getPlainSetter(CDFieldSymbol field) {
-    return new StringBuilder(SET_PREFIX).append(
-        StringTransformations.capitalize(getNativeAttributeName(field.getName())))
-        .toString();
+    StringBuilder sb = new StringBuilder(SET_PREFIX).append(
+        StringTransformations.capitalize(getNativeAttributeName(field.getName())));
+    if (isListType(field.getType().getName())) {
+      if (field.getName().endsWith(TransformationHelper.LIST_SUFFIX)) {
+        sb.replace(sb.length()-TransformationHelper.LIST_SUFFIX.length(), 
+            sb.length(), GET_SUFFIX_LIST);
+      } else {
+        sb.append(GET_SUFFIX_LIST);
+      }
+    }
+    return sb.toString();
   }
   
   /**
@@ -1264,12 +1367,33 @@ public class GeneratorHelper extends TypesHelper {
     return name;
   }
   
-  public static String getPlainName(ASTCDInterface clazz) {
-    String name = clazz.getName();
-    if (isSupertypeOfHWType(name)) {
+  /**
+   * Returns name without suffix for HW classes
+   * 
+   * @param type
+   * @return
+   */
+  public static String getPlainName(ASTCDType type, String prefix) {
+    String name = type.getName();
+    if (isSupertypeOfHWType(name, prefix)) {
       return name.substring(0, name.lastIndexOf(TransformationHelper.GENERATED_CLASS_SUFFIX));
     }
     return name;
+  }
+  
+  /**
+   * Prints the type argument of the list-values ast type otherwise prints the
+   * given type.
+   */
+  public static String printTypeArgumentOfAstList(ASTType type) {
+    if (isGenericTypeWithOneTypeArgument(type, JAVA_LIST)) {
+      Optional<ASTSimpleReferenceType> typeArgument = TypesHelper
+          .getFirstTypeArgumentOfGenericType(type, JAVA_LIST);
+      if (typeArgument.isPresent()) {
+        return printSimpleRefType(typeArgument.get());
+      }
+    }
+    return printSimpleRefType(type);
   }
   
   /**
@@ -1341,6 +1465,10 @@ public class GeneratorHelper extends TypesHelper {
       IterablePath targetPath) {
     return TransformationHelper.existsHandwrittenClass(targetPath,
         getDotPackageName(packageName) + simpleName);
+  }
+
+  public String getAstPackage() {
+    return getPackageName(getPackageName(), AST_PACKAGE_SUFFIX);
   }
   
   /**
@@ -1650,7 +1778,7 @@ public class GeneratorHelper extends TypesHelper {
    * there is an ast-name then always the same error code will be generated.
    *
    * @param ast
-   * @return generated error code suffix in format "_ddd" where d is a decimal.
+   * @return generated error code suffix in format "xddd" where d is a decimal.
    */
   public static String getGeneratedErrorCode(ASTNode ast) {
     int hashCode = 0;
@@ -1663,7 +1791,7 @@ public class GeneratorHelper extends TypesHelper {
       hashCode = Math.abs(ast.toString().hashCode());
     }
     String errorCodeSuffix = String.valueOf(hashCode);
-    return "_" + (hashCode < 1000 ? errorCodeSuffix : errorCodeSuffix
+    return "x" + (hashCode < 1000 ? errorCodeSuffix : errorCodeSuffix
         .substring(errorCodeSuffix.length() - 3));
   }
   

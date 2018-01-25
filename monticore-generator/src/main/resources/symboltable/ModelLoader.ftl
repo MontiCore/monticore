@@ -39,7 +39,7 @@ ${signature("className")}
 <#assign skipSTGen = glex.getGlobalVar("skipSTGen")>
 
 <#-- Copyright -->
-${tc.defineHookPoint("JavaCopyright")}
+${defineHookPoint("JavaCopyright")}
 
 <#-- set package -->
 package ${package};

@@ -30,10 +30,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.io.FilenameUtils;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.monticore.MontiCoreScript;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.Slf4jLog;
 import mc.feature.delete.deletetest._ast.ASTChild;
 import mc.feature.delete.deletetest._ast.ASTParent;
 import mc.feature.delete.deletetest._ast.DeleteTestNodeFactory;
@@ -42,6 +45,12 @@ import mc.feature.featuredsl._ast.FeatureDSLNodeFactory;
 
 public class ASTTest {
   
+  @BeforeClass
+  public static void setup() {
+    Slf4jLog.init();
+    Log.enableFailQuick(false);
+  }
+
   @Test
   public void testGet_ChildNodes1() {
     List<ASTA> aList = new ArrayList<>();
@@ -55,10 +64,10 @@ public class ASTTest {
   public void testGet_ChildNodes2() {
     ASTParent p = DeleteTestNodeFactory.createASTParent();
     ASTChild s = DeleteTestNodeFactory.createASTChild();
-    p.get_Children().add(s);
+    p.addChildList(s);
     p.setSon(s);
-    assertEquals(1, p.get_Children().size());
-    assertTrue(p.get_Children().contains(s));
+    assertEquals(1, p.getChildListList().size());
+    assertTrue(p.containsChildList(s));
   }
   
   @Test

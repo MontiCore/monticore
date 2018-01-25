@@ -19,7 +19,6 @@
 
 package de.monticore.cli;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -41,7 +40,7 @@ public final class MontiCoreCLIConfiguration implements Configuration {
   public enum Options {
     
     DEV("dev"), DEV_SHORT("d"), CUSTOMLOG("customLog"), CUSTOMLOG_SHORT("cl"), SCRIPT("script"),
-    SCRIPT_SHORT("s");
+    SCRIPT_SHORT("s"), HELP("help"), HELP_SHORT("h");
     
     String name;
     
@@ -225,12 +224,12 @@ public final class MontiCoreCLIConfiguration implements Configuration {
    * 
    * @return the Groovy script file to execute
    */
-  public Optional<File> getScript() {
+  public Optional<String> getScript() {
     if (getAsString(Options.SCRIPT).isPresent()) {
-      return Optional.of(new File(getAsString(Options.SCRIPT).get()));
+      return Optional.of(getAsString(Options.SCRIPT).get());
     }
     if (getAsString(Options.SCRIPT_SHORT).isPresent()) {
-      return Optional.of(new File(getAsString(Options.SCRIPT_SHORT).get()));
+      return Optional.of(getAsString(Options.SCRIPT_SHORT).get());
     }
     return Optional.empty();
   }

@@ -21,7 +21,7 @@ package de.monticore.statechart;
 
 component grammar Statechart extends mc.grammars.lexicals.TestLexicals {
       
-  Statechart implements SCStructure= "statechart" Name "{" (states:State | transitions:Transition | userCode:Code)* "}" EOF;
+  Statechart implements SCStructure= "statechart" Name "{" (state:State | transition:Transition | userCode:Code)* "}" EOF;
   
   
   EntryAction= "entry" ":" block:BlockStatement;
@@ -30,7 +30,7 @@ component grammar Statechart extends mc.grammars.lexicals.TestLexicals {
   
  
   State implements SCStructure = "state" Name ("<<" (initial:["initial"] | final:["final"])* ">>")?
-    ( ("{ options{}" (entryAction:EntryAction)? (exitAction:ExitAction)? (states:State | transitions:Transition)* "}") | ";") ;
+    ( ("{ options{}" (entryAction:EntryAction)? (exitAction:ExitAction)? (state:State | transition:Transition)* "}") | ";") ;
  
   Transition = from:Name "->" to:Name 
     				(":" (event:Name ( "(" (arguments:(Argument || ",")+) ")" )? )?

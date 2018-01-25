@@ -32,7 +32,7 @@ component grammar TestTextEditorInGrammar extends mc.grammars.literals.TestLiter
 		   ("filters" "{" (Filter:FilterDefinition)* "}")?		   
 		"}";
 	
-	ast TextEditorInGrammarConcept =
+	astrule TextEditorInGrammarConcept =
 	
 		method public String toString(){
 			return "";

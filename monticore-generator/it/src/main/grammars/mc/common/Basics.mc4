@@ -17,7 +17,7 @@
  * ******************************************************************************
  */
 
-package mc.common;
+package mc.common; 
 
 grammar Basics {
  
@@ -35,20 +35,22 @@ grammar Basics {
     '\t' |
      '\r' '\n' |
     '\r' |
-    '\n' ) :{_channel = HIDDEN;};
+    '\n' ) : -> skip;
     
   token SL_COMMENT =
     "//" (~('\n' |
       '\r' )
     )*
-    : {_channel = HIDDEN;
+    : -> skip
+    {
     if (getCompiler() != null) {
-      de.monticore.ast.Comment _comment = new de.monticore.ast.Comment(getText());
+      de.monticore.CommentExt _comment = new de.monticore.CommentExt(getText());
       de.se_rwth.commons.SourcePosition startPos = new de.se_rwth.commons.SourcePosition(_tokenStartLine, _tokenStartCharPositionInLine);
       _comment.set_SourcePositionStart(startPos);
       _comment.set_SourcePositionEnd(getCompiler().computeEndPosition(startPos, getText()));
       getCompiler().addComment(_comment);
-  }};
+  }}
+  ;
 
   token ML_COMMENT =
     "/*" ({_input.LA(2) != '/'}?'*' |
@@ -57,14 +59,16 @@ grammar Basics {
       '\n' |
       '\r' )
     )*
-    "*/" : {_channel = HIDDEN;
+    "*/" : -> skip 
+    {
     if (getCompiler() != null) {
-      de.monticore.ast.Comment _comment = new de.monticore.ast.Comment(getText());
+      de.monticore.CommentExt _comment = new de.monticore.CommentExt(getText());
       de.se_rwth.commons.SourcePosition startPos = new de.se_rwth.commons.SourcePosition(_tokenStartLine, _tokenStartCharPositionInLine);
       _comment.set_SourcePositionStart(startPos);
       _comment.set_SourcePositionEnd(getCompiler().computeEndPosition(startPos, getText()));
       getCompiler().addComment(_comment);
-  }};
+  }}
+  ;
 
   fragment token ESC =
     '\\' ('n' |
@@ -82,6 +86,6 @@ token STRING =
     )*
 '"': {setText(getText().substring(1, getText().length() - 1));};
 
-MCImportStatement = "import" importList:Name& ( "." importList:Name&)* ("." Star:["*"])? ";" ;
+MCImportStatement = "import" import:Name& ( "." import:Name&)* ("." Star:["*"])? ";" ;
      
 }

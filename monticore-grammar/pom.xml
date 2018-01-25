@@ -7,7 +7,7 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore</artifactId>
-    <version>4.5.3</version>
+    <version>4.5.5.Gen</version>
   </parent>
 
   <artifactId>monticore-grammar</artifactId>
@@ -22,25 +22,25 @@
       <groupId>de.monticore</groupId>
       <artifactId>monticore-runtime</artifactId>
     </dependency>
-      <dependency>
+    <dependency>
       <groupId>de.monticore</groupId>
       <artifactId>monticore-emf-runtime</artifactId>
     </dependency>
 
 
-       <!-- EMF dependencies -->
-      <dependency>
-        <groupId>org.mod4j.org.eclipse.emf</groupId>
-        <artifactId>ecore</artifactId>
-      </dependency>
-      <dependency>
-        <groupId>org.mod4j.org.eclipse.emf.ecore</groupId>
-        <artifactId>xmi</artifactId>
-      </dependency>
-      <dependency>
-        <groupId>org.mod4j.org.eclipse.emf</groupId>
-        <artifactId>common</artifactId>
-      </dependency>
+    <!-- EMF dependencies -->
+    <dependency>
+      <groupId>org.mod4j.org.eclipse.emf</groupId>
+      <artifactId>ecore</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mod4j.org.eclipse.emf.ecore</groupId>
+      <artifactId>xmi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mod4j.org.eclipse.emf</groupId>
+      <artifactId>common</artifactId>
+    </dependency>
 
 
 
@@ -85,6 +85,48 @@
       <plugin>
         <groupId>de.monticore.mojo</groupId>
         <artifactId>monticore-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-id</id>
+            <phase>generate-sources</phase>
+          </execution>
+          <execution>
+            <id>test-id</id>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <phase>generate-test-sources</phase>
+            <configuration>
+              <grammars>
+                <grammar>src/test/grammars</grammar>
+              </grammars>
+              <modelPaths>
+                <modelPath>src/main/grammars</modelPath>
+                <modelPath>target/generated-sources/monticore/sourcecode</modelPath>
+              </modelPaths>
+              <outputDirectory>target/generated-test-sources/monticore/sourcecode</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>add-test-source</id>
+            <phase>generate-test-sources</phase>
+            <goals>
+              <goal>add-test-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>target/generated-test-sources/monticore/sourcecode</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
@@ -95,35 +137,7 @@
         <artifactId>maven-assembly-plugin</artifactId>
       </plugin>
     </plugins>
-    <pluginManagement>
-      <plugins>
-        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-        <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
-          <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>de.monticore.mojo</groupId>
-                    <artifactId>monticore-maven-plugin</artifactId>
-                    <versionRange>[4.2.0,)</versionRange>
-                    <goals>
-                      <goal>generate</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore></ignore>
-                  </action>
-                </pluginExecution>
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
+
   </build>
 
 </project>

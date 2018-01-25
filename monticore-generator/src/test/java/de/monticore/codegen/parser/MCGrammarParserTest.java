@@ -38,7 +38,7 @@ import de.monticore.grammar.grammar._ast.ASTSemanticpredicateOrAction;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.monticore.grammar.transformation.GrammarTransformer;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.Slf4jLog;
+import de.se_rwth.commons.logging.LogStub;
 
 /**
  * TODO: Write me!
@@ -49,7 +49,7 @@ public class MCGrammarParserTest {
   
   @BeforeClass
   public static void setup() {
-    Slf4jLog.init();
+    LogStub.init();
     Log.enableFailQuick(false);
   }
 
@@ -73,13 +73,13 @@ public class MCGrammarParserTest {
   public void testASTRule() throws IOException {
     String str;
     
-    str = "ast MCGrammar = GrammarOption max=1 ;";
+    str = "astrule MCGrammar = GrammarOption max=1 ;";
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTASTRule> result = parser.parseASTRule(new StringReader(str));
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     
-    str = " ast State = method public String getName(){ return \"\";};";
+    str = " astrule State = method public String getName(){ return \"\";};";
     result = parser.parseASTRule(new StringReader(str));
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());

@@ -69,10 +69,10 @@ grammar Inheritence {
 	Leaf implements Component =
 		"leaf" value:STRING ;
 	
-	ast Leaf =
+	astrule Leaf =
 		children:Component*;
 	
-	ast Component =
+	astrule Component =
 		children:Component*
 	;
 	

@@ -30,7 +30,7 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
-  ${tc.signature("ast", "structuralMethod", "interfaces")}
+  ${tc.signature("method", "ast", "structuralMethod", "interfaces")}
   <#assign genHelper = glex.getGlobalVar("astHelper")>
   <#assign nameHelper = glex.getGlobalVar("nameHelper")>
   <#assign packageName = genHelper.getCdName() + "Package">

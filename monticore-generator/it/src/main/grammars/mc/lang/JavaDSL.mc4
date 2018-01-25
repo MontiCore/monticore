@@ -19,7 +19,7 @@
 
 package mc.lang;
 
-grammar JavaDSL extends mc.grammar.types.Types {
+grammar JavaDSL extends mc.grammar.types.ItTestTypes {
 
 // starting point for parsing a java file
 CompilationUnit
@@ -388,7 +388,7 @@ DefaultSwitchLabel implements SwitchLabel
 
 Expression implements ElementValue, VariableInitializer
     =   PrimaryExpression
-    |   Expression "." Name&
+    |   Expression "." Name
     |   Expression "." ["this"]
     |   Expression "." InnerCreator
     |   Expression "." "super" SuperSuffix
@@ -466,7 +466,7 @@ PrimaryExpression
     |   ["this"]
     |   ["super"]
     |   Literal
-    |   Name&
+    |   Name
     |   ReturnType "." "class"
     |   ExplicitGenericInvocation
     |   NonWildcardTypeArguments "this" Arguments
@@ -498,11 +498,11 @@ CreatedName
     ;
 
 IdentifierAndTypeArgumentsOrDiamond
-    =   Name& TypeArgumentsOrDiamond?
+    =   Name TypeArgumentsOrDiamond?
     ;
 
 InnerCreator
-    =   "new" NonWildcardTypeArguments? Name& NonWildcardTypeArgumentsOrDiamond? ClassCreatorRest
+    =   "new" NonWildcardTypeArguments? Name NonWildcardTypeArgumentsOrDiamond? ClassCreatorRest
     ;
 
 ClassCreatorRest

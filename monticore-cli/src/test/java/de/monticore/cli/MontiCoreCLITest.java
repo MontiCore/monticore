@@ -22,6 +22,7 @@ package de.monticore.cli;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import de.monticore.MontiCoreConfiguration;
@@ -103,6 +104,10 @@ public class MontiCoreCLITest {
       "-" + MontiCoreConfiguration.Options.OUT, "target/test-run",
       "-" + MontiCoreConfiguration.Options.HANDCODEDPATH, "src/test/java" };
   
+  static String[] help = {
+      "-" + MontiCoreCLIConfiguration.Options.HELP
+  };
+  
   @BeforeClass
   public static void deactivateFailQuick() {
     Log.enableFailQuick(false);
@@ -146,6 +151,14 @@ public class MontiCoreCLITest {
     assertTrue(!false);
   }
   
+  @Test
+  public void testHelp() {
+    MontiCoreCLI.main(help);
+
+    assertTrue(!false);
+}
+  
+  @Ignore
   @Test
   public void testArgsWithNoGrammars() {
     MontiCoreCLI.main(argsWithNoGrammars);

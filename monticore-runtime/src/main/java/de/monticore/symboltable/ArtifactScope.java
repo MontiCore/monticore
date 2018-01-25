@@ -116,7 +116,7 @@ public class ArtifactScope extends CommonScope {
 
     if (checkIfContinueWithEnclosingScope(resolvingInfo.areSymbolsFound()) && (getEnclosingScope().isPresent())) {
       if (!(enclosingScope instanceof GlobalScope)) {
-        Log.warn("0xA1039 An artifact scope should have the global scope as enclosing scope or no "
+        Log.warn("0xA1039 The artifact scope " + getName().orElse("") + " should have the global scope as enclosing scope or no "
             + "enclosing scope at all.");
       }
 

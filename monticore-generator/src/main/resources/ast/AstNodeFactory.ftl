@@ -34,7 +34,7 @@ ${tc.signature("ast", "astImports")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
   
 <#-- Copyright -->
-${tc.defineHookPoint("JavaCopyright")}
+${defineHookPoint("JavaCopyright")}
 
 <#-- set package -->
 package ${genHelper.getAstPackage()};
@@ -42,6 +42,7 @@ package ${genHelper.getAstPackage()};
 import static com.google.common.base.Preconditions.*;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import de.se_rwth.commons.logging.Log;
 
 <#-- handle ast imports from the super grammars -->

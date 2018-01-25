@@ -19,7 +19,7 @@
 
 package mc.examples.robot;
 
-grammar RobotDSL extends mc.grammar.lexicals.Lexicals {
+grammar RobotDSL extends mc.grammar.lexicals.ItTestLexicals {
 
     token INT = ('0'..'9')+;
     

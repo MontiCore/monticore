@@ -29,12 +29,14 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Optional;
 
+import com.google.common.base.Charsets;
+
 /**
  * Builds ASTs by going straight to the hard disk and reading in the model.
  *
  * @author Sebastian Oberhoff, Pedram Mir Seyed Nazari
  */
-public final class FileBasedAstProvider<T extends ASTNode> implements AstProvider {
+public final class FileBasedAstProvider<T extends ASTNode> implements AstProvider<T> {
 
   private final ModelingLanguage modelingLanguage;
 
@@ -49,7 +51,7 @@ public final class FileBasedAstProvider<T extends ASTNode> implements AstProvide
       Log.debug("Start parsing model " + modelCoordinate + ".",
           ModelingLanguageModelLoader.class.getSimpleName());
 
-      Reader reader = new InputStreamReader(modelCoordinate.getLocation().openStream());
+      Reader reader = new InputStreamReader(modelCoordinate.getLocation().openStream(), Charsets.UTF_8.name());
       ast = (Optional<T>) modelingLanguage.getParser().parse(reader);
 
       if (ast.isPresent()) {

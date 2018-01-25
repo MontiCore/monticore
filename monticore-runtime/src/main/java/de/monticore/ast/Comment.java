@@ -85,7 +85,7 @@ public class Comment {
       return super.hashCode();
     }
     else {
-      return start.getLine() * 100 + start.getColumn();
+      return start.getLine() * 1024 + start.getColumn();
     }
   }
   

@@ -19,7 +19,7 @@
 
 package mc.examples.msc;
 
-grammar MSC extends mc.grammar.lexicals.Lexicals {
+grammar MSC extends mc.grammar.lexicals.ItTestLexicals {
 
 	MSC = "msc" Name "{" ( Instance | Method )* "}";
 	

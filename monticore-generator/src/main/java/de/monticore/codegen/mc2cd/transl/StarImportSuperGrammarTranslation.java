@@ -19,11 +19,12 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.UnaryOperator;
 
-import de.monticore.grammar.grammar._ast.ASTGrammarReference;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.types.types._ast.ASTImportStatement;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.utils.Link;
@@ -40,13 +41,18 @@ public class StarImportSuperGrammarTranslation implements
   @Override
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(
       Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
-    
-    for (ASTGrammarReference superGrammar : rootLink.source().getSupergrammar()) {
-      ASTImportStatement importStatement = ASTImportStatement.getBuilder().importList(new ArrayList<>(
-          superGrammar.getNames())).star(true).build();;
-      rootLink.target().getImportStatements().add(importStatement);
-    }
-    
+    ASTMCGrammar grammar = rootLink.source();
+    if (grammar.getSymbol().isPresent()) {
+      MCGrammarSymbol symbol = (MCGrammarSymbol) grammar.getSymbol().get();
+      for (MCGrammarSymbol superSymbol : symbol.getSuperGrammarSymbols()) {
+        List<String> names = Arrays.asList(superSymbol.getFullName().split("\\."));
+        ASTImportStatement importStatement = ASTImportStatement.getBuilder().importList(names)
+            .star(true).build();
+        ;
+        rootLink.target().getImportStatements().add(importStatement);
+      }
+    }  
     return rootLink;
   }
+  
 }

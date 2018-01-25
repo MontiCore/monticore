@@ -30,20 +30,22 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
-${tc.signature("antlrGenerator")}
+${tc.signature("antlrGenerator", "parserName")}
 
 @lexer::members {
 
-// Add additional Java Code to lexer
+
 <#list antlrGenerator.getHWLexerJavaCode() as javaCode>
   ${javaCode}
 </#list>
 
-private de.monticore.antlr4.MCParser _monticore_parser;
-protected de.monticore.antlr4.MCParser getCompiler() {
+<#if antlrGenerator.embeddedJavaCode>
+private ${parserName}AntlrParser _monticore_parser;
+protected ${parserName}AntlrParser getCompiler() {
    return _monticore_parser;
 }
-public void setMCParser(de.monticore.antlr4.MCParser in) {
+public void setMCParser(${parserName}AntlrParser in) {
   this._monticore_parser = in;
 }
+</#if>
 }

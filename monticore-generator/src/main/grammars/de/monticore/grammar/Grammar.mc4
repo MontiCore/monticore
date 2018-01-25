@@ -181,7 +181,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
       )?
       "=" alts:(LexAlt || "|")+
 
-      (":" ("{" endAction:Action  "}")? (variable:Name&
+      (":"  ("->" lexerCommand:Name)? ("{" endAction:Action  "}")? (variable:Name&
         ("->" type:( Name& || ".")+ (":" "{" block:Action "}" )? )? )? // Statements
       )?
     )
@@ -449,7 +449,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
   @attribute attributeInAST Attributes to be added to the class generation
   */
   ASTRule =
-     "ast" type:Name
+     ("astrule" | "ast" /* TODO (BOOTSTRAP): MB ast is deprecated: Remove in version 4.5.4 */ ) type:Name
     (
       "astextends" aSTSuperClass:(GenericType || ",")+
     |
@@ -494,19 +494,14 @@ component grammar Grammar extends de.monticore.literals.Literals {
   /** An attribute to be added to a certain ASTClass
   @attribute name Name of the attribute
   @attribute genericType Name of the referring type
-  @attribute unordered Defines whether a collection is ordered or unordered
   @attribute card Cardinality
-  @attribute derived True indicates that the attribute is derived as specified in body
-  @attribute body Specification of derived attribute
   */
   AttributeInAST =
     (Name  ":")?
-    ([unordered:"<<unordered>>"])?
     GenericType
-    Card?
-    (["derived"] "{" body:Action "}")? ;  // Statements
-
-
+    Card?;
+ 
+ 
   /**
   A GenericType represents an generic java type
   @attribute name List containing the name of the type

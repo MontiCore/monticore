@@ -1,0 +1,7 @@
+package de.monticore;
+
+grammar TestUMLModifier extends de.monticore.UMLModifier {
+
+	A = "test" Modifier;
+	
+}

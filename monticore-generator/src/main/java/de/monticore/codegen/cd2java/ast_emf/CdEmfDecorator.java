@@ -130,6 +130,8 @@ public class CdEmfDecorator extends CdDecorator {
     
     addNodeFactoryClass(cdCompilationUnit, astNotAbstractClasses, astHelper);
     
+    addMillClass(cdCompilationUnit, nativeClasses, astHelper);
+    
     // Check if handwritten ast types exist
     transformCdTypeNamesForHWTypes(cdCompilationUnit);
     
@@ -140,12 +142,18 @@ public class CdEmfDecorator extends CdDecorator {
     for (ASTCDClass clazz : nativeClasses) {
       addConstructors(clazz, astHelper);
       addAdditionalMethods(clazz, astHelper);
+      addListMethods(clazz, astHelper);
  //     addAdditionalAttributes(clazz, astHelper);
       addGetter(clazz, astHelper);
       addSetter(clazz, astHelper);
+      addOptionalMethods(clazz, astHelper);
       addSymbolGetter(clazz, astHelper);
+      addNodeGetter(clazz, astHelper);
+      
       glex.replaceTemplate("ast.AstImports", clazz, new TemplateHookPoint("ast_emf.AstEImports"));
     }
+    
+    cdDefinition.getCDClasses().forEach(c -> makeAbstractIfHWC(c));
     
     for (ASTCDInterface interf : cdDefinition.getCDInterfaces()) {
       addGetter(interf);
@@ -242,7 +250,7 @@ public class CdEmfDecorator extends CdDecorator {
       }
       String className = GeneratorHelper.getPlainName(clazz);
       String toParse = "public static " + className + " create" + className + "() ;";
-      HookPoint methodBody = new TemplateHookPoint("ast.factorymethods.Create", clazz, className);
+      HookPoint methodBody = new TemplateHookPoint("ast.factorymethods.Create", className);
       replaceMethodBodyTemplate(factory, toParse, methodBody);
     }
     List<String> classNames = astClasses.stream().map(e -> getPlainName(e))
@@ -434,11 +442,6 @@ public class CdEmfDecorator extends CdDecorator {
         glex.replaceTemplate(ERROR_IFNULL_TEMPLATE, setMethod, new StringHookPoint(""));
       }
       
-      if (isOptional) {
-        toParse = "public boolean " + attributeName + "IsPresent() ;";
-        methodBody = new StringHookPoint("  return " + attributeName + ".isPresent(); \n");
-        replaceMethodBodyTemplate(clazz, toParse, methodBody);
-      }
     }
   }
   
@@ -452,7 +455,7 @@ public class CdEmfDecorator extends CdDecorator {
   void addEGetter(ASTCDClass clazz, AstEmfGeneratorHelper astHelper) {
     String toParse = "public Object eGet(int featureID, boolean resolve, boolean coreType);";
     HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.EGet",
-        clazz, astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
+        astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
     replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
   }
   
@@ -466,7 +469,7 @@ public class CdEmfDecorator extends CdDecorator {
   void addESetter(ASTCDClass clazz, AstEmfGeneratorHelper astHelper) {
     String toParse = "public void eSet(int featureID, Object newValue);";
     HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.ESet",
-        clazz, astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
+        astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
     Optional<ASTCDMethod> astMethod = cdTransformation.addCdMethodUsingDefinition(clazz,
         toParse);
     Preconditions.checkArgument(astMethod.isPresent());
@@ -498,7 +501,7 @@ public class CdEmfDecorator extends CdDecorator {
       String typeName, String attributeName, boolean isOptional) {
     String toParse = "public void set" + StringTransformations.capitalize(attributeName) + "("
         + typeName + " " + attributeName + ") ;";
-    HookPoint methodBody = new TemplateHookPoint("ast.additionalmethods.Set", clazz,
+    HookPoint methodBody = new TemplateHookPoint("ast.additionalmethods.Set",
         attribute, attributeName);
     ASTCDMethod setMethod = replaceMethodBodyTemplate(clazz, toParse, methodBody);
     
@@ -523,7 +526,7 @@ public class CdEmfDecorator extends CdDecorator {
   void addEUnset(ASTCDClass clazz, AstEmfGeneratorHelper astHelper) {
     String toParse = "public void eUnset(int featureID);";
     HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.EUnset",
-        clazz, astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
+        astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
     replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
   }
   
@@ -537,7 +540,7 @@ public class CdEmfDecorator extends CdDecorator {
   void addEIsSet(ASTCDClass clazz, AstEmfGeneratorHelper astHelper) {
     String toParse = "public boolean eIsSet(int featureID);";
     HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.EIsSet",
-        clazz, astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
+        astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
     replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
   }
   
@@ -552,13 +555,13 @@ public class CdEmfDecorator extends CdDecorator {
     String methodName = "eBaseStructuralFeatureID";
     String toParse = "public int " + methodName + "(int featureID, Class<?> baseClass);";
     HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.EStructuralFeature",
-        clazz, methodName, astHelper.getAllSuperInterfaces(clazz));
+        methodName, astHelper.getAllSuperInterfaces(clazz));
     replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
     
     methodName = "eDerivedStructuralFeatureID";
     toParse = "public int " + methodName + "(int featureID, Class<?> baseClass);";
     getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.EStructuralFeature",
-        clazz, methodName, astHelper.getAllSuperInterfaces(clazz));
+        methodName, astHelper.getAllSuperInterfaces(clazz));
     replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
   }
   
@@ -692,13 +695,13 @@ public class CdEmfDecorator extends CdDecorator {
     String params = "owner, featureID";
     String toParse = "public static " + className + " create" + className
         + "(InternalEObject owner, int featureID) ;";
-    HookPoint methodBody = new TemplateHookPoint("ast.factorymethods.Create", clazz, className,
+    HookPoint methodBody = new TemplateHookPoint("ast.factorymethods.Create", className,
         params);
     replaceMethodBodyTemplate(nodeFactoryClass, toParse, methodBody);
     
     toParse = "protected " + className + " doCreate" + className
         + "(InternalEObject owner, int featureID) ;";
-    methodBody = new TemplateHookPoint("ast.factorymethods.DoCreate", clazz, className, params);
+    methodBody = new TemplateHookPoint("ast.factorymethods.DoCreate", className, params);
     replaceMethodBodyTemplate(nodeFactoryClass, toParse, methodBody);
   }
   

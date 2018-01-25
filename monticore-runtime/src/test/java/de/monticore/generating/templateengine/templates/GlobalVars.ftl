@@ -31,19 +31,13 @@ software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
 <#if getGlobalVar("test")??>
+${getGlobalVar("test")}
+<#else>
 ${error("global test variable does not exist")}
-</#if>
-
-<#if getGlobalVar("a")??>
-${error("global a variable does not exist")}
-</#if>
-
-<#if getGlobalVar("b")??>
-${error("global b variable does not exist")}
 </#if>
 
 <#if getGlobalVar("asd")??>
 ${getGlobalVar("asd")}
 <#else>
-${error("global variables does not exist")}
+${error("global asd variable does not exist")}
 </#if>

@@ -19,17 +19,18 @@
 
 /* Sinnfreise Sprache um MontiCore zu testen */
 package mc.feature.expression;
-component grammar Expression4 extends mc.common.Basics { 
+grammar Expression4 extends mc.common.Basics {    
 
   token NumericLiteral = ('0'..'9')+;
 
   // Exression with hierarchical interfaces
-  // Does not work!
   interface Expr;
   
-  interface IAddExpr extends Expr;
+  interface IInfixExpr extends Expr;
   
-  interface IMultExpr extends Expr;
+  interface IAddExpr extends IInfixExpr;
+  
+  interface IMultExpr extends IInfixExpr;
   	
   MultExpr implements IMultExpr <9> = 
   	left:Expr (op:["*"]|op:["/"]) right:Expr;

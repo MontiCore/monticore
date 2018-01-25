@@ -1,0 +1,130 @@
+/*
+***************************************************************************************
+Copyright (c) 2017, MontiCore
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation and/or
+other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its contributors
+may be used to endorse or promote products derived from this software
+without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGE.
+***************************************************************************************
+*/
+package de.monticore;
+
+/**
+ * This grammar defines Java compliant literals. The scope of this grammar is to
+ * ease the reuse of literals structures in Java-like sublanguages, e.g., by 
+ * grammar inheritance or grammar embedment.
+ * The grammar contains literals from Java for: Char and String
+*/
+
+component grammar StringLiterals extends de.monticore.MCBasics {
+
+  /*========================================================================*/
+  /*== Characters ==========================================================*/
+  /*========================================================================*/
+
+  /** ASTCharLiteral represents any valid character parenthesized with "'".
+        @attribute source String-representation (including "'").
+    */
+  CharLiteral =
+    source:CharToken;
+
+  ast CharLiteral = 
+    method public char getValue() {
+      return de.monticore.MCLiteralsDecoder.decodeChar(getSource());
+    }
+  ;
+
+  token CharToken
+    = '\'' (SingleCharacter|EscapeSequence) '\''
+    : {setText(getText().substring(1, getText().length() - 1));};
+
+  /*========================================================================*/
+  /*== String ==============================================================*/
+  /*========================================================================*/
+
+  /** ASTStringLiteral represents any valid character sequence parenthesized
+        with '"'.
+        @attribute source String-representation (including '"').
+        @attribute content decoded String-representation (no '"' and escapes 
+		are decoded).
+    */
+  StringLiteral =
+    source:StringToken;
+
+  ast StringLiteral = 
+    // Caution: decoded value is in cache: so change of value leads
+    // to outdated result in getValue()
+    content:String
+    method public String getValue() {
+      if(content == null) {
+        content =
+	  de.monticore.MCLiteralsDecoder.decodeString(getSource());
+      }
+      return content;
+    };
+
+  token StringToken
+    = '"' (StringCharacters)? '"'
+    : {setText(getText().substring(1, getText().length() - 1));};
+
+
+  /*========================================================================*/
+  /*============================ LEXER RULES ===============================*/
+  /*========================================================================*/
+  
+  fragment token HexDigit
+    = '0'..'9'  | 'a'..'f'  | 'A'..'F' ;
+
+  fragment token OctalDigit
+    = '0'..'7' ;
+
+  fragment token SingleCharacter
+    = ~ ('\'');
+
+  fragment token StringCharacters
+    = (StringCharacter)+;
+
+  fragment token StringCharacter
+    = ~ ('"' | '\\') | EscapeSequence;
+
+  // §3.10.6 Escape Sequences for Character and String Literals
+  fragment token EscapeSequence
+    = '\\' ('b' | 't' | 'n' | 'f' | 'r' | '"' | '\'' | '\\')
+      | OctalEscape | UnicodeEscape;
+
+  fragment token OctalEscape
+    = '\\' OctalDigit
+      | '\\' OctalDigit OctalDigit
+      | '\\' ZeroToThree OctalDigit OctalDigit;
+
+  fragment token UnicodeEscape
+    = '\\' 'u' HexDigit HexDigit HexDigit HexDigit;
+
+  fragment token ZeroToThree
+    = '0'..'3' ;
+
+}
+

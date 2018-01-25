@@ -7,7 +7,7 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore</artifactId>
-    <version>4.5.3</version>
+    <version>4.5.5.Gen</version>
   </parent>
 
   <artifactId>monticore-cli</artifactId>
@@ -104,7 +104,7 @@
     <dependency>
       <groupId>de.monticore.lang</groupId>
       <artifactId>automaton</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>0.0.2-SNAPSHOT</version>
       <scope>runtime</scope>
       <classifier>automaton-example</classifier>
       <exclusions>
@@ -165,6 +165,25 @@
             <id>grammars</id>
             <!-- we skip this as this project has no grammars -->
             <phase />
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>wagon-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>deploy-repository</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>upload-single</goal>
+            </goals>
+            <configuration>
+              <fromFile>${project.build.directory}/monticore-cli-${project.version}.zip</fromFile>
+              <serverId>se-nexus</serverId>
+              <url>https://nexus.se.rwth-aachen.de/service/local/repositories/monticore-snapshots/content-compressed</url>
+            </configuration>
           </execution>
         </executions>
       </plugin>

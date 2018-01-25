@@ -43,7 +43,7 @@ package de.monticore.types;
  *
  * version 27.01.2016;
 */
-grammar Types extends de.monticore.literals.Literals {
+component grammar Types extends de.monticore.literals.Literals {
 
     /*========================================================================*/
     /*======================= AST Definition =================================*/
@@ -146,7 +146,7 @@ grammar Types extends de.monticore.literals.Literals {
         @attribute parts A List of ASTStringList concludes all name parts
     */
     QualifiedName =
-        parts:(Name& || ".")+;
+        parts:(Name || ".")+;
         
     /** The ASTAbstractArrayType represents array of Type
     */
@@ -222,7 +222,7 @@ grammar Types extends de.monticore.literals.Literals {
     */
     SimpleReferenceType implements ReferenceType, Type =
         Name
-        ("." Name&)*
+        ("." Name)*
         (TypeArguments)?;
     
     /** ASTComplexReferenceType represents types like class or interface types which
@@ -285,5 +285,5 @@ grammar Types extends de.monticore.literals.Literals {
 	    E.g.: import A.b;
 	    E.g.: import A.*;
 	*/
-    ImportStatement = "import" importList:(Name& || ".")+ ("." Star:["*"])? ";" ;
+    ImportStatement = "import" importList:(Name || ".")+ ("." Star:["*"])? ";" ;
 }

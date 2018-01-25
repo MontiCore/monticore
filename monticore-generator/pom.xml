@@ -7,7 +7,7 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore</artifactId>
-    <version>4.5.3</version>
+    <version>4.5.5.Gen</version>
   </parent>
 
   <artifactId>monticore-generator</artifactId>
@@ -139,21 +139,26 @@
     
   </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>de.monticore.mojo</groupId>
-        <artifactId>monticore-maven-plugin</artifactId>
-      </plugin>
+	<build>
+	<plugins>
+		<plugin>
+			<groupId>de.monticore.mojo</groupId>
+			<artifactId>monticore-maven-plugin</artifactId>
+			<configuration>
+				<templatePaths>
+					<templatePath>${basedir}/src/test/resources/</templatePath>
+				</templatePaths>
+			</configuration>
+		</plugin>
 
-      <plugin>
-        <artifactId>maven-invoker-plugin</artifactId>
-      </plugin>
+		<plugin>
+			<artifactId>maven-invoker-plugin</artifactId>
+		</plugin>
 
-      <plugin>
-        <artifactId>maven-source-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
+		<plugin>
+			<artifactId>maven-source-plugin</artifactId>
+		</plugin>
+	</plugins>
+</build>
 
 </project>

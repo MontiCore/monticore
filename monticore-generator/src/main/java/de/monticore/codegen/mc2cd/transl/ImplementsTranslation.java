@@ -22,8 +22,6 @@ package de.monticore.codegen.mc2cd.transl;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 
-import com.google.common.base.Preconditions;
-
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.ASTAbstractProd;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
@@ -35,6 +33,7 @@ import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.utils.Link;
+import de.se_rwth.commons.logging.Log;
 
 /**
  * Checks if the source rules were implementing interface rules and sets the
@@ -70,7 +69,9 @@ public class ImplementsTranslation implements
     // translates "implements"
     for (ASTRuleReference ruleReference : classProd.getSuperInterfaceRule()) {
       Optional<MCProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(ruleReference.getName());
-      Preconditions.checkState(ruleSymbol.isPresent());
+      if (!ruleSymbol.isPresent()) {
+        Log.error("0xA0137 The rule '" + ruleReference.getName() + "' does not exist!", ruleReference.get_SourcePositionStart());
+      }
       cdClass.getInterfaces().add(
           TransformationHelper.createSimpleReference(TransformationHelper
               .getPackageName(ruleSymbol.get())
@@ -96,7 +97,9 @@ public class ImplementsTranslation implements
         .getSuperInterfaceRule()) {
       MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) astGrammar.getSymbol().get();
       Optional<MCProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(ruleReference.getName());
-      Preconditions.checkState(ruleSymbol.isPresent());
+      if (!ruleSymbol.isPresent()) {
+        Log.error("0xA0138 The rule '" + ruleReference.getName() + "' does not exist!");
+      }
       cdClass.getInterfaces().add(
           TransformationHelper.createSimpleReference(TransformationHelper
               .getPackageName(ruleSymbol.get())

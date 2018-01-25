@@ -25,6 +25,7 @@ import de.monticore.generating.templateengine.reporting.commons.ReportingReposit
 import de.monticore.generating.templateengine.reporting.reporter.ArtifactGVReporter;
 import de.monticore.generating.templateengine.reporting.reporter.ArtifactGmlReporter;
 import de.monticore.generating.templateengine.reporting.reporter.DetailedReporter;
+import de.monticore.generating.templateengine.reporting.reporter.SuccessfulReporter;
 import de.monticore.generating.templateengine.reporting.reporter.InvolvedFilesReporter;
 import de.monticore.generating.templateengine.reporting.reporter.GeneratedFilesReporter;
 import de.monticore.generating.templateengine.reporting.reporter.HandWrittenCodeReporter;
@@ -106,6 +107,7 @@ public class MontiCoreReports implements ReportManagerFactory {
     ArtifactGVReporter artifactGV = new ArtifactGVReporter(this.outputDirectory, modelName);
     InputOutputFilesReporter inputOutput = new InputOutputFilesReporter(this.outputDirectory);
     ODReporter objDiagram = new ODReporter(this.outputDirectory, modelName, repository);
+    SuccessfulReporter finishReporter = new SuccessfulReporter(this.outputDirectory, modelName);
 
     reports.addReportEventHandler(summary); // 01_Summary
     reports.addReportEventHandler(generated); // 02_GeneratedFiles
@@ -124,9 +126,10 @@ public class MontiCoreReports implements ReportManagerFactory {
     reports.addReportEventHandler(artifactGml); // 15_ArtifactGml
     reports.addReportEventHandler(artifactGV); // 16_ArtifactGv
     reports.addReportEventHandler(inputOutput); // 17_InputOutputFiles
-    reports.addReportEventHandler(objDiagram); // 18_ObjectDiagram
-    
-    reports.addReportEventHandler(ioReporter); // 18_ObjectDiagram
+    reports.addReportEventHandler(ioReporter); // 18_InvolvedFiles
+    reports.addReportEventHandler(finishReporter); // 19_Successful
+    reports.addReportEventHandler(objDiagram); // ObjectDiagram
+
     
     return reports;
   }

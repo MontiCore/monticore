@@ -60,7 +60,8 @@ public class AstGenerator {
   public static void generate(GlobalExtensionManagement glex, GlobalScope globalScope, ASTCDCompilationUnit astClassDiagram,
       File outputDirectory, IterablePath templatePath, boolean emfCompatible) {
     final String diagramName = astClassDiagram.getCDDefinition().getName();
-    final GeneratorSetup setup = new GeneratorSetup(outputDirectory);
+    final GeneratorSetup setup = new GeneratorSetup();
+    setup.setOutputDirectory(outputDirectory);
     setup.setModelName(diagramName);
     setup.setAdditionalTemplatePaths(templatePath.getPaths().stream().map(Path::toFile).collect(Collectors.toList()));
     AstGeneratorHelper astHelper = GeneratorHelper.createGeneratorHelper(astClassDiagram, globalScope, emfCompatible);
@@ -80,7 +81,7 @@ public class AstGenerator {
       if (astHelper.isAstClass(clazz)) {
         generator.generate("ast.AstClass", filePath, clazz, clazz, astHelper.getASTBuilder(clazz));
       }
-      else if (!AstGeneratorHelper.isBuilderClass(clazz)) {
+      else if (!AstGeneratorHelper.isBuilderClass(astClassDiagram.getCDDefinition(), clazz)) {
         generator.generate("ast.Class", filePath, clazz);
       }
     }

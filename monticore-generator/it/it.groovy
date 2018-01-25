@@ -19,7 +19,7 @@
 
 package de.monticore
 
-info("--------------------------------")
-info("MontiCore IT Facade")
+info("--------------------------------", LOG_ID)
+info("MontiCore IT Facade", LOG_ID)
 enableFailQuick(true)
 run(_configuration)

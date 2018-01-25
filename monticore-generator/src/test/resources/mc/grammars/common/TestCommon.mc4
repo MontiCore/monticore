@@ -42,7 +42,7 @@ grammar TestCommon extends mc.grammars.types.TestTypes {
     /*======================= INTERFACE DEFINITIONS ==========================*/
     /*========================================================================*/
     
-    ast Stereotype =
+    astrule Stereotype =
         method public boolean containsStereoValue(String name) {
           return (getStereoValue(name) != null);
         }
@@ -64,7 +64,7 @@ grammar TestCommon extends mc.grammars.types.TestTypes {
           return null;
         };
     
-    ast StereoValue =
+    astrule StereoValue =
         method public String getValue() {
           try {
             if (source.isPresent()) {
@@ -82,7 +82,7 @@ grammar TestCommon extends mc.grammars.types.TestTypes {
           this.source = Optional.of('"' + value + '"');
         };
     
-    ast Cardinality =
+    astrule Cardinality =
         lowerBound:int
         upperBound:int;
          
@@ -94,7 +94,7 @@ grammar TestCommon extends mc.grammars.types.TestTypes {
         @attribute values List of Values of this Stereotype
     */
     Stereotype =
-        "<<" values:(StereoValue || ",")+ ">" ">" 
+        "<<" value:(StereoValue || ",")+ ">" ">" 
             // It is not possible to define ">>".
             // Parsing generic typs like "List<List<String>>" leads to problems.
             {((_input.LT(-2).getLine()==_input.LT(-1).getLine()) && (_input.LT(-1).getCharPositionInLine()==_input.LT(-2).getCharPositionInLine()+1))}?;

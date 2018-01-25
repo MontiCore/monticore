@@ -25,9 +25,12 @@ import org.junit.Test;
 
 import de.monticore.ast.ASTNode;
 import mc.GeneratorIntegrationsTest;
+import mc.feature.visitor.inheritance.a._ast.AMill;
 import mc.feature.visitor.inheritance.a._ast.ASTXA;
 import mc.feature.visitor.inheritance.b._ast.ASTXB;
+import mc.feature.visitor.inheritance.b._ast.BMill;
 import mc.feature.visitor.inheritance.c._ast.ASTXC;
+import mc.feature.visitor.inheritance.c._ast.CMill;
 import mc.feature.visitor.inheritance.c._visitor.CInheritanceVisitor;
 import mc.feature.visitor.inheritance.c._visitor.CVisitor;
 
@@ -42,13 +45,13 @@ public class VisitorTest extends GeneratorIntegrationsTest {
   @Test
   public void testSimple() {
     SimpleVisitor v = new SimpleVisitor();
-    v.handle(ASTXA.getBuilder().build());
+    v.handle(AMill.xABuilder().build());
     assertEquals("A", v.getRun());
     v.clear();
-    v.handle(ASTXB.getBuilder().build());
+    v.handle(BMill.xBBuilder().build());
     assertEquals("B", v.getRun());
     v.clear();
-    v.handle(ASTXC.getBuilder().build());
+    v.handle(CMill.xCBuilder().build());
     assertEquals("C", v.getRun());
     v.clear();
   }
@@ -56,13 +59,13 @@ public class VisitorTest extends GeneratorIntegrationsTest {
   @Test
   public void testInheritance() {
     InheritanceVisitor v = new InheritanceVisitor();
-    v.handle(ASTXA.getBuilder().build());
+    v.handle(AMill.xABuilder().build());
     assertEquals("_AA_", v.getRun());
     v.clear();
-    v.handle(ASTXB.getBuilder().build());
+    v.handle(BMill.xBBuilder().build());
     assertEquals("_ABBA_", v.getRun());
     v.clear();
-    v.handle(ASTXC.getBuilder().build());
+    v.handle(CMill.xCBuilder().build());
     assertEquals("_ABCCBA_", v.getRun());
     v.clear();
   }

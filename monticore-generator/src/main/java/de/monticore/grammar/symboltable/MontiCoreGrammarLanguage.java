@@ -24,12 +24,9 @@ import java.util.Optional;
 import javax.annotation.Nullable;
 
 import de.monticore.CommonModelingLanguage;
-import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.ast.ASTNode;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
-import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
-import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
@@ -41,13 +38,9 @@ public class MontiCoreGrammarLanguage extends CommonModelingLanguage {
 
   public static final String FILE_ENDING = "mc4";
 
-  private final Grammar_WithConceptsPrettyPrinter prettyPrinter;
-
   public MontiCoreGrammarLanguage() {
     super("Essential Grammar Language", FILE_ENDING);
     
-    prettyPrinter = new Grammar_WithConceptsPrettyPrinter(new IndentPrinter());
-
     addResolvingFilter(CommonResolvingFilter.create(MCGrammarSymbol.KIND));
     addResolvingFilter(CommonResolvingFilter.create(MCProdSymbol.KIND));
     addResolvingFilter(CommonResolvingFilter.create(MCProdComponentSymbol.KIND));
@@ -55,7 +48,7 @@ public class MontiCoreGrammarLanguage extends CommonModelingLanguage {
   }
   
   @Override
-  public MCConcreteParser getParser() {
+  public Grammar_WithConceptsParser getParser() {
     return new Grammar_WithConceptsParser();
   }
   
@@ -63,7 +56,7 @@ public class MontiCoreGrammarLanguage extends CommonModelingLanguage {
   public Optional<MontiCoreGrammarSymbolTableCreator> getSymbolTableCreator(
       ResolvingConfiguration resolvingConfiguration, @Nullable MutableScope enclosingScope) {
     return Optional.of(new MontiCoreGrammarSymbolTableCreator(
-        resolvingConfiguration, enclosingScope, prettyPrinter));
+        resolvingConfiguration, enclosingScope));
   }
 
   @Override

@@ -57,13 +57,13 @@ component grammar Antlr extends de.monticore.lexicals.Lexicals {
 	@attribute Text	Java Code
 	*/		
 	AntlrParserAction= 
-		"parser" "java" "{" text:JavaCode "}";
+		"parserjava" "{" text:JavaCode "}";
 		
 	/** Additional Additional Java code for the lexer
 	@attribute Text	Java Code
 	*/
 	AntlrLexerAction= 
-		"lexer" "java" "{" text:JavaCode "}";
+		"lexerjava" "{" text:JavaCode "}";
 }
 
 

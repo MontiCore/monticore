@@ -60,15 +60,10 @@ public class FreeMarkerTemplateEngine {
    */
   public Template loadTemplate(String qualifiedTemplateName) {
     isNullOrEmpty(qualifiedTemplateName);
-    
-    try {
-      // use empty logger to suppress default free marker log behaviour
-      Logger.selectLoggerLibrary(Logger.LIBRARY_NONE);
-    }
-    catch (ClassNotFoundException e1) {
-      // TODO use default logger instead
-    }
-
+      
+    // use empty logger to suppress default free marker log behaviour
+    System.setProperty(Logger.SYSTEM_PROPERTY_NAME_LOGGER_LIBRARY, Logger.LIBRARY_NAME_NONE);
+  
     Template result;
     try {
       result = configuration.getTemplate(qualifiedTemplateName);

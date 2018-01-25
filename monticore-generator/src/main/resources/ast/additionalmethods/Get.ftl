@@ -30,5 +30,5 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
-${tc.signature("ast", "attributeName")}
+${tc.signature("method", "ast", "attributeName")}
     return <#if ast.getModifier().isPresent() && !ast.getModifier().get().isStatic()> this.</#if>${attributeName};

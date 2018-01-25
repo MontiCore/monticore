@@ -30,7 +30,7 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
-  ${tc.signature("grammarName", "astClasses", "emfAttributes", "externalTypes")}
+  ${tc.signature("method", "ast", "grammarName", "astClasses", "emfAttributes", "externalTypes")}
   <#assign genHelper = glex.getGlobalVar("astHelper")>
 /**
  * Creates the meta-model objects for the package.  This method is

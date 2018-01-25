@@ -2,7 +2,7 @@ ${tc.signature("astType", "astPackage", "checkerType", "visitorPackage", "cd", "
 <#assign genHelper = glex.getGlobalVar("coCoHelper")>
 
 <#-- Copyright -->
-${tc.defineHookPoint("JavaCopyright")}
+${defineHookPoint("JavaCopyright")}
 
 package ${genHelper.getCoCoPackage()};
 

@@ -1,0 +1,76 @@
+/*
+***************************************************************************************
+Copyright (c) 2017, MontiCore
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation and/or
+other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its contributors
+may be used to endorse or promote products derived from this software
+without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGE.
+***************************************************************************************
+*/
+package de.monticore;
+
+/**
+ * Grammar to describe Cardinalities
+ */
+component grammar Cardinality extends
+	de.monticore.MCBasics, 
+	de.monticore.MCNumbers 
+{
+    
+  /** ASTCardinality represents a Cardinality in the UML/P
+    @attribute many          True if "*" is set as Cardinality
+    @attribute lowerBound    Minimum number of associated Classes/Objects
+    @attribute upperBound    Maximum number of associated Classes/Objects;
+				 zero denotes that there is no upper bound set.
+    @attribute lowerBoundLit Lower bound as Literal
+    @attribute upperBoundLit Upper bound as Literal
+    @attribute noUpperLimit  True if a lower, but no upper bound exists
+  */
+  Cardinality =
+    "["
+    ( many:["*"] {_aNode.setLowerBound(0);_aNode.setUpperBound(0);}
+      | lowerBoundLit:Decimal
+        { _aNode.setLowerBound(
+             _aNode.getLowerBoundLit().get().getValueInt());
+          _aNode.setUpperBound(_aNode.getLowerBound()); }
+      ( ".." (
+        upperBoundLit:Decimal
+        ( {_aNode.setUpperBound(
+	     _aNode.getUpperBoundLit().get().getValueInt());})
+        |
+        noUpperLimit:["*"] {_aNode.setUpperBound(0);} ) )?
+    ) "]";
+  
+
+  /** 
+    A Cardinality Object stores the bounds as integers.
+   */
+
+  ast Cardinality =
+    lowerBound:int
+    upperBound:int;
+       
+}

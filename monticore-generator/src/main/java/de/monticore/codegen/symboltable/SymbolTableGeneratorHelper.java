@@ -344,11 +344,6 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   }
   
   // TODO refactor
-  public String getCommonDelegatorVisitorType() {
-    return "Common" + VisitorGeneratorHelper.getDelegatorVisitorType(getCdName());
-  }
-  
-  // TODO refactor
   public String getDelegatorVisitorType() {
     return VisitorGeneratorHelper.getDelegatorVisitorType(getCdName());
   }

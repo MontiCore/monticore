@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import de.se_rwth.commons.logging.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -37,8 +38,7 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.cli.CLIArguments;
 import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.Slf4jLog;
+
 /**
  *  on 01.11.2016.
  */
@@ -152,7 +152,7 @@ public class TypeResolverGeneratorTest extends AstDependentGeneratorTest {
 
   @BeforeClass
   public static void setup() {
-    Slf4jLog.init();
+    LogStub.init();
     Log.enableFailQuick(false);
   }
 

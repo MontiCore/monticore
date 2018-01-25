@@ -34,9 +34,9 @@ import de.se_rwth.commons.SourcePosition;
 public abstract class MCParser extends Parser {
   
   protected List<Comment> comments = new ArrayList<Comment>();
-    
+  
   protected ASTNode activeastnode;
-    
+  
   public MCParser(TokenStream input) {
     super(input);
     removeErrorListeners();
@@ -61,7 +61,8 @@ public abstract class MCParser extends Parser {
     if (token == null || token.getText() == null) {
       return SourcePosition.getDefaultSourcePosition();
     }
-    return computeEndPosition(new SourcePosition(token.getLine(), token.getCharPositionInLine()), token.getText());
+    return computeEndPosition(new SourcePosition(token.getLine(), token.getCharPositionInLine()),
+        token.getText());
   }
   
   public de.se_rwth.commons.SourcePosition computeStartPosition(Token token) {
@@ -73,7 +74,7 @@ public abstract class MCParser extends Parser {
     return new de.se_rwth.commons.SourcePosition(line, column, getFilename());
   }
   
-  public SourcePosition computeEndPosition(SourcePosition start, String text) {   
+  public SourcePosition computeEndPosition(SourcePosition start, String text) {
     int line = start.getLine();
     int column = start.getColumn();
     if (text == null) {
@@ -126,11 +127,12 @@ public abstract class MCParser extends Parser {
   }
   
   public void setActiveASTNode(ASTNode n) {
-   
+    
     ListIterator<Comment> listIterator = comments.listIterator();
     while (listIterator.hasNext()) {
-      Comment c = listIterator.next(); 
-      if (this.activeastnode != null && this.activeastnode.get_SourcePositionEnd().getLine() == c.get_SourcePositionStart().getLine()) {
+      Comment c = listIterator.next();
+      if (this.activeastnode != null && this.activeastnode.get_SourcePositionEnd().getLine() == c
+          .get_SourcePositionStart().getLine()) {
         this.activeastnode.get_PostComments().add(c);
         listIterator.remove();
       }
@@ -143,4 +145,12 @@ public abstract class MCParser extends Parser {
     this.activeastnode = n;
   }
   
+  public boolean noSpace() {
+    org.antlr.v4.runtime.Token t1 = _input.LT(-1);
+    org.antlr.v4.runtime.Token t2 = _input.LT(-2);
+    // token are on same line
+    // and columns differ exactly length of earlier token (t2)
+    return ((t1.getLine() == t2.getLine()) &&
+        (t1.getCharPositionInLine() == t2.getCharPositionInLine() + t2.getText().length()));
+  }
 }

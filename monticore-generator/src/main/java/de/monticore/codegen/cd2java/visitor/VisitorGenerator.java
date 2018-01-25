@@ -22,7 +22,7 @@ package de.monticore.codegen.cd2java.visitor;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
+import java.util.List;
 
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.generating.GeneratorEngine;
@@ -51,7 +51,8 @@ public class VisitorGenerator {
   public static void generate(GlobalExtensionManagement glex, GlobalScope globalScope,
       ASTCDCompilationUnit astClassDiagram,
       File outputDirectory) {
-    final GeneratorSetup setup = new GeneratorSetup(outputDirectory);
+    final GeneratorSetup setup = new GeneratorSetup();
+    setup.setOutputDirectory(outputDirectory);
     VisitorGeneratorHelper visitorHelper = new VisitorGeneratorHelper(astClassDiagram, globalScope);
     glex.setGlobalValue("visitorHelper", visitorHelper);
     setup.setGlex(glex);
@@ -85,14 +86,14 @@ public class VisitorGenerator {
         astClassDiagram.getCDDefinition(), astPackage, cd);
     Log.trace(LOGGER_NAME, "Generated basic parent aware visitor for the diagram: " + diagramName);
     
-    Collection<CDSymbol> allCds = visitorHelper.getAllCds(cd);
+    List<CDSymbol> allCds = visitorHelper.getAllCds(cd);
     
     // common delegator visitor
     final Path commonDelegatorVisitorFilePath = Paths.get(path,
-        "Common" + visitorHelper.getDelegatorVisitorType() + ".java");
-    generator.generate("visitor.CommonDelegatorVisitor", commonDelegatorVisitorFilePath,
+        visitorHelper.getDelegatorVisitorType() + ".java");
+    generator.generate("visitor.DelegatorVisitor", commonDelegatorVisitorFilePath,
         astClassDiagram, astClassDiagram.getCDDefinition(), astPackage, allCds);
-    Log.trace(LOGGER_NAME, "Generated common delegator visitor for the diagram: " + diagramName);
+    Log.trace(LOGGER_NAME, "Generated delegator visitor for the diagram: " + diagramName);
   }
   
   private VisitorGenerator() {

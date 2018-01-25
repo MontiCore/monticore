@@ -50,26 +50,26 @@ public class CommentTest extends GeneratorIntegrationsTest {
     assertEquals(false, cp.hasErrors());
     assertEquals("a", ast.getName());
     
-    assertEquals(true, ((ASTConstants) ast.getWired().get(0)).isPubblic());
-    assertEquals(false, ((ASTConstants) ast.getWired().get(0)).isPrivate());
+    assertEquals(true, ((ASTConstants) ast.getWiredList().get(0)).isPubblic());
+    assertEquals(false, ((ASTConstants) ast.getWiredList().get(0)).isPrivate());
     
-    assertEquals(true, ((ASTConstants) ast.getWired().get(1)).isPubblic());
-    assertEquals(false, ((ASTConstants) ast.getWired().get(1)).isPrivate());
+    assertEquals(true, ((ASTConstants) ast.getWiredList().get(1)).isPubblic());
+    assertEquals(false, ((ASTConstants) ast.getWiredList().get(1)).isPrivate());
     
-    assertEquals(false, ((ASTConstants) ast.getWired().get(2)).isPubblic());
-    assertEquals(true, ((ASTConstants) ast.getWired().get(2)).isPrivate());
+    assertEquals(false, ((ASTConstants) ast.getWiredList().get(2)).isPubblic());
+    assertEquals(true, ((ASTConstants) ast.getWiredList().get(2)).isPrivate());
     
-    assertEquals(true, ((ASTSpices1) ast.getWired().get(3)).isCarlique());
-    assertEquals(true, ((ASTSpices1) ast.getWired().get(3)).isPepper());
+    assertEquals(true, ((ASTSpices1) ast.getWiredList().get(3)).isCarlique());
+    assertEquals(true, ((ASTSpices1) ast.getWiredList().get(3)).isPepper());
     
-    assertEquals(ASTConstantsFeatureDSL.NONE, ((ASTSpices2) ((ASTAutomaton) ast).getWired().get(4)).getSpicelevel());
+    assertEquals(ASTConstantsFeatureDSL.NONE, ((ASTSpices2) ((ASTAutomaton) ast).getWiredList().get(4)).getSpicelevel());
     
     // TODO Antlr: Will man das Newline am Ende des Kommentars haben?
     assertEquals("// Test ", ast.get_PreComments().get(0).getText());
     assertEquals("/*Second*/", ast.get_PreComments().get(1).getText());
-    assertEquals("// First Constant 1", ast.getWired().get(0).get_PreComments().get(0).getText());
-    assertEquals("// First Constant 2",  ast.getWired().get(0).get_PostComments().get(0).getText());
-    assertEquals("/*Second Constant*/", ast.getWired().get(1).get_PreComments().get(0).getText());
+    assertEquals("// First Constant 1", ast.getWiredList().get(0).get_PreComments().get(0).getText());
+    assertEquals("// First Constant 2",  ast.getWiredList().get(0).get_PostComments().get(0).getText());
+    assertEquals("/*Second Constant*/", ast.getWiredList().get(1).get_PreComments().get(0).getText());
     
   }
   

@@ -25,7 +25,7 @@ package mc.examples.lwc.edl;
 * Properties have a name and a type. 
 * It's possible to use primitive types for properties (string, date and int), as well as other Entities.
 */
-grammar EDL extends mc.grammar.lexicals.Lexicals {
+grammar EDL extends mc.grammar.lexicals.ItTestLexicals {
 
   ////////// PRODUCTIONS //////////
   

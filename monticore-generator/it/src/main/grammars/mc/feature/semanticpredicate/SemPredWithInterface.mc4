@@ -22,7 +22,7 @@ package mc.feature.semanticpredicate;
 grammar SemPredWithInterface extends mc.common.Basics {
 
     concept antlr {
-      parser java {
+      parserjava {
         boolean first = true;
       }
     }
@@ -31,14 +31,14 @@ grammar SemPredWithInterface extends mc.common.Basics {
     
     interface I;
     
-    ast I = 
+    astrule I = 
       method public boolean isFirst() {}
       method public void setFirst(boolean first) {};
       
-    ast FirstRun =
+    astrule FirstRun =
       first: boolean;
       
-    ast OtherRun =
+    astrule OtherRun =
       first: boolean;
     
     FirstRun implements { first }? I =

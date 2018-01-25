@@ -32,47 +32,36 @@ software, even if advised of the possibility of such damage.
 -->
 ${tc.signature("antlrGenerator")}
 <#assign genHelper = glex.getGlobalVar("parserHelper")>
-// Generated antlr file
 
-// Parser header
 ${tc.include("parser.ParserHeader")}
 {
-// Global actions
 <#list antlrGenerator.getHWParserJavaCode() as javaCode>
   ${javaCode}
 </#list>
 
-// Convert functions
 <#list genHelper.getIdentsToGenerate() as ident>
   ${genHelper.getConvertFunction(ident)}
 </#list>  
 }
 
-// Lexer header
-${tc.includeArgs("parser.LexerMember", [antlrGenerator])}
+${tc.includeArgs("parser.LexerMember", [antlrGenerator, parserHelper.getGrammarSymbol().getName()])}
 
-// Global actions
-
-// Parser rules 
 <#list genHelper.getParserRulesToGenerate() as parserProd>
   <#list antlrGenerator.createAntlrCode(parserProd) as parserRule>
   ${parserRule}
   </#list>
 </#list>
 
-// Extra Rules for Interfaces
 <#list genHelper.getInterfaceRulesToGenerate() as interfaceProd>
   <#list antlrGenerator.createAntlrCodeForInterface(interfaceProd) as interfaceRule>
   ${interfaceRule}
   </#list>
 </#list>
  
-// Lexer symbols
 <#list genHelper.getLexSymbolsWithInherited() as lexSymbol>
   ${genHelper.getLexSymbolName(lexSymbol)} : '${lexSymbol}';
 </#list>
  
-// Lexer rules 
 <#list genHelper.getLexerRulesToGenerate() as lexProd>
   <#list antlrGenerator.createAntlrCode(lexProd) as lexerRule>
   ${lexerRule}

@@ -30,15 +30,15 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.io.FilenameUtils;
+
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
+import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.freemarker.SimpleHashFactory;
 import de.monticore.generating.templateengine.reporting.Reporting;
-import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import freemarker.core.Macro;
@@ -47,62 +47,59 @@ import freemarker.template.SimpleHash;
 import freemarker.template.Template;
 import freemarker.template.TemplateModelException;
 
-// TODO: describe methods better for JavaDoc
-
 /**
  * Provides methods for manipulating the content of templates, mainly for
  * calling and including of templates.
  *
- * @author (last commit) $Author$
  */
-// TODO PN check if all method docs are up to date.
 public class TemplateController {
 
-  private final TemplateControllerConfiguration config;
-
-  private final GlobalExtensionManagement glex;
-
-  private final FileReaderWriter fileHandler;
-
-  private final FreeMarkerTemplateEngine freeMarkerTemplateEngine;
-
-  private ITemplateControllerFactory tcFactory;
-
-  private final String currPackage;
-
-  private String templatename;
-
-  private boolean isIncludeRunning = false;
-
-  boolean signatureInitialized = false;
-
-  private List<String> signature = newArrayList();
-
-  private List<Object> arguments = newArrayList();
-
-  public static final String DEFAULT_FILE_EXTENSION = "java";
+  /**
+   * Variable name for the current node (used in the templates)
+   **/
+  public static final String AST = "ast";
 
   /**
-   * A list of all freemarker functions that serve as aliases for Java methods,
-   * e.g. 'include' as alias for 'tc.include'
+   * Variable name for the current TemplateController (used in the templates)
+   **/
+  public static final String TC = "tc";
+
+  /**
+   * Variable name for the GLEX object (used in the templates)
+   **/
+  public static final String GLEX = "glex";
+
+  /**
+   * General config variables that hold for all template executions
    */
-  private List<Macro> aliases;
+  private final GeneratorSetup config;
+
+  /**
+   * Name of the current template (usually fully qualified)
+   */
+  private String templatename;
+
+   /**
+   * According to FreemArker, templates don't have a "signature"
+   * We can mimic such a signature through method calls:
+   * The signature(...) method defines a list of variables.
+   * And the include call allows a list of arguments that are bound to
+   * these variables, when the template is executed.
+   */
+  private List<Object> arguments = newArrayList();
 
   private SimpleHash data = SimpleHashFactory.getInstance().createSimpleHash();
 
-  protected TemplateController(TemplateControllerConfiguration tcConfig, String templatename) {
-    this.config = tcConfig;
-    this.glex = tcConfig.getGlEx();
-    this.fileHandler = tcConfig.getFileHandler();
-    this.freeMarkerTemplateEngine = tcConfig.getFreeMarkerTemplateEngine();
-
+  public TemplateController(GeneratorSetup setup, String templatename) {
+    this.config = setup;
     this.templatename = templatename;
-    this.currPackage = Names.getQualifier(templatename);
+  }
 
-    this.tcFactory = tcConfig.getTemplateControllerFactory();
-
-    // TODO PN blocker
-    // GenLogger.updateTemplateOperator(this);
+  /**
+   * getters and setters for the relevant attributes
+   */
+  public GeneratorSetup getGeneratorSetup() {
+    return config;
   }
 
   public String getTemplatename() {
@@ -114,25 +111,18 @@ public class TemplateController {
   }
 
   /**
-   * @return isIncludeRunning
-   */
-  protected boolean isIncludeRunning() {
-    return this.isIncludeRunning;
-  }
-
-  /**
-   * @param isIncludeRunning the isIncludeRunning to set
-   */
-  protected void setIncludeRunning(boolean isIncludeRunning) {
-    this.isIncludeRunning = isIncludeRunning;
-  }
-
-  /**
    * Execute each of the templates on each ASTNode of the list. Concatenate the
    * results together in one big String and include that into the currently
    * processed output. We iterate on the templates and ASTNodes. In case order
-   * is important: The iteration goes like this for ( templates ) { for (
-   * ASTNodes ) {...} } Template filename may be qualified (using "."). When it
+   * is important: The iteration goes like this:
+   * 
+   *   for ( templates ) { 
+   *     for ( ASTNodes ) {...}
+   *   } 
+   *
+   * Inside the inner loop, it is checked whether Hookpoints are to be called.
+   *
+   * Template filename may be qualified (using "."). When it
    * is not qualified, the filename is taken from the current package (same as
    * the calling template).
    *
@@ -140,20 +130,19 @@ public class TemplateController {
    * @param astlist where we execute the template on in an iteration
    * @return produced output
    */
-  public String include(List<String> templatenames, List<ASTNode> astlist) {
-    setIncludeRunning(true);
+  public StringBuilder include(List<String> templatenames, List<ASTNode> astlist) {
     StringBuilder ret = new StringBuilder();
     for (String template : templatenames) {
       for (ASTNode ast : astlist) {
-        List<HookPoint> templateForwardings = glex.getTemplateForwardings(template, ast);
+        List<HookPoint> templateForwardings =
+			  config.getGlex().getTemplateForwardings(template, ast);
         for (HookPoint templateHp : templateForwardings) {
           ret.append(templateHp.processValue(this, ast));
         }
       }
     }
 
-    setIncludeRunning(false);
-    return ret.toString();
+    return ret;
   }
 
   /**
@@ -164,15 +153,13 @@ public class TemplateController {
    * @param ast the ast node
    * @return produced output
    */
-  String includeWithoutForwarding(String templateName, ASTNode ast) {
-    setIncludeRunning(true);
+  StringBuilder includeWithoutForwarding(String templateName, ASTNode ast) {
     StringBuilder ret = new StringBuilder();
     ret.append(processTemplate(templateName, ast, new ArrayList<>()));
-    setIncludeRunning(false);
-    return ret.toString();
+    return ret;
   }
 
-  /**
+    /**
    * Defines the signature of a template. <br />
    * <br />
    * Note that, due to technical constraints, at first, the current template is
@@ -181,16 +168,11 @@ public class TemplateController {
    * @param parameterNames the list of the parameter names (=signature)
    */
   public void signature(List<String> parameterNames) {
-    checkArgument(!signatureInitialized,
-        "0xA5297 Template '" + templatename + "': tried to invoke signature() twice");
-
     Log.errorIfNull(parameterNames);
 
     checkArgument(parameterNames.size() == arguments.size(),
         "0xA5298 Template '" + templatename + "': Signature size (#" + parameterNames.size() +
             ") and number of arguments (#" + arguments.size() + ") mismatch.");
-
-    this.signature = newArrayList(parameterNames);
 
     // bind values (arguments) to names (parameters/signature)
     // and inject into template
@@ -198,7 +180,6 @@ public class TemplateController {
       data.put(parameterNames.get(i), arguments.get(i));
     }
 
-    signatureInitialized = true;
   }
 
   /**
@@ -208,17 +189,10 @@ public class TemplateController {
     signature(Lists.newArrayList(parameterName));
   }
 
-  List<String> getSignature() {
-    return ImmutableList.copyOf(signature);
-  }
-
   List<Object> getArguments() {
-    return ImmutableList.copyOf(arguments);
+    return arguments;
   }
 
-  boolean isSignatureInitialized() {
-    return signatureInitialized;
-  }
 
   /**
    * Includes a template without an explicit ast. (ast is current ast node)
@@ -226,8 +200,23 @@ public class TemplateController {
    * @param templateName
    * @return
    */
-  public String include(String templateName) {
+  public StringBuilder include(String templateName) {
     return include(newArrayList(templateName), newArrayList(getAST()));
+  }
+
+  /**
+   * Includes a template without an explicit ast. (ast is current ast node)
+   * Execute each of the templates on the ASTNode. Concatenate the results
+   * together in one big String and include that into the currently processed
+   * output. We iterate on the templates. Template filename may be qualified
+   * (using "."). When it is not qualified, the filename is taken from the
+   * current package (same as the calling template).
+   *
+   * @param templateNames list of filenames, qualified or not
+   * @return produced output
+   */
+  public StringBuilder include(List<String> templateNames) {
+    return include(templateNames, newArrayList(getAST()));
   }
 
   /**
@@ -241,7 +230,7 @@ public class TemplateController {
    * @param ast ast-node the template is operating on
    * @return produced output
    */
-  public String include(List<String> templateNames, ASTNode ast) {
+  public StringBuilder include(List<String> templateNames, ASTNode ast) {
     return include(templateNames, newArrayList(ast));
   }
 
@@ -256,7 +245,7 @@ public class TemplateController {
    * @param astlist where we execute the template on in an iteration
    * @return produced output
    */
-  public String include(String templateName, List<ASTNode> astlist) {
+  public StringBuilder include(String templateName, List<ASTNode> astlist) {
     return include(newArrayList(templateName), astlist);
   }
 
@@ -272,7 +261,7 @@ public class TemplateController {
    * @param ast ast-node the template is operating on
    * @return output for the file (may be part of a file only)
    */
-  public String include(String templateName, ASTNode ast) {
+  public StringBuilder include(String templateName, ASTNode ast) {
     return include(newArrayList(templateName), newArrayList(ast));
   }
 
@@ -289,16 +278,37 @@ public class TemplateController {
    * template
    * @return output for the file (may be part of a file only)
    */
-  public String includeArgs(String templateName, List<Object> templateArguments) {
-    setIncludeRunning(true);
+  public StringBuilder includeArgs(String templateName, ASTNode node, List<Object> templateArguments) {
     StringBuilder ret = new StringBuilder();
-    List<HookPoint> templateForwardings = glex.getTemplateForwardings(templateName, getAST());
+    List<HookPoint> templateForwardings = config.getGlex().getTemplateForwardings(templateName, node);
+    for (HookPoint tn : templateForwardings) {
+      ret.append(tn.processValue(this, node, templateArguments));
+    }
+
+    return ret;
+  }
+
+  /**
+   * Include the template into the currently processed output. Remark: even
+   * though the name suggests to run several templates, this is the version that
+   * executes on a single template given as string. We only handle one template
+   * on one node. Template filename may be qualified (using "."). When it is not
+   * qualified, the filename is taken from the current package (same as the
+   * calling template).
+   *
+   * @param templateName name of the template to be executed, qualified or not
+   * @param templateArguments additional data that is passed to the called
+   * template
+   * @return output for the file (may be part of a file only)
+   */
+  public StringBuilder includeArgs(String templateName, List<Object> templateArguments) {
+    StringBuilder ret = new StringBuilder();
+    List<HookPoint> templateForwardings = config.getGlex().getTemplateForwardings(templateName, getAST());
     for (HookPoint tn : templateForwardings) {
       ret.append(tn.processValue(this, templateArguments));
     }
 
-    setIncludeRunning(false);
-    return ret.toString();
+    return ret;
   }
 
   /**
@@ -309,20 +319,34 @@ public class TemplateController {
    * @param templateArguments the template arguments
    * @return
    */
-  String includeArgsWithoutForwarding(String templateName, List<Object> templateArguments) {
-    setIncludeRunning(true);
+  StringBuilder includeArgsWithoutForwarding(String templateName, List<Object> templateArguments) {
     StringBuilder ret = new StringBuilder();
 
     ret.append(processTemplate(templateName, getAST(), templateArguments));
 
-    setIncludeRunning(false);
-    return ret.toString();
+    return ret;
+  }
+
+  /**
+   * Processes the template with a list of additional arguments. This method is
+   * package default and should only be called by the TemplateHookPoint class.
+   *
+   * @param templateName the template name
+   * @param templateArguments the template arguments
+   * @return
+   */
+  StringBuilder includeArgsWithoutForwarding(String templateName, ASTNode node, List<Object> templateArguments) {
+    StringBuilder ret = new StringBuilder();
+
+    ret.append(processTemplate(templateName, node, templateArguments));
+
+    return ret;
   }
 
   /**
    * Delegates to {@link #includeArgs(String, List)}
    */
-  public String includeArgs(String templateName, String... templateArgument) {
+  public StringBuilder includeArgs(String templateName, String... templateArgument) {
     return includeArgs(templateName, Lists.newArrayList(templateArgument));
   }
 
@@ -420,13 +444,13 @@ public class TemplateController {
     StringBuilder content = new StringBuilder();
     content.append(processTemplate(qualifiedTemplateName, ast, templateArguments));
 
-    if (Strings.isNullOrEmpty(content.toString())) {
+    if (content.length()==0) {
       Log.error("0xA4057 Template " + qualifiedTemplateName + " produced no content for.");
     }
 
     // add trace to source-model:
     if (config.isTracing() && config.getModelName().isPresent()) {
-      content.insert(0, config.getCommentStart() + " generated from model " + config.getModelName().get()
+      content.insert(0, config.getCommentStart() + " generated from model " + config.getModelName().get() + " " 
           + config.getCommentEnd() + "\n");
     }
 
@@ -440,13 +464,13 @@ public class TemplateController {
 
     Reporting.reportFileCreation(qualifiedTemplateName, filePath, ast);
 
-    fileHandler.storeInFile(completeFilePath, content.toString());
+    config.getFileHandler().storeInFile(completeFilePath, content.toString());
 
     Log.debug(completeFilePath + " written successfully!", this.getClass().getName());
 
     Reporting.reportFileFinalization(qualifiedTemplateName, filePath, ast);
   }
-
+  
   /**
    * Include a template with additional data: We only handle one template on one
    * node. This method allows to parameterize templates. Template filename may
@@ -491,10 +515,10 @@ public class TemplateController {
     // Template t = FreeMarkerTemplateEngine.loadTemplate(templatename,
     // classLoader, MontiCoreTemplateExceptionHandler.THROW_ERROR,
     // externalTemplatePath);
-    Template template = freeMarkerTemplateEngine.loadTemplate(templateName);
+    Template template = config.getFreeMarkerTemplateEngine().loadTemplate(templateName);
 
     // add static functions to template
-    for (Macro macro : aliases) {
+    for (Macro macro : config.getAliases()) {
       template.addMacro(macro);
     }
 
@@ -507,17 +531,15 @@ public class TemplateController {
    */
   @SuppressWarnings("rawtypes")
   protected void initAliases() {
-    if (aliases == null) {
-      aliases = newArrayList();
-
-      Template aliasesTemplate = freeMarkerTemplateEngine.loadTemplate(
-          TemplateControllerConfiguration.ALIASES_TEMPLATE);
+    if (config.getAliases().isEmpty()) {
+      Template aliasesTemplate = config.getFreeMarkerTemplateEngine().loadTemplate(
+          GeneratorSetup.ALIASES_TEMPLATE);
 
       Set macros = aliasesTemplate.getMacros().entrySet();
       for (Object o : macros) {
         Entry e = (Entry) o;
         Macro macro = (Macro) e.getValue();
-        aliases.add(macro);
+        config.addAlias(macro);
       }
     }
   }
@@ -533,18 +555,16 @@ public class TemplateController {
         ast = getAST();
       }
 
-      TemplateController tc = createTemplateController(template.getName());
-      tc.tcFactory = this.tcFactory;
+      TemplateController tc = config.getNewTemplateController(template.getName());
 
       SimpleHash d = SimpleHashFactory.getInstance().createSimpleHash();
-      d.put(TemplateControllerConstants.AST, ast);
-      d.put(TemplateControllerConstants.TC, tc);
-      d.put(TemplateControllerConstants.GLEX, glex);
-      d.put(TemplateControllerConstants.LOG, config.getLog());
+      d.put(AST, ast);
+      d.put(TC, tc);
+      d.put(GLEX, config.getGlex());
 
       // add all global data to be accessible in the template
       try {
-        d.putAll(glex.getGlobalData().toMap());
+        d.putAll(config.getGlex().getGlobalData().toMap());
       }
       catch (TemplateModelException e) {
         String usage = this.templatename != null ? " (" + this.templatename + ")" : "";
@@ -556,12 +576,8 @@ public class TemplateController {
       tc.data = d;
       tc.arguments = newArrayList(passedArguments);
 
-      if (aliases != null) {
-        tc.setAliases(aliases);
-      }
-
       // Run template with data to create output
-      freeMarkerTemplateEngine.run(ret, d, template);
+      config.getFreeMarkerTemplateEngine().run(ret, d, template);
     }
     else {
       // no template
@@ -581,19 +597,7 @@ public class TemplateController {
 
     return ret;
   }
-
-  protected TemplateController createTemplateController(String templateName) {
-    return tcFactory.create(this.config, templateName);
-  }
-
-  /**
-   * @param tcFactory the factory that should be used when new template
-   * controllers are created.
-   */
-  public void setTemplateControllerFactory(ITemplateControllerFactory tcFactory) {
-    this.tcFactory = tcFactory;
-  }
-
+  
   /**
    * checks if the name seems to be already qualified: if not, adds the current
    * package (of the template it operates on)
@@ -605,13 +609,13 @@ public class TemplateController {
       return name;
     }
 
-    return currPackage + "." + name;
+    return Names.getQualifier(templatename) + "." + name;
   }
 
   ASTNode getAST() {
     ASTNode ast = null;
 
-    Object o = getValueFromData(TemplateControllerConstants.AST);
+    Object o = getValueFromData(AST);
     if ((o != null) && (o instanceof ASTNode)) {
       ast = (ASTNode) o;
     }
@@ -630,18 +634,13 @@ public class TemplateController {
     return null;
   }
 
-  protected void logTemplateCallOrInclude(String templateName, ASTNode ast) {
-    if (isIncludeRunning()) {
-      Reporting.reportTemplateInclude(templateName, ast);
-    }
-    else {
-      Reporting.reportTemplateWrite(templateName, ast);
-    }
-  }
-
   // TODO: can we remove this one?
+  /**
+   * @deprecated use glex.defineHookPoint instead
+   */ 
+  @Deprecated
   public String defineHookPoint(String hookName) {
-    return glex.defineHookPoint(this, hookName, getAST());
+    return config.getGlex().defineHookPoint(this, hookName, getAST());
   }
 
   // TODO AR <- PN Actually,the plan was to move both instantiate() methods to
@@ -663,28 +662,74 @@ public class TemplateController {
   }
 
   /**
-   * @param aliases the staticFunctions to set
+   * Checks if a file with the default extension exists in the HWV directory.
+   * 
+   * @param filename Path of the file to search for
+   * @return true if file exists
    */
-  public void setAliases(List<Macro> aliases) {
-    this.aliases = newArrayList(aliases);
+  public boolean existsHandwrittenFile(String filename) {
+    checkArgument(!isNullOrEmpty(filename));
+    
+    Path path = Paths.get(filename);
+    if (FilenameUtils.getExtension(filename).isEmpty()) {
+      path = Paths.get(filename + "." + config.getDefaultFileExtension());
+    }
+    
+    Log.debug("Checking existence of handwritten code " + FilenameUtils.getName(filename)
+        + " by searching for "
+        + path.toString(), TemplateController.class.getName());
+    
+    boolean result = config.getHandcodedPath().exists(path);
+    if (result) {
+      Reporting.reportUseHandwrittenCodeFile(config.getHandcodedPath().getResolvedPath(path).get(),
+          path);
+    }
+    
+    return result;
   }
-
+  
   /**
-   * @return aliases
+   * Checks if a handwritten class with the given qualifiedName (dot-separated)
+   * exists on the target path.
+   * 
+   * @param qualifiedName name of the class to search for
+   * @param extension extension of file to search for
+   * @return true if a handwritten class with the qualifiedName exists
    */
-  List<Macro> getAliases() {
-    return aliases;
+  public boolean existsHandwrittenClass(String qualifiedName,
+      String extension) {
+    checkArgument(!isNullOrEmpty(qualifiedName));
+    
+    if (Strings.nullToEmpty(extension).isEmpty()) {
+      extension = config.getDefaultFileExtension();
+    }
+    
+    Path handwrittenFile = Paths.get(Names
+        .getPathFromPackage(qualifiedName)
+        + "." + extension);
+    Log.debug("Checking existence of handwritten class " + qualifiedName
+        + " by searching for "
+        + handwrittenFile.toString(), TemplateController.class.getName());
+    
+    boolean result = config.getHandcodedPath().exists(handwrittenFile);
+    if (result) {
+      Reporting.reportUseHandwrittenCodeFile(
+          config.getHandcodedPath().getResolvedPath(handwrittenFile).get(),
+          handwrittenFile);
+    }
+    
+    return result;
   }
-
-  public boolean existsHWC(String fileName) {
-    return existsHWC(fileName, DEFAULT_FILE_EXTENSION);
-  }
-
-  public boolean existsHWC(String fileName, String extension) {
-    checkArgument(!isNullOrEmpty(fileName));
-    checkArgument(!isNullOrEmpty(extension));
-    Path filePath = Paths.get(Names.getFileName(Names.getPathFromPackage(fileName), extension));
-    return config.getHandcodedPath().exists(filePath);
+  
+  /**
+   * Checks if a handwritten class with the given qualifiedName (dot-separated)
+   * exists on the target path.
+   * 
+   * @param qualifiedName name of the class to search for
+   * @return true if a handwritten class with the qualifiedName exists
+   */
+  public boolean existsHandwrittenClass(String qualifiedName) {
+    return existsHandwrittenClass(qualifiedName, "");
   }
 
   /**
@@ -699,6 +744,41 @@ public class TemplateController {
   public Object instantiate(String className, List<Object> params) {
     Reporting.reportInstantiate(className, params);
     return ObjectFactory.createObject(completeQualifiedName(className), params);
+  }
+  
+  /**
+   * @see de.se_rwth.commons.logging.Log#trace(String, String)
+   */
+  public void trace(String msg, String logName) {
+    Log.trace(msg, logName);
+  }
+
+  /**
+   * @see de.se_rwth.commons.logging.Log#debug(String, String)
+   */
+  public void debug(String msg, String logName) {
+    Log.debug(msg, logName);
+  }
+
+  /**
+   * @see de.se_rwth.commons.logging.Log#info(String, String)
+   */
+  public void info(String msg, String logName) {
+    Log.info(msg, logName);
+  }
+
+  /**
+   * @see de.se_rwth.commons.logging.Log#warn(String)
+   */
+  public void warn(String msg) {
+    Log.warn(msg);
+  }
+
+  /**
+   * @see de.se_rwth.commons.logging.Log#error(String)
+   */
+  public void error(String msg) {
+    Log.error(msg);
   }
 
 }

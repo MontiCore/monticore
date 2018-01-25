@@ -30,7 +30,7 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
-${tc.signature("ast", "astNodeName")}
+${tc.signature("method", "ast", "astNodeName")}
   {
     if (factory${astNodeName} == null) {
       factory${astNodeName} = getFactory();

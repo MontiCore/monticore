@@ -19,7 +19,7 @@
 
 package mc.examples.cartesian;
 
-grammar Coordcartesian extends mc.grammar.lexicals.Lexicals {
+grammar Coordcartesian extends mc.grammar.lexicals.ItTestLexicals {
 
     token INT = ('0'..'9')+ :  int;
 

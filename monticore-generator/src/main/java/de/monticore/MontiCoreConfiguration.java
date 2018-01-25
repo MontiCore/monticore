@@ -21,6 +21,8 @@ package de.monticore;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -61,8 +63,15 @@ public final class MontiCoreConfiguration implements Configuration {
 
   public static final String CONFIGURATION_PROPERTY = "_configuration";
 
-  public static final String DEFAULT_OUTPUT_DIRECTORY = "out";
+  public static final String DEFAULT_OUTPUT_PATH = "out";
+  
+  public static final String DEFAULT_HANDCODED_JAVA_PATH = "java";
 
+  public static final String DEFAULT_HANDCODED_TEMPLATE_PATH = "resource";
+
+  public static final String DEFAULT_GRAMMAR_PATH = "grammars";
+
+  
   /**
    * The names of the specific MontiCore options used in this configuration.
    */
@@ -261,6 +270,16 @@ public final class MontiCoreConfiguration implements Configuration {
     return hasProperty(key.toString());
   }
 
+  private boolean checkPath(List<String> grammars) {
+    for (String g: grammars) {
+      Path p = Paths.get(g);
+      if (!Files.exists(p)) {
+        Log.error("0xA1019 The requested path " + p.toString() + " does not exist.");
+        return false;
+      }
+    }
+    return true;
+  }
   /**
    * Getter for the {@link IterablePath} consisting of grammar files stored in
    * this configuration.
@@ -269,11 +288,11 @@ public final class MontiCoreConfiguration implements Configuration {
    */
   public IterablePath getGrammars() {
     Optional<List<String>> grammars = getAsStrings(Options.GRAMMARS);
-    if (grammars.isPresent()) {
+    if (grammars.isPresent() && checkPath(grammars.get())) {
       return IterablePath.from(toFileList(grammars.get()), MC4_EXTENSIONS);
     }
     grammars = getAsStrings(Options.GRAMMARS_SHORT);
-    if (grammars.isPresent()) {
+    if (grammars.isPresent() && checkPath(grammars.get())) {
       return IterablePath.from(toFileList(grammars.get()), MC4_EXTENSIONS);
     }
     // no default; must specify grammar files/directories to process
@@ -384,7 +403,7 @@ public final class MontiCoreConfiguration implements Configuration {
       return new File(out.get());
     }
     // fallback default is "out"
-    return new File(DEFAULT_OUTPUT_DIRECTORY);
+    return new File(DEFAULT_OUTPUT_PATH);
   }
 
   /**
@@ -401,8 +420,12 @@ public final class MontiCoreConfiguration implements Configuration {
     if (handcodedPath.isPresent()) {
       return IterablePath.from(toFileList(handcodedPath.get()), HWC_EXTENSIONS);
     }
-    // default handcoded path is empty
-    return IterablePath.empty();
+    // default handcoded path is "java"
+    File defaultFile = new File(DEFAULT_HANDCODED_JAVA_PATH);
+    if (!defaultFile.exists()) {
+      return IterablePath.empty();
+    }
+    return IterablePath.from(new File(DEFAULT_HANDCODED_JAVA_PATH), HWC_EXTENSIONS);
   }
 
   /**
@@ -440,8 +463,12 @@ public final class MontiCoreConfiguration implements Configuration {
     if (templatePath.isPresent()) {
       return IterablePath.from(toFileList(templatePath.get()), FTL_EXTENSIONS);
     }
-    // default template path is empty
-    return IterablePath.empty();
+    // default handcoded template path is "resource"
+    File defaultFile = new File(DEFAULT_HANDCODED_TEMPLATE_PATH);
+    if (!defaultFile.exists()) {
+      return IterablePath.empty();
+    }
+    return IterablePath.from(new File(DEFAULT_HANDCODED_TEMPLATE_PATH), FTL_EXTENSIONS);
   }
 
   /**

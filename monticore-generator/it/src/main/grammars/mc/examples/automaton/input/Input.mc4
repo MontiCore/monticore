@@ -19,7 +19,7 @@
 
 package mc.examples.automaton.input;
 
-grammar Input extends mc.grammar.lexicals.Lexicals {
+grammar Input extends mc.grammar.lexicals.ItTestLexicals {
 
 /** An ASTInput represents a set of inputs for an finite automaton 
 	@attribute Name Name of the inputs

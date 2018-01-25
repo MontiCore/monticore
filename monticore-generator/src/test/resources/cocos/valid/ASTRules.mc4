@@ -23,20 +23,30 @@ grammar ASTRules {
 
  A;
 
- ast A;
+ astrule A;
 
  interface B;
 
- ast B;
+ astrule B;
 
  abstract C;
 
- ast C;
+ astrule C;
 
  D implements B;
 
-   E = d:D;
+ E = d:D;
 
-   ast E = d:B;
+ astrule E = d:B;
+   
+ F astextends ASTD;
+ 
+ G;
+ 
+ astrule G astextends ASTD;
+ 
+ interface H;
+ 
+ astrule H astextends java.util.Observer;
 
 }

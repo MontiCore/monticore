@@ -40,11 +40,11 @@ software, even if advised of the possibility of such damage.
 ${tc.signature("visitorPackage", "visitorType")}
 
 <#assign genHelper = glex.getGlobalVar("astHelper")>
-${tc.defineHookPoint("InterfaceContent:addComment")}
+${defineHookPoint("InterfaceContent:addComment")}
 <#-- set package -->
 package ${genHelper.getAstPackage()};
 <#-- Imports hook --> 
-${tc.defineHookPoint("<Block>?InterfaceContent:addImports")}
+${defineHookPoint("<Block>?InterfaceContent:addImports")}
 
 ${tc.includeArgs("ast.AstInterfaceContent", [visitorPackage, visitorType])}
 

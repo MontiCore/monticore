@@ -30,6 +30,9 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import de.monticore.AmbiguityException;
+import de.se_rwth.commons.logging.Log;
+
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class ModelPathTest {
@@ -52,6 +55,11 @@ public class ModelPathTest {
     modelPath = new ModelPath(parentPathOne, parentPathTwo);
   }
   
+  @BeforeClass
+  public static void disableFailQuick() {
+    Log.enableFailQuick(false);
+  }
+
   @Test
   public void testResolveModel() throws URISyntaxException {
     assertTrue(modelPath.resolveModel(unambiguousModel).hasLocation());
@@ -59,9 +67,10 @@ public class ModelPathTest {
     assertTrue(resolvedLocation.endsWith(unambiguousModelLocation));
   }
   
-  @Test(expected = AmbiguityException.class)
+  @Test
   public void testAmbiguityException() {
     modelPath.resolveModel(ambiguousModel);
+    assertEquals(1, Log.getErrorCount());
   }
 
   @Test

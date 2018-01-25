@@ -74,9 +74,9 @@ public class AddKeywordsTest extends GeneratorIntegrationsTest {
     helperd("keyword");
     helperd("key2");
     
-    assertEquals(3, helperd("10 keyword 2").getName().size());
-    assertEquals(3, helperd("2 2 3").getName().size());
-    assertEquals(3, helperd("48 keyword key2").getName().size());
+    assertEquals(3, helperd("10 keyword 2").getNameList().size());
+    assertEquals(3, helperd("2 2 3").getNameList().size());
+    assertEquals(3, helperd("48 keyword key2").getNameList().size());
     
   }
   
@@ -96,9 +96,9 @@ public class AddKeywordsTest extends GeneratorIntegrationsTest {
     helpere("keyword");
     helpere("key2");
     
-    assertEquals(3, helpere("10 keyword 2").getINTs().size());
-    assertEquals(3, helpere("2 2 3").getINTs().size());
-    assertEquals(3, helpere("48 keyword key2").getINTs().size());
+    assertEquals(3, helpere("10 keyword 2").getINTList().size());
+    assertEquals(3, helpere("2 2 3").getINTList().size());
+    assertEquals(3, helpere("48 keyword key2").getINTList().size());
     
   }
   

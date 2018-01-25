@@ -34,7 +34,7 @@ import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsPar
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.Slf4jLog;
+import de.se_rwth.commons.logging.LogStub;
 
 
 /**
@@ -48,7 +48,7 @@ public class MCGrammarPrettyPrinterTest {
   
   @BeforeClass
   public static void setup() {
-    Slf4jLog.init();
+    LogStub.init();
     Log.enableFailQuick(false);
   }
 

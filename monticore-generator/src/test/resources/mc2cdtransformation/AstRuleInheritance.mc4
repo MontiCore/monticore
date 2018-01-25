@@ -23,7 +23,7 @@ grammar AstRuleInheritance {
 
    A;
 
-   ast A = dimensions:int;
+   astrule A = dimensions:int;
 
    C extends A;
 
@@ -31,11 +31,11 @@ grammar AstRuleInheritance {
 
    interface I;
 
-   ast I = varName:varType;
+   astrule I = varName:varType;
 
    interface I2 extends I;
 
-   ast I2 = varName2:varType2;
+   astrule I2 = varName2:varType2;
 
    Impl implements I2;
 

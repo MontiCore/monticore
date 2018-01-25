@@ -24,7 +24,7 @@ package mc.examples.lwc.odl;
 * This language defines instances of the EDL entities, 
 * including assignment of values to the properties.
 */
-grammar ODL extends mc.grammar.lexicals.Lexicals {
+grammar ODL extends mc.grammar.lexicals.ItTestLexicals {
      
   token INT  = ('0'..'9')+;  
   

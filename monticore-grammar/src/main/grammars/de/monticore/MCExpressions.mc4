@@ -1,0 +1,199 @@
+/*
+***************************************************************************************
+Copyright (c) 2017, MontiCore
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation and/or
+other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its contributors
+may be used to endorse or promote products derived from this software
+without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGE.
+***************************************************************************************
+*/
+package de.monticore;
+
+component grammar MCExpressions extends de.monticore.types.Types {
+	
+interface Expression;
+
+QualifiedNameExpression implements Expression <290> = 
+	Expression "." Name;
+	
+ThisExpression implements Expression <280> =
+	Expression "." ["this"];
+	
+SuperExpression implements Expression <270> =
+	Expression "." "super" SuperSuffix;
+	
+GenericInvocationExpression implements Expression <260> =
+	Expression "." PrimaryGenericInvocationExpression;
+	
+ArrayExpression implements Expression <250> =
+	Expression "[" indexExpression:Expression "]";
+	
+CallExpression implements Expression <240> =
+	Expression Arguments;
+	
+TypeCastExpression implements Expression <230> =
+	"(" Type ")" Expression;
+	
+SuffixExpression implements Expression <220> =
+	Expression
+        (   suffixOp:"++"
+        |   suffixOp:"--"
+        );
+        
+PrefixExpression implements Expression <210> =
+	(   prefixOp:"+"
+        |   prefixOp:"-"
+        |   prefixOp:"++"
+        |   prefixOp:"--"
+        )
+        Expression;
+        
+BooleanNotExpression implements Expression <200> =
+	"~"  Expression;
+	
+LogicalNotExpression implements Expression <190> =
+	"!" Expression;
+	
+MultExpression implements Expression <180> =
+	leftExpression:Expression
+        (   multiplicativeOp:"*"
+        |   multiplicativeOp:"/"
+        |   multiplicativeOp:"%"
+        )
+        rightExpression:Expression;
+        
+AddExpression implements Expression <170> =
+	leftExpression:Expression
+        (   additiveOp:"+"
+        |   additiveOp:"-"
+        )
+		rightExpression:Expression;
+
+ShiftExpression implements Expression <160> =
+        // It is not possible to define "<<", ">>" or ">>>"
+        // in one string. Parsing generic types like
+        // "List<List<String>>" is then not working.
+	leftExpression:Expression
+        (   shiftOp:"<" "<" {noSpace()}?
+          {_aNode.setShiftOp("<<");}     
+        |   shiftOp:">" ">" {noSpace()}? ">" {noSpace()}?      
+         {_aNode.setShiftOp(">>>");}      
+        |   shiftOp:">" ">" {noSpace()}?
+         {_aNode.setShiftOp(">>");}      
+        )
+        rightExpression:Expression;
+        
+ComparisonExpression implements Expression <150> =
+	leftExpression:Expression
+        (   comparison:"<="
+        |   comparison:">=" 
+        |   comparison:">" 
+        |   comparison:"<"
+        )
+        rightExpression:Expression;
+        
+InstanceofExpression implements Expression <140> =
+	Expression "instanceof" Type;
+	
+IdentityExpression implements Expression <130> =
+	leftExpression:Expression
+        (   identityTest:"=="
+        |   identityTest:"!="
+        )
+        rightExpression:Expression;
+        
+BinaryAndOpExpression implements Expression <120> =
+	leftExpression:Expression "&"  rightExpression:Expression;
+	
+BinaryXorOpExpression implements Expression <110> =
+	leftExpression:Expression "^"  rightExpression:Expression;
+	
+BinaryOrOpExpression implements Expression <100> =
+	leftExpression:Expression "|"  rightExpression:Expression;
+	
+BooleanAndOpExpression implements Expression <90> =
+	leftExpression:Expression "&&" rightExpression:Expression;
+	
+BooleanOrOpExpression implements Expression <80> =
+	leftExpression:Expression "||" rightExpression:Expression;
+	
+ConditionalExpression implements Expression <70> =
+	condition:Expression "?" trueExpression:Expression ":" falseExpression:Expression;
+	
+AssignmentExpression implements Expression <60> = <rightassoc>
+	leftExpression:Expression
+        (   assignment:"="
+        |   assignment:"+="
+        |   assignment:"-="
+        |   assignment:"*="
+        |   assignment:"/="
+        |   assignment:"&="
+        |   assignment:"|="
+        |   assignment:"^="
+        |   assignment:">>="
+        |   assignment:">>>="
+        |   assignment:"<<="
+        |   assignment:"%="
+        )
+        rightExpression:Expression;
+
+BracketExpression implements Expression <310>
+    =  "(" Expression ")";
+    
+PrimaryThisExpression implements Expression <320>
+	= "this";
+
+PrimarySuperExpression implements Expression <330>
+	= "super";
+	
+LiteralExpression implements Expression <340>
+    = Literal;
+    
+NameExpression implements Expression <350>
+    = Name;
+    
+ClassExpression implements Expression <360>
+    = ReturnType "." "class";
+   
+PrimaryGenericInvocationExpression implements Expression <370>
+    = TypeArguments GenericInvocationSuffix
+    ;
+    
+GenericInvocationSuffix
+    =   ["super"] SuperSuffix
+    |   ["this"] Arguments
+    |   Name Arguments
+    ;
+    
+SuperSuffix
+    =   Arguments
+    |   "." TypeArguments? Name Arguments?
+    ;
+
+Arguments
+    =   "(" (Expression || ",")* ")"
+    ;
+}

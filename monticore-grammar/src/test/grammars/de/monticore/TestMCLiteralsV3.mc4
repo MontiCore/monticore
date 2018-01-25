@@ -1,0 +1,21 @@
+package de.monticore;
+
+grammar TestMCLiteralsV3 extends
+	de.monticore.MCNumbers,
+	de.monticore.MCHexNumbers,
+	de.monticore.StringLiterals
+{
+
+// TODO MB: Remove the rule with new MC generator > 4.5.3
+A = "";
+
+ NumberList = "["  (Number | ",")* "]" ;
+ DecimalList = "["  (Decimal | ",")* "]" ;
+ IntegerList = "["  (Integer | ",")* "]" ;
+
+ // List with only optional separator (but also space separates)
+ // Thi scan be used to check end-detection for tokens
+ AnyTokenList = "[" (AnyToken ","?)* "]" ;
+ AnyToken = DecimalToken | CharToken | StringToken | HexadecimalToken ;
+
+}

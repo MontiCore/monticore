@@ -7,7 +7,7 @@
   <parent>
     <groupId>de.monticore.mojo</groupId>
     <artifactId>monticore-maven</artifactId>
-    <version>4.5.3</version>
+    <version>4.5.5.Gen</version>
   </parent>
 
   <artifactId>monticore-m2e</artifactId>
@@ -45,51 +45,12 @@
         <plugin>
           <groupId>org.eclipse.tycho</groupId>
           <artifactId>tycho-maven-plugin</artifactId>
-          <version>${tycho.plugin}</version>
-          <extensions>true</extensions>
         </plugin>
 
         <plugin>
           <groupId>org.eclipse.tycho</groupId>
           <artifactId>target-platform-configuration</artifactId>
-          <version>${tycho.plugin}</version>
-          <configuration>
-            <target>
-              <artifact>
-                <groupId>de.se_rwth.eclipse</groupId>
-                <artifactId>de.se_rwth.eclipse.targetplatform.luna</artifactId>
-                <version>1.0.2-SNAPSHOT</version>
-              </artifact>
-            </target>
-            <environments>
-              <environment>
-                <os>linux</os>
-                <ws>gtk</ws>
-                <arch>x86</arch>
-              </environment>
-              <environment>
-                <os>linux</os>
-                <ws>gtk</ws>
-                <arch>x86_64</arch>
-              </environment>
-              <environment>
-                <os>win32</os>
-                <ws>win32</ws>
-                <arch>x86</arch>
-              </environment>
-              <environment>
-                <os>win32</os>
-                <ws>win32</ws>
-                <arch>x86_64</arch>
-              </environment>
-              <environment>
-                <os>macosx</os>
-                <ws>cocoa</ws>
-                <arch>x86_64</arch>
-              </environment>
-            </environments>
-          </configuration>
-        </plugin>
+         </plugin>
 
         <plugin>
           <groupId>org.codehaus.mojo</groupId>

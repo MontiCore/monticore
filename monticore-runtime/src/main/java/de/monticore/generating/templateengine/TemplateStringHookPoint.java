@@ -23,10 +23,9 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
 
-import de.monticore.ast.ASTNode;
-
 import com.google.common.collect.Lists;
 
+import de.monticore.ast.ASTNode;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
@@ -36,7 +35,7 @@ public class TemplateStringHookPoint extends HookPoint {
   public TemplateStringHookPoint(String statement) throws IOException {
     super();
     template = new Template("template", new StringReader(statement),
-        new Configuration());
+        new Configuration(Configuration.VERSION_2_3_23));
   }
   
   @Override
@@ -46,7 +45,12 @@ public class TemplateStringHookPoint extends HookPoint {
 
   @Override
   public String processValue(TemplateController controller, List<Object> args) {
-    return controller.runInEngine(Lists.newArrayList(), template, null).toString();
+    return controller.runInEngine(args, template, null).toString();
+  }
+
+   @Override
+  public String processValue(TemplateController controller, ASTNode node, List<Object> args) {
+     return controller.runInEngine(args, template, node).toString();
   }
 
 }

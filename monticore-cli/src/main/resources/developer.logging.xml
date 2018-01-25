@@ -19,7 +19,7 @@
     </filter>
     <encoder>
       <pattern>
-        %date{yyyy-MM-dd HH:mm:ss} %-7([%level]) %logger{26} %message%n
+        %-7([%level]) %logger{26} %message%n
       </pattern>
     </encoder>
   </appender>

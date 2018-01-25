@@ -49,13 +49,13 @@ grammar TestTypes extends mc.grammars.literals.TestLiterals {
     /*======================= AST Definition =================================*/
     /*========================================================================*/
 
-    ast QualifiedName =
+    astrule QualifiedName =
         method public String toString(){
           return de.se_rwth.commons.Names.getQualifiedName(
-              this.getParts());
+              this.getPartList());
         };
 
-    ast PrimitiveType =
+    astrule PrimitiveType =
         method public String toString(){
           if (isBoolean()){
             return "boolean";
@@ -108,9 +108,9 @@ grammar TestTypes extends mc.grammars.literals.TestLiterals {
           return this.getPrimitive()==ASTConstantsTestTypes.DOUBLE;
         };
 
-    ast ReferenceType astextends ASTType;
+    astrule ReferenceType astextends ASTType;
 
-    ast ArrayType astimplements ASTReferenceType =
+    astrule ArrayType astimplements ASTReferenceType =
         componentType:ASTType
         dimensions:int;
 
@@ -146,7 +146,7 @@ grammar TestTypes extends mc.grammars.literals.TestLiterals {
         @attribute parts A List of ASTStringList concludes all name parts
     */
     QualifiedName =
-        parts:(Name& || ".")+;
+        part:(Name& || ".")+;
 
     /** The ASTAbstractArrayType represents array of Type
     */

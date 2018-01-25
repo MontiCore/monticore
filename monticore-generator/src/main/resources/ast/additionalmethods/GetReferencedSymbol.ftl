@@ -30,7 +30,7 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
-${tc.signature("ast", "attributeName", "symbolClass")}
+${tc.signature("method", "ast", "attributeName", "symbolClass")}
   if ((${attributeName} != null) && enclosingScopeIsPresent()) {
     return enclosingScope.get().resolve(${attributeName}, ${symbolClass}.KIND);
   }

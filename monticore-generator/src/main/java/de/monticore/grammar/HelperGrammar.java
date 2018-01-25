@@ -20,6 +20,9 @@
 package de.monticore.grammar;
 
 import com.google.common.collect.Lists;
+
+import de.monticore.codegen.GeneratorHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.se_rwth.commons.JavaNamesHelper;
@@ -90,6 +93,24 @@ public class HelperGrammar {
     return name;
   }
   
+  public static String getListName(ASTNonTerminal a) {
+    
+    String name;
+    if (a.getUsageName().isPresent()) {
+      name = a.getUsageName().get();
+      if (name.endsWith(TransformationHelper.LIST_SUFFIX)) {
+        name = name.substring(0, name.length()-TransformationHelper.LIST_SUFFIX.length())
+            + GeneratorHelper.GET_SUFFIX_LIST;
+      }
+    }
+    else {
+      // Use Nonterminal name as attribute name starting with lower case
+      // latter
+      name = a.getName() + GeneratorHelper.GET_SUFFIX_LIST;
+    }
+    return name;
+  }
+
   public static boolean isIterated(ASTNonTerminal a) {
     return ((a.getIteration() == ASTConstantsGrammar.PLUS)
         || (a.getIteration() == ASTConstantsGrammar.STAR));

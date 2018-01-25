@@ -35,10 +35,12 @@ ${signature("className", "ruleSymbol")}
 <#assign ruleName = ruleSymbol.getName()?cap_first>
 
 <#-- Copyright -->
-${tc.defineHookPoint("JavaCopyright")}
+${defineHookPoint("JavaCopyright")}
 
 <#-- set package -->
 package ${genHelper.getTargetPackage()};
+
+import java.util.Optional;
 
 public class ${className} extends de.monticore.symboltable.CommonSymbol {
 
@@ -47,5 +49,9 @@ public class ${className} extends de.monticore.symboltable.CommonSymbol {
   public ${className}(String name) {
     super(name, KIND);
   }
+
+  ${includeArgs("symboltable.symbols.GetAstNodeMethod", ruleName)}
+
+  ${includeArgs("symboltable.SymbolBuilder", className)}
 
 }

@@ -33,6 +33,12 @@ SUCH DAMAGE.
 package de.monticore.literals;
 
 /**
+ *
+ *
+ * DEPRECATED: There are new versions of these nonterminals
+ * that can be found in MCLiterals.mc4 respectively its subgrammars
+ * (the grammars are almost directly replabceable)
+ *
  * This grammar defines Java compliant literals. The scope of this grammar is to
  * ease the reuse of literals structures in Java-like sublanguages, e.g., by 
  * grammar inheritance or grammar embedment.
@@ -43,7 +49,7 @@ package de.monticore.literals;
  * Version Aug. 31rd, 2015
 */
 
-grammar Literals extends de.monticore.lexicals.Lexicals {
+component grammar Literals extends de.monticore.lexicals.Lexicals {
 
   /*========================================================================*/
   /*======================= AST DEFINITIONS ================================*/

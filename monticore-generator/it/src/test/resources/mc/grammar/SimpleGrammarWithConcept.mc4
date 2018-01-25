@@ -21,12 +21,13 @@ package mc.grammar;
 
 grammar SimpleGrammarWithConcept {
 
-    concept antlr {
-      parser java {
-        boolean first = true;
-      }
+  concept antlr {
+    parserjava {
+      boolean first = true;
     }
-    
-    A = "Hello";
-    
- }
+  }
+  
+  A = "Hello";   
+  
+}
+ 

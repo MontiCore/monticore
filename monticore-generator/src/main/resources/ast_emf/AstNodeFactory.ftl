@@ -34,12 +34,13 @@ ${tc.signature("ast", "astImports", "astClasses")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
   
 <#-- Copyright -->
-${tc.defineHookPoint("JavaCopyright")}
+${defineHookPoint("JavaCopyright")}
 
 <#-- set package -->
 package ${genHelper.getAstPackage()};
 
 import java.util.ArrayList;
+import java.util.Optional;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
