@@ -70,7 +70,7 @@ public class InheritedAttributesTranslation implements
         .entrySet()) {
       for (ASTNonTerminal nonTerminal : entry.getValue()) {
         ASTCDAttribute cdAttribute = createCDAttribute(link.source(), entry.getKey());
-        link.target().getCDAttributes().add(cdAttribute);
+        link.target().getCDAttributeList().add(cdAttribute);
         new Link<>(nonTerminal, cdAttribute, link);
       }
     }
@@ -81,7 +81,7 @@ public class InheritedAttributesTranslation implements
         link.source()).entrySet()) {
       for (MCProdAttributeSymbol attributeInAST : entry.getValue()) {
         ASTCDAttribute cdAttribute = createCDAttribute(link.source(), entry.getKey());
-        link.target().getCDAttributes().add(cdAttribute);
+        link.target().getCDAttributeList().add(cdAttribute);
         if (attributeInAST.getAstNode().isPresent()) {
           new Link<>(attributeInAST.getAstNode().get(), cdAttribute, link);
         }

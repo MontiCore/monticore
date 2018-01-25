@@ -61,7 +61,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
   */
   MCGrammar =
     ("package" package:(Name& || ".")+ ";")?
-  	(importStatements:MCImportStatement)*
+  	(importStatement:MCImportStatement)*
 
     (["component"])? "grammar" Name
       ("extends" supergrammar:(GrammarReference || ",")+ )?
@@ -89,7 +89,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
          )*
       "}" ;
 
-  MCImportStatement = "import" importList:(Name& || ".")+ ("." star:["*"])? ";" ;
+  MCImportStatement = "import" import:(Name& || ".")+ ("." star:["*"])? ";" ;
 
   // One OptionBlock and one StartRule only
   ast MCGrammar =
@@ -179,7 +179,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
       |
         "{" initAction:Action "}"
       )?
-      "=" alts:(LexAlt || "|")+
+      "=" alt:(LexAlt || "|")+
 
       (":"  ("->" lexerCommand:Name)? ("{" endAction:Action  "}")? (variable:Name&
         ("->" type:( Name& || ".")+ (":" "{" block:Action "}" )? )? )? // Statements
@@ -219,7 +219,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
     |
       "astextends" aSTSuperInterface:(GenericType || ",")+
     )*
-   ("=" alts:(Alt || "|")+ )? ";";
+   ("=" alt:(Alt || "|")+ )? ";";
 
 
   /** An ASTAbstractprod represents an abstract production in a context free grammar
@@ -240,7 +240,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
     |
       "astimplements" aSTSuperInterface:(GenericType || ",")+
     )* 
-    ("=" alts:(Alt || "|")+ )? ";";
+    ("=" alt:(Alt || "|")+ )? ";";
 
   /** A rule represents a rule (production) in a context free grammar.
   @attribute name Name of the rule
@@ -265,7 +265,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
     )*
 
     ("{" Action "}")?    // Statements
-    ("=" alts:(Alt || "|")+ )? ";";
+    ("=" (Alt || "|")+ )? ";";
 
   ast ClassProd =
     method public String toString() { return name; } ;
@@ -311,7 +311,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
   @attribute Components List of the rule components of this alternative
   */
   Alt =
-    ([rightAssoc:"<rightassoc>"])? components:RuleComponent* ;
+    ([rightAssoc:"<rightassoc>"])? component:RuleComponent* ;
 
 
   /** RuleComponents are parts of the alternatives
@@ -348,7 +348,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
       )
       ":"
     )?
-    alts:(Alt || "|")+ ")"
+    alt:(Alt || "|")+ ")"
     (iteration:["?"|"*"|"+"])?;
 
 
@@ -479,7 +479,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
       (["static"])?
       returnType:GenericType Name
       "(" (MethodParameter || ",")* ")"
-      ("throws" exceptions:(GenericType || ",")+)?
+      ("throws" exception:(GenericType || ",")+)?
       "{" body:Action "}" ; // Statements
 
 
@@ -516,21 +516,13 @@ component grammar Grammar extends de.monticore.literals.Literals {
 
   ast GenericType =
     Dimension:int
-    method public String toString() {
-      return  de.monticore.grammar.HelperGrammar.printGenericType(this);
-    }
-    method public String getTypeName() {
-      return de.monticore.grammar.HelperGrammar.printGenericType(this);
-    }
-    method public boolean isExternal() {
-        return true;
-    };
+  ;
 
   // ------------------------------------------------------------------------------
   // Lexer
 
   LexAlt =
-    (lexComponents:LexComponent)*;
+    (lexComponent:LexComponent)*;
 
   interface LexComponent;
 
@@ -544,7 +536,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
       )
       ":"
      )?
-     lexAlts:(LexAlt || "|")+ ")"
+     lexAlt:(LexAlt || "|")+ ")"
      (iteration:["?"|"*"|"+"])?;
 
   LexCharRange implements LexComponent =

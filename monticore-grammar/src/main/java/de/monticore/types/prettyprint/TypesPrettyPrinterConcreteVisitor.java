@@ -70,7 +70,7 @@ public class TypesPrettyPrinterConcreteVisitor extends LiteralsPrettyPrinterConc
    */
   @Override
   public void visit(ASTQualifiedName a) {
-    getPrinter().print(Names.getQualifiedName(a.getParts()));
+    getPrinter().print(Names.getQualifiedName(a.getPartList()));
   }
     
   /**
@@ -157,7 +157,7 @@ public class TypesPrettyPrinterConcreteVisitor extends LiteralsPrettyPrinterConc
   @Override
   public void visit(ASTSimpleReferenceType a) {
     // print qualified name
-    getPrinter().print(Names.getQualifiedName(a.getNames()));
+    getPrinter().print(Names.getQualifiedName(a.getNameList()));
     // optional type arguments are printed automatically by visitor concept
   }
   
@@ -168,7 +168,7 @@ public class TypesPrettyPrinterConcreteVisitor extends LiteralsPrettyPrinterConc
    */
   @Override
   public void handle(ASTComplexReferenceType a) {
-    printList(a.getSimpleReferenceTypes().iterator(), ".");
+    printList(a.getSimpleReferenceTypeList().iterator(), ".");
   }
   
   /**
@@ -179,7 +179,7 @@ public class TypesPrettyPrinterConcreteVisitor extends LiteralsPrettyPrinterConc
   @Override
   public void handle(ASTTypeArguments a) {
     getPrinter().print("<");
-    printList(a.getTypeArguments().iterator(), ", ");
+    printList(a.getTypeArgumentList().iterator(), ", ");
     getPrinter().print(">");
   }
   
@@ -191,13 +191,13 @@ public class TypesPrettyPrinterConcreteVisitor extends LiteralsPrettyPrinterConc
   @Override
   public void handle(ASTWildcardType a) {
     getPrinter().print("?");
-    if (a.getUpperBound().isPresent()) {
+    if (a.isUpperBoundPresent()) {
       getPrinter().print(" extends ");
-      a.getUpperBound().get().accept(getRealThis());
+      a.getUpperBound().accept(getRealThis());
     }
-    else if (a.getLowerBound().isPresent()) {
+    else if (a.isLowerBoundPresent()) {
       getPrinter().print(" super ");
-      a.getLowerBound().get().accept(getRealThis());
+      a.getLowerBound().accept(getRealThis());
     }
   }
   
@@ -208,9 +208,9 @@ public class TypesPrettyPrinterConcreteVisitor extends LiteralsPrettyPrinterConc
    */
   @Override
   public void handle(ASTTypeParameters a) {
-    if (!a.getTypeVariableDeclarations().isEmpty()) {
+    if (!a.getTypeVariableDeclarationList().isEmpty()) {
       getPrinter().print("<");
-      printList(a.getTypeVariableDeclarations().iterator(), ", ");
+      printList(a.getTypeVariableDeclarationList().iterator(), ", ");
       getPrinter().print(">");
     }
   }
@@ -223,9 +223,9 @@ public class TypesPrettyPrinterConcreteVisitor extends LiteralsPrettyPrinterConc
   @Override
   public void handle(ASTTypeVariableDeclaration a) {
     getPrinter().print(a.getName());
-    if (a.getUpperBounds() != null && !a.getUpperBounds().isEmpty()) {
+    if (a.getUpperBoundList() != null && !a.getUpperBoundList().isEmpty()) {
       getPrinter().print(" extends ");
-      printList(a.getUpperBounds().iterator(), "& ");
+      printList(a.getUpperBoundList().iterator(), "& ");
     }
   }
     

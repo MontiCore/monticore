@@ -46,7 +46,7 @@ import java.util.Optional;
 
 public interface ${ast.getName()} extends ${tc.include("ast.AstExtendedInterfaces")} ${genHelper.getASTNodeBaseType()} {
   <#-- generate all methods -->
-  <#list ast.getCDMethods() as method>
+  <#list ast.getCDMethodList() as method>
     ${tc.includeArgs("ast.ClassMethod", [method, ast])}
   </#list>
 

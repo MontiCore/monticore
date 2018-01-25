@@ -59,7 +59,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
   }
   
   public String getAstAttributeValue(ASTCDAttribute attribute) {
-    if (attribute.getValue().isPresent()) {
+    if (attribute.isValuePresent()) {
       return attribute.printValue();
     }
     if (isOptional(attribute)) {
@@ -88,13 +88,13 @@ public class AstGeneratorHelper extends GeneratorHelper {
     }
     String className = AST_PREFIX
         + clazz.getName().substring(0, clazz.getName().indexOf(AST_BUILDER));
-    return cdDefinition.getCDClasses().stream()
+    return cdDefinition.getCDClassList().stream()
         .filter(c -> className.equals(GeneratorHelper.getPlainName(c))).findAny()
         .isPresent();
   }
   
   public Optional<ASTCDClass> getASTBuilder(ASTCDClass clazz) {
-    return getCdDefinition().getCDClasses().stream()
+    return getCdDefinition().getCDClassList().stream()
         .filter(c -> c.getName().equals(getNameOfBuilderClass(clazz))).findAny();
   }
   
@@ -110,7 +110,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
   }
   
   public static boolean isSuperClassExternal(ASTCDClass clazz) {
-    return clazz.superclassIsPresent()
+    return clazz.isSuperclassPresent()
         && hasStereotype(clazz, MC2CDStereotypes.EXTERNAL_TYPE.toString())
         && getStereotypeValues(clazz, MC2CDStereotypes.EXTERNAL_TYPE.toString())
             .contains(clazz.printSuperClass());
@@ -144,7 +144,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
   }
   
   public static String getSuperClassForBuilder(ASTCDClass clazz) {
-    if (!clazz.getSuperclass().isPresent()) {
+    if (!clazz.isSuperclassPresent()) {
       return "";
     }
     String superClassName = Names.getSimpleName(clazz.printSuperClass());
@@ -158,10 +158,10 @@ public class AstGeneratorHelper extends GeneratorHelper {
       return false;
     }
     String methodName = GeneratorHelper.getPlainSetter(cdAttribute);
-    if (clazz.getCDMethods().stream()
-        .filter(m -> methodName.equals(m.getName()) && m.getCDParameters().size() == 1
+    if (clazz.getCDMethodList().stream()
+        .filter(m -> methodName.equals(m.getName()) && m.getCDParameterList().size() == 1
             && compareAstTypes(typeName,
-                TypesHelper.printSimpleRefType(m.getCDParameters().get(0).getType())))
+                TypesHelper.printSimpleRefType(m.getCDParameterList().get(0).getType())))
         .findAny()
         .isPresent()) {
       return false;
@@ -194,8 +194,8 @@ public class AstGeneratorHelper extends GeneratorHelper {
   }
   
   public static boolean isBuilderClassAbstarct(ASTCDClass astType) {
-    return (astType.getSuperclass().isPresent() && isSuperClassExternal(astType))
-        || (astType.getModifier().isPresent() && astType.getModifier().get().isAbstract()
+    return (astType.getSuperclassOpt().isPresent() && isSuperClassExternal(astType))
+        || (astType.getModifierOpt().isPresent() && astType.getModifierOpt().get().isAbstract()
             && !isSupertypeOfHWType(astType.getName()));
   }
   

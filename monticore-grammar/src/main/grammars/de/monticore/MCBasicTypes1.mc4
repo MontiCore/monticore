@@ -55,12 +55,12 @@ component grammar MCBasicTypes1 extends de.monticore.MCBasics {
         @attribute parts A List of ASTStringList concludes all name parts
     */
     QualifiedName =
-        parts:(Name || ".")+;
+        part:(Name || ".")+;
 
     ast QualifiedName =
         method public String getQName(){
           return de.se_rwth.commons.Names.getQualifiedName(
-              this.getParts());
+              this.getPartList());
         };
     
 
@@ -116,7 +116,7 @@ component grammar MCBasicTypes1 extends de.monticore.MCBasics {
     ast NameAsReferenceType =
         method public String getQName(){
           return de.se_rwth.commons.Names.getQualifiedName(
-              this.getNames());
+              this.getNameList());
         };
 
 

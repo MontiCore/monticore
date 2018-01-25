@@ -54,7 +54,7 @@ while (grammarIterator.hasNext()) {
       astGrammar = astGrammar.get()
 
       // start reporting
-      grammarName = Names.getQualifiedName(astGrammar.getPackage(), astGrammar.getName())
+      grammarName = Names.getQualifiedName(astGrammar.getPackageList(), astGrammar.getName())
       Reporting.on(grammarName)
  	  Reporting.reportModelStart(astGrammar, grammarName, "")
       Reporting.reportParseInputFile(input, grammarName)
@@ -86,7 +86,7 @@ while (grammarIterator.hasNext()) {
 // local super grammars etc.
 for (astGrammar in getParsedGrammars()) {
   // make sure to use the right report manager again
-  Reporting.on(Names.getQualifiedName(astGrammar.getPackage(), astGrammar.getName()))
+  Reporting.on(Names.getQualifiedName(astGrammar.getPackageList(), astGrammar.getName()))
   reportGrammarCd(astGrammar, globalScope, out)
 
   astClassDiagram = getCDOfParsedGrammar(astGrammar)

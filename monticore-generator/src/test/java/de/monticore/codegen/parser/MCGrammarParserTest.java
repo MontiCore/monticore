@@ -63,9 +63,9 @@ public class MCGrammarParserTest {
     assertTrue(result.isPresent());
     ASTMCGrammar grammar = result.get();
     assertEquals("Statechart", grammar.getName());
-    assertEquals(7, grammar.getClassProds().size());
-    assertEquals(3, grammar.getExternalProds().size());
-    assertEquals(1, grammar.getInterfaceProds().size());
+    assertEquals(7, grammar.getClassProdList().size());
+    assertEquals(3, grammar.getExternalProdList().size());
+    assertEquals(1, grammar.getInterfaceProdList().size());
     GrammarTransformer.transform(grammar);
   }
   
@@ -186,15 +186,15 @@ public class MCGrammarParserTest {
     assertTrue(result.isPresent());
 
     ASTMCGrammar grammar = result.get();
-    assertEquals(3, grammar.getClassProds().size());
+    assertEquals(3, grammar.getClassProdList().size());
 
-    ASTClassProd transition =  grammar.getClassProds().get(2);
-    ASTNonTerminal fromState = (ASTNonTerminal) transition.getAlts().get(0).getComponents().get(0);
-    assertTrue(fromState.getReferencedSymbol().isPresent());
-    assertEquals("State", fromState.getReferencedSymbol().get());
+    ASTClassProd transition =  grammar.getClassProdList().get(2);
+    ASTNonTerminal fromState = (ASTNonTerminal) transition.getAltList().get(0).getComponentList().get(0);
+    assertTrue(fromState.isReferencedSymbolPresent());
+    assertEquals("State", fromState.getReferencedSymbol());
 
-    ASTNonTerminal toState = (ASTNonTerminal) transition.getAlts().get(0).getComponents().get(0);
-    assertTrue(toState.getReferencedSymbol().isPresent());
-    assertEquals("State", toState.getReferencedSymbol().get());
+    ASTNonTerminal toState = (ASTNonTerminal) transition.getAltList().get(0).getComponentList().get(0);
+    assertTrue(toState.isReferencedSymbolPresent());
+    assertEquals("State", toState.getReferencedSymbol());
   }
 }

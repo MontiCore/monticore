@@ -60,8 +60,8 @@ public class MCGrammarParser {
               + "the grammar (without its file extension).");
         }
         
-        if(!packageName.endsWith(Names.getQualifiedName(ast.get().getPackage()))){
-          Log.error("0xA4004 The package declaration " + Names.getQualifiedName(ast.get().getPackage()) + " of the grammar must not differ from the "
+        if(!packageName.endsWith(Names.getQualifiedName(ast.get().getPackageList()))){
+          Log.error("0xA4004 The package declaration " + Names.getQualifiedName(ast.get().getPackageList()) + " of the grammar must not differ from the "
               + "package of the grammar file.");
         }
         

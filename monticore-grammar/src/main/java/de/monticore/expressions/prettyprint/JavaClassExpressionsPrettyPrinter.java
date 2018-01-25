@@ -59,19 +59,19 @@ public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVi
   @Override
   public void handle(ASTSuperSuffix node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    if (node.getName().isPresent()) {
+    if (node.isNamePresent()) {
       getPrinter().print(".");
-      if (node.getETypeArguments().isPresent()) {
-        node.getETypeArguments().get().accept(getRealThis());
+      if (node.isETypeArgumentsPresent()) {
+        node.getETypeArguments().accept(getRealThis());
       }
-      getPrinter().print(node.getName().get());
-      if (node.getArguments().isPresent()) {
-        node.getArguments().get().accept(getRealThis());
+      getPrinter().print(node.getName());
+      if (node.isArgumentsPresent()) {
+        node.getArguments().accept(getRealThis());
         ;
       }
     }
     else {
-      node.getArguments().get().accept(getRealThis());
+      node.getArguments().accept(getRealThis());
       ;
     }
     CommentPrettyPrinter.printPostComments(node, getPrinter());
@@ -107,19 +107,19 @@ public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVi
   @Override
   public void handle(ASTGenericInvocationSuffix node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    if(node.getSuperSuffix().isPresent()) {
+    if(node.isSuperSuffixPresent()) {
       if (node.isSuper()) {
         getPrinter().print("super");
       }
-      node.getSuperSuffix().get().accept(getRealThis());;
-    }else if(node.getName().isPresent()) {
-      getPrinter().print(node.getName().get());
-      node.getArguments().get().accept(getRealThis());
+      node.getSuperSuffix().accept(getRealThis());;
+    }else if(node.isNamePresent()) {
+      getPrinter().print(node.getName());
+      node.getArguments().accept(getRealThis());
     }else {
       if (node.isThis()) {
         getPrinter().print("this");
       }
-      node.getArguments().get().accept(getRealThis());
+      node.getArguments().accept(getRealThis());
       CommentPrettyPrinter.printPostComments(node, getPrinter());
     }
     
@@ -155,8 +155,8 @@ public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVi
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     getPrinter().print("(");
     int count = 0;
-    if (!node.getExpressions().isEmpty()) {
-      for (ASTExpression ast : node.getExpressions()) {
+    if (!node.isEmptyExpressions()) {
+      for (ASTExpression ast : node.getExpressionList()) {
         if (count > 0) {
           getPrinter().print(",");
         }

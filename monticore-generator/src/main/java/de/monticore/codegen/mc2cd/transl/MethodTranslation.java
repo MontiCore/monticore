@@ -66,15 +66,15 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
     
     for (Link<ASTASTRule, ASTCDClass> link : rootLink.getLinks(ASTASTRule.class,
         ASTCDClass.class)) {
-      for (ASTMethod method : link.source().getMethods()) {
-        link.target().getCDMethods().add(translateASTMethodToASTCDMethod(method));
+      for (ASTMethod method : link.source().getMethodList()) {
+        link.target().getCDMethodList().add(translateASTMethodToASTCDMethod(method));
       }
     }
     
     for (Link<ASTASTRule, ASTCDInterface> link : rootLink.getLinks(ASTASTRule.class,
         ASTCDInterface.class)) {
-      for (ASTMethod method : link.source().getMethods()) {
-        link.target().getCDMethods().add(translateASTMethodToASTCDMethod(method));
+      for (ASTMethod method : link.source().getMethodList()) {
+        link.target().getCDMethodList().add(translateASTMethodToASTCDMethod(method));
       }
     }
     
@@ -87,13 +87,13 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
     cdMethod.setName(method.getName());
     String dotSeparatedName = TransformationHelper.typeReferenceToString(method.getReturnType());
     cdMethod.setReturnType(TransformationHelper.createSimpleReference(dotSeparatedName));
-    for (ASTMethodParameter param: method.getMethodParameters()) {
+    for (ASTMethodParameter param: method.getMethodParameterList()) {
       String typeName = TransformationHelper.typeReferenceToString(param.getType());
-      cdMethod.getCDParameters().add(TransformationHelper.createParameter(typeName, param.getName()));
+      cdMethod.getCDParameterList().add(TransformationHelper.createParameter(typeName, param.getName()));
     }
     if (method.getBody() instanceof ASTAction) {
       StringBuilder code = new StringBuilder();
-      for (ASTBlockStatement action: ((ASTAction) method.getBody()).getBlockStatements()) {
+      for (ASTBlockStatement action: ((ASTAction) method.getBody()).getBlockStatementList()) {
         code.append(GeneratorHelper.getJavaPrettyPrinter().prettyprint(action));
       }
       HookPoint methodBody = new StringHookPoint(code.toString());

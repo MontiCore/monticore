@@ -52,7 +52,7 @@ public class RemoveOverriddenAttributesTranslation implements
           .filter(attributeLink -> isOverridden(attributeLink.source(), classLink))
           .filter(attributeLink -> isNotInherited(attributeLink.target()))
           .map(Link::target)
-          .forEach(classLink.target().getCDAttributes()::remove);
+          .forEach(classLink.target().getCDAttributeList()::remove);
     }
     return rootLink;
   }
@@ -64,13 +64,13 @@ public class RemoveOverriddenAttributesTranslation implements
     attributesInASTLinkingToSameClass.remove(source);
 
     boolean matchByUsageName = usageName.isPresent() && attributesInASTLinkingToSameClass.stream()
-        .map(ASTAttributeInAST::getName)
+        .map(ASTAttributeInAST::getNameOpt)
         .filter(Optional::isPresent)
         .map(Optional::get)
         .anyMatch(usageName.get()::equals);
 
     boolean matchByTypeName = !usageName.isPresent() && attributesInASTLinkingToSameClass.stream()
-        .filter(attributeInAST -> !attributeInAST.getName().isPresent())
+        .filter(attributeInAST -> !attributeInAST.getNameOpt().isPresent())
         .map(ASTAttributeInAST::getGenericType)
         .map(ASTGenericType::getTypeName)
         .anyMatch(getName(source).orElse("")::equals);
@@ -87,15 +87,15 @@ public class RemoveOverriddenAttributesTranslation implements
   }
 
   private boolean isNotInherited(ASTCDAttribute cdAttribute) {
-    Optional<ASTModifier> modifier = cdAttribute.getModifier();
+    Optional<ASTModifier> modifier = cdAttribute.getModifierOpt();
     if (!modifier.isPresent()) {
       return true;
     }
-    Optional<ASTStereotype> stereotype = modifier.get().getStereotype();
+    Optional<ASTStereotype> stereotype = modifier.get().getStereotypeOpt();
     if (!stereotype.isPresent()) {
       return true;
     }
-    return stereotype.get().getValues().stream()
+    return stereotype.get().getValueList().stream()
         .map(ASTStereoValue::getName)
         .noneMatch(MC2CDStereotypes.INHERITED.toString()::equals);
   }

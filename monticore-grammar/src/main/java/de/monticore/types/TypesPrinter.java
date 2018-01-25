@@ -217,8 +217,8 @@ public class TypesPrinter {
   }
   
   protected String doPrintTypeParameters(ASTTypeParameters params) {
-    if (params != null && params.getTypeVariableDeclarations() != null && !params.getTypeVariableDeclarations().isEmpty()) {
-      return "<" + doPrintTypeVariableDeclarationList(params.getTypeVariableDeclarations()) + ">";
+    if (params != null && params.getTypeVariableDeclarationList() != null && !params.getTypeVariableDeclarationList().isEmpty()) {
+      return "<" + doPrintTypeVariableDeclarationList(params.getTypeVariableDeclarationList()) + ">";
     }
     return "";
   }
@@ -259,9 +259,9 @@ public class TypesPrinter {
     StringBuilder ret = new StringBuilder();
     if (decl != null) {
       ret.append(decl.getName());
-      if (decl.getUpperBounds() != null && !decl.getUpperBounds().isEmpty()) {
+      if (decl.getUpperBoundList() != null && !decl.getUpperBoundList().isEmpty()) {
         String sep = " extends ";
-        for (ASTType type : decl.getUpperBounds()) {
+        for (ASTType type : decl.getUpperBoundList()) {
           ret.append(sep + doPrintType(type));
           sep = " & ";
         }
@@ -384,11 +384,11 @@ public class TypesPrinter {
   
   protected String doPrintSimpleReferenceType(ASTSimpleReferenceType type) {
     if (type != null) {
-      if(type.getTypeArguments().isPresent()) {
-        return Names.getQualifiedName(type.getNames()) + doPrintTypeArguments(type.getTypeArguments().get());
+      if(type.isTypeArgumentsPresent()) {
+        return Names.getQualifiedName(type.getNameList()) + doPrintTypeArguments(type.getTypeArguments());
       }
       else {
-        return Names.getQualifiedName(type.getNames());
+        return Names.getQualifiedName(type.getNameList());
       }
     }
 
@@ -407,8 +407,8 @@ public class TypesPrinter {
   
   protected String doPrintComplexReferenceType(ASTComplexReferenceType type) {
     String ret = "";
-    if (type != null && type.getSimpleReferenceTypes() != null) {
-      return doPrintSimpleReferenceTypeList(type.getSimpleReferenceTypes());
+    if (type != null && type.getSimpleReferenceTypeList() != null) {
+      return doPrintSimpleReferenceTypeList(type.getSimpleReferenceTypeList());
     }
     return ret;
   }
@@ -445,8 +445,8 @@ public class TypesPrinter {
   }
   
   protected String doPrintTypeArguments(ASTTypeArguments args) {
-    if (args != null && args.getTypeArguments() != null && !args.getTypeArguments().isEmpty()) {
-      return "<" + doPrintTypeArgumentList(args.getTypeArguments()) + ">";
+    if (args != null && args.getTypeArgumentList() != null && !args.getTypeArgumentList().isEmpty()) {
+      return "<" + doPrintTypeArgumentList(args.getTypeArgumentList()) + ">";
     }
     return "";
   }
@@ -487,11 +487,11 @@ public class TypesPrinter {
     StringBuilder ret = new StringBuilder();
     if (type != null) {
       ret.append("?");
-      if (type.getUpperBound().isPresent()) {
-        ret.append(" extends " + doPrintType(type.getUpperBound().get()));
+      if (type.isUpperBoundPresent()) {
+        ret.append(" extends " + doPrintType(type.getUpperBound()));
       }
-      else if (type.getLowerBound().isPresent()) {
-        ret.append(" super " + doPrintType(type.getLowerBound().get()));
+      else if (type.isLowerBoundPresent()) {
+        ret.append(" super " + doPrintType(type.getLowerBound()));
       }
     }
     return ret.toString();
@@ -511,15 +511,15 @@ public class TypesPrinter {
 
   protected String doPrintSimpleReferenceTypeWithoutTypeArguments(ASTSimpleReferenceType type) {
     if (type != null) {
-      return Names.getQualifiedName(type.getNames());
+      return Names.getQualifiedName(type.getNameList());
     }
 
     return "";
   }
 
   protected String doPrintComplexReferenceTypeWithoutTypeArguments(ASTComplexReferenceType type) {
-    if (type != null && type.getSimpleReferenceTypes() != null) {
-      return doPrintSimpleReferenceTypeListWithoutTypeArguments(type.getSimpleReferenceTypes());
+    if (type != null && type.getSimpleReferenceTypeList() != null) {
+      return doPrintSimpleReferenceTypeListWithoutTypeArguments(type.getSimpleReferenceTypeList());
     }
     return "";
   }

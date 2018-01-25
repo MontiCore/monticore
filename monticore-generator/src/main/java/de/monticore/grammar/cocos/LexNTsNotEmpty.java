@@ -45,14 +45,14 @@ public class LexNTsNotEmpty implements GrammarASTLexProdCoCo {
   
   @Override
   public void check(ASTLexProd a) {
-    for (ASTLexAlt alt : a.getAlts()) {
-      if (alt.getLexComponents().isEmpty()) {
+    for (ASTLexAlt alt : a.getAltList()) {
+      if (alt.getLexComponentList().isEmpty()) {
         Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName()),
             a.get_SourcePositionStart());
         return;
       }
       else {
-        for (ASTLexComponent rc : alt.getLexComponents()) {
+        for (ASTLexComponent rc : alt.getLexComponentList()) {
           if (rc instanceof ASTLexBlock) {
             if (((ASTLexBlock) rc).getIteration() == ASTConstantsGrammar.PLUS
                 || ((ASTLexBlock) rc).getIteration() == ASTConstantsGrammar.DEFAULT) {

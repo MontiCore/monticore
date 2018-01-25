@@ -51,7 +51,7 @@ public class RegExpBuilder implements Grammar_WithConceptsVisitor {
   @Override
   public void handle(ASTLexProd a) {
     String del = "";
-    for (ASTLexAlt alt: a.getAlts()) {
+    for (ASTLexAlt alt: a.getAltList()) {
       b.append(del);
       alt.accept(getRealThis());
       del = "|";
@@ -70,7 +70,7 @@ public class RegExpBuilder implements Grammar_WithConceptsVisitor {
     
     // Visit all alternatives
     String del = "";
-    for (ASTLexAlt alt: a.getLexAlts()) {
+    for (ASTLexAlt alt: a.getLexAltList()) {
       b.append(del);
       alt.accept(getRealThis());
       del = "|";

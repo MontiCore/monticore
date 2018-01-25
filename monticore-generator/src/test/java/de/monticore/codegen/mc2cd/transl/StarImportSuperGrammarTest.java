@@ -40,7 +40,7 @@ public class StarImportSuperGrammarTest {
   
   @Test
   public void testStarImport() {
-    ASTImportStatement importStatement = cdCompilationUnit.getImportStatements().get(0);
+    ASTImportStatement importStatement = cdCompilationUnit.getImportStatementList().get(0);
     assertTrue(importStatement.isStar());
     assertEquals("mc2cdtransformation", importStatement.getImportList().get(0));
     assertEquals("Supergrammar", importStatement.getImportList().get(1));

@@ -41,11 +41,11 @@ ${tc.signature("ast", "astType")}
     <#assign abstract = "abstract">
   </#if>
   <#assign extends = "">
-  <#if astType.getSuperclass().isPresent() && !genHelper.isSuperClassExternal(astType)>
+  <#if astType.isSuperclassPresent() && !genHelper.isSuperClassExternal(astType)>
     <#assign extends = "extends " + genHelper.getSuperClassName(astType) + "." + genHelper.getSuperClassForBuilder(astType) + "Builder">
   </#if>
   public ${abstract} static class ${ast.getName()} ${extends} {
-  <#list astType.getCDAttributes() as attribute>
+  <#list astType.getCDAttributeList() as attribute>
     <#if !genHelper.isInherited(attribute) && !genHelper.isAdditionalAttribute(attribute)>
     ${tc.include("ast.BuilderAttribute", attribute)}
     </#if>

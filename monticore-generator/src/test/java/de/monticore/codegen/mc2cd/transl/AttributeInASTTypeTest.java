@@ -45,7 +45,7 @@ public class AttributeInASTTypeTest {
 
   @Test
   public void testType() {
-    astA.getCDAttributes().stream()
+    astA.getCDAttributeList().stream()
         .map(ASTCDAttribute::getType)
         .map(Object::getClass)
         .forEach(type -> assertEquals(ASTPrimitiveType.class, type));

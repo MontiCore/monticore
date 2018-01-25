@@ -61,7 +61,7 @@ public class AttributeInASTMultiplicityTest {
    */
   @Test
   public void testStarMultiplicity() {
-    List<ASTCDAttribute> attributes = astA.getCDAttributes();
+    List<ASTCDAttribute> attributes = astA.getCDAttributeList();
     assertTrue(TestHelper.isListOfType(attributes.get(0).getType(),
         "mc2cdtransformation.AttributeInASTMultiplicityGrammar.ASTX"));
     /*
@@ -82,14 +82,14 @@ public class AttributeInASTMultiplicityTest {
    */
   @Test
   public void testOptionalCardinality() {
-    List<ASTCDAttribute> attributes = astB.getCDAttributes();
+    List<ASTCDAttribute> attributes = astB.getCDAttributeList();
     String name = typeToString(attributes.get(0).getType());
     assertEquals("Optional", name);
   }
   
   @Test
   public void testOneCardinality() {
-    List<ASTCDAttribute> attributes = astC.getCDAttributes();
+    List<ASTCDAttribute> attributes = astC.getCDAttributeList();
     String name = typeToString(attributes.get(0).getType());
     assertEquals("mc2cdtransformation.AttributeInASTMultiplicityGrammar.ASTZ", name);
   }

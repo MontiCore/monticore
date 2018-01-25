@@ -54,19 +54,19 @@ public class OCLExpressionsPrettyPrinter implements OCLExpressionsVisitor {
     @Override
     public void handle(ASTInExpr node) {
         CommentPrettyPrinter.printPreComments(node, getPrinter());
-        if(node.typeIsPresent())
-            node.getType().get().accept(getRealThis());
+        if(node.isTypePresent())
+            node.getType().accept(getRealThis());
 
-        Iterator iter = node.getVarNames().iterator();
+        Iterator iter = node.getVarNameList().iterator();
         getPrinter().print(iter.next());
         while (iter.hasNext()) {
             getPrinter().print(", ");
             getPrinter().print(iter.next());
         }
 
-        if(node.expressionIsPresent()) {
+        if(node.isExpressionPresent()) {
             getPrinter().print(" in ");
-            node.getExpression().get().accept(getRealThis());
+            node.getExpression().accept(getRealThis());
         }
         CommentPrettyPrinter.printPostComments(node, getPrinter());
     }
@@ -93,7 +93,7 @@ public class OCLExpressionsPrettyPrinter implements OCLExpressionsVisitor {
   public void handle(ASTForallExpr node) {
       CommentPrettyPrinter.printPreComments(node, getPrinter());
       getPrinter().print("forall ");
-      node.getInExprs().forEach(e -> e.accept(getRealThis()));
+      node.getInExprList().forEach(e -> e.accept(getRealThis()));
 
       getPrinter().print(":");
       node.getExpression().accept(getRealThis());
@@ -104,7 +104,7 @@ public class OCLExpressionsPrettyPrinter implements OCLExpressionsVisitor {
   public void handle(ASTExistsExpr node) {
       CommentPrettyPrinter.printPreComments(node, getPrinter());
       getPrinter().print("exists ");
-      node.getInExprs().forEach(e -> e.accept(getRealThis()));
+      node.getInExprList().forEach(e -> e.accept(getRealThis()));
 
       getPrinter().print(":");
       node.getExpression().accept(getRealThis());
@@ -123,7 +123,7 @@ public class OCLExpressionsPrettyPrinter implements OCLExpressionsVisitor {
   public void handle(ASTLetinExpr node) {
      CommentPrettyPrinter.printPreComments(node, getPrinter());
      getPrinter().print("let ");
-     for (ASTEDeclarationExt ast : node.getDeclarations()) {
+     for (ASTEDeclarationExt ast : node.getDeclarationList()) {
         ast.accept(getRealThis());
         getPrinter().print("; ");
      }
@@ -136,7 +136,7 @@ public class OCLExpressionsPrettyPrinter implements OCLExpressionsVisitor {
   public void handle(ASTLetDeclaration node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
      getPrinter().print("let ");
-    for (ASTEDeclarationExt ast : node.getDeclarations()) {
+    for (ASTEDeclarationExt ast : node.getDeclarationList()) {
       ast.accept(getRealThis());
        getPrinter().print(";");
     }

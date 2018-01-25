@@ -42,14 +42,14 @@ public class NatLiteralsTest {
 
   private void checkNatLiteral(int i, String s) throws IOException {
     TestMCLiteralsParser parser = new TestMCLiteralsParser();
-    Optional<ASTNatLiteral> ast = parser.parseString_NatLiteral(s);
+    Optional<ASTNatLiteral> ast = parser.parse_StringNatLiteral(s);
     assertTrue(!parser.hasErrors());
     assertEquals(i, ast.get().getValue());
   }
   
   private void checkFailingNatLiteral(String s) throws IOException {
     TestMCLiteralsParser parser = new TestMCLiteralsParser();
-    parser.parseString_NatLiteral(s);
+    parser.parse_StringNatLiteral(s);
     assertTrue(parser.hasErrors());    
   }
 

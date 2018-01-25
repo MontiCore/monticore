@@ -52,7 +52,7 @@ component grammar Types extends de.monticore.literals.Literals {
     ast QualifiedName =
         method public String toString(){
           return de.se_rwth.commons.Names.getQualifiedName(
-              this.getParts());
+              this.getPartList());
         };
     
     ast PrimitiveType =
@@ -146,7 +146,7 @@ component grammar Types extends de.monticore.literals.Literals {
         @attribute parts A List of ASTStringList concludes all name parts
     */
     QualifiedName =
-        parts:(Name || ".")+;
+        part:(Name || ".")+;
         
     /** The ASTAbstractArrayType represents array of Type
     */
@@ -273,17 +273,17 @@ component grammar Types extends de.monticore.literals.Literals {
         behind the class or interface name).
         E.g.: public <T extends SuperClass> void test(T t)
         @attribute name        Name of the type variable
-        @attribute upperBounds Optional list of required super classes
+        @attribute upperBound Optional list of required super classes
     */
     TypeVariableDeclaration =
         Name
         (
-          "extends" upperBounds:(ComplexReferenceType || "&")+
+          "extends" upperBound:(ComplexReferenceType || "&")+
         )?;
 
 	/** ImportStatement represents the import list for diagrams
 	    E.g.: import A.b;
 	    E.g.: import A.*;
 	*/
-    ImportStatement = "import" importList:(Name || ".")+ ("." Star:["*"])? ";" ;
+    ImportStatement = "import" import:(Name || ".")+ ("." Star:["*"])? ";" ;
 }

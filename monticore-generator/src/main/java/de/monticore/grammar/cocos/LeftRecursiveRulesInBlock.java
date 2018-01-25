@@ -43,8 +43,8 @@ public class LeftRecursiveRulesInBlock implements GrammarASTClassProdCoCo {
   public void check(ASTClassProd a) {
     DirectLeftRecursionDetector detector = new DirectLeftRecursionDetector();
     String ruleName = a.getName();
-    for (ASTAlt alt : a.getAlts()) {
-      if (!alt.getComponents().isEmpty() && alt.getComponents().get(0) instanceof ASTBlock) {
+    for (ASTAlt alt : a.getAltList()) {
+      if (!alt.getComponentList().isEmpty() && alt.getComponentList().get(0) instanceof ASTBlock) {
         if (detector.isAlternativeLeftRecursive(alt, ruleName)) {
           Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, ruleName),
               a.get_SourcePositionStart());

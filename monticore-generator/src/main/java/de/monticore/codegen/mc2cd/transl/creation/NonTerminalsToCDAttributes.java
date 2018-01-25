@@ -51,7 +51,7 @@ class NonTerminalsToCDAttributes implements
       for (ASTNonTerminal nonTerminal : ASTNodes.getSuccessors(link.source(),
           ASTNonTerminal.class)) {
         ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-        link.target().getCDAttributes().add(cdAttribute);
+        link.target().getCDAttributeList().add(cdAttribute);
         new Link<>(nonTerminal, cdAttribute, link);
       }
     }
@@ -61,7 +61,7 @@ class NonTerminalsToCDAttributes implements
       for (ASTNonTerminal nonTerminal : ASTNodes.getSuccessors(link.source(),
           ASTNonTerminal.class)) {
         ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-        link.target().getCDAttributes().add(cdAttribute);
+        link.target().getCDAttributeList().add(cdAttribute);
         new Link<>(nonTerminal, cdAttribute, link);
       }
     }
@@ -71,7 +71,7 @@ class NonTerminalsToCDAttributes implements
       for (ASTNonTerminal nonTerminal : ASTNodes.getSuccessors(link.source(),
           ASTNonTerminal.class)) {
         ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
-        link.target().getCDAttributes().add(cdAttribute);
+        link.target().getCDAttributeList().add(cdAttribute);
         new Link<>(nonTerminal, cdAttribute, link);
       }
     }

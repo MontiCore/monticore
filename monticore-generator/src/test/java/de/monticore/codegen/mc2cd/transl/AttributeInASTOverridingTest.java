@@ -54,7 +54,7 @@ public class AttributeInASTOverridingTest {
 
   @Test
   public void testAttributeOverridden() {
-    List<ASTCDAttribute> attributes = astA.getCDAttributes();
+    List<ASTCDAttribute> attributes = astA.getCDAttributeList();
     assertEquals(1, attributes.size());
     assertEquals("mc2cdtransformation.AttributeInASTOverridingGrammar.ASTY",
         TransformationHelper.typeToString(attributes.get(0).getType()));
@@ -62,7 +62,7 @@ public class AttributeInASTOverridingTest {
   
   @Test
   public void testAttributeNotOverridden() {
-    List<ASTCDAttribute> attributes = astB.getCDAttributes();
+    List<ASTCDAttribute> attributes = astB.getCDAttributeList();
     assertEquals(2, attributes.size());
   }
 }

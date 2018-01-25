@@ -164,9 +164,9 @@ public class ParserGenerator {
     final GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(targetDir);
 
-    String qualifiedGrammarName = astGrammar.getPackage().isEmpty()
+    String qualifiedGrammarName = astGrammar.getPackageList().isEmpty()
             ? astGrammar.getName()
-            : Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackage()),
+            : Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackageList()),
             astGrammar.getName());
     MCGrammarSymbol grammarSymbol = symbolTable.<MCGrammarSymbol> resolve(
             qualifiedGrammarName, MCGrammarSymbol.KIND).orElse(null);
@@ -213,9 +213,9 @@ public class ParserGenerator {
     final GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(targetDir);
 
-    String qualifiedGrammarName = astGrammar.getPackage().isEmpty()
+    String qualifiedGrammarName = astGrammar.getPackageList().isEmpty()
             ? astGrammar.getName()
-            : Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackage()),
+            : Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackageList()),
             astGrammar.getName());
     MCGrammarSymbol grammarSymbol = symbolTable.<MCGrammarSymbol> resolve(
             qualifiedGrammarName, MCGrammarSymbol.KIND).orElse(null);

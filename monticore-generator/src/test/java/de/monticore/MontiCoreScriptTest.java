@@ -146,18 +146,18 @@ public class MontiCoreScriptTest {
         genHelper.getPackageName(), GeneratorHelper.AST_PACKAGE_SUFFIX));
     assertNotNull(cdCompilationUnit.getCDDefinition());
     ASTCDDefinition cdDefinition = cdCompilationUnit.getCDDefinition();
-    assertEquals(8, cdDefinition.getCDClasses().size());
-    assertEquals(5, cdDefinition.getCDInterfaces().size());
+    assertEquals(8, cdDefinition.getCDClassList().size());
+    assertEquals(5, cdDefinition.getCDInterfaceList().size());
     
     mc.decorateCd(glex, cdCompilationUnit, symbolTable, targetPath);
     // Added Builder classes to the each not list class
-    assertEquals(19, cdDefinition.getCDClasses().size());
+    assertEquals(19, cdDefinition.getCDClassList().size());
     
     // Check if there are all additional methods defined in the given CD class
     List<String> methods = Lists.newArrayList();
-    for (ASTCDClass cdClass : cdDefinition.getCDClasses()) {
+    for (ASTCDClass cdClass : cdDefinition.getCDClassList()) {
       // All methods of CD class
-      for (ASTCDMethod method : cdClass.getCDMethods()) {
+      for (ASTCDMethod method : cdClass.getCDMethodList()) {
         methods.add(method.getName());
       }
       String withOrder = "WithOrder";

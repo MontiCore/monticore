@@ -67,7 +67,7 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
    */
   @Override
   public String getAstAttributeValue(ASTCDAttribute attribute, ASTCDType clazz) {
-    if (attribute.getValue().isPresent()) {
+    if (attribute.isValuePresent()) {
       return attribute.printValue();
     }
     if (isOptional(attribute)) {
@@ -134,8 +134,8 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
    * @return
    */
   public List<ASTCDType> getNativeTypes(ASTCDDefinition cdDefinition) {
-    List<ASTCDType> types = new ArrayList<>(cdDefinition.getCDClasses());
-    types.addAll(cdDefinition.getCDInterfaces());
+    List<ASTCDType> types = new ArrayList<>(cdDefinition.getCDClassList());
+    types.addAll(cdDefinition.getCDInterfaceList());
     String genNode = BaseInterfaceAddingManipulation.getBaseInterfaceName(getCdDefinition());
     return types.stream().filter(c -> !c.getName().equals(genNode))
         .collect(Collectors.toList());
@@ -331,7 +331,7 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
   }
   
   public static String getSuperClass(ASTCDClass clazz) {
-    if (!clazz.getSuperclass().isPresent()) {
+    if (!clazz.isSuperclassPresent()) {
       return ASTECNode.class.getName();
     }
     return clazz.printSuperClass();

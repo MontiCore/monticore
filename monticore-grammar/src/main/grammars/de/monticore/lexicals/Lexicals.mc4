@@ -47,7 +47,6 @@ component grammar Lexicals {
     (' ' | 
     '\t' |
     '\r' |
-    '\r' |
     '\n' ) :{_channel = HIDDEN;};
     
   token SL_COMMENT =

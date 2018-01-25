@@ -60,7 +60,7 @@ public enum AttributeCategory {
   }
   
   private static boolean isGenericList(ASTCDAttribute cdAttribute) {
-    boolean hasGenerics = ((ASTSimpleReferenceType) cdAttribute.getType()).getTypeArguments() != null;
+    boolean hasGenerics = ((ASTSimpleReferenceType) cdAttribute.getType()).getTypeArgumentsOpt() != null;
     return "java.util.List".equals(TransformationHelper.typeToString(cdAttribute.getType()))
         && hasGenerics;
   }

@@ -39,7 +39,7 @@ public class DuplicatedSymbolDefinitionInProd implements GrammarASTProdCoCo {
   public void check(ASTProd a) {
     boolean isScope = false;
     boolean isSymbol = false;
-    for (ASTSymbolDefinition c : a.getSymbolDefinitions()) {
+    for (ASTSymbolDefinition c : a.getSymbolDefinitionList()) {
       if ((c.isGenScope() && isScope) || (c.isGenSymbol() && isSymbol)) {
         Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName()), a.get_SourcePositionStart());
       }

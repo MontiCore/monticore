@@ -59,12 +59,12 @@ public class NoASTExtendsForClasses implements GrammarASTMCGrammarCoCo {
       }
     }
     
-    for (ASTASTRule rule : a.getASTRules()) {
+    for (ASTASTRule rule : a.getASTRuleList()) {
       if (allProds.containsKey(rule.getType())) {
         MCProdSymbol prod = allProds.get(rule.getType());
         if (prod.isClass()) {
-          for (ASTGenericType type : rule.getASTSuperClass()) {
-            String simpleName = type.getNames().get(type.getNames().size() - 1);
+          for (ASTGenericType type : rule.getASTSuperClassList()) {
+            String simpleName = type.getNameList().get(type.getNameList().size() - 1);
 
             if (!allProds.containsKey(simpleName.substring(TransformationHelper.AST_PREFIX.length()))) {
               Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT,

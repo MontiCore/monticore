@@ -75,7 +75,7 @@ public class AstGenerator {
     final String visitorPackage = AstGeneratorHelper.getPackageName(astHelper.getPackageName(),
         VisitorGeneratorHelper.getVisitorPackageSuffix());
     
-    for (ASTCDClass clazz : astClassDiagram.getCDDefinition().getCDClasses()) {
+    for (ASTCDClass clazz : astClassDiagram.getCDDefinition().getCDClassList()) {
       final Path filePath = Paths.get(Names.getPathFromPackage(astPackage),
           Names.getSimpleName(clazz.getName()) + JAVA_EXTENSION);
       if (astHelper.isAstClass(clazz)) {
@@ -86,14 +86,14 @@ public class AstGenerator {
       }
     }
     
-    for (ASTCDInterface interf : astClassDiagram.getCDDefinition().getCDInterfaces()) {
+    for (ASTCDInterface interf : astClassDiagram.getCDDefinition().getCDInterfaceList()) {
       final Path filePath = Paths.get(Names.getPathFromPackage(astPackage),
           Names.getSimpleName(interf.getName()) + JAVA_EXTENSION);
       generator.generate("ast.AstInterface", filePath, interf, visitorPackage,
           VisitorGeneratorHelper.getVisitorType(diagramName));
     }
     
-    for (ASTCDEnum enm : astClassDiagram.getCDDefinition().getCDEnums()) {
+    for (ASTCDEnum enm : astClassDiagram.getCDDefinition().getCDEnumList()) {
       final Path filePath = Paths.get(Names.getPathFromPackage(astPackage),
           Names.getSimpleName(enm.getName()) + JAVA_EXTENSION);
       generator.generate("ast.AstEnum", filePath, enm);

@@ -42,12 +42,12 @@ public class NTDefinedByAtmostOneProduction implements GrammarASTMCGrammarCoCo {
   public void check(ASTMCGrammar a) {
     List<String> prodnames = new ArrayList<>();
     List<ASTProd> prods = new ArrayList<>();
-    prods.addAll(a.getAbstractProds());
-    prods.addAll(a.getClassProds());
-    prods.addAll(a.getEnumProds());
-    prods.addAll(a.getInterfaceProds());
-    prods.addAll(a.getLexProds());
-    prods.addAll(a.getExternalProds());
+    prods.addAll(a.getAbstractProdList());
+    prods.addAll(a.getClassProdList());
+    prods.addAll(a.getEnumProdList());
+    prods.addAll(a.getInterfaceProdList());
+    prods.addAll(a.getLexProdList());
+    prods.addAll(a.getExternalProdList());
 
     for(ASTProd p: prods){
       if(prodnames.contains(p.getName())){

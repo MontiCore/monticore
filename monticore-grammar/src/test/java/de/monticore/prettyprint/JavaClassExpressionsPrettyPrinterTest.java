@@ -88,34 +88,34 @@ public class JavaClassExpressionsPrettyPrinterTest{
     
     @Override
     public void visit(ASTEType node) {
-      if (node.getDouble().isPresent()) {
-        getPrinter().print(node.getDouble().get());
+      if (node.isDoublePresent()) {
+        getPrinter().print(node.getDouble());
       }
-      if (node.getInt().isPresent()) {
-        getPrinter().print(node.getInt().get());
+      if (node.isIntPresent()) {
+        getPrinter().print(node.getInt());
       }
-      if (node.getLong().isPresent()) {
-        getPrinter().print(node.getLong().get());
+      if (node.isLongPresent()) {
+        getPrinter().print(node.getLong());
       }
-      if (node.getFloat().isPresent()) {
-        getPrinter().print(node.getFloat().get());
+      if (node.isFloatPresent()) {
+        getPrinter().print(node.getFloat());
       }
     }
     
     @Override
     public void handle(ASTEReturnType node) {
-      if (node.getEType().isPresent()) {
-        node.getEType().get().accept(this);
+      if (node.isETypePresent()) {
+        node.getEType().accept(this);
       }
-      if (node.getVoid().isPresent()) {
-        getPrinter().print(node.getVoid().get());
+      if (node.isVoidPresent()) {
+        getPrinter().print(node.getVoid());
       }
     }
     
     @Override
     public void visit(ASTETypeArguments node) {
       getPrinter().print("<");
-      for (String s : node.getNames()) {
+      for (String s : node.getNameList()) {
         getPrinter().print(s);
       }
       getPrinter().print(">");

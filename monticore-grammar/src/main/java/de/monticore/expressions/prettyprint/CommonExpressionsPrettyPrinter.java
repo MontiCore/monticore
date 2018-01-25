@@ -214,8 +214,8 @@ public class CommonExpressionsPrettyPrinter implements CommonExpressionsVisitor 
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     getPrinter().print("(");
     int count = 0;
-    if (!node.getExpressions().isEmpty()) {
-      for (ASTExpression ast : node.getExpressions()) {
+    if (!node.isEmptyExpressions()) {
+      for (ASTExpression ast : node.getExpressionList()) {
         if (count > 0) {
           getPrinter().print(",");
         }

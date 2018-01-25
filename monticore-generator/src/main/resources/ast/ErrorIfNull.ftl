@@ -31,7 +31,7 @@ software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
 <#assign genHelper = glex.getGlobalVar("astHelper")>
-<#list ast.getCDParameters() as checkedParameter>
+<#list ast.getCDParameterList() as checkedParameter>
   <#assign type = checkedParameter.getType()>
   <#if genHelper.isNullable(type) && !genHelper.isOptional(type)>
     // MontiCore generally assumes that null is not used, but if you are

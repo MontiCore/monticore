@@ -48,13 +48,13 @@ public class OverridingNTsHaveNoSuperRules implements GrammarASTClassProdCoCo {
         .getMCGrammarSymbol(a);
     List<MCGrammarSymbol> grammarSymbols = grammarSymbol.get().getSuperGrammarSymbols();
     
-    if (!a.getSuperRule().isEmpty() || !a.getASTSuperClass().isEmpty()) {
+    if (!a.getSuperRuleList().isEmpty() || !a.getASTSuperClassList().isEmpty()) {
       String extendedType;
-      if (!a.getSuperRule().isEmpty()){
-        extendedType = a.getSuperRule().get(0).getName();
+      if (!a.getSuperRuleList().isEmpty()){
+        extendedType = a.getSuperRuleList().get(0).getName();
       }
       else{
-        extendedType = a.getASTSuperClass().get(0).getTypeName();
+        extendedType = a.getASTSuperClassList().get(0).getTypeName();
       }
       for (MCGrammarSymbol s : grammarSymbols) {
         if (s.getProd(a.getName()).isPresent()) {

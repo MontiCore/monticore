@@ -65,17 +65,17 @@ public enum Multiplicity {
   }
   
   public static Multiplicity multiplicityOfAttributeInAST(ASTAttributeInAST attributeInAST) {
-    if (!attributeInAST.getCard().isPresent()) {
+    if (!attributeInAST.isCardPresent()) {
       return STANDARD;
     }
-    ASTCard cardinality = attributeInAST.getCard().get();
-    if (!cardinality.getMax().isPresent() || cardinality.isUnbounded()
-        || "*".equals(cardinality.getMax().get())
+    ASTCard cardinality = attributeInAST.getCard();
+    if (!cardinality.isMaxPresent() || cardinality.isUnbounded()
+        || "*".equals(cardinality.getMax())
         || getMaxCardinality(cardinality) != 1) {
       return LIST;
     }
     else {
-      if (!cardinality.getMin().isPresent() || getMinCardinality(cardinality)==0)  {
+      if (!cardinality.isMinPresent() || getMinCardinality(cardinality)==0)  {
         return OPTIONAL;
       }
     }
@@ -83,11 +83,11 @@ public enum Multiplicity {
   }
   
   private static int getMaxCardinality(ASTCard cardinality) {
-    return Integer.parseInt(cardinality.getMax().get());
+    return Integer.parseInt(cardinality.getMax());
   }
   
   private static int getMinCardinality(ASTCard cardinality) {
-    return Integer.parseInt(cardinality.getMin().get());
+    return Integer.parseInt(cardinality.getMin());
   }
   
   private static Multiplicity multiplicityOfASTNode(ASTNode rootNode, ASTNode astNode) {
@@ -103,9 +103,9 @@ public enum Multiplicity {
     boolean containedInAlternative = false;
     for (ASTNode intermediate: intermediates) {
       if (intermediate instanceof ASTClassProd) {
-        containedInAlternative |= ((ASTClassProd) intermediate).getAlts().size()>1;
+        containedInAlternative |= ((ASTClassProd) intermediate).getAltList().size()>1;
       } else if (intermediate instanceof ASTBlock) {
-        containedInAlternative |= ((ASTBlock) intermediate).getAlts().size()>1;
+        containedInAlternative |= ((ASTBlock) intermediate).getAltList().size()>1;
       }
     }
     return containedInAlternative ? OPTIONAL : STANDARD;
@@ -144,7 +144,7 @@ public enum Multiplicity {
     return getIntermediates(rootNode, astNode).stream()
         .filter(ASTAlt.class::isInstance)
         .map(ASTAlt.class::cast)
-        .flatMap(alt -> alt.getComponents().stream())
+        .flatMap(alt -> alt.getComponentList().stream())
         .filter(ruleComponent -> !ancestorRuleComponents.contains(ruleComponent))
         .flatMap(ruleComponent -> getSuccessors(ruleComponent, ASTNode.class).stream());
   }

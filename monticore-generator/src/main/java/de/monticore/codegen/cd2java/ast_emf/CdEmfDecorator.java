@@ -53,6 +53,7 @@ import de.monticore.types.TypesHelper;
 import de.monticore.types.TypesPrinter;
 import de.monticore.types.types._ast.ASTImportStatement;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
+import de.monticore.types.types._ast.TypesMill;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
@@ -62,6 +63,7 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDEnumConstant;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
+import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisMill;
 import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.umlcd4a.cd4analysis._visitor.CD4AnalysisInheritanceVisitor;
 import de.monticore.umlcd4a.symboltable.CDFieldSymbol;
@@ -109,12 +111,12 @@ public class CdEmfDecorator extends CdDecorator {
     
     ASTCDDefinition cdDefinition = cdCompilationUnit.getCDDefinition();
     
-    List<ASTCDClass> nativeClasses = Lists.newArrayList(cdDefinition.getCDClasses());
+    List<ASTCDClass> nativeClasses = Lists.newArrayList(cdDefinition.getCDClassList());
     List<ASTCDType> nativeTypes = astHelper.getNativeTypes(cdDefinition);
     
-    List<ASTCDClass> astNotAbstractClasses = cdDefinition.getCDClasses().stream()
-        .filter(e -> e.getModifier().isPresent())
-        .filter(e -> !e.getModifier().get().isAbstract())
+    List<ASTCDClass> astNotAbstractClasses = cdDefinition.getCDClassList().stream()
+        .filter(e -> e.isModifierPresent())
+        .filter(e -> !e.getModifier().isAbstract())
         .collect(Collectors.toList());
         
     // Run over classdiagramm and converts cd types to mc-java types
@@ -135,7 +137,7 @@ public class CdEmfDecorator extends CdDecorator {
     // Check if handwritten ast types exist
     transformCdTypeNamesForHWTypes(cdCompilationUnit);
     
-    cdDefinition.getCDClasses().stream()
+    cdDefinition.getCDClassList().stream()
         .forEach(c -> addSuperInterfaces(c));
         
     // Decorate with additional methods and attributes
@@ -153,9 +155,9 @@ public class CdEmfDecorator extends CdDecorator {
       glex.replaceTemplate("ast.AstImports", clazz, new TemplateHookPoint("ast_emf.AstEImports"));
     }
     
-    cdDefinition.getCDClasses().forEach(c -> makeAbstractIfHWC(c));
+    cdDefinition.getCDClassList().forEach(c -> makeAbstractIfHWC(c));
     
-    for (ASTCDInterface interf : cdDefinition.getCDInterfaces()) {
+    for (ASTCDInterface interf : cdDefinition.getCDInterfaceList()) {
       addGetter(interf);
     }
     
@@ -163,10 +165,9 @@ public class CdEmfDecorator extends CdDecorator {
     addConstantsClass(cdDefinition, astHelper);
     
     // Additional imports
-    cdCompilationUnit.getImportStatements().add(
-        ASTImportStatement
-            .getBuilder()
-            .importList(
+    cdCompilationUnit.getImportStatementList().add(
+        TypesMill.importStatementBuilder()
+            .imports(
                 Lists.newArrayList(VisitorGeneratorHelper.getQualifiedVisitorType(astHelper
                     .getPackageName(), cdDefinition.getName())))
             .build());
@@ -186,11 +187,11 @@ public class CdEmfDecorator extends CdDecorator {
       List<ASTCDType> astTypes) {
     emfAttributes.clear();
     astTypes.stream().filter(t -> t instanceof ASTCDClass)
-        .forEach(t -> ((ASTCDClass) t).getCDAttributes().stream()
+        .forEach(t -> ((ASTCDClass) t).getCDAttributeList().stream()
             .filter(a -> !(getAdditionaAttributeNames().anyMatch(ad -> ad.equals(a.getName()))))
             .forEach(a -> createEmfAttribute(t, a, astHelper, emfCollector)));
     astTypes.stream().filter(t -> t instanceof ASTCDInterface)
-        .forEach(t -> ((ASTCDInterface) t).getCDAttributes().stream()
+        .forEach(t -> ((ASTCDInterface) t).getCDAttributeList().stream()
             .filter(a -> !(getAdditionaAttributeNames().anyMatch(ad -> ad.equals(a.getName()))))
             .forEach(a -> createEmfAttribute(t, a, astHelper, emfCollector)));
     emfAttributes.keySet()
@@ -242,10 +243,10 @@ public class CdEmfDecorator extends CdDecorator {
       factoryName += TransformationHelper.GENERATED_CLASS_SUFFIX;
     }
     factory.setName(factoryName);
-    cdDef.getCDInterfaces().add(factory);
+    cdDef.getCDInterfaceList().add(factory);
     
     for (ASTCDType clazz : astClasses) {
-      if (!clazz.getModifier().isPresent() || clazz.getModifier().get().isAbstract()) {
+      if (!clazz.getModifierOpt().isPresent() || clazz.getModifierOpt().get().isAbstract()) {
         return;
       }
       String className = GeneratorHelper.getPlainName(clazz);
@@ -277,12 +278,12 @@ public class CdEmfDecorator extends CdDecorator {
     factoryClass.setName(factoryClassName);
     
     List<String> classNames = astClasses.stream()
-        .filter(e -> e.getModifier().isPresent())
-        .filter(e -> !e.getModifier().get().isAbstract())
+        .filter(e -> e.getModifierOpt().isPresent())
+        .filter(e -> !e.getModifier().isAbstract())
         .map(e -> getPlainName(e))
         .collect(Collectors.toList());
         
-    cdDef.getCDClasses().add(factoryClass);
+    cdDef.getCDClassList().add(factoryClass);
     glex.replaceTemplate(CLASS_CONTENT_TEMPLATE, factoryClass, new TemplateHookPoint(
         "ast_emf.EFactoryImpl", factoryClass, cdDef.getName(), HTTP + cdDef.getName()
             + "/1.0",
@@ -303,7 +304,7 @@ public class CdEmfDecorator extends CdDecorator {
       interfaceName += TransformationHelper.GENERATED_CLASS_SUFFIX;
     }
     packageInterface.setName(interfaceName);
-    cdDef.getCDInterfaces().add(packageInterface);
+    cdDef.getCDInterfaceList().add(packageInterface);
     
     for (ASTCDType type : astTypes) {
       List<CDTypeSymbol> superTypes = astHelper.getAllSuperTypesEmfOrder(type);
@@ -415,7 +416,7 @@ public class CdEmfDecorator extends CdDecorator {
         GeneratorHelper.getValuesOfConstantEnum(astHelper.getCdDefinition()));
     replaceMethodBodyTemplate(packageImpl, toParse, getMethodBody);
     
-    cdDef.getCDClasses().add(packageImpl);
+    cdDef.getCDClassList().add(packageImpl);
     
     glex.replaceTemplate(CLASS_CONTENT_TEMPLATE, packageImpl, new TemplateHookPoint(
         "ast_emf.EPackageImpl", packageImpl, cdDef.getName(), classNames, externaltypes.values()));
@@ -572,7 +573,7 @@ public class CdEmfDecorator extends CdDecorator {
    * @param astHelper
    */
   void addToString(ASTCDClass clazz, AstEmfGeneratorHelper astHelper) {
-    if (clazz.getCDMethods().stream().anyMatch(m -> "toString".equals(m.getName()))) {
+    if (clazz.getCDMethodList().stream().anyMatch(m -> "toString".equals(m.getName()))) {
       return;
     }
     String toParse = "public String toString();";
@@ -736,7 +737,7 @@ public class CdEmfDecorator extends CdDecorator {
   void addLiteralsEnum(ASTCDCompilationUnit ast, AstGeneratorHelper astHelper) {
     ASTCDDefinition cdDefinition = ast.getCDDefinition();
     String constantsEnumName = cdDefinition.getName() + ConstantsTranslation.CONSTANTS_ENUM;
-    Optional<ASTCDEnum> enumConstants = cdDefinition.getCDEnums().stream()
+    Optional<ASTCDEnum> enumConstants = cdDefinition.getCDEnumList().stream()
         .filter(e -> e.getName().equals(constantsEnumName)).findAny();
     if (!enumConstants.isPresent()) {
       Log.error("0xA5000 CdDecorator error: " + constantsEnumName
@@ -746,8 +747,8 @@ public class CdEmfDecorator extends CdDecorator {
     }
     
     ASTCDEnum astEnum = enumConstants.get();
-    astEnum.getCDEnumConstants().add(0, ASTCDEnumConstant.getBuilder().name("DEFAULT").build());
-    astEnum.getInterfaces()
+    astEnum.getCDEnumConstantList().add(0, CD4AnalysisMill.cDEnumConstantBuilder().name("DEFAULT").build());
+    astEnum.getInterfaceList()
         .add(new ASTCDRawTransformation().createType("org.eclipse.emf.common.util.Enumerator"));
         
     // Add methods of the implemented interface {@link Enumerator}

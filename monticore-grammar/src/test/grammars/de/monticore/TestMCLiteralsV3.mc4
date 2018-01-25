@@ -6,9 +6,6 @@ grammar TestMCLiteralsV3 extends
 	de.monticore.StringLiterals
 {
 
-// TODO MB: Remove the rule with new MC generator > 4.5.3
-A = "";
-
  NumberList = "["  (Number | ",")* "]" ;
  DecimalList = "["  (Decimal | ",")* "]" ;
  IntegerList = "["  (Integer | ",")* "]" ;

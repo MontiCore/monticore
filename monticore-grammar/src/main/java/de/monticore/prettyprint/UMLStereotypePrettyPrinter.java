@@ -35,7 +35,7 @@ public class UMLStereotypePrettyPrinter implements UMLStereotypeVisitor {
   public void handle(ASTStereotype a) {
     getPrinter().print("<<");
     String sep = "";
-    for (ASTStereoValue value : a.getValues()) {
+    for (ASTStereoValue value : a.getValueList()) {
       getPrinter().print(sep);
       value.accept(getRealThis());
       sep = ", ";
@@ -46,8 +46,8 @@ public class UMLStereotypePrettyPrinter implements UMLStereotypeVisitor {
   @Override
   public void handle(ASTStereoValue a) {
     getPrinter().print(a.getName());
-    if (a.getText().isPresent()) {
-      getPrinter().print("=" + "\"" + a.getText().get().getSource() + "\"");
+    if (a.isTextPresent()) {
+      getPrinter().print("=" + "\"" + a.getText().getSource() + "\"");
     }
   }
   

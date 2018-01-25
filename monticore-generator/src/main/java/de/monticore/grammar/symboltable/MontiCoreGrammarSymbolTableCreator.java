@@ -107,12 +107,12 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
     Log.debug("Building Symboltable for Grammar: " + astGrammar.getName(),
         MontiCoreGrammarSymbolTableCreator.class.getSimpleName());
     
-    packageName = getQualifiedName(astGrammar.getPackage());
+    packageName = getQualifiedName(astGrammar.getPackageList());
     this.astGrammar = astGrammar;
     
     final List<ImportStatement> imports = new ArrayList<>();
-    if (astGrammar.getImportStatements() != null) {
-      for (ASTMCImportStatement imp : astGrammar.getImportStatements()) {
+    if (astGrammar.getImportStatementList() != null) {
+      for (ASTMCImportStatement imp : astGrammar.getImportStatementList()) {
         imports.add(new ImportStatement(getQualifiedName(imp.getImportList()),
             imp.isStar()));
       }
@@ -151,10 +151,10 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
     MCProdSymbol prodSymbol = new MCProdSymbol(ast.getName());
     prodSymbol.setInterface(true);
     
-    setSymbolDefinition(prodSymbol, ast.getSymbolDefinitions());
+    setSymbolDefinition(prodSymbol, ast.getSymbolDefinitionList());
     
     setSuperProdsAndTypes(prodSymbol, Collections.emptyList(),
-        Collections.emptyList(), ast.getSuperInterfaceRule(), ast.getASTSuperInterface());
+        Collections.emptyList(), ast.getSuperInterfaceRuleList(), ast.getASTSuperInterfaceList());
     
     addToScopeAndLinkWithNode(prodSymbol, ast);
   }
@@ -186,10 +186,10 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
   public void visit(ASTClassProd ast) {
     final MCProdSymbol prodSymbol = new MCProdSymbol(ast.getName());
     
-    setSymbolDefinition(prodSymbol, ast.getSymbolDefinitions());
+    setSymbolDefinition(prodSymbol, ast.getSymbolDefinitionList());
     
-    setSuperProdsAndTypes(prodSymbol, ast.getSuperRule(),
-        ast.getASTSuperClass(), ast.getSuperInterfaceRule(), ast.getASTSuperInterface());
+    setSuperProdsAndTypes(prodSymbol, ast.getSuperRuleList(),
+        ast.getASTSuperClassList(), ast.getSuperInterfaceRuleList(), ast.getASTSuperInterfaceList());
     
     addToScopeAndLinkWithNode(prodSymbol, ast);
   }
@@ -203,10 +203,10 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
     MCProdSymbol prodSymbol = new MCProdSymbol(ast.getName());
     prodSymbol.setAbstract(true);
     
-    setSymbolDefinition(prodSymbol, ast.getSymbolDefinitions());
+    setSymbolDefinition(prodSymbol, ast.getSymbolDefinitionList());
     
-    setSuperProdsAndTypes(prodSymbol, ast.getSuperRule(),
-        ast.getASTSuperClass(), ast.getSuperInterfaceRule(), ast.getASTSuperInterface());
+    setSuperProdsAndTypes(prodSymbol, ast.getSuperRuleList(),
+        ast.getASTSuperClassList(), ast.getSuperInterfaceRuleList(), ast.getASTSuperInterfaceList());
     
     addToScopeAndLinkWithNode(prodSymbol, ast);
   }
@@ -221,7 +221,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
     final MCProdSymbol prodSymbol = new MCProdSymbol(ast.getName());
     prodSymbol.setExternal(true);
     
-    setSymbolDefinition(prodSymbol, ast.getSymbolDefinitions());
+    setSymbolDefinition(prodSymbol, ast.getSymbolDefinitionList());
     
     
     addToScopeAndLinkWithNode(prodSymbol, ast);
@@ -247,7 +247,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
   
   @Override
   public void visit(ASTTerminal ast) {
-    final String usageName = ast.getUsageName().orElse(null);
+    final String usageName = ast.getUsageNameOpt().orElse(null);
     final Symbol currentSymbol = currentSymbol().orElse(null);
     
     if (currentSymbol != null) {
@@ -273,7 +273,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
   
   @Override
   public void visit(ASTNonTerminal ast) {
-    final String usageName = ast.getUsageName().orElse(null);
+    final String usageName = ast.getUsageNameOpt().orElse(null);
     final Symbol currentSymbol = currentSymbol().orElse(null);
     
     if (currentSymbol != null) {
@@ -320,7 +320,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
       
       setLinkBetweenSymbolAndNode(prodComponent, ast);
       prodComponent.setNonterminal(true);
-      prodComponent.setReferencedSymbolName(ast.getReferencedSymbol().orElse(""));
+      prodComponent.setReferencedSymbolName(ast.getReferencedSymbolOpt().orElse(""));
     }
   }
   
@@ -333,7 +333,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
               + " because there exists no production defining " + ast.getType(),
           ast.get_SourcePositionStart());
     }
-    ast.getAttributeInASTs().forEach(a -> addAttributeInAST(prodSymbol.get(), a));
+    ast.getAttributeInASTList().forEach(a -> addAttributeInAST(prodSymbol.get(), a));
   }
   
   void setComponentMultiplicity(MCProdComponentSymbol prod, ASTNode ast) {
@@ -362,7 +362,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
     Optional<String> attrName = MCGrammarSymbolTableHelper.getConstantName(astNode,
         currentSymbol());
     
-    final String usageName = astNode.getUsageName().orElse(null);
+    final String usageName = astNode.getUsageNameOpt().orElse(null);
     final Symbol currentSymbol = currentSymbol().orElse(null);
     
     if (currentSymbol != null && attrName.isPresent()) {
@@ -391,7 +391,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
         }
         else {
           final Optional<MCProdComponentSymbol> sym = addRuleComponent(attrName.orElse(""),
-              astNode, astNode.getUsageName().orElse(null));
+              astNode, astNode.getUsageNameOpt().orElse(null));
           if (sym.isPresent()) {
             sym.get().setConstantGroup(true);
             addToScopeAndLinkWithNode(sym.get(), astNode);
@@ -405,12 +405,12 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
   public void visit(ASTConstant astNode) {
     final Symbol currentSymbol = currentSymbol().orElse(null);
     if (currentSymbol != null) {
-      final String symbolName = astNode.getHumanName().isPresent()
-          ? astNode.getHumanName().get()
+      final String symbolName = astNode.isHumanNamePresent()
+          ? astNode.getHumanName()
           : astNode.getName();
       MCProdComponentSymbol prodComponent = new MCProdComponentSymbol(symbolName);
       prodComponent.setConstant(true);
-      prodComponent.setUsageName(astNode.getHumanName().orElse(null));
+      prodComponent.setUsageName(astNode.getHumanNameOpt().orElse(null));
       
       if (currentSymbol instanceof MCProdSymbol) {
         MCProdSymbol surroundingProd = (MCProdSymbol) currentSymbol;
@@ -470,8 +470,8 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
   }
   
   private void addSuperGrammars(ASTMCGrammar astGrammar, MCGrammarSymbol grammarSymbol) {
-    for (ASTGrammarReference ref : astGrammar.getSupergrammar()) {
-      final String superGrammarName = getQualifiedName(ref.getNames());
+    for (ASTGrammarReference ref : astGrammar.getSupergrammarList()) {
+      final String superGrammarName = getQualifiedName(ref.getNameList());
       
       final MCGrammarSymbolReference superGrammar = new MCGrammarSymbolReference(
           superGrammarName, currentScope().orElse(null));
@@ -543,9 +543,9 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
       if (symbolDefinition.isGenSymbol()) {
         String symbolKindName = prodSymbol.getName();
       
-        if (symbolDefinition.getSymbolKind().isPresent()
-          && !symbolDefinition.getSymbolKind().get().isEmpty()) {
-          symbolKindName = symbolDefinition.getSymbolKind().get();
+        if (symbolDefinition.isSymbolKindPresent()
+          && !symbolDefinition.getSymbolKind().isEmpty()) {
+          symbolKindName = symbolDefinition.getSymbolKind();
         }
       
         MCProdSymbolReference prodReference = new MCProdSymbolReference(symbolKindName,
@@ -559,8 +559,8 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
   }
   
   private void computeStartParserProd(ASTMCGrammar astGrammar) {
-    if (astGrammar.getStartRules().isPresent()) {
-      String name = astGrammar.getStartRules().get().getName();
+    if (!astGrammar.getStartRuleList().isEmpty()) {
+      String name = astGrammar.getStartRuleList().get(0).getName();
       Optional<MCProdSymbol> prod = grammarSymbol.getProdWithInherited(name);
       if (!prod.isPresent()) {
         Log.error("0xA0243 Rule " + name + " couldn't be found!");
@@ -574,14 +574,14 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
       final Set<ASTProd> firstProductions = Sets.newLinkedHashSet();
       // The start rule for parsing is the first occurring Interface-, Abstract-
       // or Class-Production in this grammar
-      if (astGrammar.getClassProds().size() != 0) {
-        firstProductions.add(astGrammar.getClassProds().get(0));
+      if (astGrammar.getClassProdList().size() != 0) {
+        firstProductions.add(astGrammar.getClassProdList().get(0));
       }
-      if (astGrammar.getInterfaceProds().size() != 0) {
-        firstProductions.add(astGrammar.getInterfaceProds().get(0));
+      if (astGrammar.getInterfaceProdList().size() != 0) {
+        firstProductions.add(astGrammar.getInterfaceProdList().get(0));
       }
-      if (astGrammar.getAbstractProds().size() != 0) {
-        firstProductions.add(astGrammar.getAbstractProds().get(0));
+      if (astGrammar.getAbstractProdList().size() != 0) {
+        firstProductions.add(astGrammar.getAbstractProdList().get(0));
       }
       setStartProd(firstProductions);
     }
@@ -624,7 +624,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
    * @param astAttribute
    */
   private void addAttributeInAST(MCProdSymbol mcProdSymbol, ASTAttributeInAST astAttribute) {
-    String attributeName = astAttribute.getName()
+    String attributeName = astAttribute.getNameOpt()
         .orElse(StringTransformations.uncapitalize(astAttribute.getGenericType().getTypeName()));
     
     MCProdAttributeSymbol astAttributeSymbol = new MCProdAttributeSymbol(attributeName);

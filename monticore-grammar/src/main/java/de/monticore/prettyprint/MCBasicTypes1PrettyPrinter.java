@@ -42,9 +42,9 @@ public class MCBasicTypes1PrettyPrinter implements MCBasicTypes1Visitor {
 	@Override
 	public void handle(ASTQualifiedName node) {
 		int count = 1;
-		for (String s : node.getParts()) {
+		for (String s : node.getPartList()) {
 			getPrinter().print(s);
-			if (node.getParts().size() > count) {
+			if (node.getPartList().size() > count) {
 				getPrinter().print(".");
 			}
 			count++;
@@ -55,9 +55,9 @@ public class MCBasicTypes1PrettyPrinter implements MCBasicTypes1Visitor {
 	public void handle(ASTImportStatement node) {
 		int count = 1;
 		getPrinter().print("import ");
-		for (String s : node.getQualifiedName().getParts()) {
+		for (String s : node.getQualifiedName().getPartList()) {
 			getPrinter().print(s);
-			if (node.getQualifiedName().getParts().size() > count) {
+			if (node.getQualifiedName().getPartList().size() > count) {
 				getPrinter().print(".");
 			}
 			count++;
@@ -111,9 +111,9 @@ public class MCBasicTypes1PrettyPrinter implements MCBasicTypes1Visitor {
 	@Override
 	public void handle(ASTNameAsReferenceType node) {
 		int count = 1;
-		for (String s : node.getNames()) {
+		for (String s : node.getNameList()) {
 			getPrinter().print(s);
-			if (node.getNames().size() > count) {
+			if (node.getNameList().size() > count) {
 				getPrinter().print(".");
 			}
 			count++;

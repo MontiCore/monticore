@@ -47,7 +47,7 @@ public class OverridingLexNTs implements GrammarASTMCGrammarCoCo {
     List<MCGrammarSymbol> grammarSymbols = grammarSymbol.getSuperGrammarSymbols();
     
     for (MCGrammarSymbol s : grammarSymbols) {
-      for (ASTLexProd p : a.getLexProds()) {
+      for (ASTLexProd p : a.getLexProdList()) {
         doCheck(s.getProdWithInherited(p.getName()), p);
       }
     }
@@ -55,8 +55,8 @@ public class OverridingLexNTs implements GrammarASTMCGrammarCoCo {
   
   private void doCheck(Optional<MCProdSymbol> prodSymbol, ASTLexProd lexProd) {
     if (prodSymbol.isPresent() && prodSymbol.get().isLexerProd()
-        && !((ASTLexProd) prodSymbol.get().getAstNode().get()).getType()
-            .equals(lexProd.getType())) {
+        && !((ASTLexProd) prodSymbol.get().getAstNode().get()).getTypeList()
+            .equals(lexProd.getTypeList())) {
       Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, lexProd.getName()));
     }
   }

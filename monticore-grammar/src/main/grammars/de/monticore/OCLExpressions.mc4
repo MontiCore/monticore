@@ -113,7 +113,7 @@ external EDeclaration;
                    An expression where previous declarations are used.
     */
     LetinExpr implements Expression <100> =
-        "let" (declarations:EDeclaration ";")+
+        "let" (declaration:EDeclaration ";")+
         "in" Expression;
 
     /** ASTOCLLetDeclaration represents a list of let-declarations inside of a
@@ -122,7 +122,7 @@ external EDeclaration;
                List of variable- or method-declarations.
     */
     LetDeclaration implements Expression <100> =
-        "let" (declarations:EDeclaration ";")+;
+        "let" (declaration:EDeclaration ";")+;
 
     /** ASTOCLIterateExpr is used to iterate collections. It differs from
         Java5-Iterator.
@@ -157,10 +157,10 @@ external EDeclaration;
     */
     InExpr implements Expression <50> =
 		Type
-		varNames:(Name || ",")+
+		varName:(Name || ",")+
 		|
 		Type?
-		varNames:(Name || ",")+
+		varName:(Name || ",")+
 		("in" Expression)
         ;
 
