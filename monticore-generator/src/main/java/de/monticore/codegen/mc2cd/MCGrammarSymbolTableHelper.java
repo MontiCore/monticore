@@ -350,13 +350,13 @@ public class MCGrammarSymbolTableHelper {
   
   public static Optional<String> getConstantGroupName(ASTConstantGroup ast) {
     // setAttributeMinMax(a.getIteration(), att);
-    if (ast.getUsageName().isPresent()) {
-      return ast.getUsageName();
+    if (ast.isUsageNamePresent()) {
+      return ast.getUsageNameOpt();
     }
     // derive attribute name from constant entry (but only if we have
     // one entry!)
-    else if (ast.getConstants().size() == 1) {
-      return Optional.of(HelperGrammar.getAttributeNameForConstant(ast.getConstants().get(0)));
+    else if (ast.getConstantList().size() == 1) {
+      return Optional.of(HelperGrammar.getAttributeNameForConstant(ast.getConstantList().get(0)));
     }
     
     Log.error("0xA2345 The name of the constant group could't be ascertained",
@@ -608,10 +608,10 @@ public class MCGrammarSymbolTableHelper {
    * @return
    */
   public static boolean isAttributeIterated(ASTAttributeInAST ast) {
-    if (!ast.getCard().isPresent()) {
+    if (!ast.isCardPresent()) {
       return false;
     }
-    if (ast.getCard().get().isUnbounded()) {
+    if (ast.getCard().isUnbounded()) {
       return true;
     }
     Optional<Integer> max = getMax(ast);
@@ -627,9 +627,9 @@ public class MCGrammarSymbolTableHelper {
   }
   
   public static Optional<Integer> getMax(ASTAttributeInAST ast) {
-    if (ast.getCard().isPresent()
-        && ast.getCard().get().getMax().isPresent()) {
-      String max = ast.getCard().get().getMax().get();
+    if (ast.isCardPresent()
+        && ast.getCard().isMaxPresent()) {
+      String max = ast.getCard().getMax();
       if ("*".equals(max)) {
         return Optional.of(GeneratorHelper.STAR);
       }
@@ -656,9 +656,9 @@ public class MCGrammarSymbolTableHelper {
   }
   
   public static Optional<Integer> getMin(ASTAttributeInAST ast) {
-    if (ast.getCard().isPresent()
-        && ast.getCard().get().getMin().isPresent()) {
-      String min = ast.getCard().get().getMin().get();
+    if (ast.isCardPresent()
+        && ast.getCard().isMinPresent()) {
+      String min = ast.getCard().getMin();
       try {
         int x = Integer.parseInt(min);
         return Optional.of(x);

@@ -45,7 +45,7 @@ public class ${ast.getName()} extends Object {
   public static final String LANGUAGE = "${qualifiedCdName}";
   
   public static final int DEFAULT = 0;
-<#list ast.getCDAttributes() as constant>
+<#list ast.getCDAttributeList() as constant>
   public static final int ${constant.getName()} = ${constant_index + 1};
 </#list>
 

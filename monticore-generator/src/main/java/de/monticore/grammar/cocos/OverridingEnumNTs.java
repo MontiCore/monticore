@@ -43,12 +43,12 @@ public class OverridingEnumNTs implements GrammarASTMCGrammarCoCo {
 
   @Override
   public void check(ASTMCGrammar a) {
-    List<ASTProd> prods = new ArrayList<>(a.getClassProds());
-    prods.addAll(a.getExternalProds());
-    prods.addAll(a.getLexProds());
-    prods.addAll(a.getInterfaceProds());
-    prods.addAll(a.getEnumProds());
-    prods.addAll(a.getAbstractProds());
+    List<ASTProd> prods = new ArrayList<>(a.getClassProdList());
+    prods.addAll(a.getExternalProdList());
+    prods.addAll(a.getLexProdList());
+    prods.addAll(a.getInterfaceProdList());
+    prods.addAll(a.getEnumProdList());
+    prods.addAll(a.getAbstractProdList());
     
     MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol().get();
     

@@ -203,7 +203,7 @@ public class GeneratorHelper extends TypesHelper {
     this.symbolTable = symbolTable;
     
     // Qualified Name
-    qualifiedName = Names.getQualifiedName(topAst.getPackage(), getCdName());
+    qualifiedName = Names.getQualifiedName(topAst.getPackageList(), getCdName());
     
     // CD package
     packageName = getCdPackage(qualifiedName);
@@ -212,7 +212,7 @@ public class GeneratorHelper extends TypesHelper {
     this.cdSymbol = getCd();
     
     // Create list of CDs for super grammars
-    for (ASTImportStatement importSt : topAst.getImportStatements()) {
+    for (ASTImportStatement importSt : topAst.getImportStatementList()) {
       if (importSt.isStar()) {
         superGrammarCds.add(Names.getQualifiedName(importSt.getImportList()));
       }
@@ -278,10 +278,10 @@ public class GeneratorHelper extends TypesHelper {
           + packageSuffix
           + cdType.getName();
       if (!genericType.isEmpty()) {
-        convertedType.setNames(Arrays.asList(typeName.split("\\.")));
+        convertedType.setNameList(Arrays.asList(typeName.split("\\.")));
         return;
       }
-      astType.setNames(Arrays.asList(typeName.split("\\.")));
+      astType.setNameList(Arrays.asList(typeName.split("\\.")));
     }
     else {
       Log.debug("CD or Java type couldn't be resolved: " + convertedTypeName, LOG_NAME);
@@ -456,7 +456,7 @@ public class GeneratorHelper extends TypesHelper {
         return;
       }
       convertedType = typeArgument.get();
-      astType.setNames(Arrays.asList("List"));
+      astType.setNameList(Arrays.asList("List"));
       genericType = JAVA_LIST;
     }
     
@@ -484,10 +484,10 @@ public class GeneratorHelper extends TypesHelper {
             + cdType.getName();
       }
       if (!genericType.isEmpty()) {
-        convertedType.setNames(Arrays.asList(typeName.split("\\.")));
+        convertedType.setNameList(Arrays.asList(typeName.split("\\.")));
         return;
       }
-      astType.setNames(Arrays.asList(typeName.split("\\.")));
+      astType.setNameList(Arrays.asList(typeName.split("\\.")));
     }
     else {
       Log.debug("CD or Java type couldn't be resolved: " + convertedTypeName, LOG_NAME);
@@ -599,12 +599,12 @@ public class GeneratorHelper extends TypesHelper {
   }
   
   public static List<ASTCDAttribute> getNativeCDAttributes(ASTCDClass clazz) {
-    return clazz.getCDAttributes().stream().filter(attr -> !isAdditionalAttribute(attr))
+    return clazz.getCDAttributeList().stream().filter(attr -> !isAdditionalAttribute(attr))
         .collect(Collectors.toList());
   }
   
   public boolean hasOnlyAstAttributes(ASTCDClass type) {
-    for (ASTCDAttribute attr : type.getCDAttributes()) {
+    for (ASTCDAttribute attr : type.getCDAttributeList()) {
       if (!isAstNode(attr)) {
         return false;
       }
@@ -617,7 +617,7 @@ public class GeneratorHelper extends TypesHelper {
   }
   
   public static boolean isString(ASTSimpleReferenceType type) {
-    String typeName = getSimpleName(type.getNames());
+    String typeName = getSimpleName(type.getNameList());
     return "String".equals(typeName) || "java.lang.String".equals(typeName);
   }
   
@@ -756,7 +756,7 @@ public class GeneratorHelper extends TypesHelper {
   }
   
   public static boolean isAbstract(ASTCDClass clazz) {
-    return clazz.getModifier().isPresent() && clazz.getModifier().get().isAbstract();
+    return clazz.isModifierPresent() && clazz.getModifier().isAbstract();
   }
   
   public static boolean isAbstract(ASTCDMethod method, ASTCDInterface type) {
@@ -815,13 +815,12 @@ public class GeneratorHelper extends TypesHelper {
   
   public static boolean hasStereotype(ASTCDType ast,
       String stereotypeName) {
-    if (!ast.getModifier().isPresent()
-        || !ast.getModifier().get().getStereotype().isPresent()) {
+    if (!ast.getModifierOpt().isPresent()
+        || !ast.getModifierOpt().get().isStereotypePresent()) {
       return false;
     }
-    ASTStereotype stereotype = ast.getModifier().get().getStereotype()
-        .get();
-    return stereotype.getValues().stream()
+    ASTStereotype stereotype = ast.getModifierOpt().get().getStereotype();
+    return stereotype.getValueList().stream()
         .filter(v -> v.getName().equals(stereotypeName)).findAny()
         .isPresent();
   }
@@ -829,12 +828,12 @@ public class GeneratorHelper extends TypesHelper {
   public static List<String> getStereotypeValues(ASTCDType ast,
       String stereotypeName) {
     List<String> values = Lists.newArrayList();
-    if (ast.getModifier().isPresent()
-        && ast.getModifier().get().getStereotype().isPresent()) {
-      ast.getModifier().get().getStereotype().get().getValues().stream()
+    if (ast.getModifierOpt().isPresent()
+        && ast.getModifierOpt().get().isStereotypePresent()) {
+      ast.getModifierOpt().get().getStereotype().getValueList().stream()
           .filter(value -> value.getName().equals(stereotypeName))
-          .filter(value -> value.getValue().isPresent())
-          .forEach(value -> values.add(value.getValue().get()));
+          .filter(value -> value.isValuePresent())
+          .forEach(value -> values.add(value.getValue()));
     }
     return values;
   }
@@ -1057,14 +1056,14 @@ public class GeneratorHelper extends TypesHelper {
   }
   
   public static String getSuperClass(ASTCDClass clazz) {
-    if (!clazz.getSuperclass().isPresent()) {
+    if (!clazz.isSuperclassPresent()) {
       return "de.monticore.ast.ASTCNode";
     }
     return clazz.printSuperClass();
   }
   
   public static String getSuperClassName(ASTCDClass clazz) {
-    if (!clazz.getSuperclass().isPresent()) {
+    if (!clazz.isSuperclassPresent()) {
       return "";
     }
     return clazz.printSuperClass();
@@ -1073,7 +1072,7 @@ public class GeneratorHelper extends TypesHelper {
   public static List<String> getValuesOfConstantEnum(ASTCDDefinition ast) {
     List<String> astConstants = new ArrayList<>();
     ASTCDEnum constants = null;
-    Iterator<ASTCDEnum> it = ast.getCDEnums().iterator();
+    Iterator<ASTCDEnum> it = ast.getCDEnumList().iterator();
     while (it.hasNext() && constants == null) {
       ASTCDEnum cdEnum = it.next();
       if (cdEnum.getName().equals(ast.getName() + CONSTANTS_ENUM)) {
@@ -1081,7 +1080,7 @@ public class GeneratorHelper extends TypesHelper {
       }
     }
     if (constants != null) {
-      for (ASTCDEnumConstant constant : constants.getCDEnumConstants()) {
+      for (ASTCDEnumConstant constant : constants.getCDEnumConstantList()) {
         astConstants.add(constant.getName());
       }
     }
@@ -1404,14 +1403,14 @@ public class GeneratorHelper extends TypesHelper {
    * @return
    */
   public static boolean isExternal(ASTCDType type, String superType) {
-    if (!type.getModifier().isPresent()) {
+    if (!type.getModifierOpt().isPresent()) {
       return false;
     }
-    if (!type.getModifier().get().getStereotype().isPresent()) {
+    if (!type.getModifierOpt().get().isStereotypePresent()) {
       return false;
     }
-    ASTStereotype stereoTypes = type.getModifier().get().getStereotype().get();
-    return stereoTypes.getValues().stream()
+    ASTStereotype stereoTypes = type.getModifierOpt().get().getStereotype();
+    return stereoTypes.getValueList().stream()
         .filter(value -> value.getName().equals(MC2CDStereotypes.EXTERNAL_TYPE.toString()))
         .filter(value -> value.getValue().equals(superType))
         .count() <= 0;
@@ -1446,9 +1445,9 @@ public class GeneratorHelper extends TypesHelper {
   }
   
   public static String getPackageName(ASTMCGrammar astGrammar, String suffix) {
-    String qualifiedGrammarName = astGrammar.getPackage().isEmpty()
+    String qualifiedGrammarName = astGrammar.getPackageList().isEmpty()
         ? astGrammar.getName()
-        : Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackage()),
+        : Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackageList()),
             astGrammar.getName());
     return Joiner.on('.').join(qualifiedGrammarName.toLowerCase(), suffix);
   }
@@ -1739,13 +1738,13 @@ public class GeneratorHelper extends TypesHelper {
   public static List<ASTProd> getDirectSuperProds(ASTNode astNode) {
     if (astNode instanceof ASTClassProd) {
       List<ASTProd> directSuperProds = resolveRuleReferences(
-          ((ASTClassProd) astNode).getSuperRule(), astNode);
+          ((ASTClassProd) astNode).getSuperRuleList(), astNode);
       directSuperProds.addAll(
-          resolveRuleReferences(((ASTClassProd) astNode).getSuperInterfaceRule(), astNode));
+          resolveRuleReferences(((ASTClassProd) astNode).getSuperInterfaceRuleList(), astNode));
       return directSuperProds;
     }
     else if (astNode instanceof ASTInterfaceProd) {
-      return resolveRuleReferences(((ASTInterfaceProd) astNode).getSuperInterfaceRule(), astNode);
+      return resolveRuleReferences(((ASTInterfaceProd) astNode).getSuperInterfaceRuleList(), astNode);
     }
     return Collections.emptyList();
   }

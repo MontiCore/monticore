@@ -38,8 +38,8 @@ public class KeywordInvalidName implements GrammarASTConstantGroupCoCo {
 
   @Override
   public void check(ASTConstantGroup a) {
-    if (!a.getUsageName().isPresent()) {
-      for (ASTConstant c : a.getConstants()) {
+    if (!a.isUsageNamePresent()) {
+      for (ASTConstant c : a.getConstantList()) {
         if (!HelperGrammar.hasValidName(c)) {
           Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT,
               c.getEnclosingScope().get().getEnclosingScope().get().getSpanningSymbol().get()

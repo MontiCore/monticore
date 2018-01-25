@@ -69,17 +69,17 @@ public class AddAttributesOfExtendedInterfacesManipulation implements
   private void addAttributesOfExtendedInterfaces(ASTCDClass cdClass) {
     List<ASTCDAttribute> attributes = new ArrayList<>();
     // TODO GV:use Cd4Analysis symboltable to get all interfaces recursively
-    for (ASTReferenceType interf : cdClass.getInterfaces()) {
+    for (ASTReferenceType interf : cdClass.getInterfaceList()) {
       if (interf instanceof ASTSimpleReferenceType) {
-        List<String> names = ((ASTSimpleReferenceType) interf).getNames();
+        List<String> names = ((ASTSimpleReferenceType) interf).getNameList();
         String interfaceName = (names.isEmpty())? "" : names.get(names.size()-1);
         if (cDInterfaces.get(interfaceName) != null) {
-          attributes.addAll(cDInterfaces.get(interfaceName).getCDAttributes());
+          attributes.addAll(cDInterfaces.get(interfaceName).getCDAttributeList());
         }
       }
     }
     for (ASTCDAttribute attr : attributes) {
-      cdClass.getCDAttributes().add(attr.deepClone());
+      cdClass.getCDAttributeList().add(attr.deepClone());
     }
   }
   

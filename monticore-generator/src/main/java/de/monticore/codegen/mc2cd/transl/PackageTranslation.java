@@ -37,7 +37,7 @@ public class PackageTranslation implements
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(
       Link<ASTMCGrammar, ASTCDCompilationUnit> rootLink) {
     
-    rootLink.target().setPackage(rootLink.source().getPackage());
+    rootLink.target().setPackageList(rootLink.source().getPackageList());
     
     return rootLink;
   }

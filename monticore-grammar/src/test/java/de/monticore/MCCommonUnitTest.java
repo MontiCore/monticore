@@ -66,13 +66,13 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testNat1() throws IOException {
-    ASTDecimal ast = parser.parseString_Decimal( " 9" ).get();
+    ASTDecimal ast = parser.parse_StringDecimal( " 9" ).get();
     assertEquals("9", ast.getSource());
     assertEquals(9, ast.getValue());
   }
   @Test
   public void testNat4() throws IOException {
-    ASTDecimal ast = parser.parseString_Decimal( " 42 " ).get();
+    ASTDecimal ast = parser.parse_StringDecimal( " 42 " ).get();
     assertEquals("42", ast.getSource());
     assertEquals(42, ast.getValue());
   }
@@ -84,7 +84,7 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testModifier() throws IOException {
-    ASTModifier ast = parser.parseString_Modifier( "# final" ).get();
+    ASTModifier ast = parser.parse_StringModifier( "# final" ).get();
     assertEquals(true, ast.isProtected());
     assertEquals(true, ast.isFinal());
     assertEquals(false, ast.isLocal());
@@ -94,13 +94,13 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testModifierStereo() throws IOException {
-    ASTModifier ast = parser.parseString_Modifier( "<<bla=\"x1\">>#+?" ).get();
+    ASTModifier ast = parser.parse_StringModifier( "<<bla=\"x1\">>#+?" ).get();
     assertEquals(true, ast.isProtected());
     assertEquals(true, ast.isPublic());
     assertEquals(true, ast.isReadonly());
     assertEquals(false, ast.isFinal());
-    assertEquals(true, ast.getStereotype().isPresent());
-    ASTStereotype sty = ast.getStereotype().get();
+    assertEquals(true, ast.isStereotypePresent());
+    ASTStereotype sty = ast.getStereotype();
     assertEquals("x1", sty.getValue("bla"));
   }
 
@@ -113,9 +113,9 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testStereoValue() throws IOException {
-    ASTStereoValue ast = parser.parseString_StereoValue( "bla=\"17\"" ).get();
+    ASTStereoValue ast = parser.parse_StringStereoValue( "bla=\"17\"" ).get();
     assertEquals("bla", ast.getName());
-    Optional<ASTStringLiteral> os = ast.getText();
+    Optional<ASTStringLiteral> os = ast.getTextOpt();
     assertEquals(true, os.isPresent());
     assertEquals("17", os.get().getValue());
     assertEquals("17", ast.getValue());
@@ -125,9 +125,9 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testStereoValue2() throws IOException {
-    ASTStereoValue ast = parser.parseString_StereoValue( "cc" ).get();
+    ASTStereoValue ast = parser.parse_StringStereoValue( "cc" ).get();
     assertEquals("cc", ast.getName());
-    Optional<ASTStringLiteral> os = ast.getText();
+    Optional<ASTStringLiteral> os = ast.getTextOpt();
     assertEquals(false, os.isPresent());
     assertEquals("", ast.getValue());
   }
@@ -136,8 +136,8 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testStereotype() throws IOException {
-    ASTStereotype ast = parser.parseString_Stereotype( "<< a1 >>" ).get();
-    List<ASTStereoValue> svl = ast.getValues();
+    ASTStereotype ast = parser.parse_StringStereotype( "<< a1 >>" ).get();
+    List<ASTStereoValue> svl = ast.getValueList();
     assertEquals(1, svl.size());
     assertEquals(true, ast.contains("a1"));
     assertEquals(false, ast.contains("bla"));
@@ -149,9 +149,9 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testStereotype2() throws IOException {
-    ASTStereotype ast = parser.parseString_Stereotype(
+    ASTStereotype ast = parser.parse_StringStereotype(
     	"<< bla, a1=\"wert1\" >>" ).get();
-    List<ASTStereoValue> svl = ast.getValues();
+    List<ASTStereoValue> svl = ast.getValueList();
     assertEquals(2, svl.size());
     assertEquals(true, ast.contains("a1"));
     assertEquals(false, ast.contains("a1",""));
@@ -162,7 +162,7 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testGetValue() throws IOException {
-    ASTStereotype ast = parser.parseString_Stereotype(
+    ASTStereotype ast = parser.parse_StringStereotype(
         "<< bla, a1=\"wert1\" >>" ).get(); 
     assertEquals("wert1", ast.getValue("a1"));
     try {
@@ -175,7 +175,7 @@ public class MCCommonUnitTest {
 
   @Test
   public void testEnding() throws IOException {
-    Optional<ASTStereotype> oast = parser.parseString_Stereotype(
+    Optional<ASTStereotype> oast = parser.parse_StringStereotype(
         "<< bla, a1=\"wert1\" > >" ); 
     assertEquals(false, oast.isPresent());
   }
@@ -188,7 +188,7 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testBasics() throws IOException {
-    ASTCompleteness ast = parser.parseString_Completeness( "(c)"  ).get();
+    ASTCompleteness ast = parser.parse_StringCompleteness( "(c)"  ).get();
     assertEquals(true, ast.isComplete());
     assertEquals(false, ast.isIncomplete());
   }
@@ -197,7 +197,7 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testBasics2() throws IOException {
-    ASTCompleteness ast = parser.parseString_Completeness( "(  ... )"  ).get();
+    ASTCompleteness ast = parser.parse_StringCompleteness( "(  ... )"  ).get();
     assertEquals(false, ast.isComplete());
     assertEquals(true, ast.isIncomplete());
     assertEquals(false, ast.isRightComplete());
@@ -208,7 +208,7 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testBasics3() throws IOException {
-    ASTCompleteness ast = parser.parseString_Completeness( "(...,c)"  ).get();
+    ASTCompleteness ast = parser.parse_StringCompleteness( "(...,c)"  ).get();
     assertEquals(false, ast.isComplete());
     assertEquals(false, ast.isIncomplete());
     assertEquals(true, ast.isRightComplete());
@@ -220,7 +220,7 @@ public class MCCommonUnitTest {
   @Test
   public void testIllegalComplete() throws IOException {
     Optional<ASTCompleteness> ast = 
-    		parser.parseString_Completeness( "(...,d)"  );
+    		parser.parse_StringCompleteness( "(...,d)"  );
     assertEquals(false, ast.isPresent());
   }
 
@@ -231,7 +231,7 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testMany() throws IOException {
-    ASTCardinality ast = parser.parseString_Cardinality("[*]").get();
+    ASTCardinality ast = parser.parse_StringCardinality("[*]").get();
     assertEquals(true, ast.isMany());
     assertEquals(0, ast.getLowerBound());
     assertEquals(0, ast.getUpperBound());
@@ -241,7 +241,7 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testLowAndStar() throws IOException {
-    ASTCardinality ast = parser.parseString_Cardinality("[7..*]").get();
+    ASTCardinality ast = parser.parse_StringCardinality("[7..*]").get();
     assertEquals(false, ast.isMany());
     assertEquals(true, ast.isNoUpperLimit());
     assertEquals(7, ast.getLowerBound());
@@ -252,7 +252,7 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testLowAndUp() throws IOException {
-    ASTCardinality ast = parser.parseString_Cardinality("[17..235]").get();
+    ASTCardinality ast = parser.parse_StringCardinality("[17..235]").get();
     assertEquals(false, ast.isMany());
     assertEquals(17, ast.getLowerBound());
     assertEquals(235, ast.getUpperBound());
@@ -262,7 +262,7 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testSpace() throws IOException {
-    ASTCardinality ast = parser.parseString_Cardinality(" [ 34 .. 15 ] ").get();
+    ASTCardinality ast = parser.parse_StringCardinality(" [ 34 .. 15 ] ").get();
     assertEquals(false, ast.isMany());
     assertEquals(34, ast.getLowerBound());
     assertEquals(15, ast.getUpperBound());
@@ -274,7 +274,7 @@ public class MCCommonUnitTest {
   // akzeptiert
   @Test
   public void testHex() throws IOException {
-    Optional<ASTCardinality> oast = parser.parseString_Cardinality(
+    Optional<ASTCardinality> oast = parser.parse_StringCardinality(
     		"[0x34..0x15]");
     assertEquals(false, oast.isPresent());
   }

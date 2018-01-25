@@ -51,10 +51,10 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
   @Override
   public ASTCDCompilationUnit apply(ASTCDCompilationUnit cdCompilationUnit) {
     for (ASTCDClass cdClass : ASTNodes.getSuccessors(cdCompilationUnit, ASTCDClass.class)) {
-      removeRedundantAttributes(cdClass.getCDAttributes());
+      removeRedundantAttributes(cdClass.getCDAttributeList());
     }
     for (ASTCDInterface cdClass : ASTNodes.getSuccessors(cdCompilationUnit, ASTCDInterface.class)) {
-      removeRedundantAttributes(cdClass.getCDAttributes());
+      removeRedundantAttributes(cdClass.getCDAttributeList());
     }
     return cdCompilationUnit;
   }
@@ -117,13 +117,13 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
     ASTSimpleReferenceType outerType = (ASTSimpleReferenceType) cdAttribute
         .getType();
 
-    if (!outerType.getTypeArguments().isPresent() || outerType
-        .getTypeArguments().get().getTypeArguments().isEmpty()) {
+    if (!outerType.isTypeArgumentsPresent() || outerType
+        .getTypeArguments().getTypeArgumentList().isEmpty()) {
       return Optional.empty();
     }
     // the 'String' in 'List<String>'
     ASTSimpleReferenceType typeArgument = (ASTSimpleReferenceType) outerType
-        .getTypeArguments().get().getTypeArguments().get(0);
+        .getTypeArguments().getTypeArgumentList().get(0);
 
     return Optional.of(typeToString(typeArgument));
   }

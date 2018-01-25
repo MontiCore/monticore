@@ -35,7 +35,7 @@ import de.monticore.types.types._ast.ASTTypeVariableDeclaration;
 public class TypesNodeIdentHelper extends LiteralsNodeIdentHelper {
   
   protected String unqualName(ASTQualifiedName ast) {
-    List<String> parts = ast.getParts();
+    List<String> parts = ast.getPartList();
     return parts.get(parts.size() - 1);
   }
   
@@ -51,9 +51,9 @@ public class TypesNodeIdentHelper extends LiteralsNodeIdentHelper {
   
   public String getIdent(ASTSimpleReferenceType a) {
     StringBuilder name = new StringBuilder();
-    for (int i = 0; i < a.getNames().size(); i++) {
-      name.append(a.getNames().get(i));
-      if (i != a.getNames().size() - 1) {
+    for (int i = 0; i < a.getNameList().size(); i++) {
+      name.append(a.getNameList().get(i));
+      if (i != a.getNameList().size() - 1) {
         name.append(".");
       }
     }
@@ -61,7 +61,7 @@ public class TypesNodeIdentHelper extends LiteralsNodeIdentHelper {
   }
   
   public String getIdent(ASTTypeParameters a) {
-    List<ASTTypeVariableDeclaration> l = a.getTypeVariableDeclarations();
+    List<ASTTypeVariableDeclaration> l = a.getTypeVariableDeclarationList();
     String n = ""; 
     if (l.isEmpty()) {
       n += "-";

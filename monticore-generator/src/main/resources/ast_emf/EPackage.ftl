@@ -62,7 +62,7 @@ public interface ${ast.getName()} extends ASTEPackage {
   </#list>
   
    <#-- generate all attributes -->  
-  <#list ast.getCDAttributes() as attribute>
+  <#list ast.getCDAttributeList() as attribute>
     <#if !genHelper.isInherited(attribute)>
     ${tc.include("ast.Constant", attribute)}
     </#if>
@@ -78,7 +78,7 @@ public interface ${ast.getName()} extends ASTEPackage {
   </#list>
     
   <#-- generate all methods -->  
-  <#list ast.getCDMethods() as method>
+  <#list ast.getCDMethodList() as method>
   ${tc.includeArgs("ast.ClassMethod", [method, ast])}
   </#list>
      

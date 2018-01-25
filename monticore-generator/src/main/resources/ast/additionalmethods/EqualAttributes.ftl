@@ -43,7 +43,7 @@ ${tc.signature("ast","astType")}
       return false;
     }
       <#-- TODO: attributes of super class - use symbol table -->
-       <#list astType.getCDAttributes()  as attribute>  
+       <#list astType.getCDAttributeList()  as attribute>  
          <#assign attributeName = genHelper.getJavaConformName(attribute.getName())>
          <#if !genHelper.isAstNode(attribute) && !genHelper.isOptionalAstNode(attribute) && !genHelper.isListAstNode(attribute)>
 	// comparing ${attributeName} 

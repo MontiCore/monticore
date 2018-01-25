@@ -56,7 +56,7 @@ public class DirectLeftRecursionDetectorTest {
   @Test
   public void testRecursiveRule() {
     // firs
-    final List<ASTClassProd> productions = astMCGrammarOptional.get().getClassProds();
+    final List<ASTClassProd> productions = astMCGrammarOptional.get().getClassProdList();
 
     // TODO: add ASTAlt parameter to isAlternativeLeftRecursive-method
     final ASTClassProd exprProduction = productions.get(0);

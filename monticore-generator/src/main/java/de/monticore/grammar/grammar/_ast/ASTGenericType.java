@@ -17,33 +17,40 @@
  * ******************************************************************************
  */
 
-package de.monticore.grammar.cocos;
-
-import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
-import de.monticore.grammar.grammar._ast.ASTConstantGroup;
-import de.monticore.grammar.grammar._cocos.GrammarASTConstantGroupCoCo;
-import de.se_rwth.commons.logging.Log;
+package de.monticore.grammar.grammar._ast;
 
 /**
- * Checks that alternatives of keywords are named.
+ * TODO: Write me!
  *
- * @author KH
+ * @author (last commit) $Author$
+ * @version $Revision$, $Date$
+ * @since TODO: add version number
  */
-public class KeywordAlternativeName implements GrammarASTConstantGroupCoCo {
+public class ASTGenericType extends ASTGenericTypeTOP {
   
-  public static final String ERROR_CODE = "0xA4019";
-  
-  public static final String ERROR_MSG_FORMAT = " The production %s must not use an alternative of keywords without naming it.";
-  
-  @Override
-  public void check(ASTConstantGroup a) {
-    if (!a.isUsageNamePresent()&& a.getConstantList().size() >1) {
-          String rulename = MCGrammarSymbolTableHelper.getEnclosingRule(a).get().getName();
-          Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, rulename),
-                  a.get_SourcePositionStart());
-
-    }
+  protected ASTGenericType() {
   }
-
-
+  
+  protected ASTGenericType(
+      int dimension,
+      java.util.List<String> names,
+      java.util.List<de.monticore.grammar.grammar._ast.ASTGenericType> genericTypes)
+  {
+    setDimension(dimension);
+    setNameList(names);
+    setGenericTypeList(genericTypes);
+  }
+  
+  public String toString() {
+    return de.monticore.grammar.HelperGrammar.printGenericType(this);
+  }
+  
+  public String getTypeName() {
+    return de.monticore.grammar.HelperGrammar.printGenericType(this);
+  }
+  
+  public boolean isExternal() {
+    return true;
+  };
+  
 }

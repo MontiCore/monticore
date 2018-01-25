@@ -63,7 +63,7 @@ public class ConstantsTranslation implements
     
     ASTCDEnum constantsEnum = CD4AnalysisNodeFactory.createASTCDEnum();
     constantsEnum.setName(rootLink.source().getName() + CONSTANTS_ENUM);
-    rootLink.target().getCDDefinition().getCDEnums().add(constantsEnum);
+    rootLink.target().getCDDefinition().getCDEnumList().add(constantsEnum);
     Set<String> grammarConstants = TransformationHelper
         .getAllGrammarConstants(rootLink.source()).stream().map(c -> lexNamer.getConstantName(c))
         .collect(Collectors.toSet());
@@ -72,7 +72,7 @@ public class ConstantsTranslation implements
     for (String grammarConstant : sortedConstants) {
       ASTCDEnumConstant constant = CD4AnalysisNodeFactory.createASTCDEnumConstant();
       constant.setName(grammarConstant);
-      constantsEnum.getCDEnumConstants().add(constant);
+      constantsEnum.getCDEnumConstantList().add(constant);
     }
     
     return rootLink;

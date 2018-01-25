@@ -48,7 +48,7 @@ public class TokenMultiplicityTest {
 
   @Test
   public void testTokenStar() {
-    List<ASTCDAttribute> attributes = testListClass.getCDAttributes();
+    List<ASTCDAttribute> attributes = testListClass.getCDAttributeList();
     String name = typeToString(attributes.get(0).getType());
     assertEquals("java.util.List", name);
   }

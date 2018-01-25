@@ -93,14 +93,14 @@ public class ${ast.getName()} extends EFactoryImpl {
     return (${genHelper.getCdName()}Package)getEPackage();
   }
     
-<#list ast.getCDAttributes() as attribute>
+<#list ast.getCDAttributeList() as attribute>
   ${tc.includeArgs("ast.Attribute", [attribute, ast])}
 </#list>
 
   protected ${ast.getName()} () {}
 
   <#-- generate all methods -->
-<#list ast.getCDMethods() as method>
+<#list ast.getCDMethodList() as method>
   ${tc.includeArgs("ast.ClassMethod", [method, ast])}
 </#list>
 

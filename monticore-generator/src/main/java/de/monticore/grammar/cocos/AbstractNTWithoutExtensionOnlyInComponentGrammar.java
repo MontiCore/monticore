@@ -42,10 +42,10 @@ public class AbstractNTWithoutExtensionOnlyInComponentGrammar implements Grammar
   @Override
   public void check(ASTMCGrammar a) {
     if (!a.isComponent()) {
-      for (ASTProd p : a.getAbstractProds()) {
+      for (ASTProd p : a.getAbstractProdList()) {
         boolean extensionFound = false;
-        for (ASTAbstractProd ep : a.getAbstractProds()) {
-          for (ASTRuleReference r : ep.getSuperRule()) {
+        for (ASTAbstractProd ep : a.getAbstractProdList()) {
+          for (ASTRuleReference r : ep.getSuperRuleList()) {
             if (p.getName().equals(r.getName())) {
               extensionFound = true;
               break;
@@ -56,8 +56,8 @@ public class AbstractNTWithoutExtensionOnlyInComponentGrammar implements Grammar
           }
         }
         if (!extensionFound) {
-          for (ASTClassProd ep : a.getClassProds()) {
-            for (ASTRuleReference r : ep.getSuperRule()) {
+          for (ASTClassProd ep : a.getClassProdList()) {
+            for (ASTRuleReference r : ep.getSuperRuleList()) {
               if (p.getName().equals(r.getName())) {
                 extensionFound = true;
                 break;

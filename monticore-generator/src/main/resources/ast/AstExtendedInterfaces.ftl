@@ -30,7 +30,7 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
-<#if ast.getInterfaces()?size == 0>  de.monticore.ast.ASTNode,
+<#if ast.getInterfaceList()?size == 0>  de.monticore.ast.ASTNode,
 <#else>
   ${ast.printInterfaces()},
 </#if>

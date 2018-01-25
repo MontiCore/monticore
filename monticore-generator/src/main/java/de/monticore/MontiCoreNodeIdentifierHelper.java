@@ -78,8 +78,8 @@ public class MontiCoreNodeIdentifierHelper extends TypesNodeIdentHelper {
   }
   
   public String getIdent(ASTAttributeInAST ast) {
-    if (ast.nameIsPresent()) {
-      return format(ast.getName().get(), nodeName(ast));
+    if (ast.isNamePresent()) {
+      return format(ast.getName(), nodeName(ast));
     }
     return format(nodeName(ast));
   }
@@ -89,8 +89,8 @@ public class MontiCoreNodeIdentifierHelper extends TypesNodeIdentHelper {
   }
   
   public String getIdent(ASTConstantGroup ast) {
-    if (ast.usageNameIsPresent()) {
-      return format(ast.getUsageName().get(), nodeName(ast));
+    if (ast.isUsageNamePresent()) {
+      return format(ast.getUsageName(), nodeName(ast));
     }
     return format(nodeName(ast));
   }
@@ -100,11 +100,11 @@ public class MontiCoreNodeIdentifierHelper extends TypesNodeIdentHelper {
   }
   
   public String getIdent(ASTGenericType ast) {
-    return format(Names.getQualifiedName(ast.getNames()), nodeName(ast));
+    return format(Names.getQualifiedName(ast.getNameList()), nodeName(ast));
   }
   
   public String getIdent(ASTGrammarReference ast) {
-    return format(Names.getSimpleName(ast.getNames()), nodeName(ast));
+    return format(Names.getSimpleName(ast.getNameList()), nodeName(ast));
   }
   
   public String getIdent(ASTITerminal ast) {

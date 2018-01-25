@@ -39,11 +39,11 @@ public class RemoveRedundantSupertypesManipulation implements UnaryOperator<ASTC
     for (ASTCDClass cdClass : ASTNodes.getSuccessors(cdCompilationUnit, ASTCDClass.class)) {
       // TODO SO <- GV: don't need it any more?
       // removeRedundantSuperTypes(cdClass.getSuperclass());
-      removeRedundantSuperTypes(cdClass.getInterfaces());
+      removeRedundantSuperTypes(cdClass.getInterfaceList());
     }
     for (ASTCDInterface cdInterface : ASTNodes.getSuccessors(cdCompilationUnit,
         ASTCDInterface.class)) {
-      removeRedundantSuperTypes(cdInterface.getInterfaces());
+      removeRedundantSuperTypes(cdInterface.getInterfaceList());
     }
     return cdCompilationUnit;
   }

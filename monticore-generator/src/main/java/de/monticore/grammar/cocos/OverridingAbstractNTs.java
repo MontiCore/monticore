@@ -51,16 +51,16 @@ public class OverridingAbstractNTs implements GrammarASTMCGrammarCoCo {
     List<MCGrammarSymbol> grammarSymbols = grammarSymbol.getSuperGrammarSymbols();
     
     for (MCGrammarSymbol s : grammarSymbols) {
-      for (ASTEnumProd p : a.getEnumProds()) {
+      for (ASTEnumProd p : a.getEnumProdList()) {
         doCheck(s.getProd(p.getName()), "enum");
       }
-      for (ASTExternalProd p : a.getExternalProds()) {
+      for (ASTExternalProd p : a.getExternalProdList()) {
         doCheck(s.getProd(p.getName()), "external");
       }
-      for (ASTInterfaceProd p : a.getInterfaceProds()) {
+      for (ASTInterfaceProd p : a.getInterfaceProdList()) {
         doCheck(s.getProd(p.getName()), "interface");
       }
-      for (ASTLexProd p : a.getLexProds()) {
+      for (ASTLexProd p : a.getLexProdList()) {
         doCheck(s.getProd(p.getName()), "lexical");
       }
     }

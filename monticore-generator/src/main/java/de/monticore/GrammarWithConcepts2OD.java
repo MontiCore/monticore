@@ -10,7 +10,7 @@ import de.monticore.grammar.concepts.antlr.antlr._od.Antlr2OD;
 import de.monticore.grammar.grammar._ast.ASTGrammarNode;
 import de.monticore.grammar.grammar._od.Grammar2OD;
 import de.monticore.grammar.grammar_withconcepts._od.Grammar_WithConcepts2OD;
-import de.monticore.grammar.grammar_withconcepts._visitor.CommonGrammar_WithConceptsDelegatorVisitor;
+import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsDelegatorVisitor;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
 import de.monticore.java.javadsl._od.JavaDSL2OD;
 import de.monticore.literals.literals._od.Literals2OD;
@@ -22,7 +22,7 @@ public class GrammarWithConcepts2OD extends Grammar_WithConcepts2OD {
     
   private Grammar_WithConceptsVisitor realThis = this;
   
-  private final CommonGrammar_WithConceptsDelegatorVisitor visitor;
+  private final Grammar_WithConceptsDelegatorVisitor visitor;
   
   private IndentPrinter printer;
   
@@ -33,13 +33,13 @@ public class GrammarWithConcepts2OD extends Grammar_WithConcepts2OD {
    */
   public GrammarWithConcepts2OD(IndentPrinter printer, ReportingRepository reporting) {
     super(printer, reporting);
-    visitor = new CommonGrammar_WithConceptsDelegatorVisitor();
-    visitor.set_de_monticore_grammar_grammar_withconcepts__visitor_Grammar_WithConceptsVisitor(this);
-    visitor.set_de_monticore_grammar_concepts_antlr_antlr__visitor_AntlrVisitor(new Antlr2OD(printer, reporting));
-    visitor.set_de_monticore_grammar_grammar__visitor_GrammarVisitor(new Grammar2OD(printer, reporting));
-    visitor.set_de_monticore_java_javadsl__visitor_JavaDSLVisitor(new JavaDSL2OD(printer, reporting));
-    visitor.set_de_monticore_literals_literals__visitor_LiteralsVisitor(new Literals2OD(printer, reporting));
-    visitor.set_de_monticore_types_types__visitor_TypesVisitor(new Types2OD(printer, reporting));
+    visitor = new Grammar_WithConceptsDelegatorVisitor();
+    visitor.setGrammar_WithConceptsVisitor(this);
+    visitor.setAntlrVisitor(new Antlr2OD(printer, reporting));
+    visitor.setGrammarVisitor(new Grammar2OD(printer, reporting));
+    visitor.setJavaDSLVisitor(new JavaDSL2OD(printer, reporting));
+    visitor.setLiteralsVisitor(new Literals2OD(printer, reporting));
+    visitor.setTypesVisitor(new Types2OD(printer, reporting));
     this.printer = printer;
   }
 

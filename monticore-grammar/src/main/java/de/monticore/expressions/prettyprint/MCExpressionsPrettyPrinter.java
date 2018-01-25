@@ -222,7 +222,7 @@ public class MCExpressionsPrettyPrinter extends TypesPrettyPrinterConcreteVisito
   public void handle(ASTSuffixExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getExpression().accept(getRealThis());
-    getPrinter().print(node.getSuffixOp().orElse(""));
+    getPrinter().print(node.getSuffixOpOpt().orElse(""));
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
 
@@ -232,7 +232,7 @@ public class MCExpressionsPrettyPrinter extends TypesPrettyPrinterConcreteVisito
   @Override
   public void handle(ASTPrefixExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    getPrinter().print(node.getPrefixOp().orElse(""));
+    getPrinter().print(node.getPrefixOpOpt().orElse(""));
     node.getExpression().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
@@ -266,7 +266,7 @@ public class MCExpressionsPrettyPrinter extends TypesPrettyPrinterConcreteVisito
   public void handle(ASTMultExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getLeftExpression().accept(getRealThis());
-    getPrinter().print(node.getMultiplicativeOp().orElse(""));
+    getPrinter().print(node.getMultiplicativeOpOpt().orElse(""));
     node.getRightExpression().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
@@ -278,7 +278,7 @@ public class MCExpressionsPrettyPrinter extends TypesPrettyPrinterConcreteVisito
   public void handle(ASTAddExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getLeftExpression().accept(getRealThis());
-    getPrinter().print(node.getAdditiveOp().orElse(""));
+    getPrinter().print(node.getAdditiveOpOpt().orElse(""));
     node.getRightExpression().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
@@ -290,7 +290,7 @@ public class MCExpressionsPrettyPrinter extends TypesPrettyPrinterConcreteVisito
   public void handle(ASTShiftExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getLeftExpression().accept(getRealThis());
-    getPrinter().print(node.getShiftOp().orElse(""));
+    getPrinter().print(node.getShiftOpOpt().orElse(""));
     node.getRightExpression().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
@@ -302,7 +302,7 @@ public class MCExpressionsPrettyPrinter extends TypesPrettyPrinterConcreteVisito
   public void handle(ASTComparisonExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getLeftExpression().accept(getRealThis());
-    getPrinter().print(node.getComparison().orElse(""));
+    getPrinter().print(node.getComparisonOpt().orElse(""));
     node.getRightExpression().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
@@ -326,7 +326,7 @@ public class MCExpressionsPrettyPrinter extends TypesPrettyPrinterConcreteVisito
   public void handle(ASTIdentityExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getLeftExpression().accept(getRealThis());
-    getPrinter().print(node.getIdentityTest().orElse(""));
+    getPrinter().print(node.getIdentityTestOpt().orElse(""));
     node.getRightExpression().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
@@ -412,7 +412,7 @@ public class MCExpressionsPrettyPrinter extends TypesPrettyPrinterConcreteVisito
   public void handle(ASTAssignmentExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getLeftExpression().accept(getRealThis());
-    getPrinter().print(node.getAssignment().orElse(""));
+    getPrinter().print(node.getAssignmentOpt().orElse(""));
     node.getRightExpression().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
@@ -425,15 +425,15 @@ public class MCExpressionsPrettyPrinter extends TypesPrettyPrinterConcreteVisito
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     if (node.isSuper()) {
       getPrinter().print(" super ");
-      node.getSuperSuffix().get().accept(getRealThis());
+      node.getSuperSuffix().accept(getRealThis());
     }
     if (node.isThis()) {
       getPrinter().print(" this ");
-      node.getSuperSuffix().get().accept(getRealThis());
+      node.getSuperSuffix().accept(getRealThis());
     }
-    if (node.getName().isPresent()) {
-      printNode(node.getName().get());
-      node.getArguments().get().accept(getRealThis());    
+    if (node.isNamePresent()) {
+      printNode(node.getName());
+      node.getArguments().accept(getRealThis());    
     }
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
@@ -444,15 +444,15 @@ public class MCExpressionsPrettyPrinter extends TypesPrettyPrinterConcreteVisito
   @Override
   public void handle(ASTSuperSuffix node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    if (node.getName().isPresent()) {
+    if (node.isNamePresent()) {
       getPrinter().print(".");
-      if (node.getTypeArguments().isPresent()) {
-        node.getTypeArguments().get().accept(getRealThis());
+      if (node.isTypeArgumentsPresent()) {
+        node.getTypeArguments().accept(getRealThis());
       }
-      printNode(node.getName().get());
+      printNode(node.getName());
     }
-    if (node.getArguments().isPresent()) {
-      node.getArguments().get().accept(getRealThis());
+    if (node.isArgumentsPresent()) {
+      node.getArguments().accept(getRealThis());
     }
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
@@ -462,7 +462,7 @@ public class MCExpressionsPrettyPrinter extends TypesPrettyPrinterConcreteVisito
   public void handle(ASTArguments a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     getPrinter().print("(");
-    printExpressionsList(a.getExpressions().iterator(), ", ");
+    printExpressionsList(a.getExpressionList().iterator(), ", ");
     getPrinter().print(")");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }

@@ -42,10 +42,10 @@ public class EnumProdsToCDEnums implements UnaryOperator<Link<ASTMCGrammar, ASTC
   }
 
   private void createEnumProdToCDEnumLinks(Link<ASTMCGrammar, ASTCDDefinition> link) {
-    for (ASTEnumProd enumProd : link.source().getEnumProds()) {
+    for (ASTEnumProd enumProd : link.source().getEnumProdList()) {
       ASTCDEnum cdEnum = CD4AnalysisNodeFactory.createASTCDEnum();
       cdEnum.setModifier(CD4AnalysisNodeFactory.createASTModifier());
-      link.target().getCDEnums().add(cdEnum);
+      link.target().getCDEnumList().add(cdEnum);
       new Link<>(enumProd, cdEnum, link);
     }
   }

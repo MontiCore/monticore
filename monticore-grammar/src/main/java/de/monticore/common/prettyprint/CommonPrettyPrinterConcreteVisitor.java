@@ -52,7 +52,7 @@ public class CommonPrettyPrinterConcreteVisitor extends TypesPrettyPrinterConcre
   public void handle(ASTStereotype a) {
     getPrinter().print("<<");
     String sep = "";
-    for (ASTStereoValue value: a.getValues()) {
+    for (ASTStereoValue value: a.getValueList()) {
       getPrinter().print(sep);
       value.accept(getRealThis());
       sep = ", ";
@@ -68,8 +68,8 @@ public class CommonPrettyPrinterConcreteVisitor extends TypesPrettyPrinterConcre
   @Override
   public void handle(ASTStereoValue a) {
     getPrinter().print(a.getName());
-    if (a.getSource().isPresent()) {
-      getPrinter().print(" = " + a.getSource().get());
+    if (a.isSourcePresent()) {
+      getPrinter().print(" = " + a.getSource());
     }
   }
   
@@ -128,8 +128,8 @@ public class CommonPrettyPrinterConcreteVisitor extends TypesPrettyPrinterConcre
   @Override
   public void handle(ASTModifier a) {
     // print stereotypes
-    if (a.getStereotype().isPresent()) {
-      a.getStereotype().get().accept(getRealThis());
+    if (a.isStereotypePresent()) {
+      a.getStereotype().accept(getRealThis());
       getPrinter().print(" ");
     }
     if (a.isPublic()) {

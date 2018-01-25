@@ -33,7 +33,7 @@ software, even if advised of the possibility of such damage.
 ${tc.signature("ast","astType")}
    <#assign genHelper = glex.getGlobalVar("astHelper")>
    <#assign astName = genHelper.getPlainName(astType)>
-   <#if astType.getCDAttributes()?size == 0>
+   <#if astType.getCDAttributeList()?size == 0>
     return o instanceof ${astName};
    <#else>
       ${astName} comp;
@@ -46,7 +46,7 @@ ${tc.signature("ast","astType")}
       return false;
     }
     <#-- TODO: attributes of super class - use symbol table -->
-    <#list astType.getCDAttributes()  as attribute>  
+    <#list astType.getCDAttributeList()  as attribute>  
        <#assign attrName = genHelper.getJavaConformName(attribute.getName())>
        <#if genHelper.isOptionalAstNode(attribute)>
     // comparing ${attrName}   

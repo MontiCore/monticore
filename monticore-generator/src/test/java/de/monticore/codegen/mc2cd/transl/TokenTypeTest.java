@@ -45,7 +45,7 @@ public class TokenTypeTest {
   }
 
   private Optional<ASTCDAttribute> getCDAttributeByName(String name) {
-    return astTest.getCDAttributes().stream()
+    return astTest.getCDAttributeList().stream()
         .filter(cdAttribute -> name.equals(cdAttribute.getName()))
         .findAny();
   }

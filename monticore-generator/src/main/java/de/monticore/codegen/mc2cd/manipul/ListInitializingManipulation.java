@@ -33,7 +33,7 @@ public class ListInitializingManipulation implements UnaryOperator<ASTCDCompilat
     
     for (ASTCDAttribute cdAttribute : ASTNodes.getSuccessors(cdCompilationUnit,
         ASTCDAttribute.class)) {
-      if ("List".equals(((ASTSimpleReferenceType) cdAttribute.getType()).getNames().get(0))) {
+      if ("List".equals(((ASTSimpleReferenceType) cdAttribute.getType()).getNameList().get(0))) {
         // TODO: Implement
       }
     }

@@ -51,7 +51,7 @@ public class RuleComponentListFinder implements ASTTraverser.Visitor{
   
   @Visit
   private void find(ASTAlt alt) {
-    for (ASTRuleComponent component: alt.getComponents()) {
+    for (ASTRuleComponent component: alt.getComponentList()) {
       if (component instanceof ASTNonTerminalSeparator) {
         map.put((ASTNonTerminalSeparator) component, alt);
       }

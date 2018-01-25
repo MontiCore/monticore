@@ -24,7 +24,7 @@ import de.monticore.expressions.prettyprint.MCExpressionsPrettyPrinter;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrNode;
 import de.monticore.grammar.grammar._ast.ASTGrammarNode;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTGrammar_WithConceptsNode;
-import de.monticore.grammar.grammar_withconcepts._visitor.CommonGrammar_WithConceptsDelegatorVisitor;
+import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsDelegatorVisitor;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
 import de.monticore.java.javadsl._ast.ASTJavaDSLNode;
 import de.monticore.java.prettyprint.JavaDSLPrettyPrinter;
@@ -38,19 +38,19 @@ public class Grammar_WithConceptsPrettyPrinter implements Grammar_WithConceptsVi
   
   private Grammar_WithConceptsVisitor realThis = this;
   
-  public final CommonGrammar_WithConceptsDelegatorVisitor visitor;
+  public final Grammar_WithConceptsDelegatorVisitor visitor;
 
   public Grammar_WithConceptsPrettyPrinter(IndentPrinter out) {
     printer = out;
     out.setIndentLength(2);
-    visitor = new CommonGrammar_WithConceptsDelegatorVisitor();
-    visitor.set_de_monticore_grammar_grammar_withconcepts__visitor_Grammar_WithConceptsVisitor(this);
-    visitor.set_de_monticore_grammar_concepts_antlr_antlr__visitor_AntlrVisitor(new AntlrPrettyPrinter(out));
-    visitor.set_de_monticore_grammar_grammar__visitor_GrammarVisitor(new GrammarPrettyPrinter(out));
-    visitor.set_de_monticore_java_javadsl__visitor_JavaDSLVisitor(new JavaDSLPrettyPrinter(out));
-    visitor.set_de_monticore_literals_literals__visitor_LiteralsVisitor(new LiteralsPrettyPrinterConcreteVisitor(out));
-    visitor.set_de_monticore_mcexpressions__visitor_MCExpressionsVisitor(new MCExpressionsPrettyPrinter(out));
-    visitor.set_de_monticore_types_types__visitor_TypesVisitor(new TypesPrettyPrinterConcreteVisitor(out));
+    visitor = new Grammar_WithConceptsDelegatorVisitor();
+    visitor.setGrammar_WithConceptsVisitor(this);
+    visitor.setAntlrVisitor(new AntlrPrettyPrinter(out));
+    visitor.setGrammarVisitor(new GrammarPrettyPrinter(out));
+    visitor.setJavaDSLVisitor(new JavaDSLPrettyPrinter(out));
+    visitor.setLiteralsVisitor(new LiteralsPrettyPrinterConcreteVisitor(out));
+    visitor.setMCExpressionsVisitor(new MCExpressionsPrettyPrinter(out));
+    visitor.setTypesVisitor(new TypesPrettyPrinterConcreteVisitor(out));
   }
   
   @Override public void setRealThis(Grammar_WithConceptsVisitor realThis) {

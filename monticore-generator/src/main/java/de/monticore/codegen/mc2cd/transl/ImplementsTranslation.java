@@ -67,12 +67,12 @@ public class ImplementsTranslation implements
       ASTCDClass cdClass, ASTMCGrammar astGrammar) {
     MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) astGrammar.getSymbol().get();
     // translates "implements"
-    for (ASTRuleReference ruleReference : classProd.getSuperInterfaceRule()) {
+    for (ASTRuleReference ruleReference : classProd.getSuperInterfaceRuleList()) {
       Optional<MCProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(ruleReference.getName());
       if (!ruleSymbol.isPresent()) {
         Log.error("0xA0137 The rule '" + ruleReference.getName() + "' does not exist!", ruleReference.get_SourcePositionStart());
       }
-      cdClass.getInterfaces().add(
+      cdClass.getInterfaceList().add(
           TransformationHelper.createSimpleReference(TransformationHelper
               .getPackageName(ruleSymbol.get())
               + "AST"
@@ -81,11 +81,11 @@ public class ImplementsTranslation implements
     
     // translates "astimplements"
     String qualifiedRuleName;
-    for (ASTGenericType typeReference : classProd.getASTSuperInterface()) {
+    for (ASTGenericType typeReference : classProd.getASTSuperInterfaceList()) {
       qualifiedRuleName = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(
               typeReference, astGrammar, cdClass);
-      cdClass.getInterfaces().add(
+      cdClass.getInterfaceList().add(
           TransformationHelper.createSimpleReference(qualifiedRuleName));
     }
   }
@@ -94,13 +94,13 @@ public class ImplementsTranslation implements
       ASTCDClass cdClass, ASTMCGrammar astGrammar) {
     // translates "implements"
     for (ASTRuleReference ruleReference : abstractProd
-        .getSuperInterfaceRule()) {
+        .getSuperInterfaceRuleList()) {
       MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) astGrammar.getSymbol().get();
       Optional<MCProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(ruleReference.getName());
       if (!ruleSymbol.isPresent()) {
         Log.error("0xA0138 The rule '" + ruleReference.getName() + "' does not exist!");
       }
-      cdClass.getInterfaces().add(
+      cdClass.getInterfaceList().add(
           TransformationHelper.createSimpleReference(TransformationHelper
               .getPackageName(ruleSymbol.get())
               + "AST"
@@ -109,11 +109,11 @@ public class ImplementsTranslation implements
     
     // translates "astimplements"
     String qualifiedRuleName;
-    for (ASTGenericType typeReference : abstractProd.getASTSuperInterface()) {
+    for (ASTGenericType typeReference : abstractProd.getASTSuperInterfaceList()) {
       qualifiedRuleName = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(
               typeReference, astGrammar, cdClass);
-      cdClass.getInterfaces().add(
+      cdClass.getInterfaceList().add(
           TransformationHelper.createSimpleReference(qualifiedRuleName));
     }
   }

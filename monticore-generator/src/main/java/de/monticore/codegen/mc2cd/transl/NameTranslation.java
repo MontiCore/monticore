@@ -88,7 +88,7 @@ public class NameTranslation implements
 
         for (Link<ASTAttributeInAST, ASTCDAttribute> link : rootLink.getLinks(ASTAttributeInAST.class,
                 ASTCDAttribute.class)) {
-            String name = link.source().getName().orElse(null);
+            String name = link.source().getNameOpt().orElse(null);
             String alternativeName = link.source().getGenericType().getTypeName();
             String nameToUse = name != null ? name : alternativeName;
             link.target().setName(nameToUse);
