@@ -149,7 +149,8 @@ public class GeneratorEngine {
    * @param node the ast node
    * @param templateArguments additional template arguments (if needed).
    */
-  public StringBuilder generate(String templateName, ASTNode node, Object... templateArguments) {
+  public StringBuilder generate(String templateName, ASTNode node,
+  				Object... templateArguments) {
     checkArgument(!isNullOrEmpty(templateName));
     TemplateController tc = setup.getNewTemplateController(templateName);
     return tc.includeArgs(templateName, node, Arrays.asList(templateArguments));
