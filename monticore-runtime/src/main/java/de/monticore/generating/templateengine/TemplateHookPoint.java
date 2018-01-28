@@ -59,6 +59,11 @@ public class TemplateHookPoint extends HookPoint {
     return controller.processTemplate(templateName, ast, this.templateArguments).toString();   
   }
   
+  // Here we handle the case that arguments come from:
+  // a) The Hookpoint itself and
+  // b) the Template call
+  // The Template-call arguments are includes first and the 
+  // Hookpoint arguments are added second
   @Override
   public String processValue(TemplateController controller, List<Object> args) {
     if (this.templateArguments.size() > 0) {
@@ -80,6 +85,11 @@ public class TemplateHookPoint extends HookPoint {
    */
   @Override
   public String processValue(TemplateController controller, ASTNode node, List<Object> args) {
+  // Here we handle the case that arguments come from:
+  // a) The Hookpoint itself and
+  // b) the Template call
+  // The Template-call arguments are includes first and the 
+  // Hookpoint arguments are added second
     if (this.templateArguments.size() > 0) {
       ArrayList<Object> l = Lists.newArrayList(args);
       l.addAll(this.templateArguments);
