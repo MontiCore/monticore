@@ -418,7 +418,7 @@ public class TemplateController {
     }
 
     if (content.length()==0) {
-      Log.warning("0xA4057 Template " + qualifiedTemplateName + " produced no content for.");
+      Log.warn("0xA4057 Template " + qualifiedTemplateName + " produced no content for.");
     }
 
     // add trace to source-model:
