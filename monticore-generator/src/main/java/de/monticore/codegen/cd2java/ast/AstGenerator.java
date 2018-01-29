@@ -79,7 +79,14 @@ public class AstGenerator {
       final Path filePath = Paths.get(Names.getPathFromPackage(astPackage),
           Names.getSimpleName(clazz.getName()) + JAVA_EXTENSION);
       if (astHelper.isAstClass(clazz)) {
-        generator.generate("ast.AstClass", filePath, clazz, clazz, astHelper.getASTBuilder(clazz));
+        generator.generate("ast.AstClass", filePath, clazz, clazz);
+
+        if(astHelper.getASTBuilder(clazz).isPresent()) {
+          final ASTCDClass astBuilder = astHelper.getASTBuilder(clazz).get();
+          Path builderFilePath = Paths.get(Names.getPathFromPackage(astPackage),
+            Names.getSimpleName(astBuilder.getName()) + JAVA_EXTENSION);
+          generator.generate("ast.AstBuilder", builderFilePath, astBuilder, astBuilder, clazz);
+        }
       }
       else if (!AstGeneratorHelper.isBuilderClass(astClassDiagram.getCDDefinition(), clazz)) {
         generator.generate("ast.Class", filePath, clazz);

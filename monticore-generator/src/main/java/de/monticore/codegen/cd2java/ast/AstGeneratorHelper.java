@@ -23,6 +23,7 @@ import java.util.Optional;
 
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.TypesHelper;
@@ -83,11 +84,11 @@ public class AstGeneratorHelper extends GeneratorHelper {
   }
   
   public static boolean isBuilderClass(ASTCDDefinition cdDefinition, ASTCDClass clazz) {
-    if (!clazz.getName().endsWith(AST_BUILDER)) {
+    if (!clazz.getName().endsWith(AST_BUILDER)
+         && !clazz.getName().endsWith(AST_BUILDER + TransformationHelper.GENERATED_CLASS_SUFFIX)) {
       return false;
     }
-    String className = AST_PREFIX
-        + clazz.getName().substring(0, clazz.getName().indexOf(AST_BUILDER));
+    String className = clazz.getName().substring(0, clazz.getName().indexOf(AST_BUILDER));
     return cdDefinition.getCDClassList().stream()
         .filter(c -> className.equals(GeneratorHelper.getPlainName(c))).findAny()
         .isPresent();
@@ -95,7 +96,11 @@ public class AstGeneratorHelper extends GeneratorHelper {
   
   public Optional<ASTCDClass> getASTBuilder(ASTCDClass clazz) {
     return getCdDefinition().getCDClassList().stream()
-        .filter(c -> c.getName().equals(getNameOfBuilderClass(clazz))).findAny();
+        .filter(c -> {
+          String name = getNameOfBuilderClass(clazz);
+          return c.getName().equals(name)
+            || c.getName().equals(name + TransformationHelper.GENERATED_CLASS_SUFFIX);
+        }).findAny();
   }
   
   public static boolean compareAstTypes(String qualifiedType, String type) {
@@ -140,7 +145,11 @@ public class AstGeneratorHelper extends GeneratorHelper {
   }
   
   public static String getNameOfBuilderClass(ASTCDClass astClass) {
-    return getASTClassNameWithoutPrefix(astClass) + AST_BUILDER;
+    String name = Names.getSimpleName(astClass.getName());
+    if(astClass.getName().endsWith(TransformationHelper.GENERATED_CLASS_SUFFIX)) {
+      name = name.substring(0, name.indexOf(TransformationHelper.GENERATED_CLASS_SUFFIX));
+    }
+    return name + AST_BUILDER;
   }
   
   public static String getSuperClassForBuilder(ASTCDClass clazz) {
@@ -148,9 +157,10 @@ public class AstGeneratorHelper extends GeneratorHelper {
       return "";
     }
     String superClassName = Names.getSimpleName(clazz.printSuperClass());
-    return superClassName.startsWith(GeneratorHelper.AST_PREFIX)
-        ? superClassName.substring(GeneratorHelper.AST_PREFIX.length())
+    return superClassName.endsWith(TransformationHelper.GENERATED_CLASS_SUFFIX)
+        ? superClassName.substring(0, superClassName.indexOf(TransformationHelper.GENERATED_CLASS_SUFFIX))
         : superClassName;
+
   }
   
   public static boolean generateSetter(ASTCDClass clazz, ASTCDAttribute cdAttribute, String typeName) {
