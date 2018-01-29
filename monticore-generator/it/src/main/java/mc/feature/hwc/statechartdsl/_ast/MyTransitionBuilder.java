@@ -19,9 +19,9 @@
 
 package mc.feature.hwc.statechartdsl._ast;
 
-public class MyTransitionBuilder extends ASTTransition.TransitionBuilder {
+public class MyTransitionBuilder extends ASTTransitionBuilder {
   
-  public ASTTransition.TransitionBuilder from(String from) {
+  public ASTTransitionBuilder from(String from) {
     this.from = from + "Suf2";
     return this;
   }

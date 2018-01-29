@@ -38,19 +38,6 @@ public class ASTState extends mc.feature.hwc.statechartdsl._ast.ASTStateTOP {
       List<ASTTransition> transitions
      ) {
     super(entryAction, exitAction, r_final, initial, name, states, transitions);
-  };
-  
-  
-  public static class StateBuilder extends ASTStateTOP.StateBuilder  {
-
-    protected StateBuilder() {};
-
-    public StateBuilder name(String name) {
-      // For testing Purposes only: we adapt the name method
-      this.name = name+"Suf1";
-      return this;
-    }
-    
-  }    
+  }
 
 }

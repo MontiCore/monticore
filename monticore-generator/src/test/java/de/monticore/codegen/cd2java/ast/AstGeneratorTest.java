@@ -59,7 +59,7 @@ public class AstGeneratorTest extends GeneratorTest {
   
   @BeforeClass
   public static void setup() {
-    //LogStub.init();
+//    LogStub.init();
     Log.enableFailQuick(false);
   }
   

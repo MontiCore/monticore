@@ -595,7 +595,7 @@ public class CdDecorator {
     newArrayList(cdDefinition.getCDClassList()).stream()
         .forEach(c -> cdTransformation.addCdClassUsingDefinition(
             cdDefinition,
-            "public static class " + AstGeneratorHelper.getNameOfBuilderClass(c) + " ;"));
+            "public class " + AstGeneratorHelper.getNameOfBuilderClass(c) + " ;"));
   }
   
   protected void addSuperInterfaces(ASTCDClass clazz) {
@@ -765,15 +765,14 @@ public class CdDecorator {
         astHelper, astClasses);
     
     String packageName = Names.getQualifiedName(cdCompilationUnit.getPackageList());
-    String importPrefix = "static " + (packageName.isEmpty() ? "" : packageName + ".")
+    String importPrefix = (packageName.isEmpty() ? "" : packageName + ".")
         + cdCompilationUnit.getCDDefinition().getName().toLowerCase()
         + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;
     
     List<String> imports = nativeClasses.stream().filter(c -> c.isModifierPresent())
         .filter(c -> !c.getModifier().isAbstract())
         .filter(c -> GeneratorHelper.getPlainName(c).startsWith(GeneratorHelper.AST_PREFIX))
-        .map(c -> importPrefix + c.getName() + "." + AstGeneratorHelper.getASTClassNameWithoutPrefix(c)
-            + AstGeneratorHelper.AST_BUILDER)
+        .map(c -> importPrefix  + AstGeneratorHelper.getNameOfBuilderClass(c))
         .collect(Collectors.toList());
     
     glex.replaceTemplate(CLASS_CONTENT_TEMPLATE, millClass, new TemplateHookPoint(
@@ -813,17 +812,17 @@ public class CdDecorator {
       }
       String className = AstGeneratorHelper.getASTClassNameWithoutPrefix(clazz);
       String methodName = StringTransformations.uncapitalize(className);
-      String toParse = "public static " + className + "Builder "
+      String toParse = "public static " + clazz.getName() + "Builder "
           + methodName
           + AstGeneratorHelper.AST_BUILDER + "() ;";
       
       HookPoint methodBody = new TemplateHookPoint("ast.AstMillBuilderMethod", className, methodName);
       replaceMethodBodyTemplate(millClass, toParse, methodBody);
       
-      toParse = "protected " + className + "Builder _"
+      toParse = "protected " + clazz.getName() + "Builder _"
           + methodName + AstGeneratorHelper.AST_BUILDER + "() ;";
       replaceMethodBodyTemplate(millClass, toParse,
-          new StringHookPoint("return new " + className + "Builder();\n"));
+          new StringHookPoint("return new " + clazz.getName() + "Builder();\n"));
     }
     
     cdDef.getCDClassList().add(millClass);

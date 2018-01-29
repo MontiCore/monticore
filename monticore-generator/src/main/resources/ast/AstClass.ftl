@@ -38,7 +38,7 @@ software, even if advised of the possibility of such damage.
   @result    mc.javadsl.JavaDSL.CompilationUnit
   
 -->
-${tc.signature("ast", "astBuilder")}
+${tc.signature("ast")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
   
 <#-- set package -->
@@ -63,10 +63,5 @@ ${ast.printModifier()} class ${ast.getName()} extends ${tc.include("ast.AstSuper
   <#list ast.getCDMethodList() as method>
     ${tc.includeArgs("ast.ClassMethod", [method, ast])}
   </#list>
-   
-  ${tc.include("ast.ClassContent")}
-  <#if astBuilder.isPresent()>
-    ${tc.includeArgs("ast.AstBuilder", [astBuilder.get(), ast])}
-  </#if>
   
 }
