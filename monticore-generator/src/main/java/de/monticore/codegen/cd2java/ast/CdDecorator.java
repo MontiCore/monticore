@@ -566,7 +566,7 @@ public class CdDecorator {
       HookPoint getMethodBody = new TemplateHookPoint("ast.additionalmethods.GetOpt", methodName);
       replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
       String nativeName = StringTransformations.capitalize(GeneratorHelper.getNativeAttributeName(attribute.getName()));
-      String methodIsPresent = "is" +nativeName + "Present";
+      String methodIsPresent = "isPresent" + nativeName;
       toParse = "public boolean " + methodIsPresent + "() ;";
       getMethodBody = new TemplateHookPoint("ast.additionalmethods.IsPresent", methodName);
       replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
