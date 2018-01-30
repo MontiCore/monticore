@@ -34,7 +34,6 @@ import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Scopes;
-import de.monticore.symboltable.references.FailedLoadingSymbol;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.langeditor.modelstates.ModelState;
 
@@ -56,7 +55,6 @@ final class SymbolTableMaintainer {
   void acceptModelState(ModelState modelState) {
     ASTNode rootNode = modelState.getRootNode();
     if (rootNode instanceof ASTMCGrammar) {
-      try {
         ASTMCGrammar mcGrammar = (ASTMCGrammar) rootNode;
         if (!mcGrammar.getSymbol().isPresent()) {
           grammarLanguage.getSymbolTableCreator(new ResolvingConfiguration(), globalScope)
@@ -66,10 +64,6 @@ final class SymbolTableMaintainer {
                 setNewSuperGrammarScope(newScope);
               });
         }
-      }
-      catch (FailedLoadingSymbol e) {
-        e.printStackTrace();
-      }
     }
   }
   

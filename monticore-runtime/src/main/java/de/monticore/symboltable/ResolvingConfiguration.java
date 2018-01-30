@@ -40,14 +40,6 @@ public final class ResolvingConfiguration {
 
   private final Set<ResolvingFilter<? extends Symbol>> defaultFilters = new LinkedHashSet<>();
 
-  /**
-   * @deprecated use {@link #addFilter(String, ResolvingFilter)} instead
-   */
-  @Deprecated
-  public void addResolver(String scopeName,
-      ResolvingFilter<? extends Symbol> resolvingFilter) {
-    addFilter(scopeName, resolvingFilter);
-  }
 
   /**
    * Adds a resolving filter to the set of filters for the specified scope name.
@@ -95,27 +87,4 @@ public final class ResolvingConfiguration {
     return ImmutableSet.copyOf(defaultFilters);
   }
 
-  /**
-   * @deprecated use {@link #addDefaultFilter(ResolvingFilter)} instead
-   */
-  @Deprecated
-  public void addTopScopeResolver(ResolvingFilter<? extends Symbol> topScopeResolvingFilter) {
-    this.addDefaultFilter(topScopeResolvingFilter);
-  }
-
-  /**
-   * @deprecated use {@link #addDefaultFilters(Collection)} instead
-   */
-  @Deprecated
-  public void addTopScopeResolvers(Collection<ResolvingFilter<? extends Symbol>> topScopeResolvingFilters) {
-    this.addDefaultFilters(topScopeResolvingFilters);
-  }
-  
-  /**
-   * @deprecated use {@link #getDefaultFilters()} instead
-   */
-  @Deprecated
-  public Set<ResolvingFilter<? extends Symbol>> getTopScopeResolvingFilters() {
-    return this.getDefaultFilters();
-  }
 }

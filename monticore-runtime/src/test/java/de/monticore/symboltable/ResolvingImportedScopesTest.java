@@ -46,12 +46,12 @@ public class ResolvingImportedScopesTest {
   public void testOnlyConsiderExplicitlyImportedScopesWhenResolvingInImportedScope() {
     final ModelingLanguage language = new EntityLanguage();
     final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addTopScopeResolvers(language.getResolvingFilters());
+    resolvingConfiguration.addDefaultFilters(language.getResolvingFilters());
 
     final GlobalScope gs = new GlobalScope(new ModelPath(), language, resolvingConfiguration);
     final ArtifactScope as = new ArtifactScope(Optional.empty(), "p", new ArrayList<>());
     gs.addSubScope(as);
-    as.setResolvingFilters(resolvingConfiguration.getTopScopeResolvingFilters());
+    as.setResolvingFilters(resolvingConfiguration.getDefaultFilters());
 
     final PropertySymbol asProp = new PropertySymbol("asProp", new EntitySymbolReference("foo", as));
     asProp.setAccessModifier(BasicAccessModifier.PROTECTED);
@@ -59,7 +59,7 @@ public class ResolvingImportedScopesTest {
 
     final EntitySymbol supEntity = new EntitySymbol("SupEntity");
     as.add(supEntity);
-    supEntity.getMutableSpannedScope().setResolvingFilters(resolvingConfiguration.getTopScopeResolvingFilters());
+    supEntity.getMutableSpannedScope().setResolvingFilters(resolvingConfiguration.getDefaultFilters());
 
     assertTrue(supEntity.getSpannedScope().resolve("asProp", PropertySymbol.KIND).isPresent());
 
@@ -71,7 +71,7 @@ public class ResolvingImportedScopesTest {
 
     final EntitySymbol subEntity = new EntitySymbol("SubEntity");
     gs.add(subEntity);
-    subEntity.getMutableSpannedScope().setResolvingFilters(resolvingConfiguration.getTopScopeResolvingFilters());
+    subEntity.getMutableSpannedScope().setResolvingFilters(resolvingConfiguration.getDefaultFilters());
 
     subEntity.setSuperClass(new EntitySymbolReference("p.SupEntity", gs));
 
@@ -86,12 +86,12 @@ public class ResolvingImportedScopesTest {
   public void testSymbolInImportedScopeHasHigherPriorityThanSymbolInEnclosingScope() {
     final ModelingLanguage language = new EntityLanguage();
     final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addTopScopeResolvers(language.getResolvingFilters());
+    resolvingConfiguration.addDefaultFilters(language.getResolvingFilters());
 
     final GlobalScope gs = new GlobalScope(new ModelPath(), language, resolvingConfiguration);
     final ArtifactScope as = new ArtifactScope(Optional.empty(), "", new ArrayList<>());
     gs.addSubScope(as);
-    as.setResolvingFilters(resolvingConfiguration.getTopScopeResolvingFilters());
+    as.setResolvingFilters(resolvingConfiguration.getDefaultFilters());
 
     final PropertySymbol asProp = new PropertySymbol("prop", new EntitySymbolReference("foo", as));
     asProp.setAccessModifier(BasicAccessModifier.PROTECTED);
@@ -99,13 +99,13 @@ public class ResolvingImportedScopesTest {
 
     final EntitySymbol subEntity = new EntitySymbol("SubEntity");
     as.add(subEntity);
-    subEntity.getMutableSpannedScope().setResolvingFilters(resolvingConfiguration.getTopScopeResolvingFilters());
+    subEntity.getMutableSpannedScope().setResolvingFilters(resolvingConfiguration.getDefaultFilters());
 
     subEntity.setSuperClass(new EntitySymbolReference("SupEntity", subEntity.getEnclosingScope()));
 
     final EntitySymbol supEntity = new EntitySymbol("SupEntity");
     gs.add(supEntity);
-    supEntity.getMutableSpannedScope().setResolvingFilters(resolvingConfiguration.getTopScopeResolvingFilters());
+    supEntity.getMutableSpannedScope().setResolvingFilters(resolvingConfiguration.getDefaultFilters());
 
     final PropertySymbol supProp = new PropertySymbol("prop", new EntitySymbolReference("bar", supEntity.getEnclosingScope()));
     supProp.setAccessModifier(BasicAccessModifier.PROTECTED);
@@ -120,26 +120,26 @@ public class ResolvingImportedScopesTest {
   public void testResolutionContinuesWIthPackageLocalModifierIfSuperTypeIsInSamePackage() {
     final ModelingLanguage language = new EntityLanguage();
     final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addTopScopeResolvers(language.getResolvingFilters());
+    resolvingConfiguration.addDefaultFilters(language.getResolvingFilters());
 
     final GlobalScope gs = new GlobalScope(new ModelPath(), language, resolvingConfiguration);
     final ArtifactScope asSub = new ArtifactScope(Optional.empty(), "p.q", new ArrayList<>());
     gs.addSubScope(asSub);
-    asSub.setResolvingFilters(resolvingConfiguration.getTopScopeResolvingFilters());
+    asSub.setResolvingFilters(resolvingConfiguration.getDefaultFilters());
 
     final EntitySymbol subEntity = new EntitySymbol("SubEntity");
     asSub.add(subEntity);
-    subEntity.getMutableSpannedScope().setResolvingFilters(resolvingConfiguration.getTopScopeResolvingFilters());
+    subEntity.getMutableSpannedScope().setResolvingFilters(resolvingConfiguration.getDefaultFilters());
 
     subEntity.setSuperClass(new EntitySymbolReference("SupEntity", subEntity.getEnclosingScope()));
 
     final ArtifactScope asSup = new ArtifactScope(Optional.empty(), "p.q", new ArrayList<>());
     gs.addSubScope(asSup);
-    asSup.setResolvingFilters(resolvingConfiguration.getTopScopeResolvingFilters());
+    asSup.setResolvingFilters(resolvingConfiguration.getDefaultFilters());
 
     final EntitySymbol supEntity = new EntitySymbol("SupEntity");
     asSup.add(supEntity);
-    supEntity.getMutableSpannedScope().setResolvingFilters(resolvingConfiguration.getTopScopeResolvingFilters());
+    supEntity.getMutableSpannedScope().setResolvingFilters(resolvingConfiguration.getDefaultFilters());
 
     final PropertySymbol supProp = new PropertySymbol("prop", new EntitySymbolReference("bar", supEntity.getEnclosingScope()));
     supProp.setAccessModifier(BasicAccessModifier.PACKAGE_LOCAL);
@@ -154,27 +154,27 @@ public class ResolvingImportedScopesTest {
   public void testResolutionContinuesWithProtectedModifierIfSuperTypeIsInDifferentPackage() {
     final ModelingLanguage language = new EntityLanguage();
     final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addTopScopeResolvers(language.getResolvingFilters());
+    resolvingConfiguration.addDefaultFilters(language.getResolvingFilters());
 
     final GlobalScope gs = new GlobalScope(new ModelPath(), language, resolvingConfiguration);
     final ArtifactScope asSub = new ArtifactScope(Optional.empty(), "p.q",  singletonList(new ImportStatement("x.y", true)));
     gs.addSubScope(asSub);
-    asSub.setResolvingFilters(resolvingConfiguration.getTopScopeResolvingFilters());
+    asSub.setResolvingFilters(resolvingConfiguration.getDefaultFilters());
 
     final EntitySymbol subEntity = new EntitySymbol("SubEntity");
     asSub.add(subEntity);
-    subEntity.getMutableSpannedScope().setResolvingFilters(resolvingConfiguration.getTopScopeResolvingFilters());
+    subEntity.getMutableSpannedScope().setResolvingFilters(resolvingConfiguration.getDefaultFilters());
 
     subEntity.setSuperClass(new EntitySymbolReference("SupEntity", subEntity.getEnclosingScope()));
 
     // Super type is in another package
     final ArtifactScope asSup = new ArtifactScope(Optional.empty(), "x.y", new ArrayList<>());
     gs.addSubScope(asSup);
-    asSup.setResolvingFilters(resolvingConfiguration.getTopScopeResolvingFilters());
+    asSup.setResolvingFilters(resolvingConfiguration.getDefaultFilters());
 
     final EntitySymbol supEntity = new EntitySymbol("SupEntity");
     asSup.add(supEntity);
-    supEntity.getMutableSpannedScope().setResolvingFilters(resolvingConfiguration.getTopScopeResolvingFilters());
+    supEntity.getMutableSpannedScope().setResolvingFilters(resolvingConfiguration.getDefaultFilters());
 
     final PropertySymbol supPropPackageLocal = new PropertySymbol("propPL", new EntitySymbolReference("bar", supEntity.getEnclosingScope()));
     supPropPackageLocal.setAccessModifier(BasicAccessModifier.PACKAGE_LOCAL);

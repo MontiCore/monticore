@@ -83,7 +83,7 @@ public class CdDecoratorTest {
   public static void setup() {
     final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
     CD4AnalysisLanguage cd4AnalysisLanguage = new CD4AnalysisLanguage();
-    resolvingConfiguration.addTopScopeResolvers(cd4AnalysisLanguage.getResolvingFilters());
+    resolvingConfiguration.addDefaultFilters(cd4AnalysisLanguage.getResolvingFilters());
     
     globalScope = new GlobalScope(modelPath, cd4AnalysisLanguage, resolvingConfiguration);
   }

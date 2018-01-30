@@ -66,7 +66,7 @@ public final class GlobalScope extends CommonScope {
           + "loading of models.");
     }
 
-    setResolvingFilters(resolvingConfiguration.getTopScopeResolvingFilters());
+    setResolvingFilters(resolvingConfiguration.getDefaultFilters());
   }
 
   public GlobalScope(final ModelPath modelPath, final ModelingLanguage language,
@@ -77,15 +77,15 @@ public final class GlobalScope extends CommonScope {
   public GlobalScope(final ModelPath modelPath, final ModelingLanguage language) {
     this(modelPath, language, new ResolvingConfiguration());
 
-    resolvingConfiguration.addTopScopeResolvers(language.getResolvingFilters());
-    setResolvingFilters(resolvingConfiguration.getTopScopeResolvingFilters());
+    resolvingConfiguration.addDefaultFilters(language.getResolvingFilters());
+    setResolvingFilters(resolvingConfiguration.getDefaultFilters());
   }
 
   public GlobalScope(final ModelPath modelPath, ModelingLanguageFamily languageFamily) {
     this(modelPath, languageFamily.getModelingLanguages(), new ResolvingConfiguration());
 
-    resolvingConfiguration.addTopScopeResolvers(languageFamily.getAllResolvers());
-    setResolvingFilters(resolvingConfiguration.getTopScopeResolvingFilters());
+    resolvingConfiguration.addDefaultFilters(languageFamily.getAllResolvers());
+    setResolvingFilters(resolvingConfiguration.getDefaultFilters());
   }
 
 

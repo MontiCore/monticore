@@ -117,7 +117,7 @@ public class ResolvingTest {
 
     final ModelingLanguage modelingLanguage = new EntityLanguage();
     final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addTopScopeResolvers(modelingLanguage.getResolvingFilters());
+    resolvingConfiguration.addDefaultFilters(modelingLanguage.getResolvingFilters());
     final ModelPath modelPath = new ModelPath(Paths.get(""));
 
     final GlobalScope globalScope = new GlobalScope(modelPath, modelingLanguage, resolvingConfiguration);
@@ -147,7 +147,7 @@ public class ResolvingTest {
 
     final ModelingLanguage modelingLanguage = new EntityLanguage();
     final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addTopScopeResolvers(modelingLanguage.getResolvingFilters());
+    resolvingConfiguration.addDefaultFilters(modelingLanguage.getResolvingFilters());
     final ModelPath modelPath = new ModelPath(Paths.get(""));
 
     final GlobalScope globalScope = new GlobalScope(modelPath, modelingLanguage, resolvingConfiguration);
@@ -166,13 +166,13 @@ public class ResolvingTest {
   @Test
   public void testCannotResolveInnerSymbolViaPartialName() {
     final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addTopScopeResolvers(new EntityLanguage().getResolvingFilters());
+    resolvingConfiguration.addDefaultFilters(new EntityLanguage().getResolvingFilters());
 
     final ArtifactScope artifactScope = new ArtifactScope(Optional.empty(), "p", new ArrayList<>());
-    artifactScope.setResolvingFilters(resolvingConfiguration.getTopScopeResolvingFilters());
+    artifactScope.setResolvingFilters(resolvingConfiguration.getDefaultFilters());
 
     final EntitySymbol entity = new EntitySymbol("Entity");
-    entity.getMutableSpannedScope().setResolvingFilters(resolvingConfiguration.getTopScopeResolvingFilters());
+    entity.getMutableSpannedScope().setResolvingFilters(resolvingConfiguration.getDefaultFilters());
     artifactScope.add(entity);
 
     final ActionSymbol action = new ActionSymbol("action");

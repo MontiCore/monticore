@@ -111,27 +111,6 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
     }
   }
 
-  /**
-   * @deprecated use {@link #addToScope(Symbol)} instead
-   */
-  @Override
-  @Deprecated
-  public void putInScope(final Symbol symbol) {
-    addToScope(symbol);
-  }
-
-  @Override
-  public void addToScope(Symbol symbol) {
-    if (!(symbol instanceof SymbolReference)){
-      if (currentScope().isPresent()) {
-        currentScope().get().add(symbol);
-      }
-      else {
-        Log.warn("0xA50212 Symbol cannot be added to current scope, since no scope exists.");
-      }
-    }
-  }
-
   @Override
   public void setLinkBetweenSymbolAndNode(Symbol symbol, ASTNode astNode) {
     // symbol -> ast
@@ -156,13 +135,16 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
     astNode.setSpannedScope(scope);
   }
 
-  /**
-   * @deprecated use {@link #addToScopeAndLinkWithNode(Symbol, ASTNode)} instead
-   */
   @Override
-  @Deprecated
-  public void putInScopeAndLinkWithAst(Symbol symbol, ASTNode astNode) {
-    addToScopeAndLinkWithNode(symbol, astNode);
+  public void addToScope(Symbol symbol) {
+    if (!(symbol instanceof SymbolReference)){
+      if (currentScope().isPresent()) {
+        currentScope().get().add(symbol);
+      }
+      else {
+        Log.warn("0xA50212 Symbol cannot be added to current scope, since no scope exists.");
+      }
+    }
   }
 
   @Override

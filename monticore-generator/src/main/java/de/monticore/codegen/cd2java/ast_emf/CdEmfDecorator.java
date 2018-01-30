@@ -74,6 +74,7 @@ import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import groovyjarjarantlr.ANTLRException;
 import transformation.ast.ASTCDRawTransformation;
+import de.monticore.generating.GeneratorSetup;
 
 /**
  * Decorates class diagrams by adding of new classes and methods using in emf
@@ -240,7 +241,7 @@ public class CdEmfDecorator extends CdDecorator {
     if (TransformationHelper.existsHandwrittenClass(targetPath,
         TransformationHelper.getAstPackageName(cdCompilationUnit)
             + factoryName)) {
-      factoryName += TransformationHelper.GENERATED_CLASS_SUFFIX;
+      factoryName += GeneratorSetup.GENERATED_CLASS_SUFFIX;
     }
     factory.setName(factoryName);
     cdDef.getCDInterfaceList().add(factory);
@@ -273,7 +274,7 @@ public class CdEmfDecorator extends CdDecorator {
     if (TransformationHelper.existsHandwrittenClass(targetPath,
         TransformationHelper.getAstPackageName(cdCompilationUnit)
             + factoryClassName)) {
-      factoryClassName += TransformationHelper.GENERATED_CLASS_SUFFIX;
+      factoryClassName += GeneratorSetup.GENERATED_CLASS_SUFFIX;
     }
     factoryClass.setName(factoryClassName);
     
@@ -301,7 +302,7 @@ public class CdEmfDecorator extends CdDecorator {
     if (TransformationHelper.existsHandwrittenClass(targetPath,
         TransformationHelper.getAstPackageName(cdCompilationUnit)
             + interfaceName)) {
-      interfaceName += TransformationHelper.GENERATED_CLASS_SUFFIX;
+      interfaceName += GeneratorSetup.GENERATED_CLASS_SUFFIX;
     }
     packageInterface.setName(interfaceName);
     cdDef.getCDInterfaceList().add(packageInterface);
@@ -365,7 +366,7 @@ public class CdEmfDecorator extends CdDecorator {
     if (TransformationHelper.existsHandwrittenClass(targetPath,
         TransformationHelper.getAstPackageName(cdCompilationUnit)
             + className)) {
-      className += TransformationHelper.GENERATED_CLASS_SUFFIX;
+      className += GeneratorSetup.GENERATED_CLASS_SUFFIX;
     }
     packageImpl.setName(className);
     

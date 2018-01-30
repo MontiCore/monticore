@@ -50,7 +50,6 @@ public interface SymbolReference<T extends Symbol> {
 
   /**
    * @return the referenced symbol
-   * @throws FailedLoadingSymbol if the referenced symbol cannot be loaded
    */
   T getReferencedSymbol();
 

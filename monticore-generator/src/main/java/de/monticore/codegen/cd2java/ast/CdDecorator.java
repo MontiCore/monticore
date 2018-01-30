@@ -80,6 +80,7 @@ import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import groovyjarjarantlr.ANTLRException;
 import transformation.ast.ASTCDTransformation;
+import de.monticore.generating.GeneratorSetup;
 
 /**
  * Decorates class diagrams by adding of new classes and methods using in ast
@@ -793,7 +794,7 @@ public class CdDecorator {
     if (TransformationHelper.existsHandwrittenClass(targetPath,
         TransformationHelper.getAstPackageName(cdCompilationUnit)
             + millClassName)) {
-      millClassName += TransformationHelper.GENERATED_CLASS_SUFFIX;
+      millClassName += GeneratorSetup.GENERATED_CLASS_SUFFIX;
       millClass.setModifier(TransformationHelper.createAbstractModifier());
     }
     millClass.setName(millClassName);
@@ -839,7 +840,7 @@ public class CdDecorator {
     if (TransformationHelper.existsHandwrittenClass(targetPath,
         TransformationHelper.getAstPackageName(cdCompilationUnit)
             + nodeFactoryName)) {
-      nodeFactoryName += TransformationHelper.GENERATED_CLASS_SUFFIX;
+      nodeFactoryName += GeneratorSetup.GENERATED_CLASS_SUFFIX;
     }
     nodeFactoryClass.setName(nodeFactoryName);
     

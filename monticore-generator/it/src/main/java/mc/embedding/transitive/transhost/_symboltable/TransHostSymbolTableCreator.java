@@ -51,7 +51,7 @@ public class TransHostSymbolTableCreator extends TransHostSymbolTableCreatorTOP 
   @Override
   public void visit(ASTTransStart node) {
     TransStartSymbol symbol = new TransStartSymbol(node.getName());
-    putInScopeAndLinkWithAst(symbol, node);
+    addToScopeAndLinkWithNode(symbol, node);
   }
   
   /**

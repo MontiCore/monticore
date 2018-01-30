@@ -68,9 +68,9 @@ public class TestHelper {
     final MontiCoreGrammarLanguage mcLanguage = new MontiCoreGrammarLanguage();
     
     final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addTopScopeResolvers(mcLanguage.getResolvingFilters());
+    resolvingConfiguration.addDefaultFilters(mcLanguage.getResolvingFilters());
     final CD4AnalysisLanguage cd4AnalysisLanguage = new CD4AnalysisLanguage();
-    resolvingConfiguration.addTopScopeResolvers(cd4AnalysisLanguage.getResolvingFilters());
+    resolvingConfiguration.addDefaultFilters(cd4AnalysisLanguage.getResolvingFilters());
     
     return new GlobalScope(modelPath, Arrays.asList(mcLanguage, cd4AnalysisLanguage), resolvingConfiguration);
   }

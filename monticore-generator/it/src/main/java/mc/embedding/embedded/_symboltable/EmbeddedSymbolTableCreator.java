@@ -49,7 +49,7 @@ public class EmbeddedSymbolTableCreator extends EmbeddedSymbolTableCreatorTOP {
   @Override public void visit(ASTText node) {
     final TextSymbol textSymbol = new TextSymbol(node.getName());
 
-    putInScopeAndLinkWithAst(textSymbol, node);
+    addToScopeAndLinkWithNode(textSymbol, node);
   }
 
   @Override public void setRealThis(EmbeddedVisitor realThis) {

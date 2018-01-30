@@ -83,19 +83,4 @@ public enum BasicAccessModifier implements AccessModifier {
       return "private";
     }    
  },
-  
-  /**
-   * Represents the absence of an access modifier, i.e., a kind of null object. This is especially
-   * for languages that do not support access modifiers. Note that this constant is different from
-   * the {@link #PACKAGE_LOCAL}, which, e.g., in Java, is only SYNTACTICALLY absent.
-   *
-   * @deprecated use {@link AccessModifier#ALL_INCLUSION} instead
-   */
-  @Deprecated ABSENT {
-    
-    @Override
-    public boolean includes(AccessModifier modifier) {
-      return true;
-    }
-  }
 }

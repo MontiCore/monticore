@@ -43,7 +43,7 @@ public class TransCompositeTest extends GeneratorIntegrationsTest {
   public void test() {
     final TransCompositeLanguage language = new TransCompositeLanguage();
     final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addTopScopeResolvers(language.getResolvingFilters());
+    resolvingConfiguration.addDefaultFilters(language.getResolvingFilters());
 
     final ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/embedding/transitive/"));
 

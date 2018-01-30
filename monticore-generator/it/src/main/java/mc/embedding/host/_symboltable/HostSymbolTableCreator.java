@@ -43,7 +43,7 @@ public class HostSymbolTableCreator extends HostSymbolTableCreatorTOP {
   @Override public void visit(ASTHost node) {
     final HostSymbol hostSymbol = new HostSymbol(node.getName());
 
-    putInScopeAndLinkWithAst(hostSymbol, node);
+    addToScopeAndLinkWithNode(hostSymbol, node);
   }
 
   @Override public void endVisit(ASTHost node) {

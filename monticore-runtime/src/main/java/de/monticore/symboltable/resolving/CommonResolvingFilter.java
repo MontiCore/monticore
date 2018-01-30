@@ -41,24 +41,8 @@ public class CommonResolvingFilter<S extends Symbol> implements ResolvingFilter<
 
   private final SymbolKind targetKind;
 
-  /**
-   * @deprecated use {@link #create(SymbolKind)} instead
-   */
-  @Deprecated
-  public static <S extends Symbol> ResolvingFilter<S> create(Class<S> symbolClass, SymbolKind symbolKind) {
-    return new CommonResolvingFilter<>(symbolClass, symbolKind);
-  }
-
   public static ResolvingFilter create(SymbolKind symbolKind) {
     return new CommonResolvingFilter<>(symbolKind);
-  }
-
-  /**
-   * @deprecated use {@link #CommonResolvingFilter(SymbolKind)} instead
-   */
-  @Deprecated
-  public CommonResolvingFilter(Class<S> symbolClass, SymbolKind targetKind) {
-    this(targetKind);
   }
 
   public CommonResolvingFilter(SymbolKind targetKind) {
@@ -95,37 +79,6 @@ public class CommonResolvingFilter<S extends Symbol> implements ResolvingFilter<
     }
 
     return foundSymbols;
-  }
-
-  @Override
-  @Deprecated
-  public Optional<Symbol> filter(ResolvingInfo resolvingInfo, String name, final List<Symbol> symbols) {
-    final Set<Symbol> resolvedSymbols = new LinkedHashSet<>();
-
-    for (Symbol symbol : symbols) {
-      if (symbol.isKindOf(targetKind)) {
-
-        if (symbol.getName().equals(name) || symbol.getFullName().equals(name)) {
-          resolvedSymbols.add(symbol);
-        }
-      }
-    }
-
-    return ResolvingFilter.getResolvedOrThrowException(resolvedSymbols);
-  }
-
-  @Override
-  @Deprecated
-  public Collection<Symbol> filter(ResolvingInfo resolvingInfo, List<Symbol> symbols) {
-      final Collection<Symbol> foundSymbols = new LinkedHashSet<>();
-
-      for (Symbol symbol : symbols) {
-        if (symbol.isKindOf(targetKind)) {
-          foundSymbols.add(symbol);
-        }
-      }
-
-      return foundSymbols;
   }
 
   @Override

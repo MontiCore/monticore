@@ -160,19 +160,7 @@ public interface Scope {
    */
   <T extends Symbol> Collection<T> resolveLocally(SymbolKind kind);
 
-  /**
-   * Resolves the symbol fulfilling the <code>predicate</code>, starting from this scope.  If no
-   * symbols are found, the resolving is continued in the enclosing scope.
-   *
-   *
-   * @param predicate the predicate that has to be fulfilled by the symbol
-   *
-   * @return the symbol fulfilling the <code>predicate</code>, starting from this scope.
-   *
-   * @deprecated use {@link #resolveMany(String, SymbolKind, Predicate)} instead
-   */
-  @Deprecated
-  Optional<? extends Symbol> resolve(SymbolPredicate predicate);
+
 
   <T extends Symbol> Optional<T> resolveDown(String name, SymbolKind kind);
 
@@ -192,10 +180,7 @@ public interface Scope {
    */
   Map<String, Collection<Symbol>> getLocalSymbols();
 
-  /**
-   * @deprecated use {@link #getLocalSymbols()} instead
-   */
-  Map<String, Collection<Symbol>> getSymbols();
+
 
   /**
    * @return number of symbols directly defined/contained in this scope (not in enclosing scope).

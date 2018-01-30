@@ -30,6 +30,6 @@ import de.monticore.symboltable.resolving.CommonResolvingFilter;
 public class HostResolvingFilter extends CommonResolvingFilter<HostSymbol> {
 
   public HostResolvingFilter() {
-    super(HostSymbol.class, HostSymbol.KIND);
+    super(HostSymbol.KIND);
   }
 }
