@@ -69,8 +69,8 @@ ${tc.include("ast.AstImports")}
       );
     }
     </#if>
-    
-    <#list genHelper.getNativeCDAttributes(astType) as attribute>
-      ${tc.includeArgs("ast.AstBuilderAttributeSetter", [attribute, ast.getName()])}
-    </#list> 
+
+    <#list ast.getCDMethodList() as method>
+      ${tc.includeArgs("ast.ClassMethod", [method, ast])}
+    </#list>
   }    

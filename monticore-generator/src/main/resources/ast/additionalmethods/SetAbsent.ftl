@@ -30,6 +30,9 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
-${tc.signature("method", "ast", "attrName")}
+${tc.signature("method", "ast", "attrName", "isBuilderClass")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
   ${attrName} = Optional.empty();
+<#if isBuilderClass>
+  return this;
+</#if>

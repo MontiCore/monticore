@@ -47,19 +47,19 @@ public class BuildersTest {
   
   @Test
   public void testMyTransitionBuilder() throws IOException {
-    ASTTransition transition = StatechartDSLMill.transitionBuilder().from("setByGenBuilder").from("xxxx").to("setByGenBuilder").build();
+    ASTTransition transition = StatechartDSLMill.transitionBuilder().setFrom("setByGenBuilder").setFrom("xxxx").setTo("setByGenBuilder").build();
     assertEquals("xxxxSuf2", transition.getFrom());
   }
   
   @Test
   public void testHWCClassGeneratedBuilder() throws IOException {
-    ASTStatechart aut = StatechartDSLMill.statechartBuilder().name("setByGeneratedBuilder").build();
+    ASTStatechart aut = StatechartDSLMill.statechartBuilder().setName("setByGeneratedBuilder").build();
     assertEquals("setByGeneratedBuilder", aut.getName());
   }
   
   @Test
   public void testHWCClassHWCBuilder() throws IOException {
-    ASTState state = StatechartDSLMill.stateBuilder().name("x2").r__final(true).name("state1").build();
+    ASTState state = StatechartDSLMill.stateBuilder().setName("x2").setFinal(true).setName("state1").build();
     assertEquals(state.getName(), "state1Suf1");
   }
   

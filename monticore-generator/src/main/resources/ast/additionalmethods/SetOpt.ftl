@@ -30,5 +30,8 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
-${tc.signature("method", "ast", "attrName")}
+${tc.signature("method", "ast", "attrName", "isBuilderClass")}
   this.${attrName} = value;
+<#if isBuilderClass>
+  return this;
+</#if>
