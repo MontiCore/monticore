@@ -55,7 +55,7 @@ public class TestODL extends GeneratorIntegrationsTest {
     
     assertEquals(instances.getObjectList().get(0).getName(), "person");
     assertTrue(instances.getObjectList().get(0).getType().deepEquals(
-        ODLMill.qualifiedNameBuilder().names(Lists.newArrayList("Person")).build()));
+        ODLMill.qualifiedNameBuilder().setNameList(Lists.newArrayList("Person")).build()));
     
     assertEquals(instances.getObjectList().get(0).getAssignmentList().size(), 4);
     assertEquals(instances.getObjectList().get(0).getAssignmentList().get(0).getName(), "birthday");
@@ -67,7 +67,7 @@ public class TestODL extends GeneratorIntegrationsTest {
         .getValue()
         .deepEquals(
             ODLMill.dateValueBuilder()
-                .date(ODLMill.dateBuilder().day("01").month("01").year("1999").build()).build()));
+                .setDate(ODLMill.dateBuilder().setDay("01").setMonth("01").setYear("1999").build()).build()));
     
     assertEquals(instances.getObjectList().get(0).getAssignmentList().get(1).getName(), "name");
     assertTrue(instances
@@ -78,7 +78,7 @@ public class TestODL extends GeneratorIntegrationsTest {
         .getValue()
         .deepEquals(
             ODLMill.stringValueBuilder()
-                .sTRING("alice").build()));
+                .setSTRING("alice").build()));
     
     assertEquals(instances.getObjectList().get(0).getAssignmentList().get(2).getName(), "id");
     assertTrue(instances
@@ -89,7 +89,7 @@ public class TestODL extends GeneratorIntegrationsTest {
         .getValue()
         .deepEquals(
             ODLMill.intValueBuilder()
-                .iNT("1").build()));
+                .setINT("1").build()));
     
     assertEquals(instances.getObjectList().get(0).getAssignmentList().get(3).getName(), "car");
     assertTrue(instances
@@ -100,11 +100,11 @@ public class TestODL extends GeneratorIntegrationsTest {
         .getValue()
         .deepEquals(
             ODLMill.referenceValueBuilder()
-                .name("car").build()));
+                .setName("car").build()));
     
     assertEquals(instances.getObjectList().get(1).getName(), "car");
     assertTrue(instances.getObjectList().get(1).getType().deepEquals(
-        ODLMill.qualifiedNameBuilder().names(Lists.newArrayList("lwc", "edl", "Car")).build()));
+        ODLMill.qualifiedNameBuilder().setNameList(Lists.newArrayList("lwc", "edl", "Car")).build()));
   }
   
 }

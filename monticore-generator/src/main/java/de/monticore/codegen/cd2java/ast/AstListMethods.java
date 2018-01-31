@@ -29,11 +29,11 @@ public enum AstListMethods {
   
   // ----------- java.util.Collection -----------------------------
   
-  clear("public void clear%s();"),
+  clear("public %s clear%s();"),//void
   
-  add("public boolean add%s(%s element);"),
+  add("public %s add%s(%s element);"),//boolean
   
-  addAll("public boolean addAll%s(Collection<? extends %s> collection);"),
+  addAll("public %s addAll%s(Collection<? extends %s> collection);"),//boolean
   
   contains("public boolean contains%s(Object element);"),
   
@@ -43,11 +43,11 @@ public enum AstListMethods {
   
   iterator("public Iterator<%s> iterator%s();"),
   
-  remove("public boolean remove%s(Object element);"),
+  remove("public %s remove%s(Object element);"),//boolean
   
-  removeAll("public boolean removeAll%s(Collection<?> collection);"),
+  removeAll("public %s removeAll%s(Collection<?> collection);"),//boolean
   
-  retainAll("public boolean retainAll%s(Collection<?> collection);"),
+  retainAll("public %s retainAll%s(Collection<?> collection);"),//boolean
   
   size("public int size%s();"),
   
@@ -57,7 +57,7 @@ public enum AstListMethods {
   
   // ----------- java.util.Collection since 1.8 --------------------
   
-  removeIf("public boolean removeIf%s(Predicate<? super %s> filter);"),
+  removeIf("public %s removeIf%s(Predicate<? super %s> filter);"),//boolean
   
   spliterator("public Spliterator<%s> spliterator%s();"),
   
@@ -67,13 +67,13 @@ public enum AstListMethods {
   
   // ----------- java.util.Iterable since 1.8 -----------------------
   
-  forEach("public void forEach%s(Consumer<? super %s> action);"),
+  forEach("public %s forEach%s(Consumer<? super %s> action);"),//void
   
   // ----------- java.util.List -------------------------------------
   
-  add_(" public void add%s(int index, %s element);"),
+  add_(" public %s add%s(int index, %s element);"),//void
   
-  addAll_("public boolean addAll%s(int index, Collection<? extends %s> collection);"),
+  addAll_("public %s addAll%s(int index, Collection<? extends %s> collection);"),//boolean
   
   get("public %s get%s(int index);"),
   
@@ -97,9 +97,9 @@ public enum AstListMethods {
   
   // ----------- java.util.List since 1.8 --------------------------
   
-  replaceAll("public void replaceAll%s(UnaryOperator<%s> operator);"),
+  replaceAll("public %s replaceAll%s(UnaryOperator<%s> operator);"),//void
   
-  sort("public void sort%s(Comparator<? super %s> comparator);");
+  sort("public %s sort%s(Comparator<? super %s> comparator);");//void
   
   // ---------------------------------------------------------------
   

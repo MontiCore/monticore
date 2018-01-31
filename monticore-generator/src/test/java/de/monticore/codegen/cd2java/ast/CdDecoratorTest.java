@@ -161,7 +161,7 @@ public class CdDecoratorTest {
   @Test
   public void addSetter() {
     for (ASTCDClass clazz : cdDefinition.getCDClassList()) {
-      cdDecorator.addSetter(clazz, astHelper);
+      cdDecorator.addSetter(clazz, astHelper, cdDefinition);
     }
     
     for (ASTCDClass clazz : cdDefinition.getCDClassList()) {

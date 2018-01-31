@@ -9,7 +9,7 @@ public class ASTStateBuilder extends ASTStateBuilderTOP {
 
   protected ASTStateBuilder() {}
 
-  public ASTStateBuilder name(String name) {
+  public ASTStateBuilder setName(String name) {
     // For testing Purposes only: we adapt the name method
     this.name = name+"Suf1";
     return this;

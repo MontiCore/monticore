@@ -78,7 +78,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
   
   public String getAstAttributeValueForBuilder(ASTCDAttribute attribute) {
     if (isOptional(attribute)) {
-      return "";
+      return "Optional.empty()";
     }
     return getAstAttributeValue(attribute);
   }
