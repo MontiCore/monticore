@@ -35,10 +35,6 @@ import de.monticore.generating.templateengine.reporting.commons.ReportingConstan
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
 
 /**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @since TODO: add version number
  */
 public class HandWrittenCodeReporter extends AReporter {
   

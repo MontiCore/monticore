@@ -27,11 +27,6 @@ import de.monticore.generating.templateengine.reporting.commons.ReportingConstan
 
 
 /**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- * @since   TODO: add version number
  *
  */
 public class ArtifactGVReporter extends ArtifactReporter {

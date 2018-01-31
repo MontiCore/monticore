@@ -149,7 +149,6 @@ public class Reporting extends Slf4jLog {
     // causing a crash, i.e., we need to catch exceptions
     if (wantsToFailQuick) {
       try {
-        // TODO TGR check if null can be provided in this case
         flush(null);
       }
       catch (Exception e) {
@@ -836,7 +835,7 @@ public class Reporting extends Slf4jLog {
    * Invoking this method causes all AReporter to close their files and all
    * OneTimeReporter to write their content into files.
    *
-   * @param ast the root node of the reported ast
+   * @param ast the root node of the reported ast, may be null on error
    */
   public static void flush(ASTNode ast) {
     if (isEnabled()) {

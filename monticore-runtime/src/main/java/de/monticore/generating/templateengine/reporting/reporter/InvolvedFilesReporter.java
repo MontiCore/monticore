@@ -187,7 +187,7 @@ public class InvolvedFilesReporter extends AReporter {
   
   @Override
   public void flush(ASTNode ast) {
-    writeContent(ast);
+    writeContent();
     writeFooter();
     super.flush(ast);
   }
@@ -205,7 +205,7 @@ public class InvolvedFilesReporter extends AReporter {
     return fileName.startsWith("file:/") ? fileName.substring(6) : fileName;
   }
   
-  private void writeContent(ASTNode ast) {
+  private void writeContent() {
     writeInputFilesHeading();
     inputFiles.forEach(f -> writeLine(f));
     

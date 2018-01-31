@@ -26,10 +26,8 @@ import de.monticore.ast.ASTNode;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * TODO: Write me!
+ * Common functionality for all reporters.
  *
- * @author (last commit) $Author$
- * @since TODO: add version number
  */
 public abstract class AReporter extends DefaultReportEventHandler {
 
@@ -96,13 +94,15 @@ public abstract class AReporter extends DefaultReportEventHandler {
 		}
 	}
 
+	/**
+   * Method is called after generation.
+   *
+	 * @param node Compilation unit AST or null on error
+	 */
 	@Override
 	public void flush(ASTNode node) {
 		closeFile();
 	}
 
-	/**
-	 * TODO: Write me!
-	 */
 	protected abstract void writeHeader();
 }

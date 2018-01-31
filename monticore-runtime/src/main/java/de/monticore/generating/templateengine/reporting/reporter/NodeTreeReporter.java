@@ -39,10 +39,6 @@ import de.monticore.generating.templateengine.reporting.commons.ReportingReposit
 import de.monticore.generating.templateengine.reporting.commons.TreePrintVisitor;
 
 /**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @since TODO: add version number
  */
 public class NodeTreeReporter extends AReporter {
   

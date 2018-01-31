@@ -34,10 +34,6 @@ import de.monticore.generating.templateengine.reporting.commons.ReportingConstan
 import de.se_rwth.commons.Names;
 
 /**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @since TODO: add version number
  */
 public class InstantiationsReporter extends AReporter {
   

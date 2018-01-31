@@ -42,10 +42,6 @@ import de.monticore.generating.templateengine.reporting.commons.TreePrintVisitor
 import de.se_rwth.commons.Names;
 
 /**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @since TODO: add version number
  */
 public class NodeTreeDecoratedReporter extends AReporter {
   
