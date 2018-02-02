@@ -279,4 +279,15 @@ public class TemplateControllerHookPointsTest {
     assertNotNull(hpValue);
     assertEquals("true", hpValue);
   }
+
+  @Test
+  public void testDefineHookPointWithArgs() {
+    glex.bindHookPoint("hp1", new TemplateHookPoint(TEMPLATE_PACKAGE + "SignatureWithOneParameter"));
+    String hpValue = glex.defineHookPoint(tc, "hp1", "A");
+    assertEquals("Name is A", hpValue);
+
+    glex.bindHookPoint("hp1", new TemplateHookPoint(TEMPLATE_PACKAGE + "SignatureWithThreeParameters"));
+    hpValue = glex.defineHookPoint(tc, "hp1", "B", 42, "LA");
+    assertEquals("Name is B, age is 42, city is LA", hpValue);
+  }
 }
