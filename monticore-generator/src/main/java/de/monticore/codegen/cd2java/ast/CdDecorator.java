@@ -25,8 +25,11 @@ import static de.se_rwth.commons.Names.getSimpleName;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -42,6 +45,7 @@ import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.mc2cd.manipul.BaseInterfaceAddingManipulation;
 import de.monticore.codegen.mc2cd.transl.ConstantsTranslation;
 import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
+import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -50,7 +54,6 @@ import de.monticore.io.paths.IterablePath;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.TypesHelper;
 import de.monticore.types.TypesPrinter;
-import de.monticore.types.types._ast.ASTImportStatement;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.types.types._ast.TypesMill;
@@ -80,7 +83,6 @@ import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import groovyjarjarantlr.ANTLRException;
 import transformation.ast.ASTCDTransformation;
-import de.monticore.generating.GeneratorSetup;
 
 /**
  * Decorates class diagrams by adding of new classes and methods using in ast
@@ -776,19 +778,20 @@ public class CdDecorator {
   protected void addMillClass(ASTCDCompilationUnit cdCompilationUnit,
       List<ASTCDClass> nativeClasses, AstGeneratorHelper astHelper) {
     
-    // Add factory-attributes for all ast classes
     Set<String> astClasses = new LinkedHashSet<>();
     nativeClasses.stream()
         .forEach(e -> astClasses.add(GeneratorHelper.getPlainName(e)));
+    Map<String, CDSymbol> superClasses = getClassesOfSuperGrammars(astHelper);
     
-    ASTCDClass millClass = createMillClass(cdCompilationUnit, nativeClasses,
+    // CreateMill 
+    ASTCDClass millClass = createMillClass(cdCompilationUnit, nativeClasses, superClasses,
         astHelper, astClasses);
     
+    // Create Import
     String packageName = Names.getQualifiedName(cdCompilationUnit.getPackageList());
     String importPrefix = (packageName.isEmpty() ? "" : packageName + ".")
         + cdCompilationUnit.getCDDefinition().getName().toLowerCase()
-        + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;
-    
+        + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;   
     List<String> imports = nativeClasses.stream().filter(c -> c.isModifierPresent())
         .filter(c -> !c.getModifier().isAbstract())
         .filter(c -> GeneratorHelper.getPlainName(c).startsWith(GeneratorHelper.AST_PREFIX))
@@ -799,10 +802,50 @@ public class CdDecorator {
         "ast.AstMill", millClass,
         millClass.isModifierPresent() && millClass.getModifier().isAbstract(),
         imports));
+    
+    // Create delegate methods for inherited classes
+    for (Entry<String, CDSymbol> entry: superClasses.entrySet()) {
+      String millName = getSimpleName(entry.getValue().getName()) + MILL;
+      String millPackage = entry.getValue().getFullName().toLowerCase()
+          + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;
+      addDelegateMethodToMill(entry.getKey(), millClass, astHelper, entry.getValue(),
+          millPackage + millName);
+    }
+    
+    // Create init for super class diagrams
+    String toParse = "public static void init();" ;
+    List<CDSymbol> overridden = Lists.newArrayList();
+    for (String clazzName: astClasses) {
+      if (superClasses.containsKey(clazzName)) {
+        overridden.add(superClasses.get(clazzName));
+      }
+    }
+    HookPoint methodBody = new TemplateHookPoint("ast.ASTMillInitMethod", cdCompilationUnit.getCDDefinition().getName(),
+        GeneratorHelper.getPlainName(millClass, ""), overridden);
+    replaceMethodBodyTemplate(millClass, toParse, methodBody);    
+
+    // Create Mill for overridden Rules
+    for (CDSymbol symbol: overridden) {
+      List<ASTCDClass> classes = Lists.newArrayList();
+      for (CDTypeSymbol overriddenType: symbol.getTypes()) {
+        if (astClasses.contains(overriddenType.getName())) {
+          classes.add((ASTCDClass) overriddenType.getAstNode().get());
+        }        
+      }
+      String millForName = symbol.getName()+ "MillFor" +cdCompilationUnit.getCDDefinition().getName();
+      String millSuperName = getSimpleName(symbol.getName()) + MILL;
+      String millSuperPackage = symbol.getFullName().toLowerCase()
+            + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;
+      millClass = createMillForSuperClass(cdCompilationUnit, millForName, symbol.getName(), classes, astHelper);
+      glex.replaceTemplate(CLASS_CONTENT_TEMPLATE, millClass, new TemplateHookPoint(
+          "ast.AstMillForSuper", millClass,
+          millClass.isModifierPresent() && millClass.getModifier().isAbstract(),
+          imports, millSuperPackage + millSuperName));
+    }
   }
   
   protected ASTCDClass createMillClass(ASTCDCompilationUnit cdCompilationUnit,
-      List<ASTCDClass> nativeClasses, AstGeneratorHelper astHelper, Set<String> astClasses) {
+      List<ASTCDClass> nativeClasses, Map<String, CDSymbol> superClasses, AstGeneratorHelper astHelper, Set<String> astClasses) {
     ASTCDDefinition cdDef = cdCompilationUnit.getCDDefinition();
     
     ASTCDClass millClass = CD4AnalysisNodeFactory.createASTCDClass();
@@ -819,6 +862,9 @@ public class CdDecorator {
     millClass.setName(millClassName);
     
     for (String clazz : astClasses) {
+      if (superClasses.containsKey(clazz)) {
+        continue;
+      }
       String toParse = "protected static " + plainName + " mill"
           + AstGeneratorHelper.getASTClassNameWithoutPrefix(clazz) + " = null;";
       cdTransformation.addCdAttributeUsingDefinition(millClass, toParse);
@@ -831,6 +877,9 @@ public class CdDecorator {
         continue;
       }
       String className = AstGeneratorHelper.getASTClassNameWithoutPrefix(clazz);
+      if (superClasses.containsKey(clazz.getName())) {
+        continue;
+      }
       String methodName = StringTransformations.uncapitalize(className);
       String toParse = "public static " + clazz.getName() + "Builder "
           + methodName
@@ -849,6 +898,45 @@ public class CdDecorator {
     return millClass;
   }
   
+  protected ASTCDClass createMillForSuperClass(ASTCDCompilationUnit cdCompilationUnit,
+      String millClassName,
+      String superName,
+      List<ASTCDClass> nativeClasses,
+      AstGeneratorHelper astHelper) {
+    ASTCDDefinition cdDef = cdCompilationUnit.getCDDefinition();
+    
+    ASTCDClass millClass = CD4AnalysisNodeFactory.createASTCDClass();
+    String plainName = millClassName;
+    
+    // Check if a handwritten mill class exists
+    if (TransformationHelper.existsHandwrittenClass(targetPath,
+        TransformationHelper.getAstPackageName(cdCompilationUnit)
+            + millClassName)) {
+      millClassName += GeneratorSetup.GENERATED_CLASS_SUFFIX;
+      millClass.setModifier(TransformationHelper.createAbstractModifier());
+    }
+    millClass.setName(millClassName);
+    millClass.setSuperclass(TransformationHelper.createSimpleReference(superName));
+ 
+    // Add builder-creating methods
+    for (ASTCDClass clazz : nativeClasses) {
+      if (AstGeneratorHelper.isBuilderClassAbstarct(clazz)
+          || !GeneratorHelper.getPlainName(clazz).startsWith(GeneratorHelper.AST_PREFIX)) {
+        continue;
+      }
+
+      String className = AstGeneratorHelper.getASTClassNameWithoutPrefix(clazz);
+      String methodName = StringTransformations.uncapitalize(className);
+      String toParse = "protected " + clazz.getName() + "Builder _"
+          + methodName + AstGeneratorHelper.AST_BUILDER + "() ;";
+      replaceMethodBodyTemplate(millClass, toParse,
+          new StringHookPoint("return new " + clazz.getName() + "Builder();\n"));
+    }
+    
+    cdDef.getCDClassList().add(millClass);
+    return millClass;
+  }
+
   protected ASTCDClass createNodeFactoryClass(ASTCDCompilationUnit cdCompilationUnit,
       List<ASTCDClass> nativeClasses, AstGeneratorHelper astHelper, Set<String> astClasses) {
     ASTCDDefinition cdDef = cdCompilationUnit.getCDDefinition();
@@ -909,6 +997,27 @@ public class CdDecorator {
     return imports;
   }
   
+  protected Map<String, CDSymbol> getClassesOfSuperGrammars( AstGeneratorHelper astHelper) {
+    HashMap<String, CDSymbol> overriddenMap = new HashMap<>();
+    if (!astHelper.getSuperGrammarCds().isEmpty()) {
+      for (CDSymbol superCd : astHelper.getAllCds(astHelper.getCdSymbol())) {
+        if (superCd.equals(astHelper.getCdSymbol())) {
+          continue;
+        }
+        for (CDTypeSymbol type : superCd.getTypes()) {
+          Optional<ASTNode> node = type.getAstNode();
+          if (!type.isAbstract() && node.isPresent() && node.get() instanceof ASTCDClass) {
+            ASTCDClass cdClass = (ASTCDClass) node.get();
+           // if ( !overriddenMap.containsKey(GeneratorHelper.getPlainName(cdClass))) {
+              overriddenMap.put(GeneratorHelper.getPlainName(cdClass), superCd);
+           // }
+          }
+        }
+      }
+    }
+    return overriddenMap;
+  }
+
   /**
    * TODO: Write me!
    * 
@@ -1200,6 +1309,26 @@ public class CdDecorator {
             paramCall.toString()));
     glex.replaceTemplate(ERROR_IFNULL_TEMPLATE, createMethod, new StringHookPoint(""));
     
+  }
+  
+  /**
+   * TODO: Write me!
+   * 
+   * @param astHelper
+   * @param cdSymbol
+   * @param delegateFactoryName
+   * @param cdClass
+   * @param nodeFactoryForSuperCd
+   */
+  protected void addDelegateMethodToMill(String name, ASTCDClass nodeMill,
+      AstGeneratorHelper astHelper, CDSymbol cdSymbol, String delegateMillName) {
+    String className = StringTransformations.uncapitalize(AstGeneratorHelper.getASTClassNameWithoutPrefix(name) + "Builder");
+    String toParse = "public static " + cdSymbol.getFullName().toLowerCase()
+        + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT + name + "Builder " + className
+        + "() ;";
+    HookPoint methodBody = new TemplateHookPoint("ast.ASTMillDelegateMethod",
+        delegateMillName, className);
+    replaceMethodBodyTemplate(nodeMill, toParse, methodBody);    
   }
   
   /**

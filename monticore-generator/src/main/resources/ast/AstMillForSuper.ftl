@@ -30,7 +30,7 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
-${tc.signature("ast", "isTop", "astImports")}
+${tc.signature("ast", "isTop", "astImports", "superClass")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
 <#assign plainName = genHelper.getPlainName(ast, "")>
 
@@ -44,27 +44,8 @@ package ${genHelper.getAstPackage()};
 import ${astImport};
 </#list>
 
-public <#if isTop>abstract </#if> class ${ast.getName()} {
-
-  private static ${plainName} getMill() {
-    if (mill == null) {
-      mill = new ${plainName}();
-    }
-    return mill;
-  }
-  
-  protected static ${plainName} mill = null;
-
-  public static void init(${plainName} a) {
-    mill = a;
-  }
-    
-
-<#list ast.getCDAttributeList() as attribute>
- ${tc.includeArgs("ast.Attribute", [attribute, ast])}
-</#list>
-
-  protected ${ast.getName()} () {}
+public <#if isTop>abstract </#if> class ${ast.getName()} extends ${superClass} {
+   
 
 <#list ast.getCDMethodList() as method>
  ${tc.includeArgs("ast.ClassMethod", [method, ast])}
