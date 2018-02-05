@@ -110,33 +110,14 @@ public class CommonScope implements MutableScope {
   public List<MutableScope> getSubScopes() {
     return ImmutableList.copyOf(subScopes);
   }
+  
+
 
   public void addSubScope(MutableScope subScope) {
     if (!subScopes.contains(subScope)) {
       subScopes.add(subScope);
       subScope.setEnclosingScope(this);
     }
-  }
-
-
-  /**
-   * Removes the sub scope <code>subScope</code>.
-   * @param subScope the sub scope to be removed
-   *
-   */
-  public void removeSubScope(MutableScope subScope) {
-    if (subScopes.contains(subScope)) {
-      subScopes.remove(subScope);
-      subScope.setEnclosingScope(null);
-    }
-  }
-
-  /**
-   * @deprecated use {@link #add(Symbol)} instead
-   */
-  @Deprecated
-  public void define(Symbol symbol) {
-    add(symbol);
   }
 
   public void add(Symbol symbol) {
@@ -152,6 +133,18 @@ public class CommonScope implements MutableScope {
     symbol.setEnclosingScope(this);
   }
 
+  /**
+   * Removes the sub scope <code>subScope</code>.
+   * @param subScope the sub scope to be removed
+   *
+   */
+  public void removeSubScope(MutableScope subScope) {
+    if (subScopes.contains(subScope)) {
+      subScopes.remove(subScope);
+      subScope.setEnclosingScope(null);
+    }
+  }
+
   @Override
   public void remove(Symbol symbol) {
     if (symbols.containsKey(symbol.getName())) {
@@ -161,8 +154,8 @@ public class CommonScope implements MutableScope {
       }
     }
   }
-
-  @Override
+  
+  
   public <T extends Symbol> Optional<T> resolve(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier) {
     return getResolvedOrThrowException(resolveMany(resolvingInfo, name, kind, modifier));
   }
@@ -288,44 +281,6 @@ public class CommonScope implements MutableScope {
   }
 
   /**
-   * @see Scope#resolve(SymbolPredicate)
-   * @deprecated use {@link #resolveMany(String, SymbolKind, Predicate)} instead
-   */
-  @Deprecated
-  @Override
-  public Optional<? extends Symbol> resolve(SymbolPredicate predicate) {
-    final Collection<Symbol> allSymbols = Scopes.getLocalSymbolsAsCollection(this);
-
-    Set<Symbol> result = new LinkedHashSet<>(allSymbols.stream().filter(predicate).collect(Collectors.toSet()));
-
-    final Optional<? extends Symbol> resolvedFromEnclosing = continueWithEnclosingScope(predicate, result);
-    if (resolvedFromEnclosing.isPresent()) {
-      result.add(resolvedFromEnclosing.get());
-    }
-
-    return getResolvedOrThrowException(result);
-  }
-
-  protected Optional<? extends Symbol> continueWithEnclosingScope(SymbolPredicate predicate, Set<Symbol> result) {
-    if (getEnclosingScope().isPresent()) {
-      return continueWithScope(getEnclosingScope().get(), predicate, result);
-    }
-
-    return Optional.empty();
-  }
-
-  protected Optional<? extends Symbol> continueWithScope(MutableScope scope, SymbolPredicate predicate, Set<Symbol> result) {
-    if (checkIfContinueWithEnclosingScope(!result.isEmpty())) {
-      Optional<? extends Symbol> resolvedFromParent = scope.resolve(predicate);
-
-      if (resolvedFromParent.isPresent() && isNotSymbolShadowed(result, resolvedFromParent.get())) {
-        return resolvedFromParent;
-      }
-    }
-    return Optional.empty();
-  }
-
-  /**
    * Returns true, if current scope should continue with resolving. By default,
    * if symbols are already found and the current scope is a shadowing scope,
    * the resolving process is not continued.
@@ -340,23 +295,9 @@ public class CommonScope implements MutableScope {
     return !(foundSymbols && isShadowingScope());
   }
 
-  /**
-   * @deprecated use {@link #checkIfContinueWithEnclosingScope(boolean)} instead
-   */
-  @Deprecated
-  protected boolean checkIfContinueWithEnclosing(boolean foundSymbols) {
-    return checkIfContinueWithEnclosingScope(foundSymbols);
-  }
-
   @Override
   public Map<String, Collection<Symbol>> getLocalSymbols() {
     return ImmutableMap.copyOf(symbols);
-  }
-
-  @Override
-  @Deprecated
-  public Map<String, Collection<Symbol>> getSymbols() {
-    return getLocalSymbols();
   }
 
   @Override

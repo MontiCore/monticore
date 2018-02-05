@@ -55,6 +55,11 @@ public <#if isTop>abstract </#if> class ${ast.getName()} {
   
   protected static ${plainName} mill = null;
 
+  public static void init(${plainName} a) {
+    mill = a;
+  }
+    
+
 <#list ast.getCDAttributeList() as attribute>
  ${tc.includeArgs("ast.Attribute", [attribute, ast])}
 </#list>

@@ -37,10 +37,6 @@ import de.monticore.generating.templateengine.reporting.commons.ReportingReposit
 import de.se_rwth.commons.Names;
 
 /**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @since TODO: add version number
  */
 public class HookPointReporter extends AReporter {
   

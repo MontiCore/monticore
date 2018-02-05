@@ -84,8 +84,6 @@ public final class TransformationHelper {
   
   public static final String DEFAULT_FILE_EXTENSION = ".java";
   
-  public final static String GENERATED_CLASS_SUFFIX = "TOP";
-  
   public static final String AST_PREFIX = "AST";
   
   public static final String AST_PACKAGE_SUFFIX = "_ast";

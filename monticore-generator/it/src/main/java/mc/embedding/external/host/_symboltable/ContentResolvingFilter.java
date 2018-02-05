@@ -30,6 +30,6 @@ import de.monticore.symboltable.resolving.CommonResolvingFilter;
 public class ContentResolvingFilter extends CommonResolvingFilter<ContentSymbol> {
 
   public ContentResolvingFilter() {
-    super(ContentSymbol.class, ContentSymbol.KIND);
+    super(ContentSymbol.KIND);
   }
 }

@@ -42,6 +42,7 @@ import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Scopes;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
+import de.monticore.generating.GeneratorSetup;
 
 /**
  * TODO: Write me!
@@ -229,7 +230,7 @@ public class ParserGenerator {
     String parserWrapperSuffix = TransformationHelper.existsHandwrittenClass(handcodedPath,
             GeneratorHelper.getDotPackageName(
                     GeneratorHelper.getPackageName(astGrammar, PARSER_PACKAGE)) + astGrammar.getName()
-                    + PARSER_WRAPPER) ? TransformationHelper.GENERATED_CLASS_SUFFIX : "";
+                    + PARSER_WRAPPER) ? GeneratorSetup.GENERATED_CLASS_SUFFIX : "";
     final Path path = Paths.get(
             Names.getPathFromPackage(GeneratorHelper.getPackageName(astGrammar, PARSER_PACKAGE)),
             astGrammar.getName() + "Parser" + parserWrapperSuffix + ".java");

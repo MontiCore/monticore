@@ -35,10 +35,6 @@ import de.monticore.generating.templateengine.reporting.commons.ReportingConstan
 import de.se_rwth.commons.SourcePosition;
 
 /**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @since TODO: add version number
  */
 public class NodeTypesReporter extends AReporter {
   

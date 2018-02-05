@@ -135,26 +135,6 @@ public class CommonJTypeScope extends CommonScope {
   }
 
   @Override
-  @Deprecated
-  public Optional<? extends Symbol> resolve(final SymbolPredicate predicate) {
-    Optional<? extends Symbol> resolvedSymbol = super.resolve(predicate);
-
-    if (!resolvedSymbol.isPresent()) {
-      final JTypeSymbol spanningSymbol = getSpanningSymbol().get();
-      final Optional<? extends JTypeReference<? extends JTypeSymbol>> optSuperClass = spanningSymbol.getSuperClass();
-
-      if (optSuperClass.isPresent()) {
-        final JTypeSymbol superClass = optSuperClass.get().getReferencedSymbol();
-
-        Log.trace("Continue in scope of super class " + superClass.getName(), CommonJTypeScope.class.getSimpleName());
-        resolvedSymbol = superClass.getSpannedScope().resolve(predicate);
-      }
-    }
-
-    return resolvedSymbol;
-  }
-
-  @Override
   public <T extends Symbol> Optional<T> resolveImported(String name, SymbolKind kind, AccessModifier modifier) {
     final Collection<T> resolvedSymbols = resolveManyLocally(new ResolvingInfo(getResolvingFilters()), name, kind, modifier, x -> true);
 

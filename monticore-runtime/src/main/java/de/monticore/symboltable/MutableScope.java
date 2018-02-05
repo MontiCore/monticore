@@ -35,13 +35,7 @@ import de.monticore.symboltable.resolving.ResolvingInfo;
  */
 public interface MutableScope extends Scope {
 
-  /**
-   *
-   * @deprecated
-   */
-  @Deprecated
-  <T extends Symbol> Optional<T> resolve(ResolvingInfo resolvingInfo, String name,
-      SymbolKind kind, AccessModifier modifier);
+
 
   <T extends Symbol> Collection<T> resolveDownMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier, Predicate<Symbol> predicate);
 
@@ -73,12 +67,6 @@ public interface MutableScope extends Scope {
    * method scope.
    */
   void setSpanningSymbol(ScopeSpanningSymbol symbol);
-
-  /**
-   * @deprecated use {@link #add(Symbol)} instead
-   */
-  @Deprecated
-  void define(Symbol symbol);
 
   /**
    * Adds the symbol to this scope. Also, this scope is set as the symbol's enclosing scope.

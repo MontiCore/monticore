@@ -41,6 +41,7 @@ import de.monticore.symboltable.mocks.languages.scandentity.State2EntityTransiti
 import de.monticore.symboltable.mocks.languages.statechart.StateChartSymbol;
 import de.monticore.symboltable.mocks.languages.statechart.StateSymbol;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -86,7 +87,7 @@ public class AdaptedResolvingTest {
     assertTrue(entity2state instanceof Entity2StateAdapter);
     assertSame(entity, ((Entity2StateAdapter) entity2state).getAdaptee());
   }
-
+  
   @Test
   public void testAdaptedResolvingInDifferentScope() {
     final MutableScope parentScope = new CommonScope(true);
@@ -130,7 +131,6 @@ public class AdaptedResolvingTest {
     assertSame(entity, ((Entity2StateAdapter) entity2state).getAdaptee());
   }
 
-
   @Test
   public void testTransitiveAdaptedResolvingInSameScope() {
     final MutableScope scope = new CommonScope(true);
@@ -164,7 +164,6 @@ public class AdaptedResolvingTest {
     // (Statechart)
     assertSame(sc, adap2.getAdaptee());
   }
-
   @Test
   public void testCircularAdaptedResolvingDependencies() {
     final MutableScope scope = new CommonScope(true);
@@ -199,7 +198,7 @@ public class AdaptedResolvingTest {
     assertTrue(entity2sc instanceof Entity2ScAdapter);
     assertSame(entity, ((Entity2ScAdapter) entity2sc).getAdaptee());
   }
-
+ 
   @Test
   public void testTransitiveCircularAdaptedResolvingDependencies() {
     final MutableScope scope = new CommonScope(true);

@@ -32,19 +32,26 @@ software, even if advised of the possibility of such damage.
 -->
 ${tc.signature("ast", "astType")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
+
+<#-- set package -->
+package ${genHelper.getAstPackage()};
+
+<#-- handle imports from model -->
+${tc.include("ast.AstImports")}
+
  /**
    * Builder for {@link ${astType.getName()}}.
    */
- 
+
   <#assign abstract = "">
   <#if genHelper.isBuilderClassAbstarct(astType)>
     <#assign abstract = "abstract">
   </#if>
   <#assign extends = "">
   <#if astType.isSuperclassPresent() && !genHelper.isSuperClassExternal(astType)>
-    <#assign extends = "extends " + genHelper.getSuperClassName(astType) + "." + genHelper.getSuperClassForBuilder(astType) + "Builder">
+    <#assign extends = "extends " + astType.printSuperClass() + "Builder">
   </#if>
-  public ${abstract} static class ${ast.getName()} ${extends} {
+  public ${abstract} class ${ast.getName()} ${extends} {
   <#list astType.getCDAttributeList() as attribute>
     <#if !genHelper.isInherited(attribute) && !genHelper.isAdditionalAttribute(attribute)>
     ${tc.include("ast.BuilderAttribute", attribute)}
@@ -62,8 +69,8 @@ ${tc.signature("ast", "astType")}
       );
     }
     </#if>
-    
-    <#list genHelper.getNativeCDAttributes(astType) as attribute>
-      ${tc.includeArgs("ast.AstBuilderAttributeSetter", [attribute, ast.getName()])}
-    </#list> 
+
+    <#list ast.getCDMethodList() as method>
+      ${tc.includeArgs("ast.ClassMethod", [method, ast])}
+    </#list>
   }    

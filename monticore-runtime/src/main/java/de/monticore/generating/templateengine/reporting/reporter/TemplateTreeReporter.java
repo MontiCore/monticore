@@ -34,10 +34,6 @@ import de.monticore.generating.templateengine.reporting.commons.ReportingHelper;
 import de.se_rwth.commons.Names;
 
 /**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @since TODO: add version number
  */
 public class TemplateTreeReporter extends AReporter {
   
@@ -217,11 +213,6 @@ public class TemplateTreeReporter extends AReporter {
     }
   }
   
-  /**
-   * TODO: Write me!
-   * 
-   * @param hp
-   */
   private void callHP(HookPoint hp) {
     if (hp != null) {
       String line = getIndent();

@@ -87,7 +87,7 @@ public class SymbolTableCreatorTest {
 
     
     final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addTopScopeResolvers(new EntityLanguage().getResolvingFilters());
+    resolvingConfiguration.addDefaultFilters(new EntityLanguage().getResolvingFilters());
 
     final MutableScope globalScope = new GlobalScope(new ModelPath(), new ArrayList<>(), resolvingConfiguration);
 

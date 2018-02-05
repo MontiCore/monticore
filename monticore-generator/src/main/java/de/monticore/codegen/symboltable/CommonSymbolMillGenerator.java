@@ -15,6 +15,7 @@ import de.se_rwth.commons.Names;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import de.monticore.generating.GeneratorSetup;
 
 import static de.monticore.codegen.GeneratorHelper.getSimpleTypeNameToGenerate;
 import static de.se_rwth.commons.Names.getSimpleName;
@@ -47,8 +48,8 @@ public class CommonSymbolMillGenerator implements SymbolMillGenerator {
       String symbolName = getSimpleName(symbol.getFullName() + "Symbol");
       String symbolBuilderName = getSimpleName(symbol.getFullName() + "SymbolBuilder");
       if (genHelper.existsHandwrittenSymbolClass(symbol, handCodedPath)) {
-        symbolName += TransformationHelper.GENERATED_CLASS_SUFFIX;
-        symbolBuilderName = getSimpleName(symbol.getFullName() + "Symbol" + TransformationHelper.GENERATED_CLASS_SUFFIX + "Builder");
+        symbolName += GeneratorSetup.GENERATED_CLASS_SUFFIX;
+        symbolBuilderName = getSimpleName(symbol.getFullName() + "Symbol" + GeneratorSetup.GENERATED_CLASS_SUFFIX + "Builder");
       }
       List<String> qualifier = Arrays.asList(genHelper.getTargetPackage(), symbolName, symbolBuilderName);
       String importStatement = Names.getQualifiedName(qualifier);

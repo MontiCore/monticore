@@ -36,10 +36,6 @@ import de.monticore.generating.templateengine.reporting.commons.MapUtil;
 import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
 
 /**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @since TODO: add version number
  */
 public class VariablesReporter extends AReporter {
   

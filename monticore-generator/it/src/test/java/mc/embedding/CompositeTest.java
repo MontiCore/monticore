@@ -42,7 +42,7 @@ public class CompositeTest extends GeneratorIntegrationsTest {
   public void test() {
     final CompositeLanguage language = new CompositeLanguage();
     final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addTopScopeResolvers(language.getResolvingFilters());
+    resolvingConfiguration.addDefaultFilters(language.getResolvingFilters());
 
     final ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/embedding"));
 

@@ -50,9 +50,9 @@ public class ASTBuilderTest extends GeneratorIntegrationsTest {
     
     // Create ASTTransition by Builder
     ASTTransition transition = FeatureDSLMill.transitionBuilder().
-        from(from).
-        activate(activate).
-        to(to).build();
+        setFrom(from).
+        setActivate(activate).
+        setTo(to).build();
     
     assertEquals(from, transition.getFrom());
     assertEquals(activate, transition.getActivate());

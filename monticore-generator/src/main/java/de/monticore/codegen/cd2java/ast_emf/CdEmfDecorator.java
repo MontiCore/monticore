@@ -74,6 +74,7 @@ import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import groovyjarjarantlr.ANTLRException;
 import transformation.ast.ASTCDRawTransformation;
+import de.monticore.generating.GeneratorSetup;
 
 /**
  * Decorates class diagrams by adding of new classes and methods using in emf
@@ -144,13 +145,21 @@ public class CdEmfDecorator extends CdDecorator {
     for (ASTCDClass clazz : nativeClasses) {
       addConstructors(clazz, astHelper);
       addAdditionalMethods(clazz, astHelper);
-      addListMethods(clazz, astHelper);
+      addListMethods(clazz, astHelper, cdDefinition);
  //     addAdditionalAttributes(clazz, astHelper);
       addGetter(clazz, astHelper);
       addSetter(clazz, astHelper);
-      addOptionalMethods(clazz, astHelper);
+      addOptionalMethods(clazz, astHelper, cdDefinition);
       addSymbolGetter(clazz, astHelper);
       addNodeGetter(clazz, astHelper);
+
+      Optional<ASTCDClass> builder = astHelper.getASTBuilder(clazz);
+      if(builder.isPresent()) {
+        addListMethods(builder.get(), astHelper, cdDefinition);
+        addGetter(builder.get(), astHelper);
+        addSetter(builder.get(), astHelper, cdDefinition);
+        addOptionalMethods(builder.get(), astHelper, cdDefinition);
+      }
       
       glex.replaceTemplate("ast.AstImports", clazz, new TemplateHookPoint("ast_emf.AstEImports"));
     }
@@ -240,7 +249,7 @@ public class CdEmfDecorator extends CdDecorator {
     if (TransformationHelper.existsHandwrittenClass(targetPath,
         TransformationHelper.getAstPackageName(cdCompilationUnit)
             + factoryName)) {
-      factoryName += TransformationHelper.GENERATED_CLASS_SUFFIX;
+      factoryName += GeneratorSetup.GENERATED_CLASS_SUFFIX;
     }
     factory.setName(factoryName);
     cdDef.getCDInterfaceList().add(factory);
@@ -273,7 +282,7 @@ public class CdEmfDecorator extends CdDecorator {
     if (TransformationHelper.existsHandwrittenClass(targetPath,
         TransformationHelper.getAstPackageName(cdCompilationUnit)
             + factoryClassName)) {
-      factoryClassName += TransformationHelper.GENERATED_CLASS_SUFFIX;
+      factoryClassName += GeneratorSetup.GENERATED_CLASS_SUFFIX;
     }
     factoryClass.setName(factoryClassName);
     
@@ -301,7 +310,7 @@ public class CdEmfDecorator extends CdDecorator {
     if (TransformationHelper.existsHandwrittenClass(targetPath,
         TransformationHelper.getAstPackageName(cdCompilationUnit)
             + interfaceName)) {
-      interfaceName += TransformationHelper.GENERATED_CLASS_SUFFIX;
+      interfaceName += GeneratorSetup.GENERATED_CLASS_SUFFIX;
     }
     packageInterface.setName(interfaceName);
     cdDef.getCDInterfaceList().add(packageInterface);
@@ -365,7 +374,7 @@ public class CdEmfDecorator extends CdDecorator {
     if (TransformationHelper.existsHandwrittenClass(targetPath,
         TransformationHelper.getAstPackageName(cdCompilationUnit)
             + className)) {
-      className += TransformationHelper.GENERATED_CLASS_SUFFIX;
+      className += GeneratorSetup.GENERATED_CLASS_SUFFIX;
     }
     packageImpl.setName(className);
     

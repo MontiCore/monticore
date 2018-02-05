@@ -312,38 +312,6 @@ public class TemplateController {
   }
 
   /**
-   * Processes the template with a list of additional arguments. This method is
-   * package default and should only be called by the TemplateHookPoint class.
-   *
-   * @param templateName the template name
-   * @param templateArguments the template arguments
-   * @return
-   */
-  StringBuilder includeArgsWithoutForwarding(String templateName, List<Object> templateArguments) {
-    StringBuilder ret = new StringBuilder();
-
-    ret.append(processTemplate(templateName, getAST(), templateArguments));
-
-    return ret;
-  }
-
-  /**
-   * Processes the template with a list of additional arguments. This method is
-   * package default and should only be called by the TemplateHookPoint class.
-   *
-   * @param templateName the template name
-   * @param templateArguments the template arguments
-   * @return
-   */
-  StringBuilder includeArgsWithoutForwarding(String templateName, ASTNode node, List<Object> templateArguments) {
-    StringBuilder ret = new StringBuilder();
-
-    ret.append(processTemplate(templateName, node, templateArguments));
-
-    return ret;
-  }
-
-  /**
    * Delegates to {@link #includeArgs(String, List)}
    */
   public StringBuilder includeArgs(String templateName, String... templateArgument) {
@@ -442,10 +410,15 @@ public class TemplateController {
     final String qualifiedTemplateName = completeQualifiedName(templateName);
 
     StringBuilder content = new StringBuilder();
-    content.append(processTemplate(qualifiedTemplateName, ast, templateArguments));
+    // Replacement added: no also writeArgs replaces its Templates
+    List<HookPoint> templateForwardings =
+    		config.getGlex().getTemplateForwardings(templateName, ast);
+    for (HookPoint tn : templateForwardings) {
+      content.append(tn.processValue(this, ast, templateArguments));
+    }
 
     if (content.length()==0) {
-      Log.error("0xA4057 Template " + qualifiedTemplateName + " produced no content for.");
+      Log.warn("0xA4057 Template " + qualifiedTemplateName + " produced no content for.");
     }
 
     // add trace to source-model:

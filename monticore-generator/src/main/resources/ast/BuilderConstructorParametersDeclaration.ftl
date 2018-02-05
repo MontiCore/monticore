@@ -35,10 +35,6 @@ software, even if advised of the possibility of such damage.
   ${tc.signature("constructorParameters")}
     <#assign del = "">
     <#list constructorParameters as parameter>
-	  <#if genHelper.isOptional(parameter.getType())>
-        ${del}Optional.ofNullable(this.${nameHelper.javaAttribute(parameter.getName())})
-      <#else>
-         ${del}this.${nameHelper.javaAttribute(parameter.getName())} 
-     </#if>
+         ${del}this.${nameHelper.javaAttribute(parameter.getName())}
       <#assign del = ",">
     </#list> 

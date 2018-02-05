@@ -95,7 +95,7 @@ public class ComposeSimpleTest extends CommonVisitorTest {
   public void testSimpleComposed4() {
     ASTYB yb = BMill.yBBuilder().build();
     ASTYC yc = mc.feature.visitor.inheritance.c._ast.CMill.yCBuilder()
-        .yB(yb)
+        .setYB(yb)
         .build();
     v.handle(yc);
     // first part of yc handling
@@ -112,8 +112,8 @@ public class ComposeSimpleTest extends CommonVisitorTest {
     ASTYB yb = BMill.yBBuilder().build();
     ASTXA xa = AMill.xABuilder().build();
     ASTZB zb = BMill.zBBuilder()
-        .xA(xa)
-        .yB(yb)
+        .setXA(xa)
+        .setYB(yb)
         .build();
     v.handle(zb);
     

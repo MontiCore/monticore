@@ -83,7 +83,7 @@ public class CdDecoratorTest {
   public static void setup() {
     final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
     CD4AnalysisLanguage cd4AnalysisLanguage = new CD4AnalysisLanguage();
-    resolvingConfiguration.addTopScopeResolvers(cd4AnalysisLanguage.getResolvingFilters());
+    resolvingConfiguration.addDefaultFilters(cd4AnalysisLanguage.getResolvingFilters());
     
     globalScope = new GlobalScope(modelPath, cd4AnalysisLanguage, resolvingConfiguration);
   }
@@ -126,7 +126,7 @@ public class CdDecoratorTest {
       assertTrue(astHelper.getASTBuilder(clazz).isPresent());
       ASTCDClass builderClass = astHelper.getASTBuilder(clazz).get();
       assertTrue(builderClass.getName().endsWith(AstGeneratorHelper.AST_BUILDER));
-      assertTrue(builderClass.getName().startsWith(clazz.getName().substring(AstGeneratorHelper.AST_PREFIX.length())));
+      assertTrue(builderClass.getName().startsWith(clazz.getName()));
     }
   }
   
@@ -161,7 +161,7 @@ public class CdDecoratorTest {
   @Test
   public void addSetter() {
     for (ASTCDClass clazz : cdDefinition.getCDClassList()) {
-      cdDecorator.addSetter(clazz, astHelper);
+      cdDecorator.addSetter(clazz, astHelper, cdDefinition);
     }
     
     for (ASTCDClass clazz : cdDefinition.getCDClassList()) {

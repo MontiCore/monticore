@@ -41,10 +41,6 @@ import de.monticore.generating.templateengine.reporting.commons.ReportingHelper;
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
 
 /**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @since TODO: add version number
  */
 public class SummaryReporter extends AReporter {
   
@@ -381,12 +377,6 @@ public class SummaryReporter extends AReporter {
     writeSummaryLine(NUM_CALLS_EMPTY_HOOKPOINTS, numCallsUnsetHookpoints);
   }
   
-  /**
-   * TODO: Write me!
-   * 
-   * @param numErrors2
-   * @param numErrors3
-   */
   private void writeSummaryLine(String string, int number) {
     writeLine(string + ":" + Layouter.getSpaceString(40 - string.length())
         + number);

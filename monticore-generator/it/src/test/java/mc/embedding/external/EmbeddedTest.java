@@ -38,7 +38,7 @@ public class EmbeddedTest extends GeneratorIntegrationsTest {
   public void test() {
     final EmbeddedLanguage language = new EmbeddedLanguage();
     final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addTopScopeResolvers(language.getResolvingFilters());
+    resolvingConfiguration.addDefaultFilters(language.getResolvingFilters());
 
     final ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/embedding"));
 

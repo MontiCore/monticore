@@ -30,17 +30,8 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
- <#assign genHelper = glex.getGlobalVar("astHelper")>
-  {
-  <#-- TODO: MB Use method getPlainSetter -->
-  <#list ast.getCDParameterList() as attribute>
-    <#if genHelper.isOptional(attribute.getType())>
-	  set${genHelper.getNativeAttributeName(attribute.getName())?cap_first}Opt(${attribute.getName()});
-    <#elseif genHelper.isListType(astHelper.printType(attribute.getType()))>
-      <#assign name=genHelper.getNativeAttributeName(attribute.getName())?cap_first>     
-      set${name?keep_before_last("s")}List(${attribute.getName()});
-    <#else>
-      set${genHelper.getNativeAttributeName(attribute.getName())?cap_first}(${attribute.getName()});
-    </#if>
-  </#list>
-  }
+${tc.signature("method", "clazz", "origName", "millName", "overridden")}
+   mill = new ${millName}();
+   <#list overridden as superClass>
+   ${superClass.getFullName()?lower_case}._ast.${superClass.getName()}Mill.init(new ${superClass.getName()}MillFor${origName}());
+   </#list>

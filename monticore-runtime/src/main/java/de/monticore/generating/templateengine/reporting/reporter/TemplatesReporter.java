@@ -36,10 +36,6 @@ import de.monticore.generating.templateengine.reporting.commons.ReportingHelper;
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
 
 /**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @since TODO: add version number
  */
 public class TemplatesReporter extends AReporter {
   

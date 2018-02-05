@@ -30,17 +30,25 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
- <#assign genHelper = glex.getGlobalVar("astHelper")>
-  {
-  <#-- TODO: MB Use method getPlainSetter -->
-  <#list ast.getCDParameterList() as attribute>
-    <#if genHelper.isOptional(attribute.getType())>
-	  set${genHelper.getNativeAttributeName(attribute.getName())?cap_first}Opt(${attribute.getName()});
-    <#elseif genHelper.isListType(astHelper.printType(attribute.getType()))>
-      <#assign name=genHelper.getNativeAttributeName(attribute.getName())?cap_first>     
-      set${name?keep_before_last("s")}List(${attribute.getName()});
-    <#else>
-      set${genHelper.getNativeAttributeName(attribute.getName())?cap_first}(${attribute.getName()});
-    </#if>
-  </#list>
-  }
+${tc.signature("ast", "isTop", "astImports", "superClass")}
+<#assign genHelper = glex.getGlobalVar("astHelper")>
+<#assign plainName = genHelper.getPlainName(ast, "")>
+
+<#-- Copyright -->
+${defineHookPoint("JavaCopyright")}
+
+<#-- set package -->
+package ${genHelper.getAstPackage()};
+
+<#list astImports as astImport>
+import ${astImport};
+</#list>
+
+public <#if isTop>abstract </#if> class ${ast.getName()} extends ${superClass} {
+   
+
+<#list ast.getCDMethodList() as method>
+ ${tc.includeArgs("ast.ClassMethod", [method, ast])}
+</#list>
+
+}

@@ -42,19 +42,6 @@ public interface ResolvingFilter<S extends Symbol> {
 
   Collection<Symbol> filter(ResolvingInfo resolvingInfo, Collection<Symbol> symbols);
 
-  /**
-   * @deprecated use {@link #filter(ResolvingInfo, Collection)} instead
-   */
-  @Deprecated
-  Collection<Symbol> filter(ResolvingInfo resolvingInfo, List<Symbol> symbols);
-
-  /**
-   * @deprecated use {@link #filter(ResolvingInfo, String, Map)} instead
-   */
-  @Deprecated
-  Optional<Symbol> filter(ResolvingInfo resolvingInfo, String name, List<Symbol> symbols);
-
-
   static Collection<ResolvingFilter<? extends Symbol>> getFiltersForTargetKind
       (Collection<ResolvingFilter<? extends Symbol>> resolvingFilters, SymbolKind targetKind) {
 
