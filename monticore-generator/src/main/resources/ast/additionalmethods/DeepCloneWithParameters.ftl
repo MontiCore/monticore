@@ -41,38 +41,28 @@ software, even if advised of the possibility of such damage.
       <#if genHelper.isAstNode(attribute)>
     result.set${genHelper.getNativeAttributeName(attribute.getName())?cap_first}((${typeName}) this.${attributeName}.deepClone());
       <#elseif genHelper.isPrimitive(attribute.getType())> 
-    result.set${genHelper.getNativeAttributeName(attribute.getName())?cap_first}(this.${attributeName});
+    result.${attributeName} = this.${attributeName};
       <#elseif genHelper.isOptional(attribute)>
         <#assign reference = genHelper.getSimpleReferenceTypeFromOptional(attrType)>
         <#assign referenceName = genHelper.getQualifiedReferenceNameFromOptional(attrType)>
         <#if genHelper.isString(reference) || genHelper.isAdditionalAttribute(attribute) || genHelper.isAttributeOfTypeEnum(attribute)>
-    result.set${genHelper.getNativeAttributeName(attribute.getName())?cap_first}Opt(this.${attributeName});
+          <#assign clone = "">
         <#elseif genHelper.isOptionalAstNode(attribute)>
-    if (isPresent${genHelper.getNativeAttributeName(attribute.getName())?cap_first}()){
-      result.set${genHelper.getNativeAttributeName(attribute.getName())?cap_first}(this.${attributeName}.get().deepClone());
-    } else {
-      result.set${genHelper.getNativeAttributeName(attribute.getName())?cap_first}Absent(); 
-    }   
+           <#assign clone = ".deepClone()">
         <#else>
-    if (isPresent${genHelper.getNativeAttributeName(attribute.getName())?cap_first}()){
-      result.set${genHelper.getNativeAttributeName(attribute.getName())?cap_first}(this.${attributeName}.get().clone());
-    } else {
-      result.set${genHelper.getNativeAttributeName(attribute.getName())?cap_first}Absent(); 
-    } 
+           <#assign clone = ".clone()">
         </#if>
-      <#else>
-      <#if genHelper.isAttributeOfTypeEnum(attribute) && genHelper.isListType(typeName)>
-    result.set${genHelper.getNativeAttributeName((attribute.getName())?cap_first)?remove_ending("s")}List(this.${attributeName});
-        <#elseif genHelper.isString(typeName) || genHelper.isAttributeOfTypeEnum(attribute)>
-    result.set${genHelper.getNativeAttributeName(attribute.getName())?cap_first}(this.${attributeName});
+    result.${attributeName} = this.${attributeName}.isPresent()? Optional.ofNullable((${referenceName})this.${attributeName}.get()${clone}) : Optional.empty();
+      <#else>  
+        <#if genHelper.isString(typeName) || genHelper.isAttributeOfTypeEnum(attribute)> 
+    result.${attributeName} = this.${attributeName};
         <#elseif genHelper.isListAstNode(attribute)>
-    result.set${genHelper.getNativeAttributeName((attribute.getName())?cap_first)?remove_ending("s")}List(this.${attributeName});
-      <#--this.${attributeName}.forEach(s -> result.${attributeName}.add(s.deepClone()));-->
-          <#elseif genHelper.isListType(typeName)>
-      result.set${genHelper.getNativeAttributeName((attribute.getName())?cap_first)?remove_ending("s")}List(this.${attributeName});
-          <#else>
-      result.set${genHelper.getNativeAttributeName(attribute.getName())?cap_first}( (${typeName}) this.${attributeName}.clone());
-      <#-- result.${attributeName} = (${typeName}) this.${attributeName}.clone(); -->
+    result.${attributeName} = com.google.common.collect.Lists.newArrayList();
+    this.${attributeName}.forEach(s -> result.${attributeName}.add(s.deepClone()));
+        <#elseif genHelper.isListType(typeName)>
+    result.${attributeName} = com.google.common.collect.Lists.newArrayList(this.${attributeName});
+        <#else>
+    result.${attributeName} = (${typeName}) this.${attributeName}.clone();
         </#if>
       </#if>    
     </#list>
