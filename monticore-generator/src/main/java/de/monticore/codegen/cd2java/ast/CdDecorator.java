@@ -927,10 +927,10 @@ public class CdDecorator {
 
       String className = AstGeneratorHelper.getASTClassNameWithoutPrefix(clazz);
       String methodName = StringTransformations.uncapitalize(className);
-      String toParse = "protected " + clazz.getName() + "Builder _"
+      String toParse = "protected " + astHelper.getPlainName(clazz) + AstGeneratorHelper.AST_BUILDER + " _"
           + methodName + AstGeneratorHelper.AST_BUILDER + "() ;";
       replaceMethodBodyTemplate(millClass, toParse,
-          new StringHookPoint("return new " + clazz.getName() + "Builder();\n"));
+          new StringHookPoint("return new " + astHelper.getPlainName(clazz) + AstGeneratorHelper.AST_BUILDER + "();\n"));
     }
     
     cdDef.getCDClassList().add(millClass);
