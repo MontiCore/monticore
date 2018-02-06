@@ -44,7 +44,8 @@ ${tc.include("ast.AstImports")}
    */
 
   <#assign abstract = "">
-  <#if genHelper.isAbstract(ast)>
+  <#assign isBuilderClassAbstract =  genHelper.isBuilderClassAbstract(astType)>
+  <#if genHelper.isAbstract(ast) || isBuilderClassAbstract>
     <#assign abstract = "abstract">
   </#if>
   public ${abstract} class ${ast.getName()} extends ${ast.printSuperClass()} {
@@ -60,10 +61,14 @@ ${tc.include("ast.AstImports")}
       this.realBuilder = <#if abstract?has_content>(${genHelper.getPlainName(ast)})</#if> this;
     }
 
+  <#if isBuilderClassAbstract>
+    public abstract ${typeName} build();
+  <#else>
     public ${typeName} build() {
       return new ${typeName} (${tc.include("ast.ParametersDeclaration")}
       );
     }
+  </#if>
 
     <#list ast.getCDMethodList() as method>
       ${tc.includeArgs("ast.ClassMethod", [method, ast])}
