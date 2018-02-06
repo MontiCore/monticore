@@ -236,8 +236,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
     new Cd2JavaTypeConverter() {
       @Override
       public void visit(ASTSimpleReferenceType node) {
-       // TODO MB
-       // AstGeneratorHelper.this.transformQualifiedToSimpleIfPossible(node, GeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT);
+       AstGeneratorHelper.this.transformQualifiedToSimpleIfPossible(node, GeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT);
       }
     }.handle(ast);
     

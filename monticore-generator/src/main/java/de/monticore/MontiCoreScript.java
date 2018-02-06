@@ -391,7 +391,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     // Write reporting CD
     ASTCDCompilationUnit astCdForReporting = new AstGeneratorHelper(cd, globalScope).getASTCDForReporting();
     // No star imports in reporting CDs
-    //astCdForReporting.getImportStatementList().forEach(s -> s.setStar(false));
+    astCdForReporting.getImportStatementList().forEach(s -> s.setStar(false));
     GeneratorHelper.prettyPrintAstCd(astCdForReporting, outputDirectory, ReportingConstants.REPORTING_DIR
         + File.separator + reportSubDir);
 
