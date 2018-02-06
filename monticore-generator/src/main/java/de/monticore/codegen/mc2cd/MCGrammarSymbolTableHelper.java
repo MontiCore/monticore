@@ -350,7 +350,7 @@ public class MCGrammarSymbolTableHelper {
   
   public static Optional<String> getConstantGroupName(ASTConstantGroup ast) {
     // setAttributeMinMax(a.getIteration(), att);
-    if (ast.isUsageNamePresent()) {
+    if (ast.isPresentUsageName()) {
       return ast.getUsageNameOpt();
     }
     // derive attribute name from constant entry (but only if we have
@@ -608,7 +608,7 @@ public class MCGrammarSymbolTableHelper {
    * @return
    */
   public static boolean isAttributeIterated(ASTAttributeInAST ast) {
-    if (!ast.isCardPresent()) {
+    if (!ast.isPresentCard()) {
       return false;
     }
     if (ast.getCard().isUnbounded()) {
@@ -627,8 +627,8 @@ public class MCGrammarSymbolTableHelper {
   }
   
   public static Optional<Integer> getMax(ASTAttributeInAST ast) {
-    if (ast.isCardPresent()
-        && ast.getCard().isMaxPresent()) {
+    if (ast.isPresentCard()
+        && ast.getCard().isPresentMax()) {
       String max = ast.getCard().getMax();
       if ("*".equals(max)) {
         return Optional.of(GeneratorHelper.STAR);
@@ -656,8 +656,8 @@ public class MCGrammarSymbolTableHelper {
   }
   
   public static Optional<Integer> getMin(ASTAttributeInAST ast) {
-    if (ast.isCardPresent()
-        && ast.getCard().isMinPresent()) {
+    if (ast.isPresentCard()
+        && ast.getCard().isPresentMin()) {
       String min = ast.getCard().getMin();
       try {
         int x = Integer.parseInt(min);

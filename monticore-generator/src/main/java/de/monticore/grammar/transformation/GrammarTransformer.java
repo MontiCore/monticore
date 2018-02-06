@@ -153,7 +153,7 @@ public class GrammarTransformer {
    */
   private static Optional<ASTBlock> transform(ASTNonTerminalSeparator nonTerminalSep) {
     String name = "";
-    if (nonTerminalSep.isUsageNamePresent()) {
+    if (nonTerminalSep.isPresentUsageName()) {
       name = nonTerminalSep.getUsageName() + ":";
     }
     String plusKeywords = (nonTerminalSep.isPlusKeywords()) ? "&" : "";

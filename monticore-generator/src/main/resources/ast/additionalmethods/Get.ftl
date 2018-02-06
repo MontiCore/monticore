@@ -31,4 +31,4 @@ software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
 ${tc.signature("method", "ast", "attributeName")}
-    return <#if ast.isModifierPresent() && !ast.getModifier().isStatic()> this.</#if>${attributeName};
+    return <#if ast.isPresentModifier() && !ast.getModifier().isStatic()> this.</#if>${attributeName};

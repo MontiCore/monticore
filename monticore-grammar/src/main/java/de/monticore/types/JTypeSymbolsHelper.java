@@ -119,7 +119,7 @@ public class JTypeSymbolsHelper {
       JTypeReferenceFactory<?> typeRefFactory) {
     if (astType instanceof ASTSimpleReferenceType) {
       ASTSimpleReferenceType astSimpleReferenceType = (ASTSimpleReferenceType) astType;
-      if (!astSimpleReferenceType.isTypeArgumentsPresent()) {
+      if (!astSimpleReferenceType.isPresentTypeArguments()) {
         return;
       }
       List<ActualTypeArgument> actualTypeArguments = new ArrayList<>();
@@ -129,12 +129,12 @@ public class JTypeSymbolsHelper {
           ASTWildcardType astWildcardType = (ASTWildcardType) astTypeArgument;
           
           // Three cases can occur here: lower bound, upper bound, no bound
-          if (astWildcardType.isLowerBoundPresent() || astWildcardType.isUpperBoundPresent()) {
+          if (astWildcardType.isPresentLowerBound() || astWildcardType.isPresentUpperBound()) {
             // We have a bound.
             // Examples: Set<? extends Number>, Set<? super Integer>
             
             // new bound
-            boolean lowerBound = astWildcardType.isLowerBoundPresent();
+            boolean lowerBound = astWildcardType.isPresentLowerBound();
             ASTType typeBound = lowerBound
                 ? astWildcardType.getLowerBound()
                 : astWildcardType
@@ -345,7 +345,7 @@ public class JTypeSymbolsHelper {
     
     if (astType instanceof ASTSimpleReferenceType) {
       ASTSimpleReferenceType astSimpleReferenceType = (ASTSimpleReferenceType) astType;
-      if (astSimpleReferenceType.isTypeArgumentsPresent()) {
+      if (astSimpleReferenceType.isPresentTypeArguments()) {
         addTypeArgumentsToTypeSymbol(fieldTypeReference, astSimpleReferenceType, definingScope,
             typeRefFactory);
       }

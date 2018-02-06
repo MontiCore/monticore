@@ -51,7 +51,7 @@ public class ASTConstructionActions {
   public String getConstantInConstantGroupMultipleEntries(ASTConstant constant,
       ASTConstantGroup constgroup) {
     String tmp = "";
-    if (constgroup.isUsageNamePresent()) {
+    if (constgroup.isPresentUsageName()) {
       String constfile;
       String constantname;
       Optional<MCGrammarSymbol> ruleGrammar = MCGrammarSymbolTableHelper
@@ -87,7 +87,7 @@ public class ASTConstructionActions {
       ASTConstantGroup constgroup) {
     String tmp = "";
     
-    if (constgroup.isUsageNamePresent()) {
+    if (constgroup.isPresentUsageName()) {
       // Add as attribute to AST
       tmp = "_aNode.set%uname%(true);";
       
@@ -237,7 +237,7 @@ public class ASTConstructionActions {
 
     String tmp = "_aNode.set%u_usage%(\"%text%\");";
 
-    if (!a.isUsageNamePresent()) {
+    if (!a.isPresentUsageName()) {
       return "";
     }
     // Replace templates
@@ -250,7 +250,7 @@ public class ASTConstructionActions {
 
   public String getActionForTerminalIteratedAttribute(ASTTerminal a) {
 
-    if (!a.isUsageNamePresent()) {
+    if (!a.isPresentUsageName()) {
       return "";
     }
 

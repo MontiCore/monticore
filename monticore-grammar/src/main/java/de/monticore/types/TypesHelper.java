@@ -59,7 +59,7 @@ public class TypesHelper {
     ASTTypeArgument refType = getReferenceTypeFromOptional(type);
     // TODO: improve
     if (refType instanceof ASTWildcardType
-        && ((ASTWildcardType) refType).isUpperBoundPresent()) {
+        && ((ASTWildcardType) refType).isPresentUpperBound()) {
       refType = ((ASTWildcardType) refType).getUpperBound();
     }
     // TODO: improve
@@ -73,7 +73,7 @@ public class TypesHelper {
     ASTTypeArgument reference = ((ASTSimpleReferenceType) type).getTypeArguments()
         .getTypeArgumentList().get(0);
     if (reference instanceof ASTWildcardType
-        && ((ASTWildcardType) reference).isUpperBoundPresent()) {
+        && ((ASTWildcardType) reference).isPresentUpperBound()) {
       reference = ((ASTWildcardType) reference).getUpperBound();
     }
     Preconditions.checkArgument(reference instanceof ASTSimpleReferenceType);
@@ -87,7 +87,7 @@ public class TypesHelper {
     ASTTypeArgument reference = ((ASTSimpleReferenceType) type).getTypeArguments()
         .getTypeArgumentList().get(0);
     if (reference instanceof ASTWildcardType
-        && ((ASTWildcardType) reference).isUpperBoundPresent()) {
+        && ((ASTWildcardType) reference).isPresentUpperBound()) {
       reference = ((ASTWildcardType) reference).getUpperBound();
     }
     Preconditions.checkArgument(reference instanceof ASTSimpleReferenceType);
@@ -103,7 +103,7 @@ public class TypesHelper {
     if (!Names.getQualifiedName(simpleRefType.getNameList()).equals(
         simpleRefTypeName)
         ||
-        !simpleRefType.isTypeArgumentsPresent() ||
+        !simpleRefType.isPresentTypeArguments() ||
         simpleRefType.getTypeArguments().getTypeArgumentList().size() != 1) {
       return false;
     }

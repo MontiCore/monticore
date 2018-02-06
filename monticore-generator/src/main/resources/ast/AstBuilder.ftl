@@ -48,7 +48,7 @@ ${tc.include("ast.AstImports")}
     <#assign abstract = "abstract">
   </#if>
   <#assign extends = "">
-  <#if astType.isSuperclassPresent() && !genHelper.isSuperClassExternal(astType)>
+  <#if astType.isPresentSuperclass() && !genHelper.isSuperClassExternal(astType)>
     <#assign extends = "extends " + astType.printSuperClass() + "Builder">
   </#if>
   public ${abstract} class ${ast.getName()} ${extends} {

@@ -717,7 +717,7 @@ public class GeneratorHelper extends TypesHelper {
     }
 
     public static boolean isAbstract(ASTCDClass clazz) {
-        return clazz.isModifierPresent() && clazz.getModifier().isAbstract();
+        return clazz.isPresentModifier() && clazz.getModifier().isAbstract();
     }
 
     public static boolean isAbstract(ASTCDMethod method, ASTCDInterface type) {
@@ -777,7 +777,7 @@ public class GeneratorHelper extends TypesHelper {
     public static boolean hasStereotype(ASTCDType ast,
                                         String stereotypeName) {
         if (!ast.getModifierOpt().isPresent()
-                || !ast.getModifierOpt().get().isStereotypePresent()) {
+                || !ast.getModifierOpt().get().isPresentStereotype()) {
             return false;
         }
         ASTStereotype stereotype = ast.getModifierOpt().get().getStereotype();
@@ -790,10 +790,10 @@ public class GeneratorHelper extends TypesHelper {
                                                    String stereotypeName) {
         List<String> values = Lists.newArrayList();
         if (ast.getModifierOpt().isPresent()
-                && ast.getModifierOpt().get().isStereotypePresent()) {
+                && ast.getModifierOpt().get().isPresentStereotype()) {
             ast.getModifierOpt().get().getStereotype().getValueList().stream()
                     .filter(value -> value.getName().equals(stereotypeName))
-                    .filter(value -> value.isValuePresent())
+                    .filter(value -> value.isPresentValue())
                     .forEach(value -> values.add(value.getValue()));
         }
         return values;
@@ -1015,14 +1015,14 @@ public class GeneratorHelper extends TypesHelper {
     }
 
     public static String getSuperClass(ASTCDClass clazz) {
-        if (!clazz.isSuperclassPresent()) {
+        if (!clazz.isPresentSuperclass()) {
             return "de.monticore.ast.ASTCNode";
         }
         return clazz.printSuperClass();
     }
 
     public static String getSuperClassName(ASTCDClass clazz) {
-        if (!clazz.isSuperclassPresent()) {
+        if (!clazz.isPresentSuperclass()) {
             return "";
         }
         return clazz.printSuperClass();
@@ -1364,7 +1364,7 @@ public class GeneratorHelper extends TypesHelper {
         if (!type.getModifierOpt().isPresent()) {
             return false;
         }
-        if (!type.getModifierOpt().get().isStereotypePresent()) {
+        if (!type.getModifierOpt().get().isPresentStereotype()) {
             return false;
         }
         ASTStereotype stereoTypes = type.getModifierOpt().get().getStereotype();

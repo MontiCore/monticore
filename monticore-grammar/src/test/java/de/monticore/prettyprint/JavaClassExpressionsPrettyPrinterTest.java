@@ -88,26 +88,26 @@ public class JavaClassExpressionsPrettyPrinterTest{
     
     @Override
     public void visit(ASTEType node) {
-      if (node.isDoublePresent()) {
+      if (node.isPresentDouble()) {
         getPrinter().print(node.getDouble());
       }
-      if (node.isIntPresent()) {
+      if (node.isPresentInt()) {
         getPrinter().print(node.getInt());
       }
-      if (node.isLongPresent()) {
+      if (node.isPresentLong()) {
         getPrinter().print(node.getLong());
       }
-      if (node.isFloatPresent()) {
+      if (node.isPresentFloat()) {
         getPrinter().print(node.getFloat());
       }
     }
     
     @Override
     public void handle(ASTEReturnType node) {
-      if (node.isETypePresent()) {
+      if (node.isPresentEType()) {
         node.getEType().accept(this);
       }
-      if (node.isVoidPresent()) {
+      if (node.isPresentVoid()) {
         getPrinter().print(node.getVoid());
       }
     }

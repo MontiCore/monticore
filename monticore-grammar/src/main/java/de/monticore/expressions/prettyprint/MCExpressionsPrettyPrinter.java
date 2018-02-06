@@ -431,7 +431,7 @@ public class MCExpressionsPrettyPrinter extends TypesPrettyPrinterConcreteVisito
       getPrinter().print(" this ");
       node.getSuperSuffix().accept(getRealThis());
     }
-    if (node.isNamePresent()) {
+    if (node.isPresentName()) {
       printNode(node.getName());
       node.getArguments().accept(getRealThis());    
     }
@@ -444,14 +444,14 @@ public class MCExpressionsPrettyPrinter extends TypesPrettyPrinterConcreteVisito
   @Override
   public void handle(ASTSuperSuffix node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    if (node.isNamePresent()) {
+    if (node.isPresentName()) {
       getPrinter().print(".");
-      if (node.isTypeArgumentsPresent()) {
+      if (node.isPresentTypeArguments()) {
         node.getTypeArguments().accept(getRealThis());
       }
       printNode(node.getName());
     }
-    if (node.isArgumentsPresent()) {
+    if (node.isPresentArguments()) {
       node.getArguments().accept(getRealThis());
     }
     CommentPrettyPrinter.printPostComments(node, getPrinter());

@@ -159,10 +159,10 @@ public class MCHexNumberUnitTests {
     ASTAnyTokenList ast = parser.parse_StringAnyTokenList( "[463 23]" ).get();
     assertEquals(2, ast.getAnyTokenList().size());
     ASTAnyToken a0 = ast.getAnyTokenList().get(0);
-    assertTrue(a0.isDecimalTokenPresent());
+    assertTrue(a0.isPresentDecimalToken());
     assertEquals("463", a0.getDecimalToken());
     ASTAnyToken a1 = ast.getAnyTokenList().get(1);
-    assertTrue(a1.isDecimalTokenPresent());
+    assertTrue(a1.isPresentDecimalToken());
     assertEquals("23", a1.getDecimalToken());
   }
 

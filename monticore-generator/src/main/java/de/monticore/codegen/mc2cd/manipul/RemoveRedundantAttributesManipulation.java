@@ -117,7 +117,7 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
     ASTSimpleReferenceType outerType = (ASTSimpleReferenceType) cdAttribute
         .getType();
 
-    if (!outerType.isTypeArgumentsPresent() || outerType
+    if (!outerType.isPresentTypeArguments() || outerType
         .getTypeArguments().getTypeArgumentList().isEmpty()) {
       return Optional.empty();
     }

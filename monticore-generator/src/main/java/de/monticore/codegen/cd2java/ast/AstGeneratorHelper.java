@@ -60,7 +60,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
   }
   
   public String getAstAttributeValue(ASTCDAttribute attribute) {
-    if (attribute.isValuePresent()) {
+    if (attribute.isPresentValue()) {
       return attribute.printValue();
     }
     if (isOptional(attribute)) {
@@ -115,7 +115,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
   }
   
   public static boolean isSuperClassExternal(ASTCDClass clazz) {
-    return clazz.isSuperclassPresent()
+    return clazz.isPresentSuperclass()
         && hasStereotype(clazz, MC2CDStereotypes.EXTERNAL_TYPE.toString())
         && getStereotypeValues(clazz, MC2CDStereotypes.EXTERNAL_TYPE.toString())
             .contains(clazz.printSuperClass());
@@ -153,7 +153,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
   }
   
   public static String getSuperClassForBuilder(ASTCDClass clazz) {
-    if (!clazz.isSuperclassPresent()) {
+    if (!clazz.isPresentSuperclass()) {
       return "";
     }
     String superClassName = Names.getSimpleName(clazz.printSuperClass());
@@ -236,7 +236,8 @@ public class AstGeneratorHelper extends GeneratorHelper {
     new Cd2JavaTypeConverter() {
       @Override
       public void visit(ASTSimpleReferenceType node) {
-        AstGeneratorHelper.this.transformQualifiedToSimpleIfPossible(node, GeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT);
+       // TODO MB
+       // AstGeneratorHelper.this.transformQualifiedToSimpleIfPossible(node, GeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT);
       }
     }.handle(ast);
     

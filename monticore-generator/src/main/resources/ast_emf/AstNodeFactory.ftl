@@ -40,6 +40,7 @@ ${defineHookPoint("JavaCopyright")}
 package ${genHelper.getAstPackage()};
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;

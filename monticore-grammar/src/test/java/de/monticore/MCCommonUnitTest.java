@@ -99,7 +99,7 @@ public class MCCommonUnitTest {
     assertEquals(true, ast.isPublic());
     assertEquals(true, ast.isReadonly());
     assertEquals(false, ast.isFinal());
-    assertEquals(true, ast.isStereotypePresent());
+    assertEquals(true, ast.isPresentStereotype());
     ASTStereotype sty = ast.getStereotype();
     assertEquals("x1", sty.getValue("bla"));
   }

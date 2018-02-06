@@ -96,7 +96,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
   public void handle(ASTSemanticpredicateOrAction a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     
-    if (a.isExpressionPredicatePresent()) {
+    if (a.isPresentExpressionPredicate()) {
       print(" {");
       getPrinter().println();
       getPrinter().indent();
@@ -105,7 +105,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
       print("}");
       print(" ?");
     }
-    if (a.isActionPresent()) {
+    if (a.isPresentAction()) {
       print(" {");
       getPrinter().println();
       getPrinter().indent();
@@ -129,7 +129,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     
     printList(a.getSymbolDefinitionList().iterator(), " ");
     
-    if (a.isGenericTypePresent()) {
+    if (a.isPresentGenericType()) {
       getPrinter().print(" " + a.getGenericType().getTypeName());
     }
     getPrinter().print(";");
@@ -160,12 +160,12 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
   public void handle(ASTNonTerminal a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     
-    if (a.isUsageNamePresent()) {
+    if (a.isPresentUsageName()) {
       print("" + a.getUsageName() + ":");
     }
     
     print(a.getName());
-    if (a.isReferencedSymbolPresent()) {
+    if (a.isPresentReferencedSymbol()) {
       print("@");
       print(a.getReferencedSymbol());
     }
@@ -184,7 +184,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
   public void handle(ASTTerminal a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     // output("ASTTerminal Iteration " + a.getIteration());
-    if (a.isUsageNamePresent()) {
+    if (a.isPresentUsageName()) {
       print("" + a.getUsageName() + ":");
     }
     /* if (a.isKeyword()) { output("!" + QUOTE + a.getName() + QUOTE + " "); } else { */
@@ -202,7 +202,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     print("(");
     
-    if (a.isOptionPresent()) {
+    if (a.isPresentOption()) {
       print("options {");
       
       for (ASTOptionValue x : a.getOption().getOptionValueList()) {
@@ -212,7 +212,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
       print("} ");
     }
     
-    if (a.isInitActionPresent()) {
+    if (a.isPresentInitAction()) {
       getPrinter().print("init ");
       print(" {");
       getPrinter().println();
@@ -222,7 +222,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
       print("}");
     }
     
-    if (a.isInitActionPresent() || a.isOptionPresent()) {
+    if (a.isPresentInitAction() || a.isPresentOption()) {
       print(": ");
     }
     
@@ -260,7 +260,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
   @Override
   public void handle(ASTConstant a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    if (a.isHumanNamePresent()) {
+    if (a.isPresentHumanName()) {
       print(a.getHumanName() + ":");
     }
     
@@ -277,7 +277,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
   @Override
   public void handle(ASTConstantGroup a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
-    if (a.isUsageNamePresent()) {
+    if (a.isPresentUsageName()) {
       print(a.getUsageName());
       print(":");
     }
@@ -467,7 +467,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
    */
   @Override
   public void handle(ASTNonTerminalSeparator node) {
-    if (node.isUsageNamePresent()) {
+    if (node.isPresentUsageName()) {
       getPrinter().print(node.getUsageName());
       getPrinter().print(":");
     }
@@ -491,15 +491,15 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
   @Override
   public void handle(ASTAttributeInAST a) {
     
-    if (a.isNamePresent()) {
+    if (a.isPresentName()) {
       getPrinter().print(a.getName());
     }
     getPrinter().print(":");
     a.getGenericType().accept(getRealThis());
-    if (a.isCardPresent() && a.getCard().isMinPresent()) {
+    if (a.isPresentCard() && a.getCard().isPresentMin()) {
       print(" min = " + a.getCard().getMin());
     }
-    if (a.isCardPresent() && a.getCard().isMaxPresent()) {
+    if (a.isPresentCard() && a.getCard().isPresentMax()) {
       print(" max = " + a.getCard().getMax());
     }
     println();
@@ -541,7 +541,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
         printList(a.getASTSuperInterfaceList().iterator(), ", ");
       }
       
-      if (a.isActionPresent()) {
+      if (a.isPresentAction()) {
         print(" {");
         getPrinter().println();
         getPrinter().indent();
@@ -581,10 +581,10 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     println(a.getName());
     getPrinter().indent();
     
-    if (a.isLexOptionPresent()) {
+    if (a.isPresentLexOption()) {
       a.getLexOption().accept(getRealThis());
     }
-    if (a.isInitActionPresent()) {
+    if (a.isPresentInitAction()) {
       print(" {");
       getPrinter().println();
       getPrinter().indent();
@@ -597,7 +597,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     
     printList(a.getAltList().iterator(), "");
     
-    if (a.isVariablePresent()) {
+    if (a.isPresentVariable()) {
       
       getPrinter().print(" : ");
       getPrinter().print(a.getVariable());
@@ -606,9 +606,9 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
         getPrinter().print("->");
         getPrinter().print(Names.getQualifiedName(a.getTypeList()));
         
-        if (a.isBlockPresent() || a.isEndActionPresent()) {
+        if (a.isPresentBlock() || a.isPresentEndAction()) {
           getPrinter().print(":");
-          if (a.isEndActionPresent()) {
+          if (a.isPresentEndAction()) {
             print(" {");
             getPrinter().println();
             getPrinter().indent();
@@ -616,7 +616,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
             getPrinter().unindent();
             print("}");
           }
-          if (a.isBlockPresent()) {
+          if (a.isPresentBlock()) {
             a.getBlock().accept(getRealThis());
           }
         }
@@ -641,13 +641,13 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     }
     
     print("(");
-    if (a.isOptionPresent()) {
+    if (a.isPresentOption()) {
       print("options {");
       print(a.getOption().getID() + "=" + a.getOption().getValue() + ";");
       print("} ");
     }
     
-    if (a.isInitActionPresent()) {
+    if (a.isPresentInitAction()) {
       getPrinter().print("init ");
       print(" {");
       getPrinter().println();
@@ -657,7 +657,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
       print("}");
     }
     
-    if (a.isInitActionPresent() || a.isOptionPresent()) {
+    if (a.isPresentInitAction() || a.isPresentOption()) {
       print(": ");
     }
     
@@ -807,11 +807,11 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
   
   @Override
   public void handle(ASTRuleReference a) {
-    if (a.isSemanticpredicateOrActionPresent()) {
+    if (a.isPresentSemanticpredicateOrAction()) {
       a.getSemanticpredicateOrAction().accept(getRealThis());
     }
     getPrinter().print(a.getName());
-    if (a.isPrioPresent()) {
+    if (a.isPresentPrio()) {
       getPrinter().print(" <" + a.getPrio() + "> ");
     }
   }
@@ -961,7 +961,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
   public void handle(ASTSymbolDefinition node) {
     if (node.isGenSymbol()) {
       getPrinter().print(" symbol ");
-      if (node.isSymbolKindPresent()) {
+      if (node.isPresentSymbolKind()) {
         getPrinter().print(node.getSymbolKind() + " ");
       }
     }

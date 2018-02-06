@@ -384,7 +384,7 @@ public class TypesPrinter {
   
   protected String doPrintSimpleReferenceType(ASTSimpleReferenceType type) {
     if (type != null) {
-      if(type.isTypeArgumentsPresent()) {
+      if(type.isPresentTypeArguments()) {
         return Names.getQualifiedName(type.getNameList()) + doPrintTypeArguments(type.getTypeArguments());
       }
       else {
@@ -487,10 +487,10 @@ public class TypesPrinter {
     StringBuilder ret = new StringBuilder();
     if (type != null) {
       ret.append("?");
-      if (type.isUpperBoundPresent()) {
+      if (type.isPresentUpperBound()) {
         ret.append(" extends " + doPrintType(type.getUpperBound()));
       }
-      else if (type.isLowerBoundPresent()) {
+      else if (type.isPresentLowerBound()) {
         ret.append(" super " + doPrintType(type.getLowerBound()));
       }
     }

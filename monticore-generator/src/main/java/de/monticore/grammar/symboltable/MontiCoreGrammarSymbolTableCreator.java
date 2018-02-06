@@ -405,7 +405,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
   public void visit(ASTConstant astNode) {
     final Symbol currentSymbol = currentSymbol().orElse(null);
     if (currentSymbol != null) {
-      final String symbolName = astNode.isHumanNamePresent()
+      final String symbolName = astNode.isPresentHumanName()
           ? astNode.getHumanName()
           : astNode.getName();
       MCProdComponentSymbol prodComponent = new MCProdComponentSymbol(symbolName);
@@ -543,7 +543,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
       if (symbolDefinition.isGenSymbol()) {
         String symbolKindName = prodSymbol.getName();
       
-        if (symbolDefinition.isSymbolKindPresent()
+        if (symbolDefinition.isPresentSymbolKind()
           && !symbolDefinition.getSymbolKind().isEmpty()) {
           symbolKindName = symbolDefinition.getSymbolKind();
         }

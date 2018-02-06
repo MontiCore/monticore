@@ -191,11 +191,11 @@ public class TypesPrettyPrinterConcreteVisitor extends LiteralsPrettyPrinterConc
   @Override
   public void handle(ASTWildcardType a) {
     getPrinter().print("?");
-    if (a.isUpperBoundPresent()) {
+    if (a.isPresentUpperBound()) {
       getPrinter().print(" extends ");
       a.getUpperBound().accept(getRealThis());
     }
-    else if (a.isLowerBoundPresent()) {
+    else if (a.isPresentLowerBound()) {
       getPrinter().print(" super ");
       a.getLowerBound().accept(getRealThis());
     }

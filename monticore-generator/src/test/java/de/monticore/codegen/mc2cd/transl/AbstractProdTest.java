@@ -67,13 +67,13 @@ public class AbstractProdTest {
 
   @Test
   public void testAbstract() {
-    assertTrue(astA.isModifierPresent());
+    assertTrue(astA.isPresentModifier());
     assertTrue(astA.getModifier().isAbstract());
-    assertTrue(astB.isModifierPresent());
+    assertTrue(astB.isPresentModifier());
     assertTrue(astB.getModifier().isAbstract());
-    assertTrue(astC.isModifierPresent());
+    assertTrue(astC.isPresentModifier());
     assertTrue(astC.getModifier().isAbstract());
-    assertTrue(astD.isModifierPresent());
+    assertTrue(astD.isPresentModifier());
     assertTrue(astD.getModifier().isAbstract());
   }
 

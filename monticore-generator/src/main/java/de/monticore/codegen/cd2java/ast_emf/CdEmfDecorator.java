@@ -116,7 +116,7 @@ public class CdEmfDecorator extends CdDecorator {
     List<ASTCDType> nativeTypes = astHelper.getNativeTypes(cdDefinition);
     
     List<ASTCDClass> astNotAbstractClasses = cdDefinition.getCDClassList().stream()
-        .filter(e -> e.isModifierPresent())
+        .filter(e -> e.isPresentModifier())
         .filter(e -> !e.getModifier().isAbstract())
         .collect(Collectors.toList());
         
@@ -176,7 +176,7 @@ public class CdEmfDecorator extends CdDecorator {
     // Additional imports
     cdCompilationUnit.getImportStatementList().add(
         TypesMill.importStatementBuilder()
-            .imports(
+            .setImportList(
                 Lists.newArrayList(VisitorGeneratorHelper.getQualifiedVisitorType(astHelper
                     .getPackageName(), cdDefinition.getName())))
             .build());
@@ -756,7 +756,7 @@ public class CdEmfDecorator extends CdDecorator {
     }
     
     ASTCDEnum astEnum = enumConstants.get();
-    astEnum.getCDEnumConstantList().add(0, CD4AnalysisMill.cDEnumConstantBuilder().name("DEFAULT").build());
+    astEnum.getCDEnumConstantList().add(0, CD4AnalysisMill.cDEnumConstantBuilder().setName("DEFAULT").build());
     astEnum.getInterfaceList()
         .add(new ASTCDRawTransformation().createType("org.eclipse.emf.common.util.Enumerator"));
         

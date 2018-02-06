@@ -307,7 +307,7 @@ public final class TransformationHelper {
       if (type.isEnum() && type.getAstNode().isPresent()
           && type.getAstNode().get() instanceof ASTEnumProd) {
         for (ASTConstant enumValue : ((ASTEnumProd) type.getAstNode().get()).getConstantList()) {
-          String humanName = enumValue.isHumanNamePresent()
+          String humanName = enumValue.isPresentHumanName()
               ? enumValue.getHumanName()
               : enumValue.getName();
           constants.add(humanName);
@@ -450,7 +450,7 @@ public final class TransformationHelper {
   public static void addStereoType(ASTCDInterface type,
       String stereotypeName,
       String stereotypeValue) {
-    if (!type.isModifierPresent()) {
+    if (!type.isPresentModifier()) {
       type.setModifier(CD4AnalysisNodeFactory.createASTModifier());
     }
     addStereotypeValue(type.getModifier(),
@@ -460,7 +460,7 @@ public final class TransformationHelper {
   public static void addStereoType(ASTCDAttribute attribute,
       String stereotypeName,
       String stereotypeValue) {
-    if (!attribute.isModifierPresent()) {
+    if (!attribute.isPresentModifier()) {
       attribute.setModifier(CD4AnalysisNodeFactory.createASTModifier());
     }
     addStereotypeValue(attribute.getModifier(),
@@ -470,7 +470,7 @@ public final class TransformationHelper {
   public static void addStereotypeValue(ASTModifier astModifier,
       String stereotypeName,
       String stereotypeValue) {
-    if (!astModifier.isStereotypePresent()) {
+    if (!astModifier.isPresentStereotype()) {
       astModifier.setStereotype(CD4AnalysisNodeFactory
           .createASTStereotype());
     }

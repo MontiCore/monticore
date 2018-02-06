@@ -183,7 +183,7 @@ public class CdDecorator {
     // Additional imports
     cdCompilationUnit.getImportStatementList().add(
         TypesMill.importStatementBuilder()
-            .imports(
+            .setImportList(
                 Lists.newArrayList(VisitorGeneratorHelper.getQualifiedVisitorType(astHelper
                     .getPackageName(), cdDefinition.getName())))
             .build());
@@ -309,13 +309,13 @@ public class CdDecorator {
         new TemplateHookPoint("ast.additionalmethods.GetChildren", symbol.get()));
     
      ASTStereotype stereo;
-     if (meth.getModifier().isStereotypePresent()) {
+     if (meth.getModifier().isPresentStereotype()) {
        stereo = meth.getModifier().getStereotype();
      } else {
        stereo = CD4AnalysisMill.stereotypeBuilder().build();
        meth.getModifier().setStereotype(stereo);
      }
-     ASTStereoValue value = CD4AnalysisMill.stereoValueBuilder().name("@Deprecated").build();
+     ASTStereoValue value = CD4AnalysisMill.stereoValueBuilder().setName("@Deprecated").build();
      stereo.getValueList().add(value);
         
     replaceMethodBodyTemplate(clazz, AstAdditionalMethods.deepEqualsWithOrder.getDeclaration(),
@@ -792,7 +792,7 @@ public class CdDecorator {
     String importPrefix = (packageName.isEmpty() ? "" : packageName + ".")
         + cdCompilationUnit.getCDDefinition().getName().toLowerCase()
         + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;   
-    List<String> imports = nativeClasses.stream().filter(c -> c.isModifierPresent())
+    List<String> imports = nativeClasses.stream().filter(c -> c.isPresentModifier())
         .filter(c -> !c.getModifier().isAbstract())
         .filter(c -> GeneratorHelper.getPlainName(c).startsWith(GeneratorHelper.AST_PREFIX))
         .map(c -> importPrefix  + AstGeneratorHelper.getNameOfBuilderClass(c))
@@ -800,7 +800,7 @@ public class CdDecorator {
     
     glex.replaceTemplate(CLASS_CONTENT_TEMPLATE, millClass, new TemplateHookPoint(
         "ast.AstMill", millClass,
-        millClass.isModifierPresent() && millClass.getModifier().isAbstract(),
+        millClass.isPresentModifier() && millClass.getModifier().isAbstract(),
         imports));
     
     // Create delegate methods for inherited classes
@@ -839,7 +839,7 @@ public class CdDecorator {
       millClass = createMillForSuperClass(cdCompilationUnit, millForName, symbol.getName(), classes, astHelper);
       glex.replaceTemplate(CLASS_CONTENT_TEMPLATE, millClass, new TemplateHookPoint(
           "ast.AstMillForSuper", millClass,
-          millClass.isModifierPresent() && millClass.getModifier().isAbstract(),
+          millClass.isPresentModifier() && millClass.getModifier().isAbstract(),
           imports, millSuperPackage + millSuperName));
     }
   }
@@ -1027,7 +1027,7 @@ public class CdDecorator {
    */
   protected void addMethodsToNodeFactory(ASTCDClass clazz, ASTCDClass nodeFactoryClass,
       AstGeneratorHelper astHelper) {
-    if (!clazz.isModifierPresent() || clazz.getModifier().isAbstract()) {
+    if (!clazz.isPresentModifier() || clazz.getModifier().isAbstract()) {
       return;
     }
     String className = GeneratorHelper.getPlainName(clazz);
@@ -1128,7 +1128,7 @@ public class CdDecorator {
     if (!hasOptional) {
       return;
     }
-    if (!clazz.isModifierPresent() || clazz.getModifier().isAbstract()) {
+    if (!clazz.isPresentModifier() || clazz.getModifier().isAbstract()) {
       return;
     }
     String className = GeneratorHelper.getPlainName(clazz);
@@ -1228,7 +1228,7 @@ public class CdDecorator {
    */
   protected void addDelegateMethodsToNodeFactory(ASTCDClass clazz, ASTCDClass nodeFactoryClass,
       AstGeneratorHelper astHelper, CDSymbol cdSymbol, String delegateFactoryName) {
-    if (!clazz.isModifierPresent() || clazz.getModifier().isAbstract()) {
+    if (!clazz.isPresentModifier() || clazz.getModifier().isAbstract()) {
       return;
     }
     String className = GeneratorHelper.getPlainName(clazz);

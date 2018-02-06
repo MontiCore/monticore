@@ -67,7 +67,7 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
    */
   @Override
   public String getAstAttributeValue(ASTCDAttribute attribute, ASTCDType clazz) {
-    if (attribute.isValuePresent()) {
+    if (attribute.isPresentValue()) {
       return attribute.printValue();
     }
     if (isOptional(attribute)) {
@@ -331,7 +331,7 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
   }
   
   public static String getSuperClass(ASTCDClass clazz) {
-    if (!clazz.isSuperclassPresent()) {
+    if (!clazz.isPresentSuperclass()) {
       return ASTECNode.class.getName();
     }
     return clazz.printSuperClass();

@@ -42,7 +42,7 @@ public class TerminalsToCDAttributes implements
         ASTCDClass.class)) {
       for (ASTTerminal terminal : ASTNodes.getSuccessors(link.source(),
           ASTTerminal.class)) {
-        if (terminal.isUsageNamePresent()) {
+        if (terminal.isPresentUsageName()) {
           ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
           link.target().getCDAttributeList().add(cdAttribute);
           new Link<>(terminal, cdAttribute, link);

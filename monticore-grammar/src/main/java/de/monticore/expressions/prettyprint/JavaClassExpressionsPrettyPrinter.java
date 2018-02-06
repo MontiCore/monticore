@@ -59,13 +59,13 @@ public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVi
   @Override
   public void handle(ASTSuperSuffix node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    if (node.isNamePresent()) {
+    if (node.isPresentName()) {
       getPrinter().print(".");
-      if (node.isETypeArgumentsPresent()) {
+      if (node.isPresentETypeArguments()) {
         node.getETypeArguments().accept(getRealThis());
       }
       getPrinter().print(node.getName());
-      if (node.isArgumentsPresent()) {
+      if (node.isPresentArguments()) {
         node.getArguments().accept(getRealThis());
         ;
       }
@@ -107,12 +107,12 @@ public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVi
   @Override
   public void handle(ASTGenericInvocationSuffix node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    if(node.isSuperSuffixPresent()) {
+    if(node.isPresentSuperSuffix()) {
       if (node.isSuper()) {
         getPrinter().print("super");
       }
       node.getSuperSuffix().accept(getRealThis());;
-    }else if(node.isNamePresent()) {
+    }else if(node.isPresentName()) {
       getPrinter().print(node.getName());
       node.getArguments().accept(getRealThis());
     }else {

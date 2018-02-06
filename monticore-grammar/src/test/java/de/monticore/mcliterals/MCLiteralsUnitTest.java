@@ -76,11 +76,11 @@ public class MCLiteralsUnitTest {
     assertEquals(5, ast.getAnyTokenList().size());
     ASTAnyToken t = ast.getAnyTokenList().get(0);
     t = ast.getAnyTokenList().get(1);
-    assertTrue(t.isDecimalTokenPresent());
+    assertTrue(t.isPresentDecimalToken());
     assertEquals("65", t.getDecimalToken());
     t = ast.getAnyTokenList().get(2);
     t = ast.getAnyTokenList().get(3);
-    assertTrue(t.isDecimalTokenPresent());
+    assertTrue(t.isPresentDecimalToken());
     assertEquals("67", t.getDecimalToken());
     t = ast.getAnyTokenList().get(4);
   }
@@ -134,10 +134,10 @@ public class MCLiteralsUnitTest {
     ASTAnyTokenList ast = parser.parse_StringAnyTokenList( ":463 23:" ).get();
     assertEquals(2, ast.getAnyTokenList().size());
     ASTAnyToken a0 = ast.getAnyTokenList().get(0);
-    assertTrue(a0.isDecimalTokenPresent());
+    assertTrue(a0.isPresentDecimalToken());
     assertEquals("463", a0.getDecimalToken());
     ASTAnyToken a1 = ast.getAnyTokenList().get(1);
-    assertTrue(a1.isDecimalTokenPresent());
+    assertTrue(a1.isPresentDecimalToken());
     assertEquals("23", a1.getDecimalToken());
   }
 

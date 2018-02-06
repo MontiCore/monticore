@@ -65,17 +65,17 @@ public enum Multiplicity {
   }
   
   public static Multiplicity multiplicityOfAttributeInAST(ASTAttributeInAST attributeInAST) {
-    if (!attributeInAST.isCardPresent()) {
+    if (!attributeInAST.isPresentCard()) {
       return STANDARD;
     }
     ASTCard cardinality = attributeInAST.getCard();
-    if (!cardinality.isMaxPresent() || cardinality.isUnbounded()
+    if (!cardinality.isPresentMax() || cardinality.isUnbounded()
         || "*".equals(cardinality.getMax())
         || getMaxCardinality(cardinality) != 1) {
       return LIST;
     }
     else {
-      if (!cardinality.isMinPresent() || getMinCardinality(cardinality)==0)  {
+      if (!cardinality.isPresentMin() || getMinCardinality(cardinality)==0)  {
         return OPTIONAL;
       }
     }

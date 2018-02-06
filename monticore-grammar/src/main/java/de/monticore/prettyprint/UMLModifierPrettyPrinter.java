@@ -33,7 +33,7 @@ public class UMLModifierPrettyPrinter implements UMLModifierVisitor {
   @Override
   public void handle(ASTModifier a) {
     // print stereotypes
-    if (a.isStereotypePresent()) {
+    if (a.isPresentStereotype()) {
       a.getStereotype().accept(getRealThis());
       getPrinter().print(" ");
     }

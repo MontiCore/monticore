@@ -54,7 +54,7 @@ public class OCLExpressionsPrettyPrinter implements OCLExpressionsVisitor {
     @Override
     public void handle(ASTInExpr node) {
         CommentPrettyPrinter.printPreComments(node, getPrinter());
-        if(node.isTypePresent())
+        if(node.isPresentType())
             node.getType().accept(getRealThis());
 
         Iterator iter = node.getVarNameList().iterator();
@@ -64,7 +64,7 @@ public class OCLExpressionsPrettyPrinter implements OCLExpressionsVisitor {
             getPrinter().print(iter.next());
         }
 
-        if(node.isExpressionPresent()) {
+        if(node.isPresentExpression()) {
             getPrinter().print(" in ");
             node.getExpression().accept(getRealThis());
         }

@@ -78,10 +78,10 @@ public class OCLExpressionsPrettyPrinterTest {
 
     @Override
     public void visit(ASTEDeclaration node) {
-      if (node.isPublicPresent()) {
+      if (node.isPresentPublic()) {
         getPrinter().print(node.getPublic() + " ");
       }
-      if (node.isPrivatePresent()) {
+      if (node.isPresentPrivate()) {
         getPrinter().print(node.getPrivate() + " ");
       }
       getPrinter().print(node.getType() + " " + node.getVarName());

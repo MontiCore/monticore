@@ -190,11 +190,11 @@ public class MCGrammarParserTest {
 
     ASTClassProd transition =  grammar.getClassProdList().get(2);
     ASTNonTerminal fromState = (ASTNonTerminal) transition.getAltList().get(0).getComponentList().get(0);
-    assertTrue(fromState.isReferencedSymbolPresent());
+    assertTrue(fromState.isPresentReferencedSymbol());
     assertEquals("State", fromState.getReferencedSymbol());
 
     ASTNonTerminal toState = (ASTNonTerminal) transition.getAltList().get(0).getComponentList().get(0);
-    assertTrue(toState.isReferencedSymbolPresent());
+    assertTrue(toState.isPresentReferencedSymbol());
     assertEquals("State", toState.getReferencedSymbol());
   }
 }

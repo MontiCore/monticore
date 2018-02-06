@@ -301,7 +301,7 @@ public class ParserGeneratorHelper {
 
   public String getConstantNameForConstant(ASTConstant x) {
     String name;
-    if (x.isHumanNamePresent()) {
+    if (x.isPresentHumanName()) {
       name = x.getHumanName();
     }
     else {
@@ -370,7 +370,7 @@ public class ParserGeneratorHelper {
 
   public static String getUsuageName(ASTNonTerminal ast) {
     // Use Nonterminal name as attribute name starting with lower case latter
-    if (ast.isUsageNamePresent()) {
+    if (ast.isPresentUsageName()) {
       return ast.getUsageName();
     }
     else {

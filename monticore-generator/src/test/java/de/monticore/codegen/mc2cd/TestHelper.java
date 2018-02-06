@@ -95,7 +95,7 @@ public class TestHelper {
       return false;
     }
     ASTSimpleReferenceType type = (ASTSimpleReferenceType) typeRef;
-    if (!type.isTypeArgumentsPresent()) {
+    if (!type.isPresentTypeArguments()) {
       return false;
     }
     if (type.getTypeArguments().getTypeArgumentList().size() != 1) {

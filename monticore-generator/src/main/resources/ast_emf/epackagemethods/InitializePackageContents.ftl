@@ -92,7 +92,7 @@ software, even if advised of the possibility of such damage.
       <#assign interface = "IS_INTERFACE">
     <#else>
       <#assign interface = "!IS_INTERFACE">
-      <#if astClass.isModifierPresent() && astClass.getModifier().isAbstract()>
+      <#if astClass.isPresentModifier() && astClass.getModifier().isAbstract()>
         <#assign abstract = "IS_ABSTRACT">
       <#else>
         <#assign abstract = "!IS_ABSTRACT">

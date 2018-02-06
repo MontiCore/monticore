@@ -51,7 +51,7 @@ class NonTerminalsWithSymbolReferenceToCDAttributeStereotypes implements
       final ASTNonTerminal nonTerminal = link.source();
       final ASTCDAttribute cdAttribute = link.target();
       
-      if (nonTerminal.isReferencedSymbolPresent()) {
+      if (nonTerminal.isPresentReferencedSymbol()) {
         final Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
             .getMCGrammarSymbol(nonTerminal);
         if (grammarSymbol.isPresent()) {

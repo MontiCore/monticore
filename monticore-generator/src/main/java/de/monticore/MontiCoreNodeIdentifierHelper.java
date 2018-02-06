@@ -78,7 +78,7 @@ public class MontiCoreNodeIdentifierHelper extends TypesNodeIdentHelper {
   }
   
   public String getIdent(ASTAttributeInAST ast) {
-    if (ast.isNamePresent()) {
+    if (ast.isPresentName()) {
       return format(ast.getName(), nodeName(ast));
     }
     return format(nodeName(ast));
@@ -89,7 +89,7 @@ public class MontiCoreNodeIdentifierHelper extends TypesNodeIdentHelper {
   }
   
   public String getIdent(ASTConstantGroup ast) {
-    if (ast.isUsageNamePresent()) {
+    if (ast.isPresentUsageName()) {
       return format(ast.getUsageName(), nodeName(ast));
     }
     return format(nodeName(ast));

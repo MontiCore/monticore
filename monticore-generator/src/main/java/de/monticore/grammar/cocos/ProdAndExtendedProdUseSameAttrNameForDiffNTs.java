@@ -45,7 +45,7 @@ public class ProdAndExtendedProdUseSameAttrNameForDiffNTs implements GrammarASTN
   
   @Override
   public void check(ASTNonTerminal a) {
-    if (a.isUsageNamePresent()) {
+    if (a.isPresentUsageName()) {
       String attributename = a.getUsageName();
       Optional<MCProdComponentSymbol> componentSymbol = a.getEnclosingScope().get()
           .resolve(attributename, MCProdComponentSymbol.KIND);
