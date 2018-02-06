@@ -154,12 +154,7 @@ public class CdEmfDecorator extends CdDecorator {
       addNodeGetter(clazz, astHelper);
 
       Optional<ASTCDClass> builder = astHelper.getASTBuilder(clazz);
-      if(builder.isPresent()) {
-        addListMethods(builder.get(), astHelper, cdDefinition);
-        addGetter(builder.get(), astHelper);
-        addSetter(builder.get(), astHelper, cdDefinition);
-        addOptionalMethods(builder.get(), astHelper, cdDefinition);
-      }
+      builder.ifPresent(astcdClass -> decorateBuilderClass(astcdClass, astHelper, cdDefinition));
       
       glex.replaceTemplate("ast.AstImports", clazz, new TemplateHookPoint("ast_emf.AstEImports"));
     }

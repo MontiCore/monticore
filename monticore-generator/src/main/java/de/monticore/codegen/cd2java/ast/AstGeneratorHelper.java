@@ -203,10 +203,14 @@ public class AstGeneratorHelper extends GeneratorHelper {
         : type;
   }
   
-  public static boolean isBuilderClassAbstarct(ASTCDClass astType) {
+  public static boolean isBuilderClassAbstract(ASTCDClass astType) {
     return (astType.getSuperclassOpt().isPresent() && isSuperClassExternal(astType))
         || (astType.getModifierOpt().isPresent() && astType.getModifierOpt().get().isAbstract()
             && !isSupertypeOfHWType(astType.getName()));
+  }
+
+  public static boolean isAbstract(ASTCDClass clazz) {
+    return clazz.isPresentModifier() && clazz.getModifier().isAbstract();
   }
   
   public static boolean hasReturnTypeVoid(ASTCDMethod method) {

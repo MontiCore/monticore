@@ -44,31 +44,26 @@ ${tc.include("ast.AstImports")}
    */
 
   <#assign abstract = "">
-  <#if genHelper.isBuilderClassAbstarct(astType)>
+  <#if genHelper.isAbstract(ast)>
     <#assign abstract = "abstract">
   </#if>
-  <#assign extends = "">
-  <#if astType.isPresentSuperclass() && !genHelper.isSuperClassExternal(astType)>
-    <#assign extends = "extends " + astType.printSuperClass() + "Builder">
-  </#if>
-  public ${abstract} class ${ast.getName()} ${extends} {
+  public ${abstract} class ${ast.getName()} extends ${ast.printSuperClass()} {
   <#list astType.getCDAttributeList() as attribute>
     <#if !genHelper.isInherited(attribute) && !genHelper.isAdditionalAttribute(attribute)>
     ${tc.include("ast.BuilderAttribute", attribute)}
     </#if>
   </#list>
   <#assign typeName = genHelper.getPlainName(astType)>
- 
-    protected ${ast.getName()}() {};
+    protected ${genHelper.getPlainName(ast)} realBuilder;
 
-  <#if abstract?has_content>
-    public abstract ${typeName} build();
-  <#else>
+    protected ${ast.getName()}() {
+      this.realBuilder = <#if abstract?has_content>(${genHelper.getPlainName(ast)})</#if> this;
+    }
+
     public ${typeName} build() {
       return new ${typeName} (${tc.include("ast.ParametersDeclaration")}
       );
     }
-    </#if>
 
     <#list ast.getCDMethodList() as method>
       ${tc.includeArgs("ast.ClassMethod", [method, ast])}
