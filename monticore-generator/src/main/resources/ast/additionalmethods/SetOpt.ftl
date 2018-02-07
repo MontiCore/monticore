@@ -30,8 +30,12 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
-${tc.signature("method", "ast", "attrName", "isBuilderClass")}
+${tc.signature("method", "ast", "attrName", "isBuilderClass", "isInherited")}
+<#if isInherited>
+  super.set${attrName?cap_first}Opt(value);
+<#else>
   this.${attrName} = value;
+</#if>
 <#if isBuilderClass>
   return this;
 </#if>
