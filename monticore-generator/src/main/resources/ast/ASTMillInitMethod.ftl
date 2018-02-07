@@ -33,5 +33,5 @@ software, even if advised of the possibility of such damage.
 ${tc.signature("method", "clazz", "origName", "millName", "overridden")}
    mill = new ${millName}();
    <#list overridden as superClass>
-   ${superClass.getFullName()?lower_case}._ast.${superClass.getName()}Mill.init(new ${superClass.getName()}MillFor${origName}());
+   // ${superClass.getFullName()?lower_case}._ast.${superClass.getName()}Mill.init(new ${superClass.getName()}MillFor${origName}());
    </#list>

@@ -859,11 +859,13 @@ public class CdDecorator {
     
     // Create delegate methods for inherited classes
     for (Entry<String, CDSymbol> entry: superClasses.entrySet()) {
+      if (!astClasses.contains(entry.getKey())) {
       String millName = getSimpleName(entry.getValue().getName()) + MILL;
       String millPackage = entry.getValue().getFullName().toLowerCase()
           + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;
       addDelegateMethodToMill(entry.getKey(), millClass, astHelper, entry.getValue(),
           millPackage + millName);
+      }
     }
     
     // Create init for super class diagrams
@@ -914,16 +916,7 @@ public class CdDecorator {
       millClass.setModifier(TransformationHelper.createAbstractModifier());
     }
     millClass.setName(millClassName);
-    
-    for (String clazz : astClasses) {
-      if (superClasses.containsKey(clazz)) {
-        continue;
-      }
-      String toParse = "protected static " + plainName + " mill"
-          + AstGeneratorHelper.getASTClassNameWithoutPrefix(clazz) + " = null;";
-      cdTransformation.addCdAttributeUsingDefinition(millClass, toParse);
-    }
-    
+        
     // Add builder-creating methods
     for (ASTCDClass clazz : nativeClasses) {
       if (AstGeneratorHelper.isBuilderClassAbstract(clazz)
@@ -931,9 +924,6 @@ public class CdDecorator {
         continue;
       }
       String className = AstGeneratorHelper.getASTClassNameWithoutPrefix(clazz);
-      if (superClasses.containsKey(clazz.getName())) {
-        continue;
-      }
       String methodName = StringTransformations.uncapitalize(className);
       String toParse = "public static " + clazz.getName() + "Builder "
           + methodName

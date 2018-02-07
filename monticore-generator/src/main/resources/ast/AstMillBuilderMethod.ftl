@@ -31,10 +31,6 @@ software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
 ${tc.signature("method", "ast", "astNodeName", "methodName")}
-     {
-       if (mill${astNodeName} == null) {
-         mill${astNodeName} = getMill();
-       }
-       
-       return mill${astNodeName}._${methodName}Builder();
+     {       
+       return getMill()._${methodName}Builder();
      }
