@@ -30,10 +30,10 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY O
 SUCH DAMAGE.
 ***************************************************************************************
 -->
-${tc.signature("d1", "ast", "attributeName", "methodName", "return", "parameters", "isBuilderClass")}
+${tc.signature("d1", "ast", "call", "return", "parameters", "isBuilderClass")}
      <#if isBuilderClass>
-        this.${attributeName}.${methodName}(${parameters});
+        ${call}(${parameters});
         return this.realBuilder;
      <#else>
-     <#if return>return </#if>this.${attributeName}.${methodName}(${parameters});
+     <#if return>return </#if>${call}(${parameters});
      </#if>

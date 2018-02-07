@@ -30,9 +30,11 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
-${tc.signature("method", "ast", "attribute", "cDAndJavaConformName", "isBuilderClass")}
+${tc.signature("method", "ast", "attribute", "cDAndJavaConformName", "isBuilderClass", "isInherited", "methodname")}
   <#assign genHelper = glex.getGlobalVar("astHelper")>
-  <#if genHelper.isOptional(attribute)>
+  <#if isInherited>
+    super.${methodname}(${cDAndJavaConformName});
+  <#elseif genHelper.isOptional(attribute)>
     this.${cDAndJavaConformName} = Optional.ofNullable(${cDAndJavaConformName});
   <#else>
     this.${cDAndJavaConformName} = ${cDAndJavaConformName};
