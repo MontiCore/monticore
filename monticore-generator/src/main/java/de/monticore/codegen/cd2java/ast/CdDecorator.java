@@ -1062,9 +1062,9 @@ public class CdDecorator {
           Optional<ASTNode> node = type.getAstNode();
           if (!type.isAbstract() && node.isPresent() && node.get() instanceof ASTCDClass) {
             ASTCDClass cdClass = (ASTCDClass) node.get();
-           // if ( !overriddenMap.containsKey(GeneratorHelper.getPlainName(cdClass))) {
+            if ( !overriddenMap.containsKey(GeneratorHelper.getPlainName(cdClass))) {
               overriddenMap.put(GeneratorHelper.getPlainName(cdClass), superCd);
-           // }
+           }
           }
         }
       }
