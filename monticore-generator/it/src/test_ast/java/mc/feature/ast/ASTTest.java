@@ -67,7 +67,7 @@ public class ASTTest {
     p.addChild(s);
     p.setSon(s);
     assertEquals(1, p.getChildList().size());
-    assertTrue(p.containsChilds(s));
+    assertTrue(p.containsChild(s));
   }
   
   @Test
