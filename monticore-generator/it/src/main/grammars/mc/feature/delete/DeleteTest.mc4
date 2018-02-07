@@ -26,7 +26,7 @@ grammar for test cases related to the deletion of elements from an AST
 grammar DeleteTest {
    
     B;
-    Parent = "parent" childList:Child*
+    Parent = "parent" Child*
         | "son" son:Child?
         | A;
     

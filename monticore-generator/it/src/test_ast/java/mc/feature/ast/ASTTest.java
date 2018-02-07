@@ -64,10 +64,10 @@ public class ASTTest {
   public void testGet_ChildNodes2() {
     ASTParent p = DeleteTestNodeFactory.createASTParent();
     ASTChild s = DeleteTestNodeFactory.createASTChild();
-    p.addChildList(s);
+    p.addChild(s);
     p.setSon(s);
-    assertEquals(1, p.getChildListList().size());
-    assertTrue(p.containsChildList(s));
+    assertEquals(1, p.getChildList().size());
+    assertTrue(p.containsChilds(s));
   }
   
   @Test
