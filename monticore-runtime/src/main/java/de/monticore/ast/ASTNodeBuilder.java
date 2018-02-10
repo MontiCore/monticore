@@ -56,19 +56,45 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
     this.realBuilder = (T) this;
   }
 
-
-  public SourcePosition get_SourcePositionEnd() {
-    if (end.isPresent()) {
-      return end.get();
-    }
-    return SourcePosition.getDefaultSourcePosition();
-  }
-
+  // ----------------------------------------------------------------------
+  // Handle the Optional SourcePosition end
+  // ----------------------------------------------------------------------
 
   public T set_SourcePositionEnd(SourcePosition end) {
     this.end = Optional.ofNullable(end);
-    return realBuilder;
+    return this.realBuilder;
   }
+
+  public Optional<SourcePosition> get_SourcePositionEndOpt() {
+    return end;
+  }
+
+  public SourcePosition get_SourcePositionEnd()   {
+    if (get_SourcePositionEndOpt().isPresent()) {
+     return get_SourcePositionEndOpt().get();
+    }
+    Log.error("0xB9266 get_SourcePositionEndOpt can't return a value. It is empty.");
+    // Normally this statement is not reachable
+    throw new IllegalStateException();
+  }
+
+  public boolean isPresent_SourcePositionEnd()   {
+    return get_SourcePositionEndOpt().isPresent();
+  }
+
+  public T set_SourcePositionEndAbsent()   {
+    end = Optional.empty();
+    return this.realBuilder;
+  }
+
+  public T set_SourcePositionEndOpt(Optional<SourcePosition> value)   {
+    this.end = value;
+    return this.realBuilder;
+  }
+
+  // ----------------------------------------------------------------------
+  // Handle the Optional SourcePosition start
+  // ----------------------------------------------------------------------
 
 
   public SourcePosition get_SourcePositionStart() {
@@ -83,6 +109,10 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
     this.start = Optional.ofNullable(start);
     return this.realBuilder;
   }
+
+  // ----------------------------------------------------------------------
+  // Handle the Pre comment List
+  // ----------------------------------------------------------------------
 
   /**
    * Can be removed after 4.5.5 Replace with List<Comment> get_PreCommentList(); use
@@ -123,63 +153,121 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
   }
 
 
+  // ----------------------------------------------------------------------
+  // Handle the Optional Enclosing Scope 
+  // ----------------------------------------------------------------------
+   
+  /**
+   * set Enclosing Scope
+   */
   public T setEnclosingScope(Scope enclosingScope) {
     this.enclosingScope = Optional.ofNullable(enclosingScope);
     return this.realBuilder;
   }
 
-
-  public Optional<? extends Scope> getEnclosingScope() {
+  public Optional<? extends Scope> getEnclosingScopeOpt() {
     return enclosingScope;
   }
 
+  public Scope getEnclosingScope()   {
+    if (getEnclosingScopeOpt().isPresent()) {
+     return getEnclosingScopeOpt().get();
+    }
+    Log.error("0xB9262 getEnclosingScopeOpt can't return a value. It is empty.");
+    // Normally this statement is not reachable
+    throw new IllegalStateException();
+  }
 
-  public boolean enclosingScopeIsPresent() {
-    return enclosingScope.isPresent();
+  public boolean isPresentEnclosingScope()   {
+    return getEnclosingScopeOpt().isPresent();
+  }
+
+  public T setEnclosingScopeAbsent()   {
+    enclosingScope = Optional.empty();
+    return this.realBuilder;
+  }
+
+  public T setEnclosingScopeOpt(Optional<Scope> value)   {
+    this.enclosingScope = value;
+    return this.realBuilder;
   }
 
 
+  // ----------------------------------------------------------------------
+  // Handle the optional Symbol
+  // ----------------------------------------------------------------------
+ 
   public T setSymbol(Symbol symbol) {
     this.symbol = Optional.ofNullable(symbol);
     return this.realBuilder;
   }
 
-
-  public Optional<? extends Symbol> getSymbol() {
+  public Optional<? extends Symbol> getSymbolOpt() {
     return symbol;
   }
 
-
-  public boolean symbolIsPresent() {
-    return symbol.isPresent();
+  public Symbol getSymbol()   {
+    if (getSymbolOpt().isPresent()) {
+     return getSymbolOpt().get();
+    }
+    Log.error("0xB9263 getSymbolOpt can't return a value. It is empty.");
+    // Normally this statement is not reachable
+    throw new IllegalStateException();
   }
 
+  public boolean isPresentSymbol()   {
+    return getSymbolOpt().isPresent();
+  }
+
+  public T setSymbolAbsent()   {
+    symbol = Optional.empty();
+    return this.realBuilder;
+  }
+
+  public T setSymbolOpt(Optional<Symbol> value)   {
+    this.symbol = value;
+    return this.realBuilder;
+  }
+
+  // ----------------------------------------------------------------------
+  // Handle the optional Spanned Scope
+  // ----------------------------------------------------------------------
 
   public T setSpannedScope(Scope spannedScope) {
     this.spannedScope = Optional.ofNullable(spannedScope);
     return this.realBuilder;
   }
 
-
-  public Optional<? extends Scope> getSpannedScope() {
-    if (spannedScope.isPresent()) {
-      return spannedScope;
-    }
-
-    Optional<? extends Scope> result = Optional.empty();
-    if (getSymbol().isPresent() && (getSymbol().get() instanceof ScopeSpanningSymbol)) {
-      final ScopeSpanningSymbol sym = (ScopeSpanningSymbol) getSymbol().get();
-      result = Optional.of(sym.getSpannedScope());
-    }
-
-    return result;
+  public Optional<? extends Scope> getSpannedScopeOpt() {
+    return spannedScope;
   }
 
-
-  public boolean spannedScopeIsPresent() {
-    return spannedScope.isPresent();
+  public Scope getSpannedScope()   {
+    if (getSpannedScopeOpt().isPresent()) {
+     return getSpannedScopeOpt().get();
+    }
+    Log.error("0xB9264 getSpannedScopeOpt can't return a value. It is empty.");
+    // Normally this statement is not reachable
+    throw new IllegalStateException();
   }
 
+  public boolean isPresentSpannedScope()   {
+    return getSpannedScopeOpt().isPresent();
+  }
+
+  public T setSpannedScopeAbsent()   {
+    spannedScope = Optional.empty();
+    return this.realBuilder;
+  }
+
+  public T setSpannedScopeOpt(Optional<Scope> value)   {
+    this.spannedScope = value;
+    return this.realBuilder;
+  }
+
+  // ----------------------------------------------------------------------
+  // Handle Pre Comments
+  // ----------------------------------------------------------------------
 
   public T clear_PreComments() {
     this.precomments.clear();

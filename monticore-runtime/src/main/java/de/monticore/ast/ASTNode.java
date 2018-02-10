@@ -39,8 +39,6 @@ import de.se_rwth.commons.logging.Log;
 
 /**
  * Foundation interface for all AST-classes
- * 
- * @author krahn
  */
 public interface ASTNode {
   
