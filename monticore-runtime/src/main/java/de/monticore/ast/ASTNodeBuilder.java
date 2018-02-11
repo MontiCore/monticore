@@ -96,17 +96,35 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
   // Handle the Optional SourcePosition start
   // ----------------------------------------------------------------------
 
-
-  public SourcePosition get_SourcePositionStart() {
-    if (start.isPresent()) {
-      return start.get();
-    }
-    return SourcePosition.getDefaultSourcePosition();
-  }
-
-
   public T set_SourcePositionStart(SourcePosition start) {
     this.start = Optional.ofNullable(start);
+    return this.realBuilder;
+  }
+
+  public Optional<SourcePosition> get_SourcePositionStartOpt() {
+    return start;
+  }
+
+  public SourcePosition get_SourcePositionStart()   {
+    if (get_SourcePositionStartOpt().isPresent()) {
+     return get_SourcePositionStartOpt().get();
+    }
+    Log.error("0xB9267 get_SourcePositionStartOpt can't return a value. It is empty.");
+    // Normally this statement is not reachable
+    throw new IllegalStateException();
+  }
+
+  public boolean isPresent_SourcePositionStart()   {
+    return get_SourcePositionStartOpt().isPresent();
+  }
+
+  public T set_SourcePositionStartAbsent()   {
+    start = Optional.empty();
+    return this.realBuilder;
+  }
+
+  public T set_SourcePositionStartOpt(Optional<SourcePosition> value)   {
+    this.start = value;
     return this.realBuilder;
   }
 
