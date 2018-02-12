@@ -8,9 +8,8 @@
 * [LGPL V3.0](https://github.com/MontiCore/monticore/tree/master/00.org/Licenses/LICENSE-LGPL.md) (for handwritten Java code)
 * [BSD-3-Clause](https://github.com/MontiCore/monticore/tree/master/00.org/Licenses/LICENSE-BSD3CLAUSE.md) (for templates and all generated artifacts)
 
-## Licenses (informal description)
+## License for Java code in the repository (informal description)
 
-* For Java code in the repository: 
 This project is free software; you can redistribute it and/or
 modify it under the terms of the LGPL; either
 version 3.0 of the License, or (at your option) any later version.
@@ -18,7 +17,8 @@ This library is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
 
-* For templates and all generated artifacts:
+## License for for templates and all generated artifacts (informal description)
+
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
