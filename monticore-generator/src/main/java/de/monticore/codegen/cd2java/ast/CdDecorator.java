@@ -972,11 +972,11 @@ public class CdDecorator {
       }
 
       String className = AstGeneratorHelper.getASTClassNameWithoutPrefix(clazz);
-      String methodName = StringTransformations.uncapitalize(className);
+      String methodName = StringTransformations.uncapitalize(className) + AstGeneratorHelper.AST_BUILDER;
       String toParse = "protected " + astHelper.getPlainName(clazz) + AstGeneratorHelper.AST_BUILDER + " _"
-          + methodName + AstGeneratorHelper.AST_BUILDER + "() ;";
+          + methodName  + "() ;";
       replaceMethodBodyTemplate(millClass, toParse,
-          new StringHookPoint("return new " + astHelper.getPlainName(clazz) + AstGeneratorHelper.AST_BUILDER + "();\n"));
+          new StringHookPoint("return " + cdCompilationUnit.getCDDefinition().getName() + "Mill." + methodName + "();\n"));
     }
     
     cdDef.getCDClassList().add(millClass);
