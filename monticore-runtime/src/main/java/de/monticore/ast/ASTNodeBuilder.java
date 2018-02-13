@@ -24,6 +24,7 @@ import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ScopeSpanningSymbol;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.SourcePosition;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
 import java.util.function.Consumer;
