@@ -46,7 +46,7 @@ import ${astImport};
 
 public <#if isTop>abstract </#if> class ${ast.getName()} {
 
-  private static ${plainName} getMill() {
+  protected static ${plainName} getMill() {
     if (mill == null) {
       mill = new ${plainName}();
     }
