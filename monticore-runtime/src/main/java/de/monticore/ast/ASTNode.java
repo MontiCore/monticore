@@ -406,7 +406,7 @@ public interface ASTNode {
    * @param element of which the index in the comment list should be returned
    * @return int index where the Object is found
    */
-  int indexOf_PreComments(Object element);
+  int indexOf_PreComment(Object element);
   
   /**
    * Returns the last index of the given element if it exists in the list
@@ -414,7 +414,7 @@ public interface ASTNode {
    * @param element of which the last index in the comment list should be returned
    * @return int index where the Object is found latest
    */
-  int lastIndexOf_PreComments(Object element);
+  int lastIndexOf_PreComment(Object element);
   
   /**
    * Returns true if the object equals the preComment list Returns false if the object and the
@@ -437,7 +437,7 @@ public interface ASTNode {
    * 
    * @return ListIterator<Comment> which iterates over the list of preComments
    */
-  ListIterator<Comment> ListIterator_PreComments();
+  ListIterator<Comment> listIterator_PreComments();
   
   /**
    * Returns the new preComment list without the removed element at the given index
@@ -694,7 +694,7 @@ public interface ASTNode {
    * @param element of which the index in the comment list should be returned
    * @return int index where the Object is found
    */
-  int indexOf_PostComments(Object element);
+  int indexOf_PostComment(Object element);
   
   /**
    * Returns the last index of the given element if this exists in the list
@@ -702,7 +702,7 @@ public interface ASTNode {
    * @param element of which the last index in the comment list should be returned
    * @return int index where the Object is found latest
    */
-  int lastIndexOf_PostComments(Object element);
+  int lastIndexOf_PostComment(Object element);
   
   /**
    * Returns true if the object equals the postComment list Returns false if the object and the
@@ -725,7 +725,7 @@ public interface ASTNode {
    * 
    * @return ListIterator<Comment> which iterates over the list of postComments
    */
-  ListIterator<Comment> ListIterator_PostComments();
+  ListIterator<Comment> listIterator_PostComments();
   
   /**
    * Returns the new postComment list without the removed element at the given index
