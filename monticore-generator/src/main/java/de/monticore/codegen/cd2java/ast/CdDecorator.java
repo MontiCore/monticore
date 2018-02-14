@@ -25,11 +25,9 @@ import static de.se_rwth.commons.Names.getSimpleName;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -837,11 +835,10 @@ public class CdDecorator {
     Set<String> astClasses = new LinkedHashSet<>();
     nativeClasses.stream()
         .forEach(e -> astClasses.add(GeneratorHelper.getPlainName(e)));
-    Map<String, CDSymbol> superClasses = getClassesOfSuperGrammars(astHelper);
     
     // CreateMill 
-    ASTCDClass millClass = createMillClass(cdCompilationUnit, nativeClasses, superClasses,
-        astHelper, astClasses);
+    ASTCDClass millClass = createMillClass(cdCompilationUnit, nativeClasses,
+        astHelper);
     
     // Create Import
     String packageName = Names.getQualifiedName(cdCompilationUnit.getPackageList());
@@ -860,24 +857,31 @@ public class CdDecorator {
         imports));
     
     // Create delegate methods for inherited classes
-    for (Entry<String, CDSymbol> entry: superClasses.entrySet()) {
-      if (!astClasses.contains(entry.getKey())) {
-      String millName = getSimpleName(entry.getValue().getName()) + MILL;
-      String millPackage = entry.getValue().getFullName().toLowerCase()
-          + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;
-      addDelegateMethodToMill(entry.getKey(), millClass, astHelper, entry.getValue(),
-          millPackage + millName);
+    ArrayList<CDSymbol> overridden = Lists.newArrayList();
+    List<String> delegateList = Lists.newArrayList(astClasses);
+    for (CDSymbol superCd : astHelper.getAllCds(astHelper.getCdSymbol())) {
+      if (!astHelper.getCdSymbol().equals(superCd)) {
+        for (CDTypeSymbol cdType : superCd.getTypes()) {
+          Optional<ASTNode> node = cdType.getAstNode();
+          if (node.isPresent() && node.get() instanceof ASTCDClass) {
+            if (!cdType.isAbstract() && !delegateList.contains(cdType.getName())) {
+              delegateList.add(cdType.getName());
+              String millName = getSimpleName(superCd.getName()) + MILL;
+              String millPackage = superCd.getFullName().toLowerCase()
+                  + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;
+              addDelegateMethodToMill(cdType.getName(), millClass, astHelper, superCd,
+                  millPackage + millName);
+            }
+          }
+        }
       }
     }
     
+    // Compute diagrams with overridden classes
+    calculateOverriddenCds(astHelper.getCdSymbol(), astClasses, overridden);
+    
     // Create init for super class diagrams
     String toParse = "public static void init();" ;
-    List<CDSymbol> overridden = Lists.newArrayList();
-    for (String clazzName: astClasses) {
-      if (superClasses.containsKey(clazzName)) {
-        overridden.add(superClasses.get(clazzName));
-      }
-    }
     HookPoint methodBody = new TemplateHookPoint("ast.ASTMillInitMethod", cdCompilationUnit.getCDDefinition().getName(),
         GeneratorHelper.getPlainName(millClass, ""), overridden);
     replaceMethodBodyTemplate(millClass, toParse, methodBody);    
@@ -902,13 +906,33 @@ public class CdDecorator {
     }
   }
   
+
+  protected void calculateOverriddenCds(CDSymbol cd,
+      Collection<String> nativeClasses, ArrayList<CDSymbol> overridden) {
+    // imported cds
+    for (String importedCdName : cd.getImports()) {
+      Optional<CDSymbol> importedCd = symbolTable.resolve(importedCdName, CDSymbol.KIND);
+      if (importedCd.isPresent()) {
+        CDSymbol superCd = importedCd.get();
+        for (String className: nativeClasses) {
+          if (superCd.getType(className).isPresent()) {
+            overridden.add(superCd);
+            calculateOverriddenCds(superCd, nativeClasses, overridden);
+            return;
+          }
+        }
+        calculateOverriddenCds(superCd, nativeClasses, overridden);
+      }
+    }
+    return;  
+  }
+
   protected ASTCDClass createMillClass(ASTCDCompilationUnit cdCompilationUnit,
-      List<ASTCDClass> nativeClasses, Map<String, CDSymbol> superClasses, AstGeneratorHelper astHelper, Set<String> astClasses) {
+      List<ASTCDClass> nativeClasses,  AstGeneratorHelper astHelper) {
     ASTCDDefinition cdDef = cdCompilationUnit.getCDDefinition();
     
     ASTCDClass millClass = CD4AnalysisNodeFactory.createASTCDClass();
     String millClassName = cdDef.getName() + MILL;
-    String plainName = millClassName;
     
     // Check if a handwritten mill class exists
     if (TransformationHelper.existsHandwrittenClass(targetPath,
@@ -952,7 +976,6 @@ public class CdDecorator {
     ASTCDDefinition cdDef = cdCompilationUnit.getCDDefinition();
     
     ASTCDClass millClass = CD4AnalysisNodeFactory.createASTCDClass();
-    String plainName = millClassName;
     
     // Check if a handwritten mill class exists
     if (TransformationHelper.existsHandwrittenClass(targetPath,
@@ -1043,34 +1066,7 @@ public class CdDecorator {
     return imports;
   }
   
-  protected Map<String, CDSymbol> getClassesOfSuperGrammars( AstGeneratorHelper astHelper) {
-    HashMap<String, CDSymbol> overriddenMap = new HashMap<>();
-    if (!astHelper.getSuperGrammarCds().isEmpty()) {
-      for (CDSymbol superCd : astHelper.getAllCds(astHelper.getCdSymbol())) {
-        if (superCd.equals(astHelper.getCdSymbol())) {
-          continue;
-        }
-        for (CDTypeSymbol type : superCd.getTypes()) {
-          Optional<ASTNode> node = type.getAstNode();
-          if (!type.isAbstract() && node.isPresent() && node.get() instanceof ASTCDClass) {
-            ASTCDClass cdClass = (ASTCDClass) node.get();
-            if ( !overriddenMap.containsKey(GeneratorHelper.getPlainName(cdClass))) {
-              overriddenMap.put(GeneratorHelper.getPlainName(cdClass), superCd);
-           }
-          }
-        }
-      }
-    }
-    return overriddenMap;
-  }
-
-  /**
-   * TODO: Write me!
-   * 
-   * @param astHelper
-   * @param cdClass
-   * @param nodeFactoryForSuperCd
-   */
+ 
   protected void addMethodsToNodeFactory(ASTCDClass clazz, ASTCDClass nodeFactoryClass,
       AstGeneratorHelper astHelper) {
     if (!clazz.isPresentModifier() || clazz.getModifier().isAbstract()) {
