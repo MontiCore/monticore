@@ -67,8 +67,7 @@ while (grammarIterator.hasNext()) {
       runGrammarCoCos(astGrammar, globalScope)
 
       // M5: transform grammar AST into Class Diagram AST
-      astClassDiagram = transformAstGrammarToAstCd(glex, astGrammar, globalScope, handcodedPath)
-      astClassDiagramWithST = createSymbolsFromAST(globalScope, astClassDiagram)
+      astClassDiagramWithST = deriveCD(astGrammar, glex, globalScope)
 
       // write Class Diagram AST to the CD-file (*.cd)
       storeInCdFile(astClassDiagramWithST, out)

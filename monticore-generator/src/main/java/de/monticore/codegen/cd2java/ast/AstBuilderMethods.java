@@ -27,8 +27,16 @@ public enum AstBuilderMethods {
   // ----------- SourcePosition -----------------------------
 
   set_SourcePositionEnd("public %s set_SourcePositionEnd(SourcePosition end);"),
+  
+  set_SourcePositionEndOpt("public %s set_SourcePositionEndOpt(Optional<SourcePosition> end);"),
+  
+  set_SourcePositionEndAbsent("public %s set_SourcePositionEndAbsent();"),
 
   set_SourcePositionStart("public %s set_SourcePositionStart(SourcePosition start);"),
+  
+  set_SourcePositionStartOpt("public %s set_SourcePositionStartOpt(Optional<SourcePosition> Start);"),
+  
+  set_SourcePositionStartAbsent("public %s set_SourcePositionStartAbsent();"),
 
   // ----------- Scope & Symbol -----------------------------
 
@@ -82,9 +90,6 @@ public enum AstBuilderMethods {
 
   set_PreComment("public %s set_PreComment(int index, Comment precomment);"),
 
-  //@Deprecated
-  set_PreComments$("public %s set_PreComments(List<Comment> precomments);"),
-
   // ----------- PostComments -----------------------------
 
   clear_PostComments("public %s clear_PostComments();"),
@@ -115,10 +120,7 @@ public enum AstBuilderMethods {
 
   set_PostCommentList("public %s set_PostCommentList(List<Comment> postComments);"),
 
-  set_PostComment("public %s set_PostComment(int index, Comment postcomment);"),
-
-  //@Deprecated
-  set_PostComments$("public %s set_PostComments(List<Comment> postcomments);")
+  set_PostComment("public %s set_PostComment(int index, Comment postcomment);")
   ;
 
   private String methodDeclaration;

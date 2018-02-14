@@ -23,7 +23,7 @@ grammar Subsubgrammar extends de.monticore.inherited.sub.Subgrammar {
 
   N = X? D;
   
-  P extends X = D;
+//  P extends X = D;
   
   S = X*;
   

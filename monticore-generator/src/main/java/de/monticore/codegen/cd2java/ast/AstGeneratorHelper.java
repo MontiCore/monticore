@@ -80,6 +80,9 @@ public class AstGeneratorHelper extends GeneratorHelper {
     if (isOptional(attribute)) {
       return "Optional.empty()";
     }
+    else if (isBoolean(attribute)) {
+      return "false";
+    }
     return getAstAttributeValue(attribute);
   }
   

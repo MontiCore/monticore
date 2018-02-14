@@ -197,12 +197,8 @@ public class CdDecorator {
       for(AstBuilderMethods value : AstBuilderMethods.values()) {
         String methodSignatur = String.format(value.getMethodDeclaration(),
           clazz.getName());
-        ASTCDMethod method = additionalNodeBuilderListMethod(clazz, value.getMethodName(),
+        additionalNodeBuilderMethod(clazz, value.getMethodName(),
           methodSignatur);
-        if(value.equals(AstBuilderMethods.set_PreComments$)
-          || value.equals(AstBuilderMethods.set_PostComments$)) {
-          addDeprecatedSteretype(method);
-        }
       }
     }
   }
@@ -1584,7 +1580,7 @@ public class CdDecorator {
     return additionalMethodForListAttribute(clazz, callMethod, attribute, methodSignatur, false, false);
   }
 
-  protected ASTCDMethod additionalNodeBuilderListMethod(ASTCDClass clazz, String callMethod,
+  protected ASTCDMethod additionalNodeBuilderMethod(ASTCDClass clazz, String callMethod,
       String methodSignatur) {
     Optional<ASTCDMethod> astMethod = cdTransformation.addCdMethodUsingDefinition(clazz,
       methodSignatur);
@@ -1593,7 +1589,7 @@ public class CdDecorator {
     String callParameters = Joiners.COMMA
       .join(parameters.stream().map(ASTCDParameter::getName).collect(Collectors.toList()));
     HookPoint hookPoint = new TemplateHookPoint(
-      "ast.additionalmethods.NodeBuilderListMethod", callMethod, callParameters);
+      "ast.additionalmethods.NodeBuilderMethod", callMethod, callParameters);
       glex.replaceTemplate(EMPTY_BODY_TEMPLATE, astMethod.get(), hookPoint);
       glex.replaceTemplate(ERROR_IFNULL_TEMPLATE, astMethod.get(), new StringHookPoint(""));
       return astMethod.get();

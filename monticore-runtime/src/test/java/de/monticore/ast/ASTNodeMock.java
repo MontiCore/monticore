@@ -64,11 +64,31 @@ public class ASTNodeMock implements ASTNode {
     return null;
   }
   
+  @Override
+  public Optional<SourcePosition> get_SourcePositionEndOpt() {
+    return Optional.empty();
+  }
+  
   /**
    * @see de.monticore.ast.ASTNode#set_SourcePositionEnd(de.se_rwth.commons.SourcePosition)
    */
   @Override
   public void set_SourcePositionEnd(SourcePosition end) {
+  }
+  
+  @Override
+  public void set_SourcePositionEndOpt(Optional<SourcePosition> end) {
+  
+  }
+  
+  @Override
+  public void set_SourcePositionEndAbsent() {
+  
+  }
+  
+  @Override
+  public boolean isPresent_SourcePositionEnd() {
+    return false;
   }
   
   /**
@@ -79,11 +99,31 @@ public class ASTNodeMock implements ASTNode {
     return null;
   }
   
+  @Override
+  public Optional<SourcePosition> get_SourcePositionStartOpt() {
+    return Optional.empty();
+  }
+  
   /**
    * @see de.monticore.ast.ASTNode#set_SourcePositionStart(de.se_rwth.commons.SourcePosition)
    */
   @Override
   public void set_SourcePositionStart(SourcePosition start) {
+  }
+  
+  @Override
+  public void set_SourcePositionStartOpt(Optional<SourcePosition> start) {
+  
+  }
+  
+  @Override
+  public void set_SourcePositionStartAbsent() {
+  
+  }
+  
+  @Override
+  public boolean isPresent_SourcePositionStart() {
+    return false;
   }
   
   /**

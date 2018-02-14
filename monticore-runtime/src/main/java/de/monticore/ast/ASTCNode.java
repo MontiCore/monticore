@@ -62,6 +62,10 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
     protected Optional<? extends Scope> spannedScope = Optional.empty();
 
     public abstract ASTNode deepClone();
+  
+  // ----------------------------------------------------------------------
+  // Handle the Optional SourcePosition end
+  // ----------------------------------------------------------------------
 
     public SourcePosition get_SourcePositionEnd() {
         if (end.isPresent()) {
@@ -73,7 +77,27 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
     public void set_SourcePositionEnd(SourcePosition end) {
         this.end = Optional.ofNullable(end);
     }
-
+  
+    public Optional<SourcePosition> get_SourcePositionEndOpt() {
+      return end;
+    }
+  
+    public boolean isPresent_SourcePositionEnd()   {
+      return get_SourcePositionEndOpt().isPresent();
+    }
+  
+    public void set_SourcePositionEndAbsent()   {
+      end = Optional.empty();
+    }
+  
+    public void set_SourcePositionEndOpt(Optional<SourcePosition> value)   {
+      this.end = value;
+    }
+  
+  // ----------------------------------------------------------------------
+  // Handle the Optional SourcePosition start
+  // ----------------------------------------------------------------------
+  
     public SourcePosition get_SourcePositionStart() {
         if (start.isPresent()) {
             return start.get();
@@ -84,6 +108,24 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
     public void set_SourcePositionStart(SourcePosition start) {
         this.start = Optional.ofNullable(start);
     }
+  
+    public Optional<SourcePosition> get_SourcePositionStartOpt() {
+      return start;
+     }
+  
+    public boolean isPresent_SourcePositionStart()   {
+      return get_SourcePositionStartOpt().isPresent();
+    }
+  
+    public void set_SourcePositionStartAbsent()   {
+      start = Optional.empty();
+    }
+  
+    public void set_SourcePositionStartOpt(Optional<SourcePosition> value)   {
+      this.start = value;
+    }
+    
+    
 
     /**
      * Can be removed after 4.5.5 Replace with List<Comment> get_PreCommentList(); use
@@ -120,7 +162,11 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
     public void set_PostComments(List<Comment> postcomments) {
         this.postcomments = postcomments;
     }
-
+  
+  // ----------------------------------------------------------------------
+  // Handle the Optional Enclosing Scope
+  // ----------------------------------------------------------------------
+  
     @Override
     public void setEnclosingScope(Scope enclosingScope) {
         this.enclosingScope = Optional.ofNullable(enclosingScope);
@@ -162,7 +208,11 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
     public boolean enclosingScopeIsPresent() {
         return enclosingScope.isPresent();
     }
-
+  
+  // ----------------------------------------------------------------------
+  // Handle the optional Symbol
+  // ----------------------------------------------------------------------
+  
     @Override
     public void setSymbol(Symbol symbol) {
         this.symbol = Optional.ofNullable(symbol);
@@ -203,7 +253,11 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
     public boolean symbolIsPresent() {
         return symbol.isPresent();
     }
-
+  
+  // ----------------------------------------------------------------------
+  // Handle the optional Spanned Scope
+  // ----------------------------------------------------------------------
+  
     @Override
     public void setSpannedScope(Scope spannedScope) {
         this.spannedScope = Optional.ofNullable(spannedScope);
@@ -250,10 +304,15 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
         return this.spannedScope;
     }
 
+    @Override
     public boolean spannedScopeIsPresent() {
         return spannedScope.isPresent();
     }
-
+  
+  // ----------------------------------------------------------------------
+  // Handle Pre Comments
+  // ----------------------------------------------------------------------
+  
     @Override
     public void clear_PreComments() {
         this.precomments.clear();
@@ -422,7 +481,11 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
     public Object[] toArray_PreComments() {
         return this.precomments.toArray();
     }
-
+  
+  // ----------------------------------------------------------------------
+  // Handle Post Comments
+  // ----------------------------------------------------------------------
+  
     @Override
     public void clear_PostComments() {
         this.postcomments.clear();

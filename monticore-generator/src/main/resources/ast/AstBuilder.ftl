@@ -65,8 +65,10 @@ ${tc.include("ast.AstImports")}
     public abstract ${typeName} build();
   <#else>
     public ${typeName} build() {
-      return new ${typeName} (${tc.include("ast.ParametersDeclaration")}
+      ${typeName} value = new ${typeName} (${tc.include("ast.ParametersDeclaration")}
       );
+      ${tc.include("ast.AstBuildMethod")}
+      return value;
     }
   </#if>
 
