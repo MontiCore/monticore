@@ -42,9 +42,7 @@ while (grammarIterator.hasNext()) {
     astGrammar = createSymbolsFromAST(globalScope, astGrammar)
 
     // Transform AST-Grammar -> AST-CD
-    astClassDiagram = transformAstGrammarToAstCd(glex, astGrammar, globalScope, handcodedPath)
-
-    astClassDiagramWithST = createSymbolsFromAST(globalScope, astClassDiagram)
+    astClassDiagramWithST = deriveCD(astGrammar, glex, globalScope)
 
     // Writes Class Diagram AST to the CD-file (*.cd)
     storeInCdFile(astClassDiagramWithST, out)

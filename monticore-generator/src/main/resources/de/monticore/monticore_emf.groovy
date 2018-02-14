@@ -56,7 +56,7 @@ while (grammarIterator.hasNext()) {
       // start reporting
       grammarName = Names.getQualifiedName(astGrammar.getPackageList(), astGrammar.getName())
       Reporting.on(grammarName)
- 	  Reporting.reportModelStart(astGrammar, grammarName, "")
+ 	    Reporting.reportModelStart(astGrammar, grammarName, "")
       Reporting.reportParseInputFile(input, grammarName)
 
       // M3: populate symbol table
@@ -66,10 +66,9 @@ while (grammarIterator.hasNext()) {
       runGrammarCoCos(astGrammar, globalScope)
 
       // M5: transform grammar AST into Class Diagram AST
-      astClassDiagram = transformAstGrammarToAstCd(glex, astGrammar, globalScope, handcodedPath)
-      astClassDiagramWithST = createSymbolsFromAST(globalScope, astClassDiagram)
+      astClassDiagramWithST = deriveCD(astGrammar, glex, globalScope)
 
-      // write Class Diagram AST to the CD-file (*.cd)
+      // write Class Diagram AST to the CD-report
       storeInCdFile(astClassDiagramWithST, out)
 
       // M6: generate parser and wrapper
