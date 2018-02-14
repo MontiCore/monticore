@@ -286,7 +286,7 @@ public class ASTNodeMock implements ASTNode {
   }
   
   @Override
-  public boolean add_PreComments(Comment precomment) {
+  public boolean add_PreComment(Comment precomment) {
     // TODO Auto-generated method stub
     return false;
   }
@@ -298,7 +298,7 @@ public class ASTNodeMock implements ASTNode {
   }
   
   @Override
-  public boolean contains_PreComments(Object element) {
+  public boolean contains_PreComment(Object element) {
     // TODO Auto-generated method stub
     return false;
   }
@@ -322,7 +322,7 @@ public class ASTNodeMock implements ASTNode {
   }
   
   @Override
-  public boolean remove_PreComments(Object element) {
+  public boolean remove_PreComment(Object element) {
     // TODO Auto-generated method stub
     return false;
   }
@@ -352,7 +352,7 @@ public class ASTNodeMock implements ASTNode {
   }
   
   @Override
-  public boolean removeIf_PreComments(Predicate<? super Comment> filter) {
+  public boolean removeIf_PreComment(Predicate<? super Comment> filter) {
     // TODO Auto-generated method stub
     return false;
   }
@@ -382,7 +382,7 @@ public class ASTNodeMock implements ASTNode {
   }
   
   @Override
-  public void add_PreComments(int index, Comment precomment) {
+  public void add_PreComment(int index, Comment precomment) {
     // TODO Auto-generated method stub
     
   }
@@ -394,7 +394,7 @@ public class ASTNodeMock implements ASTNode {
   }
   
   @Override
-  public Comment get_PreComments(int index) {
+  public Comment get_PreComment(int index) {
     // TODO Auto-generated method stub
     return null;
   }
@@ -430,7 +430,7 @@ public class ASTNodeMock implements ASTNode {
   }
   
   @Override
-  public Comment remove_PreComments(int index) {
+  public Comment remove_PreComment(int index) {
     // TODO Auto-generated method stub
     return null;
   }
@@ -472,7 +472,7 @@ public class ASTNodeMock implements ASTNode {
   }
   
   @Override
-  public boolean add_PostComments(Comment postcomment) {
+  public boolean add_PostComment(Comment postcomment) {
     // TODO Auto-generated method stub
     return false;
   }
@@ -484,7 +484,7 @@ public class ASTNodeMock implements ASTNode {
   }
   
   @Override
-  public boolean contains_PostComments(Object element) {
+  public boolean contains_PostComment(Object element) {
     // TODO Auto-generated method stub
     return false;
   }
@@ -508,7 +508,7 @@ public class ASTNodeMock implements ASTNode {
   }
   
   @Override
-  public boolean remove_PostComments(Object element) {
+  public boolean remove_PostComment(Object element) {
     // TODO Auto-generated method stub
     return false;
   }
@@ -538,7 +538,7 @@ public class ASTNodeMock implements ASTNode {
   }
   
   @Override
-  public boolean removeIf_PostComments(Predicate<? super Comment> filter) {
+  public boolean removeIf_PostComment(Predicate<? super Comment> filter) {
     // TODO Auto-generated method stub
     return false;
   }
@@ -568,7 +568,7 @@ public class ASTNodeMock implements ASTNode {
   }
   
   @Override
-  public void add_PostComments(int index, Comment postcomment) {
+  public void add_PostComment(int index, Comment postcomment) {
     // TODO Auto-generated method stub
     
   }
@@ -580,7 +580,7 @@ public class ASTNodeMock implements ASTNode {
   }
   
   @Override
-  public Comment get_PostComments(int index) {
+  public Comment get_PostComment(int index) {
     // TODO Auto-generated method stub
     return null;
   }
@@ -616,7 +616,7 @@ public class ASTNodeMock implements ASTNode {
   }
   
   @Override
-  public Comment remove_PostComments(int index) {
+  public Comment remove_PostComment(int index) {
     // TODO Auto-generated method stub
     return null;
   }
@@ -664,7 +664,7 @@ public class ASTNodeMock implements ASTNode {
    * @see de.monticore.ast.ASTNode#set_PreComments(int, de.monticore.ast.Comment)
    */
   @Override
-  public Comment set_PreComments(int index, Comment precomment) {
+  public Comment set_PreComment(int index, Comment precomment) {
     // TODO Auto-generated method stub
     return null;
   }
@@ -691,7 +691,7 @@ public class ASTNodeMock implements ASTNode {
    * @see de.monticore.ast.ASTNode#set_PostComments(int, de.monticore.ast.Comment)
    */
   @Override
-  public Comment set_PostComments(int index, Comment postcomment) {
+  public Comment set_PostComment(int index, Comment postcomment) {
     // TODO Auto-generated method stub
     return null;
   }

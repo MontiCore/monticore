@@ -19,7 +19,7 @@
 
 package mc.feature.deepclone;
 
-grammar DeepClone extends mc.common.Basics, de.monticore.types.Types {
+grammar DeepClone extends mc.common.Basics, mc.grammar.types.ItTestTypes {
 
 	//Basic
 	CloneBasic = "basic";

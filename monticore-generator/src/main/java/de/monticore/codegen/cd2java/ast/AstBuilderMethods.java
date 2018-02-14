@@ -54,23 +54,23 @@ public enum AstBuilderMethods {
 
   clear_PreComments("public %s clear_PreComments();"),
 
-  add_PreComments("public %s add_PreComments(Comment precomment);"),
+  add_PreComment("public %s add_PreComment(Comment precomment);"),
 
-  add_PreComments$("public %s add_PreComments(int index, Comment precomment);"),
+  add_PreComment$("public %s add_PreComment(int index, Comment precomment);"),
 
   addAll_PreComments("public %s addAll_PreComments(Collection<Comment> precomments);"),
 
   addAll_PreComments$("public %s addAll_PreComments(int index, Collection<Comment> precomments);"),
 
-  remove_PreComments("public %s remove_PreComments(Object element);"),
+  remove_PreComment("public %s remove_PreComment(Object element);"),
 
-  remove_PreComments$("public %s remove_PreComments(int index);"),
+  remove_PreComment$("public %s remove_PreComment(int index);"),
 
   removeAll_PreComments("public %s removeAll_PreComments(Collection<?> element);"),
 
   retainAll_PreComments("public %s retainAll_PreComments(Collection<?> element);"),
 
-  removeIf_PreComments("public %s removeIf_PreComments(Predicate<? super Comment> filter);"),
+  removeIf_PreComment("public %s removeIf_PreComment(Predicate<? super Comment> filter);"),
 
   forEach_PreComments("public %s forEach_PreComments(Consumer<? super Comment> action);"),
 
@@ -80,7 +80,7 @@ public enum AstBuilderMethods {
 
   set_PreCommentList("public %s set_PreCommentList(List<Comment> preComments);"),
 
-  set_PreComments("public %s set_PreComments(int index, Comment precomment);"),
+  set_PreComment("public %s set_PreComment(int index, Comment precomment);"),
 
   //@Deprecated
   set_PreComments$("public %s set_PreComments(List<Comment> precomments);"),
@@ -89,23 +89,23 @@ public enum AstBuilderMethods {
 
   clear_PostComments("public %s clear_PostComments();"),
 
-  add_PostComments("public %s add_PostComments(Comment postcomment);"),
+  add_PostComment("public %s add_PostComment(Comment postcomment);"),
 
-  add_PostComments$("public %s add_PostComments(int index, Comment postcomment);"),
+  add_PostComment$("public %s add_PostComment(int index, Comment postcomment);"),
 
   addAll_PostComments("public %s addAll_PostComments(Collection<Comment> postcomments);"),
 
   addAll_PostComments$("public %s addAll_PostComments(int index, Collection<Comment> postcomments);"),
 
-  remove_PostComments("public %s remove_PostComments(Object element);"),
+  remove_PostComment("public %s remove_PostComment(Object element);"),
 
-  remove_PostComments$("public %s remove_PostComments(int index);"),
+  remove_PostComment$("public %s remove_PostComment(int index);"),
 
   removeAll_PostComments("public %s removeAll_PostComments(Collection<?> element);"),
 
   retainAll_PostComments("public %s retainAll_PostComments(Collection<?> element);"),
 
-  removeIf_PostComments("public %s removeIf_PostComments(Predicate<? super Comment> filter);"),
+  removeIf_PostComment("public %s removeIf_PostComment(Predicate<? super Comment> filter);"),
 
   forEach_PostComments("public %s forEach_PostComments(Consumer<? super Comment> action);"),
 
@@ -115,7 +115,7 @@ public enum AstBuilderMethods {
 
   set_PostCommentList("public %s set_PostCommentList(List<Comment> postComments);"),
 
-  set_PostComments("public %s set_PostComments(int index, Comment postcomment);"),
+  set_PostComment("public %s set_PostComment(int index, Comment postcomment);"),
 
   //@Deprecated
   set_PostComments$("public %s set_PostComments(List<Comment> postcomments);")

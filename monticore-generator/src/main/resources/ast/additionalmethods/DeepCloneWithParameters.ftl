@@ -39,7 +39,7 @@ software, even if advised of the possibility of such damage.
       <#assign attrType = attribute.getType()>
       <#assign typeName = genHelper.printType(attribute.getType())>
       <#if genHelper.isAstNode(attribute)>
-    result.set${genHelper.getNativeAttributeName(attribute.getName())?cap_first}((${typeName}) this.${attributeName}.deepClone());
+    result.set${genHelper.getNativeAttributeName(attribute.getName())?cap_first}(this.${attributeName}.deepClone());
       <#elseif genHelper.isPrimitive(attribute.getType())> 
     result.set${genHelper.getNativeAttributeName(attribute.getName())?cap_first}(this.${attributeName});
       <#elseif genHelper.isOptional(attribute)>

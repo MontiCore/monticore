@@ -289,7 +289,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public boolean add_PreComments(Comment precomment) {
+  public boolean add_PreComment(Comment precomment) {
     return this.precomments.add(precomment);
   }
   
@@ -299,7 +299,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public boolean contains_PreComments(Object element) {
+  public boolean contains_PreComment(Object element) {
     return this.precomments.contains(element);
   }
   
@@ -319,7 +319,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public boolean remove_PreComments(Object element) {
+  public boolean remove_PreComment(Object element) {
     return this.precomments.remove(element);
   }
   
@@ -344,7 +344,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public boolean removeIf_PreComments(Predicate<? super Comment> filter) {
+  public boolean removeIf_PreComment(Predicate<? super Comment> filter) {
     return this.precomments.removeIf(filter);
   }
   
@@ -369,7 +369,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public void add_PreComments(int index, Comment precomment) {
+  public void add_PreComment(int index, Comment precomment) {
     this.precomments.add(index, precomment);
   }
   
@@ -379,7 +379,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public Comment get_PreComments(int index) {
+  public Comment get_PreComment(int index) {
     return this.precomments.get(index);
   }
   
@@ -408,7 +408,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public Comment remove_PreComments(int index) {
+  public Comment remove_PreComment(int index) {
     return this.precomments.remove(index);
   }
   
@@ -443,7 +443,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
     }
   
   @Override
-  public Comment set_PreComments(int index, Comment precomment) {
+  public Comment set_PreComment(int index, Comment precomment) {
     return this.precomments.set(index, precomment);
   }
   
@@ -458,7 +458,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public boolean add_PostComments(Comment postcomment) {
+  public boolean add_PostComment(Comment postcomment) {
     return this.postcomments.add(postcomment);
   }
   
@@ -468,7 +468,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public boolean contains_PostComments(Object element) {
+  public boolean contains_PostComment(Object element) {
     return this.postcomments.contains(element);
   }
   
@@ -488,7 +488,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public boolean remove_PostComments(Object element) {
+  public boolean remove_PostComment(Object element) {
     return this.postcomments.remove(element);
   }
   
@@ -513,7 +513,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public boolean removeIf_PostComments(Predicate<? super Comment> filter) {
+  public boolean removeIf_PostComment(Predicate<? super Comment> filter) {
     return this.postcomments.removeIf(filter);
   }
   
@@ -538,7 +538,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public void add_PostComments(int index, Comment postcomment) {
+  public void add_PostComment(int index, Comment postcomment) {
     this.postcomments.add(index, postcomment);
   }
   
@@ -548,7 +548,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public Comment get_PostComments(int index) {
+  public Comment get_PostComment(int index) {
     return this.postcomments.get(index);
   }
   
@@ -577,7 +577,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public Comment remove_PostComments(int index) {
+  public Comment remove_PostComment(int index) {
     return this.postcomments.remove(index);
   }
   
@@ -612,7 +612,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
     }
   
   @Override
-  public Comment set_PostComments(int index, Comment precomment) {
+  public Comment set_PostComment(int index, Comment precomment) {
     return this.postcomments.set(index, precomment);
   }
   

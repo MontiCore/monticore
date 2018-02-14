@@ -210,7 +210,7 @@ public interface ASTNode {
    * @param precomment one comment
    * @return boolean
    */
-  boolean add_PreComments(Comment precomment);
+  boolean add_PreComment(Comment precomment);
   
   /**
    * Adds a list of comments to the already existing preComment list
@@ -227,7 +227,7 @@ public interface ASTNode {
    * @param element which should be contained in the comments
    * @return boolean true if the list contains the Object
    */
-  boolean contains_PreComments(Object element);
+  boolean contains_PreComment(Object element);
   
   /**
    * Checks if the list contains the given Collection of elements Returns true if the Collection is
@@ -259,7 +259,7 @@ public interface ASTNode {
    * @param element which should be removed if it is present
    * @return boolean
    */
-  boolean remove_PreComments(Object element);
+  boolean remove_PreComment(Object element);
   
   /**
    * Removes a collection of elements from the list if the elements are contained
@@ -298,7 +298,7 @@ public interface ASTNode {
    * @param filter which selects different comments
    * @return boolean
    */
-  boolean removeIf_PreComments(Predicate<? super Comment> filter);
+  boolean removeIf_PreComment(Predicate<? super Comment> filter);
   
   /**
    * Returns the Spliterator of the preComment list
@@ -334,7 +334,7 @@ public interface ASTNode {
    * @param index of the existing list where it should be added
    * @param  precomment the comment that is added to the existing list
    */
-  void add_PreComments(int index, Comment precomment);
+  void add_PreComment(int index, Comment precomment);
   
   /**
    * adds a list of comments to the preComment list at the position of the given index
@@ -350,7 +350,7 @@ public interface ASTNode {
    * @param index in the existing list where the comment should be returned
    * @return Comment at the given index is returned
    */
-  Comment get_PreComments(int index);
+  Comment get_PreComment(int index);
   
   /**
    * Returns the index of the given element if it exists in the list
@@ -397,7 +397,7 @@ public interface ASTNode {
    * @param index where the element should be removed
    * @return List<Comment> where the comment at the index is removed
    */
-  Comment remove_PreComments(int index);
+  Comment remove_PreComment(int index);
   
   /**
    * Returns the sub list form the preComment list form the start to the end index which are given
@@ -452,7 +452,7 @@ public interface ASTNode {
    * @param precomment that should be added at the index
    * @return Comment at a special index
    */
-   Comment set_PreComments(int index, Comment precomment);
+   Comment set_PreComment(int index, Comment precomment);
    
    /**
     * converts the commentlist into an array of the type Object and returns thar array
@@ -498,7 +498,7 @@ public interface ASTNode {
    * @param postcomment one comment
    * @return boolean
    */
-  boolean add_PostComments(Comment postcomment);
+  boolean add_PostComment(Comment postcomment);
   
   /**
    * Adds a list of comments to the already existing postComment list
@@ -515,7 +515,7 @@ public interface ASTNode {
    * @param element which should be contained in the comments
    * @return boolean true if the list contains the Object
    */
-  boolean contains_PostComments(Object element);
+  boolean contains_PostComment(Object element);
   
   /**
    * Checks if the list contains the given Collection of elements Returns true if the Collection is
@@ -547,7 +547,7 @@ public interface ASTNode {
    * @param element which should be removed if it is postsent
    * @return boolean
    */
-  boolean remove_PostComments(Object element);
+  boolean remove_PostComment(Object element);
   
   /**
    * removes a collection of elements from the list if the elements are contained
@@ -586,7 +586,7 @@ public interface ASTNode {
    * @param filter which selects different comments
    * @return boolean
    */
-  boolean removeIf_PostComments(Predicate<? super Comment> filter);
+  boolean removeIf_PostComment(Predicate<? super Comment> filter);
   
   /**
    * Returns the Spliterator of the postComment list
@@ -622,7 +622,7 @@ public interface ASTNode {
    * @param index of the existing list where it should be added
    * @param postcomment the comment that is added to the existing list
    */
-  void add_PostComments(int index, Comment postcomment);
+  void add_PostComment(int index, Comment postcomment);
   
   /**
    * adds a list of comments to the postComment list at the position of the given index
@@ -638,7 +638,7 @@ public interface ASTNode {
    * @param index of the existing list where the comment should be returned
    * @return Comment at the given index is returned
    */
-  Comment get_PostComments(int index);
+  Comment get_PostComment(int index);
   
   /**
    * Returns the index of the given element if this exists in the list
@@ -685,7 +685,7 @@ public interface ASTNode {
    * @param index where the element should be removed
    * @return List<Comment> where the comment at the index is removed
    */
-  Comment remove_PostComments(int index);
+  Comment remove_PostComment(int index);
   
   /**
    * Returns the sub list form the postComment list form the start to the end index which are given
@@ -740,7 +740,7 @@ public interface ASTNode {
    * @param postcomment that should be added at the index
    * @return Comment at a special index
    */
-   Comment set_PostComments(int index, Comment postcomment);
+   Comment set_PostComment(int index, Comment postcomment);
    
    /**
     * converts the commentlist into an array of the type Object and returns thar array

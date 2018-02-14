@@ -294,7 +294,7 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
   }
 
 
-  public T add_PreComments(Comment precomment) {
+  public T add_PreComment(Comment precomment) {
     this.precomments.add(precomment);
     return this.realBuilder;
   }
@@ -306,7 +306,7 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
   }
 
 
-  public boolean contains_PreComments(Object element) {
+  public boolean contains_PreComment(Object element) {
     return this.precomments.contains(element);
   }
 
@@ -326,7 +326,7 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
   }
 
 
-  public T remove_PreComments(Object element) {
+  public T remove_PreComment(Object element) {
     this.precomments.remove(element);
     return this.realBuilder;
   }
@@ -354,7 +354,7 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
   }
 
 
-  public T removeIf_PreComments(Predicate<? super Comment> filter) {
+  public T removeIf_PreComment(Predicate<? super Comment> filter) {
     this.precomments.removeIf(filter);
     return this.realBuilder;
   }
@@ -381,7 +381,7 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
   }
 
 
-  public T add_PreComments(int index, Comment precomment) {
+  public T add_PreComment(int index, Comment precomment) {
     this.precomments.add(index, precomment);
     return this.realBuilder;
   }
@@ -393,7 +393,7 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
   }
 
 
-  public Comment get_PreComments(int index) {
+  public Comment get_PreComment(int index) {
     return this.precomments.get(index);
   }
 
@@ -422,7 +422,7 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
   }
 
 
-  public T remove_PreComments(int index) {
+  public T remove_PreComment(int index) {
     this.precomments.remove(index);
     return this.realBuilder;
   }
@@ -461,7 +461,7 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
   }
 
 
-  public T set_PreComments(int index, Comment precomment) {
+  public T set_PreComment(int index, Comment precomment) {
     this.precomments.set(index, precomment);
     return this.realBuilder;
   }
@@ -478,7 +478,7 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
   }
 
 
-  public T add_PostComments(Comment postcomment) {
+  public T add_PostComment(Comment postcomment) {
     this.postcomments.add(postcomment);
     return this.realBuilder;
   }
@@ -490,7 +490,7 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
   }
 
 
-  public boolean contains_PostComments(Object element) {
+  public boolean contains_PostComment(Object element) {
     return this.postcomments.contains(element);
   }
 
@@ -510,7 +510,7 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
   }
 
 
-  public T remove_PostComments(Object element) {
+  public T remove_PostComment(Object element) {
     this.postcomments.remove(element);
     return this.realBuilder;
   }
@@ -538,7 +538,7 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
   }
 
 
-  public T removeIf_PostComments(Predicate<? super Comment> filter) {
+  public T removeIf_PostComment(Predicate<? super Comment> filter) {
     this.postcomments.removeIf(filter);
     return this.realBuilder;
   }
@@ -565,7 +565,7 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
   }
 
 
-  public T add_PostComments(int index, Comment postcomment) {
+  public T add_PostComment(int index, Comment postcomment) {
     this.postcomments.add(index, postcomment);
     return this.realBuilder;
   }
@@ -577,7 +577,7 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
   }
 
 
-  public Comment get_PostComments(int index) {
+  public Comment get_PostComment(int index) {
     return this.postcomments.get(index);
   }
 
@@ -606,7 +606,7 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
   }
 
 
-  public T remove_PostComments(int index) {
+  public T remove_PostComment(int index) {
     this.postcomments.remove(index);
     return this.realBuilder;
   }
@@ -645,7 +645,7 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
   }
 
 
-  public T set_PostComments(int index, Comment precomment) {
+  public T set_PostComment(int index, Comment precomment) {
     this.postcomments.set(index, precomment);
     return this.realBuilder;
   }
