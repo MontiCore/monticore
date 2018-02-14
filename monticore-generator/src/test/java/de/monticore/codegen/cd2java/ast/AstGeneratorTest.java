@@ -42,7 +42,6 @@ import de.se_rwth.commons.cli.CLIArguments;
 import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 
 /**
  * Test for the MontiCore generator. Generates ast files for the example
@@ -157,13 +156,13 @@ public class AstGeneratorTest extends GeneratorTest {
   public void testInherited() {
     doGenerate("de/monticore/inherited/Supergrammar.mc4");
     doGenerate("de/monticore/inherited/sub/Subgrammar.mc4");
-    // doGenerate("de/monticore/inherited/subsub/Subsubgrammar.mc4");
+    //doGenerate("de/monticore/inherited/subsub/Subsubgrammar.mc4");
     Path path = Paths.get(OUTPUT_FOLDER, Names.getPathFromFilename("de/monticore/inherited/"));
     // assertTrue("There are compile errors in generated code for the models in
     // grammars/inherited.",
     // compile(path));
   }
-  
+
   @Test
   public void testInherited2() {
     doGenerate("de/monticore/fautomaton/action/Expression.mc4");

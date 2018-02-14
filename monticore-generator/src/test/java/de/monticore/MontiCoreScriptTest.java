@@ -19,8 +19,25 @@
 
 package de.monticore;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstAdditionalMethods;
 import de.monticore.codegen.mc2cd.TestHelper;
@@ -38,18 +55,6 @@ import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import static org.junit.Assert.*;
 
 /**
  * Test for the {@link MontiCoreScript} class.
@@ -121,12 +126,25 @@ public class MontiCoreScriptTest {
   
   /** {@link MontiCoreScript#transformAstGrammarToAstCd(GlobalExtensionManagement, ASTMCGrammar, GlobalScope, IterablePath)} */
   @Test
-  public void testTransformAstGrammarToAstCd() {
+  public void testGetOrCreateCD() {
     MontiCoreScript mc = new MontiCoreScript();
     GlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
     mc.createSymbolsFromAST(symbolTable, grammar);
-    cdCompilationUnit = mc.transformAstGrammarToAstCd(
-        new GlobalExtensionManagement(), grammar, symbolTable, targetPath);
+    cdCompilationUnit = mc.getOrCreateCD(grammar,
+        new GlobalExtensionManagement(), symbolTable);
+    assertNotNull(cdCompilationUnit);
+    assertNotNull(cdCompilationUnit.getCDDefinition());
+    assertEquals("Statechart", cdCompilationUnit.getCDDefinition().getName());
+  }
+  
+  /** {@link MontiCoreScript#transformAstGrammarToAstCd(GlobalExtensionManagement, ASTMCGrammar, GlobalScope, IterablePath)} */
+  @Test
+  public void testDeriveCD() {
+    MontiCoreScript mc = new MontiCoreScript();
+    GlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
+    mc.createSymbolsFromAST(symbolTable, grammar);
+    cdCompilationUnit = mc.deriveCD(grammar,
+        new GlobalExtensionManagement(), symbolTable);
     assertNotNull(cdCompilationUnit);
     assertNotNull(cdCompilationUnit.getCDDefinition());
     assertEquals("Statechart", cdCompilationUnit.getCDDefinition().getName());
@@ -138,8 +156,8 @@ public class MontiCoreScriptTest {
     MontiCoreScript mc = new MontiCoreScript();
     GlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
     mc.createSymbolsFromAST(symbolTable, grammar);
-    cdCompilationUnit = mc.transformAstGrammarToAstCd(new GlobalExtensionManagement(),
-        grammar, symbolTable, targetPath);
+    cdCompilationUnit = mc.deriveCD(grammar, new GlobalExtensionManagement(),
+        symbolTable);
     assertNotNull(cdCompilationUnit);
     GeneratorHelper genHelper = new GeneratorHelper(cdCompilationUnit, symbolTable);
     assertEquals("de.monticore.statechart.statechart._ast", GeneratorHelper.getPackageName(
@@ -180,23 +198,69 @@ public class MontiCoreScriptTest {
     MontiCoreScript mc = new MontiCoreScript();
     GlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
     mc.createSymbolsFromAST(symbolTable, grammar);
-    cdCompilationUnit = mc.transformAstGrammarToAstCd(new GlobalExtensionManagement(),
-        grammar, symbolTable, targetPath);
+    cdCompilationUnit = mc.deriveCD(grammar, new GlobalExtensionManagement(),
+        symbolTable);
     mc.storeInCdFile(cdCompilationUnit, outputPath);
     mc.generate(glex, symbolTable, cdCompilationUnit, outputPath, templatePath);
   }
   
   /** {@link MontiCoreScript#run(Configuration)} */
   @Test
-  public void testDefaultScript() {
-    Configuration configuration =
-        ConfigurationPropertiesMapContributor
-            .fromSplitMap(CLIArguments.forArguments(simpleArgs).asMap());
-    MontiCoreConfiguration cfg = MontiCoreConfiguration.withConfiguration(configuration);
-    new MontiCoreScript().run(cfg);
-    
-    assertTrue(!false);
+  public void testDefaultScriptSimpleArgs() {
+    Log.getFindings().clear();
+    testDefaultScript(simpleArgs);
+    Assert.assertTrue(Log.getFindings().isEmpty());
   }
   
+  static String[] subsubgrammarArgs = { "-grammars",
+      "src/test/resources/de/monticore/inherited/subsub/Subsubgrammar.mc4",
+      "-modelPath", modelPathPath.toAbsolutePath().toString(),
+      "-out", outputPath.getAbsolutePath(), "-targetPath", "src/test/resources", "-force" };
+  
+  /** {@link MontiCoreScript#run(Configuration)} */
+  @Test
+  public void testDefaultScriptSubsubgrammarArgs() {
+    Log.getFindings().clear();
+    testDefaultScript(subsubgrammarArgs);
+    Assert.assertTrue(Log.getFindings().isEmpty());
+  }
+  
+  static String[] inheritedgrammarArgs = { "-grammars",
+      "src/test/resources/de/monticore/inherited/Supergrammar.mc4",
+      "src/test/resources/de/monticore/inherited/sub/Subgrammar.mc4",
+      "src/test/resources/de/monticore/inherited/subsub/Subsubgrammar.mc4",
+      "-modelPath", modelPathPath.toAbsolutePath().toString(),
+      "-out", outputPath.getAbsolutePath(), "-targetPath", "src/test/resources", "-force" };
+  
+  /** {@link MontiCoreScript#run(Configuration)} */
+  @Test
+  public void testDefaultScriptSupergrammarArgs() {
+    Log.getFindings().clear();
+    testDefaultScript(inheritedgrammarArgs);
+    Assert.assertTrue(Log.getFindings().isEmpty());
+  }
+  
+  static String[] supersubgrammarArgs = { "-grammars",
+      "src/test/resources/de/monticore/inherited/subsub/Subsubgrammar.mc4",
+      "src/test/resources/de/monticore/inherited/Supergrammar.mc4",
+      "-modelPath", modelPathPath.toAbsolutePath().toString(),
+      "-out", outputPath.getAbsolutePath(), "-targetPath", "src/test/resources", "-force" };
+  
+  /** {@link MontiCoreScript#run(Configuration)} */
+  @Test
+  public void testDefaultScriptSupersubgrammarArgs() {
+    Log.getFindings().clear();
+    testDefaultScript(inheritedgrammarArgs);
+    Assert.assertTrue(Log.getFindings().isEmpty());
+  }
+  
+  protected void testDefaultScript(String[] args) {
+    Configuration configuration =
+        ConfigurationPropertiesMapContributor
+            .fromSplitMap(CLIArguments.forArguments(args).asMap());
+    MontiCoreConfiguration cfg = MontiCoreConfiguration.withConfiguration(configuration);
+    new MontiCoreScript().run(cfg);
+    assertTrue(!false);
+  }
   
 }

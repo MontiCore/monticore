@@ -184,20 +184,50 @@ public class ASTNodeMock implements ASTNode {
   public void setEnclosingScope(Scope enclosingScope) {
     
   }
-  
+
   @Override
-  public Optional<? extends Scope> getEnclosingScope() {
+  public void setEnclosingScopeOpt(Optional<? extends Scope> enclosingScopeOpt) {
+
+  }
+
+  @Override
+  public void setEnclosingScopeAbsent() {
+
+  }
+
+  @Override
+  public Optional<? extends Scope>  getEnclosingScope() {
     return null;
   }
-  
+
+  @Override
+  public Optional<? extends Scope> getEnclosingScopeOpt() {
+    return Optional.empty();
+  }
+
   @Override
   public void setSymbol(Symbol symbol) {
     
   }
-  
+
   @Override
-  public Optional<? extends Symbol> getSymbol() {
+  public void setSymbolOpt(Optional<? extends Symbol> spannedScopeOpt) {
+
+  }
+
+  @Override
+  public void setSymbolAbsent() {
+
+  }
+
+  @Override
+  public Optional<? extends Symbol>  getSymbol() {
     return null;
+  }
+
+  @Override
+  public Optional<? extends Symbol> getSymbolOpt() {
+    return Optional.empty();
   }
   
   /**
@@ -215,7 +245,32 @@ public class ASTNodeMock implements ASTNode {
   public boolean symbolIsPresent() {
     return false;
   }
-  
+
+  @Override
+  public void setSpannedScope(Scope spannedScope) {
+
+  }
+
+  @Override
+  public void setSpannedScopeOpt(Optional<? extends Scope> spannedScopeOpt) {
+
+  }
+
+  @Override
+  public void setSpannedScopeAbsent() {
+
+  }
+
+  @Override
+  public Optional<? extends Scope> getSpannedScope() {
+    return null;
+  }
+
+  @Override
+  public Optional<? extends Scope> getSpannedScopeOpt() {
+    return Optional.empty();
+  }
+
   /**
    * @see de.monticore.ast.ASTNode#spannedScopeIsPresent()
    */

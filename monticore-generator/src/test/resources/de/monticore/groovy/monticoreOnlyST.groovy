@@ -40,9 +40,7 @@ while (grammarIterator.hasNext()) {
         astGrammar = createSymbolsFromAST(globalScope, astGrammar)
 
         // Transform AST-Grammar -> AST-CD
-        astClassDiagram = transformAstGrammarToAstCd(glex, astGrammar, globalScope, handcodedPath)
-
-        astClassDiagramWithST = createSymbolsFromAST(globalScope, astClassDiagram)
+        astClassDiagram = deriveCD(astGrammar, glex, globalScope)
 
         // Generate symbol table
         generateSymbolTable(astGrammar, globalScope, astClassDiagram, out, handcodedPath)

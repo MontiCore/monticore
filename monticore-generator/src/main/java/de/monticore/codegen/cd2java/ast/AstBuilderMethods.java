@@ -33,10 +33,22 @@ public enum AstBuilderMethods {
   // ----------- Scope & Symbol -----------------------------
 
   setEnclosingScope("public %s setEnclosingScope(Scope enclosingScope);"),
+  
+  setEnclosingScopeOpt("public %s setEnclosingScopeOpt(Optional<? extends Scope> enclosingScopeOpt);"),
+
+  setEnclosingScopeAbsent("public %s setEnclosingScopeAbsent();"),
 
   setSymbol("public %s setSymbol(Symbol symbol);"),
 
+  setSymbolOpt("public %s setSymbolOpt(Optional<? extends Symbol> symbol);"),
+
+  setSymbolAbsent("public %s setSymbolAbsent();"),
+
   setSpannedScope("public %s setSpannedScope(Scope spannedScope);"),
+
+  setSpannedScopeOpt("public %s setSpannedScopeOpt(Optional<? extends Scope> enclosingScopeOpt);"),
+
+  setSpannedScopeAbsent("public %s setSpannedScopeAbsent();"),
 
   // ----------- PreComments -----------------------------
 

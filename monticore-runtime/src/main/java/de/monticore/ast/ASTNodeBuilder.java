@@ -206,7 +206,7 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
     return this.realBuilder;
   }
 
-  public T setEnclosingScopeOpt(Optional<Scope> value)   {
+  public T setEnclosingScopeOpt(Optional<? extends Scope> value)   {
     this.enclosingScope = value;
     return this.realBuilder;
   }
@@ -243,7 +243,7 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
     return this.realBuilder;
   }
 
-  public T setSymbolOpt(Optional<Symbol> value)   {
+  public T setSymbolOpt(Optional<? extends Symbol> value)   {
     this.symbol = value;
     return this.realBuilder;
   }
@@ -279,7 +279,7 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
     return this.realBuilder;
   }
 
-  public T setSpannedScopeOpt(Optional<Scope> value)   {
+  public T setSpannedScopeOpt(Optional<? extends Scope> value)   {
     this.spannedScope = value;
     return this.realBuilder;
   }
