@@ -5,10 +5,10 @@
  */
 package mc.feature.deepclone;
 
-import de.monticore.literals.literals._ast.ASTIntLiteral;
 import mc.feature.deepclone.deepclone._ast.*;
 import mc.feature.deepclone.deepclone._parser.DeepCloneParser;
-import de.monticore.literals.literals._ast.ASTStringLiteral;
+import mc.grammar.literals.ittestliterals._ast.ASTStringLiteral;
+import mc.grammar.literals.ittestliterals._ast.ASTIntLiteral;
 import org.junit.Test;
 
 import java.io.IOException;
