@@ -19,7 +19,6 @@
 
 package de.monticore.codegen.mc2cd;
 
-import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
 import de.monticore.types.types._ast.ASTPrimitiveType;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;

@@ -37,11 +37,6 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
 import de.monticore.utils.Link;
 
-import java.util.function.UnaryOperator;
-
-import static de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper.resolveRule;
-import static de.monticore.codegen.mc2cd.TransformationHelper.getAstPackageName;
-
 /**
  * Checks if the source rules were extending other rules and sets the super
  * classes / extended interfaces of the target nodes accordingly.
