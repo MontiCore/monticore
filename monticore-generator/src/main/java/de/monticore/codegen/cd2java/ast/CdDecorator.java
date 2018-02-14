@@ -933,6 +933,7 @@ public class CdDecorator {
     
     ASTCDClass millClass = CD4AnalysisNodeFactory.createASTCDClass();
     String millClassName = cdDef.getName() + MILL;
+    String plainName = millClassName;
     
     // Check if a handwritten mill class exists
     if (TransformationHelper.existsHandwrittenClass(targetPath,
@@ -942,7 +943,13 @@ public class CdDecorator {
       millClass.setModifier(TransformationHelper.createAbstractModifier());
     }
     millClass.setName(millClassName);
-        
+                
+    for (ASTCDClass clazz : nativeClasses) {
+      String toParse = "protected static " + plainName + " mill"
+          + AstGeneratorHelper.getASTClassNameWithoutPrefix(clazz) + " = null;";
+      cdTransformation.addCdAttributeUsingDefinition(millClass, toParse);
+    }
+    
     // Add builder-creating methods
     for (ASTCDClass clazz : nativeClasses) {
       if (AstGeneratorHelper.isBuilderClassAbstract(clazz)
