@@ -1,0 +1,61 @@
+/*
+ * ******************************************************************************
+ * MontiCore Language Workbench, www.monticore.de
+ * Copyright (c) 2017, MontiCore, All rights reserved.
+ *
+ * This project is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * ******************************************************************************
+ */
+
+package mc.feature.deepclone;
+
+grammar DeepClone extends mc.common.Basics, de.monticore.types.Types {
+
+	//Basic
+	CloneBasic = "basic";
+	
+	//Name
+	CloneName = Name;
+	CloneNameList = Name+ ;
+	CloneNameOptional = "opt" Name?;
+	
+	//AST
+	CloneAST = "clone" CloneNameList;
+	CloneASTList = CloneAST+;
+	CloneASTOptional = "opt" CloneAST?;
+	
+	//String
+	CloneString = StringLiteral;
+	CloneStringList = StringLiteral+;
+	CloneStringOptional = "opt" StringLiteral?;
+
+	CloneString2 = String;
+    CloneStringList2 = String+;
+    CloneStringOptional2 = "opt" String?;
+	
+	//Int
+	CloneInt = IntLiteral;
+	CloneIntList = IntLiteral+;
+	CloneIntOptional = "opt" IntLiteral?;
+
+	CloneInt2 = Num_Int;
+    CloneIntList2 = Num_Int+;
+    CloneIntOptional2 = "opt" Num_Int?;
+	
+	//Enum
+	enum CloneEnum = "enum";
+	CloneEnumList = CloneEnum+;
+	CloneEnumOptional = "opt" CloneEnum?;
+	
+
+}

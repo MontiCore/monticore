@@ -143,6 +143,7 @@
                     <grammar>src/main/grammars/mc/feature/compilationunit/Compunit.mc4</grammar>
                     <grammar>src/main/grammars/mc/feature/constantsshortform/ConstantsShortForm.mc4</grammar>
                     <grammar>src/main/grammars/mc/feature/delete/DeleteTest.mc4</grammar>
+                    <grammar>src/main/grammars/mc/feature/deepclone/DeepClone.mc4</grammar>
                     <grammar>src/main/grammars/mc/feature/FeatureDSL.mc4</grammar>
                     <grammar>src/main/grammars/mc/feature/embedding/inner/FeatureinnerDSL.mc4</grammar>
                     <grammar>src/main/grammars/mc/feature/embedding/outer/FeatureouterDSL.mc4</grammar>
