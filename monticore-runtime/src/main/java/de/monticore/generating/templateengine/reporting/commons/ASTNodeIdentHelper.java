@@ -23,8 +23,8 @@ public class ASTNodeIdentHelper implements IASTNodeIdentHelper {
   @Override
   public String getIdent(ASTNode ast) {
     String name;
-    if (ast.getSymbol().isPresent()) {
-      name = ast.getSymbol().get().getName();
+    if (ast.getSymbolOpt().isPresent()) {
+      name = ast.getSymbolOpt().get().getName();
     } else {
       name = ast.getClass().getSimpleName();
       if (name.startsWith("AST")) {

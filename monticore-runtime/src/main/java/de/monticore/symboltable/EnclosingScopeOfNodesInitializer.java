@@ -37,24 +37,24 @@ public class EnclosingScopeOfNodesInitializer implements CommonVisitor {
   
   @Override
   public void visit(ASTNode node) {
-    if (!node.getEnclosingScope().isPresent() && !scopeStack.isEmpty()) {
+    if (!node.getEnclosingScopeOpt().isPresent() && !scopeStack.isEmpty()) {
       node.setEnclosingScope(scopeStack.peekLast());
     }
     
-    if (node.getSymbol().isPresent()) {
-      if (node.getSymbol().get() instanceof ScopeSpanningSymbol) {
-        scopeStack.addLast(((ScopeSpanningSymbol) node.getSymbol().get()).getSpannedScope());
+    if (node.getSymbolOpt().isPresent()) {
+      if (node.getSymbolOpt().get() instanceof ScopeSpanningSymbol) {
+        scopeStack.addLast(((ScopeSpanningSymbol) node.getSymbolOpt().get()).getSpannedScope());
         return;
       }
     }
     
-    if (node.getSpannedScope().isPresent()) {
-      scopeStack.addLast(node.getSpannedScope().get());
+    if (node.getSpannedScopeOpt().isPresent()) {
+      scopeStack.addLast(node.getSpannedScopeOpt().get());
       return;
     }
     
-    if (node.getEnclosingScope().isPresent()) {
-      scopeStack.addLast(node.getEnclosingScope().get());
+    if (node.getEnclosingScopeOpt().isPresent()) {
+      scopeStack.addLast(node.getEnclosingScopeOpt().get());
     }
   }
   

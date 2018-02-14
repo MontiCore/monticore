@@ -212,7 +212,17 @@ public class EmptyNode implements ASTNode {
     // TODO Auto-generated method stub
     
   }
-  
+
+  @Override
+  public void setEnclosingScopeOpt(Optional<? extends Scope> enclosingScopeOpt) {
+
+  }
+
+  @Override
+  public void setEnclosingScopeAbsent() {
+
+  }
+
   /**
    * @see de.monticore.ast.ASTNode#getEnclosingScope()
    */
@@ -221,7 +231,12 @@ public class EmptyNode implements ASTNode {
     // TODO Auto-generated method stub
     return null;
   }
-  
+
+  @Override
+  public Optional<? extends Scope> getEnclosingScopeOpt() {
+    return Optional.empty();
+  }
+
   /**
    * @see de.monticore.ast.ASTNode#setSymbol(de.monticore.symboltable.Symbol)
    */
@@ -230,7 +245,17 @@ public class EmptyNode implements ASTNode {
     // TODO Auto-generated method stub
     
   }
-  
+
+  @Override
+  public void setSymbolOpt(Optional<? extends Symbol> spannedSymbolOpt) {
+
+  }
+
+  @Override
+  public void setSymbolAbsent() {
+
+  }
+
   /**
    * @see de.monticore.ast.ASTNode#getSymbol()
    */
@@ -239,7 +264,12 @@ public class EmptyNode implements ASTNode {
     // TODO Auto-generated method stub
     return null;
   }
-  
+
+  @Override
+  public Optional<? extends Symbol> getSymbolOpt() {
+    return Optional.empty();
+  }
+
   /**
    * @see de.monticore.ast.ASTNode#enclosingScopeIsPresent()
    */
@@ -255,7 +285,27 @@ public class EmptyNode implements ASTNode {
   public boolean symbolIsPresent() {
     return false;
   }
-  
+
+  @Override
+  public void setSpannedScope(Scope spannedScope) {
+
+  }
+
+  @Override
+  public void setSpannedScopeOpt(Optional<? extends Scope> spannedScopeOpt) {
+
+  }
+
+  @Override
+  public void setSpannedScopeAbsent() {
+
+  }
+
+  @Override
+  public Optional<? extends Scope> getSpannedScopeOpt() {
+    return Optional.empty();
+  }
+
   /**
    * @see de.monticore.ast.ASTNode#spannedScopeIsPresent()
    */

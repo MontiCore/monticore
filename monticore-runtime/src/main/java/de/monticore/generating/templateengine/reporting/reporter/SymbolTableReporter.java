@@ -91,7 +91,7 @@ public class SymbolTableReporter extends AReporter {
   @Override
   public void flush(ASTNode ast) {
     if (ast != null) {
-      Optional<? extends Scope> scope = ast.getSpannedScope();
+      Optional<? extends Scope> scope = ast.getSpannedScopeOpt();
       while (scope.isPresent() && !(scope.get() instanceof GlobalScope)) {
         scope = scope.get().getEnclosingScope();
       }

@@ -31,6 +31,7 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
+import de.se_rwth.commons.logging.Log;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 import com.google.common.collect.Lists;
@@ -132,20 +133,72 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   public void setEnclosingScope(Scope enclosingScope) {
     this.enclosingScope = Optional.ofNullable(enclosingScope);
   }
-  
+
+  @Override
+  public void setEnclosingScopeOpt(Optional<? extends Scope > enclosingScopeOpt) {
+    this.enclosingScope = enclosingScopeOpt ;
+  }
+
+  @Override
+  public void setEnclosingScopeAbsent() {
+    this.enclosingScope = Optional.empty();
+  }
+
+  @Deprecated
   @Override
   public Optional<? extends Scope> getEnclosingScope() {
     return enclosingScope;
+  }
+
+//  @Override
+//  public Scope getEnclosingScope() {
+//    if (getEnclosingScopeOpt().isPresent()) {
+//      return getEnclosingScopeOpt().get();
+//    }
+//    Log.error("0xA7003 x222 getCloneASTOpt can't return a value. It is empty.");
+//    // Normally this statement is not reachable
+//    throw new IllegalStateException();
+//  }
+
+  @Override
+  public Optional<? extends Scope> getEnclosingScopeOpt() {
+    return this.enclosingScope;
   }
   
   @Override
   public void setSymbol(Symbol symbol) {
     this.symbol = Optional.ofNullable(symbol);
   }
-  
+
+  @Override
+  public void setSymbolOpt(Optional<? extends Symbol > enclosingSymbolOpt) {
+    this.symbol = enclosingSymbolOpt ;
+  }
+
+  @Override
+  public void setSymbolAbsent() {
+    this.symbol = Optional.empty();
+  }
+
+  @Deprecated
   @Override
   public Optional<? extends Symbol> getSymbol() {
     return symbol;
+  }
+
+//  @Override
+//  public Symbol getSymbol() {
+//    if (getSymbolOpt().isPresent()) {
+//      return getSymbolOpt().get();
+//    }
+//    Log.error("0xA7003 x222 getCloneASTOpt can't return a value. It is empty.");
+//    // Normally this statement is not reachable
+//    throw new IllegalStateException();
+//  }
+
+  @Override
+  public Optional<? extends Symbol> getSymbolOpt() {
+    return this.symbol;
   }
   
   @Override
@@ -162,25 +215,51 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   public boolean enclosingScopeIsPresent() {
     return enclosingScope.isPresent();
   }
-  
+
+  @Override
+  public void setSpannedScope(Scope spannedScope) {
+    this.spannedScope = Optional.ofNullable(spannedScope);
+  }
+
+  @Override
+  public void setSpannedScopeOpt(Optional<? extends Scope > spannedScopeOpt) {
+    this.spannedScope = spannedScopeOpt ;
+  }
+
+  @Override
+  public void setSpannedScopeAbsent() {
+    this.spannedScope = Optional.empty();
+  }
+
+  @Deprecated
   @Override
   public Optional<? extends Scope> getSpannedScope() {
     if (spannedScope.isPresent()) {
       return spannedScope;
     }
-    
+
     Optional<? extends Scope> result = Optional.empty();
     if (getSymbol().isPresent() && (getSymbol().get() instanceof ScopeSpanningSymbol)) {
       final ScopeSpanningSymbol sym = (ScopeSpanningSymbol) getSymbol().get();
       result = Optional.of(sym.getSpannedScope());
     }
-    
+
     return result;
   }
-  
+
+//  @Override
+//  public Scope getSpannedScope() {
+//    if (getSpannedScopeOpt().isPresent()) {
+//      return getSpannedScopeOpt().get();
+//    }
+//    Log.error("0xA7003 x222 getCloneASTOpt can't return a value. It is empty.");
+//    // Normally this statement is not reachable
+//    throw new IllegalStateException();
+//  }
+
   @Override
-  public void setSpannedScope(Scope spannedScope) {
-    this.spannedScope = Optional.ofNullable(spannedScope);
+  public Optional<? extends Scope> getSpannedScopeOpt() {
+    return this.spannedScope;
   }
   
   /**
