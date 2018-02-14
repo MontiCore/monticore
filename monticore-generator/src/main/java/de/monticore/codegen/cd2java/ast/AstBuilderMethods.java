@@ -27,8 +27,16 @@ public enum AstBuilderMethods {
   // ----------- SourcePosition -----------------------------
 
   set_SourcePositionEnd("public %s set_SourcePositionEnd(SourcePosition end);"),
+  
+  set_SourcePositionEndOpt("public %s set_SourcePositionEndOpt(Optional<SourcePosition> end);"),
+  
+  set_SourcePositionEndAbsent("public %s set_SourcePositionEndAbsent();"),
 
   set_SourcePositionStart("public %s set_SourcePositionStart(SourcePosition start);"),
+  
+  set_SourcePositionStartOpt("public %s set_SourcePositionStartOpt(Optional<SourcePosition> Start);"),
+  
+  set_SourcePositionStartAbsent("public %s set_SourcePositionStartAbsent();"),
 
   // ----------- Scope & Symbol -----------------------------
 
