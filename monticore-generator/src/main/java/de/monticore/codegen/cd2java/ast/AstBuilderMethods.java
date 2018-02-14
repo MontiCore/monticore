@@ -82,9 +82,6 @@ public enum AstBuilderMethods {
 
   set_PreComments("public %s set_PreComments(int index, Comment precomment);"),
 
-  //@Deprecated
-  set_PreComments$("public %s set_PreComments(List<Comment> precomments);"),
-
   // ----------- PostComments -----------------------------
 
   clear_PostComments("public %s clear_PostComments();"),
@@ -115,10 +112,7 @@ public enum AstBuilderMethods {
 
   set_PostCommentList("public %s set_PostCommentList(List<Comment> postComments);"),
 
-  set_PostComments("public %s set_PostComments(int index, Comment postcomment);"),
-
-  //@Deprecated
-  set_PostComments$("public %s set_PostComments(List<Comment> postcomments);")
+  set_PostComments("public %s set_PostComments(int index, Comment postcomment);")
   ;
 
   private String methodDeclaration;

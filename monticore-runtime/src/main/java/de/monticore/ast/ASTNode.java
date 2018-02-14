@@ -145,11 +145,18 @@ public interface ASTNode {
   ASTNode deepClone();
   
   /**
-   * Returns the start position of this ASTNode
+   * Returns the end position of this ASTNode
    * 
-   * @return start position of this ASTNode
+   * @return end position of this ASTNode
    */
   SourcePosition get_SourcePositionEnd();
+  
+  /**
+   * Returns the optional end position of this ASTNode
+   *
+   * @return end position of this ASTNode
+   */
+  Optional<SourcePosition> get_SourcePositionEndOpt();
   
   /**
    * Sets the end position of this ASTNode
@@ -159,11 +166,35 @@ public interface ASTNode {
   void set_SourcePositionEnd(SourcePosition end);
   
   /**
-   * Returns the end source position of this ASTNode
+   * Sets the optional end position of this ASTNode
+   *
+   * @param end end position of this ASTNode
+   */
+  void set_SourcePositionEndOpt(Optional<SourcePosition> end);
+  
+  /**
+   * Sets the optional end position of this ASTNode absent
+   */
+  void set_SourcePositionEndAbsent();
+  
+  /**
+   * @return true if the optional source position end of this ASTNode is present
+   */
+  boolean isPresent_SourcePositionEnd();
+  
+  /**
+   * Returns the start source position of this ASTNode
    * 
-   * @return end position of this ASTNode
+   * @return start position of this ASTNode
    */
   SourcePosition get_SourcePositionStart();
+  
+  /**
+   * Returns the optional end position of this ASTNode
+   *
+   * @return end position of this ASTNode
+   */
+  Optional<SourcePosition> get_SourcePositionStartOpt();
   
   /**
    * Sets the start position of this ASTNode
@@ -171,6 +202,23 @@ public interface ASTNode {
    * @param start start position of this ASTNode
    */
   void set_SourcePositionStart(SourcePosition start);
+  
+  /**
+   * Sets the optional start position of this ASTNode
+   *
+   * @param start start position of this ASTNode
+   */
+  void set_SourcePositionStartOpt(Optional<SourcePosition> start);
+  
+  /**
+   * Sets the optional start position of this ASTNode absent
+   */
+  void set_SourcePositionStartAbsent();
+  
+  /**
+   * @return true if the optional source position start of this ASTNode is present
+   */
+  boolean isPresent_SourcePositionStart();
   
   /**
    * Returns list of all comments which are associated with this ASTNode and are prior to the

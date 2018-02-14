@@ -199,10 +199,6 @@ public class CdDecorator {
           clazz.getName());
         ASTCDMethod method = additionalNodeBuilderListMethod(clazz, value.getMethodName(),
           methodSignatur);
-        if(value.equals(AstBuilderMethods.set_PreComments$)
-          || value.equals(AstBuilderMethods.set_PostComments$)) {
-          addDeprecatedSteretype(method);
-        }
       }
     }
   }

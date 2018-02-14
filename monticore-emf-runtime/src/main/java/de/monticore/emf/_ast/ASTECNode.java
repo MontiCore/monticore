@@ -69,6 +69,10 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   
   public abstract ASTNode deepClone();
   
+  // ----------------------------------------------------------------------
+  // Handle the Optional SourcePosition end
+  // ----------------------------------------------------------------------
+  
   public SourcePosition get_SourcePositionEnd() {
     if (end.isPresent()) {
       return end.get();
@@ -80,6 +84,26 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
     this.end = Optional.ofNullable(end);
   }
   
+  public Optional<SourcePosition> get_SourcePositionEndOpt() {
+    return end;
+  }
+  
+  public boolean isPresent_SourcePositionEnd()   {
+    return get_SourcePositionEndOpt().isPresent();
+  }
+  
+  public void set_SourcePositionEndAbsent()   {
+    end = Optional.empty();
+  }
+  
+  public void set_SourcePositionEndOpt(Optional<SourcePosition> value)   {
+    this.end = value;
+  }
+  
+  // ----------------------------------------------------------------------
+  // Handle the Optional SourcePosition start
+  // ----------------------------------------------------------------------
+  
   public SourcePosition get_SourcePositionStart() {
     if (start.isPresent()) {
       return start.get();
@@ -89,6 +113,22 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   
   public void set_SourcePositionStart(SourcePosition start) {
     this.start = Optional.ofNullable(start);
+  }
+  
+  public Optional<SourcePosition> get_SourcePositionStartOpt() {
+    return start;
+  }
+  
+  public boolean isPresent_SourcePositionStart()   {
+    return get_SourcePositionStartOpt().isPresent();
+  }
+  
+  public void set_SourcePositionStartAbsent()   {
+    start = Optional.empty();
+  }
+  
+  public void set_SourcePositionStartOpt(Optional<SourcePosition> value)   {
+    this.start = value;
   }
   
   /**

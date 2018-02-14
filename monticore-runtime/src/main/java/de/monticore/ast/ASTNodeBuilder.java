@@ -129,48 +129,6 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
     return this.realBuilder;
   }
 
-  // ----------------------------------------------------------------------
-  // Handle the Pre comment List
-  // ----------------------------------------------------------------------
-
-  /**
-   * Can be removed after 4.5.5 Replace with List<Comment> get_PreCommentList(); use
-   * {@link #List<Comment> get_PreCommentList()} instead
-   */
-  @Deprecated
-  public List<Comment> get_PreComments() {
-    return precomments;
-  }
-
-  /**
-   * Can be removed after 4.5.5 Replace with List<Comment> set_PreCommentList(); use
-   * {@link #List<Comment> set_PreCommentList()} instead
-   */
-  @Deprecated
-  public T set_PreComments(List<Comment> precomments) {
-    this.precomments = precomments;
-    return this.realBuilder;
-  }
-
-  /**
-   * Can be removed after 4.5.5 Replace with List<Comment> get_PostCommentList(); use
-   * {@link #List<Comment> get_PostCommentList()} instead
-   */
-  @Deprecated
-  public List<Comment> get_PostComments() {
-    return postcomments;
-  }
-
-  /**
-   * Can be removed after 4.5.5 Replace with List<Comment> set_PostCommentList(); use
-   * {@link #List<Comment> set_PostCommentList()} instead
-   */
-  @Deprecated
-  public T set_PostComments(List<Comment> postcomments) {
-    this.postcomments = postcomments;
-    return this.realBuilder;
-  }
-
 
   // ----------------------------------------------------------------------
   // Handle the Optional Enclosing Scope 
@@ -470,8 +428,11 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
   public Object[] toArray_PreComments() {
     return this.precomments.toArray();
   }
-
-
+  
+  // ----------------------------------------------------------------------
+  // Handle Post Comments
+  // ----------------------------------------------------------------------
+  
   public T clear_PostComments() {
     this.postcomments.clear();
     return this.realBuilder;
