@@ -57,6 +57,10 @@ public <#if isTop>abstract </#if> class ${ast.getName()} {
 
   public static void initMe(${plainName} a) {
     mill = a;
+    <#list ast.getCDAttributeList() as attribute>
+      <#assign attributeName = genHelper.getJavaConformName(attribute.getName())>
+      ${attributeName} = a;
+    </#list>
   }
     
 
