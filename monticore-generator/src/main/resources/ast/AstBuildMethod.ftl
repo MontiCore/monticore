@@ -30,8 +30,8 @@ negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
-      value.set_SourcePositionEndOpt(this.end);
-      value.set_SourcePositionStartOpt(this.start);
+      value.set_SourcePositionEndOpt(this.sourcePositionEnd);
+      value.set_SourcePositionStartOpt(this.sourcePositionStart);
       value.setEnclosingScopeOpt(this.enclosingScope);
       value.setSymbolOpt(this.symbol);
       value.setSpannedScopeOpt(this.spannedScope);

@@ -37,9 +37,9 @@ import java.util.stream.Stream;
  */
 public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
 
-  protected Optional<SourcePosition> start = Optional.empty();
+  protected Optional<SourcePosition> sourcePositionStart = Optional.empty();
 
-  protected Optional<SourcePosition> end = Optional.empty();
+  protected Optional<SourcePosition> sourcePositionEnd = Optional.empty();
 
   protected List<Comment> precomments = Lists.newArrayList();
 
@@ -62,12 +62,12 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
   // ----------------------------------------------------------------------
 
   public T set_SourcePositionEnd(SourcePosition end) {
-    this.end = Optional.ofNullable(end);
+    this.sourcePositionEnd = Optional.ofNullable(end);
     return this.realBuilder;
   }
 
   public Optional<SourcePosition> get_SourcePositionEndOpt() {
-    return end;
+    return sourcePositionEnd;
   }
 
   public SourcePosition get_SourcePositionEnd()   {
@@ -84,12 +84,12 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
   }
 
   public T set_SourcePositionEndAbsent()   {
-    end = Optional.empty();
+    sourcePositionEnd = Optional.empty();
     return this.realBuilder;
   }
 
   public T set_SourcePositionEndOpt(Optional<SourcePosition> value)   {
-    this.end = value;
+    this.sourcePositionEnd = value;
     return this.realBuilder;
   }
 
@@ -98,12 +98,12 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
   // ----------------------------------------------------------------------
 
   public T set_SourcePositionStart(SourcePosition start) {
-    this.start = Optional.ofNullable(start);
+    this.sourcePositionStart = Optional.ofNullable(start);
     return this.realBuilder;
   }
 
   public Optional<SourcePosition> get_SourcePositionStartOpt() {
-    return start;
+    return sourcePositionStart;
   }
 
   public SourcePosition get_SourcePositionStart()   {
@@ -120,12 +120,12 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder> {
   }
 
   public T set_SourcePositionStartAbsent()   {
-    start = Optional.empty();
+    sourcePositionStart = Optional.empty();
     return this.realBuilder;
   }
 
   public T set_SourcePositionStartOpt(Optional<SourcePosition> value)   {
-    this.start = value;
+    this.sourcePositionStart = value;
     return this.realBuilder;
   }
 
