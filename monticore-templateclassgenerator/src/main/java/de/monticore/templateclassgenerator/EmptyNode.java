@@ -475,13 +475,13 @@ public class EmptyNode implements ASTNode {
   }
   
   @Override
-  public int indexOf_PreComments(Object element) {
+  public int indexOf_PreComment(Object element) {
     // TODO Auto-generated method stub
     return 0;
   }
   
   @Override
-  public int lastIndexOf_PreComments(Object element) {
+  public int lastIndexOf_PreComment(Object element) {
     // TODO Auto-generated method stub
     return 0;
   }
@@ -499,7 +499,7 @@ public class EmptyNode implements ASTNode {
   }
   
   @Override
-  public ListIterator<Comment> ListIterator_PreComments() {
+  public ListIterator<Comment> listIterator_PreComments() {
     // TODO Auto-generated method stub
     return null;
   }
@@ -661,13 +661,13 @@ public class EmptyNode implements ASTNode {
   }
   
   @Override
-  public int indexOf_PostComments(Object element) {
+  public int indexOf_PostComment(Object element) {
     // TODO Auto-generated method stub
     return 0;
   }
   
   @Override
-  public int lastIndexOf_PostComments(Object element) {
+  public int lastIndexOf_PostComment(Object element) {
     // TODO Auto-generated method stub
     return 0;
   }
@@ -685,7 +685,7 @@ public class EmptyNode implements ASTNode {
   }
   
   @Override
-  public ListIterator<Comment> ListIterator_PostComments() {
+  public ListIterator<Comment> listIterator_PostComments() {
     // TODO Auto-generated method stub
     return null;
   }

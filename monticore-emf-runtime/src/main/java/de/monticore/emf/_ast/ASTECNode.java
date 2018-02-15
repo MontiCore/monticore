@@ -424,11 +424,12 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public int indexOf_PreComments(Object element) {
+  public int indexOf_PreComment(Object element) {
     return this.precomments.indexOf(element);
   }
-  
-  public int lastIndexOf_PreComments(Object element) {
+
+  @Override
+  public int lastIndexOf_PreComment(Object element) {
     return this.precomments.lastIndexOf(element);
   }
   
@@ -443,7 +444,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public ListIterator<Comment> ListIterator_PreComments() {
+  public ListIterator<Comment> listIterator_PreComments() {
     return this.precomments.listIterator();
   }
   
@@ -593,11 +594,12 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public int indexOf_PostComments(Object element) {
+  public int indexOf_PostComment(Object element) {
     return this.postcomments.indexOf(element);
   }
-  
-  public int lastIndexOf_PostComments(Object element) {
+
+  @Override
+  public int lastIndexOf_PostComment(Object element) {
     return this.postcomments.lastIndexOf(element);
   }
   
@@ -612,7 +614,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public ListIterator<Comment> ListIterator_PostComments() {
+  public ListIterator<Comment> listIterator_PostComments() {
     return this.postcomments.listIterator();
   }
   

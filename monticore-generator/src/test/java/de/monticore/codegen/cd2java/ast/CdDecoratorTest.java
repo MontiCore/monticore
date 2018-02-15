@@ -69,9 +69,13 @@ public class CdDecoratorTest {
   
   private ASTCDDefinition cdDefinition;
   
+  private ASTCDDefinition cdDefinitionBuilder;
+  
   private GlobalExtensionManagement glex;
   
   private AstGeneratorHelper astHelper;
+  
+  private AstGeneratorHelper astHelperBuilder;
   
   private CdDecorator cdDecorator;
   
@@ -113,6 +117,26 @@ public class CdDecoratorTest {
     }
   }
   
+  @Before
+  public void initBuilderCD() {
+    String classDiagram = "src/test/resources/de/monticore/Builder.cd";
+    try {
+      Optional<ASTCDCompilationUnit> topNode = new CD4AnalysisParser().parse(new FileReader(classDiagram));
+      assertTrue(topNode.isPresent());
+      ASTCDCompilationUnit compUnit = topNode.get();
+      assertNotNull(compUnit.getCDDefinition());
+      cdDefinitionBuilder = compUnit.getCDDefinition();
+      astHelperBuilder = new AstGeneratorHelper(compUnit, globalScope);
+    }
+    catch (FileNotFoundException e) {
+      fail("Should not reach this, but: " + e);
+    }
+    catch (IOException e) {
+      fail("Should not reach this, but: " + e);
+    }
+  }
+  
+  
   /** {@link CdDecorator#decorateWithBuilders(ASTCDDefinition, GlobalExtensionManagement)} */
   @Test
   public void decorateWithBuilders() {
@@ -128,6 +152,46 @@ public class CdDecoratorTest {
       assertTrue(builderClass.getName().endsWith(AstGeneratorHelper.AST_BUILDER));
       assertTrue(builderClass.getName().startsWith(clazz.getName()));
     }
+  }
+  
+  @Test
+  public void decorateBuilderMethods() {
+    assertEquals(6, cdDefinitionBuilder.getCDClassList().size());
+    List<ASTCDClass> nativeClasses = Lists.newArrayList(cdDefinitionBuilder.getCDClassList());
+    
+    cdDecorator.addBuilders(cdDefinitionBuilder, astHelperBuilder);
+    assertEquals(12, cdDefinitionBuilder.getCDClassList().size());
+    
+    for(ASTCDClass clazz : nativeClasses) {
+      ASTCDClass builder = astHelperBuilder.getASTBuilder(clazz).get();
+      cdDecorator.decorateBuilderClass(builder, astHelperBuilder, cdDefinitionBuilder);
+    }
+    
+    // builder class with list attribute -> 34 additional list methods
+    ASTCDClass astA = cdDefinitionBuilder.getCDClass(6);
+    assertEquals(34, astA.getCDMethodList().size());
+    
+    // builder class with boolean attribute -> 2 additional methods
+    ASTCDClass astB = cdDefinitionBuilder.getCDClass(7);
+    assertEquals(2, astB.getCDMethodList().size());
+    assertEquals("isBool", astB.getCDMethod(0).getName());
+    assertEquals("setBool", astB.getCDMethod(1).getName());
+    
+    // builder class with optional attribute -> 6 additional methods
+    ASTCDClass astC = cdDefinitionBuilder.getCDClass(8);
+    assertEquals(6, astC.getCDMethodList().size());
+    
+    // builder class with normal attribute -> 2 additional methods
+    ASTCDClass astD = cdDefinitionBuilder.getCDClass(9);
+    assertEquals(2, astD.getCDMethodList().size());
+    assertEquals("getA", astD.getCDMethod(0).getName());
+    assertEquals("setA", astD.getCDMethod(1).getName());
+    
+    // builder class with explicit superclass -> 45 additional methods (overridden from ASTNodeBuilder)
+    ASTCDClass astE = cdDefinitionBuilder.getCDClass(10);
+    assertEquals(45, astE.getCDMethodList().size());
+    
+    
   }
   
   /** {@link CdDecorator#addGetter(ASTCDClass, AstGeneratorHelper)} */
