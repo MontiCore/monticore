@@ -310,7 +310,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     if (cdSymbol.isPresent() && cdSymbol.get().getEnclosingScope().getAstNode().isPresent()) {
       result = (ASTCDCompilationUnit) cdSymbol.get().getEnclosingScope().getAstNode().get();
-      Log.info("Used present symbol table for " + cdSymbol.get().getFullName(), LOG_ID);
+      Log.debug("Used present symbol table for " + cdSymbol.get().getFullName(), LOG_ID);
     }
     else {
       ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();

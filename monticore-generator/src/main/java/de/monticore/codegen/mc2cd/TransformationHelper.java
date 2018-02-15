@@ -362,7 +362,7 @@ public final class TransformationHelper {
         qualifiedCDName, CDSymbol.KIND);
 
     if (cdSymbol.isPresent() && cdSymbol.get().getEnclosingScope().getAstNode().isPresent()) {
-      Log.info("Got existed symbol table for " + cdSymbol.get().getFullName(), TransformationHelper.class.getName());
+      Log.debug("Got existed symbol table for " + cdSymbol.get().getFullName(), TransformationHelper.class.getName());
       return Optional.of((ASTCDCompilationUnit) cdSymbol.get().getEnclosingScope().getAstNode().get());
     }
     
