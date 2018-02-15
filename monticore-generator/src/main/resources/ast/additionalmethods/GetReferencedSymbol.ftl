@@ -31,7 +31,7 @@ software, even if advised of the possibility of such damage.
 ****************************************************************************
 -->
 ${tc.signature("method", "ast", "attributeName", "symbolClass")}
-  if ((${attributeName} != null) && enclosingScopeIsPresent()) {
+  if ((${attributeName} != null) && isPresentEnclosingScope()) {
     return enclosingScope.get().resolve(${attributeName}, ${symbolClass}.KIND);
   }
 
