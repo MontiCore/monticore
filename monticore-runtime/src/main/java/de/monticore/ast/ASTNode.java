@@ -839,15 +839,15 @@ public interface ASTNode {
   void setEnclosingScopeAbsent();
 
   /**
+   * Deprecated method can be deleted after next release
+   * will be replaced by the method that returns only a scope and no optional
+   * 
+   * Scope getEnclosingScope();
+   * 
    * @return the enclosing scope of this ast node
    */
   @Deprecated
   Optional<? extends Scope> getEnclosingScope();
-
-//  /**
-//   * @return the enclosing scope of this ast node
-//   */
-//  Scope getEnclosingScope();
 
   /**
    * Gets the enclosing scope of this ast node as an Optional
@@ -859,7 +859,7 @@ public interface ASTNode {
   /**
    * @return true if the enclosing scope is present
    */
-  boolean enclosingScopeIsPresent();
+  boolean isPresentEnclosingScope();
   
   /**
    * Sets the corresponding symbol of this ast node.
@@ -882,15 +882,15 @@ public interface ASTNode {
   void setSymbolAbsent();
 
   /**
+   * Deprecated method can be deleted after next release
+   * will be replaced by the method that returns only a symbol and no optional
+   * 
+   * Symbol getSymbol();
+   * 
    * @return the corresponding symbol of this ast node.
    */
   @Deprecated
   Optional<? extends Symbol> getSymbol();
-
-//  /**
-//   * @return the spanned symbol of this ast node.
-//   */
-//  Symbol getSymbol();
 
   /**
    * Gets the spanned symbol of this ast node as an Optional
@@ -903,7 +903,7 @@ public interface ASTNode {
   /**
    * @return true if the symbol is present
    */
-  boolean symbolIsPresent();
+  boolean isPresentSymbol();
   
   /**
    * Sets the spanned scope of this ast node.
@@ -924,20 +924,19 @@ public interface ASTNode {
    *
    */
   void setSpannedScopeAbsent();
-
   /**
-   * @return the spanned scope of this ast node.
+   * Deprecated method can be deleted after next release
+   * will be replaced by the method that returns only a scope and no optional
+   * 
+   * Scope getSpannedScope();
+   * 
+   * @return the spanned scope of this ast node
    */
   @Deprecated
   default Optional<? extends Scope> getSpannedScope() {
     return Optional.empty();
   }
   
-//  /**
-//   * @return the spanned scope of this ast node.
-//   */
-//  Scope getSpannedScope();
-
   /**
    * Gets the spanned scope of this ast node as an Optional
    * 
@@ -948,7 +947,7 @@ public interface ASTNode {
   /**
    * @return true if the spanned scope is present
    */
-  boolean spannedScopeIsPresent();
+  boolean isPresentSpannedScope();
 
   
   

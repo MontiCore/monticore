@@ -314,7 +314,7 @@ public class EmptyNode implements ASTNode {
    * @see de.monticore.ast.ASTNode#enclosingScopeIsPresent()
    */
   @Override
-  public boolean enclosingScopeIsPresent() {
+  public boolean isPresentEnclosingScope() {
     return false;
   }
   
@@ -322,7 +322,7 @@ public class EmptyNode implements ASTNode {
    * @see de.monticore.ast.ASTNode#symbolIsPresent()
    */
   @Override
-  public boolean symbolIsPresent() {
+  public boolean isPresentSymbol() {
     return false;
   }
 
@@ -350,7 +350,7 @@ public class EmptyNode implements ASTNode {
    * @see de.monticore.ast.ASTNode#spannedScopeIsPresent()
    */
   @Override
-  public boolean spannedScopeIsPresent() {
+  public boolean isPresentSpannedScope() {
     return false;
   }
   

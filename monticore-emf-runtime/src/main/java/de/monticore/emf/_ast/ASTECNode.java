@@ -242,17 +242,17 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public boolean spannedScopeIsPresent() {
+  public boolean isPresentSpannedScope() {
     return spannedScope.isPresent();
   }
   
   @Override
-  public boolean symbolIsPresent() {
+  public boolean isPresentSymbol() {
     return symbol.isPresent();
   }
   
   @Override
-  public boolean enclosingScopeIsPresent() {
+  public boolean isPresentEnclosingScope() {
     return enclosingScope.isPresent();
   }
 

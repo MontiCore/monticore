@@ -73,20 +73,20 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
         String name = StringTransformations.uncapitalize(reporting.getASTNodeNameFormatted(node));
         printObject(name, "${astName}");
         pp.indent();
-        if (node.getSymbol().isPresent()) {
-          String symName = StringTransformations.uncapitalize(reporting.getSymbolNameFormatted(node.getSymbol().get()));
+        if (node.isPresentSymbol()) {
+          String symName = StringTransformations.uncapitalize(reporting.getSymbolNameFormatted(node.getSymbolOpt().get()));
           pp.println("symbol = " + symName + ";");
         } else if (printEmptyOptional) {
           pp.println("symbol = absent;");
         }
-        if (node.getEnclosingScope().isPresent()) {
-          String scopeName = StringTransformations.uncapitalize(reporting.getScopeNameFormatted(node.getEnclosingScope().get()));
+        if (node.isPresentEnclosingScope()) {
+          String scopeName = StringTransformations.uncapitalize(reporting.getScopeNameFormatted(node.getEnclosingScopeOpt().get()));
           pp.println("enclosingScope = " + scopeName + ";");
         } else if (printEmptyOptional) {
           pp.println("enclosingScope = absent;");
         }
-        if (node.getSpannedScope().isPresent()) {
-          String scopeName = StringTransformations.uncapitalize(reporting.getScopeNameFormatted(node.getSpannedScope().get()));
+        if (node.isPresentSpannedScope()) {
+          String scopeName = StringTransformations.uncapitalize(reporting.getScopeNameFormatted(node.getSpannedScopeOpt().get()));
           pp.println("spanningScope = " + scopeName + ";");
         } else if (printEmptyOptional) {
           pp.println("spannedScope = absent;");

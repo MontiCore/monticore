@@ -205,7 +205,7 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
     }
 
     @Override
-    public boolean enclosingScopeIsPresent() {
+    public boolean isPresentEnclosingScope() {
         return enclosingScope.isPresent();
     }
   
@@ -250,7 +250,7 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
     }
 
     @Override
-    public boolean symbolIsPresent() {
+    public boolean isPresentSymbol() {
         return symbol.isPresent();
     }
   
@@ -305,7 +305,7 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
     }
 
     @Override
-    public boolean spannedScopeIsPresent() {
+    public boolean isPresentSpannedScope() {
         return spannedScope.isPresent();
     }
   
