@@ -51,12 +51,6 @@ import de.monticore.symboltable.Scope;
 import de.monticore.templateclassgenerator.EmptyNode;
 import de.monticore.templateclassgenerator.util.GeneratorInterface;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @since TODO: add version number
- */
 public class UsageTest extends AbstractSymtabTest {
   private static Path outputDirectory = Paths.get("target/generated-sources/templateClasses/");
   

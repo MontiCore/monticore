@@ -30,7 +30,6 @@ import de.monticore.symboltable.mocks.languages.statechart.asts.ASTStateChartCom
 import de.se_rwth.commons.Names;
 
 /**
- * TODO: Write me!
  *
  * @author Pedram Mir Seyed Nazari
  */

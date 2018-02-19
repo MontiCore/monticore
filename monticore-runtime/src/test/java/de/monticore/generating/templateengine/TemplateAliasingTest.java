@@ -42,13 +42,6 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
 import freemarker.core.Macro;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
 public class TemplateAliasingTest {
 
   private static final File TARGET_DIR = new File("target");

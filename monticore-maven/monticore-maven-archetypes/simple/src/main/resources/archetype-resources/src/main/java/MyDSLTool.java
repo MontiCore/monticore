@@ -46,7 +46,6 @@ import de.se_rwth.commons.logging.Log;
 /**
  * Main class for the MyDSL tool.
  *
- * @author (last commit) $Author$
  */
 public class MyDSLTool {
   

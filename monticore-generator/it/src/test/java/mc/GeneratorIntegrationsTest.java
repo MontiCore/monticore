@@ -24,13 +24,6 @@ import org.junit.BeforeClass;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
 public abstract class GeneratorIntegrationsTest {
   
   @BeforeClass

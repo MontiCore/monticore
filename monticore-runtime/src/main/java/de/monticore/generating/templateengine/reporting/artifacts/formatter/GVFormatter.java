@@ -31,13 +31,6 @@ import de.monticore.generating.templateengine.reporting.artifacts.model.ElementT
 import de.monticore.generating.templateengine.reporting.artifacts.model.Pkg;
 import de.monticore.generating.templateengine.reporting.artifacts.model.RootPkg;
 
-
-
-/**
- * TODO: Write me!
- * 
- * @author (last commit) $Author$
- */
 public class GVFormatter extends AFormatter {
   
   private Map<ElementType, String> shapes = new HashMap<ElementType, String>();

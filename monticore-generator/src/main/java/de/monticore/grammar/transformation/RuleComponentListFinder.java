@@ -27,14 +27,6 @@ import de.monticore.grammar.grammar._ast.ASTNonTerminalSeparator;
 import de.monticore.grammar.grammar._ast.ASTRuleComponent;
 import de.monticore.utils.ASTTraverser;
 
-
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- * @since   TODO: add version number
- *
- */
 public class RuleComponentListFinder implements ASTTraverser.Visitor{
   
   private Map<ASTNonTerminalSeparator, ASTAlt> map;

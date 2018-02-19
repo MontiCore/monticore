@@ -19,11 +19,6 @@
 
 package de.monticore.generating.templateengine.freemarker;
 
-/**
- * TODO: Write me!
- * 
- * @author (last commit) $Author$
- */
 public class MontiCoreFreeMarkerException extends RuntimeException {
   
   private static final long serialVersionUID = -1596687416377465351L;

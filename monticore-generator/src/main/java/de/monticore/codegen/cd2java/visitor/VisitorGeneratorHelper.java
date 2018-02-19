@@ -32,11 +32,6 @@ import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- */
 public class VisitorGeneratorHelper extends GeneratorHelper {
   
   public static final String VISITOR = "Visitor";

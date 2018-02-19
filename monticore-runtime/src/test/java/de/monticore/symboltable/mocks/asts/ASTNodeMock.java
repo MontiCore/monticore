@@ -30,13 +30,6 @@ import com.google.common.collect.Lists;
 
 import de.monticore.ast.ASTCNode;
 
-/**
- * TODO: Write me!
- *
- * @author  Pedram Mir Seyed Nazari
- *          $Date$
- *
- */
 public abstract class ASTNodeMock extends ASTCNode {
 
   private List<ASTNode> children = Lists.newArrayList();
@@ -61,8 +54,6 @@ public abstract class ASTNodeMock extends ASTCNode {
    */
   @Override
   public void remove_Child(ASTNode child) {
-    // TODO Auto-generated method stub
-    
   }
 
   /**
@@ -70,7 +61,6 @@ public abstract class ASTNodeMock extends ASTCNode {
    */
   @Override
   public ASTNodeMock deepClone() {
-    // TODO Auto-generated method stub
     return null;
   }
   

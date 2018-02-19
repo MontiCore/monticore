@@ -21,12 +21,6 @@ package de.monticore.symboltable.serializing.cycle;
 
 import java.io.Serializable;
 
-/**
- * TODO: Write me!
- *
- * @author  Pedram Mir Seyed Nazari
- *
- */
 public class CycleA implements Serializable{
   
   private static final long serialVersionUID = -4407341358814369723L;

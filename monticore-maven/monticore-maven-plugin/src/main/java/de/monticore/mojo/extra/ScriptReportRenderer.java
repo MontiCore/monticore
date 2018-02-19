@@ -31,11 +31,6 @@ import com.google.common.collect.Lists;
 
 import de.monticore.mojo.ReportRenderer;
 
-/**
- * TODO: Write me!
- * 
- * @author (last commit) $Author: ahorst $
- */
 public class ScriptReportRenderer extends AbstractMavenReportRenderer {
   
   private List<File> inputFiles = Lists.newArrayList();

@@ -17,11 +17,6 @@ import de.monticore.emf.util.AST2ModelFiles;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- */
 public class ASTNodeTest {
   
   @BeforeClass
@@ -31,8 +26,7 @@ public class ASTNodeTest {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param args
    */
   @Test

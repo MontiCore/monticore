@@ -30,11 +30,6 @@ import de.se_rwth.commons.cli.CLIArguments;
 import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- */
 public final class MontiCoreCLIConfiguration implements Configuration {
   
   public enum Options {

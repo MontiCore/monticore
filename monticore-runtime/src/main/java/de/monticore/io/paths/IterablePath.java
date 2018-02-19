@@ -58,8 +58,7 @@ import de.se_rwth.commons.logging.Log;
  * <b>Note that the order of the underlying path entries matter.</b> The first found resolved entry
  * for a qualified relative path is taken thus potentially hiding later matches (possible conflicts
  * are logged with level DEBUG).
- * 
- * @author (last commit) $Author$
+ *
  */
 public final class IterablePath {
   

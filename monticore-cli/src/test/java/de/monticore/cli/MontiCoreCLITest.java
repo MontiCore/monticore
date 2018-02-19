@@ -33,7 +33,6 @@ import de.se_rwth.commons.logging.Log;
  * do not really test something but are written to try out certain argument
  * combinations and hence designed to not fail.
  *
- * @author (last commit) $Author$
  * @since 4.0.0
  */
 public class MontiCoreCLITest {

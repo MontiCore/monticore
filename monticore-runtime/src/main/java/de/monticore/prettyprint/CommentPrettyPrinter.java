@@ -33,7 +33,7 @@ public  class CommentPrettyPrinter {
    */
   public static void printPreComments(ASTNode a, IndentPrinter p) {
     
-    if (a.get_PreComments() != null && a.get_PreComments().size() > 0) {
+    if (a.get_PreCommentList() != null && a.get_PreCommentList().size() > 0) {
       
       // Additional line break for comments if necessary (that means if
       // already text exists in current line)
@@ -42,7 +42,7 @@ public  class CommentPrettyPrinter {
       }
       
       // print all comments
-      for (Comment c : a.get_PreComments()) {
+      for (Comment c : a.get_PreCommentList()) {
         p.println(c.getText());
       }
     }
@@ -56,7 +56,7 @@ public  class CommentPrettyPrinter {
    */
   public static void printPostComments(ASTNode a, IndentPrinter p) {
     
-    if (a.get_PostComments() != null && a.get_PostComments().size() > 0) {
+    if (a.get_PostCommentList() != null && a.get_PostCommentList().size() > 0) {
       
       // Additional line break for comments if necessary (that means if
       // already text exists in current line)
@@ -65,7 +65,7 @@ public  class CommentPrettyPrinter {
       }
 
       // print all comments
-      for (Comment c : a.get_PostComments()) {
+      for (Comment c : a.get_PostCommentList()) {
         p.println(c.getText());
       }
     }

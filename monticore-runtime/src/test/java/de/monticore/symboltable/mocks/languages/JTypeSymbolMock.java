@@ -26,7 +26,6 @@ import de.monticore.symboltable.types.JTypeSymbol;
 import de.monticore.symboltable.types.references.JTypeReference;
 
 /**
- * TODO: Write me!
  *
  * @author Pedram Mir Seyed Nazari
  *

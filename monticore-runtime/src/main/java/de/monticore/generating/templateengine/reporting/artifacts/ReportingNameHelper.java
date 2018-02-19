@@ -22,9 +22,6 @@ package de.monticore.generating.templateengine.reporting.artifacts;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
-/** 
- * @author (last commit) $Author$
- */
 public class ReportingNameHelper {
 
   /**

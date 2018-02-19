@@ -39,7 +39,6 @@ import de.se_rwth.commons.logging.Slf4jLog;
  * Facade for all reporting activities. Invoking a report method causes all
  * AReporter implementing this method to execute it.
  *
- * @author (last commit) $Author$
  */
 public class Reporting extends Slf4jLog {
 

@@ -618,8 +618,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
 
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param mcProdSymbol
    * @param astAttribute
    */

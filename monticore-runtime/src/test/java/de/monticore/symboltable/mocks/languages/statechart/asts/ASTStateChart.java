@@ -21,13 +21,6 @@ package de.monticore.symboltable.mocks.languages.statechart.asts;
 
 import de.monticore.symboltable.mocks.asts.ASTSymbol;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
 public class ASTStateChart extends ASTSymbol implements ASTStateChartBase{
 
   public ASTStateChart() {

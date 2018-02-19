@@ -38,11 +38,6 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- */
 public class AstGenerator {
   
   private static final String JAVA_EXTENSION = ".java";

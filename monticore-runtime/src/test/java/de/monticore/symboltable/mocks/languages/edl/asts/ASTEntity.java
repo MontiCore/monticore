@@ -25,13 +25,6 @@ import de.monticore.ast.ASTNode;
 
 import java.util.List;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
 public class ASTEntity extends ASTSymbol {
   
   public ASTEntity() {

@@ -40,11 +40,9 @@ public class TemplateControllerMock extends TemplateController {
   }
 
   /**
-   * TODO: Write me!
    * @return
    */
   public TemplateControllerMock getSubController() {
-    // TODO Auto-generated method stub
     return null;
   }
   

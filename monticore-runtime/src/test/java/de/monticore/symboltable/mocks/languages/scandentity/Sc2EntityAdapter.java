@@ -23,13 +23,6 @@ import de.monticore.symboltable.mocks.languages.entity.EntitySymbol;
 import de.monticore.symboltable.mocks.languages.statechart.StateChartSymbol;
 import de.monticore.symboltable.resolving.SymbolAdapter;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
 public class Sc2EntityAdapter extends EntitySymbol implements SymbolAdapter<StateChartSymbol> {
 
   private final StateChartSymbol adaptee;

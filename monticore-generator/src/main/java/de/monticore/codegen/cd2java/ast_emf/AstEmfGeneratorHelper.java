@@ -211,8 +211,7 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param cdType
    * @return
    */

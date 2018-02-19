@@ -92,7 +92,6 @@ public class AutomatonWithSTInfo6Test extends GeneratorIntegrationsTest {
       @Override
       // Compiler fails if no method for scope 'Block' is generated
       protected MutableScope create_Block(ASTBlock ast) {
-        // TODO Auto-generated method stub
         return super.create_Block(ast);
       }
     }

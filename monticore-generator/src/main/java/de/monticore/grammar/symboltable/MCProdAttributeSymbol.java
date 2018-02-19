@@ -10,11 +10,6 @@ import java.util.Optional;
 import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.SymbolKind;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- */
 public class MCProdAttributeSymbol extends CommonSymbol {
   
   public static final MCProdAttributeKind KIND = new MCProdAttributeKind();

@@ -23,13 +23,6 @@ import java.util.Optional;
 import com.google.common.base.Preconditions;
 import de.monticore.ast.ASTNode;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
 public abstract class ASTSymbol extends ASTNodeMock {
   
   private String name;

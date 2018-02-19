@@ -20,14 +20,6 @@ package de.monticore.generating.templateengine;
 
 import de.monticore.generating.GeneratorSetup;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- * @version $Revision$, $Date$
- * @since   TODO: add version number
- *
- */
 public class GeneratorSetupMock extends GeneratorSetup {
 
   /**

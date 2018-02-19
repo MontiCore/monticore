@@ -22,7 +22,6 @@ package de.monticore.symboltable.serializing.cycle;
 import java.io.Serializable;
 
 /**
- * TODO: Write me!
  *
  * @author  Pedram Mir Seyed Nazari
  *

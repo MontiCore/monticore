@@ -51,8 +51,7 @@ import de.se_rwth.commons.logging.Slf4jLog;
 
 /**
  * Command line interface for MontiCore.
- * 
- * @author (last commit) $Author$
+ *
  */
 public final class MontiCoreCLI {
   

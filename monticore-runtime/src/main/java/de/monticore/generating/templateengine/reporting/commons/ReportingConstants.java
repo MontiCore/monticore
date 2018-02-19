@@ -21,9 +21,6 @@ package de.monticore.generating.templateengine.reporting.commons;
 
 /**
  * Constants needed for reporting
- *
- * @author (last commit) $Author$
- * @since TODO: add version number
  */
 public interface ReportingConstants {
 

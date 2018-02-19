@@ -76,7 +76,6 @@ public class ConnectionLabelMoveEditPolicy2 extends XYLayoutEditPolicy {
   
   @Override
   protected Command getCreateCommand(CreateRequest request) {
-    // TODO Auto-generated method stub
     return null;
   }
 }

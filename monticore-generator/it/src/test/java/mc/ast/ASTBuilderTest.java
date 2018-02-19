@@ -33,13 +33,6 @@ import mc.feature.featuredsl._ast.ASTTransition;
 import mc.feature.featuredsl._ast.FeatureDSLMill;
 import mc.feature.featuredsl._ast.FeatureDSLNodeFactory;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
 public class ASTBuilderTest extends GeneratorIntegrationsTest {
   
   @Test

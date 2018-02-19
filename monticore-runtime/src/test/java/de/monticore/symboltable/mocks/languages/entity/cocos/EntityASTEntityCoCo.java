@@ -21,12 +21,6 @@ package de.monticore.symboltable.mocks.languages.entity.cocos;
 
 import de.monticore.symboltable.mocks.languages.entity.asts.ASTEntity;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @since TODO: add version number
- */
 public interface EntityASTEntityCoCo extends ContextCondition {
   public void check(ASTEntity node);
 }

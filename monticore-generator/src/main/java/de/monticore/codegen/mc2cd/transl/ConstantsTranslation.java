@@ -34,11 +34,6 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDEnumConstant;
 import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.utils.Link;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- */
 public class ConstantsTranslation implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
   

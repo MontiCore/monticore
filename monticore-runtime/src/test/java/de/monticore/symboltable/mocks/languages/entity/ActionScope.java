@@ -24,13 +24,6 @@ import java.util.Optional;
 import de.monticore.symboltable.CommonScope;
 import de.monticore.symboltable.MutableScope;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
 public class ActionScope extends CommonScope {
 
   public ActionScope(ActionSymbol spanningSymbol, Optional<MutableScope> enclosingScope) {

@@ -27,11 +27,6 @@ import mc.feature.visitor.inheritance.c._visitor.CInheritanceVisitor;
 import mc.feature.visitor.inheritance.c._visitor.CVisitor;
 import de.monticore.ast.ASTNode;
 
-/**
- * TODO: Write me!
- *
- * @author Robert Heim
- */
 public class InheritanceCVisitor implements CInheritanceVisitor {
   final private StringBuilder run;
   

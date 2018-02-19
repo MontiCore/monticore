@@ -133,11 +133,11 @@ public abstract class MCParser extends Parser {
       Comment c = listIterator.next();
       if (this.activeastnode != null && this.activeastnode.get_SourcePositionEnd().getLine() == c
           .get_SourcePositionStart().getLine()) {
-        this.activeastnode.get_PostComments().add(c);
+        this.activeastnode.get_PostCommentList().add(c);
         listIterator.remove();
       }
       else if (c.get_SourcePositionStart().compareTo(n.get_SourcePositionStart()) < 0) {
-        n.get_PreComments().add(c);
+        n.get_PreCommentList().add(c);
         listIterator.remove();
       }
     }

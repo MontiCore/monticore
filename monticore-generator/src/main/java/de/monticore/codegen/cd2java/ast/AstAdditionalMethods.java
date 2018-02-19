@@ -19,11 +19,6 @@
 
 package de.monticore.codegen.cd2java.ast;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- */
 public enum AstAdditionalMethods {
   
   deepEquals("public boolean deepEquals(Object o);"),

@@ -32,12 +32,6 @@ import de.monticore.generating.templateengine.reporting.artifacts.ReportingNameH
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @since TODO: add version number
- */
 public class ReportManager implements IReportEventHandler {
 
   private Set<IReportEventHandler> reportEventHandlers = new LinkedHashSet<IReportEventHandler>();
@@ -435,7 +429,6 @@ public class ReportManager implements IReportEventHandler {
   /**
    * A factory for providing tool specific report managers.
    *
-   * @author (last commit) $Author$
    */
   public static interface ReportManagerFactory {
 

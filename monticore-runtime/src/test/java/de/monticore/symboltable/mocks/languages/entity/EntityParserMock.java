@@ -29,13 +29,6 @@ import de.monticore.symboltable.mocks.languages.entity.asts.ASTEntity;
 import de.monticore.symboltable.mocks.languages.entity.asts.ASTEntityCompilationUnit;
 import de.se_rwth.commons.Names;
 
-/**
- * TODO: Write me!
- *
- * @author  Pedram Mir Seyed Nazari
- *          $Date$
- *
- */
 public class EntityParserMock extends MCConcreteParser {
   
   /**

@@ -36,9 +36,6 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-/**
- * @author (last commit) $Author$
- */
 public class ModelLoaderTest {
   
   @BeforeClass

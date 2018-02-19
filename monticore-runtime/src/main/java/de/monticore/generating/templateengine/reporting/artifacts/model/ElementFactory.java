@@ -21,14 +21,6 @@ package de.monticore.generating.templateengine.reporting.artifacts.model;
 
 import de.monticore.generating.templateengine.reporting.artifacts.ReportingNameHelper;
 
-
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
 public class ElementFactory {
   
   public Element createTemplate (RootPkg rootPkg, String qualifiedName, String extension) {       
@@ -36,7 +28,6 @@ public class ElementFactory {
   } 
 
   /**
-   * TODO: Write me!
    * @param qualifiedfilename
    * @param fileextension
    * @return 
@@ -46,7 +37,6 @@ public class ElementFactory {
   }
 
   /**
-   * TODO: Write me!
    * @param rootPkg
    * @param modelname
    * @param filename
@@ -56,7 +46,6 @@ public class ElementFactory {
   }
   
   /**
-   * TODO: Write me!
    * @param rootPkg
    * @param modelname
    * @param filename

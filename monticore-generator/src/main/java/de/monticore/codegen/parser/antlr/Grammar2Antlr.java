@@ -75,11 +75,6 @@ import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- */
 public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
   private MCGrammarSymbol grammarEntry;

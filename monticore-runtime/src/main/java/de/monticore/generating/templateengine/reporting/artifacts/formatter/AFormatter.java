@@ -23,11 +23,6 @@ import java.util.List;
 
 import de.monticore.generating.templateengine.reporting.artifacts.model.RootPkg;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- */
 public abstract class AFormatter {
   
   private String indentString = "";

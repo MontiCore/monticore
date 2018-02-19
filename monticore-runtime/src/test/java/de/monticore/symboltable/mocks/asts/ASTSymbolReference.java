@@ -19,14 +19,6 @@
 
 package de.monticore.symboltable.mocks.asts;
 
-
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
 public class ASTSymbolReference extends ASTNodeMock {
   
   private String symbolName;

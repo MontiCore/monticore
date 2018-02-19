@@ -23,14 +23,6 @@ import java.nio.file.Path;
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.CommonSymbol;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- * @since   TODO: add version number
- *
- */
 public class HelloMainImpl extends HelloMain{
 
   /**

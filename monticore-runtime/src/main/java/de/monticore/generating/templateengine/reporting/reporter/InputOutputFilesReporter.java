@@ -55,7 +55,6 @@ import de.se_rwth.commons.logging.Log;
  * This report is used to enable incremental generation. It reports the name of all input and output
  * files.
  *
- * @author (last commit) $Author$
  */
 public class InputOutputFilesReporter extends AReporter {
   

@@ -21,14 +21,6 @@ package de.monticore.generating;
 import de.monticore.generating.templateengine.ExtendedTemplateController;
 import de.monticore.generating.templateengine.TemplateController;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- * @version $Revision$, $Date$
- * @since   TODO: add version number
- *
- */
 public class ExtendedGeneratorSetup extends GeneratorSetup {
 
   /**

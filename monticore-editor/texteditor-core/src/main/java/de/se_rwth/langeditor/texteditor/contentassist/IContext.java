@@ -18,13 +18,6 @@
 package de.se_rwth.langeditor.texteditor.contentassist;
 
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- * @since   TODO: add version number
- *
- */
 public interface IContext {
 
 }

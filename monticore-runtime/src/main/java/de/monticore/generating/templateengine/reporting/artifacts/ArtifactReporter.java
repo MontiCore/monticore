@@ -34,8 +34,7 @@ import de.monticore.generating.templateengine.reporting.commons.AReporter;
 /**
  * Creates a dependency Graph based on a generator run. Dependency Graph can be printed via various
  * printers.
- * 
- * @author (last commit) $Author$
+ *
  */
 public class ArtifactReporter extends AReporter {
 

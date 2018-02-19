@@ -56,7 +56,7 @@ public class EmptyNode implements ASTNode {
    */
   @Override
   public ASTNode deepClone() {
-    // TODO Auto-generated method stub
+    
     return null;
   }
   
@@ -65,7 +65,6 @@ public class EmptyNode implements ASTNode {
    */
   @Override
   public SourcePosition get_SourcePositionEnd() {
-    // TODO Auto-generated method stub
     return null;
   }
   
@@ -79,18 +78,14 @@ public class EmptyNode implements ASTNode {
    */
   @Override
   public void set_SourcePositionEnd(SourcePosition end) {
-    // TODO Auto-generated method stub
-    
   }
   
   @Override
   public void set_SourcePositionEndOpt(Optional<SourcePosition> end) {
-  
   }
   
   @Override
   public void set_SourcePositionEndAbsent() {
-  
   }
   
   @Override
@@ -103,7 +98,6 @@ public class EmptyNode implements ASTNode {
    */
   @Override
   public SourcePosition get_SourcePositionStart() {
-    // TODO Auto-generated method stub
     return null;
   }
   
@@ -117,18 +111,14 @@ public class EmptyNode implements ASTNode {
    */
   @Override
   public void set_SourcePositionStart(SourcePosition start) {
-    // TODO Auto-generated method stub
-    
   }
   
   @Override
   public void set_SourcePositionStartOpt(Optional<SourcePosition> start) {
-  
   }
   
   @Override
   public void set_SourcePositionStartAbsent() {
-  
   }
   
   @Override
@@ -141,7 +131,6 @@ public class EmptyNode implements ASTNode {
    */
   @Override
   public List<Comment> get_PreComments() {
-    // TODO Auto-generated method stub
     return null;
   }
   
@@ -150,8 +139,6 @@ public class EmptyNode implements ASTNode {
    */
   @Override
   public void set_PreComments(List<Comment> precomments) {
-    // TODO Auto-generated method stub
-    
   }
   
   /**
@@ -159,7 +146,6 @@ public class EmptyNode implements ASTNode {
    */
   @Override
   public List<Comment> get_PostComments() {
-    // TODO Auto-generated method stub
     return null;
   }
   
@@ -168,8 +154,6 @@ public class EmptyNode implements ASTNode {
    */
   @Override
   public void set_PostComments(List<Comment> postcomments) {
-    // TODO Auto-generated method stub
-    
   }
   
   /**
@@ -177,7 +161,6 @@ public class EmptyNode implements ASTNode {
    */
   @Override
   public boolean equalAttributes(Object o) {
-    // TODO Auto-generated method stub
     return false;
   }
   
@@ -186,7 +169,6 @@ public class EmptyNode implements ASTNode {
    */
   @Override
   public boolean equalsWithComments(Object o) {
-    // TODO Auto-generated method stub
     return false;
   }
   
@@ -195,7 +177,6 @@ public class EmptyNode implements ASTNode {
    */
   @Override
   public boolean deepEquals(Object o) {
-    // TODO Auto-generated method stub
     return false;
   }
   
@@ -204,7 +185,6 @@ public class EmptyNode implements ASTNode {
    */
   @Override
   public boolean deepEqualsWithComments(Object o) {
-    // TODO Auto-generated method stub
     return false;
   }
   
@@ -213,7 +193,6 @@ public class EmptyNode implements ASTNode {
    */
   @Override
   public boolean deepEquals(Object o, boolean forceSameOrder) {
-    // TODO Auto-generated method stub
     return false;
   }
   
@@ -222,7 +201,6 @@ public class EmptyNode implements ASTNode {
    */
   @Override
   public boolean deepEqualsWithComments(Object o, boolean forceSameOrder) {
-    // TODO Auto-generated method stub
     return false;
   }
   
@@ -231,7 +209,6 @@ public class EmptyNode implements ASTNode {
    */
   @Override
   public Collection<ASTNode> get_Children() {
-    // TODO Auto-generated method stub
     return null;
   }
   
@@ -240,8 +217,6 @@ public class EmptyNode implements ASTNode {
    */
   @Override
   public void remove_Child(ASTNode child) {
-    // TODO Auto-generated method stub
-    
   }
   
   /**
@@ -249,18 +224,14 @@ public class EmptyNode implements ASTNode {
    */
   @Override
   public void setEnclosingScope(Scope enclosingScope) {
-    // TODO Auto-generated method stub
-    
   }
 
   @Override
   public void setEnclosingScopeOpt(Optional<? extends Scope> enclosingScopeOpt) {
-
   }
 
   @Override
   public void setEnclosingScopeAbsent() {
-
   }
 
   /**
@@ -268,7 +239,6 @@ public class EmptyNode implements ASTNode {
    */
   @Override
   public Optional<? extends Scope> getEnclosingScope() {
-    // TODO Auto-generated method stub
     return null;
   }
 
@@ -282,18 +252,14 @@ public class EmptyNode implements ASTNode {
    */
   @Override
   public void setSymbol(Symbol symbol) {
-    // TODO Auto-generated method stub
-    
   }
 
   @Override
   public void setSymbolOpt(Optional<? extends Symbol> spannedSymbolOpt) {
-
   }
 
   @Override
   public void setSymbolAbsent() {
-
   }
 
   /**
@@ -301,7 +267,6 @@ public class EmptyNode implements ASTNode {
    */
   @Override
   public Optional<? extends Symbol> getSymbol() {
-    // TODO Auto-generated method stub
     return null;
   }
 
@@ -328,17 +293,14 @@ public class EmptyNode implements ASTNode {
 
   @Override
   public void setSpannedScope(Scope spannedScope) {
-
   }
 
   @Override
   public void setSpannedScopeOpt(Optional<? extends Scope> spannedScopeOpt) {
-
   }
 
   @Override
   public void setSpannedScopeAbsent() {
-
   }
 
   @Override
@@ -356,373 +318,300 @@ public class EmptyNode implements ASTNode {
   
   @Override
   public void clear_PreComments() {
-    // TODO Auto-generated method stub
-    
   }
   
   @Override
   public boolean add_PreComment(Comment precomment) {
-    // TODO Auto-generated method stub
     return false;
   }
   
   @Override
   public boolean addAll_PreComments(Collection<Comment> precomments) {
-    // TODO Auto-generated method stub
     return false;
   }
   
   @Override
   public boolean contains_PreComment(Object element) {
-    // TODO Auto-generated method stub
     return false;
   }
   
   @Override
   public boolean containsAll_PreComments(Collection<?> element) {
-    // TODO Auto-generated method stub
     return false;
   }
   
   @Override
   public boolean isEmpty_PreComments() {
-    // TODO Auto-generated method stub
     return false;
   }
   
   @Override
   public Iterator<Comment> iterator_PreComments() {
-    // TODO Auto-generated method stub
     return null;
   }
   
   @Override
   public boolean remove_PreComment(Object element) {
-    // TODO Auto-generated method stub
     return false;
   }
   
   @Override
   public boolean removeAll_PreComments(Collection<?> element) {
-    // TODO Auto-generated method stub
     return false;
   }
   
   @Override
   public boolean retainAll_PreComments(Collection<?> element) {
-    // TODO Auto-generated method stub
     return false;
   }
   
   @Override
   public int size_PreComments() {
-    // TODO Auto-generated method stub
     return 0;
   }
   
   @Override
   public Comment[] toArray_PreComments(Comment[] array) {
-    // TODO Auto-generated method stub
     return null;
   }
   
   @Override
   public boolean removeIf_PreComment(Predicate<? super Comment> filter) {
-    // TODO Auto-generated method stub
     return false;
   }
   
   @Override
   public Spliterator<Comment> spliterator_PreComments() {
-    // TODO Auto-generated method stub
     return null;
   }
   
   @Override
   public Stream<Comment> stream_PreComments() {
-    // TODO Auto-generated method stub
     return null;
   }
   
   @Override
   public Stream<Comment> parallelStream_PreComments() {
-    // TODO Auto-generated method stub
     return null;
   }
   
   @Override
   public void forEach_PreComments(Consumer<? super Comment> action) {
-    // TODO Auto-generated method stub
-    
   }
   
   @Override
   public void add_PreComment(int index, Comment precomment) {
-    // TODO Auto-generated method stub
-    
   }
   
   @Override
   public boolean addAll_PreComments(int index, Collection<Comment> precomments) {
-    // TODO Auto-generated method stub
     return false;
   }
   
   @Override
   public Comment get_PreComment(int index) {
-    // TODO Auto-generated method stub
     return null;
   }
   
   @Override
   public int indexOf_PreComment(Object element) {
-    // TODO Auto-generated method stub
     return 0;
   }
   
   @Override
   public int lastIndexOf_PreComment(Object element) {
-    // TODO Auto-generated method stub
     return 0;
   }
   
   @Override
   public boolean equals_PreComments(Object element) {
-    // TODO Auto-generated method stub
     return false;
   }
   
   @Override
   public int hashCode_PreComments() {
-    // TODO Auto-generated method stub
     return 0;
   }
   
   @Override
   public ListIterator<Comment> listIterator_PreComments() {
-    // TODO Auto-generated method stub
     return null;
   }
   
   @Override
   public Comment remove_PreComment(int index) {
-    // TODO Auto-generated method stub
     return null;
   }
   
   @Override
   public List<Comment> subList_PreComments(int start, int end) {
-    // TODO Auto-generated method stub
     return null;
   }
   
   @Override
   public void replaceAll_PreComments(UnaryOperator<Comment> operator) {
-    // TODO Auto-generated method stub
-    
   }
   
   @Override
   public void sort_PreComments(Comparator<? super Comment> comparator) {
-    // TODO Auto-generated method stub
-    
   }
   
   @Override
   public void set_PreCommentList(List<Comment> preComments) {
-    // TODO Auto-generated method stub
-    
   }
   
   @Override
   public List<Comment> get_PreCommentList() {
-    // TODO Auto-generated method stub
+    
     return null;
   }
   
   @Override
   public void clear_PostComments() {
-    // TODO Auto-generated method stub
-    
   }
   
   @Override
   public boolean add_PostComment(Comment postcomment) {
-    // TODO Auto-generated method stub
     return false;
   }
   
   @Override
   public boolean addAll_PostComments(Collection<Comment> postcomments) {
-    // TODO Auto-generated method stub
     return false;
   }
   
   @Override
   public boolean contains_PostComment(Object element) {
-    // TODO Auto-generated method stub
     return false;
   }
   
   @Override
   public boolean containsAll_PostComments(Collection<?> element) {
-    // TODO Auto-generated method stub
     return false;
   }
   
   @Override
   public boolean isEmpty_PostComments() {
-    // TODO Auto-generated method stub
     return false;
   }
   
   @Override
   public Iterator<Comment> iterator_PostComments() {
-    // TODO Auto-generated method stub
     return null;
   }
   
   @Override
   public boolean remove_PostComment(Object element) {
-    // TODO Auto-generated method stub
     return false;
   }
   
   @Override
   public boolean removeAll_PostComments(Collection<?> element) {
-    // TODO Auto-generated method stub
     return false;
   }
   
   @Override
   public boolean retainAll_PostComments(Collection<?> element) {
-    // TODO Auto-generated method stub
     return false;
   }
   
   @Override
   public int size_PostComments() {
-    // TODO Auto-generated method stub
     return 0;
   }
   
   @Override
   public Comment[] toArray_PostComments(Comment[] array) {
-    // TODO Auto-generated method stub
     return null;
   }
   
   @Override
   public boolean removeIf_PostComment(Predicate<? super Comment> filter) {
-    // TODO Auto-generated method stub
     return false;
   }
   
   @Override
   public Spliterator<Comment> spliterator_PostComments() {
-    // TODO Auto-generated method stub
     return null;
   }
   
   @Override
   public Stream<Comment> stream_PostComments() {
-    // TODO Auto-generated method stub
     return null;
   }
   
   @Override
   public Stream<Comment> parallelStream_PostComments() {
-    // TODO Auto-generated method stub
     return null;
   }
   
   @Override
   public void forEach_PostComments(Consumer<? super Comment> action) {
-    // TODO Auto-generated method stub
-    
   }
   
   @Override
   public void add_PostComment(int index, Comment postcomment) {
-    // TODO Auto-generated method stub
-    
   }
   
   @Override
   public boolean addAll_PostComments(int index, Collection<Comment> postcomments) {
-    // TODO Auto-generated method stub
     return false;
   }
   
   @Override
   public Comment get_PostComment(int index) {
-    // TODO Auto-generated method stub
     return null;
   }
   
   @Override
   public int indexOf_PostComment(Object element) {
-    // TODO Auto-generated method stub
     return 0;
   }
   
   @Override
   public int lastIndexOf_PostComment(Object element) {
-    // TODO Auto-generated method stub
     return 0;
   }
   
   @Override
   public boolean equals_PostComments(Object element) {
-    // TODO Auto-generated method stub
     return false;
   }
   
   @Override
   public int hashCode_PostComments() {
-    // TODO Auto-generated method stub
     return 0;
   }
   
   @Override
   public ListIterator<Comment> listIterator_PostComments() {
-    // TODO Auto-generated method stub
     return null;
   }
   
   @Override
   public Comment remove_PostComment(int index) {
-    // TODO Auto-generated method stub
     return null;
   }
   
   @Override
   public List<Comment> subList_PostComments(int start, int end) {
-    // TODO Auto-generated method stub
     return null;
   }
   
   @Override
   public void replaceAll_PostComments(UnaryOperator<Comment> operator) {
-    // TODO Auto-generated method stub
-    
   }
   
   @Override
   public void sort_PostComments(Comparator<? super Comment> comparator) {
-    // TODO Auto-generated method stub
-    
   }
   
   @Override
   public void set_PostCommentList(List<Comment> postComments) {
-    // TODO Auto-generated method stub
-    
   }
   
   @Override
   public List<Comment> get_PostCommentList() {
-    // TODO Auto-generated method stub
     return null;
   }
 
@@ -731,7 +620,6 @@ public class EmptyNode implements ASTNode {
    */
   @Override
   public ListIterator<Comment> listIterator_PreComments(int index) {
-    // TODO Auto-generated method stub
     return null;
   }
 
@@ -740,7 +628,6 @@ public class EmptyNode implements ASTNode {
    */
   @Override
   public Comment set_PreComment(int index, Comment precomment) {
-    // TODO Auto-generated method stub
     return null;
   }
 
@@ -749,7 +636,6 @@ public class EmptyNode implements ASTNode {
    */
   @Override
   public Object[] toArray_PreComments() {
-    // TODO Auto-generated method stub
     return null;
   }
 
@@ -758,7 +644,6 @@ public class EmptyNode implements ASTNode {
    */
   @Override
   public ListIterator<Comment> listIterator_PostComments(int index) {
-    // TODO Auto-generated method stub
     return null;
   }
 
@@ -767,7 +652,6 @@ public class EmptyNode implements ASTNode {
    */
   @Override
   public Comment set_PostComment(int index, Comment postcomment) {
-    // TODO Auto-generated method stub
     return null;
   }
 
@@ -776,7 +660,6 @@ public class EmptyNode implements ASTNode {
    */
   @Override
   public Object[] toArray_PostComments() {
-    // TODO Auto-generated method stub
     return null;
   }
   

@@ -21,13 +21,6 @@ package de.monticore.symboltable.mocks.languages.edl.asts;
 
 import de.monticore.symboltable.mocks.asts.ASTSymbol;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
 public class ASTProperty extends ASTSymbol {
   
   public ASTProperty() {

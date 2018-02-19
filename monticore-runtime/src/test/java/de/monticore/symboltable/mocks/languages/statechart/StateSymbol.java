@@ -21,13 +21,6 @@ package de.monticore.symboltable.mocks.languages.statechart;
 
 import de.monticore.symboltable.CommonSymbol;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
 public class StateSymbol extends CommonSymbol {
 
   public static final StateKind KIND = new StateKind();

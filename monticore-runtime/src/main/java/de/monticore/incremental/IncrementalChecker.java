@@ -60,7 +60,6 @@ import de.se_rwth.commons.logging.Log;
  * {@link InputOutputFilesReporter} processing can be skipped or not, i.e., the
  * realization of incremental model processing.
  *
- * @author (last commit) $Author$
  * @since 4.1.5
  */
 public class IncrementalChecker {
@@ -454,7 +453,6 @@ public class IncrementalChecker {
    * Container POJO for storing all gathered information from an input output
    * report.
    *
-   * @author (last commit) $Author$
    */
   protected static class InputOutputStory {
     
@@ -495,7 +493,6 @@ public class IncrementalChecker {
    * Container POJO for storing the necessary information for each input story
    * individually.
    *
-   * @author (last commit) $Author$
    */
   protected static class InputStory {
     

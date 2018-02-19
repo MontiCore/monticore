@@ -36,8 +36,6 @@ import de.monticore.io.FileReaderWriterMock;
 /**
  * Tests for {@link GlobalExtensionManagement}.
  *
- * @author (last commit) $Author$
- *          $Date$
  */
 public class GlobalExtensionManagementGlobalVarsTest {
 

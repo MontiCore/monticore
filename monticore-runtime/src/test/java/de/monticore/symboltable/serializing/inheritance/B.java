@@ -21,12 +21,6 @@ package de.monticore.symboltable.serializing.inheritance;
 
 import java.io.Serializable;
 
-/**
- * TODO: Write me!
- *
- * @author  Pedram Mir Seyed Nazari
- *
- */
 public class B implements Serializable {
 
   private static final long serialVersionUID = 5772581073540756479L;

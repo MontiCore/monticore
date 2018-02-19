@@ -21,13 +21,6 @@ package de.monticore.symboltable.mocks.asts.grammar;
 
 import de.monticore.ast.ASTNode;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
 public class ASTSymbolProd extends ASTProd {
 
   private boolean definesNamespace;

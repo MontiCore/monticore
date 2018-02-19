@@ -37,7 +37,6 @@ import parser.MCGrammarParser;
 /**
  * Tests the helper class on a concrete grammar containing left recursive and normal rules.
  *
- * @author (last commit) $Author$
  */
 public class DirectLeftRecursionDetectorTest {
 

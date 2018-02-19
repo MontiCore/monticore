@@ -19,11 +19,6 @@
 
 package de.monticore.generating.templateengine.reporting.artifacts.model;
 
-/**
- * TODO: Write me!
- * 
- * @author (last commit) $Author$
- */
 public enum ElementType {
   FILE("File"), HELPER("Helper"), MODEL("Model"),
   TEMPLATE("Template");

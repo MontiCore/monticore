@@ -252,7 +252,7 @@ public class AstGeneratorTest extends GeneratorTest {
   }
   
   /**
-   * Checks if ast code already was generated TODO: Write me!
+   * Checks if ast code already was generated
    * 
    * @param grammar
    * @return

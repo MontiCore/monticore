@@ -7,14 +7,6 @@ package de.monticore.generating.templateengine.reporting.commons;
 
 import de.monticore.ast.ASTNode;
 
-
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- * @since   TODO: add version number
- *
- */
 public class ASTNodeIdentHelper implements IASTNodeIdentHelper {
   
   /**

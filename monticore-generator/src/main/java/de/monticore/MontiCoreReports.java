@@ -47,7 +47,6 @@ import de.monticore.io.paths.IterablePath;
  * Initializes and provides the set of reports desired for MontiCore to the
  * reporting framework.
  *
- * @author (last commit) $Author$
  */
 public class MontiCoreReports implements ReportManagerFactory {
   

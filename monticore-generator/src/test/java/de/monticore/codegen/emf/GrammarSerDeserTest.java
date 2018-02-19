@@ -41,11 +41,6 @@ import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsPar
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- */
 public class GrammarSerDeserTest {
   
   @BeforeClass

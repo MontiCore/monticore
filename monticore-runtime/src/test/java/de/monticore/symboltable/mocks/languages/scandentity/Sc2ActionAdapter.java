@@ -24,13 +24,6 @@ import de.monticore.symboltable.mocks.languages.statechart.StateChartSymbol;
 import de.monticore.symboltable.resolving.SymbolAdapter;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
 public class Sc2ActionAdapter extends ActionSymbol implements SymbolAdapter<StateChartSymbol> {
 
   private StateChartSymbol adaptee;

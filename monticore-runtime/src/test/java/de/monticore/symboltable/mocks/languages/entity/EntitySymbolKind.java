@@ -22,13 +22,6 @@ package de.monticore.symboltable.mocks.languages.entity;
 import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.types.JTypeSymbolKind;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
 public class EntitySymbolKind extends JTypeSymbolKind {
 
   private static final String NAME = "de.monticore.symboltable.mocks.languages.entity.EntitySymbolKind";

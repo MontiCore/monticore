@@ -19,13 +19,6 @@
 
 package de.monticore.generating.templateengine;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
 public class TestConstants {
   
   public static final String TEMPLATE_PACKAGE = "de.monticore.generating.templateengine.templates.";

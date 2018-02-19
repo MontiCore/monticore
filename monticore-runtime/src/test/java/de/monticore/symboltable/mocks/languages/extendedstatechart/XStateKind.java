@@ -22,13 +22,6 @@ package de.monticore.symboltable.mocks.languages.extendedstatechart;
 import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.mocks.languages.statechart.StateKind;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
 public class XStateKind extends StateKind {
 
   private static final String NAME = "de.monticore.symboltable.mocks.languages.extendedstatechart.XStateKind";

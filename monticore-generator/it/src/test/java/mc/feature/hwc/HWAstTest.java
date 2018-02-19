@@ -30,13 +30,6 @@ import mc.feature.hwc.statechartdsl._ast.ASTStatechart;
 import mc.feature.hwc.statechartdsl._ast.ASTTransition;
 import mc.feature.hwc.statechartdsl._ast.StatechartDSLNodeFactory;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
 public class HWAstTest extends GeneratorIntegrationsTest {
   
   @Test

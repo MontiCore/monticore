@@ -78,7 +78,6 @@ import transformation.ast.ASTCDRawTransformation;
  * Decorates class diagrams by adding of new classes and methods using in emf
  * compatible ast files
  *
- * @author (last commit) $Author$
  */
 public class CdEmfDecorator extends CdDecorator {
   
@@ -180,8 +179,7 @@ public class CdEmfDecorator extends CdDecorator {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param astHelper
    * @param astNotListClasses
    */
@@ -205,8 +203,7 @@ public class CdEmfDecorator extends CdDecorator {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param astClasses
    * @param map.
    */
@@ -481,8 +478,7 @@ public class CdEmfDecorator extends CdDecorator {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param clazz
    * @param astHelper
    */
@@ -569,8 +565,7 @@ public class CdEmfDecorator extends CdDecorator {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param clazz
    * @param astHelper
    */
@@ -585,8 +580,7 @@ public class CdEmfDecorator extends CdDecorator {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param clazz
    * @param astHelper
    */

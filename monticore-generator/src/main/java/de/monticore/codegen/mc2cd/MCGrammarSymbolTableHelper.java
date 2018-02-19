@@ -381,8 +381,7 @@ public class MCGrammarSymbolTableHelper {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param astNode
    * @param currentSymbol
    * @return
@@ -422,8 +421,7 @@ public class MCGrammarSymbolTableHelper {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param superType
    * @return
    */
@@ -564,8 +562,7 @@ public class MCGrammarSymbolTableHelper {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param mcProdSymbolReference
    * @param newOne
    * @return
@@ -577,8 +574,7 @@ public class MCGrammarSymbolTableHelper {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param prodComponent
    * @return
    */
@@ -602,8 +598,7 @@ public class MCGrammarSymbolTableHelper {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param ast
    * @return
    */

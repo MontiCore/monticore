@@ -73,11 +73,6 @@ import static java.util.Collections.max;
 
 import de.monticore.generating.GeneratorSetup;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- */
 public class GeneratorHelper extends TypesHelper {
 
     public static final String AST_PREFIX = "AST";
@@ -459,7 +454,6 @@ public class GeneratorHelper extends TypesHelper {
     }
 
     /**
-     * TODO: Write me!
      *
      * @param genericType
      * @param typeName
@@ -806,7 +800,6 @@ public class GeneratorHelper extends TypesHelper {
 
 
     /**
-     * TODO: Write me!
      *
      * @param cdAttribute
      * @param type
@@ -823,7 +816,6 @@ public class GeneratorHelper extends TypesHelper {
     }
 
     /**
-     * TODO: Write me!
      *
      * @param field
      * @param type
@@ -835,7 +827,6 @@ public class GeneratorHelper extends TypesHelper {
     }
 
     /**
-     * TODO: Write me!
      *
      * @param cdType
      * @return
@@ -859,7 +850,6 @@ public class GeneratorHelper extends TypesHelper {
     }
 
     /**
-     * TODO: Write me!
      *
      * @param type
      * @return
@@ -1559,7 +1549,6 @@ public class GeneratorHelper extends TypesHelper {
     }
 
     /**
-     * TODO: Write me!
      *
      * @param cd
      * @return

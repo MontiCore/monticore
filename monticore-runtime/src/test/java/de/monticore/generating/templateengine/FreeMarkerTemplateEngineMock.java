@@ -33,7 +33,6 @@ import freemarker.template.Template;
  * processed, but does NOT process them. Consequently, expressions in templates, such as
  * <code>${tc.write(...)}</code>, are not invoked.
  *
- * @author (last commit) $Author$
  */
 public class FreeMarkerTemplateEngineMock extends FreeMarkerTemplateEngine {
   

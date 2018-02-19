@@ -22,13 +22,6 @@ package de.monticore.symboltable.mocks.languages.entity;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolPredicate;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
 public class PropertyPredicate implements SymbolPredicate {
 
   private final PropertySymbol propertySymbol;

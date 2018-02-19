@@ -25,13 +25,6 @@ import java.util.Optional;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.types.CommonJTypeSymbol;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
 public class EntitySymbol extends CommonJTypeSymbol<EntitySymbol, PropertySymbol, ActionSymbol, EntitySymbolReference> {
   
   public static final EntitySymbolKind KIND = EntitySymbolKind.KIND;

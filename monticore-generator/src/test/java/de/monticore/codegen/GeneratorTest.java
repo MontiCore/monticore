@@ -36,11 +36,6 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertTrue;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- */
 public abstract class GeneratorTest {
   
   /**

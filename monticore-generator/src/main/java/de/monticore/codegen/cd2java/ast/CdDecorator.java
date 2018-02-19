@@ -86,7 +86,6 @@ import transformation.ast.ASTCDTransformation;
  * Decorates class diagrams by adding of new classes and methods using in ast
  * files
  *
- * @author (last commit) $Author$
  */
 public class CdDecorator {
   
@@ -693,7 +692,6 @@ public class CdDecorator {
   }
   
   /**
-   * TODO: Write me!
    * 
    * @param clazz
    * @param astHelper
@@ -738,8 +736,7 @@ public class CdDecorator {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param interf
    * @param astHelper
    */
@@ -794,8 +791,7 @@ public class CdDecorator {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param cdCompilationUnit
    * @param nativeClasses
    * @param astHelper
@@ -1263,8 +1259,7 @@ public class CdDecorator {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param astHelper
    * @param cdSymbol
    * @param delegateFactoryName
@@ -1357,8 +1352,7 @@ public class CdDecorator {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param astHelper
    * @param cdSymbol
    * @param delegateFactoryName
@@ -1377,8 +1371,7 @@ public class CdDecorator {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param clazz
    * @param astHelper
    */
@@ -1430,8 +1423,7 @@ public class CdDecorator {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param cdDefinition
    * @param astHelper
    * @throws ANTLRException
@@ -1473,8 +1465,7 @@ public class CdDecorator {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param cdDefinition
    * @param astHelper
    */
@@ -1503,8 +1494,7 @@ public class CdDecorator {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param cdCompilationUnit
    */
   protected void transformCdTypeNamesForHWTypes(ASTCDCompilationUnit cdCompilationUnit) {

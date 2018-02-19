@@ -21,13 +21,6 @@ package de.monticore.symboltable.mocks.asts.grammar;
 
 import de.monticore.symboltable.mocks.asts.ASTNodeMock;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
 public class ASTSymbolProdReference extends ASTNodeMock {
  
   // TODO PN die Reference wird später über die Symtab aufgelöst.

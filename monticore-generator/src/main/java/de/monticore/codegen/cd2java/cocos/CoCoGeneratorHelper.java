@@ -26,11 +26,6 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- */
 public class CoCoGeneratorHelper extends GeneratorHelper {
   
   public CoCoGeneratorHelper(ASTCDCompilationUnit topAst, GlobalScope symbolTable) {

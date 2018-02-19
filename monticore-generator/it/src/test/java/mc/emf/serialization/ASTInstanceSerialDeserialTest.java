@@ -32,11 +32,6 @@ import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonNodeFacto
 import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonPackage;
 import mc.feature.fautomaton.automaton.flatautomaton._parser.FlatAutomatonParser;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- */
 public class ASTInstanceSerialDeserialTest extends GeneratorIntegrationsTest {
   
   @Test

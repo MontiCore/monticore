@@ -21,13 +21,6 @@ package de.monticore.symboltable.mocks.languages.entity.asts;
 
 import de.monticore.symboltable.mocks.asts.ASTSymbol;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
 public class ASTEntity extends ASTSymbol implements ASTEntityBase {
 
   public ASTEntity() {

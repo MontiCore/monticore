@@ -326,7 +326,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
   
   /**
-   * TODO: Write me!
    *
    * @param ast
    * @param scope

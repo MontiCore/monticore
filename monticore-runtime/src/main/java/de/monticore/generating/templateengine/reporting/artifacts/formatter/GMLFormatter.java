@@ -31,11 +31,6 @@ import de.monticore.generating.templateengine.reporting.artifacts.model.ElementT
 import de.monticore.generating.templateengine.reporting.artifacts.model.Pkg;
 import de.monticore.generating.templateengine.reporting.artifacts.model.RootPkg;
 
-/**
- * TODO: Write me!
- * 
- * @author (last commit) $Author$
- */
 public class GMLFormatter extends AFormatter {
   
   private Map<Element, Integer> elementIds = new HashMap<Element, Integer>();
@@ -274,7 +269,6 @@ public class GMLFormatter extends AFormatter {
   }
 
   /**
-   * TODO: Write me!
    * @param calls
    * @return
    */

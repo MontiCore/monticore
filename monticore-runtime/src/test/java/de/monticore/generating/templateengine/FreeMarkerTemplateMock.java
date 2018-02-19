@@ -29,7 +29,6 @@ import freemarker.template.Template;
 /**
  * Mock for FreeMarker templates (see {@link Template}).
  *
- * @author (last commit) $Author$
  */
 public class FreeMarkerTemplateMock extends Template {
   

@@ -27,11 +27,6 @@ import java.util.Map;
 
 import de.monticore.generating.templateengine.reporting.artifacts.ReportingNameHelper;
 
-/**
- * TODO: Write me!
- * 
- * @author (last commit) $Author$
- */
 public abstract class APkg {
      
   /**

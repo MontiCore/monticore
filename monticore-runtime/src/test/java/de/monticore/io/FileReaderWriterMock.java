@@ -28,13 +28,6 @@ import com.google.common.collect.Maps;
 
 import de.monticore.io.FileReaderWriter;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
 public class FileReaderWriterMock extends FileReaderWriter {
   
   private Map<Path, String> storedFilesAndContents = Maps.newHashMap();

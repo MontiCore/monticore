@@ -41,7 +41,6 @@ import de.monticore.generating.templateengine.reporting.commons.ReportingConstan
  * It reports the name of all input and output files as well as the name of
  * files which existence was checked.
  *
- * @author (last commit) $Author$
  */
 public class InvolvedFilesReporter extends AReporter {
   

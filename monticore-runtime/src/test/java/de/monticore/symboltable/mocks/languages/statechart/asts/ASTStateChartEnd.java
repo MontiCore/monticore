@@ -21,13 +21,6 @@ package de.monticore.symboltable.mocks.languages.statechart.asts;
 
 import de.monticore.symboltable.mocks.asts.ASTNodeMock;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
 public class ASTStateChartEnd extends ASTNodeMock {
   
 }

@@ -26,7 +26,6 @@ import org.junit.Test;
 /**
  * A simple test for MyDSL tool.
  *
- * @author (last commit) $Author$
  */
 public class MyDSLToolTest {
   

@@ -28,12 +28,6 @@ import de.monticore.symboltable.mocks.languages.entity.asts.ASTEntityCompilation
 import de.monticore.symboltable.mocks.languages.entity.asts.ASTProperty;
 import de.monticore.symboltable.mocks.languages.entity.asts.EntityLanguageVisitor;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @since TODO: add version number
- */
 public class EntityCoCoChecker implements EntityLanguageVisitor {
   
   /**

@@ -21,13 +21,6 @@ package de.monticore.symboltable.mocks.languages.statechart;
 
 import de.monticore.symboltable.SymbolKind;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
 public class StateChartKind implements SymbolKind {
 
   private static final String NAME = StateChartKind.class.getName();

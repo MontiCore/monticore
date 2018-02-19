@@ -23,13 +23,6 @@ import java.util.Optional;
 import de.monticore.symboltable.CommonScope;
 import de.monticore.symboltable.MutableScope;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
 public class StateChartScope extends CommonScope {
 
   /**

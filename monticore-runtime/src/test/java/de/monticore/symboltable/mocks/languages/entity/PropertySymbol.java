@@ -23,13 +23,6 @@ import de.monticore.symboltable.types.CommonJFieldSymbol;
 import de.monticore.symboltable.types.JTypeSymbol;
 import de.monticore.symboltable.types.references.JTypeReference;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
 public class PropertySymbol extends CommonJFieldSymbol<JTypeReference<JTypeSymbol>> {
   
   public static final PropertySymbolKind KIND = new PropertySymbolKind();

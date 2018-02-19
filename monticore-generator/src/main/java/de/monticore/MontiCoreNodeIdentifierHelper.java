@@ -53,11 +53,6 @@ import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.types.types._ast.ASTTypeVariableDeclaration;
 import de.se_rwth.commons.Names;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- */
 public class MontiCoreNodeIdentifierHelper extends TypesNodeIdentHelper {
   
   // ##############

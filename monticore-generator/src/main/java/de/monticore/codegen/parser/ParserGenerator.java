@@ -44,11 +44,6 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import de.monticore.generating.GeneratorSetup;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- */
 public class ParserGenerator {
 
   public static final String PARSER_PACKAGE = "_parser";

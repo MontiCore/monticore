@@ -24,13 +24,6 @@ import java.util.Optional;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
 import de.monticore.symboltable.MutableScope;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
 public class StateChartSymbol extends CommonScopeSpanningSymbol {
 
   public static final StateChartKind KIND = new StateChartKind();

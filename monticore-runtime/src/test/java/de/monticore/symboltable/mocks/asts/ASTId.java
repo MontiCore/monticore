@@ -19,13 +19,6 @@
 
 package de.monticore.symboltable.mocks.asts;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
 public class ASTId extends ASTNodeMock {
 
   private String value;

@@ -19,12 +19,6 @@
 
 package de.monticore.symboltable.serializing.inheritance;
 
-/**
- * TODO: Write me!
- *
- * @author  Pedram Mir Seyed Nazari
- *
- */
 public class C {
   
 }

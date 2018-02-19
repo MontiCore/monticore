@@ -40,11 +40,6 @@ import de.monticore.grammar.transformation.GrammarTransformer;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- */
 public class MCGrammarParserTest {
   
   @BeforeClass

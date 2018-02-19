@@ -23,13 +23,6 @@ import de.monticore.symboltable.CommonSymbolTableCreator;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- *          $Date$
- *
- */
 public class CommonStateChartSymbolTableCreator extends CommonSymbolTableCreator implements StateChartLanguageSymbolTableCreator {
 
 

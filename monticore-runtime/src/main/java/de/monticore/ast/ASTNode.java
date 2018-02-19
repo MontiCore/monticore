@@ -52,11 +52,11 @@ public interface ASTNode {
         "0xA4040 The argument ASTNode of the 'deepClone' method must not be null.");
     result.set_SourcePositionStart(get_SourcePositionStart().clone());
     result.set_SourcePositionEnd(get_SourcePositionEnd().clone());
-    for (de.monticore.ast.Comment x : get_PreComments()) {
-      result.get_PreComments().add(new de.monticore.ast.Comment(x.getText()));
+    for (de.monticore.ast.Comment x : get_PreCommentList()) {
+      result.get_PreCommentList().add(new de.monticore.ast.Comment(x.getText()));
     }
-    for (de.monticore.ast.Comment x : get_PostComments()) {
-      result.get_PostComments().add(new de.monticore.ast.Comment(x.getText()));
+    for (de.monticore.ast.Comment x : get_PostCommentList()) {
+      result.get_PostCommentList().add(new de.monticore.ast.Comment(x.getText()));
     }
     
     return result;
@@ -233,7 +233,7 @@ public interface ASTNode {
   
   @Deprecated
   List<Comment> get_PreComments();
-  
+
   /**
    * Sets list of all comments which are associated with this ASTNode and are prior to the ASTNode
    * in the input file

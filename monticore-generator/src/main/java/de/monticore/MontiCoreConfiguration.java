@@ -45,7 +45,6 @@ import de.se_rwth.commons.logging.Log;
  * derived from (1) its command line arguments, and (2) system properties (not
  * implemented yet).
  *
- * @author (last commit) $Author$
  */
 public final class MontiCoreConfiguration implements Configuration {
 

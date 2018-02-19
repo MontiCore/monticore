@@ -35,11 +35,6 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
 import de.monticore.utils.ASTNodes;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- */
 public class AddAttributesOfExtendedInterfacesManipulation implements
     UnaryOperator<ASTCDCompilationUnit> {
   

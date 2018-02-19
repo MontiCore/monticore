@@ -21,13 +21,6 @@ package de.monticore.symboltable.serializing.samereferences;
 
 import java.io.Serializable;
 
-/**
- * TODO: Write me!
- *
- * @author  Pedram Mir Seyed Nazari
- *          $Date$
- *
- */
 public class RefB implements Serializable {
   
   private RefA a;

@@ -27,12 +27,6 @@ import de.monticore.symboltable.resolving.TransitiveAdaptedResolvingFilter;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- *          $Date$
- */
 public class State2EntityTransitiveResolvingFilter extends TransitiveAdaptedResolvingFilter<EntitySymbol> {
 
   public State2EntityTransitiveResolvingFilter() {

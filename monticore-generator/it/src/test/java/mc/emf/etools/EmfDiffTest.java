@@ -21,11 +21,6 @@ import mc.GeneratorIntegrationsTest;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTAutomaton;
 import mc.feature.fautomaton.automaton.flatautomaton._parser.FlatAutomatonParser;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- */
 public class EmfDiffTest extends GeneratorIntegrationsTest {
   
   @Test

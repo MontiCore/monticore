@@ -19,11 +19,6 @@
 
 package de.monticore.codegen.cd2java.ast;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- */
 public enum AstAdditionalAttributes {
   
   symbol("public Optional<? extends Symbol> symbol;"),
