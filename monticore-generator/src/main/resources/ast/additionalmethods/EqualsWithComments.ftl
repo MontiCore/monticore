@@ -60,9 +60,9 @@ ${tc.signature("ast","astType")}
 	  </#if>  
     </#list --> 
     // comparing comments
-    if (get_PreComments().size() == comp.get_PreComments().size()) {
-      java.util.Iterator<de.monticore.ast.Comment> one = get_PreComments().iterator();
-      java.util.Iterator<de.monticore.ast.Comment> two = comp.get_PreComments().iterator();
+    if (get_PreCommentList().size() == comp.get_PreCommentList().size()) {
+      java.util.Iterator<de.monticore.ast.Comment> one = get_PreCommentList().iterator();
+      java.util.Iterator<de.monticore.ast.Comment> two = comp.get_PreCommentList().iterator();
       while (one.hasNext()) {
         if (!one.next().equals(two.next())) {
           return false;
@@ -72,9 +72,9 @@ ${tc.signature("ast","astType")}
       return false;
     }
     
-    if (get_PostComments().size() == comp.get_PostComments().size()) {
-      java.util.Iterator<de.monticore.ast.Comment> one = get_PostComments().iterator();
-      java.util.Iterator<de.monticore.ast.Comment> two = comp.get_PostComments().iterator();
+    if (get_PostCommentList().size() == comp.get_PostCommentList().size()) {
+      java.util.Iterator<de.monticore.ast.Comment> one = get_PostCommentList().iterator();
+      java.util.Iterator<de.monticore.ast.Comment> two = comp.get_PostCommentList().iterator();
       while (one.hasNext()) {
         if (!one.next().equals(two.next())) {
           return false;
