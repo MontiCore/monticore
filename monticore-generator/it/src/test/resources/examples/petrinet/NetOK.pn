@@ -1,3 +1,5 @@
+/* (c)  https://github.com/MontiCore/monticore */
+
 petrinet NetOK bool {
 	place a:false;
 	place b: true;

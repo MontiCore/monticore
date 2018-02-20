@@ -1,3 +1,5 @@
+/* (c)  https://github.com/MontiCore/monticore */
+
 package org.moflon;
 
 grammar JMOF extends org.moflon.Common {
