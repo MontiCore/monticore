@@ -58,6 +58,7 @@ public class Comment {
   protected String text;
   
   public Comment() {
+     text = "";
   }
   
   public Comment(String text) {
