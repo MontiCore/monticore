@@ -31,14 +31,6 @@ public <#if isTop>abstract </#if> class ${ast.getName()} {
       ${attributeName} = a;
     </#list>
   }
-    
-  public static void reset() {
-    mill = null;
-    <#list ast.getCDAttributeList() as attribute>
-      <#assign attributeName = genHelper.getJavaConformName(attribute.getName())>
-      ${attributeName} = null;
-    </#list>
-  }
 
 <#list ast.getCDAttributeList() as attribute>
  ${tc.includeArgs("ast.Attribute", [attribute, ast])}

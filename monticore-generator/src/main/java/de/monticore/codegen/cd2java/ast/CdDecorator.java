@@ -834,20 +834,19 @@ public class CdDecorator {
     // Create delegate methods for inherited classes
     ArrayList<CDSymbol> overridden = Lists.newArrayList();
     List<String> delegateList = Lists.newArrayList(astClasses);
-    for (CDSymbol superCd : astHelper.getAllCds(astHelper.getCdSymbol())) {
-      if (!astHelper.getCdSymbol().equals(superCd)) {
-        for (CDTypeSymbol cdType : superCd.getTypes()) {
-          Optional<ASTNode> node = cdType.getAstNode();
-          if (node.isPresent() && node.get() instanceof ASTCDClass) {
-            if (!cdType.isAbstract() && !delegateList.contains(cdType.getName())) {
-              delegateList.add(cdType.getName());
-              String millName = getSimpleName(superCd.getName()) + MILL;
-              String millPackage = superCd.getFullName().toLowerCase()
-                  + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;
-              addDelegateMethodToMill(cdType.getName(), millClass, astHelper, superCd,
-                  millPackage + millName);
-            }
+    for (CDSymbol superCd : astHelper.getAllSuperCds(astHelper.getCdSymbol())) {
+      for (CDTypeSymbol cdType : superCd.getTypes()) {
+        Optional<ASTNode> node = cdType.getAstNode();
+        if (node.isPresent() && node.get() instanceof ASTCDClass) {
+          if (!cdType.isAbstract() && !delegateList.contains(cdType.getName())) {
+            delegateList.add(cdType.getName());
+            String millName = getSimpleName(superCd.getName()) + MILL;
+            String millPackage = superCd.getFullName().toLowerCase()
+                + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;
+            addDelegateMethodToMill(cdType.getName(), millClass, astHelper, superCd,
+                millPackage + millName);
           }
+          
         }
       }
     }
@@ -859,6 +858,11 @@ public class CdDecorator {
     String toParse = "public static void init();" ;
     HookPoint methodBody = new TemplateHookPoint("ast.ASTMillInitMethod", cdCompilationUnit.getCDDefinition().getName(),
         GeneratorHelper.getPlainName(millClass, ""), overridden);
+    replaceMethodBodyTemplate(millClass, toParse, methodBody);    
+
+    // Create reset for super class diagrams
+    toParse = "public static void reset();" ;
+    methodBody = new TemplateHookPoint("ast.ASTMillResetMethod",  astHelper.getCdSymbol().getImports());
     replaceMethodBodyTemplate(millClass, toParse, methodBody);    
 
     // Create Mill for overridden Rules
