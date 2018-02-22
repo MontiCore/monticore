@@ -69,18 +69,6 @@ public abstract class ModelingLanguageModelLoader<T extends ASTNode> {
   }
 
   /**
-   * @deprecated use {@link #loadModelsIntoScope(String, ModelPath, MutableScope, ResolvingConfiguration)}
-   * instead.
-   */
-  @Deprecated
-  public Collection<T> loadAmbiguousModelAndCreateSymbolTable(final String qualifiedModelName,
-      final ModelPath modelPath, final MutableScope enclosingScope,
-      final ResolvingConfiguration resolvingConfiguration) {
-
-    return loadModelsIntoScope(qualifiedModelName, modelPath, enclosingScope, resolvingConfiguration);
-  }
-
-  /**
    * Loads all models with the specified <code>qualifiedModelName</code>, creates
    * the corresponding scope graphs and puts each in the <code>enclosingScope</code>.
    *
@@ -114,15 +102,6 @@ public abstract class ModelingLanguageModelLoader<T extends ASTNode> {
   protected abstract void createSymbolTableFromAST(T ast, String modelName,
       MutableScope enclosingScope,
       ResolvingConfiguration resolvingConfiguration);
-
-  /**
-   * @deprecated use {@link #loadModels(String, ModelPath)} instead.
-   */
-  public Collection<T> loadAmbiguousModels(final String qualifiedModelName, ModelPath modelPath) {
-    checkArgument(!isNullOrEmpty(qualifiedModelName));
-
-    return loadModels(qualifiedModelName, modelPath);
-  }
 
   /**
    * Loads one or more models with the <code>qualifiedModelName</code>. If only

@@ -10,8 +10,8 @@ public class AutomatonLanguage extends AutomatonLanguageTOP {
   public AutomatonLanguage() {
     super("Automaton Language", FILE_ENDING);
 
-    addResolver(CommonResolvingFilter.create(AutomatonSymbol.KIND));
-    addResolver(CommonResolvingFilter.create(StateSymbol.KIND));
+    addResolvingFilter(CommonResolvingFilter.create(AutomatonSymbol.KIND));
+    addResolvingFilter(CommonResolvingFilter.create(StateSymbol.KIND));
   }
 
   @Override

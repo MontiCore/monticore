@@ -590,20 +590,6 @@ public class TemplateController {
     return null;
   }
 
-  // TODO: can we remove this one?
-  /**
-   * @deprecated use glex.defineHookPoint instead
-   */ 
-  @Deprecated
-  public String defineHookPoint(String hookName) {
-    return config.getGlex().defineHookPoint(this, hookName, getAST());
-  }
-
-  // TODO AR <- PN Actually,the plan was to move both instantiate() methods to
-  // HpFV.
-  // But as the className may be unqualified, the package name is needed.
-  // But, HpFV does not now anything about the template or its package
-
   /**
    * Can be used to instantiate any Java-class with a default constructor (no
    * args). The passed className is either in the same package as the calling

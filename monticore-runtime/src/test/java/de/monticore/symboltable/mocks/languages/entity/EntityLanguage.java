@@ -16,10 +16,10 @@ public class EntityLanguage extends CommonModelingLanguage {
   
   public EntityLanguage() {
     super("Entity Language Mock", FILE_ENDING);
-    
-    addResolver(CommonResolvingFilter.create(EntitySymbol.KIND));
-    addResolver(CommonResolvingFilter.create(ActionSymbol.KIND));
-    addResolver(CommonResolvingFilter.create(PropertySymbol.KIND));
+
+    addResolvingFilter(CommonResolvingFilter.create(EntitySymbol.KIND));
+    addResolvingFilter(CommonResolvingFilter.create(ActionSymbol.KIND));
+    addResolvingFilter(CommonResolvingFilter.create(PropertySymbol.KIND));
   }
 
   @Override

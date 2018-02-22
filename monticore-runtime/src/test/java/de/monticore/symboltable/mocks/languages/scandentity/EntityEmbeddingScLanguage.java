@@ -29,16 +29,16 @@ public class EntityEmbeddingScLanguage extends CommonModelingLanguage {
     super("Entity with embedded Statechart language", FILE_ENDING);
     
     // add default resolvers of the entity language
-    addResolver(CommonResolvingFilter.create(EntitySymbol.KIND));
-    addResolver(CommonResolvingFilter.create(ActionSymbol.KIND));
-    addResolver(CommonResolvingFilter.create(PropertySymbol.KIND));
+    addResolvingFilter(CommonResolvingFilter.create(EntitySymbol.KIND));
+    addResolvingFilter(CommonResolvingFilter.create(ActionSymbol.KIND));
+    addResolvingFilter(CommonResolvingFilter.create(PropertySymbol.KIND));
     
     // add default resolvers of the statechart language
-    addResolver(CommonResolvingFilter.create(StateChartSymbol.KIND));
-    addResolver(CommonResolvingFilter.create(StateSymbol.KIND));
+    addResolvingFilter(CommonResolvingFilter.create(StateChartSymbol.KIND));
+    addResolvingFilter(CommonResolvingFilter.create(StateSymbol.KIND));
     
     // add sc2entity resolvers
-    addResolver(new Sc2EntityTransitiveResolvingFilter());
+    addResolvingFilter(new Sc2EntityTransitiveResolvingFilter());
   }
   
   @Override

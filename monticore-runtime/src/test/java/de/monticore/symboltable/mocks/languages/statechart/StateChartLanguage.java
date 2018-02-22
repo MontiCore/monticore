@@ -14,10 +14,10 @@ import java.util.Optional;
 public class StateChartLanguage extends CommonModelingLanguage {
   
   public StateChartLanguage() {
-    super("StateChart Language Mock", "sc", StateChartSymbol.KIND);
-    
-    addResolver(CommonResolvingFilter.create(StateChartSymbol.KIND));
-    addResolver(CommonResolvingFilter.create(StateSymbol.KIND));
+    super("StateChart Language Mock", "sc");
+
+    addResolvingFilter(CommonResolvingFilter.create(StateChartSymbol.KIND));
+    addResolvingFilter(CommonResolvingFilter.create(StateSymbol.KIND));
 
   }
   

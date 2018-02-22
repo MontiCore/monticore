@@ -37,8 +37,8 @@ public class TransHostLanguage extends TransHostLanguageTOP {
   //}
 
   protected void initResolvingFilters() {
-    addResolver(new TransHostResolvingFilter());
-    addResolver(new TransStartResolvingFilter());
+    addResolvingFilter(new TransHostResolvingFilter());
+    addResolvingFilter(new TransStartResolvingFilter());
   }
 
   /**

@@ -22,7 +22,7 @@ public class CompositeLanguage extends EmbeddingModelingLanguage {
     super("Composite Language", FILE_ENDING, new HostLanguage(), new EmbeddedLanguage());
 
     modelLoader =  provideModelLoader();
-    addResolver(new Text2ContentResolvingFilter());
+    addResolvingFilter(new Text2ContentResolvingFilter());
   }
 
   @Override public MCConcreteParser getParser() {

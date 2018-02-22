@@ -32,7 +32,7 @@ public class HostLanguage extends HostLanguageTOP {
 
   @Override
   protected void initResolvingFilters() {
-    addResolver(new ContentResolvingFilter());
-    addResolver(new HostResolvingFilter());
+    addResolvingFilter(new ContentResolvingFilter());
+    addResolvingFilter(new HostResolvingFilter());
   }
 }

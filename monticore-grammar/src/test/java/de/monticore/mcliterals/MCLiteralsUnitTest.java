@@ -12,7 +12,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.monticore.antlr4.MCConcreteParser.ParserExecution;
 import de.monticore.literals.literals._ast.ASTIntLiteral;
 import de.monticore.mcnumbers._ast.ASTDecimal;
 import de.monticore.mcnumbers._ast.ASTInteger;
@@ -46,7 +45,6 @@ public class MCLiteralsUnitTest {
   @Before
   public void setUp() { 
     Log.getFindings().clear();
-    parser.setParserTarget(ParserExecution.EOF);
   }
   
   // --------------------------------------------------------------------
