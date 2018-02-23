@@ -97,6 +97,26 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   public void run(Configuration configuration) {
     try {
       ClassLoader l = MontiCoreScript.class.getClassLoader();
+      String script = Resources.asCharSource(l.getResource("de/monticore/monticore_noemf.groovy"),
+          Charset.forName("UTF-8")).read();
+      run(script, configuration);
+    }
+    catch (IOException e) {
+      Log.error("0xA1015 Failed to default MontiCore script.", e);
+    }
+  }
+
+  /**
+   * Executes the default MontiCore Groovy script (parses grammars, generates
+   * ASTs, parsers, etc.) with emf
+   *
+   * @see Configuration
+   * @param configuration of MontiCore for this execution
+   * @see Configuration
+   */
+  public void run_emf(Configuration configuration) {
+    try {
+      ClassLoader l = MontiCoreScript.class.getClassLoader();
       String script = Resources.asCharSource(l.getResource("de/monticore/monticore_emf.groovy"),
           Charset.forName("UTF-8")).read();
       run(script, configuration);

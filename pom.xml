@@ -93,6 +93,7 @@
     <!-- .. Misc .......................................................... -->
 
     <grammars.classifier>grammars</grammars.classifier>
+    <emf.classifier>emf</emf.classifier>
     <java.version>1.8</java.version>
     <mc.grammars.assembly.version>0.0.8</mc.grammars.assembly.version>
     <wagon.provider.version>2.3</wagon.provider.version>
@@ -318,6 +319,14 @@
         <groupId>de.monticore</groupId>
         <artifactId>monticore-grammar</artifactId>
         <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>de.monticore</groupId>
+        <artifactId>monticore-grammar</artifactId>
+        <version>${project.version}</version>
+        <classifier>${emf.classifier}</classifier>
+        <scope>provided</scope>
       </dependency>
 
       <dependency>

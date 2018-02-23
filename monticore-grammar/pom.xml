@@ -85,6 +85,10 @@
       <plugin>
         <groupId>de.monticore.mojo</groupId>
         <artifactId>monticore-maven-plugin</artifactId>
+        <!-- delete this configuration as soon as monticore reaches 5.0, because this script becomes standard anyway -->
+        <configuration>
+          <script>de/monticore/monticore_noemf.groovy</script>
+        </configuration>
         <executions>
           <execution>
             <id>default-id</id>
@@ -139,5 +143,102 @@
     </plugins>
 
   </build>
+
+  <profiles>
+    <profile>
+      <id>emf</id>
+      <build>
+        <plugins>
+          <!-- generate emf files -->
+          <plugin>
+            <groupId>de.monticore.mojo</groupId>
+            <artifactId>monticore-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>generate-emf</id>
+                <goals>
+                  <goal>generate</goal>
+                </goals>
+                <phase>initialize</phase>
+                <configuration>
+                  <script>de/monticore/monticore_emf.groovy</script>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!-- compile -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>compile-emf</id>
+                <goals>
+                  <goal>compile</goal>
+                </goals>
+                <phase>initialize</phase>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!-- package  -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>package-emf</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+                <phase>initialize</phase>
+                <configuration>
+                  <classifier>${emf.classifier}</classifier>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>package-emf-sources</id>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+                <phase>initialize</phase>
+                <configuration>
+                  <classifier>${emf.classifier}-sources</classifier>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!-- clean -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-clean-plugin</artifactId>
+            <version>2.5</version>
+            <executions>
+              <execution>
+                <id>clean-emf</id>
+                <goals>
+                  <goal>clean</goal>
+                </goals>
+                <phase>initialize</phase>
+                <configuration>
+                  <directory>${project.build.outputDirectory}</directory>
+                  <directory>${project.build.outputDirectory}/../generated-sources</directory>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>
