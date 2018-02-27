@@ -423,8 +423,6 @@ public final class GenerateMojo extends AbstractMojo {
     parameters.put(HANDCODEDPATH.toString(), toStringSet(getHandcodedPaths()));
     parameters.put(TEMPLATEPATH.toString(), toStringSet(getTemplatePaths()));
     parameters.put(OUT.toString(), Arrays.asList(getOutputDirectory().getAbsolutePath()));
-    parameters.put(OUTTOMODELPATH.toString(),
-        Arrays.asList(Boolean.toString(addOutputDirectoryToModelPath())));
     
     if (getForce()) {
       parameters.put(FORCE.toString(), new ArrayList<>());

@@ -259,7 +259,6 @@ public final class MontiCoreCLI {
     System.out.println("-s, -script <script>         Optional script to control the generation workflow");
     System.out.println("-g, -grammars <path>         Instead of individual grammars: handle all grammars found");
     System.out.println("-fp, -templatePath <paths>   Optional list of directories to look for handwritten templates to integrate");
-    System.out.println("-otm, -addOutToModelpath     Specifies whether the output directory should be added to the model path (default is true)");
     System.out.println("-f, -force                    Secifies whether the code generation should be enforced, i.e. disable incremental code generation (default is false)");
     System.out.println("-d, -dev                     Specifies whether developer level logging should be used (default is false)");
     System.out.println("-cl, -customLog <file>       Optional logging configuration file to customize the logger");
