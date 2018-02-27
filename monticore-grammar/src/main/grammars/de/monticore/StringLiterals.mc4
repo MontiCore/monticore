@@ -20,7 +20,7 @@ component grammar StringLiterals extends de.monticore.MCBasics {
   CharLiteral =
     source:CharToken;
 
-  ast CharLiteral = 
+  astrule CharLiteral = 
     method public char getValue() {
       return de.monticore.MCLiteralsDecoder.decodeChar(getSource());
     }
@@ -43,7 +43,7 @@ component grammar StringLiterals extends de.monticore.MCBasics {
   StringLiteral =
     source:StringToken;
 
-  ast StringLiteral = 
+  astrule StringLiteral = 
     // Caution: decoded value is in cache: so change of value leads
     // to outdated result in getValue()
     content:String

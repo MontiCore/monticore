@@ -18,13 +18,13 @@ component grammar Types extends de.monticore.literals.Literals {
     /*======================= AST Definition =================================*/
     /*========================================================================*/
     
-    ast QualifiedName =
+    astrule QualifiedName =
         method public String toString(){
           return de.se_rwth.commons.Names.getQualifiedName(
               this.getPartList());
         };
     
-    ast PrimitiveType =
+    astrule PrimitiveType =
         method public String toString(){
           if (isBoolean()){
             return "boolean";
@@ -77,9 +77,9 @@ component grammar Types extends de.monticore.literals.Literals {
           return this.getPrimitive()==ASTConstantsTypes.DOUBLE;
         };
     
-    ast ReferenceType astextends ASTType;
+    astrule ReferenceType astextends ASTType;
     
-    ast ArrayType astimplements ASTReferenceType =
+    astrule ArrayType astimplements ASTReferenceType =
         componentType:ASTType
         dimensions:int;
     

@@ -26,7 +26,7 @@ component grammar MCBasicTypes1 extends de.monticore.MCBasics {
     QualifiedName =
         part:(Name || ".")+;
 
-    ast QualifiedName =
+    astrule QualifiedName =
         method public String getQName(){
           return de.se_rwth.commons.Names.getQualifiedName(
               this.getPartList());
@@ -44,7 +44,7 @@ component grammar MCBasicTypes1 extends de.monticore.MCBasics {
     ImportStatement =
     		"import" QualifiedName ("." Star:["*"])? ";" ;
 
-    ast ImportStatement =
+    astrule ImportStatement =
         method public String getQName(){
           return getQualifiedName().getQName();
         };
@@ -82,7 +82,7 @@ component grammar MCBasicTypes1 extends de.monticore.MCBasics {
     NameAsReferenceType implements ReferenceType =
     	(Name || ".")+;
 
-    ast NameAsReferenceType =
+    astrule NameAsReferenceType =
         method public String getQName(){
           return de.se_rwth.commons.Names.getQualifiedName(
               this.getNameList());

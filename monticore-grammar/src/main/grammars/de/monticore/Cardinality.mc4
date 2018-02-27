@@ -38,7 +38,7 @@ component grammar Cardinality extends
     A Cardinality Object stores the bounds as integers.
    */
 
-  ast Cardinality =
+  astrule Cardinality =
     lowerBound:int
     upperBound:int;
        

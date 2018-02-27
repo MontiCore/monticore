@@ -344,8 +344,9 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * Transforms grammar AST to class diagram AST.
    *
    * @param astGrammar - grammar AST
-   * @param glex TODO
-   * @param symbolTable TODO
+   * @param glex - object for managing hook points, features and global
+   * variables
+   * @param symbolTable - grammar symbol table
    */
   public ASTCDCompilationUnit getOrCreateCD(ASTMCGrammar astGrammar,
       GlobalExtensionManagement glex, GlobalScope symbolTable) {
@@ -359,8 +360,9 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * Transforms grammar AST to class diagram AST.
    *
    * @param astGrammar - grammar AST
-   * @param glex TODO
-   * @param targetPath TODO
+   * @param glex - object for managing hook points, features and global
+   * variables
+   * @param symbolTable - grammar symbol table
    */
   public ASTCDCompilationUnit deriveCD(ASTMCGrammar astGrammar, 
       GlobalExtensionManagement glex, GlobalScope symbolTable) {
@@ -466,7 +468,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param glex - object for managing hook points, features and global
    * variables
    * @param astClassDiagram - class diagram AST
-   * @param outputDirectory TODO
+   * @param outputDirectory - the name of the output directory
    */
   public void generateEmfCompatible(GlobalExtensionManagement glex,
       GlobalScope globalScope,
@@ -513,8 +515,9 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * Transforms grammar AST to class diagram AST and create CD symbol table
    *
    * @param astGrammar - grammar AST
-   * @param glex TODO
-   * @param symbolTable TODO
+   * @param glex  - object for managing hook points, features and global
+   * variables
+   * @param symbolTable grammar symbol table
    */
   private ASTCDCompilationUnit transformAndCreateSymbolTable(ASTMCGrammar astGrammar,
       GlobalExtensionManagement glex, GlobalScope symbolTable) {

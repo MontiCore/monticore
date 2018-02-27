@@ -10,7 +10,7 @@ component grammar UMLStereotype extends de.monticore.StringLiterals {
     /*======================= AST extension ================================*/
     /*========================================================================*/
     
-    ast Stereotype =
+    astrule Stereotype =
         method public boolean contains(String name) {
           for (ASTStereoValue sv : values) {
             if (sv.getName().equals(name)) {
@@ -36,7 +36,7 @@ component grammar UMLStereotype extends de.monticore.StringLiterals {
           throw new java.util.NoSuchElementException();
         };
     
-    ast StereoValue =
+    astrule StereoValue =
 	// Caution: decoded value is in cache: so change of value leads 
 	// to outdated result in getValue()
 	content:String

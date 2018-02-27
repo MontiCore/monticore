@@ -24,7 +24,7 @@ component grammar MCHexNumbers extends
   Hexadecimal implements Number =
     source:HexadecimalToken;
 
-  ast Hexadecimal =
+  astrule Hexadecimal =
     method public int getValueInt() {
       return Integer.parseInt(getSource().substring(2),16);
     }
@@ -50,7 +50,7 @@ component grammar MCHexNumbers extends
   HexInteger implements Number =
      (negative:["-"])? hexadecimalpart:HexadecimalToken;
 
-  ast HexInteger =
+  astrule HexInteger =
     method public int getValueInt() {
       int a = Integer.parseInt(getHexadecimalpart().substring(2),16);
       return negative ? -a : a;
