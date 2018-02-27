@@ -548,8 +548,6 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     startCodeSection("ASTTerminal " + ast.getName());
 
-    addToCodeSection("(");
-
     String rulename;
     if (grammarInfo.isKeyword(ast.getName(), grammarEntry)) {
       rulename = "'" + ast.getName() + "'";
@@ -585,7 +583,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     addActionToCodeSection();
 
-    addToCodeSection(")", printIteration(ast.getIteration()));
+    addToCodeSection(printIteration(ast.getIteration()));
 
     endCodeSection(ast);
 
