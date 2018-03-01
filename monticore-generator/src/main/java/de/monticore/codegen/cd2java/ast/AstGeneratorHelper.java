@@ -185,8 +185,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
   }
   
   public static boolean isBuilderClassAbstract(ASTCDClass astType) {
-    return (astType.getSuperclassOpt().isPresent() && isSuperClassExternal(astType))
-        || (astType.getModifierOpt().isPresent() && astType.getModifierOpt().get().isAbstract()
+    return (astType.getModifierOpt().isPresent() && astType.getModifierOpt().get().isAbstract()
             && !isSupertypeOfHWType(astType.getName()));
   }
 

@@ -931,6 +931,7 @@ public class CdDecorator {
     
     // Add builder-creating methods
     for (ASTCDClass clazz : nativeClasses) {
+      // TODO MB,BS: Check Builder and Mill for abstract classes
       if (AstGeneratorHelper.isBuilderClassAbstract(clazz)
           || !GeneratorHelper.getPlainName(clazz).startsWith(GeneratorHelper.AST_PREFIX)) {
         continue;
