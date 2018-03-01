@@ -39,23 +39,6 @@ public class TypeResolverGeneratorTest extends AstDependentGeneratorTest {
   }
 
   @Test
-  public void testAutomaton2() {
-    final String grammarPath = "de/monticore/emf/Automaton2.mc4";
-    dependencies("mc/grammars/lexicals/TestLexicals.mc4");
-    astTest.testCorrect(grammarPath, false);
-    testCorrect(grammarPath);
-  }
-
-  @Test
-  public void testAutomaton() {
-    final String grammarPath = "de/monticore/emf/Automaton.mc4";
-    dependencies("mc/grammars/lexicals/TestLexicals.mc4");
-    astTest.testCorrect(grammarPath, false);
-    testCorrect(grammarPath);
-  }
-
-
-  @Test
   public void testFautomaton() {
     final String grammarPath = "de/monticore/fautomaton/action/Expression.mc4";
     astTest.testCorrect(grammarPath, false);

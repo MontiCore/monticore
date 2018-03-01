@@ -31,8 +31,6 @@ public class EmfDiffTest extends GeneratorIntegrationsTest {
        
         // Matching model elements
         List<DiffElement> diffs = AstEmfDiffUtility.getAllAstDiffs(transB.get(), transC.get());
-        
-        AstEmfDiffUtility.printAstDiffsHierarchical(transB.get(), transC.get());
 
         assertEquals(12, diffs.size());
         assertEquals("Attribute Name in Testautomat has changed from Testautomat2 to Testautomat",

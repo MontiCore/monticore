@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package de.monticore.emf;
+package mc.emf;
 
-grammar Automaton extends mc.grammars.lexicals.TestLexicals {
+grammar Automaton extends mc.grammar.lexicals.ItTestLexicals {
 
 /** A ASTAutomaton represents a finite automaton
     @attribute Name Name of the automaton
@@ -21,9 +21,9 @@ Automaton =
 */
 State =
   "state" Name
-  
+
   (("<<" ["initial"] ">>" ) | ("<<" ["final"] ">>" ))*
-  
+
   ( ("{" (State | Transition)* "}") | ";") ;
 
 
@@ -31,8 +31,8 @@ State =
     @attribute From Name of the state from which the transitions starts
     @attribute Input Activation signal for this transition
     @attribute To Name of the state to which the transitions goes
-*/ 
+*/
 Transition =
   from:Name "-" input:Name ">" to:Name ";" ;
-  
+
 }

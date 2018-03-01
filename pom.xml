@@ -630,17 +630,17 @@
           <groupId>de.monticore.mojo</groupId>
           <artifactId>monticore-maven-plugin</artifactId>
           <version>${monticore.plugin}</version>
-          <!-- <configuration>
+          <configuration>
             <skip>false</skip>
             <script>de/monticore/monticore_noemf.groovy</script>
-          </configuration>-->
-          <executions>
-            <execution>
-              <goals>
-                <goal>generate</goal>
-              </goals>
-            </execution>
-          </executions> 
+          </configuration>
+          <!--<executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>-->
         </plugin>
 
         <plugin>

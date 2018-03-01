@@ -1,11 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package mc.feature.ast;
+package mc.emf.east;
 
 import mc.GeneratorIntegrationsTest;
-import mc.feature.hwc.statechartdsl._ast.StatechartDSLNodeFactory;
 import mc.feature.hwc.statechartdsl._ast.ASTState;
-
+import mc.feature.hwc.statechartdsl._ast.StatechartDSLNodeFactory;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;

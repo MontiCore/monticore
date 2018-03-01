@@ -2,20 +2,6 @@
 
 package mc.feature.ast;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import org.apache.commons.io.FilenameUtils;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import de.monticore.MontiCoreScript;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.se_rwth.commons.logging.Log;
@@ -25,6 +11,19 @@ import mc.feature.delete.deletetest._ast.ASTParent;
 import mc.feature.delete.deletetest._ast.DeleteTestNodeFactory;
 import mc.feature.featuredsl._ast.ASTA;
 import mc.feature.featuredsl._ast.FeatureDSLNodeFactory;
+import org.apache.commons.io.FilenameUtils;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ASTTest {
   

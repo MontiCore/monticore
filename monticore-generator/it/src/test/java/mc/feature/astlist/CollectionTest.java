@@ -2,15 +2,14 @@
 
 package mc.feature.astlist;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
-
 import de.monticore.ast.Comment;
 import mc.feature.list.lists._ast.ASTParent;
 import mc.feature.list.lists._ast.ASTSon;
 import mc.feature.list.lists._ast.ListsNodeFactory;
+import org.junit.Test;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class CollectionTest {
       

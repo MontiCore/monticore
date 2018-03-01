@@ -2,20 +2,20 @@
 
 package mc.grammar.concepts.texteditor;
 
-component grammar ItTestTextEditor extends mc.grammars.literals.ItTestLiterals {
+component grammar ItTestTextEditor extends mc.grammar.literals.ItTestLiterals {
 		TextEditorConcept =
 		 "{" 
-		   ( "texteditorname" ":" Name "for" RootName:String ";"  |
-		   "fileextension" ":" Extension:Name ";"   |
-		   "tool" ":" Tool:String ";"   |
-		   "workflows" ":" Workflow:(Name || ",")+ ";" |
-		   "analyses" ":" Analyses:(Name || ",")+ ";" |
-		   "syntheses" ":" Syntheses:(Name || ",")+ ";" |
+		   ( "texteditorname" ":" Name "for" rootName:String ";"  |
+		   "fileextension" ":" extension:Name ";"   |
+		   "tool" ":" tool:String ";"   |
+		   "workflows" ":" workflow:(Name || ",")+ ";" |
+		   "analyses" ":" analyses:(Name || ",")+ ";" |
+		   "syntheses" ":" syntheses:(Name || ",")+ ";" |
 		   
-		   "label" ":" Picture:String ";" |
-		   MenuItems: MenuItemDefinition |
-		   Popups: PopupDefinition |
-		   "languagehandler" ":" LanguageHandler:String ";" |
+		   "label" ":" picture:String ";" |
+		   menuItems:MenuItemDefinition |
+		   popups:PopupDefinition |
+		   "languagehandler" ":" languageHandler:String ";" |
 		   "contentassistant" ":" contentAssistant:String ";" |
 		   "texthover" ":" textHover:String ";" |		   
 		   "hyperlinkdetectors" ":" 	hyperlinkDetectors:(String || ",")+ ";"	   
@@ -23,11 +23,11 @@ component grammar ItTestTextEditor extends mc.grammars.literals.ItTestLiterals {
 		"}";
 	
 	astrule TextEditorConcept =
-		Name  max=1
-		RootName:String  max=1
-		Extension:Name  max=1
-		Tool:String  max=1
-		Picture:String  max=1
+		Name max=1
+		RootName:String max=1
+		Extension:Name max=1
+		Tool:String max=1
+		Picture:String max=1
 		LanguageHandler:String max=1
 		contentAssistant:String max = 1
 		textHover:String max = 1
@@ -35,12 +35,12 @@ component grammar ItTestTextEditor extends mc.grammars.literals.ItTestLiterals {
 		
 	MenuItemDefinition=
 	  "menuitem" (Name)+ "("
-	  	 ItsClass: String ")"
+	  	 itsClass:String ")"
 	  ";";
 		
 	//TODO: remove popup (who was the inventor of this keyword?) 	
 	PopupDefinition=	
 	  ("popup" | "navigatoritem") (Name)+ "("
-	  	 ItsClass: String ")"
+	  	 itsClass:String ")"
 	  ";";
 }

@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <!-- == PROJECT COORDINATES ============================================= -->
@@ -22,12 +22,12 @@
       <groupId>de.monticore</groupId>
       <artifactId>monticore-runtime</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>de.monticore</groupId>
       <artifactId>monticore-emf-runtime</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>de.se_rwth.commons</groupId>
       <artifactId>se-commons-utilities</artifactId>
@@ -50,15 +50,15 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.mod4j.org.eclipse.emf</groupId>
-      <artifactId>ecore</artifactId>      
+      <artifactId>ecore</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.mod4j.org.eclipse.emf.ecore</groupId>
-      <artifactId>xmi</artifactId>      
+      <artifactId>xmi</artifactId>
     </dependency>
 
     <dependency>
@@ -120,7 +120,7 @@
       <artifactId>javaDSL</artifactId>
       <classifier>${grammars.classifier}</classifier>
     </dependency>
-    
+
     <!-- EMF test dependencies -->
     <dependency>
       <groupId>org.eclipse.emf</groupId>
@@ -137,29 +137,36 @@
       <artifactId>org.eclipse.emf.compare.diff</artifactId>
       <scope>test</scope>
     </dependency>
-    
+
   </dependencies>
 
-	<build>
-	<plugins>
-		<plugin>
-			<groupId>de.monticore.mojo</groupId>
-			<artifactId>monticore-maven-plugin</artifactId>
-			<configuration>
-				<templatePaths>
-					<templatePath>${basedir}/src/test/resources/</templatePath>
-				</templatePaths>
-			</configuration>
-		</plugin>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>de.monticore.mojo</groupId>
+        <artifactId>monticore-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <templatePaths>
+            <templatePath>${basedir}/src/test/resources/</templatePath>
+          </templatePaths>
+        </configuration>
+      </plugin>
 
-		<plugin>
-			<artifactId>maven-invoker-plugin</artifactId>
-		</plugin>
+      <plugin>
+        <artifactId>maven-invoker-plugin</artifactId>
+      </plugin>
 
-		<plugin>
-			<artifactId>maven-source-plugin</artifactId>
-		</plugin>
-	</plugins>
-</build>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>
