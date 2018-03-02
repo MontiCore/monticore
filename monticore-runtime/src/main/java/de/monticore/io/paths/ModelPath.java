@@ -93,7 +93,8 @@ public final class ModelPath {
 
     List<URL> resolvedURLS = classloaderMap.keySet().stream()
         .map(classloader -> ioWrapper.getResource(classloader, fixedPath))
-        .filter(url -> url != null)
+        .filter(opturl -> opturl.isPresent())
+        .map(url -> url.get())
         .collect(Collectors.toList());
 
     if (1 < resolvedURLS.size()) {
@@ -138,5 +139,5 @@ public final class ModelPath {
 
     return entries;
   }
-
+  
 }
