@@ -3,7 +3,6 @@
 package de.monticore.grammar.symboltable;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static de.monticore.codegen.GeneratorHelper.isQualified;
 import static de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION;
 
 import java.util.Collection;
@@ -18,7 +17,6 @@ import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.resolving.ResolvingInfo;
-import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -52,6 +50,7 @@ public class MCGrammarScope extends CommonScope {
     return getResolvedOrThrowException(resolvedSymbols);
   }
 
+  @Override
   public <T extends Symbol> Collection<T> resolveMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier,
       Predicate<Symbol> predicate) {
 
@@ -78,15 +77,14 @@ public class MCGrammarScope extends CommonScope {
     Optional<T> resolvedSymbol = Optional.empty();
     
     // TODO (GV, MB)
-    // Die Methode muss überarbeitet werden. GrammarSymbols sollen nicht gefunden werden? Dann braucht man u.U. 
-    // checkIfContinueWithSuperGrammar gar nicht mehr ...
+    // Die Methode muss überarbeitet werden? 
+    // checkIfContinueWithSuperGrammar wurde bereits entfernt. Checke, ob das so ok ist
     if (kind.equals(MCGrammarSymbol.KIND)) {
       return resolvedSymbol;
     }
     final MCGrammarSymbol spanningSymbol = getSpanningSymbol().get();
     for (MCGrammarSymbolReference superGrammarRef : spanningSymbol.getSuperGrammars()) {
-      if (checkIfContinueWithSuperGrammar(name, superGrammarRef)
-          && (superGrammarRef.existsReferencedSymbol())) {
+      if (superGrammarRef.existsReferencedSymbol()) {
         final MCGrammarSymbol superGrammar = superGrammarRef.getReferencedSymbol();
         resolvedSymbol = resolveInSuperGrammar(name, kind, superGrammar);
         // Stop as soon as symbol is found in a super grammar.
@@ -97,31 +95,6 @@ public class MCGrammarScope extends CommonScope {
     }
 
     return resolvedSymbol;
-  }
-
-  private boolean checkIfContinueWithSuperGrammar(String name, MCGrammarSymbolReference superGrammar) {
-    // checks cases:
-    // 1) A   and A
-    // 2) c.A and A
-    // 3) A   and p.A
-    // 4) p.A and p.A
-    // 5) c.A and p.A // <-- only continue with this case, since we can be sure,
-    //                       that we are not searching for the super grammar itself.
-    String superGrammarName = superGrammar.getName();
-    if (Names.getSimpleName(superGrammarName).equals(Names.getSimpleName(name))) {
-
-      // checks cases 1) and 4)
-      if (superGrammarName.equals(name) ||
-          // checks cases 2) and 3)
-          (isQualified(superGrammar) != isQualified(name))) {
-        return false;
-      } else {
-        // case 5)
-        return true;
-      }
-    }
-    // names have different simple names and the name isn't qualified (A and p.B)
-    return isQualified(superGrammar) && !isQualified(name);
   }
 
   private <T extends Symbol> Optional<T> resolveInSuperGrammar(String name, SymbolKind kind,
