@@ -58,32 +58,6 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- EMF dependencies -->
-    <dependency>
-      <groupId>org.mod4j.org.eclipse.emf</groupId>
-      <artifactId>ecore</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.mod4j.org.eclipse.emf.ecore</groupId>
-      <artifactId>xmi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.mod4j.org.eclipse.emf</groupId>
-      <artifactId>common</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.emf</groupId>
-      <artifactId>org.eclipse.emf.compare</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.emf</groupId>
-      <artifactId>org.eclipse.emf.compare.match</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.emf</groupId>
-      <artifactId>org.eclipse.emf.compare.diff</artifactId>
-    </dependency>
-
   </dependencies>
 
   <build>
@@ -158,6 +132,38 @@
 
     <profile>
       <id>emf-it-tests</id>
+      <dependencies>
+        <dependency>
+          <groupId>de.monticore</groupId>
+          <artifactId>monticore-emf-runtime</artifactId>
+        </dependency>
+
+        <!-- EMF dependencies -->
+        <dependency>
+          <groupId>org.mod4j.org.eclipse.emf</groupId>
+          <artifactId>ecore</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.mod4j.org.eclipse.emf.ecore</groupId>
+          <artifactId>xmi</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.mod4j.org.eclipse.emf</groupId>
+          <artifactId>common</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.eclipse.emf</groupId>
+          <artifactId>org.eclipse.emf.compare</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.eclipse.emf</groupId>
+          <artifactId>org.eclipse.emf.compare.match</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.eclipse.emf</groupId>
+          <artifactId>org.eclipse.emf.compare.diff</artifactId>
+        </dependency>
+      </dependencies>
       <build>
         <plugins>
           <plugin>
@@ -204,24 +210,24 @@
           </plugin>
 
           <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>build-helper-maven-plugin</artifactId>
-          <version>3.0.0</version>
-          <executions>
-            <execution>
-              <id>add-emf-sources</id>
-              <phase>generate-test-sources</phase>
-              <goals>
-                <goal>add-test-source</goal>
-              </goals>
-              <configuration>
-                <sources>
-                  <source>src/test_emf/java</source>
-                </sources>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <version>3.0.0</version>
+            <executions>
+              <execution>
+                <id>add-emf-sources</id>
+                <phase>generate-test-sources</phase>
+                <goals>
+                  <goal>add-test-source</goal>
+                </goals>
+                <configuration>
+                  <sources>
+                    <source>src/test_emf/java</source>
+                  </sources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
       </build>
     </profile>

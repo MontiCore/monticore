@@ -22,32 +22,12 @@
       <groupId>de.monticore</groupId>
       <artifactId>monticore-runtime</artifactId>
     </dependency>
-    <dependency>
-      <groupId>de.monticore</groupId>
-      <artifactId>monticore-emf-runtime</artifactId>
-    </dependency>
-
-
-    <!-- EMF dependencies -->
-    <dependency>
-      <groupId>org.mod4j.org.eclipse.emf</groupId>
-      <artifactId>ecore</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.mod4j.org.eclipse.emf.ecore</groupId>
-      <artifactId>xmi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.mod4j.org.eclipse.emf</groupId>
-      <artifactId>common</artifactId>
-    </dependency>
-
-
-
+ 
     <dependency>
       <groupId>de.se_rwth.commons</groupId>
       <artifactId>se-commons-utilities</artifactId>
     </dependency>
+    
     <dependency>
       <groupId>de.se_rwth.commons</groupId>
       <artifactId>se-commons-logging</artifactId>
@@ -73,6 +53,7 @@
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
+    
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
       <artifactId>groovy</artifactId>
@@ -83,6 +64,27 @@
   <profiles>
     <profile>
       <id>emf</id>
+      
+      <dependencies>
+        <dependency>
+          <groupId>de.monticore</groupId>
+          <artifactId>monticore-emf-runtime</artifactId>
+        </dependency>
+        <!-- EMF dependencies -->
+        <dependency>
+          <groupId>org.mod4j.org.eclipse.emf</groupId>
+          <artifactId>ecore</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.mod4j.org.eclipse.emf.ecore</groupId>
+          <artifactId>xmi</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.mod4j.org.eclipse.emf</groupId>
+          <artifactId>common</artifactId>
+        </dependency>
+      </dependencies>
+      
       <build>
         <plugins>
           <!-- generate emf files -->
