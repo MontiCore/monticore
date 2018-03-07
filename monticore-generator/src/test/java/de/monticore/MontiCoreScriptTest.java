@@ -183,7 +183,6 @@ public class MontiCoreScriptTest {
     mc.createSymbolsFromAST(symbolTable, grammar);
     cdCompilationUnit = mc.deriveCD(grammar, new GlobalExtensionManagement(),
         symbolTable);
-    mc.storeInCdFile(cdCompilationUnit, outputPath);
     mc.generate(glex, symbolTable, cdCompilationUnit, outputPath, templatePath);
   }
   

@@ -375,19 +375,18 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   /**
+   * Deprecated, because this cd generation does not exist anymore
+   * so no reporting should be done
+   * can be deleted after MontiCore 5
+   *
    * Prints Cd4Analysis AST to the CD-file (*.cd) in the subdirectory
    * {@link MontiCoreScript#DIR_REPORTS}
    *
    * @param astCd - the top node of the Cd4Analysis AST
    * @param outputDirectory - output directory
    */
-  public void storeInCdFile(ASTCDCompilationUnit astCd, File outputDirectory) {
-    // we also store the class diagram fully qualified such that we can later on
-    // resolve it properly for the generation of sub languages
-    String fqn = Names.getQualifiedName(astCd.getPackageList(), astCd.getCDDefinition().getName());
-    Reporting.reportFileCreation(outputDirectory.toPath().toAbsolutePath(),
-        Paths.get(fqn.replaceAll("\\.", "/").concat(".cd")));
-  }
+  @Deprecated
+  public void storeInCdFile(ASTCDCompilationUnit astCd, File outputDirectory){}
 
   /**
    * Prints Cd4Analysis AST to the CD-file (*.cd) in the reporting directory
