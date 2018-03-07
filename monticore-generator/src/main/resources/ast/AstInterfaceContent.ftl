@@ -16,7 +16,7 @@ import java.util.Optional;
 public interface ${ast.getName()} extends ${tc.include("ast.AstExtendedInterfaces")} ${genHelper.getASTNodeBaseType()} {
   <#-- generate all methods -->
   <#list ast.getCDMethodList() as method>
-    ${tc.includeArgs("ast.ClassMethod", [method, ast])}
+    ${tc.includeArgs("ast.InterfaceMethod", [method, ast])}
   </#list>
 
   public ${genHelper.getPlainName(ast)} deepClone();

@@ -21,9 +21,13 @@ public enum MC2CDStereotypes {
   /**
    * Referenced symbol
    */
-  REFERENCED_SYMBOL("referencedSymbol");
+  REFERENCED_SYMBOL("referencedSymbol"),
+  /**
+   * Referenced symbol
+   */
+  DEFAULT_IMPLEMENTATION("defaultImplementation");
   
- private final String stereotype;
+  private final String stereotype;
   
   private MC2CDStereotypes(String stereotype) {
     this.stereotype = stereotype;

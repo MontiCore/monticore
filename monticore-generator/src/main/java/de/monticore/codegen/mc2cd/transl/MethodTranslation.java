@@ -6,6 +6,7 @@ import java.util.function.UnaryOperator;
 
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.CdDecorator;
+import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
@@ -57,11 +58,35 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
     for (Link<ASTASTRule, ASTCDInterface> link : rootLink.getLinks(ASTASTRule.class,
         ASTCDInterface.class)) {
       for (ASTMethod method : link.source().getMethodList()) {
-        link.target().getCDMethodList().add(translateASTMethodToASTCDMethod(method));
+        link.target().getCDMethodList().add(translateASTMethodToASTCDMethodInterface(method));
       }
     }
     
     return rootLink;
+  }
+
+  private ASTCDMethod translateASTMethodToASTCDMethodInterface(ASTMethod method) {
+    ASTCDMethod cdMethod = CD4AnalysisNodeFactory.createASTCDMethod();
+    cdMethod.setModifier(TransformationHelper.createPublicModifier());
+    cdMethod.setName(method.getName());
+    String dotSeparatedName = TransformationHelper.typeReferenceToString(method.getReturnType());
+    cdMethod.setReturnType(TransformationHelper.createSimpleReference(dotSeparatedName));
+    for (ASTMethodParameter param: method.getMethodParameterList()) {
+      String typeName = TransformationHelper.typeReferenceToString(param.getType());
+      cdMethod.getCDParameterList().add(TransformationHelper.createParameter(typeName, param.getName()));
+    }
+    if (method.getBody() instanceof ASTAction) {
+      StringBuilder code = new StringBuilder();
+      for (ASTBlockStatement action: ((ASTAction) method.getBody()).getBlockStatementList()) {
+        code.append(GeneratorHelper.getJavaPrettyPrinter().prettyprint(action));
+      }if(!code.toString().isEmpty()){
+        TransformationHelper.addStereoType(
+           cdMethod, MC2CDStereotypes.DEFAULT_IMPLEMENTATION.toString(), "");
+        HookPoint methodBody = new StringHookPoint(code.toString());
+        glex.replaceTemplate(CdDecorator.EMPTY_BODY_TEMPLATE, cdMethod, methodBody);
+      }
+    }
+    return cdMethod;
   }
   
   private ASTCDMethod translateASTMethodToASTCDMethod(ASTMethod method) {

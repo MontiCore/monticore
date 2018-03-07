@@ -714,6 +714,10 @@ public class GeneratorHelper extends TypesHelper {
         return CD4AnalysisHelper.isAbstract(method);
     }
 
+    public static boolean isDefault(ASTCDMethod method) {
+        return hasStereotype(method, MC2CDStereotypes.DEFAULT_IMPLEMENTATION.toString());
+    }
+
     public static boolean isInherited(ASTCDAttribute attribute) {
         return CD4AnalysisHelper.hasStereotype(attribute, MC2CDStereotypes.INHERITED.toString());
     }
@@ -766,6 +770,17 @@ public class GeneratorHelper extends TypesHelper {
         return stereotype.getValueList().stream()
                 .filter(v -> v.getName().equals(stereotypeName)).findAny()
                 .isPresent();
+    }
+
+    public static boolean hasStereotype(ASTCDMethod ast, String stereotypeName) {
+        if (ast.getModifier().isPresentStereotype()) {
+            ASTStereotype stereotype = ast.getModifier().getStereotype();
+            return stereotype.getValueList().stream().filter((v) -> {
+                return v.getName().equals(stereotypeName);
+            }).findAny().isPresent();
+        } else {
+            return false;
+        }
     }
 
     public static List<String> getStereotypeValues(ASTCDType ast,

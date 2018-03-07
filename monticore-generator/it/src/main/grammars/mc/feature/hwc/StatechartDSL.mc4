@@ -30,7 +30,7 @@ component grammar StatechartDSL extends mc.common.Basics {
   	Name
   	states:State*
   	transitions:Transition*
-  	method public String toString() {{return name;}} 
+  	method public String toString(){}
   ;
   
   astrule State = 

@@ -47,15 +47,7 @@ import de.monticore.types.types._ast.ASTType;
 import de.monticore.types.types._ast.ASTTypeArgument;
 import de.monticore.types.types._ast.ASTVoidType;
 import de.monticore.types.types._ast.TypesNodeFactory;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCD4AnalysisNode;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTModifier;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTStereoValue;
-import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
+import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParser;
 import de.monticore.umlcd4a.prettyprint.CDPrettyPrinterConcreteVisitor;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
@@ -468,6 +460,14 @@ public final class TransformationHelper {
       attribute.setModifier(CD4AnalysisNodeFactory.createASTModifier());
     }
     addStereotypeValue(attribute.getModifier(),
+        stereotypeName, stereotypeValue);
+  }
+
+  public static void addStereoType(ASTCDMethod method,
+                                   String stereotypeName,
+                                   String stereotypeValue) {
+    method.setModifier(CD4AnalysisNodeFactory.createASTModifier());
+    addStereotypeValue(method.getModifier(),
         stereotypeName, stereotypeValue);
   }
   

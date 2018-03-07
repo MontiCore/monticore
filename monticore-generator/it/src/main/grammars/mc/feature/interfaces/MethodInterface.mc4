@@ -1,0 +1,49 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.interfaces;
+
+grammar MethodInterface extends mc.common.Basics {
+
+  interface InterfaceDefault;
+
+  astrule InterfaceDefault =
+  method public String getTest() {
+    return "test";
+  };
+
+  C implements InterfaceDefault = "Hello3";
+
+  interface InterfaceDefaultA;
+
+  astrule InterfaceDefaultA =
+  method public String getTest() {
+    return "test";
+  };
+
+  A implements InterfaceDefaultA = "Hello";
+
+  astrule A =
+   method public String getTest(){
+      return "A";
+   };
+
+  interface InterfaceAbstract;
+
+  astrule InterfaceAbstract =
+    method public String getTest2(){};
+
+  B implements InterfaceAbstract = "Hello2";
+
+  astrule B =
+      method public String getTest2(){
+      return "B";
+      };
+
+  ClassMethod =  Name ("A" | "B" | "C");
+
+  astrule ClassMethod =
+  method private String getTest3(){
+    return "ABC";
+  };
+
+}
