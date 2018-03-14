@@ -18,13 +18,13 @@
     <jsr305.version>3.0.0</jsr305.version>
     <junit.version>4.12</junit.version>
     <logback.version>1.1.2</logback.version>
-    <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
-    <monticore.version>4.5.6-SNAPSHOT</monticore.version>
+    <mc.grammars.assembly.version>0.0.8</mc.grammars.assembly.version>
+    <monticore.version>5.0.0</monticore.version>
 
     <!-- .. Plugins ....................................................... -->
     <assembly.plugin>2.5.4</assembly.plugin>
     <compiler.plugin>3.3</compiler.plugin>
-    <monticore.plugin>4.5.6-SNAPSHOT</monticore.plugin>
+    <monticore.plugin>5.0.0</monticore.plugin>
 
     <!-- Classifiers -->
     <grammars.classifier>grammars</grammars.classifier>
