@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore.prettyprint;
 
@@ -88,26 +71,26 @@ public class JavaClassExpressionsPrettyPrinterTest{
     
     @Override
     public void visit(ASTEType node) {
-      if (node.isDoublePresent()) {
+      if (node.isPresentDouble()) {
         getPrinter().print(node.getDouble());
       }
-      if (node.isIntPresent()) {
+      if (node.isPresentInt()) {
         getPrinter().print(node.getInt());
       }
-      if (node.isLongPresent()) {
+      if (node.isPresentLong()) {
         getPrinter().print(node.getLong());
       }
-      if (node.isFloatPresent()) {
+      if (node.isPresentFloat()) {
         getPrinter().print(node.getFloat());
       }
     }
     
     @Override
     public void handle(ASTEReturnType node) {
-      if (node.isETypePresent()) {
+      if (node.isPresentEType()) {
         node.getEType().accept(this);
       }
-      if (node.isVoidPresent()) {
+      if (node.isPresentVoid()) {
         getPrinter().print(node.getVoid());
       }
     }

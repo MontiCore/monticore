@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore.incremental;
 
@@ -60,7 +43,6 @@ import de.se_rwth.commons.logging.Log;
  * {@link InputOutputFilesReporter} processing can be skipped or not, i.e., the
  * realization of incremental model processing.
  *
- * @author (last commit) $Author$
  * @since 4.1.5
  */
 public class IncrementalChecker {
@@ -454,7 +436,6 @@ public class IncrementalChecker {
    * Container POJO for storing all gathered information from an input output
    * report.
    *
-   * @author (last commit) $Author$
    */
   protected static class InputOutputStory {
     
@@ -495,7 +476,6 @@ public class IncrementalChecker {
    * Container POJO for storing the necessary information for each input story
    * individually.
    *
-   * @author (last commit) $Author$
    */
   protected static class InputStory {
     

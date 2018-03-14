@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore.io;
 
@@ -24,25 +7,28 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 
+import de.monticore.AmbiguityException;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.se_rwth.commons.logging.Log;
 
 /**
  * This class handles all I/O commands in Monticore.
  * <p>
- * Important conventions: File locations are always encoded as Path objects.
- * When creating Path objects please make use of the {@link Path#resolve} method
- * whenever applicable. This convention extends beyond the FileHandler. Do
- * <b>not</b> exchange information between classes using String literals or File
- * objects. Doing so within classes is permitted, though discouraged.<br>
- * Failure to adhere to such a convention has caused innumerable trivial bugs in
- * past implementations.
+ * Important conventions: File locations are always encoded as Path objects. When creating Path
+ * objects please make use of the {@link Path#resolve} method whenever applicable. This convention
+ * extends beyond the FileHandler. Do <b>not</b> exchange information between classes using String
+ * literals or File objects. Doing so within classes is permitted, though discouraged.<br>
+ * Failure to adhere to such a convention has caused innumerable trivial bugs in past
+ * implementations.
  * <p>
  * This class uses UTF_8 encoding per default.
  * 
@@ -53,8 +39,7 @@ public class FileReaderWriter {
   private Charset charset;
   
   /**
-   * Sets the encoding for all subsequent operations until another encoding is
-   * assigned.
+   * Sets the encoding for all subsequent operations until another encoding is assigned.
    * 
    * @param charset The encoding to be used
    */
@@ -70,8 +55,7 @@ public class FileReaderWriter {
   }
   
   /**
-   * @param charset The initial encoding to be used until another encoding is
-   * assigned.
+   * @param charset The initial encoding to be used until another encoding is assigned.
    * @see #setCharset
    */
   public FileReaderWriter(Charset charset) {
@@ -100,8 +84,7 @@ public class FileReaderWriter {
   /**
    * Reads the String content from a file using the specified encoding.
    * 
-   * @param sourcePath The absolute location (fully specifies the filename) of
-   * the file to be read
+   * @param sourcePath The absolute location (fully specifies the filename) of the file to be read
    * @return The String content of the file
    * @see #setCharset(Charset)
    */
@@ -120,14 +103,36 @@ public class FileReaderWriter {
     return content;
   }
   
-  public URL getResource(ClassLoader classLoader, String name) {
-    URL result = classLoader.getResource(name);
-    if (result != null) {
-      Reporting.reportOpenInputFile(result.getFile());
-    } else {
-      Reporting.reportFileExistenceChecking(Lists.newArrayList(), Paths.get(name));
+  /**
+   * Tries to load a resource with the passed name in the file system using the passed classLoader.
+   * If multiple resources are found, throws an ambiguity exception. If no resource is found,
+   * returns {@link Optional#empty()}
+   * 
+   * @param classLoader The classloader employed to load the resource
+   * @param name The name of the resource to load
+   * @return The optional URL of the resource, if present, or {@link Optional#empty()} else
+   */
+  public Optional<URL> getResource(ClassLoader classLoader, String name) {
+    try {
+      ArrayList<URL> results = Collections.list(classLoader.getResources(name));
+      if (results.size() > 1) {
+        throw new AmbiguityException("0xA4092 Multiple models were found with name '"
+            + name + "':" + results.toString());
+      }
+      else if (results.size() < 1) {
+        Reporting.reportFileExistenceChecking(Lists.newArrayList(), Paths.get(name));
+      }
+      else {
+        Reporting.reportOpenInputFile(results.get(0).getFile());
+        return Optional.ofNullable(results.get(0));
+      }
     }
-    return result;
+    catch (IOException e) {
+      Log.error("0xA1024 IOException occured.", e);
+      Log.debug("IOException while trying to find the URL of " + name, e,
+          this.getClass().getName());
+    }
+    return Optional.empty();
   }
   
   public boolean existsFile(Path sourcePath) {

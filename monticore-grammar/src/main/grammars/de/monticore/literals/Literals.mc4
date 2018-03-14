@@ -1,35 +1,4 @@
-/*
-***************************************************************************************
-Copyright (c) 2017, MontiCore
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-1. Redistributions of source code must retain the above copyright notice,
-this list of conditions and the following disclaimer.
-
-2. Redistributions in binary form must reproduce the above copyright notice,
-this list of conditions and the following disclaimer in the documentation and/or
-other materials provided with the distribution.
-
-3. Neither the name of the copyright holder nor the names of its contributors
-may be used to endorse or promote products derived from this software
-without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
-TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
-CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
-IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-SUCH DAMAGE.
-***************************************************************************************
-*/
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.literals;
 
 /**
@@ -54,13 +23,13 @@ component grammar Literals extends de.monticore.lexicals.Lexicals {
   /*========================================================================*/
   /*======================= AST DEFINITIONS ================================*/
   /*========================================================================*/
-  ast BooleanLiteral = 
+  astrule BooleanLiteral = 
     method public boolean getValue() {
       return this.source == ASTConstantsLiterals.TRUE;
     }
   ;
 
-  ast CharLiteral = 
+  astrule CharLiteral = 
     method public char getValue() {
       try {
         return de.monticore.literals.LiteralsHelper.getInstance().decodeChar(getSource());
@@ -71,7 +40,7 @@ component grammar Literals extends de.monticore.lexicals.Lexicals {
     }
   ;
 
-  ast StringLiteral = 
+  astrule StringLiteral = 
     method public String getValue() {
       try {
         return de.monticore.literals.LiteralsHelper.getInstance().decodeString(getSource());
@@ -82,7 +51,7 @@ component grammar Literals extends de.monticore.lexicals.Lexicals {
     }
   ;
 
-  ast IntLiteral = 
+  astrule IntLiteral = 
     method public int getValue() {
       try {
         return de.monticore.literals.LiteralsHelper.getInstance().decodeInt(getSource());
@@ -93,7 +62,7 @@ component grammar Literals extends de.monticore.lexicals.Lexicals {
     }
   ;
 
-  ast SignedIntLiteral = 
+  astrule SignedIntLiteral = 
     method public int getValue() {
       try {
         if (negative) {
@@ -107,7 +76,7 @@ component grammar Literals extends de.monticore.lexicals.Lexicals {
     }
   ;
   
-  ast LongLiteral = 
+  astrule LongLiteral = 
     method public long getValue() {
       try {
         return de.monticore.literals.LiteralsHelper.getInstance().decodeLong(getSource());
@@ -118,7 +87,7 @@ component grammar Literals extends de.monticore.lexicals.Lexicals {
     }
   ;
 
-  ast SignedLongLiteral = 
+  astrule SignedLongLiteral = 
     method public long getValue() {
       try {
         if (negative) {
@@ -132,7 +101,7 @@ component grammar Literals extends de.monticore.lexicals.Lexicals {
     }
   ;
 
-  ast FloatLiteral = 
+  astrule FloatLiteral = 
     method public float getValue() {
       try {
         return de.monticore.literals.LiteralsHelper.getInstance().decodeFloat(getSource());
@@ -143,7 +112,7 @@ component grammar Literals extends de.monticore.lexicals.Lexicals {
     }
   ;
 
-  ast SignedFloatLiteral = 
+  astrule SignedFloatLiteral = 
     method public float getValue() {
       try {
         if (negative) {
@@ -157,7 +126,7 @@ component grammar Literals extends de.monticore.lexicals.Lexicals {
     }
   ;
 
-  ast DoubleLiteral = 
+  astrule DoubleLiteral = 
     method public double getValue() {
       try {
         return de.monticore.literals.LiteralsHelper.getInstance().decodeDouble(getSource());
@@ -168,7 +137,7 @@ component grammar Literals extends de.monticore.lexicals.Lexicals {
     }
   ;
 
-  ast SignedDoubleLiteral = 
+  astrule SignedDoubleLiteral = 
     method public double getValue() {
       try {
         if (negative) {

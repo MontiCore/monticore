@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore.types;
 
@@ -119,7 +102,7 @@ public class JTypeSymbolsHelper {
       JTypeReferenceFactory<?> typeRefFactory) {
     if (astType instanceof ASTSimpleReferenceType) {
       ASTSimpleReferenceType astSimpleReferenceType = (ASTSimpleReferenceType) astType;
-      if (!astSimpleReferenceType.isTypeArgumentsPresent()) {
+      if (!astSimpleReferenceType.isPresentTypeArguments()) {
         return;
       }
       List<ActualTypeArgument> actualTypeArguments = new ArrayList<>();
@@ -129,12 +112,12 @@ public class JTypeSymbolsHelper {
           ASTWildcardType astWildcardType = (ASTWildcardType) astTypeArgument;
           
           // Three cases can occur here: lower bound, upper bound, no bound
-          if (astWildcardType.isLowerBoundPresent() || astWildcardType.isUpperBoundPresent()) {
+          if (astWildcardType.isPresentLowerBound() || astWildcardType.isPresentUpperBound()) {
             // We have a bound.
             // Examples: Set<? extends Number>, Set<? super Integer>
             
             // new bound
-            boolean lowerBound = astWildcardType.isLowerBoundPresent();
+            boolean lowerBound = astWildcardType.isPresentLowerBound();
             ASTType typeBound = lowerBound
                 ? astWildcardType.getLowerBound()
                 : astWildcardType
@@ -345,7 +328,7 @@ public class JTypeSymbolsHelper {
     
     if (astType instanceof ASTSimpleReferenceType) {
       ASTSimpleReferenceType astSimpleReferenceType = (ASTSimpleReferenceType) astType;
-      if (astSimpleReferenceType.isTypeArgumentsPresent()) {
+      if (astSimpleReferenceType.isPresentTypeArguments()) {
         addTypeArgumentsToTypeSymbol(fieldTypeReference, astSimpleReferenceType, definingScope,
             typeRefFactory);
       }

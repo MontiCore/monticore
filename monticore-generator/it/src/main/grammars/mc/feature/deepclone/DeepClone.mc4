@@ -1,0 +1,44 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.deepclone;
+
+grammar DeepClone extends mc.common.Basics, mc.grammar.types.ItTestTypes {
+
+	//Basic
+	CloneBasic = "basic";
+	
+	//Name
+	CloneName = Name;
+	CloneNameList = Name+ ;
+	CloneNameOptional = "opt" Name?;
+	
+	//AST
+	CloneAST = "clone" CloneNameList;
+	CloneASTList = CloneAST+;
+	CloneASTOptional = "opt" CloneAST?;
+	
+	//String
+	CloneString = StringLiteral;
+	CloneStringList = StringLiteral+;
+	CloneStringOptional = "opt" StringLiteral?;
+
+	CloneString2 = String;
+    CloneStringList2 = String+;
+    CloneStringOptional2 = "opt" String?;
+	
+	//Int
+	CloneInt = IntLiteral;
+	CloneIntList = IntLiteral+;
+	CloneIntOptional = "opt" IntLiteral?;
+
+	CloneInt2 = Num_Int;
+    CloneIntList2 = Num_Int+;
+    CloneIntOptional2 = "opt" Num_Int?;
+	
+	//Enum
+	enum CloneEnum = "enum";
+	CloneEnumList = CloneEnum+;
+	CloneEnumOptional = "opt" CloneEnum?;
+	
+
+}

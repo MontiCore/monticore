@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore.types;
 
@@ -384,7 +367,7 @@ public class TypesPrinter {
   
   protected String doPrintSimpleReferenceType(ASTSimpleReferenceType type) {
     if (type != null) {
-      if(type.isTypeArgumentsPresent()) {
+      if(type.isPresentTypeArguments()) {
         return Names.getQualifiedName(type.getNameList()) + doPrintTypeArguments(type.getTypeArguments());
       }
       else {
@@ -487,10 +470,10 @@ public class TypesPrinter {
     StringBuilder ret = new StringBuilder();
     if (type != null) {
       ret.append("?");
-      if (type.isUpperBoundPresent()) {
+      if (type.isPresentUpperBound()) {
         ret.append(" extends " + doPrintType(type.getUpperBound()));
       }
-      else if (type.isLowerBoundPresent()) {
+      else if (type.isPresentLowerBound()) {
         ret.append(" super " + doPrintType(type.getLowerBound()));
       }
     }

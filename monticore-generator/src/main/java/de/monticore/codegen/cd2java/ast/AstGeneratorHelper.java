@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore.codegen.cd2java.ast;
 
@@ -42,11 +25,6 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import de.monticore.generating.GeneratorSetup;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- */
 public class AstGeneratorHelper extends GeneratorHelper {
   
   protected static final String AST_BUILDER = "Builder";
@@ -60,7 +38,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
   }
   
   public String getAstAttributeValue(ASTCDAttribute attribute) {
-    if (attribute.isValuePresent()) {
+    if (attribute.isPresentValue()) {
       return attribute.printValue();
     }
     if (isOptional(attribute)) {
@@ -79,6 +57,9 @@ public class AstGeneratorHelper extends GeneratorHelper {
   public String getAstAttributeValueForBuilder(ASTCDAttribute attribute) {
     if (isOptional(attribute)) {
       return "Optional.empty()";
+    }
+    else if (isBoolean(attribute)) {
+      return "false";
     }
     return getAstAttributeValue(attribute);
   }
@@ -115,7 +96,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
   }
   
   public static boolean isSuperClassExternal(ASTCDClass clazz) {
-    return clazz.isSuperclassPresent()
+    return clazz.isPresentSuperclass()
         && hasStereotype(clazz, MC2CDStereotypes.EXTERNAL_TYPE.toString())
         && getStereotypeValues(clazz, MC2CDStereotypes.EXTERNAL_TYPE.toString())
             .contains(clazz.printSuperClass());
@@ -153,7 +134,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
   }
   
   public static String getSuperClassForBuilder(ASTCDClass clazz) {
-    if (!clazz.isSuperclassPresent()) {
+    if (!clazz.isPresentSuperclass()) {
       return "";
     }
     String superClassName = Names.getSimpleName(clazz.printSuperClass());
@@ -203,10 +184,13 @@ public class AstGeneratorHelper extends GeneratorHelper {
         : type;
   }
   
-  public static boolean isBuilderClassAbstarct(ASTCDClass astType) {
-    return (astType.getSuperclassOpt().isPresent() && isSuperClassExternal(astType))
-        || (astType.getModifierOpt().isPresent() && astType.getModifierOpt().get().isAbstract()
+  public static boolean isBuilderClassAbstract(ASTCDClass astType) {
+    return (astType.getModifierOpt().isPresent() && astType.getModifierOpt().get().isAbstract()
             && !isSupertypeOfHWType(astType.getName()));
+  }
+
+  public static boolean isAbstract(ASTCDClass clazz) {
+    return clazz.isPresentModifier() && clazz.getModifier().isAbstract();
   }
   
   public static boolean hasReturnTypeVoid(ASTCDMethod method) {
@@ -236,7 +220,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
     new Cd2JavaTypeConverter() {
       @Override
       public void visit(ASTSimpleReferenceType node) {
-        AstGeneratorHelper.this.transformQualifiedToSimpleIfPossible(node, GeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT);
+       AstGeneratorHelper.this.transformQualifiedToSimpleIfPossible(node, GeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT);
       }
     }.handle(ast);
     

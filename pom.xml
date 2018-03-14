@@ -6,7 +6,7 @@
 
   <groupId>de.monticore</groupId>
   <artifactId>monticore</artifactId>
-  <version>4.5.5.1</version>
+  <version>5.0.0</version>
   <packaging>pom</packaging>
 
   <!-- == PROJECT MODULES ================================================= -->
@@ -27,8 +27,8 @@
 
     <!-- .. Libraries ..................................................... -->
 
-    <mc.java.version>4.3.10</mc.java.version>
-    <cd4analysis.version>1.3.12</cd4analysis.version>
+    <mc.java.version>4.3.11</mc.java.version>
+    <cd4analysis.version>1.3.13</cd4analysis.version>
 
     <se-commons.version>1.7.8</se-commons.version>
     <antlr.version>4.7.1</antlr.version>
@@ -64,7 +64,7 @@
     <xml-apis.version>1.0.b2</xml-apis.version>
 
     <!-- .. Plugins ....................................................... -->
-    <monticore.plugin>4.5.5.Gen</monticore.plugin>
+    <monticore.plugin>4.5.5.1</monticore.plugin>
 
     <archetype.plugin>2.3</archetype.plugin>
     <assembly.plugin>2.5.4</assembly.plugin>
@@ -93,6 +93,7 @@
     <!-- .. Misc .......................................................... -->
 
     <grammars.classifier>grammars</grammars.classifier>
+    <emf.classifier>emf</emf.classifier>
     <java.version>1.8</java.version>
     <mc.grammars.assembly.version>0.0.8</mc.grammars.assembly.version>
     <wagon.provider.version>2.3</wagon.provider.version>
@@ -318,6 +319,14 @@
         <groupId>de.monticore</groupId>
         <artifactId>monticore-grammar</artifactId>
         <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>de.monticore</groupId>
+        <artifactId>monticore-grammar</artifactId>
+        <version>${project.version}</version>
+        <classifier>${emf.classifier}</classifier>
+        <scope>provided</scope>
       </dependency>
 
       <dependency>
@@ -621,17 +630,17 @@
           <groupId>de.monticore.mojo</groupId>
           <artifactId>monticore-maven-plugin</artifactId>
           <version>${monticore.plugin}</version>
-          <!-- <configuration>
+          <configuration>
             <skip>false</skip>
             <script>de/monticore/monticore_noemf.groovy</script>
-          </configuration>-->
-          <executions>
-            <execution>
-              <goals>
-                <goal>generate</goal>
-              </goals>
-            </execution>
-          </executions> 
+          </configuration>
+          <!--<executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>-->
         </plugin>
 
         <plugin>

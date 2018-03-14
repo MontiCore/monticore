@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore.codegen.mc2cd;
 
@@ -350,7 +333,7 @@ public class MCGrammarSymbolTableHelper {
   
   public static Optional<String> getConstantGroupName(ASTConstantGroup ast) {
     // setAttributeMinMax(a.getIteration(), att);
-    if (ast.isUsageNamePresent()) {
+    if (ast.isPresentUsageName()) {
       return ast.getUsageNameOpt();
     }
     // derive attribute name from constant entry (but only if we have
@@ -381,8 +364,7 @@ public class MCGrammarSymbolTableHelper {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param astNode
    * @param currentSymbol
    * @return
@@ -422,8 +404,7 @@ public class MCGrammarSymbolTableHelper {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param superType
    * @return
    */
@@ -564,8 +545,7 @@ public class MCGrammarSymbolTableHelper {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param mcProdSymbolReference
    * @param newOne
    * @return
@@ -577,8 +557,7 @@ public class MCGrammarSymbolTableHelper {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param prodComponent
    * @return
    */
@@ -602,13 +581,12 @@ public class MCGrammarSymbolTableHelper {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param ast
    * @return
    */
   public static boolean isAttributeIterated(ASTAttributeInAST ast) {
-    if (!ast.isCardPresent()) {
+    if (!ast.isPresentCard()) {
       return false;
     }
     if (ast.getCard().isUnbounded()) {
@@ -627,8 +605,8 @@ public class MCGrammarSymbolTableHelper {
   }
   
   public static Optional<Integer> getMax(ASTAttributeInAST ast) {
-    if (ast.isCardPresent()
-        && ast.getCard().isMaxPresent()) {
+    if (ast.isPresentCard()
+        && ast.getCard().isPresentMax()) {
       String max = ast.getCard().getMax();
       if ("*".equals(max)) {
         return Optional.of(GeneratorHelper.STAR);
@@ -656,8 +634,8 @@ public class MCGrammarSymbolTableHelper {
   }
   
   public static Optional<Integer> getMin(ASTAttributeInAST ast) {
-    if (ast.isCardPresent()
-        && ast.getCard().isMinPresent()) {
+    if (ast.isPresentCard()
+        && ast.getCard().isPresentMin()) {
       String min = ast.getCard().getMin();
       try {
         int x = Integer.parseInt(min);

@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore.prettyprint;
 
@@ -33,7 +16,7 @@ public  class CommentPrettyPrinter {
    */
   public static void printPreComments(ASTNode a, IndentPrinter p) {
     
-    if (a.get_PreComments() != null && a.get_PreComments().size() > 0) {
+    if (a.get_PreCommentList() != null && a.get_PreCommentList().size() > 0) {
       
       // Additional line break for comments if necessary (that means if
       // already text exists in current line)
@@ -42,7 +25,7 @@ public  class CommentPrettyPrinter {
       }
       
       // print all comments
-      for (Comment c : a.get_PreComments()) {
+      for (Comment c : a.get_PreCommentList()) {
         p.println(c.getText());
       }
     }
@@ -56,7 +39,7 @@ public  class CommentPrettyPrinter {
    */
   public static void printPostComments(ASTNode a, IndentPrinter p) {
     
-    if (a.get_PostComments() != null && a.get_PostComments().size() > 0) {
+    if (a.get_PostCommentList() != null && a.get_PostCommentList().size() > 0) {
       
       // Additional line break for comments if necessary (that means if
       // already text exists in current line)
@@ -65,7 +48,7 @@ public  class CommentPrettyPrinter {
       }
 
       // print all comments
-      for (Comment c : a.get_PostComments()) {
+      for (Comment c : a.get_PostCommentList()) {
         p.println(c.getText());
       }
     }

@@ -1,20 +1,8 @@
-/*
- * Copyright (c) 2017, MontiCore. All rights reserved.
- *
- * http://www.se-rwth.de/ 
- */
+/* (c)  https://github.com/MontiCore/monticore */
 package de.monticore.generating.templateengine.reporting.commons;
 
 import de.monticore.ast.ASTNode;
 
-
-/**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- * @since   TODO: add version number
- *
- */
 public class ASTNodeIdentHelper implements IASTNodeIdentHelper {
   
   /**
@@ -23,8 +11,8 @@ public class ASTNodeIdentHelper implements IASTNodeIdentHelper {
   @Override
   public String getIdent(ASTNode ast) {
     String name;
-    if (ast.getSymbol().isPresent()) {
-      name = ast.getSymbol().get().getName();
+    if (ast.getSymbolOpt().isPresent()) {
+      name = ast.getSymbolOpt().get().getName();
     } else {
       name = ast.getClass().getSimpleName();
       if (name.startsWith("AST")) {

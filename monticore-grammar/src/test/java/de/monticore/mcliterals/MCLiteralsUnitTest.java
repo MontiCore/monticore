@@ -1,21 +1,5 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
+
 package de.monticore.mcliterals;
 
 import static org.junit.Assert.assertEquals;
@@ -28,7 +12,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.monticore.antlr4.MCConcreteParser.ParserExecution;
 import de.monticore.literals.literals._ast.ASTIntLiteral;
 import de.monticore.mcnumbers._ast.ASTDecimal;
 import de.monticore.mcnumbers._ast.ASTInteger;
@@ -62,7 +45,6 @@ public class MCLiteralsUnitTest {
   @Before
   public void setUp() { 
     Log.getFindings().clear();
-    parser.setParserTarget(ParserExecution.EOF);
   }
   
   // --------------------------------------------------------------------
@@ -76,11 +58,11 @@ public class MCLiteralsUnitTest {
     assertEquals(5, ast.getAnyTokenList().size());
     ASTAnyToken t = ast.getAnyTokenList().get(0);
     t = ast.getAnyTokenList().get(1);
-    assertTrue(t.isDecimalTokenPresent());
+    assertTrue(t.isPresentDecimalToken());
     assertEquals("65", t.getDecimalToken());
     t = ast.getAnyTokenList().get(2);
     t = ast.getAnyTokenList().get(3);
-    assertTrue(t.isDecimalTokenPresent());
+    assertTrue(t.isPresentDecimalToken());
     assertEquals("67", t.getDecimalToken());
     t = ast.getAnyTokenList().get(4);
   }
@@ -134,10 +116,10 @@ public class MCLiteralsUnitTest {
     ASTAnyTokenList ast = parser.parse_StringAnyTokenList( ":463 23:" ).get();
     assertEquals(2, ast.getAnyTokenList().size());
     ASTAnyToken a0 = ast.getAnyTokenList().get(0);
-    assertTrue(a0.isDecimalTokenPresent());
+    assertTrue(a0.isPresentDecimalToken());
     assertEquals("463", a0.getDecimalToken());
     ASTAnyToken a1 = ast.getAnyTokenList().get(1);
-    assertTrue(a1.isDecimalTokenPresent());
+    assertTrue(a1.isPresentDecimalToken());
     assertEquals("23", a1.getDecimalToken());
   }
 

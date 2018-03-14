@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore;
 
@@ -45,7 +28,6 @@ import de.se_rwth.commons.logging.Log;
  * derived from (1) its command line arguments, and (2) system properties (not
  * implemented yet).
  *
- * @author (last commit) $Author$
  */
 public final class MontiCoreConfiguration implements Configuration {
 
@@ -79,8 +61,8 @@ public final class MontiCoreConfiguration implements Configuration {
 
     GRAMMARS("grammars"), GRAMMARS_SHORT("g"), MODELPATH("modelPath"), MODELPATH_SHORT("mp"),
     OUT("out"), OUT_SHORT("o"), HANDCODEDPATH("handcodedPath"), HANDCODEDPATH_SHORT("hcp"),
-    TEMPLATEPATH("templatePath"), TEMPLATEPATH_SHORT("fp"), OUTTOMODELPATH("addOutToModelpath"),
-    OUTTOMODELPATH_SHORT("otm"), FORCE("force"), FORCE_SHORT("f");
+    TEMPLATEPATH("templatePath"), TEMPLATEPATH_SHORT("fp"),
+    FORCE("force"), FORCE_SHORT("f");
 
     String name;
 
@@ -337,18 +319,12 @@ public final class MontiCoreConfiguration implements Configuration {
     if (modelPath.isPresent()) {
       return modelPath.get();
     }
-    // default model path is empty (but contains the output directory by
-    // default)
-    return getAddOutToModelPath() ?
-        new ModelPath(getOut().toPath().toAbsolutePath()) :
-        new ModelPath();
+    // default model path is empty 
+    return new ModelPath();
   }
 
   private ModelPath convertEntryNamesToModelPath(List<String> modelPathEntryNames) {
     List<File> modelPathFiles = toFileList(modelPathEntryNames);
-    if (getAddOutToModelPath()) {
-      modelPathFiles.add(getOut());
-    }
     List<Path> modelPathEntries = modelPathFiles.stream()
         .map(File::toPath)
         .map(Path::toAbsolutePath)
@@ -367,23 +343,14 @@ public final class MontiCoreConfiguration implements Configuration {
     Optional<List<String>> modelPath = getAsStrings(Options.MODELPATH);
     if (modelPath.isPresent()) {
       List<String> result = new ArrayList<>(modelPath.get());
-      if (getAddOutToModelPath()) {
-        result.add(getOut().toString());
-      }
       return result;
     }
     modelPath = getAsStrings(Options.MODELPATH_SHORT);
     if (modelPath.isPresent()) {
       List<String> result = new ArrayList<>(modelPath.get());
-      if (getAddOutToModelPath()) {
-        result.add(getOut().toString());
-      }
       return result;
     }
     // default model path is empty
-    if (getAddOutToModelPath()) {
-      return Collections.singletonList(getOut().toString());
-    }
     return Collections.emptyList();
   }
 
@@ -490,23 +457,6 @@ public final class MontiCoreConfiguration implements Configuration {
     }
     // default template path is empty
     return Collections.emptyList();
-  }
-
-  /**
-   * Getter for the add out to model path argument; defaults to true.
-   *
-   * @return
-   */
-  public boolean getAddOutToModelPath() {
-    Optional<Boolean> addOutToModelPath = getAsBoolean(Options.OUTTOMODELPATH);
-    if (addOutToModelPath.isPresent()) {
-      return addOutToModelPath.get();
-    }
-    addOutToModelPath = getAsBoolean(Options.OUTTOMODELPATH_SHORT);
-    if (addOutToModelPath.isPresent()) {
-      return addOutToModelPath.get();
-    }
-    return true;
   }
 
   /**

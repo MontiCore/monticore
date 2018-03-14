@@ -1,3 +1,5 @@
+/* (c)  https://github.com/MontiCore/monticore */
+
 input for automaton.Testautomat {
 	x;
 	xx;

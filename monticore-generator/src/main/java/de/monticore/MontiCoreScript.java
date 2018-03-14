@@ -1,27 +1,24 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore;
 
-import com.google.common.base.Joiner;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.codehaus.groovy.control.customizers.ImportCustomizer;
+
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
+
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstGenerator;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
@@ -29,10 +26,10 @@ import de.monticore.codegen.cd2java.ast.CdDecorator;
 import de.monticore.codegen.cd2java.ast_emf.CdEmfDecorator;
 import de.monticore.codegen.cd2java.cocos.CoCoGenerator;
 import de.monticore.codegen.cd2java.od.ODGenerator;
-import de.monticore.codegen.cd2java.types.TypeResolverGenerator;
 import de.monticore.codegen.cd2java.visitor.VisitorGenerator;
 import de.monticore.codegen.mc2cd.MC2CDTransformation;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.parser.Languages;
 import de.monticore.codegen.parser.ParserGenerator;
 import de.monticore.codegen.symboltable.SymbolTableGenerator;
@@ -63,15 +60,7 @@ import de.se_rwth.commons.groovy.GroovyRunner;
 import de.se_rwth.commons.groovy.GroovyRunnerBase;
 import de.se_rwth.commons.logging.Log;
 import groovy.lang.Script;
-import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import parser.MCGrammarParser;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
 
 /**
  * The actual top level functional implementation of MontiCore. This is the
@@ -106,6 +95,26 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @see Configuration
    */
   public void run(Configuration configuration) {
+    try {
+      ClassLoader l = MontiCoreScript.class.getClassLoader();
+      String script = Resources.asCharSource(l.getResource("de/monticore/monticore_noemf.groovy"),
+          Charset.forName("UTF-8")).read();
+      run(script, configuration);
+    }
+    catch (IOException e) {
+      Log.error("0xA1015 Failed to default MontiCore script.", e);
+    }
+  }
+
+  /**
+   * Executes the default MontiCore Groovy script (parses grammars, generates
+   * ASTs, parsers, etc.) with emf
+   *
+   * @see Configuration
+   * @param configuration of MontiCore for this execution
+   * @see Configuration
+   */
+  public void run_emf(Configuration configuration) {
     try {
       ClassLoader l = MontiCoreScript.class.getClassLoader();
       String script = Resources.asCharSource(l.getResource("de/monticore/monticore_emf.groovy"),
@@ -304,7 +313,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     if (cdSymbol.isPresent() && cdSymbol.get().getEnclosingScope().getAstNode().isPresent()) {
       result = (ASTCDCompilationUnit) cdSymbol.get().getEnclosingScope().getAstNode().get();
-      Log.info("Used present symbol table for " + cdSymbol.get().getFullName(), LOG_ID);
+      Log.debug("Used present symbol table for " + cdSymbol.get().getFullName(), LOG_ID);
     }
     else {
       ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
@@ -318,11 +327,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     return result;
   }
-
   
-
   /**
-   * TODO: Write me!
    *
    * @param ast
    * @param scope
@@ -338,39 +344,49 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * Transforms grammar AST to class diagram AST.
    *
    * @param astGrammar - grammar AST
-   * @param glex TODO
-   * @param targetPath TODO
+   * @param glex - object for managing hook points, features and global
+   * variables
+   * @param symbolTable - grammar symbol table
    */
-  public ASTCDCompilationUnit transformAstGrammarToAstCd(
-      GlobalExtensionManagement glex, ASTMCGrammar astGrammar, GlobalScope symbolTable,
-      IterablePath targetPath) {
-
+  public ASTCDCompilationUnit getOrCreateCD(ASTMCGrammar astGrammar,
+      GlobalExtensionManagement glex, GlobalScope symbolTable) {
     // transformation
-    ASTCDCompilationUnit compUnit = new MC2CDTransformation(glex)
-        .apply(astGrammar);
-    
-    storeCDForGrammar(astGrammar, compUnit);
-
-    return compUnit;
+    return TransformationHelper.getCDforGrammar(symbolTable, astGrammar)
+        .orElse(new MC2CDTransformation(glex)
+            .apply(astGrammar));
+  }
+  
+  /**
+   * Transforms grammar AST to class diagram AST.
+   *
+   * @param astGrammar - grammar AST
+   * @param glex - object for managing hook points, features and global
+   * variables
+   * @param symbolTable - grammar symbol table
+   */
+  public ASTCDCompilationUnit deriveCD(ASTMCGrammar astGrammar, 
+      GlobalExtensionManagement glex, GlobalScope symbolTable) {
+    // transformation
+    Optional<ASTCDCompilationUnit> ast = TransformationHelper.getCDforGrammar(symbolTable, astGrammar);
+    ASTCDCompilationUnit astCD = ast.orElse(transformAndCreateSymbolTable(astGrammar, glex, symbolTable));
+    createCDSymbolsForSuperGrammars(glex, astGrammar, symbolTable);
+    storeCDForGrammar(astGrammar, astCD);
+    return astCD;
   }
 
   /**
+   * Deprecated, because this cd generation does not exist anymore
+   * so no reporting should be done
+   * can be deleted after MontiCore 5
+   *
    * Prints Cd4Analysis AST to the CD-file (*.cd) in the subdirectory
    * {@link MontiCoreScript#DIR_REPORTS}
    *
    * @param astCd - the top node of the Cd4Analysis AST
    * @param outputDirectory - output directory
    */
-  public void storeInCdFile(ASTCDCompilationUnit astCd, File outputDirectory) {
-    // we also store the class diagram fully qualified such that we can later on
-    // resolve it properly for the generation of sub languages
-    String subDir = Joiner.on(File.separator).join(astCd.getPackageList());
-    GeneratorHelper.prettyPrintAstCd(astCd, outputDirectory, subDir);
-
-    String fqn = Names.getQualifiedName(astCd.getPackageList(), astCd.getCDDefinition().getName());
-    Reporting.reportFileCreation(outputDirectory.toPath().toAbsolutePath(),
-        Paths.get(fqn.replaceAll("\\.", "/").concat(".cd")));
-  }
+  @Deprecated
+  public void storeInCdFile(ASTCDCompilationUnit astCd, File outputDirectory){}
 
   /**
    * Prints Cd4Analysis AST to the CD-file (*.cd) in the reporting directory
@@ -411,7 +427,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     boolean emfCompatible = false;
     createCdDecorator(glex, symbolTable, targetPath, emfCompatible).decorate(astClassDiagram);
   }
-
+  
   /**
    * Generates ast files for the given class diagram AST TODO: rephrase!
    *
@@ -451,7 +467,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param glex - object for managing hook points, features and global
    * variables
    * @param astClassDiagram - class diagram AST
-   * @param outputDirectory TODO
+   * @param outputDirectory - the name of the output directory
    */
   public void generateEmfCompatible(GlobalExtensionManagement glex,
       GlobalScope globalScope,
@@ -479,6 +495,34 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       return new CdEmfDecorator(glex, symbolTable, targetPath);
     }
     return new CdDecorator(glex, symbolTable, targetPath);
+  }
+  
+  private void createCDSymbolsForSuperGrammars(GlobalExtensionManagement glex, ASTMCGrammar astGrammar,
+      GlobalScope symbolTable) {
+    if (astGrammar.getSymbol().isPresent()) {
+      MCGrammarSymbol sym = (MCGrammarSymbol) astGrammar.getSymbol().get();
+      for (MCGrammarSymbol mcgsym : MCGrammarSymbolTableHelper.getAllSuperGrammars(sym)) {
+        Optional<CDSymbol> importedCd = symbolTable.resolveDown(mcgsym.getFullName(), CDSymbol.KIND);
+        if (!importedCd.isPresent() && mcgsym.getAstNode().isPresent()) {
+          transformAndCreateSymbolTable((ASTMCGrammar)mcgsym.getAstNode().get(), glex, symbolTable);
+        }
+      }
+    }
+  }
+  
+  /**
+   * Transforms grammar AST to class diagram AST and create CD symbol table
+   *
+   * @param astGrammar - grammar AST
+   * @param glex  - object for managing hook points, features and global
+   * variables
+   * @param symbolTable grammar symbol table
+   */
+  private ASTCDCompilationUnit transformAndCreateSymbolTable(ASTMCGrammar astGrammar,
+      GlobalExtensionManagement glex, GlobalScope symbolTable) {
+    // transformation
+    ASTCDCompilationUnit compUnit = new MC2CDTransformation(glex).apply(astGrammar);
+    return createSymbolsFromAST(symbolTable, compUnit);
   }
   
   public GlobalScope createGlobalScope(ModelPath modelPath) {

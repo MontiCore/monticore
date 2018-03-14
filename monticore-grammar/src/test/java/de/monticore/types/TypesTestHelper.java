@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore.types;
 
@@ -23,7 +6,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
-import de.monticore.antlr4.MCConcreteParser.ParserExecution;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.prettyprint.TypesPrettyPrinterConcreteVisitor;
 import de.monticore.types.testtypes._parser.TestTypesParser;
@@ -123,8 +105,6 @@ public class TypesTestHelper {
    */
   public ASTType parseType(String input) throws IOException {
     TestTypesParser parser = new TestTypesParser();
-    // TODO MB: Remove after Release 4.5.4
-    parser.setParserTarget(ParserExecution.EOF);
     Optional<ASTType> res = parser.parseType(new StringReader(input));
     if (parser.hasErrors()) {
       return null;
@@ -159,8 +139,6 @@ public class TypesTestHelper {
    */
   public ASTTypeParameters parseTypeParameters(String input) throws IOException {
     TestTypesParser parser = new TestTypesParser();
-    // TODO MB: Remove after Release 4.5.4
-    parser.setParserTarget(ParserExecution.EOF);
     Optional<ASTTypeParameters> res = parser.parseTypeParameters(new StringReader(input));
     if (parser.hasErrors()) {
       return null;

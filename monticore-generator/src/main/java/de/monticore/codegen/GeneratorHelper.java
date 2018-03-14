@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore.codegen;
 
@@ -43,6 +26,7 @@ import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
 import de.monticore.types.TypesHelper;
 import de.monticore.types.TypesPrinter;
+import de.monticore.types.types._ast.ASTConstantsTypes;
 import de.monticore.types.types._ast.ASTImportStatement;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.types.types._ast.ASTType;
@@ -72,11 +56,6 @@ import static java.util.Collections.max;
 
 import de.monticore.generating.GeneratorSetup;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- */
 public class GeneratorHelper extends TypesHelper {
 
     public static final String AST_PREFIX = "AST";
@@ -458,7 +437,6 @@ public class GeneratorHelper extends TypesHelper {
     }
 
     /**
-     * TODO: Write me!
      *
      * @param genericType
      * @param typeName
@@ -651,6 +629,10 @@ public class GeneratorHelper extends TypesHelper {
     public static boolean isOptional(CDFieldSymbol field) {
         return isOptional(field.getType());
     }
+    
+    public static boolean isBoolean(ASTCDAttribute attribute) {
+      return "boolean".equals(attribute.printType());
+    }
 
     public boolean isAstNode(CDTypeSymbol type) {
         String typeName = type.getName();
@@ -717,7 +699,7 @@ public class GeneratorHelper extends TypesHelper {
     }
 
     public static boolean isAbstract(ASTCDClass clazz) {
-        return clazz.isModifierPresent() && clazz.getModifier().isAbstract();
+        return clazz.isPresentModifier() && clazz.getModifier().isAbstract();
     }
 
     public static boolean isAbstract(ASTCDMethod method, ASTCDInterface type) {
@@ -730,6 +712,10 @@ public class GeneratorHelper extends TypesHelper {
 
     public static boolean isAbstract(ASTCDMethod method, ASTCDClass type) {
         return CD4AnalysisHelper.isAbstract(method);
+    }
+
+    public static boolean isDefault(ASTCDMethod method) {
+        return hasStereotype(method, MC2CDStereotypes.DEFAULT_IMPLEMENTATION.toString());
     }
 
     public static boolean isInherited(ASTCDAttribute attribute) {
@@ -777,7 +763,7 @@ public class GeneratorHelper extends TypesHelper {
     public static boolean hasStereotype(ASTCDType ast,
                                         String stereotypeName) {
         if (!ast.getModifierOpt().isPresent()
-                || !ast.getModifierOpt().get().isStereotypePresent()) {
+                || !ast.getModifierOpt().get().isPresentStereotype()) {
             return false;
         }
         ASTStereotype stereotype = ast.getModifierOpt().get().getStereotype();
@@ -786,14 +772,25 @@ public class GeneratorHelper extends TypesHelper {
                 .isPresent();
     }
 
+    public static boolean hasStereotype(ASTCDMethod ast, String stereotypeName) {
+        if (ast.getModifier().isPresentStereotype()) {
+            ASTStereotype stereotype = ast.getModifier().getStereotype();
+            return stereotype.getValueList().stream().filter((v) -> {
+                return v.getName().equals(stereotypeName);
+            }).findAny().isPresent();
+        } else {
+            return false;
+        }
+    }
+
     public static List<String> getStereotypeValues(ASTCDType ast,
                                                    String stereotypeName) {
         List<String> values = Lists.newArrayList();
         if (ast.getModifierOpt().isPresent()
-                && ast.getModifierOpt().get().isStereotypePresent()) {
+                && ast.getModifierOpt().get().isPresentStereotype()) {
             ast.getModifierOpt().get().getStereotype().getValueList().stream()
                     .filter(value -> value.getName().equals(stereotypeName))
-                    .filter(value -> value.isValuePresent())
+                    .filter(value -> value.isPresentValue())
                     .forEach(value -> values.add(value.getValue()));
         }
         return values;
@@ -801,7 +798,6 @@ public class GeneratorHelper extends TypesHelper {
 
 
     /**
-     * TODO: Write me!
      *
      * @param cdAttribute
      * @param type
@@ -818,7 +814,6 @@ public class GeneratorHelper extends TypesHelper {
     }
 
     /**
-     * TODO: Write me!
      *
      * @param field
      * @param type
@@ -830,7 +825,6 @@ public class GeneratorHelper extends TypesHelper {
     }
 
     /**
-     * TODO: Write me!
      *
      * @param cdType
      * @return
@@ -854,7 +848,6 @@ public class GeneratorHelper extends TypesHelper {
     }
 
     /**
-     * TODO: Write me!
      *
      * @param type
      * @return
@@ -1015,14 +1008,14 @@ public class GeneratorHelper extends TypesHelper {
     }
 
     public static String getSuperClass(ASTCDClass clazz) {
-        if (!clazz.isSuperclassPresent()) {
+        if (!clazz.isPresentSuperclass()) {
             return "de.monticore.ast.ASTCNode";
         }
         return clazz.printSuperClass();
     }
 
     public static String getSuperClassName(ASTCDClass clazz) {
-        if (!clazz.isSuperclassPresent()) {
+        if (!clazz.isPresentSuperclass()) {
             return "";
         }
         return clazz.printSuperClass();
@@ -1364,7 +1357,7 @@ public class GeneratorHelper extends TypesHelper {
         if (!type.getModifierOpt().isPresent()) {
             return false;
         }
-        if (!type.getModifierOpt().get().isStereotypePresent()) {
+        if (!type.getModifierOpt().get().isPresentStereotype()) {
             return false;
         }
         ASTStereotype stereoTypes = type.getModifierOpt().get().getStereotype();
@@ -1554,7 +1547,6 @@ public class GeneratorHelper extends TypesHelper {
     }
 
     /**
-     * TODO: Write me!
      *
      * @param cd
      * @return

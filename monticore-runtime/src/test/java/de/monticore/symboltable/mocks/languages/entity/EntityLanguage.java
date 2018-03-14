@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore.symboltable.mocks.languages.entity;
 
@@ -33,10 +16,10 @@ public class EntityLanguage extends CommonModelingLanguage {
   
   public EntityLanguage() {
     super("Entity Language Mock", FILE_ENDING);
-    
-    addResolver(CommonResolvingFilter.create(EntitySymbol.KIND));
-    addResolver(CommonResolvingFilter.create(ActionSymbol.KIND));
-    addResolver(CommonResolvingFilter.create(PropertySymbol.KIND));
+
+    addResolvingFilter(CommonResolvingFilter.create(EntitySymbol.KIND));
+    addResolvingFilter(CommonResolvingFilter.create(ActionSymbol.KIND));
+    addResolvingFilter(CommonResolvingFilter.create(PropertySymbol.KIND));
   }
 
   @Override

@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore.ast;
 
@@ -39,8 +22,6 @@ import de.se_rwth.commons.logging.Log;
 
 /**
  * Foundation interface for all AST-classes
- * 
- * @author krahn
  */
 public interface ASTNode {
   
@@ -54,11 +35,11 @@ public interface ASTNode {
         "0xA4040 The argument ASTNode of the 'deepClone' method must not be null.");
     result.set_SourcePositionStart(get_SourcePositionStart().clone());
     result.set_SourcePositionEnd(get_SourcePositionEnd().clone());
-    for (de.monticore.ast.Comment x : get_PreComments()) {
-      result.get_PreComments().add(new de.monticore.ast.Comment(x.getText()));
+    for (de.monticore.ast.Comment x : get_PreCommentList()) {
+      result.get_PreCommentList().add(new de.monticore.ast.Comment(x.getText()));
     }
-    for (de.monticore.ast.Comment x : get_PostComments()) {
-      result.get_PostComments().add(new de.monticore.ast.Comment(x.getText()));
+    for (de.monticore.ast.Comment x : get_PostCommentList()) {
+      result.get_PostCommentList().add(new de.monticore.ast.Comment(x.getText()));
     }
     
     return result;
@@ -147,11 +128,18 @@ public interface ASTNode {
   ASTNode deepClone();
   
   /**
-   * Returns the start position of this ASTNode
+   * Returns the end position of this ASTNode
    * 
-   * @return start position of this ASTNode
+   * @return end position of this ASTNode
    */
   SourcePosition get_SourcePositionEnd();
+  
+  /**
+   * Returns the optional end position of this ASTNode
+   *
+   * @return end position of this ASTNode
+   */
+  Optional<SourcePosition> get_SourcePositionEndOpt();
   
   /**
    * Sets the end position of this ASTNode
@@ -161,11 +149,35 @@ public interface ASTNode {
   void set_SourcePositionEnd(SourcePosition end);
   
   /**
-   * Returns the end source position of this ASTNode
+   * Sets the optional end position of this ASTNode
+   *
+   * @param end end position of this ASTNode
+   */
+  void set_SourcePositionEndOpt(Optional<SourcePosition> end);
+  
+  /**
+   * Sets the optional end position of this ASTNode absent
+   */
+  void set_SourcePositionEndAbsent();
+  
+  /**
+   * @return true if the optional source position end of this ASTNode is present
+   */
+  boolean isPresent_SourcePositionEnd();
+  
+  /**
+   * Returns the start source position of this ASTNode
    * 
-   * @return end position of this ASTNode
+   * @return start position of this ASTNode
    */
   SourcePosition get_SourcePositionStart();
+  
+  /**
+   * Returns the optional end position of this ASTNode
+   *
+   * @return end position of this ASTNode
+   */
+  Optional<SourcePosition> get_SourcePositionStartOpt();
   
   /**
    * Sets the start position of this ASTNode
@@ -173,6 +185,23 @@ public interface ASTNode {
    * @param start start position of this ASTNode
    */
   void set_SourcePositionStart(SourcePosition start);
+  
+  /**
+   * Sets the optional start position of this ASTNode
+   *
+   * @param start start position of this ASTNode
+   */
+  void set_SourcePositionStartOpt(Optional<SourcePosition> start);
+  
+  /**
+   * Sets the optional start position of this ASTNode absent
+   */
+  void set_SourcePositionStartAbsent();
+  
+  /**
+   * @return true if the optional source position start of this ASTNode is present
+   */
+  boolean isPresent_SourcePositionStart();
   
   /**
    * Returns list of all comments which are associated with this ASTNode and are prior to the
@@ -187,7 +216,7 @@ public interface ASTNode {
   
   @Deprecated
   List<Comment> get_PreComments();
-  
+
   /**
    * Sets list of all comments which are associated with this ASTNode and are prior to the ASTNode
    * in the input file
@@ -196,7 +225,7 @@ public interface ASTNode {
    * Replace with  List<Comment> set_PreCommentList();
    * use {@link #List<Comment> set_PreCommentList()} instead
    * 
-   * @param _precomments list of comments
+   * @param precomments list of comments
    */
   @Deprecated
   void set_PreComments(List<Comment> precomments);
@@ -212,7 +241,7 @@ public interface ASTNode {
    * @param precomment one comment
    * @return boolean
    */
-  boolean add_PreComments(Comment precomment);
+  boolean add_PreComment(Comment precomment);
   
   /**
    * Adds a list of comments to the already existing preComment list
@@ -226,16 +255,16 @@ public interface ASTNode {
    * Checks if the list contains the given Object Returns true if the Object is contained in the
    * list of comments and false if it is not
    * 
-   * @param an object which should be contained in the comments
+   * @param element which should be contained in the comments
    * @return boolean true if the list contains the Object
    */
-  boolean contains_PreComments(Object element);
+  boolean contains_PreComment(Object element);
   
   /**
    * Checks if the list contains the given Collection of elements Returns true if the Collection is
    * contained in the list of comments and false if it is not
    * 
-   * @param a collection of elements which should be contained in the comment list
+   * @param element collection which should be contained in the comment list
    * @return boolean true if the list contains the Object
    */
   boolean containsAll_PreComments(Collection<?> element);
@@ -258,15 +287,15 @@ public interface ASTNode {
   /**
    * Removes one given element from the list if this element is contained
    * 
-   * @param Object element which should be removed if it is present
+   * @param element which should be removed if it is present
    * @return boolean
    */
-  boolean remove_PreComments(Object element);
+  boolean remove_PreComment(Object element);
   
   /**
    * Removes a collection of elements from the list if the elements are contained
    * 
-   * @param Collectionof elements which should be removed if they are present
+   * @param element collection which should be removed if they are present
    * @return boolean
    */
   boolean removeAll_PreComments(Collection<?> element);
@@ -274,7 +303,7 @@ public interface ASTNode {
   /**
    * Retrains a collection of elements from the list if the elements are contained
    * 
-   * @param Collectionof elements which should be retrained if they are present
+   * @param element collection which should be retrained if they are present
    * @return boolean
    */
   boolean retainAll_PreComments(Collection<?> element);
@@ -289,7 +318,7 @@ public interface ASTNode {
   /**
    * Converts the list of preComments into an array of comments and returns that array
    * 
-   * @param Comment[] array into which the comments should be added
+   * @param array into which the comments should be added
    * @return Comment[] array which contains all the comments
    */
   Comment[] toArray_PreComments(Comment[] array);
@@ -297,10 +326,10 @@ public interface ASTNode {
   /**
    * removes if the comment if the predicate is fulfilled
    * 
-   * @param Predicate<? super Comment> the predicate which selects different comments
+   * @param filter which selects different comments
    * @return boolean
    */
-  boolean removeIf_PreComments(Predicate<? super Comment> filter);
+  boolean removeIf_PreComment(Predicate<? super Comment> filter);
   
   /**
    * Returns the Spliterator of the preComment list
@@ -326,55 +355,55 @@ public interface ASTNode {
   /**
    * Consumer is given that performs an action but does not return a value
    * 
-   * @param Consumer<? super Comment> an action that does something but has no return value
+   * @param action that does something but has no return value
    */
   void forEach_PreComments(Consumer<? super Comment> action);
   
   /**
    * adds one comment to the preComment list at the position of the given index
    * 
-   * @param int position in the existing list where it should be added
-   * @param Comment preComment the comment that is added to the existing list
+   * @param index of the existing list where it should be added
+   * @param  precomment the comment that is added to the existing list
    */
-  void add_PreComments(int index, Comment precomment);
+  void add_PreComment(int index, Comment precomment);
   
   /**
    * adds a list of comments to the preComment list at the position of the given index
    * 
-   * @param int position in the existing list where the new list should be added
-   * @param Collection<Comment> preComments the comment list that is added to the existing list
+   * @param index of the existing list where the new list should be added
+   * @param  precomments list that is added to the existing list
    */
   boolean addAll_PreComments(int index, Collection<Comment> precomments);
   
   /**
    * Returns one comment of the list from the position of the given index
    * 
-   * @param int position in the existing list where the comment should be returned
+   * @param index in the existing list where the comment should be returned
    * @return Comment at the given index is returned
    */
-  Comment get_PreComments(int index);
+  Comment get_PreComment(int index);
   
   /**
    * Returns the index of the given element if it exists in the list
    * 
-   * @param Object of which the index in the comment list should be returned
+   * @param element of which the index in the comment list should be returned
    * @return int index where the Object is found
    */
-  int indexOf_PreComments(Object element);
+  int indexOf_PreComment(Object element);
   
   /**
    * Returns the last index of the given element if it exists in the list
    * 
-   * @param Object of which the last index in the comment list should be returned
+   * @param element of which the last index in the comment list should be returned
    * @return int index where the Object is found latest
    */
-  int lastIndexOf_PreComments(Object element);
+  int lastIndexOf_PreComment(Object element);
   
   /**
    * Returns true if the object equals the preComment list Returns false if the object and the
    * preComment list are not equal
    * 
-   * @param Object which should be equal to the preComment list
+   * @param element which should be equal to the preComment list
    * @return boolean if the object an preComment list are equal or not
    */
   boolean equals_PreComments(Object element);
@@ -391,21 +420,21 @@ public interface ASTNode {
    * 
    * @return ListIterator<Comment> which iterates over the list of preComments
    */
-  ListIterator<Comment> ListIterator_PreComments();
+  ListIterator<Comment> listIterator_PreComments();
   
   /**
    * Returns the new preComment list without the removed element at the given index
    * 
-   * @param int index where the element should be removed
+   * @param index where the element should be removed
    * @return List<Comment> where the comment at the index is removed
    */
-  Comment remove_PreComments(int index);
+  Comment remove_PreComment(int index);
   
   /**
    * Returns the sub list form the preComment list form the start to the end index which are given
    * 
-   * @param int start index of the sublist
-   * @param int end index of the sublist
+   * @param start index of the sublist
+   * @param end index of the sublist
    * @return ListIterator<Comment> which iterates over the list of preComments
    */
   List<Comment> subList_PreComments(int start, int end);
@@ -413,14 +442,14 @@ public interface ASTNode {
   /**
    * replaces all preComments that fit to the given unaryOperator
    * 
-   * @param UnaryOperator<Comment> operator that defines which preComments should be replaced
+   * @param operator that defines which preComments should be replaced
    */
   void replaceAll_PreComments(UnaryOperator<Comment> operator);
   
   /**
    * sorts the preComment list through a given way of comparing through the comparator
    * 
-   * @param Comparator<Comment> comparator that defines in which way the preComments should be
+   * @param comparator that defines in which way the preComments should be
    * sorted
    */
   void sort_PreComments(Comparator<? super Comment> comparator);
@@ -428,7 +457,7 @@ public interface ASTNode {
   /**
    * sets the complete list of preComments to the given preComment list
    * 
-   * @param List<Comment> the preCommentlist that should be set
+   * @param preComments list that should be set
    */
   void set_PreCommentList(List<Comment> preComments);
   
@@ -442,7 +471,7 @@ public interface ASTNode {
   /**
    * returns a ListIterator of the type Comment for the preComment list
    * 
-   * @param int index of the iterator
+   * @param index of the iterator
    * @return ListIterator<Comment> of a special index
    */
   ListIterator<Comment> listIterator_PreComments(int index);
@@ -450,11 +479,11 @@ public interface ASTNode {
   /**
    * sets the comment at the given index and returns that comment
    * 
-   * @param int index where the comment should be added to the list
-   * @param Comment preComment that should be added at the index
+   * @param index where the comment should be added to the list
+   * @param precomment that should be added at the index
    * @return Comment at a special index
    */
-   Comment set_PreComments(int index, Comment precomment);
+   Comment set_PreComment(int index, Comment precomment);
    
    /**
     * converts the commentlist into an array of the type Object and returns thar array
@@ -484,7 +513,7 @@ public interface ASTNode {
    * Replace with  List<Comment> set_PostCommentList();
    * use {@link #List<Comment> set_PostCommentList()} instead
    * 
-   * @param _postcomments list of comments
+   * @param postcomments list of comments
    */
   @Deprecated
   void set_PostComments(List<Comment> postcomments);
@@ -500,7 +529,7 @@ public interface ASTNode {
    * @param postcomment one comment
    * @return boolean
    */
-  boolean add_PostComments(Comment postcomment);
+  boolean add_PostComment(Comment postcomment);
   
   /**
    * Adds a list of comments to the already existing postComment list
@@ -514,16 +543,16 @@ public interface ASTNode {
    * Checks if the list contains the given Object Returns true if the Object is contained in the
    * list of comments and false if it is not
    * 
-   * @param an object which should be contained in the comments
+   * @param element which should be contained in the comments
    * @return boolean true if the list contains the Object
    */
-  boolean contains_PostComments(Object element);
+  boolean contains_PostComment(Object element);
   
   /**
    * Checks if the list contains the given Collection of elements Returns true if the Collection is
    * contained in the list of comments and false if it is not
    * 
-   * @param a collection of elements which should be contained in the comment list
+   * @param collection of elements which should be contained in the comment list
    * @return boolean true if the list contains the Object
    */
   boolean containsAll_PostComments(Collection<?> element);
@@ -546,15 +575,15 @@ public interface ASTNode {
   /**
    * removes one given element from the list if this element is contained
    * 
-   * @param Object element which should be removed if it is postsent
+   * @param element which should be removed if it is postsent
    * @return boolean
    */
-  boolean remove_PostComments(Object element);
+  boolean remove_PostComment(Object element);
   
   /**
    * removes a collection of elements from the list if the elements are contained
    * 
-   * @param Collectionof elements which should be removed if they are postsent
+   * @param element collection  which should be removed if they are postsent
    * @return boolean true if the elements were postsent and are now removed
    */
   boolean removeAll_PostComments(Collection<?> element);
@@ -562,7 +591,7 @@ public interface ASTNode {
   /**
    * Retrains a collection of elements from the list if the elements are contained
    * 
-   * @param Collectionof elements which should be retrained if they are present
+   * @param  element collection which should be retrained if they are present
    * @return boolean
    */
   boolean retainAll_PostComments(Collection<?> element);
@@ -577,7 +606,7 @@ public interface ASTNode {
   /**
    * Converts the list of postComments into an array of comments and returns that array
    * 
-   * @param Comment[] array into which the comments should be added
+   * @param array into which the comments should be added
    * @return Comment[] array which contains all the comments
    */
   Comment[] toArray_PostComments(Comment[] array);
@@ -585,10 +614,10 @@ public interface ASTNode {
   /**
    * removes if the comment if the postdicate is fulfilled
    * 
-   * @param Postdicate<? super Comment> the postdicate which selects different comments
+   * @param filter which selects different comments
    * @return boolean
    */
-  boolean removeIf_PostComments(Predicate<? super Comment> filter);
+  boolean removeIf_PostComment(Predicate<? super Comment> filter);
   
   /**
    * Returns the Spliterator of the postComment list
@@ -614,55 +643,55 @@ public interface ASTNode {
   /**
    * Consumer is given that performs an action but does not return a value
    * 
-   * @param Consumer<? super Comment> an action that does something but has no return value
+   * @param action that does something but has no return value
    */
   void forEach_PostComments(Consumer<? super Comment> action);
   
   /**
    * adds one comment to the postComment list at the position of the given index
    * 
-   * @param int position in the existing list where it should be added
-   * @param Comment postComment the comment that is added to the existing list
+   * @param index of the existing list where it should be added
+   * @param postcomment the comment that is added to the existing list
    */
-  void add_PostComments(int index, Comment postcomment);
+  void add_PostComment(int index, Comment postcomment);
   
   /**
    * adds a list of comments to the postComment list at the position of the given index
    * 
-   * @param int position in the existing list where the new list should be added
-   * @param Collection<Comment> postComments the comment list that is added to the existing list
+   * @param index of the existing list where the new list should be added
+   * @param  postcomments the comment list that is added to the existing list
    */
   boolean addAll_PostComments(int index, Collection<Comment> postcomments);
   
   /**
    * Returns one comment of the list from the position of the given index
    * 
-   * @param int position in the existing list where the comment should be returned
+   * @param index of the existing list where the comment should be returned
    * @return Comment at the given index is returned
    */
-  Comment get_PostComments(int index);
+  Comment get_PostComment(int index);
   
   /**
    * Returns the index of the given element if this exists in the list
    * 
-   * @param Object of which the index in the comment list should be returned
+   * @param element of which the index in the comment list should be returned
    * @return int index where the Object is found
    */
-  int indexOf_PostComments(Object element);
+  int indexOf_PostComment(Object element);
   
   /**
    * Returns the last index of the given element if this exists in the list
    * 
-   * @param Object of which the last index in the comment list should be returned
+   * @param element of which the last index in the comment list should be returned
    * @return int index where the Object is found latest
    */
-  int lastIndexOf_PostComments(Object element);
+  int lastIndexOf_PostComment(Object element);
   
   /**
    * Returns true if the object equals the postComment list Returns false if the object and the
    * postComment list are not equal
    * 
-   * @param Object which should be equal to the postComment list
+   * @param element which should be equal to the postComment list
    * @return boolean if the object an postComment list are equal or not
    */
   boolean equals_PostComments(Object element);
@@ -679,21 +708,21 @@ public interface ASTNode {
    * 
    * @return ListIterator<Comment> which iterates over the list of postComments
    */
-  ListIterator<Comment> ListIterator_PostComments();
+  ListIterator<Comment> listIterator_PostComments();
   
   /**
    * Returns the new postComment list without the removed element at the given index
    * 
-   * @param int index where the element should be removed
+   * @param index where the element should be removed
    * @return List<Comment> where the comment at the index is removed
    */
-  Comment remove_PostComments(int index);
+  Comment remove_PostComment(int index);
   
   /**
    * Returns the sub list form the postComment list form the start to the end index which are given
    * 
-   * @param int start index of the sublist
-   * @param int end index of the sublist
+   * @param start index of the sublist
+   * @param end index of the sublist
    * @return ListIterator<Comment> which iterates over the list of postComments
    */
   List<Comment> subList_PostComments(int start, int end);
@@ -701,14 +730,14 @@ public interface ASTNode {
   /**
    * replaces all postComments that fit to the given unaryOperator
    * 
-   * @param UnaryOperator<Comment> operator that defines which postComments should be replaced
+   * @param operator that defines which postComments should be replaced
    */
   void replaceAll_PostComments(UnaryOperator<Comment> operator);
   
   /**
    * sorts the postComment list through a given way of comparing through the comparator
    * 
-   * @param Comparator<Comment> comparator that defines in which way the postComments should be
+   * @param comparator that defines in which way the postComments should be
    * sorted
    */
   void sort_PostComments(Comparator<? super Comment> comparator);
@@ -716,7 +745,7 @@ public interface ASTNode {
   /**
    * sets the complete list of postComments to the given postComment list
    * 
-   * @param List<Comment> the postCommentlist that should be set
+   * @param postComments list that should be set
    */
   void set_PostCommentList(List<Comment> postComments);
   
@@ -730,7 +759,7 @@ public interface ASTNode {
   /**
    * returns a ListIterator of the type Comment for the postComment list
    * 
-   * @param int index of the iterator
+   * @param index of the iterator
    * @return ListIterator<Comment> of a special index
    */
   ListIterator<Comment> listIterator_PostComments(int index);
@@ -738,11 +767,11 @@ public interface ASTNode {
   /**
    * sets the comment at the given index and returns that comment
    * 
-   * @param int index where the comment should be added to the list
-   * @param Comment postComment that should be added at the index
+   * @param index  where the comment should be added to the list
+   * @param postcomment that should be added at the index
    * @return Comment at a special index
    */
-   Comment set_PostComments(int index, Comment postcomment);
+   Comment set_PostComment(int index, Comment postcomment);
    
    /**
     * converts the commentlist into an array of the type Object and returns thar array
@@ -778,16 +807,42 @@ public interface ASTNode {
    * @param enclosingScope the enclosing scope of this ast node
    */
   void setEnclosingScope(Scope enclosingScope);
-  
+
   /**
+   * Sets the enclosing scope of this ast node with an Optional as parameter.
+   *
+   * @param enclosingScopeOpt the enclosing scope of this ast node as an Optional
+   */
+  void setEnclosingScopeOpt(Optional<? extends Scope> enclosingScopeOpt);
+
+  /**
+   * Sets the enclosing scope optional to absent
+   *
+   */
+  void setEnclosingScopeAbsent();
+
+  /**
+   * Deprecated method can be deleted after next release
+   * will be replaced by the method that returns only a scope and no optional
+   * 
+   * Scope getEnclosingScope();
+   * 
    * @return the enclosing scope of this ast node
    */
+  @Deprecated
   Optional<? extends Scope> getEnclosingScope();
-  
+
+  /**
+   * Gets the enclosing scope of this ast node as an Optional
+   *
+   * @return Optional<Scope> of the enclosing Scope
+   */
+  Optional<? extends Scope> getEnclosingScopeOpt();
+
   /**
    * @return true if the enclosing scope is present
    */
-  boolean enclosingScopeIsPresent();
+  boolean isPresentEnclosingScope();
   
   /**
    * Sets the corresponding symbol of this ast node.
@@ -795,35 +850,88 @@ public interface ASTNode {
    * @param symbol the corresponding symbol of this ast node..
    */
   void setSymbol(Symbol symbol);
-  
+
   /**
+   * Sets the spanned symbol of this ast node with an Optional as parameter.
+   *
+   * @param spannedSymbolOpt the spanned symbol of this ast node as an Optional
+   */
+  void setSymbolOpt(Optional<? extends Symbol> spannedSymbolOpt);
+
+  /**
+   * Sets the spanned symbol optional to absent
+   *
+   */
+  void setSymbolAbsent();
+
+  /**
+   * Deprecated method can be deleted after next release
+   * will be replaced by the method that returns only a symbol and no optional
+   * 
+   * Symbol getSymbol();
+   * 
    * @return the corresponding symbol of this ast node.
    */
+  @Deprecated
   Optional<? extends Symbol> getSymbol();
-  
+
+  /**
+   * Gets the spanned symbol of this ast node as an Optional
+   *
+   * @return Optional<Symbol> of the spanned Symbol
+   */
+  Optional<? extends Symbol> getSymbolOpt();
+
+
   /**
    * @return true if the symbol is present
    */
-  boolean symbolIsPresent();
+  boolean isPresentSymbol();
   
   /**
    * Sets the spanned scope of this ast node.
    *
    * @param spannedScope the spanned scope of this ast node
    */
-  default void setSpannedScope(Scope spannedScope) {
-  }
-  
+  void setSpannedScope(Scope spannedScope);
+
   /**
-   * @return the spanned scope of this ast node.
+   * Sets the spanned scope of this ast node with an Optional as parameter.
+   *
+   * @param spannedScopeOpt the spanned scope of this ast node as an Optional
    */
+  void setSpannedScopeOpt(Optional<? extends Scope> spannedScopeOpt);
+
+  /**
+   * Sets the spanned scope optional to absent
+   *
+   */
+  void setSpannedScopeAbsent();
+  /**
+   * Deprecated method can be deleted after next release
+   * will be replaced by the method that returns only a scope and no optional
+   * 
+   * Scope getSpannedScope();
+   * 
+   * @return the spanned scope of this ast node
+   */
+  @Deprecated
   default Optional<? extends Scope> getSpannedScope() {
     return Optional.empty();
   }
   
   /**
+   * Gets the spanned scope of this ast node as an Optional
+   * 
+   * @return Optional<Scope> of the spanned Scope
+   */
+  Optional<? extends Scope> getSpannedScopeOpt();
+
+  /**
    * @return true if the spanned scope is present
    */
-  boolean spannedScopeIsPresent();
+  boolean isPresentSpannedScope();
+
+  
   
 }

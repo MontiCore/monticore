@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore.modelloader;
 
@@ -86,18 +69,6 @@ public abstract class ModelingLanguageModelLoader<T extends ASTNode> {
   }
 
   /**
-   * @deprecated use {@link #loadModelsIntoScope(String, ModelPath, MutableScope, ResolvingConfiguration)}
-   * instead.
-   */
-  @Deprecated
-  public Collection<T> loadAmbiguousModelAndCreateSymbolTable(final String qualifiedModelName,
-      final ModelPath modelPath, final MutableScope enclosingScope,
-      final ResolvingConfiguration resolvingConfiguration) {
-
-    return loadModelsIntoScope(qualifiedModelName, modelPath, enclosingScope, resolvingConfiguration);
-  }
-
-  /**
    * Loads all models with the specified <code>qualifiedModelName</code>, creates
    * the corresponding scope graphs and puts each in the <code>enclosingScope</code>.
    *
@@ -131,15 +102,6 @@ public abstract class ModelingLanguageModelLoader<T extends ASTNode> {
   protected abstract void createSymbolTableFromAST(T ast, String modelName,
       MutableScope enclosingScope,
       ResolvingConfiguration resolvingConfiguration);
-
-  /**
-   * @deprecated use {@link #loadModels(String, ModelPath)} instead.
-   */
-  public Collection<T> loadAmbiguousModels(final String qualifiedModelName, ModelPath modelPath) {
-    checkArgument(!isNullOrEmpty(qualifiedModelName));
-
-    return loadModels(qualifiedModelName, modelPath);
-  }
 
   /**
    * Loads one or more models with the <code>qualifiedModelName</code>. If only

@@ -1,3 +1,5 @@
+/* (c)  https://github.com/MontiCore/monticore */
+
 package de.monticore;
 
 grammar TestMCLiteralsV3 extends

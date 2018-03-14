@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore.antlr4;
 
@@ -133,11 +116,11 @@ public abstract class MCParser extends Parser {
       Comment c = listIterator.next();
       if (this.activeastnode != null && this.activeastnode.get_SourcePositionEnd().getLine() == c
           .get_SourcePositionStart().getLine()) {
-        this.activeastnode.get_PostComments().add(c);
+        this.activeastnode.get_PostCommentList().add(c);
         listIterator.remove();
       }
       else if (c.get_SourcePositionStart().compareTo(n.get_SourcePositionStart()) < 0) {
-        n.get_PreComments().add(c);
+        n.get_PreCommentList().add(c);
         listIterator.remove();
       }
     }

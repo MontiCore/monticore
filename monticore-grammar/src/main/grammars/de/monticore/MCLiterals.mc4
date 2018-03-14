@@ -1,35 +1,4 @@
-/*
-***************************************************************************************
-Copyright (c) 2017, MontiCore
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-1. Redistributions of source code must retain the above copyright notice,
-this list of conditions and the following disclaimer.
-
-2. Redistributions in binary form must reproduce the above copyright notice,
-this list of conditions and the following disclaimer in the documentation and/or
-other materials provided with the distribution.
-
-3. Neither the name of the copyright holder nor the names of its contributors
-may be used to endorse or promote products derived from this software
-without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
-TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
-CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
-IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-SUCH DAMAGE.
-***************************************************************************************
-*/
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore;
 
 /**
@@ -44,31 +13,31 @@ component grammar MCLiterals extends de.monticore.MCBasics {
   /*========================================================================*/
   /*======================= AST DEFINITIONS ================================*/
   /*========================================================================*/
-  ast BooleanLiteral = 
+  astrule BooleanLiteral = 
     method public boolean getValue() {
       return this.source == ASTConstantsMCLiterals.TRUE;
     }
   ;
 
-  ast CharLiteral = 
+  astrule CharLiteral = 
     method public char getValue() {
       return de.monticore.MCLiteralsDecoder.decodeChar(getSource());
     }
   ;
 
-  ast StringLiteral = 
+  astrule StringLiteral = 
     method public String getValue() {
       return de.monticore.MCLiteralsDecoder.decodeString(getSource());
     }
   ;
 
-  ast IntLiteral = 
+  astrule IntLiteral = 
     method public int getValue() {
       return de.monticore.MCLiteralsDecoder.decodeInt(getSource());
     }
   ;
 
-  ast SignedIntLiteral = 
+  astrule SignedIntLiteral = 
     method public int getValue() {
       if (negative) {
         return - de.monticore.MCLiteralsDecoder.decodeInt(getSource());
@@ -77,13 +46,13 @@ component grammar MCLiterals extends de.monticore.MCBasics {
     }
   ;
   
-   ast NatLiteral = 
+   astrule NatLiteral = 
     method public int getValue() {
       return de.monticore.MCLiteralsDecoder.decodeInt(getSource());
     }
   ;
 
-  ast SignedNatLiteral = 
+  astrule SignedNatLiteral = 
     method public int getValue() {
       if (negative) {
         return - de.monticore.MCLiteralsDecoder.decodeInt(getSource());
@@ -92,13 +61,13 @@ component grammar MCLiterals extends de.monticore.MCBasics {
     }
   ;
  
-  ast LongLiteral = 
+  astrule LongLiteral = 
     method public long getValue() {
       return de.monticore.MCLiteralsDecoder.decodeLong(getSource());
     }
   ;
 
-  ast SignedLongLiteral = 
+  astrule SignedLongLiteral = 
     method public long getValue() {
       if (negative) {
         return -de.monticore.MCLiteralsDecoder.decodeLong(getSource());
@@ -107,13 +76,13 @@ component grammar MCLiterals extends de.monticore.MCBasics {
     }
   ;
 
-  ast FloatLiteral = 
+  astrule FloatLiteral = 
     method public float getValue() {
       return de.monticore.MCLiteralsDecoder.decodeFloat(getSource());
     }
   ;
 
-  ast SignedFloatLiteral = 
+  astrule SignedFloatLiteral = 
     method public float getValue() {
       if (negative) {
         return -de.monticore.MCLiteralsDecoder.decodeFloat(getSource());
@@ -122,13 +91,13 @@ component grammar MCLiterals extends de.monticore.MCBasics {
     }
   ;
 
-  ast DoubleLiteral = 
+  astrule DoubleLiteral = 
     method public double getValue() {
       return de.monticore.MCLiteralsDecoder.decodeDouble(getSource());
     }
   ;
 
-  ast SignedDoubleLiteral = 
+  astrule SignedDoubleLiteral = 
     method public double getValue() {
       if (negative) {
         return -de.monticore.MCLiteralsDecoder.decodeDouble(getSource());

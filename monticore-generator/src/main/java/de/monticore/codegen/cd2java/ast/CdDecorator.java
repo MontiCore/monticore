@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore.codegen.cd2java.ast;
 
@@ -25,11 +8,9 @@ import static de.se_rwth.commons.Names.getSimpleName;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -88,7 +69,6 @@ import transformation.ast.ASTCDTransformation;
  * Decorates class diagrams by adding of new classes and methods using in ast
  * files
  *
- * @author (last commit) $Author$
  */
 public class CdDecorator {
   
@@ -163,12 +143,7 @@ public class CdDecorator {
       addNodeGetter(clazz, astHelper);
 
       Optional<ASTCDClass> builder = astHelper.getASTBuilder(clazz);
-      if(builder.isPresent()) {
-        addListMethods(builder.get(), astHelper, cdDefinition);
-        addGetter(builder.get(), astHelper);
-        addSetter(builder.get(), astHelper, cdDefinition);
-        addOptionalMethods(builder.get(), astHelper, cdDefinition);
-      }
+      builder.ifPresent(astcdClass -> decorateBuilderClass(astcdClass, astHelper, cdDefinition));
     }
     
     cdDefinition.getCDClassList().forEach(c -> makeAbstractIfHWC(c));
@@ -183,14 +158,33 @@ public class CdDecorator {
     // Additional imports
     cdCompilationUnit.getImportStatementList().add(
         TypesMill.importStatementBuilder()
-            .imports(
+            .setImportList(
                 Lists.newArrayList(VisitorGeneratorHelper.getQualifiedVisitorType(astHelper
                     .getPackageName(), cdDefinition.getName())))
             .build());
     
             
   }
-  
+
+  protected void decorateBuilderClass(ASTCDClass builder, AstGeneratorHelper astHelper, ASTCDDefinition cdDefinition) {
+    addListMethods(builder, astHelper, cdDefinition);
+    addGetter(builder, astHelper);
+    addSetter(builder, astHelper, cdDefinition);
+    addOptionalMethods(builder, astHelper, cdDefinition);
+    addASTNodeBuilderMethods(builder, astHelper);
+  }
+
+  protected void addASTNodeBuilderMethods(ASTCDClass clazz, AstGeneratorHelper astHelper) {
+    if(!clazz.printSuperClass().startsWith("de.monticore.ast.ASTNodeBuilder")) {
+      for(AstBuilderMethods value : AstBuilderMethods.values()) {
+        String methodSignatur = String.format(value.getMethodDeclaration(),
+          clazz.getName());
+        additionalNodeBuilderMethod(clazz, value.getMethodName(),
+          methodSignatur);
+      }
+    }
+  }
+
   protected void addSymbolGetter(ASTCDClass clazz, AstGeneratorHelper astHelper) {
     List<ASTCDAttribute> attributes = Lists.newArrayList(clazz.getCDAttributeList());
     for (ASTCDAttribute attribute : attributes) {
@@ -308,15 +302,7 @@ public class CdDecorator {
     ASTCDMethod meth = replaceMethodBodyTemplate(clazz, AstAdditionalMethods.get_Children.getDeclaration(),
         new TemplateHookPoint("ast.additionalmethods.GetChildren", symbol.get()));
     
-     ASTStereotype stereo;
-     if (meth.getModifier().isStereotypePresent()) {
-       stereo = meth.getModifier().getStereotype();
-     } else {
-       stereo = CD4AnalysisMill.stereotypeBuilder().build();
-       meth.getModifier().setStereotype(stereo);
-     }
-     ASTStereoValue value = CD4AnalysisMill.stereoValueBuilder().name("@Deprecated").build();
-     stereo.getValueList().add(value);
+    addDeprecatedStereotype(meth);
         
     replaceMethodBodyTemplate(clazz, AstAdditionalMethods.deepEqualsWithOrder.getDeclaration(),
         new TemplateHookPoint("ast.additionalmethods.DeepEqualsWithOrder"));
@@ -361,7 +347,19 @@ public class CdDecorator {
               "return " + astHelper.getCdName() + "NodeFactory.create" + plainClassName + "();\n"));
     }
   }
-  
+
+  protected void addDeprecatedStereotype(ASTCDMethod meth) {
+    ASTStereotype stereo;
+    if (meth.getModifier().isPresentStereotype()) {
+      stereo = meth.getModifier().getStereotype();
+    } else {
+      stereo = CD4AnalysisMill.stereotypeBuilder().build();
+      meth.getModifier().setStereotype(stereo);
+    }
+    ASTStereoValue value = CD4AnalysisMill.stereoValueBuilder().setName("@Deprecated").build();
+    stereo.getValueList().add(value);
+  }
+
   /**
    * Adds common ast methods to the all classes in the class diagram
    * 
@@ -376,185 +374,196 @@ public class CdDecorator {
     if (astHelper.isAstClass(clazz) || isBuilderClass) {
       List<ASTCDAttribute> attributes = Lists.newArrayList(clazz.getCDAttributeList());
       for (ASTCDAttribute attribute : attributes) {
-        if (GeneratorHelper.isInherited(attribute) || !astHelper.isListType(TypesPrinter.printType(attribute.getType()))) {
+        if (!astHelper.isListType(TypesPrinter.printType(attribute.getType()))) {
           continue;
         }
         Optional<ASTSimpleReferenceType> type = TypesHelper
-            .getFirstTypeArgumentOfGenericType(attribute.getType(), GeneratorHelper.JAVA_LIST);
+          .getFirstTypeArgumentOfGenericType(attribute.getType(), GeneratorHelper.JAVA_LIST);
         if (!type.isPresent()) {
           continue;
         }
         String typeName = new AstPrinter().printType(type.get());
         String attrName = GeneratorHelper.getSimpleListName(attribute);
         String listName = StringTransformations.capitalize(attribute.getName());
-        String builderReturnType = clazz.getName();
-        
-        String methodSignatur = String.format(AstListMethods.clear.getMethodDeclaration(),
-          isBuilderClass ? builderReturnType : "void", listName);
-        
-        additionalMethodForListAttribute(clazz, AstListMethods.clear.getMethodName(), attribute,
-            methodSignatur, isBuilderClass);
-        
-        methodSignatur = String.format(AstListMethods.add.getMethodDeclaration(),
-          isBuilderClass ? builderReturnType : "boolean", attrName, typeName);
-        additionalMethodForListAttribute(clazz, AstListMethods.add.getMethodName(), attribute,
-            methodSignatur, isBuilderClass);
-        
-        methodSignatur = String.format(AstListMethods.addAll.getMethodDeclaration(),
-          isBuilderClass ? builderReturnType : "boolean", listName, typeName);
-        additionalMethodForListAttribute(clazz, AstListMethods.addAll.getMethodName(), attribute,
-            methodSignatur, isBuilderClass);
-        
-        methodSignatur = String.format(AstListMethods.contains.getMethodDeclaration(),
-            attrName);
-        additionalMethodForListAttribute(clazz, AstListMethods.contains.getMethodName(), attribute,
-            methodSignatur, false);
-        
-        methodSignatur = String.format(AstListMethods.containsAll.getMethodDeclaration(),
-            listName);
-        additionalMethodForListAttribute(clazz, AstListMethods.containsAll.getMethodName(),
-            attribute,
-            methodSignatur, false);
-        
-        methodSignatur = String.format(AstListMethods.isEmpty.getMethodDeclaration(),
-            listName);
-        additionalMethodForListAttribute(clazz, AstListMethods.isEmpty.getMethodName(), attribute,
-            methodSignatur, false);
-  
-        methodSignatur = String.format(AstListMethods.iterator.getMethodDeclaration(),
-            typeName, listName);
-        additionalMethodForListAttribute(clazz, AstListMethods.iterator.getMethodName(), attribute,
-            methodSignatur, false);
-        
-        methodSignatur = String.format(AstListMethods.remove.getMethodDeclaration(),
-            isBuilderClass ? builderReturnType : "boolean", attrName);
-        additionalMethodForListAttribute(clazz, AstListMethods.remove.getMethodName(), attribute,
-            methodSignatur, isBuilderClass);
-        
-        methodSignatur = String.format(AstListMethods.removeAll.getMethodDeclaration(),
-            isBuilderClass ? builderReturnType : "boolean", listName);
-        additionalMethodForListAttribute(clazz, AstListMethods.removeAll.getMethodName(), attribute,
-            methodSignatur, isBuilderClass);
-        
-        methodSignatur = String.format(AstListMethods.retainAll.getMethodDeclaration(),
-            isBuilderClass ? builderReturnType : "boolean", listName);
-        additionalMethodForListAttribute(clazz, AstListMethods.retainAll.getMethodName(), attribute,
-            methodSignatur, isBuilderClass);
-            
-        methodSignatur = String.format(AstListMethods.size.getMethodDeclaration(),
-            listName);
-        additionalMethodForListAttribute(clazz, AstListMethods.size.getMethodName(), attribute,
-            methodSignatur, false);
-        
-        methodSignatur = String.format(AstListMethods.toArray.getMethodDeclaration(),
-            typeName, listName, typeName);
-        additionalMethodForListAttribute(clazz, AstListMethods.toArray.getMethodName(), attribute,
-            methodSignatur, false);
-        
-        methodSignatur = String.format(AstListMethods.toArray_.getMethodDeclaration(),
-            listName);
-        additionalMethodForListAttribute(clazz, AstListMethods.toArray_.getMethodName(), attribute,
-            methodSignatur, false);
-        
-        methodSignatur = String.format(AstListMethods.removeIf.getMethodDeclaration(),
-            isBuilderClass ? builderReturnType : "boolean", attrName, typeName);
-        additionalMethodForListAttribute(clazz, AstListMethods.removeIf.getMethodName(), attribute,
-            methodSignatur, isBuilderClass);
-        
-        methodSignatur = String.format(AstListMethods.spliterator.getMethodDeclaration(),
-            typeName, listName);
-        additionalMethodForListAttribute(clazz, AstListMethods.spliterator.getMethodName(),
-            attribute,
-            methodSignatur, false);
-        methodSignatur = String.format(AstListMethods.stream.getMethodDeclaration(),
-            typeName, listName);
-        additionalMethodForListAttribute(clazz, AstListMethods.stream.getMethodName(), attribute,
-            methodSignatur, false);
-        methodSignatur = String.format(AstListMethods.parallelStream.getMethodDeclaration(),
-            typeName, listName);
-        additionalMethodForListAttribute(clazz, AstListMethods.parallelStream.getMethodName(),
-            attribute,
-            methodSignatur, false);
-      
-        methodSignatur = String.format(AstListMethods.forEach.getMethodDeclaration(),
-            isBuilderClass ? builderReturnType : "void", listName, typeName);
-        additionalMethodForListAttribute(clazz, AstListMethods.forEach.getMethodName(), attribute,
-            methodSignatur, isBuilderClass);
-        
-        methodSignatur = String.format(AstListMethods.add_.getMethodDeclaration(),
-            isBuilderClass ? builderReturnType : "void", attrName, typeName);
-        additionalMethodForListAttribute(clazz, AstListMethods.add_.getMethodName(), attribute,
-            methodSignatur, isBuilderClass);
-        
-        methodSignatur = String.format(AstListMethods.addAll_.getMethodDeclaration(),
-            isBuilderClass ? builderReturnType : "boolean", listName, typeName);
-        additionalMethodForListAttribute(clazz, AstListMethods.addAll_.getMethodName(), attribute,
-            methodSignatur, isBuilderClass);
-        
-        methodSignatur = String.format(AstListMethods.get.getMethodDeclaration(),
-            typeName, attrName);
-        additionalMethodForListAttribute(clazz, AstListMethods.get.getMethodName(), attribute,
-            methodSignatur, false);
-        
-        methodSignatur = String.format(AstListMethods.indexOf.getMethodDeclaration(),
-            attrName, typeName);
-        additionalMethodForListAttribute(clazz, AstListMethods.indexOf.getMethodName(), attribute,
-            methodSignatur, false);
-        methodSignatur = String.format(AstListMethods.lastIndexOf.getMethodDeclaration(),
-            attrName);
-        additionalMethodForListAttribute(clazz, AstListMethods.lastIndexOf.getMethodName(),
-            attribute,
-            methodSignatur, false);
-        
-        methodSignatur = String.format(AstListMethods.equals.getMethodDeclaration(),
-            listName);
-        additionalMethodForListAttribute(clazz, AstListMethods.equals.getMethodName(), attribute,
-            methodSignatur, false);
-        
-        methodSignatur = String.format(AstListMethods.hashCode.getMethodDeclaration(),
-            listName);
-        additionalMethodForListAttribute(clazz, AstListMethods.hashCode.getMethodName(), attribute,
-            methodSignatur, false);
-        
-        methodSignatur = String.format(AstListMethods.listIterator.getMethodDeclaration(),
-            typeName, listName);
-        additionalMethodForListAttribute(clazz, AstListMethods.listIterator.getMethodName(),
-            attribute,
-            methodSignatur, false);
-            
-        methodSignatur = String.format(AstListMethods.listIterator_.getMethodDeclaration(),
-            typeName, listName);
-        additionalMethodForListAttribute(clazz, AstListMethods.listIterator_.getMethodName(),
-            attribute,
-            methodSignatur, false);
-
-        methodSignatur = String.format(AstListMethods.remove_.getMethodDeclaration(),
-            typeName, attrName);
-        additionalMethodForListAttribute(clazz, AstListMethods.remove_.getMethodName(), attribute,
-            methodSignatur, false);
-        
-        methodSignatur = String.format(AstListMethods.set_.getMethodDeclaration(),
-            typeName, attrName, typeName);
-        additionalMethodForListAttribute(clazz, AstListMethods.set_.getMethodName(), attribute,
-            methodSignatur, false);
-        
-        methodSignatur = String.format(AstListMethods.subList.getMethodDeclaration(),
-            typeName, listName);
-        additionalMethodForListAttribute(clazz, AstListMethods.subList.getMethodName(), attribute,
-            methodSignatur, false);
-        
-        methodSignatur = String.format(AstListMethods.replaceAll.getMethodDeclaration(),
-            isBuilderClass ? builderReturnType : "void", listName, typeName);
-        additionalMethodForListAttribute(clazz, AstListMethods.replaceAll.getMethodName(),
-            attribute,
-            methodSignatur, isBuilderClass);
-        
-        methodSignatur = String.format(AstListMethods.sort.getMethodDeclaration(),
-            isBuilderClass ? builderReturnType : "void", listName, typeName);
-        additionalMethodForListAttribute(clazz, AstListMethods.sort.getMethodName(), attribute,
-            methodSignatur, isBuilderClass);
+        if (!GeneratorHelper.isInherited(attribute)) {
+          addListSetterMethods(clazz, attribute, typeName, listName, attrName, isBuilderClass, false);
+          addListGetterMethods(clazz, attribute, typeName, listName, attrName);
+        }
+        else if (isBuilderClass) {
+          addListSetterMethods(clazz, attribute, typeName, listName, attrName, isBuilderClass, true);
+        }
       }
     }
+  }
+
+  protected void addListSetterMethods(ASTCDClass clazz, ASTCDAttribute attribute, String typeName,
+      String listName, String attrName, boolean isBuilderClass, boolean isInherited) {
+    String methodSignatur = String.format(AstListMethods.clear.getMethodDeclaration(),
+      isBuilderClass ? clazz.getName() : "void", listName);
+
+    additionalMethodForListAttribute(clazz, AstListMethods.clear.getMethodName(), attribute,
+      methodSignatur, isBuilderClass, isInherited);
+
+    methodSignatur = String.format(AstListMethods.add.getMethodDeclaration(),
+      isBuilderClass ? clazz.getName() : "boolean", attrName, typeName);
+    additionalMethodForListAttribute(clazz, AstListMethods.add.getMethodName(), attribute,
+      methodSignatur, isBuilderClass, isInherited);
+
+    methodSignatur = String.format(AstListMethods.addAll.getMethodDeclaration(),
+      isBuilderClass ? clazz.getName() : "boolean", listName, typeName);
+    additionalMethodForListAttribute(clazz, AstListMethods.addAll.getMethodName(), attribute,
+      methodSignatur, isBuilderClass, isInherited);
+
+    methodSignatur = String.format(AstListMethods.remove.getMethodDeclaration(),
+      isBuilderClass ? clazz.getName() : "boolean", attrName);
+    additionalMethodForListAttribute(clazz, AstListMethods.remove.getMethodName(), attribute,
+      methodSignatur, isBuilderClass, isInherited);
+
+    methodSignatur = String.format(AstListMethods.removeAll.getMethodDeclaration(),
+      isBuilderClass ? clazz.getName() : "boolean", listName);
+    additionalMethodForListAttribute(clazz, AstListMethods.removeAll.getMethodName(), attribute,
+      methodSignatur, isBuilderClass, isInherited);
+
+    methodSignatur = String.format(AstListMethods.retainAll.getMethodDeclaration(),
+      isBuilderClass ? clazz.getName() : "boolean", listName);
+    additionalMethodForListAttribute(clazz, AstListMethods.retainAll.getMethodName(), attribute,
+      methodSignatur, isBuilderClass, isInherited);
+
+    methodSignatur = String.format(AstListMethods.removeIf.getMethodDeclaration(),
+      isBuilderClass ? clazz.getName() : "boolean", attrName, typeName);
+    additionalMethodForListAttribute(clazz, AstListMethods.removeIf.getMethodName(), attribute,
+      methodSignatur, isBuilderClass, isInherited);
+
+    methodSignatur = String.format(AstListMethods.forEach.getMethodDeclaration(),
+      isBuilderClass ? clazz.getName() : "void", listName, typeName);
+    additionalMethodForListAttribute(clazz, AstListMethods.forEach.getMethodName(), attribute,
+      methodSignatur, isBuilderClass, isInherited);
+
+    methodSignatur = String.format(AstListMethods.add_.getMethodDeclaration(),
+      isBuilderClass ? clazz.getName() : "void", attrName, typeName);
+    additionalMethodForListAttribute(clazz, AstListMethods.add_.getMethodName(), attribute,
+      methodSignatur, isBuilderClass, isInherited);
+
+    methodSignatur = String.format(AstListMethods.addAll_.getMethodDeclaration(),
+      isBuilderClass ? clazz.getName() : "boolean", listName, typeName);
+    additionalMethodForListAttribute(clazz, AstListMethods.addAll_.getMethodName(), attribute,
+      methodSignatur, isBuilderClass, isInherited);
+
+    methodSignatur = String.format(AstListMethods.replaceAll.getMethodDeclaration(),
+      isBuilderClass ? clazz.getName() : "void", listName, typeName);
+    additionalMethodForListAttribute(clazz, AstListMethods.replaceAll.getMethodName(),
+      attribute, methodSignatur, isBuilderClass, isInherited);
+
+    methodSignatur = String.format(AstListMethods.sort.getMethodDeclaration(),
+      isBuilderClass ? clazz.getName() : "void", listName, typeName);
+    additionalMethodForListAttribute(clazz, AstListMethods.sort.getMethodName(), attribute,
+      methodSignatur, isBuilderClass, isInherited);
+
+    methodSignatur = String.format(AstListMethods.remove_.getMethodDeclaration(),
+      isBuilderClass ? clazz.getName() : typeName, attrName, typeName);
+    additionalMethodForListAttribute(clazz, AstListMethods.remove_.getMethodName(), attribute,
+      methodSignatur, isBuilderClass, isInherited);
+
+    methodSignatur = String.format(AstListMethods.set_.getMethodDeclaration(),
+      isBuilderClass ? clazz.getName() : typeName, attrName, typeName);
+    additionalMethodForListAttribute(clazz, AstListMethods.set_.getMethodName(), attribute,
+      methodSignatur, isBuilderClass, isInherited);
+  }
+
+  protected void addListGetterMethods(ASTCDClass clazz, ASTCDAttribute attribute, String typeName,
+      String listName, String attrName) {
+    String methodSignatur = String.format(AstListMethods.contains.getMethodDeclaration(),
+      attrName);
+    additionalMethodForListAttribute(clazz, AstListMethods.contains.getMethodName(), attribute,
+      methodSignatur);
+
+    methodSignatur = String.format(AstListMethods.containsAll.getMethodDeclaration(),
+      listName);
+    additionalMethodForListAttribute(clazz, AstListMethods.containsAll.getMethodName(),
+      attribute,
+      methodSignatur);
+
+    methodSignatur = String.format(AstListMethods.isEmpty.getMethodDeclaration(),
+      listName);
+    additionalMethodForListAttribute(clazz, AstListMethods.isEmpty.getMethodName(), attribute,
+      methodSignatur);
+
+    methodSignatur = String.format(AstListMethods.iterator.getMethodDeclaration(),
+      typeName, listName);
+    additionalMethodForListAttribute(clazz, AstListMethods.iterator.getMethodName(), attribute,
+      methodSignatur);
+
+    methodSignatur = String.format(AstListMethods.size.getMethodDeclaration(),
+      listName);
+    additionalMethodForListAttribute(clazz, AstListMethods.size.getMethodName(), attribute,
+      methodSignatur);
+
+    methodSignatur = String.format(AstListMethods.toArray.getMethodDeclaration(),
+      typeName, listName, typeName);
+    additionalMethodForListAttribute(clazz, AstListMethods.toArray.getMethodName(), attribute,
+      methodSignatur);
+
+    methodSignatur = String.format(AstListMethods.toArray_.getMethodDeclaration(),
+      listName);
+    additionalMethodForListAttribute(clazz, AstListMethods.toArray_.getMethodName(), attribute,
+      methodSignatur);
+
+    methodSignatur = String.format(AstListMethods.spliterator.getMethodDeclaration(),
+      typeName, listName);
+    additionalMethodForListAttribute(clazz, AstListMethods.spliterator.getMethodName(),
+      attribute, methodSignatur);
+
+    methodSignatur = String.format(AstListMethods.stream.getMethodDeclaration(),
+      typeName, listName);
+    additionalMethodForListAttribute(clazz, AstListMethods.stream.getMethodName(), attribute,
+      methodSignatur);
+
+    methodSignatur = String.format(AstListMethods.parallelStream.getMethodDeclaration(),
+      typeName, listName);
+    additionalMethodForListAttribute(clazz, AstListMethods.parallelStream.getMethodName(),
+      attribute, methodSignatur);
+
+    methodSignatur = String.format(AstListMethods.get.getMethodDeclaration(),
+      typeName, attrName);
+    additionalMethodForListAttribute(clazz, AstListMethods.get.getMethodName(), attribute,
+      methodSignatur);
+
+    methodSignatur = String.format(AstListMethods.indexOf.getMethodDeclaration(),
+      attrName, typeName);
+    additionalMethodForListAttribute(clazz, AstListMethods.indexOf.getMethodName(), attribute,
+      methodSignatur);
+
+    methodSignatur = String.format(AstListMethods.lastIndexOf.getMethodDeclaration(),
+      attrName);
+    additionalMethodForListAttribute(clazz, AstListMethods.lastIndexOf.getMethodName(),
+      attribute, methodSignatur);
+
+    methodSignatur = String.format(AstListMethods.equals.getMethodDeclaration(),
+      listName);
+    additionalMethodForListAttribute(clazz, AstListMethods.equals.getMethodName(), attribute,
+      methodSignatur);
+
+    methodSignatur = String.format(AstListMethods.hashCode.getMethodDeclaration(),
+      listName);
+    additionalMethodForListAttribute(clazz, AstListMethods.hashCode.getMethodName(), attribute,
+      methodSignatur);
+
+    methodSignatur = String.format(AstListMethods.listIterator.getMethodDeclaration(),
+      typeName, listName);
+    additionalMethodForListAttribute(clazz, AstListMethods.listIterator.getMethodName(),
+      attribute,
+      methodSignatur);
+
+    methodSignatur = String.format(AstListMethods.listIterator_.getMethodDeclaration(),
+      typeName, listName);
+    additionalMethodForListAttribute(clazz, AstListMethods.listIterator_.getMethodName(),
+      attribute,
+      methodSignatur);
+
+    methodSignatur = String.format(AstListMethods.subList.getMethodDeclaration(),
+      typeName, listName);
+    additionalMethodForListAttribute(clazz, AstListMethods.subList.getMethodName(), attribute,
+      methodSignatur);
   }
   
   /**
@@ -568,34 +577,48 @@ public class CdDecorator {
   protected void addOptionalMethods(ASTCDClass clazz,
       AstGeneratorHelper astHelper, ASTCDDefinition cdDefinition) {
     for (ASTCDAttribute attribute: clazz.getCDAttributeList()) {
-      if (astHelper.isInherited(attribute) || !astHelper.isOptional(attribute)) {
+      boolean isBuilderClass = AstGeneratorHelper.isBuilderClass(cdDefinition, clazz);
+      String nativeName = StringTransformations.capitalize(GeneratorHelper.getNativeAttributeName(attribute.getName()));
+      if(!astHelper.isOptional(attribute)) {
         continue;
       }
+      if (!astHelper.isInherited(attribute)) {
+        addOptionalGetMethods(clazz, attribute, nativeName);
+        addOptionalSetMethods(clazz, attribute, nativeName, isBuilderClass, false);
+      }
+      else if (isBuilderClass) {
+        addOptionalSetMethods(clazz, attribute, nativeName, isBuilderClass, true);
+      }
+    }
+  }
 
-      String methodName = GeneratorHelper.getPlainGetter(attribute);
-      String methodNameOpt = methodName.substring(0, methodName.length()-GeneratorHelper.GET_SUFFIX_OPTINAL.length());
-      String returnType = TypesPrinter.printType(TypesHelper.getFirstTypeArgumentOfOptional(attribute.getType()).get());
-      String toParse = "public " + returnType + " " + methodNameOpt + "() ;";
-      HookPoint getMethodBody = new TemplateHookPoint("ast.additionalmethods.GetOpt", methodName);
-      replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
-      String nativeName = StringTransformations.capitalize(GeneratorHelper.getNativeAttributeName(attribute.getName()));
-      String methodIsPresent = "isPresent" + nativeName;
-      toParse = "public boolean " + methodIsPresent + "() ;";
-      getMethodBody = new TemplateHookPoint("ast.additionalmethods.IsPresent", methodName);
-      replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
+  protected void addOptionalSetMethods(ASTCDClass clazz, ASTCDAttribute attribute, String nativeName,
+      boolean isBuilderClass, boolean isInherited) {
+    String returnType = isBuilderClass ? clazz.getName() : "void";
+    String methodSetAbsent = "set" + nativeName + "Absent";
+    String toParse = "public " + returnType + " " + methodSetAbsent + "() ;";
+    HookPoint getMethodBody = new TemplateHookPoint("ast.additionalmethods.SetAbsent",
+      GeneratorHelper.getJavaAndCdConformName(attribute.getName()), isBuilderClass, isInherited);
+    replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
 
-      boolean isBuilderClass = AstGeneratorHelper.isBuilderClass(cdDefinition, clazz);
-      returnType = isBuilderClass ? clazz.getName() : "void";
-      String methodSetAbsent = "set" + nativeName + "Absent";
-      toParse = "public " + returnType + " " + methodSetAbsent + "() ;";
-      getMethodBody = new TemplateHookPoint("ast.additionalmethods.SetAbsent", GeneratorHelper.getJavaAndCdConformName(attribute.getName()), isBuilderClass);
-      replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
+    String methodSetOpt = "set" + nativeName + "Opt";
+    toParse = "public " + returnType + " " + methodSetOpt + "(" + TypesPrinter.printType(attribute.getType()) + " value) ;";
+    getMethodBody = new TemplateHookPoint("ast.additionalmethods.SetOpt",
+      GeneratorHelper.getJavaAndCdConformName(attribute.getName()), isBuilderClass, isInherited);
+    replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
+  }
 
-      String methodSetOpt = "set" + nativeName + "Opt";
-      toParse = "public " + returnType + " " + methodSetOpt + "(" + TypesPrinter.printType(attribute.getType()) + " value) ;";
-      getMethodBody = new TemplateHookPoint("ast.additionalmethods.SetOpt", GeneratorHelper.getJavaAndCdConformName(attribute.getName()), isBuilderClass);
-      replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
-  }   
+  protected void addOptionalGetMethods(ASTCDClass clazz, ASTCDAttribute attribute, String nativeName) {
+    String methodName = GeneratorHelper.getPlainGetter(attribute);
+    String methodNameOpt = methodName.substring(0, methodName.length()-GeneratorHelper.GET_SUFFIX_OPTINAL.length());
+    String returnType = TypesPrinter.printType(TypesHelper.getFirstTypeArgumentOfOptional(attribute.getType()).get());
+    String toParse = "public " + returnType + " " + methodNameOpt + "() ;";
+    HookPoint getMethodBody = new TemplateHookPoint("ast.additionalmethods.GetOpt", methodName);
+    replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
+    String methodIsPresent = "isPresent" + nativeName;
+    toParse = "public boolean " + methodIsPresent + "() ;";
+    getMethodBody = new TemplateHookPoint("ast.additionalmethods.IsPresent", methodName);
+    replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
   }
 
   /**
@@ -614,6 +637,14 @@ public class CdDecorator {
             "public class " + AstGeneratorHelper.getNameOfBuilderClass(c) + " ;");
           if(clazz.isPresent()) {
             c.getCDAttributeList().stream().forEach(a -> cdTransformation.addCdAttribute(clazz.get(), a));
+            ASTSimpleReferenceType superClass;
+            if(c.isPresentSuperclass()) {
+              superClass = TransformationHelper.createSimpleReference(c.printSuperClass() + "Builder");
+            }
+            else {
+              superClass = TransformationHelper.createSimpleReference("de.monticore.ast.ASTNodeBuilder", clazz.get().getName());
+            }
+            clazz.get().setSuperclass(superClass);
           }
         });
   }
@@ -644,7 +675,6 @@ public class CdDecorator {
   }
   
   /**
-   * TODO: Write me!
    * 
    * @param clazz
    * @param astHelper
@@ -689,8 +719,7 @@ public class CdDecorator {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param interf
    * @param astHelper
    */
@@ -721,19 +750,20 @@ public class CdDecorator {
   protected void addSetter(ASTCDClass clazz, AstGeneratorHelper astHelper, ASTCDDefinition cdDefinition) {
     for (ASTCDAttribute attribute : clazz.getCDAttributeList()) {
       String typeName = TypesHelper.printSimpleRefType(attribute.getType());
-      if (!AstGeneratorHelper.generateSetter(clazz, attribute, typeName)) {
+      boolean isBuilderClass = AstGeneratorHelper.isBuilderClass(cdDefinition, clazz);
+      if (!AstGeneratorHelper.generateSetter(clazz, attribute, typeName) && !isBuilderClass) {
         continue;
       }
+      boolean isInherited = GeneratorHelper.isInherited(attribute);
       String attributeName = attribute.getName();
       String methodName = GeneratorHelper.getPlainSetter(attribute);
       boolean isOptional = GeneratorHelper.isOptional(attribute);
-      boolean isBuilderClass = AstGeneratorHelper.isBuilderClass(cdDefinition, clazz);
       String returnType =  isBuilderClass ? clazz.getName() : "void";
       
       String toParse = "public " + returnType + " " + methodName + "("
           + typeName + " " + attributeName + ") ;";
       HookPoint methodBody = new TemplateHookPoint("ast.additionalmethods.Set", 
-          attribute, attributeName, isBuilderClass);
+          attribute, attributeName, isBuilderClass, isInherited, methodName);
       ASTCDMethod setMethod = replaceMethodBodyTemplate(clazz, toParse, methodBody);
       
       if (isOptional) {
@@ -744,8 +774,7 @@ public class CdDecorator {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param cdCompilationUnit
    * @param nativeClasses
    * @param astHelper
@@ -781,18 +810,17 @@ public class CdDecorator {
     Set<String> astClasses = new LinkedHashSet<>();
     nativeClasses.stream()
         .forEach(e -> astClasses.add(GeneratorHelper.getPlainName(e)));
-    Map<String, CDSymbol> superClasses = getClassesOfSuperGrammars(astHelper);
     
     // CreateMill 
-    ASTCDClass millClass = createMillClass(cdCompilationUnit, nativeClasses, superClasses,
-        astHelper, astClasses);
+    ASTCDClass millClass = createMillClass(cdCompilationUnit, nativeClasses,
+        astHelper);
     
     // Create Import
     String packageName = Names.getQualifiedName(cdCompilationUnit.getPackageList());
     String importPrefix = (packageName.isEmpty() ? "" : packageName + ".")
         + cdCompilationUnit.getCDDefinition().getName().toLowerCase()
         + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;   
-    List<String> imports = nativeClasses.stream().filter(c -> c.isModifierPresent())
+    List<String> imports = nativeClasses.stream().filter(c -> c.isPresentModifier())
         .filter(c -> !c.getModifier().isAbstract())
         .filter(c -> GeneratorHelper.getPlainName(c).startsWith(GeneratorHelper.AST_PREFIX))
         .map(c -> importPrefix  + AstGeneratorHelper.getNameOfBuilderClass(c))
@@ -800,28 +828,41 @@ public class CdDecorator {
     
     glex.replaceTemplate(CLASS_CONTENT_TEMPLATE, millClass, new TemplateHookPoint(
         "ast.AstMill", millClass,
-        millClass.isModifierPresent() && millClass.getModifier().isAbstract(),
+        millClass.isPresentModifier() && millClass.getModifier().isAbstract(),
         imports));
     
     // Create delegate methods for inherited classes
-    for (Entry<String, CDSymbol> entry: superClasses.entrySet()) {
-      String millName = getSimpleName(entry.getValue().getName()) + MILL;
-      String millPackage = entry.getValue().getFullName().toLowerCase()
-          + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;
-      addDelegateMethodToMill(entry.getKey(), millClass, astHelper, entry.getValue(),
-          millPackage + millName);
+    ArrayList<CDSymbol> overridden = Lists.newArrayList();
+    List<String> delegateList = Lists.newArrayList(astClasses);
+    for (CDSymbol superCd : astHelper.getAllSuperCds(astHelper.getCdSymbol())) {
+      for (CDTypeSymbol cdType : superCd.getTypes()) {
+        Optional<ASTNode> node = cdType.getAstNode();
+        if (node.isPresent() && node.get() instanceof ASTCDClass) {
+          if (!cdType.isAbstract() && !delegateList.contains(cdType.getName())) {
+            delegateList.add(cdType.getName());
+            String millName = getSimpleName(superCd.getName()) + MILL;
+            String millPackage = superCd.getFullName().toLowerCase()
+                + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;
+            addDelegateMethodToMill(cdType.getName(), millClass, astHelper, superCd,
+                millPackage + millName);
+          }
+          
+        }
+      }
     }
+    
+    // Compute diagrams with overridden classes
+    calculateOverriddenCds(astHelper.getCdSymbol(), astClasses, overridden);
     
     // Create init for super class diagrams
     String toParse = "public static void init();" ;
-    List<CDSymbol> overridden = Lists.newArrayList();
-    for (String clazzName: astClasses) {
-      if (superClasses.containsKey(clazzName)) {
-        overridden.add(superClasses.get(clazzName));
-      }
-    }
     HookPoint methodBody = new TemplateHookPoint("ast.ASTMillInitMethod", cdCompilationUnit.getCDDefinition().getName(),
         GeneratorHelper.getPlainName(millClass, ""), overridden);
+    replaceMethodBodyTemplate(millClass, toParse, methodBody);    
+
+    // Create reset for super class diagrams
+    toParse = "public static void reset();" ;
+    methodBody = new TemplateHookPoint("ast.ASTMillResetMethod",  astHelper.getCdSymbol().getImports());
     replaceMethodBodyTemplate(millClass, toParse, methodBody);    
 
     // Create Mill for overridden Rules
@@ -839,13 +880,34 @@ public class CdDecorator {
       millClass = createMillForSuperClass(cdCompilationUnit, millForName, symbol.getName(), classes, astHelper);
       glex.replaceTemplate(CLASS_CONTENT_TEMPLATE, millClass, new TemplateHookPoint(
           "ast.AstMillForSuper", millClass,
-          millClass.isModifierPresent() && millClass.getModifier().isAbstract(),
+          millClass.isPresentModifier() && millClass.getModifier().isAbstract(),
           imports, millSuperPackage + millSuperName));
     }
   }
   
+
+  protected void calculateOverriddenCds(CDSymbol cd,
+      Collection<String> nativeClasses, ArrayList<CDSymbol> overridden) {
+    // imported cds
+    for (String importedCdName : cd.getImports()) {
+      Optional<CDSymbol> importedCd = symbolTable.resolve(importedCdName, CDSymbol.KIND);
+      if (importedCd.isPresent()) {
+        CDSymbol superCd = importedCd.get();
+        for (String className: nativeClasses) {
+          if (superCd.getType(className).isPresent()) {
+            overridden.add(superCd);
+            calculateOverriddenCds(superCd, nativeClasses, overridden);
+            return;
+          }
+        }
+        calculateOverriddenCds(superCd, nativeClasses, overridden);
+      }
+    }
+    return;  
+  }
+
   protected ASTCDClass createMillClass(ASTCDCompilationUnit cdCompilationUnit,
-      List<ASTCDClass> nativeClasses, Map<String, CDSymbol> superClasses, AstGeneratorHelper astHelper, Set<String> astClasses) {
+      List<ASTCDClass> nativeClasses,  AstGeneratorHelper astHelper) {
     ASTCDDefinition cdDef = cdCompilationUnit.getCDDefinition();
     
     ASTCDClass millClass = CD4AnalysisNodeFactory.createASTCDClass();
@@ -860,11 +922,8 @@ public class CdDecorator {
       millClass.setModifier(TransformationHelper.createAbstractModifier());
     }
     millClass.setName(millClassName);
-    
-    for (String clazz : astClasses) {
-      if (superClasses.containsKey(clazz)) {
-        continue;
-      }
+                
+    for (ASTCDClass clazz : nativeClasses) {
       String toParse = "protected static " + plainName + " mill"
           + AstGeneratorHelper.getASTClassNameWithoutPrefix(clazz) + " = null;";
       cdTransformation.addCdAttributeUsingDefinition(millClass, toParse);
@@ -872,14 +931,12 @@ public class CdDecorator {
     
     // Add builder-creating methods
     for (ASTCDClass clazz : nativeClasses) {
-      if (AstGeneratorHelper.isBuilderClassAbstarct(clazz)
+      // TODO MB,BS: Check Builder and Mill for abstract classes
+      if (AstGeneratorHelper.isBuilderClassAbstract(clazz)
           || !GeneratorHelper.getPlainName(clazz).startsWith(GeneratorHelper.AST_PREFIX)) {
         continue;
       }
       String className = AstGeneratorHelper.getASTClassNameWithoutPrefix(clazz);
-      if (superClasses.containsKey(clazz.getName())) {
-        continue;
-      }
       String methodName = StringTransformations.uncapitalize(className);
       String toParse = "public static " + clazz.getName() + "Builder "
           + methodName
@@ -906,7 +963,6 @@ public class CdDecorator {
     ASTCDDefinition cdDef = cdCompilationUnit.getCDDefinition();
     
     ASTCDClass millClass = CD4AnalysisNodeFactory.createASTCDClass();
-    String plainName = millClassName;
     
     // Check if a handwritten mill class exists
     if (TransformationHelper.existsHandwrittenClass(targetPath,
@@ -920,17 +976,17 @@ public class CdDecorator {
  
     // Add builder-creating methods
     for (ASTCDClass clazz : nativeClasses) {
-      if (AstGeneratorHelper.isBuilderClassAbstarct(clazz)
+      if (AstGeneratorHelper.isBuilderClassAbstract(clazz)
           || !GeneratorHelper.getPlainName(clazz).startsWith(GeneratorHelper.AST_PREFIX)) {
         continue;
       }
 
       String className = AstGeneratorHelper.getASTClassNameWithoutPrefix(clazz);
-      String methodName = StringTransformations.uncapitalize(className);
-      String toParse = "protected " + clazz.getName() + "Builder _"
-          + methodName + AstGeneratorHelper.AST_BUILDER + "() ;";
+      String methodName = StringTransformations.uncapitalize(className) + AstGeneratorHelper.AST_BUILDER;
+      String toParse = "protected " + astHelper.getPlainName(clazz) + AstGeneratorHelper.AST_BUILDER + " _"
+          + methodName  + "() ;";
       replaceMethodBodyTemplate(millClass, toParse,
-          new StringHookPoint("return new " + clazz.getName() + "Builder();\n"));
+          new StringHookPoint("return " + cdCompilationUnit.getCDDefinition().getName() + "Mill." + methodName + "();\n"));
     }
     
     cdDef.getCDClassList().add(millClass);
@@ -959,7 +1015,6 @@ public class CdDecorator {
     // Add ast-creating methods
     for (ASTCDClass clazz : nativeClasses) {
       addMethodsToNodeFactory(clazz, nodeFactoryClass, astHelper);
-      addDeprecatedMethodsToNodeFactory(clazz, nodeFactoryClass, astHelper);
     }
     
     cdDef.getCDClassList().add(nodeFactoryClass);
@@ -997,37 +1052,10 @@ public class CdDecorator {
     return imports;
   }
   
-  protected Map<String, CDSymbol> getClassesOfSuperGrammars( AstGeneratorHelper astHelper) {
-    HashMap<String, CDSymbol> overriddenMap = new HashMap<>();
-    if (!astHelper.getSuperGrammarCds().isEmpty()) {
-      for (CDSymbol superCd : astHelper.getAllCds(astHelper.getCdSymbol())) {
-        if (superCd.equals(astHelper.getCdSymbol())) {
-          continue;
-        }
-        for (CDTypeSymbol type : superCd.getTypes()) {
-          Optional<ASTNode> node = type.getAstNode();
-          if (!type.isAbstract() && node.isPresent() && node.get() instanceof ASTCDClass) {
-            ASTCDClass cdClass = (ASTCDClass) node.get();
-           // if ( !overriddenMap.containsKey(GeneratorHelper.getPlainName(cdClass))) {
-              overriddenMap.put(GeneratorHelper.getPlainName(cdClass), superCd);
-           // }
-          }
-        }
-      }
-    }
-    return overriddenMap;
-  }
-
-  /**
-   * TODO: Write me!
-   * 
-   * @param astHelper
-   * @param cdClass
-   * @param nodeFactoryForSuperCd
-   */
+ 
   protected void addMethodsToNodeFactory(ASTCDClass clazz, ASTCDClass nodeFactoryClass,
       AstGeneratorHelper astHelper) {
-    if (!clazz.isModifierPresent() || clazz.getModifier().isAbstract()) {
+    if (!clazz.isPresentModifier() || clazz.getModifier().isAbstract()) {
       return;
     }
     String className = GeneratorHelper.getPlainName(clazz);
@@ -1116,110 +1144,9 @@ public class CdDecorator {
     
   }
   
-  // TODO MB: Remove after Release 4.5.5
-  protected void addDeprecatedMethodsToNodeFactory(ASTCDClass clazz, ASTCDClass nodeFactoryClass,
-      AstGeneratorHelper astHelper) {
-    boolean hasOptional=false;
-    for (ASTCDAttribute attr : clazz.getCDAttributeList()) {
-      if (TypesHelper.isOptional(attr.getType())) {
-        hasOptional = true;
-      }
-    }
-    if (!hasOptional) {
-      return;
-    }
-    if (!clazz.isModifierPresent() || clazz.getModifier().isAbstract()) {
-      return;
-    }
-    String className = GeneratorHelper.getPlainName(clazz);
-    
-    String toParse = "public static " + className + " create" + className + "() ;";
-    
-    Optional<ASTCDMethod> astMethod = cdTransformation.addCdMethodUsingDefinition(
-        nodeFactoryClass, toParse);
-    Preconditions.checkArgument(astMethod.isPresent());
-    ASTCDMethod createMethod = astMethod.get();
-    
-    toParse = "protected " + className + " doCreate" + className + "() ;";
-    astMethod = cdTransformation.addCdMethodUsingDefinition(
-        nodeFactoryClass, toParse);
-    Preconditions.checkArgument(astMethod.isPresent());
-    ASTCDMethod doCreateMethod = astMethod.get();
-    
-    StringBuilder paramCall = new StringBuilder();
-    StringBuilder paramCall2 = new StringBuilder();
-    List<ASTCDAttribute> parameters = Lists.newArrayList();
-    String del = "";
-    List<ASTCDAttribute> inheritedAttributes = Lists.newArrayList();
-    for (ASTCDAttribute attr : clazz.getCDAttributeList()) {
-      if (GeneratorHelper.isInherited(attr)) {
-        inheritedAttributes.add(attr);
-        continue;
-      }
-      ASTCDParameter param = CD4AnalysisNodeFactory.createASTCDParameter();
-      ASTType type = attr.getType();
-      if (TypesHelper.isOptional(type)) {
-        type = TypesHelper.getSimpleReferenceTypeFromOptional(type);
-      }
-      else {
-        parameters.add(attr);
-      }
-      param.setType(type);
-      String javaAttrName = GeneratorHelper.getJavaAndCdConformName(attr.getName());
-      param.setName(javaAttrName);
-      ASTCDParameter doParam = param.deepClone();
-      createMethod.getCDParameterList().add(param);
-      doCreateMethod.getCDParameterList().add(doParam);
-      paramCall.append(del + javaAttrName);
-      if (TypesHelper.isOptional(attr.getType())) {
-        paramCall2.append(del + "Optional.ofNullable(" + javaAttrName + ")");
-      } else {
-        paramCall2.append(del + javaAttrName);
-      }
-      del = DEL;
-    }
-    
-    for (ASTCDAttribute attr : inheritedAttributes) {
-      ASTCDParameter param = CD4AnalysisNodeFactory.createASTCDParameter();
-      ASTType type = attr.getType();
-      if (TypesHelper.isOptional(type)) {
-        type = TypesHelper.getSimpleReferenceTypeFromOptional(type);
-      }
-      else {
-        parameters.add(attr);
-      }
-      param.setType(type);
-      String javaAttrName = GeneratorHelper.getJavaAndCdConformName(attr.getName());
-      param.setName(javaAttrName);
-      ASTCDParameter doParam = param.deepClone();
-      createMethod.getCDParameterList().add(param);
-      doCreateMethod.getCDParameterList().add(doParam);
-      paramCall.append(del + javaAttrName);
-      if (TypesHelper.isOptional(attr.getType())) {
-        paramCall2.append(del + "Optional.ofNullable(" + javaAttrName + ")");
-      } else {
-        paramCall2.append(del + javaAttrName);
-      }
-      del = DEL;
-    }
-    
-    // create() method
-    glex.replaceTemplate("ast.ParametersDeclaration", createMethod, new TemplateHookPoint(
-        "ast.ConstructorParametersDeclaration2"));
-    glex.replaceTemplate(EMPTY_BODY_TEMPLATE, createMethod, new TemplateHookPoint(
-        "ast.factorymethods.CreateWithParams", className, paramCall.toString()));
-        
-    // doCreate() method
-    glex.replaceTemplate("ast.ParametersDeclaration", doCreateMethod, new TemplateHookPoint(
-        "ast.ConstructorParametersDeclaration2"));
-    glex.replaceTemplate(EMPTY_BODY_TEMPLATE, doCreateMethod, new TemplateHookPoint(
-        "ast.factorymethods.DoCreateWithParams", className, paramCall2.toString()));
-            
-  }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param astHelper
    * @param cdSymbol
    * @param delegateFactoryName
@@ -1228,7 +1155,7 @@ public class CdDecorator {
    */
   protected void addDelegateMethodsToNodeFactory(ASTCDClass clazz, ASTCDClass nodeFactoryClass,
       AstGeneratorHelper astHelper, CDSymbol cdSymbol, String delegateFactoryName) {
-    if (!clazz.isModifierPresent() || clazz.getModifier().isAbstract()) {
+    if (!clazz.isPresentModifier() || clazz.getModifier().isAbstract()) {
       return;
     }
     String className = GeneratorHelper.getPlainName(clazz);
@@ -1272,12 +1199,7 @@ public class CdDecorator {
       String javaAttrName = GeneratorHelper.getJavaAndCdConformName(attr.getName());
       param.setName(javaAttrName);
       createMethod.getCDParameterList().add(param);
-      if (TypesHelper.isOptional(attr.getType())) {
-        // TODO MB: Remove this after MC Release 4.5.5
-        paramCall.append(del + javaAttrName + ".orElse(null)");
-      } else {
-        paramCall.append(del + javaAttrName);
-      }
+      paramCall.append(del + javaAttrName);
       del = DEL;
     }
     for (ASTCDAttribute attr : inheritedAttributes) {
@@ -1291,12 +1213,7 @@ public class CdDecorator {
       String javaAttrName = GeneratorHelper.getJavaAndCdConformName(attr.getName());
       param.setName(javaAttrName);
       createMethod.getCDParameterList().add(param);
-      if (TypesHelper.isOptional(attr.getType())) {
-        // TODO MB: Remove this after MC Release 4.5.5
-        paramCall.append(del + javaAttrName + ".orElse(null)");
-      } else {
-        paramCall.append(del + javaAttrName);
-      }
+      paramCall.append(del + javaAttrName);
       del = DEL;
     }
     
@@ -1312,8 +1229,7 @@ public class CdDecorator {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param astHelper
    * @param cdSymbol
    * @param delegateFactoryName
@@ -1332,8 +1248,7 @@ public class CdDecorator {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param clazz
    * @param astHelper
    */
@@ -1385,8 +1300,7 @@ public class CdDecorator {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param cdDefinition
    * @param astHelper
    * @throws ANTLRException
@@ -1428,8 +1342,7 @@ public class CdDecorator {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param cdDefinition
    * @param astHelper
    */
@@ -1458,8 +1371,7 @@ public class CdDecorator {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param cdCompilationUnit
    */
   protected void transformCdTypeNamesForHWTypes(ASTCDCompilationUnit cdCompilationUnit) {
@@ -1508,19 +1420,45 @@ public class CdDecorator {
    * @param replacedTemplateName qualified name of template to be replaced
    */
   protected ASTCDMethod additionalMethodForListAttribute(ASTCDClass clazz, String callMethod,
-      ASTCDAttribute attribute, String methodSignatur, boolean returnBuilder) {
+      ASTCDAttribute attribute, String methodSignatur, boolean returnBuilder, boolean isInherited) {
     Optional<ASTCDMethod> astMethod = cdTransformation.addCdMethodUsingDefinition(clazz,
         methodSignatur);
     Preconditions.checkArgument(astMethod.isPresent());
     List<ASTCDParameter> parameters = astMethod.get().getCDParameterList();
     String callParameters = Joiners.COMMA
         .join(parameters.stream().map(ASTCDParameter::getName).collect(Collectors.toList()));
+    String call;
+    if(isInherited) {
+      call = "super." + astMethod.get().getName();
+    }
+    else {
+      call = "this." + attribute.getName() + "." + callMethod;
+    }
     HookPoint hookPoint = new TemplateHookPoint(
-        "ast.additionalmethods.ListAttributeMethod", attribute.getName(), callMethod,
+        "ast.additionalmethods.ListAttributeMethod", call,
         !AstGeneratorHelper.hasReturnTypeVoid(astMethod.get()), callParameters, returnBuilder);
     glex.replaceTemplate(EMPTY_BODY_TEMPLATE, astMethod.get(), hookPoint);
     glex.replaceTemplate(ERROR_IFNULL_TEMPLATE, astMethod.get(), new StringHookPoint(""));
     return astMethod.get();
   }
-  
+
+  protected ASTCDMethod additionalMethodForListAttribute(ASTCDClass clazz, String callMethod,
+      ASTCDAttribute attribute, String methodSignatur) {
+    return additionalMethodForListAttribute(clazz, callMethod, attribute, methodSignatur, false, false);
+  }
+
+  protected ASTCDMethod additionalNodeBuilderMethod(ASTCDClass clazz, String callMethod,
+      String methodSignatur) {
+    Optional<ASTCDMethod> astMethod = cdTransformation.addCdMethodUsingDefinition(clazz,
+      methodSignatur);
+      Preconditions.checkArgument(astMethod.isPresent());
+    List<ASTCDParameter> parameters = astMethod.get().getCDParameterList();
+    String callParameters = Joiners.COMMA
+      .join(parameters.stream().map(ASTCDParameter::getName).collect(Collectors.toList()));
+    HookPoint hookPoint = new TemplateHookPoint(
+      "ast.additionalmethods.NodeBuilderMethod", callMethod, callParameters);
+      glex.replaceTemplate(EMPTY_BODY_TEMPLATE, astMethod.get(), hookPoint);
+      glex.replaceTemplate(ERROR_IFNULL_TEMPLATE, astMethod.get(), new StringHookPoint(""));
+      return astMethod.get();
+  }
 }

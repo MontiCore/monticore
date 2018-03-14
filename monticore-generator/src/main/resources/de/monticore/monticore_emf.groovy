@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore
 
@@ -56,7 +39,7 @@ while (grammarIterator.hasNext()) {
       // start reporting
       grammarName = Names.getQualifiedName(astGrammar.getPackageList(), astGrammar.getName())
       Reporting.on(grammarName)
- 	  Reporting.reportModelStart(astGrammar, grammarName, "")
+      Reporting.reportModelStart(astGrammar, grammarName, "")
       Reporting.reportParseInputFile(input, grammarName)
 
       // M3: populate symbol table
@@ -66,10 +49,9 @@ while (grammarIterator.hasNext()) {
       runGrammarCoCos(astGrammar, globalScope)
 
       // M5: transform grammar AST into Class Diagram AST
-      astClassDiagram = transformAstGrammarToAstCd(glex, astGrammar, globalScope, handcodedPath)
-      astClassDiagramWithST = createSymbolsFromAST(globalScope, astClassDiagram)
+      astClassDiagramWithST = deriveCD(astGrammar, glex, globalScope)
 
-      // write Class Diagram AST to the CD-file (*.cd)
+      // write Class Diagram AST to the CD-report
       storeInCdFile(astClassDiagramWithST, out)
 
       // M6: generate parser and wrapper

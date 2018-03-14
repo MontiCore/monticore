@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench
- * Copyright (c) 2015, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.prettyprint;
 
 import java.util.Iterator;
@@ -431,7 +414,7 @@ public class MCExpressionsPrettyPrinter extends TypesPrettyPrinterConcreteVisito
       getPrinter().print(" this ");
       node.getSuperSuffix().accept(getRealThis());
     }
-    if (node.isNamePresent()) {
+    if (node.isPresentName()) {
       printNode(node.getName());
       node.getArguments().accept(getRealThis());    
     }
@@ -444,14 +427,14 @@ public class MCExpressionsPrettyPrinter extends TypesPrettyPrinterConcreteVisito
   @Override
   public void handle(ASTSuperSuffix node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    if (node.isNamePresent()) {
+    if (node.isPresentName()) {
       getPrinter().print(".");
-      if (node.isTypeArgumentsPresent()) {
+      if (node.isPresentTypeArguments()) {
         node.getTypeArguments().accept(getRealThis());
       }
       printNode(node.getName());
     }
-    if (node.isArgumentsPresent()) {
+    if (node.isPresentArguments()) {
       node.getArguments().accept(getRealThis());
     }
     CommentPrettyPrinter.printPostComments(node, getPrinter());

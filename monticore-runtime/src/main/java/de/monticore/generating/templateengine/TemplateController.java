@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore.generating.templateengine;
 
@@ -606,20 +589,6 @@ public class TemplateController {
     }
     return null;
   }
-
-  // TODO: can we remove this one?
-  /**
-   * @deprecated use glex.defineHookPoint instead
-   */ 
-  @Deprecated
-  public String defineHookPoint(String hookName) {
-    return config.getGlex().defineHookPoint(this, hookName, getAST());
-  }
-
-  // TODO AR <- PN Actually,the plan was to move both instantiate() methods to
-  // HpFV.
-  // But as the className may be unqualified, the package name is needed.
-  // But, HpFV does not now anything about the template or its package
 
   /**
    * Can be used to instantiate any Java-class with a default constructor (no

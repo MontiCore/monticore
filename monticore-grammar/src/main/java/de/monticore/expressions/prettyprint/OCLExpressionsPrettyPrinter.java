@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench
- * Copyright (c) 2015, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.prettyprint;
 
 import de.monticore.expressionsbasis._ast.ASTExpression;
@@ -54,7 +37,7 @@ public class OCLExpressionsPrettyPrinter implements OCLExpressionsVisitor {
     @Override
     public void handle(ASTInExpr node) {
         CommentPrettyPrinter.printPreComments(node, getPrinter());
-        if(node.isTypePresent())
+        if(node.isPresentType())
             node.getType().accept(getRealThis());
 
         Iterator iter = node.getVarNameList().iterator();
@@ -64,7 +47,7 @@ public class OCLExpressionsPrettyPrinter implements OCLExpressionsVisitor {
             getPrinter().print(iter.next());
         }
 
-        if(node.isExpressionPresent()) {
+        if(node.isPresentExpression()) {
             getPrinter().print(" in ");
             node.getExpression().accept(getRealThis());
         }

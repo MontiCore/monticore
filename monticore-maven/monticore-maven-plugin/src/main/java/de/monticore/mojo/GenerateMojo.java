@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.mojo;
 
 import com.google.common.base.Throwables;
@@ -48,8 +31,7 @@ import static de.monticore.MontiCoreConfiguration.Options.*;
 
 /**
  * Invokes {@link MontiCore} using the given configuration parameters.
- * 
- * @author (last commit) $Author$
+ *
  */
 @Mojo(name = "generate",
     defaultPhase = LifecyclePhase.GENERATE_SOURCES,
@@ -441,8 +423,6 @@ public final class GenerateMojo extends AbstractMojo {
     parameters.put(HANDCODEDPATH.toString(), toStringSet(getHandcodedPaths()));
     parameters.put(TEMPLATEPATH.toString(), toStringSet(getTemplatePaths()));
     parameters.put(OUT.toString(), Arrays.asList(getOutputDirectory().getAbsolutePath()));
-    parameters.put(OUTTOMODELPATH.toString(),
-        Arrays.asList(Boolean.toString(addOutputDirectoryToModelPath())));
     
     if (getForce()) {
       parameters.put(FORCE.toString(), new ArrayList<>());

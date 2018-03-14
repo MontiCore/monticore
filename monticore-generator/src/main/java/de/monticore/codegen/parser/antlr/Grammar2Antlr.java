@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore.codegen.parser.antlr;
 
@@ -75,11 +58,6 @@ import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- */
 public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
   private MCGrammarSymbol grammarEntry;
@@ -158,14 +136,14 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     endCodeSection();
 
     // Print option
-    if (ast.isLexOptionPresent()) {
+    if (ast.isPresentLexOption()) {
       ast.getLexOption().accept(getRealThis());
     }
 
     startCodeSection();
     addToCodeSection("\n:");
 
-    if (embeddedJavaCode && ast.isInitActionPresent()) {
+    if (embeddedJavaCode && ast.isPresentInitAction()) {
       // Add init action
       addToCodeSection("{", ParserGeneratorHelper.getText(ast.getInitAction()), "\n}");
     }
@@ -177,11 +155,11 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     // Add Action
     startCodeSection();
 
-    if (embeddedJavaCode && ast.isEndActionPresent()) {
+    if (embeddedJavaCode && ast.isPresentEndAction()) {
       addToCodeSection("{", ParserGeneratorHelper.getText(ast.getEndAction()), "\n}");
     }
 
-    if (ast.isLexerCommandPresent()) {
+    if (ast.isPresentLexerCommand()) {
       addToCodeSection("->", ast.getLexerCommand(), "\n");
     }
 
@@ -240,7 +218,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
               MCGrammarSymbolTableHelper.getDefaultValue(ruleByName.get()), "]\n", options);
 
       // Add actions
-      if (ast.isActionPresent() && ast.getAction() instanceof ASTAction) {
+      if (ast.isPresentAction() && ast.getAction() instanceof ASTAction) {
         addToAction(ParserGeneratorHelper.getText(ast.getAction()));
       }
 
@@ -285,7 +263,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       for(PredicatePair x : subRules) {
 
         ASTRuleReference ruleRef = x.getRuleReference();
-        if (ruleRef.isSemanticpredicateOrActionPresent() && ruleRef.getSemanticpredicateOrAction().isPredicate()) {
+        if (ruleRef.isPresentSemanticpredicateOrAction() && ruleRef.getSemanticpredicateOrAction().isPredicate()) {
           ruleRef.getSemanticpredicateOrAction().accept(getRealThis());
         }
 
@@ -478,11 +456,11 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     // Start of Block
     addToCodeSection("(");
-    if (ast.isOptionPresent()) {
+    if (ast.isPresentOption()) {
       addToCodeSection("\noptions {", ast.getOption().getID(), "=", ast.getOption()
               .getValue(), ";}");
     }
-    if (embeddedJavaCode && ast.isInitActionPresent()) {
+    if (embeddedJavaCode && ast.isPresentInitAction()) {
       addToCodeSection("{", ParserGeneratorHelper.getText(ast.getInitAction()), "}");
     }
     endCodeSection();
@@ -507,13 +485,13 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     addToAntlrCode("(");
 
     // Visit all alternatives
-    if (ast.isLexCharPresent()) {
+    if (ast.isPresentLexChar()) {
       ast.getLexChar().accept(getRealThis());
-    } else if (ast.isLexStringPresent()) {
+    } else if (ast.isPresentLexString()) {
       ast.getLexString().accept(getRealThis());
-    } else if (ast.isLexNonTerminalPresent()) {
+    } else if (ast.isPresentLexNonTerminal()) {
       ast.getLexNonTerminal().accept(getRealThis());
-    } else if (ast.isLexAnyCharPresent()) {
+    } else if (ast.isPresentLexAnyChar()) {
       ast.getLexAnyChar().accept(getRealThis());
     }
 
@@ -541,7 +519,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     addToCodeSection("(");
     // Print options
-    if (a.isOptionPresent()) {
+    if (a.isPresentOption()) {
       addToCodeSection("\n  options {");
       for(ASTOptionValue x : a.getOption().getOptionValueList()) {
         addToCodeSection("\n  " + x.getKey() + "=" + x.getValue() + ";");
@@ -550,7 +528,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     }
 
     // Print init actions
-    if (embeddedJavaCode && a.isInitActionPresent()) {
+    if (embeddedJavaCode && a.isPresentInitAction()) {
       addToCodeSection("{" + ParserGeneratorHelper.getText(a.getInitAction()) + "}");
     }
 
@@ -570,8 +548,6 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     startCodeSection("ASTTerminal " + ast.getName());
 
-    addToCodeSection("(");
-
     String rulename;
     if (grammarInfo.isKeyword(ast.getName(), grammarEntry)) {
       rulename = "'" + ast.getName() + "'";
@@ -585,7 +561,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     if (embeddedJavaCode) {
       boolean iteratedItself = HelperGrammar.isIterated(ast);
-      boolean isAttribute = ast.isUsageNamePresent();
+      boolean isAttribute = ast.isPresentUsageName();
 
       boolean isList = iteratedItself;
       Optional<? extends Symbol> ruleComponent = ast.getSymbol();
@@ -607,7 +583,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
     addActionToCodeSection();
 
-    addToCodeSection(")", printIteration(ast.getIteration()));
+    addToCodeSection(printIteration(ast.getIteration()));
 
     endCodeSection(ast);
 
@@ -694,9 +670,9 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       startCodeSection();
 
       addToCodeSection("{");
-      if (ast.isExpressionPredicatePresent()) {
+      if (ast.isPresentExpressionPredicate()) {
         addToCodeSection(ParserGeneratorHelper.getText(ast.getExpressionPredicate()), "}");
-      } else if (ast.isActionPresent()) {
+      } else if (ast.isPresentAction()) {
         addToCodeSection(ParserGeneratorHelper.getText(ast.getAction()), "}");
       } else {
         Log.error("0xA0327 neither expression predicate nor action is set.");
@@ -856,7 +832,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       addToAntlrCode(del);
 
       // Append semantic predicates for rules
-      if (entry.getPredicatePair().getRuleReference().isSemanticpredicateOrActionPresent()) {
+      if (entry.getPredicatePair().getRuleReference().isPresentSemanticpredicateOrAction()) {
         ASTSemanticpredicateOrAction semPredicate = entry.getPredicatePair().getRuleReference().getSemanticpredicateOrAction();
         if (semPredicate.isPredicate()) {
           semPredicate.accept(getRealThis());
@@ -1098,7 +1074,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     addToCodeSection(rulename); // + " %initaction% %actions% ) %iteration% ";
 
     if (embeddedJavaCode) {
-      boolean isAttribute = (keyword.isUsageNamePresent());
+      boolean isAttribute = (keyword.isPresentUsageName());
 
       // Add Actions
       if (isAttribute) {

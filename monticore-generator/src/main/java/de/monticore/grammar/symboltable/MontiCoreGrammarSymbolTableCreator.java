@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore.grammar.symboltable;
 
@@ -405,7 +388,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
   public void visit(ASTConstant astNode) {
     final Symbol currentSymbol = currentSymbol().orElse(null);
     if (currentSymbol != null) {
-      final String symbolName = astNode.isHumanNamePresent()
+      final String symbolName = astNode.isPresentHumanName()
           ? astNode.getHumanName()
           : astNode.getName();
       MCProdComponentSymbol prodComponent = new MCProdComponentSymbol(symbolName);
@@ -543,7 +526,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
       if (symbolDefinition.isGenSymbol()) {
         String symbolKindName = prodSymbol.getName();
       
-        if (symbolDefinition.isSymbolKindPresent()
+        if (symbolDefinition.isPresentSymbolKind()
           && !symbolDefinition.getSymbolKind().isEmpty()) {
           symbolKindName = symbolDefinition.getSymbolKind();
         }
@@ -618,8 +601,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
 
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param mcProdSymbol
    * @param astAttribute
    */

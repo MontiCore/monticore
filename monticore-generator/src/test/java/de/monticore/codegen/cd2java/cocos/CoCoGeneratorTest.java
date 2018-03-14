@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore.codegen.cd2java.cocos;
 
@@ -43,12 +26,6 @@ import java.util.Optional;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @since TODO: add version number
- */
 public class CoCoGeneratorTest extends AstDependentGeneratorTest {
 
   private ASTMCGrammar grammar;
@@ -83,8 +60,7 @@ public class CoCoGeneratorTest extends AstDependentGeneratorTest {
     assertTrue(ast.isPresent());
     grammar = ast.get();
     File targetFile = new File(OUTPUT_FOLDER);
-    cdCompilationUnit = mc.transformAstGrammarToAstCd(new GlobalExtensionManagement(),
-        grammar, symbolTable, targetPath);
+    cdCompilationUnit = mc.deriveCD(grammar, new GlobalExtensionManagement(), symbolTable);
     assertEquals("CD4Analysis", cdCompilationUnit.getCDDefinition().getName());
 
     CoCoGenerator.generate(glex, symbolTable, cdCompilationUnit, targetFile);
@@ -106,8 +82,7 @@ public class CoCoGeneratorTest extends AstDependentGeneratorTest {
 
     IterablePath targetPath = IterablePath.from(new File("target"), "java");
     File targetFile = new File(OUTPUT_FOLDER);
-    cdCompilationUnit = mc.transformAstGrammarToAstCd(new GlobalExtensionManagement(),
-        grammar, symbolTable, targetPath);
+    cdCompilationUnit = mc.deriveCD(grammar, new GlobalExtensionManagement(), symbolTable);
 
     CoCoGenerator.generate(glex, symbolTable, cdCompilationUnit, targetFile);
     // TODO needs asts and visitors to be generated first

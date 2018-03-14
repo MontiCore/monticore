@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore.emf._ast;
 
@@ -31,6 +14,7 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
+import de.se_rwth.commons.logging.Log;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 import com.google.common.collect.Lists;
@@ -68,6 +52,10 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   
   public abstract ASTNode deepClone();
   
+  // ----------------------------------------------------------------------
+  // Handle the Optional SourcePosition end
+  // ----------------------------------------------------------------------
+  
   public SourcePosition get_SourcePositionEnd() {
     if (end.isPresent()) {
       return end.get();
@@ -79,6 +67,26 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
     this.end = Optional.ofNullable(end);
   }
   
+  public Optional<SourcePosition> get_SourcePositionEndOpt() {
+    return end;
+  }
+  
+  public boolean isPresent_SourcePositionEnd()   {
+    return get_SourcePositionEndOpt().isPresent();
+  }
+  
+  public void set_SourcePositionEndAbsent()   {
+    end = Optional.empty();
+  }
+  
+  public void set_SourcePositionEndOpt(Optional<SourcePosition> value)   {
+    this.end = value;
+  }
+  
+  // ----------------------------------------------------------------------
+  // Handle the Optional SourcePosition start
+  // ----------------------------------------------------------------------
+  
   public SourcePosition get_SourcePositionStart() {
     if (start.isPresent()) {
       return start.get();
@@ -88,6 +96,22 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   
   public void set_SourcePositionStart(SourcePosition start) {
     this.start = Optional.ofNullable(start);
+  }
+  
+  public Optional<SourcePosition> get_SourcePositionStartOpt() {
+    return start;
+  }
+  
+  public boolean isPresent_SourcePositionStart()   {
+    return get_SourcePositionStartOpt().isPresent();
+  }
+  
+  public void set_SourcePositionStartAbsent()   {
+    start = Optional.empty();
+  }
+  
+  public void set_SourcePositionStartOpt(Optional<SourcePosition> value)   {
+    this.start = value;
   }
   
   /**
@@ -132,55 +156,133 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   public void setEnclosingScope(Scope enclosingScope) {
     this.enclosingScope = Optional.ofNullable(enclosingScope);
   }
-  
+
+  @Override
+  public void setEnclosingScopeOpt(Optional<? extends Scope > enclosingScopeOpt) {
+    this.enclosingScope = enclosingScopeOpt ;
+  }
+
+  @Override
+  public void setEnclosingScopeAbsent() {
+    this.enclosingScope = Optional.empty();
+  }
+
+  @Deprecated
   @Override
   public Optional<? extends Scope> getEnclosingScope() {
     return enclosingScope;
+  }
+
+//  @Override
+//  public Scope getEnclosingScope() {
+//    if (getEnclosingScopeOpt().isPresent()) {
+//      return getEnclosingScopeOpt().get();
+//    }
+//    Log.error("0xA7003 x222 getCloneASTOpt can't return a value. It is empty.");
+//    // Normally this statement is not reachable
+//    throw new IllegalStateException();
+//  }
+
+  @Override
+  public Optional<? extends Scope> getEnclosingScopeOpt() {
+    return this.enclosingScope;
   }
   
   @Override
   public void setSymbol(Symbol symbol) {
     this.symbol = Optional.ofNullable(symbol);
   }
-  
+
+  @Override
+  public void setSymbolOpt(Optional<? extends Symbol > enclosingSymbolOpt) {
+    this.symbol = enclosingSymbolOpt ;
+  }
+
+  @Override
+  public void setSymbolAbsent() {
+    this.symbol = Optional.empty();
+  }
+
+  @Deprecated
   @Override
   public Optional<? extends Symbol> getSymbol() {
     return symbol;
   }
+
+//  @Override
+//  public Symbol getSymbol() {
+//    if (getSymbolOpt().isPresent()) {
+//      return getSymbolOpt().get();
+//    }
+//    Log.error("0xA7003 x222 getCloneASTOpt can't return a value. It is empty.");
+//    // Normally this statement is not reachable
+//    throw new IllegalStateException();
+//  }
+
+  @Override
+  public Optional<? extends Symbol> getSymbolOpt() {
+    return this.symbol;
+  }
   
   @Override
-  public boolean spannedScopeIsPresent() {
+  public boolean isPresentSpannedScope() {
     return spannedScope.isPresent();
   }
   
   @Override
-  public boolean symbolIsPresent() {
+  public boolean isPresentSymbol() {
     return symbol.isPresent();
   }
   
   @Override
-  public boolean enclosingScopeIsPresent() {
+  public boolean isPresentEnclosingScope() {
     return enclosingScope.isPresent();
   }
-  
+
+  @Override
+  public void setSpannedScope(Scope spannedScope) {
+    this.spannedScope = Optional.ofNullable(spannedScope);
+  }
+
+  @Override
+  public void setSpannedScopeOpt(Optional<? extends Scope > spannedScopeOpt) {
+    this.spannedScope = spannedScopeOpt ;
+  }
+
+  @Override
+  public void setSpannedScopeAbsent() {
+    this.spannedScope = Optional.empty();
+  }
+
+  @Deprecated
   @Override
   public Optional<? extends Scope> getSpannedScope() {
     if (spannedScope.isPresent()) {
       return spannedScope;
     }
-    
+
     Optional<? extends Scope> result = Optional.empty();
     if (getSymbol().isPresent() && (getSymbol().get() instanceof ScopeSpanningSymbol)) {
       final ScopeSpanningSymbol sym = (ScopeSpanningSymbol) getSymbol().get();
       result = Optional.of(sym.getSpannedScope());
     }
-    
+
     return result;
   }
-  
+
+//  @Override
+//  public Scope getSpannedScope() {
+//    if (getSpannedScopeOpt().isPresent()) {
+//      return getSpannedScopeOpt().get();
+//    }
+//    Log.error("0xA7003 x222 getCloneASTOpt can't return a value. It is empty.");
+//    // Normally this statement is not reachable
+//    throw new IllegalStateException();
+//  }
+
   @Override
-  public void setSpannedScope(Scope spannedScope) {
-    this.spannedScope = Optional.ofNullable(spannedScope);
+  public Optional<? extends Scope> getSpannedScopeOpt() {
+    return this.spannedScope;
   }
   
   /**
@@ -210,7 +312,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public boolean add_PreComments(Comment precomment) {
+  public boolean add_PreComment(Comment precomment) {
     return this.precomments.add(precomment);
   }
   
@@ -220,7 +322,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public boolean contains_PreComments(Object element) {
+  public boolean contains_PreComment(Object element) {
     return this.precomments.contains(element);
   }
   
@@ -240,7 +342,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public boolean remove_PreComments(Object element) {
+  public boolean remove_PreComment(Object element) {
     return this.precomments.remove(element);
   }
   
@@ -265,7 +367,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public boolean removeIf_PreComments(Predicate<? super Comment> filter) {
+  public boolean removeIf_PreComment(Predicate<? super Comment> filter) {
     return this.precomments.removeIf(filter);
   }
   
@@ -290,7 +392,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public void add_PreComments(int index, Comment precomment) {
+  public void add_PreComment(int index, Comment precomment) {
     this.precomments.add(index, precomment);
   }
   
@@ -300,16 +402,17 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public Comment get_PreComments(int index) {
+  public Comment get_PreComment(int index) {
     return this.precomments.get(index);
   }
   
   @Override
-  public int indexOf_PreComments(Object element) {
+  public int indexOf_PreComment(Object element) {
     return this.precomments.indexOf(element);
   }
-  
-  public int lastIndexOf_PreComments(Object element) {
+
+  @Override
+  public int lastIndexOf_PreComment(Object element) {
     return this.precomments.lastIndexOf(element);
   }
   
@@ -324,12 +427,12 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public ListIterator<Comment> ListIterator_PreComments() {
+  public ListIterator<Comment> listIterator_PreComments() {
     return this.precomments.listIterator();
   }
   
   @Override
-  public Comment remove_PreComments(int index) {
+  public Comment remove_PreComment(int index) {
     return this.precomments.remove(index);
   }
   
@@ -364,7 +467,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
     }
   
   @Override
-  public Comment set_PreComments(int index, Comment precomment) {
+  public Comment set_PreComment(int index, Comment precomment) {
     return this.precomments.set(index, precomment);
   }
   
@@ -379,7 +482,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public boolean add_PostComments(Comment postcomment) {
+  public boolean add_PostComment(Comment postcomment) {
     return this.postcomments.add(postcomment);
   }
   
@@ -389,7 +492,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public boolean contains_PostComments(Object element) {
+  public boolean contains_PostComment(Object element) {
     return this.postcomments.contains(element);
   }
   
@@ -409,7 +512,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public boolean remove_PostComments(Object element) {
+  public boolean remove_PostComment(Object element) {
     return this.postcomments.remove(element);
   }
   
@@ -434,7 +537,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public boolean removeIf_PostComments(Predicate<? super Comment> filter) {
+  public boolean removeIf_PostComment(Predicate<? super Comment> filter) {
     return this.postcomments.removeIf(filter);
   }
   
@@ -459,7 +562,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public void add_PostComments(int index, Comment postcomment) {
+  public void add_PostComment(int index, Comment postcomment) {
     this.postcomments.add(index, postcomment);
   }
   
@@ -469,16 +572,17 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public Comment get_PostComments(int index) {
+  public Comment get_PostComment(int index) {
     return this.postcomments.get(index);
   }
   
   @Override
-  public int indexOf_PostComments(Object element) {
+  public int indexOf_PostComment(Object element) {
     return this.postcomments.indexOf(element);
   }
-  
-  public int lastIndexOf_PostComments(Object element) {
+
+  @Override
+  public int lastIndexOf_PostComment(Object element) {
     return this.postcomments.lastIndexOf(element);
   }
   
@@ -493,12 +597,12 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   }
   
   @Override
-  public ListIterator<Comment> ListIterator_PostComments() {
+  public ListIterator<Comment> listIterator_PostComments() {
     return this.postcomments.listIterator();
   }
   
   @Override
-  public Comment remove_PostComments(int index) {
+  public Comment remove_PostComment(int index) {
     return this.postcomments.remove(index);
   }
   
@@ -533,7 +637,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
     }
   
   @Override
-  public Comment set_PostComments(int index, Comment precomment) {
+  public Comment set_PostComment(int index, Comment precomment) {
     return this.postcomments.set(index, precomment);
   }
   

@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore.codegen.cd2java.ast;
 
@@ -42,7 +25,6 @@ import de.se_rwth.commons.cli.CLIArguments;
 import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 
 /**
  * Test for the MontiCore generator. Generates ast files for the example
@@ -157,13 +139,13 @@ public class AstGeneratorTest extends GeneratorTest {
   public void testInherited() {
     doGenerate("de/monticore/inherited/Supergrammar.mc4");
     doGenerate("de/monticore/inherited/sub/Subgrammar.mc4");
-    // doGenerate("de/monticore/inherited/subsub/Subsubgrammar.mc4");
+    //doGenerate("de/monticore/inherited/subsub/Subsubgrammar.mc4");
     Path path = Paths.get(OUTPUT_FOLDER, Names.getPathFromFilename("de/monticore/inherited/"));
     // assertTrue("There are compile errors in generated code for the models in
     // grammars/inherited.",
     // compile(path));
   }
-  
+
   @Test
   public void testInherited2() {
     doGenerate("de/monticore/fautomaton/action/Expression.mc4");
@@ -253,7 +235,7 @@ public class AstGeneratorTest extends GeneratorTest {
   }
   
   /**
-   * Checks if ast code already was generated TODO: Write me!
+   * Checks if ast code already was generated
    * 
    * @param grammar
    * @return

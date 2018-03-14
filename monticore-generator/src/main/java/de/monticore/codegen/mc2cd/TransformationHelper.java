@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore.codegen.mc2cd;
 
@@ -25,8 +8,6 @@ import static de.monticore.codegen.GeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -59,23 +40,17 @@ import de.monticore.grammar.symboltable.MCProdComponentSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.types._ast.ASTPrimitiveType;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.types.types._ast.ASTTypeArgument;
 import de.monticore.types.types._ast.ASTVoidType;
 import de.monticore.types.types._ast.TypesNodeFactory;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCD4AnalysisNode;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTModifier;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTStereoValue;
-import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
+import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParser;
 import de.monticore.umlcd4a.prettyprint.CDPrettyPrinterConcreteVisitor;
+import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.monticore.utils.ASTNodes;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -307,7 +282,7 @@ public final class TransformationHelper {
       if (type.isEnum() && type.getAstNode().isPresent()
           && type.getAstNode().get() instanceof ASTEnumProd) {
         for (ASTConstant enumValue : ((ASTEnumProd) type.getAstNode().get()).getConstantList()) {
-          String humanName = enumValue.isHumanNamePresent()
+          String humanName = enumValue.isPresentHumanName()
               ? enumValue.getHumanName()
               : enumValue.getName();
           constants.add(humanName);
@@ -346,6 +321,27 @@ public final class TransformationHelper {
           handwrittenFile);
     }
     return result;
+  }
+  
+  /**
+   * Get the corresponding CD for MC grammar if exists
+   *
+   * @param ast
+   * @return
+   */
+  public static Optional<ASTCDCompilationUnit> getCDforGrammar(GlobalScope globalScope,
+      ASTMCGrammar ast) {
+    final String qualifiedCDName = Names.getQualifiedName(ast.getPackageList(), ast.getName());
+    
+    Optional<CDSymbol> cdSymbol = globalScope.<CDSymbol> resolveDown(
+        qualifiedCDName, CDSymbol.KIND);
+
+    if (cdSymbol.isPresent() && cdSymbol.get().getEnclosingScope().getAstNode().isPresent()) {
+      Log.debug("Got existed symbol table for " + cdSymbol.get().getFullName(), TransformationHelper.class.getName());
+      return Optional.of((ASTCDCompilationUnit) cdSymbol.get().getEnclosingScope().getAstNode().get());
+    }
+    
+   return Optional.empty();
   }
   
   public static String getQualifiedTypeNameAndMarkIfExternal(
@@ -450,7 +446,7 @@ public final class TransformationHelper {
   public static void addStereoType(ASTCDInterface type,
       String stereotypeName,
       String stereotypeValue) {
-    if (!type.isModifierPresent()) {
+    if (!type.isPresentModifier()) {
       type.setModifier(CD4AnalysisNodeFactory.createASTModifier());
     }
     addStereotypeValue(type.getModifier(),
@@ -460,17 +456,25 @@ public final class TransformationHelper {
   public static void addStereoType(ASTCDAttribute attribute,
       String stereotypeName,
       String stereotypeValue) {
-    if (!attribute.isModifierPresent()) {
+    if (!attribute.isPresentModifier()) {
       attribute.setModifier(CD4AnalysisNodeFactory.createASTModifier());
     }
     addStereotypeValue(attribute.getModifier(),
+        stereotypeName, stereotypeValue);
+  }
+
+  public static void addStereoType(ASTCDMethod method,
+                                   String stereotypeName,
+                                   String stereotypeValue) {
+    method.setModifier(CD4AnalysisNodeFactory.createASTModifier());
+    addStereotypeValue(method.getModifier(),
         stereotypeName, stereotypeValue);
   }
   
   public static void addStereotypeValue(ASTModifier astModifier,
       String stereotypeName,
       String stereotypeValue) {
-    if (!astModifier.isStereotypePresent()) {
+    if (!astModifier.isPresentStereotype()) {
       astModifier.setStereotype(CD4AnalysisNodeFactory
           .createASTStereotype());
     }

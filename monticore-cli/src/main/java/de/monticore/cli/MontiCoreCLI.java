@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
 
 package de.monticore.cli;
 
@@ -51,8 +34,7 @@ import de.se_rwth.commons.logging.Slf4jLog;
 
 /**
  * Command line interface for MontiCore.
- * 
- * @author (last commit) $Author$
+ *
  */
 public final class MontiCoreCLI {
   
@@ -277,7 +259,6 @@ public final class MontiCoreCLI {
     System.out.println("-s, -script <script>         Optional script to control the generation workflow");
     System.out.println("-g, -grammars <path>         Instead of individual grammars: handle all grammars found");
     System.out.println("-fp, -templatePath <paths>   Optional list of directories to look for handwritten templates to integrate");
-    System.out.println("-otm, -addOutToModelpath     Specifies whether the output directory should be added to the model path (default is true)");
     System.out.println("-f, -force                    Secifies whether the code generation should be enforced, i.e. disable incremental code generation (default is false)");
     System.out.println("-d, -dev                     Specifies whether developer level logging should be used (default is false)");
     System.out.println("-cl, -customLog <file>       Optional logging configuration file to customize the logger");

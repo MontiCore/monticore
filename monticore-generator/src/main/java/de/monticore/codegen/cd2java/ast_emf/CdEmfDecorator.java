@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.ast_emf;
 
 import static de.monticore.codegen.GeneratorHelper.getPlainName;
@@ -43,6 +26,7 @@ import de.monticore.codegen.cd2java.ast.CdDecorator;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.mc2cd.transl.ConstantsTranslation;
+import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -51,7 +35,6 @@ import de.monticore.io.paths.IterablePath;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.TypesHelper;
 import de.monticore.types.TypesPrinter;
-import de.monticore.types.types._ast.ASTImportStatement;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.types.types._ast.TypesMill;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
@@ -59,7 +42,6 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDDefinition;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDEnum;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDEnumConstant;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
@@ -74,13 +56,11 @@ import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import groovyjarjarantlr.ANTLRException;
 import transformation.ast.ASTCDRawTransformation;
-import de.monticore.generating.GeneratorSetup;
 
 /**
  * Decorates class diagrams by adding of new classes and methods using in emf
  * compatible ast files
  *
- * @author (last commit) $Author$
  */
 public class CdEmfDecorator extends CdDecorator {
   
@@ -116,7 +96,7 @@ public class CdEmfDecorator extends CdDecorator {
     List<ASTCDType> nativeTypes = astHelper.getNativeTypes(cdDefinition);
     
     List<ASTCDClass> astNotAbstractClasses = cdDefinition.getCDClassList().stream()
-        .filter(e -> e.isModifierPresent())
+        .filter(e -> e.isPresentModifier())
         .filter(e -> !e.getModifier().isAbstract())
         .collect(Collectors.toList());
         
@@ -154,12 +134,7 @@ public class CdEmfDecorator extends CdDecorator {
       addNodeGetter(clazz, astHelper);
 
       Optional<ASTCDClass> builder = astHelper.getASTBuilder(clazz);
-      if(builder.isPresent()) {
-        addListMethods(builder.get(), astHelper, cdDefinition);
-        addGetter(builder.get(), astHelper);
-        addSetter(builder.get(), astHelper, cdDefinition);
-        addOptionalMethods(builder.get(), astHelper, cdDefinition);
-      }
+      builder.ifPresent(astcdClass -> decorateBuilderClass(astcdClass, astHelper, cdDefinition));
       
       glex.replaceTemplate("ast.AstImports", clazz, new TemplateHookPoint("ast_emf.AstEImports"));
     }
@@ -176,7 +151,7 @@ public class CdEmfDecorator extends CdDecorator {
     // Additional imports
     cdCompilationUnit.getImportStatementList().add(
         TypesMill.importStatementBuilder()
-            .imports(
+            .setImportList(
                 Lists.newArrayList(VisitorGeneratorHelper.getQualifiedVisitorType(astHelper
                     .getPackageName(), cdDefinition.getName())))
             .build());
@@ -187,8 +162,7 @@ public class CdEmfDecorator extends CdDecorator {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param astHelper
    * @param astNotListClasses
    */
@@ -212,8 +186,7 @@ public class CdEmfDecorator extends CdDecorator {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param astClasses
    * @param map.
    */
@@ -488,8 +461,7 @@ public class CdEmfDecorator extends CdDecorator {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param clazz
    * @param astHelper
    */
@@ -576,8 +548,7 @@ public class CdEmfDecorator extends CdDecorator {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param clazz
    * @param astHelper
    */
@@ -592,8 +563,7 @@ public class CdEmfDecorator extends CdDecorator {
   }
   
   /**
-   * TODO: Write me!
-   * 
+   *
    * @param clazz
    * @param astHelper
    */
@@ -756,7 +726,7 @@ public class CdEmfDecorator extends CdDecorator {
     }
     
     ASTCDEnum astEnum = enumConstants.get();
-    astEnum.getCDEnumConstantList().add(0, CD4AnalysisMill.cDEnumConstantBuilder().name("DEFAULT").build());
+    astEnum.getCDEnumConstantList().add(0, CD4AnalysisMill.cDEnumConstantBuilder().setName("DEFAULT").build());
     astEnum.getInterfaceList()
         .add(new ASTCDRawTransformation().createType("org.eclipse.emf.common.util.Enumerator"));
         

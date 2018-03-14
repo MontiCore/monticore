@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore.antlr4;
 
@@ -75,38 +58,6 @@ public abstract class MCConcreteParser {
   
   public void setError(boolean value) {
     hasErrors = value;
-  }
-  
-  /**
-   * Indicates what should be parsed: The Rule or the rule followed by an EOF
-   * (End Of File)
-   */
-  @Deprecated // MB: Remove after Release 4.5.4
-  public enum ParserExecution {
-    NORMAL, EOF
-  }
-  
-  // Default is normal
-  ParserExecution parserTarget = ParserExecution.NORMAL;
-  
-  /**
-   * Returns if parser parses Rule or Rule followed by EOF
-   * 
-   * @return Parser.EOF iff rule is parsed with followed EOF
-   */
-  @Deprecated // MB: Remove after Release 4.5.4
-  public ParserExecution getParserTarget() {
-    return parserTarget;
-  }
-  
-  /**
-   * Sets if parser parses Rule or Rule followed by EOF
-   * 
-   * @param parserTarget
-   */
-  @Deprecated // MB: Remove after Release 4.5.4
-  public void setParserTarget(ParserExecution parserTarget) {
-    this.parserTarget = parserTarget;
   }
   
 }

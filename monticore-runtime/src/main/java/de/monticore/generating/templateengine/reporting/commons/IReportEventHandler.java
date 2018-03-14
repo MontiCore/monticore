@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore.generating.templateengine.reporting.commons;
 
@@ -28,12 +11,6 @@ import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.symboltable.Scope;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @since TODO: add version number
- */
 public interface IReportEventHandler {
 
 	public void reportModelStart(ASTNode ast, String modelName, String fileName);
@@ -51,7 +28,6 @@ public interface IReportEventHandler {
 			String qualifiedfilename, String fileextension, ASTNode ast);
 
 	/**
-	 * TODO: Write me!
 	 *
 	 * @param templatename
 	 * @param ast
@@ -59,7 +35,6 @@ public interface IReportEventHandler {
 	public void reportTemplateEnd(String templatename, ASTNode ast);
 
 	/**
-	 * TODO: Write me!
 	 *
 	 * @param modelname
 	 * @param filename
@@ -67,14 +42,12 @@ public interface IReportEventHandler {
 	public void reportModelEnd(String modelname, String filename);
 
 	/**
-	 * TODO: Write me!
 	 *
 	 * @param qualifiedName
 	 */
 	public void reportModelLoad(String qualifiedName);
 
 	/**
-	 * TODO: Write me!
 	 *
 	 * @param name
 	 * @param value
@@ -82,7 +55,6 @@ public interface IReportEventHandler {
 	public void reportSetValue(String name, Object value);
 
 	/**
-	 * TODO: Write me!
 	 *
 	 * @param name
 	 * @param value
@@ -91,7 +63,6 @@ public interface IReportEventHandler {
 	public void reportAddValue(String name, Object value, int size);
 
 	/**
-	 * TODO: Write me!
 	 *
 	 * @param className
 	 * @param params
@@ -99,7 +70,6 @@ public interface IReportEventHandler {
 	public void reportInstantiate(String className, List<Object> params);
 
 	/**
-	 * TODO: Write me!
 	 *
 	 * @param templateName
 	 * @param ast
@@ -107,7 +77,6 @@ public interface IReportEventHandler {
 	public void reportTemplateInclude(String templateName, ASTNode ast);
 
 	/**
-	 * TODO: Write me!
 	 *
 	 * @param templateName
 	 * @param ast
@@ -115,7 +84,6 @@ public interface IReportEventHandler {
 	public void reportTemplateWrite(String templateName, ASTNode ast);
 
 	/**
-	 * TODO: Write me!
 	 *
 	 * @param hookName
 	 * @param hp
@@ -123,7 +91,6 @@ public interface IReportEventHandler {
 	public void reportSetHookPoint(String hookName, HookPoint hp);
 
 	/**
-	 * TODO: Write me!
 	 *
 	 * @param hookName
 	 * @param hp
@@ -133,14 +100,12 @@ public interface IReportEventHandler {
 			ASTNode ast);
 
 	/**
-	 * TODO: Write me!
 	 *
 	 * @param hookName
 	 */
 	public void reportCallHookPointEnd(String hookName);
 
 	/**
-	 * TODO: Write me!
 	 *
 	 * @param oldTemplate
 	 * @param node
@@ -150,7 +115,6 @@ public interface IReportEventHandler {
 			ASTNode node, HookPoint newHp);
 
 	/**
-	 * TODO: Write me!
 	 *
 	 * @param hp
 	 * @param ast
@@ -159,7 +123,6 @@ public interface IReportEventHandler {
 			List<HookPoint> hps, ASTNode ast);
 
 	/**
-	 * TODO: Write me!
 	 *
 	 * @param hp
 	 * @param ast
@@ -168,7 +131,6 @@ public interface IReportEventHandler {
 			List<HookPoint> hps, ASTNode ast);
 
 	/**
-	 * TODO: Write me!
 	 *
 	 * @param hp
 	 * @param ast
@@ -177,7 +139,6 @@ public interface IReportEventHandler {
 			Collection<HookPoint> beforeHPs, ASTNode ast);
 
 	/**
-	 * TODO: Write me!
 	 *
 	 * @param hp
 	 * @param ast
@@ -186,7 +147,6 @@ public interface IReportEventHandler {
 			Collection<HookPoint> afterHPs, ASTNode ast);
 
 	/**
-	 * TODO: Write me!
 	 *
 	 * @param oldTemplate
 	 * @param newHps
@@ -195,7 +155,6 @@ public interface IReportEventHandler {
 			List<? extends HookPoint> newHps);
 
 	/**
-	 * TODO: Write me!
 	 *
 	 * @param template
 	 * @param beforeHps
@@ -204,7 +163,6 @@ public interface IReportEventHandler {
 			List<? extends HookPoint> beforeHps);
 
 	/**
-	 * TODO: Write me!
 	 *
 	 * @param template
 	 * @param afterHps
@@ -213,7 +171,6 @@ public interface IReportEventHandler {
 			List<? extends HookPoint> afterHps);
 
 	/**
-	 * TODO: Write me!
 	 *
 	 * @param transformationName
 	 */
@@ -222,35 +179,30 @@ public interface IReportEventHandler {
 	public abstract void flush(ASTNode ast);
 
 	/**
-	 * TODO: Write me!
 	 *
 	 * @param fileName
 	 */
 	public void reportUseHandwrittenCodeFile(Path parentDir, Path fileName);
 
   /**
-   * TODO: Write me!
    *
    * @param fileName
    */
   public void reportUserSpecificTemplate(Path parentDir, Path fileName);
 
   /**
-	 * TODO: Write me!
 	 *
 	 * @param message
 	 */
 	public void reportWarning(String message);
 
 	/**
-	 * TODO: Write me!
 	 *
 	 * @param message
 	 */
 	public void reportError(String message);
 
 	/**
-	 * TODO: Write me!
 	 *
 	 * @param transformationName
 	 * @param attributeName
@@ -259,7 +211,6 @@ public interface IReportEventHandler {
 			ASTNode ast, String attributeName);
 
 	/**
-	 * TODO: Write me!
 	 *
 	 * @param transformationName
 	 */
@@ -267,7 +218,6 @@ public interface IReportEventHandler {
 			ASTNode ast);
 
 	/**
-	 * TODO: Write me!
 	 *
 	 * @param transformationName
 	 * @param ast
@@ -282,13 +232,11 @@ public interface IReportEventHandler {
 	void reportParseInputFile(Path inputFilePath, String modelName);
 
   /**
-   * TODO: Write me!
    * @param scope
    */
   public void reportSymbolTableScope(Scope scope);
 
   /**
-   * TODO: Write me!
    * @param className
    * @param methodName
    * @param params

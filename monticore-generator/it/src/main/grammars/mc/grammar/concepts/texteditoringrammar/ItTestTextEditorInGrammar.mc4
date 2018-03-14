@@ -1,35 +1,18 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package mc.grammar.concepts.texteditoringrammar;
 
-component grammar ItTestTextEditorInGrammar extends mc.grammars.literals.ItTestLiterals {
+component grammar ItTestTextEditorInGrammar extends mc.grammar.literals.ItTestLiterals {
 			
      token NUM = ('0'..'9')+;
 
 	TextEditorInGrammarConcept=
 		 "{" 
-		   (Keywords: KeywordDefinition)?
-		   (Foldings: FoldingDefinition)?
-		   (Segments:SegmentDefinition)* 		   
-		   ("categories" "{" (Category:CategoryDefinition)* "}")? 
-		   ("filters" "{" (Filter:FilterDefinition)* "}")?		   
+		   (keywords:KeywordDefinition)?
+		   (foldings:FoldingDefinition)?
+		   (segments:SegmentDefinition)*
+		   ("categories" "{" (category:CategoryDefinition)* "}")?
+		   ("filters" "{" (filter:FilterDefinition)* "}")?
 		"}";
 	
 	astrule TextEditorInGrammarConcept =
@@ -39,34 +22,34 @@ component grammar ItTestTextEditorInGrammar extends mc.grammars.literals.ItTestL
 		};	
 	
 	KeywordDefinition=
-		"keywords" ":" Keywords:(WordDefinition || ",")+ ";";
+		"keywords" ":" keywords:(WordDefinition || ",")+ ";";
 
 	FoldingDefinition=
-		"foldable" ":" Foldables: WordDefinition ("," Foldables: WordDefinition)* ";";
+		"foldable" ":" foldables:WordDefinition ("," foldables:WordDefinition)* ";";
 
 	CategoryDefinition=
-		(Overriding:["overrides"])? Name  ( "(" Weight:NUM ")" )? ":" Member:(Name || ",")+ ";";
+		(overriding:["overrides"])? Name  ( "(" weight:NUM ")" )? ":" member:(Name || ",")+ ";";
 		
 	FilterDefinition=
-		FilterName:Name ":" SegmentType:(Name || ",")+ "(" (PluginName: String ",")? PicturePath: String ")" (ToolTip: String)? ";"			
+		filterName:Name ":" segmentType:(Name || ",")+ "(" (pluginName: String ",")? picturePath: String ")" (toolTip: String)? ";"
 	;	
 
 	SegmentDefinition=
-		(TopLevel:["toplevel"])? "segment" ":" Rule:Name ( "("  (PluginName: String ",")? PicturePath: String  ")" )?
-		"show" ":" ( ToString:["toString"]  | ( Components:Component)*  | methodDeclaration:Method ) ";";
+		(topLevel:["toplevel"])? "segment" ":" rule:Name ( "("  (pluginName:String ",")? picturePath:String  ")" )?
+		"show" ":" ( toString:["toString"]  | ( components:Component)*  | methodDeclaration:Method ) ";";
 	
 	external Method;
 	
 	interface Component;	
 		
 	SimpleString implements Component=
-		String:String;
+		string:String;
 		
 	Attribute implements Component =
-		Name ("." Method:Name "(" ")")* ( "[" Separator: String "]" )? ;
+		Name ("." method:Name "(" ")")* ( "[" separator:String "]" )? ;
 	
 	//keywords must be added explicit here because of the use in the above Segmentdefinition
 	WordDefinition=
-		Word:Name | Word:"catch" | | Word:"try" | Word:"return" | Word:"protected";
+		word:Name | word:"catch" | | word:"try" | word:"return" | word:"protected";
 		
 }

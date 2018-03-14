@@ -1,25 +1,9 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore.generating.templateengine.freemarker;
 
 import java.net.URL;
+import java.util.Optional;
 
 import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.logging.Log;
@@ -29,7 +13,6 @@ import freemarker.cache.URLTemplateLoader;
  * Is used to load templates with a given {@link ClassLoader}.
  * 
  * @author Arne Haber
- * 
  */
 public class MontiCoreTemplateLoader extends URLTemplateLoader {
   
@@ -66,9 +49,10 @@ public class MontiCoreTemplateLoader extends URLTemplateLoader {
     // Since the input is almost always dot separated, this method just goes ahead and converts it
     // without checking, only in the rare case that this procedure is unsuccessful are
     // alternatives considered
-    URL result = ioWrapper.getResource(classLoader, templateName.replace('.', '/').concat(FreeMarkerTemplateEngine.FM_FILE_EXTENSION));
-    if (result != null) {
-      return result;
+    Optional<URL> result = ioWrapper.getResource(classLoader,
+        templateName.replace('.', '/').concat(FreeMarkerTemplateEngine.FM_FILE_EXTENSION));
+    if (result.isPresent()) {
+      return result.get();
     }
     // if the search was still unsuccessful the method tries once more and checks if the problem
     // was that the original input already had the .ftl suffix (in that case the previous
@@ -77,11 +61,13 @@ public class MontiCoreTemplateLoader extends URLTemplateLoader {
     if (templateName.endsWith(FreeMarkerTemplateEngine.FM_FILE_EXTENSION)) {
       String newName = templateName.substring(0,
           templateName.length() - FreeMarkerTemplateEngine.FM_FILE_EXTENSION.length());
-      result = ioWrapper.getResource(classLoader, newName.replace('.', '/').concat(FreeMarkerTemplateEngine.FM_FILE_EXTENSION));
-    } else {
+      result = ioWrapper.getResource(classLoader,
+          newName.replace('.', '/').concat(FreeMarkerTemplateEngine.FM_FILE_EXTENSION));
+    }
+    else {
       result = ioWrapper.getResource(classLoader, templateName);
     }
-    return result;
+    return result.orElse(null);
   }
   
 }

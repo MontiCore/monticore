@@ -1,8 +1,4 @@
-/*
- * Copyright (c) 2017, MontiCore. All rights reserved.
- *
- * http://www.se-rwth.de/
- */
+/* (c)  https://github.com/MontiCore/monticore */
 package org.nest.commons;
 
 grammar Commons extends mc.grammar.types.ItTestTypes {
@@ -16,7 +12,7 @@ grammar Commons extends mc.grammar.types.ItTestTypes {
       )?
       : {_channel = HIDDEN;
       if (getCompiler() != null) {
-        de.monticore.CommentExt _comment = new de.monticore.CommentExt(getText());
+        de.monticore.ast.Comment _comment = new de.monticore.ast.Comment(getText());
         _comment.set_SourcePositionStart(new de.se_rwth.commons.SourcePosition(getLine(), getCharPositionInLine()));
         _comment.set_SourcePositionEnd(getCompiler().computeEndPosition(getToken()));
         getCompiler().addComment(_comment);

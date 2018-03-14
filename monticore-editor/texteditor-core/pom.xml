@@ -4,7 +4,11 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore-editor</artifactId>
+<<<<<<< HEAD
     <version>4.5.5.1</version>
+=======
+    <version>5.0.0</version>
+>>>>>>> refs/heads/dev
   </parent>
 
   <artifactId>texteditor-core</artifactId>

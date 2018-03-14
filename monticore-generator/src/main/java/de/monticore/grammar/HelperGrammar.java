@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore.grammar;
 
@@ -82,7 +65,7 @@ public class HelperGrammar {
   public static String getUsuageName(ASTNonTerminal a) {
     
     String name;
-    if (a.isUsageNamePresent()) {
+    if (a.isPresentUsageName()) {
       name = a.getUsageName();
     }
     else {
@@ -96,7 +79,7 @@ public class HelperGrammar {
   public static String getListName(ASTNonTerminal a) {
     
     String name;
-    if (a.isUsageNamePresent()) {
+    if (a.isPresentUsageName()) {
       name = a.getUsageName();
       if (name.endsWith(TransformationHelper.LIST_SUFFIX)) {
         name = name.substring(0, name.length()-TransformationHelper.LIST_SUFFIX.length())
@@ -131,7 +114,7 @@ public class HelperGrammar {
     
     String name = a.getName();
     // simple String
-    if (!a.isVariablePresent()) {
+    if (!a.isPresentVariable()) {
       return createStringConvertFunction(name);
     }
     
@@ -204,7 +187,7 @@ public class HelperGrammar {
     }
     // specific function
     else {
-      if (a.isBlockPresent()) {
+      if (a.isPresentBlock()) {
         StringBuilder buffer = new StringBuilder();
         buffer.append(prettyPrinter.prettyprint(a.getBlock()));
         String createConvertFunction = createConvertFunction(name,
@@ -234,7 +217,7 @@ public class HelperGrammar {
   
   public static String createConvertType(ASTLexProd a) {
     
-    if (!a.isVariablePresent()) {
+    if (!a.isPresentVariable()) {
       return "String";
     }
     String variable = a.getVariable();
@@ -319,7 +302,7 @@ public class HelperGrammar {
   }
   
   public static boolean hasValidName(ASTConstant astConstant) {
-    if (astConstant.isHumanNamePresent()) {
+    if (astConstant.isPresentHumanName()) {
       return true;
     }
     String constName = astConstant.getName();
@@ -352,7 +335,7 @@ public class HelperGrammar {
   public static String getAttributeNameForConstant(ASTConstant astConstant) {
     String name;
     
-    if (astConstant.isHumanNamePresent()) {
+    if (astConstant.isPresentHumanName()) {
       name = astConstant.getHumanName();
     }
     else {

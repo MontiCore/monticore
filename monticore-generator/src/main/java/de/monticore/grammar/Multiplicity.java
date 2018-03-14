@@ -1,21 +1,4 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
- *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
- */
+/* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore.grammar;
 
@@ -65,17 +48,17 @@ public enum Multiplicity {
   }
   
   public static Multiplicity multiplicityOfAttributeInAST(ASTAttributeInAST attributeInAST) {
-    if (!attributeInAST.isCardPresent()) {
+    if (!attributeInAST.isPresentCard()) {
       return STANDARD;
     }
     ASTCard cardinality = attributeInAST.getCard();
-    if (!cardinality.isMaxPresent() || cardinality.isUnbounded()
+    if (!cardinality.isPresentMax() || cardinality.isUnbounded()
         || "*".equals(cardinality.getMax())
         || getMaxCardinality(cardinality) != 1) {
       return LIST;
     }
     else {
-      if (!cardinality.isMinPresent() || getMinCardinality(cardinality)==0)  {
+      if (!cardinality.isPresentMin() || getMinCardinality(cardinality)==0)  {
         return OPTIONAL;
       }
     }
