@@ -52,16 +52,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.mod4j.org.eclipse.emf</groupId>
-      <artifactId>ecore</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.mod4j.org.eclipse.emf.ecore</groupId>
-      <artifactId>xmi</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
     </dependency>
@@ -85,7 +75,6 @@
     <dependency>
       <groupId>de.monticore</groupId>
       <artifactId>monticore-grammar</artifactId>
-      <classifier>${emf.classifier}</classifier>
     </dependency>
 
     <dependency>
@@ -100,10 +89,10 @@
     </dependency>
 
     <dependency>
-      <groupId>jline</groupId>
-      <artifactId>jline</artifactId>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr4-runtime</artifactId>
     </dependency>
-
+ 
     <!-- AST generation dependencies -->
     <dependency>
       <groupId>de.monticore.lang</groupId>
@@ -119,23 +108,6 @@
       <groupId>de.monticore</groupId>
       <artifactId>javaDSL</artifactId>
       <classifier>${grammars.classifier}</classifier>
-    </dependency>
-
-    <!-- EMF test dependencies -->
-    <dependency>
-      <groupId>org.eclipse.emf</groupId>
-      <artifactId>org.eclipse.emf.compare</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.emf</groupId>
-      <artifactId>org.eclipse.emf.compare.match</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.emf</groupId>
-      <artifactId>org.eclipse.emf.compare.diff</artifactId>
-      <scope>test</scope>
     </dependency>
 
   </dependencies>

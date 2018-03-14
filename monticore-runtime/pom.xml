@@ -56,7 +56,7 @@
 
     <dependency>
       <groupId>org.antlr</groupId>
-      <artifactId>antlr4</artifactId>
+      <artifactId>antlr4-runtime</artifactId>
     </dependency>
 
     <dependency>
