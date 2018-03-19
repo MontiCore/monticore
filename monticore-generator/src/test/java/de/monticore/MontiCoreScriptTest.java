@@ -232,7 +232,7 @@ public class MontiCoreScriptTest {
   @Test
   public void testDefaultScriptSupersubgrammarArgs() {
     Log.getFindings().clear();
-    testDefaultScript(inheritedgrammarArgs);
+    testDefaultScript(supersubgrammarArgs);
     Assert.assertTrue(Log.getFindings().isEmpty());
   }
   
