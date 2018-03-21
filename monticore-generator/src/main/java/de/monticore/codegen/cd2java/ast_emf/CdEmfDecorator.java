@@ -142,7 +142,10 @@ public class CdEmfDecorator extends CdDecorator {
     cdDefinition.getCDClassList().forEach(c -> makeAbstractIfHWC(c));
     
     for (ASTCDInterface interf : cdDefinition.getCDInterfaceList()) {
+      addOptionalMethods(interf,astHelper);
       addGetter(interf);
+      addSetter(interf);
+      addListMethods(interf, astHelper);
     }
     
     // Add ASTConstant class
@@ -198,7 +201,7 @@ public class CdEmfDecorator extends CdDecorator {
     addEPackageInterface(cdCompilationUnit, types, map.values(), astHelper);
     addEPackageImplementation(cdCompilationUnit, types, map, astHelper);
     addLiteralsEnum(cdCompilationUnit, astHelper);
-    
+
     // Decorate with additional EMF methods and attributes
     for (ASTCDClass clazz : astClasses) {
       addEGetter(clazz, astHelper);
