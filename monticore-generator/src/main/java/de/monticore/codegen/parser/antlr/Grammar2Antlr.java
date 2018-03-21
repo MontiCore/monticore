@@ -758,6 +758,10 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     }
   }
 
+  public void traverse(de.monticore.grammar.grammar._ast.ASTAbstractProd node) {
+    //no parser generation for abstract classes
+  }
+
   // ----------------- End of visit methods
   // ---------------------------------------------
 
