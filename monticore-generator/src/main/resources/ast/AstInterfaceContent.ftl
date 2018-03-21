@@ -10,8 +10,9 @@ ${tc.signature("visitorPackage", "visitorType")}
 
 <#assign genHelper = glex.getGlobalVar("astHelper")>
 
+<#-- handle imports from model -->
+${tc.include("ast.AstImports")}
 import ${visitorPackage}.${visitorType};
-import java.util.Optional;
 
 public interface ${ast.getName()} extends ${tc.include("ast.AstExtendedInterfaces")} ${genHelper.getASTNodeBaseType()} {
   <#-- generate all methods -->

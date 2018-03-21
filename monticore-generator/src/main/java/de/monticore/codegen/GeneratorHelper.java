@@ -1607,6 +1607,16 @@ public class GeneratorHelper extends TypesHelper {
         return resolveCdType(nameToResolve).isPresent();
     }
 
+    public boolean isAstInterface(ASTCDInterface interf) {
+        String simpleName = Names.getSimpleName(interf.getName());
+        if (!simpleName.startsWith(AST_PREFIX)) {
+            return false;
+        }
+        String nameToResolve = interf.getName().contains(".") ? interf.getName() : qualifiedName + "."
+            + interf.getName();
+        return resolveCdType(nameToResolve).isPresent();
+    }
+
     public String getCdName() {
         return cdDefinition.getName();
     }

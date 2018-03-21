@@ -1,0 +1,21 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.interfaces;
+
+grammar OptionalGeneration extends mc.grammar.lexicals.ItTestLexicals {
+
+  Word = minus:"-" ("a" | "b");
+
+  interface Opt1 = "abc" Name?;
+
+  interface Opt2 = "def" Word? Name?;
+
+  Test1 implements Opt1 = "abc";
+
+  Test2 implements Opt1 = "abc" Name?;
+
+  Test3 implements Opt2 = "def" Word?;
+
+  Test4 implements Opt2 = "def" Name?;
+
+  }

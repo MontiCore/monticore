@@ -1,4 +1,3 @@
-
 /* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore
@@ -13,12 +12,14 @@ globalScope = createGlobalScope(modelPath)
 // Parse grammar
 astGrammars = parseGrammars(grammars)
 
+IncrementalChecker.initialize(out)
+
 for (astGrammar in astGrammars) {
+    input = grammarIterator.next()
+    if (force || !IncrementalChecker.isUpToDate(input, out, modelPath, templatePath, handcodedPath)) {
+        astGrammar = createSymbolsFromAST(globalScope, astGrammar)
 
-    astGrammar = createSymbolsFromAST(globalScope, astGrammar)
-
-    // Generate parser
-    generateParser(glex, astGrammar, globalScope, handcodedPath, out, false, Languages.PYTHON_3)
-    generateParser(glex, astGrammar, globalScope, handcodedPath, out, false, Languages.JAVA)
-
+        // Generate parser
+        generateParser(glex, astGrammar, globalScope, handcodedPath, out, false, Languages.PYTHON_3)
+    }
 }
