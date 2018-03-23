@@ -84,6 +84,18 @@ public class AstGeneratorHelper extends GeneratorHelper {
         }).findAny();
   }
   
+  public static boolean inheritsFromASTNodeBuilder(ASTCDClass clazz) {
+    if(clazz.isPresentSuperclass()) {
+      String type = clazz.printSuperClass();
+      int index = type.indexOf('<');
+      if (index != -1) {
+        type = type.substring(0, index);
+      }
+      return "ASTNodeBuilder".equals(type) || "de.monticore.ast.ASTNodeBuilder".equals(type);
+    }
+    return false;
+  }
+  
   public static boolean compareAstTypes(String qualifiedType, String type) {
     if (type.indexOf('.') != -1) {
       return qualifiedType.equals(type);

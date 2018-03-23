@@ -1,0 +1,12 @@
+package mc.feature.inheritence.sup.sub;
+
+grammar SubGrammar extends mc.feature.inheritence.sup.SuperGrammar {
+
+  B extends X = D;
+
+  D = "dd";
+
+  A = a:Name;
+
+  C extends A = c:Name;
+}

@@ -34,12 +34,27 @@ ${tc.include("ast.AstImports")}
     public abstract ${typeName} build();
   <#else>
     public ${typeName} build() {
+      this.validate();
       ${typeName} value = new ${typeName} (${tc.include("ast.ParametersDeclaration")}
       );
       ${tc.include("ast.AstBuildMethod")}
       return value;
     }
   </#if>
+
+    protected void validate() {
+  <#list astType.getCDAttributeList() as attribute>
+    <#if !genHelper.isInherited(attribute) && !genHelper.isAdditionalAttribute(attribute)>
+      <#if !genHelper.isOptional(attribute) && !genHelper.isListType(attribute.printType())
+        && !genHelper.isPrimitive(attribute.getType())>
+      if (${attribute.getName()} == null) {
+        Log.error("0xA7222${genHelper.getGeneratedErrorCode(attribute)} ${attribute.getName()} of type ${attribute.printType()} must not be null");
+        throw new IllegalStateException();
+      }
+      </#if>
+    </#if>
+  </#list>
+    }
 
     <#list ast.getCDMethodList() as method>
       ${tc.includeArgs("ast.ClassMethod", [method, ast])}
