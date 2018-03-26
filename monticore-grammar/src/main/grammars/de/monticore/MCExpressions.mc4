@@ -110,7 +110,8 @@ BooleanOrOpExpression implements Expression <80> =
 	leftExpression:Expression "||" rightExpression:Expression;
 	
 ConditionalExpression implements Expression <70> =
-	condition:Expression "?" trueExpression:Expression ":" falseExpression:Expression;
+	condition:Expression "?" trueExpression:Expression ":"
+                                 falseExpression:Expression;
 	
 AssignmentExpression implements Expression <60> = <rightassoc>
 	leftExpression:Expression

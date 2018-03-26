@@ -180,7 +180,7 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testBasics2() throws IOException {
-    ASTCompleteness ast = parser.parse_StringCompleteness( "(  ... )"  ).get();
+    ASTCompleteness ast = parser.parse_StringCompleteness( "(...)"  ).get();
     assertEquals(false, ast.isComplete());
     assertEquals(true, ast.isIncomplete());
     assertEquals(false, ast.isRightComplete());

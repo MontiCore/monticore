@@ -131,7 +131,7 @@ public class IncrementalChecker {
     }
 
     // check if handwritten files been added
-    if (handwrittenCodeAdded(story.get().outputStories)) {
+    if (handwrittenCodeAdded(story.get().outputStories, hwcPath)) {
       Log.info("Changes detected for " + inputPath.toString() + ". Regenerating...",
           IncrementalChecker.class.getName());
       return false;
@@ -324,11 +324,11 @@ public class IncrementalChecker {
    * @param outputFiles
    * @return whether the altogether state of handwritten artifacts changed
    */
-  protected static boolean handwrittenCodeAdded(Set<String> outputFiles) {
+  protected static boolean handwrittenCodeAdded(Set<String> outputFiles, IterablePath hwcPath) {
     for (String file : outputFiles) {
-      File hwcFile = new File("src/main/java/" + file);
-      if (hwcFile.exists() && !hwcFile.isDirectory()) {
-        Log.debug("The handwritten file " + hwcFile + " has been added.",
+      
+      if (hwcPath.exists(Paths.get(file))) {
+        Log.debug("The handwritten file " + file + " has been added.",
             IncrementalChecker.class.getName());
         return true;
       }

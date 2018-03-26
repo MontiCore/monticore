@@ -8,6 +8,5 @@ ${tc.signature("method", "clazz", "superclasses")}
      ${attributeName} = null;
    </#list>
    <#list superclasses as superClass>
-     // TODO : add after next release
-     // ${superClass?lower_case}._ast.${nameHelper.getSimpleName(superClass)}Mill.reset();
+     ${superClass?lower_case}._ast.${nameHelper.getSimpleName(superClass)}Mill.reset();
    </#list>
