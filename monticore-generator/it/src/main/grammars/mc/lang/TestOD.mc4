@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package mc.grammars;
+package mc.lang;
 
-grammar TestOD extends mc.grammars.common.TestCommon { 
+grammar TestOD extends mc.grammar.common.ItTestCommon {
       
     /*========================================================================*/
     /*=========================== CompilationUnit ============================*/

@@ -4,6 +4,7 @@ package de.monticore.codegen.cd2java.ast;
 
 import java.util.Optional;
 
+import com.google.common.base.Joiner;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
@@ -24,15 +25,29 @@ import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import de.monticore.generating.GeneratorSetup;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 
 public class AstGeneratorHelper extends GeneratorHelper {
   
   protected static final String AST_BUILDER = "Builder";
+
+  private final MCGrammarSymbol grammarSymbol;
   
   public AstGeneratorHelper(ASTCDCompilationUnit topAst, GlobalScope symbolTable) {
     super(topAst, symbolTable);
+    String qualifiedGrammarName = topAst.getPackageList().isEmpty()
+        ? this.cdDefinition.getName()
+        : Joiner.on('.').join(Names.getQualifiedName(topAst.getPackageList()),
+        this.cdDefinition.getName());
+
+    grammarSymbol = symbolTable.<MCGrammarSymbol> resolve(
+        qualifiedGrammarName, MCGrammarSymbol.KIND).orElse(null);
   }
-  
+
+  public MCGrammarSymbol getGrammarSymbol() {
+    return this.grammarSymbol;
+  }
+
   public String getAstAttributeValue(ASTCDAttribute attribute, ASTCDType clazz) {
     return getAstAttributeValue(attribute);
   }

@@ -130,7 +130,7 @@ public class CdEmfDecorator extends CdDecorator {
       addGetter(clazz, astHelper);
       addSetter(clazz, astHelper);
       addOptionalMethods(clazz, astHelper, cdDefinition);
-      addSymbolGetter(clazz, astHelper);
+      addReferencedSymbolMethods(clazz, astHelper);
       addNodeGetter(clazz, astHelper);
 
       Optional<ASTCDClass> builder = astHelper.getASTBuilder(clazz);

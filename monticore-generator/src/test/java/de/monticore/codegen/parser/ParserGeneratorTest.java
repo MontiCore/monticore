@@ -34,11 +34,6 @@ public class ParserGeneratorTest extends AstDependentGeneratorTest {
     Log.enableFailQuick(false);
   }
 
-  public void testOD() {
-    astTest.testOD();
-    testCorrect("mc/grammars/TestOD.mc4");
-  }
-
   public void testCommon() {
     astTest.testCommon();
     testCorrect("mc/grammars/common/TestCommon.mc4");
@@ -89,7 +84,7 @@ public class ParserGeneratorTest extends AstDependentGeneratorTest {
   @Test
   public void testGrammarInDefaultPackage() {
     astTest.testGrammarInDefaultPackage();
-    testCorrect("Automaton.mc4");
+    testCorrect("Automaton.mc4", false);
   }
 
   @Test
