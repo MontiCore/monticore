@@ -1197,6 +1197,9 @@ public class CdDecorator {
     String del = "";
     List<ASTCDAttribute> inheritedAttributes = Lists.newArrayList();
     for (ASTCDAttribute attr : clazz.getCDAttributeList()) {
+      if (GeneratorHelper.isSymbolOrScopeAttribute(attr)) {
+        continue;
+      }
       if (GeneratorHelper.isInherited(attr)) {
         inheritedAttributes.add(attr);
         continue;
@@ -1286,6 +1289,9 @@ public class CdDecorator {
     String del = "";
     List<ASTCDAttribute> inheritedAttributes = Lists.newArrayList();
     for (ASTCDAttribute attr : clazz.getCDAttributeList()) {
+      if (GeneratorHelper.isSymbolOrScopeAttribute(attr)) {
+        continue;
+      }
       if (GeneratorHelper.isInherited(attr)) {
         inheritedAttributes.add(attr);
         continue;

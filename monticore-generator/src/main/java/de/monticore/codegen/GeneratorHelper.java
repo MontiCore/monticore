@@ -533,12 +533,16 @@ public class GeneratorHelper extends TypesHelper {
 
     public static boolean isAdditionalAttribute(ASTCDAttribute attrib) {
         return isOptional(attrib.getType())
-                && (CD4AnalysisHelper.hasStereotype(attrib, SYMBOL)
-            || CD4AnalysisHelper.hasStereotype(attrib, SCOPE)
+                && (isSymbolOrScopeAttribute(attrib)
             //TODO remove as soon as symbol and scopes get removed from ASTCNode
             || additionalAttributes.stream().filter(
                 a -> a.equals(getReferenceNameFromOptional(attrib.getType()))).findAny()
                 .isPresent());
+    }
+    
+    public static boolean isSymbolOrScopeAttribute(ASTCDAttribute attr) {
+      return CD4AnalysisHelper.hasStereotype(attr, SYMBOL)
+          || CD4AnalysisHelper.hasStereotype(attr, SCOPE);
     }
 
     public static List<ASTCDAttribute> getNativeCDAttributes(ASTCDClass clazz) {
