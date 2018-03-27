@@ -141,7 +141,7 @@ public class CdDecorator {
       addGetter(clazz, astHelper);
       addSetter(clazz, astHelper, cdDefinition);
       addOptionalMethods(clazz, astHelper, cdDefinition);
-      addSymbolAndScopeMethods(clazz, astHelper);
+      addSymbolAndScopeAttributesAndMethods(clazz, astHelper);
       addReferencedSymbolMethods(clazz, astHelper);
 
       Optional<ASTCDClass> builder = astHelper.getASTBuilder(clazz);
@@ -190,7 +190,7 @@ public class CdDecorator {
     }
   }
   
-  protected void addSymbolAndScopeMethods(ASTCDClass clazz, AstGeneratorHelper astHelper) {
+  protected void addSymbolAndScopeAttributesAndMethods(ASTCDClass clazz, AstGeneratorHelper astHelper) {
     MCGrammarSymbol grammarSymbol = astHelper.getGrammarSymbol();
     if(grammarSymbol == null) {
       Log.warn("Symbol methods can not be generated, because the grammar symbol is not found");
@@ -201,29 +201,49 @@ public class CdDecorator {
     Optional<MCProdSymbol> prodSymbol = grammarSymbol.
         getSpannedScope().resolve(name, MCProdSymbol.KIND);
     
-    if(!prodSymbol.isPresent()) {
+    if (!prodSymbol.isPresent()) {
       Log.warn("Symbol methods can not be generated, prod symbol not found");
       return;
     }
     
-    if(prodSymbol.get().isSymbolDefinition()) {
-      addSymbolMethods(clazz, name, grammarSymbol);
+    if (prodSymbol.get().isSymbolDefinition()) {
+      addSymbolAttributeAndMethods(clazz, name, grammarSymbol);
+    }
+    if (prodSymbol.get().isScopeDefinition()) {
+      addScopeAttributeAndMethods(clazz, name, grammarSymbol);
     }
   }
   
-  protected void addSymbolMethods(ASTCDClass clazz, String name, MCGrammarSymbol grammarSymbol) {
+  protected void addSymbolAttributeAndMethods(ASTCDClass clazz, String name, MCGrammarSymbol grammarSymbol) {
     String symbolName = name + AstGeneratorHelper.SYMBOL;
     String qualifiedName = grammarSymbol.getFullName().toLowerCase() + "." +
         SymbolTableGenerator.PACKAGE + "." + symbolName;
     symbolName = Character.toLowerCase(symbolName.charAt(0)) + symbolName.substring(1);
     
     Optional<ASTCDAttribute> symbolAttribute = cdTransformation.addCdAttributeUsingDefinition(clazz,
-        "<<Symbol>> protected Optional<" + qualifiedName + "> " + symbolName + ";");
+        "<<" + GeneratorHelper.SYMBOL +
+            ">> protected Optional<" + qualifiedName + "> " + symbolName + ";");
     
     addGetter(clazz, symbolAttribute.get());
     addOptionalGetMethods(clazz, symbolAttribute.get(), symbolName);
-    addSetter(clazz, symbolAttribute.get(), false, false);
-    addOptionalSetMethods(clazz, symbolAttribute.get(), symbolName, false, false);
+    addSetter(clazz, symbolAttribute.get());
+    addOptionalSetMethods(clazz, symbolAttribute.get(), symbolName);
+  }
+  
+  protected void addScopeAttributeAndMethods(ASTCDClass clazz, String name, MCGrammarSymbol grammarSymbol) {
+    String scopeName = name + AstGeneratorHelper.SCOPE;
+    String qualifiedName = grammarSymbol.getFullName().toLowerCase() + "." +
+        SymbolTableGenerator.PACKAGE + "." + scopeName;
+    scopeName = "spanned" + scopeName;
+    
+    Optional<ASTCDAttribute> scopeAttribute = cdTransformation.addCdAttributeUsingDefinition(clazz,
+        "<<" + GeneratorHelper.SCOPE +
+            ">> protected Optional<" + qualifiedName + "> " + scopeName + ";");
+    
+    addGetter(clazz, scopeAttribute.get());
+    addOptionalGetMethods(clazz, scopeAttribute.get(), scopeName);
+    addSetter(clazz, scopeAttribute.get());
+    addOptionalSetMethods(clazz, scopeAttribute.get(), scopeName);
   }
 
   protected void addReferencedSymbolMethods(ASTCDClass clazz, AstGeneratorHelper astHelper) {
@@ -675,9 +695,13 @@ public class CdDecorator {
       }
       String nativeName = StringTransformations.capitalize(GeneratorHelper.getNativeAttributeName(attribute.getName()));
       addOptionalGetMethods(interf, attribute, nativeName);
-      addOptionalSetMethods(interf, attribute, nativeName, false, false);
+      addOptionalSetMethods(interf, attribute, nativeName);
 
     }
+  }
+  
+  protected  void addOptionalSetMethods(ASTCDType type, ASTCDAttribute attribute, String nativeName) {
+    addOptionalSetMethods(type, attribute, nativeName,false, false);
   }
 
   protected void addOptionalSetMethods(ASTCDType type, ASTCDAttribute attribute, String nativeName,
@@ -851,6 +875,10 @@ public class CdDecorator {
     }
   }
   
+  protected void addSetter(ASTCDType type, ASTCDAttribute attribute) {
+    addSetter(type, attribute, false, false);
+  }
+  
   protected void addSetter(ASTCDType type, ASTCDAttribute attribute, boolean isBuilderClass, boolean isInherited) {
     String typeName = TypesHelper.printSimpleRefType(attribute.getType());
     String attributeName = attribute.getName();
@@ -877,7 +905,7 @@ public class CdDecorator {
    */
   protected void addSetter(ASTCDInterface interf) {
     for (ASTCDAttribute attribute : interf.getCDAttributeList()) {
-      addSetter(interf, attribute, false, false);
+      addSetter(interf, attribute);
     }
   }
 

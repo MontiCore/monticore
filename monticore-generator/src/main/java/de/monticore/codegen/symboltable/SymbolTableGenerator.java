@@ -39,6 +39,8 @@ public class SymbolTableGenerator {
   
   private final ScopeSpanningSymbolGenerator scopeSpanningSymbolGenerator;
   
+  private final ScopeGenerator scopeGenerator;
+  
   private final SymbolReferenceGenerator symbolReferenceGenerator;
   
   private final SymbolTableCreatorGenerator symbolTableCreatorGenerator;
@@ -53,6 +55,7 @@ public class SymbolTableGenerator {
       SymbolGenerator symbolGenerator,
       SymbolKindGenerator symbolKindGenerator,
       ScopeSpanningSymbolGenerator scopeSpanningSymbolGenerator,
+      ScopeGenerator scopeGenerator,
       SymbolReferenceGenerator symbolReferenceGenerator,
       SymbolTableCreatorGenerator symbolTableCreatorGenerator,
       SymbolMillGenerator symbolMillGenerator) {
@@ -62,6 +65,7 @@ public class SymbolTableGenerator {
     this.resolvingFilterGenerator = resolvingFilterGenerator;
     this.symbolGenerator = symbolGenerator;
     this.symbolKindGenerator = symbolKindGenerator;
+    this.scopeGenerator = scopeGenerator;
     this.scopeSpanningSymbolGenerator = scopeSpanningSymbolGenerator;
     this.symbolReferenceGenerator = symbolReferenceGenerator;
     this.symbolTableCreatorGenerator = symbolTableCreatorGenerator;
@@ -82,6 +86,7 @@ public class SymbolTableGenerator {
     
     // TODO PN consider only class rules?
     final Collection<MCProdSymbol> allSymbolDefiningRules = genHelper.getAllSymbolDefiningRules();
+    final Collection<MCProdSymbol> allScopeSpanningRules = genHelper.getAllScopeSpanningRules();
     final Collection<String> ruleNames = allSymbolDefiningRules.stream()
         .map(MCProdSymbol::getName).collect(Collectors.toSet());
     
@@ -89,7 +94,7 @@ public class SymbolTableGenerator {
      * skip generation of: ModelNameCalculator, SymbolTableCreator, Symbol,
      * SymbolKind, SymbolReference, ScopeSpanningSymbol, (Spanned) Scope and
      * ResolvingFilter */
-    final boolean skipSymbolTableGeneration = allSymbolDefiningRules.isEmpty();
+    final boolean skipSymbolTableGeneration = allSymbolDefiningRules.isEmpty() && allScopeSpanningRules.isEmpty();
     
     final GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(outputPath);
@@ -117,6 +122,10 @@ public class SymbolTableGenerator {
         symbolReferenceGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol,
             genHelper.isScopeSpanningSymbol(ruleSymbol));
         resolvingFilterGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol);
+      }
+  
+      for (MCProdSymbol ruleSymbol : allScopeSpanningRules) {
+        scopeGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol);
       }
     }
     
