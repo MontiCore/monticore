@@ -24,9 +24,8 @@ import de.monticore.testmcliteralsv3._parser.TestMCLiteralsV3Parser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 
-
 public class MCHexNumberUnitTests {
-    
+  
   // setup the language infrastructure
   TestMCLiteralsV3Parser parser = new TestMCLiteralsV3Parser() ;
   
@@ -59,35 +58,35 @@ public class MCHexNumberUnitTests {
   @Test
   public void testNumbers() throws IOException {
     ASTNumberList ast = parser.parse_StringNumberList(
-    	"[463 0x23 - 0x0045  -0X3AFFA-27 0x3affa-0xFEDBCAabcdef]" ).get();
-    assertEquals(7, ast.getNumberList().size());
+      "[463 0x23 - 0x0045  -0X3AFFA-27 0x3affa-0xFEDBCAabcdef]" ).get();
+    assertEquals(7, ast.sizeNumbers());
 
-    ASTNumber n = ast.getNumberList().get(0);
+    ASTNumber n = ast.getNumber(0);
     assertEquals(ASTDecimal.class, n.getClass());
     assertEquals(463, n.getValue());
 
-    n = ast.getNumberList().get(1);
+    n = ast.getNumber(1);
     assertEquals(ASTHexadecimal.class, n.getClass());
     assertEquals(0x23, n.getValue());
 
-    n = ast.getNumberList().get(2);
+    n = ast.getNumber(2);
     assertEquals(ASTHexInteger.class, n.getClass());
     assertEquals(-0x45, n.getValue());
     assertEquals("-0x0045", n.getSource());
 
-    n = ast.getNumberList().get(3);
+    n = ast.getNumber(3);
     assertEquals(ASTHexInteger.class, n.getClass());
     assertEquals(-0x3AFFA, n.getValue());
 
-    n = ast.getNumberList().get(4);
+    n = ast.getNumber(4);
     assertEquals(ASTInteger.class, n.getClass());
     assertEquals(-27, n.getValue());
 
-    n = ast.getNumberList().get(5);
+    n = ast.getNumber(5);
     assertEquals(ASTHexadecimal.class, n.getClass());
     assertEquals(0x3affa, n.getValue());
 
-    n = ast.getNumberList().get(6);
+    n = ast.getNumber(6);
     assertEquals(ASTHexInteger.class, n.getClass());
     assertEquals(-0xFEDBCAabcdefl, n.getValue());
 
@@ -140,11 +139,11 @@ public class MCHexNumberUnitTests {
   @Test
   public void testTokens() throws IOException {
     ASTAnyTokenList ast = parser.parse_StringAnyTokenList( "[463 23]" ).get();
-    assertEquals(2, ast.getAnyTokenList().size());
-    ASTAnyToken a0 = ast.getAnyTokenList().get(0);
+    assertEquals(2, ast.sizeAnyTokens());
+    ASTAnyToken a0 = ast.getAnyToken(0);
     assertTrue(a0.isPresentDecimalToken());
     assertEquals("463", a0.getDecimalToken());
-    ASTAnyToken a1 = ast.getAnyTokenList().get(1);
+    ASTAnyToken a1 = ast.getAnyToken(1);
     assertTrue(a1.isPresentDecimalToken());
     assertEquals("23", a1.getDecimalToken());
   }
@@ -153,15 +152,15 @@ public class MCHexNumberUnitTests {
   @Test
   public void testTokens2() throws IOException {
     ASTAnyTokenList ast = parser.parse_StringAnyTokenList(
-    	"[9 'a' 45 00 47]" ).get();
-    assertEquals(6, ast.getAnyTokenList().size());
-    assertEquals("9", ast.getAnyTokenList().get(0).getDecimalToken());
-    assertEquals("a", ast.getAnyTokenList().get(1).getCharToken());
-    assertEquals("45", ast.getAnyTokenList().get(2).getDecimalToken());
+      "[9 'a' 45 00 47]" ).get();
+    assertEquals(6, ast.sizeAnyTokens());
+    assertEquals("9", ast.getAnyToken(0).getDecimalToken());
+    assertEquals("a", ast.getAnyToken(1).getCharToken());
+    assertEquals("45", ast.getAnyToken(2).getDecimalToken());
     // Observe the separated '0's!
-    assertEquals("0", ast.getAnyTokenList().get(3).getDecimalToken());
-    assertEquals("0", ast.getAnyTokenList().get(4).getDecimalToken());
-    assertEquals("47", ast.getAnyTokenList().get(5).getDecimalToken());
+    assertEquals("0", ast.getAnyToken(3).getDecimalToken());
+    assertEquals("0", ast.getAnyToken(4).getDecimalToken());
+    assertEquals("47", ast.getAnyToken(5).getDecimalToken());
   }
 
   // --------------------------------------------------------------------
@@ -191,18 +190,17 @@ public class MCHexNumberUnitTests {
   public void testIntTokens2() throws IOException {
     ASTIntegerList ast = parser.parse_StringIntegerList(
         "[9, -45, -0, - 47]" ).get();
-    assertEquals(4, ast.getIntegerList().size());
-    assertEquals(9, ast.getIntegerList().get(0).getValue());
-    assertEquals("9", ast.getIntegerList().get(0).getSource());
-    assertEquals(-45, ast.getIntegerList().get(1).getValue());
-    assertEquals("-45", ast.getIntegerList().get(1).getSource());
-    assertEquals(0, ast.getIntegerList().get(2).getValue());
+    assertEquals(4, ast.sizeIntegers());
+    assertEquals(9, ast.getInteger(0).getValue());
+    assertEquals("9", ast.getInteger(0).getSource());
+    assertEquals(-45, ast.getInteger(1).getValue());
+    assertEquals("-45", ast.getInteger(1).getSource());
+    assertEquals(0, ast.getInteger(2).getValue());
     // "-" is still present
-    assertEquals("-0", ast.getIntegerList().get(2).getSource());
-    assertEquals(-47, ast.getIntegerList().get(3).getValue());
+    assertEquals("-0", ast.getInteger(2).getSource());
+    assertEquals(-47, ast.getInteger(3).getValue());
     // space between the two token is missing 
-    assertEquals("-47", ast.getIntegerList().get(3).getSource());
+    assertEquals("-47", ast.getInteger(3).getSource());
   }
 
 }
-
