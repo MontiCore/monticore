@@ -218,7 +218,7 @@ public class CdDecorator {
     symbolName = Character.toLowerCase(symbolName.charAt(0)) + symbolName.substring(1);
     
     Optional<ASTCDAttribute> symbolAttribute = cdTransformation.addCdAttributeUsingDefinition(clazz,
-        "<<Symbol>> private Optional<" + qualifiedName + "> " + symbolName + ";");
+        "<<Symbol>> protected Optional<" + qualifiedName + "> " + symbolName + ";");
     
     addGetter(clazz, symbolAttribute.get());
     addOptionalGetMethods(clazz, symbolAttribute.get(), symbolName);
