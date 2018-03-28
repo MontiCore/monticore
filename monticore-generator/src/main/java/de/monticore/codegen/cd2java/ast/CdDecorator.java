@@ -1075,13 +1075,13 @@ public class CdDecorator {
       String methodName = StringTransformations.uncapitalize(className);
       String toParse = "public static " + clazz.getName() + "Builder "
           + methodName
-          + AstGeneratorHelper.AST_BUILDER + "() ;";
+          + AstGeneratorHelper.BUILDER + "() ;";
 
       HookPoint methodBody = new TemplateHookPoint("ast.AstMillBuilderMethod", className, methodName);
       replaceMethodBodyTemplate(millClass, toParse, methodBody);
 
       toParse = "protected " + clazz.getName() + "Builder _"
-          + methodName + AstGeneratorHelper.AST_BUILDER + "() ;";
+          + methodName + AstGeneratorHelper.BUILDER + "() ;";
       replaceMethodBodyTemplate(millClass, toParse,
           new StringHookPoint("return new " + clazz.getName() + "Builder();\n"));
     }
@@ -1117,8 +1117,8 @@ public class CdDecorator {
       }
 
       String className = AstGeneratorHelper.getASTClassNameWithoutPrefix(clazz);
-      String methodName = StringTransformations.uncapitalize(className) + AstGeneratorHelper.AST_BUILDER;
-      String toParse = "protected " + astHelper.getPlainName(clazz) + AstGeneratorHelper.AST_BUILDER + " _"
+      String methodName = StringTransformations.uncapitalize(className) + AstGeneratorHelper.BUILDER;
+      String toParse = "protected " + astHelper.getPlainName(clazz) + AstGeneratorHelper.BUILDER + " _"
           + methodName + "() ;";
       replaceMethodBodyTemplate(millClass, toParse,
           new StringHookPoint("return " + cdCompilationUnit.getCDDefinition().getName() + "Mill." + methodName + "();\n"));

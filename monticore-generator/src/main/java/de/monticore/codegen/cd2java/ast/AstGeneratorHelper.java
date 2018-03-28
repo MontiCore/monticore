@@ -25,11 +25,8 @@ import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 
 public class AstGeneratorHelper extends GeneratorHelper {
-  
-  protected static final String AST_BUILDER = "Builder";
 
   private final MCGrammarSymbol grammarSymbol;
   
@@ -80,11 +77,11 @@ public class AstGeneratorHelper extends GeneratorHelper {
   }
   
   public static boolean isBuilderClass(ASTCDDefinition cdDefinition, ASTCDClass clazz) {
-    if (!clazz.getName().endsWith(AST_BUILDER)
-         && !clazz.getName().endsWith(AST_BUILDER + GeneratorSetup.GENERATED_CLASS_SUFFIX)) {
+    if (!clazz.getName().endsWith(BUILDER)
+         && !clazz.getName().endsWith(BUILDER + GeneratorSetup.GENERATED_CLASS_SUFFIX)) {
       return false;
     }
-    String className = clazz.getName().substring(0, clazz.getName().indexOf(AST_BUILDER));
+    String className = clazz.getName().substring(0, clazz.getName().indexOf(BUILDER));
     return cdDefinition.getCDClassList().stream()
         .filter(c -> className.equals(GeneratorHelper.getPlainName(c))).findAny()
         .isPresent();
@@ -157,7 +154,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
     if(astClass.getName().endsWith(GeneratorSetup.GENERATED_CLASS_SUFFIX)) {
       name = name.substring(0, name.indexOf(GeneratorSetup.GENERATED_CLASS_SUFFIX));
     }
-    return name + AST_BUILDER;
+    return name + BUILDER;
   }
   
   public static String getSuperClassForBuilder(ASTCDClass clazz) {

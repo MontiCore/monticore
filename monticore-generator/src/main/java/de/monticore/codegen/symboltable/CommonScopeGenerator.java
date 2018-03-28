@@ -5,6 +5,7 @@
  */
 package de.monticore.codegen.symboltable;
 
+import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.grammar.symboltable.MCProdSymbol;
@@ -36,8 +37,10 @@ public class CommonScopeGenerator implements ScopeGenerator {
     }
     
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
+    final Path builderFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), className + GeneratorHelper.BUILDER + ".java");
     if (ruleSymbol.getAstNode().isPresent()) {
       genEngine.generate("symboltable.Scope", filePath, ruleSymbol.getAstNode().get(), className);
+      genEngine.generate("symboltable.ScopeBuilder", builderFilePath, ruleSymbol.getAstNode().get(), className);
     }
   }
 }

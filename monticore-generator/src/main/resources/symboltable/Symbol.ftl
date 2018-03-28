@@ -21,6 +21,4 @@ public class ${className} extends de.monticore.symboltable.CommonSymbol {
 
   ${includeArgs("symboltable.symbols.GetAstNodeMethod", ruleName)}
 
-  ${includeArgs("symboltable.SymbolBuilder", className)}
-
 }

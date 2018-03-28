@@ -83,6 +83,8 @@ public class GeneratorHelper extends TypesHelper {
     public static final String AST_DOT_PACKAGE_SUFFIX_DOT = "._ast.";
 
     public static final String MC_CONCRETE_PARSER_CONTEXT = "MCParser";
+    
+    public static final String BUILDER = "Builder";
 
     public static final String BUILDER_PREFIX = "Builder_";
 

@@ -15,16 +15,9 @@ import java.util.Optional;
 
 public class ${className}Builder {
 
-  protected String name;
-
   protected ${className}Builder() {}
 
   public ${className} build() {
-    return new ${className}(name);
-  }
-
-  public ${className}Builder name(String name) {
-    this.name = name;
-    return this;
+    return new ${className}();
   }
 }
