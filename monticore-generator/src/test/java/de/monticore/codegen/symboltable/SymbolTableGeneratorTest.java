@@ -40,7 +40,7 @@ public class SymbolTableGeneratorTest extends AstDependentGeneratorTest {
     final String grammarPath = "de/monticore/AutomatonST.mc4";
     astTest.testCorrect(grammarPath, false);
     parserTest.testCorrect(grammarPath, false);
-    testCorrect(grammarPath);
+    testCorrect(grammarPath, false);
   }
 
   @Override
