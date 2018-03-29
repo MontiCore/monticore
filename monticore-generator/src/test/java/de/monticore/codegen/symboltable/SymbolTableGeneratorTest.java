@@ -37,7 +37,7 @@ public class SymbolTableGeneratorTest extends AstDependentGeneratorTest {
 
   @Test
   public void testGrammarWithSymbolTableInfo() {
-    final String grammarPath = "de/monticore/symboltable/GrammarWithSymbolTableInfo.mc4";
+    final String grammarPath = "de/monticore/AutomatonST.mc4";
     astTest.testCorrect(grammarPath, false);
     parserTest.testCorrect(grammarPath, false);
     testCorrect(grammarPath);
