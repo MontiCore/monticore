@@ -91,11 +91,11 @@ public interface Language {
   }
   
   default Optional<ArtifactScope> getScope(ASTNode node) {
-    if (node.getEnclosingScope().isPresent()) {
-      if (node.getEnclosingScope().get() instanceof ArtifactScope) {
-        return Optional.of((ArtifactScope) node.getEnclosingScope().get());
+    if (node.isPresentEnclosingScope()) {
+      if (node.getEnclosingScope() instanceof ArtifactScope) {
+        return Optional.of((ArtifactScope) node.getEnclosingScope());
       }
-      Optional<? extends Scope> scope = node.getEnclosingScope().get().getEnclosingScope();
+      Optional<? extends Scope> scope = node.getEnclosingScope().getEnclosingScope();
       if (scope.isPresent() && scope.get() instanceof ArtifactScope) {
         return Optional.of((ArtifactScope) scope.get());
       }

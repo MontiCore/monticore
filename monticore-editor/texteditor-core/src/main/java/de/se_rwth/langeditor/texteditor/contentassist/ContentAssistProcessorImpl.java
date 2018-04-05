@@ -65,8 +65,8 @@ public class ContentAssistProcessorImpl implements IContentAssistProcessor {
           // Get all symbols in global scope
           GlobalScope globalScope = (GlobalScope) rootScope.get().getEnclosingScope().get();
           Optional<? extends Scope> enclosingScope;
-          if (actNode.get().getEnclosingScope().isPresent()) {
-            enclosingScope = actNode.get().getEnclosingScope();
+          if (actNode.get().isPresentEnclosingScope()) {
+            enclosingScope = actNode.get().getEnclosingScopeOpt();
           } else {
             enclosingScope = rootScope;
           }
