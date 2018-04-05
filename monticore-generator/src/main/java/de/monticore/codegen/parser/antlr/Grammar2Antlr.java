@@ -344,9 +344,9 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     startCodeSection(ast);
 
     boolean iterated = false;
-    if (ast.getSymbol().isPresent() && ast.getSymbol().get() instanceof MCProdComponentSymbol) {
+    if (ast.isPresentSymbol() && ast.getSymbol() instanceof MCProdComponentSymbol) {
       iterated = MCGrammarSymbolTableHelper
-              .isConstGroupIterated((MCProdComponentSymbol) ast.getSymbol().get());
+              .isConstGroupIterated((MCProdComponentSymbol) ast.getSymbol());
     }
 
     // One entry leads to boolean isMethods
@@ -564,7 +564,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       boolean isAttribute = ast.isPresentUsageName();
 
       boolean isList = iteratedItself;
-      Optional<? extends Symbol> ruleComponent = ast.getSymbol();
+      Optional<? extends Symbol> ruleComponent = ast.getSymbolOpt();
       if (ruleComponent.isPresent() && ruleComponent.get() instanceof MCProdComponentSymbol) {
         MCProdComponentSymbol componentSymbol = (MCProdComponentSymbol) ruleComponent.get();
         isList = componentSymbol.isList();
@@ -986,7 +986,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
         term.setName(y);
         term.setUsageName(HelperGrammar.getUsuageName(ast));
 
-        Optional<? extends Symbol> ruleComponent = ast.getSymbol();
+        Optional<? extends Symbol> ruleComponent = ast.getSymbolOpt();
         if (ruleComponent.isPresent() && ruleComponent.get() instanceof MCProdComponentSymbol) {
           MCProdComponentSymbol componentSymbol = (MCProdComponentSymbol) ruleComponent.get();
           Optional<MCProdSymbol> rule = MCGrammarSymbolTableHelper

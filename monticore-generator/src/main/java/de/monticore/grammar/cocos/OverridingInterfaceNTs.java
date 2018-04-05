@@ -32,7 +32,7 @@ public class OverridingInterfaceNTs implements GrammarASTMCGrammarCoCo {
     prods.addAll(a.getInterfaceProdList());
     prods.addAll(a.getEnumProdList());
     prods.addAll(a.getAbstractProdList());
-    MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol().get();
+    MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol();
     List<MCGrammarSymbol> grammarSymbols = grammarSymbol.getSuperGrammarSymbols();
     
     for (ASTProd p : prods) {

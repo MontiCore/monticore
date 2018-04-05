@@ -47,11 +47,11 @@ public class ParserGenerator {
                                         File targetDir)
   {
     Optional<GlobalScope> symbolTable;
-    if (!astGrammar.getEnclosingScope().isPresent()) {
+    if (!astGrammar.getEnclosingScopeOpt().isPresent()) {
       Log.error("0xA0163 Cannot generate the parser because the symbol table does not exist.");
       return;
     }
-    symbolTable = Scopes.getGlobalScope(astGrammar.getEnclosingScope().get());
+    symbolTable = Scopes.getGlobalScope(astGrammar.getEnclosingScope());
     if (!symbolTable.isPresent()) {
       Log.error("0xA0164 Cannot generate the parser because the global scope does not exist.");
       return;
@@ -89,11 +89,11 @@ public class ParserGenerator {
                                     IterablePath handcodedPath,
                                     File targetDir) {
     Optional<GlobalScope> symbolTable;
-    if (!astGrammar.getEnclosingScope().isPresent()) {
+    if (!astGrammar.getEnclosingScopeOpt().isPresent()) {
       Log.error("0xA0135 Cannot generate the parser because the symbol table does not exist.");
       return;
     }
-    symbolTable = Scopes.getGlobalScope(astGrammar.getEnclosingScope().get());
+    symbolTable = Scopes.getGlobalScope(astGrammar.getEnclosingScope());
     if (!symbolTable.isPresent()) {
       Log.error("0xA0136 Cannot generate the parser because the global scope does not exist.");
       return;

@@ -147,11 +147,11 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
    * @return all supertypes (without the type itself)
    */
   public List<CDTypeSymbol> getAllSuperTypesEmfOrder(ASTCDType type) {
-    if (!type.getSymbol().isPresent()) {
+    if (!type.isPresentSymbol()) {
       Log.error("0xA4097 Could not load symbol information for " + type.getName() + ".");
     }
     
-    CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol().get();
+    CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol();
     return getAllSuperTypesEmfOrder(sym);
   }
   
@@ -184,10 +184,10 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
    * @return all supertypes (without the type itself)
    */
   public List<CDTypeSymbol> getAllTypesEmfOrder(ASTCDType type) {
-    if (!type.getSymbol().isPresent()) {
+    if (!type.isPresentSymbol()) {
       Log.error("0xA4098 Could not load symbol information for " + type.getName() + ".");
     }
-    CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol().get();
+    CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol();
     List<CDTypeSymbol> types = getAllSuperTypesEmfOrder(sym);
     types.add(sym);
     return types;
@@ -200,11 +200,11 @@ public class AstEmfGeneratorHelper extends AstGeneratorHelper {
    */
   public Collection<CDFieldSymbol> getAllVisibleFields(ASTCDType type) {
     List<CDFieldSymbol> allSuperTypeFields = new ArrayList<>();
-    if (!type.getSymbol().isPresent()) {
+    if (!type.isPresentSymbol()) {
       Log.error("0xA4099 Could not load symbol information for " + type.getName() + ".");
       return new ArrayList<>();
     }
-    CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol().get();
+    CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol();
     for (CDTypeSymbol sup : getAllSuperTypesEmfOrder(sym)) {
       sup.getFields().forEach(a -> addIfNotContained(a, allSuperTypeFields));
     }

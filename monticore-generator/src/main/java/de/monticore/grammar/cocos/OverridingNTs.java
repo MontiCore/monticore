@@ -30,7 +30,7 @@ public class OverridingNTs implements GrammarASTMCGrammarCoCo {
   
   @Override
   public void check(ASTMCGrammar a) {
-    MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol().get();
+    MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol();
     List<MCGrammarSymbol> grammarSymbols =  grammarSymbol.getSuperGrammarSymbols();
 
     for(MCGrammarSymbol s: grammarSymbols) {

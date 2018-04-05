@@ -202,34 +202,7 @@ public interface ASTNode {
    * @return true if the optional source position start of this ASTNode is present
    */
   boolean isPresent_SourcePositionStart();
-  
-  /**
-   * Returns list of all comments which are associated with this ASTNode and are prior to the
-   * ASTNode in the input file
-   * 
-   * Can be removed after 4.5.5
-   * Replace with  List<Comment> get_PreCommentList();
-   * use {@link #List<Comment> get_PreCommentList()} instead
-   * 
-   * @return list of comments
-   */
-  
-  @Deprecated
-  List<Comment> get_PreComments();
 
-  /**
-   * Sets list of all comments which are associated with this ASTNode and are prior to the ASTNode
-   * in the input file
-   * 
-   * Can be removed after 4.5.5
-   * Replace with  List<Comment> set_PreCommentList();
-   * use {@link #List<Comment> set_PreCommentList()} instead
-   * 
-   * @param precomments list of comments
-   */
-  @Deprecated
-  void set_PreComments(List<Comment> precomments);
-  
   /**
    * Clears the list of preComments, that only an empty list stays
    */
@@ -491,32 +464,7 @@ public interface ASTNode {
     * @return an array of the type Object
     */
     Object[] toArray_PreComments();
-  
-  /**
-   * Returns list of all comments which are associated with this ASTNode and can be found after the
-   * ASTNode in the input file
-   * 
-   * Can be removed after 4.5.5
-   * Replace with  List<Comment> get_PostCommentList();
-   * use {@link #List<Comment> get_PostCommentList()} instead
-   * 
-   * @return list of comments
-   */
-  @Deprecated
-  List<Comment> get_PostComments();
-  
-  /**
-   * Sets list of all comments which are associated with this ASTNode and can be found after the
-   * ASTNode in the input file
-   * 
-   * Can be removed after 4.5.5
-   * Replace with  List<Comment> set_PostCommentList();
-   * use {@link #List<Comment> set_PostCommentList()} instead
-   * 
-   * @param postcomments list of comments
-   */
-  @Deprecated
-  void set_PostComments(List<Comment> postcomments);
+
   
   /**
    * Clears the list of postComments, that only an empty list stays
@@ -822,15 +770,13 @@ public interface ASTNode {
   void setEnclosingScopeAbsent();
 
   /**
-   * Deprecated method can be deleted after next release
-   * will be replaced by the method that returns only a scope and no optional
    * 
    * Scope getEnclosingScope();
    * 
    * @return the enclosing scope of this ast node
    */
-  @Deprecated
-  Optional<? extends Scope> getEnclosingScope();
+
+  Scope getEnclosingScope();
 
   /**
    * Gets the enclosing scope of this ast node as an Optional
@@ -865,15 +811,11 @@ public interface ASTNode {
   void setSymbolAbsent();
 
   /**
-   * Deprecated method can be deleted after next release
-   * will be replaced by the method that returns only a symbol and no optional
-   * 
    * Symbol getSymbol();
    * 
    * @return the corresponding symbol of this ast node.
    */
-  @Deprecated
-  Optional<? extends Symbol> getSymbol();
+ Symbol getSymbol();
 
   /**
    * Gets the spanned symbol of this ast node as an Optional
@@ -908,17 +850,12 @@ public interface ASTNode {
    */
   void setSpannedScopeAbsent();
   /**
-   * Deprecated method can be deleted after next release
-   * will be replaced by the method that returns only a scope and no optional
    * 
    * Scope getSpannedScope();
    * 
    * @return the spanned scope of this ast node
    */
-  @Deprecated
-  default Optional<? extends Scope> getSpannedScope() {
-    return Optional.empty();
-  }
+   Scope getSpannedScope();
   
   /**
    * Gets the spanned scope of this ast node as an Optional

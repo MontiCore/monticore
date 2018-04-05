@@ -121,12 +121,12 @@ public class CollectionTest {
     ASTSon s1 = ListsNodeFactory.createASTSon();
     Comment c1 = new Comment();
     c1.setText("mycomment");
-    s1.get_PreComments().add(c1);
+    s1.get_PreCommentList().add(c1);
     ASTSon s2 = ListsNodeFactory.createASTSon();
     ASTSon s3 = ListsNodeFactory.createASTSon();
     Comment c2 = new Comment();
     c2.setText("mycomment");
-    s3.get_PreComments().add(c2);
+    s3.get_PreCommentList().add(c2);
     ASTSon s4 = ListsNodeFactory.createASTSon();
     
     p1.getSonsList().add(s1);
@@ -150,7 +150,7 @@ public class CollectionTest {
     ASTSon s1 = ListsNodeFactory.createASTSon("myname1");
     Comment c1 = new Comment();
     c1.setText("mycomment");
-    s1.get_PreComments().add(c1);
+    s1.get_PreCommentList().add(c1);
     ASTSon s2 = ListsNodeFactory.createASTSon("myname2");
     
     p1.getSonsList().add(s1);
@@ -168,7 +168,7 @@ public class CollectionTest {
     ASTSon s1 = ListsNodeFactory.createASTSon("myname1");
     Comment c1 = new Comment();
     c1.setText("mycomment");
-    s1.get_PreComments().add(c1);
+    s1.get_PreCommentList().add(c1);
     ASTSon s2 = ListsNodeFactory.createASTSon("myname1");
     
     p1.getSonsList().add(s1);

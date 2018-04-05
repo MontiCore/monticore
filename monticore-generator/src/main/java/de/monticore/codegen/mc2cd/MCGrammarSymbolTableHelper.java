@@ -91,13 +91,13 @@ public class MCGrammarSymbolTableHelper {
   }
   
   public static Optional<MCGrammarSymbol> getGrammarSymbol(ASTMCGrammar astNode) {
-    if (!astNode.getSymbol().isPresent()) {
+    if (!astNode.isPresentSymbol()) {
       return Optional.empty();
     }
-    if (!(astNode.getSymbol().get() instanceof MCGrammarSymbol)) {
+    if (!(astNode.getSymbol() instanceof MCGrammarSymbol)) {
       return Optional.empty();
     }
-    return Optional.of((MCGrammarSymbol) astNode.getSymbol().get());
+    return Optional.of((MCGrammarSymbol) astNode.getSymbol());
   }
   
   public static Optional<MCGrammarSymbol> getMCGrammarSymbol(ASTNode astNode) {
@@ -162,7 +162,7 @@ public class MCGrammarSymbolTableHelper {
   
   private static Set<Scope> getAllScopes(ASTNode astNode) {
     Set<Scope> ret = Sets.newHashSet();
-    astNode.getSpannedScope().ifPresent(s -> ret.add(s));
+    astNode.getSpannedScopeOpt().ifPresent(s -> ret.add(s));
     for (Symbol s : getAllSubSymbols(astNode)) {
       for (Scope l : listTillNull(s.getEnclosingScope(),
           childScope -> childScope.getEnclosingScope().orElse(null))) {
@@ -212,7 +212,7 @@ public class MCGrammarSymbolTableHelper {
   
   private static Set<Symbol> getAllSubSymbols(ASTNode astNode) {
     Set<Symbol> symbols = Util.preOrder(astNode, ASTNode::get_Children).stream()
-        .map(ASTNode::getSymbol)
+        .map(ASTNode::getSymbolOpt)
         .filter(Optional::isPresent)
         .map(Optional::get)
         .collect(Collectors.toSet());

@@ -600,14 +600,14 @@ public class GeneratorHelper extends TypesHelper {
     }
 
     public String getAstClassNameForASTLists(ASTCDAttribute attr) {
-        if (!attr.getSymbol().isPresent()) {
+        if (!attr.isPresentSymbol()) {
             return "";
         }
-        if (!(attr.getSymbol().get() instanceof CDFieldSymbol)) {
+        if (!(attr.getSymbol() instanceof CDFieldSymbol)) {
             Log.error(String.format("0xA04125 Symbol of ASTCDAttribute %s is not CDFieldSymbol.",
                     attr.getName()));
         }
-        return getAstClassNameForASTLists(((CDFieldSymbol) attr.getSymbol().get()).getType());
+        return getAstClassNameForASTLists(((CDFieldSymbol) attr.getSymbol()).getType());
     }
 
     public static boolean isOptional(ASTCDAttribute attribute) {
@@ -737,11 +737,11 @@ public class GeneratorHelper extends TypesHelper {
     }
 
     public boolean isAttributeOfTypeEnum(ASTCDAttribute attr) {
-        if (!attr.getSymbol().isPresent() || !(attr.getSymbol().get() instanceof CDFieldSymbol)) {
+        if (!attr.isPresentSymbol() || !(attr.getSymbol() instanceof CDFieldSymbol)) {
             return false;
         }
         CDTypeSymbolReference attrType = ((CDFieldSymbol) attr.getSymbol()
-                .get()).getType();
+                ).getType();
 
         List<ActualTypeArgument> typeArgs = attrType.getActualTypeArguments();
         if (typeArgs.size() > 1) {
@@ -813,11 +813,11 @@ public class GeneratorHelper extends TypesHelper {
      * @return
      */
     public boolean isAttributeOfSuperType(ASTCDAttribute cdAttribute, ASTCDType type) {
-        if (!type.getSymbol().isPresent()) {
+        if (!type.isPresentSymbol()) {
             Log.error("0xA5010 Could not load symbol information for " + type.getName() + ".");
             return false;
         }
-        CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol().get();
+        CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol();
         return getAllVisibleFieldsOfSuperTypes(sym).stream().map(a -> a.getName())
                 .collect(Collectors.toList()).contains(cdAttribute.getName());
     }
@@ -962,11 +962,11 @@ public class GeneratorHelper extends TypesHelper {
      * @return
      */
     public Collection<String> getSuperTypes(ASTCDInterface interf) {
-        if (!interf.getSymbol().isPresent()) {
+        if (!interf.isPresentSymbol()) {
             Log.error("0xA5011 Could not load symbol information for " + interf.getName() + ".");
         }
 
-        CDTypeSymbol sym = (CDTypeSymbol) interf.getSymbol().get();
+        CDTypeSymbol sym = (CDTypeSymbol) interf.getSymbol();
         List<CDTypeSymbol> allSuperTypes = getSuperTypes(sym);
         List<String> theSuperTypes = allSuperTypes.stream().map(t -> t.getFullName())
                 .collect(Collectors.toList());
@@ -985,11 +985,11 @@ public class GeneratorHelper extends TypesHelper {
      * @return
      */
     public List<String> getSuperTypes(ASTCDClass clazz) {
-        if (!clazz.getSymbol().isPresent()) {
+        if (!clazz.isPresentSymbol()) {
             Log.error("0xA5007 Could not load symbol information for " + clazz.getName() + ".");
         }
 
-        CDTypeSymbol sym = (CDTypeSymbol) clazz.getSymbol().get();
+        CDTypeSymbol sym = (CDTypeSymbol) clazz.getSymbol();
         List<CDTypeSymbol> allSuperTypes = getSuperTypes(sym);
         List<String> theSuperTypes = allSuperTypes.stream().map(t -> t.getFullName())
                 .collect(Collectors.toList());
@@ -1008,11 +1008,11 @@ public class GeneratorHelper extends TypesHelper {
      * @return
      */
     public List<CDTypeSymbol> getAllSuperInterfaces(ASTCDType type) {
-        if (!type.getSymbol().isPresent()) {
+        if (!type.isPresentSymbol()) {
             Log.error("0xA4079 Could not load symbol information for " + type.getName() + ".");
         }
 
-        CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol().get();
+        CDTypeSymbol sym = (CDTypeSymbol) type.getSymbol();
         return getAllSuperInterfaces(sym);
     }
 
@@ -1067,14 +1067,14 @@ public class GeneratorHelper extends TypesHelper {
     }
 
     public boolean isListAstNode(ASTCDAttribute attribute) {
-        if (!attribute.getSymbol().isPresent()) {
+        if (!attribute.isPresentSymbol()) {
             return false;
         }
-        if (!(attribute.getSymbol().get() instanceof CDFieldSymbol)) {
+        if (!(attribute.getSymbol() instanceof CDFieldSymbol)) {
             Log.error(String.format("0xA5012 Symbol of ASTCDAttribute %s is not CDFieldSymbol.",
                     attribute.getName()));
         }
-        return isListAstNode(((CDFieldSymbol) attribute.getSymbol().get()).getType());
+        return isListAstNode(((CDFieldSymbol) attribute.getSymbol()).getType());
     }
 
     public boolean isListAstNode(CDTypeSymbolReference type) {
@@ -1174,25 +1174,25 @@ public class GeneratorHelper extends TypesHelper {
     }
 
     public boolean isAstNode(ASTCDAttribute attr) {
-        if (!attr.getSymbol().isPresent()) {
+        if (!attr.isPresentSymbol()) {
             return false;
         }
-        if (!(attr.getSymbol().get() instanceof CDFieldSymbol)) {
+        if (!(attr.getSymbol() instanceof CDFieldSymbol)) {
             Log.error(String.format("0xA5013 Symbol of ASTCDAttribute %s is not CDFieldSymbol.",
                     attr.getName()));
         }
-        return isAstNode(((CDFieldSymbol) attr.getSymbol().get()).getType());
+        return isAstNode(((CDFieldSymbol) attr.getSymbol()).getType());
     }
 
     public boolean isOptionalAstNode(ASTCDAttribute attr) {
-        if (!attr.getSymbol().isPresent()) {
+        if (!attr.isPresentSymbol()) {
             return false;
         }
-        if (!(attr.getSymbol().get() instanceof CDFieldSymbol)) {
+        if (!(attr.getSymbol() instanceof CDFieldSymbol)) {
             Log.error(String.format("0xA5014 Symbol of ASTCDAttribute %s is not CDFieldSymbol.",
                     attr.getName()));
         }
-        return isOptionalAstNode(((CDFieldSymbol) attr.getSymbol().get()).getType());
+        return isOptionalAstNode(((CDFieldSymbol) attr.getSymbol()).getType());
     }
 
     public String getTypeNameWithoutOptional(ASTCDAttribute attribute) {
@@ -1749,8 +1749,8 @@ public class GeneratorHelper extends TypesHelper {
     public static String getGeneratedErrorCode(ASTNode ast) {
         int hashCode = 0;
         // If there is an ast-name then always generate the same error code.
-        if (ast.getSymbol().isPresent()) {
-            String nodeName = ast.getSymbol().get().getFullName();
+        if (ast.isPresentSymbol()) {
+            String nodeName = ast.getSymbol().getFullName();
             hashCode = Math.abs(ast.getClass().getSimpleName().hashCode() + nodeName.hashCode());
         } else { // Else use the string representation
             hashCode = Math.abs(ast.toString().hashCode());

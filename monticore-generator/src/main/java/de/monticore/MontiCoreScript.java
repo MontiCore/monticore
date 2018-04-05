@@ -279,7 +279,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       globalScope.cache(language.getModelLoader(), qualifiedGrammarName);
     }
 
-    MCGrammarSymbol symbol = (MCGrammarSymbol) result.getSymbol().get();
+    MCGrammarSymbol symbol = (MCGrammarSymbol) result.getSymbol();
     for (MCGrammarSymbol it : MCGrammarSymbolTableHelper.getAllSuperGrammars(symbol)) {
       if (!it.getFullName().equals(symbol.getFullName())) {
         Reporting.reportOpenInputFile(Optional.empty(),
@@ -499,8 +499,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   
   private void createCDSymbolsForSuperGrammars(GlobalExtensionManagement glex, ASTMCGrammar astGrammar,
       GlobalScope symbolTable) {
-    if (astGrammar.getSymbol().isPresent()) {
-      MCGrammarSymbol sym = (MCGrammarSymbol) astGrammar.getSymbol().get();
+    if (astGrammar.isPresentSymbol()) {
+      MCGrammarSymbol sym = (MCGrammarSymbol) astGrammar.getSymbol();
       for (MCGrammarSymbol mcgsym : MCGrammarSymbolTableHelper.getAllSuperGrammars(sym)) {
         Optional<CDSymbol> importedCd = symbolTable.resolveDown(mcgsym.getFullName(), CDSymbol.KIND);
         if (!importedCd.isPresent() && mcgsym.getAstNode().isPresent()) {

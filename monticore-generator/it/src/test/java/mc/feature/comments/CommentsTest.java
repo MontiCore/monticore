@@ -33,8 +33,8 @@ public class CommentsTest extends GeneratorIntegrationsTest {
     assertEquals(false, p.hasErrors());
     assertEquals(1, ast.getAList().size());
     assertEquals(1, ast.getBList().size());
-    assertEquals(1, ((ASTNode) ast.getAList().get(0)).get_PreComments().size());
-    assertEquals(1, ((ASTNode) ast.getAList().get(0)).get_PostComments().size());
-    assertEquals(0, ((ASTNode) ast.getBList().get(0)).get_PreComments().size());
+    assertEquals(1, ((ASTNode) ast.getAList().get(0)).get_PreCommentList().size());
+    assertEquals(1, ((ASTNode) ast.getAList().get(0)).get_PostCommentList().size());
+    assertEquals(0, ((ASTNode) ast.getBList().get(0)).get_PreCommentList().size());
   }
 }

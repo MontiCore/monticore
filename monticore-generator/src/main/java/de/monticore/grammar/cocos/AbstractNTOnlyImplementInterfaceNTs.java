@@ -29,7 +29,7 @@ public class AbstractNTOnlyImplementInterfaceNTs implements GrammarASTAbstractPr
     if (!a.getSuperInterfaceRuleList().isEmpty()) {
       List<ASTRuleReference> interfaces = a.getSuperInterfaceRuleList();
       for (ASTRuleReference i : interfaces) {
-        Optional<MCProdSymbol> ruleSymbol = a.getEnclosingScope().get().resolve(i.getName(),
+        Optional<MCProdSymbol> ruleSymbol = a.getEnclosingScope().resolve(i.getName(),
             MCProdSymbol.KIND);
         if (ruleSymbol.isPresent()) {
           MCProdSymbol r = ruleSymbol.get();

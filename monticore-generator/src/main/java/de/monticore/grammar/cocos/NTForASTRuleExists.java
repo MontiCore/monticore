@@ -25,7 +25,7 @@ public class NTForASTRuleExists implements GrammarASTMCGrammarCoCo {
   
   @Override
   public void check(ASTMCGrammar a) {
-    MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol().get();
+    MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol();
     boolean prodFound = false;
     for(ASTASTRule astrule : a.getASTRuleList()){
       if(!grammarSymbol.getProdWithInherited(astrule.getType()).isPresent()){

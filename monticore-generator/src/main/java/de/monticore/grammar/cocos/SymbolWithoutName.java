@@ -23,8 +23,8 @@ public class SymbolWithoutName implements GrammarASTProdCoCo {
     
   @Override
   public void check(ASTProd a) {
-    if (a.getSymbol().get() instanceof MCProdSymbol) {
-      MCProdSymbol symbol = (MCProdSymbol) a.getSymbol().get();
+    if (a.getSymbol() instanceof MCProdSymbol) {
+      MCProdSymbol symbol = (MCProdSymbol) a.getSymbol();
       if (symbol.isSymbolDefinition()) {
         Optional<MCProdComponentSymbol> ref = symbol.getProdComponent("Name");
         if (!ref.isPresent()) {
