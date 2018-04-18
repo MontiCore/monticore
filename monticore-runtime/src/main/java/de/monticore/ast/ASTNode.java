@@ -791,82 +791,165 @@ public interface ASTNode {
   boolean isPresentEnclosingScope();
   
   /**
+   * Deprecated will be deleted after next release
+   * only symbol method generation, when the ast has a symbol
+   *
+   * will be replaced with method:
+   * setASymbol(aSymbol: ASymbol): void
+   *
    * Sets the corresponding symbol of this ast node.
    *
    * @param symbol the corresponding symbol of this ast node..
    */
+  @Deprecated
   void setSymbol(Symbol symbol);
 
   /**
+   * Deprecated will be deleted after next release
+   * only symbol method generation, when the ast has a symbol
+   *
+   * will be replaced with method:
+   * setASymbolOpt(aSymbol: Optional<ASymbol>): void
+   *
    * Sets the spanned symbol of this ast node with an Optional as parameter.
    *
    * @param spannedSymbolOpt the spanned symbol of this ast node as an Optional
    */
+  @Deprecated
   void setSymbolOpt(Optional<? extends Symbol> spannedSymbolOpt);
 
   /**
+   * Deprecated will be deleted after next release
+   * only symbol method generation, when the ast has a symbol
+   *
+   * will be replaced with method:
+   * setASymbolAbsent(): void
+   *
    * Sets the spanned symbol optional to absent
    *
    */
+  @Deprecated
   void setSymbolAbsent();
 
   /**
-   * Symbol getSymbol();
+   * Deprecated will be deleted after next release
+   * only symbol method generation, when the ast has a symbol
+   *
+   * will be replaced with method:
+   * getASymbol(): ASymbol
    * 
    * @return the corresponding symbol of this ast node.
    */
+  @Deprecated
  Symbol getSymbol();
 
   /**
+   * Deprecated will be deleted after next release
+   * only symbol method generation, when the ast has a symbol
+   *
+   * will be replaced with method:
+   * getASymbolOpt(): Optional<ASymbol>
+   *
    * Gets the spanned symbol of this ast node as an Optional
    *
    * @return Optional<Symbol> of the spanned Symbol
    */
+  @Deprecated
   Optional<? extends Symbol> getSymbolOpt();
 
 
   /**
+   * Deprecated will be deleted after next release
+   * only symbol method generation, when the ast has a symbol
+   *
+   * will be replaced with method:
+   * isPresentASymbol(): boolean
+   *
    * @return true if the symbol is present
    */
+  @Deprecated
   boolean isPresentSymbol();
   
   /**
+   * Deprecated will be deleted after next release
+   * only spannedscope method generation, when the ast has a spannedscope
+   *
+   * will be replaced with method:
+   * setSpannedAScope(scope: Scope): void
+   *
    * Sets the spanned scope of this ast node.
    *
    * @param spannedScope the spanned scope of this ast node
    */
+  @Deprecated
   void setSpannedScope(Scope spannedScope);
 
   /**
+   * Deprecated will be deleted after next release
+   * only spannedscope method generation, when the ast has a spannedscope
+   *
+   * will be replaced with method:
+   * setSpannedAScopeOpt(scope: Optional<AScope>): void
+   *
    * Sets the spanned scope of this ast node with an Optional as parameter.
    *
    * @param spannedScopeOpt the spanned scope of this ast node as an Optional
    */
+  @Deprecated()
   void setSpannedScopeOpt(Optional<? extends Scope> spannedScopeOpt);
 
   /**
+   *
+   * Deprecated will be deleted after next release
+   * only spannedscope method generation, when the ast has a spannedscope
+   *
+   * will be replaced with method:
+   * setSpannedAScopeAbsent(): void
+   *
    * Sets the spanned scope optional to absent
    *
    */
+  @Deprecated
   void setSpannedScopeAbsent();
+
   /**
-   * 
-   * Scope getSpannedScope();
+   * Deprecated will be deleted after next release
+   * only spannedscope method generation, when the ast has a spannedscope
+   *
+   * will be replaced with method:
+   * getSpannedAScope(): AScope
    * 
    * @return the spanned scope of this ast node
    */
+  @Deprecated
    Scope getSpannedScope();
   
   /**
+   *  Deprecated will be deleted after next release
+   * only spannedscope method generation, when the ast has a spannedscope
+   *
+   * will be replaced with method:
+   * getSpannedAScopeOpt(): Optional<AScope>
+   *
    * Gets the spanned scope of this ast node as an Optional
    * 
    * @return Optional<Scope> of the spanned Scope
    */
+  @Deprecated
   Optional<? extends Scope> getSpannedScopeOpt();
 
   /**
+   *
+   *  Deprecated will be deleted after next release
+   * only spannedscope method generation, when the ast has a spannedscope
+   *
+   * will be replaced with method:
+   * isPresentSpannedAScope(): boolean
+   *
+   *
    * @return true if the spanned scope is present
    */
+  @Deprecated
   boolean isPresentSpannedScope();
 
   

@@ -144,23 +144,26 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   public Optional<? extends Scope> getEnclosingScopeOpt() {
     return this.enclosingScope;
   }
-  
+
+  @Deprecated
   @Override
   public void setSymbol(Symbol symbol) {
     this.symbol = Optional.ofNullable(symbol);
   }
 
+  @Deprecated
   @Override
   public void setSymbolOpt(Optional<? extends Symbol > enclosingSymbolOpt) {
     this.symbol = enclosingSymbolOpt ;
   }
 
+  @Deprecated
   @Override
   public void setSymbolAbsent() {
     this.symbol = Optional.empty();
   }
 
-
+  @Deprecated
   @Override
   public Symbol getSymbol() {
     if (getSymbolOpt().isPresent()) {
@@ -171,16 +174,19 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
     throw new IllegalStateException();
   }
 
+  @Deprecated
   @Override
   public Optional<? extends Symbol> getSymbolOpt() {
     return this.symbol;
   }
-  
+
+  @Deprecated
   @Override
   public boolean isPresentSpannedScope() {
     return spannedScope.isPresent();
   }
-  
+
+  @Deprecated
   @Override
   public boolean isPresentSymbol() {
     return symbol.isPresent();
@@ -191,22 +197,25 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
     return enclosingScope.isPresent();
   }
 
+  @Deprecated
   @Override
   public void setSpannedScope(Scope spannedScope) {
     this.spannedScope = Optional.ofNullable(spannedScope);
   }
 
+  @Deprecated
   @Override
   public void setSpannedScopeOpt(Optional<? extends Scope > spannedScopeOpt) {
     this.spannedScope = spannedScopeOpt ;
   }
 
+  @Deprecated
   @Override
   public void setSpannedScopeAbsent() {
     this.spannedScope = Optional.empty();
   }
 
-
+  @Deprecated
   @Override
   public Scope getSpannedScope() {
     if (getSpannedScopeOpt().isPresent()) {
@@ -216,7 +225,7 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
     // Normally this statement is not reachable
     throw new IllegalStateException();
   }
-
+  @Deprecated
   @Override
   public Optional<? extends Scope> getSpannedScopeOpt() {
     return this.spannedScope;
