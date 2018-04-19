@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.referencesymbol;
+
+grammar Reference extends mc.common.Basics {
+
+   symbol A = Name "+";
+
+   B = g:Name@A  ;
+
+}
