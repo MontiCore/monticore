@@ -9,14 +9,17 @@ import static de.se_rwth.commons.Names.getSimpleName;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
@@ -36,6 +39,7 @@ import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.symboltable.GlobalScope;
+import de.monticore.symboltable.Symbol;
 import de.monticore.types.TypesHelper;
 import de.monticore.types.TypesPrinter;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
@@ -967,7 +971,6 @@ public class CdDecorator {
         imports));
 
     // Create delegate methods for inherited classes
-    ArrayList<CDSymbol> overridden = Lists.newArrayList();
     List<String> delegateList = Lists.newArrayList(astClasses);
     for (CDSymbol superCd : astHelper.getAllSuperCds(astHelper.getCdSymbol())) {
       for (CDTypeSymbol cdType : superCd.getTypes()) {
@@ -987,12 +990,14 @@ public class CdDecorator {
     }
 
     // Compute diagrams with overridden classes
-    calculateOverriddenCds(astHelper.getCdSymbol(), astClasses, overridden);
+    HashMap<CDSymbol, Collection<CDTypeSymbol>> overridden = Maps.newHashMap();
+    Collection<CDTypeSymbol> firstClasses = Lists.newArrayList();
+    calculateOverriddenCds(astHelper.getCdSymbol(), astClasses, overridden, firstClasses);
 
     // Create init for super class diagrams
     String toParse = "public static void init();";
     HookPoint methodBody = new TemplateHookPoint("ast.ASTMillInitMethod", cdCompilationUnit.getCDDefinition().getName(),
-        GeneratorHelper.getPlainName(millClass, ""), overridden);
+        GeneratorHelper.getPlainName(millClass, ""), overridden.keySet());
     replaceMethodBodyTemplate(millClass, toParse, methodBody);
 
     // Create reset for super class diagrams
@@ -1001,46 +1006,51 @@ public class CdDecorator {
     replaceMethodBodyTemplate(millClass, toParse, methodBody);
 
     // Create Mill for overridden Rules
-    for (CDSymbol symbol : overridden) {
-      List<ASTCDClass> classes = Lists.newArrayList();
-      for (CDTypeSymbol overriddenType : symbol.getTypes()) {
-        if (astClasses.contains(overriddenType.getName())) {
-          classes.add((ASTCDClass) overriddenType.getAstNode().get());
-        }
-      }
+    List<String> importsIgnoredRules = Lists.newArrayList();
+    importsIgnoredRules.add("de.se_rwth.commons.logging.Log");
+    for (Entry<CDSymbol, Collection<CDTypeSymbol>> e: overridden.entrySet()) {
+      CDSymbol symbol = e.getKey();
       String millForName = symbol.getName() + "MillFor" + cdCompilationUnit.getCDDefinition().getName();
       String millSuperName = getSimpleName(symbol.getName()) + MILL;
       String millSuperPackage = symbol.getFullName().toLowerCase()
           + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;
-      millClass = createMillForSuperClass(cdCompilationUnit, millForName, symbol.getName(), classes, astHelper);
+      millClass = createMillForSuperClass(cdCompilationUnit, millForName, symbol, e.getValue(), firstClasses, astHelper);
       glex.replaceTemplate(CLASS_CONTENT_TEMPLATE, millClass, new TemplateHookPoint(
           "ast.AstMillForSuper", millClass,
           millClass.isPresentModifier() && millClass.getModifier().isAbstract(),
-          imports, millSuperPackage + millSuperName));
+          importsIgnoredRules, millSuperPackage + millSuperName));
     }
   }
 
 
   protected void calculateOverriddenCds(CDSymbol cd,
-                                        Collection<String> nativeClasses, ArrayList<CDSymbol> overridden) {
-    // imported cds
+      Collection<String> nativeClasses, HashMap<CDSymbol, Collection<CDTypeSymbol>> overridden,
+      Collection<CDTypeSymbol> firstClasses) {
+    HashMap<String, CDTypeSymbol> l = Maps.newHashMap();
     for (String importedCdName : cd.getImports()) {
       Optional<CDSymbol> importedCd = symbolTable.resolve(importedCdName, CDSymbol.KIND);
       if (importedCd.isPresent()) {
         CDSymbol superCd = importedCd.get();
+        Collection<CDTypeSymbol> overriddenSet = Lists.newArrayList();
         for (String className : nativeClasses) {
-          if (superCd.getType(className).isPresent()) {
-            overridden.add(superCd);
-            calculateOverriddenCds(superCd, nativeClasses, overridden);
-            return;
+          Optional<CDTypeSymbol> cdType = superCd.getType(className);
+          if (cdType.isPresent()) {
+            overriddenSet.add(cdType.get());
+            boolean ignore = firstClasses.stream().filter(s -> s.getName().equals(className)).count()>0;
+            if (!ignore && !l.containsKey(className)) {
+              l.put(className, cdType.get());
+            } 
           }
         }
-        calculateOverriddenCds(superCd, nativeClasses, overridden);
+        if (!overriddenSet.isEmpty()) {
+          overridden.put(superCd, overriddenSet);
+        }
+        calculateOverriddenCds(superCd, nativeClasses, overridden, firstClasses);
       }
     }
-    return;
+    firstClasses.addAll(l.values());
   }
-
+  
   protected ASTCDClass createMillClass(ASTCDCompilationUnit cdCompilationUnit,
                                        List<ASTCDClass> nativeClasses, AstGeneratorHelper astHelper) {
     ASTCDDefinition cdDef = cdCompilationUnit.getCDDefinition();
@@ -1092,8 +1102,9 @@ public class CdDecorator {
 
   protected ASTCDClass createMillForSuperClass(ASTCDCompilationUnit cdCompilationUnit,
                                                String millClassName,
-                                               String superName,
-                                               List<ASTCDClass> nativeClasses,
+                                               Symbol symbol,
+                                               Collection<CDTypeSymbol> overriddenClasses,
+                                               Collection<CDTypeSymbol> firstClasses,
                                                AstGeneratorHelper astHelper) {
     ASTCDDefinition cdDef = cdCompilationUnit.getCDDefinition();
 
@@ -1107,10 +1118,14 @@ public class CdDecorator {
       millClass.setModifier(TransformationHelper.createAbstractModifier());
     }
     millClass.setName(millClassName);
-    millClass.setSuperclass(TransformationHelper.createSimpleReference(superName));
+    millClass.setSuperclass(TransformationHelper.createSimpleReference(symbol.getName()));
 
     // Add builder-creating methods
-    for (ASTCDClass clazz : nativeClasses) {
+    for (CDTypeSymbol cdType : overriddenClasses ) {
+      if (!cdType.getAstNode().isPresent()) {
+        continue;
+      }
+      ASTCDClass clazz = (ASTCDClass) cdType.getAstNode().get();
       if (AstGeneratorHelper.isBuilderClassAbstract(clazz)
           || !GeneratorHelper.getPlainName(clazz).startsWith(GeneratorHelper.AST_PREFIX)) {
         continue;
@@ -1118,10 +1133,22 @@ public class CdDecorator {
 
       String className = AstGeneratorHelper.getASTClassNameWithoutPrefix(clazz);
       String methodName = StringTransformations.uncapitalize(className) + AstGeneratorHelper.BUILDER;
-      String toParse = "protected " + astHelper.getPlainName(clazz) + AstGeneratorHelper.BUILDER + " _"
-          + methodName + "() ;";
-      replaceMethodBodyTemplate(millClass, toParse,
-          new StringHookPoint("return " + cdCompilationUnit.getCDDefinition().getName() + "Mill." + methodName + "();\n"));
+      String toParse = "";
+      if (firstClasses.contains(cdType)) {
+        toParse = "protected " + AstGeneratorHelper.getPlainName(clazz) + AstGeneratorHelper.BUILDER + " _"
+            + methodName + "() ;";
+        replaceMethodBodyTemplate(millClass, toParse,
+            new StringHookPoint("return " + cdCompilationUnit.getCDDefinition().getName() + "Mill."
+                + methodName + "();\n"));
+      }
+      else {
+        toParse = "protected " + symbol.getFullName().toLowerCase() + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT
+            + AstGeneratorHelper.getPlainName(clazz) + AstGeneratorHelper.BUILDER + " _" + methodName
+            + "() ;";
+        replaceMethodBodyTemplate(millClass, toParse,
+            new StringHookPoint("Log.error(\"0xA7009" + AstGeneratorHelper.getGeneratedErrorCode(clazz) + " Overridden production " + AstGeneratorHelper.getPlainName(clazz) + " is not reachable\");\nreturn null;\n"));
+        
+      }
     }
 
     cdDef.getCDClassList().add(millClass);
