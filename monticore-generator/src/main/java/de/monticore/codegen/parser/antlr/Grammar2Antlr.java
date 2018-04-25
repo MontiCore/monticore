@@ -352,6 +352,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     // One entry leads to boolean isMethods
     if (!iterated) {
       ASTConstant x = ast.getConstantList().get(0);
+      addToCodeSection("(");
       if (!grammarInfo.isKeyword(x.getName(), grammarEntry)) {
         addToCodeSection(parserHelper.getLexSymbolName(x.getName()));
       } else {
@@ -362,6 +363,8 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
         addToAction(astActions.getConstantInConstantGroupSingleEntry(x, ast));
         addActionToCodeSectionWithNewLine();
       }
+      addToCodeSection(")", printIteration(ast.getIteration()));
+
     }
 
     // More than one entry leads to an int
@@ -374,34 +377,8 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
         ASTConstant x = iter.next();
 
         if (!grammarInfo.isKeyword(x.getName(), grammarEntry)) {
-          /* // Template //
-           * a.set%namegroup%(%astconstclassname%.%constantname%); tmp =
-           * "%name% {%actions%}";
-           *
-           * // Replace values tmp = tmp.replaceAll("%astconstclassname%",
-           * constClassName); tmp = tmp.replaceAll("%name%",
-           * grammarEntry.getLexSymbolName(x.getName())); tmp =
-           * tmp.replaceAll("%namegroup%",
-           * NameHelper.firstToUpper(a.getUsageName()));
-           *
-           * if (x.getHumanName() == null) { tmp =
-           * tmp.replaceAll("%constantname%",
-           * grammarEntry.getLexSymbolName(x.getName())); } else { tmp =
-           * tmp.replaceAll("%constantname%", (x.getHumanName().toUpperCase()));
-           * } */
           addToCodeSection(parserHelper.getLexSymbolName(x.getName()));
         } else {
-          /* // Template //
-           * a.set%namegroup%(%astconstclassname%.%constantname%); tmp =
-           * "'%name%' {%actions%}";
-           *
-           * tmp = tmp.replaceAll("%astconstclassname%", constClassName); tmp =
-           * tmp.replaceAll("%name%", (x.getName())); tmp =
-           * tmp.replaceAll("%namegroup%",
-           * NameHelper.firstToUpper(a.getUsageName()));
-           *
-           * tmp = tmp.replaceAll("%constantname%",
-           * (x.getName().toUpperCase())); */
           addToCodeSection("'" + x.getName() + "'");
         }
 
@@ -413,7 +390,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
         del = "|\n";
       }
 
-      addToCodeSection(")");
+      addToCodeSection(")", printIteration(ast.getIteration()));
     }
 
     endCodeSection(ast);
