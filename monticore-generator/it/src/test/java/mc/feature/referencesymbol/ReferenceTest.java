@@ -1,26 +1,21 @@
 package mc.feature.referencesymbol;
 
 import de.monticore.ModelingLanguage;
-import de.monticore.grammar.symboltable.MontiCoreGrammarLanguage;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolvingConfiguration;
-import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.*;
 import mc.GeneratorIntegrationsTest;
-import mc.feature.referencesymbol.reference._ast.ASTA;
-import mc.feature.referencesymbol.reference._ast.ASTReferenceNode;
-import mc.feature.referencesymbol.reference._ast.ASTReferenceToA;
+import mc.feature.referencesymbol.reference._ast.*;
 import mc.feature.referencesymbol.reference._parser.ReferenceParser;
-import mc.feature.referencesymbol.reference._symboltable.ASymbol;
+import mc.feature.referencesymbol.reference._symboltable.ReferenceLanguage;
 import mc.feature.referencesymbol.reference._symboltable.ReferenceSymbolTableCreator;
+import mc.feature.referencesymbol.reference._symboltable.TestSymbol;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -29,8 +24,8 @@ public class ReferenceTest extends GeneratorIntegrationsTest {
   @Test
   public void testNoSymbolTable() throws IOException {
     ReferenceParser parser = new ReferenceParser();
-    Optional<ASTA> asta = parser.parse_StringA("TestA +");
-    Optional<ASTReferenceToA> astb = parser.parse_StringReferenceToA("TestA");
+    Optional<ASTTest> asta = parser.parse_StringTest("symbol TestA ;");
+    Optional<ASTReferenceToTest> astb = parser.parse_StringReferenceToTest("ref TestA ;");
     assertFalse(parser.hasErrors());
     assertTrue(asta.isPresent());
     assertTrue(astb.isPresent());
@@ -44,24 +39,44 @@ public class ReferenceTest extends GeneratorIntegrationsTest {
   public void testWithSymbolTable() throws IOException {
 
     ReferenceParser parser = new ReferenceParser();
-    Optional<ASTA> asta = parser.parse_StringA("TestA +");
-    Optional<ASTReferenceToA> astb = parser.parse_StringReferenceToA("TestA");
-    assertTrue(asta.isPresent());
-    assertTrue(astb.isPresent());
+    Optional<ASTRand> astRand = parser.parse_StringRand("begin ReferenceTest {\n" +
+        "  symbol A;\n" +
+        "  ref A ;\n" +
+        "} end");
+        //.parse("src/test/resources/mc/feature/referencesymbol/ReferenceModel.ref");
+
+
+
     //create symboltable
+    ModelPath modelPath = new ModelPath(Paths.get("src/tests/resources/mc/feature/referencesymbol"));
+    ModelingLanguage lang = new ReferenceLanguage();
     ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    ModelingLanguage grammarLanguage = new MontiCoreGrammarLanguage();
-    Path path = Paths.get("src/main/grammars/mc/feature/referencesymbol");
-    ModelPath modelPath = new ModelPath(path);
-    MutableScope globalScope = new GlobalScope(modelPath, grammarLanguage);
+    resolvingConfiguration.addDefaultFilters(lang.getResolvingFilters());
+    GlobalScope globalScope = new GlobalScope(modelPath, lang, resolvingConfiguration);
     ReferenceSymbolTableCreator symbolTableCreator = new ReferenceSymbolTableCreator(resolvingConfiguration,globalScope);
-    symbolTableCreator.createFromAST(asta.get());
+    symbolTableCreator.createFromAST(astRand.get());
+   // symbolTableCreator.createFromAST(asta.get());
+    //symbolTableCreator.createFromAST(astb.get());
+    Optional<TestSymbol> a = globalScope.resolve("A", TestSymbol.KIND);
 
-    assertFalse(parser.hasErrors());
+    assertTrue(a.isPresent());
 
-    assertTrue(astb.get().isPresentRefSymbol());
+    ASTReferenceToTest astReferenceToTest = astRand.get().getReferenceToTest(0);
+    ASTTest astTest = astRand.get().getTest(0);
+    //muss man das machen?
+    astReferenceToTest.setEnclosingScope(astTest.getEnclosingScope());
 
-    assertTrue(astb.get().isPresentRefDefinition());
+    assertTrue(astTest.isPresentEnclosingScope());
+
+
+    assertTrue(astReferenceToTest.isPresentRefSymbol());
+
+    assertTrue(astReferenceToTest.isPresentRefDefinition());
+    assertTrue(astReferenceToTest.isPresentEnclosingScope());
+
+    assertEquals(astReferenceToTest.getRefDefinition(), astTest);
+    assertEquals(astReferenceToTest.getRefSymbolOpt(), a);
+
 
   }
 }

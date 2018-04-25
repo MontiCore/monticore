@@ -4,9 +4,10 @@ package mc.feature.referencesymbol;
 
 grammar Reference extends mc.common.Basics {
 
-   symbol A = Name "+";
+   Rand = "begin" Name "{" (Test | ReferenceToTest)+ "}" "end";
 
-   ReferenceToA = ref:Name@A  ;
+   symbol Test = "symbol" Name ";";
 
-   OnlyName = h:Name;
+   ReferenceToTest = "ref" ref:Name@Test ";" ;
+
 }
