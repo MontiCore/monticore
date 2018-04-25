@@ -70,6 +70,7 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import groovyjarjarantlr.ANTLRException;
+import groovyjarjarantlr.StringUtils;
 import transformation.ast.ASTCDTransformation;
 
 /**
@@ -147,6 +148,7 @@ public class CdDecorator {
       addOptionalMethods(clazz, astHelper, cdDefinition);
       addSymbolAndScopeAttributesAndMethods(clazz, astHelper);
       addReferencedSymbolMethods(clazz, astHelper);
+      addDefinitionGetter(clazz, astHelper);
 
       Optional<ASTCDClass> builder = astHelper.getASTBuilder(clazz);
       builder.ifPresent(astcdClass -> decorateBuilderClass(astcdClass, astHelper, cdDefinition));
@@ -156,7 +158,7 @@ public class CdDecorator {
 
     for (ASTCDInterface interf : cdDefinition.getCDInterfaceList()) {
       addListMethods(interf, astHelper);
-      addOptionalMethods(interf,astHelper);
+      addOptionalMethods(interf, astHelper);
       addGetter(interf);
       addSetter(interf);
     }
@@ -193,23 +195,23 @@ public class CdDecorator {
       }
     }
   }
-  
+
   protected void addSymbolAndScopeAttributesAndMethods(ASTCDClass clazz, AstGeneratorHelper astHelper) {
     MCGrammarSymbol grammarSymbol = astHelper.getGrammarSymbol();
-    if(grammarSymbol == null) {
+    if (grammarSymbol == null) {
       Log.warn("Symbol methods can not be generated, because the grammar symbol is not found");
       return;
     }
-    
+
     String name = AstGeneratorHelper.getASTClassNameWithoutPrefix(clazz);
     Optional<MCProdSymbol> prodSymbol = grammarSymbol.
         getSpannedScope().resolve(name, MCProdSymbol.KIND);
-    
+
     if (!prodSymbol.isPresent()) {
       Log.warn("Symbol methods can not be generated, prod symbol not found");
       return;
     }
-    
+
     if (prodSymbol.get().isSymbolDefinition()) {
       addSymbolAttributeAndMethods(clazz, name, grammarSymbol);
     }
@@ -217,33 +219,33 @@ public class CdDecorator {
       addScopeAttributeAndMethods(clazz, name, grammarSymbol);
     }
   }
-  
+
   protected void addSymbolAttributeAndMethods(ASTCDClass clazz, String name, MCGrammarSymbol grammarSymbol) {
     String symbolName = name + AstGeneratorHelper.SYMBOL;
     String qualifiedName = grammarSymbol.getFullName().toLowerCase() + "." +
         SymbolTableGenerator.PACKAGE + "." + symbolName;
     symbolName = Character.toLowerCase(symbolName.charAt(0)) + symbolName.substring(1);
-    
+
     Optional<ASTCDAttribute> symbolAttribute = cdTransformation.addCdAttributeUsingDefinition(clazz,
         "<<" + GeneratorHelper.SYMBOL +
             ">> protected Optional<" + qualifiedName + "> " + symbolName + ";");
-    
+
     addGetter(clazz, symbolAttribute.get());
     addOptionalGetMethods(clazz, symbolAttribute.get(), symbolName);
     addSetter(clazz, symbolAttribute.get());
     addOptionalSetMethods(clazz, symbolAttribute.get(), symbolName);
   }
-  
+
   protected void addScopeAttributeAndMethods(ASTCDClass clazz, String name, MCGrammarSymbol grammarSymbol) {
     String scopeName = name + AstGeneratorHelper.SCOPE;
     String qualifiedName = grammarSymbol.getFullName().toLowerCase() + "." +
         SymbolTableGenerator.PACKAGE + "." + scopeName;
     scopeName = "spanned" + scopeName;
-    
+
     Optional<ASTCDAttribute> scopeAttribute = cdTransformation.addCdAttributeUsingDefinition(clazz,
         "<<" + GeneratorHelper.SCOPE +
             ">> protected Optional<" + qualifiedName + "> " + scopeName + ";");
-    
+
     addGetter(clazz, scopeAttribute.get());
     addOptionalGetMethods(clazz, scopeAttribute.get(), scopeName);
     addSetter(clazz, scopeAttribute.get());
@@ -281,16 +283,31 @@ public class CdDecorator {
 
       // TODO PN handle both from:Name@Foo and from:QualifiedName@Foo
 
-      String toParse = "public " + returnType + " "
-          + GeneratorHelper.getPlainGetter(attribute) + nameSuffix + "() ;";
+      String methodNameGetOpt = "get"+StringTransformations.capitalize(attribute.getName())+nameSuffix+"Opt";
+      String toParseOpt = "public " + returnType + " "
+          + methodNameGetOpt + "() ;";
+      HookPoint getMethodBodyOpt = new TemplateHookPoint(
+          "ast.additionalmethods.GetReferencedSymbolOpt",
+          attribute.getName(), referencedSymbol);
+      replaceMethodBodyTemplate(clazz, toParseOpt, getMethodBodyOpt);
+
+      String methodNameGet = "get"+StringTransformations.capitalize(attribute.getName())+nameSuffix;
+      String toParse = "public " + referencedSymbol + " " + methodNameGet + "() ;";
       HookPoint getMethodBody = new TemplateHookPoint(
           "ast.additionalmethods.GetReferencedSymbol",
           attribute.getName(), referencedSymbol);
       replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
+
+      String methodNameIsPresent = "isPresent" + StringTransformations.capitalize(attribute.getName()) + nameSuffix;
+      String toParseIsPresent = "public boolean " + methodNameIsPresent + "() ;";
+      HookPoint getMethodBodyIsPresent = new TemplateHookPoint(
+          "ast.additionalmethods.IsPresentReferencedSymbol",
+          attribute.getName(), referencedSymbol);
+      replaceMethodBodyTemplate(clazz, toParseIsPresent, getMethodBodyIsPresent);
     }
   }
 
-  protected void addNodeGetter(ASTCDClass clazz, AstGeneratorHelper astHelper) {
+  protected void addDefinitionGetter(ASTCDClass clazz, AstGeneratorHelper astHelper) {
     List<ASTCDAttribute> attributes = Lists.newArrayList(clazz.getCDAttributeList());
     for (ASTCDAttribute attribute : attributes) {
       if (GeneratorHelper.isInherited(attribute)
@@ -312,14 +329,29 @@ public class CdDecorator {
       }
 
       String returnType = "Optional<" + referencedNode + ">";
-      String nameSuffix = "Node";
+      String nameSuffix = "Definition";
 
-      String toParse = "public " + returnType + " "
-          + GeneratorHelper.getPlainGetter(attribute) + nameSuffix + "() ;";
+      String methodNameGetOpt = "get"+StringTransformations.capitalize(attribute.getName())+nameSuffix+"Opt";
+      String toParseOpt = "public " + returnType + " " + methodNameGetOpt + "() ;";
+      HookPoint getMethodBodyOpt = new TemplateHookPoint(
+          "ast.additionalmethods.GetReferencedDefinitionOpt",
+          attribute.getName(), referencedSymbol, symbolName);
+      replaceMethodBodyTemplate(clazz, toParseOpt, getMethodBodyOpt);
+
+      String methodNameGet = "get"+StringTransformations.capitalize(attribute.getName())+nameSuffix;
+      String toParse = "public " + referencedNode + " " + methodNameGet + "() ;";
       HookPoint getMethodBody = new TemplateHookPoint(
-          "ast.additionalmethods.GetReferencedNode",
+          "ast.additionalmethods.GetReferencedDefinition",
           attribute.getName(), referencedSymbol, symbolName);
       replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
+
+      String methodNameIsPresent = "isPresent" + StringTransformations.capitalize(attribute.getName()) + nameSuffix;
+      String toParseIsPresent = "public boolean "
+          + methodNameIsPresent + "() ;";
+      HookPoint getMethodBodyIsPresent = new TemplateHookPoint(
+          "ast.additionalmethods.IsPresentReferencedDefinition",
+          attribute.getName(), referencedSymbol, symbolName);
+      replaceMethodBodyTemplate(clazz, toParseIsPresent, getMethodBodyIsPresent);
     }
   }
 
@@ -483,7 +515,7 @@ public class CdDecorator {
         String attrName = GeneratorHelper.getSimpleListName(attribute);
         String listName = StringTransformations.capitalize(attribute.getName());
         addListGetterMethods(interf, attribute, typeName, listName, attrName);
-        addListSetterMethods(interf, attribute, typeName, listName, attrName, false , false);
+        addListSetterMethods(interf, attribute, typeName, listName, attrName, false, false);
       }
     }
   }
@@ -657,7 +689,6 @@ public class CdDecorator {
   }
 
 
-
   /**
    * Adds common ast methods to the all classes in the class diagram
    *
@@ -686,7 +717,7 @@ public class CdDecorator {
   /**
    * Adds common ast methods to the all interfaces in the class diagram
    *
-   * @param interf     - each entry contains a class diagram intreface and a respective
+   * @param interf    - each entry contains a class diagram intreface and a respective
    *                  builder class
    * @param astHelper
    * @throws ANTLRException
@@ -703,9 +734,9 @@ public class CdDecorator {
 
     }
   }
-  
-  protected  void addOptionalSetMethods(ASTCDType type, ASTCDAttribute attribute, String nativeName) {
-    addOptionalSetMethods(type, attribute, nativeName,false, false);
+
+  protected void addOptionalSetMethods(ASTCDType type, ASTCDAttribute attribute, String nativeName) {
+    addOptionalSetMethods(type, attribute, nativeName, false, false);
   }
 
   protected void addOptionalSetMethods(ASTCDType type, ASTCDAttribute attribute, String nativeName,
@@ -829,7 +860,7 @@ public class CdDecorator {
       }
     }
   }
-  
+
   protected void addGetter(ASTCDType type, ASTCDAttribute attribute) {
     String methodName = GeneratorHelper.getPlainGetter(attribute);
     String toParse = "public " + TypesPrinter.printType(attribute.getType()) + " "
@@ -874,28 +905,28 @@ public class CdDecorator {
         continue;
       }
       boolean isInherited = GeneratorHelper.isInherited(attribute);
-      
+
       addSetter(clazz, attribute, isBuilderClass, isInherited);
     }
   }
-  
+
   protected void addSetter(ASTCDType type, ASTCDAttribute attribute) {
     addSetter(type, attribute, false, false);
   }
-  
+
   protected void addSetter(ASTCDType type, ASTCDAttribute attribute, boolean isBuilderClass, boolean isInherited) {
     String typeName = TypesHelper.printSimpleRefType(attribute.getType());
     String attributeName = attribute.getName();
     String methodName = GeneratorHelper.getPlainSetter(attribute);
     boolean isOptional = GeneratorHelper.isOptional(attribute);
     String returnType = isBuilderClass ? type.getName() : "void";
-  
+
     String toParse = "public " + returnType + " " + methodName + "("
         + typeName + " " + attributeName + ") ;";
     HookPoint methodBody = new TemplateHookPoint("ast.additionalmethods.Set",
         attribute, attributeName, isBuilderClass, isInherited, methodName);
     ASTCDMethod setMethod = replaceMethodBodyTemplate(type, toParse, methodBody);
-  
+
     if (isOptional) {
       glex.replaceTemplate(ERROR_IFNULL_TEMPLATE, setMethod, new StringHookPoint(""));
     }

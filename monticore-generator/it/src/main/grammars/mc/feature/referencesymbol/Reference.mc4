@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.referencesymbol;
+
+grammar Reference extends mc.common.Basics {
+
+   Rand = "begin" Name "{" (Test | ReferenceToTest)+ "}" "end";
+
+   symbol Test = "symbol" Name ";";
+
+   ReferenceToTest = "ref" ref:Name@Test ";" ;
+
+}
