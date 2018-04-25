@@ -39,14 +39,7 @@ public class ReferenceTest extends GeneratorIntegrationsTest {
   public void testWithSymbolTable() throws IOException {
 
     ReferenceParser parser = new ReferenceParser();
-    Optional<ASTRand> astRand = parser.parse_StringRand("begin ReferenceTest {\n" +
-        "  symbol A;\n" +
-        "  ref A ;\n" +
-        "} end");
-        //.parse("src/test/resources/mc/feature/referencesymbol/ReferenceModel.ref");
-
-
-
+    Optional<ASTRand> astRand = parser.parse("src/test/resources/mc/feature/referencesymbol/ReferenceModel.ref");
     //create symboltable
     ModelPath modelPath = new ModelPath(Paths.get("src/tests/resources/mc/feature/referencesymbol"));
     ModelingLanguage lang = new ReferenceLanguage();
@@ -55,24 +48,20 @@ public class ReferenceTest extends GeneratorIntegrationsTest {
     GlobalScope globalScope = new GlobalScope(modelPath, lang, resolvingConfiguration);
     ReferenceSymbolTableCreator symbolTableCreator = new ReferenceSymbolTableCreator(resolvingConfiguration,globalScope);
     symbolTableCreator.createFromAST(astRand.get());
-   // symbolTableCreator.createFromAST(asta.get());
-    //symbolTableCreator.createFromAST(astb.get());
     Optional<TestSymbol> a = globalScope.resolve("A", TestSymbol.KIND);
+
 
     assertTrue(a.isPresent());
 
     ASTReferenceToTest astReferenceToTest = astRand.get().getReferenceToTest(0);
     ASTTest astTest = astRand.get().getTest(0);
-    //muss man das machen?
     astReferenceToTest.setEnclosingScope(astTest.getEnclosingScope());
 
     assertTrue(astTest.isPresentEnclosingScope());
-
+    assertTrue(astReferenceToTest.isPresentEnclosingScope());
 
     assertTrue(astReferenceToTest.isPresentRefSymbol());
-
     assertTrue(astReferenceToTest.isPresentRefDefinition());
-    assertTrue(astReferenceToTest.isPresentEnclosingScope());
 
     assertEquals(astReferenceToTest.getRefDefinition(), astTest);
     assertEquals(astReferenceToTest.getRefSymbolOpt(), a);
