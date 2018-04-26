@@ -131,9 +131,23 @@ public abstract class MCParser extends Parser {
   public boolean noSpace() {
     org.antlr.v4.runtime.Token t1 = _input.LT(-1);
     org.antlr.v4.runtime.Token t2 = _input.LT(-2);
+    if ((t1 == null) || (t2==null)) {
+      return false;
+    }
     // token are on same line
     // and columns differ exactly length of earlier token (t2)
     return ((t1.getLine() == t2.getLine()) &&
         (t1.getCharPositionInLine() == t2.getCharPositionInLine() + t2.getText().length()));
+  }
+  
+  /*
+   * Compare the string of token (counting from the current token) with the given string
+   */
+  public boolean cmpToken(int i, String str) {
+    org.antlr.v4.runtime.Token t1 = _input.LT(i);
+    if (t1==null) {
+      return false;
+    }
+    return t1.getText().equals(str);
   }
 }
