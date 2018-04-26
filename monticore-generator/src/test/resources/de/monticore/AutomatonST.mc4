@@ -25,5 +25,4 @@ grammar AutomatonST {
     '\r' |
     '\n' ) :{_channel = HIDDEN;};
 
-
 }
