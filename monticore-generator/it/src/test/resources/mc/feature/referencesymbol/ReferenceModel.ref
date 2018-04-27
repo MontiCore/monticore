@@ -3,5 +3,5 @@ begin ReferenceTest {
   ref A ;
   symbol B;
   symbol C;
-  ref D;
+  ref B;
 } end

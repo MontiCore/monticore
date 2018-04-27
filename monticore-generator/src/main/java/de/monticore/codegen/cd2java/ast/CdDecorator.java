@@ -2,25 +2,9 @@
 
 package de.monticore.codegen.cd2java.ast;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static de.se_rwth.commons.Names.getQualifier;
-import static de.se_rwth.commons.Names.getSimpleName;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
@@ -31,7 +15,10 @@ import de.monticore.codegen.mc2cd.transl.ConstantsTranslation;
 import de.monticore.codegen.symboltable.SymbolTableGenerator;
 import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.*;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.HookPoint;
+import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
@@ -43,22 +30,7 @@ import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.types.types._ast.TypesMill;
 import de.monticore.umlcd4a.CD4AnalysisHelper;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDConstructor;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDDefinition;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDEnum;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDEnumConstant;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTModifier;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTStereoValue;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTStereotype;
-import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisMill;
-import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
+import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.umlcd4a.prettyprint.AstPrinter;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
@@ -67,8 +39,15 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import groovyjarjarantlr.ANTLRException;
-import groovyjarjarantlr.StringUtils;
 import transformation.ast.ASTCDTransformation;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+
+import static com.google.common.collect.Lists.newArrayList;
+import static de.se_rwth.commons.Names.getQualifier;
+import static de.se_rwth.commons.Names.getSimpleName;
 
 /**
  * Decorates class diagrams by adding of new classes and methods using in ast
@@ -255,7 +234,6 @@ public class CdDecorator {
 
   protected void addReferencedSymbolAttributes(ASTCDClass clazz, AstGeneratorHelper astHelper) {
     List<ASTCDAttribute> attributes = Lists.newArrayList(clazz.getCDAttributeList());
-    List<HookPoint> hookPointList = new ArrayList<>();
     for (ASTCDAttribute attribute : attributes) {
       if (GeneratorHelper.isInherited(attribute)
           || !CD4AnalysisHelper.hasStereotype(attribute,
@@ -273,7 +251,6 @@ public class CdDecorator {
       Optional<ASTCDAttribute> astcdAttribute = cdTransformation.addCdAttribute(clazz, attribute.getName() + "Reference", "Optional<" + referencedSymbol + ">", "protected");
       Preconditions.checkArgument(astcdAttribute.isPresent());
     }
-
   }
 
   protected void addReferencedSymbolMethods(ASTCDClass clazz, AstGeneratorHelper astHelper) {
@@ -328,6 +305,13 @@ public class CdDecorator {
           "ast.additionalmethods.IsPresentReferencedSymbol",
           attribute.getName(), referencedSymbol);
       replaceMethodBodyTemplate(clazz, toParseIsPresent, getMethodBodyIsPresent);
+
+      String methodNameSet = "set" + StringTransformations.capitalize(attribute.getName()) + nameSuffix;
+      String toParseSet = "public void " + methodNameSet + " ( "+referencedSymbol+" symbol ) ;";
+      HookPoint getMethodBodySet = new TemplateHookPoint(
+          "ast.additionalmethods.SetReferencedSymbol",
+          attribute.getName(), referencedSymbol);
+      replaceMethodBodyTemplate(clazz, toParseSet, getMethodBodySet);
     }
   }
 
@@ -376,6 +360,13 @@ public class CdDecorator {
           "ast.additionalmethods.IsPresentReferencedDefinition",
           attribute.getName(), referencedSymbol, symbolName);
       replaceMethodBodyTemplate(clazz, toParseIsPresent, getMethodBodyIsPresent);
+
+      String methodNameSet = "set" + StringTransformations.capitalize(attribute.getName()) + nameSuffix;
+      String toParseSet = "public void " + methodNameSet + "("+referencedNode+" ast ) ;";
+      HookPoint getMethodBodySet = new TemplateHookPoint(
+          "ast.additionalmethods.SetReferencedDefinition",
+          attribute.getName(), referencedSymbol, symbolName);
+      replaceMethodBodyTemplate(clazz, toParseSet, getMethodBodySet);
     }
   }
 
