@@ -31,7 +31,10 @@ import de.monticore.codegen.mc2cd.transl.ConstantsTranslation;
 import de.monticore.codegen.symboltable.SymbolTableGenerator;
 import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.*;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.HookPoint;
+import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
@@ -137,7 +140,6 @@ public class CdDecorator {
 
     // Decorate with additional methods and attributes
     for (ASTCDClass clazz : nativeClasses) {
-      addReferencedSymbolAttributes(clazz,astHelper);
       addConstructors(clazz, astHelper);
       addAdditionalMethods(clazz, astHelper);
       addListMethods(clazz, astHelper, cdDefinition);
@@ -250,36 +252,6 @@ public class CdDecorator {
     addOptionalSetMethods(clazz, scopeAttribute.get(), scopeName);
   }
 
-  protected void addReferencedSymbolAttributes(ASTCDClass clazz, AstGeneratorHelper astHelper) {
-    List<ASTCDAttribute> attributes = Lists.newArrayList(clazz.getCDAttributeList());
-    List<HookPoint> hookPointList = new ArrayList<>();
-    for (ASTCDAttribute attribute : attributes) {
-      if (GeneratorHelper.isInherited(attribute)
-          || !CD4AnalysisHelper.hasStereotype(attribute,
-          MC2CDStereotypes.REFERENCED_SYMBOL.toString())) {
-        continue;
-      }
-      String referencedSymbol = CD4AnalysisHelper.getStereotypeValues(attribute,
-          MC2CDStereotypes.REFERENCED_SYMBOL.toString()).get(0);
-
-      if (!getQualifier(referencedSymbol).isEmpty()) {
-        referencedSymbol = SymbolTableGeneratorHelper
-            .getQualifiedSymbolType(getQualifier(referencedSymbol)
-                .toLowerCase(), getSimpleName(referencedSymbol));
-      }
-      HookPoint hookPoint = new TemplateHookPoint("ast.ReferencedSymbolAttribute", attribute.getName(), referencedSymbol);
-      hookPointList.add(hookPoint);
-      //glex.
-      //String referencedSymbolAttribute = "    protected Optional<"+referencedSymbol+"> "+attribute.getName()+"Reference = Optional.empty();";
-      //HookPoint hookPoint = new StringHookPoint(referencedSymbolAttribute);
-      //Optional<ASTCDAttribute> astcdAttribute = cdTransformation.addCdAttribute(clazz, attribute.getName()+"Reference", "Optional<"+referencedSymbol +">", "protected");
-      //Preconditions.checkArgument(astcdAttribute.isPresent());
-
-      //glex.bindHookPoint("ast.Attribute", hookPoint);
-    }
-    glex.setBeforeTemplate("ast.additionalmethods.GetReferencedSymbolOpt", hookPointList);
-  }
-
   protected void addReferencedSymbolMethods(ASTCDClass clazz, AstGeneratorHelper astHelper) {
     List<ASTCDAttribute> attributes = Lists.newArrayList(clazz.getCDAttributeList());
     for (ASTCDAttribute attribute : attributes) {
@@ -311,7 +283,7 @@ public class CdDecorator {
 
       // TODO PN handle both from:Name@Foo and from:QualifiedName@Foo
 
-      String methodNameGetOpt = "get" + StringTransformations.capitalize(attribute.getName()) + nameSuffix + "Opt";
+      String methodNameGetOpt = "get"+StringTransformations.capitalize(attribute.getName())+nameSuffix+"Opt";
       String toParseOpt = "public " + returnType + " "
           + methodNameGetOpt + "() ;";
       HookPoint getMethodBodyOpt = new TemplateHookPoint(
@@ -319,7 +291,7 @@ public class CdDecorator {
           attribute.getName(), referencedSymbol);
       replaceMethodBodyTemplate(clazz, toParseOpt, getMethodBodyOpt);
 
-      String methodNameGet = "get" + StringTransformations.capitalize(attribute.getName()) + nameSuffix;
+      String methodNameGet = "get"+StringTransformations.capitalize(attribute.getName())+nameSuffix;
       String toParse = "public " + referencedSymbol + " " + methodNameGet + "() ;";
       HookPoint getMethodBody = new TemplateHookPoint(
           "ast.additionalmethods.GetReferencedSymbol",
@@ -359,14 +331,14 @@ public class CdDecorator {
       String returnType = "Optional<" + referencedNode + ">";
       String nameSuffix = "Definition";
 
-      String methodNameGetOpt = "get" + StringTransformations.capitalize(attribute.getName()) + nameSuffix + "Opt";
+      String methodNameGetOpt = "get"+StringTransformations.capitalize(attribute.getName())+nameSuffix+"Opt";
       String toParseOpt = "public " + returnType + " " + methodNameGetOpt + "() ;";
       HookPoint getMethodBodyOpt = new TemplateHookPoint(
           "ast.additionalmethods.GetReferencedDefinitionOpt",
           attribute.getName(), referencedSymbol, symbolName);
       replaceMethodBodyTemplate(clazz, toParseOpt, getMethodBodyOpt);
 
-      String methodNameGet = "get" + StringTransformations.capitalize(attribute.getName()) + nameSuffix;
+      String methodNameGet = "get"+StringTransformations.capitalize(attribute.getName())+nameSuffix;
       String toParse = "public " + referencedNode + " " + methodNameGet + "() ;";
       HookPoint getMethodBody = new TemplateHookPoint(
           "ast.additionalmethods.GetReferencedDefinition",
@@ -1067,7 +1039,7 @@ public class CdDecorator {
     // Create Mill for overridden Rules
     List<String> importsIgnoredRules = Lists.newArrayList();
     importsIgnoredRules.add("de.se_rwth.commons.logging.Log");
-    for (Entry<CDSymbol, Collection<CDTypeSymbol>> e : overridden.entrySet()) {
+    for (Entry<CDSymbol, Collection<CDTypeSymbol>> e: overridden.entrySet()) {
       CDSymbol symbol = e.getKey();
       String millForName = symbol.getName() + "MillFor" + cdCompilationUnit.getCDDefinition().getName();
       String millSuperName = getSimpleName(symbol.getName()) + MILL;
@@ -1083,8 +1055,8 @@ public class CdDecorator {
 
 
   protected void calculateOverriddenCds(CDSymbol cd,
-                                        Collection<String> nativeClasses, HashMap<CDSymbol, Collection<CDTypeSymbol>> overridden,
-                                        Collection<CDTypeSymbol> firstClasses) {
+      Collection<String> nativeClasses, HashMap<CDSymbol, Collection<CDTypeSymbol>> overridden,
+      Collection<CDTypeSymbol> firstClasses) {
     HashMap<String, CDTypeSymbol> l = Maps.newHashMap();
     for (String importedCdName : cd.getImports()) {
       Optional<CDSymbol> importedCd = symbolTable.resolve(importedCdName, CDSymbol.KIND);
@@ -1095,10 +1067,10 @@ public class CdDecorator {
           Optional<CDTypeSymbol> cdType = superCd.getType(className);
           if (cdType.isPresent()) {
             overriddenSet.add(cdType.get());
-            boolean ignore = firstClasses.stream().filter(s -> s.getName().equals(className)).count() > 0;
+            boolean ignore = firstClasses.stream().filter(s -> s.getName().equals(className)).count()>0;
             if (!ignore && !l.containsKey(className)) {
               l.put(className, cdType.get());
-            }
+            } 
           }
         }
         if (!overriddenSet.isEmpty()) {
@@ -1109,7 +1081,7 @@ public class CdDecorator {
     }
     firstClasses.addAll(l.values());
   }
-
+  
   protected ASTCDClass createMillClass(ASTCDCompilationUnit cdCompilationUnit,
                                        List<ASTCDClass> nativeClasses, AstGeneratorHelper astHelper) {
     ASTCDDefinition cdDef = cdCompilationUnit.getCDDefinition();
@@ -1180,7 +1152,7 @@ public class CdDecorator {
     millClass.setSuperclass(TransformationHelper.createSimpleReference(symbol.getName()));
 
     // Add builder-creating methods
-    for (CDTypeSymbol cdType : overriddenClasses) {
+    for (CDTypeSymbol cdType : overriddenClasses ) {
       if (!cdType.getAstNode().isPresent()) {
         continue;
       }
@@ -1199,13 +1171,14 @@ public class CdDecorator {
         replaceMethodBodyTemplate(millClass, toParse,
             new StringHookPoint("return " + cdCompilationUnit.getCDDefinition().getName() + "Mill."
                 + methodName + "();\n"));
-      } else {
+      }
+      else {
         toParse = "protected " + symbol.getFullName().toLowerCase() + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT
             + AstGeneratorHelper.getPlainName(clazz) + AstGeneratorHelper.BUILDER + " _" + methodName
             + "() ;";
         replaceMethodBodyTemplate(millClass, toParse,
             new StringHookPoint("Log.error(\"0xA7009" + AstGeneratorHelper.getGeneratedErrorCode(clazz) + " Overridden production " + AstGeneratorHelper.getPlainName(clazz) + " is not reachable\");\nreturn null;\n"));
-
+        
       }
     }
 

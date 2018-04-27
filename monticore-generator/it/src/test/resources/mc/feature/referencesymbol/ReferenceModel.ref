@@ -1,7 +1,4 @@
 begin ReferenceTest {
   symbol A;
   ref A ;
-  symbol B;
-  symbol C;
-  ref D;
 } end
