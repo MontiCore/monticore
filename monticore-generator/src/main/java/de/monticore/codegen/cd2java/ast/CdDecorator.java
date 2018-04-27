@@ -126,6 +126,10 @@ public class CdDecorator {
     // Decorate with builder pattern
     addBuilders(cdDefinition, astHelper);
 
+    for (ASTCDClass clazz : nativeClasses) {
+      addReferencedSymbolAttributes(clazz, astHelper);
+    }
+
     addNodeFactoryClass(cdCompilationUnit, nativeClasses, astHelper);
 
     addMillClass(cdCompilationUnit, nativeClasses, astHelper);
@@ -137,7 +141,6 @@ public class CdDecorator {
 
     // Decorate with additional methods and attributes
     for (ASTCDClass clazz : nativeClasses) {
-      addReferencedSymbolAttributes(clazz,astHelper);
       addConstructors(clazz, astHelper);
       addAdditionalMethods(clazz, astHelper);
       addListMethods(clazz, astHelper, cdDefinition);
@@ -267,17 +270,10 @@ public class CdDecorator {
             .getQualifiedSymbolType(getQualifier(referencedSymbol)
                 .toLowerCase(), getSimpleName(referencedSymbol));
       }
-      HookPoint hookPoint = new TemplateHookPoint("ast.ReferencedSymbolAttribute", attribute.getName(), referencedSymbol);
-      hookPointList.add(hookPoint);
-      //glex.
-      //String referencedSymbolAttribute = "    protected Optional<"+referencedSymbol+"> "+attribute.getName()+"Reference = Optional.empty();";
-      //HookPoint hookPoint = new StringHookPoint(referencedSymbolAttribute);
-      //Optional<ASTCDAttribute> astcdAttribute = cdTransformation.addCdAttribute(clazz, attribute.getName()+"Reference", "Optional<"+referencedSymbol +">", "protected");
-      //Preconditions.checkArgument(astcdAttribute.isPresent());
-
-      //glex.bindHookPoint("ast.Attribute", hookPoint);
+      Optional<ASTCDAttribute> astcdAttribute = cdTransformation.addCdAttribute(clazz, attribute.getName() + "Reference", "Optional<" + referencedSymbol + ">", "protected");
+      Preconditions.checkArgument(astcdAttribute.isPresent());
     }
-    glex.setBeforeTemplate("ast.additionalmethods.GetReferencedSymbolOpt", hookPointList);
+
   }
 
   protected void addReferencedSymbolMethods(ASTCDClass clazz, AstGeneratorHelper astHelper) {
