@@ -85,6 +85,25 @@ public class ReferenceTest extends GeneratorIntegrationsTest {
     assertEquals(astReferenceToTest.getRefSymbolOpt(), a);
     assertEquals(astReferenceToTest.getRefDefinition(), astTest);
 
+    //test setOpt
+    astReferenceToTest.setRefSymbolOpt(c);
+    assertTrue(astReferenceToTest.isPresentRefSymbol());
+    assertEquals(astReferenceToTest.getRefSymbolOpt(), c);
+
+    //test Absent
+    astReferenceToTest.setRefSymbolAbsent();
+    assertFalse(astReferenceToTest.isPresentRefSymbol());
+
+    //test setOpt
+    astReferenceToTest.setRefDefinitionOpt(Optional.ofNullable(astTest));
+    assertTrue(astReferenceToTest.isPresentRefSymbol());
+    assertEquals(astReferenceToTest.getRefSymbolOpt(), a);
+    assertEquals(astReferenceToTest.getRefDefinition(), astTest);
+
+    //test Absent
+    astReferenceToTest.setRefDefinitionAbsent();
+    assertFalse(astReferenceToTest.isPresentRefSymbol());
+
 
   }
 }

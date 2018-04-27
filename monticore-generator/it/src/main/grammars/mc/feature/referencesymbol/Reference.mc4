@@ -9,4 +9,9 @@ grammar Reference extends mc.common.Basics {
    symbol Test = "symbol" Name ";";
 
    ReferenceToTest = "ref" ref:Name@Test ";" ;
+
+
+
+
+
 }

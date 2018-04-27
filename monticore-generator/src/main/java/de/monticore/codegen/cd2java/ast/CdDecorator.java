@@ -312,6 +312,20 @@ public class CdDecorator {
           "ast.additionalmethods.SetReferencedSymbol",
           attribute.getName(), referencedSymbol);
       replaceMethodBodyTemplate(clazz, toParseSet, getMethodBodySet);
+
+      String methodNameSetOpt = "set" + StringTransformations.capitalize(attribute.getName()) + nameSuffix+"Opt";
+      String toParseSetOpt = "public void " + methodNameSetOpt + " ( Optional<"+referencedSymbol+"> symbolOpt ) ;";
+      HookPoint getMethodBodySetOpt = new TemplateHookPoint(
+          "ast.additionalmethods.SetReferencedSymbolOpt",
+          attribute.getName(), referencedSymbol);
+      replaceMethodBodyTemplate(clazz, toParseSetOpt, getMethodBodySetOpt);
+
+      String methodNameSetAbsent = "set" + StringTransformations.capitalize(attribute.getName()) + nameSuffix+"Absent";
+      String toParseSetAbsent = "public void " + methodNameSetAbsent + " ( ) ;";
+      HookPoint getMethodBodySetAbsent = new TemplateHookPoint(
+          "ast.additionalmethods.SetReferencedSymbolAbsent",
+          attribute.getName(), referencedSymbol);
+      replaceMethodBodyTemplate(clazz, toParseSetAbsent, getMethodBodySetAbsent);
     }
   }
 
@@ -367,6 +381,20 @@ public class CdDecorator {
           "ast.additionalmethods.SetReferencedDefinition",
           attribute.getName(), referencedSymbol, symbolName);
       replaceMethodBodyTemplate(clazz, toParseSet, getMethodBodySet);
+
+      String methodNameSetOpt = "set" + StringTransformations.capitalize(attribute.getName()) + nameSuffix+"Opt";
+      String toParseSetOpt = "public void " + methodNameSetOpt + "( Optional<"+referencedNode+"> astOpt ) ;";
+      HookPoint getMethodBodySetOpt = new TemplateHookPoint(
+          "ast.additionalmethods.SetReferencedDefinitionOpt",
+          attribute.getName(), referencedSymbol, symbolName);
+      replaceMethodBodyTemplate(clazz, toParseSetOpt, getMethodBodySetOpt);
+
+      String methodNameSetAbsent = "set" + StringTransformations.capitalize(attribute.getName()) + nameSuffix+"Absent";
+      String toParseSetAbsent = "public void " + methodNameSetAbsent + "( ) ;";
+      HookPoint getMethodBodySetAbsent = new TemplateHookPoint(
+          "ast.additionalmethods.SetReferencedDefinitionAbsent",
+          attribute.getName(), referencedSymbol, symbolName);
+      replaceMethodBodyTemplate(clazz, toParseSetAbsent, getMethodBodySetAbsent);
     }
   }
 
