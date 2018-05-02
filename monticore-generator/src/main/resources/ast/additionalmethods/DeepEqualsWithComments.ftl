@@ -20,13 +20,13 @@ ${tc.signature("ast","astType")}
        <#if genHelper.isOptionalAstNode(attribute)>
     // comparing ${attrName}
     if ( this.${attrName}.isPresent() != comp.${attrName}.isPresent() ||
-      (this.${attrName}.isPresent() && !this.${attrName}.get().deepEqualsWithComments(comp.${attrName}.get())) ) {
+      (this.${attrName}.isPresent() && !this.${attrName}.get().deepEqualsWithComments(comp.${attrName}.get(), forceSameOrder)) ) {
       return false;
     }
        <#elseif genHelper.isAstNode(attribute)>
     // comparing ${attrName}
     if ( (this.${attrName} == null && comp.${attrName} != null) || 
-      (this.${attrName} != null && !this.${attrName}.deepEqualsWithComments(comp.${attrName})) ) {
+      (this.${attrName} != null && !this.${attrName}.deepEqualsWithComments(comp.${attrName}, forceSameOrder)) ) {
       return false;
     }
        <#elseif genHelper.isListAstNode(attribute)>
@@ -39,7 +39,7 @@ ${tc.signature("ast","astType")}
         Iterator<${astChildTypeName}> it1 = this.${attrName}.iterator();
         Iterator<${astChildTypeName}> it2 = comp.${attrName}.iterator();
         while (it1.hasNext() && it2.hasNext()) {
-          if (!it1.next().deepEqualsWithComments(it2.next())) {
+          if (!it1.next().deepEqualsWithComments(it2.next(), forceSameOrder)) {
             return false;
           }
         }
@@ -50,7 +50,7 @@ ${tc.signature("ast","astType")}
           boolean matchFound = false;
           java.util.Iterator<${astChildTypeName}> it2 = comp.${attrName}.iterator();
           while (it2.hasNext()) {
-            if (oneNext.deepEqualsWithComments(it2.next())) {
+            if (oneNext.deepEqualsWithComments(it2.next(), forceSameOrder)) {
               matchFound = true;
               break;
             }
