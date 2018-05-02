@@ -61,6 +61,7 @@ public class GrammarWithConcepts2OD extends Grammar_WithConcepts2OD {
     printer.println(" {");
     printer.indent();
     a.accept(getRealThis());
+    pp.print(";");
     printer.unindent();
     printer.println("}");
     return printer.getContent(); 
