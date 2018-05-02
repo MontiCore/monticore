@@ -35,7 +35,7 @@ public interface IASTNodeIdentHelper {
   
   default public String maskSpecialChars(String name) {
     // Replace all special characters by _
-    name = name.replaceAll("[^a-zA-Z0-9_$\\-+]", "_");
+    name = name.replaceAll("[^a-zA-Z0-9_$]", "_");
     if (name.matches("[0-9].*")) {
       // if the name starts with a digit ...
       name = "_".concat(name);
