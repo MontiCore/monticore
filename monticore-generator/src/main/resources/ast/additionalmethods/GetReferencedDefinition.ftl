@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("method", "ast", "attributeName", "referencedSymbol", "symbolName")}
+${tc.signature("ast", "attributeName", "referencedSymbol", "symbolName")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
 <#assign definition = attributeName + "Definition">
    if (get${definition?cap_first}Opt().isPresent()) {

@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("method", "ast", "methodName")}
+${tc.signature("ast", "methodName")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
   if (${methodName}().isPresent()) {
      return ${methodName}().get();

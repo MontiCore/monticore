@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("ast","astType")}
+${tc.signature("astType")}
    <#assign genHelper = glex.getGlobalVar("astHelper")>
    <#assign astName = genHelper.getPlainName(astType)>
    <#if astType.getCDAttributeList()?size == 0>
