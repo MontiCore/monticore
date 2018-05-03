@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-  ${tc.signature("method", "clazz", "grammarName", "superGrammars", "astClasses", "emfAttributes", "externalTypes", "literals")}
+  ${tc.signature("grammarName", "superGrammars", "astClasses", "emfAttributes", "externalTypes", "literals")}
   <#assign genHelper = glex.getGlobalVar("astHelper")>
 /**
  * Complete the initialization of the package and its meta-model.  This

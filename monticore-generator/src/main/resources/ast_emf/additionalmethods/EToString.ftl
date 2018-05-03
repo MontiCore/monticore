@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-  ${tc.signature("method", "clazz", "grammarName", "emfAttributes")}
+  ${tc.signature("grammarName", "emfAttributes")}
   <#assign genHelper = glex.getGlobalVar("astHelper")>
     if (eIsProxy()) {
       return super.toString();

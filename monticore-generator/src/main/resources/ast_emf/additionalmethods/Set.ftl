@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("method", "ast", "grammarName", "emfAttribute", "cDAndJavaConformName")}
+${tc.signature("grammarName", "emfAttribute", "cDAndJavaConformName")}
   <#assign genHelper = glex.getGlobalVar("astHelper")>
   <#if emfAttribute.isOptional()>
     ${astHelper.getTypeNameWithoutOptional(emfAttribute.getCdAttribute())} old${cDAndJavaConformName?cap_first} = this.${cDAndJavaConformName}.isPresent()? this.${cDAndJavaConformName}.get() : null;

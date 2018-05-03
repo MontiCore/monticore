@@ -441,7 +441,7 @@ public class CdEmfDecorator extends CdDecorator {
   void addEGetter(ASTCDClass clazz, AstEmfGeneratorHelper astHelper) {
     String toParse = "public Object eGet(int featureID, boolean resolve, boolean coreType);";
     HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.EGet",
-        astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
+        clazz, astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
     replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
   }
   
@@ -455,7 +455,7 @@ public class CdEmfDecorator extends CdDecorator {
   void addESetter(ASTCDClass clazz, AstEmfGeneratorHelper astHelper) {
     String toParse = "public void eSet(int featureID, Object newValue);";
     HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.ESet",
-        astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
+        clazz, astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
     Optional<ASTCDMethod> astMethod = cdTransformation.addCdMethodUsingDefinition(clazz,
         toParse);
     Preconditions.checkArgument(astMethod.isPresent());
@@ -511,7 +511,7 @@ public class CdEmfDecorator extends CdDecorator {
   void addEUnset(ASTCDClass clazz, AstEmfGeneratorHelper astHelper) {
     String toParse = "public void eUnset(int featureID);";
     HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.EUnset",
-        astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
+        clazz, astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
     replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
   }
   
@@ -525,7 +525,7 @@ public class CdEmfDecorator extends CdDecorator {
   void addEIsSet(ASTCDClass clazz, AstEmfGeneratorHelper astHelper) {
     String toParse = "public boolean eIsSet(int featureID);";
     HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.EIsSet",
-        astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
+        clazz, astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
     replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
   }
   
@@ -540,13 +540,13 @@ public class CdEmfDecorator extends CdDecorator {
     String methodName = "eBaseStructuralFeatureID";
     String toParse = "public int " + methodName + "(int featureID, Class<?> baseClass);";
     HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.EStructuralFeature",
-        methodName, astHelper.getAllSuperInterfaces(clazz));
+        clazz, methodName, astHelper.getAllSuperInterfaces(clazz));
     replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
     
     methodName = "eDerivedStructuralFeatureID";
     toParse = "public int " + methodName + "(int featureID, Class<?> baseClass);";
     getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.EStructuralFeature",
-        methodName, astHelper.getAllSuperInterfaces(clazz));
+        clazz, methodName, astHelper.getAllSuperInterfaces(clazz));
     replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
   }
   

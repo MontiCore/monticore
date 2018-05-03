@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-  ${tc.signature("method", "ast", "grammarName", "fields")}
+  ${tc.signature("ast", "grammarName", "fields")}
   <#assign genHelper = glex.getGlobalVar("astHelper")>
   <#assign nameHelper = glex.getGlobalVar("nameHelper")>
   <#assign packageName = grammarName + "Package">
