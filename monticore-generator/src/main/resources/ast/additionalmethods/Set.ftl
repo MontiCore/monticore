@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("method", "ast", "attribute", "cDAndJavaConformName", "isBuilderClass", "isInherited", "methodname")}
+${tc.signature("attribute", "cDAndJavaConformName", "isBuilderClass", "isInherited", "methodname")}
   <#assign genHelper = glex.getGlobalVar("astHelper")>
   <#if isInherited>
     super.${methodname}(${cDAndJavaConformName});

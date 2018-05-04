@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("method", "ast", "astNodeName")}
+${tc.signature("astNodeName")}
   {
     if (factory${astNodeName} == null) {
       factory${astNodeName} = getFactory();

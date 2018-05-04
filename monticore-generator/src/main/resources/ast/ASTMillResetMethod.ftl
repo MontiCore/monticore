@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("method", "clazz", "superclasses")}
+${tc.signature("clazz", "superclasses")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
 <#assign nameHelper = glex.getGlobalVar("nameHelper")>
    mill = null;
