@@ -57,6 +57,10 @@
       <version>2.0.7</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>de.monticore</groupId>
+      <artifactId>monticore-runtime</artifactId>
+    </dependency>
 
   </dependencies>
 

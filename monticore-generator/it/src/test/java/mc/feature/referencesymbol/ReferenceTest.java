@@ -49,6 +49,7 @@ public class ReferenceTest extends GeneratorIntegrationsTest {
     ReferenceSymbolTableCreator symbolTableCreator = new ReferenceSymbolTableCreator(resolvingConfiguration,globalScope);
     symbolTableCreator.createFromAST(astRand.get());
     Optional<TestSymbol> a = globalScope.resolve("A", TestSymbol.KIND);
+    Optional<TestSymbol> b = globalScope.resolve("B", TestSymbol.KIND);
 
 
     assertTrue(a.isPresent());
@@ -65,7 +66,15 @@ public class ReferenceTest extends GeneratorIntegrationsTest {
 
     assertEquals(astReferenceToTest.getRefDefinition(), astTest);
     assertEquals(astReferenceToTest.getRefSymbolOpt(), a);
+    ASTTest astSymbol = astRand.get().getTest(0);
 
+    astSymbol.setTestSymbol(b.get());
+    assertEquals(astSymbol.getTestSymbol() , astSymbol.getSymbol());
 
+    astSymbol.setTestSymbolAbsent();
+    assertFalse(astSymbol.isPresentTestSymbol());
+
+    astSymbol.setSymbolOpt(b);
+    assertEquals(astSymbol.getTestSymbolOpt() , astSymbol.getTestSymbolOpt());
   }
 }
