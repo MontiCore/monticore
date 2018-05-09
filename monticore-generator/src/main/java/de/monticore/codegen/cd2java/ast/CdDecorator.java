@@ -233,37 +233,6 @@ public class CdDecorator {
     addOptionalGetMethods(clazz, symbolAttribute.get(), symbolName);
     addSetter(clazz, symbolAttribute.get());
     addOptionalSetMethods(clazz, symbolAttribute.get(), symbolName);
-
-    String methodNameSet = "public void setSymbol(Symbol symbol);";
-    HookPoint hpSet = new StringHookPoint("this."+symbolAttribute.get().getName()+" = Optional.ofNullable(("+qualifiedName+")symbol);");
-    replaceMethodBodyTemplate(clazz,methodNameSet,hpSet);
-
-    String methodNameSetOpt = "public void setSymbolOpt(Optional<? extends Symbol> symbolOpt);";
-    HookPoint hpSetOpt = new StringHookPoint("this."+symbolAttribute.get().getName()+" = (Optional<"+qualifiedName+">) symbolOpt;");
-    replaceMethodBodyTemplate(clazz,methodNameSetOpt,hpSetOpt);
-
-    String methodNameSetAbsent = "public void setSymbolAbsent();";
-    HookPoint hpSetAbsent = new StringHookPoint("this."+symbolAttribute.get().getName()+" = Optional.empty();");
-    replaceMethodBodyTemplate(clazz,methodNameSetAbsent,hpSetAbsent);
-
-    String methodNameGet = "public Symbol getSymbol();";
-    StringBuilder sb = new StringBuilder();
-    sb.append("if (getSymbolOpt().isPresent()) {\n");
-    sb.append("    return getSymbolOpt().get();\n");
-    sb.append("    }\n");
-    sb.append("    Log.error(\"0xA7003 x222 getCloneASTOpt can't return a value. It is empty.\");\n");
-    sb.append("    // Normally this statement is not reachable\n");
-    sb.append("    throw new IllegalStateException();");
-    HookPoint hpGet = new StringHookPoint(sb.toString());
-    replaceMethodBodyTemplate(clazz,methodNameGet,hpGet);
-
-    String methodNameGetOpt = "public Optional<? extends Symbol> getSymbolOpt();";
-    HookPoint hpGetOpt = new StringHookPoint("return (Optional<"+qualifiedName+">)this."+symbolAttribute.get().getName()+" ;");
-    replaceMethodBodyTemplate(clazz,methodNameGetOpt,hpGetOpt);
-
-    String methodNameIsPresent = "public boolean isPresentSymbol(Symbol Symbol);";
-    HookPoint hpIsPresent = new StringHookPoint("return this."+symbolAttribute.get().getName()+".isPresent() ;");
-    replaceMethodBodyTemplate(clazz,methodNameIsPresent,hpIsPresent);
   }
 
   protected void addScopeAttributeAndMethods(ASTCDClass clazz, String name, MCGrammarSymbol grammarSymbol) {
@@ -280,37 +249,6 @@ public class CdDecorator {
     addOptionalGetMethods(clazz, scopeAttribute.get(), scopeName);
     addSetter(clazz, scopeAttribute.get());
     addOptionalSetMethods(clazz, scopeAttribute.get(), scopeName);
-
-    String methodNameSet = "public void setSpannedScope(Scope spannedScope);";
-    HookPoint hpSet = new StringHookPoint("this."+scopeAttribute.get().getName()+" = Optional.ofNullable(("+qualifiedName+")spannedScope);");
-    replaceMethodBodyTemplate(clazz,methodNameSet,hpSet);
-
-    String methodNameSetOpt = "public void setSpannedScopeOpt(Optional<? extends Scope> spannedScopeOpt);";
-    HookPoint hpSetOpt = new StringHookPoint("this."+scopeAttribute.get().getName()+" = (Optional<"+qualifiedName+">) spannedScopeOpt;");
-    replaceMethodBodyTemplate(clazz,methodNameSetOpt,hpSetOpt);
-
-    String methodNameSetAbsent = "public void setSpannedScopeAbsent();";
-    HookPoint hpSetAbsent = new StringHookPoint("this."+scopeAttribute.get().getName()+" = Optional.empty();");
-    replaceMethodBodyTemplate(clazz,methodNameSetAbsent,hpSetAbsent);
-
-    String methodNameGet = "public Scope getSpannedScope();";
-    StringBuilder sb = new StringBuilder();
-    sb.append("if (getSpannedScopeOpt().isPresent()) {\n");
-    sb.append("    return getSpannedScopeOpt().get();\n");
-    sb.append("    }\n");
-    sb.append("    Log.error(\"0xA7003 x222 getCloneASTOpt can't return a value. It is empty.\");\n");
-    sb.append("    // Normally this statement is not reachable\n");
-    sb.append("    throw new IllegalStateException();");
-    HookPoint hpGet = new StringHookPoint(sb.toString());
-    replaceMethodBodyTemplate(clazz,methodNameGet,hpGet);
-
-    String methodNameGetOpt = "public Optional<? extends Scope> getSpannedScopeOpt();";
-    HookPoint hpGetOpt = new StringHookPoint("return (Optional<"+qualifiedName+">)this."+scopeAttribute.get().getName()+" ;");
-    replaceMethodBodyTemplate(clazz,methodNameGetOpt,hpGetOpt);
-
-    String methodNameIsPresent = "public boolean isPresentSpannedScope(Scope scope);";
-    HookPoint hpIsPresent = new StringHookPoint("return this."+scopeAttribute.get().getName()+".isPresent() ;");
-    replaceMethodBodyTemplate(clazz,methodNameIsPresent,hpIsPresent);
   }
 
   protected void addReferencedSymbolMethods(ASTCDClass clazz, AstGeneratorHelper astHelper) {
