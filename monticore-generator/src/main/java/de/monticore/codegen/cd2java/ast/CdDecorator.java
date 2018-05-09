@@ -287,7 +287,7 @@ public class CdDecorator {
           + methodNameGetOpt + "() ;";
       HookPoint getMethodBodyOpt = new TemplateHookPoint(
           "ast.additionalmethods.GetReferencedSymbolOpt",
-          attribute.getName(), referencedSymbol);
+          attribute, referencedSymbol);
       replaceMethodBodyTemplate(clazz, toParseOpt, getMethodBodyOpt);
 
       String methodNameGet = "get"+StringTransformations.capitalize(attribute.getName())+nameSuffix;

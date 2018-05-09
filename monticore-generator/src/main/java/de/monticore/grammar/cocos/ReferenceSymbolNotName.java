@@ -12,11 +12,10 @@ public class ReferenceSymbolNotName implements GrammarASTNonTerminalCoCo {
 
   @Override
   public void check(ASTNonTerminal node) {
-    if (node.isPresentReferencedSymbol()) {
-      if(!node.getName().equals("Name")){
-        Log.error(ERROR_CODE + ERROR_MSG_FORMAT,
-            node.get_SourcePositionStart());
-      }
+    if (node.isPresentReferencedSymbol() && !"Name".equals(node.getName())) {
+      Log.error(ERROR_CODE + ERROR_MSG_FORMAT,
+          node.get_SourcePositionStart());
     }
   }
 }
+

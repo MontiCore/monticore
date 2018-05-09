@@ -20,10 +20,9 @@ public class ReferencedSymbolExists implements GrammarASTNonTerminalCoCo {
         .getMCGrammarSymbol(node);
     if (node.isPresentReferencedSymbol()) {
       String symbol = node.getReferencedSymbol();
-      if (grammarSymbol.get().getProdWithInherited(symbol).isPresent()) {
-        if (grammarSymbol.get().getProdWithInherited(symbol).get().isSymbolDefinition()) {
-          return;
-        }
+      if (grammarSymbol.get().getProdWithInherited(symbol).isPresent() &&
+          grammarSymbol.get().getProdWithInherited(symbol).get().isSymbolDefinition()) {
+        return;
       }
       Log.error(String.format(ERROR_CODE + String.format(ERROR_MSG_FORMAT, symbol),
           node.get_SourcePositionStart()));
