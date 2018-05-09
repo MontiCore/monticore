@@ -68,6 +68,7 @@
           <execution>
             <id>monticore-templateclassgenerator-cli assembly</id>
             <configuration>
+              <attach>false</attach>
               <archive>
                 <manifest>
                   <mainClass>de.monticore.templateclassgenerator.TemplateClassGenerator</mainClass>
