@@ -1403,7 +1403,7 @@ public class CdDecorator {
       ASTType type = attr.getType();
       if (type instanceof ASTSimpleReferenceType) {
         type = astHelper.convertTypeCd2Java((ASTSimpleReferenceType) type,
-            AstGeneratorHelper.AST_PACKAGE_SUFFIX);
+            AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT);
       }
       param.setType(type);
       String javaAttrName = GeneratorHelper.getJavaAndCdConformName(attr.getName());
