@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package cocos.invalid.A4039;
+
+grammar A4039 extends mc.grammars.types.TestTypes{
+
+  symbol A = Name State;
+
+  symbol State = "state" Name;
+
+  B = bstate:State@A;
+
+}

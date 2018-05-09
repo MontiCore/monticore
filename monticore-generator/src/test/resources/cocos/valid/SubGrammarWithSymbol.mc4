@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package cocos.valid;
+
+grammar SubGrammarWithSymbol extends mc.grammars.types.TestTypes{
+
+  symbol SubSymbol = Name "sub";
+
+  SubNonTer = Name "NonTer";
+
+}
