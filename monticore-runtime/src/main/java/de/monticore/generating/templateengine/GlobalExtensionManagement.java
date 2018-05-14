@@ -317,6 +317,17 @@ public class GlobalExtensionManagement {
    * @param hookName name of the hook point
    * @return the (processed) value of the hook point
    */
+  public String defineHookPointWithDefault(TemplateController controller, String hookName, ASTNode ast, String defStr) {
+    if (existsHookPoint(hookName)) {
+      return defineHookPoint(controller, hookName, ast);
+    }
+    return defStr;
+  }
+
+  /**
+   * @param hookName name of the hook point
+   * @return the (processed) value of the hook point
+   */
   public String defineHookPoint(TemplateController controller, String hookName, ASTNode ast, Object... args) {
 
     String result = null;
@@ -332,6 +343,17 @@ public class GlobalExtensionManagement {
     return Strings.nullToEmpty(result);
   }
 
+  /**
+   * @param hookName name of the hook point
+   * @return the (processed) value of the hook point
+   */
+  public String defineHookPointWithDefault(TemplateController controller, String hookName, ASTNode ast, String defStr, Object... args) {
+    if (existsHookPoint(hookName)) {
+      return defineHookPoint(controller, hookName, ast, args);
+    }
+    return defStr;
+  }
+  
   /**
    * @param hookName name of the hook point
    * @return the (processed) value of the hook point
@@ -355,10 +377,32 @@ public class GlobalExtensionManagement {
    * @param hookName name of the hook point
    * @return the (processed) value of the hook point
    */
+  public String defineHookPointWithDefault(TemplateController controller, String hookName, String defStr, Object... args) {
+    if (existsHookPoint(hookName)) {
+      return defineHookPoint(controller, hookName, args);
+    }
+    return defStr;
+  }
+
+  /**
+   * @param hookName name of the hook point
+   * @return the (processed) value of the hook point
+   */
   public String defineHookPoint(TemplateController controller, String hookName) {
     return defineHookPoint(controller, hookName, controller.getAST());
   }
 
+  /**
+   * @param hookName name of the hook point
+   * @return the (processed) value of the hook point
+   */
+  public String defineHookPointWithDefault(TemplateController controller, String hookName, String defStr) {
+    if (existsHookPoint(hookName)) {
+      return defineHookPoint(controller, hookName, controller.getAST());
+    }
+    return defStr;
+  }
+  
   /**
    * @param hookName name of the hook point
    * @return the (processed) value of the hook point

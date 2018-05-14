@@ -45,6 +45,16 @@ public class TemplateControllerHookPointsTest {
   }
   
   @Test
+  public void testDefaultHook() {
+    String hpValue;
+    hpValue = glex.defineHookPointWithDefault(tc, "hp1", "default");
+    assertEquals("default", hpValue);
+    glex.bindHookPoint("hp1", new StringHookPoint("value of hp1"));
+    hpValue = glex.defineHookPointWithDefault(tc, "hp1", "default");
+    assertEquals("value of hp1", hpValue);
+  }
+  
+  @Test
   public void testSetStringHook() {
     String hpValue = null;
     
