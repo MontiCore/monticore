@@ -5,21 +5,21 @@ import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class ReferenceSymbolNotNameTest extends CocoTest {
+public class ReferenceSymbolSameAttributeTest extends CocoTest {
 
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
-  private final String grammar = "cocos.invalid.A4039.A4039";
+  private final String grammar = "cocos.invalid.A4100.A4100";
 
   @BeforeClass
   public static void disableFailQuick() {
     Log.enableFailQuick(false);
-    checker.addCoCo(new ReferenceSymbolNotName());
+    checker.addCoCo(new ReferenceSymbolSameAttribute());
   }
 
   @Test
   public void testInvalid() {
-    testInvalidGrammar(grammar , ReferenceSymbolNotName.ERROR_CODE,
-        ReferenceSymbolNotName.ERROR_MSG_FORMAT, checker);
+    testInvalidGrammar(grammar, ReferenceSymbolSameAttributeVisitor.ERROR_CODE,
+        String.format(ReferenceSymbolSameAttributeVisitor.ERROR_MSG_FORMAT, "\"ref\"", "A","B"), checker);
   }
 
   @Test
