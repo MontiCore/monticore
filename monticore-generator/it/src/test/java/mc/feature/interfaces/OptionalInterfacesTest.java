@@ -16,10 +16,6 @@ public class OptionalInterfacesTest {
   @Test
   public void testMethodExistenceTest1() throws IOException{
     OptionalGenerationParser parser = new OptionalGenerationParser();
-    Optional<ASTTest1> astTest1 = parser.parse_StringTest1("abc");
-    assertFalse(parser.hasErrors());
-    assertTrue(astTest1.isPresent());
-    assertFalse(astTest1.get().isPresentName());
     Optional<ASTOpt1> astOpt1 = parser.parse_StringOpt1("abc Name");
     assertFalse(parser.hasErrors());
     assertTrue(astOpt1.isPresent());
@@ -40,11 +36,6 @@ public class OptionalInterfacesTest {
   @Test
   public void testMethodExistenceTest3() throws IOException{
     OptionalGenerationParser parser = new OptionalGenerationParser();
-    Optional<ASTTest3> astTest3 = parser.parse_StringTest3("def -a");
-    assertFalse(parser.hasErrors());
-    assertTrue(astTest3.isPresent());
-    assertEquals("-", astTest3.get().getWord().getMinus());
-    assertTrue(astTest3.get().isPresentWord());
     Optional<ASTOpt2> astOpt2 = parser.parse_StringOpt2("def Name");
     assertFalse(parser.hasErrors());
     assertTrue(astOpt2.isPresent());

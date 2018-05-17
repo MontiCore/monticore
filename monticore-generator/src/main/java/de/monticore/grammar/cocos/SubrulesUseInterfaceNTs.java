@@ -2,7 +2,6 @@
 
 package de.monticore.grammar.cocos;
 
-import java.util.Collection;
 import java.util.Optional;
 
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
@@ -58,6 +57,11 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
       if ((prodComponentRefOpt.isPresent() && !interfaceComponentRefOpt.isPresent())
         || (!prodComponentRefOpt.isPresent() && interfaceComponentRefOpt.isPresent())) {
         logError(prodSymbol, interfaceSymbol, interfaceComponent);
+        continue;
+      }
+      
+      if (!prodComponentRefOpt.isPresent() && !interfaceComponentRefOpt.isPresent()) {
+        // Two termninals ==> no error?
         continue;
       }
 

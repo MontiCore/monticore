@@ -10,12 +10,14 @@ grammar OptionalGeneration extends mc.grammar.lexicals.ItTestLexicals {
 
   interface Opt2 = "def" Word? Name?;
 
-  Test1 implements Opt1 = "abc";
+  // The following production is forbidden
+  // Test1 implements Opt1 = "abc";
 
   Test2 implements Opt1 = "abc" Name?;
 
-  Test3 implements Opt2 = "def" Word?;
+  // The following production is forbidden
+  // Test3 implements Opt2 = "def" Word?;
 
-  Test4 implements Opt2 = "def" Name?;
+  Test4 implements Opt2 = "def" Name? Word?;
 
   }
