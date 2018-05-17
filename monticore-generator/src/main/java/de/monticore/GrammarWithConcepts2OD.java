@@ -11,6 +11,7 @@ import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsDe
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
 import de.monticore.java.javadsl._od.JavaDSL2OD;
 import de.monticore.literals.literals._od.Literals2OD;
+import de.monticore.mcexpressions._od.MCExpressions2OD;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.types._od.Types2OD;
 
@@ -37,6 +38,7 @@ public class GrammarWithConcepts2OD extends Grammar_WithConcepts2OD {
     visitor.setJavaDSLVisitor(new JavaDSL2OD(printer, reporting));
     visitor.setLiteralsVisitor(new Literals2OD(printer, reporting));
     visitor.setTypesVisitor(new Types2OD(printer, reporting));
+    visitor.setMCExpressionsVisitor(new MCExpressions2OD(printer, reporting));
     this.printer = printer;
   }
 
