@@ -7,7 +7,6 @@ import org.junit.Test;
 
 public class ReferencedSymbolExistsTest extends CocoTest {
 
-  private final String MESSAGE = " The production for the referenced symbol %s does not exist as a symbol or not at all.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "cocos.invalid.A4037.A4037";
 
@@ -19,8 +18,8 @@ public class ReferencedSymbolExistsTest extends CocoTest {
 
   @Test
   public void testInvalid() {
-    testInvalidGrammar(grammar, String.format(ReferencedSymbolExists.ERROR_CODE, "C"),
-        String.format(MESSAGE, "C"), checker);
+    testInvalidGrammar(grammar, ReferencedSymbolExists.ERROR_CODE,
+        String.format(ReferencedSymbolExists.ERROR_MSG_FORMAT, "C"), checker);
   }
 
   @Test

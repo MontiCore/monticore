@@ -2,23 +2,32 @@
 package de.monticore.ast;
 
 import de.se_rwth.commons.SourcePosition;
+import de.se_rwth.commons.logging.Log;
 
 /**
  * Builder for RTE class {@link Comment}
  */
 public class CommentBuilder {
   
-  protected String text;
+  protected String text = "";
   
   protected SourcePosition start = SourcePosition.getDefaultSourcePosition();
   
   protected SourcePosition end = SourcePosition.getDefaultSourcePosition();
   
   public Comment build() {
+    this.validate();
     Comment res = new Comment(text);
     res.set_SourcePositionStart(start);
     res.set_SourcePositionEnd(end);
     return res;
+  }
+  
+  protected void validate() {
+    if (this.text == null) {
+      Log.error("0xA7222x717 text of type String must not be null");
+      throw new IllegalStateException();
+    }
   }
   
   public SourcePosition get_SourcePositionEnd() {

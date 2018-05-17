@@ -2,13 +2,7 @@
 
 package de.monticore.codegen.parser;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Optional;
-
 import com.google.common.base.Joiner;
-
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.parser.antlr.AntlrTool;
@@ -25,7 +19,11 @@ import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Scopes;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
-import de.monticore.generating.GeneratorSetup;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
 
 public class ParserGenerator {
 

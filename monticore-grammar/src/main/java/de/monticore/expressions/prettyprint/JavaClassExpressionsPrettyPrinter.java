@@ -50,12 +50,10 @@ public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVi
       getPrinter().print(node.getName());
       if (node.isPresentArguments()) {
         node.getArguments().accept(getRealThis());
-        ;
       }
     }
     else {
       node.getArguments().accept(getRealThis());
-      ;
     }
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
@@ -94,7 +92,7 @@ public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVi
       if (node.isSuper()) {
         getPrinter().print("super");
       }
-      node.getSuperSuffix().accept(getRealThis());;
+      node.getSuperSuffix().accept(getRealThis());
     }else if(node.isPresentName()) {
       getPrinter().print(node.getName());
       node.getArguments().accept(getRealThis());
