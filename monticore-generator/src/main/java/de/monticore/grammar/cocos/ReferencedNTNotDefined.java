@@ -19,12 +19,12 @@ import de.se_rwth.commons.logging.Log;
  * @author KH
  */
 public class ReferencedNTNotDefined implements GrammarASTMCGrammarCoCo {
-  
+
   public static final String ERROR_CODE = "0xA2030";
-  
+
   public static final String ERROR_MSG_FORMAT = " The production %s must not reference the " +
       "%snonterminal %s because there exists no defining production for %s.";
-  
+
   @Override
   public void check(ASTMCGrammar a) {
     MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol();
@@ -80,5 +80,5 @@ public class ReferencedNTNotDefined implements GrammarASTMCGrammarCoCo {
       }
     }
   }
-  
+
 }

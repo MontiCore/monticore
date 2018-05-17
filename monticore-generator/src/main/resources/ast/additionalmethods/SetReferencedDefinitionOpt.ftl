@@ -1,3 +1,4 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("method", "ast", "attributeName", "referencedSymbol", "symbolName")}
-       set${attributeName?cap_first}Definition(astOpt.get());
+${tc.signature("method", "ast", "attributeName")}
+        set${attributeName?cap_first}DefinitionAbsent();
+        set${attributeName?cap_first}(astOpt.get().getName());
