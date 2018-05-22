@@ -141,6 +141,12 @@ public class AstGeneratorTest extends GeneratorTest {
     // grammars/inherited.",
     // compile(path));
   }
+  
+  @Test
+  public void testAbstractBuilder() {
+    testCorrectWithDependencies("de/monticore/inherited/AbstractBuilder.mc4",
+        "mc/grammars/lexicals/TestLexicals.mc4");
+  }
 
   @Test
   public void testInherited2() {

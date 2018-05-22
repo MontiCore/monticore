@@ -1,0 +1,8 @@
+package de.monticore.inherited;
+
+component grammar AbstractBuilder extends mc.grammars.lexicals.TestLexicals {
+
+  abstract D = Name+;
+
+  E extends D = (Name || ",")+;
+}

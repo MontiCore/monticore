@@ -88,6 +88,7 @@ public class GrammarTransformer {
    */
   public static void changeNamesOfMultivaluedAttributes(ASTMCGrammar grammar) {
     grammar.getClassProdList().forEach(c -> transformNonTerminals(grammar, c));
+    grammar.getAbstractProdList().forEach(c -> transformNonTerminals(grammar, c));
     grammar.getInterfaceProdList().forEach(c -> transformNonTerminals(grammar, c));
     grammar.getASTRuleList().forEach(c -> transformAttributesInAST(c));
   }
