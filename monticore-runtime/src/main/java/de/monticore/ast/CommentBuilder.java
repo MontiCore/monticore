@@ -16,18 +16,20 @@ public class CommentBuilder {
   protected SourcePosition end = SourcePosition.getDefaultSourcePosition();
   
   public Comment build() {
-    this.validate();
-    Comment res = new Comment(text);
-    res.set_SourcePositionStart(start);
-    res.set_SourcePositionEnd(end);
-    return res;
-  }
-  
-  protected void validate() {
-    if (this.text == null) {
+    if (isValid()) {
+      Comment res = new Comment(text);
+      res.set_SourcePositionStart(start);
+      res.set_SourcePositionEnd(end);
+      return res;
+    }
+    else {
       Log.error("0xA7222x717 text of type String must not be null");
       throw new IllegalStateException();
     }
+  }
+  
+  public boolean isValid() {
+    return this.text == null;
   }
   
   public SourcePosition get_SourcePositionEnd() {
