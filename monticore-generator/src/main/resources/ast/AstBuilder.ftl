@@ -34,26 +34,40 @@ ${tc.include("ast.AstImports")}
     public abstract ${typeName} build();
   <#else>
     public ${typeName} build() {
-      this.validate();
-      ${typeName} value = new ${typeName} (${tc.include("ast.ParametersDeclaration")}
-      );
-      ${tc.include("ast.AstBuildMethod")}
-      return value;
+      if (isValid()) {
+        ${typeName} value = new ${typeName} (${tc.include("ast.ParametersDeclaration")}
+          );
+        ${tc.include("ast.AstBuildMethod")}
+        return value;
+      }
+      else {
+    <#list astType.getCDAttributeList() as attribute>
+      <#if !genHelper.isInherited(attribute) && !genHelper.isAdditionalAttribute(attribute)>
+        <#if !genHelper.isOptional(attribute) && !genHelper.isListType(attribute.printType())
+        && !genHelper.isPrimitive(attribute.getType())>
+        if (${attribute.getName()} == null) {
+          Log.error("0xA7222${genHelper.getGeneratedErrorCode(attribute)} ${attribute.getName()} of type ${attribute.printType()} must not be null");
+        }
+        </#if>
+      </#if>
+    </#list>
+        throw new IllegalStateException();
+      }
     }
   </#if>
 
-    protected void validate() {
+    public boolean isValid() {
   <#list astType.getCDAttributeList() as attribute>
     <#if !genHelper.isInherited(attribute) && !genHelper.isAdditionalAttribute(attribute)>
       <#if !genHelper.isOptional(attribute) && !genHelper.isListType(attribute.printType())
         && !genHelper.isPrimitive(attribute.getType())>
       if (${attribute.getName()} == null) {
-        Log.error("0xA7222${genHelper.getGeneratedErrorCode(attribute)} ${attribute.getName()} of type ${attribute.printType()} must not be null");
-        throw new IllegalStateException();
+        return false;
       }
       </#if>
     </#if>
   </#list>
+      return true;
     }
 
     <#list ast.getCDMethodList() as method>
