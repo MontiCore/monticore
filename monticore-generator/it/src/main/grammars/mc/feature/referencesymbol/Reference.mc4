@@ -10,8 +10,4 @@ grammar Reference extends mc.common.Basics {
 
    ReferenceToTest = "ref" ref:Name@Test ";" ;
 
-
-
-
-
 }
