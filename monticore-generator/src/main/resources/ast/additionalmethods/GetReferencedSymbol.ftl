@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("ast", "attributeName", "symbolClass")}
+${tc.signature("method", "ast", "attributeName")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
 <#assign symbol = attributeName + "Symbol">
     if (get${symbol?cap_first}Opt().isPresent()) {

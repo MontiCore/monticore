@@ -8,6 +8,10 @@ ${tc.signature("attribute", "cDAndJavaConformName", "isBuilderClass", "isInherit
   <#else>
     this.${cDAndJavaConformName} = ${cDAndJavaConformName};
   </#if>
+<#if genHelper.isReferencedSymbolAttribute(attribute)>
+    ${cDAndJavaConformName}Definition = Optional.empty();
+</#if>
   <#if isBuilderClass>
     return this;
   </#if>
+

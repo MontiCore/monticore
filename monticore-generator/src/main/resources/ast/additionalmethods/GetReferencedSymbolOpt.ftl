@@ -1,11 +1,11 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("attribute", "symbolClass")}
+${tc.signature("method", "ast","attribute", "referencedSymbol", "symbolName")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
-   if ((${attribute.getName()} != null) && isPresentEnclosingScope()) {
-<#if genHelper.isOptional(attribute)>
-     return enclosingScope.get().resolve(${attribute.getName()}.get(), ${symbolClass}.KIND);
-<#else>
-     return enclosingScope.get().resolve(${attribute.getName()}, ${symbolClass}.KIND);
-</#if>
+     if(!${attribute.getName()}Definition.isPresent()){
+       if (get${attribute.getName()?cap_first}DefinitionOpt().isPresent()) {
+         return get${attribute.getName()?cap_first}DefinitionOpt().get().get${symbolName}SymbolOpt();
+       }else {
+         return Optional.empty();
+       }
      }
-     return Optional.empty();
+     return ${attribute.getName()}Definition.get().get${symbolName}SymbolOpt();

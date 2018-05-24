@@ -37,35 +37,54 @@ public class ReferenceTest extends GeneratorIntegrationsTest {
 
   @Test
   public void testWithSymbolTable() throws IOException {
-
     ReferenceParser parser = new ReferenceParser();
     Optional<ASTRand> astRand = parser.parse("src/test/resources/mc/feature/referencesymbol/ReferenceModel.ref");
+    ASTTest astTest = astRand.get().getTest(0);
     //create symboltable
     ModelPath modelPath = new ModelPath(Paths.get("src/tests/resources/mc/feature/referencesymbol"));
     ModelingLanguage lang = new ReferenceLanguage();
     ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
     resolvingConfiguration.addDefaultFilters(lang.getResolvingFilters());
     GlobalScope globalScope = new GlobalScope(modelPath, lang, resolvingConfiguration);
-    ReferenceSymbolTableCreator symbolTableCreator = new ReferenceSymbolTableCreator(resolvingConfiguration,globalScope);
+    ReferenceSymbolTableCreator symbolTableCreator = new ReferenceSymbolTableCreator(resolvingConfiguration, globalScope);
     symbolTableCreator.createFromAST(astRand.get());
-    Optional<TestSymbol> a = globalScope.resolve("A", TestSymbol.KIND);
 
+    Optional<TestSymbol> a = globalScope.resolve("A", TestSymbol.KIND);
+    Optional<TestSymbol> b = globalScope.resolve("B", TestSymbol.KIND);
+    Optional<TestSymbol> c = globalScope.resolve("C", TestSymbol.KIND);
 
     assertTrue(a.isPresent());
+    assertTrue(b.isPresent());
+    assertTrue(c.isPresent());
 
     ASTReferenceToTest astReferenceToTest = astRand.get().getReferenceToTest(0);
-    ASTTest astTest = astRand.get().getTest(0);
-    astReferenceToTest.setEnclosingScope(astTest.getEnclosingScope());
 
+    //test getter
     assertTrue(astTest.isPresentEnclosingScope());
     assertTrue(astReferenceToTest.isPresentEnclosingScope());
-
     assertTrue(astReferenceToTest.isPresentRefSymbol());
+    assertTrue(astTest.isPresentTestSymbol());
+    assertTrue(astReferenceToTest.isPresentRefSymbol());
+
     assertTrue(astReferenceToTest.isPresentRefDefinition());
 
     assertEquals(astReferenceToTest.getRefDefinition(), astTest);
     assertEquals(astReferenceToTest.getRefSymbolOpt(), a);
 
+    //test setter
+    astReferenceToTest.setRef("B");
+    assertTrue(astReferenceToTest.isPresentRefSymbol());
+    assertEquals(astReferenceToTest.getRefSymbolOpt(), b);
 
+    astReferenceToTest.setRefDefinition(astTest);
+    assertTrue(astReferenceToTest.isPresentRefSymbol());
+    assertEquals(astReferenceToTest.getRefSymbolOpt(), a);
+    assertEquals(astReferenceToTest.getRefDefinition(), astTest);
+
+    //test setOpt
+    astReferenceToTest.setRefDefinitionOpt(Optional.ofNullable(astTest));
+    assertTrue(astReferenceToTest.isPresentRefSymbol());
+    assertEquals(astReferenceToTest.getRefSymbolOpt(), a);
+    assertEquals(astReferenceToTest.getRefDefinition(), astTest);
   }
 }
