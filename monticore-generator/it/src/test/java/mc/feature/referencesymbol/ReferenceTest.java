@@ -27,17 +27,16 @@ public class ReferenceTest extends GeneratorIntegrationsTest {
     Optional<ASTTest> asta = parser.parse_StringTest("symbol TestA ;");
     Optional<ASTReferenceToTest> astb = parser.parse_StringReferenceToTest("ref TestA ;");
     assertFalse(parser.hasErrors());
-//    assertTrue(asta.isPresent());
-//    assertTrue(astb.isPresent());
-//    assertFalse(astb.get().isPresentRefDefinition());
-//    assertFalse(astb.get().isPresentRefSymbol());
-//    assertTrue(astb.get().getRefDefinitionOpt().equals(Optional.empty()));
-//    assertTrue(astb.get().getRefSymbolOpt().equals(Optional.empty()));
+    assertTrue(asta.isPresent());
+    assertTrue(astb.isPresent());
+    assertFalse(astb.get().isPresentRefDefinition());
+    assertFalse(astb.get().isPresentRefSymbol());
+    assertTrue(astb.get().getRefDefinitionOpt().equals(Optional.empty()));
+    assertTrue(astb.get().getRefSymbolOpt().equals(Optional.empty()));
   }
 
   @Test
   public void testWithSymbolTable() throws IOException {
-
     ReferenceParser parser = new ReferenceParser();
     Optional<ASTRand> astRand = parser.parse("src/test/resources/mc/feature/referencesymbol/ReferenceModel.ref");
     ASTTest astTest = astRand.get().getTest(0);
@@ -47,7 +46,7 @@ public class ReferenceTest extends GeneratorIntegrationsTest {
     ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
     resolvingConfiguration.addDefaultFilters(lang.getResolvingFilters());
     GlobalScope globalScope = new GlobalScope(modelPath, lang, resolvingConfiguration);
-    ReferenceSymbolTableCreator symbolTableCreator = new ReferenceSymbolTableCreator(resolvingConfiguration,globalScope);
+    ReferenceSymbolTableCreator symbolTableCreator = new ReferenceSymbolTableCreator(resolvingConfiguration, globalScope);
     symbolTableCreator.createFromAST(astRand.get());
 
     Optional<TestSymbol> a = globalScope.resolve("A", TestSymbol.KIND);
@@ -59,13 +58,14 @@ public class ReferenceTest extends GeneratorIntegrationsTest {
     assertTrue(c.isPresent());
 
     ASTReferenceToTest astReferenceToTest = astRand.get().getReferenceToTest(0);
-    astReferenceToTest.setEnclosingScope(astTest.getEnclosingScope());
 
     //test getter
     assertTrue(astTest.isPresentEnclosingScope());
     assertTrue(astReferenceToTest.isPresentEnclosingScope());
-
     assertTrue(astReferenceToTest.isPresentRefSymbol());
+    assertTrue(astTest.isPresentTestSymbol());
+    assertTrue(astReferenceToTest.isPresentRefSymbol());
+
     assertTrue(astReferenceToTest.isPresentRefDefinition());
 
     assertEquals(astReferenceToTest.getRefDefinition(), astTest);
@@ -86,11 +86,5 @@ public class ReferenceTest extends GeneratorIntegrationsTest {
     assertTrue(astReferenceToTest.isPresentRefSymbol());
     assertEquals(astReferenceToTest.getRefSymbolOpt(), a);
     assertEquals(astReferenceToTest.getRefDefinition(), astTest);
-
-    //test Absent
-    astReferenceToTest.setRefDefinitionAbsent();
-    assertFalse(astReferenceToTest.isPresentRefSymbol());
-
-
   }
 }

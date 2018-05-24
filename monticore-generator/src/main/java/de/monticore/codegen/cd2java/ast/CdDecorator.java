@@ -333,7 +333,7 @@ public class CdDecorator {
       String toParseOpt = "public " + returnType + " " + methodNameGetOpt + "() ;";
       HookPoint getMethodBodyOpt = new TemplateHookPoint(
           "ast.additionalmethods.GetReferencedDefinitionOpt",
-          attribute.getName(), referencedSymbol, symbolName);
+          attribute, referencedSymbol, symbolName);
       replaceMethodBodyTemplate(clazz, toParseOpt, getMethodBodyOpt);
 
       String methodNameGet = "get" + StringTransformations.capitalize(attribute.getName()) + nameSuffix;
