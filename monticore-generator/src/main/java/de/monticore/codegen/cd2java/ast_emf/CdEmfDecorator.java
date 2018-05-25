@@ -130,11 +130,13 @@ public class CdEmfDecorator extends CdDecorator {
       addGetter(clazz, astHelper);
       addSetter(clazz, astHelper);
       addOptionalMethods(clazz, astHelper, cdDefinition);
+      addSymbolAndScopeAttributesAndMethods(clazz, astHelper);
       addReferencedSymbolMethods(clazz, astHelper);
-      addDefinitionGetter(clazz, astHelper);
+      addDefinitionMethods(clazz, astHelper);
 
       Optional<ASTCDClass> builder = astHelper.getASTBuilder(clazz);
       builder.ifPresent(astcdClass -> decorateBuilderClass(astcdClass, astHelper, cdDefinition));
+      addReferencedSymbolAttributes(clazz, astHelper);
       
       glex.replaceTemplate("ast.AstImports", clazz, new TemplateHookPoint("ast_emf.AstEImports"));
     }
@@ -421,7 +423,7 @@ public class CdEmfDecorator extends CdDecorator {
           + typeName + " " + attributeName + ") ;";
       HookPoint methodBody = new TemplateHookPoint("ast_emf.additionalmethods.Set",
           astHelper.getCdName(),
-          attribute, attributeName);
+          cdAttribute,attribute, attributeName);
       ASTCDMethod setMethod = replaceMethodBodyTemplate(clazz, toParse, methodBody);
       
       if (isOptional) {

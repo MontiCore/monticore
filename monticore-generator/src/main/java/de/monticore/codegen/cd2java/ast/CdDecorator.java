@@ -2,25 +2,9 @@
 
 package de.monticore.codegen.cd2java.ast;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static de.se_rwth.commons.Names.getQualifier;
-import static de.se_rwth.commons.Names.getSimpleName;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
@@ -140,7 +124,7 @@ public class CdDecorator {
       addOptionalMethods(clazz, astHelper, cdDefinition);
       addSymbolAndScopeAttributesAndMethods(clazz, astHelper);
       addReferencedSymbolMethods(clazz, astHelper);
-      addDefinitionGetter(clazz, astHelper);
+      addDefinitionMethods(clazz, astHelper);
 
       Optional<ASTCDClass> builder = astHelper.getASTBuilder(clazz);
       builder.ifPresent(astcdClass -> decorateBuilderClass(astcdClass, astHelper, cdDefinition));
@@ -318,7 +302,7 @@ public class CdDecorator {
     }
   }
 
-  protected void addDefinitionGetter(ASTCDClass clazz, AstGeneratorHelper astHelper) {
+  protected void addDefinitionMethods(ASTCDClass clazz, AstGeneratorHelper astHelper) {
     List<ASTCDAttribute> attributes = Lists.newArrayList(clazz.getCDAttributeList());
     for (ASTCDAttribute attribute : attributes) {
       if (GeneratorHelper.isInherited(attribute)
@@ -403,7 +387,7 @@ public class CdDecorator {
           astHelper.getPackageName(), astHelper.getCdName());
       String methodSignatur = String.format(additionalMethod.getDeclaration(), visitorTypeFQN);
       replaceMethodBodyTemplate(clazz, methodSignatur, new TemplateHookPoint(
-          "ast.additionalmethods.Accept"));
+          "ast.additionalmethods.Accept", clazz));
 
       // node needs to accept visitors from all super languages
       for (CDSymbol cdSym : astHelper.getAllSuperCds(astHelper.getCd())) {
@@ -415,7 +399,7 @@ public class CdDecorator {
         String superVisitorTypeFQN = visitorPackage + "." + visitorType;
         methodSignatur = String.format(additionalMethod.getDeclaration(), superVisitorTypeFQN);
         replaceMethodBodyTemplate(clazz, methodSignatur, new TemplateHookPoint(
-            "ast.additionalmethods.AcceptSuper", astHelper.getQualifiedCdName(),
+            "ast.additionalmethods.AcceptSuper",clazz, astHelper.getQualifiedCdName(),
             visitorTypeFQN, superVisitorTypeFQN));
       }
     }
@@ -433,24 +417,24 @@ public class CdDecorator {
     addDeprecatedStereotype(meth);
 
     replaceMethodBodyTemplate(clazz, AstAdditionalMethods.deepEqualsWithOrder.getDeclaration(),
-        new TemplateHookPoint("ast.additionalmethods.DeepEqualsWithOrder"));
+        new TemplateHookPoint("ast.additionalmethods.DeepEqualsWithOrder", clazz));
 
     replaceMethodBodyTemplate(clazz, AstAdditionalMethods.deepEquals.getDeclaration(),
         new StringHookPoint("return deepEquals(o, true);\n"));
 
     replaceMethodBodyTemplate(clazz,
         AstAdditionalMethods.deepEqualsWithCommentsWithOrder.getDeclaration(),
-        new TemplateHookPoint("ast.additionalmethods.DeepEqualsWithComments"));
+        new TemplateHookPoint("ast.additionalmethods.DeepEqualsWithComments", clazz));
 
     replaceMethodBodyTemplate(clazz,
         AstAdditionalMethods.deepEqualsWithComments.getDeclaration(),
         new StringHookPoint("return deepEqualsWithComments(o, true);\n"));
 
     replaceMethodBodyTemplate(clazz, AstAdditionalMethods.equalAttributes.getDeclaration(),
-        new TemplateHookPoint("ast.additionalmethods.EqualAttributes"));
+        new TemplateHookPoint("ast.additionalmethods.EqualAttributes", clazz));
 
     replaceMethodBodyTemplate(clazz, AstAdditionalMethods.equalsWithComments.getDeclaration(),
-        new TemplateHookPoint("ast.additionalmethods.EqualsWithComments"));
+        new TemplateHookPoint("ast.additionalmethods.EqualsWithComments", clazz));
 
     String stringToParse = String.format(AstAdditionalMethods.deepClone.getDeclaration(),
         plainClassName);
@@ -460,7 +444,7 @@ public class CdDecorator {
     stringToParse = String.format(AstAdditionalMethods.deepCloneWithOrder.getDeclaration(),
         plainClassName, plainClassName);
     replaceMethodBodyTemplate(clazz, stringToParse,
-        new TemplateHookPoint("ast.additionalmethods.DeepCloneWithParameters"));
+        new TemplateHookPoint("ast.additionalmethods.DeepCloneWithParameters", clazz));
 
     if (modifier.isPresent() && modifier.get().isAbstract()) {
       stringToParse = String.format(AstAdditionalMethods._construct.getDeclaration(), "abstract "
@@ -794,7 +778,7 @@ public class CdDecorator {
     String methodNameOpt = methodName.substring(0, methodName.length() - GeneratorHelper.GET_SUFFIX_OPTINAL.length());
     String returnType = TypesPrinter.printType(TypesHelper.getFirstTypeArgumentOfOptional(attribute.getType()).get());
     String toParse = "public " + returnType + " " + methodNameOpt + "() ;";
-    HookPoint getMethodBody = new TemplateHookPoint("ast.additionalmethods.GetOpt", methodName);
+    HookPoint getMethodBody = new TemplateHookPoint("ast.additionalmethods.GetOpt",type, methodName);
     replaceMethodBodyTemplate(type, toParse, getMethodBody);
     String methodIsPresent = "isPresent" + nativeName;
     toParse = "public boolean " + methodIsPresent + "() ;";
@@ -898,7 +882,7 @@ public class CdDecorator {
     String toParse = "public " + TypesPrinter.printType(attribute.getType()) + " "
         + methodName + "() ;";
     HookPoint getMethodBody = new TemplateHookPoint("ast.additionalmethods.Get",
-        attribute.getName());
+        type, attribute.getName());
     replaceMethodBodyTemplate(type, toParse, getMethodBody);
   }
 
@@ -1065,7 +1049,7 @@ public class CdDecorator {
 
     // Create reset for super class diagrams
     toParse = "public static void reset();";
-    methodBody = new TemplateHookPoint("ast.ASTMillResetMethod", astHelper.getCdSymbol().getImports());
+    methodBody = new TemplateHookPoint("ast.ASTMillResetMethod",millClass, astHelper.getCdSymbol().getImports());
     replaceMethodBodyTemplate(millClass, toParse, methodBody);
 
     // Create Mill for overridden Rules
@@ -1435,7 +1419,7 @@ public class CdDecorator {
       ASTType type = attr.getType();
       if (type instanceof ASTSimpleReferenceType) {
         type = astHelper.convertTypeCd2Java((ASTSimpleReferenceType) type,
-            AstGeneratorHelper.AST_PACKAGE_SUFFIX);
+            AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT);
       }
       param.setType(type);
       String javaAttrName = GeneratorHelper.getJavaAndCdConformName(attr.getName());
@@ -1513,7 +1497,7 @@ public class CdDecorator {
 
     glex.replaceTemplate("ast.ParametersDeclaration", fullConstructor, new TemplateHookPoint(
         "ast.ConstructorParametersDeclaration", Lists.newArrayList()));
-    glex.replaceTemplate("ast.EmptyMethodBody", fullConstructor, new TemplateHookPoint(
+    glex.replaceTemplate(EMPTY_BODY_TEMPLATE, fullConstructor, new TemplateHookPoint(
         "ast.ConstructorAttributesSetter"));
     Optional<ASTCDClass> clazzBuilder = astHelper.getASTBuilder(clazz);
     if (clazzBuilder.isPresent()) {

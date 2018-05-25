@@ -17,7 +17,7 @@ public class ReferenceSymbolSameAttributeVisitor implements Grammar_WithConcepts
   public void visit(de.monticore.grammar.grammar._ast.ASTNonTerminal node) {
     if(node.isPresentUsageName() && node.isPresentReferencedSymbol()){
       String usageName = node.getUsageName();
-      if(map.containsKey(usageName) && map.get(usageName) != node.getReferencedSymbol()){
+      if(map.containsKey(usageName) && !map.get(usageName).equals(node.getReferencedSymbol())){
         Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, "\""+usageName.substring(0,usageName.length()-1)+"\"",
             map.get(usageName), node.getReferencedSymbol(), node.get_SourcePositionStart()));
       }
