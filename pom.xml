@@ -765,26 +765,6 @@
         </plugin>
 
         <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>wagon-maven-plugin</artifactId>
-          <version>${wagon.plugin}</version>
-          <executions>
-            <execution>
-              <id>deploy-repository</id>
-              <phase>deploy</phase>
-              <goals>
-                <goal>upload-single</goal>
-              </goals>
-              <configuration>
-                <fromFile>${project.build.directory}/${project.build.finalName}.zip</fromFile>
-                <serverId>se-nexus</serverId>
-                <url>https://nexus.se.rwth-aachen.de/service/local/repositories/monticore-snapshots/content-compressed</url>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-
-        <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
           <version>3.0.1</version>
