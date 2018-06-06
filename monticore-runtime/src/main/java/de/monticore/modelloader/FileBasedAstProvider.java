@@ -36,8 +36,12 @@ public final class FileBasedAstProvider<T extends ASTNode> implements AstProvide
           ModelingLanguageModelLoader.class.getSimpleName());
   
       URL loc = modelCoordinate.getLocation();
-      if (!loc.getFile().contains("jar!")){
-        ast = (Optional<T>) modelingLanguage.getParser().parse(loc.getFile().substring(1));
+      if (!loc.getProtocol().equals("jar")){
+        if(loc.getFile().charAt(2) == ':'){
+          ast = (Optional<T>) modelingLanguage.getParser().parse(loc.getFile().substring(1));
+        } else {
+           ast = (Optional<T>) modelingLanguage.getParser().parse(loc.getFile());
+        }
       } else {
         Reader reader = new InputStreamReader(loc.openStream(), Charsets.UTF_8.name());
         ast = (Optional<T>) modelingLanguage.getParser().parse(reader,modelCoordinate.getQualifiedBaseName());
