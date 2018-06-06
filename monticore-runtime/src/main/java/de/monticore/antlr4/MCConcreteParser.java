@@ -12,16 +12,16 @@ import de.monticore.ast.ASTNode;
  * A MCConcreteParser is used for every single language. MCConcreteParser wrap
  * around an antlr parser, for having a parse method for a specific rule and
  * access in a type safe way
- * 
+ *
  * @author krahn
  */
 public abstract class MCConcreteParser {
-      
+  
   protected boolean hasErrors = false;
   
   /**
    * Creates a MCConcreteParser with a certain name
-   * 
+   *
    * @param name
    */
   public MCConcreteParser() {
@@ -40,7 +40,7 @@ public abstract class MCConcreteParser {
   /**
    * Implement this method to call top rule of parser. This method will be
    * overridden in generated classes with covariant return type.
-   * 
+   *
    * @param reader The reader containing the input to be parsed
    * @return An Optional of the created AST
    * @throws IOException Errors during reader handling
@@ -49,7 +49,7 @@ public abstract class MCConcreteParser {
 
   /**
    * Returns true, if errors occured while parsing
-   * 
+   *
    * @return
    */
   public boolean hasErrors() {
@@ -60,4 +60,8 @@ public abstract class MCConcreteParser {
     hasErrors = value;
   }
   
+  public Optional<? extends ASTNode> parse(Reader reader, String qualifiedModelName)
+      throws IOException {
+    return parse(reader);
+  }
 }
