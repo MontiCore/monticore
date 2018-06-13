@@ -280,6 +280,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
         i++;
       }
       addToCodeSection("// end subrules");
+      endCodeSection();
     } else {
       endCodeSection();
     }
