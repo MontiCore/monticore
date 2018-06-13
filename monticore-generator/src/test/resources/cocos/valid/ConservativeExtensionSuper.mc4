@@ -11,8 +11,4 @@ grammar ConservativeExtensionSuper extends mc.grammars.types.TestTypes {
     P = "some" M*;
 
     Q = "optional" M?;
-
-    O = Name;
-
-    R = Name;
 }

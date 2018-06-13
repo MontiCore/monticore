@@ -8,9 +8,9 @@ grammar ConservativeExtensionSup extends cocos.valid.ConservativeExtensionSuper 
 
     P = "-"? "some" M* ;
 
-    C extends O = P* Name P? ;
+    C extends M = P* Name P? ;
 
-    D extends R = Name n:Name;
+    D extends M = Name n:Name;
 
     Q = M? "optional" ;
 
