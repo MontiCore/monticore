@@ -1,5 +1,5 @@
-image: docker.se.rwth-aachen.de:5002/se-maven
+image: maven:3-jdk-8
 build:
   stage: build
   script:
-    - mvn -q install
+    - mvn -q install --settings "settings.xml"
