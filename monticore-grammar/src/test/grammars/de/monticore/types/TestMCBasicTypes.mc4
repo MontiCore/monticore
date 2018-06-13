@@ -1,8 +1,0 @@
-/* (c)  https://github.com/MontiCore/monticore */
-
-package de.monticore.types;
-
-grammar TestMCBasicTypes extends de.monticore.types.MCBasicTypes {
-
-
-}

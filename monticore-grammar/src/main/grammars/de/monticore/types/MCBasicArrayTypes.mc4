@@ -27,7 +27,7 @@ component grammar MCBasicArrayTypes extends de.monticore.types.MCBasicTypes {
         @attribute dimensions    Counts the number of '[]'
     */
     PrimitiveArrayType extends ArrayType implements Type =
-        componentType:PrimitiveType
+        componentType:PrimitiveType2
           (
             "[" "]"
             {_aNode.setDimensions(_aNode.getDimensions()+1);}
