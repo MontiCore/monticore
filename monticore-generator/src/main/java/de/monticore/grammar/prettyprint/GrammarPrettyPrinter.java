@@ -108,10 +108,9 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     print("external ");
     
-    getPrinter().print(a.getName());
-    
     printList(a.getSymbolDefinitionList().iterator(), " ");
-    
+    getPrinter().print(a.getName());
+      
     if (a.isPresentGenericType()) {
       getPrinter().print(" " + a.getGenericType().getTypeName());
     }
@@ -291,8 +290,10 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     
     print("interface ");
-    print(a.getName());
+
     printList(a.getSymbolDefinitionList().iterator(), " ");
+
+    print(a.getName());
     
     if (!a.getSuperInterfaceRuleList().isEmpty()) {
       getPrinter().print(" extends ");
@@ -312,6 +313,13 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
         x.accept(getRealThis());
         comma = ", ";
       }
+    }
+    
+    if (!a.getAltList().isEmpty()) {
+      println(" =");
+      
+      getPrinter().indent();
+      printList(a.getAltList().iterator(), " | ");
     }
     
     getPrinter().print(";");
@@ -502,6 +510,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
       
       CommentPrettyPrinter.printPreComments(a, getPrinter());
       
+      printList(a.getSymbolDefinitionList().iterator(), " ");
       getPrinter().print(a.getName());
       
       if (!a.getSuperRuleList().isEmpty()) {
@@ -697,6 +706,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     printList(a.getAbstractProdList().iterator(), "");
     printList(a.getASTRuleList().iterator(), "");
     printList(a.getConceptList().iterator(), "");
+    printList(a.getStartRuleList().iterator(), "");
     
     getPrinter().unindent();
     print("}");
@@ -859,8 +869,8 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     
     getPrinter().print("abstract ");
-    getPrinter().print(a.getName() + " ");
     printList(a.getSymbolDefinitionList().iterator(), " ");
+    getPrinter().print(a.getName() + " ");
     if (!a.getSuperRuleList().isEmpty()) {
       getPrinter().print("extends ");
       printList(a.getSuperRuleList().iterator(), " ");
@@ -880,6 +890,13 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
       getPrinter().print("astimplements ");
       printList(a.getASTSuperInterfaceList().iterator(), ", ");
       getPrinter().print(" ");
+    }
+    
+    if (!a.getAltList().isEmpty()) {
+      println(" =");
+      
+      getPrinter().indent();
+      printList(a.getAltList().iterator(), " | ");
     }
     
     getPrinter().println(";");
