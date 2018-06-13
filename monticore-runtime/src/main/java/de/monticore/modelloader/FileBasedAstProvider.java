@@ -10,6 +10,7 @@ import de.se_rwth.commons.logging.Log;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URL;
 import java.util.Optional;
 
 import com.google.common.base.Charsets;
@@ -33,9 +34,18 @@ public final class FileBasedAstProvider<T extends ASTNode> implements AstProvide
     try {
       Log.debug("Start parsing model " + modelCoordinate + ".",
           ModelingLanguageModelLoader.class.getSimpleName());
-
-      Reader reader = new InputStreamReader(modelCoordinate.getLocation().openStream(), Charsets.UTF_8.name());
-      ast = (Optional<T>) modelingLanguage.getParser().parse(reader);
+  
+      URL loc = modelCoordinate.getLocation();
+      if (!loc.getProtocol().equals("jar")){
+        if(loc.getFile().charAt(2) == ':'){
+          ast = (Optional<T>) modelingLanguage.getParser().parse(loc.getFile().substring(1));
+        } else {
+           ast = (Optional<T>) modelingLanguage.getParser().parse(loc.getFile());
+        }
+      } else {
+        Reader reader = new InputStreamReader(loc.openStream(), Charsets.UTF_8.name());
+        ast = (Optional<T>) modelingLanguage.getParser().parse(reader,modelCoordinate.getQualifiedBaseName());
+      }
 
       if (ast.isPresent()) {
         Log.debug("Parsed model " + modelCoordinate + " successfully.",
