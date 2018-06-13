@@ -1,0 +1,5 @@
+image: docker.se.rwth-aachen.de:5002/se-maven
+build:
+  stage: build
+  script:
+    - mvn install
