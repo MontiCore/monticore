@@ -1,0 +1,5 @@
+image: se-maven
+build:
+  stage: build
+  script:
+    - mvn install
