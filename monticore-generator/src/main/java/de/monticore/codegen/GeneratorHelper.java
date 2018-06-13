@@ -546,6 +546,10 @@ public class GeneratorHelper extends TypesHelper {
         || CD4AnalysisHelper.hasStereotype(attr, SCOPE);
   }
 
+  public static boolean isSymbolClass(ASTCDClass clazz) {
+    return clazz.isPresentSymbol();
+  }
+
   public static List<ASTCDAttribute> getNativeCDAttributes(ASTCDClass clazz) {
     return clazz.getCDAttributeList().stream().filter(attr -> !isAdditionalAttribute(attr))
         .collect(Collectors.toList());
