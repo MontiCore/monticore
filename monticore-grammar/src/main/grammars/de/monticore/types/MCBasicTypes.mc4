@@ -12,7 +12,7 @@ package de.monticore.types;
  * in grammar extensions).
  *
 */
-grammar MCBasicTypes extends de.monticore.MCBasics {
+grammar MCBasicTypes extends de.monticore.MCBasics, de.monticore.literals.Literals {
 
     /*========================================================================*/
     /*= Qualified Names ======================================================*/
@@ -69,10 +69,10 @@ grammar MCBasicTypes extends de.monticore.MCBasics {
         @attribute primitive BOOLEAN, BYTE, CHAR, SHORT, INT, FLOAT, LONG,
                                  or DOUBLE
     */
-    PrimitiveType2 implements Type =
+    PrimitiveType implements Type =
         primitive: ["boolean" | "byte" | "short" | "int" | "long" | "char" |"float" | "double"];
 
-    astrule PrimitiveType2 =
+    astrule PrimitiveType =
                 method public String toString(){
                   if (isBoolean()){
                     return "boolean";

@@ -1,9 +1,8 @@
 package de.monticore.types;
 
-import de.monticore.types.mcbasictypes._ast.ASTPrimitiveType2;
+import de.monticore.types.mcbasictypes._ast.ASTPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTType;
 import de.monticore.types.mcbasictypes._parser.MCBasicTypesParser;
-import de.monticore.types.types._ast.ASTPrimitiveType;
 
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
@@ -32,11 +31,11 @@ public class MCBasicTypesTest {
         MCBasicTypesParser mcBasicTypesParser = new MCBasicTypesParser();
         // .parseType(primitive);
 
-        Optional<? extends ASTType> type = mcBasicTypesParser.parse_StringPrimitiveType2(primitive);
+        Optional<? extends ASTType> type = mcBasicTypesParser.parse_StringPrimitiveType(primitive);
 
         assertNotNull(type);
         assertTrue(type.isPresent());
-        assertTrue(type.get() instanceof ASTPrimitiveType2);
+        assertTrue(type.get() instanceof ASTPrimitiveType);
       }
     } catch (IOException e) {
       e.printStackTrace();
