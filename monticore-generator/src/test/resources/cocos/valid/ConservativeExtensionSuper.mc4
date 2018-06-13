@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package cocos.valid;
+
+grammar ConservativeExtensionSuper extends mc.grammars.types.TestTypes {
+
+    M = Name;
+
+    N = "one" M;
+
+    P = "some" M*;
+
+    Q = "optional" M?;
+
+    O = Name;
+
+    R = Name;
+}
