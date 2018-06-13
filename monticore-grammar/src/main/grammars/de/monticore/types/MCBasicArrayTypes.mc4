@@ -1,0 +1,35 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.types;
+
+/**
+ * This grammar defines a set of types. The scope of this grammar is to
+ * ease the reuse of type structures in languages similar to Java,
+ * but potentials simplified, e.g. without generics
+ * by grammar inheritance or grammar embedding.
+ * The grammar contains types from Java, e.g., primitives, void,
+ * classes (reference types).
+ * It does not contain generics or arrays (which can be added
+ * in grammar extensions).
+ *
+*/
+component grammar MCBasicArrayTypes extends de.monticore.types.MCBasicTypes {
+    /** The ASTAbstractArrayType represents array of Type
+    */
+    abstract ArrayType implements Type;
+
+
+
+    /** The ASTArrayType represents an array of any type. The rule
+        PrimitiveArrayType itself treats arrays of primitive types, such as
+        'int[]'.
+        @attribute componentType The kind of which is used for the array.
+                                 Could be every primitive type.
+        @attribute dimensions    Counts the number of '[]'
+    */
+    PrimitiveArrayType extends ArrayType implements Type =
+        componentType:PrimitiveType
+          (
+            "[" "]"
+            {_aNode.setDimensions(_aNode.getDimensions()+1);}
+          )+;
+}

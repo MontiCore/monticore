@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.types;
+
+/**
+ * This grammar defines a set of types. The scope of this grammar is to
+ * ease the reuse of type structures in languages similar to Java,
+ * but potentials simplified, e.g. without generics
+ * by grammar inheritance or grammar embedding.
+ * The grammar contains types from Java, e.g., primitives, void,
+ * classes (reference types).
+ * It does not contain generics or arrays (which can be added
+ * in grammar extensions).
+ *
+*/
+component grammar MCGenericTypes extends de.monticore.MCBasics {
+
+
+}
