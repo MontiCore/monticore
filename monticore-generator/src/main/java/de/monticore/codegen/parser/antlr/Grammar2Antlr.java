@@ -275,9 +275,11 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
         if (embeddedJavaCode) {
           addToCodeSection(" {$ret = $" + subRuleVar + ".ret;}");
         }
-        addToCodeSection(") | \n// end subrules");
+        addToCodeSection(") | \n");
         endCodeSection();
+        i++;
       }
+      addToCodeSection("// end subrules");
     } else {
       endCodeSection();
     }
