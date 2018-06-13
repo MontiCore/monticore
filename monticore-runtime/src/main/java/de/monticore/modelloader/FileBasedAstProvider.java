@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.Optional;
 
 import com.google.common.base.Charsets;
@@ -38,7 +39,8 @@ public final class FileBasedAstProvider<T extends ASTNode> implements AstProvide
       URL loc = modelCoordinate.getLocation();
       if (!loc.getProtocol().equals("jar")){
         if(loc.getFile().charAt(2) == ':'){
-          ast = (Optional<T>) modelingLanguage.getParser().parse(loc.getFile().substring(1));
+          String filename = URLDecoder.decode(loc.getFile(),  "UTF-8");
+          ast = (Optional<T>) modelingLanguage.getParser().parse(filename.substring(1));
         } else {
            ast = (Optional<T>) modelingLanguage.getParser().parse(loc.getFile());
         }
