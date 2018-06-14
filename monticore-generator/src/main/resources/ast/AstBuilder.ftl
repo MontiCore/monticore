@@ -37,7 +37,7 @@ ${tc.include("ast.AstImports")}
       if (isValid()) {
         ${typeName} value = new ${typeName} (${tc.include("ast.ParametersDeclaration")}
           );
-        ${tc.includeArgs("ast.AstBuildMethod")}
+        ${tc.include("ast.AstBuildMethod")}
         return value;
       }
       else {
