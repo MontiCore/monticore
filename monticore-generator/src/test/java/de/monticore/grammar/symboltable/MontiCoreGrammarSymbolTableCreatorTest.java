@@ -3,6 +3,7 @@
 package de.monticore.grammar.symboltable;
 
 import de.monticore.GrammarGlobalScopeTestFactory;
+import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.grammar._ast.ASTAbstractProd;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTExternalProd;

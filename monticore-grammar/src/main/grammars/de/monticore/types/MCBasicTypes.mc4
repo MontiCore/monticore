@@ -130,10 +130,22 @@ grammar MCBasicTypes extends de.monticore.MCBasics, de.monticore.literals.Litera
     
     interface ReferenceType extends Type;
     
-    NameAsReferenceType implements ReferenceType =
-    	(Name || ".")+;
+    /** ASTSimpleReferenceType represents types like class or interface types
+            which could have a qualified name like this: a.b.c<Arg>. The
+            qualification stored in the name (a.b) could be package or a type name.
+            The qualified name could contain type arguments only at the end.
+            a.b.c<Arg>.d would be one ASTSimpleReferenceType (a.b.c<Arg>) and one
+            ASTQualifiedType (d).
+            @attribute name          Name of the type
+                                     Note: Although the class name contains the
+                                     word 'simple', the name could be a qualified
+                                     one. So it is saved in an ASTStringList
+            @attribute typeArguments The types between '<...>'
+        */
+        SimpleReferenceType implements ReferenceType, Type =
+            (Name || ".")+;
 
-    astrule NameAsReferenceType =
+    astrule SimpleReferenceType =
         method public String getQName(){
           return de.se_rwth.commons.Names.getQualifiedName(
               this.getNameList());

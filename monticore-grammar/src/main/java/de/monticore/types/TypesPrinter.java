@@ -65,7 +65,10 @@ public class TypesPrinter {
   public static String printType(ASTType type) {
     return getInstance().doPrintType(type);
   }
-  
+
+
+
+
   protected String doPrintType(ASTType type) {
     if (type instanceof ASTArrayType) {
       return doPrintArrayType((ASTArrayType) type);
