@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package cocos.invalid.A4047;
+
+grammar A4047e {
+
+  D;
+
+  interface A = D*;
+
+  AImpl implements A = D;
+
+}

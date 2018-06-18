@@ -40,6 +40,7 @@ grammar TestOD extends mc.grammar.common.ItTestCommon {
 	  ( (Name | name:ODName) (":" type:ReferenceType)? | (":" type:ReferenceType))
       (
         ("{" (oDAttributes:ODAttribute | innerLinks:ODInnerLink | valueCollections:ODValueCollection ";")* "}")
+        | ";"?
       );
    
      // TODO external Value;
@@ -178,7 +179,7 @@ grammar TestOD extends mc.grammar.common.ItTestCommon {
 	  ( (Name | name:ODName) (":" type:ReferenceType)? | (":" type:ReferenceType))
       (
         ("{" (oDAttributes:ODAttribute | innerLinks:ODInnerLink | valueCollections:ODValueCollection ";")* "}")
-        |
+        | ";"?
       );
     
     
