@@ -10,12 +10,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import de.monticore.ast.ASTNode;
@@ -25,18 +27,17 @@ import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrLexerAction;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrParserAction;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTJavaCodeExt;
+import de.monticore.grammar.grammar._ast.ASTAbstractProd;
 import de.monticore.grammar.grammar._ast.ASTAlt;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTConstant;
 import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTProd;
-import de.monticore.grammar.grammar._ast.ASTRuleComponent;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
 import de.monticore.grammar.grammar._ast.ASTTerminal;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
-import de.monticore.grammar.symboltable.MCProdSymbolReference;
 import de.monticore.utils.ASTNodes;
 import de.se_rwth.commons.logging.Log;
 
@@ -90,7 +91,6 @@ public class MCGrammarInfo {
     buildLexPatterns();
     findAllKeywords();
     addSubRules();
-    addSubRulesToInterface();
     addHWAntlrCode();
     addLeftRecursiveRules();
   }
@@ -108,63 +108,50 @@ public class MCGrammarInfo {
         .newLinkedHashSet(Arrays.asList(grammarSymbol));
     grammarsToHandle.addAll(MCGrammarSymbolTableHelper.getAllSuperGrammars(grammarSymbol));
     for (MCGrammarSymbol grammar : grammarsToHandle) {
+      HashMap<String, List<ASTRuleReference>> ruleMap = Maps.newHashMap();
+      // Collect superclasses and superinterfaces for classes
       for (ASTClassProd classProd : ((ASTMCGrammar) grammar.getAstNode().get())
           .getClassProdList()) {
-        for (ASTRuleReference superRule : classProd.getSuperRuleList()) {
+        List<ASTRuleReference> ruleRefs = Lists.newArrayList();
+        ruleRefs.addAll(classProd.getSuperRuleList());
+        ruleRefs.addAll(classProd.getSuperInterfaceRuleList());
+        ruleMap.put(classProd.getName(), ruleRefs);
+      }
+      
+      // Collect superclasses and superinterfaces for abstract classes
+      for (ASTAbstractProd classProd : ((ASTMCGrammar) grammar.getAstNode().get())
+          .getAbstractProdList()) {
+        List<ASTRuleReference> ruleRefs = Lists.newArrayList();
+        ruleRefs.addAll(classProd.getSuperRuleList());
+        ruleRefs.addAll(classProd.getSuperInterfaceRuleList());
+        ruleMap.put(classProd.getName(), ruleRefs);
+      }
+      
+      // Collect superinterfaces for interfaces
+      for (ASTInterfaceProd classProd : ((ASTMCGrammar) grammar.getAstNode().get())
+          .getInterfaceProdList()) {
+        List<ASTRuleReference> ruleRefs = Lists.newArrayList();
+        ruleRefs.addAll(classProd.getSuperInterfaceRuleList());
+        ruleMap.put(classProd.getName(), ruleRefs);
+      }
+
+      // Add relation to predicats
+      for (Entry<String, List<ASTRuleReference>> entry: ruleMap.entrySet()) {
+        for (ASTRuleReference ref: entry.getValue()) {
           Optional<MCProdSymbol> prodByName = grammarSymbol
-              .getProdWithInherited(superRule.getTypeName());
+              .getProdWithInherited(ref.getTypeName());
           if (prodByName.isPresent()) {
-            addSubrule(prodByName.get().getName(), HelperGrammar.getRuleName(classProd), superRule);
+            addSubrule(prodByName.get().getName(), entry.getKey(), ref);
           }
           else {
-            Log.error("0xA2110 Undefined rule: " + superRule.getTypeName(),
-                superRule.get_SourcePositionStart());
-          }
-        }
-        
-        for (ASTRuleReference ruleref : classProd.getSuperInterfaceRuleList()) {
-          Optional<MCProdSymbol> prodByName = grammarSymbol
-              .getProdWithInherited(ruleref.getTypeName());
-          if (prodByName.isPresent()) {
-            addSubrule(prodByName.get().getName(), HelperGrammar.getRuleName(classProd), ruleref);
-          }
-          else {
-            Log.error("0xA2112 Undefined rule: " + ruleref.getTypeName(),
-                ruleref.get_SourcePositionStart());
+            Log.error("0xA2110 Undefined rule: " + ref.getTypeName(),
+                ref.get_SourcePositionStart());
           }
         }
       }
     }
-    
   }
   
-  /**
-   * Add all sub/superule-realtions to the symboltable form the perspective of
-   * the superrule by using addSubrule
-   *
-   * @param interfaceProdList Rule
-   */
-  private void addSubRulesToInterface() {
-    Set<MCGrammarSymbol> grammarsToHandle = Sets
-        .newLinkedHashSet(Arrays.asList(grammarSymbol));
-    grammarsToHandle.addAll(MCGrammarSymbolTableHelper.getAllSuperGrammars(grammarSymbol));
-    for (MCGrammarSymbol grammar : grammarsToHandle) {
-      for (ASTInterfaceProd interfaceProd : ((ASTMCGrammar) grammar.getAstNode().get())
-          .getInterfaceProdList()) {
-        for (ASTRuleReference superRule : interfaceProd.getSuperInterfaceRuleList()) {
-          Optional<MCProdSymbol> prodByName = grammar
-              .getProdWithInherited(superRule.getTypeName());
-          if (prodByName.isPresent()) {
-            addSubrule(prodByName.get().getName(), interfaceProd.getName(), superRule);
-          }
-          else {
-            Log.error("0xA2111 Undefined rule: " + superRule.getTypeName(),
-                superRule.get_SourcePositionStart());
-          }
-        }
-      }
-    }
-  }
   
   private void addSubrule(String superrule, String subrule, ASTRuleReference ruleReference) {
     PredicatePair subclassPredicatePair = new PredicatePair(subrule, ruleReference);
