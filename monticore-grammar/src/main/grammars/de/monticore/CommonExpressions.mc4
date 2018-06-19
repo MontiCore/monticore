@@ -4,7 +4,7 @@ package de.monticore;
 
 component grammar CommonExpressions extends de.monticore.ExpressionsBasis {
 
-interface InfixExpression extends Expression = leftExpression:Expression operator:"..." rightExpression:Expression;
+interface InfixExpression extends Expression = leftExpression:Expression operator:"" rightExpression:Expression;
   
 CallExpression implements Expression <240> =
 	Expression Arguments;

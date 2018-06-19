@@ -11,7 +11,7 @@ grammar ImplementInterfaceNTs {
 
   D;
 
-  interface Expression = operator:"...";
+  interface Expression = operator:"";
 
   TestExpression implements Expression = operator:"+";
 
