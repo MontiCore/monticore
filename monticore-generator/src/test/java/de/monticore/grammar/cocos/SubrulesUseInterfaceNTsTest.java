@@ -15,7 +15,7 @@ import de.se_rwth.commons.logging.Log;
  */
 public class SubrulesUseInterfaceNTsTest extends CocoTest {
   
-  private final String MESSAGE = " The production %s must use the non-terminal %s from interface %s.";
+  private final String MESSAGE = " The production %s must use the terminal %s from interface %s.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "cocos.invalid.A4047.A4047";
   

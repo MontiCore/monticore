@@ -23,7 +23,7 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
   
   public static final String ERROR_CODE = "0xA4047";
   
-  public static final String ERROR_MSG_FORMAT = " The production %s must use the non-terminal %s from interface %s.";
+  public static final String ERROR_MSG_FORMAT = " The production %s must use the terminal %s from interface %s.";
 
   @Override
   public void check(ASTMCGrammar a) {
