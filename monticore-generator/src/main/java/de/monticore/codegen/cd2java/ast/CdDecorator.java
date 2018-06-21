@@ -2,9 +2,27 @@
 
 package de.monticore.codegen.cd2java.ast;
 
+import static com.google.common.collect.Lists.newArrayList;
+import static de.se_rwth.commons.Names.getQualifier;
+import static de.se_rwth.commons.Names.getSimpleName;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.codehaus.groovy.control.CompilationUnit;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
@@ -30,7 +48,22 @@ import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.types.types._ast.TypesMill;
 import de.monticore.umlcd4a.CD4AnalysisHelper;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDConstructor;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDDefinition;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDEnum;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDEnumConstant;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTModifier;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTStereoValue;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTStereotype;
+import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisMill;
+import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
 import de.monticore.umlcd4a.prettyprint.AstPrinter;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
@@ -40,14 +73,6 @@ import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import groovyjarjarantlr.ANTLRException;
 import transformation.ast.ASTCDTransformation;
-
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-
-import static com.google.common.collect.Lists.newArrayList;
-import static de.se_rwth.commons.Names.getQualifier;
-import static de.se_rwth.commons.Names.getSimpleName;
 
 /**
  * Decorates class diagrams by adding of new classes and methods using in ast
@@ -90,6 +115,27 @@ public class CdDecorator {
     this.symbolTable = symbolTable;
     this.targetPath = targetPath;
   }
+  
+  protected void addAbstractStereotype(ASTCDDefinition def) {
+    for ( ASTCDClass clazz: def.getCDClassList()) {
+      ASTModifier modifier;
+      if (clazz.isPresentModifier()) {
+        modifier = clazz.getModifier();
+        if (modifier.isAbstract()) {
+          ASTStereotype stereo;
+          // Create Stereo
+          if (modifier.isPresentStereotype()) {
+            stereo = modifier.getStereotype();
+          } else {
+            stereo = CD4AnalysisMill.stereotypeBuilder().build();
+            modifier.setStereotype(stereo);
+          }
+          ASTStereoValue value = CD4AnalysisMill.stereoValueBuilder().setName("Abstract").build();
+          stereo.getValueList().add(value);
+       } 
+      }
+    } 
+  }
 
   public void decorate(ASTCDCompilationUnit cdCompilationUnit) {
     AstGeneratorHelper astHelper = new AstGeneratorHelper(cdCompilationUnit, symbolTable);
@@ -98,6 +144,8 @@ public class CdDecorator {
 
     // Run over classdiagramm and converts cd types to mc-java types
     astHelper.transformCdTypes2Java();
+    
+    addAbstractStereotype(cdDefinition);
 
     // Interface for all ast nodes of the language
     decorateBaseInterface(cdDefinition);
@@ -1124,7 +1172,7 @@ public class CdDecorator {
     // Add builder-creating methods
     for (ASTCDClass clazz : nativeClasses) {
       // TODO MB,BS: Check Builder and Mill for abstract classes
-      if (AstGeneratorHelper.isBuilderClassAbstract(clazz)
+      if (AstGeneratorHelper.isAbstract(clazz)
           || !GeneratorHelper.getPlainName(clazz).startsWith(GeneratorHelper.AST_PREFIX)) {
         continue;
       }
@@ -1173,7 +1221,7 @@ public class CdDecorator {
         continue;
       }
       ASTCDClass clazz = (ASTCDClass) cdType.getAstNode().get();
-      if (AstGeneratorHelper.isBuilderClassAbstract(clazz)
+      if (AstGeneratorHelper.isAbstract(clazz)
           || !GeneratorHelper.getPlainName(clazz).startsWith(GeneratorHelper.AST_PREFIX)) {
         continue;
       }
