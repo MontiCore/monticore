@@ -2,7 +2,7 @@
 
 package mc.feature.hwc; 
 
-grammar ActivityDiagram extends de.monticore.lexicals.Lexicals {
+grammar ActivityDiagram extends mc.common.Basics {
 
     ActivityDiagram =
       "activity diagram" Name "{" ( AbstractActivityNode )* "}";
