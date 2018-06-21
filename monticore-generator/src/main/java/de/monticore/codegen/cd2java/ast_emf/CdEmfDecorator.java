@@ -103,6 +103,8 @@ public class CdEmfDecorator extends CdDecorator {
     // Run over classdiagramm and converts cd types to mc-java types
     astHelper.transformCdTypes2Java();
     
+    addAbstractStereotype(cdDefinition);
+    
     createEmfAttributes(astHelper, emfCollector, nativeTypes);
     
     // Interface for all ast nodes of the language
