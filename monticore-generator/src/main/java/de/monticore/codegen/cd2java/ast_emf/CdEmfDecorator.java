@@ -103,6 +103,8 @@ public class CdEmfDecorator extends CdDecorator {
     // Run over classdiagramm and converts cd types to mc-java types
     astHelper.transformCdTypes2Java();
     
+    addAbstractStereotype(cdDefinition);
+    
     createEmfAttributes(astHelper, emfCollector, nativeTypes);
     
     // Interface for all ast nodes of the language
@@ -130,11 +132,13 @@ public class CdEmfDecorator extends CdDecorator {
       addGetter(clazz, astHelper);
       addSetter(clazz, astHelper);
       addOptionalMethods(clazz, astHelper, cdDefinition);
-      addSymbolGetter(clazz, astHelper);
-      addNodeGetter(clazz, astHelper);
+      addSymbolAndScopeAttributesAndMethods(clazz, astHelper);
+      addReferencedSymbolMethods(clazz, astHelper);
+      addDefinitionMethods(clazz, astHelper);
 
       Optional<ASTCDClass> builder = astHelper.getASTBuilder(clazz);
       builder.ifPresent(astcdClass -> decorateBuilderClass(astcdClass, astHelper, cdDefinition));
+      addReferencedSymbolAttributes(clazz, astHelper);
       
       glex.replaceTemplate("ast.AstImports", clazz, new TemplateHookPoint("ast_emf.AstEImports"));
     }
@@ -142,7 +146,10 @@ public class CdEmfDecorator extends CdDecorator {
     cdDefinition.getCDClassList().forEach(c -> makeAbstractIfHWC(c));
     
     for (ASTCDInterface interf : cdDefinition.getCDInterfaceList()) {
+      addOptionalMethods(interf,astHelper);
       addGetter(interf);
+      addSetter(interf);
+      addListMethods(interf, astHelper);
     }
     
     // Add ASTConstant class
@@ -198,7 +205,7 @@ public class CdEmfDecorator extends CdDecorator {
     addEPackageInterface(cdCompilationUnit, types, map.values(), astHelper);
     addEPackageImplementation(cdCompilationUnit, types, map, astHelper);
     addLiteralsEnum(cdCompilationUnit, astHelper);
-    
+
     // Decorate with additional EMF methods and attributes
     for (ASTCDClass clazz : astClasses) {
       addEGetter(clazz, astHelper);
@@ -418,7 +425,7 @@ public class CdEmfDecorator extends CdDecorator {
           + typeName + " " + attributeName + ") ;";
       HookPoint methodBody = new TemplateHookPoint("ast_emf.additionalmethods.Set",
           astHelper.getCdName(),
-          attribute, attributeName);
+          cdAttribute,attribute, attributeName);
       ASTCDMethod setMethod = replaceMethodBodyTemplate(clazz, toParse, methodBody);
       
       if (isOptional) {
@@ -438,7 +445,7 @@ public class CdEmfDecorator extends CdDecorator {
   void addEGetter(ASTCDClass clazz, AstEmfGeneratorHelper astHelper) {
     String toParse = "public Object eGet(int featureID, boolean resolve, boolean coreType);";
     HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.EGet",
-        astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
+        clazz, astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
     replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
   }
   
@@ -452,7 +459,7 @@ public class CdEmfDecorator extends CdDecorator {
   void addESetter(ASTCDClass clazz, AstEmfGeneratorHelper astHelper) {
     String toParse = "public void eSet(int featureID, Object newValue);";
     HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.ESet",
-        astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
+        clazz, astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
     Optional<ASTCDMethod> astMethod = cdTransformation.addCdMethodUsingDefinition(clazz,
         toParse);
     Preconditions.checkArgument(astMethod.isPresent());
@@ -508,7 +515,7 @@ public class CdEmfDecorator extends CdDecorator {
   void addEUnset(ASTCDClass clazz, AstEmfGeneratorHelper astHelper) {
     String toParse = "public void eUnset(int featureID);";
     HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.EUnset",
-        astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
+        clazz, astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
     replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
   }
   
@@ -522,7 +529,7 @@ public class CdEmfDecorator extends CdDecorator {
   void addEIsSet(ASTCDClass clazz, AstEmfGeneratorHelper astHelper) {
     String toParse = "public boolean eIsSet(int featureID);";
     HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.EIsSet",
-        astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
+        clazz, astHelper.getCdName(), astHelper.getAllVisibleFields(clazz));
     replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
   }
   
@@ -537,13 +544,13 @@ public class CdEmfDecorator extends CdDecorator {
     String methodName = "eBaseStructuralFeatureID";
     String toParse = "public int " + methodName + "(int featureID, Class<?> baseClass);";
     HookPoint getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.EStructuralFeature",
-        methodName, astHelper.getAllSuperInterfaces(clazz));
+        clazz, methodName, astHelper.getAllSuperInterfaces(clazz));
     replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
     
     methodName = "eDerivedStructuralFeatureID";
     toParse = "public int " + methodName + "(int featureID, Class<?> baseClass);";
     getMethodBody = new TemplateHookPoint("ast_emf.additionalmethods.EStructuralFeature",
-        methodName, astHelper.getAllSuperInterfaces(clazz));
+        clazz, methodName, astHelper.getAllSuperInterfaces(clazz));
     replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
   }
   

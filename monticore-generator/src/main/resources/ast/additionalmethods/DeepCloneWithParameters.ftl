@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-  ${tc.signature("ast","astType")}
+  ${tc.signature("astType")}
   <#assign genHelper = glex.getGlobalVar("astHelper")>
     super.deepClone(result);
     
@@ -24,7 +24,7 @@
     }
         <#else>
     if (isPresent${genHelper.getNativeAttributeName(attribute.getName())?cap_first}()){
-      result.set${genHelper.getNativeAttributeName(attribute.getName())?cap_first}(this.${attributeName}.get().clone());
+      result.set${genHelper.getNativeAttributeName(attribute.getName())?cap_first}(this.${attributeName}.get());
     } else {
       result.set${genHelper.getNativeAttributeName(attribute.getName())?cap_first}Absent();
     }

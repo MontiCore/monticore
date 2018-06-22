@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-  ${tc.signature("method", "ast", "structuralMethod", "interfaces")}
+  ${tc.signature("ast", "structuralMethod", "interfaces")}
   <#assign genHelper = glex.getGlobalVar("astHelper")>
   <#assign nameHelper = glex.getGlobalVar("nameHelper")>
   <#assign packageName = genHelper.getCdName() + "Package">

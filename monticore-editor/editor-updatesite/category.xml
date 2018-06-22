@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <bundle id="editor-bundle" version="5.0.0">
+   <bundle id="editor-bundle" version="5.0.1">
       <category name="mc-editor"/>
    </bundle>
-   <bundle id="texteditor-core" version="5.0.0">
+   <bundle id="texteditor-core" version="5.0.1">
       <category name="mc-editor"/>
    </bundle>
-   <bundle id="grammar-editor" version="5.0.0">
+   <bundle id="grammar-editor" version="5.0.1">
       <category name="mc-editor"/>
    </bundle>
    <category-def name="mc-editor" label="Grammar Editor"/>

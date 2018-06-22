@@ -2,13 +2,7 @@
 
 package de.monticore.codegen.parser;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Optional;
-
 import com.google.common.base.Joiner;
-
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.parser.antlr.AntlrTool;
@@ -25,7 +19,11 @@ import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Scopes;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
-import de.monticore.generating.GeneratorSetup;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
 
 public class ParserGenerator {
 
@@ -47,11 +45,11 @@ public class ParserGenerator {
                                         File targetDir)
   {
     Optional<GlobalScope> symbolTable;
-    if (!astGrammar.getEnclosingScope().isPresent()) {
+    if (!astGrammar.getEnclosingScopeOpt().isPresent()) {
       Log.error("0xA0163 Cannot generate the parser because the symbol table does not exist.");
       return;
     }
-    symbolTable = Scopes.getGlobalScope(astGrammar.getEnclosingScope().get());
+    symbolTable = Scopes.getGlobalScope(astGrammar.getEnclosingScope());
     if (!symbolTable.isPresent()) {
       Log.error("0xA0164 Cannot generate the parser because the global scope does not exist.");
       return;
@@ -89,11 +87,11 @@ public class ParserGenerator {
                                     IterablePath handcodedPath,
                                     File targetDir) {
     Optional<GlobalScope> symbolTable;
-    if (!astGrammar.getEnclosingScope().isPresent()) {
+    if (!astGrammar.getEnclosingScopeOpt().isPresent()) {
       Log.error("0xA0135 Cannot generate the parser because the symbol table does not exist.");
       return;
     }
-    symbolTable = Scopes.getGlobalScope(astGrammar.getEnclosingScope().get());
+    symbolTable = Scopes.getGlobalScope(astGrammar.getEnclosingScope());
     if (!symbolTable.isPresent()) {
       Log.error("0xA0136 Cannot generate the parser because the global scope does not exist.");
       return;

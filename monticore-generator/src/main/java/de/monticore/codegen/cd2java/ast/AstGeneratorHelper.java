@@ -4,6 +4,7 @@ package de.monticore.codegen.cd2java.ast;
 
 import java.util.Optional;
 
+import com.google.common.base.Joiner;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
@@ -19,6 +20,7 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDDefinition;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTStereotype;
 import de.monticore.umlcd4a.cd4analysis._visitor.CD4AnalysisVisitor;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
@@ -26,13 +28,24 @@ import de.se_rwth.commons.logging.Log;
 import de.monticore.generating.GeneratorSetup;
 
 public class AstGeneratorHelper extends GeneratorHelper {
-  
-  protected static final String AST_BUILDER = "Builder";
+
+  private final MCGrammarSymbol grammarSymbol;
   
   public AstGeneratorHelper(ASTCDCompilationUnit topAst, GlobalScope symbolTable) {
     super(topAst, symbolTable);
+    String qualifiedGrammarName = topAst.getPackageList().isEmpty()
+        ? this.cdDefinition.getName()
+        : Joiner.on('.').join(Names.getQualifiedName(topAst.getPackageList()),
+        this.cdDefinition.getName());
+
+    grammarSymbol = symbolTable.<MCGrammarSymbol> resolve(
+        qualifiedGrammarName, MCGrammarSymbol.KIND).orElse(null);
   }
-  
+
+  public MCGrammarSymbol getGrammarSymbol() {
+    return this.grammarSymbol;
+  }
+
   public String getAstAttributeValue(ASTCDAttribute attribute, ASTCDType clazz) {
     return getAstAttributeValue(attribute);
   }
@@ -65,11 +78,11 @@ public class AstGeneratorHelper extends GeneratorHelper {
   }
   
   public static boolean isBuilderClass(ASTCDDefinition cdDefinition, ASTCDClass clazz) {
-    if (!clazz.getName().endsWith(AST_BUILDER)
-         && !clazz.getName().endsWith(AST_BUILDER + GeneratorSetup.GENERATED_CLASS_SUFFIX)) {
+    if (!clazz.getName().endsWith(BUILDER)
+         && !clazz.getName().endsWith(BUILDER + GeneratorSetup.GENERATED_CLASS_SUFFIX)) {
       return false;
     }
-    String className = clazz.getName().substring(0, clazz.getName().indexOf(AST_BUILDER));
+    String className = clazz.getName().substring(0, clazz.getName().indexOf(BUILDER));
     return cdDefinition.getCDClassList().stream()
         .filter(c -> className.equals(GeneratorHelper.getPlainName(c))).findAny()
         .isPresent();
@@ -82,6 +95,18 @@ public class AstGeneratorHelper extends GeneratorHelper {
           return c.getName().equals(name)
             || c.getName().equals(name + GeneratorSetup.GENERATED_CLASS_SUFFIX);
         }).findAny();
+  }
+  
+  public static boolean inheritsFromASTNodeBuilder(ASTCDClass clazz) {
+    if(clazz.isPresentSuperclass()) {
+      String type = clazz.printSuperClass();
+      int index = type.indexOf('<');
+      if (index != -1) {
+        type = type.substring(0, index);
+      }
+      return "ASTNodeBuilder".equals(type) || "de.monticore.ast.ASTNodeBuilder".equals(type);
+    }
+    return false;
   }
   
   public static boolean compareAstTypes(String qualifiedType, String type) {
@@ -130,7 +155,7 @@ public class AstGeneratorHelper extends GeneratorHelper {
     if(astClass.getName().endsWith(GeneratorSetup.GENERATED_CLASS_SUFFIX)) {
       name = name.substring(0, name.indexOf(GeneratorSetup.GENERATED_CLASS_SUFFIX));
     }
-    return name + AST_BUILDER;
+    return name + BUILDER;
   }
   
   public static String getSuperClassForBuilder(ASTCDClass clazz) {
@@ -184,9 +209,8 @@ public class AstGeneratorHelper extends GeneratorHelper {
         : type;
   }
   
-  public static boolean isBuilderClassAbstract(ASTCDClass astType) {
-    return (astType.getModifierOpt().isPresent() && astType.getModifierOpt().get().isAbstract()
-            && !isSupertypeOfHWType(astType.getName()));
+  public static boolean isOriginalClassAbstract(ASTCDClass astType) {
+    return hasStereotype(astType, "Abstract");
   }
 
   public static boolean isAbstract(ASTCDClass clazz) {

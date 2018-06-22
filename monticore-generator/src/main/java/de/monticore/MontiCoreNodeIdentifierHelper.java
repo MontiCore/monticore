@@ -88,7 +88,7 @@ public class MontiCoreNodeIdentifierHelper extends TypesNodeIdentHelper {
   public String getIdent(ASTITerminal ast) {
     // return a regular "Name"
     String name = ast.getName();
-    if ((name.length()) < 4 && !name.matches("[a-zA-Z0-9_$\\-+]*")) {
+    if ((name.length()) < 4 && !name.matches("[a-zA-Z0-9_$]*")) {
       // Replace special character by the corresponding name (; -> SEMI)
       name = createGoodName(name);
     }

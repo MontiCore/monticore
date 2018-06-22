@@ -26,8 +26,8 @@ public class NoNTInheritanceCycle implements GrammarASTProdCoCo {
   
   @Override
   public void check(ASTProd a) {
-    if (a.getSymbol().get() instanceof MCProdSymbol) {
-      MCProdSymbol symbol = (MCProdSymbol) a.getSymbol().get();
+    if (a.getSymbol() instanceof MCProdSymbol) {
+      MCProdSymbol symbol = (MCProdSymbol) a.getSymbol();
       for (MCProdSymbol sr : MCGrammarSymbolTableHelper.getAllSuperProds(symbol)) {
         if (sr.getFullName().equals(symbol.getFullName())) {
           Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, symbol.getFullName()),

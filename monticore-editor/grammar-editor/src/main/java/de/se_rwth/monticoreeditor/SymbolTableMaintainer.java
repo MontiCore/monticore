@@ -42,7 +42,7 @@ final class SymbolTableMaintainer {
     ASTNode rootNode = modelState.getRootNode();
     if (rootNode instanceof ASTMCGrammar) {
         ASTMCGrammar mcGrammar = (ASTMCGrammar) rootNode;
-        if (!mcGrammar.getSymbol().isPresent()) {
+        if (!mcGrammar.isPresentSymbol()) {
           grammarLanguage.getSymbolTableCreator(new ResolvingConfiguration(), globalScope)
               .ifPresent(symbolTableCreator -> {
                 removeOldScope(mcGrammar);

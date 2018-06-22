@@ -9,6 +9,7 @@ import static de.se_rwth.commons.Names.getSimpleName;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.grammar.symboltable.MCProdSymbol;
@@ -26,7 +27,6 @@ public class CommonScopeSpanningSymbolGenerator implements ScopeSpanningSymbolGe
       IterablePath handCodedPath, MCProdSymbol ruleSymbol) {
 
     generateScopeSpanningSymbol(genEngine, genHelper, handCodedPath, ruleSymbol);
-    generateScope(genEngine, genHelper, handCodedPath, ruleSymbol);
   }
 
   protected void generateScopeSpanningSymbol(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
@@ -35,30 +35,12 @@ public class CommonScopeSpanningSymbolGenerator implements ScopeSpanningSymbolGe
         genHelper.getTargetPackage(), handCodedPath);
 
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
+    final Path builderFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), className + GeneratorHelper.BUILDER + ".java");
     if (ruleSymbol.getAstNode().isPresent()) {
-      genEngine.generate("symboltable.ScopeSpanningSymbol", filePath, ruleSymbol.getAstNode().get(), className, getScopeClassName(ruleSymbol), ruleSymbol);
+      genEngine.generate("symboltable.ScopeSpanningSymbol", filePath, ruleSymbol.getAstNode().get(),
+          className, genHelper.getScopeClassName(ruleSymbol), ruleSymbol);
+      genEngine.generate("symboltable.SymbolBuilder", builderFilePath, ruleSymbol.getAstNode().get(), className);
     }
-  }
-
-  protected void generateScope(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper, IterablePath handCodedPath,
-      MCProdSymbol ruleSymbol) {
-    final String className = getScopeClassName(ruleSymbol);
-    final String qualifiedClassName = getPackageName(genHelper.getTargetPackage(), "") + className;
-
-    if(TransformationHelper.existsHandwrittenClass(handCodedPath, qualifiedClassName)) {
-      // Scope classes are very simple and small. Hence, skip their generation
-      // if handwritten class exists.
-      return;
-    }
-
-    final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
-    if (ruleSymbol.getAstNode().isPresent()) {
-      genEngine.generate("symboltable.Scope", filePath, ruleSymbol.getAstNode().get(), className);
-    }
-  }
-
-  private String getScopeClassName(MCProdSymbol ruleSymbol) {
-    return ruleSymbol.getName() + "Scope";
   }
 
 }

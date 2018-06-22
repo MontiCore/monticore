@@ -1,0 +1,10 @@
+package mc.feature.inheritence.sup;
+
+grammar SuperGrammar extends mc.common.Basics {
+
+  X = Y "HH" J;
+
+  Y = "yy";
+
+  J = "jj";
+}

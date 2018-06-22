@@ -1,0 +1,25 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.interfaces;
+
+grammar ListGeneration extends mc.grammar.lexicals.ItTestLexicals {
+
+  interface TokenPlus = "+" Name+ ;
+
+  A implements TokenPlus = "+" (Name || ",")+ ;
+
+  interface TokenStar = "*" Name* ;
+
+  B implements TokenStar = "something" "*" Name* ;
+
+  Word = "Abc" | "Dec";
+
+  interface ListPlus = test:Word+ ;
+
+  C implements ListPlus = "something" test:Word+ ;
+
+  interface ListStar = test:Word* ;
+
+  D implements ListStar = test:Word* "word" ;
+
+  }

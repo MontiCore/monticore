@@ -15,6 +15,6 @@ grammar AutomatonWithSTInfo2 extends mc.common.Basics {
 
 
   Transition implements AutomatonElement =
-    from:Name "-" input:Name ">" to:Name ";" ;
+    from:Name "-" Name ">" to:Name ";" ;
 
 }

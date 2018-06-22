@@ -129,7 +129,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     final Set<MCProdSymbol> rules = new LinkedHashSet<>();
     
     for (final MCProdSymbol rule : grammarSymbol.getProds()) {
-      if (!rule.isSymbolDefinition() && spansScope(rule)) {
+      if (spansScope(rule)) {
         rules.add(rule);
       }
     }
@@ -400,4 +400,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
         getTargetPackage(), handCodedPath);
   }
   
+  public String getScopeClassName(MCProdSymbol ruleSymbol) {
+    return ruleSymbol.getName() + "Scope";
+  }
 }

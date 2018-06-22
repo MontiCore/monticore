@@ -56,13 +56,6 @@ public class AstGeneratorTest extends GeneratorTest {
   }
   
   @Test
-  public void testOD() {
-    testCorrectWithDependencies("mc/grammars/TestOD.mc4",
-        "mc/grammars/literals/TestLiterals.mc4", "mc/grammars/lexicals/TestLexicals.mc4",
-        "mc/grammars/types/TestTypes.mc4", "mc/grammars/common/TestCommon.mc4");
-  }
-  
-  @Test
   public void testCommon() {
     testCorrectWithDependencies("mc/grammars/common/TestCommon.mc4",
         "mc/grammars/literals/TestLiterals.mc4", "mc/grammars/lexicals/TestLexicals.mc4",
@@ -132,7 +125,10 @@ public class AstGeneratorTest extends GeneratorTest {
   
   @Test
   public void testGrammarInDefaultPackage() {
+    boolean isDoCompile = isDoCompile();
+    setDoCompile(false);
     testCorrectWithDependencies("Automaton.mc4", "mc/grammars/lexicals/TestLexicals.mc4");
+    setDoCompile(isDoCompile);
   }
   
   @Test
@@ -144,6 +140,12 @@ public class AstGeneratorTest extends GeneratorTest {
     // assertTrue("There are compile errors in generated code for the models in
     // grammars/inherited.",
     // compile(path));
+  }
+  
+  @Test
+  public void testAbstractBuilder() {
+    testCorrectWithDependencies("de/monticore/inherited/AbstractBuilder.mc4",
+        "mc/grammars/lexicals/TestLexicals.mc4");
   }
 
   @Test

@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("method", "ast", "type")}
+${tc.signature("type")}
   <#assign genHelper = glex.getGlobalVar("astHelper")>
     java.util.LinkedList<de.monticore.ast.ASTNode> result = new java.util.LinkedList<de.monticore.ast.ASTNode>();
     <#list type.getAllVisibleFields() as field>

@@ -15,7 +15,7 @@ import de.se_rwth.commons.logging.Log;
  */
 public class SubrulesUseInterfaceNTsTest extends CocoTest {
   
-  private final String MESSAGE = " The production %s must use the non-terminal %s from interface %s.";
+  private final String MESSAGE = " The production %s must use the terminal %s from interface %s.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "cocos.invalid.A4047.A4047";
   
@@ -47,6 +47,24 @@ public class SubrulesUseInterfaceNTsTest extends CocoTest {
   public void TestInvalid4() {
     testInvalidGrammar(grammar + "d", SubrulesUseInterfaceNTs.ERROR_CODE,
       String.format(MESSAGE, "B", "Foo", "A"), checker);
+  }
+
+  @Test
+  public void TestInvalid5() {
+    testInvalidGrammar(grammar + "e", SubrulesUseInterfaceNTs.ERROR_CODE,
+            String.format(MESSAGE, "AImpl", "ds*", "A"), checker);
+  }
+
+  @Test
+  public void TestInvalid6() {
+    testInvalidGrammar(grammar + "f", SubrulesUseInterfaceNTs.ERROR_CODE,
+            String.format(MESSAGE, "BImpl", "ds*", "B"), checker);
+  }
+
+  @Test
+  public void TestInvalid7() {
+    testInvalidGrammar(grammar + "g", SubrulesUseInterfaceNTs.ERROR_CODE,
+            String.format(MESSAGE, "AImpl", "D?", "A"), checker);
   }
   
   @Test

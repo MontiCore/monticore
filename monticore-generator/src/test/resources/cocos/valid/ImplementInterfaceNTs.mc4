@@ -9,6 +9,24 @@ grammar ImplementInterfaceNTs {
 
   abstract C implements A = D;
 
-D;
+  D;
+
+  interface Expression = operator:"";
+
+  TestExpression implements Expression = operator:"+";
+
+  interface IList = D*;
+
+  interface IList2 = D+;
+
+  ListImpl implements IList, IList2 = D*;
+
+  interface IOpt = D?;
+
+  OptImpl implements IOpt = D?;
+
+  interface ITerminal = "{" "}";
+
+  TerminalImpl implements ITerminal = "{" "}";
 }
 

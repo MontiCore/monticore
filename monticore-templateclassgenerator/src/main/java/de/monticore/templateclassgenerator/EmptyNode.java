@@ -110,36 +110,6 @@ public class EmptyNode implements ASTNode {
   }
   
   /**
-   * @see de.monticore.ast.ASTNode#get_PreComments()
-   */
-  @Override
-  public List<Comment> get_PreComments() {
-    return null;
-  }
-  
-  /**
-   * @see de.monticore.ast.ASTNode#set_PreComments(java.util.List)
-   */
-  @Override
-  public void set_PreComments(List<Comment> precomments) {
-  }
-  
-  /**
-   * @see de.monticore.ast.ASTNode#get_PostComments()
-   */
-  @Override
-  public List<Comment> get_PostComments() {
-    return null;
-  }
-  
-  /**
-   * @see de.monticore.ast.ASTNode#set_PostComments(java.util.List)
-   */
-  @Override
-  public void set_PostComments(List<Comment> postcomments) {
-  }
-  
-  /**
    * @see de.monticore.ast.ASTNode#equalAttributes(java.lang.Object)
    */
   @Override
@@ -221,7 +191,7 @@ public class EmptyNode implements ASTNode {
    * @see de.monticore.ast.ASTNode#getEnclosingScope()
    */
   @Override
-  public Optional<? extends Scope> getEnclosingScope() {
+  public Scope getEnclosingScope() {
     return null;
   }
 
@@ -249,7 +219,7 @@ public class EmptyNode implements ASTNode {
    * @see de.monticore.ast.ASTNode#getSymbol()
    */
   @Override
-  public Optional<? extends Symbol> getSymbol() {
+  public Symbol getSymbol() {
     return null;
   }
 
@@ -258,17 +228,13 @@ public class EmptyNode implements ASTNode {
     return Optional.empty();
   }
 
-  /**
-   * @see de.monticore.ast.ASTNode#enclosingScopeIsPresent()
-   */
+
   @Override
   public boolean isPresentEnclosingScope() {
     return false;
   }
   
-  /**
-   * @see de.monticore.ast.ASTNode#symbolIsPresent()
-   */
+
   @Override
   public boolean isPresentSymbol() {
     return false;
@@ -287,13 +253,15 @@ public class EmptyNode implements ASTNode {
   }
 
   @Override
+  public Scope getSpannedScope() {
+    return null;
+  }
+
+  @Override
   public Optional<? extends Scope> getSpannedScopeOpt() {
     return Optional.empty();
   }
 
-  /**
-   * @see de.monticore.ast.ASTNode#spannedScopeIsPresent()
-   */
   @Override
   public boolean isPresentSpannedScope() {
     return false;
@@ -606,9 +574,7 @@ public class EmptyNode implements ASTNode {
     return null;
   }
 
-  /**
-   * @see de.monticore.ast.ASTNode#set_PreComments(int, de.monticore.ast.Comment)
-   */
+
   @Override
   public Comment set_PreComment(int index, Comment precomment) {
     return null;
@@ -630,9 +596,7 @@ public class EmptyNode implements ASTNode {
     return null;
   }
 
-  /**
-   * @see de.monticore.ast.ASTNode#set_PostComments(int, de.monticore.ast.Comment)
-   */
+
   @Override
   public Comment set_PostComment(int index, Comment postcomment) {
     return null;

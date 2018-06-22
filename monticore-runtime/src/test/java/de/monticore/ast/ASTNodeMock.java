@@ -107,37 +107,7 @@ public class ASTNodeMock implements ASTNode {
   public boolean isPresent_SourcePositionStart() {
     return false;
   }
-  
-  /**
-   * @see de.monticore.ast.ASTNode#get_PreComments()
-   */
-  @Override
-  public List<Comment> get_PreComments() {
-    return null;
-  }
 
-  /**
-   * @see de.monticore.ast.ASTNode#set_PreComments(java.util.List)
-   */
-  @Override
-  public void set_PreComments(List<Comment> _precomments) {
-  }
-
-  /**
-   * @see de.monticore.ast.ASTNode#get_PostComments()
-   */
-  @Override
-  public List<Comment> get_PostComments() {
-    return null;
-  }
-
-  /**
-   * @see de.monticore.ast.ASTNode#set_PostComments(java.util.List)
-   */
-  @Override
-  public void set_PostComments(List<Comment> _postcomments) {
-  }
-  
   /**
    * @see de.monticore.ast.ASTNode#equalAttributes(java.lang.Object)
    */
@@ -218,7 +188,7 @@ public class ASTNodeMock implements ASTNode {
   }
 
   @Override
-  public Optional<? extends Scope>  getEnclosingScope() {
+  public Scope  getEnclosingScope() {
     return null;
   }
 
@@ -243,7 +213,7 @@ public class ASTNodeMock implements ASTNode {
   }
 
   @Override
-  public Optional<? extends Symbol>  getSymbol() {
+  public Symbol  getSymbol() {
     return null;
   }
 
@@ -278,7 +248,7 @@ public class ASTNodeMock implements ASTNode {
   }
 
   @Override
-  public Optional<? extends Scope> getSpannedScope() {
+  public Scope getSpannedScope() {
     return null;
   }
 

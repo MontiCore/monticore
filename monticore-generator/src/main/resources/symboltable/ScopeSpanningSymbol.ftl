@@ -41,6 +41,4 @@ public class ${className} extends de.monticore.symboltable.CommonScopeSpanningSy
   */
 
   ${includeArgs("symboltable.symbols.GetAstNodeMethod", ruleName)}
-
-  ${includeArgs("symboltable.SymbolBuilder", className)}
 }

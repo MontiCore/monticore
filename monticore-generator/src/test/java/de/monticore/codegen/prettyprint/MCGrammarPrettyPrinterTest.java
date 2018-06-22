@@ -76,5 +76,31 @@ public class MCGrammarPrettyPrinterTest {
     assertTrue(grammar.deepEquals(result.get()));
     
   }
+  
+  @Test
+  // Test grammar with symbols and scopes
+  public void testAutomaton() throws IOException {
+    String model = "src/test/resources/Automaton.mc4";
+    
+    // Parsing input
+    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
+    Optional<ASTMCGrammar> result = parser.parse(model);
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+    ASTMCGrammar grammar = result.get();
+    
+    // Prettyprinting input
+    Grammar_WithConceptsPrettyPrinter prettyPrinter = new Grammar_WithConceptsPrettyPrinter(new IndentPrinter());
+    String output = prettyPrinter.prettyprint(grammar);
+    
+    // Parsing printed input
+    result = parser.parse(new StringReader(output));
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+
+    assertTrue(grammar.deepEquals(result.get()));
+    
+  }
+
 
 }

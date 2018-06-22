@@ -18,7 +18,7 @@ ${signature("ruleSymbol")}
 
   protected ${symbolName} create_${ruleName}(${astPrefix}${ruleName} ast) {
    <#if genHelper.isOptionalNamed(ruleSymbol)>
-      return new ${symbolName}(ast.getName().orElse(""));
+      return new ${symbolName}(ast.getNameOpt().orElse(""));
    <#elseif genHelper.isNamed(ruleSymbol)>
       return new ${symbolName}(ast.getName());
    <#else>

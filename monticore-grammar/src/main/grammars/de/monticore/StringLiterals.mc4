@@ -15,7 +15,7 @@ component grammar StringLiterals extends de.monticore.MCBasics {
   /*========================================================================*/
 
   /** ASTCharLiteral represents any valid character parenthesized with "'".
-        @attribute source String-representation (including "'").
+        @attribute source String-representation (excluding "'").
     */
   CharLiteral =
     source:CharToken;

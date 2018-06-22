@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("method", "clazz", "superclasses")}
+${tc.signature("clazz", "superclasses")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
 <#assign nameHelper = glex.getGlobalVar("nameHelper")>
    mill = null;
@@ -8,6 +8,5 @@ ${tc.signature("method", "clazz", "superclasses")}
      ${attributeName} = null;
    </#list>
    <#list superclasses as superClass>
-     // TODO : add after next release
-     // ${superClass?lower_case}._ast.${nameHelper.getSimpleName(superClass)}Mill.reset();
+     ${superClass?lower_case}._ast.${nameHelper.getSimpleName(superClass)}Mill.reset();
    </#list>

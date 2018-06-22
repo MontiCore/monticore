@@ -156,7 +156,7 @@ public class MCGrammarParserTest {
 
   @Test
   public void testGrammarSymbolTableInfo() throws IOException {
-    String model = "src/test/resources/de/monticore/symboltable/GrammarWithSymbolTableInfo.mc4";
+    String model = "src/test/resources/de/monticore/AutomatonST.mc4";
 
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTMCGrammar> result = parser.parse(model);

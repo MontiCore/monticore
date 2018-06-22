@@ -30,7 +30,7 @@ public class ODGenerator {
       File outputDirectory) {
     final GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(outputDirectory);
-    GeneratorHelper odHelper = new GeneratorHelper(astClassDiagram, globalScope);
+    AstGeneratorHelper odHelper = new AstGeneratorHelper(astClassDiagram, globalScope);
     glex.setGlobalValue("odHelper", odHelper);
     setup.setGlex(glex);
     final GeneratorEngine generator = new GeneratorEngine(setup);

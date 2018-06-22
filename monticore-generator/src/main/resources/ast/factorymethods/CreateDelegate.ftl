@@ -1,3 +1,3 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("method", "clazz", "factory", "astNodeName")}
+${tc.signature("factory", "astNodeName")}
    return ${factory}.create${astNodeName}();

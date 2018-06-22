@@ -19,12 +19,12 @@
     <junit.version>4.12</junit.version>
     <logback.version>1.1.2</logback.version>
     <mc.grammars.assembly.version>0.0.8</mc.grammars.assembly.version>
-    <monticore.version>5.0.0</monticore.version>
+    <monticore.version>5.0.1</monticore.version>
 
     <!-- .. Plugins ....................................................... -->
     <assembly.plugin>2.5.4</assembly.plugin>
     <compiler.plugin>3.3</compiler.plugin>
-    <monticore.plugin>5.0.0</monticore.plugin>
+    <monticore.plugin>5.0.1</monticore.plugin>
 
     <!-- Classifiers -->
     <grammars.classifier>grammars</grammars.classifier>

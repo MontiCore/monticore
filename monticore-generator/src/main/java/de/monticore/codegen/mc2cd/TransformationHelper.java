@@ -427,8 +427,8 @@ public final class TransformationHelper {
       return type.getTypeName();
     }
     String refGrammarName = getGrammarName(typeSymbol.get());
-    if (grammar.getSymbol().isPresent()
-        && grammar.getSymbol().get().getFullName().equals(refGrammarName)) {
+    if (grammar.isPresentSymbol()
+        && grammar.getSymbol().getFullName().equals(refGrammarName)) {
       return type.getTypeName();
     }
     return refGrammarName + "." + type.getTypeName();

@@ -12,7 +12,7 @@ ${tc.signature("ast", "astType")}
 default ${ast.printModifier()} ${ast.printReturnType()} ${ast.getName()}(${ast.printParametersDecl()}) ${ast.printThrowsDecl()}
   {
   ${tc.include("ast.ErrorIfNull")}
-  ${tc.includeArgs("ast.EmptyMethodBody", [ast, astType])}
+  ${tc.includeArgs("ast.EmptyMethodBody")}
   }
 <#else>
 ${ast.printModifier()} ${ast.printReturnType()} ${ast.getName()}(${ast.printParametersDecl()}) ${ast.printThrowsDecl()};

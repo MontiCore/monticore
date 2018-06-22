@@ -15,11 +15,10 @@ public class SymbolTableGeneratorBuilder {
   private SymbolGenerator symbolGenerator;
   private SymbolKindGenerator symbolKindGenerator;
   private ScopeSpanningSymbolGenerator scopeSpanningSymbolGenerator;
+  private ScopeGenerator scopeGenerator;
 
   private SymbolReferenceGenerator symbolReferenceGenerator;
   private SymbolTableCreatorGenerator symbolTableCreatorGenerator;
-
-  private SymbolMillGenerator symbolMillGenerator;
 
   public SymbolTableGenerator build() {
     if (modelingLanguageGenerator == null) {
@@ -43,20 +42,20 @@ public class SymbolTableGeneratorBuilder {
     if (scopeSpanningSymbolGenerator == null) {
       scopeSpanningSymbolGenerator = new CommonScopeSpanningSymbolGenerator();
     }
+    if (scopeGenerator == null) {
+      scopeGenerator = new CommonScopeGenerator();
+    }
     if (symbolReferenceGenerator == null) {
       symbolReferenceGenerator = new CommonSymbolReferenceGenerator();
     }
     if ( symbolTableCreatorGenerator == null) {
       symbolTableCreatorGenerator = new CommonSymbolTableCreatorGenerator();
     }
-    if (symbolMillGenerator == null) {
-      symbolMillGenerator = new CommonSymbolMillGenerator();
-    }
 
     return new SymbolTableGenerator(modelingLanguageGenerator, modelLoaderGenerator,
         modelNameCalculatorGenerator, resolvingFilterGenerator, symbolGenerator,
-        symbolKindGenerator, scopeSpanningSymbolGenerator, symbolReferenceGenerator,
-        symbolTableCreatorGenerator, symbolMillGenerator);
+        symbolKindGenerator, scopeSpanningSymbolGenerator, scopeGenerator,
+        symbolReferenceGenerator, symbolTableCreatorGenerator);
   }
 
 
@@ -102,11 +101,6 @@ public class SymbolTableGeneratorBuilder {
 
   public SymbolTableGeneratorBuilder symbolTableCreatorGenerator(SymbolTableCreatorGenerator symbolTableCreatorGenerator) {
     this.symbolTableCreatorGenerator = symbolTableCreatorGenerator;
-    return this;
-  }
-
-  public SymbolTableGeneratorBuilder symbolMillGenerator(SymbolMillGenerator symbolMillGenerator) {
-    this.symbolMillGenerator = symbolMillGenerator;
     return this;
   }
 

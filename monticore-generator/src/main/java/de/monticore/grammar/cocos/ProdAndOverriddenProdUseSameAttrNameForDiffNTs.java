@@ -28,7 +28,7 @@ public class ProdAndOverriddenProdUseSameAttrNameForDiffNTs implements GrammarAS
   public void check(ASTNonTerminal a) {
     if (a.isPresentUsageName()) {
       String attributename = a.getUsageName();
-      Optional<MCProdComponentSymbol> componentSymbol = a.getEnclosingScope().get()
+      Optional<MCProdComponentSymbol> componentSymbol = a.getEnclosingScope()
           .resolve(attributename, MCProdComponentSymbol.KIND);
       if (!componentSymbol.isPresent()) {
         Log.error("0xA1124 ASTNonterminal " + a.getName() + " couldn't be resolved.");

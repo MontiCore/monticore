@@ -62,7 +62,7 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     // AST
     assertTrue(grammar.getAstNode().isPresent());
     assertTrue(grammar.getAstNode().get() instanceof ASTMCGrammar);
-    assertSame(grammar.getEnclosingScope(), grammar.getAstNode().get().getEnclosingScope().get());
+    assertSame(grammar.getEnclosingScope(), grammar.getAstNode().get().getEnclosingScope());
     
     final MCProdSymbol stateChartProd = grammar.getProd("Statechart").orElse(null);
     assertNotNull(stateChartProd);
@@ -192,9 +192,9 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
   
   private void testLinkBetweenSymbolAndAst(MCProdSymbol prodSymbol) {
     assertTrue(prodSymbol.getAstNode().isPresent());
-    assertSame(prodSymbol, prodSymbol.getAstNode().get().getSymbol().get());
+    assertSame(prodSymbol, prodSymbol.getAstNode().get().getSymbol());
     assertSame(prodSymbol.getEnclosingScope(),
-        prodSymbol.getAstNode().get().getEnclosingScope().get());
+        prodSymbol.getAstNode().get().getEnclosingScope());
     
     if (prodSymbol.isClass()) {
       assertTrue(prodSymbol.getAstNode().get() instanceof ASTClassProd);
@@ -215,9 +215,9 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
   
   private void testLinkBetweenSymbolAndAst(MCProdComponentSymbol prodCompSymbol) {
     assertTrue(prodCompSymbol.getAstNode().isPresent());
-    assertSame(prodCompSymbol, prodCompSymbol.getAstNode().get().getSymbol().get());
+    assertSame(prodCompSymbol, prodCompSymbol.getAstNode().get().getSymbol());
     assertSame(prodCompSymbol.getEnclosingScope(),
-        prodCompSymbol.getAstNode().get().getEnclosingScope().get());
+        prodCompSymbol.getAstNode().get().getEnclosingScope());
   }
   
   @Test

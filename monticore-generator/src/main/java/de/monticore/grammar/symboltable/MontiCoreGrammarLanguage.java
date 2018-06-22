@@ -28,6 +28,8 @@ public class MontiCoreGrammarLanguage extends CommonModelingLanguage {
     addResolvingFilter(CommonResolvingFilter.create(MCProdSymbol.KIND));
     addResolvingFilter(CommonResolvingFilter.create(MCProdComponentSymbol.KIND));
     addResolvingFilter(CommonResolvingFilter.create(MCProdAttributeSymbol.KIND));
+    
+    setModelNameCalculator(new MCGrammarModelNameCalculator());
   }
   
   @Override

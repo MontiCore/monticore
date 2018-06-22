@@ -275,9 +275,12 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
         if (embeddedJavaCode) {
           addToCodeSection(" {$ret = $" + subRuleVar + ".ret;}");
         }
-        addToCodeSection(") | \n// end subrules");
+        addToCodeSection(") | \n");
         endCodeSection();
+        i++;
       }
+      addToCodeSection("// end subrules");
+      endCodeSection();
     } else {
       endCodeSection();
     }
@@ -344,14 +347,15 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     startCodeSection(ast);
 
     boolean iterated = false;
-    if (ast.getSymbol().isPresent() && ast.getSymbol().get() instanceof MCProdComponentSymbol) {
+    if (ast.isPresentSymbol() && ast.getSymbol() instanceof MCProdComponentSymbol) {
       iterated = MCGrammarSymbolTableHelper
-              .isConstGroupIterated((MCProdComponentSymbol) ast.getSymbol().get());
+              .isConstGroupIterated((MCProdComponentSymbol) ast.getSymbol());
     }
 
     // One entry leads to boolean isMethods
     if (!iterated) {
       ASTConstant x = ast.getConstantList().get(0);
+      addToCodeSection("(");
       if (!grammarInfo.isKeyword(x.getName(), grammarEntry)) {
         addToCodeSection(parserHelper.getLexSymbolName(x.getName()));
       } else {
@@ -362,6 +366,8 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
         addToAction(astActions.getConstantInConstantGroupSingleEntry(x, ast));
         addActionToCodeSectionWithNewLine();
       }
+      addToCodeSection(")", printIteration(ast.getIteration()));
+
     }
 
     // More than one entry leads to an int
@@ -374,34 +380,8 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
         ASTConstant x = iter.next();
 
         if (!grammarInfo.isKeyword(x.getName(), grammarEntry)) {
-          /* // Template //
-           * a.set%namegroup%(%astconstclassname%.%constantname%); tmp =
-           * "%name% {%actions%}";
-           *
-           * // Replace values tmp = tmp.replaceAll("%astconstclassname%",
-           * constClassName); tmp = tmp.replaceAll("%name%",
-           * grammarEntry.getLexSymbolName(x.getName())); tmp =
-           * tmp.replaceAll("%namegroup%",
-           * NameHelper.firstToUpper(a.getUsageName()));
-           *
-           * if (x.getHumanName() == null) { tmp =
-           * tmp.replaceAll("%constantname%",
-           * grammarEntry.getLexSymbolName(x.getName())); } else { tmp =
-           * tmp.replaceAll("%constantname%", (x.getHumanName().toUpperCase()));
-           * } */
           addToCodeSection(parserHelper.getLexSymbolName(x.getName()));
         } else {
-          /* // Template //
-           * a.set%namegroup%(%astconstclassname%.%constantname%); tmp =
-           * "'%name%' {%actions%}";
-           *
-           * tmp = tmp.replaceAll("%astconstclassname%", constClassName); tmp =
-           * tmp.replaceAll("%name%", (x.getName())); tmp =
-           * tmp.replaceAll("%namegroup%",
-           * NameHelper.firstToUpper(a.getUsageName()));
-           *
-           * tmp = tmp.replaceAll("%constantname%",
-           * (x.getName().toUpperCase())); */
           addToCodeSection("'" + x.getName() + "'");
         }
 
@@ -413,7 +393,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
         del = "|\n";
       }
 
-      addToCodeSection(")");
+      addToCodeSection(")", printIteration(ast.getIteration()));
     }
 
     endCodeSection(ast);
@@ -564,7 +544,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
       boolean isAttribute = ast.isPresentUsageName();
 
       boolean isList = iteratedItself;
-      Optional<? extends Symbol> ruleComponent = ast.getSymbol();
+      Optional<? extends Symbol> ruleComponent = ast.getSymbolOpt();
       if (ruleComponent.isPresent() && ruleComponent.get() instanceof MCProdComponentSymbol) {
         MCProdComponentSymbol componentSymbol = (MCProdComponentSymbol) ruleComponent.get();
         isList = componentSymbol.isList();
@@ -756,6 +736,10 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     if (!altList.isEmpty()) {
       altList.remove(altList.size() - 1);
     }
+  }
+
+  public void traverse(de.monticore.grammar.grammar._ast.ASTAbstractProd node) {
+    //no parser generation for abstract classes
   }
 
   // ----------------- End of visit methods
@@ -982,7 +966,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
         term.setName(y);
         term.setUsageName(HelperGrammar.getUsuageName(ast));
 
-        Optional<? extends Symbol> ruleComponent = ast.getSymbol();
+        Optional<? extends Symbol> ruleComponent = ast.getSymbolOpt();
         if (ruleComponent.isPresent() && ruleComponent.get() instanceof MCProdComponentSymbol) {
           MCProdComponentSymbol componentSymbol = (MCProdComponentSymbol) ruleComponent.get();
           Optional<MCProdSymbol> rule = MCGrammarSymbolTableHelper

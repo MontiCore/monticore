@@ -114,44 +114,6 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
     this.start = value;
   }
   
-  /**
-   * Can be removed after 4.5.5
-   * Replace with  List<Comment> get_PreCommentList();
-   * use {@link #List<Comment> get_PreCommentList()} instead
-   */
-  @Deprecated
-  public List<Comment> get_PreComments() {
-    return precomments;
-  }
-  /**
-   * Can be removed after 4.5.5
-   * Replace with  List<Comment> set_PreCommentList();
-   * use {@link #List<Comment> set_PreCommentList()} instead
-   */
-  @Deprecated
-  public void set_PreComments(List<Comment> precomments) {
-    this.precomments = precomments;
-  }
-  
-  /**
-   * Can be removed after 4.5.5
-   * Replace with  List<Comment> get_PostCommentList();
-   * use {@link #List<Comment> get_PostCommentList()} instead
-   */
-  @Deprecated
-  public List<Comment> get_PostComments() {
-    return postcomments;
-  }
-  /**
-   * Can be removed after 4.5.5
-   * Replace with  List<Comment> set_PostCommentList();
-   * use {@link #List<Comment> set_PostCommentList()} instead
-   */
-  @Deprecated
-  public void set_PostComments(List<Comment> postcomments) {
-    this.postcomments = postcomments;
-  }
-  
   @Override
   public void setEnclosingScope(Scope enclosingScope) {
     this.enclosingScope = Optional.ofNullable(enclosingScope);
@@ -167,37 +129,35 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
     this.enclosingScope = Optional.empty();
   }
 
-  @Deprecated
-  @Override
-  public Optional<? extends Scope> getEnclosingScope() {
-    return enclosingScope;
-  }
 
-//  @Override
-//  public Scope getEnclosingScope() {
-//    if (getEnclosingScopeOpt().isPresent()) {
-//      return getEnclosingScopeOpt().get();
-//    }
-//    Log.error("0xA7003 x222 getCloneASTOpt can't return a value. It is empty.");
-//    // Normally this statement is not reachable
-//    throw new IllegalStateException();
-//  }
+  @Override
+  public Scope getEnclosingScope() {
+    if (getEnclosingScopeOpt().isPresent()) {
+      return getEnclosingScopeOpt().get();
+    }
+    Log.error("0xA7003 x222 getCloneASTOpt can't return a value. It is empty.");
+    // Normally this statement is not reachable
+    throw new IllegalStateException();
+  }
 
   @Override
   public Optional<? extends Scope> getEnclosingScopeOpt() {
     return this.enclosingScope;
   }
-  
+
+  @Deprecated
   @Override
   public void setSymbol(Symbol symbol) {
     this.symbol = Optional.ofNullable(symbol);
   }
 
+  @Deprecated
   @Override
   public void setSymbolOpt(Optional<? extends Symbol > enclosingSymbolOpt) {
     this.symbol = enclosingSymbolOpt ;
   }
 
+  @Deprecated
   @Override
   public void setSymbolAbsent() {
     this.symbol = Optional.empty();
@@ -205,30 +165,28 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
 
   @Deprecated
   @Override
-  public Optional<? extends Symbol> getSymbol() {
-    return symbol;
+  public Symbol getSymbol() {
+    if (getSymbolOpt().isPresent()) {
+      return getSymbolOpt().get();
+    }
+    Log.error("0xA7003 x222 getCloneASTOpt can't return a value. It is empty.");
+    // Normally this statement is not reachable
+    throw new IllegalStateException();
   }
 
-//  @Override
-//  public Symbol getSymbol() {
-//    if (getSymbolOpt().isPresent()) {
-//      return getSymbolOpt().get();
-//    }
-//    Log.error("0xA7003 x222 getCloneASTOpt can't return a value. It is empty.");
-//    // Normally this statement is not reachable
-//    throw new IllegalStateException();
-//  }
-
+  @Deprecated
   @Override
   public Optional<? extends Symbol> getSymbolOpt() {
     return this.symbol;
   }
-  
+
+  @Deprecated
   @Override
   public boolean isPresentSpannedScope() {
     return spannedScope.isPresent();
   }
-  
+
+  @Deprecated
   @Override
   public boolean isPresentSymbol() {
     return symbol.isPresent();
@@ -239,16 +197,19 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
     return enclosingScope.isPresent();
   }
 
+  @Deprecated
   @Override
   public void setSpannedScope(Scope spannedScope) {
     this.spannedScope = Optional.ofNullable(spannedScope);
   }
 
+  @Deprecated
   @Override
   public void setSpannedScopeOpt(Optional<? extends Scope > spannedScopeOpt) {
     this.spannedScope = spannedScopeOpt ;
   }
 
+  @Deprecated
   @Override
   public void setSpannedScopeAbsent() {
     this.spannedScope = Optional.empty();
@@ -256,30 +217,15 @@ public abstract class ASTECNode extends EObjectImpl implements ASTENode {
 
   @Deprecated
   @Override
-  public Optional<? extends Scope> getSpannedScope() {
-    if (spannedScope.isPresent()) {
-      return spannedScope;
+  public Scope getSpannedScope() {
+    if (getSpannedScopeOpt().isPresent()) {
+      return getSpannedScopeOpt().get();
     }
-
-    Optional<? extends Scope> result = Optional.empty();
-    if (getSymbol().isPresent() && (getSymbol().get() instanceof ScopeSpanningSymbol)) {
-      final ScopeSpanningSymbol sym = (ScopeSpanningSymbol) getSymbol().get();
-      result = Optional.of(sym.getSpannedScope());
-    }
-
-    return result;
+    Log.error("0xA7003 x222 getCloneASTOpt can't return a value. It is empty.");
+    // Normally this statement is not reachable
+    throw new IllegalStateException();
   }
-
-//  @Override
-//  public Scope getSpannedScope() {
-//    if (getSpannedScopeOpt().isPresent()) {
-//      return getSpannedScopeOpt().get();
-//    }
-//    Log.error("0xA7003 x222 getCloneASTOpt can't return a value. It is empty.");
-//    // Normally this statement is not reachable
-//    throw new IllegalStateException();
-//  }
-
+  @Deprecated
   @Override
   public Optional<? extends Scope> getSpannedScopeOpt() {
     return this.spannedScope;

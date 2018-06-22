@@ -16,14 +16,13 @@ component grammar Lexicals {
     (' ' | 
     '\t' |
     '\r' |
-    '\n' ) :{_channel = HIDDEN;};
+    '\n' ) : -> skip;
     
   token SL_COMMENT =
     "//" (~('\n' |
       '\r' )
-    )* :
-    { _channel = HIDDEN;
-      if (getCompiler() != null) {
+    )* :  -> skip
+    { if (getCompiler() != null) {
         de.monticore.ast.Comment _comment = new de.monticore.ast.Comment(getText());
         de.se_rwth.commons.SourcePosition startPos = new de.se_rwth.commons.SourcePosition(_tokenStartLine, _tokenStartCharPositionInLine);
         _comment.set_SourcePositionStart(startPos);
@@ -39,9 +38,8 @@ component grammar Lexicals {
       '\n' |
       '\r' )
     )*
-    "*/" :
-    { _channel = HIDDEN;
-      if (getCompiler() != null) {
+    "*/" : -> skip
+    { if (getCompiler() != null) {
         de.monticore.ast.Comment _comment = new de.monticore.ast.Comment(getText());
         de.se_rwth.commons.SourcePosition startPos = new de.se_rwth.commons.SourcePosition(_tokenStartLine, _tokenStartCharPositionInLine);
         _comment.set_SourcePositionStart(startPos);

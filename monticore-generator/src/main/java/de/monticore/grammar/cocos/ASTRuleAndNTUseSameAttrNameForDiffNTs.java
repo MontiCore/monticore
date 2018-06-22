@@ -26,16 +26,16 @@ public class ASTRuleAndNTUseSameAttrNameForDiffNTs implements GrammarASTASTRuleC
   
   @Override
   public void check(ASTASTRule a) {
-    MCProdSymbol symbol = (MCProdSymbol) a.getEnclosingScope().get().resolve(a.getType(),
+    MCProdSymbol symbol = (MCProdSymbol) a.getEnclosingScope().resolve(a.getType(),
         MCProdSymbol.KIND).get();
     for (ASTAttributeInAST attr : a.getAttributeInASTList()) {
       Optional<MCProdComponentSymbol> rc = symbol.getProdComponent(attr.getNameOpt().orElse(""));
       if (rc.isPresent()) {
         if (!attr.getGenericType().getTypeName()
             .endsWith(rc.get().getReferencedProd().get().getName())) {
-          Optional<MCProdSymbol> attrType = a.getEnclosingScope().get()
+          Optional<MCProdSymbol> attrType = a.getEnclosingScope()
               .resolve(attr.getGenericType().getTypeName(), MCProdSymbol.KIND);
-          Optional<MCProdSymbol> compType = a.getEnclosingScope().get()
+          Optional<MCProdSymbol> compType = a.getEnclosingScope()
               .resolve(rc.get().getReferencedProd().get().getName(), MCProdSymbol.KIND);
           if (attrType.isPresent() && compType.isPresent()
               && !MCGrammarSymbolTableHelper.isSubtype(compType.get(), attrType.get())) {

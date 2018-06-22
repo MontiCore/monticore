@@ -31,7 +31,7 @@ BinaryXorExpression implements Expression <110> =
 BinaryOrOpExpression implements Expression <100> =
 	leftExpression:Expression operator:"|"  rightExpression:Expression;
 	
-interface AssignmentExpression extends Expression = leftExpression:Expression operator:Name rightExpression:Expression;
+interface AssignmentExpression extends Expression = leftExpression:Expression operator:"" rightExpression:Expression;
 
 RegularAssignmentExpression implements Expression <60>, AssignmentExpression =
 	leftExpression:Expression operator:"="  rightExpression:Expression;

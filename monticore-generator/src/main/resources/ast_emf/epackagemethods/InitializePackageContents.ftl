@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-  ${tc.signature("method", "clazz", "grammarName", "superGrammars", "astClasses", "emfAttributes", "externalTypes", "literals")}
+  ${tc.signature("grammarName", "superGrammars", "astClasses", "emfAttributes", "externalTypes", "literals")}
   <#assign genHelper = glex.getGlobalVar("astHelper")>
 /**
  * Complete the initialization of the package and its meta-model.  This
@@ -30,10 +30,10 @@
   
   <#list astClasses as astClass>
     <#assign className = astHelper.getPlainName(astClass)>
-    <#if !astClass.getSymbol().get().getSuperTypes()?has_content>
+    <#if !astClass.getSymbol().getSuperTypes()?has_content>
     ${className[3..]?uncap_first}EClass.getESuperTypes().add(theASTENodePackage.getENode()); 
     <#else>
-      <#list astClass.getSymbol().get().getSuperTypes() as superType>
+      <#list astClass.getSymbol().getSuperTypes() as superType>
         <#assign sGrammarName = nameHelper.getSimpleName(superType.getModelName())>
         <#if superType.getModelName()?lower_case==astHelper.getQualifiedCdName()?lower_case>
           <#assign package = "this.get">
@@ -56,7 +56,7 @@
     
   <#list astClasses as astClass>
     <#assign className = astHelper.getPlainName(astClass)>
-    <#if astClass.getSymbol().get().isInterface()>
+    <#if astClass.getSymbol().isInterface()>
       <#assign abstract = "IS_ABSTRACT">
       <#assign interface = "IS_INTERFACE">
     <#else>

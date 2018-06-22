@@ -23,6 +23,7 @@ import java.util.regex.Matcher;
 import de.monticore.ast.ASTNode;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.common.hash.Hashing;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Files;
@@ -47,7 +48,7 @@ public class InputOutputFilesReporter extends AReporter {
   
   private List<String> inputFiles = Lists.newArrayList();
   
-  private List<String> hwcFiles = Lists.newArrayList();
+  private LinkedHashSet<String> hwcFiles = Sets.newLinkedHashSet();
   
   private List<String> outputFiles = Lists.newArrayList();
   

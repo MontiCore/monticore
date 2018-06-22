@@ -219,7 +219,7 @@ public class MontiCoreScriptTest {
   public void testDefaultScriptSupergrammarArgs() {
     Log.getFindings().clear();
     testDefaultScript(inheritedgrammarArgs);
-    Assert.assertTrue(Log.getFindings().isEmpty());
+    assertEquals(Log.getErrorCount(), 0);
   }
   
   static String[] supersubgrammarArgs = { "-grammars",
@@ -232,7 +232,7 @@ public class MontiCoreScriptTest {
   @Test
   public void testDefaultScriptSupersubgrammarArgs() {
     Log.getFindings().clear();
-    testDefaultScript(inheritedgrammarArgs);
+    testDefaultScript(supersubgrammarArgs);
     Assert.assertTrue(Log.getFindings().isEmpty());
   }
   

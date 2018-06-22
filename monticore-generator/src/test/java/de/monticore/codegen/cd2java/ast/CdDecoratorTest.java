@@ -132,7 +132,7 @@ public class CdDecoratorTest {
     for (ASTCDClass clazz : nativeClasses) {
       assertTrue(astHelper.getASTBuilder(clazz).isPresent());
       ASTCDClass builderClass = astHelper.getASTBuilder(clazz).get();
-      assertTrue(builderClass.getName().endsWith(AstGeneratorHelper.AST_BUILDER));
+      assertTrue(builderClass.getName().endsWith(AstGeneratorHelper.BUILDER));
       assertTrue(builderClass.getName().startsWith(clazz.getName()));
     }
   }

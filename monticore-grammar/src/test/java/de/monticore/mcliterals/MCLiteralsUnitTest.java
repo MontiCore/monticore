@@ -12,7 +12,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.monticore.literals.literals._ast.ASTIntLiteral;
 import de.monticore.mcnumbers._ast.ASTDecimal;
 import de.monticore.mcnumbers._ast.ASTInteger;
 import de.monticore.mcnumbers._ast.ASTNumber;
@@ -28,9 +27,8 @@ import de.monticore.testmcliteralsv2._parser.TestMCLiteralsV2Parser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 
-
 public class MCLiteralsUnitTest {
-    
+  
   // setup the language infrastructure
   TestMCLiteralsV2Parser parser = new TestMCLiteralsV2Parser() ;
   
@@ -55,16 +53,18 @@ public class MCLiteralsUnitTest {
   @Test
   public void testCardinalityToken() throws IOException {
     ASTAnyTokenList ast = parser.parse_StringAnyTokenList( ":[65..67]:" ).get();
-    assertEquals(5, ast.getAnyTokenList().size());
-    ASTAnyToken t = ast.getAnyTokenList().get(0);
-    t = ast.getAnyTokenList().get(1);
+    assertEquals(5, ast.sizeAnyTokens());
+    ASTAnyToken t = ast.getAnyToken(0);
+    t = ast.getAnyToken(1);
     assertTrue(t.isPresentDecimalToken());
+    assertEquals(t.getDecimalTokenOpt().isPresent(),t.isPresentDecimalToken());
     assertEquals("65", t.getDecimalToken());
-    t = ast.getAnyTokenList().get(2);
-    t = ast.getAnyTokenList().get(3);
+    assertEquals(t.getDecimalTokenOpt().get(),t.getDecimalToken());
+    t = ast.getAnyToken(2);
+    t = ast.getAnyToken(3);
     assertTrue(t.isPresentDecimalToken());
     assertEquals("67", t.getDecimalToken());
-    t = ast.getAnyTokenList().get(4);
+    t = ast.getAnyToken(4);
   }
   
   // --------------------------------------------------------------------
@@ -114,11 +114,11 @@ public class MCLiteralsUnitTest {
   @Test
   public void testTokens() throws IOException {
     ASTAnyTokenList ast = parser.parse_StringAnyTokenList( ":463 23:" ).get();
-    assertEquals(2, ast.getAnyTokenList().size());
-    ASTAnyToken a0 = ast.getAnyTokenList().get(0);
+    assertEquals(2, ast.sizeAnyTokens());
+    ASTAnyToken a0 = ast.getAnyToken(0);
     assertTrue(a0.isPresentDecimalToken());
     assertEquals("463", a0.getDecimalToken());
-    ASTAnyToken a1 = ast.getAnyTokenList().get(1);
+    ASTAnyToken a1 = ast.getAnyToken(1);
     assertTrue(a1.isPresentDecimalToken());
     assertEquals("23", a1.getDecimalToken());
   }
@@ -127,15 +127,15 @@ public class MCLiteralsUnitTest {
   @Test
   public void testTokens2() throws IOException {
     ASTAnyTokenList ast = parser.parse_StringAnyTokenList(
-    	":9 'a' 45 00 47:" ).get();
-    assertEquals(6, ast.getAnyTokenList().size());
-    assertEquals("9", ast.getAnyTokenList().get(0).getDecimalToken());
-    assertEquals("a", ast.getAnyTokenList().get(1).getCharToken());
-    assertEquals("45", ast.getAnyTokenList().get(2).getDecimalToken());
+      ":9 'a' 45 00 47:" ).get();
+    assertEquals(6, ast.sizeAnyTokens());
+    assertEquals("9", ast.getAnyToken(0).getDecimalToken());
+    assertEquals("a", ast.getAnyToken(1).getCharToken());
+    assertEquals("45", ast.getAnyToken(2).getDecimalToken());
     // Observe the separated '0's!
-    assertEquals("0", ast.getAnyTokenList().get(3).getDecimalToken());
-    assertEquals("0", ast.getAnyTokenList().get(4).getDecimalToken());
-    assertEquals("47", ast.getAnyTokenList().get(5).getDecimalToken());
+    assertEquals("0", ast.getAnyToken(3).getDecimalToken());
+    assertEquals("0", ast.getAnyToken(4).getDecimalToken());
+    assertEquals("47", ast.getAnyToken(5).getDecimalToken());
   }
 
   // --------------------------------------------------------------------
@@ -165,17 +165,17 @@ public class MCLiteralsUnitTest {
   public void testIntTokens2() throws IOException {
     ASTIntegerList ast = parser.parse_StringIntegerList(
         "[9, -45, -0, - 47]" ).get();
-    assertEquals(4, ast.getIntegerList().size());
-    assertEquals(9, ast.getIntegerList().get(0).getValue());
-    assertEquals("9", ast.getIntegerList().get(0).getSource());
-    assertEquals(-45, ast.getIntegerList().get(1).getValue());
-    assertEquals("-45", ast.getIntegerList().get(1).getSource());
-    assertEquals(0, ast.getIntegerList().get(2).getValue());
+    assertEquals(4, ast.sizeIntegers());
+    assertEquals(9, ast.getInteger(0).getValue());
+    assertEquals("9", ast.getInteger(0).getSource());
+    assertEquals(-45, ast.getInteger(1).getValue());
+    assertEquals("-45", ast.getInteger(1).getSource());
+    assertEquals(0, ast.getInteger(2).getValue());
     // "-" is still present
-    assertEquals("-0", ast.getIntegerList().get(2).getSource());
-    assertEquals(-47, ast.getIntegerList().get(3).getValue());
+    assertEquals("-0", ast.getInteger(2).getSource());
+    assertEquals(-47, ast.getInteger(3).getValue());
     // space between the two token is missing 
-    assertEquals("-47", ast.getIntegerList().get(3).getSource());
+    assertEquals("-47", ast.getInteger(3).getSource());
   }
 
   // --------------------------------------------------------------------
@@ -193,8 +193,8 @@ public class MCLiteralsUnitTest {
   @Test
   public void testB() throws IOException {
     ASTBTest ast = parser.parse_StringBTest( " X2X, XFF001DX" ).get();
-    assertEquals("X2X", ast.getXHexDigitList().get(0));
-    assertEquals("XFF001DX", ast.getXHexDigitList().get(1));
+    assertEquals("X2X", ast.getXHexDigit(0));
+    assertEquals("XFF001DX", ast.getXHexDigit(1));
   }
 
   
@@ -207,14 +207,14 @@ public class MCLiteralsUnitTest {
   public void testString() throws IOException {
     ASTStringList ast = parser.parse_StringStringList( 
      "[\"ZWeR\",\"4\", \"',\\b,\\\\;\", \"S\\u34F4W\", \"o\"]" ).get();
-    assertEquals("ZWeR", ast.getStringLiteralList().get(0).getValue());
-    assertEquals("4", ast.getStringLiteralList().get(1).getValue());
-    assertEquals("',\b,\\;", ast.getStringLiteralList().get(2).getValue());
-    assertEquals("S\u34F4W", ast.getStringLiteralList().get(3).getValue());
-    assertEquals("o", ast.getStringLiteralList().get(4).getValue());
+    assertEquals("ZWeR", ast.getStringLiteral(0).getValue());
+    assertEquals("4", ast.getStringLiteral(1).getValue());
+    assertEquals("',\b,\\;", ast.getStringLiteral(2).getValue());
+    assertEquals("S\u34F4W", ast.getStringLiteral(3).getValue());
+    assertEquals("o", ast.getStringLiteral(4).getValue());
 
     // repeat wg. buffering
-    assertEquals("ZWeR", ast.getStringLiteralList().get(0).getValue());
+    assertEquals("ZWeR", ast.getStringLiteral(0).getValue());
   }
 
   // --------------------------------------------------------------------
@@ -234,16 +234,15 @@ public class MCLiteralsUnitTest {
   public void testChar2() throws IOException {
     ASTCharList ast = parser.parse_StringCharList( 
      "['Z','4','\\'', '\\b', '\\\\', '\7', '\\7', 'o']" ).get();
-    assertEquals('Z', ast.getCharLiteralList().get(0).getValue());
-    assertEquals('4', ast.getCharLiteralList().get(1).getValue());
-    assertEquals('\'', ast.getCharLiteralList().get(2).getValue());
-    assertEquals('\b', ast.getCharLiteralList().get(3).getValue());
-    assertEquals('\\', ast.getCharLiteralList().get(4).getValue());
+    assertEquals('Z', ast.getCharLiteral(0).getValue());
+    assertEquals('4', ast.getCharLiteral(1).getValue());
+    assertEquals('\'', ast.getCharLiteral(2).getValue());
+    assertEquals('\b', ast.getCharLiteral(3).getValue());
+    assertEquals('\\', ast.getCharLiteral(4).getValue());
     // Encoded by Java
-    assertEquals('\7', ast.getCharLiteralList().get(5).getValue());
-    assertEquals('o', ast.getCharLiteralList().get(7).getValue());
+    assertEquals('\7', ast.getCharLiteral(5).getValue());
+    assertEquals('o', ast.getCharLiteral(7).getValue());
   }
-
 
   // --------------------------------------------------------------------
   // --------------------------------------------------------------------
@@ -251,10 +250,10 @@ public class MCLiteralsUnitTest {
   public void testCharUnicode() throws IOException {
     ASTCharList ast = parser.parse_StringCharList( 
      "['\\u2345', '\\u23EF', '\\u0001', '\\uAFFA']" ).get();
-    assertEquals('\u2345', ast.getCharLiteralList().get(0).getValue());
-    assertEquals('\u23EF', ast.getCharLiteralList().get(1).getValue());
-    assertEquals('\u0001', ast.getCharLiteralList().get(2).getValue());
-    assertEquals('\uAFFA', ast.getCharLiteralList().get(3).getValue());
+    assertEquals('\u2345', ast.getCharLiteral(0).getValue());
+    assertEquals('\u23EF', ast.getCharLiteral(1).getValue());
+    assertEquals('\u0001', ast.getCharLiteral(2).getValue());
+    assertEquals('\uAFFA', ast.getCharLiteral(3).getValue());
   }
 
 }

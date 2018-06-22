@@ -13,6 +13,6 @@
   <#else>
   { 
      ${tc.include("ast.ErrorIfNull")}
-     ${tc.includeArgs("ast.EmptyMethodBody", [ast, astType])}
+     ${tc.includeArgs("ast.EmptyMethodBody")}
   } 
   </#if>
