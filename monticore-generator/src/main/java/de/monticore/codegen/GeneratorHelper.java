@@ -23,6 +23,8 @@ import de.monticore.java.prettyprint.JavaDSLPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.GlobalScope;
+import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
 import de.monticore.types.TypesHelper;
 import de.monticore.types.TypesPrinter;
@@ -1640,6 +1642,26 @@ public class GeneratorHelper extends TypesHelper {
    */
   public Optional<CDSymbol> resolveCd(String qualifiedCdName) {
     return symbolTable.resolve(qualifiedCdName, CDSymbol.KIND);
+  }
+
+  public boolean isSymbolClass(String name, AstGeneratorHelper astGeneratorHelper) {
+    String astName = name.substring(name.lastIndexOf("AST") + 3);
+    MCGrammarSymbol grammarSymbol = astGeneratorHelper.getGrammarSymbol();
+    Optional<MCProdSymbol> mcProdSymbol = grammarSymbol.getProd(astName);
+    if (mcProdSymbol.isPresent() && mcProdSymbol.get().isSymbolDefinition()) {
+      return true;
+    }
+    return false;
+  }
+
+  public boolean isScopeClass(String name, AstGeneratorHelper astGeneratorHelper) {
+    String astName = name.substring(name.lastIndexOf("AST") + 3);
+    MCGrammarSymbol grammarSymbol = astGeneratorHelper.getGrammarSymbol();
+    Optional<MCProdSymbol> mcProdSymbol = grammarSymbol.getProd(astName);
+    if (mcProdSymbol.isPresent() && mcProdSymbol.get().isScopeDefinition()) {
+      return true;
+    }
+    return false;
   }
 
   public Optional<CDTypeSymbol> resolveCdType(String type) {

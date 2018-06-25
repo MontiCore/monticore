@@ -13,8 +13,8 @@ ${tc.include("ast.AstImports")}
    */
 
   <#assign abstract = "">
-  <#assign isBuilderClassAbstract =  genHelper.isBuilderClassAbstract(astType)>
-  <#if genHelper.isAbstract(ast) || isBuilderClassAbstract>
+  <#assign isBuilderClassAbstract = genHelper.isAbstract(ast) || genHelper.isOriginalClassAbstract(astType)>
+  <#if isBuilderClassAbstract>
     <#assign abstract = "abstract">
   </#if>
   public ${abstract} class ${ast.getName()} extends ${ast.printSuperClass()} {
@@ -30,7 +30,7 @@ ${tc.include("ast.AstImports")}
       this.realBuilder = <#if abstract?has_content>(${genHelper.getPlainName(ast)})</#if> this;
     }
 
-  <#if isBuilderClassAbstract>
+  <#if genHelper.isOriginalClassAbstract(astType)>
     public abstract ${typeName} build();
   <#else>
     public ${typeName} build() {

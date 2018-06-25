@@ -1,0 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.hwc; 
+
+grammar ActivityDiagram extends mc.common.Basics {
+
+    ActivityDiagram =
+      "activity diagram" Name "{" ( AbstractActivityNode )* "}";
+      
+    abstract AbstractActivityNode = Name;
+
+    abstract ControlNode extends AbstractActivityNode;
+
+    /*Node Types*/
+    
+    symbol ActivityNode extends AbstractActivityNode = "activity" Name ";";
+
+    symbol InitialNode extends ControlNode = "initial" Name ";";
+}

@@ -1,4 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
+<#assign genHelper = glex.getGlobalVar("astHelper")>
       value.set_SourcePositionEndOpt(this.sourcePositionEnd);
       value.set_SourcePositionStartOpt(this.sourcePositionStart);
       value.setEnclosingScopeOpt(this.enclosingScope);

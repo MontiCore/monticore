@@ -20,6 +20,7 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDDefinition;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTStereotype;
 import de.monticore.umlcd4a.cd4analysis._visitor.CD4AnalysisVisitor;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
@@ -208,9 +209,8 @@ public class AstGeneratorHelper extends GeneratorHelper {
         : type;
   }
   
-  public static boolean isBuilderClassAbstract(ASTCDClass astType) {
-    return (astType.getModifierOpt().isPresent() && astType.getModifierOpt().get().isAbstract()
-            && !isSupertypeOfHWType(astType.getName()));
+  public static boolean isOriginalClassAbstract(ASTCDClass astType) {
+    return hasStereotype(astType, "Abstract");
   }
 
   public static boolean isAbstract(ASTCDClass clazz) {

@@ -23,7 +23,7 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
   
   public static final String ERROR_CODE = "0xA4047";
   
-  public static final String ERROR_MSG_FORMAT = " The production %s must use the non-terminal %s from interface %s.";
+  public static final String ERROR_MSG_FORMAT = " The production %s must use the terminal %s from interface %s.";
 
   @Override
   public void check(ASTMCGrammar a) {
@@ -46,16 +46,30 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
   
   private void compareComponents(MCProdSymbol prodSymbol, MCProdSymbol interfaceSymbol) {
     for (MCProdComponentSymbol interfaceComponent : interfaceSymbol.getProdComponents()) {
-      Optional<MCProdComponentSymbol> prodComponent = prodSymbol.getProdComponent(interfaceComponent.getName());
-      if (!prodComponent.isPresent()) {
+      Optional<MCProdComponentSymbol> prodComponentOpt = prodSymbol.getProdComponent(interfaceComponent.getName());
+      if (!prodComponentOpt.isPresent()) {
         logError(prodSymbol, interfaceSymbol, interfaceComponent);
         continue;
       }
-      Optional<MCProdSymbolReference> prodComponentRefOpt = prodComponent.get().getReferencedProd();
+      MCProdComponentSymbol prodComponent = prodComponentOpt.get();
+
+      if (prodComponent.isList() != interfaceComponent.isList()
+         || prodComponent.isOptional() != interfaceComponent.isOptional()) {
+        logError(prodSymbol, interfaceSymbol, interfaceComponent);
+        continue;
+      }
+
+      if (prodComponent.isTerminal() && interfaceComponent.isTerminal()) {
+        if (interfaceComponent.getUsageName().isEmpty()
+          || interfaceComponent.getUsageName().equals(prodComponent.getUsageName())) {
+          continue;
+        }
+      }
+
+      Optional<MCProdSymbolReference> prodComponentRefOpt = prodComponent.getReferencedProd();
       Optional<MCProdSymbolReference> interfaceComponentRefOpt = interfaceComponent.getReferencedProd();
 
-      if ((prodComponentRefOpt.isPresent() && !interfaceComponentRefOpt.isPresent())
-        || (!prodComponentRefOpt.isPresent() && interfaceComponentRefOpt.isPresent())) {
+      if (prodComponentRefOpt.isPresent() != interfaceComponentRefOpt.isPresent()) {
         logError(prodSymbol, interfaceSymbol, interfaceComponent);
         continue;
       }
@@ -72,8 +86,9 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
   }
 
   private void logError(MCProdSymbol prodSymbol, MCProdSymbol interfaceSymbol, MCProdComponentSymbol interfaceComponent) {
+    String suffix = interfaceComponent.isList() ? "*" : interfaceComponent.isOptional() ? "?" : "";
     Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, prodSymbol.getName(),
-          interfaceComponent.getName(), interfaceSymbol.getName()),
+          interfaceComponent.getName() + suffix, interfaceSymbol.getName()),
           prodSymbol.getSourcePosition());
   }
   

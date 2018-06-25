@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package cocos.invalid.A2007;
+
+grammar A2007Sup2 extends cocos.invalid.A2007.A2007Super {
+
+  M = Name?;
+
+}

@@ -37,116 +37,119 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
   <#list cd.getTypes() as type>
     <#if type.isClass()>
       <#assign astName = genHelper.getJavaASTName(type)>
-  
+      <#assign symbolName = genHelper.getASTClassNameWithoutPrefix(genHelper.getCdName(astName))>
+
       @Override
       public void handle(${astName} node) {
         String name = StringTransformations.uncapitalize(reporting.getASTNodeNameFormatted(node));
         printObject(name, "${astName}");
         pp.indent();
-        if (node.isPresentSymbol()) {
-          String symName = StringTransformations.uncapitalize(reporting.getSymbolNameFormatted(node.getSymbolOpt().get()));
+      <#if genHelper.isSymbolClass(astName, genHelper)>
+        if (node.isPresent${symbolName}Symbol()) {
+          String symName = StringTransformations.uncapitalize(reporting.getSymbolNameFormatted(node.get${symbolName}SymbolOpt().get()));
           pp.println("symbol = " + symName + ";");
         } else if (printEmptyOptional) {
           pp.println("symbol = absent;");
         }
+      </#if>
         if (node.isPresentEnclosingScope()) {
           String scopeName = StringTransformations.uncapitalize(reporting.getScopeNameFormatted(node.getEnclosingScopeOpt().get()));
           pp.println("enclosingScope = " + scopeName + ";");
         } else if (printEmptyOptional) {
           pp.println("enclosingScope = absent;");
         }
-        if (node.isPresentSpannedScope()) {
-          String scopeName = StringTransformations.uncapitalize(reporting.getScopeNameFormatted(node.getSpannedScopeOpt().get()));
+      <#if genHelper.isScopeClass(astName, genHelper)>
+        if (node.isPresentSpanned${symbolName}Scope()) {
+          String scopeName = StringTransformations.uncapitalize(reporting.getScopeNameFormatted(node.getSpanned${symbolName}ScopeOpt().get()));
           pp.println("spanningScope = " + scopeName + ";");
         } else if (printEmptyOptional) {
           pp.println("spannedScope = absent;");
         }
-        <#list type.getAllVisibleFields() as field>
- 
+      </#if>
+       <#list type.getAllVisibleFields() as field>
           <#if genHelper.isAstNode(field) || genHelper.isOptionalAstNode(field) >
             <#assign attrGetter = genHelper.getPlainGetter(field)>
             <#if genHelper.isOptional(field)>
-              if (node.${attrGetter}().isPresent()) {
-     			pp.print("${field.getName()}");
-   			    pp.print(" = ");
-                node.${attrGetter}().get().accept(getRealThis());
-                pp.println(";");
-              } else if (printEmptyOptional) {
-                pp.println("${field.getName()} = absent;");
-              }
+        if (node.${attrGetter}().isPresent()) {
+     		  pp.print("${field.getName()}");
+   			  pp.print(" = ");
+          node.${attrGetter}().get().accept(getRealThis());
+          pp.println(";");
+        } else if (printEmptyOptional) {
+          pp.println("${field.getName()} = absent;");
+        }
             <#else>
-              if (null != node.${attrGetter}()) {          
-      			pp.print("${field.getName()}");
-   			    pp.print(" = ");
-                node.${attrGetter}().accept(getRealThis());
-                pp.println(";");
-              }
+        if (null != node.${attrGetter}()) {
+      		pp.print("${field.getName()}");
+          pp.print(" = ");
+          node.${attrGetter}().accept(getRealThis());
+          pp.println(";");
+        }
             </#if>
           <#elseif genHelper.isListAstNode(field)>
             <#assign attrGetter = genHelper.getPlainGetter(field)>
             <#assign astChildTypeName = genHelper.getAstClassNameForASTLists(field)>
-            {
-              Iterator<${astChildTypeName}> iter_${field.getName()} = node.${attrGetter}().iterator();
-              boolean isEmpty = true;
-              if (iter_${field.getName()}.hasNext()) {
-       			pp.print("${field.getName()}");
-   			    pp.print(" = [");
-   			    pp.println("// *size: " + node.${attrGetter}().size());
-				pp.indent();
-   			    isEmpty = false;
-              } else if (printEmptyList) {
-                pp.print("${field.getName()}");
-                pp.println(" = [];");
-              }
-              boolean isFirst = true;
-              while (iter_${field.getName()}.hasNext()) {
-                if (!isFirst) {
-                  pp.println(",");
-                }
-                isFirst = false;
-                iter_${field.getName()}.next().accept(getRealThis());
-              }
-              if (!isEmpty) {
-              	pp.println("];");
-              	pp.unindent();
-              }
-             
+        {
+        Iterator<${astChildTypeName}> iter_${field.getName()} = node.${attrGetter}().iterator();
+        boolean isEmpty = true;
+        if (iter_${field.getName()}.hasNext()) {
+       	  pp.print("${field.getName()}");
+   			  pp.print(" = [");
+   			  pp.println("// *size: " + node.${attrGetter}().size());
+				  pp.indent();
+   			  isEmpty = false;
+        } else if (printEmptyList) {
+          pp.print("${field.getName()}");
+          pp.println(" = [];");
+        }
+          boolean isFirst = true;
+          while (iter_${field.getName()}.hasNext()) {
+            if (!isFirst) {
+              pp.println(",");
             }
-          <#elseif genHelper.isOptional(field)>
-            if (node.${genHelper.getPlainGetter(field)}().isPresent()) {
-              printAttribute("${field.getName()}", "\"" + String.valueOf(node.${genHelper.getPlainGetter(field)}().get()) + "\"");
-            } else if (printEmptyOptional) {
-              pp.println("${field.getName()} = absent;");
-            }
-          <#elseif genHelper.isListType(field.getType())>
-            {
-              String sep = "";
-              <#if genHelper.isListOfString(field)>
-                String str = "\"";
-              <#else>
-                String str = "";
-              </#if>
-              Iterator<?> it = node.${genHelper.getPlainGetter(field)}().iterator();
-              boolean isEmpty = true;
-              if (it.hasNext() || printEmptyList) {
-                pp.print("${field.getName()}" + " = [");
-                isEmpty = false;
-              }
-              while (it.hasNext()) {
-                pp.print(sep); 
-                pp.print(str + String.valueOf(it.next()) + str);
-                sep = ", ";
-              }
-              if (!isEmpty) {
-              	pp.println("];");
-              }
-            }
+            isFirst = false;
+            iter_${field.getName()}.next().accept(getRealThis());
+          }
+          if (!isEmpty) {
+            pp.println("];");
+            pp.unindent();
+          }
+        }
+        <#elseif genHelper.isOptional(field)>
+        if (node.${genHelper.getPlainGetter(field)}().isPresent()) {
+          printAttribute("${field.getName()}", "\"" + String.valueOf(node.${genHelper.getPlainGetter(field)}().get()) + "\"");
+        } else if (printEmptyOptional) {
+          pp.println("${field.getName()} = absent;");
+        }
+        <#elseif genHelper.isListType(field.getType())>
+        {
+          String sep = "";
+        <#if genHelper.isListOfString(field)>
+          String str = "\"";
           <#else>
-            <#assign fieldType = field.getType()>
-            <#if genHelper.isString(fieldType.getName())>
-              printAttribute("${field.getName()}", "\"" + String.valueOf(node.${genHelper.getPlainGetter(field)}()) + "\"");
-            <#else>
-              printAttribute("${field.getName()}", String.valueOf(node.${genHelper.getPlainGetter(field)}()));
+          String str = "";
+        </#if>
+          Iterator<?> it = node.${genHelper.getPlainGetter(field)}().iterator();
+          boolean isEmpty = true;
+          if (it.hasNext() || printEmptyList) {
+             pp.print("${field.getName()}" + " = [");
+             isEmpty = false;
+          }
+          while (it.hasNext()) {
+            pp.print(sep);
+            pp.print(str + String.valueOf(it.next()) + str);
+            sep = ", ";
+          }
+          if (!isEmpty) {
+          	pp.println("];");
+          }
+        }
+        <#else>
+        <#assign fieldType = field.getType()>
+        <#if genHelper.isString(fieldType.getName())>
+        printAttribute("${field.getName()}", "\"" + String.valueOf(node.${genHelper.getPlainGetter(field)}()) + "\"");
+        <#else>
+        printAttribute("${field.getName()}", String.valueOf(node.${genHelper.getPlainGetter(field)}()));
             </#if>
           </#if>
         </#list>

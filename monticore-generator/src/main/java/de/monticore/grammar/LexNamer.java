@@ -75,7 +75,7 @@ public class LexNamer {
   public static String createGoodName(String x) {
     StringBuilder ret = new StringBuilder();
     
-    if (x.matches("[a-zA-Z]+")) {
+    if (x.matches("[a-zA-Z_0-9]+")) {
       return x.toUpperCase();
     }
     
