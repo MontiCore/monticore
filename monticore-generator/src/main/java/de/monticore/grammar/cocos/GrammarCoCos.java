@@ -51,7 +51,7 @@ public class GrammarCoCos {
     checker.addCoCo(new GrammarInheritanceCycle());
     checker.addCoCo(new LeftRecursiveRulesInBlock());
     checker.addCoCo(new DuplicatedSymbolDefinitionInProd());
-    checker.addCoCo(new SymbolWithoutName());
+   // checker.addCoCo(new SymbolWithoutName());
     checker.addCoCo(new SubrulesUseInterfaceNTs());
     checker.addCoCo(new ReferenceSymbolSameAttribute());
     checker.addCoCo(new ReferenceSymbolNotName());

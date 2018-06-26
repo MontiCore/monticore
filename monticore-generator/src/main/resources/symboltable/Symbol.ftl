@@ -1,8 +1,17 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className", "ruleSymbol")}
+${signature("className", "prodSymbol", "ruleSymbol", "imports")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
-<#assign ruleName = ruleSymbol.getName()?cap_first>
-
+<#assign ruleName = prodSymbol.getName()>
+<#assign superClass = " extends de.monticore.symboltable.CommonScopeSpanningSymbol">
+<#assign superInterfaces = "">
+<#if ruleSymbol.isPresent()>
+  <#if !ruleSymbol.get().isEmptySuperInterfaces()>
+    <#assign superInterfaces = "implements " + stHelper.printGenericTypes(ruleSymbol.get().getSuperInterfaceList())>
+  </#if>
+  <#if !ruleSymbol.get().isEmptySuperClasss()>
+    <#assign superClass = " extends " + stHelper.printGenericTypes(ruleSymbol.get().getSuperClassList())>
+  </#if>
+</#if>
 <#-- Copyright -->
 ${defineHookPoint("JavaCopyright")}
 
@@ -10,8 +19,11 @@ ${defineHookPoint("JavaCopyright")}
 package ${genHelper.getTargetPackage()};
 
 import java.util.Optional;
+<#list imports as imp>
+import ${imp}._ast.*;
+</#list>
 
-public class ${className} extends de.monticore.symboltable.CommonSymbol {
+public class ${className} ${superClass} ${superInterfaces} {
 
   ${includeArgs("symboltable.symbols.KindConstantDeclaration", ruleName)}
 
@@ -20,5 +32,9 @@ public class ${className} extends de.monticore.symboltable.CommonSymbol {
   }
 
   ${includeArgs("symboltable.symbols.GetAstNodeMethod", ruleName)}
+  
+  <#if ruleSymbol.isPresent()>
+  ${includeArgs("symboltable.symbols.SymbolRule", ruleSymbol.get())}
+  </#if>
 
 }

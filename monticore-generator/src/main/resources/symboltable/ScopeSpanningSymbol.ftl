@@ -1,7 +1,22 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className", "scopeClassName", "ruleSymbol")}
+${signature("className", "scopeClassName", "prodSymbol", "ruleSymbol")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
-<#assign ruleName = ruleSymbol.getName()?cap_first>
+<#if prodSymbol.getSymbolDefinitionKind().isPresent()>
+  <#assign ruleName = prodSymbol.getSymbolDefinitionKind().get()>
+<#else>
+  <#assign ruleName = prodSymbol.getName()>
+</#if>
+<#assign astName = prodSymbol.getName()?cap_first>
+<#assign superClass = " extends de.monticore.symboltable.CommonScopeSpanningSymbol">
+<#assign superInterfaces = "">
+<#if ruleSymbol.isPresent()>
+  <#if !ruleSymbol.get().isEmptySuperInterfaces()>
+    <#assign superInterfaces = "implements " + stHelper.printGenericTypes(ruleSymbol.get().getSuperInterfaceList())>
+  </#if>
+  <#if !ruleSymbol.get().isEmptySuperClasss()>
+    <#assign superClass = " extends " + stHelper.printGenericTypes(ruleSymbol.get().getSuperClassList())>
+  </#if>
+</#if>
 
 <#-- Copyright -->
 ${defineHookPoint("JavaCopyright")}
@@ -14,7 +29,7 @@ import static de.monticore.symboltable.Symbols.sortSymbolsByPosition;
 import java.util.Collection;
 import java.util.Optional;
 
-public class ${className} extends de.monticore.symboltable.CommonScopeSpanningSymbol {
+public class ${className} ${superClass} ${superInterfaces} {
 
   ${includeArgs("symboltable.symbols.KindConstantDeclaration", ruleName)}
 
@@ -29,7 +44,7 @@ public class ${className} extends de.monticore.symboltable.CommonScopeSpanningSy
   }
 
   <#-- Get methods for  containing symbols -->
-  <#assign fields = genHelper.symbolRuleComponents2JavaFields(ruleSymbol)>
+  <#assign fields = genHelper.symbolRuleComponents2JavaFields(prodSymbol)>
   /* Possible methods for containinig symbols
   <#list fields?keys as fname>
     <#assign type = fields[fname]>
@@ -40,5 +55,10 @@ public class ${className} extends de.monticore.symboltable.CommonScopeSpanningSy
   </#list>
   */
 
-  ${includeArgs("symboltable.symbols.GetAstNodeMethod", ruleName)}
+  ${includeArgs("symboltable.symbols.GetAstNodeMethod", astName)}
+  
+  <#if ruleSymbol.isPresent()>
+    ${includeArgs("symboltable.symbols.SymbolRule", ruleSymbol.get())}
+  </#if>
+
 }

@@ -1644,16 +1644,16 @@ public class GeneratorHelper extends TypesHelper {
     return symbolTable.resolve(qualifiedCdName, CDSymbol.KIND);
   }
 
-  public boolean isSymbolClass(String name, AstGeneratorHelper astGeneratorHelper) {
+  public Optional<String> getSymbolName(String name, AstGeneratorHelper astGeneratorHelper) {
     String astName = name.substring(name.lastIndexOf("AST") + 3);
     MCGrammarSymbol grammarSymbol = astGeneratorHelper.getGrammarSymbol();
     Optional<MCProdSymbol> mcProdSymbol = grammarSymbol.getProd(astName);
-    if (mcProdSymbol.isPresent() && mcProdSymbol.get().isSymbolDefinition()) {
-      return true;
+    if (mcProdSymbol.isPresent()) {
+      return mcProdSymbol.get().getSymbolDefinitionKind();
     }
-    return false;
+    return Optional.empty();
   }
-
+  
   public boolean isScopeClass(String name, AstGeneratorHelper astGeneratorHelper) {
     String astName = name.substring(name.lastIndexOf("AST") + 3);
     MCGrammarSymbol grammarSymbol = astGeneratorHelper.getGrammarSymbol();

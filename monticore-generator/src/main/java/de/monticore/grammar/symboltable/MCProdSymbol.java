@@ -2,19 +2,19 @@
 
 package de.monticore.grammar.symboltable;
 
-import com.google.common.collect.ImmutableList;
-import de.monticore.symboltable.CommonScopeSpanningSymbol;
-import de.monticore.symboltable.SymbolKind;
-import de.se_rwth.commons.logging.Log;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
-import static java.util.Optional.ofNullable;
+import com.google.common.collect.ImmutableList;
+
+import de.monticore.symboltable.CommonScopeSpanningSymbol;
+import de.monticore.symboltable.SymbolKind;
+import de.se_rwth.commons.logging.Log;
 
 /**
  * @author Pedram Mir Seyed Nazari
@@ -41,7 +41,7 @@ public class MCProdSymbol extends CommonScopeSpanningSymbol {
    * the producution that defines the symbol kind of the current prod symbol
    * (only if isSymbolDefinition is true)
    */
-  private MCProdSymbolReference prodDefiningSymbolKind = null;
+  private String prodDefiningSymbolKind = "";
   
   /**
    * A extends B, C = ...
@@ -76,7 +76,7 @@ public class MCProdSymbol extends CommonScopeSpanningSymbol {
   }
   
   public boolean isSymbolDefinition() {
-    return prodDefiningSymbolKind != null;
+    return !prodDefiningSymbolKind.isEmpty();
   }
   
   public boolean isScopeDefinition() {
@@ -89,19 +89,12 @@ public class MCProdSymbol extends CommonScopeSpanningSymbol {
   
   public Optional<String> getSymbolDefinitionKind() {
     if (isSymbolDefinition()) {
-      if (prodDefiningSymbolKind.getReferencedSymbol() == this) {
-        return of(getName());
-      }
-      return prodDefiningSymbolKind.getReferencedSymbol().getSymbolDefinitionKind();
+      return of(prodDefiningSymbolKind);
     }
     return empty();
   }
-  
-  public Optional<MCProdSymbolReference> getProdDefiningSymbolKind() {
-    return ofNullable(prodDefiningSymbolKind);
-  }
-  
-  public void setProdDefiningSymbolKind(MCProdSymbolReference prodDefiningSymbolKind) {
+    
+  public void setProdDefiningSymbolKind(String prodDefiningSymbolKind) {
     this.prodDefiningSymbolKind = prodDefiningSymbolKind;
   }
   

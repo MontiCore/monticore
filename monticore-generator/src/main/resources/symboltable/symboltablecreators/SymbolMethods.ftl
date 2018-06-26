@@ -1,9 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("ruleSymbol")}
+${signature("ruleSymbol","symbolName")}
 
 <#assign ruleName = ruleSymbol.getName()>
 <#assign ruleNameLower = ruleName?uncap_first>
-<#assign symbolName = ruleName + "Symbol">
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign fqn = genHelper.getQualifiedGrammarName()?lower_case>
 <#assign topAstName = genHelper.getQualifiedStartRuleName()>
@@ -27,5 +26,5 @@ ${signature("ruleSymbol")}
   }
 
   protected void initialize_${ruleName}(${symbolName} ${ruleNameLower}, ${astPrefix}${ruleName} ast) {
-    ${includeArgs("symboltable.symboltablecreators.InitializeSymbol", ruleSymbol)}
+    ${includeArgs("symboltable.symboltablecreators.InitializeSymbol", ruleSymbol, symbolName)}
   }

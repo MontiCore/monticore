@@ -1,7 +1,17 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className")}
+${signature("className","scopeRule")}
 
 <#assign genHelper = glex.getGlobalVar("stHelper")>
+<#assign superClass = " extends de.monticore.symboltable.CommonScope ">
+<#assign superInterfaces = "">
+<#if scopeRule.isPresent()>
+  <#if !scopeRule.get().isEmptySuperInterfaces()>
+    <#assign superInterfaces = "implements " + stHelper.printGenericTypes(scopeRule.get().getSuperInterfaceList())>
+  </#if>
+  <#if !scopeRule.get().isEmptySuperClasss()>
+    <#assign superClass = " extends " + stHelper.printGenericTypes(scopeRule.get().getSuperClassList())>
+  </#if>
+</#if>
 
 <#-- Copyright -->
 ${defineHookPoint("JavaCopyright")}
@@ -13,7 +23,7 @@ import java.util.Optional;
 
 import de.monticore.symboltable.MutableScope;
 
-public class ${className} extends de.monticore.symboltable.CommonScope {
+public class ${className} ${superClass} ${superInterfaces} {
 
   public ${className}() {
     super();

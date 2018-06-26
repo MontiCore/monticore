@@ -22,7 +22,8 @@ public class CommonSymbolReferenceGenerator implements SymbolReferenceGenerator 
   @Override
   public void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
       IterablePath handCodedPath, MCProdSymbol ruleSymbol, boolean isScopeSpanningSymbol) {
-    final String className = getSimpleTypeNameToGenerate(getSimpleName(ruleSymbol.getName() + "SymbolReference"),
+    final String ruleName = ruleSymbol.getSymbolDefinitionKind().isPresent()?ruleSymbol.getSymbolDefinitionKind().get():ruleSymbol.getName();
+    final String className = getSimpleTypeNameToGenerate(getSimpleName(ruleName + "SymbolReference"),
         genHelper.getTargetPackage(), handCodedPath);
 
     boolean hwSymbolExists = existsHandwrittenClass(getSimpleName(ruleSymbol.getName() + "Symbol"), genHelper.getTargetPackage(), handCodedPath);
@@ -30,7 +31,7 @@ public class CommonSymbolReferenceGenerator implements SymbolReferenceGenerator 
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
     if (ruleSymbol.getAstNode().isPresent()) {
       genEngine.generate("symboltable.SymbolReference", filePath, ruleSymbol.getAstNode().get(),
-          className, ruleSymbol, isScopeSpanningSymbol, hwSymbolExists);
+          className, ruleName, isScopeSpanningSymbol, hwSymbolExists);
     }
   }
 }

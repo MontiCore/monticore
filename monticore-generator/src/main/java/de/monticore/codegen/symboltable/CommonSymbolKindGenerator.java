@@ -21,7 +21,7 @@ public class CommonSymbolKindGenerator implements SymbolKindGenerator {
   @Override
   public void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
       IterablePath handCodedPath, MCProdSymbol ruleSymbol) {
-    final String className = ruleSymbol.getName() + "Kind";
+    final String className = (ruleSymbol.getSymbolDefinitionKind().isPresent()?ruleSymbol.getSymbolDefinitionKind().get():ruleSymbol.getName()) + "Kind";
     final String qualifiedClassName = getPackageName(genHelper.getTargetPackage(), "") + className;
 
     if(TransformationHelper.existsHandwrittenClass(handCodedPath, qualifiedClassName)) {

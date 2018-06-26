@@ -236,12 +236,13 @@ public class CdDecorator {
       Log.warn("Symbol methods can not be generated, prod symbol not found");
       return;
     }
+    String symbolName = prodSymbol.get().getSymbolDefinitionKind().orElse(name);
 
     if (prodSymbol.get().isSymbolDefinition()) {
-      addSymbolAttributeAndMethods(clazz, name, grammarSymbol);
+      addSymbolAttributeAndMethods(clazz, symbolName, grammarSymbol);
     }
     if (prodSymbol.get().isScopeDefinition()) {
-      addScopeAttributeAndMethods(clazz, name, grammarSymbol);
+      addScopeAttributeAndMethods(clazz, symbolName, grammarSymbol);
     }
   }
 
@@ -262,7 +263,7 @@ public class CdDecorator {
   }
 
   protected void addScopeAttributeAndMethods(ASTCDClass clazz, String name, MCGrammarSymbol grammarSymbol) {
-    String scopeName = name + AstGeneratorHelper.SCOPE;
+    String scopeName = grammarSymbol.getName() + AstGeneratorHelper.SCOPE;
     String qualifiedName = grammarSymbol.getFullName().toLowerCase() + "." +
         SymbolTableGenerator.PACKAGE + "." + scopeName;
     scopeName = "spanned" + scopeName;
