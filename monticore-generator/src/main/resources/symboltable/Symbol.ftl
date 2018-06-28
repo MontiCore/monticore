@@ -2,7 +2,7 @@
 ${signature("className", "prodSymbol", "ruleSymbol", "imports")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign ruleName = prodSymbol.getName()>
-<#assign superClass = " extends de.monticore.symboltable.CommonScopeSpanningSymbol">
+<#assign superClass = " extends de.monticore.symboltable.CommonSymbol">
 <#assign superInterfaces = "">
 <#if ruleSymbol.isPresent()>
   <#if !ruleSymbol.get().isEmptySuperInterfaces()>
