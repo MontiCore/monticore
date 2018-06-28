@@ -36,4 +36,16 @@ public class ${className} ${superClass} ${superInterfaces} {
   public ${className}(Optional<MutableScope> enclosingScope) {
     super(enclosingScope, true);
   }
+  
+  <#if scopeRule.isPresent()>
+    <#list scopeRule.get().getAdditionalAttributeList() as attr>
+      <#assign attrName=attr.getName()>
+      <#assign attrType=attr.getGenericType().getTypeName()>
+      private ${genHelper.getQualifiedASTName(attrType)} ${attrName};
+    </#list>
+
+    <#list scopeRule.get().getMethodList() as meth>
+      ${genHelper.printMethod(meth)}
+    </#list>
+  </#if>
 }
