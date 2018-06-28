@@ -1,7 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className", "ruleSymbol", "isScopeSpanningSymbol", "hwSymbolExists")}
+${signature("className", "ruleName", "isScopeSpanningSymbol", "hwSymbolExists")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
-<#assign ruleName = ruleSymbol.getName()?cap_first>
 <#assign referencedSymbol = ruleName+"Symbol">
 <#assign package = genHelper.getTargetPackage()?lower_case>
 

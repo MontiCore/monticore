@@ -5,7 +5,7 @@ package de.monticore.codegen.mc2cd.transl.creation;
 import java.util.function.UnaryOperator;
 
 import de.monticore.grammar.grammar._ast.ASTASTRule;
-import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
+import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
@@ -24,8 +24,8 @@ public class AttributeInASTsToCDAttributes implements
     
     for (Link<ASTASTRule, ASTCDClass> link : rootLink.getLinks(ASTASTRule.class,
         ASTCDClass.class)) {
-      for (ASTAttributeInAST attributeInAST : ASTNodes.getSuccessors(link.source(),
-          ASTAttributeInAST.class)) {
+      for (ASTAdditionalAttribute attributeInAST : ASTNodes.getSuccessors(link.source(),
+          ASTAdditionalAttribute.class)) {
         ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
         link.target().getCDAttributeList().add(cdAttribute);
         new Link<>(attributeInAST, cdAttribute, link);
@@ -34,8 +34,8 @@ public class AttributeInASTsToCDAttributes implements
     
     for (Link<ASTASTRule, ASTCDInterface> link : rootLink.getLinks(ASTASTRule.class,
         ASTCDInterface.class)) {
-      for (ASTAttributeInAST attributeInAST : ASTNodes.getSuccessors(link.source(),
-          ASTAttributeInAST.class)) {
+      for (ASTAdditionalAttribute attributeInAST : ASTNodes.getSuccessors(link.source(),
+          ASTAdditionalAttribute.class)) {
         ASTCDAttribute cdAttribute = CD4AnalysisNodeFactory.createASTCDAttribute();
         link.target().getCDAttributeList().add(cdAttribute);
         new Link<>(attributeInAST, cdAttribute, link);

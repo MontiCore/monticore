@@ -11,7 +11,7 @@ import java.util.function.UnaryOperator;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.HelperGrammar;
-import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
+import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
 import de.monticore.grammar.grammar._ast.ASTGenericType;
 import de.monticore.grammar.grammar._ast.ASTLexProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
@@ -48,7 +48,7 @@ public class ReferenceTypeTranslation implements
       link.target().setType(createSimpleReference("String"));
     }
 
-    for (Link<ASTAttributeInAST, ASTCDAttribute> link : rootLink.getLinks(ASTAttributeInAST.class,
+    for (Link<ASTAdditionalAttribute, ASTCDAttribute> link : rootLink.getLinks(ASTAdditionalAttribute.class,
         ASTCDAttribute.class)) {
       ASTType type = determineTypeToSetForAttributeInAST(
           link.source().getGenericType(), rootLink.source());

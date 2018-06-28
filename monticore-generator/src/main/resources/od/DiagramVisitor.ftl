@@ -44,9 +44,10 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
         String name = StringTransformations.uncapitalize(reporting.getASTNodeNameFormatted(node));
         printObject(name, "${astName}");
         pp.indent();
-      <#if genHelper.isSymbolClass(astName, genHelper)>
-        if (node.isPresent${symbolName}Symbol()) {
-          String symName = StringTransformations.uncapitalize(reporting.getSymbolNameFormatted(node.get${symbolName}SymbolOpt().get()));
+      <#assign symbolName=genHelper.getSymbolName(astName, genHelper)>
+      <#if symbolName.isPresent()>
+        if (node.isPresent${symbolName.get()}Symbol()) {
+          String symName = StringTransformations.uncapitalize(reporting.getSymbolNameFormatted(node.get${symbolName.get()}SymbolOpt().get()));
           pp.println("symbol = " + symName + ";");
         } else if (printEmptyOptional) {
           pp.println("symbol = absent;");
@@ -59,8 +60,8 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
           pp.println("enclosingScope = absent;");
         }
       <#if genHelper.isScopeClass(astName, genHelper)>
-        if (node.isPresentSpanned${symbolName}Scope()) {
-          String scopeName = StringTransformations.uncapitalize(reporting.getScopeNameFormatted(node.getSpanned${symbolName}ScopeOpt().get()));
+        if (node.isPresentSpanned${genHelper.getCdName()}Scope()) {
+          String scopeName = StringTransformations.uncapitalize(reporting.getScopeNameFormatted(node.getSpanned${genHelper.getCdName()}ScopeOpt().get()));
           pp.println("spanningScope = " + scopeName + ";");
         } else if (printEmptyOptional) {
           pp.println("spannedScope = absent;");

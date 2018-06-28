@@ -30,7 +30,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.RegExpBuilder;
-import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
+import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
 import de.monticore.grammar.grammar._ast.ASTConstant;
 import de.monticore.grammar.grammar._ast.ASTConstantGroup;
 import de.monticore.grammar.grammar._ast.ASTLexActionOrPredicate;
@@ -576,8 +576,8 @@ public class MCGrammarSymbolTableHelper {
   
   public static boolean isAttributeIterated(MCProdAttributeSymbol attrSymbol) {
     return attrSymbol.getAstNode().isPresent()
-        && attrSymbol.getAstNode().get() instanceof ASTAttributeInAST
-        && isAttributeIterated((ASTAttributeInAST) attrSymbol.getAstNode().get());
+        && attrSymbol.getAstNode().get() instanceof ASTAdditionalAttribute
+        && isAttributeIterated((ASTAdditionalAttribute) attrSymbol.getAstNode().get());
   }
   
   /**
@@ -585,7 +585,7 @@ public class MCGrammarSymbolTableHelper {
    * @param ast
    * @return
    */
-  public static boolean isAttributeIterated(ASTAttributeInAST ast) {
+  public static boolean isAttributeIterated(ASTAdditionalAttribute ast) {
     if (!ast.isPresentCard()) {
       return false;
     }
@@ -598,13 +598,13 @@ public class MCGrammarSymbolTableHelper {
   
   public static Optional<Integer> getMax(MCProdAttributeSymbol attrSymbol) {
     if (!attrSymbol.getAstNode().isPresent()
-        || !(attrSymbol.getAstNode().get() instanceof ASTAttributeInAST)) {
+        || !(attrSymbol.getAstNode().get() instanceof ASTAdditionalAttribute)) {
       return Optional.empty();
     }
-    return getMax((ASTAttributeInAST) attrSymbol.getAstNode().get());
+    return getMax((ASTAdditionalAttribute) attrSymbol.getAstNode().get());
   }
   
-  public static Optional<Integer> getMax(ASTAttributeInAST ast) {
+  public static Optional<Integer> getMax(ASTAdditionalAttribute ast) {
     if (ast.isPresentCard()
         && ast.getCard().isPresentMax()) {
       String max = ast.getCard().getMax();
@@ -617,7 +617,7 @@ public class MCGrammarSymbolTableHelper {
           return Optional.of(x);
         }
         catch (NumberFormatException ignored) {
-          Log.warn("0xA0140 Failed to parse an integer value of max of ASTAttributeInAST "
+          Log.warn("0xA0140 Failed to parse an integer value of max of ASTAdditionalAttribute "
               + ast.getName() + " from string " + max);
         }
       }
@@ -627,13 +627,13 @@ public class MCGrammarSymbolTableHelper {
   
   public static Optional<Integer> getMin(MCProdAttributeSymbol attrSymbol) {
     if (!attrSymbol.getAstNode().isPresent()
-        || !(attrSymbol.getAstNode().get() instanceof ASTAttributeInAST)) {
+        || !(attrSymbol.getAstNode().get() instanceof ASTAdditionalAttribute)) {
       return Optional.empty();
     }
-    return getMin((ASTAttributeInAST) attrSymbol.getAstNode().get());
+    return getMin((ASTAdditionalAttribute) attrSymbol.getAstNode().get());
   }
   
-  public static Optional<Integer> getMin(ASTAttributeInAST ast) {
+  public static Optional<Integer> getMin(ASTAdditionalAttribute ast) {
     if (ast.isPresentCard()
         && ast.getCard().isPresentMin()) {
       String min = ast.getCard().getMin();
@@ -642,7 +642,7 @@ public class MCGrammarSymbolTableHelper {
         return Optional.of(x);
       }
       catch (NumberFormatException ignored) {
-        Log.warn("0xA0141 Failed to parse an integer value of max of ASTAttributeInAST "
+        Log.warn("0xA0141 Failed to parse an integer value of max of ASTAdditionalAttribute "
             + ast.getName() + " from string " + min);
       }
     }

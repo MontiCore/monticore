@@ -8,7 +8,7 @@ import de.monticore.grammar.grammar._ast.ASTASTRule;
 import de.monticore.grammar.grammar._ast.ASTAbstractProd;
 import de.monticore.grammar.grammar._ast.ASTAlt;
 import de.monticore.grammar.grammar._ast.ASTAnything;
-import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
+import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
 import de.monticore.grammar.grammar._ast.ASTBlock;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTConcept;
@@ -44,9 +44,11 @@ import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTNonTerminalSeparator;
 import de.monticore.grammar.grammar._ast.ASTOptionValue;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
+import de.monticore.grammar.grammar._ast.ASTScopeRule;
 import de.monticore.grammar.grammar._ast.ASTSemanticpredicateOrAction;
 import de.monticore.grammar.grammar._ast.ASTStartRule;
 import de.monticore.grammar.grammar._ast.ASTSymbolDefinition;
+import de.monticore.grammar.grammar._ast.ASTSymbolRule;
 import de.monticore.grammar.grammar._ast.ASTTerminal;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor;
 import de.monticore.literals.prettyprint.LiteralsPrettyPrinterConcreteVisitor;
@@ -150,6 +152,13 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     if (a.isPresentReferencedSymbol()) {
       print("@");
       print(a.getReferencedSymbol());
+    }
+    
+    if (a.isGenSymbol()) {
+      print("!!");
+      if (a.isPresentSymbolName()) {
+        print(a.getSymbolName());
+      }
     }
     
     if (a.isPlusKeywords()) {
@@ -378,11 +387,53 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
       }
     }
     
-    if (!a.getMethodList().isEmpty() || !a.getAttributeInASTList().isEmpty()) {
+    if (!a.getMethodList().isEmpty() || !a.getAdditionalAttributeList().isEmpty()) {
       
       println(" = ");
       getPrinter().indent();
-      printList(a.getAttributeInASTList().iterator(), "");
+      printList(a.getAdditionalAttributeList().iterator(), "");
+      printList(a.getMethodList().iterator(), "");
+    }
+    
+    getPrinter().print(";");
+    getPrinter().unindent();
+    CommentPrettyPrinter.printPostComments(a, getPrinter());
+    getPrinter().println();
+    
+  }
+  
+  @Override
+  public void handle(ASTSymbolRule a) {
+    CommentPrettyPrinter.printPreComments(a, getPrinter());
+    print("symbolrule ");
+    
+    print(a.getType());
+    
+    if (!a.getSuperClassList().isEmpty()) {
+      getPrinter().print(" extends ");
+      String comma = "";
+      for (ASTGenericType x : a.getSuperClassList()) {
+        getPrinter().print(comma);
+        x.accept(getRealThis());
+        comma = ", ";
+      }
+    }
+    
+    if (!a.getSuperInterfaceList().isEmpty()) {
+      getPrinter().print(" astimplements ");
+      String comma = "";
+      for (ASTGenericType x : a.getSuperInterfaceList()) {
+        getPrinter().print(comma);
+        x.accept(getRealThis());
+        comma = ", ";
+      }
+    }
+    
+    if (!a.getMethodList().isEmpty() || !a.getAdditionalAttributeList().isEmpty()) {
+      
+      println(" = ");
+      getPrinter().indent();
+      printList(a.getAdditionalAttributeList().iterator(), "");
       printList(a.getMethodList().iterator(), "");
     }
     
@@ -393,7 +444,48 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     getPrinter().println();
     
   }
-  
+
+  @Override
+  public void handle(ASTScopeRule a) {
+    CommentPrettyPrinter.printPreComments(a, getPrinter());
+    print("scoperule ");
+    
+    if (!a.getSuperClassList().isEmpty()) {
+      getPrinter().print(" extends ");
+      String comma = "";
+      for (ASTGenericType x : a.getSuperClassList()) {
+        getPrinter().print(comma);
+        x.accept(getRealThis());
+        comma = ", ";
+      }
+    }
+    
+    if (!a.getSuperInterfaceList().isEmpty()) {
+      getPrinter().print(" astimplements ");
+      String comma = "";
+      for (ASTGenericType x : a.getSuperInterfaceList()) {
+        getPrinter().print(comma);
+        x.accept(getRealThis());
+        comma = ", ";
+      }
+    }
+    
+    if (!a.getMethodList().isEmpty() || !a.getAdditionalAttributeList().isEmpty()) {
+      
+      println(" = ");
+      getPrinter().indent();
+      printList(a.getAdditionalAttributeList().iterator(), "");
+      printList(a.getMethodList().iterator(), "");
+    }
+    
+    getPrinter().print(";");
+    getPrinter().unindent();
+    CommentPrettyPrinter.printPostComments(a, getPrinter());
+    getPrinter().println();
+    getPrinter().println();
+    
+  }
+
   @Override
   public void handle(ASTMethod a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
@@ -480,7 +572,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
   }
   
   @Override
-  public void handle(ASTAttributeInAST a) {
+  public void handle(ASTAdditionalAttribute a) {
     
     if (a.isPresentName()) {
       getPrinter().print(a.getName());
@@ -709,6 +801,10 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     printList(a.getConceptList().iterator(), "");
     if (a.getStartRulesOpt().isPresent()) {
       a.getStartRules().accept(getRealThis());
+    }
+    printList(a.getSymbolRuleList().iterator(), "");
+    if (a.getScopeRulesOpt().isPresent()) {
+      a.getScopeRules().accept(getRealThis());
     }
     
     getPrinter().unindent();
@@ -964,12 +1060,25 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
   public void handle(ASTSymbolDefinition node) {
     if (node.isGenSymbol()) {
       getPrinter().print(" symbol ");
-      if (node.isPresentSymbolKind()) {
-        getPrinter().print(node.getSymbolKind() + " ");
+      if (node.isPresentSymbolName()) {
+        getPrinter().print(node.getSymbolName() + " ");
       }
     }
     if (node.isGenScope()) {
       getPrinter().print(" scope ");
+      if (node.isOrdered() || node.isNo_shadowing() || node.isExporting()) {
+        getPrinter().print("(");
+        if (node.isOrdered()) {
+          getPrinter().print(" ordered ");
+        }
+        if (node.isNo_shadowing()) {
+          getPrinter().print(" no_shadowing ");
+        }
+        if (node.isExporting()) {
+          getPrinter().print(" exporting ");
+        }
+        getPrinter().print(")");
+     }
     }
   }
   

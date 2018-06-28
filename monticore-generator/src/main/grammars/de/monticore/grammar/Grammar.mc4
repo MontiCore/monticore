@@ -52,6 +52,10 @@ component grammar Grammar extends de.monticore.literals.Literals {
          |
            ASTRule
          |
+           SymbolRule
+         | 
+           ScopeRule
+         |
            Concept
          |
            StartRule
@@ -60,10 +64,11 @@ component grammar Grammar extends de.monticore.literals.Literals {
 
   MCImportStatement = "import" import:(Name& || ".")+ ("." star:["*"])? ";" ;
 
-  // One OptionBlock and one StartRule only
+  // One OptionBlock, one StartRule, one ScopeRule only
   astrule MCGrammar =
     grammarOptions:GrammarOption max=1
-    startRules:StartRule max=1 ;
+    startRules:StartRule max=1
+    scopeRules:ScopeRule max=1 ;
 
 
   /** A GrammarReference references another grammar
@@ -85,6 +90,8 @@ component grammar Grammar extends de.monticore.literals.Literals {
         FollowOption
       |
         AntlrOption
+      | 
+        KeywordOption
       )*
     "}" ;
 
@@ -103,6 +110,10 @@ component grammar Grammar extends de.monticore.literals.Literals {
   */
   AntlrOption =
     Name  ("=" value:Name |"=" value:String)? ;
+    
+  KeywordOption = 
+    ["allkeywords"] | 
+    "keywords" Name+ ";";
 
   /** The start rule should be the rule defining the whole model.
   If there is no start rule the first rule of the grammar is the start rule.
@@ -344,8 +355,8 @@ component grammar Grammar extends de.monticore.literals.Literals {
   @attribute iteration Iteration of nonterminal
   */
   NonTerminal implements RuleComponent =
-    (usageName:Name&?  ":")?
-    Name ("@" referencedSymbol:Name)?
+    (usageName:Name&  ":")?
+    Name ("@" referencedSymbol:Name)? (genSymbol:["!!"] symbolName:Name?)?
     (plusKeywords:["&"] | iteration:["?"|"*"|"+"] )*;
 
 
@@ -415,7 +426,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
   @attribute aSTSuperInterface Super interfaces abstract syntax only
   @attribute aSTSuperClass Super productions abstract syntax only
   @attribute methods Methods to be added to the class generation
-  @attribute attributeInAST Attributes to be added to the class generation
+  @attribute AdditionalAttribute Attributes to be added to the class generation
   */
   ASTRule =
      ("astrule" | "ast" /* TODO (BOOTSTRAP): MB ast is deprecated: Remove in version 4.5.4 */ ) type:Name
@@ -425,7 +436,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
       "astimplements" aSTSuperInterface:(GenericType || ",")+
     )*
     (
-      "=" ( Method | AttributeInAST )*
+      "=" ( Method | AdditionalAttribute )*
     )? ";";
 
 
@@ -465,7 +476,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
   @attribute genericType Name of the referring type
   @attribute card Cardinality
   */
-  AttributeInAST =
+  AdditionalAttribute =
     (Name  ":")?
     GenericType
     Card?;
@@ -537,7 +548,37 @@ component grammar Grammar extends de.monticore.literals.Literals {
   // Symbol Table
 
   SymbolDefinition =
-    (genSymbol:[Symbol:"symbol"] ("("symbolKind:Name ")")? ) |
-    genScope:["scope"] ;
+    (genSymbol:["symbol"] ("("symbolName:Name ")")? ) |
+    genScope:["scope"] ("(" (["no_shadowing"] | ["exporting"] | ["ordered"])+ ")")?;
 
+  /** An SymbolRule contains additional information for the class generation
+  process
+  @attribute type Type this rule refers to
+  @attribute superInterface Super interfaces abstract syntax only
+  @attribute superClass Super productions abstract syntax only
+  @attribute methods Methods to be added to the class generation
+  @attribute additionalAttribute Attributes to be added to the class generation
+  */
+  SymbolRule =
+     "symbolrule"  type:Name
+    (
+      "extends" superClass:(GenericType || ",")+
+    |
+      "implements" superInterface:(GenericType || ",")+
+    )*
+    (
+      "=" ( Method | AdditionalAttribute )*
+    )? ";";
+    
+  ScopeRule =
+  	"scoperule" (
+      "extends" superClass:(GenericType || ",")+
+    |
+      "implements" superInterface:(GenericType || ",")+
+    )*
+    (
+      "=" ( Method | AdditionalAttribute )*
+    )? 
+  	 ";";
+    
 }

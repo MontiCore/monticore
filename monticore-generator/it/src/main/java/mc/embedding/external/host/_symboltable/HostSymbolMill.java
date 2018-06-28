@@ -4,8 +4,6 @@
 
 package mc.embedding.external.host._symboltable;
 
-import static mc.embedding.external.host._symboltable.HostSymbol.HostSymbolBuilder;
-
 public class HostSymbolMill {
 
   private static HostSymbolMill getMill() {

@@ -42,30 +42,30 @@ public class RemoveOverriddenAttributesTranslation implements
 
   private boolean isOverridden(ASTNode source, Link<?, ASTCDClass> classLink) {
     Optional<String> usageName = getUsageName(classLink.source(), source);
-    Set<ASTAttributeInAST> attributesInASTLinkingToSameClass = attributesInASTLinkingToSameClass(
+    Set<ASTAdditionalAttribute> attributesInASTLinkingToSameClass = attributesInASTLinkingToSameClass(
         classLink);
     attributesInASTLinkingToSameClass.remove(source);
 
     boolean matchByUsageName = usageName.isPresent() && attributesInASTLinkingToSameClass.stream()
-        .map(ASTAttributeInAST::getNameOpt)
+        .map(ASTAdditionalAttribute::getNameOpt)
         .filter(Optional::isPresent)
         .map(Optional::get)
         .anyMatch(usageName.get()::equals);
 
     boolean matchByTypeName = !usageName.isPresent() && attributesInASTLinkingToSameClass.stream()
         .filter(attributeInAST -> !attributeInAST.getNameOpt().isPresent())
-        .map(ASTAttributeInAST::getGenericType)
+        .map(ASTAdditionalAttribute::getGenericType)
         .map(ASTGenericType::getTypeName)
         .anyMatch(getName(source).orElse("")::equals);
 
     return matchByUsageName || matchByTypeName;
   }
 
-  private Set<ASTAttributeInAST> attributesInASTLinkingToSameClass(Link<?, ASTCDClass> link) {
+  private Set<ASTAdditionalAttribute> attributesInASTLinkingToSameClass(Link<?, ASTCDClass> link) {
     return link.rootLink().getLinks(ASTNode.class, ASTCDClass.class).stream()
         .filter(attributeLink -> attributeLink.target() == link.target())
         .flatMap(astRuleLink ->
-            astRuleLink.getLinks(ASTAttributeInAST.class, ASTCDAttribute.class).stream())
+            astRuleLink.getLinks(ASTAdditionalAttribute.class, ASTCDAttribute.class).stream())
         .map(Link::source).collect(Collectors.toSet());
   }
 
