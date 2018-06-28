@@ -542,8 +542,8 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
   }
   
   private void computeStartParserProd(ASTMCGrammar astGrammar) {
-    if (!astGrammar.getStartRuleList().isEmpty()) {
-      String name = astGrammar.getStartRuleList().get(0).getName();
+    if (astGrammar.getStartRulesOpt().isPresent()) {
+      String name = astGrammar.getStartRules().getName();
       Optional<MCProdSymbol> prod = grammarSymbol.getProdWithInherited(name);
       if (!prod.isPresent()) {
         Log.error("0xA0243 Rule " + name + " couldn't be found!");

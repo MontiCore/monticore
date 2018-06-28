@@ -696,8 +696,9 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     }
     println(" {");
     getPrinter().indent();
-    
-    printList(a.getGrammarOptionList().iterator(), "");
+    if (a.getGrammarOptionsOpt().isPresent()) {
+      a.getGrammarOptions().accept(getRealThis());
+    }
     printList(a.getLexProdList().iterator(), "");
     printList(a.getClassProdList().iterator(), "");
     printList(a.getExternalProdList().iterator(), "");
@@ -706,7 +707,9 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     printList(a.getAbstractProdList().iterator(), "");
     printList(a.getASTRuleList().iterator(), "");
     printList(a.getConceptList().iterator(), "");
-    printList(a.getStartRuleList().iterator(), "");
+    if (a.getStartRulesOpt().isPresent()) {
+      a.getStartRules().accept(getRealThis());
+    }
     
     getPrinter().unindent();
     print("}");

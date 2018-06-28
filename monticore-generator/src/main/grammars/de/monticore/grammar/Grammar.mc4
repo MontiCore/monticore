@@ -62,8 +62,8 @@ component grammar Grammar extends de.monticore.literals.Literals {
 
   // One OptionBlock and one StartRule only
   astrule MCGrammar =
-    ASTGrammarOption max=1
-    ASTStartRule max=1 ;
+    grammarOptions:GrammarOption max=1
+    startRules:StartRule max=1 ;
 
 
   /** A GrammarReference references another grammar
