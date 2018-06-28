@@ -38,10 +38,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
     final Path builderFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), builderName + ".java");
     ASTMCGrammar grammar = genHelper.getGrammarSymbol().getAstGrammar().get();
-    Optional<ASTScopeRule> scopeRule = Optional.empty();
-    if (!grammar.isEmptyScopeRules()) {
-      scopeRule = Optional.of(grammar.getScopeRule(0));
-    }
+    Optional<ASTScopeRule> scopeRule = grammar.getScopeRulesOpt();
     genEngine.generateNoA("symboltable.Scope", filePath, className, scopeRule);
     genEngine.generateNoA("symboltable.ScopeBuilder", builderFilePath, builderName, scopeName + GeneratorHelper.BUILDER);
   }

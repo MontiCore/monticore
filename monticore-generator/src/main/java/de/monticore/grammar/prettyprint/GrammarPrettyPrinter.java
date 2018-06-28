@@ -800,7 +800,9 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     printList(a.getConceptList().iterator(), "");
     printList(a.getStartRuleList().iterator(), "");
     printList(a.getSymbolRuleList().iterator(), "");
-    printList(a.getScopeRuleList().iterator(), "");
+    if (a.getScopeRulesOpt().isPresent()) {
+      a.getScopeRules().accept(getRealThis());
+    }
     
     getPrinter().unindent();
     print("}");

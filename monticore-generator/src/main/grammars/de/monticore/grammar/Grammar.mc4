@@ -68,7 +68,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
   astrule MCGrammar =
     ASTGrammarOption max=1
     ASTStartRule max=1
-    ASTScopeRule max=1 ;
+    scopeRules:ScopeRule max=1 ;
 
 
   /** A GrammarReference references another grammar
