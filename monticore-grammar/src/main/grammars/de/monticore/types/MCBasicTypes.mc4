@@ -12,7 +12,7 @@ package de.monticore.types;
  * in grammar extensions).
  *
 */
-grammar MCBasicTypes extends de.monticore.MCBasics, de.monticore.literals.Literals {
+component grammar MCBasicTypes extends de.monticore.MCBasics, de.monticore.literals.Literals {
 
     /*========================================================================*/
     /*= Qualified Names ======================================================*/
@@ -131,10 +131,10 @@ grammar MCBasicTypes extends de.monticore.MCBasics, de.monticore.literals.Litera
     interface ReferenceType extends Type;
     
     /** ASTSimpleReferenceType represents types like class or interface types
-            which could have a qualified name like this: a.b.c<Arg>. The
+            which could have a qualified name like this: a.b.c. The
             qualification stored in the name (a.b) could be package or a type name.
             The qualified name could contain type arguments only at the end.
-            a.b.c<Arg>.d would be one ASTSimpleReferenceType (a.b.c<Arg>) and one
+            a.b.c.d would be one ASTSimpleReferenceType (a.b.c) and one
             ASTQualifiedType (d).
             @attribute name          Name of the type
                                      Note: Although the class name contains the

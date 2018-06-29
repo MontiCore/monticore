@@ -1,8 +1,8 @@
 package de.monticore.types;
 
+import de.monticore.types.mcbasicgenericstypestest._parser.MCBasicGenericsTypesTestParser;
 import de.monticore.types.mcbasictypes._ast.ASTPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTType;
-
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
@@ -14,7 +14,7 @@ import java.util.Optional;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class MCBasicTypesTest {
+public class MCBasicGenericsTypesTest {
 
   @BeforeClass
   public static void disableFailQuick() {
@@ -22,22 +22,22 @@ public class MCBasicTypesTest {
   }
 
   @Test
-  public void testPrimitiveTypes() {
+  public void testBasicGenericsTypes() {
 
     Class foo = boolean.class;
 
-    String[] primitives = new String[]{"boolean", "byte", "char", "short", "int", "long",
-            "float", "double"};
+    String[] types = new String[]{"List<String>","Optional<String>"};
     try {
-      for (String primitive : primitives) {
-        MCBasicTypesTestParser mcBasicTypesParser = new MCBasicTypesTestParser();
+      for (String testType : types) {
+        MCBasicGenericsTypesTestParser mcBasicTypesParser = new MCBasicGenericsTypesTestParser();
         // .parseType(primitive);
 
-        Optional<? extends ASTType> type = mcBasicTypesParser.parse_StringPrimitiveType(primitive);
+        Optional<ASTType> type = mcBasicTypesParser.parse_StringType(testType);
 
         assertNotNull(type);
         assertTrue(type.isPresent());
-        assertTrue(type.get() instanceof ASTPrimitiveType);
+        //assertTrue(type.get() instanceof ASTPrimitiveType);
+
       }
     } catch (IOException e) {
       e.printStackTrace();

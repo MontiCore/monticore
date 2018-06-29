@@ -36,4 +36,45 @@ public class UsedLexNTNotDefinedTest extends CocoTest {
     testValidGrammar("cocos.valid.Attributes", checker);
   }
 
+  @Test
+  public void test2() {
+    test();
+  }
+
+  public Stringc test() {
+    Stringc a;
+    String y="y",x="j",c="e";
+
+    y = x = c = 1+y +1   ;
+
+    int i = 1;
+
+    double h =  i + 1;
+    System.out.println(h);
+    Stringb b = new Stringb();
+
+//    while( (a=readLine(file))!=null) {
+//      print a;
+//    }
+
+      if((a=b) instanceof Stringb) {
+        System.out.println("b");
+      }
+
+    if((a=b) instanceof Stringc) {
+      System.out.println("c");
+    }
+
+    return (a=b);
+  }
+
+  private class Stringb extends Stringc {
+
+  }
+
+
+  private class Stringc {
+
+  }
+
 }

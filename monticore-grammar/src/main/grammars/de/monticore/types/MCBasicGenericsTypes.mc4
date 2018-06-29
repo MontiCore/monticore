@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.types;
+
+/**
+ * This grammar introduces basic generics List<> and Optional<>
+*/
+component grammar MCBasicGenericsTypes extends de.monticore.types.MCBasicTypes {
+
+  ListType implements ReferenceType, Type = "List<" ReferenceType ">";
+
+  OptionalType implements ReferenceType, Type = "Optional<" ReferenceType ">";
+
+
+}
