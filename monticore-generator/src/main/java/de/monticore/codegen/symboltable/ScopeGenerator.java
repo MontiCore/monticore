@@ -5,11 +5,14 @@
  */
 package de.monticore.codegen.symboltable;
 
+import java.util.Collection;
+
 import de.monticore.generating.GeneratorEngine;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
 
 public interface ScopeGenerator {
   
   void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
-      IterablePath handCodedPath, String languageName);
+      IterablePath handCodedPath, String languageName, Collection<MCProdSymbol> allSymbolDefiningRules);
 }

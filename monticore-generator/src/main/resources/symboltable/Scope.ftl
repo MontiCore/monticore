@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className","scopeRule")}
+${signature("className","scopeRule", "symbolNames")}
 
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign superClass = " extends de.monticore.symboltable.CommonScope ">
@@ -36,6 +36,13 @@ public class ${className} ${superClass} ${superInterfaces} {
   public ${className}(Optional<MutableScope> enclosingScope) {
     super(enclosingScope, true);
   }
+  
+  <#list symbolNames?keys as symbol>
+  public Optional<${symbolNames[symbol]}> resolve${symbol}(String name) {
+    return resolve(name, ${symbolNames[symbol]}.KIND);
+  }
+  
+  </#list>
   
   <#if scopeRule.isPresent()>
     <#list scopeRule.get().getAdditionalAttributeList() as attr>
