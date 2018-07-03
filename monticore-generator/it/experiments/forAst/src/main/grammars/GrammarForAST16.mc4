@@ -1,0 +1,16 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+/* Used in the Reference Manual 
+   Chapter 5, demonstrating AST results
+*/
+
+grammar GrammarForAST16 {
+
+B = "...";
+interface I;
+ast I =
+  y:B*;
+
+C implements I = "...";
+
+}
+

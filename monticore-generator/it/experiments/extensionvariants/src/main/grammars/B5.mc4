@@ -1,0 +1,19 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+grammar B5 extends A {
+
+  // M is changed, but only used in new productions
+
+  // Orig:  M = Decimal; 
+  M = Integer;
+
+  // Orig:  N = "one" M;
+  N = "ein" New "ende";
+
+  // Orig:  P = "some" M*;
+  P = "einige" New* "ende";
+
+  // Orig:  Q = "optional" M?;
+  Q = "opti" New?;
+
+  New = "here_M_can_be_used" M ":" M* ":" M?;
+}

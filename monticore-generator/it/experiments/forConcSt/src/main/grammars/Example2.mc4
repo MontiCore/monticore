@@ -1,0 +1,69 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+/* Used in the Reference Manual 
+   Chapter 4, Section 4.2 Productions
+*/
+
+grammar Example2 extends de.monticore.MCBasics {
+
+// ----------------------- Startbeispiel fuer Produktionen
+
+  A = "Hello" "World" "." ;
+  B = ("Good Morning" Name ) | A ;
+  C = "Hello" (Name || ",")+ ;
+  D = A B* (C | D)
+      | B* A ;
+
+// ----------------------- Augmentation of Terminals for Storage in the AST
+
+  E = "Hello"
+    (who: "World" | who: "Tom")
+    "!";
+
+  F = ["initial"]?;
+
+
+// ----------------------- Alternate Terminals become Integers
+
+  G = vis:[ PUBLIC:"+"  | "public" |
+            PRIVATE:"-" | "private"];
+
+
+// ----------------------- Explicit Definition of an Enumeration.
+
+  enum VISIBILITY =
+    PUBLIC:"+"  | "public" |
+    PRIVATE:"-" | "private" ;
+  H = vis:VISIBILITY;
+
+
+// ----------------------- Automaton small example
+
+  Automaton =
+   "automaton" Name "{"
+     ( State | Transition )*
+   "}";
+
+
+   State = "...";
+   Transition = "...";
+
+// ----------------------- A concept
+
+concept antlr {
+  parserjava {
+    public int ltCounter = 0;
+
+    public void incCounter(int i){
+      this.ltCounter = this.ltCounter + i;
+    }
+  }
+  
+  lexerjava {     
+    public String capitalize(String s){
+      return de.se_rwth.commons.StringTransformations.capitalize(s);
+    }
+  }
+}
+
+}
+

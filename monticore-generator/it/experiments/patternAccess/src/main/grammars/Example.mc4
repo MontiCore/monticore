@@ -1,0 +1,12 @@
+/* Used in the Reference Manual 
+   Chapter 11, design pattern
+*/
+
+grammar Example {
+
+  X = a:Person b:Person? c:Person*;
+
+  Person = "...";
+
+}
+

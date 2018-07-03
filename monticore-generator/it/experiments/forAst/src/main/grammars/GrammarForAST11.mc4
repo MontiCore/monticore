@@ -1,0 +1,17 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+/* Used in the Reference Manual 
+   Chapter 5, demonstrating AST results
+*/
+
+component grammar GrammarForAST11 {
+
+interface I;
+A implements I = "x";
+
+B astimplements java.util.Observer = "y";
+
+abstract C astimplements java.util.Observer = "y";
+
+
+}
+

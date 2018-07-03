@@ -1,0 +1,16 @@
+// The ping pong game
+automaton PingPong {
+  state NoGame true <<initial>>;
+  state Pung true && v1 && !false && v2 <<final>>;
+
+  NoGame - startGame > Ping;
+
+  Ping - stopGame > NoGame;
+  Pong - stopGame > NoGame;
+
+  state Ping var1 ;
+  state Pong var2 <<final>>;
+
+  Ping - returnBall > Pong;
+  Pong - returnBall > Ping;
+}

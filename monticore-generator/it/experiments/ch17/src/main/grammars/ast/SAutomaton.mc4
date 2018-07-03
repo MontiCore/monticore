@@ -1,0 +1,8 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+package ast;
+
+grammar SAutomaton extends de.monticore.MCBasics {
+  Automaton  = Name (State | Transition)* ;
+  State      = Name (["initial"] | ["final"])* ;
+  Transition = from:Name input:Name to:Name ;
+}

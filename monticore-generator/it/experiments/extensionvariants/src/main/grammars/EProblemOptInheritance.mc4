@@ -1,0 +1,19 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+grammar EProblemOptInheritance extends D {
+
+  // Orig:  S = "text" a:S* b:S? c:S;
+  S = "bla";
+
+  // Orig: T = "text" a:S* b:S? c:S;
+  T = "text" b:S? c:S;
+
+/*
+  This is an extension that doesn't compile: (1 error)
+
+  Overriding " b:S?" by another " b:S?" in nonterminal T
+  while also overriding S itself
+  leads to a signature conflict for  getOptB()
+
+  See RefMan for avoiding this issue.
+*/
+}

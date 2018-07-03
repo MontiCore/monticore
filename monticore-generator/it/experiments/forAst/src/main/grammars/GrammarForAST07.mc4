@@ -1,0 +1,14 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+/* Used in the Reference Manual 
+   Chapter 5, demonstrating AST results
+*/
+
+grammar GrammarForAST07 {
+
+abstract AutomatonElement;
+State extends AutomatonElement = "..." ;
+Transition extends AutomatonElement = "..." ;
+
+
+}
+

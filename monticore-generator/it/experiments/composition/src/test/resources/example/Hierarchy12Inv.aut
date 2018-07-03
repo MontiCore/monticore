@@ -1,0 +1,16 @@
+automaton Hierarchy12Inv {
+
+  state A true  <<initial>> {
+    A - x > B;
+    A - y > A;
+    state C  var1 && var2 {
+      C - x > B;
+      C - y > C;
+    }
+  }
+
+  state B false  <<final>> {
+    B - x > A;
+    B - y > A;
+  }
+}

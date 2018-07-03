@@ -1,0 +1,16 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+
+grammar Automaton5 extends de.monticore.MCBasics {
+
+  Automaton =  "automaton" Name "{" AutElement* "}";
+
+  // The interface allows extension
+  interface AutElement;
+  
+  State implements AutElement = "state" Name ";";
+  
+  Transition implements AutElement =
+    from:Name "-" input:Name ">" to:Name ";";
+
+}
+
