@@ -123,7 +123,7 @@ public class SymbolTableGenerator {
         resolvingFilterGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol);
       }
   
-      scopeGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol.getName() + genHelper.SCOPE);
+      scopeGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol.getName() + genHelper.SCOPE, allSymbolDefiningRules);
     }
     
     Log.debug("End symbol table generation for the grammar " + astGrammar.getName(), LOG);
