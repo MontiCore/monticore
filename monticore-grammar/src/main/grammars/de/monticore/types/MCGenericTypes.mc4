@@ -12,7 +12,7 @@ package de.monticore.types;
  * in grammar extensions).
  *
 */
-component grammar MCGenericTypes extends de.monticore.MCBasics {
+component grammar MCGenericTypes extends de.monticore.types.MCExtGenericsTypes {
 
-
+  GenericType implements ReferenceType = type:SimpleReferenceType "<" typeParameter:SimpleReferenceType ">";
 }

@@ -1,20 +1,18 @@
 package de.monticore.types;
 
 import de.monticore.literals.literals._ast.ASTBooleanLiteral;
-import de.monticore.mcexpressions._ast.ASTBooleanAndOpExpression;
-import de.monticore.mcexpressions._ast.ASTBooleanOrOpExpression;
-import de.monticore.mcexpressions._ast.ASTNameExpression;
+import de.monticore.mcexpressions._ast.*;
 import de.monticore.mcexpressions._visitor.MCExpressionsVisitor;
 
 
-public class MCBasicTypesCalculatorVisitor implements MCExpressionsVisitor {
+public class MCBasicTypesBooleanCalculatorVisitor implements MCExpressionsVisitor {
 
   public Boolean isBool = false;
 
 
   public MCBasicTypesCalculator basicTypesCalculator;
 
-  MCBasicTypesCalculatorVisitor(MCBasicTypesCalculator calc) {
+  MCBasicTypesBooleanCalculatorVisitor(MCBasicTypesCalculator calc) {
     this.basicTypesCalculator = calc;
   }
 
@@ -45,4 +43,15 @@ public class MCBasicTypesCalculatorVisitor implements MCExpressionsVisitor {
     this.isBool = this.basicTypesCalculator.isBool(nameExpression);
   }
 
+  @Override
+  public void handle(ASTIdentityExpression identityExpression) {
+    System.out.println("Visit IdentityExpression");
+    this.isBool = true;
+  }
+  
+  @Override
+  public void handle(ASTInstanceofExpression instanceofExpression) {
+    System.out.println("Visit InstanceOfExpression");
+    this.isBool = true;
+  }
 }

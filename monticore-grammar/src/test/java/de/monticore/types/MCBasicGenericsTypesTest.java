@@ -36,7 +36,6 @@ public class MCBasicGenericsTypesTest {
 
         assertNotNull(type);
         assertTrue(type.isPresent());
-        //assertTrue(type.get() instanceof ASTPrimitiveType);
 
       }
     } catch (IOException e) {

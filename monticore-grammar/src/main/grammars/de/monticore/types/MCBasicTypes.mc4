@@ -128,7 +128,7 @@ component grammar MCBasicTypes extends de.monticore.MCBasics, de.monticore.liter
     /*= Reference Types (Classes, Interfaces in OO) ==========================*/
     /*========================================================================*/
     
-    interface ReferenceType extends Type;
+
     
     /** ASTSimpleReferenceType represents types like class or interface types
             which could have a qualified name like this: a.b.c. The
@@ -142,7 +142,7 @@ component grammar MCBasicTypes extends de.monticore.MCBasics, de.monticore.liter
                                      one. So it is saved in an ASTStringList
             @attribute typeArguments The types between '<...>'
         */
-        SimpleReferenceType implements ReferenceType, Type =
+        SimpleReferenceType implements Type =
             (Name || ".")+;
 
     astrule SimpleReferenceType =
