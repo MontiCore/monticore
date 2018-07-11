@@ -63,11 +63,6 @@ public class CommonSymbolReference<T extends Symbol> implements SymbolReference<
             referencedName + "' (Kind " + referencedKind.getName() + ").");
       }
     }
-    else {
-      Log.debug("Full information of '" + referencedName + "' already loaded. Use cached "
-              + "version.",
-          CommonSymbolReference.class.getSimpleName());
-    }
 
     return referencedSymbol;
   }
