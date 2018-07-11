@@ -1,0 +1,15 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+/* Used in the Reference Manual 
+   Chapter 5, demonstrating AST results
+*/
+
+grammar GrammarForAST08 {
+
+State = "..." ;
+Transition = "..." ;
+AutomatonElement =
+    State | Transition;
+
+
+}
+

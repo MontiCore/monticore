@@ -1,0 +1,16 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+/* Used in the Reference Manual 
+   Chapter 4, Section 4.2 Productions
+*/
+
+grammar Interface1 extends de.monticore.MCBasics {
+
+// ----------------------- Interface Ex.
+
+  interface I;
+  A implements I = "...1";
+  B implements I = "...2";
+  C = I "...";
+
+}
+

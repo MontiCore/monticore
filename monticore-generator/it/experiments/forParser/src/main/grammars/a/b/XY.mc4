@@ -1,0 +1,7 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+package a.b;
+
+grammar XY {
+  Ax = "...";
+  B = "...";
+}

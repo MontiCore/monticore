@@ -1,0 +1,15 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+grammar BX1 extends A {
+
+  // M changed; P changed; M* reused in P
+
+  // Orig:  M = Decimal; 
+  M = Integer;
+
+  // direct inheritance doesn't work. We have to rename the attribute
+  // it is therefore CS-conservative, but not AST-conservative
+  // (but would not be necessary here at all)
+  // Orig:  P = "some" M*;
+  P = "some" mm:M*;
+
+}

@@ -1,0 +1,15 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+
+grammar Automaton3 extends de.monticore.MCBasics, de.monticore.MCLiterals {
+
+Automaton =
+  "automaton" Name "{" (State | Transition)* "}" ;
+
+State = "state" Name  prio:NatLiteral?
+  ( ["initial"] |  ["final"] )*
+  ( ("{" (State | Transition)* "}") | ";") ;
+
+Transition =
+  from:Name "-" input:Name ">" to:Name ";" ;
+  
+}

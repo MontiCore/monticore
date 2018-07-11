@@ -454,8 +454,8 @@ public class ParserGeneratorHelper {
   }
 
   public Optional<ASTAlt> getAlternativeForFollowOption(String prodName) {
-    return !astGrammar.getGrammarOptionList().isEmpty()
-            ? astGrammar.getGrammarOptionList().get(0).getFollowOptionList().stream()
+    return astGrammar.getGrammarOptionsOpt().isPresent()
+            ? astGrammar.getGrammarOptionsOpt().get().getFollowOptionList().stream()
             .filter(f -> f.getProdName().equals(prodName)).map(ASTFollowOption::getAlt).findFirst()
             : Optional.empty();
   }

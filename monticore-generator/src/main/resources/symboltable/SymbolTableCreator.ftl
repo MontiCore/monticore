@@ -44,7 +44,7 @@ public class ${className} extends de.monticore.symboltable.CommonSymbolTableCrea
   * @param rootNode the root node
   * @return the first scope that was created
   */
-  public Scope createFromAST(${astPrefix}${grammarName}Node rootNode) {
+  public Scope createFromAST(${topAstName} rootNode) {
     Log.errorIfNull(rootNode, "0xA7004${genHelper.getGeneratedErrorCode(ast)} Error by creating of the ${className} symbol table: top ast node is null");
     rootNode.accept(realThis);
     return getFirstCreatedScope();
@@ -66,11 +66,15 @@ public class ${className} extends de.monticore.symboltable.CommonSymbolTableCrea
 <#list rules as ruleSymbol>
   <#assign ruleName = ruleSymbol.getName()>
   <#assign ruleNameLower = ruleSymbol.getName()?uncap_first>
-  <#assign symbolName = ruleName + "Symbol">
+  <#if ruleSymbol.getSymbolDefinitionKind().isPresent()>
+    <#assign symbolName = ruleSymbol.getSymbolDefinitionKind().get() + "Symbol">
+  <#else>
+    <#assign symbolName = ruleSymbol.getName() + "Symbol">
+  </#if>
   <#if genHelper.isScopeSpanningSymbol(ruleSymbol)>
-  ${includeArgs("symboltable.symboltablecreators.ScopeSpanningSymbolMethods", ruleSymbol)}
+  ${includeArgs("symboltable.symboltablecreators.ScopeSpanningSymbolMethods", ruleSymbol, symbolName)}
   <#elseif genHelper.isSymbol(ruleSymbol)>
-  ${includeArgs("symboltable.symboltablecreators.SymbolMethods", ruleSymbol)}
+  ${includeArgs("symboltable.symboltablecreators.SymbolMethods", ruleSymbol, symbolName)}
   <#elseif genHelper.spansScope(ruleSymbol)>
   ${includeArgs("symboltable.symboltablecreators.ScopeMethods", ruleSymbol)}
   <#elseif genHelper.isStartRule(ruleSymbol)>

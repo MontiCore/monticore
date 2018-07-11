@@ -1,0 +1,14 @@
+// The ping pong game
+automaton PingPong {
+  state NoGame <<initial>>;
+  state Ping;
+  state Pong <<final>>;
+
+  NoGame - startGame > Ping;
+
+  Ping - stopGame > NoGame;
+  Pong - stopGame > NoGame;
+
+  Ping - returnBall > Pong;
+  Pong - returnBall > Ping;
+}

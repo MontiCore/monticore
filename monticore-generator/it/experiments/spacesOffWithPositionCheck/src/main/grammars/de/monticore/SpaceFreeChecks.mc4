@@ -1,0 +1,105 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+
+package de.monticore;
+
+/*
+ * with this grammar, we examine how to define a scannerless pasrer
+ * (actually the grammar is only "almost" scannerless
+ *
+ * The scanner is restricted in recognizing patterns and overlapping tokens,
+ * such as ">" and ">>" need to be taken especially into account.
+ * Scannerless parsing prevents these issues, but introduces different 
+ * ones:
+ *  * it is much slower
+ *  * Whitespaces (nonterminal WS) cannot simply be filtered from the 
+ *    token stream anymore, but need to be adressed at nonterminal level
+ *
+ */
+
+grammar SpaceFreeChecks extends de.monticore.MCBasics {
+ 
+  /* ***********************************************************
+   * Expressions with ">" and ">>" +
+   * Generic Types like "List<List<String>>"
+   */
+  interface Expression;
+
+  ShiftExpression implements Expression <160> =
+        leftExpression:Expression
+        (   shiftOp2:"<" "<" {noSpace()}?
+        |   shiftOp3:">" ">" {noSpace()}? ">" {noSpace()}?
+        |   shiftOp4:">" ">" {noSpace()}?
+        )
+        rightExpression:Expression;
+
+  ComparisonExpression implements Expression <150> =
+        leftExpression:Expression
+        (   comparison1:"<" "=" {noSpace()}?
+        |   comparison2:">" "=" {noSpace()}?
+        |   comparison3:">"
+        |   comparison4:"<"
+        )
+        rightExpression:Expression;
+
+  AddExpression implements Expression <170> =
+        leftExpression:Expression
+        (   additiveOp:"+"
+        |   additiveOp:"-"
+        )
+        rightExpression:Expression;
+
+  BracketExpression implements Expression <310>
+    =  "(" Expression ")" ;
+
+  NameExpression implements Expression <350>
+    = Name ;
+
+  /* OCL e.g. allows types to be used as expressions, denoting their 
+     extensions. We use this to see that generic types and greater then
+     symbol are still distinguished
+   */
+  TypeAsExpression implements Expression <351>
+    = Type ;
+
+  /************************************************************
+   */
+  Type = Name TypeArguments?;
+
+  TypeArguments = "<" (Type || ",")* ">" ;
+
+
+  /* ***********************************************************
+   * some test NTs
+   */
+  A = Name ;
+  B = Name Name;
+  // noSpace can also be used between complex nonterminals 
+  // (e.g. qualified names)
+  C = Name "." NoWSLast2 Name NoWSLast2 ;
+
+  /* ***********************************************************
+   * This Nonterminal encapsulates the semantic refutation
+   * and can be used instead
+   */
+  NoWSLast2 = {noSpace()}? ;
+
+  /* ***********************************************************
+   * Some helping functions
+   */
+  concept antlr {
+    parserjava {
+      // checks that there is no space between the last two token
+      // this function is used after the two tokens that are combined
+      public boolean noSpace() {
+	org.antlr.v4.runtime.Token t1 = _input.LT(-1);
+	org.antlr.v4.runtime.Token t2 = _input.LT(-2);
+	// token are on same line
+	// and columns differ exactly length of earlier token (t2)
+        return ((t1.getLine()==t2.getLine()) &&
+                (t1.getCharPositionInLine()==
+		       t2.getCharPositionInLine()+t2.getText().length()));
+      }
+    }
+  }
+
+}

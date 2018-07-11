@@ -1,0 +1,15 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+
+/* Used in the Reference Manual 
+   Chapter 5, demonstrating AST results
+*/
+
+grammar Automaton2 {
+  State = "..." ;
+  ast State =
+    reachableState:State*
+    method public boolean isReachable(ASTState s) {
+      return reachableStates.contains(s);
+    };
+}
+

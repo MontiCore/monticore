@@ -1,0 +1,18 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+/* Used in the Reference Manual 
+   Chapter 4, Section 4.2 Productions
+*/
+
+grammar InterfaceSig extends de.monticore.MCBasics {
+
+// ----------------------- Interface signature
+
+  interface I =     x:Integer        y:Name* ;
+  A implements I =  x:Integer "...1" y:(Name || ",")* ;
+  B implements I =  y:Name*   "...2" x:Integer        "..." ;
+  C = I "..." ;
+
+  Integer = "..." ;
+}
+
+

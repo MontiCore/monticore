@@ -19,7 +19,7 @@ import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.ASTASTRule;
 import de.monticore.grammar.grammar._ast.ASTAlt;
-import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
+import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
 import de.monticore.grammar.grammar._ast.ASTBlock;
 import de.monticore.grammar.grammar._ast.ASTConstantsGrammar;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
@@ -117,7 +117,7 @@ public class GrammarTransformer {
   
   private static void transformAttributesInAST(ASTASTRule astRule) {
     ASTNodes
-        .getSuccessors(astRule, ASTAttributeInAST.class)
+        .getSuccessors(astRule, ASTAdditionalAttribute.class)
         .stream()
         .filter(attributeInAST -> multiplicityOfAttributeInAST(attributeInAST) == Multiplicity.LIST)
         .forEach(

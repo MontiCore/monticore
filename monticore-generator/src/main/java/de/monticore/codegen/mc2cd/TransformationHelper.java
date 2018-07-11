@@ -25,7 +25,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.generating.templateengine.reporting.Reporting;
-import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
+import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTConstant;
 import de.monticore.grammar.grammar._ast.ASTConstantGroup;
@@ -125,8 +125,8 @@ public final class TransformationHelper {
       if (ancestor instanceof ASTTerminal) {
         return ((ASTTerminal) ancestor).getUsageNameOpt();
       }
-      if (ancestor instanceof ASTAttributeInAST) {
-        return ((ASTAttributeInAST) ancestor).getNameOpt();
+      if (ancestor instanceof ASTAdditionalAttribute) {
+        return ((ASTAdditionalAttribute) ancestor).getNameOpt();
       }
     }
     return Optional.empty();
@@ -148,8 +148,8 @@ public final class TransformationHelper {
     if (node instanceof ASTTerminal) {
       return Optional.of(((ASTTerminal) node).getName());
     }
-    if (node instanceof ASTAttributeInAST) {
-      return ((ASTAttributeInAST) node).getNameOpt();
+    if (node instanceof ASTAdditionalAttribute) {
+      return ((ASTAdditionalAttribute) node).getNameOpt();
     }
     return Optional.empty();
   }

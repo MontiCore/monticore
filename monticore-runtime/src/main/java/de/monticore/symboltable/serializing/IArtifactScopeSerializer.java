@@ -3,6 +3,8 @@ package de.monticore.symboltable.serializing;
 import java.nio.file.Path;
 import java.util.Optional;
 
+import com.google.gson.JsonDeserializer;
+
 import de.monticore.io.FileReaderWriter;
 import de.monticore.symboltable.ArtifactScope;
 import de.se_rwth.commons.logging.Log;
@@ -35,6 +37,14 @@ public interface IArtifactScopeSerializer {
   public Optional<ArtifactScope> deserialize(String s);
   
   /**
+   * Registers a deserializer for a specific symbol or scope class to the {@link IArtifactScopeSerializer}.
+   * 
+   * @param s
+   * @return
+   */
+  public void registerDeserializer(Class<?> clazz, JsonDeserializer<?> deserializer);
+  
+  /**
    * Stores an {@link ArtifactScope} instance to a given path.
    * A failure of the operation causes an error.
    * 
@@ -59,8 +69,7 @@ public interface IArtifactScopeSerializer {
    * @return
    */
   default ArtifactScope load(Path sourcePath) {
-    String content = new FileReaderWriter().readFromFile(sourcePath);
-    Optional<ArtifactScope> deserialized = deserialize(content);
+    Optional<ArtifactScope> deserialized = loadOpt(sourcePath);
     if (!deserialized.isPresent()) {
       Log.error("0x Deserialization of symbols in " + sourcePath.toString() + " failed.");
     }

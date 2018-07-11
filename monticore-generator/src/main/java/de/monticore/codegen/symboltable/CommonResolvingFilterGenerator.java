@@ -21,7 +21,8 @@ public class CommonResolvingFilterGenerator implements ResolvingFilterGenerator 
   @Override
   public void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
       IterablePath handCodedPath, MCProdSymbol ruleSymbol) {
-    final String className = ruleSymbol.getName() + "ResolvingFilter";
+    final String ruleName = ruleSymbol.getSymbolDefinitionKind().isPresent()?ruleSymbol.getSymbolDefinitionKind().get():ruleSymbol.getName();
+    final String className = ruleName + "ResolvingFilter";
     final String qualifiedClassName = getPackageName(genHelper.getTargetPackage(), "") + className;
 
     if(TransformationHelper.existsHandwrittenClass(handCodedPath, qualifiedClassName)) {
@@ -32,7 +33,7 @@ public class CommonResolvingFilterGenerator implements ResolvingFilterGenerator 
 
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
     if (ruleSymbol.getAstNode().isPresent()) {
-      genEngine.generate("symboltable.ResolvingFilter", filePath, ruleSymbol.getAstNode().get(), className, ruleSymbol.getName());
+      genEngine.generate("symboltable.ResolvingFilter", filePath, ruleSymbol.getAstNode().get(), className, ruleName);
     }
   }
 }

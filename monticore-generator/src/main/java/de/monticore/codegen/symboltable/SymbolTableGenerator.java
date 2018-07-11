@@ -6,6 +6,8 @@ import java.io.File;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.Lists;
+
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -83,8 +85,10 @@ public class SymbolTableGenerator {
     // TODO PN consider only class rules?
     final Collection<MCProdSymbol> allSymbolDefiningRules = genHelper.getAllSymbolDefiningRules();
     final Collection<MCProdSymbol> allScopeSpanningRules = genHelper.getAllScopeSpanningRules();
-    final Collection<String> ruleNames = allSymbolDefiningRules.stream()
-        .map(MCProdSymbol::getName).collect(Collectors.toSet());
+    Collection<String> ruleNames = Lists.newArrayList();
+    for (MCProdSymbol prod: allSymbolDefiningRules) {
+      ruleNames.add(prod.getSymbolDefinitionKind().isPresent()?prod.getSymbolDefinitionKind().get():prod.getName());
+    }
     
     /* If no rules with name are defined, no symbols can be generated. Hence,
      * skip generation of: ModelNameCalculator, SymbolTableCreator, Symbol,
@@ -119,9 +123,7 @@ public class SymbolTableGenerator {
         resolvingFilterGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol);
       }
   
-      for (MCProdSymbol ruleSymbol : allScopeSpanningRules) {
-        scopeGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol);
-      }
+      scopeGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol.getName() + genHelper.SCOPE, allSymbolDefiningRules);
     }
     
     Log.debug("End symbol table generation for the grammar " + astGrammar.getName(), LOG);

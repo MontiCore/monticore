@@ -1,0 +1,23 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+/* Used in the Reference Manual 
+   Chapter 4, Section 4.2 Productions
+*/
+
+grammar ExtendingNT1 extends de.monticore.MCBasics {
+
+// ----------------------- Extension of NTs
+
+  A = "...1";
+  B extends A = "...2";
+  C = A;
+
+// ----------------------- Extension of NTs
+
+  abstract AutomatonElement;
+
+  State extends AutomatonElement = "...1" ;
+
+  Transition extends AutomatonElement = "...2" ;
+
+}
+

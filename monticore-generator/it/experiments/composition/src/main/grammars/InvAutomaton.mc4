@@ -1,0 +1,18 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+
+component grammar InvAutomaton
+			extends de.monticore.MCBasics {
+  
+  Automaton =
+    "automaton" Name "{" (State | Transition)* "}" ;
+
+  external Invariant;
+  
+  State = "state" Name
+          Invariant
+          ( "<<" ["initial"] ">>" | "<<" ["final"] ">>" )* ";" ;
+
+  Transition =
+    from:Name "-" input:Name ">" to:Name ";" ;
+
+}

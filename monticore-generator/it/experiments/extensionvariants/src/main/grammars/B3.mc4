@@ -1,0 +1,16 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+grammar B3 extends A {
+
+  // M is unchanged
+
+  // Orig:  N = "one" M;
+  N = "ein" M "ende";
+
+  // Orig:  P = "some" M*;
+  P = "einige" M* "ende";
+
+  // Orig:  Q = "optional" M?;
+  Q = "opti" M?;
+
+  New = Integer;
+}

@@ -5,42 +5,65 @@
  */
 package de.monticore.codegen.symboltable;
 
+import static de.monticore.codegen.GeneratorHelper.getSimpleTypeNameToGenerate;
+import static de.se_rwth.commons.Names.getSimpleName;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 import de.monticore.codegen.GeneratorHelper;
-import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.GeneratorEngine;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar._ast.ASTScopeRule;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.se_rwth.commons.Names;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import static de.monticore.codegen.GeneratorHelper.getPackageName;
-
 public class CommonScopeGenerator implements ScopeGenerator {
   
   @Override
-  public void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper, IterablePath handCodedPath,
-      MCProdSymbol ruleSymbol) {
-    generateScope(genEngine, genHelper, handCodedPath, ruleSymbol);
+  public void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
+      IterablePath handCodedPath,
+      String scopeName, Collection<MCProdSymbol> allSymbolDefiningRules) {
+    generateScope(genEngine, genHelper, handCodedPath, scopeName, allSymbolDefiningRules);
   }
   
-  protected void generateScope(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper, IterablePath handCodedPath,
-      MCProdSymbol ruleSymbol) {
-    final String className = genHelper.getScopeClassName(ruleSymbol);
-    final String qualifiedClassName = getPackageName(genHelper.getTargetPackage(), "") + className;
+  protected void generateScope(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
+      IterablePath handCodedPath,
+      String scopeName, Collection<MCProdSymbol> allSymbolDefiningRules) {
+    String className = getSimpleTypeNameToGenerate(getSimpleName(scopeName),
+        genHelper.getTargetPackage(), handCodedPath);
     
-    if(TransformationHelper.existsHandwrittenClass(handCodedPath, qualifiedClassName)) {
-      // Scope classes are very simple and small. Hence, skip their generation
-      // if handwritten class exists.
-      return;
+    String builderName = getSimpleTypeNameToGenerate(
+        getSimpleName(scopeName + GeneratorHelper.BUILDER),
+        genHelper.getTargetPackage(), handCodedPath);
+    
+    // Maps Symbol Name to Symbol Kind Name
+    Map<String, String> symbolNames = new HashMap<String, String>();
+    for (MCProdSymbol sym : allSymbolDefiningRules) {
+      String name = getSimpleName(sym.getName());
+      String kind;
+      if (sym.getSymbolDefinitionKind().isPresent()) {
+        kind = getSimpleName(sym.getSymbolDefinitionKind().get() + GeneratorHelper.SYMBOL);
+      }
+      else {
+        kind = name + GeneratorHelper.SYMBOL;
+      }
+      symbolNames.put(name, kind);
     }
     
-    final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
-    final Path builderFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), className + GeneratorHelper.BUILDER + ".java");
-    if (ruleSymbol.getAstNode().isPresent()) {
-      genEngine.generate("symboltable.Scope", filePath, ruleSymbol.getAstNode().get(), className);
-      genEngine.generate("symboltable.ScopeBuilder", builderFilePath, ruleSymbol.getAstNode().get(), className);
-    }
+    final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
+        className + ".java");
+    final Path builderFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
+        builderName + ".java");
+    ASTMCGrammar grammar = genHelper.getGrammarSymbol().getAstGrammar().get();
+    Optional<ASTScopeRule> scopeRule = grammar.getScopeRulesOpt();
+    genEngine.generateNoA("symboltable.Scope", filePath, className, scopeRule, symbolNames);
+    genEngine.generateNoA("symboltable.ScopeBuilder", builderFilePath, builderName,
+        scopeName + GeneratorHelper.BUILDER);
   }
 }

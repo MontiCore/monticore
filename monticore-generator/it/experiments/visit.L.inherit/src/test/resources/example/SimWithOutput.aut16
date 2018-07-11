@@ -1,0 +1,11 @@
+automaton SimpleWithOutput {
+
+  state A ;
+    A - x / o1 > B;
+    A - y / o2 > A;
+
+  state B ;
+    B - x > A;
+    B - y > A;
+
+}

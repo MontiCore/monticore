@@ -1,0 +1,66 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- == PROJECT COORDINATES ============================================= -->
+
+  <parent>
+    <groupId>de.monticore</groupId>
+    <artifactId>monticore</artifactId>
+    <version>5.0.2-SNAPSHOT</version>
+    <relativePath>../../../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>experiments</artifactId>
+
+  <packaging>pom</packaging>
+
+  <!-- == PROJECT MODULES ================================================= -->
+  <modules>
+    <module>automaton</module>
+    <module>builderAtm</module>
+    <module>ch17</module>
+    <module>codeChecks</module>
+    <module>composition</module>
+    <module>extensionvariants</module>
+    <module>forAst</module>
+    <module>forConcSt</module>
+    <module>forParser</module>
+    <module>forVisitors</module>
+    <module>generator</module>
+    <module>glex</module>
+    <module>patternAccess</module>
+    <module>questionnaire</module>
+    <module>S01.intro</module>
+    <module>scannerless</module>
+    <module>spaceOnOff-negative</module>
+    <module>spacesOffWithPositionCheck</module>
+    <module>symbols</module>
+    <module>visit.L.inherit</module>
+  </modules>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <!-- MontiCore Generation -->
+        <plugin>
+          <groupId>de.monticore.mojo</groupId>
+          <artifactId>monticore-maven-plugin</artifactId>
+          <version>5.0.2-SNAPSHOT</version>
+          <executions>
+            <execution>
+              <configuration>
+                <script>de/monticore/monticore_noemf.groovy</script>
+              </configuration>
+              <goals>
+                <goal>generate</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+  </build>
+
+</project>

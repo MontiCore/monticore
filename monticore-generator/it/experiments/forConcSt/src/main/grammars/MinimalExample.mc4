@@ -1,0 +1,92 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+/* Used in the Reference Manual 
+   Chapter 4
+*/
+
+grammar MinimalExample extends de.monticore.MCBasics {
+
+// ----------------------- Startbeispiel
+  A = "Hello" B ;
+  B = Name "!";
+
+// ----------------------- zwei Token
+  token SimpleName = ('a'..'z'|'A'..'Z')+ ;
+
+  token SimpleString = '\"' ('a'..'z'|'A'..'Z')* '\"';
+
+
+// ----------------------- Token Fragments
+
+// token can be structured using fragments
+  token NUM_INT =
+    ('0'..'9')+ (EXPONENT)? (SUFFIX)? ;
+
+  fragment token SUFFIX =
+    'f'|'F'|'d'|'D' ;
+
+  fragment token EXPONENT =
+    ('e'|'E') ('+'|'-')? ('0'..'9')+ ;
+
+
+// ----------------------- listing/LexicalsAction.x
+
+  fragment token ESC =
+    '\\' ('n' |
+    'r' |
+    't' |
+    '"' |
+    '\\' );
+
+// token can have actions attached processing the
+// string with Java operations
+  token STRING = '"'
+    ( ESC
+    | ~('"' | '\\' | '\n' | '\r' )
+	  )*
+	  '"'
+    :{setText(getText().substring(1, getText().length() - 1));};
+
+
+// ----------------------- listing/WhiteSpaces.x
+
+  token WS =
+    (' '
+    | '\t'
+    | '\r' '\n'  // DOS
+    | '\r'       // Macintosh
+    | '\n'       // Unix
+    ) :{_channel = HIDDEN;};
+
+
+
+
+// ----------------------- listing/LexicalsAdaptedTypes1.x
+
+  // token results can be converted
+  // here NUMBER becomes type float
+    token NUMBER = ('0'..'9')* '.' ('0'..'9')* 'f': float;
+    A2 = b:NUMBER c:NUMBER*;
+
+  // while Name is stored as a String
+    A1 = b:Name c:Name;
+
+// ----------------------- listing/LexicalsAdaptedTypes2.x
+
+// XXX,BUG Marita: folgendes klappt icht mehr
+// Wo liegt denn der Fehler?
+
+// token results get adapted:
+// type conversion to int
+// by Java code that does the conversion
+  token
+    CARDINALITY = ('0'..'9')+ | '*' :
+    x -> int : { // Java code:
+                 if (x.equals("*"))
+                   return -1;
+                 else
+                   return Integer.parseInt(x.getText());
+               };
+
+
+}
+

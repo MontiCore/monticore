@@ -1,0 +1,11 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+grammar B7 extends A {
+
+  // R is adapted and reused in its body
+  // this works.
+
+  // Orig:  R = "several" M "," N* "," P? "," (Q|R) ".";
+  R = "several" R* ".";
+  
+  New = "...";
+}
