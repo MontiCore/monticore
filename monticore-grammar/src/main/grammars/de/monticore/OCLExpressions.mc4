@@ -25,10 +25,15 @@ external EDeclaration;
         "implies"
         rightExpression:Expression;
 
-	SingleLogicalORExpr implements Expression <80> =
-		left:Expression
-		"|"
-		right:Expression;
+    SingleLogicalORExpr implements Expression <80> =
+	left:Expression
+	"|"
+	right:Expression;
+	
+    SingleLogicalANDExpr implements Expression <80> =
+	left:Expression
+	"&"
+	right:Expression;
 
     /** ASTForAllExpr defines a quantified expression for collections e.g.
         "forall x in Y : ...".
