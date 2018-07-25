@@ -12,7 +12,24 @@ package de.monticore.types;
  * in grammar extensions).
  *
 */
-component grammar MCGenericTypes extends de.monticore.types.MCExtGenericsTypes {
+component grammar MCGenericTypes extends de.monticore.types.MCCustomGenericsTypes {
 
   GenericType implements ReferenceType = type:SimpleReferenceType "<" typeParameter:SimpleReferenceType ">";
+
+  /** ASTTypeParameters represents a list of generic parameter parenthesized
+          by '<...>' in type declarations (e.g., class-, interface-, method-, or
+          constructor declarations).
+          @attribute typeVariableDeclarations List of parameters
+      */
+      TypeParameters =
+           (
+             "<" (TypeVariableDeclaration || ",")+ ">"
+           );
+
+  TypeVariableDeclaration =
+          Name
+          (
+            "extends" upperBound:(SimpleReferenceType || "&")+
+          )?;
+
 }

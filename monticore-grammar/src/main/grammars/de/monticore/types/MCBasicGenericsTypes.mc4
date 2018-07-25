@@ -6,11 +6,17 @@ package de.monticore.types;
 */
 component grammar MCBasicGenericsTypes extends de.monticore.types.MCBasicTypes {
 
+  interface ReferenceType extends Type;
 
-  interface ReferenceType;
+  ListType implements ReferenceType = "List<" SimpleReferenceType ">";
 
-  ListType implements ReferenceType, Type = "List<" SimpleReferenceType ">";
+  OptionalType implements ReferenceType = "Optional<" SimpleReferenceType ">";
 
-  OptionalType implements ReferenceType, Type = "Optional<" SimpleReferenceType ">";
+
+  MapType implements ReferenceType = "Map<" SimpleReferenceType "," SimpleReferenceType ">";
+
+  SetType implements ReferenceType = "Set<" SimpleReferenceType ">";
+
+
 
 }
