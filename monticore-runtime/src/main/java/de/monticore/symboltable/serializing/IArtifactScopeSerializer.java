@@ -1,9 +1,8 @@
 package de.monticore.symboltable.serializing;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
-
-import com.google.gson.JsonDeserializer;
 
 import de.monticore.io.FileReaderWriter;
 import de.monticore.symboltable.ArtifactScope;
@@ -18,6 +17,8 @@ import de.se_rwth.commons.logging.Log;
  * @since TODO: add version number
  */
 public interface IArtifactScopeSerializer {
+  
+  public static final String SYMBOL_STORE_LOCATION = "target/generated-sources/symbols";
   
   /**
    * An implementation realizes a method to serialize an {@link ArtifactScope} instance into a
@@ -36,17 +37,13 @@ public interface IArtifactScopeSerializer {
    */
   public Optional<ArtifactScope> deserialize(String s);
   
-  /**
-   * Registers a deserializer for a specific symbol or scope class to the {@link IArtifactScopeSerializer}.
-   * 
-   * @param s
-   * @return
-   */
-  public void registerDeserializer(Class<?> clazz, JsonDeserializer<?> deserializer);
+  default void store(ArtifactScope as) {
+    store(as, Paths.get(SYMBOL_STORE_LOCATION + "/" + as.getPackageName() + "/" + "Symbols.json"));
+  }
   
   /**
-   * Stores an {@link ArtifactScope} instance to a given path.
-   * A failure of the operation causes an error.
+   * Stores an {@link ArtifactScope} instance to a given path. A failure of the operation causes an
+   * error.
    * 
    * @param as
    * @param targetPath
@@ -59,6 +56,24 @@ public interface IArtifactScopeSerializer {
     else {
       Log.error("0x Serialization of symbols to " + targetPath.toString() + " failed.");
     }
+  }
+  
+  /**
+   * Stores an {@link ArtifactScope} instance to a given path. A failure of the operation is
+   * ignored.
+   * 
+   * @param as
+   * @param targetPath
+   */
+  default void storeOpt(ArtifactScope as, Path targetPath) {
+    Optional<String> content = serialize(as);
+    if (content.isPresent()) {
+      new FileReaderWriter().storeInFile(targetPath, content.get());
+    }
+  }
+  
+  default ArtifactScope load(String name) {
+    return load(Paths.get(SYMBOL_STORE_LOCATION));
   }
   
   /**
@@ -77,22 +92,8 @@ public interface IArtifactScopeSerializer {
   }
   
   /**
-   * Stores an {@link ArtifactScope} instance to a given path.
-   * A failure of the operation is ignored.
-   * 
-   * @param as
-   * @param targetPath
-   */
-  default void storeOpt(ArtifactScope as, Path targetPath) {
-    Optional<String> content = serialize(as);
-    if (content.isPresent()) {
-      new FileReaderWriter().storeInFile(targetPath, content.get());
-    }
-  }
-  
-  /**
-   * Loads an {@link ArtifactScope} instance from a file in the given path.
-   * If the operation fails, returns {@link Optional#empty()}.
+   * Loads an {@link ArtifactScope} instance from a file in the given path. If the operation fails,
+   * returns {@link Optional#empty()}.
    * 
    * @param sourcePath
    * @return

@@ -42,6 +42,10 @@ public class CommonScopeGenerator implements ScopeGenerator {
         getSimpleName(scopeName + GeneratorHelper.BUILDER),
         genHelper.getTargetPackage(), handCodedPath);
     
+    String serializerName = getSimpleTypeNameToGenerate(
+        getSimpleName(className + GeneratorHelper.SERIALIZER),
+        genHelper.getTargetPackage(), handCodedPath);
+    
     // Maps Symbol Name to Symbol Kind Name
     Map<String, String> symbolNames = new HashMap<String, String>();
     for (MCProdSymbol sym : allSymbolDefiningRules) {
@@ -60,10 +64,15 @@ public class CommonScopeGenerator implements ScopeGenerator {
         className + ".java");
     final Path builderFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
         builderName + ".java");
+    final Path serializerFilePath = Paths
+        .get(Names.getPathFromPackage(genHelper.getTargetPackage()), serializerName + ".java");
+    
     ASTMCGrammar grammar = genHelper.getGrammarSymbol().getAstGrammar().get();
     Optional<ASTScopeRule> scopeRule = grammar.getScopeRulesOpt();
     genEngine.generateNoA("symboltable.Scope", filePath, className, scopeRule, symbolNames);
     genEngine.generateNoA("symboltable.ScopeBuilder", builderFilePath, builderName,
         scopeName + GeneratorHelper.BUILDER);
+    genEngine.generateNoA("symboltable.serialization.ScopeSerialization", serializerFilePath,
+        className);
   }
 }
