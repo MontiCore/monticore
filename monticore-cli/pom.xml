@@ -182,7 +182,7 @@
             <configuration>
               <fromFile>${project.build.directory}/monticore-cli-${project.version}.zip</fromFile>
               <serverId>se-nexus</serverId>
-              <url>https://nexus.se.rwth-aachen.de/service/local/repositories/monticore-snapshots/content-compressed</url>
+              <url>http://nexus.se.rwth-aachen.de/service/local/repositories/monticore-snapshots/content-compressed</url>
             </configuration>
           </execution>
         </executions>
