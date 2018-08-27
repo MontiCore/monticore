@@ -218,7 +218,9 @@ public class JTypeSymbolsHelper {
         ASTComplexReferenceType astComplexReferenceType = (ASTComplexReferenceType) astInterfaceType;
         for (ASTSimpleReferenceType astSimpleReferenceType : astComplexReferenceType
             .getSimpleReferenceTypeList()) {
-          // TODO
+          // TODO: tested for only one
+          addTypeArgumentsToTypeSymbol(jInterfaceTypeSymbolReference, astSimpleReferenceType,
+                  definingScopeOfReference, typeRefFactory);
         }
       }
       
@@ -337,8 +339,9 @@ public class JTypeSymbolsHelper {
       ASTComplexReferenceType astComplexReferenceType = (ASTComplexReferenceType) astType;
       for (ASTSimpleReferenceType astSimpleReferenceType : astComplexReferenceType
           .getSimpleReferenceTypeList()) {
-        // TODO
-      }
+        // TODO: tested for only one
+        addTypeArgumentsToTypeSymbol(fieldTypeReference, astSimpleReferenceType,
+                definingScope, typeRefFactory);      }
     }
     jAttributeSymbol.setType(fieldTypeReference);
   }
