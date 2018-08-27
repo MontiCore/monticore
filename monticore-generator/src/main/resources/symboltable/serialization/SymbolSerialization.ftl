@@ -14,31 +14,31 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import de.monticore.symboltable.serializing.ISerialization;
 
-class ${name}Serialization 
-    implements ISerialization<${name}> {
+class ${name}SymbolSerialization 
+    implements ISerialization<${name}Symbol> {
     
   @Override
-  public ${name} deserialize(JsonElement json, Type typeOfT,
+  public ${name}Symbol deserialize(JsonElement json, Type typeOfT,
       JsonDeserializationContext context) throws JsonParseException {
     JsonObject jsonObject = json.getAsJsonObject();
     String kind = jsonObject.get("kind").getAsString();
-    if(${name}.class.getName().equals(kind)) {
+    if(${name}Symbol.class.getName().equals(kind)) {
       String name = jsonObject.get("name").getAsString();
-      ${name}Builder builder = new ${name}Builder();
+      ${name}SymbolBuilder builder = new ${name}SymbolBuilder();
       builder.name(name);
       
       //TODO: Add symbol-specific attributes
       
       return builder.build();
     }
-    throw new JsonParseException("Bla!");
+    throw new JsonParseException("Deserialization of '${name}Symbol' failed!");
   }
     
   @Override
-  public JsonElement serialize(${name} src, Type typeOfSrc,
+  public JsonElement serialize(${name}Symbol src, Type typeOfSrc,
       JsonSerializationContext context) {
     JsonObject json = new JsonObject();
-    json.addProperty("kind", ${name}.class.getName());
+    json.addProperty("kind", ${name}Symbol.class.getName());
     json.addProperty("name", src.getName());
     
     //TODO: Add symbol-specific attributes
@@ -46,8 +46,8 @@ class ${name}Serialization
   }
   
   @Override
-  public Class<${name}> getSerializedClass() {
-    return ${name}.class;
+  public Class<${name}Symbol> getSerializedClass() {
+    return ${name}Symbol.class;
   }
 }
   

@@ -50,7 +50,7 @@ class ${name}Serialization
       
       return result;
     }
-    throw new JsonParseException("Bla!");
+    throw new JsonParseException("Deserialization of '${name}' failed!");
   }
     
   @Override
