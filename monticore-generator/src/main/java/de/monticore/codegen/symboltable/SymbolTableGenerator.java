@@ -4,7 +4,6 @@ package de.monticore.codegen.symboltable;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 
@@ -47,6 +46,8 @@ public class SymbolTableGenerator {
   
   private final SymbolTableCreatorGenerator symbolTableCreatorGenerator;
   
+  private final SymbolTableSerializationGenerator symbolTableSerializationGenerator;
+  
   protected SymbolTableGenerator(
       ModelingLanguageGenerator modelingLanguageGenerator,
       ModelLoaderGenerator modelLoaderGenerator,
@@ -57,7 +58,8 @@ public class SymbolTableGenerator {
       ScopeSpanningSymbolGenerator scopeSpanningSymbolGenerator,
       ScopeGenerator scopeGenerator,
       SymbolReferenceGenerator symbolReferenceGenerator,
-      SymbolTableCreatorGenerator symbolTableCreatorGenerator) {
+      SymbolTableCreatorGenerator symbolTableCreatorGenerator, 
+      SymbolTableSerializationGenerator symbolTableSerializationGenerator) {
     this.modelingLanguageGenerator = modelingLanguageGenerator;
     this.modelLoaderGenerator = modelLoaderGenerator;
     this.modelNameCalculatorGenerator = modelNameCalculatorGenerator;
@@ -68,6 +70,7 @@ public class SymbolTableGenerator {
     this.scopeSpanningSymbolGenerator = scopeSpanningSymbolGenerator;
     this.symbolReferenceGenerator = symbolReferenceGenerator;
     this.symbolTableCreatorGenerator = symbolTableCreatorGenerator;
+    this.symbolTableSerializationGenerator = symbolTableSerializationGenerator;
   }
   
   public void generate(ASTMCGrammar astGrammar, SymbolTableGeneratorHelper genHelper,
@@ -114,6 +117,7 @@ public class SymbolTableGenerator {
       modelNameCalculatorGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol,
           ruleNames);
       symbolTableCreatorGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol);
+      symbolTableSerializationGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol);
       
       for (MCProdSymbol ruleSymbol : allSymbolDefiningRules) {
         generateSymbolOrScopeSpanningSymbol(genEngine, genHelper, ruleSymbol, handCodedPath);

@@ -36,9 +36,13 @@ public class CommonScopeSpanningSymbolGenerator implements ScopeSpanningSymbolGe
         genHelper.getTargetPackage(), handCodedPath);
     String builderName = getSimpleTypeNameToGenerate(getSimpleName(className + GeneratorHelper.SYMBOL + GeneratorHelper.BUILDER),
         genHelper.getTargetPackage(), handCodedPath);
+    String serializerName = getSimpleTypeNameToGenerate(getSimpleName(className + GeneratorHelper.SYMBOL + GeneratorHelper.SERIALIZER), 
+        genHelper.getTargetPackage(), handCodedPath);
 
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), symbolName + ".java");
     final Path builderFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), builderName + ".java");
+    final Path serializerFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), serializerName + ".java");
+    
     if (prodSymbol.getAstNode().isPresent()) {
       Optional<ASTSymbolRule> symbolRule = Optional.empty();
       ASTMCGrammar grammar = genHelper.getGrammarSymbol().getAstGrammar().get();
@@ -54,6 +58,7 @@ public class CommonScopeSpanningSymbolGenerator implements ScopeSpanningSymbolGe
       genEngine.generate("symboltable.ScopeSpanningSymbol", filePath, prodSymbol.getAstNode().get(),
           symbolName, genHelper.getGrammarSymbol().getName()+GeneratorHelper.SCOPE, prodSymbol, symbolRule);
       genEngine.generate("symboltable.SymbolBuilder", builderFilePath, prodSymbol.getAstNode().get(), builderName, className);
+      genEngine.generate("symboltable.serialization.SymbolSerialization", serializerFilePath, prodSymbol.getAstNode().get(), symbolName);
     }
   }
 

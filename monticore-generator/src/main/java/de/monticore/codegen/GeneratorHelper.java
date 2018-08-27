@@ -90,6 +90,8 @@ public class GeneratorHelper extends TypesHelper {
 
   public static final String BUILDER_PREFIX = "Builder_";
 
+  public static final String SERIALIZER = "Serialization";
+  
   public static final String OPTIONAL = "Optional";
 
   public static final String SYMBOL = "Symbol";

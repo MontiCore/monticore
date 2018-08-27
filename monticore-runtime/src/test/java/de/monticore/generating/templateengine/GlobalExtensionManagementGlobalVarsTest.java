@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import de.monticore.ast.ASTNodeMock;
@@ -57,6 +58,7 @@ public class GlobalExtensionManagementGlobalVarsTest {
     assertEquals("abc", output.toString().replaceAll("\\s+", ""));
   }
   
+  @Ignore
   @Test
   public void testVariables4() {
     GeneratorSetup s = new GeneratorSetup();

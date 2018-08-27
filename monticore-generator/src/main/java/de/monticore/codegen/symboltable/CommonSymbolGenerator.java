@@ -35,16 +35,19 @@ public class CommonSymbolGenerator implements SymbolGenerator {
 
   protected void generateSymbol(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
       IterablePath handCodedPath, MCProdSymbol prodSymbol) {
-    final String suffix = SYMBOL_SUFFIX;
 
     String className = prodSymbol.getSymbolDefinitionKind().isPresent()?prodSymbol.getSymbolDefinitionKind().get():prodSymbol.getName();
     String symbolName = getSimpleTypeNameToGenerate(getSimpleName(className + GeneratorHelper.SYMBOL),
         genHelper.getTargetPackage(), handCodedPath);
-    String builderName = getSimpleTypeNameToGenerate(getSimpleName(className + GeneratorHelper.SYMBOL + GeneratorHelper.BUILDER),
+    String builderName = getSimpleTypeNameToGenerate(getSimpleName(className + GeneratorHelper.SYMBOL + GeneratorHelper.BUILDER), 
+        genHelper.getTargetPackage(), handCodedPath);
+    String serializerName = getSimpleTypeNameToGenerate(getSimpleName(className + GeneratorHelper.SYMBOL + GeneratorHelper.SERIALIZER), 
         genHelper.getTargetPackage(), handCodedPath);
 
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), symbolName + ".java");
     final Path builderFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), builderName + ".java");
+    final Path serializerFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()), serializerName + ".java");
+    
     ASTMCGrammar grammar = genHelper.getGrammarSymbol().getAstGrammar().get();
     Optional<ASTSymbolRule> symbolRule = Optional.empty();
     List<String> imports = Lists.newArrayList();
@@ -58,6 +61,7 @@ public class CommonSymbolGenerator implements SymbolGenerator {
       }
       genEngine.generate("symboltable.Symbol", filePath, prodSymbol.getAstNode().get(), symbolName, prodSymbol, symbolRule, imports);
       genEngine.generate("symboltable.SymbolBuilder", builderFilePath, prodSymbol.getAstNode().get(), builderName, className);
+      genEngine.generate("symboltable.serialization.SymbolSerialization", serializerFilePath, prodSymbol.getAstNode().get(), symbolName);
     }
   }
 }
