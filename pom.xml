@@ -114,7 +114,7 @@
 
   <name>MontiCore</name>
   <description>Agile Domain Specific Language Workbench</description>
-  <url>http://nexus.se.rwth-aachen.de/service/local/repositories/se-sites/content/monticore/${project.version}/</url>
+  <url>https://nexus.se.rwth-aachen.de/service/local/repositories/se-sites/content/monticore/${project.version}/</url>
   <inceptionYear>2005</inceptionYear>
 
   <organization>
