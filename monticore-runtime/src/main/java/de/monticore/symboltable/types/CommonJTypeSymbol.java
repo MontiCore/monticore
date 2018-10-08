@@ -130,9 +130,14 @@ public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JField
   public List<U> getMethods() {
     final Collection<U> resolvedMethods = getSpannedScope().resolveLocally(methodKind);
 
-    final List<U> methods = sortSymbolsByPosition(resolvedMethods.stream().filter(method -> !method.isConstructor()).collect(Collectors.toList()));
+    return sortSymbolsByPosition(resolvedMethods.stream().filter(method -> !method.isConstructor()).collect(Collectors.toList()));
+  }
 
-    return methods;
+  @Override
+  public List<U> getMethods(String methodName) {
+    final Collection<U> resolvedMethods = getSpannedScope().resolveLocally(methodKind);
+
+    return resolvedMethods.stream().filter(method -> methodName.equals(method.getName())).collect(Collectors.toList());
   }
 
   @Override

@@ -31,6 +31,8 @@ public interface JTypeSymbol extends TypeSymbol, ScopeSpanningSymbol {
 
   List<? extends JMethodSymbol> getMethods();
 
+  List<? extends JMethodSymbol> getMethods(String methodName);
+
   Optional<? extends JMethodSymbol> getMethod(String methodName);
 
   List<? extends JMethodSymbol> getConstructors();
