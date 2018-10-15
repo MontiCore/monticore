@@ -74,7 +74,7 @@
     <deploy.plugin>2.8.2</deploy.plugin>
     <invoker.plugin>1.10</invoker.plugin>
     <jar.plugin>2.6</jar.plugin>
-    <plugin.plugin>3.4</plugin.plugin>
+    <plugin.plugin>3.5.2</plugin.plugin>
     <release.plugin>2.5.2</release.plugin>
     <replacer.plugin>1.5.3</replacer.plugin>
     <resources.plugin>2.7</resources.plugin>
