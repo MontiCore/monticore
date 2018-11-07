@@ -24,7 +24,6 @@ import de.monticore.genericgraphics.view.figures.LabelList;
  * </ul>
  * </p>
  * 
- * @author Tim Enger
  */
 public class TextConnectionLabelEditPart extends AbstractConnectionLabelEditPart {
   

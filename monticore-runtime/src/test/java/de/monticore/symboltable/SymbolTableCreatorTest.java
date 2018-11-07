@@ -23,10 +23,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 
-/**
- *
- * @author Pedram Mir Seyed Nazari
- */
 public class SymbolTableCreatorTest {
   
   @Test

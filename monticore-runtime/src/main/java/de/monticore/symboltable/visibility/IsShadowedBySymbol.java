@@ -5,10 +5,6 @@ package de.monticore.symboltable.visibility;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolPredicate;
 
-/**
- * @author Pedram Mir Seyed Nazari
- *
- */
 public class IsShadowedBySymbol implements SymbolPredicate {
   
   private final Symbol shadowedSymbol;

@@ -17,11 +17,6 @@ import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
 import de.se_rwth.commons.logging.Log;
 
-/**
- *
- * @author  Jerome Pfeiffer
- *
- */
 public class GroovyScriptTest {
   /**
    * Parent folder for the generated code

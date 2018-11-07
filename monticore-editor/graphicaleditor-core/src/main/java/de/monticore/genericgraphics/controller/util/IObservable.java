@@ -12,7 +12,6 @@ import java.util.Observer;
  * used the method signatures of {@link java.util.Observable} as inspiration :).
  * </p>
  * 
- * @author Tim Enger
  */
 public interface IObservable {
   

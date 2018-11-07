@@ -30,7 +30,6 @@ import de.se_rwth.commons.TreeUtil;
  * <li>Any ASTNodes that visitors add or remove from the traversed AST will not affect the current
  * traversal.</li>
  * 
- * @author Sebastian Oberhoff
  */
 public final class ASTTraverser {
   

@@ -12,7 +12,6 @@ import de.monticore.genericgraphics.model.graphics.impl.ShapeViewElement;
  * </p>
  * Updates the x, y, width & height values according to passed values.
  * 
- * @author Tim Enger
  */
 public class ResizeMoveShapeCommand extends Command {
   

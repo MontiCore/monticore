@@ -16,9 +16,7 @@ import com.google.common.io.Files;
  * Represents the execution of an executable (e.g., a shell script). The result
  * is stored in a file named like the executable and located in the supplied
  * output directory.
- * 
- * @author (last commit) $Author: ahorst $
- * 2013) $
+ *
  */
 public class Execution {
   

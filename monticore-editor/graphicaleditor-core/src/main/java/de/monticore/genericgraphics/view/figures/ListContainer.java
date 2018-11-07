@@ -12,7 +12,6 @@ import org.eclipse.draw2d.geometry.Insets;
  * To arrange its children this figure uses a {@link ToolbarLayout}.
  * </p>
  * 
- * @author Tim Enger
  */
 public class ListContainer extends Figure {
   

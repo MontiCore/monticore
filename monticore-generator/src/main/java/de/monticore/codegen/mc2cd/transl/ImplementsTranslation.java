@@ -22,7 +22,6 @@ import de.se_rwth.commons.logging.Log;
  * Checks if the source rules were implementing interface rules and sets the
  * implemented interfaces of the target nodes accordingly.
  * 
- * @author Sebastian Oberhoff
  */
 public class ImplementsTranslation implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {

@@ -1,14 +1,12 @@
-/* (c)  https://github.com/MontiCore/monticore */package de.monticore.genericgraphics.view.layout;
+/* (c)  https://github.com/MontiCore/monticore */
+package de.monticore.genericgraphics.view.layout;
 
-/**
- * @author Tim Enger
- */
+
 public interface IConnectionType {
   
   /**
    * Indicates a type of a connection.
    * 
-   * @author Tim Enger
    */
   public enum Connection_Type {
     /**

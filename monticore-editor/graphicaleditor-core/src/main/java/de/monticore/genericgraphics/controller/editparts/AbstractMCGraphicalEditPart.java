@@ -19,7 +19,6 @@ import de.se_rwth.commons.logging.Finding;
  * </p>
  * 
  * @see ProblemReportUtil
- * @author Tim Enger
  */
 public abstract class AbstractMCGraphicalEditPart extends AbstractGraphicalEditPart implements IMCGraphicalEditPart {
   

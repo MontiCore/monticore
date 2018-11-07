@@ -25,7 +25,6 @@ import de.monticore.utils.Link;
  * Creates Links from ASTRules to CDClasses and CDInterfaces. The CDClass/CDInterface will
  * correspond to the ClassProd/AbstractProd/InterfaceProd referred to by the ASTRule.
  * 
- * @author Sebastian Oberhoff
  */
 public class ASTRulesToCDClassesAndCDInterfaces implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {

@@ -13,8 +13,7 @@ package de.monticore.literals;
  * grammar inheritance or grammar embedment.
  * The grammar contains literals from Java, e.g., Boolean, Char, String, ....
  *
- * @author Martin Schindler, Marita Breuer
- * 
+ *
  * Version Aug. 31rd, 2015
 */
 

@@ -5,7 +5,6 @@ package de.monticore.codegen.cd2java.ast;
 /**
  * Methods-profile for list-valued ast attributes.
  *
- * @author Galina Volkova
  */
 
 public enum AstListMethods {

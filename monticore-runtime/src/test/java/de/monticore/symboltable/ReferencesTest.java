@@ -17,10 +17,6 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertSame;
 
-/**
- *
- * @author Pedram Mir Seyed Nazari
- */
 public class ReferencesTest {
 
   @Test

@@ -14,7 +14,6 @@ import de.monticore.genericgraphics.view.figures.connections.locators.Connection
  * Provides management of the position of the label.
  * </p>
  * 
- * @author Tim Enger
  */
 public class ConnectionLabel implements IConnectionLabel {
   

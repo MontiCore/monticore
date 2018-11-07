@@ -16,10 +16,6 @@ import de.monticore.genericgraphics.model.graphics.ViewElementFactory;
 import de.monticore.genericgraphics.view.figures.connections.locators.ConnectionLabelLocator;
 import de.monticore.genericgraphics.view.figures.connections.locators.ConnectionLocatorPosition;
 
-
-/**
- * @author Tim Enger
- */
 public abstract class AbstractConnectionLabelEditPart extends AbstractMCShapeEditPart {
   
   private Locator locator;

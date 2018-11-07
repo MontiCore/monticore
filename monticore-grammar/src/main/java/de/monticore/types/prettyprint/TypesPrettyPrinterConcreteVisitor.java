@@ -29,7 +29,6 @@ import de.se_rwth.commons.Names;
  * whole subtree of a node has been traversed. The ownVisit-Methods stop the automatic traversal
  * order and allow to explictly visit subtrees by calling getVisitor().startVisit(ASTNode)
  * 
- * @author Martin Schindler
  */
 public class TypesPrettyPrinterConcreteVisitor extends LiteralsPrettyPrinterConcreteVisitor implements TypesVisitor {
   

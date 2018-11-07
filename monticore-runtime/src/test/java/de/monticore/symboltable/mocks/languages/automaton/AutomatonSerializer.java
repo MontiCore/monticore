@@ -21,13 +21,6 @@ import de.monticore.symboltable.serializing.CommonJsonArtifactScopeSerializer;
 import de.monticore.symboltable.serializing.ISerialization;
 import de.monticore.symboltable.serializing.SymbolTableSerializationHelper;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
- */
 public class AutomatonSerializer extends CommonJsonArtifactScopeSerializer {
   
   /**

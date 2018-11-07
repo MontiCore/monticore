@@ -36,7 +36,6 @@ import de.monticore.utils.Link;
  * <li>Question mark implies an  Optional
  * <li>the default is just a normal reference
  *
- * @author Sebastian Oberhoff
  */
 public class MultiplicityTranslation implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {

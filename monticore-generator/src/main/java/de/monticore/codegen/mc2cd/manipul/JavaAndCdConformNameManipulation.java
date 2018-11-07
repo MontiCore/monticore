@@ -13,7 +13,6 @@ import de.monticore.utils.ASTNodes;
  * Ensures that attributes are spelled with lower case in order to comply with the standard Java
  * convention.
  * 
- * @author Sebastian Oberhoff
  */
 public class JavaAndCdConformNameManipulation implements UnaryOperator<ASTCDCompilationUnit> {
   

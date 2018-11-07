@@ -13,7 +13,6 @@ import de.monticore.codegen.cd2java.ast.AstGeneratorTest;
  * The super class for all test classes that generate and compile code which
  * depends on the generated ast code
  *
- * @author Galina Volkova
  */
 public abstract class AstDependentGeneratorTest extends GeneratorTest {
   

@@ -17,9 +17,6 @@ import de.monticore.common.common._ast.ASTStereotype;
 import de.monticore.common.testcommon._parser.TestCommonParser;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * @author Marita Breuer
- */
 public class StereotypeTest {
   
   @BeforeClass

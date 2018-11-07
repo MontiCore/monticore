@@ -42,7 +42,6 @@ import de.se_rwth.commons.logging.LogStub;
 /**
  * Test for the {@link MontiCoreScript} class.
  *
- * @author Galina Volkova, Andreas Horst
  */
 public class MontiCoreScriptTest {
   

@@ -25,7 +25,6 @@ import de.monticore.genericgraphics.view.figures.connections.locators.Connection
  * children, to the figure specified by this label.
  * </p>
  * 
- * @author Tim Enger
  */
 public class FigureConnectionLabel extends ConnectionLabel implements IFigureConnectionLabel {
   

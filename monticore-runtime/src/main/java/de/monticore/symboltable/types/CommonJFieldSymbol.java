@@ -6,9 +6,8 @@ import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.symboltable.types.references.JTypeReference;
 
-/**
- * @author Pedram Mir Seyed Nazari
- */
+import static de.monticore.symboltable.modifiers.BasicAccessModifier.*;
+
 public abstract class CommonJFieldSymbol<T extends JTypeReference<? extends JTypeSymbol>> extends CommonSymbol implements JFieldSymbol {
 
   private T type;
@@ -59,30 +58,30 @@ public abstract class CommonJFieldSymbol<T extends JTypeReference<? extends JTyp
   }
 
   public void setPrivate() {
-    setAccessModifier(BasicAccessModifier.PRIVATE);
+    setAccessModifier(PRIVATE);
   }
 
   public void setProtected() {
-    setAccessModifier(BasicAccessModifier.PROTECTED);
+    setAccessModifier(PROTECTED);
   }
 
   public void setPublic() {
-    setAccessModifier(BasicAccessModifier.PUBLIC);
+    setAccessModifier(PUBLIC);
   }
 
   @Override
   public boolean isPrivate() {
-    return getAccessModifier().equals(BasicAccessModifier.PRIVATE);
+    return getAccessModifier().equals(PRIVATE);
   }
 
   @Override
   public boolean isProtected() {
-    return getAccessModifier().equals(BasicAccessModifier.PROTECTED);
+    return getAccessModifier().equals(PROTECTED);
   }
 
   @Override
   public boolean isPublic() {
-    return getAccessModifier().equals(BasicAccessModifier.PUBLIC);
+    return getAccessModifier().equals(PUBLIC);
   }
 
 }

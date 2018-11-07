@@ -5,10 +5,6 @@ package de.monticore.symboltable.types;/* (c)  https://github.com/MontiCore/mont
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.types.references.JTypeReference;
 
-/**
- * @author Pedram Mir Seyed Nazari
- *
- */
 public interface JFieldSymbol extends Symbol {
 
   JAttributeSymbolKind KIND = new JAttributeSymbolKind();

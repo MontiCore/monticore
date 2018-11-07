@@ -10,12 +10,10 @@ import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.references.SymbolReference;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * Base class for all symbol table creators.
- *
- * @author Pedram Mir Seyed Nazari
- *
- */
+import static de.se_rwth.commons.logging.Log.errorIfNull;
+import static de.se_rwth.commons.logging.Log.warn;
+import static java.util.Optional.*;
+
 public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
 
   private final ResolvingConfiguration resolvingConfig;
@@ -28,36 +26,35 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
   private MutableScope firstCreatedScope;
 
   public CommonSymbolTableCreator(final ResolvingConfiguration resolvingConfig,
-      final MutableScope enclosingScope) {
+                                  final MutableScope enclosingScope) {
     this(resolvingConfig, new ArrayDeque<>());
 
-    putOnStack(Log.errorIfNull(enclosingScope));
+    putOnStack(errorIfNull(enclosingScope));
   }
 
   public CommonSymbolTableCreator(final ResolvingConfiguration resolvingConfig,
-      final Deque<MutableScope> scopeStack) {
-    this.scopeStack = Log.errorIfNull(scopeStack);
-    this.resolvingConfig = Log.errorIfNull(resolvingConfig);
+                                  final Deque<MutableScope> scopeStack) {
+    this.scopeStack = errorIfNull(scopeStack);
+    this.resolvingConfig = errorIfNull(resolvingConfig);
   }
 
   @Override
   public void putSpannedScopeOnStack(ScopeSpanningSymbol symbol) {
-    Log.errorIfNull(symbol);
+    errorIfNull(symbol);
     putOnStack((MutableScope) symbol.getSpannedScope());
   }
 
   @Override
   public void putOnStack(MutableScope scope) {
-    Log.errorIfNull(scope);
+    errorIfNull(scope);
     setResolvingFiltersForScope(scope);
 
     if (!scope.getEnclosingScope().isPresent() && currentScope().isPresent()) {
       scope.setEnclosingScope(currentScope().get());
       currentScope().get().addSubScope(scope);
-    }
-    else if (scope.getEnclosingScope().isPresent() && currentScope().isPresent()) {
+    } else if (scope.getEnclosingScope().isPresent() && currentScope().isPresent()) {
       if (scope.getEnclosingScope().get() != currentScope().get()) {
-        Log.warn("0xA1043 The enclosing scope is not the same as the current scope on the stack.");
+        warn("0xA1043 The enclosing scope is not the same as the current scope on the stack.");
       }
     }
 
@@ -85,12 +82,11 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
       if (currentScope().isPresent()) {
         final Scope enclosingScope = currentScope().get();
         scope.setResolvingFilters(enclosingScope.getResolvingFilters());
-      }
-      else {
+      } else {
         // Scope is the top scope, hence, use the default filters.
         scope.setResolvingFilters(resolvingConfig.getDefaultFilters());
       }
-      
+
     }
   }
 
@@ -120,12 +116,11 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
 
   @Override
   public void addToScope(Symbol symbol) {
-    if (!(symbol instanceof SymbolReference)){
+    if (!(symbol instanceof SymbolReference)) {
       if (currentScope().isPresent()) {
         currentScope().get().add(symbol);
-      }
-      else {
-        Log.warn("0xA50212 Symbol cannot be added to current scope, since no scope exists.");
+      } else {
+        warn("0xA50212 Symbol cannot be added to current scope, since no scope exists.");
       }
     }
   }
@@ -142,21 +137,21 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
 
   @Override
   public final Optional<? extends MutableScope> removeCurrentScope() {
-    return Optional.of(scopeStack.pollLast());
+    return of(scopeStack.pollLast());
   }
-  
+
   @Override
   public final Optional<? extends MutableScope> currentScope() {
-    return Optional.ofNullable(scopeStack.peekLast());
+    return ofNullable(scopeStack.peekLast());
   }
-  
+
   @Override
   public final Optional<? extends ScopeSpanningSymbol> currentSymbol() {
     if (currentScope().isPresent()) {
       return currentScope().get().getSpanningSymbol();
     }
-    
-    return Optional.empty();
+
+    return empty();
   }
 
   @Override

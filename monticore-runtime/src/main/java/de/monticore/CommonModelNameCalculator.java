@@ -10,7 +10,6 @@ import de.monticore.symboltable.SymbolKind;
 /**
  * Provides a default implementation for {@link ModelNameCalculator}.
  *
- * @author Pedram Mir Nazari
  *
  * @see ModelNameCalculator
  */

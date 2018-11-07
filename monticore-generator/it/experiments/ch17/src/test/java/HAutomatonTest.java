@@ -8,14 +8,9 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by
- *
- * @author KH
- */
 public class HAutomatonTest {
-  
-  
+
+
   @Test
   public void testPingPong() throws IOException {
     Optional<ASTAutomaton> a = new HAutomatonParser().parse("src/main/resources/hautomaton/PingPong.aut");

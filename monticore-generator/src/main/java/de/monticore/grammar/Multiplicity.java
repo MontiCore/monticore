@@ -23,7 +23,6 @@ import static java.util.Collections.max;
 /**
  * Denotes the multiplicity of nonterminals in a MC grammar such as '*', '+', or '?'.
  * 
- * @author Sebastian Oberhoff
  */
 public enum Multiplicity {
   

@@ -13,9 +13,6 @@ import org.junit.Test;
 import de.monticore.mcliterals._ast.ASTSignedFloatLiteral;
 import de.monticore.mcliterals._ast.ASTSignedLiteral;
 
-/**
- * @author Martin Schindler
- */
 public class SignedFloatLiteralsTest {
   
   private void checkFloatLiteral(float f, String s) throws IOException {

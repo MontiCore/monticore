@@ -19,10 +19,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-/**
- * @author Pedram Mir Seyed Nazari
- *
- */
 public class ResolvingImportedScopesTest {
 
   @Test

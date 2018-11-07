@@ -8,11 +8,6 @@ import org.junit.Test;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * Created by
- *
- * @author MB
- */
 public class SymbolWithoutNameTest extends CocoTest {
 
   private final String MESSAGE = " Ensure that the symbol A contains a 'Name'.";

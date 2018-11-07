@@ -25,7 +25,6 @@ import de.monticore.genericgraphics.model.graphics.IEdgeViewElement;
  * </ul>
  * </p>
  * 
- * @author Tim Enger
  */
 public class ConnectionRelBendpointEditPolicy extends BendpointEditPolicy {
   

@@ -15,7 +15,6 @@ import de.monticore.genericgraphics.view.figures.LabelList;
 /**
  * A {@link PolylineConnection} that implements {@link IDecoratorDisplay}.
  * 
- * @author Tim Enger
  */
 public class ExtendedPolylineConnection extends PolylineConnection implements IDecoratorDisplay {
   

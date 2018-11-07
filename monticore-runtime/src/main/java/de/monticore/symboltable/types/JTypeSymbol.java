@@ -8,9 +8,6 @@ import de.monticore.symboltable.types.references.JTypeReference;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * @author Pedram Mir Seyed Nazari
- */
 public interface JTypeSymbol extends TypeSymbol, ScopeSpanningSymbol {
 
   JTypeSymbolKind KIND = new JTypeSymbolKind();

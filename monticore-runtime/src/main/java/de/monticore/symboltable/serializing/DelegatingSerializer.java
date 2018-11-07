@@ -14,13 +14,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 
-/**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
- */
 public class DelegatingSerializer<T> implements ISerialization<T> {
   
   protected List<ISerialization<?>> serializers;

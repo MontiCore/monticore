@@ -7,10 +7,6 @@ import org.eclipse.draw2d.IFigure;
 
 import de.monticore.genericgraphics.model.IFigureConnectionLabel;
 
-
-/**
- * @author Tim Enger
- */
 public class FigureConnectionLabelEditPart extends AbstractConnectionLabelEditPart {
   
   @Override

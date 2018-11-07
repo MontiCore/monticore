@@ -26,9 +26,7 @@ import org.osgi.service.prefs.BackingStoreException;
 /**
  * An {@link AbstractSourcesGenerationProjectConfigurator} for the
  * monticore-maven-plugin.
- * 
- * @author (last commit) $Author: antonio $
- * 2014) $
+ *
  */
 public class MontiCoreProjectConfigurator extends AbstractSourcesGenerationProjectConfigurator {
   

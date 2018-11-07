@@ -77,7 +77,6 @@ import parser.MCGrammarParser;
  * Language developers can hence very easily implement their own language
  * processing workflows without having to recompile things.
  *
- * @author Galina Volkova, Andreas Horst
  */
 public class MontiCoreScript extends Script implements GroovyRunner {
 

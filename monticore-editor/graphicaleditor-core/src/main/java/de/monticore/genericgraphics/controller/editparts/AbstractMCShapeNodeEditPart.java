@@ -27,7 +27,6 @@ import de.monticore.genericgraphics.view.figures.anchors.SelfReferencingChopboxA
  * {@link SelfReferencingChopboxAnchor}. <br>
  * </p>
  * 
- * @author Tim Enger
  */
 public abstract class AbstractMCShapeNodeEditPart extends AbstractMCShapeEditPart implements IMCNodeEditPart {
   

@@ -12,7 +12,6 @@ import org.eclipse.draw2d.geometry.Rectangle;
  * <br>
  * Inspired by Logic Example BentCornerFigure
  * 
- * @author Tim Enger
  */
 public class BentCornerFigure extends Figure {
   

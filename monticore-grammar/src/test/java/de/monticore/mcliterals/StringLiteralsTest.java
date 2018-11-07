@@ -13,9 +13,6 @@ import org.junit.Test;
 import de.monticore.mcliterals._ast.ASTLiteral;
 import de.monticore.mcliterals._ast.ASTStringLiteral;
 
-/**
- * @author Martin Schindler
- */
 public class StringLiteralsTest {
   
   private void checkStringLiteral(String expected, String actual) throws IOException {

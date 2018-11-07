@@ -11,7 +11,6 @@ import de.monticore.genericgraphics.view.figures.connections.MCBendpoint;
  * {@link Command} for creating new bendpoints in {@link IEdgeViewElement
  * IEdgeViewElements}.
  * 
- * @author Tim Enger
  */
 public class ConnectionCreateRelBendpointCommand extends Command {
   

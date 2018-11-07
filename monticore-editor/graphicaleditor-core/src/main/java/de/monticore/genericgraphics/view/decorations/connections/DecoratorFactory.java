@@ -13,7 +13,6 @@ import org.eclipse.swt.graphics.Color;
  * Here decorators means: Line endings like arrows, or labels on the Connection.
  * </p>
  * 
- * @author Tim Enger
  */
 public class DecoratorFactory {
   

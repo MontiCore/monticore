@@ -8,7 +8,6 @@ import de.se_rwth.commons.logging.Log;
 /**
  * This class provides methods for converting literals. The LiteralsHelper is a singleton.
  * 
- * @author Martin Schindler
  */
 public class MCLiteralsDecoder {
   

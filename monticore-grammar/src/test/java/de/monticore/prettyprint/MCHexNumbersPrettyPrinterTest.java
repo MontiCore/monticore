@@ -21,10 +21,6 @@ import de.monticore.testmchexnumbers._parser.TestMCHexNumbersParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 
-/**
- * @author npichler
- */
-
 public class MCHexNumbersPrettyPrinterTest {
   
   @BeforeClass

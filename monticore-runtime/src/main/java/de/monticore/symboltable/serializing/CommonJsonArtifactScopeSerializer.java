@@ -30,9 +30,6 @@ import de.se_rwth.commons.logging.Log;
  * of {@link ISerialization} instances to (de)serialize individual scopes and symbols. This class is
  * the superclass of all generated serializers for languages.
  *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
  */
 public abstract class CommonJsonArtifactScopeSerializer implements IArtifactScopeSerializer {
   

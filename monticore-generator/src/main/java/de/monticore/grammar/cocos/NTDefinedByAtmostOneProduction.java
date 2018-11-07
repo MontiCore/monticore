@@ -13,7 +13,6 @@ import de.se_rwth.commons.logging.Log;
 /**
  * Checks that nonterminals only extends abstract or normal nonterminals.
  *
- * @author KH
  */
 public class NTDefinedByAtmostOneProduction implements GrammarASTMCGrammarCoCo {
   

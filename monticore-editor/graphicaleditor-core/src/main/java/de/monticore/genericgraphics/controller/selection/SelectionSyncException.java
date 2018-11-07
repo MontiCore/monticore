@@ -4,7 +4,6 @@
  * A simple {@link Exception} for indication of Selection Synchronization
  * errors.
  * 
- * @author Tim Enger
  */
 public class SelectionSyncException extends Exception {
   

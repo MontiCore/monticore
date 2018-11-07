@@ -22,7 +22,6 @@ import org.eclipse.draw2d.geometry.Rectangle;
  * </ul>
  * </p>
  * 
- * @author Tim Enger
  */
 public class SelfReferencingChopboxAnchor extends ChopboxAnchor {
   

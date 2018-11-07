@@ -7,7 +7,7 @@ import de.monticore.prettyprint.IndentPrinter;
  * Pretty prints automatons. Use {@link #print(ASTAutomaton3)} to start a pretty
  * print and get the result by using {@link #getResult()}.
  *
- * @author Robert Heim
+
  */
 public class Automaton3SublangPP implements Automaton3Visitor {
 

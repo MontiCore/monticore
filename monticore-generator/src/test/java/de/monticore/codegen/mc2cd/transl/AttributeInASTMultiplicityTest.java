@@ -20,7 +20,6 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
  * Test for the proper transformation of AttributeInASTs to corresponding
  * CDAttributes
  *
- * @author Sebastian Oberhoff
  */
 public class AttributeInASTMultiplicityTest {
   

@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableList;
 import de.monticore.ast.ASTNode;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.resolving.CommonAdaptedResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.se_rwth.commons.logging.Log;
 
@@ -16,14 +17,13 @@ import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.collect.ImmutableList.copyOf;
+import static de.se_rwth.commons.logging.Log.errorIfNull;
+import static de.se_rwth.commons.logging.Log.info;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+import static java.util.stream.Collectors.toSet;
 
-/**
- * Base class for language families. Provides access to language-related
- * functionality, like parsing, model analysis and code generation.
- *
- * @author  Pedram Mir Seyed Nazari
- *
- */
 // TODO PN extract interface, analogous to ModelingLanguage
 public class ModelingLanguageFamily {
 
@@ -42,25 +42,25 @@ public class ModelingLanguageFamily {
     checkArgument(!isNullOrEmpty(fileExtension), "File extension may not be null or empty");
 
     final String cleanedFileExtension = fileExtension.startsWith(".")
-        ? fileExtension.substring(1) : fileExtension;
+            ? fileExtension.substring(1) : fileExtension;
 
     for (ModelingLanguage modelingLanguage : modelingLanguages) {
       if (modelingLanguage.getFileExtension().equals(cleanedFileExtension)) {
-        return Optional.of(modelingLanguage);
+        return of(modelingLanguage);
       }
     }
 
-    return Optional.empty();
+    return empty();
   }
 
   public void addModelingLanguage(final ModelingLanguage newModelingLanguage) {
-    Log.errorIfNull(newModelingLanguage);
+    errorIfNull(newModelingLanguage);
 
     for (ModelingLanguage modelingLanguage : modelingLanguages) {
       if (modelingLanguage.getFileExtension().equals(newModelingLanguage.getFileExtension())) {
-        Log.info("0xA1027 The languages \"" + modelingLanguage.getName() + "\" and \"" +
-            newModelingLanguage.getName() + "\" use both the file extension \"" + modelingLanguage
-            .getFileExtension() + "\".", ModelingLanguageFamily.class.getName());
+        info("0xA1027 The languages \"" + modelingLanguage.getName() + "\" and \"" +
+                newModelingLanguage.getName() + "\" use both the file extension \"" + modelingLanguage
+                .getFileExtension() + "\".", ModelingLanguageFamily.class.getName());
       }
     }
 
@@ -68,7 +68,7 @@ public class ModelingLanguageFamily {
   }
 
   public Collection<ModelingLanguage> getModelingLanguages() {
-    return ImmutableList.copyOf(modelingLanguages);
+    return copyOf(modelingLanguages);
   }
 
   /**
@@ -86,8 +86,8 @@ public class ModelingLanguageFamily {
   }
 
   /**
-   * Adds a {@link de.monticore.symboltable.resolving.ResolvingFilter} directly to this language family.
-   * Usually, only {@link de.monticore.symboltable.resolving.CommonAdaptedResolvingFilter}s
+   * Adds a {@link ResolvingFilter} directly to this language family.
+   * Usually, only {@link CommonAdaptedResolvingFilter}s
    * need to be added, since the modeling languages already define their default resolvers (see
    * {@link ModelingLanguage#getResolvingFilters()}).
    *
@@ -99,7 +99,7 @@ public class ModelingLanguageFamily {
 
   public Collection<ModelingLanguageModelLoader<? extends ASTNode>> getAllModelLoaders() {
     final Collection<ModelingLanguageModelLoader<? extends ASTNode>> allModelLoader =
-        modelingLanguages.stream().map(ModelingLanguage::getModelLoader).collect(Collectors.toSet());
+            modelingLanguages.stream().map(ModelingLanguage::getModelLoader).collect(toSet());
 
     return allModelLoader;
   }

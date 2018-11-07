@@ -130,9 +130,7 @@ import de.se_rwth.langeditor.texteditor.TextEditorImpl;
  * </p>
  * <b>Note</b>: when overriding (non-abstract) methods (e.g. <code>foo()</code> ), you should always
  * call <code>super.foo()</code> first in your method.<br>
- * 
- * @author Tim Enger
- * @author Philipp Kehrbusch
+ *
  */
 public abstract class GenericGraphicsViewer extends ScrollingGraphicalViewer {
     
@@ -440,7 +438,6 @@ public abstract class GenericGraphicsViewer extends ScrollingGraphicalViewer {
    * changed and was saved. <br>
    * <br>
    * 
-   * @author Tim Enger
    */
   class ResourceTracker implements IResourceChangeListener, IResourceDeltaVisitor {
     

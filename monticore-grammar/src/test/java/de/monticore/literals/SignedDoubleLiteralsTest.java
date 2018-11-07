@@ -13,9 +13,6 @@ import org.junit.Test;
 import de.monticore.literals.literals._ast.ASTSignedDoubleLiteral;
 import de.monticore.literals.literals._ast.ASTSignedLiteral;
 
-/**
- * @author Martin Schindler
- */
 public class SignedDoubleLiteralsTest {
   
   private void checkDoubleLiteral(double d, String s) throws IOException {

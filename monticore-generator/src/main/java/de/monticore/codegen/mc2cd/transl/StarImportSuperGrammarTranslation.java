@@ -17,7 +17,6 @@ import de.monticore.utils.Link;
  * Adds the fully qualified names of supergrammars as star-imports to the ASTCDCompilationUnit of
  * the CD AST.
  * 
- * @author Sebastian Oberhoff
  */
 public class StarImportSuperGrammarTranslation implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {

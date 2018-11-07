@@ -32,7 +32,6 @@ import de.se_rwth.commons.logging.Log;
  * <p>
  * This class uses UTF_8 encoding per default.
  * 
- * @author Sebastian Oberhoff
  */
 public class FileReaderWriter {
   

@@ -32,7 +32,6 @@ import de.monticore.genericgraphics.controller.actions.ExportAsImageAction;
  * </li>
  * </ul>
  * 
- * @author Tim Enger
  */
 public class GenericActionBarContributor extends ActionBarContributor {
   

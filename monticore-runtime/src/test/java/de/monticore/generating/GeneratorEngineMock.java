@@ -13,9 +13,6 @@ import de.monticore.ast.ASTNode;
  * Mock for {@link GeneratorEngine}. Can always be used instead
  * of {@link GeneratorEngine}.
  *
- * @author  (last commit) $Author$
- *          $Date$
- *
  */
 public class GeneratorEngineMock extends GeneratorEngine {
   

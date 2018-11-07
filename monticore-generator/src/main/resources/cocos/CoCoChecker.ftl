@@ -37,7 +37,6 @@ import ${visitorPackage}.${genHelper.getInheritanceVisitorType()};
  * <b>Execute all</b> registered context conditions and checkers by calling
  * {@link #checkAll(${genHelper.getASTNodeBaseType()})}.
  * 
- * @author Robert Heim
  */
 public class ${checkerType} implements ${genHelper.getInheritanceVisitorType()} {
 

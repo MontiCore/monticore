@@ -22,7 +22,6 @@ import mc.feature.visitor.inheritance.c._visitor.CVisitor;
  * from B and A. Furthermore, we test that rules extending rules from a super
  * grammar are visited in both types, the sub and the super type.
  * 
- * @author Robert Heim
  */
 public class VisitorTest extends GeneratorIntegrationsTest {
   @Test

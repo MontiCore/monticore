@@ -18,7 +18,6 @@ import de.monticore.utils.Link;
  * Adds the CDClass corresponding to another rule 'X' as a superclass to the CDClass corresponding
  * to 'Y' if 'Y' overwrites 'X'.
  * 
- * @author Sebastian Oberhoff
  */
 public class OverridingClassProdTranslation implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {

@@ -18,7 +18,6 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
 /**
  * Test for the proper transformation of ASTInterfaceProds to corresponding ASTCDInterfaces
  * 
- * @author Sebastian Oberhoff
  */
 public class InterfaceProdTest {
   

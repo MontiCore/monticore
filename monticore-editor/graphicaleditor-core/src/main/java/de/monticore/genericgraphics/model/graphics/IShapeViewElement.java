@@ -3,7 +3,6 @@
 /**
  * Interface for positioned view elements.
  * 
- * @author Tim Enger
  */
 public interface IShapeViewElement extends IViewElement {
   /**

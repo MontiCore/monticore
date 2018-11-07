@@ -31,7 +31,6 @@ import java.util.Optional;
  * Common methods for working with the {@link JTypeSymbol}s symbol table framework. E.g., they are
  * handy for creating symbol tables based on {@link JTypeSymbol}s.
  *
- * @author Robert Heim
  */
 public class JTypeSymbolsHelper {
   
@@ -43,7 +42,6 @@ public class JTypeSymbolsHelper {
    * A factory to create type references. Implementations ensure the specific kind/type of the
    * created reference. If sufficient consider using the {@link CommonJTypeReferenceFactory}.
    *
-   * @author Robert Heim
    */
   public interface JTypeReferenceFactory<Y extends JTypeReference<?>> {
     Y create(String name, Scope definingScopeOfReference,
@@ -54,7 +52,6 @@ public class JTypeSymbolsHelper {
    * Default implementation to create {@link CommonJTypeReference}s using the
    * {@link JTypeSymbolKind}.
    *
-   * @author Robert Heim
    */
   public static class CommonJTypeReferenceFactory
       implements JTypeReferenceFactory<CommonJTypeReference<JTypeSymbol>> {
@@ -74,7 +71,6 @@ public class JTypeSymbolsHelper {
    * A factory to create {@link JTypeSymbol}s. Implementations ensure the specific kinds of the
    * created types.
    *
-   * @author Robert Heim
    */
   public interface JTypeFactory<U extends CommonJTypeSymbol<?, ?, ?, ?>> {
     // TODO introduce MutableJTypeSymbol to prevent forcing engineers to always subtype

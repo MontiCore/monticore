@@ -13,38 +13,38 @@ import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbolReference;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * Created by
- *
- * @author KH
- */
+import static de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper.getAllSuperGrammars;
+import static de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper.getMCGrammarSymbol;
+import static de.se_rwth.commons.logging.Log.error;
+import static java.lang.String.format;
+
 public class ProdWithExtensionMustNotBeOverridden implements GrammarASTProdCoCo {
-  
+
   public static final String ERROR_CODE = "0xA4010";
-  
+
   public static final String ERROR_MSG_FORMAT = " The production %s must not be overridden because there"
-      + " already exist productions extending it.";
-  
+          + " already exist productions extending it.";
+
   @Override
   public void check(ASTProd a) {
-    
-    Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
-        .getMCGrammarSymbol(a);
-    
+
+    Optional<MCGrammarSymbol> grammarSymbol = getMCGrammarSymbol(a);
+
     boolean isOverriding = false;
-    for (MCGrammarSymbol sup : MCGrammarSymbolTableHelper.getAllSuperGrammars(grammarSymbol.get())) {
+    for (MCGrammarSymbol sup : getAllSuperGrammars(grammarSymbol.get())) {
       if (sup.getProd(a.getName()).isPresent()) {
         isOverriding = true;
         break;
       }
     }
-    if(!isOverriding) {
+    if (!isOverriding) {
       return;
     }
-    
+
     boolean extensionFound = false;
-    entryLoop: for (Entry<String, MCProdSymbol> entry : grammarSymbol.get().getProdsWithInherited()
-        .entrySet()) {
+    entryLoop:
+    for (Entry<String, MCProdSymbol> entry : grammarSymbol.get().getProdsWithInherited()
+            .entrySet()) {
       MCProdSymbol rs = entry.getValue();
       for (MCProdSymbolReference typeSymbol : rs.getSuperProds()) {
         if (a.getName().equals(typeSymbol.getName())) {
@@ -54,8 +54,8 @@ public class ProdWithExtensionMustNotBeOverridden implements GrammarASTProdCoCo 
       }
     }
     if (extensionFound) {
-      Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName()),
-          a.get_SourcePositionStart());
+      error(format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName()),
+              a.get_SourcePositionStart());
     }
   }
 }

@@ -30,7 +30,6 @@ import de.monticore.genericgraphics.model.impl.TextConnectionLabel;
  * {@link TextConnectionLabel ConnectionLabels}.
  * </p>
  * 
- * @author Tim Enger
  */
 public class MCEditPartFactory implements EditPartFactory {
   

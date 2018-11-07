@@ -9,7 +9,6 @@ import de.se_rwth.commons.logging.Finding;
  * Simple Error Collector for collection of {@link ProblemReport ProblemReports}
  * during parsing of a model file by MontiCore
  * 
- * @author Tim Enger
  */
 public class ErrorCollector {
   

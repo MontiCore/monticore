@@ -11,13 +11,7 @@ import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingInfo;
 
-/**
- * Provides methods for manipulating a scope.
- *
- * @author Pedram Mir Seyed Nazari
- */
 public interface MutableScope extends Scope {
-
 
 
   <T extends Symbol> Collection<T> resolveDownMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier, Predicate<Symbol> predicate);
@@ -34,20 +28,21 @@ public interface MutableScope extends Scope {
 
   /**
    * Adds a sub subScope. In Java, for example, sub scopes of a class are the method scopes.
+   *
    * @param subScope the sub scope to be added.
    */
   void addSubScope(MutableScope subScope);
 
   /**
    * Removes given <code>subScope</code>.
-   * @param subScope the sub scope to be removed
    *
+   * @param subScope the sub scope to be removed
    */
   void removeSubScope(MutableScope subScope);
 
   /**
    * @param symbol the symbol that spans this scope. For example, a Java method spans a
-   * method scope.
+   *               method scope.
    */
   void setSpanningSymbol(ScopeSpanningSymbol symbol);
 
@@ -58,6 +53,7 @@ public interface MutableScope extends Scope {
 
   /**
    * removes the given symbol from this scope and unsets the enclosing scope relation.
+   *
    * @param symbol the symbol to be removed
    */
   void remove(Symbol symbol);
@@ -83,7 +79,7 @@ public interface MutableScope extends Scope {
    * @param node the corresponding ast node
    */
   void setAstNode(ASTNode node);
-  
+
 
   /**
    * @param name of the scope

@@ -23,7 +23,6 @@ import org.eclipse.swt.graphics.Image;
  * errors messages,e.g., by drawing an icon with the error message as tooltip.
  * </p>
  * 
- * @author Tim Enger
  */
 public interface IDecoratorDisplay {
   

@@ -11,7 +11,6 @@ import java.nio.file.Path;
  * <p>
  * The actual presence of a file denoted by a ModelCoordinate object is <i>not</i> guaranteed.
  * 
- * @author Sebastian Oberhoff
  */
 public interface ModelCoordinate {
   

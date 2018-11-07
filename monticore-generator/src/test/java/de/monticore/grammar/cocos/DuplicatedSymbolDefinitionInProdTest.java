@@ -8,11 +8,6 @@ import org.junit.Test;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * Created by
- *
- * @author MB
- */
 public class DuplicatedSymbolDefinitionInProdTest extends CocoTest {
 
   private final String MESSAGE = " Symbol or scope is mentioned more than once in the declaration 'A'.";

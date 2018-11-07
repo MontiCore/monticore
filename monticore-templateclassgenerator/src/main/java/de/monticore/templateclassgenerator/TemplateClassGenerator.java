@@ -9,7 +9,6 @@ import de.se_rwth.commons.cli.CLIArguments;
 /**
  * Main class for launching TCG with jar.
  *
- * @author Jerome Pfeiffer
  */
 public class TemplateClassGenerator {
   

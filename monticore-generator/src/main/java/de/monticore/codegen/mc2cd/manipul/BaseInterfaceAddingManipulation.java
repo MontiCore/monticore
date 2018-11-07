@@ -13,7 +13,6 @@ import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
 /**
  * Adds the base interface for all AST nodes of the handled grammar
  * 
- * @author Galina Volkova
  */
 public final class BaseInterfaceAddingManipulation implements UnaryOperator<ASTCDCompilationUnit> {
   

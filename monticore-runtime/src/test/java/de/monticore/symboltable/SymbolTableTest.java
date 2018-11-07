@@ -23,10 +23,6 @@ import de.monticore.symboltable.types.references.JTypeReference;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Pedram Mir Seyed Nazari
- */
 public class SymbolTableTest {
 
   private MutableScope topScope;

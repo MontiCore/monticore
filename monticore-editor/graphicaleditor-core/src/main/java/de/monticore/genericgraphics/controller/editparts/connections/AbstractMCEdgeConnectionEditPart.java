@@ -40,7 +40,6 @@ import de.monticore.genericgraphics.view.figures.connections.MCBendpoint;
  * </ul>
  * </p>
  * 
- * @author Tim Enger
  */
 public abstract class AbstractMCEdgeConnectionEditPart extends AbstractMCConnectionEditPart implements IMCConnectionEdgeEditPart {
   

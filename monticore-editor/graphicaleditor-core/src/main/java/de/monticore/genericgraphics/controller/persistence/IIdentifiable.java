@@ -3,7 +3,6 @@
 /**
  * Simple interface providing a method for unique identification.
  * 
- * @author Tim Enger
  */
 public interface IIdentifiable {
   

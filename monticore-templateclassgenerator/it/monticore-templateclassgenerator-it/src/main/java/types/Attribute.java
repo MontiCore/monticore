@@ -3,9 +3,7 @@ package types;
 
 /**
  * Used for testing
- * 
- * @author Jerome Pfeiffer
- * 
+ **
  */
 public class Attribute {
   

@@ -25,7 +25,6 @@ import mc.feature.visitor.inheritance.c._visitor.CVisitor;
  * SimpleXVisitors append "[NameOfVisitor].[h|t|v|e][ASTNode]" when a method of
  * them is called.
  *
- * @author Robert Heim
  */
 public class ComposeSimpleTest extends CommonVisitorTest {
   

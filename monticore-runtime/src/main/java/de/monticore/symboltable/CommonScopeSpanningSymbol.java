@@ -2,9 +2,6 @@
 
 package de.monticore.symboltable;
 
-/**
- * @author Pedram Mir Seyed Nazari
- */
 public abstract class CommonScopeSpanningSymbol extends CommonSymbol implements ScopeSpanningSymbol {
 
   private final MutableScope spannedScope;
@@ -42,7 +39,7 @@ public abstract class CommonScopeSpanningSymbol extends CommonSymbol implements 
   @Override
   public void setEnclosingScope(MutableScope scope) {
     super.setEnclosingScope(scope);
-   getMutableSpannedScope().setEnclosingScope(scope);
+    getMutableSpannedScope().setEnclosingScope(scope);
   }
 
 }

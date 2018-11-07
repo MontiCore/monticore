@@ -19,7 +19,6 @@ import de.monticore.io.FileReaderWriterMock;
 /**
  * Tests hook point methods of {@link TemplateController}
  *
- * @author  Pedram Nazari
  *
  */
 public class TemplateControllerHookPointsTest {

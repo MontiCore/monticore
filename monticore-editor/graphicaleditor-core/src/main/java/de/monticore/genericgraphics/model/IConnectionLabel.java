@@ -13,7 +13,6 @@ import de.monticore.genericgraphics.view.figures.connections.locators.Connection
  * Provides methods to access the position of the label.
  * </p>
  * 
- * @author Tim Enger
  */
 public interface IConnectionLabel {
   

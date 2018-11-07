@@ -12,9 +12,6 @@ import de.se_rwth.commons.logging.Log;
  * This interface realizes storing {@link ArtifactScope} instances to files and loading these, and
  * abstracts from a concrete mechanism to (de)serialize {@link ArtifactScope} instances.
  *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
  */
 public interface IArtifactScopeSerializer {
   

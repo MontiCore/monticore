@@ -8,7 +8,6 @@ import org.eclipse.draw2d.geometry.Point;
 /**
  * A class for bendpoints providing data for relative and absolute bendpoints.
  * 
- * @author Tim Enger
  */
 public class MCBendpoint implements Serializable {
   

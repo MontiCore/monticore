@@ -1,9 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package freemarker.core;
 
-/**
- * @author Jerome Pfeiffer
- */
 public class Parameter {
   
   private String type;

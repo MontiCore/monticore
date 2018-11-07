@@ -13,7 +13,6 @@ import de.monticore.genericgraphics.model.graphics.impl.ShapeViewElement;
  * Factory for creation of {@link IViewElement IViewElements}.
  * </p>
  * 
- * @author Tim Enger
  */
 public class ViewElementFactory {
   

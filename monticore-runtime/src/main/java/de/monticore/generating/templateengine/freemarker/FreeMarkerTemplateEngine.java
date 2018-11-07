@@ -18,8 +18,6 @@ import freemarker.template.TemplateException;
 /**
  * Helps to process FreeMarker templates with MontiCore.
  * 
- * @author  (last commit) $Author$
- *          $Date$
  *
  */
 public class FreeMarkerTemplateEngine {

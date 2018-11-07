@@ -15,7 +15,7 @@ import de.se_rwth.commons.logging.Log;
 /**
  * Checks that nonterminals or only overridden by normal nonterminals.
  *
- * @author KH
+
  */
 public class OverridingLexNTs implements GrammarASTMCGrammarCoCo {
   

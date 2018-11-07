@@ -7,13 +7,6 @@ import java.util.List;
 import de.monticore.symboltable.references.SymbolReference;
 import de.monticore.symboltable.types.TypeSymbol;
 
-/**
- * Represents a symbol type reference and is the super type of all type symbol references.
- * <br />
- * Do not implement this interface directly. Instead, use one of its subtypes.
- *
- * @author Pedram Mir Seyed Nazari
- */
 public interface TypeReference<T extends TypeSymbol> extends SymbolReference<T> {
 
   /**
@@ -24,6 +17,7 @@ public interface TypeReference<T extends TypeSymbol> extends SymbolReference<T> 
 
   /**
    * Sets the actual type arguments of this reference.
+   *
    * @param actualTypeArguments the actual type arguments.
    */
   void setActualTypeArguments(List<ActualTypeArgument> actualTypeArguments);

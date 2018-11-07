@@ -13,8 +13,7 @@ import java.io.Writer;
 /**
  * Handles exceptions occurring during the template processing.
  * 
- * @author Arne Haber
- * 
+ *
  */
 public class MontiCoreTemplateExceptionHandler implements TemplateExceptionHandler {
   

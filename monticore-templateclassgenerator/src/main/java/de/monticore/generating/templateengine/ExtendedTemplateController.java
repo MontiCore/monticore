@@ -16,7 +16,6 @@ import de.se_rwth.commons.logging.Log;
  * This class adds the signature methods tc.params(...) and tc.result(...) to
  * the existing TemplateController.
  *
- * @author Jerome Pfeiffer
  */
 public class ExtendedTemplateController extends TemplateController {
   

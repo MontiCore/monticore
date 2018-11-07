@@ -12,10 +12,6 @@ import de.monticore.symboltable.mocks.languages.statechart.asts.ASTStateChart;
 import de.monticore.symboltable.mocks.languages.statechart.asts.ASTStateChartCompilationUnit;
 import de.se_rwth.commons.Names;
 
-/**
- *
- * @author Pedram Mir Seyed Nazari
- */
 public class StateChartParserMock extends MCConcreteParser {
 
   @Override

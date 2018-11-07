@@ -16,8 +16,7 @@ import junit.framework.TestCase;
  * parses a given input string to an AST. The AST is printed via prettyprint and
  * parsed again. The resulting ASTs are compared. The TypeTestHelper is a
  * singleton.
- * 
- * @author Martin Schindler
+ *
  */
 public class MCLiteralsTestHelper {
   

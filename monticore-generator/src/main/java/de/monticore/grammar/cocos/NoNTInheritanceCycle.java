@@ -15,7 +15,7 @@ import de.se_rwth.commons.logging.Log;
 /**
  * Checks that nonterminals do not have inheritance cycles.
  *
- * @author KH
+
  */
 public class NoNTInheritanceCycle implements GrammarASTProdCoCo {
   

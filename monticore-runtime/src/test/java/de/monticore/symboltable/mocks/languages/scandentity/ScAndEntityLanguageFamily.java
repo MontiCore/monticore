@@ -6,9 +6,6 @@ import de.monticore.ModelingLanguageFamily;
 import de.monticore.symboltable.mocks.languages.entity.EntityLanguage;
 import de.monticore.symboltable.mocks.languages.statechart.StateChartLanguage;
 
-/**
- * @author  Pedram Mir Seyed Nazari
- */
 public class ScAndEntityLanguageFamily extends ModelingLanguageFamily {
 
   public ScAndEntityLanguageFamily() {

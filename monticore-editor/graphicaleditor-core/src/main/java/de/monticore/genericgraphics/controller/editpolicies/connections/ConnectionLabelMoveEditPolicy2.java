@@ -22,7 +22,6 @@ import de.se_rwth.commons.logging.Log;
  * A {@link XYLayoutEditPolicy} extension for providing the functionality of
  * moving connection labels.
  * 
- * @author Tim Enger
  */
 public class ConnectionLabelMoveEditPolicy2 extends XYLayoutEditPolicy {
   

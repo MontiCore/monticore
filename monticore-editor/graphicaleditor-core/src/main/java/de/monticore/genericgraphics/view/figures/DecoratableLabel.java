@@ -29,7 +29,6 @@ import de.monticore.genericgraphics.view.decorations.IDecoratorDisplay;
  * Per default this figure has no border.
  * </p>
  * 
- * @author Tim Enger
  */
 public class DecoratableLabel extends Figure implements IDecoratorDisplay {
   

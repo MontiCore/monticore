@@ -8,11 +8,6 @@ import org.junit.Test;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * Created by
- *
- * @author KH
- */
 public class NoASTExtendsForClassesTest extends CocoTest{
 
   private final String MESSAGE = " It is not allowed to extend the rule A with the external class java.util.Observer.";

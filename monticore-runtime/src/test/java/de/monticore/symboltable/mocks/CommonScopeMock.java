@@ -17,7 +17,6 @@ import de.monticore.symboltable.resolving.ResolvingInfo;
  * Mock for {@link CommonScope} which enables to test the data of the
  * {@link ResolvingInfo} collected during the resolution process
  *
- * @author Pedram Mir Seyed Nazari
  *
  */
 public class CommonScopeMock extends CommonScope {

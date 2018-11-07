@@ -25,7 +25,6 @@ import freemarker.template.Template;
 /**
  * This class generates a template class for each template.
  * 
- * @author Jerome Pfeiffer
  */
 public class TemplateClassGenerator {
   

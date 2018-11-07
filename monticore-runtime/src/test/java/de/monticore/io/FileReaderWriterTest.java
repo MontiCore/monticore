@@ -12,9 +12,6 @@ import java.nio.file.Paths;
 import org.junit.After;
 import org.junit.Test;
 
-/**
- * @author Sebastian Oberhoff
- */
 public class FileReaderWriterTest {
   
   FileReaderWriter fileHandler = new FileReaderWriter();

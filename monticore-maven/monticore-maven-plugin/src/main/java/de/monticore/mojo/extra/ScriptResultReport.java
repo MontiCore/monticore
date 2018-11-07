@@ -22,7 +22,6 @@ import com.google.common.collect.Lists;
 /**
  * This report MOJO collects and provides the output of certain analysis scripts as a fancy report.
  * 
- * @author (last commit) $Author: ahorst $
  */
 @Mojo(name = "script-report", defaultPhase = LifecyclePhase.SITE)
 public class ScriptResultReport extends AbstractMavenReport {

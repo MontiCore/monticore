@@ -12,7 +12,6 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
  * <p>
  * This function composes all CD manipulations into a single function.
  * 
- * @author Sebastian Oberhoff
  */
 public final class CDManipulation implements UnaryOperator<ASTCDCompilationUnit> {
   

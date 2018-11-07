@@ -8,11 +8,9 @@ import org.junit.Test;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * Created by
- *
- * @author KH
- */
+import static de.monticore.grammar.cocos.KeywordInvalidName.ERROR_CODE;
+import static de.se_rwth.commons.logging.Log.enableFailQuick;
+
 public class KeywordInvalidNameTest extends CocoTest {
   private final String MESSAGE = " The production A must not use the keyword ` without naming it.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
@@ -20,17 +18,17 @@ public class KeywordInvalidNameTest extends CocoTest {
 
   @BeforeClass
   public static void disableFailQuick() {
-    Log.enableFailQuick(false);
+    enableFailQuick(false);
     checker.addCoCo(new KeywordInvalidName());
   }
 
   @Test
   public void testInvalid() throws IllegalArgumentException {
-    testInvalidGrammar(grammar, KeywordInvalidName.ERROR_CODE, MESSAGE, checker);
+    testInvalidGrammar(grammar, ERROR_CODE, MESSAGE, checker);
   }
 
   @Test
-  public void testCorrect(){
+  public void testCorrect() {
     testValidGrammar("cocos.valid.Attributes", checker);
   }
 

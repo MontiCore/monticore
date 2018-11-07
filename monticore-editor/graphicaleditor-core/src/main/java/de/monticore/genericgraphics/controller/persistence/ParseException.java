@@ -3,7 +3,6 @@
 /**
  * Simple Exception for errors during parsing.
  * 
- * @author Tim Enger
  */
 public class ParseException extends Exception {
   

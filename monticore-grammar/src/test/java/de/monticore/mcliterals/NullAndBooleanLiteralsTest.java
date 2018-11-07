@@ -14,9 +14,6 @@ import de.monticore.mcliterals._ast.ASTBooleanLiteral;
 import de.monticore.mcliterals._ast.ASTLiteral;
 import de.monticore.mcliterals._ast.ASTNullLiteral;
 
-/**
- * @author Martin Schindler
- */
 public class NullAndBooleanLiteralsTest {
   
   @Test

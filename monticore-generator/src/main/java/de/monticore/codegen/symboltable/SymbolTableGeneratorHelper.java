@@ -41,9 +41,6 @@ import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * @author Pedram Mir Seyed Nazari
- */
 public class SymbolTableGeneratorHelper extends GeneratorHelper {
   
   public static final String NAME_NONTERMINAL = "Name";

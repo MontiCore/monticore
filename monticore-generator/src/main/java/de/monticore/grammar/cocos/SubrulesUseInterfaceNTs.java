@@ -17,7 +17,6 @@ import de.se_rwth.commons.logging.Log;
  * Checks that the productions, which implement an interface, use the
  * non-terminals of that interface.
  * 
- * @author BS
  */
 public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
   

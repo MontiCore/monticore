@@ -17,7 +17,6 @@ import de.monticore.genericgraphics.model.graphics.IViewElement;
  * IViewElements} from a {@link IFile}</li>
  * </ul>
  * 
- * @author Tim Enger
  */
 public interface IPersistenceUtil {
   

@@ -32,7 +32,6 @@ import de.se_rwth.commons.logging.Log;
  * representations for a ASTNode should be retrieved from this repository
  * (getASTNodeNameFormatted method).
  *
- * @author BM
  */
 public class ReportingRepository {
   

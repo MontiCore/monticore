@@ -2,9 +2,6 @@
 
 package de.monticore.codegen.symboltable;
 
-/**
- * @author Pedram Mir Seyed Nazari
- */
 public class SymbolTableGeneratorBuilder {
 
   private ModelingLanguageGenerator modelingLanguageGenerator;
@@ -49,17 +46,17 @@ public class SymbolTableGeneratorBuilder {
     if (symbolReferenceGenerator == null) {
       symbolReferenceGenerator = new CommonSymbolReferenceGenerator();
     }
-    if ( symbolTableCreatorGenerator == null) {
+    if (symbolTableCreatorGenerator == null) {
       symbolTableCreatorGenerator = new CommonSymbolTableCreatorGenerator();
     }
-    if ( symbolTableSerializationGenerator == null) {
+    if (symbolTableSerializationGenerator == null) {
       symbolTableSerializationGenerator = new CommonSymbolTableSerializationGenerator();
     }
 
     return new SymbolTableGenerator(modelingLanguageGenerator, modelLoaderGenerator,
-        modelNameCalculatorGenerator, resolvingFilterGenerator, symbolGenerator,
-        symbolKindGenerator, scopeSpanningSymbolGenerator, scopeGenerator,
-        symbolReferenceGenerator, symbolTableCreatorGenerator, symbolTableSerializationGenerator);
+            modelNameCalculatorGenerator, resolvingFilterGenerator, symbolGenerator,
+            symbolKindGenerator, scopeSpanningSymbolGenerator, scopeGenerator,
+            symbolReferenceGenerator, symbolTableCreatorGenerator, symbolTableSerializationGenerator);
   }
 
 
@@ -107,7 +104,7 @@ public class SymbolTableGeneratorBuilder {
     this.symbolTableCreatorGenerator = symbolTableCreatorGenerator;
     return this;
   }
-  
+
   public SymbolTableGeneratorBuilder symbolTableSerializationGenerator(SymbolTableSerializationGenerator symbolTableSerializationGenerator) {
     this.symbolTableSerializationGenerator = symbolTableSerializationGenerator;
     return this;

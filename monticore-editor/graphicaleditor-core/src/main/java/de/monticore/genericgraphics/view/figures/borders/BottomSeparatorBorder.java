@@ -11,7 +11,6 @@ import org.eclipse.swt.graphics.Color;
  * A border extension of {@link MarginBorder} that draws a border at the bottom
  * of a {@link IFigure}.
  * 
- * @author Tim Enger
  */
 public class BottomSeparatorBorder extends MarginBorder {
   

@@ -5,7 +5,6 @@ package mc.feature.hwc;
 /**
  * Basic grammar to tag non-functional properties
  *
- * @author Michael von Wenckstern
  */
 grammar Tagging2 extends mc.grammar.types.ItTestTypes {
 

@@ -3,7 +3,6 @@
 /**
  * An interface providing methods for accessing line numbers.
  * 
- * @author Tim Enger
  */
 public interface IHasLineNumbers {
   

@@ -19,8 +19,6 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 /**
  * Default implementation of {@link SymbolReference}.
  *
- * @author Pedram Mir Seyed Nazari
- *
  */
 public class CommonSymbolReference<T extends Symbol> implements SymbolReference<T> {
 

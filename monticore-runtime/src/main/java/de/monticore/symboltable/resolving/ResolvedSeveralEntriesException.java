@@ -8,17 +8,15 @@ import java.util.Collection;
 import com.google.common.collect.ImmutableList;
 import de.monticore.symboltable.Symbol;
 
-/**
- * @author Pedram Mir Seyed Nazari
- *
- */
+import static com.google.common.collect.ImmutableList.copyOf;
+
 public class ResolvedSeveralEntriesException extends RuntimeException {
 
   private static final long serialVersionUID = 931330102959575779L;
 
   private Collection<? extends Symbol> symbols = new ArrayList<>();
 
-  public ResolvedSeveralEntriesException (String message, Collection<? extends Symbol> symbols) {
+  public ResolvedSeveralEntriesException(String message, Collection<? extends Symbol> symbols) {
     super(message);
     this.symbols = new ArrayList<>(symbols);
   }
@@ -28,7 +26,7 @@ public class ResolvedSeveralEntriesException extends RuntimeException {
   }
 
   public Collection<? extends Symbol> getSymbols() {
-    return ImmutableList.copyOf(symbols);
+    return copyOf(symbols);
   }
 
 }

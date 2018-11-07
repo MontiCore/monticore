@@ -12,9 +12,6 @@ import org.junit.Test;
 
 import de.se_rwth.commons.logging.Log;
 
-/**
- * @author Martin Schindler
- */
 public class ComplexQualifiedTypesTest {
   
   @BeforeClass

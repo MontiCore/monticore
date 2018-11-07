@@ -14,11 +14,6 @@ import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * Created by
- *
- * @author KH
- */
 public abstract class CocoTest {
   
   protected void testValidGrammar(String grammar, Grammar_WithConceptsCoCoChecker checker) {

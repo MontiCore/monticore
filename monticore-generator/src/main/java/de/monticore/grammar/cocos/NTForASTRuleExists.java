@@ -14,7 +14,7 @@ import de.se_rwth.commons.logging.Log;
 /**
  * Checks that nonterminal names start lower-case.
  *
- * @author KH
+
  */
 public class NTForASTRuleExists implements GrammarASTMCGrammarCoCo {
   

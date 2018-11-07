@@ -23,7 +23,6 @@ import de.se_rwth.langeditor.texteditor.outline.OutlinePage;
  * {@link PageBook} control. Only one of the two outlines is displayed at a time and it is 
  * possible to switch between the two by calling {@link #changeOutlineType(boolean)}.
  * 
- * @author Philipp Kehrbusch
  *
  */
 public class CombinedGraphicsOutlinePage extends Page implements IContentOutlinePage {

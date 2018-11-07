@@ -13,9 +13,6 @@ import org.junit.Test;
 import de.monticore.mcliterals._ast.ASTCharLiteral;
 import de.monticore.mcliterals._ast.ASTLiteral;
 
-/**
- * @author Martin Schindler
- */
 public class CharLiteralsTest {
   
   private void checkCharLiteral(char c, String s) throws IOException {

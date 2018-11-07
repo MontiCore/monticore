@@ -12,7 +12,6 @@ import de.monticore.genericgraphics.model.graphics.ViewElementFactory;
  * <li>int: height</li>
  * </ul>
  * 
- * @author Tim Enger
  */
 public class ShapeViewElement extends AbstractViewElement implements IShapeViewElement {
   

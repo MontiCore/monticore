@@ -22,9 +22,6 @@ import de.monticore.testoclexpressions._visitor.TestOCLExpressionsVisitor;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 
-/**
- * @author npichler
- */
 public class OCLExpressionsPrettyPrinterTest {
   
   @BeforeClass

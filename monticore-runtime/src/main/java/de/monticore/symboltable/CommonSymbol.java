@@ -11,9 +11,12 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Optional;
 
-/**
- * @author Pedram Mir Seyed Nazari
- */
+import static de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION;
+import static de.se_rwth.commons.Names.getQualifiedName;
+import static de.se_rwth.commons.logging.Log.errorIfNull;
+import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
+
 public abstract class CommonSymbol implements Symbol {
 
   private final String name;
@@ -21,22 +24,22 @@ public abstract class CommonSymbol implements Symbol {
   private String fullName;
 
   private Scope enclosingScope;
-  
+
   private ASTNode node;
 
   private SymbolKind kind;
 
-  private AccessModifier accessModifier = AccessModifier.ALL_INCLUSION;
+  private AccessModifier accessModifier = ALL_INCLUSION;
 
   public CommonSymbol(String name, SymbolKind kind) {
-    this.name = Log.errorIfNull(name);
-    this.kind = Log.errorIfNull(kind);
+    this.name = errorIfNull(name);
+    this.kind = errorIfNull(kind);
   }
 
   public void setPackageName(String packageName) {
-    this.packageName = Log.errorIfNull(packageName);
+    this.packageName = errorIfNull(packageName);
   }
-  
+
   /**
    * @see Symbol#getName()
    */
@@ -49,14 +52,13 @@ public abstract class CommonSymbol implements Symbol {
    * Returns the package of this symbol. All symbols within  an artifact usually
    * have the same package name. For example, the state chart <code>p.q.SC</code>
    * and its containing states all have the package <code>p.q</code>.
-   *
+   * <p>
    * By default, this method determines the package name dynamically via
    * {@link #determinePackageName()} } and caches the value. If the package name
    * should not be cached, and hence, calculated every time this method is invoked,
    * override this method and directly delegate to {@link #determinePackageName()}.
    *
    * @see #getFullName()
-   *
    */
   @Override
   public String getPackageName() {
@@ -69,10 +71,11 @@ public abstract class CommonSymbol implements Symbol {
 
   /**
    * Determines <b>dynamically</b> the package name of the symbol.
+   *
    * @return the package name of the symbol determined dynamically
    */
   protected String determinePackageName() {
-    Optional<? extends Scope> optCurrentScope = Optional.ofNullable(enclosingScope);
+    Optional<? extends Scope> optCurrentScope = ofNullable(enclosingScope);
 
     while (optCurrentScope.isPresent()) {
       final Scope currentScope = optCurrentScope.get();
@@ -81,10 +84,9 @@ public abstract class CommonSymbol implements Symbol {
         // package name. This check is important, since the package name of the
         // enclosing symbol might be set manually.
         return currentScope.getSpanningSymbol().get().getPackageName();
+      } else if (currentScope instanceof ArtifactScope) {
+        return ((ArtifactScope) currentScope).getPackageName();
       }
-      else if (currentScope instanceof ArtifactScope) {
-          return ((ArtifactScope)currentScope).getPackageName();
-        }
 
       optCurrentScope = currentScope.getEnclosingScope();
     }
@@ -118,6 +120,7 @@ public abstract class CommonSymbol implements Symbol {
 
   /**
    * Determines <b>dynamically</b> the full name of the symbol.
+   *
    * @return the full name of the symbol determined dynamically
    */
   protected String determineFullName() {
@@ -131,7 +134,7 @@ public abstract class CommonSymbol implements Symbol {
     final Deque<String> nameParts = new ArrayDeque<>();
     nameParts.addFirst(name);
 
-    Optional<? extends Scope> optCurrentScope = Optional.of(enclosingScope);
+    Optional<? extends Scope> optCurrentScope = of(enclosingScope);
 
     while (optCurrentScope.isPresent()) {
       final Scope currentScope = optCurrentScope.get();
@@ -145,53 +148,52 @@ public abstract class CommonSymbol implements Symbol {
       }
 
       if (!(currentScope instanceof GlobalScope)) {
-          if (currentScope instanceof ArtifactScope) {
-            // We have reached the artifact scope. Get the package name from the
-            // symbol itself, since it might be set manually.
-            if (!getPackageName().isEmpty()) {
-              nameParts.addFirst(getPackageName());
-            }
+        if (currentScope instanceof ArtifactScope) {
+          // We have reached the artifact scope. Get the package name from the
+          // symbol itself, since it might be set manually.
+          if (!getPackageName().isEmpty()) {
+            nameParts.addFirst(getPackageName());
           }
-          else {
-            if (currentScope.getName().isPresent()) {
-              nameParts.addFirst(currentScope.getName().get());
-            }
-            // ...else stop? If one of the enclosing scopes is unnamed,
-            //         the full name is same as the simple name.
+        } else {
+          if (currentScope.getName().isPresent()) {
+            nameParts.addFirst(currentScope.getName().get());
           }
+          // ...else stop? If one of the enclosing scopes is unnamed,
+          //         the full name is same as the simple name.
+        }
       }
       optCurrentScope = currentScope.getEnclosingScope();
     }
 
-    return Names.getQualifiedName(nameParts);
+    return getQualifiedName(nameParts);
   }
 
   @Override
   public SymbolKind getKind() {
     return kind;
   }
-  
+
   /**
    * @param kind the kind to set
    */
   protected void setKind(SymbolKind kind) {
-    this.kind = Log.errorIfNull(kind);
+    this.kind = errorIfNull(kind);
   }
 
   /**
-   * @see Symbol#setAstNode(de.monticore.ast.ASTNode)
+   * @see Symbol#setAstNode(ASTNode)
    */
   @Override
   public void setAstNode(ASTNode node) {
     this.node = node;
   }
-  
+
   /**
    * @see Symbol#getAstNode()
    */
   @Override
   public Optional<ASTNode> getAstNode() {
-    return Optional.ofNullable(node);
+    return ofNullable(node);
   }
 
   @Override

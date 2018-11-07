@@ -27,7 +27,6 @@ import de.monticore.utils.ASTNodes;
  * Removes duplicate attributes that may result from rules having multiple nonterminals referencing
  * the same rule.
  *
- * @author Sebastian Oberhoff
  */
 final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCDCompilationUnit> {
 

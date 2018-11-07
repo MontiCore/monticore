@@ -18,10 +18,6 @@ import de.monticore.umlstereotype._ast.ASTStereotype;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 
-/**
- * @author npichler
- */
-
 public class UMLStereotypePrettyPrinterTest {
   
   @BeforeClass

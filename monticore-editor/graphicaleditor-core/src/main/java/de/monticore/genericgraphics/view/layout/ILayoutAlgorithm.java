@@ -11,7 +11,6 @@ import de.monticore.genericgraphics.model.graphics.IViewElement;
 /**
  * Interface for all layout algorithm.
  * 
- * @author Tim Enger
  */
 public interface ILayoutAlgorithm {
   
