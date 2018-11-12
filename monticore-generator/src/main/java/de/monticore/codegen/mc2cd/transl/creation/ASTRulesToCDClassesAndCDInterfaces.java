@@ -23,7 +23,7 @@ import de.monticore.utils.Link;
  * 
  */
 public class ASTRulesToCDClassesAndCDInterfaces implements
-    UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> , java.io.Serializable{
+    UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
   
   @Override
   public Link<ASTMCGrammar, ASTCDCompilationUnit> apply(
