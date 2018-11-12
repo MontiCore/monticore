@@ -2,18 +2,14 @@
 
 package de.monticore.symboltable.types;
 
-import com.google.common.collect.ImmutableList;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.symboltable.types.references.JTypeReference;
-import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -162,9 +158,7 @@ public abstract class CommonJTypeSymbol<T extends JTypeSymbol, S extends JFieldS
   public List<U> getConstructors() {
     final Collection<U> resolvedMethods = getSpannedScope().resolveLocally(methodKind);
 
-    final List<U> constructors = sortSymbolsByPosition(resolvedMethods.stream().filter(U::isConstructor).collect(toList()));
-
-    return constructors;
+    return sortSymbolsByPosition(resolvedMethods.stream().filter(U::isConstructor).collect(toList()));
   }
 
   public void addInnerType(T innerType) {

@@ -2,16 +2,12 @@
 
 package de.monticore.symboltable.types;
 
-import com.google.common.collect.ImmutableList;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
-import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.symboltable.types.references.JTypeReference;
-import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.ImmutableList.copyOf;
@@ -49,9 +45,7 @@ public abstract class CommonJMethodSymbol<U extends JTypeSymbol, T extends JType
   public List<S> getParameters() {
     final Collection<S> resolvedAttributes = getSpannedScope().resolveLocally(S.KIND);
 
-    final List<S> parameters = sortSymbolsByPosition(resolvedAttributes.stream().filter(S::isParameter).collect(toList()));
-
-    return parameters;
+    return sortSymbolsByPosition(resolvedAttributes.stream().filter(S::isParameter).collect(toList()));
   }
 
   public void addParameter(S paramType) {

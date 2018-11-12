@@ -2,6 +2,16 @@
 
 package de.monticore.grammar.symboltable;
 
+import de.monticore.ast.ASTNode;
+import de.monticore.grammar.Multiplicity;
+import de.monticore.grammar.grammar._ast.*;
+import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
+import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
+import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symboltable.*;
+
+import java.util.*;
+
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.collect.Lists.newArrayList;
@@ -16,56 +26,6 @@ import static de.se_rwth.commons.logging.Log.*;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-
-import de.monticore.ast.ASTNode;
-import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
-import de.monticore.grammar.HelperGrammar;
-import de.monticore.grammar.Multiplicity;
-import de.monticore.grammar.grammar._ast.ASTASTRule;
-import de.monticore.grammar.grammar._ast.ASTAbstractProd;
-import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
-import de.monticore.grammar.grammar._ast.ASTClassProd;
-import de.monticore.grammar.grammar._ast.ASTConstant;
-import de.monticore.grammar.grammar._ast.ASTConstantGroup;
-import de.monticore.grammar.grammar._ast.ASTEnumProd;
-import de.monticore.grammar.grammar._ast.ASTExternalProd;
-import de.monticore.grammar.grammar._ast.ASTGenericType;
-import de.monticore.grammar.grammar._ast.ASTGrammarReference;
-import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
-import de.monticore.grammar.grammar._ast.ASTLexActionOrPredicate;
-import de.monticore.grammar.grammar._ast.ASTLexNonTerminal;
-import de.monticore.grammar.grammar._ast.ASTLexProd;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._ast.ASTMCImportStatement;
-import de.monticore.grammar.grammar._ast.ASTNonTerminal;
-import de.monticore.grammar.grammar._ast.ASTProd;
-import de.monticore.grammar.grammar._ast.ASTRuleReference;
-import de.monticore.grammar.grammar._ast.ASTSymbolDefinition;
-import de.monticore.grammar.grammar._ast.ASTSymbolRule;
-import de.monticore.grammar.grammar._ast.ASTTerminal;
-import de.monticore.grammar.grammar._ast.GrammarMill;
-import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
-import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
-import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.symboltable.ArtifactScope;
-import de.monticore.symboltable.CommonSymbolTableCreator;
-import de.monticore.symboltable.ImportStatement;
-import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolvingConfiguration;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.Symbol;
-import de.se_rwth.commons.StringTransformations;
-import de.se_rwth.commons.logging.Log;
 
 public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
         implements Grammar_WithConceptsVisitor {

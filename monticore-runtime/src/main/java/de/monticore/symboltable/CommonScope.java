@@ -2,6 +2,21 @@
 
 package de.monticore.symboltable;
 
+import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import de.monticore.ast.ASTNode;
+import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
+import de.monticore.symboltable.resolving.ResolvingFilter;
+import de.monticore.symboltable.resolving.ResolvingInfo;
+import de.monticore.symboltable.visibility.IsShadowedBySymbol;
+import de.se_rwth.commons.Splitters;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.Predicate;
+
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.collect.FluentIterable.from;
@@ -14,34 +29,6 @@ import static de.se_rwth.commons.logging.Log.*;
 import static java.util.Collections.emptySet;
 import static java.util.Optional.*;
 import static java.util.stream.Collectors.toSet;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
-import com.google.common.collect.FluentIterable;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-
-import de.monticore.ast.ASTNode;
-import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
-import de.monticore.symboltable.resolving.ResolvingFilter;
-import de.monticore.symboltable.resolving.ResolvingInfo;
-import de.monticore.symboltable.visibility.IsShadowedBySymbol;
-import de.se_rwth.commons.Joiners;
-import de.se_rwth.commons.Splitters;
-import de.se_rwth.commons.logging.Log;
 
 public class CommonScope implements MutableScope {
 
