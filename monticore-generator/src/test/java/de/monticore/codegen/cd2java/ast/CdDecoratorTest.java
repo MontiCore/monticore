@@ -40,7 +40,6 @@ import static org.junit.Assert.fail;
 /**
  * Test for the {@link CdDecorator} class.
  *
- * @author Galina Volkova
  */
 public class CdDecoratorTest {
   

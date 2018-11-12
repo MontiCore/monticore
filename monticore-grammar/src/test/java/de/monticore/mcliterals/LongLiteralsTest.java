@@ -17,9 +17,6 @@ import de.monticore.mcliterals._ast.ASTLongLiteral;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 
-/**
- * @author Martin Schindler
- */
 public class LongLiteralsTest {
   
   @BeforeClass

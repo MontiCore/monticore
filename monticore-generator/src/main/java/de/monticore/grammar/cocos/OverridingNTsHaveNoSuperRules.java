@@ -15,7 +15,7 @@ import de.se_rwth.commons.logging.Log;
  * Checks that overriding nonterminals do not have super rules or
  * classes.
  *
- * @author KH
+
  */
 public class OverridingNTsHaveNoSuperRules implements GrammarASTClassProdCoCo {
   

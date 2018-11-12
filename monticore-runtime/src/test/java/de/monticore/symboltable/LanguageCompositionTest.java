@@ -30,11 +30,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-/**
- *
- * @author  Pedram Mir Seyed Nazari
- *
- */
 public class LanguageCompositionTest {
 
 //  @Test

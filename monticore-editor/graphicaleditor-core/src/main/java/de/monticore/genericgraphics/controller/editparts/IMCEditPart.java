@@ -22,7 +22,6 @@ import de.monticore.genericgraphics.controller.persistence.IIdentifiable;
  * </ul>
  * </li> </ul>
  * 
- * @author Tim Enger
  */
 public interface IMCEditPart extends EditPart, IProblemReportHandler, IIdentifiable {
   

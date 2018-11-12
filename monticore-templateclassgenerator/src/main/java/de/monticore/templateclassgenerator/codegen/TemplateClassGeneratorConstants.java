@@ -3,11 +3,6 @@ package de.monticore.templateclassgenerator.codegen;
 
 import de.monticore.generating.templateengine.ExtendedTemplateController;
 
-/**
- * Sets some constants for the Generator and the generated template classes
- *
- * @author Jerome Pfeiffer
- */
 public class TemplateClassGeneratorConstants {
   
   /**

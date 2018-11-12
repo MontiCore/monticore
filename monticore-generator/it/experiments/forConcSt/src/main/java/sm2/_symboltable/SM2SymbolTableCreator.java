@@ -25,18 +25,6 @@ public class SM2SymbolTableCreator extends SM2SymbolTableCreatorTOP {
   }
 
   @Override
-  public Scope createFromAST(sm2._ast.ASTSM2Node rootNode) {
-      requireNonNull(rootNode);
-
-      final ArtifactScope artifactScope = new ArtifactScope(Optional.empty(), "", new ArrayList<>());
-      putOnStack(artifactScope);
-
-      rootNode.accept(this);
-
-      return artifactScope;
-  }
-
-  @Override
   public void visit(final ASTAutomaton automatonNode) {
     final AutomatonSymbol automaton = new AutomatonSymbol(automatonNode.getName());
     addToScopeAndLinkWithNode(automaton, automatonNode);

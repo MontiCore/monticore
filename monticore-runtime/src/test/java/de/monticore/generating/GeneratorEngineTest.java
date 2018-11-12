@@ -18,9 +18,6 @@ import de.monticore.io.FileReaderWriterMock;
 /**
  * Tests for {@link de.monticore.generating.GeneratorEngine}.
  *
- * @author  (last commit) $Author$
- *          $Date$
- *
  */
 public class GeneratorEngineTest {
   

@@ -27,7 +27,6 @@ import de.se_rwth.commons.logging.Log;
  * of {@link IShapeViewElement IShapeViewElements}.
  * </p>
  * 
- * @author Tim Enger
  */
 public class ResizeMoveShapeEditPolicy extends XYLayoutEditPolicy {
   

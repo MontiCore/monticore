@@ -16,9 +16,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-/**
- * @author Pedram Mir Seyed Nazari
- */
 public class ResolvingViaPredicateTest {
 
   final EntitySymbolReference DUMMY_TYPE_REF = new EntitySymbolReference("DUMMY", new CommonScope(true));

@@ -13,7 +13,6 @@ import de.monticore.symboltable.Scope;
 /**
  * Common methods for symboltable tests
  *
- * @author Jerome Pfeiffer
  */
 public class AbstractSymtabTest {
   protected static Scope createSymTab(Path modelPath) {

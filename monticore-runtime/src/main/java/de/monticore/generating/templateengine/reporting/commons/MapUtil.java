@@ -26,7 +26,6 @@ import java.util.Set;
  * with encapsulated map (provide it as a good util). Unless such a thing already exists 
  * e.g. in Guava
  * 
- * @author rumpe
  *
  */
 

@@ -8,7 +8,7 @@ import automaton15._visitor.*;
  * Pretty prints automatons. Use {@link #print(ASTAutomaton15)} to start a pretty
  * print and get the result by using {@link #getResult()}.
  *
- * @author Robert Heim
+
  */
 public class Automaton15PrettyPrinter implements Automaton15Visitor {
 

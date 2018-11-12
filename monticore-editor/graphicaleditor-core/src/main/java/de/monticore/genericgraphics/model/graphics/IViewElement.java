@@ -9,7 +9,6 @@ import de.monticore.genericgraphics.controller.util.IObservable;
 /**
  * Common interface for all View elements storing view information.
  * 
- * @author Tim Enger
  */
 public interface IViewElement extends IIdentifiable, IObservable, Serializable, Cloneable {
   

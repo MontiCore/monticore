@@ -14,34 +14,35 @@ import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 
-/**
- * @author  Pedram Mir Seyed Nazari
- */
+import static de.monticore.grammar.symboltable.MCGrammarSymbol.KIND;
+import static de.monticore.symboltable.resolving.CommonResolvingFilter.create;
+import static java.util.Optional.of;
+
 public class MontiCoreGrammarLanguage extends CommonModelingLanguage {
 
   public static final String FILE_ENDING = "mc4";
 
   public MontiCoreGrammarLanguage() {
     super("Essential Grammar Language", FILE_ENDING);
-    
-    addResolvingFilter(CommonResolvingFilter.create(MCGrammarSymbol.KIND));
-    addResolvingFilter(CommonResolvingFilter.create(MCProdSymbol.KIND));
-    addResolvingFilter(CommonResolvingFilter.create(MCProdComponentSymbol.KIND));
-    addResolvingFilter(CommonResolvingFilter.create(MCProdAttributeSymbol.KIND));
-    
+
+    addResolvingFilter(create(KIND));
+    addResolvingFilter(create(MCProdSymbol.KIND));
+    addResolvingFilter(create(MCProdComponentSymbol.KIND));
+    addResolvingFilter(create(MCProdAttributeSymbol.KIND));
+
     setModelNameCalculator(new MCGrammarModelNameCalculator());
   }
-  
+
   @Override
   public Grammar_WithConceptsParser getParser() {
     return new Grammar_WithConceptsParser();
   }
-  
+
   @Override
   public Optional<MontiCoreGrammarSymbolTableCreator> getSymbolTableCreator(
-      ResolvingConfiguration resolvingConfiguration, @Nullable MutableScope enclosingScope) {
-    return Optional.of(new MontiCoreGrammarSymbolTableCreator(
-        resolvingConfiguration, enclosingScope));
+          ResolvingConfiguration resolvingConfiguration, @Nullable MutableScope enclosingScope) {
+    return of(new MontiCoreGrammarSymbolTableCreator(
+            resolvingConfiguration, enclosingScope));
   }
 
   @Override

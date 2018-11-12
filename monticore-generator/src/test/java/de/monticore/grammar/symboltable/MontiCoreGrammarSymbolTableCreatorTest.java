@@ -27,9 +27,6 @@ import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * @author Pedram Mir Seyed Nazari
- */
 public class MontiCoreGrammarSymbolTableCreatorTest {
   
   @BeforeClass

@@ -12,7 +12,6 @@ import de.monticore.symboltable.Symbol;
  * Represents a symbol reference and is the super type of all symbol references. Do not
  * implement this interface directly. Instead, use one of its subtypes.
  *
- * @author Pedram Mir Seyed Nazari
  */
 public interface SymbolReference<T extends Symbol> {
 

@@ -10,10 +10,6 @@ import java.util.Optional;
 import de.monticore.symboltable.mocks.languages.JTypeSymbolMock;
 import org.junit.Test;
 
-/**
- *
- * @author Pedram Mir Seyed Nazari
- */
 public class NamesTest {
 
   @Test

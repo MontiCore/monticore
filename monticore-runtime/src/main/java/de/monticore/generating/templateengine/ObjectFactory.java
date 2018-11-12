@@ -12,7 +12,6 @@ import java.util.List;
  * Factory to instantiate any object from Templates 
  * using op.instantiate(classname)
  * 
- * @author Martin Schindler
  */
 public class ObjectFactory {
   

@@ -12,9 +12,6 @@ import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 
-/**
- * @author Sebastian Oberhoff
- */
 public final class AstRuleInheritanceTest {
 
   private final ASTCDClass astC;

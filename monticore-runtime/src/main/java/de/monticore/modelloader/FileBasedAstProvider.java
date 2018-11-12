@@ -19,7 +19,6 @@ import com.google.common.base.Charsets;
 /**
  * Builds ASTs by going straight to the hard disk and reading in the model.
  *
- * @author Sebastian Oberhoff, Pedram Mir Seyed Nazari
  */
 public final class FileBasedAstProvider<T extends ASTNode> implements AstProvider<T> {
 

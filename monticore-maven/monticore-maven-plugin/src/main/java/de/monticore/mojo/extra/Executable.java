@@ -10,9 +10,7 @@ import com.google.common.collect.Lists;
 /**
  * Represents an executable (e.g., a shell script) and the arguments being
  * passed to it; for configuration in POM.
- * 
- * @author (last commit) $Author: ahorst $
- * 2014) $
+ *
  */
 public class Executable {
   

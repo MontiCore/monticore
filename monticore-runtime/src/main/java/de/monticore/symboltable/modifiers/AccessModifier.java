@@ -2,12 +2,6 @@
 
 package de.monticore.symboltable.modifiers;
 
-/**
- * Super type for access modifiers, such as <code>public</code> and <code>protected</code>.
- *
- * @author Pedram Mir Seyed Nazari
- *
- */
 public interface AccessModifier extends Modifier {
 
   /**
@@ -25,8 +19,8 @@ public interface AccessModifier extends Modifier {
       return true;
     }
 
-    private AllInclusionAccessModifier(){
+    private AllInclusionAccessModifier() {
     }
   }
-  
+
 }

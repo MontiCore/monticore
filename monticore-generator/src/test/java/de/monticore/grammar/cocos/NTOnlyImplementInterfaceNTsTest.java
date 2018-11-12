@@ -8,11 +8,6 @@ import org.junit.Test;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * Created by
- *
- * @author KH
- */
 public class NTOnlyImplementInterfaceNTsTest extends CocoTest {
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String MESSAGE = " The nonterminal B must not implement the nonterminal A." +

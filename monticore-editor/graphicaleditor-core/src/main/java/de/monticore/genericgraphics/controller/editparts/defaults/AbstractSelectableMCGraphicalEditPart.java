@@ -17,7 +17,6 @@ import de.monticore.genericgraphics.controller.editparts.AbstractMCGraphicalEdit
  * selection using a {@link NonResizableEditPolicy}.
  * </p>
  * 
- * @author Tim Enger
  */
 public abstract class AbstractSelectableMCGraphicalEditPart extends AbstractMCGraphicalEditPart {
   

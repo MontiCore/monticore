@@ -13,9 +13,6 @@ import org.junit.Test;
 import de.monticore.literals.literals._ast.ASTDoubleLiteral;
 import de.monticore.literals.literals._ast.ASTLiteral;
 
-/**
- * @author Martin Schindler
- */
 public class DoubleLiteralsTest {
   
   private void checkDoubleLiteral(double d, String s) throws IOException {

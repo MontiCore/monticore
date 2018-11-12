@@ -14,7 +14,7 @@ import de.se_rwth.commons.logging.Log;
 /**
  * Checks that used nonterminals are defined.
  *
- * @author KH
+
  */
 public class UsedNTNotDefined implements GrammarASTNonTerminalCoCo {
 

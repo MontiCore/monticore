@@ -15,10 +15,6 @@ import java.nio.file.Paths;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-/**
- *
- * @author Pedram Mir Seyed Nazari
- */
 public class GlobalScopeTest {
   
   @BeforeClass

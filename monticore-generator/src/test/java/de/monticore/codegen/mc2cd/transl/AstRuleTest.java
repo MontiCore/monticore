@@ -23,7 +23,6 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
  * Test for the proper transformation of ASTAbstractProds to corresponding
  * ASTCDClasses
  * 
- * @author Sebastian Oberhoff
  */
 @Ignore
 // TODO: refactor - this test is a mess

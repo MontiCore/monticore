@@ -13,7 +13,6 @@ import de.se_rwth.commons.logging.Log;
 /**
  * Checks that Prods have one symbol and one scope keyword at most
  *
- * @author MB
  */
 public class SymbolWithoutName implements GrammarASTProdCoCo {
   

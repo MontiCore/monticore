@@ -27,7 +27,6 @@ import de.se_rwth.commons.SourcePosition;
  * Foundation class of all AST-classes Shouldn't be used in an implementation, all AST-classes also
  * share the interface ASTNode
  *
- * @author krahn, volkova
  */
 public abstract class ASTCNode implements ASTNode, Cloneable {
 

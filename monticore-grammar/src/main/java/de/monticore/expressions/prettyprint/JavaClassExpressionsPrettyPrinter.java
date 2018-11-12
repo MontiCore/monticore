@@ -16,10 +16,6 @@ import de.monticore.javaclassexpressions._visitor.JavaClassExpressionsVisitor;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 
-/**
- * @author npichler
- */
-
 public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVisitor {
   
  protected JavaClassExpressionsVisitor realThis;

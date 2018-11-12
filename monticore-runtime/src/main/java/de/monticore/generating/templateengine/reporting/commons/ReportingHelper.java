@@ -8,7 +8,6 @@ import de.se_rwth.commons.Names;
 /**
  * Helper to write files
  * 
- * @author Timo Greifenberg
  */
 public class ReportingHelper {
   

@@ -14,7 +14,6 @@ import org.eclipse.swt.graphics.Color;
  * Shadow Border for {@link IFigure IFigures}.
  * </p>
  * 
- * @author Tim Enger
  */
 public class ShadowBorder extends AbstractBorder {
   

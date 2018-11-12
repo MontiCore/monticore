@@ -26,7 +26,6 @@ import freemarker.template.TemplateModelException;
 /**
  * Class for managing hook points, features and (global) variables in templates.
  *
- * @author Pedram Nazari, Alexander Roth
  */
 public class GlobalExtensionManagement {
 

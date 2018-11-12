@@ -12,7 +12,6 @@ import java.util.Map;
 /**
  * Helper to write files
  * 
- * @author Timo Greifenberg
  */
 public class ReportCreator {
 

@@ -18,10 +18,6 @@ import de.monticore.prettyprint.IndentPrinter;
 
 import java.util.Iterator;
 
-/**
- * @author npichler
- */
-
 public class OCLExpressionsPrettyPrinter implements OCLExpressionsVisitor {
   
  protected OCLExpressionsVisitor realThis;

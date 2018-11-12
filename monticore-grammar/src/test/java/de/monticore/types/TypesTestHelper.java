@@ -21,7 +21,6 @@ import junit.framework.TestCase;
  * parsed again. The resulting ASTs are compared. The TypeTestHelper is a
  * singleton.
  * 
- * @author Martin Schindler
  */
 public class TypesTestHelper {
   

@@ -10,9 +10,6 @@ import de.monticore.symboltable.mocks.languages.extendedstatechart.XStateChartSy
 import de.monticore.symboltable.mocks.languages.statechart.StateChartSymbol;
 import org.junit.Test;
 
-/**
- * @author Pedram Mir Seyed Nazari
- */
 public class SymbolKindTest {
 
   @Test

@@ -12,7 +12,6 @@ import de.monticore.ast.ASTNode;
 /**
  * This is a helper class for various operations related to the {@link Visit} annotation.
  * 
- * @author Sebastian Oberhoff
  */
 public final class VisitAnnotations {
   

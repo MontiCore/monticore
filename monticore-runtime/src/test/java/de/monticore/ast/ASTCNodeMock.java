@@ -13,9 +13,6 @@ import com.google.common.collect.Lists;
 /**
  * Mock for ASTCNode.
  *
- * @author  (last commit) $Author$
- *          $Date$
- *
  */
 public class ASTCNodeMock extends ASTCNode {
 

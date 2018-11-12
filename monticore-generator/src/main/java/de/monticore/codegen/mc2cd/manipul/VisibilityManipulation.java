@@ -17,7 +17,6 @@ import de.monticore.utils.ASTNodes;
  * Sets the visibility of classes and interfaces to public, and attributes to
  * protected.
  * 
- * @author Sebastian Oberhoff
  */
 final class VisibilityManipulation implements UnaryOperator<ASTCDCompilationUnit> {
   

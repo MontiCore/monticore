@@ -11,9 +11,6 @@ import de.monticore.ast.ASTNode;
 /**
  * Mock for {@link CodeHookPoint}
  *
- * @author  (last commit) $Author$
- *          $Date$
- *
  */
 public class CodeHookPointMock extends CodeHookPoint {
   

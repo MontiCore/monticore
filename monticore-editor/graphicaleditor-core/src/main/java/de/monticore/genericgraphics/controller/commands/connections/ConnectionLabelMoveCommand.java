@@ -10,7 +10,6 @@ import de.monticore.genericgraphics.model.graphics.IShapeViewElement;
 /**
  * A command for moving connection labels.
  * 
- * @author Tim Enger
  */
 public class ConnectionLabelMoveCommand extends Command {
   

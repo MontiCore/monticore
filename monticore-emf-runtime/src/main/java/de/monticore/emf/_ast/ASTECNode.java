@@ -30,7 +30,6 @@ import de.se_rwth.commons.SourcePosition;
 /**
  * Foundation class of all EMF compatible AST-classes.
  * 
- * @author krahn, volkova
  */
 public abstract class ASTECNode extends EObjectImpl implements ASTENode {
   

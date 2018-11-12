@@ -20,7 +20,6 @@ import de.monticore.utils.Link;
 /**
  * Creates the ASTCDAttributes corresponding to NonTerminals
  * 
- * @author Sebastian Oberhoff
  */
 class NonTerminalsToCDAttributes implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {

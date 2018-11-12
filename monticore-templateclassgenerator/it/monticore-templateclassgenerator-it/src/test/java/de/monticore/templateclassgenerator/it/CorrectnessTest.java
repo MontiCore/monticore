@@ -20,7 +20,6 @@ import de.monticore.symboltable.Scope;
 /**
  * Tests the correctness of the generated template classes methods
  *
- * @author Jerome Pfeiffer
  */
 public class CorrectnessTest extends AbstractSymtabTest {
   

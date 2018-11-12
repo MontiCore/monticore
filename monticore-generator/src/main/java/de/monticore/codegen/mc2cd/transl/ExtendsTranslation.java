@@ -24,7 +24,6 @@ import de.monticore.utils.Link;
  * Checks if the source rules were extending other rules and sets the super
  * classes / extended interfaces of the target nodes accordingly.
  *
- * @author Sebastian Oberhoff
  */
 public class ExtendsTranslation implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {

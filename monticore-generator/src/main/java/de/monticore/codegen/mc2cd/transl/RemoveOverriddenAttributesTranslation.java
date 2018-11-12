@@ -20,7 +20,6 @@ import static de.monticore.codegen.mc2cd.TransformationHelper.getUsageName;
  * The CDAttributes generated from AttributeInASTs completely hide any CDAttributes derived from
  * NonTerminals.
  *
- * @author Sebastian Oberhoff
  */
 public class RemoveOverriddenAttributesTranslation implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {

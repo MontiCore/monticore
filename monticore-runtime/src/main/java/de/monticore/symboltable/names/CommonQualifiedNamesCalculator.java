@@ -11,11 +11,10 @@ import de.monticore.symboltable.ImportStatement;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * Provides default implementation for {@link QualifiedNamesCalculator}.
- *
- * @author Pedram Mir Seyed Nazari
- */
+import static de.se_rwth.commons.Names.getQualifier;
+import static de.se_rwth.commons.Names.getSimpleName;
+import static de.se_rwth.commons.logging.Log.trace;
+
 public class CommonQualifiedNamesCalculator implements QualifiedNamesCalculator {
 
   @Override
@@ -26,7 +25,7 @@ public class CommonQualifiedNamesCalculator implements QualifiedNamesCalculator 
     potentialSymbolNames.add(name);
 
     // if name is already qualified, no further (potential) names exist.
-    if (Names.getQualifier(name).isEmpty()) {
+    if (getQualifier(name).isEmpty()) {
       // maybe the model belongs to the same package
       if (!packageName.isEmpty()) {
         potentialSymbolNames.add(packageName + "." + name);
@@ -35,14 +34,13 @@ public class CommonQualifiedNamesCalculator implements QualifiedNamesCalculator 
       for (ImportStatement importStatement : imports) {
         if (importStatement.isStar()) {
           potentialSymbolNames.add(importStatement.getStatement() + "." + name);
-        }
-        else if (Names.getSimpleName(importStatement.getStatement()).equals(name)) {
+        } else if (getSimpleName(importStatement.getStatement()).equals(name)) {
           potentialSymbolNames.add(importStatement.getStatement());
         }
       }
     }
-    Log.trace("Potential qualified names for \"" + name + "\": " + potentialSymbolNames.toString(),
-        CommonQualifiedNamesCalculator.class.getSimpleName());
+    trace("Potential qualified names for \"" + name + "\": " + potentialSymbolNames.toString(),
+            CommonQualifiedNamesCalculator.class.getSimpleName());
 
     return potentialSymbolNames;
   }

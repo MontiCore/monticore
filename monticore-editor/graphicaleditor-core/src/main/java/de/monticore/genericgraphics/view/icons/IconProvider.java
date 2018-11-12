@@ -13,7 +13,6 @@ import org.eclipse.swt.widgets.Display;
  * Icon downloaded from http://eclipse-icons.i24.cc/<br>
  * under EPL.
  * 
- * @author Tim Enger
  */
 public class IconProvider {
   

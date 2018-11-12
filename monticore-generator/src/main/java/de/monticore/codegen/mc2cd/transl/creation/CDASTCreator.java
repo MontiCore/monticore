@@ -13,7 +13,6 @@ import java.util.function.UnaryOperator;
  * semantic nature. It only concerns itself with mirroring the MC AST structure over to the CD AST
  * and building the corresponding Link structure as it goes along.
  *
- * @author Sebastian Oberhoff
  */
 public class CDASTCreator implements UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
 

@@ -126,7 +126,6 @@ import de.se_rwth.commons.logging.Log;
  * <li>hierarchical nested view elements</li>
  * </ul>
  * 
- * @author Tim Enger
  */
 public class MCDiagramLayoutManager implements IDiagramLayoutManager<IMCEditPart> {
   

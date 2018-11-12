@@ -41,7 +41,6 @@ import de.se_rwth.langeditor.util.Misc;
  * {@link #setSelection}, {@link #createControl} when the wizard is launched and {@link #finish},
  * then {@link #getSelection} when the wizard finishes.
  * 
- * @author Sebastian Oberhoff
  */
 public class ModelPathContainerPage extends WizardPage implements IClasspathContainerPage,
     IClasspathContainerPageExtension {

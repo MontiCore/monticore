@@ -15,7 +15,6 @@ import org.eclipse.swt.graphics.Font;
  * </ul>
  * Note: The {@link LabelList} is created on demand, so only if needed.
  * 
- * @author Tim Enger
  */
 public class LabelListDecoLabelWithContainer extends DecoLabelWithContainer {
   

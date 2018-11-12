@@ -28,7 +28,6 @@ import de.monticore.utils.Link;
  * Translates Methods belonging to ASTRules into CDMethods and attaches them to
  * the corresponding CDClasses.
  * 
- * @author Sebastian Oberhoff
  */
 public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
   

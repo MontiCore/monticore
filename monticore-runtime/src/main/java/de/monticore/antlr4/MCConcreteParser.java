@@ -13,7 +13,6 @@ import de.monticore.ast.ASTNode;
  * around an antlr parser, for having a parse method for a specific rule and
  * access in a type safe way
  *
- * @author krahn
  */
 public abstract class MCConcreteParser {
   

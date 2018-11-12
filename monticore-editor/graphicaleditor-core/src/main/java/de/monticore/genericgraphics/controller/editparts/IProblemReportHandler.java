@@ -9,7 +9,6 @@ import de.se_rwth.commons.logging.Finding;
 /**
  * * Interface providing methods to handle errors in an {@link EditPart}.
  * 
- * @author Tim Enger
  */
 public interface IProblemReportHandler {
   

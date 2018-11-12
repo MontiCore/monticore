@@ -10,7 +10,6 @@ import de.monticore.genericgraphics.view.figures.connections.MCBendpoint;
 /**
  * Interface for edge view elements.
  * 
- * @author Tim Enger
  */
 public interface IEdgeViewElement extends IViewElement {
   

@@ -23,7 +23,6 @@ import de.monticore.genericgraphics.view.layout.ILayoutAlgorithm;
  * {@link GenericGraphicsEditor#getContentEditPart()}.
  * </p>
  * 
- * @author Tim Enger
  */
 public class KielerLayoutAlgorithm implements ILayoutAlgorithm {
   

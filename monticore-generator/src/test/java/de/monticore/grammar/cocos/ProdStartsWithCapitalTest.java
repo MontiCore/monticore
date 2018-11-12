@@ -8,11 +8,6 @@ import org.junit.Test;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * Created by
- *
- * @author KH
- */
 public class ProdStartsWithCapitalTest extends CocoTest {
 
   private final String MESSAGE = " The nonterminal a should not start with a lower-case letter.";;

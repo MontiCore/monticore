@@ -9,7 +9,6 @@ import de.se_rwth.commons.logging.Finding.Type;
 /**
  * A utility class for loading ProblemReport images/icons.
  * 
- * @author Tim Enger
  */
 public class ProblemReportIconProvider {
   

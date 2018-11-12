@@ -34,7 +34,6 @@ import de.monticore.genericgraphics.controller.editpolicies.ResizeMoveShapeEditP
  * returning a {@link FreeformLayer} with {@link XYLayout}.
  * </p>
  * 
- * @author Tim Enger
  */
 public abstract class AbstractDiagramMCGraphicalEditPart extends AbstractMCGraphicalEditPart implements IMCDiagramEditPart {
   

@@ -13,7 +13,6 @@ import java.util.function.UnaryOperator;
 /**
  * Sets the modifiers of CDClasses that resulted from AbstractProds to abstract.
  *
- * @author Sebastian Oberhoff
  */
 public class AbstractProdModifierTranslation implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {

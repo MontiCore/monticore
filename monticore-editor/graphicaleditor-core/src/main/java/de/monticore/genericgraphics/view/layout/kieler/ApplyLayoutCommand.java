@@ -44,7 +44,6 @@ import de.monticore.genericgraphics.view.figures.connections.MCBendpoint;
  * =328078
  * </p>
  * 
- * @author Tim Enger
  */
 public class ApplyLayoutCommand extends Command {
   

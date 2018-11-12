@@ -20,10 +20,6 @@ import de.monticore.testmcnumbers._parser.TestMCNumbersParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 
-/**
- * @author npichler
- */
-
 public class MCNumbersPrettyPrinterTest {
   
   @BeforeClass

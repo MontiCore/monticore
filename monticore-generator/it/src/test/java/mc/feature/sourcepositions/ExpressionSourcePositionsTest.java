@@ -18,7 +18,6 @@ import mc.feature.expression.expression._parser.ExpressionParser;
  * Tests the source position's computing for the AST nodes
  * Defined grammar: mc.feature.expression.Expression.mc
  * 
- * @author volkova
  */
 public class ExpressionSourcePositionsTest extends GeneratorIntegrationsTest {
   

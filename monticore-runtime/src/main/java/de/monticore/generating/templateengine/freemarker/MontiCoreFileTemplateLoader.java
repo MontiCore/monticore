@@ -20,7 +20,6 @@ public class MontiCoreFileTemplateLoader extends FileTemplateLoader {
   /**
    * A template loader that uses files in a specified directory as the source of templates.
    * 
-   * @author Galina Volkova
    */
   public MontiCoreFileTemplateLoader(File baseDir) throws IOException {
     super(baseDir);

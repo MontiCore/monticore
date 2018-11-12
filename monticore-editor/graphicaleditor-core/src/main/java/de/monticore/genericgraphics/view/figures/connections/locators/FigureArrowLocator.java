@@ -25,7 +25,6 @@ import org.eclipse.draw2d.geometry.Rectangle;
  * Note: Works only for {@link ConnectionLocator#SOURCE} and
  * {@link ConnectionLocator#TARGET} as location.
  * 
- * @author Tim Enger
  */
 public class FigureArrowLocator extends ArrowLocator {
   

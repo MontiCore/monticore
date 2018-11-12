@@ -20,10 +20,6 @@ import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 
-/**
- * @author npichler
- */
-
 public class UMLModifierPrettyPrinterTest {
   
   @BeforeClass

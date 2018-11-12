@@ -14,7 +14,6 @@ import de.se_rwth.commons.logging.Log;
 /**
  * Checks that abstract nonterminals only implement interface nonterminals.
  *
- * @author KH
  */
 public class AbstractNTOnlyImplementInterfaceNTs implements GrammarASTAbstractProdCoCo {
   

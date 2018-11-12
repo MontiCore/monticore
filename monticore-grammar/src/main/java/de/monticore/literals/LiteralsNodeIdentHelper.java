@@ -13,9 +13,6 @@ import de.monticore.literals.literals._ast.ASTLongLiteral;
 import de.monticore.literals.literals._ast.ASTNullLiteral;
 import de.monticore.literals.literals._ast.ASTStringLiteral;
 
-/**
- * @author MB
- */
 public class LiteralsNodeIdentHelper extends ASTNodeIdentHelper {
   
   public String getIdent(ASTBooleanLiteral ast) {

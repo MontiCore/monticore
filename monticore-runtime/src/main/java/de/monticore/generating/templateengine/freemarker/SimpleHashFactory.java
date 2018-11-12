@@ -13,10 +13,7 @@ import freemarker.template.SimpleHash;
 
 /**
  * Use this factory to instantiate SimpleHash objects.
- * 
- * @author Arne Haber
- * @date 10.02.2010
- * 
+ *
  */
 // STATE SMELL PN 
 public class SimpleHashFactory {

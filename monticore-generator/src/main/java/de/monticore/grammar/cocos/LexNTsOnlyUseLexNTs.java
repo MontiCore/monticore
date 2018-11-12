@@ -14,7 +14,6 @@ import de.se_rwth.commons.logging.Log;
 /**
  * Checks that used nonterminals are lexical nonterminals.
  *
- * @author KH
  */
 public class LexNTsOnlyUseLexNTs implements GrammarASTLexNonTerminalCoCo {
 

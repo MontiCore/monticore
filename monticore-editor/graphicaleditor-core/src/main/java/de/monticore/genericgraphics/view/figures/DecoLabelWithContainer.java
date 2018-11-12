@@ -20,7 +20,6 @@ import de.monticore.genericgraphics.view.figures.layout.ToolbarLayoutWithMinimum
  * A container figure, that has a {@link DecoratableLabel} at the top and a
  * {@link BottomSeparatorBorder} below the {@link DecoratableLabel}.
  * 
- * @author Tim Enger
  */
 public class DecoLabelWithContainer extends RectangleFigure implements IDecoratorDisplay {
   

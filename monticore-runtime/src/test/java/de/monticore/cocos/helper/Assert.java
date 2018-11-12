@@ -14,7 +14,6 @@ import de.se_rwth.commons.logging.Finding;
 /**
  * Helper for testing CoCos.
  *
- * @author Robert Heim
  */
 public class Assert {
   

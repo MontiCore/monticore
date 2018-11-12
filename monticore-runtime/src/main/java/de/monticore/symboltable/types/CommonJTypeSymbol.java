@@ -2,31 +2,27 @@
 
 package de.monticore.symboltable.types;
 
-import com.google.common.collect.ImmutableList;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.symboltable.types.references.JTypeReference;
-import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.collect.ImmutableList.copyOf;
 import static de.monticore.symboltable.Symbols.sortSymbolsByPosition;
+import static de.monticore.symboltable.modifiers.BasicAccessModifier.*;
+import static de.se_rwth.commons.logging.Log.errorIfNull;
+import static java.util.Optional.empty;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 
-/**
- *
- * @author Pedram Mir Seyed Nazari
- * @param <T>
- * @param <S>
- */
-public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JFieldSymbol, U extends JMethodSymbol, V extends JTypeReference<T>>
-    extends CommonScopeSpanningSymbol implements JTypeSymbol {
+public abstract class CommonJTypeSymbol<T extends JTypeSymbol, S extends JFieldSymbol, U extends JMethodSymbol, V extends JTypeReference<T>>
+        extends CommonScopeSpanningSymbol implements JTypeSymbol {
 
   private final JAttributeSymbolKind attributeKind;
   private final JMethodSymbolKind methodKind;
@@ -43,7 +39,7 @@ public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JField
   private boolean isInnerType = false;
 
   protected CommonJTypeSymbol(String name, JTypeSymbolKind typeKind,
-      JAttributeSymbolKind attributeKind, JMethodSymbolKind methodKind) {
+                              JAttributeSymbolKind attributeKind, JMethodSymbolKind methodKind) {
     super(name, typeKind);
 
     this.attributeKind = attributeKind;
@@ -51,12 +47,12 @@ public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JField
   }
 
   protected CommonJTypeSymbol(String name) {
-    this(name, JTypeSymbol.KIND, JFieldSymbol.KIND, JMethodSymbol.KIND);
+    this(name, KIND, JFieldSymbol.KIND, JMethodSymbol.KIND);
   }
 
   @Override
   protected MutableScope createSpannedScope() {
-    return new CommonJTypeScope(Optional.empty());
+    return new CommonJTypeScope(empty());
   }
 
   @Override
@@ -71,13 +67,13 @@ public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JField
 
   @Override
   public List<T> getFormalTypeParameters() {
-    final Collection<T> resolvedTypes = getSpannedScope().resolveLocally(T.KIND);
-    return resolvedTypes.stream().filter(T::isFormalTypeParameter).collect(Collectors.toList());
+    final Collection<T> resolvedTypes = getSpannedScope().resolveLocally(KIND);
+    return resolvedTypes.stream().filter(T::isFormalTypeParameter).collect(toList());
   }
 
   @Override
   public Optional<V> getSuperClass() {
-    return Optional.ofNullable(superClass);
+    return ofNullable(superClass);
   }
 
   public void setSuperClass(V superClass) {
@@ -86,11 +82,11 @@ public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JField
 
   @Override
   public List<V> getInterfaces() {
-    return ImmutableList.copyOf(interfaces);
+    return copyOf(interfaces);
   }
 
   public void addInterface(V superInterface) {
-    this.interfaces.add(Log.errorIfNull(superInterface));
+    this.interfaces.add(errorIfNull(superInterface));
   }
 
   @Override
@@ -104,7 +100,7 @@ public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JField
   }
 
   public void addField(S attribute) {
-    getMutableSpannedScope().add(Log.errorIfNull(attribute));
+    getMutableSpannedScope().add(errorIfNull(attribute));
   }
 
   @Override
@@ -120,7 +116,7 @@ public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JField
   }
 
   public void addMethod(U method) {
-    Log.errorIfNull(method);
+    errorIfNull(method);
     checkArgument(!method.isConstructor());
 
     getMutableSpannedScope().add(method);
@@ -130,9 +126,14 @@ public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JField
   public List<U> getMethods() {
     final Collection<U> resolvedMethods = getSpannedScope().resolveLocally(methodKind);
 
-    final List<U> methods = sortSymbolsByPosition(resolvedMethods.stream().filter(method -> !method.isConstructor()).collect(Collectors.toList()));
+    return sortSymbolsByPosition(resolvedMethods.stream().filter(method -> !method.isConstructor()).collect(toList()));
+  }
 
-    return methods;
+  @Override
+  public List<U> getMethods(String methodName) {
+    final Collection<U> resolvedMethods = getSpannedScope().resolveLocally(methodKind);
+
+    return resolvedMethods.stream().filter(method -> methodName.equals(method.getName())).collect(toList());
   }
 
   @Override
@@ -143,11 +144,11 @@ public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JField
     if (method.isPresent() && !method.get().isConstructor()) {
       return method;
     }
-    return Optional.empty();
+    return empty();
   }
 
   public void addConstructor(U constructor) {
-    Log.errorIfNull(constructor);
+    errorIfNull(constructor);
     checkArgument(constructor.isConstructor());
 
     getMutableSpannedScope().add(constructor);
@@ -157,13 +158,11 @@ public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JField
   public List<U> getConstructors() {
     final Collection<U> resolvedMethods = getSpannedScope().resolveLocally(methodKind);
 
-    final List<U> constructors = sortSymbolsByPosition(resolvedMethods.stream().filter(U::isConstructor).collect(Collectors.toList()));
-
-    return constructors;
+    return sortSymbolsByPosition(resolvedMethods.stream().filter(U::isConstructor).collect(toList()));
   }
 
   public void addInnerType(T innerType) {
-    Log.errorIfNull(innerType);
+    errorIfNull(innerType);
 
     getMutableSpannedScope().add(innerType);
   }
@@ -179,7 +178,6 @@ public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JField
 
     return getSpannedScope().resolveLocally(innerTypeName, getKind());
   }
-
 
 
   public void setAbstract(boolean isAbstract) {
@@ -224,30 +222,30 @@ public abstract class CommonJTypeSymbol <T extends JTypeSymbol, S extends JField
   }
 
   public void setPrivate() {
-    setAccessModifier(BasicAccessModifier.PRIVATE);
+    setAccessModifier(PRIVATE);
   }
 
   public void setProtected() {
-    setAccessModifier(BasicAccessModifier.PROTECTED);
+    setAccessModifier(PROTECTED);
   }
 
   public void setPublic() {
-    setAccessModifier(BasicAccessModifier.PUBLIC);
+    setAccessModifier(PUBLIC);
   }
 
   @Override
   public boolean isPrivate() {
-    return getAccessModifier().equals(BasicAccessModifier.PRIVATE);
+    return getAccessModifier().equals(PRIVATE);
   }
 
   @Override
   public boolean isProtected() {
-    return getAccessModifier().equals(BasicAccessModifier.PROTECTED);
+    return getAccessModifier().equals(PROTECTED);
   }
 
   @Override
   public boolean isPublic() {
-    return getAccessModifier().equals(BasicAccessModifier.PUBLIC);
+    return getAccessModifier().equals(PUBLIC);
   }
 
   public void setInnerType(boolean innerType) {

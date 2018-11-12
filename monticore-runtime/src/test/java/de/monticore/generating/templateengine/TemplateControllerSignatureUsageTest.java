@@ -23,8 +23,6 @@ import de.monticore.io.FileReaderWriterMock;
 /**
  * Tests for parameterized calls of the {@link TemplateController} 
  *
- * @author  Pedram Nazari
- *
  */
 
 //TODO MB: Refactor test

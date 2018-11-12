@@ -7,7 +7,7 @@ import invautomaton._visitor.*;
  * Pretty prints automatons. Use {@link #print(ASTInvAutomaton)} to start a pretty
  * print and get the result by using {@link #getResult()}.
  *
- * @author Robert Heim
+
  */
 public class InvAutomatonPrettyPrinter
 				implements InvAutomatonVisitor {

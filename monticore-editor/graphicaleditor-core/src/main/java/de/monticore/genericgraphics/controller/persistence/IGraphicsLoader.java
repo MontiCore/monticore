@@ -32,7 +32,6 @@ import de.monticore.genericgraphics.view.layout.ILayoutAlgorithm;
  * </ul>
  * </P
  * 
- * @author Tim Enger
  */
 public interface IGraphicsLoader {
   

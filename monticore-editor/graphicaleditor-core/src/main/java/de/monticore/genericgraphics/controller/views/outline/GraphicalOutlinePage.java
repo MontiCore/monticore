@@ -32,7 +32,6 @@ import de.monticore.genericgraphics.GenericGraphicsViewer;
  * is created in {@link #createControl(Composite)} and the viewer gets configured, initialized and
  * displayed. <br>
  * 
- * @author Philipp Kehrbusch
  */
 public class GraphicalOutlinePage extends ContentOutlinePage {
     

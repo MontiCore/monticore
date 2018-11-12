@@ -14,7 +14,6 @@ import de.monticore.genericgraphics.view.figures.connections.locators.Connection
 /**
  * Factory for a model elements.
  * 
- * @author Tim Enger
  */
 public class ModelElementFactory {
   

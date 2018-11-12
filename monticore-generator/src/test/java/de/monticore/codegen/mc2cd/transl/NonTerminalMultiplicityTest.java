@@ -21,7 +21,6 @@ import de.se_rwth.commons.logging.LogStub;
 /**
  * Test for the proper transformation of NonTerminals to corresponding ASTCDAttributes
  * 
- * @author Sebastian Oberhoff
  */
 public class NonTerminalMultiplicityTest {
 

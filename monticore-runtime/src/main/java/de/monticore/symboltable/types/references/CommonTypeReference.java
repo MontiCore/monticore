@@ -12,12 +12,8 @@ import de.monticore.symboltable.references.CommonSymbolReference;
 import de.monticore.symboltable.types.TypeSymbol;
 import de.monticore.symboltable.types.TypeSymbolKind;
 
-/**
- * Default implementation of {@link TypeReference}.
- *
- * @author Pedram Mir Seyed Nazari
- *
- */
+import static com.google.common.collect.ImmutableList.copyOf;
+
 public class CommonTypeReference<T extends TypeSymbol> extends CommonSymbolReference<T> implements TypeReference<T> {
 
   private List<ActualTypeArgument> actualTypeArguments = new ArrayList<>();
@@ -30,7 +26,7 @@ public class CommonTypeReference<T extends TypeSymbol> extends CommonSymbolRefer
 
   @Override
   public List<ActualTypeArgument> getActualTypeArguments() {
-    return ImmutableList.copyOf(actualTypeArguments);
+    return copyOf(actualTypeArguments);
   }
 
   @Override

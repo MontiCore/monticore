@@ -15,11 +15,6 @@ import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * Created by
- *
- * @author KH
- */
 public class KeywordAlternativeNameTest extends CocoTest {
   private final String MESSAGE = " The name of the constant group could't be ascertained";
   

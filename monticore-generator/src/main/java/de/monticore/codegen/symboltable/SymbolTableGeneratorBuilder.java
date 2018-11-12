@@ -2,9 +2,6 @@
 
 package de.monticore.codegen.symboltable;
 
-/**
- * @author Pedram Mir Seyed Nazari
- */
 public class SymbolTableGeneratorBuilder {
 
   private ModelingLanguageGenerator modelingLanguageGenerator;
@@ -19,6 +16,7 @@ public class SymbolTableGeneratorBuilder {
 
   private SymbolReferenceGenerator symbolReferenceGenerator;
   private SymbolTableCreatorGenerator symbolTableCreatorGenerator;
+  private SymbolTableSerializationGenerator symbolTableSerializationGenerator;
 
   public SymbolTableGenerator build() {
     if (modelingLanguageGenerator == null) {
@@ -48,14 +46,17 @@ public class SymbolTableGeneratorBuilder {
     if (symbolReferenceGenerator == null) {
       symbolReferenceGenerator = new CommonSymbolReferenceGenerator();
     }
-    if ( symbolTableCreatorGenerator == null) {
+    if (symbolTableCreatorGenerator == null) {
       symbolTableCreatorGenerator = new CommonSymbolTableCreatorGenerator();
+    }
+    if (symbolTableSerializationGenerator == null) {
+      symbolTableSerializationGenerator = new CommonSymbolTableSerializationGenerator();
     }
 
     return new SymbolTableGenerator(modelingLanguageGenerator, modelLoaderGenerator,
-        modelNameCalculatorGenerator, resolvingFilterGenerator, symbolGenerator,
-        symbolKindGenerator, scopeSpanningSymbolGenerator, scopeGenerator,
-        symbolReferenceGenerator, symbolTableCreatorGenerator);
+            modelNameCalculatorGenerator, resolvingFilterGenerator, symbolGenerator,
+            symbolKindGenerator, scopeSpanningSymbolGenerator, scopeGenerator,
+            symbolReferenceGenerator, symbolTableCreatorGenerator, symbolTableSerializationGenerator);
   }
 
 
@@ -101,6 +102,11 @@ public class SymbolTableGeneratorBuilder {
 
   public SymbolTableGeneratorBuilder symbolTableCreatorGenerator(SymbolTableCreatorGenerator symbolTableCreatorGenerator) {
     this.symbolTableCreatorGenerator = symbolTableCreatorGenerator;
+    return this;
+  }
+
+  public SymbolTableGeneratorBuilder symbolTableSerializationGenerator(SymbolTableSerializationGenerator symbolTableSerializationGenerator) {
+    this.symbolTableSerializationGenerator = symbolTableSerializationGenerator;
     return this;
   }
 

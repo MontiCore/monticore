@@ -13,7 +13,6 @@ import de.se_rwth.commons.logging.Log;
 /**
  * Checks that abstract nonterminals witheout extending productions only occur in a component grammar.
  *
- * @author KH
  */
 public class AbstractNTWithoutExtensionOnlyInComponentGrammar implements GrammarASTMCGrammarCoCo {
 

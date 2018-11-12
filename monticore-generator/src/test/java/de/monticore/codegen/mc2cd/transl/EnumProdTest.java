@@ -11,9 +11,6 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author Sebastian Oberhoff
- */
 public class EnumProdTest {
 
   private final ASTCDCompilationUnit cdCompilationUnit;

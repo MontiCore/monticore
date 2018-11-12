@@ -15,7 +15,7 @@ import de.se_rwth.commons.logging.Log;
 /**
  * Checks that an attribute name is not used twice for different nonterminals.
  *
- * @author KH
+
  */
 public class ProdAndOverriddenProdUseSameAttrNameForDiffNTs implements GrammarASTNonTerminalCoCo {
   

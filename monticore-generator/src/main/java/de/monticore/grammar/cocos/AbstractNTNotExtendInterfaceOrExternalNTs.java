@@ -14,7 +14,7 @@ import de.se_rwth.commons.logging.Log;
 /**
  * Checks that abstract nonterminals only extends abstract or normal nonterminals..
  *
- * @author KH
+
  */
 public class AbstractNTNotExtendInterfaceOrExternalNTs implements GrammarASTAbstractProdCoCo {
   

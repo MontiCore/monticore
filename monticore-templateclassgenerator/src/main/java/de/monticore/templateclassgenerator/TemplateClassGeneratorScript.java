@@ -22,7 +22,6 @@ import de.se_rwth.commons.logging.Log;
 /**
  * This class is used to call the TemplateClassGenerator.
  *
- * @author Jerome Pfeiffer
  */
 public class TemplateClassGeneratorScript extends Script implements GroovyRunner {
   

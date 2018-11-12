@@ -20,10 +20,6 @@ import de.monticore.testshiftexpressions._visitor.TestShiftExpressionsVisitor;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 
-/**
- * @author npichler
- */
-
 public class ShiftExpressionsPrettyPrinterTest{
   
   @BeforeClass

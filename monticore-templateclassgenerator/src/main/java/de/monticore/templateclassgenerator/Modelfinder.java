@@ -14,7 +14,6 @@ import de.se_rwth.commons.logging.Log;
 /**
  * Class that finds all models with a given file extension in a modelpath.
  *
- * @author Jerome Pfeiffer
  */
 public class Modelfinder {
   

@@ -16,7 +16,6 @@ import freemarker.core.Parameter;
 /**
  * Common helper methods for generator.
  *
- * @author Jerome Pfeiffer
  */
 public class TemplateClassHelper {
   

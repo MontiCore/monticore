@@ -13,9 +13,6 @@ import org.junit.Test;
 import de.monticore.literals.literals._ast.ASTLiteral;
 import de.monticore.literals.literals._ast.ASTLongLiteral;
 
-/**
- * @author Martin Schindler
- */
 public class LongLiteralsTest {
   
   private void checkLongLiteral(long l, String s) throws IOException {

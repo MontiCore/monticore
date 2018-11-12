@@ -8,10 +8,6 @@ import org.eclipse.ui.IEditorPart;
 import de.monticore.genericgraphics.controller.util.ImageSaveUtil;
 import de.monticore.genericgraphics.view.icons.IconProvider;
 
-
-/**
- * @author Tim Enger
- */
 public class ExportAsImageAction extends EditorPartAction {
   
   /**

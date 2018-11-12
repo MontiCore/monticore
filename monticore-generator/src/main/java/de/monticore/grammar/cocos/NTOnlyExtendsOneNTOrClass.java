@@ -9,7 +9,7 @@ import de.se_rwth.commons.logging.Log;
 /**
  * Checks that nonterminals do not extend more than one nonterminals/class.
  *
- * @author KH
+
  */
 public class NTOnlyExtendsOneNTOrClass implements GrammarASTClassProdCoCo {
 

@@ -12,7 +12,6 @@ import freemarker.cache.URLTemplateLoader;
 /**
  * Is used to load templates with a given {@link ClassLoader}.
  * 
- * @author Arne Haber
  */
 public class MontiCoreTemplateLoader extends URLTemplateLoader {
   

@@ -18,7 +18,6 @@ import java.util.function.UnaryOperator;
  * builds up the entire CD AST from there and then transfers various pieces of information from the
  * MC AST to the CD AST.
  *
- * @author Sebastian Oberhoff
  */
 public class MC2CDTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
 

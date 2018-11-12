@@ -12,7 +12,6 @@ import freemarker.template.Template;
 /**
  * Helper class for Freemarker templates
  *
- * @author Jerome Pfeiffer
  */
 public class FMHelper {
   

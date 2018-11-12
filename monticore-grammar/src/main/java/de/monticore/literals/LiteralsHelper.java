@@ -7,7 +7,6 @@ import java.io.CharConversionException;
 /**
  * This class provides methods for converting literals. The LiteralsHelper is a singleton.
  * 
- * @author Martin Schindler
  */
 public class LiteralsHelper {
   

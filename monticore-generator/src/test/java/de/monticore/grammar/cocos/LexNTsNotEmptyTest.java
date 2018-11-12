@@ -8,11 +8,9 @@ import org.junit.Test;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * Created by
- *
- * @author KH
- */
+import static de.monticore.grammar.cocos.LexNTsNotEmpty.ERROR_CODE;
+import static de.se_rwth.commons.logging.Log.enableFailQuick;
+
 public class LexNTsNotEmptyTest extends CocoTest {
 
   private final String MESSAGE = " The lexical production A must not allow the empty token.";
@@ -21,27 +19,27 @@ public class LexNTsNotEmptyTest extends CocoTest {
 
   @BeforeClass
   public static void disableFailQuick() {
-    Log.enableFailQuick(false);
+    enableFailQuick(false);
     checker.addCoCo(new LexNTsNotEmpty());
   }
 
   @Test
   public void testInvalid() {
-    testInvalidGrammar(grammar, LexNTsNotEmpty.ERROR_CODE, MESSAGE, checker);
+    testInvalidGrammar(grammar, ERROR_CODE, MESSAGE, checker);
   }
-  
+
   @Test
   public void testCorrect() {
     testValidGrammar("cocos.valid.Attributes", checker);
   }
-  
+
   @Test
   public void testCorrect2() {
     testValidGrammar("mc.grammars.lexicals.TestLexicals", checker);
   }
 
   @Test
-  public void testCorrect3(){
+  public void testCorrect3() {
     testValidGrammar("mc.grammars.literals.TestLiterals", checker);
   }
 }

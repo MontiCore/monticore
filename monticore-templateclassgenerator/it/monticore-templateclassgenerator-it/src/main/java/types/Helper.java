@@ -6,8 +6,7 @@ import java.util.List;
 /**
  * Used for testing
  *
- * @author Jerome Pfeiffer
- * 
+ *
  */
 public class Helper {
   

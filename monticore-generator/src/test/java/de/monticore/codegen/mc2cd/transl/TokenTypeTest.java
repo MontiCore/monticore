@@ -14,9 +14,6 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertTrue;
 
-/**
- * @author Sebastian Oberhoff
- */
 public class TokenTypeTest {
 
   private final ASTCDClass astTest;

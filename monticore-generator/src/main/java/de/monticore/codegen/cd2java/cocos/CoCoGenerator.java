@@ -26,7 +26,7 @@ import de.se_rwth.commons.Names;
  * can be registered at the generated CoCoChecker (basically a visitor that
  * executes the registered cocos at the corresponding ast nodes).
  *
- * @author Robert Heim
+
  */
 public class CoCoGenerator {
   

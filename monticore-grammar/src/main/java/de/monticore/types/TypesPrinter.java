@@ -28,7 +28,6 @@ import de.se_rwth.commons.Names;
  * This class provides methods for printing types as Strings. The TypesPrinter
  * is a singleton.
  * 
- * @author Martin Schindler
  */
 public class TypesPrinter {
   

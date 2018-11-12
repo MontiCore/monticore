@@ -10,7 +10,6 @@ import mc.feature.visitor.inheritance.a._visitor.AVisitor;
  * StringBuilder given in the constructor: tA = traverse A; hA = handle A; vA =
  * visit A; eA = endVisit A.
  *
- * @author Robert Heim
  */
 public class SimpleAVisitor implements AVisitor {
   final private StringBuilder run;

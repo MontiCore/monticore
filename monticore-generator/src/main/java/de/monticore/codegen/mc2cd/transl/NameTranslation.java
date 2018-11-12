@@ -14,7 +14,6 @@ import static de.monticore.codegen.mc2cd.TransformationHelper.*;
 /**
  * This function copies over names from source to target nodes.
  *
- * @author Sebastian Oberhoff
  */
 public class NameTranslation implements
         UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {

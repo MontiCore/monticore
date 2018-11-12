@@ -14,11 +14,6 @@ import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCo
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * Created by
- *
- * @author KH
- */
 public class UsedNTNotDefinedTest extends CocoTest {
 
   private final String MESSAGE =" The production A must not use the nonterminal " +

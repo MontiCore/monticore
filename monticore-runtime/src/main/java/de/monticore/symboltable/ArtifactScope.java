@@ -21,13 +21,15 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import static com.google.common.collect.FluentIterable.from;
+import static de.se_rwth.commons.Names.getQualifier;
+import static de.se_rwth.commons.Splitters.DOT;
+import static de.se_rwth.commons.logging.Log.errorIfNull;
+import static de.se_rwth.commons.logging.Log.warn;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
 
-/**
- * Represents the scope of the whole artifact (i.e., file or compilation unit).
- *
- * @author Pedram Mir Seyed Nazari
- */
 public class ArtifactScope extends CommonScope {
 
   private final String packageName;
@@ -36,26 +38,25 @@ public class ArtifactScope extends CommonScope {
   private QualifiedNamesCalculator qualifiedNamesCalculator;
 
   public ArtifactScope(final String packageName, final List<ImportStatement> imports) {
-    this(Optional.empty(), packageName, imports);
+    this(empty(), packageName, imports);
   }
 
   public ArtifactScope(final Optional<MutableScope> enclosingScope, final String packageName,
-      final List<ImportStatement> imports) {
+                       final List<ImportStatement> imports) {
     super(enclosingScope, true);
     setExportsSymbols(true);
 
-    Log.errorIfNull(packageName);
-    Log.errorIfNull(imports);
+    errorIfNull(packageName);
+    errorIfNull(imports);
 
     if (!packageName.isEmpty()) {
       this.packageName = packageName.endsWith(".") ? packageName.substring(0, packageName.length() - 1) : packageName;
-    }
-    else {
+    } else {
       // default package
       this.packageName = "";
     }
 
-    this.imports = Collections.unmodifiableList(new ArrayList<>(imports));
+    this.imports = unmodifiableList(new ArrayList<>(imports));
 
     this.qualifiedNamesCalculator = new CommonQualifiedNamesCalculator();
   }
@@ -76,7 +77,7 @@ public class ArtifactScope extends CommonScope {
       return getSubScopes().get(0).getSpanningSymbol();
     }
     // there is no top level symbol, if more than one sub scope exists.
-    return Optional.empty();
+    return empty();
   }
 
   public String getPackageName() {
@@ -94,13 +95,13 @@ public class ArtifactScope extends CommonScope {
    */
   @Override
   protected <T extends Symbol> Collection<T> continueWithEnclosingScope(final ResolvingInfo resolvingInfo, final String name,
-      final SymbolKind kind, final AccessModifier modifier, final Predicate<Symbol> predicate) {
+                                                                        final SymbolKind kind, final AccessModifier modifier, final Predicate<Symbol> predicate) {
     final Collection<T> result = new LinkedHashSet<>();
 
     if (checkIfContinueWithEnclosingScope(resolvingInfo.areSymbolsFound()) && (getEnclosingScope().isPresent())) {
       if (!(enclosingScope instanceof GlobalScope)) {
-        Log.warn("0xA1039 The artifact scope " + getName().orElse("") + " should have the global scope as enclosing scope or no "
-            + "enclosing scope at all.");
+        warn("0xA1039 The artifact scope " + getName().orElse("") + " should have the global scope as enclosing scope or no "
+                + "enclosing scope at all.");
       }
 
       final Set<String> potentialQualifiedNames = qualifiedNamesCalculator.calculateQualifiedNames(name, packageName, imports);
@@ -116,9 +117,9 @@ public class ArtifactScope extends CommonScope {
 
   protected String getRemainingNameForResolveDown(String symbolName) {
     final String packageAS = this.getPackageName();
-    final FluentIterable<String> packageASNameParts = FluentIterable.from(Splitters.DOT.omitEmptyStrings().split(packageAS));
+    final FluentIterable<String> packageASNameParts = from(DOT.omitEmptyStrings().split(packageAS));
 
-    final FluentIterable<String> symbolNameParts = FluentIterable.from(Splitters.DOT.split(symbolName));
+    final FluentIterable<String> symbolNameParts = from(DOT.split(symbolName));
     String remainingSymbolName = symbolName;
 
     if (symbolNameParts.size() > packageASNameParts.size()) {
@@ -130,27 +131,25 @@ public class ArtifactScope extends CommonScope {
 
   @Override
   protected boolean checkIfContinueAsSubScope(String symbolName, SymbolKind kind) {
-    if(this.exportsSymbols()) {
-      final String symbolQualifier = Names.getQualifier(symbolName);
+    if (this.exportsSymbols()) {
+      final String symbolQualifier = getQualifier(symbolName);
 
-      final List<String> symbolQualifierParts = Splitters.DOT.splitToList(symbolQualifier);
-      final List<String> packageParts = Splitters.DOT.splitToList(packageName);
+      final List<String> symbolQualifierParts = DOT.splitToList(symbolQualifier);
+      final List<String> packageParts = DOT.splitToList(packageName);
 
       boolean symbolNameStartsWithPackage = true;
 
       if (packageName.isEmpty()) {
         // symbol qualifier always contains default package (i.e., empty string)
         symbolNameStartsWithPackage = true;
-      }
-      else if (symbolQualifierParts.size() >= packageParts.size()) {
+      } else if (symbolQualifierParts.size() >= packageParts.size()) {
         for (int i = 0; i < packageParts.size(); i++) {
           if (!packageParts.get(i).equals(symbolQualifierParts.get(i))) {
             symbolNameStartsWithPackage = false;
             break;
           }
         }
-      }
-      else {
+      } else {
         symbolNameStartsWithPackage = false;
       }
       return symbolNameStartsWithPackage;
@@ -163,6 +162,6 @@ public class ArtifactScope extends CommonScope {
   }
 
   public List<ImportStatement> getImports() {
-    return Collections.unmodifiableList(imports);
+    return unmodifiableList(imports);
   }
 }

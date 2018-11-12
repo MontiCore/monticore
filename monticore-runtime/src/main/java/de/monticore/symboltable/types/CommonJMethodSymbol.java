@@ -2,25 +2,22 @@
 
 package de.monticore.symboltable.types;
 
-import com.google.common.collect.ImmutableList;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
-import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.symboltable.types.references.JTypeReference;
-import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.collect.ImmutableList.copyOf;
 import static de.monticore.symboltable.Symbols.sortSymbolsByPosition;
+import static de.monticore.symboltable.modifiers.BasicAccessModifier.*;
+import static de.se_rwth.commons.logging.Log.errorIfNull;
+import static java.util.stream.Collectors.toList;
 
-/**
- * @author Pedram Mir Seyed Nazari
- */
-public abstract class CommonJMethodSymbol <U extends JTypeSymbol, T extends JTypeReference<? extends U>, S extends JFieldSymbol>
-    extends CommonScopeSpanningSymbol implements JMethodSymbol {
+public abstract class CommonJMethodSymbol<U extends JTypeSymbol, T extends JTypeReference<? extends U>, S extends JFieldSymbol>
+        extends CommonScopeSpanningSymbol implements JMethodSymbol {
 
   private boolean isAbstract = false;
   private boolean isStatic = false;
@@ -41,20 +38,18 @@ public abstract class CommonJMethodSymbol <U extends JTypeSymbol, T extends JTyp
   }
 
   public void setReturnType(T type) {
-    this.returnType = Log.errorIfNull(type);
+    this.returnType = errorIfNull(type);
   }
 
   @Override
   public List<S> getParameters() {
     final Collection<S> resolvedAttributes = getSpannedScope().resolveLocally(S.KIND);
 
-    final List<S> parameters = sortSymbolsByPosition(resolvedAttributes.stream().filter(S::isParameter).collect(Collectors.toList()));
-
-    return parameters;
+    return sortSymbolsByPosition(resolvedAttributes.stream().filter(S::isParameter).collect(toList()));
   }
 
   public void addParameter(S paramType) {
-    Log.errorIfNull(paramType);
+    errorIfNull(paramType);
     checkArgument(paramType.isParameter(), "Only parameters can be added.");
 
     getMutableSpannedScope().add(paramType);
@@ -68,12 +63,12 @@ public abstract class CommonJMethodSymbol <U extends JTypeSymbol, T extends JTyp
   @Override
   public List<U> getFormalTypeParameters() {
     final Collection<U> resolvedTypes = getSpannedScope().resolveLocally(U.KIND);
-    return resolvedTypes.stream().filter(U::isFormalTypeParameter).collect(Collectors.toList());
+    return resolvedTypes.stream().filter(U::isFormalTypeParameter).collect(toList());
   }
 
   @Override
   public List<T> getExceptions() {
-    return ImmutableList.copyOf(exceptions);
+    return copyOf(exceptions);
   }
 
   public void setExceptions(List<T> exceptions) {
@@ -130,30 +125,30 @@ public abstract class CommonJMethodSymbol <U extends JTypeSymbol, T extends JTyp
   }
 
   public void setPrivate() {
-    setAccessModifier(BasicAccessModifier.PRIVATE);
+    setAccessModifier(PRIVATE);
   }
 
   public void setProtected() {
-    setAccessModifier(BasicAccessModifier.PROTECTED);
+    setAccessModifier(PROTECTED);
   }
 
   public void setPublic() {
-    setAccessModifier(BasicAccessModifier.PUBLIC);
+    setAccessModifier(PUBLIC);
   }
 
   @Override
   public boolean isPrivate() {
-    return getAccessModifier().equals(BasicAccessModifier.PRIVATE);
+    return getAccessModifier().equals(PRIVATE);
   }
 
   @Override
   public boolean isProtected() {
-    return getAccessModifier().equals(BasicAccessModifier.PROTECTED);
+    return getAccessModifier().equals(PROTECTED);
   }
 
   @Override
   public boolean isPublic() {
-    return getAccessModifier().equals(BasicAccessModifier.PUBLIC);
+    return getAccessModifier().equals(PUBLIC);
   }
 
 }

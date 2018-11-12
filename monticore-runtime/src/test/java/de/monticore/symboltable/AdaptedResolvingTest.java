@@ -27,10 +27,6 @@ import de.monticore.symboltable.resolving.CommonResolvingFilter;
 import org.junit.Ignore;
 import org.junit.Test;
 
-/**
- * @author Pedram Mir Seyed Nazari
- *
- */
 public class AdaptedResolvingTest {
 
   @Test

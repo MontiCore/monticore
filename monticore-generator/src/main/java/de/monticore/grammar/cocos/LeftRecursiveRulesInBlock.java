@@ -14,7 +14,6 @@ import de.se_rwth.commons.logging.Log;
  * If Antlr (Antlr 4.5 throws an exception) can take care of it,  the check is 
  * no longer necessary.
  *
- * @author MB
  */
 public class LeftRecursiveRulesInBlock implements GrammarASTClassProdCoCo {
   

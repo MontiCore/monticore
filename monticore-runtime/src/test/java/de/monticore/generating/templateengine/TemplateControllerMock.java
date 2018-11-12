@@ -7,8 +7,6 @@ import de.monticore.generating.GeneratorSetup;
 /**
  * This class helps to test internals of {@link TemplateController}.
  *
- * @author  Pedram Nazari
- *
  */
 public class TemplateControllerMock extends TemplateController {
 

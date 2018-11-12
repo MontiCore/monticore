@@ -16,10 +16,6 @@ import org.eclipse.jface.util.SafeRunnable;
 
 import de.monticore.genericgraphics.model.graphics.IViewElement;
 
-
-/**
- * @author Tim Enger
- */
 public class JavaPersistenceUtil implements IPersistenceUtil {
   
   @Override

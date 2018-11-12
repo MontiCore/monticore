@@ -10,7 +10,6 @@ import de.se_rwth.commons.logging.Log;
 /**
  * Checks that alternatives of keywords are named.
  *
- * @author KH
  */
 public class KeywordAlternativeName implements GrammarASTConstantGroupCoCo {
   

@@ -23,9 +23,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Optional;
 
-/**
- * @author Sebastian Oberhoff
- */
 public class TestHelper {
 
   /**

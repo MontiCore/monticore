@@ -18,7 +18,6 @@ import de.se_rwth.commons.logging.Log;
  * Provides useful information of the current resolution process, e.g., the
  * scope that started the process.
  *
- * @author Pedram Mir Seyed Nazari
  *
  */
 public class ResolvingInfo {

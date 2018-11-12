@@ -12,11 +12,6 @@ import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCo
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * Created by
- *
- * @author GV
- */
 public class NTUniqueIgnoreCaseTest extends CocoTest {
   
   private final String MESSAGE = " The nonterminal A must not be defined by more than one production: nonterminals aren't case-sensitive.";

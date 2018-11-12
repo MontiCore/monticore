@@ -10,7 +10,6 @@ import de.monticore.genericgraphics.view.figures.connections.MCBendpoint;
  * {@link Command} for deleting bendpoints in {@link IEdgeViewElement
  * IEdgeViewElements}.
  * 
- * @author Tim Enger
  */
 public class ConnectionDeleteBendpointCommand extends Command {
   

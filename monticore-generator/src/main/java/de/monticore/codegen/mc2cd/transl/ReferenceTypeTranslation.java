@@ -29,7 +29,6 @@ import de.monticore.utils.Link;
  * Infers the type that ASTCDAttributes should have according to what kind of rule the original
  * nonterminals were referring to.
  *
- * @author Sebastian Oberhoff
  */
 public class ReferenceTypeTranslation implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {

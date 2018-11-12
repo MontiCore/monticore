@@ -6,9 +6,6 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-/**
- * @author Tim Enger
- */
 public class ExportAsImageHandler extends AbstractHandler {
   
   @Override

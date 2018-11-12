@@ -14,10 +14,6 @@ import de.monticore.symboltable.mocks.languages.statechart.StateSymbol;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 import org.junit.Test;
 
-/**
- *
- * @author Pedram Mir Seyed Nazari
- */
 public class ScopeTest {
 
   @Test

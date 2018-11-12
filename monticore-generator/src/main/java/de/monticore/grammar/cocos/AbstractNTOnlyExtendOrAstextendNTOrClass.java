@@ -9,7 +9,6 @@ import de.se_rwth.commons.logging.Log;
 /**
  * Checks that abstract nonterminals do not extend and astextend a type.
  *
- * @author KH
  */
 public class AbstractNTOnlyExtendOrAstextendNTOrClass implements GrammarASTAbstractProdCoCo {
 

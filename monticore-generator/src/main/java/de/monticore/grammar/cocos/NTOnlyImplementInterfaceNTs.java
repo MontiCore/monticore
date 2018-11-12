@@ -14,7 +14,7 @@ import de.se_rwth.commons.logging.Log;
 /**
  * Checks that nonterminals only implement interface nonterminals.
  *
- * @author KH
+
  */
 public class NTOnlyImplementInterfaceNTs implements GrammarASTClassProdCoCo {
   

@@ -8,16 +8,12 @@ import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.reporting.commons.AReporter;
 import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
 
-/** *
- * @author MB
- */
-
 public class SuccessfulReporter extends AReporter {
   
   final static String SIMPLE_FILE_NAME = "19_Successful";
   
   public SuccessfulReporter(String outputDir, String modelName) {
-    super(outputDir + File.separator + ReportingConstants.REPORTING_DIR
+    super(outputDir
         + File.separator + modelName, SIMPLE_FILE_NAME,
         ReportingConstants.REPORT_FILE_EXTENSION);
   }

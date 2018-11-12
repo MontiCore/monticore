@@ -6,12 +6,6 @@ import java.util.Set;
 
 import de.monticore.symboltable.SymbolKind;
 
-/**
- * Calculates the possible model names from a (un-)qualified symbol <code>name</code> depending on the
- * <code>kind</code> (see {@link #calculateModelNames(String, SymbolKind)}.
- *
- * @author Pedram Mir Seyed Nazari
- */
 public interface ModelNameCalculator {
 
 
