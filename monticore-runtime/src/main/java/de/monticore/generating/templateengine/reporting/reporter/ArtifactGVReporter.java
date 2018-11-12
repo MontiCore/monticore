@@ -17,7 +17,7 @@ public class ArtifactGVReporter extends ArtifactReporter {
   final static String SIMPLE_FILE_NAME = "16_ArtifactGv";  
   
   public ArtifactGVReporter(String outputDir, String modelName) {
-    super(outputDir + File.separator + ReportingConstants.REPORTING_DIR + File.separator + modelName,
+    super(outputDir + File.separator + modelName,
         SIMPLE_FILE_NAME, "gv", new GVFormatter());
   }
 }

@@ -407,8 +407,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ASTCDCompilationUnit astCdForReporting = new AstGeneratorHelper(cd, globalScope).getASTCDForReporting();
     // No star imports in reporting CDs
     astCdForReporting.getImportStatementList().forEach(s -> s.setStar(false));
-    GeneratorHelper.prettyPrintAstCd(astCdForReporting, outputDirectory, ReportingConstants.REPORTING_DIR
-        + File.separator + reportSubDir);
+    GeneratorHelper.prettyPrintAstCd(astCdForReporting, outputDirectory, reportSubDir);
 
   }
 
@@ -602,6 +601,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
             mcConfig.getModelPath());
         builder.addVariable(MontiCoreConfiguration.Options.OUT.toString(),
             mcConfig.getOut());
+        builder.addVariable(MontiCoreConfiguration.Options.REPORT.toString(),
+                mcConfig.getReport());
         builder.addVariable(MontiCoreConfiguration.Options.FORCE.toString(),
             mcConfig.getForce());
         builder.addVariable(MontiCoreConfiguration.Options.HANDCODEDPATH.toString(),
@@ -611,7 +612,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         builder.addVariable("LOG_ID", LOG_ID);
         builder.addVariable("glex", new GlobalExtensionManagement());
         builder.addVariable("grammarIterator", mcConfig.getGrammars().getResolvedPaths());
-        builder.addVariable("reportManagerFactory", new MontiCoreReports(mcConfig.getOut().getAbsolutePath(),
+        builder.addVariable("reportManagerFactory", new MontiCoreReports(mcConfig.getReport().getAbsolutePath(),
             mcConfig.getHandcodedPath(), mcConfig.getTemplatePath()));
       }
 

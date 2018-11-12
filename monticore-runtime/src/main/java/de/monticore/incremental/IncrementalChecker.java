@@ -64,7 +64,7 @@ public class IncrementalChecker {
    * @return whether there are no significant changes in the model or its
    * context based on the current configuration
    */
-  public static boolean isUpToDate(Path inputPath, File outputDirectory,
+  public static boolean isUpToDate(Path inputPath,
                                    ModelPath modelPath, IterablePath templatePath, IterablePath hwcPath) {
     if (inputPath == null) {
       throw new IllegalArgumentException(
@@ -431,12 +431,16 @@ public class IncrementalChecker {
    *
    * @param outputDirectory
    */
-  public static void initialize(File outputDirectory) {
+  public static void initialize(File outputDirectory, File reportDir) {
     if (outputDirectory == null) {
       throw new IllegalArgumentException(
           "0xA4063 Output directory for checking incremental regeneration must not be null.");
     }
-    List<Path> inputOutputReportsFiles = getAllInputOutputReports(outputDirectory);
+    if (reportDir == null) {
+      throw new IllegalArgumentException(
+              "0xA4064 Report directory for checking incremental regeneration must not be null.");
+    }
+    List<Path> inputOutputReportsFiles = getAllInputOutputReports(reportDir);
     Map<String, InputOutputStory> result = new HashMap<String, InputOutputStory>();
     for (Path path : inputOutputReportsFiles) {
       collectInputOutputMapFromReport(path, result);

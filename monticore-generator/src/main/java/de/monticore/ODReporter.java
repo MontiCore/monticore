@@ -21,7 +21,7 @@ public class ODReporter extends AReporter {
   private ReportingRepository reporting;
   
   public ODReporter(String outputDir, String modelName, ReportingRepository reporting) {
-    super(outputDir + File.separator + ReportingConstants.REPORTING_DIR + File.separator
+    super(outputDir + File.separator
         + modelName,
         Names.getSimpleName(modelName) + "_AST", ReportingConstants.OD_FILE_EXTENSION);
     this.modelName = modelName;

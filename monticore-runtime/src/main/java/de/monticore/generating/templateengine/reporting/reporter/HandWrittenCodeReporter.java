@@ -32,7 +32,7 @@ public class HandWrittenCodeReporter extends AReporter {
   private Map<String, Integer> usedFileNames = Maps.newHashMap();
   
   public HandWrittenCodeReporter(String outputDir, String modelName, ReportingRepository repo) {
-    super(outputDir + File.separator + ReportingConstants.REPORTING_DIR
+    super(outputDir + File.separator
         + File.separator + modelName, SIMPLE_FILE_NAME,
         ReportingConstants.REPORT_FILE_EXTENSION);
     this.repo = repo;

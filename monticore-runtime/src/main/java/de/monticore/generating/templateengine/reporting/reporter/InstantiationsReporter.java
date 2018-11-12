@@ -25,7 +25,7 @@ public class InstantiationsReporter extends AReporter {
   private Map<String, Integer> instantiateCount = Maps.newTreeMap();
   
   public InstantiationsReporter(String outputDir, String modelName) {
-    super(outputDir + File.separator + ReportingConstants.REPORTING_DIR
+    super(outputDir
         + File.separator + modelName, SIMPLE_FILE_NAME,
         ReportingConstants.REPORT_FILE_EXTENSION);    
   }
