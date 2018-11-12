@@ -2,11 +2,10 @@
 
 package de.monticore.generating.templateengine.reporting.reporter;
 
-import java.io.File;
-
 import de.monticore.generating.templateengine.reporting.artifacts.ArtifactReporter;
 import de.monticore.generating.templateengine.reporting.artifacts.formatter.GMLFormatter;
-import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
+
+import java.io.File;
 
 
 /**

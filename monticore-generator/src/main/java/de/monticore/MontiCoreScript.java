@@ -2,23 +2,8 @@
 
 package de.monticore;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import org.codehaus.groovy.control.customizers.ImportCustomizer;
-
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
-
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstGenerator;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
@@ -37,7 +22,6 @@ import de.monticore.codegen.symboltable.SymbolTableGeneratorBuilder;
 import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
-import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
 import de.monticore.grammar.cocos.GrammarCoCos;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
@@ -60,7 +44,15 @@ import de.se_rwth.commons.groovy.GroovyRunner;
 import de.se_rwth.commons.groovy.GroovyRunnerBase;
 import de.se_rwth.commons.logging.Log;
 import groovy.lang.Script;
+import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import parser.MCGrammarParser;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 /**
  * The actual top level functional implementation of MontiCore. This is the
