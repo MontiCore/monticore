@@ -12,6 +12,12 @@
 
     <mirrors>
         <mirror>
+            <id>maven-central</id>
+            <mirrorOf>central</mirrorOf>
+            <url>http://central.maven.org/maven2/</url>
+        </mirror>
+
+        <mirror>
             <!-- this sends everything to the specified nexus repository -->
             <id>se-nexus</id>
             <mirrorOf>external:*</mirrorOf>
