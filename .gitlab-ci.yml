@@ -2,13 +2,7 @@ image: maven:3.6.0-jdk-8
 
 cache:
   paths:
-    - monticore-cli/target/
-    - monticore-grammar/target/
-    - monticore-generator/target/
-    - monticore-maven/target/
-    - monticore-runtime/target/
-    - monticore-emf-runtime/target/
-    - monticore-templateclassgenerator/target/
+    - target/
 
 stages:
   - build
