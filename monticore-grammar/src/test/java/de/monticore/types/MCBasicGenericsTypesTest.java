@@ -1,9 +1,8 @@
 package de.monticore.types;
 
+
 import de.monticore.types.mcbasicgenericstypestest._parser.MCBasicGenericsTypesTestParser;
-import de.monticore.types.mcbasictypes._ast.ASTPrimitiveType;
-import de.monticore.types.mcbasictypes._ast.ASTType;
-import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
+import de.monticore.types.mcbasictypes._ast.ASTReferenceType;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -23,16 +22,14 @@ public class MCBasicGenericsTypesTest {
 
   @Test
   public void testBasicGenericsTypes() {
-
     Class foo = boolean.class;
-
     String[] types = new String[]{"List<String>","Optional<String>"};
     try {
       for (String testType : types) {
         MCBasicGenericsTypesTestParser mcBasicTypesParser = new MCBasicGenericsTypesTestParser();
         // .parseType(primitive);
 
-        Optional<ASTType> type = mcBasicTypesParser.parse_StringType(testType);
+        Optional<ASTReferenceType> type = mcBasicTypesParser.parse_StringReferenceType(testType);
 
         assertNotNull(type);
         assertTrue(type.isPresent());
@@ -41,7 +38,5 @@ public class MCBasicGenericsTypesTest {
     } catch (IOException e) {
       e.printStackTrace();
     }
-
   }
-
 }

@@ -1,6 +1,8 @@
 package de.monticore.types;
 
+import de.monticore.types.mcbasictypes._ast.ASTBuiltInType;
 import de.monticore.types.mcbasictypes._ast.ASTPrimitiveType;
+import de.monticore.types.mcbasictypes._ast.ASTQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTType;
 
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
@@ -44,5 +46,48 @@ public class MCBasicTypesTest {
     }
 
   }
+
+  @Test
+  public void testOwnSimpleTypes() {
+
+    Class foo = boolean.class;
+
+    String[] primitives = new String[]{"socnet.Person", "Person"};
+    try {
+      for (String primitive : primitives) {
+        MCBasicTypesTestParser mcBasicTypesParser = new MCBasicTypesTestParser();
+
+        Optional<ASTType> type = mcBasicTypesParser.parse_StringType(primitive);
+
+        assertNotNull(type);
+        assertTrue(type.isPresent());
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+  }
+
+  @Test
+  public void testBuiltInTypes() {
+
+    Class foo = boolean.class;
+
+    String[] primitives = new String[]{"Boolean","String"};
+    try {
+      for (String primitive : primitives) {
+        MCBasicTypesTestParser mcBasicTypesParser = new MCBasicTypesTestParser();
+
+        Optional<ASTBuiltInType> type = mcBasicTypesParser.parse_StringBuiltInType(primitive);
+
+        assertNotNull(type);
+        assertTrue(type.isPresent());
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+  }
+
 
 }
