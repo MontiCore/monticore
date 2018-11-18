@@ -11,13 +11,19 @@ external EDeclaration;
 
     TypeIfExpr implements Expression <100> =
         "typeif" condition:Expression
-        "then" thenExpression:Expression
-        "else" elseExpression:Expression;
+        ThenExpressionPart
+        ElseExpressionPart;
+
+    // need own ASTNode for visitor to know when we are in then part and when we are in else part for
+    // typeif construction, b/c in then part we automatically cast the type
+    // cf. http://mbse.se-rwth.de/book1/index.php?c=chapter3-3#x1-550003.3.5
+    ThenExpressionPart = "then" thenExpression:Expression;
+    ElseExpressionPart = "else" elseExpression:Expression;
 
     IfThenElseExpr implements Expression <100> =
         "if" condition:Expression
-        "then" thenExpression:Expression
-        "else" elseExpression:Expression;
+        ThenExpressionPart
+        ElseExpressionPart;
 
     ImpliesExpression implements Expression <60> =
         leftExpression:Expression
