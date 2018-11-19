@@ -24,8 +24,7 @@ public class IncGenCheckReporter extends AReporter {
   String outputDir;
 
   public IncGenCheckReporter(String outputDir) {
-    super(outputDir + File.separator + ReportingConstants.REPORTING_DIR + File.separator,
-        SIMPLE_FILE_NAME, "sh");
+    super(outputDir + File.separator, SIMPLE_FILE_NAME, "sh");
     this.outputDir = outputDir;
   }
 
