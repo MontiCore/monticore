@@ -1,8 +1,4 @@
-image: maven:latest
-
-cache:
-  paths:
-    - target/
+image: maven:3.5.4-jdk-8-alpine
 
 stages:
   - build
@@ -13,4 +9,4 @@ variables:
 build:
   stage: build
   script:
-    - mvn $MAVEN_CLI_OPTS install -DskipTests
+    - mvn $MAVEN_CLI_OPTS install
