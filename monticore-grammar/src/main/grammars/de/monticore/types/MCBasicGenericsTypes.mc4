@@ -6,7 +6,7 @@ package de.monticore.types;
 */
 component grammar MCBasicGenericsTypes extends de.monticore.types.MCBasicTypes {
 
-
+  start Type;
 
   ListType implements ReferenceType = "List<" BuiltInType ">";
 

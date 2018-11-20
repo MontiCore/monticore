@@ -15,6 +15,12 @@ package de.monticore.types;
 component grammar MCBasicTypes extends de.monticore.MCBasics, de.monticore.literals.Literals {
 
     /*========================================================================*/
+    /*= The Type Interfaces ==================================================*/
+    /*========================================================================*/
+
+    interface Type;
+
+    /*========================================================================*/
     /*= Qualified Names ======================================================*/
     /*========================================================================*/
     
@@ -50,11 +56,7 @@ component grammar MCBasicTypes extends de.monticore.MCBasics, de.monticore.liter
         };
 
 
-    /*========================================================================*/
-    /*= The Type Interfaces ==================================================*/
-    /*========================================================================*/
-    
-    interface Type;
+
 
 
     /*========================================================================*/
@@ -152,6 +154,11 @@ component grammar MCBasicTypes extends de.monticore.MCBasics, de.monticore.liter
     /*= Builtin Types (Integer, Boolean, String, ...)=========================*/
     /*========================================================================*/
     interface BuiltInType extends Type;
+
+    astrule BuiltInType =
+        method public String getaa() {
+           return "hh";
+        };
 
     BooleanRereferenceType implements BuiltInType = "Boolean";
     StringRereferenceType implements BuiltInType = "String";

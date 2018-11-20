@@ -1,18 +1,17 @@
 package de.monticore.types;
 
 import de.monticore.types.mcbasictypes._ast.*;
-
+import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor;
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
 import de.se_rwth.commons.logging.Log;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class MCBasicTypesTest {
 
@@ -43,7 +42,6 @@ public class MCBasicTypesTest {
     assertFalse(isInt);
     Boolean isShort = bool.isShort();
     assertFalse(isInt);
-
   }
 
 
@@ -72,48 +70,51 @@ public class MCBasicTypesTest {
   }
 
   @Test
-  public void testOwnSimpleTypes() {
-
-    Class foo = boolean.class;
+  public void testOwnSimpleTypes() throws IOException {
 
     String[] types = new String[]{"socnet.Person", "Person"};
-    try {
-      for (String type : types) {
-        MCBasicTypesTestParser mcBasicTypesParser = new MCBasicTypesTestParser();
+    for (String type : types) {
+      MCBasicTypesTestParser mcBasicTypesParser = new MCBasicTypesTestParser();
+      Optional<ASTType> astType = mcBasicTypesParser.parse_StringType(type);
+      assertNotNull(astType);
+      assertTrue(astType.isPresent());
+      assertTrue(astType.get() instanceof ASTReferenceType);
 
-        Optional<ASTType> astType = mcBasicTypesParser.parse_StringType(type);
-
-        assertNotNull(astType);
-        assertTrue(astType.isPresent());
-        assertTrue(astType.get() instanceof ASTReferenceType);
-
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
     }
 
   }
 
   @Test
-  public void testBuiltInTypes() {
+  public void testBuiltInTypes() throws IOException {
+    String[] builtIns = new String[]{"Boolean","String","Char","Short","Integer","Float","Double"};
 
-    Class foo = boolean.class;
-
-    String[] primitives = new String[]{"Boolean","String"};
-    try {
-      for (String primitive : primitives) {
-        MCBasicTypesTestParser mcBasicTypesParser = new MCBasicTypesTestParser();
-
-        Optional<ASTBuiltInType> type = mcBasicTypesParser.parse_StringBuiltInType(primitive);
-
-        assertNotNull(type);
-        assertTrue(type.isPresent());
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
+    for (String builtIn : builtIns) {
+      MCBasicTypesTestParser mcBasicTypesParser = new MCBasicTypesTestParser();
+      Optional<ASTBuiltInType> type = mcBasicTypesParser.parse_StringBuiltInType(builtIn);
+      assertNotNull(type);
+      assertTrue(type.isPresent());
     }
+
 
   }
 
+  @Test
+  public void testVisitorOnTypes() throws IOException {
+    TypesVisitor t = new TypesVisitor();
+    MCBasicTypesTestParser mcBasicTypesParser = new MCBasicTypesTestParser();
+    Optional<ASTType> v = mcBasicTypesParser.parse_String("Boolean");
+
+    v.get().accept(t);
+    Assert.assertEquals("Boolean",t.content);
+
+  }
+
+  private class TypesVisitor implements MCBasicTypesVisitor {
+    String content="";
+
+    public void visit(ASTBooleanRereferenceType t) {
+      content = "Boolean";
+    }
+  }
 
 }
