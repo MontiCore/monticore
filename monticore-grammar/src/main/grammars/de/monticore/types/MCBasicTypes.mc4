@@ -57,8 +57,6 @@ component grammar MCBasicTypes extends de.monticore.MCBasics, de.monticore.liter
     interface Type;
 
 
-
-
     /*========================================================================*/
     /*= Primitives ===========================================================*/
     /*========================================================================*/
@@ -128,7 +126,7 @@ component grammar MCBasicTypes extends de.monticore.MCBasics, de.monticore.liter
     /*= Reference Types (Classes, Interfaces in OO) ==========================*/
     /*========================================================================*/
     
-
+    interface ReferenceType extends Type;
     
     /** ASTSimpleReferenceType represents types like class or interface types
             which could have a qualified name like this: a.b.c. The
@@ -142,15 +140,28 @@ component grammar MCBasicTypes extends de.monticore.MCBasics, de.monticore.liter
                                      one. So it is saved in an ASTStringList
             @attribute typeArguments The types between '<...>'
         */
-        SimpleReferenceType implements Type =
-            (Name || ".")+;
+    SimpleReferenceType implements ReferenceType =
+        (Name || ".")+;
 
     astrule SimpleReferenceType =
         method public String getQName(){
           return de.se_rwth.commons.Names.getQualifiedName(
               this.getNameList());
         };
+    /*========================================================================*/
+    /*= Builtin Types (Integer, Boolean, String, ...)=========================*/
+    /*========================================================================*/
+    interface BuiltInType extends Type;
 
+    BooleanRereferenceType implements BuiltInType = "Boolean";
+    StringRereferenceType implements BuiltInType = "String";
+    ByteRereferenceType implements BuiltInType = "Byte";
+    CharRereferenceType implements BuiltInType = "Char";
+    ShortRereferenceType implements BuiltInType = "Short";
+    IntegerRereferenceType implements BuiltInType = "Integer";
+    FloatRereferenceType implements BuiltInType = "Float";
+    LongRereferenceType implements BuiltInType = "Long";
+    DoubleRereferenceType implements BuiltInType = "Double";
 
     /*========================================================================*/
     /*= ReturnTypes and void =================================================*/
