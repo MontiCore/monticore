@@ -106,7 +106,10 @@ public class MCBasicTypesPrettyPrinterConcreteVisitor extends LiteralsPrettyPrin
   }
 
 
-
+  @Override
+  public void visit(ASTImportStatement a){
+    getPrinter().print("import" + a.getQualifiedName().getQName());
+  }
 
   /**
    * This method prettyprints a given node from type grammar.
@@ -151,4 +154,5 @@ public class MCBasicTypesPrettyPrinterConcreteVisitor extends LiteralsPrettyPrin
       sep = seperator;
     }
   }
+
 }
