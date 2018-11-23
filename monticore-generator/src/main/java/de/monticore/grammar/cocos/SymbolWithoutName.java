@@ -2,13 +2,13 @@
 
 package de.monticore.grammar.cocos;
 
-import java.util.Optional;
-
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTProdCoCo;
 import de.monticore.grammar.symboltable.MCProdComponentSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.Optional;
 
 /**
  * Checks that Prods have one symbol and one scope keyword at most
@@ -30,7 +30,7 @@ public class SymbolWithoutName implements GrammarASTProdCoCo {
           ref = symbol.getProdComponent("name");
         }
 
-        if (!ref.isPresent() || ref.get().isList() || (ref.get().getReferencedProd().isPresent() && !ref.get().getReferencedProd().get().getName().equals("Name"))) {
+        if (!ref.isPresent() || ref.get().isList() || (ref.get().getReferencedProd().isPresent() && !"Name".equals(ref.get().getReferencedProd().get().getName()))) {
           Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, symbol.getName()),
               a.get_SourcePositionStart());
         }
