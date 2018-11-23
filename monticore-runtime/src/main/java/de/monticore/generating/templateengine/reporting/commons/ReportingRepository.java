@@ -2,13 +2,14 @@
 
 package de.monticore.generating.templateengine.reporting.commons;
 
-import java.nio.file.Path;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
-
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import de.monticore.ast.ASTNode;
+import de.monticore.io.paths.IterablePath;
+import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.references.SymbolReference;
+import de.se_rwth.commons.SourcePosition;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 import org.reflections.util.ClasspathHelper;
@@ -16,16 +17,12 @@ import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-
-import de.monticore.ast.ASTNode;
-import de.monticore.io.paths.IterablePath;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.references.SymbolReference;
-import de.se_rwth.commons.SourcePosition;
-import de.se_rwth.commons.logging.Log;
+import java.nio.file.Path;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * ReportingRepository holds all used formatted ASTNode strings. All string
@@ -235,7 +232,7 @@ public class ReportingRepository {
 
     @Override
     public void trace(String msg) {
-      System.out.println("[TRACE] " + msg);
+      if (isTraceEnabled()) System.out.println("[TRACE] " + msg);
     }
 
     @Override
@@ -264,7 +261,7 @@ public class ReportingRepository {
     }
 
     @Override
-    public void debug(String msg) {System.out.println("[DEBUG] " + msg);
+    public void debug(String msg) {if (isDebugEnabled()) System.out.println("[DEBUG] " + msg);
     }
 
     @Override
@@ -293,8 +290,7 @@ public class ReportingRepository {
     }
 
     @Override
-    public void info(String msg) {
-      System.out.println("[INFO] " + msg);
+    public void info(String msg) { if (isInfoEnabled()) System.out.println("[INFO] " + msg);
     }
 
     @Override
@@ -323,8 +319,7 @@ public class ReportingRepository {
     }
 
     @Override
-    public void warn(String msg) {
-      System.err.println("[WARNING] " + msg);
+    public void warn(String msg) { if (isWarnEnabled()) System.err.println("[WARNING] " + msg);
     }
 
     @Override
@@ -353,8 +348,7 @@ public class ReportingRepository {
     }
 
     @Override
-    public void error(String msg) {
-      System.err.println("[ERROR] " + msg);
+    public void error(String msg) { if (isErrorEnabled()) System.err.println("[ERROR] " + msg);
     }
 
     @Override
