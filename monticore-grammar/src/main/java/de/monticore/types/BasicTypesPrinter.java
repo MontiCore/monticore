@@ -2,7 +2,7 @@
 
 package de.monticore.types;
 
-import de.monticore.types.mcbasicgenericstypes._ast.ASTReferenceType;
+
 import de.monticore.types.mcbasictypes._ast.*;
 import de.se_rwth.commons.Names;
 
