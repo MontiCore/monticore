@@ -111,6 +111,51 @@ public class MCBasicTypesPrettyPrinterConcreteVisitor extends LiteralsPrettyPrin
     getPrinter().print("import" + a.getQualifiedName().getQName());
   }
 
+  @Override
+  public void visit(ASTBooleanRereferenceType a){
+    getPrinter().print("Boolean");
+  }
+
+  @Override
+  public void visit(ASTStringRereferenceType a){
+    getPrinter().print("String");
+  }
+
+  @Override
+  public void visit(ASTByteRereferenceType a){
+    getPrinter().print("Byte");
+  }
+
+  @Override
+  public void visit(ASTCharRereferenceType a){
+    getPrinter().print("Char");
+  }
+
+  @Override
+  public void visit(ASTShortRereferenceType a){
+    getPrinter().print("Short");
+  }
+
+  @Override
+  public void visit(ASTIntegerRereferenceType a){
+    getPrinter().print("Integer");
+  }
+
+  @Override
+  public void visit(ASTFloatRereferenceType a){
+    getPrinter().print("Float");
+  }
+
+  @Override
+  public void visit(ASTLongRereferenceType a){
+    getPrinter().print("Long");
+  }
+
+  @Override
+  public void visit(ASTDoubleRereferenceType a){
+    getPrinter().print("Double");
+  }
+
   /**
    * This method prettyprints a given node from type grammar.
    *

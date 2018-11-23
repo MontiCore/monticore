@@ -30,22 +30,36 @@ public class MCBasicGenericsTypesPrettyPrinterConcreteVisitor extends MCBasicTyp
 
   @Override
   public void visit(ASTListType a){
-    getPrinter().print("List<"+a.getSimpleReferenceType().getQName()+">");
+    MCBasicTypesPrettyPrinterConcreteVisitor prettyprinter = new MCBasicGenericsTypesPrettyPrinterConcreteVisitor(new IndentPrinter());
+    prettyprinter.visit(a.getBuiltInType());
+    String output = prettyprinter.getPrinter().getContent();
+    getPrinter().print("List<"+output+">");
   }
 
   @Override
   public void visit(ASTOptionalType a){
-    getPrinter().print("Optional<"+a.getSimpleReferenceType().getQName()+">");
+    MCBasicTypesPrettyPrinterConcreteVisitor prettyprinter = new MCBasicGenericsTypesPrettyPrinterConcreteVisitor(new IndentPrinter());
+    prettyprinter.visit(a.getBuiltInType());
+    String output = prettyprinter.getPrinter().getContent();
+    getPrinter().print("Optional<"+output+">");
   }
 
   @Override
   public void visit(ASTMapType a){
-    getPrinter().print("Map<"+a.getSimpleReferenceType(0).getQName()+","+a.getSimpleReferenceType(1).getQName() +">");
+    MCBasicTypesPrettyPrinterConcreteVisitor prettyprinter = new MCBasicGenericsTypesPrettyPrinterConcreteVisitor(new IndentPrinter());
+    prettyprinter.visit(a.getBuiltInType(0));
+    prettyprinter.getPrinter().print(",");
+    prettyprinter.visit(a.getBuiltInType(1));
+    String output = prettyprinter.getPrinter().getContent();
+    getPrinter().print("Map<"+output+">");
   }
 
   @Override
   public void visit(ASTSetType a){
-    getPrinter().print("Set<"+a.getSimpleReferenceType().getQName()+">");
+    MCBasicTypesPrettyPrinterConcreteVisitor prettyprinter = new MCBasicGenericsTypesPrettyPrinterConcreteVisitor(new IndentPrinter());
+    prettyprinter.visit(a.getBuiltInType());
+    String output = prettyprinter.getPrinter().getContent();
+    getPrinter().print("Set<"+output+">");
   }
 
 
