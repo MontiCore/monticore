@@ -14,7 +14,7 @@ package de.monticore.types;
 */
 component grammar MCGenericTypes extends de.monticore.types.MCCustomGenericsTypes {
 
-  GenericType implements ReferenceType = type:SimpleReferenceType "<" typeParameter:SimpleReferenceType ">";
+  GenericType implements ReferenceType = type:QualifiedReferenceType "<" typeParameter:QualifiedReferenceType ">";
 
   /** ASTTypeParameters represents a list of generic parameter parenthesized
           by '<...>' in type declarations (e.g., class-, interface-, method-, or
@@ -25,11 +25,11 @@ component grammar MCGenericTypes extends de.monticore.types.MCCustomGenericsType
            (
              "<" (TypeVariableDeclaration || ",")+ ">"
            );
-
+  //TODO RE: Change QualifiedReferenceType to something with generic
   TypeVariableDeclaration =
           Name
           (
-            "extends" upperBound:(SimpleReferenceType || "&")+
+            "extends" upperBound:(QualifiedReferenceType || "&")+
           )?;
 
 }

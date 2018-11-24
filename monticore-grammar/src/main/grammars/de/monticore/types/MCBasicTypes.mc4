@@ -130,45 +130,11 @@ component grammar MCBasicTypes extends de.monticore.MCBasics, de.monticore.liter
     
     interface ReferenceType extends Type;
     
-    /** ASTSimpleReferenceType represents types like class or interface types
-            which could have a qualified name like this: a.b.c. The
-            qualification stored in the name (a.b) could be package or a type name.
-            The qualified name could contain type arguments only at the end.
-            a.b.c.d would be one ASTSimpleReferenceType (a.b.c) and one
-            ASTQualifiedType (d).
-            @attribute name          Name of the type
-                                     Note: Although the class name contains the
-                                     word 'simple', the name could be a qualified
-                                     one. So it is saved in an ASTStringList
-            @attribute typeArguments The types between '<...>'
+    /** ASTQualifiedReferenceType represents types like class or interface types
+            which could have a qualified name like this: a.b.c.D
         */
-    SimpleReferenceType implements ReferenceType =
-        (Name || ".")+;
+    QualifiedReferenceType implements ReferenceType = QualifiedName;
 
-    astrule SimpleReferenceType =
-        method public String getQName(){
-          return de.se_rwth.commons.Names.getQualifiedName(
-              this.getNameList());
-        };
-    /*========================================================================*/
-    /*= Builtin Types (Integer, Boolean, String, ...)=========================*/
-    /*========================================================================*/
-    interface BuiltInType extends Type;
-
-    astrule BuiltInType =
-        method public String getaa() {
-           return "hh";
-        };
-
-    BooleanRereferenceType implements BuiltInType = "Boolean";
-    StringRereferenceType implements BuiltInType = "String";
-    ByteRereferenceType implements BuiltInType = "Byte";
-    CharRereferenceType implements BuiltInType = "Char";
-    ShortRereferenceType implements BuiltInType = "Short";
-    IntegerRereferenceType implements BuiltInType = "Integer";
-    FloatRereferenceType implements BuiltInType = "Float";
-    LongRereferenceType implements BuiltInType = "Long";
-    DoubleRereferenceType implements BuiltInType = "Double";
 
     /*========================================================================*/
     /*= ReturnTypes and void =================================================*/
