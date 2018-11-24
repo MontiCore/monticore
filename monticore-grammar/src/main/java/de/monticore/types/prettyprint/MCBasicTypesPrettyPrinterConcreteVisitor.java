@@ -7,6 +7,7 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor;
 
+import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.se_rwth.commons.Names;
 
 import java.util.Iterator;
@@ -98,19 +99,18 @@ public class MCBasicTypesPrettyPrinterConcreteVisitor extends LiteralsPrettyPrin
    *
    * @param a simple reference type
    */
-  @Override
+  //@Override
   public void visit(ASTSimpleReferenceType a) {
     // print qualified name
     getPrinter().print(Names.getQualifiedName(a.getNameList()));
     // optional type arguments are printed automatically by visitor concept
   }
 
-
   @Override
   public void visit(ASTImportStatement a){
     getPrinter().print("import" + a.getQualifiedName().getQName());
   }
-
+ /*
   @Override
   public void visit(ASTBooleanRereferenceType a){
     getPrinter().print("Boolean");
@@ -155,7 +155,7 @@ public class MCBasicTypesPrettyPrinterConcreteVisitor extends LiteralsPrettyPrin
   public void visit(ASTDoubleRereferenceType a){
     getPrinter().print("Double");
   }
-
+ */
   /**
    * This method prettyprints a given node from type grammar.
    *

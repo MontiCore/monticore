@@ -4,6 +4,7 @@ package de.monticore.types;
 
 
 import de.monticore.types.mcbasictypes._ast.*;
+import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.se_rwth.commons.Names;
 
 import java.util.List;

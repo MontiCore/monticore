@@ -45,10 +45,10 @@ public class MCBasicGenericsTypesTest {
       t.accept( new MCBasicGenericsTypesVisitor() {
         public void visit(ASTListType t) {
           assertTrue(true);
-          t.getBuiltInType().accept(new MCBasicTypesVisitor() {
+          t.getType().accept(new MCBasicTypesVisitor() {
             @Override
-            public void visit(ASTBuiltInType node) {
-              if (!(node instanceof ASTStringRereferenceType)) {
+            public void visit(ASTType node) {
+              if (!(node instanceof ASTQualifiedReferenceType)) {
                 fail("Found not String");
               }
             }

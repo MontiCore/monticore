@@ -83,38 +83,4 @@ public class MCBasicTypesTest {
     }
 
   }
-
-  @Test
-  public void testBuiltInTypes() throws IOException {
-    String[] builtIns = new String[]{"Boolean","String","Char","Short","Integer","Float","Double"};
-
-    for (String builtIn : builtIns) {
-      MCBasicTypesTestParser mcBasicTypesParser = new MCBasicTypesTestParser();
-      Optional<ASTBuiltInType> type = mcBasicTypesParser.parse_StringBuiltInType(builtIn);
-      assertNotNull(type);
-      assertTrue(type.isPresent());
-    }
-
-
-  }
-
-  @Test
-  public void testVisitorOnTypes() throws IOException {
-    TypesVisitor t = new TypesVisitor();
-    MCBasicTypesTestParser mcBasicTypesParser = new MCBasicTypesTestParser();
-    Optional<ASTType> v = mcBasicTypesParser.parse_String("Boolean");
-
-    v.get().accept(t);
-    Assert.assertEquals("Boolean",t.content);
-
-  }
-
-  private class TypesVisitor implements MCBasicTypesVisitor {
-    String content="";
-
-    public void visit(ASTBooleanRereferenceType t) {
-      content = "Boolean";
-    }
-  }
-
 }

@@ -8,15 +8,11 @@ component grammar MCBasicGenericsTypes extends de.monticore.types.MCBasicTypes {
 
   start Type;
 
-  ListType implements ReferenceType = "List<" BuiltInType ">";
+  ListType implements ReferenceType = "List<" Type ">";
 
-  OptionalType implements ReferenceType = "Optional<" BuiltInType ">";
+  OptionalType implements ReferenceType = "Optional<" Type ">";
 
+  MapType implements ReferenceType = "Map<" Type "," Type ">";
 
-  MapType implements ReferenceType = "Map<" BuiltInType "," BuiltInType ">";
-
-  SetType implements ReferenceType = "Set<" BuiltInType ">";
-
-
-
+  SetType implements ReferenceType = "Set<" Type ">";
 }

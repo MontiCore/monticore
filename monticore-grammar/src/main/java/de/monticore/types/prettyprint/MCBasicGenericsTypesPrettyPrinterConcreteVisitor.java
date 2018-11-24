@@ -31,7 +31,7 @@ public class MCBasicGenericsTypesPrettyPrinterConcreteVisitor extends MCBasicTyp
   @Override
   public void visit(ASTListType a){
     MCBasicTypesPrettyPrinterConcreteVisitor prettyprinter = new MCBasicGenericsTypesPrettyPrinterConcreteVisitor(new IndentPrinter());
-    prettyprinter.visit(a.getBuiltInType());
+    prettyprinter.visit(a.getType());
     String output = prettyprinter.getPrinter().getContent();
     getPrinter().print("List<"+output+">");
   }
@@ -39,7 +39,7 @@ public class MCBasicGenericsTypesPrettyPrinterConcreteVisitor extends MCBasicTyp
   @Override
   public void visit(ASTOptionalType a){
     MCBasicTypesPrettyPrinterConcreteVisitor prettyprinter = new MCBasicGenericsTypesPrettyPrinterConcreteVisitor(new IndentPrinter());
-    prettyprinter.visit(a.getBuiltInType());
+    prettyprinter.visit(a.getType());
     String output = prettyprinter.getPrinter().getContent();
     getPrinter().print("Optional<"+output+">");
   }
@@ -47,9 +47,9 @@ public class MCBasicGenericsTypesPrettyPrinterConcreteVisitor extends MCBasicTyp
   @Override
   public void visit(ASTMapType a){
     MCBasicTypesPrettyPrinterConcreteVisitor prettyprinter = new MCBasicGenericsTypesPrettyPrinterConcreteVisitor(new IndentPrinter());
-    prettyprinter.visit(a.getBuiltInType(0));
+    prettyprinter.visit(a.getType(0));
     prettyprinter.getPrinter().print(",");
-    prettyprinter.visit(a.getBuiltInType(1));
+    prettyprinter.visit(a.getType(1));
     String output = prettyprinter.getPrinter().getContent();
     getPrinter().print("Map<"+output+">");
   }
@@ -57,7 +57,7 @@ public class MCBasicGenericsTypesPrettyPrinterConcreteVisitor extends MCBasicTyp
   @Override
   public void visit(ASTSetType a){
     MCBasicTypesPrettyPrinterConcreteVisitor prettyprinter = new MCBasicGenericsTypesPrettyPrinterConcreteVisitor(new IndentPrinter());
-    prettyprinter.visit(a.getBuiltInType());
+    prettyprinter.visit(a.getType());
     String output = prettyprinter.getPrinter().getContent();
     getPrinter().print("Set<"+output+">");
   }
