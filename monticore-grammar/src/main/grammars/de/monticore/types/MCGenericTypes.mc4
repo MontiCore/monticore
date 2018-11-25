@@ -1,35 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types;
 
-/**
- * This grammar defines a set of types. The scope of this grammar is to
- * ease the reuse of type structures in languages similar to Java,
- * but potentials simplified, e.g. without generics
- * by grammar inheritance or grammar embedding.
- * The grammar contains types from Java, e.g., primitives, void,
- * classes (reference types).
- * It does not contain generics or arrays (which can be added
- * in grammar extensions).
- *
-*/
+
 component grammar MCGenericTypes extends de.monticore.types.MCCustomGenericsTypes {
+  start Type;
 
-  GenericType implements ReferenceType = type:QualifiedReferenceType "<" typeParameter:QualifiedReferenceType ">";
-
-  /** ASTTypeParameters represents a list of generic parameter parenthesized
-          by '<...>' in type declarations (e.g., class-, interface-, method-, or
-          constructor declarations).
-          @attribute typeVariableDeclarations List of parameters
-      */
-      TypeParameters =
-           (
-             "<" (TypeVariableDeclaration || ",")+ ">"
-           );
-  //TODO RE: Change QualifiedReferenceType to something with generic
-  TypeVariableDeclaration =
-          Name
-          (
-            "extends" upperBound:(QualifiedReferenceType || "&")+
-          )?;
+  /** ASTWildcardType represents a wildcard type in a type argument (generics)
+          It could also contain an upper- or lower bound.
+          @attribute upperBound Supertye of the type argument
+          @attribute lowerBound Subtype of the type argument
+  */
+  WildcardType extends TypeArgument =
+     "?" (
+     ("extends" upperBound:Type) | ("super" lowerBound:Type)
+     )?;
 
 }

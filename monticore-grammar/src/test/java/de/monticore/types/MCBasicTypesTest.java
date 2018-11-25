@@ -57,7 +57,7 @@ public class MCBasicTypesTest {
         MCBasicTypesTestParser mcBasicTypesParser = new MCBasicTypesTestParser();
         // .parseType(primitive);
 
-        Optional<? extends ASTType> type = mcBasicTypesParser.parse_StringPrimitiveType(primitive);
+        Optional<? extends ASTType> type = mcBasicTypesParser.parse_String(primitive);
 
         assertNotNull(type);
         assertTrue(type.isPresent());
@@ -75,12 +75,10 @@ public class MCBasicTypesTest {
     String[] types = new String[]{"socnet.Person", "Person"};
     for (String type : types) {
       MCBasicTypesTestParser mcBasicTypesParser = new MCBasicTypesTestParser();
-      Optional<ASTType> astType = mcBasicTypesParser.parse_StringType(type);
+      Optional<ASTType> astType = mcBasicTypesParser.parse_String(type);
       assertNotNull(astType);
       assertTrue(astType.isPresent());
-      assertTrue(astType.get() instanceof ASTReferenceType);
-
+      assertTrue(astType.get() instanceof ASTQualifiedReferenceType);
     }
-
   }
 }

@@ -2,11 +2,40 @@
 package de.monticore.types;
 
 /**
- * This grammar introduces basic generics List<> and Optional<>
+ * This grammar introduces self-defined generic reference types
 */
 component grammar MCCustomGenericsTypes extends de.monticore.types.MCBasicGenericsTypes {
 
+  start Type;
 
+  /** ASTSimpleReferenceType represents types like class or interface types
+          which could have a qualified name like this: a.b.c<Arg>. The
+          qualification stored in the name (a.b) could be package or a type name.
+          The qualified name could contain type arguments only at the end.
+          a.b.c<Arg>.d would be one ASTSimpleReferenceType (a.b.c<Arg>) and one
+          ASTQualifiedType (d).
+          @attribute name          Name of the type
+                                   Note: Although the class name contains the
+                                   word 'simple', the name could be a qualified
+                                   one. So it is saved in an ASTStringList
+          @attribute typeArguments The types between '<...>'
+      */
+      SimpleReferenceType implements ReferenceType =
+          (Name || ".")+
+          (TypeArguments)?;
 
+      /** ASTTypeArguments represents a list of generic arguments parenthesized
+              by '<...>'. It is also possible to nest type arguments in each other
+              like this <A<B<C>>>.
+              @attribute typeArguments List of arguments
+      */
+      TypeArguments = "<" (TypeArgument || ",")* ">";
+
+      /** ASTWildcardType represents a wildcard type in a type argument (generics)
+              It could also contain an upper- or lower bound.
+              @attribute upperBound Supertye of the type argument
+              @attribute lowerBound Subtype of the type argument
+      */
+      TypeArgument = ReferenceType;
 
 }

@@ -2,17 +2,17 @@
 package de.monticore.types;
 
 /**
- * This grammar introduces basic generics List<> and Optional<>
+ * This grammar introduces basic generics List<>, Map<,>, Set<> and Optional<>
 */
 component grammar MCBasicGenericsTypes extends de.monticore.types.MCBasicTypes {
 
   start Type;
 
-  ListType implements ReferenceType = "List<" Type ">";
+  ListType implements ReferenceType = name:"List<" QualifiedReferenceType ">";
 
-  OptionalType implements ReferenceType = "Optional<" Type ">";
+  OptionalType implements ReferenceType = name:"Optional<" QualifiedReferenceType ">";
 
-  MapType implements ReferenceType = "Map<" Type "," Type ">";
+  MapType implements ReferenceType = name:"Map<" key:QualifiedReferenceType "," value:QualifiedReferenceType ">";
 
-  SetType implements ReferenceType = "Set<" Type ">";
+  SetType implements ReferenceType = "Set<" QualifiedReferenceType ">";
 }
