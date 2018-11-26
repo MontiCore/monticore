@@ -25,7 +25,7 @@ public class MCGenericsTypesTest {
   @Test
   public void testBasicGenericsTypes() throws IOException {
     Class foo = boolean.class;
-    String[] types = new String[]{"otherList<List<String>>","Optional<String>","Set<String>","Map<String,String>","List<socnet.Person>"};
+    String[] types = new String[]{"List<P<String>>","Optional<String>","Set<String>","Map<String,String>","List<socnet.Person>"};
 
     for (String testType : types) {
       MCGenericTypesTestParser mcBasicTypesParser = new MCGenericTypesTestParser();
@@ -36,7 +36,7 @@ public class MCGenericsTypesTest {
       assertNotNull(type);
       assertTrue(type.isPresent());
       assertTrue(type.get() instanceof ASTReferenceType);
-
+      System.out.println(type.get().getClass());
       ASTReferenceType t = (ASTReferenceType) type.get();
     }
   }

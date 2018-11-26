@@ -24,7 +24,10 @@ public class MCCustomGenericsTypesTest {
   @Test
   public void testCustomGenericsTypes() throws IOException {
 
-    String[] types = new String[]{"List<CustomGeneric>","socnet.Person<socnet.Person<B>, SecondaryParam>"};
+
+
+
+    String[] types = new String[]{"List<List<b.B>>","socnet.Person<socnet.Person<B>, SecondaryParam>"};
 
     for (String testType : types) {
       System.out.println("Teste "+testType);
@@ -35,6 +38,7 @@ public class MCCustomGenericsTypesTest {
       assertNotNull(type);
       assertTrue(type.isPresent());
       assertTrue(type.get() instanceof ASTReferenceType);
+      System.out.println(type.get().getClass());
 
       ASTReferenceType t = (ASTReferenceType) type.get();
     }

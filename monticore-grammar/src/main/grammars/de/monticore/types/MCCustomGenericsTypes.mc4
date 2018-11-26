@@ -20,22 +20,26 @@ component grammar MCCustomGenericsTypes extends de.monticore.types.MCBasicGeneri
                                    one. So it is saved in an ASTStringList
           @attribute typeArguments The types between '<...>'
       */
-      SimpleReferenceType implements ReferenceType =
-          (Name || ".")+
-          (TypeArguments)?;
+      SimpleReferenceType implements ReferenceType <20> =
+          (Name& || ".")+
+          (TypeArguments);
+
+      //ListType implements ReferenceType = "asfdsadasfgagesdg"; //deaktiviere ListType
+      GenericArgument = ReferenceType;
+
 
       /** ASTTypeArguments represents a list of generic arguments parenthesized
               by '<...>'. It is also possible to nest type arguments in each other
               like this <A<B<C>>>.
               @attribute typeArguments List of arguments
       */
-      TypeArguments = "<" (TypeArgument || ",")* ">";
+      TypeArguments = "<" (GenericArgument || ",")* ">";
 
       /** ASTWildcardType represents a wildcard type in a type argument (generics)
               It could also contain an upper- or lower bound.
               @attribute upperBound Supertye of the type argument
               @attribute lowerBound Subtype of the type argument
       */
-      TypeArgument = ReferenceType;
+      //TypeArgument = ReferenceType;
 
 }

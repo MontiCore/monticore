@@ -29,7 +29,7 @@ public class MCBasicGenericsTypesTest {
   @Test
   public void testBasicGenericsTypes() throws IOException {
     Class foo = boolean.class;
-    String[] types = new String[]{"List<String>","Optional<String>","Set<String>","Map<String,String>","List<socnet.Person>"};
+    String[] types = new String[]{"List<a.A>","Optional<String>","Set<String>","Map<String,String>","List<socnet.Person>"};
 
     for (String testType : types) {
       MCBasicGenericsTypesTestParser mcBasicTypesParser = new MCBasicGenericsTypesTestParser();
@@ -45,7 +45,7 @@ public class MCBasicGenericsTypesTest {
       t.accept( new MCBasicGenericsTypesVisitor() {
         public void visit(ASTListType t) {
           assertTrue(true);
-          t.getQualifiedReferenceType().accept(new MCBasicTypesVisitor() {
+          t.getGenericArgument().accept(new MCBasicGenericsTypesVisitor() {
             @Override
             public void visit(ASTType node) {
               if (!(node instanceof ASTQualifiedReferenceType)) {

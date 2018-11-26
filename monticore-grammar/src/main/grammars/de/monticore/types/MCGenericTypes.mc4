@@ -10,7 +10,7 @@ component grammar MCGenericTypes extends de.monticore.types.MCCustomGenericsType
           @attribute upperBound Supertye of the type argument
           @attribute lowerBound Subtype of the type argument
   */
-  WildcardType extends TypeArgument =
+  WildcardType extends GenericArgument =
      "?" (
      ("extends" upperBound:Type) | ("super" lowerBound:Type)
      )?;
