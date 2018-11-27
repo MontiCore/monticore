@@ -1,12 +1,14 @@
 package de.monticore.symboltable.serializing;
 
+import de.monticore.io.FileReaderWriter;
+import de.monticore.symboltable.ArtifactScope;
+import de.se_rwth.commons.Names;
+import de.se_rwth.commons.logging.Log;
+
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
-
-import de.monticore.io.FileReaderWriter;
-import de.monticore.symboltable.ArtifactScope;
-import de.se_rwth.commons.logging.Log;
 
 /**
  * This interface realizes storing {@link ArtifactScope} instances to files and loading these, and
@@ -35,7 +37,8 @@ public interface IArtifactScopeSerializer {
   public Optional<ArtifactScope> deserialize(String s);
   
   default void store(ArtifactScope as) {
-    store(as, Paths.get(SYMBOL_STORE_LOCATION + "/" + as.getPackageName() + "/" + "Symbols.json"));
+    String fileName = Names.getPathFromPackage(as.getPackageName()) + File.separator + as.getName().get() + ".json";
+    store(as, Paths.get(SYMBOL_STORE_LOCATION + File.separator + fileName));
   }
   
   /**
@@ -69,8 +72,8 @@ public interface IArtifactScopeSerializer {
     }
   }
   
-  default ArtifactScope load(String name) {
-    return load(Paths.get(SYMBOL_STORE_LOCATION));
+  default ArtifactScope load(String qualifiedName) {
+    return load(Paths.get(SYMBOL_STORE_LOCATION + File.separator + Names.getPathFromPackage(qualifiedName) + ".json" ));
   }
   
   /**

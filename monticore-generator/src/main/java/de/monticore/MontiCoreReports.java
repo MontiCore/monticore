@@ -5,25 +5,7 @@ package de.monticore;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager.ReportManagerFactory;
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
-import de.monticore.generating.templateengine.reporting.reporter.ArtifactGVReporter;
-import de.monticore.generating.templateengine.reporting.reporter.ArtifactGmlReporter;
-import de.monticore.generating.templateengine.reporting.reporter.DetailedReporter;
-import de.monticore.generating.templateengine.reporting.reporter.SuccessfulReporter;
-import de.monticore.generating.templateengine.reporting.reporter.InvolvedFilesReporter;
-import de.monticore.generating.templateengine.reporting.reporter.GeneratedFilesReporter;
-import de.monticore.generating.templateengine.reporting.reporter.HandWrittenCodeReporter;
-import de.monticore.generating.templateengine.reporting.reporter.HookPointReporter;
-import de.monticore.generating.templateengine.reporting.reporter.InputOutputFilesReporter;
-import de.monticore.generating.templateengine.reporting.reporter.InstantiationsReporter;
-import de.monticore.generating.templateengine.reporting.reporter.NodeTreeDecoratedReporter;
-import de.monticore.generating.templateengine.reporting.reporter.NodeTreeReporter;
-import de.monticore.generating.templateengine.reporting.reporter.NodeTypesReporter;
-import de.monticore.generating.templateengine.reporting.reporter.SummaryReporter;
-import de.monticore.generating.templateengine.reporting.reporter.SymbolTableReporter;
-import de.monticore.generating.templateengine.reporting.reporter.TemplateTreeReporter;
-import de.monticore.generating.templateengine.reporting.reporter.TemplatesReporter;
-import de.monticore.generating.templateengine.reporting.reporter.TransformationReporter;
-import de.monticore.generating.templateengine.reporting.reporter.VariablesReporter;
+import de.monticore.generating.templateengine.reporting.reporter.*;
 import de.monticore.io.paths.IterablePath;
 
 /**
@@ -90,6 +72,7 @@ public class MontiCoreReports implements ReportManagerFactory {
     InputOutputFilesReporter inputOutput = new InputOutputFilesReporter(this.outputDirectory);
     ODReporter objDiagram = new ODReporter(this.outputDirectory, modelName, repository);
     SuccessfulReporter finishReporter = new SuccessfulReporter(this.outputDirectory, modelName);
+    IncGenCheckReporter incGenCheck = new IncGenCheckReporter(this.outputDirectory);
 
     reports.addReportEventHandler(summary); // 01_Summary
     reports.addReportEventHandler(generated); // 02_GeneratedFiles
@@ -111,8 +94,8 @@ public class MontiCoreReports implements ReportManagerFactory {
     reports.addReportEventHandler(ioReporter); // 18_InvolvedFiles
     reports.addReportEventHandler(finishReporter); // 19_Successful
     reports.addReportEventHandler(objDiagram); // ObjectDiagram
+    reports.addReportEventHandler(incGenCheck); // IncGenCheck
 
-    
     return reports;
   }
   

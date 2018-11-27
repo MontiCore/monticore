@@ -4,6 +4,7 @@ package de.monticore.generating.templateengine.reporting.commons;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.HookPoint;
+import de.monticore.io.paths.IterablePath;
 import de.monticore.symboltable.Scope;
 
 import java.nio.file.Path;
@@ -138,6 +139,10 @@ public class DefaultReportEventHandler implements IReportEventHandler {
 
   @Override
   public void reportUseHandwrittenCodeFile(Path parentDir, Path fileName) {
+  }
+
+  @Override
+  public void reportHWCExistenceCheck(IterablePath parentDir, Path fileName, Optional<Path> exists){
   }
 
   @Override

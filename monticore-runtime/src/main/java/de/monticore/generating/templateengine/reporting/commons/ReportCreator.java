@@ -77,8 +77,7 @@ public class ReportCreator {
 	 */
 	public void writeLineToFile(File file, String content) throws IOException {
 		BufferedWriter writer = writers.get(file);
-		writer.append(content);
-		writer.newLine();
+		writer.append(content + "\n");
 	}
 
 	/**

@@ -5,24 +5,6 @@
  */
 package de.monticore.symboltable.serializing;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Optional;
-
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.GlobalScope;
@@ -33,11 +15,26 @@ import de.monticore.symboltable.mocks.languages.automaton.AutomatonSerializer;
 import de.monticore.symboltable.mocks.languages.automaton.StateSymbol;
 import de.monticore.symboltable.mocks.languages.statechart.StateChartLanguage;
 import de.se_rwth.commons.Directories;
+import de.se_rwth.commons.Names;
+import de.se_rwth.commons.logging.Log;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Optional;
+
+import static org.junit.Assert.*;
 
 public class JsonArtifactSerializationTest {
   
   @Before
   public void setup() {
+    Log.enableFailQuick(false);
     Path p = Paths.get("target/serialization");
     
     Directories.delete(p.toFile());
@@ -56,7 +53,8 @@ public class JsonArtifactSerializationTest {
     ModelPath mp = new ModelPath(Paths.get("src/test/resources/modelloader/modelpath2"));
     GlobalScope gs = new GlobalScope(mp, new StateChartLanguage());
     ArtifactScope as = new ArtifactScope(Optional.of(gs), "pack", new ArrayList<>());
-    as.add(new AutSymbol("p"));
+    as.setName("P");
+    as.add(new AutSymbol("P"));
     AutomatonScope scScope = new AutomatonScope();
     scScope.add(new StateSymbol("ping"));
     scScope.add(new StateSymbol("pong"));
@@ -84,17 +82,17 @@ public class JsonArtifactSerializationTest {
   }
   
   @Test
-  public void testSimpleStoring() {
+  public void testSimpleStoringAndLoading() {
     ArtifactScope as = initPingPong();
+
+    // Storing
     new AutomatonSerializer().store(as);
-    assertTrue(new File(IArtifactScopeSerializer.SYMBOL_STORE_LOCATION).exists());
-  }
-  
-  @Ignore
-  @Test
-  public void testSimpleLoading() {
+    String qualifiedName = Names.getPathFromPackage(as.getPackageName()) + File.separator + as.getName().get();
+    assertTrue(new File(IArtifactScopeSerializer.SYMBOL_STORE_LOCATION + File.separator + qualifiedName + ".json").exists());
+
+    // Loading
     AutomatonSerializer deserializer = new AutomatonSerializer();
-    ArtifactScope as = deserializer.load("Symbols.json");
+     as = deserializer.load("pack.P");
     assertNotNull(as);
   }
   

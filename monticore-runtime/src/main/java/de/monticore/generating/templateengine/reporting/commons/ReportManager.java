@@ -12,6 +12,7 @@ import java.util.Set;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.reporting.artifacts.ReportingNameHelper;
+import de.monticore.io.paths.IterablePath;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
@@ -258,6 +259,12 @@ public class ReportManager implements IReportEventHandler {
   public void reportUseHandwrittenCodeFile(Path parentDir, Path fileName) {
     for (IReportEventHandler handler : this.reportEventHandlers) {
       handler.reportUseHandwrittenCodeFile(parentDir, fileName);
+    }
+  }
+
+  public void reportHWCExistenceCheck(IterablePath parentDir, Path fileName, Optional<Path> resolvedPath) {
+    for (IReportEventHandler handler : this.reportEventHandlers) {
+      handler.reportHWCExistenceCheck(parentDir, fileName, resolvedPath);
     }
   }
 

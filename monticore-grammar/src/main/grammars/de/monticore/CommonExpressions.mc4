@@ -30,9 +30,6 @@ PlusExpression implements Expression <170>, InfixExpression =
 MinusExpression implements Expression <170>, InfixExpression =
 	leftExpression:Expression operator:"-" rightExpression:Expression;
 
-EquivalentExpression implements Expression <160>, InfixExpression =
-    leftExpression:Expression operator:"<=>" rightExpression:Expression;
-
 LessEqualExpression implements Expression <150>, InfixExpression =
 	leftExpression:Expression operator:"<=" rightExpression:Expression;
 	
@@ -51,17 +48,27 @@ EqualsExpression implements Expression <130>, InfixExpression =
 NotEqualsExpression implements Expression <130>, InfixExpression =
 	leftExpression:Expression operator:"!=" rightExpression:Expression;
 	        
-BooleanAndOpExpression implements Expression <90>, InfixExpression =
+BooleanAndOpExpression implements Expression <120>, InfixExpression =
 	leftExpression:Expression operator:"&&" rightExpression:Expression;
 	
-BooleanOrOpExpression implements Expression <80>, InfixExpression =
+BooleanOrOpExpression implements Expression <117>, InfixExpression =
 	leftExpression:Expression operator:"||" rightExpression:Expression;
 	
-ConditionalExpression implements Expression <70> =
+ConditionalExpression implements Expression <114> =
 	condition:Expression "?" trueExpression:Expression ":" falseExpression:Expression;
-	
-SimpleAssignmentExpression implements Expression <60>, InfixExpression = <rightassoc>
+
+SimpleAssignmentExpression implements Expression <111>, InfixExpression = <rightassoc>
 	leftExpression:Expression operator:"+=" rightExpression:Expression;
+
+// priority must be higher than 100 (this is OCL let-in expression) and
+// below all other operators to write down:
+// let
+//   a = ...;
+//   b = ...;
+// in
+//   a == b <=> a.f1 == b.f1 && a a.f2 == b.f2
+EquivalentExpression implements Expression <107>, InfixExpression =
+    leftExpression:Expression operator:"<=>" rightExpression:Expression;
 
 BracketExpression implements Expression <310>
     =  "(" Expression ")";

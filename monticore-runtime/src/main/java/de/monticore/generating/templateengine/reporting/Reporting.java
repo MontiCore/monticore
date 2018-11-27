@@ -14,6 +14,7 @@ import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager.ReportManagerFactory;
+import de.monticore.io.paths.IterablePath;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
@@ -732,6 +733,19 @@ public class Reporting extends Slf4jLog {
   public static void reportUseHandwrittenCodeFile(Path parentDir, Path fileName) {
     if (isEnabled()) {
       getReportManager().reportUseHandwrittenCodeFile(parentDir, fileName);
+    }
+  }
+
+  /**
+   * Reports the check for existence of an artifact
+   *
+   * @param parentDir
+   * @param fileName
+   * @param resolvedPath contains the result if artifact exists
+   */
+  public static void reportHWCExistenceCheck(IterablePath parentDir, Path fileName, Optional<Path> resolvedPath) {
+    if (isEnabled()) {
+      getReportManager().reportHWCExistenceCheck(parentDir, fileName, resolvedPath);
     }
   }
 

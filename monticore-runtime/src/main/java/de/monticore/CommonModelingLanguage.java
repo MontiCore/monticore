@@ -2,11 +2,9 @@
 
 package de.monticore;
 
-import com.google.common.collect.ImmutableList;
 import de.monticore.ast.ASTNode;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 
 import java.util.Collection;

@@ -44,6 +44,11 @@ public abstract class ${className} extends de.monticore.CommonModelingLanguage {
       ResolvingConfiguration resolvingConfiguration, MutableScope enclosingScope) {
     return Optional.of(new ${grammarName}SymbolTableCreator(resolvingConfiguration, enclosingScope));
   }
+
+  @Override
+  public Optional<${grammarName}LanguageSerialization> getSymbolTableDeserializer() {
+    return Optional.of(new ${grammarName}LanguageSerialization());
+  }
   </#if>
 
   @Override
