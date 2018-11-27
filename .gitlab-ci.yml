@@ -2,4 +2,4 @@ image: maven:3-jdk-11
 build:
   stage: build
   script:
-    - mvn install -q -DskipTests  --settings "settings.xml"
+    - mvn install --settings "settings.xml"
