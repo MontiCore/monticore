@@ -7,6 +7,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.symboltable.*;
 import de.monticore.symboltable.resolving.ResolvingFilter;
+import de.monticore.symboltable.serializing.IArtifactScopeSerializer;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -42,6 +43,10 @@ public interface ModelingLanguage {
   // TODO PN change to mandatory
   Optional<? extends SymbolTableCreator> getSymbolTableCreator
   (ResolvingConfiguration resolvingConfiguration, MutableScope enclosingScope);
+
+  default Optional<? extends IArtifactScopeSerializer> getSymbolTableDeserializer() {
+    return Optional.empty();
+  }
 
   ModelingLanguageModelLoader<? extends ASTNode> getModelLoader();
 
