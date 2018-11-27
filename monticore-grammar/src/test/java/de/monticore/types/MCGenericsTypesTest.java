@@ -34,7 +34,7 @@ public class MCGenericsTypesTest {
       MCGenericTypesTestParser mcBasicTypesParser = new MCGenericTypesTestParser();
       // .parseType(primitive);
 
-      Optional<ASTComplexReferenceType> type = mcBasicTypesParser.parse_StringComplexReferenceType(testType);
+      Optional<ASTType> type = mcBasicTypesParser.parse_String(testType);
 
       assertNotNull(type);
       assertTrue(type.isPresent());

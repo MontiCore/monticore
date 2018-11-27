@@ -11,23 +11,17 @@ public class ASTComplexReferenceType extends ASTComplexReferenceTypeTOP {
   }
   
   public ASTComplexReferenceType(
-      List<ASTSimpleReferenceType> simpleReferenceTypes) {
-    super(simpleReferenceTypes);
+      List<ASTSimpleReferenceType> simpleReferenceTypes, List<String> names,
+      List<ASTTypeArgument> typeArguments) {
+    super(simpleReferenceTypes, names, typeArguments);
   }
   
-  @Override public List<String> getNameList() {
-    return null;
-  }
-  
-  @Override public void setNameList(List<String> names) {
-  
-  }
   
   @Override public List<ASTTypeArgument> getArgumentList() {
-    return null;
+    return getTypeArgumentList();
   }
   
   @Override public void setArgumentList(List<ASTTypeArgument> arguments) {
-//    setTypeArgumentList(arguments);
+    setTypeArgumentList(arguments);
   }
 }
