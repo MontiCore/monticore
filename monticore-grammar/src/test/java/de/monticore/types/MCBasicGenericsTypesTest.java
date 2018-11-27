@@ -45,7 +45,7 @@ public class MCBasicGenericsTypesTest {
       t.accept( new MCBasicGenericsTypesVisitor() {
         public void visit(ASTListType t) {
           assertTrue(true);
-          t.getGenericArgument().accept(new MCBasicGenericsTypesVisitor() {
+          t.getTypeArgument().accept(new MCBasicGenericsTypesVisitor() {
             @Override
             public void visit(ASTType node) {
               if (!(node instanceof ASTQualifiedReferenceType)) {

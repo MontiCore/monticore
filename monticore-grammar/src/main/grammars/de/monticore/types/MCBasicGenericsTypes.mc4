@@ -11,18 +11,22 @@ component grammar MCBasicGenericsTypes extends de.monticore.types.MCBasicTypes {
   interface GenericReferenceType extends ReferenceType;
 
   astrule GenericReferenceType =
-    names:List<String>
-    arguments:List<de.monticore.types.mcbasicgenericstypes._ast.ASTGenericArgument>
+    // names:List<String>
+    // arguments:List<de.monticore.types.mcbasicgenericstypes._ast.ASTGenericArgument>
   ;
 
 
-  ListType implements GenericReferenceType <200> = name:"List" "<" GenericArgument ">";
+  ListType implements GenericReferenceType <200> = name:"List" "<" TypeArgument ">";
 
-  OptionalType implements GenericReferenceType <200> = name:"Optional" "<" GenericArgument ">";
+  OptionalType implements GenericReferenceType <200> = name:"Optional" "<" TypeArgument ">";
 
-  MapType implements GenericReferenceType  <200> = name:"Map" "<" key:GenericArgument "," value:GenericArgument ">";
+  MapType implements GenericReferenceType  <200> = name:"Map" "<" key:TypeArgument "," value:TypeArgument ">";
 
-  SetType implements GenericReferenceType <200> = "Set" "<" GenericArgument ">";
+  SetType implements GenericReferenceType <200> = name:"Set" "<" TypeArgument ">";
 
-  GenericArgument = QualifiedReferenceType;
+  interface TypeArgument ;
+
+  BasicTypeArgument implements TypeArgument = QualifiedReferenceType;
+
+
 }

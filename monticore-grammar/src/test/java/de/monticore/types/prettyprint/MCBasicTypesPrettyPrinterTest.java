@@ -6,6 +6,7 @@ import de.monticore.types.mcbasictypes._ast.ASTQualifiedReferenceType;
 import de.monticore.types.mcbasictypes._ast.ASTType;
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
 import org.junit.Test;
+import de.monticore.types.MCGenericsTypesTest.Foo.Bar;
 
 import java.io.IOException;
 import java.util.Optional;

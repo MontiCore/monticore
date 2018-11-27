@@ -41,6 +41,7 @@ public class MCCustomGenericsTypesTest {
       System.out.println(type.get().getClass());
 
       ASTReferenceType t = (ASTReferenceType) type.get();
+      
     }
   }
 }
