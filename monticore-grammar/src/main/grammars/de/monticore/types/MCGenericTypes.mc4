@@ -20,4 +20,11 @@ component grammar MCGenericTypes extends de.monticore.types.MCCustomGenericsType
           "."  (Name& || ".")+ "<" (TypeArgument || ",")* ">"
           ;
 
+  /** Array
+
+  */
+
+  ArrayType implements Type = Type ("[" "]"{_aNode.setDimensions(_aNode.getDimensions()+1);})+;
+  astrule ArrayType =
+          dimensions:int;
 }

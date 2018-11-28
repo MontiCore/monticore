@@ -4,12 +4,12 @@ import java.util.List;
 
 public interface ASTGenericReferenceType extends ASTGenericReferenceTypeTOP {
 
-//    List<String> getNameList() ;
-//
-//    void setNameList(List<String> names) ;
-//
-//    List<ASTTypeArgument> getArgumentList() ;
-//
-//    void setArgumentList(List<ASTTypeArgument> arguments) ;
+    List<String> getNameList() ;
+
+    void setNameList(List<String> names) ;
+
+    List<ASTTypeArgument> getTypeArgumentList() ;
+
+    void setTypeArgumentList(List<ASTTypeArgument> arguments) ;
 
 }

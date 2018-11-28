@@ -12,7 +12,7 @@ package de.monticore.types;
  * in grammar extensions).
  *
 */
-component grammar MCBasicTypes extends de.monticore.MCBasics, de.monticore.literals.Literals {
+component grammar MCBasicTypes extends de.monticore.MCBasics {
 
     /*========================================================================*/
     /*= The Type Interfaces ==================================================*/

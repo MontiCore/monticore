@@ -2,37 +2,33 @@
 
 package de.monticore.types.prettyprint;
 
-import de.monticore.literals.prettyprint.LiteralsPrettyPrinterConcreteVisitor;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor;
-
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.se_rwth.commons.Names;
 
 import java.util.Iterator;
 
-/**
- * This class is responsible for pretty-printing types of the common type system. It is implemented
- * using the Visitor pattern. The Visitor pattern traverses a tree in depth first, the visit and
- * ownVisit-methods are called when a node is traversed, the endVisit methods are called when the
- * whole subtree of a node has been traversed. The ownVisit-Methods stop the automatic traversal
- * order and allow to explictly visit subtrees by calling getVisitor().startVisit(ASTNode)
- * 
- * @author Martin Schindler
- */
-public class MCBasicTypesPrettyPrinterConcreteVisitor extends LiteralsPrettyPrinterConcreteVisitor implements MCBasicTypesVisitor {
+public class MCBasicTypesPrettyPrinterConcreteVisitor implements MCBasicTypesVisitor {
 
   private MCBasicTypesVisitor realThis = this;
 
-   /**
-   * Constructor.
-   *
-   * @param printer the printer to write to.
-   */
-  public MCBasicTypesPrettyPrinterConcreteVisitor(IndentPrinter printer) {
-    super(printer);
+  public IndentPrinter getPrinter() {
+    return printer;
   }
+
+  MCBasicTypesPrettyPrinterConcreteVisitor(IndentPrinter printer) {
+    this.printer = printer;
+  }
+
+  public void setPrinter(IndentPrinter printer) {
+    this.printer = printer;
+  }
+
+  // printer to use
+  protected IndentPrinter printer = null;
+
 
   /**
    * Prints qualified names

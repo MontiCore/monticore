@@ -5,11 +5,7 @@ import de.monticore.types.mcbasicgenericstypes._ast.ASTListType;
 import de.monticore.types.mcbasicgenericstypes._ast.ASTMapType;
 import de.monticore.types.mcbasicgenericstypes._ast.ASTOptionalType;
 import de.monticore.types.mcbasicgenericstypes._ast.ASTSetType;
-import de.monticore.types.mcbasicgenericstypes._cocos.MCBasicGenericsTypesASTListTypeCoCo;
 import de.monticore.types.mcbasicgenericstypes._visitor.MCBasicGenericsTypesVisitor;
-import de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode;
-
-import java.util.Iterator;
 
 public class MCBasicGenericsTypesPrettyPrinterConcreteVisitor extends MCBasicTypesPrettyPrinterConcreteVisitor implements MCBasicGenericsTypesVisitor {
   private MCBasicGenericsTypesVisitor realThis = this;
