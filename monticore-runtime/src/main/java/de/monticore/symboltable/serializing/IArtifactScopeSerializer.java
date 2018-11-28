@@ -19,6 +19,8 @@ public interface IArtifactScopeSerializer {
   
   public static final String SYMBOL_STORE_LOCATION = "target/generated-sources/symbols";
   
+  public static final String SYMBOL_FILE_ENDING = "json";
+  
   /**
    * An implementation realizes a method to serialize an {@link ArtifactScope} instance into a
    * String
