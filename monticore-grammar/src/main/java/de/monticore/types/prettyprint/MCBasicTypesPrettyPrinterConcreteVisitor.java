@@ -18,7 +18,7 @@ public class MCBasicTypesPrettyPrinterConcreteVisitor implements MCBasicTypesVis
     return printer;
   }
 
-  MCBasicTypesPrettyPrinterConcreteVisitor(IndentPrinter printer) {
+  public MCBasicTypesPrettyPrinterConcreteVisitor(IndentPrinter printer) {
     this.printer = printer;
   }
 

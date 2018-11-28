@@ -8,10 +8,9 @@ public class ASTListType extends ASTListTypeTOP {
     public ASTListType() {
     }
 
-    public ASTListType(ASTTypeArgument genericArgument, String name) {
-        super(genericArgument, name);
+    public ASTListType(String name, ASTTypeArgument typeArgument) {
+        super(name, typeArgument);
     }
-
 
     @Override
     public List<String> getNameList() {

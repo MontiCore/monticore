@@ -11,9 +11,11 @@ public class ASTMapType extends ASTMapTypeTOP {
     public ASTMapType() {
     }
 
-    public ASTMapType(ASTTypeArgument key, ASTTypeArgument value, String name) {
-        super(key, value, name);
+    public ASTMapType(String name, ASTTypeArgument key, ASTTypeArgument value) {
+        super(name, key, value);
     }
+
+
 
     @Override
     public List<String> getNameList() {

@@ -25,38 +25,33 @@ public class MCBasicGenericsTypesPrettyPrinterConcreteVisitor extends MCBasicTyp
   }
 
   @Override
-  public void visit(ASTListType a){
-    MCBasicTypesPrettyPrinterConcreteVisitor prettyprinter = new MCBasicGenericsTypesPrettyPrinterConcreteVisitor(new IndentPrinter());
-    prettyprinter.visit(a.getTypeArgument());
-    String output = prettyprinter.getPrinter().getContent();
-    getPrinter().print("List<"+output+">");
+  public void traverse(ASTListType a){
+    getPrinter().print("List<");
+    a.getTypeArgument().accept(this);
+    getPrinter().print(">");
   }
 
   @Override
-  public void visit(ASTOptionalType a){
-    MCBasicTypesPrettyPrinterConcreteVisitor prettyprinter = new MCBasicGenericsTypesPrettyPrinterConcreteVisitor(new IndentPrinter());
-    prettyprinter.visit(a.getTypeArgument());
-    String output = prettyprinter.getPrinter().getContent();
-    getPrinter().print("Optional<"+output+">");
+  public void traverse(ASTOptionalType a){
+    getPrinter().print("Optional<");
+    a.getTypeArgument().accept(this);
+    getPrinter().print(">");
   }
 
   @Override
-  public void visit(ASTMapType a){
-    MCBasicTypesPrettyPrinterConcreteVisitor prettyprinter = new MCBasicGenericsTypesPrettyPrinterConcreteVisitor(new IndentPrinter());
-    prettyprinter.visit(a.getKey());
-    prettyprinter.getPrinter().print(",");
-    prettyprinter.visit(a.getValue());
-    String output = prettyprinter.getPrinter().getContent();
-    getPrinter().print("Map<"+output+">");
+  public void traverse(ASTSetType a){
+    getPrinter().print("Set<");
+    a.getTypeArgument().accept(this);
+    getPrinter().print(">");
   }
 
   @Override
-  public void visit(ASTSetType a){
-    MCBasicTypesPrettyPrinterConcreteVisitor prettyprinter = new MCBasicGenericsTypesPrettyPrinterConcreteVisitor(new IndentPrinter());
-    prettyprinter.visit(a.getTypeArgument());
-    String output = prettyprinter.getPrinter().getContent();
-    getPrinter().print("Set<"+output+">");
+  public void traverse(ASTMapType a){
+    getPrinter().print("Map<");
+    a.getKey().accept(this);
+    getPrinter().print(",");
+    a.getValue().accept(this);
+    getPrinter().print(">");
   }
-
 
 }

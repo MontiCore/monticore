@@ -20,7 +20,7 @@ component grammar MCCustomGenericsTypes extends de.monticore.types.MCBasicGeneri
                                    one. So it is saved in an ASTStringList
           @attribute typeArguments The types between '<...>'
       */
-      SimpleReferenceType implements GenericReferenceType <20> =
+      BasicGenericsReferenceType implements GenericReferenceType <20> =
           (Name& || ".")+ "<" (TypeArgument || ",")* ">";
 
       CustomTypeArgument implements TypeArgument = ReferenceType;

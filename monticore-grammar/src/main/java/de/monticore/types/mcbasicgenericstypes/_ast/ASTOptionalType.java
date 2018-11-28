@@ -9,9 +9,10 @@ public class ASTOptionalType extends ASTOptionalTypeTOP {
     public ASTOptionalType() {
     }
 
-    public ASTOptionalType(ASTTypeArgument TypeArgument, String name) {
-        super(TypeArgument, name);
+    public ASTOptionalType(String name, ASTTypeArgument typeArgument) {
+        super(name, typeArgument);
     }
+
     @Override
     public List<String> getNameList() {
         return Lists.newArrayList(getName());

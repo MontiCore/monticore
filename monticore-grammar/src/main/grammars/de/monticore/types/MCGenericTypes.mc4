@@ -16,7 +16,7 @@ component grammar MCGenericTypes extends de.monticore.types.MCCustomGenericsType
      )?;
 
    ComplexReferenceType implements GenericReferenceType, Type =
-           (SimpleReferenceType || "." )+ // complex qualification
+           (BasicGenericsReferenceType || "." )+ // complex qualification
           "."  (Name& || ".")+ "<" (TypeArgument || ",")* ">"
           ;
 

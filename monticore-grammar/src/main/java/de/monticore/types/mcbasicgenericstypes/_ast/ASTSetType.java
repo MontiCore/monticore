@@ -9,8 +9,8 @@ public class ASTSetType extends ASTSetTypeTOP {
     public ASTSetType() {
     }
 
-    public ASTSetType(ASTTypeArgument TypeArgument, String name) {
-        super(TypeArgument, name);
+    public ASTSetType(String name, ASTTypeArgument typeArgument) {
+        super(name, typeArgument);
     }
 
     @Override

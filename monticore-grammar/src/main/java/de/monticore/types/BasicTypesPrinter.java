@@ -4,7 +4,6 @@ package de.monticore.types;
 
 
 import de.monticore.types.mcbasictypes._ast.*;
-import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.se_rwth.commons.Names;
 
 import java.util.List;
@@ -71,10 +70,8 @@ public class BasicTypesPrinter {
   }
 
   protected String doPrintReferenceType(ASTReferenceType type) {
-    if (type instanceof ASTSimpleReferenceType) {
-      return doPrintSimpleReferenceType((ASTSimpleReferenceType) type);
-    }
-    return "";
+
+    return Names.getQualifiedName(type.getNameList());
   }
 
   /**
@@ -162,9 +159,7 @@ public class BasicTypesPrinter {
     }
     return "";
   }
-  
 
-  
   /**
    * Converts an ASTReferenceTypeList to a String
    * 
@@ -186,46 +181,5 @@ public class BasicTypesPrinter {
     }
     return ret.toString();
   }
-  
-  /**
-   * Converts an ASTSimpleReferenceType to a String
-   * 
-   * @param type ASTSimpleReferenceType to be converted
-   * @return String representation of "type"
-   */
-  public static String printSimpleReferenceType(ASTSimpleReferenceType type) {
-    return getInstance().doPrintSimpleReferenceType(type);
-  }
-  
-  protected String doPrintSimpleReferenceType(ASTSimpleReferenceType type) {
-    if (type != null) {
-      return Names.getQualifiedName(type.getNameList());
-    }
 
-    return "";
-  }
-
-  
-  /**
-   * Converts an ASTSimpleReferenceTypeList to a String
-   * @param type ComplexReferenceType to be converted
-   * @return String representation of "type"
-   */
-  public static String printSimpleReferenceTypeList(List<ASTSimpleReferenceType> type) {
-    return getInstance().doPrintSimpleReferenceTypeList(type);
-  }
-
-  protected String doPrintSimpleReferenceTypeList(List<ASTSimpleReferenceType> argList) {
-    StringBuilder ret = new StringBuilder();
-    if (argList != null) {
-      String sep = "";
-      for (ASTSimpleReferenceType arg : argList) {
-        ret.append(sep + doPrintSimpleReferenceType(arg));
-        sep = ". ";
-      }
-    }
-    return ret.toString();
-  }
-
-  
 }
