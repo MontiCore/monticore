@@ -16,13 +16,13 @@ component grammar MCBasicGenericsTypes extends de.monticore.types.MCBasicTypes {
   ;
 
 
-  ListType implements GenericReferenceType <200> = { _input.LT(1).getText().equals("List") }? Name "<" TypeArgument ">";
+  ListType implements GenericReferenceType <200> = { cmpToken(1, "List") }? Name "<" TypeArgument ">";
 
-  OptionalType implements GenericReferenceType <200> = { _input.LT(1).getText().equals("Optional") }? Name "<" TypeArgument ">";
+  OptionalType implements GenericReferenceType <200> = { cmpToken(1, "Optional") }? Name "<" TypeArgument ">";
 
-  MapType implements GenericReferenceType  <200> = { _input.LT(1).getText().equals("Map") }? Name "<" key:TypeArgument "," value:TypeArgument ">";
+  MapType implements GenericReferenceType  <200> = { cmpToken(1, "Map") }? Name "<" key:TypeArgument "," value:TypeArgument ">";
 
-  SetType implements GenericReferenceType <200> = { _input.LT(1).getText().equals("Set") }? Name "<" TypeArgument ">";
+  SetType implements GenericReferenceType <200> = { cmpToken(1, "Set") }? Name "<" TypeArgument ">";
 
   interface TypeArgument ;
 
