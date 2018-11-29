@@ -2,51 +2,21 @@
 
 package de.monticore.codegen.mc2cd;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Strings.isNullOrEmpty;
-import static de.monticore.codegen.GeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;
-
-import java.io.IOException;
-import java.io.StringReader;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.generating.templateengine.reporting.Reporting;
-import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
-import de.monticore.grammar.grammar._ast.ASTClassProd;
-import de.monticore.grammar.grammar._ast.ASTConstant;
-import de.monticore.grammar.grammar._ast.ASTConstantGroup;
-import de.monticore.grammar.grammar._ast.ASTEnumProd;
-import de.monticore.grammar.grammar._ast.ASTGenericType;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._ast.ASTNonTerminal;
-import de.monticore.grammar.grammar._ast.ASTNonTerminalSeparator;
-import de.monticore.grammar.grammar._ast.ASTTerminal;
+import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdComponentSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.GlobalScope;
-import de.monticore.types.types._ast.ASTPrimitiveType;
-import de.monticore.types.types._ast.ASTSimpleReferenceType;
-import de.monticore.types.types._ast.ASTType;
-import de.monticore.types.types._ast.ASTTypeArgument;
-import de.monticore.types.types._ast.ASTVoidType;
-import de.monticore.types.types._ast.TypesNodeFactory;
+import de.monticore.types.types._ast.*;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParser;
 import de.monticore.umlcd4a.prettyprint.CDPrettyPrinterConcreteVisitor;
@@ -54,6 +24,17 @@ import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.monticore.utils.ASTNodes;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static de.monticore.codegen.GeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;
 
 public final class TransformationHelper {
 
@@ -220,6 +201,17 @@ public final class TransformationHelper {
     }
 
     return reference;
+  }
+
+  public static ASTType createType(String typeName) {
+    CD4AnalysisParser parser = new CD4AnalysisParser();
+    Optional<ASTType> optType = null;
+    try {
+      optType = parser.parse_StringType(typeName);
+    } catch (IOException e) {
+      Log.error("0xA4036 Cannot create ASTType " + typeName + " during transformation from MC4 to CD4Analysis");
+    }
+    return optType.get();
   }
 
   public static ASTVoidType createVoidType() {

@@ -18,7 +18,12 @@ import de.monticore.symboltable.Symbol;
 
 public class SymbolTableSerializationHelper {
   
-  
+  /**
+   * 
+   * Returns all Symbols that are directly contained within a given scope and returns these as a Collection
+   * @param scope
+   * @return
+   */
   public static Collection<Symbol> getLocalSymbols(Scope scope){
     Collection<Symbol> symbols = new ArrayList<>();
     for(Collection<Symbol> s : scope.getLocalSymbols().values()) {
@@ -27,9 +32,14 @@ public class SymbolTableSerializationHelper {
     return symbols;
   }
   
+  /**
+   * 
+   * Deserializes a list of ImportStatements
+   * @param i
+   * @return
+   */
   public static List<ImportStatement> deserializeImports(JsonElement i) {
     List<ImportStatement> imports = new ArrayList<>();
-    // context.deserialize(jsonObject.get("imports"), List.class);
     JsonArray list = i.getAsJsonArray();
     for (JsonElement e : list) {
       String importStatement = e.getAsString();
