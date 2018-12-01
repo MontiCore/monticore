@@ -21,13 +21,13 @@ component grammar MCBasicGenericsTypes extends de.monticore.types.MCBasicTypes {
 
   // use LookAhead to avoid "List" etc. as keywords
 
-  ListType implements GenericReferenceType <200> = { _input.LT(1).getText().equals("List") }? Name "<" TypeArgument ">";
+  ListType implements GenericReferenceType <200> = { cmpToken(1, "List") }? Name "<" TypeArgument ">";
 
-  OptionalType implements GenericReferenceType <200> = { _input.LT(1).getText().equals("Optional") }? Name "<" TypeArgument ">";
+  OptionalType implements GenericReferenceType <200> = { cmpToken(1, "Optional") }? Name "<" TypeArgument ">";
 
-  MapType implements GenericReferenceType  <200> = { _input.LT(1).getText().equals("Map") }? Name "<" key:TypeArgument "," value:TypeArgument ">";
+  MapType implements GenericReferenceType  <200> = { cmpToken(1, "Map") }? Name "<" key:TypeArgument "," value:TypeArgument ">";
 
-  SetType implements GenericReferenceType <200> = { _input.LT(1).getText().equals("Set") }? Name "<" TypeArgument ">";
+  SetType implements GenericReferenceType <200> = { cmpToken(1, "Set") }? Name "<" TypeArgument ">";
 
   /**
   *  ASTTypeArgument interface introduced here as QualifiedReferenceType, more implementations to be added in subgrammars

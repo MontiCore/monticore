@@ -104,7 +104,7 @@ public class MCBasicTypesPrettyPrinterConcreteVisitor implements MCBasicTypesVis
 
   @Override
   public void visit(ASTImportStatement a){
-    getPrinter().print("import" + a.getQualifiedName().getQName());
+    getPrinter().print("import" + a.getQualifiedName().toString());
   }
  /*
   @Override

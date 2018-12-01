@@ -33,7 +33,7 @@ component grammar MCBasicTypes extends de.monticore.MCBasics {
         part:(Name || ".")+;
 
     astrule QualifiedName =
-        method public String getQName(){
+        method public String toString(){
           return de.se_rwth.commons.Names.getQualifiedName(
               this.getPartList());
         };
@@ -52,7 +52,7 @@ component grammar MCBasicTypes extends de.monticore.MCBasics {
 
     astrule ImportStatement =
         method public String getQName(){
-          return getQualifiedName().getQName();
+          return getQualifiedName().toString();
         };
 
 
