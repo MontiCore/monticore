@@ -72,58 +72,7 @@ component grammar MCBasicTypes extends de.monticore.MCBasics {
     PrimitiveType implements Type =
         primitive: ["boolean" | "byte" | "short" | "int" | "long" | "char" |"float" | "double"];
 
-    astrule PrimitiveType =
-                method public String toString(){
-                  if (isBoolean()){
-                    return "boolean";
-                  }
-                  if (isByte()){
-                    return "byte";
-                  }
-                  if (isChar()){
-                    return "char";
-                  }
-                  if (isShort()){
-                    return "short";
-                  }
-                  if (isInt()){
-                    return "int";
-                  }
-                  if (isFloat()){
-                    return "float";
-                  }
-                  if (isLong()){
-                    return "long";
-                  }
-                  if (isDouble()){
-                    return "double";
-                  }
-                  return "";
-                }
-                method public boolean isBoolean(){
-                  return this.getPrimitive()==ASTConstantsMCBasicTypes.BOOLEAN;
-                }
-                method public boolean isByte(){
-                  return this.getPrimitive()==ASTConstantsMCBasicTypes.BYTE;
-                }
-                method public boolean isChar(){
-                  return this.getPrimitive()==ASTConstantsMCBasicTypes.CHAR;
-                }
-                method public boolean isShort(){
-                  return this.getPrimitive()==ASTConstantsMCBasicTypes.SHORT;
-                }
-                method public boolean isInt(){
-                  return this.getPrimitive()==ASTConstantsMCBasicTypes.INT;
-                }
-                method public boolean isFloat(){
-                  return this.getPrimitive()==ASTConstantsMCBasicTypes.FLOAT;
-                }
-                method public boolean isLong(){
-                  return this.getPrimitive()==ASTConstantsMCBasicTypes.LONG;
-                }
-                method public boolean isDouble(){
-                  return this.getPrimitive()==ASTConstantsMCBasicTypes.DOUBLE;
-                };
+
     /*========================================================================*/
     /*= Reference Types (Classes, Interfaces in OO) ==========================*/
     /*========================================================================*/

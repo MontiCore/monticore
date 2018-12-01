@@ -8,6 +8,10 @@ component grammar MCBasicGenericsTypes extends de.monticore.types.MCBasicTypes {
 
   start Type;
 
+  /**
+  *  The interface ASTBasicGenerics can be used to restrict to BasicGenerics even if a extended Grammar
+  * (MCGenericTypes.mc4) is included.
+  */
   interface GenericReferenceType extends ReferenceType;
 
   astrule GenericReferenceType =
@@ -15,6 +19,7 @@ component grammar MCBasicGenericsTypes extends de.monticore.types.MCBasicTypes {
     // arguments:List<de.monticore.types.mcbasicgenericstypes._ast.ASTGenericArgument>
   ;
 
+  // use LookAhead to avoid "List" etc. as keywords
 
   ListType implements GenericReferenceType <200> = { _input.LT(1).getText().equals("List") }? Name "<" TypeArgument ">";
 
@@ -24,6 +29,9 @@ component grammar MCBasicGenericsTypes extends de.monticore.types.MCBasicTypes {
 
   SetType implements GenericReferenceType <200> = { _input.LT(1).getText().equals("Set") }? Name "<" TypeArgument ">";
 
+  /**
+  *  ASTTypeArgument interface introduced here as QualifiedReferenceType, more implementations to be added in subgrammars
+  */
   interface TypeArgument ;
 
   BasicTypeArgument implements TypeArgument = QualifiedReferenceType;

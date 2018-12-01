@@ -20,11 +20,45 @@ component grammar MCGenericTypes extends de.monticore.types.MCCustomGenericsType
           "."  (Name& || ".")+ "<" (TypeArgument || ",")* ">"
           ;
 
-  /** Array
-
+  /** ASTArrayType introduce array for arbitrary types
   */
-
   ArrayType implements Type = Type ("[" "]"{_aNode.setDimensions(_aNode.getDimensions()+1);})+;
   astrule ArrayType =
           dimensions:int;
+
+  // ##############################################################################################################
+     // #################################### nur für temp. abwärts kompat. ###########################################
+     // ##############################################################################################################
+     /** ASTTypeArguments represents a list of generic arguments parenthesized
+             by '<...>'. It is also possible to nest type arguments in each other
+             like this <A<B<C>>>.
+             @attribute typeArguments List of arguments
+         */
+         TypeArguments =
+             (
+               "<" (TypeArgument || ",")* ">"
+             );
+
+
+    /** ASTTypeParameters represents a list of generic parameter parenthesized
+            by '<...>' in type declarations (e.g., class-, interface-, method-, or
+            constructor declarations).
+            @attribute typeVariableDeclarations List of parameters
+        */
+        TypeParameters =
+             (
+               "<" (TypeVariableDeclaration || ",")+ ">"
+             );
+    /** ASTTypeVariableDeclaration represents the generic variable declaration
+            in '<'...'>' (e.g., in front of method or constructor declarations or
+            behind the class or interface name).
+            E.g.: public <T extends SuperClass> void test(T t)
+            @attribute name        Name of the type variable
+            @attribute upperBound Optional list of required super classes
+        */
+        TypeVariableDeclaration =
+            Name
+            (
+              "extends" upperBound:(ComplexReferenceType || "&")+
+            )?;
 }
