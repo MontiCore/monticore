@@ -26,11 +26,6 @@ component grammar MCGenericTypes extends de.monticore.types.MCCustomGenericsType
   astrule MCArrayType =
     dimensions:int;
 
-  // ###############################################################################################
-  // #################################### nur für temp. abwärts kompat. ############################
-  // ###############################################################################################
-
-
   /** ASTTypeParameters represents a list of generic parameter parenthesized
           by '<...>' in type declarations (e.g., class-, interface-, method-, or
           constructor declarations).
