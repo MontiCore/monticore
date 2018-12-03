@@ -3,62 +3,49 @@ package de.monticore.types;
 
 
 component grammar MCGenericTypes extends de.monticore.types.MCCustomGenericsTypes {
-  start Type;
+  start MCType;
 
   /** ASTWildcardType represents a wildcard type in a type argument (generics)
           It could also contain an upper- or lower bound.
           @attribute upperBound Supertye of the type argument
           @attribute lowerBound Subtype of the type argument
   */
-  WildcardType implements TypeArgument =
-     "?" (
-     ("extends" upperBound:Type) | ("super" lowerBound:Type)
-     )?;
+  MCWildcardType implements MCTypeArgument =
+     "?" ( ("extends" upperBound:MCType) | ("super" lowerBound:MCType) )?;
 
-   ComplexReferenceType implements GenericReferenceType, Type =
-           (BasicGenericsReferenceType || "." )+ // complex qualification
-          "."  (Name& || ".")+ "<" (TypeArgument || ",")* ">"
-          ;
+  MCComplexReferenceType implements MCGenericReferenceType, MCType =
+    (MCBasicGenericsReferenceType || "." )+ // complex qualification
+    "."  (Name& || ".")+ "<" (MCTypeArgument || ",")* ">"
+    ;
 
   /** ASTArrayType introduce array for arbitrary types
   */
-  ArrayType implements Type = Type ("[" "]"{_aNode.setDimensions(_aNode.getDimensions()+1);})+;
-  astrule ArrayType =
-          dimensions:int;
+  MCArrayType implements MCType =
+    MCType ("[" "]" {_aNode.setDimensions(_aNode.getDimensions()+1);} )+;
 
-  // ##############################################################################################################
-     // #################################### nur für temp. abwärts kompat. ###########################################
-     // ##############################################################################################################
-     /** ASTTypeArguments represents a list of generic arguments parenthesized
-             by '<...>'. It is also possible to nest type arguments in each other
-             like this <A<B<C>>>.
-             @attribute typeArguments List of arguments
-         */
-         TypeArguments =
-             (
-               "<" (TypeArgument || ",")* ">"
-             );
+  astrule MCArrayType =
+    dimensions:int;
+
+  // ###############################################################################################
+  // #################################### nur für temp. abwärts kompat. ############################
+  // ###############################################################################################
 
 
-    /** ASTTypeParameters represents a list of generic parameter parenthesized
-            by '<...>' in type declarations (e.g., class-, interface-, method-, or
-            constructor declarations).
-            @attribute typeVariableDeclarations List of parameters
-        */
-        TypeParameters =
-             (
-               "<" (TypeVariableDeclaration || ",")+ ">"
-             );
-    /** ASTTypeVariableDeclaration represents the generic variable declaration
-            in '<'...'>' (e.g., in front of method or constructor declarations or
-            behind the class or interface name).
-            E.g.: public <T extends SuperClass> void test(T t)
-            @attribute name        Name of the type variable
-            @attribute upperBound Optional list of required super classes
-        */
-        TypeVariableDeclaration =
-            Name
-            (
-              "extends" upperBound:(ComplexReferenceType || "&")+
-            )?;
+  /** ASTTypeParameters represents a list of generic parameter parenthesized
+          by '<...>' in type declarations (e.g., class-, interface-, method-, or
+          constructor declarations).
+          @attribute typeVariableDeclarations List of parameters
+      */
+  MCTypeParameters =
+    "<" (MCTypeVariableDeclaration || ",")+ ">";
+
+  /** ASTTypeVariableDeclaration represents the generic variable declaration
+          in '<'...'>' (e.g., in front of method or constructor declarations or
+          behind the class or interface name).
+          E.g.: public <T extends SuperClass> void test(T t)
+          @attribute name        Name of the type variable
+          @attribute upperBound Optional list of required super classes
+      */
+  MCTypeVariableDeclaration =
+    Name ( "extends" upperBound:(MCComplexReferenceType || "&")+ )?;
 }

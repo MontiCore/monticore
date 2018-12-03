@@ -4,11 +4,8 @@ package de.monticore.types;
 
 
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.mcbasictypes._ast.*;
-import de.monticore.types.prettyprint.MCBasicGenericsTypesPrettyPrinterConcreteVisitor;
-import de.se_rwth.commons.Names;
-
-import java.util.List;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.prettyprint.MCBasicGenericsTypesPrettyPrinter;
 
 /**
  * This class provides methods for printing types as Strings. The TypesPrinter
@@ -26,7 +23,7 @@ public class BasicGenericsTypesPrinter {
   
   /**
    * Returns the singleton instance.
-   * 
+   *
    * @return The instance.
    */
   private static BasicGenericsTypesPrinter getInstance() {
@@ -42,19 +39,19 @@ public class BasicGenericsTypesPrinter {
   
   /**
    * Converts an ASTType to a String
-   * 
+   *
    * @param type ASTType to be converted
    * @return String representation of "type"
    */
-  public static String printType(ASTType type) {
+  public static String printType(ASTMCType type) {
     return getInstance().doPrintType(type);
   }
   
-  protected String doPrintType(ASTType type) {
+  protected String doPrintType(ASTMCType type) {
 
     IndentPrinter printer = new IndentPrinter();
 
-    MCBasicGenericsTypesPrettyPrinterConcreteVisitor vi = new MCBasicGenericsTypesPrettyPrinterConcreteVisitor(printer);
+    MCBasicGenericsTypesPrettyPrinter vi = new MCBasicGenericsTypesPrettyPrinter(printer);
     return vi.prettyprint(type);
   }
 

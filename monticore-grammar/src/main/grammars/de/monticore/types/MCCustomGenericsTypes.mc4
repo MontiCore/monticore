@@ -6,7 +6,7 @@ package de.monticore.types;
 */
 component grammar MCCustomGenericsTypes extends de.monticore.types.MCBasicGenericsTypes {
 
-  start Type;
+  start MCType;
 
   /** ASTBasicGenericsReferenceType represents types like class or interface types
           which could have a qualified name like this: a.b.C<Arg>. The
@@ -17,13 +17,13 @@ component grammar MCCustomGenericsTypes extends de.monticore.types.MCBasicGeneri
           @attribute name             Name of the type
           @attribute typeArgumentList The types between '<...>'
       */
-      BasicGenericsReferenceType implements GenericReferenceType <20> =
-          (Name& || ".")+ "<" (TypeArgument || ",")* ">";
+      MCBasicGenericsReferenceType implements MCGenericReferenceType <20> =
+          (Name& || ".")+ "<" (MCTypeArgument || ",")* ">";
 
       /**
        ASTCustomTypeArgument introduces all ReferenceType as TypeArguments
        This enables recursive Generics e.g. List<Map<String, socnet.Person>>
       */
-      CustomTypeArgument implements TypeArgument = ReferenceType;
+      MCCustomTypeArgument implements MCTypeArgument = MCReferenceType;
 
 }

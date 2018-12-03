@@ -1,9 +1,9 @@
 package de.monticore.types;
 
 
-import de.monticore.types.mcbasicgenericstypes._ast.ASTListType;
-import de.monticore.types.mcbasicgenericstypes._ast.ASTOptionalType;
-import de.monticore.types.mcbasicgenericstypes._ast.ASTSetType;
+import de.monticore.types.mcbasicgenericstypes._ast.ASTMCListType;
+import de.monticore.types.mcbasicgenericstypes._ast.ASTMCOptionalType;
+import de.monticore.types.mcbasicgenericstypes._ast.ASTMCSetType;
 import de.monticore.types.mcbasicgenericstypes._visitor.MCBasicGenericsTypesVisitor;
 import de.monticore.types.mcbasicgenericstypestest._parser.MCBasicGenericsTypesTestParser;
 import de.monticore.types.mcbasictypes._ast.*;
@@ -35,20 +35,20 @@ public class MCBasicGenericsTypesTest {
       MCBasicGenericsTypesTestParser mcBasicTypesParser = new MCBasicGenericsTypesTestParser();
       // .parseType(primitive);
 
-      Optional<ASTType> type = mcBasicTypesParser.parse_String(testType);
+      Optional<ASTMCType> type = mcBasicTypesParser.parse_String(testType);
 
       assertNotNull(type);
       assertTrue(type.isPresent());
-      assertTrue(type.get() instanceof ASTReferenceType);
+      assertTrue(type.get() instanceof ASTMCReferenceType);
 
-      ASTReferenceType t = (ASTReferenceType) type.get();
+      ASTMCReferenceType t = (ASTMCReferenceType) type.get();
       t.accept( new MCBasicGenericsTypesVisitor() {
-        public void visit(ASTListType t) {
+        public void visit(ASTMCListType t) {
           assertTrue(true);
-          t.getTypeArgument().accept(new MCBasicGenericsTypesVisitor() {
+          t.getMCTypeArgument().accept(new MCBasicGenericsTypesVisitor() {
             @Override
-            public void visit(ASTType node) {
-              if (!(node instanceof ASTQualifiedReferenceType)) {
+            public void visit(ASTMCType node) {
+              if (!(node instanceof ASTMCQualifiedReferenceType)) {
                 fail("Found not String");
               }
             }

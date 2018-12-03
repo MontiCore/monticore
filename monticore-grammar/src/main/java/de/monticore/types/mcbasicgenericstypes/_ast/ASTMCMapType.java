@@ -6,12 +6,12 @@ import com.google.common.collect.Lists;
 
 import java.util.List;
 
-public class ASTMapType extends ASTMapTypeTOP {
+public class ASTMCMapType extends ASTMCMapTypeTOP {
 
-    public ASTMapType() {
+    public ASTMCMapType() {
     }
 
-    public ASTMapType(String name, ASTTypeArgument key, ASTTypeArgument value) {
+    public ASTMCMapType(String name, ASTMCTypeArgument key, ASTMCTypeArgument value) {
         super(name, key, value);
     }
 
@@ -28,13 +28,13 @@ public class ASTMapType extends ASTMapTypeTOP {
     }
 
     @Override
-    public List<ASTTypeArgument> getTypeArgumentList() {
+    public List<ASTMCTypeArgument> getMCTypeArgumentList() {
         return Lists.newArrayList(getKey(),getValue());
     }
 
 
     @Override
-    public void setTypeArgumentList(List<ASTTypeArgument> arguments) {
+    public void setMCTypeArgumentList(List<ASTMCTypeArgument> arguments) {
         setKey(arguments.get(0));
         setValue(arguments.get(1));
     }

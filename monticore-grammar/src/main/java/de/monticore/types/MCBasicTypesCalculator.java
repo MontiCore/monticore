@@ -3,7 +3,7 @@ package de.monticore.types;
 import de.monticore.literals.literals._ast.ASTBooleanLiteral;
 import de.monticore.mcexpressions._ast.*;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
-import de.monticore.types.mcbasictypes._ast.ASTPrimitiveType;
+import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 
 import java.util.Map;
 
@@ -16,7 +16,7 @@ public class MCBasicTypesCalculator {
   }
   
   
-  public boolean isBool(ASTPrimitiveType primitiveType) {
+  public boolean isBool(ASTMCPrimitiveType primitiveType) {
     return primitiveType.isBoolean();
   }
 

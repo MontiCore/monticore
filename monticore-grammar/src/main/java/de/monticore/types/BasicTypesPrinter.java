@@ -24,7 +24,7 @@ public class BasicTypesPrinter {
   
   /**
    * Returns the singleton instance.
-   * 
+   *
    * @return The instance.
    */
   private static BasicTypesPrinter getInstance() {
@@ -40,21 +40,21 @@ public class BasicTypesPrinter {
   
   /**
    * Converts an ASTType to a String
-   * 
+   *
    * @param type ASTType to be converted
    * @return String representation of "type"
    */
-  public static String printType(ASTType type) {
+  public static String printType(ASTMCType type) {
     return getInstance().doPrintType(type);
   }
   
-  protected String doPrintType(ASTType type) {
+  protected String doPrintType(ASTMCType type) {
 
-    if (type instanceof ASTPrimitiveType) {
-      return doPrintPrimitiveType((ASTPrimitiveType) type);
+    if (type instanceof ASTMCPrimitiveType) {
+      return doPrintPrimitiveType((ASTMCPrimitiveType) type);
     }
-    if (type instanceof ASTReferenceType) {
-      return doPrintReferenceType((ASTReferenceType) type);
+    if (type instanceof ASTMCReferenceType) {
+      return doPrintReferenceType((ASTMCReferenceType) type);
     }
     return "";
   }
@@ -65,31 +65,31 @@ public class BasicTypesPrinter {
    * @param type ASTReferenceType to be converted
    * @return String representation of "type"
    */
-  public static String printReferenceType(ASTReferenceType type) {
+  public static String printReferenceType(ASTMCReferenceType type) {
     return getInstance().doPrintReferenceType(type);
   }
 
-  protected String doPrintReferenceType(ASTReferenceType type) {
+  protected String doPrintReferenceType(ASTMCReferenceType type) {
 
     return Names.getQualifiedName(type.getNameList());
   }
 
   /**
    * Converts an ASTReturnType to a String
-   * 
+   *
    * @param type ASTReturnType to be converted
    * @return String representation of "type"
    */
-  public static String printReturnType(ASTReturnType type) {
+  public static String printReturnType(ASTMCReturnType type) {
     return getInstance().doPrintReturnType(type);
   }
   
-  protected String doPrintReturnType(ASTReturnType type) {
-    if (type.isPresentType()) {
-      return doPrintType(type.getType());
+  protected String doPrintReturnType(ASTMCReturnType type) {
+    if (type.isPresentMCType()) {
+      return doPrintType(type.getMCType());
     }
-    if (type.isPresentVoidType()) {
-      return doPrintVoidType(type.getVoidType());
+    if (type.isPresentMCVoidType()) {
+      return doPrintVoidType(type.getMCVoidType());
     }
     return "";
   }
@@ -104,15 +104,15 @@ public class BasicTypesPrinter {
   
   /**
    * Converts an ASTVoidType to a String
-   * 
+   *
    * @param type ASTVoidType to be converted
    * @return String representation of "type"
    */
-  public static String printVoidType(ASTVoidType type) {
+  public static String printVoidType(ASTMCVoidType type) {
     return getInstance().doPrintVoidType(type);
   }
   
-  protected String doPrintVoidType(ASTVoidType type) {
+  protected String doPrintVoidType(ASTMCVoidType type) {
     if (type != null) {
       return "void";
     }
@@ -121,15 +121,15 @@ public class BasicTypesPrinter {
   
   /**
    * Converts an ASTPrimitiveType to a String
-   * 
+   *
    * @param type ASTPrimitiveType to be converted
    * @return String representation of "type"
    */
-  public static String printPrimitiveType(ASTPrimitiveType type) {
+  public static String printPrimitiveType(ASTMCPrimitiveType type) {
     return getInstance().doPrintPrimitiveType(type);
   }
   
-  protected String doPrintPrimitiveType(ASTPrimitiveType type) {
+  protected String doPrintPrimitiveType(ASTMCPrimitiveType type) {
     if (type == null) {
       return "";
     }
@@ -162,19 +162,19 @@ public class BasicTypesPrinter {
 
   /**
    * Converts an ASTReferenceTypeList to a String
-   * 
+   *
    * @param type ASTReferenceTypeList to be converted
    * @return String representation of "type"
    */
-  public static String printReferenceTypeList(List<ASTReferenceType> type) {
+  public static String printReferenceTypeList(List<ASTMCReferenceType> type) {
     return getInstance().doPrintReferenceTypeList(type);
   }
   
-  protected String doPrintReferenceTypeList(List<ASTReferenceType> type) {
+  protected String doPrintReferenceTypeList(List<ASTMCReferenceType> type) {
     StringBuilder ret = new StringBuilder();
     if (type != null) {
       String sep = "";
-      for (ASTReferenceType refType : type) {
+      for (ASTMCReferenceType refType : type) {
         ret.append(sep + doPrintReferenceType(refType));
         sep = ", ";
       }

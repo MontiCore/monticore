@@ -1,9 +1,9 @@
 package de.monticore.types.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.mcbasictypes._ast.ASTPrimitiveType;
-import de.monticore.types.mcbasictypes._ast.ASTQualifiedReferenceType;
-import de.monticore.types.mcbasictypes._ast.ASTType;
+import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedReferenceType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
 import org.junit.Test;
 
@@ -18,7 +18,7 @@ public class MCBasicTypesPrettyPrinterTest {
   @Test
   public void primitivesTest(){
     Class foo = boolean.class;
-    MCBasicTypesPrettyPrinterConcreteVisitor prettyprinter = new MCBasicTypesPrettyPrinterConcreteVisitor(new IndentPrinter());
+    MCBasicTypesPrettyPrinter prettyprinter = new MCBasicTypesPrettyPrinter(new IndentPrinter());
 
     String[] primitives = new String[]{"boolean", "byte", "char", "short", "int", "long",
         "float", "double"};
@@ -28,11 +28,11 @@ public class MCBasicTypesPrettyPrinterTest {
         MCBasicTypesTestParser mcBasicTypesParser = new MCBasicTypesTestParser();
         // .parseType(primitive);
 
-        Optional<? extends ASTType> type = mcBasicTypesParser.parse_StringPrimitiveType(primitive);
+        Optional<? extends ASTMCType> type = mcBasicTypesParser.parse_StringMCPrimitiveType(primitive);
         type.get().accept(prettyprinter);
         assertTrue(type.isPresent());
         assertEquals(primitive,prettyprinter.getPrinter().getContent());
-        assertTrue(type.get() instanceof ASTPrimitiveType);
+        assertTrue(type.get() instanceof ASTMCPrimitiveType);
       }
     } catch (IOException e) {
       e.printStackTrace();
@@ -42,15 +42,15 @@ public class MCBasicTypesPrettyPrinterTest {
 
   @Test
   public void simpleReferenceTest(){
-    MCBasicTypesPrettyPrinterConcreteVisitor prettyprinter = new MCBasicTypesPrettyPrinterConcreteVisitor(new IndentPrinter());
+    MCBasicTypesPrettyPrinter prettyprinter = new MCBasicTypesPrettyPrinter(new IndentPrinter());
     String simpleReference = "de.monticore.types.prettyprint";
     try{
       MCBasicTypesTestParser mcBasicTypesParser= new MCBasicTypesTestParser();
-      Optional<? extends ASTType> type = mcBasicTypesParser.parse_StringQualifiedReferenceType(simpleReference);
+      Optional<? extends ASTMCType> type = mcBasicTypesParser.parse_StringMCQualifiedReferenceType(simpleReference);
       type.get().accept(prettyprinter);
       assertTrue(type.isPresent());
       assertEquals(simpleReference,prettyprinter.getPrinter().getContent());
-      assertTrue(type.get() instanceof ASTQualifiedReferenceType);
+      assertTrue(type.get() instanceof ASTMCQualifiedReferenceType);
     }catch(IOException e){
       e.printStackTrace();
     }

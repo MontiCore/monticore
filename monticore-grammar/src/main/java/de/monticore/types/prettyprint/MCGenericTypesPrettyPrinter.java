@@ -1,20 +1,19 @@
 package de.monticore.types.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.mcbasictypes._ast.ASTQualifiedReferenceType;
-import de.monticore.types.mccustomgenericstypes._ast.ASTBasicGenericsReferenceType;
-import de.monticore.types.mcgenerictypes._ast.ASTComplexReferenceType;
-import de.monticore.types.mcgenerictypes._ast.ASTWildcardType;
+import de.monticore.types.mccustomgenericstypes._ast.ASTMCBasicGenericsReferenceType;
+import de.monticore.types.mcgenerictypes._ast.ASTMCComplexReferenceType;
+import de.monticore.types.mcgenerictypes._ast.ASTMCWildcardType;
 import de.monticore.types.mcgenerictypes._visitor.MCGenericTypesVisitor;
 
-public class MCGenericTypesPrettyPrinterConcreteVisitor extends MCCustomGenericsTypesPrettyPrinterConcreteVisitor implements MCGenericTypesVisitor {
+public class MCGenericTypesPrettyPrinter extends MCCustomGenericsTypesPrettyPrinter implements MCGenericTypesVisitor {
   private MCGenericTypesVisitor realThis = this;
 
-  public MCGenericTypesPrettyPrinterConcreteVisitor(IndentPrinter printer){
+  public MCGenericTypesPrettyPrinter(IndentPrinter printer){
     super(printer);
   }
 
-  public MCGenericTypesPrettyPrinterConcreteVisitor(IndentPrinter printer, MCGenericTypesVisitor realThis) {
+  public MCGenericTypesPrettyPrinter(IndentPrinter printer, MCGenericTypesVisitor realThis) {
     super(printer);
     this.realThis = realThis;
   }
@@ -29,7 +28,7 @@ public class MCGenericTypesPrettyPrinterConcreteVisitor extends MCCustomGenerics
     this.realThis=realThis;
   }
 
-  public void traverse(ASTWildcardType node) {
+  public void traverse(ASTMCWildcardType node) {
     getPrinter().print("?");
     if(node.isPresentUpperBound()) {
       getPrinter().print("extends");
@@ -40,8 +39,8 @@ public class MCGenericTypesPrettyPrinterConcreteVisitor extends MCCustomGenerics
     }
   }
 
-  public void traverse(ASTComplexReferenceType node) {
-    for(ASTBasicGenericsReferenceType q : node.getBasicGenericsReferenceTypeList())
+  public void traverse(ASTMCComplexReferenceType node) {
+    for(ASTMCBasicGenericsReferenceType q : node.getMCBasicGenericsReferenceTypeList())
 
     getPrinter().print(String.join(".",node.getNameList())+"<");
 

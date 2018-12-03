@@ -1,19 +1,14 @@
 package de.monticore.types;
 
-
-import de.monticore.types.mcbasicgenericstypestest._parser.MCBasicGenericsTypesTestParser;
-import de.monticore.types.mcbasictypes._ast.ASTReferenceType;
-import de.monticore.types.mcbasictypes._ast.ASTType;
-import de.monticore.types.mcgenerictypes._ast.ASTArrayType;
-import de.monticore.types.mcgenerictypes._ast.ASTComplexReferenceType;
+import de.monticore.types.mcbasictypes._ast.ASTMCReferenceType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcgenerictypes._ast.ASTMCArrayType;
 import de.monticore.types.mcgenerictypestest._parser.MCGenericTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -34,13 +29,13 @@ public class MCGenericsTypesTest {
       MCGenericTypesTestParser mcBasicTypesParser = new MCGenericTypesTestParser();
       // .parseType(primitive);
 
-      Optional<ASTType> type = mcBasicTypesParser.parse_String(testType);
+      Optional<ASTMCType> type = mcBasicTypesParser.parse_String(testType);
 
       assertNotNull(type);
       assertTrue(type.isPresent());
-      assertTrue(type.get() instanceof ASTReferenceType);
+      assertTrue(type.get() instanceof ASTMCReferenceType);
       System.out.println(type.get().getClass());
-      ASTReferenceType t = (ASTReferenceType) type.get();
+      ASTMCReferenceType t = (ASTMCReferenceType) type.get();
     }
   }
 
@@ -53,13 +48,13 @@ public class MCGenericsTypesTest {
       MCGenericTypesTestParser mcBasicTypesParser = new MCGenericTypesTestParser();
       // .parseType(primitive);
 
-      Optional<ASTType> type = mcBasicTypesParser.parse_String(testType);
+      Optional<ASTMCType> type = mcBasicTypesParser.parse_String(testType);
 
       assertNotNull(type);
       assertTrue(type.isPresent());
-      assertTrue(type.get() instanceof ASTArrayType);
+      assertTrue(type.get() instanceof ASTMCArrayType);
       System.out.println(type.get().getClass());
-      ASTArrayType t = (ASTArrayType) type.get();
+      ASTMCArrayType t = (ASTMCArrayType) type.get();
       assertEquals(2,t.getDimensions());
     }
   }

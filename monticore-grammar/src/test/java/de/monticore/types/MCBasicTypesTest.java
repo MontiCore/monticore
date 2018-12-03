@@ -23,10 +23,10 @@ public class MCBasicTypesTest {
   @Test
   public void testPrimitiveTypesAPI() throws IOException {
     MCBasicTypesTestParser mcBasicTypesParser = new MCBasicTypesTestParser();
-    Optional<ASTPrimitiveType> boolOpt = mcBasicTypesParser.parse_StringPrimitiveType("boolean");
+    Optional<ASTMCPrimitiveType> boolOpt = mcBasicTypesParser.parse_StringMCPrimitiveType("boolean");
     assertTrue(boolOpt.isPresent());
 
-    ASTPrimitiveType bool = boolOpt.get();
+    ASTMCPrimitiveType bool = boolOpt.get();
 
     Boolean isBool = bool.isBoolean();
     assertTrue(isBool);
@@ -57,11 +57,11 @@ public class MCBasicTypesTest {
         MCBasicTypesTestParser mcBasicTypesParser = new MCBasicTypesTestParser();
         // .parseType(primitive);
 
-        Optional<? extends ASTType> type = mcBasicTypesParser.parse_String(primitive);
+        Optional<? extends ASTMCType> type = mcBasicTypesParser.parse_String(primitive);
 
         assertNotNull(type);
         assertTrue(type.isPresent());
-        assertTrue(type.get() instanceof ASTPrimitiveType);
+        assertTrue(type.get() instanceof ASTMCPrimitiveType);
       }
     } catch (IOException e) {
       e.printStackTrace();
@@ -75,10 +75,10 @@ public class MCBasicTypesTest {
     String[] types = new String[]{"socnet.Person", "Person"};
     for (String type : types) {
       MCBasicTypesTestParser mcBasicTypesParser = new MCBasicTypesTestParser();
-      Optional<ASTType> astType = mcBasicTypesParser.parse_String(type);
+      Optional<ASTMCType> astType = mcBasicTypesParser.parse_String(type);
       assertNotNull(astType);
       assertTrue(astType.isPresent());
-      assertTrue(astType.get() instanceof ASTQualifiedReferenceType);
+      assertTrue(astType.get() instanceof ASTMCQualifiedReferenceType);
     }
   }
 }

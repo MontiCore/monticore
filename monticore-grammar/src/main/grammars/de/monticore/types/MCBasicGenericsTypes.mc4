@@ -6,35 +6,35 @@ package de.monticore.types;
 */
 component grammar MCBasicGenericsTypes extends de.monticore.types.MCBasicTypes {
 
-  start Type;
+  start MCType;
 
   /**
   *  The interface ASTBasicGenerics can be used to restrict to BasicGenerics even if a extended Grammar
   * (MCGenericTypes.mc4) is included.
   */
-  interface GenericReferenceType extends ReferenceType;
+  interface MCGenericReferenceType extends MCReferenceType;
 
-  astrule GenericReferenceType =
+  astrule MCGenericReferenceType =
     // names:List<String>
     // arguments:List<de.monticore.types.mcbasicgenericstypes._ast.ASTGenericArgument>
   ;
 
   // use LookAhead to avoid "List" etc. as keywords
 
-  ListType implements GenericReferenceType <200> = { cmpToken(1, "List") }? Name "<" TypeArgument ">";
+  MCListType implements MCGenericReferenceType <200> = { cmpToken(1, "List") }? Name "<" MCTypeArgument ">";
 
-  OptionalType implements GenericReferenceType <200> = { cmpToken(1, "Optional") }? Name "<" TypeArgument ">";
+  MCOptionalType implements MCGenericReferenceType <200> = { cmpToken(1, "Optional") }? Name "<" MCTypeArgument ">";
 
-  MapType implements GenericReferenceType  <200> = { cmpToken(1, "Map") }? Name "<" key:TypeArgument "," value:TypeArgument ">";
+  MCMapType implements MCGenericReferenceType  <200> = { cmpToken(1, "Map") }? Name "<" key:MCTypeArgument "," value:MCTypeArgument ">";
 
-  SetType implements GenericReferenceType <200> = { cmpToken(1, "Set") }? Name "<" TypeArgument ">";
+  MCSetType implements MCGenericReferenceType <200> = { cmpToken(1, "Set") }? Name "<" MCTypeArgument ">";
 
   /**
   *  ASTTypeArgument interface introduced here as QualifiedReferenceType, more implementations to be added in subgrammars
   */
-  interface TypeArgument ;
+  interface MCTypeArgument ;
 
-  BasicTypeArgument implements TypeArgument = QualifiedReferenceType;
+  MCBasicTypeArgument implements MCTypeArgument = MCQualifiedReferenceType;
 
 
 }

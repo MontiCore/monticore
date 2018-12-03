@@ -4,12 +4,12 @@ package de.monticore.types.mcbasictypes._ast;
 
 import java.util.List;
 
-public  class ASTPrimitiveType extends ASTPrimitiveTypeTOP {
+public  class ASTMCPrimitiveType extends ASTMCPrimitiveTypeTOP {
 
-  public ASTPrimitiveType() {
+  public ASTMCPrimitiveType() {
   }
 
-  public ASTPrimitiveType(int primitive) {
+  public ASTMCPrimitiveType(int primitive) {
     super(primitive);
   }
 

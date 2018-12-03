@@ -10,7 +10,7 @@ import de.se_rwth.commons.Names;
 
 import java.util.Iterator;
 
-public class MCBasicTypesPrettyPrinterConcreteVisitor implements MCBasicTypesVisitor {
+public class MCBasicTypesPrettyPrinter implements MCBasicTypesVisitor {
 
   private MCBasicTypesVisitor realThis = this;
 
@@ -18,7 +18,7 @@ public class MCBasicTypesPrettyPrinterConcreteVisitor implements MCBasicTypesVis
     return printer;
   }
 
-  public MCBasicTypesPrettyPrinterConcreteVisitor(IndentPrinter printer) {
+  public MCBasicTypesPrettyPrinter(IndentPrinter printer) {
     this.printer = printer;
   }
 
@@ -36,7 +36,7 @@ public class MCBasicTypesPrettyPrinterConcreteVisitor implements MCBasicTypesVis
    * @param a qualified name
    */
   @Override
-  public void visit(ASTQualifiedName a) {
+  public void visit(ASTMCQualifiedName a) {
     getPrinter().print(Names.getQualifiedName(a.getPartList()));
   }
 
@@ -50,7 +50,7 @@ public class MCBasicTypesPrettyPrinterConcreteVisitor implements MCBasicTypesVis
    * @param a void type
    */
   @Override
-  public void visit(ASTVoidType a) {
+  public void visit(ASTMCVoidType a) {
     getPrinter().print("void");
   }
 
@@ -60,7 +60,7 @@ public class MCBasicTypesPrettyPrinterConcreteVisitor implements MCBasicTypesVis
    * @param a primitive type
    */
   @Override
-  public void visit(ASTPrimitiveType a) {
+  public void visit(ASTMCPrimitiveType a) {
     switch (a.getPrimitive()) {
       case ASTConstantsMCBasicTypes.BOOLEAN:
         getPrinter().print("boolean");
@@ -103,8 +103,8 @@ public class MCBasicTypesPrettyPrinterConcreteVisitor implements MCBasicTypesVis
   }
 
   @Override
-  public void visit(ASTImportStatement a){
-    getPrinter().print("import" + a.getQualifiedName().toString());
+  public void visit(ASTMCImportStatement a){
+    getPrinter().print("import" + a.getMCQualifiedName().toString());
   }
  /*
   @Override

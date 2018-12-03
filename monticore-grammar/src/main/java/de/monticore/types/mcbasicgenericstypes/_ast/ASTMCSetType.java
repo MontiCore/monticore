@@ -4,12 +4,12 @@ import com.google.common.collect.Lists;
 
 import java.util.List;
 
-public class ASTSetType extends ASTSetTypeTOP {
+public class ASTMCSetType extends ASTMCSetTypeTOP {
 
-    public ASTSetType() {
+    public ASTMCSetType() {
     }
 
-    public ASTSetType(String name, ASTTypeArgument typeArgument) {
+    public ASTMCSetType(String name, ASTMCTypeArgument typeArgument) {
         super(name, typeArgument);
     }
 
@@ -24,12 +24,12 @@ public class ASTSetType extends ASTSetTypeTOP {
     }
 
     @Override
-    public List<ASTTypeArgument> getTypeArgumentList() {
-        return Lists.newArrayList(getTypeArgument());
+    public List<ASTMCTypeArgument> getMCTypeArgumentList() {
+        return Lists.newArrayList(getMCTypeArgument());
     }
 
     @Override
-    public void setTypeArgumentList(List<ASTTypeArgument> arguments) {
-        setTypeArgument(arguments.get(0));
+    public void setMCTypeArgumentList(List<ASTMCTypeArgument> arguments) {
+        setMCTypeArgument(arguments.get(0));
     }
 }

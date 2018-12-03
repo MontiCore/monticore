@@ -3,7 +3,7 @@ package de.monticore.types;
 import de.monticore.mcexpressions._ast.ASTExpression;
 import de.monticore.testmcexpressions._parser.TestMCExpressionsParser;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
-import de.monticore.types.mcbasictypes._ast.ASTPrimitiveType;
+import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +35,7 @@ public class MCBasicTypesCalculatorTest {
     MCBasicTypesTestParser mcBasicTypesParser = new MCBasicTypesTestParser();
 
     try {
-      Optional<ASTPrimitiveType> type = mcBasicTypesParser.parse_StringPrimitiveType("boolean");
+      Optional<ASTMCPrimitiveType> type = mcBasicTypesParser.parse_StringMCPrimitiveType("boolean");
 
       MCBasicTypesCalculator calc = new MCBasicTypesCalculator(lookUp);
 

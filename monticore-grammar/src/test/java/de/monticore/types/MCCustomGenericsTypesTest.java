@@ -1,8 +1,8 @@
 package de.monticore.types;
 
 
-import de.monticore.types.mcbasictypes._ast.ASTReferenceType;
-import de.monticore.types.mcbasictypes._ast.ASTType;
+import de.monticore.types.mcbasictypes._ast.ASTMCReferenceType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccustomgenerictypestest._parser.MCCustomGenericTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
@@ -33,14 +33,14 @@ public class MCCustomGenericsTypesTest {
       System.out.println("Teste "+testType);
       MCCustomGenericTypesTestParser mcBasicTypesParser = new MCCustomGenericTypesTestParser();
 
-      Optional<ASTType> type = mcBasicTypesParser.parse_String(testType);
+      Optional<ASTMCType> type = mcBasicTypesParser.parse_String(testType);
 
       assertNotNull(type);
       assertTrue(type.isPresent());
-      assertTrue(type.get() instanceof ASTReferenceType);
+      assertTrue(type.get() instanceof ASTMCReferenceType);
       System.out.println(type.get().getClass());
 
-      ASTReferenceType t = (ASTReferenceType) type.get();
+      ASTMCReferenceType t = (ASTMCReferenceType) type.get();
       
     }
   }

@@ -1,16 +1,16 @@
 package de.monticore.types.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.mcbasicgenericstypes._ast.ASTListType;
-import de.monticore.types.mcbasicgenericstypes._ast.ASTMapType;
-import de.monticore.types.mcbasicgenericstypes._ast.ASTOptionalType;
-import de.monticore.types.mcbasicgenericstypes._ast.ASTSetType;
+import de.monticore.types.mcbasicgenericstypes._ast.ASTMCListType;
+import de.monticore.types.mcbasicgenericstypes._ast.ASTMCMapType;
+import de.monticore.types.mcbasicgenericstypes._ast.ASTMCOptionalType;
+import de.monticore.types.mcbasicgenericstypes._ast.ASTMCSetType;
 import de.monticore.types.mcbasicgenericstypes._visitor.MCBasicGenericsTypesVisitor;
 
-public class MCBasicGenericsTypesPrettyPrinterConcreteVisitor extends MCBasicTypesPrettyPrinterConcreteVisitor implements MCBasicGenericsTypesVisitor {
+public class MCBasicGenericsTypesPrettyPrinter extends MCBasicTypesPrettyPrinter implements MCBasicGenericsTypesVisitor {
   private MCBasicGenericsTypesVisitor realThis = this;
 
-  public MCBasicGenericsTypesPrettyPrinterConcreteVisitor(IndentPrinter printer){
+  public MCBasicGenericsTypesPrettyPrinter(IndentPrinter printer){
     super(printer);
   }
 
@@ -25,28 +25,28 @@ public class MCBasicGenericsTypesPrettyPrinterConcreteVisitor extends MCBasicTyp
   }
 
   @Override
-  public void traverse(ASTListType a){
+  public void traverse(ASTMCListType a){
     getPrinter().print("List<");
-    a.getTypeArgument().accept(this);
+    a.getMCTypeArgument().accept(this);
     getPrinter().print(">");
   }
 
   @Override
-  public void traverse(ASTOptionalType a){
+  public void traverse(ASTMCOptionalType a){
     getPrinter().print("Optional<");
-    a.getTypeArgument().accept(this);
+    a.getMCTypeArgument().accept(this);
     getPrinter().print(">");
   }
 
   @Override
-  public void traverse(ASTSetType a){
+  public void traverse(ASTMCSetType a){
     getPrinter().print("Set<");
-    a.getTypeArgument().accept(this);
+    a.getMCTypeArgument().accept(this);
     getPrinter().print(">");
   }
 
   @Override
-  public void traverse(ASTMapType a){
+  public void traverse(ASTMCMapType a){
     getPrinter().print("Map<");
     a.getKey().accept(this);
     getPrinter().print(",");

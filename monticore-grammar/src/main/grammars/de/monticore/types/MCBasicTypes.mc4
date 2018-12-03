@@ -6,9 +6,9 @@ package de.monticore.types;
  * ease the reuse of type structures in languages similar to Java,
  * but potentials simplified, e.g. without generics
  * by grammar inheritance or grammar embedding.
- * The grammar contains types from Java, e.g., primitives, void, 
+ * The grammar contains types from Java, e.g., primitives, void,
  * classes (reference types).
- * It does not contain generics or arrays (which can be added 
+ * It does not contain generics or arrays (which can be added
  * in grammar extensions).
  *
 */
@@ -18,41 +18,41 @@ component grammar MCBasicTypes extends de.monticore.MCBasics {
     /*= The Type Interfaces ==================================================*/
     /*========================================================================*/
 
-    interface Type;
+    interface MCType;
 
     /*========================================================================*/
     /*= Qualified Names ======================================================*/
     /*========================================================================*/
-    
+
     /** The ASTQualifiedName represents a possibly qualified name in the AST.
         The different parts of a qualified name are separated by '.'; they are
         stored in an ASTStringList.
         @attribute parts A List of ASTStringList concludes all name parts
     */
-    QualifiedName =
+    MCQualifiedName =
         part:(Name || ".")+;
 
-    astrule QualifiedName =
+    astrule MCQualifiedName =
         method public String toString(){
           return de.se_rwth.commons.Names.getQualifiedName(
               this.getPartList());
         };
-    
+
 
     /*========================================================================*/
     /*= ImportStatement ======================================================*/
     /*========================================================================*/
-    
+
     /** ImportStatement represents the import list for diagrams
         E.g.: import A.b;
         E.g.: import A.*;
     */
-    ImportStatement =
-    		"import" QualifiedName ("." Star:["*"])? ";" ;
+    MCImportStatement =
+    		"import" MCQualifiedName ("." Star:["*"])? ";" ;
 
-    astrule ImportStatement =
+    astrule MCImportStatement =
         method public String getQName(){
-          return getQualifiedName().toString();
+          return getMCQualifiedName().toString();
         };
 
 
@@ -69,30 +69,30 @@ component grammar MCBasicTypes extends de.monticore.MCBasics {
         @attribute primitive BOOLEAN, BYTE, CHAR, SHORT, INT, FLOAT, LONG,
                                  or DOUBLE
     */
-    PrimitiveType implements Type =
+    MCPrimitiveType implements MCType =
         primitive: ["boolean" | "byte" | "short" | "int" | "long" | "char" |"float" | "double"];
 
 
     /*========================================================================*/
     /*= Reference Types (Classes, Interfaces in OO) ==========================*/
     /*========================================================================*/
-    
-    interface ReferenceType extends Type;
-    
+
+    interface MCReferenceType extends MCType;
+
     /** ASTQualifiedReferenceType represents types like class or interface types
             which could have a qualified name like this: a.b.c.D
         */
-    QualifiedReferenceType implements ReferenceType = QualifiedName;
+    MCQualifiedReferenceType implements MCReferenceType = MCQualifiedName;
 
 
     /*========================================================================*/
     /*= ReturnTypes and void =================================================*/
     /*========================================================================*/
-    
-    ReturnType = VoidType | Type;
+
+    MCReturnType = MCVoidType | MCType;
 
     /** ASTVoidType represents the return type "void".
     */
-    VoidType = "void";
+    MCVoidType = "void";
 
 }
