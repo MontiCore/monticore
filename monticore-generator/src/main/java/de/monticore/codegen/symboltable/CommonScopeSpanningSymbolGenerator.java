@@ -59,7 +59,7 @@ public class CommonScopeSpanningSymbolGenerator implements ScopeSpanningSymbolGe
       genEngine.generate("symboltable.ScopeSpanningSymbol", filePath, prodSymbol.getAstNode().get(),
               symbolName, genHelper.getGrammarSymbol().getName() + SCOPE, prodSymbol, symbolRule);
       genEngine.generate("symboltable.SymbolBuilder", builderFilePath, prodSymbol.getAstNode().get(), builderName, className);
-      genEngine.generate("symboltable.serialization.SymbolSerialization", serializerFilePath, prodSymbol.getAstNode().get(), className);
+      genEngine.generate("symboltable.serialization.SymbolSerialization", serializerFilePath, prodSymbol.getAstNode().get(), serializerName, className);
     }
   }
 

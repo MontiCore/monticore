@@ -74,7 +74,7 @@ public class CommonSymbolGenerator implements SymbolGenerator {
       genEngine.generate("symboltable.SymbolBuilder", builderFilePath,
               prodSymbol.getAstNode().get(), builderName, className);
       genEngine.generate("symboltable.serialization.SymbolSerialization", serializerFilePath,
-              prodSymbol.getAstNode().get(), className);
+              prodSymbol.getAstNode().get(), serializerName, className);
     }
 
   }
