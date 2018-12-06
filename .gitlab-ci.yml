@@ -7,12 +7,12 @@ stages:
 variables:
   MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode"# -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN"
 
-build:
+job 1:
   stage: compile
   script:
-    - mvn $MAVEN_CLI_OPTS install -DskipTests
+    - mvn $MAVEN_CLI_OPTS install -DskipTests=true
     
-    
+job 2: 
   stage: test
   script:
     - mvn $MAVEN_CLI_OPTS test
