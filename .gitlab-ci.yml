@@ -13,7 +13,6 @@ build:
     - mvn $MAVEN_CLI_OPTS install -DskipTests
     
     
-build:
   stage: test
   script:
     - mvn $MAVEN_CLI_OPTS test
