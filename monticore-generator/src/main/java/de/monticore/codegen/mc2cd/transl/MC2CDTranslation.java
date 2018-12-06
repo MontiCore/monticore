@@ -22,7 +22,7 @@ import java.util.function.UnaryOperator;
 public class MC2CDTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
 
   private GlobalExtensionManagement glex;
-  
+
   private LexNamer lexNamer;
 
   public MC2CDTranslation(GlobalExtensionManagement glex) {
@@ -56,6 +56,7 @@ public class MC2CDTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCDC
         .andThen(new CreateConstantAttributeTranslation())
         .andThen(new MultiplicityTranslation())
         .andThen(new ConstantsTranslation(lexNamer))
+        .andThen(new DeprecatedTranslation())
         .andThen(new NonTerminalsWithSymbolReferenceToCDAttributeStereotypes())
         .apply(rootLink);
   }

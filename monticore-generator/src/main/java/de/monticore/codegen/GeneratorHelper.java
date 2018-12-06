@@ -12,6 +12,7 @@ import de.monticore.codegen.cd2java.ast_emf.AstEmfGeneratorHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
+import de.monticore.generating.GeneratorSetup;
 import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
@@ -23,12 +24,9 @@ import de.monticore.java.prettyprint.JavaDSLPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
 import de.monticore.types.TypesHelper;
 import de.monticore.types.TypesPrinter;
-import de.monticore.types.types._ast.ASTConstantsTypes;
 import de.monticore.types.types._ast.ASTImportStatement;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.types.types._ast.ASTType;
@@ -55,8 +53,6 @@ import static de.monticore.codegen.mc2cd.transl.ConstantsTranslation.CONSTANTS_E
 import static de.monticore.grammar.Multiplicity.multiplicityByAlternative;
 import static de.monticore.grammar.Multiplicity.multiplicityByIteration;
 import static java.util.Collections.max;
-
-import de.monticore.generating.GeneratorSetup;
 
 public class GeneratorHelper extends TypesHelper {
 
@@ -117,6 +113,8 @@ public class GeneratorHelper extends TypesHelper {
   public static final String JAVA_LIST = "java.util.List";
 
   public static final int STAR = -1;
+
+  public static final String DEPRECATED = "@Deprecated";
 
   protected static final String LOG_NAME = "GeneratorHelper";
 
@@ -786,7 +784,7 @@ public class GeneratorHelper extends TypesHelper {
         || !ast.getModifierOpt().get().isPresentStereotype()) {
       return false;
     }
-    ASTStereotype stereotype = ast.getModifierOpt().get().getStereotype();
+    ASTCDStereotype stereotype = ast.getModifierOpt().get().getStereotype();
     return stereotype.getValueList().stream()
         .filter(v -> v.getName().equals(stereotypeName)).findAny()
         .isPresent();
@@ -794,7 +792,7 @@ public class GeneratorHelper extends TypesHelper {
 
   public static boolean hasStereotype(ASTCDMethod ast, String stereotypeName) {
     if (ast.getModifier().isPresentStereotype()) {
-      ASTStereotype stereotype = ast.getModifier().getStereotype();
+      ASTCDStereotype stereotype = ast.getModifier().getStereotype();
       return stereotype.getValueList().stream().filter((v) -> {
         return v.getName().equals(stereotypeName);
       }).findAny().isPresent();
@@ -1362,6 +1360,25 @@ public class GeneratorHelper extends TypesHelper {
     return printSimpleRefType(type);
   }
 
+  public static String printDeprecatedAnnotation(Optional<ASTModifier> modifier) {
+    StringBuilder modifierStr = new StringBuilder();
+    if (modifier.isPresent() && modifier.get().isPresentStereotype()) {
+      ASTCDStereotype stereo = modifier.get().getStereotype();
+      for (ASTCDStereoValue stereoValue : stereo.getValueList()) {
+        if (DEPRECATED.equals(stereoValue.getName())) {
+          if (stereoValue.isPresentValue()) {
+            // Print java doc
+            modifierStr.append("/**\n * @deprecated ");
+            modifierStr.append(stereoValue.getValue());
+            modifierStr.append("\n **/\n");
+          }
+          modifierStr.append(DEPRECATED );
+        }
+      }
+    }
+    return modifierStr.toString();
+  }
+
   /**
    * Checks if the node is part of the current language (or one of its super
    * languages) or if it is external (e.g. String, List, etc.)
@@ -1376,7 +1393,7 @@ public class GeneratorHelper extends TypesHelper {
     if (!type.getModifierOpt().get().isPresentStereotype()) {
       return false;
     }
-    ASTStereotype stereoTypes = type.getModifierOpt().get().getStereotype();
+    ASTCDStereotype stereoTypes = type.getModifierOpt().get().getStereotype();
     return stereoTypes.getValueList().stream()
         .filter(value -> value.getName().equals(MC2CDStereotypes.EXTERNAL_TYPE.toString()))
         .filter(value -> value.getValue().equals(superType))
