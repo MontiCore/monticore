@@ -8,11 +8,6 @@ import org.junit.Test;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * Created by
- *
- * @author KH
- */
 public class OverridingEnumNTsTest extends CocoTest {
   
   private final String MESSAGE = " The production for the enum nonterminal E must not be overridden."; 

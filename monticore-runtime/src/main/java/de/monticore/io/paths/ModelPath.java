@@ -29,7 +29,6 @@ import de.se_rwth.commons.logging.Log;
  * A ModelPath encapsulates the domain of accessible models inside the running
  * language tool.
  *
- * @author Sebastian Oberhoff, Pedram Mir Seyed Nazari
  */
 public final class ModelPath {
 

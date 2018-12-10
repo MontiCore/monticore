@@ -8,10 +8,6 @@ import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolPredicate;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * @author Pedram Mir Seyed Nazari
- *
- */
 public class ShadowsSymbol implements SymbolPredicate {
   
   private final Symbol shadowingSymbol;

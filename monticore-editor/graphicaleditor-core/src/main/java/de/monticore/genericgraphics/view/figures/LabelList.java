@@ -17,7 +17,6 @@ import org.eclipse.swt.graphics.Font;
  * </ul>
  * </p>
  * 
- * @author Tim Enger
  */
 public class LabelList extends ListContainer {
   

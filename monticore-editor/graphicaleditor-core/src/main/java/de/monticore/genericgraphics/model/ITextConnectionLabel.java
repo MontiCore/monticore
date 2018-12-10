@@ -16,7 +16,6 @@ import de.monticore.genericgraphics.view.figures.connections.locators.Connection
  * {@link ConnectionLocatorPosition}.
  * </p>
  * 
- * @author Tim Enger
  */
 public interface ITextConnectionLabel extends IConnectionLabel {
   

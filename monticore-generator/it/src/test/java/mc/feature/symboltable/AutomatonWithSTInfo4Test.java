@@ -15,12 +15,12 @@ import mc.feature.symboltable.automatonwithstinfo4._symboltable.AutomatonElement
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.AutomatonElementSymbolReference;
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.AutomatonKind;
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.AutomatonResolvingFilter;
-import mc.feature.symboltable.automatonwithstinfo4._symboltable.AutomatonScope;
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.AutomatonSymbol;
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.AutomatonSymbolReference;
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.AutomatonWithSTInfo4Language;
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.AutomatonWithSTInfo4ModelLoader;
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.AutomatonWithSTInfo4ModelNameCalculator;
+import mc.feature.symboltable.automatonwithstinfo4._symboltable.AutomatonWithSTInfo4Scope;
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.AutomatonWithSTInfo4SymbolTableCreator;
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.StateKind;
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.StateResolvingFilter;
@@ -42,7 +42,7 @@ public class AutomatonWithSTInfo4Test extends GeneratorIntegrationsTest {
     AutomatonElementSymbolReference automatonElementSymbolReference;
     AutomatonKind automatonKind;
     AutomatonResolvingFilter automatonResolvingFilter;
-    AutomatonScope automatonScope;
+    AutomatonWithSTInfo4Scope automatonScope;
     AutomatonSymbol automatonSymbol= new AutomatonSymbol("A");
     assertTrue(automatonSymbol instanceof ScopeSpanningSymbol);
     AutomatonSymbolReference automatonSymbolReference;

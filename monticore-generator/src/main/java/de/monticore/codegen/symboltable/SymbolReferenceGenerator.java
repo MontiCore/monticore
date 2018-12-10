@@ -6,12 +6,9 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
 
-/**
- * @author Pedram Mir Seyed Nazari
- */
 public interface SymbolReferenceGenerator {
 
   void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
-      IterablePath handCodedPath, MCProdSymbol ruleSymbol, boolean isScopeSpanningSymbol);
+                IterablePath handCodedPath, MCProdSymbol ruleSymbol, boolean isScopeSpanningSymbol);
 
 }

@@ -5,22 +5,13 @@ package de.monticore;
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.ast.ASTNode;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
-import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolvingConfiguration;
-import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.SymbolTableCreator;
+import de.monticore.symboltable.*;
 import de.monticore.symboltable.resolving.ResolvingFilter;
+import de.monticore.symboltable.serializing.IArtifactScopeSerializer;
 
 import java.util.Collection;
 import java.util.Optional;
 
-/**
- * Super interface for languages. Provides access to language-related functionality,
- * like parsing, symbol table creation, model analysis and code generation.
- *
- * @author  Pedram Mir Seyed Nazari
- * 
- */
 public interface ModelingLanguage {
 
   /**
@@ -44,16 +35,18 @@ public interface ModelingLanguage {
   Collection<ResolvingFilter<? extends Symbol>> getResolvingFilters();
 
   /**
-   *
-   *
    * @param resolvingConfiguration the {@link ResolvingConfiguration}
-   * @param enclosingScope the enclosing scope of the top level symbol's spanned scope. In other
-   *                       words, the scope in which the top level symbol should be defined.
-   * @return the {@link de.monticore.symboltable.CommonSymbolTableCreator} for this language.
+   * @param enclosingScope         the enclosing scope of the top level symbol's spanned scope. In other
+   *                               words, the scope in which the top level symbol should be defined.
+   * @return the {@link CommonSymbolTableCreator} for this language.
    */
   // TODO PN change to mandatory
   Optional<? extends SymbolTableCreator> getSymbolTableCreator
   (ResolvingConfiguration resolvingConfiguration, MutableScope enclosingScope);
+
+  default Optional<? extends IArtifactScopeSerializer> getSymbolTableDeserializer() {
+    return Optional.empty();
+  }
 
   ModelingLanguageModelLoader<? extends ASTNode> getModelLoader();
 

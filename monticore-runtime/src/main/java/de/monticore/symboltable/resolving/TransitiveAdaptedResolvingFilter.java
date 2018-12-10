@@ -13,11 +13,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- *
- * @author Pedram Mir Seyed Nazari
- *
- */
 // TODO PN remove formal type argument, since not needed anymore
 public abstract class TransitiveAdaptedResolvingFilter<S extends Symbol>
     extends CommonAdaptedResolvingFilter<S> implements AdaptedResolvingFilter<S> {

@@ -12,7 +12,7 @@ component grammar RuleWithSymbolReference {
 
   symbol(T) A = "a";
 
-  B = an:Name@A;
+  B = an:Name@T;
 
   external symbol E;
   abstract symbol R;

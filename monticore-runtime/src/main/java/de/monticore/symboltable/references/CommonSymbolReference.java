@@ -19,8 +19,6 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 /**
  * Default implementation of {@link SymbolReference}.
  *
- * @author Pedram Mir Seyed Nazari
- *
  */
 public class CommonSymbolReference<T extends Symbol> implements SymbolReference<T> {
 
@@ -62,11 +60,6 @@ public class CommonSymbolReference<T extends Symbol> implements SymbolReference<
         Log.error("0xA1038 " + SymbolReference.class.getSimpleName() + " Could not load full information of '" +
             referencedName + "' (Kind " + referencedKind.getName() + ").");
       }
-    }
-    else {
-      Log.debug("Full information of '" + referencedName + "' already loaded. Use cached "
-              + "version.",
-          CommonSymbolReference.class.getSimpleName());
     }
 
     return referencedSymbol;

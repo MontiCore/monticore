@@ -22,7 +22,7 @@ import de.se_rwth.commons.logging.Log;
  * implementations and delegation concepts for composing visitors across
  * languages.
  *
- * @author Robert Heim
+
  */
 public class VisitorGenerator {
   private final static String LOGGER_NAME = VisitorGenerator.class.getName();

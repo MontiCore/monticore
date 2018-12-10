@@ -1,0 +1,27 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+
+grammar Questionnaire extends de.monticore.MCLiterals {
+ 
+  symbol scope QDefinition = "questionnaire" Name "{"
+    ( Item | Scale )*
+  "}";
+
+  symbol Item = "item" Name question:String (scale:Name | ScaleType);
+
+  symbol Scale = "scale" Name ScaleType;
+  
+  interface ScaleType;
+
+  Range implements ScaleType = "range" "["
+    minTitle:String? min:IntLiteral
+   ".." 
+    max:IntLiteral maxTitle:String? 
+  "]";
+  Number implements ScaleType = "number";
+  Text implements ScaleType = "text" maxCharacters:IntLiteral?;
+  Select implements ScaleType = "select" "{"
+    options:SelectOption+
+  "}";
+  SelectOption = id:IntLiteral ":" title:String;
+
+}

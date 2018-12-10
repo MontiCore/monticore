@@ -6,16 +6,10 @@ import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.types.JTypeSymbol;
 
-/**
- * Default implementation of {@link JTypeReference}.
- *
- * @author Pedram Mir Seyed Nazari
- *
- */
 public class CommonJTypeReference<T extends JTypeSymbol> extends CommonTypeReference<T> implements JTypeReference<T> {
 
   public CommonJTypeReference(String referencedSymbolName, SymbolKind referencedSymbolKind,
-      Scope definingScopeOfReference) {
+                              Scope definingScopeOfReference) {
     super(referencedSymbolName, referencedSymbolKind, definingScopeOfReference);
   }
 }

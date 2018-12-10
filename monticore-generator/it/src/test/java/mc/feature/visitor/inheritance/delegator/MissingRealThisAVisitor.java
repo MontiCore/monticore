@@ -9,7 +9,6 @@ import mc.feature.visitor.inheritance.a._visitor.AVisitor;
  * Visitor that does not implement the realThis pattern and hence cannot be
  * composed.
  *
- * @author Robert Heim
  */
 public class MissingRealThisAVisitor implements AVisitor {
   final private StringBuilder run;

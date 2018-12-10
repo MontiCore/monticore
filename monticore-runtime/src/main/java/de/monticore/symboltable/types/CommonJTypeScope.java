@@ -21,10 +21,9 @@ import static de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION;
 import static de.monticore.symboltable.modifiers.BasicAccessModifier.PACKAGE_LOCAL;
 import static de.monticore.symboltable.modifiers.BasicAccessModifier.PRIVATE;
 import static de.monticore.symboltable.modifiers.BasicAccessModifier.PROTECTED;
+import static de.se_rwth.commons.logging.Log.trace;
+import static java.util.Optional.empty;
 
-/**
- * @author Pedram Mir Seyed Nazari
- */
 public class CommonJTypeScope extends CommonScope {
 
   public CommonJTypeScope(Optional<MutableScope> enclosingScope) {
@@ -40,7 +39,7 @@ public class CommonJTypeScope extends CommonScope {
   @Override
   @SuppressWarnings("unchecked")
   public Optional<? extends JTypeSymbol> getSpanningSymbol() {
-    return (Optional <? extends JTypeSymbol>) super.getSpanningSymbol();
+    return (Optional<? extends JTypeSymbol>) super.getSpanningSymbol();
   }
 
   @Override
@@ -65,7 +64,7 @@ public class CommonJTypeScope extends CommonScope {
   }
 
   protected <T extends Symbol> Optional<T> resolveInSuperTypes(String name, SymbolKind kind, AccessModifier modifier) {
-    Optional<T> resolvedSymbol = Optional.empty();
+    Optional<T> resolvedSymbol = empty();
 
     final JTypeSymbol spanningSymbol = getSpanningSymbol().get();
 
@@ -94,10 +93,10 @@ public class CommonJTypeScope extends CommonScope {
   }
 
   private <T extends Symbol> Optional<T> resolveInSuperType(String name, SymbolKind kind,
-      final AccessModifier modifier, JTypeSymbol superType) {
+                                                            final AccessModifier modifier, JTypeSymbol superType) {
 
-    Log.trace("Continue in scope of super class " + superType.getName(), CommonJTypeScope.class
-        .getSimpleName());
+    trace("Continue in scope of super class " + superType.getName(), CommonJTypeScope.class
+            .getSimpleName());
     // Private symbols cannot be resolved from the super class. So, the modifier must at
     // least be protected when searching in the super class scope
     AccessModifier modifierForSuperClass = getModifierForSuperClass(modifier, superType);
@@ -109,8 +108,7 @@ public class CommonJTypeScope extends CommonScope {
     if (modifier.equals(ALL_INCLUSION) || modifier.equals(PRIVATE) || modifier.equals(PACKAGE_LOCAL)) {
       if (getSpanningSymbol().get().getPackageName().equals(superType.getPackageName())) {
         return PACKAGE_LOCAL;
-      }
-      else {
+      } else {
         return PROTECTED;
       }
     }

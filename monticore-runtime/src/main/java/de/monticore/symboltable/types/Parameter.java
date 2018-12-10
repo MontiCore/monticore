@@ -2,12 +2,8 @@
 
 package de.monticore.symboltable.types;
 
-/**
- * @author Pedram Mir Seyed Nazari
- * @param <T>
- */
 public class Parameter<T extends TypeSymbol> {
-  
+
   private final String name;
   private final T type;
 
@@ -15,15 +11,15 @@ public class Parameter<T extends TypeSymbol> {
     this.name = name;
     this.type = type;
   }
-  
+
   public String getName() {
     return name;
   }
-  
+
   public T getType() {
     return type;
   }
-  
+
   @Override
   public String toString() {
     if (type == null || name == null) {
@@ -31,5 +27,5 @@ public class Parameter<T extends TypeSymbol> {
     }
     return type.getName() + " " + name + " ";
   }
-  
+
 }

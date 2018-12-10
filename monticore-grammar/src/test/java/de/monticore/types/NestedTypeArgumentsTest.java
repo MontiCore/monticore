@@ -9,9 +9,6 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-/**
- * @author Martin Schindler
- */
 public class NestedTypeArgumentsTest {
   
   @Test

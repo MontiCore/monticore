@@ -24,9 +24,12 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-/**
- * @author Pedram Mir Seyed Nazari
- */
+import static de.monticore.symboltable.resolving.ResolvingFilter.getFiltersForTargetKind;
+import static de.se_rwth.commons.logging.Log.*;
+import static java.util.Collections.singletonList;
+import static java.util.Optional.empty;
+import static java.util.stream.Collectors.toCollection;
+
 public final class GlobalScope extends CommonScope {
 
   private final ModelPath modelPath;
@@ -36,25 +39,25 @@ public final class GlobalScope extends CommonScope {
 
   private final Map<String, Set<ModelingLanguageModelLoader<? extends ASTNode>>> modelName2ModelLoaderCache = new HashMap<>();
 
-  public GlobalScope(final ModelPath modelPath, final Collection <ModelingLanguage> modelingLanguages,
-      final ResolvingConfiguration resolvingConfiguration) {
-    super(Optional.empty(), true);
+  public GlobalScope(final ModelPath modelPath, final Collection<ModelingLanguage> modelingLanguages,
+                     final ResolvingConfiguration resolvingConfiguration) {
+    super(empty(), true);
 
-    this.modelPath = Log.errorIfNull(modelPath);
-    this.resolvingConfiguration = Log.errorIfNull(resolvingConfiguration);
-    this.modelingLanguages.addAll(Log.errorIfNull(modelingLanguages));
+    this.modelPath = errorIfNull(modelPath);
+    this.resolvingConfiguration = errorIfNull(resolvingConfiguration);
+    this.modelingLanguages.addAll(errorIfNull(modelingLanguages));
 
     if (modelingLanguages.isEmpty()) {
-      Log.warn(GlobalScope.class.getSimpleName() + ": 0xA1044 No model loaders defined. This hampers the "
-          + "loading of models.");
+      warn(GlobalScope.class.getSimpleName() + ": 0xA1044 No model loaders defined. This hampers the "
+              + "loading of models.");
     }
 
     setResolvingFilters(resolvingConfiguration.getDefaultFilters());
   }
 
   public GlobalScope(final ModelPath modelPath, final ModelingLanguage language,
-      ResolvingConfiguration resolvingConfiguration) {
-    this(modelPath, Collections.singletonList(language), resolvingConfiguration);
+                     ResolvingConfiguration resolvingConfiguration) {
+    this(modelPath, singletonList(language), resolvingConfiguration);
   }
 
   public GlobalScope(final ModelPath modelPath, final ModelingLanguage language) {
@@ -74,12 +77,12 @@ public final class GlobalScope extends CommonScope {
 
   @Override
   public Optional<String> getName() {
-    return Optional.empty();
+    return empty();
   }
 
   @Override
   public <T extends Symbol> Collection<T> resolveMany(final ResolvingInfo resolvingInfo,
-      final String symbolName, final SymbolKind kind, final AccessModifier modifier, final Predicate<Symbol> predicate) {
+                                                      final String symbolName, final SymbolKind kind, final AccessModifier modifier, final Predicate<Symbol> predicate) {
     resolvingInfo.addInvolvedScope(this);
 
     // First, try to resolve the symbol in the current scope and its sub scopes.
@@ -100,7 +103,7 @@ public final class GlobalScope extends CommonScope {
   }
 
   protected void loadModels(final Collection<ResolvingFilter<? extends Symbol>> resolvingFilters,
-      final String symbolName, final SymbolKind kind) {
+                            final String symbolName, final SymbolKind kind) {
 
     for (final ModelingLanguage lang : modelingLanguages) {
       final ModelNameCalculator modelNameCalculator = lang.getModelNameCalculator();
@@ -115,9 +118,8 @@ public final class GlobalScope extends CommonScope {
           if (continueWithModelLoader(calculatedModelName, modelLoader)) {
             modelLoader.loadModelsIntoScope(calculatedModelName, modelPath, this, resolvingConfiguration);
             cache(modelLoader, calculatedModelNames.iterator().next());
-          }
-          else {
-            Log.debug("Already tried to load model for '" + symbolName + "'. If model exists, continue with cached version.", GlobalScope.class.getSimpleName());
+          } else {
+            debug("Already tried to load model for '" + symbolName + "'. If model exists, continue with cached version.", GlobalScope.class.getSimpleName());
           }
         }
       }
@@ -127,19 +129,17 @@ public final class GlobalScope extends CommonScope {
   }
 
   protected Set<SymbolKind> calculatePossibleSymbolKinds(Collection<ResolvingFilter<? extends Symbol>> resolvingFilters, SymbolKind kind) {
-    final Collection<ResolvingFilter<? extends Symbol>> resolversForKind = ResolvingFilter
-        .getFiltersForTargetKind(resolvingFilters, kind);
+    final Collection<ResolvingFilter<? extends Symbol>> resolversForKind = getFiltersForTargetKind(resolvingFilters, kind);
 
     return resolversForKind.stream()
-        .map(resolvingFilter -> getSymbolKindByResolvingFilter(kind, resolvingFilter))
-        .collect(Collectors.toCollection(LinkedHashSet::new));
+            .map(resolvingFilter -> getSymbolKindByResolvingFilter(kind, resolvingFilter))
+            .collect(toCollection(LinkedHashSet::new));
   }
 
   public void cache(ModelingLanguageModelLoader<? extends ASTNode> modelLoader, String calculatedModelName) {
     if (modelName2ModelLoaderCache.containsKey(calculatedModelName)) {
       modelName2ModelLoaderCache.get(calculatedModelName).add(modelLoader);
-    }
-    else {
+    } else {
       final Set<ModelingLanguageModelLoader<? extends ASTNode>> ml = new LinkedHashSet<>();
       ml.add(modelLoader);
       modelName2ModelLoaderCache.put(calculatedModelName, ml);
@@ -160,8 +160,7 @@ public final class GlobalScope extends CommonScope {
     SymbolKind kindForCalc;
     if (resolvingFilter instanceof AdaptedResolvingFilter) {
       kindForCalc = ((AdaptedResolvingFilter) resolvingFilter).getSourceKind();
-    }
-    else {
+    } else {
       kindForCalc = kind;
     }
     return kindForCalc;
@@ -175,7 +174,7 @@ public final class GlobalScope extends CommonScope {
    */
   protected boolean continueWithModelLoader(final String calculatedModelName, final ModelingLanguageModelLoader<? extends ASTNode> modelLoader) {
     return !modelName2ModelLoaderCache.containsKey(calculatedModelName)
-        || !modelName2ModelLoaderCache.get(calculatedModelName).contains(modelLoader);
+            || !modelName2ModelLoaderCache.get(calculatedModelName).contains(modelLoader);
   }
 
   @Override

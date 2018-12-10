@@ -38,7 +38,6 @@ import de.se_rwth.commons.logging.Log;
  * </ul>
  * </p>
  * 
- * @author Tim Enger
  */
 public class ASTNodeProblemReportHandler {
   /**

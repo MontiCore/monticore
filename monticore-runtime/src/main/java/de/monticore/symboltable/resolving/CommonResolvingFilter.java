@@ -16,7 +16,6 @@ import java.util.Set;
 /**
  * Default implementation for {@link ResolvingFilter}.
  *
- * @author Pedram Mir Seyed Nazari
  *
  */
 // TODO PN remove formal type argument, since not needed anymore

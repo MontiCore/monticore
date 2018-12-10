@@ -7,7 +7,6 @@ package de.monticore;
  * are two models in the modelpath sharing the same fully qualified name or two symbols in the
  * symboltable sharing an identifier.
  * 
- * @author Sebastian Oberhoff
  */
 public class AmbiguityException extends RuntimeException {
   

@@ -24,7 +24,6 @@ import java.nio.file.Paths;
  * rules for example grammars and performs a compilation task for all generated
  * files.
  *
- * @author Galina Volkova
  */
 public class ParserGeneratorTest extends AstDependentGeneratorTest {
 

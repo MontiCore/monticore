@@ -5,8 +5,6 @@ package mc.feature.symboltable;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Collection;
-
 import org.junit.Test;
 
 import de.monticore.symboltable.ScopeSpanningSymbol;
@@ -16,12 +14,12 @@ import mc.feature.symboltable.automatonwithstinfo2._symboltable.AutomatonElement
 import mc.feature.symboltable.automatonwithstinfo2._symboltable.AutomatonElementSymbol;
 import mc.feature.symboltable.automatonwithstinfo2._symboltable.AutomatonKind;
 import mc.feature.symboltable.automatonwithstinfo2._symboltable.AutomatonResolvingFilter;
-import mc.feature.symboltable.automatonwithstinfo2._symboltable.AutomatonScope;
 import mc.feature.symboltable.automatonwithstinfo2._symboltable.AutomatonSymbol;
 import mc.feature.symboltable.automatonwithstinfo2._symboltable.AutomatonSymbolReference;
 import mc.feature.symboltable.automatonwithstinfo2._symboltable.AutomatonWithSTInfo2Language;
 import mc.feature.symboltable.automatonwithstinfo2._symboltable.AutomatonWithSTInfo2ModelLoader;
 import mc.feature.symboltable.automatonwithstinfo2._symboltable.AutomatonWithSTInfo2ModelNameCalculator;
+import mc.feature.symboltable.automatonwithstinfo2._symboltable.AutomatonWithSTInfo2Scope;
 import mc.feature.symboltable.automatonwithstinfo2._symboltable.AutomatonWithSTInfo2SymbolTableCreator;
 
 public class AutomatonWithSTInfo2Test extends GeneratorIntegrationsTest {
@@ -38,7 +36,7 @@ public class AutomatonWithSTInfo2Test extends GeneratorIntegrationsTest {
     assertFalse(automatonElementSymbol instanceof ScopeSpanningSymbol);
     AutomatonKind automatonKind;
     AutomatonResolvingFilter automatonResolvingFilter;
-    AutomatonScope automatonScope;
+    AutomatonWithSTInfo2Scope automatonScope;
     AutomatonSymbol automatonSymbol = new AutomatonSymbol("A");
     assertTrue(automatonSymbol instanceof ScopeSpanningSymbol);
 //    Collection<AutomatonElementSymbol> automatonElementSymbols = automatonSymbol.getAutomatonElements();

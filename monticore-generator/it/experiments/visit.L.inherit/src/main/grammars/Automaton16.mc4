@@ -1,0 +1,10 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+grammar Automaton16 extends Automaton15 {
+
+  start Automaton;
+
+  Transition =
+    from:Name "-" input:Name ("/" output:Name)? ">" to:Name ";";
+
+}
+

@@ -4,7 +4,11 @@ package de.monticore.grammar.symboltable;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static de.monticore.codegen.GeneratorHelper.isQualified;
+import static de.monticore.grammar.symboltable.MCGrammarSymbol.KIND;
 import static de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION;
+import static de.se_rwth.commons.Names.getSimpleName;
+import static de.se_rwth.commons.logging.Log.trace;
+import static java.util.Optional.empty;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -21,9 +25,6 @@ import de.monticore.symboltable.resolving.ResolvingInfo;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * @author Pedram Mir Seyed Nazari
- */
 public class MCGrammarScope extends CommonScope {
 
   public MCGrammarScope(Optional<MutableScope> enclosingScope) {
@@ -41,7 +42,7 @@ public class MCGrammarScope extends CommonScope {
   public Optional<MCGrammarSymbol> getSpanningSymbol() {
     return (Optional<MCGrammarSymbol>) super.getSpanningSymbol();
   }
-  
+
   @Override
   public <T extends Symbol> Optional<T> resolveImported(String name, SymbolKind kind, AccessModifier modifier) {
     final Collection<T> resolvedSymbols = resolveManyLocally(new ResolvingInfo(getResolvingFilters()), name, kind, modifier, x -> true);
@@ -53,7 +54,7 @@ public class MCGrammarScope extends CommonScope {
   }
 
   public <T extends Symbol> Collection<T> resolveMany(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier,
-      Predicate<Symbol> predicate) {
+                                                      Predicate<Symbol> predicate) {
 
     final Collection<T> resolvedSymbols = new LinkedHashSet<T>();
 
@@ -66,8 +67,7 @@ public class MCGrammarScope extends CommonScope {
     if (!resolvedSymbol.isPresent()) {
       // continue with enclosing scope
       resolvedSymbols.addAll(super.resolveMany(resolvingInfo, name, kind, modifier, predicate));
-    }
-    else {
+    } else {
       resolvedSymbols.add(resolvedSymbol.get());
     }
 
@@ -75,18 +75,18 @@ public class MCGrammarScope extends CommonScope {
   }
 
   protected <T extends Symbol> Optional<T> resolveInSuperGrammars(String name, SymbolKind kind, AccessModifier modifier) {
-    Optional<T> resolvedSymbol = Optional.empty();
-    
+    Optional<T> resolvedSymbol = empty();
+
     // TODO (GV, MB)
     // Die Methode muss überarbeitet werden. GrammarSymbols sollen nicht gefunden werden? Dann braucht man u.U. 
     // checkIfContinueWithSuperGrammar gar nicht mehr ...
-    if (kind.equals(MCGrammarSymbol.KIND)) {
+    if (kind.equals(KIND)) {
       return resolvedSymbol;
     }
     final MCGrammarSymbol spanningSymbol = getSpanningSymbol().get();
     for (MCGrammarSymbolReference superGrammarRef : spanningSymbol.getSuperGrammars()) {
       if (checkIfContinueWithSuperGrammar(name, superGrammarRef)
-          && (superGrammarRef.existsReferencedSymbol())) {
+              && (superGrammarRef.existsReferencedSymbol())) {
         final MCGrammarSymbol superGrammar = superGrammarRef.getReferencedSymbol();
         resolvedSymbol = resolveInSuperGrammar(name, kind, superGrammar);
         // Stop as soon as symbol is found in a super grammar.
@@ -109,12 +109,12 @@ public class MCGrammarScope extends CommonScope {
     // 5) c.A and p.A // <-- only continue with this case, since we can be sure,
     //                       that we are not searching for the super grammar itself.
     String superGrammarName = superGrammar.getName();
-    if (Names.getSimpleName(superGrammarName).equals(Names.getSimpleName(name))) {
+    if (getSimpleName(superGrammarName).equals(getSimpleName(name))) {
 
       // checks cases 1) and 4)
       if (superGrammarName.equals(name) ||
-          // checks cases 2) and 3)
-          (isQualified(superGrammar) != isQualified(name))) {
+              // checks cases 2) and 3)
+              (isQualified(superGrammar) != isQualified(name))) {
         return false;
       } else {
         // case 5)
@@ -126,10 +126,10 @@ public class MCGrammarScope extends CommonScope {
   }
 
   private <T extends Symbol> Optional<T> resolveInSuperGrammar(String name, SymbolKind kind,
-      MCGrammarSymbol superGrammar) {
+                                                               MCGrammarSymbol superGrammar) {
 
-    Log.trace("Continue in scope of super grammar " + superGrammar.getName(),
-        MCGrammarScope.class.getSimpleName());
+    trace("Continue in scope of super grammar " + superGrammar.getName(),
+            MCGrammarScope.class.getSimpleName());
 
     return superGrammar.getSpannedScope().resolveImported(name, kind, ALL_INCLUSION);
   }

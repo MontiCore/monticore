@@ -16,7 +16,6 @@ import de.se_rwth.commons.logging.Finding;
  * A utility class that can be used by {@link IMCGraphicalEditPart
  * IMCGraphicalEditParts} to set {@link ProblemReport ProblemReports}.
  * 
- * @author Tim Enger
  */
 public class ProblemReportUtil {
   

@@ -16,7 +16,6 @@ import de.se_rwth.langeditor.texteditor.TextEditorImpl;
  * Provides methods for accessing information from extensions that
  * other plugins added to this plugin's extension points.
  * 
- * @author Philipp Kehrbusch
  *
  */
 public class ExtensionRegistryUtils {

@@ -68,7 +68,6 @@ import de.se_rwth.langeditor.texteditor.TextEditorImpl;
  * </p>
  * TODO: Make it faster! Performance is low, perhaps some cached values?
  * 
- * @author Tim Enger
  */
 public class GraphicalSelectionListener implements ISelectionListener {
   

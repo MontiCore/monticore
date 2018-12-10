@@ -19,7 +19,6 @@ import de.monticore.genericgraphics.controller.editparts.IMCEditPart;
 /**
  * An implementation of the {@link ILayoutConfig}.
  * 
- * @author Tim Enger
  */
 public class MCLayoutConfig implements IMutableLayoutConfig {
   

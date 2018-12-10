@@ -14,7 +14,6 @@ import org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy;
  * not selected anymore, the highlight is removed.
  * </p>
  * 
- * @author Tim Enger
  */
 public class LineWidthConnectionEndpointEditPolicy extends ConnectionEndpointEditPolicy {
   

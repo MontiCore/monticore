@@ -13,7 +13,6 @@ import de.monticore.genericgraphics.model.graphics.IViewElement;
  * This class extends the {@link IObservable} class and thus is part of the
  * Observer pattern.
  * 
- * @author Tim Enger
  */
 public abstract class AbstractViewElement extends Observable implements IObservable, IViewElement {
   

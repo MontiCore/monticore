@@ -13,11 +13,6 @@ import java.nio.file.Paths;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-/**
- * Created by
- *
- * @author KH
- */
 public class GrammarNameEqualsFileNameTest {
 
   @BeforeClass

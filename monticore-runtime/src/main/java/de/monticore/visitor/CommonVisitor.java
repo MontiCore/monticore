@@ -25,7 +25,7 @@ import de.monticore.ast.ASTNode;
  * nc.handle(ast);
  * System.out.println(nc.getNodeCount());
  * </pre>
- * @author Robert Heim
+
  */
 public interface CommonVisitor {
   

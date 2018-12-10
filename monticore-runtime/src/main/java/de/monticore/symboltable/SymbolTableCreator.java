@@ -5,12 +5,8 @@ package de.monticore.symboltable;
 import java.util.Optional;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.symboltable.references.SymbolReference;
 
-/**
- * Provides useful methods for building up a symbol table.
- *
- * @author Pedram Mir Seyed Nazari
- */
 public interface SymbolTableCreator {
 
   void putSpannedScopeOnStack(ScopeSpanningSymbol symbol);
@@ -19,9 +15,9 @@ public interface SymbolTableCreator {
 
   /**
    * Adds the <code>symbol</code> to the current scope (see {@link #currentScope()}).
-   *
+   * <p>
    * Note: if <code>symbol</code> is a reference
-   * (i.e., {@link de.monticore.symboltable.references.SymbolReference})
+   * (i.e., {@link SymbolReference})
    * this method does not do anything.
    *
    * @param symbol the symbol to be added in the current scope.

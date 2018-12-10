@@ -19,10 +19,6 @@ import de.monticore.symboltable.types.references.CommonJTypeReference;
 import de.monticore.symboltable.types.references.JTypeReference;
 import org.junit.Test;
 
-/**
- *
- * @author Pedram Mir Seyed Nazari
- */
 public class ModifierTest {
 
   @Test

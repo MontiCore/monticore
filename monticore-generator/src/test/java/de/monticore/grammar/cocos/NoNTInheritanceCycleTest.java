@@ -16,11 +16,6 @@ import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * Created by
- *
- * @author KH
- */
 public class NoNTInheritanceCycleTest extends CocoTest{
 
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();

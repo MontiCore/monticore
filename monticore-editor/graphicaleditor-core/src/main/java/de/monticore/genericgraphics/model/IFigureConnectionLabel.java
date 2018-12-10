@@ -6,10 +6,6 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
 
-
-/**
- * @author Tim Enger
- */
 public interface IFigureConnectionLabel extends IConnectionLabel {
   
   /**

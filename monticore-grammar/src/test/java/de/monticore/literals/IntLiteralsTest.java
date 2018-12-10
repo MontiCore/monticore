@@ -13,9 +13,6 @@ import org.junit.Test;
 import de.monticore.literals.literals._ast.ASTIntLiteral;
 import de.monticore.literals.literals._ast.ASTLiteral;
 
-/**
- * @author Martin Schindler
- */
 public class IntLiteralsTest {
   
   private void checkIntLiteral(int i, String s) throws IOException {

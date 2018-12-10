@@ -10,9 +10,7 @@ import org.eclipse.m2e.core.project.configurator.MojoExecutionBuildParticipant;
 
 /**
  * An {@link MojoExecutionBuildParticipant} for the monticore-maven-plugin.
- * 
- * @author (last commit) $Author: ahorst $
- * 2013) $
+ *
  */
 public class MontiCoreBuildParticipant extends MojoExecutionBuildParticipant {
   

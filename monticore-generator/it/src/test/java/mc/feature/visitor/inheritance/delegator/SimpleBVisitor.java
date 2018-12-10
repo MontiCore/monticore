@@ -12,7 +12,6 @@ import mc.feature.visitor.inheritance.b._visitor.BVisitor;
  * Simple Visitor for B that keeps track of the actual methods called using the
  * StringBuilder given in the constructor.
  *
- * @author Robert Heim
  */
 public class SimpleBVisitor implements BVisitor {
   final private StringBuilder run;

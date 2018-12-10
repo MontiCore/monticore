@@ -4,7 +4,7 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore-editor</artifactId>
-    <version>5.0.1</version>
+    <version>5.0.2</version>
   </parent>
 
   <artifactId>editor-bundle</artifactId>

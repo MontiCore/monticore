@@ -30,7 +30,6 @@ import de.se_rwth.commons.Util;
  * on the assumption that the overall structure of both source and target AST will also be
  * equivalent.
  * 
- * @author Sebastian Oberhoff
  */
 public final class Link<S extends ASTNode, T extends ASTNode> implements Iterable<Link<?, ?>> {
   

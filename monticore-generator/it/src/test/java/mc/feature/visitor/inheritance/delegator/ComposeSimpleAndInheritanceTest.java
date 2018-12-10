@@ -17,7 +17,6 @@ import mc.feature.visitor.inheritance.c._visitor.CVisitor;
 /**
  * Tests composing of simple visitors with inheritance visitors.
  *
- * @author Robert Heim
  */
 public class ComposeSimpleAndInheritanceTest extends CommonVisitorTest {
   

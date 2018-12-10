@@ -15,7 +15,6 @@ import de.monticore.visitor.CommonVisitor;
  * We use this visit mechanism to count instances of AST-Node-Types classes. The
  * type2count member maps the AST-Node-Type as String to it's object count.
  *
- * @author BM
  */
 public class ObjectCountVisitor implements CommonVisitor {
   

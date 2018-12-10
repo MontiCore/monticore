@@ -6,7 +6,7 @@
 
   <groupId>de.monticore</groupId>
   <artifactId>monticore</artifactId>
-  <version>5.0.1</version>
+  <version>5.0.2</version>
   <packaging>pom</packaging>
 
   <!-- == PROJECT MODULES ================================================= -->
@@ -27,8 +27,8 @@
 
     <!-- .. Libraries ..................................................... -->
 
-    <mc.java.version>4.3.12</mc.java.version>
-    <cd4analysis.version>1.3.13</cd4analysis.version>
+    <mc.java.version>4.3.13</mc.java.version>
+    <cd4analysis.version>1.3.16</cd4analysis.version>
 
     <se-commons.version>1.7.9</se-commons.version>
     <antlr.version>4.7.1</antlr.version>
@@ -64,7 +64,7 @@
     <xml-apis.version>1.0.b2</xml-apis.version>
 
     <!-- .. Plugins ....................................................... -->
-    <monticore.plugin>5.0.0</monticore.plugin>
+    <monticore.plugin>5.0.1</monticore.plugin>
 
     <archetype.plugin>2.3</archetype.plugin>
     <assembly.plugin>2.5.4</assembly.plugin>
@@ -74,7 +74,7 @@
     <deploy.plugin>2.8.2</deploy.plugin>
     <invoker.plugin>1.10</invoker.plugin>
     <jar.plugin>2.6</jar.plugin>
-    <plugin.plugin>3.4</plugin.plugin>
+    <plugin.plugin>3.5.2</plugin.plugin>
     <release.plugin>2.5.2</release.plugin>
     <replacer.plugin>1.5.3</replacer.plugin>
     <resources.plugin>2.7</resources.plugin>
@@ -114,7 +114,7 @@
 
   <name>MontiCore</name>
   <description>Agile Domain Specific Language Workbench</description>
-  <url>http://nexus.se.rwth-aachen.de/service/local/repositories/se-sites/content/monticore/${project.version}/</url>
+  <url>https://nexus.se.rwth-aachen.de/service/local/repositories/se-sites/content/monticore/${project.version}/</url>
   <inceptionYear>2005</inceptionYear>
 
   <organization>

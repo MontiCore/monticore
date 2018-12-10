@@ -11,7 +11,6 @@ import de.monticore.genericgraphics.model.graphics.IViewElement;
  * Interface providing methods to handle an {@link IViewElement} in an
  * {@link EditPart}.
  * 
- * @author Tim Enger
  */
 public interface IMCViewElementEditPart extends IMCGraphicalEditPart, Observer {
   

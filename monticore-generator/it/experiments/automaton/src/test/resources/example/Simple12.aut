@@ -1,0 +1,10 @@
+automaton Simple {
+
+  state A   <<initial>>;
+    A - x > B;
+    A - y > A;
+
+  state B   <<final>>;
+    B - x > A;
+    B - y > A;
+}

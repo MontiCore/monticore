@@ -20,9 +20,6 @@ import de.monticore.types.types._ast.ASTType;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
 
-/**
- * @author Martin Schindler
- */
 public class ComplexArrayTypesTest {
   
   @BeforeClass

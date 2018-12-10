@@ -8,11 +8,6 @@ import de.monticore.symboltable.types.JMethodSymbol;
 import de.monticore.symboltable.types.JTypeSymbol;
 import de.monticore.symboltable.types.references.JTypeReference;
 
-/**
- *
- * @author Pedram Mir Seyed Nazari
- *
- */
 public class JTypeSymbolMock extends CommonJTypeSymbol<JTypeSymbol, JFieldSymbol, JMethodSymbol, JTypeReference<JTypeSymbol>> {
 
   public JTypeSymbolMock(String name) {

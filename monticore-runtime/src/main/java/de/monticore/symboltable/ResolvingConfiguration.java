@@ -15,7 +15,6 @@ import java.util.Set;
 /**
  * Maintains a mapping from names and kinds of symbols to {@link ResolvingFilter}s.
  *
- * @author Pedram Mir Seyed Nazari, Sebastian Oberhoff
  */
 public final class ResolvingConfiguration {
   

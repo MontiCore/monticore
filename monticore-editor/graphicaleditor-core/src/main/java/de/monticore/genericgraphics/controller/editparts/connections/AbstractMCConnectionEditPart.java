@@ -20,7 +20,6 @@ import de.se_rwth.commons.logging.Finding;
  * </p>
  * 
  * @see ProblemReportUtil
- * @author Tim Enger
  */
 public abstract class AbstractMCConnectionEditPart extends AbstractConnectionEditPart implements IMCConnectionEditPart {
   

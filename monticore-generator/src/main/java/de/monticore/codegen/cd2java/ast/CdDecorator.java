@@ -2,27 +2,9 @@
 
 package de.monticore.codegen.cd2java.ast;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static de.se_rwth.commons.Names.getQualifier;
-import static de.se_rwth.commons.Names.getSimpleName;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.codehaus.groovy.control.CompilationUnit;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
@@ -48,22 +30,7 @@ import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.types.types._ast.TypesMill;
 import de.monticore.umlcd4a.CD4AnalysisHelper;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDConstructor;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDDefinition;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDEnum;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDEnumConstant;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTModifier;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTStereoValue;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTStereotype;
-import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisMill;
-import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
+import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.umlcd4a.prettyprint.AstPrinter;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
@@ -73,6 +40,14 @@ import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import groovyjarjarantlr.ANTLRException;
 import transformation.ast.ASTCDTransformation;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+
+import static com.google.common.collect.Lists.newArrayList;
+import static de.se_rwth.commons.Names.getQualifier;
+import static de.se_rwth.commons.Names.getSimpleName;
 
 /**
  * Decorates class diagrams by adding of new classes and methods using in ast
@@ -122,15 +97,15 @@ public class CdDecorator {
       if (clazz.isPresentModifier()) {
         modifier = clazz.getModifier();
         if (modifier.isAbstract()) {
-          ASTStereotype stereo;
+          ASTCDStereotype stereo;
           // Create Stereo
           if (modifier.isPresentStereotype()) {
             stereo = modifier.getStereotype();
           } else {
-            stereo = CD4AnalysisMill.stereotypeBuilder().build();
+            stereo = CD4AnalysisMill.cDStereotypeBuilder().build();
             modifier.setStereotype(stereo);
           }
-          ASTStereoValue value = CD4AnalysisMill.stereoValueBuilder().setName("Abstract").build();
+          ASTCDStereoValue value = CD4AnalysisMill.cDStereoValueBuilder().setName("Abstract").build();
           stereo.getValueList().add(value);
        } 
       }
@@ -236,12 +211,13 @@ public class CdDecorator {
       Log.warn("Symbol methods can not be generated, prod symbol not found");
       return;
     }
+    String symbolName = prodSymbol.get().getSymbolDefinitionKind().orElse(name);
 
     if (prodSymbol.get().isSymbolDefinition()) {
-      addSymbolAttributeAndMethods(clazz, name, grammarSymbol);
+      addSymbolAttributeAndMethods(clazz, symbolName, grammarSymbol);
     }
     if (prodSymbol.get().isScopeDefinition()) {
-      addScopeAttributeAndMethods(clazz, name, grammarSymbol);
+      addScopeAttributeAndMethods(clazz, symbolName, grammarSymbol);
     }
   }
 
@@ -262,7 +238,7 @@ public class CdDecorator {
   }
 
   protected void addScopeAttributeAndMethods(ASTCDClass clazz, String name, MCGrammarSymbol grammarSymbol) {
-    String scopeName = name + AstGeneratorHelper.SCOPE;
+    String scopeName = grammarSymbol.getName() + AstGeneratorHelper.SCOPE;
     String qualifiedName = grammarSymbol.getFullName().toLowerCase() + "." +
         SymbolTableGenerator.PACKAGE + "." + scopeName;
     scopeName = "spanned" + scopeName;
@@ -462,7 +438,7 @@ public class CdDecorator {
     ASTCDMethod meth = replaceMethodBodyTemplate(clazz, AstAdditionalMethods.get_Children.getDeclaration(),
         new TemplateHookPoint("ast.additionalmethods.GetChildren", symbol.get()));
 
-    addDeprecatedStereotype(meth);
+    addDeprecatedStereotype(meth, Optional.empty());
 
     replaceMethodBodyTemplate(clazz, AstAdditionalMethods.deepEqualsWithOrder.getDeclaration(),
         new TemplateHookPoint("ast.additionalmethods.DeepEqualsWithOrder", clazz));
@@ -507,15 +483,27 @@ public class CdDecorator {
     }
   }
 
-  protected void addDeprecatedStereotype(ASTCDMethod meth) {
-    ASTStereotype stereo;
+  protected void addDeprecatedStereotype(ASTCDMethod meth, Optional<String> message) {
+    ASTCDStereotype stereo;
     if (meth.getModifier().isPresentStereotype()) {
       stereo = meth.getModifier().getStereotype();
     } else {
-      stereo = CD4AnalysisMill.stereotypeBuilder().build();
+      stereo = CD4AnalysisMill.cDStereotypeBuilder().build();
       meth.getModifier().setStereotype(stereo);
     }
-    ASTStereoValue value = CD4AnalysisMill.stereoValueBuilder().setName("@Deprecated").build();
+    ASTCDStereoValue value = CD4AnalysisMill.cDStereoValueBuilder().setName("@Deprecated").build();
+    stereo.getValueList().add(value);
+  }
+
+  protected void addDeprecatedStereotype(ASTCDType cdClass, Optional<String> message) {
+    ASTCDStereotype stereo;
+    if (cdClass.getModifierOpt().isPresent() && cdClass.getModifierOpt().get().isPresentStereotype()) {
+      stereo = cdClass.getModifierOpt().get().getStereotype();
+    } else {
+      stereo = CD4AnalysisMill.cDStereotypeBuilder().build();
+      cdClass.getModifierOpt().get().setStereotype(stereo);
+    }
+    ASTCDStereoValue value = CD4AnalysisMill.cDStereoValueBuilder().setName("@Deprecated").build();
     stereo.getValueList().add(value);
   }
 
@@ -1654,8 +1642,6 @@ public class CdDecorator {
   /**
    * Performs ast specific template replacements using {@link HookPoint}
    *
-   * @param clazz
-   * @param replacedTemplateName qualified name of template to be replaced
    */
   protected ASTCDMethod replaceMethodBodyTemplate(ASTCDType clazz, String methodSignatur,
                                                   HookPoint hookPoint) {
@@ -1670,8 +1656,6 @@ public class CdDecorator {
    * Performs list-valued attribute specific template replacements using
    * {@link HookPoint}
    *
-   * @param ast
-   * @param replacedTemplateName qualified name of template to be replaced
    */
   protected ASTCDMethod additionalMethodForListAttribute(ASTCDType type, String callMethod,
                                                          ASTCDAttribute attribute, String methodSignatur, boolean returnBuilder, boolean isInherited) {

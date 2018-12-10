@@ -19,7 +19,6 @@ import de.monticore.genericgraphics.model.graphics.IShapeViewElement;
  * A {@link NonResizableEditPolicy} extension for providing the functionality of
  * moving connection labels.
  * 
- * @author Tim Enger
  */
 public class ConnectionLabelMoveEditPolicy extends ResizableEditPolicy {
   

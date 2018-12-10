@@ -9,7 +9,6 @@ import de.se_rwth.commons.logging.Log;
 /**
  * Util class
  * 
- * @author Tim Enger
  */
 public class PositionUtil {
   

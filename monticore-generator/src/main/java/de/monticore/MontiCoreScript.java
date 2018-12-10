@@ -2,23 +2,8 @@
 
 package de.monticore;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import org.codehaus.groovy.control.customizers.ImportCustomizer;
-
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
-
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.AstGenerator;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
@@ -37,7 +22,6 @@ import de.monticore.codegen.symboltable.SymbolTableGeneratorBuilder;
 import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
-import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
 import de.monticore.grammar.cocos.GrammarCoCos;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
@@ -60,7 +44,15 @@ import de.se_rwth.commons.groovy.GroovyRunner;
 import de.se_rwth.commons.groovy.GroovyRunnerBase;
 import de.se_rwth.commons.logging.Log;
 import groovy.lang.Script;
+import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import parser.MCGrammarParser;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 /**
  * The actual top level functional implementation of MontiCore. This is the
@@ -77,7 +69,6 @@ import parser.MCGrammarParser;
  * Language developers can hence very easily implement their own language
  * processing workflows without having to recompile things.
  *
- * @author Galina Volkova, Andreas Horst
  */
 public class MontiCoreScript extends Script implements GroovyRunner {
 
@@ -408,8 +399,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ASTCDCompilationUnit astCdForReporting = new AstGeneratorHelper(cd, globalScope).getASTCDForReporting();
     // No star imports in reporting CDs
     astCdForReporting.getImportStatementList().forEach(s -> s.setStar(false));
-    GeneratorHelper.prettyPrintAstCd(astCdForReporting, outputDirectory, ReportingConstants.REPORTING_DIR
-        + File.separator + reportSubDir);
+    GeneratorHelper.prettyPrintAstCd(astCdForReporting, outputDirectory, reportSubDir);
 
   }
 
@@ -603,6 +593,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
             mcConfig.getModelPath());
         builder.addVariable(MontiCoreConfiguration.Options.OUT.toString(),
             mcConfig.getOut());
+        builder.addVariable(MontiCoreConfiguration.Options.REPORT.toString(),
+                mcConfig.getReport());
         builder.addVariable(MontiCoreConfiguration.Options.FORCE.toString(),
             mcConfig.getForce());
         builder.addVariable(MontiCoreConfiguration.Options.HANDCODEDPATH.toString(),
@@ -612,7 +604,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         builder.addVariable("LOG_ID", LOG_ID);
         builder.addVariable("glex", new GlobalExtensionManagement());
         builder.addVariable("grammarIterator", mcConfig.getGrammars().getResolvedPaths());
-        builder.addVariable("reportManagerFactory", new MontiCoreReports(mcConfig.getOut().getAbsolutePath(),
+        builder.addVariable("reportManagerFactory", new MontiCoreReports(mcConfig.getReport().getAbsolutePath(),
             mcConfig.getHandcodedPath(), mcConfig.getTemplatePath()));
       }
 

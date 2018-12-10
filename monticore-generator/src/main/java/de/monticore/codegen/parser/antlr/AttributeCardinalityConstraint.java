@@ -57,7 +57,7 @@ public class AttributeCardinalityConstraint {
       if (min.isPresent() || max.isPresent()) {
         if (min.isPresent()) {
           
-          String runtimemessage = "\"0xA7017\" + de.monticore.codegen.GeneratorHelper.getGeneratedErrorCode(_aNode) + \" Invalid minimal occurence for %attributename% in rule %rulename% : Should be %reference% but is \"+%value%+\"!\"";
+          String runtimemessage = "\"0xA7017" + de.monticore.codegen.GeneratorHelper.getGeneratedErrorCode(ast) + " Invalid minimal occurence for %attributename% in rule %rulename% : Should be %reference% but is \"+%value%+\"!\"";
           
           runtimemessage = runtimemessage.replaceAll("%attributename%", usageName);
           runtimemessage = runtimemessage.replaceAll("%rulename%", HelperGrammar.getRuleName(ast));
@@ -78,7 +78,7 @@ public class AttributeCardinalityConstraint {
         
         if (max.isPresent() && max.get() != GeneratorHelper.STAR) {
           
-          String runtimemessage = "\"0xA7018\" + de.monticore.codegen.GeneratorHelper.getGeneratedErrorCode(_aNode) + \" Invalid maximal occurence for %attributename% in rule %rulename% : Should be %reference% but is \"+%value%+\"!\"";
+          String runtimemessage = "\"0xA7018" + de.monticore.codegen.GeneratorHelper.getGeneratedErrorCode(ast) + " Invalid maximal occurence for %attributename% in rule %rulename% : Should be %reference% but is \"+%value%+\"!\"";
           
           runtimemessage = runtimemessage.replaceAll("%attributename%", usageName);
           runtimemessage = runtimemessage.replaceAll("%rulename%", HelperGrammar.getRuleName(ast));
@@ -116,7 +116,7 @@ public class AttributeCardinalityConstraint {
     Optional<MCProdAttributeSymbol> att = rule.get().getProdAttribute(usageName);
     if (att.isPresent() && (MCGrammarSymbolTableHelper.getMax(att.get()).isPresent()
         || MCGrammarSymbolTableHelper.getMin(att.get()).isPresent())) {
-      ret.append(getCounterName(usageName) + "++;");
+      ret.append(getCounterName(usageName) + "++;\n");
     }
     return ret.toString();
   }

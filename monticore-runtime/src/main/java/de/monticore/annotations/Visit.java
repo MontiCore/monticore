@@ -13,7 +13,6 @@ import java.lang.annotation.Target;
  * <i>must</i> have exactly one parameter which must be a subclass of ASTNode (which includes
  * ASTNode itself). It may be inherited and declared private, as well as any other visibility.
  *
- * @author Sebastian Oberhoff
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

@@ -12,7 +12,6 @@ import java.util.Map;
 /**
  * Helper to write files
  * 
- * @author Timo Greifenberg
  */
 public class ReportCreator {
 
@@ -78,8 +77,7 @@ public class ReportCreator {
 	 */
 	public void writeLineToFile(File file, String content) throws IOException {
 		BufferedWriter writer = writers.get(file);
-		writer.append(content);
-		writer.newLine();
+		writer.append(content + "\n");
 	}
 
 	/**

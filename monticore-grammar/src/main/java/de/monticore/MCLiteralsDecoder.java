@@ -2,13 +2,11 @@
 
 package de.monticore;
 
-import java.io.CharConversionException;
 import de.se_rwth.commons.logging.Log;
 
 /**
  * This class provides methods for converting literals. The LiteralsHelper is a singleton.
  * 
- * @author Martin Schindler
  */
 public class MCLiteralsDecoder {
   
@@ -17,7 +15,6 @@ public class MCLiteralsDecoder {
    * 
    * @param s char literal as string including "'"
    * @return decoded char
-   * @throws CharConversionException
    */
   public static char decodeChar(String s) {
     if (s.length() == 1) { // single char
@@ -58,7 +55,6 @@ public class MCLiteralsDecoder {
    * 
    * @param s string literal excluding '"'
    * @return decoded string
-   * @throws CharConversionException
    */
   public static String decodeString(String s) {
     StringBuilder ret = new StringBuilder();

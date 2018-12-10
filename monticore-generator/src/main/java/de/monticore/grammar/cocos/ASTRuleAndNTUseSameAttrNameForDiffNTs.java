@@ -6,14 +6,14 @@ import java.util.Optional;
 
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTASTRule;
-import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
+import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
 import de.monticore.grammar.grammar._cocos.GrammarASTASTRuleCoCo;
 import de.monticore.grammar.symboltable.MCProdComponentSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * @author KH
+
  */
 public class ASTRuleAndNTUseSameAttrNameForDiffNTs implements GrammarASTASTRuleCoCo {
   
@@ -28,7 +28,7 @@ public class ASTRuleAndNTUseSameAttrNameForDiffNTs implements GrammarASTASTRuleC
   public void check(ASTASTRule a) {
     MCProdSymbol symbol = (MCProdSymbol) a.getEnclosingScope().resolve(a.getType(),
         MCProdSymbol.KIND).get();
-    for (ASTAttributeInAST attr : a.getAttributeInASTList()) {
+    for (ASTAdditionalAttribute attr : a.getAdditionalAttributeList()) {
       Optional<MCProdComponentSymbol> rc = symbol.getProdComponent(attr.getNameOpt().orElse(""));
       if (rc.isPresent()) {
         if (!attr.getGenericType().getTypeName()

@@ -43,7 +43,7 @@ public class DetailedReporter extends AReporter {
   
   public DetailedReporter(String outputDir, String modelName,
       ReportingRepository repository) {
-    super(outputDir + File.separator + ReportingConstants.REPORTING_DIR
+    super(outputDir
         + File.separator + modelName, SIMPLE_FILE_NAME,
         ReportingConstants.REPORT_FILE_EXTENSION);
     this.repository = repository;

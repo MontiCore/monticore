@@ -17,7 +17,6 @@ import de.se_rwth.commons.logging.Log;
 /**
  * Checks that no ast rules exist for enum nonterminals.
  *
- * @author KH
  */
 public class NoASTExtendsForClasses implements GrammarASTMCGrammarCoCo {
   

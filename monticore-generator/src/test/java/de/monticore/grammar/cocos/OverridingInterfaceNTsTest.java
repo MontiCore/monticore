@@ -8,11 +8,6 @@ import org.junit.Test;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * Created by
- *
- * @author KH
- */
 public class OverridingInterfaceNTsTest extends CocoTest{
 
   private final String MESSAGE =  " The production for the interface nonterminal ReturnType must not be overridden.";

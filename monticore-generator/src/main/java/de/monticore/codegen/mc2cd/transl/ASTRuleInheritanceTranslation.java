@@ -21,7 +21,6 @@ import de.monticore.utils.Link;
  * {@link ImplementsTranslation} since it applies to ASTRules rather than
  * ordinary rules. E.g: 'ast A astextends B' instead of 'A astextends B'.
  *
- * @author Sebastian Oberhoff
  */
 public class ASTRuleInheritanceTranslation implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {

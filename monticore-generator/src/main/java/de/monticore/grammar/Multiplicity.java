@@ -23,7 +23,6 @@ import static java.util.Collections.max;
 /**
  * Denotes the multiplicity of nonterminals in a MC grammar such as '*', '+', or '?'.
  * 
- * @author Sebastian Oberhoff
  */
 public enum Multiplicity {
   
@@ -41,13 +40,13 @@ public enum Multiplicity {
   LIST;
   
   public static Multiplicity determineMultiplicity(ASTNode rootNode, ASTNode astNode) {
-    if (astNode instanceof ASTAttributeInAST) {
-      return multiplicityOfAttributeInAST((ASTAttributeInAST) astNode);
+    if (astNode instanceof ASTAdditionalAttribute) {
+      return multiplicityOfAttributeInAST((ASTAdditionalAttribute) astNode);
     }
     return multiplicityOfASTNode(rootNode, astNode);
   }
   
-  public static Multiplicity multiplicityOfAttributeInAST(ASTAttributeInAST attributeInAST) {
+  public static Multiplicity multiplicityOfAttributeInAST(ASTAdditionalAttribute attributeInAST) {
     if (!attributeInAST.isPresentCard()) {
       return STANDARD;
     }

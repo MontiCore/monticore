@@ -14,7 +14,6 @@ import de.monticore.genericgraphics.controller.views.outline.CombinedGraphicsOut
  * This class acts as a command handler for the "Switch Outline" command.
  * <br><br>
  * 
- * @author Philipp Kehrbusch
  *
  */
 public class SwitchOutlineCommand extends AbstractHandler {  

@@ -17,7 +17,6 @@ import org.eclipse.draw2d.geometry.Rectangle;
  * for a given {@link PolylineConnection} on which a {@link IFigure} should be
  * placed at the position, with the offset.
  * 
- * @author Tim Enger
  */
 public class ConnectionLabelLocator implements Locator {
   

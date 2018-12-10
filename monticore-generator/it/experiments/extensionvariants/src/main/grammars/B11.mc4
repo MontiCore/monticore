@@ -1,0 +1,19 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+grammar B11 extends A {
+
+  // M is adapted and reused, but its cardinality adapted
+
+  // Orig:  M = Decimal; 
+  M = "sic" Integer New* N P? Q* "end";
+
+  // Orig:  N = "one" M;
+  N = "ein" M* N* P* Q* "ende";
+
+  // Orig:  P = "some" M*;
+  P = "einige" M N? P? Q? "ende";
+
+  // Orig:  Q = "optional" M?;
+  Q = "opti" M* N P Q;
+
+  New = Integer;
+}

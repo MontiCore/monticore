@@ -25,8 +25,6 @@ import de.monticore.io.paths.IterablePath;
 /**
  * Tests for {@link TemplateController}.
  *
- * @author  (last commit) $Author$
- *          $Date$
  *
  */
 public class TemplateControllerTest {

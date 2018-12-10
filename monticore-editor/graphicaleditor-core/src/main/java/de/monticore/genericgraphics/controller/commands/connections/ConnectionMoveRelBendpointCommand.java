@@ -11,7 +11,6 @@ import de.monticore.genericgraphics.view.figures.connections.MCBendpoint;
  * {@link Command} for meoving bendpoints in {@link IEdgeViewElement
  * IEdgeViewElements}.
  * 
- * @author Tim Enger
  */
 public class ConnectionMoveRelBendpointCommand extends Command {
   

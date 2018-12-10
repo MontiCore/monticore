@@ -7,7 +7,7 @@
   <parent>
     <groupId>de.monticore.mojo</groupId>
     <artifactId>monticore-maven</artifactId>
-    <version>5.0.1</version>
+    <version>5.0.2</version>
   </parent>
 
   <artifactId>monticore-m2e</artifactId>
@@ -60,7 +60,7 @@
             <skip>${skip.m2e.deployment}</skip>
             <fromFile>${project.build.directory}/${project.build.finalName}.zip</fromFile>
             <serverId>se-nexus</serverId>
-            <url>http://nexus.se.rwth-aachen.de/service/local/repositories/monticore-snapshots/content-compressed</url>
+            <url>https://nexus.se.rwth-aachen.de/service/local/repositories/monticore-snapshots/content-compressed</url>
           </configuration>
           <executions>
             <execution>

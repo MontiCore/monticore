@@ -21,10 +21,6 @@ import de.monticore.teststringliterals._parser.TestStringLiteralsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 
-/**
- * @author npichler
- */
-
 public class StringLiteralsPrettyPrinterTest {
   
   @BeforeClass

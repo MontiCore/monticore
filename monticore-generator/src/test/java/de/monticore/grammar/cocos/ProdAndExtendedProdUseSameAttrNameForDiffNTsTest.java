@@ -8,11 +8,6 @@ import org.junit.Test;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * Created by
- *
- * @author KH
- */
 public class ProdAndExtendedProdUseSameAttrNameForDiffNTsTest extends CocoTest{
 
   private final String MESSAGE = " The production B extending the production A must not use the\n" +

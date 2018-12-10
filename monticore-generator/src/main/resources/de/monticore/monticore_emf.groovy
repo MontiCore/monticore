@@ -11,23 +11,24 @@ Log.debug("Grammar argument    : " + _configuration.getGrammarsAsStrings(), LOG_
 Log.debug("Grammar files       : " + grammars, LOG_ID)
 Log.debug("Modelpath           : " + modelPath, LOG_ID)
 Log.debug("Output dir          : " + out, LOG_ID)
+Log.debug("Report dir          : " + report, LOG_ID)
 Log.debug("Handcoded argument  : " + _configuration.getHandcodedPathAsStrings(), LOG_ID)
 Log.debug("Handcoded files     : " + handcodedPath, LOG_ID)
 
 // ############################################################
 // M1  basic setup and initialization:
 // initialize incremental generation; enabling of reporting; create global scope
-IncrementalChecker.initialize(out)
+IncrementalChecker.initialize(out, report)
 InputOutputFilesReporter.resetModelToArtifactMap()
 globalScope = createGlobalScope(modelPath)
-Reporting.init(out.getAbsolutePath(), reportManagerFactory)
+Reporting.init(report.getAbsolutePath(), reportManagerFactory)
 // ############################################################
 
 // ############################################################
 // the first pass processes all input grammars up to transformation to CD and storage of the resulting CD to disk
 while (grammarIterator.hasNext()) {
   input = grammarIterator.next()
-  if (force || !IncrementalChecker.isUpToDate(input, out, modelPath, templatePath, handcodedPath )) {
+  if (force || !IncrementalChecker.isUpToDate(input, modelPath, templatePath, handcodedPath )) {
     IncrementalChecker.cleanUp(input)
 
     // M2: parse grammar
@@ -51,9 +52,6 @@ while (grammarIterator.hasNext()) {
       // M5: transform grammar AST into Class Diagram AST
       astClassDiagramWithST = deriveCD(astGrammar, glex, globalScope)
 
-      // write Class Diagram AST to the CD-report
-      storeInCdFile(astClassDiagramWithST, out)
-
       // M6: generate parser and wrapper
       generateParser(glex, astGrammar, globalScope, handcodedPath, out)
     }
@@ -69,7 +67,7 @@ while (grammarIterator.hasNext()) {
 for (astGrammar in getParsedGrammars()) {
   // make sure to use the right report manager again
   Reporting.on(Names.getQualifiedName(astGrammar.getPackageList(), astGrammar.getName()))
-  reportGrammarCd(astGrammar, globalScope, out)
+  reportGrammarCd(astGrammar, globalScope, report)
 
   astClassDiagram = getCDOfParsedGrammar(astGrammar)
 

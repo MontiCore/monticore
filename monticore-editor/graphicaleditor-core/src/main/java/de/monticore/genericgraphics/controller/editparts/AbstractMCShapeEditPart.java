@@ -24,7 +24,6 @@ import de.monticore.genericgraphics.model.graphics.ViewElementFactory;
  * call <code>refreshVisuals()</code></li>
  * </ul>
  * 
- * @author Tim Enger
  */
 public abstract class AbstractMCShapeEditPart extends AbstractMCGraphicalEditPart implements IMCShapeEditPart {
   

@@ -31,7 +31,7 @@ public class VariablesReporter extends AReporter {
   private List<String> templateCount;
   
   public VariablesReporter(String outputDir, String modelName) {
-    super(outputDir + File.separator + ReportingConstants.REPORTING_DIR + File.separator
+    super(outputDir + File.separator
         + modelName,
         SIMPLE_FILE_NAME, ReportingConstants.REPORT_FILE_EXTENSION);
     templateCount = Lists.newArrayList();

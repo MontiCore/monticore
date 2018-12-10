@@ -7,9 +7,6 @@ import de.monticore.symboltable.types.references.JTypeReference;
 
 import java.util.List;
 
-/**
- * @author Pedram Mir Seyed Nazari
- */
 public interface JMethodSymbol extends ScopeSpanningSymbol {
 
   JMethodSymbolKind KIND = new JMethodSymbolKind();

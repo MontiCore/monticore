@@ -99,7 +99,6 @@ import de.se_rwth.langeditor.texteditor.TextEditorImpl;
  * <b>Note</b>: when overriding (non-abstract) methods (e.g. <code>foo()</code> ), you should always
  * call <code>super.foo()</code> first in your method.<br>
  * 
- * @author Tim Enger
  */
 public class GenericGraphicsEditor extends GraphicalEditor {
   

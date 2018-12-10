@@ -17,9 +17,6 @@ import de.monticore.types.types._ast.ASTPrimitiveType;
 import de.monticore.types.types._ast.ASTType;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * @author Martin Schindler
- */
 public class PrimitiveTypesTest {
   
   @BeforeClass

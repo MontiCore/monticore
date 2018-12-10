@@ -16,9 +16,6 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 
-/**
- * @author Sebastian Oberhoff
- */
 public class TokenMultiplicityTest {
 
   private final ASTCDClass testListClass;

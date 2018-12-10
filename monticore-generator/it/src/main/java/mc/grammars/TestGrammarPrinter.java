@@ -8,7 +8,6 @@ import mc.grammar.ittestgrammar._ast.ASTGenericType;
 /**
  * Some helper methods for GrammarDSL
  * 
- * @author krahn
  */
 public class TestGrammarPrinter extends de.monticore.grammar.HelperGrammar {
   

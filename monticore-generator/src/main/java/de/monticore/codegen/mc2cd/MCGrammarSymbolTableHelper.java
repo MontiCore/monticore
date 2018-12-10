@@ -2,57 +2,31 @@
 
 package de.monticore.codegen.mc2cd;
 
-import static com.google.common.collect.Sets.newLinkedHashSet;
-import static de.se_rwth.commons.Util.listTillNull;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-
 import de.monticore.ModelingLanguage;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.RegExpBuilder;
-import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
-import de.monticore.grammar.grammar._ast.ASTConstant;
-import de.monticore.grammar.grammar._ast.ASTConstantGroup;
-import de.monticore.grammar.grammar._ast.ASTLexActionOrPredicate;
-import de.monticore.grammar.grammar._ast.ASTLexProd;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.symboltable.MCGrammarSymbol;
-import de.monticore.grammar.symboltable.MCProdAttributeSymbol;
-import de.monticore.grammar.symboltable.MCProdComponentSymbol;
-import de.monticore.grammar.symboltable.MCProdSymbol;
-import de.monticore.grammar.symboltable.MCProdSymbolReference;
-import de.monticore.grammar.symboltable.MontiCoreGrammarLanguage;
-import de.monticore.grammar.symboltable.MontiCoreGrammarSymbolTableCreator;
+import de.monticore.grammar.grammar._ast.*;
+import de.monticore.grammar.symboltable.*;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolvingConfiguration;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.ScopeSpanningSymbol;
-import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.*;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.Util;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static com.google.common.collect.Sets.newLinkedHashSet;
+import static de.se_rwth.commons.Util.listTillNull;
 
 public class MCGrammarSymbolTableHelper {
   
@@ -274,10 +248,10 @@ public class MCGrammarSymbolTableHelper {
   }
   
   public static String getDefaultValue(MCProdSymbol symbol) {
-    if (getQualifiedName(symbol).equals("int")) {
+    if ("int".equals(getQualifiedName(symbol))) {
       return "0";
     }
-    else if (getQualifiedName(symbol).equals("boolean")) {
+    else if ("boolean".equals(getQualifiedName(symbol))) {
       return "false";
     }
     else {
@@ -405,7 +379,7 @@ public class MCGrammarSymbolTableHelper {
   
   /**
    *
-   * @param superType
+   * @param prod
    * @return
    */
   public static List<MCProdSymbol> getSuperProds(MCProdSymbol prod) {
@@ -464,17 +438,7 @@ public class MCGrammarSymbolTableHelper {
     }
     
     return type1.getFullName().equals(type2.getFullName());
-    
-    // if (!type1.getName().equals(type2.getName())) {
-    // return false;
-    // }
-    // // TODO NN <- PN needed?
-    // // if (getOriginalLanguage() != type2.getOriginalLanguage()) {
-    // // return false;
-    // // }
-    //
-    // return
-    // type1.getGrammarSymbol().getFullName().equals(type2.getGrammarSymbol().getFullName());
+
   }
   
   public static boolean isAssignmentCompatibleOrUndecidable(MCProdSymbol subType,
@@ -519,12 +483,7 @@ public class MCGrammarSymbolTableHelper {
     if (areSameTypes(subType, superType)) {
       return true;
     }
-    
-    // if ((subType.getKindOfType() == KindType.IDENT) &&
-    // (superType.getKindOfType() == KindType.IDENT)) {
-    // return subType.getLexType().equals(superType.getLexType());
-    // }
-    
+
     // Try to find superType in supertypes of this type
     Collection<MCProdSymbol> allSuperTypes = getAllSuperProds(subType);
     if (allSuperTypes.contains(superType)) {
@@ -546,8 +505,8 @@ public class MCGrammarSymbolTableHelper {
   
   /**
    *
-   * @param mcProdSymbolReference
-   * @param newOne
+   * @param ref1
+   * @param ref2
    * @return
    */
   public static boolean isSubType(MCProdSymbolReference ref1, MCProdSymbolReference ref2) {
@@ -576,8 +535,8 @@ public class MCGrammarSymbolTableHelper {
   
   public static boolean isAttributeIterated(MCProdAttributeSymbol attrSymbol) {
     return attrSymbol.getAstNode().isPresent()
-        && attrSymbol.getAstNode().get() instanceof ASTAttributeInAST
-        && isAttributeIterated((ASTAttributeInAST) attrSymbol.getAstNode().get());
+        && attrSymbol.getAstNode().get() instanceof ASTAdditionalAttribute
+        && isAttributeIterated((ASTAdditionalAttribute) attrSymbol.getAstNode().get());
   }
   
   /**
@@ -585,7 +544,7 @@ public class MCGrammarSymbolTableHelper {
    * @param ast
    * @return
    */
-  public static boolean isAttributeIterated(ASTAttributeInAST ast) {
+  public static boolean isAttributeIterated(ASTAdditionalAttribute ast) {
     if (!ast.isPresentCard()) {
       return false;
     }
@@ -598,13 +557,13 @@ public class MCGrammarSymbolTableHelper {
   
   public static Optional<Integer> getMax(MCProdAttributeSymbol attrSymbol) {
     if (!attrSymbol.getAstNode().isPresent()
-        || !(attrSymbol.getAstNode().get() instanceof ASTAttributeInAST)) {
+        || !(attrSymbol.getAstNode().get() instanceof ASTAdditionalAttribute)) {
       return Optional.empty();
     }
-    return getMax((ASTAttributeInAST) attrSymbol.getAstNode().get());
+    return getMax((ASTAdditionalAttribute) attrSymbol.getAstNode().get());
   }
   
-  public static Optional<Integer> getMax(ASTAttributeInAST ast) {
+  public static Optional<Integer> getMax(ASTAdditionalAttribute ast) {
     if (ast.isPresentCard()
         && ast.getCard().isPresentMax()) {
       String max = ast.getCard().getMax();
@@ -617,7 +576,7 @@ public class MCGrammarSymbolTableHelper {
           return Optional.of(x);
         }
         catch (NumberFormatException ignored) {
-          Log.warn("0xA0140 Failed to parse an integer value of max of ASTAttributeInAST "
+          Log.warn("0xA0140 Failed to parse an integer value of max of ASTAdditionalAttribute "
               + ast.getName() + " from string " + max);
         }
       }
@@ -627,13 +586,13 @@ public class MCGrammarSymbolTableHelper {
   
   public static Optional<Integer> getMin(MCProdAttributeSymbol attrSymbol) {
     if (!attrSymbol.getAstNode().isPresent()
-        || !(attrSymbol.getAstNode().get() instanceof ASTAttributeInAST)) {
+        || !(attrSymbol.getAstNode().get() instanceof ASTAdditionalAttribute)) {
       return Optional.empty();
     }
-    return getMin((ASTAttributeInAST) attrSymbol.getAstNode().get());
+    return getMin((ASTAdditionalAttribute) attrSymbol.getAstNode().get());
   }
   
-  public static Optional<Integer> getMin(ASTAttributeInAST ast) {
+  public static Optional<Integer> getMin(ASTAdditionalAttribute ast) {
     if (ast.isPresentCard()
         && ast.getCard().isPresentMin()) {
       String min = ast.getCard().getMin();
@@ -642,24 +601,11 @@ public class MCGrammarSymbolTableHelper {
         return Optional.of(x);
       }
       catch (NumberFormatException ignored) {
-        Log.warn("0xA0141 Failed to parse an integer value of max of ASTAttributeInAST "
+        Log.warn("0xA0141 Failed to parse an integer value of max of ASTAdditionalAttribute "
             + ast.getName() + " from string " + min);
       }
     }
     return Optional.empty();
   }
-  
-  // public String getListType() {
-  // if (isASTNode()) {
-  // return getQualifiedName() + "List";
-  // }
-  // else {
-  // return "java.util.List<" + getQualifiedName() + ">";
-  // }
-  // }
-  
-  // private String getConstantType() {
-  // return (this.getEnumValues().size() > 1) ? "int" : "boolean";
-  // }
-  
+
 }

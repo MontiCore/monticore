@@ -4,6 +4,7 @@ package de.monticore.symboltable;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 
 import java.util.Collection;
@@ -13,21 +14,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
-/**
- * Super type of all scopes in the symbol table. A scope defines/contains a collection of symbols
- * and can have an enclosing and several sub scopes. An example is the method scope in Java. A
- * method scope can define variables and can have sub scopes, such as if-blocks. The enclosing
- * scope is the scope of the class which defines the method.
- *
- * @author  Pedram Mir Seyed Nazari
- *
- */
 public interface Scope {
 
   /**
    * @return the name of the scope, if it is a named scope. If a symbol spans this scope, the name usually is the same
    * as the spanning symbol's name.
-   *
    * @see Scope#getSpanningSymbol()
    */
   Optional<String> getName();
@@ -51,18 +42,15 @@ public interface Scope {
    *
    * @param name the symbol name to be resolved
    * @param kind the symbol kind to be resolved
-   * @param <T> the type of the resolved symbol
-   *
+   * @param <T>  the type of the resolved symbol
    * @return the symbol with the given <code>name</code> and <code>kind</code> starting from
    * this scope.
-   *
-   * @throws de.monticore.symboltable.resolving.ResolvedSeveralEntriesException Thrown if more than one
-   * symbol is resolved.
+   * @throws ResolvedSeveralEntriesException Thrown if more than one
+   *                                                                            symbol is resolved.
    */
   <T extends Symbol> Optional<T> resolve(String name, SymbolKind kind);
 
   /**
-   *
    * Resolves the symbol with the given <code>name</code> and <code>kind</code> starting from
    * this scope. Additionally, the symbol must have a proper access <code>modifier</code>. For
    * example, in Java, if <code>modifier</code> was <code>protected</code>, the symbol would have
@@ -70,16 +58,14 @@ public interface Scope {
    * the resolving is continued in the enclosing scope. Note that hiding has also an impact on whether the
    * resolving should continue in the enclosing scope.
    *
-   * @param name the symbol name to be resolved
-   * @param kind the symbol kind to be resolved
+   * @param name     the symbol name to be resolved
+   * @param kind     the symbol kind to be resolved
    * @param modifier the access modifier of the symbol
-   * @param <T> the type of the resolved symbol
-   *
+   * @param <T>      the type of the resolved symbol
    * @return the symbol with the given <code>name</code> and <code>kind</code> starting from
    * this scope.
-   *
-   * @throws de.monticore.symboltable.resolving.ResolvedSeveralEntriesException Thrown if more than one
-   * symbol is resolved.
+   * @throws ResolvedSeveralEntriesException Thrown if more than one
+   *                                                                            symbol is resolved.
    */
   <T extends Symbol> Optional<T> resolve(String name, SymbolKind kind, AccessModifier modifier);
 
@@ -96,18 +82,14 @@ public interface Scope {
    * In contrast, <code>A</code> does not import symbols that are <b>implicitly</b> imported by <code>B</code>.
    * That means, symbols defined in the enclosing scope of <code>B</code>.
    *
-   *
-   *
-   * @param name the symbol name to be resolved
-   * @param kind the symbol kind to be resolved
+   * @param name     the symbol name to be resolved
+   * @param kind     the symbol kind to be resolved
    * @param modifier the access modifier of the symbol
-   * @param <T> the type of the resolved symbol
-   *
+   * @param <T>      the type of the resolved symbol
    * @return the symbol with the given <code>name</code> and <code>kind</code> starting from
    * this scope.
-   *
-   * @throws de.monticore.symboltable.resolving.ResolvedSeveralEntriesException Thrown if more than one
-   * symbol is resolved.
+   * @throws ResolvedSeveralEntriesException Thrown if more than one
+   *                                                                            symbol is resolved.
    */
   <T extends Symbol> Optional<T> resolveImported(String name, SymbolKind kind, AccessModifier modifier);
 
@@ -124,12 +106,10 @@ public interface Scope {
    *
    * @param name the symbol name to be resolved
    * @param kind the symbol kind to be resolved
-   * @param <T> the type of the resolved symbol
-   *
+   * @param <T>  the type of the resolved symbol
    * @return the symbol with the given <code>name</code> and <code>kind</code> only within scope.
-   *
-   * @throws de.monticore.symboltable.resolving.ResolvedSeveralEntriesException Thrown if more than one
-   * symbol is resolved.
+   * @throws ResolvedSeveralEntriesException Thrown if more than one
+   *                                                                            symbol is resolved.
    */
   <T extends Symbol> Optional<T> resolveLocally(String name, SymbolKind kind);
 
@@ -137,12 +117,10 @@ public interface Scope {
    * Resolves all symbols with the given <code>kind</code> only within this scope.
    *
    * @param kind the symbol kind to be resolved
-   * @param <T> the type of the resolved symbols
-   *
+   * @param <T>  the type of the resolved symbols
    * @return the symbols with the given <code>name</code> and <code>kind</code> only within scope.
    */
   <T extends Symbol> Collection<T> resolveLocally(SymbolKind kind);
-
 
 
   <T extends Symbol> Optional<T> resolveDown(String name, SymbolKind kind);
@@ -158,11 +136,9 @@ public interface Scope {
   <T extends Symbol> Collection<T> resolveDownMany(String name, SymbolKind kind, AccessModifier modifier, Predicate<Symbol> predicate);
 
   /**
-   *
    * @return all symbols directly defined/contained in this scope (not in enclosing scope).
    */
   Map<String, Collection<Symbol>> getLocalSymbols();
-
 
 
   /**
@@ -171,7 +147,7 @@ public interface Scope {
   int getSymbolsSize();
 
   /**
-    * @return true, if this scope shadows symbols of the enclosing scope. By default, named scopes
+   * @return true, if this scope shadows symbols of the enclosing scope. By default, named scopes
    * (see #getName()) are shadowing scopes.
    */
   boolean isShadowingScope();

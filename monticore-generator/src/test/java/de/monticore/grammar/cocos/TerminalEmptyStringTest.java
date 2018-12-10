@@ -7,11 +7,6 @@ import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- * Created by
- *
- * @author KH
- */
 public class TerminalEmptyStringTest extends CocoTest {
 
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();

@@ -8,11 +8,7 @@ import java.util.function.UnaryOperator;
 
 import com.google.common.collect.Iterables;
 
-import de.monticore.grammar.grammar._ast.ASTASTRule;
-import de.monticore.grammar.grammar._ast.ASTAbstractProd;
-import de.monticore.grammar.grammar._ast.ASTClassProd;
-import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar._ast.*;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDDefinition;
@@ -25,7 +21,6 @@ import de.monticore.utils.Link;
  * Creates Links from ASTRules to CDClasses and CDInterfaces. The CDClass/CDInterface will
  * correspond to the ClassProd/AbstractProd/InterfaceProd referred to by the ASTRule.
  * 
- * @author Sebastian Oberhoff
  */
 public class ASTRulesToCDClassesAndCDInterfaces implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
@@ -78,6 +73,17 @@ public class ASTRulesToCDClassesAndCDInterfaces implements
             matchedASTRules.add(matchedASTRule);
             new Link<>(matchedASTRule, link.target(), link.parent());
           });
+    }
+    // creates Links from ASTRules to the CDInterfaces of corresponding ExternalProds
+    for (Link<ASTExternalProd, ASTCDInterface> link : rootLink.getLinks(ASTExternalProd.class,
+            ASTCDInterface.class)) {
+
+      ASTNodes.getSuccessors(rootLink.source(), ASTASTRule.class).stream()
+              .filter(astRule -> astRule.getType().equals(link.source().getName()))
+              .forEach(matchedASTRule -> {
+                matchedASTRules.add(matchedASTRule);
+                new Link<>(matchedASTRule, link.target(), link.parent());
+              });
     }
     return matchedASTRules;
   }

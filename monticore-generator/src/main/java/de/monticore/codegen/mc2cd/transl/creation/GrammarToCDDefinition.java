@@ -13,7 +13,6 @@ import de.monticore.utils.Link;
 /**
  * Creates the CDDefinition corresponding to the ASTMCGrammar
  * 
- * @author Sebastian Oberhoff
  */
 class GrammarToCDDefinition implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {

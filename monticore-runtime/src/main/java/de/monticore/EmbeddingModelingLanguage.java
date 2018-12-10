@@ -17,9 +17,6 @@ import java.util.Set;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Collections.singletonList;
 
-/**
- * @author Pedram Mir Nazari
- */
 public abstract class EmbeddingModelingLanguage extends CommonModelingLanguage {
 
   protected ModelingLanguage hostLanguage;

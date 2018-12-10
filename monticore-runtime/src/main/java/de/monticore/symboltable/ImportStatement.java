@@ -5,11 +5,6 @@ package de.monticore.symboltable;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
-/**
- *
- * @author Pedram Mir Seyed Nazari
- *
- */
 public class ImportStatement {
 
   private final String statement;

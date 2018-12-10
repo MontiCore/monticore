@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className")}
+${signature("className", "symbolName")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#-- Copyright -->
 ${defineHookPoint("JavaCopyright")}
@@ -13,17 +13,17 @@ import java.util.Optional;
     * Builder for {@link ${className}}.
     */
 
-public class ${className}Builder {
+public class ${className} {
 
   protected String name;
 
-  protected ${className}Builder() {}
+  protected ${className}() {}
 
-  public ${className} build() {
-    return new ${className}(name);
+  public ${symbolName}Symbol build() {
+    return new ${symbolName}Symbol(name);
   }
 
-  public ${className}Builder name(String name) {
+  public ${className} name(String name) {
     this.name = name;
     return this;
   }

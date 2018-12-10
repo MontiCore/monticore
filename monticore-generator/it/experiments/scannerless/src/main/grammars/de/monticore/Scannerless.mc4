@@ -1,0 +1,93 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+package de.monticore;
+
+/*
+ * with this grammar, we examine how to define a scannerless pasrer
+ * (actually the grammar is only "almost" scannerless
+ *
+ * The scanner is restricted in recognizing patterns and overlapping tokens,
+ * such as ">" and ">>" need to be taken especially into account.
+ * Scannerless parsing prevents these issues, but introduces different 
+ * ones:
+ *  * it is much slower
+ *  * Whitespaces (nonterminal WS) cannot simply be filtered from the 
+ *    token stream anymore, but need to be adressed at nonterminal level
+ *
+ */
+
+grammar Scannerless {
+ 
+  /* ***********************************************************
+   * Expressions with ">" and ">>" +
+   * Generic Types like "List<List<String>>"
+   */
+  interface Expression;
+
+  ShiftExpression implements Expression <160> =
+        leftExpression:Expression
+        (   shiftOp2:"<" "<"
+        |   shiftOp3:">" ">" ">"
+        |   shiftOp4:">" ">"
+        )
+        rightExpression:Expression;
+
+  ComparisonExpression implements Expression <150> =
+        leftExpression:Expression
+        (   comparison1:"<" "="
+        |   comparison2:">" "="
+        |   comparison3:">"
+        |   comparison4:"<"
+        )
+        rightExpression:Expression;
+
+  AddExpression implements Expression <170> =
+        leftExpression:Expression
+        (   additiveOp:"+"
+        |   additiveOp:"-"
+        )
+        rightExpression:Expression;
+
+  BracketExpression implements Expression <310>
+    =  S "(" Expression ")" S;
+
+  NameExpression implements Expression <350>
+    = S Name S;
+
+  /* OCL e.g. allows types to be used as expressions, denoting their 
+     extensions. We use this to see that generic types and greater then
+     symbol are still distinguished
+   */
+  TypeAsExpression implements Expression <351>
+    = Type ;
+
+  /************************************************************
+   */
+  Type = S Name S TypeArguments? S;
+
+  TypeArguments = S "<" (Type || ",")* ">" S ;
+
+
+  /* ***********************************************************
+   * some test NTs
+   */
+  A = S Name S ;
+  B = Name S Name S ;
+  C = S Name "," Name S ;
+
+  /* ***********************************************************
+   * Some basic token are still in use:
+   */
+
+  token Name = ( 'a'..'z' | 'A'..'Z' | '_' | '$' )
+               ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '$' )*;
+  
+  /* ***********************************************************
+   * S = optional sequence of white spaces
+   * S1 = has at least one white space
+   */
+  S = WhiteSpace* ;
+  S1 = WhiteSpace+ ;
+
+  token WhiteSpace = (' ' | '\t' | '\r' | '\n' ) ;
+    
+}

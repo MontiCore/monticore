@@ -34,7 +34,6 @@ import de.se_rwth.commons.logging.Log;
  * <li>{@link SWT#IMAGE_GIF}</li>
  * </ul>
  * 
- * @author Tim Enger
  */
 public class ImageSaveUtil {
   

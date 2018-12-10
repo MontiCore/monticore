@@ -9,7 +9,7 @@ import de.se_rwth.commons.logging.Log;
 /**
  * Checks that used terminals are not empty strings.
  *
- * @author KH
+
  */
 public class TerminalEmptyString implements GrammarASTTerminalCoCo {
 

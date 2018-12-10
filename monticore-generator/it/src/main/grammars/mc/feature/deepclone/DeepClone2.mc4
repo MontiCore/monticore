@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.deepclone;
+
+grammar DeepClone2 extends mc.feature.deepclone.DeepClone {
+
+	//Overriding
+	CloneNameList = "cloneList" Name+;
+
+}

@@ -12,11 +12,11 @@ globalScope = createGlobalScope(modelPath)
 // Parse grammar
 astGrammars = parseGrammars(grammars)
 
-IncrementalChecker.initialize(out)
+IncrementalChecker.initialize(out, report)
 
 for (astGrammar in astGrammars) {
     input = grammarIterator.next()
-    if (force || !IncrementalChecker.isUpToDate(input, out, modelPath, templatePath, handcodedPath)) {
+    if (force || !IncrementalChecker.isUpToDate(input, modelPath, templatePath, handcodedPath)) {
         astGrammar = createSymbolsFromAST(globalScope, astGrammar)
 
         // Generate parser

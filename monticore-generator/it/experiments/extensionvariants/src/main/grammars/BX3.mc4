@@ -1,0 +1,9 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+grammar BX3 extends A {
+
+  // R reuses R (in optional form)
+
+  // Orig:  R = "several" M "," N* "," P? "," (Q|R) ".";
+  R = "several" M "," N* "," P? "," (Q|rr:R) ".";
+  
+}

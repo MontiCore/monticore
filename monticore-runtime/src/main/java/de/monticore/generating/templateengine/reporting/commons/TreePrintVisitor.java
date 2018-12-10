@@ -17,7 +17,6 @@ import de.monticore.visitor.CommonVisitor;
  * as tree. As a basis we use ast2idents that maps each node into a string in a
  * compact form. Result is store as list for print
  * 
- * @author BR
  */
 public class TreePrintVisitor implements CommonVisitor {
   private ReportingRepository repo;

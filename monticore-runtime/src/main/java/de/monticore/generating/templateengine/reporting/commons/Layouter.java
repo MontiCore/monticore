@@ -11,7 +11,6 @@ import de.se_rwth.commons.SourcePosition;
  * op.setValue("layouter", new util.Layouter()); and is set once at the
  * beginning of the main template.
  * 
- * @author rumpe
  */
 public class Layouter {
   

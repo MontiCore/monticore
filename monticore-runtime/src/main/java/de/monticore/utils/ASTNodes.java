@@ -14,7 +14,6 @@ import java.util.List;
 /**
  * Helper class containing common operations concerning ASTNodes
  *
- * @author Sebastian Oberhoff
  */
 public final class ASTNodes {
 

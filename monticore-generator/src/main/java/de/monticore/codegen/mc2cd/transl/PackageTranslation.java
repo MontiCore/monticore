@@ -11,7 +11,6 @@ import de.monticore.utils.Link;
 /**
  * This function copies over the package statement from the source root to the target root.
  * 
- * @author Sebastian Oberhoff
  */
 public class PackageTranslation implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {

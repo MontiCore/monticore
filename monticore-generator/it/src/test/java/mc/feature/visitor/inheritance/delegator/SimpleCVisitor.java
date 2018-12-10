@@ -12,7 +12,6 @@ import mc.feature.visitor.inheritance.c._visitor.CVisitor;
  * Simple Visitor for C that keeps track of the actual methods called using the
  * StringBuilder given in the constructor.
  *
- * @author Robert Heim
  */
 public class SimpleCVisitor implements CVisitor {
   final private StringBuilder run;

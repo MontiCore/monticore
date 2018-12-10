@@ -2,19 +2,10 @@
 
 package de.monticore.symboltable;
 
-/**
- * Represents a kind of a symbol. It is the super class of all symbol kinds and can be used in
- * {@link de.monticore.symboltable.Scope Scopes} and {@link de.monticore.symboltable.resolving.ResolvingFilter ResolvingFilters}
- * to resolve all symbol kinds matching the corresponding criteria.
- * <br /><br />
- * NOTE: This class intentionally is not abstract, because otherwise the above use case is not fulfilled.
- *
- * @author Pedram Mir Seyed Nazari
- *
- */
 public interface SymbolKind {
 
-  SymbolKind KIND = new SymbolKind() {};
+  SymbolKind KIND = new SymbolKind() {
+  };
 
   default String getName() {
     return SymbolKind.class.getName();

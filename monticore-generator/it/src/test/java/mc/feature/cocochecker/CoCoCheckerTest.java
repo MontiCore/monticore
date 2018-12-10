@@ -38,7 +38,6 @@ import mc.feature.cocochecker.c._cocos.CCoCoChecker;
  * cocos within the checker of A as well as for composing the cocos in their
  * language's checkers and then composing the checkers in A's checker.
  * 
- * @author Robert Heim
  */
 public class CoCoCheckerTest extends GeneratorIntegrationsTest {
   final StringBuilder checked = new StringBuilder();

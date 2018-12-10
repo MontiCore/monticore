@@ -13,7 +13,6 @@ import de.monticore.genericgraphics.view.figures.connections.MCBendpoint;
 /**
  * Implementation for the {@link IEdgeViewElement} interface.
  * 
- * @author Tim Enger
  */
 public class EdgeViewElement extends AbstractViewElement implements IEdgeViewElement {
   

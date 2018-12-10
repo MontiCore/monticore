@@ -4,13 +4,8 @@ package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 
-/**
- * Created by
- *
- * @author KH
- */
 public class GrammarCoCos {
-  public Grammar_WithConceptsCoCoChecker getCoCoChecker(){
+  public Grammar_WithConceptsCoCoChecker getCoCoChecker() {
     Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
     checker.addCoCo(new OverridingNTsHaveNoSuperRules());
     checker.addCoCo(new OverridingAbstractNTsHaveNoSuperRules());
@@ -51,7 +46,7 @@ public class GrammarCoCos {
     checker.addCoCo(new GrammarInheritanceCycle());
     checker.addCoCo(new LeftRecursiveRulesInBlock());
     checker.addCoCo(new DuplicatedSymbolDefinitionInProd());
-    checker.addCoCo(new SymbolWithoutName());
+    // checker.addCoCo(new SymbolWithoutName());
     checker.addCoCo(new SubrulesUseInterfaceNTs());
     checker.addCoCo(new ReferenceSymbolSameAttribute());
     checker.addCoCo(new ReferenceSymbolNotName());
@@ -63,7 +58,7 @@ public class GrammarCoCos {
     return checker;
   }
 
-  public Grammar_WithConceptsCoCoChecker getSymbolTableCoCoChecker(){
+  public Grammar_WithConceptsCoCoChecker getSymbolTableCoCoChecker() {
     Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
     checker.addCoCo(new OverridingNTsHaveNoSuperRules());
     checker.addCoCo(new OverridingAbstractNTsHaveNoSuperRules());

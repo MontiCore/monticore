@@ -23,7 +23,6 @@ import de.se_rwth.commons.SourcePosition;
  * Without ASTNode it is not possible to generate in MontiCore. As there exists no ASTNode for
  * templates, we fool MontiCore with this class.
  *
- * @author Jerome Pfeiffer
  */
 public class EmptyNode implements ASTNode {
   

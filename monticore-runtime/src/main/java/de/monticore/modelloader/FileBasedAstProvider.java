@@ -2,6 +2,7 @@
 
 package de.monticore.modelloader;
 
+import com.google.common.base.Charsets;
 import de.monticore.ModelingLanguage;
 import de.monticore.ast.ASTNode;
 import de.monticore.io.paths.ModelCoordinate;
@@ -14,12 +15,9 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Optional;
 
-import com.google.common.base.Charsets;
-
 /**
  * Builds ASTs by going straight to the hard disk and reading in the model.
  *
- * @author Sebastian Oberhoff, Pedram Mir Seyed Nazari
  */
 public final class FileBasedAstProvider<T extends ASTNode> implements AstProvider<T> {
 
@@ -37,7 +35,7 @@ public final class FileBasedAstProvider<T extends ASTNode> implements AstProvide
           ModelingLanguageModelLoader.class.getSimpleName());
   
       URL loc = modelCoordinate.getLocation();
-      if (!loc.getProtocol().equals("jar")){
+      if (!"jar".equals(loc.getProtocol())){
         if(loc.getFile().charAt(2) == ':'){
           String filename = URLDecoder.decode(loc.getFile(),  "UTF-8");
           ast = (Optional<T>) modelingLanguage.getParser().parse(filename.substring(1));

@@ -12,18 +12,19 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * Provides helper methods for {@link de.monticore.symboltable.Scope}.
- *
- * @author Pedram Mir Seyed Nazari
- */
+import static de.monticore.symboltable.SymbolKind.KIND;
+import static de.se_rwth.commons.logging.Log.errorIfNull;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+import static java.util.stream.Collectors.toSet;
+
 public final class Scopes {
 
-  private Scopes(){
+  private Scopes() {
   }
 
   public static Scope getTopScope(final Scope scope) {
-    Log.errorIfNull(scope);
+    errorIfNull(scope);
 
     Scope currentScope = scope;
 
@@ -38,15 +39,15 @@ public final class Scopes {
     Scope topScope = getTopScope(scope);
 
     return (topScope instanceof GlobalScope)
-        ? Optional.of((GlobalScope) topScope)
-        : Optional.empty();
+            ? of((GlobalScope) topScope)
+            : empty();
   }
 
   public static Optional<ArtifactScope> getArtifactScope(final Scope scope) {
-    Log.errorIfNull(scope);
+    errorIfNull(scope);
 
     if (scope instanceof ArtifactScope) {
-      return Optional.of((ArtifactScope) scope);
+      return of((ArtifactScope) scope);
     }
 
     Scope currentScope = scope;
@@ -55,22 +56,22 @@ public final class Scopes {
       currentScope = currentScope.getEnclosingScope().get();
 
       if (currentScope instanceof ArtifactScope) {
-        return Optional.of((ArtifactScope)currentScope);
+        return of((ArtifactScope) currentScope);
       }
     }
 
-    return Optional.empty();
+    return empty();
 
   }
-  
+
   public static boolean isDescendant(final Scope descendant, final Scope ancestor) {
-    Log.errorIfNull(descendant);
-    Log.errorIfNull(ancestor);
-    
+    errorIfNull(descendant);
+    errorIfNull(ancestor);
+
     if (descendant == ancestor) {
       return false;
     }
-    
+
     Optional<? extends Scope> parent = descendant.getEnclosingScope();
     while (parent.isPresent()) {
       if (parent.get() == ancestor) {
@@ -78,28 +79,28 @@ public final class Scopes {
       }
       parent = parent.get().getEnclosingScope();
     }
-    
+
     return false;
   }
-  
-  public static Optional<? extends Scope> getFirstShadowingScope(final Scope scope) {
-    Log.errorIfNull(scope);
 
-    Optional<? extends Scope> currentScope = Optional.of(scope);
-    
+  public static Optional<? extends Scope> getFirstShadowingScope(final Scope scope) {
+    errorIfNull(scope);
+
+    Optional<? extends Scope> currentScope = of(scope);
+
     while (currentScope.isPresent()) {
       if (currentScope.get().isShadowingScope()) {
         return currentScope;
       }
       currentScope = currentScope.get().getEnclosingScope();
     }
-    
-    return Optional.empty();
-    
+
+    return empty();
+
   }
 
   public static Collection<? extends Symbol> getAllEncapsulatedSymbols(Scope scope) {
-    if(scope == null) {
+    if (scope == null) {
       return new LinkedHashSet<>();
     }
 
@@ -108,7 +109,7 @@ public final class Scopes {
     Scope nextScope = scope;
 
     while (true) {
-      encapsulatedSymbols.addAll(nextScope.resolveLocally(SymbolKind.KIND));
+      encapsulatedSymbols.addAll(nextScope.resolveLocally(KIND));
 
       if (!nextScope.getEnclosingScope().isPresent() || (nextScope.getEnclosingScope().get() instanceof GlobalScope)) {
         break;
@@ -127,7 +128,7 @@ public final class Scopes {
   }
 
   public static <T extends Symbol> Set<T> filterSymbolsByAccessModifier(AccessModifier modifier, Collection<T> resolvedUnfiltered) {
-    return new LinkedHashSet<>(resolvedUnfiltered.stream().filter(new IncludesAccessModifierPredicate(modifier)).collect(Collectors.toSet()));
+    return new LinkedHashSet<>(resolvedUnfiltered.stream().filter(new IncludesAccessModifierPredicate(modifier)).collect(toSet()));
   }
 
 

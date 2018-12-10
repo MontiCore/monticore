@@ -2,21 +2,14 @@
 
 package de.monticore.types;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+import de.monticore.types.types._ast.*;
+import de.se_rwth.commons.Names;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-
-import de.monticore.types.types._ast.ASTArrayType;
-import de.monticore.types.types._ast.ASTConstantsTypes;
-import de.monticore.types.types._ast.ASTPrimitiveType;
-import de.monticore.types.types._ast.ASTSimpleReferenceType;
-import de.monticore.types.types._ast.ASTType;
-import de.monticore.types.types._ast.ASTTypeArgument;
-import de.monticore.types.types._ast.ASTWildcardType;
-import de.se_rwth.commons.Names;
 
 // TODO: improve implementations
 public class TypesHelper {
@@ -77,20 +70,25 @@ public class TypesHelper {
     List<String> names = ((ASTSimpleReferenceType) reference).getNameList();
     return names.isEmpty() ? "" : Names.getQualifiedName(names);
   }
-  
+
   public static boolean isGenericTypeWithOneTypeArgument(ASTType type, String simpleRefTypeName) {
     if (!(type instanceof ASTSimpleReferenceType)) {
       return false;
     }
     ASTSimpleReferenceType simpleRefType = (ASTSimpleReferenceType) type;
-    if (!Names.getQualifiedName(simpleRefType.getNameList()).equals(
-        simpleRefTypeName)
-        ||
-        !simpleRefType.isPresentTypeArguments() ||
-        simpleRefType.getTypeArguments().getTypeArgumentList().size() != 1) {
+    if (!simpleRefType.isPresentTypeArguments() || simpleRefType.getTypeArguments().getTypeArgumentList().size() != 1) {
       return false;
     }
-    return true;
+
+    if (simpleRefType.getNameList().size() == 1 && simpleRefTypeName.contains(".")) {
+      if (simpleRefTypeName.endsWith("." + simpleRefType.getName(0))){
+        return true;
+      }
+    }
+    if (Names.getQualifiedName(simpleRefType.getNameList()).equals(simpleRefTypeName)) {
+      return true;
+    }
+    return false;
   }
   
   public static int getArrayDimensionIfArrayOrZero(ASTType astType) {

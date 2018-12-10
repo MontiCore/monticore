@@ -19,7 +19,6 @@ import de.se_rwth.commons.configuration.DelegatingConfigurationContributor;
 /**
  * Configuration of TemplateClass Generator.
  *
- * @author Jerome Pfeiffer
  */
 public class TemplateClassGeneratorConfiguration implements Configuration {
   

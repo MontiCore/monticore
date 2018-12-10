@@ -1,0 +1,10 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+grammar D {
+
+  // Top grammar to test forms of extension
+
+  S = "text" a:S* b:S? c:S;
+
+  T = "text" a:S* b:S? c:S;
+
+}

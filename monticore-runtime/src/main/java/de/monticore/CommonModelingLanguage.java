@@ -2,11 +2,9 @@
 
 package de.monticore;
 
-import com.google.common.collect.ImmutableList;
 import de.monticore.ast.ASTNode;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 
 import java.util.Collection;
@@ -14,13 +12,8 @@ import java.util.LinkedHashSet;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.collect.ImmutableList.copyOf;
 
-/**
- * Base class for modeling languages. Provides access to grammarlanguage-related functionality,
- * like parsing, symbol table creation, model analysis and code generation.
- *
- * @author Pedram Mir Seyed Nazari
- */
 public abstract class CommonModelingLanguage implements ModelingLanguage {
 
   private final String fileEnding;
@@ -34,9 +27,9 @@ public abstract class CommonModelingLanguage implements ModelingLanguage {
   private ModelNameCalculator modelNameCalculator;
 
   /**
-   * @param name the name of the modeling grammarlanguage, e.g., "MontiCore Grammar Language"
+   * @param name       the name of the modeling grammarlanguage, e.g., "MontiCore Grammar Language"
    * @param fileEnding the file ending, e.g., ".cd" or "cd"
-   * {@link de.monticore.symboltable.Symbol}
+   *                   {@link Symbol}
    */
   public CommonModelingLanguage(final String name, final String fileEnding) {
     checkArgument(!isNullOrEmpty(name));
@@ -55,12 +48,12 @@ public abstract class CommonModelingLanguage implements ModelingLanguage {
   public String getName() {
     return name;
   }
-  
+
   @Override
   public String getFileExtension() {
     return fileEnding;
   }
-  
+
   @Override
   public String toString() {
     return getName();
@@ -68,7 +61,7 @@ public abstract class CommonModelingLanguage implements ModelingLanguage {
 
   @Override
   public Collection<ResolvingFilter<? extends Symbol>> getResolvingFilters() {
-    return ImmutableList.copyOf(resolvingFilters);
+    return copyOf(resolvingFilters);
   }
 
   public void addResolvingFilter(final ResolvingFilter<? extends Symbol> resolvingFilter) {

@@ -1,0 +1,12 @@
+
+questionnaire Personal {
+
+  item name "What is your name?" text   140
+  item age  "What is your age?"  number
+
+  item java "Rate your Java skill" skill
+  item cpp  "Rate your C++ skill"  skill
+
+  scale skill range ["Beginner" 1 .. 5 "Expert"]
+}
+

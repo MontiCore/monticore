@@ -13,7 +13,6 @@ import org.eclipse.draw2d.geometry.Dimension;
  * Yes, this functionality was not given, and I had to implement it.
  * </p>
  * 
- * @author Tim Enger
  */
 public class ToolbarLayoutWithMinimumSize extends ToolbarLayout {
   

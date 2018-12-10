@@ -8,7 +8,6 @@ package mc.grammars.literals;
  * grammar inheritance or grammar embedment.
  * The grammar contains literals from Java, e.g., Boolean, Char, String, ....
  *
- * @author Martin Schindler
 */
 
 grammar TestLiterals extends mc.grammars.lexicals.TestLexicals {

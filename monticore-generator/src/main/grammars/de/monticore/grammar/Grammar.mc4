@@ -32,7 +32,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
     ("package" package:(Name& || ".")+ ";")?
   	(importStatement:MCImportStatement)*
 
-    (["component"])? "grammar" Name
+    DeprecatedAnnotation? (["component"])? "grammar" Name
       ("extends" supergrammar:(GrammarReference || ",")+ )?
       "{"
          (
@@ -52,6 +52,10 @@ component grammar Grammar extends de.monticore.literals.Literals {
          |
            ASTRule
          |
+           SymbolRule
+         | 
+           ScopeRule
+         |
            Concept
          |
            StartRule
@@ -60,10 +64,11 @@ component grammar Grammar extends de.monticore.literals.Literals {
 
   MCImportStatement = "import" import:(Name& || ".")+ ("." star:["*"])? ";" ;
 
-  // One OptionBlock and one StartRule only
+  // One OptionBlock, one StartRule, one ScopeRule only
   astrule MCGrammar =
-    ASTGrammarOption max=1
-    ASTStartRule max=1 ;
+    grammarOptions:GrammarOption max=1
+    startRules:StartRule max=1
+    scopeRules:ScopeRule max=1 ;
 
 
   /** A GrammarReference references another grammar
@@ -85,6 +90,8 @@ component grammar Grammar extends de.monticore.literals.Literals {
         FollowOption
       |
         AntlrOption
+      | 
+        KeywordOption
       )*
     "}" ;
 
@@ -103,6 +110,10 @@ component grammar Grammar extends de.monticore.literals.Literals {
   */
   AntlrOption =
     Name  ("=" value:Name |"=" value:String)? ;
+    
+  KeywordOption = 
+    ["allkeywords"] | 
+    "keywords" Name+ ";";
 
   /** The start rule should be the rule defining the whole model.
   If there is no start rule the first rule of the grammar is the start rule.
@@ -111,12 +122,15 @@ component grammar Grammar extends de.monticore.literals.Literals {
   StartRule =
     "start" Name ";";
 
+  DeprecatedAnnotation =
+    "@" {cmpToken(1, "Deprecated")}? Name ( "(" message:String ")" )?;
+
   // ------------------------------------------------------------------------------
   // Productions
 
   /** Productions form the syntactical structure of the grammar
   */
-  interface Prod = Name;
+  interface Prod = DeprecatedAnnotation? Name;
 
   /** ParserProduction are handled by the parser
   */
@@ -140,7 +154,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
   @attribute Block Block used if other than standard mapping shall be used
   */
   LexProd implements Prod =
-    (["fragment"] | ["comment"]  )*
+    DeprecatedAnnotation? (["fragment"] | ["comment"]  )*
     ("token") Name
     (
       (
@@ -162,7 +176,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
   @attribute constant List of all constants
   */
   EnumProd implements Prod =
-    "enum" Name "=" (Constant || "|")+ ";";
+    DeprecatedAnnotation? "enum" Name "=" (Constant || "|")+ ";";
 
 
   /** A ExternalProduction represents a hole in the grammar where another production
@@ -171,7 +185,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
   @attribute genericType External type used for this hole rule
   */
   ExternalProd implements Prod =
-    "external" SymbolDefinition* Name GenericType? ";";
+    DeprecatedAnnotation? "external" SymbolDefinition* Name GenericType? ";";
 
 
   /** An ASTInterfaceProd represents an explicit definition for an interface production
@@ -182,7 +196,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
   @attribute aSTSuperInterface Super interfaces abstract syntax only
   */
   InterfaceProd implements ParserProd =
-    "interface" SymbolDefinition* Name 
+    DeprecatedAnnotation? "interface" SymbolDefinition* Name
     (
       "extends" superInterfaceRule:(RuleReference || "," )+
     |
@@ -199,7 +213,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
   @attribute aSTSuperInterface Super interfaces  (abstract syntax only)
   */
   AbstractProd implements Prod =
-    "abstract" SymbolDefinition* Name 
+    DeprecatedAnnotation? "abstract" SymbolDefinition* Name
     (
       "extends" superRule:(RuleReference || ",")+
     |
@@ -222,7 +236,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
   @attribute alts List of alternatives representing the body of the rule
   */
   ClassProd implements ParserProd =
-    SymbolDefinition* Name
+    DeprecatedAnnotation? SymbolDefinition* Name
     (
        "extends" superRule:(RuleReference || ",")+
     |
@@ -280,7 +294,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
   @attribute Components List of the rule components of this alternative
   */
   Alt =
-    ([rightAssoc:"<rightassoc>"])? component:RuleComponent* ;
+    ([rightAssoc:"<rightassoc>"])? DeprecatedAnnotation? component:RuleComponent* ;
 
 
   /** RuleComponents are parts of the alternatives
@@ -344,8 +358,8 @@ component grammar Grammar extends de.monticore.literals.Literals {
   @attribute iteration Iteration of nonterminal
   */
   NonTerminal implements RuleComponent =
-    (usageName:Name&?  ":")?
-    Name ("@" referencedSymbol:Name)?
+    (usageName:Name&  ":")?
+    Name ("@" referencedSymbol:Name)? (genSymbol:["!!"] symbolName:Name?)?
     (plusKeywords:["&"] | iteration:["?"|"*"|"+"] )*;
 
 
@@ -415,7 +429,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
   @attribute aSTSuperInterface Super interfaces abstract syntax only
   @attribute aSTSuperClass Super productions abstract syntax only
   @attribute methods Methods to be added to the class generation
-  @attribute attributeInAST Attributes to be added to the class generation
+  @attribute AdditionalAttribute Attributes to be added to the class generation
   */
   ASTRule =
      ("astrule" | "ast" /* TODO (BOOTSTRAP): MB ast is deprecated: Remove in version 4.5.4 */ ) type:Name
@@ -425,7 +439,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
       "astimplements" aSTSuperInterface:(GenericType || ",")+
     )*
     (
-      "=" ( Method | AttributeInAST )*
+      "=" ( Method | AdditionalAttribute )*
     )? ";";
 
 
@@ -465,7 +479,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
   @attribute genericType Name of the referring type
   @attribute card Cardinality
   */
-  AttributeInAST =
+  AdditionalAttribute =
     (Name  ":")?
     GenericType
     Card?;
@@ -537,7 +551,37 @@ component grammar Grammar extends de.monticore.literals.Literals {
   // Symbol Table
 
   SymbolDefinition =
-    (genSymbol:[Symbol:"symbol"] ("("symbolKind:Name ")")? ) |
-    genScope:["scope"] ;
+    (genSymbol:["symbol"] ("("symbolName:Name ")")? ) |
+    genScope:["scope"] ("(" (["no_shadowing"] | ["exporting"] | ["ordered"])+ ")")?;
 
+  /** An SymbolRule contains additional information for the class generation
+  process
+  @attribute type Type this rule refers to
+  @attribute superInterface Super interfaces abstract syntax only
+  @attribute superClass Super productions abstract syntax only
+  @attribute methods Methods to be added to the class generation
+  @attribute additionalAttribute Attributes to be added to the class generation
+  */
+  SymbolRule =
+     "symbolrule"  type:Name
+    (
+      "extends" superClass:(GenericType || ",")+
+    |
+      "implements" superInterface:(GenericType || ",")+
+    )*
+    (
+      "=" ( Method | AdditionalAttribute )*
+    )? ";";
+    
+  ScopeRule =
+  	"scoperule" (
+      "extends" superClass:(GenericType || ",")+
+    |
+      "implements" superInterface:(GenericType || ",")+
+    )*
+    (
+      "=" ( Method | AdditionalAttribute )*
+    )? 
+  	 ";";
+    
 }

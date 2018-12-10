@@ -9,7 +9,6 @@ package mc.grammar.types;
  * The grammar contains types from Java, e.g., primitives, void, types with
  * dimensions, reference types, generics, and type parameters.
  *
- * @author Martin Schindler
 */
 grammar ItTestTypes extends mc.grammar.literals.ItTestLiterals {
 

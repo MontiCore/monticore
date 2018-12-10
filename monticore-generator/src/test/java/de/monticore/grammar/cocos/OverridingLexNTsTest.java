@@ -7,11 +7,6 @@ import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- * Created by
- *
- * @author KH
- */
 public class OverridingLexNTsTest extends CocoTest{
 
   private final String MESSAGE =  " The lexical production CARDINALITY must not use a different "

@@ -54,7 +54,7 @@ public class InvolvedFilesReporter extends AReporter {
    * @param outputDir
    */
   public InvolvedFilesReporter(String outputDir) {
-    super(outputDir + File.separator + ReportingConstants.REPORTING_DIR + File.separator,
+    super(outputDir + File.separator,
         SIMPLE_FILE_NAME, ReportingConstants.REPORT_FILE_EXTENSION);
     this.outputDirectory = outputDir;
   }
@@ -150,8 +150,7 @@ public class InvolvedFilesReporter extends AReporter {
    */
   @Override
   public void reportParseInputFile(Path inputFilePath, String modelName) {
-    this.reportingHelper = new ReportCreator(outputDirectory + File.separator
-        + ReportingConstants.REPORTING_DIR + File.separator + modelName);
+    this.reportingHelper = new ReportCreator(outputDirectory + File.separator + modelName);
     inputFiles.clear();
     outputFiles.clear();
     checkedFiles.clear();

@@ -12,7 +12,6 @@ import de.monticore.symboltable.types.references.JTypeReference;
  * The <code>astextends</code> constructs allows both extending another rule
  * or an external type (see {@link JTypeSymbol]). This class helps resolve the respective type.
  *
- * @author  Pedram Mir Seyed Nazari
  */
 public class MCProdOrTypeReference {
 

@@ -9,7 +9,6 @@ import de.monticore.symboltable.mocks.languages.entity.cocos.UniquePropertyNames
 /**
  * Holds the CoCos of the Entity language.
  *
- * @author Robert Heim
  */
 public class EntityLanguageCoCos {
   public EntityCoCoChecker getAllCoCosChecker() {

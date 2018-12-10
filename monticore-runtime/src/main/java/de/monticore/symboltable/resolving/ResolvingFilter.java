@@ -12,10 +12,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * @author Pedram Mir Seyed Nazari
- *
- */
 // TODO PN remove formal type argument, since not needed anymore
 public interface ResolvingFilter<S extends Symbol> {
 

@@ -4,7 +4,6 @@ package mc.grammars.common;
 /**
  * Grammar for common elements of the UML/P-Language-Family
  *
- * @author Martin Schindler, Marita Breuer
  */
 grammar TestCommon extends mc.grammars.types.TestTypes {
     /*========================================================================*/

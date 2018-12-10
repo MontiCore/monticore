@@ -17,7 +17,6 @@ import de.monticore.genericgraphics.view.figures.connections.locators.FigureArro
  * extension of the {@link PolylineConnection} implementation.
  * </p>
  * 
- * @author Tim Enger
  */
 public class FigureEndPolylineConnection extends ExtendedPolylineConnection implements IFigureEndPolylineConnection {
   

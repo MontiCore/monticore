@@ -14,7 +14,6 @@ import com.google.common.io.Files;
 /**
  * A very basic report renderer that creates a verbatim report taking the contents of a given file.
  * 
- * @author (last commit) $Author: ahorst $
  */
 public class ReportRenderer extends AbstractMavenReportRenderer {
   

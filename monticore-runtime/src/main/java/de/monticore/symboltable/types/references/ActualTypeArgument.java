@@ -4,12 +4,6 @@ package de.monticore.symboltable.types.references;
 
 import de.monticore.symboltable.types.TypeSymbol;
 
-/**
- * Represents an actual type argument as in Java.
- *
- * @author Pedram Mir Seyed Nazari
- *
- */
 public class ActualTypeArgument {
 
   private final boolean isLowerBound;

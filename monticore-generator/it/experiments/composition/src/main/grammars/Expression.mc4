@@ -1,0 +1,18 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+// Very simplified grammar to mimic expressions 
+
+component grammar Expression extends de.monticore.MCBasics {
+
+  interface LogicExpr;
+
+  Truth    implements LogicExpr <150> =
+  		tt:["true"] | ff:["false"] ;
+  
+  And      implements LogicExpr <120> =
+  		left:LogicExpr "&&" right:LogicExpr ;
+
+  Not      implements LogicExpr <130> = "!" LogicExpr ;
+
+  Variable implements LogicExpr <140> = Name ;
+
+}

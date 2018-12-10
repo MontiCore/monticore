@@ -24,7 +24,6 @@ import de.monticore.genericgraphics.view.figures.connections.locators.EndPointFi
  * {@link ArrowLocator} for the {@link RotatableDecoration}, in case a
  * source/target figure decoration is set. </p>
  * 
- * @author Tim Enger
  */
 public interface IFigureEndPolylineConnection extends Connection {
   

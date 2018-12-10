@@ -20,9 +20,6 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-/**
- * @author Pedram Mir Seyed Nazari
- */
 public class ArtifactScopeTest {
 
   @Test

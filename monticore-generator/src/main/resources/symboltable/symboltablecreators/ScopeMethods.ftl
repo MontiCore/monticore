@@ -3,6 +3,7 @@ ${signature("ruleSymbol")}
 
 <#assign ruleName = ruleSymbol.getName()>
 <#assign genHelper = glex.getGlobalVar("stHelper")>
+<#assign scopeName = genHelper.getGrammarSymbol().getName() + "Scope">
 <#assign fqn = genHelper.getQualifiedGrammarName()?lower_case>
 <#assign astPrefix = fqn + "._ast.AST">
 
@@ -17,10 +18,10 @@ ${signature("ruleSymbol")}
   protected MutableScope create_${ruleName}(${astPrefix}${ruleName} ast) {
   <#if !genHelper.isNamed(ruleSymbol)>
     // creates new visibility scope
-    return new de.monticore.symboltable.CommonScope(false);
+    return new ${scopeName}(false);
   <#else>
     // creates new shadowing scope
-    return new de.monticore.symboltable.CommonScope(true);
+    return new ${scopeName}(true);
   </#if>
   }
 

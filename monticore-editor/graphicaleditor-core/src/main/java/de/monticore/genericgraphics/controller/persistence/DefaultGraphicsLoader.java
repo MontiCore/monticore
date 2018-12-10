@@ -32,7 +32,6 @@ import de.se_rwth.commons.logging.Log;
  * the {@link DSLTool}. If you want to use your own arguments, just ignore the
  * passed ones and set your own.
  * 
- * @author Tim Enger
  */
 public class DefaultGraphicsLoader implements IGraphicsLoader {
   

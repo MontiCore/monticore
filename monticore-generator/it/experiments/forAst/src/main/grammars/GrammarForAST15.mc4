@@ -1,0 +1,16 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+/* Used in the Reference Manual 
+   Chapter 5, demonstrating AST results
+*/
+
+grammar GrammarForAST15 extends de.monticore.MCBasics {
+
+// nonterminals for the concrete syntax
+S = y:A*;
+A = "...";
+
+// constraining occurrences of A in S:
+ast S = y:A min=2 max=4;
+
+}
+

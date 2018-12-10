@@ -30,7 +30,6 @@ import de.se_rwth.commons.logging.Log;
  * Test for the MontiCore generator. Generates ast files for the example
  * grammars and performs a compilation task for all generated files.
  * 
- * @author Galina Volkova, Sebastian Oberhoff
  */
 public class AstGeneratorTest extends GeneratorTest {
   

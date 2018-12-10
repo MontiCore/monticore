@@ -7,11 +7,6 @@ import de.se_rwth.commons.logging.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- * Created by
- *
- * @author KH
- */
 public class ASTRuleAndNTUseSameAttrNameForDiffNTsTest extends CocoTest{
 
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();

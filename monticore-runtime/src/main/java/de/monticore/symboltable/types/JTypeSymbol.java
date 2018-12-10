@@ -8,9 +8,6 @@ import de.monticore.symboltable.types.references.JTypeReference;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * @author Pedram Mir Seyed Nazari
- */
 public interface JTypeSymbol extends TypeSymbol, ScopeSpanningSymbol {
 
   JTypeSymbolKind KIND = new JTypeSymbolKind();
@@ -30,6 +27,8 @@ public interface JTypeSymbol extends TypeSymbol, ScopeSpanningSymbol {
   Optional<? extends JFieldSymbol> getField(String attributeName);
 
   List<? extends JMethodSymbol> getMethods();
+
+  List<? extends JMethodSymbol> getMethods(String methodName);
 
   Optional<? extends JMethodSymbol> getMethod(String methodName);
 

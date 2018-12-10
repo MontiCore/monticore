@@ -6,8 +6,6 @@ package de.monticore.codegen.mc2cd;
 /**
  * Class diagram stereotypes used by MC grammar -> CD transformation
  *
- * @author  Galina Volkova
- *
  */
 public enum MC2CDStereotypes {
   /**

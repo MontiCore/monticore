@@ -13,9 +13,6 @@ import java.nio.file.Paths;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author Sebastian Oberhoff
- */
 public class AttributeInASTTypeTest {
 
   private ASTCDClass astA;

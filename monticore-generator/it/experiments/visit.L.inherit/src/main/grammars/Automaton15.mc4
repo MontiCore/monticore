@@ -1,0 +1,13 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+
+grammar Automaton15 extends de.monticore.MCBasics {
+
+  Automaton =  "automaton" Name "{" (State|Transition)* "}";
+
+  State = "state" Name ";";
+  
+  Transition =
+    from:Name "-" input:Name ">" to:Name ";";
+
+}
+

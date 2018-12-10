@@ -18,7 +18,6 @@ import java.util.List;
 /**
  * Some helper methods for GrammarDSL
  * 
- * @author krahn
  */
 public class HelperGrammar {
   

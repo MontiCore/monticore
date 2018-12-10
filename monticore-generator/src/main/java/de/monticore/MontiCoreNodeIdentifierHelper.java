@@ -6,8 +6,8 @@ import static de.monticore.generating.templateengine.reporting.commons.Layouter.
 
 import de.monticore.ast.ASTNode;
 import de.monticore.grammar.LexNamer;
+import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
 import de.monticore.grammar.grammar._ast.ASTAntlrOption;
-import de.monticore.grammar.grammar._ast.ASTAttributeInAST;
 import de.monticore.grammar.grammar._ast.ASTConcept;
 import de.monticore.grammar.grammar._ast.ASTConstantGroup;
 import de.monticore.grammar.grammar._ast.ASTFollowOption;
@@ -55,7 +55,7 @@ public class MontiCoreNodeIdentifierHelper extends TypesNodeIdentHelper {
     return format(ast.getName(), nodeName(ast));
   }
   
-  public String getIdent(ASTAttributeInAST ast) {
+  public String getIdent(ASTAdditionalAttribute ast) {
     if (ast.isPresentName()) {
       return format(ast.getName(), nodeName(ast));
     }
@@ -176,8 +176,8 @@ public class MontiCoreNodeIdentifierHelper extends TypesNodeIdentHelper {
     else if (ast instanceof ASTAntlrOption) {
       return getIdent((ASTAntlrOption) ast);
     }
-    else if (ast instanceof ASTAttributeInAST) {
-      return getIdent((ASTAttributeInAST) ast);
+    else if (ast instanceof ASTAdditionalAttribute) {
+      return getIdent((ASTAdditionalAttribute) ast);
     }
     else if (ast instanceof ASTConcept) {
       return getIdent((ASTConcept) ast);

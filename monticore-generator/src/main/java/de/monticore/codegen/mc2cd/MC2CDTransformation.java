@@ -16,7 +16,6 @@ import de.monticore.utils.Link;
  * This is the top-level function accepting a MC AST and taking it all the way
  * through to the finished CD AST.
  *
- * @author Sebastian Oberhoff
  */
 public class MC2CDTransformation implements Function<ASTMCGrammar, ASTCDCompilationUnit> {
   

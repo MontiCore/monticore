@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -24,11 +25,15 @@ import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
+import de.monticore.grammar.grammar._ast.ASTGenericType;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar._ast.ASTMethod;
+import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdComponentSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
@@ -36,9 +41,6 @@ import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
-/**
- * @author Pedram Mir Seyed Nazari
- */
 public class SymbolTableGeneratorHelper extends GeneratorHelper {
   
   public static final String NAME_NONTERMINAL = "Name";
@@ -117,7 +119,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     final Set<MCProdSymbol> ruleSymbolsWithName = new LinkedHashSet<>();
     
     for (final MCProdSymbol rule : grammarSymbol.getProds()) {
-      if (rule.isSymbolDefinition()) {
+      if (rule.isSymbolDefinition() && rule.getName().equals(rule.getSymbolDefinitionKind().get())) {
         ruleSymbolsWithName.add(rule);
       }
     }
@@ -400,7 +402,34 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
         getTargetPackage(), handCodedPath);
   }
   
-  public String getScopeClassName(MCProdSymbol ruleSymbol) {
-    return ruleSymbol.getName() + "Scope";
+  public String getQualifiedASTName(String name) {
+    Optional<MCProdSymbol> prod = grammarSymbol.getProdWithInherited(name);
+    if (prod.isPresent()) {
+      return AST_PREFIX + prod.get().getName();
+    }
+    return name;
   }
+  
+  public String printMethod(ASTMethod meth) {
+    Grammar_WithConceptsPrettyPrinter pp = new Grammar_WithConceptsPrettyPrinter(new IndentPrinter());
+    String code = pp.prettyprint(meth);
+    code = code.replaceFirst("method", "");
+    return code;
+  }
+
+  public String printGenericTypes(List<ASTGenericType> types) {
+    if (types.isEmpty()) {
+      return "";
+    }    
+    StringBuilder sb = new StringBuilder();
+    Grammar_WithConceptsPrettyPrinter pp = new Grammar_WithConceptsPrettyPrinter(new IndentPrinter());
+    String sep = "";
+    for (ASTGenericType typeName: types) {
+      sb.append(sep);
+      sb.append(pp.prettyprint(typeName));
+      sep = ", ";
+    }
+    return sb.toString();
+  }
+  
 }

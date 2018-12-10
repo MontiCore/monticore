@@ -1,0 +1,108 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+
+package de.monticore;
+
+/*
+ * with this grammar, we examine how to define a parser that
+ * allows to swith off recognition of whitespaces (and thus only
+ * parses the input if the whitespaces are under full control of the 
+ * productions)
+ *
+ * This technique only works, when special tokens can be identified
+ * that allow to shut of whitespaces temporarily
+ *
+ * So this grammar shows how NOT to solve the problem (in general)
+ *
+ */
+
+grammar SpaceOnOff {
+ 
+  /* ***********************************************************
+   * Expressions with ">" and ">>" +
+   * Generic Types like "List<List<String>>"
+   */
+  interface Expression;
+
+  ShiftExpression implements Expression <160> =
+        leftExpression:Expression  
+        WSOff ( shiftOp2:"<" "<" 
+        |   shiftOp3:">" ">" ">" 
+        |   shiftOp4:">" ">"	
+        ) WSOn 
+        rightExpression:Expression ;
+
+  ComparisonExpression implements Expression <150> =
+        leftExpression:Expression
+        (  WSOff comparison1:"<" "=" WSOn
+        |  WSOff comparison2:">" "=" WSOn
+        |   comparison3:">"
+        |   comparison4:"<"
+        ) 
+        rightExpression:Expression;
+
+  AddExpression implements Expression <170> =
+        leftExpression:Expression
+        (   additiveOp:"+"
+        |   additiveOp:"-"
+        )
+        rightExpression:Expression;
+
+  BracketExpression implements Expression <310>
+    =  "(" Expression ")";
+
+  NameExpression implements Expression <350>
+    = Name;
+
+  /************************************************************
+   */
+  Type = Name TypeArguments? ;
+
+  TypeArguments = "<" (Type || ",")* ">" ;
+
+
+  /* ***********************************************************
+   * some test NTs
+   */
+  A = Name ;
+  B = Name Name ;
+  C = WSOff Name "," Name WSOn ;
+
+  /* ***********************************************************
+   * Some basic token are still in use:
+   */
+
+  token Name = ( 'a'..'z' | 'A'..'Z' | '_' | '$' )
+               ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '$' )* ;
+  
+  /* ***********************************************************
+   * WS = optional sequence of white spaces
+   * WS1 = has at least one white space
+   */
+  WS = WhiteSpace* ;
+  WS1 = WhiteSpace+ ;
+
+  token WhiteSpace = (' ' | '\t' | '\r' | '\n' ) 
+  	:{ if(isSpaceOn()) {_channel = HIDDEN; } };
+
+  // an empty token like WSOff = WS*  would not work
+  // It would also not work to declare WSOff a nonterminal, because
+  // the lookahead may cause several tokens to be already parsed bevore(!)
+  // the nonterminal WSOff would shut of spaces
+
+  token WSOff = ":!"
+  	:{ spaceOnFlag = false; };
+
+  token WSOn = "!:" 
+  	:{ spaceOnFlag = true; };
+
+  concept antlr {
+    lexerjava {
+      protected boolean spaceOnFlag = true;
+
+      public boolean isSpaceOn() {
+        return spaceOnFlag;
+      }
+    }
+  }
+
+}

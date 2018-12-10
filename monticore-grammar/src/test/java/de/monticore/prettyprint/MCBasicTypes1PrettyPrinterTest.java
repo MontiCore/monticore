@@ -29,10 +29,6 @@ import de.monticore.testmcbasictypes1._parser.TestMCBasicTypes1Parser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 
-/**
- * @author npichler
- */
-
 public class MCBasicTypes1PrettyPrinterTest {
   
   @BeforeClass

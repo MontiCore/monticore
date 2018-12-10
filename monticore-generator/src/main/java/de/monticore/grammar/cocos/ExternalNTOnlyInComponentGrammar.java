@@ -10,7 +10,7 @@ import de.se_rwth.commons.logging.Log;
 /**
  * Checks that external nonterminals only occur in a component grammar.
  *
- * @author KH
+
  */
 public class ExternalNTOnlyInComponentGrammar implements GrammarASTMCGrammarCoCo {
   

@@ -22,7 +22,6 @@ import org.eclipse.swt.SWT;
  * a {@link ManhattanConnectionRouter})</li>
  * </p>
  * 
- * @author Tim Enger
  */
 public class ConnectionFactory {
   

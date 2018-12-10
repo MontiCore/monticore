@@ -39,7 +39,6 @@ import org.eclipse.draw2d.geometry.Rectangle;
  * figure.
  * </p>
  * 
- * @author Tim Enger
  */
 public class EndPointFigureLocator extends ConnectionLocator {
   

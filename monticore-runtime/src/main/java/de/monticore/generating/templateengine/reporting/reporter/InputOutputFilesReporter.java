@@ -61,7 +61,7 @@ public class InputOutputFilesReporter extends AReporter {
    * @param outputDir
    */
   public InputOutputFilesReporter(String outputDir) {
-    super(outputDir + File.separator + ReportingConstants.REPORTING_DIR + File.separator,
+    super(outputDir + File.separator,
         SIMPLE_FILE_NAME, ReportingConstants.REPORT_FILE_EXTENSION);
     this.outputDirectory = outputDir;
   }
@@ -188,8 +188,7 @@ public class InputOutputFilesReporter extends AReporter {
     // this entirely resets the gathered information, hence the corresponding
     // event reportParseInputFile must only be called once for each actual input
     // file, i.e., the things that are parsed
-    this.reportingHelper = new ReportCreator(outputDirectory + File.separator
-        + ReportingConstants.REPORTING_DIR + File.separator + modelName);
+    this.reportingHelper = new ReportCreator(outputDirectory + File.separator + modelName);
     inputFiles.clear();
     hwcFiles.clear();
     outputFiles.clear();

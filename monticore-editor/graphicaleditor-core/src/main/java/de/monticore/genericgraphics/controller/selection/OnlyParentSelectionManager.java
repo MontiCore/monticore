@@ -20,7 +20,6 @@ import org.eclipse.jface.viewers.StructuredSelection;
  * Independent of which child figure the user clicked on only the parent, the
  * outermost figure, is selected only.
  * 
- * @author Tim Enger
  */
 public class OnlyParentSelectionManager extends SelectionManager {
   

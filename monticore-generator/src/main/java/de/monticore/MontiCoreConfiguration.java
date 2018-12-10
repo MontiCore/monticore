@@ -49,6 +49,8 @@ public final class MontiCoreConfiguration implements Configuration {
   
   public static final String DEFAULT_HANDCODED_JAVA_PATH = "java";
 
+  public static final String DEFAULT_REPORT_PATH = "reports";
+
   public static final String DEFAULT_HANDCODED_TEMPLATE_PATH = "resource";
 
   public static final String DEFAULT_GRAMMAR_PATH = "grammars";
@@ -62,7 +64,8 @@ public final class MontiCoreConfiguration implements Configuration {
     GRAMMARS("grammars"), GRAMMARS_SHORT("g"), MODELPATH("modelPath"), MODELPATH_SHORT("mp"),
     OUT("out"), OUT_SHORT("o"), HANDCODEDPATH("handcodedPath"), HANDCODEDPATH_SHORT("hcp"),
     TEMPLATEPATH("templatePath"), TEMPLATEPATH_SHORT("fp"),
-    FORCE("force"), FORCE_SHORT("f");
+    FORCE("force"), FORCE_SHORT("f"),
+    REPORT("report"), REPORT_SHORT("r");
 
     String name;
 
@@ -371,6 +374,25 @@ public final class MontiCoreConfiguration implements Configuration {
     }
     // fallback default is "out"
     return new File(DEFAULT_OUTPUT_PATH);
+  }
+
+  /**
+   * Getter for the output directory stored in this configuration. A fallback
+   * default is "monticore/sourcecode".
+   *
+   * @return output directory file
+   */
+  public File getReport() {
+    Optional<String> report = getAsString(Options.REPORT);
+    if (report.isPresent()) {
+      return new File(report.get());
+    }
+    report = getAsString(Options.REPORT_SHORT);
+    if (report.isPresent()) {
+      return new File(report.get());
+    }
+    // fallback default is "out/report"
+    return new File(getOut(), DEFAULT_REPORT_PATH);
   }
 
   /**

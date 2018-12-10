@@ -4,9 +4,6 @@ package de.monticore.symboltable.types;
 
 import de.monticore.symboltable.SymbolKind;
 
-/**
- * @author Pedram Mir Seyed Nazari
- */
 public class JTypeSymbolKind extends TypeSymbolKind {
 
   private static final String NAME = JTypeSymbolKind.class.getName();

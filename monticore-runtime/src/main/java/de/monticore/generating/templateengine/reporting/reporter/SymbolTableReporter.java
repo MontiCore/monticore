@@ -53,7 +53,7 @@ public class SymbolTableReporter extends AReporter {
       String outputDir,
       String modelName,
       ReportingRepository repository) {
-    super(outputDir + File.separator + ReportingConstants.REPORTING_DIR + File.separator
+    super(outputDir + File.separator
         + modelName,
         Names.getSimpleName(modelName) + "_ST", ReportingConstants.OD_FILE_EXTENSION);
     this.outputDir = outputDir;

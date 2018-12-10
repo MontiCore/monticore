@@ -1,0 +1,22 @@
+/* (c) Monticore license: https://github.com/MontiCore/monticore */
+/* Used in the Reference Manual 
+   Chapter 4, Section 4.2 Productions
+*/
+
+grammar MutualRecursion extends de.monticore.MCBasics {
+
+// ----------------------- Mutual Recursion Testen
+
+/* geht nicht:
+--  A = B "!" ;
+--  B = C "::" | A "?" | "End" ;
+--  C = A | B "!" ;
+*/
+
+/* geht: */
+  interface A = B;
+  B implements A = "::"  B "?"  "End" ;
+  C implements A = B "!" "!" ;
+
+}
+

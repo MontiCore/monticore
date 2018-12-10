@@ -2,11 +2,13 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import de.monticore.grammar.grammar._ast.*;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
-import de.monticore.utils.Link;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
+import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
+import de.monticore.grammar.grammar._ast.ASTGenericType;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.umlcd4a.cd4analysis._ast.*;
+import de.monticore.utils.Link;
 
 import java.util.Optional;
 import java.util.Set;
@@ -20,7 +22,6 @@ import static de.monticore.codegen.mc2cd.TransformationHelper.getUsageName;
  * The CDAttributes generated from AttributeInASTs completely hide any CDAttributes derived from
  * NonTerminals.
  *
- * @author Sebastian Oberhoff
  */
 public class RemoveOverriddenAttributesTranslation implements
     UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {
@@ -42,30 +43,30 @@ public class RemoveOverriddenAttributesTranslation implements
 
   private boolean isOverridden(ASTNode source, Link<?, ASTCDClass> classLink) {
     Optional<String> usageName = getUsageName(classLink.source(), source);
-    Set<ASTAttributeInAST> attributesInASTLinkingToSameClass = attributesInASTLinkingToSameClass(
+    Set<ASTAdditionalAttribute> attributesInASTLinkingToSameClass = attributesInASTLinkingToSameClass(
         classLink);
     attributesInASTLinkingToSameClass.remove(source);
 
     boolean matchByUsageName = usageName.isPresent() && attributesInASTLinkingToSameClass.stream()
-        .map(ASTAttributeInAST::getNameOpt)
+        .map(ASTAdditionalAttribute::getNameOpt)
         .filter(Optional::isPresent)
         .map(Optional::get)
         .anyMatch(usageName.get()::equals);
 
     boolean matchByTypeName = !usageName.isPresent() && attributesInASTLinkingToSameClass.stream()
         .filter(attributeInAST -> !attributeInAST.getNameOpt().isPresent())
-        .map(ASTAttributeInAST::getGenericType)
+        .map(ASTAdditionalAttribute::getGenericType)
         .map(ASTGenericType::getTypeName)
         .anyMatch(getName(source).orElse("")::equals);
 
     return matchByUsageName || matchByTypeName;
   }
 
-  private Set<ASTAttributeInAST> attributesInASTLinkingToSameClass(Link<?, ASTCDClass> link) {
+  private Set<ASTAdditionalAttribute> attributesInASTLinkingToSameClass(Link<?, ASTCDClass> link) {
     return link.rootLink().getLinks(ASTNode.class, ASTCDClass.class).stream()
         .filter(attributeLink -> attributeLink.target() == link.target())
         .flatMap(astRuleLink ->
-            astRuleLink.getLinks(ASTAttributeInAST.class, ASTCDAttribute.class).stream())
+            astRuleLink.getLinks(ASTAdditionalAttribute.class, ASTCDAttribute.class).stream())
         .map(Link::source).collect(Collectors.toSet());
   }
 
@@ -74,12 +75,12 @@ public class RemoveOverriddenAttributesTranslation implements
     if (!modifier.isPresent()) {
       return true;
     }
-    Optional<ASTStereotype> stereotype = modifier.get().getStereotypeOpt();
+    Optional<ASTCDStereotype> stereotype = modifier.get().getStereotypeOpt();
     if (!stereotype.isPresent()) {
       return true;
     }
     return stereotype.get().getValueList().stream()
-        .map(ASTStereoValue::getName)
+        .map(ASTCDStereoValue::getName)
         .noneMatch(MC2CDStereotypes.INHERITED.toString()::equals);
   }
 }

@@ -41,7 +41,6 @@ import org.eclipse.draw2d.PositionConstants;
  * </ul>
  * </p>
  * 
- * @author Tim Enger
  */
 public enum ConnectionLocatorPosition {
   /**

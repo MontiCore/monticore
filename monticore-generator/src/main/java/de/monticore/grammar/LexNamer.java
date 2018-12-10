@@ -12,7 +12,6 @@ import de.se_rwth.commons.logging.Log;
 /**
  * Class generates human readable names for Lexersymbols
  * 
- * @author krahn
  */
 public class LexNamer {
   

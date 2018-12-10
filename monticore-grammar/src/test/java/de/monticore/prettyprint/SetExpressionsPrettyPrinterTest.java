@@ -20,9 +20,6 @@ import de.monticore.testsetexpressions._visitor.TestSetExpressionsVisitor;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 
-/**
- * @author npichler
- */
 public class SetExpressionsPrettyPrinterTest {
   
   @BeforeClass
