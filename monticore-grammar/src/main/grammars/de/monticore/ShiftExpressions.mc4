@@ -13,7 +13,8 @@ ThisExpression implements Expression <280> =
 ArrayExpression implements Expression <250> =
 	Expression "[" indexExpression:Expression "]";
 
-interface ShiftExpression astextends de.monticore.expressionsbasis._ast.ASTExpression =
+// Use "astextends after Release of MC 5.0.3 and delete TOP"
+interface ShiftExpression =
 	leftExpression:Expression shiftOp:"" rightExpression:Expression;
 
 // It is not possible to define "<<", ">>" or ">>>".
