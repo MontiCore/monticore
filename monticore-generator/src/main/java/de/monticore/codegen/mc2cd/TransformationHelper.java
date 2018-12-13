@@ -430,7 +430,7 @@ public final class TransformationHelper {
     return refGrammarName + "." + type.getTypeName();
   }
 
-  public static void addStereoType(ASTCDClass type, String stereotypeName,
+  public static void addStereoType(ASTCDType type, String stereotypeName,
       String stereotypeValue) {
     if (!type.getModifierOpt().isPresent()) {
       type.setModifier(CD4AnalysisNodeFactory.createASTModifier());
@@ -439,14 +439,12 @@ public final class TransformationHelper {
         stereotypeName, stereotypeValue);
   }
 
-  public static void addStereoType(ASTCDInterface type,
-      String stereotypeName,
-      String stereotypeValue) {
-    if (!type.isPresentModifier()) {
+  public static void addStereoType(ASTCDType type, String stereotypeName) {
+    if (!type.getModifierOpt().isPresent()) {
       type.setModifier(CD4AnalysisNodeFactory.createASTModifier());
     }
-    addStereotypeValue(type.getModifier(),
-        stereotypeName, stereotypeValue);
+    addStereotypeValue(type.getModifierOpt().get(),
+            stereotypeName);
   }
 
   public static void addStereoType(ASTCDAttribute attribute,
@@ -472,15 +470,28 @@ public final class TransformationHelper {
       String stereotypeValue) {
     if (!astModifier.isPresentStereotype()) {
       astModifier.setStereotype(CD4AnalysisNodeFactory
-          .createASTStereotype());
+          .createASTCDStereotype());
     }
-    List<ASTStereoValue> stereoValueList = astModifier.getStereotype()
+    List<ASTCDStereoValue> stereoValueList = astModifier.getStereotype()
         .getValueList();
-    ASTStereoValue stereoValue = CD4AnalysisNodeFactory
-        .createASTStereoValue();
+    ASTCDStereoValue stereoValue = CD4AnalysisNodeFactory
+        .createASTCDStereoValue();
     stereoValue.setName(stereotypeName);
     stereoValue.setValue(stereotypeValue);
     stereoValueList.add(stereoValue);
   }
 
+  public static void addStereotypeValue(ASTModifier astModifier,
+                                        String stereotypeName) {
+    if (!astModifier.isPresentStereotype()) {
+      astModifier.setStereotype(CD4AnalysisNodeFactory
+              .createASTCDStereotype());
+    }
+    List<ASTCDStereoValue> stereoValueList = astModifier.getStereotype()
+            .getValueList();
+    ASTCDStereoValue stereoValue = CD4AnalysisNodeFactory
+            .createASTCDStereoValue();
+    stereoValue.setName(stereotypeName);
+    stereoValueList.add(stereoValue);
+  }
 }

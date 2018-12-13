@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("name")}
+${signature("className", "symbolName")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#-- Copyright -->
 ${defineHookPoint("JavaCopyright")}
@@ -14,40 +14,40 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import de.monticore.symboltable.serializing.ISerialization;
 
-class ${name}SymbolSerialization 
-    implements ISerialization<${name}Symbol> {
+class ${className} 
+    implements ISerialization<${symbolName}Symbol> {
     
   @Override
-  public ${name}Symbol deserialize(JsonElement json, Type typeOfT,
+  public ${symbolName}Symbol deserialize(JsonElement json, Type typeOfT,
       JsonDeserializationContext context) throws JsonParseException {
     JsonObject jsonObject = json.getAsJsonObject();
-    String kind = jsonObject.get("kind").getAsString();
-    if(${name}Symbol.class.getName().equals(kind)) {
-      String name = jsonObject.get("name").getAsString();
-      ${name}SymbolBuilder builder = new ${name}SymbolBuilder();
+    String kind = jsonObject.get(KIND).getAsString();
+    if(${symbolName}Symbol.class.getName().equals(kind)) {
+      String name = jsonObject.get(NAME).getAsString();
+      ${symbolName}SymbolBuilder builder = new ${symbolName}SymbolBuilder();
       builder.name(name);
       
       //TODO: Add symbol-specific attributes
       
       return builder.build();
     }
-    throw new JsonParseException("Deserialization of '${name}Symbol' failed!");
+    throw new JsonParseException("Deserialization of '${symbolName}Symbol' failed!");
   }
     
   @Override
-  public JsonElement serialize(${name}Symbol src, Type typeOfSrc,
+  public JsonElement serialize(${symbolName}Symbol src, Type typeOfSrc,
       JsonSerializationContext context) {
     JsonObject json = new JsonObject();
-    json.addProperty("kind", ${name}Symbol.class.getName());
-    json.addProperty("name", src.getName());
+    json.addProperty(KIND, ${symbolName}Symbol.class.getName());
+    json.addProperty(NAME, src.getName());
     
     //TODO: Add symbol-specific attributes
     return json;
   }
   
   @Override
-  public Class<${name}Symbol> getSerializedClass() {
-    return ${name}Symbol.class;
+  public Class<${symbolName}Symbol> getSerializedClass() {
+    return ${symbolName}Symbol.class;
   }
 }
   

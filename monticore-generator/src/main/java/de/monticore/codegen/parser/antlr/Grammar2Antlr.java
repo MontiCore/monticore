@@ -2,19 +2,9 @@
 
 package de.monticore.codegen.parser.antlr;
 
-import static de.monticore.codegen.parser.ParserGeneratorHelper.printIteration;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
@@ -22,34 +12,7 @@ import de.monticore.grammar.DirectLeftRecursionDetector;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.PredicatePair;
-import de.monticore.grammar.grammar._ast.ASTAlt;
-import de.monticore.grammar.grammar._ast.ASTAnything;
-import de.monticore.grammar.grammar._ast.ASTBlock;
-import de.monticore.grammar.grammar._ast.ASTClassProd;
-import de.monticore.grammar.grammar._ast.ASTConstant;
-import de.monticore.grammar.grammar._ast.ASTConstantGroup;
-import de.monticore.grammar.grammar._ast.ASTEnumProd;
-import de.monticore.grammar.grammar._ast.ASTEof;
-import de.monticore.grammar.grammar._ast.ASTGrammarNode;
-import de.monticore.grammar.grammar._ast.ASTLexActionOrPredicate;
-import de.monticore.grammar.grammar._ast.ASTLexAlt;
-import de.monticore.grammar.grammar._ast.ASTLexAnyChar;
-import de.monticore.grammar.grammar._ast.ASTLexBlock;
-import de.monticore.grammar.grammar._ast.ASTLexChar;
-import de.monticore.grammar.grammar._ast.ASTLexCharRange;
-import de.monticore.grammar.grammar._ast.ASTLexNonTerminal;
-import de.monticore.grammar.grammar._ast.ASTLexOption;
-import de.monticore.grammar.grammar._ast.ASTLexProd;
-import de.monticore.grammar.grammar._ast.ASTLexSimpleIteration;
-import de.monticore.grammar.grammar._ast.ASTLexString;
-import de.monticore.grammar.grammar._ast.ASTMCAnything;
-import de.monticore.grammar.grammar._ast.ASTNonTerminal;
-import de.monticore.grammar.grammar._ast.ASTOptionValue;
-import de.monticore.grammar.grammar._ast.ASTProd;
-import de.monticore.grammar.grammar._ast.ASTRuleReference;
-import de.monticore.grammar.grammar._ast.ASTSemanticpredicateOrAction;
-import de.monticore.grammar.grammar._ast.ASTTerminal;
-import de.monticore.grammar.grammar._ast.GrammarNodeFactory;
+import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
@@ -57,6 +20,10 @@ import de.monticore.grammar.symboltable.MCProdComponentSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.*;
+
+import static de.monticore.codegen.parser.ParserGeneratorHelper.printIteration;
 
 public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
 
@@ -728,6 +695,10 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
     altList.add(alt);
     if (alt.isRightAssoc()) {
       addToAntlrCode(ParserGeneratorHelper.RIGHTASSOC);
+    }
+    if (alt.isPresentDeprecatedAnnotation()) {
+      String message = "Deprecated syntax: " + alt.getDeprecatedAnnotation().getMessageOpt().orElse("");
+      addToAction("de.se_rwth.commons.logging.Log.warn(\"" + message + "\");");
     }
   }
 

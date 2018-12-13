@@ -2,11 +2,10 @@
 
 package de.monticore.codegen.cd2java.ast;
 
-import java.util.Optional;
-
 import com.google.common.base.Joiner;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
+import de.monticore.generating.GeneratorSetup;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.TypesHelper;
@@ -14,18 +13,13 @@ import de.monticore.types.TypesPrinter;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.types.types._ast.ASTVoidType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDDefinition;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTStereotype;
+import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.umlcd4a.cd4analysis._visitor.CD4AnalysisVisitor;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
-import de.monticore.generating.GeneratorSetup;
+
+import java.util.Optional;
 
 public class AstGeneratorHelper extends GeneratorHelper {
 

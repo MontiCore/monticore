@@ -2,11 +2,13 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import de.monticore.grammar.grammar._ast.*;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
-import de.monticore.utils.Link;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
+import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
+import de.monticore.grammar.grammar._ast.ASTGenericType;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.umlcd4a.cd4analysis._ast.*;
+import de.monticore.utils.Link;
 
 import java.util.Optional;
 import java.util.Set;
@@ -73,12 +75,12 @@ public class RemoveOverriddenAttributesTranslation implements
     if (!modifier.isPresent()) {
       return true;
     }
-    Optional<ASTStereotype> stereotype = modifier.get().getStereotypeOpt();
+    Optional<ASTCDStereotype> stereotype = modifier.get().getStereotypeOpt();
     if (!stereotype.isPresent()) {
       return true;
     }
     return stereotype.get().getValueList().stream()
-        .map(ASTStereoValue::getName)
+        .map(ASTCDStereoValue::getName)
         .noneMatch(MC2CDStereotypes.INHERITED.toString()::equals);
   }
 }
