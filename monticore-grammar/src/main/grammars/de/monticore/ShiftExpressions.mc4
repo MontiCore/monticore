@@ -13,7 +13,9 @@ ThisExpression implements Expression <280> =
 ArrayExpression implements Expression <250> =
 	Expression "[" indexExpression:Expression "]";
 
-interface ShiftExpression;
+interface ShiftExpression astextends de.monticore.expressionsbasis._ast.ASTExpression =
+	leftExpression:Expression shiftOp:"" rightExpression:Expression;
+
 // It is not possible to define "<<", ">>" or ">>>".
 // Parsing generic typs like "List<List<String>>" leads to problems.
 		
