@@ -798,13 +798,13 @@ public class CdDecorator {
     String methodSetAbsent = "set" + nativeName + "Absent";
     String toParse = "public " + returnType + " " + methodSetAbsent + "() ;";
     HookPoint getMethodBody = new TemplateHookPoint("ast.additionalmethods.SetAbsent",
-        GeneratorHelper.getJavaAndCdConformName(attribute.getName()), isBuilderClass, isInherited);
+        GeneratorHelper.getJavaAndCdConformName(attribute.getName()), isBuilderClass, isInherited, GeneratorHelper.isReferencedSymbolAttribute(attribute));
     replaceMethodBodyTemplate(type, toParse, getMethodBody);
 
     String methodSetOpt = "set" + nativeName + "Opt";
     toParse = "public " + returnType + " " + methodSetOpt + "(" + TypesPrinter.printType(attribute.getType()) + " value) ;";
     getMethodBody = new TemplateHookPoint("ast.additionalmethods.SetOpt",
-        GeneratorHelper.getJavaAndCdConformName(attribute.getName()), isBuilderClass, isInherited);
+        GeneratorHelper.getJavaAndCdConformName(attribute.getName()), isBuilderClass, isInherited, GeneratorHelper.isReferencedSymbolAttribute(attribute));
     replaceMethodBodyTemplate(type, toParse, getMethodBody);
   }
 

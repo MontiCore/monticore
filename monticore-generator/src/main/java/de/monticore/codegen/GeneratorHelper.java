@@ -562,7 +562,7 @@ public class GeneratorHelper extends TypesHelper {
     return true;
   }
 
-  public boolean isReferencedSymbolAttribute(ASTCDAttribute attribute) {
+  public static boolean isReferencedSymbolAttribute(ASTCDAttribute attribute) {
     if (CD4AnalysisHelper.hasStereotype(attribute, MC2CDStereotypes.REFERENCED_SYMBOL.toString())) {
       return true;
     } else {

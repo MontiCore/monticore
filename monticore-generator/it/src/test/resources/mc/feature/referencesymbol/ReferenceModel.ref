@@ -4,4 +4,9 @@ begin ReferenceTest {
   symbol B;
   symbol C;
   ref B;
+
+  optRef A;
+
+  noRef a;
+  noRef A;
 } end
