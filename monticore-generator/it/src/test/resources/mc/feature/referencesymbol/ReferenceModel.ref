@@ -9,4 +9,6 @@ begin ReferenceTest {
 
   noRef a;
   noRef A;
+
+  listRef A B C;
 } end

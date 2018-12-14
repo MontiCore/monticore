@@ -138,8 +138,7 @@ public class CdEmfDecorator extends CdDecorator {
 
       Optional<ASTCDClass> builder = astHelper.getASTBuilder(clazz);
       builder.ifPresent(astcdClass -> decorateBuilderClass(astcdClass, astHelper, cdDefinition));
-      addReferencedSymbolAttributes(clazz, astHelper);
-      
+
       glex.replaceTemplate("ast.AstImports", clazz, new TemplateHookPoint("ast_emf.AstEImports"));
     }
     

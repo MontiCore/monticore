@@ -90,9 +90,9 @@ public class CdDecorator {
     this.symbolTable = symbolTable;
     this.targetPath = targetPath;
   }
-  
+
   protected void addAbstractStereotype(ASTCDDefinition def) {
-    for ( ASTCDClass clazz: def.getCDClassList()) {
+    for (ASTCDClass clazz : def.getCDClassList()) {
       ASTModifier modifier;
       if (clazz.isPresentModifier()) {
         modifier = clazz.getModifier();
@@ -107,9 +107,9 @@ public class CdDecorator {
           }
           ASTCDStereoValue value = CD4AnalysisMill.cDStereoValueBuilder().setName("Abstract").build();
           stereo.getValueList().add(value);
-       } 
+        }
       }
-    } 
+    }
   }
 
   public void decorate(ASTCDCompilationUnit cdCompilationUnit) {
@@ -119,7 +119,7 @@ public class CdDecorator {
 
     // Run over classdiagramm and converts cd types to mc-java types
     astHelper.transformCdTypes2Java();
-    
+
     addAbstractStereotype(cdDefinition);
 
     // Interface for all ast nodes of the language
@@ -151,7 +151,6 @@ public class CdDecorator {
 
       Optional<ASTCDClass> builder = astHelper.getASTBuilder(clazz);
       builder.ifPresent(astcdClass -> decorateBuilderClass(astcdClass, astHelper, cdDefinition));
-      addReferencedSymbolAttributes(clazz, astHelper);
     }
 
     cdDefinition.getCDClassList().forEach(c -> makeAbstractIfHWC(c));
@@ -253,146 +252,127 @@ public class CdDecorator {
     addOptionalSetMethods(clazz, scopeAttribute.get(), scopeName);
   }
 
-  protected void addReferencedSymbolAttributes(ASTCDClass clazz, AstGeneratorHelper astHelper) {
-    List<ASTCDAttribute> attributes = Lists.newArrayList(clazz.getCDAttributeList());
-    for (ASTCDAttribute attribute : attributes) {
-      if (GeneratorHelper.isInherited(attribute)
-          || !CD4AnalysisHelper.hasStereotype(attribute,
-          MC2CDStereotypes.REFERENCED_SYMBOL.toString())) {
-        continue;
-      }
-      String referencedSymbol = CD4AnalysisHelper.getStereotypeValues(attribute,
-          MC2CDStereotypes.REFERENCED_SYMBOL.toString()).get(0);
-      String symbolName = getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf("Symbol"));
-      String referencedNode = GeneratorHelper.AST_PREFIX + symbolName;
-      referencedNode = GeneratorHelper.getPackageName(astHelper.getAstPackage(), referencedNode);
-      Optional<ASTCDAttribute> astcdAttribute = cdTransformation.addCdAttribute(clazz, attribute.getName() + "Definition", "Optional<" + referencedNode + ">", "protected");
-      Preconditions.checkArgument(astcdAttribute.isPresent());
-    }
-  }
-
   protected void addReferencedSymbolMethods(ASTCDClass clazz, AstGeneratorHelper astHelper) {
     List<ASTCDAttribute> attributes = Lists.newArrayList(clazz.getCDAttributeList());
     for (ASTCDAttribute attribute : attributes) {
-      if (GeneratorHelper.isInherited(attribute)
-          || !CD4AnalysisHelper.hasStereotype(attribute,
+      if (!GeneratorHelper.isInherited(attribute)
+          && CD4AnalysisHelper.hasStereotype(attribute,
           MC2CDStereotypes.REFERENCED_SYMBOL.toString())) {
-        continue;
+        if (GeneratorHelper.isListType(attribute.printType())) {
+          addReferencedSymbolListMethods(attribute, astHelper, clazz);
+        } else {
+          addReferencedSymbolOptMethods(attribute, astHelper, clazz);
+        }
       }
-      // TODO PN use a general helper function
-      // TODO PN use import statements instead of qualified names
-      String referencedSymbol = CD4AnalysisHelper.getStereotypeValues(attribute,
-          MC2CDStereotypes.REFERENCED_SYMBOL.toString()).get(0);
-
-      if (!getQualifier(referencedSymbol).isEmpty()) {
-        referencedSymbol = SymbolTableGeneratorHelper
-            .getQualifiedSymbolType(getQualifier(referencedSymbol)
-                .toLowerCase(), getSimpleName(referencedSymbol));
-      }
-
-      String returnType;
-      String nameSuffix;
-      if (astHelper.isListAstNode(attribute)) {
-        returnType = "java.util.Collection<" + referencedSymbol + ">";
-        nameSuffix = "Symbols";
-      } else {
-        returnType = "Optional<" + referencedSymbol + ">";
-        nameSuffix = "Symbol";
-      }
-
-      // TODO PN handle both from:Name@Foo and from:QualifiedName@Foo
-      String symbolName = getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf("Symbol"));
-      String methodNameGetOpt = "get" + StringTransformations.capitalize(attribute.getName()) + nameSuffix + "Opt";
-      String toParseOpt = "public " + returnType + " "
-          + methodNameGetOpt + "() ;";
-      HookPoint getMethodBodyOpt = new TemplateHookPoint(
-          "ast.additionalmethods.GetReferencedSymbolOpt",
-          attribute, referencedSymbol, symbolName);
-      replaceMethodBodyTemplate(clazz, toParseOpt, getMethodBodyOpt);
-
-      String methodNameGet = "get"+StringTransformations.capitalize(attribute.getName())+nameSuffix;
-      String toParse = "public " + referencedSymbol + " " + methodNameGet + "() ;";
-      HookPoint getMethodBody = new TemplateHookPoint(
-          "ast.additionalmethods.GetReferencedSymbol",
-          attribute.getName());
-      replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
-
-      String methodNameIsPresent = "isPresent" + StringTransformations.capitalize(attribute.getName()) + nameSuffix;
-      String toParseIsPresent = "public boolean " + methodNameIsPresent + "() ;";
-      HookPoint getMethodBodyIsPresent = new TemplateHookPoint(
-          "ast.additionalmethods.IsPresentReferencedSymbol",
-          attribute.getName());
-      replaceMethodBodyTemplate(clazz, toParseIsPresent, getMethodBodyIsPresent);
     }
+  }
+
+  protected void addReferencedSymbolOptMethods(ASTCDAttribute attribute, AstGeneratorHelper astHelper, ASTCDClass clazz) {
+    String referencedSymbol = astHelper.getReferencedSymbolName(attribute);
+    String nameSuffix = "Symbol";
+
+    // TODO PN handle both from:Name@Foo and from:QualifiedName@Foo
+    String methodNameGetOpt = "get" + StringTransformations.capitalize(attribute.getName()) + nameSuffix + "Opt";
+    String toParseOpt = "public " + "Optional<" + referencedSymbol + ">" + " "
+        + methodNameGetOpt + "() ;";
+    HookPoint getMethodBodyOpt = new TemplateHookPoint(
+        "ast.symbolreferencemethods.GetReferencedSymbolOpt",
+        attribute.getName(), referencedSymbol, GeneratorHelper.isOptional(attribute));
+    replaceMethodBodyTemplate(clazz, toParseOpt, getMethodBodyOpt);
+
+    String methodNameGet = "get" + StringTransformations.capitalize(attribute.getName()) + nameSuffix;
+    String toParse = "public " + referencedSymbol + " " + methodNameGet + "() ;";
+    HookPoint getMethodBody = new TemplateHookPoint(
+        "ast.symbolreferencemethods.GetReferencedSymbol",
+        attribute.getName());
+    replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
+
+    String methodNameIsPresent = "isPresent" + StringTransformations.capitalize(attribute.getName()) + nameSuffix;
+    String toParseIsPresent = "public boolean " + methodNameIsPresent + "() ;";
+    HookPoint getMethodBodyIsPresent = new TemplateHookPoint(
+        "ast.symbolreferencemethods.IsPresentReferencedSymbol",
+        attribute.getName());
+    replaceMethodBodyTemplate(clazz, toParseIsPresent, getMethodBodyIsPresent);
+  }
+
+  public void addReferencedSymbolListMethods(ASTCDAttribute attribute, AstGeneratorHelper astHelper, ASTCDClass clazz) {
+    String referencedSymbol = astHelper.getReferencedSymbolName(attribute);
+    String nameSuffix = "SymbolList";
+    String methodNameGetList = "get" + StringTransformations.capitalize(attribute.getName()) + nameSuffix;
+    String toParseOpt = "public " + "java.util.List<Optional<" + referencedSymbol + ">>" + " "
+        + methodNameGetList + "() ;";
+    HookPoint getMethodBodyOpt = new TemplateHookPoint(
+        "ast.symbolreferencemethods.GetReferencedSymbolList.ftl",
+        attribute.getName(), referencedSymbol);
+    replaceMethodBodyTemplate(clazz, toParseOpt, getMethodBodyOpt);
   }
 
   protected void addDefinitionMethods(ASTCDClass clazz, AstGeneratorHelper astHelper) {
     List<ASTCDAttribute> attributes = Lists.newArrayList(clazz.getCDAttributeList());
     for (ASTCDAttribute attribute : attributes) {
-      if (GeneratorHelper.isInherited(attribute)
-          || !CD4AnalysisHelper.hasStereotype(attribute,
+      if (!GeneratorHelper.isInherited(attribute)
+          && CD4AnalysisHelper.hasStereotype(attribute,
           MC2CDStereotypes.REFERENCED_SYMBOL.toString())) {
-        continue;
+        if (GeneratorHelper.isListType(attribute.printType())) {
+          //if the name is a ist
+          addReferencedDefinitionListMethods(attribute, astHelper, clazz);
+        } else {
+          //if the name is mandatory or optional
+          addReferencedDefinitionOptMethods(attribute, astHelper, clazz);
+        }
+
       }
-
-      String referencedSymbol = CD4AnalysisHelper.getStereotypeValues(attribute,
-          MC2CDStereotypes.REFERENCED_SYMBOL.toString()).get(0);
-      String symbolName = getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf("Symbol"));
-      String referencedNode = GeneratorHelper.AST_PREFIX + symbolName;
-      referencedNode = GeneratorHelper.getPackageName(astHelper.getAstPackage(), referencedNode);
-
-      if (!getQualifier(referencedSymbol).isEmpty()) {
-        referencedSymbol = SymbolTableGeneratorHelper
-            .getQualifiedSymbolType(getQualifier(referencedSymbol)
-                .toLowerCase(), getSimpleName(referencedSymbol));
-      }
-
-      String returnType = "Optional<" + referencedNode + ">";
-      String nameSuffix = "Definition";
-
-      String methodNameGetOpt = "get"+StringTransformations.capitalize(attribute.getName())+nameSuffix+"Opt";
-      String toParseOpt = "public " + returnType + " " + methodNameGetOpt + "() ;";
-      HookPoint getMethodBodyOpt = new TemplateHookPoint(
-          "ast.additionalmethods.GetReferencedDefinitionOpt",
-          attribute, referencedSymbol, symbolName);
-      replaceMethodBodyTemplate(clazz, toParseOpt, getMethodBodyOpt);
-
-      String methodNameGet = "get"+StringTransformations.capitalize(attribute.getName())+nameSuffix;
-      String toParse = "public " + referencedNode + " " + methodNameGet + "() ;";
-      HookPoint getMethodBody = new TemplateHookPoint(
-          "ast.additionalmethods.GetReferencedDefinition",
-          attribute.getName(), referencedSymbol);
-      replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
-
-      String methodNameIsPresent = "isPresent" + StringTransformations.capitalize(attribute.getName()) + nameSuffix;
-      String toParseIsPresent = "public boolean "
-          + methodNameIsPresent + "() ;";
-      HookPoint getMethodBodyIsPresent = new TemplateHookPoint(
-          "ast.additionalmethods.IsPresentReferencedDefinition",
-          attribute.getName());
-      replaceMethodBodyTemplate(clazz, toParseIsPresent, getMethodBodyIsPresent);
-
-      String methodNameSet = "set" + StringTransformations.capitalize(attribute.getName()) + nameSuffix;
-      String toParseSet = "public void " + methodNameSet + "("+referencedNode+" ast ) ;";
-      HookPoint getMethodBodySet = new TemplateHookPoint(
-          "ast.additionalmethods.SetReferencedDefinition",
-          attribute.getName());
-      replaceMethodBodyTemplate(clazz, toParseSet, getMethodBodySet);
-
-      String methodNameSetOpt = "set" + StringTransformations.capitalize(attribute.getName()) + nameSuffix+"Opt";
-      String toParseSetOpt = "public void " + methodNameSetOpt + "( Optional<"+referencedNode+"> astOpt ) ;";
-      HookPoint getMethodBodySetOpt = new TemplateHookPoint(
-          "ast.additionalmethods.SetReferencedDefinitionOpt",
-          attribute.getName());
-      replaceMethodBodyTemplate(clazz, toParseSetOpt, getMethodBodySetOpt);
-
-      String methodNameSetAbsent = "set" + StringTransformations.capitalize(attribute.getName()) + nameSuffix+"Absent";
-      String toParseSetAbsent = "public void " + methodNameSetAbsent + "( ) ;";
-      HookPoint getMethodBodySetAbsent = new TemplateHookPoint(
-          "ast.additionalmethods.SetReferencedDefinitionAbsent",
-          attribute.getName());
-      replaceMethodBodyTemplate(clazz, toParseSetAbsent, getMethodBodySetAbsent);
     }
+  }
+
+  public void addReferencedDefinitionOptMethods(ASTCDAttribute attribute, AstGeneratorHelper astHelper, ASTCDClass clazz) {
+    String referencedSymbol = astHelper.getReferencedSymbolName(attribute);
+
+    String symbolName = getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf("Symbol"));
+    String referencedNode = GeneratorHelper.AST_PREFIX + symbolName;
+    referencedNode = GeneratorHelper.getPackageName(astHelper.getAstPackage(), referencedNode);
+
+
+    String returnType = "Optional<" + referencedNode + ">";
+    String nameSuffix = "Definition";
+
+    String methodNameGet = "get"+StringTransformations.capitalize(attribute.getName())+nameSuffix;
+    String toParse = "public " + referencedNode + " " + methodNameGet + "() ;";
+    HookPoint getMethodBody = new TemplateHookPoint(
+        "ast.symbolreferencemethods.GetReferencedDefinition",
+        attribute.getName(), referencedSymbol);
+    replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
+
+    String methodNameGetOpt = "get" + StringTransformations.capitalize(attribute.getName()) + nameSuffix + "Opt";
+    String toParseOpt = "public " + returnType + " " + methodNameGetOpt + "() ;";
+    HookPoint getMethodBodyOpt = new TemplateHookPoint(
+        "ast.symbolreferencemethods.GetReferencedDefinitionOpt",
+        attribute, referencedSymbol, symbolName);
+    replaceMethodBodyTemplate(clazz, toParseOpt, getMethodBodyOpt);
+
+
+    String methodNameIsPresent = "isPresent" + StringTransformations.capitalize(attribute.getName()) + nameSuffix;
+    String toParseIsPresent = "public boolean "
+        + methodNameIsPresent + "() ;";
+    HookPoint getMethodBodyIsPresent = new TemplateHookPoint(
+        "ast.symbolreferencemethods.IsPresentReferencedDefinition",
+        attribute.getName());
+    replaceMethodBodyTemplate(clazz, toParseIsPresent, getMethodBodyIsPresent);
+  }
+
+  public void addReferencedDefinitionListMethods(ASTCDAttribute attribute, AstGeneratorHelper astHelper, ASTCDClass clazz) {
+    String referencedSymbol = astHelper.getReferencedSymbolName(attribute);
+
+    String symbolName = getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf("Symbol"));
+    String referencedNode = GeneratorHelper.AST_PREFIX + symbolName;
+    referencedNode = GeneratorHelper.getPackageName(astHelper.getAstPackage(), referencedNode);
+
+    String methodNameGet = "get" + StringTransformations.capitalize(attribute.getName()) + "DefinitionList";
+    String toParse = "public java.util.List<Optional<" + referencedNode + ">> " + methodNameGet + "() ;";
+    HookPoint getMethodBody = new TemplateHookPoint(
+        "ast.symbolreferencemethods.GetReferencedDefinitionList",
+        attribute.getName(), referencedSymbol, symbolName, referencedNode);
+    replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
   }
 
   /**
@@ -423,7 +403,7 @@ public class CdDecorator {
         String superVisitorTypeFQN = visitorPackage + "." + visitorType;
         methodSignatur = String.format(additionalMethod.getDeclaration(), superVisitorTypeFQN);
         replaceMethodBodyTemplate(clazz, methodSignatur, new TemplateHookPoint(
-            "ast.additionalmethods.AcceptSuper",clazz, astHelper.getQualifiedCdName(),
+            "ast.additionalmethods.AcceptSuper", clazz, astHelper.getQualifiedCdName(),
             visitorTypeFQN, superVisitorTypeFQN));
       }
     }
@@ -814,7 +794,7 @@ public class CdDecorator {
     String methodNameOpt = methodName.substring(0, methodName.length() - GeneratorHelper.GET_SUFFIX_OPTINAL.length());
     String returnType = TypesPrinter.printType(TypesHelper.getFirstTypeArgumentOfOptional(attribute.getType()).get());
     String toParse = "public " + returnType + " " + methodNameOpt + "() ;";
-    HookPoint getMethodBody = new TemplateHookPoint("ast.additionalmethods.GetOpt",type, methodName);
+    HookPoint getMethodBody = new TemplateHookPoint("ast.additionalmethods.GetOpt", type, methodName);
     replaceMethodBodyTemplate(type, toParse, getMethodBody);
     String methodIsPresent = "isPresent" + nativeName;
     toParse = "public boolean " + methodIsPresent + "() ;";
@@ -1085,7 +1065,7 @@ public class CdDecorator {
 
     // Create reset for super class diagrams
     toParse = "public static void reset();";
-    methodBody = new TemplateHookPoint("ast.ASTMillResetMethod",millClass, astHelper.getCdSymbol().getImports());
+    methodBody = new TemplateHookPoint("ast.ASTMillResetMethod", millClass, astHelper.getCdSymbol().getImports());
     replaceMethodBodyTemplate(millClass, toParse, methodBody);
 
     // Create Mill for overridden Rules
@@ -1641,7 +1621,6 @@ public class CdDecorator {
 
   /**
    * Performs ast specific template replacements using {@link HookPoint}
-   *
    */
   protected ASTCDMethod replaceMethodBodyTemplate(ASTCDType clazz, String methodSignatur,
                                                   HookPoint hookPoint) {
@@ -1655,7 +1634,6 @@ public class CdDecorator {
   /**
    * Performs list-valued attribute specific template replacements using
    * {@link HookPoint}
-   *
    */
   protected ASTCDMethod additionalMethodForListAttribute(ASTCDType type, String callMethod,
                                                          ASTCDAttribute attribute, String methodSignatur, boolean returnBuilder, boolean isInherited) {

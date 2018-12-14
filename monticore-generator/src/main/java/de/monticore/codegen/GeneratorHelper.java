@@ -12,6 +12,7 @@ import de.monticore.codegen.cd2java.ast_emf.AstEmfGeneratorHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
+import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.*;
@@ -52,6 +53,8 @@ import static de.monticore.codegen.mc2cd.TransformationHelper.createSimpleRefere
 import static de.monticore.codegen.mc2cd.transl.ConstantsTranslation.CONSTANTS_ENUM;
 import static de.monticore.grammar.Multiplicity.multiplicityByAlternative;
 import static de.monticore.grammar.Multiplicity.multiplicityByIteration;
+import static de.se_rwth.commons.Names.getQualifier;
+import static de.se_rwth.commons.Names.getSimpleName;
 import static java.util.Collections.max;
 
 public class GeneratorHelper extends TypesHelper {
@@ -1702,6 +1705,18 @@ public class GeneratorHelper extends TypesHelper {
 
   public static String getCdName(String qualifiedCdName) {
     return Names.getSimpleName(qualifiedCdName);
+  }
+
+  public String getReferencedSymbolName(ASTCDAttribute attribute){
+    String referencedSymbol = CD4AnalysisHelper.getStereotypeValues(attribute,
+        MC2CDStereotypes.REFERENCED_SYMBOL.toString()).get(0);
+
+    if (!getQualifier(referencedSymbol).isEmpty()) {
+      referencedSymbol = SymbolTableGeneratorHelper
+          .getQualifiedSymbolType(getQualifier(referencedSymbol)
+              .toLowerCase(), Names.getSimpleName(referencedSymbol));
+    }
+    return referencedSymbol;
   }
 
   /**

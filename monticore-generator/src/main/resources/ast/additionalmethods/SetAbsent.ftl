@@ -5,9 +5,8 @@ ${tc.signature("attrName", "isBuilderClass", "isInherited", "hasSymbolReference"
 <#else>
   ${attrName} = Optional.empty();
 </#if>
-<#if hasSymbolReference>
-  ${attrName}Definition = Optional.empty();
-</#if>
 <#if isBuilderClass>
   return this;
+<#elseif hasSymbolReference>
+  ${attrName}Symbol = Optional.empty();
 </#if>

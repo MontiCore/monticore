@@ -15,6 +15,8 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -154,6 +156,33 @@ public class ReferenceTest {
   public void testNoReference(){
     ASTNoRef astNoRef = astRand.getNoRef(0);
     assertEquals(astNoRef.getName(), "a");
+  }
+
+  @Test
+  public void testListNoSymbolTable() {
+    ASTTest astTest = astRand.getTest(0);
+
+    ASTListRef astListRef = astRand.getListRef(0);
+
+    assertTrue(astTest.isPresentEnclosingScope());
+    assertTrue(astListRef.isPresentEnclosingScope());
+    assertTrue(astTest.isPresentTestSymbol());
+
+
+    //test setter
+    assertFalse(astListRef.isEmptyNames());
+    assertEquals(astListRef.sizeNames(), 3);
+    assertEquals(astListRef.getName(0), "A");
+    assertEquals(astListRef.getName(1), "B");
+    assertEquals(astListRef.getName(2), "C");
+    assertTrue(astListRef.containsName("A"));
+    assertFalse(astListRef.removeName("D"));
+    assertEquals(astListRef.removeName(1), "B");
+
+    List<String> list = new ArrayList<>();
+    list.add("A");
+    list.add("C");
+    assertEquals(astListRef.getNameList(), list);
   }
 
 }
