@@ -13,7 +13,6 @@ import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.mc2cd.manipul.BaseInterfaceAddingManipulation;
 import de.monticore.codegen.mc2cd.transl.ConstantsTranslation;
 import de.monticore.codegen.symboltable.SymbolTableGenerator;
-import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
@@ -46,7 +45,6 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static de.se_rwth.commons.Names.getQualifier;
 import static de.se_rwth.commons.Names.getSimpleName;
 
 /**
@@ -146,8 +144,7 @@ public class CdDecorator {
       addSetter(clazz, astHelper, cdDefinition);
       addOptionalMethods(clazz, astHelper, cdDefinition);
       addSymbolAndScopeAttributesAndMethods(clazz, astHelper);
-      addReferencedSymbolMethods(clazz, astHelper);
-      addDefinitionMethods(clazz, astHelper);
+      addReferencedSymbolAndDefinitionMethods(clazz, astHelper);
 
       Optional<ASTCDClass> builder = astHelper.getASTBuilder(clazz);
       builder.ifPresent(astcdClass -> decorateBuilderClass(astcdClass, astHelper, cdDefinition));
@@ -252,25 +249,28 @@ public class CdDecorator {
     addOptionalSetMethods(clazz, scopeAttribute.get(), scopeName);
   }
 
-  protected void addReferencedSymbolMethods(ASTCDClass clazz, AstGeneratorHelper astHelper) {
+  protected void addReferencedSymbolAndDefinitionMethods(ASTCDClass clazz, AstGeneratorHelper astHelper) {
     List<ASTCDAttribute> attributes = Lists.newArrayList(clazz.getCDAttributeList());
     for (ASTCDAttribute attribute : attributes) {
       if (!GeneratorHelper.isInherited(attribute)
           && CD4AnalysisHelper.hasStereotype(attribute,
           MC2CDStereotypes.REFERENCED_SYMBOL.toString())) {
+        String referencedSymbol = astHelper.getReferencedSymbolName(attribute);
         if (GeneratorHelper.isListType(attribute.printType())) {
-          addReferencedSymbolListMethods(attribute, astHelper, clazz);
+          //if the attribute is a list type
+          addReferencedDefinitionListMethods(attribute.getName(), referencedSymbol, astHelper, clazz);
+          addReferencedSymbolListMethods(attribute.getName(),referencedSymbol, astHelper, clazz);
         } else {
-          addReferencedSymbolOptMethods(attribute, astHelper, clazz);
+          //if the attribute is mandatory or optional
+          addReferencedDefinitionOptMethods(attribute.getName(), referencedSymbol, astHelper, clazz);
+          addReferencedSymbolOptMethods(attribute, referencedSymbol, clazz);
         }
       }
     }
   }
 
-  protected void addReferencedSymbolOptMethods(ASTCDAttribute attribute, AstGeneratorHelper astHelper, ASTCDClass clazz) {
-    String referencedSymbol = astHelper.getReferencedSymbolName(attribute);
+  protected void addReferencedSymbolOptMethods(ASTCDAttribute attribute, String referencedSymbol,  ASTCDClass clazz) {
     String nameSuffix = "Symbol";
-
     // TODO PN handle both from:Name@Foo and from:QualifiedName@Foo
     String methodNameGetOpt = "get" + StringTransformations.capitalize(attribute.getName()) + nameSuffix + "Opt";
     String toParseOpt = "public " + "Optional<" + referencedSymbol + ">" + " "
@@ -295,83 +295,57 @@ public class CdDecorator {
     replaceMethodBodyTemplate(clazz, toParseIsPresent, getMethodBodyIsPresent);
   }
 
-  public void addReferencedSymbolListMethods(ASTCDAttribute attribute, AstGeneratorHelper astHelper, ASTCDClass clazz) {
-    String referencedSymbol = astHelper.getReferencedSymbolName(attribute);
-    String nameSuffix = "SymbolList";
-    String methodNameGetList = "get" + StringTransformations.capitalize(attribute.getName()) + nameSuffix;
+  public void addReferencedSymbolListMethods(String attributeName,String referencedSymbol, AstGeneratorHelper astHelper, ASTCDClass clazz) {
+    String methodNameGetList = "get" + StringTransformations.capitalize(attributeName) + "SymbolList";
     String toParseOpt = "public " + "java.util.List<Optional<" + referencedSymbol + ">>" + " "
         + methodNameGetList + "() ;";
     HookPoint getMethodBodyOpt = new TemplateHookPoint(
         "ast.symbolreferencemethods.GetReferencedSymbolList.ftl",
-        attribute.getName(), referencedSymbol);
+        attributeName, referencedSymbol);
     replaceMethodBodyTemplate(clazz, toParseOpt, getMethodBodyOpt);
   }
 
-  protected void addDefinitionMethods(ASTCDClass clazz, AstGeneratorHelper astHelper) {
-    List<ASTCDAttribute> attributes = Lists.newArrayList(clazz.getCDAttributeList());
-    for (ASTCDAttribute attribute : attributes) {
-      if (!GeneratorHelper.isInherited(attribute)
-          && CD4AnalysisHelper.hasStereotype(attribute,
-          MC2CDStereotypes.REFERENCED_SYMBOL.toString())) {
-        if (GeneratorHelper.isListType(attribute.printType())) {
-          //if the name is a ist
-          addReferencedDefinitionListMethods(attribute, astHelper, clazz);
-        } else {
-          //if the name is mandatory or optional
-          addReferencedDefinitionOptMethods(attribute, astHelper, clazz);
-        }
-
-      }
-    }
-  }
-
-  public void addReferencedDefinitionOptMethods(ASTCDAttribute attribute, AstGeneratorHelper astHelper, ASTCDClass clazz) {
-    String referencedSymbol = astHelper.getReferencedSymbolName(attribute);
-
+  public void addReferencedDefinitionOptMethods(String attributeName,String referencedSymbol, AstGeneratorHelper astHelper, ASTCDClass clazz) {
     String symbolName = getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf("Symbol"));
     String referencedNode = GeneratorHelper.AST_PREFIX + symbolName;
     referencedNode = GeneratorHelper.getPackageName(astHelper.getAstPackage(), referencedNode);
-
-
-    String returnType = "Optional<" + referencedNode + ">";
     String nameSuffix = "Definition";
 
-    String methodNameGet = "get"+StringTransformations.capitalize(attribute.getName())+nameSuffix;
+    String methodNameGet = "get"+StringTransformations.capitalize(attributeName)+nameSuffix;
     String toParse = "public " + referencedNode + " " + methodNameGet + "() ;";
     HookPoint getMethodBody = new TemplateHookPoint(
         "ast.symbolreferencemethods.GetReferencedDefinition",
-        attribute.getName(), referencedSymbol);
+        attributeName, referencedSymbol);
     replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
 
-    String methodNameGetOpt = "get" + StringTransformations.capitalize(attribute.getName()) + nameSuffix + "Opt";
-    String toParseOpt = "public " + returnType + " " + methodNameGetOpt + "() ;";
+    String methodNameGetOpt = "get" + StringTransformations.capitalize(attributeName) + nameSuffix + "Opt";
+    String toParseOpt = "public " + "Optional<" + referencedNode + ">" + " " + methodNameGetOpt + "() ;";
     HookPoint getMethodBodyOpt = new TemplateHookPoint(
         "ast.symbolreferencemethods.GetReferencedDefinitionOpt",
-        attribute, referencedSymbol, symbolName);
+        attributeName, referencedSymbol, symbolName);
     replaceMethodBodyTemplate(clazz, toParseOpt, getMethodBodyOpt);
 
 
-    String methodNameIsPresent = "isPresent" + StringTransformations.capitalize(attribute.getName()) + nameSuffix;
+    String methodNameIsPresent = "isPresent" + StringTransformations.capitalize(attributeName) + nameSuffix;
     String toParseIsPresent = "public boolean "
         + methodNameIsPresent + "() ;";
     HookPoint getMethodBodyIsPresent = new TemplateHookPoint(
         "ast.symbolreferencemethods.IsPresentReferencedDefinition",
-        attribute.getName());
+        attributeName);
     replaceMethodBodyTemplate(clazz, toParseIsPresent, getMethodBodyIsPresent);
   }
 
-  public void addReferencedDefinitionListMethods(ASTCDAttribute attribute, AstGeneratorHelper astHelper, ASTCDClass clazz) {
-    String referencedSymbol = astHelper.getReferencedSymbolName(attribute);
+  public void addReferencedDefinitionListMethods(String attributeName,String referencedSymbol, AstGeneratorHelper astHelper, ASTCDClass clazz) {
 
     String symbolName = getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf("Symbol"));
     String referencedNode = GeneratorHelper.AST_PREFIX + symbolName;
     referencedNode = GeneratorHelper.getPackageName(astHelper.getAstPackage(), referencedNode);
 
-    String methodNameGet = "get" + StringTransformations.capitalize(attribute.getName()) + "DefinitionList";
+    String methodNameGet = "get" + StringTransformations.capitalize(attributeName) + "DefinitionList";
     String toParse = "public java.util.List<Optional<" + referencedNode + ">> " + methodNameGet + "() ;";
     HookPoint getMethodBody = new TemplateHookPoint(
         "ast.symbolreferencemethods.GetReferencedDefinitionList",
-        attribute.getName(), referencedSymbol, symbolName, referencedNode);
+        attributeName, referencedSymbol, symbolName, referencedNode);
     replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
   }
 
