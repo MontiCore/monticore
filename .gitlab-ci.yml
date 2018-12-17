@@ -1,0 +1,5 @@
+image: maven:3-jdk-11
+build:
+  stage: build
+  script:
+    - mvn install --settings "settings.xml"
