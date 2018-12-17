@@ -73,6 +73,7 @@ public class MontiCoreReports implements ReportManagerFactory {
     ODReporter objDiagram = new ODReporter(this.outputDirectory, modelName, repository);
     SuccessfulReporter finishReporter = new SuccessfulReporter(this.outputDirectory, modelName);
     IncGenCheckReporter incGenCheck = new IncGenCheckReporter(this.outputDirectory);
+    IncGenGradleReporter incGenWin = new IncGenGradleReporter(this.outputDirectory);
 
     reports.addReportEventHandler(summary); // 01_Summary
     reports.addReportEventHandler(generated); // 02_GeneratedFiles
@@ -95,6 +96,7 @@ public class MontiCoreReports implements ReportManagerFactory {
     reports.addReportEventHandler(finishReporter); // 19_Successful
     reports.addReportEventHandler(objDiagram); // ObjectDiagram
     reports.addReportEventHandler(incGenCheck); // IncGenCheck
+    reports.addReportEventHandler(incGenWin);
 
     return reports;
   }
