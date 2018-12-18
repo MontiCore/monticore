@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 
 import java.util.Optional;
 import de.monticore.antlr4.MCConcreteParser;
+import de.monticore.antlr4.MCErrorListener;
 
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.ANTLRInputStream;
