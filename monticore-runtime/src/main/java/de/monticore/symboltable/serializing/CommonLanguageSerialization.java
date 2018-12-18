@@ -23,21 +23,24 @@ import de.se_rwth.commons.logging.Log;
  * of {@link ISerialization} instances to (de)serialize individual scopes and symbols. This class is
  * the superclass of all generated serializers for languages.
  */
-public abstract class CommonJsonArtifactScopeSerializer implements IArtifactScopeSerializer {
+public abstract class CommonLanguageSerialization implements IArtifactScopeSerializer {
   
   protected GsonBuilder gson;
   
   protected List<ISerialization<?>> serializers;
   
-  public CommonJsonArtifactScopeSerializer() {
+  protected String fileExtension;
+  
+  public CommonLanguageSerialization() {
     serializers = getSerializers();
     
     gson = new GsonBuilder();
     // TODO: Further configuration might be necessary
     gson.serializeSpecialFloatingPointValues();
-    // gson.addSerializationExclusionStrategy(getExcusionStrategy());
     
     registerSerializers();
+    
+    fileExtension = ".sym"; //Will be overridden by generated concrete class 
   }
   
   /**

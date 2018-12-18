@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("name")}
+${signature("name", "serializerSuffix")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#-- Copyright -->
 ${defineHookPoint("JavaCopyright")}
@@ -7,6 +7,7 @@ ${defineHookPoint("JavaCopyright")}
 package ${genHelper.getTargetPackage()};
 
 import java.lang.reflect.Type;
+import java.util.Collection;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -14,40 +15,23 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import de.monticore.symboltable.serializing.ISerialization;
 import de.monticore.symboltable.serializing.SymbolTableSerializationHelper;
+import de.monticore.symboltable.serializing.SerializationBuilder;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.Symbol;
 
-class ${name}Serialization 
+public class ${name}${serializerSuffix}
     implements ISerialization<${name}> {
     
   @Override
   public ${name} deserialize(JsonElement json, Type typeOfT,
-      JsonDeserializationContext context) throws JsonParseException {
+      JsonDeserializationContext context) throws JsonParseException {   
     JsonObject jsonObject = json.getAsJsonObject();
-    String kind = jsonObject.get(KIND).getAsString();
-    if (${name}.class.getName().equals(kind)) {     
-      boolean exportsSymbols = jsonObject.get(EXPORTS_SYMBOLS).getAsBoolean();
-      boolean isShadowingScope = jsonObject.get(IS_SHADOWING_SCOPE).getAsBoolean();
-      
-      ${name} result = new ${name}(isShadowingScope);
-      if(jsonObject.has(NAME)){
-        String name = jsonObject.get(NAME).getAsString();
-        result.setName(name);
-      }
-      result.setExportsSymbols(exportsSymbols);
-      
-      // Deserialize symbols
-      for(JsonElement e : jsonObject.get(SYMBOLS).getAsJsonArray()) {
-        Symbol sym = context.deserialize(e, Symbol.class);
-        result.add(sym);
-      }
-      
-      // Deserialize subscopes
-      for(JsonElement e : jsonObject.get(SUBSCOPES).getAsJsonArray()) {
-        MutableScope subScope = context.deserialize(e, MutableScope.class);
-        result.addSubScope(subScope);
-      }
-      
+    if (${name}.class.getName().equals(SymbolTableSerializationHelper.getKind(jsonObject))) { 
+      ${name} result = new ${name}(SymbolTableSerializationHelper.getIsShadowingScopeFlag(jsonObject));
+      SymbolTableSerializationHelper.deserializeName(jsonObject, result);
+      SymbolTableSerializationHelper.deserializeExportsSymbolsFlag(jsonObject, result);
+      SymbolTableSerializationHelper.deserializeSymbols(jsonObject, context, result);
+      SymbolTableSerializationHelper.deserializeSubscopes(jsonObject, context, result);
       return result;
     }
     throw new JsonParseException("Deserialization of '${name}' failed!");
@@ -57,14 +41,18 @@ class ${name}Serialization
   public JsonElement serialize(${name} src, Type typeOfSrc,
       JsonSerializationContext context) {
     JsonObject json = new JsonObject();
-    json.addProperty(KIND, ${name}.class.getName());
-    json.addProperty(NAME, src.getName().orElse(null));
-    json.addProperty(EXPORTS_SYMBOLS, src.exportsSymbols());
-    json.addProperty(IS_SHADOWING_SCOPE, src.isShadowingScope());
-    
-    json.add(SUBSCOPES, context.serialize(src.getSubScopes()));
-    json.add(SYMBOLS, context.serialize(SymbolTableSerializationHelper.getLocalSymbols(src)));
-    // TODO: Add scope-specific attributes
+    Collection<Symbol> symbols = SymbolTableSerializationHelper.getLocalSymbols(src);
+    json = new SerializationBuilder(json, context)
+        .add(KIND, ${name}.class.getName())
+        .add(NAME, src.getName())
+        .addOnlyIfFalse(EXPORTS_SYMBOLS, src.exportsSymbols())
+        .addOnlyIfFalse(IS_SHADOWING_SCOPE, src.isShadowingScope())
+        .add(SYMBOLS, symbols)
+        .add(SUBSCOPES, src.getSubScopes())
+        .build();
+        
+    // TODO: Remove if ScopeSpanningSymbols are removed
+    SymbolTableSerializationHelper.serializeSpanningSymbol(src, json);
     return json;
   }
   

@@ -13,20 +13,20 @@ package ${genHelper.getTargetPackage()};
 
 import java.util.List;
 import com.google.common.collect.ImmutableList;
-import de.monticore.symboltable.serializing.CommonJsonArtifactScopeSerializer;
+import de.monticore.symboltable.serializing.CommonLanguageSerialization;
 import de.monticore.symboltable.serializing.ISerialization;
 
-public class ${languageName}Language${serializationSuffix} extends CommonJsonArtifactScopeSerializer {
+public class ${languageName}Language${serializationSuffix} extends CommonLanguageSerialization {
 
 
   @Override
   protected List<ISerialization<?>> getSerializers() {
     return ImmutableList.of(
-      //register symbols
+      //add symbols
   <#list genHelper.getAllSymbolDefiningRules() as symbol>
       new ${symbol}Symbol${serializationSuffix}(),
   </#list>
-      //register language scope
+      //add language scope
       new ${languageName}Scope${serializationSuffix}()
       );
   }

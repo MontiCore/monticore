@@ -17,7 +17,7 @@ import java.util.Optional;
  */
 public interface IArtifactScopeSerializer {
   
-  public static final String SYMBOL_STORE_LOCATION = "target/generated-sources/symbols";
+  public static final String SYMBOL_STORE_LOCATION = "target/generated-sources/monticore/symbols";
   
   public static final String SYMBOL_FILE_ENDING = "json";
   
@@ -39,8 +39,15 @@ public interface IArtifactScopeSerializer {
   public Optional<ArtifactScope> deserialize(String s);
   
   default void store(ArtifactScope as) {
-    String fileName = Names.getPathFromPackage(as.getPackageName()) + File.separator + as.getName().get() + ".json";
-    store(as, Paths.get(SYMBOL_STORE_LOCATION + File.separator + fileName));
+    StringBuilder fileName = new StringBuilder();
+    fileName.append(SYMBOL_STORE_LOCATION);
+    fileName.append(File.separator);
+    fileName.append(Names.getPathFromPackage(as.getPackageName()));
+    fileName.append(File.separator);
+    fileName.append(as.getName().get());
+    fileName.append(".");
+    fileName.append(SYMBOL_FILE_ENDING);
+    store(as, Paths.get(fileName.toString()));
   }
   
   /**
@@ -75,7 +82,13 @@ public interface IArtifactScopeSerializer {
   }
   
   default ArtifactScope load(String qualifiedName) {
-    return load(Paths.get(SYMBOL_STORE_LOCATION + File.separator + Names.getPathFromPackage(qualifiedName) + ".json" ));
+    StringBuilder fileName = new StringBuilder();
+    fileName.append(SYMBOL_STORE_LOCATION);
+    fileName.append(File.separator);
+    fileName.append(Names.getPathFromPackage(qualifiedName));
+    fileName.append(".");
+    fileName.append(SYMBOL_FILE_ENDING);
+    return load(Paths.get(fileName.toString()));
   }
   
   /**

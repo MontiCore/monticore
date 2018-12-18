@@ -46,8 +46,8 @@ public abstract class ${className} extends de.monticore.CommonModelingLanguage {
   }
 
   @Override
-  public Optional<${grammarName}LanguageSerialization> getSymbolTableDeserializer() {
-    return Optional.of(new ${grammarName}LanguageSerialization());
+  public Optional<${grammarName}LanguageSerializer> getSymbolTableDeserializer() {
+    return Optional.of(new ${grammarName}LanguageSerializer());
   }
   </#if>
 

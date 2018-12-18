@@ -73,6 +73,6 @@ public class CommonScopeGenerator implements ScopeGenerator {
     genEngine.generateNoA("symboltable.ScopeBuilder", builderFilePath, builderName,
         scopeName + GeneratorHelper.BUILDER);
     genEngine.generateNoA("symboltable.serialization.ScopeSerialization", serializerFilePath,
-        className);
+        className, GeneratorHelper.SERIALIZER);
   }
 }
