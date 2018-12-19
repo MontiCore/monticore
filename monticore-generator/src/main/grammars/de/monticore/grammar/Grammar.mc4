@@ -391,14 +391,6 @@ component grammar Grammar extends de.monticore.literals.Literals {
   Eof implements RuleComponent =
     "EOF";
 
-  /** MCAnything is a special lexer production which represents
-  */
-  MCAnything implements RuleComponent =
-    "MCA";
-
-  Anything implements RuleComponent=
-    ".";
-
   /** Handed on as antlr action or predicate, realised by external JavaDSLParser */
   SemanticpredicateOrAction implements RuleComponent=
      "{" ExpressionPredicate "}" Predicate:["?"]
