@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("name", "serializerSuffix")}
+${signature("className", "scopeName")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#-- Copyright -->
 ${defineHookPoint("JavaCopyright")}
@@ -19,31 +19,31 @@ import de.monticore.symboltable.serializing.SerializationBuilder;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.Symbol;
 
-public class ${name}${serializerSuffix}
-    implements ISerialization<${name}> {
+public class ${className}
+    implements ISerialization<${scopeName}> {
     
   @Override
-  public ${name} deserialize(JsonElement json, Type typeOfT,
+  public ${scopeName} deserialize(JsonElement json, Type typeOfT,
       JsonDeserializationContext context) throws JsonParseException {   
     JsonObject jsonObject = json.getAsJsonObject();
-    if (${name}.class.getName().equals(SymbolTableSerializationHelper.getKind(jsonObject))) { 
-      ${name} result = new ${name}(SymbolTableSerializationHelper.getIsShadowingScopeFlag(jsonObject));
+    if (${scopeName}.class.getName().equals(SymbolTableSerializationHelper.getKind(jsonObject))) { 
+      ${scopeName} result = new ${scopeName}(SymbolTableSerializationHelper.getIsShadowingScopeFlag(jsonObject));
       SymbolTableSerializationHelper.deserializeName(jsonObject, result);
       SymbolTableSerializationHelper.deserializeExportsSymbolsFlag(jsonObject, result);
       SymbolTableSerializationHelper.deserializeSymbols(jsonObject, context, result);
       SymbolTableSerializationHelper.deserializeSubscopes(jsonObject, context, result);
       return result;
     }
-    throw new JsonParseException("Deserialization of '${name}' failed!");
+    throw new JsonParseException("Deserialization of '${scopeName}' failed!");
   }
     
   @Override
-  public JsonElement serialize(${name} src, Type typeOfSrc,
+  public JsonElement serialize(${scopeName} src, Type typeOfSrc,
       JsonSerializationContext context) {
     JsonObject json = new JsonObject();
     Collection<Symbol> symbols = SymbolTableSerializationHelper.getLocalSymbols(src);
     json = new SerializationBuilder(json, context)
-        .add(KIND, ${name}.class.getName())
+        .add(KIND, ${scopeName}.class.getName())
         .add(NAME, src.getName())
         .addOnlyIfFalse(EXPORTS_SYMBOLS, src.exportsSymbols())
         .addOnlyIfFalse(IS_SHADOWING_SCOPE, src.isShadowingScope())
@@ -57,7 +57,7 @@ public class ${name}${serializerSuffix}
   }
   
   @Override
-  public Class<${name}> getSerializedClass() {
-    return ${name}.class;
+  public Class<${scopeName}> getSerializedClass() {
+    return ${scopeName}.class;
   }
 }
