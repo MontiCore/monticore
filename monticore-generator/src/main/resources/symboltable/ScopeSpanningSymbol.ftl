@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className", "scopeClassName", "prodSymbol", "ruleSymbol")}
+${signature("className", "scopeClassName", "prodSymbol", "ruleSymbol", "imports")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#if prodSymbol.getSymbolDefinitionKind().isPresent()>
   <#assign ruleName = prodSymbol.getSymbolDefinitionKind().get()>
@@ -28,6 +28,10 @@ import static de.monticore.symboltable.Symbols.sortSymbolsByPosition;
 
 import java.util.Collection;
 import java.util.Optional;
+
+<#list imports as imp>
+import ${imp}._ast.*;
+</#list>
 
 public class ${className} ${superClass} ${superInterfaces} {
 
