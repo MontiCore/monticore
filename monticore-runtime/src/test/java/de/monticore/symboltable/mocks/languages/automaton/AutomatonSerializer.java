@@ -26,11 +26,11 @@ public class AutomatonSerializer extends CommonLanguageSerialization {
   /**
    * @see de.monticore.symboltable.serializing.CommonLanguageSerialization#getSerializers()
    */
-  @Override
-  protected List<ISerialization<?>> getSerializers() {
-    return ImmutableList.of(new StateSymbolSerialization(), new AutSymbolSerialization(),
-        new AutomatonScopeSerialization());
-  }
+//  @Override
+//  protected List<ISerialization<?>> getSerializers() {
+//    return ImmutableList.of(new StateSymbolSerialization(), new AutSymbolSerialization(),
+//        new AutomatonScopeSerialization());
+//  }
   
   class StateSymbolSerialization
       implements ISerialization<StateSymbol> {
