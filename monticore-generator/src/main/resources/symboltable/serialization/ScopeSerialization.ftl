@@ -8,16 +8,18 @@ package ${genHelper.getTargetPackage()};
 
 import java.lang.reflect.Type;
 import java.util.Collection;
+
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
-import de.monticore.symboltable.serializing.ISerialization;
-import de.monticore.symboltable.serializing.SymbolTableSerializationHelper;
-import de.monticore.symboltable.serializing.SerializationBuilder;
-import de.monticore.symboltable.MutableScope;
+
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.serializing.ISerialization;
+import de.monticore.symboltable.serializing.SerializationBuilder;
+import de.monticore.symboltable.serializing.SymbolTableSerializationHelper;
 
 public class ${className}
     implements ISerialization<${scopeName}> {
@@ -42,13 +44,15 @@ public class ${className}
       JsonSerializationContext context) {
     JsonObject json = new JsonObject();
     Collection<Symbol> symbols = SymbolTableSerializationHelper.getLocalSymbols(src);
+    Collection<Scope> subscopes = SymbolTableSerializationHelper.filterRelevantSubScopes(src);
+    
     json = new SerializationBuilder(json, context)
         .add(KIND, ${scopeName}.class.getName())
         .add(NAME, src.getName())
         .addOnlyIfFalse(EXPORTS_SYMBOLS, src.exportsSymbols())
         .addOnlyIfFalse(IS_SHADOWING_SCOPE, src.isShadowingScope())
         .add(SYMBOLS, symbols)
-        .add(SUBSCOPES, src.getSubScopes())
+        .add(SUBSCOPES, subscopes)
         .build();
         
     // TODO: Remove if ScopeSpanningSymbols are removed

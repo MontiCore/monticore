@@ -40,6 +40,14 @@ public class SymbolTableSerializationHelper {
     return symbols;
   }
   
+  public static Collection<Scope> filterRelevantSubScopes(MutableScope src) {
+    return src.getSubScopes()
+        .stream()
+        .filter(s -> s.exportsSymbols())
+        .filter(s -> SymbolTableSerializationHelper.getLocalSymbols(s).size() > 0)
+        .collect(Collectors.toList());
+  }
+  
   /**
    * 
    * Deserializes a list of ImportStatements. Is the passed JsonElement is nulll, returns an empty list
