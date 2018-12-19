@@ -2,59 +2,14 @@
 
 package de.monticore.grammar.prettyprint;
 
-import java.util.Iterator;
-
-import de.monticore.grammar.grammar._ast.ASTASTRule;
-import de.monticore.grammar.grammar._ast.ASTAbstractProd;
-import de.monticore.grammar.grammar._ast.ASTAlt;
-import de.monticore.grammar.grammar._ast.ASTAnything;
-import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
-import de.monticore.grammar.grammar._ast.ASTBlock;
-import de.monticore.grammar.grammar._ast.ASTClassProd;
-import de.monticore.grammar.grammar._ast.ASTConcept;
-import de.monticore.grammar.grammar._ast.ASTConstant;
-import de.monticore.grammar.grammar._ast.ASTConstantGroup;
-import de.monticore.grammar.grammar._ast.ASTConstantsGrammar;
-import de.monticore.grammar.grammar._ast.ASTEnumProd;
-import de.monticore.grammar.grammar._ast.ASTEof;
-import de.monticore.grammar.grammar._ast.ASTExternalProd;
-import de.monticore.grammar.grammar._ast.ASTFollowOption;
-import de.monticore.grammar.grammar._ast.ASTGenericType;
-import de.monticore.grammar.grammar._ast.ASTGrammarNode;
-import de.monticore.grammar.grammar._ast.ASTGrammarOption;
-import de.monticore.grammar.grammar._ast.ASTGrammarReference;
-import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
-import de.monticore.grammar.grammar._ast.ASTLexActionOrPredicate;
-import de.monticore.grammar.grammar._ast.ASTLexAlt;
-import de.monticore.grammar.grammar._ast.ASTLexAnyChar;
-import de.monticore.grammar.grammar._ast.ASTLexBlock;
-import de.monticore.grammar.grammar._ast.ASTLexChar;
-import de.monticore.grammar.grammar._ast.ASTLexCharRange;
-import de.monticore.grammar.grammar._ast.ASTLexComponent;
-import de.monticore.grammar.grammar._ast.ASTLexNonTerminal;
-import de.monticore.grammar.grammar._ast.ASTLexOption;
-import de.monticore.grammar.grammar._ast.ASTLexProd;
-import de.monticore.grammar.grammar._ast.ASTLexSimpleIteration;
-import de.monticore.grammar.grammar._ast.ASTLexString;
-import de.monticore.grammar.grammar._ast.ASTMCAnything;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._ast.ASTMethod;
-import de.monticore.grammar.grammar._ast.ASTMethodParameter;
-import de.monticore.grammar.grammar._ast.ASTNonTerminal;
-import de.monticore.grammar.grammar._ast.ASTNonTerminalSeparator;
-import de.monticore.grammar.grammar._ast.ASTOptionValue;
-import de.monticore.grammar.grammar._ast.ASTRuleReference;
-import de.monticore.grammar.grammar._ast.ASTScopeRule;
-import de.monticore.grammar.grammar._ast.ASTSemanticpredicateOrAction;
-import de.monticore.grammar.grammar._ast.ASTStartRule;
-import de.monticore.grammar.grammar._ast.ASTSymbolDefinition;
-import de.monticore.grammar.grammar._ast.ASTSymbolRule;
-import de.monticore.grammar.grammar._ast.ASTTerminal;
+import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor;
 import de.monticore.literals.prettyprint.LiteralsPrettyPrinterConcreteVisitor;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.Names;
+
+import java.util.Iterator;
 
 public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     implements GrammarVisitor {
@@ -1038,21 +993,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     println(";");
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
-  
-  @Override
-  public void handle(ASTAnything a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    print(". ");
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-  
-  @Override
-  public void handle(ASTMCAnything a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    print("MCA ");
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-  
+
   /**
    * @see de.monticore.grammar.grammar._visitor.GrammarVisitor#handle(de.monticore.grammar.grammar._ast.ASTSymbolDefinition)
    */
