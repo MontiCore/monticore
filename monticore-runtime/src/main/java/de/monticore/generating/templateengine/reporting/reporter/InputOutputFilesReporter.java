@@ -142,7 +142,6 @@ public class InputOutputFilesReporter extends AReporter {
    */
   @Override
   public void reportOpenInputFile(Optional<Path> parentPath, Path file) {
-    System.out.println("------"+qualifiedInputFile);
     if (file.compareTo(qualifiedInputFile) == 0) {
       return;
     }
@@ -196,7 +195,7 @@ public class InputOutputFilesReporter extends AReporter {
     userTemplates.clear();
     filesThatMatterButAreNotThereInTime.clear();
     inputFile = inputFilePath.toString();
-    System.out.println("---------------------------------------------------------------------"+modelName);
+
     qualifiedInputFile = Paths.get(modelName.replaceAll("\\.", "/") + "."
         + Files.getFileExtension(inputFilePath.getFileName().toString()));
     
