@@ -369,7 +369,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
   /**
    * Print alternatives
    *
-   * @param ast
+   * @param alts
    */
   public void createAntlrCodeForAlts(List<ASTAlt> alts) {
     String del = "";
@@ -681,16 +681,6 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
   }
 
   @Override
-  public void visit(ASTAnything a) {
-    addToAntlrCode(".");
-  }
-
-  @Override
-  public void visit(ASTMCAnything a) {
-    addToAntlrCode(ParserGeneratorHelper.MONTICOREANYTHING);
-  }
-
-  @Override
   public void visit(ASTAlt alt) {
     altList.add(alt);
     if (alt.isRightAssoc()) {
@@ -731,7 +721,7 @@ public class Grammar2Antlr implements Grammar_WithConceptsVisitor {
      * Constructor for de.monticore.codegen.parser.antlr.NodePair.
      *
      * @param alternative
-     * @param ruleReference
+     * @param pp
      */
     public NodePair(ASTGrammarNode alternative, PredicatePair pp) {
       this.alternative = alternative;

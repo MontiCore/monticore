@@ -17,20 +17,20 @@ import com.google.gson.JsonSerializationContext;
 
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.serializing.CommonJsonArtifactScopeSerializer;
+import de.monticore.symboltable.serializing.CommonLanguageSerialization;
 import de.monticore.symboltable.serializing.ISerialization;
 import de.monticore.symboltable.serializing.SymbolTableSerializationHelper;
 
-public class AutomatonSerializer extends CommonJsonArtifactScopeSerializer {
+public class AutomatonSerializer extends CommonLanguageSerialization {
   
   /**
-   * @see de.monticore.symboltable.serializing.CommonJsonArtifactScopeSerializer#getSerializers()
+   * @see de.monticore.symboltable.serializing.CommonLanguageSerialization#getSerializers()
    */
-  @Override
-  protected List<ISerialization<?>> getSerializers() {
-    return ImmutableList.of(new StateSymbolSerialization(), new AutSymbolSerialization(),
-        new AutomatonScopeSerialization());
-  }
+//  @Override
+//  protected List<ISerialization<?>> getSerializers() {
+//    return ImmutableList.of(new StateSymbolSerialization(), new AutSymbolSerialization(),
+//        new AutomatonScopeSerialization());
+//  }
   
   class StateSymbolSerialization
       implements ISerialization<StateSymbol> {
