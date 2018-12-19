@@ -74,8 +74,13 @@
       <#assign get = "theASTENodePackage.getENode">
     <#elseif emfAttribute.isInherited()>
       <#assign sGrammarName = astHelper.getIdentifierName(emfAttribute.getDefinedGrammar())>
-      <#assign get = "the" + sGrammarName?cap_first + "Package.get" + emfAttribute.getEDataType()[3..]>
-    <#else>
+      <#if emfAttribute.hasExternalType()>
+        <#-- Delete 4 characters: "AST" +"E" -->
+        <#assign get = "the" + sGrammarName?cap_first + "Package.get" + emfAttribute.getEDataType()[4..]>
+      <#else>
+        <#assign get = "the" + sGrammarName?cap_first + "Package.get" + emfAttribute.getEDataType()[3..]>
+      </#if>
+     <#else>
       <#assign get = "this.get" + emfAttribute.getEDataType()[3..]>
     </#if>
     <#if emfAttribute.isAstNode()>
