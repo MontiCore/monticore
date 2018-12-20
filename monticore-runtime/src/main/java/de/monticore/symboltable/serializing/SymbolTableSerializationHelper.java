@@ -16,7 +16,6 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import de.monticore.symboltable.CommonScope;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.Scope;
@@ -97,15 +96,6 @@ public class SymbolTableSerializationHelper {
     }
     else {
       return true;
-    }
-  }
-  
-  public static void deserializeExportsSymbolsFlag(JsonObject json, CommonScope result) {
-    if (json.has(ISerialization.EXPORTS_SYMBOLS)) {
-      result.setExportsSymbols(json.get(ISerialization.EXPORTS_SYMBOLS).getAsBoolean());
-    }
-    else {
-      result.setExportsSymbols(true);
     }
   }
   
