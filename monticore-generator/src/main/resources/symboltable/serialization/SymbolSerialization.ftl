@@ -56,7 +56,12 @@ class ${className}
     json.addProperty(NAME, src.getName());
     <#if symbolRule.isPresent()>
     <#list symbolRule.get().getAdditionalAttributeList() as attr>
+    <#assign attrType=genHelper.getQualifiedASTName(attr.getGenericType().getTypeName())>
+    <#if attrType == "boolean" || attrType == "Boolean">
+    json.add(${attr.getName()?upper_case}, context.serialize(src.is${attr.getName()?cap_first}()));
+    <#else>
     json.add(${attr.getName()?upper_case}, context.serialize(src.get${attr.getName()?cap_first}()));
+    </#if>
     </#list>
     </#if>
 
