@@ -27,7 +27,7 @@ public class MCBasicTypesPrettyPrinter implements MCBasicTypesVisitor {
   }
 
   // printer to use
-  protected IndentPrinter printer = null;
+  protected IndentPrinter printer;
 
 
   /**
@@ -36,12 +36,9 @@ public class MCBasicTypesPrettyPrinter implements MCBasicTypesVisitor {
    * @param a qualified name
    */
   @Override
-  public void visit(ASTMCQualifiedName a) {
+  public void handle(ASTMCQualifiedName a) {
     getPrinter().print(Names.getQualifiedName(a.getPartList()));
   }
-
-
-
 
 
   /**
@@ -50,7 +47,7 @@ public class MCBasicTypesPrettyPrinter implements MCBasicTypesVisitor {
    * @param a void type
    */
   @Override
-  public void visit(ASTMCVoidType a) {
+  public void handle(ASTMCVoidType a) {
     getPrinter().print("void");
   }
 
@@ -60,7 +57,7 @@ public class MCBasicTypesPrettyPrinter implements MCBasicTypesVisitor {
    * @param a primitive type
    */
   @Override
-  public void visit(ASTMCPrimitiveType a) {
+  public void handle(ASTMCPrimitiveType a) {
     switch (a.getPrimitive()) {
       case ASTConstantsMCBasicTypes.BOOLEAN:
         getPrinter().print("boolean");
@@ -96,62 +93,21 @@ public class MCBasicTypesPrettyPrinter implements MCBasicTypesVisitor {
    * @param a simple reference type
    */
   //@Override
-  public void visit(ASTSimpleReferenceType a) {
+  public void handle(ASTSimpleReferenceType a) {
     // print qualified name
     getPrinter().print(Names.getQualifiedName(a.getNameList()));
-    // optional type arguments are printed automatically by visitor concept
+    // optional type arguments are printed automatically by handleor concept
   }
 
   @Override
-  public void visit(ASTMCImportStatement a){
-    getPrinter().print("import" + a.getMCQualifiedName().toString());
-  }
- /*
-  @Override
-  public void visit(ASTBooleanRereferenceType a){
-    getPrinter().print("Boolean");
-  }
-
-  @Override
-  public void visit(ASTStringRereferenceType a){
-    getPrinter().print("String");
+  public void handle(ASTMCImportStatement a){
+    getPrinter().print("import " + a.getMCQualifiedName().toString());
+    if(a.isStar()){
+      getPrinter().print(".*");
+    }
+    getPrinter().print(";");
   }
 
-  @Override
-  public void visit(ASTByteRereferenceType a){
-    getPrinter().print("Byte");
-  }
-
-  @Override
-  public void visit(ASTCharRereferenceType a){
-    getPrinter().print("Char");
-  }
-
-  @Override
-  public void visit(ASTShortRereferenceType a){
-    getPrinter().print("Short");
-  }
-
-  @Override
-  public void visit(ASTIntegerRereferenceType a){
-    getPrinter().print("Integer");
-  }
-
-  @Override
-  public void visit(ASTFloatRereferenceType a){
-    getPrinter().print("Float");
-  }
-
-  @Override
-  public void visit(ASTLongRereferenceType a){
-    getPrinter().print("Long");
-  }
-
-  @Override
-  public void visit(ASTDoubleRereferenceType a){
-    getPrinter().print("Double");
-  }
- */
   /**
    * This method prettyprints a given node from type grammar.
    *
@@ -164,17 +120,12 @@ public class MCBasicTypesPrettyPrinter implements MCBasicTypesVisitor {
     return getPrinter().getContent();
   }
 
-  /**
-   * @see MCBasicTypesVisitor#setRealThis(MCBasicTypesVisitor)
-   */
-  @Override
+
   public void setRealThis(MCBasicTypesVisitor realThis) {
     this.realThis = realThis;
   }
 
-  /**
-   * @see MCBasicTypesVisitor#getRealThis()
-   */
+
   @Override
   public MCBasicTypesVisitor getRealThis() {
     return realThis;

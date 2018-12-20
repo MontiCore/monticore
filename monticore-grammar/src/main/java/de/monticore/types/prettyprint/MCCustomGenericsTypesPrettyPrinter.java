@@ -28,17 +28,23 @@ public class MCCustomGenericsTypesPrettyPrinter extends MCBasicGenericsTypesPret
     this.realThis=realThis;
   }
 
-  public void traverse(ASTMCBasicGenericsReferenceType node) {
+  public void handle(ASTMCBasicGenericsReferenceType node) {
    getPrinter().print(String.join(".",node.getNameList())+"<");
 
    for(ASTMCTypeArgument t:node.getMCTypeArgumentList()) {
-     t.accept(this);
+     t.accept(getRealThis());
    }
     getPrinter().print(">");
   }
 
-  public void traverse(ASTMCCustomTypeArgument node) {
-    node.getMCReferenceType().accept(this);
+  public void handle(ASTMCCustomTypeArgument node) {
+    node.getMCReferenceType().accept(getRealThis());
   }
 
+
+  public String prettyprint(ASTMCCustomTypeArgument a) {
+    getPrinter().clearBuffer();
+    a.accept(getRealThis());
+    return getPrinter().getContent();
+  }
 }
