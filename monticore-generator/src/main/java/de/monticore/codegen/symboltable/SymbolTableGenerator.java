@@ -47,7 +47,7 @@ public class SymbolTableGenerator {
 
   private final SymbolTableCreatorGenerator symbolTableCreatorGenerator;
 
-  private final SymbolTableSerializationGenerator symbolTableSerializationGenerator;
+  private final ArtifactScopeSerializerGenerator symbolTableSerializationGenerator;
 
   protected SymbolTableGenerator(
           ModelingLanguageGenerator modelingLanguageGenerator,
@@ -60,7 +60,7 @@ public class SymbolTableGenerator {
           ScopeGenerator scopeGenerator,
           SymbolReferenceGenerator symbolReferenceGenerator,
           SymbolTableCreatorGenerator symbolTableCreatorGenerator,
-          SymbolTableSerializationGenerator symbolTableSerializationGenerator) {
+          ArtifactScopeSerializerGenerator symbolTableSerializationGenerator) {
     this.modelingLanguageGenerator = modelingLanguageGenerator;
     this.modelLoaderGenerator = modelLoaderGenerator;
     this.modelNameCalculatorGenerator = modelNameCalculatorGenerator;

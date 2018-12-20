@@ -47,7 +47,7 @@ public class ${className}
     Collection<Scope> subscopes = SymbolTableSerializationHelper.filterRelevantSubScopes(src);
     
     json = new SerializationBuilder(json, context)
-        .add(KIND, ${scopeName}.class.getName())
+        .add(CLASS, ${scopeName}.class.getName())
         .add(NAME, src.getName())
         .addOnlyIfFalse(EXPORTS_SYMBOLS, src.exportsSymbols())
         .addOnlyIfFalse(IS_SHADOWING_SCOPE, src.isShadowingScope())

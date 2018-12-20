@@ -17,14 +17,14 @@ import com.google.gson.JsonSerializationContext;
 
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.serializing.CommonLanguageSerialization;
+import de.monticore.symboltable.serializing.CommonArtifactScopeSerializer;
 import de.monticore.symboltable.serializing.ISerialization;
 import de.monticore.symboltable.serializing.SymbolTableSerializationHelper;
 
-public class AutomatonSerializer extends CommonLanguageSerialization {
+public class AutomatonSerializer extends CommonArtifactScopeSerializer {
   
   /**
-   * @see de.monticore.symboltable.serializing.CommonLanguageSerialization#getSerializers()
+   * @see de.monticore.symboltable.serializing.CommonArtifactScopeSerializer#getSerializers()
    */
 //  @Override
 //  protected List<ISerialization<?>> getSerializers() {

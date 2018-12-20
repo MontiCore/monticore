@@ -37,7 +37,7 @@ public interface ISerialization<T> extends JsonSerializer<T>, JsonDeserializer<T
   
   public static final String NAME = "name";
   
-  public static final String KIND = "kind";
+  public static final String CLASS = "class";
   
   // TODO: Can be removed if ScopeSpanningSymbols are removed
   public static final String SCOPESPANNING_SYMBOL = "spanningSymbol";

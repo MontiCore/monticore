@@ -81,8 +81,8 @@ public class SymbolTableSerializationHelper {
   }
   
   public static String getKind(JsonObject json) {
-    if (json.has(ISerialization.KIND)) {
-      String name = json.get(ISerialization.KIND).getAsString();
+    if (json.has(ISerialization.CLASS)) {
+      String name = json.get(ISerialization.CLASS).getAsString();
       return name;
     }
     else {
@@ -139,7 +139,7 @@ public class SymbolTableSerializationHelper {
     if (src.isSpannedBySymbol()) {
       ScopeSpanningSymbol spanningSymbol = src.getSpanningSymbol().get();
       JsonObject jsonSpanningSymbol = new JsonObject();
-      jsonSpanningSymbol.addProperty(ISerialization.KIND, spanningSymbol.getKind().getName());
+      jsonSpanningSymbol.addProperty(ISerialization.CLASS, spanningSymbol.getKind().getName());
       jsonSpanningSymbol.addProperty(ISerialization.NAME, spanningSymbol.getName());
       json.add(ISerialization.SCOPESPANNING_SYMBOL, jsonSpanningSymbol);
     }
@@ -158,7 +158,7 @@ public class SymbolTableSerializationHelper {
     if (jsonSubScope.has(ISerialization.SCOPESPANNING_SYMBOL)) {
       JsonObject asJsonObject = jsonSubScope.get(ISerialization.SCOPESPANNING_SYMBOL).getAsJsonObject();
       String spanningSymbolName = asJsonObject.get(ISerialization.NAME).getAsString();
-      String spanningSymbolKind = asJsonObject.get(ISerialization.KIND).getAsString();
+      String spanningSymbolKind = asJsonObject.get(ISerialization.CLASS).getAsString();
       
       Collection<Symbol> allLocalSymbols = result.getLocalSymbols().get(spanningSymbolName);
       List<Symbol> symbolsOfCorrectKind = allLocalSymbols.stream()

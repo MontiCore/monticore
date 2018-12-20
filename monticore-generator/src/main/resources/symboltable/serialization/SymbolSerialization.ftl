@@ -30,7 +30,7 @@ class ${className}
   public ${symbolName}Symbol deserialize(JsonElement json, Type typeOfT,
       JsonDeserializationContext context) throws JsonParseException {
     JsonObject jsonObject = json.getAsJsonObject();
-    String kind = jsonObject.get(KIND).getAsString();
+    String kind = jsonObject.get(CLASS).getAsString();
     if(${symbolName}Symbol.class.getName().equals(kind)) {
       String name = jsonObject.get(NAME).getAsString();
       ${symbolName}SymbolBuilder builder = new ${symbolName}SymbolBuilder();
@@ -52,7 +52,7 @@ class ${className}
   public JsonElement serialize(${symbolName}Symbol src, Type typeOfSrc,
       JsonSerializationContext context) {
     JsonObject json = new JsonObject();
-    json.addProperty(KIND, ${symbolName}Symbol.class.getName());
+    json.addProperty(CLASS, ${symbolName}Symbol.class.getName());
     json.addProperty(NAME, src.getName());
     <#if symbolRule.isPresent()>
     <#list symbolRule.get().getAdditionalAttributeList() as attr>
