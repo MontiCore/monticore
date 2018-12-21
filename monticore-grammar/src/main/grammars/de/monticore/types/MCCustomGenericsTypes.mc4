@@ -18,7 +18,7 @@ component grammar MCCustomGenericsTypes extends de.monticore.types.MCBasicGeneri
           @attribute typeArgumentList The types between '<...>'
       */
       MCBasicGenericsReferenceType implements MCGenericReferenceType <20> =
-          (Name& || ".")+ "<" (MCTypeArgument || ",")* ">";
+          (Name || ".")+ "<" (MCTypeArgument || ",")* ">";
 
       /**
        ASTCustomTypeArgument introduces all ReferenceType as TypeArguments

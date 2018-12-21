@@ -13,9 +13,14 @@ component grammar MCGenericTypes extends de.monticore.types.MCCustomGenericsType
   MCWildcardType implements MCTypeArgument =
      "?" ( ("extends" upperBound:MCType) | ("super" lowerBound:MCType) )?;
 
+
+  /**  ASTMCComplexReferenceType is only used if referenced Type is
+      generic and has generic inner classes e.g.
+      monticore.Generic1<TypeParam1>.GenericInnerClass<TypeParam2>
+  */
   MCComplexReferenceType implements MCGenericReferenceType, MCType =
     (MCBasicGenericsReferenceType || "." )+ // complex qualification
-    "."  (Name& || ".")+ "<" (MCTypeArgument || ",")* ">"
+    "."  (Name || ".")+ "<" (MCTypeArgument || ",")* ">"
     ;
 
   /** ASTArrayType introduce array for arbitrary types
