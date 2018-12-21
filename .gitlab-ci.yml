@@ -18,7 +18,7 @@ stages:
 build:
   stage: build
   script:
-    - "mvn clean compile $MAVEN_CLI_OPTS"
+    - "mvn clean package $MAVEN_CLI_OPTS -DskipTests"
   artifacts:
     paths:
       - target/
@@ -36,9 +36,6 @@ unittest:
     - build
   script:
     - "mvn surefire:test $MAVEN_CLI_OPTS"
-  artifacts:
-    paths:
-      - target/
 
 # integrationtest:
 #   stage: test
