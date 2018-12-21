@@ -24,7 +24,7 @@ build:
       - target/
       - monticore-runtime/target/
       - monticore-emf-runtime/target/
-      - monticore-grammar/target/
+      - monticore-grammar/target/*.jar
       - monticore-generator/target/
       - monticore-cli/target/
       - monticore-maven/monticore-maven-plugin/target/
