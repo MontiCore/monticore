@@ -2,17 +2,14 @@
 
 package de.monticore.mcliterals;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import de.monticore.mcbasicliterals._ast.ASTBooleanLiteral;
+import de.monticore.mcbasicliterals._ast.ASTLiteral;
+import de.monticore.mcbasicliterals._ast.ASTNullLiteral;
+import org.junit.Test;
 
 import java.io.IOException;
 
-import org.junit.Test;
-
-import de.monticore.mcliterals._ast.ASTBooleanLiteral;
-import de.monticore.mcliterals._ast.ASTLiteral;
-import de.monticore.mcliterals._ast.ASTNullLiteral;
+import static org.junit.Assert.*;
 
 public class NullAndBooleanLiteralsTest {
   

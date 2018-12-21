@@ -1,0 +1,40 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.types;
+
+/**
+ * This grammar introduces basic generics List<>, Map<,>, Set<> and Optional<>
+*/
+component grammar MCBasicGenericsTypes extends de.monticore.types.MCBasicTypes {
+
+  start MCType;
+
+  /**
+  *  The interface ASTBasicGenerics can be used to restrict to BasicGenerics even if a extended Grammar
+  * (MCGenericTypes.mc4) is included.
+  */
+  interface MCGenericReferenceType extends MCReferenceType;
+
+  astrule MCGenericReferenceType =
+    // names:List<String>
+    // arguments:List<de.monticore.types.mcbasicgenericstypes._ast.ASTGenericArgument>
+  ;
+
+  // use LookAhead to avoid "List" etc. as keywords
+
+  MCListType implements MCGenericReferenceType <200> = { cmpToken(1, "List") }? Name "<" MCTypeArgument ">";
+
+  MCOptionalType implements MCGenericReferenceType <200> = { cmpToken(1, "Optional") }? Name "<" MCTypeArgument ">";
+
+  MCMapType implements MCGenericReferenceType  <200> = { cmpToken(1, "Map") }? Name "<" key:MCTypeArgument "," value:MCTypeArgument ">";
+
+  MCSetType implements MCGenericReferenceType <200> = { cmpToken(1, "Set") }? Name "<" MCTypeArgument ">";
+
+  /**
+  *  ASTTypeArgument interface introduced here as QualifiedReferenceType, more implementations to be added in subgrammars
+  */
+  interface MCTypeArgument ;
+
+  MCBasicTypeArgument implements MCTypeArgument <200> = MCQualifiedReferenceType;
+
+
+}

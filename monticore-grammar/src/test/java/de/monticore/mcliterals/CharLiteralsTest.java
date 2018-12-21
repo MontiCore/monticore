@@ -2,16 +2,13 @@
 
 package de.monticore.mcliterals;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import de.monticore.mcbasicliterals._ast.ASTCharLiteral;
+import de.monticore.mcbasicliterals._ast.ASTLiteral;
+import org.junit.Test;
 
 import java.io.IOException;
 
-import org.junit.Test;
-
-import de.monticore.mcliterals._ast.ASTCharLiteral;
-import de.monticore.mcliterals._ast.ASTLiteral;
+import static org.junit.Assert.*;
 
 public class CharLiteralsTest {
   

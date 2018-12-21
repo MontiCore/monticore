@@ -2,43 +2,22 @@
 
 package de.monticore.types.prettyprint;
 
-import java.util.Iterator;
-
 import de.monticore.literals.prettyprint.LiteralsPrettyPrinterConcreteVisitor;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.types._ast.ASTComplexArrayType;
-import de.monticore.types.types._ast.ASTComplexReferenceType;
-import de.monticore.types.types._ast.ASTConstantsTypes;
-import de.monticore.types.types._ast.ASTPrimitiveArrayType;
-import de.monticore.types.types._ast.ASTPrimitiveType;
-import de.monticore.types.types._ast.ASTQualifiedName;
-import de.monticore.types.types._ast.ASTSimpleReferenceType;
-import de.monticore.types.types._ast.ASTTypeArguments;
-import de.monticore.types.types._ast.ASTTypeParameters;
-import de.monticore.types.types._ast.ASTTypeVariableDeclaration;
-import de.monticore.types.types._ast.ASTTypesNode;
-import de.monticore.types.types._ast.ASTVoidType;
-import de.monticore.types.types._ast.ASTWildcardType;
+import de.monticore.types.types._ast.*;
 import de.monticore.types.types._visitor.TypesVisitor;
 import de.se_rwth.commons.Names;
 
-/**
- * This class is responsible for pretty-printing types of the common type system. It is implemented
- * using the Visitor pattern. The Visitor pattern traverses a tree in depth first, the visit and
- * ownVisit-methods are called when a node is traversed, the endVisit methods are called when the
- * whole subtree of a node has been traversed. The ownVisit-Methods stop the automatic traversal
- * order and allow to explictly visit subtrees by calling getVisitor().startVisit(ASTNode)
- * 
- */
+import java.util.Iterator;
+
+
 public class TypesPrettyPrinterConcreteVisitor extends LiteralsPrettyPrinterConcreteVisitor implements TypesVisitor {
   
   private TypesVisitor realThis = this;
   
    /**
    * Constructor.
-   * 
-   * @param parent the parent pretty printer, needed to give control to the embedded pretty printer
-   * when embedding is detected.
+   *
    * @param printer the printer to write to.
    */
   public TypesPrettyPrinterConcreteVisitor(IndentPrinter printer) {

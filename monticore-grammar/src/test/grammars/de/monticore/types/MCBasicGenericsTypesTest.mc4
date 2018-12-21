@@ -1,0 +1,8 @@
+/* (c)  https://github.com/MontiCore/monticore */
+
+package de.monticore.types;
+
+grammar MCBasicGenericsTypesTest extends de.monticore.types.MCBasicGenericsTypes {
+
+
+}
