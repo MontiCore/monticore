@@ -1,10 +1,10 @@
 package de.monticore.types;
 
-import de.monticore.types.mcbasictypes._ast.*;
-import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor;
+import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedReferenceType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -28,20 +28,20 @@ public class MCBasicTypesTest {
 
     ASTMCPrimitiveType bool = boolOpt.get();
 
-    Boolean isBool = bool.isBoolean();
+    boolean isBool = bool.isBoolean();
     assertTrue(isBool);
-    Boolean isByte = bool.isByte();
+    boolean isByte = bool.isByte();
     assertFalse(isByte);
-    Boolean isChar = bool.isChar();
+    boolean isChar = bool.isChar();
     assertFalse(isChar);
-    Boolean isDouble = bool.isDouble();
+    boolean isDouble = bool.isDouble();
     assertFalse(isDouble);
-    Boolean isFloat = bool.isFloat();
+    boolean isFloat = bool.isFloat();
     assertFalse(isFloat);
-    Boolean isInt = bool.isInt();
+    boolean isInt = bool.isInt();
     assertFalse(isInt);
-    Boolean isShort = bool.isShort();
-    assertFalse(isInt);
+    boolean isShort = bool.isShort();
+    assertFalse(isShort);
   }
 
 
@@ -51,7 +51,7 @@ public class MCBasicTypesTest {
     Class foo = boolean.class;
 
     String[] primitives = new String[]{"boolean", "byte", "char", "short", "int", "long",
-            "float", "double"};
+        "float", "double"};
     try {
       for (String primitive : primitives) {
         MCBasicTypesTestParser mcBasicTypesParser = new MCBasicTypesTestParser();
@@ -70,8 +70,7 @@ public class MCBasicTypesTest {
   }
 
   @Test
-  public void testOwnSimpleTypes() throws IOException {
-
+  public void testMCQualifiedReferenceType() throws IOException {
     String[] types = new String[]{"socnet.Person", "Person"};
     for (String type : types) {
       MCBasicTypesTestParser mcBasicTypesParser = new MCBasicTypesTestParser();
@@ -81,4 +80,5 @@ public class MCBasicTypesTest {
       assertTrue(astType.get() instanceof ASTMCQualifiedReferenceType);
     }
   }
+
 }

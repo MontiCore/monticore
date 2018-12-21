@@ -1,8 +1,11 @@
 package de.monticore.types;
 
+import de.monticore.types.mcbasicgenericstypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mcbasictypes._ast.ASTMCReferenceType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcgenerictypes._ast.ASTMCArrayType;
+import de.monticore.types.mcgenerictypes._ast.ASTMCComplexReferenceType;
+import de.monticore.types.mcgenerictypes._ast.ASTMCWildcardType;
 import de.monticore.types.mcgenerictypestest._parser.MCGenericTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
@@ -30,7 +33,6 @@ public class MCGenericsTypesTest {
       // .parseType(primitive);
 
       Optional<ASTMCType> type = mcBasicTypesParser.parse_String(testType);
-
       assertNotNull(type);
       assertTrue(type.isPresent());
       assertTrue(type.get() instanceof ASTMCReferenceType);
@@ -42,7 +44,7 @@ public class MCGenericsTypesTest {
   @Test
   public void testArrayTypes() throws IOException {
     Class foo = boolean.class;
-    String[] types = new String[]{"String[][]"};
+    String[] types = new String[]{"String[][]"," java.util.List<Foo>[][]"," boolean[][]"};
 
     for (String testType : types) {
       MCGenericTypesTestParser mcBasicTypesParser = new MCGenericTypesTestParser();
@@ -53,10 +55,29 @@ public class MCGenericsTypesTest {
       assertNotNull(type);
       assertTrue(type.isPresent());
       assertTrue(type.get() instanceof ASTMCArrayType);
-      System.out.println(type.get().getClass());
       ASTMCArrayType t = (ASTMCArrayType) type.get();
       assertEquals(2,t.getDimensions());
     }
+  }
+
+  @Test
+  public void testMCComplexReferenceTypeValid() throws IOException {
+    MCGenericTypesTestParser parser = new MCGenericTypesTestParser();
+    Optional<ASTMCType> type = parser.parse_StringMCType("java.util.List<A>.Set<C>.some.Collection<B>");
+    assertFalse(parser.hasErrors());
+    assertNotNull(type);
+    assertTrue(type.isPresent());
+    assertTrue(type.get() instanceof ASTMCComplexReferenceType);
+  }
+
+  @Test
+  public void testMcWildcardType() throws IOException {
+    MCGenericTypesTestParser parser = new MCGenericTypesTestParser();
+    Optional<ASTMCTypeArgument> type = parser.parse_StringMCTypeArgument("? extends java.util.Set<Foo>");
+    assertFalse(parser.hasErrors());
+    assertNotNull(type);
+    assertTrue(type.isPresent());
+    assertTrue(type.get() instanceof ASTMCWildcardType);
   }
 
 }

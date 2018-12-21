@@ -34,7 +34,7 @@ component grammar MCBasicGenericsTypes extends de.monticore.types.MCBasicTypes {
   */
   interface MCTypeArgument ;
 
-  MCBasicTypeArgument implements MCTypeArgument = MCQualifiedReferenceType;
+  MCBasicTypeArgument implements MCTypeArgument <200> = MCQualifiedReferenceType;
 
 
 }

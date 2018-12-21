@@ -24,6 +24,6 @@ component grammar MCCustomGenericsTypes extends de.monticore.types.MCBasicGeneri
        ASTCustomTypeArgument introduces all ReferenceType as TypeArguments
        This enables recursive Generics e.g. List<Map<String, socnet.Person>>
       */
-      MCCustomTypeArgument implements MCTypeArgument = MCReferenceType;
+      MCCustomTypeArgument implements MCTypeArgument <20> = MCReferenceType;
 
 }
