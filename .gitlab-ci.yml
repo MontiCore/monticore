@@ -22,13 +22,13 @@ build:
   artifacts:
     paths:
       - target/
-      - monticore-runtime/target/
-      - monticore-emf-runtime/target/
+      - monticore-runtime/target/*.jar
+      - monticore-emf-runtime/target/*.jar
       - monticore-grammar/target/*.jar
-      - monticore-generator/target/
-      - monticore-cli/target/
-      - monticore-maven/monticore-maven-plugin/target/
-      - monticore-templateclassgenerator/target/
+      - monticore-generator/target/*.jar
+      - monticore-cli/target/*.jar
+      - monticore-maven/monticore-maven-plugin/target/*.jar
+      - monticore-templateclassgenerator/target/*.jar
 
 unittest:
   stage: test
