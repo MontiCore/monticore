@@ -1,22 +1,57 @@
 image: maven:3.5.4-jdk-8-alpine
+    
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=./.m2/repository"
+  MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode"
+
+cache:
+  paths:
+    - ./.m2/repository
+  # keep cache across branch
+  key: "$CI_BUILD_REF_NAME"
 
 stages:
   - build
   - test
-  
-cache:
-  paths:
-    - .m2/
-
-variables:
-  MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode -Dmaven.repo.local=.m2"# -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN"
+  - deploy
 
 build:
   stage: build
   script:
-    - mvn $MAV$MAVEN_CLI_OPTS install -DskipTests=true
-    
-test: 
+    - "mvn clean compile $MAVEN_CLI_OPTS"
+  artifacts:
+    paths:
+      - target/
+      - monticore-runtime/target/
+      - monticore-emf-runtime/target/
+      - monticore-grammar/target/
+      - monticore-generator/target/
+      - monticore-cli/target/
+      - monticore-maven/monticore-maven-plugin/target/
+      - monticore-templateclassgenerator/target/
+
+unittest:
   stage: test
+  dependencies:
+    - build
   script:
-    - mvn $MAVEN_CLI_OPTS surefire:test
+    - "mvn surefire:test $MAVEN_CLI_OPTS"
+  artifacts:
+    paths:
+      - target/
+
+# integrationtest:
+#   stage: test
+#   dependencies:
+#     - build-job
+#   script:
+#     - "mvn verify $MAVEN_CLI_OPTS"
+#   artifacts:
+#     paths:
+#       - target/
+
+# deploy:
+#   stage: deploy
+#   artifacts:
+#     paths:
+#       - "target/*.jar"
