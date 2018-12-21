@@ -21,24 +21,16 @@ build:
     - "mvn clean package $MAVEN_CLI_OPTS -DskipTests"
   artifacts:
     paths:
-        # upload classes and resources
       - target/
-      - monticore-runtime/target/classes/
-      - monticore-emf-runtime/target/classes/
+      - monticore-runtime/target/
+      - monticore-emf-runtime/target/
       - monticore-grammar/target/classes/
-      - monticore-generator/target/classes/
-      - monticore-cli/target/classes/
-      - monticore-maven/monticore-maven-plugin/target/classes/
-      - monticore-templateclassgenerator/target/classes/
-      
-      # upload test classes and resources
-      - monticore-runtime/target/test-classes/
-      - monticore-emf-runtime/target/test-classes/
       - monticore-grammar/target/test-classes/
-      - monticore-generator/target/test-classes/
-      - monticore-cli/target/test-classes/
-      - monticore-maven/monticore-maven-plugin/target/test-classes/
-      - monticore-templateclassgenerator/target/test-classes/
+      - monticore-grammar/target/*.jar
+      - monticore-generator/target/
+      - monticore-cli/target/
+      - monticore-maven/monticore-maven-plugin/target/
+      - monticore-templateclassgenerator/target/
 
 unittest:
   stage: test
