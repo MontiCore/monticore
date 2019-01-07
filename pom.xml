@@ -56,9 +56,9 @@
     <reflections.version>0.9.9</reflections.version>
     <slf4j.version>1.7.10</slf4j.version>
     <freemarker.version>2.3.23</freemarker.version>
-    <emf.common.version>2.5.0</emf.common.version>
-    <emf.ecore.version>2.5.0</emf.ecore.version>
-    <emf.ecore.xmi.version>2.5.0</emf.ecore.xmi.version>
+    <emf.common.version>2.15.0</emf.common.version>
+    <emf.ecore.version>2.15.0</emf.ecore.version>
+    <emf.ecore.xmi.version>2.15.0</emf.ecore.xmi.version>
     <emf.compare.version>1.2.0</emf.compare.version>
     <!-- has been relocated to that version -->
     <xml-apis.version>1.0.b2</xml-apis.version>
@@ -293,18 +293,18 @@
 
       <!-- EMF dependencies -->
       <dependency>
-        <groupId>org.mod4j.org.eclipse.emf</groupId>
-        <artifactId>ecore</artifactId>
+        <groupId>org.eclipse.emf</groupId>
+        <artifactId>org.eclipse.emf.ecore</artifactId>
         <version>${emf.ecore.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.mod4j.org.eclipse.emf.ecore</groupId>
-        <artifactId>xmi</artifactId>
+        <groupId>org.eclipse.emf</groupId>
+        <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
         <version>${emf.ecore.xmi.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.mod4j.org.eclipse.emf</groupId>
-        <artifactId>common</artifactId>
+        <groupId>org.eclipse.emf</groupId>
+        <artifactId>org.eclipse.emf.common</artifactId>
         <version>${emf.common.version}</version>
       </dependency>
 
