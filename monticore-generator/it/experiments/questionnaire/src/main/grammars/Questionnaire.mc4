@@ -1,6 +1,6 @@
 /* (c) Monticore license: https://github.com/MontiCore/monticore */
 
-grammar Questionnaire extends de.monticore.MCLiterals {
+grammar Questionnaire extends de.monticore.MCBasicLiterals {
  
   symbol scope QDefinition = "questionnaire" Name "{"
     ( Item | Scale )*
@@ -13,15 +13,15 @@ grammar Questionnaire extends de.monticore.MCLiterals {
   interface ScaleType;
 
   Range implements ScaleType = "range" "["
-    minTitle:String? min:IntLiteral
+    minTitle:String? min:NatLiteral
    ".." 
-    max:IntLiteral maxTitle:String? 
+    max:NatLiteral maxTitle:String?
   "]";
   Number implements ScaleType = "number";
-  Text implements ScaleType = "text" maxCharacters:IntLiteral?;
+  Text implements ScaleType = "text" maxCharacters:NatLiteral?;
   Select implements ScaleType = "select" "{"
     options:SelectOption+
   "}";
-  SelectOption = id:IntLiteral ":" title:String;
+  SelectOption = id:NatLiteral ":" title:String;
 
 }
