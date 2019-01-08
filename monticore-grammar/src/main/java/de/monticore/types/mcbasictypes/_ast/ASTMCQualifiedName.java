@@ -1,5 +1,7 @@
 package de.monticore.types.mcbasictypes._ast;
 
+import de.monticore.utils.Names;
+
 import java.util.List;
 
 public class ASTMCQualifiedName extends ASTMCQualifiedNameTOP {
@@ -17,5 +19,10 @@ public class ASTMCQualifiedName extends ASTMCQualifiedNameTOP {
 
   public String getBaseName() {
     return parts.get(-1);
+  }
+
+  public String toString(){
+    return Names.constructQualifiedName(
+            this.getPartList());
   }
 }

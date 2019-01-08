@@ -10,7 +10,7 @@ import de.se_rwth.commons.Names;
 
 import java.util.Iterator;
 
-
+@Deprecated
 public class TypesPrettyPrinterConcreteVisitor extends LiteralsPrettyPrinterConcreteVisitor implements TypesVisitor {
   
   private TypesVisitor realThis = this;

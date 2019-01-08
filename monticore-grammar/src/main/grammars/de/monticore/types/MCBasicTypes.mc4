@@ -32,13 +32,6 @@ component grammar MCBasicTypes extends de.monticore.MCBasics {
     MCQualifiedName =
         part:(Name || ".")+;
 
-    astrule MCQualifiedName =
-        method public String toString(){
-          return de.se_rwth.commons.Names.getQualifiedName(
-              this.getPartList());
-        };
-
-
     /*========================================================================*/
     /*= ImportStatement ======================================================*/
     /*========================================================================*/
@@ -49,15 +42,6 @@ component grammar MCBasicTypes extends de.monticore.MCBasics {
     */
     MCImportStatement =
     		"import" MCQualifiedName ("." Star:["*"])? ";" ;
-
-    astrule MCImportStatement =
-        method public String getQName(){
-          return getMCQualifiedName().toString();
-        };
-
-
-
-
 
     /*========================================================================*/
     /*= Primitives ===========================================================*/
@@ -74,15 +58,15 @@ component grammar MCBasicTypes extends de.monticore.MCBasics {
 
 
     /*========================================================================*/
-    /*= Reference Types (Classes, Interfaces in OO) ==========================*/
+    /*=========== Types (Classes, Interfaces in OO) ==========================*/
     /*========================================================================*/
 
-    interface MCReferenceType extends MCType;
+    interface MCObjectType extends MCType;
 
-    /** ASTQualifiedReferenceType represents types like class or interface types
+    /** ASTQualifiedType represents types like class or interface types
             which could have a qualified name like this: a.b.c.D
         */
-    MCQualifiedReferenceType implements MCReferenceType = MCQualifiedName;
+    MCQualifiedType implements MCObjectType = MCQualifiedName;
 
 
     /*========================================================================*/

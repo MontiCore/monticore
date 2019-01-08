@@ -2,12 +2,12 @@ package de.monticore.types.mcbasictypes._ast;
 
 import java.util.List;
 
-public class ASTMCQualifiedReferenceType extends ASTMCQualifiedReferenceTypeTOP {
+public class ASTMCQualifiedType extends ASTMCQualifiedTypeTOP {
 
-  public ASTMCQualifiedReferenceType() {
+  public ASTMCQualifiedType() {
   }
 
-  public ASTMCQualifiedReferenceType(ASTMCQualifiedName qualifiedName) {
+  public ASTMCQualifiedType(ASTMCQualifiedName qualifiedName) {
     super(qualifiedName);
   }
 

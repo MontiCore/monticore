@@ -7,11 +7,11 @@ import de.monticore.symboltable.types.*;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
 import de.monticore.symboltable.types.references.CommonJTypeReference;
 import de.monticore.symboltable.types.references.JTypeReference;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedReferenceType;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mccustomgenericstypes._ast.ASTMCCollectionTypesReferenceType;
-import de.monticore.types.mcgenerictypes._ast.ASTMCComplexReferenceType;
+import de.monticore.types.mccustomgenericstypes._ast.ASTMCCollectionType;
+import de.monticore.types.mcgenerictypes._ast.ASTMCComplexType;
 import de.monticore.types.mcgenerictypes._ast.ASTMCTypeParameters;
 import de.monticore.types.mcgenerictypes._ast.ASTMCTypeVariableDeclaration;
 
@@ -88,8 +88,8 @@ public class MCTypesJTypeSymbolsHelper {
           JTypeReference<?> typeReference,
           ASTMCReturnType astType, Scope definingScopeOfReference,
           JTypeReferenceFactory<?> typeRefFactory) {
-    if (astType.getMCTypeOpt().isPresent() && astType.getMCType() instanceof ASTMCQualifiedReferenceType) {
-      ASTMCQualifiedReferenceType astSimpleReferenceType = (ASTMCQualifiedReferenceType) astType.getMCType();
+    if (astType.getMCTypeOpt().isPresent() && astType.getMCType() instanceof ASTMCQualifiedType) {
+      ASTMCQualifiedType astSimpleReferenceType = (ASTMCQualifiedType) astType.getMCType();
 //
 //      List<ActualTypeArgument> actualTypeArguments = new ArrayList<>();
 //      for (ASTTypeArgument astTypeArgument : astSimpleReferenceType.getTypeArguments()
@@ -151,10 +151,10 @@ public class MCTypesJTypeSymbolsHelper {
 //        typeReference.setActualTypeArguments(actualTypeArguments);
 //      }
     }
-    else if (astType.getMCTypeOpt().isPresent() && astType.getMCType() instanceof ASTMCComplexReferenceType) {
-      ASTMCComplexReferenceType astComplexReferenceType = (ASTMCComplexReferenceType) astType.getMCType();
-      for (ASTMCCollectionTypesReferenceType astSimpleReferenceType : astComplexReferenceType
-          .getMCCollectionTypesReferenceTypeList()) {
+    else if (astType.getMCTypeOpt().isPresent() && astType.getMCType() instanceof ASTMCComplexType) {
+      ASTMCComplexType astComplexReferenceType = (ASTMCComplexType) astType.getMCType();
+      for (ASTMCCollectionType astSimpleReferenceType : astComplexReferenceType
+          .getMCCollectionTypeList()) {
         // TODO
         /* ASTComplexReferenceType represents types like class or interface types which always have
          * ASTSimpleReferenceType as qualification. For example: a.b.c<Arg>.d.e<Arg> */

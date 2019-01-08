@@ -2,7 +2,7 @@ package de.monticore.types.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcgenerictypes._ast.ASTMCComplexReferenceType;
+import de.monticore.types.mcgenerictypes._ast.ASTMCComplexType;
 import de.monticore.types.mcgenerictypes._ast.ASTMCTypeParameters;
 import de.monticore.types.mcgenerictypes._ast.ASTMCTypeVariableDeclaration;
 import de.monticore.types.mcgenerictypes._ast.ASTMCWildcardType;
@@ -63,15 +63,15 @@ public class MCGenericTypesPrettyPrinterTest {
   }
 
   @Test
-  public void testMCComplexReferenceType() throws IOException {
+  public void testMCComplexType() throws IOException {
     MCGenericTypesTestParser parser = new MCGenericTypesTestParser();
-    Optional<ASTMCComplexReferenceType> ast = parser.parse_StringMCComplexReferenceType("java.util.List<Integer>.some.util.Set<String>.Opt<List<String>>");
+    Optional<ASTMCComplexType> ast = parser.parse_StringMCComplexType("java.util.List<Integer>.some.util.Set<String>.Opt<List<String>>");
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
-    ASTMCComplexReferenceType complexReferenceType = ast.get();
+    ASTMCComplexType complexReferenceType = ast.get();
     MCGenericTypesPrettyPrinter printer = new MCGenericTypesPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
-    ast = parser.parse_StringMCComplexReferenceType(output);
+    ast = parser.parse_StringMCComplexType(output);
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertTrue(complexReferenceType.deepEquals(ast.get()));

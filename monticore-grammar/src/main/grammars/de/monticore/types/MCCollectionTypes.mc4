@@ -15,32 +15,32 @@ component grammar MCCollectionTypes
   *  even if a extended Grammar
   * (MCGenericTypes.mc4) is included.
   */
-  interface MCGenericReferenceType extends MCReferenceType;
+  interface MCGenericType extends MCObjectType;
 
 
   // use LookAhead to avoid "List" etc. as keywords
 
-  MCListType implements MCGenericReferenceType <200> =
+  MCListType implements MCGenericType <200> =
        { cmpToken(1, "List") }? Name "<" MCTypeArgument ">";
 
-  MCOptionalType implements MCGenericReferenceType <200> =
+  MCOptionalType implements MCGenericType <200> =
        { cmpToken(1, "Optional") }? Name "<" MCTypeArgument ">";
 
-  MCMapType implements MCGenericReferenceType  <200> =
+  MCMapType implements MCGenericType  <200> =
        { cmpToken(1, "Map") }? Name
        "<" key:MCTypeArgument "," value:MCTypeArgument ">";
 
-  MCSetType implements MCGenericReferenceType <200> =
+  MCSetType implements MCGenericType <200> =
        { cmpToken(1, "Set") }? Name "<" MCTypeArgument ">";
 
   /**
-  *  ASTTypeArgument interface introduced here as QualifiedReferenceType,
+  *  ASTTypeArgument interface introduced here as QualifiedType,
   *  more implementations to be added in subgrammars
   */
   interface MCTypeArgument ;
 
   MCBasicTypeArgument implements MCTypeArgument <200> =
-       MCQualifiedReferenceType;
+       MCQualifiedType;
 
 
 }

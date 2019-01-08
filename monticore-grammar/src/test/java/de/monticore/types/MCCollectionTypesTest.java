@@ -3,8 +3,8 @@ package de.monticore.types;
 
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedReferenceType;
-import de.monticore.types.mcbasictypes._ast.ASTMCReferenceType;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
 import de.se_rwth.commons.logging.Log;
@@ -35,16 +35,16 @@ public class MCCollectionTypesTest {
 
       assertNotNull(type);
       assertTrue(type.isPresent());
-      assertTrue(type.get() instanceof ASTMCReferenceType);
+      assertTrue(type.get() instanceof ASTMCObjectType);
 
-      ASTMCReferenceType t = (ASTMCReferenceType) type.get();
+      ASTMCObjectType t = (ASTMCObjectType) type.get();
       t.accept( new MCCollectionTypesVisitor() {
         public void visit(ASTMCListType t) {
           assertTrue(true);
           t.getMCTypeArgument().accept(new MCCollectionTypesVisitor() {
             @Override
             public void visit(ASTMCType node) {
-              if (!(node instanceof ASTMCQualifiedReferenceType)) {
+              if (!(node instanceof ASTMCQualifiedType)) {
                 fail("Found not String");
               }
             }
@@ -62,7 +62,7 @@ public class MCCollectionTypesTest {
   @Test
   public void testMCListTypeValid() throws IOException {
     MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();
-    Optional<ASTMCGenericReferenceType> type = parser.parse_StringMCGenericReferenceType("List<String>");
+    Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("List<String>");
     assertFalse(parser.hasErrors());
     assertNotNull(type);
     assertTrue(type.isPresent());
@@ -72,7 +72,7 @@ public class MCCollectionTypesTest {
   @Test
   public void testMCListTypeInvalid() throws IOException {
     MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();
-    Optional<ASTMCGenericReferenceType> type = parser.parse_StringMCGenericReferenceType("java.util.List<String>");
+    Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("java.util.List<String>");
     assertTrue(parser.hasErrors());
     assertFalse(type.isPresent());
   }
@@ -80,7 +80,7 @@ public class MCCollectionTypesTest {
   @Test
   public void testMCMapTypeValid() throws IOException {
     MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();
-    Optional<ASTMCGenericReferenceType> type = parser.parse_StringMCGenericReferenceType("Map<Integer, String>");
+    Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("Map<Integer, String>");
     assertFalse(parser.hasErrors());
     assertNotNull(type);
     assertTrue(type.isPresent());
@@ -90,7 +90,7 @@ public class MCCollectionTypesTest {
   @Test
   public void testMCMapTypeInvalid() throws IOException {
     MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();
-    Optional<ASTMCGenericReferenceType> type = parser.parse_StringMCGenericReferenceType("java.util.Map<Integer, String>");
+    Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("java.util.Map<Integer, String>");
     assertTrue(parser.hasErrors());
     assertFalse(type.isPresent());
   }
@@ -99,7 +99,7 @@ public class MCCollectionTypesTest {
   @Test
   public void testMCOptionalTypeValid() throws IOException {
     MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();
-    Optional<ASTMCGenericReferenceType> type = parser.parse_StringMCGenericReferenceType("Optional<String>");
+    Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("Optional<String>");
     assertFalse(parser.hasErrors());
     assertNotNull(type);
     assertTrue(type.isPresent());
@@ -109,7 +109,7 @@ public class MCCollectionTypesTest {
   @Test
   public void testMCOptionalTypeInvalid() throws IOException {
     MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();
-    Optional<ASTMCGenericReferenceType> type = parser.parse_StringMCGenericReferenceType("java.util.Optional<String>");
+    Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("java.util.Optional<String>");
     assertTrue(parser.hasErrors());
     assertFalse(type.isPresent());
   }
@@ -118,7 +118,7 @@ public class MCCollectionTypesTest {
   @Test
   public void testMCSetTypeValid() throws IOException {
     MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();
-    Optional<ASTMCGenericReferenceType> type = parser.parse_StringMCGenericReferenceType("Set<String>");
+    Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("Set<String>");
     assertFalse(parser.hasErrors());
     assertNotNull(type);
     assertTrue(type.isPresent());
@@ -128,7 +128,7 @@ public class MCCollectionTypesTest {
   @Test
   public void testMCSetTypeInvalid() throws IOException {
     MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();
-    Optional<ASTMCGenericReferenceType> type = parser.parse_StringMCGenericReferenceType("java.util.Set<String>");
+    Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("java.util.Set<String>");
     assertTrue(parser.hasErrors());
     assertFalse(type.isPresent());
   }

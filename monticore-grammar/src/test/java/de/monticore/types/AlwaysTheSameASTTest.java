@@ -1,7 +1,7 @@
 package de.monticore.types;
 
 import de.monticore.types.mccollectiontypes._ast.*;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedReferenceType;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
@@ -43,17 +43,17 @@ public class AlwaysTheSameASTTest {
   public void testMCListType() throws IOException {
     String list = "List<String>";
 
-    Optional<ASTMCGenericReferenceType> basicGenericAst = mcCollectionTypesTestParser.parse_StringMCGenericReferenceType(list);
+    Optional<ASTMCGenericType> basicGenericAst = mcCollectionTypesTestParser.parse_StringMCGenericType(list);
     assertFalse(mcCollectionTypesTestParser.hasErrors());
     assertTrue(basicGenericAst.isPresent());
     assertTrue(basicGenericAst.get() instanceof ASTMCListType);
 
-    Optional<ASTMCGenericReferenceType> customAst = customGenericTypesTestParser.parse_StringMCGenericReferenceType(list);
+    Optional<ASTMCGenericType> customAst = customGenericTypesTestParser.parse_StringMCGenericType(list);
     assertFalse(mcCollectionTypesTestParser.hasErrors());
     assertTrue(customAst.isPresent());
     assertTrue(customAst.get() instanceof ASTMCListType);
 
-    Optional<ASTMCGenericReferenceType> genericAST = genericTypesTestParser.parse_StringMCGenericReferenceType(list);
+    Optional<ASTMCGenericType> genericAST = genericTypesTestParser.parse_StringMCGenericType(list);
     assertFalse(mcCollectionTypesTestParser.hasErrors());
     assertTrue(genericAST.isPresent());
     assertTrue(genericAST.get() instanceof ASTMCListType);
@@ -71,17 +71,17 @@ public class AlwaysTheSameASTTest {
   public void testMCMapType() throws IOException {
     String map = "Map<Integer, String>";
 
-    Optional<ASTMCGenericReferenceType> basicGenericAst = mcCollectionTypesTestParser.parse_StringMCGenericReferenceType(map);
+    Optional<ASTMCGenericType> basicGenericAst = mcCollectionTypesTestParser.parse_StringMCGenericType(map);
     assertFalse(mcCollectionTypesTestParser.hasErrors());
     assertTrue(basicGenericAst.isPresent());
     assertTrue(basicGenericAst.get() instanceof ASTMCMapType);
 
-    Optional<ASTMCGenericReferenceType> customAst = customGenericTypesTestParser.parse_StringMCGenericReferenceType(map);
+    Optional<ASTMCGenericType> customAst = customGenericTypesTestParser.parse_StringMCGenericType(map);
     assertFalse(mcCollectionTypesTestParser.hasErrors());
     assertTrue(customAst.isPresent());
     assertTrue(customAst.get() instanceof ASTMCMapType);
 
-    Optional<ASTMCGenericReferenceType> genericAST = genericTypesTestParser.parse_StringMCGenericReferenceType(map);
+    Optional<ASTMCGenericType> genericAST = genericTypesTestParser.parse_StringMCGenericType(map);
     assertFalse(mcCollectionTypesTestParser.hasErrors());
     assertTrue(genericAST.isPresent());
     assertTrue(genericAST.get() instanceof ASTMCMapType);
@@ -95,17 +95,17 @@ public class AlwaysTheSameASTTest {
   public void testMCOptionalType() throws IOException {
     String optional = "Optional<String>";
 
-    Optional<ASTMCGenericReferenceType> basicGenericAst = mcCollectionTypesTestParser.parse_StringMCGenericReferenceType(optional);
+    Optional<ASTMCGenericType> basicGenericAst = mcCollectionTypesTestParser.parse_StringMCGenericType(optional);
     assertFalse(mcCollectionTypesTestParser.hasErrors());
     assertTrue(basicGenericAst.isPresent());
     assertTrue(basicGenericAst.get() instanceof ASTMCOptionalType);
 
-    Optional<ASTMCGenericReferenceType> customAst = customGenericTypesTestParser.parse_StringMCGenericReferenceType(optional);
+    Optional<ASTMCGenericType> customAst = customGenericTypesTestParser.parse_StringMCGenericType(optional);
     assertFalse(mcCollectionTypesTestParser.hasErrors());
     assertTrue(customAst.isPresent());
     assertTrue(customAst.get() instanceof ASTMCOptionalType);
 
-    Optional<ASTMCGenericReferenceType> genericAST = genericTypesTestParser.parse_StringMCGenericReferenceType(optional);
+    Optional<ASTMCGenericType> genericAST = genericTypesTestParser.parse_StringMCGenericType(optional);
     assertFalse(mcCollectionTypesTestParser.hasErrors());
     assertTrue(genericAST.isPresent());
     assertTrue(genericAST.get() instanceof ASTMCOptionalType);
@@ -120,17 +120,17 @@ public class AlwaysTheSameASTTest {
   public void testMCSetType() throws IOException {
     String set = "Set<String>";
 
-    Optional<ASTMCGenericReferenceType> basicGenericAst = mcCollectionTypesTestParser.parse_StringMCGenericReferenceType(set);
+    Optional<ASTMCGenericType> basicGenericAst = mcCollectionTypesTestParser.parse_StringMCGenericType(set);
     assertFalse(mcCollectionTypesTestParser.hasErrors());
     assertTrue(basicGenericAst.isPresent());
     assertTrue(basicGenericAst.get() instanceof ASTMCSetType);
 
-    Optional<ASTMCGenericReferenceType> customAst = customGenericTypesTestParser.parse_StringMCGenericReferenceType(set);
+    Optional<ASTMCGenericType> customAst = customGenericTypesTestParser.parse_StringMCGenericType(set);
     assertFalse(mcCollectionTypesTestParser.hasErrors());
     assertTrue(customAst.isPresent());
     assertTrue(customAst.get() instanceof ASTMCSetType);
 
-    Optional<ASTMCGenericReferenceType> genericAST = genericTypesTestParser.parse_StringMCGenericReferenceType(set);
+    Optional<ASTMCGenericType> genericAST = genericTypesTestParser.parse_StringMCGenericType(set);
     assertFalse(mcCollectionTypesTestParser.hasErrors());
     assertTrue(genericAST.isPresent());
     assertTrue(genericAST.get() instanceof ASTMCSetType);
@@ -183,28 +183,28 @@ public class AlwaysTheSameASTTest {
   }
 
   @Test
-  public void testMCQualifiedReferenceType() throws IOException {
+  public void testMCQualifiedType() throws IOException {
     String type = "de.monticore.ASTNode";
 
     Optional<ASTMCType> basicAST = basicTypesTestParser.parse_StringMCType(type);
     assertFalse(mcCollectionTypesTestParser.hasErrors());
     assertTrue(basicAST.isPresent());
-    assertTrue(basicAST.get() instanceof ASTMCQualifiedReferenceType);
+    assertTrue(basicAST.get() instanceof ASTMCQualifiedType);
 
     Optional<ASTMCType> basicGenericAst = mcCollectionTypesTestParser.parse_StringMCType(type);
     assertFalse(mcCollectionTypesTestParser.hasErrors());
     assertTrue(basicGenericAst.isPresent());
-    assertTrue(basicGenericAst.get() instanceof ASTMCQualifiedReferenceType);
+    assertTrue(basicGenericAst.get() instanceof ASTMCQualifiedType);
 
     Optional<ASTMCType> customAst = customGenericTypesTestParser.parse_StringMCType(type);
     assertFalse(mcCollectionTypesTestParser.hasErrors());
     assertTrue(customAst.isPresent());
-    assertTrue(customAst.get() instanceof ASTMCQualifiedReferenceType);
+    assertTrue(customAst.get() instanceof ASTMCQualifiedType);
 
     Optional<ASTMCType> genericAST = genericTypesTestParser.parse_StringMCType(type);
     assertFalse(mcCollectionTypesTestParser.hasErrors());
     assertTrue(genericAST.isPresent());
-    assertTrue(genericAST.get() instanceof ASTMCQualifiedReferenceType);
+    assertTrue(genericAST.get() instanceof ASTMCQualifiedType);
 
     assertTrue(basicAST.get().deepEquals(customAst.get()));
     assertTrue(basicAST.get().deepEquals(basicGenericAst.get()));

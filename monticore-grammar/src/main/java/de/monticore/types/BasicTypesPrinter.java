@@ -53,8 +53,8 @@ public class BasicTypesPrinter {
     if (type instanceof ASTMCPrimitiveType) {
       return doPrintPrimitiveType((ASTMCPrimitiveType) type);
     }
-    if (type instanceof ASTMCReferenceType) {
-      return doPrintReferenceType((ASTMCReferenceType) type);
+    if (type instanceof ASTMCObjectType) {
+      return doPrintReferenceType((ASTMCObjectType) type);
     }
     return "";
   }
@@ -65,11 +65,11 @@ public class BasicTypesPrinter {
    * @param type ASTReferenceType to be converted
    * @return String representation of "type"
    */
-  public static String printReferenceType(ASTMCReferenceType type) {
+  public static String printReferenceType(ASTMCObjectType type) {
     return getInstance().doPrintReferenceType(type);
   }
 
-  protected String doPrintReferenceType(ASTMCReferenceType type) {
+  protected String doPrintReferenceType(ASTMCObjectType type) {
 
     return Names.getQualifiedName(type.getNameList());
   }
@@ -166,15 +166,15 @@ public class BasicTypesPrinter {
    * @param type ASTReferenceTypeList to be converted
    * @return String representation of "type"
    */
-  public static String printReferenceTypeList(List<ASTMCReferenceType> type) {
+  public static String printReferenceTypeList(List<ASTMCObjectType> type) {
     return getInstance().doPrintReferenceTypeList(type);
   }
   
-  protected String doPrintReferenceTypeList(List<ASTMCReferenceType> type) {
+  protected String doPrintReferenceTypeList(List<ASTMCObjectType> type) {
     StringBuilder ret = new StringBuilder();
     if (type != null) {
       String sep = "";
-      for (ASTMCReferenceType refType : type) {
+      for (ASTMCObjectType refType : type) {
         ret.append(sep + doPrintReferenceType(refType));
         sep = ", ";
       }

@@ -9,7 +9,7 @@ component grammar MCCustomGenericsTypes
 
   start MCType;
 
-  /** ASTBasicGenericsReferenceType represents types like class or interface
+  /** ASTMCCollectionTypesType represents types like class or interface
   *   types which could have a qualified name like this: a.b.C<Arg>. The
   *   qualification stored in the name (a.b) could be package (or a type
   *   name in case of inner classes). The qualified name could contain type
@@ -19,12 +19,12 @@ component grammar MCCustomGenericsTypes
   *   @attribute typeArgumentList The types between '<...>'
   */
 
-  MCCollectionTypesReferenceType implements MCGenericReferenceType <20> =
+  MCCollectionType implements MCGenericType <20> =
        (Name || ".")+ "<" (MCTypeArgument || ",")* ">";
 
-  /** ASTCustomTypeArgument introduces all ReferenceType as TypeArguments
+  /** ASTMCCustomTypeArgument introduces all MCType as TypeArguments
   *   This enables recursive Generics e.g. List<Map<String, socnet.Person>>
   */
-  MCCustomTypeArgument implements MCTypeArgument <20> = MCReferenceType;
+  MCCustomTypeArgument implements MCTypeArgument <20> = MCType;
 
 }

@@ -16,12 +16,12 @@ component grammar MCGenericTypes
        "?" ( ("extends" upperBound:MCType) | ("super" lowerBound:MCType) )?;
 
 
-  /** ASTMCComplexReferenceType is only used if referenced Type is
+  /** ASTMCComplexType is only used if referenced Type is
   *   generic and has generic inner classes e.g.
   *   monticore.Generic1<TypeParam1>.GenericInnerClass<TypeParam2>
   */
-  MCComplexReferenceType implements MCGenericReferenceType, MCType =
-       (MCCollectionTypesReferenceType || "." )+ // complex qualification
+  MCComplexType implements MCGenericType, MCType =
+       (MCCollectionType || "." )+ // complex qualification
         "."  (Name || ".")+ "<" (MCTypeArgument || ",")* ">"
    ;
 
@@ -49,5 +49,5 @@ component grammar MCGenericTypes
   *   @attribute upperBound Optional list of required super classes
   */
   MCTypeVariableDeclaration =
-    Name ( "extends" upperBound:(MCComplexReferenceType || "&")+ )?;
+    Name ( "extends" upperBound:(MCComplexType || "&")+ )?;
 }

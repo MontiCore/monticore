@@ -1,10 +1,10 @@
 package de.monticore.types;
 
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
-import de.monticore.types.mcbasictypes._ast.ASTMCReferenceType;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcgenerictypes._ast.ASTMCArrayType;
-import de.monticore.types.mcgenerictypes._ast.ASTMCComplexReferenceType;
+import de.monticore.types.mcgenerictypes._ast.ASTMCComplexType;
 import de.monticore.types.mcgenerictypes._ast.ASTMCWildcardType;
 import de.monticore.types.mcgenerictypestest._parser.MCGenericTypesTestParser;
 import de.se_rwth.commons.logging.Log;
@@ -35,9 +35,9 @@ public class MCGenericsTypesTest {
       Optional<ASTMCType> type = mcBasicTypesParser.parse_String(testType);
       assertNotNull(type);
       assertTrue(type.isPresent());
-      assertTrue(type.get() instanceof ASTMCReferenceType);
+      assertTrue(type.get() instanceof ASTMCObjectType);
       System.out.println(type.get().getClass());
-      ASTMCReferenceType t = (ASTMCReferenceType) type.get();
+      ASTMCObjectType t = (ASTMCObjectType) type.get();
     }
   }
 
@@ -67,7 +67,7 @@ public class MCGenericsTypesTest {
     assertFalse(parser.hasErrors());
     assertNotNull(type);
     assertTrue(type.isPresent());
-    assertTrue(type.get() instanceof ASTMCComplexReferenceType);
+    assertTrue(type.get() instanceof ASTMCComplexType);
   }
 
   @Test

@@ -29,6 +29,7 @@ import de.se_rwth.commons.Names;
  * is a singleton.
  * 
  */
+@Deprecated
 public class TypesPrinter {
   
   private static TypesPrinter instance;

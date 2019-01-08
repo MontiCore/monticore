@@ -12,6 +12,7 @@ package de.monticore;
  * in grammar extensions).
  *
 */
+@Deprecated
 component grammar MCBasicTypes1 extends de.monticore.MCBasics {
 
     /*========================================================================*/

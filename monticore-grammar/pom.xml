@@ -22,11 +22,6 @@
       <groupId>de.monticore</groupId>
       <artifactId>monticore-runtime</artifactId>
     </dependency>
- 
-    <dependency>
-      <groupId>de.se_rwth.commons</groupId>
-      <artifactId>se-commons-utilities</artifactId>
-    </dependency>
     
     <dependency>
       <groupId>de.se_rwth.commons</groupId>
