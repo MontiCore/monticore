@@ -1,17 +1,21 @@
-package de.monticore.types.mcbasicgenericstypes._ast;
+package de.monticore.types.mccollectiontypes._ast;
+
+
 
 import com.google.common.collect.Lists;
 
 import java.util.List;
 
-public class ASTMCOptionalType extends ASTMCOptionalTypeTOP {
+public class ASTMCMapType extends ASTMCMapTypeTOP {
 
-    public ASTMCOptionalType() {
+    public ASTMCMapType() {
     }
 
-    public ASTMCOptionalType(String name, ASTMCTypeArgument typeArgument) {
-        super(name, typeArgument);
+    public ASTMCMapType(String name, ASTMCTypeArgument key, ASTMCTypeArgument value) {
+        super(name, key, value);
     }
+
+
 
     @Override
     public List<String> getNameList() {
@@ -25,12 +29,13 @@ public class ASTMCOptionalType extends ASTMCOptionalTypeTOP {
 
     @Override
     public List<ASTMCTypeArgument> getMCTypeArgumentList() {
-        return Lists.newArrayList(getMCTypeArgument());
+        return Lists.newArrayList(getKey(),getValue());
     }
+
 
     @Override
     public void setMCTypeArgumentList(List<ASTMCTypeArgument> arguments) {
-        setMCTypeArgument(arguments.get(0));
+        setKey(arguments.get(0));
+        setValue(arguments.get(1));
     }
-
 }

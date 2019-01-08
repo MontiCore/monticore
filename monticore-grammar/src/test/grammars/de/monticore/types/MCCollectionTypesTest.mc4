@@ -2,7 +2,7 @@
 
 package de.monticore.types;
 
-grammar MCBasicGenericsTypesTest extends de.monticore.types.MCBasicGenericsTypes {
+grammar MCCollectionTypesTest extends de.monticore.types.MCCollectionTypes {
 
 
 }

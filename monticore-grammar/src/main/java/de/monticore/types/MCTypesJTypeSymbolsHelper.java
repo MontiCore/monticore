@@ -10,7 +10,7 @@ import de.monticore.symboltable.types.references.JTypeReference;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedReferenceType;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mccustomgenericstypes._ast.ASTMCBasicGenericsReferenceType;
+import de.monticore.types.mccustomgenericstypes._ast.ASTMCCollectionTypesReferenceType;
 import de.monticore.types.mcgenerictypes._ast.ASTMCComplexReferenceType;
 import de.monticore.types.mcgenerictypes._ast.ASTMCTypeParameters;
 import de.monticore.types.mcgenerictypes._ast.ASTMCTypeVariableDeclaration;
@@ -153,8 +153,8 @@ public class MCTypesJTypeSymbolsHelper {
     }
     else if (astType.getMCTypeOpt().isPresent() && astType.getMCType() instanceof ASTMCComplexReferenceType) {
       ASTMCComplexReferenceType astComplexReferenceType = (ASTMCComplexReferenceType) astType.getMCType();
-      for (ASTMCBasicGenericsReferenceType astSimpleReferenceType : astComplexReferenceType
-          .getMCBasicGenericsReferenceTypeList()) {
+      for (ASTMCCollectionTypesReferenceType astSimpleReferenceType : astComplexReferenceType
+          .getMCCollectionTypesReferenceTypeList()) {
         // TODO
         /* ASTComplexReferenceType represents types like class or interface types which always have
          * ASTSimpleReferenceType as qualification. For example: a.b.c<Arg>.d.e<Arg> */

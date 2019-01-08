@@ -1,23 +1,23 @@
 package de.monticore.types.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.mcbasicgenericstypes._ast.*;
-import de.monticore.types.mcbasicgenericstypes._visitor.MCBasicGenericsTypesVisitor;
+import de.monticore.types.mccollectiontypes._ast.*;
+import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor;
 
-public class MCBasicGenericsTypesPrettyPrinter extends MCBasicTypesPrettyPrinter implements MCBasicGenericsTypesVisitor {
-  private MCBasicGenericsTypesVisitor realThis = this;
+public class MCCollectionTypesPrettyPrinter extends MCBasicTypesPrettyPrinter implements MCCollectionTypesVisitor {
+  private MCCollectionTypesVisitor realThis = this;
 
-  public MCBasicGenericsTypesPrettyPrinter(IndentPrinter printer) {
+  public MCCollectionTypesPrettyPrinter(IndentPrinter printer) {
     super(printer);
   }
 
   @Override
-  public MCBasicGenericsTypesVisitor getRealThis() {
+  public MCCollectionTypesVisitor getRealThis() {
     return realThis;
   }
 
   @Override
-  public void setRealThis(MCBasicGenericsTypesVisitor realThis) {
+  public void setRealThis(MCCollectionTypesVisitor realThis) {
     this.realThis = realThis;
   }
 

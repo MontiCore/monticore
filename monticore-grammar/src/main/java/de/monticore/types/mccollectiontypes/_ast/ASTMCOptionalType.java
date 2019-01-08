@@ -1,14 +1,15 @@
-package de.monticore.types.mcbasicgenericstypes._ast;
+package de.monticore.types.mccollectiontypes._ast;
 
 import com.google.common.collect.Lists;
 
 import java.util.List;
 
-public class ASTMCListType extends ASTMCListTypeTOP {
-    public ASTMCListType() {
+public class ASTMCOptionalType extends ASTMCOptionalTypeTOP {
+
+    public ASTMCOptionalType() {
     }
 
-    public ASTMCListType(String name, ASTMCTypeArgument typeArgument) {
+    public ASTMCOptionalType(String name, ASTMCTypeArgument typeArgument) {
         super(name, typeArgument);
     }
 
@@ -19,7 +20,7 @@ public class ASTMCListType extends ASTMCListTypeTOP {
 
     @Override
     public void setNameList(List<String> names) {
-       setName(names.get(0));
+        setName(names.get(0));
     }
 
     @Override
@@ -31,4 +32,5 @@ public class ASTMCListType extends ASTMCListTypeTOP {
     public void setMCTypeArgumentList(List<ASTMCTypeArgument> arguments) {
         setMCTypeArgument(arguments.get(0));
     }
+
 }

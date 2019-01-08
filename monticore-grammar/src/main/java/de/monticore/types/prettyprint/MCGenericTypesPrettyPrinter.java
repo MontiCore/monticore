@@ -1,8 +1,8 @@
 package de.monticore.types.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.mcbasicgenericstypes._ast.ASTMCTypeArgument;
-import de.monticore.types.mccustomgenericstypes._ast.ASTMCBasicGenericsReferenceType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
+import de.monticore.types.mccustomgenericstypes._ast.ASTMCCollectionTypesReferenceType;
 import de.monticore.types.mcgenerictypes._ast.*;
 import de.monticore.types.mcgenerictypes._visitor.MCGenericTypesVisitor;
 
@@ -43,7 +43,7 @@ public class MCGenericTypesPrettyPrinter extends MCCustomGenericsTypesPrettyPrin
   @Override
   public void handle(ASTMCComplexReferenceType node) {
     boolean first = true;
-    for (ASTMCBasicGenericsReferenceType referenceType : node.getMCBasicGenericsReferenceTypeList()) {
+    for (ASTMCCollectionTypesReferenceType referenceType : node.getMCCollectionTypesReferenceTypeList()) {
       if (!first) {
         getPrinter().print(".");
       } else {

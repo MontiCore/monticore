@@ -1,6 +1,6 @@
 package de.monticore.types;
 
-import de.monticore.types.mcbasicgenericstypes._ast.ASTMCTypeArgument;
+import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mcbasictypes._ast.ASTMCReferenceType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcgenerictypes._ast.ASTMCArrayType;
