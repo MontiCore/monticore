@@ -1,4 +1,4 @@
-package de.monticore.types.mcbasicgenericstypes._ast;
+package de.monticore.types.mccollectiontypes._ast;
 
 import com.google.common.collect.Lists;
 

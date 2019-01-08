@@ -1,7 +1,7 @@
 package de.monticore.types.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.mccustomgenericstypes._ast.ASTMCBasicGenericsReferenceType;
+import de.monticore.types.mccustomgenericstypes._ast.ASTMCCollectionTypesReferenceType;
 import de.monticore.types.mccustomgenericstypes._ast.ASTMCCustomTypeArgument;
 import de.monticore.types.mccustomgenerictypestest._parser.MCCustomGenericTypesTestParser;
 import de.se_rwth.commons.logging.Log;
@@ -33,13 +33,13 @@ public class MCCustomGenericsTypesPrettyPrinterTest {
   @Test
   public void testMCBasicTypeArgument() throws IOException {
     MCCustomGenericTypesTestParser parser = new MCCustomGenericTypesTestParser();
-    Optional<ASTMCBasicGenericsReferenceType> ast = parser.parse_StringMCBasicGenericsReferenceType("java.util.List<Optional<Set<Integer>>>");
+    Optional<ASTMCCollectionTypesReferenceType> ast = parser.parse_StringMCCollectionTypesReferenceType("java.util.List<Optional<Set<Integer>>>");
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
-    ASTMCBasicGenericsReferenceType typeArgument = ast.get();
+    ASTMCCollectionTypesReferenceType typeArgument = ast.get();
     MCCustomGenericsTypesPrettyPrinter printer = new MCCustomGenericsTypesPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
-    ast = parser.parse_StringMCBasicGenericsReferenceType(output);
+    ast = parser.parse_StringMCCollectionTypesReferenceType(output);
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertTrue(typeArgument.deepEquals(ast.get()));
@@ -48,13 +48,13 @@ public class MCCustomGenericsTypesPrettyPrinterTest {
   @Test
   public void testMCBasicTypeArgument2() throws IOException {
     MCCustomGenericTypesTestParser parser = new MCCustomGenericTypesTestParser();
-    Optional<ASTMCBasicGenericsReferenceType> ast = parser.parse_StringMCBasicGenericsReferenceType("some.randomObject<List<Map<Optional<Set<String>>>>>");
+    Optional<ASTMCCollectionTypesReferenceType> ast = parser.parse_StringMCCollectionTypesReferenceType("some.randomObject<List<Map<Optional<Set<String>>>>>");
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
-    ASTMCBasicGenericsReferenceType typeArgument = ast.get();
+    ASTMCCollectionTypesReferenceType typeArgument = ast.get();
     MCCustomGenericsTypesPrettyPrinter printer = new MCCustomGenericsTypesPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
-    ast = parser.parse_StringMCBasicGenericsReferenceType(output);
+    ast = parser.parse_StringMCCollectionTypesReferenceType(output);
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertTrue(typeArgument.deepEquals(ast.get()));

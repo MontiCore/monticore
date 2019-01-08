@@ -5,7 +5,7 @@ package de.monticore.types;
 
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.prettyprint.MCBasicGenericsTypesPrettyPrinter;
+import de.monticore.types.prettyprint.MCCollectionTypesPrettyPrinter;
 
 /**
  * This class provides methods for printing types as Strings. The TypesPrinter
@@ -51,7 +51,7 @@ public class BasicGenericsTypesPrinter {
 
     IndentPrinter printer = new IndentPrinter();
 
-    MCBasicGenericsTypesPrettyPrinter vi = new MCBasicGenericsTypesPrettyPrinter(printer);
+    MCCollectionTypesPrettyPrinter vi = new MCCollectionTypesPrettyPrinter(printer);
     return vi.prettyprint(type);
   }
 

@@ -1,12 +1,12 @@
 package de.monticore.types.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.mcbasicgenericstypes._ast.ASTMCTypeArgument;
-import de.monticore.types.mccustomgenericstypes._ast.ASTMCBasicGenericsReferenceType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
+import de.monticore.types.mccustomgenericstypes._ast.ASTMCCollectionTypesReferenceType;
 import de.monticore.types.mccustomgenericstypes._ast.ASTMCCustomTypeArgument;
 import de.monticore.types.mccustomgenericstypes._visitor.MCCustomGenericsTypesVisitor;
 
-public class MCCustomGenericsTypesPrettyPrinter extends MCBasicGenericsTypesPrettyPrinter implements MCCustomGenericsTypesVisitor {
+public class MCCustomGenericsTypesPrettyPrinter extends MCCollectionTypesPrettyPrinter implements MCCustomGenericsTypesVisitor {
   private MCCustomGenericsTypesVisitor realThis = this;
 
   public MCCustomGenericsTypesPrettyPrinter(IndentPrinter printer){
@@ -28,7 +28,7 @@ public class MCCustomGenericsTypesPrettyPrinter extends MCBasicGenericsTypesPret
     this.realThis=realThis;
   }
 
-  public void handle(ASTMCBasicGenericsReferenceType node) {
+  public void handle(ASTMCCollectionTypesReferenceType node) {
    getPrinter().print(String.join(".",node.getNameList())+"<");
 
    for(ASTMCTypeArgument t:node.getMCTypeArgumentList()) {
