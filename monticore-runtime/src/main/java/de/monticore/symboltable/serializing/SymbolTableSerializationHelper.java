@@ -39,6 +39,13 @@ public class SymbolTableSerializationHelper {
     return symbols;
   }
   
+  /**
+   * 
+   * Given a scope, returns a collection of direct subscopes that export symbols and that contain at least one symbol 
+   * TODO AB: in any transitive subscope
+   * @param src
+   * @return
+   */
   public static Collection<Scope> filterRelevantSubScopes(MutableScope src) {
     return src.getSubScopes()
         .stream()
@@ -79,13 +86,13 @@ public class SymbolTableSerializationHelper {
     }
   }
   
-  public static String getKind(JsonObject json) {
+  public static String getClassName(JsonObject json) {
     if (json.has(ISerialization.CLASS)) {
       String name = json.get(ISerialization.CLASS).getAsString();
       return name;
     }
     else {
-      Log.error("0x"+"ScopeKind could not be deserialized!");
+      Log.error("0x"+"Class of scope or symbol could not be deserialized!");
       return "";
     }
   }
