@@ -1,6 +1,7 @@
 image: maven:3.5.4-jdk-8-alpine
     
 variables:
+  MAVEN_OPTS: ""
   MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode"
 
 cache:
@@ -18,13 +19,6 @@ build:
   stage: build
   script:
     - "mvn $MAVEN_CLI_OPTS compile"
-    
-it-build:
-  stage: build
-  dependencies:
-    - build
-  script:
-    - "mvn $MAVEN_CLI_OPTS compile -f monticore-generator/it/pom.xml"
 
 test:
   stage: test
@@ -32,13 +26,6 @@ test:
     - build
   script:
     - "mvn $MAVEN_CLI_OPTS test"
-
-it-test:
-  stage: test
-  dependencies:
-    - it-build
-  script:
-    - "mvn $MAVEN_CLI_OPTS test -f monticore-generator/it/pom.xml"
 
 # deploy:
 #   stage: deploy
