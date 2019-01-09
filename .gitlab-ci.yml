@@ -1,7 +1,7 @@
 image: maven:3.5.4-jdk-8-alpine
     
 variables:
-  MAVEN_OPTS: "-Dmaven.repo.local=./.m2/repository"
+  MAVEN_OPTS:
   MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode"
 
 cache:
@@ -18,36 +18,28 @@ stages:
 build:
   stage: build
   script:
-    - "mvn clean package $MAVEN_CLI_OPTS -DskipTests"
-  artifacts:
-    paths:
-      - target/
-      - monticore-runtime/target/
-      - monticore-emf-runtime/target/
-      - monticore-grammar/target/classes/
-      - monticore-grammar/target/test-classes/
-      - monticore-grammar/target/*.jar
-      - monticore-generator/target/
-      - monticore-cli/target/
-      - monticore-maven/monticore-maven-plugin/target/
-      - monticore-templateclassgenerator/target/
+    - "mvn $MAVEN_CLI_OPTS compile"
+    
+it-build:
+  stage: build
+  dependencies:
+    - build
+  script:
+    - "mvn $MAVEN_CLI_OPTS compile -f monticore-generator/it/pom.xml"
 
-unittest:
+test:
   stage: test
   dependencies:
     - build
   script:
-    - "mvn surefire:test $MAVEN_CLI_OPTS"
+    - "mvn $MAVEN_CLI_OPTS test"
 
-# integrationtest:
-#   stage: test
-#   dependencies:
-#     - build-job
-#   script:
-#     - "mvn verify $MAVEN_CLI_OPTS"
-#   artifacts:
-#     paths:
-#       - target/
+it-test:
+  stage: test
+  dependencies:
+    - it-build
+  script:
+    - "mvn $MAVEN_CLI_OPTS test -f monticore-generator/it/pom.xml"
 
 # deploy:
 #   stage: deploy
