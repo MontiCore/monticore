@@ -15,6 +15,8 @@ import de.monticore.mcbasictypes1._ast.ASTQualifiedName;
 import de.monticore.mcbasictypes1._ast.ASTShortType;
 import de.monticore.mcbasictypes1._visitor.MCBasicTypes1Visitor;
 
+
+@Deprecated
 public class MCBasicTypes1PrettyPrinter implements MCBasicTypes1Visitor {
 	private IndentPrinter printer = null;
 
