@@ -1,0 +1,73 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.expressions;
+
+component grammar AssignmentExpressions extends de.monticore.expressions.ExpressionsBasis {
+		
+IncSuffixExpression implements Expression <220> =
+	Expression "++";
+        
+DecSuffixExpression implements Expression <220> =
+	Expression "--";
+        
+PlusPrefixExpression implements Expression <210> =
+	"+" Expression;
+
+MinusPrefixExpression implements Expression <210> =
+	"-" Expression;
+
+IncPrefixExpression implements Expression <210> =
+	"++" Expression;
+
+DecPrefixExpression implements Expression <210> =
+	"--" Expression;
+	
+BinaryAndExpression implements Expression <120> =
+	leftExpression:Expression operator:"&"  rightExpression:Expression;
+	
+BinaryXorExpression implements Expression <110> =
+	leftExpression:Expression operator:"^"  rightExpression:Expression;
+	
+BinaryOrOpExpression implements Expression <100> =
+	leftExpression:Expression operator:"|"  rightExpression:Expression;
+	
+// Use "astextends after Release of MC 5.0.3 and delete TOP"
+interface AssignmentExpression = leftExpression:Expression operator:"" rightExpression:Expression;
+
+RegularAssignmentExpression implements Expression <60>, AssignmentExpression =
+	leftExpression:Expression operator:"="  rightExpression:Expression;
+	
+PlusAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+	leftExpression:Expression operator:"+=" rightExpression:Expression;
+	
+MinusAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+	leftExpression:Expression operator:"-=" rightExpression:Expression;
+
+MultAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+	leftExpression:Expression operator:"*=" rightExpression:Expression;
+
+DivideAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+	leftExpression:Expression operator:"/=" rightExpression:Expression;
+
+AndAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+	leftExpression:Expression operator:"&=" rightExpression:Expression;
+
+OrAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+	leftExpression:Expression operator:"|=" rightExpression:Expression;
+
+BinaryXorAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+	leftExpression:Expression operator:"^=" rightExpression:Expression;
+
+RightShiftAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+	leftExpression:Expression operator:">>=" rightExpression:Expression;
+
+LogicalRightAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+	leftExpression:Expression operator:">>>=" rightExpression:Expression;
+
+LeftShiftAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+	leftExpression:Expression operator:"<<=" rightExpression:Expression;
+
+ModuloAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+	leftExpression:Expression operator:"%=" rightExpression:Expression;
+
+}

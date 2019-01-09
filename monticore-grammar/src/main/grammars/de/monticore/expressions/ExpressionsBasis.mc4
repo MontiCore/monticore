@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.expressions;
+
+component grammar ExpressionsBasis extends de.monticore.MCBasics {
+	
+interface Expression;
+
+symbol ExprMethod = Name;
+
+
+}
