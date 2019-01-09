@@ -4,31 +4,16 @@ variables:
   MAVEN_OPTS: ""
   MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode"
 
-cache:
-  paths:
-    - ./.m2/repository
-  # keep cache across branch
-  key: "$CI_BUILD_REF_NAME"
-
 stages:
   - build
-  - test
   - deploy
 
 build:
   stage: build
   script:
-    - "mvn $MAVEN_CLI_OPTS compile"
+    - "mvn $MAVEN_CLI_OPTS install"
 
-test:
-  stage: test
-  dependencies:
-    - build
+deploy:
+  stage: deploy
   script:
-    - "mvn $MAVEN_CLI_OPTS test"
-
-# deploy:
-#   stage: deploy
-#   artifacts:
-#     paths:
-#       - "target/*.jar"
+    - "mvn $MAVEN_CLI_OPTS deploy -DskipTests"
