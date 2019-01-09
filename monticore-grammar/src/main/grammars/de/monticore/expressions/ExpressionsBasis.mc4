@@ -4,9 +4,14 @@ package de.monticore.expressions;
 
 component grammar ExpressionsBasis extends de.monticore.MCBasics {
 	
-interface Expression;
+  interface Expression;
 
-symbol ExprMethod = Name;
+  symbol EMethod = Name;
 
+  symbol EVariable = Name;
+
+  symbol EType = Name;
+
+  //FooBar = Name@EMethod;
 
 }

@@ -8,11 +8,11 @@ component grammar CommonExpressions extends de.monticore.expressions.Expressions
 interface InfixExpression = leftExpression:Expression operator:"" rightExpression:Expression;
   
 CallExpression implements Expression <240> =
-	Expression Arguments;
+	Expression Arguments; //Name@EMethod;
 	        
 BooleanNotExpression implements Expression <200> =
 	"~"  Expression;
-	
+
 LogicalNotExpression implements Expression <190> =
 	"!" Expression;
 
