@@ -26,7 +26,7 @@ public class MCGenericsTypesTest {
   @Test
   public void testBasicGenericsTypes() throws IOException {
     Class foo = boolean.class;
-    String[] types = new String[]{"Foo<String>.Bar<List<Integer>>","List<? extends Person>","List<P<String>>","Optional<String>","Set<String>","Map<String,String>","List<socnet.Person>"};
+    String[] types = new String[]{"Foo<String>.Bar<List<Integer>>", "List<? extends Person>", "List<P<String>>", "Optional<String>", "Set<String>", "Map<String,String>", "List<socnet.Person>"};
 
     for (String testType : types) {
       MCGenericTypesTestParser mcBasicTypesParser = new MCGenericTypesTestParser();
@@ -44,7 +44,7 @@ public class MCGenericsTypesTest {
   @Test
   public void testArrayTypes() throws IOException {
     Class foo = boolean.class;
-    String[] types = new String[]{"String[][]"," java.util.List<Foo>[][]"," boolean[][]"};
+    String[] types = new String[]{"String[][]", " java.util.List<Foo>[][]", " boolean[][]"};
 
     for (String testType : types) {
       MCGenericTypesTestParser mcBasicTypesParser = new MCGenericTypesTestParser();
@@ -56,7 +56,7 @@ public class MCGenericsTypesTest {
       assertTrue(type.isPresent());
       assertTrue(type.get() instanceof ASTMCArrayType);
       ASTMCArrayType t = (ASTMCArrayType) type.get();
-      assertEquals(2,t.getDimensions());
+      assertEquals(2, t.getDimensions());
     }
   }
 
