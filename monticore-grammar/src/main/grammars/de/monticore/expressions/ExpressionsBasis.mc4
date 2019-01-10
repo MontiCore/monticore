@@ -12,6 +12,6 @@ component grammar ExpressionsBasis extends de.monticore.MCBasics {
 
   symbol EType = Name;
 
-  FooBar = Name@EMethod;
+  //FooBar = franz:Name@EMethod;
 
 }
