@@ -7,9 +7,12 @@ component grammar CommonExpressions extends de.monticore.expressions.Expressions
 // Use "astextends after Release of MC 5.0.3 and delete TOP"
 interface InfixExpression = leftExpression:Expression operator:"" rightExpression:Expression;
   
-CallExpression implements Expression <240> =
-	Expression? "." Arguments;
-	        
+QualifiedCallExpression implements Expression <240> =
+	Expression "." Name Arguments;
+
+CallExpression implements Expression <241> =
+	Name Arguments;
+
 BooleanNotExpression implements Expression <200> =
 	"~"  Expression;
 

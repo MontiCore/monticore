@@ -13,8 +13,14 @@ public class CommonExpressionsTest {
 @Test
   public void parseTest() throws IOException {
   TestCommonExpressionsParser p = new TestCommonExpressionsParser();
-  Optional<ASTExpression> o = p.parse_StringExpression("a.fun(a,b)");
+  String[] tests = { "fun(a,b)" , "a.fun(j,b)", "A.fun(b,b)","fun2(g).fun(h)","j.fun2(g).fun(h)","A.k.fun2(g).fun(h)"};
+  Optional<ASTExpression> o = p.parse_StringExpression("fun(a,b)");
   System.out.println("jj");
-
 }
+
+
+
+
+
+
 }
