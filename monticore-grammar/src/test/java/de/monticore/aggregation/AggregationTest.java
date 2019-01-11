@@ -2,10 +2,7 @@ package de.monticore.aggregation;
 
 import de.monticore.aggregation.blah._ast.ASTBlub;
 import de.monticore.aggregation.blah._parser.BlahParser;
-import de.monticore.aggregation.blah._symboltable.BlahLanguage;
-import de.monticore.aggregation.blah._symboltable.BlahScope;
-import de.monticore.aggregation.blah._symboltable.BlahSymbolTableCreator;
-import de.monticore.aggregation.blah._symboltable.DummySymbol;
+import de.monticore.aggregation.blah._symboltable.*;
 import de.monticore.aggregation.foo._ast.ASTBar;
 import de.monticore.aggregation.foo._parser.FooParser;
 import de.monticore.aggregation.foo._symboltable.FooLanguage;
@@ -15,6 +12,7 @@ import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.Symbol;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -52,7 +50,6 @@ public class AggregationTest {
    BlahSymbolTableCreator blahSymbolTableCreator = new BlahSymbolTableCreator(blahResolverConfiguration,globalScope);
    BlahScope blahSymbolTable = (BlahScope) blahSymbolTableCreator.createFromAST(blahModel.get());
 
-
    Optional<DummySymbol> blubSymbol1 = blahSymbolTable.resolveDummy("blubSymbol1");
 
    System.out.println(blubSymbol1.isPresent());
@@ -76,7 +73,11 @@ public class AggregationTest {
 
    System.out.println(fooModel.isPresent());
 
+   globalScope.addSubScope(fooScope);
 
+  Optional<Symbol> k = globalScope.resolve("blubSymbol1", DummyKind.KIND);
+
+  System.out.println(k.get());
   }
 
 
