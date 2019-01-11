@@ -65,9 +65,9 @@ public class ArtifactScopeSerialization implements ISerialization<ArtifactScope>
         imports);
 
     SymbolTableSerializationHelper.deserializeName(jsonObject, result);
-    SymbolTableSerializationHelper.deserializeExportsSymbolsFlag(jsonObject, result);
     SymbolTableSerializationHelper.deserializeSymbols(jsonObject, context, result);
     SymbolTableSerializationHelper.deserializeSubscopes(jsonObject, context, result);
+    result.setExportsSymbols(true);
     return result;
   }
   

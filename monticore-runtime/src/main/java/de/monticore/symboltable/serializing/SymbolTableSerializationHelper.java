@@ -16,7 +16,6 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import de.monticore.symboltable.CommonScope;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.Scope;
@@ -40,6 +39,13 @@ public class SymbolTableSerializationHelper {
     return symbols;
   }
   
+  /**
+   * 
+   * Given a scope, returns a collection of direct subscopes that export symbols and that contain at least one symbol 
+   * TODO AB: in any transitive subscope
+   * @param src
+   * @return
+   */
   public static Collection<Scope> filterRelevantSubScopes(MutableScope src) {
     return src.getSubScopes()
         .stream()
@@ -80,13 +86,13 @@ public class SymbolTableSerializationHelper {
     }
   }
   
-  public static String getKind(JsonObject json) {
-    if (json.has(ISerialization.KIND)) {
-      String name = json.get(ISerialization.KIND).getAsString();
+  public static String getClassName(JsonObject json) {
+    if (json.has(ISerialization.CLASS)) {
+      String name = json.get(ISerialization.CLASS).getAsString();
       return name;
     }
     else {
-      Log.error("0x"+"ScopeKind could not be deserialized!");
+      Log.error("0x"+"Class of scope or symbol could not be deserialized!");
       return "";
     }
   }
@@ -97,15 +103,6 @@ public class SymbolTableSerializationHelper {
     }
     else {
       return true;
-    }
-  }
-  
-  public static void deserializeExportsSymbolsFlag(JsonObject json, CommonScope result) {
-    if (json.has(ISerialization.EXPORTS_SYMBOLS)) {
-      result.setExportsSymbols(json.get(ISerialization.EXPORTS_SYMBOLS).getAsBoolean());
-    }
-    else {
-      result.setExportsSymbols(true);
     }
   }
   
@@ -139,7 +136,7 @@ public class SymbolTableSerializationHelper {
     if (src.isSpannedBySymbol()) {
       ScopeSpanningSymbol spanningSymbol = src.getSpanningSymbol().get();
       JsonObject jsonSpanningSymbol = new JsonObject();
-      jsonSpanningSymbol.addProperty(ISerialization.KIND, spanningSymbol.getKind().getName());
+      jsonSpanningSymbol.addProperty(ISerialization.CLASS, spanningSymbol.getKind().getName());
       jsonSpanningSymbol.addProperty(ISerialization.NAME, spanningSymbol.getName());
       json.add(ISerialization.SCOPESPANNING_SYMBOL, jsonSpanningSymbol);
     }
@@ -158,7 +155,7 @@ public class SymbolTableSerializationHelper {
     if (jsonSubScope.has(ISerialization.SCOPESPANNING_SYMBOL)) {
       JsonObject asJsonObject = jsonSubScope.get(ISerialization.SCOPESPANNING_SYMBOL).getAsJsonObject();
       String spanningSymbolName = asJsonObject.get(ISerialization.NAME).getAsString();
-      String spanningSymbolKind = asJsonObject.get(ISerialization.KIND).getAsString();
+      String spanningSymbolKind = asJsonObject.get(ISerialization.CLASS).getAsString();
       
       Collection<Symbol> allLocalSymbols = result.getLocalSymbols().get(spanningSymbolName);
       List<Symbol> symbolsOfCorrectKind = allLocalSymbols.stream()

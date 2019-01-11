@@ -154,11 +154,16 @@ public abstract class MCParser extends Parser {
   /*
    * Compare the string of the actual token with the given string
    */
-  public boolean is(String str) {
+  public boolean is(String... str) {
     org.antlr.v4.runtime.Token t1 = _input.LT(-1);
     if (t1==null) {
       return false;
     }
-    return t1.getText().equals(str);
+    for (int i = 0; i < str.length; i++) {
+      if (t1.getText().equals(str[i])) {
+        return true;
+      }
+    }
+    return false;
   }
 }

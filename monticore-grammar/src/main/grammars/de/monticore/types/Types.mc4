@@ -11,6 +11,7 @@ package de.monticore.types;
  *
  * version 27.01.2016;
 */
+@Deprecated
 component grammar Types extends de.monticore.literals.Literals {
 
     /*========================================================================*/

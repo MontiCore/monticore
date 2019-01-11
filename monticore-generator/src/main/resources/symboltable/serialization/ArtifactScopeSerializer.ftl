@@ -18,13 +18,13 @@ import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.serializing.ArtifactScopeSerialization;
-import de.monticore.symboltable.serializing.CommonLanguageSerialization;
+import de.monticore.symboltable.serializing.CommonArtifactScopeSerializer;
 import de.monticore.symboltable.serializing.DelegatingSerializer;
 import de.monticore.symboltable.serializing.ISerialization;
 
-public class ${languageName}Language${serializationSuffix} extends CommonLanguageSerialization {
+public class ${languageName}ArtifactScope${serializationSuffix} extends CommonArtifactScopeSerializer {
 
-  public ${languageName}Language${serializationSuffix}() {
+  public ${languageName}ArtifactScope${serializationSuffix}() {
     super();
     List<ISerialization<?>> serializers = ImmutableList.of(
   <#list genHelper.getAllSymbolDefiningRules() as symbol>

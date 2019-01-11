@@ -12,7 +12,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
+
 import de.monticore.symboltable.serializing.ISerialization;
+import de.monticore.symboltable.serializing.SerializationBuilder;
+import de.monticore.symboltable.serializing.SymbolTableSerializationHelper;
 <#list imports as imp>
 import ${imp}._ast.*;
 </#list>
@@ -30,8 +33,7 @@ class ${className}
   public ${symbolName}Symbol deserialize(JsonElement json, Type typeOfT,
       JsonDeserializationContext context) throws JsonParseException {
     JsonObject jsonObject = json.getAsJsonObject();
-    String kind = jsonObject.get(KIND).getAsString();
-    if(${symbolName}Symbol.class.getName().equals(kind)) {
+    if (${symbolName}Symbol.class.getName().equals(SymbolTableSerializationHelper.getClassName(jsonObject))) { 
       String name = jsonObject.get(NAME).getAsString();
       ${symbolName}SymbolBuilder builder = new ${symbolName}SymbolBuilder();
       builder.name(name);
@@ -51,14 +53,22 @@ class ${className}
   @Override
   public JsonElement serialize(${symbolName}Symbol src, Type typeOfSrc,
       JsonSerializationContext context) {
+      
     JsonObject json = new JsonObject();
-    json.addProperty(KIND, ${symbolName}Symbol.class.getName());
-    json.addProperty(NAME, src.getName());
-    <#if symbolRule.isPresent()>
-    <#list symbolRule.get().getAdditionalAttributeList() as attr>
-    json.add(${attr.getName()?upper_case}, context.serialize(src.get${attr.getName()?cap_first}()));
-    </#list>
-    </#if>
+    json = new SerializationBuilder(json, context)
+        .add(CLASS, ${symbolName}Symbol.class.getName())
+        .add(NAME, src.getName())
+        <#if symbolRule.isPresent()>
+        <#list symbolRule.get().getAdditionalAttributeList() as attr>
+        <#assign attrType=genHelper.getQualifiedASTName(attr.getGenericType().getTypeName())>
+        <#if attrType == "boolean" || attrType == "Boolean">
+        .add(${attr.getName()?upper_case}, context.serialize(src.is${attr.getName()?cap_first}()));
+        <#else>
+        .add(${attr.getName()?upper_case}, context.serialize(src.get${attr.getName()?cap_first}()));
+        </#if>
+        </#list>
+        </#if>
+        .build();
 
     return json;
   }
@@ -68,4 +78,3 @@ class ${className}
     return ${symbolName}Symbol.class;
   }
 }
-  

@@ -1367,7 +1367,14 @@ public class CdDecorator {
     replaceMethodBodyTemplate(nodeFactoryClass, toParse, methodBody);
 
     // No create methods without parameters
-    if (clazz.getCDAttributeList().size() == 0) {
+    // see ticket #2225
+    int paramCount = 0;
+    for (ASTCDAttribute attr: clazz.getCDAttributeList()) {
+      if (!GeneratorHelper.isSymbolOrScopeAttribute(attr)) {
+        paramCount++;
+      }
+    }
+    if (paramCount == 0) {
       return;
     }
 

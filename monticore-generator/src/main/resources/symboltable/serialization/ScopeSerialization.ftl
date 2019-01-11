@@ -28,12 +28,12 @@ public class ${className}
   public ${scopeName} deserialize(JsonElement json, Type typeOfT,
       JsonDeserializationContext context) throws JsonParseException {   
     JsonObject jsonObject = json.getAsJsonObject();
-    if (${scopeName}.class.getName().equals(SymbolTableSerializationHelper.getKind(jsonObject))) { 
+    if (${scopeName}.class.getName().equals(SymbolTableSerializationHelper.getClassName(jsonObject))) { 
       ${scopeName} result = new ${scopeName}(SymbolTableSerializationHelper.getIsShadowingScopeFlag(jsonObject));
       SymbolTableSerializationHelper.deserializeName(jsonObject, result);
-      SymbolTableSerializationHelper.deserializeExportsSymbolsFlag(jsonObject, result);
       SymbolTableSerializationHelper.deserializeSymbols(jsonObject, context, result);
       SymbolTableSerializationHelper.deserializeSubscopes(jsonObject, context, result);
+      result.setExportsSymbols(true);
       return result;
     }
     throw new JsonParseException("Deserialization of '${scopeName}' failed!");
@@ -47,10 +47,9 @@ public class ${className}
     Collection<Scope> subscopes = SymbolTableSerializationHelper.filterRelevantSubScopes(src);
     
     json = new SerializationBuilder(json, context)
-        .add(KIND, ${scopeName}.class.getName())
+        .add(CLASS, ${scopeName}.class.getName())
         .add(NAME, src.getName())
-        .addOnlyIfFalse(EXPORTS_SYMBOLS, src.exportsSymbols())
-        .addOnlyIfFalse(IS_SHADOWING_SCOPE, src.isShadowingScope())
+        .add(IS_SHADOWING_SCOPE, src.isShadowingScope())
         .add(SYMBOLS, symbols)
         .add(SUBSCOPES, subscopes)
         .build();

@@ -12,13 +12,13 @@ import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.se_rwth.commons.Names;
 
-public class CommonSymbolTableSerializationGenerator implements SymbolTableSerializationGenerator {
+public class CommonArtifactScopeSerializerGenerator implements ArtifactScopeSerializerGenerator {
   
   @Override
   public void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
       IterablePath handCodedPath, MCGrammarSymbol grammarSymbol) {
     final String className = getSimpleTypeNameToGenerate(
-        getSimpleName(grammarSymbol.getFullName() + "Language" + GeneratorHelper.SERIALIZER),
+        getSimpleName(grammarSymbol.getFullName() + "ArtifactScope" + GeneratorHelper.SERIALIZER),
         genHelper.getTargetPackage(), handCodedPath);
     final String languageName = getSimpleTypeNameToGenerate(
         getSimpleName(grammarSymbol.getFullName()),
@@ -27,7 +27,7 @@ public class CommonSymbolTableSerializationGenerator implements SymbolTableSeria
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
         className + ".java");
     
-    genEngine.generateNoA("symboltable.serialization.LanguageSerializer", filePath, languageName,
+    genEngine.generateNoA("symboltable.serialization.ArtifactScopeSerializer", filePath, languageName,
         GeneratorHelper.SERIALIZER,
         grammarSymbol.getProds());
   } 

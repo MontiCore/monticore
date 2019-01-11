@@ -82,7 +82,7 @@ public class JTypeSymbolsHelper {
    * Derives the (potentially nested) {@link ActualTypeArgument}s from the given {@link ASTType} and
    * adds them to the given {@link JTypeReference}. Since {@link ActualTypeArgument}s reference
    * types themselves, the given factory is used to create such references.
-   * 
+   *
    * @param typeReference the type reference to add the arguments to.
    * @param astType the parsed type name/reference being investigated. Note that ReturnType is a
    * super type of ASTType. are structured. Based on these the {@link ActualTypeArgument}s are
@@ -117,7 +117,7 @@ public class JTypeSymbolsHelper {
             ASTType typeBound = lowerBound
                 ? astWildcardType.getLowerBound()
                 : astWildcardType
-                    .getUpperBound();
+                .getUpperBound();
             int dimension = TypesHelper.getArrayDimensionIfArrayOrZero(typeBound);
             
             JTypeReference<?> typeBoundSymbolReference = typeRefFactory.create(
@@ -216,7 +216,7 @@ public class JTypeSymbolsHelper {
             .getSimpleReferenceTypeList()) {
           // TODO: tested for only one
           addTypeArgumentsToTypeSymbol(jInterfaceTypeSymbolReference, astSimpleReferenceType,
-                  definingScopeOfReference, typeRefFactory);
+              definingScopeOfReference, typeRefFactory);
         }
       }
       
@@ -231,7 +231,7 @@ public class JTypeSymbolsHelper {
    * public <U extends SomeClass<?>>& SomeInterface> U myMethod()
    * </p>
    * U is added to myMethod.
-   * 
+   *
    * @param jMethodSymbol
    * @param typeParameters
    * @param definingScope
@@ -308,7 +308,7 @@ public class JTypeSymbolsHelper {
    * initializes the jAttributeSymbol using information of the given astType and the
    * additionalDimensions. E.g., the typeReference of the symbol is set including its type
    * arguments.
-   * 
+   *
    * @param jAttributeSymbol
    * @param astType
    * @param additionalDimensions
@@ -337,7 +337,7 @@ public class JTypeSymbolsHelper {
           .getSimpleReferenceTypeList()) {
         // TODO: tested for only one
         addTypeArgumentsToTypeSymbol(fieldTypeReference, astSimpleReferenceType,
-                definingScope, typeRefFactory);      }
+            definingScope, typeRefFactory);      }
     }
     jAttributeSymbol.setType(fieldTypeReference);
   }

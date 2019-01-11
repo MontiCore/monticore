@@ -5,17 +5,12 @@
  */
 package de.monticore.symboltable.serializing;
 
-import java.util.List;
 import java.util.Optional;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import de.monticore.symboltable.ArtifactScope;
-import de.monticore.symboltable.CommonScope;
-import de.monticore.symboltable.CommonSymbol;
-import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -23,44 +18,22 @@ import de.se_rwth.commons.logging.Log;
  * of {@link ISerialization} instances to (de)serialize individual scopes and symbols. This class is
  * the superclass of all generated serializers for languages.
  */
-public abstract class CommonLanguageSerialization implements IArtifactScopeSerializer {
+public abstract class CommonArtifactScopeSerializer implements IArtifactScopeSerializer {
   
   protected GsonBuilder gson;
   
-//  protected List<ISerialization<?>> serializers;
   
   protected String fileExtension;
   
-  public CommonLanguageSerialization() {
-//    serializers = getSerializers();
-    
+  public CommonArtifactScopeSerializer() {
     gson = new GsonBuilder();
     // TODO: Further configuration might be necessary
     gson.serializeSpecialFloatingPointValues();
     
-//    registerSerializers();
-    
     fileExtension = ".sym"; //Will be overridden by generated concrete class 
   }
   
-//  /**
-//   * This method is called to obtain a list of language-specific {@link ISerialization} instances
-//   * for each symbol and scope of the language.
-//   * 
-//   * @return
-//   */
-//  protected abstract List<ISerialization<?>> getSerializers();
-  
-//  protected void registerSerializers() {
-//    gson.registerTypeAdapter(ArtifactScope.class, new ArtifactScopeSerialization());
-//    gson.registerTypeAdapter(Symbol.class, new DelegatingSerializer<Symbol>(serializers));
-//    gson.registerTypeAdapter(MutableScope.class,
-//        new DelegatingSerializer<MutableScope>(serializers));
-//    for (ISerialization<?> s : serializers) {
-//      gson.registerTypeAdapter(s.getSerializedClass(), s);
-//    }
-//  }
-  
+
   /**
    * @see de.monticore.symboltable.serializing.scopes.IArtifactScopeSerializer#serialize(de.monticore.symboltable.ArtifactScope)
    */

@@ -1,0 +1,53 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.types;
+
+
+component grammar MCGenericTypes
+       extends de.monticore.types.MCCustomGenericsTypes {
+  start MCType;
+
+  /** ASTWildcardType represents a wildcard type in a type argument
+  *   (generics). It could also contain an upper- or lower bound.
+  *
+  *   @attribute upperBound Supertye of the type argument
+  *   @attribute lowerBound Subtype of the type argument
+  */
+  MCWildcardType implements MCTypeArgument =
+       "?" ( ("extends" upperBound:MCType) | ("super" lowerBound:MCType) )?;
+
+
+  /** ASTMCComplexType is only used if referenced Type is
+  *   generic and has generic inner classes e.g.
+  *   monticore.Generic1<TypeParam1>.GenericInnerClass<TypeParam2>
+  */
+  MCComplexType implements MCGenericType, MCType =
+       (MCCollectionType || "." )+ // complex qualification
+        "."  (Name || ".")+ "<" (MCTypeArgument || ",")* ">"
+   ;
+
+  /** ASTArrayType introduce array for arbitrary types
+  */
+  MCArrayType implements MCType =
+       MCType ("[" "]" {_aNode.setDimensions(_aNode.getDimensions()+1);} )+;
+
+  astrule MCArrayType =
+    dimensions:int;
+
+  /** ASTTypeParameters represents a list of generic parameter parenthesized
+  *   by '<...>' in type declarations (e.g., class-, interface-, method-, or
+  *   constructor declarations).
+  *   @attribute typeVariableDeclarations List of parameters
+  */
+  MCTypeParameters =
+    "<" (MCTypeVariableDeclaration || ",")+ ">";
+
+  /** ASTTypeVariableDeclaration represents the generic variable declaration
+  *   in '<'...'>' (e.g., in front of method or constructor declarations or
+  *   behind the class or interface name).
+  *   E.g.: public <T extends SuperClass> void test(T t)
+  *   @attribute name        Name of the type variable
+  *   @attribute upperBound Optional list of required super classes
+  */
+  MCTypeVariableDeclaration =
+    Name ( "extends" upperBound:(MCComplexType || "&")+ )?;
+}
