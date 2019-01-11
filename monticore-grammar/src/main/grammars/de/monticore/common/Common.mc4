@@ -9,6 +9,7 @@ package de.monticore.common;
  * (the grammars are almost directly replabceable)
  *
  */
+ @Deprecated
 component grammar Common extends de.monticore.types.Types {
     /*========================================================================*/
     /*======================= INTERFACE DEFINITIONS ==========================*/

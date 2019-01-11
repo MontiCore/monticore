@@ -28,7 +28,7 @@ public class ${className}
   public ${scopeName} deserialize(JsonElement json, Type typeOfT,
       JsonDeserializationContext context) throws JsonParseException {   
     JsonObject jsonObject = json.getAsJsonObject();
-    if (${scopeName}.class.getName().equals(SymbolTableSerializationHelper.getKind(jsonObject))) { 
+    if (${scopeName}.class.getName().equals(SymbolTableSerializationHelper.getClassName(jsonObject))) { 
       ${scopeName} result = new ${scopeName}(SymbolTableSerializationHelper.getIsShadowingScopeFlag(jsonObject));
       SymbolTableSerializationHelper.deserializeName(jsonObject, result);
       SymbolTableSerializationHelper.deserializeSymbols(jsonObject, context, result);
