@@ -77,7 +77,7 @@ public class AggregationTest {
 
   Optional<Symbol> k = globalScope.resolve("blubSymbol1", DummyKind.KIND);
 
-  System.out.println(k.get());
+  //System.out.println(k.get());
   }
 
 
