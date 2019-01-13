@@ -2,8 +2,8 @@
 package de.monticore.types;
 
 
-component grammar MCGenericTypes
-       extends de.monticore.types.MCCustomGenericsTypes {
+component grammar MCFullGenericTypes
+       extends de.monticore.types.MCSimpleGenericTypes {
   start MCType;
 
   /** ASTWildcardType represents a wildcard type in a type argument
@@ -20,7 +20,7 @@ component grammar MCGenericTypes
   *   generic and has generic inner classes e.g.
   *   monticore.Generic1<TypeParam1>.GenericInnerClass<TypeParam2>
   */
-  MCComplexType implements MCGenericType, MCType =
+  MCMultipleGenericType implements MCGenericType, MCType =
        (MCCollectionType || "." )+ // complex qualification
         "."  (Name || ".")+ "<" (MCTypeArgument || ",")* ">"
    ;
@@ -49,5 +49,5 @@ component grammar MCGenericTypes
   *   @attribute upperBound Optional list of required super classes
   */
   MCTypeVariableDeclaration =
-    Name ( "extends" upperBound:(MCComplexType || "&")+ )?;
+    Name ( "extends" upperBound:(MCMultipleGenericType || "&")+ )?;
 }

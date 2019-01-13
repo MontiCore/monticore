@@ -2,29 +2,30 @@ package de.monticore.types.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
-import de.monticore.types.mccustomgenericstypes._ast.ASTMCCollectionType;
-import de.monticore.types.mccustomgenericstypes._ast.ASTMCCustomTypeArgument;
-import de.monticore.types.mccustomgenericstypes._visitor.MCCustomGenericsTypesVisitor;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCollectionType;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
+import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesVisitor;
+import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesVisitor;
 
-public class MCCustomGenericsTypesPrettyPrinter extends MCCollectionTypesPrettyPrinter implements MCCustomGenericsTypesVisitor {
-  private MCCustomGenericsTypesVisitor realThis = this;
+public class MCSimpleGenericTypesPrettyPrinter extends MCCollectionTypesPrettyPrinter implements MCSimpleGenericTypesVisitor {
+  private MCSimpleGenericTypesVisitor realThis = this;
 
-  public MCCustomGenericsTypesPrettyPrinter(IndentPrinter printer){
+  public MCSimpleGenericTypesPrettyPrinter(IndentPrinter printer){
     super(printer);
   }
 
-  public MCCustomGenericsTypesPrettyPrinter(IndentPrinter printer, MCCustomGenericsTypesVisitor realThis) {
+  public MCSimpleGenericTypesPrettyPrinter(IndentPrinter printer, MCSimpleGenericTypesVisitor realThis) {
     super(printer);
     this.realThis = realThis;
   }
 
   @Override
-  public MCCustomGenericsTypesVisitor getRealThis(){
+  public MCSimpleGenericTypesVisitor getRealThis(){
     return realThis;
   }
 
   @Override
-  public void setRealThis(MCCustomGenericsTypesVisitor realThis){
+  public void setRealThis(MCSimpleGenericTypesVisitor realThis){
     this.realThis=realThis;
   }
 

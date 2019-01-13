@@ -10,10 +10,10 @@ import de.monticore.symboltable.types.references.JTypeReference;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mccustomgenericstypes._ast.ASTMCCollectionType;
-import de.monticore.types.mcgenerictypes._ast.ASTMCComplexType;
-import de.monticore.types.mcgenerictypes._ast.ASTMCTypeParameters;
-import de.monticore.types.mcgenerictypes._ast.ASTMCTypeVariableDeclaration;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCollectionType;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCMultipleGenericType;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCTypeParameters;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCTypeVariableDeclaration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -151,8 +151,8 @@ public class MCTypesJTypeSymbolsHelper {
 //        typeReference.setActualTypeArguments(actualTypeArguments);
 //      }
     }
-    else if (astType.getMCTypeOpt().isPresent() && astType.getMCType() instanceof ASTMCComplexType) {
-      ASTMCComplexType astComplexReferenceType = (ASTMCComplexType) astType.getMCType();
+    else if (astType.getMCTypeOpt().isPresent() && astType.getMCType() instanceof ASTMCMultipleGenericType) {
+      ASTMCMultipleGenericType astComplexReferenceType = (ASTMCMultipleGenericType) astType.getMCType();
       for (ASTMCCollectionType astSimpleReferenceType : astComplexReferenceType
           .getMCCollectionTypeList()) {
         // TODO
