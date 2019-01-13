@@ -189,6 +189,9 @@
               <grammars>
                 <grammar>src/test/grammars</grammar>
               </grammars>
+              <handcodedPaths>
+                <handcodedPath>src/test/java</handcodedPath>
+              </handcodedPaths>
               <modelPaths>
                 <modelPath>src/main/grammars</modelPath>
                 <modelPath>target/generated-sources/monticore/sourcecode</modelPath>

@@ -39,6 +39,9 @@ public interface ISerialization<T> extends JsonSerializer<T>, JsonDeserializer<T
   
   public static final String CLASS = "class";
   
+  @Deprecated //Can be removed after release 5.0.3
+  public static final String KIND = "kind";
+  
   // TODO: Can be removed if ScopeSpanningSymbols are removed
   public static final String SCOPESPANNING_SYMBOL = "spanningSymbol";
   
