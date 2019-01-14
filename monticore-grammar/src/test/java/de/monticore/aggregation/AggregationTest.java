@@ -22,47 +22,47 @@ import java.util.Optional;
 import static junit.framework.TestCase.assertTrue;
 
 public class AggregationTest {
-
-
-
+ 
+ 
+ 
  @Test
-  public void test() throws IOException {
-
-    BlahParser blahParser = new BlahParser();
-    FooParser fooParser = new FooParser();
-
-    //blahParser
-
-    // infrastruktur aufbauen, modelle zum resolven einlesen, SymTab aufbauen, adapter schreiben, globalscope foo und blah verbinden
-    // TransitiveAdapterResolvingFilter implementieren und im globscope registrieren,
-    //
+ public void test() throws IOException {
+  
+  // infrastruktur aufbauen, modelle zum resolven einlesen, SymTab aufbauen, adapter schreiben, globalscope foo und blah verbinden
+  // TransitiveAdapterResolvingFilter implementieren und im globscope registrieren,
+  //
    /* ***************************************************************************************************************
    ******************************************************************************************************************
                                        Blah/Blub Infrastruktur
     ******************************************************************************************************************
     */
  
+  //Create global scope for our language combination
   BlahLanguage blahLang = new BlahLanguage("BlahLangName","blah"){};
-  Optional<ASTBlub> blahModel = blahParser.parse_String("blub { blubSymbol1 }");
   FooLanguage fooLanguage = new FooLanguage("FooLangName","foo") {};
-  Optional<ASTBar> fooModel = fooParser.parse_String("bar { blubSymbol1() }");
+  final ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
+  resolvingConfiguration.addDefaultFilters(blahLang.getResolvingFilters());
+  resolvingConfiguration.addDefaultFilters(fooLanguage.getResolvingFilters());
  
-  final ResolvingConfiguration blahResolverConfiguration = new ResolvingConfiguration();
-  blahResolverConfiguration.addDefaultFilters(blahLang.getResolvingFilters());
-  blahResolverConfiguration.addDefaultFilters(fooLanguage.getResolvingFilters());
+  GlobalScope globalScope = new GlobalScope(new ModelPath(), Lists.newArrayList(blahLang,fooLanguage), resolvingConfiguration);
  
-   GlobalScope globalScope = new GlobalScope(new ModelPath(), Lists.newArrayList(blahLang,fooLanguage), blahResolverConfiguration);
-
-   BlahSymbolTableCreator blahSymbolTableCreator = new BlahSymbolTableCreator(blahResolverConfiguration,globalScope);
-   BlahScope blahSymbolTable = (BlahScope) blahSymbolTableCreator.createFromAST(blahModel.get());
-
-   Optional<DummySymbol> blubSymbol1 = blahSymbolTable.resolveDummy("blubSymbol1");
- 
+  //Parse blah model
+  BlahParser blahParser = new BlahParser();
+  Optional<ASTBlub> blahModel = blahParser.parse_String("blub { blubSymbol1 }");
+  
+  // create symbol table for "blah"
+  BlahSymbolTableCreator blahSymbolTableCreator = new BlahSymbolTableCreator(resolvingConfiguration,globalScope);
+  BlahScope blahSymbolTable = (BlahScope) blahSymbolTableCreator.createFromAST(blahModel.get());
+  
+  // check dummy symbol is present in local scope
+  Optional<DummySymbol> blubSymbol1 = blahSymbolTable.resolveDummy("blubSymbol1");
+  
   assertTrue(blubSymbol1.isPresent());
  
+  // check dummy symbol is present in global scope
   // TODO soll das so? Scopes ohne Namen müssen mit Punkt navigiert werde
   blubSymbol1 = globalScope.resolve(".blubSymbol1", DummyKind.KIND);
- 
+  
   assertTrue(blubSymbol1.isPresent());
 
 
@@ -71,20 +71,24 @@ public class AggregationTest {
                                        Foo/Bar Infrastruktur
    ******************************************************************************************************************
    */
+ 
+   //parse foo model
+  FooParser fooParser = new FooParser();
+  Optional<ASTBar> fooModel = fooParser.parse_String("bar { blubSymbol1() }");
+ 
+  // Check foo model is parsed
+  assertTrue(fooModel.isPresent());
+ 
+  // create symbol table for "foo"
+  FooSymbolTableCreator fooSymbolTableCreator = new FooSymbolTableCreator(resolvingConfiguration,globalScope);
+  FooScope fooScope = (FooScope) fooSymbolTableCreator.createFromAST(fooModel.get());
   
-
-   FooSymbolTableCreator fooSymbolTableCreator = new FooSymbolTableCreator(blahResolverConfiguration,globalScope);
-
-   FooScope fooScope = (FooScope) fooSymbolTableCreator.createFromAST(fooModel.get());
-
-   System.out.println(fooModel.isPresent());
-
+  // check Dummy symbol is resolvable
   // TODO soll das so? Scopes ohne Namen müssen mit Punkt navigiert werde
   Optional<Symbol> k = fooScope.resolve(".blubSymbol1", DummyKind.KIND);
   assertTrue(k.isPresent());
-
-  //System.out.println(k.get());
-  }
-
-
+  
+ }
+ 
+ 
 }
