@@ -1,5 +1,6 @@
 package de.monticore.aggregation;
 
+import com.google.common.collect.Lists;
 import de.monticore.aggregation.blah._ast.ASTBlub;
 import de.monticore.aggregation.blah._parser.BlahParser;
 import de.monticore.aggregation.blah._symboltable.*;
@@ -17,6 +18,8 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Optional;
+
+import static junit.framework.TestCase.assertTrue;
 
 public class AggregationTest {
 
@@ -38,21 +41,29 @@ public class AggregationTest {
                                        Blah/Blub Infrastruktur
     ******************************************************************************************************************
     */
-
-   BlahLanguage blahLang = new BlahLanguage("BlahLangName","blah"){};
-    Optional<ASTBlub> blahModel = blahParser.parse_String("blub { blubSymbol1 }");
-
-   final ResolvingConfiguration blahResolverConfiguration = new ResolvingConfiguration();
-   blahResolverConfiguration.addDefaultFilters(blahLang.getResolvingFilters());
-
-   GlobalScope globalScope = new GlobalScope(new ModelPath(), blahLang, blahResolverConfiguration);
+ 
+  BlahLanguage blahLang = new BlahLanguage("BlahLangName","blah"){};
+  Optional<ASTBlub> blahModel = blahParser.parse_String("blub { blubSymbol1 }");
+  FooLanguage fooLanguage = new FooLanguage("FooLangName","foo") {};
+  Optional<ASTBar> fooModel = fooParser.parse_String("bar { blubSymbol1() }");
+ 
+  final ResolvingConfiguration blahResolverConfiguration = new ResolvingConfiguration();
+  blahResolverConfiguration.addDefaultFilters(blahLang.getResolvingFilters());
+  blahResolverConfiguration.addDefaultFilters(fooLanguage.getResolvingFilters());
+ 
+   GlobalScope globalScope = new GlobalScope(new ModelPath(), Lists.newArrayList(blahLang,fooLanguage), blahResolverConfiguration);
 
    BlahSymbolTableCreator blahSymbolTableCreator = new BlahSymbolTableCreator(blahResolverConfiguration,globalScope);
    BlahScope blahSymbolTable = (BlahScope) blahSymbolTableCreator.createFromAST(blahModel.get());
 
    Optional<DummySymbol> blubSymbol1 = blahSymbolTable.resolveDummy("blubSymbol1");
-
-   System.out.println(blubSymbol1.isPresent());
+ 
+  assertTrue(blubSymbol1.isPresent());
+ 
+  // TODO soll das so? Scopes ohne Namen müssen mit Punkt navigiert werde
+  blubSymbol1 = globalScope.resolve("blub.blubSymbol1", DummyKind.KIND);
+ 
+  assertTrue(blubSymbol1.isPresent());
 
 
    /* ***************************************************************************************************************
@@ -60,22 +71,17 @@ public class AggregationTest {
                                        Foo/Bar Infrastruktur
    ******************************************************************************************************************
    */
-   FooLanguage fooLanguage = new FooLanguage("FooLangName","foo") {};
-   Optional<ASTBar> fooModel = fooParser.parse_String("bar { blubSymbol1() }");
+  
 
-   final ResolvingConfiguration fooResolvingConfiguration = new ResolvingConfiguration();
-   fooResolvingConfiguration.addDefaultFilters(fooLanguage.getResolvingFilters());
-
-   GlobalScope fooGlobalScope = new GlobalScope(new ModelPath(), fooLanguage,fooResolvingConfiguration);
-   FooSymbolTableCreator fooSymbolTableCreator = new FooSymbolTableCreator(fooResolvingConfiguration,fooGlobalScope);
+   FooSymbolTableCreator fooSymbolTableCreator = new FooSymbolTableCreator(blahResolverConfiguration,globalScope);
 
    FooScope fooScope = (FooScope) fooSymbolTableCreator.createFromAST(fooModel.get());
 
    System.out.println(fooModel.isPresent());
 
-   globalScope.addSubScope(fooScope);
-
-  Optional<Symbol> k = globalScope.resolve("blubSymbol1", DummyKind.KIND);
+  // TODO soll das so? Scopes ohne Namen müssen mit Punkt navigiert werde
+  Optional<Symbol> k = fooScope.resolve(".blubSymbol1", DummyKind.KIND);
+  assertTrue(k.isPresent());
 
   //System.out.println(k.get());
   }
