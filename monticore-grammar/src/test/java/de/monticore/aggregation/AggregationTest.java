@@ -61,7 +61,7 @@ public class AggregationTest {
   assertTrue(blubSymbol1.isPresent());
  
   // TODO soll das so? Scopes ohne Namen müssen mit Punkt navigiert werde
-  blubSymbol1 = globalScope.resolve("blub.blubSymbol1", DummyKind.KIND);
+  blubSymbol1 = globalScope.resolve(".blubSymbol1", DummyKind.KIND);
  
   assertTrue(blubSymbol1.isPresent());
 

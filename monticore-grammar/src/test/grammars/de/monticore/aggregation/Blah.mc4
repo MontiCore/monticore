@@ -4,7 +4,7 @@ package de.monticore.aggregation;
 
 grammar Blah extends de.monticore.MCBasics {
 
-  symbol scope Blub = Name "{" Dummy "}";
+  scope Blub = "blub" "{" Dummy "}";
   symbol Dummy = Name;
 
 }
