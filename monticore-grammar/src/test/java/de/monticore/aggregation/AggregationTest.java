@@ -50,8 +50,7 @@ public class AggregationTest {
 
 
   Dummy2EMethodResolvingFilter dummy2EMethodResolvingFilter = new Dummy2EMethodResolvingFilter();
-
-  resolvingConfiguration.addDefaultFilter(dummy2EMethodResolvingFilter);
+  //resolvingConfiguration.addDefaultFilter(dummy2EMethodResolvingFilter);
 
 
   resolvingConfiguration.addDefaultFilters(fooLanguage.getResolvingFilters());
@@ -102,9 +101,9 @@ public class AggregationTest {
   //Optional<Symbol> k = fooScope.resolve(".blubSymbol1", DummyKind.KIND);
   //assertTrue(k.isPresent());
 
-  Collection<Symbol> a = fooScope.resolveMany(".blubSymbol1", EMethodKind.KIND);
+  Optional<Symbol> a = fooScope.resolve(".blubSymbol1", EMethodKind.KIND);
 
-  assertTrue(!a.isEmpty());
+  assertTrue(a.isPresent());
 
  }
  
