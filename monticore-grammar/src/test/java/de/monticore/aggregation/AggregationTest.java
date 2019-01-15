@@ -50,7 +50,7 @@ public class AggregationTest {
 
 
   Dummy2EMethodResolvingFilter dummy2EMethodResolvingFilter = new Dummy2EMethodResolvingFilter();
-  //resolvingConfiguration.addDefaultFilter(dummy2EMethodResolvingFilter);
+  resolvingConfiguration.addDefaultFilter(dummy2EMethodResolvingFilter);
 
 
   resolvingConfiguration.addDefaultFilters(fooLanguage.getResolvingFilters());
@@ -74,9 +74,9 @@ public class AggregationTest {
 
   // check dummy symbol is present in global scope
   // TODO soll das so? Scopes ohne Namen müssen mit Punkt navigiert werde
-  //blubSymbol1 = globalScope.resolve(".blubSymbol1", DummyKind.KIND);
+  blubSymbol1 = globalScope.resolve(".blubSymbol1", DummySymbol.KIND);
   
- // assertTrue(blubSymbol1.isPresent());
+  assertTrue(blubSymbol1.isPresent());
 
 
    /* ***************************************************************************************************************
@@ -101,7 +101,7 @@ public class AggregationTest {
   //Optional<Symbol> k = fooScope.resolve(".blubSymbol1", DummyKind.KIND);
   //assertTrue(k.isPresent());
 
-  Optional<Symbol> a = fooScope.resolve(".blubSymbol1", EMethodKind.KIND);
+  Optional<Symbol> a = fooScope.resolve(".blubSymbol1", EMethodSymbol.KIND);
 
   assertTrue(a.isPresent());
 
