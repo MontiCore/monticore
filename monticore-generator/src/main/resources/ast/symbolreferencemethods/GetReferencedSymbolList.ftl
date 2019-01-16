@@ -8,7 +8,7 @@ ${tc.signature("attributeName", "referencedSymbol")}
         //create the returned list
         temp.add(${attributeName}Map.get(element));
       }
-    }else {
+    }else if(enclosingScope.isPresent()){
       for (String element : this.${attributeName}) {
         //create the returned list, because the names list has not changed
         temp.add(${attributeName}Map.get(element));

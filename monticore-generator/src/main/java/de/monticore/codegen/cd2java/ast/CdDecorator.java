@@ -351,8 +351,7 @@ public class CdDecorator {
   public void addReferencedDefinitionListMethods(ASTCDAttribute attribute, String referencedSymbol, AstGeneratorHelper astHelper, ASTCDClass clazz) {
     String attributeName = StringTransformations.capitalize(attribute.getName());
     String symbolName = getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf("Symbol"));
-    String referencedNode = GeneratorHelper.AST_PREFIX + symbolName;
-    referencedNode = GeneratorHelper.getPackageName(astHelper.getAstPackage(), referencedNode);
+    String referencedNode = referencedSymbol.substring(0, referencedSymbol.lastIndexOf("_symboltable")) + GeneratorHelper.AST_PACKAGE_SUFFIX_DOT + GeneratorHelper.AST_PREFIX + symbolName;
 
     String methodNameGet = "get" + attributeName + "DefinitionList";
     String toParse = "public java.util.List<Optional<" + referencedNode + ">> " + methodNameGet + "() ;";
