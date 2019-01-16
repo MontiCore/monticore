@@ -4,7 +4,7 @@ package de.monticore.types;
 /**
  * This grammar introduces self-defined generic reference types
 */
-component grammar MCCustomGenericsTypes
+component grammar MCSimpleGenericTypes
        extends de.monticore.types.MCCollectionTypes {
 
   start MCType;
@@ -19,7 +19,7 @@ component grammar MCCustomGenericsTypes
   *   @attribute typeArgumentList The types between '<...>'
   */
 
-  MCCollectionType implements MCGenericType <20> =
+  MCBasicGenericType implements MCGenericType <20> =
        (Name || ".")+ "<" (MCTypeArgument || ",")* ">";
 
   /** ASTMCCustomTypeArgument introduces all MCType as TypeArguments

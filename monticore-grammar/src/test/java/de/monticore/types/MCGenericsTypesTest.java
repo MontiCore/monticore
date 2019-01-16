@@ -1,16 +1,12 @@
 package de.monticore.types;
 
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcgenerictypes._ast.ASTMCArrayType;
-import de.monticore.types.mcgenerictypes._ast.ASTMCComplexType;
-import de.monticore.types.mcgenerictypes._ast.ASTMCWildcardType;
-import de.monticore.types.mcgenerictypestest._parser.MCGenericTypesTestParser;
-import de.monticore.types.types._ast.ASTArrayType;
-import de.monticore.types.types._ast.ASTComplexReferenceType;
-import de.monticore.types.types._ast.ASTType;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCMultipleGenericType;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardType;
+import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -37,7 +33,7 @@ public class MCGenericsTypesTest {
     };
 
     for (String testType : types) {
-      MCGenericTypesTestParser mcBasicTypesParser = new MCGenericTypesTestParser();
+      MCFullGenericTypesTestParser mcBasicTypesParser = new MCFullGenericTypesTestParser();
       // .parseType(primitive);
 
       Optional<ASTMCType> type = mcBasicTypesParser.parse_String(testType);
@@ -57,7 +53,7 @@ public class MCGenericsTypesTest {
     };
 
     for (String testType : types) {
-      MCGenericTypesTestParser mcBasicTypesParser = new MCGenericTypesTestParser();
+      MCFullGenericTypesTestParser mcBasicTypesParser = new MCFullGenericTypesTestParser();
       // .parseType(primitive);
 
       Optional<ASTMCType> type = mcBasicTypesParser.parse_String(testType);
@@ -72,23 +68,18 @@ public class MCGenericsTypesTest {
 
   @Test
   public void testMCComplexReferenceTypeValid() throws IOException {
-    MCGenericTypesTestParser parser = new MCGenericTypesTestParser();
-    Optional<ASTMCType> type = parser.parse_StringMCType(
-            "java.util.List<A>.Set<C>.some.Collection<B>"
-    );
+    MCFullGenericTypesTestParser parser = new MCFullGenericTypesTestParser();
+    Optional<ASTMCType> type = parser.parse_StringMCType("java.util.List<A>.Set<C>.some.Collection<B>");
     assertFalse(parser.hasErrors());
     assertNotNull(type);
     assertTrue(type.isPresent());
-    assertTrue(type.get() instanceof ASTMCComplexType);
+    assertTrue(type.get() instanceof ASTMCMultipleGenericType);
   }
 
   @Test
   public void testMcWildcardType() throws IOException {
-    MCGenericTypesTestParser parser = new MCGenericTypesTestParser();
-    Optional<ASTMCTypeArgument> type =
-            parser.parse_StringMCTypeArgument(
-                    "? extends java.util.Set<Foo>"
-            );
+    MCFullGenericTypesTestParser parser = new MCFullGenericTypesTestParser();
+    Optional<ASTMCTypeArgument> type = parser.parse_StringMCTypeArgument("? extends java.util.Set<Foo>");
     assertFalse(parser.hasErrors());
     assertNotNull(type);
     assertTrue(type.isPresent());
