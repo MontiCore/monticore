@@ -21,7 +21,7 @@ component grammar MCFullGenericTypes
   *   monticore.Generic1<TypeParam1>.GenericInnerClass<TypeParam2>
   */
   MCMultipleGenericType implements MCGenericType, MCType =
-       (MCCollectionType || "." )+ // complex qualification
+       (MCBasicGenericType || "." )+ // complex qualification
         "."  (Name || ".")+ "<" (MCTypeArgument || ",")* ">"
    ;
 
