@@ -56,6 +56,7 @@ import static de.monticore.grammar.Multiplicity.multiplicityByIteration;
 import static de.se_rwth.commons.Names.getQualifier;
 import static de.se_rwth.commons.Names.getSimpleName;
 import static java.util.Collections.max;
+import static java.util.Collections.sort;
 
 public class GeneratorHelper extends TypesHelper {
 
@@ -88,11 +89,11 @@ public class GeneratorHelper extends TypesHelper {
   public static final String BUILDER = "Builder";
 
   public static final String BUILDER_PREFIX = "Builder_";
-  
+
   public static final String SERIALIZATION = "Serialization";
 
   public static final String SERIALIZER = "Serializer";
-  
+
   public static final String OPTIONAL = "Optional";
 
   public static final String SYMBOL = "Symbol";
@@ -1377,7 +1378,7 @@ public class GeneratorHelper extends TypesHelper {
             modifierStr.append(stereoValue.getValue());
             modifierStr.append("\n **/\n");
           }
-          modifierStr.append(DEPRECATED );
+          modifierStr.append(DEPRECATED);
         }
       }
     }
@@ -1677,7 +1678,7 @@ public class GeneratorHelper extends TypesHelper {
     }
     return Optional.empty();
   }
-  
+
   public boolean isScopeClass(String name, AstGeneratorHelper astGeneratorHelper) {
     String astName = name.substring(name.lastIndexOf("AST") + 3);
     MCGrammarSymbol grammarSymbol = astGeneratorHelper.getGrammarSymbol();
@@ -1709,7 +1710,7 @@ public class GeneratorHelper extends TypesHelper {
     return Names.getSimpleName(qualifiedCdName);
   }
 
-  public String getReferencedSymbolName(ASTCDAttribute attribute){
+  public String getReferencedSymbolName(ASTCDAttribute attribute) {
     String referencedSymbol = CD4AnalysisHelper.getStereotypeValues(attribute,
         MC2CDStereotypes.REFERENCED_SYMBOL.toString()).get(0);
 

@@ -285,7 +285,7 @@ public class CdDecorator {
     HookPoint getMethodBodyIsPresent = new TemplateHookPoint(
         "ast.symbolreferencemethods.IsPresentReferencedSymbol",
         attribute.getName());
-    replaceMethodBodyTemplate(clazz, String.format(AstOptionalGetMethods.isPresent.getDeclaration(),  symboName), getMethodBodyIsPresent);
+    replaceMethodBodyTemplate(clazz, String.format(AstOptionalGetMethods.isPresent.getDeclaration(), symboName), getMethodBodyIsPresent);
   }
 
   public void addReferencedSymbolListMethods(ASTCDAttribute attribute, String referencedSymbol, ASTCDClass clazz) {
@@ -309,9 +309,7 @@ public class CdDecorator {
 
   public void addReferencedDefinitionOptMethods(String attributeName, String referencedSymbol, AstGeneratorHelper astHelper, ASTCDClass clazz) {
     String symbolName = getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf("Symbol"));
-    String referencedNode = GeneratorHelper.AST_PREFIX + symbolName;
-    referencedNode = GeneratorHelper.getPackageName(astHelper.getAstPackage(), referencedNode);
-
+    String referencedNode = referencedSymbol.substring(0, referencedSymbol.lastIndexOf("_symboltable")) + GeneratorHelper.AST_PACKAGE_SUFFIX_DOT + GeneratorHelper.AST_PREFIX + symbolName;
     String definitionName = StringTransformations.capitalize(attributeName) + "Definition";
 
     HookPoint getMethodBody = new TemplateHookPoint(
@@ -1369,7 +1367,7 @@ public class CdDecorator {
     // No create methods without parameters
     // see ticket #2225
     int paramCount = 0;
-    for (ASTCDAttribute attr: clazz.getCDAttributeList()) {
+    for (ASTCDAttribute attr : clazz.getCDAttributeList()) {
       if (!GeneratorHelper.isSymbolOrScopeAttribute(attr)) {
         paramCount++;
       }
