@@ -2,29 +2,30 @@ package de.monticore.types.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
-import de.monticore.types.mccustomgenericstypes._ast.ASTMCCollectionType;
-import de.monticore.types.mcgenerictypes._ast.*;
-import de.monticore.types.mcgenerictypes._visitor.MCGenericTypesVisitor;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesVisitor;
+import de.monticore.types.mcfullgenerictypes._ast.*;
+import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesVisitor;
 
-public class MCGenericTypesPrettyPrinter extends MCCustomGenericsTypesPrettyPrinter implements MCGenericTypesVisitor {
-  private MCGenericTypesVisitor realThis = this;
+public class MCFullGenericTypesPrettyPrinter extends MCSimpleGenericTypesPrettyPrinter implements MCFullGenericTypesVisitor {
+  private MCFullGenericTypesVisitor realThis = this;
 
-  public MCGenericTypesPrettyPrinter(IndentPrinter printer) {
+  public MCFullGenericTypesPrettyPrinter(IndentPrinter printer) {
     super(printer);
   }
 
-  public MCGenericTypesPrettyPrinter(IndentPrinter printer, MCGenericTypesVisitor realThis) {
+  public MCFullGenericTypesPrettyPrinter(IndentPrinter printer, MCFullGenericTypesVisitor realThis) {
     super(printer);
     this.realThis = realThis;
   }
 
   @Override
-  public MCGenericTypesVisitor getRealThis() {
+  public MCFullGenericTypesVisitor getRealThis() {
     return realThis;
   }
 
   @Override
-  public void setRealThis(MCGenericTypesVisitor realThis) {
+  public void setRealThis(MCFullGenericTypesVisitor realThis) {
     this.realThis = realThis;
   }
 
@@ -41,9 +42,9 @@ public class MCGenericTypesPrettyPrinter extends MCCustomGenericsTypesPrettyPrin
   }
 
   @Override
-  public void handle(ASTMCComplexType node) {
+  public void handle(ASTMCMultipleGenericType node) {
     boolean first = true;
-    for (ASTMCCollectionType referenceType : node.getMCCollectionTypeList()) {
+    for (ASTMCBasicGenericType referenceType : node.getMCBasicGenericTypeList()) {
       if (!first) {
         getPrinter().print(".");
       } else {
@@ -81,7 +82,7 @@ public class MCGenericTypesPrettyPrinter extends MCCustomGenericsTypesPrettyPrin
     if (!node.isEmptyUpperBounds()) {
       getPrinter().print("extends ");
       boolean first = true;
-      for (ASTMCComplexType type : node.getUpperBoundList()) {
+      for (ASTMCMultipleGenericType type : node.getUpperBoundList()) {
         if (first) {
           first = false;
         } else {

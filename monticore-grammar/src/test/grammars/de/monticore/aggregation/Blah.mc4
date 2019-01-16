@@ -1,0 +1,10 @@
+/* (c)  https://github.com/MontiCore/monticore */
+
+package de.monticore.aggregation;
+
+grammar Blah extends de.monticore.MCBasics {
+
+  scope Blub = "blub" "{" Dummy "}";
+  symbol Dummy = Name;
+
+}
