@@ -89,7 +89,7 @@ public class MCGenericsTypesTest {
   @Test
   public void testOldComplexArrayTypes() {
 
-    MCGenericTypesTestParser parser = new MCGenericTypesTestParser();
+    MCFullGenericTypesTestParser parser = new MCFullGenericTypesTestParser();
     try {
       // test-data
       HashMap<String, Integer> testdata = new HashMap<String, Integer>();
