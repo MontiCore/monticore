@@ -1,0 +1,41 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.expressions;
+
+component grammar ShiftExpressions extends de.monticore.expressions.ExpressionsBasis {
+
+QualifiedNameExpression implements Expression <290> = 
+	Expression "." Name;
+	
+ThisExpression implements Expression <280> =
+	Expression "." ["this"];
+		
+ArrayExpression implements Expression <250> =
+	Expression "[" indexExpression:Expression "]";
+
+// Use "astextends after Release of MC 5.0.3 and delete TOP"
+interface ShiftExpression =
+	leftExpression:Expression shiftOp:"" rightExpression:Expression;
+
+// It is not possible to define "<<", ">>" or ">>>".
+// Parsing generic typs like "List<List<String>>" leads to problems.
+		
+LeftShiftExpression implements Expression <160>, ShiftExpression =
+	leftExpression:Expression 
+	shiftOp:"<" "<" {noSpace()}? {_aNode.setShiftOp("<<");}        
+    rightExpression:Expression;
+ 
+RightShiftExpression implements Expression <160>, ShiftExpression =
+	leftExpression:Expression 
+	shiftOp:">" ">" {noSpace()}? {_aNode.setShiftOp(">>");}        
+    rightExpression:Expression;
+
+LogicalRightShiftExpression implements Expression <160>, ShiftExpression =
+	leftExpression:Expression 
+	shiftOp:">" ">" {noSpace()}? ">" {noSpace()}? {_aNode.setShiftOp(">>>");}        
+    rightExpression:Expression;
+    
+PrimaryThisExpression implements Expression <320>
+	= "this";
+
+}

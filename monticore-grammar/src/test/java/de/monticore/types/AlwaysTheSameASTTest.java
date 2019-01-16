@@ -5,9 +5,9 @@ import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
-import de.monticore.types.mccustomgenericstypes._ast.ASTMCCustomTypeArgument;
 import de.monticore.types.mccustomgenerictypestest._parser.MCCustomGenericTypesTestParser;
-import de.monticore.types.mcgenerictypestest._parser.MCGenericTypesTestParser;
+import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -25,7 +25,7 @@ public class AlwaysTheSameASTTest {
   private MCBasicTypesTestParser basicTypesTestParser;
   private MCCollectionTypesTestParser mcCollectionTypesTestParser;
   private MCCustomGenericTypesTestParser customGenericTypesTestParser;
-  private MCGenericTypesTestParser genericTypesTestParser;
+  private MCFullGenericTypesTestParser genericTypesTestParser;
 
   @BeforeClass
   public static void disableFailQuick() {
@@ -37,7 +37,7 @@ public class AlwaysTheSameASTTest {
     this.mcCollectionTypesTestParser = new MCCollectionTypesTestParser();
     this.basicTypesTestParser = new MCBasicTypesTestParser();
     this.customGenericTypesTestParser = new MCCustomGenericTypesTestParser();
-    this.genericTypesTestParser = new MCGenericTypesTestParser();
+    this.genericTypesTestParser = new MCFullGenericTypesTestParser();
   }
 
   @Test

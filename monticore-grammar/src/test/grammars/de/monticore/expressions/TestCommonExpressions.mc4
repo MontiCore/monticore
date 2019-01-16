@@ -1,0 +1,10 @@
+/* (c)  https://github.com/MontiCore/monticore */
+
+package de.monticore.expressions;
+
+grammar TestCommonExpressions extends de.monticore.expressions.CommonExpressions, de.monticore.MCBasics {
+  start Expression;
+  //FooBarBlub implements Expression = Name;
+  QFooBarBlub implements Expression = (Name || ".")+;
+
+}

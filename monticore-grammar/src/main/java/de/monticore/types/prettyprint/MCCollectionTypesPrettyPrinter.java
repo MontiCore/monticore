@@ -22,28 +22,28 @@ public class MCCollectionTypesPrettyPrinter extends MCBasicTypesPrettyPrinter im
   }
 
   @Override
-  public void traverse(ASTMCListType a) {
+  public void handle(ASTMCListType a) {
     getPrinter().print("List<");
     a.getMCTypeArgument().accept(this);
     getPrinter().print(">");
   }
 
   @Override
-  public void traverse(ASTMCOptionalType a) {
+  public void handle(ASTMCOptionalType a) {
     getPrinter().print("Optional<");
     a.getMCTypeArgument().accept(this);
     getPrinter().print(">");
   }
 
   @Override
-  public void traverse(ASTMCSetType a) {
+  public void handle(ASTMCSetType a) {
     getPrinter().print("Set<");
     a.getMCTypeArgument().accept(this);
     getPrinter().print(">");
   }
 
   @Override
-  public void traverse(ASTMCMapType a) {
+  public void handle(ASTMCMapType a) {
     getPrinter().print("Map<");
     a.getKey().accept(this);
     getPrinter().print(",");

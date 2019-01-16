@@ -4,8 +4,8 @@ package de.monticore.types;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mccustomgenericstypes._ast.ASTMCCollectionType;
 import de.monticore.types.mccustomgenerictypestest._parser.MCCustomGenericTypesTestParser;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -58,7 +58,7 @@ public class MCCustomGenericsTypesTest {
     assertFalse(parser.hasErrors());
     assertNotNull(type);
     assertTrue(type.isPresent());
-    assertTrue(type.get() instanceof ASTMCCollectionType);
+    assertTrue(type.get() instanceof ASTMCBasicGenericType);
   }
 
   @Test
@@ -78,7 +78,7 @@ public class MCCustomGenericsTypesTest {
     assertFalse(parser.hasErrors());
     assertNotNull(type);
     assertTrue(type.isPresent());
-    assertTrue(type.get() instanceof ASTMCCollectionType);
+    assertTrue(type.get() instanceof ASTMCBasicGenericType);
   }
 
 
@@ -99,7 +99,7 @@ public class MCCustomGenericsTypesTest {
     assertFalse(parser.hasErrors());
     assertNotNull(type);
     assertTrue(type.isPresent());
-    assertTrue(type.get() instanceof ASTMCCollectionType);
+    assertTrue(type.get() instanceof ASTMCBasicGenericType);
   }
 
 
@@ -120,7 +120,7 @@ public class MCCustomGenericsTypesTest {
     assertFalse(parser.hasErrors());
     assertNotNull(type);
     assertTrue(type.isPresent());
-    assertTrue(type.get() instanceof ASTMCCollectionType);
+    assertTrue(type.get() instanceof ASTMCBasicGenericType);
   }
 
   @Test
