@@ -19,7 +19,7 @@ ${tc.include("ast.AstImports")}
   </#if>
   public ${abstract} class ${ast.getName()} extends ${ast.printSuperClass()} {
   <#list astType.getCDAttributeList() as attribute>
-    <#if !genHelper.isInherited(attribute) && !genHelper.isAdditionalAttribute(attribute)>
+    <#if !genHelper.isInherited(attribute) && !genHelper.isAdditionalAttribute(attribute) && !genHelper.isModifierPrivate(attribute)>
     ${tc.include("ast.BuilderAttribute", attribute)}
     </#if>
   </#list>
@@ -42,7 +42,7 @@ ${tc.include("ast.AstImports")}
       }
       else {
     <#list astType.getCDAttributeList() as attribute>
-      <#if !genHelper.isInherited(attribute) && !genHelper.isAdditionalAttribute(attribute)>
+      <#if !genHelper.isInherited(attribute) && !genHelper.isAdditionalAttribute(attribute)&& !genHelper.isModifierPrivate(attribute)>
         <#if !genHelper.isOptional(attribute) && !genHelper.isListType(attribute.printType())
         && !genHelper.isPrimitive(attribute.getType())>
         if (${attribute.getName()} == null) {
@@ -58,7 +58,7 @@ ${tc.include("ast.AstImports")}
 
     public boolean isValid() {
   <#list astType.getCDAttributeList() as attribute>
-    <#if !genHelper.isInherited(attribute) && !genHelper.isAdditionalAttribute(attribute)>
+    <#if !genHelper.isInherited(attribute) && !genHelper.isAdditionalAttribute(attribute) && !genHelper.isModifierPrivate(attribute)>
       <#if !genHelper.isOptional(attribute) && !genHelper.isListType(attribute.printType())
         && !genHelper.isPrimitive(attribute.getType())>
       if (${attribute.getName()} == null) {

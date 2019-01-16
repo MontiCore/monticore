@@ -144,6 +144,7 @@ public class CdDecorator {
       addSetter(clazz, astHelper, cdDefinition);
       addOptionalMethods(clazz, astHelper, cdDefinition);
       addSymbolAndScopeAttributesAndMethods(clazz, astHelper);
+      addReferencedSymbolAttributes(clazz, astHelper);
       addReferencedSymbolAndDefinitionMethods(clazz, astHelper);
 
       Optional<ASTCDClass> builder = astHelper.getASTBuilder(clazz);
@@ -249,12 +250,31 @@ public class CdDecorator {
     addOptionalSetMethods(clazz, scopeAttribute.get(), scopeName);
   }
 
+  protected void addReferencedSymbolAttributes(ASTCDClass clazz, AstGeneratorHelper astHelper) {
+    List<ASTCDAttribute> attributes = Lists.newArrayList(clazz.getCDAttributeList());
+    for (ASTCDAttribute attribute : attributes) {
+      if (!GeneratorHelper.isInherited(attribute)
+          && GeneratorHelper.isReferencedSymbolAttribute(attribute)) {
+        String referencedSymbol = astHelper.getReferencedSymbolName(attribute);
+
+        String symbolName = getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf("Symbol"));
+        Optional<ASTCDAttribute> astcdAttribute;
+        if (GeneratorHelper.isListType(attribute.printType())) {
+          astcdAttribute = cdTransformation.addCdAttribute(clazz, attribute.getName() + "Map", "java.util.Map<String, Optional<" + referencedSymbol + ">>", "private");
+        }else {
+          astcdAttribute = cdTransformation.addCdAttribute(clazz, attribute.getName() + "Symbol", "Optional<" + referencedSymbol + ">", "private");
+        }
+        Preconditions.checkArgument(astcdAttribute.isPresent());
+      }
+    }
+  }
+
+
   protected void addReferencedSymbolAndDefinitionMethods(ASTCDClass clazz, AstGeneratorHelper astHelper) {
     List<ASTCDAttribute> attributes = Lists.newArrayList(clazz.getCDAttributeList());
     for (ASTCDAttribute attribute : attributes) {
       if (!GeneratorHelper.isInherited(attribute)
-          && CD4AnalysisHelper.hasStereotype(attribute,
-          MC2CDStereotypes.REFERENCED_SYMBOL.toString())) {
+          && GeneratorHelper.isReferencedSymbolAttribute(attribute)) {
         String referencedSymbol = astHelper.getReferencedSymbolName(attribute);
         if (GeneratorHelper.isListType(attribute.printType())) {
           //if the attribute is a list
@@ -1385,7 +1405,7 @@ public class CdDecorator {
     String del = "";
     List<ASTCDAttribute> inheritedAttributes = Lists.newArrayList();
     for (ASTCDAttribute attr : clazz.getCDAttributeList()) {
-      if (GeneratorHelper.isSymbolOrScopeAttribute(attr)) {
+      if (GeneratorHelper.isSymbolOrScopeAttribute(attr) || GeneratorHelper.isModifierPrivate(attr)) {
         continue;
       }
       if (GeneratorHelper.isInherited(attr)) {

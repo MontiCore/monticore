@@ -22,9 +22,6 @@ ${ast.printModifier()} class ${ast.getName()} extends ${tc.include("ast.AstSuper
 <#list ast.getCDAttributeList() as attribute>
   <#if !genHelper.isInherited(attribute)>
     ${tc.includeArgs("ast.Attribute", [attribute, ast])}
-    <#if genHelper.isReferencedSymbolAttribute(attribute)>
-      ${tc.includeArgs("ast.AttributeReference", [attribute, ast])}
-    </#if>
   </#if>
 </#list>
 <#-- generate all constructors -->

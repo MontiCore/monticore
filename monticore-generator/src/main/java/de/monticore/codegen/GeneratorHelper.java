@@ -569,12 +569,14 @@ public class GeneratorHelper extends TypesHelper {
   }
 
   public static boolean isReferencedSymbolAttribute(ASTCDAttribute attribute) {
-    if (CD4AnalysisHelper.hasStereotype(attribute, MC2CDStereotypes.REFERENCED_SYMBOL.toString())) {
-      return true;
-    } else {
-      return false;
-    }
+    return CD4AnalysisHelper.hasStereotype(attribute, MC2CDStereotypes.REFERENCED_SYMBOL.toString());
   }
+
+  public static boolean isModifierPrivate(ASTCDAttribute attribute) {
+    return attribute.isPresentModifier() && attribute.getModifier().isPrivate();
+  }
+
+
 
   public static boolean isString(String type) {
     return "String".equals(type) || "java.lang.String".equals(type);
@@ -1836,5 +1838,4 @@ public class GeneratorHelper extends TypesHelper {
     }
     return new AstGeneratorHelper(astClassDiagram, globalScope);
   }
-
 }
