@@ -26,7 +26,11 @@ public class MCCollectionTypesTest {
   @Test
   public void testBasicGenericsTypes() throws IOException {
     Class foo = boolean.class;
-    String[] types = new String[]{"List<a.A>","Optional<String>","Set<String>","Map<String,String>","List<socnet.Person>"};
+    String[] types = new String[]{"List<a.A>","Optional<String>",
+            "Set<String>","Map<String,String>","List<socnet.Person>"
+            ,"List<int>"
+    };
+
     for (String testType : types) {
       MCCollectionTypesTestParser mcBasicTypesParser = new MCCollectionTypesTestParser();
       // .parseType(primitive);
