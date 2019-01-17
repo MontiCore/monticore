@@ -4,6 +4,13 @@ variables:
   MAVEN_OPTS: ""
   MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode"
 
+# Cache downloaded dependencies and plugins between builds.
+# To keep cache across branches add 'key: "$CI_JOB_NAME"'
+cache:
+  paths:
+    - .m2/repository
+
+
 stages:
   - build
   - deploy
