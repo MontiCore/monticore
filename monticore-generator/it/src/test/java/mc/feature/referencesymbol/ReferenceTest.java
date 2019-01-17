@@ -34,7 +34,7 @@ public class ReferenceTest {
     Optional<ASTRand> astRand = parser.parse("src/test/resources/mc/feature/referencesymbol/ReferenceModel.ref");
     assertTrue(astRand.isPresent());
     //create symboltable
-    ModelPath modelPath = new ModelPath(Paths.get("src/tests/resources/mc/feature/referencesymbol"));
+    ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/mc/feature/referencesymbol"));
     ModelingLanguage lang = new ReferenceLanguage();
     ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
     resolvingConfiguration.addDefaultFilters(lang.getResolvingFilters());
