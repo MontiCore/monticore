@@ -13,14 +13,14 @@ cache:
 
 stages:
   - build
-  - deploy
+#  - deploy
 
 build:
   stage: build
   script:
     - "mvn $MAVEN_CLI_OPTS install"
 
-deploy:
-  stage: deploy
-  script:
-    - "mvn $MAVEN_CLI_OPTS deploy -DskipTests"
+#deploy:
+#  stage: deploy
+#  script:
+#    - "mvn $MAVEN_CLI_OPTS deploy -DskipTests"
