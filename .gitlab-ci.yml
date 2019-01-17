@@ -32,7 +32,7 @@ integration-test-experiments:
   script:
     - "mvn $MAVEN_CLI_OPTS install -DskipTests" 
     - cd monticore-generator/it/experiments
-    - "mvn --settings ../../../settings.xml clean instal"
+    - "mvn --settings ../../../settings.xml clean install"
 
 #deploy:
 #  stage: deploy
