@@ -2,8 +2,10 @@ package de.monticore.aggregation;
 
 import de.monticore.aggregation.blah._symboltable.DummySymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
+import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.resolving.SymbolAdapter;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.SourcePosition;
 
 public class Dummy2MethodAdapterSymbol extends EMethodSymbol implements SymbolAdapter<DummySymbol> {
@@ -19,4 +21,11 @@ public class Dummy2MethodAdapterSymbol extends EMethodSymbol implements SymbolAd
   public DummySymbol getAdaptee() {
     return adaptee;
   }
+
+//  @Override
+//  public ASTMCType getReturnType() {
+//    this.adaptee.getAstNode()
+//  }
+
+
 }

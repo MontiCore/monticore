@@ -49,7 +49,7 @@ public class AggregationTest {
   resolvingConfiguration.addDefaultFilters(blahLang.getResolvingFilters());
 
 
-  Dummy2EMethodResolvingFilter dummy2EMethodResolvingFilter = new Dummy2EMethodResolvingFilter();
+  Dummy2EMethodResolvingFilter dummy2EMethodResolvingFilter = new Dummy2EMethodResolvingFilter(DummySymbol.KIND);
   resolvingConfiguration.addDefaultFilter(dummy2EMethodResolvingFilter);
 
 
