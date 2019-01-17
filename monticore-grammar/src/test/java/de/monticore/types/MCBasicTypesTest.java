@@ -1,8 +1,6 @@
 package de.monticore.types;
 
-import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
@@ -42,6 +40,8 @@ public class MCBasicTypesTest {
     assertFalse(isInt);
     boolean isShort = bool.isShort();
     assertFalse(isShort);
+
+    assertEquals(bool.toString(), "boolean");
   }
 
 
@@ -81,4 +81,28 @@ public class MCBasicTypesTest {
     }
   }
 
+  @Test
+  public void testMCQualifiedName() throws IOException {
+    String[] types = new String[]{"socnet.Person", "Person"};
+    for (String type : types) {
+      MCBasicTypesTestParser mcBasicTypesParser = new MCBasicTypesTestParser();
+      Optional<ASTMCQualifiedName> astType = mcBasicTypesParser.parse_StringMCQualifiedName(type);
+      assertNotNull(astType);
+      assertTrue(astType.isPresent());
+      //test toString
+      assertEquals(astType.get().toString(), type);
+    }
+  }
+
+
+  @Test
+  public void testMCImportStatement() throws IOException {
+    String type = "import socnet.Person.*;";
+    MCBasicTypesTestParser mcBasicTypesParser = new MCBasicTypesTestParser();
+    Optional<ASTMCImportStatement> astType = mcBasicTypesParser.parse_StringMCImportStatement(type);
+    assertNotNull(astType);
+    assertTrue(astType.isPresent());
+    //test getQName method
+    assertEquals(astType.get().getQName(), "socnet.Person");
+  }
 }

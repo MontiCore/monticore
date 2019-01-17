@@ -25,12 +25,11 @@ public class MCCollectionTypesTest {
 
   @Test
   public void testBasicGenericsTypes() throws IOException {
-    Class foo = boolean.class;
+
     String[] types = new String[]{"List<a.A>","Optional<String>",
             "Set<String>","Map<String,String>","List<socnet.Person>"
             ,"List<int>"
     };
-
     for (String testType : types) {
       MCCollectionTypesTestParser mcBasicTypesParser = new MCCollectionTypesTestParser();
       // .parseType(primitive);
@@ -42,7 +41,7 @@ public class MCCollectionTypesTest {
       assertTrue(type.get() instanceof ASTMCObjectType);
 
       ASTMCObjectType t = (ASTMCObjectType) type.get();
-      t.accept( new MCCollectionTypesVisitor() {
+      t.accept(new MCCollectionTypesVisitor() {
         public void visit(ASTMCListType t) {
           assertTrue(true);
           t.getMCTypeArgument().accept(new MCCollectionTypesVisitor() {
@@ -71,6 +70,20 @@ public class MCCollectionTypesTest {
     assertNotNull(type);
     assertTrue(type.isPresent());
     assertTrue(type.get() instanceof ASTMCListType);
+
+    //test specific methods
+    ASTMCListType listType = (ASTMCListType) type.get();
+    assertEquals(listType.getNameList().size(), 1);
+
+    assertEquals(listType.getNameList().get(0), "List");
+
+    assertEquals(listType.getMCTypeArgumentList().size(), 1);
+
+    ASTMCTypeArgument argument = listType.getMCTypeArgumentList().get(0);
+    Optional<ASTMCTypeArgument> argument2 = parser.parse_StringMCTypeArgument("String");
+    assertFalse(parser.hasErrors());
+    assertTrue(argument2.isPresent());
+    assertTrue(argument.deepEquals(argument2.get()));
   }
 
   @Test
@@ -89,6 +102,20 @@ public class MCCollectionTypesTest {
     assertNotNull(type);
     assertTrue(type.isPresent());
     assertTrue(type.get() instanceof ASTMCMapType);
+
+    //test specific methods
+    ASTMCMapType mapType = (ASTMCMapType) type.get();
+    assertEquals(mapType.getNameList().size(), 1);
+
+    assertEquals(mapType.getNameList().get(0), "Map");
+
+    assertEquals(mapType.getMCTypeArgumentList().size(), 2);
+
+    ASTMCTypeArgument argument = mapType.getMCTypeArgumentList().get(0);
+    Optional<ASTMCTypeArgument> argument2 = parser.parse_StringMCTypeArgument("Integer");
+    assertFalse(parser.hasErrors());
+    assertTrue(argument2.isPresent());
+    assertTrue(argument.deepEquals(argument2.get()));
   }
 
   @Test
@@ -108,6 +135,20 @@ public class MCCollectionTypesTest {
     assertNotNull(type);
     assertTrue(type.isPresent());
     assertTrue(type.get() instanceof ASTMCOptionalType);
+
+    //test specific methods
+    ASTMCOptionalType optionalType = (ASTMCOptionalType) type.get();
+    assertEquals(optionalType.getNameList().size(), 1);
+
+    assertEquals(optionalType.getNameList().get(0), "Optional");
+
+    assertEquals(optionalType.getMCTypeArgumentList().size(), 1);
+
+    ASTMCTypeArgument argument = optionalType.getMCTypeArgumentList().get(0);
+    Optional<ASTMCTypeArgument> argument2 = parser.parse_StringMCTypeArgument("String");
+    assertFalse(parser.hasErrors());
+    assertTrue(argument2.isPresent());
+    assertTrue(argument.deepEquals(argument2.get()));
   }
 
   @Test
@@ -127,6 +168,20 @@ public class MCCollectionTypesTest {
     assertNotNull(type);
     assertTrue(type.isPresent());
     assertTrue(type.get() instanceof ASTMCSetType);
+
+    //test specific methods
+    ASTMCSetType setType = (ASTMCSetType) type.get();
+    assertEquals(setType.getNameList().size(), 1);
+
+    assertEquals(setType.getNameList().get(0), "Set");
+
+    assertEquals(setType.getMCTypeArgumentList().size(), 1);
+
+    ASTMCTypeArgument argument = setType.getMCTypeArgumentList().get(0);
+    Optional<ASTMCTypeArgument> argument2 = parser.parse_StringMCTypeArgument("String");
+    assertFalse(parser.hasErrors());
+    assertTrue(argument2.isPresent());
+    assertTrue(argument.deepEquals(argument2.get()));
   }
 
   @Test

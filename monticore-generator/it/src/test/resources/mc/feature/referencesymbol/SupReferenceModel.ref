@@ -1,0 +1,16 @@
+begin SupReferenceTest {
+  symbol A;
+  supRef A ;
+  symbol B;
+  symbol C;
+  supRef B;
+
+  supRefOpt A;
+
+  supRefList A B C;
+
+  supRefList ;
+
+  symbol D;
+  supRefList A B C D;
+} end
