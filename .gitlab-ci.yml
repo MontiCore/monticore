@@ -18,10 +18,13 @@ build:
   stage: build
   script:
     - "mvn $MAVEN_CLI_OPTS $MAVEN_OPTS install"
-  artifacts:
-    paths:
-      - "target"
-      - "*/target"
+
+build_emf:
+  stage: build
+  script:
+    - cd monticore-grammar
+    - "mvn --settings ../settings.xml $MAVEN_CLI_OPTS $MAVEN_OPTS install -P emf"
+  
 
 integration-test:
   stage: test
@@ -34,6 +37,9 @@ integration-test-emf:
   script:
     - cd monticore-generator/it
     - "mvn --settings ../../settings.xml $MAVEN_OPTS clean install -P emf-it-tests"
+  dependencies:
+    - build_emf
+
 
 integration-test-experiments:
   stage: test
