@@ -1,11 +1,16 @@
 image: maven:3.5.4-jdk-8-alpine
     
 variables:
-  MAVEN_OPTS: -Dmaven.repo.local=/cache/maven.repository
+  MAVEN_OPTS: -Dmaven.repo.local=.m2
   MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode"
+
+cache:
+  paths:
+    - .m2/
 
 stages:
   - build
+  - test
 #  - deploy
 
 build:
@@ -14,25 +19,25 @@ build:
     - "mvn $MAVEN_CLI_OPTS install"
 
 integration-test:
-  stage: build
+  stage: test
   script:
     - "mvn $MAVEN_CLI_OPTS install -DskipTests" 
     - cd monticore-generator/it
     - "mvn --settings ../../settings.xml clean verify"
 
-integration-test-emf:
-  stage: build
-  script:
-    - "mvn $MAVEN_CLI_OPTS install -DskipTests" 
-    - cd monticore-generator/it
-    - "mvn --settings ../../settings.xml clean install -P emf-it-tests"
+#integration-test-emf:
+#  stage: build
+#  script:
+#    - "mvn $MAVEN_CLI_OPTS install -DskipTests" 
+#    - cd monticore-generator/it
+#    - "mvn --settings ../../settings.xml clean install -P emf-it-tests"
 
-integration-test-experiments:
-  stage: build
-  script:
-    - "mvn $MAVEN_CLI_OPTS install -DskipTests" 
-    - cd monticore-generator/it/experiments
-    - "mvn --settings ../../../settings.xml clean install"
+#integration-test-experiments:
+#  stage: build
+#  script:
+#    - "mvn $MAVEN_CLI_OPTS install -DskipTests" 
+#    - cd monticore-generator/it/experiments
+#    - "mvn --settings ../../../settings.xml clean install"
 
 #deploy:
 #  stage: deploy
