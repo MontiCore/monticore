@@ -1,7 +1,7 @@
 image: maven:3.5.4-jdk-8-alpine
     
 variables:
-  MAVEN_OPTS: -Dmaven.repo.local=.m2
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
   MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode"
 
 cache:
