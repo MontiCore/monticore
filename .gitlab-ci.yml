@@ -17,28 +17,27 @@ stages:
 build:
   stage: build
   script:
-    - "mvn $MAVEN_CLI_OPTS install"
+    - "mvn $MAVEN_CLI_OPTS $MAVEN_OPTS install"
+  artifacts:
+    - "target"
 
 integration-test:
   stage: test
   script:
-    - "mvn $MAVEN_CLI_OPTS install -DskipTests" 
     - cd monticore-generator/it
-    - "mvn --settings ../../settings.xml clean verify"
+    - "mvn --settings ../../settings.xml $MAVEN_CLI_OPTS $MAVEN_OPTS clean verify"
 
 integration-test-emf:
   stage: test
   script:
-    - "mvn $MAVEN_CLI_OPTS install -DskipTests" 
     - cd monticore-generator/it
-    - "mvn --settings ../../settings.xml clean install -P emf-it-tests"
+    - "mvn --settings ../../settings.xml $MAVEN_OPTS clean install -P emf-it-tests"
 
 integration-test-experiments:
   stage: test
   script:
-    - "mvn $MAVEN_CLI_OPTS install -DskipTests" 
     - cd monticore-generator/it/experiments
-    - "mvn --settings ../../../settings.xml clean install"
+    - "mvn --settings ../../../settings.xml $MAVEN_OPTS clean install"
 
 #deploy:
 #  stage: deploy
