@@ -11,6 +11,7 @@ cache:
 
 stages:
   - build
+  - build_emf
   - test
 #  - deploy
 
@@ -20,7 +21,7 @@ build:
     - "mvn $MAVEN_CLI_OPTS $MAVEN_OPTS install"
 
 build_emf:
-  stage: build
+  stage: build_emf
   script:
     - cd monticore-grammar
     - "mvn --settings ../settings.xml $MAVEN_CLI_OPTS $MAVEN_OPTS install -P emf"
