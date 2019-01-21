@@ -7,6 +7,7 @@ variables:
 cache:
   paths:
     - .m2/
+  key: ${CI_COMMIT_REF_SLUG} # Cache per branch 
 
 stages:
   - build
@@ -25,19 +26,19 @@ integration-test:
     - cd monticore-generator/it
     - "mvn --settings ../../settings.xml clean verify"
 
-#integration-test-emf:
-#  stage: build
-#  script:
-#    - "mvn $MAVEN_CLI_OPTS install -DskipTests" 
-#    - cd monticore-generator/it
-#    - "mvn --settings ../../settings.xml clean install -P emf-it-tests"
+integration-test-emf:
+  stage: test
+  script:
+    - "mvn $MAVEN_CLI_OPTS install -DskipTests" 
+    - cd monticore-generator/it
+    - "mvn --settings ../../settings.xml clean install -P emf-it-tests"
 
-#integration-test-experiments:
-#  stage: build
-#  script:
-#    - "mvn $MAVEN_CLI_OPTS install -DskipTests" 
-#    - cd monticore-generator/it/experiments
-#    - "mvn --settings ../../../settings.xml clean install"
+integration-test-experiments:
+  stage: test
+  script:
+    - "mvn $MAVEN_CLI_OPTS install -DskipTests" 
+    - cd monticore-generator/it/experiments
+    - "mvn --settings ../../../settings.xml clean install"
 
 #deploy:
 #  stage: deploy
