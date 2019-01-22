@@ -5,3 +5,4 @@ target/
 *.log
 *.iml
 .idea/
+*.factorypath
