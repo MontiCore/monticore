@@ -65,7 +65,7 @@ public abstract class ${className} extends de.monticore.CommonModelingLanguage {
 
   protected void initResolvingFilters() {
     <#list ruleNames as ruleName>
-    addResolvingFilter(new ${ruleName?cap_first}ResolvingFilter());
+    addResolvingFilter(new ${ruleName}ResolvingFilter());
     </#list>
   }
 }
