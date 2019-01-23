@@ -1,49 +1,55 @@
 package de.monticore.types.serialization;
 
 import java.lang.reflect.Type;
+import java.util.List;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
+import com.google.gson.reflect.TypeToken;
 
 import de.monticore.symboltable.serializing.ISerialization;
 import de.monticore.symboltable.serializing.SerializationBuilder;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 
-public class ASTMCQualifiedTypeSerializer implements ISerialization<ASTMCQualifiedType> {
+public class ASTMCQualifiedNameSerializer implements ISerialization<ASTMCQualifiedName> {
   
-  public static final String MC_QUALIFIED_NAME = "mCQualifiedName";
+  public static final String PART_LIST = "partList";
   
   @Override
-  public ASTMCQualifiedType deserialize(JsonElement json, Type typeOfT,
+  public ASTMCQualifiedName deserialize(JsonElement json, Type typeOfT,
       JsonDeserializationContext context) throws JsonParseException {
     JsonObject jsonObject = json.getAsJsonObject();
     if (isCorrectSerializer(jsonObject)) {
-      ASTMCQualifiedName qName = context.deserialize(jsonObject.get(MC_QUALIFIED_NAME),
-          ASTMCQualifiedName.class);
-      return MCBasicTypesMill.mCQualifiedTypeBuilder()
-          .setMCQualifiedName(qName)
+      
+      Type listType = new TypeToken<List<String>>() {}.getType();
+      List<String> parts = new Gson().fromJson(jsonObject.get(PART_LIST), listType);
+      
+      return MCBasicTypesMill.mCQualifiedNameBuilder()
+          .setPartList(parts)
           .build();
     }
     return fail();
   }
   
   @Override
-  public JsonElement serialize(ASTMCQualifiedType src, Type typeOfSrc,
+  public JsonElement serialize(ASTMCQualifiedName src, Type typeOfSrc,
       JsonSerializationContext context) {
     
-    return new SerializationBuilder(context)
+    JsonObject json = new JsonObject();
+    json = new SerializationBuilder(json, context)
         .add(CLASS, getSerializedClass().getName())
-        .add(MC_QUALIFIED_NAME, src.getMCQualifiedName())
+        .add(PART_LIST, src.getPartList())
         .build();
+    return json;
   }
   
   @Override
-  public Class<ASTMCQualifiedType> getSerializedClass() {
-    return ASTMCQualifiedType.class;
+  public Class<ASTMCQualifiedName> getSerializedClass() {
+    return ASTMCQualifiedName.class;
   }
 }

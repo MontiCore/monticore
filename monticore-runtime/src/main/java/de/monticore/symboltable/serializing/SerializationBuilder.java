@@ -29,6 +29,11 @@ public class SerializationBuilder {
     this.context = context;
   }
   
+  public SerializationBuilder(JsonSerializationContext context) {
+    this.json = new JsonObject();
+    this.context = context;
+  }
+  
   public SerializationBuilder add(String key, Object o) {
     json.add(key, context.serialize(o));
     return this;
