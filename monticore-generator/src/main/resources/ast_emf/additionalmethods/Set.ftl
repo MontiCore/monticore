@@ -1,9 +1,13 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("grammarName", "cdAttribute","emfAttribute", "cDAndJavaConformName")}
   <#assign genHelper = glex.getGlobalVar("astHelper")>
-  <#if genHelper.isReferencedSymbolAttribute(cdAttribute)>
-    ${cDAndJavaConformName}Definition = Optional.empty();
+<#if genHelper.isReferencedSymbolAttribute(cdAttribute)>
+  <#if astHelper.isListType(cdAttribute.printType())>
+    ${cDAndJavaConformName}Map.clear();
+  <#else >
+    ${cDAndJavaConformName}Symbol = Optional.empty();
   </#if>
+</#if>
   <#if emfAttribute.isOptional()>
     ${astHelper.getTypeNameWithoutOptional(emfAttribute.getCdAttribute())} old${cDAndJavaConformName?cap_first} = this.${cDAndJavaConformName}.isPresent()? this.${cDAndJavaConformName}.get() : null;
     this.${cDAndJavaConformName} = Optional.ofNullable(${cDAndJavaConformName});

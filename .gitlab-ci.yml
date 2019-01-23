@@ -1,5 +1,54 @@
-image: maven:3-jdk-11
+image: maven:3.5.4-jdk-8-alpine
+    
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
+  MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode"
+
+cache:
+  paths:
+    - .m2/
+  key: ${CI_COMMIT_REF_SLUG} # Cache per branch 
+
+stages:
+  - build
+  - build_emf
+  - test
+#  - deploy
+
 build:
   stage: build
   script:
-    - mvn install -T 2 --settings "settings.xml"
+    - "mvn $MAVEN_CLI_OPTS $MAVEN_OPTS install"
+
+build_emf:
+  stage: build_emf
+  script:
+    - cd monticore-grammar
+    - "mvn --settings ../settings.xml $MAVEN_CLI_OPTS $MAVEN_OPTS install -P emf"
+  
+
+integration-test:
+  stage: test
+  script:
+    - cd monticore-generator/it
+    - "mvn --settings ../../settings.xml $MAVEN_CLI_OPTS $MAVEN_OPTS clean verify"
+
+integration-test-emf:
+  stage: test
+  script:
+    - cd monticore-generator/it
+    - "mvn --settings ../../settings.xml $MAVEN_OPTS clean install -P emf-it-tests"
+  dependencies:
+    - build_emf
+
+
+integration-test-experiments:
+  stage: test
+  script:
+    - cd monticore-generator/it/experiments
+    - "mvn --settings ../../../settings.xml $MAVEN_OPTS clean install"
+
+#deploy:
+#  stage: deploy
+#  script:
+#    - "mvn $MAVEN_CLI_OPTS deploy -DskipTests"

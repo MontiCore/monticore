@@ -115,6 +115,56 @@ public class MCGenericsTypesTest {
       fail(e.getMessage());
     }
   }
+  
+  
+  @Test
+  public void testOldComplexTypes() throws IOException {
+    String[] typesToTest = new String[]{
+            "Type"
+            , "Type<Arg>"
+            , "package.Type"
+            , "packageName.OuterClass.Type<Arg>"
+            , "java.util.Foo<A>.Set<C>.some.Collection"
+            , "a.b.Type<Arg>.C"
+            , "a.b.Type<Arg>.C.D"
+            , "OwnClass"
+            , "a.b.c"
+            , "_$testABC_1._5"
+            , "a.b<c>"
+            , "Seq<Pair<T,S>>"
+            , "Pair<T,S>"
+            , "Seq<Pair<String,Number>>"
+            , "A<B<C,D<E,F<G>>>>"
+            , "A<B<C,D<E,F<G<H>>>>,I<J>>"
+            , "Vector<String>"
+            , "A.B<String>.C<Object>"
+            , "A.B<int[][]>.C<int[]>"
+            , "L<A[]>"
+            , "C<L<A>[]>"
+            , "a.b.c<arg>"
+            , "a.b.c<arg>.d"
+            // Wildcards:
+            , "Collection<?>"
+            , "List<? extends Number>"
+            , "ReferenceQueue<? super T>"
+            , "Pair<String,?>"
+            , "B<? extends int[]>"
+            , "Pair<T, ? super Object>"
+    };
 
+    for (String testType : typesToTest) {
+      MCFullGenericTypesTestParser mcBasicTypesParser = new MCFullGenericTypesTestParser();
+      // .parseType(primitive);
+
+      Optional<ASTMCType> type = mcBasicTypesParser.parse_StringMCType(testType);
+
+      assertNotNull(type);
+      assertTrue(type.isPresent());
+      //assertTrue(type.get() instanceof ASTMCMultipleGenericType);
+
+    }
+
+
+  }
 
 }
