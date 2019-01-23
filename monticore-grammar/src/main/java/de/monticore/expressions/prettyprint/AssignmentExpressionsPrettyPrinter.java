@@ -27,6 +27,7 @@ import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 
+@Deprecated
 public class AssignmentExpressionsPrettyPrinter implements AssignmentExpressionsVisitor {
   
   protected AssignmentExpressionsVisitor realThis;
