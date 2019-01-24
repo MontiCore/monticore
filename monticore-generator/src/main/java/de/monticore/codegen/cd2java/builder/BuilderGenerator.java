@@ -2,14 +2,12 @@ package de.monticore.codegen.cd2java.builder;
 
 import de.monticore.ast.ASTCNode;
 import de.monticore.codegen.cd2java.Generator;
-import de.monticore.codegen.cd2java.factories.CDConstructorFactory;
-import de.monticore.codegen.cd2java.factories.CDMethodFactory;
-import de.monticore.codegen.cd2java.factories.CDTypeFactory;
-import de.monticore.codegen.cd2java.factories.ModifierBuilder;
+import de.monticore.codegen.cd2java.factories.*;
 import de.monticore.types.types._ast.ASTReferenceType;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,14 +25,14 @@ public class BuilderGenerator implements Generator<ASTCDClass, ASTCDClass> {
 
   private final CDMethodFactory cdMethodFactory;
 
-  private final BuilderMethodGenerator builderMethodGenerator;
+  private final CDParameterFactory cdParameterFactory;
 
   public BuilderGenerator(final CDTypeFactory cdTypeFactory, final CDConstructorFactory cdConstructorFactory, final CDMethodFactory cdMethodFactory,
-      final BuilderMethodGenerator builderMethodGenerator) {
+      final CDParameterFactory cdParameterFactory) {
     this.cdTypeFactory = cdTypeFactory;
     this.cdConstructorFactory = cdConstructorFactory;
     this.cdMethodFactory = cdMethodFactory;
-    this.builderMethodGenerator = builderMethodGenerator;
+    this.cdParameterFactory = cdParameterFactory;
   }
 
   @Override
@@ -54,12 +52,18 @@ public class BuilderGenerator implements Generator<ASTCDClass, ASTCDClass> {
     ASTCDMethod buildMethod = this.cdMethodFactory.createPublicMethod(domainType, BUILD_METHOD);
 
     ASTType builderType = this.cdTypeFactory.createTypeByDefinition(builderClassName);
-    this.builderMethodGenerator.setBuilderType(builderType);
+    BuilderMethodGenerator builderMethodGenerator = createBuilderMethodGenerator(builderType);
 
-    List<ASTCDMethod> methods = domainClass.getCDAttributeList().stream()
+    List<ASTCDMethod> attributeMethods = domainClass.getCDAttributeList().stream()
         .map(builderMethodGenerator::generate)
         .flatMap(List::stream)
         .collect(Collectors.toList());
+
+    List<ASTCDMethod> astCNodeMethods = new ArrayList<>();
+    if (hasSuperClassOtherThanASTCNode(domainClass)) {
+      BuilderASTCNodeMethodGenerator builderASTCNodeMethodGenerator = createBuilderASTCNodeMethodGenerator(builderType);
+      astCNodeMethods.addAll(builderASTCNodeMethodGenerator.generate());
+    }
 
     return  CD4AnalysisMill.cDClassBuilder()
         .setModifier(modifier)
@@ -68,7 +72,8 @@ public class BuilderGenerator implements Generator<ASTCDClass, ASTCDClass> {
         .addAllCDAttributes(builderAttributes)
         .addCDConstructor(constructor)
         .addCDMethod(buildMethod)
-        .addAllCDMethods(methods)
+        .addAllCDMethods(attributeMethods)
+        .addAllCDMethods(astCNodeMethods)
         .build();
   }
 
@@ -82,5 +87,13 @@ public class BuilderGenerator implements Generator<ASTCDClass, ASTCDClass> {
 
   private boolean hasSuperClassOtherThanASTCNode(final ASTCDClass domainClass) {
     return domainClass.isPresentSuperclass() && !ASTCNode.class.getSimpleName().equals(domainClass.printSuperClass());
+  }
+
+  private BuilderMethodGenerator createBuilderMethodGenerator(final ASTType builderType) {
+    return new BuilderMethodGenerator(this.cdTypeFactory, this.cdMethodFactory, this.cdParameterFactory, builderType);
+  }
+
+  private BuilderASTCNodeMethodGenerator createBuilderASTCNodeMethodGenerator(final ASTType builderType) {
+    return new BuilderASTCNodeMethodGenerator(this.cdMethodFactory, builderType);
   }
 }

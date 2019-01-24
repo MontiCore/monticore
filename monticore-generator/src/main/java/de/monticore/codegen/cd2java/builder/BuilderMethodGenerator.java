@@ -8,29 +8,15 @@ import de.monticore.codegen.cd2java.methods.ListMethodGeneratorStrategy;
 import de.monticore.codegen.cd2java.methods.MandatoryMethodGeneratorStrategy;
 import de.monticore.codegen.cd2java.methods.OptionalMethodGeneratorStrategy;
 import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
-import de.se_rwth.commons.logging.Log;
 
-import java.util.List;
+class BuilderMethodGenerator extends MethodGenerator {
 
-public class BuilderMethodGenerator extends MethodGenerator {
+  private final ASTType builderType;
 
-  private ASTType builderType;
-
-  public BuilderMethodGenerator(final CDTypeFactory cdTypeFactory, final CDMethodFactory cdMethodFactory, final CDParameterFactory cdParameterFactory) {
+  BuilderMethodGenerator(final CDTypeFactory cdTypeFactory, final CDMethodFactory cdMethodFactory, final CDParameterFactory cdParameterFactory,
+      final ASTType builderType) {
     super(cdTypeFactory, cdMethodFactory, cdParameterFactory);
-  }
-
-  void setBuilderType(final ASTType builderType) {
     this.builderType = builderType;
-  }
-
-  @Override
-  public List<ASTCDMethod> generate(ASTCDAttribute ast) {
-    if (builderType == null)
-      Log.error("The builder type is not set yet, but it is necessary to generate Builder methods.");
-    return super.generate(ast);
   }
 
   @Override
