@@ -2,8 +2,13 @@
 
 package de.monticore.symboltable;
 
+/**
+ * 
+ * @deprecated SymbolKind will be removed soon
+ */
 public interface SymbolKind {
 
+  @Deprecated //will be removed in 5.0.3
   SymbolKind KIND = new SymbolKind() {
   };
 
@@ -20,9 +25,7 @@ public interface SymbolKind {
    * @return true, if this symbol kind is a kind of the given symbol kind.
    */
   default boolean isKindOf(SymbolKind kind) {
-    // TODO PN The following statement makes use of reflection, and hence, will be soon
-    //         (i.e., after next bootstrapping) replaced by: kind.getName().equals(getName());
-    return kind.equals(KIND) || kind.getClass().isAssignableFrom(this.getClass());
+    return (kind != null) && kind.getName().equals(this.getName());
   }
 
   default boolean isSame(SymbolKind kind) {
