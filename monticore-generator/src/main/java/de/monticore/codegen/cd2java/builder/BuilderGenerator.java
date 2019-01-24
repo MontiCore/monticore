@@ -27,12 +27,17 @@ public class BuilderGenerator implements Generator<ASTCDClass, ASTCDClass> {
 
   private final CDMethodFactory cdMethodFactory;
 
-  public BuilderGenerator(final CDTypeFactory cdTypeFactory, final CDConstructorFactory cdConstructorFactory, final CDMethodFactory cdMethodFactory) {
+  private final BuilderMethodGenerator builderMethodGenerator;
+
+  public BuilderGenerator(final CDTypeFactory cdTypeFactory, final CDConstructorFactory cdConstructorFactory, final CDMethodFactory cdMethodFactory,
+      final BuilderMethodGenerator builderMethodGenerator) {
     this.cdTypeFactory = cdTypeFactory;
     this.cdConstructorFactory = cdConstructorFactory;
     this.cdMethodFactory = cdMethodFactory;
+    this.builderMethodGenerator = builderMethodGenerator;
   }
 
+  @Override
   public ASTCDClass generate(final ASTCDClass domainClass) {
     String builderClassName = domainClass.getName() + BUILDER_SUFFIX;
     ASTModifier modifier = ModifierBuilder.builder().Public().build();
@@ -49,7 +54,7 @@ public class BuilderGenerator implements Generator<ASTCDClass, ASTCDClass> {
     ASTCDMethod buildMethod = this.cdMethodFactory.createPublicMethod(domainType, BUILD_METHOD);
 
     ASTType builderType = this.cdTypeFactory.createTypeByDefinition(builderClassName);
-    BuilderMethodGenerator builderMethodGenerator = createBuilderMethodGenerator(builderType);
+    this.builderMethodGenerator.setBuilderType(builderType);
 
     List<ASTCDMethod> methods = domainClass.getCDAttributeList().stream()
         .map(builderMethodGenerator::generate)
@@ -77,9 +82,5 @@ public class BuilderGenerator implements Generator<ASTCDClass, ASTCDClass> {
 
   private boolean hasSuperClassOtherThanASTCNode(final ASTCDClass domainClass) {
     return domainClass.isPresentSuperclass() && !ASTCNode.class.getSimpleName().equals(domainClass.printSuperClass());
-  }
-
-  private BuilderMethodGenerator createBuilderMethodGenerator(final ASTType builderType) {
-    return new BuilderMethodGenerator(builderType);
   }
 }

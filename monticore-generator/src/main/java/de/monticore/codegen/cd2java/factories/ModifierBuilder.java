@@ -45,22 +45,22 @@ public class ModifierBuilder {
     return this;
   }
 
-  public ModifierBuilder setPrivate() {
+  public ModifierBuilder Private() {
     isPrivate = true;
     return this;
   }
 
-  public ModifierBuilder setStatic() {
+  public ModifierBuilder Static() {
     isStatic = true;
     return this;
   }
 
-  public ModifierBuilder setFinal() {
+  public ModifierBuilder Final() {
     isFinal = true;
     return this;
   }
 
-  public ModifierBuilder setAbstract() {
+  public ModifierBuilder Abstract() {
     isAbstract = true;
     return this;
   }

@@ -6,11 +6,11 @@ import de.monticore.codegen.cd2java.methods.MandatoryMethodGeneratorStrategy;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 
-public class BuilderListMethodGeneratorStrategy extends ListMethodGeneratorStrategy {
+class BuilderListMethodGeneratorStrategy extends ListMethodGeneratorStrategy {
 
   private final ASTType builderType;
 
-  public BuilderListMethodGeneratorStrategy(final CDMethodFactory cdMethodFactory, final MandatoryMethodGeneratorStrategy mandatoryMethodGeneratorStrategy,
+  BuilderListMethodGeneratorStrategy(final CDMethodFactory cdMethodFactory, final MandatoryMethodGeneratorStrategy mandatoryMethodGeneratorStrategy,
       final ASTType builderType) {
     super(cdMethodFactory, mandatoryMethodGeneratorStrategy);
     this.builderType = builderType;

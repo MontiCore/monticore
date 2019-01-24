@@ -8,11 +8,11 @@ import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 
-public class BuilderOptionalMethodGeneratorStrategy extends OptionalMethodGeneratorStrategy {
+class BuilderOptionalMethodGeneratorStrategy extends OptionalMethodGeneratorStrategy {
 
   private final ASTType builderType;
 
-  public BuilderOptionalMethodGeneratorStrategy(final CDTypeFactory cdTypeFactory, final CDMethodFactory cdMethodFactory,
+  BuilderOptionalMethodGeneratorStrategy(final CDTypeFactory cdTypeFactory, final CDMethodFactory cdMethodFactory,
       final CDParameterFactory cdParameterFactory, final ASTType builderType) {
     super(cdTypeFactory, cdMethodFactory, cdParameterFactory);
     this.builderType = builderType;

@@ -16,7 +16,7 @@ public class MandatoryMethodGeneratorStrategy implements MethodGeneratorStrategy
 
   private final CDMethodFactory cdMethodFactory;
 
-  public MandatoryMethodGeneratorStrategy(CDMethodFactory cdMethodFactory) {
+  protected MandatoryMethodGeneratorStrategy(CDMethodFactory cdMethodFactory) {
     this.cdMethodFactory = cdMethodFactory;
   }
 

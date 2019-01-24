@@ -12,36 +12,56 @@ import java.util.List;
 
 public class MethodGenerator implements Generator<ASTCDAttribute, List<ASTCDMethod>> {
 
+  private final CDTypeFactory cdTypeFactory;
+
+  private final CDMethodFactory cdMethodFactory;
+
+  private final CDParameterFactory cdParameterFactory;
+
+  public MethodGenerator(final CDTypeFactory cdTypeFactory, final CDMethodFactory cdMethodFactory, final CDParameterFactory cdParameterFactory) {
+    this.cdTypeFactory = cdTypeFactory;
+    this.cdMethodFactory = cdMethodFactory;
+    this.cdParameterFactory = cdParameterFactory;
+  }
+
+  protected CDTypeFactory getCDTypeFactory() {
+    return this.cdTypeFactory;
+  }
+
+  protected CDMethodFactory getCDMethodFactory() {
+    return this.cdMethodFactory;
+  }
+
+  protected CDParameterFactory getCDParameterFactory() {
+    return this.cdParameterFactory;
+  }
+
+  @Override
   public List<ASTCDMethod> generate(final ASTCDAttribute ast) {
     MethodGeneratorStrategy methodGeneratorStrategy = determineMethodGeneratorStrategy(ast);
     return methodGeneratorStrategy.generate(ast);
   }
 
   private MethodGeneratorStrategy determineMethodGeneratorStrategy(final ASTCDAttribute ast) {
-    CDTypeFactory cdTypeFactory = CDTypeFactory.getInstance();
-    CDMethodFactory cdMethodFactory = CDMethodFactory.getInstance();
-    CDParameterFactory cdParameterFactory = CDParameterFactory.getInstance();
-
     //TODO: helper durch OO-Ansatz ersetzen (und vereinheitlichen)
     if (GeneratorHelper.isListType(ast.printType())) {
-      return createListMethodGeneratorStrategy(cdMethodFactory);
+      return createListMethodGeneratorStrategy();
     }
     else if (GeneratorHelper.isOptional(ast)) {
-      return createOptionalMethodGeneratorStrategy(cdTypeFactory, cdMethodFactory, cdParameterFactory);
+      return createOptionalMethodGeneratorStrategy();
     }
-    return createMandatoryMethodGeneratorStrategy(cdMethodFactory);
+    return createMandatoryMethodGeneratorStrategy();
   }
 
-  protected MandatoryMethodGeneratorStrategy createMandatoryMethodGeneratorStrategy(final CDMethodFactory cdMethodFactory) {
-    return new MandatoryMethodGeneratorStrategy(cdMethodFactory);
+  protected MandatoryMethodGeneratorStrategy createMandatoryMethodGeneratorStrategy() {
+    return new MandatoryMethodGeneratorStrategy(this.getCDMethodFactory());
   }
 
-  protected OptionalMethodGeneratorStrategy createOptionalMethodGeneratorStrategy(final CDTypeFactory cdTypeFactory, final CDMethodFactory cdMethodFactory,
-      final CDParameterFactory cdParameterFactory) {
-    return new OptionalMethodGeneratorStrategy(cdTypeFactory, cdMethodFactory, cdParameterFactory);
+  protected OptionalMethodGeneratorStrategy createOptionalMethodGeneratorStrategy() {
+    return new OptionalMethodGeneratorStrategy(this.getCDTypeFactory(), this.getCDMethodFactory(), this.getCDParameterFactory());
   }
 
-  protected ListMethodGeneratorStrategy createListMethodGeneratorStrategy(final CDMethodFactory cdMethodFactory) {
-    return new ListMethodGeneratorStrategy(cdMethodFactory, new MandatoryMethodGeneratorStrategy(cdMethodFactory));
+  protected ListMethodGeneratorStrategy createListMethodGeneratorStrategy() {
+    return new ListMethodGeneratorStrategy(this.getCDMethodFactory(), createMandatoryMethodGeneratorStrategy());
   }
 }

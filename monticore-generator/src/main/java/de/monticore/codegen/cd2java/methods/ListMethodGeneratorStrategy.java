@@ -48,10 +48,10 @@ public class ListMethodGeneratorStrategy implements MethodGeneratorStrategy {
   private final MandatoryMethodGeneratorStrategy mandatoryMethodGeneratorStrategy;
 
   private String attributeName;
-  
+
   private String attributeType;
 
-  public ListMethodGeneratorStrategy(CDMethodFactory cdMethodFactory, MandatoryMethodGeneratorStrategy mandatoryMethodGeneratorStrategy) {
+  protected ListMethodGeneratorStrategy(CDMethodFactory cdMethodFactory, MandatoryMethodGeneratorStrategy mandatoryMethodGeneratorStrategy) {
     this.cdMethodFactory = cdMethodFactory;
     this.mandatoryMethodGeneratorStrategy = mandatoryMethodGeneratorStrategy;
   }

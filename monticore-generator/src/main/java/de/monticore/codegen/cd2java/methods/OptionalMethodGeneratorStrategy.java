@@ -29,7 +29,7 @@ public class OptionalMethodGeneratorStrategy implements MethodGeneratorStrategy 
 
   private final CDParameterFactory cdParameterFactory;
 
-  public OptionalMethodGeneratorStrategy(final CDTypeFactory cdTypeFactory, final CDMethodFactory cdMethodFactory, final CDParameterFactory cdParameterFactory) {
+  protected OptionalMethodGeneratorStrategy(final CDTypeFactory cdTypeFactory, final CDMethodFactory cdMethodFactory, final CDParameterFactory cdParameterFactory) {
     this.cdTypeFactory = cdTypeFactory;
     this.cdMethodFactory = cdMethodFactory;
     this.cdParameterFactory = cdParameterFactory;
@@ -39,11 +39,11 @@ public class OptionalMethodGeneratorStrategy implements MethodGeneratorStrategy 
   public List<ASTCDMethod> generate(final ASTCDAttribute ast) {
     ASTCDMethod get = createGetMethod(ast);
     ASTCDMethod getOpt = createGetOptMethod(ast);
+    ASTCDMethod isPresent = createIsPresentMethod(ast);
     ASTCDMethod set = createSetMethod(ast);
     ASTCDMethod setOpt = createSetOptMethod(ast);
-    ASTCDMethod isPresent = createIsPresentMethod(ast);
     ASTCDMethod setAbsent = createSetAbsentMethod(ast);
-    return Arrays.asList(get, set, getOpt, setOpt, isPresent, setAbsent);
+    return Arrays.asList(get, getOpt, isPresent, set, setOpt, setAbsent);
   }
 
   private ASTCDMethod createGetMethod(final ASTCDAttribute ast) {
@@ -58,6 +58,12 @@ public class OptionalMethodGeneratorStrategy implements MethodGeneratorStrategy 
     return this.cdMethodFactory.createPublicMethod(type, name);
   }
 
+  private ASTCDMethod createIsPresentMethod(final ASTCDAttribute ast) {
+    String name = IS_PRESENT_PREFIX + StringUtils.capitalize(ast.getName());
+    ASTType type = this.cdTypeFactory.createBooleanType();
+    return this.cdMethodFactory.createPublicMethod(type, name);
+  }
+
   protected ASTCDMethod createSetMethod(final ASTCDAttribute ast) {
     String name = SET_PREFIX + StringUtils.capitalize(ast.getName());
     ASTType parameterType = TypesHelper.getSimpleReferenceTypeFromOptional(ast.getType().deepClone());
@@ -68,12 +74,6 @@ public class OptionalMethodGeneratorStrategy implements MethodGeneratorStrategy 
   protected ASTCDMethod createSetOptMethod(final ASTCDAttribute ast) {
     String name = SET_PREFIX + StringUtils.capitalize(ast.getName()) + OPT_SUFFIX;
     return this.cdMethodFactory.createPublicVoidMethod(name, ast);
-  }
-
-  private ASTCDMethod createIsPresentMethod(final ASTCDAttribute ast) {
-    String name = IS_PRESENT_PREFIX + StringUtils.capitalize(ast.getName());
-    ASTType type = this.cdTypeFactory.createBooleanType();
-    return this.cdMethodFactory.createPublicMethod(type, name);
   }
 
   protected ASTCDMethod createSetAbsentMethod(final ASTCDAttribute ast) {

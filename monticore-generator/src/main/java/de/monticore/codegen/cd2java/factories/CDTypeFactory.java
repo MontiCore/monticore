@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public class CDTypeFactory {
 
-  private static CDTypeFactory CDTypeFactory;
+  private static CDTypeFactory cdTypeFactory;
 
   private final CD4AnalysisParser parser;
 
@@ -18,10 +18,10 @@ public class CDTypeFactory {
   }
 
   public static CDTypeFactory getInstance() {
-    if (CDTypeFactory == null) {
-      CDTypeFactory = new CDTypeFactory();
+    if (cdTypeFactory == null) {
+      cdTypeFactory = new CDTypeFactory();
     }
-    return CDTypeFactory;
+    return cdTypeFactory;
   }
 
   public ASTType createTypeByDefinition(final String typeSignature) {

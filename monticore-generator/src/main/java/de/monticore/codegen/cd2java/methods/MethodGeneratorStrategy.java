@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface MethodGeneratorStrategy extends Generator<ASTCDAttribute, List<ASTCDMethod>> {
 
+  @Override
   List<ASTCDMethod> generate(final ASTCDAttribute ast);
 }
