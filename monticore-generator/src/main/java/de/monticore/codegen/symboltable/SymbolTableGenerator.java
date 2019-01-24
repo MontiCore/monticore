@@ -138,8 +138,10 @@ public class SymbolTableGenerator {
             genHelper.isScopeSpanningSymbol(ruleSymbol));
         resolvingFilterGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol);
       }
-      scopeGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol.getName() + SCOPE, allSymbolDefiningRules, allSymbolDefiningRulesWithSuperGrammar);
     }
+    //a scope is generated for all grammars
+    scopeGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol.getName() + SCOPE, allSymbolDefiningRules, allSymbolDefiningRulesWithSuperGrammar);
+
 
     debug("End symbol table generation for the grammar " + astGrammar.getName(), LOG);
   }
