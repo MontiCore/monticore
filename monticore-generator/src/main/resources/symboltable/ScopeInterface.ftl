@@ -12,6 +12,8 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
 <#list symbolNames?keys as symbol>
   public Optional<${symbolNames[symbol]}> resolve${symbol}(String name);
 
+  public Optional<${symbolNames[symbol]}> resolve${symbol}Down(String name);
+
 </#list>
 
 }

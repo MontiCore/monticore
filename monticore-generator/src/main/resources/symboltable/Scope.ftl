@@ -42,6 +42,10 @@ public class ${className} ${superClass} ${superInterfaces} {
   public Optional<${symbolNames[symbol]}> resolve${symbol}(String name) {
     return resolve(name, ${symbolNames[symbol]}.KIND);
   }
+
+  public Optional<${symbolNames[symbol]}> resolve${symbol}Down(String name) {
+  return resolveDown(name, ${symbolNames[symbol]}.KIND);
+  }
   
   </#list>
   

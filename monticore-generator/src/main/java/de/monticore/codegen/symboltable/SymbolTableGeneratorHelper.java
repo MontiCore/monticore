@@ -460,7 +460,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   }
 
   public String getQualifiedScopeInterfaceType(String packageName, String cdName) {
-    return getPackageName(packageName, SYMBOLTABLE_PACKAGE_SUFIX) + ".I"
+    return getPackageName(packageName, SymbolTableGenerator.PACKAGE) + ".I"
         + cdName + SCOPE;
   }
 
