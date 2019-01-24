@@ -15,11 +15,17 @@ public class BuilderGenerator implements Generator<ASTCDClass, ASTCDClass> {
 
   private static final String BUILDER_SUFFIX = "Builder";
 
-  private static final String BUILD_METHOD = "build";
-
   private static final String DEFAULT_SUPER_CLASS = "de.monticore.ast.ASTNodeBuilder<%s>";
 
+  private static final String REAL_THIS = "realThis";
+
+  private static final String BUILD_METHOD = "build";
+
+  private static final String IS_VALID = "isValid";
+
   private final CDTypeFactory cdTypeFactory;
+
+  private final CDAttributeFactory cdAttributeFactory;
 
   private final CDConstructorFactory cdConstructorFactory;
 
@@ -27,9 +33,13 @@ public class BuilderGenerator implements Generator<ASTCDClass, ASTCDClass> {
 
   private final CDParameterFactory cdParameterFactory;
 
-  public BuilderGenerator(final CDTypeFactory cdTypeFactory, final CDConstructorFactory cdConstructorFactory, final CDMethodFactory cdMethodFactory,
+  public BuilderGenerator(final CDTypeFactory cdTypeFactory,
+      final CDAttributeFactory cdAttributeFactory,
+      final CDConstructorFactory cdConstructorFactory,
+      final CDMethodFactory cdMethodFactory,
       final CDParameterFactory cdParameterFactory) {
     this.cdTypeFactory = cdTypeFactory;
+    this.cdAttributeFactory = cdAttributeFactory;
     this.cdConstructorFactory = cdConstructorFactory;
     this.cdMethodFactory = cdMethodFactory;
     this.cdParameterFactory = cdParameterFactory;
@@ -38,22 +48,29 @@ public class BuilderGenerator implements Generator<ASTCDClass, ASTCDClass> {
   @Override
   public ASTCDClass generate(final ASTCDClass domainClass) {
     String builderClassName = domainClass.getName() + BUILDER_SUFFIX;
-    ASTModifier modifier = ModifierBuilder.builder().Public().build();
+    ASTType domainType = this.cdTypeFactory.createTypeByDefinition(domainClass.getName());
+    ASTType builderType = this.cdTypeFactory.createTypeByDefinition(builderClassName);
 
-    ASTReferenceType superClass = createBuilderSuperClass(domainClass);
 
+    ModifierBuilder modifierBuilder = ModifierBuilder.builder().Public();
+    if (domainClass.isPresentModifier() && domainClass.getModifier().isAbstract()) {
+      modifierBuilder.Abstract();
+    }
+
+    ASTReferenceType superClass = createBuilderSuperClass(domainClass, builderClassName);
+
+    ASTCDAttribute realThisAttribute = this.cdAttributeFactory.createProtectedAttribute(builderType, REAL_THIS);
     List<ASTCDAttribute> builderAttributes = domainClass.getCDAttributeList().stream()
         .map(ASTCDAttribute::deepClone)
         .collect(Collectors.toList());
 
     ASTCDConstructor constructor = this.cdConstructorFactory.createProtectedDefaultConstructor(builderClassName);
 
-    ASTType domainType = this.cdTypeFactory.createTypeByDefinition(domainClass.getName());
     ASTCDMethod buildMethod = this.cdMethodFactory.createPublicMethod(domainType, BUILD_METHOD);
 
-    ASTType builderType = this.cdTypeFactory.createTypeByDefinition(builderClassName);
-    BuilderMethodGenerator builderMethodGenerator = createBuilderMethodGenerator(builderType);
+    ASTCDMethod isValidMethod = this.cdMethodFactory.createPublicMethod(this.cdTypeFactory.createBooleanType(), IS_VALID);
 
+    BuilderMethodGenerator builderMethodGenerator = createBuilderMethodGenerator(builderType);
     List<ASTCDMethod> attributeMethods = domainClass.getCDAttributeList().stream()
         .map(builderMethodGenerator::generate)
         .flatMap(List::stream)
@@ -66,19 +83,21 @@ public class BuilderGenerator implements Generator<ASTCDClass, ASTCDClass> {
     }
 
     return  CD4AnalysisMill.cDClassBuilder()
-        .setModifier(modifier)
+        .setModifier(modifierBuilder.build())
         .setName(builderClassName)
         .setSuperclass(superClass)
+        .addCDAttribute(realThisAttribute)
         .addAllCDAttributes(builderAttributes)
         .addCDConstructor(constructor)
         .addCDMethod(buildMethod)
+        .addCDMethod(isValidMethod)
         .addAllCDMethods(attributeMethods)
         .addAllCDMethods(astCNodeMethods)
         .build();
   }
 
-  private ASTReferenceType createBuilderSuperClass(final ASTCDClass domainClass) {
-    String superClass = String.format(DEFAULT_SUPER_CLASS, domainClass.getName());
+  private ASTReferenceType createBuilderSuperClass(final ASTCDClass domainClass, final String builderClassName) {
+    String superClass = String.format(DEFAULT_SUPER_CLASS, builderClassName);
     if (hasSuperClassOtherThanASTCNode(domainClass)) {
       superClass = domainClass.printSuperClass() + BUILDER_SUFFIX;
     }
