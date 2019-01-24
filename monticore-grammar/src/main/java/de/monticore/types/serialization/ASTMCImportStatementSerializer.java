@@ -42,13 +42,11 @@ public class ASTMCImportStatementSerializer implements ISerialization<ASTMCImpor
   public JsonElement serialize(ASTMCImportStatement src, Type typeOfSrc,
       JsonSerializationContext context) {
     
-    JsonObject json = new JsonObject();
-    json = new SerializationBuilder(json, context)
+    return new SerializationBuilder(context)
         .add(CLASS, getSerializedClass().getName())
         .add(MC_QUALIFIED_NAME, src.getMCQualifiedName())
         .add(STAR, src.isStar())
         .build();
-    return json;
   }
   
   @Override

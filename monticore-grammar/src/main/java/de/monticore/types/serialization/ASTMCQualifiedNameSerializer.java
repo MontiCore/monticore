@@ -40,12 +40,10 @@ public class ASTMCQualifiedNameSerializer implements ISerialization<ASTMCQualifi
   public JsonElement serialize(ASTMCQualifiedName src, Type typeOfSrc,
       JsonSerializationContext context) {
     
-    JsonObject json = new JsonObject();
-    json = new SerializationBuilder(json, context)
+    return new SerializationBuilder(context)
         .add(CLASS, getSerializedClass().getName())
         .add(PART_LIST, src.getPartList())
         .build();
-    return json;
   }
   
   @Override

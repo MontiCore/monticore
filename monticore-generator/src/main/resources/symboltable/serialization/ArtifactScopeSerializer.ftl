@@ -33,11 +33,11 @@ public class ${languageName}ArtifactScope${serializationSuffix} extends CommonAr
       new ${languageName}Scope${serializationSuffix}()
     );
     
-    DelegatingSerializer delegatingSerializer = new DelegatingSerializer(serializers);
+    DelegatingSerializer symbolAndScopeSerializer = new DelegatingSerializer(serializers);
     
     gson.registerTypeAdapter(ArtifactScope.class, new ArtifactScopeSerialization());
-    gson.registerTypeAdapter(MutableScope.class, delegatingSerializer);
-    gson.registerTypeAdapter(Symbol.class, delegatingSerializer);
+    gson.registerTypeAdapter(MutableScope.class, symbolAndScopeSerializer);
+    gson.registerTypeAdapter(Symbol.class, symbolAndScopeSerializer);
     
     for (ISerialization<?> serializer : serializers) {
       gson.registerTypeAdapter(serializer.getSerializedClass(), serializer);
