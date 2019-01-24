@@ -1,6 +1,7 @@
 package de.monticore.types;
 
 
+import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
@@ -208,6 +209,17 @@ public class MCCollectionTypesTest {
     Optional<ASTMCTypeArgument> type = parser.parse_StringMCTypeArgument("List<A>");
     assertTrue(parser.hasErrors());
     assertFalse(type.isPresent());
+  }
+
+
+  @Test
+  public void collectionTypeWithInt() throws IOException {
+    MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();
+    Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("List<int>");
+    assertTrue(type.isPresent());
+    assertEquals("List",type.get().getBaseName());
+    assertTrue(type.get().getMCTypeArgumentList().get(0) instanceof ASTMCPrimitiveTypeArgument);
+
   }
 
 }
