@@ -8,6 +8,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
+import de.monticore.types.mccollectiontypeswithoutprimitivestest._parser.MCCollectionTypesWithoutPrimitivesTestParser;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -222,4 +223,14 @@ public class MCCollectionTypesTest {
 
   }
 
+
+  @Test
+  public void collectionTypeWithIntFail() throws IOException {
+    MCCollectionTypesWithoutPrimitivesTestParser parser = new MCCollectionTypesWithoutPrimitivesTestParser();
+    Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("List<int>");
+    assertTrue(parser.hasErrors());
+    assertFalse(type.isPresent());
+
+
+  }
 }
