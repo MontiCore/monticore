@@ -50,13 +50,11 @@ public class ASTMCReturnTypeSerializer implements ISerialization<ASTMCReturnType
   public JsonElement serialize(ASTMCReturnType src, Type typeOfSrc,
       JsonSerializationContext context) {
     
-    JsonObject json = new JsonObject();
-    json = new SerializationBuilder(json, context)
+    return new SerializationBuilder(context)
         .add(CLASS, getSerializedClass().getName())
         .add(MC_TYPE, src.getMCTypeOpt())
         .add(MC_VOID_TYPE, src.getMCVoidTypeOpt())
         .build();
-    return json;
   }
   
   @Override

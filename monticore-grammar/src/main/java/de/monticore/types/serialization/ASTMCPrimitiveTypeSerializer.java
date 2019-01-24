@@ -38,12 +38,10 @@ public class ASTMCPrimitiveTypeSerializer implements ISerialization<ASTMCPrimiti
   public JsonElement serialize(ASTMCPrimitiveType src, Type typeOfSrc,
       JsonSerializationContext context) {
     
-    JsonObject json = new JsonObject();
-    json = new SerializationBuilder(json, context)
+    return new SerializationBuilder(context)
         .add(CLASS, getSerializedClass().getName())
         .add(PRIMITIVE, src.getPrimitive())
         .build();
-    return json;
   }
   
   @Override

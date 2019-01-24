@@ -34,10 +34,10 @@ public class ArtifactScopeSerialization implements ISerialization<ArtifactScope>
       JsonSerializationContext context) {
     JsonObject json = new JsonObject();
     Collection<Symbol> symbols = SymbolTableSerializationHelper.getLocalSymbols(src);
-    json = new SerializationBuilder(json, context)
+    json = new SerializationBuilder(context)
         .add(PACKAGE, src.getPackageName())
         .add(IMPORTS, src.getImports())
-        .addOnlyIfFalse(EXPORTS_SYMBOLS, src.exportsSymbols())
+        .add(EXPORTS_SYMBOLS, src.exportsSymbols())
         .add(NAME, src.getName())
         .add(SYMBOLS, symbols)
         .add(SUBSCOPES, src.getSubScopes())
