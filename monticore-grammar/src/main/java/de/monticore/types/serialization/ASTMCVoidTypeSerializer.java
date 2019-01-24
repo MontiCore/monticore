@@ -16,10 +16,6 @@ import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 
 public class ASTMCVoidTypeSerializer implements ISerialization<ASTMCVoidType> {
   
-  public static final String MC_QUALIFIED_NAME = "mCQualifiedName";
-  
-  public static final String STAR = "star";
-  
   @Override
   public ASTMCVoidType deserialize(JsonElement json, Type typeOfT,
       JsonDeserializationContext context) throws JsonParseException {
@@ -34,11 +30,9 @@ public class ASTMCVoidTypeSerializer implements ISerialization<ASTMCVoidType> {
   public JsonElement serialize(ASTMCVoidType src, Type typeOfSrc,
       JsonSerializationContext context) {
     
-    JsonObject json = new JsonObject();
-    json = new SerializationBuilder(json, context)
+    return new SerializationBuilder(context)
         .add(CLASS, getSerializedClass().getName())
         .build();
-    return json;
   }
   
   @Override

@@ -22,20 +22,12 @@ public class TypesSerializer {
     gson = new GsonBuilder();
     gson.serializeSpecialFloatingPointValues();
     
-    List<ISerialization<?>> serializers = ImmutableList.of(
-        new ASTMCImportStatementSerializer(),
-        new ASTMCVoidTypeSerializer(),
-        new ASTMCReturnTypeSerializer(),
-        new ASTMCPrimitiveTypeSerializer(),
-        new ASTMCQualifiedNameSerializer(),
-        new ASTMCQualifiedTypeSerializer());
-    
-    DelegatingSerializer delegatingSerializer = new DelegatingSerializer(serializers);
+    DelegatingSerializer delegatingSerializer = new DelegatingSerializer(getTypeSerializers());
     
     gson.registerTypeAdapter(ASTNode.class, delegatingSerializer);
     gson.registerTypeAdapter(ASTMCType.class, delegatingSerializer);
     
-    for (ISerialization<?> serializer : serializers) {
+    for (ISerialization<?> serializer : getTypeSerializers()) {
       gson.registerTypeAdapter(serializer.getSerializedClass(), serializer);
     }
     
@@ -72,4 +64,15 @@ public class TypesSerializer {
   protected Gson getGson() {
     return gson.create();
   }
+  
+  public static List<ISerialization<?>> getTypeSerializers() {
+    return ImmutableList.of(
+        new ASTMCImportStatementSerializer(),
+        new ASTMCVoidTypeSerializer(),
+        new ASTMCReturnTypeSerializer(),
+        new ASTMCPrimitiveTypeSerializer(),
+        new ASTMCQualifiedNameSerializer(),
+        new ASTMCQualifiedTypeSerializer());
+  }
+  
 }

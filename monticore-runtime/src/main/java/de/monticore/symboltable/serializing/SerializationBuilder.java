@@ -24,6 +24,7 @@ public class SerializationBuilder {
   
   protected JsonObject json;
   
+  @Deprecated //Constructor below should be used instead when a new JsonObject shall be created
   public SerializationBuilder(JsonObject json, JsonSerializationContext context) {
     this.json = json;
     this.context = context;
