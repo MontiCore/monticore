@@ -29,6 +29,11 @@ public class SerializationBuilder {
     this.context = context;
   }
   
+  public SerializationBuilder(JsonSerializationContext context) {
+    this.json = new JsonObject();
+    this.context = context;
+  }
+  
   public SerializationBuilder add(String key, Object o) {
     json.add(key, context.serialize(o));
     return this;
@@ -69,6 +74,7 @@ public class SerializationBuilder {
     return json;
   }
   
+  @Deprecated //TODO: remove if 5.0.3 is released
   public SerializationBuilder addOnlyIfTrue(String key, boolean o) {
     if (o) {
       json.addProperty(key, o);
@@ -76,6 +82,7 @@ public class SerializationBuilder {
     return this;
   }
   
+  @Deprecated //TODO: remove if 5.0.3 is released
   public SerializationBuilder addOnlyIfFalse(String key, boolean o) {
     if (!o) {
       json.addProperty(key, o);

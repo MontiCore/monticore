@@ -113,13 +113,13 @@ component grammar MCBasicLiterals extends de.monticore.MCBasics {
   /** ASTNatLiteral represents a positive Decimal number.
         @attribute source String-representation (including '"').
     */
-  NatLiteral implements NumericLiteral =
+  NatLiteral implements NumericLiteral<1> =
     source:Digits;
 
   /** ASTSignedNatLiteral represents a positive or negative Decimal number.
         @attribute source String-representation (including '"').
     */
-  SignedNatLiteral implements SignedNumericLiteral =
+  SignedNatLiteral implements SignedNumericLiteral<1> =
      (negative:["-"])? source:Digits;
 
 

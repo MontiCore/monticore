@@ -9,12 +9,13 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.serializing.DelegatingSerializer;
 import de.monticore.symboltable.serializing.ISerialization;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.Log;
 
-public class TypesSerializer  {
+public class TypesSerializer {
   protected GsonBuilder gson;
   
   public TypesSerializer() {
@@ -22,43 +23,46 @@ public class TypesSerializer  {
     gson.serializeSpecialFloatingPointValues();
     
     List<ISerialization<?>> serializers = ImmutableList.of(
-        new ASTMCQualifiedTypeSerializer()
-        //TODO: Hier andere Serialisierer für TypesKlassen registrieren
-        );
+        new ASTMCImportStatementSerializer(),
+        new ASTMCVoidTypeSerializer(),
+        new ASTMCReturnTypeSerializer(),
+        new ASTMCPrimitiveTypeSerializer(),
+        new ASTMCQualifiedNameSerializer(),
+        new ASTMCQualifiedTypeSerializer());
     
     DelegatingSerializer delegatingSerializer = new DelegatingSerializer(serializers);
     
+    gson.registerTypeAdapter(ASTNode.class, delegatingSerializer);
     gson.registerTypeAdapter(ASTMCType.class, delegatingSerializer);
     
     for (ISerialization<?> serializer : serializers) {
       gson.registerTypeAdapter(serializer.getSerializedClass(), serializer);
     }
     
-  }  
-
-  public Optional<String> serialize(ASTMCType as) {
+  }
+  
+  public Optional<String> serialize(ASTNode as) {
     String serialize;
     try {
       serialize = getGson().toJson(as);
     }
     catch (Exception e) {
-      Log.info("Serialization of TypesSerializer in \"" + as.toString() + "\" failed.", e,
-          "JsonArtifactScopeSerializer");
+      Log.info("Serialization of \"" + as.toString() + "\" failed.", e,
+          "TypesSerializer");
       return Optional.empty();
     }
     
     return Optional.ofNullable(serialize);
   }
   
-
-  public Optional<ASTMCType> deserialize(String content) {
-    ASTMCType fromJson;
+  public Optional<ASTNode> deserialize(String content) {
+    ASTNode fromJson;
     try {
-      fromJson = getGson().fromJson(content, ASTMCType.class);
+      fromJson = getGson().fromJson(content, ASTNode.class);
     }
     catch (Exception e) {
-      Log.info("Deserialization of ASTMCType from \"" + content + "\" failed.", e,
-          "JsonArtifactScopeSerializer");
+      Log.info("Deserialization of \"" + content + "\" failed.", e,
+          "TypesSerializer");
       return Optional.empty();
     }
     

@@ -15,6 +15,9 @@ package ${genHelper.getTargetPackage()};
 
 import de.monticore.symboltable.SymbolKind;
 
+/**
+ * @deprecated SymbolKinds will be removed soon
+ */
 public class ${ruleName}Kind implements SymbolKind {
 
   private static final String NAME = "${genHelper.getTargetPackage()}.${ruleName}Kind";
@@ -26,7 +29,7 @@ public class ${ruleName}Kind implements SymbolKind {
 
   @Override
   public boolean isKindOf(SymbolKind kind) {
-    return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
+    return NAME.equals(kind.getName());
   }
 
 }

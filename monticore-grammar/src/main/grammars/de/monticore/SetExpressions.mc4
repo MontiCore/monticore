@@ -2,6 +2,7 @@
 
 package de.monticore;
 
+@Deprecated("Use de.monticore.expressions.SetExpressions")
 component grammar SetExpressions extends de.monticore.CommonExpressions {
 
 

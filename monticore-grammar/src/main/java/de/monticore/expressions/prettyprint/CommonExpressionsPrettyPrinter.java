@@ -25,6 +25,7 @@ import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 
+@Deprecated
 public class CommonExpressionsPrettyPrinter implements CommonExpressionsVisitor {
   
   protected CommonExpressionsVisitor realThis;

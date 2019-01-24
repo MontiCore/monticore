@@ -2,6 +2,7 @@
 
 package de.monticore;
 
+@Deprecated("Use de.monticore.expressions.ExpressionBasis")
 component grammar ExpressionsBasis extends de.monticore.MCBasics {
 	
 interface Expression;

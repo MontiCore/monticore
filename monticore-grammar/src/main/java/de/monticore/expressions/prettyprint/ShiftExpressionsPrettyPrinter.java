@@ -13,6 +13,7 @@ import de.monticore.shiftexpressions._ast.ASTRightShiftExpression;
 import de.monticore.shiftexpressions._ast.ASTThisExpression;
 import de.monticore.shiftexpressions._visitor.ShiftExpressionsVisitor;
 
+@Deprecated
 public class ShiftExpressionsPrettyPrinter implements ShiftExpressionsVisitor{
 
   protected ShiftExpressionsVisitor realThis;

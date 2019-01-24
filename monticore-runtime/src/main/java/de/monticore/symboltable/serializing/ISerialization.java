@@ -6,20 +6,20 @@
 package de.monticore.symboltable.serializing;
 
 import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializer;
 
 /**
- * 
- * Interface for all Serialization classes for specific symbols and scopes that relies on Google's Gson API for json.
+ * Interface for all Serialization classes for specific symbols and scopes that relies on Google's
+ * Gson API for json.
  *
- * @author  (last commit) $Author$
- * @version $Revision$,
- *          $Date$
- * @since   TODO: add version number
- *
+ * @author (last commit) $Author$
+ * @version $Revision$, $Date$
+ * @since TODO: add version number
  * @param <T>
  */
-public interface ISerialization<T> extends JsonSerializer<T>, JsonDeserializer<T>{
+public interface ISerialization<T> extends JsonSerializer<T>, JsonDeserializer<T> {
   
   public Class<T> getSerializedClass();
   
@@ -39,10 +39,27 @@ public interface ISerialization<T> extends JsonSerializer<T>, JsonDeserializer<T
   
   public static final String CLASS = "class";
   
-  @Deprecated //Can be removed after release 5.0.3
+  @Deprecated // Can be removed after release 5.0.3
   public static final String KIND = "kind";
   
   // TODO: Can be removed if ScopeSpanningSymbols are removed
   public static final String SCOPESPANNING_SYMBOL = "spanningSymbol";
+  
+  default T fail() throws JsonParseException {
+    throw new JsonParseException(
+        "Deserialization of '" + getSerializedClass().getName() + "' with '" + this.getClass()
+            + "' failed!");
+  }
+  
+  default boolean isCorrectSerializer(JsonObject json) {
+    if (json.has(ISerialization.CLASS)) {
+      String name = json.get(ISerialization.CLASS).getAsString();
+      return getSerializedClass().getName().equals(name);
+    }
+    else {
+      fail();
+      return false;
+    }
+  }
   
 }
