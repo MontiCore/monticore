@@ -24,6 +24,7 @@ import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
+import javax.naming.Name;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -36,8 +37,6 @@ import static de.se_rwth.commons.Names.getQualifier;
 public class SymbolTableGeneratorHelper extends GeneratorHelper {
 
   public static final String NAME_NONTERMINAL = "Name";
-
-  public static final String SYMBOLTABLE_PACKAGE_SUFIX = "_symboltable";
 
   private final String qualifiedGrammarName;
 
@@ -86,6 +85,10 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
 
   public static String getQualifiedSymbolType(String packageName, String symbolName) {
     return getPackageName(packageName, SymbolTableGenerator.PACKAGE) + "." + symbolName;
+  }
+
+  public static String getQualifiedASTType(String packageName, String astName) {
+    return getPackageName(packageName, AST_PACKAGE_SUFFIX) + "." + astName;
   }
 
   /**
@@ -442,6 +445,14 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     prodName = SymbolTableGeneratorHelper
         .getQualifiedSymbolType(getQualifier(prodName)
             .toLowerCase(), Names.getSimpleName(prodName));
+    return prodName;
+  }
+
+  public String getQualifiedASTName(MCProdSymbol prod) {
+    String prodName = prod.getFullName();
+    prodName = SymbolTableGeneratorHelper
+        .getQualifiedASTType(getQualifier(prodName)
+            .toLowerCase(), "AST"+ Names.getSimpleName(prodName));
     return prodName;
   }
 

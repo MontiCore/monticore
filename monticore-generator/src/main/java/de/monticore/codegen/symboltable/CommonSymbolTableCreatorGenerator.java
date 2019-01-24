@@ -29,6 +29,6 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
 
     List<CDSymbol> directSuperCds = genHelper.getDirectSuperCds(genHelper.getCd());
     genEngine.generate("symboltable.SymbolTableCreator", filePath, grammarSymbol.getAstNode().get(), className, directSuperCds,
-            grammarSymbol.getProds(), handCodedPath);
+            grammarSymbol.getProdsWithInherited().values(), handCodedPath);
   }
 }

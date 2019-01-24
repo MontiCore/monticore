@@ -1,21 +1,18 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("ruleSymbol")}
+${signature("ruleSymbol", "ruleName", "astName")}
 
-<#assign ruleName = ruleSymbol.getName()>
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign scopeName = genHelper.getGrammarSymbol().getName() + "Scope">
-<#assign fqn = genHelper.getQualifiedGrammarName()?lower_case>
-<#assign astPrefix = fqn + "._ast.AST">
 
   @Override
-  public void visit(${astPrefix}${ruleName} ast) {
+  public void visit(${astName} ast) {
     MutableScope scope = create_${ruleName}(ast);
     initialize_${ruleName}(scope, ast);
     putOnStack(scope);
     setLinkBetweenSpannedScopeAndNode(scope, ast);
   }
 
-  protected MutableScope create_${ruleName}(${astPrefix}${ruleName} ast) {
+  protected MutableScope create_${ruleName}(${astName} ast) {
   <#if !genHelper.isNamed(ruleSymbol)>
     // creates new visibility scope
     return new ${scopeName}(false);
@@ -25,7 +22,7 @@ ${signature("ruleSymbol")}
   </#if>
   }
 
-  protected void initialize_${ruleName}(MutableScope scope, ${astPrefix}${ruleName} ast) {
+  protected void initialize_${ruleName}(MutableScope scope, ${astName} ast) {
   <#if !genHelper.isNamed(ruleSymbol)>
     // e.g., scope.setName(ast.getName())
   <#else>
@@ -33,4 +30,4 @@ ${signature("ruleSymbol")}
   </#if>
   }
 
-  ${includeArgs("symboltable.symboltablecreators.EndVisitMethod", ruleSymbol)}
+  ${includeArgs("symboltable.symboltablecreators.EndVisitMethod", ruleSymbol, astName)}
