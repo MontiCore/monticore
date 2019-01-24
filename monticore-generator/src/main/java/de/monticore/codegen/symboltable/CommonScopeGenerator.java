@@ -68,7 +68,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
 
     Set<String> superScopes = new HashSet<>();
     for (String symbol : genHelper.getSuperGrammarCds()) {
-      if (genHelper.hasSymbolDefiningRule(symbol) || genHelper.hasScopeSpanningRule(symbol)) {
+      if (!genHelper.isComponentGrammar(symbol)) {
         String qualifiedSymbolName = genHelper.getQualifiedScopeInterfaceType(symbol);
         if (!qualifiedSymbolName.isEmpty()) {
           superScopes.add(qualifiedSymbolName);

@@ -488,5 +488,13 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     return false;
   }
 
+  public boolean isComponentGrammar(String grammarName) {
+    Optional<MCGrammarSymbol> grammarSymbol = cdSymbol.getEnclosingScope().resolve(grammarName, MCGrammarSymbol.KIND);
+    if (grammarSymbol.isPresent() && grammarSymbol.get().isComponent()) {
+        return true;
+    }
+    return false;
+  }
+
 
 }
