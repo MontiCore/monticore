@@ -2,6 +2,8 @@
 package de.monticore.types.mcbasictypes._ast;
 
 
+import com.google.common.collect.Lists;
+
 import java.util.List;
 
 public  class ASTMCPrimitiveType extends ASTMCPrimitiveTypeTOP {
@@ -63,5 +65,13 @@ public  class ASTMCPrimitiveType extends ASTMCPrimitiveTypeTOP {
   }
   public boolean isDouble(){
     return this.getPrimitive()==ASTConstantsMCBasicTypes.DOUBLE;
+  }
+
+  public String getBaseName() {
+    return toString();
+  }
+
+  public List<String> getNameList() {
+    return Lists.newArrayList(toString());
   }
 }
