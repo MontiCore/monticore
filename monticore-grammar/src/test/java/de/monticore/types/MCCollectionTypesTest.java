@@ -209,4 +209,5 @@ public class MCCollectionTypesTest {
     assertTrue(parser.hasErrors());
     assertFalse(type.isPresent());
   }
+
 }
