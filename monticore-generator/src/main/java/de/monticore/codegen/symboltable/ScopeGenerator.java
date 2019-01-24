@@ -14,5 +14,6 @@ import de.monticore.io.paths.IterablePath;
 public interface ScopeGenerator {
   
   void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
-      IterablePath handCodedPath, String languageName, Collection<MCProdSymbol> allSymbolDefiningRules);
+      IterablePath handCodedPath, String languageName, Collection<MCProdSymbol> allSymbolDefiningRules,
+                Collection<MCProdSymbol> allSymbolDefiningRulesWithSuperGrammar);
 }

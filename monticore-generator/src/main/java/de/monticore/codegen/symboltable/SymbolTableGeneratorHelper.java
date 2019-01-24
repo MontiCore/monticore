@@ -37,6 +37,8 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
 
   public static final String NAME_NONTERMINAL = "Name";
 
+  public static final String SYMBOLTABLE_PACKAGE_SUFIX = "_symboltable";
+
   private final String qualifiedGrammarName;
 
   private final ASTMCGrammar astGrammar;
@@ -440,7 +442,51 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     prodName = SymbolTableGeneratorHelper
         .getQualifiedSymbolType(getQualifier(prodName)
             .toLowerCase(), Names.getSimpleName(prodName));
-    return prodName.substring(0, 1).toLowerCase() + prodName.substring(1);
+    return prodName;
   }
+
+  public String getQualifiedScopeInterfaceType(CDSymbol cdSymbol) {
+    String packageName = getCdPackage(cdSymbol.getFullName());
+    String cdName = getCdName(cdSymbol.getFullName());
+    return getQualifiedScopeInterfaceType(packageName, cdName);
+  }
+
+  public String getQualifiedScopeInterfaceType(String symbol) {
+    Optional<CDSymbol> cdSymbol = this.cdSymbol.getEnclosingScope().resolve(symbol, CDSymbol.KIND);
+    if (cdSymbol.isPresent()) {
+      return getQualifiedScopeInterfaceType(cdSymbol.get());
+    }
+    return "";
+  }
+
+  public String getQualifiedScopeInterfaceType(String packageName, String cdName) {
+    return getPackageName(packageName, SYMBOLTABLE_PACKAGE_SUFIX) + ".I"
+        + cdName + SCOPE;
+  }
+
+  public boolean hasSymbolDefiningRule(String symbol) {
+    Optional<MCGrammarSymbol> grammarSymbol = cdSymbol.getEnclosingScope().resolve(symbol, MCGrammarSymbol.KIND);
+    if (grammarSymbol.isPresent()) {
+      for (MCProdSymbol prodSymbol : grammarSymbol.get().getProds()) {
+        if (prodSymbol.isSymbolDefinition()) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  public boolean hasScopeSpanningRule(String symbol) {
+    Optional<MCGrammarSymbol> grammarSymbol = cdSymbol.getEnclosingScope().resolve(symbol, MCGrammarSymbol.KIND);
+    if (grammarSymbol.isPresent()) {
+      for (MCProdSymbol prodSymbol : grammarSymbol.get().getProds()) {
+        if (prodSymbol.isScopeDefinition()) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
 
 }

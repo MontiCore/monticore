@@ -1,0 +1,8 @@
+package mc.feature.scopes;
+
+
+grammar SupAutomaton extends mc.feature.scopes.SuperAutomaton {
+
+  scope Sup = "sup" Name "{" Automaton "}";
+
+}

@@ -4,14 +4,17 @@ package de.monticore.codegen.symboltable;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.List;
 
 import com.google.common.collect.Lists;
 
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.grammar.grammar._ast.ASTGrammarReference;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.grammar.symboltable.MCGrammarSymbolReference;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.se_rwth.commons.Names;
@@ -50,17 +53,17 @@ public class SymbolTableGenerator {
   private final ArtifactScopeSerializerGenerator symbolTableSerializationGenerator;
 
   protected SymbolTableGenerator(
-          ModelingLanguageGenerator modelingLanguageGenerator,
-          ModelLoaderGenerator modelLoaderGenerator,
-          ModelNameCalculatorGenerator modelNameCalculatorGenerator,
-          ResolvingFilterGenerator resolvingFilterGenerator,
-          SymbolGenerator symbolGenerator,
-          SymbolKindGenerator symbolKindGenerator,
-          ScopeSpanningSymbolGenerator scopeSpanningSymbolGenerator,
-          ScopeGenerator scopeGenerator,
-          SymbolReferenceGenerator symbolReferenceGenerator,
-          SymbolTableCreatorGenerator symbolTableCreatorGenerator,
-          ArtifactScopeSerializerGenerator symbolTableSerializationGenerator) {
+      ModelingLanguageGenerator modelingLanguageGenerator,
+      ModelLoaderGenerator modelLoaderGenerator,
+      ModelNameCalculatorGenerator modelNameCalculatorGenerator,
+      ResolvingFilterGenerator resolvingFilterGenerator,
+      SymbolGenerator symbolGenerator,
+      SymbolKindGenerator symbolKindGenerator,
+      ScopeSpanningSymbolGenerator scopeSpanningSymbolGenerator,
+      ScopeGenerator scopeGenerator,
+      SymbolReferenceGenerator symbolReferenceGenerator,
+      SymbolTableCreatorGenerator symbolTableCreatorGenerator,
+      ArtifactScopeSerializerGenerator symbolTableSerializationGenerator) {
     this.modelingLanguageGenerator = modelingLanguageGenerator;
     this.modelLoaderGenerator = modelLoaderGenerator;
     this.modelNameCalculatorGenerator = modelNameCalculatorGenerator;
@@ -77,6 +80,8 @@ public class SymbolTableGenerator {
   public void generate(ASTMCGrammar astGrammar, SymbolTableGeneratorHelper genHelper,
                        File outputPath, final IterablePath handCodedPath) {
 
+
+
     MCGrammarSymbol grammarSymbol = genHelper.getGrammarSymbol();
 
     // Skip generation if no rules are defined in the grammar, since no top asts
@@ -88,6 +93,7 @@ public class SymbolTableGenerator {
 
     // TODO PN consider only class rules?
     final Collection<MCProdSymbol> allSymbolDefiningRules = genHelper.getAllSymbolDefiningRules();
+    final Collection<MCProdSymbol> allSymbolDefiningRulesWithSuperGrammar = genHelper.getAllSymbolDefiningRulesInSuperGrammar();
     final Collection<MCProdSymbol> allScopeSpanningRules = genHelper.getAllScopeSpanningRules();
     Collection<String> ruleNames = newArrayList();
     Collection<String> ruleNamesWithSuperGrammar = newArrayList();
@@ -116,12 +122,12 @@ public class SymbolTableGenerator {
     final GeneratorEngine genEngine = new GeneratorEngine(setup);
 
     modelingLanguageGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol,
-            ruleNamesWithSuperGrammar);
+        ruleNamesWithSuperGrammar);
     modelLoaderGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol);
 
     if (!skipSymbolTableGeneration) {
       modelNameCalculatorGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol,
-              ruleNames);
+          ruleNames);
       symbolTableCreatorGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol);
       symbolTableSerializationGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol);
 
@@ -129,11 +135,10 @@ public class SymbolTableGenerator {
         generateSymbolOrScopeSpanningSymbol(genEngine, genHelper, ruleSymbol, handCodedPath);
         symbolKindGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol);
         symbolReferenceGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol,
-                genHelper.isScopeSpanningSymbol(ruleSymbol));
+            genHelper.isScopeSpanningSymbol(ruleSymbol));
         resolvingFilterGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol);
       }
-
-      scopeGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol.getName() + SCOPE, allSymbolDefiningRules);
+      scopeGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol.getName() + SCOPE, allSymbolDefiningRules, allSymbolDefiningRulesWithSuperGrammar);
     }
 
     debug("End symbol table generation for the grammar " + astGrammar.getName(), LOG);

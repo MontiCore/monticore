@@ -3,15 +3,16 @@ ${signature("className","scopeRule", "symbolNames")}
 
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign superClass = " extends de.monticore.symboltable.CommonScope ">
-<#assign superInterfaces = "">
+<#assign superInterfaces = "implements I"+ className>
 <#if scopeRule.isPresent()>
   <#if !scopeRule.get().isEmptySuperInterfaces()>
-    <#assign superInterfaces = "implements " + stHelper.printGenericTypes(scopeRule.get().getSuperInterfaceList())>
+    <#assign superInterfaces = superInterfaces + ", "+ stHelper.printGenericTypes(scopeRule.get().getSuperInterfaceList())>
   </#if>
   <#if !scopeRule.get().isEmptySuperClasss()>
     <#assign superClass = " extends " + stHelper.printGenericTypes(scopeRule.get().getSuperClassList())>
   </#if>
 </#if>
+
 
 <#-- Copyright -->
 ${defineHookPoint("JavaCopyright")}

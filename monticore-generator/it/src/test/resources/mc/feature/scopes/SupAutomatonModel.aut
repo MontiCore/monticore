@@ -1,0 +1,15 @@
+sup TopPingPong {
+ automaton PingPong {
+       state NoGame;
+       state Ping;
+       state Pong;
+
+       NoGame - startGame > Ping;
+
+       Ping - stopGame > NoGame;
+       Pong - stopGame > NoGame;
+
+       Ping - returnBall > Pong;
+       Pong - returnBall > Ping;
+     }
+}
