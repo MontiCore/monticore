@@ -37,33 +37,4 @@ public class SuperAutomatonSymbolTableCreator extends SuperAutomatonSymbolTableC
 
       return artifactScope;
   }
-
-  @Override
-  public void visit(final ASTAutomaton automatonNode) {
-    final AutomatonSymbol automaton = new AutomatonSymbol(automatonNode.getName());
-    addToScopeAndLinkWithNode(automaton, automatonNode);
-  }
-  
-  @Override
-  public void endVisit(final ASTAutomaton automatonNode) {
-    removeCurrentScope();
-  }
-  
-  @Override
-  public void visit(final ASTState stateNode) {
-    final StateSymbol stateSymbol = new StateSymbol(stateNode.getName());
-
-    addToScopeAndLinkWithNode(stateSymbol, stateNode);
-  }
-
-  @Override
-  public void endVisit(final ASTState node) {
-    removeCurrentScope();
-  }
-
-  @Override
-  public void visit(final ASTTransition transitionNode) {
-    transitionNode.setEnclosingScope(currentScope().get());
-  }
-
 }
