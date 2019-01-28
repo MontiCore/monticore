@@ -2,6 +2,7 @@
 
 package de.monticore;
 
+@Deprecated("Use de.monticore.expressions.ShiftExpressions")
 component grammar ShiftExpressions extends de.monticore.ExpressionsBasis {
 
 QualifiedNameExpression implements Expression <290> = 

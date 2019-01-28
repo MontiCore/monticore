@@ -1,12 +1,14 @@
 package de.monticore.types;
 
 
+import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
+import de.monticore.types.mccollectiontypeswithoutprimitivestest._parser.MCCollectionTypesWithoutPrimitivesTestParser;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -25,7 +27,11 @@ public class MCCollectionTypesTest {
 
   @Test
   public void testBasicGenericsTypes() throws IOException {
-    String[] types = new String[]{"List<a.A>", "Optional<String>", "Set<String>", "Map<String,String>", "List<socnet.Person>"};
+
+    String[] types = new String[]{"List<a.A>","Optional<String>",
+            "Set<String>","Map<String,String>","List<socnet.Person>"
+            ,"List<int>"
+    };
     for (String testType : types) {
       MCCollectionTypesTestParser mcBasicTypesParser = new MCCollectionTypesTestParser();
       // .parseType(primitive);
@@ -204,5 +210,27 @@ public class MCCollectionTypesTest {
     Optional<ASTMCTypeArgument> type = parser.parse_StringMCTypeArgument("List<A>");
     assertTrue(parser.hasErrors());
     assertFalse(type.isPresent());
+  }
+
+
+  @Test
+  public void collectionTypeWithInt() throws IOException {
+    MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();
+    Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("List<int>");
+    assertTrue(type.isPresent());
+    assertEquals("List",type.get().getBaseName());
+    assertTrue(type.get().getMCTypeArgumentList().get(0) instanceof ASTMCPrimitiveTypeArgument);
+
+  }
+
+
+  @Test
+  public void collectionTypeWithIntFail() throws IOException {
+    MCCollectionTypesWithoutPrimitivesTestParser parser = new MCCollectionTypesWithoutPrimitivesTestParser();
+    Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("List<int>");
+    assertTrue(parser.hasErrors());
+    assertFalse(type.isPresent());
+
+
   }
 }

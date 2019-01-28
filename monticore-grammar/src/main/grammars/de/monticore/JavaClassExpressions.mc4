@@ -2,6 +2,7 @@
 
 package de.monticore;
 
+@Deprecated("Use de.monticore.expressions.JavaClassExpressions")
 component grammar JavaClassExpressions extends de.monticore.CommonExpressions{
 	
 external ELiteral;

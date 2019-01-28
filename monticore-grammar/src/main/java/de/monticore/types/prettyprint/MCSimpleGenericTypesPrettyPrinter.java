@@ -5,7 +5,6 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesVisitor;
-import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesVisitor;
 
 public class MCSimpleGenericTypesPrettyPrinter extends MCCollectionTypesPrettyPrinter implements MCSimpleGenericTypesVisitor {
   private MCSimpleGenericTypesVisitor realThis = this;

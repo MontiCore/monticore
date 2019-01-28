@@ -22,7 +22,7 @@ grammar MCFullGenericTypes
   */
   MCMultipleGenericType implements MCGenericType, MCType =
        (MCBasicGenericType || "." )+ // complex qualification
-        "."  (Name || ".")+ "<" (MCTypeArgument || ",")* ">"
+        "."  (Name || ".")+ ("<" (MCTypeArgument || ",")* ">")?
    ;
 
   /** ASTArrayType introduce array for arbitrary types

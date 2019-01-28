@@ -28,7 +28,7 @@ public class ${className}
   public ${scopeName} deserialize(JsonElement json, Type typeOfT,
       JsonDeserializationContext context) throws JsonParseException {   
     JsonObject jsonObject = json.getAsJsonObject();
-    if (${scopeName}.class.getName().equals(SymbolTableSerializationHelper.getClassName(jsonObject))) { 
+    if (isCorrectSerializer(jsonObject)) { 
       ${scopeName} result = new ${scopeName}(SymbolTableSerializationHelper.getIsShadowingScopeFlag(jsonObject));
       SymbolTableSerializationHelper.deserializeName(jsonObject, result);
       SymbolTableSerializationHelper.deserializeSymbols(jsonObject, context, result);
@@ -47,7 +47,7 @@ public class ${className}
     Collection<Scope> subscopes = SymbolTableSerializationHelper.filterRelevantSubScopes(src);
     
     json = new SerializationBuilder(json, context)
-        .add(CLASS, ${scopeName}.class.getName())
+        .add(CLASS, getSerializedClass().getName())
         .add(NAME, src.getName())
         .add(IS_SHADOWING_SCOPE, src.isShadowingScope())
         .add(SYMBOLS, symbols)

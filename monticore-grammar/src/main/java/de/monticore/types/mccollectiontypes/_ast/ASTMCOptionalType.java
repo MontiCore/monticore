@@ -17,7 +17,10 @@ public class ASTMCOptionalType extends ASTMCOptionalTypeTOP {
     public List<String> getNameList() {
         return Lists.newArrayList(getName());
     }
-
+    @Override
+    public String getBaseName() {
+        return getName();
+    }
     @Override
     public void setNameList(List<String> names) {
         setName(names.get(0));

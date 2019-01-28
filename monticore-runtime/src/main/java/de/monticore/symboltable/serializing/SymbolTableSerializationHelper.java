@@ -26,43 +26,45 @@ import de.se_rwth.commons.logging.Log;
 public class SymbolTableSerializationHelper {
   
   /**
+   * Returns all Symbols that are directly contained within a given scope and returns these as a
+   * Collection
    * 
-   * Returns all Symbols that are directly contained within a given scope and returns these as a Collection
    * @param scope
    * @return
    */
-  public static Collection<Symbol> getLocalSymbols(Scope scope){
+  public static Collection<Symbol> getLocalSymbols(Scope scope) {
     Collection<Symbol> symbols = new ArrayList<>();
-    for(Collection<Symbol> s : scope.getLocalSymbols().values()) {
+    for (Collection<Symbol> s : scope.getLocalSymbols().values()) {
       symbols.addAll(s);
     }
     return symbols;
   }
   
   /**
+   * Given a scope, returns a collection of direct subscopes that export symbols and that contain at
+   * least one symbol TODO AB: in any transitive subscope
    * 
-   * Given a scope, returns a collection of direct subscopes that export symbols and that contain at least one symbol 
-   * TODO AB: in any transitive subscope
    * @param src
    * @return
    */
   public static Collection<Scope> filterRelevantSubScopes(MutableScope src) {
-    return src.getSubScopes()
-        .stream()
-        .filter(s -> s.exportsSymbols())
-        .filter(s -> SymbolTableSerializationHelper.getLocalSymbols(s).size() > 0)
-        .collect(Collectors.toList());
+     return src.getSubScopes()
+     .stream()
+     .filter(s -> s.exportsSymbols())
+     .filter(s -> SymbolTableSerializationHelper.getLocalSymbols(s).size() > 0)
+     .collect(Collectors.toList());
   }
   
   /**
+   * Deserializes a list of ImportStatements. Is the passed JsonElement is null, returns an empty
+   * list
    * 
-   * Deserializes a list of ImportStatements. Is the passed JsonElement is nulll, returns an empty list
    * @param i
    * @return
    */
   public static List<ImportStatement> deserializeImports(JsonElement i) {
     List<ImportStatement> imports = new ArrayList<>();
-    if(null!=i) {
+    if (null != i) {
       JsonArray list = i.getAsJsonArray();
       for (JsonElement e : list) {
         String importStatement = e.getAsString();
@@ -92,7 +94,7 @@ public class SymbolTableSerializationHelper {
       return name;
     }
     else {
-      Log.error("0x"+"Class of scope or symbol could not be deserialized!");
+      Log.error("0x" + "Class of scope or symbol could not be deserialized!");
       return "";
     }
   }
@@ -106,8 +108,9 @@ public class SymbolTableSerializationHelper {
     }
   }
   
-  public static void deserializeSymbols(JsonObject json, JsonDeserializationContext context, MutableScope result) {
-    if(json.has(ISerialization.SYMBOLS)) {
+  public static void deserializeSymbols(JsonObject json, JsonDeserializationContext context,
+      MutableScope result) {
+    if (json.has(ISerialization.SYMBOLS)) {
       for (JsonElement e : json.get(ISerialization.SYMBOLS).getAsJsonArray()) {
         Symbol sym = context.deserialize(e, Symbol.class);
         result.add(sym);
@@ -115,8 +118,9 @@ public class SymbolTableSerializationHelper {
     }
   }
   
-  public static void deserializeSubscopes(JsonObject json, JsonDeserializationContext context, MutableScope result) {
-    if(json.has(ISerialization.SUBSCOPES)) {
+  public static void deserializeSubscopes(JsonObject json, JsonDeserializationContext context,
+      MutableScope result) {
+    if (json.has(ISerialization.SUBSCOPES)) {
       for (JsonElement e : json.get(ISerialization.SUBSCOPES).getAsJsonArray()) {
         MutableScope subScope = context.deserialize(e, MutableScope.class);
         // TODO: Remove if ScopeSpanningSymbols are removed
@@ -153,7 +157,8 @@ public class SymbolTableSerializationHelper {
       JsonElement e) {
     JsonObject jsonSubScope = e.getAsJsonObject();
     if (jsonSubScope.has(ISerialization.SCOPESPANNING_SYMBOL)) {
-      JsonObject asJsonObject = jsonSubScope.get(ISerialization.SCOPESPANNING_SYMBOL).getAsJsonObject();
+      JsonObject asJsonObject = jsonSubScope.get(ISerialization.SCOPESPANNING_SYMBOL)
+          .getAsJsonObject();
       String spanningSymbolName = asJsonObject.get(ISerialization.NAME).getAsString();
       String spanningSymbolKind = asJsonObject.get(ISerialization.CLASS).getAsString();
       
