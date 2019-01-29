@@ -59,13 +59,23 @@ public class CommonScopeGenerator implements ScopeGenerator {
     }
 
     // Maps Symbol Name to Symbol Kind Name
-    Map<String, String> symbolNamesWithSuperGrammar = new HashMap<String, String>();
+    Map<String, String> symbolNamesWithSuperGrammar = new HashMap<>();
     for (MCProdSymbol sym : allSymbolDefiningRulesWithSuperGrammar) {
       String name = getSimpleName(sym.getName());
       String kind = genHelper.getQualifiedProdName(sym) + GeneratorHelper.SYMBOL;
       symbolNamesWithSuperGrammar.put(name, kind);
     }
 
+    // symbols that got overwritten by a nonterminal
+    // needed so the scope does implement all methods from the interface
+    // discuss if this is even allowed to do
+    for (MCProdSymbol sym : genHelper.getAllOverwrittenSymbolProductions()) {
+      String name = getSimpleName(sym.getName());
+      String kind = genHelper.getQualifiedProdName(sym) + GeneratorHelper.SYMBOL;
+      symbolNamesWithSuperGrammar.put(name, kind);
+    }
+
+    //list of superscopes that the interface must extend
     Set<String> superScopes = new HashSet<>();
     for (String symbol : genHelper.getSuperGrammarCds()) {
       if (!genHelper.isComponentGrammar(symbol)) {

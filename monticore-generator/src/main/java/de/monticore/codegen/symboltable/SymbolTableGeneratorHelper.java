@@ -136,6 +136,21 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     return ImmutableList.copyOf(ruleSymbolsWithName);
   }
 
+  public Collection<MCProdSymbol> getAllOverwrittenSymbolProductions() {
+    final Set<MCProdSymbol> ruleSymbolsWithName = new LinkedHashSet<>();
+
+    for (final MCProdSymbol rule : grammarSymbol.getProds()) {
+      if (!rule.isSymbolDefinition()) {
+        Optional<MCProdSymbol> overwrittenSymbol = grammarSymbol.getInheritedProd(rule.getName());
+        if(overwrittenSymbol.isPresent() && overwrittenSymbol.get().isSymbolDefinition()){
+          ruleSymbolsWithName.add(overwrittenSymbol.get());
+        }
+      }
+    }
+
+    return ImmutableList.copyOf(ruleSymbolsWithName);
+  }
+
 
   public Collection<MCProdSymbol> getAllScopeSpanningRules() {
     final Set<MCProdSymbol> rules = new LinkedHashSet<>();
