@@ -1,7 +1,6 @@
 package de.monticore.expressions.expressionsbasis._symboltable;
 
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class ETypeSymbol extends ETypeSymbolTOP {
 
@@ -10,6 +9,6 @@ public class ETypeSymbol extends ETypeSymbolTOP {
   }
 
   public ASTMCType getType() {
-    throw new NotImplementedException();
+    throw new UnsupportedOperationException();
   }
 }
