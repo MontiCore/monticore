@@ -1,13 +1,10 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("ruleSymbol")}
+${signature("ruleSymbol", "astName")}
 
-<#assign ruleName = ruleSymbol.getName()>
 <#assign genHelper = glex.getGlobalVar("stHelper")>
-<#assign fqn = genHelper.getQualifiedGrammarName()?lower_case>
-<#assign astPrefix = fqn + "._ast.AST">
 
   @Override
-  public void endVisit(${astPrefix}${ruleName} ast) {
+  public void endVisit(${astName} ast) {
     removeCurrentScope();
     <#if genHelper.isStartRule(ruleSymbol)>
     setEnclosingScopeOfNodes(ast);

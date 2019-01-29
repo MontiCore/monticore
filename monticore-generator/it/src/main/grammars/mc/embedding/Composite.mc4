@@ -6,7 +6,10 @@ grammar Composite extends mc.embedding.Host, mc.embedding.Embedded {
    
    start Host;
 
-   Content = Text;
-   
+   MyContent extends Content = Text;
+
+
+
+
 
 }

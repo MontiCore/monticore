@@ -6,7 +6,6 @@ ${signature("className", "directSuperCds", "rules", "hcPath")}
 <#assign fqn = genHelper.getQualifiedGrammarName()?lower_case>
 <#assign package = genHelper.getTargetPackage()?lower_case>
 <#assign topAstName = genHelper.getQualifiedStartRuleName()>
-<#assign astPrefix = fqn + "._ast.AST">
 
 <#-- Copyright -->
 ${defineHookPoint("JavaCopyright")}
@@ -65,21 +64,18 @@ public class ${className} extends de.monticore.symboltable.CommonSymbolTableCrea
 
 <#list rules as ruleSymbol>
   <#assign ruleName = ruleSymbol.getName()>
-  <#assign ruleNameLower = ruleSymbol.getName()?uncap_first>
-  <#if ruleSymbol.getSymbolDefinitionKind().isPresent()>
-    <#assign symbolName = ruleSymbol.getSymbolDefinitionKind().get() + "Symbol">
-  <#else>
-    <#assign symbolName = ruleSymbol.getName() + "Symbol">
-  </#if>
+  <#assign symbolName = genHelper.getQualifiedProdName(ruleSymbol) + "Symbol">
+  <#assign astName = genHelper.getQualifiedASTName(ruleSymbol)>
+
   <#if genHelper.isScopeSpanningSymbol(ruleSymbol)>
-  ${includeArgs("symboltable.symboltablecreators.ScopeSpanningSymbolMethods", ruleSymbol, symbolName)}
+  ${includeArgs("symboltable.symboltablecreators.ScopeSpanningSymbolMethods", ruleSymbol, symbolName, ruleName, astName)}
   <#elseif genHelper.isSymbol(ruleSymbol)>
-  ${includeArgs("symboltable.symboltablecreators.SymbolMethods", ruleSymbol, symbolName)}
+  ${includeArgs("symboltable.symboltablecreators.SymbolMethods", ruleSymbol, symbolName, ruleName, astName)}
   <#elseif genHelper.spansScope(ruleSymbol)>
-  ${includeArgs("symboltable.symboltablecreators.ScopeMethods", ruleSymbol)}
+  ${includeArgs("symboltable.symboltablecreators.ScopeMethods", ruleSymbol, ruleName, astName)}
   <#elseif genHelper.isStartRule(ruleSymbol)>
   @Override
-  public void endVisit(${astPrefix}${ruleName} ast) {
+  public void endVisit(${astName} ast) {
     setEnclosingScopeOfNodes(ast);
   }
   </#if>
