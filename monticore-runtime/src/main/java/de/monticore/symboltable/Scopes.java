@@ -2,21 +2,18 @@
 
 package de.monticore.symboltable;
 
-import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.symboltable.modifiers.IncludesAccessModifierPredicate;
-import de.se_rwth.commons.logging.Log;
+import static de.se_rwth.commons.logging.Log.errorIfNull;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import static de.monticore.symboltable.SymbolKind.KIND;
-import static de.se_rwth.commons.logging.Log.errorIfNull;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
-import static java.util.stream.Collectors.toSet;
+import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.symboltable.modifiers.IncludesAccessModifierPredicate;
 
 public final class Scopes {
 
@@ -109,7 +106,7 @@ public final class Scopes {
     Scope nextScope = scope;
 
     while (true) {
-      encapsulatedSymbols.addAll(nextScope.resolveLocally(KIND));
+      nextScope.getLocalSymbols().values().forEach(encapsulatedSymbols::addAll);
 
       if (!nextScope.getEnclosingScope().isPresent() || (nextScope.getEnclosingScope().get() instanceof GlobalScope)) {
         break;

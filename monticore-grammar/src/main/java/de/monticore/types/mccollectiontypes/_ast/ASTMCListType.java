@@ -18,6 +18,11 @@ public class ASTMCListType extends ASTMCListTypeTOP {
     }
 
     @Override
+    public String getBaseName() {
+        return getName();
+    }
+
+    @Override
     public void setNameList(List<String> names) {
        setName(names.get(0));
     }

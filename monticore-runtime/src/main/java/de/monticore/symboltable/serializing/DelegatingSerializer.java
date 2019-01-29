@@ -53,6 +53,7 @@ public class DelegatingSerializer<T> implements ISerialization<Object> {
    * com.google.gson.JsonSerializationContext)
    */
   @Override
+  @Deprecated
   public JsonElement serialize(Object src, Type typeOfSrc, JsonSerializationContext context) {
     throw new JsonParseException("Do not invoke DelegatingSerializer#serialize()!");
   }
