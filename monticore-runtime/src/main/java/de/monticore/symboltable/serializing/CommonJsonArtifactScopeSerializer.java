@@ -19,10 +19,9 @@ import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * Realizes (de)serializing {@link ArtifactScope} instances via JSON. For this, it maintains a list
- * of {@link ISerialization} instances to (de)serialize individual scopes and symbols. This class is
- * the superclass of all generated serializers for languages.
+ * @deprecated  As of release 5.0.3, replaced by {@link CommonArtifactScopeSerializer}
  */
+@Deprecated 
 public abstract class CommonJsonArtifactScopeSerializer implements IArtifactScopeSerializer {
   
   protected GsonBuilder gson;

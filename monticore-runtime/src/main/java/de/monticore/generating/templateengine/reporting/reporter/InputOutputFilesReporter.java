@@ -195,7 +195,7 @@ public class InputOutputFilesReporter extends AReporter {
     userTemplates.clear();
     filesThatMatterButAreNotThereInTime.clear();
     inputFile = inputFilePath.toString();
-    
+
     qualifiedInputFile = Paths.get(modelName.replaceAll("\\.", "/") + "."
         + Files.getFileExtension(inputFilePath.getFileName().toString()));
     

@@ -1,0 +1,283 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore;
+
+/**
+ *
+ *
+ * This grammar defines Java compliant literals. The scope of this grammar is to
+ * ease the reuse of literals structures in Java-like sublanguages, e.g., by 
+ * grammar inheritance or grammar embedment.
+ * The grammar contains literals from Java, e.g., Boolean, Char, String, ....
+ *
+ *
+ * Version Aug. 31rd, 2015
+*/
+
+component grammar MCJavaLiterals extends de.monticore.MCBasicLiterals {
+
+  /*========================================================================*/
+  /*======================= AST DEFINITIONS ================================*/
+  /*========================================================================*/
+
+
+  astrule IntLiteral = 
+    method public int getValue() {
+      try {
+        return de.monticore.MCLiteralsDecoder.decodeInt(getSource());
+      }
+      catch (NumberFormatException e) {
+        return 0;
+      }
+    }
+  ;
+  
+  astrule LongLiteral = 
+    method public long getValue() {
+      try {
+        return de.monticore.MCLiteralsDecoder.decodeLong(getSource());
+      }
+      catch (NumberFormatException e) {
+        return 0;
+      }
+    }
+  ;
+
+
+  astrule FloatLiteral = 
+    method public float getValue() {
+      try {
+        return de.monticore.MCLiteralsDecoder.decodeFloat(getSource());
+      }
+      catch (NumberFormatException e) {
+        return 0f;
+      }
+    }
+  ;
+
+
+  astrule DoubleLiteral = 
+    method public double getValue() {
+      try {
+        return de.monticore.MCLiteralsDecoder.decodeDouble(getSource());
+      }
+      catch (NumberFormatException e) {
+        return 0d;
+      }
+    }
+  ;
+
+
+  /*========================================================================*/
+  /*======================= INTERFACE DEFINITIONS ==========================*/
+  /*========================================================================*/
+
+  /*========================================================================*/
+  /*============================ PARSER RULES ==============================*/
+  /*========================================================================*/
+
+
+  /** ASTIntLiteral represents a positive Integer number.
+        @attribute source String-representation (including '"').
+    */
+  IntLiteral implements NumericLiteral<100> =
+    source:Num_Int ;
+
+
+  /** ASTLongLiteral represents a positive Long number.
+        @attribute source String-representation (including '"').
+    */
+  LongLiteral implements NumericLiteral<99> =
+    source:Num_Long ;
+
+
+  /** ASTFloatLiteral represents a positive Float number.
+        @attribute source String-representation (including '"').
+    */
+  FloatLiteral implements NumericLiteral<100> =
+    // {isFloat(_input.LT(1).getText())}? source:Digits ;
+    //Digits "." (Digits | "+" | "-")+ |
+    //"." (Digits | "+" | "-")+ |
+    //(Digits | "+" | "-")+ ;
+    source:Num_Float ;
+
+
+
+  /** ASTDoubleLiteral represents a positive Double number.
+        @attribute source String-representation (including '"').
+    */
+  DoubleLiteral implements NumericLiteral<100> =
+    //{isDouble(_input.LT(1).getText())}? source:Digits ;
+    source:Num_Double ;
+
+
+  /*========================================================================*/
+  /*============================ LEXER RULES ===============================*/
+  /*========================================================================*/
+
+
+
+   /*========================================================================*/
+   /* The following section is adapted from                                  */
+   /* https://github.com/antlr/grammars-v4/blob/master/java/Java.g4          */
+   /*========================================================================*/
+
+   // §3.10.1 Integer Literals
+
+   token Num_Int
+     = DecimalIntegerLiteral | HexIntegerLiteral | OctalIntegerLiteral | BinaryIntegerLiteral;
+
+   token Num_Long
+     = (DecimalIntegerLiteral IntegerTypeSuffix) | (HexIntegerLiteral IntegerTypeSuffix) | (OctalIntegerLiteral IntegerTypeSuffix) | (BinaryIntegerLiteral IntegerTypeSuffix);
+
+   fragment token DecimalIntegerLiteral
+     = DecimalNumeral;
+
+   fragment token HexIntegerLiteral
+     = HexNumeral;
+
+   fragment token OctalIntegerLiteral
+     = OctalNumeral;
+
+   fragment token BinaryIntegerLiteral
+     = BinaryNumeral;
+
+   fragment token IntegerTypeSuffix
+     = 'l' | 'L';
+
+   fragment token DecimalNumeral
+     = '0' | NonZeroDigit ((Digits)? | Underscores Digits);
+
+   fragment token Digits
+     = Digit ((DigitOrUnderscore)* Digit)?;
+
+   fragment token Digit
+     = '0' | NonZeroDigit;
+
+   fragment token NonZeroDigit
+     = '1'..'9' ;
+
+   fragment token DigitOrUnderscore
+     = Digit | '_';
+
+   fragment token Underscores
+     = '_'+;
+
+   fragment token HexNumeral
+     = '0' ('x' | 'X') HexDigits;
+
+   fragment token HexDigits
+     = HexDigit ((HexDigitOrUnderscore)* HexDigit)?;
+
+   fragment token HexDigit
+     = '0'..'9'  | 'a'..'f'  | 'A'..'F' ;
+
+   fragment token HexDigitOrUnderscore
+     = HexDigit | '_';
+
+   fragment token OctalNumeral
+     = '0' (Underscores)? OctalDigits;
+
+   fragment token OctalDigits
+     = OctalDigit ((OctalDigitOrUnderscore)* OctalDigit)?;
+
+   fragment token OctalDigit
+     = '0'..'7' ;
+
+   fragment token OctalDigitOrUnderscore
+     = OctalDigit | '_';
+
+   fragment token BinaryNumeral
+     = '0' ('b' | 'B') BinaryDigits;
+
+   fragment token BinaryDigits
+     = BinaryDigit ((BinaryDigitOrUnderscore)* BinaryDigit)?;
+
+   fragment token BinaryDigit
+     = '0' | '1';
+
+   fragment token BinaryDigitOrUnderscore
+     = BinaryDigit | '_';
+
+
+   // §3.10.2 Floating-Point Literals
+
+   token Num_Float
+     = DecimalFloatingPointLiteral | HexadecimalFloatingPointLiteral;
+
+   token Num_Double
+     = DecimalDoublePointLiteral | HexadecimalDoublePointLiteral;
+
+   fragment token DecimalDoublePointLiteral
+     = Digits '.' (Digits)? (ExponentPart)? (DoubleTypeSuffix)? | '.' Digits (ExponentPart)? (DoubleTypeSuffix)? | Digits ExponentPart (DoubleTypeSuffix)? | Digits DoubleTypeSuffix;
+
+   fragment token DecimalFloatingPointLiteral
+     = Digits '.' (Digits)? (ExponentPart)? (FloatTypeSuffix) | '.' Digits (ExponentPart)? (FloatTypeSuffix) | Digits ExponentPart (FloatTypeSuffix) | Digits FloatTypeSuffix;
+
+   fragment token ExponentPart
+     = ExponentIndicator SignedInteger;
+
+   fragment token ExponentIndicator
+     = 'e' | 'E';
+
+   fragment token SignedInteger
+     = (Sign)? Digits;
+
+   fragment token Sign
+     = '+' | '-';
+
+   fragment token FloatTypeSuffix
+     = 'f' | 'F';
+
+   fragment token DoubleTypeSuffix
+     = 'd' | 'D';
+
+   fragment token HexadecimalDoublePointLiteral
+     = HexSignificand BinaryExponent (DoubleTypeSuffix)?;
+
+   fragment token HexadecimalFloatingPointLiteral
+     = HexSignificand BinaryExponent (FloatTypeSuffix);
+
+   fragment token HexSignificand
+     = HexNumeral '.'? | '0' ('x' | 'X') (HexDigits)? '.' HexDigits;
+
+   fragment token BinaryExponent
+     = BinaryExponentIndicator SignedInteger;
+
+   fragment token BinaryExponentIndicator
+     = 'p' | 'P';
+
+
+   // §3.10.4 Character Literals
+   token Char
+     = '\'' (SingleCharacter|EscapeSequence) '\''
+     : {setText(getText().substring(1, getText().length() - 1));};
+
+   fragment token SingleCharacter
+     = ~ ('\'');
+
+
+   // §3.10.5 String Literals
+   token String
+     = '"' (StringCharacters)? '"'
+     : {setText(getText().substring(1, getText().length() - 1));};
+
+   fragment token StringCharacters
+     = (StringCharacter)+;
+
+   fragment token StringCharacter
+     = ~ ('"' | '\\') | EscapeSequence;
+
+   // §3.10.6 Escape Sequences for Character and String Literals
+   fragment token EscapeSequence
+     = '\\' ('b' | 't' | 'n' | 'f' | 'r' | '"' | '\'' | '\\') | OctalEscape | UnicodeEscape;
+
+   fragment token OctalEscape
+     = '\\' OctalDigit | '\\' OctalDigit OctalDigit | '\\' ZeroToThree OctalDigit OctalDigit;
+
+   fragment token UnicodeEscape
+     = '\\' 'u' HexDigit HexDigit HexDigit HexDigit;
+
+   fragment token ZeroToThree
+     = '0'..'3' ;
+
+ }

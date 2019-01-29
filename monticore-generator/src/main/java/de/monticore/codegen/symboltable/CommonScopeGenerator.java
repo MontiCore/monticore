@@ -43,7 +43,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
         genHelper.getTargetPackage(), handCodedPath);
     
     String serializerName = getSimpleTypeNameToGenerate(
-        getSimpleName(className + GeneratorHelper.SERIALIZER),
+        getSimpleName(getSimpleName(scopeName) + GeneratorHelper.SERIALIZER),
         genHelper.getTargetPackage(), handCodedPath);
     
     // Maps Symbol Name to Symbol Kind Name
@@ -73,6 +73,6 @@ public class CommonScopeGenerator implements ScopeGenerator {
     genEngine.generateNoA("symboltable.ScopeBuilder", builderFilePath, builderName,
         scopeName + GeneratorHelper.BUILDER);
     genEngine.generateNoA("symboltable.serialization.ScopeSerialization", serializerFilePath,
-        className);
+        serializerName, getSimpleName(scopeName));
   }
 }

@@ -2,6 +2,7 @@
 
 package de.monticore.codegen.symboltable;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static de.monticore.codegen.GeneratorHelper.*;
 import static de.se_rwth.commons.Names.getPathFromPackage;
 import static de.se_rwth.commons.Names.getSimpleName;
@@ -46,6 +47,9 @@ public class CommonScopeSpanningSymbolGenerator implements ScopeSpanningSymbolGe
 
     if (prodSymbol.getAstNode().isPresent()) {
       Optional<ASTSymbolRule> symbolRule = empty();
+      List<String> imports = newArrayList();
+      genHelper.getAllCds(genHelper.getCd()).stream()
+              .forEach(s -> imports.add(s.getFullName().toLowerCase()));
       ASTMCGrammar grammar = genHelper.getGrammarSymbol().getAstGrammar().get();
       List<ASTSymbolRule> symbolRules = grammar.getSymbolRuleList();
       if (prodSymbol.getAstNode().isPresent() && prodSymbol.getSymbolDefinitionKind().isPresent()) {
@@ -57,9 +61,11 @@ public class CommonScopeSpanningSymbolGenerator implements ScopeSpanningSymbolGe
         }
       }
       genEngine.generate("symboltable.ScopeSpanningSymbol", filePath, prodSymbol.getAstNode().get(),
-              symbolName, genHelper.getGrammarSymbol().getName() + SCOPE, prodSymbol, symbolRule);
-      genEngine.generate("symboltable.SymbolBuilder", builderFilePath, prodSymbol.getAstNode().get(), builderName, className);
-      genEngine.generate("symboltable.serialization.SymbolSerialization", serializerFilePath, prodSymbol.getAstNode().get(), serializerName, className);
+              symbolName, genHelper.getGrammarSymbol().getName() + SCOPE, prodSymbol, symbolRule, imports);
+      genEngine.generate("symboltable.SymbolBuilder", builderFilePath, 
+              prodSymbol.getAstNode().get(), builderName, className, symbolRule, imports);
+      genEngine.generate("symboltable.serialization.SymbolSerialization", serializerFilePath, 
+              prodSymbol.getAstNode().get(), serializerName, className, symbolRule, imports);
     }
   }
 

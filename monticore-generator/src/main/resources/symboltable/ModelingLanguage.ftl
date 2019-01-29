@@ -46,8 +46,8 @@ public abstract class ${className} extends de.monticore.CommonModelingLanguage {
   }
 
   @Override
-  public Optional<${grammarName}LanguageSerialization> getSymbolTableDeserializer() {
-    return Optional.of(new ${grammarName}LanguageSerialization());
+  public Optional<${grammarName}ArtifactScopeSerializer> getSymbolTableDeserializer() {
+    return Optional.of(new ${grammarName}ArtifactScopeSerializer());
   }
   </#if>
 
@@ -65,7 +65,7 @@ public abstract class ${className} extends de.monticore.CommonModelingLanguage {
 
   protected void initResolvingFilters() {
     <#list ruleNames as ruleName>
-    addResolvingFilter(new ${ruleName?cap_first}ResolvingFilter());
+    addResolvingFilter(new ${ruleName}ResolvingFilter());
     </#list>
   }
 }

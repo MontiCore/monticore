@@ -14,7 +14,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 
-public class DelegatingSerializer<T> implements ISerialization<T> {
+/**
+ * 
+ * @deprecated ONLY THE GENERIC type parameter of the class can be removed after 5.0.3 has been released
+ */
+public class DelegatingSerializer<T> implements ISerialization<Object> {
   
   protected List<ISerialization<?>> serializers;
   
@@ -32,10 +36,10 @@ public class DelegatingSerializer<T> implements ISerialization<T> {
    * java.lang.reflect.Type, com.google.gson.JsonDeserializationContext)
    */
   @Override
-  public T deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+  public Object deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
       throws JsonParseException {
     JsonObject jsonObject = json.getAsJsonObject();
-    String kind = jsonObject.get("kind").getAsString();
+    String kind = jsonObject.get("class").getAsString(); //TODO: Replace by constant CLASS 5.0.3 has been released
     for (ISerialization<?> s : serializers) {
       if (kind.equals(s.getSerializedClass().getName())) {
         return context.deserialize(json, s.getSerializedClass());
@@ -49,22 +53,16 @@ public class DelegatingSerializer<T> implements ISerialization<T> {
    * com.google.gson.JsonSerializationContext)
    */
   @Override
-  public JsonElement serialize(T src, Type typeOfSrc, JsonSerializationContext context) {
-    String actualKind = src.getClass().getName();
-    for (ISerialization<?> s : serializers) {
-      String serKind = s.getSerializedClass().getName();
-      if (actualKind.equals(serKind)) {
-        return context.serialize(src, s.getSerializedClass());
-      }
-    }
-    throw new JsonParseException("Could not find a registered serializer to delegate "+typeOfSrc+" to.");
+  @Deprecated
+  public JsonElement serialize(Object src, Type typeOfSrc, JsonSerializationContext context) {
+    throw new JsonParseException("Do not invoke DelegatingSerializer#serialize()!");
   }
   
   /**
    * @see de.monticore.symboltable.serializing.ISerialization#getSerializedClass()
    */
   @Override
-  public Class<T> getSerializedClass() {
+  public Class<Object> getSerializedClass() {
     throw new JsonParseException("Do not invoke DelegatingSerializer#getSerializedClass()!");
   }
   

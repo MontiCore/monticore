@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.referencesymbol;
+
+grammar SupGrammarRef extends mc.feature.referencesymbol.Reference {
+
+  scope SupRand = "begin" Name "{" (SupRef | SupRefList | SupRefOpt | SupRefRand | Test)+ "}" "end";
+
+  SupRef = "supRef" Name@Test ";";
+
+  SupRefList = "supRefList" Name@Test* ";";
+
+  SupRefOpt = "supRefOpt" Name@Test? ";";
+
+  SupRefRand = "supRefRand" Name@Rand ";";
+
+}

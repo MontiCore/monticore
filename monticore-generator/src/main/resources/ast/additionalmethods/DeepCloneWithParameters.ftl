@@ -4,6 +4,7 @@ ${tc.signature("astType")}
     super.deepClone(result);
 
 <#list astType.getCDAttributeList() as attribute>
+<#if !genHelper.isModifierPrivate(attribute)>
   <#assign attributeName = genHelper.getJavaConformName(attribute.getName())>
   <#assign methName = genHelper.getNativeAttributeName(attribute.getName())?cap_first>
   <#assign attrType = attribute.getType()>
@@ -43,6 +44,7 @@ ${tc.signature("astType")}
     result.set${methName}(get${methName}());
     </#if>
   </#if>
+</#if>
 </#list>
     
     return result;

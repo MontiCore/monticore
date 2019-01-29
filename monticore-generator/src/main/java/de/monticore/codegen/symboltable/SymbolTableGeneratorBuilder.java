@@ -16,7 +16,7 @@ public class SymbolTableGeneratorBuilder {
 
   private SymbolReferenceGenerator symbolReferenceGenerator;
   private SymbolTableCreatorGenerator symbolTableCreatorGenerator;
-  private SymbolTableSerializationGenerator symbolTableSerializationGenerator;
+  private ArtifactScopeSerializerGenerator symbolTableSerializationGenerator;
 
   public SymbolTableGenerator build() {
     if (modelingLanguageGenerator == null) {
@@ -50,7 +50,7 @@ public class SymbolTableGeneratorBuilder {
       symbolTableCreatorGenerator = new CommonSymbolTableCreatorGenerator();
     }
     if (symbolTableSerializationGenerator == null) {
-      symbolTableSerializationGenerator = new CommonSymbolTableSerializationGenerator();
+      symbolTableSerializationGenerator = new CommonArtifactScopeSerializerGenerator();
     }
 
     return new SymbolTableGenerator(modelingLanguageGenerator, modelLoaderGenerator,
@@ -105,7 +105,7 @@ public class SymbolTableGeneratorBuilder {
     return this;
   }
 
-  public SymbolTableGeneratorBuilder symbolTableSerializationGenerator(SymbolTableSerializationGenerator symbolTableSerializationGenerator) {
+  public SymbolTableGeneratorBuilder symbolTableSerializationGenerator(ArtifactScopeSerializerGenerator symbolTableSerializationGenerator) {
     this.symbolTableSerializationGenerator = symbolTableSerializationGenerator;
     return this;
   }

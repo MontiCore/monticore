@@ -2,14 +2,14 @@
 
 package de.monticore.mcliterals;
 
+import de.monticore.mcbasicliterals._ast.ASTLiteral;
+import de.monticore.mcbasicliterals._ast.ASTSignedLiteral;
+import de.monticore.testmcbasicliterals._parser.TestMCBasicLiteralsParser;
+import junit.framework.TestCase;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
-
-import de.monticore.mcliterals._ast.ASTLiteral;
-import de.monticore.mcliterals._ast.ASTSignedLiteral;
-import de.monticore.testmcliterals._parser.TestMCLiteralsParser;
-import junit.framework.TestCase;
 
 /**
  * This class provides two methods that allow testing type grammar. The test
@@ -48,7 +48,7 @@ public class MCLiteralsTestHelper {
    * @throws IOException
    */
   public ASTLiteral parseLiteral(String input) throws IOException {
-    TestMCLiteralsParser parser = new TestMCLiteralsParser();
+    TestMCBasicLiteralsParser parser = new TestMCBasicLiteralsParser();
     Optional<ASTLiteral> res = parser.parseLiteral(new StringReader(input));
     TestCase.assertTrue(res.isPresent());
     return res.get();
@@ -63,7 +63,7 @@ public class MCLiteralsTestHelper {
    */
   public ASTSignedLiteral parseSignedLiteral(String input)
       throws IOException {
-    TestMCLiteralsParser parser = new TestMCLiteralsParser();
+    TestMCBasicLiteralsParser parser = new TestMCBasicLiteralsParser();
     Optional<ASTSignedLiteral> res = parser.parseSignedLiteral(new StringReader(input));
     TestCase.assertTrue(res.isPresent());
     return res.get();

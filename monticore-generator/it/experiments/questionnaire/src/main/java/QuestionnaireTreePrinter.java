@@ -3,7 +3,7 @@ import java.util.*;
 import questionnaire._ast.*;
 import questionnaire._visitor.*;
 import de.monticore.ast.ASTNode;
-import de.monticore.mcliterals._ast.*;
+import de.monticore.mcbasicliterals._ast.*;
 
 import java.io.IOException;
 import org.antlr.v4.runtime.RecognitionException;
@@ -39,11 +39,11 @@ public class QuestionnaireTreePrinter implements
   }
 
   // interface ASTLiteralsNode (for all nodes of Literals grammar)
-  public void visit(ASTMCLiteralsNode node) {
+  public void visit(ASTMCBasicLiteralsNode node) {
     print("[LN"+depth+"|");
   }
 
-  public void endVisit(ASTMCLiteralsNode node) {
+  public void endVisit(ASTMCBasicLiteralsNode node) {
     print("|LN"+depth+"]");
   }
 
@@ -139,11 +139,11 @@ public class QuestionnaireTreePrinter implements
     print("</O"+depth+">");
   }
 
-  public void visit(ASTIntLiteral node) {
+  public void visit(ASTNatLiteral node) {
     print("<L"+depth+"!"+node.getValue()+">");
   }
 
-  public void endVisit(ASTIntLiteral node) {
+  public void endVisit(ASTNatLiteral node) {
     print("</L"+depth+">");
   }
 

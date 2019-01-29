@@ -2,6 +2,7 @@
 
 package de.monticore;
 
+@Deprecated("Use de.monticore.expressions.OCLExpressions")
 component grammar OCLExpressions extends de.monticore.common.Common, de.monticore.ExpressionsBasis {
 
 external EDeclaration;

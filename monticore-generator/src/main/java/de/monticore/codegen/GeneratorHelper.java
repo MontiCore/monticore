@@ -12,6 +12,7 @@ import de.monticore.codegen.cd2java.ast_emf.AstEmfGeneratorHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
+import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.*;
@@ -20,7 +21,7 @@ import de.monticore.grammar.symboltable.MCGrammarSymbolReference;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.IterablePath;
-import de.monticore.java.prettyprint.JavaDSLPrettyPrinter;
+import de.monticore.java.prettyprint.JavaDSLPrettyPrinterDelegator;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.GlobalScope;
@@ -52,7 +53,10 @@ import static de.monticore.codegen.mc2cd.TransformationHelper.createSimpleRefere
 import static de.monticore.codegen.mc2cd.transl.ConstantsTranslation.CONSTANTS_ENUM;
 import static de.monticore.grammar.Multiplicity.multiplicityByAlternative;
 import static de.monticore.grammar.Multiplicity.multiplicityByIteration;
+import static de.se_rwth.commons.Names.getQualifier;
+import static de.se_rwth.commons.Names.getSimpleName;
 import static java.util.Collections.max;
+import static java.util.Collections.sort;
 
 public class GeneratorHelper extends TypesHelper {
 
@@ -86,8 +90,10 @@ public class GeneratorHelper extends TypesHelper {
 
   public static final String BUILDER_PREFIX = "Builder_";
 
-  public static final String SERIALIZER = "Serialization";
-  
+  public static final String SERIALIZATION = "Serialization";
+
+  public static final String SERIALIZER = "Serializer";
+
   public static final String OPTIONAL = "Optional";
 
   public static final String SYMBOL = "Symbol";
@@ -128,7 +134,7 @@ public class GeneratorHelper extends TypesHelper {
       "local",
       "readonly"});
 
-  static JavaDSLPrettyPrinter javaPrettyPrinter;
+  static JavaDSLPrettyPrinterDelegator javaPrettyPrinter;
 
   static CDPrettyPrinterConcreteVisitor cdPrettyPrinter;
 
@@ -562,13 +568,15 @@ public class GeneratorHelper extends TypesHelper {
     return true;
   }
 
-  public boolean isReferencedSymbolAttribute(ASTCDAttribute attribute) {
-    if (CD4AnalysisHelper.hasStereotype(attribute, MC2CDStereotypes.REFERENCED_SYMBOL.toString())) {
-      return true;
-    } else {
-      return false;
-    }
+  public static boolean isReferencedSymbolAttribute(ASTCDAttribute attribute) {
+    return CD4AnalysisHelper.hasStereotype(attribute, MC2CDStereotypes.REFERENCED_SYMBOL.toString());
   }
+
+  public static boolean isModifierPrivate(ASTCDAttribute attribute) {
+    return attribute.isPresentModifier() && attribute.getModifier().isPrivate();
+  }
+
+
 
   public static boolean isString(String type) {
     return "String".equals(type) || "java.lang.String".equals(type);
@@ -1057,9 +1065,9 @@ public class GeneratorHelper extends TypesHelper {
     return cdType.getFields().stream().filter(a -> !a.isPrivate()).collect(Collectors.toList());
   }
 
-  public static JavaDSLPrettyPrinter getJavaPrettyPrinter() {
+  public static JavaDSLPrettyPrinterDelegator getJavaPrettyPrinter() {
     if (javaPrettyPrinter == null) {
-      javaPrettyPrinter = new JavaDSLPrettyPrinter(new IndentPrinter());
+      javaPrettyPrinter = new JavaDSLPrettyPrinterDelegator(new IndentPrinter());
     }
     return javaPrettyPrinter;
   }
@@ -1372,7 +1380,7 @@ public class GeneratorHelper extends TypesHelper {
             modifierStr.append(stereoValue.getValue());
             modifierStr.append("\n **/\n");
           }
-          modifierStr.append(DEPRECATED );
+          modifierStr.append(DEPRECATED);
         }
       }
     }
@@ -1672,7 +1680,7 @@ public class GeneratorHelper extends TypesHelper {
     }
     return Optional.empty();
   }
-  
+
   public boolean isScopeClass(String name, AstGeneratorHelper astGeneratorHelper) {
     String astName = name.substring(name.lastIndexOf("AST") + 3);
     MCGrammarSymbol grammarSymbol = astGeneratorHelper.getGrammarSymbol();
@@ -1702,6 +1710,18 @@ public class GeneratorHelper extends TypesHelper {
 
   public static String getCdName(String qualifiedCdName) {
     return Names.getSimpleName(qualifiedCdName);
+  }
+
+  public String getReferencedSymbolName(ASTCDAttribute attribute) {
+    String referencedSymbol = CD4AnalysisHelper.getStereotypeValues(attribute,
+        MC2CDStereotypes.REFERENCED_SYMBOL.toString()).get(0);
+
+    if (!getQualifier(referencedSymbol).isEmpty()) {
+      referencedSymbol = SymbolTableGeneratorHelper
+          .getQualifiedSymbolType(getQualifier(referencedSymbol)
+              .toLowerCase(), Names.getSimpleName(referencedSymbol));
+    }
+    return referencedSymbol;
   }
 
   /**
@@ -1818,5 +1838,4 @@ public class GeneratorHelper extends TypesHelper {
     }
     return new AstGeneratorHelper(astClassDiagram, globalScope);
   }
-
 }

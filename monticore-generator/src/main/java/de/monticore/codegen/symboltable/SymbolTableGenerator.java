@@ -47,7 +47,7 @@ public class SymbolTableGenerator {
 
   private final SymbolTableCreatorGenerator symbolTableCreatorGenerator;
 
-  private final SymbolTableSerializationGenerator symbolTableSerializationGenerator;
+  private final ArtifactScopeSerializerGenerator symbolTableSerializationGenerator;
 
   protected SymbolTableGenerator(
           ModelingLanguageGenerator modelingLanguageGenerator,
@@ -60,7 +60,7 @@ public class SymbolTableGenerator {
           ScopeGenerator scopeGenerator,
           SymbolReferenceGenerator symbolReferenceGenerator,
           SymbolTableCreatorGenerator symbolTableCreatorGenerator,
-          SymbolTableSerializationGenerator symbolTableSerializationGenerator) {
+          ArtifactScopeSerializerGenerator symbolTableSerializationGenerator) {
     this.modelingLanguageGenerator = modelingLanguageGenerator;
     this.modelLoaderGenerator = modelLoaderGenerator;
     this.modelNameCalculatorGenerator = modelNameCalculatorGenerator;
@@ -90,8 +90,13 @@ public class SymbolTableGenerator {
     final Collection<MCProdSymbol> allSymbolDefiningRules = genHelper.getAllSymbolDefiningRules();
     final Collection<MCProdSymbol> allScopeSpanningRules = genHelper.getAllScopeSpanningRules();
     Collection<String> ruleNames = newArrayList();
+    Collection<String> ruleNamesWithSuperGrammar = newArrayList();
     for (MCProdSymbol prod : allSymbolDefiningRules) {
       ruleNames.add(prod.getSymbolDefinitionKind().isPresent() ? prod.getSymbolDefinitionKind().get() : prod.getName());
+    }
+
+    for (MCProdSymbol prod : genHelper.getAllSymbolDefiningRulesInSuperGrammar()) {
+      ruleNamesWithSuperGrammar.add(genHelper.getQualifiedProdName(prod));
     }
 
     /* If no rules with name are defined, no symbols can be generated. Hence,
@@ -111,7 +116,7 @@ public class SymbolTableGenerator {
     final GeneratorEngine genEngine = new GeneratorEngine(setup);
 
     modelingLanguageGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol,
-            ruleNames);
+            ruleNamesWithSuperGrammar);
     modelLoaderGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol);
 
     if (!skipSymbolTableGeneration) {

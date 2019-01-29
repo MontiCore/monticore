@@ -1,0 +1,83 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.expressions;
+
+component grammar CommonExpressions extends de.monticore.expressions.ExpressionsBasis {
+
+// Use "astextends after Release of MC 5.0.3 and delete TOP"
+interface InfixExpression = leftExpression:Expression operator:"" rightExpression:Expression;
+  
+QualifiedCallExpression implements Expression <240> =
+	Expression "." Name Arguments;
+
+CallExpression implements Expression <241> =
+	Name Arguments;
+
+BooleanNotExpression implements Expression <200> =
+	"~"  Expression;
+
+LogicalNotExpression implements Expression <190> =
+	"!" Expression;
+
+MultExpression implements Expression <180>, InfixExpression =
+	leftExpression:Expression operator:"*" rightExpression:Expression;
+
+DivideExpression implements Expression <180>, InfixExpression =
+	leftExpression:Expression operator:"/" rightExpression:Expression;
+
+ModuloExpression implements Expression <180>, InfixExpression =
+	leftExpression:Expression operator:"%" rightExpression:Expression;
+    
+PlusExpression implements Expression <170>, InfixExpression =
+	leftExpression:Expression operator:"+" rightExpression:Expression;
+        
+MinusExpression implements Expression <170>, InfixExpression =
+	leftExpression:Expression operator:"-" rightExpression:Expression;
+
+LessEqualExpression implements Expression <150>, InfixExpression =
+	leftExpression:Expression operator:"<=" rightExpression:Expression;
+	
+GreaterEqualExpression implements Expression <150>, InfixExpression =
+	leftExpression:Expression operator:">=" rightExpression:Expression;
+	
+LessThanExpression implements Expression <150>, InfixExpression =
+	leftExpression:Expression operator:"<" rightExpression:Expression;
+	
+GreaterThanExpression implements Expression <150>, InfixExpression =
+	leftExpression:Expression operator:">" rightExpression:Expression;
+	        
+EqualsExpression implements Expression <130>, InfixExpression =
+	leftExpression:Expression operator:"==" rightExpression:Expression;
+	
+NotEqualsExpression implements Expression <130>, InfixExpression =
+	leftExpression:Expression operator:"!=" rightExpression:Expression;
+	        
+BooleanAndOpExpression implements Expression <120>, InfixExpression =
+	leftExpression:Expression operator:"&&" rightExpression:Expression;
+	
+BooleanOrOpExpression implements Expression <117>, InfixExpression =
+	leftExpression:Expression operator:"||" rightExpression:Expression;
+	
+ConditionalExpression implements Expression <114> =
+	condition:Expression "?" trueExpression:Expression ":" falseExpression:Expression;
+
+SimpleAssignmentExpression implements Expression <111>, InfixExpression = <rightassoc>
+	leftExpression:Expression operator:"+=" rightExpression:Expression;
+
+// priority must be higher than 100 (this is OCL let-in expression) and
+// below all other operators to write down:
+// let
+//   a = ...;
+//   b = ...;
+// in
+//   a == b <=> a.f1 == b.f1 && a a.f2 == b.f2
+EquivalentExpression implements Expression <107>, InfixExpression =
+    leftExpression:Expression operator:"<=>" rightExpression:Expression;
+
+BracketExpression implements Expression <310>
+    =  "(" Expression ")";
+    
+Arguments
+    =   "(" (Expression || ",")* ")";
+    
+}
