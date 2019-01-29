@@ -21,8 +21,8 @@ public class IncGenGradleReporter extends AReporter {
 
   String outputDir;
 
-  public IncGenGradleReporter(String outputDir) {
-    super(outputDir + File.separator, SIMPLE_FILE_NAME, "txt");
+  public IncGenGradleReporter(String outputDir, String modelName) {
+    super(outputDir + File.separator + modelName, SIMPLE_FILE_NAME, "txt");
     this.outputDir = outputDir;
   }
 
