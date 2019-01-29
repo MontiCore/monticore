@@ -21,17 +21,17 @@ component grammar MCCollectionTypes
   // use LookAhead to avoid "List" etc. as keywords
 
   MCListType implements MCGenericType <200> =
-       { cmpToken(1, "List") }? Name "<" MCTypeArgument ">";
+       { next("List") }? Name "<" MCTypeArgument ">";
 
   MCOptionalType implements MCGenericType <200> =
-       { cmpToken(1, "Optional") }? Name "<" MCTypeArgument ">";
+      { next("Optional") }? Name "<" MCTypeArgument ">";
 
   MCMapType implements MCGenericType  <200> =
-       { cmpToken(1, "Map") }? Name
+      { next("Map") }? Name
        "<" key:MCTypeArgument "," value:MCTypeArgument ">";
 
   MCSetType implements MCGenericType <200> =
-       { cmpToken(1, "Set") }? Name "<" MCTypeArgument ">";
+       { next("Set") }? Name "<" MCTypeArgument ">";
 
   /**
   *  ASTTypeArgument interface introduced here as QualifiedType,
