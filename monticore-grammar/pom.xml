@@ -197,6 +197,7 @@
                 <modelPath>target/generated-sources/monticore/sourcecode</modelPath>
               </modelPaths>
               <outputDirectory>target/generated-test-sources/monticore/sourcecode</outputDirectory>
+              <skip>${maven.test.skip}</skip>
             </configuration>
           </execution>
         </executions>
