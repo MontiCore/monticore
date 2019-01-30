@@ -1,8 +1,8 @@
 package de.monticore.codegen.cd2java.builder;
 
-import de.monticore.codegen.cd2java.factories.CDMethodFactory;
 import de.monticore.codegen.cd2java.methods.ListMethodGeneratorStrategy;
 import de.monticore.codegen.cd2java.methods.MandatoryMethodGeneratorStrategy;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 
@@ -10,9 +10,11 @@ class BuilderListMethodGeneratorStrategy extends ListMethodGeneratorStrategy {
 
   private final ASTType builderType;
 
-  BuilderListMethodGeneratorStrategy(final CDMethodFactory cdMethodFactory, final MandatoryMethodGeneratorStrategy mandatoryMethodGeneratorStrategy,
+  BuilderListMethodGeneratorStrategy(
+      final GlobalExtensionManagement glex,
+      final MandatoryMethodGeneratorStrategy mandatoryMethodGeneratorStrategy,
       final ASTType builderType) {
-    super(cdMethodFactory, mandatoryMethodGeneratorStrategy);
+    super(glex, mandatoryMethodGeneratorStrategy);
     this.builderType = builderType;
   }
 

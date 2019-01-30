@@ -1,9 +1,7 @@
 package de.monticore.codegen.cd2java.builder;
 
-import de.monticore.codegen.cd2java.factories.CDMethodFactory;
-import de.monticore.codegen.cd2java.factories.CDParameterFactory;
-import de.monticore.codegen.cd2java.factories.CDTypeFactory;
 import de.monticore.codegen.cd2java.methods.OptionalMethodGeneratorStrategy;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
@@ -12,9 +10,10 @@ class BuilderOptionalMethodGeneratorStrategy extends OptionalMethodGeneratorStra
 
   private final ASTType builderType;
 
-  BuilderOptionalMethodGeneratorStrategy(final CDTypeFactory cdTypeFactory, final CDMethodFactory cdMethodFactory,
-      final CDParameterFactory cdParameterFactory, final ASTType builderType) {
-    super(cdTypeFactory, cdMethodFactory, cdParameterFactory);
+  BuilderOptionalMethodGeneratorStrategy(
+      final GlobalExtensionManagement glex,
+      final ASTType builderType) {
+    super(glex);
     this.builderType = builderType;
   }
 

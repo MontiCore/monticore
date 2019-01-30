@@ -1,6 +1,7 @@
 package de.monticore.codegen.cd2java.methods;
 
 import de.monticore.codegen.cd2java.factories.CDMethodFactory;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import org.apache.commons.lang3.StringUtils;
@@ -14,10 +15,13 @@ public class MandatoryMethodGeneratorStrategy implements MethodGeneratorStrategy
 
   private static final String SETTER_PREFIX = "set";
 
+  private final GlobalExtensionManagement glex;
+
   private final CDMethodFactory cdMethodFactory;
 
-  protected MandatoryMethodGeneratorStrategy(CDMethodFactory cdMethodFactory) {
-    this.cdMethodFactory = cdMethodFactory;
+  protected MandatoryMethodGeneratorStrategy(final GlobalExtensionManagement glex) {
+    this.glex = glex;
+    this.cdMethodFactory = CDMethodFactory.getInstance();
   }
 
   @Override

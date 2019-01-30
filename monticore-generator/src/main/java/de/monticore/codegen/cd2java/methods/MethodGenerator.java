@@ -5,6 +5,7 @@ import de.monticore.codegen.cd2java.Generator;
 import de.monticore.codegen.cd2java.factories.CDMethodFactory;
 import de.monticore.codegen.cd2java.factories.CDParameterFactory;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 
@@ -12,28 +13,15 @@ import java.util.List;
 
 public class MethodGenerator implements Generator<ASTCDAttribute, List<ASTCDMethod>> {
 
-  private final CDTypeFactory cdTypeFactory;
+  private final GlobalExtensionManagement glex;
 
-  private final CDMethodFactory cdMethodFactory;
-
-  private final CDParameterFactory cdParameterFactory;
-
-  public MethodGenerator(final CDTypeFactory cdTypeFactory, final CDMethodFactory cdMethodFactory, final CDParameterFactory cdParameterFactory) {
-    this.cdTypeFactory = cdTypeFactory;
-    this.cdMethodFactory = cdMethodFactory;
-    this.cdParameterFactory = cdParameterFactory;
+  public MethodGenerator(
+      final GlobalExtensionManagement glex) {
+    this.glex = glex;
   }
 
-  protected CDTypeFactory getCDTypeFactory() {
-    return this.cdTypeFactory;
-  }
-
-  protected CDMethodFactory getCDMethodFactory() {
-    return this.cdMethodFactory;
-  }
-
-  protected CDParameterFactory getCDParameterFactory() {
-    return this.cdParameterFactory;
+  protected GlobalExtensionManagement getGlex() {
+    return this.glex;
   }
 
   @Override
@@ -54,14 +42,14 @@ public class MethodGenerator implements Generator<ASTCDAttribute, List<ASTCDMeth
   }
 
   protected MandatoryMethodGeneratorStrategy createMandatoryMethodGeneratorStrategy() {
-    return new MandatoryMethodGeneratorStrategy(this.getCDMethodFactory());
+    return new MandatoryMethodGeneratorStrategy(this.getGlex());
   }
 
   protected OptionalMethodGeneratorStrategy createOptionalMethodGeneratorStrategy() {
-    return new OptionalMethodGeneratorStrategy(this.getCDTypeFactory(), this.getCDMethodFactory(), this.getCDParameterFactory());
+    return new OptionalMethodGeneratorStrategy(this.getGlex());
   }
 
   protected ListMethodGeneratorStrategy createListMethodGeneratorStrategy() {
-    return new ListMethodGeneratorStrategy(this.getCDMethodFactory(), createMandatoryMethodGeneratorStrategy());
+    return new ListMethodGeneratorStrategy(this.getGlex(), createMandatoryMethodGeneratorStrategy());
   }
 }

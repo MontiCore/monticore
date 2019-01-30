@@ -1,6 +1,7 @@
 package de.monticore.codegen.cd2java.builder;
 
 import de.monticore.codegen.cd2java.factories.CDMethodFactory;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 
@@ -117,13 +118,19 @@ class BuilderASTCNodeMethodGenerator {
     }
   }
 
-  private final CDMethodFactory cdMethodFactory;
+  private final GlobalExtensionManagement glex;
 
   private final ASTType builderType;
 
-  BuilderASTCNodeMethodGenerator(final CDMethodFactory cdMethodFactory, final ASTType builderType) {
-    this.cdMethodFactory = cdMethodFactory;
+  private final CDMethodFactory cdMethodFactory;
+
+  BuilderASTCNodeMethodGenerator(
+      final GlobalExtensionManagement glex,
+      final ASTType builderType) {
+    this.glex = glex;
     this.builderType = builderType;
+    this.cdMethodFactory = CDMethodFactory.getInstance();
+
   }
 
   public List<ASTCDMethod> generate() {
