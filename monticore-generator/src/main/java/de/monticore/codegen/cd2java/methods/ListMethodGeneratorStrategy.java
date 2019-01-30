@@ -1,6 +1,7 @@
 package de.monticore.codegen.cd2java.methods;
 
 import de.monticore.codegen.cd2java.factories.CDMethodFactory;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import org.apache.commons.lang3.StringUtils;
 
@@ -43,6 +44,8 @@ public class ListMethodGeneratorStrategy implements MethodGeneratorStrategy {
   private static final String LIST_ITERATOR_  = "public ListIterator<%s> listIterator%s(int index);";
   private static final String SUBLIST         = "public List<%s> subList%s(int start, int end);";
 
+  private final GlobalExtensionManagement glex;
+
   private final CDMethodFactory cdMethodFactory;
 
   private final MandatoryMethodGeneratorStrategy mandatoryMethodGeneratorStrategy;
@@ -51,8 +54,11 @@ public class ListMethodGeneratorStrategy implements MethodGeneratorStrategy {
 
   private String attributeType;
 
-  protected ListMethodGeneratorStrategy(CDMethodFactory cdMethodFactory, MandatoryMethodGeneratorStrategy mandatoryMethodGeneratorStrategy) {
-    this.cdMethodFactory = cdMethodFactory;
+  protected ListMethodGeneratorStrategy(
+      final GlobalExtensionManagement glex,
+      final MandatoryMethodGeneratorStrategy mandatoryMethodGeneratorStrategy) {
+    this.glex = glex;
+    this.cdMethodFactory = CDMethodFactory.getInstance();
     this.mandatoryMethodGeneratorStrategy = mandatoryMethodGeneratorStrategy;
   }
 

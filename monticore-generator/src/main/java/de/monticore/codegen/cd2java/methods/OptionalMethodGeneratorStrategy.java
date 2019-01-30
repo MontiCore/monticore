@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java.methods;
 import de.monticore.codegen.cd2java.factories.CDMethodFactory;
 import de.monticore.codegen.cd2java.factories.CDParameterFactory;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.TypesHelper;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
@@ -23,16 +24,19 @@ public class OptionalMethodGeneratorStrategy implements MethodGeneratorStrategy 
 
   private static final String SET_ABSENT_PREFIX = "setAbsent";
 
+  private final GlobalExtensionManagement glex;
+
   private final CDTypeFactory cdTypeFactory;
 
   private final CDMethodFactory cdMethodFactory;
 
   private final CDParameterFactory cdParameterFactory;
 
-  protected OptionalMethodGeneratorStrategy(final CDTypeFactory cdTypeFactory, final CDMethodFactory cdMethodFactory, final CDParameterFactory cdParameterFactory) {
-    this.cdTypeFactory = cdTypeFactory;
-    this.cdMethodFactory = cdMethodFactory;
-    this.cdParameterFactory = cdParameterFactory;
+  protected OptionalMethodGeneratorStrategy(final GlobalExtensionManagement glex) {
+    this.glex = glex;
+    this.cdTypeFactory = CDTypeFactory.getInstance();
+    this.cdMethodFactory = CDMethodFactory.getInstance();
+    this.cdParameterFactory = CDParameterFactory.getInstance();
   }
 
   @Override
