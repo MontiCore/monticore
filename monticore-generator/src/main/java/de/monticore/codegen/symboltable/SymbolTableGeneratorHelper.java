@@ -24,6 +24,7 @@ import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
+import javax.naming.Name;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -86,6 +87,10 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     return getPackageName(packageName, SymbolTableGenerator.PACKAGE) + "." + symbolName;
   }
 
+  public static String getQualifiedASTType(String packageName, String astName) {
+    return getPackageName(packageName, AST_PACKAGE_SUFFIX) + "." + astName;
+  }
+
   /**
    * @return the name of the top ast, i.e., the ast of the start rule.
    */
@@ -125,6 +130,21 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     for (final MCProdSymbol superRule : grammarSymbol.getProdsWithInherited().values()) {
       if (superRule.isSymbolDefinition() && superRule.getName().equals(superRule.getSymbolDefinitionKind().get())) {
         ruleSymbolsWithName.add(superRule);
+      }
+    }
+
+    return ImmutableList.copyOf(ruleSymbolsWithName);
+  }
+
+  public Collection<MCProdSymbol> getAllOverwrittenSymbolProductions() {
+    final Set<MCProdSymbol> ruleSymbolsWithName = new LinkedHashSet<>();
+
+    for (final MCProdSymbol rule : grammarSymbol.getProds()) {
+      if (!rule.isSymbolDefinition()) {
+        Optional<MCProdSymbol> overwrittenSymbol = grammarSymbol.getInheritedProd(rule.getName());
+        if(overwrittenSymbol.isPresent() && overwrittenSymbol.get().isSymbolDefinition()){
+          ruleSymbolsWithName.add(overwrittenSymbol.get());
+        }
       }
     }
 
@@ -440,7 +460,67 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     prodName = SymbolTableGeneratorHelper
         .getQualifiedSymbolType(getQualifier(prodName)
             .toLowerCase(), Names.getSimpleName(prodName));
-    return prodName.substring(0, 1).toLowerCase() + prodName.substring(1);
+    return prodName;
   }
+
+  public String getQualifiedASTName(MCProdSymbol prod) {
+    String prodName = prod.getFullName();
+    prodName = SymbolTableGeneratorHelper
+        .getQualifiedASTType(getQualifier(prodName)
+            .toLowerCase(), "AST"+ Names.getSimpleName(prodName));
+    return prodName;
+  }
+
+  public String getQualifiedScopeInterfaceType(CDSymbol cdSymbol) {
+    String packageName = getCdPackage(cdSymbol.getFullName());
+    String cdName = getCdName(cdSymbol.getFullName());
+    return getQualifiedScopeInterfaceType(packageName, cdName);
+  }
+
+  public String getQualifiedScopeInterfaceType(String symbol) {
+    Optional<CDSymbol> cdSymbol = this.cdSymbol.getEnclosingScope().resolve(symbol, CDSymbol.KIND);
+    if (cdSymbol.isPresent()) {
+      return getQualifiedScopeInterfaceType(cdSymbol.get());
+    }
+    return "";
+  }
+
+  public String getQualifiedScopeInterfaceType(String packageName, String cdName) {
+    return getPackageName(packageName, SymbolTableGenerator.PACKAGE) + ".I"
+        + cdName + SCOPE;
+  }
+
+  public boolean hasSymbolDefiningRule(String symbol) {
+    Optional<MCGrammarSymbol> grammarSymbol = cdSymbol.getEnclosingScope().resolve(symbol, MCGrammarSymbol.KIND);
+    if (grammarSymbol.isPresent()) {
+      for (MCProdSymbol prodSymbol : grammarSymbol.get().getProds()) {
+        if (prodSymbol.isSymbolDefinition()) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  public boolean hasScopeSpanningRule(String symbol) {
+    Optional<MCGrammarSymbol> grammarSymbol = cdSymbol.getEnclosingScope().resolve(symbol, MCGrammarSymbol.KIND);
+    if (grammarSymbol.isPresent()) {
+      for (MCProdSymbol prodSymbol : grammarSymbol.get().getProds()) {
+        if (prodSymbol.isScopeDefinition()) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  public boolean isComponentGrammar(String grammarName) {
+    Optional<MCGrammarSymbol> grammarSymbol = cdSymbol.getEnclosingScope().resolve(grammarName, MCGrammarSymbol.KIND);
+    if (grammarSymbol.isPresent() && grammarSymbol.get().isComponent()) {
+        return true;
+    }
+    return false;
+  }
+
 
 }

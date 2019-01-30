@@ -21,7 +21,7 @@ import de.monticore.grammar.symboltable.MCGrammarSymbolReference;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.IterablePath;
-import de.monticore.java.prettyprint.JavaDSLPrettyPrinter;
+import de.monticore.java.prettyprint.JavaDSLPrettyPrinterDelegator;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.GlobalScope;
@@ -134,7 +134,7 @@ public class GeneratorHelper extends TypesHelper {
       "local",
       "readonly"});
 
-  static JavaDSLPrettyPrinter javaPrettyPrinter;
+  static JavaDSLPrettyPrinterDelegator javaPrettyPrinter;
 
   static CDPrettyPrinterConcreteVisitor cdPrettyPrinter;
 
@@ -1065,9 +1065,9 @@ public class GeneratorHelper extends TypesHelper {
     return cdType.getFields().stream().filter(a -> !a.isPrivate()).collect(Collectors.toList());
   }
 
-  public static JavaDSLPrettyPrinter getJavaPrettyPrinter() {
+  public static JavaDSLPrettyPrinterDelegator getJavaPrettyPrinter() {
     if (javaPrettyPrinter == null) {
-      javaPrettyPrinter = new JavaDSLPrettyPrinter(new IndentPrinter());
+      javaPrettyPrinter = new JavaDSLPrettyPrinterDelegator(new IndentPrinter());
     }
     return javaPrettyPrinter;
   }

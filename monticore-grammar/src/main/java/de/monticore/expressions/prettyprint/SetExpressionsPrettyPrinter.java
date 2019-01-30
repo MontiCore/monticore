@@ -13,6 +13,7 @@ import de.monticore.setexpressions._ast.ASTSetXOrExpression;
 import de.monticore.setexpressions._ast.ASTUnionExpressionInfix;
 import de.monticore.setexpressions._visitor.SetExpressionsVisitor;
 
+@Deprecated
 public class SetExpressionsPrettyPrinter implements SetExpressionsVisitor {
   
   protected SetExpressionsVisitor realThis;

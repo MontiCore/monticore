@@ -152,7 +152,7 @@ public abstract class MCParser extends Parser {
   }
 
   /*
-   * Compare the string of the actual token with the given string
+   * Compare the string of the actual token with the given strings
    */
   public boolean is(String... str) {
     org.antlr.v4.runtime.Token t1 = _input.LT(-1);
@@ -166,4 +166,21 @@ public abstract class MCParser extends Parser {
     }
     return false;
   }
+
+  /*
+   * Compare the string of the next token with the given strings
+   */
+  public boolean next(String... str) {
+    org.antlr.v4.runtime.Token t1 = _input.LT(1);
+    if (t1==null) {
+      return false;
+    }
+    for (int i = 0; i < str.length; i++) {
+      if (t1.getText().equals(str[i])) {
+        return true;
+      }
+    }
+    return false;
+  }
+
 }

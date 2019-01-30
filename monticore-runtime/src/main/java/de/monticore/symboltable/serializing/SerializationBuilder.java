@@ -24,8 +24,14 @@ public class SerializationBuilder {
   
   protected JsonObject json;
   
+  @Deprecated //Constructor below should be used instead when a new JsonObject shall be created
   public SerializationBuilder(JsonObject json, JsonSerializationContext context) {
     this.json = json;
+    this.context = context;
+  }
+  
+  public SerializationBuilder(JsonSerializationContext context) {
+    this.json = new JsonObject();
     this.context = context;
   }
   
@@ -69,6 +75,7 @@ public class SerializationBuilder {
     return json;
   }
   
+  @Deprecated //TODO: remove if 5.0.3 is released
   public SerializationBuilder addOnlyIfTrue(String key, boolean o) {
     if (o) {
       json.addProperty(key, o);
@@ -76,6 +83,7 @@ public class SerializationBuilder {
     return this;
   }
   
+  @Deprecated //TODO: remove if 5.0.3 is released
   public SerializationBuilder addOnlyIfFalse(String key, boolean o) {
     if (!o) {
       json.addProperty(key, o);

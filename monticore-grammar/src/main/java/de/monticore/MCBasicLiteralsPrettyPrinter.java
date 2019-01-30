@@ -11,10 +11,6 @@ public class MCBasicLiteralsPrettyPrinter extends MCBasicsPrettyPrinter implemen
   
   private MCBasicLiteralsVisitor realThis = this;
 
-  /**
-   * Constructor for de.monticore.literals.prettyprint.LiteralsPrettyPrinterConcreteVisitor.
-   * @param printer
-   */
   public MCBasicLiteralsPrettyPrinter(IndentPrinter printer) {
     super(printer);
   }

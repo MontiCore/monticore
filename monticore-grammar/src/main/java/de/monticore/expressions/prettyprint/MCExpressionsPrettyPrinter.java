@@ -43,6 +43,7 @@ import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.prettyprint.TypesPrettyPrinterConcreteVisitor;
 
+@Deprecated
 public class MCExpressionsPrettyPrinter extends TypesPrettyPrinterConcreteVisitor implements MCExpressionsVisitor {
 
   private boolean WRITE_COMMENTS = false;

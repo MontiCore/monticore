@@ -2,6 +2,7 @@
 
 package de.monticore;
 
+@Deprecated("Use de.monticore.expressions.AssignmentExpression")
 component grammar AssignmentExpressions extends de.monticore.ExpressionsBasis {
 		
 IncSuffixExpression implements Expression <220> =
