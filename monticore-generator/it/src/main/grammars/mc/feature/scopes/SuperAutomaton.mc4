@@ -1,0 +1,17 @@
+
+
+package mc.feature.scopes;
+
+
+grammar SuperAutomaton extends mc.common.Basics  {
+
+symbol scope Automaton =
+  "automaton" Name "{" (State | Transition)* "}" ;
+
+symbol scope State =
+  "state" Name ";";
+
+Transition =
+  from:Name "-" input:Name ">" to:Name ";" ;
+  
+}

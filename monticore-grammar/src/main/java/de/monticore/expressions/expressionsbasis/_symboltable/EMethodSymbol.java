@@ -1,7 +1,6 @@
 package de.monticore.expressions.expressionsbasis._symboltable;
 
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 /*
     Symbol Facade to be adapted by aggregated languages
  */
@@ -13,8 +12,7 @@ public class EMethodSymbol extends EMethodSymbolTOP {
 
 
   public ASTMCType getReturnType() {
-    // must be implemented in adapter subtype
-    throw new NotImplementedException();
+    throw new UnsupportedOperationException();
   }
 
 }

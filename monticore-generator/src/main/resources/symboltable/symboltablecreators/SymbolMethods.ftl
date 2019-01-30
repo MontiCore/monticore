@@ -1,21 +1,17 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("ruleSymbol","symbolName")}
+${signature("ruleSymbol","symbolName",  "ruleName", "astName")}
 
-<#assign ruleName = ruleSymbol.getName()>
 <#assign ruleNameLower = ruleName?uncap_first>
 <#assign genHelper = glex.getGlobalVar("stHelper")>
-<#assign fqn = genHelper.getQualifiedGrammarName()?lower_case>
-<#assign topAstName = genHelper.getQualifiedStartRuleName()>
-<#assign astPrefix = fqn + "._ast.AST">
 
   @Override
-  public void visit(${astPrefix}${ruleName} ast) {
+  public void visit(${astName} ast) {
     ${symbolName} ${ruleNameLower} = create_${ruleName}(ast);
     initialize_${ruleName}(${ruleNameLower}, ast);
     addToScopeAndLinkWithNode(${ruleNameLower}, ast);
   }
 
-  protected ${symbolName} create_${ruleName}(${astPrefix}${ruleName} ast) {
+  protected ${symbolName} create_${ruleName}(${astName} ast) {
    <#if genHelper.isOptionalNamed(ruleSymbol)>
       return new ${symbolName}(ast.getNameOpt().orElse(""));
    <#elseif genHelper.isNamed(ruleSymbol)>
@@ -25,6 +21,6 @@ ${signature("ruleSymbol","symbolName")}
    </#if>
   }
 
-  protected void initialize_${ruleName}(${symbolName} ${ruleNameLower}, ${astPrefix}${ruleName} ast) {
+  protected void initialize_${ruleName}(${symbolName} ${ruleNameLower}, ${astName} ast) {
     ${includeArgs("symboltable.symboltablecreators.InitializeSymbol", ruleSymbol, symbolName)}
   }

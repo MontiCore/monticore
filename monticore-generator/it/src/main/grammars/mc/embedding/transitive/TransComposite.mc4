@@ -6,6 +6,6 @@ grammar TransComposite extends mc.embedding.transitive.TransHost, mc.embedding.C
 
    start TransStart;
    
-   TransHost = Host;
+   MyTransHost extends TransHoster = Host;
 
 }
