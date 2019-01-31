@@ -1,0 +1,11 @@
+package de.monticore.codegen.builder;
+
+classdiagram Builder {
+
+    class A {
+        int i;
+        String s;
+        Optional<String> opt;
+        // List<String> list;
+    }
+}
