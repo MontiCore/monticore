@@ -3,9 +3,9 @@ package de.monticore.codegen.builder;
 classdiagram Builder {
 
     class A {
-        int i;
-        String s;
-        Optional<String> opt;
+        protected int i;
+        protected String s;
+        protected Optional<String> opt;
         // List<String> list;
     }
 }

@@ -1,5 +1,6 @@
 package de.monticore.codegen.cd2java.builder;
 
+import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.Generator;
 import de.monticore.codegen.cd2java.factories.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -54,7 +55,11 @@ class BuilderGenerator implements Generator<ASTCDClass, ASTCDClass> {
     ASTCDConstructor constructor = this.cdConstructorFactory.createProtectedDefaultConstructor(builderClassName);
 
     ASTCDMethod buildMethod = this.cdMethodFactory.createPublicMethod(domainType, BUILD_METHOD);
-    this.glex.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint("builder.BuildMethod", domainClass));
+    List<ASTCDAttribute> mandatoryAttributes = builderAttributes.stream()
+        .filter(a -> !GeneratorHelper.isListType(a.printType()))
+        .filter(a -> !GeneratorHelper.isOptional(a))
+        .collect(Collectors.toList());
+    this.glex.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint("builder.BuildMethod", domainClass, mandatoryAttributes));
 
     ASTCDMethod isValidMethod = this.cdMethodFactory.createPublicMethod(this.cdTypeFactory.createBooleanType(), IS_VALID);
 
