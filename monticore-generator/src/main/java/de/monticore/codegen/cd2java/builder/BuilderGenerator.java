@@ -3,12 +3,14 @@ package de.monticore.codegen.cd2java.builder;
 import de.monticore.codegen.cd2java.Generator;
 import de.monticore.codegen.cd2java.factories.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.builder.BuilderGeneratorConstants.*;
 
 class BuilderGenerator implements Generator<ASTCDClass, ASTCDClass> {
@@ -52,8 +54,10 @@ class BuilderGenerator implements Generator<ASTCDClass, ASTCDClass> {
     ASTCDConstructor constructor = this.cdConstructorFactory.createProtectedDefaultConstructor(builderClassName);
 
     ASTCDMethod buildMethod = this.cdMethodFactory.createPublicMethod(domainType, BUILD_METHOD);
+    this.glex.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint("builder.BuildMethod", domainClass));
 
     ASTCDMethod isValidMethod = this.cdMethodFactory.createPublicMethod(this.cdTypeFactory.createBooleanType(), IS_VALID);
+
 
     BuilderMethodGenerator builderMethodGenerator = new BuilderMethodGenerator(this.glex, builderType);
     List<ASTCDMethod> attributeMethods = domainClass.getCDAttributeList().stream()
