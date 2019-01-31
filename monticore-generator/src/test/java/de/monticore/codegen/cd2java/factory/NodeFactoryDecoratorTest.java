@@ -61,6 +61,10 @@ public class NodeFactoryDecoratorTest {
   @Test
   public void testCDClassNotChanged() {
     ASTCDDefinition astcdDefinition = cdCompilationUnit.getCDDefinition().deepClone();
+    GlobalExtensionManagement glex = new GlobalExtensionManagement();
+    NodeFactoryDecorator decorator = new NodeFactoryDecorator(glex);
+    //generate from CDDefinition, which does not change
+    decorator.generate(cdCompilationUnit.getCDDefinition());
     assertTrue(astcdDefinition.deepEquals(cdCompilationUnit.getCDDefinition()));
   }
 

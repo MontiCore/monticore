@@ -51,7 +51,7 @@ public class NodeFactoryDecorator implements Generator<ASTCDDefinition, ASTCDCla
     String factoryClassName = astcdDefinition.getName() + NODE_FACTORY_SUFFIX;
     ASTType factoryType = this.cdTypeFacade.createTypeByDefinition(factoryClassName);
 
-    ModifierBuilder modifierBuilder = ModifierBuilder.builder().Public();
+    ASTModifier modifier = ModifierBuilder.builder().Public().build();
 
     ASTCDConstructor constructor = this.cdConstructorFacade.createProtectedDefaultConstructor(factoryClassName);
 
@@ -104,7 +104,7 @@ public class NodeFactoryDecorator implements Generator<ASTCDDefinition, ASTCDCla
     }
 
     return CD4AnalysisMill.cDClassBuilder()
-        .setModifier(modifierBuilder.build())
+        .setModifier(modifier)
         .setName(factoryClassName)
         .addCDAttribute(factoryAttribute)
         .addAllCDAttributes(cdFactoryAttributeList)
