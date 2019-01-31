@@ -37,6 +37,10 @@ public class NodeFactoryDecorator implements Generator<ASTCDDefinition, ASTCDCla
 
   private final CDParameterFactory cdParameterFacade;
 
+  private List<ASTCDMethod> cdFactoryCreateMethodList = new ArrayList<>();
+  private List<ASTCDMethod> cdFactoryDoCreateMethodList = new ArrayList<>();
+  private List<ASTCDAttribute> cdFactoryAttributeList = new ArrayList<>();
+
 
   public NodeFactoryDecorator(final GlobalExtensionManagement glex) {
     this.glex = glex;
@@ -61,47 +65,16 @@ public class NodeFactoryDecorator implements Generator<ASTCDDefinition, ASTCDCla
     this.glex.replaceTemplate(EMPTY_BODY, getFactoryMethod, new TemplateHookPoint("ast.factorymethods.Create", ""));
 
     List<ASTCDClass> astcdClassList = Lists.newArrayList(astcdDefinition.getCDClassList());
-    List<ASTCDAttribute> cdFactoryAttributeList = new ArrayList<>();
-    List<ASTCDMethod> cdFactoryCreateMethodList = new ArrayList<>();
-    List<ASTCDMethod> cdFactoryDoCreateMethodList = new ArrayList<>();
 
     for (ASTCDClass astcdClass : astcdClassList) {
       if (!astcdClass.isPresentModifier() || (astcdClass.getModifier().isAbstract() && !astcdClass.getName().endsWith("TOP"))) {
         continue;
       }
       // create attribute for AST
-      cdFactoryAttributeList.add(this.cdAttributeFacade.createProtectedStaticAttribute(factoryType, FACTORY_INFIX + astcdClass.getName()));
-
-      String astName = astcdClass.getName();
-      ASTType astType = this.cdTypeFacade.createTypeByDefinition(astName);
-
-      // add create Method for AST without parameters
-      ASTCDMethod createWithoutParameters = this.cdMethodFacade.createPublicStaticMethod(astType, CREATE_INFIX + astName);
-      cdFactoryCreateMethodList.add(createWithoutParameters);
-      this.glex.replaceTemplate(EMPTY_BODY, getFactoryMethod, new TemplateHookPoint("ast.factorymethods.Create", astName));
-
-      // add doCreate Method for AST without parameters
-      ASTCDMethod doCreateWithoutParameters = this.cdMethodFacade.createProtectedMethod(astType, DOCREATE_INFIX + astName);
-      cdFactoryDoCreateMethodList.add(doCreateWithoutParameters);
-      this.glex.replaceTemplate(EMPTY_BODY, getFactoryMethod, new TemplateHookPoint("ast.factorymethods.DoCreate", astName));
-
-      if (!astcdClass.isEmptyCDAttributes()) {
-        //create parameterList
-        List<ASTCDParameter> params = this.cdParameterFacade.createParameters(astcdClass.getCDAttributeList());
-        String paramCall = getParamCall(params);
-
-        // add create Method for AST without parameters
-        ASTCDMethod createWithParameters = this.cdMethodFacade.createPublicStaticMethod(astType, CREATE_INFIX + astName, params);
-        cdFactoryCreateMethodList.add(createWithParameters);
-        this.glex.replaceTemplate(EMPTY_BODY, getFactoryMethod, new TemplateHookPoint("ast.factorymethods.CreateWithParams", astName, paramCall));
-
-
-        // add doCreate Method for AST without parameters
-        ASTCDMethod doCreateWithParameters = this.cdMethodFacade.createProtectedMethod(astType, DOCREATE_INFIX + astName, params);
-        cdFactoryDoCreateMethodList.add(doCreateWithParameters);
-        this.glex.replaceTemplate(EMPTY_BODY, getFactoryMethod, new TemplateHookPoint("ast.factorymethods.DoCreateWithParams", astName, paramCall));
-      }
+      addAttributes(astcdClass, factoryType);
+      addFactoryMethods(astcdClass);
     }
+
 
     return CD4AnalysisMill.cDClassBuilder()
         .setModifier(modifier)
@@ -125,6 +98,44 @@ public class NodeFactoryDecorator implements Generator<ASTCDDefinition, ASTCDCla
       }
     }
     return s;
+  }
+
+  public void addAttributes(ASTCDClass astcdClass, ASTType factoryType) {
+    // create attribute for AST
+    cdFactoryAttributeList.add(this.cdAttributeFacade.createProtectedStaticAttribute(factoryType, FACTORY_INFIX + astcdClass.getName()));
+
+  }
+
+  public void addFactoryMethods(ASTCDClass astcdClass) {
+    String astName = astcdClass.getName();
+    ASTType astType = this.cdTypeFacade.createTypeByDefinition(astName);
+
+    // add create Method for AST without parameters
+    ASTCDMethod createWithoutParameters = this.cdMethodFacade.createPublicStaticMethod(astType, CREATE_INFIX + astName);
+    cdFactoryCreateMethodList.add(createWithoutParameters);
+    this.glex.replaceTemplate(EMPTY_BODY, createWithoutParameters, new TemplateHookPoint("ast.factorymethods.Create", astName));
+
+    // add doCreate Method for AST without parameters
+    ASTCDMethod doCreateWithoutParameters = this.cdMethodFacade.createProtectedMethod(astType, DOCREATE_INFIX + astName);
+    cdFactoryDoCreateMethodList.add(doCreateWithoutParameters);
+    this.glex.replaceTemplate(EMPTY_BODY, doCreateWithoutParameters, new TemplateHookPoint("ast.factorymethods.DoCreate", astName));
+
+    if (!astcdClass.isEmptyCDAttributes()) {
+      //create parameterList
+      List<ASTCDParameter> params = this.cdParameterFacade.createParameters(astcdClass.getCDAttributeList());
+      String paramCall = getParamCall(params);
+
+      // add create Method for AST without parameters
+      ASTCDMethod createWithParameters = this.cdMethodFacade.createPublicStaticMethod(astType, CREATE_INFIX + astName, params);
+      cdFactoryCreateMethodList.add(createWithParameters);
+      this.glex.replaceTemplate(EMPTY_BODY, createWithParameters, new TemplateHookPoint("ast.factorymethods.CreateWithParams", astName, paramCall));
+
+
+      // add doCreate Method for AST without parameters
+      ASTCDMethod doCreateWithParameters = this.cdMethodFacade.createProtectedMethod(astType, DOCREATE_INFIX + astName, params);
+      cdFactoryDoCreateMethodList.add(doCreateWithParameters);
+      this.glex.replaceTemplate(EMPTY_BODY, doCreateWithParameters, new TemplateHookPoint("ast.factorymethods.DoCreateWithParams", astName, paramCall));
+    }
   }
 
 }
