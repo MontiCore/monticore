@@ -86,88 +86,9 @@ public class MCTypesJTypeSymbolsHelper {
    */
   public static void addTypeArgumentsToTypeSymbol(
           JTypeReference<?> typeReference,
-          ASTMCReturnType astType, Scope definingScopeOfReference,
+          ASTMCType astType, Scope definingScopeOfReference,
           JTypeReferenceFactory<?> typeRefFactory) {
-    if (astType.getMCTypeOpt().isPresent() && astType.getMCType() instanceof ASTMCQualifiedType) {
-      ASTMCQualifiedType astSimpleReferenceType = (ASTMCQualifiedType) astType.getMCType();
-//
-//      List<ActualTypeArgument> actualTypeArguments = new ArrayList<>();
-//      for (ASTTypeArgument astTypeArgument : astSimpleReferenceType.getTypeArguments()
-//          .getTypeArgumentList()) {
-//        if (astTypeArgument instanceof ASTWildcardType) {
-//          ASTWildcardType astWildcardType = (ASTWildcardType) astTypeArgument;
-//
-//          // Three cases can occur here: lower bound, upper bound, no bound
-//          if (astWildcardType.isPresentLowerBound() || astWildcardType.isPresentUpperBound()) {
-//            // We have a bound.
-//            // Examples: Set<? extends Number>, Set<? super Integer>
-//
-//            // new bound
-//            boolean lowerBound = astWildcardType.isPresentLowerBound();
-//            ASTType typeBound = lowerBound
-//                ? astWildcardType.getLowerBound()
-//                : astWildcardType
-//                    .getUpperBound();
-//            int dimension = TypesHelper.getArrayDimensionIfArrayOrZero(typeBound);
-//
-//            JTypeReference<?> typeBoundSymbolReference = typeRefFactory.create(
-//                TypesPrinter.printTypeWithoutTypeArgumentsAndDimension(typeBound),
-//                definingScopeOfReference, dimension);
-//            ActualTypeArgument actualTypeArgument = new ActualTypeArgument(lowerBound, !lowerBound,
-//                typeBoundSymbolReference);
-//
-//            // init bound
-//            addTypeArgumentsToTypeSymbol(typeBoundSymbolReference, typeBound,
-//                definingScopeOfReference,
-//                typeRefFactory);
-//            actualTypeArguments.add(actualTypeArgument);
-//          }
-//          else {
-//            // No bound. Example: Set<?>
-//            actualTypeArguments.add(
-//                new ActualTypeArgument(false, false,
-//                    typeRefFactory.create("?", definingScopeOfReference, 0)));
-//          }
-//        }
-//        else if (astTypeArgument instanceof ASTType) {
-//          // type argument is a type:
-//          // Examples: Set<Integer>, Set<Set<?>>, Set<java.lang.String>
-//          ASTType astTypeNoBound = (ASTType) astTypeArgument;
-//          JTypeReference<?> typeArgumentSymbolReference = typeRefFactory.create(
-//              TypesPrinter.printTypeWithoutTypeArgumentsAndDimension(astTypeNoBound),
-//              definingScopeOfReference,
-//              TypesHelper.getArrayDimensionIfArrayOrZero(astTypeNoBound));
-//
-//          addTypeArgumentsToTypeSymbol(typeArgumentSymbolReference, astTypeNoBound,
-//              definingScopeOfReference,
-//              typeRefFactory);
-//
-//          actualTypeArguments.add(new ActualTypeArgument(typeArgumentSymbolReference));
-//        }
-//        else {
-//          Log.error("0xE0401 Unknown type argument " + astTypeArgument + " of type "
-//              + typeReference);
-//        }
-//        typeReference.setActualTypeArguments(actualTypeArguments);
-//      }
-    }
-    else if (astType.getMCTypeOpt().isPresent() && astType.getMCType() instanceof ASTMCMultipleGenericType) {
-      ASTMCMultipleGenericType astComplexReferenceType = (ASTMCMultipleGenericType) astType.getMCType();
-      for (ASTMCBasicGenericType astSimpleReferenceType : astComplexReferenceType
-          .getMCBasicGenericTypeList()) {
-        // TODO
-        /* ASTComplexReferenceType represents types like class or interface types which always have
-         * ASTSimpleReferenceType as qualification. For example: a.b.c<Arg>.d.e<Arg> */
-      }
-    }
-//    else if (astType.getTypeOpt().isPresent() && astType.getType() instanceof ASTComplexArrayType) {
-//      ASTComplexArrayType astComplexArrayType = (ASTComplexArrayType) astType;
-//      // references to types with dimension>0, e.g., String[]
-//      addTypeArgumentsToTypeSymbol(typeReference, astComplexArrayType.getComponentType(),
-//          definingScopeOfReference, typeRefFactory);
-//      int dimension = astComplexArrayType.getDimensions();
-//      typeReference.setDimension(dimension);
-//    }
+    throw new RuntimeException("Not yet implemented");
   }
   
   /**
