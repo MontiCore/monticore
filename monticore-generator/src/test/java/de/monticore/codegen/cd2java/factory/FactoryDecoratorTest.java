@@ -1,16 +1,202 @@
 package de.monticore.codegen.cd2java.factory;
 
+import de.monticore.MontiCoreScript;
+import de.monticore.codegen.cd2java.factories.CDParameterFactory;
+import de.monticore.codegen.cd2java.factories.CDTypeFactory;
+import de.monticore.codegen.cd2java.factories.ModifierBuilder;
+import de.monticore.codegen.mc2cd.TestHelper;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.io.paths.ModelPath;
+import de.monticore.symboltable.GlobalScope;
+import de.monticore.types.types._ast.ASTType;
+import de.monticore.umlcd4a.cd4analysis._ast.*;
+import org.junit.Before;
 import org.junit.Test;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
+
+import static org.junit.Assert.*;
 
 public class FactoryDecoratorTest {
 
-  @Test
-  public void testCDClassNotChanged(){
+  private CDTypeFactory cdTypeFassade;
 
+  private CDParameterFactory cdParameterFassade;
+
+  private ASTCDCompilationUnit cdCompilationUnit;
+
+  private ASTCDClass factoryClass;
+
+  @Before
+  public void setUp() {
+    GlobalExtensionManagement glex = new GlobalExtensionManagement();
+    FactoryDecorator factoryDecorator = new FactoryDecorator(glex);
+    this.cdTypeFassade = CDTypeFactory.getInstance();
+    this.cdParameterFassade = CDParameterFactory.getInstance();
+
+    //create grammar from ModelPath
+    Path modelPathPath = Paths.get("src/test/resources");
+    File outputPath = new File("target/generated-test-sources");
+    ModelPath modelPath = new ModelPath(modelPathPath, outputPath.toPath());
+    Optional<ASTMCGrammar> grammar = new MontiCoreScript()
+        .parseGrammar(Paths.get(new File(
+            "src/test/resources/Automaton.mc4").getAbsolutePath()));
+    assertTrue(grammar.isPresent());
+
+    //create ASTCDDefinition from MontiCoreScript
+    MontiCoreScript script = new MontiCoreScript();
+    GlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
+    script.createSymbolsFromAST(symbolTable, grammar.get());
+    cdCompilationUnit = script.getOrCreateCD(grammar.get(),
+        new GlobalExtensionManagement(), symbolTable);
+    ASTCDDefinition astcdDefinition = cdCompilationUnit.getCDDefinition().deepClone();
+    this.factoryClass = factoryDecorator.generate(astcdDefinition);
   }
 
   @Test
-  public void testNewCDClassExpected(){
-
+  public void testCDClassNotChanged() {
+    ASTCDDefinition astcdDefinition = cdCompilationUnit.getCDDefinition().deepClone();
+    assertTrue(astcdDefinition.deepEquals(cdCompilationUnit.getCDDefinition()));
   }
+
+  @Test
+  public void testFactoryName() {
+    assertEquals("AutomatonNodeFactory", factoryClass.getName());
+  }
+
+  @Test
+  public void testAttributeName() {
+    assertEquals("factory", factoryClass.getCDAttribute(0).getName());
+    assertEquals("factoryASTAutomaton", factoryClass.getCDAttribute(1).getName());
+    assertEquals("factoryASTState", factoryClass.getCDAttribute(2).getName());
+    assertEquals("factoryASTTransition", factoryClass.getCDAttribute(3).getName());
+    //test attribute Modifier for protected static
+    for (ASTCDAttribute astcdAttribute : factoryClass.getCDAttributeList()) {
+      assertTrue(ModifierBuilder.builder().Protected().Static().build().deepEquals(astcdAttribute.getModifier()));
+    }
+    //test
+  }
+
+  @Test
+  public void testAttributeModifier() {
+    for (ASTCDAttribute astcdAttribute : factoryClass.getCDAttributeList()) {
+      assertTrue(ModifierBuilder.builder().Protected().Static().build().deepEquals(astcdAttribute.getModifier()));
+    }
+  }
+
+  @Test
+  public void testConstructor() {
+    assertEquals(1, factoryClass.sizeCDConstructors());
+    ASTCDConstructor astcdConstructor = CD4AnalysisMill.cDConstructorBuilder()
+        .setModifier(ModifierBuilder.builder().Protected().build())
+        .setName("AutomatonNodeFactory")
+        .build();
+    assertTrue(astcdConstructor.deepEquals(factoryClass.getCDConstructor(0)));
+  }
+
+  @Test
+  public void testMethodGetFactory() {
+    ASTCDMethod method = factoryClass.getCDMethod(0);
+    //test name
+    assertEquals("getFactory", method.getName());
+    //test modifier
+    assertTrue(ModifierBuilder.builder().Private().Static().build().deepEquals(method.getModifier()));
+    //test parameters
+    assertTrue(method.isEmptyCDParameters());
+    //test returnType
+    ASTType returnType = cdTypeFassade.createTypeByDefinition("AutomatonNodeFactory");
+    assertTrue(returnType.deepEquals(method.getReturnType()));
+  }
+
+  @Test
+  public void testMethodCreateASTAutomatonWithoutParameter() {
+    ASTCDMethod method = factoryClass.getCDMethod(1);
+    //test name
+    assertEquals("createASTAutomaton", method.getName());
+    //test modifier
+    assertTrue(ModifierBuilder.builder().Public().Static().build().deepEquals(method.getModifier()));
+    //test parameters
+    assertTrue(method.isEmptyCDParameters());
+    //test returnType
+    ASTType returnType = cdTypeFassade.createTypeByDefinition("ASTAutomaton");
+    assertTrue(returnType.deepEquals(method.getReturnType()));
+  }
+
+  @Test
+  public void testMethodDoCreateASTAutomatonWithoutParameter() {
+    ASTCDMethod method = factoryClass.getCDMethod(7);
+    //test name
+    assertEquals("doCreateASTAutomaton", method.getName());
+    //test modifier
+    assertTrue(ModifierBuilder.builder().Protected().build().deepEquals(method.getModifier()));
+    //test parameters
+    assertTrue(method.isEmptyCDParameters());
+    //test returnType
+    ASTType returnType = cdTypeFassade.createTypeByDefinition("ASTAutomaton");
+    assertTrue(returnType.deepEquals(method.getReturnType()));
+  }
+
+  @Test
+  public void testMethodCreateASTAutomatonWithParameter() {
+    ASTCDMethod method = factoryClass.getCDMethod(2);
+    //test name
+    assertEquals("createASTAutomaton", method.getName());
+    //test modifier
+    assertTrue(ModifierBuilder.builder().Public().Static().build().deepEquals(method.getModifier()));
+    //test returnType
+    ASTType returnType = cdTypeFassade.createTypeByDefinition("ASTAutomaton");
+    assertTrue(returnType.deepEquals(method.getReturnType()));
+    //testParameter
+    assertFalse(method.isEmptyCDParameters());
+
+    ASTType nameType = cdTypeFassade.createTypeByDefinition("String");
+    ASTCDParameter nameParameter = cdParameterFassade.createParameter(nameType, "name");
+    assertTrue(nameParameter.getType().deepEquals(method.getCDParameter(0).getType()));
+    assertEquals(nameParameter.getName(), method.getCDParameter(0).getName());
+
+    ASTType statesType = cdTypeFassade.createTypeByDefinition("java.util.List<automaton._ast.ASTState>");
+    ASTCDParameter statesParameter = cdParameterFassade.createParameter(statesType, "states");
+    assertTrue(statesParameter.getType().deepEquals(statesType));
+    assertEquals(statesParameter.getName(), method.getCDParameter(1).getName());
+
+    ASTType transitionsType = cdTypeFassade.createTypeByDefinition("java.util.List<automaton._ast.ASTTransition>");
+    ASTCDParameter transitionsParameter = cdParameterFassade.createParameter(transitionsType, "transitions");
+    assertTrue(transitionsParameter.getType().deepEquals(transitionsType));
+    assertEquals(transitionsParameter.getName(), method.getCDParameter(2).getName());
+  }
+
+  @Test
+  public void testMethodDoCreateASTAutomatonWithParameter() {
+    ASTCDMethod method = factoryClass.getCDMethod(8);
+    //test name
+    assertEquals("doCreateASTAutomaton", method.getName());
+    //test modifier
+    assertTrue(ModifierBuilder.builder().Protected().build().deepEquals(method.getModifier()));
+    //test returnType
+    ASTType returnType = cdTypeFassade.createTypeByDefinition("ASTAutomaton");
+    assertTrue(returnType.deepEquals(method.getReturnType()));
+    //testParameter
+    assertFalse(method.isEmptyCDParameters());
+
+    ASTType nameType = cdTypeFassade.createTypeByDefinition("String");
+    ASTCDParameter nameParameter = cdParameterFassade.createParameter(nameType, "name");
+    assertTrue(nameParameter.getType().deepEquals(method.getCDParameter(0).getType()));
+    assertEquals(nameParameter.getName(), method.getCDParameter(0).getName());
+
+    ASTType statesType = cdTypeFassade.createTypeByDefinition("java.util.List<automaton._ast.ASTState>");
+    ASTCDParameter statesParameter = cdParameterFassade.createParameter(statesType, "states");
+    assertTrue(statesParameter.getType().deepEquals(statesType));
+    assertEquals(statesParameter.getName(), method.getCDParameter(1).getName());
+
+    ASTType transitionsType = cdTypeFassade.createTypeByDefinition("java.util.List<automaton._ast.ASTTransition>");
+    ASTCDParameter transitionsParameter = cdParameterFassade.createParameter(transitionsType, "transitions");
+    assertTrue(transitionsParameter.getType().deepEquals(transitionsType));
+    assertEquals(transitionsParameter.getName(), method.getCDParameter(2).getName());
+  }
+
+
 }

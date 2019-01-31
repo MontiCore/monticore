@@ -53,6 +53,8 @@ public class FactoryDecorator implements Generator<ASTCDDefinition, ASTCDClass> 
 
     ASTCDAttribute factoryAttribute = this.cdAttributeFassade.createProtectedStaticAttribute(factoryType, FACTORY_INFIX);
 
+    ASTCDMethod getFactoryMethod = this.cdMethodFassade.createPrivateStaticMethod(factoryType, GET_FACTORY_METHOD);
+
     List<ASTCDClass> astcdClassList = Lists.newArrayList(astcdDefinition.getCDClassList());
     List<ASTCDAttribute> cdFactoryAttributeList = new ArrayList<>();
     List<ASTCDMethod> cdFactoryCreateMethodList = new ArrayList<>();
@@ -63,9 +65,9 @@ public class FactoryDecorator implements Generator<ASTCDDefinition, ASTCDClass> 
         continue;
       }
       // create attribute for AST
-      cdFactoryAttributeList.add(this.cdAttributeFassade.createProtectedStaticAttribute(factoryType, FACTORY_INFIX + GeneratorHelper.AST_PREFIX + astcdClass.getName()));
+      cdFactoryAttributeList.add(this.cdAttributeFassade.createProtectedStaticAttribute(factoryType, FACTORY_INFIX + astcdClass.getName()));
 
-      String astName = GeneratorHelper.AST_PREFIX + astcdClass.getName();
+      String astName = astcdClass.getName();
       ASTType astType = this.cdTypeFassade.createTypeByDefinition(astName);
 
       // add create Method for AST without parameters
@@ -84,9 +86,6 @@ public class FactoryDecorator implements Generator<ASTCDDefinition, ASTCDClass> 
     }
 
     ASTCDConstructor constructor = this.cdConstructorFassade.createProtectedDefaultConstructor(factoryClassName);
-
-    ASTCDMethod getFactoryMethod = this.cdMethodFassade.createPublicStaticMethod(factoryType, GET_FACTORY_METHOD);
-
 
     return CD4AnalysisMill.cDClassBuilder()
         .setModifier(modifierBuilder.build())
