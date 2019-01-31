@@ -20,6 +20,18 @@ public class CDMethodFactory {
     this.parser = new CD4AnalysisParser();
   }
 
+  private static final ASTModifier PUBLIC = ModifierBuilder.builder().Public().build();
+  
+  private static final ASTModifier PUBLIC_STATIC = ModifierBuilder.builder().Public().Static().build();
+  
+  private static final ASTModifier PROTECTED = ModifierBuilder.builder().Protected().build();
+
+  private static final ASTModifier PROTECTED_STATIC = ModifierBuilder.builder().Protected().Static().build();
+  
+  private static final ASTModifier PRIVATE = ModifierBuilder.builder().Private().build();
+
+  private static final ASTModifier PRIVATE_STATIC = ModifierBuilder.builder().Private().Static().build();
+
   public static CDMethodFactory getInstance() {
     if (cdMethodFactory == null) {
       cdMethodFactory = new CDMethodFactory();
@@ -40,58 +52,233 @@ public class CDMethodFactory {
     return method.get();
   }
 
+  /*
+  create Methods for all public Methods
+   */
   public ASTCDMethod createPublicVoidMethod(final String name) {
-    return createPublicVoidMethodBuilder(name).build();
-  }
-
-  public ASTCDMethod createPublicVoidMethod(final String name, final ASTCDAttribute... parameters) {
-    List<ASTCDParameter> parameterList = CDParameterFactory.getInstance().createParameters(parameters);
-    return createPublicVoidMethodBuilder(name)
-        .setCDParameterList(parameterList)
-        .build();
+    return createVoidMethodBuilder(name, PUBLIC).build();
   }
 
   public ASTCDMethod createPublicVoidMethod(final String name, final ASTCDParameter... parameters) {
-    return createPublicVoidMethodBuilder(name)
+    return createVoidMethodBuilder(name, PUBLIC)
         .setCDParameterList(Arrays.asList(parameters))
         .build();
   }
 
-
-  public ASTCDMethod createPublicMethod(final ASTType returnType, final String name) {
-    return createPublicMethodBuilder(returnType, name).build();
+  public ASTCDMethod createPublicVoidMethod(final String name, final List<ASTCDParameter> parameters) {
+    return createVoidMethodBuilder(name, PUBLIC)
+        .setCDParameterList(parameters)
+        .build();
   }
 
-  public ASTCDMethod createPublicMethod(final ASTType returnType, final String name, final ASTCDAttribute... parameters) {
-    List<ASTCDParameter> parameterList = CDParameterFactory.getInstance().createParameters(parameters);
-    return createPublicMethodBuilder(returnType, name)
-        .setCDParameterList(parameterList)
-        .build();
+  public ASTCDMethod createPublicMethod(final ASTType returnType, final String name) {
+    return createMethodBuilder(returnType, name, PUBLIC).build();
   }
 
   public ASTCDMethod createPublicMethod(final ASTType returnType, final String name, final ASTCDParameter... parameters) {
-    return createPublicMethodBuilder(returnType, name)
+    return createMethodBuilder(returnType, name, PUBLIC)
         .setCDParameterList(Arrays.asList(parameters))
         .build();
   }
 
+  public ASTCDMethod createPublicMethod(final ASTType returnType, final String name, final List<ASTCDParameter> parameters) {
+    return createMethodBuilder(returnType, name, PUBLIC)
+        .setCDParameterList(parameters)
+        .build();
+  }
+  
+  /*
+  create Methods for all public static Methods
+   */
+  public ASTCDMethod createPublicStaticVoidMethod(final String name) {
+    return createVoidMethodBuilder(name, PUBLIC_STATIC).build();
+  }
 
+  public ASTCDMethod createPublicStaticVoidMethod(final String name, final ASTCDParameter... parameters) {
+    return createVoidMethodBuilder(name, PUBLIC_STATIC)
+        .setCDParameterList(Arrays.asList(parameters))
+        .build();
+  }
 
+  public ASTCDMethod createPublicStaticVoidMethod(final String name, final List<ASTCDParameter> parameters) {
+    return createVoidMethodBuilder(name, PUBLIC_STATIC)
+        .setCDParameterList(parameters)
+        .build();
+  }
 
+  public ASTCDMethod createPublicStaticMethod(final ASTType returnType, final String name) {
+    return createMethodBuilder(returnType, name, PUBLIC_STATIC).build();
+  }
 
-  private ASTCDMethodBuilder createPublicMethodBuilder(final ASTType returnType, final String name) {
-    return createPublicMethodBuilder(name)
+  public ASTCDMethod createPublicStaticMethod(final ASTType returnType, final String name, final ASTCDParameter... parameters) {
+    return createMethodBuilder(returnType, name, PUBLIC_STATIC)
+        .setCDParameterList(Arrays.asList(parameters))
+        .build();
+  }
+
+  public ASTCDMethod createPublicStaticMethod(final ASTType returnType, final String name, final List<ASTCDParameter> parameters) {
+    return createMethodBuilder(returnType, name, PUBLIC_STATIC)
+        .setCDParameterList(parameters)
+        .build();
+  }
+
+  /*
+  create Methods for all protected Methods
+   */
+  public ASTCDMethod createProtectedVoidMethod(final String name) {
+    return createVoidMethodBuilder(name, PROTECTED).build();
+  }
+
+  public ASTCDMethod createProtectedVoidMethod(final String name, final ASTCDParameter... parameters) {
+    return createVoidMethodBuilder(name, PROTECTED)
+        .setCDParameterList(Arrays.asList(parameters))
+        .build();
+  }
+
+  public ASTCDMethod createProtectedVoidMethod(final String name, final List<ASTCDParameter> parameters) {
+    return createVoidMethodBuilder(name, PROTECTED)
+        .setCDParameterList(parameters)
+        .build();
+  }
+
+  public ASTCDMethod createProtectedMethod(final ASTType returnType, final String name) {
+    return createMethodBuilder(returnType, name, PROTECTED).build();
+  }
+
+  public ASTCDMethod createProtectedMethod(final ASTType returnType, final String name, final ASTCDParameter... parameters) {
+    return createMethodBuilder(returnType, name, PROTECTED)
+        .setCDParameterList(Arrays.asList(parameters))
+        .build();
+  }
+
+  public ASTCDMethod createProtectedMethod(final ASTType returnType, final String name, final List<ASTCDParameter> parameters) {
+    return createMethodBuilder(returnType, name, PROTECTED)
+        .setCDParameterList(parameters)
+        .build();
+  }
+  
+    /*
+  create Methods for all protected static Methods
+   */
+  public ASTCDMethod createProtectedStaticVoidMethod(final String name) {
+    return createVoidMethodBuilder(name, PROTECTED_STATIC).build();
+  }
+
+  public ASTCDMethod createProtectedStaticVoidMethod(final String name, final ASTCDParameter... parameters) {
+    return createVoidMethodBuilder(name, PROTECTED_STATIC)
+        .setCDParameterList(Arrays.asList(parameters))
+        .build();
+  }
+
+  public ASTCDMethod createProtectedStaticVoidMethod(final String name, final List<ASTCDParameter> parameters) {
+    return createVoidMethodBuilder(name, PROTECTED_STATIC)
+        .setCDParameterList(parameters)
+        .build();
+  }
+
+  public ASTCDMethod createProtectedStaticMethod(final ASTType returnType, final String name) {
+    return createMethodBuilder(returnType, name, PROTECTED_STATIC).build();
+  }
+
+  public ASTCDMethod createProtectedStaticMethod(final ASTType returnType, final String name, final ASTCDParameter... parameters) {
+    return createMethodBuilder(returnType, name, PROTECTED_STATIC)
+        .setCDParameterList(Arrays.asList(parameters))
+        .build();
+  }
+
+  public ASTCDMethod createProtectedStaticMethod(final ASTType returnType, final String name, final List<ASTCDParameter> parameters) {
+    return createMethodBuilder(returnType, name, PROTECTED_STATIC)
+        .setCDParameterList(parameters)
+        .build();
+  }
+  
+    /*
+  create Methods for all private Methods
+   */
+  public ASTCDMethod createPrivateVoidMethod(final String name) {
+    return createVoidMethodBuilder(name, PRIVATE).build();
+  }
+
+  public ASTCDMethod createPrivateVoidMethod(final String name, final ASTCDParameter... parameters) {
+    return createVoidMethodBuilder(name, PRIVATE)
+        .setCDParameterList(Arrays.asList(parameters))
+        .build();
+  }
+
+  public ASTCDMethod createPrivateVoidMethod(final String name, final List<ASTCDParameter> parameters) {
+    return createVoidMethodBuilder(name, PRIVATE)
+        .setCDParameterList(parameters)
+        .build();
+  }
+
+  public ASTCDMethod createPrivateMethod(final ASTType returnType, final String name) {
+    return createMethodBuilder(returnType, name, PRIVATE).build();
+  }
+
+  public ASTCDMethod createPrivateMethod(final ASTType returnType, final String name, final ASTCDParameter... parameters) {
+    return createMethodBuilder(returnType, name, PRIVATE)
+        .setCDParameterList(Arrays.asList(parameters))
+        .build();
+  }
+
+  public ASTCDMethod createPrivateMethod(final ASTType returnType, final String name, final List<ASTCDParameter> parameters) {
+    return createMethodBuilder(returnType, name, PRIVATE)
+        .setCDParameterList(parameters)
+        .build();
+  }
+  
+    /*
+  create Methods for all private static Methods
+   */
+  public ASTCDMethod createPrivateStaticVoidMethod(final String name) {
+    return createVoidMethodBuilder(name, PRIVATE_STATIC).build();
+  }
+
+  public ASTCDMethod createPrivateStaticVoidMethod(final String name, final ASTCDParameter... parameters) {
+    return createVoidMethodBuilder(name, PRIVATE_STATIC)
+        .setCDParameterList(Arrays.asList(parameters))
+        .build();
+  }
+
+  public ASTCDMethod createPrivateStaticVoidMethod(final String name, final List<ASTCDParameter> parameters) {
+    return createVoidMethodBuilder(name, PRIVATE_STATIC)
+        .setCDParameterList(parameters)
+        .build();
+  }
+
+  public ASTCDMethod createPrivateStaticMethod(final ASTType returnType, final String name) {
+    return createMethodBuilder(returnType, name, PRIVATE_STATIC).build();
+  }
+
+  public ASTCDMethod createPrivateStaticMethod(final ASTType returnType, final String name, final ASTCDParameter... parameters) {
+    return createMethodBuilder(returnType, name, PRIVATE_STATIC)
+        .setCDParameterList(Arrays.asList(parameters))
+        .build();
+  }
+
+  public ASTCDMethod createPrivateStaticMethod(final ASTType returnType, final String name, final List<ASTCDParameter> parameters) {
+    return createMethodBuilder(returnType, name, PRIVATE_STATIC)
+        .setCDParameterList(parameters)
+        .build();
+  }
+
+  
+  /*
+  builder for methods with the special modifier
+   */
+  private ASTCDMethodBuilder createMethodBuilder(final ASTType returnType,final String name, final ASTModifier modifier) {
+    return createMethodBuilder(name, modifier)
         .setReturnType(returnType);
   }
 
-  private ASTCDMethodBuilder createPublicVoidMethodBuilder(final String name) {
-    return createPublicMethodBuilder(name)
+  private ASTCDMethodBuilder createVoidMethodBuilder(final String name, final ASTModifier modifier) {
+    return createMethodBuilder(name, modifier)
         .setReturnType(CDTypeFactory.getInstance().createVoidType());
   }
 
-  private ASTCDMethodBuilder createPublicMethodBuilder(final String name) {
+  private ASTCDMethodBuilder createMethodBuilder(final String name, final ASTModifier modifier) {
     return CD4AnalysisMill.cDMethodBuilder()
-        .setModifier(ModifierBuilder.builder().Public().build())
+        .setModifier(modifier)
         .setName(name);
   }
 }

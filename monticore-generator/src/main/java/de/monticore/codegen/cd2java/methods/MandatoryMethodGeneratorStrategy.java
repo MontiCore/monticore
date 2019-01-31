@@ -1,6 +1,7 @@
 package de.monticore.codegen.cd2java.methods;
 
 import de.monticore.codegen.cd2java.factories.CDMethodFactory;
+import de.monticore.codegen.cd2java.factories.CDParameterFactory;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
@@ -19,9 +20,12 @@ public class MandatoryMethodGeneratorStrategy implements MethodGeneratorStrategy
 
   private final CDMethodFactory cdMethodFactory;
 
+  private final CDParameterFactory cdParameterFactory;
+
   protected MandatoryMethodGeneratorStrategy(final GlobalExtensionManagement glex) {
     this.glex = glex;
     this.cdMethodFactory = CDMethodFactory.getInstance();
+    this.cdParameterFactory = CDParameterFactory.getInstance();
   }
 
   @Override
@@ -39,6 +43,6 @@ public class MandatoryMethodGeneratorStrategy implements MethodGeneratorStrategy
 
   protected ASTCDMethod createSetter(final ASTCDAttribute ast) {
     String name = SETTER_PREFIX + StringUtils.capitalize(ast.getName());
-    return this.cdMethodFactory.createPublicVoidMethod(name, ast);
+    return this.cdMethodFactory.createPublicVoidMethod(name, this.cdParameterFactory.createParameters(ast));
   }
 }

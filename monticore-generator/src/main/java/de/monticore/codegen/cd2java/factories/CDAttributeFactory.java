@@ -47,4 +47,12 @@ public class CDAttributeFactory {
         .build();
   }
 
+  public ASTCDAttribute createProtectedStaticAttribute(final ASTType type, final String name) {
+    return CD4AnalysisMill.cDAttributeBuilder()
+        .setModifier(ModifierBuilder.builder().Protected().Static().build())
+        .setType(type)
+        .setName(name)
+        .build();
+  }
+
 }

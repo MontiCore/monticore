@@ -77,7 +77,7 @@ public class OptionalMethodGeneratorStrategy implements MethodGeneratorStrategy 
 
   protected ASTCDMethod createSetOptMethod(final ASTCDAttribute ast) {
     String name = SET_PREFIX + StringUtils.capitalize(ast.getName()) + OPT_SUFFIX;
-    return this.cdMethodFactory.createPublicVoidMethod(name, ast);
+    return this.cdMethodFactory.createPublicVoidMethod(name, this.cdParameterFactory.createParameters(ast));
   }
 
   protected ASTCDMethod createSetAbsentMethod(final ASTCDAttribute ast) {
