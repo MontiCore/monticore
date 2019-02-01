@@ -9,6 +9,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParser;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,7 +25,7 @@ import static org.junit.Assert.assertEquals;
 
 public class BuilderDecoratorTest {
 
-  private static final String BUILDER_CD = Paths.get("src/test/resources/de/monticore/codegen/builder/Builder.cd").toAbsolutePath().toString();
+  private static final String CD = Paths.get("src/test/resources/de/monticore/codegen/builder/Builder.cd").toAbsolutePath().toString();
 
   private final GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
@@ -32,10 +33,11 @@ public class BuilderDecoratorTest {
 
   @Before
   public void setup() throws IOException {
+    LogStub.init();
     CD4AnalysisParser parser = new CD4AnalysisParser();
-    Optional<ASTCDCompilationUnit> ast = parser.parse(BUILDER_CD);
+    Optional<ASTCDCompilationUnit> ast = parser.parse(CD);
     if (!ast.isPresent()) {
-      Log.error(BUILDER_CD + " is not present");
+      Log.error(CD + " is not present");
     }
     ASTCDClass cdClass = ast.get().getCDDefinition().getCDClass(0);
 
@@ -94,7 +96,7 @@ public class BuilderDecoratorTest {
     ASTCDMethod build = buildOpt.get();
     assertEquals("A", build.printReturnType());
     assertEquals("public", build.printModifier().trim());
-    assertEquals(0, build.getCDParameterList().size());
+    assertTrue(build.getCDParameterList().isEmpty());
   }
 
   @Test
@@ -104,7 +106,7 @@ public class BuilderDecoratorTest {
     ASTCDMethod isValid = isValidOpt.get();
     assertEquals("boolean", isValid.printReturnType());
     assertEquals("public", isValid.printModifier().trim());
-    assertEquals(0, isValid.getCDParameterList().size());
+    assertTrue(isValid.getCDParameterList().isEmpty());
   }
 
 

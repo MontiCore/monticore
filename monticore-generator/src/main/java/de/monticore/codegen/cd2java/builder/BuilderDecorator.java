@@ -2,6 +2,7 @@ package de.monticore.codegen.cd2java.builder;
 
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.Decorator;
+import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.factories.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -27,7 +28,7 @@ class BuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
   private final CDMethodFactory cdMethodFactory;
 
 
-  BuilderDecorator(final GlobalExtensionManagement glex) {
+  BuilderDecorator(final GlobalExtensionManagement glex) throws DecorateException {
     this.glex = glex;
     this.cdTypeFactory = CDTypeFactory.getInstance();
     this.cdAttributeFactory = CDAttributeFactory.getInstance();
@@ -36,10 +37,10 @@ class BuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
   }
 
   @Override
-  public ASTCDClass decorate(final ASTCDClass domainClass) {
+  public ASTCDClass decorate(final ASTCDClass domainClass) throws DecorateException {
     String builderClassName = domainClass.getName() + BUILDER_SUFFIX;
-    ASTType domainType = this.cdTypeFactory.createTypeByDefinition(domainClass.getName());
-    ASTType builderType = this.cdTypeFactory.createTypeByDefinition(builderClassName);
+    ASTType domainType = this.cdTypeFactory.createSimpleReferenceType(domainClass.getName());
+    ASTType builderType = this.cdTypeFactory.createSimpleReferenceType(builderClassName);
 
 
     ModifierBuilder modifierBuilder = ModifierBuilder.builder().Public();

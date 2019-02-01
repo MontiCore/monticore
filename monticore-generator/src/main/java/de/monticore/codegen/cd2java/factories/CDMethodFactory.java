@@ -1,11 +1,13 @@
 package de.monticore.codegen.cd2java.factories;
 
+import de.monticore.codegen.cd2java.factories.exception.CDFactoryErrorCode;
+import de.monticore.codegen.cd2java.factories.exception.CDFactoryException;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParser;
-import de.se_rwth.commons.logging.Log;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -40,15 +42,17 @@ public class CDMethodFactory {
   }
 
   public ASTCDMethod createMethodByDefinition(final String signature) {
-    Optional<ASTCDMethod> method = Optional.empty();
+    Optional<ASTCDMethod> method;
     try {
-      method = parser.parse_StringCDMethod(signature);
+      method = parser.parseCDMethod(new StringReader(signature));
     } catch (IOException e) {
-      Log.error("Could not create CDMethod with signature '" + signature + "'.", e);
+      throw new CDFactoryException(CDFactoryErrorCode.COULD_NOT_CREATE_METHOD, signature, e);
     }
+
     if (!method.isPresent()) {
-      Log.error("Could not create CDMethod with signature '" + signature + "'.");
+      throw new CDFactoryException(CDFactoryErrorCode.COULD_NOT_CREATE_METHOD, signature);
     }
+
     return method.get();
   }
 

@@ -12,6 +12,7 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.builder.BuilderDecoratorConstants.BUILDER_SUFFIX;
 
@@ -25,15 +26,12 @@ public class ASTNodeBuilderDecorator implements Decorator<ASTCDClass, ASTCDClass
 
   private final CDTypeFactory cdTypeFactory;
 
-  private final CDMethodFactory cdMethodFactory;
-
   public ASTNodeBuilderDecorator(
       final GlobalExtensionManagement glex,
       final BuilderDecorator builderDecorator) {
     this.glex = glex;
     this.builderDecorator = builderDecorator;
     this.cdTypeFactory = CDTypeFactory.getInstance();
-    this.cdMethodFactory = CDMethodFactory.getInstance();
   }
 
   @Override
@@ -47,9 +45,9 @@ public class ASTNodeBuilderDecorator implements Decorator<ASTCDClass, ASTCDClass
     List<ASTCDMethod> astCNodeMethods = new ArrayList<>();
 
     if (hasSuperClassOtherThanASTCNode(domainClass)) {
-      ASTType builderType = this.cdTypeFactory.createTypeByDefinition(builderClassName);
+      ASTType builderType = this.cdTypeFactory.createSimpleReferenceType(builderClassName);
       BuilderASTCNodeMethodDecorator builderASTCNodeMethodGenerator = createBuilderASTCNodeMethodGenerator(builderType);
-      astCNodeMethods.addAll(builderASTCNodeMethodGenerator.generate());
+      astCNodeMethods.addAll(builderASTCNodeMethodGenerator.decorate());
     }
 
     builderClass.addAllCDMethods(astCNodeMethods);

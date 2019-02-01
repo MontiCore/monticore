@@ -7,6 +7,7 @@ import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class MandatoryMethodDecoratorStrategy implements MethodDecoratorStrategy
   public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
     ASTCDMethod getter = createGetter(ast);
     ASTCDMethod setter = createSetter(ast);
-    return Arrays.asList(getter, setter);
+    return new ArrayList<>(Arrays.asList(getter, setter));
   }
 
   private ASTCDMethod createGetter(final ASTCDAttribute ast) {

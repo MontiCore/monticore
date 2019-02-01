@@ -133,13 +133,13 @@ class BuilderASTCNodeMethodDecorator {
 
   }
 
-  public List<ASTCDMethod> generate() {
+  public List<ASTCDMethod> decorate() {
     return Stream.of(ASTCNodeMethod.values())
         .map(this::createBuilderMethodForASTCNodeMethod)
         .collect(Collectors.toList());
   }
 
-  private ASTCDMethod createBuilderMethodForASTCNodeMethod(ASTCNodeMethod astcNodeMethod) {
+  private ASTCDMethod createBuilderMethodForASTCNodeMethod(final ASTCNodeMethod astcNodeMethod) {
     ASTCDMethod method = this.cdMethodFactory.createMethodByDefinition(astcNodeMethod.signature);
     method.setReturnType(this.builderType);
     return method;

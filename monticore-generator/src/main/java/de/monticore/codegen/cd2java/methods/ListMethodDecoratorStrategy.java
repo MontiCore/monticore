@@ -5,12 +5,14 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class ListMethodDecoratorStrategy implements MethodDecoratorStrategy {
 
-  private static final String CLEAR           = "public void clear%s()";
+  private static final String CLEAR           = "public void clear%s();";
   private static final String ADD             = "public boolean add%s(%s element);";
   private static final String ADD_ALL         = "public boolean addAll%s(Collection<? extends %s> collection);";
   private static final String REMOVE          = "public boolean remove%s(Object element);";
@@ -67,7 +69,7 @@ public class ListMethodDecoratorStrategy implements MethodDecoratorStrategy {
     this.attributeName = StringUtils.capitalize(ast.getName());
     this.attributeType = ast.printType();
     List<ASTCDMethod> methods = this.mandatoryMethodDecoratorStrategy.decorate(ast);
-    methods.addAll(Arrays.asList(
+    methods.addAll(new ArrayList<>(Arrays.asList(
         createClearMethod(),
         createAddMethod(),
         createAddAllMethod(),
@@ -100,7 +102,7 @@ public class ListMethodDecoratorStrategy implements MethodDecoratorStrategy {
         createHashCodeMethod(),
         createListIteratorMethod(),
         createListIterator_Method(),
-        createSubListMethod()));
+        createSubListMethod())));
     return methods;
   }
 

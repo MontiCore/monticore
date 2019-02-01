@@ -1,10 +1,12 @@
 package de.monticore.codegen.cd2java.factories;
 
+import de.monticore.codegen.cd2java.factories.exception.CDFactoryErrorCode;
+import de.monticore.codegen.cd2java.factories.exception.CDFactoryException;
 import de.monticore.types.types._ast.*;
 import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParser;
-import de.se_rwth.commons.logging.Log;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.Optional;
 
 public class CDTypeFactory {
@@ -25,29 +27,39 @@ public class CDTypeFactory {
   }
 
   public ASTType createTypeByDefinition(final String typeSignature) {
-    Optional<ASTType> type = Optional.empty();
+    Optional<ASTType> type;
     try {
-      type = parser.parse_StringType(typeSignature);
+      type = parser.parseType(new StringReader(typeSignature));
     } catch (IOException e) {
-      Log.error("Could not create Type '" + typeSignature + "'.", e);
+      throw new CDFactoryException(CDFactoryErrorCode.COULD_NOT_CREATE_TYPE, typeSignature, e);
     }
+
     if (!type.isPresent()) {
-      Log.error("Could not create Type '" + typeSignature + "'.");
+      throw new CDFactoryException(CDFactoryErrorCode.COULD_NOT_CREATE_TYPE, typeSignature);
     }
+
     return type.get();
   }
 
   public ASTReferenceType createReferenceTypeByDefinition(final String typeSignature) {
-    Optional<ASTReferenceType> type = Optional.empty();
+    Optional<ASTReferenceType> type;
     try {
-      type = parser.parse_StringReferenceType(typeSignature);
+      type = parser.parseReferenceType(new StringReader(typeSignature));
     } catch (IOException e) {
-      Log.error("Could not create ReferenceType '" + typeSignature + "'.", e);
+      throw new CDFactoryException(CDFactoryErrorCode.COULD_NOT_CREATE_TYPE, typeSignature, e);
     }
+
     if (!type.isPresent()) {
-      Log.error("Could not create ReferenceType '" + typeSignature + "'.");
+      throw new CDFactoryException(CDFactoryErrorCode.COULD_NOT_CREATE_TYPE, typeSignature);
     }
+
     return type.get();
+  }
+
+  public ASTSimpleReferenceType createSimpleReferenceType(final String name) {
+    return TypesMill.simpleReferenceTypeBuilder()
+        .addName(name)
+        .build();
   }
 
   public ASTReturnType createVoidType() {

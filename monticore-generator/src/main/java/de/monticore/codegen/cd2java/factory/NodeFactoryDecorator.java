@@ -64,7 +64,7 @@ public class NodeFactoryDecorator implements Decorator<ASTCDDefinition, ASTCDCla
   @Override
   public ASTCDClass decorate(ASTCDDefinition astcdDefinition) {
     String factoryClassName = astcdDefinition.getName() + NODE_FACTORY_SUFFIX;
-    ASTType factoryType = this.cdTypeFacade.createTypeByDefinition(factoryClassName);
+    ASTType factoryType = this.cdTypeFacade.createSimpleReferenceType(factoryClassName);
 
     ASTModifier modifier = ModifierBuilder.builder().Public().build();
 
@@ -137,7 +137,7 @@ public class NodeFactoryDecorator implements Decorator<ASTCDDefinition, ASTCDCla
 
   public void addFactoryMethods(ASTCDClass astcdClass) {
     String astName = astcdClass.getName();
-    ASTType astType = this.cdTypeFacade.createTypeByDefinition(astName);
+    ASTType astType = this.cdTypeFacade.createSimpleReferenceType(astName);
 
     // add create Method for AST without parameters
     ASTCDMethod createWithoutParameters = this.cdMethodFacade.createPublicStaticMethod(astType, CREATE_INFIX + astName);

@@ -1,8 +1,0 @@
-package de.monticore.codegen.builder;
-
-classdiagram Mandatory {
-
-    class A {
-        protected int i;
-    }
-}
