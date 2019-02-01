@@ -19,6 +19,10 @@ import static org.junit.Assert.assertEquals;
 
 public class BuilderOptionalMethodDecoratorStrategyTest {
 
+  private static final String BUILDER_CLASS_NAME = "A" + BUILDER_SUFFIX;
+
+  private static final String PUBLIC = "public";
+
   private final GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
   private List<ASTCDMethod> methods;
@@ -27,7 +31,7 @@ public class BuilderOptionalMethodDecoratorStrategyTest {
   public void setup() {
     LogStub.init();
     ASTCDAttribute attribute = CDAttributeFactory.getInstance().createAttributeByDefinition("protected Optional<String> s;");
-    ASTType builderType = CDTypeFactory.getInstance().createTypeByDefinition("A" + BUILDER_SUFFIX);
+    ASTType builderType = CDTypeFactory.getInstance().createTypeByDefinition(BUILDER_CLASS_NAME);
     BuilderOptionalMethodDecoratorStrategy decoratorStrategy = new BuilderOptionalMethodDecoratorStrategy(glex, builderType);
     this.methods = decoratorStrategy.decorate(attribute);
   }
@@ -42,7 +46,7 @@ public class BuilderOptionalMethodDecoratorStrategyTest {
     Optional<ASTCDMethod> getMethod = methods.stream().filter(m -> "getS".equals(m.getName())).findFirst();
     assertTrue(getMethod.isPresent());
     assertTrue(getMethod.get().getCDParameterList().isEmpty());
-    assertEquals("public", getMethod.get().printModifier().trim());
+    assertEquals(PUBLIC, getMethod.get().printModifier().trim());
     assertEquals("String", getMethod.get().printReturnType());
   }
 
@@ -51,7 +55,7 @@ public class BuilderOptionalMethodDecoratorStrategyTest {
     Optional<ASTCDMethod> getMethod = methods.stream().filter(m -> "getSOpt".equals(m.getName())).findFirst();
     assertTrue(getMethod.isPresent());
     assertTrue(getMethod.get().getCDParameterList().isEmpty());
-    assertEquals("public", getMethod.get().printModifier().trim());
+    assertEquals(PUBLIC, getMethod.get().printModifier().trim());
     assertEquals("Optional<String>", getMethod.get().printReturnType());
   }
 
@@ -60,7 +64,7 @@ public class BuilderOptionalMethodDecoratorStrategyTest {
     Optional<ASTCDMethod> getMethod = methods.stream().filter(m -> "isPresentS".equals(m.getName())).findFirst();
     assertTrue(getMethod.isPresent());
     assertTrue(getMethod.get().getCDParameterList().isEmpty());
-    assertEquals("public", getMethod.get().printModifier().trim());
+    assertEquals(PUBLIC, getMethod.get().printModifier().trim());
     assertEquals("boolean", getMethod.get().printReturnType());
   }
 
@@ -74,8 +78,8 @@ public class BuilderOptionalMethodDecoratorStrategyTest {
     assertEquals("String", TypesPrinter.printType(parameter.getType()));
     assertEquals("s", parameter.getName());
 
-    assertEquals("public", getMethod.get().printModifier().trim());
-    assertEquals("ABuilder", getMethod.get().printReturnType());
+    assertEquals(PUBLIC, getMethod.get().printModifier().trim());
+    assertEquals(BUILDER_CLASS_NAME, getMethod.get().printReturnType());
   }
 
   @Test
@@ -88,8 +92,8 @@ public class BuilderOptionalMethodDecoratorStrategyTest {
     assertEquals("Optional<String>", TypesPrinter.printType(parameter.getType()));
     assertEquals("s", parameter.getName());
 
-    assertEquals("public", getMethod.get().printModifier().trim());
-    assertEquals("ABuilder", getMethod.get().printReturnType());
+    assertEquals(PUBLIC, getMethod.get().printModifier().trim());
+    assertEquals(BUILDER_CLASS_NAME, getMethod.get().printReturnType());
   }
 
   @Test
@@ -97,7 +101,7 @@ public class BuilderOptionalMethodDecoratorStrategyTest {
     Optional<ASTCDMethod> getMethod = methods.stream().filter(m -> "setAbsentS".equals(m.getName())).findFirst();
     assertTrue(getMethod.isPresent());
     assertTrue(getMethod.get().getCDParameterList().isEmpty());
-    assertEquals("public", getMethod.get().printModifier().trim());
-    assertEquals("ABuilder", getMethod.get().printReturnType());
+    assertEquals(PUBLIC, getMethod.get().printModifier().trim());
+    assertEquals(BUILDER_CLASS_NAME, getMethod.get().printReturnType());
   }
 }

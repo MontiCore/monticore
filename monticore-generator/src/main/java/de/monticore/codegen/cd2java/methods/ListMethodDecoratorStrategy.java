@@ -2,10 +2,11 @@ package de.monticore.codegen.cd2java.methods;
 
 import de.monticore.codegen.cd2java.factories.CDMethodFactory;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.TypesPrinter;
+import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -67,7 +68,7 @@ public class ListMethodDecoratorStrategy implements MethodDecoratorStrategy {
   @Override
   public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
     this.attributeName = StringUtils.capitalize(ast.getName());
-    this.attributeType = ast.printType();
+    this.attributeType = getGenericTypeFromListAttribute(ast.getType());
     List<ASTCDMethod> methods = this.mandatoryMethodDecoratorStrategy.decorate(ast);
     methods.addAll(new ArrayList<>(Arrays.asList(
         createClearMethod(),
@@ -104,6 +105,11 @@ public class ListMethodDecoratorStrategy implements MethodDecoratorStrategy {
         createListIterator_Method(),
         createSubListMethod())));
     return methods;
+  }
+
+  private String getGenericTypeFromListAttribute(ASTType type) {
+    String typeString = TypesPrinter.printType(type);
+    return typeString.substring("List<".length(), typeString.length() - 1);
   }
 
   protected ASTCDMethod createClearMethod() {

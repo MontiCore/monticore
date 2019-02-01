@@ -19,6 +19,10 @@ import static org.junit.Assert.assertEquals;
 
 public class BuilderMandatoryMethodDecoratorStrategyTest {
 
+  private static final String BUILDER_CLASS_NAME = "A" + BUILDER_SUFFIX;
+
+  private static final String PUBLIC = "public";
+
   private final GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
   private List<ASTCDMethod> methods;
@@ -27,7 +31,7 @@ public class BuilderMandatoryMethodDecoratorStrategyTest {
   public void setup() {
     LogStub.init();
     ASTCDAttribute attribute = CDAttributeFactory.getInstance().createAttributeByDefinition("protected int i;");
-    ASTType builderType = CDTypeFactory.getInstance().createTypeByDefinition("A" + BUILDER_SUFFIX);
+    ASTType builderType = CDTypeFactory.getInstance().createTypeByDefinition(BUILDER_CLASS_NAME);
     BuilderMandatoryMethodDecoratorStrategy decoratorStrategy = new BuilderMandatoryMethodDecoratorStrategy(glex, builderType);
     this.methods = decoratorStrategy.decorate(attribute);
   }
@@ -42,7 +46,7 @@ public class BuilderMandatoryMethodDecoratorStrategyTest {
     Optional<ASTCDMethod> getMethod = methods.stream().filter(m -> "getI".equals(m.getName())).findFirst();
     assertTrue(getMethod.isPresent());
     assertTrue(getMethod.get().getCDParameterList().isEmpty());
-    assertEquals("public", getMethod.get().printModifier().trim());
+    assertEquals(PUBLIC, getMethod.get().printModifier().trim());
     assertEquals("int", getMethod.get().printReturnType());
   }
 
@@ -56,7 +60,7 @@ public class BuilderMandatoryMethodDecoratorStrategyTest {
     assertEquals("int", TypesPrinter.printType(parameter.getType()));
     assertEquals("i", parameter.getName());
 
-    assertEquals("public", getMethod.get().printModifier().trim());
-    assertEquals("ABuilder", getMethod.get().printReturnType());
+    assertEquals(PUBLIC, getMethod.get().printModifier().trim());
+    assertEquals(BUILDER_CLASS_NAME, getMethod.get().printReturnType());
   }
 }
