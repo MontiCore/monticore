@@ -1,6 +1,8 @@
 package de.monticore.codegen.cd2java.builder;
 
+import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
