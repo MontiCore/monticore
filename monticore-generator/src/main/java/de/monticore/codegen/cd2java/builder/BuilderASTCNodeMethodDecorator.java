@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-class BuilderASTCNodeMethodGenerator {
+class BuilderASTCNodeMethodDecorator {
 
   private enum ASTCNodeMethod {
 
@@ -124,7 +124,7 @@ class BuilderASTCNodeMethodGenerator {
 
   private final CDMethodFactory cdMethodFactory;
 
-  BuilderASTCNodeMethodGenerator(
+  BuilderASTCNodeMethodDecorator(
       final GlobalExtensionManagement glex,
       final ASTType builderType) {
     this.glex = glex;

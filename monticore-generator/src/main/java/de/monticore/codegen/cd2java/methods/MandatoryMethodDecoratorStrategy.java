@@ -10,7 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Arrays;
 import java.util.List;
 
-public class MandatoryMethodGeneratorStrategy implements MethodGeneratorStrategy {
+public class MandatoryMethodDecoratorStrategy implements MethodDecoratorStrategy {
 
   private static final String GETTER_PREFIX = "get";
 
@@ -22,14 +22,14 @@ public class MandatoryMethodGeneratorStrategy implements MethodGeneratorStrategy
 
   private final CDParameterFactory cdParameterFactory;
 
-  protected MandatoryMethodGeneratorStrategy(final GlobalExtensionManagement glex) {
+  protected MandatoryMethodDecoratorStrategy(final GlobalExtensionManagement glex) {
     this.glex = glex;
     this.cdMethodFactory = CDMethodFactory.getInstance();
     this.cdParameterFactory = CDParameterFactory.getInstance();
   }
 
   @Override
-  public List<ASTCDMethod> generate(final ASTCDAttribute ast) {
+  public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
     ASTCDMethod getter = createGetter(ast);
     ASTCDMethod setter = createSetter(ast);
     return Arrays.asList(getter, setter);

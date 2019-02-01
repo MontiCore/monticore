@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Arrays;
 import java.util.List;
 
-public class ListMethodGeneratorStrategy implements MethodGeneratorStrategy {
+public class ListMethodDecoratorStrategy implements MethodDecoratorStrategy {
 
   private static final String CLEAR           = "public void clear%s()";
   private static final String ADD             = "public boolean add%s(%s element);";
@@ -48,25 +48,25 @@ public class ListMethodGeneratorStrategy implements MethodGeneratorStrategy {
 
   private final CDMethodFactory cdMethodFactory;
 
-  private final MandatoryMethodGeneratorStrategy mandatoryMethodGeneratorStrategy;
+  private final MandatoryMethodDecoratorStrategy mandatoryMethodDecoratorStrategy;
 
   private String attributeName;
 
   private String attributeType;
 
-  protected ListMethodGeneratorStrategy(
+  protected ListMethodDecoratorStrategy(
       final GlobalExtensionManagement glex,
-      final MandatoryMethodGeneratorStrategy mandatoryMethodGeneratorStrategy) {
+      final MandatoryMethodDecoratorStrategy mandatoryMethodDecoratorStrategy) {
     this.glex = glex;
     this.cdMethodFactory = CDMethodFactory.getInstance();
-    this.mandatoryMethodGeneratorStrategy = mandatoryMethodGeneratorStrategy;
+    this.mandatoryMethodDecoratorStrategy = mandatoryMethodDecoratorStrategy;
   }
 
   @Override
-  public List<ASTCDMethod> generate(final ASTCDAttribute ast) {
+  public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
     this.attributeName = StringUtils.capitalize(ast.getName());
     this.attributeType = ast.printType();
-    List<ASTCDMethod> methods = this.mandatoryMethodGeneratorStrategy.generate(ast);
+    List<ASTCDMethod> methods = this.mandatoryMethodDecoratorStrategy.decorate(ast);
     methods.addAll(Arrays.asList(
         createClearMethod(),
         createAddMethod(),

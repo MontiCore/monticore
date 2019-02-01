@@ -1,20 +1,20 @@
 package de.monticore.codegen.cd2java.builder;
 
-import de.monticore.codegen.cd2java.methods.ListMethodGeneratorStrategy;
-import de.monticore.codegen.cd2java.methods.MandatoryMethodGeneratorStrategy;
+import de.monticore.codegen.cd2java.methods.ListMethodDecoratorStrategy;
+import de.monticore.codegen.cd2java.methods.MandatoryMethodDecoratorStrategy;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 
-class BuilderListMethodGeneratorStrategy extends ListMethodGeneratorStrategy {
+class BuilderListMethodDecoratorStrategy extends ListMethodDecoratorStrategy {
 
   private final ASTType builderType;
 
-  BuilderListMethodGeneratorStrategy(
+  BuilderListMethodDecoratorStrategy(
       final GlobalExtensionManagement glex,
-      final MandatoryMethodGeneratorStrategy mandatoryMethodGeneratorStrategy,
+      final MandatoryMethodDecoratorStrategy mandatoryMethodDecoratorStrategy,
       final ASTType builderType) {
-    super(glex, mandatoryMethodGeneratorStrategy);
+    super(glex, mandatoryMethodDecoratorStrategy);
     this.builderType = builderType;
   }
 

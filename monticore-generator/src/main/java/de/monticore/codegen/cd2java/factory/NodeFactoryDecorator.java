@@ -1,7 +1,7 @@
 package de.monticore.codegen.cd2java.factory;
 
 import com.google.common.collect.Lists;
-import de.monticore.codegen.cd2java.Generator;
+import de.monticore.codegen.cd2java.Decorator;
 import de.monticore.codegen.cd2java.factories.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -13,7 +13,7 @@ import java.util.List;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 
-public class NodeFactoryDecorator implements Generator<ASTCDDefinition, ASTCDClass> {
+public class NodeFactoryDecorator implements Decorator<ASTCDDefinition, ASTCDClass> {
 
   private final GlobalExtensionManagement glex;
 
@@ -51,7 +51,8 @@ public class NodeFactoryDecorator implements Generator<ASTCDDefinition, ASTCDCla
     this.cdParameterFacade = CDParameterFactory.getInstance();
   }
 
-  public ASTCDClass generate(ASTCDDefinition astcdDefinition) {
+  @Override
+  public ASTCDClass decorate(ASTCDDefinition astcdDefinition) {
     String factoryClassName = astcdDefinition.getName() + NODE_FACTORY_SUFFIX;
     ASTType factoryType = this.cdTypeFacade.createTypeByDefinition(factoryClassName);
 

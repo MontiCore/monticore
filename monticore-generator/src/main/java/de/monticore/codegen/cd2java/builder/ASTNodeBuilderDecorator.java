@@ -1,7 +1,7 @@
 package de.monticore.codegen.cd2java.builder;
 
 import de.monticore.ast.ASTCNode;
-import de.monticore.codegen.cd2java.Generator;
+import de.monticore.codegen.cd2java.Decorator;
 import de.monticore.codegen.cd2java.factories.CDMethodFactory;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -13,32 +13,32 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.monticore.codegen.cd2java.builder.BuilderGeneratorConstants.BUILDER_SUFFIX;
+import static de.monticore.codegen.cd2java.builder.BuilderDecoratorConstants.BUILDER_SUFFIX;
 
-public class ASTNodeBuilderGenerator implements Generator<ASTCDClass, ASTCDClass> {
+public class ASTNodeBuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
 
   private static final String DEFAULT_SUPER_CLASS = "de.monticore.ast.ASTNodeBuilder<%s>";
 
   private final GlobalExtensionManagement glex;
 
-  private final BuilderGenerator builderGenerator;
+  private final BuilderDecorator builderDecorator;
 
   private final CDTypeFactory cdTypeFactory;
 
   private final CDMethodFactory cdMethodFactory;
 
-  public ASTNodeBuilderGenerator(
+  public ASTNodeBuilderDecorator(
       final GlobalExtensionManagement glex,
-      final BuilderGenerator builderGenerator) {
+      final BuilderDecorator builderDecorator) {
     this.glex = glex;
-    this.builderGenerator = builderGenerator;
+    this.builderDecorator = builderDecorator;
     this.cdTypeFactory = CDTypeFactory.getInstance();
     this.cdMethodFactory = CDMethodFactory.getInstance();
   }
 
   @Override
-  public ASTCDClass generate(ASTCDClass domainClass) {
-    ASTCDClass builderClass = this.builderGenerator.generate(domainClass);
+  public ASTCDClass decorate(ASTCDClass domainClass) {
+    ASTCDClass builderClass = this.builderDecorator.decorate(domainClass);
     String builderClassName = builderClass.getName();
 
     ASTReferenceType superClass = createBuilderSuperClass(domainClass, builderClassName);
@@ -48,7 +48,7 @@ public class ASTNodeBuilderGenerator implements Generator<ASTCDClass, ASTCDClass
 
     if (hasSuperClassOtherThanASTCNode(domainClass)) {
       ASTType builderType = this.cdTypeFactory.createTypeByDefinition(builderClassName);
-      BuilderASTCNodeMethodGenerator builderASTCNodeMethodGenerator = createBuilderASTCNodeMethodGenerator(builderType);
+      BuilderASTCNodeMethodDecorator builderASTCNodeMethodGenerator = createBuilderASTCNodeMethodGenerator(builderType);
       astCNodeMethods.addAll(builderASTCNodeMethodGenerator.generate());
     }
 
@@ -70,7 +70,7 @@ public class ASTNodeBuilderGenerator implements Generator<ASTCDClass, ASTCDClass
     return domainClass.isPresentSuperclass() && !ASTCNode.class.getSimpleName().equals(domainClass.printSuperClass());
   }
 
-  private BuilderASTCNodeMethodGenerator createBuilderASTCNodeMethodGenerator(final ASTType builderType) {
-    return new BuilderASTCNodeMethodGenerator(this.glex, builderType);
+  private BuilderASTCNodeMethodDecorator createBuilderASTCNodeMethodGenerator(final ASTType builderType) {
+    return new BuilderASTCNodeMethodDecorator(this.glex, builderType);
   }
 }

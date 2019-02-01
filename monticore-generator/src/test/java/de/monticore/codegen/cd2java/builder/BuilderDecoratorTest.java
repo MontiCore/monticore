@@ -15,7 +15,8 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
-import static de.monticore.codegen.cd2java.builder.BuilderGeneratorConstants.BUILD_METHOD;
+import static de.monticore.codegen.cd2java.builder.BuilderDecoratorConstants.BUILD_METHOD;
+import static de.monticore.codegen.cd2java.builder.BuilderDecoratorConstants.IS_VALID;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 
@@ -36,8 +37,8 @@ public class BuilderDecoratorTest {
     }
     ASTCDClass cdClass = ast.get().getCDDefinition().getCDClass(0);
 
-    BuilderGenerator builderGenerator = new BuilderGenerator(glex);
-    this.builderClass = builderGenerator.generate(cdClass);
+    BuilderDecorator builderDecorator = new BuilderDecorator(glex);
+    this.builderClass = builderDecorator.decorate(cdClass);
   }
 
   @Test
@@ -93,6 +94,17 @@ public class BuilderDecoratorTest {
     assertEquals("public", build.printModifier().trim());
     assertEquals(0, build.getCDParameterList().size());
   }
+
+  @Test
+  public void testIsValidMethod() {
+    Optional<ASTCDMethod> isValidOpt = builderClass.getCDMethodList().stream().filter(m -> IS_VALID.equals(m.getName())).findFirst();
+    assertTrue(isValidOpt.isPresent());
+    ASTCDMethod isValid = isValidOpt.get();
+    assertEquals("boolean", isValid.printReturnType());
+    assertEquals("public", isValid.printModifier().trim());
+    assertEquals(0, isValid.getCDParameterList().size());
+  }
+
 
   @Test
   public void testGeneratedCode() {

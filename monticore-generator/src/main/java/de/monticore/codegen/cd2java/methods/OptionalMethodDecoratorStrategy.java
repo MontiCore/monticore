@@ -12,7 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Arrays;
 import java.util.List;
 
-public class OptionalMethodGeneratorStrategy implements MethodGeneratorStrategy {
+public class OptionalMethodDecoratorStrategy implements MethodDecoratorStrategy {
 
   private static final String GET_PREFIX = "get";
 
@@ -32,7 +32,7 @@ public class OptionalMethodGeneratorStrategy implements MethodGeneratorStrategy 
 
   private final CDParameterFactory cdParameterFactory;
 
-  protected OptionalMethodGeneratorStrategy(final GlobalExtensionManagement glex) {
+  protected OptionalMethodDecoratorStrategy(final GlobalExtensionManagement glex) {
     this.glex = glex;
     this.cdTypeFactory = CDTypeFactory.getInstance();
     this.cdMethodFactory = CDMethodFactory.getInstance();
@@ -40,7 +40,7 @@ public class OptionalMethodGeneratorStrategy implements MethodGeneratorStrategy 
   }
 
   @Override
-  public List<ASTCDMethod> generate(final ASTCDAttribute ast) {
+  public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
     ASTCDMethod get = createGetMethod(ast);
     ASTCDMethod getOpt = createGetOptMethod(ast);
     ASTCDMethod isPresent = createIsPresentMethod(ast);

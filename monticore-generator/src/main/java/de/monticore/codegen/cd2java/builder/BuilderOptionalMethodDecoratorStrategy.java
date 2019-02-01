@@ -1,16 +1,16 @@
 package de.monticore.codegen.cd2java.builder;
 
-import de.monticore.codegen.cd2java.methods.OptionalMethodGeneratorStrategy;
+import de.monticore.codegen.cd2java.methods.OptionalMethodDecoratorStrategy;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 
-class BuilderOptionalMethodGeneratorStrategy extends OptionalMethodGeneratorStrategy {
+class BuilderOptionalMethodDecoratorStrategy extends OptionalMethodDecoratorStrategy {
 
   private final ASTType builderType;
 
-  BuilderOptionalMethodGeneratorStrategy(
+  BuilderOptionalMethodDecoratorStrategy(
       final GlobalExtensionManagement glex,
       final ASTType builderType) {
     super(glex);

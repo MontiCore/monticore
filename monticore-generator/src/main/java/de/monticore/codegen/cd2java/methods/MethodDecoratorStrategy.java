@@ -1,13 +1,13 @@
 package de.monticore.codegen.cd2java.methods;
 
-import de.monticore.codegen.cd2java.Generator;
+import de.monticore.codegen.cd2java.Decorator;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 
 import java.util.List;
 
-public interface MethodGeneratorStrategy extends Generator<ASTCDAttribute, List<ASTCDMethod>> {
+public interface MethodDecoratorStrategy extends Decorator<ASTCDAttribute, List<ASTCDMethod>> {
 
   @Override
-  List<ASTCDMethod> generate(final ASTCDAttribute ast);
+  List<ASTCDMethod> decorate(final ASTCDAttribute ast);
 }

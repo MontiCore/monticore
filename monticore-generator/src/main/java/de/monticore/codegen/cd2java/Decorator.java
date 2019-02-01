@@ -1,7 +1,7 @@
 package de.monticore.codegen.cd2java;
 
 @FunctionalInterface
-public interface Generator<I, R> {
+public interface Decorator<I, R> {
 
-  R generate(final I ast);
+  R decorate(final I ast);
 }

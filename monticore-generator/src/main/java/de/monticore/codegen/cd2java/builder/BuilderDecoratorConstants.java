@@ -1,6 +1,6 @@
 package de.monticore.codegen.cd2java.builder;
 
-final class BuilderGeneratorConstants {
+final class BuilderDecoratorConstants {
 
   static final String BUILDER_SUFFIX = "Builder";
 
@@ -10,5 +10,5 @@ final class BuilderGeneratorConstants {
 
   static final String IS_VALID = "isValid";
 
-  private BuilderGeneratorConstants() {}
+  private BuilderDecoratorConstants() {}
 }

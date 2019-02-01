@@ -1,7 +1,7 @@
 package de.monticore.codegen.cd2java.builder;
 
 import de.monticore.codegen.GeneratorHelper;
-import de.monticore.codegen.cd2java.Generator;
+import de.monticore.codegen.cd2java.Decorator;
 import de.monticore.codegen.cd2java.factories.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java.builder.BuilderGeneratorConstants.*;
+import static de.monticore.codegen.cd2java.builder.BuilderDecoratorConstants.*;
 
-class BuilderGenerator implements Generator<ASTCDClass, ASTCDClass> {
+class BuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
 
   private final GlobalExtensionManagement glex;
 
@@ -27,7 +27,7 @@ class BuilderGenerator implements Generator<ASTCDClass, ASTCDClass> {
   private final CDMethodFactory cdMethodFactory;
 
 
-  public BuilderGenerator(final GlobalExtensionManagement glex) {
+  BuilderDecorator(final GlobalExtensionManagement glex) {
     this.glex = glex;
     this.cdTypeFactory = CDTypeFactory.getInstance();
     this.cdAttributeFactory = CDAttributeFactory.getInstance();
@@ -36,7 +36,7 @@ class BuilderGenerator implements Generator<ASTCDClass, ASTCDClass> {
   }
 
   @Override
-  public ASTCDClass generate(final ASTCDClass domainClass) {
+  public ASTCDClass decorate(final ASTCDClass domainClass) {
     String builderClassName = domainClass.getName() + BUILDER_SUFFIX;
     ASTType domainType = this.cdTypeFactory.createTypeByDefinition(domainClass.getName());
     ASTType builderType = this.cdTypeFactory.createTypeByDefinition(builderClassName);
@@ -64,9 +64,9 @@ class BuilderGenerator implements Generator<ASTCDClass, ASTCDClass> {
     ASTCDMethod isValidMethod = this.cdMethodFactory.createPublicMethod(this.cdTypeFactory.createBooleanType(), IS_VALID);
 
 
-    BuilderMethodGenerator builderMethodGenerator = new BuilderMethodGenerator(this.glex, builderType);
+    BuilderMethodDecorator builderMethodGenerator = new BuilderMethodDecorator(this.glex, builderType);
     List<ASTCDMethod> attributeMethods = domainClass.getCDAttributeList().stream()
-        .map(builderMethodGenerator::generate)
+        .map(builderMethodGenerator::decorate)
         .flatMap(List::stream)
         .collect(Collectors.toList());
 

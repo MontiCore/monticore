@@ -1,6 +1,6 @@
 package de.monticore.codegen.cd2java.builder;
 
-import de.monticore.codegen.cd2java.Generator;
+import de.monticore.codegen.cd2java.Decorator;
 import de.monticore.codegen.cd2java.factories.CDAttributeFactory;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
@@ -9,30 +9,30 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import java.util.Arrays;
 import java.util.List;
 
-public class SymbolBuilderGenerator implements Generator<ASTCDClass, ASTCDClass> {
+public class SymbolBuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
 
   private final GlobalExtensionManagement glex;
 
-  private final BuilderGenerator builderGenerator;
+  private final BuilderDecorator builderDecorator;
 
   private final CDAttributeFactory cdAttributeFactory;
 
-  public SymbolBuilderGenerator(
+  public SymbolBuilderDecorator(
       final GlobalExtensionManagement glex,
-      final BuilderGenerator builderGenerator) {
+      final BuilderDecorator builderDecorator) {
     this.glex = glex;
-    this.builderGenerator = builderGenerator;
+    this.builderDecorator = builderDecorator;
     this.cdAttributeFactory = CDAttributeFactory.getInstance();
   }
 
   @Override
-  public ASTCDClass generate(final ASTCDClass symbolClass) {
+  public ASTCDClass decorate(final ASTCDClass symbolClass) {
     ASTCDClass decoratedSymbolClass = symbolClass.deepClone();
 
     decoratedSymbolClass.addAllCDAttributes(createSymbolAttributes());
     decoratedSymbolClass.getCDMethodList().clear();
 
-    return this.builderGenerator.generate(decoratedSymbolClass);
+    return this.builderDecorator.decorate(decoratedSymbolClass);
   }
 
   private List<ASTCDAttribute> createSymbolAttributes() {
