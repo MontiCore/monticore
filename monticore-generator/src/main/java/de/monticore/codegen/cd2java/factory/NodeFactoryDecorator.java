@@ -1,19 +1,18 @@
 package de.monticore.codegen.cd2java.factory;
 
 import com.google.common.collect.Lists;
-import de.monticore.codegen.cd2java.Decorator;
-import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
+import de.monticore.codegen.cd2java.Decorator;
 import de.monticore.codegen.cd2java.factories.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.TypesPrinter;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 
@@ -74,7 +73,7 @@ public class NodeFactoryDecorator implements Decorator<ASTCDDefinition, ASTCDCla
     ASTCDAttribute factoryAttribute = this.cdAttributeFacade.createProtectedStaticAttribute(factoryType, FACTORY_INFIX);
 
     ASTCDMethod getFactoryMethod = this.cdMethodFacade.createPrivateStaticMethod(factoryType, GET_FACTORY_METHOD);
-    this.glex.replaceTemplate(EMPTY_BODY, getFactoryMethod, new TemplateHookPoint("ast.factorymethods.Create", ""));
+    this.glex.replaceTemplate(EMPTY_BODY, getFactoryMethod, new TemplateHookPoint("nodefactory.getFactory", factoryClassName));
 
     List<ASTCDClass> astcdClassList = Lists.newArrayList(astcdDefinition.getCDClassList());
 
@@ -122,9 +121,9 @@ public class NodeFactoryDecorator implements Decorator<ASTCDDefinition, ASTCDCla
     String s = "";
     for (ASTCDParameter parameter : parameterList) {
       if (s.isEmpty()) {
-        s += parameter.getType().toString() + " " + parameter.getName();
+        s +=  parameter.getName();
       } else {
-        s += ", " + parameter.getType().toString() + " " + parameter.getName();
+        s += ", " + parameter.getName();
       }
     }
     return s;

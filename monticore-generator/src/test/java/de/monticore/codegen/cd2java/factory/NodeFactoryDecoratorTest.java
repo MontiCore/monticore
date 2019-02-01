@@ -203,4 +203,15 @@ public class NodeFactoryDecoratorTest {
     System.out.println(sb.toString());
   }
 
+  @Test
+  public void testGeneratedCodeInFile() {
+    GeneratorSetup generatorSetup = new GeneratorSetup();
+    generatorSetup.setGlex(glex);
+    generatorSetup.setOutputDirectory(Paths.get("target/generated-test-sources/generatortest/factory").toFile());
+    Path generatedFiles = Paths.get("AutomatonNodeFactory.java");
+    GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
+    generatorEngine.generate(CoreTemplates.CLASS, generatedFiles, factoryClass, factoryClass);
+
+  }
+
 }

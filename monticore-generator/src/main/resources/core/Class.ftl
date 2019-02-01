@@ -1,6 +1,10 @@
 ${tc.signature("cdClass")}
 
-${cdClass.printModifier()} ${cdClass.getName()} extends ${cdClass.printSuperClass()} implements ${cdClass.printInterfaces()} {
+${tc.include("core.Imports")}
+
+${cdClass.printModifier()} class ${cdClass.getName()}
+<#if cdClass.isPresentSuperclass()>extends ${cdClass.printSuperClass()} </#if>
+<#if !cdClass.isEmptyInterfaces()>implements ${cdClass.printInterfaces()} </#if>{
 
 <#list cdClass.getCDAttributeList() as attribute>
     ${tc.include("core.Attribute", attribute)}
