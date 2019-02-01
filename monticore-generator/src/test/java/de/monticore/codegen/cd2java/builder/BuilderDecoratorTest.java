@@ -1,8 +1,6 @@
 package de.monticore.codegen.cd2java.builder;
 
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.CoreTemplates;
-import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -22,6 +20,7 @@ import static de.monticore.codegen.cd2java.builder.BuilderDecoratorConstants.BUI
 import static de.monticore.codegen.cd2java.builder.BuilderDecoratorConstants.IS_VALID;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class BuilderDecoratorTest {
 
@@ -48,6 +47,11 @@ public class BuilderDecoratorTest {
   @Test
   public void testClassName() {
     assertEquals("ABuilder", builderClass.getName());
+  }
+
+  @Test
+  public void testSuperClassName() {
+    assertFalse(builderClass.getSuperclassOpt().isPresent());
   }
 
   @Test

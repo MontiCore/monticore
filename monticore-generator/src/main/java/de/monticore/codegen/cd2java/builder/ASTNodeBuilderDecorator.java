@@ -5,6 +5,7 @@ import de.monticore.codegen.cd2java.Decorator;
 import de.monticore.codegen.cd2java.factories.CDMethodFactory;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.types._ast.ASTReferenceType;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
@@ -44,13 +45,15 @@ public class ASTNodeBuilderDecorator implements Decorator<ASTCDClass, ASTCDClass
 
     List<ASTCDMethod> astCNodeMethods = new ArrayList<>();
 
-    if (hasSuperClassOtherThanASTCNode(domainClass)) {
+    if (!hasSuperClassOtherThanASTCNode(domainClass)) {
       ASTType builderType = this.cdTypeFactory.createSimpleReferenceType(builderClassName);
-      BuilderASTCNodeMethodDecorator builderASTCNodeMethodGenerator = createBuilderASTCNodeMethodGenerator(builderType);
+      BuilderASTCNodeMethodDecorator builderASTCNodeMethodGenerator = new BuilderASTCNodeMethodDecorator(this.glex, builderType);
       astCNodeMethods.addAll(builderASTCNodeMethodGenerator.decorate());
     }
 
     builderClass.addAllCDMethods(astCNodeMethods);
+
+    this.glex.bindHookPoint("<JavaBlock>:BuildMethod:init", new TemplateHookPoint("builder.ASTCNodeInit", domainClass));
 
     return builderClass;
   }
@@ -66,9 +69,5 @@ public class ASTNodeBuilderDecorator implements Decorator<ASTCDClass, ASTCDClass
 
   private boolean hasSuperClassOtherThanASTCNode(final ASTCDClass domainClass) {
     return domainClass.isPresentSuperclass() && !ASTCNode.class.getSimpleName().equals(domainClass.printSuperClass());
-  }
-
-  private BuilderASTCNodeMethodDecorator createBuilderASTCNodeMethodGenerator(final ASTType builderType) {
-    return new BuilderASTCNodeMethodDecorator(this.glex, builderType);
   }
 }

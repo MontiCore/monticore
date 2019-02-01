@@ -59,10 +59,12 @@ class BuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
     List<ASTCDAttribute> mandatoryAttributes = builderAttributes.stream()
         .filter(a -> !GeneratorHelper.isListType(a.printType()))
         .filter(a -> !GeneratorHelper.isOptional(a))
+        .filter(a -> !GeneratorHelper.isPrimitive(a.getType()))
         .collect(Collectors.toList());
     this.glex.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint("builder.BuildMethod", domainClass, mandatoryAttributes));
 
     ASTCDMethod isValidMethod = this.cdMethodFactory.createPublicMethod(this.cdTypeFactory.createBooleanType(), IS_VALID);
+    this.glex.replaceTemplate(EMPTY_BODY, isValidMethod, new TemplateHookPoint("builder.IsValidMethod", mandatoryAttributes));
 
 
     BuilderMethodDecorator builderMethodGenerator = new BuilderMethodDecorator(this.glex, builderType);

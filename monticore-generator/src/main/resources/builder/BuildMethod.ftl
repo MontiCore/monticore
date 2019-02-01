@@ -7,8 +7,6 @@ if (!isValid()) {
     }
 </#list>
 }
-${domainClass.getName()} value = new ${domainClass.getName()}();
-<#list domainClass.getCDAttributeList() as attribute>
-value.set${attribute.getName()?cap_first}(this.${attribute.getName()});
-</#list>
+${domainClass.getName()} value;
+${glex.defineHookPoint(tc, "<JavaBlock>:BuildMethod:init", ast)}
 return value;

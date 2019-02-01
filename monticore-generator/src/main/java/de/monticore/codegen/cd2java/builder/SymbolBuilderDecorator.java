@@ -4,6 +4,8 @@ import de.monticore.codegen.cd2java.Decorator;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.factories.CDAttributeFactory;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import org.slf4j.Logger;
@@ -38,15 +40,16 @@ public class SymbolBuilderDecorator implements Decorator<ASTCDClass, ASTCDClass>
     decoratedSymbolClass.addAllCDAttributes(createSymbolAttributes());
     decoratedSymbolClass.getCDMethodList().clear();
 
+    this.glex.bindHookPoint("<JavaBlock>:BuildMethod:init", new TemplateHookPoint("builder.SymbolInit", decoratedSymbolClass));
+
     return this.builderDecorator.decorate(decoratedSymbolClass);
   }
 
   private List<ASTCDAttribute> createSymbolAttributes() {
     ASTCDAttribute name = this.cdAttributeFactory.createAttributeByDefinition("private String name;");
     ASTCDAttribute enclosingScope = this.cdAttributeFactory.createAttributeByDefinition("private Scope enclosingScope;");
-    ASTCDAttribute node = this.cdAttributeFactory.createAttributeByDefinition("private ASTNode node;");
-    ASTCDAttribute kind = this.cdAttributeFactory.createAttributeByDefinition("private SymbolKind kind;");
+    ASTCDAttribute node = this.cdAttributeFactory.createAttributeByDefinition("private ASTNode astNode;");
     ASTCDAttribute accessModifier = this.cdAttributeFactory.createAttributeByDefinition("private AccessModifier accessModifier;");
-    return new ArrayList<>(Arrays.asList(name, enclosingScope, node, kind, accessModifier));
+    return new ArrayList<>(Arrays.asList(name, enclosingScope, node, accessModifier));
   }
 }

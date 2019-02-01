@@ -1,0 +1,7 @@
+package de.monticore.codegen.builder;
+
+classdiagram ASTNodeBuilder {
+
+    class A extends ASTCNode {
+    }
+}
