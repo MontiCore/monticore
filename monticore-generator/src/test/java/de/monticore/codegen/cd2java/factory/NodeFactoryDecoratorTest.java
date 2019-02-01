@@ -1,10 +1,13 @@
 package de.monticore.codegen.cd2java.factory;
 
 import de.monticore.MontiCoreScript;
+import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.factories.CDParameterFactory;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
 import de.monticore.codegen.cd2java.factories.ModifierBuilder;
 import de.monticore.codegen.mc2cd.TestHelper;
+import de.monticore.generating.GeneratorEngine;
+import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.io.paths.ModelPath;
@@ -31,16 +34,17 @@ public class NodeFactoryDecoratorTest {
 
   private ASTCDClass factoryClass;
 
+  private GlobalExtensionManagement glex;
+
   @Before
   public void setUp() {
-    GlobalExtensionManagement glex = new GlobalExtensionManagement();
+    this.glex = new GlobalExtensionManagement();
     this.cdTypeFacade = CDTypeFactory.getInstance();
     this.cdParameterFacade = CDParameterFactory.getInstance();
 
     //create grammar from ModelPath
     Path modelPathPath = Paths.get("src/test/resources");
-    File outputPath = new File("target/generated-test-sources");
-    ModelPath modelPath = new ModelPath(modelPathPath, outputPath.toPath());
+    ModelPath modelPath = new ModelPath(modelPathPath);
     Optional<ASTMCGrammar> grammar = new MontiCoreScript()
         .parseGrammar(Paths.get(new File(
             "src/test/resources/Automaton.mc4").getAbsolutePath()));
@@ -56,15 +60,7 @@ public class NodeFactoryDecoratorTest {
 
     NodeFactoryDecorator factoryDecorator = new NodeFactoryDecorator(glex);
     this.factoryClass = factoryDecorator.decorate(astcdDefinition);
-  }
-
-  @Test
-  public void testCDClassNotChanged() {
-    ASTCDDefinition astcdDefinition = cdCompilationUnit.getCDDefinition().deepClone();
-    GlobalExtensionManagement glex = new GlobalExtensionManagement();
-    NodeFactoryDecorator decorator = new NodeFactoryDecorator(glex);
-    //generate from CDDefinition, which does not change
-    decorator.decorate(cdCompilationUnit.getCDDefinition());
+    //test if not changed the original Definition
     assertTrue(astcdDefinition.deepEquals(cdCompilationUnit.getCDDefinition()));
   }
 
@@ -197,4 +193,14 @@ public class NodeFactoryDecoratorTest {
     assertTrue(transitionsParameter.getType().deepEquals(transitionsType));
     assertEquals(transitionsParameter.getName(), method.getCDParameter(2).getName());
   }
+
+  @Test
+  public void testGeneratedCode() {
+    GeneratorSetup generatorSetup = new GeneratorSetup();
+    generatorSetup.setGlex(glex);
+    GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
+    StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, factoryClass, factoryClass);
+    System.out.println(sb.toString());
+  }
+
 }

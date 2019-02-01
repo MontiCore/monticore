@@ -1,4 +1,3 @@
-${tc.signature("method")}
-${method.printModifier()} ${method.printReturnType()} ${method.getName()} (${method.printParametersDecl()}) ${method.printThrowsDecl()} {
+${ast.printModifier()} ${ast.printReturnType()} ${ast.getName()} (${ast.printParametersDecl()}) ${ast.printThrowsDecl()} {
     ${tc.include("core.EmptyBody")}
 }

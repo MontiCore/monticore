@@ -1,2 +1,1 @@
-${tc.signature("attribute")}
-${attribute.printModifier()} ${attribute.printType()} ${attribute.getName()}<#if attribute.isPresentValue()> = ${attribute.printValue()}</#if>;
+${ast.printModifier()} ${ast.printType()} ${ast.getName()}<#if ast.isPresentValue()> = ${ast.printValue()}</#if>;

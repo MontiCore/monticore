@@ -2,14 +2,18 @@ package de.monticore.codegen.cd2java.factory;
 
 import com.google.common.collect.Lists;
 import de.monticore.codegen.cd2java.Decorator;
+import de.monticore.ast.ASTNode;
+import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.factories.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
+import de.monticore.umlcd4a.symboltable.CDSymbol;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 
@@ -37,9 +41,13 @@ public class NodeFactoryDecorator implements Decorator<ASTCDDefinition, ASTCDCla
 
   private final CDParameterFactory cdParameterFacade;
 
-  private List<ASTCDMethod> cdFactoryCreateMethodList = new ArrayList<>();
-  private List<ASTCDMethod> cdFactoryDoCreateMethodList = new ArrayList<>();
-  private List<ASTCDAttribute> cdFactoryAttributeList = new ArrayList<>();
+  private List<ASTCDMethod> cdFactoryCreateMethodList;
+
+  private List<ASTCDMethod> cdFactoryDoCreateMethodList;
+
+  private List<ASTCDAttribute> cdFactoryAttributeList;
+
+  private List<ASTCDAttribute> cdFactorySuperAttributeList;
 
 
   public NodeFactoryDecorator(final GlobalExtensionManagement glex) {
@@ -49,6 +57,9 @@ public class NodeFactoryDecorator implements Decorator<ASTCDDefinition, ASTCDCla
     this.cdConstructorFacade = CDConstructorFactory.getInstance();
     this.cdMethodFacade = CDMethodFactory.getInstance();
     this.cdParameterFacade = CDParameterFactory.getInstance();
+    this.cdFactoryAttributeList = new ArrayList<>();
+    this.cdFactoryCreateMethodList = new ArrayList<>();
+    this.cdFactoryDoCreateMethodList = new ArrayList<>();
   }
 
   @Override
@@ -71,10 +82,18 @@ public class NodeFactoryDecorator implements Decorator<ASTCDDefinition, ASTCDCla
       if (!astcdClass.isPresentModifier() || (astcdClass.getModifier().isAbstract() && !astcdClass.getName().endsWith("TOP"))) {
         continue;
       }
-      // create attribute for AST
       addAttributes(astcdClass, factoryType);
       addFactoryMethods(astcdClass);
     }
+
+//    for (CDSymbol cdSymbol : genHelper.getAllSuperCds(genHelper.getCd())) {
+//      Optional<ASTNode> astNode = cdSymbol.getAstNode();
+//      if (astNode.isPresent() && !isOverwritten(cdSymbol)) {
+//        addAttributes((ASTCDClass) astNode.get(), factoryType);
+//        addFactoryMethods((ASTCDClass) astNode.get());
+//      }
+//
+//    }
 
 
     return CD4AnalysisMill.cDClassBuilder()
@@ -87,6 +106,16 @@ public class NodeFactoryDecorator implements Decorator<ASTCDDefinition, ASTCDCla
         .addAllCDMethods(cdFactoryCreateMethodList)
         .addAllCDMethods(cdFactoryDoCreateMethodList)
         .build();
+  }
+
+  private boolean isOverwritten(CDSymbol superSymbol) {
+    String superAttrName = FACTORY_INFIX + GeneratorHelper.AST_PREFIX + superSymbol.getName();
+    for (ASTCDAttribute attribute : cdFactoryAttributeList) {
+      if (superAttrName.equals(attribute.getName())) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private String getParamCall(List<ASTCDParameter> parameterList) {
@@ -138,7 +167,6 @@ public class NodeFactoryDecorator implements Decorator<ASTCDDefinition, ASTCDCla
       this.glex.replaceTemplate(EMPTY_BODY, doCreateWithParameters, new TemplateHookPoint("ast.factorymethods.DoCreateWithParams", astName, paramCall));
     }
   }
-
 }
 
 

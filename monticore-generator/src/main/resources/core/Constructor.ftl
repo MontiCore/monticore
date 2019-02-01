@@ -1,4 +1,3 @@
-${tc.signature("constructor")}
-${constructor.printModifier()} ${constructor.getName()}(${constructor.printParametersDecl()}) ${constructor.printThrowsDecl()} {
+${ast.printModifier()} ${ast.getName()}(${ast.printParametersDecl()}) ${ast.printThrowsDecl()} {
     ${tc.include("core.EmptyBody")}
 }
