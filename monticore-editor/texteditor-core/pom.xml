@@ -4,7 +4,7 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore-editor</artifactId>
-    <version>5.0.3-SNAPSHOT</version>
+    <version>5.0.3</version>
   </parent>
 
   <artifactId>texteditor-core</artifactId>
