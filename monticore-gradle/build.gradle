@@ -1,0 +1,56 @@
+plugins {
+  id 'groovy'
+  id 'java-gradle-plugin'
+  id 'maven-publish'
+}
+version = "5.0.4-SNAPSHOT"
+group = "de.monticore"
+
+repositories {
+  mavenLocal()
+  maven {
+    credentials.username mavenUser
+    credentials.password mavenPassword
+    url repo
+  }
+}
+
+dependencies {
+  compile gradleApi()
+  compile localGroovy()
+  compile group: 'de.monticore', name: 'monticore-cli', version: '5.0.4-SNAPSHOT'
+  compile group: 'de.monticore', name: 'monticore-runtime', version: '5.0.4-SNAPSHOT'
+  compile group: 'de.monticore', name: 'monticore-generator', version: '5.0.4-SNAPSHOT'
+}
+
+gradlePlugin.plugins {
+  monticore {
+    id = 'monticore'
+    implementationClass = 'de.monticore.MCPlugin'
+  }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+  classifier = 'sources'
+  from sourceSets.main.allSource
+}
+
+
+// configure deployment
+publishing {
+  // configure what artifacts to publish
+  publications {
+    mavenJava(MavenPublication) {
+      artifactId = "$project.name"
+      from components.java
+      artifact sourcesJar
+    }
+  }
+  repositories.maven {
+    credentials.username mavenUser
+    credentials.password mavenPassword
+    def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
+    def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
+    url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+  }
+}
