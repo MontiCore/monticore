@@ -23,8 +23,8 @@ public class IncGenCheckReporter extends AReporter {
 
   String outputDir;
 
-  public IncGenCheckReporter(String outputDir) {
-    super(outputDir + File.separator, SIMPLE_FILE_NAME, "sh");
+  public IncGenCheckReporter(String outputDir, String modelName) {
+    super(outputDir + File.separator + modelName, SIMPLE_FILE_NAME, "sh");
     this.outputDir = outputDir;
   }
 
@@ -61,6 +61,7 @@ public class IncGenCheckReporter extends AReporter {
 
   @Override
   public void flush(ASTNode node) {
+      openFile();
     // create check: used file deleted?
     for (String p : usedHWCFiles) {
       writeLine("[ -e " + p + " ] || (touch $1; echo " + p + " removed!; exit 0;)");

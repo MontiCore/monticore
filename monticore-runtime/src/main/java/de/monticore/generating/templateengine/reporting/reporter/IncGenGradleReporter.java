@@ -59,6 +59,7 @@ public class IncGenGradleReporter extends AReporter {
 
   @Override
   public void flush(ASTNode node) {
+    openFile();
     // create check: used file deleted?
     for (String p : usedHWCFiles) {
 //      writeLine("if (-not (Test-Path " + p + ")) { echo \"" + p + " removed!\"; exit}");
