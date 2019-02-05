@@ -1,0 +1,19 @@
+package de.monticore.codegen.mill;
+
+classdiagram Test {
+
+    class FooBar {
+        protected int firstInteger;
+        protected String s;
+        protected Optional<String> optString;
+        protected List<String> listString;
+    }
+
+    class Automaton {
+      protected Map<Integer, String> mapTest;
+    }
+
+    class TestA {
+      protected String name;
+    }
+}

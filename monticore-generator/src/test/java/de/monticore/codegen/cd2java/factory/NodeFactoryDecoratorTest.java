@@ -80,6 +80,7 @@ public class NodeFactoryDecoratorTest {
   @Test
   public void testAttributeModifier() {
     for (ASTCDAttribute astcdAttribute : factoryClass.getCDAttributeList()) {
+      assertTrue(astcdAttribute.isPresentModifier());
       assertTrue(ModifierBuilder.builder().Protected().Static().build().deepEquals(astcdAttribute.getModifier()));
     }
   }
@@ -211,7 +212,6 @@ public class NodeFactoryDecoratorTest {
     Path generatedFiles = Paths.get("AutomatonNodeFactory.java");
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     generatorEngine.generate(CoreTemplates.CLASS, generatedFiles, factoryClass, factoryClass);
-
   }
 
 }
