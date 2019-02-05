@@ -1,11 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("ruleSymbol", "symbolName")}
+${signature("ruleSymbol", "symbolName", "ruleName", "astName")}
 
-<#assign ruleName = ruleSymbol.getName()>
 <#assign genHelper = glex.getGlobalVar("stHelper")>
-<#assign fqn = genHelper.getQualifiedGrammarName()?lower_case>
-<#assign astPrefix = fqn + "._ast.AST">
 
-  ${includeArgs("symboltable.symboltablecreators.SymbolMethods", ruleSymbol, symbolName)}
+  ${includeArgs("symboltable.symboltablecreators.SymbolMethods", ruleSymbol, symbolName, ruleName, astName)}
 
-  ${includeArgs("symboltable.symboltablecreators.EndVisitMethod", ruleSymbol)}
+  ${includeArgs("symboltable.symboltablecreators.EndVisitMethod", ruleSymbol, astName)}

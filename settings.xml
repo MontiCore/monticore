@@ -7,6 +7,8 @@
     <servers>
         <server>
             <id>se-nexus</id>
+            <username>${user}</username>
+            <password>${pass}</password>
         </server>
     </servers>
 

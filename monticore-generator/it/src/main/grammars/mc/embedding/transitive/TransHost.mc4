@@ -4,8 +4,9 @@ package mc.embedding.transitive;
 
 grammar TransHost extends mc.grammar.lexicals.ItTestLexicals {
 
-   symbol scope TransStart = Name "host" TransHost;
+   symbol scope TransStart = Name "host" TransHoster;
 
-   symbol TransHost = Name;
+//symbol better have a different Name than the Grammar
+   symbol TransHoster = Name;
 
 }
