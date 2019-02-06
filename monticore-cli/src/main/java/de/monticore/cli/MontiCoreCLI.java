@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.slf4j.ILoggerFactory;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Iterables;
@@ -48,7 +49,7 @@ public final class MontiCoreCLI {
   
   /**
    * Main method.
-   * 
+   *
    * @param args the CLI arguments
    */
   public static void main(String[] args) {
@@ -68,7 +69,7 @@ public final class MontiCoreCLI {
     CLIArguments arguments = CLIArguments.forArguments(args);
     MontiCoreCLIConfiguration configuration = MontiCoreCLIConfiguration.fromArguments(arguments);
     
-    if (arguments.asMap().containsKey(MontiCoreCLIConfiguration.Options.HELP.toString()) || 
+    if (arguments.asMap().containsKey(MontiCoreCLIConfiguration.Options.HELP.toString()) ||
         arguments.asMap().containsKey(MontiCoreCLIConfiguration.Options.HELP_SHORT.toString())) {
       printHelp();
       return;
@@ -143,7 +144,7 @@ public final class MontiCoreCLI {
             System.clearProperty(MC_OUT);
             Log.error("0xA1001 Custom script \"" + configuration.getScript().get()
                 + "\" not found!");
-            return;            
+            return;
           }
         } else {
           script = Files.toString(f, Charset.forName("UTF-8"));
@@ -161,7 +162,7 @@ public final class MontiCoreCLI {
   
   /**
    * Initializes the logging configuration based on the CLI arguments.
-   * 
+   *
    * @param configuration the MontiCore CLI configuration
    */
   static void initLogging(MontiCoreCLIConfiguration configuration) {
@@ -233,16 +234,19 @@ public final class MontiCoreCLI {
   
   /**
    * Programmatically load and configure logback with the given logback XML input stream.
-   * 
+   *
    * @param config
    */
   protected static final void useLogbackConfiguration(InputStream config) throws JoranException {
-    LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-    JoranConfigurator configurator = new JoranConfigurator();
-    configurator.setContext(context);
-    
-    context.reset();
-    configurator.doConfigure(config);
+    ILoggerFactory lf = LoggerFactory.getILoggerFactory();
+    if(lf instanceof LoggerContext) {
+      LoggerContext context = (LoggerContext) lf;
+      JoranConfigurator configurator = new JoranConfigurator();
+      configurator.setContext(context);
+  
+      context.reset();
+      configurator.doConfigure(config);
+    }
   }
   
   private MontiCoreCLI() {
