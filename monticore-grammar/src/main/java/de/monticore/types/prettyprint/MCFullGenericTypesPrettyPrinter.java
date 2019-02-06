@@ -1,10 +1,11 @@
 package de.monticore.types.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
-import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
-import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesVisitor;
 import de.monticore.types.mcfullgenerictypes._ast.*;
+import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesVisitor;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 
 public class MCFullGenericTypesPrettyPrinter extends MCSimpleGenericTypesPrettyPrinter implements MCFullGenericTypesVisitor {
   private MCFullGenericTypesVisitor realThis = this;
@@ -81,7 +82,7 @@ public class MCFullGenericTypesPrettyPrinter extends MCSimpleGenericTypesPrettyP
     if (!node.isEmptyUpperBounds()) {
       getPrinter().print("extends ");
       boolean first = true;
-      for (ASTMCMultipleGenericType type : node.getUpperBoundList()) {
+      for (ASTMCType type : node.getUpperBoundList()) {
         if (first) {
           first = false;
         } else {
