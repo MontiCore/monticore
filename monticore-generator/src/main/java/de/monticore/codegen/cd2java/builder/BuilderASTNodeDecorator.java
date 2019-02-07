@@ -15,7 +15,7 @@ import java.util.List;
 
 import static de.monticore.codegen.cd2java.builder.BuilderDecoratorConstants.BUILDER_SUFFIX;
 
-public class ASTNodeBuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
+public class BuilderASTNodeDecorator implements Decorator<ASTCDClass, ASTCDClass> {
 
   private static final String DEFAULT_SUPER_CLASS = "de.monticore.ast.ASTNodeBuilder<%s>";
 
@@ -25,7 +25,7 @@ public class ASTNodeBuilderDecorator implements Decorator<ASTCDClass, ASTCDClass
 
   private final CDTypeFactory cdTypeFactory;
 
-  public ASTNodeBuilderDecorator(
+  public BuilderASTNodeDecorator(
       final GlobalExtensionManagement glex,
       final BuilderDecorator builderDecorator) {
     this.glex = glex;

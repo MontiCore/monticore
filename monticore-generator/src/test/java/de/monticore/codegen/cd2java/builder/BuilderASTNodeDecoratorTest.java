@@ -17,7 +17,7 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 
-public class ASTCNodeBuilderDecoratorTest {
+public class BuilderASTNodeDecoratorTest {
 
   private static final String CD = Paths.get("src/test/resources/de/monticore/codegen/builder/ASTNodeBuilder.cd").toAbsolutePath().toString();
 
@@ -36,8 +36,8 @@ public class ASTCNodeBuilderDecoratorTest {
     ASTCDClass cdClass = ast.get().getCDDefinition().getCDClass(0);
 
     BuilderDecorator builderDecorator = new BuilderDecorator(glex);
-    ASTNodeBuilderDecorator astNodeBuilderDecorator = new ASTNodeBuilderDecorator(glex, builderDecorator);
-    this.builderClass = astNodeBuilderDecorator.decorate(cdClass);
+    BuilderASTNodeDecorator builderASTNodeDecorator = new BuilderASTNodeDecorator(glex, builderDecorator);
+    this.builderClass = builderASTNodeDecorator.decorate(cdClass);
   }
 
   @Test
