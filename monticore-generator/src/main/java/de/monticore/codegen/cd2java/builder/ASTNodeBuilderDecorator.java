@@ -2,7 +2,6 @@ package de.monticore.codegen.cd2java.builder;
 
 import de.monticore.ast.ASTCNode;
 import de.monticore.codegen.cd2java.Decorator;
-import de.monticore.codegen.cd2java.factories.CDMethodFactory;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -13,7 +12,6 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.builder.BuilderDecoratorConstants.BUILDER_SUFFIX;
 

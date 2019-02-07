@@ -5,6 +5,7 @@ import de.monticore.codegen.cd2java.Decorator;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.factories.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
@@ -54,6 +55,7 @@ class BuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
         .collect(Collectors.toList());
 
     ASTCDConstructor constructor = this.cdConstructorFactory.createProtectedDefaultConstructor(builderClassName);
+    this.glex.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this.realBuilder = (" + builderClassName + ") this;"));
 
     ASTCDMethod buildMethod = this.cdMethodFactory.createPublicMethod(domainType, BUILD_METHOD);
     List<ASTCDAttribute> mandatoryAttributes = builderAttributes.stream()

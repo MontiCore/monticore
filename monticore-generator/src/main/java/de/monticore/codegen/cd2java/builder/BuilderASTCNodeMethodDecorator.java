@@ -2,12 +2,18 @@ package de.monticore.codegen.cd2java.builder;
 
 import de.monticore.codegen.cd2java.factories.CDMethodFactory;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.HookPoint;
+import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 
 class BuilderASTCNodeMethodDecorator {
 
@@ -142,6 +148,15 @@ class BuilderASTCNodeMethodDecorator {
   private ASTCDMethod createBuilderMethodForASTCNodeMethod(final ASTCNodeMethod astcNodeMethod) {
     ASTCDMethod method = this.cdMethodFactory.createMethodByDefinition(astcNodeMethod.signature);
     method.setReturnType(this.builderType);
+    this.glex.replaceTemplate(EMPTY_BODY, method, createImplementation(method));
     return method;
+  }
+
+  private HookPoint createImplementation(final ASTCDMethod method) {
+    String methodName = method.getName();
+    String parameterCall = method.getCDParameterList().stream()
+        .map(ASTCDParameter::getName)
+        .collect(Collectors.joining(", "));
+    return new TemplateHookPoint("builder.ASTCNodeMethodDelegate", methodName, parameterCall);
   }
 }

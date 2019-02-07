@@ -134,7 +134,7 @@ public class ListMethodDecoratorStrategy implements MethodDecoratorStrategy {
   }
 
   protected HookPoint createImplementation(String attributeName, String methodName, String parameterCall, String returnType) {
-    return new TemplateHookPoint("methods.ListMethod", attributeName, methodName, parameterCall, returnType);
+    return new TemplateHookPoint("methods.MethodDelegate", attributeName, methodName, parameterCall, returnType);
   }
 
   protected ASTCDMethod createClearMethod() {

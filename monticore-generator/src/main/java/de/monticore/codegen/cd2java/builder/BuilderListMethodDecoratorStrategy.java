@@ -26,7 +26,7 @@ class BuilderListMethodDecoratorStrategy extends ListMethodDecoratorStrategy {
     if (!TypesPrinter.printType(builderType).equals(returnType)) {
       return super.createImplementation(attributeName, methodName, parameterCall, returnType);
     }
-    return new TemplateHookPoint("builder.ListMethod", attributeName, methodName, parameterCall, returnType);
+    return new TemplateHookPoint("builder.MethodDelegate", attributeName, methodName, parameterCall, returnType);
   }
 
   @Override

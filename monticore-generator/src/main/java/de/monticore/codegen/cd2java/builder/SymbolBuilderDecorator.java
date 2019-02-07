@@ -3,9 +3,11 @@ package de.monticore.codegen.cd2java.builder;
 import de.monticore.codegen.cd2java.Decorator;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.factories.CDAttributeFactory;
+import de.monticore.codegen.cd2java.factories.CDTypeFactory;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import org.slf4j.Logger;
@@ -23,6 +25,8 @@ public class SymbolBuilderDecorator implements Decorator<ASTCDClass, ASTCDClass>
 
   private final BuilderDecorator builderDecorator;
 
+  private final CDTypeFactory cdTypeFactory;
+
   private final CDAttributeFactory cdAttributeFactory;
 
   public SymbolBuilderDecorator(
@@ -30,6 +34,7 @@ public class SymbolBuilderDecorator implements Decorator<ASTCDClass, ASTCDClass>
       final BuilderDecorator builderDecorator) {
     this.glex = glex;
     this.builderDecorator = builderDecorator;
+    this.cdTypeFactory = CDTypeFactory.getInstance();
     this.cdAttributeFactory = CDAttributeFactory.getInstance();
   }
 
@@ -46,10 +51,18 @@ public class SymbolBuilderDecorator implements Decorator<ASTCDClass, ASTCDClass>
   }
 
   private List<ASTCDAttribute> createSymbolAttributes() {
-    ASTCDAttribute name = this.cdAttributeFactory.createAttributeByDefinition("private String name;");
-    ASTCDAttribute enclosingScope = this.cdAttributeFactory.createAttributeByDefinition("private Scope enclosingScope;");
-    ASTCDAttribute node = this.cdAttributeFactory.createAttributeByDefinition("private ASTNode astNode;");
-    ASTCDAttribute accessModifier = this.cdAttributeFactory.createAttributeByDefinition("private AccessModifier accessModifier;");
+    ASTType stringType = this.cdTypeFactory.createSimpleReferenceType("String");
+    ASTCDAttribute name = this.cdAttributeFactory.createPrivateAttribute(stringType, "name");
+
+    ASTType scopeType = this.cdTypeFactory.createSimpleReferenceType("Scope");
+    ASTCDAttribute enclosingScope = this.cdAttributeFactory.createPrivateAttribute(scopeType, "scope");
+
+    ASTType nodeType = this.cdTypeFactory.createSimpleReferenceType("ASTNode");
+    ASTCDAttribute node = this.cdAttributeFactory.createPrivateAttribute(nodeType, "astNode");
+
+    ASTType accessModifierType = this.cdTypeFactory.createSimpleReferenceType("AccessModifier");
+    ASTCDAttribute accessModifier = this.cdAttributeFactory.createPrivateAttribute(accessModifierType, "accessModifier");
+
     return new ArrayList<>(Arrays.asList(name, enclosingScope, node, accessModifier));
   }
 }
