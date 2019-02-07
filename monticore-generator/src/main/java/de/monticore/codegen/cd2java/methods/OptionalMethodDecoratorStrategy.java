@@ -4,6 +4,9 @@ import de.monticore.codegen.cd2java.factories.CDMethodFactory;
 import de.monticore.codegen.cd2java.factories.CDParameterFactory;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.HookPoint;
+import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.TypesHelper;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
@@ -11,6 +14,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 
 public class OptionalMethodDecoratorStrategy implements MethodDecoratorStrategy {
 
@@ -53,35 +58,73 @@ public class OptionalMethodDecoratorStrategy implements MethodDecoratorStrategy 
   private ASTCDMethod createGetMethod(final ASTCDAttribute ast) {
     String name = GET_PREFIX + StringUtils.capitalize(ast.getName());
     ASTType type = TypesHelper.getSimpleReferenceTypeFromOptional(ast.getType().deepClone());
-    return this.cdMethodFactory.createPublicMethod(type, name);
+    ASTCDMethod method = this.cdMethodFactory.createPublicMethod(type, name);
+    this.glex.replaceTemplate(EMPTY_BODY, method, createGetImplementation(ast));
+    return method;
+  }
+
+  private HookPoint createGetImplementation(final ASTCDAttribute ast) {
+    return new TemplateHookPoint("methods.opt.Get", ast);
   }
 
   private ASTCDMethod createGetOptMethod(final ASTCDAttribute ast) {
     String name = GET_PREFIX + StringUtils.capitalize(ast.getName()) + OPT_SUFFIX;
     ASTType type = ast.getType().deepClone();
-    return this.cdMethodFactory.createPublicMethod(type, name);
+    ASTCDMethod method = this.cdMethodFactory.createPublicMethod(type, name);
+    this.glex.replaceTemplate(EMPTY_BODY, method, createGetOptImplementation(ast));
+    return method;
+  }
+
+  private HookPoint createGetOptImplementation(final ASTCDAttribute ast) {
+    return new TemplateHookPoint("methods.Get", ast);
   }
 
   private ASTCDMethod createIsPresentMethod(final ASTCDAttribute ast) {
     String name = IS_PRESENT_PREFIX + StringUtils.capitalize(ast.getName());
     ASTType type = this.cdTypeFactory.createBooleanType();
-    return this.cdMethodFactory.createPublicMethod(type, name);
+    ASTCDMethod method = this.cdMethodFactory.createPublicMethod(type, name);
+    this.glex.replaceTemplate(EMPTY_BODY, method, createIsPresentImplementation(ast));
+    return method;
   }
+
+  private HookPoint createIsPresentImplementation(final ASTCDAttribute ast) {
+    return new TemplateHookPoint("methods.opt.IsPresent", ast);
+  }
+
+
 
   protected ASTCDMethod createSetMethod(final ASTCDAttribute ast) {
     String name = SET_PREFIX + StringUtils.capitalize(ast.getName());
     ASTType parameterType = TypesHelper.getSimpleReferenceTypeFromOptional(ast.getType().deepClone());
     ASTCDParameter parameter = this.cdParameterFactory.createParameter(parameterType, ast.getName());
-    return this.cdMethodFactory.createPublicVoidMethod(name, parameter);
+    ASTCDMethod method = this.cdMethodFactory.createPublicVoidMethod(name, parameter);
+    this.glex.replaceTemplate(EMPTY_BODY, method, createSetImplementation(ast));
+    return method;
+  }
+
+  protected HookPoint createSetImplementation(final ASTCDAttribute ast) {
+    return new TemplateHookPoint("methods.opt.Set", ast);
   }
 
   protected ASTCDMethod createSetOptMethod(final ASTCDAttribute ast) {
     String name = SET_PREFIX + StringUtils.capitalize(ast.getName()) + OPT_SUFFIX;
-    return this.cdMethodFactory.createPublicVoidMethod(name, this.cdParameterFactory.createParameters(ast));
+    ASTCDMethod method = this.cdMethodFactory.createPublicVoidMethod(name, this.cdParameterFactory.createParameters(ast));
+    this.glex.replaceTemplate(EMPTY_BODY, method, createSetOptImplementation(ast));
+    return method;
+  }
+
+  protected HookPoint createSetOptImplementation(final ASTCDAttribute ast) {
+    return new TemplateHookPoint("methods.Set", ast);
   }
 
   protected ASTCDMethod createSetAbsentMethod(final ASTCDAttribute ast) {
     String name = SET_ABSENT_PREFIX + StringUtils.capitalize(ast.getName());
-    return this.cdMethodFactory.createPublicVoidMethod(name);
+    ASTCDMethod method = this.cdMethodFactory.createPublicVoidMethod(name);
+    this.glex.replaceTemplate(EMPTY_BODY, method, createSetAbsentImplementation(ast));
+    return method;
+  }
+
+  protected HookPoint createSetAbsentImplementation(final ASTCDAttribute ast) {
+    return new TemplateHookPoint("methods.opt.SetAbsent", ast);
   }
 }

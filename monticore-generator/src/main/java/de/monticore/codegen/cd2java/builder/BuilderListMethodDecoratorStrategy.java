@@ -3,6 +3,9 @@ package de.monticore.codegen.cd2java.builder;
 import de.monticore.codegen.cd2java.methods.ListMethodDecoratorStrategy;
 import de.monticore.codegen.cd2java.methods.MandatoryMethodDecoratorStrategy;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.HookPoint;
+import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.TypesPrinter;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 
@@ -16,6 +19,14 @@ class BuilderListMethodDecoratorStrategy extends ListMethodDecoratorStrategy {
       final ASTType builderType) {
     super(glex, mandatoryMethodDecoratorStrategy);
     this.builderType = builderType;
+  }
+
+  @Override
+  protected HookPoint createImplementation(String attributeName, String methodName, String parameterCall, String returnType) {
+    if (!TypesPrinter.printType(builderType).equals(returnType)) {
+      return super.createImplementation(attributeName, methodName, parameterCall, returnType);
+    }
+    return new TemplateHookPoint("builder.ListMethod", attributeName, methodName, parameterCall, returnType);
   }
 
   @Override

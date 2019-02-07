@@ -49,10 +49,10 @@ public class BuilderListMethodDecoratorStrategyTest {
   public void testGetMethod() {
     List<ASTCDMethod> methodOpt = this.methods.stream()
         .filter(m -> "getA".equals(m.getName()))
+        .filter(m -> m.getCDParameterList().isEmpty())
         .collect(Collectors.toList());
-    assertEquals(2, methodOpt.size());
+    assertEquals(1, methodOpt.size());
     ASTCDMethod method = methodOpt.get(0);
-    assertTrue(method.getCDParameterList().isEmpty());
     assertEquals("List<String>", method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
   }
@@ -61,8 +61,9 @@ public class BuilderListMethodDecoratorStrategyTest {
   public void testSetMethod() {
     List<ASTCDMethod> methodOpt = this.methods.stream()
         .filter(m -> "setA".equals(m.getName()))
+        .filter(m -> 1 == m.getCDParameterList().size())
         .collect(Collectors.toList());
-    assertEquals(2, methodOpt.size());
+    assertEquals(1, methodOpt.size());
     ASTCDMethod method = methodOpt.get(0);
     assertEquals(BUILDER_CLASS_NAME, method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
@@ -246,13 +247,13 @@ public class BuilderListMethodDecoratorStrategyTest {
   public void testSetWithIndexMethod() {
     List<ASTCDMethod> methodOpt = this.methods.stream()
         .filter(m -> "setA".equals(m.getName()))
+        .filter(m -> 2 == m.getCDParameterList().size())
         .collect(Collectors.toList());
-    assertEquals(2, methodOpt.size());
-    ASTCDMethod method = methodOpt.get(1);
+    assertEquals(1, methodOpt.size());
+    ASTCDMethod method = methodOpt.get(0);
     assertEquals(BUILDER_CLASS_NAME, method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
-    assertEquals(2, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
     assertEquals("int", TypesPrinter.printType(parameter.getType()));
     assertEquals("index", parameter.getName());
@@ -410,13 +411,13 @@ public class BuilderListMethodDecoratorStrategyTest {
   public void testGetWithIndexMethod() {
     List<ASTCDMethod> methodOpt = this.methods.stream()
         .filter(m -> "getA".equals(m.getName()))
+        .filter(m -> 1 == m.getCDParameterList().size())
         .collect(Collectors.toList());
-    assertEquals(2, methodOpt.size());
-    ASTCDMethod method = methodOpt.get(1);
+    assertEquals(1, methodOpt.size());
+    ASTCDMethod method = methodOpt.get(0);
     assertEquals("String", method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
-    assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
     assertEquals("int", TypesPrinter.printType(parameter.getType()));
     assertEquals("index", parameter.getName());

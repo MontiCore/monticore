@@ -66,7 +66,7 @@ public class BuilderDecoratorTest {
   @Test
   public void testAttributes() {
     List<ASTCDAttribute> attributes = builderClass.getCDAttributeList();
-    assertEquals(4, attributes.size());
+    assertEquals(5, attributes.size());
 
     Optional<ASTCDAttribute> iOpt = attributes.stream().filter(a -> "i".equals(a.getName())).findFirst();
     assertTrue(iOpt.isPresent());
@@ -85,6 +85,12 @@ public class BuilderDecoratorTest {
     ASTCDAttribute opt = optOpt.get();
     assertEquals("protected", opt.printModifier().trim());
     assertEquals("Optional<String>", opt.printType());
+
+    Optional<ASTCDAttribute> listOpt = attributes.stream().filter(a -> "list".equals(a.getName())).findFirst();
+    assertTrue(listOpt.isPresent());
+    ASTCDAttribute list = listOpt.get();
+    assertEquals("protected", list.printModifier().trim());
+    assertEquals("List<String>", list.printType());
 
     Optional<ASTCDAttribute> realThisOpt = attributes.stream().filter(a -> "realThis".equals(a.getName())).findFirst();
     assertTrue(realThisOpt.isPresent());

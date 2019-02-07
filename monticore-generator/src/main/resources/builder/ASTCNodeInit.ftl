@@ -11,4 +11,3 @@ value.setSymbolOpt(this.symbol);
 value.setSpannedScopeOpt(this.spannedScope);
 value.set_PreCommentList(this.precomments);
 value.set_PostCommentList(this.postcomments);
-return value;

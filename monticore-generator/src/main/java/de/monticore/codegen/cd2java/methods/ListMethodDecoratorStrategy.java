@@ -2,6 +2,8 @@ package de.monticore.codegen.cd2java.methods;
 
 import de.monticore.codegen.cd2java.factories.CDMethodFactory;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.HookPoint;
+import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.TypesPrinter;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
@@ -10,6 +12,9 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 
 public class ListMethodDecoratorStrategy implements MethodDecoratorStrategy {
 
@@ -53,7 +58,7 @@ public class ListMethodDecoratorStrategy implements MethodDecoratorStrategy {
 
   private final MandatoryMethodDecoratorStrategy mandatoryMethodDecoratorStrategy;
 
-  private String attributeName;
+  private String capitalizedAttributeName;
 
   private String attributeType;
 
@@ -67,10 +72,9 @@ public class ListMethodDecoratorStrategy implements MethodDecoratorStrategy {
 
   @Override
   public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
-    this.attributeName = StringUtils.capitalize(ast.getName());
+    this.capitalizedAttributeName = StringUtils.capitalize(ast.getName());
     this.attributeType = getGenericTypeFromListAttribute(ast.getType());
-    List<ASTCDMethod> methods = this.mandatoryMethodDecoratorStrategy.decorate(ast);
-    methods.addAll(new ArrayList<>(Arrays.asList(
+    List<ASTCDMethod> methods = new ArrayList<>(Arrays.asList(
         createClearMethod(),
         createAddMethod(),
         createAddAllMethod(),
@@ -103,7 +107,11 @@ public class ListMethodDecoratorStrategy implements MethodDecoratorStrategy {
         createHashCodeMethod(),
         createListIteratorMethod(),
         createListIterator_Method(),
-        createSubListMethod())));
+        createSubListMethod()));
+
+    methods.forEach(this::addImplementation);
+
+    methods.addAll(this.mandatoryMethodDecoratorStrategy.decorate(ast));
     return methods;
   }
 
@@ -112,165 +120,182 @@ public class ListMethodDecoratorStrategy implements MethodDecoratorStrategy {
     return typeString.substring("List<".length(), typeString.length() - 1);
   }
 
+  private void addImplementation(final ASTCDMethod method) {
+    String attributeName = StringUtils.uncapitalize(this.capitalizedAttributeName);
+    String methodName = method.getName().substring(0, method.getName().length() - this.capitalizedAttributeName.length());
+    String parameterCall = method.getCDParameterList().stream()
+        .map(ASTCDParameter::getName)
+        .collect(Collectors.joining(", "));
+    String returnType = method.printReturnType();
+
+    HookPoint impl = createImplementation(attributeName, methodName, parameterCall, returnType);
+
+    this.glex.replaceTemplate(EMPTY_BODY, method, impl);
+  }
+
+  protected HookPoint createImplementation(String attributeName, String methodName, String parameterCall, String returnType) {
+    return new TemplateHookPoint("methods.ListMethod", attributeName, methodName, parameterCall, returnType);
+  }
+
   protected ASTCDMethod createClearMethod() {
-    String signature = String.format(CLEAR, attributeName);
+    String signature = String.format(CLEAR, capitalizedAttributeName);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
   protected ASTCDMethod createAddMethod() {
-    String signature = String.format(ADD, attributeName, attributeType);
+    String signature = String.format(ADD, capitalizedAttributeName, attributeType);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
   protected ASTCDMethod createAddAllMethod() {
-    String signature = String.format(ADD_ALL, attributeName, attributeType);
+    String signature = String.format(ADD_ALL, capitalizedAttributeName, attributeType);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
   protected ASTCDMethod createRemoveMethod() {
-    String signature = String.format(REMOVE, attributeName);
+    String signature = String.format(REMOVE, capitalizedAttributeName);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
   protected ASTCDMethod createRemoveAllMethod() {
-    String signature = String.format(REMOVE_ALL, attributeName);
+    String signature = String.format(REMOVE_ALL, capitalizedAttributeName);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
   protected ASTCDMethod createRetainAllMethod() {
-    String signature = String.format(RETAIN_ALL, attributeName);
+    String signature = String.format(RETAIN_ALL, capitalizedAttributeName);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
   protected ASTCDMethod createRemoveIfMethod() {
-    String signature = String.format(REMOVE_IF, attributeName, attributeType);
+    String signature = String.format(REMOVE_IF, capitalizedAttributeName, attributeType);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
   protected ASTCDMethod createForEachMethod() {
-    String signature = String.format(FOR_EACH, attributeName, attributeType);
+    String signature = String.format(FOR_EACH, capitalizedAttributeName, attributeType);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
   protected ASTCDMethod createAdd_Method() {
-    String signature = String.format(ADD_, attributeName, attributeType);
+    String signature = String.format(ADD_, capitalizedAttributeName, attributeType);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
   protected ASTCDMethod createAddAll_Method() {
-    String signature = String.format(ADD_ALL_, attributeName, attributeType);
+    String signature = String.format(ADD_ALL_, capitalizedAttributeName, attributeType);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
   protected ASTCDMethod createRemove_Method() {
-    String signature = String.format(REMOVE_, attributeType, attributeName);
+    String signature = String.format(REMOVE_, attributeType, capitalizedAttributeName);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
   protected ASTCDMethod createSetMethod() {
-    String signature = String.format(SET, attributeType, attributeName, attributeType);
+    String signature = String.format(SET, attributeType, capitalizedAttributeName, attributeType);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
   protected ASTCDMethod createReplaceAllMethod() {
-    String signature = String.format(REPLACE_ALL, attributeName, attributeType);
+    String signature = String.format(REPLACE_ALL, capitalizedAttributeName, attributeType);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
   protected ASTCDMethod createSortMethod() {
-    String signature = String.format(SORT, attributeName, attributeType);
+    String signature = String.format(SORT, capitalizedAttributeName, attributeType);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
 
 
   private ASTCDMethod createContainsMethod() {
-    String signature = String.format(CONTAINS, attributeName);
+    String signature = String.format(CONTAINS, capitalizedAttributeName);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
   private ASTCDMethod createContainsAllMethod() {
-    String signature = String.format(CONTAINS_ALL, attributeName);
+    String signature = String.format(CONTAINS_ALL, capitalizedAttributeName);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
   private ASTCDMethod createIsEmptyMethod() {
-    String signature = String.format(IS_EMPTY, attributeName);
+    String signature = String.format(IS_EMPTY, capitalizedAttributeName);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
   private ASTCDMethod createIteratorMethod() {
-    String signature = String.format(ITERATOR, attributeType, attributeName);
+    String signature = String.format(ITERATOR, attributeType, capitalizedAttributeName);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
   private ASTCDMethod createSizeMethod() {
-    String signature = String.format(SIZE, attributeName);
+    String signature = String.format(SIZE, capitalizedAttributeName);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
   private ASTCDMethod createToArrayMethod() {
-    String signature = String.format(TO_ARRAY, attributeType, attributeName, attributeType);
+    String signature = String.format(TO_ARRAY, attributeType, capitalizedAttributeName, attributeType);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
   private ASTCDMethod createToArray_Method() {
-    String signature = String.format(TO_ARRAY_, attributeName);
+    String signature = String.format(TO_ARRAY_, capitalizedAttributeName);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
   private ASTCDMethod createSpliteratorMethod() {
-    String signature = String.format(SPLITERATOR, attributeType, attributeName);
+    String signature = String.format(SPLITERATOR, attributeType, capitalizedAttributeName);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
   private ASTCDMethod createStreamMethod() {
-    String signature = String.format(STREAM, attributeType, attributeName);
+    String signature = String.format(STREAM, attributeType, capitalizedAttributeName);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
   private ASTCDMethod createParallelStreamMethod() {
-    String signature = String.format(PARALLEL_STREAM, attributeType, attributeName);
+    String signature = String.format(PARALLEL_STREAM, attributeType, capitalizedAttributeName);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
   private ASTCDMethod createGetMethod() {
-    String signature = String.format(GET, attributeType, attributeName);
+    String signature = String.format(GET, attributeType, capitalizedAttributeName);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
   private ASTCDMethod createIndexOfMethod() {
-    String signature = String.format(INDEX_OF, attributeName);
+    String signature = String.format(INDEX_OF, capitalizedAttributeName);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
   private ASTCDMethod createLastIndexOfMethod() {
-    String signature = String.format(LAST_INDEX_OF, attributeName);
+    String signature = String.format(LAST_INDEX_OF, capitalizedAttributeName);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
   private ASTCDMethod createEqualsMethod() {
-    String signature = String.format(EQUALS, attributeName);
+    String signature = String.format(EQUALS, capitalizedAttributeName);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
   private ASTCDMethod createHashCodeMethod() {
-    String signature = String.format(HASHCODE, attributeName);
+    String signature = String.format(HASHCODE, capitalizedAttributeName);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
   private ASTCDMethod createListIteratorMethod() {
-    String signature = String.format(LIST_ITERATOR, attributeType, attributeName);
+    String signature = String.format(LIST_ITERATOR, attributeType, capitalizedAttributeName);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
   private ASTCDMethod createListIterator_Method() {
-    String signature = String.format(LIST_ITERATOR_, attributeType, attributeName);
+    String signature = String.format(LIST_ITERATOR_, attributeType, capitalizedAttributeName);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 
   private ASTCDMethod createSubListMethod() {
-    String signature = String.format(SUBLIST, attributeType, attributeName);
+    String signature = String.format(SUBLIST, attributeType, capitalizedAttributeName);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
 }
