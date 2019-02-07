@@ -1,7 +1,6 @@
 package de.monticore.codegen.cd2java.factory;
 
 import de.monticore.MontiCoreScript;
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.factories.CDParameterFactory;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
@@ -54,18 +53,16 @@ public class NodeFactoryWithInheritanceTest {
 
     //create ASTCDDefinition from MontiCoreScript
     MontiCoreScript script = new MontiCoreScript();
-    GlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
-    script.createSymbolsFromAST(symbolTable, grammar.get());
+    GlobalScope globalScope = TestHelper.createGlobalScope(modelPath);
+    script.createSymbolsFromAST(globalScope, grammar.get());
     cdCompilationUnit = script.deriveCD(grammar.get(), new GlobalExtensionManagement(),
-        symbolTable);
+        globalScope);
 
-    ASTCDDefinition astcdDefinition = cdCompilationUnit.getCDDefinition().deepClone();
-    GeneratorHelper genHelper = new GeneratorHelper(cdCompilationUnit, symbolTable);
-
-    NodeFactoryDecorator factoryDecorator = new NodeFactoryDecorator(glex, genHelper);
-    this.factoryClass = factoryDecorator.decorate(astcdDefinition);
+    cdCompilationUnit.setEnclosingScope(globalScope);
+    NodeFactoryDecorator factoryDecorator = new NodeFactoryDecorator(glex);
+    this.factoryClass = factoryDecorator.decorate(cdCompilationUnit);
     //test if not changed the original Definition
-    assertTrue(astcdDefinition.deepEquals(cdCompilationUnit.getCDDefinition()));
+    assertTrue(cdCompilationUnit.getCDDefinition().deepEquals(cdCompilationUnit.getCDDefinition()));
   }
 
 
