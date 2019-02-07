@@ -1,6 +1,7 @@
 package de.monticore.codegen.cd2java.factory;
 
 import de.monticore.MontiCoreScript;
+import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.factories.CDParameterFactory;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
@@ -54,11 +55,12 @@ public class NodeFactoryDecoratorTest {
     MontiCoreScript script = new MontiCoreScript();
     GlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
     script.createSymbolsFromAST(symbolTable, grammar.get());
-    cdCompilationUnit = script.getOrCreateCD(grammar.get(),
-        new GlobalExtensionManagement(), symbolTable);
+    cdCompilationUnit = script.deriveCD(grammar.get(), new GlobalExtensionManagement(),
+        symbolTable);
     ASTCDDefinition astcdDefinition = cdCompilationUnit.getCDDefinition().deepClone();
 
-    NodeFactoryDecorator factoryDecorator = new NodeFactoryDecorator(glex);
+    GeneratorHelper genHelper = new GeneratorHelper(cdCompilationUnit, symbolTable);
+    NodeFactoryDecorator factoryDecorator = new NodeFactoryDecorator(glex, genHelper);
     this.factoryClass = factoryDecorator.decorate(astcdDefinition);
     //test if not changed the original Definition
     assertTrue(astcdDefinition.deepEquals(cdCompilationUnit.getCDDefinition()));

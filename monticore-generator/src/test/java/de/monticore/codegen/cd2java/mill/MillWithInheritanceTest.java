@@ -3,10 +3,8 @@ package de.monticore.codegen.cd2java.mill;
 import de.monticore.MontiCoreScript;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.CoreTemplates;
-import de.monticore.codegen.cd2java.factories.CDParameterFactory;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
 import de.monticore.codegen.cd2java.factories.ModifierBuilder;
-import de.monticore.codegen.cd2java.factory.NodeFactoryDecorator;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -16,14 +14,10 @@ import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.TypesPrinter;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
-import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParser;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -31,7 +25,7 @@ import java.util.Optional;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class MillDecoratorTest {
+public class MillWithInheritanceTest {
 
   private CDTypeFactory cdTypeFacade;
 
@@ -48,11 +42,11 @@ public class MillDecoratorTest {
     this.cdTypeFacade = CDTypeFactory.getInstance();
 
     //create grammar from ModelPath
-    Path modelPathPath = Paths.get("src/test/resources");
+    Path modelPathPath = Paths.get("src/test/resources/de/monticore/codegen/factory");
     ModelPath modelPath = new ModelPath(modelPathPath);
     Optional<ASTMCGrammar> grammar = new MontiCoreScript()
         .parseGrammar(Paths.get(new File(
-            "src/test/resources/Automaton.mc4").getAbsolutePath()));
+            "src/test/resources/de/monticore/codegen/factory/BGrammar.mc4").getAbsolutePath()));
     assertTrue(grammar.isPresent());
 
     //create ASTCDDefinition from MontiCoreScript
@@ -71,16 +65,10 @@ public class MillDecoratorTest {
   }
 
   @Test
-  public void testMillName() {
-    assertEquals("AutomatonMill", millClass.getName());
-  }
-
-  @Test
   public void testAttributeName() {
     assertEquals("mill", millClass.getCDAttribute(0).getName());
-    assertEquals("millASTAutomaton", millClass.getCDAttribute(1).getName());
-    assertEquals("millASTState", millClass.getCDAttribute(2).getName());
-    assertEquals("millASTTransition", millClass.getCDAttribute(3).getName());
+    assertEquals("millASTBlub", millClass.getCDAttribute(1).getName());
+    assertEquals("millASTBli", millClass.getCDAttribute(2).getName());
   }
 
   @Test
@@ -95,7 +83,7 @@ public class MillDecoratorTest {
   public void testConstructor() {
     assertEquals(1, millClass.sizeCDConstructors());
     assertTrue(ModifierBuilder.builder().Protected().build().deepEquals(millClass.getCDConstructor(0).getModifier()));
-    assertEquals("AutomatonMill", millClass.getCDConstructor(0).getName());
+    assertEquals("BGrammarMill", millClass.getCDConstructor(0).getName());
   }
 
   @Test
@@ -106,7 +94,7 @@ public class MillDecoratorTest {
     //test Parameters
     assertTrue(getMill.isEmptyCDParameters());
     //test ReturnType
-    assertEquals("AutomatonMill", TypesPrinter.printReturnType(getMill.getReturnType()));
+    assertEquals("BGrammarMill", TypesPrinter.printReturnType(getMill.getReturnType()));
     //test Modifier
     assertTrue(ModifierBuilder.builder().Protected().Static().build().deepEquals(getMill.getModifier()));
   }
@@ -118,7 +106,7 @@ public class MillDecoratorTest {
     assertEquals("initMe", initMe.getName());
     //test Parameters
     assertEquals(1, initMe.sizeCDParameters());
-    assertEquals("AutomatonMill", TypesPrinter.printType(initMe.getCDParameter(0).getType()));
+    assertEquals("BGrammarMill", TypesPrinter.printType(initMe.getCDParameter(0).getType()));
     assertEquals("a", initMe.getCDParameter(0).getName());
     //test ReturnType
     assertTrue(cdTypeFacade.createVoidType().deepEquals(initMe.getReturnType()));
@@ -153,86 +141,56 @@ public class MillDecoratorTest {
   }
 
   @Test
-  public void testAutomatonBuilderMethod() {
-    ASTCDMethod fooBarBuilder = millClass.getCDMethod(4);
-    //test Method Name
-    assertEquals("aSTAutomatonBuilder", fooBarBuilder.getName());
-    //test Parameters
-    assertTrue(fooBarBuilder.isEmptyCDParameters());
-    //test ReturnType
-    assertEquals("ASTAutomatonBuilder", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
-    //test Modifier
-    assertTrue(ModifierBuilder.builder().Public().Static().build().deepEquals(fooBarBuilder.getModifier()));
-  }
-
-  @Test
-  public void testProtectedAutomatonMethod() {
-    ASTCDMethod fooBarBuilder = millClass.getCDMethod(5);
-    //test Method Name
-    assertEquals("_aSTAutomatonBuilder", fooBarBuilder.getName());
-    //test Parameters
-    assertTrue(fooBarBuilder.isEmptyCDParameters());
-    //test ReturnType
-    assertEquals("ASTAutomatonBuilder", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
-    //test Modifier
-    assertTrue(ModifierBuilder.builder().Protected().build().deepEquals(fooBarBuilder.getModifier()));
-  }
-
-
-  @Test
-  public void testStateMethod() {
-    ASTCDMethod fooBarBuilder = millClass.getCDMethod(6);
-    //test Method Name
-    assertEquals("aSTStateBuilder", fooBarBuilder.getName());
-    //test Parameters
-    assertTrue(fooBarBuilder.isEmptyCDParameters());
-    //test ReturnType
-    assertEquals("ASTStateBuilder", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
-    //test Modifier
-    assertTrue(ModifierBuilder.builder().Public().Static().build().deepEquals(fooBarBuilder.getModifier()));
-  }
-
-  @Test
-  public void testProtectedStateBuilderMethod() {
-    ASTCDMethod fooBarBuilder = millClass.getCDMethod(7);
-    //test Method Name
-    assertEquals("_aSTStateBuilder", fooBarBuilder.getName());
-    //test Parameters
-    assertTrue(fooBarBuilder.isEmptyCDParameters());
-    //test ReturnType
-    assertEquals("ASTStateBuilder", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
-    //test Modifier
-    assertTrue(ModifierBuilder.builder().Protected().build().deepEquals(fooBarBuilder.getModifier()));
-  }
-
-
-  @Test
-  public void testTransitionAMethod() {
+  public void testCBuilderMethod() {
     ASTCDMethod fooBarBuilder = millClass.getCDMethod(8);
     //test Method Name
-    assertEquals("aSTTransitionBuilder", fooBarBuilder.getName());
+    assertEquals("aSTCBuilder", fooBarBuilder.getName());
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
-    assertEquals("ASTTransitionBuilder", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
+    assertEquals("de.monticore.codegen.factory.cgrammar._ast.ASTC", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
     //test Modifier
     assertTrue(ModifierBuilder.builder().Public().Static().build().deepEquals(fooBarBuilder.getModifier()));
   }
 
   @Test
-  public void testProtectedTransitionBuilderMethod() {
+  public void testNameBuilderMethod() {
     ASTCDMethod fooBarBuilder = millClass.getCDMethod(9);
     //test Method Name
-    assertEquals("_aSTTransitionBuilder", fooBarBuilder.getName());
+    assertEquals("aSTNameBuilder", fooBarBuilder.getName());
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
-    assertEquals("ASTTransitionBuilder", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
+    assertEquals("de.monticore.codegen.factory.agrammar._ast.ASTName", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
     //test Modifier
-    assertTrue(ModifierBuilder.builder().Protected().build().deepEquals(fooBarBuilder.getModifier()));
+    assertTrue(ModifierBuilder.builder().Public().Static().build().deepEquals(fooBarBuilder.getModifier()));
   }
 
+  @Test
+  public void testFooBuilderMethod() {
+    ASTCDMethod fooBarBuilder = millClass.getCDMethod(10);
+    //test Method Name
+    assertEquals("aSTFooBuilder", fooBarBuilder.getName());
+    //test Parameters
+    assertTrue(fooBarBuilder.isEmptyCDParameters());
+    //test ReturnType
+    assertEquals("de.monticore.codegen.factory.agrammar._ast.ASTFoo", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
+    //test Modifier
+    assertTrue(ModifierBuilder.builder().Public().Static().build().deepEquals(fooBarBuilder.getModifier()));
+  }
 
+  @Test
+  public void tesBarBuilderMethod() {
+    ASTCDMethod fooBarBuilder = millClass.getCDMethod(11);
+    //test Method Name
+    assertEquals("aSTBarBuilder", fooBarBuilder.getName());
+    //test Parameters
+    assertTrue(fooBarBuilder.isEmptyCDParameters());
+    //test ReturnType
+    assertEquals("de.monticore.codegen.factory.agrammar._ast.ASTBar", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
+    //test Modifier
+    assertTrue(ModifierBuilder.builder().Public().Static().build().deepEquals(fooBarBuilder.getModifier()));
+  }
 
   @Test
   public void testGeneratedCode() {
@@ -248,7 +206,7 @@ public class MillDecoratorTest {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     generatorSetup.setOutputDirectory(Paths.get("target/generated-test-sources/generatortest/mill").toFile());
-    Path generatedFiles = Paths.get("AutomatonMill.java");
+    Path generatedFiles = Paths.get("BGrammarMill.java");
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     generatorEngine.generate(CoreTemplates.CLASS, generatedFiles, millClass, millClass);
   }

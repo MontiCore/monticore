@@ -1,0 +1,11 @@
+package de.monticore.codegen.factory;
+
+grammar AGrammar {
+
+  Name = ("A" | "B" | "C");
+
+  Foo = "foo" Name;
+
+  Bar = "bar" Foo bar:Name;
+
+}
