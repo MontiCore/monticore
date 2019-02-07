@@ -2,7 +2,9 @@ package de.monticore.codegen.cd2java.factories;
 
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CDConstructorFactory {
 
@@ -18,25 +20,24 @@ public class CDConstructorFactory {
     return cdConstructorFactory;
   }
 
-  public ASTCDConstructor createProtectedFullConstructor(final ASTCDClass ast) {
-    List<ASTCDParameter> parameterList = CDParameterFactory.getInstance().createParameters(ast.getCDAttributeList());
-    return createProtectedConstructorBuilder(ast.getName())
-        .setCDParameterList(parameterList)
-        .build();
+  public ASTCDConstructor createFullConstructor(final ASTModifier modifier, final ASTCDClass cdClass) {
+    List<ASTCDParameter> parameterList = CDParameterFactory.getInstance().createParameters(cdClass.getCDAttributeList());
+    return createConstructor(modifier, cdClass.getName(), parameterList);
   }
 
-  public ASTCDConstructor createProtectedDefaultConstructor(final ASTCDClass ast) {
-    return createProtectedDefaultConstructor(ast.getName());
+  public ASTCDConstructor createDefaultConstructor(final ASTModifier modifier, final ASTCDClass cdClass) {
+    return createConstructor(modifier, cdClass.getName(), Collections.emptyList());
   }
 
-
-  public ASTCDConstructor createProtectedDefaultConstructor(final String name) {
-    return createProtectedConstructorBuilder(name).build();
+  public ASTCDConstructor createConstructor(final ASTModifier modifier, final String name) {
+    return createConstructor(modifier, name, Collections.emptyList());
   }
 
-  private ASTCDConstructorBuilder createProtectedConstructorBuilder(final String name) {
+  public ASTCDConstructor createConstructor(final ASTModifier modifier, final String name, final List<ASTCDParameter> parameters) {
     return CD4AnalysisMill.cDConstructorBuilder()
-        .setModifier(ModifierBuilder.builder().Protected().build())
-        .setName(name);
+        .setModifier(modifier.deepClone())
+        .setName(name)
+        .setCDParameterList(parameters.stream().map(ASTCDParameter::deepClone).collect(Collectors.toList()))
+        .build();
   }
 }

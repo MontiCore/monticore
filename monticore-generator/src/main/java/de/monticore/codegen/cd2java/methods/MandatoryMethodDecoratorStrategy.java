@@ -1,6 +1,7 @@
 package de.monticore.codegen.cd2java.methods;
 
 import de.monticore.codegen.cd2java.factories.CDMethodFactory;
+import de.monticore.codegen.cd2java.factories.CDModifier;
 import de.monticore.codegen.cd2java.factories.CDParameterFactory;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
@@ -15,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
 public class MandatoryMethodDecoratorStrategy implements MethodDecoratorStrategy {
 
@@ -44,7 +46,7 @@ public class MandatoryMethodDecoratorStrategy implements MethodDecoratorStrategy
   private ASTCDMethod createGetter(final ASTCDAttribute ast) {
     String name = GETTER_PREFIX + StringUtils.capitalize(ast.getName());
     ASTType type = ast.getType().deepClone();
-    ASTCDMethod method = this.cdMethodFactory.createPublicMethod(type, name);
+    ASTCDMethod method = this.cdMethodFactory.createMethod(PUBLIC, type, name);
     this.glex.replaceTemplate(EMPTY_BODY, method, createGetImplementation(ast));
     return method;
   }
@@ -55,7 +57,7 @@ public class MandatoryMethodDecoratorStrategy implements MethodDecoratorStrategy
 
   protected ASTCDMethod createSetter(final ASTCDAttribute ast) {
     String name = SETTER_PREFIX + StringUtils.capitalize(ast.getName());
-    ASTCDMethod method = this.cdMethodFactory.createPublicVoidMethod(name, this.cdParameterFactory.createParameters(ast));
+    ASTCDMethod method = this.cdMethodFactory.createMethod(PUBLIC, name, this.cdParameterFactory.createParameters(ast));
     this.glex.replaceTemplate(EMPTY_BODY, method, createSetImplementation(ast));
     return method;
   }

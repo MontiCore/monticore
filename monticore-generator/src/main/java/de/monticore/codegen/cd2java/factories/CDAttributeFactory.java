@@ -2,11 +2,13 @@ package de.monticore.codegen.cd2java.factories;
 
 import de.monticore.codegen.cd2java.factories.exception.CDFactoryErrorCode;
 import de.monticore.codegen.cd2java.factories.exception.CDFactoryException;
+import de.monticore.types.TypesHelper;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttributeBuilder;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTModifier;
 import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisMill;
 import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParser;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -42,29 +44,32 @@ public class CDAttributeFactory {
     return attribute.get();
   }
 
-  public ASTCDAttribute createPrivateAttribute(final ASTType type, final String name) {
-    return createAttributeBuilder(type, name)
-        .setModifier(ModifierBuilder.builder().Private().build())
-        .build();
-  }
-
-  public ASTCDAttribute createProtectedAttribute(final ASTType type, final String name) {
-    return createAttributeBuilder(type, name)
-        .setModifier(ModifierBuilder.builder().Protected().build())
-        .build();
-  }
-
-  public ASTCDAttribute createProtectedStaticAttribute(final ASTType type, final String name) {
-    return createAttributeBuilder(type, name)
-        .setModifier(ModifierBuilder.builder().Protected().Static().build())
-        .build();
-  }
-
-
-  private ASTCDAttributeBuilder createAttributeBuilder(final ASTType type, final String name) {
+  public ASTCDAttribute createAttribute(final ASTModifier modifier, final ASTType type, final String name) {
     return CD4AnalysisMill.cDAttributeBuilder()
-        .setType(type)
-        .setName(name);
+        .setModifier(modifier.deepClone())
+        .setType(type.deepClone())
+        .setName(name)
+        .build();
+  }
+
+  public ASTCDAttribute createAttribute(final ASTModifier modifier, final ASTType type) {
+    return createAttribute(modifier, type, StringUtils.uncapitalize(TypesHelper.printType(type)));
+  }
+
+  public ASTCDAttribute createAttribute(final ASTModifier modifier, final String type, final String name) {
+    return createAttribute(modifier, CDTypeFactory.getInstance().createSimpleReferenceType(type), name);
+  }
+
+  public ASTCDAttribute createAttribute(final ASTModifier modifier, final String type) {
+    return createAttribute(modifier, CDTypeFactory.getInstance().createSimpleReferenceType(type), StringUtils.uncapitalize(type));
+  }
+
+  public ASTCDAttribute createAttribute(final ASTModifier modifier, final Class<?> type, final String name) {
+    return createAttribute(modifier, CDTypeFactory.getInstance().createSimpleReferenceType(type), name);
+  }
+
+  public ASTCDAttribute createAttribute(final ASTModifier modifier, final Class<?> type) {
+    return createAttribute(modifier, CDTypeFactory.getInstance().createSimpleReferenceType(type), StringUtils.uncapitalize(type.getSimpleName()));
   }
 
 }

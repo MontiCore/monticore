@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 public class MillDecorator implements Decorator<ASTCDDefinition, ASTCDClass> {
 
@@ -62,16 +63,14 @@ public class MillDecorator implements Decorator<ASTCDDefinition, ASTCDClass> {
     ASTType millType = this.cdTypeFacade.createTypeByDefinition(millClassName);
     List<ASTCDClass> astcdClassList = Lists.newArrayList(astcdDefinition.getCDClassList());
 
-    ASTModifier modifier = ModifierBuilder.builder().Public().build();
+    ASTCDConstructor constructor = this.cdConstructorFacade.createConstructor(PROTECTED, millClassName);
 
-    ASTCDConstructor constructor = this.cdConstructorFacade.createProtectedDefaultConstructor(millClassName);
-
-    ASTCDAttribute millAttribute = this.cdAttributeFacade.createProtectedStaticAttribute(millType, MILL_INFIX);
+    ASTCDAttribute millAttribute = this.cdAttributeFacade.createAttribute(PROTECTED_STATIC, millType, MILL_INFIX);
 
     //add mill attribute for each class
     List<ASTCDAttribute> attributeList = new ArrayList<>();
     for (String attributeName : getAttributeNameList(astcdClassList)) {
-      attributeList.add(this.cdAttributeFacade.createProtectedStaticAttribute(millType, MILL_INFIX + attributeName));
+      attributeList.add(this.cdAttributeFacade.createAttribute(PROTECTED_STATIC, millType, MILL_INFIX + attributeName));
     }
 
     //add all standard methods
@@ -92,7 +91,7 @@ public class MillDecorator implements Decorator<ASTCDDefinition, ASTCDClass> {
     }
 
     return CD4AnalysisMill.cDClassBuilder()
-        .setModifier(modifier)
+        .setModifier(PUBLIC)
         .setName(millClassName)
         .addCDAttribute(millAttribute)
         .addAllCDAttributes(attributeList)
@@ -114,26 +113,26 @@ public class MillDecorator implements Decorator<ASTCDDefinition, ASTCDClass> {
   }
 
   private ASTCDMethod addGetMillMethods(ASTType millType) {
-    ASTCDMethod getMillMethod = this.cdMethodFacade.createProtectedStaticMethod(millType, GET_MILL);
+    ASTCDMethod getMillMethod = this.cdMethodFacade.createMethod(PROTECTED_STATIC, millType, GET_MILL);
     this.glex.replaceTemplate(EMPTY_BODY, getMillMethod, new TemplateHookPoint("mill.GetMillMethod", TypesPrinter.printType(millType)));
     return getMillMethod;
   }
 
   private ASTCDMethod addInitMeMethod(ASTType millType, List<ASTCDClass> astcdClassList) {
     ASTCDParameter astcdParameter = cdParameterFacade.createParameter(millType, "mill");
-    ASTCDMethod initMeMethod = this.cdMethodFacade.createPublicStaticVoidMethod(INIT_ME, astcdParameter);
+    ASTCDMethod initMeMethod = this.cdMethodFacade.createMethod(PUBLIC_STATIC, INIT_ME, astcdParameter);
     this.glex.replaceTemplate(EMPTY_BODY, initMeMethod, new TemplateHookPoint("mill.InitMeMethod", getAttributeNameList(astcdClassList)));
     return initMeMethod;
   }
 
   private ASTCDMethod addInitMethod(ASTType millType) {
-    ASTCDMethod initMethod = this.cdMethodFacade.createPublicStaticVoidMethod(INIT);
+    ASTCDMethod initMethod = this.cdMethodFacade.createMethod(PUBLIC_STATIC, INIT);
     this.glex.replaceTemplate(EMPTY_BODY, initMethod, new TemplateHookPoint("mill.InitMethod", TypesPrinter.printType(millType)));
     return initMethod;
   }
 
   private ASTCDMethod addResetMethod(List<ASTCDClass> astcdClassList) {
-    ASTCDMethod resetMethod = this.cdMethodFacade.createPublicStaticVoidMethod(RESET);
+    ASTCDMethod resetMethod = this.cdMethodFacade.createMethod(PUBLIC_STATIC, RESET);
     this.glex.replaceTemplate(EMPTY_BODY, resetMethod, new TemplateHookPoint("mill.ResetMethod", getAttributeNameList(astcdClassList)));
     return resetMethod;
   }
@@ -143,12 +142,12 @@ public class MillDecorator implements Decorator<ASTCDDefinition, ASTCDClass> {
     ASTType builderType = this.cdTypeFacade.createSimpleReferenceType(astName + BUILDER);
 
     // add public static Method for Builder
-    ASTCDMethod builderMethod = this.cdMethodFacade.createPublicStaticMethod(builderType, StringTransformations.uncapitalize(astName) + BUILDER);
+    ASTCDMethod builderMethod = this.cdMethodFacade.createMethod(PUBLIC_STATIC, builderType, StringTransformations.uncapitalize(astName) + BUILDER);
     builderMethods.add(builderMethod);
     this.glex.replaceTemplate(EMPTY_BODY, builderMethod, new TemplateHookPoint("mill.BuilderMethod", astName));
 
     // add protected Method for Builder
-    ASTCDMethod protectedMethod = this.cdMethodFacade.createProtectedMethod(builderType, "_" + StringTransformations.uncapitalize(astName) + BUILDER);
+    ASTCDMethod protectedMethod = this.cdMethodFacade.createMethod(PROTECTED, builderType, "_" + StringTransformations.uncapitalize(astName) + BUILDER);
     builderMethods.add(protectedMethod);
     this.glex.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("mill.ProtectedBuilderMethod", TypesPrinter.printType(builderType)));
   }

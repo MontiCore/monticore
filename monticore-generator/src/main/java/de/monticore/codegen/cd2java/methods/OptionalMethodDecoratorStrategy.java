@@ -16,6 +16,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.factories.CDTypeFactory.BOOLEAN_TYPE;
 
 public class OptionalMethodDecoratorStrategy implements MethodDecoratorStrategy {
 
@@ -58,7 +60,7 @@ public class OptionalMethodDecoratorStrategy implements MethodDecoratorStrategy 
   private ASTCDMethod createGetMethod(final ASTCDAttribute ast) {
     String name = GET_PREFIX + StringUtils.capitalize(ast.getName());
     ASTType type = TypesHelper.getSimpleReferenceTypeFromOptional(ast.getType().deepClone());
-    ASTCDMethod method = this.cdMethodFactory.createPublicMethod(type, name);
+    ASTCDMethod method = this.cdMethodFactory.createMethod(PUBLIC, type, name);
     this.glex.replaceTemplate(EMPTY_BODY, method, createGetImplementation(ast));
     return method;
   }
@@ -70,7 +72,7 @@ public class OptionalMethodDecoratorStrategy implements MethodDecoratorStrategy 
   private ASTCDMethod createGetOptMethod(final ASTCDAttribute ast) {
     String name = GET_PREFIX + StringUtils.capitalize(ast.getName()) + OPT_SUFFIX;
     ASTType type = ast.getType().deepClone();
-    ASTCDMethod method = this.cdMethodFactory.createPublicMethod(type, name);
+    ASTCDMethod method = this.cdMethodFactory.createMethod(PUBLIC, type, name);
     this.glex.replaceTemplate(EMPTY_BODY, method, createGetOptImplementation(ast));
     return method;
   }
@@ -81,8 +83,7 @@ public class OptionalMethodDecoratorStrategy implements MethodDecoratorStrategy 
 
   private ASTCDMethod createIsPresentMethod(final ASTCDAttribute ast) {
     String name = IS_PRESENT_PREFIX + StringUtils.capitalize(ast.getName());
-    ASTType type = this.cdTypeFactory.createBooleanType();
-    ASTCDMethod method = this.cdMethodFactory.createPublicMethod(type, name);
+    ASTCDMethod method = this.cdMethodFactory.createMethod(PUBLIC, BOOLEAN_TYPE, name);
     this.glex.replaceTemplate(EMPTY_BODY, method, createIsPresentImplementation(ast));
     return method;
   }
@@ -95,9 +96,9 @@ public class OptionalMethodDecoratorStrategy implements MethodDecoratorStrategy 
 
   protected ASTCDMethod createSetMethod(final ASTCDAttribute ast) {
     String name = SET_PREFIX + StringUtils.capitalize(ast.getName());
-    ASTType parameterType = TypesHelper.getSimpleReferenceTypeFromOptional(ast.getType().deepClone());
+    ASTType parameterType = TypesHelper.getSimpleReferenceTypeFromOptional(ast.getType()).deepClone();
     ASTCDParameter parameter = this.cdParameterFactory.createParameter(parameterType, ast.getName());
-    ASTCDMethod method = this.cdMethodFactory.createPublicVoidMethod(name, parameter);
+    ASTCDMethod method = this.cdMethodFactory.createMethod(PUBLIC, name, parameter);
     this.glex.replaceTemplate(EMPTY_BODY, method, createSetImplementation(ast));
     return method;
   }
@@ -108,7 +109,7 @@ public class OptionalMethodDecoratorStrategy implements MethodDecoratorStrategy 
 
   protected ASTCDMethod createSetOptMethod(final ASTCDAttribute ast) {
     String name = SET_PREFIX + StringUtils.capitalize(ast.getName()) + OPT_SUFFIX;
-    ASTCDMethod method = this.cdMethodFactory.createPublicVoidMethod(name, this.cdParameterFactory.createParameters(ast));
+    ASTCDMethod method = this.cdMethodFactory.createMethod(PUBLIC, name, this.cdParameterFactory.createParameters(ast));
     this.glex.replaceTemplate(EMPTY_BODY, method, createSetOptImplementation(ast));
     return method;
   }
@@ -119,7 +120,7 @@ public class OptionalMethodDecoratorStrategy implements MethodDecoratorStrategy 
 
   protected ASTCDMethod createSetAbsentMethod(final ASTCDAttribute ast) {
     String name = SET_ABSENT_PREFIX + StringUtils.capitalize(ast.getName());
-    ASTCDMethod method = this.cdMethodFactory.createPublicVoidMethod(name);
+    ASTCDMethod method = this.cdMethodFactory.createMethod(PUBLIC, name);
     this.glex.replaceTemplate(EMPTY_BODY, method, createSetAbsentImplementation(ast));
     return method;
   }

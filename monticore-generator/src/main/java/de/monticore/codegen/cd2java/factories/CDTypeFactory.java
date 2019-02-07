@@ -11,6 +11,10 @@ import java.util.Optional;
 
 public class CDTypeFactory {
 
+  public static final ASTReturnType VOID_TYPE = CDTypeFactory.getInstance().createVoidType();
+
+  public static final ASTType BOOLEAN_TYPE = CDTypeFactory.getInstance().createBooleanType();
+
   private static CDTypeFactory cdTypeFactory;
 
   private final CD4AnalysisParser parser;
@@ -54,6 +58,12 @@ public class CDTypeFactory {
     }
 
     return type.get();
+  }
+
+  public ASTSimpleReferenceType createSimpleReferenceType(final Class<?> clazz) {
+    return TypesMill.simpleReferenceTypeBuilder()
+        .addName(clazz.getCanonicalName())
+        .build();
   }
 
   public ASTSimpleReferenceType createSimpleReferenceType(final String name) {

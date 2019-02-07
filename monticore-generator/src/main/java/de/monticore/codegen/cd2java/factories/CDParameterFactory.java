@@ -1,9 +1,11 @@
 package de.monticore.codegen.cd2java.factories;
 
+import de.monticore.types.TypesHelper;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
 import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisMill;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +32,22 @@ public class CDParameterFactory {
         .build();
   }
 
+  public ASTCDParameter createParameter(final ASTType type) {
+    return createParameter(type, StringUtils.uncapitalize(TypesHelper.printType(type)));
+  }
+
+  public ASTCDParameter createParameter(final Class<?> type, final String name) {
+    return createParameter(CDTypeFactory.getInstance().createSimpleReferenceType(type), name);
+  }
+
+  public ASTCDParameter createParameter(final Class<?> type) {
+    return createParameter(CDTypeFactory.getInstance().createSimpleReferenceType(type), StringUtils.uncapitalize(type.getSimpleName()));
+  }
+
+  public ASTCDParameter createParameter(final ASTCDAttribute ast) {
+    return createParameter(ast.getType(), ast.getName());
+  }
+
   public List<ASTCDParameter> createParameters(final ASTCDAttribute... attributes) {
     return Stream.of(attributes)
         .map(this::createParameter)
@@ -40,9 +58,5 @@ public class CDParameterFactory {
     return attributes.stream()
         .map(this::createParameter)
         .collect(Collectors.toList());
-  }
-
-  public ASTCDParameter createParameter(final ASTCDAttribute ast) {
-    return createParameter(ast.getType(), ast.getName());
   }
 }

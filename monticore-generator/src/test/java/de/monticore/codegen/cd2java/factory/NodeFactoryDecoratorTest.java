@@ -4,7 +4,6 @@ import de.monticore.MontiCoreScript;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.factories.CDParameterFactory;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
-import de.monticore.codegen.cd2java.factories.ModifierBuilder;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -22,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 import static org.junit.Assert.*;
 
 public class NodeFactoryDecoratorTest {
@@ -81,7 +81,7 @@ public class NodeFactoryDecoratorTest {
   public void testAttributeModifier() {
     for (ASTCDAttribute astcdAttribute : factoryClass.getCDAttributeList()) {
       assertTrue(astcdAttribute.isPresentModifier());
-      assertTrue(ModifierBuilder.builder().Protected().Static().build().deepEquals(astcdAttribute.getModifier()));
+      assertTrue(PROTECTED_STATIC.deepEquals(astcdAttribute.getModifier()));
     }
   }
 
@@ -89,7 +89,7 @@ public class NodeFactoryDecoratorTest {
   public void testConstructor() {
     assertEquals(1, factoryClass.sizeCDConstructors());
     ASTCDConstructor astcdConstructor = CD4AnalysisMill.cDConstructorBuilder()
-        .setModifier(ModifierBuilder.builder().Protected().build())
+        .setModifier(PROTECTED)
         .setName("AutomatonNodeFactory")
         .build();
     assertTrue(astcdConstructor.deepEquals(factoryClass.getCDConstructor(0)));
@@ -101,7 +101,7 @@ public class NodeFactoryDecoratorTest {
     //test name
     assertEquals("getFactory", method.getName());
     //test modifier
-    assertTrue(ModifierBuilder.builder().Private().Static().build().deepEquals(method.getModifier()));
+    assertTrue(PRIVATE_STATIC.deepEquals(method.getModifier()));
     //test parameters
     assertTrue(method.isEmptyCDParameters());
     //test returnType
@@ -115,7 +115,7 @@ public class NodeFactoryDecoratorTest {
     //test name
     assertEquals("createASTAutomaton", method.getName());
     //test modifier
-    assertTrue(ModifierBuilder.builder().Public().Static().build().deepEquals(method.getModifier()));
+    assertTrue(PUBLIC_STATIC.deepEquals(method.getModifier()));
     //test parameters
     assertTrue(method.isEmptyCDParameters());
     //test returnType
@@ -129,7 +129,7 @@ public class NodeFactoryDecoratorTest {
     //test name
     assertEquals("doCreateASTAutomaton", method.getName());
     //test modifier
-    assertTrue(ModifierBuilder.builder().Protected().build().deepEquals(method.getModifier()));
+    assertTrue(PROTECTED.deepEquals(method.getModifier()));
     //test parameters
     assertTrue(method.isEmptyCDParameters());
     //test returnType
@@ -143,7 +143,7 @@ public class NodeFactoryDecoratorTest {
     //test name
     assertEquals("createASTAutomaton", method.getName());
     //test modifier
-    assertTrue(ModifierBuilder.builder().Public().Static().build().deepEquals(method.getModifier()));
+    assertTrue(PUBLIC_STATIC.deepEquals(method.getModifier()));
     //test returnType
     ASTType returnType = cdTypeFacade.createTypeByDefinition("ASTAutomaton");
     assertTrue(returnType.deepEquals(method.getReturnType()));
@@ -172,7 +172,7 @@ public class NodeFactoryDecoratorTest {
     //test name
     assertEquals("doCreateASTAutomaton", method.getName());
     //test modifier
-    assertTrue(ModifierBuilder.builder().Protected().build().deepEquals(method.getModifier()));
+    assertTrue(PROTECTED.deepEquals(method.getModifier()));
     //test returnType
     ASTType returnType = cdTypeFacade.createTypeByDefinition("ASTAutomaton");
     assertTrue(returnType.deepEquals(method.getReturnType()));

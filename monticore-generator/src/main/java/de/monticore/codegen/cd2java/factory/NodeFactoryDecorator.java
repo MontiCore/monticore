@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 public class NodeFactoryDecorator implements Decorator<ASTCDDefinition, ASTCDClass> {
 
@@ -62,11 +63,9 @@ public class NodeFactoryDecorator implements Decorator<ASTCDDefinition, ASTCDCla
     String factoryClassName = astcdDefinition.getName() + NODE_FACTORY_SUFFIX;
     ASTType factoryType = this.cdTypeFacade.createSimpleReferenceType(factoryClassName);
 
-    ASTModifier modifier = ModifierBuilder.builder().Public().build();
+    ASTCDConstructor constructor = this.cdConstructorFacade.createConstructor(PROTECTED, factoryClassName);
 
-    ASTCDConstructor constructor = this.cdConstructorFacade.createProtectedDefaultConstructor(factoryClassName);
-
-    ASTCDAttribute factoryAttribute = this.cdAttributeFacade.createProtectedStaticAttribute(factoryType, FACTORY_INFIX);
+    ASTCDAttribute factoryAttribute = this.cdAttributeFacade.createAttribute(PROTECTED_STATIC, factoryType, FACTORY_INFIX);
 
     ASTCDMethod getFactoryMethod = addGetFactoryMethod(factoryType, factoryClassName);
 
@@ -83,7 +82,7 @@ public class NodeFactoryDecorator implements Decorator<ASTCDDefinition, ASTCDCla
     }
 
     return CD4AnalysisMill.cDClassBuilder()
-        .setModifier(modifier)
+        .setModifier(PUBLIC)
         .setName(factoryClassName)
         .addCDAttribute(factoryAttribute)
         .addAllCDAttributes(cdFactoryAttributeList)
@@ -105,7 +104,7 @@ public class NodeFactoryDecorator implements Decorator<ASTCDDefinition, ASTCDCla
   }
 
   private ASTCDMethod addGetFactoryMethod(ASTType factoryType, String factoryClassName) {
-    ASTCDMethod getFactoryMethod = this.cdMethodFacade.createPrivateStaticMethod(factoryType, GET_FACTORY_METHOD);
+    ASTCDMethod getFactoryMethod = this.cdMethodFacade.createMethod(PRIVATE_STATIC, factoryType, GET_FACTORY_METHOD);
     this.glex.replaceTemplate(EMPTY_BODY, getFactoryMethod, new TemplateHookPoint("nodefactory.GetFactory", factoryClassName));
     return getFactoryMethod;
   }
@@ -124,7 +123,7 @@ public class NodeFactoryDecorator implements Decorator<ASTCDDefinition, ASTCDCla
 
   private void addAttributes(ASTCDClass astcdClass, ASTType factoryType) {
     // create attribute for AST
-    cdFactoryAttributeList.add(this.cdAttributeFacade.createProtectedStaticAttribute(factoryType, FACTORY_INFIX + astcdClass.getName()));
+    cdFactoryAttributeList.add(this.cdAttributeFacade.createAttribute(PROTECTED_STATIC, factoryType, FACTORY_INFIX + astcdClass.getName()));
   }
 
   private void addFactoryMethods(ASTCDClass astcdClass) {
@@ -151,26 +150,26 @@ public class NodeFactoryDecorator implements Decorator<ASTCDDefinition, ASTCDCla
   }
 
   private void addCreateMethod(String astName, ASTType astType) {
-    ASTCDMethod createWithoutParameters = this.cdMethodFacade.createPublicStaticMethod(astType, CREATE_INFIX + astName);
+    ASTCDMethod createWithoutParameters = this.cdMethodFacade.createMethod(PUBLIC_STATIC, astType, CREATE_INFIX + astName);
     cdFactoryCreateMethodList.add(createWithoutParameters);
     this.glex.replaceTemplate(EMPTY_BODY, createWithoutParameters, new TemplateHookPoint("ast.factorymethods.Create", astName));
   }
 
 
   private void addDoCreateMethod(String astName, ASTType astType) {
-    ASTCDMethod doCreateWithoutParameters = this.cdMethodFacade.createProtectedMethod(astType, DOCREATE_INFIX + astName);
+    ASTCDMethod doCreateWithoutParameters = this.cdMethodFacade.createMethod(PROTECTED, astType, DOCREATE_INFIX + astName);
     cdFactoryDoCreateMethodList.add(doCreateWithoutParameters);
     this.glex.replaceTemplate(EMPTY_BODY, doCreateWithoutParameters, new TemplateHookPoint("ast.factorymethods.DoCreate", astName));
   }
 
   private void addCreateWithParamMethod(String astName, ASTType astType, List<ASTCDParameter> params, String paramCall) {
-    ASTCDMethod createWithParameters = this.cdMethodFacade.createPublicStaticMethod(astType, CREATE_INFIX + astName, params);
+    ASTCDMethod createWithParameters = this.cdMethodFacade.createMethod(PUBLIC_STATIC, astType, CREATE_INFIX + astName, params);
     cdFactoryCreateMethodList.add(createWithParameters);
     this.glex.replaceTemplate(EMPTY_BODY, createWithParameters, new TemplateHookPoint("ast.factorymethods.CreateWithParams", astName, paramCall));
   }
 
   private void addDoCreateWithParamMethod(String astName, ASTType astType, List<ASTCDParameter> params, String paramCall) {
-    ASTCDMethod doCreateWithParameters = this.cdMethodFacade.createProtectedMethod(astType, DOCREATE_INFIX + astName, params);
+    ASTCDMethod doCreateWithParameters = this.cdMethodFacade.createMethod(PROTECTED, astType, DOCREATE_INFIX + astName, params);
     cdFactoryDoCreateMethodList.add(doCreateWithParameters);
     this.glex.replaceTemplate(EMPTY_BODY, doCreateWithParameters, new TemplateHookPoint("ast.factorymethods.DoCreateWithParams", astName, paramCall));
   }
