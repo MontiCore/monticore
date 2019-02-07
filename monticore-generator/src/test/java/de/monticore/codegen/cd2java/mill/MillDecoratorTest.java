@@ -140,7 +140,7 @@ public class MillDecoratorTest {
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
-    assertEquals("ASTFooBarBuilder", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
+    assertEquals("FooBarBuilder", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
     //test Modifier
     assertTrue(ModifierBuilder.builder().Public().Static().build().deepEquals(fooBarBuilder.getModifier()));
   }
@@ -153,7 +153,7 @@ public class MillDecoratorTest {
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
-    assertEquals("ASTFooBarBuilder", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
+    assertEquals("FooBarBuilder", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
     //test Modifier
     assertTrue(ModifierBuilder.builder().Protected().build().deepEquals(fooBarBuilder.getModifier()));
   }
@@ -167,7 +167,7 @@ public class MillDecoratorTest {
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
-    assertEquals("ASTAutomatonBuilder", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
+    assertEquals("AutomatonBuilder", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
     //test Modifier
     assertTrue(ModifierBuilder.builder().Public().Static().build().deepEquals(fooBarBuilder.getModifier()));
   }
@@ -180,7 +180,7 @@ public class MillDecoratorTest {
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
-    assertEquals("ASTAutomatonBuilder", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
+    assertEquals("AutomatonBuilder", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
     //test Modifier
     assertTrue(ModifierBuilder.builder().Protected().build().deepEquals(fooBarBuilder.getModifier()));
   }
@@ -194,7 +194,7 @@ public class MillDecoratorTest {
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
-    assertEquals("ASTTestABuilder", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
+    assertEquals("TestABuilder", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
     //test Modifier
     assertTrue(ModifierBuilder.builder().Public().Static().build().deepEquals(fooBarBuilder.getModifier()));
   }
@@ -207,7 +207,7 @@ public class MillDecoratorTest {
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
-    assertEquals("ASTTestABuilder", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
+    assertEquals("TestABuilder", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
     //test Modifier
     assertTrue(ModifierBuilder.builder().Protected().build().deepEquals(fooBarBuilder.getModifier()));
   }

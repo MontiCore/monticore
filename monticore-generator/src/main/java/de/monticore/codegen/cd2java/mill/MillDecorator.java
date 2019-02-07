@@ -68,27 +68,22 @@ public class MillDecorator implements Decorator<ASTCDDefinition, ASTCDClass> {
 
     ASTCDAttribute millAttribute = this.cdAttributeFacade.createProtectedStaticAttribute(millType, MILL_INFIX);
 
+    //add mill attribute for each class
     List<ASTCDAttribute> attributeList = new ArrayList<>();
     for (String attributeName : getAttributeNameList(astcdClassList)) {
       attributeList.add(this.cdAttributeFacade.createProtectedStaticAttribute(millType, MILL_INFIX + attributeName));
     }
 
-    ASTCDMethod getMillMethod = this.cdMethodFacade.createProtectedStaticMethod(millType, GET_MILL);
-    this.glex.replaceTemplate(EMPTY_BODY, getMillMethod, new TemplateHookPoint("mill.GetMillMethod", TypesPrinter.printType(millType)));
+    //add all standard methods
+    ASTCDMethod getMillMethod = addGetMillMethods(millType);
 
+    ASTCDMethod initMeMethod = addInitMeMethod(millType, astcdClassList);
 
-    ASTCDParameter astcdParameter = cdParameterFacade.createParameter(millType, "mill");
-    ASTCDMethod initMeMethod = this.cdMethodFacade.createPublicStaticVoidMethod(INIT_ME, astcdParameter);
-    this.glex.replaceTemplate(EMPTY_BODY, initMeMethod, new TemplateHookPoint("mill.InitMeMethod", getAttributeNameList(astcdClassList)));
+    ASTCDMethod initMethod = addInitMethod(millType);
 
-    ASTCDMethod initMethod = this.cdMethodFacade.createPublicStaticVoidMethod(INIT);
-    this.glex.replaceTemplate(EMPTY_BODY, initMethod, new TemplateHookPoint("mill.InitMethod", TypesPrinter.printType(millType)));
+    ASTCDMethod resetMethod = addResetMethod(astcdClassList);
 
-
-    ASTCDMethod resetMethod = this.cdMethodFacade.createPublicStaticVoidMethod(RESET);
-    this.glex.replaceTemplate(EMPTY_BODY, resetMethod, new TemplateHookPoint("mill.ResetMethod", getAttributeNameList(astcdClassList)));
-
-
+    //add builder methods for each class
     for (ASTCDClass astcdClass : astcdClassList) {
       if (!astcdClass.isPresentModifier() || (astcdClass.getModifier().isAbstract() && !astcdClass.getName().endsWith("TOP"))) {
         continue;
@@ -110,7 +105,7 @@ public class MillDecorator implements Decorator<ASTCDDefinition, ASTCDClass> {
         .build();
   }
 
-  public List<String> getAttributeNameList(List<ASTCDClass> astcdClasses) {
+  private List<String> getAttributeNameList(List<ASTCDClass> astcdClasses) {
     List<String> attributeNames = new ArrayList<>();
     for (ASTCDClass astcdClass : astcdClasses) {
       attributeNames.add(astcdClass.getName());
@@ -118,9 +113,34 @@ public class MillDecorator implements Decorator<ASTCDDefinition, ASTCDClass> {
     return attributeNames;
   }
 
-  public void addBuilderMethods(ASTCDClass astcdClass) {
-    String astName = astcdClass.getName(); //TODO understand when AST prefix exists and when not
-    ASTType builderType = this.cdTypeFacade.createSimpleReferenceType(GeneratorHelper.AST_PREFIX + astName + BUILDER);
+  private ASTCDMethod addGetMillMethods(ASTType millType) {
+    ASTCDMethod getMillMethod = this.cdMethodFacade.createProtectedStaticMethod(millType, GET_MILL);
+    this.glex.replaceTemplate(EMPTY_BODY, getMillMethod, new TemplateHookPoint("mill.GetMillMethod", TypesPrinter.printType(millType)));
+    return getMillMethod;
+  }
+
+  private ASTCDMethod addInitMeMethod(ASTType millType, List<ASTCDClass> astcdClassList) {
+    ASTCDParameter astcdParameter = cdParameterFacade.createParameter(millType, "mill");
+    ASTCDMethod initMeMethod = this.cdMethodFacade.createPublicStaticVoidMethod(INIT_ME, astcdParameter);
+    this.glex.replaceTemplate(EMPTY_BODY, initMeMethod, new TemplateHookPoint("mill.InitMeMethod", getAttributeNameList(astcdClassList)));
+    return initMeMethod;
+  }
+
+  private ASTCDMethod addInitMethod(ASTType millType) {
+    ASTCDMethod initMethod = this.cdMethodFacade.createPublicStaticVoidMethod(INIT);
+    this.glex.replaceTemplate(EMPTY_BODY, initMethod, new TemplateHookPoint("mill.InitMethod", TypesPrinter.printType(millType)));
+    return initMethod;
+  }
+
+  private ASTCDMethod addResetMethod(List<ASTCDClass> astcdClassList) {
+    ASTCDMethod resetMethod = this.cdMethodFacade.createPublicStaticVoidMethod(RESET);
+    this.glex.replaceTemplate(EMPTY_BODY, resetMethod, new TemplateHookPoint("mill.ResetMethod", getAttributeNameList(astcdClassList)));
+    return resetMethod;
+  }
+
+  private void addBuilderMethods(ASTCDClass astcdClass) {
+    String astName = astcdClass.getName();
+    ASTType builderType = this.cdTypeFacade.createSimpleReferenceType(astName + BUILDER);
 
     // add public static Method for Builder
     ASTCDMethod builderMethod = this.cdMethodFacade.createPublicStaticMethod(builderType, StringTransformations.uncapitalize(astName) + BUILDER);
