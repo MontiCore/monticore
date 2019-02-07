@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java.factory;
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
+import de.monticore.codegen.cd2java.Decorator;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.factories.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -17,7 +18,7 @@ import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 
-public class NodeFactoryDecorator /*implements Decorator<ASTCDDefinition, ASTCDClass> */ {
+public class NodeFactoryDecorator implements Decorator<ASTCDDefinition, ASTCDClass> {
 
   private final GlobalExtensionManagement glex;
 
