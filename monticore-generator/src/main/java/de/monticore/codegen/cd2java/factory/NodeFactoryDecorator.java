@@ -49,9 +49,12 @@ public class NodeFactoryDecorator /*implements Decorator<ASTCDDefinition, ASTCDC
 
   private List<ASTCDMethod> cdFactoryDelegateMethods;
 
+  private GeneratorHelper genHelper;
 
-  public NodeFactoryDecorator(final GlobalExtensionManagement glex) {
+
+  public NodeFactoryDecorator(final GlobalExtensionManagement glex, GeneratorHelper genHelper) {
     this.glex = glex;
+    this.genHelper = genHelper;
     this.cdTypeFacade = CDTypeFactory.getInstance();
     this.cdAttributeFacade = CDAttributeFactory.getInstance();
     this.cdConstructorFacade = CDConstructorFactory.getInstance();
@@ -63,7 +66,7 @@ public class NodeFactoryDecorator /*implements Decorator<ASTCDDefinition, ASTCDC
     this.cdFactoryDelegateMethods = new ArrayList<>();
   }
 
-  public ASTCDClass decorate(ASTCDDefinition astcdDefinition, GeneratorHelper genHelper) {
+  public ASTCDClass decorate(ASTCDDefinition astcdDefinition) {
     String factoryClassName = astcdDefinition.getName() + NODE_FACTORY_SUFFIX;
     ASTType factoryType = this.cdTypeFacade.createSimpleReferenceType(factoryClassName);
 
@@ -89,7 +92,7 @@ public class NodeFactoryDecorator /*implements Decorator<ASTCDDefinition, ASTCDC
     }
 
     //add factory delegate Methods form Super Classes
-    addFactoryDelegateMethods(genHelper);
+    addFactoryDelegateMethods();
 
 
     return CD4AnalysisMill.cDClassBuilder()
@@ -177,7 +180,7 @@ public class NodeFactoryDecorator /*implements Decorator<ASTCDDefinition, ASTCDC
     this.glex.replaceTemplate(EMPTY_BODY, doCreateWithParameters, new TemplateHookPoint("ast.factorymethods.DoCreateWithParams", astName, paramCall));
   }
 
-  private void addFactoryDelegateMethods(GeneratorHelper genHelper) {
+  private void addFactoryDelegateMethods() {
     //get super symbols
     for (CDSymbol superSymbol : genHelper.getAllSuperCds(genHelper.getCd())) {
       Optional<ASTNode> astNode = superSymbol.getAstNode();
@@ -203,7 +206,6 @@ public class NodeFactoryDecorator /*implements Decorator<ASTCDDefinition, ASTCDC
     ASTCDMethod createDelegateMethod = this.cdMethodFacade.createPublicStaticMethod(superAstType, CREATE_INFIX + className);
     this.glex.replaceTemplate(EMPTY_BODY, createDelegateMethod, new TemplateHookPoint("nodefactory.CreateDelegateMethod", packageName + symbolName, className, ""));
     this.cdFactoryDelegateMethods.add(createDelegateMethod);
-
   }
 
   private void addCreateDelegateWithParamMethod(ASTType superAstType, ASTCDClass superClass, String packageName, String symbolName) {

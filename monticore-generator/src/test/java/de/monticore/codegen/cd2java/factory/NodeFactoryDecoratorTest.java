@@ -56,12 +56,12 @@ public class NodeFactoryDecoratorTest {
     GlobalScope symbolTable = TestHelper.createGlobalScope(modelPath);
     script.createSymbolsFromAST(symbolTable, grammar.get());
     cdCompilationUnit = script.deriveCD(grammar.get(), new GlobalExtensionManagement(),
-        symbolTable);;
+        symbolTable);
     ASTCDDefinition astcdDefinition = cdCompilationUnit.getCDDefinition().deepClone();
 
     GeneratorHelper genHelper = new GeneratorHelper(cdCompilationUnit, symbolTable);
-    NodeFactoryDecorator factoryDecorator = new NodeFactoryDecorator(glex);
-    this.factoryClass = factoryDecorator.decorate(astcdDefinition, genHelper);
+    NodeFactoryDecorator factoryDecorator = new NodeFactoryDecorator(glex, genHelper);
+    this.factoryClass = factoryDecorator.decorate(astcdDefinition);
     //test if not changed the original Definition
     assertTrue(astcdDefinition.deepEquals(cdCompilationUnit.getCDDefinition()));
   }
