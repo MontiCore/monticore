@@ -4,7 +4,6 @@ import de.monticore.MontiCoreScript;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
-import de.monticore.codegen.cd2java.factories.ModifierBuilder;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -22,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -75,14 +75,14 @@ public class MillWithInheritanceTest {
   public void testAttributeModifier() {
     for (ASTCDAttribute astcdAttribute : millClass.getCDAttributeList()) {
       assertTrue(astcdAttribute.isPresentModifier());
-      assertTrue(ModifierBuilder.builder().Protected().Static().build().deepEquals(astcdAttribute.getModifier()));
+      assertTrue(PROTECTED_STATIC.deepEquals(astcdAttribute.getModifier()));
     }
   }
 
   @Test
   public void testConstructor() {
     assertEquals(1, millClass.sizeCDConstructors());
-    assertTrue(ModifierBuilder.builder().Protected().build().deepEquals(millClass.getCDConstructor(0).getModifier()));
+    assertTrue(PROTECTED.deepEquals(millClass.getCDConstructor(0).getModifier()));
     assertEquals("BGrammarMill", millClass.getCDConstructor(0).getName());
   }
 
@@ -96,7 +96,7 @@ public class MillWithInheritanceTest {
     //test ReturnType
     assertEquals("BGrammarMill", TypesPrinter.printReturnType(getMill.getReturnType()));
     //test Modifier
-    assertTrue(ModifierBuilder.builder().Protected().Static().build().deepEquals(getMill.getModifier()));
+    assertTrue(PROTECTED_STATIC.deepEquals(getMill.getModifier()));
   }
 
   @Test
@@ -111,7 +111,7 @@ public class MillWithInheritanceTest {
     //test ReturnType
     assertTrue(cdTypeFacade.createVoidType().deepEquals(initMe.getReturnType()));
     //test Modifier
-    assertTrue(ModifierBuilder.builder().Public().Static().build().deepEquals(initMe.getModifier()));
+    assertTrue(PUBLIC_STATIC.deepEquals(initMe.getModifier()));
   }
 
   @Test
@@ -124,7 +124,7 @@ public class MillWithInheritanceTest {
     //test ReturnType
     assertTrue(cdTypeFacade.createVoidType().deepEquals(init.getReturnType()));
     //test Modifier
-    assertTrue(ModifierBuilder.builder().Public().Static().build().deepEquals(init.getModifier()));
+    assertTrue(PUBLIC_STATIC.deepEquals(init.getModifier()));
   }
 
   @Test
@@ -137,7 +137,7 @@ public class MillWithInheritanceTest {
     //test ReturnType
     assertTrue(cdTypeFacade.createVoidType().deepEquals(init.getReturnType()));
     //test Modifier
-    assertTrue(ModifierBuilder.builder().Public().Static().build().deepEquals(init.getModifier()));
+    assertTrue(PUBLIC_STATIC.deepEquals(init.getModifier()));
   }
 
   @Test
@@ -150,7 +150,7 @@ public class MillWithInheritanceTest {
     //test ReturnType
     assertEquals("de.monticore.codegen.factory.cgrammar._ast.ASTC", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
     //test Modifier
-    assertTrue(ModifierBuilder.builder().Public().Static().build().deepEquals(fooBarBuilder.getModifier()));
+    assertTrue(PUBLIC_STATIC.deepEquals(fooBarBuilder.getModifier()));
   }
 
   @Test
@@ -163,7 +163,7 @@ public class MillWithInheritanceTest {
     //test ReturnType
     assertEquals("de.monticore.codegen.factory.agrammar._ast.ASTName", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
     //test Modifier
-    assertTrue(ModifierBuilder.builder().Public().Static().build().deepEquals(fooBarBuilder.getModifier()));
+    assertTrue(PUBLIC_STATIC.deepEquals(fooBarBuilder.getModifier()));
   }
 
   @Test
@@ -176,7 +176,7 @@ public class MillWithInheritanceTest {
     //test ReturnType
     assertEquals("de.monticore.codegen.factory.agrammar._ast.ASTFoo", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
     //test Modifier
-    assertTrue(ModifierBuilder.builder().Public().Static().build().deepEquals(fooBarBuilder.getModifier()));
+    assertTrue(PUBLIC_STATIC.deepEquals(fooBarBuilder.getModifier()));
   }
 
   @Test
@@ -189,7 +189,7 @@ public class MillWithInheritanceTest {
     //test ReturnType
     assertEquals("de.monticore.codegen.factory.agrammar._ast.ASTBar", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
     //test Modifier
-    assertTrue(ModifierBuilder.builder().Public().Static().build().deepEquals(fooBarBuilder.getModifier()));
+    assertTrue(PUBLIC_STATIC.deepEquals(fooBarBuilder.getModifier()));
   }
 
   @Test

@@ -206,7 +206,7 @@ public class NodeFactoryDecorator implements Decorator<ASTCDCompilationUnit, AST
   }
 
   private void addCreateDelegateMethod(ASTType superAstType, String className, String packageName, String symbolName) {
-    ASTCDMethod createDelegateMethod = this.cdMethodFacade.createPublicStaticMethod(superAstType, CREATE_INFIX + className);
+    ASTCDMethod createDelegateMethod = this.cdMethodFacade.createMethod(PUBLIC_STATIC, superAstType, CREATE_INFIX + className);
     this.glex.replaceTemplate(EMPTY_BODY, createDelegateMethod, new TemplateHookPoint("nodefactory.CreateDelegateMethod", packageName + symbolName, className, ""));
     this.cdFactoryDelegateMethods.add(createDelegateMethod);
   }
@@ -215,7 +215,7 @@ public class NodeFactoryDecorator implements Decorator<ASTCDCompilationUnit, AST
     List<ASTCDParameter> params = this.cdParameterFacade.createParameters(superClass.getCDAttributeList());
     String paramCall = getParamCall(params);
 
-    ASTCDMethod createDelegateWithParamMethod = this.cdMethodFacade.createPublicStaticMethod(superAstType, CREATE_INFIX + superClass.getName(), params);
+    ASTCDMethod createDelegateWithParamMethod = this.cdMethodFacade.createMethod(PUBLIC_STATIC, superAstType, CREATE_INFIX + superClass.getName(), params);
     this.glex.replaceTemplate(EMPTY_BODY, createDelegateWithParamMethod, new TemplateHookPoint("nodefactory.CreateDelegateMethod", packageName + symbolName, superClass.getName(), paramCall));
     this.cdFactoryDelegateMethods.add(createDelegateWithParamMethod);
   }
