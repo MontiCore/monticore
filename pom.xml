@@ -51,7 +51,7 @@
     <maven-plugin-annotations.version>3.4</maven-plugin-annotations.version>
     <maven-reporting-api.version>3.0</maven-reporting-api.version>
     <maven-reporting-impl.version>2.3</maven-reporting-impl.version>
-    <mockito.version>1.10.19</mockito.version>
+    <mockito.version>2.24.0</mockito.version>
     <powermock.version>1.6.1</powermock.version>
     <reflections.version>0.9.9</reflections.version>
     <slf4j.version>1.7.10</slf4j.version>

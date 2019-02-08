@@ -25,6 +25,16 @@ public class CDModifier {
 
   public static final ASTModifier PROTECTED_STATIC_FINAL = CDModifier.builder().Protected().Static().Final().build();
 
+  public static final ASTModifier PACKAGE_PRIVATE = CDModifier.builder().build();
+
+  public static final ASTModifier PACKAGE_PRIVATE_FINAL = CDModifier.builder().Final().build();
+
+  public static final ASTModifier PACKAGE_PRIVATE_ABSTRACT = CDModifier.builder().Abstract().build();
+
+  public static final ASTModifier PACKAGE_PRIVATE_STATIC = CDModifier.builder().Static().build();
+
+  public static final ASTModifier PACKAGE_PRIVATE_STATIC_FINAL = CDModifier.builder().Static().Final().build();
+
   public static final ASTModifier PRIVATE = CDModifier.builder().Private().build();
 
   public static final ASTModifier PRIVATE_FINAL = CDModifier.builder().Private().Final().build();

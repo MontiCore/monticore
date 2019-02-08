@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 public class TopDecorator implements Decorator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
 
@@ -45,18 +45,17 @@ public class TopDecorator implements Decorator<ASTCDCompilationUnit, ASTCDCompil
 
   private boolean existsHandwrittenClass(String packageName, String simpleName) {
     Path handwrittenFile = Paths.get(packageName, simpleName + JAVA_EXTENSION);
-    Optional<Path> handwrittenFilePath = targetPath.getResolvedPath(handwrittenFile);
-    boolean result = handwrittenFilePath.isPresent();
-    if (result) {
-      Reporting.reportUseHandwrittenCodeFile(handwrittenFilePath.get(), handwrittenFile);
-    }
-    Reporting.reportHWCExistenceCheck(targetPath, handwrittenFile, handwrittenFilePath);
-    return result;
+    return targetPath.exists(handwrittenFile);
   }
 
   private void applyTopMechanism(ASTCDClass cdClass) {
     makeAbstract(cdClass);
     cdClass.setName(cdClass.getName() + TOP_EXTENSION);
+
+    cdClass.getCDConstructorList().forEach(constructor -> {
+      constructor.setName(constructor.getName() + TOP_EXTENSION);
+      makeAbstract(constructor.getModifier());
+    });
   }
 
   private void applyTopMechanism(ASTCDInterface cdInterface) {
@@ -69,11 +68,16 @@ public class TopDecorator implements Decorator<ASTCDCompilationUnit, ASTCDCompil
     cdEnum.setName(cdEnum.getName() + TOP_EXTENSION);
   }
 
-  private void makeAbstract(ASTCDType cdType) {
-    ASTModifier modifier = PUBLIC;
-    if (cdType.getModifierOpt().isPresent()) {
-      modifier = cdType.getModifierOpt().get();
+  private void makeAbstract(ASTCDType type) {
+    if (type.getModifierOpt().isPresent()) {
+      makeAbstract(type.getModifierOpt().get());
     }
+    else {
+      type.setModifier(PACKAGE_PRIVATE_ABSTRACT);
+    }
+  }
+
+  private void makeAbstract(ASTModifier modifier) {
     modifier.setAbstract(true);
   }
 }
