@@ -5,6 +5,7 @@ import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -26,7 +27,7 @@ public class TopDecorator implements Decorator<ASTCDCompilationUnit, ASTCDCompil
   @Override
   public ASTCDCompilationUnit decorate(ASTCDCompilationUnit ast) {
     ASTCDDefinition cdDefinition = ast.getCDDefinition();
-    String packageName = String.join(".", ast.getPackageList());
+    String packageName = String.join(File.separator, ast.getPackageList());
 
     cdDefinition.getCDClassList().stream()
         .filter(cdClass -> existsHandwrittenClass(packageName, cdClass.getName()))
@@ -44,7 +45,7 @@ public class TopDecorator implements Decorator<ASTCDCompilationUnit, ASTCDCompil
   }
 
   private boolean existsHandwrittenClass(String packageName, String simpleName) {
-    Path handwrittenFile = Paths.get(packageName.replaceAll("\\.", "/"), simpleName + JAVA_EXTENSION);
+    Path handwrittenFile = Paths.get(packageName, simpleName + JAVA_EXTENSION);
     return targetPath.exists(handwrittenFile);
   }
 
