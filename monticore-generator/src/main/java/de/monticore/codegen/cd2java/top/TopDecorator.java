@@ -44,7 +44,7 @@ public class TopDecorator implements Decorator<ASTCDCompilationUnit, ASTCDCompil
   }
 
   private boolean existsHandwrittenClass(String packageName, String simpleName) {
-    Path handwrittenFile = Paths.get(packageName, simpleName + JAVA_EXTENSION);
+    Path handwrittenFile = Paths.get(packageName.replaceAll("\\.", "/"), simpleName + JAVA_EXTENSION);
     return targetPath.exists(handwrittenFile);
   }
 
