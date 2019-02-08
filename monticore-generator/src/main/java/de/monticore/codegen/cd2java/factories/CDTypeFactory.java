@@ -7,6 +7,7 @@ import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParser;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Arrays;
 import java.util.Optional;
 
 public class CDTypeFactory {
@@ -14,6 +15,8 @@ public class CDTypeFactory {
   public static final ASTReturnType VOID_TYPE = CDTypeFactory.getInstance().createVoidType();
 
   public static final ASTType BOOLEAN_TYPE = CDTypeFactory.getInstance().createBooleanType();
+
+  private static final String PACKAGE_SEPARATOR = "\\.";
 
   private static CDTypeFactory cdTypeFactory;
 
@@ -61,14 +64,12 @@ public class CDTypeFactory {
   }
 
   public ASTSimpleReferenceType createSimpleReferenceType(final Class<?> clazz) {
-    return TypesMill.simpleReferenceTypeBuilder()
-        .addName(clazz.getCanonicalName())
-        .build();
+    return createSimpleReferenceType(clazz.getCanonicalName());
   }
 
   public ASTSimpleReferenceType createSimpleReferenceType(final String name) {
     return TypesMill.simpleReferenceTypeBuilder()
-        .addName(name)
+        .setNameList(Arrays.asList(name.split(PACKAGE_SEPARATOR)))
         .build();
   }
 

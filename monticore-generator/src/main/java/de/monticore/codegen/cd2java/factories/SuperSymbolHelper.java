@@ -11,35 +11,28 @@ import java.util.Optional;
 
 public class SuperSymbolHelper {
 
-  private ASTCDCompilationUnit compilationUnit;
 
-  private CDSymbol cdSymbol;
+  private static CDSymbol cdSymbol;
 
-  protected static final String LOG_NAME = "SuperSymbolHelper";
+  private static final String LOG_NAME = "SuperSymbolHelper";
 
-  public SuperSymbolHelper(ASTCDCompilationUnit compilationUnit) {
-    this.compilationUnit = compilationUnit;
-    this.cdSymbol = resolveCd(Names.getQualifiedName(compilationUnit.getPackageList(), compilationUnit.getCDDefinition().getName()));
+  public static List<CDSymbol> getSuperCDs(ASTCDCompilationUnit compilationUnit) {
+    cdSymbol = resolveCd(Names.getQualifiedName(compilationUnit.getPackageList(), compilationUnit.getCDDefinition().getName()), compilationUnit);
+    return getSuperCDs(cdSymbol, compilationUnit);
   }
 
-  public List<CDSymbol> getSuperCDs() {
-    return getSuperCDs(cdSymbol);
-  }
-
-  private List<CDSymbol> getSuperCDs(CDSymbol cdSymbol) {
+  private static List<CDSymbol> getSuperCDs(CDSymbol cdSymbol, ASTCDCompilationUnit compilationUnit) {
     List<CDSymbol> resolvedCds = new ArrayList<>();
     // imported cds
     for (String importedCdName : cdSymbol.getImports()) {
       Log.trace("Resolving the CD: " + importedCdName, LOG_NAME);
-      CDSymbol importedCd = resolveCd(importedCdName);
-      List<CDSymbol> recursivImportedCds = getAllCds(importedCd);
+      CDSymbol importedCd = resolveCd(importedCdName, compilationUnit);
+      List<CDSymbol> recursivImportedCds = getAllCds(importedCd, compilationUnit);
       for (CDSymbol recImport : recursivImportedCds) {
         //falls das Symbol noch nicht vorhanden ist, dann hinzufuegen
-        if (!resolvedCds
+        if (resolvedCds
             .stream()
-            .filter(c -> c.getFullName().equals(recImport.getFullName()))
-            .findAny()
-            .isPresent()) {
+            .noneMatch(c -> c.getFullName().equals(recImport.getFullName()))) {
           resolvedCds.add(recImport);
         }
       }
@@ -47,7 +40,7 @@ public class SuperSymbolHelper {
     return resolvedCds;
   }
 
-  private CDSymbol resolveCd(String symbolName) {
+  private static CDSymbol resolveCd(String symbolName, ASTCDCompilationUnit compilationUnit) {
     Optional<CDSymbol> cdSymbol = compilationUnit.getEnclosingScope().resolve(symbolName, CDSymbol.KIND);
     if (!cdSymbol.isPresent()) {
       Log.error("0xA0487 The class diagram could not be resolved: " + symbolName);
@@ -55,11 +48,11 @@ public class SuperSymbolHelper {
     return cdSymbol.get();
   }
 
-  private List<CDSymbol> getAllCds(CDSymbol cd) {
+  private static List<CDSymbol> getAllCds(CDSymbol cd, ASTCDCompilationUnit compilationUnit) {
     List<CDSymbol> resolvedCds = new ArrayList<>();
     // the cd itself
     resolvedCds.add(cd);
-    resolvedCds.addAll(getSuperCDs(cd));
+    resolvedCds.addAll(getSuperCDs(cd, compilationUnit));
     return resolvedCds;
   }
 }

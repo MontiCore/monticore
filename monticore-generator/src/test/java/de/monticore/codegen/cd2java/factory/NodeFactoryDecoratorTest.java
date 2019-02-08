@@ -125,7 +125,7 @@ public class NodeFactoryDecoratorTest {
 
   @Test
   public void testMethodDoCreateASTAutomatonWithoutParameter() {
-    ASTCDMethod method = factoryClass.getCDMethod(7);
+    ASTCDMethod method = factoryClass.getCDMethod(2);
     //test name
     assertEquals("doCreateASTAutomaton", method.getName());
     //test modifier
@@ -139,7 +139,7 @@ public class NodeFactoryDecoratorTest {
 
   @Test
   public void testMethodCreateASTAutomatonWithParameter() {
-    ASTCDMethod method = factoryClass.getCDMethod(2);
+    ASTCDMethod method = factoryClass.getCDMethod(3);
     //test name
     assertEquals("createASTAutomaton", method.getName());
     //test modifier
@@ -168,7 +168,7 @@ public class NodeFactoryDecoratorTest {
 
   @Test
   public void testMethodDoCreateASTAutomatonWithParameter() {
-    ASTCDMethod method = factoryClass.getCDMethod(8);
+    ASTCDMethod method = factoryClass.getCDMethod(4);
     //test name
     assertEquals("doCreateASTAutomaton", method.getName());
     //test modifier

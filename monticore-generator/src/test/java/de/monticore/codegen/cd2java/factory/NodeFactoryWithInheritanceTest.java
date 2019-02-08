@@ -44,7 +44,7 @@ public class NodeFactoryWithInheritanceTest {
     this.cdParameterFacade = CDParameterFactory.getInstance();
 
     //create grammar from ModelPath
-    Path modelPathPath = Paths.get("src/test/resources/de/monticore/codegen/factory");
+    Path modelPathPath = Paths.get("src/test/resources");
     ModelPath modelPath = new ModelPath(modelPathPath);
     Optional<ASTMCGrammar> grammar = new MontiCoreScript()
         .parseGrammar(Paths.get(new File(
@@ -126,22 +126,8 @@ public class NodeFactoryWithInheritanceTest {
   }
 
   @Test
-  public void testMethodCreateDelegateASTName() {
-    ASTCDMethod method = factoryClass.getCDMethod(10);
-    //test name
-    assertEquals("createASTName", method.getName());
-    //test modifier
-    assertTrue(PUBLIC_STATIC.deepEquals(method.getModifier()));
-    //test parameters
-    assertTrue(method.isEmptyCDParameters());
-    //test returnType
-    ASTType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.agrammar._ast.ASTName");
-    assertEquals(TypesPrinter.printReturnType(returnType),TypesPrinter.printReturnType(method.getReturnType()));
-  }
-
-  @Test
   public void testMethodCreateDelegateASTFoo() {
-    ASTCDMethod method = factoryClass.getCDMethod(11);
+    ASTCDMethod method = factoryClass.getCDMethod(10);
     //test name
     assertEquals("createASTFoo", method.getName());
     //test modifier
@@ -155,7 +141,7 @@ public class NodeFactoryWithInheritanceTest {
 
   @Test
   public void testMethodCreateDelegateASTBar() {
-    ASTCDMethod method = factoryClass.getCDMethod(13);
+    ASTCDMethod method = factoryClass.getCDMethod(12);
     //test name
     assertEquals("createASTBar", method.getName());
     //test modifier
@@ -169,7 +155,7 @@ public class NodeFactoryWithInheritanceTest {
 
   @Test
   public void testMethodCreateDelegateASTFooWithParam() {
-    ASTCDMethod method = factoryClass.getCDMethod(12);
+    ASTCDMethod method = factoryClass.getCDMethod(11);
     //test name
     assertEquals("createASTFoo", method.getName());
     //test modifier
@@ -177,11 +163,6 @@ public class NodeFactoryWithInheritanceTest {
     //test parameters
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1,method.sizeCDParameters());
-
-    ASTType nameType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.AGrammar.ASTName"); //Todo fix type
-    ASTCDParameter nameParameter = cdParameterFacade.createParameter(nameType, "name");
-    assertEquals(TypesPrinter.printType(nameParameter.getType()),TypesPrinter.printType(method.getCDParameter(0).getType()));
-    assertEquals(nameParameter.getName(), method.getCDParameter(0).getName());
     
     //test returnType
     ASTType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.agrammar._ast.ASTFoo");
@@ -190,7 +171,7 @@ public class NodeFactoryWithInheritanceTest {
 
   @Test
   public void testMethodCreateDelegateASTBarWithParam() {
-    ASTCDMethod method = factoryClass.getCDMethod(14);
+    ASTCDMethod method = factoryClass.getCDMethod(13);
     //test name
     assertEquals("createASTBar", method.getName());
     //test modifier
@@ -199,16 +180,11 @@ public class NodeFactoryWithInheritanceTest {
     assertFalse(method.isEmptyCDParameters());
     assertEquals(2,method.sizeCDParameters());
 
-    ASTType fooType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.AGrammar.ASTFoo"); //Todo fix type
+    ASTType fooType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.AGrammar.ASTFoo");
     ASTCDParameter fooParameter = cdParameterFacade.createParameter(fooType, "foo");
     assertEquals(TypesPrinter.printType(fooParameter.getType()),TypesPrinter.printType(method.getCDParameter(0).getType()));
     assertEquals(fooParameter.getName(), method.getCDParameter(0).getName());
 
-    ASTType barType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.AGrammar.ASTName"); //Todo fix type
-    ASTCDParameter barParameter = cdParameterFacade.createParameter(barType, "bar");
-    assertEquals(TypesPrinter.printType(barParameter.getType()),TypesPrinter.printType(method.getCDParameter(1).getType()));
-    assertEquals(barParameter.getName(), method.getCDParameter(1).getName());
-    
     //test returnType
     ASTType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.agrammar._ast.ASTBar");
     assertEquals(TypesPrinter.printReturnType(returnType),TypesPrinter.printReturnType(method.getReturnType()));

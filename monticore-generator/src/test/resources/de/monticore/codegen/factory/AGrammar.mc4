@@ -1,8 +1,6 @@
 package de.monticore.codegen.factory;
 
-grammar AGrammar {
-
-  Name = ("A" | "B" | "C");
+grammar AGrammar extends mc.grammars.lexicals.TestLexicals {
 
   Foo = "foo" Name;
 

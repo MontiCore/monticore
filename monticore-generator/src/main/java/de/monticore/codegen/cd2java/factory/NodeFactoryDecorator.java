@@ -42,15 +42,6 @@ public class NodeFactoryDecorator implements Decorator<ASTCDCompilationUnit, AST
 
   private final CDParameterFactory cdParameterFacade;
 
-  private List<ASTCDMethod> cdFactoryCreateMethodList;
-
-  private List<ASTCDMethod> cdFactoryDoCreateMethodList;
-
-  private List<ASTCDAttribute> cdFactoryAttributeList;
-
-  private List<ASTCDMethod> cdFactoryDelegateMethods;
-
-
   private ASTCDCompilationUnit compilationUnit;
 
 
@@ -61,10 +52,6 @@ public class NodeFactoryDecorator implements Decorator<ASTCDCompilationUnit, AST
     this.cdConstructorFacade = CDConstructorFactory.getInstance();
     this.cdMethodFacade = CDMethodFactory.getInstance();
     this.cdParameterFacade = CDParameterFactory.getInstance();
-    this.cdFactoryAttributeList = new ArrayList<>();
-    this.cdFactoryCreateMethodList = new ArrayList<>();
-    this.cdFactoryDoCreateMethodList = new ArrayList<>();
-    this.cdFactoryDelegateMethods = new ArrayList<>();
   }
 
   public ASTCDClass decorate(ASTCDCompilationUnit astcdCompilationUnit) {
@@ -81,31 +68,34 @@ public class NodeFactoryDecorator implements Decorator<ASTCDCompilationUnit, AST
 
     List<ASTCDClass> astcdClassList = Lists.newArrayList(astcdDefinition.getCDClassList());
 
+    List<ASTCDMethod> createMethodList = new ArrayList<>();
+
+    List<ASTCDAttribute> factoryAttributeList = new ArrayList<>();
+
 
     for (ASTCDClass astcdClass : astcdClassList) {
       if (!astcdClass.isPresentModifier() || (astcdClass.getModifier().isAbstract() && !astcdClass.getName().endsWith("TOP"))) {
         continue;
       }
       //add factory attributes for all classes
-      addAttributes(astcdClass, factoryType);
+      factoryAttributeList.add(addAttributes(astcdClass, factoryType));
       //add create and doCreate Methods for all classes
-      addFactoryMethods(astcdClass);
+      createMethodList.addAll(addFactoryMethods(astcdClass));
     }
 
     //add factory delegate Methods form Super Classes
-    addFactoryDelegateMethods();
+    List<ASTCDMethod> delegateMethodList = addFactoryDelegateMethods();
 
 
     return CD4AnalysisMill.cDClassBuilder()
         .setModifier(PUBLIC)
         .setName(factoryClassName)
         .addCDAttribute(factoryAttribute)
-        .addAllCDAttributes(cdFactoryAttributeList)
+        .addAllCDAttributes(factoryAttributeList)
         .addCDConstructor(constructor)
         .addCDMethod(getFactoryMethod)
-        .addAllCDMethods(cdFactoryCreateMethodList)
-        .addAllCDMethods(cdFactoryDoCreateMethodList)
-        .addAllCDMethods(cdFactoryDelegateMethods)
+        .addAllCDMethods(createMethodList)
+        .addAllCDMethods(delegateMethodList)
         .build();
   }
 
@@ -128,20 +118,21 @@ public class NodeFactoryDecorator implements Decorator<ASTCDCompilationUnit, AST
     return s;
   }
 
-  private void addAttributes(ASTCDClass astcdClass, ASTType factoryType) {
+  private ASTCDAttribute addAttributes(ASTCDClass astcdClass, ASTType factoryType) {
     // create attribute for AST
-    cdFactoryAttributeList.add(this.cdAttributeFacade.createAttribute(PROTECTED_STATIC, factoryType, FACTORY_INFIX + astcdClass.getName()));
+    return this.cdAttributeFacade.createAttribute(PROTECTED_STATIC, factoryType, FACTORY_INFIX + astcdClass.getName());
   }
 
-  private void addFactoryMethods(ASTCDClass astcdClass) {
+  private List<ASTCDMethod> addFactoryMethods(ASTCDClass astcdClass) {
+    List<ASTCDMethod> methodList = new ArrayList<>();
     String astName = astcdClass.getName();
     ASTType astType = this.cdTypeFacade.createSimpleReferenceType(astName);
 
     // add create Method for AST without parameters
-    addCreateMethod(astName, astType);
+    addCreateMethod(astName, astType, methodList);
 
     // add doCreate Method for AST without parameters
-    addDoCreateMethod(astName, astType);
+    addDoCreateMethod(astName, astType, methodList);
 
     if (!astcdClass.isEmptyCDAttributes()) {
       //create parameterList
@@ -149,43 +140,44 @@ public class NodeFactoryDecorator implements Decorator<ASTCDCompilationUnit, AST
       String paramCall = getParamCall(params);
 
       // add create Method for AST without parameters
-      addCreateWithParamMethod(astName, astType, params, paramCall);
+      addCreateWithParamMethod(astName, astType, params, paramCall, methodList);
 
       // add doCreate Method for AST without parameters
-      addDoCreateWithParamMethod(astName, astType, params, paramCall);
+      addDoCreateWithParamMethod(astName, astType, params, paramCall, methodList);
     }
+    return methodList;
   }
 
-  private void addCreateMethod(String astName, ASTType astType) {
+  private void addCreateMethod(String astName, ASTType astType, List<ASTCDMethod> methodList) {
     ASTCDMethod createWithoutParameters = this.cdMethodFacade.createMethod(PUBLIC_STATIC, astType, CREATE_INFIX + astName);
-    cdFactoryCreateMethodList.add(createWithoutParameters);
+    methodList.add(createWithoutParameters);
     this.glex.replaceTemplate(EMPTY_BODY, createWithoutParameters, new TemplateHookPoint("ast.factorymethods.Create", astName));
   }
 
 
-  private void addDoCreateMethod(String astName, ASTType astType) {
+  private void addDoCreateMethod(String astName, ASTType astType, List<ASTCDMethod> methodList) {
     ASTCDMethod doCreateWithoutParameters = this.cdMethodFacade.createMethod(PROTECTED, astType, DOCREATE_INFIX + astName);
-    cdFactoryDoCreateMethodList.add(doCreateWithoutParameters);
+    methodList.add(doCreateWithoutParameters);
     this.glex.replaceTemplate(EMPTY_BODY, doCreateWithoutParameters, new TemplateHookPoint("ast.factorymethods.DoCreate", astName));
   }
 
-  private void addCreateWithParamMethod(String astName, ASTType astType, List<ASTCDParameter> params, String paramCall) {
+  private void addCreateWithParamMethod(String astName, ASTType astType, List<ASTCDParameter> params, String paramCall, List<ASTCDMethod> methodList) {
     ASTCDMethod createWithParameters = this.cdMethodFacade.createMethod(PUBLIC_STATIC, astType, CREATE_INFIX + astName, params);
-    cdFactoryCreateMethodList.add(createWithParameters);
+    methodList.add(createWithParameters);
     this.glex.replaceTemplate(EMPTY_BODY, createWithParameters, new TemplateHookPoint("ast.factorymethods.CreateWithParams", astName, paramCall));
   }
 
-  private void addDoCreateWithParamMethod(String astName, ASTType astType, List<ASTCDParameter> params, String paramCall) {
+  private void addDoCreateWithParamMethod(String astName, ASTType astType, List<ASTCDParameter> params, String paramCall, List<ASTCDMethod> methodList) {
     ASTCDMethod doCreateWithParameters = this.cdMethodFacade.createMethod(PROTECTED, astType, DOCREATE_INFIX + astName, params);
-    cdFactoryDoCreateMethodList.add(doCreateWithParameters);
+    methodList.add(doCreateWithParameters);
     this.glex.replaceTemplate(EMPTY_BODY, doCreateWithParameters, new TemplateHookPoint("ast.factorymethods.DoCreateWithParams", astName, paramCall));
   }
 
 
-  private void addFactoryDelegateMethods() {
+  private List<ASTCDMethod> addFactoryDelegateMethods() {
+    List<ASTCDMethod> delegateMethodList = new ArrayList<>();
     //get super symbols
-    SuperSymbolHelper symbolHelper = new SuperSymbolHelper(compilationUnit);
-    for (CDSymbol superSymbol : symbolHelper.getSuperCDs()) {
+    for (CDSymbol superSymbol : SuperSymbolHelper.getSuperCDs(compilationUnit)) {
       Optional<ASTNode> astNode = superSymbol.getAstNode();
       if (astNode.isPresent() && astNode.get() instanceof ASTCDDefinition) {
         //get super cddefinition
@@ -195,29 +187,30 @@ public class NodeFactoryDecorator implements Decorator<ASTCDCompilationUnit, AST
           ASTType superAstType = this.cdTypeFacade.createSimpleReferenceType(packageName + superClass.getName());
 
           //add create method without parameters
-          addCreateDelegateMethod(superAstType, superClass.getName(), packageName, superSymbol.getName());
+          addCreateDelegateMethod(superAstType, superClass.getName(), packageName, superSymbol.getName(), delegateMethodList);
           if (!superClass.isEmptyCDAttributes()) {
             //add create method with parameters
-            addCreateDelegateWithParamMethod(superAstType, superClass, packageName, superSymbol.getName());
+            addCreateDelegateWithParamMethod(superAstType, superClass, packageName, superSymbol.getName(), delegateMethodList);
           }
         }
       }
     }
+    return delegateMethodList;
   }
 
-  private void addCreateDelegateMethod(ASTType superAstType, String className, String packageName, String symbolName) {
+  private void addCreateDelegateMethod(ASTType superAstType, String className, String packageName, String symbolName, List<ASTCDMethod> delegateMethodList) {
     ASTCDMethod createDelegateMethod = this.cdMethodFacade.createMethod(PUBLIC_STATIC, superAstType, CREATE_INFIX + className);
     this.glex.replaceTemplate(EMPTY_BODY, createDelegateMethod, new TemplateHookPoint("nodefactory.CreateDelegateMethod", packageName + symbolName, className, ""));
-    this.cdFactoryDelegateMethods.add(createDelegateMethod);
+    delegateMethodList.add(createDelegateMethod);
   }
 
-  private void addCreateDelegateWithParamMethod(ASTType superAstType, ASTCDClass superClass, String packageName, String symbolName) {
+  private void addCreateDelegateWithParamMethod(ASTType superAstType, ASTCDClass superClass, String packageName, String symbolName, List<ASTCDMethod> delegateMethodList) {
     List<ASTCDParameter> params = this.cdParameterFacade.createParameters(superClass.getCDAttributeList());
     String paramCall = getParamCall(params);
 
     ASTCDMethod createDelegateWithParamMethod = this.cdMethodFacade.createMethod(PUBLIC_STATIC, superAstType, CREATE_INFIX + superClass.getName(), params);
     this.glex.replaceTemplate(EMPTY_BODY, createDelegateWithParamMethod, new TemplateHookPoint("nodefactory.CreateDelegateMethod", packageName + symbolName, superClass.getName(), paramCall));
-    this.cdFactoryDelegateMethods.add(createDelegateWithParamMethod);
+    delegateMethodList.add(createDelegateWithParamMethod);
   }
 }
 

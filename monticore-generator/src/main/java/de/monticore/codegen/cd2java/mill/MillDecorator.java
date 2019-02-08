@@ -2,7 +2,6 @@ package de.monticore.codegen.cd2java.mill;
 
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.Decorator;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.factories.*;
@@ -21,7 +20,7 @@ import java.util.Optional;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
-public class MillDecorator implements Decorator<ASTCDDefinition, ASTCDClass> {
+public class MillDecorator implements Decorator<ASTCDCompilationUnit, ASTCDClass> {
 
   private final GlobalExtensionManagement glex;
 
@@ -49,34 +48,26 @@ public class MillDecorator implements Decorator<ASTCDDefinition, ASTCDClass> {
 
   private final CDParameterFactory cdParameterFacade;
 
-  private List<ASTCDMethod> builderMethods;
-
-  private List<ASTCDMethod> superBuilderMethods;
-
-  private GeneratorHelper genHelper;
-
   private List<CDSymbol> superSymbolList;
 
 
-  public MillDecorator(final GlobalExtensionManagement glex, GeneratorHelper genHelper) {
+  public MillDecorator(final GlobalExtensionManagement glex) {
     this.glex = glex;
-    this.genHelper = genHelper;
     this.cdTypeFacade = CDTypeFactory.getInstance();
     this.cdAttributeFacade = CDAttributeFactory.getInstance();
     this.cdConstructorFacade = CDConstructorFactory.getInstance();
     this.cdMethodFacade = CDMethodFactory.getInstance();
     this.cdParameterFacade = CDParameterFactory.getInstance();
-    this.builderMethods = new ArrayList<>();
-    this.superBuilderMethods = new ArrayList<>();
     this.superSymbolList = new ArrayList<>();
   }
 
-  public ASTCDClass decorate(ASTCDDefinition astcdDefinition) {
+  public ASTCDClass decorate(ASTCDCompilationUnit compilationUnit) {
+    ASTCDDefinition astcdDefinition = compilationUnit.getCDDefinition();
     String millClassName = astcdDefinition.getName() + MILL_SUFFIX;
     ASTType millType = this.cdTypeFacade.createTypeByDefinition(millClassName);
     List<ASTCDClass> astcdClassList = Lists.newArrayList(astcdDefinition.getCDClassList());
 
-    superSymbolList = genHelper.getAllSuperCds(genHelper.getCd());
+    superSymbolList = SuperSymbolHelper.getSuperCDs(compilationUnit);
 
     ASTCDConstructor constructor = this.cdConstructorFacade.createConstructor(PROTECTED, millClassName);
 
@@ -97,15 +88,10 @@ public class MillDecorator implements Decorator<ASTCDDefinition, ASTCDClass> {
 
     ASTCDMethod resetMethod = addResetMethod(astcdClassList);
 
-    //add builder methods for each class
-    for (ASTCDClass astcdClass : astcdClassList) {
-      if (astcdClass.isEmptyCDAttributes() || !astcdClass.isPresentModifier() || (astcdClass.getModifier().isAbstract() && !astcdClass.getName().endsWith("TOP"))) {
-        continue;
-      }
-      addBuilderMethods(astcdClass);
-    }
+    List<ASTCDMethod> builderMethodsList = addBuilderMethods(astcdClassList);
 
-    addSuperBuilderMethods();
+    //add builder methods for each class
+    List<ASTCDMethod> superMethodsList = addSuperBuilderMethods();
 
     return CD4AnalysisMill.cDClassBuilder()
         .setModifier(PUBLIC)
@@ -117,8 +103,8 @@ public class MillDecorator implements Decorator<ASTCDDefinition, ASTCDClass> {
         .addCDMethod(initMeMethod)
         .addCDMethod(initMethod)
         .addCDMethod(resetMethod)
-        .addAllCDMethods(builderMethods)
-        .addAllCDMethods(superBuilderMethods)
+        .addAllCDMethods(builderMethodsList)
+        .addAllCDMethods(superMethodsList)
         .build();
   }
 
@@ -155,22 +141,32 @@ public class MillDecorator implements Decorator<ASTCDDefinition, ASTCDClass> {
     return resetMethod;
   }
 
-  private void addBuilderMethods(ASTCDClass astcdClass) {
-    String astName = astcdClass.getName();
-    ASTType builderType = this.cdTypeFacade.createSimpleReferenceType(astName + BUILDER);
+  private List<ASTCDMethod> addBuilderMethods(List<ASTCDClass> astcdClassList) {
+    List<ASTCDMethod> builderMethodsList = new ArrayList<>();
 
-    // add public static Method for Builder
-    ASTCDMethod builderMethod = this.cdMethodFacade.createMethod(PUBLIC_STATIC, builderType, StringTransformations.uncapitalize(astName) + BUILDER);
-    builderMethods.add(builderMethod);
-    this.glex.replaceTemplate(EMPTY_BODY, builderMethod, new TemplateHookPoint("mill.BuilderMethod", astName));
+    for (ASTCDClass astcdClass : astcdClassList) {
+      if (astcdClass.isEmptyCDAttributes() || !astcdClass.isPresentModifier() || (astcdClass.getModifier().isAbstract() && !astcdClass.getName().endsWith("TOP"))) {
+        continue;
+      }
+      String astName = astcdClass.getName();
+      ASTType builderType = this.cdTypeFacade.createSimpleReferenceType(astName + BUILDER);
 
-    // add protected Method for Builder
-    ASTCDMethod protectedMethod = this.cdMethodFacade.createMethod(PROTECTED, builderType, "_" + StringTransformations.uncapitalize(astName) + BUILDER);
-    builderMethods.add(protectedMethod);
-    this.glex.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("mill.ProtectedBuilderMethod", TypesPrinter.printType(builderType)));
+      // add public static Method for Builder
+      ASTCDMethod builderMethod = this.cdMethodFacade.createMethod(PUBLIC_STATIC, builderType, StringTransformations.uncapitalize(astName) + BUILDER);
+      builderMethodsList.add(builderMethod);
+      this.glex.replaceTemplate(EMPTY_BODY, builderMethod, new TemplateHookPoint("mill.BuilderMethod", astName));
+
+      // add protected Method for Builder
+      ASTCDMethod protectedMethod = this.cdMethodFacade.createMethod(PROTECTED, builderType, "_" + StringTransformations.uncapitalize(astName) + BUILDER);
+      builderMethodsList.add(protectedMethod);
+      this.glex.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("mill.ProtectedBuilderMethod", TypesPrinter.printType(builderType)));
+    }
+
+    return builderMethodsList;
   }
 
-  private void addSuperBuilderMethods() {
+  private List<ASTCDMethod> addSuperBuilderMethods() {
+    List<ASTCDMethod> superMethods = new ArrayList<>();
     //get super symbols
     for (CDSymbol superSymbol : this.superSymbolList) {
       Optional<ASTNode> astNode = superSymbol.getAstNode();
@@ -182,16 +178,14 @@ public class MillDecorator implements Decorator<ASTCDDefinition, ASTCDClass> {
           ASTType superAstType = this.cdTypeFacade.createSimpleReferenceType(packageName + superClass.getName());
 
           //add builder method
-          addSuperBuilderMethod(superAstType, superClass.getName(), packageName, superSymbol.getName());
+          ASTCDMethod createDelegateMethod = this.cdMethodFacade.createMethod(PUBLIC_STATIC, superAstType, StringTransformations.uncapitalize(superClass.getName()) + BUILDER);
+          this.glex.replaceTemplate(EMPTY_BODY, createDelegateMethod, new TemplateHookPoint("mill.BuilderDelegatorMethod", packageName + superSymbol.getName(), superClass.getName()));
+          superMethods.add(createDelegateMethod);
         }
       }
     }
+    return superMethods;
   }
 
-  private void addSuperBuilderMethod(ASTType superAstType, String className, String packageName, String symbolName) {
-    ASTCDMethod createDelegateMethod = this.cdMethodFacade.createMethod(PUBLIC_STATIC, superAstType, StringTransformations.uncapitalize(className) + BUILDER);
-    this.glex.replaceTemplate(EMPTY_BODY, createDelegateMethod, new TemplateHookPoint("mill.BuilderDelegatorMethod", packageName + symbolName, className));
-    this.superBuilderMethods.add(createDelegateMethod);
-  }
 
 }
