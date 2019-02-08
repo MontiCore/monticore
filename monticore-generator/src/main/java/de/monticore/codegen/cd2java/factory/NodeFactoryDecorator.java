@@ -2,7 +2,6 @@ package de.monticore.codegen.cd2java.factory;
 
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.Decorator;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.factories.*;
@@ -19,7 +18,7 @@ import java.util.Optional;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
-public class NodeFactoryDecorator implements Decorator<ASTCDDefinition, ASTCDClass> {
+public class NodeFactoryDecorator implements Decorator<ASTCDCompilationUnit, ASTCDClass> {
 
   private final GlobalExtensionManagement glex;
 
@@ -51,12 +50,12 @@ public class NodeFactoryDecorator implements Decorator<ASTCDDefinition, ASTCDCla
 
   private List<ASTCDMethod> cdFactoryDelegateMethods;
 
-  private GeneratorHelper genHelper;
+
+  private ASTCDCompilationUnit compilationUnit;
 
 
-  public NodeFactoryDecorator(final GlobalExtensionManagement glex, GeneratorHelper genHelper) {
+  public NodeFactoryDecorator(final GlobalExtensionManagement glex) {
     this.glex = glex;
-    this.genHelper = genHelper;
     this.cdTypeFacade = CDTypeFactory.getInstance();
     this.cdAttributeFacade = CDAttributeFactory.getInstance();
     this.cdConstructorFacade = CDConstructorFactory.getInstance();
@@ -68,7 +67,9 @@ public class NodeFactoryDecorator implements Decorator<ASTCDDefinition, ASTCDCla
     this.cdFactoryDelegateMethods = new ArrayList<>();
   }
 
-  public ASTCDClass decorate(ASTCDDefinition astcdDefinition) {
+  public ASTCDClass decorate(ASTCDCompilationUnit astcdCompilationUnit) {
+    this.compilationUnit = astcdCompilationUnit;
+    ASTCDDefinition astcdDefinition = astcdCompilationUnit.getCDDefinition();
     String factoryClassName = astcdDefinition.getName() + NODE_FACTORY_SUFFIX;
     ASTType factoryType = this.cdTypeFacade.createSimpleReferenceType(factoryClassName);
 
@@ -180,9 +181,11 @@ public class NodeFactoryDecorator implements Decorator<ASTCDDefinition, ASTCDCla
     this.glex.replaceTemplate(EMPTY_BODY, doCreateWithParameters, new TemplateHookPoint("ast.factorymethods.DoCreateWithParams", astName, paramCall));
   }
 
+
   private void addFactoryDelegateMethods() {
     //get super symbols
-    for (CDSymbol superSymbol : genHelper.getAllSuperCds(genHelper.getCd())) {
+    SuperSymbolHelper symbolHelper = new SuperSymbolHelper(compilationUnit);
+    for (CDSymbol superSymbol : symbolHelper.getSuperCDs()) {
       Optional<ASTNode> astNode = superSymbol.getAstNode();
       if (astNode.isPresent() && astNode.get() instanceof ASTCDDefinition) {
         //get super cddefinition
