@@ -65,7 +65,7 @@ class BuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
     ASTCDConstructor constructor = this.cdConstructorFactory.createConstructor(PROTECTED, builderClassName);
     this.glex.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this.realBuilder = (" + builderClassName + ") this;"));
 
-    ASTCDMethod buildMethod = this.cdMethodFactory.createMethod(modifier.deepClone(), domainType, BUILD_METHOD);
+    ASTCDMethod buildMethod = this.cdMethodFactory.createMethod(modifier, domainType, BUILD_METHOD);
     this.glex.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint("builder.BuildMethod", domainClass, mandatoryAttributes));
 
     ASTCDMethod isValidMethod = this.cdMethodFactory.createMethod(PUBLIC, BOOLEAN_TYPE, IS_VALID);
