@@ -2,6 +2,7 @@
 
 package de.monticore.types;
 
+import com.google.common.base.Joiner;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.types.*;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
@@ -103,7 +104,7 @@ public class MCTypesJTypeSymbolsHelper {
           dimension = ((ASTMCArrayType) typeArgument).getDimensions();
         }
         JTypeReference<?> typeArgumentSymbolReference = typeRefFactory.create(
-                typeArgument.getBaseName(),
+                Joiner.on(".").join(typeArgument.getNameList()),
                 definingScopeOfReference,dimension);
         addTypeArgumentsToTypeSymbol(typeArgumentSymbolReference, typeArgument,
                 definingScopeOfReference,
@@ -134,7 +135,7 @@ public class MCTypesJTypeSymbolsHelper {
       JTypeReferenceFactory<Y> typeRefFactory) {
     for (ASTMCType astInterfaceType : astInterfaceTypeList) {
       Y jInterfaceTypeSymbolReference = typeRefFactory
-          .create(astInterfaceType.getBaseName(), definingScopeOfReference, 0);
+          .create(Joiner.on(".").join(astInterfaceType.getNameList()), definingScopeOfReference, 0);
 
       // Add the ASTTypeArguments to astInterfaceType
         addTypeArgumentsToTypeSymbol(jInterfaceTypeSymbolReference, astInterfaceType,
@@ -239,7 +240,7 @@ public class MCTypesJTypeSymbolsHelper {
       // CommonJFieldSymbol?
       CommonJFieldSymbol<Y> jAttributeSymbol, ASTMCType astType, int additionalDimensions,
       Scope definingScope, JTypeReferenceFactory<Y> typeRefFactory) {
-    final String fieldTypeName = astType.getBaseName();
+    final String fieldTypeName = Joiner.on(".").join(astType.getNameList());
     Y fieldTypeReference = typeRefFactory.create(fieldTypeName, definingScope,
         MCTypesHelper.getArrayDimensionIfArrayOrZero(astType) + additionalDimensions);
 
