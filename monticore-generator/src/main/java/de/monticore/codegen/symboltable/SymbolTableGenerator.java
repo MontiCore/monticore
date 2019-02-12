@@ -77,7 +77,7 @@ public class SymbolTableGenerator {
     this.symbolTableSerializationGenerator = symbolTableSerializationGenerator;
   }
 
-  public void generate(ASTMCGrammar astGrammar, SymbolTableGeneratorHelper genHelper,
+  public void generate(GlobalExtensionManagement glex, ASTMCGrammar astGrammar, SymbolTableGeneratorHelper genHelper,
                        File outputPath, final IterablePath handCodedPath) {
 
 
@@ -113,7 +113,6 @@ public class SymbolTableGenerator {
 
     final GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(outputPath);
-    GlobalExtensionManagement glex = new GlobalExtensionManagement();
     glex.setGlobalValue("stHelper", genHelper);
     glex.setGlobalValue("nameHelper", new Names());
     glex.setGlobalValue("skipSTGen", skipSymbolTableGeneration);

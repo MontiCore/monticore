@@ -232,13 +232,13 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param astCd
    * @param outputDirectory output directory for generated Java code
    */
-  public void generateSymbolTable(ASTMCGrammar astGrammar, GlobalScope symbolTable,
-      ASTCDCompilationUnit astCd,
-      File outputDirectory, IterablePath handcodedPath) {
+  public void generateSymbolTable(GlobalExtensionManagement glex, ASTMCGrammar astGrammar, 
+                                  GlobalScope symbolTable, ASTCDCompilationUnit astCd,
+                                  File outputDirectory, IterablePath handcodedPath) {
     Log.errorIfNull(astGrammar);
     SymbolTableGeneratorHelper genHelper = new SymbolTableGeneratorHelper(astGrammar, symbolTable, astCd);
     SymbolTableGenerator symbolTableGenerator = new SymbolTableGeneratorBuilder().build();
-    symbolTableGenerator.generate(astGrammar, genHelper, outputDirectory, handcodedPath);
+    symbolTableGenerator.generate(glex, astGrammar, genHelper, outputDirectory, handcodedPath);
   }
 
   /**
