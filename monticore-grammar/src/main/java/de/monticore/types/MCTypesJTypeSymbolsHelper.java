@@ -2,18 +2,21 @@
 
 package de.monticore.types;
 
+import com.google.common.base.Joiner;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.types.*;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
 import de.monticore.symboltable.types.references.CommonJTypeReference;
 import de.monticore.symboltable.types.references.JTypeReference;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCBasicTypeArgument;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
-import de.monticore.types.mcfullgenerictypes._ast.*;
-import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCTypeParameters;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCTypeVariableDeclaration;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardType;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,24 +97,70 @@ public class MCTypesJTypeSymbolsHelper {
     ASTMCGenericType genericType = (ASTMCGenericType) astType;
     List<ActualTypeArgument> actualTypeArguments = new ArrayList<>();
     for (ASTMCTypeArgument argument : genericType.getMCTypeArgumentList()) {
-      if (argument instanceof ASTMCWildcardType) {
-
-      } else if (argument instanceof ASTMCType) {
-        ASTMCType typeArgument = (ASTMCType) argument;
+      // TODO Alle anderen TypeArgements behandeln
+      if (argument instanceof ASTMCBasicTypeArgument) {
+        ASTMCType typeArgument = ((ASTMCBasicTypeArgument) argument).getMCQualifiedType();
         int dimension = 0;
         if (typeArgument instanceof ASTMCArrayType) {
           dimension = ((ASTMCArrayType) typeArgument).getDimensions();
         }
         JTypeReference<?> typeArgumentSymbolReference = typeRefFactory.create(
-                typeArgument.getBaseName(),
+                Joiner.on(".").join(typeArgument.getNameList()),
                 definingScopeOfReference,dimension);
         addTypeArgumentsToTypeSymbol(typeArgumentSymbolReference, typeArgument,
                 definingScopeOfReference,
                 typeRefFactory);
 
         actualTypeArguments.add(new ActualTypeArgument(typeArgumentSymbolReference));
-      }
+      } else if (argument instanceof ASTMCWildcardType) {
+        ASTMCWildcardType astWildcardType = (ASTMCWildcardType) argument;
+
+        // Three cases can occur here: lower bound, upper bound, no bound
+        if (astWildcardType.isPresentLowerBound() || astWildcardType.isPresentUpperBound()) {
+          // We have a bound.
+          // Examples: Set<? extends Number>, Set<? super Integer>
+
+          // new bound
+          boolean lowerBound = astWildcardType.isPresentLowerBound();
+          ASTMCType typeBound = lowerBound
+                  ? astWildcardType.getLowerBound()
+                  : astWildcardType
+                  .getUpperBound();
+          int dimension = MCTypesHelper.getArrayDimensionIfArrayOrZero(typeBound);
+
+          JTypeReference<?> typeBoundSymbolReference = typeRefFactory.create(
+                  Joiner.on(".").join(typeBound.getNameList()),
+                  definingScopeOfReference, dimension);
+          ActualTypeArgument actualTypeArgument = new ActualTypeArgument(lowerBound, !lowerBound,
+                  typeBoundSymbolReference);
+
+          // init bound
+          addTypeArgumentsToTypeSymbol(typeBoundSymbolReference, typeBound,
+                  definingScopeOfReference,
+                  typeRefFactory);
+          actualTypeArguments.add(actualTypeArgument);
+        } else {
+          // No bound. Example: Set<?>
+          actualTypeArguments.add(
+                  new ActualTypeArgument(false, false,
+                          typeRefFactory.create("?", definingScopeOfReference, 0)));
+        }
+      } else if (argument instanceof ASTMCCustomTypeArgument) {
+        ASTMCType typeArgument = ((ASTMCCustomTypeArgument) argument).getMCType();
+        int dimension = 0;
+        if (typeArgument instanceof ASTMCArrayType) {
+          dimension = ((ASTMCArrayType) typeArgument).getDimensions();
+        }
+        JTypeReference<?> typeArgumentSymbolReference = typeRefFactory.create(
+                Joiner.on(".").join(typeArgument.getNameList()),
+                definingScopeOfReference,dimension);
+        addTypeArgumentsToTypeSymbol(typeArgumentSymbolReference, typeArgument,
+                definingScopeOfReference,
+                typeRefFactory);
+
+        actualTypeArguments.add(new ActualTypeArgument(typeArgumentSymbolReference));        }
     }
+    typeReference.setActualTypeArguments(actualTypeArguments);
   }
   
   /**
@@ -134,7 +183,7 @@ public class MCTypesJTypeSymbolsHelper {
       JTypeReferenceFactory<Y> typeRefFactory) {
     for (ASTMCType astInterfaceType : astInterfaceTypeList) {
       Y jInterfaceTypeSymbolReference = typeRefFactory
-          .create(astInterfaceType.getBaseName(), definingScopeOfReference, 0);
+          .create(Joiner.on(".").join(astInterfaceType.getNameList()), definingScopeOfReference, 0);
 
       // Add the ASTTypeArguments to astInterfaceType
         addTypeArgumentsToTypeSymbol(jInterfaceTypeSymbolReference, astInterfaceType,
@@ -239,7 +288,7 @@ public class MCTypesJTypeSymbolsHelper {
       // CommonJFieldSymbol?
       CommonJFieldSymbol<Y> jAttributeSymbol, ASTMCType astType, int additionalDimensions,
       Scope definingScope, JTypeReferenceFactory<Y> typeRefFactory) {
-    final String fieldTypeName = astType.getBaseName();
+    final String fieldTypeName = Joiner.on(".").join(astType.getNameList());
     Y fieldTypeReference = typeRefFactory.create(fieldTypeName, definingScope,
         MCTypesHelper.getArrayDimensionIfArrayOrZero(astType) + additionalDimensions);
 
