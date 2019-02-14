@@ -14,6 +14,9 @@ public class MCTask extends DefaultTask {
   File outputDir
   
   @Input @Optional
+  boolean addGrammarConfig = true
+  
+  @Input @Optional
   List<String> handcodedPath = []
   
   @Input @Optional
@@ -22,10 +25,18 @@ public class MCTask extends DefaultTask {
   @Input @Optional
   List<String> templatePath = []
   
+  @Input @Optional
+  List<String> includeConfigs = []
+  
   
   @Input @Optional
   public void handcodedPath(String... strings){
     handcodedPath.addAll(strings)
+  }
+  
+  @Input @Optional
+  public void includeConfigs(String... configurations){
+    includeConfigs.addAll(configurations)
   }
   
   String group = "MC"
@@ -34,11 +45,16 @@ public class MCTask extends DefaultTask {
   @TaskAction
   void execute(IncrementalTaskInputs inputs) {
     def List<String> mp = new ArrayList()
-    if(project.configurations.find { it.name == 'grammar' }){
-      project.configurations.getByName("grammar").each { mp.add it}
+    if(addGrammarConfig) {
+      if (project.configurations.find { it.name == 'grammar' }) {
+        project.configurations.getByName("grammar").each { mp.add it }
+      }
+    }
+    for(c in includeConfigs){
+      project.configurations.getByName(c).each { mp.add it}
     }
     mp.addAll(modelPath)
-    System.out.println(inputs.isIncremental() ? "CHANGED inputs considered out of date"
+    logger.info(inputs.isIncremental() ? "CHANGED inputs considered out of date"
             : "ALL inputs considered out of date");
     inputs.outOfDate({ InputFileDetails change ->
       System.out.println("out of date: "+change.file.name)
@@ -54,31 +70,31 @@ public class MCTask extends DefaultTask {
   }
   
   
-//  def incCheck = { incReport ->
-//    def inout = new File (incReport)
-//    if(inout.exists()) { // check whether report exists
-//      // check for new files to consider
-//      def newfiles = inout.filterLine {
-//        line -> line.startsWith('gen:') && new File(line.toString().substring(4)).exists()
-//      }
-//      def added = newfiles.toString()
-//      if(!added.isEmpty()) { // added files -> generate
-//        logger.info( 'Added files:\n' + added)
-//        return false
-//      }
-//      // check for considered but deleted files
-//      def removedFiles = inout.filterLine {
-//        line -> line.startsWith('hwc:') && !new File(line.toString().substring(4)).exists()
-//      }
-//      def removed = removedFiles.toString()
-//      if(!removed.isEmpty()) { // deleted files -> generate
-//        logger.info( 'Removed files:\n' + removed)
-//        return false
-//      }
-//    } else { // no report -> generate
-//      logger.info( "No previous generation report found")
-//      return false
-//    }
-//    return true
-//  }
+  boolean incCheck (String incReport) {
+    def inout = new File (incReport)
+    if(inout.exists()) { // check whether report exists
+      // check for new files to consider
+      def newfiles = inout.filterLine {
+        line -> line.startsWith('gen:') && new File(line.toString().substring(4)).exists()
+      }
+      def added = newfiles.toString()
+      if(!added.isEmpty()) { // added files -> generate
+        logger.info( 'Added files:\n' + added)
+        return false
+      }
+      // check for considered but deleted files
+      def removedFiles = inout.filterLine {
+        line -> line.startsWith('hwc:') && !new File(line.toString().substring(4)).exists()
+      }
+      def removed = removedFiles.toString()
+      if(!removed.isEmpty()) { // deleted files -> generate
+        logger.info( 'Removed files:\n' + removed)
+        return false
+      }
+    } else { // no report -> generate
+      logger.info( "No previous generation report $incReport found")
+      return false
+    }
+    return true
+  }
 }
