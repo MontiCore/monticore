@@ -2,18 +2,21 @@
 
 package de.monticore.types;
 
+import com.google.common.base.Joiner;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.types.*;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
 import de.monticore.symboltable.types.references.CommonJTypeReference;
 import de.monticore.symboltable.types.references.JTypeReference;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
-import de.monticore.types.mcfullgenerictypes._ast.ASTMCMultipleGenericType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCBasicTypeArgument;
+import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCTypeParameters;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCTypeVariableDeclaration;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardType;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +91,76 @@ public class MCTypesJTypeSymbolsHelper {
           JTypeReference<?> typeReference,
           ASTMCType astType, Scope definingScopeOfReference,
           JTypeReferenceFactory<?> typeRefFactory) {
-    throw new RuntimeException("Not yet implemented");
+    if (!(astType instanceof ASTMCGenericType)) {
+      return;
+    }
+    ASTMCGenericType genericType = (ASTMCGenericType) astType;
+    List<ActualTypeArgument> actualTypeArguments = new ArrayList<>();
+    for (ASTMCTypeArgument argument : genericType.getMCTypeArgumentList()) {
+      // TODO Alle anderen TypeArgements behandeln
+      if (argument instanceof ASTMCBasicTypeArgument) {
+        ASTMCType typeArgument = ((ASTMCBasicTypeArgument) argument).getMCQualifiedType();
+        int dimension = 0;
+        if (typeArgument instanceof ASTMCArrayType) {
+          dimension = ((ASTMCArrayType) typeArgument).getDimensions();
+        }
+        JTypeReference<?> typeArgumentSymbolReference = typeRefFactory.create(
+                Joiner.on(".").join(typeArgument.getNameList()),
+                definingScopeOfReference,dimension);
+        addTypeArgumentsToTypeSymbol(typeArgumentSymbolReference, typeArgument,
+                definingScopeOfReference,
+                typeRefFactory);
+
+        actualTypeArguments.add(new ActualTypeArgument(typeArgumentSymbolReference));
+      } else if (argument instanceof ASTMCWildcardType) {
+        ASTMCWildcardType astWildcardType = (ASTMCWildcardType) argument;
+
+        // Three cases can occur here: lower bound, upper bound, no bound
+        if (astWildcardType.isPresentLowerBound() || astWildcardType.isPresentUpperBound()) {
+          // We have a bound.
+          // Examples: Set<? extends Number>, Set<? super Integer>
+
+          // new bound
+          boolean lowerBound = astWildcardType.isPresentLowerBound();
+          ASTMCType typeBound = lowerBound
+                  ? astWildcardType.getLowerBound()
+                  : astWildcardType
+                  .getUpperBound();
+          int dimension = MCTypesHelper.getArrayDimensionIfArrayOrZero(typeBound);
+
+          JTypeReference<?> typeBoundSymbolReference = typeRefFactory.create(
+                  Joiner.on(".").join(typeBound.getNameList()),
+                  definingScopeOfReference, dimension);
+          ActualTypeArgument actualTypeArgument = new ActualTypeArgument(lowerBound, !lowerBound,
+                  typeBoundSymbolReference);
+
+          // init bound
+          addTypeArgumentsToTypeSymbol(typeBoundSymbolReference, typeBound,
+                  definingScopeOfReference,
+                  typeRefFactory);
+          actualTypeArguments.add(actualTypeArgument);
+        } else {
+          // No bound. Example: Set<?>
+          actualTypeArguments.add(
+                  new ActualTypeArgument(false, false,
+                          typeRefFactory.create("?", definingScopeOfReference, 0)));
+        }
+      } else if (argument instanceof ASTMCCustomTypeArgument) {
+        ASTMCType typeArgument = ((ASTMCCustomTypeArgument) argument).getMCType();
+        int dimension = 0;
+        if (typeArgument instanceof ASTMCArrayType) {
+          dimension = ((ASTMCArrayType) typeArgument).getDimensions();
+        }
+        JTypeReference<?> typeArgumentSymbolReference = typeRefFactory.create(
+                Joiner.on(".").join(typeArgument.getNameList()),
+                definingScopeOfReference,dimension);
+        addTypeArgumentsToTypeSymbol(typeArgumentSymbolReference, typeArgument,
+                definingScopeOfReference,
+                typeRefFactory);
+
+        actualTypeArguments.add(new ActualTypeArgument(typeArgumentSymbolReference));        }
+    }
+    typeReference.setActualTypeArguments(actualTypeArguments);
   }
   
   /**
@@ -109,30 +181,15 @@ public class MCTypesJTypeSymbolsHelper {
   public static <Y extends JTypeReference<?>, U extends CommonJTypeSymbol<?, ?, ?, Y>> void addInterfacesToType(
       U jTypeSymbol, List<ASTMCType> astInterfaceTypeList, Scope definingScopeOfReference,
       JTypeReferenceFactory<Y> typeRefFactory) {
-//    for (ASTType astInterfaceType : astInterfaceTypeList) {
-//      Y jInterfaceTypeSymbolReference = typeRefFactory
-//          .create(
-//              TypesPrinter.printTypeWithoutTypeArgumentsAndDimension(astInterfaceType),
-//              definingScopeOfReference, 0);
-//
-//      // Add the ASTTypeArguments to astInterfaceType
-//      // Before we can do that we have to cast.
-//      if (astInterfaceType instanceof ASTSimpleReferenceType) {
-//        addTypeArgumentsToTypeSymbol(jInterfaceTypeSymbolReference, astInterfaceType,
-//            definingScopeOfReference, typeRefFactory);
-//      }
-//      else if (astInterfaceType instanceof ASTComplexReferenceType) {
-//        ASTComplexReferenceType astComplexReferenceType = (ASTComplexReferenceType) astInterfaceType;
-//        for (ASTSimpleReferenceType astSimpleReferenceType : astComplexReferenceType
-//            .getSimpleReferenceTypeList()) {
-//          // TODO: tested for only one
-//          addTypeArgumentsToTypeSymbol(jInterfaceTypeSymbolReference, astSimpleReferenceType,
-//                  definingScopeOfReference, typeRefFactory);
-//        }
-//      }
-//
-//      jTypeSymbol.addInterface(jInterfaceTypeSymbolReference);
-//    }
+    for (ASTMCType astInterfaceType : astInterfaceTypeList) {
+      Y jInterfaceTypeSymbolReference = typeRefFactory
+          .create(Joiner.on(".").join(astInterfaceType.getNameList()), definingScopeOfReference, 0);
+
+      // Add the ASTTypeArguments to astInterfaceType
+        addTypeArgumentsToTypeSymbol(jInterfaceTypeSymbolReference, astInterfaceType,
+            definingScopeOfReference, typeRefFactory);
+      jTypeSymbol.addInterface(jInterfaceTypeSymbolReference);
+    }
   }
   
   /**
@@ -153,26 +210,25 @@ public class MCTypesJTypeSymbolsHelper {
   public static <Y extends JTypeReference<?>, U extends CommonJTypeSymbol<?, ?, ?, Y>> List<U> addTypeParametersToMethod(
       CommonJMethodSymbol<U, ?, ?> jMethodSymbol, Optional<ASTMCTypeParameters> typeParameters,
       Scope definingScope, JTypeFactory<U> symbolFactory, JTypeReferenceFactory<Y> typeRefFactory) {
-//    List<U> jTypeParameterSymbols = new ArrayList<>();
-//    if (typeParameters.isPresent()) {
-//      ASTTypeParameters astTypeParameters = typeParameters.get();
-//      for (ASTTypeVariableDeclaration astTypeParameter : astTypeParameters
-//          .getTypeVariableDeclarationList()) {
-//        // new type parameter
-//        U typeParameter = symbolFactory
-//            .createTypeVariable(astTypeParameter.getName());
-//        jTypeParameterSymbols.add(typeParameter);
-//
-//        // Treat type bounds are implemented interfaces, even though the
-//        // first bound might be a class. See also JLS7.
-//        List<ASTType> types = new ArrayList<ASTType>(astTypeParameter.getUpperBoundList());
-//        addInterfacesToType(typeParameter, types, definingScope, typeRefFactory);
-//
-//        jMethodSymbol.addFormalTypeParameter(typeParameter);
-//      }
-//    }
-//    return jTypeParameterSymbols;
-    return null;
+    List<U> jTypeParameterSymbols = new ArrayList<>();
+    if (typeParameters.isPresent()) {
+      ASTMCTypeParameters astTypeParameters = typeParameters.get();
+      for (ASTMCTypeVariableDeclaration astTypeParameter : astTypeParameters
+          .getMCTypeVariableDeclarationList()) {
+        // new type parameter
+        U typeParameter = symbolFactory
+            .createTypeVariable(astTypeParameter.getName());
+        jTypeParameterSymbols.add(typeParameter);
+
+        // Treat type bounds are implemented interfaces, even though the
+        // first bound might be a class. See also JLS7.
+        List<ASTMCType> types = new ArrayList<ASTMCType>(astTypeParameter.getUpperBoundList());
+        addInterfacesToType(typeParameter, types, definingScope, typeRefFactory);
+
+        jMethodSymbol.addFormalTypeParameter(typeParameter);
+      }
+    }
+    return jTypeParameterSymbols;
   }
   
   /**
@@ -232,25 +288,18 @@ public class MCTypesJTypeSymbolsHelper {
       // CommonJFieldSymbol?
       CommonJFieldSymbol<Y> jAttributeSymbol, ASTMCType astType, int additionalDimensions,
       Scope definingScope, JTypeReferenceFactory<Y> typeRefFactory) {
-//    final String fieldTypeName = TypesPrinter.printTypeWithoutTypeArgumentsAndDimension(astType);
-//    Y fieldTypeReference = typeRefFactory.create(fieldTypeName, definingScope,
-//        TypesHelper.getArrayDimensionIfArrayOrZero(astType) + additionalDimensions);
-//
-//    if (astType instanceof ASTSimpleReferenceType) {
-//      ASTSimpleReferenceType astSimpleReferenceType = (ASTSimpleReferenceType) astType;
-//      if (astSimpleReferenceType.isPresentTypeArguments()) {
-//        addTypeArgumentsToTypeSymbol(fieldTypeReference, astSimpleReferenceType, definingScope,
-//            typeRefFactory);
-//      }
-//    }
-//    else if (astType instanceof ASTComplexReferenceType) {
-//      ASTComplexReferenceType astComplexReferenceType = (ASTComplexReferenceType) astType;
-//      for (ASTSimpleReferenceType astSimpleReferenceType : astComplexReferenceType
-//          .getSimpleReferenceTypeList()) {
-//        // TODO: tested for only one
-//        addTypeArgumentsToTypeSymbol(fieldTypeReference, astSimpleReferenceType,
-//                definingScope, typeRefFactory);      }
-//    }
-//    jAttributeSymbol.setType(fieldTypeReference);
+    final String fieldTypeName = Joiner.on(".").join(astType.getNameList());
+    Y fieldTypeReference = typeRefFactory.create(fieldTypeName, definingScope,
+        MCTypesHelper.getArrayDimensionIfArrayOrZero(astType) + additionalDimensions);
+
+    if (astType instanceof ASTMCGenericType) {
+      // TODO: Berücksichtige MultipleGenericTypes
+      ASTMCGenericType astGenericType = (ASTMCGenericType) astType;
+      if (!astGenericType.getMCTypeArgumentList().isEmpty()) {
+        addTypeArgumentsToTypeSymbol(fieldTypeReference, astGenericType, definingScope,
+            typeRefFactory);
+      }
+    }
+    jAttributeSymbol.setType(fieldTypeReference);
   }
 }

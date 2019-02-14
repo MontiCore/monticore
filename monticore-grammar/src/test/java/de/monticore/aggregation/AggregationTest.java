@@ -17,6 +17,8 @@ import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.resolving.TransitiveAdaptedResolvingFilter;
+import de.se_rwth.commons.logging.Log;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -26,9 +28,13 @@ import java.util.Optional;
 import static junit.framework.TestCase.assertTrue;
 
 public class AggregationTest {
- 
- 
- 
+
+ @BeforeClass
+ public static void disableFailQuick() {
+  Log.enableFailQuick(false);
+ }
+
+
  @Test
  public void test() throws IOException {
   

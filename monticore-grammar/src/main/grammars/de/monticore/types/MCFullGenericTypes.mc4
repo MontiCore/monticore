@@ -49,5 +49,5 @@ grammar MCFullGenericTypes
   *   @attribute upperBound Optional list of required super classes
   */
   MCTypeVariableDeclaration =
-    Name ( "extends" upperBound:(MCMultipleGenericType || "&")+ )?;
+    Name ( "extends" upperBound:(MCType || "&")+ )?;
 }

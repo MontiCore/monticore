@@ -69,6 +69,8 @@ public class GeneratorHelper extends TypesHelper {
   public static final String ASTC_NODE_CLASS_NAME = "mc.ast.ASTCNode";
 
   public static final String AST_PACKAGE_SUFFIX = "_ast";
+  
+  public static final String SYMBOLTABLE_PACKAGE_SUFFIX = "_symboltable";
 
   public static final String VISITOR_PACKAGE_SUFFIX = "_visitor";
 
@@ -1460,6 +1462,10 @@ public class GeneratorHelper extends TypesHelper {
 
   public String getAstPackage() {
     return getPackageName(getPackageName(), AST_PACKAGE_SUFFIX);
+  }
+  
+  public String getSymbolTablePackage() {
+    return getPackageName(getPackageName(), SYMBOLTABLE_PACKAGE_SUFFIX);
   }
 
   /**
