@@ -5,12 +5,16 @@ package de.monticore.codegen.cd2java.visitor;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
+import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
@@ -45,6 +49,8 @@ public class VisitorGenerator {
     
     final String astPackage = VisitorGeneratorHelper.getPackageName(visitorHelper.getPackageName(),
         AstGeneratorHelper.getAstPackageSuffix());
+    final String symbolTablePackage = VisitorGeneratorHelper.getPackageName(visitorHelper.getPackageName(),
+        AstGeneratorHelper.getSymbolTablePackageSuffix());
     
     final String visitorPackage = visitorHelper.getVisitorPackage();
     String path = Names.getPathFromPackage(visitorPackage);
@@ -77,6 +83,18 @@ public class VisitorGenerator {
     generator.generate("visitor.DelegatorVisitor", commonDelegatorVisitorFilePath,
         astClassDiagram, astClassDiagram.getCDDefinition(), astPackage, allCds);
     Log.trace(LOGGER_NAME, "Generated delegator visitor for the diagram: " + diagramName);
+    
+    // symbol visitor interface
+    Collection<MCProdSymbol> symbols  = new LinkedHashSet<>();
+    Object stHelperObj = glex.getGlobalVar("stHelper");
+    if (stHelperObj != null && stHelperObj instanceof SymbolTableGeneratorHelper) {
+      SymbolTableGeneratorHelper stHelper = (SymbolTableGeneratorHelper) stHelperObj;
+      symbols = stHelper.getAllSymbolDefiningRules();
+    }
+    final Path symbolVisitorFilePath = Paths.get(path, visitorHelper.getSymbolVisitorType() + ".java");
+    generator.generate("visitor.SymbolVisitor", symbolVisitorFilePath, astClassDiagram,
+        astClassDiagram.getCDDefinition(), symbolTablePackage, cd, symbols);
+    Log.trace(LOGGER_NAME, "Generated symbol visitor for the diagram: " + diagramName);
   }
   
   private VisitorGenerator() {

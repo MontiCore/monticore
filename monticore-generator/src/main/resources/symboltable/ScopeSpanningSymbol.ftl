@@ -1,6 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${signature("className", "scopeClassName", "prodSymbol", "ruleSymbol", "imports")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
+<#assign names = glex.getGlobalVar("nameHelper")>
 <#if prodSymbol.getSymbolDefinitionKind().isPresent()>
   <#assign ruleName = prodSymbol.getSymbolDefinitionKind().get()>
 <#else>
@@ -60,6 +61,20 @@ public class ${className} ${superClass} ${superInterfaces} {
   */
 
   ${includeArgs("symboltable.symbols.GetAstNodeMethod", astName)}
+  
+  <#assign langVisitorType = names.getQualifiedName(genHelper.getVisitorPackage(), genHelper.getGrammarSymbol().getName() + "SymbolVisitor")>
+   public void accept(${langVisitorType} visitor) {
+  <#if genHelper.isSupertypeOfHWType(className, "")>
+  <#assign plainName = className?remove_ending("TOP")>
+    if (this instanceof ${plainName}) {
+      visitor.handle((${plainName}) this);
+    } else {
+      throw new UnsupportedOperationException("0xA7010${genHelper.getGeneratedErrorCode(ast)} Only handwritten class ${plainName} is supported for the visitor");
+    }
+  <#else>
+    visitor.handle(this);
+  </#if>
+  }
   
   <#if ruleSymbol.isPresent()>
     ${includeArgs("symboltable.symbols.SymbolRule", ruleSymbol.get())}

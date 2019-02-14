@@ -144,6 +144,10 @@ public class AstGeneratorHelper extends GeneratorHelper {
     return GeneratorHelper.AST_PACKAGE_SUFFIX;
   }
   
+  public static String getSymbolTablePackageSuffix() {
+    return GeneratorHelper.SYMBOLTABLE_PACKAGE_SUFFIX;
+  }
+  
   public static String getNameOfBuilderClass(ASTCDClass astClass) {
     String name = Names.getSimpleName(astClass.getName());
     if(astClass.getName().endsWith(GeneratorSetup.GENERATED_CLASS_SUFFIX)) {
