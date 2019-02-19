@@ -6,7 +6,7 @@ classdiagram Test {
         protected int firstInteger;
         protected String s;
         protected Optional<String> optString;
-        protected List<String> listString;
+        protected java.util.List<String> listString;
     }
 
     class Automaton {

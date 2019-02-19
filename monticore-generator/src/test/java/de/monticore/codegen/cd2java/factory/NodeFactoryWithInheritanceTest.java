@@ -122,7 +122,7 @@ public class NodeFactoryWithInheritanceTest {
     assertTrue(method.isEmptyCDParameters());
     //test returnType
     ASTType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.cgrammar._ast.ASTC");
-    assertEquals(TypesPrinter.printReturnType(returnType),TypesPrinter.printReturnType(method.getReturnType()));
+    assertTrue(returnType.deepEquals(method.getReturnType()));
   }
 
   @Test
@@ -136,7 +136,7 @@ public class NodeFactoryWithInheritanceTest {
     assertTrue(method.isEmptyCDParameters());
     //test returnType
     ASTType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.agrammar._ast.ASTFoo");
-    assertEquals(TypesPrinter.printReturnType(returnType),TypesPrinter.printReturnType(method.getReturnType()));
+    assertTrue(returnType.deepEquals(method.getReturnType()));
   }
 
   @Test
@@ -150,7 +150,7 @@ public class NodeFactoryWithInheritanceTest {
     assertTrue(method.isEmptyCDParameters());
     //test returnType
     ASTType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.agrammar._ast.ASTBar");
-    assertEquals(TypesPrinter.printReturnType(returnType),TypesPrinter.printReturnType(method.getReturnType()));
+    assertTrue(returnType.deepEquals(method.getReturnType()));
   }
 
   @Test
@@ -166,7 +166,7 @@ public class NodeFactoryWithInheritanceTest {
     
     //test returnType
     ASTType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.agrammar._ast.ASTFoo");
-    assertEquals(TypesPrinter.printReturnType(returnType),TypesPrinter.printReturnType(method.getReturnType()));
+    assertTrue(returnType.deepEquals(method.getReturnType()));
   }
 
   @Test
@@ -180,14 +180,14 @@ public class NodeFactoryWithInheritanceTest {
     assertFalse(method.isEmptyCDParameters());
     assertEquals(2,method.sizeCDParameters());
 
-    ASTType fooType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.AGrammar.ASTFoo");
+    ASTType fooType = cdTypeFacade.createSimpleReferenceType("de.monticore.codegen.factory.AGrammar.ASTFoo");
     ASTCDParameter fooParameter = cdParameterFacade.createParameter(fooType, "foo");
-    assertEquals(TypesPrinter.printType(fooParameter.getType()),TypesPrinter.printType(method.getCDParameter(0).getType()));
+    //assertTrue(fooParameter.getType().deepEquals(method.getCDParameter(0).getType())); todo fix ast->cd transformation
+    assertEquals("de.monticore.codegen.factory.AGrammar.ASTFoo", TypesPrinter.printType(method.getCDParameter(0).getType()));
     assertEquals(fooParameter.getName(), method.getCDParameter(0).getName());
-
     //test returnType
     ASTType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.agrammar._ast.ASTBar");
-    assertEquals(TypesPrinter.printReturnType(returnType),TypesPrinter.printReturnType(method.getReturnType()));
+    assertTrue(returnType.deepEquals(method.getReturnType()));
   }
 
 

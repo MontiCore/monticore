@@ -11,6 +11,7 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.TypesPrinter;
+import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -99,7 +100,8 @@ public class MillDecoratorTest {
     //test Parameters
     assertTrue(getMill.isEmptyCDParameters());
     //test ReturnType
-    assertEquals("AutomatonMill", TypesPrinter.printReturnType(getMill.getReturnType()));
+    ASTType returnType = cdTypeFacade.createTypeByDefinition("AutomatonMill");
+    assertTrue(returnType.deepEquals(getMill.getReturnType()));
     //test Modifier
     assertTrue(PROTECTED_STATIC.deepEquals(getMill.getModifier()));
   }
@@ -111,7 +113,8 @@ public class MillDecoratorTest {
     assertEquals("initMe", initMe.getName());
     //test Parameters
     assertEquals(1, initMe.sizeCDParameters());
-    assertEquals("AutomatonMill", TypesPrinter.printType(initMe.getCDParameter(0).getType()));
+    ASTType type = cdTypeFacade.createSimpleReferenceType("AutomatonMill");
+    assertTrue(type.deepEquals(initMe.getCDParameter(0).getType()));
     assertEquals("a", initMe.getCDParameter(0).getName());
     //test ReturnType
     assertTrue(cdTypeFacade.createVoidType().deepEquals(initMe.getReturnType()));
@@ -153,7 +156,8 @@ public class MillDecoratorTest {
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
-    assertEquals("ASTAutomatonBuilder", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
+    ASTType returnType = cdTypeFacade.createTypeByDefinition("ASTAutomatonBuilder");
+    assertTrue(returnType.deepEquals(fooBarBuilder.getReturnType()));
     //test Modifier
     assertTrue(PUBLIC_STATIC.deepEquals(fooBarBuilder.getModifier()));
   }
@@ -166,7 +170,8 @@ public class MillDecoratorTest {
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
-    assertEquals("ASTAutomatonBuilder", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
+    ASTType returnType = cdTypeFacade.createTypeByDefinition("ASTAutomatonBuilder");
+    assertTrue(returnType.deepEquals(fooBarBuilder.getReturnType()));
     //test Modifier
     assertTrue(PROTECTED.deepEquals(fooBarBuilder.getModifier()));
   }
@@ -180,7 +185,8 @@ public class MillDecoratorTest {
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
-    assertEquals("ASTStateBuilder", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
+    ASTType returnType = cdTypeFacade.createTypeByDefinition("ASTStateBuilder");
+    assertTrue(returnType.deepEquals(fooBarBuilder.getReturnType()));
     //test Modifier
     assertTrue(PUBLIC_STATIC.deepEquals(fooBarBuilder.getModifier()));
   }
@@ -193,7 +199,8 @@ public class MillDecoratorTest {
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
-    assertEquals("ASTStateBuilder", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
+    ASTType returnType = cdTypeFacade.createTypeByDefinition("ASTStateBuilder");
+    assertTrue(returnType.deepEquals(fooBarBuilder.getReturnType()));
     //test Modifier
     assertTrue(PROTECTED.deepEquals(fooBarBuilder.getModifier()));
   }
@@ -207,6 +214,7 @@ public class MillDecoratorTest {
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
+    ASTType returnType = cdTypeFacade.createTypeByDefinition("ASTTransitionBuilder");
     assertEquals("ASTTransitionBuilder", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
     //test Modifier
     assertTrue(PUBLIC_STATIC.deepEquals(fooBarBuilder.getModifier()));
@@ -220,7 +228,8 @@ public class MillDecoratorTest {
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
-    assertEquals("ASTTransitionBuilder", TypesPrinter.printReturnType(fooBarBuilder.getReturnType()));
+    ASTType returnType = cdTypeFacade.createTypeByDefinition("ASTTransitionBuilder");
+    assertTrue(returnType.deepEquals(fooBarBuilder.getReturnType()));
     //test Modifier
     assertTrue(PROTECTED.deepEquals(fooBarBuilder.getModifier()));
   }
