@@ -65,7 +65,7 @@ public class AggregationTest {
  
   //Parse blah model
   BlahParser blahParser = new BlahParser();
-  Optional<ASTBlub> blahModel = blahParser.parse_String("blub { blubSymbol1 }");
+  Optional<ASTBlub> blahModel = blahParser.parse_String("blub blubScopeName { blubSymbol1 }");
   
   // create symbol table for "blah"
   BlahSymbolTableCreator blahSymbolTableCreator = new BlahSymbolTableCreator(resolvingConfiguration,globalScope);
@@ -74,13 +74,13 @@ public class AggregationTest {
   // check dummy symbol is present in local scope
   Optional<DummySymbol> blubSymbol1 = blahSymbolTable.resolveDummy("blubSymbol1");
   
- // assertTrue(blubSymbol1.isPresent());
+  assertTrue(blubSymbol1.isPresent());
 
 
 
   // check dummy symbol is present in global scope
   // TODO soll das so? Scopes ohne Namen müssen mit Punkt navigiert werde
-  blubSymbol1 = globalScope.resolve(".blubSymbol1", DummySymbol.KIND);
+  blubSymbol1 = globalScope.resolve("blubScopeName.blubSymbol1", DummySymbol.KIND);
   
   assertTrue(blubSymbol1.isPresent());
 
@@ -107,7 +107,7 @@ public class AggregationTest {
   //Optional<Symbol> k = fooScope.resolve(".blubSymbol1", DummyKind.KIND);
   //assertTrue(k.isPresent());
 
-  Optional<Symbol> a = fooScope.resolve(".blubSymbol1", EMethodSymbol.KIND);
+  Optional<Symbol> a = fooScope.resolve("blubScopeName.blubSymbol1", EMethodSymbol.KIND);
 
   assertTrue(a.isPresent());
 
