@@ -6,4 +6,7 @@ grammar Foo extends de.monticore.expressions.CommonExpressions, de.monticore.MCB
 
   scope Bar = "bar" "{" Expression "}";
 
+  NameExpression implements Expression <350>
+      = Name;
+
 }

@@ -32,8 +32,8 @@ public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVi
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     if (node.isPresentName()) {
       getPrinter().print(".");
-      if (node.isPresentETypeArguments()) {
-        node.getETypeArguments().accept(getRealThis());
+      if (node.isPresentExtTypeArguments()) {
+        node.getExtTypeArguments().accept(getRealThis());
       }
       getPrinter().print(node.getName());
       if (node.isPresentArguments()) {
@@ -58,7 +58,7 @@ public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVi
   @Override
   public void handle(ASTClassExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getEReturnType().accept(getRealThis());
+    node.getExtReturnType().accept(getRealThis());
     getPrinter().print(".class");
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
@@ -67,7 +67,7 @@ public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVi
   public void handle(ASTTypeCastExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     getPrinter().print("(");
-    node.getEType().accept(getRealThis());
+    node.getExtType().accept(getRealThis());
     getPrinter().print(")");
     node.getExpression().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
@@ -115,7 +115,7 @@ public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVi
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getExpression().accept(getRealThis());
     getPrinter().print(" instanceof ");
-    node.getEType().accept(getRealThis());
+    node.getExtType().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   

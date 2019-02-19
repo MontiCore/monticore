@@ -15,6 +15,6 @@ public class ASTMCMultipleGenericType extends ASTMCMultipleGenericTypeTOP {
 
   @Override
   public String getBaseName() {
-    return getNameList().get(-1);
+    return getNameList().get(getNameList().size()-1);
   }
 }

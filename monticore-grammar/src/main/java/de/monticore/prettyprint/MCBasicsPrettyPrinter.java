@@ -31,5 +31,13 @@ public class MCBasicsPrettyPrinter implements MCBasicsVisitor {
     return printer;
   }
 
+  @Override
+  public void setRealThis(MCBasicsVisitor realThis) {
+    this.realThis = realThis;
+  }
 
+  @Override
+  public MCBasicsVisitor getRealThis() {
+    return realThis;
+  }
 }

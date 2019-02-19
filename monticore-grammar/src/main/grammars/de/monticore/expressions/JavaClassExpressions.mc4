@@ -4,13 +4,13 @@ package de.monticore.expressions;
 
 component grammar JavaClassExpressions extends de.monticore.expressions.CommonExpressions{
 	
-external ELiteral;
+external ExtLiteral;
 
-external EType;
+external ExtType;
 
-external EReturnType;
+external ExtReturnType;
 
-external ETypeArguments;
+external ExtTypeArguments;
 
 SuperExpression implements Expression <270> =
 	Expression "." "super" SuperSuffix;
@@ -19,19 +19,19 @@ GenericInvocationExpression implements Expression <260> =
 	Expression "." PrimaryGenericInvocationExpression;
 	
 TypeCastExpression implements Expression <230> =
-	"(" EType ")" Expression;
+	"(" ExtType ")" Expression;
         
 PrimarySuperExpression implements Expression <330>
 	= "super";
 	
 LiteralExpression implements Expression <340>
-    = ELiteral;
+    = ExtLiteral;
         
 ClassExpression implements Expression <360>
-    = EReturnType "." "class";
+    = ExtReturnType "." "class";
    
 PrimaryGenericInvocationExpression implements Expression <370>
-    = ETypeArguments GenericInvocationSuffix
+    = ExtTypeArguments GenericInvocationSuffix
     ;
 
 GenericInvocationSuffix
@@ -42,12 +42,12 @@ GenericInvocationSuffix
     
 SuperSuffix
     =   Arguments
-    |   "." ETypeArguments? Name Arguments?
+    |   "." ExtTypeArguments? Name Arguments?
     ;
     
 NameExpression implements Expression <350>
     = Name;
     
 InstanceofExpression implements Expression <140> 
-	= Expression "instanceof" EType;
+	= Expression "instanceof" ExtType;
 }
