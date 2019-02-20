@@ -1,6 +1,7 @@
 package de.monticore.aggregation;
 
 import com.google.common.collect.Lists;
+import de.monticore.aggregation.blah._ast.ASTBlahModel;
 import de.monticore.aggregation.blah._ast.ASTBlub;
 import de.monticore.aggregation.blah._parser.BlahParser;
 import de.monticore.aggregation.blah._symboltable.*;
@@ -65,7 +66,14 @@ public class AggregationTest {
  
   //Parse blah model
   BlahParser blahParser = new BlahParser();
-  Optional<ASTBlub> blahModel = blahParser.parse_String("blub blubScopeName { blubSymbol1 }");
+  Optional<ASTBlahModel> blahModel = blahParser.parse_String(
+          "blahmodel {" +
+                  "blubScope blubScope1 {" +
+                  "blubSymbol1" +
+
+                  "}" +
+                  "}"
+  );
   
   // create symbol table for "blah"
   BlahSymbolTableCreator blahSymbolTableCreator = new BlahSymbolTableCreator(resolvingConfiguration,globalScope);
@@ -80,7 +88,7 @@ public class AggregationTest {
 
   // check dummy symbol is present in global scope
   // TODO soll das so? Scopes ohne Namen müssen mit Punkt navigiert werde
-  blubSymbol1 = globalScope.resolve("blubScopeName.blubSymbol1", DummySymbol.KIND);
+  blubSymbol1 = globalScope.resolve("blubScope1.blubSymbol1", DummySymbol.KIND);
   
   assertTrue(blubSymbol1.isPresent());
 
@@ -107,9 +115,13 @@ public class AggregationTest {
   //Optional<Symbol> k = fooScope.resolve(".blubSymbol1", DummyKind.KIND);
   //assertTrue(k.isPresent());
 
-  Optional<Symbol> a = fooScope.resolve("blubScopeName.blubSymbol1", EMethodSymbol.KIND);
+  Optional<Symbol> a = fooScope.resolve("blubScope1.blubSymbol1", EMethodSymbol.KIND);
 
   assertTrue(a.isPresent());
+
+  Optional<EMethodSymbol> a2 = fooScope.resolveEMethod("blubScope1.blubSymbol1");
+
+  assertTrue(a2.isPresent());
 
  }
  
