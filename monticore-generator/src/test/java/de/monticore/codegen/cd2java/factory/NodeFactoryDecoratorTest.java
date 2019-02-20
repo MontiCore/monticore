@@ -4,6 +4,7 @@ import de.monticore.MontiCoreScript;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.factories.CDParameterFactory;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
+import de.monticore.codegen.cd2java.typecd2java.TypeCD2JavaDecorator;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -58,6 +59,10 @@ public class NodeFactoryDecoratorTest {
         globalScope);
 
     cdCompilationUnit.setEnclosingScope(globalScope);
+    //make types java compatible
+    TypeCD2JavaDecorator decorator = new TypeCD2JavaDecorator();
+    decorator.decorateAST(cdCompilationUnit);
+
     NodeFactoryDecorator factoryDecorator = new NodeFactoryDecorator(glex);
     this.factoryClass = factoryDecorator.decorate(cdCompilationUnit);
     //test if not changed the original Definition
@@ -157,12 +162,12 @@ public class NodeFactoryDecoratorTest {
 
     ASTType statesType = cdTypeFacade.createTypeByDefinition("java.util.List<automaton._ast.ASTState>");
     ASTCDParameter statesParameter = cdParameterFacade.createParameter(statesType, "states");
-    assertTrue(statesParameter.getType().deepEquals(statesType));
+    assertTrue(statesParameter.getType().deepEquals(method.getCDParameter(1).getType()));
     assertEquals(statesParameter.getName(), method.getCDParameter(1).getName());
 
     ASTType transitionsType = cdTypeFacade.createTypeByDefinition("java.util.List<automaton._ast.ASTTransition>");
     ASTCDParameter transitionsParameter = cdParameterFacade.createParameter(transitionsType, "transitions");
-    assertTrue(transitionsParameter.getType().deepEquals(transitionsType));
+    assertTrue(transitionsParameter.getType().deepEquals(method.getCDParameter(2).getType()));
     assertEquals(transitionsParameter.getName(), method.getCDParameter(2).getName());
   }
 

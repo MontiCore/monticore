@@ -231,7 +231,6 @@ public class GeneratorHelper extends TypesHelper {
     if (convertedTypeName.contains("<")) {
       return;
     }
-
     Optional<CDTypeSymbol> symbol = resolveCdType(convertedTypeName);
     if (symbol.isPresent()) {
       CDTypeSymbol cdType = symbol.get();

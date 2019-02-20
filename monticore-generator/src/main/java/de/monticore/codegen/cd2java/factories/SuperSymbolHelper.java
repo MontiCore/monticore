@@ -11,13 +11,10 @@ import java.util.Optional;
 
 public class SuperSymbolHelper {
 
-
-  private static CDSymbol cdSymbol;
-
   private static final String LOG_NAME = "SuperSymbolHelper";
 
   public static List<CDSymbol> getSuperCDs(ASTCDCompilationUnit compilationUnit) {
-    cdSymbol = resolveCd(Names.getQualifiedName(compilationUnit.getPackageList(), compilationUnit.getCDDefinition().getName()), compilationUnit);
+    CDSymbol cdSymbol = resolveCd(compilationUnit);
     return getSuperCDs(cdSymbol, compilationUnit);
   }
 
@@ -38,6 +35,11 @@ public class SuperSymbolHelper {
       }
     }
     return resolvedCds;
+  }
+
+  private static CDSymbol resolveCd(ASTCDCompilationUnit compilationUnit) {
+    String symbolName = Names.getQualifiedName(compilationUnit.getPackageList(), compilationUnit.getCDDefinition().getName());
+    return resolveCd(symbolName, compilationUnit);
   }
 
   private static CDSymbol resolveCd(String symbolName, ASTCDCompilationUnit compilationUnit) {
