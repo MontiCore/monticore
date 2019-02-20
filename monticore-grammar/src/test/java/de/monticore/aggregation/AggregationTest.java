@@ -68,11 +68,13 @@ public class AggregationTest {
   BlahParser blahParser = new BlahParser();
   Optional<ASTBlahModel> blahModel = blahParser.parse_String(
           "blahmodel {" +
-                  "blubScope blubScope1 {" +
-                  "blubSymbol1" +
-
-                  "}" +
-                  "}"
+            "blubScope blubScope1 {" +
+              "blubScope blubScope2 {" +
+                "symbol blubSymbol2" +
+              "}" +
+              "symbol blubSymbol1"+
+            "}" +
+          "}"
   );
   
   // create symbol table for "blah"
