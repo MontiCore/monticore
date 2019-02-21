@@ -1,0 +1,10 @@
+package de.monticore.codegen.ast;
+
+grammar ASTTest extends mc.grammars.lexicals.TestLexicals {
+
+  Mand = Name;
+
+  Opt = name:Mand?;
+
+  List = name:Mand*;
+}

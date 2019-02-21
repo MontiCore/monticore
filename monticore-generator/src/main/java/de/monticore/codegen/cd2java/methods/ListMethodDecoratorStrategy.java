@@ -5,10 +5,10 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.TypesPrinter;
-import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.types.types._ast.ASTType;
-import de.monticore.types.types._ast.ASTTypeArgument;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -20,6 +20,7 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 
 public class ListMethodDecoratorStrategy implements MethodDecoratorStrategy {
 
+  //TODO distinguish between Methodnames with "s" oder without at the end of the Attributename
   private static final String CLEAR           = "public void clear%s();";
   private static final String ADD             = "public boolean add%s(%s element);";
   private static final String ADD_ALL         = "public boolean addAll%s(Collection<? extends %s> collection);";
@@ -112,7 +113,7 @@ public class ListMethodDecoratorStrategy implements MethodDecoratorStrategy {
         createSubListMethod()));
 
     methods.forEach(this::addImplementation);
-
+    //TODO name getter and setter from here with "List" suffix
     methods.addAll(this.mandatoryMethodDecoratorStrategy.decorate(ast));
     return methods;
   }
