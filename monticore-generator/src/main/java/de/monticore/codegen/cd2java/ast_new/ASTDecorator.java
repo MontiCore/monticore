@@ -96,7 +96,8 @@ public class ASTDecorator implements Decorator<ASTCDClass, ASTCDClass> {
   private List<ASTCDMethod> getAcceptMethods(ASTCDClass astcdClass) {
     List<ASTCDMethod> methodList = new ArrayList<>();
 
-    ASTType visitorType = this.cdTypeFactory.createTypeByDefinition(astcdClass.getName().toLowerCase() + VISITOR_PACKAGE + astcdClass.getName() + VISITOR_SUFFIX);
+    String simpleClassName = (astcdClass.getName().contains("AST")) ? astcdClass.getName().replaceFirst("AST", "") : astcdClass.getName();
+    ASTType visitorType = this.cdTypeFactory.createTypeByDefinition(simpleClassName.toLowerCase() + VISITOR_PACKAGE + simpleClassName + VISITOR_SUFFIX);
     ASTCDParameter visitorParameter = this.cdParameterFactory.createParameter(visitorType, VISITOR_PREFIX);
     methodList.add(this.cdMethodFactory.createMethod(PUBLIC, ACCEPT_METHOD, visitorParameter));
 
