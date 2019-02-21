@@ -1,8 +1,6 @@
 package de.monticore.codegen.cd2java.ast_new;
 
 import de.monticore.MontiCoreScript;
-import de.monticore.codegen.cd2java.factories.CDParameterFactory;
-import de.monticore.codegen.cd2java.factories.CDTypeFactory;
 import de.monticore.codegen.cd2java.typecd2java.TypeCD2JavaDecorator;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -29,10 +27,6 @@ import static org.junit.Assert.assertEquals;
 
 public class ASTDecoratorListMethodsTest {
 
-  private CDTypeFactory cdTypeFacade;
-
-  private CDParameterFactory cdParameterFacade;
-
   private ASTCDCompilationUnit cdCompilationUnit;
 
   private List<ASTCDMethod> methods;
@@ -41,12 +35,16 @@ public class ASTDecoratorListMethodsTest {
 
   private static final String PUBLIC = "public";
 
+  private static final String VOID = "void";
+
+  private static final String BOOLEAN = "boolean";
+
+  private static final String ASTNAME = "de.monticore.codegen.ast.asttest._ast.ASTMand";
+
 
   @Before
   public void setUp() {
     this.glex = new GlobalExtensionManagement();
-    this.cdTypeFacade = CDTypeFactory.getInstance();
-    this.cdParameterFacade = CDParameterFactory.getInstance();
 
     //create grammar from ModelPath
     Path modelPathPath = Paths.get("src/test/resources");
@@ -86,7 +84,7 @@ public class ASTDecoratorListMethodsTest {
         .collect(Collectors.toList());
     assertEquals(1, methodOpt.size());
     ASTCDMethod method = methodOpt.get(0);
-    assertEquals("java.util.List<de.monticore.codegen.ast.asttest._ast.ASTMand>", method.printReturnType());
+    assertEquals("java.util.List<" + ASTNAME + ">", method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
   }
 
@@ -98,12 +96,12 @@ public class ASTDecoratorListMethodsTest {
         .collect(Collectors.toList());
     assertEquals(1, methodOpt.size());
     ASTCDMethod method = methodOpt.get(0);
-    assertEquals("void", method.printReturnType());
+    assertEquals(VOID, method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertEquals("java.util.List<de.monticore.codegen.ast.asttest._ast.ASTMand>", TypesPrinter.printType(parameter.getType()));
+    assertEquals("java.util.List<" + ASTNAME + ">", TypesPrinter.printType(parameter.getType()));
     assertEquals("names", parameter.getName());
   }
 
@@ -113,7 +111,7 @@ public class ASTDecoratorListMethodsTest {
     assertTrue(methodOpt.isPresent());
     ASTCDMethod method = methodOpt.get();
     assertTrue(method.getCDParameterList().isEmpty());
-    assertEquals("void", method.printReturnType());
+    assertEquals(VOID, method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
   }
 
@@ -125,12 +123,12 @@ public class ASTDecoratorListMethodsTest {
         .collect(Collectors.toList());
     assertEquals(1, methods.size());
     ASTCDMethod method = methods.get(0);
-    assertEquals("boolean", method.printReturnType());
+    assertEquals(BOOLEAN, method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertEquals("de.monticore.codegen.ast.asttest._ast.ASTMand", TypesPrinter.printType(parameter.getType()));
+    assertEquals(ASTNAME, TypesPrinter.printType(parameter.getType()));
     assertEquals("element", parameter.getName());
   }
 
@@ -139,12 +137,12 @@ public class ASTDecoratorListMethodsTest {
     Optional<ASTCDMethod> methodOpt = this.methods.stream().filter(m -> "addAllNames".equals(m.getName())).findFirst();
     assertTrue(methodOpt.isPresent());
     ASTCDMethod method = methodOpt.get();
-    assertEquals("boolean", method.printReturnType());
+    assertEquals(BOOLEAN, method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertEquals("Collection<? extends de.monticore.codegen.ast.asttest._ast.ASTMand>", TypesPrinter.printType(parameter.getType()));
+    assertEquals("Collection<? extends " + ASTNAME + ">", TypesPrinter.printType(parameter.getType()));
     assertEquals("collection", parameter.getName());
   }
 
@@ -155,7 +153,7 @@ public class ASTDecoratorListMethodsTest {
         .collect(Collectors.toList());
     assertEquals(2, methodOpt.size());
     ASTCDMethod method = methodOpt.get(0);
-    assertEquals("boolean", method.printReturnType());
+    assertEquals(BOOLEAN, method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals(1, method.getCDParameterList().size());
@@ -169,7 +167,7 @@ public class ASTDecoratorListMethodsTest {
     Optional<ASTCDMethod> methodOpt = this.methods.stream().filter(m -> "removeAllNames".equals(m.getName())).findFirst();
     assertTrue(methodOpt.isPresent());
     ASTCDMethod method = methodOpt.get();
-    assertEquals("boolean", method.printReturnType());
+    assertEquals(BOOLEAN, method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals(1, method.getCDParameterList().size());
@@ -183,7 +181,7 @@ public class ASTDecoratorListMethodsTest {
     Optional<ASTCDMethod> methodOpt = this.methods.stream().filter(m -> "retainAllNames".equals(m.getName())).findFirst();
     assertTrue(methodOpt.isPresent());
     ASTCDMethod method = methodOpt.get();
-    assertEquals("boolean", method.printReturnType());
+    assertEquals(BOOLEAN, method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals(1, method.getCDParameterList().size());
@@ -197,12 +195,12 @@ public class ASTDecoratorListMethodsTest {
     Optional<ASTCDMethod> methodOpt = this.methods.stream().filter(m -> "removeIfNames".equals(m.getName())).findFirst();
     assertTrue(methodOpt.isPresent());
     ASTCDMethod method = methodOpt.get();
-    assertEquals("boolean", method.printReturnType());
+    assertEquals(BOOLEAN, method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertEquals("Predicate<? super de.monticore.codegen.ast.asttest._ast.ASTMand>", TypesPrinter.printType(parameter.getType()));
+    assertEquals("Predicate<? super " + ASTNAME + ">", TypesPrinter.printType(parameter.getType()));
     assertEquals("filter", parameter.getName());
   }
 
@@ -211,12 +209,12 @@ public class ASTDecoratorListMethodsTest {
     Optional<ASTCDMethod> methodOpt = this.methods.stream().filter(m -> "forEachNames".equals(m.getName())).findFirst();
     assertTrue(methodOpt.isPresent());
     ASTCDMethod method = methodOpt.get();
-    assertEquals("void", method.printReturnType());
+    assertEquals(VOID, method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertEquals("Consumer<? super de.monticore.codegen.ast.asttest._ast.ASTMand>", TypesPrinter.printType(parameter.getType()));
+    assertEquals("Consumer<? super " + ASTNAME + ">", TypesPrinter.printType(parameter.getType()));
     assertEquals("action", parameter.getName());
   }
 
@@ -228,7 +226,7 @@ public class ASTDecoratorListMethodsTest {
         .collect(Collectors.toList());
     assertEquals(1, methods.size());
     ASTCDMethod method = methods.get(0);
-    assertEquals("void", method.printReturnType());
+    assertEquals(VOID, method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals(2, method.getCDParameterList().size());
@@ -236,7 +234,7 @@ public class ASTDecoratorListMethodsTest {
     assertEquals("int", TypesPrinter.printType(parameter.getType()));
     assertEquals("index", parameter.getName());
     parameter = method.getCDParameter(1);
-    assertEquals("de.monticore.codegen.ast.asttest._ast.ASTMand", TypesPrinter.printType(parameter.getType()));
+    assertEquals(ASTNAME, TypesPrinter.printType(parameter.getType()));
     assertEquals("element", parameter.getName());
   }
 
@@ -248,7 +246,7 @@ public class ASTDecoratorListMethodsTest {
         .collect(Collectors.toList());
     assertEquals(1, methods.size());
     ASTCDMethod method = methods.get(0);
-    assertEquals("boolean", method.printReturnType());
+    assertEquals(BOOLEAN, method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals(2, method.getCDParameterList().size());
@@ -256,7 +254,7 @@ public class ASTDecoratorListMethodsTest {
     assertEquals("int", TypesPrinter.printType(parameter.getType()));
     assertEquals("index", parameter.getName());
     parameter = method.getCDParameter(1);
-    assertEquals("Collection<? extends de.monticore.codegen.ast.asttest._ast.ASTMand>", TypesPrinter.printType(parameter.getType()));
+    assertEquals("Collection<? extends " + ASTNAME + ">", TypesPrinter.printType(parameter.getType()));
     assertEquals("collection", parameter.getName());
   }
 
@@ -267,7 +265,7 @@ public class ASTDecoratorListMethodsTest {
         .collect(Collectors.toList());
     assertEquals(2, methodOpt.size());
     ASTCDMethod method = methodOpt.get(1);
-    assertEquals("de.monticore.codegen.ast.asttest._ast.ASTMand", method.printReturnType());
+    assertEquals(ASTNAME, method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals(1, method.getCDParameterList().size());
@@ -284,14 +282,14 @@ public class ASTDecoratorListMethodsTest {
         .collect(Collectors.toList());
     assertEquals(1, methodOpt.size());
     ASTCDMethod method = methodOpt.get(0);
-    assertEquals("de.monticore.codegen.ast.asttest._ast.ASTMand", method.printReturnType());
+    assertEquals(ASTNAME, method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
     ASTCDParameter parameter = method.getCDParameter(0);
     assertEquals("int", TypesPrinter.printType(parameter.getType()));
     assertEquals("index", parameter.getName());
     parameter = method.getCDParameter(1);
-    assertEquals("de.monticore.codegen.ast.asttest._ast.ASTMand", TypesPrinter.printType(parameter.getType()));
+    assertEquals(ASTNAME, TypesPrinter.printType(parameter.getType()));
     assertEquals("element", parameter.getName());
   }
 
@@ -300,12 +298,12 @@ public class ASTDecoratorListMethodsTest {
     Optional<ASTCDMethod> methodOpt = this.methods.stream().filter(m -> "replaceAllNames".equals(m.getName())).findFirst();
     assertTrue(methodOpt.isPresent());
     ASTCDMethod method = methodOpt.get();
-    assertEquals("void", method.printReturnType());
+    assertEquals(VOID, method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertEquals("UnaryOperator<de.monticore.codegen.ast.asttest._ast.ASTMand>", TypesPrinter.printType(parameter.getType()));
+    assertEquals("UnaryOperator<" + ASTNAME + ">", TypesPrinter.printType(parameter.getType()));
     assertEquals("operator", parameter.getName());
   }
 
@@ -314,12 +312,12 @@ public class ASTDecoratorListMethodsTest {
     Optional<ASTCDMethod> methodOpt = this.methods.stream().filter(m -> "sortNames".equals(m.getName())).findFirst();
     assertTrue(methodOpt.isPresent());
     ASTCDMethod method = methodOpt.get();
-    assertEquals("void", method.printReturnType());
+    assertEquals(VOID, method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertEquals("Comparator<? super de.monticore.codegen.ast.asttest._ast.ASTMand>", TypesPrinter.printType(parameter.getType()));
+    assertEquals("Comparator<? super " + ASTNAME + ">", TypesPrinter.printType(parameter.getType()));
     assertEquals("comparator", parameter.getName());
   }
 
@@ -328,7 +326,7 @@ public class ASTDecoratorListMethodsTest {
     Optional<ASTCDMethod> methodOpt = this.methods.stream().filter(m -> "containsNames".equals(m.getName())).findFirst();
     assertTrue(methodOpt.isPresent());
     ASTCDMethod method = methodOpt.get();
-    assertEquals("boolean", method.printReturnType());
+    assertEquals(BOOLEAN, method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals(1, method.getCDParameterList().size());
@@ -342,7 +340,7 @@ public class ASTDecoratorListMethodsTest {
     Optional<ASTCDMethod> methodOpt = this.methods.stream().filter(m -> "containsAllNames".equals(m.getName())).findFirst();
     assertTrue(methodOpt.isPresent());
     ASTCDMethod method = methodOpt.get();
-    assertEquals("boolean", method.printReturnType());
+    assertEquals(BOOLEAN, method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals(1, method.getCDParameterList().size());
@@ -357,7 +355,7 @@ public class ASTDecoratorListMethodsTest {
     assertTrue(methodOpt.isPresent());
     ASTCDMethod method = methodOpt.get();
     assertTrue(method.getCDParameterList().isEmpty());
-    assertEquals("boolean", method.printReturnType());
+    assertEquals(BOOLEAN, method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
   }
 
@@ -367,7 +365,7 @@ public class ASTDecoratorListMethodsTest {
     assertTrue(methodOpt.isPresent());
     ASTCDMethod method = methodOpt.get();
     assertTrue(method.getCDParameterList().isEmpty());
-    assertEquals("Iterator<de.monticore.codegen.ast.asttest._ast.ASTMand>", method.printReturnType());
+    assertEquals("Iterator<" + ASTNAME + ">", method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
   }
 
@@ -389,12 +387,12 @@ public class ASTDecoratorListMethodsTest {
         .findFirst();
     assertTrue(methodOpt.isPresent());
     ASTCDMethod method = methodOpt.get();
-    assertEquals("de.monticore.codegen.ast.asttest._ast.ASTMand[]", method.printReturnType());
+    assertEquals(ASTNAME+"[]", method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertEquals("de.monticore.codegen.ast.asttest._ast.ASTMand[]", TypesPrinter.printType(parameter.getType()));
+    assertEquals(ASTNAME+"[]", TypesPrinter.printType(parameter.getType()));
     assertEquals("array", parameter.getName());
   }
 
@@ -416,7 +414,7 @@ public class ASTDecoratorListMethodsTest {
     assertTrue(methodOpt.isPresent());
     ASTCDMethod method = methodOpt.get();
     assertTrue(method.getCDParameterList().isEmpty());
-    assertEquals("Spliterator<de.monticore.codegen.ast.asttest._ast.ASTMand>", method.printReturnType());
+    assertEquals("Spliterator<"+ASTNAME+">", method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
   }
 
@@ -426,7 +424,7 @@ public class ASTDecoratorListMethodsTest {
     assertTrue(methodOpt.isPresent());
     ASTCDMethod method = methodOpt.get();
     assertTrue(method.getCDParameterList().isEmpty());
-    assertEquals("Stream<de.monticore.codegen.ast.asttest._ast.ASTMand>", method.printReturnType());
+    assertEquals("Stream<"+ASTNAME+">", method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
   }
 
@@ -436,7 +434,7 @@ public class ASTDecoratorListMethodsTest {
     assertTrue(methodOpt.isPresent());
     ASTCDMethod method = methodOpt.get();
     assertTrue(method.getCDParameterList().isEmpty());
-    assertEquals("Stream<de.monticore.codegen.ast.asttest._ast.ASTMand>", method.printReturnType());
+    assertEquals("Stream<"+ASTNAME+">", method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
   }
 
@@ -448,7 +446,7 @@ public class ASTDecoratorListMethodsTest {
         .collect(Collectors.toList());
     assertEquals(1, methodOpt.size());
     ASTCDMethod method = methodOpt.get(0);
-    assertEquals("de.monticore.codegen.ast.asttest._ast.ASTMand", method.printReturnType());
+    assertEquals(ASTNAME, method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
     ASTCDParameter parameter = method.getCDParameter(0);
@@ -489,7 +487,7 @@ public class ASTDecoratorListMethodsTest {
     Optional<ASTCDMethod> methodOpt = this.methods.stream().filter(m -> "equalsNames".equals(m.getName())).findFirst();
     assertTrue(methodOpt.isPresent());
     ASTCDMethod method = methodOpt.get();
-    assertEquals("boolean", method.printReturnType());
+    assertEquals(BOOLEAN, method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals(1, method.getCDParameterList().size());
@@ -517,7 +515,7 @@ public class ASTDecoratorListMethodsTest {
     assertTrue(methodOpt.isPresent());
     ASTCDMethod method = methodOpt.get();
     assertTrue(method.getCDParameterList().isEmpty());
-    assertEquals("ListIterator<de.monticore.codegen.ast.asttest._ast.ASTMand>", method.printReturnType());
+    assertEquals("ListIterator<"+ASTNAME+">", method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
   }
 
@@ -529,7 +527,7 @@ public class ASTDecoratorListMethodsTest {
         .findFirst();
     assertTrue(methodOpt.isPresent());
     ASTCDMethod method = methodOpt.get();
-    assertEquals("ListIterator<de.monticore.codegen.ast.asttest._ast.ASTMand>", method.printReturnType());
+    assertEquals("ListIterator<" + ASTNAME + ">", method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals(1, method.getCDParameterList().size());
@@ -543,7 +541,7 @@ public class ASTDecoratorListMethodsTest {
     Optional<ASTCDMethod> methodOpt = this.methods.stream().filter(m -> "subListNames".equals(m.getName())).findFirst();
     assertTrue(methodOpt.isPresent());
     ASTCDMethod method = methodOpt.get();
-    assertEquals("java.util.List<de.monticore.codegen.ast.asttest._ast.ASTMand>", method.printReturnType());
+    assertEquals("java.util.List<" + ASTNAME + ">", method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals(2, method.getCDParameterList().size());
