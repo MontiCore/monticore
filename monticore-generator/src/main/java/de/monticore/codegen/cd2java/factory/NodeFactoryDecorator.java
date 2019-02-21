@@ -154,7 +154,6 @@ public class NodeFactoryDecorator implements Decorator<ASTCDCompilationUnit, AST
     this.glex.replaceTemplate(EMPTY_BODY, createWithoutParameters, new TemplateHookPoint("ast.factorymethods.Create", astName));
   }
 
-
   private void addDoCreateMethod(String astName, ASTType astType, List<ASTCDMethod> methodList) {
     ASTCDMethod doCreateWithoutParameters = this.cdMethodFacade.createMethod(PROTECTED, astType, DOCREATE_INFIX + astName);
     methodList.add(doCreateWithoutParameters);

@@ -30,17 +30,12 @@ public class TypeCD2JavaVisitor implements CD4AnalysisVisitor {
   }
 
   private void transform(ASTSimpleReferenceType node) {
-
-    if (node.sizeNames() == 1) {
-      Optional<CDTypeSymbol> typeSymbol = compilationUnit.getEnclosingScope().resolve(node.getName(0), CDTypeSymbol.KIND);
-      if(typeSymbol.isPresent()){
-        String javaType = typeSymbol.get().getModelName().toLowerCase() +"."+ package_suffix +"."+ typeSymbol.get().getName();
-        node.setName(0,javaType);
-      }
+    Optional<CDTypeSymbol> typeSymbol = compilationUnit.getEnclosingScope().resolve(node.getName(0), CDTypeSymbol.KIND);
+    if (typeSymbol.isPresent()) {
+      String javaType = typeSymbol.get().getModelName().toLowerCase() + package_suffix + typeSymbol.get().getName();
+      node.setName(0, javaType);
     }
-    if (node.sizeNames() == 1 && node.getName(0).contains(".")) {
-      node.setNameList(splitName(node.getName(0)));
-    }
+    node.setNameList(splitName(node.getName(0)));
   }
 
   private List<String> splitName(String name) {

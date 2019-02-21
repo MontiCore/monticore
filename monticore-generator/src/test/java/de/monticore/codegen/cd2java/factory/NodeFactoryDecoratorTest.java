@@ -60,14 +60,12 @@ public class NodeFactoryDecoratorTest {
 
     cdCompilationUnit.setEnclosingScope(globalScope);
     //make types java compatible
-    TypeCD2JavaDecorator decorator = new TypeCD2JavaDecorator();
-    decorator.decorateAST(cdCompilationUnit);
+    TypeCD2JavaDecorator typeDecorator = new TypeCD2JavaDecorator();
+    cdCompilationUnit = typeDecorator.decorateAST(cdCompilationUnit);
 
     NodeFactoryDecorator factoryDecorator = new NodeFactoryDecorator(glex);
     this.factoryClass = factoryDecorator.decorate(cdCompilationUnit);
-    //test if not changed the original Definition
-    assertTrue(cdCompilationUnit.getCDDefinition().deepEquals(cdCompilationUnit.getCDDefinition()));
-  }
+}
 
   @Test
   public void testFactoryName() {

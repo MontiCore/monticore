@@ -4,6 +4,7 @@ import de.monticore.MontiCoreScript;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.factories.CDParameterFactory;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
+import de.monticore.codegen.cd2java.typecd2java.TypeCD2JavaDecorator;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -57,14 +58,15 @@ public class NodeFactoryWithInheritanceTest {
     script.createSymbolsFromAST(globalScope, grammar.get());
     cdCompilationUnit = script.deriveCD(grammar.get(), new GlobalExtensionManagement(),
         globalScope);
-
     cdCompilationUnit.setEnclosingScope(globalScope);
+
+    //make types java compatible
+    TypeCD2JavaDecorator typeDecorator = new TypeCD2JavaDecorator();
+    cdCompilationUnit = typeDecorator.decorateAST(cdCompilationUnit);
+
     NodeFactoryDecorator factoryDecorator = new NodeFactoryDecorator(glex);
     this.factoryClass = factoryDecorator.decorate(cdCompilationUnit);
-    //test if not changed the original Definition
-    assertTrue(cdCompilationUnit.getCDDefinition().deepEquals(cdCompilationUnit.getCDDefinition()));
   }
-
 
   @Test
   public void testFactoryName() {
@@ -180,7 +182,7 @@ public class NodeFactoryWithInheritanceTest {
     assertFalse(method.isEmptyCDParameters());
     assertEquals(2,method.sizeCDParameters());
 
-    ASTType fooType = cdTypeFacade.createSimpleReferenceType("de.monticore.codegen.factory.AGrammar.ASTFoo");
+    ASTType fooType = cdTypeFacade.createSimpleReferenceType("de.monticore.codegen.factory.agrammar._ast.ASTFoo");
     ASTCDParameter fooParameter = cdParameterFacade.createParameter(fooType, "foo");
     //assertTrue(fooParameter.getType().deepEquals(method.getCDParameter(0).getType())); todo fix ast->cd transformation
     assertEquals("de.monticore.codegen.factory.AGrammar.ASTFoo", TypesPrinter.printType(method.getCDParameter(0).getType()));

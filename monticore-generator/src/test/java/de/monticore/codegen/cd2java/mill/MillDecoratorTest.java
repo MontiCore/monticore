@@ -55,13 +55,10 @@ public class MillDecoratorTest {
     script.createSymbolsFromAST(globalScope, grammar.get());
     cdCompilationUnit = script.deriveCD(grammar.get(), new GlobalExtensionManagement(),
         globalScope);
-    ASTCDDefinition astcdDefinition = cdCompilationUnit.getCDDefinition().deepClone();
 
     cdCompilationUnit.setEnclosingScope(globalScope);
     MillDecorator millDecorator = new MillDecorator(glex);
     this.millClass = millDecorator.decorate(cdCompilationUnit);
-    //test if not changed the original Definition
-    assertTrue(astcdDefinition.deepEquals(cdCompilationUnit.getCDDefinition()));
   }
 
   @Test
