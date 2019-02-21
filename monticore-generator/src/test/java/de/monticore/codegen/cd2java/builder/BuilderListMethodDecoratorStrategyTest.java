@@ -33,7 +33,7 @@ public class BuilderListMethodDecoratorStrategyTest {
   @Before
   public void setup() {
     LogStub.init();
-    ASTCDAttribute attribute = CDAttributeFactory.getInstance().createAttributeByDefinition("protected List<String> a;");
+    ASTCDAttribute attribute = CDAttributeFactory.getInstance().createAttributeByDefinition("protected java.util.List<String> a;");
     ASTType builderType = CDTypeFactory.getInstance().createTypeByDefinition(BUILDER_CLASS_NAME);
     BuilderMandatoryMethodDecoratorStrategy mandatoryDecoratorStrategy = new BuilderMandatoryMethodDecoratorStrategy(glex, builderType);
     BuilderListMethodDecoratorStrategy decoratorStrategy = new BuilderListMethodDecoratorStrategy(glex, mandatoryDecoratorStrategy, builderType);
@@ -53,7 +53,7 @@ public class BuilderListMethodDecoratorStrategyTest {
         .collect(Collectors.toList());
     assertEquals(1, methodOpt.size());
     ASTCDMethod method = methodOpt.get(0);
-    assertEquals("List<String>", method.printReturnType());
+    assertEquals("java.util.List<String>", method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
   }
 
@@ -70,7 +70,7 @@ public class BuilderListMethodDecoratorStrategyTest {
 
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertEquals("List<String>", TypesPrinter.printType(parameter.getType()));
+    assertEquals("java.util.List<String>", TypesPrinter.printType(parameter.getType()));
     assertEquals("a", parameter.getName());
   }
 
@@ -510,7 +510,7 @@ public class BuilderListMethodDecoratorStrategyTest {
     Optional<ASTCDMethod> methodOpt = this.methods.stream().filter(m -> "subListA".equals(m.getName())).findFirst();
     assertTrue(methodOpt.isPresent());
     ASTCDMethod method = methodOpt.get();
-    assertEquals("List<String>", method.printReturnType());
+    assertEquals("java.util.List<String>", method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals(2, method.getCDParameterList().size());

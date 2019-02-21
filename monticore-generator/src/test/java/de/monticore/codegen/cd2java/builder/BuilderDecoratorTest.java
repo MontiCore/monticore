@@ -90,7 +90,7 @@ public class BuilderDecoratorTest {
     assertTrue(listOpt.isPresent());
     ASTCDAttribute list = listOpt.get();
     assertEquals("protected", list.printModifier().trim());
-    assertEquals("List<String>", list.printType());
+    assertEquals("java.util.List<String>", list.printType());
 
     Optional<ASTCDAttribute> realThisOpt = attributes.stream().filter(a -> "realThis".equals(a.getName())).findFirst();
     assertTrue(realThisOpt.isPresent());

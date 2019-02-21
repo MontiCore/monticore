@@ -5,7 +5,9 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.TypesPrinter;
+import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.types.types._ast.ASTType;
+import de.monticore.types.types._ast.ASTTypeArgument;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import org.apache.commons.lang3.StringUtils;
 
@@ -50,7 +52,7 @@ public class ListMethodDecoratorStrategy implements MethodDecoratorStrategy {
   private static final String HASHCODE        = "public int hashCode%s();";
   private static final String LIST_ITERATOR   = "public ListIterator<%s> listIterator%s();";
   private static final String LIST_ITERATOR_  = "public ListIterator<%s> listIterator%s(int index);";
-  private static final String SUBLIST         = "public List<%s> subList%s(int start, int end);";
+  private static final String SUBLIST         = "public java.util.List<%s> subList%s(int start, int end);";
 
   private final GlobalExtensionManagement glex;
 
@@ -117,7 +119,7 @@ public class ListMethodDecoratorStrategy implements MethodDecoratorStrategy {
 
   private String getGenericTypeFromListAttribute(ASTType type) {
     String typeString = TypesPrinter.printType(type);
-    return typeString.substring("List<".length(), typeString.length() - 1);
+    return typeString.substring("java.util.List<".length(), typeString.length() - 1);
   }
 
   private void addImplementation(final ASTCDMethod method) {
