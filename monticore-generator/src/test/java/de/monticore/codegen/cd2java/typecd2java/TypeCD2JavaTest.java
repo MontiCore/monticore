@@ -45,7 +45,7 @@ public class TypeCD2JavaTest {
     unit.setEnclosingScope(globalScope);
     //make types java compatible
     TypeCD2JavaDecorator decorator = new TypeCD2JavaDecorator();
-    cdCompilationUnit = decorator.decorateAST(unit);
+    cdCompilationUnit = decorator.decorate(unit);
   }
 
   @Test

@@ -21,6 +21,8 @@ public class TypeCD2JavaCopyTest {
 
   @Test
   public void testCopy() {
+    //test checks that the original CompilationUnitInput is not changed
+
     //create grammar from ModelPath
     Path modelPathPath = Paths.get("src/test/resources");
     ModelPath modelPath = new ModelPath(modelPathPath);
@@ -41,7 +43,7 @@ public class TypeCD2JavaCopyTest {
     ASTCDCompilationUnit copy = unit.deepClone();
     //make types java compatible
     TypeCD2JavaDecorator decorator = new TypeCD2JavaDecorator();
-    ASTCDCompilationUnit cdCompilationUnit = decorator.decorateAST(unit);
+    ASTCDCompilationUnit cdCompilationUnit = decorator.decorate(unit);
 
     //test that the returned actually is different
     assertFalse(cdCompilationUnit.deepEquals(unit));
