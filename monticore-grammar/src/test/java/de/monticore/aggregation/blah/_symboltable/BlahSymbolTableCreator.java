@@ -14,10 +14,11 @@ public class BlahSymbolTableCreator  extends BlahSymbolTableCreatorTOP {
     super(resolvingConfig, scopeStack);
   }
   
-  protected MutableScope create_Blub(de.monticore.aggregation.blah._ast.ASTBlub ast) {
+  protected de.monticore.aggregation.blah._symboltable.BlubSymbol create_Blub(de.monticore.aggregation.blah._ast.ASTBlub ast) {
     // creates new visibility scope
     BlahScope bla = new BlahScope(false);
     bla.setExportsSymbols(true);
-    return bla;
+
+    return new BlubSymbolBuilder().name(ast.getName()).build();
   }
 }
