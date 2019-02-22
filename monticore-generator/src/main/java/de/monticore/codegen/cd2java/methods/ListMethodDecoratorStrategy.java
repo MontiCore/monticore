@@ -7,6 +7,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.TypesPrinter;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
 import org.apache.commons.lang3.StringUtils;
@@ -21,39 +22,39 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 public class ListMethodDecoratorStrategy implements MethodDecoratorStrategy {
 
   //TODO distinguish between Methodnames with "s" oder without at the end of the Attributename
-  private static final String CLEAR           = "public void clear%s();";
-  private static final String ADD             = "public boolean add%s(%s element);";
-  private static final String ADD_ALL         = "public boolean addAll%s(Collection<? extends %s> collection);";
-  private static final String REMOVE          = "public boolean remove%s(Object element);";
-  private static final String REMOVE_ALL      = "public boolean removeAll%s(Collection<?> collection);";
-  private static final String RETAIN_ALL      = "public boolean retainAll%s(Collection<?> collection);";
-  private static final String REMOVE_IF       = "public boolean removeIf%s(Predicate<? super %s> filter);";
-  private static final String FOR_EACH        = "public void forEach%s(Consumer<? super %s> action);";
-  private static final String ADD_            = "public void add%s(int index, %s element);";
-  private static final String ADD_ALL_        = "public boolean addAll%s(int index, Collection<? extends %s> collection);";
-  private static final String REMOVE_         = "public %s remove%s(int index);";
-  private static final String SET             = "public %s set%s(int index, %s element);";
-  private static final String REPLACE_ALL     = "public void replaceAll%s(UnaryOperator<%s> operator);";
-  private static final String SORT            = "public void sort%s(Comparator<? super %s> comparator);";
+  private static final String CLEAR = "public void clear%s();";
+  private static final String ADD = "public boolean add%s(%s element);";
+  private static final String ADD_ALL = "public boolean addAll%s(Collection<? extends %s> collection);";
+  private static final String REMOVE = "public boolean remove%s(Object element);";
+  private static final String REMOVE_ALL = "public boolean removeAll%s(Collection<?> collection);";
+  private static final String RETAIN_ALL = "public boolean retainAll%s(Collection<?> collection);";
+  private static final String REMOVE_IF = "public boolean removeIf%s(Predicate<? super %s> filter);";
+  private static final String FOR_EACH = "public void forEach%s(Consumer<? super %s> action);";
+  private static final String ADD_ = "public void add%s(int index, %s element);";
+  private static final String ADD_ALL_ = "public boolean addAll%s(int index, Collection<? extends %s> collection);";
+  private static final String REMOVE_ = "public %s remove%s(int index);";
+  private static final String SET = "public %s set%s(int index, %s element);";
+  private static final String REPLACE_ALL = "public void replaceAll%s(UnaryOperator<%s> operator);";
+  private static final String SORT = "public void sort%s(Comparator<? super %s> comparator);";
 
-  private static final String CONTAINS        = "public boolean contains%s(Object element);";
-  private static final String CONTAINS_ALL    = "public boolean containsAll%s(Collection<?> collection);";
-  private static final String IS_EMPTY        = "public boolean isEmpty%s();";
-  private static final String ITERATOR        = "public Iterator<%s> iterator%s();";
-  private static final String SIZE            = "public int size%s();";
-  private static final String TO_ARRAY        = "public %s[] toArray%s(%s[] array);";
-  private static final String TO_ARRAY_       = "public Object[] toArray%s();";
-  private static final String SPLITERATOR     = "public Spliterator<%s> spliterator%s();";
-  private static final String STREAM          = "public Stream<%s> stream%s();";
+  private static final String CONTAINS = "public boolean contains%s(Object element);";
+  private static final String CONTAINS_ALL = "public boolean containsAll%s(Collection<?> collection);";
+  private static final String IS_EMPTY = "public boolean isEmpty%s();";
+  private static final String ITERATOR = "public Iterator<%s> iterator%s();";
+  private static final String SIZE = "public int size%s();";
+  private static final String TO_ARRAY = "public %s[] toArray%s(%s[] array);";
+  private static final String TO_ARRAY_ = "public Object[] toArray%s();";
+  private static final String SPLITERATOR = "public Spliterator<%s> spliterator%s();";
+  private static final String STREAM = "public Stream<%s> stream%s();";
   private static final String PARALLEL_STREAM = "public Stream<%s> parallelStream%s();";
-  private static final String GET             = "public %s get%s(int index);";
-  private static final String INDEX_OF        = "public int indexOf%s(Object element);";
-  private static final String LAST_INDEX_OF   = "public int lastIndexOf%s(Object element);";
-  private static final String EQUALS          = "public boolean equals%s(Object o);";
-  private static final String HASHCODE        = "public int hashCode%s();";
-  private static final String LIST_ITERATOR   = "public ListIterator<%s> listIterator%s();";
-  private static final String LIST_ITERATOR_  = "public ListIterator<%s> listIterator%s(int index);";
-  private static final String SUBLIST         = "public java.util.List<%s> subList%s(int start, int end);";
+  private static final String GET = "public %s get%s(int index);";
+  private static final String INDEX_OF = "public int indexOf%s(Object element);";
+  private static final String LAST_INDEX_OF = "public int lastIndexOf%s(Object element);";
+  private static final String EQUALS = "public boolean equals%s(Object o);";
+  private static final String HASHCODE = "public int hashCode%s();";
+  private static final String LIST_ITERATOR = "public ListIterator<%s> listIterator%s();";
+  private static final String LIST_ITERATOR_ = "public ListIterator<%s> listIterator%s(int index);";
+  private static final String SUBLIST = "public java.util.List<%s> subList%s(int start, int end);";
 
   private final GlobalExtensionManagement glex;
 
@@ -113,8 +114,11 @@ public class ListMethodDecoratorStrategy implements MethodDecoratorStrategy {
         createSubListMethod()));
 
     methods.forEach(this::addImplementation);
-    //TODO name getter and setter from here with "List" suffix
-    methods.addAll(this.mandatoryMethodDecoratorStrategy.decorate(ast));
+
+    //create new Attribute with new attribute name that the name Ends with "List" and the correct method name is generated
+    ASTCDAttribute listAttribute = ast.deepClone();
+    listAttribute.setName(ast.getName() + "List");
+    methods.addAll(this.mandatoryMethodDecoratorStrategy.decorate(listAttribute));
     return methods;
   }
 
@@ -209,7 +213,6 @@ public class ListMethodDecoratorStrategy implements MethodDecoratorStrategy {
     String signature = String.format(SORT, capitalizedAttributeName, attributeType);
     return this.cdMethodFactory.createMethodByDefinition(signature);
   }
-
 
 
   private ASTCDMethod createContainsMethod() {

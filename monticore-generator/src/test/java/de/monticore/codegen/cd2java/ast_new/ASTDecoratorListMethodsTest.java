@@ -79,7 +79,7 @@ public class ASTDecoratorListMethodsTest {
   @Test
   public void testGetMethod() {
     List<ASTCDMethod> methodOpt = this.methods.stream()
-        .filter(m -> "getNames".equals(m.getName()))
+        .filter(m -> "getNamesList".equals(m.getName()))
         .filter(m -> m.getCDParameterList().isEmpty())
         .collect(Collectors.toList());
     assertEquals(1, methodOpt.size());
@@ -91,7 +91,7 @@ public class ASTDecoratorListMethodsTest {
   @Test
   public void testSetMethod() {
     List<ASTCDMethod> methodOpt = this.methods.stream()
-        .filter(m -> "setNames".equals(m.getName()))
+        .filter(m -> "setNamesList".equals(m.getName()))
         .filter(m -> 1 == m.getCDParameterList().size())
         .collect(Collectors.toList());
     assertEquals(1, methodOpt.size());
@@ -102,7 +102,7 @@ public class ASTDecoratorListMethodsTest {
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
     assertEquals("java.util.List<" + ASTNAME + ">", TypesPrinter.printType(parameter.getType()));
-    assertEquals("names", parameter.getName());
+    assertEquals("namesList", parameter.getName());
   }
 
   @Test

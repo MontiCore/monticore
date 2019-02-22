@@ -48,7 +48,7 @@ public class BuilderListMethodDecoratorStrategyTest {
   @Test
   public void testGetMethod() {
     List<ASTCDMethod> methodOpt = this.methods.stream()
-        .filter(m -> "getA".equals(m.getName()))
+        .filter(m -> "getAList".equals(m.getName()))
         .filter(m -> m.getCDParameterList().isEmpty())
         .collect(Collectors.toList());
     assertEquals(1, methodOpt.size());
@@ -60,7 +60,7 @@ public class BuilderListMethodDecoratorStrategyTest {
   @Test
   public void testSetMethod() {
     List<ASTCDMethod> methodOpt = this.methods.stream()
-        .filter(m -> "setA".equals(m.getName()))
+        .filter(m -> "setAList".equals(m.getName()))
         .filter(m -> 1 == m.getCDParameterList().size())
         .collect(Collectors.toList());
     assertEquals(1, methodOpt.size());
@@ -71,7 +71,7 @@ public class BuilderListMethodDecoratorStrategyTest {
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
     assertEquals("java.util.List<String>", TypesPrinter.printType(parameter.getType()));
-    assertEquals("a", parameter.getName());
+    assertEquals("aList", parameter.getName());
   }
 
   @Test
