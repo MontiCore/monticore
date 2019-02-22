@@ -3,6 +3,8 @@
 package de.monticore.grammar;
 
 import de.monticore.grammar.grammar._ast.*;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.symboltable.Symbol;
 import de.monticore.utils.ASTNodes;
 import de.monticore.ast.ASTNode;
 
@@ -43,7 +45,7 @@ public enum Multiplicity {
     if (astNode instanceof ASTAdditionalAttribute) {
       return multiplicityOfAttributeInAST((ASTAdditionalAttribute) astNode);
     }
-    return multiplicityOfASTNode(rootNode, astNode);
+    return multiplicityOfASTNodeWithInheritance(rootNode, astNode);
   }
   
   public static Multiplicity multiplicityOfAttributeInAST(ASTAdditionalAttribute attributeInAST) {
@@ -70,6 +72,40 @@ public enum Multiplicity {
   
   private static int getMinCardinality(ASTCard cardinality) {
     return Integer.parseInt(cardinality.getMin());
+  }
+  
+  /**
+   * Performs the multiplicity calculation for inherited attributes.
+   * 
+   * @param rootNode The grammar symbol of the ast node.
+   * @param astNode The ast node.
+   * @return The multiplicity of the ast in the defining grammar.
+   */
+  private static Multiplicity multiplicityOfASTNodeWithInheritance(ASTNode rootNode, ASTNode astNode) {
+    // cast rootNode to grammar or switch to default behavior without inheritance
+    if (!(rootNode instanceof ASTMCGrammar)) {
+      return multiplicityOfASTNode(rootNode, astNode);
+    }
+    ASTMCGrammar grammar = (ASTMCGrammar) rootNode;
+    
+    // check if own grammar is the defining grammar
+    if (!astNode.isPresentEnclosingScope()) {
+      return multiplicityOfASTNode(rootNode, astNode);
+    }
+    String definingGrammarName = astNode.getEnclosingScope().getEnclosingScope().get().getSpanningSymbol().get().getName();
+    if (grammar.getName().equals(definingGrammarName)) {
+      return multiplicityOfASTNode(rootNode, astNode);
+    }
+    
+    // resolve defining grammar or switch to default behavior without inheritance
+    Optional<Symbol> grammarSymbol = rootNode.getEnclosingScope().resolve(definingGrammarName, MCGrammarSymbol.KIND);
+    if (!grammarSymbol.isPresent() || !grammarSymbol.get().getAstNode().isPresent()) {
+      return multiplicityOfASTNode(rootNode, astNode);
+    }
+    ASTNode definingGrammar = grammarSymbol.get().getAstNode().get();
+    
+    // perform multiplicity computation with defining grammar
+    return multiplicityOfASTNode(definingGrammar, astNode);
   }
   
   private static Multiplicity multiplicityOfASTNode(ASTNode rootNode, ASTNode astNode) {
