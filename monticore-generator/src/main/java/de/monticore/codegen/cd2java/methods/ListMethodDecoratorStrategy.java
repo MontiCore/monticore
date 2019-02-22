@@ -5,6 +5,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.TypesPrinter;
+import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
@@ -124,7 +125,8 @@ public class ListMethodDecoratorStrategy implements MethodDecoratorStrategy {
 
   private String getGenericTypeFromListAttribute(ASTType type) {
     String typeString = TypesPrinter.printType(type);
-    return typeString.substring("java.util.List<".length(), typeString.length() - 1);
+    int lastListIndex = typeString.lastIndexOf("List<")+5;
+    return typeString.substring(lastListIndex, typeString.length() - 1);
   }
 
   private void addImplementation(final ASTCDMethod method) {
