@@ -82,8 +82,10 @@ public enum Multiplicity {
    * @return The multiplicity of the ast in the defining grammar.
    */
   private static Multiplicity multiplicityOfASTNodeWithInheritance(ASTNode rootNode, ASTNode astNode) {
-    // cast rootNode to grammar or switch to default behavior without inheritance
-    if (!(rootNode instanceof ASTMCGrammar)) {
+    // multiplicity by inheritance is only relevant for nonterminals and can
+    // cause errors otherwise; cast rootNode to ASTMCGrammar for further use
+    // switch to default behavior without inheritance otherwise
+    if (!(rootNode instanceof ASTMCGrammar) || !(astNode instanceof ASTNonTerminal)) {
       return multiplicityOfASTNode(rootNode, astNode);
     }
     ASTMCGrammar grammar = (ASTMCGrammar) rootNode;
