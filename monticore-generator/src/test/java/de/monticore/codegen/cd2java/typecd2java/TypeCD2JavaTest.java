@@ -38,14 +38,13 @@ public class TypeCD2JavaTest {
     MontiCoreScript script = new MontiCoreScript();
     GlobalScope globalScope = TestHelper.createGlobalScope(modelPath);
     script.createSymbolsFromAST(globalScope, grammar.get());
-    ASTCDCompilationUnit unit = script.deriveCD(grammar.get(), new GlobalExtensionManagement(),
+    cdCompilationUnit = script.deriveCD(grammar.get(), new GlobalExtensionManagement(),
         globalScope);
 
-
-    unit.setEnclosingScope(globalScope);
+    cdCompilationUnit.setEnclosingScope(globalScope);
     //make types java compatible
     TypeCD2JavaDecorator decorator = new TypeCD2JavaDecorator();
-    cdCompilationUnit = decorator.decorate(unit);
+    decorator.decorate(cdCompilationUnit);
   }
 
   @Test

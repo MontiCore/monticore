@@ -14,11 +14,8 @@ public class TypeCD2JavaDecorator implements Decorator<ASTCDCompilationUnit, AST
   }
 
   private ASTCDCompilationUnit decorate(String packageSuffix, final ASTCDCompilationUnit compilationUnit) {
-    //make copy from compilationunit so that the actual one is not changed
-    ASTCDCompilationUnit copy = compilationUnit.deepClone();
-    copy.setEnclosingScope(compilationUnit.getEnclosingScope());
-    TypeCD2JavaVisitor visitor = new TypeCD2JavaVisitor(packageSuffix, copy);
-    visitor.handle(copy);
-    return copy;
+    TypeCD2JavaVisitor visitor = new TypeCD2JavaVisitor(packageSuffix, compilationUnit);
+    visitor.handle(compilationUnit);
+    return compilationUnit;
   }
 }

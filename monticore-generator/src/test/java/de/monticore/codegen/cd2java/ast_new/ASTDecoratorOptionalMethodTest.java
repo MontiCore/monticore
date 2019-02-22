@@ -60,7 +60,7 @@ public class ASTDecoratorOptionalMethodTest {
     cdCompilationUnit.setEnclosingScope(globalScope);
     //make types java compatible
     TypeCD2JavaDecorator typeDecorator = new TypeCD2JavaDecorator();
-    cdCompilationUnit = typeDecorator.decorate(cdCompilationUnit);
+    typeDecorator.decorate(cdCompilationUnit);
 
     ASTDecorator factoryDecorator = new ASTDecorator(glex, cdCompilationUnit);
     this.methods = factoryDecorator.decorate(cdCompilationUnit.getCDDefinition().getCDClass(1)).getCDMethodList();
@@ -91,7 +91,7 @@ public class ASTDecoratorOptionalMethodTest {
     assertTrue(getMethod.isPresent());
     assertTrue(getMethod.get().getCDParameterList().isEmpty());
     assertEquals(PUBLIC, getMethod.get().printModifier().trim());
-    assertEquals("Optional<"+ASTNAME+">", getMethod.get().printReturnType());
+    assertEquals("Optional<" + ASTNAME + ">", getMethod.get().printReturnType());
   }
 
   @Test
@@ -124,7 +124,7 @@ public class ASTDecoratorOptionalMethodTest {
 
     assertEquals(1, getMethod.get().getCDParameterList().size());
     ASTCDParameter parameter = getMethod.get().getCDParameter(0);
-    assertEquals("Optional<"+ASTNAME+">", TypesPrinter.printType(parameter.getType()));
+    assertEquals("Optional<" + ASTNAME + ">", TypesPrinter.printType(parameter.getType()));
     assertEquals("name", parameter.getName());
 
     assertEquals(PUBLIC, getMethod.get().printModifier().trim());

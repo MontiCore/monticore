@@ -1,10 +1,14 @@
 package de.monticore.codegen.cd2java.ast_new;
 
 import de.monticore.MontiCoreScript;
+import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.factories.CDParameterFactory;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
+import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.typecd2java.TypeCD2JavaDecorator;
 import de.monticore.codegen.mc2cd.TestHelper;
+import de.monticore.generating.GeneratorEngine;
+import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.io.paths.ModelPath;
@@ -59,8 +63,9 @@ public class ASTDecoratorTest {
     cdCompilationUnit.setEnclosingScope(globalScope);
     //make types java compatible
     TypeCD2JavaDecorator typeDecorator = new TypeCD2JavaDecorator();
-    cdCompilationUnit = typeDecorator.decorate(cdCompilationUnit);
+    typeDecorator.decorate(cdCompilationUnit);
 
+    glex.setGlobalValue("astHelper", new DecorationHelper());
     ASTDecorator factoryDecorator = new ASTDecorator(glex, cdCompilationUnit);
     this.automatonClass = factoryDecorator.decorate(cdCompilationUnit.getCDDefinition().getCDClass(0));
   }
@@ -326,5 +331,24 @@ public class ASTDecoratorTest {
     assertTrue(astType.deepEquals(method.getReturnType()));
 
     assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testGeneratedCode() {
+    GeneratorSetup generatorSetup = new GeneratorSetup();
+    generatorSetup.setGlex(glex);
+    GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
+    StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, automatonClass, automatonClass);
+    System.out.println(sb.toString());
+  }
+
+  @Test
+  public void testGeneratedCodeInFile() {
+    GeneratorSetup generatorSetup = new GeneratorSetup();
+    generatorSetup.setGlex(glex);
+    generatorSetup.setOutputDirectory(Paths.get("target/generated-test-sources/generatortest/ast").toFile());
+    Path generatedFiles = Paths.get("ASTAutomaton.java");
+    GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
+    generatorEngine.generate(CoreTemplates.CLASS, generatedFiles, automatonClass, automatonClass);
   }
 }

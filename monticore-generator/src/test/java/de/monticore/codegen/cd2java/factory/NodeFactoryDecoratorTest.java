@@ -61,7 +61,7 @@ public class NodeFactoryDecoratorTest {
     cdCompilationUnit.setEnclosingScope(globalScope);
     //make types java compatible
     TypeCD2JavaDecorator typeDecorator = new TypeCD2JavaDecorator();
-    cdCompilationUnit = typeDecorator.decorate(cdCompilationUnit);
+    typeDecorator.decorate(cdCompilationUnit);
 
     NodeFactoryDecorator factoryDecorator = new NodeFactoryDecorator(glex);
     this.factoryClass = factoryDecorator.decorate(cdCompilationUnit);

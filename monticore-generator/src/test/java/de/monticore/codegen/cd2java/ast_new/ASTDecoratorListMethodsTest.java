@@ -64,7 +64,7 @@ public class ASTDecoratorListMethodsTest {
     cdCompilationUnit.setEnclosingScope(globalScope);
     //make types java compatible
     TypeCD2JavaDecorator typeDecorator = new TypeCD2JavaDecorator();
-    cdCompilationUnit = typeDecorator.decorate(cdCompilationUnit);
+    typeDecorator.decorate(cdCompilationUnit);
 
     ASTDecorator factoryDecorator = new ASTDecorator(glex, cdCompilationUnit);
     this.methods = factoryDecorator.decorate(cdCompilationUnit.getCDDefinition().getCDClass(2)).getCDMethodList();
