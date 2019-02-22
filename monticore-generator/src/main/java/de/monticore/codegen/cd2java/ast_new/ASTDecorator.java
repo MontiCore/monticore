@@ -114,7 +114,7 @@ public class ASTDecorator implements Decorator<ASTCDClass, ASTCDClass> {
     ASTCDParameter visitorParameter = this.cdParameterFactory.createParameter(visitorType, VISITOR_PREFIX);
 
     ASTCDMethod accept = this.cdMethodFactory.createMethod(PUBLIC, ACCEPT_METHOD, visitorParameter);
-    this.glex.replaceTemplate(EMPTY_BODY, accept, new TemplateHookPoint("ast_new.Accept"));
+    this.glex.replaceTemplate(EMPTY_BODY, accept, new TemplateHookPoint("ast_new.Accept", astcdClass));
     methodList.add(accept);
 
     //accept methods for super grammar visitors

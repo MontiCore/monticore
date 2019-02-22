@@ -25,6 +25,7 @@ public class DecorationHelper extends TypesHelper{
 
   public static final String AST_NODE_CLASS_NAME = "de.monticore.ast.ASTNode";
 
+  public final static String GENERATED_CLASS_SUFFIX = "TOP";
 
   public static String generateErrorCode(ASTNode node){
     int hashCode;
@@ -211,4 +212,9 @@ public class DecorationHelper extends TypesHelper{
         .get(0).getType();
     return typeArgument.existsReferencedSymbol() && typeArgument.isEnum();
   }
+
+  public static boolean isSupertypeOfHWType(String className) {
+    return className.endsWith(GENERATED_CLASS_SUFFIX);
+  }
+
 }
