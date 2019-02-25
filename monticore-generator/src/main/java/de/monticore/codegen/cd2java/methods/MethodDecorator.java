@@ -27,7 +27,7 @@ public class MethodDecorator implements Decorator<ASTCDAttribute, List<ASTCDMeth
     return methodGeneratorStrategy.decorate(ast);
   }
 
-  private MethodDecoratorStrategy determineMethodGeneratorStrategy(final ASTCDAttribute ast) {
+  protected MethodDecoratorStrategy determineMethodGeneratorStrategy(final ASTCDAttribute ast) {
     //TODO: helper durch OO-Ansatz ersetzen (und vereinheitlichen)
     if (GeneratorHelper.isListType(ast.printType())) {
       return createListMethodDecoratorStrategy();

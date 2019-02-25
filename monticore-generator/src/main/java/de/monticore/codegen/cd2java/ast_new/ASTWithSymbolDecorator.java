@@ -1,0 +1,137 @@
+package de.monticore.codegen.cd2java.ast_new;
+
+import de.monticore.codegen.GeneratorHelper;
+import de.monticore.codegen.cd2java.Decorator;
+import de.monticore.codegen.cd2java.factories.*;
+import de.monticore.codegen.cd2java.methods.MethodDecorator;
+import de.monticore.codegen.mc2cd.MC2CDStereotypes;
+import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.types._ast.ASTType;
+import de.monticore.umlcd4a.CD4AnalysisHelper;
+import de.monticore.umlcd4a.cd4analysis._ast.*;
+import de.se_rwth.commons.Names;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
+
+
+import static de.se_rwth.commons.Names.getQualifier;
+import static de.se_rwth.commons.Names.getSimpleName;
+
+public class ASTWithSymbolDecorator implements Decorator<ASTCDClass, ASTCDClass> {
+
+  private final GlobalExtensionManagement glex;
+
+  private final CDTypeFactory cdTypeFactory;
+
+  private final CDAttributeFactory cdAttributeFactory;
+
+  private final CDConstructorFactory cdConstructorFactory;
+
+  private final CDParameterFactory cdParameterFactory;
+
+  private final CDMethodFactory cdMethodFactory;
+
+  private final ASTCDCompilationUnit compilationUnit;
+
+  private ASTCDClass astcdClass;
+
+  private static final String DEFINITION_PREFIX = "Definition";
+
+  private static final String SYMBOL_PREFIX = "Symbol";
+
+
+  public ASTWithSymbolDecorator(GlobalExtensionManagement glex, ASTCDCompilationUnit compilationUnit) {
+    this.glex = glex;
+    this.compilationUnit = compilationUnit;
+    this.cdTypeFactory = CDTypeFactory.getInstance();
+    this.cdAttributeFactory = CDAttributeFactory.getInstance();
+    this.cdConstructorFactory = CDConstructorFactory.getInstance();
+    this.cdParameterFactory = CDParameterFactory.getInstance();
+    this.cdMethodFactory = CDMethodFactory.getInstance();
+  }
+
+  @Override
+  public ASTCDClass decorate(ASTCDClass ast) {
+    ASTDecorator astDecorator = new ASTDecorator(glex, compilationUnit);
+    astcdClass = astDecorator.decorate(ast);
+    List<ASTCDAttribute> attributeList = new ArrayList<>();
+    List<ASTCDMethod> methodList = new ArrayList<>();
+    for (ASTCDAttribute astcdAttribute : astcdClass.getCDAttributeList()) {
+      if (isReferencedSymbolAttribute(astcdAttribute)) {
+        String referencedSymbol = getReferencedSymbolName(astcdAttribute);
+        //create referenced symbol attribute and methods
+        ASTCDAttribute refSymbolAttribute = getRefSymbolAttribute(astcdAttribute);
+        attributeList.add(refSymbolAttribute);
+        methodList.addAll(getRefSymbolMethods(refSymbolAttribute, referencedSymbol));
+        //create referenced definition Methods
+        methodList.addAll(getRefDefinitionMethods(astcdAttribute));
+      }
+    }
+    astcdClass.addAllCDMethods(methodList);
+    astcdClass.addAllCDAttributes(attributeList);
+    return astcdClass;
+  }
+
+  private ASTCDAttribute getRefSymbolAttribute(ASTCDAttribute astcdAttribute) {
+    String referencedSymbol = getReferencedSymbolName(astcdAttribute);
+    if (GeneratorHelper.isListType(astcdAttribute.printType())) {
+      //if the attribute is a list
+      ASTType symbolType = cdTypeFactory.createTypeByDefinition("List<" + referencedSymbol + ">");
+      return cdAttributeFactory.createAttribute(PRIVATE, symbolType, astcdAttribute.getName() + SYMBOL_PREFIX);
+    } else {
+      //if the attribute is mandatory or optional
+      ASTType symbolType = cdTypeFactory.createTypeByDefinition("Optional<" + referencedSymbol + ">");
+      return cdAttributeFactory.createAttribute(PRIVATE, symbolType, astcdAttribute.getName() + SYMBOL_PREFIX);
+    }
+  }
+
+  private List<ASTCDMethod> getRefSymbolMethods(ASTCDAttribute refSymbolAttribute, String referencedSymbol) {
+    RefSymbolMethodDecorator methodDecorator = new RefSymbolMethodDecorator(glex, refSymbolAttribute.getType(), getSimpleSymbolName(referencedSymbol));
+    return methodDecorator.decorate(refSymbolAttribute);
+  }
+
+  private List<ASTCDMethod> getRefDefinitionMethods(ASTCDAttribute astcdAttribute) {
+    String referencedSymbol = getReferencedSymbolName(astcdAttribute);
+    ASTCDAttribute refSymbolAttribute;
+    String referencedNode = referencedSymbol.substring(0, referencedSymbol.lastIndexOf("_symboltable")) + GeneratorHelper.AST_PACKAGE_SUFFIX_DOT + GeneratorHelper.AST_PREFIX + getSimpleSymbolName(referencedSymbol);
+    if (GeneratorHelper.isListType(astcdAttribute.printType())) {
+      //if the attribute is a list
+      ASTType symbolType = cdTypeFactory.createTypeByDefinition("List<" + referencedNode + ">");
+      refSymbolAttribute = cdAttributeFactory.createAttribute(PRIVATE, symbolType, astcdAttribute.getName() + DEFINITION_PREFIX);
+    } else {
+      //if the attribute is mandatory or optional
+      ASTType symbolType = cdTypeFactory.createTypeByDefinition("Optional<" + referencedNode + ">");
+      refSymbolAttribute = cdAttributeFactory.createAttribute(PRIVATE, symbolType, astcdAttribute.getName() + DEFINITION_PREFIX);
+    }
+    RefDefinitionMethodDecorator methodDecorator = new RefDefinitionMethodDecorator(glex, refSymbolAttribute.getType(), getSimpleSymbolName(referencedSymbol));
+    return methodDecorator.decorate(refSymbolAttribute);
+  }
+
+  private boolean isReferencedSymbolAttribute(ASTCDAttribute attribute) {
+    return CD4AnalysisHelper.hasStereotype(attribute, MC2CDStereotypes.REFERENCED_SYMBOL.toString());
+  }
+
+  private String getSimpleSymbolName(String referencedSymbol) {
+    return getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf("Symbol"));
+  }
+
+  private String getReferencedSymbolName(ASTCDAttribute attribute) {
+    String referencedSymbol = CD4AnalysisHelper.getStereotypeValues(attribute,
+        MC2CDStereotypes.REFERENCED_SYMBOL.toString()).get(0);
+
+    if (!getQualifier(referencedSymbol).isEmpty()) {
+      referencedSymbol = SymbolTableGeneratorHelper
+          .getQualifiedSymbolType(getQualifier(referencedSymbol)
+              .toLowerCase(), Names.getSimpleName(referencedSymbol));
+    }
+    return referencedSymbol;
+  }
+
+
+}
+
+

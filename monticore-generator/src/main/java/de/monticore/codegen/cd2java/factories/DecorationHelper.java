@@ -27,7 +27,7 @@ public class DecorationHelper extends TypesHelper{
 
   public final static String GENERATED_CLASS_SUFFIX = "TOP";
 
-  public static String generateErrorCode(ASTNode node){
+  public static String getGeneratedErrorCode(ASTNode node){
     int hashCode;
     if (node.isPresentSymbol()) {
       String nodeName = node.getSymbol().getFullName();

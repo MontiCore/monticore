@@ -57,7 +57,7 @@ public class OptionalMethodDecoratorStrategy implements MethodDecoratorStrategy 
     return Arrays.asList(get, getOpt, isPresent, set, setOpt, setAbsent);
   }
 
-  private ASTCDMethod createGetMethod(final ASTCDAttribute ast) {
+  protected ASTCDMethod createGetMethod(final ASTCDAttribute ast) {
     String name = GET_PREFIX + StringUtils.capitalize(ast.getName());
     ASTType type = TypesHelper.getSimpleReferenceTypeFromOptional(ast.getType().deepClone());
     ASTCDMethod method = this.cdMethodFactory.createMethod(PUBLIC, type, name);
@@ -65,11 +65,11 @@ public class OptionalMethodDecoratorStrategy implements MethodDecoratorStrategy 
     return method;
   }
 
-  private HookPoint createGetImplementation(final ASTCDAttribute ast) {
+  protected HookPoint createGetImplementation(final ASTCDAttribute ast) {
     return new TemplateHookPoint("methods.opt.Get", ast);
   }
 
-  private ASTCDMethod createGetOptMethod(final ASTCDAttribute ast) {
+  protected ASTCDMethod createGetOptMethod(final ASTCDAttribute ast) {
     String name = GET_PREFIX + StringUtils.capitalize(ast.getName()) + OPT_SUFFIX;
     ASTType type = ast.getType().deepClone();
     ASTCDMethod method = this.cdMethodFactory.createMethod(PUBLIC, type, name);
@@ -77,18 +77,18 @@ public class OptionalMethodDecoratorStrategy implements MethodDecoratorStrategy 
     return method;
   }
 
-  private HookPoint createGetOptImplementation(final ASTCDAttribute ast) {
+  protected HookPoint createGetOptImplementation(final ASTCDAttribute ast) {
     return new TemplateHookPoint("methods.Get", ast);
   }
 
-  private ASTCDMethod createIsPresentMethod(final ASTCDAttribute ast) {
+  protected ASTCDMethod createIsPresentMethod(final ASTCDAttribute ast) {
     String name = IS_PRESENT_PREFIX + StringUtils.capitalize(ast.getName());
     ASTCDMethod method = this.cdMethodFactory.createMethod(PUBLIC, BOOLEAN_TYPE, name);
     this.glex.replaceTemplate(EMPTY_BODY, method, createIsPresentImplementation(ast));
     return method;
   }
 
-  private HookPoint createIsPresentImplementation(final ASTCDAttribute ast) {
+  protected HookPoint createIsPresentImplementation(final ASTCDAttribute ast) {
     return new TemplateHookPoint("methods.opt.IsPresent", ast);
   }
 

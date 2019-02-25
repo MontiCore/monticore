@@ -11,6 +11,7 @@ import de.monticore.types.types._ast.ASTReferenceType;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
+import de.se_rwth.commons.Names;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,7 +111,7 @@ public class ASTDecorator implements Decorator<ASTCDClass, ASTCDClass> {
   private List<ASTCDMethod> getAcceptMethods(ASTCDClass astcdClass, String simpleClassName) {
     List<ASTCDMethod> methodList = new ArrayList<>();
 
-    ASTType visitorType = this.cdTypeFactory.createTypeByDefinition(simpleClassName.toLowerCase() + VISITOR_PACKAGE + simpleClassName + VISITOR_SUFFIX);
+    ASTType visitorType = this.cdTypeFactory.createTypeByDefinition(getVisitorType(simpleClassName));
     ASTCDParameter visitorParameter = this.cdParameterFactory.createParameter(visitorType, VISITOR_PREFIX);
 
     ASTCDMethod accept = this.cdMethodFactory.createMethod(PUBLIC, ACCEPT_METHOD, visitorParameter);
@@ -123,7 +124,7 @@ public class ASTDecorator implements Decorator<ASTCDClass, ASTCDClass> {
       ASTCDParameter superVisitorParameter = this.cdParameterFactory.createParameter(superVisitorType, VISITOR_PREFIX);
 
       ASTCDMethod superAccept = this.cdMethodFactory.createMethod(PUBLIC, ACCEPT_METHOD, superVisitorParameter);
-      String errorcode = DecorationHelper.generateErrorCode(astcdClass);
+      String errorcode = DecorationHelper.getGeneratedErrorCode(astcdClass);
       this.glex.replaceTemplate(EMPTY_BODY, superAccept, new TemplateHookPoint("ast_new.AcceptSuper", TypesPrinter.printType(visitorType), errorcode, astcdClass.getName(), TypesPrinter.printType(superVisitorType)));
       methodList.add(superAccept);
     }
@@ -200,5 +201,14 @@ public class ASTDecorator implements Decorator<ASTCDClass, ASTCDClass> {
     this.glex.replaceTemplate(EMPTY_BODY, constructMethod, new StringHookPoint(
         "return " + simpleClassName + "NodeFactory.create" + astcdClass.getName() + "();\n"));
     return constructMethod;
+  }
+
+  private String getPackage(){
+    String qualifiedName = Names.getQualifiedName(compilationUnit.getPackageList(), compilationUnit.getCDDefinition().getName());
+  return qualifiedName.toLowerCase();
+  }
+
+  private String getVisitorType(String className){
+    return getPackage() + VISITOR_PACKAGE + className + VISITOR_SUFFIX;
   }
 }

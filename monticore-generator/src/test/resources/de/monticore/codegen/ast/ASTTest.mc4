@@ -2,9 +2,11 @@ package de.monticore.codegen.ast;
 
 grammar ASTTest extends mc.grammars.lexicals.TestLexicals {
 
-  Mand = Name;
+  symbol Mand = Name;
 
   Opt = name:Mand?;
 
   List = name:Mand*;
+
+  Ref = Name@Mand;
 }
