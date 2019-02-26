@@ -73,4 +73,29 @@ public class CDMethodFactory {
         .setCDParameterList(parameters.stream().map(ASTCDParameter::deepClone).collect(Collectors.toList()))
         .build();
   }
+
+
+  public ASTCDMethod createMethod(final CDModifier modifier, final String name) {
+    return createMethod(modifier.build(), name);
+  }
+
+  public ASTCDMethod createMethod(final CDModifier modifier, final String name, final ASTCDParameter... parameters) {
+    return createMethod(modifier.build(), name, parameters);
+  }
+
+  public ASTCDMethod createMethod(final CDModifier modifier, final String name, final List<ASTCDParameter> parameters) {
+    return createMethod(modifier.build(), name, parameters);
+  }
+
+  public ASTCDMethod createMethod(final CDModifier modifier, final ASTReturnType returnType, final String name) {
+    return createMethod(modifier.build(), returnType, name);
+  }
+
+  public ASTCDMethod createMethod(final CDModifier modifier, final ASTReturnType returnType, final String name, final ASTCDParameter... parameters) {
+    return createMethod(modifier.build(), returnType, name, parameters);
+  }
+
+  public ASTCDMethod createMethod(final CDModifier modifier, final ASTReturnType returnType, final String name, final List<ASTCDParameter> parameters) {
+    return createMethod(modifier.build(), returnType, name, parameters);
+  }
 }

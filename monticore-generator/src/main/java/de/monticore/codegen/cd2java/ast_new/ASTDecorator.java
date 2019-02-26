@@ -1,5 +1,6 @@
 package de.monticore.codegen.cd2java.ast_new;
 
+import de.monticore.ast.ASTCNode;
 import de.monticore.codegen.cd2java.Decorator;
 import de.monticore.codegen.cd2java.factories.*;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
@@ -49,8 +50,6 @@ public class ASTDecorator implements Decorator<ASTCDClass, ASTCDClass> {
 
   private final CDTypeFactory cdTypeFactory;
 
-  private final CDAttributeFactory cdAttributeFactory;
-
   private final CDConstructorFactory cdConstructorFactory;
 
   private final CDParameterFactory cdParameterFactory;
@@ -63,7 +62,6 @@ public class ASTDecorator implements Decorator<ASTCDClass, ASTCDClass> {
     this.glex = glex;
     this.compilationUnit = compilationUnit;
     this.cdTypeFactory = CDTypeFactory.getInstance();
-    this.cdAttributeFactory = CDAttributeFactory.getInstance();
     this.cdConstructorFactory = CDConstructorFactory.getInstance();
     this.cdParameterFactory = CDParameterFactory.getInstance();
     this.cdMethodFactory = CDMethodFactory.getInstance();
@@ -76,7 +74,7 @@ public class ASTDecorator implements Decorator<ASTCDClass, ASTCDClass> {
     ASTCDConstructor paramConstructor = this.cdConstructorFactory.createFullConstructor(PROTECTED, astcdClass);
     this.glex.replaceTemplate(EMPTY_BODY, paramConstructor, new TemplateHookPoint("ast_new.ConstructorAttributesSetter"));
 
-    String simpleClassName = (astcdClass.getName().contains(AST_PREFIX)) ? astcdClass.getName().replaceFirst(AST_PREFIX, "") : astcdClass.getName();
+    String simpleClassName = astcdClass.getName().replaceFirst(AST_PREFIX, "");
 
     List<ASTCDMethod> acceptMethods = getAcceptMethods(astcdClass, simpleClassName);
 
@@ -84,16 +82,16 @@ public class ASTDecorator implements Decorator<ASTCDClass, ASTCDClass> {
 
     List<ASTCDMethod> deepCloneMethods = getCloneMethods(classType, astcdClass);
 
-    ASTCDMethod constructMethod = getContructMethod(astcdClass, simpleClassName, classType);
+    ASTCDMethod constructMethod = getConstructMethod(astcdClass, simpleClassName, classType);
 
     List<ASTCDMethod> attributeMethods = getAllAttributeMethods(astcdClass.getCDAttributeList());
 
-    ASTReferenceType superClass = cdTypeFactory.createReferenceTypeByDefinition("de.monticore.ast.ASTCNode");
+    ASTReferenceType superClass = cdTypeFactory.createSimpleReferenceType(ASTCNode.class);
 
     ASTReferenceType interfaceNode = cdTypeFactory.createReferenceTypeByDefinition(AST_PREFIX + compilationUnit.getCDDefinition().getName() + "Node");
 
     return CD4AnalysisMill.cDClassBuilder()
-        .setModifier(PUBLIC)
+        .setModifier(PUBLIC.build())
         .setName(astcdClass.getName())
         .addAllCDAttributes(astcdClass.getCDAttributeList())
         .addCDConstructor(defaultConstructor)
@@ -141,7 +139,7 @@ public class ASTDecorator implements Decorator<ASTCDClass, ASTCDClass> {
     this.glex.replaceTemplate(EMPTY_BODY, deepEqualsWithOrder, new TemplateHookPoint("ast_new.DeepEqualsWithOrder", astcdClass));
     methodList.add(deepEqualsWithOrder);
 
-//    // public  boolean deepEquals(Object o)
+    // public  boolean deepEquals(Object o)
     ASTCDMethod deepEquals = this.cdMethodFactory.createMethod(PUBLIC, cdTypeFactory.createBooleanType(), DEEP_EQUALS_METHOD, objectParameter);
     this.glex.replaceTemplate(EMPTY_BODY, deepEquals, new StringHookPoint("     return deepEquals(o, true);"));
     methodList.add(deepEquals);
@@ -172,12 +170,12 @@ public class ASTDecorator implements Decorator<ASTCDClass, ASTCDClass> {
     List<ASTCDMethod> methodList = new ArrayList<>();
     ASTCDParameter classParameter = cdParameterFactory.createParameter(classType, "result");
 
-//    //deep clone with result parameter
+    // deep clone with result parameter
     ASTCDMethod deepCloneWithParam = this.cdMethodFactory.createMethod(PUBLIC, classType, DEEP_CLONE_METHOD, classParameter);
     this.glex.replaceTemplate(EMPTY_BODY, deepCloneWithParam, new TemplateHookPoint("ast_new.DeepCloneWithParameters", astcdClass));
     methodList.add(deepCloneWithParam);
 
-    //deep clone without parameters
+    // deep clone without parameters
     ASTCDMethod deepClone = this.cdMethodFactory.createMethod(PUBLIC, classType, DEEP_CLONE_METHOD);
     this.glex.replaceTemplate(EMPTY_BODY, deepClone, new StringHookPoint("    return deepClone(_construct());"));
     methodList.add(deepClone);
@@ -188,7 +186,7 @@ public class ASTDecorator implements Decorator<ASTCDClass, ASTCDClass> {
 
   private List<ASTCDMethod> getAllAttributeMethods(List<ASTCDAttribute> attributeList) {
     List<ASTCDMethod> attributeMethods = new ArrayList<>();
-    //methoddecorator does template handeling
+    // method decorator does template handling
     MethodDecorator methodDecorator = new MethodDecorator(glex);
     for (ASTCDAttribute attribute : attributeList) {
       attributeMethods.addAll(methodDecorator.decorate(attribute));
@@ -196,7 +194,7 @@ public class ASTDecorator implements Decorator<ASTCDClass, ASTCDClass> {
     return attributeMethods;
   }
 
-  private ASTCDMethod getContructMethod(ASTCDClass astcdClass, String simpleClassName, ASTType classType) {
+  private ASTCDMethod getConstructMethod(ASTCDClass astcdClass, String simpleClassName, ASTType classType) {
     ASTCDMethod constructMethod = this.cdMethodFactory.createMethod(PROTECTED, classType, CONSTRUCT_METHOD);
     this.glex.replaceTemplate(EMPTY_BODY, constructMethod, new StringHookPoint(
         "return " + simpleClassName + "NodeFactory.create" + astcdClass.getName() + "();\n"));

@@ -72,4 +72,29 @@ public class CDAttributeFactory {
     return createAttribute(modifier, CDTypeFactory.getInstance().createSimpleReferenceType(type), StringUtils.uncapitalize(type.getSimpleName()));
   }
 
+
+  public ASTCDAttribute createAttribute(final CDModifier modifier, final ASTType type, final String name) {
+    return createAttribute(modifier.build(), type, name);
+  }
+
+  public ASTCDAttribute createAttribute(final CDModifier modifier, final ASTType type) {
+    return createAttribute(modifier.build(), type);
+  }
+
+  public ASTCDAttribute createAttribute(final CDModifier modifier, final String type, final String name) {
+    return createAttribute(modifier.build(), type, name);
+  }
+
+  public ASTCDAttribute createAttribute(final CDModifier modifier, final String type) {
+    return createAttribute(modifier.build(), type);
+  }
+
+  public ASTCDAttribute createAttribute(final CDModifier modifier, final Class<?> type, final String name) {
+    return createAttribute(modifier.build(), type, name);
+  }
+
+  public ASTCDAttribute createAttribute(final CDModifier modifier, final Class<?> type) {
+    return createAttribute(modifier.build(), type);
+  }
+
 }

@@ -46,7 +46,7 @@ class BuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
     ASTType builderType = this.cdTypeFactory.createSimpleReferenceType(builderClassName);
 
 
-    ASTModifier modifier = PUBLIC;
+    CDModifier modifier = PUBLIC;
     if (this.isAbstract(domainClass)) {
       modifier = PUBLIC_ABSTRACT;
     }
@@ -79,7 +79,7 @@ class BuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
         .collect(Collectors.toList());
 
     return  CD4AnalysisMill.cDClassBuilder()
-        .setModifier(modifier)
+        .setModifier(modifier.build())
         .setName(builderClassName)
         .addCDAttribute(realThisAttribute)
         .addAllCDAttributes(builderAttributes)

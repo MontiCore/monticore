@@ -3,63 +3,67 @@ package de.monticore.codegen.cd2java.factories;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTModifier;
 import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisMill;
 
-public class CDModifier {
+public enum CDModifier {
 
-  public static final ASTModifier PUBLIC = CDModifier.builder().Public().build();
+  PUBLIC (true, false, false, false, false, false),
 
-  public static final ASTModifier PUBLIC_FINAL = CDModifier.builder().Public().Final().build();
+  PUBLIC_FINAL (true, false, false, false, true, false),
 
-  public static final ASTModifier PUBLIC_ABSTRACT = CDModifier.builder().Public().Abstract().build();
+  PUBLIC_ABSTRACT (true, false, false, false, false, true),
 
-  public static final ASTModifier PUBLIC_STATIC = CDModifier.builder().Public().Static().build();
+  PUBLIC_STATIC (true, false, false, true, false, false),
 
-  public static final ASTModifier PUBLIC_STATIC_FINAL = CDModifier.builder().Public().Static().Final().build();
+  PUBLIC_STATIC_FINAL (true, false, false, true, true, false),
 
-  public static final ASTModifier PROTECTED = CDModifier.builder().Protected().build();
+  PROTECTED (false, true, false, false, false, false),
 
-  public static final ASTModifier PROTECTED_FINAL = CDModifier.builder().Protected().Final().build();
+  PROTECTED_FINAL (false, true, false, false, true, false),
 
-  public static final ASTModifier PROTECTED_ABSTRACT = CDModifier.builder().Protected().Abstract().build();
+  PROTECTED_ABSTRACT (false, true, false, false, false, true),
 
-  public static final ASTModifier PROTECTED_STATIC = CDModifier.builder().Protected().Static().build();
+  PROTECTED_STATIC (false, true, false, true, false, false),
 
-  public static final ASTModifier PROTECTED_STATIC_FINAL = CDModifier.builder().Protected().Static().Final().build();
+  PROTECTED_STATIC_FINAL (false, true, false, true, true, false),
 
-  public static final ASTModifier PACKAGE_PRIVATE = CDModifier.builder().build();
+  PACKAGE_PRIVATE (false, false, false, false, false, false),
 
-  public static final ASTModifier PACKAGE_PRIVATE_FINAL = CDModifier.builder().Final().build();
+  PACKAGE_PRIVATE_FINAL (false, false, false, false, true, false),
 
-  public static final ASTModifier PACKAGE_PRIVATE_ABSTRACT = CDModifier.builder().Abstract().build();
+  PACKAGE_PRIVATE_ABSTRACT (false, false, false, false, false, true),
 
-  public static final ASTModifier PACKAGE_PRIVATE_STATIC = CDModifier.builder().Static().build();
+  PACKAGE_PRIVATE_STATIC (false, false, false, true, false, false),
 
-  public static final ASTModifier PACKAGE_PRIVATE_STATIC_FINAL = CDModifier.builder().Static().Final().build();
+  PACKAGE_PRIVATE_STATIC_FINAL (false, false, false, true, true, false),
 
-  public static final ASTModifier PRIVATE = CDModifier.builder().Private().build();
+  PRIVATE (false, false, true, false, false, false),
 
-  public static final ASTModifier PRIVATE_FINAL = CDModifier.builder().Private().Final().build();
+  PRIVATE_FINAL (false, false, true, false, true, false),
 
-  public static final ASTModifier PRIVATE_STATIC = CDModifier.builder().Private().Static().build();
+  PRIVATE_STATIC (false, false, true, true, false, false),
 
-  public static final ASTModifier PRIVATE_STATIC_FINAL = CDModifier.builder().Private().Static().build();
+  PRIVATE_STATIC_FINAL (false, false, true, true, true, false)
 
-  private boolean isPublic = false;
+  ;
 
-  private boolean isProtected = false;
+  private final boolean isPublic;
 
-  private boolean isPrivate = false;
+  private final boolean isProtected;
 
-  private boolean isStatic = false;
+  private final boolean isPrivate;
 
-  private boolean isFinal = false;
+  private final boolean isStatic;
 
-  private boolean isAbstract = false;
+  private final boolean isFinal;
 
-  private CDModifier() {
-  }
+  private final boolean isAbstract;
 
-  private static CDModifier builder() {
-    return new CDModifier();
+  CDModifier(boolean isPublic, boolean isProtected, boolean isPrivate, boolean isStatic, boolean isFinal, boolean isAbstract) {
+    this.isPublic = isPublic;
+    this.isProtected = isProtected;
+    this.isPrivate = isPrivate;
+    this.isStatic = isStatic;
+    this.isFinal = isFinal;
+    this.isAbstract = isAbstract;
   }
 
   public ASTModifier build() {
@@ -71,35 +75,5 @@ public class CDModifier {
         .setFinal(isFinal)
         .setAbstract(isAbstract)
         .build();
-  }
-
-  private CDModifier Public() {
-    isPublic = true;
-    return this;
-  }
-
-  private CDModifier Protected() {
-    isProtected = true;
-    return this;
-  }
-
-  private CDModifier Private() {
-    isPrivate = true;
-    return this;
-  }
-
-  private CDModifier Static() {
-    isStatic = true;
-    return this;
-  }
-
-  private CDModifier Final() {
-    isFinal = true;
-    return this;
-  }
-
-  private CDModifier Abstract() {
-    isAbstract = true;
-    return this;
   }
 }

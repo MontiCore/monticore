@@ -84,7 +84,7 @@ public class NodeFactoryDecoratorTest {
   public void testAttributeModifier() {
     for (ASTCDAttribute astcdAttribute : factoryClass.getCDAttributeList()) {
       assertTrue(astcdAttribute.isPresentModifier());
-      assertTrue(PROTECTED_STATIC.deepEquals(astcdAttribute.getModifier()));
+      assertTrue(PROTECTED_STATIC.build().deepEquals(astcdAttribute.getModifier()));
     }
   }
 
@@ -92,7 +92,7 @@ public class NodeFactoryDecoratorTest {
   public void testConstructor() {
     assertEquals(1, factoryClass.sizeCDConstructors());
     ASTCDConstructor astcdConstructor = CD4AnalysisMill.cDConstructorBuilder()
-        .setModifier(PROTECTED)
+        .setModifier(PROTECTED.build())
         .setName("AutomatonNodeFactory")
         .build();
     assertTrue(astcdConstructor.deepEquals(factoryClass.getCDConstructor(0)));
@@ -104,7 +104,7 @@ public class NodeFactoryDecoratorTest {
     //test name
     assertEquals("getFactory", method.getName());
     //test modifier
-    assertTrue(PRIVATE_STATIC.deepEquals(method.getModifier()));
+    assertTrue(PRIVATE_STATIC.build().deepEquals(method.getModifier()));
     //test parameters
     assertTrue(method.isEmptyCDParameters());
     //test returnType
@@ -118,7 +118,7 @@ public class NodeFactoryDecoratorTest {
     //test name
     assertEquals("createASTAutomaton", method.getName());
     //test modifier
-    assertTrue(PUBLIC_STATIC.deepEquals(method.getModifier()));
+    assertTrue(PUBLIC_STATIC.build().deepEquals(method.getModifier()));
     //test parameters
     assertTrue(method.isEmptyCDParameters());
     //test returnType
@@ -132,7 +132,7 @@ public class NodeFactoryDecoratorTest {
     //test name
     assertEquals("doCreateASTAutomaton", method.getName());
     //test modifier
-    assertTrue(PROTECTED.deepEquals(method.getModifier()));
+    assertTrue(PROTECTED.build().deepEquals(method.getModifier()));
     //test parameters
     assertTrue(method.isEmptyCDParameters());
     //test returnType
@@ -146,7 +146,7 @@ public class NodeFactoryDecoratorTest {
     //test name
     assertEquals("createASTAutomaton", method.getName());
     //test modifier
-    assertTrue(PUBLIC_STATIC.deepEquals(method.getModifier()));
+    assertTrue(PUBLIC_STATIC.build().deepEquals(method.getModifier()));
     //test returnType
     ASTType returnType = cdTypeFacade.createTypeByDefinition("ASTAutomaton");
     assertTrue(returnType.deepEquals(method.getReturnType()));
@@ -175,7 +175,7 @@ public class NodeFactoryDecoratorTest {
     //test name
     assertEquals("doCreateASTAutomaton", method.getName());
     //test modifier
-    assertTrue(PROTECTED.deepEquals(method.getModifier()));
+    assertTrue(PROTECTED.build().deepEquals(method.getModifier()));
     //test returnType
     ASTType returnType = cdTypeFacade.createTypeByDefinition("ASTAutomaton");
     assertTrue(returnType.deepEquals(method.getReturnType()));

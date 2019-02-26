@@ -77,7 +77,7 @@ public class ASTDecoratorTest {
 
   @Test
   public void testClassModifier() {
-    assertTrue(PUBLIC.deepEquals(automatonClass.getModifier()));
+    assertTrue(PUBLIC.build().deepEquals(automatonClass.getModifier()));
   }
 
   @Test
@@ -89,7 +89,7 @@ public class ASTDecoratorTest {
   @Test
   public void testAttributeModifier() {
     for (ASTCDAttribute attribute : automatonClass.getCDAttributeList()) {
-      assertTrue(PROTECTED.deepEquals(attribute.getModifier()));
+      assertTrue(PROTECTED.build().deepEquals(attribute.getModifier()));
     }
   }
 
@@ -123,14 +123,14 @@ public class ASTDecoratorTest {
   @Test
   public void testDefaultConstructor() {
     ASTCDConstructor defaultConstructor = automatonClass.getCDConstructor(0);
-    assertTrue(PROTECTED.deepEquals(defaultConstructor.getModifier()));
+    assertTrue(PROTECTED.build().deepEquals(defaultConstructor.getModifier()));
     assertTrue(defaultConstructor.isEmptyCDParameters());
   }
 
   @Test
   public void testFullConstructor() {
     ASTCDConstructor fullConstructor = automatonClass.getCDConstructor(1);
-    assertTrue(PROTECTED.deepEquals(fullConstructor.getModifier()));
+    assertTrue(PROTECTED.build().deepEquals(fullConstructor.getModifier()));
     assertFalse(fullConstructor.isEmptyCDParameters());
     assertEquals(3, fullConstructor.sizeCDParameters());
 
@@ -151,7 +151,7 @@ public class ASTDecoratorTest {
   @Test
   public void testAcceptAutomatonVisitor() {
     ASTCDMethod method = automatonClass.getCDMethod(0);
-    assertTrue(PUBLIC.deepEquals(method.getModifier()));
+    assertTrue(PUBLIC.build().deepEquals(method.getModifier()));
 
     assertEquals("accept", method.getName());
 
@@ -168,7 +168,7 @@ public class ASTDecoratorTest {
   @Test
   public void testAcceptLexicalsVisitor() {
     ASTCDMethod method = automatonClass.getCDMethod(1);
-    assertTrue(PUBLIC.deepEquals(method.getModifier()));
+    assertTrue(PUBLIC.build().deepEquals(method.getModifier()));
 
     assertEquals("accept", method.getName());
 
@@ -185,7 +185,7 @@ public class ASTDecoratorTest {
   @Test
   public void testDeepEqualsForceSameOrder() {
     ASTCDMethod method = automatonClass.getCDMethod(2);
-    assertTrue(PUBLIC.deepEquals(method.getModifier()));
+    assertTrue(PUBLIC.build().deepEquals(method.getModifier()));
 
     assertEquals("deepEquals", method.getName());
 
@@ -205,7 +205,7 @@ public class ASTDecoratorTest {
   @Test
   public void testDeepEquals() {
     ASTCDMethod method = automatonClass.getCDMethod(3);
-    assertTrue(PUBLIC.deepEquals(method.getModifier()));
+    assertTrue(PUBLIC.build().deepEquals(method.getModifier()));
 
     assertEquals("deepEquals", method.getName());
 
@@ -222,7 +222,7 @@ public class ASTDecoratorTest {
   @Test
   public void testDeepEqualsWithCommentsForceSameOrder() {
     ASTCDMethod method = automatonClass.getCDMethod(4);
-    assertTrue(PUBLIC.deepEquals(method.getModifier()));
+    assertTrue(PUBLIC.build().deepEquals(method.getModifier()));
 
     assertEquals("deepEqualsWithComments", method.getName());
 
@@ -242,7 +242,7 @@ public class ASTDecoratorTest {
   @Test
   public void testDeepEqualsWithComments() {
     ASTCDMethod method = automatonClass.getCDMethod(5);
-    assertTrue(PUBLIC.deepEquals(method.getModifier()));
+    assertTrue(PUBLIC.build().deepEquals(method.getModifier()));
 
     assertEquals("deepEqualsWithComments", method.getName());
 
@@ -259,7 +259,7 @@ public class ASTDecoratorTest {
   @Test
   public void testEqualAttributes() {
     ASTCDMethod method = automatonClass.getCDMethod(6);
-    assertTrue(PUBLIC.deepEquals(method.getModifier()));
+    assertTrue(PUBLIC.build().deepEquals(method.getModifier()));
 
     assertEquals("equalAttributes", method.getName());
 
@@ -276,7 +276,7 @@ public class ASTDecoratorTest {
   @Test
   public void testEqualsWithComments() {
     ASTCDMethod method = automatonClass.getCDMethod(7);
-    assertTrue(PUBLIC.deepEquals(method.getModifier()));
+    assertTrue(PUBLIC.build().deepEquals(method.getModifier()));
 
     assertEquals("equalsWithComments", method.getName());
 
@@ -293,7 +293,7 @@ public class ASTDecoratorTest {
   @Test
   public void testDeepCloneWithResult() {
     ASTCDMethod method = automatonClass.getCDMethod(8);
-    assertTrue(PUBLIC.deepEquals(method.getModifier()));
+    assertTrue(PUBLIC.build().deepEquals(method.getModifier()));
 
     assertEquals("deepClone", method.getName());
 
@@ -310,7 +310,7 @@ public class ASTDecoratorTest {
   @Test
   public void testDeepClone() {
     ASTCDMethod method = automatonClass.getCDMethod(9);
-    assertTrue(PUBLIC.deepEquals(method.getModifier()));
+    assertTrue(PUBLIC.build().deepEquals(method.getModifier()));
 
     assertEquals("deepClone", method.getName());
 
@@ -323,7 +323,7 @@ public class ASTDecoratorTest {
   @Test
   public void testConstruct() {
     ASTCDMethod method = automatonClass.getCDMethod(10);
-    assertTrue(PROTECTED.deepEquals(method.getModifier()));
+    assertTrue(PROTECTED.build().deepEquals(method.getModifier()));
 
     assertEquals("_construct", method.getName());
 

@@ -1,14 +1,12 @@
 package de.monticore.codegen.cd2java.top;
 
 import de.monticore.codegen.cd2java.Decorator;
-import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
@@ -74,7 +72,7 @@ public class TopDecorator implements Decorator<ASTCDCompilationUnit, ASTCDCompil
       makeAbstract(type.getModifierOpt().get());
     }
     else {
-      type.setModifier(PACKAGE_PRIVATE_ABSTRACT);
+      type.setModifier(PACKAGE_PRIVATE_ABSTRACT.build());
     }
   }
 

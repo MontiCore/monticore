@@ -33,15 +33,12 @@ public class OptionalMethodDecoratorStrategy implements MethodDecoratorStrategy 
 
   private final GlobalExtensionManagement glex;
 
-  private final CDTypeFactory cdTypeFactory;
-
   private final CDMethodFactory cdMethodFactory;
 
   private final CDParameterFactory cdParameterFactory;
 
   protected OptionalMethodDecoratorStrategy(final GlobalExtensionManagement glex) {
     this.glex = glex;
-    this.cdTypeFactory = CDTypeFactory.getInstance();
     this.cdMethodFactory = CDMethodFactory.getInstance();
     this.cdParameterFactory = CDParameterFactory.getInstance();
   }

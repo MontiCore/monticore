@@ -40,4 +40,21 @@ public class CDConstructorFactory {
         .setCDParameterList(parameters.stream().map(ASTCDParameter::deepClone).collect(Collectors.toList()))
         .build();
   }
+
+
+  public ASTCDConstructor createFullConstructor(final CDModifier modifier, final ASTCDClass cdClass) {
+    return createFullConstructor(modifier.build(), cdClass);
+  }
+
+  public ASTCDConstructor createDefaultConstructor(final CDModifier modifier, final ASTCDClass cdClass) {
+    return createDefaultConstructor(modifier.build(), cdClass);
+  }
+
+  public ASTCDConstructor createConstructor(final CDModifier modifier, final String name) {
+    return createConstructor(modifier.build(), name, Collections.emptyList());
+  }
+
+  public ASTCDConstructor createConstructor(final CDModifier modifier, final String name, final List<ASTCDParameter> parameters) {
+    return createConstructor(modifier.build(), name, parameters);
+  }
 }

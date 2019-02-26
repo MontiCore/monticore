@@ -71,14 +71,14 @@ public class MillWithInheritanceTest {
   public void testAttributeModifier() {
     for (ASTCDAttribute astcdAttribute : millClass.getCDAttributeList()) {
       assertTrue(astcdAttribute.isPresentModifier());
-      assertTrue(PROTECTED_STATIC.deepEquals(astcdAttribute.getModifier()));
+      assertTrue(PROTECTED_STATIC.build().deepEquals(astcdAttribute.getModifier()));
     }
   }
 
   @Test
   public void testConstructor() {
     assertEquals(1, millClass.sizeCDConstructors());
-    assertTrue(PROTECTED.deepEquals(millClass.getCDConstructor(0).getModifier()));
+    assertTrue(PROTECTED.build().deepEquals(millClass.getCDConstructor(0).getModifier()));
     assertEquals("BGrammarMill", millClass.getCDConstructor(0).getName());
   }
 
@@ -93,7 +93,7 @@ public class MillWithInheritanceTest {
     ASTType returnType = cdTypeFacade.createTypeByDefinition("BGrammarMill");
     assertTrue(returnType.deepEquals(getMill.getReturnType()));
     //test Modifier
-    assertTrue(PROTECTED_STATIC.deepEquals(getMill.getModifier()));
+    assertTrue(PROTECTED_STATIC.build().deepEquals(getMill.getModifier()));
   }
 
   @Test
@@ -109,7 +109,7 @@ public class MillWithInheritanceTest {
     //test ReturnType
     assertTrue(cdTypeFacade.createVoidType().deepEquals(initMe.getReturnType()));
     //test Modifier
-    assertTrue(PUBLIC_STATIC.deepEquals(initMe.getModifier()));
+    assertTrue(PUBLIC_STATIC.build().deepEquals(initMe.getModifier()));
   }
 
   @Test
@@ -122,7 +122,7 @@ public class MillWithInheritanceTest {
     //test ReturnType
     assertTrue(cdTypeFacade.createVoidType().deepEquals(init.getReturnType()));
     //test Modifier
-    assertTrue(PUBLIC_STATIC.deepEquals(init.getModifier()));
+    assertTrue(PUBLIC_STATIC.build().deepEquals(init.getModifier()));
   }
 
   @Test
@@ -135,7 +135,7 @@ public class MillWithInheritanceTest {
     //test ReturnType
     assertTrue(cdTypeFacade.createVoidType().deepEquals(init.getReturnType()));
     //test Modifier
-    assertTrue(PUBLIC_STATIC.deepEquals(init.getModifier()));
+    assertTrue(PUBLIC_STATIC.build().deepEquals(init.getModifier()));
   }
 
   @Test
@@ -149,7 +149,7 @@ public class MillWithInheritanceTest {
     ASTType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.cgrammar._ast.ASTC");
     assertTrue(returnType.deepEquals(fooBarBuilder.getReturnType()));
     //test Modifier
-    assertTrue(PUBLIC_STATIC.deepEquals(fooBarBuilder.getModifier()));
+    assertTrue(PUBLIC_STATIC.build().deepEquals(fooBarBuilder.getModifier()));
   }
 
 
@@ -164,7 +164,7 @@ public class MillWithInheritanceTest {
     ASTType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.agrammar._ast.ASTFoo");
     assertTrue(returnType.deepEquals(fooBarBuilder.getReturnType()));
     //test Modifier
-    assertTrue(PUBLIC_STATIC.deepEquals(fooBarBuilder.getModifier()));
+    assertTrue(PUBLIC_STATIC.build().deepEquals(fooBarBuilder.getModifier()));
   }
 
   @Test
@@ -178,7 +178,7 @@ public class MillWithInheritanceTest {
     ASTType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.agrammar._ast.ASTBar");
     assertTrue(returnType.deepEquals(fooBarBuilder.getReturnType()));
     //test Modifier
-    assertTrue(PUBLIC_STATIC.deepEquals(fooBarBuilder.getModifier()));
+    assertTrue(PUBLIC_STATIC.build().deepEquals(fooBarBuilder.getModifier()));
   }
 
   @Test

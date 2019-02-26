@@ -94,7 +94,7 @@ public class MillDecorator implements Decorator<ASTCDCompilationUnit, ASTCDClass
     List<ASTCDMethod> superMethodsList = addSuperBuilderMethods();
 
     return CD4AnalysisMill.cDClassBuilder()
-        .setModifier(PUBLIC)
+        .setModifier(PUBLIC.build())
         .setName(millClassName)
         .addCDAttribute(millAttribute)
         .addAllCDAttributes(attributeList)

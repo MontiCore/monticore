@@ -85,7 +85,7 @@ public class NodeFactoryWithInheritanceTest {
   public void testAttributeModifier() {
     for (ASTCDAttribute astcdAttribute : factoryClass.getCDAttributeList()) {
       assertTrue(astcdAttribute.isPresentModifier());
-      assertTrue(PROTECTED_STATIC.deepEquals(astcdAttribute.getModifier()));
+      assertTrue(PROTECTED_STATIC.build().deepEquals(astcdAttribute.getModifier()));
     }
   }
 
@@ -93,7 +93,7 @@ public class NodeFactoryWithInheritanceTest {
   public void testConstructor() {
     assertEquals(1, factoryClass.sizeCDConstructors());
     ASTCDConstructor astcdConstructor = CD4AnalysisMill.cDConstructorBuilder()
-        .setModifier(PROTECTED)
+        .setModifier(PROTECTED.build())
         .setName("BGrammarNodeFactory")
         .build();
     assertTrue(astcdConstructor.deepEquals(factoryClass.getCDConstructor(0)));
@@ -105,7 +105,7 @@ public class NodeFactoryWithInheritanceTest {
     //test name
     assertEquals("getFactory", method.getName());
     //test modifier
-    assertTrue(PRIVATE_STATIC.deepEquals(method.getModifier()));
+    assertTrue(PRIVATE_STATIC.build().deepEquals(method.getModifier()));
     //test parameters
     assertTrue(method.isEmptyCDParameters());
     //test returnType
@@ -119,7 +119,7 @@ public class NodeFactoryWithInheritanceTest {
     //test name
     assertEquals("createASTC", method.getName());
     //test modifier
-    assertTrue(PUBLIC_STATIC.deepEquals(method.getModifier()));
+    assertTrue(PUBLIC_STATIC.build().deepEquals(method.getModifier()));
     //test parameters
     assertTrue(method.isEmptyCDParameters());
     //test returnType
@@ -133,7 +133,7 @@ public class NodeFactoryWithInheritanceTest {
     //test name
     assertEquals("createASTFoo", method.getName());
     //test modifier
-    assertTrue(PUBLIC_STATIC.deepEquals(method.getModifier()));
+    assertTrue(PUBLIC_STATIC.build().deepEquals(method.getModifier()));
     //test parameters
     assertTrue(method.isEmptyCDParameters());
     //test returnType
@@ -147,7 +147,7 @@ public class NodeFactoryWithInheritanceTest {
     //test name
     assertEquals("createASTBar", method.getName());
     //test modifier
-    assertTrue(PUBLIC_STATIC.deepEquals(method.getModifier()));
+    assertTrue(PUBLIC_STATIC.build().deepEquals(method.getModifier()));
     //test parameters
     assertTrue(method.isEmptyCDParameters());
     //test returnType
@@ -161,7 +161,7 @@ public class NodeFactoryWithInheritanceTest {
     //test name
     assertEquals("createASTFoo", method.getName());
     //test modifier
-    assertTrue(PUBLIC_STATIC.deepEquals(method.getModifier()));
+    assertTrue(PUBLIC_STATIC.build().deepEquals(method.getModifier()));
     //test parameters
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1,method.sizeCDParameters());
@@ -177,7 +177,7 @@ public class NodeFactoryWithInheritanceTest {
     //test name
     assertEquals("createASTBar", method.getName());
     //test modifier
-    assertTrue(PUBLIC_STATIC.deepEquals(method.getModifier()));
+    assertTrue(PUBLIC_STATIC.build().deepEquals(method.getModifier()));
     //test parameters
     assertFalse(method.isEmptyCDParameters());
     assertEquals(2,method.sizeCDParameters());

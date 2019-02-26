@@ -88,7 +88,7 @@ public class NodeFactoryDecorator implements Decorator<ASTCDCompilationUnit, AST
 
 
     return CD4AnalysisMill.cDClassBuilder()
-        .setModifier(PUBLIC)
+        .setModifier(PUBLIC.build())
         .setName(factoryClassName)
         .addCDAttribute(factoryAttribute)
         .addAllCDAttributes(factoryAttributeList)
