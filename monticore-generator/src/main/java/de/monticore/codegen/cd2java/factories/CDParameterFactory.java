@@ -46,13 +46,11 @@ public class CDParameterFactory {
   }
 
   public ASTCDParameter createParameter(final ASTCDAttribute ast) {
-    return createParameter(ast.getType(), ast.getName());
+    return createParameter(ast.getType().deepClone(), ast.getName());
   }
 
   public List<ASTCDParameter> createParameters(final ASTCDAttribute... attributes) {
-    return Stream.of(attributes)
-        .map(this::createParameter)
-        .collect(Collectors.toList());
+    return createParameters(Arrays.asList(attributes));
   }
 
   public List<ASTCDParameter> createParameters(final List<ASTCDAttribute> attributes) {
