@@ -46,7 +46,7 @@ public class CDAttributeFactory {
 
   public ASTCDAttribute createAttribute(final ASTModifier modifier, final ASTType type, final String name) {
     return CD4AnalysisMill.cDAttributeBuilder()
-        .setModifier(modifier.deepClone())
+        .setModifier(modifier)
         .setType(type.deepClone())
         .setName(name)
         .build();

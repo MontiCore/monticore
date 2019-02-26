@@ -67,8 +67,8 @@ public class CDMethodFactory {
 
   public ASTCDMethod createMethod(final ASTModifier modifier, final ASTReturnType returnType, final String name, final List<ASTCDParameter> parameters) {
     return CD4AnalysisMill.cDMethodBuilder()
-        .setModifier(modifier.deepClone())
-        .setReturnType(returnType.deepClone())
+        .setModifier(modifier)
+        .setReturnType(returnType)
         .setName(name)
         .setCDParameterList(parameters.stream().map(ASTCDParameter::deepClone).collect(Collectors.toList()))
         .build();

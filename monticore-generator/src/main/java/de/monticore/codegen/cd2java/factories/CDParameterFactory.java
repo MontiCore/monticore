@@ -28,7 +28,7 @@ public class CDParameterFactory {
 
   public ASTCDParameter createParameter(final ASTType type, final String name) {
     return CD4AnalysisMill.cDParameterBuilder()
-        .setType(type.deepClone())
+        .setType(type)
         .setName(name)
         .build();
   }

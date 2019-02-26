@@ -35,7 +35,7 @@ public class CDConstructorFactory {
 
   public ASTCDConstructor createConstructor(final ASTModifier modifier, final String name, final List<ASTCDParameter> parameters) {
     return CD4AnalysisMill.cDConstructorBuilder()
-        .setModifier(modifier.deepClone())
+        .setModifier(modifier)
         .setName(name)
         .setCDParameterList(parameters.stream().map(ASTCDParameter::deepClone).collect(Collectors.toList()))
         .build();
