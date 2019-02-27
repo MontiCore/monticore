@@ -24,7 +24,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -75,7 +74,7 @@ public class ASTDecoratorWithRefSymbolListTest {
     typeDecorator.decorate(cdCompilationUnit);
 
     glex.setGlobalValue("astHelper", new DecorationHelper());
-    ASTWithSymbolDecorator symbolDecorator = new ASTWithSymbolDecorator(glex, cdCompilationUnit);
+    ASTWithReferencedSymbolDecorator symbolDecorator = new ASTWithReferencedSymbolDecorator(glex, cdCompilationUnit);
     this.astcdClass = symbolDecorator.decorate(cdCompilationUnit.getCDDefinition().getCDClass(5));
     this.methods = astcdClass.getCDMethodList();
   }

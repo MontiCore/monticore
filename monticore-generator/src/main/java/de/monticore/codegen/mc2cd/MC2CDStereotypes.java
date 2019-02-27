@@ -23,7 +23,15 @@ public enum MC2CDStereotypes {
   /**
    * Referenced symbol
    */
-  DEFAULT_IMPLEMENTATION("defaultImplementation");
+  DEFAULT_IMPLEMENTATION("defaultImplementation"),
+  /**
+   * Referenced symbol
+   */
+  SYMBOL("symbol"),
+  /**
+   * Referenced symbol
+   */
+  SCOPE("scope");
   
   private final String stereotype;
   
