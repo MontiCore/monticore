@@ -12,6 +12,7 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import de.se_rwth.commons.Names;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -45,14 +46,15 @@ public class ASTWithSymbolDecorator implements Decorator<ASTCDClass, ASTCDClass>
     ast = astDecorator.decorate(ast);
     if (isSymbolClass(ast)) {
       String symbolName = getSymbolName(ast);
-      final ASTCDAttribute symbolAttribute = addAttribute(symbolName, ast.getName() + SYMBOL_PREFIX);
+      String attributeName = StringUtils.uncapitalize(ast.getName().replaceFirst("AST", "")) + SYMBOL_PREFIX;
+      final ASTCDAttribute symbolAttribute = addAttribute(symbolName, attributeName);
       ast.addCDAttribute(symbolAttribute);
       List<ASTCDMethod> methods = addMethod(symbolAttribute);
       ast.addAllCDMethods(methods);
     }
     if (isScopeClass(ast)) {
       String scopeName = getScopeName();
-      ASTCDAttribute scopeAttribute = addAttribute(scopeName, compilationUnit.getCDDefinition().getName()+SCOPE_PREFIX);
+      ASTCDAttribute scopeAttribute = addAttribute(scopeName, StringUtils.uncapitalize(compilationUnit.getCDDefinition().getName())+SCOPE_PREFIX);
       ast.addCDAttribute(scopeAttribute);
       List<ASTCDMethod> methods = addMethod(scopeAttribute);
       ast.addAllCDMethods(methods);

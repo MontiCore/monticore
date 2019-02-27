@@ -100,7 +100,6 @@ public class ASTDecoratorWithRefSymbolListTest {
 
   @Test
   public void testMethods() {
-    // TODO NP funktioniert nicht !!!!! 98!!!!!
     assertEquals(83, astcdClass.sizeCDMethods());
   }
 
@@ -375,6 +374,15 @@ public class ASTDecoratorWithRefSymbolListTest {
     parameter = method.getCDParameter(1);
     assertEquals("int", TypesPrinter.printType(parameter.getType()));
     assertEquals("end", parameter.getName());
+  }
+
+  @Test
+  public void testGeneratedCode() {
+    GeneratorSetup generatorSetup = new GeneratorSetup();
+    generatorSetup.setGlex(glex);
+    GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
+    StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, astcdClass, astcdClass);
+    System.out.println(sb.toString());
   }
 
   @Test

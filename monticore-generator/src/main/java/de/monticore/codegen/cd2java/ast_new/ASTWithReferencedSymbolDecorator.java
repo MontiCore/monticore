@@ -51,13 +51,13 @@ public class ASTWithReferencedSymbolDecorator implements Decorator<ASTCDClass, A
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDAttribute astcdAttribute : astcdClass.getCDAttributeList()) {
       if (isReferencedSymbolAttribute(astcdAttribute)) {
-        String referencedSymbol = getReferencedSymbolName(astcdAttribute);
+        String referencedSymbolType = getReferencedSymbolType(astcdAttribute);
         //create referenced symbol attribute and methods
-        ASTCDAttribute refSymbolAttribute = getRefSymbolAttribute(astcdAttribute, referencedSymbol);
+        ASTCDAttribute refSymbolAttribute = getRefSymbolAttribute(astcdAttribute, referencedSymbolType);
         attributeList.add(refSymbolAttribute);
-        methodList.addAll(getRefSymbolMethods(refSymbolAttribute, referencedSymbol));
+        methodList.addAll(getRefSymbolMethods(refSymbolAttribute, referencedSymbolType));
         //create referenced definition Methods
-        methodList.addAll(getRefDefinitionMethods(astcdAttribute, referencedSymbol));
+        methodList.addAll(getRefDefinitionMethods(astcdAttribute, referencedSymbolType));
 
       }
     }
@@ -115,7 +115,7 @@ public class ASTWithReferencedSymbolDecorator implements Decorator<ASTCDClass, A
     return getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf(SYMBOL));
   }
 
-  private String getReferencedSymbolName(ASTCDAttribute attribute) {
+  private String getReferencedSymbolType(ASTCDAttribute attribute) {
     String referencedSymbol = CD4AnalysisHelper.getStereotypeValues(attribute,
         MC2CDStereotypes.REFERENCED_SYMBOL.toString()).get(0);
 

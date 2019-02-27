@@ -1,2 +1,2 @@
-${tc.signature("attributeName")}
-this.${attributeName} = Optional.empty();
+${tc.signature("attribute")}
+this.${attribute.getName()} = Optional.empty();
