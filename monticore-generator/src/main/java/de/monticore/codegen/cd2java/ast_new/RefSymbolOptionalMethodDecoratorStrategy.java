@@ -10,34 +10,32 @@ import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class RefSymbolOptionalMethodDecoratorStrategy extends OptionalMethodDecoratorStrategy {
 
-  private ASTType refSymbolType;
+  private String refSymbolType;
 
-  protected RefSymbolOptionalMethodDecoratorStrategy(GlobalExtensionManagement glex, ASTType refSymbolType) {
+  protected RefSymbolOptionalMethodDecoratorStrategy(GlobalExtensionManagement glex, String refSymbolType) {
     super(glex);
     this.refSymbolType = refSymbolType;
   }
 
   @Override
   public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
-    ASTCDMethod get = createGetMethod(ast);
-    ASTCDMethod getOpt = createGetOptMethod(ast);
-    ASTCDMethod isPresent = createIsPresentMethod(ast);
-    return Arrays.asList(get, getOpt, isPresent);
+    return new ArrayList<>(getGetter(ast));
   }
 
   @Override
   protected HookPoint createGetImplementation(final ASTCDAttribute ast) {
-    return new TemplateHookPoint("ast_new.refSymbolMethods.Get", ast, TypesPrinter.printType(refSymbolType));
+    return new TemplateHookPoint("ast_new.refSymbolMethods.Get", ast, refSymbolType);
   }
 
   @Override
   protected HookPoint createGetOptImplementation(final ASTCDAttribute ast) {
-    return new TemplateHookPoint("ast_new.refSymbolMethods.GetSymbolOpt", ast.getName(), TypesPrinter.printType(refSymbolType), GeneratorHelper.isOptional(ast));
+    return new TemplateHookPoint("ast_new.refSymbolMethods.GetSymbolOpt", ast.getName(), refSymbolType, GeneratorHelper.isOptional(ast));
   }
 
   @Override

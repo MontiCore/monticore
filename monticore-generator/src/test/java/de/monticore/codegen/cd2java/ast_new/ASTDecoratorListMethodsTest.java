@@ -102,7 +102,7 @@ public class ASTDecoratorListMethodsTest {
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
     assertEquals("java.util.List<" + ASTNAME + ">", TypesPrinter.printType(parameter.getType()));
-    assertEquals("namesList", parameter.getName());
+    assertEquals("element", parameter.getName());
   }
 
   @Test

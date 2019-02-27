@@ -346,7 +346,7 @@ public class ASTDecoratorTest {
   public void testGeneratedCodeInFile() {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
-    generatorSetup.setOutputDirectory(Paths.get("target/generated-test-sources/generatortest/ast").toFile());
+    generatorSetup.setOutputDirectory(Paths.get("target/generated-test-sources/de/monticore/codegen/ast").toFile());
     Path generatedFiles = Paths.get("ASTAutomaton.java");
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     generatorEngine.generate(CoreTemplates.CLASS, generatedFiles, automatonClass, automatonClass);

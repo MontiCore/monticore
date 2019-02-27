@@ -16,7 +16,7 @@ ${tc.signature("astcdClass")}
   <#elseif genHelper.isOptional(attribute.getType())>
     <#assign reference = genHelper.getSimpleReferenceTypeFromOptional(attrType)>
     <#assign referenceName = genHelper.getQualifiedReferenceNameFromOptional(attrType)>
-    <#if genHelper.isString(reference) || genHelper.isAdditionalAttribute(attribute) || genHelper.isAttributeOfTypeEnum(attribute)>
+    <#if genHelper.isString(reference) || genHelper.isAttributeOfTypeEnum(attribute)>
     result.set${methName}Opt(get${methName}Opt());
     <#elseif genHelper.isOptionalAstNode(attribute)>
     if (isPresent${methName}()){

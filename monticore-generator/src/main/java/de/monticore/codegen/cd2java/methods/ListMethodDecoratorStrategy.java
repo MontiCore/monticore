@@ -5,10 +5,8 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.TypesPrinter;
-import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
 import org.apache.commons.lang3.StringUtils;
@@ -57,6 +55,9 @@ public class ListMethodDecoratorStrategy implements MethodDecoratorStrategy {
   private static final String LIST_ITERATOR_ = "public ListIterator<%s> listIterator%s(int index);";
   private static final String SUBLIST = "public java.util.List<%s> subList%s(int start, int end);";
 
+  private static final String SET_LIST = "public void set%sList(java.util.List<%s> element);";
+  private static final String GET_LIST = "public java.util.List<%s> get%sList();";
+
   private final GlobalExtensionManagement glex;
 
   private final CDMethodFactory cdMethodFactory;
@@ -79,7 +80,48 @@ public class ListMethodDecoratorStrategy implements MethodDecoratorStrategy {
   public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
     this.capitalizedAttributeName = StringUtils.capitalize(ast.getName());
     this.attributeType = getGenericTypeFromListAttribute(ast.getType());
-    List<ASTCDMethod> methods = new ArrayList<>(Arrays.asList(
+
+    List<ASTCDMethod> methods = getMethodList();
+
+
+    return methods;
+  }
+
+  protected ASTCDMethod createGetListMethod() {
+    String signature = String.format(GET_LIST, attributeType, capitalizedAttributeName);
+    ASTCDMethod getList = this.cdMethodFactory.createMethodByDefinition(signature);
+    this.glex.replaceTemplate(EMPTY_BODY, getList, createGetImplementation());
+    return getList;
+  }
+
+  private HookPoint createGetImplementation() {
+    return new TemplateHookPoint("methods.Get", StringUtils.uncapitalize(capitalizedAttributeName));
+  }
+
+  protected ASTCDMethod createSetListMethod() {
+    String signature = String.format(SET_LIST, capitalizedAttributeName, attributeType);
+    ASTCDMethod getList = this.cdMethodFactory.createMethodByDefinition(signature);
+    this.glex.replaceTemplate(EMPTY_BODY, getList, createSetImplementation());
+    return getList;
+  }
+
+  private HookPoint createSetImplementation() {
+    return new TemplateHookPoint("methods.Set", StringUtils.uncapitalize(capitalizedAttributeName));
+  }
+
+  protected List<ASTCDMethod> getMethodList() {
+    ArrayList<ASTCDMethod> methods = new ArrayList<>();
+    methods.addAll(createSetter());
+    methods.addAll(createGetter());
+    methods.forEach(this::addImplementation);
+
+    methods.add(createSetListMethod());
+    methods.add(createGetListMethod());
+    return methods;
+  }
+
+  private List<ASTCDMethod> createSetter() {
+    return new ArrayList<>(Arrays.asList(
         createClearMethod(),
         createAddMethod(),
         createAddAllMethod(),
@@ -93,8 +135,11 @@ public class ListMethodDecoratorStrategy implements MethodDecoratorStrategy {
         createRemove_Method(),
         createSetMethod(),
         createReplaceAllMethod(),
-        createSortMethod(),
+        createSortMethod()));
+  }
 
+  protected List<ASTCDMethod> createGetter() {
+    return new ArrayList<>(Arrays.asList(
         createContainsMethod(),
         createContainsAllMethod(),
         createIsEmptyMethod(),
@@ -113,23 +158,15 @@ public class ListMethodDecoratorStrategy implements MethodDecoratorStrategy {
         createListIteratorMethod(),
         createListIterator_Method(),
         createSubListMethod()));
-
-    methods.forEach(this::addImplementation);
-
-    //create new Attribute with new attribute name that the name Ends with "List" and the correct method name is generated
-    ASTCDAttribute listAttribute = ast.deepClone();
-    listAttribute.setName(ast.getName() + "List");
-    methods.addAll(this.mandatoryMethodDecoratorStrategy.decorate(listAttribute));
-    return methods;
   }
 
   private String getGenericTypeFromListAttribute(ASTType type) {
     String typeString = TypesPrinter.printType(type);
-    int lastListIndex = typeString.lastIndexOf("List<")+5;
+    int lastListIndex = typeString.lastIndexOf("List<") + 5;
     return typeString.substring(lastListIndex, typeString.length() - 1);
   }
 
-  private void addImplementation(final ASTCDMethod method) {
+  protected void addImplementation(final ASTCDMethod method) {
     String attributeName = StringUtils.uncapitalize(this.capitalizedAttributeName);
     String methodName = method.getName().substring(0, method.getName().length() - this.capitalizedAttributeName.length());
     String parameterCall = method.getCDParameterList().stream()

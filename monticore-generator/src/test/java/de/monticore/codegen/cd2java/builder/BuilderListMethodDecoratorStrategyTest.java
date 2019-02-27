@@ -71,7 +71,7 @@ public class BuilderListMethodDecoratorStrategyTest {
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
     assertEquals("java.util.List<String>", TypesPrinter.printType(parameter.getType()));
-    assertEquals("aList", parameter.getName());
+    assertEquals("element", parameter.getName());
   }
 
   @Test

@@ -7,10 +7,13 @@ import de.monticore.types.types._ast.ASTType;
 
 public class RefDefinitionListMethodDecoratorStrategy extends ListMethodDecoratorStrategy {
 
-  private ASTType refSymbolType;
+  private String refSymbolType;
   private String refSymbolSimpleName;
 
-  protected RefDefinitionListMethodDecoratorStrategy(GlobalExtensionManagement glex, MandatoryMethodDecoratorStrategy mandatoryMethodDecoratorStrategy, ASTType refSymbolType, String refSymbolSimpleName) {
+  protected RefDefinitionListMethodDecoratorStrategy(GlobalExtensionManagement glex,
+                                                     MandatoryMethodDecoratorStrategy mandatoryMethodDecoratorStrategy,
+                                                     String refSymbolType,
+                                                     String refSymbolSimpleName) {
     super(glex, mandatoryMethodDecoratorStrategy);
     this.refSymbolType = refSymbolType;
     this.refSymbolSimpleName = refSymbolSimpleName;

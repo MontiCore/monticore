@@ -1,2 +1,2 @@
-${tc.signature("attribute")}
-this${attribute.getName()} = Optional.ofNullable(${attribute.getName()});
+${tc.signature("attributeName")}
+this${attributeName} = Optional.ofNullable(${attributeName});

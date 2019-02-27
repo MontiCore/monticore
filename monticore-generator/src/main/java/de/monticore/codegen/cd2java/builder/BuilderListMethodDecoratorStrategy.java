@@ -126,4 +126,11 @@ class BuilderListMethodDecoratorStrategy extends ListMethodDecoratorStrategy {
     method.setReturnType(this.builderType);
     return method;
   }
+
+  @Override
+  protected ASTCDMethod createSetListMethod() {
+    ASTCDMethod method = super.createSetListMethod();
+    method.setReturnType(this.builderType);
+    return method;
+  }
 }

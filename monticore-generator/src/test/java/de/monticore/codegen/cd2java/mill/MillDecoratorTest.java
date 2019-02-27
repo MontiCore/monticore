@@ -246,7 +246,7 @@ public class MillDecoratorTest {
   public void testGeneratedCodeInFile() {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
-    generatorSetup.setOutputDirectory(Paths.get("target/generated-test-sources/generatortest/mill").toFile());
+    generatorSetup.setOutputDirectory(Paths.get("target/generated-test-sources/de/monticore/codegen/mill").toFile());
     Path generatedFiles = Paths.get("AutomatonMill.java");
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     generatorEngine.generate(CoreTemplates.CLASS, generatedFiles, millClass, millClass);

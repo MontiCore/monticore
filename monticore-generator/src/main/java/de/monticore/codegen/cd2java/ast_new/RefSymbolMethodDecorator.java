@@ -11,10 +11,10 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 
 public class RefSymbolMethodDecorator extends MethodDecorator {
 
-  private ASTType refSymbolType;
+  private String refSymbolType;
   private String refSymbolSimpleName;
 
-  public RefSymbolMethodDecorator(GlobalExtensionManagement glex, ASTType refSymbolType, String refSymbolSimpleName) {
+  public RefSymbolMethodDecorator(GlobalExtensionManagement glex, String refSymbolType, String refSymbolSimpleName) {
     super(glex);
     this.refSymbolType = refSymbolType;
     this.refSymbolSimpleName = refSymbolSimpleName;

@@ -1,7 +1,7 @@
-${tc.signature("attribute")}
-if (this.${attribute.getName()}.isPresent()) {
-    return this.${attribute.getName()}().get();
+${tc.signature("attributeName")}
+if (this.${attributeName}.isPresent()) {
+    return this.${attributeName}().get();
 }
-Log.error("0xA7003 ${attribute.getName()} can't return a value. It is empty.");
+Log.error("0xA7003 ${attributeName} can't return a value. It is empty.");
 // Normally this statement is not reachable
 throw new IllegalStateException();

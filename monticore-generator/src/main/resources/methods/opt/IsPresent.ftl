@@ -1,2 +1,2 @@
-${tc.signature("attribute")}
-return ${attribute.getName()}.isPresent();
+${tc.signature("attributeName")}
+return ${attributeName}.isPresent();

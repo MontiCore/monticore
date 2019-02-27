@@ -12,6 +12,7 @@ import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -45,13 +46,18 @@ public class OptionalMethodDecoratorStrategy implements MethodDecoratorStrategy 
 
   @Override
   public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
-    ASTCDMethod get = createGetMethod(ast);
-    ASTCDMethod getOpt = createGetOptMethod(ast);
-    ASTCDMethod isPresent = createIsPresentMethod(ast);
-    ASTCDMethod set = createSetMethod(ast);
-    ASTCDMethod setOpt = createSetOptMethod(ast);
-    ASTCDMethod setAbsent = createSetAbsentMethod(ast);
-    return Arrays.asList(get, getOpt, isPresent, set, setOpt, setAbsent);
+    List<ASTCDMethod> methods = new ArrayList<>();
+    methods.addAll(getGetter(ast));
+    methods.addAll(getSetter(ast));
+    return methods;
+  }
+
+  protected List<ASTCDMethod> getGetter(final ASTCDAttribute ast) {
+    return Arrays.asList(createGetMethod(ast), createGetOptMethod(ast), createIsPresentMethod(ast));
+  }
+
+  private List<ASTCDMethod> getSetter(final ASTCDAttribute ast) {
+    return Arrays.asList(createSetMethod(ast), createSetOptMethod(ast), createSetAbsentMethod(ast));
   }
 
   protected ASTCDMethod createGetMethod(final ASTCDAttribute ast) {
@@ -63,7 +69,7 @@ public class OptionalMethodDecoratorStrategy implements MethodDecoratorStrategy 
   }
 
   protected HookPoint createGetImplementation(final ASTCDAttribute ast) {
-    return new TemplateHookPoint("methods.opt.Get", ast);
+    return new TemplateHookPoint("methods.opt.Get", ast.getName());
   }
 
   protected ASTCDMethod createGetOptMethod(final ASTCDAttribute ast) {
@@ -75,7 +81,7 @@ public class OptionalMethodDecoratorStrategy implements MethodDecoratorStrategy 
   }
 
   protected HookPoint createGetOptImplementation(final ASTCDAttribute ast) {
-    return new TemplateHookPoint("methods.Get", ast);
+    return new TemplateHookPoint("methods.Get", ast.getName());
   }
 
   protected ASTCDMethod createIsPresentMethod(final ASTCDAttribute ast) {
@@ -86,9 +92,8 @@ public class OptionalMethodDecoratorStrategy implements MethodDecoratorStrategy 
   }
 
   protected HookPoint createIsPresentImplementation(final ASTCDAttribute ast) {
-    return new TemplateHookPoint("methods.opt.IsPresent", ast);
+    return new TemplateHookPoint("methods.opt.IsPresent", ast.getName());
   }
-
 
 
   protected ASTCDMethod createSetMethod(final ASTCDAttribute ast) {
@@ -101,7 +106,7 @@ public class OptionalMethodDecoratorStrategy implements MethodDecoratorStrategy 
   }
 
   protected HookPoint createSetImplementation(final ASTCDAttribute ast) {
-    return new TemplateHookPoint("methods.opt.Set", ast);
+    return new TemplateHookPoint("methods.opt.Set", ast.getName());
   }
 
   protected ASTCDMethod createSetOptMethod(final ASTCDAttribute ast) {
@@ -112,7 +117,7 @@ public class OptionalMethodDecoratorStrategy implements MethodDecoratorStrategy 
   }
 
   protected HookPoint createSetOptImplementation(final ASTCDAttribute ast) {
-    return new TemplateHookPoint("methods.Set", ast);
+    return new TemplateHookPoint("methods.Set", ast.getName());
   }
 
   protected ASTCDMethod createSetAbsentMethod(final ASTCDAttribute ast) {
@@ -123,6 +128,6 @@ public class OptionalMethodDecoratorStrategy implements MethodDecoratorStrategy 
   }
 
   protected HookPoint createSetAbsentImplementation(final ASTCDAttribute ast) {
-    return new TemplateHookPoint("methods.opt.SetAbsent", ast);
+    return new TemplateHookPoint("methods.opt.SetAbsent", ast.getName());
   }
 }

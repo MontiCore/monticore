@@ -52,7 +52,7 @@ public class MandatoryMethodDecoratorStrategy implements MethodDecoratorStrategy
   }
 
   private HookPoint createGetImplementation(final ASTCDAttribute ast) {
-    return new TemplateHookPoint("methods.Get", ast);
+    return new TemplateHookPoint("methods.Get", ast.getName());
   }
 
   protected ASTCDMethod createSetter(final ASTCDAttribute ast) {
@@ -63,6 +63,6 @@ public class MandatoryMethodDecoratorStrategy implements MethodDecoratorStrategy
   }
 
   protected HookPoint createSetImplementation(final ASTCDAttribute ast) {
-    return new TemplateHookPoint("methods.Set", ast);
+    return new TemplateHookPoint("methods.Set", ast.getName());
   }
 }

@@ -9,4 +9,8 @@ grammar ASTTest extends mc.grammars.lexicals.TestLexicals {
   List = name:Mand*;
 
   Ref = Name@Mand;
+
+  RefOpt = Name@Mand?;
+
+  RefList = Name@Mand*;
 }

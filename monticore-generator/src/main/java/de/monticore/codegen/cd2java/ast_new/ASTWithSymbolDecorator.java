@@ -64,11 +64,11 @@ public class ASTWithSymbolDecorator implements Decorator<ASTCDClass, ASTCDClass>
       if (isReferencedSymbolAttribute(astcdAttribute)) {
         String referencedSymbol = getReferencedSymbolName(astcdAttribute);
         //create referenced symbol attribute and methods
-        ASTCDAttribute refSymbolAttribute = getRefSymbolAttribute(astcdAttribute);
+        ASTCDAttribute refSymbolAttribute = getRefSymbolAttribute(astcdAttribute, referencedSymbol);
         attributeList.add(refSymbolAttribute);
         methodList.addAll(getRefSymbolMethods(refSymbolAttribute, referencedSymbol));
         //create referenced definition Methods
-        methodList.addAll(getRefDefinitionMethods(astcdAttribute));
+        methodList.addAll(getRefDefinitionMethods(astcdAttribute, referencedSymbol));
       }
     }
     astcdClass.addAllCDMethods(methodList);
@@ -76,11 +76,10 @@ public class ASTWithSymbolDecorator implements Decorator<ASTCDClass, ASTCDClass>
     return astcdClass;
   }
 
-  private ASTCDAttribute getRefSymbolAttribute(ASTCDAttribute astcdAttribute) {
-    String referencedSymbol = getReferencedSymbolName(astcdAttribute);
+  private ASTCDAttribute getRefSymbolAttribute(ASTCDAttribute astcdAttribute, String referencedSymbol) {
     if (GeneratorHelper.isListType(astcdAttribute.printType())) {
       //if the attribute is a list
-      ASTType symbolType = cdTypeFactory.createTypeByDefinition("List<" + referencedSymbol + ">");
+      ASTType symbolType = cdTypeFactory.createTypeByDefinition("Map<String, Optional<" + referencedSymbol + ">>");
       return cdAttributeFactory.createAttribute(PRIVATE, symbolType, astcdAttribute.getName() + SYMBOL_PREFIX);
     } else {
       //if the attribute is mandatory or optional
@@ -90,12 +89,17 @@ public class ASTWithSymbolDecorator implements Decorator<ASTCDClass, ASTCDClass>
   }
 
   private List<ASTCDMethod> getRefSymbolMethods(ASTCDAttribute refSymbolAttribute, String referencedSymbol) {
-    RefSymbolMethodDecorator methodDecorator = new RefSymbolMethodDecorator(glex, refSymbolAttribute.getType(), getSimpleSymbolName(referencedSymbol));
+    if (GeneratorHelper.isMapType(refSymbolAttribute.printType())) {
+      //have to change type of attribute list instead of map
+      //because the inner representation is a map but for users the List methods are only shown
+      ASTType listType = cdTypeFactory.createTypeByDefinition("List<Optional<" + referencedSymbol + ">>");
+      refSymbolAttribute = cdAttributeFactory.createAttribute(refSymbolAttribute.getModifier(), listType, refSymbolAttribute.getName());
+    }
+    RefSymbolMethodDecorator methodDecorator = new RefSymbolMethodDecorator(glex, referencedSymbol, getSimpleSymbolName(referencedSymbol));
     return methodDecorator.decorate(refSymbolAttribute);
   }
 
-  private List<ASTCDMethod> getRefDefinitionMethods(ASTCDAttribute astcdAttribute) {
-    String referencedSymbol = getReferencedSymbolName(astcdAttribute);
+  private List<ASTCDMethod> getRefDefinitionMethods(ASTCDAttribute astcdAttribute, String referencedSymbol) {
     ASTCDAttribute refSymbolAttribute;
     String referencedNode = referencedSymbol.substring(0, referencedSymbol.lastIndexOf("_symboltable")) + GeneratorHelper.AST_PACKAGE_SUFFIX_DOT + GeneratorHelper.AST_PREFIX + getSimpleSymbolName(referencedSymbol);
     if (GeneratorHelper.isListType(astcdAttribute.printType())) {
@@ -107,7 +111,8 @@ public class ASTWithSymbolDecorator implements Decorator<ASTCDClass, ASTCDClass>
       ASTType symbolType = cdTypeFactory.createTypeByDefinition("Optional<" + referencedNode + ">");
       refSymbolAttribute = cdAttributeFactory.createAttribute(PRIVATE, symbolType, astcdAttribute.getName() + DEFINITION_PREFIX);
     }
-    RefDefinitionMethodDecorator methodDecorator = new RefDefinitionMethodDecorator(glex, refSymbolAttribute.getType(), getSimpleSymbolName(referencedSymbol));
+    RefDefinitionMethodDecorator methodDecorator = new RefDefinitionMethodDecorator(glex, referencedSymbol, getSimpleSymbolName(referencedSymbol));
+
     return methodDecorator.decorate(refSymbolAttribute);
   }
 
