@@ -14,7 +14,7 @@ public class TopDecorator implements Decorator<ASTCDCompilationUnit, ASTCDCompil
 
   private static final String JAVA_EXTENSION = ".java";
 
-  private static final String TOP_EXTENSION = "TOP";
+  private static final String TOP_SUFFIX = "TOP";
 
   private final IterablePath targetPath;
 
@@ -49,22 +49,22 @@ public class TopDecorator implements Decorator<ASTCDCompilationUnit, ASTCDCompil
 
   private void applyTopMechanism(ASTCDClass cdClass) {
     makeAbstract(cdClass);
-    cdClass.setName(cdClass.getName() + TOP_EXTENSION);
+    cdClass.setName(cdClass.getName() + TOP_SUFFIX);
 
     cdClass.getCDConstructorList().forEach(constructor -> {
-      constructor.setName(constructor.getName() + TOP_EXTENSION);
+      constructor.setName(constructor.getName() + TOP_SUFFIX);
       makeAbstract(constructor.getModifier());
     });
   }
 
   private void applyTopMechanism(ASTCDInterface cdInterface) {
     makeAbstract(cdInterface);
-    cdInterface.setName(cdInterface.getName() + TOP_EXTENSION);
+    cdInterface.setName(cdInterface.getName() + TOP_SUFFIX);
   }
 
   private void applyTopMechanism(ASTCDEnum cdEnum) {
     makeAbstract(cdEnum);
-    cdEnum.setName(cdEnum.getName() + TOP_EXTENSION);
+    cdEnum.setName(cdEnum.getName() + TOP_SUFFIX);
   }
 
   private void makeAbstract(ASTCDType type) {

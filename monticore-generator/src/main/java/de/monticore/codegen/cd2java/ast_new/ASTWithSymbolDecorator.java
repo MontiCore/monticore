@@ -3,7 +3,7 @@ package de.monticore.codegen.cd2java.ast_new;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.Decorator;
 import de.monticore.codegen.cd2java.factories.*;
-import de.monticore.codegen.cd2java.methods.MethodDecorator;
+import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -29,19 +29,11 @@ public class ASTWithSymbolDecorator implements Decorator<ASTCDClass, ASTCDClass>
 
   private final CDAttributeFactory cdAttributeFactory;
 
-  private final CDConstructorFactory cdConstructorFactory;
-
-  private final CDParameterFactory cdParameterFactory;
-
-  private final CDMethodFactory cdMethodFactory;
-
   private final ASTCDCompilationUnit compilationUnit;
 
-  private ASTCDClass astcdClass;
+  private static final String DEFINITION = "Definition";
 
-  private static final String DEFINITION_PREFIX = "Definition";
-
-  private static final String SYMBOL_PREFIX = "Symbol";
+  private static final String SYMBOL = "Symbol";
 
 
   public ASTWithSymbolDecorator(GlobalExtensionManagement glex, ASTCDCompilationUnit compilationUnit) {
@@ -49,15 +41,12 @@ public class ASTWithSymbolDecorator implements Decorator<ASTCDClass, ASTCDClass>
     this.compilationUnit = compilationUnit;
     this.cdTypeFactory = CDTypeFactory.getInstance();
     this.cdAttributeFactory = CDAttributeFactory.getInstance();
-    this.cdConstructorFactory = CDConstructorFactory.getInstance();
-    this.cdParameterFactory = CDParameterFactory.getInstance();
-    this.cdMethodFactory = CDMethodFactory.getInstance();
   }
 
   @Override
   public ASTCDClass decorate(ASTCDClass ast) {
     ASTDecorator astDecorator = new ASTDecorator(glex, compilationUnit);
-    astcdClass = astDecorator.decorate(ast);
+    ASTCDClass astcdClass = astDecorator.decorate(ast);
     List<ASTCDAttribute> attributeList = new ArrayList<>();
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDAttribute astcdAttribute : astcdClass.getCDAttributeList()) {
@@ -69,6 +58,7 @@ public class ASTWithSymbolDecorator implements Decorator<ASTCDClass, ASTCDClass>
         methodList.addAll(getRefSymbolMethods(refSymbolAttribute, referencedSymbol));
         //create referenced definition Methods
         methodList.addAll(getRefDefinitionMethods(astcdAttribute, referencedSymbol));
+
       }
     }
     astcdClass.addAllCDMethods(methodList);
@@ -76,16 +66,16 @@ public class ASTWithSymbolDecorator implements Decorator<ASTCDClass, ASTCDClass>
     return astcdClass;
   }
 
-  private ASTCDAttribute getRefSymbolAttribute(ASTCDAttribute astcdAttribute, String referencedSymbol) {
-    if (GeneratorHelper.isListType(astcdAttribute.printType())) {
+  private ASTCDAttribute getRefSymbolAttribute(ASTCDAttribute attribute, String referencedSymbol) {
+    ASTType attributeType;
+    if (GeneratorHelper.isListType(attribute.printType())) {
       //if the attribute is a list
-      ASTType symbolType = cdTypeFactory.createTypeByDefinition("Map<String, Optional<" + referencedSymbol + ">>");
-      return cdAttributeFactory.createAttribute(PRIVATE, symbolType, astcdAttribute.getName() + SYMBOL_PREFIX);
+      attributeType = cdTypeFactory.createTypeByDefinition("Map<String, Optional<" + referencedSymbol + ">>");
     } else {
       //if the attribute is mandatory or optional
-      ASTType symbolType = cdTypeFactory.createTypeByDefinition("Optional<" + referencedSymbol + ">");
-      return cdAttributeFactory.createAttribute(PRIVATE, symbolType, astcdAttribute.getName() + SYMBOL_PREFIX);
+      attributeType = cdTypeFactory.createTypeByDefinition("Optional<" + referencedSymbol + ">");
     }
+    return cdAttributeFactory.createAttribute(PRIVATE, attributeType, attribute.getName() + SYMBOL);
   }
 
   private List<ASTCDMethod> getRefSymbolMethods(ASTCDAttribute refSymbolAttribute, String referencedSymbol) {
@@ -95,33 +85,34 @@ public class ASTWithSymbolDecorator implements Decorator<ASTCDClass, ASTCDClass>
       ASTType listType = cdTypeFactory.createTypeByDefinition("List<Optional<" + referencedSymbol + ">>");
       refSymbolAttribute = cdAttributeFactory.createAttribute(refSymbolAttribute.getModifier(), listType, refSymbolAttribute.getName());
     }
-    RefSymbolMethodDecorator methodDecorator = new RefSymbolMethodDecorator(glex, referencedSymbol, getSimpleSymbolName(referencedSymbol));
-    return methodDecorator.decorate(refSymbolAttribute);
+    AccessorDecorator accessorDecorator = new AccessorDecorator(glex);
+    List<ASTCDMethod> methods =  accessorDecorator.decorate(refSymbolAttribute);
+    return methods;
   }
 
   private List<ASTCDMethod> getRefDefinitionMethods(ASTCDAttribute astcdAttribute, String referencedSymbol) {
-    ASTCDAttribute refSymbolAttribute;
+    ASTType symbolType;
     String referencedNode = referencedSymbol.substring(0, referencedSymbol.lastIndexOf("_symboltable")) + GeneratorHelper.AST_PACKAGE_SUFFIX_DOT + GeneratorHelper.AST_PREFIX + getSimpleSymbolName(referencedSymbol);
     if (GeneratorHelper.isListType(astcdAttribute.printType())) {
       //if the attribute is a list
-      ASTType symbolType = cdTypeFactory.createTypeByDefinition("List<" + referencedNode + ">");
-      refSymbolAttribute = cdAttributeFactory.createAttribute(PRIVATE, symbolType, astcdAttribute.getName() + DEFINITION_PREFIX);
+      symbolType = cdTypeFactory.createTypeByDefinition("List<" + referencedNode + ">");
     } else {
       //if the attribute is mandatory or optional
-      ASTType symbolType = cdTypeFactory.createTypeByDefinition("Optional<" + referencedNode + ">");
-      refSymbolAttribute = cdAttributeFactory.createAttribute(PRIVATE, symbolType, astcdAttribute.getName() + DEFINITION_PREFIX);
+      symbolType = cdTypeFactory.createTypeByDefinition("Optional<" + referencedNode + ">");
     }
-    RefDefinitionMethodDecorator methodDecorator = new RefDefinitionMethodDecorator(glex, referencedSymbol, getSimpleSymbolName(referencedSymbol));
-
-    return methodDecorator.decorate(refSymbolAttribute);
+    ASTCDAttribute refSymbolAttribute = cdAttributeFactory.createAttribute(PRIVATE, symbolType, astcdAttribute.getName() + DEFINITION);
+    AccessorDecorator accessorDecorator = new AccessorDecorator(glex);
+    List<ASTCDMethod> methods =  accessorDecorator.decorate(refSymbolAttribute);
+    return methods;
   }
+
 
   private boolean isReferencedSymbolAttribute(ASTCDAttribute attribute) {
     return CD4AnalysisHelper.hasStereotype(attribute, MC2CDStereotypes.REFERENCED_SYMBOL.toString());
   }
 
   private String getSimpleSymbolName(String referencedSymbol) {
-    return getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf("Symbol"));
+    return getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf(SYMBOL));
   }
 
   private String getReferencedSymbolName(ASTCDAttribute attribute) {
@@ -135,8 +126,6 @@ public class ASTWithSymbolDecorator implements Decorator<ASTCDClass, ASTCDClass>
     }
     return referencedSymbol;
   }
-
-
 }
 
 

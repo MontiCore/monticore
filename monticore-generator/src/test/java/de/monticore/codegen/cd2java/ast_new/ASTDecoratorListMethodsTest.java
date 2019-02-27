@@ -84,7 +84,7 @@ public class ASTDecoratorListMethodsTest {
         .collect(Collectors.toList());
     assertEquals(1, methodOpt.size());
     ASTCDMethod method = methodOpt.get(0);
-    assertEquals("java.util.List<" + ASTNAME + ">", method.printReturnType());
+    assertEquals("List<" + ASTNAME + ">", method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
   }
 
@@ -101,7 +101,7 @@ public class ASTDecoratorListMethodsTest {
 
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertEquals("java.util.List<" + ASTNAME + ">", TypesPrinter.printType(parameter.getType()));
+    assertEquals("List<" + ASTNAME + ">", TypesPrinter.printType(parameter.getType()));
     assertEquals("element", parameter.getName());
   }
 
@@ -541,7 +541,7 @@ public class ASTDecoratorListMethodsTest {
     Optional<ASTCDMethod> methodOpt = this.methods.stream().filter(m -> "subListNames".equals(m.getName())).findFirst();
     assertTrue(methodOpt.isPresent());
     ASTCDMethod method = methodOpt.get();
-    assertEquals("java.util.List<" + ASTNAME + ">", method.printReturnType());
+    assertEquals("List<" + ASTNAME + ">", method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals(2, method.getCDParameterList().size());

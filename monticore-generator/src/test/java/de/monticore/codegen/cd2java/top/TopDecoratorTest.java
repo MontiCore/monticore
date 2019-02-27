@@ -1,11 +1,8 @@
 package de.monticore.codegen.cd2java.top;
 
-import de.monticore.codegen.cd2java.factories.CDAttributeFactory;
-import de.monticore.codegen.cd2java.factories.CDMethodFactory;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParser;
-import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;

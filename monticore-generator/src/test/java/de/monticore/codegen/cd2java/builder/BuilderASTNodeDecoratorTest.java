@@ -36,7 +36,7 @@ public class BuilderASTNodeDecoratorTest {
     ASTCDClass cdClass = ast.get().getCDDefinition().getCDClass(0);
 
     BuilderDecorator builderDecorator = new BuilderDecorator(glex);
-    BuilderASTNodeDecorator builderASTNodeDecorator = new BuilderASTNodeDecorator(glex, builderDecorator);
+    ASTNodeBuilderDecorator builderASTNodeDecorator = new ASTNodeBuilderDecorator(glex, builderDecorator);
     this.builderClass = builderASTNodeDecorator.decorate(cdClass);
   }
 

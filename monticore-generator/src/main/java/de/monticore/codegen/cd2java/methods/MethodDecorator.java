@@ -1,11 +1,11 @@
 package de.monticore.codegen.cd2java.methods;
 
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.Decorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MethodDecorator implements Decorator<ASTCDAttribute, List<ASTCDMethod>> {
@@ -17,36 +17,15 @@ public class MethodDecorator implements Decorator<ASTCDAttribute, List<ASTCDMeth
     this.glex = glex;
   }
 
-  protected GlobalExtensionManagement getGlex() {
-    return this.glex;
-  }
-
   @Override
   public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
-    MethodDecoratorStrategy methodGeneratorStrategy = determineMethodGeneratorStrategy(ast);
-    return methodGeneratorStrategy.decorate(ast);
-  }
+    Decorator<ASTCDAttribute, List<ASTCDMethod>> accessorDecorator = new AccessorDecorator(glex);
+    Decorator<ASTCDAttribute, List<ASTCDMethod>> mutatorDecorator = new MutatorDecorator(glex);
 
-  protected MethodDecoratorStrategy determineMethodGeneratorStrategy(final ASTCDAttribute ast) {
-    //TODO: helper durch OO-Ansatz ersetzen (und vereinheitlichen)
-    if (GeneratorHelper.isListType(ast.printType())) {
-      return createListMethodDecoratorStrategy();
-    }
-    else if (GeneratorHelper.isOptional(ast)) {
-      return createOptionalMethodDecoratorStrategy();
-    }
-    return createMandatoryMethodDecoratorStrategy();
-  }
+    List<ASTCDMethod> result = new ArrayList<>();
+    result.addAll(accessorDecorator.decorate(ast));
+    result.addAll(mutatorDecorator.decorate(ast));
 
-  protected MandatoryMethodDecoratorStrategy createMandatoryMethodDecoratorStrategy() {
-    return new MandatoryMethodDecoratorStrategy(this.getGlex());
-  }
-
-  protected OptionalMethodDecoratorStrategy createOptionalMethodDecoratorStrategy() {
-    return new OptionalMethodDecoratorStrategy(this.getGlex());
-  }
-
-  protected ListMethodDecoratorStrategy createListMethodDecoratorStrategy() {
-    return new ListMethodDecoratorStrategy(this.getGlex(), createMandatoryMethodDecoratorStrategy());
+    return result;
   }
 }

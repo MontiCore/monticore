@@ -4,14 +4,18 @@ import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.Decorator;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.factories.*;
+import de.monticore.codegen.cd2java.methods.AccessorDecorator;
+import de.monticore.codegen.cd2java.methods.MutatorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.builder.BuilderDecoratorConstants.*;
@@ -72,11 +76,23 @@ class BuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
     this.glex.replaceTemplate(EMPTY_BODY, isValidMethod, new TemplateHookPoint("builder.IsValidMethod", mandatoryAttributes));
 
 
-    BuilderMethodDecorator builderMethodGenerator = new BuilderMethodDecorator(this.glex, builderType);
-    List<ASTCDMethod> attributeMethods = domainClass.getCDAttributeList().stream()
-        .map(builderMethodGenerator::decorate)
+    AccessorDecorator accessorDecorator = new AccessorDecorator(this.glex);
+    MutatorDecorator mutatorDecorator = new MutatorDecorator(this.glex);
+
+    List<ASTCDMethod> accessorMethods = domainClass.getCDAttributeList().stream()
+        .map(accessorDecorator::decorate)
         .flatMap(List::stream)
         .collect(Collectors.toList());
+
+    List<ASTCDMethod> mutatorMethods = domainClass.getCDAttributeList().stream()
+        .map(mutatorDecorator::decorate)
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
+
+    mutatorMethods.forEach(m -> {
+      m.setReturnType(builderType);
+      this.glex.replaceTemplate(EMPTY_BODY, m, new StringHookPoint("HI"));
+    });
 
     return  CD4AnalysisMill.cDClassBuilder()
         .setModifier(modifier.build())
@@ -86,7 +102,8 @@ class BuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
         .addCDConstructor(constructor)
         .addCDMethod(buildMethod)
         .addCDMethod(isValidMethod)
-        .addAllCDMethods(attributeMethods)
+        .addAllCDMethods(accessorMethods)
+        .addAllCDMethods(mutatorMethods)
         .build();
   }
 

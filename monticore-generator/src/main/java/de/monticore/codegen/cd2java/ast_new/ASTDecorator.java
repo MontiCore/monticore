@@ -71,8 +71,8 @@ public class ASTDecorator implements Decorator<ASTCDClass, ASTCDClass> {
   public ASTCDClass decorate(ASTCDClass astcdClass) {
     ASTType classType = this.cdTypeFactory.createSimpleReferenceType(astcdClass.getName());
     ASTCDConstructor defaultConstructor = this.cdConstructorFactory.createDefaultConstructor(PROTECTED, astcdClass);
-    ASTCDConstructor paramConstructor = this.cdConstructorFactory.createFullConstructor(PROTECTED, astcdClass);
-    this.glex.replaceTemplate(EMPTY_BODY, paramConstructor, new TemplateHookPoint("ast_new.ConstructorAttributesSetter"));
+    ASTCDConstructor fullConstructor = this.cdConstructorFactory.createFullConstructor(PROTECTED, astcdClass);
+    this.glex.replaceTemplate(EMPTY_BODY, fullConstructor, new TemplateHookPoint("ast_new.ConstructorAttributesSetter"));
 
     String simpleClassName = astcdClass.getName().replaceFirst(AST_PREFIX, "");
 
@@ -93,9 +93,9 @@ public class ASTDecorator implements Decorator<ASTCDClass, ASTCDClass> {
     return CD4AnalysisMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
         .setName(astcdClass.getName())
-        .addAllCDAttributes(astcdClass.getCDAttributeList())
+        .addAllCDAttributes(new ArrayList<>(astcdClass.getCDAttributeList()))
         .addCDConstructor(defaultConstructor)
-        .addCDConstructor(paramConstructor)
+        .addCDConstructor(fullConstructor)
         .addAllCDMethods(acceptMethods)
         .addAllCDMethods(equalsMethods)
         .addAllCDMethods(deepCloneMethods)
