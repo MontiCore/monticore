@@ -15,7 +15,6 @@ import de.monticore.umlcd4a.cd4analysis._ast.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.builder.BuilderDecoratorConstants.*;
@@ -84,15 +83,19 @@ class BuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
         .flatMap(List::stream)
         .collect(Collectors.toList());
 
-    List<ASTCDMethod> mutatorMethods = domainClass.getCDAttributeList().stream()
-        .map(mutatorDecorator::decorate)
-        .flatMap(List::stream)
-        .collect(Collectors.toList());
-
-    mutatorMethods.forEach(m -> {
-      m.setReturnType(builderType);
-      this.glex.replaceTemplate(EMPTY_BODY, m, new StringHookPoint("HI"));
-    });
+    List<ASTCDMethod> mutatorMethods = new ArrayList<>();
+    for (ASTCDAttribute attribute : domainClass.getCDAttributeList()) {
+      List<ASTCDMethod> methods = mutatorDecorator.decorate(attribute);
+      for (ASTCDMethod m : methods) {
+        m.setReturnType(builderType);
+        String methodName = m.getName().substring(0, m.getName().length() - attribute.getName().length());
+        String parameterCall = m.getCDParameterList().stream()
+            .map(ASTCDParameter::getName)
+            .collect(Collectors.joining(", "));
+        this.glex.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("builder.MethodDelegate", attribute.getName(), methodName, parameterCall));
+      }
+      mutatorMethods.addAll(methods);
+    }
 
     return  CD4AnalysisMill.cDClassBuilder()
         .setModifier(modifier.build())
