@@ -24,9 +24,10 @@ import java.nio.file.Paths;
 import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
+import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static org.junit.Assert.*;
 
-public class ASTDecoratorTest {
+public class ASTWithSymbolDecoratorTest {
 
   private CDTypeFactory cdTypeFacade;
 
@@ -38,7 +39,7 @@ public class ASTDecoratorTest {
 
   private GlobalExtensionManagement glex;
 
-  private static final String PUBLIC = "public";
+  private final static String PUBLIC = "public";
 
   @Before
   public void setUp() {
@@ -67,24 +68,25 @@ public class ASTDecoratorTest {
     typeDecorator.decorate(cdCompilationUnit);
 
     glex.setGlobalValue("astHelper", new DecorationHelper());
-    ASTDecorator factoryDecorator = new ASTDecorator(glex, cdCompilationUnit);
+    ASTWithSymbolDecorator factoryDecorator = new ASTWithSymbolDecorator(glex, cdCompilationUnit);
     this.automatonClass = factoryDecorator.decorate(cdCompilationUnit.getCDDefinition().getCDClass(0));
   }
 
   @Test
-  public void testClassName() {
+  public void testClass() {
     assertEquals("ASTAutomaton", automatonClass.getName());
   }
 
+
   @Test
   public void testClassModifier() {
-    assertEquals(PUBLIC,automatonClass.printModifier().trim());
+    assertEquals(PUBLIC, automatonClass.printModifier().trim());
   }
 
   @Test
   public void testAttributes() {
     assertFalse(automatonClass.isEmptyCDAttributes());
-    assertEquals(3, automatonClass.sizeCDAttributes());
+    assertEquals(5, automatonClass.sizeCDAttributes());
   }
 
   @Test
@@ -146,13 +148,13 @@ public class ASTDecoratorTest {
   @Test
   public void testMethods() {
     assertFalse(automatonClass.isEmptyCDMethods());
-    assertEquals(81, automatonClass.sizeCDMethods());
+    assertEquals(93, automatonClass.sizeCDMethods());
   }
 
   @Test
   public void testAcceptAutomatonVisitor() {
     ASTCDMethod method = automatonClass.getCDMethod(0);
-    assertEquals(PUBLIC,method.printModifier().trim());
+    assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals("accept", method.getName());
 
@@ -169,7 +171,7 @@ public class ASTDecoratorTest {
   @Test
   public void testAcceptLexicalsVisitor() {
     ASTCDMethod method = automatonClass.getCDMethod(1);
-    assertEquals(PUBLIC,method.printModifier().trim());
+    assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals("accept", method.getName());
 
@@ -186,7 +188,7 @@ public class ASTDecoratorTest {
   @Test
   public void testDeepEqualsForceSameOrder() {
     ASTCDMethod method = automatonClass.getCDMethod(2);
-    assertEquals(PUBLIC,method.printModifier().trim());
+    assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals("deepEquals", method.getName());
 
@@ -206,7 +208,7 @@ public class ASTDecoratorTest {
   @Test
   public void testDeepEquals() {
     ASTCDMethod method = automatonClass.getCDMethod(3);
-    assertEquals(PUBLIC,method.printModifier().trim());
+    assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals("deepEquals", method.getName());
 
@@ -223,7 +225,7 @@ public class ASTDecoratorTest {
   @Test
   public void testDeepEqualsWithCommentsForceSameOrder() {
     ASTCDMethod method = automatonClass.getCDMethod(4);
-    assertEquals(PUBLIC,method.printModifier().trim());
+    assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals("deepEqualsWithComments", method.getName());
 
@@ -243,7 +245,7 @@ public class ASTDecoratorTest {
   @Test
   public void testDeepEqualsWithComments() {
     ASTCDMethod method = automatonClass.getCDMethod(5);
-    assertEquals(PUBLIC,method.printModifier().trim());
+    assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals("deepEqualsWithComments", method.getName());
 
@@ -260,7 +262,7 @@ public class ASTDecoratorTest {
   @Test
   public void testEqualAttributes() {
     ASTCDMethod method = automatonClass.getCDMethod(6);
-    assertEquals(PUBLIC,method.printModifier().trim());
+    assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals("equalAttributes", method.getName());
 
@@ -277,7 +279,7 @@ public class ASTDecoratorTest {
   @Test
   public void testEqualsWithComments() {
     ASTCDMethod method = automatonClass.getCDMethod(7);
-    assertEquals(PUBLIC,method.printModifier().trim());
+    assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals("equalsWithComments", method.getName());
 
@@ -294,7 +296,7 @@ public class ASTDecoratorTest {
   @Test
   public void testDeepCloneWithResult() {
     ASTCDMethod method = automatonClass.getCDMethod(8);
-    assertEquals(PUBLIC,method.printModifier().trim());
+    assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals("deepClone", method.getName());
 
@@ -311,7 +313,7 @@ public class ASTDecoratorTest {
   @Test
   public void testDeepClone() {
     ASTCDMethod method = automatonClass.getCDMethod(9);
-    assertEquals(PUBLIC,method.printModifier().trim());
+    assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals("deepClone", method.getName());
 
@@ -341,15 +343,5 @@ public class ASTDecoratorTest {
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, automatonClass, automatonClass);
     System.out.println(sb.toString());
-  }
-
-  @Test
-  public void testGeneratedCodeInFile() {
-    GeneratorSetup generatorSetup = new GeneratorSetup();
-    generatorSetup.setGlex(glex);
-    generatorSetup.setOutputDirectory(Paths.get("target/generated-test-sources/de/monticore/codegen/ast").toFile());
-    Path generatedFiles = Paths.get("ASTAutomaton.java");
-    GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-    generatorEngine.generate(CoreTemplates.CLASS, generatedFiles, automatonClass, automatonClass);
   }
 }

@@ -1,2 +1,2 @@
-${tc.signature("attributeName")}
-this.${attributeName} = ${attributeName};
+${tc.signature("attribute")}
+this.${attribute.getName()} = ${attribute.getName()};

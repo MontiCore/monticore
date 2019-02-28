@@ -91,7 +91,7 @@ public class ASTDecorator implements Decorator<ASTCDClass, ASTCDClass> {
     ASTReferenceType interfaceNode = cdTypeFactory.createReferenceTypeByDefinition(AST_PREFIX + compilationUnit.getCDDefinition().getName() + "Node");
 
     return CD4AnalysisMill.cDClassBuilder()
-        .setModifier(PUBLIC.build())
+        .setModifier(astcdClass.getModifier())
         .setName(astcdClass.getName())
         .addAllCDAttributes(new ArrayList<>(astcdClass.getCDAttributeList()))
         .addCDConstructor(defaultConstructor)

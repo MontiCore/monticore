@@ -24,7 +24,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -75,7 +74,7 @@ public class ASTDecoratorWithRefSymbolListTest {
     typeDecorator.decorate(cdCompilationUnit);
 
     glex.setGlobalValue("astHelper", new DecorationHelper());
-    ASTWithSymbolDecorator symbolDecorator = new ASTWithSymbolDecorator(glex, cdCompilationUnit);
+    ASTWithReferencedSymbolDecorator symbolDecorator = new ASTWithReferencedSymbolDecorator(glex, cdCompilationUnit);
     this.astcdClass = symbolDecorator.decorate(cdCompilationUnit.getCDDefinition().getCDClass(5));
     this.methods = astcdClass.getCDMethodList();
   }
@@ -101,7 +100,6 @@ public class ASTDecoratorWithRefSymbolListTest {
 
   @Test
   public void testMethods() {
-    // TODO NP funktioniert nicht !!!!! 98!!!!!
     assertEquals(83, astcdClass.sizeCDMethods());
   }
 
@@ -376,6 +374,15 @@ public class ASTDecoratorWithRefSymbolListTest {
     parameter = method.getCDParameter(1);
     assertEquals("int", TypesPrinter.printType(parameter.getType()));
     assertEquals("end", parameter.getName());
+  }
+
+  @Test
+  public void testGeneratedCode() {
+    GeneratorSetup generatorSetup = new GeneratorSetup();
+    generatorSetup.setGlex(glex);
+    GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
+    StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, astcdClass, astcdClass);
+    System.out.println(sb.toString());
   }
 
   @Test
