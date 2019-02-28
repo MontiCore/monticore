@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.builder.BuilderDecoratorConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
-import static de.monticore.codegen.cd2java.factories.CDTypeFactory.BOOLEAN_TYPE;
 
 class BuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
 
@@ -71,7 +70,7 @@ class BuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
     ASTCDMethod buildMethod = this.cdMethodFactory.createMethod(modifier, domainType, BUILD_METHOD);
     this.glex.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint("builder.BuildMethod", domainClass, mandatoryAttributes));
 
-    ASTCDMethod isValidMethod = this.cdMethodFactory.createMethod(PUBLIC, BOOLEAN_TYPE, IS_VALID);
+    ASTCDMethod isValidMethod = this.cdMethodFactory.createMethod(PUBLIC, this.cdTypeFactory.createBooleanType(), IS_VALID);
     this.glex.replaceTemplate(EMPTY_BODY, isValidMethod, new TemplateHookPoint("builder.IsValidMethod", mandatoryAttributes));
 
 

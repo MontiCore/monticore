@@ -7,14 +7,9 @@ import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParser;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Arrays;
-import java.util.Optional;
+import java.util.*;
 
 public class CDTypeFactory {
-
-  public static final ASTReturnType VOID_TYPE = CDTypeFactory.getInstance().createVoidType();
-
-  public static final ASTType BOOLEAN_TYPE = CDTypeFactory.getInstance().createBooleanType();
 
   private static final String PACKAGE_SEPARATOR = "\\.";
 
@@ -64,12 +59,35 @@ public class CDTypeFactory {
   }
 
   public ASTSimpleReferenceType createSimpleReferenceType(final Class<?> clazz) {
-    return createSimpleReferenceType(clazz.getCanonicalName());
+    return createSimpleReferenceType(clazz.getSimpleName());
   }
 
   public ASTSimpleReferenceType createSimpleReferenceType(final String name) {
     return TypesMill.simpleReferenceTypeBuilder()
         .setNameList(Arrays.asList(name.split(PACKAGE_SEPARATOR)))
+        .build();
+  }
+
+  public ASTSimpleReferenceType createOptionalTypeOf(final Class<?> clazz) {
+    return createOptionalTypeOf(clazz.getSimpleName());
+  }
+
+  public ASTSimpleReferenceType createOptionalTypeOf(final String name) {
+    return createSimpleReferenceType(Optional.class, name);
+  }
+
+  public ASTSimpleReferenceType createListTypeOf(final Class<?> clazz) {
+    return createListTypeOf(clazz.getSimpleName());
+  }
+
+  public ASTSimpleReferenceType createListTypeOf(final String name) {
+    return createSimpleReferenceType(List.class, name);
+  }
+
+  private ASTSimpleReferenceType createSimpleReferenceType(final Class<?> clazz, final String name) {
+    return CDTypeBuilder.newTypeBuilder()
+        .simpleName(clazz)
+        .qualifiedGenericType(name)
         .build();
   }
 
@@ -79,8 +97,16 @@ public class CDTypeFactory {
   }
 
   public ASTType createBooleanType() {
+    return createPrimitiveType(ASTConstantsTypes.BOOLEAN);
+  }
+
+  public ASTType createIntType() {
+    return createPrimitiveType(ASTConstantsTypes.INT);
+  }
+
+  private ASTType createPrimitiveType(int constantsType) {
     return TypesMill.primitiveTypeBuilder()
-        .setPrimitive(ASTConstantsTypes.BOOLEAN)
+        .setPrimitive(constantsType)
         .build();
   }
 }

@@ -1,6 +1,7 @@
 package de.monticore.codegen.cd2java.builder;
 
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -15,11 +16,10 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static org.junit.Assert.assertEquals;
 
-public class BuilderASTNodeDecoratorTest {
-
-  private static final String CD = Paths.get("src/test/resources/de/monticore/codegen/builder/ASTNodeBuilder.cd").toAbsolutePath().toString();
+public class BuilderASTNodeDecoratorTest extends DecoratorTestCase {
 
   private final GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
@@ -28,12 +28,8 @@ public class BuilderASTNodeDecoratorTest {
   @Before
   public void setup() throws IOException {
     LogStub.init();
-    CD4AnalysisParser parser = new CD4AnalysisParser();
-    Optional<ASTCDCompilationUnit> ast = parser.parse(CD);
-    if (!ast.isPresent()) {
-      Log.error(CD + " is not present");
-    }
-    ASTCDClass cdClass = ast.get().getCDDefinition().getCDClass(0);
+    ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "builder", "ASTNodeBuilder");
+    ASTCDClass cdClass = getClassBy("A", ast);
 
     BuilderDecorator builderDecorator = new BuilderDecorator(glex);
     ASTNodeBuilderDecorator builderASTNodeDecorator = new ASTNodeBuilderDecorator(glex, builderDecorator);

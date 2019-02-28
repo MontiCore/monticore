@@ -1,44 +1,43 @@
 package de.monticore.codegen.cd2java.builder;
 
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecoratorTestCase;
+import de.monticore.codegen.cd2java.factories.CDTypeFactory;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
-import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParser;
-import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
+import static de.monticore.codegen.cd2java.DecoratorAssert.*;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static de.monticore.codegen.cd2java.builder.BuilderDecoratorConstants.BUILD_METHOD;
 import static de.monticore.codegen.cd2java.builder.BuilderDecoratorConstants.IS_VALID;
+import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
+import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-public class BuilderDecoratorTest {
-
-  private static final String CD = Paths.get("src/test/resources/de/monticore/codegen/builder/Builder.cd").toAbsolutePath().toString();
+public class BuilderDecoratorTest extends DecoratorTestCase {
 
   private final GlobalExtensionManagement glex = new GlobalExtensionManagement();
+
+  private final CDTypeFactory cdTypeFactory = CDTypeFactory.getInstance();
 
   private ASTCDClass builderClass;
 
   @Before
   public void setup() throws IOException {
     LogStub.init();
-    CD4AnalysisParser parser = new CD4AnalysisParser();
-    Optional<ASTCDCompilationUnit> ast = parser.parse(CD);
-    if (!ast.isPresent()) {
-      Log.error(CD + " is not present");
-    }
-    ASTCDClass cdClass = ast.get().getCDDefinition().getCDClass(0);
+    ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "builder", "Builder");
+    ASTCDClass cdClass = getClassBy("A", ast);
 
     BuilderDecorator builderDecorator = new BuilderDecorator(glex);
     this.builderClass = builderDecorator.decorate(cdClass);
@@ -59,63 +58,48 @@ public class BuilderDecoratorTest {
     List<ASTCDConstructor> constructors = builderClass.getCDConstructorList();
     assertEquals(1, constructors.size());
     ASTCDConstructor constructor = constructors.get(0);
-    assertEquals("protected", constructor.printModifier().trim());
-    assertEquals(0, constructor.getCDParameterList().size());
+    assertDeepEquals(PROTECTED, constructor.getModifier());
+    assertTrue(constructor.getCDParameterList().isEmpty());
   }
 
   @Test
   public void testAttributes() {
-    List<ASTCDAttribute> attributes = builderClass.getCDAttributeList();
-    assertEquals(5, attributes.size());
+    assertEquals(5, builderClass.getCDAttributeList().size());
 
-    Optional<ASTCDAttribute> iOpt = attributes.stream().filter(a -> "i".equals(a.getName())).findFirst();
-    assertTrue(iOpt.isPresent());
-    ASTCDAttribute i = iOpt.get();
-    assertEquals("protected", i.printModifier().trim());
-    assertEquals("int", i.printType());
+    ASTCDAttribute attribute = getAttributeBy("i", builderClass);
+    assertDeepEquals(PROTECTED, attribute.getModifier());
+    assertInt(attribute.getType());
 
-    Optional<ASTCDAttribute> sOpt = attributes.stream().filter(a -> "s".equals(a.getName())).findFirst();
-    assertTrue(sOpt.isPresent());
-    ASTCDAttribute s = sOpt.get();
-    assertEquals("protected", s.printModifier().trim());
-    assertEquals("String", s.printType());
+    attribute = getAttributeBy("s", builderClass);
+    assertDeepEquals(PROTECTED, attribute.getModifier());
+    assertDeepEquals(String.class, attribute.getType());
 
-    Optional<ASTCDAttribute> optOpt = attributes.stream().filter(a -> "opt".equals(a.getName())).findFirst();
-    assertTrue(optOpt.isPresent());
-    ASTCDAttribute opt = optOpt.get();
-    assertEquals("protected", opt.printModifier().trim());
-    assertEquals("Optional<String>", opt.printType());
+    attribute = getAttributeBy("opt", builderClass);
+    assertDeepEquals(PROTECTED, attribute.getModifier());
+    assertOptionalOf(String.class, attribute.getType());
 
-    Optional<ASTCDAttribute> listOpt = attributes.stream().filter(a -> "list".equals(a.getName())).findFirst();
-    assertTrue(listOpt.isPresent());
-    ASTCDAttribute list = listOpt.get();
-    assertEquals("protected", list.printModifier().trim());
-    assertEquals("java.util.List<String>", list.printType());
+    attribute = getAttributeBy("list", builderClass);
+    assertDeepEquals(PROTECTED, attribute.getModifier());
+    assertListOf(String.class, attribute.getType());
 
-    Optional<ASTCDAttribute> realThisOpt = attributes.stream().filter(a -> "realThis".equals(a.getName())).findFirst();
-    assertTrue(realThisOpt.isPresent());
-    ASTCDAttribute realThis = realThisOpt.get();
-    assertEquals("protected", realThis.printModifier().trim());
-    assertEquals("ABuilder", realThis.printType());
+    attribute = getAttributeBy("realThis", builderClass);
+    assertDeepEquals(PROTECTED, attribute.getModifier());
+    assertDeepEquals(cdTypeFactory.createSimpleReferenceType("ABuilder"), attribute.getType());
   }
 
   @Test
   public void testBuildMethod() {
-    Optional<ASTCDMethod> buildOpt = builderClass.getCDMethodList().stream().filter(m -> BUILD_METHOD.equals(m.getName())).findFirst();
-    assertTrue(buildOpt.isPresent());
-    ASTCDMethod build = buildOpt.get();
-    assertEquals("A", build.printReturnType());
-    assertEquals("public", build.printModifier().trim());
+    ASTCDMethod build = getMethodBy(BUILD_METHOD, builderClass);
+    assertDeepEquals(cdTypeFactory.createSimpleReferenceType("A"), build.getReturnType());
+    assertDeepEquals(PUBLIC, build.getModifier());
     assertTrue(build.getCDParameterList().isEmpty());
   }
 
   @Test
   public void testIsValidMethod() {
-    Optional<ASTCDMethod> isValidOpt = builderClass.getCDMethodList().stream().filter(m -> IS_VALID.equals(m.getName())).findFirst();
-    assertTrue(isValidOpt.isPresent());
-    ASTCDMethod isValid = isValidOpt.get();
-    assertEquals("boolean", isValid.printReturnType());
-    assertEquals("public", isValid.printModifier().trim());
+    ASTCDMethod isValid = getMethodBy(IS_VALID, builderClass);
+    assertBoolean(isValid.getReturnType());
+    assertDeepEquals(PUBLIC, isValid.getModifier());
     assertTrue(isValid.getCDParameterList().isEmpty());
   }
 

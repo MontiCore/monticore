@@ -11,15 +11,16 @@ import java.io.StringReader;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.cd2java.factories.CDTypeFactory.VOID_TYPE;
-
 public class CDMethodFactory {
   
   private static CDMethodFactory cdMethodFactory;
 
+  private final CDTypeFactory cdTypeFactory;
+
   private final CD4AnalysisParser parser;
   
   private CDMethodFactory() {
+    this.cdTypeFactory = CDTypeFactory.getInstance();
     this.parser = new CD4AnalysisParser();
   }
 
@@ -46,15 +47,15 @@ public class CDMethodFactory {
   }
 
   public ASTCDMethod createMethod(final ASTModifier modifier, final String name) {
-    return createMethod(modifier, VOID_TYPE, name);
+    return createMethod(modifier, this.cdTypeFactory.createVoidType(), name);
   }
   
   public ASTCDMethod createMethod(final ASTModifier modifier, final String name, final ASTCDParameter... parameters) {
-    return createMethod(modifier, VOID_TYPE, name, parameters);
+    return createMethod(modifier, this.cdTypeFactory.createVoidType(), name, parameters);
   }
 
   public ASTCDMethod createMethod(final ASTModifier modifier, final String name, final List<ASTCDParameter> parameters) {
-    return createMethod(modifier, VOID_TYPE, name, parameters);
+    return createMethod(modifier, this.cdTypeFactory.createVoidType(), name, parameters);
   }
 
   public ASTCDMethod createMethod(final ASTModifier modifier, final ASTReturnType returnType, final String name) {

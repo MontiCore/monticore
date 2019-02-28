@@ -2,8 +2,8 @@ package de.monticore.codegen.cd2java.methods.accessor;
 
 import de.monticore.codegen.cd2java.Decorator;
 import de.monticore.codegen.cd2java.factories.CDMethodFactory;
+import de.monticore.codegen.cd2java.factories.CDTypeFactory;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.TypesHelper;
 import de.monticore.types.types._ast.ASTType;
@@ -16,7 +16,6 @@ import java.util.List;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java.factories.CDTypeFactory.BOOLEAN_TYPE;
 
 public class OptionalAccessorDecorator implements Decorator<ASTCDAttribute, List<ASTCDMethod>> {
 
@@ -28,10 +27,13 @@ public class OptionalAccessorDecorator implements Decorator<ASTCDAttribute, List
 
   private final GlobalExtensionManagement glex;
 
+  private final CDTypeFactory cdTypeFactory;
+
   private final CDMethodFactory cdMethodFactory;
 
   public OptionalAccessorDecorator(final GlobalExtensionManagement glex) {
     this.glex = glex;
+    this.cdTypeFactory = CDTypeFactory.getInstance();
     this.cdMethodFactory = CDMethodFactory.getInstance();
   }
 
@@ -61,7 +63,7 @@ public class OptionalAccessorDecorator implements Decorator<ASTCDAttribute, List
 
   private ASTCDMethod createIsPresentMethod(final ASTCDAttribute ast) {
     String name = String.format(IS_PRESENT, StringUtils.capitalize(ast.getName()));
-    ASTCDMethod method = this.cdMethodFactory.createMethod(PUBLIC, BOOLEAN_TYPE, name);
+    ASTCDMethod method = this.cdMethodFactory.createMethod(PUBLIC, this.cdTypeFactory.createBooleanType(), name);
     this.glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.IsPresent", ast));
     return method;
   }
