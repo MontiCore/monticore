@@ -18,11 +18,11 @@ public final class DecoratorTestUtil {
   private DecoratorTestUtil() {}
 
   public static ASTCDClass getClassBy(String name, ASTCDCompilationUnit ast) {
-    List<ASTCDClass> filteredMethods = ast.getCDDefinition().getCDClassList().stream()
+    List<ASTCDClass> filtered = ast.getCDDefinition().getCDClassList().stream()
         .filter(c -> name.equals(c.getName()))
         .collect(Collectors.toList());
-    assertEquals(String.format("Expected find 1 method, but found '%s'", filteredMethods.size()), 1, filteredMethods.size());
-    return filteredMethods.get(0);
+    assertEquals(String.format("Expected find 1 class, but found '%s'", filtered.size()), 1, filtered.size());
+    return filtered.get(0);
   }
 
   public static List<ASTCDMethod> getMethodsBy(String name, ASTCDClass clazz) {
@@ -64,9 +64,9 @@ public final class DecoratorTestUtil {
   }
 
   private static ASTCDMethod filterMethodsOrFail(List<ASTCDMethod> methods, List<Predicate<ASTCDMethod>> predicates) {
-    List<ASTCDMethod> filteredMethods = filterMethods(methods, predicates);
-    assertEquals(String.format("Expected find 1 method, but found '%s'", filteredMethods.size()), 1, filteredMethods.size());
-    return filteredMethods.get(0);
+    List<ASTCDMethod> filtered = filterMethods(methods, predicates);
+    assertEquals(String.format("Expected find 1 method, but found '%s'", filtered.size()), 1, filtered.size());
+    return filtered.get(0);
   }
 
   private static List<ASTCDMethod> filterMethods(List<ASTCDMethod> methods, List<Predicate<ASTCDMethod>> predicates) {
@@ -78,10 +78,10 @@ public final class DecoratorTestUtil {
   }
 
   public static ASTCDAttribute getAttributeBy(String name, ASTCDClass clazz) {
-    List<ASTCDAttribute> filterAttributes = clazz.getCDAttributeList().stream()
+    List<ASTCDAttribute> filtered = clazz.getCDAttributeList().stream()
         .filter(attribute -> name.equals(attribute.getName()))
         .collect(Collectors.toList());
-    assertEquals(String.format("Expected find 1 method, but found '%s'", filterAttributes.size()), 1, filterAttributes.size());
-    return filterAttributes.get(0);
+    assertEquals(String.format("Expected find 1 attribute, but found '%s'", filtered.size()), 1, filtered.size());
+    return filtered.get(0);
   }
 }
