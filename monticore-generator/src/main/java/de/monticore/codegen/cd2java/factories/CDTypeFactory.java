@@ -91,12 +91,18 @@ public class CDTypeFactory {
         .build();
   }
 
+  public ASTComplexReferenceType createComplexReferenceType(final String name) {
+    return TypesMill.complexReferenceTypeBuilder()
+        .setSimpleReferenceTypeList(Arrays.asList(createSimpleReferenceType(name)))
+        .build();
+  }
+
   public ASTComplexArrayType createArrayType(final Class<?> clazz, int dimension) {
     return createArrayType(clazz.getSimpleName(), dimension);
   }
 
   public ASTComplexArrayType createArrayType(final String name, int dimension) {
-    return createArrayType(this.createSimpleReferenceType(name), dimension);
+    return createArrayType(this.createComplexReferenceType(name), dimension);
   }
 
   private ASTComplexArrayType createArrayType(final ASTType type, int dimension) {

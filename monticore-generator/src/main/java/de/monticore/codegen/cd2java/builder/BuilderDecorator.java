@@ -20,7 +20,7 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.builder.BuilderDecoratorConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
-class BuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
+public class BuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
 
   private final GlobalExtensionManagement glex;
 
@@ -32,8 +32,7 @@ class BuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
 
   private final CDMethodFactory cdMethodFactory;
 
-
-  BuilderDecorator(final GlobalExtensionManagement glex) throws DecorateException {
+  public BuilderDecorator(final GlobalExtensionManagement glex) {
     this.glex = glex;
     this.cdTypeFactory = CDTypeFactory.getInstance();
     this.cdAttributeFactory = CDAttributeFactory.getInstance();
@@ -77,13 +76,13 @@ class BuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
     AccessorDecorator accessorDecorator = new AccessorDecorator(this.glex);
     MutatorDecorator mutatorDecorator = new MutatorDecorator(this.glex);
 
-    List<ASTCDMethod> accessorMethods = domainClass.getCDAttributeList().stream()
+    List<ASTCDMethod> accessorMethods = builderAttributes.stream()
         .map(accessorDecorator::decorate)
         .flatMap(List::stream)
         .collect(Collectors.toList());
 
     List<ASTCDMethod> mutatorMethods = new ArrayList<>();
-    for (ASTCDAttribute attribute : domainClass.getCDAttributeList()) {
+    for (ASTCDAttribute attribute : builderAttributes) {
       List<ASTCDMethod> methods = mutatorDecorator.decorate(attribute);
       for (ASTCDMethod m : methods) {
         m.setReturnType(builderType);
