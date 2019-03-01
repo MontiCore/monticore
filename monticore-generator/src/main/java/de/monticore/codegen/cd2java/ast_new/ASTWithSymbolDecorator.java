@@ -27,9 +27,11 @@ public class ASTWithSymbolDecorator implements Decorator<ASTCDClass, ASTCDClass>
 
   private final ASTCDCompilationUnit compilationUnit;
 
-  private static final String SYMBOL_PREFIX = "Symbol";
+  private static final String SYMBOL_SUFFIX = "Symbol";
 
-  private static final String SCOPE_PREFIX = "Scope";
+  private static final String SCOPE_SUFFIX = "Scope";
+
+  private static final String SYMBOLTABLE_PACKAGE = "._symboltable.";
 
 
   public ASTWithSymbolDecorator(GlobalExtensionManagement glex, ASTCDCompilationUnit compilationUnit) {
@@ -45,16 +47,17 @@ public class ASTWithSymbolDecorator implements Decorator<ASTCDClass, ASTCDClass>
 
     ast = astDecorator.decorate(ast);
     if (isSymbolClass(ast)) {
-      String symbolName = getSymbolName(ast);
-      String attributeName = StringUtils.uncapitalize(ast.getName().replaceFirst("AST", "")) + SYMBOL_PREFIX;
-      final ASTCDAttribute symbolAttribute = addAttribute(symbolName, attributeName);
+      String symbolType = getSymbolType(ast);
+      String attributeName = StringUtils.uncapitalize(ast.getName().replaceFirst("AST", "")) + SYMBOL_SUFFIX;
+      final ASTCDAttribute symbolAttribute = addAttribute(symbolType, attributeName);
       ast.addCDAttribute(symbolAttribute);
       List<ASTCDMethod> methods = addMethod(symbolAttribute);
       ast.addAllCDMethods(methods);
     }
     if (isScopeClass(ast)) {
-      String scopeName = getScopeName();
-      ASTCDAttribute scopeAttribute = addAttribute(scopeName, StringUtils.uncapitalize(compilationUnit.getCDDefinition().getName())+SCOPE_PREFIX);
+      String scopeType = getScopeType();
+      String attributeName = StringUtils.uncapitalize(compilationUnit.getCDDefinition().getName()) + SCOPE_SUFFIX;
+      ASTCDAttribute scopeAttribute = addAttribute(scopeType, attributeName);
       ast.addCDAttribute(scopeAttribute);
       List<ASTCDMethod> methods = addMethod(scopeAttribute);
       ast.addAllCDMethods(methods);
@@ -62,12 +65,12 @@ public class ASTWithSymbolDecorator implements Decorator<ASTCDClass, ASTCDClass>
     return ast;
   }
 
-  private ASTCDAttribute addAttribute(String typeName, String attrName){
+  private ASTCDAttribute addAttribute(String typeName, String attrName) {
     ASTType optSymbolType = cdTypeFactory.createTypeByDefinition("Optional<" + typeName + ">");
     return cdAttributeFactory.createAttribute(CDModifier.PROTECTED, optSymbolType, attrName);
   }
 
-  private List<ASTCDMethod> addMethod(ASTCDAttribute attribute){
+  private List<ASTCDMethod> addMethod(ASTCDAttribute attribute) {
     MethodDecorator methodDecorator = new MethodDecorator(glex);
     return methodDecorator.decorate(attribute);
   }
@@ -89,20 +92,19 @@ public class ASTWithSymbolDecorator implements Decorator<ASTCDClass, ASTCDClass>
     return false;
   }
 
-  private String getSymbolName(ASTCDClass astcdClass) {
-    return getQualifiedName(astcdClass.getName().replaceFirst("AST", "") + SYMBOL_PREFIX);
+  private String getSymbolType(ASTCDClass astcdClass) {
+    return getPackage() + SYMBOLTABLE_PACKAGE + astcdClass.getName().replaceFirst("AST", "") + SYMBOL_SUFFIX;
   }
 
-  private String getScopeName() {
-    return getQualifiedName(compilationUnit.getCDDefinition().getName().replaceFirst("AST", "") + SCOPE_PREFIX);
+  private String getScopeType() {
+    return getPackage() + SYMBOLTABLE_PACKAGE + compilationUnit.getCDDefinition().getName() + SCOPE_SUFFIX;
   }
-  
-  private String getQualifiedName( String name){
-    if (!getQualifier(name).isEmpty()) {
-      name = SymbolTableGeneratorHelper
-          .getQualifiedSymbolType(getQualifier(name)
-              .toLowerCase(), Names.getSimpleName(name));
-    }
-    return name;
+
+
+  private String getPackage() {
+    String qualifiedName = Names.getQualifiedName(compilationUnit.getPackageList(), compilationUnit.getCDDefinition().getName());
+    return qualifiedName.toLowerCase();
   }
+
+
 }
