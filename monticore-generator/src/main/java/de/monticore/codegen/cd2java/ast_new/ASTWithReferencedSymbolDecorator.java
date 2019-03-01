@@ -21,7 +21,7 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
 import static de.se_rwth.commons.Names.getQualifier;
 import static de.se_rwth.commons.Names.getSimpleName;
 
-public class ASTWithReferencedSymbolDecorator implements Decorator<ASTCDClass, ASTCDClass> {
+class ASTWithReferencedSymbolDecorator implements Decorator<ASTCDClass, ASTCDClass> {
 
   private final GlobalExtensionManagement glex;
 
@@ -36,7 +36,7 @@ public class ASTWithReferencedSymbolDecorator implements Decorator<ASTCDClass, A
   private static final String SYMBOL = "Symbol";
 
 
-  public ASTWithReferencedSymbolDecorator(GlobalExtensionManagement glex, ASTCDCompilationUnit compilationUnit) {
+  ASTWithReferencedSymbolDecorator(GlobalExtensionManagement glex, ASTCDCompilationUnit compilationUnit) {
     this.glex = glex;
     this.compilationUnit = compilationUnit;
     this.cdTypeFactory = CDTypeFactory.getInstance();
@@ -44,9 +44,7 @@ public class ASTWithReferencedSymbolDecorator implements Decorator<ASTCDClass, A
   }
 
   @Override
-  public ASTCDClass decorate(ASTCDClass ast) {
-    ASTDecorator astDecorator = new ASTDecorator(glex, compilationUnit);
-    ASTCDClass astcdClass = astDecorator.decorate(ast);
+  public ASTCDClass decorate(ASTCDClass astcdClass) {
     List<ASTCDAttribute> attributeList = new ArrayList<>();
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDAttribute astcdAttribute : astcdClass.getCDAttributeList()) {
@@ -86,7 +84,7 @@ public class ASTWithReferencedSymbolDecorator implements Decorator<ASTCDClass, A
       refSymbolAttribute = cdAttributeFactory.createAttribute(refSymbolAttribute.getModifier(), listType, refSymbolAttribute.getName());
     }
     AccessorDecorator accessorDecorator = new AccessorDecorator(glex);
-    List<ASTCDMethod> methods =  accessorDecorator.decorate(refSymbolAttribute);
+    List<ASTCDMethod> methods = accessorDecorator.decorate(refSymbolAttribute);
     return methods;
   }
 
@@ -102,7 +100,7 @@ public class ASTWithReferencedSymbolDecorator implements Decorator<ASTCDClass, A
     }
     ASTCDAttribute refSymbolAttribute = cdAttributeFactory.createAttribute(PRIVATE, symbolType, astcdAttribute.getName() + DEFINITION);
     AccessorDecorator accessorDecorator = new AccessorDecorator(glex);
-    List<ASTCDMethod> methods =  accessorDecorator.decorate(refSymbolAttribute);
+    List<ASTCDMethod> methods = accessorDecorator.decorate(refSymbolAttribute);
     return methods;
   }
 

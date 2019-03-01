@@ -78,7 +78,7 @@ public class ASTDecoratorWithRefSymbolOptionalTest {
     typeDecorator.decorate(cdCompilationUnit);
 
     glex.setGlobalValue("astHelper", new DecorationHelper());
-    ASTWithReferencedSymbolDecorator symbolDecorator = new ASTWithReferencedSymbolDecorator(glex, cdCompilationUnit);
+    ASTDecorator symbolDecorator = new ASTDecorator(glex, cdCompilationUnit);
     this.astcdClass = symbolDecorator.decorate(cdCompilationUnit.getCDDefinition().getCDClass(4));
     this.methods = astcdClass.getCDMethodList();
   }
