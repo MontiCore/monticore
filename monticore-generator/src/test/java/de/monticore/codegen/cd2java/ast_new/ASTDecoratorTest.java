@@ -89,7 +89,7 @@ public class ASTDecoratorTest {
   @Test
   public void testAttributes() {
     assertFalse(automatonClass.isEmptyCDAttributes());
-    assertEquals(3, automatonClass.sizeCDAttributes());
+    assertEquals(5, automatonClass.sizeCDAttributes());
   }
 
   @Test
@@ -151,7 +151,7 @@ public class ASTDecoratorTest {
   @Test
   public void testMethods() {
     assertFalse(automatonClass.isEmptyCDMethods());
-    assertEquals(81, automatonClass.sizeCDMethods());
+    assertEquals(93, automatonClass.sizeCDMethods());
   }
 
   @Test

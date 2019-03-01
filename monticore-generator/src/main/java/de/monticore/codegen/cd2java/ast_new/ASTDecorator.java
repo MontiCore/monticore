@@ -90,7 +90,7 @@ public class ASTDecorator implements Decorator<ASTCDClass, ASTCDClass> {
 
     ASTReferenceType interfaceNode = cdTypeFactory.createReferenceTypeByDefinition(AST_PREFIX + compilationUnit.getCDDefinition().getName() + "Node");
 
-    return CD4AnalysisMill.cDClassBuilder()
+    ASTCDClass astClassWithoutSymbols= CD4AnalysisMill.cDClassBuilder()
         .setModifier(astcdClass.getModifier())
         .setName(astcdClass.getName())
         .addAllCDAttributes(new ArrayList<>(astcdClass.getCDAttributeList()))
@@ -104,6 +104,11 @@ public class ASTDecorator implements Decorator<ASTCDClass, ASTCDClass> {
         .setSuperclass(superClass)
         .addInterface(interfaceNode)
         .build();
+
+    ASTWithSymbolDecorator symbolDecorator = new ASTWithSymbolDecorator(glex, compilationUnit);
+    ASTCDClass astClassWithSymbolAndScope = symbolDecorator.decorate(astClassWithoutSymbols);
+    ASTWithReferencedSymbolDecorator referencedSymbolDecorator = new ASTWithReferencedSymbolDecorator(glex, compilationUnit);
+    return referencedSymbolDecorator.decorate(astClassWithSymbolAndScope);
   }
 
   private List<ASTCDMethod> getAcceptMethods(ASTCDClass astcdClass, String simpleClassName) {

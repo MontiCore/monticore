@@ -4,7 +4,6 @@ import de.monticore.codegen.cd2java.Decorator;
 import de.monticore.codegen.cd2java.factories.*;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
-import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
@@ -16,9 +15,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
-import static de.se_rwth.commons.Names.getQualifier;
 
-public class ASTWithSymbolDecorator implements Decorator<ASTCDClass, ASTCDClass> {
+class ASTWithSymbolDecorator implements Decorator<ASTCDClass, ASTCDClass> {
   private final GlobalExtensionManagement glex;
 
   private final CDTypeFactory cdTypeFactory;
@@ -34,7 +32,7 @@ public class ASTWithSymbolDecorator implements Decorator<ASTCDClass, ASTCDClass>
   private static final String SYMBOLTABLE_PACKAGE = "._symboltable.";
 
 
-  public ASTWithSymbolDecorator(GlobalExtensionManagement glex, ASTCDCompilationUnit compilationUnit) {
+  ASTWithSymbolDecorator(GlobalExtensionManagement glex, ASTCDCompilationUnit compilationUnit) {
     this.glex = glex;
     this.compilationUnit = compilationUnit;
     this.cdTypeFactory = CDTypeFactory.getInstance();
@@ -43,9 +41,6 @@ public class ASTWithSymbolDecorator implements Decorator<ASTCDClass, ASTCDClass>
 
   @Override
   public ASTCDClass decorate(ASTCDClass ast) {
-    ASTDecorator astDecorator = new ASTDecorator(glex, compilationUnit);
-
-    ast = astDecorator.decorate(ast);
     if (isSymbolClass(ast)) {
       String symbolType = getSymbolType(ast);
       String attributeName = StringUtils.uncapitalize(ast.getName().replaceFirst("AST", "")) + SYMBOL_SUFFIX;
