@@ -20,6 +20,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+import static de.monticore.codegen.cd2java.DecoratorAssert.*;
+
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -91,7 +93,7 @@ public class MillWithInheritanceTest {
     assertTrue(getMill.isEmptyCDParameters());
     //test ReturnType
     ASTType returnType = cdTypeFacade.createTypeByDefinition("BGrammarMill");
-    assertTrue(returnType.deepEquals(getMill.getReturnType()));
+    assertDeepEquals(returnType, getMill.getReturnType());
     //test Modifier
     assertTrue(PROTECTED_STATIC.build().deepEquals(getMill.getModifier()));
   }
@@ -104,10 +106,10 @@ public class MillWithInheritanceTest {
     //test Parameters
     assertEquals(1, initMe.sizeCDParameters());
     ASTType type = cdTypeFacade.createSimpleReferenceType("BGrammarMill");
-    assertTrue(type.deepEquals(initMe.getCDParameter(0).getType()));
+    assertDeepEquals(type, initMe.getCDParameter(0).getType());
     assertEquals("a", initMe.getCDParameter(0).getName());
     //test ReturnType
-    assertTrue(cdTypeFacade.createVoidType().deepEquals(initMe.getReturnType()));
+    assertVoid(initMe.getReturnType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(initMe.getModifier()));
   }
@@ -120,7 +122,7 @@ public class MillWithInheritanceTest {
     //test Parameters
     assertTrue(init.isEmptyCDParameters());
     //test ReturnType
-    assertTrue(cdTypeFacade.createVoidType().deepEquals(init.getReturnType()));
+    assertVoid(init.getReturnType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(init.getModifier()));
   }
@@ -133,7 +135,7 @@ public class MillWithInheritanceTest {
     //test Parameters
     assertTrue(init.isEmptyCDParameters());
     //test ReturnType
-    assertTrue(cdTypeFacade.createVoidType().deepEquals(init.getReturnType()));
+    assertVoid(init.getReturnType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(init.getModifier()));
   }
@@ -147,7 +149,7 @@ public class MillWithInheritanceTest {
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
     ASTType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.cgrammar._ast.ASTC");
-    assertTrue(returnType.deepEquals(fooBarBuilder.getReturnType()));
+    assertDeepEquals(returnType, fooBarBuilder.getReturnType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(fooBarBuilder.getModifier()));
   }
@@ -162,7 +164,7 @@ public class MillWithInheritanceTest {
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
     ASTType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.agrammar._ast.ASTFoo");
-    assertTrue(returnType.deepEquals(fooBarBuilder.getReturnType()));
+    assertDeepEquals(returnType, fooBarBuilder.getReturnType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(fooBarBuilder.getModifier()));
   }
@@ -176,7 +178,7 @@ public class MillWithInheritanceTest {
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
     ASTType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.agrammar._ast.ASTBar");
-    assertTrue(returnType.deepEquals(fooBarBuilder.getReturnType()));
+    assertDeepEquals(returnType, fooBarBuilder.getReturnType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(fooBarBuilder.getModifier()));
   }

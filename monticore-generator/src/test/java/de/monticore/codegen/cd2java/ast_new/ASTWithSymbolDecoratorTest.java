@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static org.junit.Assert.*;
 
 public class ASTWithSymbolDecoratorTest {
@@ -97,19 +98,18 @@ public class ASTWithSymbolDecoratorTest {
 
   @Test
   public void testSymbolAttribute() {
-    Optional<ASTCDAttribute> symbolAttribute = astcdClass.getCDAttributeList().stream().filter(m -> "automatonSymbol".equals(m.getName())).findFirst();
-    assertTrue(symbolAttribute.isPresent());
-    assertEquals(PROTECTED, symbolAttribute.get().printModifier().trim());
+    ASTCDAttribute symbolAttribute = getAttributeBy("automatonSymbol", astcdClass);
+    assertEquals(PROTECTED, symbolAttribute.printModifier().trim());
 
-    assertEquals("Optional<automaton._symboltable.AutomatonSymbol>",symbolAttribute.get().printType());
+    assertEquals("Optional<automaton._symboltable.AutomatonSymbol>",symbolAttribute.printType());
   }
 
   @Test
   public void testScopeAttribute() {
-    Optional<ASTCDAttribute> symbolAttribute = astcdClass.getCDAttributeList().stream().filter(m -> "automatonScope".equals(m.getName())).findFirst();
-    assertTrue(symbolAttribute.isPresent());
-    assertEquals(PROTECTED, symbolAttribute.get().printModifier().trim());
-    assertEquals("Optional<automaton._symboltable.AutomatonScope>",symbolAttribute.get().printType());
+    ASTCDAttribute symbolAttribute = getAttributeBy("automatonScope", astcdClass);
+
+    assertEquals(PROTECTED, symbolAttribute.printModifier().trim());
+    assertEquals("Optional<automaton._symboltable.AutomatonScope>",symbolAttribute.printType());
   }
 
   @Test

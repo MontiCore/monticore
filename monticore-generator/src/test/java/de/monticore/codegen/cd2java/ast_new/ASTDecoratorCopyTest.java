@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static org.junit.Assert.assertTrue;
 
 public class ASTDecoratorCopyTest {
@@ -43,10 +44,10 @@ public class ASTDecoratorCopyTest {
     ASTCDCompilationUnit copy = cdCompilationUnit.deepClone();
 
     ASTDecorator astDecorator = new ASTDecorator(new GlobalExtensionManagement(), cdCompilationUnit);
-    for(ASTCDClass astcdClass : cdCompilationUnit.getCDDefinition().getCDClassList()){
+    for (ASTCDClass astcdClass : cdCompilationUnit.getCDDefinition().getCDClassList()) {
       astDecorator.decorate(astcdClass);
     }
 
-    assertTrue(cdCompilationUnit.deepEquals(copy));
+    assertDeepEquals(cdCompilationUnit, copy);
   }
 }

@@ -21,8 +21,11 @@ import org.junit.Test;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
 
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -47,6 +50,9 @@ public class ASTDecoratorWithRefSymbolOptionalTest {
   private static final String PUBLIC = "public";
 
   private static final String PRIVATE = "private";
+
+  private List<ASTCDMethod> methods;
+
 
   @Before
   public void setUp() {
@@ -74,6 +80,7 @@ public class ASTDecoratorWithRefSymbolOptionalTest {
     glex.setGlobalValue("astHelper", new DecorationHelper());
     ASTWithReferencedSymbolDecorator symbolDecorator = new ASTWithReferencedSymbolDecorator(glex, cdCompilationUnit);
     this.astcdClass = symbolDecorator.decorate(cdCompilationUnit.getCDDefinition().getCDClass(4));
+    this.methods = astcdClass.getCDMethodList();
   }
 
   @Test
@@ -89,10 +96,9 @@ public class ASTDecoratorWithRefSymbolOptionalTest {
 
   @Test
   public void testSymbolAttribute() {
-    Optional<ASTCDAttribute> symbolAttribute = astcdClass.getCDAttributeList().stream().filter(m -> "nameSymbol".equals(m.getName())).findFirst();
-    assertTrue(symbolAttribute.isPresent());
-    assertEquals(PRIVATE, symbolAttribute.get().printModifier().trim());
-    assertEquals(OPTIONAL_SYMBOL_TYPE, symbolAttribute.get().printType());
+    ASTCDAttribute symbolAttribute = getAttributeBy("nameSymbol", astcdClass);
+    assertEquals(PRIVATE, symbolAttribute.printModifier().trim());
+    assertEquals(OPTIONAL_SYMBOL_TYPE, symbolAttribute.printType());
   }
 
   @Test
@@ -102,61 +108,53 @@ public class ASTDecoratorWithRefSymbolOptionalTest {
 
   @Test
   public void testGetSymbol() {
-    Optional<ASTCDMethod> getMethod = astcdClass.getCDMethodList().stream().filter(m -> "getNameSymbol".equals(m.getName())).findFirst();
-    assertTrue(getMethod.isPresent());
-    assertTrue(getMethod.get().getCDParameterList().isEmpty());
-    assertEquals(PUBLIC, getMethod.get().printModifier().trim());
-    assertEquals(SYMBOL_TYPE, getMethod.get().printReturnType());
+    ASTCDMethod method = getMethodBy("getNameSymbol", methods);
+    assertTrue(method.getCDParameterList().isEmpty());
+    assertEquals(PUBLIC, method.printModifier().trim());
+    assertEquals(SYMBOL_TYPE, method.printReturnType());
   }
 
   @Test
   public void testGetOptSymbol() {
-    Optional<ASTCDMethod> getMethod = astcdClass.getCDMethodList().stream().filter(m -> "getNameSymbolOpt".equals(m.getName())).findFirst();
-    assertTrue(getMethod.isPresent());
-    assertTrue(getMethod.get().getCDParameterList().isEmpty());
-    assertEquals(PUBLIC, getMethod.get().printModifier().trim());
-    assertEquals(OPTIONAL_SYMBOL_TYPE, getMethod.get().printReturnType());
+    ASTCDMethod method = getMethodBy("getNameSymbolOpt", methods);
+    assertTrue(method.getCDParameterList().isEmpty());
+    assertEquals(PUBLIC, method.printModifier().trim());
+    assertEquals(OPTIONAL_SYMBOL_TYPE, method.printReturnType());
   }
 
   @Test
   public void testIsPresentSymbol() {
-    Optional<ASTCDMethod> getMethod = astcdClass.getCDMethodList().stream().filter(m -> "isPresentNameSymbol".equals(m.getName())).findFirst();
-    assertTrue(getMethod.isPresent());
-    assertTrue(getMethod.get().getCDParameterList().isEmpty());
-    assertEquals(PUBLIC, getMethod.get().printModifier().trim());
-    assertEquals("boolean",getMethod.get().printReturnType());
+    ASTCDMethod method = getMethodBy("isPresentNameSymbol", methods);
+    assertTrue(method.getCDParameterList().isEmpty());
+    assertEquals(PUBLIC, method.printModifier().trim());
+    assertEquals("boolean", method.printReturnType());
   }
-
-
 
   @Test
   public void testGetDefinition() {
-    Optional<ASTCDMethod> getMethod = astcdClass.getCDMethodList().stream().filter(m -> "getNameDefinition".equals(m.getName())).findFirst();
-    assertTrue(getMethod.isPresent());
-    assertTrue(getMethod.get().getCDParameterList().isEmpty());
-    assertEquals(PUBLIC, getMethod.get().printModifier().trim());
-    assertEquals(DEFINITION_TYPE, getMethod.get().printReturnType());
+    ASTCDMethod method = getMethodBy("getNameDefinition", methods);
+    assertTrue(method.getCDParameterList().isEmpty());
+    assertEquals(PUBLIC, method.printModifier().trim());
+    assertEquals(DEFINITION_TYPE, method.printReturnType());
   }
 
   @Test
   public void testGetOptDefinition() {
-    Optional<ASTCDMethod> getMethod = astcdClass.getCDMethodList().stream().filter(m -> "getNameDefinitionOpt".equals(m.getName())).findFirst();
-    assertTrue(getMethod.isPresent());
-    assertTrue(getMethod.get().getCDParameterList().isEmpty());
-    assertEquals(PUBLIC, getMethod.get().printModifier().trim());
-    assertEquals(OPTIONAL_DEFINITION_TYPE, getMethod.get().printReturnType());
+    ASTCDMethod method = getMethodBy("getNameDefinitionOpt", methods);
+    assertTrue(method.getCDParameterList().isEmpty());
+    assertEquals(PUBLIC, method.printModifier().trim());
+    assertEquals(OPTIONAL_DEFINITION_TYPE, method.printReturnType());
   }
 
   @Test
   public void testIsPresentDefinition() {
-    Optional<ASTCDMethod> getMethod = astcdClass.getCDMethodList().stream().filter(m -> "isPresentNameDefinition".equals(m.getName())).findFirst();
-    assertTrue(getMethod.isPresent());
-    assertTrue(getMethod.get().getCDParameterList().isEmpty());
-    assertEquals(PUBLIC, getMethod.get().printModifier().trim());
-    assertEquals("boolean",getMethod.get().printReturnType());
+    ASTCDMethod method = getMethodBy("isPresentNameDefinition", methods);
+    assertTrue(method.getCDParameterList().isEmpty());
+    assertEquals(PUBLIC, method.printModifier().trim());
+    assertEquals("boolean", method.printReturnType());
   }
 
-  
+
   @Test
   public void testGeneratedCode() {
     GeneratorSetup generatorSetup = new GeneratorSetup();

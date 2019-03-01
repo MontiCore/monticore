@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 import static org.junit.Assert.*;
 
@@ -65,7 +66,7 @@ public class NodeFactoryDecoratorTest {
 
     NodeFactoryDecorator factoryDecorator = new NodeFactoryDecorator(glex);
     this.factoryClass = factoryDecorator.decorate(cdCompilationUnit);
-}
+  }
 
   @Test
   public void testFactoryName() {
@@ -95,7 +96,7 @@ public class NodeFactoryDecoratorTest {
         .setModifier(PROTECTED.build())
         .setName("AutomatonNodeFactory")
         .build();
-    assertTrue(astcdConstructor.deepEquals(factoryClass.getCDConstructor(0)));
+    assertDeepEquals(astcdConstructor, factoryClass.getCDConstructor(0));
   }
 
   @Test
@@ -109,7 +110,7 @@ public class NodeFactoryDecoratorTest {
     assertTrue(method.isEmptyCDParameters());
     //test returnType
     ASTType returnType = cdTypeFacade.createTypeByDefinition("AutomatonNodeFactory");
-    assertTrue(returnType.deepEquals(method.getReturnType()));
+    assertDeepEquals(returnType, method.getReturnType());
   }
 
   @Test
@@ -123,7 +124,7 @@ public class NodeFactoryDecoratorTest {
     assertTrue(method.isEmptyCDParameters());
     //test returnType
     ASTType returnType = cdTypeFacade.createTypeByDefinition("ASTAutomaton");
-    assertTrue(returnType.deepEquals(method.getReturnType()));
+    assertDeepEquals(returnType, method.getReturnType());
   }
 
   @Test
@@ -137,7 +138,7 @@ public class NodeFactoryDecoratorTest {
     assertTrue(method.isEmptyCDParameters());
     //test returnType
     ASTType returnType = cdTypeFacade.createTypeByDefinition("ASTAutomaton");
-    assertTrue(returnType.deepEquals(method.getReturnType()));
+    assertDeepEquals(returnType, method.getReturnType());
   }
 
   @Test
@@ -149,23 +150,23 @@ public class NodeFactoryDecoratorTest {
     assertTrue(PUBLIC_STATIC.build().deepEquals(method.getModifier()));
     //test returnType
     ASTType returnType = cdTypeFacade.createTypeByDefinition("ASTAutomaton");
-    assertTrue(returnType.deepEquals(method.getReturnType()));
+    assertDeepEquals(returnType, method.getReturnType());
     //testParameter
     assertFalse(method.isEmptyCDParameters());
 
     ASTType nameType = cdTypeFacade.createTypeByDefinition("String");
     ASTCDParameter nameParameter = cdParameterFacade.createParameter(nameType, "name");
-    assertTrue(nameParameter.getType().deepEquals(method.getCDParameter(0).getType()));
+    assertDeepEquals(nameParameter.getType(), method.getCDParameter(0).getType());
     assertEquals(nameParameter.getName(), method.getCDParameter(0).getName());
 
     ASTType statesType = cdTypeFacade.createTypeByDefinition("java.util.List<automaton._ast.ASTState>");
     ASTCDParameter statesParameter = cdParameterFacade.createParameter(statesType, "states");
-    assertTrue(statesParameter.getType().deepEquals(method.getCDParameter(1).getType()));
+    assertDeepEquals(statesParameter.getType(), method.getCDParameter(1).getType());
     assertEquals(statesParameter.getName(), method.getCDParameter(1).getName());
 
     ASTType transitionsType = cdTypeFacade.createTypeByDefinition("java.util.List<automaton._ast.ASTTransition>");
     ASTCDParameter transitionsParameter = cdParameterFacade.createParameter(transitionsType, "transitions");
-    assertTrue(transitionsParameter.getType().deepEquals(method.getCDParameter(2).getType()));
+    assertDeepEquals(transitionsParameter.getType(), method.getCDParameter(2).getType());
     assertEquals(transitionsParameter.getName(), method.getCDParameter(2).getName());
   }
 
@@ -178,23 +179,23 @@ public class NodeFactoryDecoratorTest {
     assertTrue(PROTECTED.build().deepEquals(method.getModifier()));
     //test returnType
     ASTType returnType = cdTypeFacade.createTypeByDefinition("ASTAutomaton");
-    assertTrue(returnType.deepEquals(method.getReturnType()));
+    assertDeepEquals(returnType,method.getReturnType());
     //testParameter
     assertFalse(method.isEmptyCDParameters());
 
     ASTType nameType = cdTypeFacade.createTypeByDefinition("String");
     ASTCDParameter nameParameter = cdParameterFacade.createParameter(nameType, "name");
-    assertTrue(nameParameter.getType().deepEquals(method.getCDParameter(0).getType()));
+    assertDeepEquals(nameParameter.getType(), method.getCDParameter(0).getType());
     assertEquals(nameParameter.getName(), method.getCDParameter(0).getName());
 
     ASTType statesType = cdTypeFacade.createTypeByDefinition("java.util.List<automaton._ast.ASTState>");
     ASTCDParameter statesParameter = cdParameterFacade.createParameter(statesType, "states");
-    assertTrue(statesParameter.getType().deepEquals(statesType));
+    assertDeepEquals(statesParameter.getType(), statesType);
     assertEquals(statesParameter.getName(), method.getCDParameter(1).getName());
 
     ASTType transitionsType = cdTypeFacade.createTypeByDefinition("java.util.List<automaton._ast.ASTTransition>");
     ASTCDParameter transitionsParameter = cdParameterFacade.createParameter(transitionsType, "transitions");
-    assertTrue(transitionsParameter.getType().deepEquals(transitionsType));
+    assertDeepEquals(transitionsParameter.getType(), transitionsType);
     assertEquals(transitionsParameter.getName(), method.getCDParameter(2).getName());
   }
 

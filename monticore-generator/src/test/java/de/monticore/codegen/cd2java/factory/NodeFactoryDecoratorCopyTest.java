@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static org.junit.Assert.assertTrue;
 
 public class NodeFactoryDecoratorCopyTest {
@@ -46,10 +47,10 @@ public class NodeFactoryDecoratorCopyTest {
     NodeFactoryDecorator factoryDecorator = new NodeFactoryDecorator(new GlobalExtensionManagement());
     factoryDecorator.decorate(cdCompilationUnit);
 
-    assertTrue(cdCompilationUnit.deepEquals(copy));
+    assertDeepEquals(cdCompilationUnit, copy);
   }
 
-
+  @Test
   public void testCopyWithInheritance() {
     //create grammar from ModelPath
     Path modelPathPath = Paths.get("src/test/resources");
@@ -72,8 +73,7 @@ public class NodeFactoryDecoratorCopyTest {
     NodeFactoryDecorator factoryDecorator = new NodeFactoryDecorator(new GlobalExtensionManagement());
     factoryDecorator.decorate(cdCompilationUnit);
 
-    assertTrue(cdCompilationUnit.deepEquals(copy));
-
+    assertDeepEquals(cdCompilationUnit, copy);
   }
 
 }

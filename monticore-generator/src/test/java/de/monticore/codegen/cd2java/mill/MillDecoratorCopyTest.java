@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static org.junit.Assert.assertTrue;
 
 public class MillDecoratorCopyTest {
@@ -43,7 +44,7 @@ public class MillDecoratorCopyTest {
     MillDecorator millDecorator = new MillDecorator(new GlobalExtensionManagement());
     millDecorator.decorate(cdCompilationUnit);
     //test if not changed the original Definition
-    assertTrue(cdCompilationUnit.deepEquals(copy));
+    assertDeepEquals(cdCompilationUnit, copy);
   }
 
   @Test
@@ -70,7 +71,7 @@ public class MillDecoratorCopyTest {
     MillDecorator millDecorator = new MillDecorator(new GlobalExtensionManagement());
     millDecorator.decorate(cdCompilationUnit);
 
-    assertTrue(cdCompilationUnit.deepEquals(copy));
+    assertDeepEquals(cdCompilationUnit, copy);
   }
 
 }

@@ -21,8 +21,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertBoolean;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
@@ -40,15 +42,9 @@ public class ASTDecoratorWithRefSymbolListTest {
 
   private static final String PUBLIC = "public";
 
-  private static final String BOOLEAN = "boolean";
-
   private static final String MAP_SYMBOL_ATTR_TYPE = "Map<String, Optional<de.monticore.codegen.ast.asttest._symboltable.MandSymbol>>";
 
   private static final String OPTIONAL_SYMBOL_TYPE = "Optional<de.monticore.codegen.ast.asttest._symboltable.MandSymbol>";
-
-  private static final String DEFINITION_TYPE = "de.monticore.codegen.ast.asttest._ast.ASTMand";
-
-  private static final String OPTIONAL_DEFINITION_TYPE = "Optional<de.monticore.codegen.ast.asttest._ast.ASTMand>";
 
   @Before
   public void setUp() {
@@ -92,10 +88,9 @@ public class ASTDecoratorWithRefSymbolListTest {
 
   @Test
   public void testSymbolAttribute() {
-    Optional<ASTCDAttribute> symbolAttribute = astcdClass.getCDAttributeList().stream().filter(m -> "namesSymbol".equals(m.getName())).findFirst();
-    assertTrue(symbolAttribute.isPresent());
-    assertTrue(PRIVATE.build().deepEquals(symbolAttribute.get().getModifier()));
-    assertEquals(MAP_SYMBOL_ATTR_TYPE, symbolAttribute.get().printType());
+    ASTCDAttribute symbolAttribute = getAttributeBy("namesSymbol", astcdClass);
+    assertTrue(PRIVATE.build().deepEquals(symbolAttribute.getModifier()));
+    assertEquals(MAP_SYMBOL_ATTR_TYPE, symbolAttribute.printType());
   }
 
   @Test
@@ -105,22 +100,15 @@ public class ASTDecoratorWithRefSymbolListTest {
 
   @Test
   public void testGetMethod() {
-    List<ASTCDMethod> methodOpt = this.methods.stream()
-        .filter(m -> "getNamesSymbolList".equals(m.getName()))
-        .filter(m -> m.getCDParameterList().isEmpty())
-        .collect(Collectors.toList());
-    assertEquals(1, methodOpt.size());
-    ASTCDMethod method = methodOpt.get(0);
+    ASTCDMethod method = getMethodBy("getNamesSymbolList", 0, methods);
     assertEquals("List<" + OPTIONAL_SYMBOL_TYPE + ">", method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
   }
 
   @Test
   public void testContainsMethod() {
-    Optional<ASTCDMethod> methodOpt = this.methods.stream().filter(m -> "containsNamesSymbol".equals(m.getName())).findFirst();
-    assertTrue(methodOpt.isPresent());
-    ASTCDMethod method = methodOpt.get();
-    assertEquals(BOOLEAN, method.printReturnType());
+    ASTCDMethod method = getMethodBy("containsNamesSymbol", methods);
+    assertBoolean(method.getReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals(1, method.getCDParameterList().size());
@@ -131,10 +119,8 @@ public class ASTDecoratorWithRefSymbolListTest {
 
   @Test
   public void testContainsAllMethod() {
-    Optional<ASTCDMethod> methodOpt = this.methods.stream().filter(m -> "containsAllNamesSymbol".equals(m.getName())).findFirst();
-    assertTrue(methodOpt.isPresent());
-    ASTCDMethod method = methodOpt.get();
-    assertEquals(BOOLEAN, method.printReturnType());
+    ASTCDMethod method = getMethodBy("containsAllNamesSymbol", methods);
+    assertBoolean(method.getReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals(1, method.getCDParameterList().size());
@@ -145,19 +131,15 @@ public class ASTDecoratorWithRefSymbolListTest {
 
   @Test
   public void testIsEmptyMethod() {
-    Optional<ASTCDMethod> methodOpt = this.methods.stream().filter(m -> "isEmptyNamesSymbol".equals(m.getName())).findFirst();
-    assertTrue(methodOpt.isPresent());
-    ASTCDMethod method = methodOpt.get();
+    ASTCDMethod method = getMethodBy("isEmptyNamesSymbol", methods);
     assertTrue(method.getCDParameterList().isEmpty());
-    assertEquals(BOOLEAN, method.printReturnType());
+    assertBoolean(method.getReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
   }
 
   @Test
   public void testIteratorMethod() {
-    Optional<ASTCDMethod> methodOpt = this.methods.stream().filter(m -> "iteratorNamesSymbol".equals(m.getName())).findFirst();
-    assertTrue(methodOpt.isPresent());
-    ASTCDMethod method = methodOpt.get();
+    ASTCDMethod method = getMethodBy("iteratorNamesSymbol", methods);
     assertTrue(method.getCDParameterList().isEmpty());
     assertEquals("Iterator<" + OPTIONAL_SYMBOL_TYPE + ">", method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
@@ -165,9 +147,7 @@ public class ASTDecoratorWithRefSymbolListTest {
 
   @Test
   public void testSizeMethod() {
-    Optional<ASTCDMethod> methodOpt = this.methods.stream().filter(m -> "sizeNamesSymbol".equals(m.getName())).findFirst();
-    assertTrue(methodOpt.isPresent());
-    ASTCDMethod method = methodOpt.get();
+    ASTCDMethod method = getMethodBy("sizeNamesSymbol", methods);
     assertTrue(method.getCDParameterList().isEmpty());
     assertEquals("int", method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
@@ -181,65 +161,49 @@ public class ASTDecoratorWithRefSymbolListTest {
         .findFirst();
     assertTrue(methodOpt.isPresent());
     ASTCDMethod method = methodOpt.get();
-    assertEquals(OPTIONAL_SYMBOL_TYPE+"[]", method.printReturnType());
+    assertEquals(OPTIONAL_SYMBOL_TYPE + "[]", method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertEquals(OPTIONAL_SYMBOL_TYPE+"[]", TypesPrinter.printType(parameter.getType()));
+    assertEquals(OPTIONAL_SYMBOL_TYPE + "[]", TypesPrinter.printType(parameter.getType()));
     assertEquals("array", parameter.getName());
   }
 
   @Test
   public void testToArrayMethod() {
-    Optional<ASTCDMethod> methodOpt = this.methods.stream()
-        .filter(m -> "toArrayNamesSymbol".equals(m.getName()))
-        .filter(m -> m.getCDParameterList().isEmpty())
-        .findFirst();
-    assertTrue(methodOpt.isPresent());
-    ASTCDMethod method = methodOpt.get();
+    ASTCDMethod method = getMethodBy("toArrayNamesSymbol", 0, methods);
     assertEquals("Object[]", method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
   }
 
   @Test
   public void testSpliteratorMethod() {
-    Optional<ASTCDMethod> methodOpt = this.methods.stream().filter(m -> "spliteratorNamesSymbol".equals(m.getName())).findFirst();
-    assertTrue(methodOpt.isPresent());
-    ASTCDMethod method = methodOpt.get();
+    ASTCDMethod method = getMethodBy("spliteratorNamesSymbol", methods);
     assertTrue(method.getCDParameterList().isEmpty());
-    assertEquals("Spliterator<"+OPTIONAL_SYMBOL_TYPE+">", method.printReturnType());
+    assertEquals("Spliterator<" + OPTIONAL_SYMBOL_TYPE + ">", method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
   }
 
   @Test
   public void testStreamMethod() {
-    Optional<ASTCDMethod> methodOpt = this.methods.stream().filter(m -> "streamNamesSymbol".equals(m.getName())).findFirst();
-    assertTrue(methodOpt.isPresent());
-    ASTCDMethod method = methodOpt.get();
+    ASTCDMethod method = getMethodBy("streamNamesSymbol", methods);
     assertTrue(method.getCDParameterList().isEmpty());
-    assertEquals("Stream<"+OPTIONAL_SYMBOL_TYPE+">", method.printReturnType());
+    assertEquals("Stream<" + OPTIONAL_SYMBOL_TYPE + ">", method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
   }
 
   @Test
   public void testParallelStreamMethod() {
-    Optional<ASTCDMethod> methodOpt = this.methods.stream().filter(m -> "parallelStreamNamesSymbol".equals(m.getName())).findFirst();
-    assertTrue(methodOpt.isPresent());
-    ASTCDMethod method = methodOpt.get();
+    ASTCDMethod method = getMethodBy("parallelStreamNamesSymbol", methods);
     assertTrue(method.getCDParameterList().isEmpty());
-    assertEquals("Stream<"+OPTIONAL_SYMBOL_TYPE+">", method.printReturnType());
+    assertEquals("Stream<" + OPTIONAL_SYMBOL_TYPE + ">", method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
   }
 
   @Test
   public void testGetWithIndexMethod() {
-    List<ASTCDMethod> methodOpt = this.methods.stream()
-        .filter(m -> "getNamesSymbol".equals(m.getName()))
-        .filter(m -> 1 == m.getCDParameterList().size())
-        .collect(Collectors.toList());
-    assertEquals(1, methodOpt.size());
-    ASTCDMethod method = methodOpt.get(0);
+    ASTCDMethod method = getMethodBy("getNamesSymbol", 1, methods);
     assertEquals(OPTIONAL_SYMBOL_TYPE, method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
@@ -250,9 +214,7 @@ public class ASTDecoratorWithRefSymbolListTest {
 
   @Test
   public void testIndexOfMethod() {
-    Optional<ASTCDMethod> methodOpt = this.methods.stream().filter(m -> "indexOfNamesSymbol".equals(m.getName())).findFirst();
-    assertTrue(methodOpt.isPresent());
-    ASTCDMethod method = methodOpt.get();
+    ASTCDMethod method = getMethodBy("indexOfNamesSymbol", methods);
     assertEquals("int", method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
@@ -264,9 +226,7 @@ public class ASTDecoratorWithRefSymbolListTest {
 
   @Test
   public void testLastIndexOfMethod() {
-    Optional<ASTCDMethod> methodOpt = this.methods.stream().filter(m -> "lastIndexOfNamesSymbol".equals(m.getName())).findFirst();
-    assertTrue(methodOpt.isPresent());
-    ASTCDMethod method = methodOpt.get();
+    ASTCDMethod method = getMethodBy("lastIndexOfNamesSymbol", methods);
     assertEquals("int", method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
@@ -278,10 +238,8 @@ public class ASTDecoratorWithRefSymbolListTest {
 
   @Test
   public void testEqualsMethod() {
-    Optional<ASTCDMethod> methodOpt = this.methods.stream().filter(m -> "equalsNamesSymbol".equals(m.getName())).findFirst();
-    assertTrue(methodOpt.isPresent());
-    ASTCDMethod method = methodOpt.get();
-    assertEquals(BOOLEAN, method.printReturnType());
+    ASTCDMethod method = getMethodBy("equalsNamesSymbol", methods);
+    assertBoolean(method.getReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
     assertEquals(1, method.getCDParameterList().size());
@@ -292,9 +250,7 @@ public class ASTDecoratorWithRefSymbolListTest {
 
   @Test
   public void testHashCodeMethod() {
-    Optional<ASTCDMethod> methodOpt = this.methods.stream().filter(m -> "hashCodeNamesSymbol".equals(m.getName())).findFirst();
-    assertTrue(methodOpt.isPresent());
-    ASTCDMethod method = methodOpt.get();
+    ASTCDMethod method = getMethodBy("hashCodeNamesSymbol", methods);
     assertTrue(method.getCDParameterList().isEmpty());
     assertEquals("int", method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
@@ -302,25 +258,15 @@ public class ASTDecoratorWithRefSymbolListTest {
 
   @Test
   public void testListIteratorMethod() {
-    Optional<ASTCDMethod> methodOpt = this.methods.stream()
-        .filter(m -> "listIteratorNamesSymbol".equals(m.getName()))
-        .filter(m -> m.getCDParameterList().isEmpty())
-        .findFirst();
-    assertTrue(methodOpt.isPresent());
-    ASTCDMethod method = methodOpt.get();
+    ASTCDMethod method = getMethodBy("listIteratorNamesSymbol", 0, methods);
     assertTrue(method.getCDParameterList().isEmpty());
-    assertEquals("ListIterator<"+OPTIONAL_SYMBOL_TYPE+">", method.printReturnType());
+    assertEquals("ListIterator<" + OPTIONAL_SYMBOL_TYPE + ">", method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
   }
 
   @Test
   public void testListIteratorWithIndexMethod() {
-    Optional<ASTCDMethod> methodOpt = this.methods.stream()
-        .filter(m -> "listIteratorNamesSymbol".equals(m.getName()))
-        .filter(m -> 1 == m.getCDParameterList().size())
-        .findFirst();
-    assertTrue(methodOpt.isPresent());
-    ASTCDMethod method = methodOpt.get();
+    ASTCDMethod method = getMethodBy("listIteratorNamesSymbol", 1, methods);
     assertEquals("ListIterator<" + OPTIONAL_SYMBOL_TYPE + ">", method.printReturnType());
     assertEquals(PUBLIC, method.printModifier().trim());
 
@@ -331,7 +277,23 @@ public class ASTDecoratorWithRefSymbolListTest {
   }
 
   @Test
-  public void testNoSetter(){
+  public void testSubListMethod() {
+    ASTCDMethod method = getMethodBy("subListNamesSymbol", methods);
+    assertEquals("List<" + OPTIONAL_SYMBOL_TYPE + ">", method.printReturnType());
+    assertEquals(PUBLIC, method.printModifier().trim());
+
+    assertEquals(2, method.getCDParameterList().size());
+    ASTCDParameter parameter = method.getCDParameter(0);
+    assertEquals("int", TypesPrinter.printType(parameter.getType()));
+    assertEquals("start", parameter.getName());
+
+    parameter = method.getCDParameter(1);
+    assertEquals("int", TypesPrinter.printType(parameter.getType()));
+    assertEquals("end", parameter.getName());
+  }
+
+  @Test
+  public void testNoSetter() {
     Optional<ASTCDMethod> methodOpt = this.methods.stream()
         .filter(m -> "setNamesSymbolList".equals(m.getName()))
         .findFirst();
@@ -356,24 +318,6 @@ public class ASTDecoratorWithRefSymbolListTest {
         .filter(m -> "addAllNamesSymbol".equals(m.getName()))
         .findFirst();
     assertFalse(methodOpt.isPresent());
-  }
-
-  @Test
-  public void testSubListMethod() {
-    Optional<ASTCDMethod> methodOpt = this.methods.stream().filter(m -> "subListNamesSymbol".equals(m.getName())).findFirst();
-    assertTrue(methodOpt.isPresent());
-    ASTCDMethod method = methodOpt.get();
-    assertEquals("List<" + OPTIONAL_SYMBOL_TYPE + ">", method.printReturnType());
-    assertEquals(PUBLIC, method.printModifier().trim());
-
-    assertEquals(2, method.getCDParameterList().size());
-    ASTCDParameter parameter = method.getCDParameter(0);
-    assertEquals("int", TypesPrinter.printType(parameter.getType()));
-    assertEquals("start", parameter.getName());
-
-    parameter = method.getCDParameter(1);
-    assertEquals("int", TypesPrinter.printType(parameter.getType()));
-    assertEquals("end", parameter.getName());
   }
 
   @Test

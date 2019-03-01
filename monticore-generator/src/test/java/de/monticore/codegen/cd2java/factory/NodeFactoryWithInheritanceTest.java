@@ -23,6 +23,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 import static org.junit.Assert.*;
 
@@ -96,7 +97,7 @@ public class NodeFactoryWithInheritanceTest {
         .setModifier(PROTECTED.build())
         .setName("BGrammarNodeFactory")
         .build();
-    assertTrue(astcdConstructor.deepEquals(factoryClass.getCDConstructor(0)));
+    assertDeepEquals(astcdConstructor, factoryClass.getCDConstructor(0));
   }
 
   @Test
@@ -110,7 +111,7 @@ public class NodeFactoryWithInheritanceTest {
     assertTrue(method.isEmptyCDParameters());
     //test returnType
     ASTType returnType = cdTypeFacade.createTypeByDefinition("BGrammarNodeFactory");
-    assertTrue(returnType.deepEquals(method.getReturnType()));
+    assertDeepEquals(returnType, method.getReturnType());
   }
 
   @Test
@@ -124,7 +125,7 @@ public class NodeFactoryWithInheritanceTest {
     assertTrue(method.isEmptyCDParameters());
     //test returnType
     ASTType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.cgrammar._ast.ASTC");
-    assertTrue(returnType.deepEquals(method.getReturnType()));
+    assertDeepEquals(returnType, method.getReturnType());
   }
 
   @Test
@@ -138,7 +139,7 @@ public class NodeFactoryWithInheritanceTest {
     assertTrue(method.isEmptyCDParameters());
     //test returnType
     ASTType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.agrammar._ast.ASTFoo");
-    assertTrue(returnType.deepEquals(method.getReturnType()));
+    assertDeepEquals(returnType, method.getReturnType());
   }
 
   @Test
@@ -152,7 +153,7 @@ public class NodeFactoryWithInheritanceTest {
     assertTrue(method.isEmptyCDParameters());
     //test returnType
     ASTType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.agrammar._ast.ASTBar");
-    assertTrue(returnType.deepEquals(method.getReturnType()));
+    assertDeepEquals(returnType, method.getReturnType());
   }
 
   @Test
@@ -164,11 +165,11 @@ public class NodeFactoryWithInheritanceTest {
     assertTrue(PUBLIC_STATIC.build().deepEquals(method.getModifier()));
     //test parameters
     assertFalse(method.isEmptyCDParameters());
-    assertEquals(1,method.sizeCDParameters());
-    
+    assertEquals(1, method.sizeCDParameters());
+
     //test returnType
     ASTType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.agrammar._ast.ASTFoo");
-    assertTrue(returnType.deepEquals(method.getReturnType()));
+    assertDeepEquals(returnType, method.getReturnType());
   }
 
   @Test
@@ -180,7 +181,7 @@ public class NodeFactoryWithInheritanceTest {
     assertTrue(PUBLIC_STATIC.build().deepEquals(method.getModifier()));
     //test parameters
     assertFalse(method.isEmptyCDParameters());
-    assertEquals(2,method.sizeCDParameters());
+    assertEquals(2, method.sizeCDParameters());
 
     ASTType fooType = cdTypeFacade.createSimpleReferenceType("de.monticore.codegen.factory.agrammar._ast.ASTFoo");
     ASTCDParameter fooParameter = cdParameterFacade.createParameter(fooType, "foo");
@@ -189,7 +190,7 @@ public class NodeFactoryWithInheritanceTest {
     assertEquals(fooParameter.getName(), method.getCDParameter(0).getName());
     //test returnType
     ASTType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.agrammar._ast.ASTBar");
-    assertTrue(returnType.deepEquals(method.getReturnType()));
+    assertDeepEquals(returnType, method.getReturnType());
   }
 
 
