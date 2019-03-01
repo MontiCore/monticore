@@ -8,10 +8,11 @@ import static org.junit.Assert.assertTrue;
 
 public final class DecoratorAssert {
 
+  private static final int DEFAULT_ARRAY_DIMENSION = 1;
+
   private static final CDTypeFactory cdTypeFactory = CDTypeFactory.getInstance();
 
   private DecoratorAssert() {
-
   }
 
   public static void assertDeepEquals(ASTNode expected, ASTNode actual) {
@@ -52,5 +53,13 @@ public final class DecoratorAssert {
 
   public static void assertListOf(String name, ASTNode actual) {
     assertDeepEquals(cdTypeFactory.createListTypeOf(name), actual);
+  }
+
+  public static void assertArrayOf(Class<?> clazz, ASTNode actual) {
+    assertDeepEquals(cdTypeFactory.createArrayType(clazz, DEFAULT_ARRAY_DIMENSION), actual);
+  }
+
+  public static void assertArrayOf(String name, ASTNode actual) {
+    assertDeepEquals(cdTypeFactory.createArrayType(name, DEFAULT_ARRAY_DIMENSION), actual);
   }
 }

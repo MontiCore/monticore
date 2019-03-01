@@ -111,17 +111,17 @@ public class ListAccessorDecoratorTest {
   @Test
   public void testToArrayWithParamMethod() {
     ASTCDMethod method = getMethodBy("toArrayA", 1, this.methods);
-    assertEquals("String[]", method.printReturnType());
+    assertArrayOf(String.class, method.getReturnType());
     assertDeepEquals(PUBLIC, method.getModifier());
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertEquals("String[]", TypesPrinter.printType(parameter.getType()));
+    assertArrayOf(String.class, parameter.getType());
     assertEquals("array", parameter.getName());
   }
 
   @Test
   public void testToArrayMethod() {
     ASTCDMethod method = getMethodBy("toArrayA", 0, this.methods);
-    assertEquals("Object[]", method.printReturnType());
+    assertArrayOf(Object.class, method.getReturnType());
     assertDeepEquals(PUBLIC, method.getModifier());
   }
 

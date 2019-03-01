@@ -1,5 +1,6 @@
 package de.monticore.codegen.cd2java.top;
 
+import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParser;
@@ -17,9 +18,7 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class TopDecoratorTest {
-
-  private static final String CD = Paths.get("src/test/resources/de/monticore/codegen/top/Top.cd").toAbsolutePath().toString();
+public class TopDecoratorTest extends DecoratorTestCase {
 
   @Mock
   private IterablePath targetPath;
@@ -33,8 +32,7 @@ public class TopDecoratorTest {
     LogStub.init();
     this.targetPath = Mockito.mock(IterablePath.class);
     this.topDecorator = new TopDecorator(this.targetPath);
-    CD4AnalysisParser parser = new CD4AnalysisParser();
-    this.topCD = parser.parse(CD).get();
+    this.topCD = this.parse("de", "monticore", "codegen", "top", "Top");
   }
 
   @Test
