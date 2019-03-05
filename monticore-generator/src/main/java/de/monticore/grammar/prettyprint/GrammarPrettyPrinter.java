@@ -630,34 +630,51 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     getPrinter().print("=");
     
     printList(a.getAltList().iterator(), "");
-    
-    if (a.isPresentVariable()) {
-      
+
+    if (a.isPresentLexerCommand() || a.isPresentEndAction() || a.isPresentVariable()) {
       getPrinter().print(" : ");
-      getPrinter().print(a.getVariable());
-      
-      if (!a.getTypeList().isEmpty()) {
+
+      if(a.isPresentLexerCommand()) {
         getPrinter().print("->");
-        getPrinter().print(Names.getQualifiedName(a.getTypeList()));
-        
-        if (a.isPresentBlock() || a.isPresentEndAction()) {
-          getPrinter().print(":");
-          if (a.isPresentEndAction()) {
-            print(" {");
-            getPrinter().println();
-            getPrinter().indent();
-            a.getEndAction().accept(getRealThis());
-            getPrinter().unindent();
-            print("}");
-          }
-          if (a.isPresentBlock()) {
-            a.getBlock().accept(getRealThis());
-          }
-        }
-        
+        getPrinter().print(a.getLexerCommand());
       }
-      
+
+      if (a.isPresentEndAction()) {
+        print(" {");
+        getPrinter().println();
+        getPrinter().indent();
+        a.getEndAction().accept(getRealThis());
+        getPrinter().unindent();
+        print("}");
+      }
+
+      if (a.isPresentVariable()) {
+        getPrinter().print(a.getVariable());
+
+        if (!a.getTypeList().isEmpty()) {
+          getPrinter().print("->");
+          getPrinter().print(Names.getQualifiedName(a.getTypeList()));
+
+          if (a.isPresentBlock()) {
+            getPrinter().print(":");
+            if (a.isPresentBlock()) {
+              print(" {");
+              getPrinter().println();
+              getPrinter().indent();
+              a.getBlock().accept(getRealThis());
+              getPrinter().unindent();
+              print("}");
+            }
+          }
+
+        }
+
+      }
+
+
     }
+
+
     print(";");
     
     CommentPrettyPrinter.printPostComments(a, getPrinter());
