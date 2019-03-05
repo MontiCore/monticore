@@ -79,9 +79,11 @@ public class SymbolTableGenerator {
 
   public void generate(GlobalExtensionManagement glex, ASTMCGrammar astGrammar, SymbolTableGeneratorHelper genHelper,
                        File outputPath, final IterablePath handCodedPath) {
-
-
-
+    
+    // Always set symbol table helper even if symbol table is not generated to
+    // provide corresponding information and prevent wrong symbol assignments.
+    glex.setGlobalValue("stHelper", genHelper);
+    
     MCGrammarSymbol grammarSymbol = genHelper.getGrammarSymbol();
 
     // Skip generation if no rules are defined in the grammar, since no top asts
@@ -113,7 +115,6 @@ public class SymbolTableGenerator {
 
     final GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(outputPath);
-    glex.setGlobalValue("stHelper", genHelper);
     glex.setGlobalValue("nameHelper", new Names());
     glex.setGlobalValue("skipSTGen", skipSymbolTableGeneration);
     setup.setGlex(glex);
