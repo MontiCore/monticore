@@ -531,8 +531,8 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     
     if (a.isPresentName()) {
       getPrinter().print(a.getName());
+      getPrinter().print(":");
     }
-    getPrinter().print(":");
     a.getGenericType().accept(getRealThis());
     if (a.isPresentCard() && a.getCard().isPresentMin()) {
       print(" min = " + a.getCard().getMin());
@@ -550,57 +550,52 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
    */
   @Override
   public void handle(ASTClassProd a) {
-    
-    // Rules with names that start with MC are created by the symboltable
-    // and are not pretty printeds
-    if (!a.getName().startsWith("MC")) {
-      
-      CommentPrettyPrinter.printPreComments(a, getPrinter());
-      
-      printList(a.getSymbolDefinitionList().iterator(), " ");
-      getPrinter().print(a.getName());
-      
-      if (!a.getSuperRuleList().isEmpty()) {
-        getPrinter().print(" extends ");
-        printList(a.getSuperRuleList().iterator(), " ");
-      }
-      
-      if (!a.getSuperInterfaceRuleList().isEmpty()) {
-        getPrinter().print(" implements ");
-        printList(a.getSuperInterfaceRuleList().iterator(), ", ");
-      }
-      
-      if (!a.getASTSuperClassList().isEmpty()) {
-        getPrinter().print(" astextends ");
-        printList(a.getASTSuperClassList().iterator(), "");
-      }
-      
-      if (!a.getASTSuperInterfaceList().isEmpty()) {
-        getPrinter().print(" astimplements ");
-        printList(a.getASTSuperInterfaceList().iterator(), ", ");
-      }
-      
-      if (a.isPresentAction()) {
-        print(" {");
-        getPrinter().println();
-        getPrinter().indent();
-        a.getAction().accept(getRealThis());
-        getPrinter().unindent();
-        print("}");
-      }
-      
-      if (!a.getAltList().isEmpty()) {
-        println(" =");
-        
-        getPrinter().indent();
-        printList(a.getAltList().iterator(), " | ");
-      }
-      println(";");
-      
-      CommentPrettyPrinter.printPostComments(a, getPrinter());
-      getPrinter().unindent();
-      getPrinter().println();
+
+    CommentPrettyPrinter.printPreComments(a, getPrinter());
+
+    printList(a.getSymbolDefinitionList().iterator(), " ");
+    getPrinter().print(a.getName());
+
+    if (!a.getSuperRuleList().isEmpty()) {
+      getPrinter().print(" extends ");
+      printList(a.getSuperRuleList().iterator(), " ");
     }
+
+    if (!a.getSuperInterfaceRuleList().isEmpty()) {
+      getPrinter().print(" implements ");
+      printList(a.getSuperInterfaceRuleList().iterator(), ", ");
+    }
+
+    if (!a.getASTSuperClassList().isEmpty()) {
+      getPrinter().print(" astextends ");
+      printList(a.getASTSuperClassList().iterator(), "");
+    }
+
+    if (!a.getASTSuperInterfaceList().isEmpty()) {
+      getPrinter().print(" astimplements ");
+      printList(a.getASTSuperInterfaceList().iterator(), ", ");
+    }
+
+    if (a.isPresentAction()) {
+      print(" {");
+      getPrinter().println();
+      getPrinter().indent();
+      a.getAction().accept(getRealThis());
+      getPrinter().unindent();
+      print("}");
+    }
+
+    if (!a.getAltList().isEmpty()) {
+      println(" =");
+
+      getPrinter().indent();
+      printList(a.getAltList().iterator(), " | ");
+    }
+    println(";");
+
+    CommentPrettyPrinter.printPostComments(a, getPrinter());
+    getPrinter().unindent();
+    getPrinter().println();
   }
   
   /**
