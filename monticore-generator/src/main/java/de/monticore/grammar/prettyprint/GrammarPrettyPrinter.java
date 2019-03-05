@@ -629,7 +629,7 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
     
     getPrinter().print("=");
     
-    printList(a.getAltList().iterator(), "");
+    printList(a.getAltList().iterator(), " | ");
 
     if (a.isPresentLexerCommand() || a.isPresentEndAction() || a.isPresentVariable()) {
       getPrinter().print(" : ");
