@@ -95,6 +95,19 @@ public class VisitorGenerator {
     generator.generate("visitor.SymbolVisitor", symbolVisitorFilePath, astClassDiagram,
         astClassDiagram.getCDDefinition(), symbolTablePackage, cd, symbols);
     Log.trace(LOGGER_NAME, "Generated symbol visitor for the diagram: " + diagramName);
+    
+    // scope visitor interface
+    boolean existsST = false;
+    if (stHelperObj != null && stHelperObj instanceof SymbolTableGeneratorHelper) {
+      SymbolTableGeneratorHelper stHelper = (SymbolTableGeneratorHelper) stHelperObj;
+      if (stHelper.getGrammarSymbol().getStartProd().isPresent()) {
+        existsST = true;
+      }
+    }
+    final Path scopeVisitorFilePath = Paths.get(path, visitorHelper.getScopeVisitorType() + ".java");
+    generator.generate("visitor.ScopeVisitor", scopeVisitorFilePath, astClassDiagram,
+        astClassDiagram.getCDDefinition(), symbolTablePackage, cd, existsST);
+    Log.trace(LOGGER_NAME, "Generated scope visitor for the diagram: " + diagramName);
   }
   
   private VisitorGenerator() {
