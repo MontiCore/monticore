@@ -10,7 +10,7 @@ S = y:A*;
 A = "...";
 
 // constraining occurrences of A in S:
-ast S = y:A min=2 max=4;
+astrule S = y:A min=2 max=4;
 
 }
 

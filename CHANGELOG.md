@@ -1,5 +1,8 @@
 # Release Notes
 
+##  MontiCore 5.0.4-SNAPSHOT
+- Removed deprecated keyword _ast_ (use _astrule_) in *.mc4
+
 ##  MontiCore 5.0.3
 - Use the following emf coordinates (MB):
 - group: org.eclipse.emf
