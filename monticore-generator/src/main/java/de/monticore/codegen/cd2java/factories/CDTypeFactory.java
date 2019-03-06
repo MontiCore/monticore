@@ -2,6 +2,7 @@ package de.monticore.codegen.cd2java.factories;
 
 import de.monticore.codegen.cd2java.factories.exception.CDFactoryErrorCode;
 import de.monticore.codegen.cd2java.factories.exception.CDFactoryException;
+import de.monticore.types.TypesHelper;
 import de.monticore.types.types._ast.*;
 import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParser;
 
@@ -76,6 +77,10 @@ public class CDTypeFactory {
     return createSimpleReferenceType(Optional.class, name);
   }
 
+  public ASTSimpleReferenceType createOptionalTypeOf(final ASTType type) {
+    return createSimpleReferenceType(Optional.class, TypesHelper.printType(type));
+  }
+
   public ASTSimpleReferenceType createListTypeOf(final Class<?> clazz) {
     return createListTypeOf(clazz.getSimpleName());
   }
@@ -84,11 +89,19 @@ public class CDTypeFactory {
     return createSimpleReferenceType(List.class, name);
   }
 
-  private ASTSimpleReferenceType createSimpleReferenceType(final Class<?> clazz, final String name) {
-    return CDTypeBuilder.newTypeBuilder()
-        .simpleName(clazz)
-        .qualifiedGenericType(name.split(PACKAGE_SEPARATOR))
-        .build();
+  public ASTSimpleReferenceType createListTypeOf(final ASTType type) {
+    return createSimpleReferenceType(List.class, TypesHelper.printType(type));
+  }
+
+  public ASTSimpleReferenceType createMapTypeOf(final String firstType, final String secondType) {
+    return createSimpleReferenceType(Map.class, firstType, secondType);
+  }
+
+  private ASTSimpleReferenceType createSimpleReferenceType(final Class<?> clazz, final String... names) {
+    CDTypeBuilder cdTypeBuilder = CDTypeBuilder.newTypeBuilder().simpleName(clazz);
+    for (String name : names)
+      cdTypeBuilder.qualifiedGenericType(name.split(PACKAGE_SEPARATOR));
+    return cdTypeBuilder.build();
   }
 
   public ASTComplexReferenceType createComplexReferenceType(final String name) {

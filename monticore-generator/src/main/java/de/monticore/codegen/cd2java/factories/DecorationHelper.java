@@ -2,15 +2,18 @@ package de.monticore.codegen.cd2java.factories;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
 import de.monticore.types.TypesHelper;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.symboltable.CDFieldSymbol;
 import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
+import de.monticore.umlcd4a.symboltable.CDTypes;
 import de.monticore.umlcd4a.symboltable.references.CDTypeSymbolReference;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
+import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
@@ -24,6 +27,14 @@ public class DecorationHelper extends TypesHelper{
   public static final String JAVA_LIST = "java.util.List";
 
   public static final String AST_NODE_CLASS_NAME = "de.monticore.ast.ASTNode";
+
+  public static final String GET_PREFIX_BOOLEAN = "is";
+
+  public static final String GET_SUFFIX_OPTINAL = "Opt";
+
+  public static final String GET_SUFFIX_LIST = "List";
+
+  public static final String GET_PREFIX = "get";
 
   public final static String GENERATED_CLASS_SUFFIX = "TOP";
 
@@ -215,6 +226,28 @@ public class DecorationHelper extends TypesHelper{
 
   public static boolean isSupertypeOfHWType(String className) {
     return className.endsWith(GENERATED_CLASS_SUFFIX);
+  }
+
+  public static String getPlainGetter(ASTCDAttribute ast) {
+    String astType = printType(ast.getType());
+    StringBuilder sb = new StringBuilder();
+    if (CDTypes.isBoolean(astType)) {
+      sb.append(GET_PREFIX_BOOLEAN);
+    } else {
+      sb.append(GET_PREFIX);
+    }
+    sb.append(StringTransformations.capitalize(getNativeAttributeName(ast.getName())));
+    if (isOptional(ast.getType())) {
+      sb.append(GET_SUFFIX_OPTINAL);
+    } else if (isListType(astType)) {
+      if (ast.getName().endsWith(TransformationHelper.LIST_SUFFIX)) {
+        sb.replace(sb.length() - TransformationHelper.LIST_SUFFIX.length(),
+            sb.length(), GET_SUFFIX_LIST);
+      } else {
+        sb.append(GET_SUFFIX_LIST);
+      }
+    }
+    return sb.toString();
   }
 
 }

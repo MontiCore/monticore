@@ -31,7 +31,8 @@ public abstract class DecoratorTestCase {
     return ast.get();
   }
 
-  public ASTCDCompilationUnit loadModel(String qualifiedName) {
+  public ASTCDCompilationUnit loadModel(String... names) {
+    String qualifiedName = String.join(".", names);
     CD4AnalysisLanguage cd4AnalysisLanguage = new CD4AnalysisLanguage();
     ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
     resolvingConfiguration.addDefaultFilters(cd4AnalysisLanguage.getResolvingFilters());

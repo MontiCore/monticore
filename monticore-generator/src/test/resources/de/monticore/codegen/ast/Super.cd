@@ -1,0 +1,4 @@
+package de.monticore.codegen.ast;
+
+classdiagram Super {
+}

@@ -21,7 +21,7 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
 import static de.se_rwth.commons.Names.getQualifier;
 import static de.se_rwth.commons.Names.getSimpleName;
 
-class ASTWithReferencedSymbolDecorator implements Decorator<ASTCDClass, ASTCDClass> {
+public class ASTReferencedSymbolDecorator implements Decorator<ASTCDClass, ASTCDClass> {
 
   private final GlobalExtensionManagement glex;
 
@@ -29,16 +29,13 @@ class ASTWithReferencedSymbolDecorator implements Decorator<ASTCDClass, ASTCDCla
 
   private final CDAttributeFactory cdAttributeFactory;
 
-  private final ASTCDCompilationUnit compilationUnit;
-
   private static final String DEFINITION = "Definition";
 
   private static final String SYMBOL = "Symbol";
 
-
-  ASTWithReferencedSymbolDecorator(GlobalExtensionManagement glex, ASTCDCompilationUnit compilationUnit) {
+  //TODO test
+  public ASTReferencedSymbolDecorator(final GlobalExtensionManagement glex) {
     this.glex = glex;
-    this.compilationUnit = compilationUnit;
     this.cdTypeFactory = CDTypeFactory.getInstance();
     this.cdAttributeFactory = CDAttributeFactory.getInstance();
   }
@@ -68,10 +65,10 @@ class ASTWithReferencedSymbolDecorator implements Decorator<ASTCDClass, ASTCDCla
     ASTType attributeType;
     if (GeneratorHelper.isListType(attribute.printType())) {
       //if the attribute is a list
-      attributeType = cdTypeFactory.createTypeByDefinition("Map<String, Optional<" + referencedSymbol + ">>");
+      attributeType = cdTypeFactory.createMapTypeOf(String.class.getSimpleName(),  "Optional<" + referencedSymbol + ">>");
     } else {
       //if the attribute is mandatory or optional
-      attributeType = cdTypeFactory.createTypeByDefinition("Optional<" + referencedSymbol + ">");
+      attributeType = cdTypeFactory.createOptionalTypeOf(referencedSymbol);
     }
     return cdAttributeFactory.createAttribute(PRIVATE, attributeType, attribute.getName() + SYMBOL);
   }
@@ -80,7 +77,8 @@ class ASTWithReferencedSymbolDecorator implements Decorator<ASTCDClass, ASTCDCla
     if (GeneratorHelper.isMapType(refSymbolAttribute.printType())) {
       //have to change type of attribute list instead of map
       //because the inner representation is a map but for users the List methods are only shown
-      ASTType listType = cdTypeFactory.createTypeByDefinition("List<Optional<" + referencedSymbol + ">>");
+      ASTType optionalType = cdTypeFactory.createOptionalTypeOf(referencedSymbol);
+      ASTType listType = cdTypeFactory.createListTypeOf(optionalType);
       refSymbolAttribute = cdAttributeFactory.createAttribute(refSymbolAttribute.getModifier(), listType, refSymbolAttribute.getName());
     }
     AccessorDecorator accessorDecorator = new AccessorDecorator(glex);
@@ -93,10 +91,10 @@ class ASTWithReferencedSymbolDecorator implements Decorator<ASTCDClass, ASTCDCla
     String referencedNode = referencedSymbol.substring(0, referencedSymbol.lastIndexOf("_symboltable")) + GeneratorHelper.AST_PACKAGE_SUFFIX_DOT + GeneratorHelper.AST_PREFIX + getSimpleSymbolName(referencedSymbol);
     if (GeneratorHelper.isListType(astcdAttribute.printType())) {
       //if the attribute is a list
-      symbolType = cdTypeFactory.createTypeByDefinition("List<" + referencedNode + ">");
+      symbolType = cdTypeFactory.createListTypeOf(referencedNode);
     } else {
       //if the attribute is mandatory or optional
-      symbolType = cdTypeFactory.createTypeByDefinition("Optional<" + referencedNode + ">");
+      symbolType = cdTypeFactory.createOptionalTypeOf(referencedNode);
     }
     ASTCDAttribute refSymbolAttribute = cdAttributeFactory.createAttribute(PRIVATE, symbolType, astcdAttribute.getName() + DEFINITION);
     AccessorDecorator accessorDecorator = new AccessorDecorator(glex);

@@ -1,341 +1,115 @@
 package de.monticore.codegen.cd2java.ast_new;
 
-import de.monticore.MontiCoreScript;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.factories.CDParameterFactory;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
-import de.monticore.codegen.cd2java.typecd2java.TypeCD2JavaDecorator;
-import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
+import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static org.junit.Assert.*;
 
-public class ASTDecoratorTest {
+public class ASTDecoratorTest extends DecoratorTestCase {
 
-  private CDTypeFactory cdTypeFacade;
+  private GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
-  private CDParameterFactory cdParameterFacade;
+  private CDTypeFactory cdTypeFactory = CDTypeFactory.getInstance();
 
-  private ASTCDCompilationUnit cdCompilationUnit;
-
-  private ASTCDClass automatonClass;
-
-  private GlobalExtensionManagement glex;
-
-  private static final String PUBLIC = "public";
-
-  private List<ASTCDMethod> methods;
+  private ASTCDClass astClass;
 
   @Before
-  public void setUp() {
-    this.glex = new GlobalExtensionManagement();
-    this.cdTypeFacade = CDTypeFactory.getInstance();
-    this.cdParameterFacade = CDParameterFactory.getInstance();
-
-    //create grammar from ModelPath
-    Path modelPathPath = Paths.get("src/test/resources");
-    ModelPath modelPath = new ModelPath(modelPathPath);
-    Optional<ASTMCGrammar> grammar = new MontiCoreScript()
-        .parseGrammar(Paths.get(new File(
-            "src/test/resources/Automaton.mc4").getAbsolutePath()));
-    assertTrue(grammar.isPresent());
-
-    //create ASTCDDefinition from MontiCoreScript
-    MontiCoreScript script = new MontiCoreScript();
-    GlobalScope globalScope = TestHelper.createGlobalScope(modelPath);
-    script.createSymbolsFromAST(globalScope, grammar.get());
-    cdCompilationUnit = script.deriveCD(grammar.get(), new GlobalExtensionManagement(),
-        globalScope);
-
-    cdCompilationUnit.setEnclosingScope(globalScope);
-    //make types java compatible
-    TypeCD2JavaDecorator typeDecorator = new TypeCD2JavaDecorator();
-    typeDecorator.decorate(cdCompilationUnit);
-
-    glex.setGlobalValue("astHelper", new DecorationHelper());
-    ASTDecorator factoryDecorator = new ASTDecorator(glex, cdCompilationUnit);
-    this.automatonClass = factoryDecorator.decorate(cdCompilationUnit.getCDDefinition().getCDClass(0));
-    this.methods =automatonClass.getCDMethodList();
+  public void setup() {
+    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    ASTCDCompilationUnit ast = this.loadModel("de", "monticore", "codegen", "ast", "AST");
+    ASTDecorator decorator = new ASTDecorator(this.glex, ast);
+    ASTCDClass clazz = getClassBy("A", ast);
+    this.astClass = decorator.decorate(clazz);
   }
 
   @Test
   public void testClassName() {
-    assertEquals("ASTAutomaton", automatonClass.getName());
+    assertEquals("A", astClass.getName());
   }
 
   @Test
-  public void testClassModifier() {
-    assertEquals(PUBLIC, automatonClass.printModifier().trim());
+  public void testEmptyAttributes() {
+    assertEquals(0, astClass.getCDAttributeList().size());
   }
 
   @Test
-  public void testAttributes() {
-    assertFalse(automatonClass.isEmptyCDAttributes());
-    assertEquals(5, automatonClass.sizeCDAttributes());
-  }
-
-  @Test
-  public void testAttributeModifier() {
-    for (ASTCDAttribute attribute : automatonClass.getCDAttributeList()) {
-      assertTrue(PROTECTED.build().deepEquals(attribute.getModifier()));
-    }
-  }
-
-  @Test
-  public void testNameAttribute() {
-    ASTCDAttribute attribute = automatonClass.getCDAttribute(0);
-    assertEquals("name", attribute.getName());
-    assertDeepEquals(cdTypeFacade.createTypeByDefinition("String"), attribute.getType());
-  }
-
-  @Test
-  public void testStatesAttribute() {
-    ASTCDAttribute attribute = automatonClass.getCDAttribute(1);
-    assertEquals("states", attribute.getName());
-    assertDeepEquals(cdTypeFacade.createTypeByDefinition("java.util.List<automaton._ast.ASTState>"), attribute.getType());
-  }
-
-  @Test
-  public void testTransitionsAttribute() {
-    ASTCDAttribute attribute = automatonClass.getCDAttribute(2);
-    assertEquals("transitions", attribute.getName());
-    assertDeepEquals(cdTypeFacade.createTypeByDefinition("java.util.List<automaton._ast.ASTTransition>"), attribute.getType());
-  }
-
-  @Test
-  public void testConstructors() {
-    assertFalse(automatonClass.isEmptyCDConstructors());
-    assertEquals(2, automatonClass.sizeCDConstructors());
-  }
-
-  @Test
-  public void testDefaultConstructor() {
-    ASTCDConstructor defaultConstructor = automatonClass.getCDConstructor(0);
-    assertTrue(PROTECTED.build().deepEquals(defaultConstructor.getModifier()));
-    assertTrue(defaultConstructor.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testFullConstructor() {
-    ASTCDConstructor fullConstructor = automatonClass.getCDConstructor(1);
-    assertTrue(PROTECTED.build().deepEquals(fullConstructor.getModifier()));
-    assertFalse(fullConstructor.isEmptyCDParameters());
-    assertEquals(3, fullConstructor.sizeCDParameters());
-
-    ASTCDParameter name = this.cdParameterFacade.createParameter(this.cdTypeFacade.createTypeByDefinition("String"), "name");
-    ASTCDParameter states = this.cdParameterFacade.createParameter(this.cdTypeFacade.createTypeByDefinition("java.util.List<automaton._ast.ASTState>"), "states");
-    ASTCDParameter transitions = this.cdParameterFacade.createParameter(this.cdTypeFacade.createTypeByDefinition("java.util.List<automaton._ast.ASTTransition>"), "transitions");
-    assertDeepEquals(name, fullConstructor.getCDParameter(0));
-    assertDeepEquals(states, fullConstructor.getCDParameter(1));
-    assertDeepEquals(transitions, fullConstructor.getCDParameter(2));
+  public void testEmptyConstructors() {
+    assertEquals(0, astClass.getCDConstructorList().size());
   }
 
   @Test
   public void testMethods() {
-    assertFalse(automatonClass.isEmptyCDMethods());
-    assertEquals(93, automatonClass.sizeCDMethods());
+    assertFalse(astClass.getCDMethodList().isEmpty());
+    assertEquals(3, astClass.getCDMethodList().size());
   }
 
   @Test
-  public void testAcceptAutomatonVisitor() {
-    ASTCDMethod method = automatonClass.getCDMethod(0);
-    assertEquals(PUBLIC, method.printModifier().trim());
+  public void testAcceptMethod() {
+    List<ASTCDMethod> methods = getMethodsBy("accept", 1, astClass);
+    ASTType visitorType = this.cdTypeFactory.createSimpleReferenceType("de.monticore.codegen.ast.ast._visitor.ASTVisitor");
 
-    assertEquals("accept", method.getName());
+    methods = methods.stream().filter(m -> visitorType.deepEquals(m.getCDParameter(0).getType())).collect(Collectors.toList());
+    assertEquals(1, methods.size());
 
+    ASTCDMethod method = methods.get(0);
+    assertDeepEquals(PUBLIC, method.getModifier());
     assertVoid(method.getReturnType());
 
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.sizeCDParameters());
 
-    assertEquals("visitor", method.getCDParameter(0).getName());
-    ASTType visitorType = this.cdTypeFacade.createTypeByDefinition("automaton._visitor.AutomatonVisitor");
-    assertDeepEquals(visitorType, method.getCDParameter(0).getType());
+    ASTCDParameter parameter = method.getCDParameter(0);
+
+    assertDeepEquals(visitorType, parameter.getType());
+    assertEquals("visitor", parameter.getName());
   }
 
   @Test
-  public void testAcceptLexicalsVisitor() {
-    ASTCDMethod method = automatonClass.getCDMethod(1);
-    assertEquals(PUBLIC, method.printModifier().trim());
+  public void testAcceptSuperMethod() {
+    List<ASTCDMethod> methods = getMethodsBy("accept", 1, astClass);
+    ASTType visitorType = this.cdTypeFactory.createSimpleReferenceType("de.monticore.codegen.ast.super._visitor.SuperVisitor");
 
-    assertEquals("accept", method.getName());
+    methods = methods.stream().filter(m -> visitorType.deepEquals(m.getCDParameter(0).getType())).collect(Collectors.toList());
+    assertEquals(1, methods.size());
 
+    ASTCDMethod method = methods.get(0);
+    assertDeepEquals(PUBLIC, method.getModifier());
     assertVoid(method.getReturnType());
 
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.sizeCDParameters());
 
-    assertEquals("visitor", method.getCDParameter(0).getName());
-    ASTType visitorType = this.cdTypeFacade.createTypeByDefinition("mc.grammars.lexicals.testlexicals._visitor.TestLexicalsVisitor");
-    assertDeepEquals(visitorType, method.getCDParameter(0).getType());
+    ASTCDParameter parameter = method.getCDParameter(0);
+    assertDeepEquals(visitorType, parameter.getType());
+    assertEquals("visitor", parameter.getName());
   }
 
   @Test
-  public void testDeepEqualsForceSameOrder() {
-    ASTCDMethod method = automatonClass.getCDMethod(2);
-    assertEquals(PUBLIC, method.printModifier().trim());
-
-    assertEquals("deepEquals", method.getName());
-
-    assertBoolean(method.getReturnType());
-
-    assertFalse(method.isEmptyCDParameters());
-    assertEquals(2, method.sizeCDParameters());
-
-    assertEquals("o", method.getCDParameter(0).getName());
-    ASTType objectType = this.cdTypeFacade.createTypeByDefinition("Object");
-    assertDeepEquals(objectType, method.getCDParameter(0).getType());
-
-    assertEquals("forceSameOrder", method.getCDParameter(1).getName());
-    assertDeepEquals(this.cdTypeFacade.createBooleanType(), method.getCDParameter(1).getType());
-  }
-
-  @Test
-  public void testDeepEquals() {
-    ASTCDMethod method = automatonClass.getCDMethod(3);
-    assertEquals(PUBLIC, method.printModifier().trim());
-
-    assertEquals("deepEquals", method.getName());
-
-    assertBoolean(method.getReturnType());
-
-    assertFalse(method.isEmptyCDParameters());
-    assertEquals(1, method.sizeCDParameters());
-
-    assertEquals("o", method.getCDParameter(0).getName());
-    ASTType objectType = this.cdTypeFacade.createTypeByDefinition("Object");
-    assertDeepEquals(objectType, method.getCDParameter(0).getType());
-  }
-
-  @Test
-  public void testDeepEqualsWithCommentsForceSameOrder() {
-    ASTCDMethod method = automatonClass.getCDMethod(4);
-    assertEquals(PUBLIC, method.printModifier().trim());
-
-    assertEquals("deepEqualsWithComments", method.getName());
-
-    assertBoolean(method.getReturnType());
-
-    assertFalse(method.isEmptyCDParameters());
-    assertEquals(2, method.sizeCDParameters());
-
-    assertEquals("o", method.getCDParameter(0).getName());
-    ASTType objectType = this.cdTypeFacade.createTypeByDefinition("Object");
-    assertDeepEquals(objectType, method.getCDParameter(0).getType());
-
-    assertEquals("forceSameOrder", method.getCDParameter(1).getName());
-    assertBoolean(method.getCDParameter(1).getType());
-  }
-
-  @Test
-  public void testDeepEqualsWithComments() {
-    ASTCDMethod method = automatonClass.getCDMethod(5);
-    assertEquals(PUBLIC, method.printModifier().trim());
-
-    assertEquals("deepEqualsWithComments", method.getName());
-
-    assertBoolean(method.getReturnType());
-
-    assertFalse(method.isEmptyCDParameters());
-    assertEquals(1, method.sizeCDParameters());
-
-    assertEquals("o", method.getCDParameter(0).getName());
-    ASTType objectType = this.cdTypeFacade.createTypeByDefinition("Object");
-    assertDeepEquals(objectType, method.getCDParameter(0).getType());
-  }
-
-  @Test
-  public void testEqualAttributes() {
-    ASTCDMethod method = automatonClass.getCDMethod(6);
-    assertEquals(PUBLIC, method.printModifier().trim());
-
-    assertEquals("equalAttributes", method.getName());
-
-    assertBoolean(method.getReturnType());
-
-    assertFalse(method.isEmptyCDParameters());
-    assertEquals(1, method.sizeCDParameters());
-
-    assertEquals("o", method.getCDParameter(0).getName());
-    ASTType objectType = this.cdTypeFacade.createTypeByDefinition("Object");
-    assertDeepEquals(objectType, method.getCDParameter(0).getType());
-  }
-
-  @Test
-  public void testEqualsWithComments() {
-    ASTCDMethod method = automatonClass.getCDMethod(7);
-    assertEquals(PUBLIC, method.printModifier().trim());
-
-    assertEquals("equalsWithComments", method.getName());
-
-    assertBoolean(method.getReturnType());
-
-    assertFalse(method.isEmptyCDParameters());
-    assertEquals(1, method.sizeCDParameters());
-
-    assertEquals("o", method.getCDParameter(0).getName());
-    ASTType objectType = this.cdTypeFacade.createTypeByDefinition("Object");
-    assertDeepEquals(objectType, method.getCDParameter(0).getType());
-  }
-
-  @Test
-  public void testDeepCloneWithResult() {
-    ASTCDMethod method = automatonClass.getCDMethod(8);
-    assertEquals(PUBLIC, method.printModifier().trim());
-
-    assertEquals("deepClone", method.getName());
-
-    ASTType astType = this.cdTypeFacade.createTypeByDefinition("ASTAutomaton");
+  public void testConstructMethod() {
+    ASTCDMethod method = getMethodBy("_construct", astClass);
+    assertDeepEquals(PROTECTED, method.getModifier());
+    ASTType astType = this.cdTypeFactory.createSimpleReferenceType(astClass.getName());
     assertDeepEquals(astType, method.getReturnType());
-
-    assertFalse(method.isEmptyCDParameters());
-    assertEquals(1, method.sizeCDParameters());
-
-    assertEquals("result", method.getCDParameter(0).getName());
-    assertDeepEquals(astType, method.getCDParameter(0).getType());
-  }
-
-  @Test
-  public void testDeepClone() {
-    ASTCDMethod method = automatonClass.getCDMethod(9);
-    assertEquals(PUBLIC, method.printModifier().trim());
-
-    assertEquals("deepClone", method.getName());
-
-    ASTType astType = this.cdTypeFacade.createTypeByDefinition("ASTAutomaton");
-    assertDeepEquals(astType, method.getReturnType());
-
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testConstruct() {
-    ASTCDMethod method = automatonClass.getCDMethod(10);
-    assertTrue(PROTECTED.build().deepEquals(method.getModifier()));
-
-    assertEquals("_construct", method.getName());
-
-    ASTType astType = this.cdTypeFacade.createTypeByDefinition("ASTAutomaton");
-    assertDeepEquals(astType, method.getReturnType());
-
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -344,7 +118,7 @@ public class ASTDecoratorTest {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-    StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, automatonClass, automatonClass);
+    StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, astClass, astClass);
     System.out.println(sb.toString());
   }
 
@@ -355,6 +129,6 @@ public class ASTDecoratorTest {
     generatorSetup.setOutputDirectory(Paths.get("target/generated-test-sources/de/monticore/codegen/ast").toFile());
     Path generatedFiles = Paths.get("ASTAutomaton.java");
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-    generatorEngine.generate(CoreTemplates.CLASS, generatedFiles, automatonClass, automatonClass);
+    generatorEngine.generate(CoreTemplates.CLASS, generatedFiles, astClass, astClass);
   }
 }
