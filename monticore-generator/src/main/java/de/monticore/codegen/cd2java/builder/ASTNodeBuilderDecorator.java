@@ -15,14 +15,17 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java.builder.BuilderDecoratorConstants.BUILDER_SUFFIX;
+import static de.monticore.codegen.cd2java.builder.BuilderDecoratorUtil.*;
 
 public class ASTNodeBuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
 
   private static final String DEFAULT_SUPER_CLASS = "de.monticore.ast.ASTNodeBuilder<%s>";
+
+  private static final String AST_BUILDER_INIT_TEMPLATE = "builder.ASTCNodeInit";
 
   private final GlobalExtensionManagement glex;
 
@@ -46,19 +49,16 @@ public class ASTNodeBuilderDecorator implements Decorator<ASTCDClass, ASTCDClass
     ASTCDClass builderClass = this.builderDecorator.decorate(domainClass);
     String builderClassName = builderClass.getName();
 
-    ASTReferenceType superClass = createBuilderSuperClass(domainClass, builderClassName);
-    builderClass.setSuperclass(superClass);
-
-    List<ASTCDMethod> astCNodeMethods = new ArrayList<>();
+    builderClass.setSuperclass(createBuilderSuperClass(domainClass, builderClassName));
 
     if (!hasSuperClassOtherThanASTCNode(domainClass)) {
       ASTType builderType = this.cdTypeFactory.createSimpleReferenceType(builderClassName);
-      astCNodeMethods = createBuilderMethodForASTCNodeMethods(builderType);
+      builderClass.addAllCDMethods(createBuilderMethodForASTCNodeMethods(builderType));
     }
 
-    builderClass.addAllCDMethods(astCNodeMethods);
-
-    this.glex.bindHookPoint("<JavaBlock>:BuildMethod:init", new TemplateHookPoint("builder.ASTCNodeInit", domainClass));
+    Optional<ASTCDMethod> buildMethod = builderClass.getCDMethodList().stream().filter(m -> BUILD_METHOD.equals(m.getName())).findFirst();
+    buildMethod.ifPresent(b ->
+        this.glex.replaceTemplate(BUILD_INIT_TEMPLATE, b, new TemplateHookPoint(AST_BUILDER_INIT_TEMPLATE, domainClass)));
 
     return builderClass;
   }
@@ -69,7 +69,7 @@ public class ASTNodeBuilderDecorator implements Decorator<ASTCDClass, ASTCDClass
     if (hasSuperClassOtherThanASTCNode(domainClass)) {
       superClass = domainClass.printSuperClass() + BUILDER_SUFFIX;
     }
-    return this.cdTypeFactory.createReferenceTypeByDefinition(superClass);
+    return this.cdTypeFactory.createSimpleReferenceType(superClass);
   }
 
   private boolean hasSuperClassOtherThanASTCNode(final ASTCDClass domainClass) {

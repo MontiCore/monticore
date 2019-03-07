@@ -2,29 +2,27 @@ package de.monticore.codegen.cd2java.builder;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.cd2java.Decorator;
-import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.factories.CDAttributeFactory;
-import de.monticore.codegen.cd2java.factories.CDTypeFactory;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static de.monticore.codegen.cd2java.builder.BuilderDecoratorUtil.BUILD_INIT_TEMPLATE;
+import static de.monticore.codegen.cd2java.builder.BuilderDecoratorUtil.BUILD_METHOD;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
 
 public class SymbolBuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
+
+  private static final String SYMBOL_BUILD_INIT_TEMPLATE = "builder.SymbolInit";
 
   private final GlobalExtensionManagement glex;
 
@@ -47,9 +45,13 @@ public class SymbolBuilderDecorator implements Decorator<ASTCDClass, ASTCDClass>
     decoratedSymbolClass.addAllCDAttributes(createSymbolAttributes());
     decoratedSymbolClass.getCDMethodList().clear();
 
-    this.glex.bindHookPoint("<JavaBlock>:BuildMethod:init", new TemplateHookPoint("builder.SymbolInit", decoratedSymbolClass));
+    ASTCDClass symbolBuilder = this.builderDecorator.decorate(decoratedSymbolClass);
 
-    return this.builderDecorator.decorate(decoratedSymbolClass);
+    Optional<ASTCDMethod> buildMethod = symbolBuilder.getCDMethodList().stream().filter(m -> BUILD_METHOD.equals(m.getName())).findFirst();
+    buildMethod.ifPresent(b ->
+        this.glex.replaceTemplate(BUILD_INIT_TEMPLATE, b, new TemplateHookPoint(SYMBOL_BUILD_INIT_TEMPLATE, symbolBuilder)));
+
+    return symbolBuilder;
   }
 
   private List<ASTCDAttribute> createSymbolAttributes() {

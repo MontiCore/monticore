@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java.builder.BuilderDecoratorConstants.*;
+import static de.monticore.codegen.cd2java.builder.BuilderDecoratorUtil.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 public class BuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
@@ -48,7 +48,7 @@ public class BuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
 
 
     CDModifier modifier = PUBLIC;
-    if (this.isAbstract(domainClass)) {
+    if (domainClass.isPresentModifier() && domainClass.getModifier().isAbstract()) {
       modifier = PUBLIC_ABSTRACT;
     }
 
@@ -64,7 +64,7 @@ public class BuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
 
 
     ASTCDConstructor constructor = this.cdConstructorFactory.createConstructor(PROTECTED, builderClassName);
-    this.glex.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this.realBuilder = (" + builderClassName + ") this;"));
+    this.glex.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this."  + REAL_THIS + " = (" + builderClassName + ") this;"));
 
     ASTCDMethod buildMethod = this.cdMethodFactory.createMethod(modifier, domainType, BUILD_METHOD);
     this.glex.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint("builder.BuildMethod", domainClass, mandatoryAttributes));
@@ -106,9 +106,5 @@ public class BuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
         .addAllCDMethods(accessorMethods)
         .addAllCDMethods(mutatorMethods)
         .build();
-  }
-
-  private boolean isAbstract(final ASTCDClass domainClass) {
-    return domainClass.isPresentModifier() && domainClass.getModifier().isAbstract();
   }
 }

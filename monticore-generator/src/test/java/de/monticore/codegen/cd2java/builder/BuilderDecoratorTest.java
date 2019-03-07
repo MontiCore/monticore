@@ -13,12 +13,11 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
-import static de.monticore.codegen.cd2java.builder.BuilderDecoratorConstants.BUILD_METHOD;
-import static de.monticore.codegen.cd2java.builder.BuilderDecoratorConstants.IS_VALID;
+import static de.monticore.codegen.cd2java.builder.BuilderDecoratorUtil.BUILD_METHOD;
+import static de.monticore.codegen.cd2java.builder.BuilderDecoratorUtil.IS_VALID;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static junit.framework.TestCase.assertTrue;

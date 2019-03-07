@@ -8,5 +8,5 @@ if (!isValid()) {
 </#list>
 }
 ${domainClass.getName()} value;
-${glex.defineHookPoint(tc, "<JavaBlock>:BuildMethod:init", ast)}
+${tc.include("builder.BuildInit")}
 return value;

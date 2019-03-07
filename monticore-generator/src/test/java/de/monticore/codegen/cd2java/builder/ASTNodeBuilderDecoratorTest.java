@@ -19,7 +19,7 @@ import java.util.Optional;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static org.junit.Assert.assertEquals;
 
-public class BuilderASTNodeDecoratorTest extends DecoratorTestCase {
+public class ASTNodeBuilderDecoratorTest extends DecoratorTestCase {
 
   private final GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
