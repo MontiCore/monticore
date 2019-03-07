@@ -18,6 +18,7 @@ public class InterfaceNTWithoutImplementationOnlyInComponentGrammarTest extends 
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "cocos.invalid.A0278.A0278";
   private final String grammar2 = "cocos.invalid.A0278.A0278b";
+  private final String grammar3 = "cocos.invalid.A0278.A0278b";
 
   @BeforeClass
   public static void disableFailQuick() {
@@ -31,6 +32,17 @@ public class InterfaceNTWithoutImplementationOnlyInComponentGrammarTest extends 
             MESSAGE, checker);
   }
 
+  @Test
+  public void testInvalid2() {
+    testInvalidGrammar(grammar2, ERROR_CODE,
+        MESSAGE, checker);
+  }
+
+  @Test
+  public void testInvalid3() {
+    testInvalidGrammar(grammar3, ERROR_CODE,
+        MESSAGE, checker);
+  }
 
   @Test
   public void testCorrect() {
