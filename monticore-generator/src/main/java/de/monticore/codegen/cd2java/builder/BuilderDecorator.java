@@ -17,10 +17,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java.builder.BuilderDecoratorUtil.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 public class BuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
+
+  public static final String BUILD_INIT_TEMPLATE = "builder.BuildInit";
+
+  public static final String BUILDER_SUFFIX = "Builder";
+
+  public static final String REAL_THIS = "realThis";
+
+  public static final String BUILD_METHOD = "build";
+
+  public static final String IS_VALID = "isValid";
 
   private final GlobalExtensionManagement glex;
 

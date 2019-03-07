@@ -1,7 +1,8 @@
-package de.monticore.codegen.cd2java.builder;
+package de.monticore.codegen.cd2java.symboltable;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.cd2java.Decorator;
+import de.monticore.codegen.cd2java.builder.BuilderDecorator;
 import de.monticore.codegen.cd2java.factories.CDAttributeFactory;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -16,13 +17,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static de.monticore.codegen.cd2java.builder.BuilderDecoratorUtil.BUILD_INIT_TEMPLATE;
-import static de.monticore.codegen.cd2java.builder.BuilderDecoratorUtil.BUILD_METHOD;
+import static de.monticore.codegen.cd2java.builder.BuilderDecorator.BUILD_INIT_TEMPLATE;
+import static de.monticore.codegen.cd2java.builder.BuilderDecorator.BUILD_METHOD;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
 
 public class SymbolBuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
 
-  private static final String SYMBOL_BUILD_INIT_TEMPLATE = "builder.SymbolInit";
+  private static final String SYMBOL_BUILD_INIT_TEMPLATE = "symboltable_new.builder.SymbolInit";
 
   private final GlobalExtensionManagement glex;
 

@@ -1,6 +1,6 @@
 package de.monticore.codegen.builder;
 
-classdiagram SymbolBuilder {
+classdiagram Builder {
 
     class A extends CommonSymbol {
     }

@@ -1,7 +1,8 @@
-package de.monticore.codegen.cd2java.builder;
+package de.monticore.codegen.cd2java.ast_new;
 
 import de.monticore.ast.ASTCNode;
 import de.monticore.codegen.cd2java.Decorator;
+import de.monticore.codegen.cd2java.builder.BuilderDecorator;
 import de.monticore.codegen.cd2java.factories.CDMethodFactory;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -19,13 +20,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java.builder.BuilderDecoratorUtil.*;
+import static de.monticore.codegen.cd2java.builder.BuilderDecorator.*;
 
-public class ASTNodeBuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
+public class ASTBuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
 
   private static final String DEFAULT_SUPER_CLASS = "de.monticore.ast.ASTNodeBuilder<%s>";
 
-  private static final String AST_BUILDER_INIT_TEMPLATE = "builder.ASTCNodeInit";
+  private static final String AST_BUILDER_INIT_TEMPLATE = "ast_new.builder.ASTCNodeInit";
 
   private final GlobalExtensionManagement glex;
 
@@ -35,7 +36,7 @@ public class ASTNodeBuilderDecorator implements Decorator<ASTCDClass, ASTCDClass
 
   private final CDMethodFactory cdMethodFactory;
 
-  public ASTNodeBuilderDecorator(
+  public ASTBuilderDecorator(
       final GlobalExtensionManagement glex,
       final BuilderDecorator builderDecorator) {
     this.glex = glex;
@@ -92,7 +93,7 @@ public class ASTNodeBuilderDecorator implements Decorator<ASTCDClass, ASTCDClass
     String parameterCall = method.getCDParameterList().stream()
         .map(ASTCDParameter::getName)
         .collect(Collectors.joining(", "));
-    return new TemplateHookPoint("builder.ASTCNodeMethodDelegate", methodName, parameterCall);
+    return new TemplateHookPoint("ast_new.builder.ASTCNodeMethodDelegate", methodName, parameterCall);
   }
 
   private enum ASTCNodeMethod {

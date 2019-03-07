@@ -4,7 +4,7 @@ import de.monticore.codegen.cd2java.ast_new.ASTDecorator;
 import de.monticore.codegen.cd2java.ast_new.ASTReferencedSymbolDecorator;
 import de.monticore.codegen.cd2java.ast_new.ASTScopeDecorator;
 import de.monticore.codegen.cd2java.ast_new.ASTSymbolDecorator;
-import de.monticore.codegen.cd2java.builder.ASTNodeBuilderDecorator;
+import de.monticore.codegen.cd2java.ast_new.ASTBuilderDecorator;
 import de.monticore.codegen.cd2java.builder.BuilderDecorator;
 import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.factory.NodeFactoryDecorator;
@@ -63,10 +63,10 @@ public class ASTCDDecorator implements Decorator<ASTCDCompilationUnit, ASTCDComp
 
   private List<ASTCDClass> createASTBuilderClasses(final ASTCDCompilationUnit ast) {
     BuilderDecorator builderDecorator = new BuilderDecorator(this.glex);
-    ASTNodeBuilderDecorator astNodeBuilderDecorator = new ASTNodeBuilderDecorator(this.glex, builderDecorator);
+    ASTBuilderDecorator astBuilderDecorator = new ASTBuilderDecorator(this.glex, builderDecorator);
 
     return ast.getCDDefinition().getCDClassList().stream()
-        .map(astNodeBuilderDecorator::decorate)
+        .map(astBuilderDecorator::decorate)
         .collect(Collectors.toList());
   }
 

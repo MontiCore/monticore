@@ -16,8 +16,8 @@ import java.util.List;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
-import static de.monticore.codegen.cd2java.builder.BuilderDecoratorUtil.BUILD_METHOD;
-import static de.monticore.codegen.cd2java.builder.BuilderDecoratorUtil.IS_VALID;
+import static de.monticore.codegen.cd2java.builder.BuilderDecorator.BUILD_METHOD;
+import static de.monticore.codegen.cd2java.builder.BuilderDecorator.IS_VALID;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static junit.framework.TestCase.assertTrue;
