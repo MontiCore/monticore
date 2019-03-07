@@ -19,19 +19,7 @@ public abstract class DecoratorTestCase {
 
   private static final String MODEL_PATH = "src/test/resources";
 
-  private static final String CD_EXTENSION = ".cd";
-
-  private static final CD4AnalysisParser parser = new CD4AnalysisParser();
-
-  public ASTCDCompilationUnit parse(String... pathSegments) throws IOException {
-    String path = Paths.get(MODEL_PATH, pathSegments).toAbsolutePath().toString() + CD_EXTENSION;
-    Optional<ASTCDCompilationUnit> ast = parser.parse(path);
-    if (!ast.isPresent())
-      fail(String.format("Failed to load model '%s'", path));
-    return ast.get();
-  }
-
-  public ASTCDCompilationUnit loadModel(String... names) {
+  public ASTCDCompilationUnit parse(String... names) {
     String qualifiedName = String.join(".", names);
     CD4AnalysisLanguage cd4AnalysisLanguage = new CD4AnalysisLanguage();
     ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();

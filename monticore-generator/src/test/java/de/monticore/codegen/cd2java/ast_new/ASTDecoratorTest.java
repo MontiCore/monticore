@@ -2,7 +2,6 @@ package de.monticore.codegen.cd2java.ast_new;
 
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
-import de.monticore.codegen.cd2java.factories.CDParameterFactory;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
@@ -13,7 +12,6 @@ import de.monticore.umlcd4a.cd4analysis._ast.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -36,7 +34,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
   @Before
   public void setup() {
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
-    ASTCDCompilationUnit ast = this.loadModel("de", "monticore", "codegen", "ast", "AST");
+    ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "AST");
     ASTDecorator decorator = new ASTDecorator(this.glex, ast);
     ASTCDClass clazz = getClassBy("A", ast);
     this.astClass = decorator.decorate(clazz);
@@ -44,7 +42,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassName() {
-    assertEquals("A", astClass.getName());
+    assertEquals("ASTA", astClass.getName());
   }
 
   @Test

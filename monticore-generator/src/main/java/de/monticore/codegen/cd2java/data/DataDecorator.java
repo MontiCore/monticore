@@ -55,8 +55,8 @@ public class DataDecorator implements Decorator<ASTCDClass, ASTCDClass> {
   }
 
   @Override
-  public ASTCDClass decorate(ASTCDClass ast) {
-    ASTCDClass dataClass = ast.deepClone();
+  public ASTCDClass decorate(ASTCDClass clazz) {
+    ASTCDClass dataClass = clazz.deepClone();
     MethodDecorator methodDecorator = new MethodDecorator(this.glex);
 
     dataClass.addCDConstructor(createDefaultConstructor(dataClass));

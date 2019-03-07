@@ -55,6 +55,7 @@ public class ASTDecorator implements Decorator<ASTCDClass, ASTCDClass> {
   @Override
   public ASTCDClass decorate(ASTCDClass clazz) {
     ASTCDClass astClass = clazz.deepClone();
+    astClass.setName(AST_PREFIX + clazz.getName());
 
     if (!astClass.isPresentSuperclass()) {
       astClass.setSuperclass(cdTypeFactory.createSimpleReferenceType(ASTCNode.class));
