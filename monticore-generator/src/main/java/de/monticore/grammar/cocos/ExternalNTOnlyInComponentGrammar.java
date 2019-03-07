@@ -7,6 +7,7 @@ import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
+import de.monticore.grammar.symboltable.MCProdSymbolReference;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
@@ -30,10 +31,10 @@ public class ExternalNTOnlyInComponentGrammar implements GrammarASTMCGrammarCoCo
     MCGrammarSymbol grammarSymbol = (MCGrammarSymbol) a.getSymbol();
 
     if (!a.isComponent()) {
-      for (ASTProd p : a.getExternalProdList()) {
-        Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName()),
-                a.get_SourcePositionStart());
-      }
+//      for (ASTProd p : a.getExternalProdList()) {
+//        Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName()),
+//                a.get_SourcePositionStart());
+//      }
       List<MCProdSymbol> externalProds = grammarSymbol.getProds().stream().
           filter(MCProdSymbol::isExternal).collect(Collectors.toList());
       for(MCGrammarSymbol symbol: grammarSymbol.getSuperGrammarSymbols()){
@@ -47,7 +48,7 @@ public class ExternalNTOnlyInComponentGrammar implements GrammarASTMCGrammarCoCo
 
       List<MCProdSymbol> prods = grammarSymbol.getProds().stream().
           filter(prodSymbol -> prodSymbol.isClass() || prodSymbol.isAbstract()).collect(Collectors.toList());
-      for(MCGrammarSymbol symbol: grammarSymbol.getSuperGrammarSymbols()){
+      for(MCGrammarSymbol symbol: grammarSymbol.getAllSuperGrammars()){
         Collection<MCProdSymbol> prodSymbols = symbol.getProds();
         for(MCProdSymbol mcProdSymbol : prodSymbols){
           if (mcProdSymbol.isAbstract() || mcProdSymbol.isClass()) {
@@ -57,9 +58,12 @@ public class ExternalNTOnlyInComponentGrammar implements GrammarASTMCGrammarCoCo
       }
 
       for(MCProdSymbol prodSymbol: prods){
-        for(MCProdSymbol externalProdSymbol : externalProds){
-          if(prodSymbol.getName().equals(externalProdSymbol.getName())){
-            externalProds.remove(externalProdSymbol);
+        for(MCProdSymbolReference symbolReference : prodSymbol.getSuperProds()){
+          for(int i = externalProds.size(); i>=0; --i){
+            MCProdSymbol externalProdSymbol = externalProds.get(i);
+            if(symbolReference.getName().equals(externalProdSymbol.getName())){
+              externalProds.remove(i);
+            }
           }
         }
       }
