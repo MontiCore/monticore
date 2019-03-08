@@ -25,7 +25,7 @@ public class BuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
 
   public static final String BUILDER_SUFFIX = "Builder";
 
-  public static final String REAL_THIS = "realThis";
+  public static final String REAL_BUILDER = "realBuilder";
 
   public static final String BUILD_METHOD = "build";
 
@@ -61,7 +61,7 @@ public class BuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
       modifier = PUBLIC_ABSTRACT;
     }
 
-    ASTCDAttribute realThisAttribute = this.cdAttributeFactory.createAttribute(PROTECTED, builderType, REAL_THIS);
+    ASTCDAttribute realThisAttribute = this.cdAttributeFactory.createAttribute(PROTECTED, builderType, REAL_BUILDER);
     List<ASTCDAttribute> builderAttributes = domainClass.getCDAttributeList().stream()
         .map(ASTCDAttribute::deepClone)
         .collect(Collectors.toList());
@@ -73,7 +73,7 @@ public class BuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
 
 
     ASTCDConstructor constructor = this.cdConstructorFactory.createConstructor(PROTECTED, builderClassName);
-    this.glex.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this."  + REAL_THIS + " = (" + builderClassName + ") this;"));
+    this.glex.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this."  + REAL_BUILDER + " = (" + builderClassName + ") this;"));
 
     ASTCDMethod buildMethod = this.cdMethodFactory.createMethod(modifier, domainType, BUILD_METHOD);
     this.glex.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint("builder.BuildMethod", domainClass, mandatoryAttributes));
