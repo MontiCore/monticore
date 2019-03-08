@@ -1,6 +1,6 @@
 package de.monticore.codegen.cd2java.methods;
 
-import de.monticore.codegen.cd2java.Decorator;
+import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.methods.mutator.ListMutatorDecorator;
 import de.monticore.codegen.cd2java.methods.mutator.MandatoryMutatorDecorator;
 import de.monticore.codegen.cd2java.methods.mutator.OptionalMutatorDecorator;
@@ -12,24 +12,22 @@ import java.util.List;
 
 public class MutatorDecorator extends SpecificMethodDecorator {
 
-  private final GlobalExtensionManagement glex;
-
   public MutatorDecorator(final GlobalExtensionManagement glex) {
-    this.glex = glex;
+    super(glex);
   }
 
   @Override
-  Decorator<ASTCDAttribute, List<ASTCDMethod>> createMandatoryMethodDecoratorStrategy() {
-    return new MandatoryMutatorDecorator(this.glex);
+  AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> createMandatoryMethodDecoratorStrategy() {
+    return new MandatoryMutatorDecorator(this.getGlex());
   }
 
   @Override
-  Decorator<ASTCDAttribute, List<ASTCDMethod>> createOptionalMethodDecoratorStrategy() {
-    return new OptionalMutatorDecorator(this.glex);
+  AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> createOptionalMethodDecoratorStrategy() {
+    return new OptionalMutatorDecorator(this.getGlex());
   }
 
   @Override
-  Decorator<ASTCDAttribute, List<ASTCDMethod>> createListMethodDecoratorStrategy() {
-    return new ListMutatorDecorator(this.glex);
+  AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> createListMethodDecoratorStrategy() {
+    return new ListMutatorDecorator(this.getGlex());
   }
 }

@@ -1,8 +1,6 @@
 package de.monticore.codegen.cd2java.methods.accessor;
 
-import de.monticore.codegen.cd2java.Decorator;
-import de.monticore.codegen.cd2java.factories.CDMethodFactory;
-import de.monticore.codegen.cd2java.factories.CDTypeFactory;
+import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.TypesHelper;
@@ -17,7 +15,7 @@ import java.util.List;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
-public class OptionalAccessorDecorator implements Decorator<ASTCDAttribute, List<ASTCDMethod>> {
+public class OptionalAccessorDecorator extends AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> {
 
   private static final String GET = "get%s";
 
@@ -25,16 +23,8 @@ public class OptionalAccessorDecorator implements Decorator<ASTCDAttribute, List
 
   private static final String IS_PRESENT = "isPresent%s";
 
-  private final GlobalExtensionManagement glex;
-
-  private final CDTypeFactory cdTypeFactory;
-
-  private final CDMethodFactory cdMethodFactory;
-
   public OptionalAccessorDecorator(final GlobalExtensionManagement glex) {
-    this.glex = glex;
-    this.cdTypeFactory = CDTypeFactory.getInstance();
-    this.cdMethodFactory = CDMethodFactory.getInstance();
+    super(glex);
   }
 
   @Override
@@ -48,23 +38,23 @@ public class OptionalAccessorDecorator implements Decorator<ASTCDAttribute, List
   private ASTCDMethod createGetMethod(final ASTCDAttribute ast) {
     String name = String.format(GET, StringUtils.capitalize(ast.getName()));
     ASTType type = TypesHelper.getSimpleReferenceTypeFromOptional(ast.getType().deepClone());
-    ASTCDMethod method = this.cdMethodFactory.createMethod(PUBLIC, type, name);
-    this.glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.Get", ast));
+    ASTCDMethod method = this.getCDMethodFactory().createMethod(PUBLIC, type, name);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.Get", ast));
     return method;
   }
 
   private ASTCDMethod createGetOptMethod(final ASTCDAttribute ast) {
     String name = String.format(GET_OPT, StringUtils.capitalize(ast.getName()));
     ASTType type = ast.getType().deepClone();
-    ASTCDMethod method = this.cdMethodFactory.createMethod(PUBLIC, type, name);
-    this.glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.Get", ast));
+    ASTCDMethod method = this.getCDMethodFactory().createMethod(PUBLIC, type, name);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.Get", ast));
     return method;
   }
 
   private ASTCDMethod createIsPresentMethod(final ASTCDAttribute ast) {
     String name = String.format(IS_PRESENT, StringUtils.capitalize(ast.getName()));
-    ASTCDMethod method = this.cdMethodFactory.createMethod(PUBLIC, this.cdTypeFactory.createBooleanType(), name);
-    this.glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.IsPresent", ast));
+    ASTCDMethod method = this.getCDMethodFactory().createMethod(PUBLIC, this.getCDTypeFactory().createBooleanType(), name);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.IsPresent", ast));
     return method;
   }
 }

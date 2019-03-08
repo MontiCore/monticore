@@ -1,6 +1,13 @@
 package de.monticore.codegen.cd2java;
 
+import de.monticore.codegen.cd2java.ast_new.*;
+import de.monticore.codegen.cd2java.builder.ASTBuilderDecorator;
+import de.monticore.codegen.cd2java.builder.BuilderDecorator;
+import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
+import de.monticore.codegen.cd2java.factory.NodeFactoryDecorator;
+import de.monticore.codegen.cd2java.methods.MethodDecorator;
+import de.monticore.codegen.cd2java.mill.MillDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -24,8 +31,25 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
   public void setup() {
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "AST");
-    ASTCDDecorator decorator = new ASTCDDecorator(this.glex);
-    this.ast = decorator.decorate(ast);
+
+    MethodDecorator methodDecorator = new MethodDecorator(glex);
+
+    DataDecorator dataDecorator = new DataDecorator(glex, methodDecorator);
+    ASTDecorator astDecorator = new ASTDecorator(glex, ast);
+    ASTSymbolDecorator astSymbolDecorator = new ASTSymbolDecorator(glex, ast);
+    ASTScopeDecorator astScopeDecorator = new ASTScopeDecorator(glex, ast);
+    ASTReferencedSymbolDecorator astReferencedSymbolDecorator = new ASTReferencedSymbolDecorator(glex, methodDecorator);
+    ASTFullDecorator fullDecorator = new ASTFullDecorator(dataDecorator, astDecorator, astSymbolDecorator, astScopeDecorator, astReferencedSymbolDecorator);
+
+    BuilderDecorator builderDecorator = new BuilderDecorator(glex, methodDecorator);
+    ASTBuilderDecorator astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator);
+
+    NodeFactoryDecorator nodeFactoryDecorator = new NodeFactoryDecorator(glex);
+
+    MillDecorator millDecorator = new MillDecorator(glex);
+
+    ASTCDDecorator astcdDecorator = new ASTCDDecorator(fullDecorator, astBuilderDecorator, nodeFactoryDecorator, millDecorator);
+    this.ast = astcdDecorator.decorate(ast);
   }
 
   @Test

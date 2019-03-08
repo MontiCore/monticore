@@ -1,6 +1,6 @@
 package de.monticore.codegen.cd2java.methods;
 
-import de.monticore.codegen.cd2java.Decorator;
+import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.methods.accessor.ListAccessorDecorator;
 import de.monticore.codegen.cd2java.methods.accessor.MandatoryAccessorDecorator;
 import de.monticore.codegen.cd2java.methods.accessor.OptionalAccessorDecorator;
@@ -12,24 +12,22 @@ import java.util.List;
 
 public class AccessorDecorator extends SpecificMethodDecorator {
 
-  private final GlobalExtensionManagement glex;
-
   public AccessorDecorator(final GlobalExtensionManagement glex) {
-    this.glex = glex;
+    super(glex);
   }
 
   @Override
-  Decorator<ASTCDAttribute, List<ASTCDMethod>> createMandatoryMethodDecoratorStrategy() {
-    return new MandatoryAccessorDecorator(this.glex);
+  AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> createMandatoryMethodDecoratorStrategy() {
+    return new MandatoryAccessorDecorator(this.getGlex());
   }
 
   @Override
-  Decorator<ASTCDAttribute, List<ASTCDMethod>> createOptionalMethodDecoratorStrategy() {
-    return new OptionalAccessorDecorator(this.glex);
+  AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> createOptionalMethodDecoratorStrategy() {
+    return new OptionalAccessorDecorator(this.getGlex());
   }
 
   @Override
-  Decorator<ASTCDAttribute, List<ASTCDMethod>> createListMethodDecoratorStrategy() {
-    return new ListAccessorDecorator(this.glex);
+  AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> createListMethodDecoratorStrategy() {
+    return new ListAccessorDecorator(this.getGlex());
   }
 }

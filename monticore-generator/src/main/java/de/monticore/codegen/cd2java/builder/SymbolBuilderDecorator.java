@@ -1,9 +1,7 @@
-package de.monticore.codegen.cd2java.symboltable;
+package de.monticore.codegen.cd2java.builder;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.codegen.cd2java.Decorator;
-import de.monticore.codegen.cd2java.builder.BuilderDecorator;
-import de.monticore.codegen.cd2java.factories.CDAttributeFactory;
+import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.symboltable.Scope;
@@ -21,22 +19,15 @@ import static de.monticore.codegen.cd2java.builder.BuilderDecorator.BUILD_INIT_T
 import static de.monticore.codegen.cd2java.builder.BuilderDecorator.BUILD_METHOD;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
 
-public class SymbolBuilderDecorator implements Decorator<ASTCDClass, ASTCDClass> {
+public class SymbolBuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
   private static final String SYMBOL_BUILD_INIT_TEMPLATE = "symboltable_new.builder.SymbolInit";
 
-  private final GlobalExtensionManagement glex;
-
   private final BuilderDecorator builderDecorator;
 
-  private final CDAttributeFactory cdAttributeFactory;
-
-  public SymbolBuilderDecorator(
-      final GlobalExtensionManagement glex,
-      final BuilderDecorator builderDecorator) {
-    this.glex = glex;
+  public SymbolBuilderDecorator(final GlobalExtensionManagement glex, final BuilderDecorator builderDecorator) {
+    super(glex);
     this.builderDecorator = builderDecorator;
-    this.cdAttributeFactory = CDAttributeFactory.getInstance();
   }
 
   @Override
@@ -46,20 +37,20 @@ public class SymbolBuilderDecorator implements Decorator<ASTCDClass, ASTCDClass>
     decoratedSymbolClass.addAllCDAttributes(createSymbolAttributes());
     decoratedSymbolClass.getCDMethodList().clear();
 
-    ASTCDClass symbolBuilder = this.builderDecorator.decorate(decoratedSymbolClass);
+    ASTCDClass symbolBuilder = builderDecorator.decorate(decoratedSymbolClass);
 
     Optional<ASTCDMethod> buildMethod = symbolBuilder.getCDMethodList().stream().filter(m -> BUILD_METHOD.equals(m.getName())).findFirst();
     buildMethod.ifPresent(b ->
-        this.glex.replaceTemplate(BUILD_INIT_TEMPLATE, b, new TemplateHookPoint(SYMBOL_BUILD_INIT_TEMPLATE, symbolBuilder)));
+        this.replaceTemplate(BUILD_INIT_TEMPLATE, b, new TemplateHookPoint(SYMBOL_BUILD_INIT_TEMPLATE, symbolBuilder)));
 
     return symbolBuilder;
   }
 
   private List<ASTCDAttribute> createSymbolAttributes() {
-    ASTCDAttribute name = this.cdAttributeFactory.createAttribute(PRIVATE, String.class, "name");
-    ASTCDAttribute enclosingScope = this.cdAttributeFactory.createAttribute(PRIVATE, Scope.class, "scope");
-    ASTCDAttribute node = this.cdAttributeFactory.createAttribute(PRIVATE, ASTNode.class, "astNode");
-    ASTCDAttribute accessModifier = this.cdAttributeFactory.createAttribute(PRIVATE, AccessModifier.class, "accessModifier");
+    ASTCDAttribute name = this.getCDAttributeFactory().createAttribute(PRIVATE, String.class, "name");
+    ASTCDAttribute enclosingScope = this.getCDAttributeFactory().createAttribute(PRIVATE, Scope.class, "scope");
+    ASTCDAttribute node = this.getCDAttributeFactory().createAttribute(PRIVATE, ASTNode.class, "astNode");
+    ASTCDAttribute accessModifier = this.getCDAttributeFactory().createAttribute(PRIVATE, AccessModifier.class, "accessModifier");
     return new ArrayList<>(Arrays.asList(name, enclosingScope, node, accessModifier));
   }
 }

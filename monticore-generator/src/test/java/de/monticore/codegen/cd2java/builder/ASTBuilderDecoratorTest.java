@@ -1,9 +1,10 @@
-package de.monticore.codegen.cd2java.symboltable;
+package de.monticore.codegen.cd2java.builder;
 
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
+import de.monticore.codegen.cd2java.builder.ASTBuilderDecorator;
 import de.monticore.codegen.cd2java.builder.BuilderDecorator;
-import de.monticore.codegen.cd2java.symboltable.SymbolBuilderDecorator;
+import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -12,13 +13,10 @@ import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
-
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
-public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
+public class ASTBuilderDecoratorTest extends DecoratorTestCase {
 
   private final GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
@@ -27,12 +25,13 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
   @Before
   public void setup() {
     LogStub.init();
-    ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "symboltable", "Builder");
+    ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "ast", "Builder");
     ASTCDClass cdClass = getClassBy("A", ast);
 
-    BuilderDecorator builderDecorator = new BuilderDecorator(glex);
-    SymbolBuilderDecorator astNodeBuilderDecorator = new SymbolBuilderDecorator(glex, builderDecorator);
-    this.builderClass = astNodeBuilderDecorator.decorate(cdClass);
+    MethodDecorator methodDecorator = new MethodDecorator(glex);
+    BuilderDecorator builderDecorator = new BuilderDecorator(glex, methodDecorator);
+    ASTBuilderDecorator builderASTNodeDecorator = new ASTBuilderDecorator(glex, builderDecorator);
+    this.builderClass = builderASTNodeDecorator.decorate(cdClass);
   }
 
   @Test
@@ -42,12 +41,12 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperClassName() {
-    assertFalse(builderClass.getSuperclassOpt().isPresent());
+    assertEquals("de.monticore.ast.ASTNodeBuilder<ABuilder>", builderClass.printSuperClass());
   }
 
   @Test
   public void testMethods() {
-    assertEquals(10, builderClass.getCDMethodList().size());
+    assertEquals(47, builderClass.getCDMethodList().size());
   }
 
   @Test

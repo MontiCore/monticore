@@ -1,10 +1,7 @@
 package de.monticore.codegen.cd2java.methods.mutator;
 
-import de.monticore.codegen.cd2java.Decorator;
-import de.monticore.codegen.cd2java.factories.CDMethodFactory;
-import de.monticore.codegen.cd2java.factories.CDParameterFactory;
+import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.TypesHelper;
 import de.monticore.types.types._ast.ASTType;
@@ -19,7 +16,7 @@ import java.util.List;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
-public class OptionalMutatorDecorator implements Decorator<ASTCDAttribute, List<ASTCDMethod>> {
+public class OptionalMutatorDecorator extends AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> {
 
   private static final String SET = "set%s";
 
@@ -27,16 +24,8 @@ public class OptionalMutatorDecorator implements Decorator<ASTCDAttribute, List<
 
   private static final String SET_ABSENT = "setAbsent%s";
 
-  private final GlobalExtensionManagement glex;
-
-  private final CDMethodFactory cdMethodFactory;
-
-  private final CDParameterFactory cdParameterFactory;
-
   public OptionalMutatorDecorator(final GlobalExtensionManagement glex) {
-    this.glex = glex;
-    this.cdMethodFactory = CDMethodFactory.getInstance();
-    this.cdParameterFactory = CDParameterFactory.getInstance();
+    super(glex);
   }
 
   @Override
@@ -50,23 +39,23 @@ public class OptionalMutatorDecorator implements Decorator<ASTCDAttribute, List<
   private ASTCDMethod createSetMethod(final ASTCDAttribute ast) {
     String name = String.format(SET, StringUtils.capitalize(ast.getName()));
     ASTType parameterType = TypesHelper.getSimpleReferenceTypeFromOptional(ast.getType()).deepClone();
-    ASTCDParameter parameter = this.cdParameterFactory.createParameter(parameterType, ast.getName());
-    ASTCDMethod method = this.cdMethodFactory.createMethod(PUBLIC, name, parameter);
-    this.glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.Set", ast));
+    ASTCDParameter parameter = this.getCDParameterFactory().createParameter(parameterType, ast.getName());
+    ASTCDMethod method = this.getCDMethodFactory().createMethod(PUBLIC, name, parameter);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.Set", ast));
     return method;
   }
 
   private ASTCDMethod createSetOptMethod(final ASTCDAttribute ast) {
     String name = String.format(SET_OPT, StringUtils.capitalize(ast.getName()));
-    ASTCDMethod method = this.cdMethodFactory.createMethod(PUBLIC, name, this.cdParameterFactory.createParameters(ast));
-    this.glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.Set", ast));
+    ASTCDMethod method = this.getCDMethodFactory().createMethod(PUBLIC, name, this.getCDParameterFactory().createParameters(ast));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.Set", ast));
     return method;
   }
 
   private ASTCDMethod createSetAbsentMethod(final ASTCDAttribute ast) {
     String name = String.format(SET_ABSENT, StringUtils.capitalize(ast.getName()));
-    ASTCDMethod method = this.cdMethodFactory.createMethod(PUBLIC, name);
-    this.glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.SetAbsent", ast));
+    ASTCDMethod method = this.getCDMethodFactory().createMethod(PUBLIC, name);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.SetAbsent", ast));
     return method;
   }
 }

@@ -44,8 +44,8 @@ public class ListMutatorDecorator extends ListMethodDecorator {
 
   private ASTCDMethod createSetListMethod(ASTCDAttribute ast) {
     String signature = String.format(SET_LIST, capitalizedAttributeName, attributeType);
-    ASTCDMethod getList = this.cdMethodFactory.createMethodByDefinition(signature);
-    this.glex.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint("methods.Set", ast));
+    ASTCDMethod getList = this.getCDMethodFactory().createMethodByDefinition(signature);
+    this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint("methods.Set", ast));
     return getList;
   }
 

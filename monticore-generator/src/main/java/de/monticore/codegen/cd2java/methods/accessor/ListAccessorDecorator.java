@@ -48,8 +48,8 @@ public class ListAccessorDecorator extends ListMethodDecorator {
 
   private ASTCDMethod createGetListMethod(ASTCDAttribute ast) {
     String signature = String.format(GET_LIST, attributeType, capitalizedAttributeName);
-    ASTCDMethod getList = this.cdMethodFactory.createMethodByDefinition(signature);
-    this.glex.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint("methods.Get", ast));
+    ASTCDMethod getList = this.getCDMethodFactory().createMethodByDefinition(signature);
+    this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint("methods.Get", ast));
     return getList;
   }
 

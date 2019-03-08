@@ -1,6 +1,6 @@
 package de.monticore.codegen.cd2java.top;
 
-import de.monticore.codegen.cd2java.Decorator;
+import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 
@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
-public class TopDecorator implements Decorator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
+public class TopDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
 
   private static final String JAVA_EXTENSION = ".java";
 

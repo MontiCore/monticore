@@ -30,7 +30,6 @@ public class MillDecoratorTest {
 
   private CDTypeFactory cdTypeFacade;
 
-
   private ASTCDCompilationUnit cdCompilationUnit;
 
   private ASTCDClass millClass;

@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java.builder;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
+import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -16,8 +17,7 @@ import java.util.List;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
-import static de.monticore.codegen.cd2java.builder.BuilderDecorator.BUILD_METHOD;
-import static de.monticore.codegen.cd2java.builder.BuilderDecorator.IS_VALID;
+import static de.monticore.codegen.cd2java.builder.BuilderDecorator.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static junit.framework.TestCase.assertTrue;
@@ -33,12 +33,13 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
   private ASTCDClass builderClass;
 
   @Before
-  public void setup() throws IOException {
+  public void setup() {
     LogStub.init();
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "builder", "Builder");
     ASTCDClass cdClass = getClassBy("A", ast);
 
-    BuilderDecorator builderDecorator = new BuilderDecorator(glex);
+    MethodDecorator methodDecorator = new MethodDecorator(glex);
+    BuilderDecorator builderDecorator = new BuilderDecorator(glex, methodDecorator);
     this.builderClass = builderDecorator.decorate(cdClass);
   }
 
@@ -81,7 +82,7 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PROTECTED, attribute.getModifier());
     assertListOf(String.class, attribute.getType());
 
-    attribute = getAttributeBy("realThis", builderClass);
+    attribute = getAttributeBy(REAL_BUILDER, builderClass);
     assertDeepEquals(PROTECTED, attribute.getModifier());
     assertDeepEquals(cdTypeFactory.createSimpleReferenceType("ABuilder"), attribute.getType());
   }

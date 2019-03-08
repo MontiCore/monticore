@@ -28,7 +28,7 @@ public class TopDecoratorTest extends DecoratorTestCase {
   private ASTCDCompilationUnit topCD;
 
   @Before
-  public void setup() throws IOException {
+  public void setup() {
     LogStub.init();
     this.targetPath = Mockito.mock(IterablePath.class);
     this.topDecorator = new TopDecorator(this.targetPath);

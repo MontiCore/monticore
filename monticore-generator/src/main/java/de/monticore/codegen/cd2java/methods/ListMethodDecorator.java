@@ -1,7 +1,6 @@
 package de.monticore.codegen.cd2java.methods;
 
-import de.monticore.codegen.cd2java.Decorator;
-import de.monticore.codegen.cd2java.factories.CDMethodFactory;
+import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -17,19 +16,14 @@ import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 
-public abstract class ListMethodDecorator implements Decorator<ASTCDAttribute, List<ASTCDMethod>> {
-
-  protected final GlobalExtensionManagement glex;
-
-  protected final CDMethodFactory cdMethodFactory;
+public abstract class ListMethodDecorator extends AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> {
 
   protected String capitalizedAttributeName;
 
   protected String attributeType;
 
   public ListMethodDecorator(final GlobalExtensionManagement glex) {
-    this.glex = glex;
-    this.cdMethodFactory = CDMethodFactory.getInstance();
+    super(glex);
   }
 
   @Override
@@ -38,10 +32,10 @@ public abstract class ListMethodDecorator implements Decorator<ASTCDAttribute, L
     this.attributeType = getTypeArgumentFromListType(ast.getType());
 
     List<ASTCDMethod> methods = getMethodSignatures().stream()
-        .map(cdMethodFactory::createMethodByDefinition)
+        .map(getCDMethodFactory()::createMethodByDefinition)
         .collect(Collectors.toList());
 
-    methods.forEach(m -> this.glex.replaceTemplate(EMPTY_BODY, m, createListImplementation(m, capitalizedAttributeName)));
+    methods.forEach(m -> this.replaceTemplate(EMPTY_BODY, m, createListImplementation(m, capitalizedAttributeName)));
 
     return methods;
   }
