@@ -9,8 +9,6 @@ package de.monticore;
  * grammar inheritance or grammar embedment.
  * The grammar contains literals from Java, e.g., Boolean, Char, String, ....
  *
- *
- * Version Aug. 31rd, 2015
 */
 
 component grammar MCJavaLiterals extends de.monticore.MCBasicLiterals {

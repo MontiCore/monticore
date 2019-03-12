@@ -2,21 +2,21 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import java.util.Optional;
-import java.util.function.UnaryOperator;
-
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.ASTAbstractProd;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
-import de.monticore.grammar.grammar._ast.ASTGenericType;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTRuleReference;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.utils.Link;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.Optional;
+import java.util.function.UnaryOperator;
 
 /**
  * Checks if the source rules were implementing interface rules and sets the
@@ -63,7 +63,7 @@ public class ImplementsTranslation implements
     
     // translates "astimplements"
     String qualifiedRuleName;
-    for (ASTGenericType typeReference : classProd.getASTSuperInterfaceList()) {
+    for (ASTMCType typeReference : classProd.getASTSuperInterfaceList()) {
       qualifiedRuleName = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(
               typeReference, astGrammar, cdClass);
@@ -91,7 +91,7 @@ public class ImplementsTranslation implements
     
     // translates "astimplements"
     String qualifiedRuleName;
-    for (ASTGenericType typeReference : abstractProd.getASTSuperInterfaceList()) {
+    for (ASTMCType typeReference : abstractProd.getASTSuperInterfaceList()) {
       qualifiedRuleName = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(
               typeReference, astGrammar, cdClass);

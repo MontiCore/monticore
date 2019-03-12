@@ -8,7 +8,6 @@ import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
-import de.monticore.grammar.grammar._ast.ASTGenericType;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTMethod;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
@@ -24,7 +23,6 @@ import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
-import javax.naming.Name;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -438,21 +436,6 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     String code = pp.prettyprint(meth);
     code = code.replaceFirst("method", "");
     return code;
-  }
-
-  public String printGenericTypes(List<ASTGenericType> types) {
-    if (types.isEmpty()) {
-      return "";
-    }
-    StringBuilder sb = new StringBuilder();
-    Grammar_WithConceptsPrettyPrinter pp = new Grammar_WithConceptsPrettyPrinter(new IndentPrinter());
-    String sep = "";
-    for (ASTGenericType typeName : types) {
-      sb.append(sep);
-      sb.append(pp.prettyprint(typeName));
-      sep = ", ";
-    }
-    return sb.toString();
   }
 
   public String getQualifiedProdName(MCProdSymbol prod) {
