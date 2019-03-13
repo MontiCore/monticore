@@ -57,12 +57,14 @@ public class ExternalNTOnlyInComponentGrammar implements GrammarASTMCGrammarCoCo
         }
       }
 
-      for(MCProdSymbol prodSymbol: prods){
-        for(MCProdSymbolReference symbolReference : prodSymbol.getSuperProds()){
-          for(int i = externalProds.size(); i>=0; --i){
-            MCProdSymbol externalProdSymbol = externalProds.get(i);
-            if(symbolReference.getName().equals(externalProdSymbol.getName())){
-              externalProds.remove(i);
+      if(!externalProds.isEmpty()) {
+        for (MCProdSymbol prodSymbol : prods) {
+          for (MCProdSymbolReference symbolReference : prodSymbol.getSuperProds()) { 
+            for (int i = externalProds.size(); i >= 0; --i) {
+              MCProdSymbol externalProdSymbol = externalProds.get(i);
+              if (symbolReference.getName().equals(externalProdSymbol.getName())) {
+                externalProds.remove(i);
+              }
             }
           }
         }

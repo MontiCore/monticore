@@ -70,13 +70,14 @@ public class InterfaceNTWithoutImplementationOnlyInComponentGrammar implements G
           }
         }
       }
-
-      for(MCProdSymbol prodSymbol: prods){
-        for (MCProdSymbolReference interfaceProdImplemented : prodSymbol.getSuperInterfaceProds()) {
-          for (int i = interfaceProds.size() - 1; i >= 0; --i) {
-            MCProdSymbol interfaceProd = interfaceProds.get(i);
-            if(interfaceProdImplemented.getName().equals(interfaceProd.getName())){
-              interfaceProds.remove(i);
+      if(!interfaceProds.isEmpty()) {
+        for (MCProdSymbol prodSymbol : prods) {
+          for (MCProdSymbolReference interfaceProdImplemented : prodSymbol.getSuperInterfaceProds()) {
+            for (int i = interfaceProds.size() - 1; i >= 0; --i) {
+              MCProdSymbol interfaceProd = interfaceProds.get(i);
+              if (interfaceProdImplemented.getName().equals(interfaceProd.getName())) {
+                interfaceProds.remove(i);
+              }
             }
           }
         }
