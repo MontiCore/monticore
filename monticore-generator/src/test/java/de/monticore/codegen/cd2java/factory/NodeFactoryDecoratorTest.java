@@ -1,38 +1,30 @@
 package de.monticore.codegen.cd2java.factory;
 
-import de.monticore.MontiCoreScript;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.factories.CDParameterFactory;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
-import de.monticore.codegen.cd2java.typecd2java.TypeCD2JavaDecorator;
-import de.monticore.codegen.mc2cd.TestHelper;
+import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 import static org.junit.Assert.*;
 
-public class NodeFactoryDecoratorTest {
+public class NodeFactoryDecoratorTest extends DecoratorTestCase {
 
   private CDTypeFactory cdTypeFacade;
 
   private CDParameterFactory cdParameterFacade;
-
-  private ASTCDCompilationUnit cdCompilationUnit;
 
   private ASTCDClass factoryClass;
 
@@ -44,28 +36,10 @@ public class NodeFactoryDecoratorTest {
     this.cdTypeFacade = CDTypeFactory.getInstance();
     this.cdParameterFacade = CDParameterFactory.getInstance();
 
-    //create grammar from ModelPath
-    Path modelPathPath = Paths.get("src/test/resources");
-    ModelPath modelPath = new ModelPath(modelPathPath);
-    Optional<ASTMCGrammar> grammar = new MontiCoreScript()
-        .parseGrammar(Paths.get(new File(
-            "src/test/resources/Automaton.mc4").getAbsolutePath()));
-    assertTrue(grammar.isPresent());
-
-    //create ASTCDDefinition from MontiCoreScript
-    MontiCoreScript script = new MontiCoreScript();
-    GlobalScope globalScope = TestHelper.createGlobalScope(modelPath);
-    script.createSymbolsFromAST(globalScope, grammar.get());
-    cdCompilationUnit = script.deriveCD(grammar.get(), new GlobalExtensionManagement(),
-        globalScope);
-
-    cdCompilationUnit.setEnclosingScope(globalScope);
-    //make types java compatible
-    TypeCD2JavaDecorator typeDecorator = new TypeCD2JavaDecorator();
-    typeDecorator.decorate(cdCompilationUnit);
-
-    NodeFactoryDecorator factoryDecorator = new NodeFactoryDecorator(glex);
-    this.factoryClass = factoryDecorator.decorate(cdCompilationUnit);
+    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    ASTCDCompilationUnit compilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
+    NodeFactoryDecorator decorator = new NodeFactoryDecorator(this.glex);
+    this.factoryClass = decorator.decorate(compilationUnit);
   }
 
   @Test
@@ -159,12 +133,12 @@ public class NodeFactoryDecoratorTest {
     assertDeepEquals(nameParameter.getType(), method.getCDParameter(0).getType());
     assertEquals(nameParameter.getName(), method.getCDParameter(0).getName());
 
-    ASTType statesType = cdTypeFacade.createTypeByDefinition("java.util.List<automaton._ast.ASTState>");
+    ASTType statesType = cdTypeFacade.createTypeByDefinition("java.util.List<de.monticore.codegen.ast.automaton._ast.ASTState>");
     ASTCDParameter statesParameter = cdParameterFacade.createParameter(statesType, "states");
     assertDeepEquals(statesParameter.getType(), method.getCDParameter(1).getType());
     assertEquals(statesParameter.getName(), method.getCDParameter(1).getName());
 
-    ASTType transitionsType = cdTypeFacade.createTypeByDefinition("java.util.List<automaton._ast.ASTTransition>");
+    ASTType transitionsType = cdTypeFacade.createTypeByDefinition("java.util.List<de.monticore.codegen.ast.automaton._ast.ASTTransition>");
     ASTCDParameter transitionsParameter = cdParameterFacade.createParameter(transitionsType, "transitions");
     assertDeepEquals(transitionsParameter.getType(), method.getCDParameter(2).getType());
     assertEquals(transitionsParameter.getName(), method.getCDParameter(2).getName());

@@ -47,7 +47,7 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributes() {
-    assertEquals(5, builderClass.getCDMethodList().size());
+    assertEquals(5, builderClass.getCDAttributeList().size());
   }
 
   @Test

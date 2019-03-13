@@ -1,39 +1,31 @@
 package de.monticore.codegen.cd2java.factory;
 
-import de.monticore.MontiCoreScript;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.factories.CDParameterFactory;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
-import de.monticore.codegen.cd2java.typecd2java.TypeCD2JavaDecorator;
-import de.monticore.codegen.mc2cd.TestHelper;
+import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.TypesPrinter;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 import static org.junit.Assert.*;
 
-public class NodeFactoryWithInheritanceTest {
+public class NodeFactoryWithInheritanceTest extends DecoratorTestCase {
 
   private CDTypeFactory cdTypeFacade;
 
   private CDParameterFactory cdParameterFacade;
-
-  private ASTCDCompilationUnit cdCompilationUnit;
 
   private ASTCDClass factoryClass;
 
@@ -45,33 +37,15 @@ public class NodeFactoryWithInheritanceTest {
     this.cdTypeFacade = CDTypeFactory.getInstance();
     this.cdParameterFacade = CDParameterFactory.getInstance();
 
-    //create grammar from ModelPath
-    Path modelPathPath = Paths.get("src/test/resources");
-    ModelPath modelPath = new ModelPath(modelPathPath);
-    Optional<ASTMCGrammar> grammar = new MontiCoreScript()
-        .parseGrammar(Paths.get(new File(
-            "src/test/resources/de/monticore/codegen/factory/BGrammar.mc4").getAbsolutePath()));
-    assertTrue(grammar.isPresent());
-
-    //create ASTCDDefinition from MontiCoreScript
-    MontiCoreScript script = new MontiCoreScript();
-    GlobalScope globalScope = TestHelper.createGlobalScope(modelPath);
-    script.createSymbolsFromAST(globalScope, grammar.get());
-    cdCompilationUnit = script.deriveCD(grammar.get(), new GlobalExtensionManagement(),
-        globalScope);
-    cdCompilationUnit.setEnclosingScope(globalScope);
-
-    //make types java compatible
-    TypeCD2JavaDecorator typeDecorator = new TypeCD2JavaDecorator();
-    typeDecorator.decorate(cdCompilationUnit);
-
-    NodeFactoryDecorator factoryDecorator = new NodeFactoryDecorator(glex);
-    this.factoryClass = factoryDecorator.decorate(cdCompilationUnit);
+    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    ASTCDCompilationUnit compilationUnit = this.parse("de", "monticore", "codegen", "factory", "CGrammar");
+    NodeFactoryDecorator decorator = new NodeFactoryDecorator(this.glex);
+    this.factoryClass = decorator.decorate(compilationUnit);
   }
 
   @Test
   public void testFactoryName() {
-    assertEquals("BGrammarNodeFactory", factoryClass.getName());
+    assertEquals("CGrammarNodeFactory", factoryClass.getName());
   }
 
   @Test
@@ -95,7 +69,7 @@ public class NodeFactoryWithInheritanceTest {
     assertEquals(1, factoryClass.sizeCDConstructors());
     ASTCDConstructor astcdConstructor = CD4AnalysisMill.cDConstructorBuilder()
         .setModifier(PROTECTED.build())
-        .setName("BGrammarNodeFactory")
+        .setName("CGrammarNodeFactory")
         .build();
     assertDeepEquals(astcdConstructor, factoryClass.getCDConstructor(0));
   }
@@ -110,7 +84,7 @@ public class NodeFactoryWithInheritanceTest {
     //test parameters
     assertTrue(method.isEmptyCDParameters());
     //test returnType
-    ASTType returnType = cdTypeFacade.createTypeByDefinition("BGrammarNodeFactory");
+    ASTType returnType = cdTypeFacade.createTypeByDefinition("CGrammarNodeFactory");
     assertDeepEquals(returnType, method.getReturnType());
   }
 
@@ -118,13 +92,13 @@ public class NodeFactoryWithInheritanceTest {
   public void testMethodCreateDelegateASTC() {
     ASTCDMethod method = factoryClass.getCDMethod(9);
     //test name
-    assertEquals("createASTC", method.getName());
+    assertEquals("createASTB", method.getName());
     //test modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(method.getModifier()));
     //test parameters
     assertTrue(method.isEmptyCDParameters());
     //test returnType
-    ASTType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.cgrammar._ast.ASTC");
+    ASTType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.bgrammar._ast.ASTB");
     assertDeepEquals(returnType, method.getReturnType());
   }
 
@@ -186,7 +160,7 @@ public class NodeFactoryWithInheritanceTest {
     ASTType fooType = cdTypeFacade.createSimpleReferenceType("de.monticore.codegen.factory.agrammar._ast.ASTFoo");
     ASTCDParameter fooParameter = cdParameterFacade.createParameter(fooType, "foo");
     //assertTrue(fooParameter.getType().deepEquals(method.getCDParameter(0).getType())); todo fix ast->cd transformation
-    assertEquals("de.monticore.codegen.factory.AGrammar.ASTFoo", TypesPrinter.printType(method.getCDParameter(0).getType()));
+    assertEquals("de.monticore.codegen.factory.agrammar._ast.ASTFoo", TypesPrinter.printType(method.getCDParameter(0).getType()));
     assertEquals(fooParameter.getName(), method.getCDParameter(0).getName());
     //test returnType
     ASTType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.agrammar._ast.ASTBar");
@@ -208,7 +182,7 @@ public class NodeFactoryWithInheritanceTest {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     generatorSetup.setOutputDirectory(Paths.get("target/generated-test-sources/de/monticore/codegen/factory").toFile());
-    Path generatedFiles = Paths.get("BGrammarNodeFactory.java");
+    Path generatedFiles = Paths.get("CGrammarNodeFactory.java");
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     generatorEngine.generate(CoreTemplates.CLASS, generatedFiles, factoryClass, factoryClass);
   }

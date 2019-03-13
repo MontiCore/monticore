@@ -1,0 +1,24 @@
+package de.monticore.codegen.ast;
+
+import de.monticore.codegen.ast.Lexicals;
+
+classdiagram Automaton {
+
+    <<scope, symbol>> public class ASTAutomaton extends ASTCNode {
+      protected String name;
+      protected java.util.List<de.monticore.codegen.ast.automaton._ast.ASTState> states;
+      protected java.util.List<de.monticore.codegen.ast.automaton._ast.ASTTransition> transitions;
+    }
+
+    <<symbol>> public class ASTState extends ASTCNode {
+      protected String name;
+      protected java.util.List<de.monticore.codegen.ast.automaton._ast.ASTState> states;
+      protected java.util.List<de.monticore.codegen.ast.automaton._ast.ASTTransition> transitions;
+    }
+
+    public class ASTTransition extends ASTCNode {
+      protected String from;
+      protected String input;
+      protected String to;
+    }
+}
