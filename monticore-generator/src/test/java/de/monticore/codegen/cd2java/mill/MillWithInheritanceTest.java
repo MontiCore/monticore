@@ -1,37 +1,32 @@
 package de.monticore.codegen.cd2java.mill;
 
-import de.monticore.MontiCoreScript;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
-import de.monticore.codegen.mc2cd.TestHelper;
+import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Optional;
 
-import static de.monticore.codegen.cd2java.DecoratorAssert.*;
-
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertVoid;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class MillWithInheritanceTest {
+public class MillWithInheritanceTest extends DecoratorTestCase {
 
   private CDTypeFactory cdTypeFacade;
-
-
-  private ASTCDCompilationUnit cdCompilationUnit;
 
   private ASTCDClass millClass;
 
@@ -42,24 +37,10 @@ public class MillWithInheritanceTest {
     this.glex = new GlobalExtensionManagement();
     this.cdTypeFacade = CDTypeFactory.getInstance();
 
-    //create grammar from ModelPath
-    Path modelPathPath = Paths.get("src/test/resources");
-    ModelPath modelPath = new ModelPath(modelPathPath);
-    Optional<ASTMCGrammar> grammar = new MontiCoreScript()
-        .parseGrammar(Paths.get(new File(
-            "src/test/resources/de/monticore/codegen/factory/BGrammar.mc4").getAbsolutePath()));
-    assertTrue(grammar.isPresent());
-
-    //create ASTCDDefinition from MontiCoreScript
-    MontiCoreScript script = new MontiCoreScript();
-    GlobalScope globalScope = TestHelper.createGlobalScope(modelPath);
-    script.createSymbolsFromAST(globalScope, grammar.get());
-    cdCompilationUnit = script.deriveCD(grammar.get(), new GlobalExtensionManagement(),
-        globalScope);
-
-    cdCompilationUnit.setEnclosingScope(globalScope);
-    MillDecorator millDecorator = new MillDecorator(glex);
-    this.millClass = millDecorator.decorate(cdCompilationUnit);
+    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    ASTCDCompilationUnit compilationUnit = this.parse("de", "monticore", "codegen", "factory", "CGrammar");
+    MillDecorator decorator = new MillDecorator(this.glex);
+    this.millClass = decorator.decorate(compilationUnit);
   }
 
   @Test
@@ -81,7 +62,7 @@ public class MillWithInheritanceTest {
   public void testConstructor() {
     assertEquals(1, millClass.sizeCDConstructors());
     assertTrue(PROTECTED.build().deepEquals(millClass.getCDConstructor(0).getModifier()));
-    assertEquals("BGrammarMill", millClass.getCDConstructor(0).getName());
+    assertEquals("CGrammarMill", millClass.getCDConstructor(0).getName());
   }
 
   @Test
@@ -92,7 +73,7 @@ public class MillWithInheritanceTest {
     //test Parameters
     assertTrue(getMill.isEmptyCDParameters());
     //test ReturnType
-    ASTType returnType = cdTypeFacade.createTypeByDefinition("BGrammarMill");
+    ASTType returnType = cdTypeFacade.createTypeByDefinition("CGrammarMill");
     assertDeepEquals(returnType, getMill.getReturnType());
     //test Modifier
     assertTrue(PROTECTED_STATIC.build().deepEquals(getMill.getModifier()));
@@ -105,7 +86,7 @@ public class MillWithInheritanceTest {
     assertEquals("initMe", initMe.getName());
     //test Parameters
     assertEquals(1, initMe.sizeCDParameters());
-    ASTType type = cdTypeFacade.createSimpleReferenceType("BGrammarMill");
+    ASTType type = cdTypeFacade.createSimpleReferenceType("CGrammarMill");
     assertDeepEquals(type, initMe.getCDParameter(0).getType());
     assertEquals("a", initMe.getCDParameter(0).getName());
     //test ReturnType
@@ -144,11 +125,11 @@ public class MillWithInheritanceTest {
   public void testCBuilderMethod() {
     ASTCDMethod fooBarBuilder = millClass.getCDMethod(8);
     //test Method Name
-    assertEquals("aSTCBuilder", fooBarBuilder.getName());
+    assertEquals("aSTBBuilder", fooBarBuilder.getName());
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
-    ASTType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.cgrammar._ast.ASTC");
+    ASTType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.bgrammar._ast.ASTB");
     assertDeepEquals(returnType, fooBarBuilder.getReturnType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(fooBarBuilder.getModifier()));
@@ -197,7 +178,7 @@ public class MillWithInheritanceTest {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     generatorSetup.setOutputDirectory(Paths.get("target/generated-test-sources/de/monticore/codegen/mill").toFile());
-    Path generatedFiles = Paths.get("BGrammarMill.java");
+    Path generatedFiles = Paths.get("CGrammarMill.java");
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     generatorEngine.generate(CoreTemplates.CLASS, generatedFiles, millClass, millClass);
   }

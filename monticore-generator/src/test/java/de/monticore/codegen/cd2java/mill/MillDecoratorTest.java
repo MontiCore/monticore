@@ -1,36 +1,32 @@
 package de.monticore.codegen.cd2java.mill;
 
-import de.monticore.MontiCoreScript;
 import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
-import de.monticore.codegen.mc2cd.TestHelper;
+import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.GlobalScope;
 import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Optional;
 
-import static de.monticore.codegen.cd2java.DecoratorAssert.*;
-
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertVoid;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class MillDecoratorTest {
+public class MillDecoratorTest extends DecoratorTestCase {
 
   private CDTypeFactory cdTypeFacade;
-
-  private ASTCDCompilationUnit cdCompilationUnit;
 
   private ASTCDClass millClass;
 
@@ -41,24 +37,10 @@ public class MillDecoratorTest {
     this.glex = new GlobalExtensionManagement();
     this.cdTypeFacade = CDTypeFactory.getInstance();
 
-    //create grammar from ModelPath
-    Path modelPathPath = Paths.get("src/test/resources");
-    ModelPath modelPath = new ModelPath(modelPathPath);
-    Optional<ASTMCGrammar> grammar = new MontiCoreScript()
-        .parseGrammar(Paths.get(new File(
-            "src/test/resources/Automaton.mc4").getAbsolutePath()));
-    assertTrue(grammar.isPresent());
-
-    //create ASTCDDefinition from MontiCoreScript
-    MontiCoreScript script = new MontiCoreScript();
-    GlobalScope globalScope = TestHelper.createGlobalScope(modelPath);
-    script.createSymbolsFromAST(globalScope, grammar.get());
-    cdCompilationUnit = script.deriveCD(grammar.get(), new GlobalExtensionManagement(),
-        globalScope);
-
-    cdCompilationUnit.setEnclosingScope(globalScope);
-    MillDecorator millDecorator = new MillDecorator(glex);
-    this.millClass = millDecorator.decorate(cdCompilationUnit);
+    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+    ASTCDCompilationUnit compilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
+    MillDecorator decorator = new MillDecorator(this.glex);
+    this.millClass = decorator.decorate(compilationUnit);
   }
 
   @Test
