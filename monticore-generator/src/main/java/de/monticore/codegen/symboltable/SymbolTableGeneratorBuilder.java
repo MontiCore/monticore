@@ -17,6 +17,7 @@ public class SymbolTableGeneratorBuilder {
   private SymbolReferenceGenerator symbolReferenceGenerator;
   private SymbolTableCreatorGenerator symbolTableCreatorGenerator;
   private ArtifactScopeSerializerGenerator symbolTableSerializationGenerator;
+  private SymbolInterfaceGenerator symbolInterfaceGenerator;
 
   public SymbolTableGenerator build() {
     if (modelingLanguageGenerator == null) {
@@ -52,11 +53,15 @@ public class SymbolTableGeneratorBuilder {
     if (symbolTableSerializationGenerator == null) {
       symbolTableSerializationGenerator = new CommonArtifactScopeSerializerGenerator();
     }
+    if (symbolInterfaceGenerator == null) {
+      symbolInterfaceGenerator = new CommonSymbolInterfaceGenerator();
+    }
 
     return new SymbolTableGenerator(modelingLanguageGenerator, modelLoaderGenerator,
             modelNameCalculatorGenerator, resolvingFilterGenerator, symbolGenerator,
             symbolKindGenerator, scopeSpanningSymbolGenerator, scopeGenerator,
-            symbolReferenceGenerator, symbolTableCreatorGenerator, symbolTableSerializationGenerator);
+            symbolReferenceGenerator, symbolTableCreatorGenerator, symbolTableSerializationGenerator,
+            symbolInterfaceGenerator);
   }
 
 

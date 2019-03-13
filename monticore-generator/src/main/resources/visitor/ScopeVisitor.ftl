@@ -11,7 +11,13 @@ package ${genHelper.getVisitorPackage()};
 <#if existsST>
 import ${symbolTablePackage}.*;
 </#if>
+import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.MutableScope;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 /**
  * Default scope-visitor for the {@code ${genHelper.getCdName()}} language.<br/>
@@ -27,7 +33,7 @@ import de.monticore.symboltable.Scope;
  *   <li><b>Handling of nodes</b>: You may override the {@code handle(node)} methods, if you want to change its default implementation (depth-first iteration): {@code visit(node); traverse(node); endVisit(node);}<br/><br/></li>
  * </ul>
  */
-public interface ${genHelper.getScopeVisitorType()} { 
+public interface ${genHelper.getScopeVisitorType()} extends ${genHelper.getSymbolVisitorType()} { 
 
   /**
    * Sets the visitor to use for handling and traversing nodes.
@@ -84,7 +90,8 @@ public interface ${genHelper.getScopeVisitorType()} {
   /* ------------------------------------------------------------------------*/
   
   
-  <#if existsST>
+  <#if existsST && glex.getGlobalVar("stHelper")?has_content>
+    <#assign stHelper = glex.getGlobalVar("stHelper")>
     <#assign scopeType = astType.getName() + "Scope">
   
       default public void visit(${scopeType} scope) {}
@@ -97,7 +104,19 @@ public interface ${genHelper.getScopeVisitorType()} {
         getRealThis().endVisit(scope);
       }
   
-    default public void traverse(${scopeType} scope) {}
+    default public void traverse(${scopeType} scope) {
+      // traverse symbols within the scope
+      Iterator<Entry<String, Collection<Symbol>>> iter_symbols = scope.getLocalSymbols().entrySet().iterator();
+      while (iter_symbols.hasNext()) {
+        iter_symbols.next().getValue().forEach(s -> ((${"ICommon" + stHelper.getGrammarSymbol().getName() + "Symbol"})s).accept(getRealThis()));
+      }
+      
+      // traverse sub-scopes
+      Iterator<MutableScope> iter_scopes = scope.getSubScopes().iterator();
+      while (iter_scopes.hasNext()) {
+        ((${"I" + stHelper.getGrammarSymbol().getName() + "Scope"})iter_scopes.next()).accept(getRealThis());
+      }
+    }
   </#if>
 
 }

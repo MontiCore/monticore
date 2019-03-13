@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className","scopeRule", "symbolNames")}
+${signature("className","scopeRule", "symbolNames", "superScopeVisitors")}
 
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign names = glex.getGlobalVar("nameHelper")>
@@ -154,4 +154,14 @@ public class ${className} ${superClass} ${superInterfaces} {
     visitor.handle(this);
   </#if>
   }
+  
+  <#list superScopeVisitors as superScopeVisitor>
+  public void accept(${superScopeVisitor} visitor) {
+    if (visitor instanceof ${langVisitorType}) {
+      accept((${langVisitorType}) visitor);
+    } else {
+      throw new UnsupportedOperationException("0xA7010${genHelper.getGeneratedErrorCode(ast)} Scope node type ${className} expected a visitor of type ${langVisitorType}, but got ${superScopeVisitor}.");
+    }
+  }
+  </#list>
 }

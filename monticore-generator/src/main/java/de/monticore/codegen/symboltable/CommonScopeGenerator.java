@@ -11,6 +11,7 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTScopeRule;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.Names;
 
 import java.nio.file.Path;
@@ -85,7 +86,16 @@ public class CommonScopeGenerator implements ScopeGenerator {
         }
       }
     }
-
+    
+    // list of superscopevisitorss that the scope must accept
+    Set<String> superScopeVisitors = new HashSet<>();
+    for (CDSymbol cdSymbol : genHelper.getAllSuperCds(genHelper.getCd())) {
+      String qualifiedScopeVisitorName = genHelper.getQualifiedScopeVisitorType(cdSymbol);
+      if (!qualifiedScopeVisitorName.isEmpty()) {
+        superScopeVisitors.add(qualifiedScopeVisitorName);
+      }
+    }
+    
     final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
         className + ".java");
     final Path builderFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
@@ -97,7 +107,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
 
     ASTMCGrammar grammar = genHelper.getGrammarSymbol().getAstGrammar().get();
     Optional<ASTScopeRule> scopeRule = grammar.getScopeRulesOpt();
-    genEngine.generateNoA("symboltable.Scope", filePath, className, scopeRule, symbolNamesWithSuperGrammar);
+    genEngine.generateNoA("symboltable.Scope", filePath, className, scopeRule, symbolNamesWithSuperGrammar, superScopeVisitors);
     genEngine.generateNoA("symboltable.ScopeInterface", interfaceFilePath, interfaceName, symbolNames, superScopes);
     genEngine.generateNoA("symboltable.ScopeBuilder", builderFilePath, builderName,
         scopeName + GeneratorHelper.BUILDER);
