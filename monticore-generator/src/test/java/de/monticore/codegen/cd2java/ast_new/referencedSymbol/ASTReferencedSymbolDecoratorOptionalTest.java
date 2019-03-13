@@ -1,7 +1,8 @@
-package de.monticore.codegen.cd2java.ast_new;
+package de.monticore.codegen.cd2java.ast_new.referencedSymbol;
 
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
+import de.monticore.codegen.cd2java.ast_new.ASTReferencedSymbolDecorator;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
@@ -9,10 +10,7 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
+import de.monticore.umlcd4a.cd4analysis._ast.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,8 +20,9 @@ import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
-public class ASTReferencedSymbolDecoratorTest extends DecoratorTestCase {
+public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase {
 
   private GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
@@ -41,13 +40,13 @@ public class ASTReferencedSymbolDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "ReferencedSymbol");
     ASTReferencedSymbolDecorator decorator = new ASTReferencedSymbolDecorator(this.glex, new MethodDecorator(glex));
-    ASTCDClass clazz = getClassBy("ASTBar", ast);
+    ASTCDClass clazz = getClassBy("ASTBarOpt", ast);
     this.astClass = decorator.decorate(clazz);
   }
 
   @Test
   public void testClass() {
-    assertEquals("ASTBar", astClass.getName());
+    assertEquals("ASTBarOpt", astClass.getName());
   }
 
   @Test
@@ -61,11 +60,12 @@ public class ASTReferencedSymbolDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute nameAttribute = getAttributeBy("name", astClass);
     assertTrue( nameAttribute.getModifier().isProtected());
     assertTrue(nameAttribute.getModifier().isPresentStereotype());
-    assertEquals(1, nameAttribute.getModifier().getStereotype().sizeValues());
-    assertEquals("referencedSymbol", nameAttribute.getModifier().getStereotype().getValue(0).getName());
-    assertTrue(nameAttribute.getModifier().getStereotype().getValue(0).isPresentValue());
-    assertEquals("de.monticore.codegen.ast.referencedSymbol.FooSymbol", nameAttribute.getModifier().getStereotype().getValue(0).getValue());
-    assertDeepEquals(cdTypeFactory.createTypeByDefinition("String"), nameAttribute.getType());
+    ASTCDStereotype stereotype = nameAttribute.getModifier().getStereotype();
+    assertEquals(1, stereotype.sizeValues());
+    assertEquals("referencedSymbol", stereotype.getValue(0).getName());
+    assertTrue(stereotype.getValue(0).isPresentValue());
+    assertEquals("de.monticore.codegen.ast.referencedSymbol.FooSymbol", stereotype.getValue(0).getValue());
+    assertDeepEquals(cdTypeFactory.createTypeByDefinition("Optional<String>"), nameAttribute.getType());
   }
 
   @Test

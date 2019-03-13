@@ -9,7 +9,15 @@ classdiagram ReferencedSymbol {
       protected String name;
     }
 
-    public class ASTBar extends ASTCNode{
+    public class ASTBarMand extends ASTCNode{
       <<referencedSymbol = "de.monticore.codegen.ast.referencedSymbol.FooSymbol">> protected String name;
+    }
+
+    public class ASTBarOpt extends ASTCNode{
+      <<referencedSymbol = "de.monticore.codegen.ast.referencedSymbol.FooSymbol">> protected Optional<String> name;
+    }
+
+    public class ASTBarList extends ASTCNode{
+       <<referencedSymbol = "de.monticore.codegen.ast.referencedSymbol.FooSymbol">> protected java.util.List<String> name;
     }
 }

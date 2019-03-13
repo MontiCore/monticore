@@ -60,7 +60,7 @@ public class ASTReferencedSymbolDecorator extends AbstractDecorator<ASTCDClass, 
     ASTType attributeType;
     if (GeneratorHelper.isListType(attribute.printType())) {
       //if the attribute is a list
-      attributeType = getCDTypeFactory().createMapTypeOf(String.class.getSimpleName(),  "Optional<" + referencedSymbol + ">>");
+      attributeType = getCDTypeFactory().createTypeByDefinition(  "Map< String, Optional<" + referencedSymbol + ">>");
     } else {
       //if the attribute is mandatory or optional
       attributeType = getCDTypeFactory().createOptionalTypeOf(referencedSymbol);
