@@ -30,7 +30,7 @@ public class DataDecoratorTest extends DecoratorTestCase {
   private ASTCDClass dataClass;
 
   @Before
-  public void setUp() throws IOException {
+  public void setUp() {
     ASTCDCompilationUnit cd = this.parse("de", "monticore", "codegen", "data", "Data");
     ASTCDClass clazz = getClassBy("A", cd);
 

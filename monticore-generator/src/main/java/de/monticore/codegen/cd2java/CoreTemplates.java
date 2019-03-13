@@ -4,6 +4,8 @@ public final class CoreTemplates {
 
   public static final String CLASS = "core.Class";
 
+  public static final String INTERFACE = "core.Interface";
+
   public static final String ATTRIBUTE = "core.Attribute";
 
   public static final String CONSTRUCTOR = "core.Constructor";
