@@ -17,7 +17,7 @@
 
   <!-- == PROJECT MODULES ================================================= -->
   <modules>
-    <module>automaton</module>
+<!--    <module>automaton</module>
     <module>builderAtm</module>
     <module>ch17</module>
     <module>codeChecks</module>
@@ -36,7 +36,7 @@
     <module>spaceOnOff-negative</module>
     <module>spacesOffWithPositionCheck</module>
     <module>symbols</module>
-    <module>visit.L.inherit</module>
+    <module>visit.L.inherit</module>-->
   </modules>
 
   <build>
