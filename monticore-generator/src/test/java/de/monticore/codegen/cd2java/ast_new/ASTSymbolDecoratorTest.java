@@ -2,21 +2,23 @@ package de.monticore.codegen.cd2java.ast_new;
 
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
+import de.monticore.codegen.cd2java.factories.CDTypeFactory;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
+import de.monticore.types.types._ast.ASTType;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
-
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertOptionalOf;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
+import static de.monticore.codegen.cd2java.DecoratorAssert.*;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
+import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static org.junit.Assert.*;
 
 public class ASTSymbolDecoratorTest extends DecoratorTestCase {
@@ -25,8 +27,15 @@ public class ASTSymbolDecoratorTest extends DecoratorTestCase {
 
   private ASTCDClass astClass;
 
+  private CDTypeFactory cdTypeFactory = CDTypeFactory.getInstance();
+
+  private static final String AST_SYMBOL = "de.monticore.codegen.ast.ast._symboltable.ASymbol";
+
+  private static final String OPTIONAL_AST_SYMBOL = "Optional<de.monticore.codegen.ast.ast._symboltable.ASymbol>";
+
   @Before
-  public void setup() throws IOException {
+  public void setup() {
+    this.cdTypeFactory = CDTypeFactory.getInstance();
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "AST");
     ASTSymbolDecorator decorator = new ASTSymbolDecorator(this.glex, ast);
@@ -56,7 +65,65 @@ public class ASTSymbolDecoratorTest extends DecoratorTestCase {
   public void testMethods() {
     assertEquals(6, astClass.getCDMethodList().size());
   }
+  
+  @Test
+  public void testGetSymbolMethod() {
+    ASTCDMethod method = getMethodBy("getASymbol", astClass);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    ASTType astType = this.cdTypeFactory.createTypeByDefinition(AST_SYMBOL);
+    assertDeepEquals(astType, method.getReturnType());
+    assertTrue(method.isEmptyCDParameters());
+  }
 
+  @Test
+  public void testGetSymbolOptMethod() {
+    ASTCDMethod method = getMethodBy("getASymbolOpt", astClass);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    ASTType astType = this.cdTypeFactory.createTypeByDefinition(OPTIONAL_AST_SYMBOL);
+    assertDeepEquals(astType, method.getReturnType());
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testIsPresentSymbolMethod() {
+    ASTCDMethod method = getMethodBy("isPresentASymbol", astClass);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertBoolean(method.getReturnType());
+    assertTrue(method.isEmptyCDParameters());
+  }
+
+  @Test
+  public void testIsSetSymbolMethod() {
+    ASTCDMethod method = getMethodBy("setASymbol", astClass);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertVoid(method.getReturnType());
+    assertEquals(1, method.sizeCDParameters());
+    assertEquals("aSymbol", method.getCDParameter(0).getName());
+    ASTType astType = this.cdTypeFactory.createTypeByDefinition(AST_SYMBOL);
+    assertDeepEquals(astType, method.getCDParameter(0).getType());
+  }
+
+
+  @Test
+  public void testIsSetSymbolOptMethod() {
+    ASTCDMethod method = getMethodBy("setASymbolOpt", astClass);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertVoid(method.getReturnType());
+    assertEquals(1, method.sizeCDParameters());
+    assertEquals("aSymbol", method.getCDParameter(0).getName());
+    ASTType astType = this.cdTypeFactory.createTypeByDefinition(OPTIONAL_AST_SYMBOL);
+    assertDeepEquals(astType, method.getCDParameter(0).getType());
+  }
+
+
+  @Test
+  public void testIsSetSymbolAbsentMethod() {
+    ASTCDMethod method = getMethodBy("setAbsentASymbol", astClass);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertVoid(method.getReturnType());
+    assertTrue(method.isEmptyCDParameters());
+  }
+  
   @Test
   public void testGeneratedCode() {
     GeneratorSetup generatorSetup = new GeneratorSetup();
