@@ -31,8 +31,6 @@ public class ASTScopeDecoratorTest extends DecoratorTestCase {
 
   private static final String AST_SCOPE = "de.monticore.codegen.ast.ast._symboltable.ASTScope";
 
-  private static final String OPTIONAL_AST_SCOPE = "Optional<de.monticore.codegen.ast.ast._symboltable.ASTScope>";
-
   @Before
   public void setup() {
     this.cdTypeFactory = CDTypeFactory.getInstance();
@@ -80,8 +78,7 @@ public class ASTScopeDecoratorTest extends DecoratorTestCase {
   public void testGetScopeOptMethod() {
     ASTCDMethod method = getMethodBy("getASTScopeOpt", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    ASTType astType = this.cdTypeFactory.createTypeByDefinition(OPTIONAL_AST_SCOPE);
-    assertDeepEquals(astType, method.getReturnType());
+    assertOptionalOf(AST_SCOPE, method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -112,8 +109,7 @@ public class ASTScopeDecoratorTest extends DecoratorTestCase {
     assertVoid(method.getReturnType());
     assertEquals(1, method.sizeCDParameters());
     assertEquals("aSTScope", method.getCDParameter(0).getName());
-    ASTType astType = this.cdTypeFactory.createTypeByDefinition(OPTIONAL_AST_SCOPE);
-    assertDeepEquals(astType, method.getCDParameter(0).getType());
+    assertOptionalOf(AST_SCOPE, method.getCDParameter(0).getType());
   }
 
 

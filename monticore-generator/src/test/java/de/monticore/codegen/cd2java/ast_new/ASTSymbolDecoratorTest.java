@@ -31,8 +31,6 @@ public class ASTSymbolDecoratorTest extends DecoratorTestCase {
 
   private static final String AST_SYMBOL = "de.monticore.codegen.ast.ast._symboltable.ASymbol";
 
-  private static final String OPTIONAL_AST_SYMBOL = "Optional<de.monticore.codegen.ast.ast._symboltable.ASymbol>";
-
   @Before
   public void setup() {
     this.cdTypeFactory = CDTypeFactory.getInstance();
@@ -79,8 +77,7 @@ public class ASTSymbolDecoratorTest extends DecoratorTestCase {
   public void testGetSymbolOptMethod() {
     ASTCDMethod method = getMethodBy("getASymbolOpt", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    ASTType astType = this.cdTypeFactory.createTypeByDefinition(OPTIONAL_AST_SYMBOL);
-    assertDeepEquals(astType, method.getReturnType());
+    assertOptionalOf(AST_SYMBOL, method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -111,8 +108,7 @@ public class ASTSymbolDecoratorTest extends DecoratorTestCase {
     assertVoid(method.getReturnType());
     assertEquals(1, method.sizeCDParameters());
     assertEquals("aSymbol", method.getCDParameter(0).getName());
-    ASTType astType = this.cdTypeFactory.createTypeByDefinition(OPTIONAL_AST_SYMBOL);
-    assertDeepEquals(astType, method.getCDParameter(0).getType());
+    assertOptionalOf(AST_SYMBOL, method.getCDParameter(0).getType());
   }
 
 

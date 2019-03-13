@@ -1,0 +1,15 @@
+package de.monticore.codegen.ast;
+
+import de.monticore.codegen.ast.Lexicals;
+
+classdiagram ReferencedSymbol {
+
+    <<symbol>>
+    public class ASTFoo extends ASTCNode{
+      protected String name;
+    }
+
+    public class ASTBar extends ASTCNode{
+      <<referencedSymbol = "de.monticore.codegen.ast.referencedSymbol.FooSymbol">> protected String name;
+    }
+}
