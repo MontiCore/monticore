@@ -1,6 +1,6 @@
 # Release Notes
 
-##  MontiCore 5.0.4
+##  MontiCore 5.0.5-SNAPSHOT
 - Removed deprecated keyword _ast_ (use _astrule_) in *.mc4
 
 ##  MontiCore 5.0.3
