@@ -51,7 +51,7 @@ public class InterfaceNTWithoutImplementationOnlyInComponentGrammar implements G
 //      }
       List<MCProdSymbol> interfaceProds = grammarSymbol.getProds().stream().
           filter(MCProdSymbol::isInterface).collect(Collectors.toList());
-      for(MCGrammarSymbol symbol: grammarSymbol.getSuperGrammarSymbols()){
+      for(MCGrammarSymbol symbol: grammarSymbol.getAllSuperGrammars()){
         Collection<MCProdSymbol> prodSymbols = symbol.getProds();
         for(MCProdSymbol mcProdSymbol : prodSymbols){
           if (mcProdSymbol.isInterface()) {

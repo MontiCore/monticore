@@ -48,7 +48,7 @@ public class ExternalNTOnlyInComponentGrammar implements GrammarASTMCGrammarCoCo
 
       List<MCProdSymbol> prods = grammarSymbol.getProds().stream().
           filter(prodSymbol -> prodSymbol.isClass() || prodSymbol.isAbstract()).collect(Collectors.toList());
-      for(MCGrammarSymbol symbol: grammarSymbol.getAllSuperGrammars()){ 
+      for(MCGrammarSymbol symbol: grammarSymbol.getAllSuperGrammars()){
         Collection<MCProdSymbol> prodSymbols = symbol.getProds();
         for(MCProdSymbol mcProdSymbol : prodSymbols){
           if (mcProdSymbol.isAbstract() || mcProdSymbol.isClass()) {
