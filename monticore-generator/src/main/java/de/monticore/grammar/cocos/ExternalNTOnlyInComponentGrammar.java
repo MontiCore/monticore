@@ -3,11 +3,9 @@
 package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
-import de.monticore.grammar.symboltable.MCProdSymbolReference;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
@@ -59,12 +57,10 @@ public class ExternalNTOnlyInComponentGrammar implements GrammarASTMCGrammarCoCo
 
       if(!externalProds.isEmpty()) {
         for (MCProdSymbol prodSymbol : prods) {
-          for (MCProdSymbolReference symbolReference : prodSymbol.getSuperProds()) {
-            for (int i = externalProds.size(); i >= 0; --i) {
-              MCProdSymbol externalProdSymbol = externalProds.get(i);
-              if (symbolReference.getName().equals(externalProdSymbol.getName())) {
-                externalProds.remove(i);
-              }
+          for (int i = externalProds.size()-1; i >= 0; i--) {
+            MCProdSymbol externalProdSymbol = externalProds.get(i);
+            if (prodSymbol.getName().equals(externalProdSymbol.getName())) {
+              externalProds.remove(i);
             }
           }
         }
