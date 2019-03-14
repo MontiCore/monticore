@@ -37,7 +37,7 @@ public class ExternalNTOnlyInComponentGrammar implements GrammarASTMCGrammarCoCo
 //      }
       List<MCProdSymbol> externalProds = grammarSymbol.getProds().stream().
           filter(MCProdSymbol::isExternal).collect(Collectors.toList());
-      for(MCGrammarSymbol symbol: grammarSymbol.getSuperGrammarSymbols()){
+      for(MCGrammarSymbol symbol: grammarSymbol.getAllSuperGrammars()){
         Collection<MCProdSymbol> prodSymbols = symbol.getProds();
         for(MCProdSymbol mcProdSymbol : prodSymbols){
           if (mcProdSymbol.isExternal()) {
@@ -48,7 +48,7 @@ public class ExternalNTOnlyInComponentGrammar implements GrammarASTMCGrammarCoCo
 
       List<MCProdSymbol> prods = grammarSymbol.getProds().stream().
           filter(prodSymbol -> prodSymbol.isClass() || prodSymbol.isAbstract()).collect(Collectors.toList());
-      for(MCGrammarSymbol symbol: grammarSymbol.getAllSuperGrammars()){
+      for(MCGrammarSymbol symbol: grammarSymbol.getAllSuperGrammars()){ 
         Collection<MCProdSymbol> prodSymbols = symbol.getProds();
         for(MCProdSymbol mcProdSymbol : prodSymbols){
           if (mcProdSymbol.isAbstract() || mcProdSymbol.isClass()) {
@@ -59,7 +59,7 @@ public class ExternalNTOnlyInComponentGrammar implements GrammarASTMCGrammarCoCo
 
       if(!externalProds.isEmpty()) {
         for (MCProdSymbol prodSymbol : prods) {
-          for (MCProdSymbolReference symbolReference : prodSymbol.getSuperProds()) { 
+          for (MCProdSymbolReference symbolReference : prodSymbol.getSuperProds()) {
             for (int i = externalProds.size(); i >= 0; --i) {
               MCProdSymbol externalProdSymbol = externalProds.get(i);
               if (symbolReference.getName().equals(externalProdSymbol.getName())) {
