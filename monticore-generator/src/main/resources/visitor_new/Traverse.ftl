@@ -10,21 +10,21 @@ ${tc.signature("cdClass")}
     <#assign attrGetter = "get"+ attr.getName()?cap_first>
     <#if genHelper.isOptional(attr.getType())>
       if (node.${attrGetter}().isPresent()) {
-      node.${attrGetter}().get().accept(getRealThis());
+        node.${attrGetter}().get().accept(getRealThis());
       }
     <#else>
       if (null != node.${attrGetter}()) {
-      node.${attrGetter}().accept(getRealThis());
+        node.${attrGetter}().accept(getRealThis());
       }
     </#if>
   <#elseif genHelper.isListAstNode(attr)>
     <#assign attrGetter = "get"+ attr.getName()?cap_first + "List">
     <#assign astChildTypeName = attr.printType()>
     {
-    Iterator<${astChildTypeName}> iter_${attr.getName()} = node.${attrGetter}().iterator();
-    while (iter_${attr.getName()}.hasNext()) {
-    iter_${attr.getName()}.next().accept(getRealThis());
-    }
+      Iterator<${astChildTypeName}> iter_${attr.getName()} = node.${attrGetter}().iterator();
+      while (iter_${attr.getName()}.hasNext()) {
+        iter_${attr.getName()}.next().accept(getRealThis());
+      }
     }
   </#if>
 </#list>

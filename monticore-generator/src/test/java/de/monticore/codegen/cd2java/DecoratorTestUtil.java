@@ -1,9 +1,7 @@
 package de.monticore.codegen.cd2java;
 
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
+import de.monticore.types.types._ast.ASTType;
+import de.monticore.umlcd4a.cd4analysis._ast.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,6 +36,18 @@ public final class DecoratorTestUtil {
   }
 
   public static ASTCDMethod getMethodBy(String name, int parameterSize, ASTCDClass clazz) {
+    return getMethodBy(name, parameterSize, clazz.getCDMethodList());
+  }
+
+  public static List<ASTCDMethod> getMethodsBy(String name, int parameterSize, ASTCDInterface clazz) {
+    return getMethodsBy(name, parameterSize, clazz.getCDMethodList());
+  }
+
+  public static ASTCDMethod getMethodBy(String name, ASTCDInterface clazz) {
+    return getMethodBy(name, clazz.getCDMethodList());
+  }
+
+  public static ASTCDMethod getMethodBy(String name, int parameterSize, ASTCDInterface clazz) {
     return getMethodBy(name, parameterSize, clazz.getCDMethodList());
   }
 
