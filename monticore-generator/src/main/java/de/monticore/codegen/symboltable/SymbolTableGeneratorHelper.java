@@ -383,6 +383,18 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   public String getQualifiedVisitorType(CDSymbol cd) {
     return VisitorGeneratorHelper.getQualifiedVisitorType(cd.getFullName());
   }
+  
+  public String getQualifiedScopeVisitorType(CDSymbol cd) {
+    return VisitorGeneratorHelper.getQualifiedScopeVisitorType(cd.getFullName());
+  }
+  
+  public String getQualifiedScopeVisitorType(String symbol) {
+    Optional<CDSymbol> cdSymbol = this.cdSymbol.getEnclosingScope().resolve(symbol, CDSymbol.KIND);
+    if (cdSymbol.isPresent()) {
+      return getQualifiedScopeVisitorType(cdSymbol.get());
+    }
+    return "";
+  }
 
   public boolean spansScope(final MCProdSymbol rule) {
     return rule.isScopeDefinition();

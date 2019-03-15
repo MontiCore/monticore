@@ -51,6 +51,8 @@ public class SymbolTableGenerator {
   private final SymbolTableCreatorGenerator symbolTableCreatorGenerator;
 
   private final ArtifactScopeSerializerGenerator symbolTableSerializationGenerator;
+  
+  private final SymbolInterfaceGenerator symbolInterfaceGenerator;
 
   protected SymbolTableGenerator(
       ModelingLanguageGenerator modelingLanguageGenerator,
@@ -63,7 +65,8 @@ public class SymbolTableGenerator {
       ScopeGenerator scopeGenerator,
       SymbolReferenceGenerator symbolReferenceGenerator,
       SymbolTableCreatorGenerator symbolTableCreatorGenerator,
-      ArtifactScopeSerializerGenerator symbolTableSerializationGenerator) {
+      ArtifactScopeSerializerGenerator symbolTableSerializationGenerator,
+      SymbolInterfaceGenerator symbolInterfaceGenerator) {
     this.modelingLanguageGenerator = modelingLanguageGenerator;
     this.modelLoaderGenerator = modelLoaderGenerator;
     this.modelNameCalculatorGenerator = modelNameCalculatorGenerator;
@@ -75,6 +78,7 @@ public class SymbolTableGenerator {
     this.symbolReferenceGenerator = symbolReferenceGenerator;
     this.symbolTableCreatorGenerator = symbolTableCreatorGenerator;
     this.symbolTableSerializationGenerator = symbolTableSerializationGenerator;
+    this.symbolInterfaceGenerator = symbolInterfaceGenerator;
   }
 
   public void generate(GlobalExtensionManagement glex, ASTMCGrammar astGrammar, SymbolTableGeneratorHelper genHelper,
@@ -139,7 +143,8 @@ public class SymbolTableGenerator {
         resolvingFilterGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol);
       }
     }
-    //a scope is generated for all grammars
+    //a symbol interface and scope is generated for all grammars
+    symbolInterfaceGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol);
     scopeGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol.getName() + SCOPE, allSymbolDefiningRules, allSymbolDefiningRulesWithSuperGrammar);
 
 
