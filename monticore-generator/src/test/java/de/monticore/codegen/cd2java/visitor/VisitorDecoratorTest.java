@@ -62,7 +62,7 @@ public class VisitorDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testMethods() {
+  public void testMethodCount() {
     assertEquals(16, visitorInterface.sizeCDMethods());
   }
 
@@ -148,7 +148,7 @@ public class VisitorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testTraverseASTAutomaton() {
-    List<ASTCDMethod> methodList = getMethodsBy("handle", 1, visitorInterface);
+    List<ASTCDMethod> methodList = getMethodsBy("traverse", 1, visitorInterface);
     ASTType astType = this.cdTypeFacade.createTypeByDefinition("automaton._ast.ASTAutomaton");
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getType())).count());
@@ -197,7 +197,7 @@ public class VisitorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testTraverseASTState() {
-    List<ASTCDMethod> methodList = getMethodsBy("handle", 1, visitorInterface);
+    List<ASTCDMethod> methodList = getMethodsBy("traverse", 1, visitorInterface);
     ASTType astType = this.cdTypeFacade.createTypeByDefinition("automaton._ast.ASTState");
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getType())).count());
@@ -246,7 +246,7 @@ public class VisitorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testTraverseASTTransition() {
-    List<ASTCDMethod> methodList = getMethodsBy("handle", 1, visitorInterface);
+    List<ASTCDMethod> methodList = getMethodsBy("traverse", 1, visitorInterface);
     ASTType astType = this.cdTypeFacade.createTypeByDefinition("automaton._ast.ASTTransition");
     assertTrue(methodList.stream().anyMatch(m -> astType.deepEquals(m.getCDParameter(0).getType())));
     assertEquals(1, methodList.stream().filter(m -> astType.deepEquals(m.getCDParameter(0).getType())).count());
