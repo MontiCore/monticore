@@ -249,6 +249,30 @@ public class VisitorGeneratorHelper extends GeneratorHelper {
   }
   
   /**
+   * @param packageName
+   * @param cdName
+   * @return full-qualified name of the language's scope visitor interface
+   * @see #getVisitorType()
+   */
+  public static String getQualifiedScopeVisitorType(String packageName, String cdName) {
+    return getPackageName(packageName, getVisitorPackageSuffix()) + "."
+        + getScopeVisitorType(cdName);
+  }
+  
+  /**
+   * Gets the full-qualified type of the languages scope visitor interface. For
+   * example, input "a.b.c.D" results in output "a.b.c.d._visitor.DScopeVisitor"
+   * 
+   * @param qualifiedLanguageName
+   * @return the languages full-qualified scope visitor interface
+   */
+  public static String getQualifiedScopeVisitorType(String qualifiedLanguageName) {
+    String packageName = getCdPackage(qualifiedLanguageName);
+    String cdName = getCdName(qualifiedLanguageName);
+    return getQualifiedScopeVisitorType(packageName, cdName);
+  }
+  
+  /**
    * Gets the full-qualified name of the visitor interface with dots replaced by
    * underscores. E.g., input a cd with qualified name "a.b.c.D" the result is
    * "a_b_c_d__visitor_DVisitor".

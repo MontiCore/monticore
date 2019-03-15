@@ -1,6 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${signature("interfaceName", "symbolNames", "superScopes")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
+<#assign names = glex.getGlobalVar("nameHelper")>
 
 <#-- set package -->
 package ${genHelper.getTargetPackage()};
@@ -62,5 +63,7 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
   public Collection<${symbolNames[symbol]}> resolve${symbol}Many(ResolvingInfo resolvingInfo, String name, AccessModifier modifier, Predicate<Symbol> predicate);
 </#list>
 
+  <#assign langVisitorType = names.getQualifiedName(genHelper.getVisitorPackage(), genHelper.getGrammarSymbol().getName() + "ScopeVisitor")>
+  public void accept(${langVisitorType} visitor);
 }
 

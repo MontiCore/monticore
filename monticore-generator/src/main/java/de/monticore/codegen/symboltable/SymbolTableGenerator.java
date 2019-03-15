@@ -51,6 +51,8 @@ public class SymbolTableGenerator {
   private final SymbolTableCreatorGenerator symbolTableCreatorGenerator;
 
   private final ArtifactScopeSerializerGenerator symbolTableSerializationGenerator;
+  
+  private final SymbolInterfaceGenerator symbolInterfaceGenerator;
 
   protected SymbolTableGenerator(
       ModelingLanguageGenerator modelingLanguageGenerator,
@@ -63,7 +65,8 @@ public class SymbolTableGenerator {
       ScopeGenerator scopeGenerator,
       SymbolReferenceGenerator symbolReferenceGenerator,
       SymbolTableCreatorGenerator symbolTableCreatorGenerator,
-      ArtifactScopeSerializerGenerator symbolTableSerializationGenerator) {
+      ArtifactScopeSerializerGenerator symbolTableSerializationGenerator,
+      SymbolInterfaceGenerator symbolInterfaceGenerator) {
     this.modelingLanguageGenerator = modelingLanguageGenerator;
     this.modelLoaderGenerator = modelLoaderGenerator;
     this.modelNameCalculatorGenerator = modelNameCalculatorGenerator;
@@ -75,13 +78,16 @@ public class SymbolTableGenerator {
     this.symbolReferenceGenerator = symbolReferenceGenerator;
     this.symbolTableCreatorGenerator = symbolTableCreatorGenerator;
     this.symbolTableSerializationGenerator = symbolTableSerializationGenerator;
+    this.symbolInterfaceGenerator = symbolInterfaceGenerator;
   }
 
   public void generate(GlobalExtensionManagement glex, ASTMCGrammar astGrammar, SymbolTableGeneratorHelper genHelper,
                        File outputPath, final IterablePath handCodedPath) {
-
-
-
+    
+    // Always set symbol table helper even if symbol table is not generated to
+    // provide corresponding information and prevent wrong symbol assignments.
+    glex.setGlobalValue("stHelper", genHelper);
+    
     MCGrammarSymbol grammarSymbol = genHelper.getGrammarSymbol();
 
     // Skip generation if no rules are defined in the grammar, since no top asts
@@ -113,7 +119,6 @@ public class SymbolTableGenerator {
 
     final GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(outputPath);
-    glex.setGlobalValue("stHelper", genHelper);
     glex.setGlobalValue("nameHelper", new Names());
     glex.setGlobalValue("skipSTGen", skipSymbolTableGeneration);
     setup.setGlex(glex);
@@ -138,7 +143,8 @@ public class SymbolTableGenerator {
         resolvingFilterGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol);
       }
     }
-    //a scope is generated for all grammars
+    //a symbol interface and scope is generated for all grammars
+    symbolInterfaceGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol);
     scopeGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol.getName() + SCOPE, allSymbolDefiningRules, allSymbolDefiningRulesWithSuperGrammar);
 
 

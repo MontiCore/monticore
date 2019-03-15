@@ -4,10 +4,10 @@ ${signature("className", "prodSymbol", "ruleSymbol", "imports")}
 <#assign names = glex.getGlobalVar("nameHelper")>
 <#assign ruleName = prodSymbol.getName()>
 <#assign superClass = " extends de.monticore.symboltable.CommonSymbol">
-<#assign superInterfaces = "">
+<#assign superInterfaces = "implements ICommon" + genHelper.getGrammarSymbol().getName() + "Symbol">
 <#if ruleSymbol.isPresent()>
   <#if !ruleSymbol.get().isEmptySuperInterfaces()>
-    <#assign superInterfaces = "implements " + stHelper.printGenericTypes(ruleSymbol.get().getSuperInterfaceList())>
+    <#assign superInterfaces = ", " + stHelper.printGenericTypes(ruleSymbol.get().getSuperInterfaceList())>
   </#if>
   <#if !ruleSymbol.get().isEmptySuperClasss()>
     <#assign superClass = " extends " + stHelper.printGenericTypes(ruleSymbol.get().getSuperClassList())>

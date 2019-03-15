@@ -9,10 +9,10 @@ ${signature("className", "scopeClassName", "prodSymbol", "ruleSymbol", "imports"
 </#if>
 <#assign astName = prodSymbol.getName()?cap_first>
 <#assign superClass = " extends de.monticore.symboltable.CommonScopeSpanningSymbol">
-<#assign superInterfaces = "">
+<#assign superInterfaces = "implements ICommon" + genHelper.getGrammarSymbol().getName() + "Symbol">
 <#if ruleSymbol.isPresent()>
   <#if !ruleSymbol.get().isEmptySuperInterfaces()>
-    <#assign superInterfaces = "implements " + stHelper.printGenericTypes(ruleSymbol.get().getSuperInterfaceList())>
+    <#assign superInterfaces = ", " + stHelper.printGenericTypes(ruleSymbol.get().getSuperInterfaceList())>
   </#if>
   <#if !ruleSymbol.get().isEmptySuperClasss()>
     <#assign superClass = " extends " + stHelper.printGenericTypes(ruleSymbol.get().getSuperClassList())>

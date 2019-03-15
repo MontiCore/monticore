@@ -1,7 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className","scopeRule", "symbolNames")}
+${signature("className","scopeRule", "symbolNames", "superScopeVisitors")}
 
 <#assign genHelper = glex.getGlobalVar("stHelper")>
+<#assign names = glex.getGlobalVar("nameHelper")>
 <#assign superClass = " extends de.monticore.symboltable.CommonScope ">
 <#assign superInterfaces = "implements I"+ className>
 <#if scopeRule.isPresent()>
@@ -28,6 +29,8 @@ import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.resolving.ResolvingInfo;
 import de.monticore.symboltable.MutableScope;
+import static de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION;
+import static java.util.Collections.emptySet;
 
 public class ${className} ${superClass} ${superInterfaces} {
 
@@ -44,47 +47,47 @@ public class ${className} ${superClass} ${superInterfaces} {
   }
   
   <#list symbolNames?keys as symbol>
-  // all resolve Methods for ${symbol}
+  // all resolve Methods for symbol ${symbol}
   public Optional<${symbolNames[symbol]}> resolve${symbol}(String name) {
-    return resolve(name, ${symbolNames[symbol]}.KIND);
+    return getResolvedOrThrowException(resolve${symbol}Many(name));
   }
 
   public Optional<${symbolNames[symbol]}> resolve${symbol}(String name, AccessModifier modifier) {
-    return resolve(name, ${symbolNames[symbol]}.KIND, modifier);
+    return getResolvedOrThrowException(resolve${symbol}Many(name, modifier));
   }
 
   public Optional<${symbolNames[symbol]}> resolve${symbol}(String name, AccessModifier modifier, Predicate<Symbol> predicate) {
-    return resolve(name, ${symbolNames[symbol]}.KIND, modifier, predicate);
+    return getResolvedOrThrowException(resolve${symbol}Many(name, modifier, predicate));
   }
 
   public Optional<${symbolNames[symbol]}> resolve${symbol}(ResolvingInfo resolvingInfo, String name, AccessModifier modifier) {
-    return resolve(resolvingInfo, name, ${symbolNames[symbol]}.KIND, modifier);
+    return getResolvedOrThrowException(resolve${symbol}Many(resolvingInfo, name, modifier));
   }
 
-  // all resolveDown Methods for ${symbol}
+  // all resolveDown Methods for symbol ${symbol}
   public Optional<${symbolNames[symbol]}> resolve${symbol}Down(String name) {
-    return resolveDown(name, ${symbolNames[symbol]}.KIND);
+    return getResolvedOrThrowException(resolve${symbol}DownMany(name));
   }
 
   public Optional<${symbolNames[symbol]}> resolve${symbol}Down(String name, AccessModifier modifier) {
-  return resolveDown(name, ${symbolNames[symbol]}.KIND, modifier);
+  return getResolvedOrThrowException(resolve${symbol}DownMany(name, modifier));
   }
 
   public Optional<${symbolNames[symbol]}> resolve${symbol}Down(String name, AccessModifier modifier, Predicate<Symbol> predicate) {
-    return resolveDown(name, ${symbolNames[symbol]}.KIND, modifier, predicate);
+    return getResolvedOrThrowException(resolve${symbol}DownMany(name, modifier, predicate));
   }
 
-  // all resolveDownMany Methods for ${symbol}
+  // all resolveDownMany Methods for symbol ${symbol}
   public Collection<${symbolNames[symbol]}> resolve${symbol}DownMany(String name) {
-    return resolveDownMany(name, ${symbolNames[symbol]}.KIND);
+    return resolve${symbol}DownMany(new ResolvingInfo(getResolvingFilters()), name, ALL_INCLUSION, x -> true);
   }
 
   public Collection<${symbolNames[symbol]}> resolve${symbol}DownMany(String name, AccessModifier modifier) {
-    return resolveDownMany(name, ${symbolNames[symbol]}.KIND, modifier);
+    return resolve${symbol}DownMany(new ResolvingInfo(getResolvingFilters()), name, modifier, x -> true);
   }
 
   public Collection<${symbolNames[symbol]}> resolve${symbol}DownMany(String name, AccessModifier modifier, Predicate<Symbol> predicate) {
-    return resolveDownMany(name, ${symbolNames[symbol]}.KIND, modifier, predicate);
+    return resolve${symbol}DownMany(new ResolvingInfo(getResolvingFilters()), name, modifier, predicate);
   }
 
   public Collection<${symbolNames[symbol]}> resolve${symbol}DownMany(ResolvingInfo resolvingInfo, String name, AccessModifier modifier, Predicate<Symbol> predicate) {
@@ -93,37 +96,65 @@ public class ${className} ${superClass} ${superInterfaces} {
 
   // all resolveLocally Methods for ${symbol}
   public Optional<${symbolNames[symbol]}> resolve${symbol}Locally(String name) {
-    return resolveLocally(name, ${symbolNames[symbol]}.KIND);
+    return getResolvedOrThrowException(resolve${symbol}ManyLocally(new ResolvingInfo(getResolvingFilters()), name, ALL_INCLUSION, x -> true));
   }
 
-  // all resolveImported Methods for ${symbol}
+  public java.util.Set<${symbolNames[symbol]}> resolve${symbol}ManyLocally(ResolvingInfo resolvingInfo, String name, AccessModifier modifier, Predicate<Symbol> predicate) {
+    return resolveManyLocally(resolvingInfo, name, ${symbolNames[symbol]}.KIND, modifier, predicate);
+  }
+
+  public java.util.List<${symbolNames[symbol]}> resolve${symbol}Locally() {
+    return resolveLocally(${symbolNames[symbol]}.KIND);
+  }
+
+  // all resolveImported Methods for symbol ${symbol}
   public Optional<${symbolNames[symbol]}> resolve${symbol}Imported(String name, AccessModifier modifier) {
-    return resolveImported(name, ${symbolNames[symbol]}.KIND, modifier);
+    return resolve${symbol}Locally(name);
   }
 
-  // all resolveMany Methods for ${symbol}
+  // all resolveMany Methods for symbol ${symbol}
   public Collection<${symbolNames[symbol]}> resolve${symbol}Many(String name) {
-    return resolveMany(name, ${symbolNames[symbol]}.KIND);
+    return resolve${symbol}Many(name, ALL_INCLUSION);
   }
 
   public Collection<${symbolNames[symbol]}> resolve${symbol}Many(String name, AccessModifier modifier) {
-    return resolveMany(name, ${symbolNames[symbol]}.KIND, modifier);
+    return resolve${symbol}Many(name, modifier, x -> true);
   }
 
   public Collection<${symbolNames[symbol]}> resolve${symbol}Many(String name, AccessModifier modifier, Predicate<Symbol> predicate) {
-    return resolveMany(name, ${symbolNames[symbol]}.KIND, modifier, predicate);
+    return resolve${symbol}Many(name, predicate);
   }
 
   public Collection<${symbolNames[symbol]}> resolve${symbol}Many(String name, Predicate<Symbol> predicate) {
-    return resolveMany(name, ${symbolNames[symbol]}.KIND, predicate);
+    return resolve${symbol}Many(new ResolvingInfo(getResolvingFilters()), name, ALL_INCLUSION, predicate);
   }
 
   public Collection<${symbolNames[symbol]}> resolve${symbol}Many(ResolvingInfo resolvingInfo, String name, AccessModifier modifier) {
-    return resolveMany(resolvingInfo, name, ${symbolNames[symbol]}.KIND, modifier);
+    return resolve${symbol}Many(resolvingInfo, name, modifier, x -> true);
   }
 
   public Collection<${symbolNames[symbol]}> resolve${symbol}Many(ResolvingInfo resolvingInfo, String name, AccessModifier modifier, Predicate<Symbol> predicate) {
     return resolveMany(resolvingInfo, name, ${symbolNames[symbol]}.KIND, modifier, predicate);
+  }
+
+  //continue with scope methods for symbol ${symbol}
+  public Collection<${symbolNames[symbol]}> continue${symbol}AsSubScope(ResolvingInfo resolvingInfo, String symbolName,  AccessModifier modifier, Predicate<Symbol> predicate) {
+    if (checkIfContinue${symbol}AsSubScope(symbolName)) {
+      final String remainingSymbolName = getRemainingNameForResolveDown(symbolName);
+      return this.resolve${symbol}DownMany(resolvingInfo, remainingSymbolName, modifier, predicate);
+    }
+    return emptySet();
+  }
+
+  protected boolean checkIfContinue${symbol}AsSubScope(String symbolName) {
+    return checkIfContinueAsSubScope(symbolName, ${symbolNames[symbol]}.KIND);
+  }
+
+  protected Collection<${symbolNames[symbol]}> continue${symbol}WithEnclosingScope(ResolvingInfo resolvingInfo, String name, AccessModifier modifier, Predicate<Symbol> predicate) {
+    if (checkIfContinueWithEnclosingScope(resolvingInfo.areSymbolsFound()) && (getEnclosingScope().isPresent())) {
+      return getEnclosingScope().get().resolveMany(resolvingInfo, name, ${symbolNames[symbol]}.KIND, modifier, predicate);
+    }
+    return emptySet();
   }
 
   </#list>
@@ -139,4 +170,28 @@ public class ${className} ${superClass} ${superInterfaces} {
       ${genHelper.printMethod(meth)}
     </#list>
   </#if>
+  
+  <#assign langVisitorType = names.getQualifiedName(genHelper.getVisitorPackage(), genHelper.getGrammarSymbol().getName() + "ScopeVisitor")>
+  public void accept(${langVisitorType} visitor) {
+  <#if genHelper.isSupertypeOfHWType(className, "")>
+  <#assign plainName = className?remove_ending("TOP")>
+    if (this instanceof ${plainName}) {
+      visitor.handle((${plainName}) this);
+    } else {
+      throw new UnsupportedOperationException("0xA7010${genHelper.getGeneratedErrorCode(ast)} Only handwritten class ${plainName} is supported for the visitor");
+    }
+  <#else>
+    visitor.handle(this);
+  </#if>
+  }
+  
+  <#list superScopeVisitors as superScopeVisitor>
+  public void accept(${superScopeVisitor} visitor) {
+    if (visitor instanceof ${langVisitorType}) {
+      accept((${langVisitorType}) visitor);
+    } else {
+      throw new UnsupportedOperationException("0xA7010${genHelper.getGeneratedErrorCode(ast)} Scope node type ${className} expected a visitor of type ${langVisitorType}, but got ${superScopeVisitor}.");
+    }
+  }
+  </#list>
 }

@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.inheritance.multiplicity;
+
+/**
+ * This grammar extends the standard automaton example language. The 
+ * nonterminal PLAutomaton extends the Automaton of the parent grammar and adds
+ * a new alternative B. This tests the inheritance including the list
+ * multiplicity of the parent language.
+*/
+
+grammar PLAutomata extends mc.feature.inheritance.multiplicity.Automata {
+    PLAutomaton extends Automaton = B;
+    B = "b";
+}
