@@ -70,7 +70,35 @@ public class InterfaceNTWithoutImplementationOnlyInComponentGrammar implements G
           }
         }
       }
+
       if(!interfaceProds.isEmpty()) {
+        List<MCProdSymbol> temp = new ArrayList<>(interfaceProds);
+        for(MCProdSymbol interfaceProdSymbol : interfaceProds){
+          for(MCProdSymbolReference interfaceProdExtended : interfaceProdSymbol.getSuperInterfaceProds()){
+            for(int i = interfaceProds.size()-1;i>=0;--i){
+              MCProdSymbol interfaceProd = interfaceProds.get(i);
+              if(interfaceProdExtended.getReferencedSymbol().getName().equals(interfaceProd.getName())){
+                temp.remove(interfaceProdExtended.getReferencedSymbol());
+              }
+            }
+          }
+        }
+        interfaceProds = temp;
+
+//        Iterator<MCProdSymbol> iter = interfaceProds.iterator();
+//        while(iter.hasNext()){
+//          MCProdSymbol prodSymbol = iter.next();
+//          if(!prodSymbol.getSuperInterfaceProds().isEmpty()){
+//            for(MCProdSymbolReference interfaceProdExtended : prodSymbol.getSuperInterfaceProds()) {
+//              for (int i = interfaceProds.size() - 1; i >= 0; --i) {
+//                Iterator<MCProdSymbol> interfaceProdIter = interfaceProds.iterator();
+//              }
+//            }
+//          }
+//        }
+      }
+        
+      if(!interfaceProds.isEmpty()){
         for (MCProdSymbol prodSymbol : prods) {
           for (MCProdSymbolReference interfaceProdImplemented : prodSymbol.getSuperInterfaceProds()) {
             for (int i = interfaceProds.size() - 1; i >= 0; --i) {
