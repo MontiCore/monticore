@@ -16,6 +16,8 @@ import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.GlobalScope;
+import de.monticore.types.BasicGenericsTypesPrinter;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.types._ast.*;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParser;
@@ -65,14 +67,10 @@ public final class TransformationHelper {
     return "";
   }
 
-  public static String typeReferenceToString(ASTGenericType typeReference) {
-    return typeReference.getTypeName();
-  }
-
   /**
    * Pretty prints a CD AST to a String object.
    *
-   * @param cdCompilationUnit the top node of the CD AST to be pretty printed
+   * @param astNode the top node of the CD AST to be pretty printed
    */
   // TODO: should be placed somewhere in the UML/P CD project
   public static String prettyPrint(ASTCD4AnalysisNode astNode) {
@@ -340,8 +338,7 @@ public final class TransformationHelper {
     return Optional.empty();
   }
 
-  public static String getQualifiedTypeNameAndMarkIfExternal(
-      ASTGenericType ruleReference,
+  public static String getQualifiedTypeNameAndMarkIfExternal(ASTMCType ruleReference,
       ASTMCGrammar grammar, ASTCDClass cdClass) {
 
     Optional<MCProdSymbol> typeSymbol = resolveAstRuleType(grammar, ruleReference);
@@ -358,8 +355,7 @@ public final class TransformationHelper {
   }
 
   // TODO GV: remove this if CDInterface and CDClass have a common type CDType
-  public static String getQualifiedTypeNameAndMarkIfExternal(
-      ASTGenericType ruleReference,
+  public static String getQualifiedTypeNameAndMarkIfExternal(ASTMCType ruleReference,
       ASTMCGrammar grammar, ASTCDInterface interf) {
 
     Optional<MCProdSymbol> typeSymbol = resolveAstRuleType(grammar, ruleReference);
@@ -375,7 +371,7 @@ public final class TransformationHelper {
     return qualifiedRuleName;
   }
 
-  public static Optional<MCProdSymbol> resolveAstRuleType(ASTNode node, ASTGenericType type) {
+  public static Optional<MCProdSymbol> resolveAstRuleType(ASTNode node, ASTMCType type) {
     if (!type.getNameList().isEmpty()) {
       String simpleName = type.getNameList().get(type.getNameList().size() - 1);
       if (!simpleName.startsWith(AST_PREFIX)) {
@@ -409,25 +405,25 @@ public final class TransformationHelper {
     return getGrammarName(rule) + ".";
   }
 
-  public static boolean checkIfExternal(ASTNode node, ASTGenericType type) {
+  public static boolean checkIfExternal(ASTNode node, ASTMCType type) {
     return !resolveAstRuleType(node, type).isPresent();
   }
 
   public static String getQualifiedAstName(
-      Optional<MCProdSymbol> typeSymbol, ASTGenericType type,
+      Optional<MCProdSymbol> typeSymbol, ASTMCType type,
       ASTMCGrammar grammar) {
     if (!typeSymbol.isPresent()) {
-      return type.getTypeName();
+      return BasicGenericsTypesPrinter.printType(type);
     }
     if (type.getNameList().size() > 1) {
-      return type.getTypeName();
+      return BasicGenericsTypesPrinter.printType(type);
     }
     String refGrammarName = getGrammarName(typeSymbol.get());
     if (grammar.isPresentSymbol()
         && grammar.getSymbol().getFullName().equals(refGrammarName)) {
-      return type.getTypeName();
+      return BasicGenericsTypesPrinter.printType(type);
     }
-    return refGrammarName + "." + type.getTypeName();
+    return refGrammarName + "." + BasicGenericsTypesPrinter.printType(type);
   }
 
   public static void addStereoType(ASTCDType type, String stereotypeName,

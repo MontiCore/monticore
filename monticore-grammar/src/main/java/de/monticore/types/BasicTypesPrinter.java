@@ -19,7 +19,7 @@ public class BasicTypesPrinter {
   /**
    * We have a singleton.
    */
-  private BasicTypesPrinter() {
+  protected BasicTypesPrinter() {
   }
   
   /**

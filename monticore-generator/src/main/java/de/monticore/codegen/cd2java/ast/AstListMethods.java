@@ -22,7 +22,7 @@ public enum AstListMethods {
   containsAll("public boolean containsAll%s(Collection<?> collection);"),
   
   isEmpty("public boolean isEmpty%s();"),
-  
+
   iterator("public Iterator<%s> iterator%s();"),
   
   remove("public %s remove%s(Object element);"),//boolean

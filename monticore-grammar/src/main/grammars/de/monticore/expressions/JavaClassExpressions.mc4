@@ -2,7 +2,7 @@
 
 package de.monticore.expressions;
 
-component grammar JavaClassExpressions extends de.monticore.expressions.CommonExpressions{
+component grammar JavaClassExpressions extends de.monticore.expressions.CommonExpressions {
 	
 external ExtLiteral;
 

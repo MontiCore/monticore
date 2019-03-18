@@ -55,7 +55,17 @@ public class MCBasicLiteralsPrettyPrinter extends MCBasicsPrettyPrinter implemen
     printer.print("\"" + a.getSource() + "\"");
   }
 
-  
+
+  /**
+   * Prints a natural literal
+   *
+   * @param a Nat literal
+   */
+  @Override
+  public void visit(ASTNatLiteral a) {
+    printer.print(a.getSource());
+  }
+
   /**
    * This method prettyprints a given node from literal grammar.
    * 

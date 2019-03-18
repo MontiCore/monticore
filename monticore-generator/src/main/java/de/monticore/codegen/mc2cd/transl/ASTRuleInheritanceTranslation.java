@@ -2,16 +2,16 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import java.util.function.UnaryOperator;
-
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.ASTASTRule;
-import de.monticore.grammar.grammar._ast.ASTGenericType;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
 import de.monticore.utils.Link;
+
+import java.util.function.UnaryOperator;
 
 
 /**
@@ -45,7 +45,7 @@ public class ASTRuleInheritanceTranslation implements
   private void translateInterfaceProd(ASTASTRule rule, ASTCDInterface cdInterface,
       ASTMCGrammar astGrammar) {
     // translates "astextends"
-    for (ASTGenericType superInterface : rule.getASTSuperClassList()) {
+    for (ASTMCType superInterface : rule.getASTSuperClassList()) {
       String qualifiedSuperInterface = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(superInterface, astGrammar, cdInterface);
 
@@ -56,14 +56,14 @@ public class ASTRuleInheritanceTranslation implements
 
   private void translateClassProd(ASTASTRule rule, ASTCDClass cdClass, ASTMCGrammar astGrammar) {
     // translates "astextends"
-    for (ASTGenericType superClass : rule.getASTSuperClassList()) {
+    for (ASTMCType superClass : rule.getASTSuperClassList()) {
       String qualifiedSuperClass = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(superClass, astGrammar, cdClass);
       cdClass.setSuperclass(TransformationHelper.createSimpleReference(qualifiedSuperClass));
     }
 
     // translates "astimplements"
-    for (ASTGenericType superInterface : rule.getASTSuperInterfaceList()) {
+    for (ASTMCType superInterface : rule.getASTSuperInterfaceList()) {
       String qualifiedSuperInterface = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(superInterface, astGrammar, cdClass);
       cdClass.getInterfaceList()
