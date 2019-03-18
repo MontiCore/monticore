@@ -20,23 +20,25 @@ public class ASTScopeDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass>
 
   private final ASTCDCompilationUnit compilationUnit;
 
-  public ASTScopeDecorator(final GlobalExtensionManagement glex, final ASTCDCompilationUnit compilationUnit) {
+  private final MethodDecorator methodDecorator;
+
+  public ASTScopeDecorator(final GlobalExtensionManagement glex, final ASTCDCompilationUnit compilationUnit, final MethodDecorator methodDecorator) {
     super(glex);
     this.compilationUnit = compilationUnit;
+    this.methodDecorator = methodDecorator;
   }
 
   @Override
   public ASTCDClass decorate(final ASTCDClass clazz) {
-    ASTCDClass decoratedClass = clazz.deepClone();
-    if (isScopeClass(decoratedClass)) {
+    if (isScopeClass(clazz)) {
       String symbolTablePackage = (String.join(".", compilationUnit.getPackageList()) + "." + compilationUnit.getCDDefinition().getName() + SYMBOLTABLE_PACKAGE).toLowerCase();
       ASTType scopeType = this.getCDTypeFactory().createOptionalTypeOf(symbolTablePackage + compilationUnit.getCDDefinition().getName() + SCOPE_SUFFIX);
       String attributeName = StringUtils.uncapitalize(compilationUnit.getCDDefinition().getName()) + SCOPE_SUFFIX;
       ASTCDAttribute scopeAttribute = this.getCDAttributeFactory().createAttribute(PROTECTED, scopeType, attributeName);
-      decoratedClass.addCDAttribute(scopeAttribute);
-      decoratedClass.addAllCDMethods(new MethodDecorator(this.getGlex()).decorate(scopeAttribute));
+      clazz.addCDAttribute(scopeAttribute);
+      clazz.addAllCDMethods(methodDecorator.decorate(scopeAttribute));
     }
-    return decoratedClass;
+    return clazz;
   }
 
   private boolean isScopeClass(final ASTCDClass clazz) {

@@ -6,6 +6,7 @@ import de.monticore.codegen.cd2java.builder.BuilderDecorator;
 import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.factory.NodeFactoryDecorator;
+import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.codegen.cd2java.mill.MillDecorator;
 import de.monticore.generating.GeneratorEngine;
@@ -32,16 +33,14 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "AST");
 
-    MethodDecorator methodDecorator = new MethodDecorator(glex);
-
-    DataDecorator dataDecorator = new DataDecorator(glex, methodDecorator);
+    DataDecorator dataDecorator = new DataDecorator(glex, new MethodDecorator(glex));
     ASTDecorator astDecorator = new ASTDecorator(glex, ast);
-    ASTSymbolDecorator astSymbolDecorator = new ASTSymbolDecorator(glex, ast);
-    ASTScopeDecorator astScopeDecorator = new ASTScopeDecorator(glex, ast);
-    ASTReferencedSymbolDecorator astReferencedSymbolDecorator = new ASTReferencedSymbolDecorator(glex, methodDecorator);
+    ASTSymbolDecorator astSymbolDecorator = new ASTSymbolDecorator(glex, ast, new MethodDecorator(glex));
+    ASTScopeDecorator astScopeDecorator = new ASTScopeDecorator(glex, ast, new MethodDecorator(glex));
+    ASTReferencedSymbolDecorator astReferencedSymbolDecorator = new ASTReferencedSymbolDecorator(glex, new AccessorDecorator(glex));
     ASTFullDecorator fullDecorator = new ASTFullDecorator(dataDecorator, astDecorator, astSymbolDecorator, astScopeDecorator, astReferencedSymbolDecorator);
 
-    BuilderDecorator builderDecorator = new BuilderDecorator(glex, methodDecorator);
+    BuilderDecorator builderDecorator = new BuilderDecorator(glex, new MethodDecorator(glex));
     ASTBuilderDecorator astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator);
 
     NodeFactoryDecorator nodeFactoryDecorator = new NodeFactoryDecorator(glex);

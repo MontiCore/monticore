@@ -20,23 +20,25 @@ public class ASTSymbolDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass
 
   private final ASTCDCompilationUnit compilationUnit;
 
-  public ASTSymbolDecorator(final GlobalExtensionManagement glex, final ASTCDCompilationUnit compilationUnit) {
+  private final MethodDecorator methodDecorator;
+
+  public ASTSymbolDecorator(final GlobalExtensionManagement glex, final ASTCDCompilationUnit compilationUnit, final MethodDecorator methodDecorator) {
     super(glex);
     this.compilationUnit = compilationUnit;
+    this.methodDecorator = methodDecorator;
   }
 
   @Override
   public ASTCDClass decorate(final ASTCDClass clazz) {
-    ASTCDClass decoratedClass = clazz.deepClone();
-    if (isSymbolClass(decoratedClass)) {
+    if (isSymbolClass(clazz)) {
       String symbolTablePackage = (String.join(".", compilationUnit.getPackageList()) + "." + compilationUnit.getCDDefinition().getName() + SYMBOLTABLE_PACKAGE).toLowerCase();
-      ASTType symbolType = this.getCDTypeFactory().createOptionalTypeOf(symbolTablePackage + decoratedClass.getName().replaceFirst("AST", "") + SYMBOL_SUFFIX);
-      String attributeName = StringUtils.uncapitalize(decoratedClass.getName().replaceFirst("AST", "")) + SYMBOL_SUFFIX;
+      ASTType symbolType = this.getCDTypeFactory().createOptionalTypeOf(symbolTablePackage + clazz.getName().replaceFirst("AST", "") + SYMBOL_SUFFIX);
+      String attributeName = StringUtils.uncapitalize(clazz.getName().replaceFirst("AST", "")) + SYMBOL_SUFFIX;
       ASTCDAttribute symbolAttribute = this.getCDAttributeFactory().createAttribute(PROTECTED, symbolType, attributeName);
-      decoratedClass.addCDAttribute(symbolAttribute);
-      decoratedClass.addAllCDMethods(new MethodDecorator(this.getGlex()).decorate(symbolAttribute));
+      clazz.addCDAttribute(symbolAttribute);
+      clazz.addAllCDMethods(methodDecorator.decorate(symbolAttribute));
     }
-    return decoratedClass;
+    return clazz;
   }
 
   private boolean isSymbolClass(ASTCDClass ast) {

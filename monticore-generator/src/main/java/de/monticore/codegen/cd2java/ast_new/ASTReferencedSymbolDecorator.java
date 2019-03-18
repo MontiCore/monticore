@@ -27,19 +27,19 @@ public class ASTReferencedSymbolDecorator extends AbstractDecorator<ASTCDClass, 
 
   private static final String SYMBOL = "Symbol";
 
-  private final MethodDecorator methodDecorator;
+  private final AccessorDecorator accessorDecorator;
 
   //TODO test
-  public ASTReferencedSymbolDecorator(final GlobalExtensionManagement glex, final MethodDecorator methodDecorator) {
+  public ASTReferencedSymbolDecorator(final GlobalExtensionManagement glex, final AccessorDecorator accessorDecorator) {
     super(glex);
-    this.methodDecorator = methodDecorator;
+    this.accessorDecorator = accessorDecorator;
   }
 
   @Override
-  public ASTCDClass decorate(ASTCDClass astcdClass) {
+  public ASTCDClass decorate(ASTCDClass clazz) {
     List<ASTCDAttribute> attributeList = new ArrayList<>();
     List<ASTCDMethod> methodList = new ArrayList<>();
-    for (ASTCDAttribute astcdAttribute : astcdClass.getCDAttributeList()) {
+    for (ASTCDAttribute astcdAttribute : clazz.getCDAttributeList()) {
       if (isReferencedSymbolAttribute(astcdAttribute)) {
         String referencedSymbolType = getReferencedSymbolType(astcdAttribute);
         //create referenced symbol attribute and methods
@@ -51,9 +51,9 @@ public class ASTReferencedSymbolDecorator extends AbstractDecorator<ASTCDClass, 
 
       }
     }
-    astcdClass.addAllCDMethods(methodList);
-    astcdClass.addAllCDAttributes(attributeList);
-    return astcdClass;
+    clazz.addAllCDMethods(methodList);
+    clazz.addAllCDAttributes(attributeList);
+    return clazz;
   }
 
   private ASTCDAttribute getRefSymbolAttribute(ASTCDAttribute attribute, String referencedSymbol) {
@@ -76,7 +76,6 @@ public class ASTReferencedSymbolDecorator extends AbstractDecorator<ASTCDClass, 
       ASTType listType = getCDTypeFactory().createListTypeOf(optionalType);
       refSymbolAttribute = getCDAttributeFactory().createAttribute(refSymbolAttribute.getModifier(), listType, refSymbolAttribute.getName());
     }
-    AccessorDecorator accessorDecorator = new AccessorDecorator(this.getGlex());
     List<ASTCDMethod> methods = accessorDecorator.decorate(refSymbolAttribute);
     return methods;
   }
@@ -92,7 +91,6 @@ public class ASTReferencedSymbolDecorator extends AbstractDecorator<ASTCDClass, 
       symbolType = getCDTypeFactory().createOptionalTypeOf(referencedNode);
     }
     ASTCDAttribute refSymbolAttribute = getCDAttributeFactory().createAttribute(PRIVATE, symbolType, astcdAttribute.getName() + DEFINITION);
-    AccessorDecorator accessorDecorator = new AccessorDecorator(this.getGlex());
     List<ASTCDMethod> methods = accessorDecorator.decorate(refSymbolAttribute);
     return methods;
   }

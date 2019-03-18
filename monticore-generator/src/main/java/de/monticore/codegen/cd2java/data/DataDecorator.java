@@ -41,18 +41,18 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
   @Override
   public ASTCDClass decorate(ASTCDClass clazz) {
-    ASTCDClass dataClass = clazz.deepClone();
-
-    dataClass.addCDConstructor(createDefaultConstructor(dataClass));
-    dataClass.addCDConstructor(createFullConstructor(dataClass));
-    dataClass.addAllCDMethods(createEqualsMethods(dataClass));
-    dataClass.addAllCDMethods(createCloneMethods(dataClass));
-    dataClass.addAllCDMethods(dataClass.getCDAttributeList().stream()
+    clazz.addCDConstructor(createDefaultConstructor(clazz));
+    if (!clazz.getCDAttributeList().isEmpty()) {
+      clazz.addCDConstructor(createFullConstructor(clazz));
+    }
+    clazz.addAllCDMethods(createEqualsMethods(clazz));
+    clazz.addAllCDMethods(createCloneMethods(clazz));
+    clazz.addAllCDMethods(clazz.getCDAttributeList().stream()
         .map(methodDecorator::decorate)
         .flatMap(List::stream)
         .collect(Collectors.toList()));
     
-    return dataClass;
+    return clazz;
   }
 
   private ASTCDConstructor createDefaultConstructor(ASTCDClass clazz) {

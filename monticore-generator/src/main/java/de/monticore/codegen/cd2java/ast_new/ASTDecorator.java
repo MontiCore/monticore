@@ -42,23 +42,22 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
   @Override
   public ASTCDClass decorate(ASTCDClass clazz) {
-    ASTCDClass astClass = clazz.deepClone();
-    astClass.setName(AST_PREFIX + clazz.getName());
+    clazz.setName(AST_PREFIX + clazz.getName());
 
-    if (!astClass.isPresentSuperclass()) {
-      astClass.setSuperclass(this.getCDTypeFactory().createSimpleReferenceType(ASTCNode.class));
+    if (!clazz.isPresentSuperclass()) {
+      clazz.setSuperclass(this.getCDTypeFactory().createSimpleReferenceType(ASTCNode.class));
     }
 
-    astClass.addInterface(this.getCDTypeFactory().createReferenceTypeByDefinition(AST_PREFIX + compilationUnit.getCDDefinition().getName() + "Node"));
+    clazz.addInterface(this.getCDTypeFactory().createReferenceTypeByDefinition(AST_PREFIX + compilationUnit.getCDDefinition().getName() + "Node"));
 
     String visitorPackage = (String.join(".", compilationUnit.getPackageList()) + "." + compilationUnit.getCDDefinition().getName() + VISITOR_PACKAGE).toLowerCase();
     ASTType visitorType = this.getCDTypeFactory().createSimpleReferenceType(visitorPackage + compilationUnit.getCDDefinition().getName() + VISITOR_SUFFIX);
 
-    astClass.addCDMethod(createAcceptMethod(astClass, visitorType));
-    astClass.addAllCDMethods(createAcceptSuperMethods(astClass, visitorType));
-    astClass.addCDMethod(getConstructMethod(astClass));
+    clazz.addCDMethod(createAcceptMethod(clazz, visitorType));
+    clazz.addAllCDMethods(createAcceptSuperMethods(clazz, visitorType));
+    clazz.addCDMethod(getConstructMethod(clazz));
 
-    return astClass;
+    return clazz;
   }
 
   private ASTCDMethod createAcceptMethod(ASTCDClass astClass, ASTType visitorType) {
