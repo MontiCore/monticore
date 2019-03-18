@@ -887,6 +887,9 @@ public class GrammarPrettyPrinter extends LiteralsPrettyPrinterConcreteVisitor
   @Override
   public void endVisit(ASTLexSimpleIteration a) {
     outputIteration(a.getIteration());
+    if(a.isQuestion()) {
+      getPrinter().print("?");
+    }
   }
   
   @Override
