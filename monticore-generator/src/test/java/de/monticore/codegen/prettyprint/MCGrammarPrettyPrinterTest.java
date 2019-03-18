@@ -67,7 +67,6 @@ public class MCGrammarPrettyPrinterTest {
     // Prettyprinting input
     Grammar_WithConceptsPrettyPrinter prettyPrinter = new Grammar_WithConceptsPrettyPrinter(new IndentPrinter());
     String output = prettyPrinter.prettyprint(grammar);
-    System.out.println(output);
     // Parsing printed input
     result = parser.parse(new StringReader(output));
     assertFalse(parser.hasErrors());

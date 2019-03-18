@@ -450,7 +450,7 @@ component grammar Grammar extends de.monticore.MCBasicLiterals, de.monticore.typ
       (["public"] | ["private"] | ["protected"])?
       (["final"])?
       (["static"])?
-      returnType:MCType Name
+      MCReturnType Name
       "(" (MethodParameter || ",")* ")"
       ("throws" exception:(MCType || ",")+)?
       "{" body:Action "}" ; // Statements

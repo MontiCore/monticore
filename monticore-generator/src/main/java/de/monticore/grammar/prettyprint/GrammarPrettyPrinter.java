@@ -469,7 +469,7 @@ public class GrammarPrettyPrinter
       print("protected ");
     }
     
-    a.getReturnType().accept(getRealThis());
+    a.getMCReturnType().accept(getRealThis());
     
     print(" " + a.getName() + "(");
     

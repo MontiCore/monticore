@@ -65,7 +65,7 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
     ASTCDMethod cdMethod = CD4AnalysisNodeFactory.createASTCDMethod();
     cdMethod.setModifier(TransformationHelper.createPublicModifier());
     cdMethod.setName(method.getName());
-    String dotSeparatedName = BasicGenericsTypesPrinter.printType(method.getReturnType());
+    String dotSeparatedName = BasicGenericsTypesPrinter.printReturnType(method.getMCReturnType());
     cdMethod.setReturnType(TransformationHelper.createSimpleReference(dotSeparatedName));
     for (ASTMethodParameter param: method.getMethodParameterList()) {
       String typeName = BasicGenericsTypesPrinter.printType(param.getType());
@@ -89,7 +89,7 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
     ASTCDMethod cdMethod = CD4AnalysisNodeFactory.createASTCDMethod();
     cdMethod.setModifier(TransformationHelper.createPublicModifier());
     cdMethod.setName(method.getName());
-    String dotSeparatedName = BasicGenericsTypesPrinter.printType(method.getReturnType());
+    String dotSeparatedName = BasicGenericsTypesPrinter.printReturnType(method.getMCReturnType());
     cdMethod.setReturnType(TransformationHelper.createSimpleReference(dotSeparatedName));
     for (ASTMethodParameter param: method.getMethodParameterList()) {
       String typeName = BasicGenericsTypesPrinter.printType(param.getType());
