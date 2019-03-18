@@ -13,21 +13,13 @@ import java.util.List;
 public class MutatorDecorator extends SpecificMethodDecorator {
 
   public MutatorDecorator(final GlobalExtensionManagement glex) {
-    super(glex);
+    super(glex, new MandatoryMutatorDecorator(glex), new OptionalMutatorDecorator(glex), new ListMutatorDecorator(glex));
   }
 
-  @Override
-  AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> createMandatoryMethodDecoratorStrategy() {
-    return new MandatoryMutatorDecorator(this.getGlex());
-  }
-
-  @Override
-  AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> createOptionalMethodDecoratorStrategy() {
-    return new OptionalMutatorDecorator(this.getGlex());
-  }
-
-  @Override
-  AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> createListMethodDecoratorStrategy() {
-    return new ListMutatorDecorator(this.getGlex());
+  public MutatorDecorator(final GlobalExtensionManagement glex,
+      final AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> mandatoryMethodDecorator,
+      final AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> optionalMethodDecorator,
+      final AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> listMethodDecorator) {
+    super(glex,mandatoryMethodDecorator, optionalMethodDecorator, listMethodDecorator);
   }
 }

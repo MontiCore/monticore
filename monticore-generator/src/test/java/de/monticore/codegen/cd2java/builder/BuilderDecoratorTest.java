@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java.builder;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
+import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -12,7 +13,6 @@ import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
@@ -21,8 +21,7 @@ import static de.monticore.codegen.cd2java.builder.BuilderDecorator.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 public class BuilderDecoratorTest extends DecoratorTestCase {
 
@@ -30,17 +29,25 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
 
   private final CDTypeFactory cdTypeFactory = CDTypeFactory.getInstance();
 
+  private ASTCDClass originalClass;
+
   private ASTCDClass builderClass;
 
   @Before
   public void setup() {
     LogStub.init();
+    this.glex.setGlobalValue("astHelper", new DecorationHelper());
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "builder", "Builder");
-    ASTCDClass cdClass = getClassBy("A", ast);
+    originalClass = getClassBy("A", ast);
 
     MethodDecorator methodDecorator = new MethodDecorator(glex);
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, methodDecorator);
-    this.builderClass = builderDecorator.decorate(cdClass);
+    this.builderClass = builderDecorator.decorate(originalClass);
+  }
+
+  @Test
+  public void testCopy() {
+    assertNotEquals(originalClass, builderClass);
   }
 
   @Test
@@ -84,13 +91,13 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
 
     attribute = getAttributeBy(REAL_BUILDER, builderClass);
     assertDeepEquals(PROTECTED, attribute.getModifier());
-    assertDeepEquals(cdTypeFactory.createSimpleReferenceType("ABuilder"), attribute.getType());
+    assertDeepEquals(cdTypeFactory.createSimpleReferenceType(builderClass.getName()), attribute.getType());
   }
 
   @Test
   public void testBuildMethod() {
     ASTCDMethod build = getMethodBy(BUILD_METHOD, builderClass);
-    assertDeepEquals(cdTypeFactory.createSimpleReferenceType("A"), build.getReturnType());
+    assertDeepEquals(cdTypeFactory.createSimpleReferenceType(originalClass.getName()), build.getReturnType());
     assertDeepEquals(PUBLIC, build.getModifier());
     assertTrue(build.getCDParameterList().isEmpty());
   }

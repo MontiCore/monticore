@@ -72,8 +72,8 @@ public class BuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> 
     this.replaceTemplate(EMPTY_BODY, isValidMethod, new TemplateHookPoint("builder.IsValidMethod", mandatoryAttributes));
 
 
-    AccessorDecorator accessorDecorator = this.methodDecorator.getAccessorDecorator();
-    MutatorDecorator mutatorDecorator = this.methodDecorator.getMutatorDecorator();
+    AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> accessorDecorator = this.methodDecorator.getAccessorDecorator();
+    AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> mutatorDecorator = this.methodDecorator.getMutatorDecorator();
     mutatorDecorator.disableTemplates();
 
     List<ASTCDMethod> accessorMethods = builderAttributes.stream()

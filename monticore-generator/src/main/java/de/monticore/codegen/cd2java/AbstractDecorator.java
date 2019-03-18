@@ -9,7 +9,7 @@ public abstract class AbstractDecorator<I, R> implements Decorator<I, R> {
 
   private final GlobalExtensionManagement glex;
 
-  private boolean attachTemplates;
+  private boolean templatesEnabled;
 
   private final CDTypeFactory cdTypeFactory;
 
@@ -42,7 +42,7 @@ public abstract class AbstractDecorator<I, R> implements Decorator<I, R> {
       final CDMethodFactory cdMethodFactory,
       final CDParameterFactory cdParameterFactory) {
     this.glex = glex;
-    this.attachTemplates = true;
+    this.templatesEnabled = true;
     this.cdTypeFactory = cdTypeFactory;
     this.cdAttributeFactory = cdAttributeFactory;
     this.cdConstructorFactory = cdConstructorFactory;
@@ -50,16 +50,20 @@ public abstract class AbstractDecorator<I, R> implements Decorator<I, R> {
     this.cdParameterFactory = cdParameterFactory;
   }
 
-  public boolean enableTemplates() {
-    return this.attachTemplates = true;
+  public void enableTemplates() {
+    this.templatesEnabled = true;
   }
 
-  public boolean disableTemplates() {
-    return this.attachTemplates = false;
+  public void disableTemplates() {
+    this.templatesEnabled = false;
+  }
+
+  public boolean templatesEnabled() {
+    return this.templatesEnabled;
   }
 
   protected void replaceTemplate(String template, ASTNode node, HookPoint hookPoint) {
-    if (this.attachTemplates) {
+    if (this.templatesEnabled()) {
       this.glex.replaceTemplate(template, node, hookPoint);
     }
   }

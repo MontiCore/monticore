@@ -13,21 +13,13 @@ import java.util.List;
 public class AccessorDecorator extends SpecificMethodDecorator {
 
   public AccessorDecorator(final GlobalExtensionManagement glex) {
-    super(glex);
+    super(glex, new MandatoryAccessorDecorator(glex), new OptionalAccessorDecorator(glex), new ListAccessorDecorator(glex));
   }
 
-  @Override
-  AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> createMandatoryMethodDecoratorStrategy() {
-    return new MandatoryAccessorDecorator(this.getGlex());
-  }
-
-  @Override
-  AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> createOptionalMethodDecoratorStrategy() {
-    return new OptionalAccessorDecorator(this.getGlex());
-  }
-
-  @Override
-  AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> createListMethodDecoratorStrategy() {
-    return new ListAccessorDecorator(this.getGlex());
+  public AccessorDecorator(final GlobalExtensionManagement glex,
+      final AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> mandatoryMethodDecorator,
+      final AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> optionalMethodDecorator,
+      final AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> listMethodDecorator) {
+    super(glex,mandatoryMethodDecorator, optionalMethodDecorator, listMethodDecorator);
   }
 }
