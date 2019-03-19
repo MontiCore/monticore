@@ -68,10 +68,6 @@ public abstract class AbstractDecorator<I, R> implements Decorator<I, R> {
     }
   }
 
-  protected GlobalExtensionManagement getGlex() {
-    return this.glex;
-  }
-
   protected CDTypeFactory getCDTypeFactory() {
     return this.cdTypeFactory;
   }
