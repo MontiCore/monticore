@@ -96,7 +96,7 @@
     <grammars.classifier>grammars</grammars.classifier>
     <emf.classifier>emf</emf.classifier>
     <java.version>1.8</java.version>
-    <mc.grammars.assembly.version>0.0.8</mc.grammars.assembly.version>
+    <mc.grammars.assembly.version>0.0.11-SNAPSHOT</mc.grammars.assembly.version>
     <wagon.provider.version>2.3</wagon.provider.version>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
