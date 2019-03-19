@@ -1,4 +1,4 @@
-package de.monticore.codegen.cd2java.ast_new.referencedSymbolAndDefinition;
+package de.monticore.codegen.cd2java.ast_new.reference;
 
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;

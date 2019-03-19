@@ -1,6 +1,6 @@
-package de.monticore.codegen.cd2java.ast_new.referencedSymbolAndDefinition.referencedDefinitionMethodDecorator;
+package de.monticore.codegen.cd2java.ast_new.reference.referencedDefinition.referencedDefinitionMethodDecorator;
 
-import de.monticore.codegen.cd2java.ast_new.referencedSymbolAndDefinition.ReferencedSymbolUtil;
+import de.monticore.codegen.cd2java.ast_new.reference.ReferencedSymbolUtil;
 import de.monticore.codegen.cd2java.methods.accessor.ListAccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;

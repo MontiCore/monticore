@@ -1,12 +1,10 @@
-package de.monticore.codegen.cd2java.ast_new.referencedSymbolAndDefinition;
+package de.monticore.codegen.cd2java.ast_new.reference.referencedSymbol;
 
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
-import de.monticore.codegen.cd2java.ast_new.referencedSymbolAndDefinition.referencedDefinitionMethodDecorator.ReferencedDefinitionAccessorDecorator;
-import de.monticore.codegen.cd2java.ast_new.referencedSymbolAndDefinition.referenedSymbolMethodDecorator.ReferencedSymbolAccessorDecorator;
+import de.monticore.codegen.cd2java.ast_new.reference.ASTReferenceDecorator;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
-import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -18,7 +16,6 @@ import org.junit.Test;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static org.junit.Assert.*;
 
@@ -101,30 +98,6 @@ public class ASTReferencedSymbolDecoratorMandatoryTest extends DecoratorTestCase
   @Test
   public void testIsPresentNameSymbolMethod() {
     ASTCDMethod method = getMethodBy("isPresentNameSymbol", astClass);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertBoolean(method.getReturnType());
-    assertTrue(method.isEmptyCDParameters());
-  }
-  @Test
-  public void testGetNameDefinitionMethod() {
-    ASTCDMethod method = getMethodBy("getNameDefinition", astClass);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    ASTType astType = this.cdTypeFactory.createTypeByDefinition(NAME_DEFINITION);
-    assertDeepEquals(astType, method.getReturnType());
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testGetNameDefinitionOptMethod() {
-    ASTCDMethod method = getMethodBy("getNameDefinitionOpt", astClass);
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertOptionalOf(NAME_DEFINITION, method.getReturnType());
-    assertTrue(method.isEmptyCDParameters());
-  }
-
-  @Test
-  public void testIsPresentNameDefinitionMethod() {
-    ASTCDMethod method = getMethodBy("isPresentNameDefinition", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertBoolean(method.getReturnType());
     assertTrue(method.isEmptyCDParameters());

@@ -1,8 +1,9 @@
-package de.monticore.codegen.cd2java.ast_new.referencedSymbolAndDefinition;
+package de.monticore.codegen.cd2java.ast_new.reference.referencedSymbol;
 
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.AbstractDecorator;
-import de.monticore.codegen.cd2java.ast_new.referencedSymbolAndDefinition.referenedSymbolMethodDecorator.ReferencedSymbolAccessorDecorator;
+import de.monticore.codegen.cd2java.ast_new.reference.ReferencedSymbolUtil;
+import de.monticore.codegen.cd2java.ast_new.reference.referencedSymbol.referenedSymbolMethodDecorator.ReferencedSymbolAccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;

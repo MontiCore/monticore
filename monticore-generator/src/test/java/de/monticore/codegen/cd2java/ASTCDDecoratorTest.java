@@ -1,15 +1,12 @@
 package de.monticore.codegen.cd2java;
 
 import de.monticore.codegen.cd2java.ast_new.*;
-import de.monticore.codegen.cd2java.ast_new.referencedSymbolAndDefinition.ASTReferenceDecorator;
-import de.monticore.codegen.cd2java.ast_new.referencedSymbolAndDefinition.ASTReferencedSymbolDecorator;
-import de.monticore.codegen.cd2java.ast_new.referencedSymbolAndDefinition.referenedSymbolMethodDecorator.ReferencedSymbolAccessorDecorator;
+import de.monticore.codegen.cd2java.ast_new.reference.ASTReferenceDecorator;
 import de.monticore.codegen.cd2java.builder.ASTBuilderDecorator;
 import de.monticore.codegen.cd2java.builder.BuilderDecorator;
 import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.factory.NodeFactoryDecorator;
-import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.codegen.cd2java.mill.MillDecorator;
 import de.monticore.generating.GeneratorEngine;
