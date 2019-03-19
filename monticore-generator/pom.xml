@@ -138,6 +138,12 @@
       <plugin>
         <artifactId>maven-source-plugin</artifactId>
       </plugin>
+
+      <!-- create grammar jar -->
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+      </plugin>
+
     </plugins>
   </build>
 
