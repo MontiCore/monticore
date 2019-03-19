@@ -58,20 +58,20 @@ public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase 
   @Test
   public void testNameAttribute() {
     ASTCDAttribute nameAttribute = getAttributeBy("name", astClass);
-    assertTrue( nameAttribute.getModifier().isProtected());
+    assertTrue(nameAttribute.getModifier().isProtected());
     assertTrue(nameAttribute.getModifier().isPresentStereotype());
     ASTCDStereotype stereotype = nameAttribute.getModifier().getStereotype();
     assertEquals(1, stereotype.sizeValues());
-    assertEquals("referencedSymbolAndDefinition", stereotype.getValue(0).getName());
+    assertEquals("referencedSymbol", stereotype.getValue(0).getName());
     assertTrue(stereotype.getValue(0).isPresentValue());
-    assertEquals("de.monticore.codegen.ast.referencedSymbolAndDefinition.FooSymbol", stereotype.getValue(0).getValue());
+    assertEquals("de.monticore.codegen.ast.referencedSymbol.FooSymbol", stereotype.getValue(0).getValue());
     assertDeepEquals(cdTypeFactory.createTypeByDefinition("Optional<String>"), nameAttribute.getType());
   }
 
   @Test
   public void testSymbolAttribute() {
     ASTCDAttribute symbolAttribute = getAttributeBy("nameSymbol", astClass);
-    assertDeepEquals(PRIVATE, symbolAttribute.getModifier());
+    assertTrue(symbolAttribute.getModifier().isPrivate());
     assertOptionalOf(NAME_SYMBOL, symbolAttribute.getType());
   }
 
@@ -105,6 +105,7 @@ public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase 
     assertBoolean(method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
   }
+
   @Test
   public void testGetNameDefinitionMethod() {
     ASTCDMethod method = getMethodBy("getNameDefinition", astClass);

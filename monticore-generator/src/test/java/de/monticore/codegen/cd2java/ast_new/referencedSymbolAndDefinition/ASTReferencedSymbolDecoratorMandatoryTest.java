@@ -61,16 +61,16 @@ public class ASTReferencedSymbolDecoratorMandatoryTest extends DecoratorTestCase
     assertTrue(nameAttribute.getModifier().isPresentStereotype());
     ASTCDStereotype stereotype = nameAttribute.getModifier().getStereotype();
     assertEquals(1, stereotype.sizeValues());
-    assertEquals("referencedSymbolAndDefinition", stereotype.getValue(0).getName());
+    assertEquals("referencedSymbol", stereotype.getValue(0).getName());
     assertTrue(stereotype.getValue(0).isPresentValue());
-    assertEquals("de.monticore.codegen.ast.referencedSymbolAndDefinition.FooSymbol", stereotype.getValue(0).getValue());
+    assertEquals("de.monticore.codegen.ast.referencedSymbol.FooSymbol", stereotype.getValue(0).getValue());
     assertDeepEquals(cdTypeFactory.createTypeByDefinition("String"), nameAttribute.getType());
   }
 
   @Test
   public void testSymbolAttribute() {
     ASTCDAttribute symbolAttribute = getAttributeBy("nameSymbol", astClass);
-    assertDeepEquals(PRIVATE, symbolAttribute.getModifier());
+    assertTrue(symbolAttribute.getModifier().isPrivate());
     assertOptionalOf(NAME_SYMBOL, symbolAttribute.getType());
   }
 

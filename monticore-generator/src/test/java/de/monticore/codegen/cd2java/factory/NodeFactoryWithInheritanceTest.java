@@ -12,6 +12,7 @@ import de.monticore.types.TypesPrinter;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.nio.file.Path;
@@ -177,6 +178,7 @@ public class NodeFactoryWithInheritanceTest extends DecoratorTestCase {
     System.out.println(sb.toString());
   }
 
+  @Ignore
   @Test
   public void testGeneratedCodeInFile() {
     GeneratorSetup generatorSetup = new GeneratorSetup();

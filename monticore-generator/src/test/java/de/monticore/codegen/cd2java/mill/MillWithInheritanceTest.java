@@ -13,6 +13,7 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.nio.file.Path;
@@ -173,6 +174,7 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
     System.out.println(sb.toString());
   }
 
+  @Ignore
   @Test
   public void testGeneratedCodeInFile() {
     GeneratorSetup generatorSetup = new GeneratorSetup();

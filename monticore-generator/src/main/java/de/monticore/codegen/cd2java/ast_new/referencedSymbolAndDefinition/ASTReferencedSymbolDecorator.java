@@ -64,7 +64,9 @@ public class ASTReferencedSymbolDecorator extends AbstractDecorator<ASTCDClass, 
       //if the attribute is mandatory or optional
       attributeType = getCDTypeFactory().createOptionalTypeOf(referencedSymbol);
     }
-    return this.getCDAttributeFactory().createAttribute(PRIVATE, attributeType, attribute.getName() + SYMBOL);
+    ASTCDAttribute astcdAttribute = this.getCDAttributeFactory().createAttribute(PRIVATE, attributeType, attribute.getName() + SYMBOL);
+    astcdAttribute.getModifier().setStereotype(attribute.getModifier().getStereotype());
+    return astcdAttribute;
   }
 
   private List<ASTCDMethod> getRefSymbolMethods(ASTCDAttribute refSymbolAttribute, String referencedSymbol) {
@@ -89,7 +91,7 @@ public class ASTReferencedSymbolDecorator extends AbstractDecorator<ASTCDClass, 
       symbolType = getCDTypeFactory().createOptionalTypeOf(referencedNode);
     }
     ASTCDAttribute refSymbolAttribute = getCDAttributeFactory().createAttribute(PRIVATE, symbolType, astcdAttribute.getName() + DEFINITION);
-
+    refSymbolAttribute.getModifier().setStereotype(astcdAttribute.getModifier().getStereotype());
     return accessorDecorator.decorate(refSymbolAttribute);
   }
 

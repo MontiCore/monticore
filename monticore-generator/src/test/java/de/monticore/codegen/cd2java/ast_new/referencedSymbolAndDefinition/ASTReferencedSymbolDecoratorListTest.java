@@ -1,10 +1,13 @@
 package de.monticore.codegen.cd2java.ast_new.referencedSymbolAndDefinition;
 
+import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.ast_new.referencedSymbolAndDefinition.referenedSymbolMethodDecorator.ReferencedSymbolAccessorDecorator;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
+import de.monticore.generating.GeneratorEngine;
+import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
@@ -58,16 +61,16 @@ public class ASTReferencedSymbolDecoratorListTest extends DecoratorTestCase {
     assertTrue(nameAttribute.getModifier().isPresentStereotype());
     ASTCDStereotype stereotype = nameAttribute.getModifier().getStereotype();
     assertEquals(1, stereotype.sizeValues());
-    assertEquals("referencedSymbolAndDefinition", stereotype.getValue(0).getName());
+    assertEquals("referencedSymbol", stereotype.getValue(0).getName());
     assertTrue(stereotype.getValue(0).isPresentValue());
-    assertEquals("de.monticore.codegen.ast.referencedSymbolAndDefinition.FooSymbol", stereotype.getValue(0).getValue());
+    assertEquals("de.monticore.codegen.ast.referencedSymbol.FooSymbol", stereotype.getValue(0).getValue());
     assertDeepEquals(cdTypeFactory.createTypeByDefinition("java.util.List<String>"), nameAttribute.getType());
   }
 
   @Test
   public void testSymbolAttribute() {
     ASTCDAttribute symbolAttribute = getAttributeBy("nameSymbol", astClass);
-    assertDeepEquals(PRIVATE, symbolAttribute.getModifier());
+    assertTrue(symbolAttribute.getModifier().isPrivate());
     ASTType symboType = this.cdTypeFactory.createTypeByDefinition(NAME_SYMBOL_MAP);
     assertDeepEquals(symboType, symbolAttribute.getType());
   }
@@ -77,4 +80,12 @@ public class ASTReferencedSymbolDecoratorListTest extends DecoratorTestCase {
     assertEquals(38, astClass.getCDMethodList().size());
   }
 
+  @Test
+  public void testGeneratedCode() {
+    GeneratorSetup generatorSetup = new GeneratorSetup();
+    generatorSetup.setGlex(glex);
+    GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
+    StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, astClass, astClass);
+    System.out.println(sb.toString());
+  }
 }
