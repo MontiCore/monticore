@@ -58,12 +58,10 @@ public class TopDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDC
   }
 
   private void applyTopMechanism(ASTCDInterface cdInterface) {
-    makeAbstract(cdInterface);
     cdInterface.setName(cdInterface.getName() + TOP_SUFFIX);
   }
 
   private void applyTopMechanism(ASTCDEnum cdEnum) {
-    makeAbstract(cdEnum);
     cdEnum.setName(cdEnum.getName() + TOP_SUFFIX);
   }
 

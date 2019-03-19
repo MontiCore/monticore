@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -43,22 +44,22 @@ public class TopDecoratorTest extends DecoratorTestCase {
     assertEquals(1, ast.getCDClassList().size());
     ASTCDClass cdClass = ast.getCDClassList().get(0);
     assertEquals("CTOP", cdClass.getName());
-    assertTrue(PUBLIC_ABSTRACT.build().deepEquals(cdClass.getModifier()));
+    assertDeepEquals(PUBLIC_ABSTRACT, cdClass.getModifier());
 
     assertEquals(1, cdClass.getCDConstructorList().size());
     ASTCDConstructor constructor = cdClass.getCDConstructorList().get(0);
     assertEquals("CTOP", constructor.getName());
-    assertTrue(PROTECTED_ABSTRACT.build().deepEquals(constructor.getModifier()));
+    assertDeepEquals(PROTECTED_ABSTRACT, constructor.getModifier());
 
     assertEquals(1, ast.getCDInterfaceList().size());
     ASTCDInterface cdInterface = ast.getCDInterfaceList().get(0);
     assertEquals("ITOP", cdInterface.getName());
-    assertTrue(PUBLIC_ABSTRACT.build().deepEquals(cdInterface.getModifier()));
+    assertDeepEquals(PUBLIC, cdInterface.getModifier());
 
     assertEquals(1, ast.getCDEnumList().size());
     ASTCDEnum cdEnum = ast.getCDEnumList().get(0);
     assertEquals("ETOP", cdEnum.getName());
-    assertTrue(PUBLIC_ABSTRACT.build().deepEquals(cdEnum.getModifier()));
+    assertDeepEquals(PUBLIC, cdEnum.getModifier());
   }
 
   @Test
@@ -69,21 +70,21 @@ public class TopDecoratorTest extends DecoratorTestCase {
     assertEquals(1, ast.getCDClassList().size());
     ASTCDClass cdClass = ast.getCDClassList().get(0);
     assertEquals("C", cdClass.getName());
-    assertTrue(PUBLIC.build().deepEquals(cdClass.getModifier()));
+    assertDeepEquals(PUBLIC, cdClass.getModifier());
 
     assertEquals(1, cdClass.getCDConstructorList().size());
     ASTCDConstructor constructor = cdClass.getCDConstructorList().get(0);
     assertEquals("C", constructor.getName());
-    assertTrue(PROTECTED.build().deepEquals(constructor.getModifier()));
+    assertDeepEquals(PROTECTED, constructor.getModifier());
 
     assertEquals(1, ast.getCDInterfaceList().size());
     ASTCDInterface cdInterface = ast.getCDInterfaceList().get(0);
     assertEquals("I", cdInterface.getName());
-    assertTrue(PUBLIC.build().deepEquals(cdInterface.getModifier()));
+    assertDeepEquals(PUBLIC, cdInterface.getModifier());
 
     assertEquals(1, ast.getCDEnumList().size());
     ASTCDEnum cdEnum = ast.getCDEnumList().get(0);
     assertEquals("E", cdEnum.getName());
-    assertTrue(PUBLIC.build().deepEquals(cdEnum.getModifier()));
+    assertDeepEquals(PUBLIC, cdEnum.getModifier());
   }
 }

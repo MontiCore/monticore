@@ -27,6 +27,10 @@ public final class DecoratorAssert {
     assertDeepEquals(cdTypeFactory.createSimpleReferenceType(expected), actual);
   }
 
+  public static void assertDeepEquals(String name, ASTNode actual) {
+    assertDeepEquals(cdTypeFactory.createSimpleReferenceType(name), actual);
+  }
+
   public static void assertBoolean(ASTNode actual) {
     assertDeepEquals(cdTypeFactory.createBooleanType(), actual);
   }

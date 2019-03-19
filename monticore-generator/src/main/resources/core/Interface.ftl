@@ -2,8 +2,8 @@ ${tc.signature("cdInterface")}
 
 ${tc.include("core.Imports")}
 
-${cdInterface.printModifier()} class ${cdInterface.getName()}
-<#if !cdInterface.isEmptyInterfaces()>implements ${cdInterface.printInterfaces()} </#if>{
+${cdInterface.printModifier()} interface ${cdInterface.getName()}
+<#if !cdInterface.isEmptyInterfaces()>extends ${cdInterface.printInterfaces()} </#if>{
 
 <#list cdInterface.getCDAttributeList() as attribute>
   ${tc.include("core.Attribute", attribute)}

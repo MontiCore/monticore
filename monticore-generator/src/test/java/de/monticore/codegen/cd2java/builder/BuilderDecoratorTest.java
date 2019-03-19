@@ -27,8 +27,6 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
 
   private final GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
-  private final CDTypeFactory cdTypeFactory = CDTypeFactory.getInstance();
-
   private ASTCDClass originalClass;
 
   private ASTCDClass builderClass;
@@ -91,13 +89,13 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
 
     attribute = getAttributeBy(REAL_BUILDER, builderClass);
     assertDeepEquals(PROTECTED, attribute.getModifier());
-    assertDeepEquals(cdTypeFactory.createSimpleReferenceType(builderClass.getName()), attribute.getType());
+    assertDeepEquals(builderClass.getName(), attribute.getType());
   }
 
   @Test
   public void testBuildMethod() {
     ASTCDMethod build = getMethodBy(BUILD_METHOD, builderClass);
-    assertDeepEquals(cdTypeFactory.createSimpleReferenceType(originalClass.getName()), build.getReturnType());
+    assertDeepEquals(originalClass.getName(), build.getReturnType());
     assertDeepEquals(PUBLIC, build.getModifier());
     assertTrue(build.getCDParameterList().isEmpty());
   }
@@ -109,7 +107,6 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, isValid.getModifier());
     assertTrue(isValid.getCDParameterList().isEmpty());
   }
-
 
   @Test
   public void testGeneratedCode() {
