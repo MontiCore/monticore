@@ -97,8 +97,8 @@ public class ListMutatorDecoratorTest {
   public void testRemoveMethod() {
     List<ASTCDMethod> methods = getMethodsBy("removeA", 1, this.methods);
     assertEquals(2, methods.size());
-    ASTType exptectedReturnType = CDTypeFactory.getInstance().createBooleanType();
-    methods = methods.stream().filter(m -> m.getReturnType().deepEquals(exptectedReturnType)).collect(Collectors.toList());
+    ASTType expectedReturnType = CDTypeFactory.getInstance().createBooleanType();
+    methods = methods.stream().filter(m -> m.getReturnType().deepEquals(expectedReturnType)).collect(Collectors.toList());
     assertEquals(1, methods.size());
     ASTCDMethod method = methods.get(0);
     assertBoolean(method.getReturnType());

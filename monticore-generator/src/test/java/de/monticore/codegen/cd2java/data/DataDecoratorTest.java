@@ -218,11 +218,7 @@ public class DataDecoratorTest extends DecoratorTestCase {
   public void testDeepClone() {
     ASTCDMethod method = getMethodBy("deepClone", 0, dataClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-
-    ASTType expectedReturnType = CDTypeBuilder.newTypeBuilder()
-        .qualifiedName(dataClass.getName()).build();
-    assertDeepEquals(expectedReturnType, method.getReturnType());
-
+    assertDeepEquals(dataClass.getName(), method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
   }
 
@@ -230,16 +226,13 @@ public class DataDecoratorTest extends DecoratorTestCase {
   public void testDeepCloneWithResult() {
     ASTCDMethod method = getMethodBy("deepClone", 1, dataClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-
-    ASTType expectedReturnType = CDTypeBuilder.newTypeBuilder()
-        .qualifiedName(dataClass.getName()).build();
-    assertDeepEquals(expectedReturnType, method.getReturnType());
+    assertDeepEquals(dataClass.getName(), method.getReturnType());
 
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.sizeCDParameters());
 
     ASTCDParameter parameter = method.getCDParameter(0);
-    assertDeepEquals(expectedReturnType, parameter.getType());
+    assertDeepEquals(dataClass.getName(), parameter.getType());
     assertEquals("result", parameter.getName());
   }
 
