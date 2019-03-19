@@ -7,6 +7,8 @@ import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.symboltable.MCProdSymbol;
+import de.monticore.types.BasicGenericsTypesPrinter;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.types._ast.ASTConstantsTypes;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.types.types._ast.TypesNodeFactory;
@@ -45,7 +47,7 @@ public class ReferenceTypeTranslation implements
     for (Link<ASTAdditionalAttribute, ASTCDAttribute> link : rootLink.getLinks(ASTAdditionalAttribute.class,
         ASTCDAttribute.class)) {
       ASTType type = determineTypeToSetForAttributeInAST(
-          link.source().getGenericType(), rootLink.source());
+          link.source().getMCType(), rootLink.source());
       link.target().setType(type);
     }
 
@@ -71,8 +73,8 @@ public class ReferenceTypeTranslation implements
     }
   }
 
-  private ASTType determineTypeToSetForAttributeInAST(ASTGenericType astGenericType,
-      ASTMCGrammar astMCGrammar) {
+  private ASTType determineTypeToSetForAttributeInAST(ASTMCType astGenericType,
+                                                      ASTMCGrammar astMCGrammar) {
     Optional<MCProdSymbol> ruleSymbol = TransformationHelper
         .resolveAstRuleType(astMCGrammar, astGenericType);
     if (!ruleSymbol.isPresent()) {
@@ -88,14 +90,14 @@ public class ReferenceTypeTranslation implements
     }
   }
 
-  private ASTType determineTypeToSet(ASTGenericType astGenericType, ASTMCGrammar astMCGrammar) {
+  private ASTType determineTypeToSet(ASTMCType astGenericType, ASTMCGrammar astMCGrammar) {
     String typeName = Names.getQualifiedName(astGenericType.getNameList());
     Optional<ASTType> byReference = MCGrammarSymbolTableHelper
         .resolveRule(astMCGrammar, typeName)
         .map(ruleSymbol -> ruleSymbolToType(ruleSymbol, typeName));
     Optional<ASTType> byPrimitive = determineConstantsType(typeName)
         .map(TypesNodeFactory::createASTPrimitiveType);
-    return byReference.orElse(byPrimitive.orElse(createType(astGenericType.getTypeName())));
+    return byReference.orElse(byPrimitive.orElse(createType(BasicGenericsTypesPrinter.printType(astGenericType))));
   }
 
   private ASTType determineTypeToSet(String typeName, ASTMCGrammar astMCGrammar) {

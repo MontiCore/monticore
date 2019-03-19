@@ -2,23 +2,19 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import static de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper.resolveRule;
-import static de.monticore.codegen.mc2cd.TransformationHelper.getPackageName;
-
-import java.util.function.UnaryOperator;
-
 import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.grammar.grammar._ast.ASTAbstractProd;
-import de.monticore.grammar.grammar._ast.ASTClassProd;
-import de.monticore.grammar.grammar._ast.ASTGenericType;
-import de.monticore.grammar.grammar._ast.ASTInterfaceProd;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._ast.ASTRuleReference;
+import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.symboltable.MCProdSymbol;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
 import de.monticore.utils.Link;
+
+import java.util.function.UnaryOperator;
+
+import static de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper.resolveRule;
+import static de.monticore.codegen.mc2cd.TransformationHelper.getPackageName;
 
 /**
  * Checks if the source rules were extending other rules and sets the super
@@ -61,7 +57,7 @@ public class ExtendsTranslation implements
     }
 
     // translates "astextends"
-    for (ASTGenericType typeReference : classProd.getASTSuperClassList()) {
+    for (ASTMCType typeReference : classProd.getASTSuperClassList()) {
       String qualifiedRuleName = TransformationHelper.getQualifiedTypeNameAndMarkIfExternal(
           typeReference, astGrammar, cdClass);
       cdClass.setSuperclass(TransformationHelper.createSimpleReference(qualifiedRuleName));
@@ -80,7 +76,7 @@ public class ExtendsTranslation implements
 
     // translates "astextends"
     String qualifiedRuleName;
-    for (ASTGenericType typeReference : abstractProd.getASTSuperClassList()) {
+    for (ASTMCType typeReference : abstractProd.getASTSuperClassList()) {
       qualifiedRuleName = TransformationHelper.getQualifiedTypeNameAndMarkIfExternal(
           typeReference, astGrammar, cdClass);
       cdClass.setSuperclass(TransformationHelper.createSimpleReference(qualifiedRuleName));
@@ -99,7 +95,7 @@ public class ExtendsTranslation implements
 
     // translates "astextends"
     String qualifiedRuleName;
-    for (ASTGenericType typeReference : interfaceProd.getASTSuperInterfaceList()) {
+    for (ASTMCType typeReference : interfaceProd.getASTSuperInterfaceList()) {
       qualifiedRuleName = TransformationHelper.getQualifiedTypeNameAndMarkIfExternal(
           typeReference, astGrammar, cdInterface);
       cdInterface.getInterfaceList().add(

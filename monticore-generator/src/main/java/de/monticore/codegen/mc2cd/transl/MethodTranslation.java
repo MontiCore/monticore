@@ -2,8 +2,6 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import java.util.function.UnaryOperator;
-
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.ast.CdDecorator;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
@@ -17,12 +15,11 @@ import de.monticore.grammar.grammar._ast.ASTMethod;
 import de.monticore.grammar.grammar._ast.ASTMethodParameter;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.java.javadsl._ast.ASTBlockStatement;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
-import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisNodeFactory;
+import de.monticore.types.BasicGenericsTypesPrinter;
+import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.utils.Link;
+
+import java.util.function.UnaryOperator;
 
 /**
  * Translates Methods belonging to ASTRules into CDMethods and attaches them to
@@ -68,10 +65,10 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
     ASTCDMethod cdMethod = CD4AnalysisNodeFactory.createASTCDMethod();
     cdMethod.setModifier(TransformationHelper.createPublicModifier());
     cdMethod.setName(method.getName());
-    String dotSeparatedName = TransformationHelper.typeReferenceToString(method.getReturnType());
+    String dotSeparatedName = BasicGenericsTypesPrinter.printReturnType(method.getMCReturnType());
     cdMethod.setReturnType(TransformationHelper.createSimpleReference(dotSeparatedName));
     for (ASTMethodParameter param: method.getMethodParameterList()) {
-      String typeName = TransformationHelper.typeReferenceToString(param.getType());
+      String typeName = BasicGenericsTypesPrinter.printType(param.getType());
       cdMethod.getCDParameterList().add(TransformationHelper.createParameter(typeName, param.getName()));
     }
     if (method.getBody() instanceof ASTAction) {
@@ -92,10 +89,10 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
     ASTCDMethod cdMethod = CD4AnalysisNodeFactory.createASTCDMethod();
     cdMethod.setModifier(TransformationHelper.createPublicModifier());
     cdMethod.setName(method.getName());
-    String dotSeparatedName = TransformationHelper.typeReferenceToString(method.getReturnType());
+    String dotSeparatedName = BasicGenericsTypesPrinter.printReturnType(method.getMCReturnType());
     cdMethod.setReturnType(TransformationHelper.createSimpleReference(dotSeparatedName));
     for (ASTMethodParameter param: method.getMethodParameterList()) {
-      String typeName = TransformationHelper.typeReferenceToString(param.getType());
+      String typeName = BasicGenericsTypesPrinter.printType(param.getType());
       cdMethod.getCDParameterList().add(TransformationHelper.createParameter(typeName, param.getName()));
     }
     if (method.getBody() instanceof ASTAction) {

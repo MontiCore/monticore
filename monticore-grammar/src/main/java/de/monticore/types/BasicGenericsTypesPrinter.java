@@ -11,16 +11,16 @@ import de.monticore.types.prettyprint.MCCollectionTypesPrettyPrinter;
  * This class provides methods for printing types as Strings. The TypesPrinter
  * is a singleton.
  */
-public class BasicGenericsTypesPrinter {
+public class BasicGenericsTypesPrinter extends BasicTypesPrinter {
 
   private static BasicGenericsTypesPrinter instance;
 
   /**
    * We have a singleton.
    */
-  private BasicGenericsTypesPrinter() {
+  protected BasicGenericsTypesPrinter() {
   }
-  
+
   /**
    * Returns the singleton instance.
    *
@@ -32,21 +32,7 @@ public class BasicGenericsTypesPrinter {
     }
     return instance;
   }
-  
-  /******************************************************************
-   * INTERFACES
-   ******************************************************************/
-  
-  /**
-   * Converts an ASTType to a String
-   *
-   * @param type ASTType to be converted
-   * @return String representation of "type"
-   */
-  public static String printType(ASTMCType type) {
-    return getInstance().doPrintType(type);
-  }
-  
+
   protected String doPrintType(ASTMCType type) {
 
     IndentPrinter printer = new IndentPrinter();
