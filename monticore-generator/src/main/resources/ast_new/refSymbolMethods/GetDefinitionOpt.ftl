@@ -1,8 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("attributeName", "referencedSymbolType", "simpleSymbolName")}
+${tc.signature("attributeName", "referencedSymbolType", "simpleName")}
     if (${attributeName}Symbol.isPresent()) {
-      return ${attributeName}Symbol.get().get${simpleSymbolName}Node();
+      return ${attributeName}Symbol.get().get${simpleName}Node();
     } else {
       Optional<${referencedSymbolType}> symbol = get${attributeName?cap_first}SymbolOpt();
-      return (symbol.isPresent()) ? symbol.get().get${simpleSymbolName}Node() : Optional.empty();
+      return (symbol.isPresent()) ? symbol.get().get${simpleName}Node() : Optional.empty();
     }

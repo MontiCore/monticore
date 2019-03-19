@@ -23,9 +23,10 @@ public class ReferencedDefinitionOptAccessorDecorator extends OptionalAccessorDe
     String name = String.format(GET_OPT, StringUtils.capitalize(ast.getName()));
     ASTType type = ast.getType().deepClone();
     ASTCDMethod method = this.getCDMethodFactory().createMethod(PUBLIC, type, name);
-    String referencedSymbolType = ReferencedSymbolUtil.getReferencedSymbolTypeName(ast);
-    String simpleSymbolName = ReferencedSymbolUtil.getSimpleSymbolName(referencedSymbolType);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("ast_new.refSymbolMethods.GetDefinitionOpt", ast.getName(),referencedSymbolType, simpleSymbolName));
+    String referencedSymbolType =ReferencedSymbolUtil.getReferencedSymbolTypeName(ast);
+    String simpleName = ReferencedSymbolUtil.getSimpleSymbolName(referencedSymbolType);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("ast_new.refSymbolMethods.GetDefinitionOpt",
+        ast.getName(),referencedSymbolType, simpleName));
     return method;
   }
 }

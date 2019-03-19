@@ -13,7 +13,6 @@ public class ReferencedSymbolUtil {
 
   private static final String SYMBOL = "Symbol";
 
-
   public static String getReferencedSymbolTypeName(ASTCDAttribute attribute) {
     String referencedSymbol = CD4AnalysisHelper.getStereotypeValues(attribute,
         MC2CDStereotypes.REFERENCED_SYMBOL.toString()).get(0);
@@ -29,5 +28,9 @@ public class ReferencedSymbolUtil {
 
   public static String getSimpleSymbolName(String referencedSymbol) {
     return getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf(SYMBOL));
+  }
+
+  public static boolean isReferencedSymbolAttribute(ASTCDAttribute attribute) {
+    return CD4AnalysisHelper.hasStereotype(attribute, MC2CDStereotypes.REFERENCED_SYMBOL.toString());
   }
 }
