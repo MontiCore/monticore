@@ -15,7 +15,7 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 public class ListAccessorDecorator extends ListMethodDecorator {
 
   //TODO distinguish between Methodnames with "s" oder without at the end of the Attributename
-  private static final String GET_LIST = "public List<%s> get%sList();";
+  protected static final String GET_LIST = "public List<%s> get%sList();";
   private static final String CONTAINS = "public boolean contains%s(Object element);";
   private static final String CONTAINS_ALL = "public boolean containsAll%s(Collection<?> collection);";
   private static final String IS_EMPTY = "public boolean isEmpty%s();";
@@ -46,7 +46,8 @@ public class ListAccessorDecorator extends ListMethodDecorator {
     return methods;
   }
 
-  private ASTCDMethod createGetListMethod(ASTCDAttribute ast) {
+
+  protected ASTCDMethod createGetListMethod(ASTCDAttribute ast) {
     String signature = String.format(GET_LIST, attributeType, capitalizedAttributeName);
     ASTCDMethod getList = this.getCDMethodFactory().createMethodByDefinition(signature);
     this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint("methods.Get", ast));

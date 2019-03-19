@@ -19,7 +19,7 @@ public class OptionalAccessorDecorator extends AbstractDecorator<ASTCDAttribute,
 
   private static final String GET = "get%s";
 
-  private static final String GET_OPT = "get%sOpt";
+  protected static final String GET_OPT = "get%sOpt";
 
   private static final String IS_PRESENT = "isPresent%s";
 
@@ -43,7 +43,7 @@ public class OptionalAccessorDecorator extends AbstractDecorator<ASTCDAttribute,
     return method;
   }
 
-  private ASTCDMethod createGetOptMethod(final ASTCDAttribute ast) {
+  protected ASTCDMethod createGetOptMethod(final ASTCDAttribute ast) {
     String name = String.format(GET_OPT, StringUtils.capitalize(ast.getName()));
     ASTType type = ast.getType().deepClone();
     ASTCDMethod method = this.getCDMethodFactory().createMethod(PUBLIC, type, name);

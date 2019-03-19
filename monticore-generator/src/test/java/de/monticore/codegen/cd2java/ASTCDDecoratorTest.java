@@ -1,6 +1,8 @@
 package de.monticore.codegen.cd2java;
 
 import de.monticore.codegen.cd2java.ast_new.*;
+import de.monticore.codegen.cd2java.ast_new.referencedSymbolAndDefinition.ASTReferencedSymbolDecorator;
+import de.monticore.codegen.cd2java.ast_new.referencedSymbolAndDefinition.referenedSymbolMethodDecorator.ReferencedSymbolAccessorDecorator;
 import de.monticore.codegen.cd2java.builder.ASTBuilderDecorator;
 import de.monticore.codegen.cd2java.builder.BuilderDecorator;
 import de.monticore.codegen.cd2java.data.DataDecorator;
@@ -37,7 +39,7 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
     ASTDecorator astDecorator = new ASTDecorator(glex, ast);
     ASTSymbolDecorator astSymbolDecorator = new ASTSymbolDecorator(glex, ast, new MethodDecorator(glex));
     ASTScopeDecorator astScopeDecorator = new ASTScopeDecorator(glex, ast, new MethodDecorator(glex));
-    ASTReferencedSymbolDecorator astReferencedSymbolDecorator = new ASTReferencedSymbolDecorator(glex, new AccessorDecorator(glex));
+    ASTReferencedSymbolDecorator astReferencedSymbolDecorator = new ASTReferencedSymbolDecorator(glex, new ReferencedSymbolAccessorDecorator(glex));
     ASTFullDecorator fullDecorator = new ASTFullDecorator(dataDecorator, astDecorator, astSymbolDecorator, astScopeDecorator, astReferencedSymbolDecorator);
 
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, new MethodDecorator(glex));

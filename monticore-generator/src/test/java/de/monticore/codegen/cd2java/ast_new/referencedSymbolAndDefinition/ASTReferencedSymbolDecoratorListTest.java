@@ -1,11 +1,10 @@
-package de.monticore.codegen.cd2java.ast_new.referencedSymbol;
+package de.monticore.codegen.cd2java.ast_new.referencedSymbolAndDefinition;
 
 import de.monticore.codegen.cd2java.DecoratorTestCase;
-import de.monticore.codegen.cd2java.ast_new.ASTReferencedSymbolDecorator;
+import de.monticore.codegen.cd2java.ast_new.referencedSymbolAndDefinition.referenedSymbolMethodDecorator.ReferencedSymbolAccessorDecorator;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
-import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
@@ -36,7 +35,7 @@ public class ASTReferencedSymbolDecoratorListTest extends DecoratorTestCase {
     this.cdTypeFactory = CDTypeFactory.getInstance();
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "ReferencedSymbol");
-    ASTReferencedSymbolDecorator decorator = new ASTReferencedSymbolDecorator(this.glex, new AccessorDecorator(glex));
+    ASTReferencedSymbolDecorator decorator = new ASTReferencedSymbolDecorator(this.glex, new ReferencedSymbolAccessorDecorator(glex));
     ASTCDClass clazz = getClassBy("ASTBarList", ast);
     this.astClass = decorator.decorate(clazz);
   }
@@ -59,9 +58,9 @@ public class ASTReferencedSymbolDecoratorListTest extends DecoratorTestCase {
     assertTrue(nameAttribute.getModifier().isPresentStereotype());
     ASTCDStereotype stereotype = nameAttribute.getModifier().getStereotype();
     assertEquals(1, stereotype.sizeValues());
-    assertEquals("referencedSymbol", stereotype.getValue(0).getName());
+    assertEquals("referencedSymbolAndDefinition", stereotype.getValue(0).getName());
     assertTrue(stereotype.getValue(0).isPresentValue());
-    assertEquals("de.monticore.codegen.ast.referencedSymbol.FooSymbol", stereotype.getValue(0).getValue());
+    assertEquals("de.monticore.codegen.ast.referencedSymbolAndDefinition.FooSymbol", stereotype.getValue(0).getValue());
     assertDeepEquals(cdTypeFactory.createTypeByDefinition("java.util.List<String>"), nameAttribute.getType());
   }
 

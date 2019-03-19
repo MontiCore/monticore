@@ -29,11 +29,9 @@ public class VisitorDecorator extends AbstractDecorator<ASTCDCompilationUnit, AS
 
   private static final String HANDLE = "handle";
 
-  private static final String TRAVERSE = "traverse";
+  public static final String TRAVERSE = "traverse";
 
   private static final String ASTNODE = "de.monticore.ast.ASTNode";
-
-  private static final String AST_PACKAGE = "._ast.";
 
   public VisitorDecorator(final GlobalExtensionManagement glex) {
     super(glex);
@@ -41,12 +39,11 @@ public class VisitorDecorator extends AbstractDecorator<ASTCDCompilationUnit, AS
 
   @Override
   public ASTCDInterface decorate(ASTCDCompilationUnit input) {
-    this.compilationUnit = input;
+    this.compilationUnit = input.deepClone();
     ASTCDDefinition astcdDefinition = compilationUnit.getCDDefinition();
     String visitorInterfaceName = astcdDefinition.getName() + VISITOR_SUFFIX;
     ASTType visitoryType = this.getCDTypeFactory().createSimpleReferenceType(visitorInterfaceName);
 
-    String astPath = astcdDefinition.getName().toLowerCase() + AST_PACKAGE;
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setName(visitorInterfaceName)
         .setModifier(PUBLIC.build())
@@ -54,10 +51,10 @@ public class VisitorDecorator extends AbstractDecorator<ASTCDCompilationUnit, AS
         .addCDMethod(addSetRealThisMethods(visitoryType))
         .addCDMethod(addVisitASTNodeMethods())
         .addCDMethod(addEndVisitASTNodeMethods())
-        .addAllCDMethods(addClassVisitorMethods(astcdDefinition.getCDClassList(), astPath))
-        .addAllCDMethods(addInterfaceVisitorMethods(astcdDefinition.getCDInterfaceList(), astPath))
-        .addAllCDMethods(addEnumVisitorMethods(astcdDefinition.getCDEnumList(), astPath))
-        .build();
+        .addAllCDMethods(addClassVisitorMethods(astcdDefinition.getCDClassList()))
+        .addAllCDMethods(addInterfaceVisitorMethods(astcdDefinition.getCDInterfaceList()))
+        .addAllCDMethods(addEnumVisitorMethods(astcdDefinition.getCDEnumList()))
+            .build();
   }
 
   private ASTCDMethod addGetRealThisMethods(ASTType visitoryType) {
@@ -83,11 +80,11 @@ public class VisitorDecorator extends AbstractDecorator<ASTCDCompilationUnit, AS
     return getVisitorMethod(END_VISIT, astNodeType);
   }
 
-  private List<ASTCDMethod> addClassVisitorMethods(List<ASTCDClass> astcdClassList, String path) {
+  private List<ASTCDMethod> addClassVisitorMethods(List<ASTCDClass> astcdClassList) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     for (ASTCDClass astcdClass : astcdClassList) {
       boolean doTraverse = !(astcdClass.isPresentModifier() && astcdClass.getModifier().isAbstract());
-      ASTType classType = getCDTypeFactory().createTypeByDefinition(path + astcdClass.getName());
+      ASTType classType = getCDTypeFactory().createTypeByDefinition(astcdClass.getName());
       visitorMethods.add(addVisitMethod(classType));
       visitorMethods.add(addEndVisitMethod(classType));
       visitorMethods.add(addTraversMethod(classType, astcdClass));
@@ -96,10 +93,10 @@ public class VisitorDecorator extends AbstractDecorator<ASTCDCompilationUnit, AS
     return visitorMethods;
   }
 
-  private List<ASTCDMethod> addEnumVisitorMethods(List<ASTCDEnum> astcdEnumList, String path) {
+  private List<ASTCDMethod> addEnumVisitorMethods(List<ASTCDEnum> astcdEnumList) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     for (ASTCDEnum astcdEnum : astcdEnumList) {
-      ASTType enumType = getCDTypeFactory().createTypeByDefinition(path + astcdEnum.getName());
+      ASTType enumType = getCDTypeFactory().createTypeByDefinition(astcdEnum.getName());
       visitorMethods.add(addVisitMethod(enumType));
       visitorMethods.add(addEndVisitMethod(enumType));
       visitorMethods.add(addHandleMethod(enumType, false));
@@ -107,10 +104,10 @@ public class VisitorDecorator extends AbstractDecorator<ASTCDCompilationUnit, AS
     return visitorMethods;
   }
 
-  private List<ASTCDMethod> addInterfaceVisitorMethods(List<ASTCDInterface> astcdInterfaceList, String path) {
+  private List<ASTCDMethod> addInterfaceVisitorMethods(List<ASTCDInterface> astcdInterfaceList) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     for (ASTCDInterface astcdInterface : astcdInterfaceList) {
-      ASTType interfaceType = getCDTypeFactory().createTypeByDefinition(path + astcdInterface.getName());
+      ASTType interfaceType = getCDTypeFactory().createTypeByDefinition(astcdInterface.getName());
       visitorMethods.add(addVisitMethod(interfaceType));
       visitorMethods.add(addEndVisitMethod(interfaceType));
       visitorMethods.add(addHandleMethod(interfaceType, false));

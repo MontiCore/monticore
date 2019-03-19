@@ -30,6 +30,8 @@ public class TypeCD2JavaVisitor implements CD4AnalysisVisitor {
   }
 
   private void transform(ASTSimpleReferenceType node) {
+    //only take first one because at first the type has just one name which contains the complete qualified name
+    //e.g. "de.monticore.Automaton.ASTAutomaton"
     Optional<CDTypeSymbol> typeSymbol = compilationUnit.getEnclosingScope().resolve(node.getName(0), CDTypeSymbol.KIND);
     if (typeSymbol.isPresent()) {
       String javaType = typeSymbol.get().getModelName().toLowerCase() + package_suffix + typeSymbol.get().getName();

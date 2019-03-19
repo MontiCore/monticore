@@ -5,6 +5,7 @@ import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.factories.CDParameterFactory;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
+import de.monticore.codegen.cd2java.visitor_new.ASTVisitorDecorator;
 import de.monticore.codegen.cd2java.visitor_new.VisitorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -30,8 +31,6 @@ public class VisitorDecoratorTest extends DecoratorTestCase {
 
   private CDTypeFactory cdTypeFacade;
 
-  private CDParameterFactory cdParameterFactory;
-
   private ASTCDInterface visitorInterface;
 
   private GlobalExtensionManagement glex;
@@ -42,12 +41,11 @@ public class VisitorDecoratorTest extends DecoratorTestCase {
   public void setUp() {
     this.glex = new GlobalExtensionManagement();
     this.cdTypeFacade = CDTypeFactory.getInstance();
-    this.cdParameterFactory = CDParameterFactory.getInstance();
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     ASTCDCompilationUnit compilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     this.glex.setGlobalValue("genHelper", new DecorationHelper());
-    VisitorDecorator decorator = new VisitorDecorator(this.glex);
+    ASTVisitorDecorator decorator = new ASTVisitorDecorator(this.glex, new VisitorDecorator(this.glex));
     this.visitorInterface = decorator.decorate(compilationUnit);
   }
 

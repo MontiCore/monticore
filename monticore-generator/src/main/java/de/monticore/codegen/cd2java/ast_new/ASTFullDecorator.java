@@ -1,6 +1,7 @@
 package de.monticore.codegen.cd2java.ast_new;
 
 import de.monticore.codegen.cd2java.CompositeDecorator;
+import de.monticore.codegen.cd2java.ast_new.referencedSymbolAndDefinition.ASTReferencedSymbolDecorator;
 import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 

@@ -19,7 +19,7 @@ public enum MC2CDStereotypes {
   /**
    * Referenced symbol
    */
-  REFERENCED_SYMBOL("referencedSymbol"),
+  REFERENCED_SYMBOL("referencedSymbolAndDefinition"),
   /**
    * Referenced symbol
    */
