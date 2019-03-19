@@ -58,7 +58,7 @@ public abstract class AbstractDecorator<I, R> implements Decorator<I, R> {
     this.templatesEnabled = false;
   }
 
-  public boolean templatesEnabled() {
+  private boolean templatesEnabled() {
     return this.templatesEnabled;
   }
 
