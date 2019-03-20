@@ -1,5 +1,6 @@
 package de.monticore.codegen.cd2java.ast_new.reference.referencedSymbol.referenedSymbolMethodDecorator;
 
+import de.monticore.codegen.cd2java.ast_new.reference.referencedSymbol.ASTReferencedSymbolDecorator;
 import de.monticore.codegen.cd2java.methods.accessor.OptionalAccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -24,7 +25,17 @@ public class ReferencedSymbolOptAccessorDecorator extends OptionalAccessorDecora
     ASTType type = ast.getType().deepClone();
     ASTCDMethod method = this.getCDMethodFactory().createMethod(PUBLIC, type, name);
     ASTType referencedSymbolType = TypesHelper.getSimpleReferenceTypeFromOptional(ast.getType().deepClone());
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("ast_new.refSymbolMethods.GetSymbolOpt", ast.getName(), TypesPrinter.printType(referencedSymbolType), false));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("ast_new.refSymbolMethods.GetSymbolOpt",
+        ast.getName(), TypesPrinter.printType(referencedSymbolType), isOptionalAttribute(ast)));
     return method;
+  }
+
+  private boolean isOptionalAttribute(final ASTCDAttribute clazz) {
+    //have to ask here if the original attribute was an optional or mandatory String attribute
+    //the template has to be different
+    if (clazz.isPresentModifier() && clazz.getModifier().isPresentStereotype()) {
+      return clazz.getModifier().getStereotype().getValueList().stream().anyMatch(v -> v.getName().equals(ASTReferencedSymbolDecorator.IS_OPTIONAL));
+    }
+    return false;
   }
 }

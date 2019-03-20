@@ -6,9 +6,7 @@ import de.monticore.codegen.cd2java.ast_new.reference.ReferencedSymbolUtil;
 import de.monticore.codegen.cd2java.ast_new.reference.referencedSymbol.referenedSymbolMethodDecorator.ReferencedSymbolAccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
+import de.monticore.umlcd4a.cd4analysis._ast.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +16,8 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
 public class ASTReferencedSymbolDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
   private static final String SYMBOL = "Symbol";
+
+  public static final String IS_OPTIONAL = "isOptional";
 
   private final ReferencedSymbolAccessorDecorator accessorDecorator;
 
@@ -58,14 +58,20 @@ public class ASTReferencedSymbolDecorator extends AbstractDecorator<ASTCDClass, 
   }
 
   private List<ASTCDMethod> getRefSymbolMethods(ASTCDAttribute refSymbolAttribute, String referencedSymbol) {
+    ASTCDAttribute methodDecorationAttribute = refSymbolAttribute.deepClone();
     if (GeneratorHelper.isMapType(refSymbolAttribute.printType())) {
       //have to change type of attribute list instead of map
       //because the inner representation is a map but for users the List methods are only shown
       ASTType optionalType = getCDTypeFactory().createOptionalTypeOf(referencedSymbol);
       ASTType listType = getCDTypeFactory().createListTypeOf(optionalType);
-      refSymbolAttribute = getCDAttributeFactory().createAttribute(refSymbolAttribute.getModifier().deepClone(), listType, refSymbolAttribute.getName());
+      methodDecorationAttribute = getCDAttributeFactory().createAttribute(refSymbolAttribute.getModifier().deepClone(), listType, refSymbolAttribute.getName());
+    } else if (GeneratorHelper.isOptional(refSymbolAttribute)) {
+      //add stereotye to attribute to later in the method generation know if the original attribute was optional or mandatory
+      ASTCDStereoValue stereoValue = CD4AnalysisMill.cDStereoValueBuilder().setName("isOptional").build();
+      methodDecorationAttribute.getModifier().setStereotype(CD4AnalysisMill.cDStereotypeBuilder().addValue(stereoValue).build());
     }
-    return accessorDecorator.decorate(refSymbolAttribute);
+
+    return accessorDecorator.decorate(methodDecorationAttribute);
   }
 
 }
