@@ -52,12 +52,12 @@ public abstract class CommonJMethodSymbol<U extends JTypeSymbol, T extends JType
     errorIfNull(paramType);
     checkArgument(paramType.isParameter(), "Only parameters can be added.");
 
-    getMutableSpannedScope().add(paramType);
+    getSpannedScope().add(paramType);
   }
 
   public void addFormalTypeParameter(U formalTypeParameter) {
     checkArgument(formalTypeParameter.isFormalTypeParameter());
-    getMutableSpannedScope().add(formalTypeParameter);
+    getSpannedScope().add(formalTypeParameter);
   }
 
   @Override

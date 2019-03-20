@@ -76,13 +76,13 @@ public class ArtifactScopeTest {
     EntitySymbol classA = new EntitySymbol("A");
     artifactScope1.add(classA);
 
-    MutableScope classAScope = classA.getMutableSpannedScope();
+    Scope classAScope = classA.getSpannedScope();
     classAScope.addResolver(classResolver);
 
     ArtifactScope artifactScope2 = new ArtifactScope(Optional.of(globalScope), "q", new ArrayList<>());
     artifactScope2.addResolver(classResolver);
     EntitySymbol classQB = new EntitySymbol("B");
-    classQB.getMutableSpannedScope().addResolver(classResolver);
+    classQB.getSpannedScope().addResolver(classResolver);
     artifactScope2.add(classQB);
 
     // resolve by qualified name
@@ -94,7 +94,7 @@ public class ArtifactScopeTest {
     ArtifactScope artifactScope3 = new ArtifactScope(Optional.of(globalScope), "r", new ArrayList<>());
     artifactScope3.addResolver(classResolver);
     EntitySymbol classRB = new EntitySymbol("B");
-    classRB.getMutableSpannedScope().addResolver(classResolver);
+    classRB.getSpannedScope().addResolver(classResolver);
     artifactScope3.add(classRB);
 
     // Now, besides q.B the symbol r.B is defined in the global scope

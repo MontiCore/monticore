@@ -3,7 +3,7 @@
 package de.monticore.symboltable.types;
 
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
-import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.types.references.JTypeReference;
 
 import java.util.ArrayList;
@@ -51,7 +51,7 @@ public abstract class CommonJTypeSymbol<T extends JTypeSymbol, S extends JFieldS
   }
 
   @Override
-  protected MutableScope createSpannedScope() {
+  protected Scope createSpannedScope() {
     return new CommonJTypeScope(empty());
   }
 
@@ -62,7 +62,7 @@ public abstract class CommonJTypeSymbol<T extends JTypeSymbol, S extends JFieldS
 
   public void addFormalTypeParameter(T formalTypeParameter) {
     checkArgument(formalTypeParameter.isFormalTypeParameter());
-    getMutableSpannedScope().add(formalTypeParameter);
+    getSpannedScope().add(formalTypeParameter);
   }
 
   @Override
@@ -100,7 +100,7 @@ public abstract class CommonJTypeSymbol<T extends JTypeSymbol, S extends JFieldS
   }
 
   public void addField(S attribute) {
-    getMutableSpannedScope().add(errorIfNull(attribute));
+    getSpannedScope().add(errorIfNull(attribute));
   }
 
   @Override
@@ -119,7 +119,7 @@ public abstract class CommonJTypeSymbol<T extends JTypeSymbol, S extends JFieldS
     errorIfNull(method);
     checkArgument(!method.isConstructor());
 
-    getMutableSpannedScope().add(method);
+    getSpannedScope().add(method);
   }
 
   @Override
@@ -151,7 +151,7 @@ public abstract class CommonJTypeSymbol<T extends JTypeSymbol, S extends JFieldS
     errorIfNull(constructor);
     checkArgument(constructor.isConstructor());
 
-    getMutableSpannedScope().add(constructor);
+    getSpannedScope().add(constructor);
   }
 
   @Override
@@ -164,7 +164,7 @@ public abstract class CommonJTypeSymbol<T extends JTypeSymbol, S extends JFieldS
   public void addInnerType(T innerType) {
     errorIfNull(innerType);
 
-    getMutableSpannedScope().add(innerType);
+    getSpannedScope().add(innerType);
   }
 
   @Override

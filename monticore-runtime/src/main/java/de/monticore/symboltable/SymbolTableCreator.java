@@ -11,7 +11,7 @@ public interface SymbolTableCreator {
 
   void putSpannedScopeOnStack(ScopeSpanningSymbol symbol);
 
-  void putOnStack(MutableScope scope);
+  void putOnStack(Scope scope);
 
   /**
    * Adds the <code>symbol</code> to the current scope (see {@link #currentScope()}).
@@ -26,17 +26,17 @@ public interface SymbolTableCreator {
 
   void setLinkBetweenSymbolAndNode(Symbol symbol, ASTNode astNode);
 
-  void setLinkBetweenSpannedScopeAndNode(MutableScope scope, ASTNode astNode);
+  void setLinkBetweenSpannedScopeAndNode(Scope scope, ASTNode astNode);
 
   void addToScopeAndLinkWithNode(Symbol symbol, ASTNode astNode);
 
-  Optional<? extends MutableScope> removeCurrentScope();
+  Optional<? extends Scope> removeCurrentScope();
 
-  Optional<? extends MutableScope> currentScope();
+  Optional<? extends Scope> currentScope();
 
   Optional<? extends ScopeSpanningSymbol> currentSymbol();
 
-  MutableScope getFirstCreatedScope();
+  Scope getFirstCreatedScope();
 
   /**
    * Sets the enclosing scope for all ast nodes starting with the <code>root</code> node. A node that

@@ -2,16 +2,16 @@
 
 package de.monticore.symboltable.mocks;
 
-import java.util.Collection;
-import java.util.Optional;
-import java.util.function.Predicate;
-
 import de.monticore.symboltable.CommonScope;
-import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.resolving.ResolvingInfo;
+
+import java.util.Collection;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 /**
  * Mock for {@link CommonScope} which enables to test the data of the
@@ -27,7 +27,7 @@ public class CommonScopeMock extends CommonScope {
     super(isShadowingScope);
   }
 
-  public CommonScopeMock(Optional<MutableScope> enclosingScope, boolean isShadowingScope) {
+  public CommonScopeMock(Optional<Scope> enclosingScope, boolean isShadowingScope) {
     super(enclosingScope, isShadowingScope);
   }
 

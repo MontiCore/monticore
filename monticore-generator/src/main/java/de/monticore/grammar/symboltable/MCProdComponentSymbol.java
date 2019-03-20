@@ -181,7 +181,7 @@ public class MCProdComponentSymbol extends CommonScopeSpanningSymbol {
 
   public void addSubProdComponent(MCProdComponentSymbol prodComp) {
     errorIfNull(prodComp);
-    getMutableSpannedScope().add(prodComp);
+    getSpannedScope().add(prodComp);
   }
 
   public static class MCProdComponentKind implements SymbolKind {

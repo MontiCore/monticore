@@ -33,14 +33,14 @@ import static java.util.stream.Collectors.toSet;
 public class CommonScope implements MutableScope {
 
   private final Map<String, Collection<Symbol>> symbols = new LinkedHashMap<>();
-  private final List<MutableScope> subScopes = new ArrayList<>();
+  private final List<Scope> subScopes = new ArrayList<>();
 
   private Boolean exportsSymbols = null;
   private Boolean isShadowingScope;
 
   private String name;
 
-  protected MutableScope enclosingScope;
+  protected Scope enclosingScope;
 
   private ScopeSpanningSymbol spanningSymbol;
   private ASTNode astNode;
@@ -55,7 +55,7 @@ public class CommonScope implements MutableScope {
     this(empty(), isShadowingScope);
   }
 
-  public CommonScope(Optional<MutableScope> enclosingScope, boolean isShadowingScope) {
+  public CommonScope(Optional<Scope> enclosingScope, boolean isShadowingScope) {
     errorIfNull(enclosingScope);
 
     this.isShadowingScope = isShadowingScope;
@@ -65,7 +65,7 @@ public class CommonScope implements MutableScope {
     }
   }
 
-  public CommonScope(Optional<MutableScope> enclosingScope) {
+  public CommonScope(Optional<Scope> enclosingScope) {
     this(enclosingScope, false);
   }
 
@@ -75,18 +75,18 @@ public class CommonScope implements MutableScope {
   }
 
   @Override
-  public Optional<MutableScope> getEnclosingScope() {
+  public Optional<Scope> getEnclosingScope() {
     return ofNullable(enclosingScope);
   }
 
 
   @Override
-  public List<MutableScope> getSubScopes() {
+  public List<Scope> getSubScopes() {
     return copyOf(subScopes);
   }
 
 
-  public void addSubScope(MutableScope subScope) {
+  public void addSubScope(Scope subScope) {
     if (!subScopes.contains(subScope)) {
       subScopes.add(subScope);
       subScope.setEnclosingScope(this);
@@ -111,7 +111,7 @@ public class CommonScope implements MutableScope {
    *
    * @param subScope the sub scope to be removed
    */
-  public void removeSubScope(MutableScope subScope) {
+  public void removeSubScope(Scope subScope) {
     if (subScopes.contains(subScope)) {
       subScopes.remove(subScope);
       subScope.setEnclosingScope(null);
@@ -301,7 +301,7 @@ public class CommonScope implements MutableScope {
     return empty();
   }
 
-  public void setEnclosingScope(MutableScope newEnclosingScope) {
+  public void setEnclosingScope(Scope newEnclosingScope) {
     if ((this.enclosingScope != null) && (newEnclosingScope != null)) {
       if (this.enclosingScope == newEnclosingScope) {
         return;
@@ -326,11 +326,6 @@ public class CommonScope implements MutableScope {
   @Override
   public Optional<ASTNode> getAstNode() {
     return ofNullable(astNode);
-  }
-
-  @Override
-  public MutableScope getAsMutableScope() {
-    return this;
   }
 
   public void setAstNode(ASTNode astNode) {
@@ -481,7 +476,7 @@ public class CommonScope implements MutableScope {
     // If no matching symbols have been found...
     if (resolved.isEmpty()) {
       // 2. Continue search in sub scopes and ...
-      for (MutableScope subScope : getSubScopes()) {
+      for (Scope subScope : getSubScopes()) {
         final Collection<T> resolvedFromSub = subScope.continueAsSubScope(resolvingInfo, name, kind, modifier, predicate);
         // 3. unify results
         resolved.addAll(resolvedFromSub);
@@ -493,9 +488,6 @@ public class CommonScope implements MutableScope {
   }
 
 
-  /**
-   * @see MutableScope#resolveDown(String, SymbolKind)
-   */
   @Override
   public <T extends Symbol> Optional<T> resolveDown(String name, SymbolKind kind) {
     return getResolvedOrThrowException(this.resolveDownMany(name, kind));

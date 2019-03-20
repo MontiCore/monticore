@@ -15,11 +15,7 @@ import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import de.monticore.symboltable.CommonScope;
-import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ScopeSpanningSymbol;
-import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.SymbolKind;
+import de.monticore.symboltable.*;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.resolving.ResolvingInfo;
 import de.se_rwth.commons.Names;
@@ -27,7 +23,7 @@ import de.se_rwth.commons.logging.Log;
 
 public class MCGrammarScope extends CommonScope {
 
-  public MCGrammarScope(Optional<MutableScope> enclosingScope) {
+  public MCGrammarScope(Optional<Scope> enclosingScope) {
     super(enclosingScope, true);
   }
 

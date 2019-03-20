@@ -25,7 +25,7 @@ public class ActionSymbol extends CommonJMethodSymbol<EntitySymbol, EntitySymbol
   }
   
   public void addVariable(PropertySymbol variable) {
-    getMutableSpannedScope().add(variable);
+    getSpannedScope().add(variable);
   }
 
   

@@ -2,14 +2,6 @@
 
 package de.monticore.symboltable;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.util.List;
-import java.util.Optional;
-
 import de.monticore.symboltable.mocks.CommonScopeMock;
 import de.monticore.symboltable.mocks.languages.entity.PropertySymbol;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
@@ -19,6 +11,11 @@ import de.monticore.symboltable.types.JTypeSymbol;
 import de.monticore.symboltable.types.references.CommonJTypeReference;
 import de.monticore.symboltable.types.references.JTypeReference;
 import org.junit.Test;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.Assert.*;
 
 public class ShadowingTest {
 
@@ -122,7 +119,7 @@ public class ShadowingTest {
     assertSame(gpVariable, enclosingScope.resolve("var", PropertySymbol.KIND).get());
     assertSame(variable, scope.resolve("var", PropertySymbol.KIND).get());
 
-    final List<MutableScope> involvedScopes = scope.getResolvingInfo().getInvolvedScopes();
+    final List<Scope> involvedScopes = scope.getResolvingInfo().getInvolvedScopes();
 
     // Resolution must stop after the third scope (i.e., grandEnclosing)
     assertEquals(3, involvedScopes.size());

@@ -128,10 +128,10 @@ public class LanguageCompositionTest {
     MutableScope scope = new CommonScope(true);
     scope.addResolver(CommonResolvingFilter.create(StateChartSymbol.KIND));
 
-    sc.getSpannedScope().getAsMutableScope().addResolver(CommonResolvingFilter.create(StateSymbol.KIND));
+    sc.getSpannedScope().addResolver(CommonResolvingFilter.create(StateSymbol.KIND));
 
     XStateChartSymbol xSc = new XStateChartSymbol("xSc");
-    xSc.getSpannedScope().getAsMutableScope().addResolver(CommonResolvingFilter.create(StateSymbol.KIND));
+    xSc.getSpannedScope().addResolver(CommonResolvingFilter.create(StateSymbol.KIND));
     // Note how symbols of the sub language can be used without any adapters
 
     scope.add(xSc);
@@ -146,7 +146,7 @@ public class LanguageCompositionTest {
     assertSame(xState, xSc.getSpannedScope().resolve("xState", StateSymbol.KIND).get());
     // Super symbol cannot be used instead of sub. Resolver for sub needed.
     assertFalse(xSc.getSpannedScope().resolve("xState", XStateSymbol.KIND).isPresent());
-    xSc.getSpannedScope().getAsMutableScope().addResolver(CommonResolvingFilter.create(XStateSymbol.KIND));
+    xSc.getSpannedScope().addResolver(CommonResolvingFilter.create(XStateSymbol.KIND));
     assertSame(xState, xSc.getSpannedScope().resolve("xState", XStateSymbol.KIND).get());
 
     XStateSymbol xState2 = new XStateSymbol("xState2");

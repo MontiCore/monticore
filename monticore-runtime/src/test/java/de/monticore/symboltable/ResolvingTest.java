@@ -78,7 +78,7 @@ public class ResolvingTest {
     assertFalse(entity.getSpannedScope().resolve("prop", PropertySymbol.KIND).isPresent());
 
 
-    entity.getMutableSpannedScope().addResolver(propertyResolvingFilter);
+    entity.getSpannedScope().addResolver(propertyResolvingFilter);
     assertFalse(action.getSpannedScope().resolve("prop", PropertySymbol.KIND).isPresent());
     assertTrue(entity.getSpannedScope().resolve("prop", PropertySymbol.KIND).isPresent());
   }
@@ -151,7 +151,7 @@ public class ResolvingTest {
     artifactScope.setResolvingFilters(resolvingConfiguration.getDefaultFilters());
 
     final EntitySymbol entity = new EntitySymbol("Entity");
-    entity.getMutableSpannedScope().setResolvingFilters(resolvingConfiguration.getDefaultFilters());
+    entity.getSpannedScope().setResolvingFilters(resolvingConfiguration.getDefaultFilters());
     artifactScope.add(entity);
 
     final ActionSymbol action = new ActionSymbol("action");

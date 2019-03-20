@@ -28,7 +28,7 @@ public class StateChartSymbol extends CommonScopeSpanningSymbol {
   }
   
   public void addState(StateSymbol state) {
-    getMutableSpannedScope().add(state);
+    getSpannedScope().add(state);
   }
 
 }

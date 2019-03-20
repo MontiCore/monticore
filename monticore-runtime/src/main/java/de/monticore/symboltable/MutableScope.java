@@ -11,6 +11,7 @@ import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingInfo;
 
+@Deprecated
 public interface MutableScope extends Scope {
 
 
@@ -24,21 +25,21 @@ public interface MutableScope extends Scope {
    * @param enclosingScope the enclosing scope. In Java, for example, a class scope is the
    *                       enclosing scope of method scopes.
    */
-  void setEnclosingScope(MutableScope enclosingScope);
+  void setEnclosingScope(Scope enclosingScope);
 
   /**
    * Adds a sub subScope. In Java, for example, sub scopes of a class are the method scopes.
    *
    * @param subScope the sub scope to be added.
    */
-  void addSubScope(MutableScope subScope);
+  void addSubScope(Scope subScope);
 
   /**
    * Removes given <code>subScope</code>.
    *
    * @param subScope the sub scope to be removed
    */
-  void removeSubScope(MutableScope subScope);
+  void removeSubScope(Scope subScope);
 
   /**
    * @param symbol the symbol that spans this scope. For example, a Java method spans a

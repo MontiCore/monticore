@@ -17,31 +17,28 @@ public class EntitySymbol extends CommonJTypeSymbol<EntitySymbol, PropertySymbol
   }
 
   public Optional<ActionSymbol> getAction(String actionName) {
-    return getMutableSpannedScope().<ActionSymbol>resolveLocally(actionName, ActionSymbol.KIND);
+    return getSpannedScope().<ActionSymbol>resolveLocally(actionName, ActionSymbol.KIND);
   }
   
   public void addAction(ActionSymbol method) {
-    getMutableSpannedScope().add(method);
+    getSpannedScope().add(method);
   }
   
   public Collection<ActionSymbol> getActions() {
-    return getMutableSpannedScope().resolveLocally(ActionSymbol.KIND);
+    return getSpannedScope().resolveLocally(ActionSymbol.KIND);
   }
   
   public Optional<PropertySymbol> getProperty(String propertyName) {
-    return getMutableSpannedScope().<PropertySymbol>resolveLocally(propertyName, PropertySymbol.KIND);
+    return getSpannedScope().<PropertySymbol>resolveLocally(propertyName, PropertySymbol.KIND);
   }
   
   public void addProperty(PropertySymbol property) {
-    getMutableSpannedScope().add(property);
+    getSpannedScope().add(property);
   }
   
   public Collection<PropertySymbol> getProperties() {
-    return getMutableSpannedScope().resolveLocally(PropertySymbol.KIND);
+    return getSpannedScope().resolveLocally(PropertySymbol.KIND);
   }
 
-  @Override
-  public MutableScope getMutableSpannedScope() {
-    return super.getMutableSpannedScope();
-  }
+
 }

@@ -108,7 +108,7 @@ public class MCProdSymbol extends CommonScopeSpanningSymbol {
       prevProdComp.setList(prevProdComp.isList() || prodComp.isList());
       return prevProdComp;
     } else {
-      getMutableSpannedScope().add(prodComp);
+      getSpannedScope().add(prodComp);
     }
     return prodComp;
   }
@@ -123,7 +123,7 @@ public class MCProdSymbol extends CommonScopeSpanningSymbol {
 
   public void addProdAttribute(MCProdAttributeSymbol attributeSymbol) {
     errorIfNull(attributeSymbol);
-    getMutableSpannedScope().add(attributeSymbol);
+    getSpannedScope().add(attributeSymbol);
   }
 
   public Collection<MCProdAttributeSymbol> getProdAttributes() {
