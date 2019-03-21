@@ -41,9 +41,8 @@ public class ${ast.getName()} extends EPackageImpl implements ${grammarName}Pack
    * <p>Note: the correct way to create the package is via the static
    * factory method {@link #init init()}, which also performs
    * initialization of the package, or returns the registered package,
-   * if one already exists.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * if one already exists.</p>
+   *
    * @see org.eclipse.emf.ecore.EPackage.Registry
   */
   private ${ast.getName()}() {
@@ -57,8 +56,7 @@ public class ${ast.getName()} extends EPackageImpl implements ${grammarName}Pack
    * 
    * This method is used to initialize eInstance when that field is accessed.
    * Clients should not invoke it directly. Instead, they should simply access that field to obtain the package.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   *
    * @see #eNS_URI
    * @see #createPackageContents()
    * @see #initializePackageContents()

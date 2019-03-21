@@ -13,7 +13,7 @@ import ${imp}._ast.*;
 </#list>
 
   /**
-    * Builder for {@link ${className}}.
+    * Builder for {@link ${symbolName}}.
     */
 
 public class ${className} {
