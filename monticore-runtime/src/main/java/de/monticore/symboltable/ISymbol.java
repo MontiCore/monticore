@@ -1,19 +1,12 @@
  /* (c) https://github.com/MontiCore/monticore */
  package de.monticore.symboltable;
 
- import de.monticore.ast.ASTNode;
  import de.monticore.symboltable.modifiers.AccessModifier;
  import de.monticore.symboltable.modifiers.BasicAccessModifier;
- import de.se_rwth.commons.SourcePosition;
-
- import java.util.Optional;
 
  import static de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION;
- import static de.se_rwth.commons.SourcePosition.getDefaultSourcePosition;
- import static de.se_rwth.commons.logging.Log.errorIfNull;
 
- @Deprecated
- public interface Symbol {
+ public interface ISymbol {
 
    /**
     * @return the symbol name
@@ -38,18 +31,7 @@
    String getFullName();
 
 
-   /**
-    * @return the symbol kind
-    */
-   SymbolKind getKind();
 
-   /**
-    * @return true, if this symbol is of the <code>kind</code>.
-    * @see SymbolKind#isKindOf(SymbolKind)
-    */
-   default boolean isKindOf(SymbolKind kind) {
-     return getKind().isKindOf(errorIfNull(kind));
-   }
 
    /**
     * @return the access modifier, such as public or protected in Java. By default, the {@link
@@ -68,37 +50,7 @@
     */
    void setAccessModifier(AccessModifier accessModifier);
 
-   /**
-    * @param node the corresponding ast node
-    */
-   void setAstNode(ASTNode node);
 
-   /**
-    * @return the corresponding ast node
-    */
-   Optional<ASTNode> getAstNode();
-
-   /**
-    * @return the position of this symbol in the source model. By default, it is the source position
-    * of the ast node.
-    * @see #getAstNode()
-    */
-   default SourcePosition getSourcePosition() {
-     if (getAstNode().isPresent()) {
-       return getAstNode().get().get_SourcePositionStart();
-     } else {
-       return getDefaultSourcePosition();
-     }
-   }
-
-   /**
-    * @return the enclosing scope of this symbol, i.e., the scope that defines this symbol.
-    */
-   Scope getEnclosingScope();
-
-   /**
-    * @param scope the enclosing scope of this symbol, i.e., the scope that defines this symbol.
-    */
-   void setEnclosingScope(MutableScope scope);
-
+   
+   
  }
