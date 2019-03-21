@@ -6,8 +6,10 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
@@ -98,15 +100,23 @@ public class VisitorGenerator {
     
     // scope visitor interface
     boolean existsST = false;
+    Set<String> superScopeVisitors = new HashSet<>();
     if (stHelperObj != null && stHelperObj instanceof SymbolTableGeneratorHelper) {
       SymbolTableGeneratorHelper stHelper = (SymbolTableGeneratorHelper) stHelperObj;
       if (stHelper.getGrammarSymbol().getStartProd().isPresent()) {
         existsST = true;
       }
+      // super scope visitors
+      for (CDSymbol cdSymbol : stHelper.getDirectSuperCds(stHelper.getCd())) {
+        String qualifiedScopeVisitorName = stHelper.getQualifiedScopeVisitorType(cdSymbol);
+        if (!qualifiedScopeVisitorName.isEmpty() && !cdSymbol.equals(stHelper.getCd())) {
+          superScopeVisitors.add(qualifiedScopeVisitorName);
+        }
+      }
     }
     final Path scopeVisitorFilePath = Paths.get(path, visitorHelper.getScopeVisitorType() + ".java");
     generator.generate("visitor.ScopeVisitor", scopeVisitorFilePath, astClassDiagram,
-        astClassDiagram.getCDDefinition(), symbolTablePackage, cd, existsST);
+        astClassDiagram.getCDDefinition(), symbolTablePackage, cd, existsST, superScopeVisitors);
     Log.trace(LOGGER_NAME, "Generated scope visitor for the diagram: " + diagramName);
   }
   
