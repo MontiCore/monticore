@@ -52,7 +52,7 @@ public class ASTBuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClas
   }
 
 
-  private ASTReferenceType createBuilderSuperClass(final ASTCDClass domainClass, final String builderClassName) {
+  protected ASTReferenceType createBuilderSuperClass(final ASTCDClass domainClass, final String builderClassName) {
     String superClass = String.format(DEFAULT_SUPER_CLASS, builderClassName);
     if (hasSuperClassOtherThanASTCNode(domainClass)) {
       superClass = domainClass.printSuperClass() + BUILDER_SUFFIX;
@@ -60,11 +60,11 @@ public class ASTBuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClas
     return this.getCDTypeFactory().createSimpleReferenceType(superClass);
   }
 
-  private boolean hasSuperClassOtherThanASTCNode(final ASTCDClass domainClass) {
+  protected boolean hasSuperClassOtherThanASTCNode(final ASTCDClass domainClass) {
     return domainClass.isPresentSuperclass() && !ASTCNode.class.getSimpleName().equals(domainClass.printSuperClass());
   }
 
-  private List<ASTCDMethod> createBuilderMethodForASTCNodeMethods(final ASTType builderType) {
+  protected List<ASTCDMethod> createBuilderMethodForASTCNodeMethods(final ASTType builderType) {
     List<ASTCDMethod> result = new ArrayList<>();
     for (ASTCNodeMethod astNodeMethod : ASTCNodeMethod.values()) {
       ASTCDMethod method = this.getCDMethodFactory().createMethodByDefinition(astNodeMethod.signature);
@@ -75,7 +75,7 @@ public class ASTBuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClas
     return result;
   }
 
-  private HookPoint createImplementation(final ASTCDMethod method) {
+  protected HookPoint createImplementation(final ASTCDMethod method) {
     String methodName = method.getName();
     String parameterCall = method.getCDParameterList().stream()
         .map(ASTCDParameter::getName)
@@ -83,7 +83,7 @@ public class ASTBuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClas
     return new TemplateHookPoint("ast_new.builder.ASTCNodeMethodDelegate", methodName, parameterCall);
   }
 
-  private enum ASTCNodeMethod {
+  protected enum ASTCNodeMethod {
     // ----------- SourcePosition -----------------------------
     set_SourcePositionEnd("public void set_SourcePositionEnd(SourcePosition end);"),
     set_SourcePositionEndOpt("public void set_SourcePositionEndOpt(Optional<SourcePosition> end);"),

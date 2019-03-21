@@ -41,7 +41,7 @@ public class ASTSymbolDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass
     return clazz;
   }
 
-  private boolean isSymbolClass(ASTCDClass ast) {
+  protected boolean isSymbolClass(ASTCDClass ast) {
     if (ast.isPresentModifier() && ast.getModifier().isPresentStereotype()) {
       return ast.getModifier().getStereotype().getValueList().stream().anyMatch(v -> v.getName().equals(MC2CDStereotypes.SYMBOL.toString()));
     }

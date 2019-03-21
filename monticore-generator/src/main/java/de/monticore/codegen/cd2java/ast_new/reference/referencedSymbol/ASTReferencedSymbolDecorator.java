@@ -44,7 +44,7 @@ public class ASTReferencedSymbolDecorator extends AbstractDecorator<ASTCDClass, 
     return clazz;
   }
 
-  private ASTCDAttribute getRefSymbolAttribute(ASTCDAttribute attribute, String referencedSymbol) {
+  protected ASTCDAttribute getRefSymbolAttribute(ASTCDAttribute attribute, String referencedSymbol) {
     ASTType attributeType;
     if (GeneratorHelper.isListType(attribute.printType())) {
       //if the attribute is a list
@@ -53,8 +53,7 @@ public class ASTReferencedSymbolDecorator extends AbstractDecorator<ASTCDClass, 
       //if the attribute is mandatory or optional
       attributeType = getCDTypeFactory().createOptionalTypeOf(referencedSymbol);
     }
-    ASTCDAttribute astcdAttribute = this.getCDAttributeFactory().createAttribute(PRIVATE, attributeType, attribute.getName() + SYMBOL);
-    return astcdAttribute;
+    return this.getCDAttributeFactory().createAttribute(PRIVATE, attributeType, attribute.getName() + SYMBOL);
   }
 
   private List<ASTCDMethod> getRefSymbolMethods(ASTCDAttribute refSymbolAttribute, String referencedSymbol) {

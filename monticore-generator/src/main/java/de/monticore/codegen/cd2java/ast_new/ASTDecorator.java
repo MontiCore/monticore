@@ -42,8 +42,6 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
   @Override
   public ASTCDClass decorate(ASTCDClass clazz) {
-    clazz.setName(AST_PREFIX + clazz.getName());
-
     if (!clazz.isPresentSuperclass()) {
       clazz.setSuperclass(this.getCDTypeFactory().createSimpleReferenceType(ASTCNode.class));
     }
@@ -60,14 +58,14 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
     return clazz;
   }
 
-  private ASTCDMethod createAcceptMethod(ASTCDClass astClass, ASTType visitorType) {
+  protected ASTCDMethod createAcceptMethod(ASTCDClass astClass, ASTType visitorType) {
     ASTCDParameter visitorParameter = this.getCDParameterFactory().createParameter(visitorType, VISITOR_PREFIX);
     ASTCDMethod acceptMethod = this.getCDMethodFactory().createMethod(PUBLIC, ACCEPT_METHOD, visitorParameter);
     this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint("ast_new.Accept", astClass));
     return acceptMethod;
   }
 
-  private List<ASTCDMethod> createAcceptSuperMethods(ASTCDClass astClass, ASTType visitorType) {
+  protected List<ASTCDMethod> createAcceptSuperMethods(ASTCDClass astClass, ASTType visitorType) {
     List<ASTCDMethod> result = new ArrayList<>();
     //accept methods for super grammar visitors
     for (CDSymbol superSymbol : SuperSymbolHelper.getSuperCDs(compilationUnit)) {
@@ -83,7 +81,7 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
     return result;
   }
 
-  private ASTCDMethod getConstructMethod(ASTCDClass astClass) {
+  protected ASTCDMethod getConstructMethod(ASTCDClass astClass) {
     ASTType classType = this.getCDTypeFactory().createSimpleReferenceType(astClass.getName());
     ASTCDMethod constructMethod = this.getCDMethodFactory().createMethod(PROTECTED, classType, CONSTRUCT_METHOD);
     this.replaceTemplate(EMPTY_BODY, constructMethod, new StringHookPoint(

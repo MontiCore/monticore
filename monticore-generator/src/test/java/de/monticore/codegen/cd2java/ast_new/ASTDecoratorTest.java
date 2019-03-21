@@ -43,7 +43,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassName() {
-    assertEquals("ASTA", astClass.getName());
+    assertEquals("A", astClass.getName());
   }
 
   @Test

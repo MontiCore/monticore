@@ -55,17 +55,17 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
     return clazz;
   }
 
-  private ASTCDConstructor createDefaultConstructor(ASTCDClass clazz) {
+  protected ASTCDConstructor createDefaultConstructor(ASTCDClass clazz) {
     return this.getCDConstructorFactory().createDefaultConstructor(PROTECTED, clazz);
   }
 
-  private ASTCDConstructor createFullConstructor(ASTCDClass clazz) {
+  protected ASTCDConstructor createFullConstructor(ASTCDClass clazz) {
     ASTCDConstructor fullConstructor = this.getCDConstructorFactory().createFullConstructor(PROTECTED, clazz);
     this.replaceTemplate(EMPTY_BODY, fullConstructor, new TemplateHookPoint("data.ConstructorAttributesSetter", clazz));
     return fullConstructor;
   }
-  
-  private List<ASTCDMethod> createEqualsMethods(ASTCDClass clazz) {
+
+  protected List<ASTCDMethod> createEqualsMethods(ASTCDClass clazz) {
     ASTCDParameter objectParameter = getCDParameterFactory().createParameter(Object.class, "o");
     ASTCDParameter forceSameOrderParameter = getCDParameterFactory().createParameter(getCDTypeFactory().createBooleanType(), "forceSameOrder");
     
@@ -78,49 +78,49 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
         createEqualsWithComments(clazz, objectParameter)));
   }
 
-  private ASTCDMethod createDeepEqualsMethod(ASTCDParameter objectParameter) {
+  protected ASTCDMethod createDeepEqualsMethod(ASTCDParameter objectParameter) {
     // public  boolean deepEquals(Object o)
     ASTCDMethod deepEquals = this.getCDMethodFactory().createMethod(PUBLIC, getCDTypeFactory().createBooleanType(), DEEP_EQUALS_METHOD, objectParameter);
     this.replaceTemplate(EMPTY_BODY, deepEquals, new StringHookPoint("     return deepEquals(o, true);"));
     return deepEquals;
   }
 
-  private ASTCDMethod createDeepEqualsWithOrderMethod(ASTCDClass clazz, ASTCDParameter objectParameter, ASTCDParameter forceSameOrderParameter) {
+  protected ASTCDMethod createDeepEqualsWithOrderMethod(ASTCDClass clazz, ASTCDParameter objectParameter, ASTCDParameter forceSameOrderParameter) {
     // public  boolean deepEquals(Object o,boolean forceSameOrder)
     ASTCDMethod deepEqualsWithOrder = this.getCDMethodFactory().createMethod(PUBLIC, getCDTypeFactory().createBooleanType(), DEEP_EQUALS_METHOD, objectParameter, forceSameOrderParameter);
     this.replaceTemplate(EMPTY_BODY, deepEqualsWithOrder, new TemplateHookPoint("data.DeepEqualsWithOrder", clazz));
     return deepEqualsWithOrder;
   }
 
-  private ASTCDMethod createDeepEqualsWithComments(ASTCDParameter objectParameter) {
+  protected ASTCDMethod createDeepEqualsWithComments(ASTCDParameter objectParameter) {
     // public  boolean deepEqualsWithComments(Object o)
     ASTCDMethod deepEqualsWithComments = this.getCDMethodFactory().createMethod(PUBLIC, getCDTypeFactory().createBooleanType(), DEEP_EQUALS_METHOD + WITH_COMMENTS_SUFFIX, objectParameter);
     this.replaceTemplate(EMPTY_BODY, deepEqualsWithComments, new StringHookPoint("     return deepEqualsWithComments(o, true);"));
     return deepEqualsWithComments;
   }
-  
-  private ASTCDMethod createDeepEqualsWithCommentsWithOrder(ASTCDClass clazz, ASTCDParameter objectParameter, ASTCDParameter forceSameOrderParameter) {
+
+  protected ASTCDMethod createDeepEqualsWithCommentsWithOrder(ASTCDClass clazz, ASTCDParameter objectParameter, ASTCDParameter forceSameOrderParameter) {
     // public  boolean deepEqualsWithComments(Object o,boolean forceSameOrder)
     ASTCDMethod deepEqualsWithCommentsWithOrder = this.getCDMethodFactory().createMethod(PUBLIC, getCDTypeFactory().createBooleanType(), DEEP_EQUALS_METHOD + WITH_COMMENTS_SUFFIX, objectParameter, forceSameOrderParameter);
     this.replaceTemplate(EMPTY_BODY, deepEqualsWithCommentsWithOrder, new TemplateHookPoint("data.DeepEqualsWithComments", clazz));
     return deepEqualsWithCommentsWithOrder;
   }
-  
-  private ASTCDMethod createEqualAttributesMethod(ASTCDClass clazz, ASTCDParameter objectParameter) {
+
+  protected ASTCDMethod createEqualAttributesMethod(ASTCDClass clazz, ASTCDParameter objectParameter) {
     // public  boolean equalAttributes(Object o)
     ASTCDMethod equalAttributes = this.getCDMethodFactory().createMethod(PUBLIC, getCDTypeFactory().createBooleanType(), EQUAL_ATTRIBUTES_METHOD, objectParameter);
     this.replaceTemplate(EMPTY_BODY, equalAttributes, new TemplateHookPoint("data.EqualAttributes", clazz));
     return equalAttributes;
   }
-  
-  private ASTCDMethod createEqualsWithComments(ASTCDClass clazz, ASTCDParameter objectParameter) {
+
+  protected ASTCDMethod createEqualsWithComments(ASTCDClass clazz, ASTCDParameter objectParameter) {
     // public  boolean equalsWithComments(Object o)
     ASTCDMethod equals = this.getCDMethodFactory().createMethod(PUBLIC, getCDTypeFactory().createBooleanType(), EQUALS_METHOD + WITH_COMMENTS_SUFFIX, objectParameter);
     this.replaceTemplate(EMPTY_BODY, equals, new TemplateHookPoint("data.EqualsWithComments", clazz.getName()));
     return equals;
   }
 
-  private List<ASTCDMethod> createCloneMethods(ASTCDClass clazz) {
+  protected List<ASTCDMethod> createCloneMethods(ASTCDClass clazz) {
     ASTType classType = this.getCDTypeFactory().createSimpleReferenceType(clazz.getName());
     ASTCDParameter classParameter = getCDParameterFactory().createParameter(classType, "result");
     
@@ -129,14 +129,14 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
        createDeepCloneWithParam(clazz, classParameter)));
   }
 
-  private ASTCDMethod createDeepClone(ASTType classType) {
+  protected ASTCDMethod createDeepClone(ASTType classType) {
     // deep clone without parameters
     ASTCDMethod deepClone = this.getCDMethodFactory().createMethod(PUBLIC, classType, DEEP_CLONE_METHOD);
     this.replaceTemplate(EMPTY_BODY, deepClone, new StringHookPoint("    return deepClone(_construct());"));
     return deepClone;
   }
-  
-  private ASTCDMethod createDeepCloneWithParam(ASTCDClass clazz, ASTCDParameter parameter) {
+
+  protected ASTCDMethod createDeepCloneWithParam(ASTCDClass clazz, ASTCDParameter parameter) {
     // deep clone with result parameter
     ASTCDMethod deepCloneWithParam = this.getCDMethodFactory().createMethod(PUBLIC, parameter.getType(), DEEP_CLONE_METHOD, parameter);
     this.replaceTemplate(EMPTY_BODY, deepCloneWithParam, new TemplateHookPoint("data.DeepCloneWithParameters", clazz));

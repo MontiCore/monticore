@@ -41,7 +41,7 @@ public class ASTScopeDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass>
     return clazz;
   }
 
-  private boolean isScopeClass(final ASTCDClass clazz) {
+  protected boolean isScopeClass(final ASTCDClass clazz) {
     if (clazz.isPresentModifier() && clazz.getModifier().isPresentStereotype()) {
       return clazz.getModifier().getStereotype().getValueList().stream().anyMatch(v -> v.getName().equals(MC2CDStereotypes.SCOPE.toString()));
     }
