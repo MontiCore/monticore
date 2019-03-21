@@ -2,17 +2,18 @@
 
 package de.monticore.grammar.cocos;
 
-import java.util.Map;
-
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.ASTASTRule;
-import de.monticore.grammar.grammar._ast.ASTGenericType;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdOrTypeReference;
 import de.monticore.grammar.symboltable.MCProdSymbol;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.Map;
 
 /**
  * Checks that no ast rules exist for enum nonterminals.
@@ -45,13 +46,11 @@ public class NoASTExtendsForClasses implements GrammarASTMCGrammarCoCo {
       if (allProds.containsKey(rule.getType())) {
         MCProdSymbol prod = allProds.get(rule.getType());
         if (prod.isClass()) {
-          for (ASTGenericType type : rule.getASTSuperClassList()) {
-            String simpleName = type.getNameList().get(type.getNameList().size() - 1);
-
+          for (ASTMCType type : rule.getASTSuperClassList()) {
+            String simpleName = type.getBaseName();
             if (!allProds.containsKey(simpleName.substring(TransformationHelper.AST_PREFIX.length()))) {
               Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT,
-                  rule.getType(),
-                  type.getTypeName(),
+                  rule.getType(), Joiners.DOT.join(type.getNameList()),
                   rule.get_SourcePositionStart()));
             }
           }

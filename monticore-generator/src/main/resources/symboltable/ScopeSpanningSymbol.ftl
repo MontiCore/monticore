@@ -61,7 +61,7 @@ public class ${className} ${superClass} ${superInterfaces} {
   */
 
   ${includeArgs("symboltable.symbols.GetAstNodeMethod", astName)}
-  
+
   <#assign langVisitorType = names.getQualifiedName(genHelper.getVisitorPackage(), genHelper.getGrammarSymbol().getName() + "SymbolVisitor")>
    public void accept(${langVisitorType} visitor) {
   <#if genHelper.isSupertypeOfHWType(className, "")>
@@ -75,9 +75,39 @@ public class ${className} ${superClass} ${superInterfaces} {
     visitor.handle(this);
   </#if>
   }
-  
+
   <#if ruleSymbol.isPresent()>
     ${includeArgs("symboltable.symbols.SymbolRule", ruleSymbol.get())}
   </#if>
+
+  protected I${genHelper.getGrammarSymbol().getName()}Scope enclosing${genHelper.getGrammarSymbol().getName()}Scope;
+
+  public I${genHelper.getGrammarSymbol().getName()}Scope getEnclosing${genHelper.getGrammarSymbol().getName()}Scope(){
+    return this.enclosing${genHelper.getGrammarSymbol().getName()}Scope;
+  }
+
+  public void setEnclosing${genHelper.getGrammarSymbol().getName()}Scope(I${genHelper.getGrammarSymbol().getName()}Scope newEnclosingScope){
+  /*
+  if ((this.enclosing${genHelper.getGrammarSymbol().getName()}Scope != null) && (newEnclosingScope != null)) {
+    if (this.enclosing${genHelper.getGrammarSymbol().getName()}Scope == newEnclosingScope) {
+      return;
+    }
+    warn("0xA1042 Scope \"" + getName() + "\" has already an enclosing scope.");
+  }
+
+  // remove this scope from current (old) enclosing scope, if exists.
+  if (this.enclosing${genHelper.getGrammarSymbol().getName()}Scope != null) {
+    this.enclosing${genHelper.getGrammarSymbol().getName()}Scope.removeSubScope(this);
+  }
+
+  // add this scope to new enclosing scope, if exists.
+  if (newEnclosingScope != null) {
+    newEnclosingScope.addSubScope(this);
+  }
+
+  */
+  // set new enclosing scope (or null)
+  this.enclosing${genHelper.getGrammarSymbol().getName()}Scope = newEnclosingScope;
+  }
 
 }

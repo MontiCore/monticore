@@ -2,36 +2,24 @@
 
 package de.monticore.grammar.transformation;
 
-import static de.monticore.grammar.Multiplicity.multiplicityByDuplicates;
-import static de.monticore.grammar.Multiplicity.multiplicityOfAttributeInAST;
-
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
-
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.Multiplicity;
-import de.monticore.grammar.grammar._ast.ASTASTRule;
-import de.monticore.grammar.grammar._ast.ASTAlt;
-import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
-import de.monticore.grammar.grammar._ast.ASTBlock;
-import de.monticore.grammar.grammar._ast.ASTConstantsGrammar;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._ast.ASTNonTerminal;
-import de.monticore.grammar.grammar._ast.ASTNonTerminalSeparator;
-import de.monticore.grammar.grammar._ast.ASTProd;
+import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.monticore.utils.ASTNodes;
 import de.monticore.utils.ASTTraverser;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.*;
+import java.util.Map.Entry;
+
+import static de.monticore.grammar.Multiplicity.multiplicityByDuplicates;
+import static de.monticore.grammar.Multiplicity.multiplicityOfAttributeInAST;
 
 /**
  * Static facade for the transformation of MC AST.
@@ -122,11 +110,11 @@ public class GrammarTransformer {
         .filter(attributeInAST -> multiplicityOfAttributeInAST(attributeInAST) == Multiplicity.LIST)
         .forEach(
             attributeInAST -> {
-              String typeName = StringTransformations.uncapitalize(Names.getSimpleName(attributeInAST.getGenericType().getNameList()));
+              String typeName = StringTransformations.uncapitalize(attributeInAST.getMCType().getBaseName());
               
               attributeInAST.setName(attributeInAST.getNameOpt().orElse(typeName)+ TransformationHelper.LIST_SUFFIX);
               Log.debug("Change the name of ast-rule " + astRule.getType()
-                  + " list-attribute: " + attributeInAST.getGenericType(),
+                  + " list-attribute: " + attributeInAST.getMCType(),
                   GrammarTransformer.class.getName());
             });
   }

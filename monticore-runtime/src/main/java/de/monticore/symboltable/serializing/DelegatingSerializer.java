@@ -39,7 +39,7 @@ public class DelegatingSerializer<T> implements ISerialization<Object> {
   public Object deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
       throws JsonParseException {
     JsonObject jsonObject = json.getAsJsonObject();
-    String kind = jsonObject.get("class").getAsString(); //TODO: Replace by constant CLASS 5.0.3 has been released
+    String kind = jsonObject.get(KIND).getAsString(); //TODO: Replace by constant CLASS 5.0.3 has been released
     for (ISerialization<?> s : serializers) {
       if (kind.equals(s.getSerializedClass().getName())) {
         return context.deserialize(json, s.getSerializedClass());
