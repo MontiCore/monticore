@@ -23,6 +23,7 @@ import de.monticore.symboltable.ScopeSpanningSymbol;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
 
+@Deprecated
 public class SymbolTableSerializationHelper {
   
   /**
@@ -48,11 +49,17 @@ public class SymbolTableSerializationHelper {
    * @return
    */
   public static Collection<Scope> filterRelevantSubScopes(MutableScope src) {
-     return src.getSubScopes()
-     .stream()
-     .filter(s -> s.exportsSymbols())
-     .filter(s -> SymbolTableSerializationHelper.getLocalSymbols(s).size() > 0)
-     .collect(Collectors.toList());
+    return src.getSubScopes()
+        .stream()
+        .filter(s -> s.exportsSymbols())
+        .filter(s -> containsSymbolsInTransitiveSubScopes(s))
+        .collect(Collectors.toList());
+  }
+  
+  protected static boolean containsSymbolsInTransitiveSubScopes(Scope s) {
+//    boolean containsSymbolsInTransitiveSubsScopes = true;
+    //TODO@AB: Tiefensuche durch Scopes implementieren
+    return s.getSymbolsSize()>0;
   }
   
   /**
@@ -89,8 +96,8 @@ public class SymbolTableSerializationHelper {
   }
   
   public static String getClassName(JsonObject json) {
-    if (json.has(ISerialization.CLASS)) {
-      String name = json.get(ISerialization.CLASS).getAsString();
+    if (json.has(ISerialization.KIND)) {
+      String name = json.get(ISerialization.KIND).getAsString();
       return name;
     }
     else {
@@ -140,7 +147,7 @@ public class SymbolTableSerializationHelper {
     if (src.isSpannedBySymbol()) {
       ScopeSpanningSymbol spanningSymbol = src.getSpanningSymbol().get();
       JsonObject jsonSpanningSymbol = new JsonObject();
-      jsonSpanningSymbol.addProperty(ISerialization.CLASS, spanningSymbol.getKind().getName());
+      jsonSpanningSymbol.addProperty(ISerialization.KIND, spanningSymbol.getKind().getName());
       jsonSpanningSymbol.addProperty(ISerialization.NAME, spanningSymbol.getName());
       json.add(ISerialization.SCOPESPANNING_SYMBOL, jsonSpanningSymbol);
     }
@@ -160,7 +167,7 @@ public class SymbolTableSerializationHelper {
       JsonObject asJsonObject = jsonSubScope.get(ISerialization.SCOPESPANNING_SYMBOL)
           .getAsJsonObject();
       String spanningSymbolName = asJsonObject.get(ISerialization.NAME).getAsString();
-      String spanningSymbolKind = asJsonObject.get(ISerialization.CLASS).getAsString();
+      String spanningSymbolKind = asJsonObject.get(ISerialization.KIND).getAsString();
       
       Collection<Symbol> allLocalSymbols = result.getLocalSymbols().get(spanningSymbolName);
       List<Symbol> symbolsOfCorrectKind = allLocalSymbols.stream()

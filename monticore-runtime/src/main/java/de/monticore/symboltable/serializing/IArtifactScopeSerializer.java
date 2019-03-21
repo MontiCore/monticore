@@ -15,6 +15,7 @@ import java.util.Optional;
  * abstracts from a concrete mechanism to (de)serialize {@link ArtifactScope} instances.
  *
  */
+@Deprecated
 public interface IArtifactScopeSerializer {
   
   public static final String SYMBOL_STORE_LOCATION = "target/generated-sources/monticore/symbols";
