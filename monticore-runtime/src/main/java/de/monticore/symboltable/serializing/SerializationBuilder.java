@@ -18,6 +18,7 @@ import com.google.gson.JsonSerializationContext;
  * @version $Revision$, $Date$
  * @since TODO: add version number
  */
+@Deprecated 
 public class SerializationBuilder {
   
   protected JsonSerializationContext context;
