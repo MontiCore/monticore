@@ -42,7 +42,7 @@ public interface ModelingLanguage {
    */
   // TODO PN change to mandatory
   Optional<? extends SymbolTableCreator> getSymbolTableCreator
-  (ResolvingConfiguration resolvingConfiguration, MutableScope enclosingScope);
+  (ResolvingConfiguration resolvingConfiguration, Scope enclosingScope);
 
   default Optional<? extends IArtifactScopeSerializer> getSymbolTableDeserializer() {
     return Optional.empty();

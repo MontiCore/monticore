@@ -44,7 +44,7 @@ public class ReferencesTest {
     resolvingConfiguration.addDefaultFilter(CommonResolvingFilter.create(CommonJTypeSymbol.KIND));
     resolvingConfiguration.addDefaultFilter(CommonResolvingFilter.create(PropertySymbol.KIND));
 
-    final MutableScope globalScope = new GlobalScope(new ModelPath(), new ArrayList<>(), resolvingConfiguration);
+    final Scope globalScope = new GlobalScope(new ModelPath(), new ArrayList<>(), resolvingConfiguration);
 
     globalScope.add(c);
     globalScope.add(d);

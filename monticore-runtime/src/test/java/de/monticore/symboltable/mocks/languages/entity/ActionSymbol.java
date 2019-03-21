@@ -2,7 +2,7 @@
 
 package de.monticore.symboltable.mocks.languages.entity;
 
-import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.types.CommonJMethodSymbol;
 
 import java.util.Optional;
@@ -16,7 +16,7 @@ public class ActionSymbol extends CommonJMethodSymbol<EntitySymbol, EntitySymbol
   }
 
   @Override
-  protected MutableScope createSpannedScope() {
+  protected Scope createSpannedScope() {
     return new ActionScope(this);
   }
 

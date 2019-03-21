@@ -4,7 +4,7 @@ package de.monticore.symboltable.mocks.languages.scandentity;
 
 import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.symboltable.ArtifactScope;
-import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.mocks.languages.entity.asts.ASTEntityCompilationUnit;
@@ -18,7 +18,7 @@ public class EntityEmbeddingScModelLoader extends ModelingLanguageModelLoader<AS
 
   @Override
   protected void createSymbolTableFromAST(final ASTEntityCompilationUnit ast, final String modelName,
-      final MutableScope enclosingScope, final ResolvingConfiguration resolvingConfiguration) {
+      final Scope enclosingScope, final ResolvingConfiguration resolvingConfiguration) {
     final CompositeScAndEntitySymbolTableCreator symbolTableCreator = getModelingLanguage().getSymbolTableCreator
         (resolvingConfiguration, enclosingScope).orElse(null);
 

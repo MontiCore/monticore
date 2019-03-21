@@ -2,18 +2,9 @@
 
 package de.monticore.symboltable;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import de.monticore.symboltable.mocks.languages.JTypeSymbolMock;
 import de.monticore.symboltable.mocks.languages.entity.ActionSymbol;
 import de.monticore.symboltable.mocks.languages.entity.EntitySymbol;
-import de.monticore.symboltable.mocks.languages.entity.PropertyPredicate;
 import de.monticore.symboltable.mocks.languages.entity.PropertySymbol;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingFilter;
@@ -23,9 +14,14 @@ import de.monticore.symboltable.types.references.JTypeReference;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import static org.junit.Assert.*;
+
 public class SymbolTableTest {
 
-  private MutableScope topScope;
+  private Scope topScope;
 
   private JTypeReference<JTypeSymbol> intReference;
   private JTypeReference<JTypeSymbol> stringReference;
@@ -73,7 +69,7 @@ public class SymbolTableTest {
     
     Set<ResolvingFilter<? extends Symbol>> resolvingFilters = new LinkedHashSet<>();
     resolvingFilters.add(CommonResolvingFilter.create(PropertySymbol.KIND));
-    ((MutableScope)method.getSpannedScope()).setResolvingFilters(resolvingFilters);
+    ((Scope)method.getSpannedScope()).setResolvingFilters(resolvingFilters);
     
     
     assertSame(topScope, method.getEnclosingScope());
@@ -120,7 +116,7 @@ public class SymbolTableTest {
     
     Set<ResolvingFilter<? extends Symbol>> resolvingFilters = new LinkedHashSet<>();
     resolvingFilters.add(CommonResolvingFilter.create(PropertySymbol.KIND));
-    ((MutableScope)method.getSpannedScope()).setResolvingFilters(resolvingFilters);
+    ((Scope)method.getSpannedScope()).setResolvingFilters(resolvingFilters);
     
     PropertySymbol globalVariable1 = new PropertySymbol("var1", stringReference);
     topScope.add(globalVariable1);
@@ -150,7 +146,7 @@ public class SymbolTableTest {
     resolvingFilters.add(CommonResolvingFilter.create(ActionSymbol.KIND));
     
     EntitySymbol clazz = new EntitySymbol("C");
-    ((MutableScope)clazz.getSpannedScope()).setResolvingFilters(resolvingFilters);
+    ((Scope)clazz.getSpannedScope()).setResolvingFilters(resolvingFilters);
     
     PropertySymbol i = new PropertySymbol("i", intReference);
     clazz.addProperty(i);

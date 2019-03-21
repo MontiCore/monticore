@@ -2,11 +2,10 @@
 
 package de.monticore.symboltable.mocks.languages.entity;
 
+import de.monticore.symboltable.types.CommonJTypeSymbol;
+
 import java.util.Collection;
 import java.util.Optional;
-
-import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.types.CommonJTypeSymbol;
 
 public class EntitySymbol extends CommonJTypeSymbol<EntitySymbol, PropertySymbol, ActionSymbol, EntitySymbolReference> {
   

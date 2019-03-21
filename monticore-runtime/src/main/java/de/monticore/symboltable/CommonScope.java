@@ -30,7 +30,7 @@ import static java.util.Collections.emptySet;
 import static java.util.Optional.*;
 import static java.util.stream.Collectors.toSet;
 
-public class CommonScope implements MutableScope {
+public class CommonScope implements Scope {
 
   private final Map<String, Collection<Symbol>> symbols = new LinkedHashMap<>();
   private final List<Scope> subScopes = new ArrayList<>();

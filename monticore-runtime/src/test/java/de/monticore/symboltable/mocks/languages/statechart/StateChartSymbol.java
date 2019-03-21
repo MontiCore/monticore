@@ -2,10 +2,10 @@
 
 package de.monticore.symboltable.mocks.languages.statechart;
 
-import java.util.Optional;
-
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
-import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Scope;
+
+import java.util.Optional;
 
 public class StateChartSymbol extends CommonScopeSpanningSymbol {
 
@@ -19,7 +19,7 @@ public class StateChartSymbol extends CommonScopeSpanningSymbol {
   }
 
   @Override
-  protected MutableScope createSpannedScope() {
+  protected Scope createSpannedScope() {
     return new StateChartScope(this);
   }
 

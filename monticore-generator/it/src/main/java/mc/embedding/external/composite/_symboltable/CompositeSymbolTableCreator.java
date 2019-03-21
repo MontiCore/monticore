@@ -3,7 +3,7 @@
 package mc.embedding.external.composite._symboltable;
 
 import de.monticore.symboltable.CommonSymbolTableCreator;
-import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
@@ -24,7 +24,7 @@ public class CompositeSymbolTableCreator extends CommonSymbolTableCreator implem
   private CompositeVisitor realThis = this;
 
   public CompositeSymbolTableCreator(final ResolvingConfiguration resolverConfig,
-      final MutableScope enclosingScope) {
+      final Scope enclosingScope) {
     super(resolverConfig, enclosingScope);
 
     this.hostSymbolTableCreator = new HostSymbolTableCreator(resolverConfig, scopeStack);
@@ -37,7 +37,7 @@ public class CompositeSymbolTableCreator extends CommonSymbolTableCreator implem
   }
 
   public CompositeSymbolTableCreator(final ResolvingConfiguration resolverConfig,
-      final Deque<MutableScope> scopeStack) {
+      final Deque<Scope> scopeStack) {
     super(resolverConfig, scopeStack);
 
     this.hostSymbolTableCreator = new HostSymbolTableCreator(resolverConfig, scopeStack);
@@ -58,7 +58,7 @@ public class CompositeSymbolTableCreator extends CommonSymbolTableCreator implem
   }
 
   @Override
-  public MutableScope getFirstCreatedScope() {
+  public Scope getFirstCreatedScope() {
     return hostSymbolTableCreator.getFirstCreatedScope();
   }
 

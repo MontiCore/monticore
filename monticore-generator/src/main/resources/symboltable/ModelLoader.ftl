@@ -13,7 +13,7 @@ ${defineHookPoint("JavaCopyright")}
 <#-- set package -->
 package ${package};
 
-import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ResolvingConfiguration;
 
 <#if !skipSTGen>
@@ -30,7 +30,7 @@ public class ${className} extends de.monticore.modelloader.ModelingLanguageModel
 
   @Override
   protected void createSymbolTableFromAST(final ${topAstName} ast, final String modelName,
-    final MutableScope enclosingScope, final ResolvingConfiguration resolvingConfiguration) {
+    final Scope enclosingScope, final ResolvingConfiguration resolvingConfiguration) {
     <#if !skipSTGen>
     final ${grammarName}SymbolTableCreator symbolTableCreator =
             getModelingLanguage().getSymbolTableCreator(resolvingConfiguration, enclosingScope).orElse(null);

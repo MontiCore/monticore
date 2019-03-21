@@ -41,7 +41,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
 
   public MontiCoreGrammarSymbolTableCreator(
           ResolvingConfiguration resolvingConfig,
-          MutableScope enclosingScope) {
+          Scope enclosingScope) {
     super(resolvingConfig, enclosingScope);
   }
 

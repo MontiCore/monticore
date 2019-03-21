@@ -2,36 +2,21 @@
 
 package de.monticore.symboltable;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
 import de.monticore.symboltable.mocks.languages.entity.ActionSymbol;
 import de.monticore.symboltable.mocks.languages.entity.EntitySymbol;
-import de.monticore.symboltable.mocks.languages.scandentity.Action2StateAdapter;
-import de.monticore.symboltable.mocks.languages.scandentity.Action2StateTransitiveResolvingFilter;
-import de.monticore.symboltable.mocks.languages.scandentity.Entity2ScAdapter;
-import de.monticore.symboltable.mocks.languages.scandentity.Entity2ScTransitiveResolvingFilter;
-import de.monticore.symboltable.mocks.languages.scandentity.Entity2StateAdapter;
-import de.monticore.symboltable.mocks.languages.scandentity.Entity2StateTransitiveResolvingFilter;
-import de.monticore.symboltable.mocks.languages.scandentity.Sc2ActionAdapter;
-import de.monticore.symboltable.mocks.languages.scandentity.Sc2ActionTransitiveResolvingFilter;
-import de.monticore.symboltable.mocks.languages.scandentity.Sc2EntityAdapter;
-import de.monticore.symboltable.mocks.languages.scandentity.Sc2EntityTransitiveResolvingFilter;
-import de.monticore.symboltable.mocks.languages.scandentity.State2EntityTransitiveResolvingFilter;
+import de.monticore.symboltable.mocks.languages.scandentity.*;
 import de.monticore.symboltable.mocks.languages.statechart.StateChartSymbol;
 import de.monticore.symboltable.mocks.languages.statechart.StateSymbol;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
-import org.junit.Ignore;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class AdaptedResolvingTest {
 
   @Test
   public void testAdaptedResolvingInSameScope() {
-    final MutableScope scope = new CommonScope(true);
+    final Scope scope = new CommonScope(true);
 
     final EntitySymbol entity = new EntitySymbol("Entity");
     final StateChartSymbol sc = new StateChartSymbol("Sc");
@@ -69,8 +54,8 @@ public class AdaptedResolvingTest {
   
   @Test
   public void testAdaptedResolvingInDifferentScope() {
-    final MutableScope parentScope = new CommonScope(true);
-    final MutableScope subScope = new CommonScope(true);
+    final Scope parentScope = new CommonScope(true);
+    final Scope subScope = new CommonScope(true);
     parentScope.addSubScope(subScope);
 
     final EntitySymbol entity = new EntitySymbol("Entity");
@@ -112,7 +97,7 @@ public class AdaptedResolvingTest {
 
   @Test
   public void testTransitiveAdaptedResolvingInSameScope() {
-    final MutableScope scope = new CommonScope(true);
+    final Scope scope = new CommonScope(true);
 
     final EntitySymbol entity = new EntitySymbol("Entity");
     final StateChartSymbol sc = new StateChartSymbol("Sc");
@@ -145,7 +130,7 @@ public class AdaptedResolvingTest {
   }
   @Test
   public void testCircularAdaptedResolvingDependencies() {
-    final MutableScope scope = new CommonScope(true);
+    final Scope scope = new CommonScope(true);
 
     final EntitySymbol entity = new EntitySymbol("Entity");
     final StateChartSymbol sc = new StateChartSymbol("Sc");
@@ -180,7 +165,7 @@ public class AdaptedResolvingTest {
  
   @Test
   public void testTransitiveCircularAdaptedResolvingDependencies() {
-    final MutableScope scope = new CommonScope(true);
+    final Scope scope = new CommonScope(true);
 
     final EntitySymbol entity = new EntitySymbol("Entity");
 
