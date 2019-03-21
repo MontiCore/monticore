@@ -27,7 +27,7 @@ public class MCGrammarParserTest {
   
   @BeforeClass
   public static void setup() {
-    LogStub.init();
+    Log.init();
     Log.enableFailQuick(false);
   }
 

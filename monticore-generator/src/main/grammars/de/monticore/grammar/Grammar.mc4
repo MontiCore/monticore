@@ -3,7 +3,7 @@ package de.monticore.grammar;
 
 /** The grammar describes the MontiCore grammar in its own format
 */
-component grammar Grammar extends de.monticore.literals.Literals {
+component grammar Grammar extends de.monticore.MCBasicLiterals, de.monticore.types.MCSimpleGenericTypes {
 
   /** Used for embedding actions */
   external Action;
@@ -61,8 +61,6 @@ component grammar Grammar extends de.monticore.literals.Literals {
            StartRule
          )*
       "}" ;
-
-  MCImportStatement = "import" import:(Name& || ".")+ ("." star:["*"])? ";" ;
 
   // One OptionBlock, one StartRule, one ScopeRule only
   astrule MCGrammar =
@@ -182,10 +180,10 @@ component grammar Grammar extends de.monticore.literals.Literals {
   /** A ExternalProduction represents a hole in the grammar where another production
   can be plugged in
   @attribute name Name of the hole
-  @attribute genericType External type used for this hole rule
+  @attribute MCType External type used for this hole rule
   */
   ExternalProd implements Prod =
-    DeprecatedAnnotation? "external" SymbolDefinition* Name GenericType? ";";
+    DeprecatedAnnotation? "external" SymbolDefinition* Name MCType? ";";
 
 
   /** An ASTInterfaceProd represents an explicit definition for an interface production
@@ -200,7 +198,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
     (
       "extends" superInterfaceRule:(RuleReference || "," )+
     |
-      "astextends" aSTSuperInterface:(GenericType || ",")+
+      "astextends" aSTSuperInterface:(MCType || ",")+
     )*
    ("=" alt:(Alt || "|")+ )? ";";
 
@@ -219,9 +217,9 @@ component grammar Grammar extends de.monticore.literals.Literals {
     |
       "implements" superInterfaceRule:(RuleReference || ",")+
     |
-      "astextends" aSTSuperClass:(GenericType || ",")+
+      "astextends" aSTSuperClass:(MCType || ",")+
     |
-      "astimplements" aSTSuperInterface:(GenericType || ",")+
+      "astimplements" aSTSuperInterface:(MCType || ",")+
     )* 
     ("=" alt:(Alt || "|")+ )? ";";
 
@@ -242,9 +240,9 @@ component grammar Grammar extends de.monticore.literals.Literals {
     |
        "implements" superInterfaceRule:(RuleReference || ",")+
     |
-       "astextends" aSTSuperClass:(GenericType || ",")+
+       "astextends" aSTSuperClass:(MCType || ",")+
     |
-       "astimplements" aSTSuperInterface:(GenericType || ",")+
+       "astimplements" aSTSuperInterface:(MCType || ",")+
     )*
 
     ("{" Action "}")?    // Statements
@@ -263,10 +261,10 @@ component grammar Grammar extends de.monticore.literals.Literals {
    (
      Unbounded:["*"]
    |
-     "min" "=" min:Num_Int
-     ("max" "=" ( max:Num_Int | max:"*"))?
+     "min" "=" min:Digits
+     ("max" "=" ( max:Digits | max:"*"))?
    |
-     "max" "=" ( max:Num_Int | max:"*")
+     "max" "=" ( max:Digits | max:"*")
    );
 
 
@@ -274,7 +272,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
   /** A RuleReference refers to another production
   */
   RuleReference  =
-    SemanticpredicateOrAction? Name ("<"prio:Num_Int">")? ;
+    SemanticpredicateOrAction? Name ("<"prio:Digits">")? ;
 
   astrule RuleReference =
     method public String getTypeName() {
@@ -426,9 +424,9 @@ component grammar Grammar extends de.monticore.literals.Literals {
   ASTRule =
      "astrule" type:Name
     (
-      "astextends" aSTSuperClass:(GenericType || ",")+
+      "astextends" aSTSuperClass:(MCType || ",")+
     |
-      "astimplements" aSTSuperInterface:(GenericType || ",")+
+      "astimplements" aSTSuperInterface:(MCType || ",")+
     )*
     (
       "=" ( Method | AdditionalAttribute )*
@@ -452,9 +450,9 @@ component grammar Grammar extends de.monticore.literals.Literals {
       (["public"] | ["private"] | ["protected"])?
       (["final"])?
       (["static"])?
-      returnType:GenericType Name
+      MCReturnType Name
       "(" (MethodParameter || ",")* ")"
-      ("throws" exception:(GenericType || ",")+)?
+      ("throws" exception:(MCType || ",")+)?
       "{" body:Action "}" ; // Statements
 
 
@@ -463,7 +461,7 @@ component grammar Grammar extends de.monticore.literals.Literals {
   @attribute name Name of the parameter
   */
   MethodParameter =
-    type:GenericType Name;
+    type:MCType Name;
 
 
   /** An attribute to be added to a certain ASTClass
@@ -473,25 +471,9 @@ component grammar Grammar extends de.monticore.literals.Literals {
   */
   AdditionalAttribute =
     (Name  ":")?
-    GenericType
+    MCType
     Card?;
  
- 
-  /**
-  A GenericType represents an generic java type
-  @attribute name List containing the name of the type
-  @attribute genericType List of all type parameters
-  @attribute dimension Array dimension of the type
-  */
-  GenericType  =
-    (Name& || ".")+
-    ("<" (GenericType || ",")+  ">")?
-    {_aNode.setDimension(0);} ("[" "]"
-      {_aNode.setDimension(_aNode.getDimension()+1);} )*;
-
-  astrule GenericType =
-    Dimension:int
-  ;
 
   // ------------------------------------------------------------------------------
   // Lexer
@@ -557,9 +539,9 @@ component grammar Grammar extends de.monticore.literals.Literals {
   SymbolRule =
      "symbolrule"  type:Name
     (
-      "extends" superClass:(GenericType || ",")+
+      "extends" superClass:(MCType || ",")+
     |
-      "implements" superInterface:(GenericType || ",")+
+      "implements" superInterface:(MCType || ",")+
     )*
     (
       "=" ( Method | AdditionalAttribute )*
@@ -567,9 +549,9 @@ component grammar Grammar extends de.monticore.literals.Literals {
     
   ScopeRule =
   	"scoperule" (
-      "extends" superClass:(GenericType || ",")+
+      "extends" superClass:(MCType || ",")+
     |
-      "implements" superInterface:(GenericType || ",")+
+      "implements" superInterface:(MCType || ",")+
     )*
     (
       "=" ( Method | AdditionalAttribute )*

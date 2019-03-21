@@ -2,39 +2,18 @@
 
 package de.monticore;
 
-import static de.monticore.generating.templateengine.reporting.commons.Layouter.nodeName;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.grammar.LexNamer;
-import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
-import de.monticore.grammar.grammar._ast.ASTAntlrOption;
-import de.monticore.grammar.grammar._ast.ASTConcept;
-import de.monticore.grammar.grammar._ast.ASTConstantGroup;
-import de.monticore.grammar.grammar._ast.ASTFollowOption;
-import de.monticore.grammar.grammar._ast.ASTGenericType;
-import de.monticore.grammar.grammar._ast.ASTGrammarReference;
-import de.monticore.grammar.grammar._ast.ASTITerminal;
-import de.monticore.grammar.grammar._ast.ASTLexNonTerminal;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._ast.ASTMethod;
-import de.monticore.grammar.grammar._ast.ASTMethodParameter;
-import de.monticore.grammar.grammar._ast.ASTNonTerminal;
-import de.monticore.grammar.grammar._ast.ASTNonTerminalSeparator;
-import de.monticore.grammar.grammar._ast.ASTProd;
-import de.monticore.grammar.grammar._ast.ASTRuleReference;
-import de.monticore.literals.literals._ast.ASTBooleanLiteral;
-import de.monticore.literals.literals._ast.ASTCharLiteral;
-import de.monticore.literals.literals._ast.ASTDoubleLiteral;
-import de.monticore.literals.literals._ast.ASTFloatLiteral;
-import de.monticore.literals.literals._ast.ASTIntLiteral;
-import de.monticore.literals.literals._ast.ASTLongLiteral;
-import de.monticore.literals.literals._ast.ASTNullLiteral;
-import de.monticore.literals.literals._ast.ASTStringLiteral;
+import de.monticore.grammar.grammar._ast.*;
+import de.monticore.literals.literals._ast.*;
 import de.monticore.types.TypesNodeIdentHelper;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.types._ast.ASTQualifiedName;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.types.types._ast.ASTTypeVariableDeclaration;
 import de.se_rwth.commons.Names;
+
+import static de.monticore.generating.templateengine.reporting.commons.Layouter.nodeName;
 
 public class MontiCoreNodeIdentifierHelper extends TypesNodeIdentHelper {
   
@@ -77,7 +56,7 @@ public class MontiCoreNodeIdentifierHelper extends TypesNodeIdentHelper {
     return format(ast.getProdName(), nodeName(ast));
   }
   
-  public String getIdent(ASTGenericType ast) {
+  public String getIdent(ASTMCBasicGenericType ast) {
     return format(Names.getQualifiedName(ast.getNameList()), nodeName(ast));
   }
   
@@ -188,8 +167,8 @@ public class MontiCoreNodeIdentifierHelper extends TypesNodeIdentHelper {
     else if (ast instanceof ASTFollowOption) {
       return getIdent((ASTFollowOption) ast);
     }
-    else if (ast instanceof ASTGenericType) {
-      return getIdent((ASTGenericType) ast);
+    else if (ast instanceof ASTMCBasicGenericType) {
+      return getIdent((ASTMCBasicGenericType) ast);
     }
     else if (ast instanceof ASTGrammarReference) {
       return getIdent((ASTGrammarReference) ast);

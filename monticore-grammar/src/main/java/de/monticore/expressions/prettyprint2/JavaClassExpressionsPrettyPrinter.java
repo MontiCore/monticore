@@ -8,13 +8,14 @@ import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressio
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 
-public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVisitor {
+public class JavaClassExpressionsPrettyPrinter extends CommonExpressionsPrettyPrinter implements JavaClassExpressionsVisitor {
   
  protected JavaClassExpressionsVisitor realThis;
   
   protected IndentPrinter printer;
   
   public JavaClassExpressionsPrettyPrinter(IndentPrinter printer) {
+    super(printer);
     this.printer=printer;
     realThis = this;
 
@@ -26,7 +27,14 @@ public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVi
     getPrinter().print("super");
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
-  
+
+  @Override
+  public void handle(ASTLiteralExpression node) {
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    node.getExtLiteral().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
+  }
+
   @Override
   public void handle(ASTSuperSuffix node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
@@ -45,7 +53,7 @@ public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVi
     }
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
-  
+
   @Override
   public void handle(ASTSuperExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
@@ -102,7 +110,15 @@ public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVi
     handle(node.getPrimaryGenericInvocationExpression());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
-  
+
+  @Override
+  public void handle(ASTPrimaryGenericInvocationExpression node) {
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    node.getExtTypeArguments().accept(getRealThis());
+    node.getGenericInvocationSuffix().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
+  }
+
   @Override
   public void handle(ASTNameExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
