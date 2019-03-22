@@ -1,9 +1,9 @@
 package de.monticore.codegen.cd2java.constants;
 
 import de.monticore.codegen.cd2java.AbstractDecorator;
-import de.monticore.codegen.cd2java.factories.CDModifier;
 import de.monticore.codegen.cd2java.factories.SuperSymbolHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
@@ -14,8 +14,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC_STATIC;
+import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
+import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 public class ASTConstantsDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDClass> {
 
@@ -67,27 +67,29 @@ public class ASTConstantsDecorator extends AbstractDecorator<ASTCDCompilationUni
   }
 
   protected ASTCDAttribute getLanguageAttribute(String grammarName) {
-    return getCDAttributeFactory().createAttribute(CDModifier.PUBLIC_STATIC_FINAL, getCDTypeFactory().createTypeByDefinition("String"), LANGUAGE, "\"" + grammarName + "\"");
+    ASTCDAttribute languageAttribute = getCDAttributeFactory().createAttribute(PUBLIC_STATIC_FINAL, String.class, LANGUAGE);
+    this.replaceTemplate(VALUE, languageAttribute, new StringHookPoint("\"" + grammarName + "\""));
+    return languageAttribute;
   }
 
   protected List<ASTCDAttribute> getConstantAttribute(List<ASTCDEnumConstant> enumConstants) {
     List<ASTCDAttribute> attributeList = new ArrayList<>();
     for (int i = 0; i < enumConstants.size(); i++) {
-      attributeList.add(getCDAttributeFactory().createAttribute(CDModifier.PUBLIC_STATIC_FINAL, getCDTypeFactory().createIntType(), enumConstants.get(i).getName(), Integer.toString(i + 1)));
+      attributeList.add(getCDAttributeFactory().createAttribute(PUBLIC_STATIC_FINAL, getCDTypeFactory().createIntType(), enumConstants.get(i).getName()));
     }
     return attributeList;
   }
 
   protected ASTCDAttribute getDefaultAttribute() {
-    return getCDAttributeFactory().createAttribute(CDModifier.PUBLIC_STATIC_FINAL, getCDTypeFactory().createIntType(), DEFAULT, "0");
+    return getCDAttributeFactory().createAttribute(PUBLIC_STATIC_FINAL, getCDTypeFactory().createIntType(), DEFAULT);
   }
 
   protected ASTCDAttribute getSuperGrammarsAttribute() {
-    return getCDAttributeFactory().createAttribute(CDModifier.PUBLIC_STATIC, getCDTypeFactory().createTypeByDefinition("String[]"), SUPER_GRAMMARS);
+    return getCDAttributeFactory().createAttribute(PUBLIC_STATIC, getCDTypeFactory().createArrayType(String.class, 1), SUPER_GRAMMARS);
   }
 
   protected ASTCDConstructor getDefaultConstructor(String className, ASTCDCompilationUnit compilationUnit) {
-    ASTCDConstructor defaultConstructor = getCDConstructorFactory().createDefaultConstructor(PUBLIC.build(), className);
+    ASTCDConstructor defaultConstructor = getCDConstructorFactory().createConstructor(PUBLIC, className);
     List<CDSymbol> superSymbolList = SuperSymbolHelper.getSuperCDs(compilationUnit);
     List<String> superGrammarNames = superSymbolList.stream().map(CDSymbol::getFullName).collect(Collectors.toList());
     this.replaceTemplate(EMPTY_BODY, defaultConstructor, new TemplateHookPoint("ast_constants.ASTConstantsConstructor", superGrammarNames));

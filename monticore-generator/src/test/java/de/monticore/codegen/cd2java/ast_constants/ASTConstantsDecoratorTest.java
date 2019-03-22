@@ -56,8 +56,6 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("LANGUAGE", constantClass);
     assertDeepEquals(CDModifier.PUBLIC_STATIC_FINAL, astcdAttribute.getModifier());
     assertDeepEquals("String", astcdAttribute.getType());
-    assertTrue(astcdAttribute.isPresentValue());
-    assertEquals("\"Automaton\"", astcdAttribute.printValue());
   }
 
   @Test
@@ -65,8 +63,6 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("DEFAULT", constantClass);
     assertDeepEquals(CDModifier.PUBLIC_STATIC_FINAL, astcdAttribute.getModifier());
     assertInt(astcdAttribute.getType());
-    assertTrue(astcdAttribute.isPresentValue());
-    assertEquals("0", astcdAttribute.printValue());
   }
 
   @Test
@@ -74,8 +70,6 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("FINAL", constantClass);
     assertDeepEquals(CDModifier.PUBLIC_STATIC_FINAL, astcdAttribute.getModifier());
     assertInt(astcdAttribute.getType());
-    assertTrue(astcdAttribute.isPresentValue());
-    assertEquals("1", astcdAttribute.printValue());
   }
 
   @Test
@@ -83,8 +77,6 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("INITIAL", constantClass);
     assertDeepEquals(CDModifier.PUBLIC_STATIC_FINAL, astcdAttribute.getModifier());
     assertInt(astcdAttribute.getType());
-    assertTrue(astcdAttribute.isPresentValue());
-    assertEquals("2", astcdAttribute.printValue());
   }
 
   @Test

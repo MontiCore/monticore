@@ -53,24 +53,6 @@ public class CDAttributeFactory {
         .build();
   }
 
-  public ASTCDAttribute createAttribute(final ASTModifier modifier, final ASTType type, final String name, final String value) {
-    Optional<ASTValue> astValue ;
-    try {
-      astValue = parser.parseValue(new StringReader(value));
-    } catch (IOException e) {
-      throw new CDFactoryException(CDFactoryErrorCode.COULD_NOT_CREATE_ATTRIBUTE_VALUE, value, e);
-    }
-    if (!astValue.isPresent()) {
-      throw new CDFactoryException(CDFactoryErrorCode.COULD_NOT_CREATE_ATTRIBUTE_VALUE, value);
-    }
-    return CD4AnalysisMill.cDAttributeBuilder()
-        .setModifier(modifier)
-        .setType(type.deepClone())
-        .setName(name)
-        .setValue(astValue.get())
-        .build();
-  }
-
   public ASTCDAttribute createAttribute(final ASTModifier modifier, final ASTType type) {
     return createAttribute(modifier, type, StringUtils.uncapitalize(TypesHelper.printType(type)));
   }
@@ -114,9 +96,5 @@ public class CDAttributeFactory {
 
   public ASTCDAttribute createAttribute(final CDModifier modifier, final Class<?> type) {
     return createAttribute(modifier.build(), type);
-  }
-
-  public ASTCDAttribute createAttribute(final CDModifier modifier, final ASTType type, final String name, final String value) {
-    return createAttribute(modifier.build(), type, name, value);
   }
 }
