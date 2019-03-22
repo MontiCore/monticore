@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("astType", "symbolTablePackage", "cd", "existsST")}
+${tc.signature("astType", "symbolTablePackage", "cd", "existsST", "superScopeVisitors")}
 <#assign genHelper = glex.getGlobalVar("visitorHelper")>
 
 <#-- Copyright -->
@@ -33,7 +33,7 @@ import java.util.Map.Entry;
  *   <li><b>Handling of nodes</b>: You may override the {@code handle(node)} methods, if you want to change its default implementation (depth-first iteration): {@code visit(node); traverse(node); endVisit(node);}<br><br></li>
  * </ul>
  */
-public interface ${genHelper.getScopeVisitorType()} extends ${genHelper.getSymbolVisitorType()} { 
+public interface ${genHelper.getScopeVisitorType()} extends ${genHelper.getSymbolVisitorType()} <#list superScopeVisitors as superScopeVisitor>, ${superScopeVisitor}</#list> { 
 
   /**
    * Sets the visitor to use for handling and traversing nodes.
@@ -87,6 +87,16 @@ public interface ${genHelper.getScopeVisitorType()} extends ${genHelper.getSymbo
   default public void endVisit(Scope scope) {
   }
   
+  @Override
+  default void visit(Symbol symbol) {
+    ${genHelper.getSymbolVisitorType()}.super.visit(symbol);
+  }
+    
+  @Override
+  default void endVisit(Symbol symbol) {
+    ${genHelper.getSymbolVisitorType()}.super.endVisit(symbol);
+  }
+
   /* ------------------------------------------------------------------------*/
   
   
@@ -106,9 +116,17 @@ public interface ${genHelper.getScopeVisitorType()} extends ${genHelper.getSymbo
   
     default public void traverse(${scopeType} scope) {
       // traverse symbols within the scope
-      Iterator<Entry<String, Collection<Symbol>>> iter_symbols = scope.getLocalSymbols().entrySet().iterator();
-      while (iter_symbols.hasNext()) {
-        iter_symbols.next().getValue().forEach(s -> ((${"ICommon" + stHelper.getGrammarSymbol().getName() + "Symbol"})s).accept(getRealThis()));
+      Iterator<Entry<String, Collection<Symbol>>> iter_symbolEntries = scope.getLocalSymbols().entrySet().iterator();
+      while (iter_symbolEntries.hasNext()) {
+        Iterator<Symbol> iter_symbols = iter_symbolEntries.next().getValue().iterator();
+        while (iter_symbols.hasNext()) {
+          Symbol symbol = iter_symbols.next();
+          <#list stHelper.getAllQualifiedSymbols() as qualifiedSymbol>
+          if (symbol instanceof ${qualifiedSymbol}) {
+            ((${qualifiedSymbol}) symbol).accept(getRealThis());
+          }
+          </#list>
+        }
       }
       
       // traverse sub-scopes
