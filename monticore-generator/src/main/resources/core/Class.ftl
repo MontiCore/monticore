@@ -1,4 +1,5 @@
 ${tc.signature("cdClass")}
+${tc.include("core.Package")}
 
 ${tc.include("core.Imports")}
 

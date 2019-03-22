@@ -4,11 +4,16 @@ import de.monticore.codegen.cd2java.ast_new.*;
 import de.monticore.codegen.cd2java.builder.ASTBuilderDecorator;
 import de.monticore.codegen.cd2java.factory.NodeFactoryDecorator;
 import de.monticore.codegen.cd2java.mill.MillDecorator;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static de.monticore.codegen.cd2java.CoreTemplates.PACKAGE;
+import static de.monticore.codegen.cd2java.CoreTemplates.createPackageHookPoint;
 
 public class ASTCDDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
 
@@ -22,8 +27,10 @@ public class ASTCDDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTC
 
   private final MillDecorator millDecorator;
 
-  public ASTCDDecorator(final ASTFullDecorator astFullDecorator, final ASTBuilderDecorator astBuilderDecorator,
+  public ASTCDDecorator(final GlobalExtensionManagement glex,
+      final ASTFullDecorator astFullDecorator, final ASTBuilderDecorator astBuilderDecorator,
       final NodeFactoryDecorator nodeFactoryDecorator, final MillDecorator millDecorator) {
+    super(glex);
     this.astFullDecorator = astFullDecorator;
     this.astBuilderDecorator = astBuilderDecorator;
     this.nodeFactoryDecorator = nodeFactoryDecorator;
@@ -42,6 +49,10 @@ public class ASTCDDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTC
         .addCDClass(createNodeFactoryClass(ast))
         .addCDClass(createMillClass(ast))
         .build();
+
+    for (ASTCDClass clazz : astCD.getCDClassList()) {
+      this.replaceTemplate(PACKAGE, clazz, createPackageHookPoint(astPackage));
+    }
 
     return CD4AnalysisMill.cDCompilationUnitBuilder()
         .setPackageList(astPackage)

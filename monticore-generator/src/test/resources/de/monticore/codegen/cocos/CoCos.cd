@@ -1,0 +1,12 @@
+package de.monticore.codegen.cocos;
+
+import de.monticore.codegen.cocos.Super;
+
+classdiagram CoCos {
+
+    class A {
+    }
+
+    interface I {
+    }
+}

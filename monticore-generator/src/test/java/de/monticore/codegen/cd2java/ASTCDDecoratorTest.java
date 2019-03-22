@@ -47,7 +47,7 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
 
     MillDecorator millDecorator = new MillDecorator(glex);
 
-    ASTCDDecorator astcdDecorator = new ASTCDDecorator(fullDecorator, astBuilderDecorator, nodeFactoryDecorator, millDecorator);
+    ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, fullDecorator, astBuilderDecorator, nodeFactoryDecorator, millDecorator);
     this.ast = astcdDecorator.decorate(ast);
   }
 

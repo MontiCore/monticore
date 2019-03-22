@@ -93,6 +93,18 @@ public class CDTypeFactory {
     return createSimpleReferenceType(List.class, TypesHelper.printType(type));
   }
 
+  public ASTSimpleReferenceType createCollectionTypeOf(final Class<?> clazz) {
+    return createCollectionTypeOf(clazz.getSimpleName());
+  }
+
+  public ASTSimpleReferenceType createCollectionTypeOf(final String name) {
+    return createSimpleReferenceType(Collection.class, name);
+  }
+
+  public ASTSimpleReferenceType createCollectionTypeOf(final ASTType type) {
+    return createSimpleReferenceType(Collection.class, TypesHelper.printType(type));
+  }
+
   public ASTSimpleReferenceType createMapTypeOf(final String firstType, final String secondType) {
     return createSimpleReferenceType(Map.class, firstType, secondType);
   }
