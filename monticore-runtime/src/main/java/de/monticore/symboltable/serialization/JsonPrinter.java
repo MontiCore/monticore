@@ -78,7 +78,7 @@ public class JsonPrinter {
    * @param value The value of the Json attribute
    */
   public void attribute(String kind, Optional<?> value) {
-    if (value.isPresent()) {
+    if (null != value && value.isPresent()) {
       attribute(kind, value.get());
     }
     else if (serializeEmptyLists) {
@@ -160,14 +160,21 @@ public class JsonPrinter {
    * @param value The value of the Json attribute
    */
   public void attribute(String kind, Object value) {
-    String s = value.toString();
+    String s = value.toString().trim();
+    boolean isFramedInQuotationMarks = s.length() > 0 && s.startsWith("\"") && s.endsWith("\"");
+    boolean isSerializedObject = s.length() > 0 && s.startsWith("{") && s.endsWith("}");
     if (null != s && !"".equals(s)) {
       printCommaIfNecessary();
       printer.print("\"");
       printer.print(kind);
-      printer.print("\": \"");
+      printer.print("\":");
+      if (!isFramedInQuotationMarks && !isSerializedObject) {
+        printer.print("\"");
+      }
       printer.print(s);
-      printer.print("\"");
+      if (!isFramedInQuotationMarks && !isSerializedObject) {
+        printer.print("\"");
+      }
     }
   }
   
