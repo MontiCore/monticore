@@ -24,6 +24,10 @@ public final class CoreTemplates {
 
   public static final String EMPTY_BODY = "core.EmptyBody";
 
+  public static final String CONSTANT = "core.Constants";
+
+  public static final String ENUM = "core.Enum";
+
   private CoreTemplates() {}
 
   public static HookPoint createPackageHookPoint(final String... packageName) {

@@ -2,6 +2,7 @@ package de.monticore.codegen.cd2java.factories;
 
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,6 +42,9 @@ public class CDConstructorFactory {
         .build();
   }
 
+  public ASTCDConstructor createConstructor(final ASTModifier modifier, final String name, final ASTCDParameter... parameters) {
+    return createConstructor(modifier, name, Arrays.asList(parameters));
+  }
 
   public ASTCDConstructor createFullConstructor(final CDModifier modifier, final ASTCDClass cdClass) {
     return createFullConstructor(modifier.build(), cdClass);

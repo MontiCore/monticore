@@ -1,6 +1,6 @@
 package de.monticore.codegen.ast;
 
-import de.monticore.codegen.ast.Lexicals;
+import de.monticore.codegen.ast.Lexicals.*;
 
 classdiagram Automaton {
 
@@ -20,5 +20,10 @@ classdiagram Automaton {
       protected String from;
       protected String input;
       protected String to;
+    }
+
+    enum AutomatonLiterals{
+      FINAL,
+      INITIAL;
     }
 }
