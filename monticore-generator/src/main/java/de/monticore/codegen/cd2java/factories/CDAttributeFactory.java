@@ -6,6 +6,7 @@ import de.monticore.types.TypesHelper;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTModifier;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTValue;
 import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisMill;
 import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParser;
 import org.apache.commons.lang3.StringUtils;
@@ -49,6 +50,24 @@ public class CDAttributeFactory {
         .setModifier(modifier)
         .setType(type.deepClone())
         .setName(name)
+        .build();
+  }
+
+  public ASTCDAttribute createAttribute(final ASTModifier modifier, final ASTType type, final String name, final String value) {
+    Optional<ASTValue> astValue ;
+    try {
+      astValue = parser.parseValue(new StringReader(value));
+    } catch (IOException e) {
+      throw new CDFactoryException(CDFactoryErrorCode.COULD_NOT_CREATE_ATTRIBUTE_VALUE, value, e);
+    }
+    if (!astValue.isPresent()) {
+      throw new CDFactoryException(CDFactoryErrorCode.COULD_NOT_CREATE_ATTRIBUTE_VALUE, value);
+    }
+    return CD4AnalysisMill.cDAttributeBuilder()
+        .setModifier(modifier)
+        .setType(type.deepClone())
+        .setName(name)
+        .setValue(astValue.get())
         .build();
   }
 
@@ -97,4 +116,7 @@ public class CDAttributeFactory {
     return createAttribute(modifier.build(), type);
   }
 
+  public ASTCDAttribute createAttribute(final CDModifier modifier, final ASTType type, final String name, final String value) {
+    return createAttribute(modifier.build(), type, name, value);
+  }
 }

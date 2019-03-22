@@ -5,7 +5,7 @@ ${tc.include("core.Package")}
 public enum ${cdEnum.getName()}<#if !cdEnum.isEmptyInterfaces()> implements ${cdEnum.printInterfaces()}</#if> {
 
 <#list cdEnum.getCDEnumConstantList() as constants>
-  <#if !constants?is_first>,</#if>${tc.include("core.EmptyConstants", constants)}
+  ${tc.include("core.EmptyConstants", constants)}<#if !constants?is_last>,</#if>
 </#list>
 ;
 

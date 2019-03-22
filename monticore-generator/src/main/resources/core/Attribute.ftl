@@ -1,1 +1,1 @@
-${ast.printModifier()} ${ast.printType()} ${ast.getName()} ${tc.include("core.Value")};
+${ast.printModifier()} ${ast.printType()} ${ast.getName()} <#if ast.isPresentValue()> = ${ast.printValue()}</#if>;

@@ -30,7 +30,7 @@ public class CDConstructorFactory {
     return createConstructor(modifier, cdClass.getName(), Collections.emptyList());
   }
 
-  public ASTCDConstructor createConstructor(final ASTModifier modifier, final String name) {
+  public ASTCDConstructor createDefaultConstructor(final ASTModifier modifier, final String name) {
     return createConstructor(modifier, name, Collections.emptyList());
   }
 
