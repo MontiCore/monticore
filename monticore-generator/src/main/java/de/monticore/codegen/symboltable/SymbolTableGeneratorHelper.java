@@ -482,7 +482,6 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     Set<String> qualifiedSymbols = new LinkedHashSet<>();
     
     // add local and inherited qualified symbols
-    MCGrammarSymbol grammarSymbol = cdSymbol.getEnclosingScope().<MCGrammarSymbol> resolve(cdSymbol.getName(), MCGrammarSymbol.KIND).orElse(null);
     qualifiedSymbols.addAll(getQualifiedSymbolsFromGrammar(grammarSymbol));
     qualifiedSymbols.addAll(getQualifiedInheritedSymbols());
     return qualifiedSymbols;
