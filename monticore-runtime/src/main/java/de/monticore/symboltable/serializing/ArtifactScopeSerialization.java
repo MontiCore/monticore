@@ -26,6 +26,7 @@ import de.monticore.symboltable.Symbol;
  * @version $Revision$, $Date$
  * @since TODO: add version number
  */
+@Deprecated
 public class ArtifactScopeSerialization implements ISerialization<ArtifactScope> {
 
   

@@ -18,22 +18,22 @@ import de.monticore.generating.templateengine.reporting.commons.ReportingReposit
 import java.util.Iterator;
 
 public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visitor {
-      
+
   private ${genHelper.getCdName()}Visitor realThis = this;
-  
+
   protected IndentPrinter pp;
-  
+
   protected ReportingRepository reporting;
-  
+
   protected boolean printEmptyOptional = false;
-  
+
   protected boolean printEmptyList = false;
-    
+
   public ${genHelper.getCdName()}2OD(IndentPrinter printer, ReportingRepository reporting) {
     this.reporting = reporting;
     this.pp = printer;
   }
-    
+
   <#list cd.getTypes() as type>
     <#if type.isClass()>
       <#assign astName = genHelper.getJavaASTName(type)>
@@ -61,7 +61,7 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
         }
       <#if genHelper.isScopeClass(astName, genHelper)>
         if (node.isPresentSpanned${genHelper.getCdName()}Scope()) {
-          String scopeName = StringTransformations.uncapitalize(reporting.getScopeNameFormatted(node.getSpanned${genHelper.getCdName()}ScopeOpt().get()));
+          String scopeName = StringTransformations.uncapitalize(reporting.getScopeNameFormatted(node.getSpannedScopeOpt().get()));
           pp.println("spanningScope = " + scopeName + ";");
         } else if (printEmptyOptional) {
           pp.println("spannedScope = absent;");
@@ -156,25 +156,25 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
         </#list>
         pp.unindent();
         pp.print("}");
-     } 
+     }
 
     </#if>
-  </#list>  
-  
+  </#list>
+
   private void printAttribute(String name, String value) {
     pp.print(name);
     pp.print(" = ");
     pp.print(value);
     pp.println(";");
   }
-  
+
   private void printObject(String objName, String objType) {
     pp.print(objName);
     pp.print(":");
     pp.print(Names.getSimpleName(objType));
     pp.println(" {");
   }
-  
+
   public String printObjectDiagram(String modelName, ${genHelper.getASTNodeBaseType()} node) {
     pp.clearBuffer();
     pp.setIndentLength(2);
@@ -188,7 +188,7 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
     pp.println("}");
     return pp.getContent();
   }
-  
+
   @Override
   public void setRealThis(${genHelper.getCdName()}Visitor realThis) {
     this.realThis = realThis;
@@ -198,7 +198,7 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
   public ${genHelper.getCdName()}Visitor getRealThis() {
     return realThis;
   }
-  
+
   /**
    * @return the printEmptyOptional
    */
@@ -206,7 +206,7 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
     return this.printEmptyOptional;
   }
 
-  
+
   /**
    * @param printEmptyOptional the printEmptyOptional to set
    */
@@ -214,7 +214,7 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
     this.printEmptyOptional = printEmptyOptional;
   }
 
-  
+
   /**
    * @return the printEmptyList
    */
@@ -222,13 +222,13 @@ public class ${genHelper.getCdName()}2OD implements ${genHelper.getCdName()}Visi
     return this.printEmptyList;
   }
 
-  
+
   /**
    * @param printEmptyList the printEmptyList to set
    */
   public void setPrintEmptyList(boolean printEmptyList) {
     this.printEmptyList = printEmptyList;
   }
-  
+
 }
-  
+

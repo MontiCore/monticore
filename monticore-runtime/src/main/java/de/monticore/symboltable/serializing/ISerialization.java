@@ -19,6 +19,7 @@ import com.google.gson.JsonSerializer;
  * @since TODO: add version number
  * @param <T>
  */
+@Deprecated // IDeSer will be used instead
 public interface ISerialization<T> extends JsonSerializer<T>, JsonDeserializer<T> {
   
   public Class<T> getSerializedClass();
@@ -36,10 +37,10 @@ public interface ISerialization<T> extends JsonSerializer<T>, JsonDeserializer<T
   public static final String IS_SHADOWING_SCOPE = "isShadowingScope";
   
   public static final String NAME = "name";
-  
-  public static final String CLASS = "class";
-  
+ 
   @Deprecated // Can be removed after release 5.0.3
+  public static final String CLASS = "class";
+
   public static final String KIND = "kind";
   
   // TODO: Can be removed if ScopeSpanningSymbols are removed
@@ -52,8 +53,8 @@ public interface ISerialization<T> extends JsonSerializer<T>, JsonDeserializer<T
   }
   
   default boolean isCorrectSerializer(JsonObject json) {
-    if (json.has(ISerialization.CLASS)) {
-      String name = json.get(ISerialization.CLASS).getAsString();
+    if (json.has(ISerialization.KIND)) {
+      String name = json.get(ISerialization.KIND).getAsString();
       return getSerializedClass().getName().equals(name);
     }
     else {

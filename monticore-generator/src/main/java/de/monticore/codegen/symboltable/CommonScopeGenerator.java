@@ -87,7 +87,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
       }
     }
     
-    // list of superscopevisitorss that the scope must accept
+    // list of superscopevisitors that the scope must accept
     Set<String> superScopeVisitors = new HashSet<>();
     for (CDSymbol cdSymbol : genHelper.getAllSuperCds(genHelper.getCd())) {
       String qualifiedScopeVisitorName = genHelper.getQualifiedScopeVisitorType(cdSymbol);
