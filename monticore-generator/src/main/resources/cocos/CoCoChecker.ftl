@@ -25,15 +25,15 @@ import ${visitorPackage}.${genHelper.getInheritanceVisitorType()};
  * the language itself and checkers of (transitive) super languages
  * ({@code addChecker(...)}). Composing multiple checkers of the same (super)
  * language is possible. The composed checkers are not modified. Also it is
- * supported to mix both composing existing checkers as well as single.<br/>
+ * supported to mix both composing existing checkers as well as single.<br>
  * <b>Keep in mind</b> that context conditions are executed multiple-times if
  * added multiple times. This might be tricky when multiple composed checkers
- * hold the same context condition.<br/>
- * <br/>
- * <b>Add context conditions</b> using {@code #addCoCo(...}.<br/>
- * <br/>
- * <b>Add checkers</b> using {@code #addCoCo(...}.<br/>
- * <br/>
+ * hold the same context condition.<br>
+ * <br>
+ * <b>Add context conditions</b> using {@code #addCoCo(...}.<br>
+ * <br>
+ * <b>Add checkers</b> using {@code #addCoCo(...}.<br>
+ * <br>
  * <b>Execute all</b> registered context conditions and checkers by calling
  * {@link #checkAll(${genHelper.getASTNodeBaseType()})}.
  * 
@@ -85,8 +85,8 @@ public class ${checkerType} implements ${genHelper.getInheritanceVisitorType()} 
 
     /**
      * Registers a checker whose context conditions will be executed once the
-     * checker runs.<br/>
-     * <br/>
+     * checker runs.<br>
+     * <br>
      * Use this to compose checkers that already have cocos added. All
      * registered context conditions of all checkers are executed. By default
      * at least an empty checker is registered for super languages.

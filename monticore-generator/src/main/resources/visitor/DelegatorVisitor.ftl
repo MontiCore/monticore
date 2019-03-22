@@ -15,8 +15,8 @@ import de.se_rwth.commons.logging.Log;
 
 /**
  *  Delegator visitor for the <code>${genHelper.getCdName()}</code>
- * language.<br/>
- * <br/>
+ * language.<br>
+ * <br>
  */
 public class ${genHelper.getDelegatorVisitorType()}  implements ${genHelper.getInheritanceVisitorType()} {
 
