@@ -70,7 +70,7 @@ public class VisitorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(16, visitorInterface.sizeCDMethods());
+    assertEquals(19, visitorInterface.sizeCDMethods());
   }
 
   @Test
