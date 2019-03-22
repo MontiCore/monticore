@@ -26,15 +26,49 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
 
   private final GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
-  private ASTCDClass cocoChecker;
+  private List<ASTCDInterface> interfaces;
 
   @Before
   public void setup() {
     LogStub.init();
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "cocos", "CoCos");
-    MethodDecorator methodDecorator = new MethodDecorator(glex);
-    CoCoCheckerDecorator coCoCheckerDecorator = new CoCoCheckerDecorator(glex, methodDecorator);
-    this.cocoChecker = coCoCheckerDecorator.decorate(ast);
+    CoCoInterfaceDecorator coCoInterfaceDecorator = new CoCoInterfaceDecorator(glex);
+    this.interfaces = coCoInterfaceDecorator.decorate(ast.getCDDefinition());
+  }
+
+  @Test
+  public void testSize() {
+    assertEquals(2, interfaces.size());
+  }
+
+  @Test
+  public void testAInterface() {
+    ASTCDInterface cdInterface = interfaces.get(0);
+    assertEquals("CoCosACoCo", cdInterface.getName());
+    assertEquals(1, cdInterface.getCDMethodList().size());
+    ASTCDMethod method = cdInterface.getCDMethod(0);
+    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
+    assertVoid(method.getReturnType());
+    assertEquals("check", method.getName());
+    assertEquals(1, method.getCDParameterList().size());
+    ASTCDParameter parameter = method.getCDParameter(0);
+    assertDeepEquals("A", parameter.getType());
+    assertEquals("node", parameter.getName());
+  }
+
+  @Test
+  public void testIInterface() {
+    ASTCDInterface cdInterface = interfaces.get(1);
+    assertEquals("CoCosICoCo", cdInterface.getName());
+    assertEquals(1, cdInterface.getCDMethodList().size());
+    ASTCDMethod method = cdInterface.getCDMethod(0);
+    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
+    assertVoid(method.getReturnType());
+    assertEquals("check", method.getName());
+    assertEquals(1, method.getCDParameterList().size());
+    ASTCDParameter parameter = method.getCDParameter(0);
+    assertDeepEquals("I", parameter.getType());
+    assertEquals("node", parameter.getName());
   }
 
   @Test
@@ -42,7 +76,10 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-    StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, cocoChecker, cocoChecker);
-    System.out.println(sb.toString());
-}
+    for (ASTCDInterface i : interfaces) {
+      System.out.printf("==================== %s ====================\n", i.getName());
+      StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, i, i);
+      System.out.println(sb.toString());
+    }
+  }
 }
