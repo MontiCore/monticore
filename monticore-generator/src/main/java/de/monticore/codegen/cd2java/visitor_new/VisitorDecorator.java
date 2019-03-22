@@ -42,13 +42,13 @@ public class VisitorDecorator extends AbstractDecorator<ASTCDCompilationUnit, AS
     this.compilationUnit = input.deepClone();
     ASTCDDefinition astcdDefinition = compilationUnit.getCDDefinition();
     String visitorInterfaceName = astcdDefinition.getName() + VISITOR_SUFFIX;
-    ASTType visitoryType = this.getCDTypeFactory().createSimpleReferenceType(visitorInterfaceName);
+    ASTType visitorType = this.getCDTypeFactory().createSimpleReferenceType(visitorInterfaceName);
 
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setName(visitorInterfaceName)
         .setModifier(PUBLIC.build())
-        .addCDMethod(addGetRealThisMethods(visitoryType))
-        .addCDMethod(addSetRealThisMethods(visitoryType))
+        .addCDMethod(addGetRealThisMethods(visitorType))
+        .addCDMethod(addSetRealThisMethods(visitorType))
         .addCDMethod(addVisitASTNodeMethods())
         .addCDMethod(addEndVisitASTNodeMethods())
         .addAllCDMethods(addClassVisitorMethods(astcdDefinition.getCDClassList()))
@@ -57,14 +57,14 @@ public class VisitorDecorator extends AbstractDecorator<ASTCDCompilationUnit, AS
             .build();
   }
 
-  protected ASTCDMethod addGetRealThisMethods(ASTType visitoryType) {
-    ASTCDMethod getRealThisMethod = this.getCDMethodFactory().createMethod(PUBLIC, visitoryType, GET_REAL_THIS);
+  protected ASTCDMethod addGetRealThisMethods(ASTType visitorType) {
+    ASTCDMethod getRealThisMethod = this.getCDMethodFactory().createMethod(PUBLIC, visitorType, GET_REAL_THIS);
     this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint("return this;"));
     return getRealThisMethod;
   }
 
-  protected ASTCDMethod addSetRealThisMethods(ASTType visitoryType) {
-    ASTCDParameter visitorParameter = getCDParameterFactory().createParameter(visitoryType, "realThis");
+  protected ASTCDMethod addSetRealThisMethods(ASTType visitorType) {
+    ASTCDParameter visitorParameter = getCDParameterFactory().createParameter(visitorType, "realThis");
     ASTCDMethod getRealThisMethod = this.getCDMethodFactory().createMethod(PUBLIC, SET_REAL_THIS, visitorParameter);
     this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint("    throw new UnsupportedOperationException(\"0xA7011x709 The setter for realThis is not implemented. You might want to implement a wrapper class to allow setting/getting realThis.\");\n"));
     return getRealThisMethod;
