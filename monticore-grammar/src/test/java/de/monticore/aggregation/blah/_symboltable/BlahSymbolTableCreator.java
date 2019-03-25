@@ -1,6 +1,5 @@
 package de.monticore.aggregation.blah._symboltable;
 
-import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 

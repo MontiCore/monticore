@@ -2,7 +2,6 @@
 
 package mc.feature.symboltable;
 
-import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ScopeSpanningSymbol;
@@ -50,7 +49,7 @@ public class AutomatonWithSTInfo6Test extends GeneratorIntegrationsTest {
 //    StateSymbol to = transitionSymbol.getTo();
     
     class STCreator extends AutomatonWithSTInfo6SymbolTableCreator {
-      public STCreator(ResolvingConfiguration resolvingConfig, MutableScope enclosingScope) {
+      public STCreator(ResolvingConfiguration resolvingConfig, Scope enclosingScope) {
         super(resolvingConfig, enclosingScope);
       }
       
