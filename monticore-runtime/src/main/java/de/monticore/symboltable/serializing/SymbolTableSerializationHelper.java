@@ -46,7 +46,7 @@ public class SymbolTableSerializationHelper {
    * @param src
    * @return
    */
-  public static Collection<Scope> filterRelevantSubScopes(MutableScope src) {
+  public static Collection<Scope> filterRelevantSubScopes(Scope src) {
     return src.getSubScopes()
         .stream()
         .filter(s -> s.exportsSymbols())
