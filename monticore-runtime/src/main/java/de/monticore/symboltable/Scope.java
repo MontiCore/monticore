@@ -16,6 +16,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
+@Deprecated
 public interface Scope {
 
   /**

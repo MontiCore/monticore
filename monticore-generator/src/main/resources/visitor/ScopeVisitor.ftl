@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("astType", "symbolTablePackage", "cd", "existsST")}
+${tc.signature("astType", "symbolTablePackage", "cd", "existsST", "superScopeVisitors")}
 <#assign genHelper = glex.getGlobalVar("visitorHelper")>
 
 <#-- Copyright -->
@@ -19,20 +19,20 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 /**
- * Default scope-visitor for the {@code ${genHelper.getCdName()}} language.<br/>
- * <br/>
- * <b>Running a visitor</b>: Starting a traversal of a scope is as simple as calling {@code handle(scope)}. Note that the visitor only handles nodes of language {@code ${genHelper.getCdName()}}.<br/>
- * <br/>
- * <b>Implementing a visitor:</b><br/>
- * You should never use {@code this}, but always make use of {@link #getRealThis()}. This ensures that the visitor can be reused by composition.<br/>
- * <br/>
+ * Default scope-visitor for the {@code ${genHelper.getCdName()}} language.<br>
+ * <br>
+ * <b>Running a visitor</b>: Starting a traversal of a scope is as simple as calling {@code handle(scope)}. Note that the visitor only handles nodes of language {@code ${genHelper.getCdName()}}.<br>
+ * <br>
+ * <b>Implementing a visitor:</b><br>
+ * You should never use {@code this}, but always make use of {@link #getRealThis()}. This ensures that the visitor can be reused by composition.<br>
+ * <br>
  * <ul>
-    *   <li><b>Visiting nodes</b>: You may override the {@code visit(node)} and {@code endVisit(node)} methods to do something at specific scope nodes.<br/><br/></li>
-    *   <li><b>Traversal</b>: You may override the {@code traverse(node)} methods, if you want to change the climb down strategy for traversing children (e.g. ordering the children). Be aware of the underlying double-dispatch mechanism: probably you want to call {@code childNode.accept(getRealThis())} and <b>not</b> {@code handle(childNode)}<br/><br/></li>
-    *   <li><b>Handling of nodes</b>: You may override the {@code handle(node)} methods, if you want to change its default implementation (depth-first iteration): {@code visit(node); traverse(node); endVisit(node);}<br/><br/></li>
-    * </ul>
+ *   <li><b>Visiting nodes</b>: You may override the {@code visit(node)} and {@code endVisit(node)} methods to do something at specific scope nodes.<br><br></li>
+ *   <li><b>Traversal</b>: You may override the {@code traverse(node)} methods, if you want to change the climb down strategy for traversing children (e.g. ordering the children). Be aware of the underlying double-dispatch mechanism: probably you want to call {@code childNode.accept(getRealThis())} and <b>not</b> {@code handle(childNode)}<br><br></li>
+ *   <li><b>Handling of nodes</b>: You may override the {@code handle(node)} methods, if you want to change its default implementation (depth-first iteration): {@code visit(node); traverse(node); endVisit(node);}<br><br></li>
+ * </ul>
  */
-public interface ${genHelper.getScopeVisitorType()} extends ${genHelper.getSymbolVisitorType()} { 
+public interface ${genHelper.getScopeVisitorType()} extends ${genHelper.getSymbolVisitorType()} <#list superScopeVisitors as superScopeVisitor>, ${superScopeVisitor}</#list> {
 
   /**
    * Sets the visitor to use for handling and traversing nodes.
@@ -54,10 +54,10 @@ public interface ${genHelper.getScopeVisitorType()} extends ${genHelper.getSymbo
   /**
    * By default this method returns {@code this}. Visitors intended for reusage
    * in other languages should override this method together with
-   * {@link #setRealThis(${genHelper.getVisitorType()})} to make a visitor
+   * {@link ${genHelper.getVisitorType()}#setRealThis(${genHelper.getVisitorType()})} to make a visitor
    * composable.
-   * See {@link #setRealThis(${genHelper.getVisitorType()})} for more information.
-   * @see #setRealThis(${genHelper.getVisitorType()})
+   * See {@link ${genHelper.getVisitorType()}#setRealThis(${genHelper.getVisitorType()})} for more information.
+   * @see ${genHelper.getVisitorType()}#setRealThis(${genHelper.getVisitorType()})
    * @see ${genHelper.getCdName()}DelegatorVisitor
    */
   default public ${genHelper.getScopeVisitorType()} getRealThis() {
@@ -86,6 +86,16 @@ public interface ${genHelper.getScopeVisitorType()} extends ${genHelper.getSymbo
   default public void endVisit(Scope scope) {
   }
   
+  @Override
+  default void visit(Symbol symbol) {
+    ${genHelper.getSymbolVisitorType()}.super.visit(symbol);
+  }
+
+  @Override
+  default void endVisit(Symbol symbol) {
+    ${genHelper.getSymbolVisitorType()}.super.endVisit(symbol);
+  }
+
   /* ------------------------------------------------------------------------*/
 
 
@@ -105,9 +115,17 @@ public interface ${genHelper.getScopeVisitorType()} extends ${genHelper.getSymbo
   
     default public void traverse(${scopeType} scope) {
       // traverse symbols within the scope
-      Iterator<Entry<String, Collection<Symbol>>> iter_symbols = scope.getLocalSymbols().entrySet().iterator();
-      while (iter_symbols.hasNext()) {
-        iter_symbols.next().getValue().forEach(s -> ((${"ICommon" + stHelper.getGrammarSymbol().getName() + "Symbol"})s).accept(getRealThis()));
+      Iterator<Entry<String, Collection<Symbol>>> iter_symbolEntries = scope.getLocalSymbols().entrySet().iterator();
+      while (iter_symbolEntries.hasNext()) {
+        Iterator<Symbol> iter_symbols = iter_symbolEntries.next().getValue().iterator();
+        while (iter_symbols.hasNext()) {
+          Symbol symbol = iter_symbols.next();
+          <#list stHelper.getAllQualifiedSymbols() as qualifiedSymbol>
+          if (symbol instanceof ${qualifiedSymbol}) {
+            ((${qualifiedSymbol}) symbol).accept(getRealThis());
+          }
+          </#list>
+        }
       }
       
       // traverse sub-scopes

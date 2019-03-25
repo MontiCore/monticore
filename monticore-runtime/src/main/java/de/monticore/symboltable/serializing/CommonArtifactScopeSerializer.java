@@ -18,6 +18,7 @@ import de.se_rwth.commons.logging.Log;
  * of {@link ISerialization} instances to (de)serialize individual scopes and symbols. This class is
  * the superclass of all generated serializers for languages.
  */
+@Deprecated
 public abstract class CommonArtifactScopeSerializer implements IArtifactScopeSerializer {
   
   protected GsonBuilder gson;

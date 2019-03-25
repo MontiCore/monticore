@@ -2,15 +2,20 @@
 
 package de.monticore;
 
+import java.util.Collection;
+import java.util.Optional;
+
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.ast.ASTNode;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
-import de.monticore.symboltable.*;
+import de.monticore.symboltable.CommonSymbolTableCreator;
+import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.ResolvingConfiguration;
+import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.SymbolTableCreator;
 import de.monticore.symboltable.resolving.ResolvingFilter;
+import de.monticore.symboltable.serialization.IDeSer;
 import de.monticore.symboltable.serializing.IArtifactScopeSerializer;
-
-import java.util.Collection;
-import java.util.Optional;
 
 public interface ModelingLanguage {
 
@@ -44,7 +49,12 @@ public interface ModelingLanguage {
   Optional<? extends SymbolTableCreator> getSymbolTableCreator
   (ResolvingConfiguration resolvingConfiguration, Scope enclosingScope);
 
+  @Deprecated//("Use getSymbolTableDeSer() instead.")
   default Optional<? extends IArtifactScopeSerializer> getSymbolTableDeserializer() {
+    return Optional.empty();
+  }
+  
+  default Optional<? extends IDeSer<?>> getSymbolTableDeSer() {
     return Optional.empty();
   }
 
