@@ -54,8 +54,6 @@ public class IncrementalChecker {
    * artifacts path.
    *
    * @param inputPath       path to the model to check
-   * @param outputDirectory the location where to look for both a corresponding
-   *                        input output report for the given model as well as any previously generated
    *                        artifacts
    * @param modelPath       the current model path used to check the current state of
    *                        any dependencies reported for the previous processing of the input model
@@ -658,8 +656,9 @@ public class IncrementalChecker {
       Optional<InputStory> mainInput = parseMainInput(line);
       if (!mainInput.isPresent()) {
         Log.warn("0xA4067 Failed to parse main input from report " + report.toString());
+      } else {
+        mainInputStory = mainInput.get();
       }
-      mainInputStory = mainInput.get();
       line = it.next();
     }
 

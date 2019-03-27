@@ -21,7 +21,7 @@ Log.debug("Handcoded files     : " + handcodedPath, LOG_ID)
 IncrementalChecker.initialize(out, report)
 InputOutputFilesReporter.resetModelToArtifactMap()
 globalScope = createGlobalScope(modelPath)
-Reporting.init(report.getAbsolutePath(), reportManagerFactory)
+Reporting.init(out.getAbsolutePath(), report.getAbsolutePath(), reportManagerFactory)
 // ############################################################
 
 // ############################################################
