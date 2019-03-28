@@ -1,6 +1,5 @@
 package de.monticore.codegen.cd2java;
 
-import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 
 import java.util.Arrays;
@@ -19,7 +18,7 @@ public final class DecoratorTestUtil {
     List<ASTCDClass> filtered = ast.getCDDefinition().getCDClassList().stream()
         .filter(c -> name.equals(c.getName()))
         .collect(Collectors.toList());
-    assertEquals(String.format("Expected find 1 class, but found '%s'", filtered.size()), 1, filtered.size());
+    assertEquals(String.format("Expected to find 1 class, but found '%s'", filtered.size()), 1, filtered.size());
     return filtered.get(0);
   }
 
@@ -27,7 +26,7 @@ public final class DecoratorTestUtil {
     List<ASTCDInterface> filtered = ast.getCDDefinition().getCDInterfaceList().stream()
         .filter(c -> name.equals(c.getName()))
         .collect(Collectors.toList());
-    assertEquals(String.format("Expected find 1 enum, but found '%s'", filtered.size()), 1, filtered.size());
+    assertEquals(String.format("Expected to find 1 interface, but found '%s'", filtered.size()), 1, filtered.size());
     return filtered.get(0);
   }
 
@@ -35,15 +34,7 @@ public final class DecoratorTestUtil {
     List<ASTCDEnum> filtered = ast.getCDDefinition().getCDEnumList().stream()
         .filter(c -> name.equals(c.getName()))
         .collect(Collectors.toList());
-    assertEquals(String.format("Expected find 1 enum, but found '%s'", filtered.size()), 1, filtered.size());
-    return filtered.get(0);
-  }
-
-  public static ASTCDInterface getInterfaceBy(String name, ASTCDCompilationUnit ast) {
-    List<ASTCDInterface> filtered = ast.getCDDefinition().getCDInterfaceList().stream()
-        .filter(c -> name.equals(c.getName()))
-        .collect(Collectors.toList());
-    assertEquals(String.format("Expected find 1 enum, but found '%s'", filtered.size()), 1, filtered.size());
+    assertEquals(String.format("Expected to find 1 enum, but found '%s'", filtered.size()), 1, filtered.size());
     return filtered.get(0);
   }
 

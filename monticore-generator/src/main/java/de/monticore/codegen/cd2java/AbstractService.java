@@ -1,9 +1,13 @@
 package de.monticore.codegen.cd2java;
 
+import de.monticore.codegen.cd2java.exception.DecorateException;
+import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
-import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class AbstractService {
 
@@ -26,6 +30,17 @@ public abstract class AbstractService {
 
   protected CDSymbol getCDSymbol() {
     return (CDSymbol) getCD().getCDDefinition().getSymbol();
+  }
+
+  protected List<CDSymbol> getSuperCDs() {
+    return getCDSymbol().getImports().stream()
+        .map(this::resolveCD)
+        .collect(Collectors.toList());
+  }
+
+  private CDSymbol resolveCD(String qualifiedName) {
+    return getCDSymbol().getEnclosingScope().<CDSymbol>resolve(qualifiedName, CDSymbol.KIND)
+        .orElseThrow(() -> new DecorateException(DecoratorErrorCode.CD_SYMBOL_NOT_FOUND, qualifiedName));
   }
 
   public String getCDName() {
