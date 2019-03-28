@@ -32,7 +32,7 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
   public void setup() {
     LogStub.init();
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "cocos", "CoCos");
-    CoCoInterfaceDecorator coCoInterfaceDecorator = new CoCoInterfaceDecorator(glex);
+    CoCoInterfaceDecorator coCoInterfaceDecorator = new CoCoInterfaceDecorator(glex, new CoCoService(ast));
     this.interfaces = coCoInterfaceDecorator.decorate(ast.getCDDefinition());
   }
 

@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
+import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
 
 public abstract class AbstractService {
 
@@ -37,6 +38,10 @@ public abstract class AbstractService {
 
   public String getPackage() {
     return String.join(".", getBasePackage(), getCDName(), getSubPackage()).toLowerCase();
+  }
+
+  public String getPackage(CDSymbol cd) {
+    return String.join(".", cd.getPackageName(), cd.getName(), getSubPackage()).toLowerCase();
   }
 
   protected abstract String getSubPackage();

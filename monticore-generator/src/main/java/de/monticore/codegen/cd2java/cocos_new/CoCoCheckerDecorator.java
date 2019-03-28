@@ -1,8 +1,10 @@
 package de.monticore.codegen.cd2java.cocos_new;
 
 import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.ast_new.ASTService;
 import de.monticore.codegen.cd2java.factories.SuperSymbolHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
+import de.monticore.codegen.cd2java.visitor_new.VisitorService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -17,49 +19,46 @@ import java.util.List;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
+import static de.monticore.codegen.cd2java.cocos_new.CoCoConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
+import static de.monticore.codegen.cd2java.visitor_new.VisitorConstants.VISIT;
 
 public class CoCoCheckerDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDClass> {
 
-  private static final String COCO_PACKAGE = "._cocos.";
-
-  private static final String COCO_SUFFIX = "CoCo";
-
-  private static final String COCOS_SUFFIX = "CoCos";
-
-  private static final String COCO_CHECKER_SUFFIX = "CoCoChecker";
-
   private static final String REAL_THIS = "realThis";
 
-  private static final String ADD_CHECKER = "addChecker";
-
-  private static final String ADD_COCO = "addCoCo";
-
-  private static final String VISITOR_SUFFIX = "Visitor";
-
-  private static final String VISIT = "visit";
-
-  private static final String AST_PACKAGE = "._ast.";
-
-  private static final String AST_PREFIX = "AST";
-
-  private static final String CHECKER = "checker";
+  private static final String COCOS = "CoCos";
 
   private static final String NODE = "node";
 
   private static final String COCO = "coco";
 
+  private static final String CHECKER = "checker";
+
   private final MethodDecorator methodDecorator;
 
-  public CoCoCheckerDecorator(final GlobalExtensionManagement glex, final MethodDecorator methodDecorator) {
+  private final CoCoService cocoService;
+
+  private final VisitorService visitorService;
+
+  private final ASTService astService;
+
+  public CoCoCheckerDecorator(final GlobalExtensionManagement glex, final MethodDecorator methodDecorator,
+      final CoCoService cocoService,
+      final VisitorService visitorService,
+      final ASTService astService) {
     super(glex);
     this.methodDecorator = methodDecorator;
+    this.cocoService = cocoService;
+    this.visitorService = visitorService;
+    this.astService = astService;
+
   }
 
   @Override
   public ASTCDClass decorate(ASTCDCompilationUnit compilationUnit) {
-    ASTType cocoCheckerType = getCDTypeFactory().createSimpleReferenceType(compilationUnit.getCDDefinition().getName() + COCO_CHECKER_SUFFIX);
-    ASTType visitorType = getCDTypeFactory().createSimpleReferenceType(compilationUnit.getCDDefinition().getName() + VISITOR_SUFFIX);
+    ASTType cocoCheckerType = cocoService.getCheckerType();
+    ASTType visitorType = visitorService.getVisitorType();
 
     ASTCDAttribute realThisAttribute = getCDAttributeFactory().createAttribute(PROTECTED, visitorType, REAL_THIS);
     List<ASTCDMethod> realThisMethods = methodDecorator.decorate(realThisAttribute);
@@ -80,7 +79,7 @@ public class CoCoCheckerDecorator extends AbstractDecorator<ASTCDCompilationUnit
     allCDs.add(cdSymbol);
     allCDs.addAll(SuperSymbolHelper.getSuperCDs(compilationUnit));
     for (CDSymbol currentCDSymbol : allCDs) {
-      ASTType checkerType = getCDTypeFactory().createSimpleReferenceType(currentCDSymbol.getPackageName() + COCO_PACKAGE + currentCDSymbol.getName() + COCO_CHECKER_SUFFIX);
+      ASTType checkerType = cocoService.getCheckerType(currentCDSymbol);
       String checkerName = TypesHelper.printType(checkerType).replaceAll("\\.", "_");
       boolean isCurrentDiagram = cdSymbol.getFullName().equals(currentCDSymbol.getFullName());
 
@@ -91,9 +90,9 @@ public class CoCoCheckerDecorator extends AbstractDecorator<ASTCDCompilationUnit
         if (!cdTypeSymbol.isClass() && !cdTypeSymbol.isInterface()) {
           continue;
         }
-        ASTType cocoType = getCDTypeFactory().createSimpleReferenceType(cdTypeSymbol.getPackageName() + COCO_PACKAGE + cdTypeSymbol.getName() + COCO_SUFFIX);
-        ASTType astType = getCDTypeFactory().createSimpleReferenceType(cdTypeSymbol.getPackageName() + AST_PACKAGE + AST_PREFIX + cdTypeSymbol.getName());
-        String cocoCollectionName = TypesHelper.printType(astType).replaceAll("\\.", "_") + COCOS_SUFFIX;
+        ASTType cocoType = cocoService.getCoCoType(cdTypeSymbol);
+        ASTType astType = astService.getASTType(cdTypeSymbol);
+        String cocoCollectionName = TypesHelper.printType(astType).replaceAll("\\.", "_") + COCOS;
 
         if (isCurrentDiagram) {
           cocoChecker.addCDAttribute(createCoCoCollectionAttribute(cocoType, cocoCollectionName));
@@ -146,7 +145,7 @@ public class CoCoCheckerDecorator extends AbstractDecorator<ASTCDCompilationUnit
       return new StringHookPoint(cocoCollectionName + ".add(" + COCO + ");");
     }
     else {
-      return new StringHookPoint(checkerName + ".stream().findFirst().get().addCoCo(" + COCO + ");");
+      return new StringHookPoint(checkerName + ".stream().findFirst().get()." + ADD_COCO + "(" + COCO + ");");
     }
   }
 
@@ -158,8 +157,8 @@ public class CoCoCheckerDecorator extends AbstractDecorator<ASTCDCompilationUnit
   protected HookPoint createVisitImpl(boolean isCurrentDiagram, ASTType cocoType, String cocoCollectionName, String checkerName) {
     if (isCurrentDiagram) {
       return new StringHookPoint(
-          "for (" + TypesHelper.printType(cocoType) + " coco : " + cocoCollectionName + ") {\n" +
-              "coco.check(" + NODE + ");\n" +
+          "for (" + TypesHelper.printType(cocoType) + " " + COCO + " : " + cocoCollectionName + ") {\n" +
+              COCO + "." + CHECK + "(" + NODE + ");\n" +
               "}\n" +
               "// and delegate to all registered checkers of the same language as well\n" +
               checkerName + ".stream().forEach(c -> c.visit(" + NODE + "));");

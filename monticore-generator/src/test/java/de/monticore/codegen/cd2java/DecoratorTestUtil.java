@@ -23,6 +23,14 @@ public final class DecoratorTestUtil {
     return filtered.get(0);
   }
 
+  public static ASTCDInterface getInterfaceBy(String name, ASTCDCompilationUnit ast) {
+    List<ASTCDInterface> filtered = ast.getCDDefinition().getCDInterfaceList().stream()
+        .filter(c -> name.equals(c.getName()))
+        .collect(Collectors.toList());
+    assertEquals(String.format("Expected find 1 enum, but found '%s'", filtered.size()), 1, filtered.size());
+    return filtered.get(0);
+  }
+
   public static ASTCDEnum getEnumBy(String name, ASTCDCompilationUnit ast) {
     List<ASTCDEnum> filtered = ast.getCDDefinition().getCDEnumList().stream()
         .filter(c -> name.equals(c.getName()))
