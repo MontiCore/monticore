@@ -7,6 +7,7 @@ import de.monticore.codegen.cd2java.factories.CDTypeFactory;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.visitor_new.ASTVisitorDecorator;
 import de.monticore.codegen.cd2java.visitor_new.VisitorDecorator;
+import de.monticore.codegen.cd2java.visitor_new.VisitorService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -36,6 +37,8 @@ public class VisitorDecoratorTest extends DecoratorTestCase {
   private GlobalExtensionManagement glex;
 
   private static final String VISITOR_NAME = "AutomatonVisitor";
+
+  private static final String VISITOR_FULL_NAME = "de.monticore.codegen.ast.automaton._visitor.AutomatonVisitor";
   
   private static final String AST_AUTOMATON= "automaton._ast.ASTAutomaton";
 
@@ -54,7 +57,7 @@ public class VisitorDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     ASTCDCompilationUnit compilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     this.glex.setGlobalValue("genHelper", new DecorationHelper());
-    ASTVisitorDecorator decorator = new ASTVisitorDecorator(this.glex, new VisitorDecorator(this.glex));
+    ASTVisitorDecorator decorator = new ASTVisitorDecorator(this.glex, new VisitorDecorator(this.glex, new VisitorService(compilationUnit)));
     this.visitorInterface = decorator.decorate(compilationUnit);
   }
 
@@ -77,7 +80,7 @@ public class VisitorDecoratorTest extends DecoratorTestCase {
   public void testGetRealThis() {
     ASTCDMethod method = getMethodBy("getRealThis", visitorInterface);
     assertDeepEquals(PUBLIC, method.getModifier());
-    ASTType astType = this.cdTypeFacade.createTypeByDefinition(VISITOR_NAME);
+    ASTType astType = this.cdTypeFacade.createTypeByDefinition(VISITOR_FULL_NAME);
     assertDeepEquals(astType, method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
   }
@@ -87,7 +90,7 @@ public class VisitorDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = getMethodBy("setRealThis", visitorInterface);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertVoid(method.getReturnType());
-    ASTType astType = this.cdTypeFacade.createTypeByDefinition(VISITOR_NAME);
+    ASTType astType = this.cdTypeFacade.createTypeByDefinition(VISITOR_FULL_NAME);
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(astType, method.getCDParameter(0).getType());
     assertEquals("realThis", method.getCDParameter(0).getName());

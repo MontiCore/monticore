@@ -5,6 +5,7 @@ import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
+import de.monticore.codegen.cd2java.symboltable.SymbolTableService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -37,7 +38,7 @@ public class ASTScopeDecoratorTest extends DecoratorTestCase {
     this.cdTypeFactory = CDTypeFactory.getInstance();
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "AST");
-    ASTScopeDecorator decorator = new ASTScopeDecorator(this.glex, ast, new MethodDecorator(glex));
+    ASTScopeDecorator decorator = new ASTScopeDecorator(this.glex, new MethodDecorator(glex), new SymbolTableService(ast));
     ASTCDClass clazz = getClassBy("A", ast);
     this.astClass = decorator.decorate(clazz);
   }

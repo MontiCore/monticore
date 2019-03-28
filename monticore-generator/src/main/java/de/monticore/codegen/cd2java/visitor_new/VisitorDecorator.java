@@ -12,40 +12,26 @@ import java.util.List;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.visitor_new.VisitorConstants.*;
 
 public class VisitorDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDInterface> {
 
-  private ASTCDCompilationUnit compilationUnit;
-
-  private static final String VISITOR_SUFFIX = "Visitor";
-
-  private static final String GET_REAL_THIS = "getRealThis";
-
-  private static final String SET_REAL_THIS = "setRealThis";
-
-  private static final String VISIT = "visit";
-
-  private static final String END_VISIT = "endVisit";
-
-  private static final String HANDLE = "handle";
-
-  public static final String TRAVERSE = "traverse";
-
   private static final String ASTNODE = "de.monticore.ast.ASTNode";
 
-  public VisitorDecorator(final GlobalExtensionManagement glex) {
+  private final VisitorService visitorService;
+
+  public VisitorDecorator(final GlobalExtensionManagement glex, VisitorService visitorService) {
     super(glex);
+    this.visitorService = visitorService;
   }
 
   @Override
-  public ASTCDInterface decorate(ASTCDCompilationUnit input) {
-    this.compilationUnit = input.deepClone();
+  public ASTCDInterface decorate(final ASTCDCompilationUnit compilationUnit) {
     ASTCDDefinition astcdDefinition = compilationUnit.getCDDefinition();
-    String visitorInterfaceName = astcdDefinition.getName() + VISITOR_SUFFIX;
-    ASTType visitorType = this.getCDTypeFactory().createSimpleReferenceType(visitorInterfaceName);
+    ASTType visitorType = this.visitorService.getVisitorType();
 
     return CD4AnalysisMill.cDInterfaceBuilder()
-        .setName(visitorInterfaceName)
+        .setName(this.visitorService.getVisitorSimpleTypeName())
         .setModifier(PUBLIC.build())
         .addCDMethod(addGetRealThisMethods(visitorType))
         .addCDMethod(addSetRealThisMethods(visitorType))

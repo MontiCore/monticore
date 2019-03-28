@@ -2,6 +2,7 @@ package de.monticore.codegen.cd2java.ast_new.reference;
 
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
+import de.monticore.codegen.cd2java.symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
@@ -29,7 +30,7 @@ public class ASTReferenceDecoratorTest extends DecoratorTestCase {
   public void setup() {
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "ReferencedSymbol");
-    this.referenceDecorator = new ASTReferenceDecorator(this.glex);
+    this.referenceDecorator = new ASTReferenceDecorator(this.glex, new SymbolTableService(ast));
     ASTCDClass mandclazz = getClassBy("ASTBarMand", ast);
     this.astMandClass = referenceDecorator.decorate(mandclazz);
     ASTCDClass optclazz = getClassBy("ASTBarOpt", ast);

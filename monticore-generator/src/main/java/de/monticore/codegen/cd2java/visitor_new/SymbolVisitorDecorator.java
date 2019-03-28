@@ -9,7 +9,7 @@ import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.builder.BuilderDecorator.BUILD_METHOD;
-import static de.monticore.codegen.cd2java.visitor_new.VisitorDecorator.TRAVERSE;
+import static de.monticore.codegen.cd2java.visitor_new.VisitorConstants.TRAVERSE;
 
 public class SymbolVisitorDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDInterface> {
 

@@ -3,41 +3,43 @@ package de.monticore.codegen.cd2java.ast_new;
 import de.monticore.ast.ASTCNode;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.factories.*;
+import de.monticore.codegen.cd2java.factory.NodeFactoryService;
+import de.monticore.codegen.cd2java.visitor_new.VisitorService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.TypesPrinter;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
-import de.monticore.umlcd4a.symboltable.CDSymbol;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.codegen.cd2java.ast_new.ASTConstants.ACCEPT_METHOD;
+import static de.monticore.codegen.cd2java.ast_new.ASTConstants.CONSTRUCT_METHOD;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
 
 public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
-  private static final String AST_PREFIX = "AST";
+  private static final String VISITOR = "visitor";
 
-  private static final String ACCEPT_METHOD = "accept";
+  private final ASTService astService;
 
-  private static final String CONSTRUCT_METHOD = "_construct";
+  private final VisitorService visitorService;
 
-  private static final String VISITOR_PACKAGE = "._visitor.";
+  private final NodeFactoryService nodeFactoryService;
 
-  private static final String VISITOR_SUFFIX = "Visitor";
-
-  private static final String VISITOR_PREFIX = "visitor";
-
-  private final ASTCDCompilationUnit compilationUnit;
-
-  public ASTDecorator(final GlobalExtensionManagement glex, final ASTCDCompilationUnit compilationUnit) {
+  public ASTDecorator(final GlobalExtensionManagement glex,
+      final ASTService astService,
+      final VisitorService visitorService,
+      final NodeFactoryService nodeFactoryService) {
     super(glex);
-    this.compilationUnit = compilationUnit;
+    this.astService = astService;
+    this.visitorService = visitorService;
+    this.nodeFactoryService = nodeFactoryService;
   }
 
   @Override
@@ -46,36 +48,32 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
       clazz.setSuperclass(this.getCDTypeFactory().createSimpleReferenceType(ASTCNode.class));
     }
 
-    clazz.addInterface(this.getCDTypeFactory().createReferenceTypeByDefinition(AST_PREFIX + compilationUnit.getCDDefinition().getName() + "Node"));
+    clazz.addInterface(this.astService.getASTBaseInterface());
 
-    String visitorPackage = (String.join(".", compilationUnit.getPackageList()) + "." + compilationUnit.getCDDefinition().getName() + VISITOR_PACKAGE).toLowerCase();
-    ASTType visitorType = this.getCDTypeFactory().createSimpleReferenceType(visitorPackage + compilationUnit.getCDDefinition().getName() + VISITOR_SUFFIX);
-
-    clazz.addCDMethod(createAcceptMethod(clazz, visitorType));
-    clazz.addAllCDMethods(createAcceptSuperMethods(clazz, visitorType));
+    clazz.addCDMethod(createAcceptMethod(clazz));
+    clazz.addAllCDMethods(createAcceptSuperMethods(clazz));
     clazz.addCDMethod(getConstructMethod(clazz));
 
     return clazz;
   }
 
-  protected ASTCDMethod createAcceptMethod(ASTCDClass astClass, ASTType visitorType) {
-    ASTCDParameter visitorParameter = this.getCDParameterFactory().createParameter(visitorType, VISITOR_PREFIX);
+  protected ASTCDMethod createAcceptMethod(ASTCDClass astClass) {
+    ASTCDParameter visitorParameter = this.getCDParameterFactory().createParameter(this.visitorService.getVisitorType(), VISITOR);
     ASTCDMethod acceptMethod = this.getCDMethodFactory().createMethod(PUBLIC, ACCEPT_METHOD, visitorParameter);
     this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint("ast_new.Accept", astClass));
     return acceptMethod;
   }
 
-  protected List<ASTCDMethod> createAcceptSuperMethods(ASTCDClass astClass, ASTType visitorType) {
+  protected List<ASTCDMethod> createAcceptSuperMethods(ASTCDClass astClass) {
     List<ASTCDMethod> result = new ArrayList<>();
-    //accept methods for super grammar visitors
-    for (CDSymbol superSymbol : SuperSymbolHelper.getSuperCDs(compilationUnit)) {
-      ASTType superVisitorType = this.getCDTypeFactory().createSimpleReferenceType(superSymbol.getFullName().toLowerCase() + VISITOR_PACKAGE + superSymbol.getName() + VISITOR_SUFFIX);
-      ASTCDParameter superVisitorParameter = this.getCDParameterFactory().createParameter(superVisitorType, VISITOR_PREFIX);
+    //accept methods for super visitors
+    for (ASTType superVisitorType : this.visitorService.getAllVisitorTypesInHierarchy()) {
+      ASTCDParameter superVisitorParameter = this.getCDParameterFactory().createParameter(superVisitorType, VISITOR);
 
       ASTCDMethod superAccept = this.getCDMethodFactory().createMethod(PUBLIC, ACCEPT_METHOD, superVisitorParameter);
       String errorCode = DecorationHelper.getGeneratedErrorCode(astClass);
       this.replaceTemplate(EMPTY_BODY, superAccept, new TemplateHookPoint("ast_new.AcceptSuper",
-          TypesPrinter.printType(visitorType), errorCode, astClass.getName(), TypesPrinter.printType(superVisitorType)));
+          this.visitorService.getVisitorFullTypeName(), errorCode, astClass.getName(), TypesPrinter.printType(superVisitorType)));
       result.add(superAccept);
     }
     return result;
@@ -84,8 +82,7 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
   protected ASTCDMethod getConstructMethod(ASTCDClass astClass) {
     ASTType classType = this.getCDTypeFactory().createSimpleReferenceType(astClass.getName());
     ASTCDMethod constructMethod = this.getCDMethodFactory().createMethod(PROTECTED, classType, CONSTRUCT_METHOD);
-    this.replaceTemplate(EMPTY_BODY, constructMethod, new StringHookPoint(
-        "return " + compilationUnit.getCDDefinition().getName() + "NodeFactory.create" + astClass.getName() + "();\n"));
+    this.replaceTemplate(EMPTY_BODY, constructMethod, new StringHookPoint(this.nodeFactoryService.getCreateInvocation(astClass)));
     return constructMethod;
   }
 }

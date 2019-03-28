@@ -16,7 +16,7 @@ public final class DecoratorAssert {
   }
 
   public static void assertDeepEquals(ASTNode expected, ASTNode actual) {
-    assertTrue(expected.deepEquals(actual));
+    assertTrue(String.format("Expected: [%s], Actual: [%s]", expected.toString(), actual.toString()), expected.deepEquals(actual));
   }
 
   public static void assertDeepEquals(CDModifier expected, ASTNode actual) {

@@ -2,8 +2,8 @@ package de.monticore.codegen.cd2java.ast_new.reference.referencedDefinition;
 
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.AbstractDecorator;
-import de.monticore.codegen.cd2java.ast_new.reference.ReferencedSymbolUtil;
 import de.monticore.codegen.cd2java.ast_new.reference.referencedDefinition.referencedDefinitionMethodDecorator.ReferencedDefinitionAccessorDecorator;
+import de.monticore.codegen.cd2java.symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
@@ -21,9 +21,13 @@ public class ASTReferencedDefinitionDecorator extends AbstractDecorator<ASTCDCla
 
   private final ReferencedDefinitionAccessorDecorator accessorDecorator;
 
-  public ASTReferencedDefinitionDecorator(final GlobalExtensionManagement glex, final ReferencedDefinitionAccessorDecorator accessorDecorator) {
+  private final SymbolTableService symbolTableService;
+
+  public ASTReferencedDefinitionDecorator(final GlobalExtensionManagement glex, final ReferencedDefinitionAccessorDecorator accessorDecorator,
+      final SymbolTableService symbolTableService) {
     super(glex);
     this.accessorDecorator = accessorDecorator;
+    this.symbolTableService = symbolTableService;
   }
 
   @Override
@@ -31,8 +35,8 @@ public class ASTReferencedDefinitionDecorator extends AbstractDecorator<ASTCDCla
     List<ASTCDAttribute> attributeList = new ArrayList<>();
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDAttribute astcdAttribute : input.getCDAttributeList()) {
-      if (ReferencedSymbolUtil.isReferencedSymbolAttribute(astcdAttribute)) {
-        String referencedSymbolType = ReferencedSymbolUtil.getReferencedSymbolTypeName(astcdAttribute);
+      if (symbolTableService.isReferencedSymbolAttribute(astcdAttribute)) {
+        String referencedSymbolType = symbolTableService.getReferencedSymbolTypeName(astcdAttribute);
         //create referenced symbol attribute and methods
         methodList.addAll(getRefDefinitionMethods(astcdAttribute, referencedSymbolType));
       }
@@ -44,7 +48,7 @@ public class ASTReferencedDefinitionDecorator extends AbstractDecorator<ASTCDCla
 
   protected List<ASTCDMethod> getRefDefinitionMethods(ASTCDAttribute astcdAttribute, String referencedSymbol) {
     ASTType symbolType;
-    String referencedNode = referencedSymbol.substring(0, referencedSymbol.lastIndexOf("_symboltable")) + GeneratorHelper.AST_PACKAGE_SUFFIX_DOT + GeneratorHelper.AST_PREFIX + ReferencedSymbolUtil.getSimpleSymbolName(referencedSymbol);
+    String referencedNode = referencedSymbol.substring(0, referencedSymbol.lastIndexOf("_symboltable")) + GeneratorHelper.AST_PACKAGE_SUFFIX_DOT + GeneratorHelper.AST_PREFIX + symbolTableService.getSimpleSymbolName(referencedSymbol);
     if (GeneratorHelper.isListType(astcdAttribute.printType())) {
       //if the attribute is a list
       symbolType = getCDTypeFactory().createListTypeOf(referencedNode);

@@ -1,7 +1,7 @@
 package de.monticore.codegen.cd2java.ast_new.reference.referencedDefinition.referencedDefinitionMethodDecorator;
 
-import de.monticore.codegen.cd2java.ast_new.reference.ReferencedSymbolUtil;
 import de.monticore.codegen.cd2java.methods.accessor.OptionalAccessorDecorator;
+import de.monticore.codegen.cd2java.symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.types._ast.ASTType;
@@ -14,8 +14,12 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
 public class ReferencedDefinitionOptAccessorDecorator extends OptionalAccessorDecorator {
 
-  public ReferencedDefinitionOptAccessorDecorator(GlobalExtensionManagement glex) {
+  private final SymbolTableService symbolTableService;
+
+  public ReferencedDefinitionOptAccessorDecorator(final GlobalExtensionManagement glex,
+      final SymbolTableService symbolTableService) {
     super(glex);
+    this.symbolTableService = symbolTableService;
   }
 
   @Override
@@ -23,8 +27,8 @@ public class ReferencedDefinitionOptAccessorDecorator extends OptionalAccessorDe
     String name = String.format(GET_OPT, StringUtils.capitalize(ast.getName()));
     ASTType type = ast.getType().deepClone();
     ASTCDMethod method = this.getCDMethodFactory().createMethod(PUBLIC, type, name);
-    String referencedSymbolType =ReferencedSymbolUtil.getReferencedSymbolTypeName(ast);
-    String simpleName = ReferencedSymbolUtil.getSimpleSymbolName(referencedSymbolType);
+    String referencedSymbolType = symbolTableService.getReferencedSymbolTypeName(ast);
+    String simpleName = symbolTableService.getSimpleSymbolName(referencedSymbolType);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("ast_new.refSymbolMethods.GetDefinitionOpt",
         ast.getName(),referencedSymbolType, simpleName));
     return method;

@@ -15,6 +15,7 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
 public class ReferencedSymbolOptAccessorDecorator extends OptionalAccessorDecorator {
+
   public ReferencedSymbolOptAccessorDecorator(GlobalExtensionManagement glex) {
     super(glex);
   }

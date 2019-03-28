@@ -2,8 +2,8 @@ package de.monticore.codegen.cd2java.ast_new.reference.referencedSymbol;
 
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.AbstractDecorator;
-import de.monticore.codegen.cd2java.ast_new.reference.ReferencedSymbolUtil;
 import de.monticore.codegen.cd2java.ast_new.reference.referencedSymbol.referenedSymbolMethodDecorator.ReferencedSymbolAccessorDecorator;
+import de.monticore.codegen.cd2java.symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
@@ -21,9 +21,13 @@ public class ASTReferencedSymbolDecorator extends AbstractDecorator<ASTCDClass, 
 
   private final ReferencedSymbolAccessorDecorator accessorDecorator;
 
-  public ASTReferencedSymbolDecorator(final GlobalExtensionManagement glex, final ReferencedSymbolAccessorDecorator accessorDecorator) {
+  private final SymbolTableService symbolTableService;
+
+  public ASTReferencedSymbolDecorator(final GlobalExtensionManagement glex, final ReferencedSymbolAccessorDecorator accessorDecorator,
+      final SymbolTableService symbolTableService) {
     super(glex);
     this.accessorDecorator = accessorDecorator;
+    this.symbolTableService = symbolTableService;
   }
 
   @Override
@@ -31,8 +35,8 @@ public class ASTReferencedSymbolDecorator extends AbstractDecorator<ASTCDClass, 
     List<ASTCDAttribute> attributeList = new ArrayList<>();
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDAttribute astcdAttribute : clazz.getCDAttributeList()) {
-      if (ReferencedSymbolUtil.isReferencedSymbolAttribute(astcdAttribute)) {
-        String referencedSymbolType = ReferencedSymbolUtil.getReferencedSymbolTypeName(astcdAttribute);
+      if (symbolTableService.isReferencedSymbolAttribute(astcdAttribute)) {
+        String referencedSymbolType = symbolTableService.getReferencedSymbolTypeName(astcdAttribute);
         //create referenced symbol attribute and methods
         ASTCDAttribute refSymbolAttribute = getRefSymbolAttribute(astcdAttribute, referencedSymbolType);
         attributeList.add(refSymbolAttribute);
