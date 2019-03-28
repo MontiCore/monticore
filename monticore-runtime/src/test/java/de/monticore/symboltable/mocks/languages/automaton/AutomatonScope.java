@@ -6,10 +6,10 @@
 
 package de.monticore.symboltable.mocks.languages.automaton;
 
-import java.util.Optional;
-
-import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.mocks.languages.statechart.StateSymbol;
+
+import java.util.Optional;
 
 public class AutomatonScope  extends de.monticore.symboltable.CommonScope   {
 
@@ -21,7 +21,7 @@ public class AutomatonScope  extends de.monticore.symboltable.CommonScope   {
     super(isShadowingScope);
   }
 
-  public AutomatonScope(Optional<MutableScope> enclosingScope) {
+  public AutomatonScope(Optional<Scope> enclosingScope) {
     super(enclosingScope, true);
   }
   

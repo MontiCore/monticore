@@ -2,7 +2,7 @@
 
 package mc.embedding.host._symboltable;
 
-import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import mc.embedding.host._ast.ASTHost;
 import mc.embedding.host._visitor.HostVisitor;
@@ -14,12 +14,12 @@ public class HostSymbolTableCreator extends HostSymbolTableCreatorTOP {
   private HostVisitor realThis = this;
 
   public HostSymbolTableCreator(ResolvingConfiguration resolverConfig,
-      MutableScope enclosingScope) {
+      Scope enclosingScope) {
     super(resolverConfig, enclosingScope);
   }
 
   public HostSymbolTableCreator (ResolvingConfiguration resolvingConfiguration,
-      Deque<MutableScope> scopeStack) {
+      Deque<Scope> scopeStack) {
     super(resolvingConfiguration, scopeStack);
   }
 

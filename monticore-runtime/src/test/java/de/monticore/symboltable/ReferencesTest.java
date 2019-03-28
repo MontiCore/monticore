@@ -44,13 +44,13 @@ public class ReferencesTest {
     resolvingConfiguration.addDefaultFilter(CommonResolvingFilter.create(CommonJTypeSymbol.KIND));
     resolvingConfiguration.addDefaultFilter(CommonResolvingFilter.create(PropertySymbol.KIND));
 
-    final MutableScope globalScope = new GlobalScope(new ModelPath(), new ArrayList<>(), resolvingConfiguration);
+    final Scope globalScope = new GlobalScope(new ModelPath(), new ArrayList<>(), resolvingConfiguration);
 
     globalScope.add(c);
     globalScope.add(d);
 
-    c.getMutableSpannedScope().setResolvingFilters(globalScope.getResolvingFilters());
-    d.getMutableSpannedScope().setResolvingFilters(globalScope.getResolvingFilters());
+    c.getSpannedScope().setResolvingFilters(globalScope.getResolvingFilters());
+    d.getSpannedScope().setResolvingFilters(globalScope.getResolvingFilters());
 
     assertSame(c, globalScope.resolve("C", CommonJTypeSymbol.KIND).orElse(null));
     assertSame(d, globalScope.resolve("D", CommonJTypeSymbol.KIND).orElse(null));

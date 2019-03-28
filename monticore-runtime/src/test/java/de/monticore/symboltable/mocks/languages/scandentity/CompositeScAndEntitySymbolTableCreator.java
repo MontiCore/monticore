@@ -4,7 +4,7 @@ package de.monticore.symboltable.mocks.languages.scandentity;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.CommonSymbolTableCreator;
-import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.mocks.languages.entity.EntityLanguageSymbolTableCreator;
 import de.monticore.symboltable.mocks.languages.entity.asts.ASTEntity;
@@ -16,7 +16,7 @@ import de.monticore.symboltable.mocks.languages.statechart.asts.ASTStateChartBas
 public class CompositeScAndEntitySymbolTableCreator extends CommonSymbolTableCreator implements
     EntityLanguageSymbolTableCreator, StateChartLanguageSymbolTableCreator {
 
-  public CompositeScAndEntitySymbolTableCreator(ResolvingConfiguration resolverConfig, MutableScope enclosingScope) {
+  public CompositeScAndEntitySymbolTableCreator(ResolvingConfiguration resolverConfig, Scope enclosingScope) {
     super(resolverConfig, enclosingScope);
   }
 

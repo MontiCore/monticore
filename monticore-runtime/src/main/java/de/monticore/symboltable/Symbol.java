@@ -99,6 +99,6 @@
    /**
     * @param scope the enclosing scope of this symbol, i.e., the scope that defines this symbol.
     */
-   void setEnclosingScope(MutableScope scope);
+   void setEnclosingScope(Scope scope);
 
  }

@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package cocos.invalid.A0276;
+
+grammar A0276a {
+
+  external A;
+
+}

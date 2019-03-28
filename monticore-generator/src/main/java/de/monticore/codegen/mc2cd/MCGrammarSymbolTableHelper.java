@@ -36,7 +36,7 @@ public class MCGrammarSymbolTableHelper {
     ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
     resolvingConfiguration.addDefaultFilters(grammarLanguage.getResolvingFilters());
     
-    MutableScope globalScope = new GlobalScope(modelPath, grammarLanguage, resolvingConfiguration);
+    Scope globalScope = new GlobalScope(modelPath, grammarLanguage, resolvingConfiguration);
     MontiCoreGrammarSymbolTableCreator symbolTableCreator = new MontiCoreGrammarSymbolTableCreator(
         resolvingConfiguration, globalScope);
     

@@ -20,6 +20,7 @@ public interface JsonConstants {
   
   public static final String SUBSCOPES = "subScopes";
   
+  @Deprecated // there will be lists of symbols per individual kind
   public static final String SYMBOLS = "symbols";
   
   public static final String EXPORTS_SYMBOLS = "exportsSymbols";
@@ -30,7 +31,6 @@ public interface JsonConstants {
   
   public static final String KIND = "kind";
   
-  // TODO: Can be removed if ScopeSpanningSymbols are removed
   public static final String SCOPE_SPANNING_SYMBOL = "spanningSymbol";
   
 }

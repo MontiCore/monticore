@@ -13,7 +13,6 @@ import java.util.Collection;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.resolving.ResolvingInfo;
-import de.monticore.symboltable.MutableScope;
 
 public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScopes?join(", ")} </#if>{
 

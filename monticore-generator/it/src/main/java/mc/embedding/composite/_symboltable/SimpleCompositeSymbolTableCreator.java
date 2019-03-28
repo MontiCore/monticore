@@ -5,7 +5,7 @@ package mc.embedding.composite._symboltable;
 import java.util.Deque;
 
 import de.monticore.symboltable.CommonSymbolTableCreator;
-import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import mc.embedding.composite._visitor.CompositeVisitor;
 
@@ -15,12 +15,12 @@ public class SimpleCompositeSymbolTableCreator extends CommonSymbolTableCreator 
   private CompositeVisitor realThis = this;
 
   public SimpleCompositeSymbolTableCreator(final ResolvingConfiguration resolverConfig,
-      final MutableScope enclosingScope) {
+      final Scope enclosingScope) {
     super(resolverConfig, enclosingScope);
   }
 
   public SimpleCompositeSymbolTableCreator(final ResolvingConfiguration resolverConfig,
-      final Deque<MutableScope> scopeStack) {
+      final Deque<Scope> scopeStack) {
     super(resolverConfig, scopeStack);
 
   }

@@ -6,7 +6,7 @@ import de.monticore.CommonModelingLanguage;
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.ast.ASTNode;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
-import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.mocks.languages.entity.ActionSymbol;
 import de.monticore.symboltable.mocks.languages.entity.EntityLanguage;
@@ -47,7 +47,7 @@ public class EntityEmbeddingScLanguage extends CommonModelingLanguage {
   }
   
   @Override
-  public Optional<CompositeScAndEntitySymbolTableCreator> getSymbolTableCreator(ResolvingConfiguration resolvingConfiguration, MutableScope enclosingScope) {
+  public Optional<CompositeScAndEntitySymbolTableCreator> getSymbolTableCreator(ResolvingConfiguration resolvingConfiguration, Scope enclosingScope) {
     return Optional.of(new CompositeScAndEntitySymbolTableCreator(resolvingConfiguration,
         enclosingScope));
   }

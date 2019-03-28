@@ -5,7 +5,7 @@ package mc.embedding.transitive.transcomposite._symboltable;
 import java.util.Deque;
 
 import de.monticore.symboltable.CommonSymbolTableCreator;
-import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
@@ -27,7 +27,7 @@ public class TransCompositeSymbolTableCreator extends CommonSymbolTableCreator i
   private TransCompositeVisitor realThis = this;
   
   public TransCompositeSymbolTableCreator(final ResolvingConfiguration resolverConfig,
-      final MutableScope enclosingScope) {
+      final Scope enclosingScope) {
     super(resolverConfig, enclosingScope);
     
     this.hostSymbolTableCreator = new TransHostSymbolTableCreator(resolverConfig, scopeStack);
@@ -44,7 +44,7 @@ public class TransCompositeSymbolTableCreator extends CommonSymbolTableCreator i
   }
   
   public TransCompositeSymbolTableCreator(final ResolvingConfiguration resolverConfig,
-      final Deque<MutableScope> scopeStack) {
+      final Deque<Scope> scopeStack) {
     super(resolverConfig, scopeStack);
     
     this.hostSymbolTableCreator = new TransHostSymbolTableCreator(resolverConfig, scopeStack);
@@ -75,7 +75,7 @@ public class TransCompositeSymbolTableCreator extends CommonSymbolTableCreator i
   }
   
   @Override
-  public MutableScope getFirstCreatedScope() {
+  public Scope getFirstCreatedScope() {
     return hostSymbolTableCreator.getFirstCreatedScope();
   }
   

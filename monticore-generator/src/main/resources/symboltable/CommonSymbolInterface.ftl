@@ -11,6 +11,7 @@ import java.util.Collection;
 import de.monticore.symboltable.ISymbol;
 
 import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.symboltable.resolving.ResolvingInfo;
 
 public interface ${interfaceName} extends ISymbol {
  <#assign langVisitorType = names.getQualifiedName(genHelper.getVisitorPackage(), genHelper.getGrammarSymbol().getName() + "SymbolVisitor")>

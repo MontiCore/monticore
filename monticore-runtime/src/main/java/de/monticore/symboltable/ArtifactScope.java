@@ -8,17 +8,8 @@ import de.monticore.symboltable.names.CommonQualifiedNamesCalculator;
 import de.monticore.symboltable.names.QualifiedNamesCalculator;
 import de.monticore.symboltable.resolving.ResolvingInfo;
 import de.se_rwth.commons.Joiners;
-import de.se_rwth.commons.Names;
-import de.se_rwth.commons.Splitters;
-import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 
 import static com.google.common.collect.FluentIterable.from;
@@ -41,7 +32,7 @@ public class ArtifactScope extends CommonScope {
     this(empty(), packageName, imports);
   }
 
-  public ArtifactScope(final Optional<MutableScope> enclosingScope, final String packageName,
+  public ArtifactScope(final Optional<Scope> enclosingScope, final String packageName,
                        final List<ImportStatement> imports) {
     super(enclosingScope, true);
     setExportsSymbols(true);

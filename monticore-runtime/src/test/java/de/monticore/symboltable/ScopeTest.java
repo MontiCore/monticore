@@ -18,9 +18,9 @@ public class ScopeTest {
 
   @Test
   public void testInitEnclosingAndSubScopesUsingConstructors() {
-    MutableScope enclosing = new CommonScope(false);
-    MutableScope sub1 = new CommonScope(Optional.of(enclosing));
-    MutableScope sub2 = new CommonScope(Optional.of(enclosing));
+    Scope enclosing = new CommonScope(false);
+    Scope sub1 = new CommonScope(Optional.of(enclosing));
+    Scope sub2 = new CommonScope(Optional.of(enclosing));
 
     assertEquals(2, enclosing.getSubScopes().size());
     assertSame(sub1, enclosing.getSubScopes().get(0));
@@ -31,9 +31,9 @@ public class ScopeTest {
 
   @Test
   public void testInitEnclosingAndSubScopesUsingAddSubScopeMethod() {
-    MutableScope enclosing = new CommonScope(false);
-    MutableScope sub1 = new CommonScope(false);
-    MutableScope sub2 = new CommonScope(false);
+    Scope enclosing = new CommonScope(false);
+    Scope sub1 = new CommonScope(false);
+    Scope sub2 = new CommonScope(false);
 
     assertEquals(0, enclosing.getSubScopes().size());
     assertFalse(sub1.getEnclosingScope().isPresent());
@@ -60,9 +60,9 @@ public class ScopeTest {
 
   @Test
   public void testInitEnclosingAndSubScopesUsingSetEnclosingScopeMethod() {
-    MutableScope enclosing = new CommonScope(false);
-    MutableScope sub1 = new CommonScope(false);
-    MutableScope sub2 = new CommonScope(false);
+    Scope enclosing = new CommonScope(false);
+    Scope sub1 = new CommonScope(false);
+    Scope sub2 = new CommonScope(false);
 
     assertEquals(0, enclosing.getSubScopes().size());
     assertFalse(sub1.getEnclosingScope().isPresent());
@@ -89,9 +89,9 @@ public class ScopeTest {
 
   @Test
   public void testChangingEnclosingAndSubScopesUsingSetEnclosingMethod() {
-    MutableScope oldEnclosing = new CommonScope(false);
-    MutableScope sub1 = new CommonScope(Optional.of(oldEnclosing));
-    MutableScope sub2 = new CommonScope(Optional.of(oldEnclosing));
+    Scope oldEnclosing = new CommonScope(false);
+    Scope sub1 = new CommonScope(Optional.of(oldEnclosing));
+    Scope sub2 = new CommonScope(Optional.of(oldEnclosing));
 
     assertEquals(2, oldEnclosing.getSubScopes().size());
     assertSame(sub1, oldEnclosing.getSubScopes().get(0));
@@ -99,7 +99,7 @@ public class ScopeTest {
     assertSame(oldEnclosing, sub1.getEnclosingScope().get());
     assertSame(oldEnclosing, sub2.getEnclosingScope().get());
 
-    MutableScope newEnclosing = new CommonScope(false);
+    Scope newEnclosing = new CommonScope(false);
 
     sub1.setEnclosingScope(newEnclosing);
 
@@ -114,9 +114,9 @@ public class ScopeTest {
 
   @Test
   public void testChangingEnclosingAndSubScopesUsingAddSubScopeMethod() {
-    MutableScope oldEnclosing = new CommonScope(false);
-    MutableScope sub1 = new CommonScope(Optional.of(oldEnclosing));
-    MutableScope sub2 = new CommonScope(Optional.of(oldEnclosing));
+    Scope oldEnclosing = new CommonScope(false);
+    Scope sub1 = new CommonScope(Optional.of(oldEnclosing));
+    Scope sub2 = new CommonScope(Optional.of(oldEnclosing));
 
     assertEquals(2, oldEnclosing.getSubScopes().size());
     assertSame(sub1, oldEnclosing.getSubScopes().get(0));
@@ -124,7 +124,7 @@ public class ScopeTest {
     assertSame(oldEnclosing, sub1.getEnclosingScope().get());
     assertSame(oldEnclosing, sub2.getEnclosingScope().get());
 
-    MutableScope newEnclosing = new CommonScope(false);
+    Scope newEnclosing = new CommonScope(false);
 
     newEnclosing.addSubScope(sub1);
 
@@ -139,17 +139,17 @@ public class ScopeTest {
 
   @Test
   public void testGetAllEncapsulatedSymbols(){
-    final MutableScope scope1 = new CommonScope(false);
+    final Scope scope1 = new CommonScope(false);
     final StateSymbol symbol11 = new StateSymbol("s11");
     scope1.add(symbol11);
 
-    final MutableScope scope2 = new CommonScope(false);
+    final Scope scope2 = new CommonScope(false);
     final StateSymbol symbol21 = new StateSymbol("s21");
     final StateSymbol symbol22 = new StateSymbol("s22");
     scope2.add(symbol21);
     scope2.add(symbol22);
 
-    final MutableScope scope3 = new CommonScope(false);
+    final Scope scope3 = new CommonScope(false);
     final StateSymbol symbol31 = new StateSymbol("s31");
     scope3.add(symbol31);
 

@@ -2,19 +2,19 @@
 
 package de.monticore.symboltable;
 
-import static org.junit.Assert.assertEquals;
+import de.monticore.symboltable.mocks.languages.JTypeSymbolMock;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
-import de.monticore.symboltable.mocks.languages.JTypeSymbolMock;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 public class NamesTest {
 
   @Test
   public void testDeterminePackageName() {
-    ArtifactScope as = new ArtifactScope(Optional.<MutableScope>empty(), "p", new ArrayList<>());
+    ArtifactScope as = new ArtifactScope(Optional.<Scope>empty(), "p", new ArrayList<>());
 
     JTypeSymbolMock c = new JTypeSymbolMock("C");
 
@@ -30,7 +30,7 @@ public class NamesTest {
 
   @Test
   public void testDeterminePackageNameWhereEnclosingNameIsSetManually() {
-    ArtifactScope as = new ArtifactScope(Optional.<MutableScope>empty(), "p", new ArrayList<>());
+    ArtifactScope as = new ArtifactScope(Optional.<Scope>empty(), "p", new ArrayList<>());
 
     JTypeSymbolMock c = new JTypeSymbolMock("C");
     as.add(c);
@@ -47,7 +47,7 @@ public class NamesTest {
 
   @Test
   public void testDetermineFullName() {
-    ArtifactScope as = new ArtifactScope(Optional.<MutableScope>empty(), "p", new ArrayList<>());
+    ArtifactScope as = new ArtifactScope(Optional.<Scope>empty(), "p", new ArrayList<>());
 
     JTypeSymbolMock c = new JTypeSymbolMock("C");
     as.add(c);
@@ -61,7 +61,7 @@ public class NamesTest {
 
   @Test
   public void testDetermineFullNameWhereEnclosingNameIsSetManually() {
-    ArtifactScope as = new ArtifactScope(Optional.<MutableScope>empty(), "p", new ArrayList<>());
+    ArtifactScope as = new ArtifactScope(Optional.<Scope>empty(), "p", new ArrayList<>());
 
     JTypeSymbolMock c = new JTypeSymbolMock("C");
     as.add(c);

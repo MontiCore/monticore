@@ -5,23 +5,21 @@
  */
 package de.monticore.symboltable.serializing;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import de.monticore.symboltable.ImportStatement;
+import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.ScopeSpanningSymbol;
+import de.monticore.symboltable.Symbol;
+import de.se_rwth.commons.logging.Log;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
-import de.monticore.symboltable.ImportStatement;
-import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.ScopeSpanningSymbol;
-import de.monticore.symboltable.Symbol;
-import de.se_rwth.commons.logging.Log;
 
 @Deprecated
 public class SymbolTableSerializationHelper {
@@ -48,7 +46,7 @@ public class SymbolTableSerializationHelper {
    * @param src
    * @return
    */
-  public static Collection<Scope> filterRelevantSubScopes(MutableScope src) {
+  public static Collection<Scope> filterRelevantSubScopes(Scope src) {
     return src.getSubScopes()
         .stream()
         .filter(s -> s.exportsSymbols())
@@ -61,7 +59,7 @@ public class SymbolTableSerializationHelper {
     //TODO@AB: Tiefensuche durch Scopes implementieren
     return s.getSymbolsSize()>0;
   }
-  
+
   /**
    * Deserializes a list of ImportStatements. Is the passed JsonElement is null, returns an empty
    * list
@@ -88,7 +86,7 @@ public class SymbolTableSerializationHelper {
     return "";
   }
   
-  public static void deserializeName(JsonObject json, MutableScope result) {
+  public static void deserializeName(JsonObject json, Scope result) {
     if (json.has(ISerialization.NAME)) {
       String name = json.get(ISerialization.NAME).getAsString();
       result.setName(name);
@@ -116,7 +114,7 @@ public class SymbolTableSerializationHelper {
   }
   
   public static void deserializeSymbols(JsonObject json, JsonDeserializationContext context,
-      MutableScope result) {
+      Scope result) {
     if (json.has(ISerialization.SYMBOLS)) {
       for (JsonElement e : json.get(ISerialization.SYMBOLS).getAsJsonArray()) {
         Symbol sym = context.deserialize(e, Symbol.class);
@@ -126,10 +124,10 @@ public class SymbolTableSerializationHelper {
   }
   
   public static void deserializeSubscopes(JsonObject json, JsonDeserializationContext context,
-      MutableScope result) {
+      Scope result) {
     if (json.has(ISerialization.SUBSCOPES)) {
       for (JsonElement e : json.get(ISerialization.SUBSCOPES).getAsJsonArray()) {
-        MutableScope subScope = context.deserialize(e, MutableScope.class);
+        Scope subScope = context.deserialize(e, Scope.class);
         // TODO: Remove if ScopeSpanningSymbols are removed
         deserializeSpanningSymbol(result, subScope, e);
         result.addSubScope(subScope);
@@ -143,7 +141,7 @@ public class SymbolTableSerializationHelper {
    * @param src
    * @param json
    */
-  public static void serializeSpanningSymbol(MutableScope src, JsonObject json) {
+  public static void serializeSpanningSymbol(Scope src, JsonObject json) {
     if (src.isSpannedBySymbol()) {
       ScopeSpanningSymbol spanningSymbol = src.getSpanningSymbol().get();
       JsonObject jsonSpanningSymbol = new JsonObject();
@@ -160,7 +158,7 @@ public class SymbolTableSerializationHelper {
    * @param subScope
    * @param e
    */
-  public static void deserializeSpanningSymbol(MutableScope result, MutableScope subScope,
+  public static void deserializeSpanningSymbol(Scope result, Scope subScope,
       JsonElement e) {
     JsonObject jsonSubScope = e.getAsJsonObject();
     if (jsonSubScope.has(ISerialization.SCOPESPANNING_SYMBOL)) {
@@ -178,8 +176,8 @@ public class SymbolTableSerializationHelper {
         subScope.setSpanningSymbol(symbol);
         Optional<? extends Scope> enclosingScope = symbol.getSpannedScope().getEnclosingScope();
         if (enclosingScope.isPresent()) {
-          enclosingScope.get().getAsMutableScope()
-              .removeSubScope((MutableScope) symbol.getSpannedScope());
+          enclosingScope.get()
+              .removeSubScope(symbol.getSpannedScope());
         }
       }
       else {

@@ -17,23 +17,23 @@ import static java.util.Optional.*;
 public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
 
   private final ResolvingConfiguration resolvingConfig;
-  protected Deque<MutableScope> scopeStack;
+  protected Deque<Scope> scopeStack;
 
   /**
    * The first scope OTHER THAN THE GLOBAL SCOPE that has been created, i.e., added  to the scope
    * stack. This information helps to determine the top scope within this creation process.
    */
-  private MutableScope firstCreatedScope;
+  private Scope firstCreatedScope;
 
   public CommonSymbolTableCreator(final ResolvingConfiguration resolvingConfig,
-                                  final MutableScope enclosingScope) {
+                                  final Scope enclosingScope) {
     this(resolvingConfig, new ArrayDeque<>());
 
     putOnStack(errorIfNull(enclosingScope));
   }
 
   public CommonSymbolTableCreator(final ResolvingConfiguration resolvingConfig,
-                                  final Deque<MutableScope> scopeStack) {
+                                  final Deque<Scope> scopeStack) {
     this.scopeStack = errorIfNull(scopeStack);
     this.resolvingConfig = errorIfNull(resolvingConfig);
   }
@@ -41,11 +41,11 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
   @Override
   public void putSpannedScopeOnStack(ScopeSpanningSymbol symbol) {
     errorIfNull(symbol);
-    putOnStack((MutableScope) symbol.getSpannedScope());
+    putOnStack((Scope) symbol.getSpannedScope());
   }
 
   @Override
-  public void putOnStack(MutableScope scope) {
+  public void putOnStack(Scope scope) {
     errorIfNull(scope);
     setResolvingFiltersForScope(scope);
 
@@ -71,7 +71,7 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
    *
    * @param scope the scope
    */
-  private void setResolvingFiltersForScope(final MutableScope scope) {
+  private void setResolvingFiltersForScope(final Scope scope) {
     // Look for filters that are registered for that scope (in case it is named).
     if (scope.getName().isPresent()) {
       scope.setResolvingFilters(resolvingConfig.getFilters(scope.getName().get()));
@@ -106,7 +106,7 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
   }
 
   @Override
-  public void setLinkBetweenSpannedScopeAndNode(MutableScope scope, ASTNode astNode) {
+  public void setLinkBetweenSpannedScopeAndNode(Scope scope, ASTNode astNode) {
     // scope -> ast
     scope.setAstNode(astNode);
 
@@ -136,12 +136,12 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
   }
 
   @Override
-  public final Optional<? extends MutableScope> removeCurrentScope() {
+  public final Optional<? extends Scope> removeCurrentScope() {
     return of(scopeStack.pollLast());
   }
 
   @Override
-  public final Optional<? extends MutableScope> currentScope() {
+  public final Optional<? extends Scope> currentScope() {
     return ofNullable(scopeStack.peekLast());
   }
 
@@ -155,7 +155,7 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
   }
 
   @Override
-  public MutableScope getFirstCreatedScope() {
+  public Scope getFirstCreatedScope() {
     return firstCreatedScope;
   }
 
@@ -165,7 +165,7 @@ public abstract class CommonSymbolTableCreator implements SymbolTableCreator {
     v.handle(root);
   }
 
-  protected void setScopeStack(final Deque<MutableScope> scopeStack) {
+  protected void setScopeStack(final Deque<Scope> scopeStack) {
     this.scopeStack = scopeStack;
   }
 
