@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className", "builderName")}
+${signature("className", "scopeName")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#-- Copyright -->
 ${defineHookPoint("JavaCopyright")}
@@ -10,14 +10,14 @@ package ${genHelper.getTargetPackage()};
 import java.util.Optional;
 
   /**
-    * Builder for {@link ${className}}.
+    * Builder for {@link ${scopeName}}.
     */
 
 public class ${className} {
 
   protected ${className}() {}
 
-  public ${builderName} build() {
-    return new ${builderName}();
+  public ${scopeName} build() {
+    return new ${scopeName}();
   }
 }

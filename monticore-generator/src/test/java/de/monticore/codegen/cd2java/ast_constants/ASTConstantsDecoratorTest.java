@@ -88,15 +88,6 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testGeneratedCode() {
-    GeneratorSetup generatorSetup = new GeneratorSetup();
-    generatorSetup.setGlex(glex);
-    GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-    StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, constantClass, constantClass);
-    System.out.println(sb.toString());
-  }
-
-  @Test
   public void testMethodCount() {
     assertEquals(1, constantClass.sizeCDMethods());
   }
@@ -108,4 +99,15 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(cdTypeFactory.createTypeByDefinition("Collection<String>"), method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
   }
+
+  @Test
+  public void testGeneratedCode() {
+    GeneratorSetup generatorSetup = new GeneratorSetup();
+    generatorSetup.setGlex(glex);
+    GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
+    StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, constantClass, constantClass);
+    System.out.println(sb.toString());
+  }
+
+
 }

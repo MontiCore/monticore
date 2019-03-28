@@ -19,11 +19,11 @@ import de.monticore.ast.ASTNode;
 
 
 /**
-* The ParentAwareVisitor of the language keeps track of the parent nodes during a traversal.<br/>
-* <br/>
-* <b>Access current parent</b>: use {@code getParent()} to access the current parent.<br/>
-* <br/>
-* <b>Access the complete parents list:</b> use {@code getParents()} to access a list of all parents.<br/>
+* The ParentAwareVisitor of the language keeps track of the parent nodes during a traversal.<br>
+* <br>
+* <b>Access current parent</b>: use {@code getParent()} to access the current parent.<br>
+* <br>
+* <b>Access the complete parents list:</b> use {@code getParents()} to access a list of all parents.<br>
 */
 public abstract class ${genHelper.getParentAwareVisitorType()} ${genHelper.getParentAwareVisitorSuperInterfaces()} {
 

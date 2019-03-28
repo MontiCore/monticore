@@ -6,7 +6,7 @@ import de.monticore.EmbeddingModelingLanguage;
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.ast.ASTNode;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
-import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import mc.embedding.composite._parser.CompositeParser;
 import mc.embedding.embedded._symboltable.EmbeddedLanguage;
@@ -30,7 +30,7 @@ public class CompositeLanguage extends EmbeddingModelingLanguage {
   }
 
   @Override public Optional<CompositeSymbolTableCreator> getSymbolTableCreator(
-      ResolvingConfiguration resolvingConfiguration, MutableScope enclosingScope) {
+      ResolvingConfiguration resolvingConfiguration, Scope enclosingScope) {
     return Optional.of(new CompositeSymbolTableCreator(resolvingConfiguration, enclosingScope));
   }
 

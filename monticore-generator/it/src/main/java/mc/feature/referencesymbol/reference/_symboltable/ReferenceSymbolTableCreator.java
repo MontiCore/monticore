@@ -1,6 +1,6 @@
 package mc.feature.referencesymbol.reference._symboltable;
 
-import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import mc.feature.referencesymbol.reference._ast.ASTRand;
 import mc.feature.referencesymbol.reference._ast.ASTReferenceToTest;
@@ -16,11 +16,11 @@ public class ReferenceSymbolTableCreator extends ReferenceSymbolTableCreatorTOP 
   private ASTTest astTest;
 
 
-  public ReferenceSymbolTableCreator(final ResolvingConfiguration resolvingConfig, final MutableScope enclosingScope) {
+  public ReferenceSymbolTableCreator(final ResolvingConfiguration resolvingConfig, final Scope enclosingScope) {
     super(resolvingConfig, enclosingScope);
   }
 
-  public ReferenceSymbolTableCreator(final ResolvingConfiguration resolvingConfig, final Deque<MutableScope> scopeStack) {
+  public ReferenceSymbolTableCreator(final ResolvingConfiguration resolvingConfig, final Deque<Scope> scopeStack) {
     super(resolvingConfig, scopeStack);
   }
 

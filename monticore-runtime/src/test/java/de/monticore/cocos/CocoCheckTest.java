@@ -2,13 +2,8 @@
 
 package de.monticore.cocos;
 
-import static org.junit.Assert.assertTrue;
-
-import java.util.Arrays;
-import java.util.Collection;
-
 import de.monticore.cocos.helper.Assert;
-import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.mocks.languages.entity.EntitySymbol;
 import de.monticore.symboltable.mocks.languages.entity.PropertySymbol;
 import de.monticore.symboltable.mocks.languages.entity.cocos.PropertyNameMustStartWithLowerCase;
@@ -19,6 +14,11 @@ import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.Collection;
+
+import static org.junit.Assert.assertTrue;
 
 public class CocoCheckTest {
   
@@ -83,6 +83,6 @@ public class CocoCheckTest {
   }
   
   private void setVariableResolver(EntitySymbol clazz) {
-    ((MutableScope) clazz.getSpannedScope()).addResolver(CommonResolvingFilter.create(PropertySymbol.KIND));
+    ((Scope) clazz.getSpannedScope()).addResolver(CommonResolvingFilter.create(PropertySymbol.KIND));
   }
 }

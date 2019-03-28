@@ -202,7 +202,7 @@ public abstract class CommonSymbol implements Symbol {
   }
 
   @Override
-  public void setEnclosingScope(MutableScope scope) {
+  public void setEnclosingScope(Scope scope) {
     this.enclosingScope = scope;
   }
 

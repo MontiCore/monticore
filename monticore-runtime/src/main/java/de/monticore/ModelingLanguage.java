@@ -8,11 +8,7 @@ import java.util.Optional;
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.ast.ASTNode;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
-import de.monticore.symboltable.CommonSymbolTableCreator;
-import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolvingConfiguration;
-import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.SymbolTableCreator;
+import de.monticore.symboltable.*;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.monticore.symboltable.serialization.IDeSer;
 import de.monticore.symboltable.serializing.IArtifactScopeSerializer;
@@ -47,7 +43,7 @@ public interface ModelingLanguage {
    */
   // TODO PN change to mandatory
   Optional<? extends SymbolTableCreator> getSymbolTableCreator
-  (ResolvingConfiguration resolvingConfiguration, MutableScope enclosingScope);
+  (ResolvingConfiguration resolvingConfiguration, Scope enclosingScope);
 
   @Deprecated//("Use getSymbolTableDeSer() instead.")
   default Optional<? extends IArtifactScopeSerializer> getSymbolTableDeserializer() {

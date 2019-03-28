@@ -496,7 +496,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     Set<String> inheritedSymbols = new LinkedHashSet<>();
     for (CDSymbol superCd : getAllSuperCds(cdSymbol)) {
       // resolve super grammar and retrieve qualified symbols
-      MCGrammarSymbol grammarSymbol = cdSymbol.getEnclosingScope().<MCGrammarSymbol> resolve(superCd.getName(), MCGrammarSymbol.KIND).orElse(null);
+      MCGrammarSymbol grammarSymbol = cdSymbol.getEnclosingScope().<MCGrammarSymbol> resolve(superCd.getFullName(), MCGrammarSymbol.KIND).orElse(null);
       inheritedSymbols.addAll(getQualifiedSymbolsFromGrammar(grammarSymbol));
     }
     return inheritedSymbols;

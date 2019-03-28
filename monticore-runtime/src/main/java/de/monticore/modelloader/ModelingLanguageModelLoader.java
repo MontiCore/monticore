@@ -9,8 +9,8 @@ import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelCoordinate;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.ArtifactScope;
-import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
+import de.monticore.symboltable.Scope;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -80,7 +80,7 @@ public abstract class ModelingLanguageModelLoader<T extends ASTNode> {
    * @return the asts of the loaded models (mapped to the corresponding symbol table elements)
    */
   public Collection<T> loadModelsIntoScope(final String qualifiedModelName,
-                                           final ModelPath modelPath, final MutableScope enclosingScope,
+                                           final ModelPath modelPath, final Scope enclosingScope,
                                            final ResolvingConfiguration resolvingConfiguration) {
 
     if (!loadSymbolsIntoScope(qualifiedModelName, modelPath, enclosingScope, resolvingConfiguration)) {
@@ -104,7 +104,7 @@ public abstract class ModelingLanguageModelLoader<T extends ASTNode> {
    * @param resolvingConfiguration the configuration of the resolving filters
    */
   public boolean loadSymbolsIntoScope(final String qualifiedModelName,
-                                   final ModelPath modelPath, final MutableScope enclosingScope,
+                                   final ModelPath modelPath, final Scope enclosingScope,
                                    final ResolvingConfiguration resolvingConfiguration)  {
 
     final ModelCoordinate resolvedCoordinate = resolveSymbol(qualifiedModelName, modelPath);
@@ -137,7 +137,7 @@ public abstract class ModelingLanguageModelLoader<T extends ASTNode> {
      * @param modelName name of the model
      */
     protected abstract void createSymbolTableFromAST (T ast, String modelName,
-            MutableScope enclosingScope,
+            Scope enclosingScope,
             ResolvingConfiguration resolvingConfiguration);
 
     /**

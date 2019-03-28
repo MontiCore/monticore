@@ -110,7 +110,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
     genEngine.generateNoA("symboltable.Scope", filePath, className, scopeRule, symbolNamesWithSuperGrammar, superScopeVisitors);
     genEngine.generateNoA("symboltable.ScopeInterface", interfaceFilePath, interfaceName, symbolNames, superScopes);
     genEngine.generateNoA("symboltable.ScopeBuilder", builderFilePath, builderName,
-        scopeName + GeneratorHelper.BUILDER);
+        scopeName);
     genEngine.generateNoA("symboltable.serialization.ScopeSerialization", serializerFilePath,
         serializerName, getSimpleName(scopeName));
   }

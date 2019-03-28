@@ -60,8 +60,8 @@ public class ASTConstantsDecorator extends AbstractDecorator<ASTCDCompilationUni
         .addCDAttribute(getLanguageAttribute(grammarName))
         .addCDAttribute(getDefaultAttribute())
         .addAllCDAttributes(getConstantAttribute(enumConstants))
-        .addCDAttribute(getSuperGrammarsAttribute())
-        .addCDConstructor(getDefaultConstructor(className, input))
+        .addCDAttribute(getSuperGrammarsAttribute(input))
+        .addCDConstructor(getDefaultConstructor(className))
         .addCDMethod(getGetAllLanguagesMethod())
         .build();
   }
@@ -75,25 +75,30 @@ public class ASTConstantsDecorator extends AbstractDecorator<ASTCDCompilationUni
   protected List<ASTCDAttribute> getConstantAttribute(List<ASTCDEnumConstant> enumConstants) {
     List<ASTCDAttribute> attributeList = new ArrayList<>();
     for (int i = 0; i < enumConstants.size(); i++) {
-      attributeList.add(getCDAttributeFactory().createAttribute(PUBLIC_STATIC_FINAL, getCDTypeFactory().createIntType(), enumConstants.get(i).getName()));
+      ASTCDAttribute attribute = getCDAttributeFactory().createAttribute(PUBLIC_STATIC_FINAL, getCDTypeFactory().createIntType(), enumConstants.get(i).getName());
+      this.replaceTemplate(VALUE, attribute, new StringHookPoint("= " + (i + 1)));
+      attributeList.add(attribute);
     }
     return attributeList;
   }
 
   protected ASTCDAttribute getDefaultAttribute() {
-    return getCDAttributeFactory().createAttribute(PUBLIC_STATIC_FINAL, getCDTypeFactory().createIntType(), DEFAULT);
+    ASTCDAttribute attribute = getCDAttributeFactory().createAttribute(PUBLIC_STATIC_FINAL, getCDTypeFactory().createIntType(), DEFAULT);
+    this.replaceTemplate(VALUE, attribute, new StringHookPoint("= 0"));
+    return attribute;
   }
 
-  protected ASTCDAttribute getSuperGrammarsAttribute() {
-    return getCDAttributeFactory().createAttribute(PUBLIC_STATIC, getCDTypeFactory().createArrayType(String.class, 1), SUPER_GRAMMARS);
-  }
-
-  protected ASTCDConstructor getDefaultConstructor(String className, ASTCDCompilationUnit compilationUnit) {
-    ASTCDConstructor defaultConstructor = getCDConstructorFactory().createConstructor(PUBLIC, className);
+  protected ASTCDAttribute getSuperGrammarsAttribute(ASTCDCompilationUnit compilationUnit) {
     List<CDSymbol> superSymbolList = SuperSymbolHelper.getSuperCDs(compilationUnit);
-    List<String> superGrammarNames = superSymbolList.stream().map(CDSymbol::getFullName).collect(Collectors.toList());
-    this.replaceTemplate(EMPTY_BODY, defaultConstructor, new TemplateHookPoint("ast_constants.ASTConstantsConstructor", superGrammarNames));
-    return defaultConstructor;
+    List<String> superGrammarNames = superSymbolList.stream().map(CDSymbol::getFullName).map(x -> "\"" + x + "\"").collect(Collectors.toList());
+    ASTCDAttribute attribute = getCDAttributeFactory().createAttribute(PUBLIC_STATIC, getCDTypeFactory().createArrayType(String.class, 1), SUPER_GRAMMARS);
+    String s = superGrammarNames.stream().reduce((a, b) -> a + ", " + b).get();
+    this.replaceTemplate(VALUE, attribute, new StringHookPoint("= {" + s + "}"));
+    return attribute;
+  }
+
+  protected ASTCDConstructor getDefaultConstructor(String className) {
+    return getCDConstructorFactory().createConstructor(PUBLIC, className);
   }
 
   protected ASTCDMethod getGetAllLanguagesMethod() {

@@ -15,7 +15,7 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 
 import de.monticore.symboltable.ArtifactScope;
-import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.serializing.ArtifactScopeSerialization;
 import de.monticore.symboltable.serializing.CommonArtifactScopeSerializer;
@@ -36,7 +36,7 @@ public class ${languageName}ArtifactScope${serializationSuffix} extends CommonAr
     DelegatingSerializer symbolAndScopeSerializer = new DelegatingSerializer(serializers);
     
     gson.registerTypeAdapter(ArtifactScope.class, new ArtifactScopeSerialization());
-    gson.registerTypeAdapter(MutableScope.class, symbolAndScopeSerializer);
+    gson.registerTypeAdapter(Scope.class, symbolAndScopeSerializer);
     gson.registerTypeAdapter(Symbol.class, symbolAndScopeSerializer);
     
     for (ISerialization<?> serializer : serializers) {

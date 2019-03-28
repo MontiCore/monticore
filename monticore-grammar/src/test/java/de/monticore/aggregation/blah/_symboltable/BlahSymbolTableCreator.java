@@ -1,16 +1,16 @@
 package de.monticore.aggregation.blah._symboltable;
 
-import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
+import de.monticore.symboltable.Scope;
 
 import java.util.Deque;
 
 public class BlahSymbolTableCreator  extends BlahSymbolTableCreatorTOP {
-  public BlahSymbolTableCreator(ResolvingConfiguration resolvingConfig, MutableScope enclosingScope) {
+  public BlahSymbolTableCreator(ResolvingConfiguration resolvingConfig, Scope enclosingScope) {
     super(resolvingConfig, enclosingScope);
   }
 
-  public BlahSymbolTableCreator(ResolvingConfiguration resolvingConfig, Deque<MutableScope> scopeStack) {
+  public BlahSymbolTableCreator(ResolvingConfiguration resolvingConfig, Deque<Scope> scopeStack) {
     super(resolvingConfig, scopeStack);
   }
   

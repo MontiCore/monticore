@@ -6,13 +6,13 @@ ${signature("ruleSymbol", "ruleName", "astName")}
 
   @Override
   public void visit(${astName} ast) {
-    MutableScope scope = create_${ruleName}(ast);
+    Scope scope = create_${ruleName}(ast);
     initialize_${ruleName}(scope, ast);
     putOnStack(scope);
     setLinkBetweenSpannedScopeAndNode(scope, ast);
   }
 
-  protected MutableScope create_${ruleName}(${astName} ast) {
+  protected Scope create_${ruleName}(${astName} ast) {
   <#if !genHelper.isNamed(ruleSymbol)>
     // creates new visibility scope
     return new ${scopeName}(false);
@@ -22,7 +22,7 @@ ${signature("ruleSymbol", "ruleName", "astName")}
   </#if>
   }
 
-  protected void initialize_${ruleName}(MutableScope scope, ${astName} ast) {
+  protected void initialize_${ruleName}(Scope scope, ${astName} ast) {
   <#if !genHelper.isNamed(ruleSymbol)>
     // e.g., scope.setName(ast.getName())
   <#else>

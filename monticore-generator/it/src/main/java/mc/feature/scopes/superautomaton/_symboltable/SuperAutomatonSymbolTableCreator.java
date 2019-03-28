@@ -6,7 +6,7 @@
 package mc.feature.scopes.superautomaton._symboltable;
 
 import de.monticore.symboltable.ArtifactScope;
-import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import mc.feature.scopes.superautomaton._ast.ASTAutomaton;
 import mc.feature.scopes.superautomaton._ast.ASTState;
@@ -22,7 +22,7 @@ public class SuperAutomatonSymbolTableCreator extends SuperAutomatonSymbolTableC
   
   public SuperAutomatonSymbolTableCreator(
       final ResolvingConfiguration resolverConfig,
-      final MutableScope enclosingScope) {
+      final Scope enclosingScope) {
     super(resolverConfig, enclosingScope);
   }
 

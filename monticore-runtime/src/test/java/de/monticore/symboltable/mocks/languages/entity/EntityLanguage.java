@@ -3,7 +3,7 @@
 package de.monticore.symboltable.mocks.languages.entity;
 
 import de.monticore.CommonModelingLanguage;
-import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 
@@ -29,7 +29,7 @@ public class EntityLanguage extends CommonModelingLanguage {
   
   @Override
   public Optional<EntityLanguageSymbolTableCreator> getSymbolTableCreator(
-      ResolvingConfiguration resolvingConfiguration, @Nullable MutableScope enclosingScope) {
+      ResolvingConfiguration resolvingConfiguration, @Nullable Scope enclosingScope) {
     return Optional.of(new CommonEntityLanguageSymbolTableCreator(resolvingConfiguration, enclosingScope));
   }
   

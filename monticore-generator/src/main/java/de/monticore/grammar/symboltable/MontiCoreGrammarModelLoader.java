@@ -7,7 +7,7 @@ import de.monticore.grammar.transformation.GrammarTransformer;
 import de.monticore.modelloader.FileBasedAstProvider;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.symboltable.ArtifactScope;
-import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
@@ -34,7 +34,7 @@ public class MontiCoreGrammarModelLoader extends ModelingLanguageModelLoader<AST
   }
 
   @Override
-  protected void createSymbolTableFromAST(ASTMCGrammar ast, String modelName, MutableScope
+  protected void createSymbolTableFromAST(ASTMCGrammar ast, String modelName, Scope
           enclosingScope, ResolvingConfiguration resolvingConfiguration) {
 
     final MontiCoreGrammarSymbolTableCreator symbolTableCreator =

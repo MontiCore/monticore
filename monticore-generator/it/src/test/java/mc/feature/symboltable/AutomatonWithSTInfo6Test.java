@@ -2,33 +2,16 @@
 
 package mc.feature.symboltable;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
-
-import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ScopeSpanningSymbol;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.symboltable.automatonwithstinfo6._ast.ASTBlock;
-import mc.feature.symboltable.automatonwithstinfo6._symboltable.AutomatonKind;
-import mc.feature.symboltable.automatonwithstinfo6._symboltable.AutomatonResolvingFilter;
-import mc.feature.symboltable.automatonwithstinfo6._symboltable.AutomatonSymbol;
-import mc.feature.symboltable.automatonwithstinfo6._symboltable.AutomatonSymbolReference;
-import mc.feature.symboltable.automatonwithstinfo6._symboltable.AutomatonWithSTInfo6Language;
-import mc.feature.symboltable.automatonwithstinfo6._symboltable.AutomatonWithSTInfo6ModelLoader;
-import mc.feature.symboltable.automatonwithstinfo6._symboltable.AutomatonWithSTInfo6ModelNameCalculator;
-import mc.feature.symboltable.automatonwithstinfo6._symboltable.AutomatonWithSTInfo6Scope;
-import mc.feature.symboltable.automatonwithstinfo6._symboltable.AutomatonWithSTInfo6SymbolTableCreator;
-import mc.feature.symboltable.automatonwithstinfo6._symboltable.StateKind;
-import mc.feature.symboltable.automatonwithstinfo6._symboltable.StateResolvingFilter;
-import mc.feature.symboltable.automatonwithstinfo6._symboltable.StateSymbol;
-import mc.feature.symboltable.automatonwithstinfo6._symboltable.StateSymbolReference;
-import mc.feature.symboltable.automatonwithstinfo6._symboltable.TransitionKind;
-import mc.feature.symboltable.automatonwithstinfo6._symboltable.TransitionResolvingFilter;
-import mc.feature.symboltable.automatonwithstinfo6._symboltable.TransitionSymbol;
-import mc.feature.symboltable.automatonwithstinfo6._symboltable.TransitionSymbolReference;
+import mc.feature.symboltable.automatonwithstinfo6._symboltable.*;
+import org.junit.Test;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class AutomatonWithSTInfo6Test extends GeneratorIntegrationsTest {
 
@@ -66,13 +49,13 @@ public class AutomatonWithSTInfo6Test extends GeneratorIntegrationsTest {
 //    StateSymbol to = transitionSymbol.getTo();
     
     class STCreator extends AutomatonWithSTInfo6SymbolTableCreator {
-      public STCreator(ResolvingConfiguration resolvingConfig, MutableScope enclosingScope) {
+      public STCreator(ResolvingConfiguration resolvingConfig, Scope enclosingScope) {
         super(resolvingConfig, enclosingScope);
       }
       
       @Override
       // Compiler fails if no method for scope 'Block' is generated
-      protected MutableScope create_Block(ASTBlock ast) {
+      protected Scope create_Block(ASTBlock ast) {
         return super.create_Block(ast);
       }
     }

@@ -19,11 +19,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class ResolvingTest {
 
@@ -31,7 +27,7 @@ public class ResolvingTest {
   public void testSameSymbolOccursOnlyOnce() {
     final EntitySymbol entity = new EntitySymbol("Entity");
 
-    final MutableScope localScope = new CommonScope(false);
+    final Scope localScope = new CommonScope(false);
     localScope.addResolver(CommonResolvingFilter.create(EntitySymbol.KIND));
 
     localScope.add(entity);
@@ -59,8 +55,8 @@ public class ResolvingTest {
     final ActionSymbol action = new ActionSymbol("action");
     entity.addAction(action);
 
-    final MutableScope localScope = new CommonScope(false);
-    ((MutableScope)action.getSpannedScope()).addSubScope(localScope);
+    final Scope localScope = new CommonScope(false);
+    ((Scope)action.getSpannedScope()).addSubScope(localScope);
 
     final ResolvingFilter<PropertySymbol> propertyResolvingFilter = CommonResolvingFilter.create(PropertySymbol.KIND);
 
@@ -78,7 +74,7 @@ public class ResolvingTest {
     assertFalse(entity.getSpannedScope().resolve("prop", PropertySymbol.KIND).isPresent());
 
 
-    entity.getMutableSpannedScope().addResolver(propertyResolvingFilter);
+    entity.getSpannedScope().addResolver(propertyResolvingFilter);
     assertFalse(action.getSpannedScope().resolve("prop", PropertySymbol.KIND).isPresent());
     assertTrue(entity.getSpannedScope().resolve("prop", PropertySymbol.KIND).isPresent());
   }
@@ -151,7 +147,7 @@ public class ResolvingTest {
     artifactScope.setResolvingFilters(resolvingConfiguration.getDefaultFilters());
 
     final EntitySymbol entity = new EntitySymbol("Entity");
-    entity.getMutableSpannedScope().setResolvingFilters(resolvingConfiguration.getDefaultFilters());
+    entity.getSpannedScope().setResolvingFilters(resolvingConfiguration.getDefaultFilters());
     artifactScope.add(entity);
 
     final ActionSymbol action = new ActionSymbol("action");
