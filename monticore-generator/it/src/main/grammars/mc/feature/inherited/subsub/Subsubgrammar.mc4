@@ -4,8 +4,9 @@ package mc.feature.inherited.subsub;
 
 grammar Subsubgrammar extends mc.feature.inherited.sub.Subgrammar {
 
-  N = X? D;
-  
+//TODO: Obere Produktion eigentlich richtig, wegen Emf ausgewichen auf untere
+//  N = X? D;
+  N = D;
 //  P extends X = D;
   
   S = X*;
