@@ -3,23 +3,24 @@ package de.monticore.codegen.cd2java.visitor_new;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 
-import java.util.Optional;
-
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java.builder.BuilderDecorator.BUILD_METHOD;
-import static de.monticore.codegen.cd2java.visitor_new.VisitorConstants.TRAVERSE;
+import static de.monticore.codegen.cd2java.symboltable.SymbolTableConstants.SYMBOL_FULL_NAME;
+import static de.monticore.codegen.cd2java.symboltable.SymbolTableConstants.SYMBOL_TABLE_PACKGE;
+import static de.monticore.codegen.cd2java.visitor_new.VisitorConstants.*;
 
 public class SymbolVisitorDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDInterface> {
 
-  private static final String SYMBOL_PACKAGE = "._symboltable.";
-
   private final VisitorDecorator visitorDecorator;
 
-  public SymbolVisitorDecorator(final GlobalExtensionManagement glex, final VisitorDecorator visitorDecorator) {
+  private final VisitorService visitorService;
+
+  public SymbolVisitorDecorator(final GlobalExtensionManagement glex, final VisitorDecorator visitorDecorator, final VisitorService visitorService) {
     super(glex);
     this.visitorDecorator = visitorDecorator;
+    this.visitorService = visitorService;
   }
 
   @Override
@@ -27,7 +28,7 @@ public class SymbolVisitorDecorator extends AbstractDecorator<ASTCDCompilationUn
     ASTCDCompilationUnit compilationUnit = input.deepClone();
 
     //set classname to correct Name with path
-    String astPath = compilationUnit.getCDDefinition().getName().toLowerCase() + SYMBOL_PACKAGE;
+    String astPath = compilationUnit.getCDDefinition().getName().toLowerCase() + "." + SYMBOL_TABLE_PACKGE + ".";
     for (ASTCDClass astcdClass : compilationUnit.getCDDefinition().getCDClassList()) {
       astcdClass.setName(astPath + astcdClass.getName());
     }
@@ -39,14 +40,27 @@ public class SymbolVisitorDecorator extends AbstractDecorator<ASTCDCompilationUn
     for (ASTCDEnum astcdEnum : compilationUnit.getCDDefinition().getCDEnumList()) {
       astcdEnum.setName(astPath + astcdEnum.getName());
     }
+    visitorDecorator.disableTemplates();
+    ASTCDInterface astcdInterface = visitorDecorator.decorate(compilationUnit);
 
-    ASTCDInterface symbolBuilder = visitorDecorator.decorate(compilationUnit);
+    astcdInterface.getCDMethodList().stream().filter(m -> TRAVERSE.equals(m.getName())).forEach(m ->
+        this.replaceTemplate("visitor_new.Traverse", m, new TemplateHookPoint(EMPTY_BODY, astcdInterface)));
+    astcdInterface.getCDMethodList().stream().filter(m -> HANDLE.equals(m.getName())).forEach(m ->
+        this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("visitor_new.Handle", true)));
 
-    Optional<ASTCDMethod> traverseMethod = symbolBuilder.getCDMethodList().stream().filter(m -> BUILD_METHOD.equals(m.getName())).findFirst();
-    traverseMethod.ifPresent(m ->
-        this.replaceTemplate(TRAVERSE, m, new TemplateHookPoint(EMPTY_BODY, symbolBuilder)));
+    astcdInterface.addCDMethod(addVisitASTNodeMethods());
+    astcdInterface.addCDMethod(addEndVisitASTNodeMethods());
+    return astcdInterface;
+  }
 
-    return symbolBuilder;
+  protected ASTCDMethod addVisitASTNodeMethods() {
+    ASTType astNodeType = getCDTypeFactory().createTypeByDefinition(SYMBOL_FULL_NAME);
+    return visitorService.getVisitorMethod(VISIT, astNodeType);
+  }
+
+  protected ASTCDMethod addEndVisitASTNodeMethods() {
+    ASTType astNodeType = getCDTypeFactory().createTypeByDefinition(SYMBOL_FULL_NAME);
+    return visitorService.getVisitorMethod(END_VISIT, astNodeType);
   }
 
 }

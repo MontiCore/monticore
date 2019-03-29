@@ -2,10 +2,14 @@ package de.monticore.codegen.data;
 
 classdiagram Data {
 
-    class A {
+    public class A {
         protected int i;
         protected String s;
         protected Optional<String> opt;
         protected List<String> list;
+        protected de.monticore.codegen.data.ASTB b;
+    }
+
+    public class B {
     }
 }

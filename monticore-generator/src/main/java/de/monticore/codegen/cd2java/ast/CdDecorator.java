@@ -21,6 +21,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Symbol;
 import de.monticore.types.TypesHelper;
@@ -31,6 +32,7 @@ import de.monticore.types.types._ast.TypesMill;
 import de.monticore.umlcd4a.CD4AnalysisHelper;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.umlcd4a.prettyprint.AstPrinter;
+import de.monticore.umlcd4a.prettyprint.CDPrettyPrinterConcreteVisitor;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
 import de.se_rwth.commons.Joiners;
@@ -111,6 +113,8 @@ public class CdDecorator {
   }
 
   public void decorate(ASTCDCompilationUnit cdCompilationUnit) {
+    CDPrettyPrinterConcreteVisitor pp = new CDPrettyPrinterConcreteVisitor(new IndentPrinter());
+    System.out.println(pp.prettyprint(cdCompilationUnit));
     AstGeneratorHelper astHelper = new AstGeneratorHelper(cdCompilationUnit, symbolTable);
     ASTCDDefinition cdDefinition = cdCompilationUnit.getCDDefinition();
     List<ASTCDClass> nativeClasses = Lists.newArrayList(cdDefinition.getCDClassList());

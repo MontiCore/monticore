@@ -2,7 +2,6 @@ package de.monticore.codegen.cd2java.visitor;
 
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
-import de.monticore.codegen.cd2java.factories.CDParameterFactory;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.visitor_new.ASTVisitorDecorator;
@@ -28,15 +27,13 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class VisitorDecoratorTest extends DecoratorTestCase {
+public class ASTVisitorDecoratorTest extends DecoratorTestCase {
 
   private CDTypeFactory cdTypeFacade;
 
   private ASTCDInterface visitorInterface;
 
   private GlobalExtensionManagement glex;
-
-  private static final String VISITOR_NAME = "AutomatonVisitor";
 
   private static final String VISITOR_FULL_NAME = "de.monticore.codegen.ast.automaton._visitor.AutomatonVisitor";
   
@@ -54,11 +51,12 @@ public class VisitorDecoratorTest extends DecoratorTestCase {
     this.glex = new GlobalExtensionManagement();
     this.cdTypeFacade = CDTypeFactory.getInstance();
 
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
     ASTCDCompilationUnit compilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     this.glex.setGlobalValue("genHelper", new DecorationHelper());
-    ASTVisitorDecorator decorator = new ASTVisitorDecorator(this.glex, new VisitorDecorator(this.glex, new VisitorService(compilationUnit)));
+    ASTVisitorDecorator decorator = new ASTVisitorDecorator(this.glex, new VisitorDecorator(this.glex, new VisitorService(compilationUnit)), new VisitorService(compilationUnit));
     this.visitorInterface = decorator.decorate(compilationUnit);
+    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+
   }
 
   @Test
