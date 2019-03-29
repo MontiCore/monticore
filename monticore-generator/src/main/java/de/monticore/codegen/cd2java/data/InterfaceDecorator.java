@@ -32,5 +32,4 @@ public class InterfaceDecorator extends AbstractDecorator<ASTCDInterface, ASTCDI
     cdInterface.getCDAttributeList().clear();
     return cdInterface;
   }
-
 }
