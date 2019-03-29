@@ -3,10 +3,10 @@
 package mc.feature;
 
 grammar AstAttributes {
+//TODO: warum wird kein Lexer generiert, wenn nur A; und B;?
+   A="foo";
 
-   A;
-
-   B;
+   B="bar";
 
    TransformationStructure = B;
     astrule TransformationStructure =

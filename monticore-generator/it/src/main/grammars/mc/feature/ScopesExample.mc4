@@ -42,10 +42,10 @@ grammar ScopesExample extends mc.grammar.lexicals.ItTestLexicals {
 										            // oder besser: Type sollte nicht String sein sondern ein TypeUsage
 										            //TODO für Holger: es wäre toll, wenn ClassGenwithinGrammar beliegibe Attributtypen generieren/verstehen kann...
 										            //TODO für Steven: Ksann sie jetzt ...
-										| bool:"false" {a.setType("Boolean");}
-										| bool:"true" {a.setType("Boolean");}
-										| int:INT {a.setType("Int");}
-										| float:FLOAT {a.setType("Float");}
+										| bool:"false" {_aNode.setType("Boolean");}
+										| bool:"true" {_aNode.setType("Boolean");}
+										| int:INT {_aNode.setType("Int");}
+										| float:FLOAT {_aNode.setType("Float");}
 										| call:MethodCall) ";";
 
 
