@@ -1,16 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package de.monticore;
+package mc.feature;
 
 grammar Action {
-  
+
   // LexBlock with InitAction
   token Name = (init {int i = 0;} : 'a');
-  
+
   // LexRule with InitAction
   token Name2 {int j = 0;} = 'b';
-  
+
   // ClassBlock with InitAction
   A = (init {int k = 0;} : "A");
-    
+
 }

@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.inherited;
+
+component grammar Supergrammar {
+
+  X = Y "HH" J;
+  
+  Y = G J;
+  
+  J = K;
+  
+  interface G;
+   
+  K implements G = "OO";
+  
+  N;
+}
