@@ -1,6 +1,9 @@
 # Release Notes
 
 ##  MontiCore 5.0.5-SNAPSHOT
+- The IncGen-reports are stored in the source code directory
+- Removed MutableScope
+- IncGen-Reports are stored 
 - Removed deprecated keyword _ast_ (use _astrule_) in *.mc4
 
 ##  MontiCore 5.0.3
