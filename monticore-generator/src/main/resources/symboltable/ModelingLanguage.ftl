@@ -19,6 +19,7 @@ import ${fqn}._parser.${grammarName}Parser;
 </#if>
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ResolvingConfiguration;
+import de.monticore.symboltable.serializing.IArtifactScopeSerializer;
 
 public abstract class ${className} extends de.monticore.CommonModelingLanguage {
 
@@ -46,8 +47,9 @@ public abstract class ${className} extends de.monticore.CommonModelingLanguage {
   }
 
   @Override
-  public Optional<${grammarName}ArtifactScopeSerializer> getSymbolTableDeserializer() {
-    return Optional.of(new ${grammarName}ArtifactScopeSerializer());
+  @Deprecated
+  public Optional<? extends IArtifactScopeSerializer> getSymbolTableDeserializer() {
+    return Optional.empty();
   }
   </#if>
 

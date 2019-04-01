@@ -29,11 +29,14 @@ public class JsonPrinter {
   
   protected int nestedListDepth;
   
+  protected int nestedObjectDepth;
+  
   public JsonPrinter(boolean serializeEmptyLists) {
     this.serializeEmptyLists = serializeEmptyLists;
     this.printer = new IndentPrinter();
     this.isFirstAttribute = true;
     this.nestedListDepth = 0;
+    this.nestedObjectDepth = 0;
   }
   
   public JsonPrinter() {
@@ -44,6 +47,7 @@ public class JsonPrinter {
     printCommaIfNecessary();
     printer.print("{");
     isFirstAttribute = true;
+    nestedObjectDepth++;
   }
   
   /**
@@ -186,7 +190,7 @@ public class JsonPrinter {
     printCommaIfNecessary();
     printer.print("\"");
     printer.print(kind);
-    printer.print("\": [");
+    printer.print("\":[");
     isFirstAttribute = true;
     nestedListDepth++;
   }
@@ -219,9 +223,7 @@ public class JsonPrinter {
     if (0 == nestedListDepth) {
       isFirstAttribute = true;
     }
-    else if (0 > nestedListDepth) {
-      Log.error("Invalid nesting of Json lists in " + this.toString());
-    }
+    nestedObjectDepth--;
   }
   
   /**
@@ -241,7 +243,7 @@ public class JsonPrinter {
     printCommaIfNecessary();
     printer.print("\"");
     printer.print(kind);
-    printer.print("\": ");
+    printer.print("\":");
     printer.print(value);
   }
   
@@ -252,6 +254,16 @@ public class JsonPrinter {
    */
   @Override
   public String toString() {
+    if (0 != nestedListDepth) {
+      Log.error("Invalid nesting of Json lists in " + this.toStringWithoutValidation());
+    }
+    if (0 != nestedObjectDepth) {
+      Log.error("Invalid nesting of Json objects in " + this.toStringWithoutValidation());
+    }
+    return toStringWithoutValidation();
+  }
+  
+  protected String toStringWithoutValidation() {
     return printer.getContent();
   }
   
