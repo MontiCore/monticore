@@ -195,7 +195,6 @@ public class Reporting extends Slf4jLog {
   }
 
   public static void init(String outputDirectory, String reportDirectory, ReportManagerFactory factory) {
-  System.out.println("!!!!!!!!!!!!!!!!!!");
     if (outputDirectory == null || outputDirectory.isEmpty()) {
       Log.error("0xA4050 Output directory must not be null or empty.");
     }
