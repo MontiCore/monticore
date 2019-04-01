@@ -10,42 +10,6 @@ package de.monticore;
 
 component grammar MCBasicLiterals extends de.monticore.MCBasics {
 
-  /*========================================================================*/
-  /*======================= AST DEFINITIONS ================================*/
-  /*========================================================================*/
-
-  astrule BooleanLiteral =
-    method public boolean getValue() {
-      return this.source == ASTConstantsMCBasicLiterals.TRUE;
-    }
-  ;
-
-  astrule CharLiteral = 
-    method public char getValue() {
-      return de.monticore.MCLiteralsDecoder.decodeChar(getSource());
-    }
-  ;
-
-  astrule StringLiteral = 
-    method public String getValue() {
-      return de.monticore.MCLiteralsDecoder.decodeString(getSource());
-    }
-  ;
-
-   astrule NatLiteral = 
-    method public int getValue() {
-      return de.monticore.MCLiteralsDecoder.decodeInt(getSource());
-    }
-  ;
-
-  astrule SignedNatLiteral = 
-    method public int getValue() {
-      if (negative) {
-        return - de.monticore.MCLiteralsDecoder.decodeInt(getSource());
-      }
-      return de.monticore.MCLiteralsDecoder.decodeInt(getSource());
-    }
-  ;
 
 
   /*========================================================================*/
@@ -53,7 +17,8 @@ component grammar MCBasicLiterals extends de.monticore.MCBasics {
   /*========================================================================*/
 
   /** ASTLiteral is the interface for all literals (NullLiteral,
-        BooleanLiteral, CharLiteral, StringLiteral and all NumericLiterals)
+        BooleanLiteral, CharLiteral, StringLiteral and all NumericLiterals
+        without '-' at the beginning)
     */
   interface Literal;
 
@@ -66,7 +31,7 @@ component grammar MCBasicLiterals extends de.monticore.MCBasics {
 
 
   /** The interface ASTNumericLiteral combines the numeric literal types for
-        Integer, Long, Float and Double
+        Integer, Long, Float and Double without '-' at the beginning)
     */
   interface NumericLiteral extends Literal;
 
@@ -180,6 +145,43 @@ component grammar MCBasicLiterals extends de.monticore.MCBasics {
  fragment token OctalDigit
     = '0'..'7' ;
 
+
+  /*========================================================================*/
+  /*======================= AST DEFINITIONS ================================*/
+  /*========================================================================*/
+
+  astrule BooleanLiteral =
+    method public boolean getValue() {
+      return this.source == ASTConstantsMCBasicLiterals.TRUE;
+    }
+  ;
+
+  astrule CharLiteral =
+    method public char getValue() {
+      return de.monticore.MCLiteralsDecoder.decodeChar(getSource());
+    }
+  ;
+
+  astrule StringLiteral =
+    method public String getValue() {
+      return de.monticore.MCLiteralsDecoder.decodeString(getSource());
+    }
+  ;
+
+   astrule NatLiteral =
+    method public int getValue() {
+      return de.monticore.MCLiteralsDecoder.decodeInt(getSource());
+    }
+  ;
+
+  astrule SignedNatLiteral =
+    method public int getValue() {
+      if (negative) {
+        return - de.monticore.MCLiteralsDecoder.decodeInt(getSource());
+      }
+      return de.monticore.MCLiteralsDecoder.decodeInt(getSource());
+    }
+  ;
 
 }
 
