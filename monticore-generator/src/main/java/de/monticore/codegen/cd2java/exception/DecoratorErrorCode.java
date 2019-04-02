@@ -5,9 +5,6 @@ public enum DecoratorErrorCode {
   AST_FOR_CD_TYPE_SYMBOL_NOT_FOUND(11, "Could find ASTCDClass for CDTypeSymbol '%s'"),
   AST_FOR_CD_FIELD_SYMBOL_NOT_FOUND(12, "Could find ASTCDAttribute for CDFieldSymbol '%s'"),
   CD_TYPE_NOT_FOUND(13, "Could find CDTypeSymbol '%s'")
-
-
-
   ;
 
   final int code;
