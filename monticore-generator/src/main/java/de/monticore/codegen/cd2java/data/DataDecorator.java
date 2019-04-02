@@ -39,10 +39,14 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
   private final AbstractService service;
 
-  public DataDecorator(final GlobalExtensionManagement glex, final MethodDecorator methodDecorator, final AbstractService service) {
+  private final DataDecoratorUtil dataDecoratorUtil;
+
+  public DataDecorator(final GlobalExtensionManagement glex, final MethodDecorator methodDecorator,
+                       final AbstractService service, final DataDecoratorUtil dataDecoratorUtil) {
     super(glex);
     this.methodDecorator = methodDecorator;
     this.service = service;
+    this.dataDecoratorUtil = dataDecoratorUtil;
   }
 
   @Override
@@ -51,7 +55,8 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
     if (!clazz.getCDAttributeList().isEmpty()) {
       clazz.addCDConstructor(createFullConstructor(clazz));
     }
-    clazz.addAllCDMethods(createEqualsMethods(clazz));
+    List<ASTCDMethod> dataMethods = dataDecoratorUtil.decorate(clazz);
+    clazz.addAllCDMethods(dataMethods);
     clazz.addAllCDMethods(createCloneMethods(clazz));
     clazz.addAllCDMethods(clazz.getCDAttributeList().stream()
         .map(methodDecorator::decorate)
@@ -73,6 +78,7 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
   }
 
   //todo move to constructor factory -> how use service in factory?
+  //todo may do this recursive?
   protected List<ASTCDAttribute> getInheritedAttributes(ASTCDClass clazz) {
     List<ASTCDAttribute> inheritedAttributes = new ArrayList<>();
     //also consider super classes of super classes
@@ -97,19 +103,6 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
       }
     }
     return inheritedAttributes;
-  }
-
-  protected List<ASTCDMethod> createEqualsMethods(ASTCDClass clazz) {
-    ASTCDParameter objectParameter = getCDParameterFactory().createParameter(Object.class, "o");
-    ASTCDParameter forceSameOrderParameter = getCDParameterFactory().createParameter(getCDTypeFactory().createBooleanType(), "forceSameOrder");
-
-    return new ArrayList<>(Arrays.asList(
-        createDeepEqualsMethod(objectParameter),
-        createDeepEqualsWithOrderMethod(clazz, objectParameter, forceSameOrderParameter),
-        createDeepEqualsWithComments(objectParameter),
-        createDeepEqualsWithCommentsWithOrder(clazz, objectParameter, forceSameOrderParameter),
-        createEqualAttributesMethod(clazz, objectParameter),
-        createEqualsWithComments(clazz, objectParameter)));
   }
 
   protected ASTCDMethod createDeepEqualsMethod(ASTCDParameter objectParameter) {
