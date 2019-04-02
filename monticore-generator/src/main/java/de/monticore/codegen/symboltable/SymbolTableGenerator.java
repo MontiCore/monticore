@@ -2,27 +2,21 @@
 
 package de.monticore.codegen.symboltable;
 
+import static com.google.common.collect.Lists.newArrayList;
+import static de.monticore.codegen.GeneratorHelper.SCOPE;
+import static de.se_rwth.commons.logging.Log.debug;
+
 import java.io.File;
 import java.util.Collection;
-import java.util.List;
-
-import com.google.common.collect.Lists;
 
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.grammar.grammar._ast.ASTGrammarReference;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
-import de.monticore.grammar.symboltable.MCGrammarSymbolReference;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.se_rwth.commons.Names;
-import de.se_rwth.commons.logging.Log;
-
-import static com.google.common.collect.Lists.newArrayList;
-import static de.monticore.codegen.GeneratorHelper.SCOPE;
-import static de.se_rwth.commons.logging.Log.debug;
 
 public class SymbolTableGenerator {
 
@@ -50,8 +44,6 @@ public class SymbolTableGenerator {
 
   private final SymbolTableCreatorGenerator symbolTableCreatorGenerator;
 
-  private final ArtifactScopeSerializerGenerator symbolTableSerializationGenerator;
-  
   private final SymbolInterfaceGenerator symbolInterfaceGenerator;
 
   protected SymbolTableGenerator(
@@ -65,7 +57,6 @@ public class SymbolTableGenerator {
       ScopeGenerator scopeGenerator,
       SymbolReferenceGenerator symbolReferenceGenerator,
       SymbolTableCreatorGenerator symbolTableCreatorGenerator,
-      ArtifactScopeSerializerGenerator symbolTableSerializationGenerator,
       SymbolInterfaceGenerator symbolInterfaceGenerator) {
     this.modelingLanguageGenerator = modelingLanguageGenerator;
     this.modelLoaderGenerator = modelLoaderGenerator;
@@ -77,7 +68,6 @@ public class SymbolTableGenerator {
     this.scopeSpanningSymbolGenerator = scopeSpanningSymbolGenerator;
     this.symbolReferenceGenerator = symbolReferenceGenerator;
     this.symbolTableCreatorGenerator = symbolTableCreatorGenerator;
-    this.symbolTableSerializationGenerator = symbolTableSerializationGenerator;
     this.symbolInterfaceGenerator = symbolInterfaceGenerator;
   }
 
@@ -133,7 +123,6 @@ public class SymbolTableGenerator {
       modelNameCalculatorGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol,
           ruleNames);
       symbolTableCreatorGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol);
-      symbolTableSerializationGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol);
 
       for (MCProdSymbol ruleSymbol : allSymbolDefiningRules) {
         generateSymbolOrScopeSpanningSymbol(genEngine, genHelper, ruleSymbol, handCodedPath);

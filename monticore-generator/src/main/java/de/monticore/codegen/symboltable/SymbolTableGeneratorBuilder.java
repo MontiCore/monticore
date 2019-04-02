@@ -16,7 +16,6 @@ public class SymbolTableGeneratorBuilder {
 
   private SymbolReferenceGenerator symbolReferenceGenerator;
   private SymbolTableCreatorGenerator symbolTableCreatorGenerator;
-  private ArtifactScopeSerializerGenerator symbolTableSerializationGenerator;
   private SymbolInterfaceGenerator symbolInterfaceGenerator;
 
   public SymbolTableGenerator build() {
@@ -50,9 +49,6 @@ public class SymbolTableGeneratorBuilder {
     if (symbolTableCreatorGenerator == null) {
       symbolTableCreatorGenerator = new CommonSymbolTableCreatorGenerator();
     }
-    if (symbolTableSerializationGenerator == null) {
-      symbolTableSerializationGenerator = new CommonArtifactScopeSerializerGenerator();
-    }
     if (symbolInterfaceGenerator == null) {
       symbolInterfaceGenerator = new CommonSymbolInterfaceGenerator();
     }
@@ -60,7 +56,7 @@ public class SymbolTableGeneratorBuilder {
     return new SymbolTableGenerator(modelingLanguageGenerator, modelLoaderGenerator,
             modelNameCalculatorGenerator, resolvingFilterGenerator, symbolGenerator,
             symbolKindGenerator, scopeSpanningSymbolGenerator, scopeGenerator,
-            symbolReferenceGenerator, symbolTableCreatorGenerator, symbolTableSerializationGenerator,
+            symbolReferenceGenerator, symbolTableCreatorGenerator, //symbolTableSerializationGenerator,
             symbolInterfaceGenerator);
   }
 
@@ -107,11 +103,6 @@ public class SymbolTableGeneratorBuilder {
 
   public SymbolTableGeneratorBuilder symbolTableCreatorGenerator(SymbolTableCreatorGenerator symbolTableCreatorGenerator) {
     this.symbolTableCreatorGenerator = symbolTableCreatorGenerator;
-    return this;
-  }
-
-  public SymbolTableGeneratorBuilder symbolTableSerializationGenerator(ArtifactScopeSerializerGenerator symbolTableSerializationGenerator) {
-    this.symbolTableSerializationGenerator = symbolTableSerializationGenerator;
     return this;
   }
 

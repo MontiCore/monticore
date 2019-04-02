@@ -32,9 +32,15 @@ public class Reporting extends Slf4jLog {
   private Map<String, ReportManager> reportManagers = new HashMap<>();
 
   /**
-   * Where reports will be written to.
+   * Where output will be written to.
    */
   private String outputDirectory;
+
+  /**
+   * Where reports will be written to.
+   */
+  private String reportDirectory;
+
 
   /**
    * For creating report managers on-demand for newly processed models.
@@ -44,11 +50,24 @@ public class Reporting extends Slf4jLog {
   /**
    * Constructor for de.monticore.generating.templateengine.reporting.Reporting
    *
+   * @param reportDirectory for storing the reports
+   * @param factory for creating specific report manager configurations
+   */
+  private Reporting(String reportDirectory, ReportManagerFactory factory) {
+    this.outputDirectory = outputDirectory;
+    this.reportDirectory = reportDirectory;
+    this.factory = factory;
+  }
+
+  /**
+   * Constructor for de.monticore.generating.templateengine.reporting.Reporting
+   *
    * @param outputDirectory for storing the reports
    * @param factory for creating specific report manager configurations
    */
-  private Reporting(String outputDirectory, ReportManagerFactory factory) {
+  private Reporting(String outputDirectory, String reportDirectory, ReportManagerFactory factory) {
     this.outputDirectory = outputDirectory;
+    this.reportDirectory = reportDirectory;
     this.factory = factory;
   }
 
@@ -58,6 +77,10 @@ public class Reporting extends Slf4jLog {
 
   private String getOutputDirectory() {
     return this.outputDirectory;
+  }
+
+  private String getReportDirectory() {
+    return this.reportDirectory;
   }
 
   private ReportManagerFactory getFactory() {
@@ -76,7 +99,7 @@ public class Reporting extends Slf4jLog {
   // some log overriding magic
 
   /**
-   * @see de.se_rwth.commons.logging.ILog#warn(java.lang.String)
+   * @see de.se_rwth.commons.logging.Log#warn(java.lang.String)
    */
   @Override
   public void doWarn(String msg) {
@@ -85,7 +108,7 @@ public class Reporting extends Slf4jLog {
   }
 
   /**
-   * @see de.se_rwth.commons.logging.ILog#warn(java.lang.String,
+   * @see de.se_rwth.commons.logging.Log#warn(java.lang.String,
    * java.lang.Throwable)
    */
   @Override
@@ -95,7 +118,7 @@ public class Reporting extends Slf4jLog {
   }
 
   /**
-   * @see de.se_rwth.commons.logging.ILog#error(java.lang.String)
+   * @see de.se_rwth.commons.logging.Log#error(java.lang.String)
    */
   @Override
   public void doError(String msg) {
@@ -103,7 +126,7 @@ public class Reporting extends Slf4jLog {
   }
 
   /**
-   * @see de.se_rwth.commons.logging.ILog#error(java.lang.String,
+   * @see de.se_rwth.commons.logging.Log#error(java.lang.String,
    * java.lang.Throwable)
    */
   @Override
@@ -166,20 +189,28 @@ public class Reporting extends Slf4jLog {
     return singleton;
   }
 
-  public static void init(String outputDirectory, ReportManagerFactory factory) {
+  @Deprecated // Delete afer release 5.0.5
+  public static void init(String reportDirectory, ReportManagerFactory factory) {
+    init(reportDirectory, reportDirectory, factory);
+  }
+
+  public static void init(String outputDirectory, String reportDirectory, ReportManagerFactory factory) {
     if (outputDirectory == null || outputDirectory.isEmpty()) {
       Log.error("0xA4050 Output directory must not be null or empty.");
+    }
+    if (reportDirectory == null || reportDirectory.isEmpty()) {
+      Log.error("0xA4052 ReportDirectory directory must not be null or empty.");
     }
     if (factory == null) {
       Log.error("0xA4051 Report manager factory must not be null.");
     }
-    singleton = new Reporting(outputDirectory, factory);
+    singleton = new Reporting(outputDirectory, reportDirectory, factory);
     Log.setLog(singleton);
   }
 
   /**
    * @return whether reporting was properly initialized
-   * @see Reporting#init(String, ReportManagerFactory)
+   * @see Reporting#init(String, String, ReportManagerFactory)
    */
   public static boolean isInitialized() {
     return get() != null;
@@ -484,7 +515,6 @@ public class Reporting extends Slf4jLog {
 
   /**
    * Reports the template inclusion via the
-   * {@link de.monticore.generating.templateengine.TemplateController#logTemplateCallOrInclude(String, ASTNode)
    * logTemplateCallOrInclude} method called by the
    * {@link de.monticore.generating.templateengine.TemplateController#processTemplate(String, ASTNode, List)
    * processTemplate} method of the
@@ -502,7 +532,7 @@ public class Reporting extends Slf4jLog {
 
   /**
    * Reports the template write via the
-   * {@link de.monticore.generating.templateengine.TemplateController#logTemplateCallOrInclude(String, ASTNode)
+
    * logTemplateCallOrInclude} method called by the
    * {@link de.monticore.generating.templateengine.TemplateController#processTemplate(String, ASTNode, List)
    * processTemplate} method of the
@@ -521,7 +551,7 @@ public class Reporting extends Slf4jLog {
 
   /**
    * Reports the registration of a hook point via the
-   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#setHookPoint(String, HookPoint)
+   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#defineHookPoint(TemplateController, String)} (String, HookPoint)
    * setHookPoint} method of the
    * {@link de.monticore.generating.templateengine.GlobalExtensionManagement
    * GlobalExtensionManagement}.
@@ -537,13 +567,12 @@ public class Reporting extends Slf4jLog {
 
   /**
    * Reports the execution of a hook point via the
-   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#callHookPoint(TemplateController, String, ASTNode)
    * callHookPoint} method. This does not include the execution of hook points
    * registered by the setBefore, setAfter or replaceTemplate Methods, nor the
    * execution of AST specific hook points.
    *
-   * @param oldTemplate
-   * @param beforeHps
+   * @param hookName
+   * @param hp
    * @param ast
    */
   public static void reportCallHookPointStart(String hookName, HookPoint hp, ASTNode ast) {
@@ -554,7 +583,7 @@ public class Reporting extends Slf4jLog {
 
   /**
    * Reports the end of the execution of a hook point via the
-   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#callHookPoint(TemplateController, String, ASTNode)
+   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#bindHookPoint(String, HookPoint)} (TemplateController, String, ASTNode)
    * callHookPoint} method.
    *
    * @param hookName
@@ -764,7 +793,7 @@ public class Reporting extends Slf4jLog {
   /**
    * Invoking this method causes a report of value to DetailedReporter.
    *
-   * @param line that will be reported in DetailedReporter
+   * @param value that will be reported in DetailedReporter
    */
   public static void reportToDetailed(String value) {
     if (isEnabled()) {
@@ -791,8 +820,7 @@ public class Reporting extends Slf4jLog {
    * model resolution. Such files typically are dependency models (e.g., super
    * grammars, super CDs, ...).
    *
-   * @param parentPath
-   * @param file
+   * @param fileName
    */
   public static void reportOpenInputFile(String fileName) {
     if (isEnabled()) {
@@ -804,7 +832,7 @@ public class Reporting extends Slf4jLog {
    * This method is called when an input file is parsed; i.e., this report hook
    * point is designed for the main input artifacts only. E.g., files that are
    * loaded on demand during further processing should not report using this
-   * method but {@link #reportOpenInputFile(Optional<Path>, Path)} instead.
+   * method but {@link #reportOpenInputFile(Optional, Path)}  instead.
    *
    * @param inputFilePath
    * @param modelName
@@ -858,4 +886,10 @@ public class Reporting extends Slf4jLog {
     return "";
   }
 
+  public static String getReportDir() {
+    if (isInitialized()) {
+      return get().getReportDirectory();
+    }
+    return "";
+  }
 }
