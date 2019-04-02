@@ -6,7 +6,7 @@
 package de.monticore.symboltable.serialization;
 
 /**
- * TODO: Write me!
+ * This class contains constants for Json keys commonly used for the serialization of symbol tables.
  *
  * @author (last commit) $Author$
  * @version $Revision$, $Date$

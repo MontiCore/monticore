@@ -45,7 +45,7 @@ public interface ModelingLanguage {
   Optional<? extends SymbolTableCreator> getSymbolTableCreator
   (ResolvingConfiguration resolvingConfiguration, Scope enclosingScope);
 
-  @Deprecated//("Use getSymbolTableDeSer() instead.")
+  @Deprecated// Use getSymbolTableDeSer() instead
   default Optional<? extends IArtifactScopeSerializer> getSymbolTableDeserializer() {
     return Optional.empty();
   }

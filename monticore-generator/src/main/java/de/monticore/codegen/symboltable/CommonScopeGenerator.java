@@ -40,10 +40,6 @@ public class CommonScopeGenerator implements ScopeGenerator {
         getSimpleName(scopeName + GeneratorHelper.BUILDER),
         genHelper.getTargetPackage(), handCodedPath);
 
-    String serializerName = getSimpleTypeNameToGenerate(
-        getSimpleName(getSimpleName(scopeName) + GeneratorHelper.SERIALIZER),
-        genHelper.getTargetPackage(), handCodedPath);
-
     String interfaceName = "I" + className;
 
     // Maps Symbol Name to Symbol Kind Name
@@ -100,8 +96,6 @@ public class CommonScopeGenerator implements ScopeGenerator {
         className + ".java");
     final Path builderFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
         builderName + ".java");
-    final Path serializerFilePath = Paths
-        .get(Names.getPathFromPackage(genHelper.getTargetPackage()), serializerName + ".java");
     final Path interfaceFilePath = Paths
         .get(Names.getPathFromPackage(genHelper.getTargetPackage()), interfaceName + ".java");
 
@@ -111,7 +105,5 @@ public class CommonScopeGenerator implements ScopeGenerator {
     genEngine.generateNoA("symboltable.ScopeInterface", interfaceFilePath, interfaceName, symbolNames, superScopes);
     genEngine.generateNoA("symboltable.ScopeBuilder", builderFilePath, builderName,
         scopeName);
-    genEngine.generateNoA("symboltable.serialization.ScopeSerialization", serializerFilePath,
-        serializerName, getSimpleName(scopeName));
   }
 }
