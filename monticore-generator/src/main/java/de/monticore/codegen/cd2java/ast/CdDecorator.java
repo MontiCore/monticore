@@ -113,6 +113,8 @@ public class CdDecorator {
   }
 
   public void decorate(ASTCDCompilationUnit cdCompilationUnit) {
+    CDPrettyPrinterConcreteVisitor pp = new CDPrettyPrinterConcreteVisitor(new IndentPrinter());
+    System.out.println(pp.prettyprint(cdCompilationUnit));
     AstGeneratorHelper astHelper = new AstGeneratorHelper(cdCompilationUnit, symbolTable);
     ASTCDDefinition cdDefinition = cdCompilationUnit.getCDDefinition();
     List<ASTCDClass> nativeClasses = Lists.newArrayList(cdDefinition.getCDClassList());

@@ -2,6 +2,7 @@ package de.monticore.codegen.cd2java.data;
 
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
+import de.monticore.codegen.cd2java.ast_new.ASTService;
 import de.monticore.codegen.cd2java.factories.CDTypeBuilder;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
@@ -35,7 +36,7 @@ public class DataDecoratorTest extends DecoratorTestCase {
     ASTCDClass clazz = getClassBy("A", cd);
 
     MethodDecorator methodDecorator = new MethodDecorator(glex);
-    DataDecorator dataDecorator = new DataDecorator(this.glex, methodDecorator);
+    DataDecorator dataDecorator = new DataDecorator(this.glex, methodDecorator, new ASTService(cd));
     this.dataClass = dataDecorator.decorate(clazz);
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());

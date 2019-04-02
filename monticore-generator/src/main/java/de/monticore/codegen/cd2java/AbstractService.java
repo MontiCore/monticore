@@ -38,7 +38,7 @@ public abstract class AbstractService {
         .collect(Collectors.toList());
   }
 
-  private CDSymbol resolveCD(String qualifiedName) {
+  public CDSymbol resolveCD(String qualifiedName) {
     return getCDSymbol().getEnclosingScope().<CDSymbol>resolve(qualifiedName, CDSymbol.KIND)
         .orElseThrow(() -> new DecorateException(DecoratorErrorCode.CD_SYMBOL_NOT_FOUND, qualifiedName));
   }

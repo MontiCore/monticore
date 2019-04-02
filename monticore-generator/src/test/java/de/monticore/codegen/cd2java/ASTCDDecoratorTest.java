@@ -41,7 +41,7 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
     VisitorService visitorService = new VisitorService(ast);
     NodeFactoryService nodeFactoryService = new NodeFactoryService(ast);
 
-    DataDecorator dataDecorator = new DataDecorator(glex, new MethodDecorator(glex));
+    DataDecorator dataDecorator = new DataDecorator(glex, new MethodDecorator(glex), new ASTService(ast));
     ASTDecorator astDecorator = new ASTDecorator(glex, astService, visitorService, nodeFactoryService);
     ASTSymbolDecorator astSymbolDecorator = new ASTSymbolDecorator(glex, new MethodDecorator(glex), symbolTableService);
     ASTScopeDecorator astScopeDecorator = new ASTScopeDecorator(glex, new MethodDecorator(glex), symbolTableService);

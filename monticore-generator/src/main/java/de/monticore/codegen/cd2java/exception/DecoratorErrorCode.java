@@ -1,7 +1,13 @@
 package de.monticore.codegen.cd2java.exception;
 
 public enum DecoratorErrorCode {
-  CD_SYMBOL_NOT_FOUND(10, "Could not resolve CD symbol '%s'")
+  CD_SYMBOL_NOT_FOUND(10, "Could not resolve CD symbol '%s'"),
+  AST_FOR_CD_TYPE_SYMBOL_NOT_FOUND(11, "Could find ASTCDClass for CDTypeSymbol '%s'"),
+  AST_FOR_CD_FIELD_SYMBOL_NOT_FOUND(12, "Could find ASTCDAttribute for CDFieldSymbol '%s'"),
+  CD_TYPE_NOT_FOUND(13, "Could find CDTypeSymbol '%s'")
+
+
+
   ;
 
   final int code;

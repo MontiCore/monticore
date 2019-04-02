@@ -11,5 +11,7 @@ classdiagram Data {
     }
 
     public class B {
+        protected int i;
+        protected String s;
     }
 }
