@@ -32,7 +32,6 @@ BinaryXorExpression implements Expression <110> =
 BinaryOrOpExpression implements Expression <100> =
 	leftExpression:Expression operator:"|"  rightExpression:Expression;
 	
-// Use "astextends after Release of MC 5.0.3 and delete TOP"
 interface AssignmentExpression = leftExpression:Expression operator:"" rightExpression:Expression;
 
 RegularAssignmentExpression implements Expression <60>, AssignmentExpression =

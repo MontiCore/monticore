@@ -3,7 +3,7 @@
 package de.monticore.commonexpressions._ast;
 
 
-import de.monticore.assignmentexpressions._ast.ASTAssignmentExpressionTOP;
+import de.monticore.assignmentexpressions._ast.ASTAssignmentExpression;
 import de.monticore.expressionsbasis._ast.ASTExpression;
 
 @Deprecated
