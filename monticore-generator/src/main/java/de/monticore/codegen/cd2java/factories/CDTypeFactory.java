@@ -4,6 +4,8 @@ import de.monticore.codegen.cd2java.factories.exception.CDFactoryErrorCode;
 import de.monticore.codegen.cd2java.factories.exception.CDFactoryException;
 import de.monticore.types.TypesHelper;
 import de.monticore.types.types._ast.*;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
+import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisMill;
 import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParser;
 
 import java.io.IOException;

@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
@@ -31,6 +32,8 @@ import de.se_rwth.commons.logging.Log;
  * grammars and performs a compilation task for all generated files.
  * 
  */
+@Ignore
+@Deprecated
 public class AstGeneratorTest extends GeneratorTest {
   
   /**

@@ -3,6 +3,9 @@ package de.monticore.codegen.cd2java;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.cd2java.factories.CDModifier;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
+import de.monticore.types.TypesHelper;
+import de.monticore.types.types._ast.ASTSimpleReferenceType;
+import de.monticore.types.types._ast.ASTType;
 
 import static org.junit.Assert.assertTrue;
 
@@ -16,7 +19,11 @@ public final class DecoratorAssert {
   }
 
   public static void assertDeepEquals(ASTNode expected, ASTNode actual) {
-    assertTrue(String.format("Expected: [%s], Actual: [%s]", expected.toString(), actual.toString()), expected.deepEquals(actual));
+    assertTrue(String.format("Expected: [%s], Actual: [%s]", getAsString(expected), getAsString(actual)), expected.deepEquals(actual));
+  }
+
+  private static String getAsString(ASTNode node) {
+    return node instanceof ASTType ? TypesHelper.printType((ASTType) node) : node.toString();
   }
 
   public static void assertDeepEquals(CDModifier expected, ASTNode actual) {

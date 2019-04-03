@@ -29,11 +29,8 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
 
   private GlobalExtensionManagement glex;
 
-  private CDTypeFactory cdTypeFactory;
-
   @Before
   public void setUp() {
-    this.cdTypeFactory = CDTypeFactory.getInstance();
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
@@ -84,9 +81,9 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testASTDataInterfaceNodeSuperInterfae(){
+  public void testASTDataInterfaceNodeSuperInterface(){
     ASTReferenceType superInteface = dataInterface.getInterface(1);
-    assertDeepEquals("ASTDataInterfaceNode", superInteface);
+    assertDeepEquals("de.monticore.codegen.data.datainterface._ast.ASTDataInterfaceNode", superInteface);
   }
 
   @Test
