@@ -33,19 +33,19 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
 
   private static final String COCO_CHECKER = "de.monticore.codegen.ast.automaton._visitor.AutomatonVisitor";
 
-  private static final String AUTOMATON_COCO_CHECKER = "de.monticore.codegen.ast.automaton._coco.AutomatonCoCoChecker";
+  private static final String AUTOMATON_COCO_CHECKER = "de.monticore.codegen.ast.automaton._cocos.AutomatonCoCoChecker";
 
-  private static final String LEXICALS_COCO_CHECKER = "de.monticore.codegen.ast.lexicals._coco.LexicalsCoCoChecker";
+  private static final String LEXICALS_COCO_CHECKER = "de.monticore.codegen.ast.lexicals._cocos.LexicalsCoCoChecker";
 
-  private static final String AUTOMATON_COCO = "de.monticore.codegen.ast.automaton._coco.AutomatonASTASTAutomatonCoCo";
+  private static final String AUTOMATON_COCO = "de.monticore.codegen.ast.automaton._cocos.AutomatonASTASTAutomatonCoCo";
 
-  private static final String AUTOMATON_NODE_COCO = "de.monticore.codegen.ast.automaton._coco.AutomatonASTAutomatonNodeCoCo";
+  private static final String AUTOMATON_NODE_COCO = "de.monticore.codegen.ast.automaton._cocos.AutomatonASTAutomatonNodeCoCo";
 
-  private static final String STATE_COCO = "de.monticore.codegen.ast.automaton._coco.AutomatonASTASTStateCoCo";
+  private static final String STATE_COCO = "de.monticore.codegen.ast.automaton._cocos.AutomatonASTASTStateCoCo";
 
-  private static final String TRANSITION_COCO = "de.monticore.codegen.ast.automaton._coco.AutomatonASTASTTransitionCoCo";
+  private static final String TRANSITION_COCO = "de.monticore.codegen.ast.automaton._cocos.AutomatonASTASTTransitionCoCo";
 
-  private static final String LEXICALS_NODE_COCO = "de.monticore.codegen.ast.lexicals._coco.LexicalsASTASTLexicalsNodeCoCo";
+  private static final String LEXICALS_NODE_COCO = "de.monticore.codegen.ast.lexicals._cocos.LexicalsASTASTLexicalsNodeCoCo";
 
   private static final String AUTOMATON = "de.monticore.codegen.ast.automaton._ast.ASTASTAutomaton";
 
@@ -94,14 +94,14 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAutomatonCoCoCheckerAttribute() {
     //TODO test type
-    ASTCDAttribute attribute = getAttributeBy("de_monticore_codegen_ast_automaton__coco_AutomatonCoCoChecker", cocoChecker);
+    ASTCDAttribute attribute = getAttributeBy("de_monticore_codegen_ast_automaton__cocos_AutomatonCoCoChecker", cocoChecker);
     assertDeepEquals(PRIVATE, attribute.getModifier());
   }
 
   @Test
   public void testLexicalsCoCoCheckerAttribute() {
     //TODO test type
-    ASTCDAttribute attribute = getAttributeBy("de_monticore_codegen_ast_lexicals__coco_LexicalsCoCoChecker", cocoChecker);
+    ASTCDAttribute attribute = getAttributeBy("de_monticore_codegen_ast_lexicals__cocos_LexicalsCoCoChecker", cocoChecker);
     assertDeepEquals(PRIVATE, attribute.getModifier());
   }
 
