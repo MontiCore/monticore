@@ -10,6 +10,7 @@ import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,7 +42,7 @@ public class ASTCDDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTC
   @Override
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit ast) {
     List<String> astPackage = new ArrayList<>(ast.getPackageList());
-    astPackage.add(AST_PACKAGE);
+    astPackage.addAll(Arrays.asList(ast.getCDDefinition().getName(), ASTConstants.AST_PACKAGE));
 
     ASTCDDefinition astCD = CD4AnalysisMill.cDDefinitionBuilder()
         .setName(ast.getCDDefinition().getName())

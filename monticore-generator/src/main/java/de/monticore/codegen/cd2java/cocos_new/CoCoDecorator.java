@@ -6,6 +6,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.createPackageHookPoint;
@@ -26,7 +27,7 @@ public class CoCoDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCD
   @Override
   public ASTCDCompilationUnit decorate(ASTCDCompilationUnit input) {
     List<String> cocoPackage = new ArrayList<>(input.getPackageList());
-    cocoPackage.add(CoCoConstants.COCO_PACKAGE);
+    cocoPackage.addAll(Arrays.asList(input.getCDDefinition().getName(), CoCoConstants.COCO_PACKAGE));
 
     ASTCDDefinition cocoCD = CD4AnalysisMill.cDDefinitionBuilder()
         .setName(input.getCDDefinition().getName())

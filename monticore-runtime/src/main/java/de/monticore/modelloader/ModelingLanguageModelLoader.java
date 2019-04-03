@@ -93,6 +93,27 @@ public abstract class ModelingLanguageModelLoader<T extends ASTNode> {
     return Collections.EMPTY_SET;
   }
 
+  /**
+   * Loads a single model with the specified <code>qualifiedModelName</code>, creates
+   * the corresponding scope graphs and puts it in the <code>enclosingScope</code>.
+   *
+   * @param qualifiedModelName     the qualified name of the model(s) to be loaded
+   * @param modelPath              the model path
+   * @param enclosingScope         the enclosing scope for each scope graph of the loaded models
+   * @param resolvingConfiguration the configuration of the resolving filters
+   * @return the asts of the loaded models (mapped to the corresponding symbol table elements)
+   */
+  public Optional<T> loadModelIntoScope(final String qualifiedModelName,
+      final ModelPath modelPath, final Scope enclosingScope,
+      final ResolvingConfiguration resolvingConfiguration) {
+    Optional<T> result = Optional.empty();
+    if (!loadSymbolsIntoScope(qualifiedModelName, modelPath, enclosingScope, resolvingConfiguration)) {
+      result  = loadModel(qualifiedModelName, modelPath);
+      result.ifPresent(r -> createSymbolTableFromAST(r, qualifiedModelName, enclosingScope, resolvingConfiguration));
+    }
+    return result;
+  }
+
 
   /**
    * Loads all models with the specified <code>qualifiedModelName</code>, creates
