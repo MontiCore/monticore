@@ -2,33 +2,26 @@
 
 package de.monticore.ast;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Optional;
-import java.util.Spliterator;
+import com.google.common.collect.Lists;
+import de.monticore.symboltable.IScope;
+import de.monticore.symboltable.ISymbol;
+import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.Symbol;
+import de.se_rwth.commons.SourcePosition;
+import de.se_rwth.commons.logging.Log;
+
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
-
-import de.se_rwth.commons.logging.Log;
-
-import com.google.common.collect.Lists;
-
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.ScopeSpanningSymbol;
-import de.monticore.symboltable.Symbol;
-import de.se_rwth.commons.SourcePosition;
 
 /**
  * Foundation class of all AST-classes Shouldn't be used in an implementation, all AST-classes also
  * share the interface ASTNode
  *
  */
-public abstract class ASTCNode implements ASTNode, Cloneable {
+public abstract class ASTCNode<T extends ISymbol,S extends IScope> implements ASTNode/*<T,S>*/, Cloneable {
 
   protected Optional<SourcePosition> start = Optional.empty();
 
@@ -43,6 +36,12 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
   protected Optional<? extends Scope> enclosingScope = Optional.empty();
 
   protected Optional<? extends Scope> spannedScope = Optional.empty();
+  
+  protected Optional<T> symbol2 = Optional.empty();
+  
+  protected Optional<S> enclosingScope2 = Optional.empty();
+  
+  protected Optional<S> spannedScope2 = Optional.empty();
 
   public abstract ASTNode deepClone();
 
@@ -583,6 +582,107 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
   @Override
   public Object[] toArray_PostComments() {
     return this.postcomments.toArray();
+  }
+  
+  
+  ////  For new SymTab #############################################################################
+  
+  // ----------------------------------------------------------------------
+  // Handle the Optional Enclosing Scope
+  // ----------------------------------------------------------------------
+  
+  public void setEnclosingScope2(S enclosingScope) {
+    this.enclosingScope2 = Optional.ofNullable(enclosingScope);
+  }
+  
+  public void setEnclosingScopeOpt2(Optional<S> enclosingScopeOpt) {
+    this.enclosingScope2 = enclosingScopeOpt;
+  }
+  
+  public void setEnclosingScopeAbsent2() {
+    this.enclosingScope2 = Optional.empty();
+  }
+  
+  public S getEnclosingScope2() {
+    if (getEnclosingScopeOpt2().isPresent()) {
+      return getEnclosingScopeOpt2().get();
+    }
+    Log.error("0xA7003 x222 getCloneASTOpt can't return a value. It is empty.");
+    // Normally this statement is not reachable
+    throw new IllegalStateException();
+  }
+  
+  public Optional<S> getEnclosingScopeOpt2() {
+    return this.enclosingScope2;
+  }
+  
+  public boolean isPresentEnclosingScope2() {
+    return enclosingScope2.isPresent();
+  }
+  
+  // ----------------------------------------------------------------------
+  // Handle the optional Symbol
+  // ----------------------------------------------------------------------
+  
+  public void setSymbol2(T symbol) {
+    this.symbol2 = Optional.ofNullable(symbol);
+  }
+  
+  public void setSymbolOpt2(Optional<T> enclosingSymbolOpt) {
+    this.symbol2 = enclosingSymbolOpt;
+  }
+  
+  public void setSymbolAbsent2() {
+    this.symbol2 = Optional.empty();
+  }
+  
+  public T getSymbol2() {
+    if (getSymbolOpt2().isPresent()) {
+      return getSymbolOpt2().get();
+    }
+    Log.error("0xA7003 x222 getCloneASTOpt can't return a value. It is empty.");
+    // Normally this statement is not reachable
+    throw new IllegalStateException();
+  }
+  
+  public Optional<T> getSymbolOpt2() {
+    return this.symbol2;
+  }
+  
+  public boolean isPresentSymbol2() {
+    return symbol2.isPresent();
+  }
+  
+  // ----------------------------------------------------------------------
+  // Handle the optional Spanned Scope
+  // ----------------------------------------------------------------------
+  public void setSpannedScope2(S spannedScope) {
+    this.spannedScope2 = Optional.ofNullable(spannedScope);
+  }
+  
+  public void setSpannedScopeOpt2(Optional<S> spannedScopeOpt) {
+    this.spannedScope2 = spannedScopeOpt;
+  }
+  
+  public void setSpannedScopeAbsent2() {
+    this.spannedScope2 = Optional.empty();
+  }
+  
+  public S getSpannedScope2() {
+    if (getSpannedScopeOpt2().isPresent()) {
+      return getSpannedScopeOpt2().get();
+    }
+    Log.error("0xA7003 x222 getCloneASTOpt can't return a value. It is empty.");
+    // Normally this statement is not reachable
+    throw new IllegalStateException();
+  }
+  
+  public Optional<S> getSpannedScopeOpt2() {
+    return this.spannedScope2;
+  }
+  
+  public boolean isPresentSpannedScope2() {
+    return spannedScope2.isPresent();
   }
 
 }

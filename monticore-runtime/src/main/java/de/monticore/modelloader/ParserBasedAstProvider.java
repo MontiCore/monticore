@@ -3,7 +3,7 @@
 package de.monticore.modelloader;
 
 import com.google.common.base.Charsets;
-import de.monticore.ModelingLanguage;
+import de.monticore.IModelingLanguage;
 import de.monticore.ast.ASTNode;
 import de.monticore.io.paths.ModelCoordinate;
 import de.se_rwth.commons.logging.Log;
@@ -19,12 +19,11 @@ import java.util.Optional;
  * Builds ASTs by going straight to the hard disk and reading in the model.
  *
  */
-@Deprecated
-public final class FileBasedAstProvider<T extends ASTNode> implements AstProvider<T> {
+public final class ParserBasedAstProvider<T extends ASTNode> implements AstProvider<T> {
 
-  private final ModelingLanguage modelingLanguage;
+  private final IModelingLanguage modelingLanguage;
 
-  public FileBasedAstProvider(ModelingLanguage modelingLanguage) {
+  public ParserBasedAstProvider(IModelingLanguage modelingLanguage) {
     this.modelingLanguage = modelingLanguage;
   }
 

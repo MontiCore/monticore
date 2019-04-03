@@ -2,6 +2,7 @@
 
 package de.monticore.symboltable;
 
+@Deprecated
 public abstract class CommonScopeSpanningSymbol extends CommonSymbol implements ScopeSpanningSymbol {
 
   private final Scope spannedScope;

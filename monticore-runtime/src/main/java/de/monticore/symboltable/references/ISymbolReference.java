@@ -3,8 +3,8 @@
 package de.monticore.symboltable.references;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.IScope;
+import de.monticore.symboltable.ISymbol;
 
 import java.util.Optional;
 
@@ -13,8 +13,7 @@ import java.util.Optional;
  * implement this interface directly. Instead, use one of its subtypes.
  *
  */
-@Deprecated
-public interface SymbolReference<T extends Symbol> {
+public interface ISymbolReference<T extends ISymbol, S extends IScope, A extends ASTNode> {
 
   /**
    * @return the reference name
@@ -24,12 +23,12 @@ public interface SymbolReference<T extends Symbol> {
   /**
    * @return the corresponding ast node
    */
-  Optional<ASTNode> getAstNode();
+  Optional<A> getAstNode();
 
   /**
    * @param node the corresponding ast node
    */
-  void setAstNode(ASTNode node);
+  void setAstNode(A node);
 
   /**
    * @return the referenced symbol
@@ -49,6 +48,6 @@ public interface SymbolReference<T extends Symbol> {
   /**
    * @return the enclosing scope of the reference itself
    */
-  Scope getEnclosingScope();
+  S getEnclosingScope();
 
 }

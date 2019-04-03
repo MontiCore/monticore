@@ -4,14 +4,12 @@ package de.monticore.symboltable;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-
-import com.google.common.collect.ImmutableList;
 
 import static com.google.common.collect.ImmutableList.copyOf;
 import static java.util.Collections.sort;
 
+@Deprecated
 public class Symbols {
 
   private Symbols() {

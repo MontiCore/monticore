@@ -3,15 +3,15 @@
 package de.monticore.symboltable.modifiers;
 
 import com.google.common.base.Predicate;
-import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.SymbolPredicate;
+import de.monticore.symboltable.ISymbol;
+import de.monticore.symboltable.ISymbolPredicate;
 
-@Deprecated
-public class IncludesAccessModifierPredicate implements SymbolPredicate {
+
+public class IncludesAccessModifierSymbolPredicate implements ISymbolPredicate {
 
   private final AccessModifier modifier;
 
-  public IncludesAccessModifierPredicate(AccessModifier modifier) {
+  public IncludesAccessModifierSymbolPredicate(AccessModifier modifier) {
     this.modifier = modifier;
   }
 
@@ -19,7 +19,7 @@ public class IncludesAccessModifierPredicate implements SymbolPredicate {
    * @see Predicate#apply(Object)
    */
   @Override
-  public boolean test(Symbol symbol) {
+  public boolean test(ISymbol symbol) {
     return modifier.includes(symbol.getAccessModifier());
   }
 

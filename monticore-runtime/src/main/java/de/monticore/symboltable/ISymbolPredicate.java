@@ -4,11 +4,10 @@ package de.monticore.symboltable;
 
 import java.util.function.Predicate;
 
-@Deprecated
-public interface SymbolPredicate extends Predicate<Symbol> {
+public interface ISymbolPredicate extends Predicate<ISymbol> {
 
   @Override
-  boolean test(Symbol symbol);
+  boolean test(ISymbol symbol);
 
 
 }

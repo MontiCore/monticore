@@ -2,21 +2,22 @@
 
 package de.monticore.symboltable;
 
-import static de.se_rwth.commons.logging.Log.errorIfNull;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
-import static java.util.stream.Collectors.toSet;
+import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.symboltable.modifiers.IncludesAccessModifierPredicate;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.symboltable.modifiers.IncludesAccessModifierPredicate;
+import static de.se_rwth.commons.logging.Log.errorIfNull;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+import static java.util.stream.Collectors.toSet;
 
+@Deprecated
 public final class Scopes {
-
+  
   private Scopes() {
   }
 

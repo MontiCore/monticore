@@ -4,11 +4,13 @@ package de.monticore.visitor;
 
 import de.monticore.ast.ASTNode;
 
+import java.util.Collection;
+
 /**
  * Visitor that ignores the actual node type and calls the same visit Method for
  * all nodes. Note that its structure is the same as language specific visitors,
  * but its not compatible with them in terms of composition.
- * 
+ *
  * Example of implementing and running the common visitor on a given AST ast:
  * <pre>
  *  public class NodeCounter implements CommonVisit {
@@ -36,7 +38,8 @@ public interface CommonVisitor {
   }
   
   default public void traverse(ASTNode node) {
-    for (ASTNode child : node.get_Children()) {
+    Collection<ASTNode> bla = node.get_Children();
+    for (ASTNode child : bla) {
       handle(child);
     }
   }

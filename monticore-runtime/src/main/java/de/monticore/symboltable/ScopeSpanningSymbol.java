@@ -2,6 +2,7 @@
 
 package de.monticore.symboltable;
 
+@Deprecated
 public interface ScopeSpanningSymbol extends Symbol {
 
   /**

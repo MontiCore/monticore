@@ -30,6 +30,7 @@ import static java.util.Collections.emptySet;
 import static java.util.Optional.*;
 import static java.util.stream.Collectors.toSet;
 
+@Deprecated
 public class CommonScope implements Scope {
 
   private final Map<String, Collection<Symbol>> symbols = new LinkedHashMap<>();
