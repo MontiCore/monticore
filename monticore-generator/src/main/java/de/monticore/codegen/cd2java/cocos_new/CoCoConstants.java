@@ -2,7 +2,7 @@ package de.monticore.codegen.cd2java.cocos_new;
 
 public final class CoCoConstants {
   
-  public static final String COCO_PACKAGE = "_coco";
+  public static final String COCO_PACKAGE = "_cocos";
 
   public static final String COCO_SUFFIX = "CoCo";
 

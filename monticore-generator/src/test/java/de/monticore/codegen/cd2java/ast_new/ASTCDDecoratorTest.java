@@ -1,5 +1,7 @@
-package de.monticore.codegen.cd2java;
+package de.monticore.codegen.cd2java.ast_new;
 
+import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.ast_new.*;
 import de.monticore.codegen.cd2java.ast_new.reference.ASTReferenceDecorator;
 import de.monticore.codegen.cd2java.builder.ASTBuilderDecorator;
