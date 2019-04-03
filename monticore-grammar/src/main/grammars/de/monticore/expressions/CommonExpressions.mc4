@@ -6,6 +6,12 @@ component grammar CommonExpressions extends de.monticore.expressions.Expressions
 
 interface InfixExpression = left:Expression operator:"" right:Expression;
 
+NameExpression implements Expression <350>
+    = Name;
+
+QualifiedNameExpression implements Expression <290> =
+	Expression "." Name;
+
 CallExpression implements Expression <240> =
 	Expression Arguments;
 

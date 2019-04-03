@@ -4,12 +4,9 @@ package de.monticore.expressions;
 
 component grammar ShiftExpressions extends de.monticore.expressions.ExpressionsBasis {
 
-QualifiedNameExpression implements Expression <290> = 
-	Expression "." Name;
-	
 ThisExpression implements Expression <280> =
 	Expression "." "this";
-		
+
 ArrayExpression implements Expression <250> =
 	Expression "[" indexExpression:Expression "]";
 

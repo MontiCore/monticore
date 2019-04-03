@@ -18,15 +18,7 @@ public class ShiftExpressionsPrettyPrinter implements ShiftExpressionsVisitor{
     realThis = this;
   }
   
-  @Override
-  public void handle(ASTQualifiedNameExpression node) {
-    CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getExpression().accept(getRealThis());
-    getPrinter().print("." + node.getName());
-    CommentPrettyPrinter.printPostComments(node, getPrinter());
-  }
-  
-  @Override
+   @Override
   public void handle(ASTThisExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getExpression().accept(getRealThis());
