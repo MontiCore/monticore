@@ -45,9 +45,6 @@ SuperSuffix
     |   "." ExtTypeArguments? Name Arguments?
     ;
     
-NameExpression implements Expression <350>
-    = Name;
-    
-InstanceofExpression implements Expression <140> 
+InstanceofExpression implements Expression <140>
 	= Expression "instanceof" ExtType;
 }

@@ -21,36 +21,36 @@ public class SetExpressionsPrettyPrinter implements SetExpressionsVisitor {
   @Override
   public void handle(ASTIsInExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(getRealThis());
+    node.getElem().accept(getRealThis());
     getPrinter().print(" isin ");
-    node.getRightExpression().accept(getRealThis());
+    node.getSet().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTSetInExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(getRealThis());
+    node.getElem().accept(getRealThis());
     getPrinter().print(" in ");
-    node.getRightExpression().accept(getRealThis());
+    node.getSet().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTUnionExpressionInfix node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(getRealThis());
+    node.getLeft().accept(getRealThis());
     getPrinter().print(" union ");
-    node.getRightExpression().accept(getRealThis());
+    node.getRight().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTIntersectionExpressionInfix node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(getRealThis());
+    node.getLeft().accept(getRealThis());
     getPrinter().print(" intersect ");
-    node.getRightExpression().accept(getRealThis());
+    node.getRight().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   

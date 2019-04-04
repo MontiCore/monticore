@@ -16,6 +16,8 @@ import de.monticore.grammar.grammar._ast.ASTMethodParameter;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.java.javadsl._ast.ASTBlockStatement;
 import de.monticore.types.BasicGenericsTypesPrinter;
+import de.monticore.types.FullGenericTypesPrinter;
+import de.monticore.types.SimpleGenericTypesPrinter;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.utils.Link;
 
@@ -65,10 +67,10 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
     ASTCDMethod cdMethod = CD4AnalysisNodeFactory.createASTCDMethod();
     cdMethod.setModifier(TransformationHelper.createPublicModifier());
     cdMethod.setName(method.getName());
-    String dotSeparatedName = BasicGenericsTypesPrinter.printReturnType(method.getMCReturnType());
+    String dotSeparatedName = FullGenericTypesPrinter.printReturnType(method.getMCReturnType());
     cdMethod.setReturnType(TransformationHelper.createSimpleReference(dotSeparatedName));
     for (ASTMethodParameter param: method.getMethodParameterList()) {
-      String typeName = BasicGenericsTypesPrinter.printType(param.getType());
+      String typeName = FullGenericTypesPrinter.printType(param.getType());
       cdMethod.getCDParameterList().add(TransformationHelper.createParameter(typeName, param.getName()));
     }
     if (method.getBody() instanceof ASTAction) {
@@ -89,10 +91,10 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
     ASTCDMethod cdMethod = CD4AnalysisNodeFactory.createASTCDMethod();
     cdMethod.setModifier(TransformationHelper.createPublicModifier());
     cdMethod.setName(method.getName());
-    String dotSeparatedName = BasicGenericsTypesPrinter.printReturnType(method.getMCReturnType());
+    String dotSeparatedName = FullGenericTypesPrinter.printReturnType(method.getMCReturnType());
     cdMethod.setReturnType(TransformationHelper.createSimpleReference(dotSeparatedName));
     for (ASTMethodParameter param: method.getMethodParameterList()) {
-      String typeName = BasicGenericsTypesPrinter.printType(param.getType());
+      String typeName = FullGenericTypesPrinter.printType(param.getType());
       cdMethod.getCDParameterList().add(TransformationHelper.createParameter(typeName, param.getName()));
     }
     if (method.getBody() instanceof ASTAction) {

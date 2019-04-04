@@ -51,7 +51,7 @@ public class MCCollectionTypesPrettyPrinter extends MCBasicTypesPrettyPrinter im
     getPrinter().print(">");
   }
 
-  public String prettyprint(ASTMCBasicTypeArgument a) {
+  public String prettyprint(ASTMCTypeArgument a) {
     getPrinter().clearBuffer();
     a.accept(getRealThis());
     return getPrinter().getContent();

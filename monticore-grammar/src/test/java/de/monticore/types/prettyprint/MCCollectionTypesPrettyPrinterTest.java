@@ -28,6 +28,20 @@ public class MCCollectionTypesPrettyPrinterTest {
     Log.getFindings().clear();
   }
 
+  @Test
+  public void testMCPrimitiveTypeArgument() throws IOException {
+    MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();
+    Optional<ASTMCPrimitiveTypeArgument> ast = parser.parse_StringMCPrimitiveTypeArgument("boolean");
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTMCPrimitiveTypeArgument typeArgument = ast.get();
+    MCCollectionTypesPrettyPrinter printer = new MCCollectionTypesPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    ast = parser.parse_StringMCPrimitiveTypeArgument(output);
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(typeArgument.deepEquals(ast.get()));
+  }
 
   @Test
   public void testMCBasicTypeArgument() throws IOException {
