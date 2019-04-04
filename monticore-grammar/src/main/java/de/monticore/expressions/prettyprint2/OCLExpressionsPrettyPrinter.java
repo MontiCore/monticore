@@ -24,8 +24,8 @@ public class OCLExpressionsPrettyPrinter implements OCLExpressionsVisitor {
     @Override
     public void handle(ASTInExpr node) {
         CommentPrettyPrinter.printPreComments(node, getPrinter());
-        if(node.isPresentType())
-            node.getType().accept(getRealThis());
+        if(node.isPresentExtType())
+            node.getExtType().accept(getRealThis());
 
         Iterator iter = node.getVarNameList().iterator();
         getPrinter().print(iter.next());
@@ -44,9 +44,9 @@ public class OCLExpressionsPrettyPrinter implements OCLExpressionsVisitor {
   @Override
   public void handle(ASTImpliesExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(getRealThis());
+    node.getLeft().accept(getRealThis());
      getPrinter().print(" implies ");
-    node.getRightExpression().accept(getRealThis());
+    node.getRight().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
@@ -93,7 +93,7 @@ public class OCLExpressionsPrettyPrinter implements OCLExpressionsVisitor {
   public void handle(ASTLetinExpr node) {
      CommentPrettyPrinter.printPreComments(node, getPrinter());
      getPrinter().print("let ");
-     for (ASTEDeclarationExt ast : node.getDeclarationList()) {
+     for (ASTEDeclarationExt ast : node.getEDeclarationList()) {
         ast.accept(getRealThis());
         getPrinter().print("; ");
      }
@@ -101,30 +101,19 @@ public class OCLExpressionsPrettyPrinter implements OCLExpressionsVisitor {
      node.getExpression().accept(getRealThis());
      CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
-  
-  @Override
-  public void handle(ASTLetDeclaration node) {
-    CommentPrettyPrinter.printPreComments(node, getPrinter());
-     getPrinter().print("let ");
-    for (ASTEDeclarationExt ast : node.getDeclarationList()) {
-      ast.accept(getRealThis());
-       getPrinter().print(";");
-    }
-    CommentPrettyPrinter.printPostComments(node, getPrinter());
-  }
-  
+
   @Override
   public void handle(ASTIterateExpr node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-     getPrinter().print("iterate { ");
-    node.getIterationDeclarator().accept(getRealThis());
-     getPrinter().print("; ");
-    node.getInitDeclarator().accept(getRealThis());
-     getPrinter().print(" : ");
-     getPrinter().print(node.getAccumulatorName() + " = ");
-    node.getAccumulatorValue().accept(getRealThis());
-     getPrinter().print(" }");
-     CommentPrettyPrinter.printPostComments(node, getPrinter());
+    getPrinter().print("iterate { ");
+    node.getIteration().accept(getRealThis());
+    getPrinter().print("; ");
+    node.getInit().accept(getRealThis());
+    getPrinter().print(" : ");
+    getPrinter().print(node.getName() + " = ");
+    node.getValue().accept(getRealThis());
+    getPrinter().print(" }");
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
 

@@ -17,121 +17,136 @@ public class CommonExpressionsPrettyPrinter implements CommonExpressionsVisitor 
     this.printer = printer;
     realThis = this;
   }
-  
+
+  @Override
+  public void handle(ASTNameExpression node) {
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    getPrinter().print(node.getName());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
+  }
+
+  @Override
+  public void handle(ASTQualifiedNameExpression node) {
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    node.getExpression().accept(getRealThis());
+    getPrinter().print("." + node.getName());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
+  }
+
   @Override
   public void handle(ASTMultExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(getRealThis());
+    node.getLeft().accept(getRealThis());
     getPrinter().print(" * ");
-    node.getRightExpression().accept(getRealThis());
+    node.getRight().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTDivideExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(getRealThis());
+    node.getLeft().accept(getRealThis());
     getPrinter().print(" / ");
-    node.getRightExpression().accept(getRealThis());
+    node.getRight().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTPlusExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(getRealThis());
+    node.getLeft().accept(getRealThis());
     getPrinter().print(" + ");
-    node.getRightExpression().accept(getRealThis());
+    node.getRight().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTMinusExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(getRealThis());
+    node.getLeft().accept(getRealThis());
     getPrinter().print(" - ");
-    node.getRightExpression().accept(getRealThis());
+    node.getRight().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTLessEqualExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(getRealThis());
+    node.getLeft().accept(getRealThis());
     getPrinter().print(" <= ");
-    node.getRightExpression().accept(getRealThis());
+    node.getRight().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTGreaterEqualExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(getRealThis());
+    node.getLeft().accept(getRealThis());
     getPrinter().print(" >= ");
-    node.getRightExpression().accept(getRealThis());
+    node.getRight().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTLessThanExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(getRealThis());
+    node.getLeft().accept(getRealThis());
     getPrinter().print(" < ");
-    node.getRightExpression().accept(getRealThis());
+    node.getRight().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTGreaterThanExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(getRealThis());
+    node.getLeft().accept(getRealThis());
     getPrinter().print(" > ");
-    node.getRightExpression().accept(getRealThis());
+    node.getRight().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTBooleanAndOpExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(getRealThis());
+    node.getLeft().accept(getRealThis());
     getPrinter().print(" && ");
-    node.getRightExpression().accept(getRealThis());
+    node.getRight().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTBooleanOrOpExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(getRealThis());
+    node.getLeft().accept(getRealThis());
     getPrinter().print(" || ");
-    node.getRightExpression().accept(getRealThis());
+    node.getRight().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTSimpleAssignmentExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(getRealThis());
+    node.getLeft().accept(getRealThis());
     getPrinter().print(" += ");
-    node.getRightExpression().accept(getRealThis());
+    node.getRight().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTEqualsExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(getRealThis());
+    node.getLeft().accept(getRealThis());
     getPrinter().print(" == ");
-    node.getRightExpression().accept(getRealThis());
+    node.getRight().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
   @Override
   public void handle(ASTNotEqualsExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeftExpression().accept(getRealThis());
+    node.getLeft().accept(getRealThis());
     getPrinter().print(" != ");
-    node.getRightExpression().accept(getRealThis());
+    node.getRight().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
