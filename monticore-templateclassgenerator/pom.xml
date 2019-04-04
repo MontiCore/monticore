@@ -7,7 +7,7 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore</artifactId>
-    <version>5.0.5-SNAPSHOT</version>
+    <version>5.0.5.NewSymTab-SNAPSHOT</version>
   </parent>
 
   <artifactId>monticore-templateclassgenerator</artifactId>

@@ -20,6 +20,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  * Default implementation of {@link SymbolReference}.
  *
  */
+@Deprecated
 public class CommonSymbolReference<T extends Symbol> implements SymbolReference<T> {
 
   private final String referencedName;

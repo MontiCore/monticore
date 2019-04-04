@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 /**
  * Foundation interface for all AST-classes
  */
-public interface ASTNode/*<T extends ISymbol,S extends IScope>*/ {
+public interface ASTNode {
   
   /**
    * Performs a deep clone of this ASTNode and all of its successors
@@ -746,6 +746,7 @@ public interface ASTNode/*<T extends ISymbol,S extends IScope>*/ {
    *
    * @param enclosingScope the enclosing scope of this ast node
    */
+  @Deprecated
   void setEnclosingScope(Scope enclosingScope);
 
   /**
@@ -753,6 +754,7 @@ public interface ASTNode/*<T extends ISymbol,S extends IScope>*/ {
    *
    * @param enclosingScopeOpt the enclosing scope of this ast node as an Optional
    */
+  @Deprecated
   void setEnclosingScopeOpt(Optional<? extends Scope> enclosingScopeOpt);
 
   /**
@@ -767,7 +769,7 @@ public interface ASTNode/*<T extends ISymbol,S extends IScope>*/ {
    *
    * @return the enclosing scope of this ast node
    */
-
+@Deprecated
   Scope getEnclosingScope();
 
   /**
@@ -775,6 +777,7 @@ public interface ASTNode/*<T extends ISymbol,S extends IScope>*/ {
    *
    * @return Optional<Scope> of the enclosing Scope
    */
+  @Deprecated
   Optional<? extends Scope> getEnclosingScopeOpt();
 
   /**
@@ -944,42 +947,4 @@ public interface ASTNode/*<T extends ISymbol,S extends IScope>*/ {
   @Deprecated
   boolean isPresentSpannedScope();
   
-//  void setEnclosingScope2(S enclosingScope);
-//
-//  void setEnclosingScopeOpt2(Optional<S> enclosingScopeOpt);
-//
-//  void setEnclosingScopeAbsent2();
-//
-//  S getEnclosingScope2();
-//
-//  Optional<S> getEnclosingScopeOpt2();
-//
-//  boolean isPresentEnclosingScope2();
-//
-//  void setSymbol2(T symbol);
-//
-//  void setSymbolOpt2(Optional<T> enclosingSymbolOpt);
-//
-//  void setSymbolAbsent2();
-//
-//  T getSymbol2();
-//
-//  Optional<T> getSymbolOpt2();
-//
-//  boolean isPresentSymbol2();
-//
-//  // ----------------------------------------------------------------------
-//  // Handle the optional Spanned Scope
-//  // ----------------------------------------------------------------------
-//  void setSpannedScope2(S spannedScope);
-//
-//  void setSpannedScopeOpt2(Optional<S> spannedScopeOpt);
-//
-//  void setSpannedScopeAbsent2();
-//
-//  S getSpannedScope2();
-//
-//  Optional<S> getSpannedScopeOpt2();
-//
-//  boolean isPresentSpannedScope2();
 }
