@@ -1,8 +1,10 @@
-package de.monticore.codegen.cd2java.language_interface;
+package de.monticore.codegen.cd2java.ast_interface;
 
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
+import de.monticore.codegen.cd2java.ast_new.ASTService;
 import de.monticore.codegen.cd2java.factories.CDTypeFactory;
+import de.monticore.codegen.cd2java.visitor_new.VisitorService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -19,38 +21,40 @@ import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class LanguageInterfaceDecoratorTest extends DecoratorTestCase {
+public class ASTLanguageInterfaceDecoratorTest extends DecoratorTestCase {
 
   private CDTypeFactory cdTypeFacade;
 
-  private ASTCDInterface languageInterace;
+  private ASTCDInterface languageInterface;
 
   @Before
   public void setUp() {
     this.cdTypeFacade = CDTypeFactory.getInstance();
     ASTCDCompilationUnit compilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
-    LanguageInteraceDecorator decorator = new LanguageInteraceDecorator();
-    this.languageInterace = decorator.decorate(compilationUnit);
+    ASTService astService = new ASTService(compilationUnit);
+    VisitorService visitorService = new VisitorService(compilationUnit);
+    ASTLanguageInterfaceDecorator decorator = new ASTLanguageInterfaceDecorator(astService, visitorService);
+    this.languageInterface = decorator.decorate(compilationUnit);
   }
 
   @Test
   public void testMillName() {
-    assertEquals("ASTAutomatonNode", languageInterace.getName());
+    assertEquals("ASTAutomatonNode", languageInterface.getName());
   }
 
   @Test
   public void testAttributesEmpty() {
-    assertTrue(languageInterace.isEmptyCDAttributes());
+    assertTrue(languageInterface.isEmptyCDAttributes());
   }
 
   @Test
   public void testMethodCount(){
-    assertEquals(1, languageInterace.sizeCDMethods());
+    assertEquals(1, languageInterface.sizeCDMethods());
   }
 
   @Test
   public void testAcceptMethod() {
-    ASTCDMethod method = getMethodBy("accept", languageInterace);
+    ASTCDMethod method = getMethodBy("accept", languageInterface);
     assertTrue(method.getModifier().isAbstract());
     assertTrue(method.getModifier().isPublic());
     assertVoid(method.getReturnType());
@@ -66,7 +70,7 @@ public class LanguageInterfaceDecoratorTest extends DecoratorTestCase {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(new GlobalExtensionManagement());
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-    StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, languageInterace, languageInterace);
+    StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, languageInterface, languageInterface);
     System.out.println(sb.toString());
   }
 }

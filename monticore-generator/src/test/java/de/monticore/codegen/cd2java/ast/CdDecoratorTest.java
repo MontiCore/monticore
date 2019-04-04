@@ -20,6 +20,7 @@ import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParser;
 import de.se_rwth.commons.Names;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -41,6 +42,8 @@ import static org.junit.Assert.fail;
  * Test for the {@link CdDecorator} class.
  *
  */
+@Ignore
+@Deprecated
 public class CdDecoratorTest {
   
   private static Path modelPathPath = Paths.get("src/test/resources");

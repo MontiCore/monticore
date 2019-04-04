@@ -5,11 +5,16 @@ import de.monticore.codegen.cd2java.ast_new.ASTConstants;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.symboltable.CDSymbol;
 
-public class NodeFactoryService extends AbstractService {
+public class NodeFactoryService extends AbstractService<NodeFactoryService> {
 
   public NodeFactoryService(ASTCDCompilationUnit compilationUnit) {
     super(compilationUnit);
+  }
+
+  public NodeFactoryService(CDSymbol cdSymbol) {
+    super(cdSymbol);
   }
 
   @Override
@@ -17,15 +22,28 @@ public class NodeFactoryService extends AbstractService {
     return ASTConstants.AST_PACKAGE;
   }
 
-  public String getNodeFactoryTypeName() {
+  @Override
+  protected NodeFactoryService createService(CDSymbol cdSymbol) {
+    return createNodeFactoryService(cdSymbol);
+  }
+
+  public static NodeFactoryService createNodeFactoryService(CDSymbol cdSymbol) {
+    return new NodeFactoryService(cdSymbol);
+  }
+
+  public String getNodeFactorySimpleTypeName() {
     return getCDName() + NodeFactoryConstants.NODE_FACTORY_SUFFIX;
   }
 
+  public String getNodeFactoryFullTypeName() {
+    return String.join(".", getPackage(), getNodeFactorySimpleTypeName());
+  }
+
   public ASTType getNodeFactoryType() {
-    return getCDTypeFactory().createSimpleReferenceType(getNodeFactoryTypeName());
+    return getCDTypeFactory().createSimpleReferenceType(getNodeFactoryFullTypeName());
   }
 
   public String getCreateInvocation(ASTCDClass clazz) {
-    return "return " + getNodeFactoryTypeName() + "." + NodeFactoryConstants.CREATE + clazz.getName() + "();\n";
+    return "return " + getNodeFactorySimpleTypeName() + "." + NodeFactoryConstants.CREATE_METHOD + clazz.getName() + "();\n";
   }
 }

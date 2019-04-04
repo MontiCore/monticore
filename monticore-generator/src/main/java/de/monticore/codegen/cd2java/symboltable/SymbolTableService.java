@@ -9,6 +9,7 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTModifier;
+import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.Names;
 
 import java.util.Optional;
@@ -16,15 +17,28 @@ import java.util.Optional;
 import static de.monticore.utils.Names.getSimpleName;
 import static de.se_rwth.commons.Names.getQualifier;
 
-public class SymbolTableService extends AbstractService {
+public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public SymbolTableService(ASTCDCompilationUnit compilationUnit) {
     super(compilationUnit);
   }
 
+  public SymbolTableService(CDSymbol cdSymbol) {
+    super(cdSymbol);
+  }
+
   @Override
   protected String getSubPackage() {
     return SymbolTableConstants.SYMBOL_TABLE_PACKGE;
+  }
+
+  @Override
+  protected SymbolTableService createService(CDSymbol cdSymbol) {
+    return createSymbolTableService(cdSymbol);
+  }
+
+  public static SymbolTableService createSymbolTableService(CDSymbol cdSymbol) {
+    return new SymbolTableService(cdSymbol);
   }
 
   public String getScopeTypeName() {

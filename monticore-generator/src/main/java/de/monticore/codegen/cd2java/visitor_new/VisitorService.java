@@ -16,10 +16,14 @@ import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
-public class VisitorService extends AbstractService {
+public class VisitorService extends AbstractService<VisitorService> {
 
   public VisitorService(ASTCDCompilationUnit compilationUnit) {
     super(compilationUnit);
+  }
+
+  public VisitorService(CDSymbol cdSymbol) {
+    super(cdSymbol);
   }
 
   @Override
@@ -27,30 +31,40 @@ public class VisitorService extends AbstractService {
     return VisitorConstants.VISITOR_PACKAGE;
   }
 
+  @Override
+  protected VisitorService createService(CDSymbol cdSymbol) {
+    return createVisitorService(cdSymbol);
+  }
+
+  public VisitorService createVisitorService(CDSymbol cdSymbol) {
+    return new VisitorService(cdSymbol);
+  }
+
   public String getVisitorSimpleTypeName() {
     return getCDName() + VisitorConstants.VISITOR_SUFFIX;
   }
 
   public String getVisitorFullTypeName() {
-    return getPackage() + "." + getVisitorSimpleTypeName();
+    return String.join(".",getPackage(), getVisitorSimpleTypeName());
   }
 
   public ASTType getVisitorType() {
     return getCDTypeFactory().createSimpleReferenceType(getVisitorFullTypeName());
   }
 
-  public ASTReferenceType getVisitorType(CDSymbol cd) {
-    return getCDTypeFactory().createSimpleReferenceType(String.join(".", getPackage(cd), cd.getName() + VisitorConstants.VISITOR_SUFFIX));
+  public ASTReferenceType getVisitorReferenceType() {
+    return getCDTypeFactory().createSimpleReferenceType(getVisitorFullTypeName());
   }
 
   public List<ASTReferenceType> getAllVisitorTypesInHierarchy() {
-    return SuperSymbolHelper.getSuperCDs(getCD()).stream()
-        .map(this::getVisitorType)
+    return getServicesOfSuperCDs().stream()
+        .map(VisitorService::getVisitorReferenceType)
         .collect(Collectors.toList());
   }
 
-  public ASTCDMethod getVisitorMethod(String methodType, ASTType nodeType) {
+
+  ASTCDMethod getVisitorMethod(String methodName, ASTType nodeType) {
     ASTCDParameter visitorParameter = CDParameterFactory.getInstance().createParameter(nodeType, "node");
-    return CDMethodFactory.getInstance().createMethod(PUBLIC, methodType, visitorParameter);
+    return CDMethodFactory.getInstance().createMethod(PUBLIC, methodName, visitorParameter);
   }
 }

@@ -18,18 +18,17 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 
 public class EnumDecorator extends AbstractDecorator<ASTCDEnum, ASTCDEnum> {
 
-  public EnumDecorator(GlobalExtensionManagement glex, final AccessorDecorator accessorDecorator, final String grammarName) {
-    super(glex);
-    this.accessorDecorator = accessorDecorator;
-    this.grammarName = grammarName;
-  }
+  private static final String INT_VALUE = "intValue";
 
   private final String grammarName;
 
   private final AccessorDecorator accessorDecorator;
 
-
-  private static final String INT_VALUE = "intValue";
+  public EnumDecorator(GlobalExtensionManagement glex, final AccessorDecorator accessorDecorator, final String grammarName) {
+    super(glex);
+    this.accessorDecorator = accessorDecorator;
+    this.grammarName = grammarName;
+  }
 
   @Override
   public ASTCDEnum decorate(ASTCDEnum input) {

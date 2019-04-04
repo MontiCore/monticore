@@ -120,13 +120,6 @@ public class JavaClassExpressionsPrettyPrinter extends CommonExpressionsPrettyPr
   }
 
   @Override
-  public void handle(ASTNameExpression node) {
-    CommentPrettyPrinter.printPreComments(node, getPrinter());
-   getPrinter().print(node.getName());
-   CommentPrettyPrinter.printPostComments(node, getPrinter());
-  }
-  
-  @Override
   public void handle(ASTInstanceofExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getExpression().accept(getRealThis());

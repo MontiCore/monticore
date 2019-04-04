@@ -34,7 +34,6 @@ public class ASTSymbolDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass
       String attributeName = StringUtils.uncapitalize(clazz.getName()) + SymbolTableConstants.SYMBOL_SUFFIX;
       ASTCDAttribute symbolAttribute = this.getCDAttributeFactory().createAttribute(PROTECTED, symbolType, attributeName);
       clazz.addCDAttribute(symbolAttribute);
-      clazz.addAllCDMethods(methodDecorator.decorate(symbolAttribute));
     }
     return clazz;
   }

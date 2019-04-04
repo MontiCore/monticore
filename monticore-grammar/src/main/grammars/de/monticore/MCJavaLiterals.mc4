@@ -8,61 +8,13 @@ package de.monticore;
  * ease the reuse of literals structures in Java-like sublanguages, e.g., by 
  * grammar inheritance or grammar embedment.
  * The grammar contains literals from Java, e.g., Boolean, Char, String, ....
+ * Please note that Java has an extended syntax e.g. for integers using underscores
+ * or other kinds of encodings. They parse e.g. 999_999 or 0x3F2A
  *
 */
 
 component grammar MCJavaLiterals extends de.monticore.MCBasicLiterals {
 
-  /*========================================================================*/
-  /*======================= AST DEFINITIONS ================================*/
-  /*========================================================================*/
-
-
-  astrule IntLiteral = 
-    method public int getValue() {
-      try {
-        return de.monticore.MCLiteralsDecoder.decodeInt(getSource());
-      }
-      catch (NumberFormatException e) {
-        return 0;
-      }
-    }
-  ;
-  
-  astrule LongLiteral = 
-    method public long getValue() {
-      try {
-        return de.monticore.MCLiteralsDecoder.decodeLong(getSource());
-      }
-      catch (NumberFormatException e) {
-        return 0;
-      }
-    }
-  ;
-
-
-  astrule FloatLiteral = 
-    method public float getValue() {
-      try {
-        return de.monticore.MCLiteralsDecoder.decodeFloat(getSource());
-      }
-      catch (NumberFormatException e) {
-        return 0f;
-      }
-    }
-  ;
-
-
-  astrule DoubleLiteral = 
-    method public double getValue() {
-      try {
-        return de.monticore.MCLiteralsDecoder.decodeDouble(getSource());
-      }
-      catch (NumberFormatException e) {
-        return 0d;
-      }
-    }
-  ;
 
 
   /*========================================================================*/
@@ -277,5 +229,36 @@ component grammar MCJavaLiterals extends de.monticore.MCBasicLiterals {
 
    fragment token ZeroToThree
      = '0'..'3' ;
+
+  /*========================================================================*/
+  /*======================= AST DEFINITIONS ================================*/
+  /*========================================================================*/
+
+
+  astrule IntLiteral =
+    method public int getValue() {
+      return de.monticore.MCLiteralsDecoder.decodeInt(getSource());
+    }
+  ;
+
+  astrule LongLiteral =
+    method public long getValue() {
+      return de.monticore.MCLiteralsDecoder.decodeLong(getSource());
+    }
+  ;
+
+
+  astrule FloatLiteral =
+    method public float getValue() {
+      return de.monticore.MCLiteralsDecoder.decodeFloat(getSource());
+    }
+  ;
+
+
+  astrule DoubleLiteral =
+    method public double getValue() {
+      return de.monticore.MCLiteralsDecoder.decodeDouble(getSource());
+    }
+  ;
 
  }
