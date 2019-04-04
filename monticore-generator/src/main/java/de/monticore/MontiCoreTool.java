@@ -1,23 +1,25 @@
 package de.monticore;
 
-import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.CDGenerator;
-import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
+import de.monticore.codegen.cd2java.ast_interface.ASTLanguageInterfaceDecorator;
 import de.monticore.codegen.cd2java.ast_new.*;
 import de.monticore.codegen.cd2java.ast_new.reference.ASTReferenceDecorator;
 import de.monticore.codegen.cd2java.builder.ASTBuilderDecorator;
 import de.monticore.codegen.cd2java.builder.BuilderDecorator;
+import de.monticore.codegen.cd2java.cocos.CoCoGenerator;
 import de.monticore.codegen.cd2java.cocos_new.CoCoCheckerDecorator;
 import de.monticore.codegen.cd2java.cocos_new.CoCoDecorator;
 import de.monticore.codegen.cd2java.cocos_new.CoCoInterfaceDecorator;
 import de.monticore.codegen.cd2java.cocos_new.CoCoService;
 import de.monticore.codegen.cd2java.data.DataDecorator;
+import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.factory.NodeFactoryDecorator;
 import de.monticore.codegen.cd2java.factory.NodeFactoryService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.codegen.cd2java.mill.MillDecorator;
 import de.monticore.codegen.cd2java.od.ODGenerator;
 import de.monticore.codegen.cd2java.symboltable.SymbolTableService;
+import de.monticore.codegen.cd2java.typecd2java.TypeCD2JavaDecorator;
 import de.monticore.codegen.cd2java.visitor.VisitorGenerator;
 import de.monticore.codegen.cd2java.visitor_new.VisitorService;
 import de.monticore.codegen.mc2cd.MC2CDTransformation;
@@ -45,10 +47,12 @@ import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.umlcd4a.CD4AnalysisLanguage;
 import de.monticore.umlcd4a.CD4AnalysisModelLoader;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.symboltable.CD4AnalysisSymbolTableCreator;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -125,9 +129,11 @@ public class MontiCoreTool {
     Log.debug("Template files      : " + templatePath, LOG_ID);
 
     // M1  basic setup and initialization:
-    // initialize incremental generation; enabling of reporting; create global scope
+    // initialize incremental generation; enabling of reporting;
     IncrementalChecker.initialize(out, report);
     InputOutputFilesReporter.resetModelToArtifactMap();
+    Reporting.init(out.getAbsolutePath(), report.getAbsolutePath(),
+        new MontiCoreReports(out.getAbsolutePath(), report.getAbsolutePath(), handcodedPath, templatePath));
 
     // the first pass processes all input grammars up to transformation to CD and storage of the resulting CD to disk
     Map<ASTMCGrammar, ASTCDCompilationUnit> transformedGrammars = loadAndTransformMCGrammarToCD();
@@ -184,11 +190,24 @@ public class MontiCoreTool {
       Log.error("0xA1016 Cannot read " + grammar.toString() + " as it is not a file.");
     }
     String qualifiedName = getQualifiedNameFromPath(grammar);
-    return mcModelLoader.loadModelIntoScope(qualifiedName, modelPath, symbolTable, resolvingConfiguration);
+    Optional<MCGrammarSymbol> grammarSymbol = symbolTable.resolveDown(qualifiedName, MCGrammarSymbol.KIND);
+    if (grammarSymbol.isPresent()) {
+      return grammarSymbol.get().getAstGrammar();
+    }
+    else {
+      return mcModelLoader.loadModelIntoScope(qualifiedName, modelPath, symbolTable, resolvingConfiguration);
+    }
   }
 
   private String getQualifiedNameFromPath(Path grammar) {
-    return grammar.toAbsolutePath().toString();
+    String qualifiedName = "";
+    for (Path modelPath : this.modelPath.getFullPathOfEntries()) {
+      if (grammar.startsWith(modelPath)) {
+        qualifiedName = modelPath.relativize(grammar).toString();
+        break;
+      }
+    }
+    return Names.getPackageFromPath(FilenameUtils.removeExtension(qualifiedName));
   }
 
   private void runGrammarCoCos(ASTMCGrammar grammar) {
@@ -210,10 +229,10 @@ public class MontiCoreTool {
       GlobalExtensionManagement glex) {
     // transformation
     ASTCDCompilationUnit compUnit = new MC2CDTransformation(glex).apply(astGrammar);
-    return createSymbolsFromAST(compUnit);
+    return createSymbolsFromAST(compUnit, symbolTable);
   }
 
-  public ASTCDCompilationUnit createSymbolsFromAST(ASTCDCompilationUnit ast) {
+  public ASTCDCompilationUnit createSymbolsFromAST(ASTCDCompilationUnit ast, GlobalScope symbolTable) {
     // Build grammar symbol table (if not already built)
 
     final String qualifiedCDName = Names.getQualifiedName(ast.getPackageList(), ast.getCDDefinition()
@@ -229,9 +248,10 @@ public class MontiCoreTool {
       Log.debug("Used present symbol table for " + cdSymbol.get().getFullName(), LOG_ID);
     }
     else {
-      Optional<ASTCDCompilationUnit> cdOpt = cd4aModelLoader.loadModelIntoScope(qualifiedCDName, modelPath, symbolTable, resolvingConfiguration);
-      if (cdOpt.isPresent()) {
-        result = cdOpt.get();
+      Optional<CD4AnalysisSymbolTableCreator> symbolTableCreatorOpt = cd4aModelLoader.getModelingLanguage().getSymbolTableCreator(resolvingConfiguration, symbolTable);
+      if (symbolTableCreatorOpt.isPresent()) {
+        CD4AnalysisSymbolTableCreator symbolTableCreator = symbolTableCreatorOpt.get();
+        symbolTableCreator.createFromAST(ast);
       }
     }
 
@@ -256,32 +276,24 @@ public class MontiCoreTool {
   }
 
   private void generate(Map<ASTMCGrammar, ASTCDCompilationUnit> input) {
+    // old generation process
     for (Map.Entry<ASTMCGrammar, ASTCDCompilationUnit> pair : input.entrySet()) {
       ASTMCGrammar grammar = pair.getKey();
       ASTCDCompilationUnit cd = pair.getValue();
 
       // make sure to use the right report manager again
       Reporting.on(Names.getQualifiedName(grammar.getPackageList(), grammar.getName()));
-      reportGrammarCd(grammar, cd);
+      // reportGrammarCd(grammar, cd);
 
       GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
-      // M7: decorate Class Diagram AST
-      //TODO add visitor + od decorator
-      Collection<ASTCDCompilationUnit> decoratedCDs = Stream.of(
-          decorateWithAST(cd.deepClone(), glex),
-          decorateWithCoCos(cd.deepClone(), glex))
-          .collect(Collectors.toList());
-
-      //TODO replace symbol table generation with ST decorator
       // M8: generate symbol table
       generateSymbolTable(glex, grammar, cd);
 
       // M9 Generate ast classes, visitor and context condition
-      generate(decoratedCDs, glex);
-      GlobalExtensionManagement old_glex = new GlobalExtensionManagement();
-      VisitorGenerator.generate(old_glex, symbolTable, cd, out);
-      ODGenerator.generate(old_glex, symbolTable, cd, out);
+      VisitorGenerator.generate(glex, symbolTable, cd, out);
+      CoCoGenerator.generate(glex, symbolTable, cd, out);
+      ODGenerator.generate(glex, symbolTable, cd, out);
 
       Log.info("Grammar " + grammar.getName() + " processed successfully!", LOG_ID);
 
@@ -289,21 +301,41 @@ public class MontiCoreTool {
       Reporting.reportModelEnd(grammar.getName(), "");
       Reporting.flush(grammar);
     }
+
+    // new generation process using decorator
+    CD4AnalysisLanguage cd4aLanguage = new CD4AnalysisLanguage();
+    ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
+    resolvingConfiguration.addDefaultFilters(cd4aLanguage.getResolvingFilters());
+    GlobalScope symbolTable = new GlobalScope(modelPath,cd4aLanguage, resolvingConfiguration);
+    for (Map.Entry<ASTMCGrammar, ASTCDCompilationUnit> pair : input.entrySet()) {
+      ASTMCGrammar grammar = pair.getKey();
+      ASTCDCompilationUnit cd = pair.getValue();
+
+      GlobalExtensionManagement glex = new GlobalExtensionManagement();
+      glex.setGlobalValue("astHelper", new DecorationHelper());
+
+      // TODO replacing old decoration process
+      // Pre-transform CD to fit decoration
+      ASTCDCompilationUnit preparedCD = prepareCD(cd, symbolTable);
+
+      Collection<ASTCDCompilationUnit> decoratedCDs = Stream.of(
+          decorateWithAST(preparedCD, glex))
+          .collect(Collectors.toList());
+
+      generate(decoratedCDs, glex);
+
+      Log.info("Grammar " + grammar.getName() + " processed successfully!", LOG_ID);
+    }
   }
 
-  private void reportGrammarCd(ASTMCGrammar astCd, ASTCDCompilationUnit cd) {
-    // we also store the class diagram fully qualified such that we can later on
-    // resolve it properly for the generation of sub languages
-    String reportSubDir = Joiners.DOT.join(astCd.getPackageList());
-    reportSubDir = reportSubDir.isEmpty()
-        ? cd.getCDDefinition().getName()
-        : reportSubDir.concat(".").concat(cd.getCDDefinition().getName());
+  private ASTCDCompilationUnit prepareCD(ASTCDCompilationUnit cd, GlobalScope symbolTable) {
+    ASTCDCompilationUnit preparedCD = cd;
 
-    // Write reporting CD
-    ASTCDCompilationUnit astCdForReporting = new AstGeneratorHelper(cd, symbolTable).getASTCDForReporting();
-    // No star imports in reporting CDs
-    astCdForReporting.getImportStatementList().forEach(s -> s.setStar(false));
-    GeneratorHelper.prettyPrintAstCd(astCdForReporting, out, reportSubDir);
+    TypeCD2JavaDecorator typeCD2JavaDecorator = new TypeCD2JavaDecorator();
+    preparedCD = typeCD2JavaDecorator.decorate(preparedCD);
+
+    createSymbolsFromAST(preparedCD, symbolTable);
+    return preparedCD;
   }
 
   private ASTCDCompilationUnit decorateWithAST(ASTCDCompilationUnit cd, GlobalExtensionManagement glex) {
@@ -319,6 +351,8 @@ public class MontiCoreTool {
     ASTReferenceDecorator astReferencedSymbolDecorator = new ASTReferenceDecorator(glex, symbolTableService);
     ASTFullDecorator fullDecorator = new ASTFullDecorator(dataDecorator, astDecorator, astSymbolDecorator, astScopeDecorator, astReferencedSymbolDecorator);
 
+    ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator = new ASTLanguageInterfaceDecorator(astService, visitorService);
+
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, new MethodDecorator(glex));
     ASTBuilderDecorator astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator);
 
@@ -326,7 +360,7 @@ public class MontiCoreTool {
 
     MillDecorator millDecorator = new MillDecorator(glex);
 
-    ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, fullDecorator, astBuilderDecorator, nodeFactoryDecorator, millDecorator);
+    ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, fullDecorator, astLanguageInterfaceDecorator, astBuilderDecorator, nodeFactoryDecorator, millDecorator);
     return astcdDecorator.decorate(cd);
   }
 

@@ -61,6 +61,9 @@ public abstract class AbstractService<T extends AbstractService> {
   }
 
   public String getPackage() {
+    if (getBasePackage().isEmpty()) {
+      return String.join(".", getCDName(), getSubPackage()).toLowerCase();
+    }
     return String.join(".", getBasePackage(), getCDName(), getSubPackage()).toLowerCase();
   }
 

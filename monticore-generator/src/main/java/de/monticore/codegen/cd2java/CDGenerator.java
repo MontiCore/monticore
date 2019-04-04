@@ -20,7 +20,7 @@ public class CDGenerator {
 
   public void generate(ASTCDCompilationUnit compilationUnit) {
     ASTCDDefinition definition = compilationUnit.getCDDefinition();
-    String packageAsPath = String.join(File.separator, compilationUnit.getPackageList());
+    String packageAsPath = String.join(File.separator, compilationUnit.getPackageList()).toLowerCase();
 
     for (ASTCDClass cdClass : definition.getCDClassList()) {
       Path filePath = getAsPath(packageAsPath, cdClass.getName());

@@ -2,6 +2,7 @@ package de.monticore.codegen.cd2java.ast_new;
 
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
+import de.monticore.codegen.cd2java.ast_interface.ASTLanguageInterfaceDecorator;
 import de.monticore.codegen.cd2java.ast_new.*;
 import de.monticore.codegen.cd2java.ast_new.reference.ASTReferenceDecorator;
 import de.monticore.codegen.cd2java.builder.ASTBuilderDecorator;
@@ -50,6 +51,8 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
     ASTReferenceDecorator astReferencedSymbolDecorator = new ASTReferenceDecorator(glex, symbolTableService);
     ASTFullDecorator fullDecorator = new ASTFullDecorator(dataDecorator, astDecorator, astSymbolDecorator, astScopeDecorator, astReferencedSymbolDecorator);
 
+    ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator = new ASTLanguageInterfaceDecorator(astService, visitorService);
+
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, new MethodDecorator(glex));
     ASTBuilderDecorator astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator);
 
@@ -57,13 +60,13 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
 
     MillDecorator millDecorator = new MillDecorator(glex);
 
-    ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, fullDecorator, astBuilderDecorator, nodeFactoryDecorator, millDecorator);
+    ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, fullDecorator, astLanguageInterfaceDecorator, astBuilderDecorator, nodeFactoryDecorator, millDecorator);
     this.ast = astcdDecorator.decorate(ast);
   }
 
   @Test
   public void testPackage() {
-    List<String> expectedPackage = Arrays.asList("de", "monticore", "codegen", "ast", "_ast");
+    List<String> expectedPackage = Arrays.asList("de", "monticore", "codegen", "ast", "ast", "_ast");
     assertEquals(expectedPackage, ast.getPackageList());
   }
 

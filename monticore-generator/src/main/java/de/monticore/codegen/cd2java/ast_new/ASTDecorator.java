@@ -44,6 +44,8 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
   @Override
   public ASTCDClass decorate(ASTCDClass clazz) {
+    clazz.setName(astService.getASTSimpleTypeName(clazz));
+
     if (!clazz.isPresentSuperclass()) {
       clazz.setSuperclass(this.getCDTypeFactory().createSimpleReferenceType(ASTCNode.class));
     }

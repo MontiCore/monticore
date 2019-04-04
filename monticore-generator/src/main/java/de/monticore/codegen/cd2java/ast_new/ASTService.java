@@ -1,5 +1,6 @@
 package de.monticore.codegen.cd2java.ast_new;
 
+import de.monticore.ast.ASTNode;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.types.types._ast.ASTReferenceType;
 import de.monticore.types.types._ast.ASTType;
@@ -43,6 +44,10 @@ public class ASTService extends AbstractService<ASTService> {
     return getCDTypeFactory().createSimpleReferenceType(getASTBaseInterfaceFullName());
   }
 
+  public String getSimpleTypeName(ASTCDType type) {
+    return type.getName().startsWith(ASTConstants.AST_PREFIX) ? type.getName().substring(ASTConstants.AST_PREFIX.length()) : type.getName();
+  }
+
   public String getASTSimpleTypeName(ASTCDType type) {
     return ASTConstants.AST_PREFIX + type.getName();
   }
@@ -53,5 +58,9 @@ public class ASTService extends AbstractService<ASTService> {
 
   public ASTType getASTType(ASTCDType type) {
     return getCDTypeFactory().createSimpleReferenceType(getASTFullTypeName(type));
+  }
+
+  public ASTReferenceType getASTNodeInterfaceType() {
+    return getCDTypeFactory().createSimpleReferenceType(ASTNode.class);
   }
 }

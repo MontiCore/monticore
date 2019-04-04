@@ -27,7 +27,7 @@ public class CoCoDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCD
   @Override
   public ASTCDCompilationUnit decorate(ASTCDCompilationUnit input) {
     List<String> cocoPackage = new ArrayList<>(input.getPackageList());
-    cocoPackage.addAll(Arrays.asList(input.getCDDefinition().getName(), CoCoConstants.COCO_PACKAGE));
+    cocoPackage.addAll(Arrays.asList(input.getCDDefinition().getName().toLowerCase(), CoCoConstants.COCO_PACKAGE));
 
     ASTCDDefinition cocoCD = CD4AnalysisMill.cDDefinitionBuilder()
         .setName(input.getCDDefinition().getName())

@@ -34,7 +34,6 @@ public class ASTScopeDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass>
       String attributeName = StringUtils.uncapitalize(symbolTableService.getCDName()) + SymbolTableConstants.SCOPE_SUFFIX;
       ASTCDAttribute scopeAttribute = this.getCDAttributeFactory().createAttribute(PROTECTED, scopeType, attributeName);
       clazz.addCDAttribute(scopeAttribute);
-      clazz.addAllCDMethods(methodDecorator.decorate(scopeAttribute));
     }
     return clazz;
   }
