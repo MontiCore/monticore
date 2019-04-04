@@ -12,6 +12,7 @@ import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.types.types._ast.ASTTypeParameters;
 import de.monticore.types.types._ast.ASTTypeVariableDeclaration;
 
+@Deprecated
 public class TypesNodeIdentHelper extends LiteralsNodeIdentHelper {
   
   protected String unqualName(ASTQualifiedName ast) {

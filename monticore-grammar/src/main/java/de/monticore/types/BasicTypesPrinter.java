@@ -56,7 +56,7 @@ public class BasicTypesPrinter {
     if (type instanceof ASTMCObjectType) {
       return doPrintReferenceType((ASTMCObjectType) type);
     }
-    return "";
+    return "vxgcnfnhnhjggf";
   }
   
   /**
