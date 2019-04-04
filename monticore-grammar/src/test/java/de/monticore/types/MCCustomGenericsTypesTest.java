@@ -4,8 +4,8 @@ package de.monticore.types;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mccustomgenerictypestest._parser.MCCustomGenericTypesTestParser;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import de.monticore.types.mcsimplegenerictypestest._parser.MCSimpleGenericTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,7 +28,7 @@ public class MCCustomGenericsTypesTest {
 
     for (String testType : types) {
       System.out.println("Teste "+testType);
-      MCCustomGenericTypesTestParser mcBasicTypesParser = new MCCustomGenericTypesTestParser();
+      MCSimpleGenericTypesTestParser mcBasicTypesParser = new MCSimpleGenericTypesTestParser();
 
       Optional<ASTMCType> type = mcBasicTypesParser.parse_String(testType);
 
@@ -43,7 +43,7 @@ public class MCCustomGenericsTypesTest {
 
   @Test
   public void testMCListTypeValid() throws IOException {
-    MCCustomGenericTypesTestParser parser = new MCCustomGenericTypesTestParser();
+    MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
     Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("List<Integer>");
     assertFalse(parser.hasErrors());
     assertNotNull(type);
@@ -53,7 +53,7 @@ public class MCCustomGenericsTypesTest {
 
   @Test
   public void testMCListTypeValid2() throws IOException {
-    MCCustomGenericTypesTestParser parser = new MCCustomGenericTypesTestParser();
+    MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
     Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("java.util.List<String>");
     assertFalse(parser.hasErrors());
     assertNotNull(type);
@@ -63,7 +63,7 @@ public class MCCustomGenericsTypesTest {
 
   @Test
   public void testMCMapTypeValid() throws IOException {
-    MCCustomGenericTypesTestParser parser = new MCCustomGenericTypesTestParser();
+    MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
     Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("Map<Integer, String>");
     assertFalse(parser.hasErrors());
     assertNotNull(type);
@@ -73,7 +73,7 @@ public class MCCustomGenericsTypesTest {
 
   @Test
   public void testMCMapTypeValid2() throws IOException {
-    MCCustomGenericTypesTestParser parser = new MCCustomGenericTypesTestParser();
+    MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
     Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("java.util.Map<java.util.List<Integer>, String>");
     assertFalse(parser.hasErrors());
     assertNotNull(type);
@@ -84,7 +84,7 @@ public class MCCustomGenericsTypesTest {
 
   @Test
   public void testMCOptionalTypeValid() throws IOException {
-    MCCustomGenericTypesTestParser parser = new MCCustomGenericTypesTestParser();
+    MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
     Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("Optional<String>");
     assertFalse(parser.hasErrors());
     assertNotNull(type);
@@ -94,7 +94,7 @@ public class MCCustomGenericsTypesTest {
 
   @Test
   public void testMCOptionalTypeValid2() throws IOException {
-    MCCustomGenericTypesTestParser parser = new MCCustomGenericTypesTestParser();
+    MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
     Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("java.util.Optional<Set<String>>");
     assertFalse(parser.hasErrors());
     assertNotNull(type);
@@ -105,7 +105,7 @@ public class MCCustomGenericsTypesTest {
 
   @Test
   public void testMCSetTypeValid() throws IOException {
-    MCCustomGenericTypesTestParser parser = new MCCustomGenericTypesTestParser();
+    MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
     Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("Set<String>");
     assertFalse(parser.hasErrors());
     assertNotNull(type);
@@ -115,7 +115,7 @@ public class MCCustomGenericsTypesTest {
 
   @Test
   public void testMCSetTypeValid2() throws IOException {
-    MCCustomGenericTypesTestParser parser = new MCCustomGenericTypesTestParser();
+    MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
     Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("java.util.Set<List<String>>");
     assertFalse(parser.hasErrors());
     assertNotNull(type);
@@ -125,7 +125,7 @@ public class MCCustomGenericsTypesTest {
 
   @Test
   public void testMCTypeArgumentValid() throws IOException {
-    MCCustomGenericTypesTestParser parser = new MCCustomGenericTypesTestParser();
+    MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
     Optional<ASTMCTypeArgument> type = parser.parse_StringMCTypeArgument("a.b.c");
     assertFalse(parser.hasErrors());
     assertNotNull(type);
@@ -135,7 +135,7 @@ public class MCCustomGenericsTypesTest {
 
   @Test
   public void testMCTypeArgumentValid2() throws IOException {
-    MCCustomGenericTypesTestParser parser = new MCCustomGenericTypesTestParser();
+    MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
     Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("List<A>");
     assertFalse(parser.hasErrors());
     assertNotNull(type);
@@ -146,7 +146,7 @@ public class MCCustomGenericsTypesTest {
   @Test
   public void testMCComplexReferenceTypeInvalid() throws IOException {
     //not defined in that grammar, only in MCGenericsTypes
-    MCCustomGenericTypesTestParser parser = new MCCustomGenericTypesTestParser();
+    MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
     Optional<ASTMCType> type = parser.parse_StringMCType("java.util.List<A>.Set<C>.some.Collection<B>");
     assertTrue(parser.hasErrors());
     assertFalse(type.isPresent());
