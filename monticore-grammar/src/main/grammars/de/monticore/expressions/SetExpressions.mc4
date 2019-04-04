@@ -33,6 +33,7 @@ component grammar SetExpressions extends de.monticore.expressions.CommonExpressi
         "intersect"
         set:Expression;
 
+    // Logical expressions extended to sets of arguments
     SetAndExpression implements Expression <130> =
         "setand"
         set:Expression;
