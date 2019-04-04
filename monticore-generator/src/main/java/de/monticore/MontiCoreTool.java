@@ -43,8 +43,8 @@ import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.umlcd4a.CD4AnalysisLanguage;
+import de.monticore.umlcd4a.CD4AnalysisModelLoader;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.symboltable.CD4AnalysisSymbolTableCreator;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
@@ -74,15 +74,13 @@ public class MontiCoreTool {
 
   private final IterablePath templatePath;
 
-  private final MontiCoreGrammarLanguage mcLanguage;
-
-  private final CD4AnalysisLanguage cd4aLanguage;
-
   private final ResolvingConfiguration resolvingConfiguration;
 
   private final GlobalScope symbolTable;
 
-  private final MontiCoreGrammarModelLoader modelLoader;
+  private final MontiCoreGrammarModelLoader mcModelLoader;
+
+  private final CD4AnalysisModelLoader cd4aModelLoader;
 
   public MontiCoreTool(MontiCoreConfiguration configuration) {
     this(configuration.getGrammars(), configuration.getModelPath(),
@@ -101,18 +99,31 @@ public class MontiCoreTool {
     this.handcodedPath = handcodedPath;
     this.templatePath = templatePath;
 
-    this.mcLanguage = new MontiCoreGrammarLanguage();
-    this.cd4aLanguage = new CD4AnalysisLanguage();
+    MontiCoreGrammarLanguage mcLanguage = new MontiCoreGrammarLanguage();
+    CD4AnalysisLanguage cd4aLanguage = new CD4AnalysisLanguage();
 
     this.resolvingConfiguration = new ResolvingConfiguration();
     resolvingConfiguration.addDefaultFilters(mcLanguage.getResolvingFilters());
     resolvingConfiguration.addDefaultFilters(cd4aLanguage.getResolvingFilters());
 
     this.symbolTable =  new GlobalScope(modelPath, Arrays.asList(mcLanguage, cd4aLanguage), resolvingConfiguration);
-    this.modelLoader = new MontiCoreGrammarModelLoader(mcLanguage);
+    this.mcModelLoader = new MontiCoreGrammarModelLoader(mcLanguage);
+    this.cd4aModelLoader = new CD4AnalysisModelLoader(cd4aLanguage);
   }
 
   public void execute() {
+    // M1: configuration object "_configuration" prepared externally
+    Log.debug("--------------------------------", LOG_ID);
+    Log.debug("MontiCore", LOG_ID);
+    Log.debug(" - eating your models since 2005", LOG_ID);
+    Log.debug("--------------------------------", LOG_ID);
+    Log.debug("Grammar files       : " + grammars, LOG_ID);
+    Log.debug("Modelpath           : " + modelPath, LOG_ID);
+    Log.debug("Output dir          : " + out, LOG_ID);
+    Log.debug("Report dir          : " + report, LOG_ID);
+    Log.debug("Handcoded files     : " + handcodedPath, LOG_ID);
+    Log.debug("Template files      : " + templatePath, LOG_ID);
+
     // M1  basic setup and initialization:
     // initialize incremental generation; enabling of reporting; create global scope
     IncrementalChecker.initialize(out, report);
@@ -173,7 +184,7 @@ public class MontiCoreTool {
       Log.error("0xA1016 Cannot read " + grammar.toString() + " as it is not a file.");
     }
     String qualifiedName = getQualifiedNameFromPath(grammar);
-    return modelLoader.loadModelIntoScope(qualifiedName, modelPath, symbolTable, resolvingConfiguration);
+    return mcModelLoader.loadModelIntoScope(qualifiedName, modelPath, symbolTable, resolvingConfiguration);
   }
 
   private String getQualifiedNameFromPath(Path grammar) {
@@ -207,7 +218,7 @@ public class MontiCoreTool {
 
     final String qualifiedCDName = Names.getQualifiedName(ast.getPackageList(), ast.getCDDefinition()
         .getName());
-    Optional<CDSymbol> cdSymbol = symbolTable.<CDSymbol> resolveDown(
+    Optional<CDSymbol> cdSymbol = symbolTable.resolveDown(
         qualifiedCDName,
         CDSymbol.KIND);
 
@@ -218,13 +229,10 @@ public class MontiCoreTool {
       Log.debug("Used present symbol table for " + cdSymbol.get().getFullName(), LOG_ID);
     }
     else {
-      ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-      resolvingConfiguration.addDefaultFilters(cd4aLanguage.getResolvingFilters());
-
-      CD4AnalysisSymbolTableCreator stCreator = cd4aLanguage.getSymbolTableCreator(resolvingConfiguration,
-          symbolTable).get();
-      stCreator.createFromAST(result);
-      symbolTable.cache(cd4aLanguage.getModelLoader(), qualifiedCDName);
+      Optional<ASTCDCompilationUnit> cdOpt = cd4aModelLoader.loadModelIntoScope(qualifiedCDName, modelPath, symbolTable, resolvingConfiguration);
+      if (cdOpt.isPresent()) {
+        result = cdOpt.get();
+      }
     }
 
     return result;
