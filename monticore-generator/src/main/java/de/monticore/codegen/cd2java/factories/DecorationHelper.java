@@ -1,18 +1,15 @@
 package de.monticore.codegen.cd2java.factories;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
 import de.monticore.types.TypesHelper;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.symboltable.CDFieldSymbol;
-import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
 import de.monticore.umlcd4a.symboltable.CDTypes;
 import de.monticore.umlcd4a.symboltable.references.CDTypeSymbolReference;
 import de.se_rwth.commons.JavaNamesHelper;
-import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
@@ -52,7 +49,7 @@ public class DecorationHelper extends TypesHelper {
 
 
   public static boolean isAstNode(ASTCDAttribute attr) {
-    return isAstNode(attr.printType());
+    return isAstNode(attr.printType()) && !isListAstNode(attr);
   }
 
   public static boolean isAstNode(String type) {
@@ -132,9 +129,7 @@ public class DecorationHelper extends TypesHelper {
     if (!(typeArgs.get(0).getType() instanceof CDTypeSymbolReference)) {
       return AST_INTERFACE;
     }
-    String arg = typeArgs.get(0).getType().getReferencedSymbol().getFullName();
-    return AstGeneratorHelper.getAstPackage(Names.getQualifier(arg))
-        + Names.getSimpleName(arg);
+    return ((CDTypeSymbolReference) typeArgs.get(0).getType()).getStringRepresentation();
   }
 
   public static String getAstClassNameForASTLists(ASTCDAttribute attr) {
