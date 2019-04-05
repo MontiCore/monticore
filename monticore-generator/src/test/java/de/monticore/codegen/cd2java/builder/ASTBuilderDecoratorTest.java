@@ -4,6 +4,7 @@ import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.builder.ASTBuilderDecorator;
 import de.monticore.codegen.cd2java.builder.BuilderDecorator;
+import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -27,7 +28,7 @@ public class ASTBuilderDecoratorTest extends DecoratorTestCase {
     LogStub.init();
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "ast", "Builder");
     ASTCDClass cdClass = getClassBy("A", ast);
-
+    this.glex.setGlobalValue("astHelper", new DecorationHelper());
     MethodDecorator methodDecorator = new MethodDecorator(glex);
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, methodDecorator);
     ASTBuilderDecorator builderASTNodeDecorator = new ASTBuilderDecorator(glex, builderDecorator);
