@@ -3,7 +3,7 @@ package de.monticore.types.prettyprint;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
-import de.monticore.types.mccustomgenerictypestest._parser.MCCustomGenericTypesTestParser;
+import de.monticore.types.mcsimplegenerictypestest._parser.MCSimpleGenericTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -32,7 +32,7 @@ public class MCSimpleGenericTypesPrettyPrinterTest {
 
   @Test
   public void testMCBasicTypeArgument() throws IOException {
-    MCCustomGenericTypesTestParser parser = new MCCustomGenericTypesTestParser();
+    MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
     Optional<ASTMCBasicGenericType> ast = parser.parse_StringMCBasicGenericType("java.util.List<Optional<Set<Integer>>>");
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
@@ -47,7 +47,7 @@ public class MCSimpleGenericTypesPrettyPrinterTest {
 
   @Test
   public void testMCBasicTypeArgument2() throws IOException {
-    MCCustomGenericTypesTestParser parser = new MCCustomGenericTypesTestParser();
+    MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
     Optional<ASTMCBasicGenericType> ast = parser.parse_StringMCBasicGenericType("some.randomObject<List<Map<Optional<Set<String>>>>>");
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
@@ -62,7 +62,7 @@ public class MCSimpleGenericTypesPrettyPrinterTest {
 
   @Test
   public void testMCCustomTypeArgument() throws IOException {
-    MCCustomGenericTypesTestParser parser = new MCCustomGenericTypesTestParser();
+    MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
     Optional<ASTMCCustomTypeArgument> ast = parser.parse_StringMCCustomTypeArgument("some.randomObject<java.util.List<Map<Optional<Set<String>>>>>");
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());

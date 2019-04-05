@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 // TODO: improve implementations
+@Deprecated
 public class TypesHelper {
   
   public static final String OPTIONAL = "Optional";

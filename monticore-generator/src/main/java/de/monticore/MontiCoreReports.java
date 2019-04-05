@@ -56,6 +56,7 @@ public class MontiCoreReports implements ReportManagerFactory {
    */
   @Override
   public ReportManager provide(String modelName) {
+    String lowerCaseName = modelName.toLowerCase();
     MontiCoreNodeIdentifierHelper identifierHelper = new MontiCoreNodeIdentifierHelper();
     ReportingRepository repository = new ReportingRepository(identifierHelper);
     repository.initAllTemplates();
@@ -64,34 +65,34 @@ public class MontiCoreReports implements ReportManagerFactory {
     
     ReportManager reports = new ReportManager(this.outputDirectory);
     
-    SummaryReporter summary = new SummaryReporter(this.reportDirectory, modelName, repository);
-    GeneratedFilesReporter generated = new GeneratedFilesReporter(this.reportDirectory, modelName,
+    SummaryReporter summary = new SummaryReporter(this.reportDirectory, lowerCaseName, repository);
+    GeneratedFilesReporter generated = new GeneratedFilesReporter(this.reportDirectory, lowerCaseName,
         repository);
     HandWrittenCodeReporter handwritten = new HandWrittenCodeReporter(this.reportDirectory,
-        modelName, repository);
-    TemplatesReporter templates = new TemplatesReporter(this.reportDirectory, modelName, repository);
-    HookPointReporter hookPoints = new HookPointReporter(this.reportDirectory, modelName,
+        lowerCaseName, repository);
+    TemplatesReporter templates = new TemplatesReporter(this.reportDirectory, lowerCaseName, repository);
+    HookPointReporter hookPoints = new HookPointReporter(this.reportDirectory, lowerCaseName,
         repository);
     InstantiationsReporter instantiations = new InstantiationsReporter(this.reportDirectory,
-        modelName);
-    VariablesReporter variables = new VariablesReporter(this.reportDirectory, modelName);
-    DetailedReporter detail = new DetailedReporter(this.reportDirectory, modelName, repository);
-    TemplateTreeReporter templateTree = new TemplateTreeReporter(this.reportDirectory, modelName);
+        lowerCaseName);
+    VariablesReporter variables = new VariablesReporter(this.reportDirectory, lowerCaseName);
+    DetailedReporter detail = new DetailedReporter(this.reportDirectory, lowerCaseName, repository);
+    TemplateTreeReporter templateTree = new TemplateTreeReporter(this.reportDirectory, lowerCaseName);
     InvolvedFilesReporter ioReporter = new InvolvedFilesReporter(this.reportDirectory);
-    NodeTreeReporter nodeTree = new NodeTreeReporter(this.reportDirectory, modelName, repository);
+    NodeTreeReporter nodeTree = new NodeTreeReporter(this.reportDirectory, lowerCaseName, repository);
     NodeTreeDecoratedReporter nodeTreeDecorated = new NodeTreeDecoratedReporter(
-        this.reportDirectory, modelName, repository);
-    NodeTypesReporter nodeTypes = new NodeTypesReporter(this.reportDirectory, modelName);
-    SymbolTableReporter symbolTable = new SymbolTableReporter(this.reportDirectory, modelName, repository);
+        this.reportDirectory, lowerCaseName, repository);
+    NodeTypesReporter nodeTypes = new NodeTypesReporter(this.reportDirectory, lowerCaseName);
+    SymbolTableReporter symbolTable = new SymbolTableReporter(this.reportDirectory, lowerCaseName, repository);
     TransformationReporter transformations = new TransformationReporter(this.reportDirectory,
-        modelName, repository);
-    ArtifactGmlReporter artifactGml = new ArtifactGmlReporter(this.reportDirectory, modelName);
-    ArtifactGVReporter artifactGV = new ArtifactGVReporter(this.reportDirectory, modelName);
+        lowerCaseName, repository);
+    ArtifactGmlReporter artifactGml = new ArtifactGmlReporter(this.reportDirectory, lowerCaseName);
+    ArtifactGVReporter artifactGV = new ArtifactGVReporter(this.reportDirectory, lowerCaseName);
     InputOutputFilesReporter inputOutput = new InputOutputFilesReporter(this.outputDirectory);
-    ODReporter objDiagram = new ODReporter(this.reportDirectory, modelName, repository);
-    SuccessfulReporter finishReporter = new SuccessfulReporter(this.reportDirectory, modelName);
-    IncGenCheckReporter incGenCheck = new IncGenCheckReporter(this.outputDirectory, modelName);
-    IncGenGradleReporter gradleReporter = new IncGenGradleReporter(this.outputDirectory, modelName);
+    ODReporter objDiagram = new ODReporter(this.reportDirectory, lowerCaseName, repository);
+    SuccessfulReporter finishReporter = new SuccessfulReporter(this.reportDirectory, lowerCaseName);
+    IncGenCheckReporter incGenCheck = new IncGenCheckReporter(this.outputDirectory, lowerCaseName);
+    IncGenGradleReporter gradleReporter = new IncGenGradleReporter(this.outputDirectory, lowerCaseName);
 
     reports.addReportEventHandler(summary); // 01_Summary
     reports.addReportEventHandler(generated); // 02_GeneratedFiles

@@ -31,12 +31,12 @@ public class MCFullGenericTypesPrettyPrinter extends MCSimpleGenericTypesPrettyP
 
   @Override
   public void handle(ASTMCWildcardType node) {
-    getPrinter().print("? ");
+    getPrinter().print("?");
     if (node.isPresentUpperBound()) {
-      getPrinter().print("extends ");
+      getPrinter().print(" extends ");
       node.getUpperBound().accept(getRealThis());
     } else if (node.isPresentLowerBound()) {
-      getPrinter().print("super ");
+      getPrinter().print(" super ");
       node.getLowerBound().accept(getRealThis());
     }
   }
@@ -86,7 +86,7 @@ public class MCFullGenericTypesPrettyPrinter extends MCSimpleGenericTypesPrettyP
         if (first) {
           first = false;
         } else {
-          getPrinter().print(" & ");
+          getPrinter().print(" &" );
         }
         type.accept(getRealThis());
       }

@@ -81,7 +81,6 @@ public interface ASTNode {
    * Compare this object to another Object. Take comments into account.
    * 
    * @param o the object to compare this node to
-   * @param forceSameOrder consider the order in ancestor lists, even if these lists are of
    * stereotype <tt>&lt;&lt;unordered&gt;&gt;</tt> in the grammar.
    */
   default public boolean deepEqualsWithComments(Object o) {
@@ -500,7 +499,7 @@ public interface ASTNode {
    * Checks if the list contains the given Collection of elements Returns true if the Collection is
    * contained in the list of comments and false if it is not
    * 
-   * @param collection of elements which should be contained in the comment list
+   * @param element collection of elements which should be contained in the comment list
    * @return boolean true if the list contains the Object
    */
   boolean containsAll_PostComments(Collection<?> element);
