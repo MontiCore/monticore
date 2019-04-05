@@ -68,7 +68,7 @@ public class ASTConstantsDecorator extends AbstractDecorator<ASTCDCompilationUni
 
   protected ASTCDAttribute getLanguageAttribute(String grammarName) {
     ASTCDAttribute languageAttribute = getCDAttributeFactory().createAttribute(PUBLIC_STATIC_FINAL, String.class, LANGUAGE);
-    this.replaceTemplate(VALUE, languageAttribute, new StringHookPoint("\"" + grammarName + "\""));
+    this.replaceTemplate(VALUE, languageAttribute, new StringHookPoint("= \"" + grammarName + "\""));
     return languageAttribute;
   }
 
@@ -90,10 +90,15 @@ public class ASTConstantsDecorator extends AbstractDecorator<ASTCDCompilationUni
 
   protected ASTCDAttribute getSuperGrammarsAttribute(ASTCDCompilationUnit compilationUnit) {
     List<CDSymbol> superSymbolList = SuperSymbolHelper.getSuperCDs(compilationUnit);
+
     List<String> superGrammarNames = superSymbolList.stream().map(CDSymbol::getFullName).map(x -> "\"" + x + "\"").collect(Collectors.toList());
     ASTCDAttribute attribute = getCDAttributeFactory().createAttribute(PUBLIC_STATIC, getCDTypeFactory().createArrayType(String.class, 1), SUPER_GRAMMARS);
-    String s = superGrammarNames.stream().reduce((a, b) -> a + ", " + b).get();
-    this.replaceTemplate(VALUE, attribute, new StringHookPoint("= {" + s + "}"));
+    if(!superSymbolList.isEmpty()){
+      String s = superGrammarNames.stream().reduce((a, b) -> a + ", " + b).get();
+      this.replaceTemplate(VALUE, attribute, new StringHookPoint("= {" + s + "}"));
+    }else {
+      this.replaceTemplate(VALUE, attribute, new StringHookPoint("= {}"));
+    }
     return attribute;
   }
 

@@ -14,5 +14,8 @@ public final class ASTConstants {
 
   public static final String CONSTRUCT_METHOD = "_construct";
 
-  private ASTConstants() {}
+  public static final String AST_CONSTANTS = "ASTConstants";
+
+  private ASTConstants() {
+  }
 }

@@ -8,6 +8,8 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
 
+import static de.monticore.codegen.cd2java.ast_new.ASTConstants.AST_CONSTANTS;
+
 public class ASTService extends AbstractService<ASTService> {
 
   public ASTService(ASTCDCompilationUnit compilationUnit) {
@@ -62,5 +64,9 @@ public class ASTService extends AbstractService<ASTService> {
 
   public ASTReferenceType getASTNodeInterfaceType() {
     return getCDTypeFactory().createSimpleReferenceType(ASTNode.class);
+  }
+
+  public String getASTConstantClassName() {
+    return getPackage() + "." + AST_CONSTANTS + getCDName();
   }
 }

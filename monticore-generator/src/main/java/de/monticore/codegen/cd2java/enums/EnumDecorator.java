@@ -1,6 +1,7 @@
 package de.monticore.codegen.cd2java.enums;
 
 import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.ast_new.ASTService;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -20,26 +21,27 @@ public class EnumDecorator extends AbstractDecorator<ASTCDEnum, ASTCDEnum> {
 
   private static final String INT_VALUE = "intValue";
 
-  private final String grammarName;
-
   private final AccessorDecorator accessorDecorator;
 
-  public EnumDecorator(GlobalExtensionManagement glex, final AccessorDecorator accessorDecorator, final String grammarName) {
+  private final ASTService astService;
+
+  public EnumDecorator(GlobalExtensionManagement glex, final AccessorDecorator accessorDecorator, final ASTService astService) {
     super(glex);
     this.accessorDecorator = accessorDecorator;
-    this.grammarName = grammarName;
+    this.astService = astService;
   }
 
   @Override
   public ASTCDEnum decorate(ASTCDEnum input) {
     String enumName = input.getName();
+    String constantClassName = astService.getASTConstantClassName();
     ASTCDAttribute intValueAttribute = getIntValueAttribute();
     List<ASTCDMethod> intValueMethod = accessorDecorator.decorate(intValueAttribute);
     List<ASTCDEnumConstant> constants = input.getCDEnumConstantList().stream()
         .map(ASTCDEnumConstant::deepClone)
         .collect(Collectors.toList());
     for (ASTCDEnumConstant constant : constants) {
-      this.replaceTemplate(EMPTY_BODY, constant, new TemplateHookPoint(CONSTANT, constant.getName(), grammarName));
+      this.replaceTemplate(EMPTY_BODY, constant, new TemplateHookPoint(CONSTANT, constant.getName(), constantClassName));
     }
     return CD4AnalysisMill.cDEnumBuilder()
         .setName(enumName)

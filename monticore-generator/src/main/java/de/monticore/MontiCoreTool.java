@@ -1,6 +1,7 @@
 package de.monticore;
 
 import de.monticore.codegen.cd2java.CDGenerator;
+import de.monticore.codegen.cd2java.ast_interface.ASTInterfaceDecorator;
 import de.monticore.codegen.cd2java.ast_interface.ASTLanguageInterfaceDecorator;
 import de.monticore.codegen.cd2java.ast_new.*;
 import de.monticore.codegen.cd2java.ast_new.reference.ASTReferenceDecorator;
@@ -11,11 +12,14 @@ import de.monticore.codegen.cd2java.cocos_new.CoCoCheckerDecorator;
 import de.monticore.codegen.cd2java.cocos_new.CoCoDecorator;
 import de.monticore.codegen.cd2java.cocos_new.CoCoInterfaceDecorator;
 import de.monticore.codegen.cd2java.cocos_new.CoCoService;
+import de.monticore.codegen.cd2java.constants.ASTConstantsDecorator;
 import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
+import de.monticore.codegen.cd2java.enums.EnumDecorator;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.factory.NodeFactoryDecorator;
 import de.monticore.codegen.cd2java.factory.NodeFactoryService;
+import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.codegen.cd2java.mill.MillDecorator;
 import de.monticore.codegen.cd2java.od.ODGenerator;
@@ -361,7 +365,14 @@ public class MontiCoreTool {
 
     MillDecorator millDecorator = new MillDecorator(glex);
 
-    ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, fullDecorator, astLanguageInterfaceDecorator, astBuilderDecorator, nodeFactoryDecorator, millDecorator);
+    ASTConstantsDecorator astConstantsDecorator = new ASTConstantsDecorator(glex);
+
+    EnumDecorator enumDecorator = new EnumDecorator(glex, new AccessorDecorator(glex), astService);
+
+    ASTInterfaceDecorator astInterfaceDecorator = new ASTInterfaceDecorator(glex, astService, visitorService);
+
+    ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, fullDecorator, astLanguageInterfaceDecorator,
+        astBuilderDecorator, nodeFactoryDecorator, millDecorator, astConstantsDecorator, enumDecorator, astInterfaceDecorator);
     return astcdDecorator.decorate(cd);
   }
 

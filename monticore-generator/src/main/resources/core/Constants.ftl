@@ -1,2 +1,2 @@
-${tc.signature("constantName", "grammarName")}
-${constantName}(ASTConstants${grammarName}.${constantName})
+${tc.signature("constantName", "constantClass")}
+${constantName}(${constantClass}.${constantName})
