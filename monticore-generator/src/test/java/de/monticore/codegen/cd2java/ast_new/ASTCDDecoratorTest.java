@@ -8,6 +8,7 @@ import de.monticore.codegen.cd2java.ast_new.reference.ASTReferenceDecorator;
 import de.monticore.codegen.cd2java.builder.ASTBuilderDecorator;
 import de.monticore.codegen.cd2java.builder.BuilderDecorator;
 import de.monticore.codegen.cd2java.data.DataDecorator;
+import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.factory.NodeFactoryDecorator;
 import de.monticore.codegen.cd2java.factory.NodeFactoryService;
@@ -44,7 +45,7 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
     VisitorService visitorService = new VisitorService(ast);
     NodeFactoryService nodeFactoryService = new NodeFactoryService(ast);
 
-    DataDecorator dataDecorator = new DataDecorator(glex, new MethodDecorator(glex), new ASTService(ast));
+    DataDecorator dataDecorator = new DataDecorator(glex, new MethodDecorator(glex), new ASTService(ast), new DataDecoratorUtil());
     ASTDecorator astDecorator = new ASTDecorator(glex, astService, visitorService, nodeFactoryService);
     ASTSymbolDecorator astSymbolDecorator = new ASTSymbolDecorator(glex, new MethodDecorator(glex), symbolTableService);
     ASTScopeDecorator astScopeDecorator = new ASTScopeDecorator(glex, new MethodDecorator(glex), symbolTableService);

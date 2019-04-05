@@ -36,7 +36,7 @@ public class DataDecoratorTest extends DecoratorTestCase {
     ASTCDClass clazz = getClassBy("A", cd);
 
     MethodDecorator methodDecorator = new MethodDecorator(glex);
-    DataDecorator dataDecorator = new DataDecorator(this.glex, methodDecorator, new ASTService(cd));
+    DataDecorator dataDecorator = new DataDecorator(this.glex, methodDecorator, new ASTService(cd), new DataDecoratorUtil());
     this.dataClass = dataDecorator.decorate(clazz);
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());

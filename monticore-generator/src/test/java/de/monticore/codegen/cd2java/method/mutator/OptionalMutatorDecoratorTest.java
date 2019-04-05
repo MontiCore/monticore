@@ -65,7 +65,7 @@ public class OptionalMutatorDecoratorTest {
 
   @Test
   public void testIsPresentMethod() {
-    ASTCDMethod method = getMethodBy("setAbsentA", this.methods);
+    ASTCDMethod method = getMethodBy("setAAbsent", this.methods);
     assertVoid(method.getReturnType());
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getCDParameterList().isEmpty());

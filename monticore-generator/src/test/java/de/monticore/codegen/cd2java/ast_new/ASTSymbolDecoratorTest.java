@@ -116,7 +116,7 @@ public class ASTSymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testIsSetSymbolAbsentMethod() {
-    ASTCDMethod method = getMethodBy("setAbsentASymbol", astClass);
+    ASTCDMethod method = getMethodBy("setASymbolAbsent", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertVoid(method.getReturnType());
     assertTrue(method.isEmptyCDParameters());

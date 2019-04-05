@@ -31,7 +31,7 @@ public class FullConstructorTest extends DecoratorTestCase {
   public void setup() {
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "data", "SupData");
-    DataDecorator dataDecorator = new DataDecorator(this.glex, new MethodDecorator(glex), new ASTService(ast));
+    DataDecorator dataDecorator = new DataDecorator(this.glex, new MethodDecorator(glex), new ASTService(ast), new DataDecoratorUtil());
     ASTCDClass clazz = getClassBy("SupB", ast);
     this.subBClass = dataDecorator.decorate(clazz);
     clazz = getClassBy("SupA", ast);

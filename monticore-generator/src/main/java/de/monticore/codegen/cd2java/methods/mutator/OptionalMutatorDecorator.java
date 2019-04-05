@@ -22,7 +22,7 @@ public class OptionalMutatorDecorator extends AbstractDecorator<ASTCDAttribute, 
 
   private static final String SET_OPT = "set%sOpt";
 
-  private static final String SET_ABSENT = "setAbsent%s";
+  private static final String SET_ABSENT = "set%sAbsent";
 
   public OptionalMutatorDecorator(final GlobalExtensionManagement glex) {
     super(glex);

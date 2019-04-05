@@ -117,7 +117,7 @@ public class ASTScopeDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testIsSetScopeAbsentMethod() {
-    ASTCDMethod method = getMethodBy("setAbsentASTScope", astClass);
+    ASTCDMethod method = getMethodBy("setASTScopeAbsent", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertVoid(method.getReturnType());
     assertTrue(method.isEmptyCDParameters());

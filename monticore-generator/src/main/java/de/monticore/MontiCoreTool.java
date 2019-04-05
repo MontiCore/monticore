@@ -12,6 +12,7 @@ import de.monticore.codegen.cd2java.cocos_new.CoCoDecorator;
 import de.monticore.codegen.cd2java.cocos_new.CoCoInterfaceDecorator;
 import de.monticore.codegen.cd2java.cocos_new.CoCoService;
 import de.monticore.codegen.cd2java.data.DataDecorator;
+import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.factory.NodeFactoryDecorator;
 import de.monticore.codegen.cd2java.factory.NodeFactoryService;
@@ -344,7 +345,7 @@ public class MontiCoreTool {
     VisitorService visitorService = new VisitorService(cd);
     NodeFactoryService nodeFactoryService = new NodeFactoryService(cd);
 
-    DataDecorator dataDecorator = new DataDecorator(glex, new MethodDecorator(glex), new ASTService(cd));
+    DataDecorator dataDecorator = new DataDecorator(glex, new MethodDecorator(glex), new ASTService(cd), new DataDecoratorUtil());
     ASTDecorator astDecorator = new ASTDecorator(glex, astService, visitorService, nodeFactoryService);
     ASTSymbolDecorator astSymbolDecorator = new ASTSymbolDecorator(glex, new MethodDecorator(glex), symbolTableService);
     ASTScopeDecorator astScopeDecorator = new ASTScopeDecorator(glex, new MethodDecorator(glex), symbolTableService);
