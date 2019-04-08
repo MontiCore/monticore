@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("astType", "astPackage", "cd")}
+${tc.signature("parentAwareVisitorName", "astType", "astPackage", "cd")}
 <#assign genHelper = glex.getGlobalVar("visitorHelper")>
 
 <#-- Copyright -->
@@ -25,7 +25,7 @@ import de.monticore.ast.ASTNode;
 * <br>
 * <b>Access the complete parents list:</b> use {@code getParents()} to access a list of all parents.<br>
 */
-public abstract class ${genHelper.getParentAwareVisitorType()} ${genHelper.getParentAwareVisitorSuperInterfaces()} {
+public abstract class ${parentAwareVisitorName} ${genHelper.getParentAwareVisitorSuperInterfaces()} {
 
   <#assign astRootNode = genHelper.getASTNodeBaseType()>
   final Stack<${astRootNode}> parents = new Stack<>();

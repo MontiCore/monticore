@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("astType", "astPackage", "cd")}
+${tc.signature("simpleVisitorName", "astType", "astPackage", "cd")}
 <#assign genHelper = glex.getGlobalVar("visitorHelper")>
 
 <#-- Copyright -->
@@ -34,7 +34,7 @@ import de.monticore.ast.ASTNode;
  *
  * @see ${genHelper.getASTNodeBaseType()}#accept(${genHelper.getVisitorType()} visitor)
  */
-public interface ${genHelper.getVisitorType()} ${genHelper.getVisitorSuperInterfaces()} {
+public interface ${simpleVisitorName} ${genHelper.getVisitorSuperInterfaces()} {
 
   /**
    * Sets the visitor to use for handling and traversing nodes.
@@ -63,7 +63,7 @@ public interface ${genHelper.getVisitorType()} ${genHelper.getVisitorSuperInterf
    * @see ${genHelper.getCdName()}DelegatorVisitor
    */
   default public ${genHelper.getVisitorType()} getRealThis() {
-    return this;
+    return (${genHelper.getVisitorType()}) this;
   }
   
   /* ------------------------------------------------------------------------*/

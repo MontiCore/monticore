@@ -62,32 +62,41 @@ public class VisitorGenerator {
     String path = Names.getPathFromPackage(visitorPackage);
     
     // simple visitor interface
-    final Path simpleVisitorFilePath = Paths.get(path, visitorHelper.getVisitorType() + ".java");
+    String simpleVisitorName = getSimpleTypeNameToGenerate(getSimpleName(visitorHelper.getVisitorType()),
+        visitorHelper.getVisitorPackage(), handcodedPath);
+    final Path simpleVisitorFilePath = Paths.get(path, simpleVisitorName + ".java");
     generator.generate("visitor.SimpleVisitor", simpleVisitorFilePath, astClassDiagram,
-        astClassDiagram.getCDDefinition(), astPackage, cd);
+        simpleVisitorName, astClassDiagram.getCDDefinition(), astPackage, cd);
     Log.trace(LOGGER_NAME, "Generated simple visitor for the diagram: " + diagramName);
     
     // inheritance visitor interface
+    String inheritanceVisitorName = getSimpleTypeNameToGenerate(getSimpleName(visitorHelper.getInheritanceVisitorType()),
+        visitorHelper.getVisitorPackage(), handcodedPath);
     final Path inheritanceVisitorFilePath = Paths
-        .get(path, visitorHelper.getInheritanceVisitorType() + ".java");
+        .get(path, inheritanceVisitorName + ".java");
     generator.generate("visitor.InheritanceVisitor", inheritanceVisitorFilePath, astClassDiagram,
-        astClassDiagram.getCDDefinition(), astPackage, cd);
+        inheritanceVisitorName, astClassDiagram.getCDDefinition(), astPackage, cd);
     Log.trace(LOGGER_NAME, "Generated inheritance visitor for the diagram: " + diagramName);
     
     // parent aware visitor interface
+    String parentAwareVisitorName = getSimpleTypeNameToGenerate(getSimpleName(diagramName + "ParentAwareVisitor"),
+        visitorHelper.getVisitorPackage(), handcodedPath);
     final Path parentAwareVisitorFilePath = Paths
-        .get(path, diagramName + "ParentAwareVisitor.java");
+        .get(path, parentAwareVisitorName + ".java");
     generator.generate("visitor.ParentAwareVisitor", parentAwareVisitorFilePath, astClassDiagram,
-        astClassDiagram.getCDDefinition(), astPackage, cd);
+        parentAwareVisitorName, astClassDiagram.getCDDefinition(), astPackage, cd);
     Log.trace(LOGGER_NAME, "Generated basic parent aware visitor for the diagram: " + diagramName);
     
     List<CDSymbol> allCds = visitorHelper.getAllCds(cd);
     
     // common delegator visitor
+    String commonDelegatorVisitorName = getSimpleTypeNameToGenerate(getSimpleName(visitorHelper.getDelegatorVisitorType()),
+        visitorHelper.getVisitorPackage(), handcodedPath);
     final Path commonDelegatorVisitorFilePath = Paths.get(path,
-        visitorHelper.getDelegatorVisitorType() + ".java");
+        commonDelegatorVisitorName + ".java");
     generator.generate("visitor.DelegatorVisitor", commonDelegatorVisitorFilePath,
-        astClassDiagram, astClassDiagram.getCDDefinition(), astPackage, allCds);
+        astClassDiagram, commonDelegatorVisitorName, astClassDiagram.getCDDefinition(), 
+        astPackage, allCds);
     Log.trace(LOGGER_NAME, "Generated delegator visitor for the diagram: " + diagramName);
     
     // symbol visitor interface

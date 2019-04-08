@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("astType", "astPackage", "cd")}
+${tc.signature("inheritanceVisitorName", "astType", "astPackage", "cd")}
 <#assign genHelper = glex.getGlobalVar("visitorHelper")>
 
 <#-- Copyright -->
@@ -19,7 +19,7 @@ import de.monticore.ast.ASTNode;
  * @see ${genHelper.getVisitorType()}
  * @see ${genHelper.getASTNodeBaseType()}#accept(${genHelper.getVisitorType()} visitor)
  */
- public interface ${genHelper.getInheritanceVisitorType()} extends ${genHelper.getVisitorType()} ${genHelper.getSuperInheritanceVisitorTypes()} {
+ public interface ${inheritanceVisitorName} extends ${genHelper.getVisitorType()} ${genHelper.getSuperInheritanceVisitorTypes()} {
 
   <#list cd.getTypes() as type>
 

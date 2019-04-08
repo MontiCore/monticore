@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("astType", "astPackage", "allCds")}
+${tc.signature("commonDelegatorVisitorName", "astType", "astPackage", "allCds")}
 <#assign genHelper = glex.getGlobalVar("visitorHelper")>
 
 <#-- Copyright -->
@@ -18,9 +18,9 @@ import de.se_rwth.commons.logging.Log;
  * language.<br>
  * <br>
  */
-public class ${genHelper.getDelegatorVisitorType()}  implements ${genHelper.getInheritanceVisitorType()} {
+public class ${commonDelegatorVisitorName}  implements ${genHelper.getInheritanceVisitorType()} {
 
-  private ${genHelper.getDelegatorVisitorType()} realThis = this;
+  private ${genHelper.getDelegatorVisitorType()} realThis = (${genHelper.getDelegatorVisitorType()}) this;
 
   @Override
   public void setRealThis(${genHelper.getVisitorType()} realThis) {
