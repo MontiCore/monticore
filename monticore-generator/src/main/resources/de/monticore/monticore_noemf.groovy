@@ -79,7 +79,7 @@ for (astGrammar in getParsedGrammars()) {
   generateSymbolTable(glex, astGrammar, globalScope, astClassDiagram, out, handcodedPath)
   
   // M9 Generate ast classes, visitor and context condition
-  generate(glex, globalScope, astClassDiagram, out, templatePath)
+  generate(glex, globalScope, astClassDiagram, out, templatePath, handcodedPath)
 
   Log.info("Grammar " + astGrammar.getName() + " processed successfully!", LOG_ID)
 
