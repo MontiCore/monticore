@@ -5,6 +5,7 @@
 - Removed MutableScope
 - IncGen-Reports are stored 
 - Removed deprecated keyword _ast_ (use _astrule_) in *.mc4
+- Add visitors for symbol table
 
 ##  MontiCore 5.0.3
 - Use the following emf coordinates (MB):
