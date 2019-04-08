@@ -410,7 +410,7 @@ public class CommonScope implements Scope {
           resolvedSymbols.add(resolvedSymbol.get());
         }
       } catch (ResolvedSeveralEntriesException e) {
-        resolvedSymbols.addAll((Collection<? extends T>) e.getSymbols());
+        resolvedSymbols.addAll(e.getSymbols());
       }
     }
 

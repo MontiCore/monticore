@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Set;
 
 import de.monticore.symboltable.ImportStatement;
-import de.se_rwth.commons.Names;
-import de.se_rwth.commons.logging.Log;
 
 import static de.se_rwth.commons.Names.getQualifier;
 import static de.se_rwth.commons.Names.getSimpleName;

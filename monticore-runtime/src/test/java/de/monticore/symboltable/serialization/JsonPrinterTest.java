@@ -7,6 +7,9 @@ package de.monticore.symboltable.serialization;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.Optional;
 
 import org.junit.Test;
@@ -97,8 +100,15 @@ public class JsonPrinterTest {
   
   @Test
   public void testInvalidNestings() {
+    //init Log and mute System.err temporarily
     Log.init();
-     Log.enableFailQuick(false);
+    Log.enableFailQuick(false);
+    PrintStream _err = System.err;
+    System.setErr(new PrintStream(new OutputStream() {
+      @Override
+      public void write(int b) throws IOException {
+      }}));
+    
     JsonPrinter printer = new JsonPrinter();
     printer.beginObject();
     printer.beginObject();
@@ -143,6 +153,9 @@ public class JsonPrinterTest {
     printer.endObject();
     printer.toString();
     assertEquals(1, Log.getFindings().size());
+    
+    //unmute Sytem.err
+    System.setErr(_err);
     
   }
   

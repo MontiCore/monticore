@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("interfaceName", "symbolNames", "superScopes")}
+${signature("interfaceName", "symbolNames", "superScopes", "scopeName")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign names = glex.getGlobalVar("nameHelper")>
 
@@ -8,61 +8,242 @@ package ${genHelper.getTargetPackage()};
 
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.Set;
 import java.util.Collection;
+import java.util.Collections;
+import com.google.common.collect.ListMultimap;
+import java.util.LinkedHashSet;
 
-import de.monticore.symboltable.Symbol;
+import java.util.stream.Collectors;
+
+import de.se_rwth.commons.logging.Log;
+import de.monticore.utils.Names;
+import de.monticore.symboltable.ISymbol;
+import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.symboltable.resolving.ResolvingInfo;
+import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
 
-public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScopes?join(", ")} </#if>{
+public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScopes?join(", ")} </#if> extends IScope {
 
 <#list symbolNames?keys as symbol>
   // all resolve Methods for ${symbol}Symbol
-  public Optional<${symbolNames[symbol]}> resolve${symbol}(String name);
+  default public Optional<${symbolNames[symbol]}> resolve${symbol}(String name) {
+    return getResolvedOrThrowException(resolve${symbol}Many(name));
+  }
 
-  public Optional<${symbolNames[symbol]}> resolve${symbol}(String name, AccessModifier modifier);
+  default public Optional<${symbolNames[symbol]}> resolve${symbol}(String name, AccessModifier modifier) {
+    return getResolvedOrThrowException(resolve${symbol}Many(name, modifier));
+  }
 
-  public Optional<${symbolNames[symbol]}> resolve${symbol}(String name, AccessModifier modifier, Predicate<Symbol> predicate);
+  default public Optional<${symbolNames[symbol]}> resolve${symbol}(String name, AccessModifier modifier, Predicate<${symbolNames[symbol]}> predicate){
+    return getResolvedOrThrowException(resolve${symbol}Many(name, modifier, predicate));
+  }
 
-  public Optional<${symbolNames[symbol]}> resolve${symbol}(ResolvingInfo resolvingInfo, String name, AccessModifier modifier);
+  default public Optional<${symbolNames[symbol]}> resolve${symbol}(${scopeName}ResolvingInfo resolvingInfo, String name, AccessModifier modifier) {
+    return getResolvedOrThrowException(resolve${symbol}Many(resolvingInfo, name, modifier));
+  }
 
   // all resolveDown Methods for ${symbol}Symbol
-  public Optional<${symbolNames[symbol]}> resolve${symbol}Down(String name);
+  default public Optional<${symbolNames[symbol]}> resolve${symbol}Down(String name) {
+    return getResolvedOrThrowException(this.resolve${symbol}DownMany(name));
+  }
 
-  public Optional<${symbolNames[symbol]}> resolve${symbol}Down(String name, AccessModifier modifier);
+  default public Optional<${symbolNames[symbol]}> resolve${symbol}Down(String name, AccessModifier modifier) {
+    return getResolvedOrThrowException(resolve${symbol}DownMany(name, modifier));
+  }
 
-  public Optional<${symbolNames[symbol]}> resolve${symbol}Down(String name, AccessModifier modifier, Predicate<Symbol> predicate);
+  default public Optional<${symbolNames[symbol]}> resolve${symbol}Down(String name, AccessModifier modifier, Predicate<${symbolNames[symbol]}> predicate) {
+    return getResolvedOrThrowException(resolve${symbol}DownMany(name, modifier, predicate));
+  }
 
   // all resolveDownMany Methods for ${symbol}Symbol
-  public Collection<${symbolNames[symbol]}> resolve${symbol}DownMany(String name);
+  default public Collection<${symbolNames[symbol]}> resolve${symbol}DownMany(String name) {
+    return this.resolve${symbol}DownMany(new ${scopeName}ResolvingInfo(), name, AccessModifier.ALL_INCLUSION, x -> true);
+  }
 
-  public Collection<${symbolNames[symbol]}> resolve${symbol}DownMany(String name, AccessModifier modifier);
+  default public Collection<${symbolNames[symbol]}> resolve${symbol}DownMany(String name, AccessModifier modifier) {
+    return resolve${symbol}DownMany(new ${scopeName}ResolvingInfo(), name, modifier, x -> true);
+  }
 
-  public Collection<${symbolNames[symbol]}> resolve${symbol}DownMany(String name, AccessModifier modifier, Predicate<Symbol> predicate);
+  default public Collection<${symbolNames[symbol]}> resolve${symbol}DownMany(String name, AccessModifier modifier, Predicate<${symbolNames[symbol]}> predicate) {
+    return resolve${symbol}DownMany(new ${scopeName}ResolvingInfo(), name, modifier, predicate);
+  }
 
-  public Collection<${symbolNames[symbol]}> resolve${symbol}DownMany(ResolvingInfo resolvingInfo, String name, AccessModifier modifier, Predicate<Symbol> predicate);
+  default public Collection<${symbolNames[symbol]}> resolve${symbol}DownMany(${scopeName}ResolvingInfo resolvingInfo, String name, AccessModifier modifier, Predicate<${symbolNames[symbol]}> predicate) {
+      // 1. Conduct search locally in the current scope
+    final Set<${symbolNames[symbol]}> resolved = this.resolve${symbol}ManyLocally(resolvingInfo, name,
+        modifier, predicate);
+    
+    final String resolveCall = "resolveDownMany(\"" + name + "\", \"" + "${symbolNames[symbol]}"
+        + "\") in scope \"" + getName() + "\"";
+    Log.trace("START " + resolveCall + ". Found #" + resolved.size() + " (local)", "");
+    // If no matching symbols have been found...
+    if (resolved.isEmpty()) {
+      // 2. Continue search in sub scopes and ...
+      for (${interfaceName} subScope : get${scopeName}SubScopes()) {
+        final Collection<${symbolNames[symbol]}> resolvedFromSub = subScope
+            .continueAs${symbol}SubScope(resolvingInfo, name, modifier, predicate);
+        // 3. unify results
+        resolved.addAll(resolvedFromSub);
+      }
+    }
+    Log.trace("END " + resolveCall + ". Found #" + resolved.size(), "");
+    
+    return resolved;
+  }
 
-  // all resolveLocally Methods for ${symbol}Symbol
-  public Optional<${symbolNames[symbol]}> resolve${symbol}Locally(String name);
+  // resolveLocally Method for ${symbol}Symbol
+  default public Optional<${symbolNames[symbol]}> resolve${symbol}Locally(String name) {
+    return getResolvedOrThrowException(
+        this.resolve${symbol}ManyLocally(new ${scopeName}ResolvingInfo(), name,  AccessModifier.ALL_INCLUSION, x -> true));
+  }
 
   // all resolveImported Methods for ${symbol}Symbol
-  public Optional<${symbolNames[symbol]}> resolve${symbol}Imported(String name, AccessModifier modifier);
+  default public Optional<${symbolNames[symbol]}> resolve${symbol}Imported(String name, AccessModifier modifier) {
+    return this.resolve${symbol}Locally(name);
+  }
 
   // all resolveMany Methods for ${symbol}Symbol
-  public Collection<${symbolNames[symbol]}> resolve${symbol}Many(String name);
+  default public Collection<${symbolNames[symbol]}> resolve${symbol}Many(String name) {
+    return resolve${symbol}Many(name, AccessModifier.ALL_INCLUSION);
+  }
 
-  public Collection<${symbolNames[symbol]}> resolve${symbol}Many(String name, AccessModifier modifier);
+  default public Collection<${symbolNames[symbol]}> resolve${symbol}Many(String name, AccessModifier modifier) {
+    return resolve${symbol}Many(name, modifier, x -> true);
+  }
 
-  public Collection<${symbolNames[symbol]}> resolve${symbol}Many(String name, AccessModifier modifier, Predicate<Symbol> predicate);
+  default public Collection<${symbolNames[symbol]}> resolve${symbol}Many(String name, AccessModifier modifier, Predicate<${symbolNames[symbol]}> predicate)  {
+    return resolve${symbol}Many(new ${scopeName}ResolvingInfo(), name, modifier, predicate);
+  }
 
-  public Collection<${symbolNames[symbol]}> resolve${symbol}Many(String name, Predicate<Symbol> predicate);
+  default public Collection<${symbolNames[symbol]}> resolve${symbol}Many(String name, Predicate<${symbolNames[symbol]}> predicate)  {
+    return resolve${symbol}Many(new ${scopeName}ResolvingInfo(), name, AccessModifier.ALL_INCLUSION, predicate);
+  }
 
-  public Collection<${symbolNames[symbol]}> resolve${symbol}Many(ResolvingInfo resolvingInfo, String name, AccessModifier modifier);
+  default public Collection<${symbolNames[symbol]}> resolve${symbol}Many(${scopeName}ResolvingInfo resolvingInfo, String name, AccessModifier modifier) {
+    return resolve${symbol}Many(resolvingInfo, name, modifier, x -> true);
+  }
 
-  public Collection<${symbolNames[symbol]}> resolve${symbol}Many(ResolvingInfo resolvingInfo, String name, AccessModifier modifier, Predicate<Symbol> predicate);
+  default public Collection<${symbolNames[symbol]}> resolve${symbol}Many(${scopeName}ResolvingInfo resolvingInfo, String name, AccessModifier modifier, Predicate<${symbolNames[symbol]}> predicate)  {
+    final Set<${symbolNames[symbol]}> resolvedSymbols = this.resolve${symbol}ManyLocally(resolvingInfo, name, modifier, predicate);
+    final Collection<${symbolNames[symbol]}> resolvedFromEnclosing = continue${symbol}WithEnclosingScope(resolvingInfo, name, modifier, predicate);
+    resolvedSymbols.addAll(resolvedFromEnclosing);
+    return resolvedSymbols;
+  }
+  
+  default Set<${symbolNames[symbol]}> resolve${symbol}ManyLocally(${scopeName}ResolvingInfo resolvingInfo, String name, AccessModifier modifier,
+      Predicate<${symbolNames[symbol]}> predicate) {
+    Log.errorIfNull(resolvingInfo);
+    resolvingInfo.addInvolvedScope(this);
+    
+    final Set<${symbolNames[symbol]}> resolvedSymbols = new LinkedHashSet<>();
+    
+    try {
+      // TODO remove filter?
+      Optional<${symbolNames[symbol]}> resolvedSymbol = filter${symbol}(name,
+          get${symbol}Symbols());
+      if (resolvedSymbol.isPresent()) {
+        resolvedSymbols.add(resolvedSymbol.get());
+      }
+    }
+    catch (ResolvedSeveralEntriesException e) {
+      resolvedSymbols.addAll(e.getSymbols());
+    }
+    
+    // filter out symbols that are not included within the access modifier
+    Set<${symbolNames[symbol]}> filteredSymbols = filterSymbolsByAccessModifier(modifier, resolvedSymbols);
+    filteredSymbols = new LinkedHashSet<>(
+        filteredSymbols.stream().filter(predicate).collect(Collectors.toSet()));
+    
+    resolvingInfo.updateSymbolsFound(!filteredSymbols.isEmpty());
+    
+    return filteredSymbols;
+  }
+  
+  default Optional<${symbolNames[symbol]}> filter${symbol}(String name, ListMultimap<String, ${symbolNames[symbol]}> symbols) {
+    final Set<${symbolNames[symbol]}> resolvedSymbols = new LinkedHashSet<>();
+    
+    final String simpleName = Names.getSimpleName(name);
+    
+    if (symbols.containsKey(simpleName)) {
+      for (${symbolNames[symbol]} symbol : symbols.get(simpleName)) {
+        if (symbol.getName().equals(name) || symbol.getFullName().equals(name)) {
+          resolvedSymbols.add(symbol);
+        }
+      }
+    }
+    
+    return getResolvedOrThrowException(resolvedSymbols);
+  }
+  
+  
+  default Collection<${symbolNames[symbol]}> continue${symbol}WithEnclosingScope(${scopeName}ResolvingInfo resolvingInfo, String name,  AccessModifier modifier,
+      Predicate<${symbolNames[symbol]}> predicate) {
+    if (checkIfContinueWithEnclosingScope(resolvingInfo.areSymbolsFound()) && (getEnclosing${scopeName}Scope().isPresent())) {
+      return getEnclosing${scopeName}Scope().get().resolve${symbol}Many(resolvingInfo, name, modifier, predicate);
+    }
+    return Collections.emptySet();
+  }
+  
+  default Collection<${symbolNames[symbol]}> continueAs${symbol}SubScope(${scopeName}ResolvingInfo resolvingInfo, String name, AccessModifier modifier, Predicate<${symbolNames[symbol]}> predicate){
+    if (checkIfContinueAsSubScope(name)) {
+      final String remainingSymbolName = getRemainingNameForResolveDown(name);
+      return this.resolve${symbol}DownMany(resolvingInfo, remainingSymbolName, modifier, predicate);
+    }
+    return Collections.emptySet();
+  }
+  
+  /**
+   * Adds the symbol to this scope. Also, this scope is set as the symbol's enclosing scope.
+   */
+  void add(${symbolNames[symbol]} symbol);
+  
+  /**
+   * removes the given symbol from this scope and unsets the enclosing scope relation.
+   *
+   * @param symbol the symbol to be removed
+   */
+  void remove(${symbolNames[symbol]} symbol);
+  
+  default public Collection<${symbolNames[symbol]}> getLocal${symbol}Symbols() {
+    return get${symbol}Symbols().values();
+  }
+  
+  ListMultimap<String, ${symbolNames[symbol]}> get${symbol}Symbols();
+
 </#list>
 
   <#assign langVisitorType = names.getQualifiedName(genHelper.getVisitorPackage(), genHelper.getGrammarSymbol().getName() + "ScopeVisitor")>
   public void accept(${langVisitorType} visitor);
+  
+  Optional<ICommon${scopeName}Symbol<?>> getSpanning${scopeName}Symbol();
+  
+    /**
+   * @param symbol the symbol that spans this scope. For example, a Java method spans a
+   *               method scope.
+   */
+  void setSpanning${scopeName}Symbol(ICommon${scopeName}Symbol<?> symbol);
+  
+    
+  public Optional<I${scopeName}Scope> getEnclosing${scopeName}Scope();
+  
+  public void setEnclosing${scopeName}Scope(I${scopeName}Scope enclosingScope);
+  
+  
+  /**
+   * Adds a sub subScope. In Java, for example, sub scopes of a class are the method scopes.
+   *
+   * @param subScope the sub scope to be added.
+   */
+  void add${scopeName}SubScope(I${scopeName}Scope subScope);
+  
+  /**
+   * Removes given <code>subScope</code>.
+   *
+   * @param subScope the sub scope to be removed
+   */
+  void remove${scopeName}SubScope(I${scopeName}Scope subScope);
+
+  public Collection<I${scopeName}Scope> get${scopeName}SubScopes();
 }
 

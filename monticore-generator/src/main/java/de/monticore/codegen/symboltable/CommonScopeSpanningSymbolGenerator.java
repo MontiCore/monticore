@@ -4,6 +4,7 @@ package de.monticore.codegen.symboltable;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static de.monticore.codegen.GeneratorHelper.BUILDER;
+import static de.monticore.codegen.GeneratorHelper.DESER;
 import static de.monticore.codegen.GeneratorHelper.SCOPE;
 import static de.monticore.codegen.GeneratorHelper.SYMBOL;
 import static de.monticore.codegen.GeneratorHelper.getSimpleTypeNameToGenerate;
@@ -41,11 +42,17 @@ public class CommonScopeSpanningSymbolGenerator implements ScopeSpanningSymbolGe
         genHelper.getTargetPackage(), handCodedPath);
     String builderName = getSimpleTypeNameToGenerate(getSimpleName(className + SYMBOL + BUILDER),
         genHelper.getTargetPackage(), handCodedPath);
+    String deserName = getSimpleTypeNameToGenerate(
+        getSimpleName(className + SYMBOL + DESER),
+        genHelper.getTargetPackage(), handCodedPath);
     
     final Path filePath = get(getPathFromPackage(genHelper.getTargetPackage()),
         symbolName + ".java");
     final Path builderFilePath = get(getPathFromPackage(genHelper.getTargetPackage()),
         builderName + ".java");
+    final Path serializationFilePath = get(getPathFromPackage(genHelper.getTargetPackage()),
+        "serialization",
+        deserName + ".java");
     
     if (prodSymbol.getAstNode().isPresent()) {
       Optional<ASTSymbolRule> symbolRule = empty();
@@ -67,6 +74,9 @@ public class CommonScopeSpanningSymbolGenerator implements ScopeSpanningSymbolGe
           imports);
       genEngine.generate("symboltable.SymbolBuilder", builderFilePath,
           prodSymbol.getAstNode().get(), builderName, className, symbolRule, imports);
+      genEngine.generate("symboltable.serialization.SymbolDeSer", serializationFilePath,
+          prodSymbol.getAstNode().get(), genHelper.getGrammarSymbol().getName(), deserName,
+          className, symbolRule);
     }
   }
   

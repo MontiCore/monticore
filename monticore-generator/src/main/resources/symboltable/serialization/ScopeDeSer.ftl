@@ -147,9 +147,10 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
       scope.add(s);
     }
 </#list>
-    
 
-    scope.set${languageName}SubScopes(linkSubScopes(scope, subScopes));
+    for (I${languageName}Scope s : linkSubScopes(scope, subScopes)) {
+      scope.add${languageName}SubScope(s);
+    }
     return Optional.of(new ScopeDeserializationResult<I${languageName}Scope>(scope,spanningSymbol));
   }
   
@@ -161,13 +162,13 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
         if (stateSymbolDeSer.getSerializedKind().equals(subScope.getSpanningSymbolKind())) {
           Optional<StateSymbol> spanningStateSymbol = scope.resolveStateLocally(subScope.getSpanningSymbolName());
           if(spanningStateSymbol.isPresent()) {
-            subScope.getScope().setSpanningSymbol(spanningStateSymbol.get());
+            subScope.getScope().setSpanning${languageName}Symbol(spanningStateSymbol.get());
           }
         }
         else if (automatonSymbolDeSer.getSerializedKind().equals(subScope.getSpanningSymbolKind())) {
           Optional<AutomatonSymbol> spanningAutomatonSymbol = scope.resolveAutomatonLocally(subScope.getSpanningSymbolName());
           if(spanningAutomatonSymbol.isPresent()) {
-            subScope.getScope().setSpanningSymbol(spanningAutomatonSymbol.get());
+            subScope.getScope().setSpanning${languageName}Symbol(spanningAutomatonSymbol.get());
           }
         }
         else {

@@ -9,6 +9,7 @@ import de.se_rwth.commons.Splitters;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -47,6 +48,9 @@ public interface IScope  {
    */
   boolean exportsSymbols();
   
+  
+  void setExportsSymbols(boolean b);
+  
   /**
    * @param node the corresponding ast node
    */
@@ -74,7 +78,21 @@ public interface IScope  {
     return !(foundSymbols && isShadowingScope());
   }
   
-  default <T extends ISymbol> Optional<T> getResolvedOrThrowException(final Collection<T> resolved) {
+  default boolean checkIfContinueAsSubScope(String symbolName){
+    if (this.exportsSymbols()) {
+      final List<String> nameParts = getNameParts(symbolName).toList();
+    
+      if (nameParts.size() > 1) {
+        final String firstNamePart = nameParts.get(0);
+        // A scope that exports symbols usually has a name.
+        return firstNamePart.equals(this.getName().orElse(""));
+      }
+    }
+  
+    return false;
+  }
+  
+  default <T extends ISymbol<?>> Optional<T> getResolvedOrThrowException(final Collection<T> resolved) {
     if (resolved.size() == 1) {
       return Optional.of(resolved.iterator().next());
     }
@@ -86,10 +104,8 @@ public interface IScope  {
     return Optional.empty();
   }
   
-  default  <T extends ISymbol> Set<T> filterSymbolsByAccessModifier(AccessModifier modifier, Collection<T> resolvedUnfiltered) {
+  default  <T extends ISymbol<?>> Set<T> filterSymbolsByAccessModifier(AccessModifier modifier, Collection<T> resolvedUnfiltered) {
     return new LinkedHashSet<>(resolvedUnfiltered.stream().filter(new IncludesAccessModifierSymbolPredicate(modifier)).collect(toSet()));
   }
-  
-  
   
 }

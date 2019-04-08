@@ -33,14 +33,28 @@ public class CommonScopeGenerator implements ScopeGenerator {
   protected void generateScope(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
                                IterablePath handCodedPath,
                                String scopeName, Collection<MCProdSymbol> allSymbolDefiningRules, Collection<MCProdSymbol> allSymbolDefiningRulesWithSuperGrammar) {
-    String className = getSimpleTypeNameToGenerate(getSimpleName(scopeName),
+    
+    final String languageName = genHelper.getGrammarSymbol().getName();
+    
+    String scopeClassName = getSimpleTypeNameToGenerate(getSimpleName(scopeName),
+        genHelper.getTargetPackage(), handCodedPath);
+    
+    String artifactScopeClassName = getSimpleTypeNameToGenerate(getSimpleName(languageName+GeneratorHelper.ARTIFACT_SCOPE),
         genHelper.getTargetPackage(), handCodedPath);
 
     String builderName = getSimpleTypeNameToGenerate(
         getSimpleName(scopeName + GeneratorHelper.BUILDER),
         genHelper.getTargetPackage(), handCodedPath);
+    
+    String deserName = getSimpleTypeNameToGenerate(
+        getSimpleName(scopeName + GeneratorHelper.DESER),
+        genHelper.getTargetPackage()+".serialization", handCodedPath);
+    
+    String resolvingInfoName = getSimpleTypeNameToGenerate(
+        getSimpleName(languageName + GeneratorHelper.RESOLVING_INFO),
+        genHelper.getTargetPackage(), handCodedPath);
 
-    String interfaceName = "I" + className;
+    String interfaceName = "I" + scopeClassName;
 
     // Maps Symbol Name to Symbol Kind Name
     Map<String, String> symbolNames = new HashMap<String, String>();
@@ -92,18 +106,30 @@ public class CommonScopeGenerator implements ScopeGenerator {
       }
     }
     
-    final Path filePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
-        className + ".java");
+    final Path scopeFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
+        scopeClassName + ".java");
+    final Path artifactScopeFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
+        artifactScopeClassName + ".java");
     final Path builderFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
         builderName + ".java");
     final Path interfaceFilePath = Paths
         .get(Names.getPathFromPackage(genHelper.getTargetPackage()), interfaceName + ".java");
+    final Path serializationFilePath = Paths
+        .get(Names.getPathFromPackage(genHelper.getTargetPackage()),"serialization", deserName + ".java");
+    final Path resolvingInfoFilePath = Paths
+        .get(Names.getPathFromPackage(genHelper.getTargetPackage()), resolvingInfoName + ".java");
+    
+
+
 
     ASTMCGrammar grammar = genHelper.getGrammarSymbol().getAstGrammar().get();
     Optional<ASTScopeRule> scopeRule = grammar.getScopeRulesOpt();
-    genEngine.generateNoA("symboltable.Scope", filePath, className, scopeRule, symbolNamesWithSuperGrammar, superScopeVisitors);
-    genEngine.generateNoA("symboltable.ScopeInterface", interfaceFilePath, interfaceName, symbolNames, superScopes);
-    genEngine.generateNoA("symboltable.ScopeBuilder", builderFilePath, builderName,
-        scopeName);
+    genEngine.generateNoA("symboltable.Scope", scopeFilePath, scopeClassName, scopeRule, symbolNamesWithSuperGrammar, superScopeVisitors);
+    genEngine.generateNoA("symboltable.ArtifactScope", artifactScopeFilePath, artifactScopeClassName, scopeRule, symbolNamesWithSuperGrammar, superScopeVisitors);
+    genEngine.generateNoA("symboltable.ScopeInterface", interfaceFilePath, interfaceName, symbolNames, superScopes, languageName);
+    genEngine.generateNoA("symboltable.ScopeBuilder", builderFilePath, builderName, scopeName);
+    genEngine.generateNoA("symboltable.serialization.ScopeDeSer", serializationFilePath, languageName , deserName, scopeRule, symbolNames);
+    genEngine.generateNoA("symboltable.ResolvingInfo", resolvingInfoFilePath, resolvingInfoName, languageName);
+
   }
 }

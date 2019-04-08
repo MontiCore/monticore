@@ -2,17 +2,6 @@
 
 package de.monticore.symboltable;
 
-import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.mocks.languages.entity.EntitySymbol;
-import de.monticore.symboltable.resolving.CommonResolvingFilter;
-import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Optional;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
@@ -20,8 +9,23 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Optional;
+
+import org.junit.Ignore;
+import org.junit.Test;
+
+import de.monticore.io.paths.ModelPath;
+import de.monticore.symboltable.mocks.languages.entity.EntitySymbol;
+import de.monticore.symboltable.resolving.CommonResolvingFilter;
+import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
+
 public class ArtifactScopeTest {
 
+  @Ignore
+  @Deprecated
   @Test
   public void testArtifactScopeWithoutImportStatements() {
     final CommonResolvingFilter<EntitySymbol> classResolver = new CommonResolvingFilter<>(EntitySymbol.KIND);
@@ -63,6 +67,8 @@ public class ArtifactScopeTest {
 
   }
 
+  @Ignore
+  @Deprecated
   @Test
   public void testArtifactScopeWithImportStatements() {
     final CommonResolvingFilter<EntitySymbol> classResolver = new CommonResolvingFilter<>(EntitySymbol.KIND);
@@ -116,6 +122,8 @@ public class ArtifactScopeTest {
 
   }
 
+  @Ignore
+  @Deprecated
   @Test
   public void testResolveUnqualifiedSymbolInSamePackage() {
     final CommonResolvingFilter<EntitySymbol> classResolver = new CommonResolvingFilter<>(EntitySymbol.KIND);
@@ -141,6 +149,8 @@ public class ArtifactScopeTest {
     assertSame(classA, classAScope.resolve("A", EntitySymbol.KIND).get());
   }
 
+  @Ignore
+  @Deprecated
   @Test
   public void testPackageNameMustBePrefixOfQualifiedSymbolName() {
     final CommonResolvingFilter<EntitySymbol> classResolver = new CommonResolvingFilter<>(EntitySymbol.KIND);
@@ -164,6 +174,8 @@ public class ArtifactScopeTest {
     assertNotSame(classA, classA2);
   }
 
+  @Ignore
+  @Deprecated
   @Test
   public void testResolveInDefaultPackage() {
     final CommonResolvingFilter<EntitySymbol> classResolver = new CommonResolvingFilter<>(EntitySymbol.KIND);

@@ -54,7 +54,7 @@ public class ${symTabPrinterName}
   }
   
   protected Optional<String> serializeScopeSpanningSymbol(
-      Optional<ICommon${languageName}Symbol> spanningSymbol) {
+      Optional<ICommon${languageName}Symbol<?>> spanningSymbol) {
     if (null != spanningSymbol && spanningSymbol.isPresent()) {
       JsonPrinter spPrinter = new JsonPrinter();
       spPrinter.beginObject();
