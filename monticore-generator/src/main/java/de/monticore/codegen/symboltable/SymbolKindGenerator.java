@@ -9,6 +9,6 @@ import de.monticore.io.paths.IterablePath;
 public interface SymbolKindGenerator {
 
   void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
-                IterablePath handCodedPath, MCProdSymbol ruleSymbol);
+                IterablePath handCodedPath, String ruleName);
 
 }

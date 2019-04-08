@@ -11,6 +11,7 @@ package ${genHelper.getVisitorPackage()};
 <#if existsST>
 import ${symbolTablePackage}.*;
 </#if>
+import de.monticore.symboltable.ISymbol;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.Scope;
 
@@ -94,6 +95,11 @@ public interface ${scopeVisitorName} extends ${genHelper.getSymbolVisitorType()}
   @Override
   default void endVisit(Symbol symbol) {
     ${genHelper.getSymbolVisitorType()}.super.endVisit(symbol);
+  }
+
+  @Override
+  default void handle(ISymbol symbol) {
+    ${genHelper.getSymbolVisitorType()}.super.handle(symbol);
   }
 
   /* ------------------------------------------------------------------------*/

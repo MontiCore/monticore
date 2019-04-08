@@ -12,6 +12,7 @@ package ${genHelper.getVisitorPackage()};
 import ${symbolTablePackage}.*;
 </#if>
 import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.ISymbol;
 
 /**
  * Default symbol-visitor for the {@code ${genHelper.getCdName()}} language.<br>
@@ -80,8 +81,18 @@ public interface ${symbolVisitorName} {
    */
   default public void endVisit(Symbol symbol) {
   }
-  
-  /* ------------------------------------------------------------------------*/
+
+  /**
+   * By default this method is not called, because the default visitor only
+   * visits a symbol in its dynamic runtime type. Use an InheritanceVisitor
+   * if you want to visit a node in its super types as well.
+   *
+   * @param symbol the symbol that is left
+   */
+  default public void handle(ISymbol symbol) {
+  }
+
+ /* ------------------------------------------------------------------------*/
   
   
   <#list symbols as symbol>

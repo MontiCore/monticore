@@ -1,11 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("ruleSymbol")}
+${signature("ruleName")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
-<#if ruleSymbol.getSymbolDefinitionKind().isPresent()>
-  <#assign ruleName = ruleSymbol.getSymbolDefinitionKind().get()>
-<#else>
-  <#assign ruleName = ruleSymbol.getName()>
-</#if>
 <#t>
 <#-- Copyright -->
 ${defineHookPoint("JavaCopyright")}
