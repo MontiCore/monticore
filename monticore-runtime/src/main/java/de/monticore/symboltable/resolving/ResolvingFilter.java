@@ -7,12 +7,12 @@ import de.monticore.symboltable.SymbolKind;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 // TODO PN remove formal type argument, since not needed anymore
+@Deprecated
 public interface ResolvingFilter<S extends Symbol> {
 
   SymbolKind getTargetKind();

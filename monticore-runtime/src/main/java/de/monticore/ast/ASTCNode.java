@@ -19,7 +19,7 @@ import java.util.stream.Stream;
  * share the interface ASTNode
  *
  */
-public abstract class ASTCNode implements ASTNode/*<T,S>*/, Cloneable {
+public abstract class ASTCNode implements ASTNode, Cloneable {
 
   protected Optional<SourcePosition> start = Optional.empty();
 
