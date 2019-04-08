@@ -34,8 +34,6 @@ public class SymbolTableGenerator {
 
   private final SymbolGenerator symbolGenerator;
 
-  private final SymbolKindGenerator symbolKindGenerator;
-
   private final ScopeSpanningSymbolGenerator scopeSpanningSymbolGenerator;
 
   private final ScopeGenerator scopeGenerator;
@@ -54,7 +52,6 @@ public class SymbolTableGenerator {
       ModelNameCalculatorGenerator modelNameCalculatorGenerator,
       ResolvingFilterGenerator resolvingFilterGenerator,
       SymbolGenerator symbolGenerator,
-      SymbolKindGenerator symbolKindGenerator,
       ScopeSpanningSymbolGenerator scopeSpanningSymbolGenerator,
       ScopeGenerator scopeGenerator,
       SymbolReferenceGenerator symbolReferenceGenerator,
@@ -66,7 +63,6 @@ public class SymbolTableGenerator {
     this.modelNameCalculatorGenerator = modelNameCalculatorGenerator;
     this.resolvingFilterGenerator = resolvingFilterGenerator;
     this.symbolGenerator = symbolGenerator;
-    this.symbolKindGenerator = symbolKindGenerator;
     this.scopeGenerator = scopeGenerator;
     this.scopeSpanningSymbolGenerator = scopeSpanningSymbolGenerator;
     this.symbolReferenceGenerator = symbolReferenceGenerator;
@@ -130,7 +126,6 @@ public class SymbolTableGenerator {
 
       for (MCProdSymbol ruleSymbol : allSymbolDefiningRules) {
         generateSymbolOrScopeSpanningSymbol(genEngine, genHelper, ruleSymbol, handCodedPath);
-        symbolKindGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol);
         symbolReferenceGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol,
             genHelper.isScopeSpanningSymbol(ruleSymbol));
         resolvingFilterGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol);

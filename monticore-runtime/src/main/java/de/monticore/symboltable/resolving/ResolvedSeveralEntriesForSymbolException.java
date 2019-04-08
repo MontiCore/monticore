@@ -13,19 +13,20 @@ public class ResolvedSeveralEntriesForSymbolException extends RuntimeException {
 
   private static final long serialVersionUID = 931330102959575779L;
 
-  private Collection<? extends ISymbol> symbols = new ArrayList<>();
+  private Collection<? extends ISymbol<?>> symbols = new ArrayList<>();
 
-  public ResolvedSeveralEntriesForSymbolException(String message, Collection<? extends ISymbol> symbols) {
+  public ResolvedSeveralEntriesForSymbolException(String message, Collection<? extends ISymbol<?>> symbols) {
     super(message);
     this.symbols = new ArrayList<>(symbols);
   }
 
-  public ResolvedSeveralEntriesForSymbolException(Collection<? extends ISymbol> symbols) {
+  public ResolvedSeveralEntriesForSymbolException(Collection<? extends ISymbol<?>> symbols) {
     this("", symbols);
   }
 
-  public Collection<? extends ISymbol> getSymbols() {
-    return copyOf(symbols);
+  @SuppressWarnings("unchecked")
+  public <S extends ISymbol<?>> Collection<S> getSymbols() {
+    return (Collection<S>) copyOf(symbols);
   }
 
 }

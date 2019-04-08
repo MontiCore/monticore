@@ -1,18 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className","scopeRule", "symbolNames", "superScopeVisitors")}
+${signature("className","scopeClass", "languageName", "symbolNames")}
 
 <#assign genHelper = glex.getGlobalVar("stHelper")>
-<#assign names = glex.getGlobalVar("nameHelper")>
-<#assign superClass = " extends de.monticore.symboltable.CommonScope ">
-<#assign superInterfaces = "implements I"+ className>
-<#if scopeRule.isPresent()>
-  <#if !scopeRule.get().isEmptySuperInterfaces()>
-    <#assign superInterfaces = superInterfaces + ", "+ stHelper.printGenericTypes(scopeRule.get().getSuperInterfaceList())>
-  </#if>
-  <#if !scopeRule.get().isEmptySuperClasss()>
-    <#assign superClass = " extends " + stHelper.printGenericTypes(scopeRule.get().getSuperClassList())>
-  </#if>
-</#if>
 
 
 <#-- Copyright -->
@@ -21,147 +10,166 @@ ${defineHookPoint("JavaCopyright")}
 <#-- set package -->
 package ${genHelper.getTargetPackage()};
 
-import java.util.Optional;
-import java.util.function.Predicate;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Predicate;
 
-import de.monticore.symboltable.Symbol;
+import com.google.common.collect.FluentIterable;
+
+import de.monticore.symboltable.ImportStatement;
 import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.symboltable.resolving.ResolvingInfo;
-import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.names.CommonQualifiedNamesCalculator;
+import de.monticore.symboltable.names.QualifiedNamesCalculator;
+import de.monticore.utils.Names;
+import de.se_rwth.commons.Joiners;
+import de.se_rwth.commons.Splitters;
+import de.se_rwth.commons.logging.Log;
 
-public class ${className} ${superClass} ${superInterfaces} {
+public class ${className} extends ${scopeClass} {
 
-  public ${className}() {
-    super();
+
+  private final String packageName;
+  
+  private final List<ImportStatement> imports;
+
+  private QualifiedNamesCalculator qualifiedNamesCalculator;
+
+  public ${className}(final String packageName, final List<ImportStatement> imports) {
+    this(Optional.empty(), packageName, imports);
   }
 
-  public ${className}(boolean isShadowingScope) {
-    super(isShadowingScope);
-  }
-
-  public ${className}(Optional<Scope> enclosingScope) {
-    super(enclosingScope, true);
+  public ${className}(final Optional<I${languageName}Scope> enclosingScope, final String packageName, final List<ImportStatement> imports) {
+    super(true);
+    if (enclosingScope.isPresent()) {
+      setEnclosingScope(enclosingScope.get());
     }
+    setExportsSymbols(true);
+    Log.errorIfNull(packageName);
+    Log.errorIfNull(imports);
 
-  <#list symbolNames?keys as symbol>
-  // all resolve Methods for ${symbol}
-  public Optional<${symbolNames[symbol]}> resolve${symbol}(String name) {
-    return resolve(name, ${symbolNames[symbol]}.KIND);
-  }
-
-  public Optional<${symbolNames[symbol]}> resolve${symbol}(String name, AccessModifier modifier) {
-    return resolve(name, ${symbolNames[symbol]}.KIND, modifier);
-  }
-
-  public Optional<${symbolNames[symbol]}> resolve${symbol}(String name, AccessModifier modifier, Predicate<Symbol> predicate) {
-    return resolve(name, ${symbolNames[symbol]}.KIND, modifier, predicate);
-  }
-
-  public Optional<${symbolNames[symbol]}> resolve${symbol}(ResolvingInfo resolvingInfo, String name, AccessModifier modifier) {
-    return resolve(resolvingInfo, name, ${symbolNames[symbol]}.KIND, modifier);
-  }
-
-  // all resolveDown Methods for ${symbol}
-  public Optional<${symbolNames[symbol]}> resolve${symbol}Down(String name) {
-    return resolveDown(name, ${symbolNames[symbol]}.KIND);
-  }
-
-  public Optional<${symbolNames[symbol]}> resolve${symbol}Down(String name, AccessModifier modifier) {
-  return resolveDown(name, ${symbolNames[symbol]}.KIND, modifier);
-  }
-
-  public Optional<${symbolNames[symbol]}> resolve${symbol}Down(String name, AccessModifier modifier, Predicate<Symbol> predicate) {
-    return resolveDown(name, ${symbolNames[symbol]}.KIND, modifier, predicate);
-  }
-
-  // all resolveDownMany Methods for ${symbol}
-  public Collection<${symbolNames[symbol]}> resolve${symbol}DownMany(String name) {
-    return resolveDownMany(name, ${symbolNames[symbol]}.KIND);
-  }
-
-  public Collection<${symbolNames[symbol]}> resolve${symbol}DownMany(String name, AccessModifier modifier) {
-    return resolveDownMany(name, ${symbolNames[symbol]}.KIND, modifier);
-  }
-
-  public Collection<${symbolNames[symbol]}> resolve${symbol}DownMany(String name, AccessModifier modifier, Predicate<Symbol> predicate) {
-    return resolveDownMany(name, ${symbolNames[symbol]}.KIND, modifier, predicate);
-  }
-
-  public Collection<${symbolNames[symbol]}> resolve${symbol}DownMany(ResolvingInfo resolvingInfo, String name, AccessModifier modifier, Predicate<Symbol> predicate) {
-    return resolveDownMany(resolvingInfo, name, ${symbolNames[symbol]}.KIND, modifier, predicate);
-  }
-
-  // all resolveLocally Methods for ${symbol}
-  public Optional<${symbolNames[symbol]}> resolve${symbol}Locally(String name) {
-    return resolveLocally(name, ${symbolNames[symbol]}.KIND);
-  }
-
-  // all resolveImported Methods for ${symbol}
-  public Optional<${symbolNames[symbol]}> resolve${symbol}Imported(String name, AccessModifier modifier) {
-    return resolveImported(name, ${symbolNames[symbol]}.KIND, modifier);
-  }
-
-  // all resolveMany Methods for ${symbol}
-  public Collection<${symbolNames[symbol]}> resolve${symbol}Many(String name) {
-    return resolveMany(name, ${symbolNames[symbol]}.KIND);
-  }
-
-  public Collection<${symbolNames[symbol]}> resolve${symbol}Many(String name, AccessModifier modifier) {
-    return resolveMany(name, ${symbolNames[symbol]}.KIND, modifier);
-  }
-
-  public Collection<${symbolNames[symbol]}> resolve${symbol}Many(String name, AccessModifier modifier, Predicate<Symbol> predicate) {
-    return resolveMany(name, ${symbolNames[symbol]}.KIND, modifier, predicate);
-  }
-
-  public Collection<${symbolNames[symbol]}> resolve${symbol}Many(String name, Predicate<Symbol> predicate) {
-    return resolveMany(name, ${symbolNames[symbol]}.KIND, predicate);
-  }
-
-  public Collection<${symbolNames[symbol]}> resolve${symbol}Many(ResolvingInfo resolvingInfo, String name, AccessModifier modifier) {
-    return resolveMany(resolvingInfo, name, ${symbolNames[symbol]}.KIND, modifier);
-  }
-
-  public Collection<${symbolNames[symbol]}> resolve${symbol}Many(ResolvingInfo resolvingInfo, String name, AccessModifier modifier, Predicate<Symbol> predicate) {
-    return resolveMany(resolvingInfo, name, ${symbolNames[symbol]}.KIND, modifier, predicate);
-  }
-
-  </#list>
-  
-  <#if scopeRule.isPresent()>
-    <#list scopeRule.get().getAdditionalAttributeList() as attr>
-      <#assign attrName=attr.getName()>
-      <#assign attrType=attr.getGenericType().getTypeName()>
-      private ${genHelper.getQualifiedASTName(attrType)} ${attrName};
-    </#list>
-
-    <#list scopeRule.get().getMethodList() as meth>
-      ${genHelper.printMethod(meth)}
-    </#list>
-  </#if>
-  
-  <#assign langVisitorType = names.getQualifiedName(genHelper.getVisitorPackage(), genHelper.getGrammarSymbol().getName() + "ScopeVisitor")>
-    public void accept(${langVisitorType} visitor) {
-  <#if genHelper.isSupertypeOfHWType(className, "")>
-    <#assign plainName = className?remove_ending("TOP")>
-    if (this instanceof ${plainName}) {
-      visitor.handle((${plainName}) this);
+    if (!packageName.isEmpty()) {
+      this.packageName = packageName.endsWith(".") ? packageName.substring(0, packageName.length() - 1) : packageName;
     } else {
-      throw new UnsupportedOperationException("0xA7010${genHelper.getGeneratedErrorCode(ast)} Only handwritten class ${plainName} is supported for the visitor");
+      // default package
+      this.packageName = "";
     }
-  <#else>
-    visitor.handle(this);
-  </#if>
-    }
-  
-  <#list superScopeVisitors as superScopeVisitor>
-  public void accept(${superScopeVisitor} visitor) {
-    if (visitor instanceof ${langVisitorType}) {
-      accept((${langVisitorType}) visitor);
-    } else {
-      throw new UnsupportedOperationException("0xA7010${genHelper.getGeneratedErrorCode(ast)} Scope node type ${className} expected a visitor of type ${langVisitorType}, but got ${superScopeVisitor}.");
-    }
+
+    this.imports = Collections.unmodifiableList(new ArrayList<>(imports));
+    this.qualifiedNamesCalculator = new CommonQualifiedNamesCalculator();
   }
-  </#list>
+
+  @Override
+  public Optional<String> getName() {
+    if (!super.getName().isPresent()) {
+      final Optional<ICommon${languageName}Symbol> topLevelSymbol = getTopLevelSymbol();
+      if (topLevelSymbol.isPresent()) {
+        setName(topLevelSymbol.get().getName());
+      }
     }
+    return super.getName();
+  }
+
+  public Optional<ICommon${languageName}Symbol> getTopLevelSymbol() {
+    if (getSubScopes().size() == 1) {
+      return getSubScopes().get(0).getSpanningSymbol();
+    }
+    // there is no top level symbol, if more than one sub scope exists.
+    return Optional.empty();
+  }
+
+  public String getPackageName() {
+    return packageName;
+  }
+  
+    public void setQualifiedNamesCalculator(QualifiedNamesCalculator qualifiedNamesCalculator) {
+    this.qualifiedNamesCalculator = Objects.requireNonNull(qualifiedNamesCalculator);
+  }
+
+  public List<ImportStatement> getImports() {
+    return Collections.unmodifiableList(imports);
+  }
+  
+  @Override //TODO: Does not depend on a specific language. Move implementation to RTE?
+  public boolean checkIfContinueAsSubScope(String symbolName) {
+    if (this.exportsSymbols()) {
+      final String symbolQualifier = Names.getQualifier(symbolName);
+
+      final List<String> symbolQualifierParts = Splitters.DOT.splitToList(symbolQualifier);
+      final List<String> packageParts = Splitters.DOT.splitToList(packageName);
+
+      boolean symbolNameStartsWithPackage = true;
+
+      if (packageName.isEmpty()) {
+        // symbol qualifier always contains default package (i.e., empty string)
+        symbolNameStartsWithPackage = true;
+      } else if (symbolQualifierParts.size() >= packageParts.size()) {
+        for (int i = 0; i < packageParts.size(); i++) {
+          if (!packageParts.get(i).equals(symbolQualifierParts.get(i))) {
+            symbolNameStartsWithPackage = false;
+            break;
+          }
+        }
+      } else {
+        symbolNameStartsWithPackage = false;
+      }
+      return symbolNameStartsWithPackage;
+    }
+    return false;
+  }
+  
+  @Override //TODO: Does not depend on a specific language. Move implementation to RTE?
+  public String getRemainingNameForResolveDown(String symbolName) {
+    final String packageAS = this.getPackageName();
+    final FluentIterable<String> packageASNameParts = FluentIterable.from(Splitters.DOT.omitEmptyStrings().split(packageAS));
+
+    final FluentIterable<String> symbolNameParts = FluentIterable.from(Splitters.DOT.split(symbolName));
+    String remainingSymbolName = symbolName;
+
+    if (symbolNameParts.size() > packageASNameParts.size()) {
+      remainingSymbolName = Joiners.DOT.join(symbolNameParts.skip(packageASNameParts.size()));
+    }
+
+    return remainingSymbolName;
+  }
+  
+<#list symbolNames?keys as symbol> 
+  /**
+   * Starts the bottom-up inter-model resolution process.
+   *
+   * @param <T>
+   * @param resolvingInfo
+   * @param name
+   * @param kind
+   * @return
+   */
+  @Override
+  public Collection<${symbolNames[symbol]}> continue${symbol}WithEnclosingScope(
+      boolean foundSymbols, String name,
+      AccessModifier modifier, Predicate<${symbolNames[symbol]}> predicate) {
+    final Collection<${symbolNames[symbol]}> result = new LinkedHashSet<>();
+
+    if (checkIfContinueWithEnclosingScope(foundSymbols) && (getEnclosingScope().isPresent())) {
+      if (!(enclosingScope instanceof I${languageName}GlobalScope)) {
+        warn("0xA1039 The artifact scope " + getName().orElse("") + " should have a global scope as enclosing scope or no "
+                + "enclosing scope at all.");
+      }
+      foundSymbols = foundSymbols | result.size() > 0;
+      final Set<String> potentialQualifiedNames = qualifiedNamesCalculator.calculateQualifiedNames(name, packageName, imports);
+
+      for (final String potentialQualifiedName : potentialQualifiedNames) {
+        final Collection<${symbolNames[symbol]}> resolvedFromEnclosing = enclosingScope.resolve${symbol}Many(foundSymbols, potentialQualifiedName, modifier, predicate);
+        foundSymbols = foundSymbols | resolvedFromEnclosing.size() > 0;
+        result.addAll(resolvedFromEnclosing);
+      }
+    }
+    return result;
+  }
+  
+</#list>
+}

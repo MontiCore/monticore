@@ -10,7 +10,6 @@ public class SymbolTableGeneratorBuilder {
   private ResolvingFilterGenerator resolvingFilterGenerator;
 
   private SymbolGenerator symbolGenerator;
-  private SymbolKindGenerator symbolKindGenerator;
   private ScopeSpanningSymbolGenerator scopeSpanningSymbolGenerator;
   private ScopeGenerator scopeGenerator;
 
@@ -36,9 +35,6 @@ public class SymbolTableGeneratorBuilder {
     if (symbolGenerator == null) {
       symbolGenerator = new CommonSymbolGenerator();
     }
-    if (symbolKindGenerator == null) {
-      symbolKindGenerator = new CommonSymbolKindGenerator();
-    }
     if (scopeSpanningSymbolGenerator == null) {
       scopeSpanningSymbolGenerator = new CommonScopeSpanningSymbolGenerator();
     }
@@ -60,7 +56,7 @@ public class SymbolTableGeneratorBuilder {
 
     return new SymbolTableGenerator(modelingLanguageGenerator, modelLoaderGenerator,
             modelNameCalculatorGenerator, resolvingFilterGenerator, symbolGenerator,
-            symbolKindGenerator, scopeSpanningSymbolGenerator, scopeGenerator,
+            scopeSpanningSymbolGenerator, scopeGenerator,
             symbolReferenceGenerator, symbolTableCreatorGenerator,
             symbolInterfaceGenerator, symbolTablePrinterGenerator);
   }
@@ -88,11 +84,6 @@ public class SymbolTableGeneratorBuilder {
 
   public SymbolTableGeneratorBuilder symbolGenerator(SymbolGenerator symbolGenerator) {
     this.symbolGenerator = symbolGenerator;
-    return this;
-  }
-
-  public SymbolTableGeneratorBuilder symbolKindGenerator(SymbolKindGenerator symbolKindGenerator) {
-    this.symbolKindGenerator = symbolKindGenerator;
     return this;
   }
 

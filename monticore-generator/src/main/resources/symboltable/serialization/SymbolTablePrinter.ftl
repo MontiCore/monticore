@@ -37,7 +37,7 @@ public class ${symTabPrinterName}
     printer.attribute(JsonConstants.PACKAGE, as.getPackageName());
     printer.attribute(JsonConstants.EXPORTS_SYMBOLS, as.exportsSymbols());
     printer.attribute(JsonConstants.IMPORTS, as.getImports());
-    printer.attribute(JsonConstants.SCOPE_SPANNING_SYMBOL,serializeScopeSpanningSymbol(as.getSpanning${languageName}Symbol()));
+    printer.attribute(JsonConstants.SCOPE_SPANNING_SYMBOL,serializeScopeSpanningSymbol(as.getSpanningSymbol()));
   }
   
   /**
@@ -50,7 +50,7 @@ public class ${symTabPrinterName}
     printer.attribute(JsonConstants.NAME, scope.getName());
     printer.attribute(JsonConstants.IS_SHADOWING_SCOPE, scope.isShadowingScope());
     printer.attribute(JsonConstants.EXPORTS_SYMBOLS, scope.exportsSymbols());
-    printer.attribute(JsonConstants.SCOPE_SPANNING_SYMBOL,serializeScopeSpanningSymbol(scope.getSpanning${languageName}Symbol()));
+    printer.attribute(JsonConstants.SCOPE_SPANNING_SYMBOL,serializeScopeSpanningSymbol(scope.getSpanningSymbol()));
   }
   
   protected Optional<String> serializeScopeSpanningSymbol(
@@ -78,7 +78,7 @@ public class ${symTabPrinterName}
       printer.endAttributeList();
     }
 </#list>
-    Collection<I${languageName}Scope> subScopes = filterRelevantSubScopes(scope.get${languageName}SubScopes());
+    Collection<I${languageName}Scope> subScopes = filterRelevantSubScopes(scope.getSubScopes());
     if (!subScopes.isEmpty()) {
       printer.beginAttributeList(JsonConstants.SUBSCOPES);
       subScopes.stream().forEach(s -> s.accept(getRealThis()));

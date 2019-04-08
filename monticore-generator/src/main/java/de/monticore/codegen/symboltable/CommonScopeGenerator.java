@@ -38,9 +38,6 @@ public class CommonScopeGenerator implements ScopeGenerator {
     
     String scopeClassName = getSimpleTypeNameToGenerate(getSimpleName(scopeName),
         genHelper.getTargetPackage(), handCodedPath);
-    
-    String artifactScopeClassName = getSimpleTypeNameToGenerate(getSimpleName(languageName+GeneratorHelper.ARTIFACT_SCOPE),
-        genHelper.getTargetPackage(), handCodedPath);
 
     String builderName = getSimpleTypeNameToGenerate(
         getSimpleName(scopeName + GeneratorHelper.BUILDER),
@@ -50,10 +47,16 @@ public class CommonScopeGenerator implements ScopeGenerator {
         getSimpleName(scopeName + GeneratorHelper.DESER),
         genHelper.getTargetPackage()+".serialization", handCodedPath);
     
-    String resolvingInfoName = getSimpleTypeNameToGenerate(
-        getSimpleName(languageName + GeneratorHelper.RESOLVING_INFO),
+    String artifactScopeClassName = getSimpleTypeNameToGenerate(getSimpleName(languageName+GeneratorHelper.ARTIFACT_SCOPE),
         genHelper.getTargetPackage(), handCodedPath);
-
+    
+    String globalScopeClassName = getSimpleTypeNameToGenerate(getSimpleName(languageName+GeneratorHelper.GLOBAL_SCOPE),
+        genHelper.getTargetPackage(), handCodedPath);
+    
+    String globalScopeInterfaceClassName = getSimpleTypeNameToGenerate(getSimpleName("I"+languageName+GeneratorHelper.GLOBAL_SCOPE),
+        genHelper.getTargetPackage(), handCodedPath);
+    
+    
     String interfaceName = "I" + scopeClassName;
 
     // Maps Symbol Name to Symbol Kind Name
@@ -108,16 +111,18 @@ public class CommonScopeGenerator implements ScopeGenerator {
     
     final Path scopeFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
         scopeClassName + ".java");
-    final Path artifactScopeFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
-        artifactScopeClassName + ".java");
     final Path builderFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
         builderName + ".java");
     final Path interfaceFilePath = Paths
         .get(Names.getPathFromPackage(genHelper.getTargetPackage()), interfaceName + ".java");
     final Path serializationFilePath = Paths
         .get(Names.getPathFromPackage(genHelper.getTargetPackage()),"serialization", deserName + ".java");
-    final Path resolvingInfoFilePath = Paths
-        .get(Names.getPathFromPackage(genHelper.getTargetPackage()), resolvingInfoName + ".java");
+    final Path artifactScopeFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
+        artifactScopeClassName + ".java");
+    final Path globalScopeFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
+        globalScopeClassName + ".java");
+    final Path globalScopeInterfaceFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
+        globalScopeInterfaceClassName + ".java");
     
 
 
@@ -125,11 +130,14 @@ public class CommonScopeGenerator implements ScopeGenerator {
     ASTMCGrammar grammar = genHelper.getGrammarSymbol().getAstGrammar().get();
     Optional<ASTScopeRule> scopeRule = grammar.getScopeRulesOpt();
     genEngine.generateNoA("symboltable.Scope", scopeFilePath, scopeClassName, scopeRule, symbolNamesWithSuperGrammar, superScopeVisitors);
-    genEngine.generateNoA("symboltable.ArtifactScope", artifactScopeFilePath, artifactScopeClassName, scopeRule, symbolNamesWithSuperGrammar, superScopeVisitors);
     genEngine.generateNoA("symboltable.ScopeInterface", interfaceFilePath, interfaceName, symbolNames, superScopes, languageName);
     genEngine.generateNoA("symboltable.ScopeBuilder", builderFilePath, builderName, scopeName);
     genEngine.generateNoA("symboltable.serialization.ScopeDeSer", serializationFilePath, languageName , deserName, scopeRule, symbolNames);
-    genEngine.generateNoA("symboltable.ResolvingInfo", resolvingInfoFilePath, resolvingInfoName, languageName);
+
+    genEngine.generateNoA("symboltable.ArtifactScope", artifactScopeFilePath, artifactScopeClassName, scopeClassName, languageName, symbolNames);
+    genEngine.generateNoA("symboltable.GlobalScope", globalScopeFilePath, globalScopeClassName, languageName);
+    genEngine.generateNoA("symboltable.GlobalScopeInterface", globalScopeInterfaceFilePath, globalScopeInterfaceClassName, scopeClassName, languageName, symbolNames);
+    
 
   }
 }

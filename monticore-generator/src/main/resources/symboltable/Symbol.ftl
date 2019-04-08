@@ -3,8 +3,8 @@ ${signature("className", "prodSymbol", "ruleSymbol", "imports")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign names = glex.getGlobalVar("nameHelper")>
 <#assign ruleName = prodSymbol.getName()>
-<#assign superClass = " extends de.monticore.symboltable.CommonSymbol">
-<#assign superInterfaces = "implements ICommon" + genHelper.getGrammarSymbol().getName() + "Symbol">
+<#assign superClass = "">
+<#assign superInterfaces = "implements ICommon" + genHelper.getGrammarSymbol().getName() + "Symbol<"+ruleName+">">
 <#if ruleSymbol.isPresent()>
   <#if !ruleSymbol.get().isEmptySuperInterfaces()>
     <#assign superInterfaces = ", " + stHelper.printGenericTypes(ruleSymbol.get().getSuperInterfaceList())>
@@ -25,8 +25,6 @@ import ${imp}._ast.*;
 </#list>
 
 public class ${className} ${superClass} ${superInterfaces} {
-
-  ${includeArgs("symboltable.symbols.KindConstantDeclaration", ruleName)}
 
   public ${className}(String name) {
     super(name, KIND);

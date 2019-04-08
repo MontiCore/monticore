@@ -2,29 +2,26 @@
 
 package de.monticore.symboltable;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Collection;
+import java.util.function.Predicate;
+
+import org.junit.Test;
+
 import de.monticore.symboltable.mocks.languages.entity.ActionSymbol;
 import de.monticore.symboltable.mocks.languages.entity.EntitySymbol;
 import de.monticore.symboltable.mocks.languages.entity.EntitySymbolReference;
 import de.monticore.symboltable.mocks.languages.entity.PropertySymbol;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
-import java.util.Collection;
-import java.util.function.Predicate;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
 public class ResolvingViaPredicateTest {
 
   final EntitySymbolReference DUMMY_TYPE_REF = new EntitySymbolReference("DUMMY", new CommonScope(true));
   final EntitySymbolReference DUMMY_TYPE_REF2 = new EntitySymbolReference("DUMMY2", new CommonScope(true));
 
-  @Ignore
-  @Deprecated
   @Test
   public void testResolveOnlyPropertiesSymbolWithMatchingType() {
     final EntitySymbol entitySymbol = new EntitySymbol("E");
@@ -45,8 +42,6 @@ public class ResolvingViaPredicateTest {
     assertEquals(2, spannedScope.resolveMany("p", PropertySymbol.KIND, new PropertyTypePredicate(DUMMY_TYPE_REF.getName())).size());
   }
 
-  @Ignore
-  @Deprecated
   @Test
   public void testResolveOnlyActionWithMatchingParameters() {
     final EntitySymbol entitySymbol = new EntitySymbol("E");

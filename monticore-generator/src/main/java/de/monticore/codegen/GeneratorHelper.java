@@ -94,8 +94,6 @@ public class GeneratorHelper extends TypesHelper {
 
   public static final String DESER = "DeSer";
   
-  public static final String RESOLVING_INFO = "ResolvingInfo";
-
   public static final String OPTIONAL = "Optional";
 
   public static final String SYMBOL = "Symbol";
@@ -103,6 +101,8 @@ public class GeneratorHelper extends TypesHelper {
   public static final String SCOPE = "Scope";
   
   public static final String ARTIFACT_SCOPE = "ArtifactScope";
+  
+  public static final String GLOBAL_SCOPE = "GlobalScope";
 
   public static final String BASE = "Node";
 

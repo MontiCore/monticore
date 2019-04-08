@@ -18,10 +18,9 @@ import java.util.stream.Collectors;
 
 import de.se_rwth.commons.logging.Log;
 import de.monticore.utils.Names;
-import de.monticore.symboltable.ISymbol;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
+import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException;
 
 public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScopes?join(", ")} </#if> extends IScope {
 
@@ -39,8 +38,8 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
     return getResolvedOrThrowException(resolve${symbol}Many(name, modifier, predicate));
   }
 
-  default public Optional<${symbolNames[symbol]}> resolve${symbol}(${scopeName}ResolvingInfo resolvingInfo, String name, AccessModifier modifier) {
-    return getResolvedOrThrowException(resolve${symbol}Many(resolvingInfo, name, modifier));
+  default public Optional<${symbolNames[symbol]}> resolve${symbol}(boolean foundSymbols, String name, AccessModifier modifier) {
+    return getResolvedOrThrowException(resolve${symbol}Many(foundSymbols, name, modifier));
   }
 
   // all resolveDown Methods for ${symbol}Symbol
@@ -58,21 +57,23 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
 
   // all resolveDownMany Methods for ${symbol}Symbol
   default public Collection<${symbolNames[symbol]}> resolve${symbol}DownMany(String name) {
-    return this.resolve${symbol}DownMany(new ${scopeName}ResolvingInfo(), name, AccessModifier.ALL_INCLUSION, x -> true);
+    return this.resolve${symbol}DownMany(false, name, AccessModifier.ALL_INCLUSION, x -> true);
   }
 
   default public Collection<${symbolNames[symbol]}> resolve${symbol}DownMany(String name, AccessModifier modifier) {
-    return resolve${symbol}DownMany(new ${scopeName}ResolvingInfo(), name, modifier, x -> true);
+    return resolve${symbol}DownMany(false, name, modifier, x -> true);
   }
 
   default public Collection<${symbolNames[symbol]}> resolve${symbol}DownMany(String name, AccessModifier modifier, Predicate<${symbolNames[symbol]}> predicate) {
-    return resolve${symbol}DownMany(new ${scopeName}ResolvingInfo(), name, modifier, predicate);
+    return resolve${symbol}DownMany(false, name, modifier, predicate);
   }
 
-  default public Collection<${symbolNames[symbol]}> resolve${symbol}DownMany(${scopeName}ResolvingInfo resolvingInfo, String name, AccessModifier modifier, Predicate<${symbolNames[symbol]}> predicate) {
+  default public Collection<${symbolNames[symbol]}> resolve${symbol}DownMany(boolean foundSymbols, String name, AccessModifier modifier, Predicate<${symbolNames[symbol]}> predicate) {
       // 1. Conduct search locally in the current scope
-    final Set<${symbolNames[symbol]}> resolved = this.resolve${symbol}ManyLocally(resolvingInfo, name,
+    final Set<${symbolNames[symbol]}> resolved = this.resolve${symbol}ManyLocally(foundSymbols, name,
         modifier, predicate);
+    
+    foundSymbols = foundSymbols | resolved.size() > 0;
     
     final String resolveCall = "resolveDownMany(\"" + name + "\", \"" + "${symbolNames[symbol]}"
         + "\") in scope \"" + getName() + "\"";
@@ -80,9 +81,10 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
     // If no matching symbols have been found...
     if (resolved.isEmpty()) {
       // 2. Continue search in sub scopes and ...
-      for (${interfaceName} subScope : get${scopeName}SubScopes()) {
+      for (${interfaceName} subScope : getSubScopes()) {
         final Collection<${symbolNames[symbol]}> resolvedFromSub = subScope
-            .continueAs${symbol}SubScope(resolvingInfo, name, modifier, predicate);
+            .continueAs${symbol}SubScope(foundSymbols, name, modifier, predicate);
+        foundSymbols = foundSymbols | resolved.size() > 0;
         // 3. unify results
         resolved.addAll(resolvedFromSub);
       }
@@ -95,7 +97,7 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
   // resolveLocally Method for ${symbol}Symbol
   default public Optional<${symbolNames[symbol]}> resolve${symbol}Locally(String name) {
     return getResolvedOrThrowException(
-        this.resolve${symbol}ManyLocally(new ${scopeName}ResolvingInfo(), name,  AccessModifier.ALL_INCLUSION, x -> true));
+        this.resolve${symbol}ManyLocally(false, name,  AccessModifier.ALL_INCLUSION, x -> true));
   }
 
   // all resolveImported Methods for ${symbol}Symbol
@@ -113,28 +115,26 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
   }
 
   default public Collection<${symbolNames[symbol]}> resolve${symbol}Many(String name, AccessModifier modifier, Predicate<${symbolNames[symbol]}> predicate)  {
-    return resolve${symbol}Many(new ${scopeName}ResolvingInfo(), name, modifier, predicate);
+    return resolve${symbol}Many(false, name, modifier, predicate);
   }
 
   default public Collection<${symbolNames[symbol]}> resolve${symbol}Many(String name, Predicate<${symbolNames[symbol]}> predicate)  {
-    return resolve${symbol}Many(new ${scopeName}ResolvingInfo(), name, AccessModifier.ALL_INCLUSION, predicate);
+    return resolve${symbol}Many(false, name, AccessModifier.ALL_INCLUSION, predicate);
   }
 
-  default public Collection<${symbolNames[symbol]}> resolve${symbol}Many(${scopeName}ResolvingInfo resolvingInfo, String name, AccessModifier modifier) {
-    return resolve${symbol}Many(resolvingInfo, name, modifier, x -> true);
+  default public Collection<${symbolNames[symbol]}> resolve${symbol}Many(boolean foundSymbols, String name, AccessModifier modifier) {
+    return resolve${symbol}Many(foundSymbols, name, modifier, x -> true);
   }
 
-  default public Collection<${symbolNames[symbol]}> resolve${symbol}Many(${scopeName}ResolvingInfo resolvingInfo, String name, AccessModifier modifier, Predicate<${symbolNames[symbol]}> predicate)  {
-    final Set<${symbolNames[symbol]}> resolvedSymbols = this.resolve${symbol}ManyLocally(resolvingInfo, name, modifier, predicate);
-    final Collection<${symbolNames[symbol]}> resolvedFromEnclosing = continue${symbol}WithEnclosingScope(resolvingInfo, name, modifier, predicate);
+  default public Collection<${symbolNames[symbol]}> resolve${symbol}Many(boolean foundSymbols, String name, AccessModifier modifier, Predicate<${symbolNames[symbol]}> predicate)  {
+    final Set<${symbolNames[symbol]}> resolvedSymbols = this.resolve${symbol}ManyLocally(foundSymbols, name, modifier, predicate);
+    final Collection<${symbolNames[symbol]}> resolvedFromEnclosing = continue${symbol}WithEnclosingScope((foundSymbols | resolvedSymbols.size() > 0), name, modifier, predicate);
     resolvedSymbols.addAll(resolvedFromEnclosing);
     return resolvedSymbols;
   }
   
-  default Set<${symbolNames[symbol]}> resolve${symbol}ManyLocally(${scopeName}ResolvingInfo resolvingInfo, String name, AccessModifier modifier,
+  default Set<${symbolNames[symbol]}> resolve${symbol}ManyLocally(boolean foundSymbols, String name, AccessModifier modifier,
       Predicate<${symbolNames[symbol]}> predicate) {
-    Log.errorIfNull(resolvingInfo);
-    resolvingInfo.addInvolvedScope(this);
     
     final Set<${symbolNames[symbol]}> resolvedSymbols = new LinkedHashSet<>();
     
@@ -146,7 +146,7 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
         resolvedSymbols.add(resolvedSymbol.get());
       }
     }
-    catch (ResolvedSeveralEntriesException e) {
+    catch (ResolvedSeveralEntriesForSymbolException e) {
       resolvedSymbols.addAll(e.getSymbols());
     }
     
@@ -154,8 +154,6 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
     Set<${symbolNames[symbol]}> filteredSymbols = filterSymbolsByAccessModifier(modifier, resolvedSymbols);
     filteredSymbols = new LinkedHashSet<>(
         filteredSymbols.stream().filter(predicate).collect(Collectors.toSet()));
-    
-    resolvingInfo.updateSymbolsFound(!filteredSymbols.isEmpty());
     
     return filteredSymbols;
   }
@@ -177,18 +175,18 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
   }
   
   
-  default Collection<${symbolNames[symbol]}> continue${symbol}WithEnclosingScope(${scopeName}ResolvingInfo resolvingInfo, String name,  AccessModifier modifier,
+  default Collection<${symbolNames[symbol]}> continue${symbol}WithEnclosingScope(boolean foundSymbols, String name,  AccessModifier modifier,
       Predicate<${symbolNames[symbol]}> predicate) {
-    if (checkIfContinueWithEnclosingScope(resolvingInfo.areSymbolsFound()) && (getEnclosing${scopeName}Scope().isPresent())) {
-      return getEnclosing${scopeName}Scope().get().resolve${symbol}Many(resolvingInfo, name, modifier, predicate);
+    if (checkIfContinueWithEnclosingScope(foundSymbols) && (getEnclosingScope().isPresent())) {
+      return getEnclosingScope().get().resolve${symbol}Many(foundSymbols, name, modifier, predicate);
     }
     return Collections.emptySet();
   }
   
-  default Collection<${symbolNames[symbol]}> continueAs${symbol}SubScope(${scopeName}ResolvingInfo resolvingInfo, String name, AccessModifier modifier, Predicate<${symbolNames[symbol]}> predicate){
+  default Collection<${symbolNames[symbol]}> continueAs${symbol}SubScope(boolean foundSymbols, String name, AccessModifier modifier, Predicate<${symbolNames[symbol]}> predicate){
     if (checkIfContinueAsSubScope(name)) {
       final String remainingSymbolName = getRemainingNameForResolveDown(name);
-      return this.resolve${symbol}DownMany(resolvingInfo, remainingSymbolName, modifier, predicate);
+      return this.resolve${symbol}DownMany(foundSymbols, remainingSymbolName, modifier, predicate);
     }
     return Collections.emptySet();
   }
@@ -216,34 +214,34 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
   <#assign langVisitorType = names.getQualifiedName(genHelper.getVisitorPackage(), genHelper.getGrammarSymbol().getName() + "ScopeVisitor")>
   public void accept(${langVisitorType} visitor);
   
-  Optional<ICommon${scopeName}Symbol<?>> getSpanning${scopeName}Symbol();
   
-    /**
+  Optional<ICommon${scopeName}Symbol<?>> getSpanningSymbol();
+  
+  /**
    * @param symbol the symbol that spans this scope. For example, a Java method spans a
    *               method scope.
    */
-  void setSpanning${scopeName}Symbol(ICommon${scopeName}Symbol<?> symbol);
+  void setSpanningSymbol(ICommon${scopeName}Symbol<?> symbol);
   
     
-  public Optional<I${scopeName}Scope> getEnclosing${scopeName}Scope();
+  public Optional<I${scopeName}Scope> getEnclosingScope();
   
-  public void setEnclosing${scopeName}Scope(I${scopeName}Scope enclosingScope);
-  
+  public void setEnclosingScope(I${scopeName}Scope enclosingScope);
   
   /**
    * Adds a sub subScope. In Java, for example, sub scopes of a class are the method scopes.
    *
    * @param subScope the sub scope to be added.
    */
-  void add${scopeName}SubScope(I${scopeName}Scope subScope);
+  void addSubScope(I${scopeName}Scope subScope);
   
   /**
    * Removes given <code>subScope</code>.
    *
    * @param subScope the sub scope to be removed
    */
-  void remove${scopeName}SubScope(I${scopeName}Scope subScope);
+  void removeSubScope(I${scopeName}Scope subScope);
 
-  public Collection<I${scopeName}Scope> get${scopeName}SubScopes();
+  public Collection<I${scopeName}Scope> getSubScopes();
 }
 

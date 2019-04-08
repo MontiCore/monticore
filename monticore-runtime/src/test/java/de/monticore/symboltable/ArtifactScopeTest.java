@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Optional;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import de.monticore.io.paths.ModelPath;
@@ -24,8 +23,6 @@ import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
 
 public class ArtifactScopeTest {
 
-  @Ignore
-  @Deprecated
   @Test
   public void testArtifactScopeWithoutImportStatements() {
     final CommonResolvingFilter<EntitySymbol> classResolver = new CommonResolvingFilter<>(EntitySymbol.KIND);
@@ -67,8 +64,6 @@ public class ArtifactScopeTest {
 
   }
 
-  @Ignore
-  @Deprecated
   @Test
   public void testArtifactScopeWithImportStatements() {
     final CommonResolvingFilter<EntitySymbol> classResolver = new CommonResolvingFilter<>(EntitySymbol.KIND);
@@ -122,8 +117,6 @@ public class ArtifactScopeTest {
 
   }
 
-  @Ignore
-  @Deprecated
   @Test
   public void testResolveUnqualifiedSymbolInSamePackage() {
     final CommonResolvingFilter<EntitySymbol> classResolver = new CommonResolvingFilter<>(EntitySymbol.KIND);
@@ -149,8 +142,6 @@ public class ArtifactScopeTest {
     assertSame(classA, classAScope.resolve("A", EntitySymbol.KIND).get());
   }
 
-  @Ignore
-  @Deprecated
   @Test
   public void testPackageNameMustBePrefixOfQualifiedSymbolName() {
     final CommonResolvingFilter<EntitySymbol> classResolver = new CommonResolvingFilter<>(EntitySymbol.KIND);
@@ -174,8 +165,6 @@ public class ArtifactScopeTest {
     assertNotSame(classA, classA2);
   }
 
-  @Ignore
-  @Deprecated
   @Test
   public void testResolveInDefaultPackage() {
     final CommonResolvingFilter<EntitySymbol> classResolver = new CommonResolvingFilter<>(EntitySymbol.KIND);

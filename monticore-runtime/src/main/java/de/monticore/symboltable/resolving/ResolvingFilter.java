@@ -38,7 +38,7 @@ public interface ResolvingFilter<S extends Symbol> {
       return Optional.of(resolved.iterator().next());
     }
     else if (resolved.size() > 1) {
-      throw new ResolvedSeveralEntriesException("0xA4095 Found " + resolved.size() + " symbols: " + resolved);
+      throw new ResolvedSeveralEntriesException("0xA4095 Found " + resolved.size() + " symbols: " + resolved, resolved);
     }
 
     return Optional.empty();

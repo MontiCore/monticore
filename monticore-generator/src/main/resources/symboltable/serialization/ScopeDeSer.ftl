@@ -149,7 +149,7 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
 </#list>
 
     for (I${languageName}Scope s : linkSubScopes(scope, subScopes)) {
-      scope.add${languageName}SubScope(s);
+      scope.addSubScope(s);
     }
     return Optional.of(new ScopeDeserializationResult<I${languageName}Scope>(scope,spanningSymbol));
   }
@@ -157,18 +157,18 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
   protected List<I${languageName}Scope> linkSubScopes(I${languageName}Scope scope, List<ScopeDeserializationResult<I${languageName}Scope>> subScopes){
     List<I${languageName}Scope> subScopeList = new ArrayList<>();
     for (ScopeDeserializationResult<I${languageName}Scope> subScope : subScopes) {
-      subScope.getScope().setEnclosing${languageName}Scope(scope);
+      subScope.getScope().setEnclosingScope(scope);
       if (subScope.hasSpanningSymbol()) {
         if (stateSymbolDeSer.getSerializedKind().equals(subScope.getSpanningSymbolKind())) {
           Optional<StateSymbol> spanningStateSymbol = scope.resolveStateLocally(subScope.getSpanningSymbolName());
           if(spanningStateSymbol.isPresent()) {
-            subScope.getScope().setSpanning${languageName}Symbol(spanningStateSymbol.get());
+            subScope.getScope().setSpanningSymbol(spanningStateSymbol.get());
           }
         }
         else if (automatonSymbolDeSer.getSerializedKind().equals(subScope.getSpanningSymbolKind())) {
           Optional<AutomatonSymbol> spanningAutomatonSymbol = scope.resolveAutomatonLocally(subScope.getSpanningSymbolName());
           if(spanningAutomatonSymbol.isPresent()) {
-            subScope.getScope().setSpanning${languageName}Symbol(spanningAutomatonSymbol.get());
+            subScope.getScope().setSpanningSymbol(spanningAutomatonSymbol.get());
           }
         }
         else {

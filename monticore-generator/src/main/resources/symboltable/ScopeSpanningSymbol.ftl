@@ -8,8 +8,8 @@ ${signature("className", "scopeClassName", "prodSymbol", "ruleSymbol", "imports"
   <#assign ruleName = prodSymbol.getName()>
 </#if>
 <#assign astName = prodSymbol.getName()?cap_first>
-<#assign superClass = " extends de.monticore.symboltable.CommonScopeSpanningSymbol">
-<#assign superInterfaces = "implements ICommon" + genHelper.getGrammarSymbol().getName() + "Symbol">
+<#assign superClass = "">
+<#assign superInterfaces = "implements ICommon" + genHelper.getGrammarSymbol().getName() + "Symbol<AST"+ruleName+">, IScopeSpanningSymbol<"+scopeClassName+", AST"+ruleName+">">
 <#if ruleSymbol.isPresent()>
   <#if !ruleSymbol.get().isEmptySuperInterfaces()>
     <#assign superInterfaces = ", " + stHelper.printGenericTypes(ruleSymbol.get().getSuperInterfaceList())>
@@ -35,8 +35,6 @@ import ${imp}._ast.*;
 </#list>
 
 public class ${className} ${superClass} ${superInterfaces} {
-
-  ${includeArgs("symboltable.symbols.KindConstantDeclaration", ruleName)}
 
   public ${className}(String name) {
     super(name, KIND);
