@@ -30,6 +30,7 @@ import java.util.Deque;
 import java.util.Optional;
 import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.se_rwth.commons.Names;
+import de.monticore.symboltable.modifiers.AccessModifier;
 
 <#list imports as imp>
 import ${imp}._ast.*;
@@ -76,8 +77,6 @@ public class ${className} ${superClass} ${superInterfaces} {
   </#if>
   
   
-
-  protected I${languageName}Scope enclosingScope;
 
   public I${languageName}Scope getEnclosingScope(){
     return this.enclosingScope;

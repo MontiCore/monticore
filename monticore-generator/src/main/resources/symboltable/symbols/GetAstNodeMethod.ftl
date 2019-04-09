@@ -11,6 +11,6 @@ ${tc.signature("ruleName")}
     return Optional.empty();
   }
   
-  public void setAstNode(${ruleName} node) {
+  public void setAstNode(${astNode} node) {
     this.node = node;
   }
