@@ -477,6 +477,9 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
         + cdName + SCOPE;
   }
 
+  public String getSymbolNameFromQualifiedSymbol (String qualifiedSymbol) {
+	  return qualifiedSymbol.substring(qualifiedSymbol.lastIndexOf(".") + 1);
+  }
   
   public Set<String> getAllQualifiedSymbols() {
     Set<String> qualifiedSymbols = new LinkedHashSet<>();

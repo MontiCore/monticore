@@ -115,23 +115,15 @@ public interface ${genHelper.getScopeVisitorType()} extends ${genHelper.getSymbo
   
     default public void traverse(${scopeType} scope) {
       // traverse symbols within the scope
-      Iterator<Entry<String, Collection<Symbol>>> iter_symbolEntries = scope.getLocalSymbols().entrySet().iterator();
-      while (iter_symbolEntries.hasNext()) {
-        Iterator<Symbol> iter_symbols = iter_symbolEntries.next().getValue().iterator();
-        while (iter_symbols.hasNext()) {
-          Symbol symbol = iter_symbols.next();
-          <#list stHelper.getAllQualifiedSymbols() as qualifiedSymbol>
-          if (symbol instanceof ${qualifiedSymbol}) {
-            ((${qualifiedSymbol}) symbol).accept(getRealThis());
+      <#list stHelper.getAllQualifiedSymbols() as qualifiedSymbol>
+          for (${stHelper.getSymbolNameFromQualifiedSymbol(qualifiedSymbol)} s : scope.getLocal${stHelper.getSymbolNameFromQualifiedSymbol(qualifiedSymbol)}s()) {
+            s.accept(getRealThis());
           }
-          </#list>
-        }
-      }
+      </#list>
       
       // traverse sub-scopes
-      Iterator<Scope> iter_scopes = scope.getSubScopes().iterator();
-      while (iter_scopes.hasNext()) {
-        ((${"I" + stHelper.getGrammarSymbol().getName() + "Scope"})iter_scopes.next()).accept(getRealThis());
+      for (${"I" + stHelper.getGrammarSymbol().getName() + "Scope"} s : scope.getSubScopes()) {
+        s.accept(getRealThis());
       }
     }
 </#if>
