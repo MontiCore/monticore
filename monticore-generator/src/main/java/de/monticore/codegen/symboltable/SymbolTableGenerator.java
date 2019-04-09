@@ -28,13 +28,7 @@ public class SymbolTableGenerator {
 
   private final ModelLoaderGenerator modelLoaderGenerator;
 
-  private final ModelNameCalculatorGenerator modelNameCalculatorGenerator;
-
-  private final ResolvingFilterGenerator resolvingFilterGenerator;
-
   private final SymbolGenerator symbolGenerator;
-
-  private final ScopeSpanningSymbolGenerator scopeSpanningSymbolGenerator;
 
   private final ScopeGenerator scopeGenerator;
 
@@ -49,10 +43,7 @@ public class SymbolTableGenerator {
   protected SymbolTableGenerator(
       ModelingLanguageGenerator modelingLanguageGenerator,
       ModelLoaderGenerator modelLoaderGenerator,
-      ModelNameCalculatorGenerator modelNameCalculatorGenerator,
-      ResolvingFilterGenerator resolvingFilterGenerator,
       SymbolGenerator symbolGenerator,
-      ScopeSpanningSymbolGenerator scopeSpanningSymbolGenerator,
       ScopeGenerator scopeGenerator,
       SymbolReferenceGenerator symbolReferenceGenerator,
       SymbolTableCreatorGenerator symbolTableCreatorGenerator,
@@ -60,11 +51,8 @@ public class SymbolTableGenerator {
       SymbolTablePrinterGenerator symbolTablePrinterGenerator) {
     this.modelingLanguageGenerator = modelingLanguageGenerator;
     this.modelLoaderGenerator = modelLoaderGenerator;
-    this.modelNameCalculatorGenerator = modelNameCalculatorGenerator;
-    this.resolvingFilterGenerator = resolvingFilterGenerator;
     this.symbolGenerator = symbolGenerator;
     this.scopeGenerator = scopeGenerator;
-    this.scopeSpanningSymbolGenerator = scopeSpanningSymbolGenerator;
     this.symbolReferenceGenerator = symbolReferenceGenerator;
     this.symbolTableCreatorGenerator = symbolTableCreatorGenerator;
     this.symbolInterfaceGenerator = symbolInterfaceGenerator;
@@ -120,15 +108,12 @@ public class SymbolTableGenerator {
     modelLoaderGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol);
 
     if (!skipSymbolTableGeneration) {
-      modelNameCalculatorGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol,
-          ruleNames);
       symbolTableCreatorGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol);
 
       for (MCProdSymbol ruleSymbol : allSymbolDefiningRules) {
         generateSymbolOrScopeSpanningSymbol(genEngine, genHelper, ruleSymbol, handCodedPath);
         symbolReferenceGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol,
             genHelper.isScopeSpanningSymbol(ruleSymbol));
-        resolvingFilterGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol);
       }
     }
     //a symbol interface and scope is generated for all grammars
@@ -143,11 +128,7 @@ public class SymbolTableGenerator {
                                                    SymbolTableGeneratorHelper genHelper,
                                                    MCProdSymbol ruleSymbol, IterablePath handCodedPath) {
     if (ruleSymbol.getAstNode().isPresent()) {
-      if (!genHelper.isScopeSpanningSymbol(ruleSymbol)) {
-        symbolGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol);
-      } else {
-        scopeSpanningSymbolGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol);
-      }
+        symbolGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol, genHelper.isScopeSpanningSymbol(ruleSymbol));
     }
   }
 

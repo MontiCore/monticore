@@ -10,28 +10,15 @@ ${defineHookPoint("JavaCopyright")}
 <#-- set package -->
 package ${genHelper.getTargetPackage()};
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 
-import de.monticore.symboltable.ImportStatement;
-import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.symboltable.names.CommonQualifiedNamesCalculator;
-import de.monticore.symboltable.names.QualifiedNamesCalculator;
-import de.monticore.utils.Names;
-import de.se_rwth.commons.Joiners;
-import de.se_rwth.commons.Splitters;
-import de.se_rwth.commons.logging.Log;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.symboltable.modifiers.AccessModifier;
+import de.se_rwth.commons.logging.Log;
 
 public interface ${className} extends I${scopeClass} {
 
@@ -95,7 +82,7 @@ public interface ${className} extends I${scopeClass} {
   default void loadModelsFor${symbol}(String symbolName) {
     
     ${languageName}ModelLoader modelLoader = get${languageName}Language().getModelLoader();
-    Set<String> calculatedModelNames = get${languageName}Language().getModelNameCalculator().calculateModelNamesFor${symbol}(symbolName);
+    Set<String> calculatedModelNames = get${languageName}Language().calculateModelNamesFor${symbol}(symbolName);
     
     for (String calculatedModelName : calculatedModelNames) {
       if (continueWithModelLoader(calculatedModelName, modelLoader)) {

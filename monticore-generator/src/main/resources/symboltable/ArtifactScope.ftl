@@ -33,7 +33,6 @@ import de.se_rwth.commons.logging.Log;
 
 public class ${className} extends ${scopeClass} {
 
-
   private final String packageName;
   
   private final List<ImportStatement> imports;
@@ -67,7 +66,7 @@ public class ${className} extends ${scopeClass} {
   @Override
   public Optional<String> getName() {
     if (!super.getName().isPresent()) {
-      final Optional<ICommon${languageName}Symbol> topLevelSymbol = getTopLevelSymbol();
+      final Optional<ICommon${languageName}Symbol<?>> topLevelSymbol = getTopLevelSymbol();
       if (topLevelSymbol.isPresent()) {
         setName(topLevelSymbol.get().getName());
       }
@@ -75,7 +74,7 @@ public class ${className} extends ${scopeClass} {
     return super.getName();
   }
 
-  public Optional<ICommon${languageName}Symbol> getTopLevelSymbol() {
+  public Optional<ICommon${languageName}Symbol<?>> getTopLevelSymbol() {
     if (getSubScopes().size() == 1) {
       return getSubScopes().get(0).getSpanningSymbol();
     }
@@ -156,7 +155,7 @@ public class ${className} extends ${scopeClass} {
 
     if (checkIfContinueWithEnclosingScope(foundSymbols) && (getEnclosingScope().isPresent())) {
       if (!(enclosingScope instanceof I${languageName}GlobalScope)) {
-        warn("0xA1039 The artifact scope " + getName().orElse("") + " should have a global scope as enclosing scope or no "
+        Log.warn("0xA1039 The artifact scope " + getName().orElse("") + " should have a global scope as enclosing scope or no "
                 + "enclosing scope at all.");
       }
       foundSymbols = foundSymbols | result.size() > 0;

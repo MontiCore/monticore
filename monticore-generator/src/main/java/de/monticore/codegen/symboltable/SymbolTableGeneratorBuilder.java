@@ -6,11 +6,8 @@ public class SymbolTableGeneratorBuilder {
 
   private ModelingLanguageGenerator modelingLanguageGenerator;
   private ModelLoaderGenerator modelLoaderGenerator;
-  private ModelNameCalculatorGenerator modelNameCalculatorGenerator;
-  private ResolvingFilterGenerator resolvingFilterGenerator;
 
   private SymbolGenerator symbolGenerator;
-  private ScopeSpanningSymbolGenerator scopeSpanningSymbolGenerator;
   private ScopeGenerator scopeGenerator;
 
   private SymbolReferenceGenerator symbolReferenceGenerator;
@@ -26,17 +23,8 @@ public class SymbolTableGeneratorBuilder {
     if (modelLoaderGenerator == null) {
       modelLoaderGenerator = new CommonModelLoaderGenerator();
     }
-    if (modelNameCalculatorGenerator == null) {
-      modelNameCalculatorGenerator = new CommonModelNameCalculatorGenerator();
-    }
-    if (resolvingFilterGenerator == null) {
-      resolvingFilterGenerator = new CommonResolvingFilterGenerator();
-    }
     if (symbolGenerator == null) {
       symbolGenerator = new CommonSymbolGenerator();
-    }
-    if (scopeSpanningSymbolGenerator == null) {
-      scopeSpanningSymbolGenerator = new CommonScopeSpanningSymbolGenerator();
     }
     if (scopeGenerator == null) {
       scopeGenerator = new CommonScopeGenerator();
@@ -55,8 +43,7 @@ public class SymbolTableGeneratorBuilder {
     }
 
     return new SymbolTableGenerator(modelingLanguageGenerator, modelLoaderGenerator,
-            modelNameCalculatorGenerator, resolvingFilterGenerator, symbolGenerator,
-            scopeSpanningSymbolGenerator, scopeGenerator,
+            symbolGenerator, scopeGenerator,
             symbolReferenceGenerator, symbolTableCreatorGenerator,
             symbolInterfaceGenerator, symbolTablePrinterGenerator);
   }
@@ -72,23 +59,8 @@ public class SymbolTableGeneratorBuilder {
     return this;
   }
 
-  public SymbolTableGeneratorBuilder modelNameCalculatorGenerator(ModelNameCalculatorGenerator modelNameCalculatorGenerator) {
-    this.modelNameCalculatorGenerator = modelNameCalculatorGenerator;
-    return this;
-  }
-
-  public SymbolTableGeneratorBuilder resolvingFilterGenerator(ResolvingFilterGenerator resolvingFilterGenerator) {
-    this.resolvingFilterGenerator = resolvingFilterGenerator;
-    return this;
-  }
-
   public SymbolTableGeneratorBuilder symbolGenerator(SymbolGenerator symbolGenerator) {
     this.symbolGenerator = symbolGenerator;
-    return this;
-  }
-
-  public SymbolTableGeneratorBuilder scopeSpanningSymbolGenerator(ScopeSpanningSymbolGenerator scopeSpanningSymbolGenerator) {
-    this.scopeSpanningSymbolGenerator = scopeSpanningSymbolGenerator;
     return this;
   }
 

@@ -14,7 +14,7 @@ import de.monticore.io.paths.ModelPath;
 import java.util.Optional;
 import de.se_rwth.commons.logging.Log;
 
-public class ${className} implements I${className} {
+public class ${className} extends ${languageName}Scope implements I${className} {
 
   protected ModelPath modelPath;
   

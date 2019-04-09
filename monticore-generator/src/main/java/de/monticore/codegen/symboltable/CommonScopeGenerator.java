@@ -129,7 +129,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
 
     ASTMCGrammar grammar = genHelper.getGrammarSymbol().getAstGrammar().get();
     Optional<ASTScopeRule> scopeRule = grammar.getScopeRulesOpt();
-    genEngine.generateNoA("symboltable.Scope", scopeFilePath, scopeClassName, scopeRule, symbolNamesWithSuperGrammar, superScopeVisitors);
+    genEngine.generateNoA("symboltable.Scope", scopeFilePath, scopeClassName, scopeRule, symbolNames, superScopeVisitors);
     genEngine.generateNoA("symboltable.ScopeInterface", interfaceFilePath, interfaceName, symbolNames, superScopes, languageName);
     genEngine.generateNoA("symboltable.ScopeBuilder", builderFilePath, builderName, scopeName);
     genEngine.generateNoA("symboltable.serialization.ScopeDeSer", serializationFilePath, languageName , deserName, scopeRule, symbolNames);

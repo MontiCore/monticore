@@ -13,23 +13,39 @@ ${defineHookPoint("JavaCopyright")}
 <#-- set package -->
 package ${package};
 
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.ResolvingConfiguration;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
 
-<#if !skipSTGen>
-import de.monticore.symboltable.ArtifactScope;
-import de.monticore.symboltable.Scope;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+
+import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.io.paths.ModelCoordinate;
+import de.monticore.io.paths.ModelCoordinates;
+import de.monticore.io.paths.ModelPath;
+import de.monticore.modelloader.AstProvider;
+import de.monticore.modelloader.IModelLoader;
+import de.monticore.modelloader.ParserBasedAstProvider;
+import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
-</#if>
 
 public class ${className} implements de.monticore.modelloader.IModelLoader<${topAstName}, I${grammarName}Scope> {
 
+  protected final ${grammarName}Language language;
+  
+  protected AstProvider<${topAstName}> astProvider;
+
   public ${className}(${grammarName}Language language) {
-    super(language);
+    this.language = language;
+    this.astProvider = new ParserBasedAstProvider<>(language);
   }
 
   @Override
-  protected void createSymbolTableFromAST(final ${topAstName} ast, final String modelName, final I${grammarName}Scope enclosingScope) {
+  public void createSymbolTableFromAST(final ${topAstName} ast, final String modelName, final I${grammarName}Scope enclosingScope) {
     <#if !skipSTGen>
     final ${grammarName}SymbolTableCreator symbolTableCreator =
             getModelingLanguage().getSymbolTableCreator(enclosingScope);
@@ -53,9 +69,8 @@ public class ${className} implements de.monticore.modelloader.IModelLoader<${top
     </#if>
   }
 
-  @Override
   public ${grammarName}Language getModelingLanguage() {
-    return (${grammarName}Language) super.getModelingLanguage();
+    return this.language;
   }
   
   public Collection<${topAstName}> loadModelsIntoScope(final String qualifiedModelName,
@@ -68,7 +83,7 @@ public class ${className} implements de.monticore.modelloader.IModelLoader<${top
       }
       return asts;
     }
-    return Collections.EMPTY_SET;
+    return Collections.emptySet();
   }
   
   public Collection<${topAstName}> loadModels(final String qualifiedModelName, ModelPath modelPath){
