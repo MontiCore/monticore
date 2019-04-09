@@ -24,7 +24,7 @@ component grammar MCBasicTypes extends de.monticore.MCBasics {
     /*= Qualified Names ======================================================*/
     /*========================================================================*/
 
-    /** The ASTQualifiedName represents a possibly qualified name in the AST.
+    /** The ASTMCQualifiedName represents a possibly qualified name.
         The different parts of a qualified name are separated by '.'; they are
         stored in an ASTStringList.
         @attribute parts A List of ASTStringList concludes all name parts
@@ -36,7 +36,7 @@ component grammar MCBasicTypes extends de.monticore.MCBasics {
     /*= ImportStatement ======================================================*/
     /*========================================================================*/
 
-    /** ImportStatement represents the import list for diagrams
+    /** ASTMCImportStatement represents the import list for diagrams
         E.g.: import A.b;
         E.g.: import A.*;
     */
@@ -47,7 +47,7 @@ component grammar MCBasicTypes extends de.monticore.MCBasics {
     /*= Primitives ===========================================================*/
     /*========================================================================*/
 
-    /** ASTPrimitiveType represents every primitive type supported by Java.
+    /** ASTMCPrimitiveType represents every primitive type supported by Java.
         The type is not realized by an enumeration, because enumerations cannot
         be extended.
         @attribute primitive BOOLEAN, BYTE, CHAR, SHORT, INT, FLOAT, LONG,
@@ -63,7 +63,7 @@ component grammar MCBasicTypes extends de.monticore.MCBasics {
 
     interface MCObjectType extends MCType;
 
-    /** ASTQualifiedType represents types like class or interface types
+    /** ASTMCQualifiedType represents types like class or interface types
             which could have a qualified name like this: a.b.c.D
         */
     MCQualifiedType implements MCObjectType = MCQualifiedName;
@@ -71,6 +71,7 @@ component grammar MCBasicTypes extends de.monticore.MCBasics {
 
     /*========================================================================*/
     /*= ReturnTypes and void =================================================*/
+    /*Please Note these special types do not implement interface ASTMCType ===*/
     /*========================================================================*/
 
     MCReturnType = MCVoidType | MCType;
