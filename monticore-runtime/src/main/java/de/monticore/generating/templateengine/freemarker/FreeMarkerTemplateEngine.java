@@ -91,7 +91,8 @@ public class FreeMarkerTemplateEngine {
           e.getCause());
     }
     catch (IOException e) {
-      throw new MontiCoreFreeMarkerException("0xA0563 Could read template " + template.getName() + FM_FILE_EXTENSION);
+      throw new MontiCoreFreeMarkerException("0xA0563 Could not read template " + template.getName() + FM_FILE_EXTENSION + " : " + e.getLocalizedMessage() +
+              System.getProperty("line.separator") + "Exception-type: " + e.getCause())  ;
     }
     buffer.append(w.toString());
   }
