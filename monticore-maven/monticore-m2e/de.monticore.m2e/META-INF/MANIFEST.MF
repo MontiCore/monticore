@@ -8,7 +8,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui
 Bundle-Vendor: SE RWTH Aachen
 Bundle-ActivationPolicy: lazy
-Bundle-Version: 5.0.1
+Bundle-Version: 5.0.1.1
 Bundle-Name: m2e Extension for the MontiCore Maven Plugin
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: de.monticore.m2e;singleton:=true
