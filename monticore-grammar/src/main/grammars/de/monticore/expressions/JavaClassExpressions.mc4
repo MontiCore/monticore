@@ -2,15 +2,32 @@
 
 package de.monticore.expressions;
 
+/**
+ * This grammar defines java specific class expressions like super, this, type cast, etc.
+*/
+
 component grammar JavaClassExpressions extends de.monticore.expressions.CommonExpressions {
-	
-external ExtLiteral;
+
+/**
+ * When combining the languages you can decide later if you want to use the complete
+ * type system of java (extending MCFullGenericType)
+ * or if you want to use a smaller variant
+ */
 
 external ExtType;
 
 external ExtReturnType;
 
 external ExtTypeArguments;
+
+PrimaryThisExpression implements Expression <320>
+	= "this";
+
+ThisExpression implements Expression <280> =
+	Expression "." "this";
+
+ArrayExpression implements Expression <250> =
+	Expression "[" indexExpression:Expression "]";
 
 SuperExpression implements Expression <270> =
 	Expression "." "super" SuperSuffix;
@@ -24,9 +41,6 @@ TypeCastExpression implements Expression <230> =
 PrimarySuperExpression implements Expression <330>
 	= "super";
 	
-LiteralExpression implements Expression <340>
-    = ExtLiteral;
-        
 ClassExpression implements Expression <360>
     = ExtReturnType "." "class";
    

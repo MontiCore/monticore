@@ -29,13 +29,6 @@ public class JavaClassExpressionsPrettyPrinter extends CommonExpressionsPrettyPr
   }
 
   @Override
-  public void handle(ASTLiteralExpression node) {
-    CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getExtLiteral().accept(getRealThis());
-    CommentPrettyPrinter.printPostComments(node, getPrinter());
-  }
-
-  @Override
   public void handle(ASTSuperSuffix node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     if (node.isPresentName()) {
@@ -127,25 +120,34 @@ public class JavaClassExpressionsPrettyPrinter extends CommonExpressionsPrettyPr
     node.getExtType().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
-  
+
   @Override
-  public void handle(ASTArguments node) {
+  public void handle(ASTThisExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    getPrinter().print("(");
-    int count = 0;
-    if (!node.isEmptyExpressions()) {
-      for (ASTExpression ast : node.getExpressionList()) {
-        if (count > 0) {
-          getPrinter().print(",");
-        }
-        ast.accept(getRealThis());
-        count++;
-      }
-    }
-    getPrinter().print(")");
+    node.getExpression().accept(getRealThis());
+    getPrinter().print(".");
+    getPrinter().print("this");
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
-  
+
+  @Override
+  public void handle(ASTArrayExpression node) {
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    node.getExpression().accept(getRealThis());
+    getPrinter().print("[");
+    node.getIndexExpression().accept(getRealThis());
+    ;
+    getPrinter().print("]");
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
+  }
+
+  @Override
+  public void visit(ASTPrimaryThisExpression node) {
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    getPrinter().print("this");
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
+  }
+
   public IndentPrinter getPrinter() {
     return this.printer;
   }

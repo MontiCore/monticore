@@ -65,34 +65,7 @@ public class AssignmentExpressionsPrettyPrinter implements AssignmentExpressions
     node.getExpression().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
-  
-  @Override
-  public void handle(ASTBinaryAndExpression node) {
-    CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeft().accept(getRealThis());
-    getPrinter().print("&");
-    node.getRight().accept(getRealThis());
-    CommentPrettyPrinter.printPostComments(node, getPrinter());
-  }
-  
-  @Override
-  public void handle(ASTBinaryXorExpression node) {
-    CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeft().accept(getRealThis());
-    getPrinter().print("^");
-    node.getRight().accept(getRealThis());
-    CommentPrettyPrinter.printPostComments(node, getPrinter());
-  }
-  
-  @Override
-  public void handle(ASTBinaryOrOpExpression node) {
-    CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeft().accept(getRealThis());
-    getPrinter().print("|");
-    node.getRight().accept(getRealThis());
-    CommentPrettyPrinter.printPostComments(node, getPrinter());
-  }
-  
+
   @Override
   public void handle(ASTRegularAssignmentExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
