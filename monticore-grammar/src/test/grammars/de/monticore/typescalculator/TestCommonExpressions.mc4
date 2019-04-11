@@ -1,0 +1,14 @@
+/* (c)  https://github.com/MontiCore/monticore */
+
+package de.monticore.typescalculator;
+
+grammar TestCommonExpressions extends de.monticore.expressions.CommonExpressions, de.monticore.MCBasics, de.monticore.MCBasicLiterals {
+  start Expression;
+  //FooBarBlub implements Expression = Name;
+  NameExpression implements Expression = (Name || ".")+;
+
+  IntExpression implements Expression = SignedNatLiteral;
+
+  DoubleExpression implements Expression = SignedNatLiteral "." NatLiteral;
+
+}
