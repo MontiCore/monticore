@@ -16,7 +16,7 @@ component grammar CommonExpressions extends de.monticore.expressions.Expressions
 
 interface InfixExpression = left:Expression operator:"" right:Expression;
 
-interface BiOpExpression = left:Expression right:Expression;
+interface BiOpExpression extends Expression = left:Expression right:Expression;
 
 NameExpression implements Expression <350>
     = Name;
