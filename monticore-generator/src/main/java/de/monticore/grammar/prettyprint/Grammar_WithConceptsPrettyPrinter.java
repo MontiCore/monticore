@@ -6,14 +6,14 @@ package de.monticore.grammar.prettyprint;
 import de.monticore.MCBasicLiteralsPrettyPrinter;
 import de.monticore.MCJavaLiteralsPrettyPrinter;
 import de.monticore.expressions.assignmentexpressions._ast.ASTAssignmentExpressionsNode;
+import de.monticore.expressions.bitexpressions._ast.ASTBitExpressionsNode;
 import de.monticore.expressions.commonexpressions._ast.ASTCommonExpressionsNode;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpressionsBasisNode;
 import de.monticore.expressions.javaclassexpressions._ast.ASTJavaClassExpressionsNode;
 import de.monticore.expressions.prettyprint2.AssignmentExpressionsPrettyPrinter;
+import de.monticore.expressions.prettyprint2.BitExpressionsPrettyPrinter;
 import de.monticore.expressions.prettyprint2.CommonExpressionsPrettyPrinter;
 import de.monticore.expressions.prettyprint2.JavaClassExpressionsPrettyPrinter;
-import de.monticore.expressions.prettyprint2.ShiftExpressionsPrettyPrinter;
-import de.monticore.expressions.shiftexpressions._ast.ASTShiftExpressionsNode;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTAntlrNode;
 import de.monticore.grammar.grammar._ast.ASTGrammarNode;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTGrammar_WithConceptsNode;
@@ -49,7 +49,7 @@ public class Grammar_WithConceptsPrettyPrinter implements Grammar_WithConceptsVi
     visitor.setCommonExpressionsVisitor(new CommonExpressionsPrettyPrinter(out));
     visitor.setMCBasicsVisitor(new MCBasicsPrettyPrinter(out));
     visitor.setJavaClassExpressionsVisitor(new JavaClassExpressionsPrettyPrinter(out));
-    visitor.setShiftExpressionsVisitor(new ShiftExpressionsPrettyPrinter(out));
+    visitor.setBitExpressionsVisitor(new BitExpressionsPrettyPrinter(out));
     visitor.setMCBasicLiteralsVisitor(new MCBasicLiteralsPrettyPrinter(out));
     visitor.setMCBasicTypesVisitor(new MCBasicTypesPrettyPrinter(out));
     visitor.setMCCollectionTypesVisitor(new MCCollectionTypesPrettyPrinter(out));
@@ -100,7 +100,7 @@ public class Grammar_WithConceptsPrettyPrinter implements Grammar_WithConceptsVi
     return printer.getContent();
   }
 
-  public String prettyprint(ASTShiftExpressionsNode a) {
+  public String prettyprint(ASTBitExpressionsNode a) {
     printer.clearBuffer();
     a.accept(getRealThis());
     return printer.getContent();

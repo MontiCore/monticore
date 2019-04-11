@@ -4,40 +4,20 @@ package de.monticore.expressions.prettyprint2;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.expressions.shiftexpressions._ast.*;
-import de.monticore.expressions.shiftexpressions._visitor.ShiftExpressionsVisitor;
+import de.monticore.expressions.bitexpressions._ast.*;
+import de.monticore.expressions.bitexpressions._visitor.BitExpressionsVisitor;
 
-public class ShiftExpressionsPrettyPrinter implements ShiftExpressionsVisitor{
+public class BitExpressionsPrettyPrinter implements BitExpressionsVisitor{
 
-  protected ShiftExpressionsVisitor realThis;
+  protected BitExpressionsVisitor realThis;
   
   protected IndentPrinter printer;
   
-  public ShiftExpressionsPrettyPrinter(IndentPrinter printer) {
+  public BitExpressionsPrettyPrinter(IndentPrinter printer) {
     this.printer = printer;
     realThis = this;
   }
-  
-   @Override
-  public void handle(ASTThisExpression node) {
-    CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getExpression().accept(getRealThis());
-    getPrinter().print(".");
-    getPrinter().print("this");
-    CommentPrettyPrinter.printPostComments(node, getPrinter());
-  }
-  
-  @Override
-  public void handle(ASTArrayExpression node) {
-    CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getExpression().accept(getRealThis());
-    getPrinter().print("[");
-    node.getIndexExpression().accept(getRealThis());
-    ;
-    getPrinter().print("]");
-    CommentPrettyPrinter.printPostComments(node, getPrinter());
-  }
-  
+
   @Override
   public void handle(ASTLeftShiftExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
@@ -66,12 +46,32 @@ public class ShiftExpressionsPrettyPrinter implements ShiftExpressionsVisitor{
   }
   
   @Override
-  public void visit(ASTPrimaryThisExpression node) {
+  public void handle(ASTBinaryAndExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    getPrinter().print("this");
+    node.getLeft().accept(getRealThis());
+    getPrinter().print("&");
+    node.getRight().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
-  
+
+  @Override
+  public void handle(ASTBinaryXorExpression node) {
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    node.getLeft().accept(getRealThis());
+    getPrinter().print("^");
+    node.getRight().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
+  }
+
+  @Override
+  public void handle(ASTBinaryOrOpExpression node) {
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    node.getLeft().accept(getRealThis());
+    getPrinter().print("|");
+    node.getRight().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
+  }
+
   public IndentPrinter getPrinter() {
     return this.printer;
   }
@@ -83,12 +83,12 @@ public class ShiftExpressionsPrettyPrinter implements ShiftExpressionsVisitor{
   }
   
   @Override
-  public void setRealThis(ShiftExpressionsVisitor realThis) {
+  public void setRealThis(BitExpressionsVisitor realThis) {
     this.realThis = realThis;
   }
   
   @Override
-  public ShiftExpressionsVisitor getRealThis() {
+  public BitExpressionsVisitor getRealThis() {
     return realThis;
   }
 }

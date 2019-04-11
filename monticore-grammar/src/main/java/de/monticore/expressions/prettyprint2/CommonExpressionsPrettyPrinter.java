@@ -202,7 +202,14 @@ public class CommonExpressionsPrettyPrinter implements CommonExpressionsVisitor 
     getPrinter().print(")");
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
-  
+
+  @Override
+  public void handle(ASTLiteralExpression node) {
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    node.getExtLiteral().accept(getRealThis());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
+  }
+
   @Override
   public void handle(ASTCallExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());

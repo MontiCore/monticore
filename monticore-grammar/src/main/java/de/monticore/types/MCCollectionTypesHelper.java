@@ -1,15 +1,10 @@
 package de.monticore.types;
 
 import com.google.common.base.Preconditions;
-import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCBasicTypeArgument;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCPrimitiveTypeArgument;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
-import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardType;
 import de.se_rwth.commons.Names;
-import sun.java2d.pipe.SpanShapeRenderer;
 
 import java.util.List;
 import java.util.Optional;

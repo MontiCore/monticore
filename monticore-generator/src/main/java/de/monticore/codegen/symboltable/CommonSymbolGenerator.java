@@ -2,47 +2,50 @@
 
 package de.monticore.codegen.symboltable;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static de.monticore.codegen.GeneratorHelper.BUILDER;
-import static de.monticore.codegen.GeneratorHelper.SYMBOL;
-import static de.monticore.codegen.GeneratorHelper.getSimpleTypeNameToGenerate;
-import static de.se_rwth.commons.Names.getPathFromPackage;
-import static de.se_rwth.commons.Names.getSimpleName;
-import static java.nio.file.Paths.get;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
-
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Optional;
-
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTSymbolRule;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
 
-public class CommonSymbolGenerator implements SymbolGenerator {
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Optional;
 
-  public static final String SYMBOL_SUFFIX = "Symbol";
+import static com.google.common.collect.Lists.newArrayList;
+import static de.monticore.codegen.GeneratorHelper.*;
+import static de.se_rwth.commons.Names.getPathFromPackage;
+import static de.se_rwth.commons.Names.getSimpleName;
+import static java.nio.file.Paths.get;
+
+public class CommonSymbolGenerator implements SymbolGenerator {
 
   @Override
   public void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
-                       IterablePath handCodedPath, MCProdSymbol prodSymbol) {
-    generateSymbol(genEngine, genHelper, handCodedPath, prodSymbol);
+                       IterablePath handCodedPath,
+                       Optional<MCProdSymbol> prodSymbol, Optional<ASTSymbolRule> symbolRule) {
+    generateSymbol(genEngine, genHelper, handCodedPath, prodSymbol, symbolRule);
   }
 
   protected void generateSymbol(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
-                                IterablePath handCodedPath, MCProdSymbol prodSymbol) {
-
-    String className = prodSymbol.getSymbolDefinitionKind().isPresent()
-            ? prodSymbol.getSymbolDefinitionKind().get()
-            : prodSymbol.getName();
+                                IterablePath handCodedPath,
+                                Optional<MCProdSymbol> prodSymbol, Optional<ASTSymbolRule> symbolRule) {
+    if (!prodSymbol.isPresent() && !symbolRule.isPresent()) {
+      return;
+    }
+    String className;
+    if (prodSymbol.isPresent()) {
+       className = getSimpleName(prodSymbol.get().getSymbolDefinitionKind().isPresent()
+              ? prodSymbol.get().getSymbolDefinitionKind().get()
+              : prodSymbol.get().getName());
+    } else {
+      className = symbolRule.get().getType();
+    }
     String symbolName = getSimpleTypeNameToGenerate(
-            getSimpleName(className + SYMBOL),
+            className + SYMBOL,
             genHelper.getTargetPackage(), handCodedPath);
     String builderName = getSimpleTypeNameToGenerate(
-            getSimpleName(className + SYMBOL + BUILDER),
+            className + SYMBOL + BUILDER,
             genHelper.getTargetPackage(), handCodedPath);
 
     final Path filePath = get(getPathFromPackage(genHelper.getTargetPackage()),
@@ -51,23 +54,13 @@ public class CommonSymbolGenerator implements SymbolGenerator {
             builderName + ".java");
 
     ASTMCGrammar grammar = genHelper.getGrammarSymbol().getAstGrammar().get();
-    Optional<ASTSymbolRule> symbolRule = empty();
     List<String> imports = newArrayList();
     genHelper.getAllCds(genHelper.getCd()).stream()
             .forEach(s -> imports.add(s.getFullName().toLowerCase()));
-    if (prodSymbol.getAstNode().isPresent() && prodSymbol.getSymbolDefinitionKind().isPresent()) {
-      for (ASTSymbolRule sr : grammar.getSymbolRuleList()) {
-        if (sr.getType().equals(prodSymbol.getSymbolDefinitionKind().get())) {
-          symbolRule = of(sr);
-          break;
-        }
-      }
-      genEngine.generate("symboltable.Symbol", filePath, prodSymbol.getAstNode().get(), symbolName,
-              prodSymbol, symbolRule, imports);
-      genEngine.generate("symboltable.SymbolBuilder", builderFilePath,
-              prodSymbol.getAstNode().get(), builderName, className, symbolRule, imports);
-    }
-
+       genEngine.generateNoA("symboltable.Symbol", filePath, symbolName,
+              className, symbolRule, prodSymbol.isPresent(), imports);
+      genEngine.generateNoA("symboltable.SymbolBuilder", builderFilePath,
+               builderName, className, symbolRule, imports);
   }
 
 }

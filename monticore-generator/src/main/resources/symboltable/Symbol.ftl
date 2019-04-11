@@ -1,8 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className", "prodSymbol", "ruleSymbol", "imports")}
+${signature("className", "ruleName", "ruleSymbol", "hasAst", "imports")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign names = glex.getGlobalVar("nameHelper")>
-<#assign ruleName = prodSymbol.getName()>
 <#assign superClass = " extends de.monticore.symboltable.CommonSymbol">
 <#assign superInterfaces = "implements ICommon" + genHelper.getGrammarSymbol().getName() + "Symbol">
 <#if ruleSymbol.isPresent()>
@@ -32,12 +31,14 @@ public class ${className} ${superClass} ${superInterfaces} {
     super(name, KIND);
   }
 
+<#if hasAst>
   ${includeArgs("symboltable.symbols.GetAstNodeMethod", ruleName)}
+</#if>
 
   <#assign langVisitorType = names.getQualifiedName(genHelper.getVisitorPackage(), genHelper.getGrammarSymbol().getName() + "SymbolVisitor")>
    public void accept(${langVisitorType} visitor) {
   <#if genHelper.isSupertypeOfHWType(className, "")>
-  <#assign plainName = className?remove_ending("TOP")>
+    <#assign plainName = className?remove_ending("TOP")>
     if (this instanceof ${plainName}) {
       visitor.handle((${plainName}) this);
     } else {

@@ -2,6 +2,9 @@
 
 package de.monticore.expressions;
 
+/**
+ * This grammar defines set expressions like union, intersection etc.
+*/
 component grammar SetExpressions extends de.monticore.expressions.CommonExpressions {
 
 

@@ -1260,8 +1260,10 @@ public class CdDecorator {
               continue;
             }
             astClasses.add(cdClass.getName());
-            addDelegateMethodsToNodeFactory(cdClass, nodeFactoryClass, astHelper, superCd,
-                factoryPackage + nodeFactoryName);
+            if (!type.isAbstract()) {
+              addDelegateMethodsToNodeFactory(cdClass, nodeFactoryClass, astHelper, superCd,
+                      factoryPackage + nodeFactoryName);
+            }
           }
         }
       }
@@ -1374,9 +1376,6 @@ public class CdDecorator {
    */
   protected void addDelegateMethodsToNodeFactory(ASTCDClass clazz, ASTCDClass nodeFactoryClass,
                                                  AstGeneratorHelper astHelper, CDSymbol cdSymbol, String delegateFactoryName) {
-    if (!clazz.isPresentModifier() || clazz.getModifier().isAbstract()) {
-      return;
-    }
     String className = GeneratorHelper.getPlainName(clazz);
     String toParse = "public static " + cdSymbol.getFullName().toLowerCase()
         + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT + className + " create" + className
