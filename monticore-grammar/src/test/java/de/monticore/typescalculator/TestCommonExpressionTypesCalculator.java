@@ -3,6 +3,7 @@ package de.monticore.typescalculator;
 import de.monticore.expressions.commonexpressions._ast.ASTPlusExpression;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.typescalculator.testcommonexpressions._ast.ASTDoubleExpression;
 import de.monticore.typescalculator.testcommonexpressions._visitor.TestCommonExpressionsVisitor;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
@@ -34,7 +35,7 @@ public class TestCommonExpressionTypesCalculator extends CommonExpressionTypesCa
 
   @Override
   public void endVisit(ASTIntExpression expr){
-    types.put(expr,new ASTMCPrimitiveType(6));
+    types.put(expr,new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT));
   }
 
   @Override
@@ -44,7 +45,7 @@ public class TestCommonExpressionTypesCalculator extends CommonExpressionTypesCa
 
   @Override
   public void endVisit(ASTDoubleExpression expr){
-    types.put(expr,new ASTMCPrimitiveType(4));
+    types.put(expr,new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE));
   }
 
   public ASTMCType getResult() {

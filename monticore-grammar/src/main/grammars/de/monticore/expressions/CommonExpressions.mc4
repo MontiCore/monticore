@@ -16,8 +16,6 @@ component grammar CommonExpressions extends de.monticore.expressions.Expressions
 
 interface InfixExpression = left:Expression operator:"" right:Expression;
 
-interface BiOpExpression extends Expression = left:Expression right:Expression;
-
 NameExpression implements Expression <350>
     = Name;
 
@@ -36,19 +34,19 @@ BooleanNotExpression implements Expression <200> =
 LogicalNotExpression implements Expression <190> =
 	"!" Expression;
 
-MultExpression implements BiOpExpression, Expression <180>, InfixExpression =
+MultExpression implements Expression <180>, InfixExpression =
 	left:Expression operator:"*" right:Expression;
 
-DivideExpression implements BiOpExpression, Expression <180>, InfixExpression =
+DivideExpression implements Expression <180>, InfixExpression =
 	left:Expression operator:"/" right:Expression;
 
 ModuloExpression implements Expression <180>, InfixExpression =
 	left:Expression operator:"%" right:Expression;
     
-PlusExpression implements BiOpExpression, Expression <170>, InfixExpression =
+PlusExpression implements Expression <170>, InfixExpression =
 	left:Expression operator:"+" right:Expression;
         
-MinusExpression implements BiOpExpression, Expression <170>, InfixExpression =
+MinusExpression implements Expression <170>, InfixExpression =
 	left:Expression operator:"-" right:Expression;
 
 LessEqualExpression implements Expression <150>, InfixExpression =
