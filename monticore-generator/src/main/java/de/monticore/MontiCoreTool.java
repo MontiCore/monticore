@@ -296,7 +296,7 @@ public class MontiCoreTool {
       generateSymbolTable(glex, grammar, cd);
 
       // M9 Generate ast classes, visitor and context condition
-      VisitorGenerator.generate(glex, symbolTable, cd, out);
+      VisitorGenerator.generate(glex, symbolTable, cd, out, handcodedPath);
       CoCoGenerator.generate(glex, symbolTable, cd, out);
       ODGenerator.generate(glex, symbolTable, cd, out);
 
