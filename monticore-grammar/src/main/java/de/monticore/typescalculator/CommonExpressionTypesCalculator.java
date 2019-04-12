@@ -1,13 +1,9 @@
 package de.monticore.typescalculator;
 
-import de.monticore.common.common._ast.ASTConstantsCommon;
 import de.monticore.expressions.commonexpressions._ast.*;
-import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsInheritanceVisitor;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
-import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcbasictypes._ast.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,6 +53,17 @@ public class CommonExpressionTypesCalculator implements CommonExpressionsVisitor
 
   @Override
   public void endVisit(ASTMinusExpression expr){
+    ASTMCType result = calculateTypeArithmetic(expr.getLeft(),expr.getRight());
+    if(result!=null) {
+      types.put(expr, result);
+      this.result = result;
+    }else{
+      throw new RuntimeException("The resulting type cannot be calculated");
+    }
+  }
+
+  @Override
+  public void endVisit(ASTModuloExpression expr){
     ASTMCType result = calculateTypeArithmetic(expr.getLeft(),expr.getRight());
     if(result!=null) {
       types.put(expr, result);
@@ -209,6 +216,41 @@ public class CommonExpressionTypesCalculator implements CommonExpressionsVisitor
     }
   }
 
+  @Override
+  public void endVisit(ASTConditionalExpression expr){
+    ASTMCType result = null;
+    if(types.containsKey(expr.getTrueExpression())&&types.containsKey(expr.getFalseExpression())){
+      if(types.containsKey(expr.getCondition())&&types.get(expr.getCondition()).deepEquals(new ASTMCPrimitiveType(1))){
+        result = calculateTypeArithmetic(expr.getTrueExpression(),expr.getFalseExpression());
+      }
+    }
+    if(result!=null){
+      this.result=result;
+      types.put(expr,result);
+    }else{
+      throw new RuntimeException("the resulting type cannot be calculated");
+    }
+  }
+
+  @Override
+  public void endVisit(ASTBooleanNotExpression expr){
+    ASTMCType result = null;
+    if(types.containsKey(expr.getExpression())){
+      if(types.get(expr.getExpression()).deepEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT))){
+        result = new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT);
+      }else if(types.get(expr.getExpression()).deepEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.LONG))){
+        result = new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.LONG);
+      }
+    }
+    if(result!=null){
+      this.result=result;
+      types.put(expr,result);
+    }else{
+      throw new RuntimeException("the resulting type cannot be calculated");
+    }
+  }
+
+
   public ASTMCType getResult() {
     return result;
   }
@@ -285,4 +327,6 @@ public class CommonExpressionTypesCalculator implements CommonExpressionsVisitor
     }
     return result;
   }
+
+  //TODO: es fehlen noch LiteralExpr, CallExpr, NameExpr und QualifiedNameExpr, bisher nur fuer double und int alles implementiert
 }
