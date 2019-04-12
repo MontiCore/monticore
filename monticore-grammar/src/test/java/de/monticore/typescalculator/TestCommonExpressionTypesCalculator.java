@@ -1,19 +1,14 @@
 package de.monticore.typescalculator;
 
-import de.monticore.expressions.commonexpressions._ast.ASTPlusExpression;
-import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
+import de.monticore.typescalculator.testcommonexpressions._ast.ASTBooleanExpression;
 import de.monticore.typescalculator.testcommonexpressions._ast.ASTDoubleExpression;
 import de.monticore.typescalculator.testcommonexpressions._visitor.TestCommonExpressionsVisitor;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
-import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveTypeBuilder;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
 import de.monticore.typescalculator.testcommonexpressions._ast.ASTIntExpression;
 
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 public class TestCommonExpressionTypesCalculator extends CommonExpressionTypesCalculator implements TestCommonExpressionsVisitor {
@@ -46,6 +41,11 @@ public class TestCommonExpressionTypesCalculator extends CommonExpressionTypesCa
   @Override
   public void endVisit(ASTDoubleExpression expr){
     types.put(expr,new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE));
+  }
+
+  @Override
+  public void endVisit(ASTBooleanExpression expr){
+    types.put(expr,new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.BOOLEAN));
   }
 
   public ASTMCType getResult() {
