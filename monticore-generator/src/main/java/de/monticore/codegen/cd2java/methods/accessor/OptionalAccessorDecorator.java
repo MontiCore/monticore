@@ -1,6 +1,7 @@
 package de.monticore.codegen.cd2java.methods.accessor;
 
 import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.TypesHelper;
@@ -23,12 +24,16 @@ public class OptionalAccessorDecorator extends AbstractDecorator<ASTCDAttribute,
 
   private static final String IS_PRESENT = "isPresent%s";
 
+  private String naiveAttributeName;
+
   public OptionalAccessorDecorator(final GlobalExtensionManagement glex) {
     super(glex);
   }
 
   @Override
   public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
+    //todo find better util than the DecorationHelper
+    naiveAttributeName = StringUtils.capitalize(DecorationHelper.getNativeAttributeName(ast.getName()));
     ASTCDMethod get = createGetMethod(ast);
     ASTCDMethod getOpt = createGetOptMethod(ast);
     ASTCDMethod isPresent = createIsPresentMethod(ast);
@@ -36,7 +41,7 @@ public class OptionalAccessorDecorator extends AbstractDecorator<ASTCDAttribute,
   }
 
   private ASTCDMethod createGetMethod(final ASTCDAttribute ast) {
-    String name = String.format(GET, StringUtils.capitalize(ast.getName()));
+    String name = String.format(GET, naiveAttributeName);
     ASTType type = TypesHelper.getSimpleReferenceTypeFromOptional(ast.getType().deepClone());
     ASTCDMethod method = this.getCDMethodFactory().createMethod(PUBLIC, type, name);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.Get", ast));
@@ -44,7 +49,7 @@ public class OptionalAccessorDecorator extends AbstractDecorator<ASTCDAttribute,
   }
 
   protected ASTCDMethod createGetOptMethod(final ASTCDAttribute ast) {
-    String name = String.format(GET_OPT, StringUtils.capitalize(ast.getName()));
+    String name = String.format(GET_OPT, naiveAttributeName);
     ASTType type = ast.getType().deepClone();
     ASTCDMethod method = this.getCDMethodFactory().createMethod(PUBLIC, type, name);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.Get", ast));
@@ -52,7 +57,7 @@ public class OptionalAccessorDecorator extends AbstractDecorator<ASTCDAttribute,
   }
 
   private ASTCDMethod createIsPresentMethod(final ASTCDAttribute ast) {
-    String name = String.format(IS_PRESENT, StringUtils.capitalize(ast.getName()));
+    String name = String.format(IS_PRESENT, naiveAttributeName);
     ASTCDMethod method = this.getCDMethodFactory().createMethod(PUBLIC, this.getCDTypeFactory().createBooleanType(), name);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.IsPresent", ast));
     return method;

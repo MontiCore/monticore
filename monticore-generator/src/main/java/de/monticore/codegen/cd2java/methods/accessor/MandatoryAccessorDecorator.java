@@ -1,6 +1,7 @@
 package de.monticore.codegen.cd2java.methods.accessor;
 
 import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.types._ast.ASTType;
@@ -37,7 +38,8 @@ public class MandatoryAccessorDecorator extends AbstractDecorator<ASTCDAttribute
     } else {
       getterPrefix = GET;
     }
-    String name = String.format(getterPrefix, StringUtils.capitalize(ast.getName()));
+    //todo find better util than the DecorationHelper
+    String name = String.format(getterPrefix, StringUtils.capitalize(DecorationHelper.getNativeAttributeName(ast.getName())));
     ASTType type = ast.getType().deepClone();
     ASTCDMethod method = this.getCDMethodFactory().createMethod(PUBLIC, type, name);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.Get", ast));

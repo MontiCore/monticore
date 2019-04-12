@@ -13,6 +13,7 @@ import java.util.*;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
+import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
@@ -21,24 +22,33 @@ public class MandatoryAccessorDecoratorTest {
 
   private final GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
-  private List<ASTCDMethod> methods;
 
   @Before
   public void setup() {
     LogStub.init();
+  }
+
+  @Test
+  public void testGetMethodString() {
     ASTCDAttribute attribute = CDAttributeFactory.getInstance().createAttributeByDefinition("protected String a;");
     MandatoryAccessorDecorator mandatoryAccessorDecorator = new MandatoryAccessorDecorator(glex);
-    this.methods = mandatoryAccessorDecorator.decorate(attribute);
-  }
+    List<ASTCDMethod> methods = mandatoryAccessorDecorator.decorate(attribute);
 
-  @Test
-  public void testMethods() {
     assertEquals(1, methods.size());
+    ASTCDMethod method = getMethodBy("getA", methods);
+    assertTrue(method.getCDParameterList().isEmpty());
+    assertDeepEquals(String.class, method.getReturnType());
+    assertDeepEquals(PUBLIC, method.getModifier());
   }
 
   @Test
-  public void testGetMethod() {
-    ASTCDMethod method = getMethodBy("getA", this.methods);
+  public void testGetMethodBoolean() {
+    ASTCDAttribute attribute = CDAttributeFactory.getInstance().createAttribute(PROTECTED, String.class, "a");
+    MandatoryAccessorDecorator mandatoryAccessorDecorator = new MandatoryAccessorDecorator(glex);
+    List<ASTCDMethod> methods = mandatoryAccessorDecorator.decorate(attribute);
+
+    assertEquals(1, methods.size());
+    ASTCDMethod method = getMethodBy("getA", methods);
     assertTrue(method.getCDParameterList().isEmpty());
     assertDeepEquals(String.class, method.getReturnType());
     assertDeepEquals(PUBLIC, method.getModifier());

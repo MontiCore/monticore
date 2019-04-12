@@ -1,6 +1,7 @@
 package de.monticore.codegen.cd2java.methods.mutator;
 
 import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
@@ -28,7 +29,8 @@ public class MandatoryMutatorDecorator extends AbstractDecorator<ASTCDAttribute,
   }
 
   private ASTCDMethod createSetter(final ASTCDAttribute ast) {
-    String name = String.format(SET, StringUtils.capitalize(ast.getName()));
+    //todo find better util than the DecorationHelper
+    String name = String.format(SET, StringUtils.capitalize(DecorationHelper.getNativeAttributeName(ast.getName())));
     ASTCDMethod method = this.getCDMethodFactory().createMethod(PUBLIC, name, this.getCDParameterFactory().createParameters(ast));
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.Set", ast));
     return method;

@@ -1,6 +1,7 @@
 package de.monticore.codegen.cd2java.methods.mutator;
 
 import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.TypesHelper;
@@ -24,12 +25,16 @@ public class OptionalMutatorDecorator extends AbstractDecorator<ASTCDAttribute, 
 
   private static final String SET_ABSENT = "set%sAbsent";
 
+  private String naiveAttributeName;
+
   public OptionalMutatorDecorator(final GlobalExtensionManagement glex) {
     super(glex);
   }
 
   @Override
   public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
+    //todo find better util than the DecorationHelper
+    naiveAttributeName = StringUtils.capitalize(DecorationHelper.getNativeAttributeName(ast.getName()));
     ASTCDMethod set = createSetMethod(ast);
     ASTCDMethod setOpt = createSetOptMethod(ast);
     ASTCDMethod setAbsent = createSetAbsentMethod(ast);
@@ -37,7 +42,7 @@ public class OptionalMutatorDecorator extends AbstractDecorator<ASTCDAttribute, 
   }
 
   private ASTCDMethod createSetMethod(final ASTCDAttribute ast) {
-    String name = String.format(SET, StringUtils.capitalize(ast.getName()));
+    String name = String.format(SET, naiveAttributeName);
     ASTType parameterType = TypesHelper.getSimpleReferenceTypeFromOptional(ast.getType()).deepClone();
     ASTCDParameter parameter = this.getCDParameterFactory().createParameter(parameterType, ast.getName());
     ASTCDMethod method = this.getCDMethodFactory().createMethod(PUBLIC, name, parameter);
@@ -46,14 +51,14 @@ public class OptionalMutatorDecorator extends AbstractDecorator<ASTCDAttribute, 
   }
 
   private ASTCDMethod createSetOptMethod(final ASTCDAttribute ast) {
-    String name = String.format(SET_OPT, StringUtils.capitalize(ast.getName()));
+    String name = String.format(SET_OPT, naiveAttributeName);
     ASTCDMethod method = this.getCDMethodFactory().createMethod(PUBLIC, name, this.getCDParameterFactory().createParameters(ast));
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.Set", ast));
     return method;
   }
 
   private ASTCDMethod createSetAbsentMethod(final ASTCDAttribute ast) {
-    String name = String.format(SET_ABSENT, StringUtils.capitalize(ast.getName()));
+    String name = String.format(SET_ABSENT, naiveAttributeName);
     ASTCDMethod method = this.getCDMethodFactory().createMethod(PUBLIC, name);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.SetAbsent", ast));
     return method;

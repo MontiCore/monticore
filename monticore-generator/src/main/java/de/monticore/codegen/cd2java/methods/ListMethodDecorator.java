@@ -1,6 +1,7 @@
 package de.monticore.codegen.cd2java.methods;
 
 import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -28,7 +29,8 @@ public abstract class ListMethodDecorator extends AbstractDecorator<ASTCDAttribu
 
   @Override
   public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
-    this.capitalizedAttributeName = StringUtils.capitalize(ast.getName());
+    //todo find better util than the DecorationHelper
+    this.capitalizedAttributeName = StringUtils.capitalize(DecorationHelper.getNativeAttributeName(ast.getName()));
     this.attributeType = getTypeArgumentFromListType(ast.getType());
 
     List<ASTCDMethod> methods = getMethodSignatures().stream()
