@@ -18,6 +18,8 @@ public class MandatoryAccessorDecorator extends AbstractDecorator<ASTCDAttribute
 
   private static final String GET = "get%s";
 
+  private static final String IS = "is%s";
+
   public MandatoryAccessorDecorator(final GlobalExtensionManagement glex) {
     super(glex);
   }
@@ -29,7 +31,13 @@ public class MandatoryAccessorDecorator extends AbstractDecorator<ASTCDAttribute
   }
 
   private ASTCDMethod createGetter(final ASTCDAttribute ast) {
-    String name = String.format(GET, StringUtils.capitalize(ast.getName()));
+    String getterPrefix;
+    if (getCDTypeFactory().isBooleanType(ast.getType())) {
+      getterPrefix = IS;
+    } else {
+      getterPrefix = GET;
+    }
+    String name = String.format(getterPrefix, StringUtils.capitalize(ast.getName()));
     ASTType type = ast.getType().deepClone();
     ASTCDMethod method = this.getCDMethodFactory().createMethod(PUBLIC, type, name);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.Get", ast));

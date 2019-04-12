@@ -148,6 +148,10 @@ public class CDTypeFactory {
     return createPrimitiveType(ASTConstantsTypes.BOOLEAN);
   }
 
+  public boolean isBooleanType(ASTType type) {
+    return type.deepEquals(createBooleanType());
+  }
+
   public ASTType createIntType() {
     return createPrimitiveType(ASTConstantsTypes.INT);
   }

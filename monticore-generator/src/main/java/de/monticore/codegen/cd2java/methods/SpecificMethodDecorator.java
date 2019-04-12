@@ -3,8 +3,11 @@ package de.monticore.codegen.cd2java.methods;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.Decorator;
+import de.monticore.codegen.cd2java.factories.CDAttributeFactory;
+import de.monticore.codegen.cd2java.factories.CDTypeFactory;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 
 import java.util.List;
@@ -48,8 +51,11 @@ abstract class SpecificMethodDecorator extends AbstractDecorator<ASTCDAttribute,
   }
 
   private Decorator<ASTCDAttribute, List<ASTCDMethod>> determineMethodDecoratorStrategy(final ASTCDAttribute ast) {
+    if(getCDTypeFactory().isBooleanType(ast.getType())){
+      return mandatoryMethodDecorator;
+    }
     //TODO: helper durch OO-Ansatz ersetzen (und vereinheitlichen)
-    if (GeneratorHelper.isListType(ast.printType())) {
+    else if (GeneratorHelper.isListType(ast.printType())) {
       return listMethodDecorator;
     }
     else if (GeneratorHelper.isOptional(ast)) {
