@@ -2,16 +2,12 @@ package de.monticore.codegen.cd2java.typecd2java;
 
 import de.monticore.codegen.cd2java.ast_new.ASTConstants;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
 import de.monticore.umlcd4a.cd4analysis._visitor.CD4AnalysisVisitor;
 import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 public class TypeCD2JavaVisitor implements CD4AnalysisVisitor {
@@ -22,20 +18,6 @@ public class TypeCD2JavaVisitor implements CD4AnalysisVisitor {
 
   public TypeCD2JavaVisitor(ASTCDCompilationUnit compilationUnit) {
     this.compilationUnit = compilationUnit;
-  }
-
-  @Override
-  public void visit(ASTCDClass node) {
-    if (node.getName().startsWith(ASTConstants.AST_PREFIX)) {
-      node.setName(node.getName().substring(ASTConstants.AST_PREFIX.length()));
-    }
-  }
-
-  @Override
-  public void visit(ASTCDInterface node) {
-    if (node.getName().startsWith(ASTConstants.AST_PREFIX)) {
-      node.setName(node.getName().substring(ASTConstants.AST_PREFIX.length()));
-    }
   }
 
   @Override

@@ -14,6 +14,7 @@ import de.se_rwth.commons.Names;
 
 import java.util.Optional;
 
+import static de.monticore.codegen.cd2java.ast_new.ASTConstants.AST_PREFIX;
 import static de.monticore.utils.Names.getSimpleName;
 import static de.se_rwth.commons.Names.getQualifier;
 
@@ -49,8 +50,16 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getCDTypeFactory().createSimpleReferenceType(getScopeTypeName());
   }
 
+  public String getSymbolName(ASTCDClass clazz) {
+    if (clazz.getName().startsWith(AST_PREFIX)) {
+      return clazz.getName().substring(AST_PREFIX.length()) + SymbolTableConstants.SYMBOL_SUFFIX;
+    } else {
+      return clazz.getName() + SymbolTableConstants.SYMBOL_SUFFIX;
+    }
+  }
+
   public String getSymbolTypeName(ASTCDClass clazz) {
-    return getPackage() + "." + clazz.getName() + SymbolTableConstants.SYMBOL_SUFFIX;
+    return getPackage() + "." + getSymbolName(clazz);
   }
 
   public ASTType getSymbolType(ASTCDClass clazz) {

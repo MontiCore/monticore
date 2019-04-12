@@ -29,7 +29,7 @@ public class ASTSymbolDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass
   public ASTCDClass decorate(final ASTCDClass clazz) {
     if (symbolTableService.isSymbolClass(clazz)) {
       ASTType symbolType = this.getCDTypeFactory().createOptionalTypeOf(symbolTableService.getSymbolType(clazz));
-      String attributeName = StringUtils.uncapitalize(clazz.getName()) + SymbolTableConstants.SYMBOL_SUFFIX;
+      String attributeName = StringUtils.uncapitalize(symbolTableService.getSymbolName(clazz));
       ASTCDAttribute symbolAttribute = this.getCDAttributeFactory().createAttribute(PROTECTED, symbolType, attributeName);
       clazz.addCDAttribute(symbolAttribute);
       clazz.addAllCDMethods(methodDecorator.decorate(symbolAttribute));
