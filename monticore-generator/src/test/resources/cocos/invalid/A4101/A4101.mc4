@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package cocos.invalid.A4101;
+
+grammar A4101 {
+
+  abstract A = "foo";
+
+  B extends A;
+
+  interface C;
+
+  D implements C;
+
+}
