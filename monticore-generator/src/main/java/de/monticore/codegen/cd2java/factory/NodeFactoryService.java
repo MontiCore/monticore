@@ -44,6 +44,6 @@ public class NodeFactoryService extends AbstractService<NodeFactoryService> {
   }
 
   public String getCreateInvocation(ASTCDClass clazz) {
-    return "return " + getNodeFactorySimpleTypeName() + "." + NodeFactoryConstants.CREATE_METHOD + clazz.getName() + "();\n";
+    return "return " + getPackage() + "." + getNodeFactorySimpleTypeName() + "." + NodeFactoryConstants.CREATE_METHOD + clazz.getName() + "();\n";
   }
 }
