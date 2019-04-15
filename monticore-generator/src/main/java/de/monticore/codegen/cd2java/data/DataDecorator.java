@@ -15,7 +15,6 @@ import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,16 +63,16 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
   }
 
   protected ASTCDConstructor createFullConstructor(ASTCDClass clazz) {
-    List<ASTCDAttribute> inheritedAttributes = getInheritedAttributes(clazz);
-    ASTCDConstructor fullConstructor = this.getCDConstructorFactory().createFullConstructor(PROTECTED, clazz, inheritedAttributes);
-    this.replaceTemplate(EMPTY_BODY, fullConstructor, new TemplateHookPoint("data.ConstructorAttributesSetter", clazz, inheritedAttributes));
+    List<ASTCDAttribute> allAttributesInHierarchy = getAllAttributesInHierarchy(clazz);
+    ASTCDConstructor fullConstructor = this.getCDConstructorFactory().createConstructor(PROTECTED, clazz.getName(), getCDParameterFactory().createParameters(allAttributesInHierarchy));
+    this.replaceTemplate(EMPTY_BODY, fullConstructor, new TemplateHookPoint("data.ConstructorAttributesSetter", allAttributesInHierarchy));
     return fullConstructor;
   }
 
   //todo move to constructor factory -> how use service in factory?
   //todo may do this recursive?
-  protected List<ASTCDAttribute> getInheritedAttributes(ASTCDClass clazz) {
-    List<ASTCDAttribute> inheritedAttributes = new ArrayList<>();
+  protected List<ASTCDAttribute> getAllAttributesInHierarchy(ASTCDClass clazz) {
+    List<ASTCDAttribute> result = new ArrayList<>(clazz.getCDAttributeList());
     //also consider super classes of super classes
     while (clazz.isPresentSuperclass()) {
       String superClassName = clazz.printSuperClass();
@@ -84,7 +83,7 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
         CDTypeSymbol cdTypeSymbol = superGrammar.getType(superTypeName).get();
         for (CDFieldSymbol fieldSymbol : cdTypeSymbol.getFields()) {
           if (clazz.getCDAttributeList().stream().noneMatch(a -> a.getName().equals(fieldSymbol.getName()))) {
-            inheritedAttributes.add((ASTCDAttribute) fieldSymbol.getAstNode().orElseThrow(
+            result.add((ASTCDAttribute) fieldSymbol.getAstNode().orElseThrow(
                 () -> new DecorateException(DecoratorErrorCode.AST_FOR_CD_FIELD_SYMBOL_NOT_FOUND, fieldSymbol.getName())));
           }
         }
@@ -95,7 +94,7 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
         throw new DecorateException(DecoratorErrorCode.CD_TYPE_NOT_FOUND, superTypeName);
       }
     }
-    return inheritedAttributes;
+    return result;
   }
 
   protected void addImplementation(ASTCDClass clazz) {

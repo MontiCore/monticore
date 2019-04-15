@@ -1,9 +1,14 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("clazz", "inheritedAttributes")}
+${tc.signature("attributes")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
-<#list clazz.getCDAttributeList() as attribute>
-  ${tc.include("data.AttributeSetter", attribute)}
+
+<#list attributes as attribute>
+  <#if genHelper.isListType(attribute.printType())>
+    set${attribute.getName()?cap_first}List(${attribute.getName()});
+  <#elseif genHelper.isOptional(attribute.getType())>
+    set${attribute.getName()?cap_first}Opt(${attribute.getName()});
+  <#else>
+    set${attribute.getName()?cap_first}(${attribute.getName()});
+  </#if>
 </#list>
-<#list inheritedAttributes as attribute>
-  ${tc.include("data.AttributeSetter", attribute)}
-</#list>
+

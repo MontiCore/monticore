@@ -64,12 +64,12 @@ public class ASTCDDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTC
     ASTCDDefinition astCD = CD4AnalysisMill.cDDefinitionBuilder()
         .setName(ast.getCDDefinition().getName())
         .addAllCDClasss(createASTClasses(ast))
-        .addCDInterface(createASTInterface(ast))
         .addAllCDClasss(createASTBuilderClasses(ast))
         .addCDClass(createNodeFactoryClass(ast))
         .addCDClass(createMillClass(ast))
         .addCDClass(createASTConstantsClass(ast))
         .addAllCDInterfaces(createASTInterfaces(ast))
+        .addCDInterface(createLanguageInterface(ast))
         .addAllCDEnums(createEnums(ast))
         .build();
 
@@ -93,7 +93,7 @@ public class ASTCDDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTC
         .collect(Collectors.toList());
   }
 
-  private ASTCDInterface createASTInterface(final ASTCDCompilationUnit ast) {
+  private ASTCDInterface createLanguageInterface(final ASTCDCompilationUnit ast) {
     return astLanguageInterfaceDecorator.decorate(ast);
   }
 
