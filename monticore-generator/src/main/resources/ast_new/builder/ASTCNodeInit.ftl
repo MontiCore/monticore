@@ -3,12 +3,13 @@ ${tc.signature("domainClass")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
 value = new ${domainClass.getName()}();
 <#list domainClass.getCDAttributeList() as attribute>
+  <#assign methName = genHelper.getNativeAttributeName(attribute.getName())?cap_first>
   <#if genHelper.isListType(attribute.printType())>
-    value.set${attribute.getName()?cap_first}List(this.${attribute.getName()});
+    value.set${methName}List(this.${attribute.getName()});
   <#elseif genHelper.isOptional(attribute.getType())>
-    value.set${attribute.getName()?cap_first}Opt(this.${attribute.getName()});
+    value.set${methName}Opt(this.${attribute.getName()});
   <#else>
-    value.set${attribute.getName()?cap_first}(this.${attribute.getName()});
+    value.set${methName}(this.${attribute.getName()});
   </#if>
 </#list>
     value.set_SourcePositionEndOpt(this.sourcePositionEnd);
