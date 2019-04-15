@@ -31,7 +31,7 @@ public class DataDecoratorUtil extends AbstractDecorator<ASTCDType, List<ASTCDMe
     return result;
   }
 
-  protected List<ASTCDMethod> createEqualsMethods() {
+  public List<ASTCDMethod> createEqualsMethods() {
     ASTCDParameter objectParameter = getCDParameterFactory().createParameter(Object.class, "o");
     ASTCDParameter forceSameOrderParameter = getCDParameterFactory().createParameter(getCDTypeFactory().createBooleanType(), "forceSameOrder");
 
@@ -44,37 +44,37 @@ public class DataDecoratorUtil extends AbstractDecorator<ASTCDType, List<ASTCDMe
         createEqualsWithComments(objectParameter)));
   }
 
-  protected ASTCDMethod createDeepEqualsMethod(ASTCDParameter objectParameter) {
+  public ASTCDMethod createDeepEqualsMethod(ASTCDParameter objectParameter) {
     // public  boolean deepEquals(Object o)
     return getCDMethodFactory().createMethod(PUBLIC, getCDTypeFactory().createBooleanType(), DEEP_EQUALS_METHOD, objectParameter);
   }
 
-  protected ASTCDMethod createDeepEqualsWithOrderMethod(ASTCDParameter objectParameter, ASTCDParameter forceSameOrderParameter) {
+  public ASTCDMethod createDeepEqualsWithOrderMethod(ASTCDParameter objectParameter, ASTCDParameter forceSameOrderParameter) {
     // public  boolean deepEquals(Object o,boolean forceSameOrder)
     return getCDMethodFactory().createMethod(PUBLIC, getCDTypeFactory().createBooleanType(), DEEP_EQUALS_METHOD, objectParameter, forceSameOrderParameter);
   }
 
-  protected ASTCDMethod createDeepEqualsWithComments(ASTCDParameter objectParameter) {
+  public ASTCDMethod createDeepEqualsWithComments(ASTCDParameter objectParameter) {
     // public  boolean deepEqualsWithComments(Object o)
     return getCDMethodFactory().createMethod(PUBLIC, getCDTypeFactory().createBooleanType(), DEEP_EQUALS_METHOD + WITH_COMMENTS_SUFFIX, objectParameter);
   }
 
-  protected ASTCDMethod createDeepEqualsWithCommentsWithOrder(ASTCDParameter objectParameter, ASTCDParameter forceSameOrderParameter) {
+  public ASTCDMethod createDeepEqualsWithCommentsWithOrder(ASTCDParameter objectParameter, ASTCDParameter forceSameOrderParameter) {
     // public  boolean deepEqualsWithComments(Object o,boolean forceSameOrder)
     return getCDMethodFactory().createMethod(PUBLIC, getCDTypeFactory().createBooleanType(), DEEP_EQUALS_METHOD + WITH_COMMENTS_SUFFIX, objectParameter, forceSameOrderParameter);
   }
 
-  protected ASTCDMethod createEqualAttributesMethod(ASTCDParameter objectParameter) {
+  public ASTCDMethod createEqualAttributesMethod(ASTCDParameter objectParameter) {
     // public  boolean equalAttributes(Object o)
     return getCDMethodFactory().createMethod(PUBLIC, getCDTypeFactory().createBooleanType(), EQUAL_ATTRIBUTES_METHOD, objectParameter);
   }
 
-  protected ASTCDMethod createEqualsWithComments(ASTCDParameter objectParameter) {
+  public ASTCDMethod createEqualsWithComments(ASTCDParameter objectParameter) {
     // public  boolean equalsWithComments(Object o)
     return getCDMethodFactory().createMethod(PUBLIC, getCDTypeFactory().createBooleanType(), EQUALS_METHOD + WITH_COMMENTS_SUFFIX, objectParameter);
   }
 
-  protected ASTCDMethod createDeepClone(ASTCDType cdType) {
+  public ASTCDMethod createDeepClone(ASTCDType cdType) {
     // deep clone without parameters
     ASTType type = getCDTypeFactory().createSimpleReferenceType(cdType.getName());
     return getCDMethodFactory().createMethod(PUBLIC, type, DEEP_CLONE_METHOD);

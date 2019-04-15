@@ -46,9 +46,7 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
     if (!clazz.getCDAttributeList().isEmpty()) {
       clazz.addCDConstructor(createFullConstructor(clazz));
     }
-    List<ASTCDMethod> dataMethods = dataDecoratorUtil.decorate(clazz);
-    clazz.addAllCDMethods(dataMethods);
-    addImplementation(clazz);
+    clazz.addAllCDMethods(getAllDataMethods(clazz));
     clazz.addCDMethod(createDeepCloneWithParam(clazz));
     clazz.addAllCDMethods(clazz.getCDAttributeList().stream()
         .map(methodDecorator::decorate)
@@ -97,34 +95,41 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
     return result;
   }
 
-  protected void addImplementation(ASTCDClass clazz) {
-    ASTCDMethod deepEquals = getMethodBy("deepEquals", 1, clazz);
-    this.replaceTemplate(EMPTY_BODY, deepEquals, new StringHookPoint("     return deepEquals(o, true);"));
+  protected List<ASTCDMethod> getAllDataMethods(ASTCDClass clazz) {
+    List<ASTCDMethod> methods = new ArrayList<>();
+    ASTCDParameter objectParameter = getCDParameterFactory().createParameter(Object.class, "o");
+    ASTCDParameter forceSameOrderParameter = getCDParameterFactory().createParameter(getCDTypeFactory().createBooleanType(), "forceSameOrder");
 
-    ASTCDMethod deepEqualsWithOrder = getMethodBy("deepEquals", 2, clazz);
+    ASTCDMethod deepEqualsMethod = dataDecoratorUtil.createDeepEqualsMethod(objectParameter);
+    this.replaceTemplate(EMPTY_BODY, deepEqualsMethod, new StringHookPoint("     return deepEquals(o, true);"));
+    methods.add(deepEqualsMethod);
+
+    ASTCDMethod deepEqualsWithOrder = dataDecoratorUtil.createDeepEqualsWithOrderMethod(objectParameter, forceSameOrderParameter);
     this.replaceTemplate(EMPTY_BODY, deepEqualsWithOrder, new TemplateHookPoint("data.DeepEqualsWithOrder", clazz));
+    methods.add(deepEqualsWithOrder);
 
-    ASTCDMethod deepEqualsWithComments = getMethodBy("deepEqualsWithComments", 1, clazz);
+    ASTCDMethod deepEqualsWithComments = dataDecoratorUtil.createDeepEqualsWithComments(objectParameter);
     this.replaceTemplate(EMPTY_BODY, deepEqualsWithComments, new StringHookPoint("     return deepEqualsWithComments(o, true);"));
+    methods.add(deepEqualsWithComments);
 
-    ASTCDMethod deepEqualsWithCommentsWithOrder = getMethodBy("deepEqualsWithComments", 2, clazz);
+    ASTCDMethod deepEqualsWithCommentsWithOrder = dataDecoratorUtil.createDeepEqualsWithCommentsWithOrder(objectParameter, forceSameOrderParameter);
     this.replaceTemplate(EMPTY_BODY, deepEqualsWithCommentsWithOrder, new TemplateHookPoint("data.DeepEqualsWithComments", clazz));
+    methods.add(deepEqualsWithCommentsWithOrder);
 
-    ASTCDMethod equalAttributes = getMethodBy("equalAttributes", 1, clazz);
+    ASTCDMethod equalAttributes = dataDecoratorUtil.createEqualAttributesMethod(objectParameter);
     this.replaceTemplate(EMPTY_BODY, equalAttributes, new TemplateHookPoint("data.EqualAttributes", clazz));
+    methods.add(equalAttributes);
 
-    ASTCDMethod equalsWithComments = getMethodBy("equalsWithComments", 1, clazz);
+    ASTCDMethod equalsWithComments = dataDecoratorUtil.createEqualsWithComments(objectParameter);
     this.replaceTemplate(EMPTY_BODY, equalsWithComments, new TemplateHookPoint("data.EqualsWithComments", clazz.getName()));
+    methods.add(equalsWithComments);
 
-    ASTCDMethod deepClone = getMethodBy("deepClone", 0, clazz);
+    ASTCDMethod deepClone = dataDecoratorUtil.createDeepClone(clazz);
     this.replaceTemplate(EMPTY_BODY, deepClone, new StringHookPoint("    return deepClone(_construct());"));
+    methods.add(deepClone);
+    return methods;
   }
 
-  //todo make util class for these methods
-  public ASTCDMethod getMethodBy(String name, int parameterSize, ASTCDClass astcdClass) {
-    return astcdClass.getCDMethodList().stream().filter(m -> name.equals(m.getName()))
-        .filter(m -> parameterSize == m.sizeCDParameters()).findFirst().get();
-  }
 
   protected ASTCDMethod createDeepCloneWithParam(ASTCDClass clazz) {
     // deep clone with result parameter
