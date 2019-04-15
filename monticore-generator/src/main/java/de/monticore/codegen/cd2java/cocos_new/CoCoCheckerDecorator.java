@@ -2,7 +2,6 @@ package de.monticore.codegen.cd2java.cocos_new;
 
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.ast_new.ASTService;
-import de.monticore.codegen.cd2java.factories.SuperSymbolHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.codegen.cd2java.visitor_new.VisitorService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -14,13 +13,13 @@ import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java.cocos_new.CoCoConstants.*;
-import static de.monticore.codegen.cd2java.factories.CDModifier.*;
+import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
+import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.visitor_new.VisitorConstants.VISIT;
 
 public class CoCoCheckerDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDClass> {
@@ -53,11 +52,11 @@ public class CoCoCheckerDecorator extends AbstractDecorator<ASTCDCompilationUnit
 
   @Override
   public ASTCDClass decorate(ASTCDCompilationUnit compilationUnit) {
-    ASTCDAttribute realThisAttribute = getCDAttributeFactory().createAttribute(PRIVATE, visitorService.getVisitorType(), REAL_THIS);
+    ASTCDAttribute realThisAttribute = getCDAttributeFacade().createAttribute(PRIVATE, visitorService.getVisitorType(), REAL_THIS);
     this.replaceTemplate(VALUE, realThisAttribute, new StringHookPoint("= this"));
     List<ASTCDMethod> realThisMethods = methodDecorator.decorate(realThisAttribute);
 
-    ASTCDConstructor constructor = this.getCDConstructorFactory().createConstructor(PUBLIC, cocoService.getCheckerSimpleTypeName());
+    ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PUBLIC, cocoService.getCheckerSimpleTypeName());
 
     ASTCDClass cocoChecker = CD4AnalysisMill.cDClassBuilder()
         .setName(cocoService.getCheckerSimpleTypeName())
@@ -126,8 +125,8 @@ public class CoCoCheckerDecorator extends AbstractDecorator<ASTCDCompilationUnit
   }
 
   protected ASTCDAttribute createCheckerAttribute(ASTType checkerType, String checkerName, boolean isCurrentDiagram) {
-    ASTType checkerListType = getCDTypeFactory().createListTypeOf(checkerType);
-    ASTCDAttribute checker = getCDAttributeFactory().createAttribute(PRIVATE, checkerListType, checkerName);
+    ASTType checkerListType = getCDTypeFacade().createListTypeOf(checkerType);
+    ASTCDAttribute checker = getCDAttributeFacade().createAttribute(PRIVATE, checkerListType, checkerName);
     HookPoint hp = isCurrentDiagram ? new StringHookPoint("= new ArrayList<>(Arrays.asList(new " + TypesHelper.printType(checkerType) + "()))")
         : new StringHookPoint("= new ArrayList<>()");
     this.replaceTemplate(VALUE, checker, hp);
@@ -135,22 +134,22 @@ public class CoCoCheckerDecorator extends AbstractDecorator<ASTCDCompilationUnit
   }
 
   protected ASTCDMethod createAddCheckerMethod(ASTType checkerType, String checkerName) {
-    ASTCDParameter parameter = getCDParameterFactory().createParameter(checkerType, CHECKER);
-    ASTCDMethod addCheckerMethod = getCDMethodFactory().createMethod(PUBLIC, ADD_CHECKER, parameter);
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(checkerType, CHECKER);
+    ASTCDMethod addCheckerMethod = getCDMethodFacade().createMethod(PUBLIC, ADD_CHECKER, parameter);
     this.replaceTemplate(EMPTY_BODY, addCheckerMethod, new StringHookPoint("this." + checkerName + ".add(" + CHECKER + ");"));
     return addCheckerMethod;
   }
 
   protected ASTCDAttribute createCoCoCollectionAttribute(ASTType cocoType, String cocoCollectionName) {
-    ASTType cocoCollectionType = getCDTypeFactory().createCollectionTypeOf(cocoType);
-    ASTCDAttribute cocoCollectionAttribute = getCDAttributeFactory().createAttribute(PRIVATE, cocoCollectionType, cocoCollectionName);
+    ASTType cocoCollectionType = getCDTypeFacade().createCollectionTypeOf(cocoType);
+    ASTCDAttribute cocoCollectionAttribute = getCDAttributeFacade().createAttribute(PRIVATE, cocoCollectionType, cocoCollectionName);
     this.replaceTemplate(VALUE, cocoCollectionAttribute, new StringHookPoint("= new LinkedHashSet<>()"));
     return cocoCollectionAttribute;
   }
 
   protected ASTCDMethod createAddCoCoMethod(ASTType cocoType, ASTType checkerType) {
-    ASTCDParameter parameter = getCDParameterFactory().createParameter(cocoType, COCO);
-    return getCDMethodFactory().createMethod(PUBLIC, checkerType, ADD_COCO, parameter);
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(cocoType, COCO);
+    return getCDMethodFacade().createMethod(PUBLIC, checkerType, ADD_COCO, parameter);
   }
 
   protected HookPoint createAddCoCoImpl(boolean isCurrentDiagram, String cocoCollectionName, String checkerName) {
@@ -165,8 +164,8 @@ public class CoCoCheckerDecorator extends AbstractDecorator<ASTCDCompilationUnit
   }
 
   protected ASTCDMethod createVisitMethod(ASTType astType) {
-    ASTCDParameter parameter = getCDParameterFactory().createParameter(astType, NODE);
-    return getCDMethodFactory().createMethod(PUBLIC, VISIT, parameter);
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(astType, NODE);
+    return getCDMethodFacade().createMethod(PUBLIC, VISIT, parameter);
   }
 
   protected HookPoint createVisitImpl(boolean isCurrentDiagram, ASTType cocoType, String cocoCollectionName, String checkerName) {
@@ -184,7 +183,7 @@ public class CoCoCheckerDecorator extends AbstractDecorator<ASTCDCompilationUnit
   }
 
   protected ASTCDMethod createCheckAllMethod(ASTType astType) {
-    ASTCDParameter parameter = getCDParameterFactory().createParameter(astType, NODE);
-    return getCDMethodFactory().createMethod(PUBLIC, CHECK_ALL, parameter);
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(astType, NODE);
+    return getCDMethodFacade().createMethod(PUBLIC, CHECK_ALL, parameter);
   }
 }

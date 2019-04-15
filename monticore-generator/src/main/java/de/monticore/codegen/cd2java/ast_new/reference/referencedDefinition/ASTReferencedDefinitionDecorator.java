@@ -51,12 +51,12 @@ public class ASTReferencedDefinitionDecorator extends AbstractDecorator<ASTCDCla
     String referencedNode = referencedSymbol.substring(0, referencedSymbol.lastIndexOf("_symboltable")) + GeneratorHelper.AST_PACKAGE_SUFFIX_DOT + GeneratorHelper.AST_PREFIX + symbolTableService.getSimpleSymbolName(referencedSymbol);
     if (GeneratorHelper.isListType(astcdAttribute.printType())) {
       //if the attribute is a list
-      symbolType = getCDTypeFactory().createListTypeOf(referencedNode);
+      symbolType = getCDTypeFacade().createListTypeOf(referencedNode);
     } else {
       //if the attribute is mandatory or optional
-      symbolType = getCDTypeFactory().createOptionalTypeOf(referencedNode);
+      symbolType = getCDTypeFacade().createOptionalTypeOf(referencedNode);
     }
-    ASTCDAttribute refSymbolAttribute = getCDAttributeFactory().createAttribute(PRIVATE, symbolType, astcdAttribute.getName() + DEFINITION);
+    ASTCDAttribute refSymbolAttribute = getCDAttributeFacade().createAttribute(PRIVATE, symbolType, astcdAttribute.getName() + DEFINITION);
     refSymbolAttribute.getModifier().setStereotype(astcdAttribute.getModifier().getStereotype().deepClone());
     return accessorDecorator.decorate(refSymbolAttribute);
   }

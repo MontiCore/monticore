@@ -2,7 +2,7 @@ package de.monticore.codegen.cd2java.visitor;
 
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
-import de.monticore.codegen.cd2java.factories.CDTypeFactory;
+import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.visitor_new.ASTVisitorDecorator;
 import de.monticore.codegen.cd2java.visitor_new.VisitorDecorator;
@@ -29,7 +29,7 @@ import static org.junit.Assert.assertTrue;
 
 public class ASTVisitorDecoratorTest extends DecoratorTestCase {
 
-  private CDTypeFactory cdTypeFacade;
+  private CDTypeFacade cdTypeFacade;
 
   private ASTCDInterface visitorInterface;
 
@@ -49,7 +49,7 @@ public class ASTVisitorDecoratorTest extends DecoratorTestCase {
   @Before
   public void setUp() {
     this.glex = new GlobalExtensionManagement();
-    this.cdTypeFacade = CDTypeFactory.getInstance();
+    this.cdTypeFacade = CDTypeFacade.getInstance();
 
     ASTCDCompilationUnit compilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     this.glex.setGlobalValue("genHelper", new DecorationHelper());

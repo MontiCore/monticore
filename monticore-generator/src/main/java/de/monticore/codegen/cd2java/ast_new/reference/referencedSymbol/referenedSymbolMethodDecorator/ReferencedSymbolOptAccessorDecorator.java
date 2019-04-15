@@ -24,7 +24,7 @@ public class ReferencedSymbolOptAccessorDecorator extends OptionalAccessorDecora
   protected ASTCDMethod createGetOptMethod(final ASTCDAttribute ast) {
     String name = String.format(GET_OPT, StringUtils.capitalize(ast.getName()));
     ASTType type = ast.getType().deepClone();
-    ASTCDMethod method = this.getCDMethodFactory().createMethod(PUBLIC, type, name);
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, type, name);
     ASTType referencedSymbolType = TypesHelper.getSimpleReferenceTypeFromOptional(ast.getType().deepClone());
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("ast_new.refSymbolMethods.GetSymbolOpt",
         ast.getName(), TypesPrinter.printType(referencedSymbolType), isOptionalAttribute(ast)));

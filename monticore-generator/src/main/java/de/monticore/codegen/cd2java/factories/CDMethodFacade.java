@@ -3,32 +3,38 @@ package de.monticore.codegen.cd2java.factories;
 import de.monticore.codegen.cd2java.factories.exception.CDFactoryErrorCode;
 import de.monticore.codegen.cd2java.factories.exception.CDFactoryException;
 import de.monticore.types.types._ast.ASTReturnType;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTModifier;
+import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisMill;
 import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParser;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class CDMethodFactory {
+public class CDMethodFacade {
   
-  private static CDMethodFactory cdMethodFactory;
+  private static CDMethodFacade cdMethodFacade;
 
-  private final CDTypeFactory cdTypeFactory;
+  private final CDTypeFacade cdTypeFacade;
 
   private final CD4AnalysisParser parser;
   
-  private CDMethodFactory() {
-    this.cdTypeFactory = CDTypeFactory.getInstance();
+  private CDMethodFacade() {
+    this.cdTypeFacade = CDTypeFacade.getInstance();
     this.parser = new CD4AnalysisParser();
   }
 
-  public static CDMethodFactory getInstance() {
-    if (cdMethodFactory == null) {
-      cdMethodFactory = new CDMethodFactory();
+  public static CDMethodFacade getInstance() {
+    if (cdMethodFacade == null) {
+      cdMethodFacade = new CDMethodFacade();
     }
-    return cdMethodFactory;
+    return cdMethodFacade;
   }
 
   public ASTCDMethod createMethodByDefinition(final String signature) {
@@ -47,15 +53,15 @@ public class CDMethodFactory {
   }
 
   public ASTCDMethod createMethod(final ASTModifier modifier, final String name) {
-    return createMethod(modifier, this.cdTypeFactory.createVoidType(), name);
+    return createMethod(modifier, this.cdTypeFacade.createVoidType(), name);
   }
   
   public ASTCDMethod createMethod(final ASTModifier modifier, final String name, final ASTCDParameter... parameters) {
-    return createMethod(modifier, this.cdTypeFactory.createVoidType(), name, parameters);
+    return createMethod(modifier, this.cdTypeFacade.createVoidType(), name, parameters);
   }
 
   public ASTCDMethod createMethod(final ASTModifier modifier, final String name, final List<ASTCDParameter> parameters) {
-    return createMethod(modifier, this.cdTypeFactory.createVoidType(), name, parameters);
+    return createMethod(modifier, this.cdTypeFacade.createVoidType(), name, parameters);
   }
 
   public ASTCDMethod createMethod(final ASTModifier modifier, final ASTReturnType returnType, final String name) {

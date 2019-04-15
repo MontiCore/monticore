@@ -3,7 +3,7 @@ package de.monticore.codegen.cd2java.ast_new.reference.referencedSymbol;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.ast_new.reference.ASTReferenceDecorator;
-import de.monticore.codegen.cd2java.factories.CDTypeFactory;
+import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.symboltable.SymbolTableService;
 import de.monticore.generating.GeneratorEngine;
@@ -28,13 +28,13 @@ public class ASTReferencedSymbolDecoratorListTest extends DecoratorTestCase {
 
   private ASTCDClass astClass;
 
-  private CDTypeFactory cdTypeFactory = CDTypeFactory.getInstance();
+  private CDTypeFacade cdTypeFacade = CDTypeFacade.getInstance();
 
   private static final String NAME_SYMBOL_MAP = "Map<String, Optional<de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol>>";
 
   @Before
   public void setup() {
-    this.cdTypeFactory = CDTypeFactory.getInstance();
+    this.cdTypeFacade = CDTypeFacade.getInstance();
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "ReferencedSymbol");
     ASTReferenceDecorator decorator = new ASTReferenceDecorator(this.glex, new SymbolTableService(ast));
@@ -63,14 +63,14 @@ public class ASTReferencedSymbolDecoratorListTest extends DecoratorTestCase {
     assertEquals("referencedSymbol", stereotype.getValue(0).getName());
     assertTrue(stereotype.getValue(0).isPresentValue());
     assertEquals("de.monticore.codegen.ast.referencedSymbol.FooSymbol", stereotype.getValue(0).getValue());
-    assertDeepEquals(cdTypeFactory.createTypeByDefinition("java.util.List<String>"), nameAttribute.getType());
+    assertDeepEquals(cdTypeFacade.createTypeByDefinition("java.util.List<String>"), nameAttribute.getType());
   }
 
   @Test
   public void testSymbolAttribute() {
     ASTCDAttribute symbolAttribute = getAttributeBy("nameSymbol", astClass);
     assertTrue(symbolAttribute.getModifier().isPrivate());
-    ASTType symboType = this.cdTypeFactory.createTypeByDefinition(NAME_SYMBOL_MAP);
+    ASTType symboType = this.cdTypeFacade.createTypeByDefinition(NAME_SYMBOL_MAP);
     assertDeepEquals(symboType, symbolAttribute.getType());
   }
 

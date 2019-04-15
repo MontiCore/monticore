@@ -1,6 +1,6 @@
 package de.monticore.codegen.cd2java.method.accessor;
 
-import de.monticore.codegen.cd2java.factories.CDAttributeFactory;
+import de.monticore.codegen.cd2java.factories.CDAttributeFacade;
 import de.monticore.codegen.cd2java.factories.CDTypeBuilder;
 import de.monticore.codegen.cd2java.methods.accessor.ListAccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -16,7 +16,7 @@ import java.util.*;
 import java.util.stream.Stream;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
@@ -30,7 +30,7 @@ public class ListAccessorDecoratorTest {
   @Before
   public void setup() {
     LogStub.init();
-    ASTCDAttribute attribute = CDAttributeFactory.getInstance().createAttributeByDefinition("protected List<String> a;");
+    ASTCDAttribute attribute = CDAttributeFacade.getInstance().createAttributeByDefinition("protected List<String> a;");
     ListAccessorDecorator listAccessorDecorator = new ListAccessorDecorator(glex);
     this.methods = listAccessorDecorator.decorate(attribute);
   }

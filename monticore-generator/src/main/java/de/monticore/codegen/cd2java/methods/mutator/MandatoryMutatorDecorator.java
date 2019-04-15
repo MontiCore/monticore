@@ -31,7 +31,7 @@ public class MandatoryMutatorDecorator extends AbstractDecorator<ASTCDAttribute,
   private ASTCDMethod createSetter(final ASTCDAttribute ast) {
     //todo find better util than the DecorationHelper
     String name = String.format(SET, StringUtils.capitalize(DecorationHelper.getNativeAttributeName(ast.getName())));
-    ASTCDMethod method = this.getCDMethodFactory().createMethod(PUBLIC, name, this.getCDParameterFactory().createParameters(ast));
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, name, this.getCDParameterFacade().createParameters(ast));
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.Set", ast));
     return method;
   }

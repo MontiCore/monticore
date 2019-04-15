@@ -3,7 +3,7 @@ package de.monticore.codegen.cd2java.ast_interface;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.ast_new.ASTService;
-import de.monticore.codegen.cd2java.factories.CDTypeFactory;
+import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.visitor_new.VisitorService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -23,13 +23,13 @@ import static org.junit.Assert.assertTrue;
 
 public class ASTLanguageInterfaceDecoratorTest extends DecoratorTestCase {
 
-  private CDTypeFactory cdTypeFacade;
+  private CDTypeFacade cdTypeFacade;
 
   private ASTCDInterface languageInterface;
 
   @Before
   public void setUp() {
-    this.cdTypeFacade = CDTypeFactory.getInstance();
+    this.cdTypeFacade = CDTypeFacade.getInstance();
     ASTCDCompilationUnit compilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     ASTService astService = new ASTService(compilationUnit);
     VisitorService visitorService = new VisitorService(compilationUnit);

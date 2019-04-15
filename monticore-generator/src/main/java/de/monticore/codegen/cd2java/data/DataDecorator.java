@@ -57,12 +57,12 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
   }
 
   protected ASTCDConstructor createDefaultConstructor(ASTCDClass clazz) {
-    return this.getCDConstructorFactory().createDefaultConstructor(PROTECTED, clazz);
+    return this.getCDConstructorFacade().createDefaultConstructor(PROTECTED, clazz);
   }
 
   protected ASTCDConstructor createFullConstructor(ASTCDClass clazz) {
     List<ASTCDAttribute> allAttributesInHierarchy = getAllAttributesInHierarchy(clazz);
-    ASTCDConstructor fullConstructor = this.getCDConstructorFactory().createConstructor(PROTECTED, clazz.getName(), getCDParameterFactory().createParameters(allAttributesInHierarchy));
+    ASTCDConstructor fullConstructor = this.getCDConstructorFacade().createConstructor(PROTECTED, clazz.getName(), getCDParameterFacade().createParameters(allAttributesInHierarchy));
     this.replaceTemplate(EMPTY_BODY, fullConstructor, new TemplateHookPoint("data.ConstructorAttributesSetter", allAttributesInHierarchy));
     return fullConstructor;
   }
@@ -97,8 +97,8 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
   protected List<ASTCDMethod> getAllDataMethods(ASTCDClass clazz) {
     List<ASTCDMethod> methods = new ArrayList<>();
-    ASTCDParameter objectParameter = getCDParameterFactory().createParameter(Object.class, "o");
-    ASTCDParameter forceSameOrderParameter = getCDParameterFactory().createParameter(getCDTypeFactory().createBooleanType(), "forceSameOrder");
+    ASTCDParameter objectParameter = getCDParameterFacade().createParameter(Object.class, "o");
+    ASTCDParameter forceSameOrderParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createBooleanType(), "forceSameOrder");
 
     ASTCDMethod deepEqualsMethod = dataDecoratorUtil.createDeepEqualsMethod(objectParameter);
     this.replaceTemplate(EMPTY_BODY, deepEqualsMethod, new StringHookPoint("     return deepEquals(o, true);"));
@@ -133,9 +133,9 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
   protected ASTCDMethod createDeepCloneWithParam(ASTCDClass clazz) {
     // deep clone with result parameter
-    ASTType classType = this.getCDTypeFactory().createSimpleReferenceType(clazz.getName());
-    ASTCDParameter parameter = getCDParameterFactory().createParameter(classType, "result");
-    ASTCDMethod deepCloneWithParam = this.getCDMethodFactory().createMethod(PUBLIC, parameter.getType(), DEEP_CLONE_METHOD, parameter);
+    ASTType classType = this.getCDTypeFacade().createSimpleReferenceType(clazz.getName());
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(classType, "result");
+    ASTCDMethod deepCloneWithParam = this.getCDMethodFacade().createMethod(PUBLIC, parameter.getType(), DEEP_CLONE_METHOD, parameter);
     this.replaceTemplate(EMPTY_BODY, deepCloneWithParam, new TemplateHookPoint("data.DeepCloneWithParameters", clazz));
     return deepCloneWithParam;
   }

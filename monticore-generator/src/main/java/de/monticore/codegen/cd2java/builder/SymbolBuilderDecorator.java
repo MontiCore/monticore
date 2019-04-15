@@ -47,10 +47,10 @@ public class SymbolBuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDC
   }
 
   protected List<ASTCDAttribute> createSymbolAttributes() {
-    ASTCDAttribute name = this.getCDAttributeFactory().createAttribute(PRIVATE, String.class, "name");
-    ASTCDAttribute enclosingScope = this.getCDAttributeFactory().createAttribute(PRIVATE, Scope.class, "scope");
-    ASTCDAttribute node = this.getCDAttributeFactory().createAttribute(PRIVATE, ASTNode.class, "astNode");
-    ASTCDAttribute accessModifier = this.getCDAttributeFactory().createAttribute(PRIVATE, AccessModifier.class, "accessModifier");
+    ASTCDAttribute name = this.getCDAttributeFacade().createAttribute(PRIVATE, String.class, "name");
+    ASTCDAttribute enclosingScope = this.getCDAttributeFacade().createAttribute(PRIVATE, Scope.class, "scope");
+    ASTCDAttribute node = this.getCDAttributeFacade().createAttribute(PRIVATE, ASTNode.class, "astNode");
+    ASTCDAttribute accessModifier = this.getCDAttributeFacade().createAttribute(PRIVATE, AccessModifier.class, "accessModifier");
     return new ArrayList<>(Arrays.asList(name, enclosingScope, node, accessModifier));
   }
 }

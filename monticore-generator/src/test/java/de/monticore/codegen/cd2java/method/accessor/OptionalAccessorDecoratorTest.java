@@ -1,6 +1,6 @@
 package de.monticore.codegen.cd2java.method.accessor;
 
-import de.monticore.codegen.cd2java.factories.CDAttributeFactory;
+import de.monticore.codegen.cd2java.factories.CDAttributeFacade;
 import de.monticore.codegen.cd2java.factories.CDTypeBuilder;
 import de.monticore.codegen.cd2java.methods.accessor.OptionalAccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -11,11 +11,12 @@ import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertBoolean;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
@@ -29,7 +30,7 @@ public class OptionalAccessorDecoratorTest {
   @Before
   public void setup() {
     LogStub.init();
-    ASTCDAttribute attribute = CDAttributeFactory.getInstance().createAttributeByDefinition("protected Optional<String> a;");
+    ASTCDAttribute attribute = CDAttributeFacade.getInstance().createAttributeByDefinition("protected Optional<String> a;");
     OptionalAccessorDecorator optionalAccessorDecorator = new OptionalAccessorDecorator(glex);
     this.methods = optionalAccessorDecorator.decorate(attribute);
   }

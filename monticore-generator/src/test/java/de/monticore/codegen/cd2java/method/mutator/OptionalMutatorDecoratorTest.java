@@ -1,7 +1,7 @@
 package de.monticore.codegen.cd2java.method.mutator;
 
-import de.monticore.codegen.cd2java.factories.CDAttributeFactory;
-import de.monticore.codegen.cd2java.factories.CDTypeFactory;
+import de.monticore.codegen.cd2java.factories.CDAttributeFacade;
+import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.methods.mutator.OptionalMutatorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.types._ast.ASTType;
@@ -15,7 +15,7 @@ import org.junit.Test;
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static junit.framework.TestCase.assertTrue;
@@ -30,8 +30,8 @@ public class OptionalMutatorDecoratorTest {
   @Before
   public void setup() {
     LogStub.init();
-    ASTType optionalType = CDTypeFactory.getInstance().createOptionalTypeOf(String.class);
-    ASTCDAttribute attribute = CDAttributeFactory.getInstance().createAttribute(PROTECTED, optionalType, "a");
+    ASTType optionalType = CDTypeFacade.getInstance().createOptionalTypeOf(String.class);
+    ASTCDAttribute attribute = CDAttributeFacade.getInstance().createAttribute(PROTECTED, optionalType, "a");
     OptionalMutatorDecorator optionalMutatorDecorator = new OptionalMutatorDecorator(glex);
     this.methods = optionalMutatorDecorator.decorate(attribute);
   }

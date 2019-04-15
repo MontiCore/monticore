@@ -2,11 +2,10 @@ package de.monticore.codegen.cd2java;
 
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
-import de.monticore.codegen.cd2java.factories.CDTypeFactory;
+import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
@@ -16,7 +15,7 @@ public abstract class AbstractService<T extends AbstractService> {
 
   private final CDSymbol cdSymbol;
 
-  private final CDTypeFactory cdTypeFactory;
+  private final CDTypeFacade cdTypeFacade;
 
   public AbstractService(final ASTCDCompilationUnit compilationUnit) {
     this((CDSymbol) compilationUnit.getCDDefinition().getSymbol());
@@ -24,15 +23,15 @@ public abstract class AbstractService<T extends AbstractService> {
 
   public AbstractService(final CDSymbol cdSymbol) {
     this.cdSymbol = cdSymbol;
-    this.cdTypeFactory = CDTypeFactory.getInstance();
+    this.cdTypeFacade = CDTypeFacade.getInstance();
   }
 
   public CDSymbol getCDSymbol() {
     return this.cdSymbol;
   }
 
-  protected CDTypeFactory getCDTypeFactory() {
-    return this.cdTypeFactory;
+  protected CDTypeFacade getCDTypeFactory() {
+    return this.cdTypeFacade;
   }
 
   public Collection<CDSymbol> getAllCDs() {

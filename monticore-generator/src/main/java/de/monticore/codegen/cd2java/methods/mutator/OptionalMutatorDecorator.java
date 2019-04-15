@@ -44,22 +44,22 @@ public class OptionalMutatorDecorator extends AbstractDecorator<ASTCDAttribute, 
   private ASTCDMethod createSetMethod(final ASTCDAttribute ast) {
     String name = String.format(SET, naiveAttributeName);
     ASTType parameterType = TypesHelper.getSimpleReferenceTypeFromOptional(ast.getType()).deepClone();
-    ASTCDParameter parameter = this.getCDParameterFactory().createParameter(parameterType, ast.getName());
-    ASTCDMethod method = this.getCDMethodFactory().createMethod(PUBLIC, name, parameter);
+    ASTCDParameter parameter = this.getCDParameterFacade().createParameter(parameterType, ast.getName());
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, name, parameter);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.Set", ast));
     return method;
   }
 
   private ASTCDMethod createSetOptMethod(final ASTCDAttribute ast) {
     String name = String.format(SET_OPT, naiveAttributeName);
-    ASTCDMethod method = this.getCDMethodFactory().createMethod(PUBLIC, name, this.getCDParameterFactory().createParameters(ast));
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, name, this.getCDParameterFacade().createParameters(ast));
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.Set", ast));
     return method;
   }
 
   private ASTCDMethod createSetAbsentMethod(final ASTCDAttribute ast) {
     String name = String.format(SET_ABSENT, naiveAttributeName);
-    ASTCDMethod method = this.getCDMethodFactory().createMethod(PUBLIC, name);
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, name);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.SetAbsent", ast));
     return method;
   }

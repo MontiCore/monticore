@@ -3,7 +3,7 @@ package de.monticore.codegen.cd2java.ast_new.reference.referencedDefinition;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.ast_new.reference.referencedDefinition.referencedDefinitionMethodDecorator.ReferencedDefinitionAccessorDecorator;
-import de.monticore.codegen.cd2java.factories.CDTypeFactory;
+import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.symboltable.SymbolTableService;
 import de.monticore.generating.GeneratorEngine;
@@ -24,11 +24,11 @@ public class ASTReferencedDefinitionDecoratorListTest extends DecoratorTestCase 
 
   private ASTCDClass astClass;
 
-  private CDTypeFactory cdTypeFactory = CDTypeFactory.getInstance();
+  private CDTypeFacade cdTypeFacade = CDTypeFacade.getInstance();
 
   @Before
   public void setup() {
-    this.cdTypeFactory = CDTypeFactory.getInstance();
+    this.cdTypeFacade = CDTypeFacade.getInstance();
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "ReferencedSymbol");
     SymbolTableService symbolTableService = new SymbolTableService(ast);

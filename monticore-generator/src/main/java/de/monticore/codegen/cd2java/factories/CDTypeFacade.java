@@ -4,31 +4,29 @@ import de.monticore.codegen.cd2java.factories.exception.CDFactoryErrorCode;
 import de.monticore.codegen.cd2java.factories.exception.CDFactoryException;
 import de.monticore.types.TypesHelper;
 import de.monticore.types.types._ast.*;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
-import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisMill;
 import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParser;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.*;
 
-public class CDTypeFactory {
+public class CDTypeFacade {
 
   private static final String PACKAGE_SEPARATOR = "\\.";
 
-  private static CDTypeFactory cdTypeFactory;
+  private static CDTypeFacade cdTypeFacade;
 
   private final CD4AnalysisParser parser;
 
-  private CDTypeFactory() {
+  private CDTypeFacade() {
     this.parser = new CD4AnalysisParser();
   }
 
-  public static CDTypeFactory getInstance() {
-    if (cdTypeFactory == null) {
-      cdTypeFactory = new CDTypeFactory();
+  public static CDTypeFacade getInstance() {
+    if (cdTypeFacade == null) {
+      cdTypeFacade = new CDTypeFacade();
     }
-    return cdTypeFactory;
+    return cdTypeFacade;
   }
 
   public ASTType createTypeByDefinition(final String typeSignature) {

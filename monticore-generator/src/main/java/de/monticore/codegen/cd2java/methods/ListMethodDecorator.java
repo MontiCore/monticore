@@ -34,7 +34,7 @@ public abstract class ListMethodDecorator extends AbstractDecorator<ASTCDAttribu
     this.attributeType = getTypeArgumentFromListType(ast.getType());
 
     List<ASTCDMethod> methods = getMethodSignatures().stream()
-        .map(getCDMethodFactory()::createMethodByDefinition)
+        .map(getCDMethodFacade()::createMethodByDefinition)
         .collect(Collectors.toList());
 
     methods.forEach(m -> this.replaceTemplate(EMPTY_BODY, m, createListImplementation(m, capitalizedAttributeName)));

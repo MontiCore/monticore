@@ -11,15 +11,15 @@ public abstract class AbstractDecorator<I, R> implements Decorator<I, R> {
 
   private boolean templatesEnabled;
 
-  private final CDTypeFactory cdTypeFactory;
+  private final CDTypeFacade cdTypeFacade;
 
-  private final CDAttributeFactory cdAttributeFactory;
+  private final CDAttributeFacade cdAttributeFacade;
 
-  private final CDConstructorFactory cdConstructorFactory;
+  private final CDConstructorFacade cdConstructorFacade;
 
-  private final CDMethodFactory cdMethodFactory;
+  private final CDMethodFacade cdMethodFacade;
 
-  private final CDParameterFactory cdParameterFactory;
+  private final CDParameterFacade cdParameterFacade;
 
   public AbstractDecorator() {
     this(null);
@@ -27,27 +27,27 @@ public abstract class AbstractDecorator<I, R> implements Decorator<I, R> {
 
   public AbstractDecorator(final GlobalExtensionManagement glex) {
     this(glex,
-        CDTypeFactory.getInstance(),
-        CDAttributeFactory.getInstance(),
-        CDConstructorFactory.getInstance(),
-        CDMethodFactory.getInstance(),
-        CDParameterFactory.getInstance()
+        CDTypeFacade.getInstance(),
+        CDAttributeFacade.getInstance(),
+        CDConstructorFacade.getInstance(),
+        CDMethodFacade.getInstance(),
+        CDParameterFacade.getInstance()
     );
   }
 
   public AbstractDecorator(final GlobalExtensionManagement glex,
-      final CDTypeFactory cdTypeFactory,
-      final CDAttributeFactory cdAttributeFactory,
-      final CDConstructorFactory cdConstructorFactory,
-      final CDMethodFactory cdMethodFactory,
-      final CDParameterFactory cdParameterFactory) {
+      final CDTypeFacade cdTypeFacade,
+      final CDAttributeFacade cdAttributeFacade,
+      final CDConstructorFacade cdConstructorFacade,
+      final CDMethodFacade cdMethodFacade,
+      final CDParameterFacade cdParameterFacade) {
     this.glex = glex;
     this.templatesEnabled = true;
-    this.cdTypeFactory = cdTypeFactory;
-    this.cdAttributeFactory = cdAttributeFactory;
-    this.cdConstructorFactory = cdConstructorFactory;
-    this.cdMethodFactory = cdMethodFactory;
-    this.cdParameterFactory = cdParameterFactory;
+    this.cdTypeFacade = cdTypeFacade;
+    this.cdAttributeFacade = cdAttributeFacade;
+    this.cdConstructorFacade = cdConstructorFacade;
+    this.cdMethodFacade = cdMethodFacade;
+    this.cdParameterFacade = cdParameterFacade;
   }
 
   public void enableTemplates() {
@@ -68,23 +68,23 @@ public abstract class AbstractDecorator<I, R> implements Decorator<I, R> {
     }
   }
 
-  protected CDTypeFactory getCDTypeFactory() {
-    return this.cdTypeFactory;
+  protected CDTypeFacade getCDTypeFacade() {
+    return this.cdTypeFacade;
   }
 
-  protected CDAttributeFactory getCDAttributeFactory() {
-    return this.cdAttributeFactory;
+  protected CDAttributeFacade getCDAttributeFacade() {
+    return this.cdAttributeFacade;
   }
 
-  protected CDConstructorFactory getCDConstructorFactory() {
-    return this.cdConstructorFactory;
+  protected CDConstructorFacade getCDConstructorFacade() {
+    return this.cdConstructorFacade;
   }
 
-  protected CDMethodFactory getCDMethodFactory() {
-    return this.cdMethodFactory;
+  protected CDMethodFacade getCDMethodFacade() {
+    return this.cdMethodFacade;
   }
 
-  protected CDParameterFactory getCDParameterFactory() {
-    return this.cdParameterFactory;
+  protected CDParameterFacade getCDParameterFacade() {
+    return this.cdParameterFacade;
   }
 }

@@ -6,7 +6,8 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.TypesHelper;
 import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class OptionalAccessorDecorator extends AbstractDecorator<ASTCDAttribute,
   private ASTCDMethod createGetMethod(final ASTCDAttribute ast) {
     String name = String.format(GET, naiveAttributeName);
     ASTType type = TypesHelper.getSimpleReferenceTypeFromOptional(ast.getType().deepClone());
-    ASTCDMethod method = this.getCDMethodFactory().createMethod(PUBLIC, type, name);
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, type, name);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.Get", ast));
     return method;
   }
@@ -51,14 +52,14 @@ public class OptionalAccessorDecorator extends AbstractDecorator<ASTCDAttribute,
   protected ASTCDMethod createGetOptMethod(final ASTCDAttribute ast) {
     String name = String.format(GET_OPT, naiveAttributeName);
     ASTType type = ast.getType().deepClone();
-    ASTCDMethod method = this.getCDMethodFactory().createMethod(PUBLIC, type, name);
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, type, name);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.Get", ast));
     return method;
   }
 
   private ASTCDMethod createIsPresentMethod(final ASTCDAttribute ast) {
     String name = String.format(IS_PRESENT, naiveAttributeName);
-    ASTCDMethod method = this.getCDMethodFactory().createMethod(PUBLIC, this.getCDTypeFactory().createBooleanType(), name);
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, this.getCDTypeFacade().createBooleanType(), name);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.IsPresent", ast));
     return method;
   }

@@ -4,13 +4,11 @@ import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.types._ast.ASTReferenceType;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
@@ -42,14 +40,14 @@ public class VisitorDecorator extends AbstractDecorator<ASTCDCompilationUnit, AS
   }
 
   protected ASTCDMethod addGetRealThisMethods(ASTType visitorType) {
-    ASTCDMethod getRealThisMethod = this.getCDMethodFactory().createMethod(PUBLIC, visitorType, GET_REAL_THIS);
+    ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, visitorType, GET_REAL_THIS);
     this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint("return this;"));
     return getRealThisMethod;
   }
 
   protected ASTCDMethod addSetRealThisMethods(ASTType visitorType) {
-    ASTCDParameter visitorParameter = getCDParameterFactory().createParameter(visitorType, "realThis");
-    ASTCDMethod getRealThisMethod = this.getCDMethodFactory().createMethod(PUBLIC, SET_REAL_THIS, visitorParameter);
+    ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(visitorType, "realThis");
+    ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC, SET_REAL_THIS, visitorParameter);
     this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint("    throw new UnsupportedOperationException(\"0xA7011x709 The setter for realThis is not implemented. You might want to implement a wrapper class to allow setting/getting realThis.\");\n"));
     return getRealThisMethod;
   }
@@ -58,7 +56,7 @@ public class VisitorDecorator extends AbstractDecorator<ASTCDCompilationUnit, AS
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     for (ASTCDClass astcdClass : astcdClassList) {
       boolean doTraverse = !(astcdClass.isPresentModifier() && astcdClass.getModifier().isAbstract());
-      ASTType classType = getCDTypeFactory().createTypeByDefinition(astcdClass.getName());
+      ASTType classType = getCDTypeFacade().createTypeByDefinition(astcdClass.getName());
       visitorMethods.add(addVisitMethod(classType));
       visitorMethods.add(addEndVisitMethod(classType));
       visitorMethods.add(addTraversMethod(classType, astcdClass));
@@ -70,7 +68,7 @@ public class VisitorDecorator extends AbstractDecorator<ASTCDCompilationUnit, AS
   protected List<ASTCDMethod> addEnumVisitorMethods(List<ASTCDEnum> astcdEnumList) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     for (ASTCDEnum astcdEnum : astcdEnumList) {
-      ASTType enumType = getCDTypeFactory().createTypeByDefinition(astcdEnum.getName());
+      ASTType enumType = getCDTypeFacade().createTypeByDefinition(astcdEnum.getName());
       visitorMethods.add(addVisitMethod(enumType));
       visitorMethods.add(addEndVisitMethod(enumType));
       visitorMethods.add(addHandleMethod(enumType, false));
@@ -81,7 +79,7 @@ public class VisitorDecorator extends AbstractDecorator<ASTCDCompilationUnit, AS
   protected List<ASTCDMethod> addInterfaceVisitorMethods(List<ASTCDInterface> astcdInterfaceList) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     for (ASTCDInterface astcdInterface : astcdInterfaceList) {
-      ASTType interfaceType = getCDTypeFactory().createTypeByDefinition(astcdInterface.getName());
+      ASTType interfaceType = getCDTypeFacade().createTypeByDefinition(astcdInterface.getName());
       visitorMethods.add(addVisitMethod(interfaceType));
       visitorMethods.add(addEndVisitMethod(interfaceType));
       visitorMethods.add(addHandleMethod(interfaceType, false));

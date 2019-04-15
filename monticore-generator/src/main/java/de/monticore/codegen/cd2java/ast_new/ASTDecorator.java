@@ -2,7 +2,7 @@ package de.monticore.codegen.cd2java.ast_new;
 
 import de.monticore.ast.ASTCNode;
 import de.monticore.codegen.cd2java.AbstractDecorator;
-import de.monticore.codegen.cd2java.factories.*;
+import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.factory.NodeFactoryService;
 import de.monticore.codegen.cd2java.visitor_new.VisitorService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -10,7 +10,9 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.TypesPrinter;
 import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +47,7 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
   @Override
   public ASTCDClass decorate(ASTCDClass clazz) {
     if (!clazz.isPresentSuperclass()) {
-      clazz.setSuperclass(this.getCDTypeFactory().createSimpleReferenceType(ASTCNode.class));
+      clazz.setSuperclass(this.getCDTypeFacade().createSimpleReferenceType(ASTCNode.class));
     }
 
     clazz.addInterface(this.astService.getASTBaseInterface());
@@ -58,8 +60,8 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
   }
 
   protected ASTCDMethod createAcceptMethod(ASTCDClass astClass) {
-    ASTCDParameter visitorParameter = this.getCDParameterFactory().createParameter(this.visitorService.getVisitorType(), VISITOR);
-    ASTCDMethod acceptMethod = this.getCDMethodFactory().createMethod(PUBLIC, ACCEPT_METHOD, visitorParameter);
+    ASTCDParameter visitorParameter = this.getCDParameterFacade().createParameter(this.visitorService.getVisitorType(), VISITOR);
+    ASTCDMethod acceptMethod = this.getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, visitorParameter);
     this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint("ast_new.Accept", astClass));
     return acceptMethod;
   }
@@ -68,9 +70,9 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
     List<ASTCDMethod> result = new ArrayList<>();
     //accept methods for super visitors
     for (ASTType superVisitorType : this.visitorService.getAllVisitorTypesInHierarchy()) {
-      ASTCDParameter superVisitorParameter = this.getCDParameterFactory().createParameter(superVisitorType, VISITOR);
+      ASTCDParameter superVisitorParameter = this.getCDParameterFacade().createParameter(superVisitorType, VISITOR);
 
-      ASTCDMethod superAccept = this.getCDMethodFactory().createMethod(PUBLIC, ACCEPT_METHOD, superVisitorParameter);
+      ASTCDMethod superAccept = this.getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, superVisitorParameter);
       String errorCode = DecorationHelper.getGeneratedErrorCode(astClass);
       this.replaceTemplate(EMPTY_BODY, superAccept, new TemplateHookPoint("ast_new.AcceptSuper",
           this.visitorService.getVisitorFullTypeName(), errorCode, astClass.getName(), TypesPrinter.printType(superVisitorType)));
@@ -80,8 +82,8 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
   }
 
   protected ASTCDMethod getConstructMethod(ASTCDClass astClass) {
-    ASTType classType = this.getCDTypeFactory().createSimpleReferenceType(astClass.getName());
-    ASTCDMethod constructMethod = this.getCDMethodFactory().createMethod(PROTECTED, classType, CONSTRUCT_METHOD);
+    ASTType classType = this.getCDTypeFacade().createSimpleReferenceType(astClass.getName());
+    ASTCDMethod constructMethod = this.getCDMethodFacade().createMethod(PROTECTED, classType, CONSTRUCT_METHOD);
     this.replaceTemplate(EMPTY_BODY, constructMethod, new StringHookPoint(this.nodeFactoryService.getCreateInvocation(astClass)));
     return constructMethod;
   }

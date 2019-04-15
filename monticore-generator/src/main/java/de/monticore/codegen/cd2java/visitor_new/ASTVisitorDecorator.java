@@ -46,12 +46,12 @@ public class ASTVisitorDecorator extends AbstractDecorator<ASTCDCompilationUnit,
   }
 
   protected ASTCDMethod addVisitASTNodeMethods() {
-    ASTType astNodeType = getCDTypeFactory().createTypeByDefinition(AST_INTERFACE);
+    ASTType astNodeType = getCDTypeFacade().createTypeByDefinition(AST_INTERFACE);
     return visitorService.getVisitorMethod(VISIT, astNodeType);
   }
 
   protected ASTCDMethod addEndVisitASTNodeMethods() {
-    ASTType astNodeType = getCDTypeFactory().createTypeByDefinition(AST_INTERFACE);
+    ASTType astNodeType = getCDTypeFacade().createTypeByDefinition(AST_INTERFACE);
     return visitorService.getVisitorMethod(END_VISIT, astNodeType);
   }
 }

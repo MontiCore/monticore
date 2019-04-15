@@ -1,9 +1,8 @@
 package de.monticore.codegen.cd2java.visitor_new;
 
 import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java.factories.CDMethodFactory;
-import de.monticore.codegen.cd2java.factories.CDParameterFactory;
-import de.monticore.codegen.cd2java.factories.SuperSymbolHelper;
+import de.monticore.codegen.cd2java.factories.CDMethodFacade;
+import de.monticore.codegen.cd2java.factories.CDParameterFacade;
 import de.monticore.types.types._ast.ASTReferenceType;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
@@ -64,7 +63,7 @@ public class VisitorService extends AbstractService<VisitorService> {
 
 
   ASTCDMethod getVisitorMethod(String methodName, ASTType nodeType) {
-    ASTCDParameter visitorParameter = CDParameterFactory.getInstance().createParameter(nodeType, "node");
-    return CDMethodFactory.getInstance().createMethod(PUBLIC, methodName, visitorParameter);
+    ASTCDParameter visitorParameter = CDParameterFacade.getInstance().createParameter(nodeType, "node");
+    return CDMethodFacade.getInstance().createMethod(PUBLIC, methodName, visitorParameter);
   }
 }

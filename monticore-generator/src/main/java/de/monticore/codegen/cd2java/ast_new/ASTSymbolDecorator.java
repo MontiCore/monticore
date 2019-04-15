@@ -2,7 +2,6 @@ package de.monticore.codegen.cd2java.ast_new;
 
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
-import de.monticore.codegen.cd2java.symboltable.SymbolTableConstants;
 import de.monticore.codegen.cd2java.symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.types._ast.ASTType;
@@ -28,9 +27,9 @@ public class ASTSymbolDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass
   @Override
   public ASTCDClass decorate(final ASTCDClass clazz) {
     if (symbolTableService.isSymbolClass(clazz)) {
-      ASTType symbolType = this.getCDTypeFactory().createOptionalTypeOf(symbolTableService.getSymbolType(clazz));
+      ASTType symbolType = this.getCDTypeFacade().createOptionalTypeOf(symbolTableService.getSymbolType(clazz));
       String attributeName = StringUtils.uncapitalize(symbolTableService.getSymbolName(clazz));
-      ASTCDAttribute symbolAttribute = this.getCDAttributeFactory().createAttribute(PROTECTED, symbolType, attributeName);
+      ASTCDAttribute symbolAttribute = this.getCDAttributeFacade().createAttribute(PROTECTED, symbolType, attributeName);
       clazz.addCDAttribute(symbolAttribute);
       clazz.addAllCDMethods(methodDecorator.decorate(symbolAttribute));
     }

@@ -4,7 +4,7 @@ import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.constants.ASTConstantsDecorator;
 import de.monticore.codegen.cd2java.factories.CDModifier;
-import de.monticore.codegen.cd2java.factories.CDTypeFactory;
+import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -28,11 +28,11 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
 
   private GlobalExtensionManagement glex;
 
-  private CDTypeFactory cdTypeFactory;
+  private CDTypeFacade cdTypeFacade;
 
   @Before
   public void setUp() {
-    this.cdTypeFactory = CDTypeFactory.getInstance();
+    this.cdTypeFacade = CDTypeFacade.getInstance();
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
@@ -83,7 +83,7 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
   public void testSuperGrammarsAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("superGrammars", constantClass);
     assertDeepEquals(CDModifier.PUBLIC_STATIC, astcdAttribute.getModifier());
-    assertDeepEquals(cdTypeFactory.createTypeByDefinition("String[]"), astcdAttribute.getType());
+    assertDeepEquals(cdTypeFacade.createTypeByDefinition("String[]"), astcdAttribute.getType());
     assertFalse(astcdAttribute.isPresentValue());
   }
 
@@ -96,7 +96,7 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
   public void testGetAllLanguagesMethod() {
     ASTCDMethod method = getMethodBy("getAllLanguages", constantClass);
     assertDeepEquals(CDModifier.PUBLIC_STATIC, method.getModifier());
-    assertDeepEquals(cdTypeFactory.createTypeByDefinition("Collection<String>"), method.getReturnType());
+    assertDeepEquals(cdTypeFacade.createTypeByDefinition("Collection<String>"), method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
   }
 

@@ -1,8 +1,8 @@
 package de.monticore.codegen.cd2java.method.mutator;
 
-import de.monticore.codegen.cd2java.factories.CDAttributeFactory;
+import de.monticore.codegen.cd2java.factories.CDAttributeFacade;
 import de.monticore.codegen.cd2java.factories.CDTypeBuilder;
-import de.monticore.codegen.cd2java.factories.CDTypeFactory;
+import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.methods.mutator.ListMutatorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.types._ast.ASTType;
@@ -13,14 +13,17 @@ import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.factories.CDTypeBuilder.Wildcard.EXTENDS;
@@ -37,8 +40,8 @@ public class ListMutatorDecoratorTest {
   @Before
   public void setup() {
     LogStub.init();
-    ASTType listType = CDTypeFactory.getInstance().createListTypeOf(String.class);
-    ASTCDAttribute attribute = CDAttributeFactory.getInstance().createAttribute(PROTECTED, listType, "a");
+    ASTType listType = CDTypeFacade.getInstance().createListTypeOf(String.class);
+    ASTCDAttribute attribute = CDAttributeFacade.getInstance().createAttribute(PROTECTED, listType, "a");
     ListMutatorDecorator listMutatorDecorator = new ListMutatorDecorator(glex);
     this.methods = listMutatorDecorator.decorate(attribute);
   }
@@ -97,7 +100,7 @@ public class ListMutatorDecoratorTest {
   public void testRemoveMethod() {
     List<ASTCDMethod> methods = getMethodsBy("removeA", 1, this.methods);
     assertEquals(2, methods.size());
-    ASTType expectedReturnType = CDTypeFactory.getInstance().createBooleanType();
+    ASTType expectedReturnType = CDTypeFacade.getInstance().createBooleanType();
     methods = methods.stream().filter(m -> m.getReturnType().deepEquals(expectedReturnType)).collect(Collectors.toList());
     assertEquals(1, methods.size());
     ASTCDMethod method = methods.get(0);
@@ -205,7 +208,7 @@ public class ListMutatorDecoratorTest {
   public void testRemoveWithIndexMethod() {
     List<ASTCDMethod> methods = getMethodsBy("removeA", 1, this.methods);
     assertEquals(2, methods.size());
-    ASTType exptectedReturnType = CDTypeFactory.getInstance().createSimpleReferenceType(String.class);
+    ASTType exptectedReturnType = CDTypeFacade.getInstance().createSimpleReferenceType(String.class);
     methods = methods.stream().filter(m -> m.getReturnType().deepEquals(exptectedReturnType)).collect(Collectors.toList());
     assertEquals(1, methods.size());
     ASTCDMethod method = methods.get(0);

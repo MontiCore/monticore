@@ -3,7 +3,7 @@ package de.monticore.codegen.cd2java.ast_new.reference.referencedDefinition;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.ast_new.reference.referencedDefinition.referencedDefinitionMethodDecorator.ReferencedDefinitionAccessorDecorator;
-import de.monticore.codegen.cd2java.factories.CDTypeFactory;
+import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.symboltable.SymbolTableService;
 import de.monticore.generating.GeneratorEngine;
@@ -21,7 +21,6 @@ import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertTrue;
 
 public class ASTReferencedDefinitionDecoratorOptionalTest extends DecoratorTestCase {
 
@@ -29,13 +28,13 @@ public class ASTReferencedDefinitionDecoratorOptionalTest extends DecoratorTestC
 
   private ASTCDClass astClass;
 
-  private CDTypeFactory cdTypeFactory = CDTypeFactory.getInstance();
+  private CDTypeFacade cdTypeFacade = CDTypeFacade.getInstance();
 
   private static final String NAME_DEFINITION = "de.monticore.codegen.ast.referencedsymbol._ast.ASTFoo";
 
   @Before
   public void setup() {
-    this.cdTypeFactory = CDTypeFactory.getInstance();
+    this.cdTypeFacade = CDTypeFacade.getInstance();
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "ReferencedSymbol");
     SymbolTableService symbolTableService = new SymbolTableService(ast);
@@ -64,7 +63,7 @@ public class ASTReferencedDefinitionDecoratorOptionalTest extends DecoratorTestC
   public void testGetNameDefinitionMethod() {
     ASTCDMethod method = getMethodBy("getNameDefinition", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    ASTType astType = this.cdTypeFactory.createTypeByDefinition(NAME_DEFINITION);
+    ASTType astType = this.cdTypeFacade.createTypeByDefinition(NAME_DEFINITION);
     assertDeepEquals(astType, method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
   }

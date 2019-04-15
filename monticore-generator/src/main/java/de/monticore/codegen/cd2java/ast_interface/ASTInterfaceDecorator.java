@@ -40,15 +40,15 @@ public class ASTInterfaceDecorator extends AbstractDecorator<ASTCDInterface, AST
         .addAllInterfaces(input.getInterfaceList().stream()
             .map(ASTReferenceType::deepClone)
             .collect(Collectors.toList()))
-        .addInterface(getCDTypeFactory().createReferenceTypeByDefinition(AST_INTERFACE))
+        .addInterface(getCDTypeFacade().createReferenceTypeByDefinition(AST_INTERFACE))
         .addInterface(astService.getASTBaseInterface())
         .build()
         ;
   }
 
   protected ASTCDMethod getAcceptMethod(ASTType visitorType) {
-    ASTCDParameter parameter = getCDParameterFactory().createParameter(visitorType, "visitor");
-    return getCDMethodFactory().createMethod(PUBLIC_ABSTRACT, getCDTypeFactory().createVoidType(), ACCEPT_METHOD, parameter);
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(visitorType, "visitor");
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, getCDTypeFacade().createVoidType(), ACCEPT_METHOD, parameter);
   }
 
 

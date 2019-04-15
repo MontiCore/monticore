@@ -3,7 +3,7 @@ package de.monticore.codegen.cd2java.ast_new.reference.referencedSymbol;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.ast_new.reference.ASTReferenceDecorator;
-import de.monticore.codegen.cd2java.factories.CDTypeFactory;
+import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.symboltable.SymbolTableService;
 import de.monticore.generating.GeneratorEngine;
@@ -16,10 +16,8 @@ import org.junit.Test;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertTrue;
 
 public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase {
 
@@ -27,7 +25,7 @@ public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase 
 
   private ASTCDClass astClass;
 
-  private CDTypeFactory cdTypeFactory = CDTypeFactory.getInstance();
+  private CDTypeFacade cdTypeFacade = CDTypeFacade.getInstance();
 
   private static final String NAME_SYMBOL = "de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol";
 
@@ -35,7 +33,7 @@ public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase 
 
   @Before
   public void setup() {
-    this.cdTypeFactory = CDTypeFactory.getInstance();
+    this.cdTypeFacade = CDTypeFacade.getInstance();
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "ReferencedSymbol");
     ASTReferenceDecorator decorator = new ASTReferenceDecorator(this.glex, new SymbolTableService(ast));
@@ -64,7 +62,7 @@ public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase 
     assertEquals("referencedSymbol", stereotype.getValue(0).getName());
     assertTrue(stereotype.getValue(0).isPresentValue());
     assertEquals("de.monticore.codegen.ast.referencedSymbol.FooSymbol", stereotype.getValue(0).getValue());
-    assertDeepEquals(cdTypeFactory.createTypeByDefinition("Optional<String>"), nameAttribute.getType());
+    assertDeepEquals(cdTypeFacade.createTypeByDefinition("Optional<String>"), nameAttribute.getType());
   }
 
   @Test
@@ -84,7 +82,7 @@ public class ASTReferencedSymbolDecoratorOptionalTest extends DecoratorTestCase 
   public void testGetNameSymbolMethod() {
     ASTCDMethod method = getMethodBy("getNameSymbol", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    ASTType astType = this.cdTypeFactory.createTypeByDefinition(NAME_SYMBOL);
+    ASTType astType = this.cdTypeFacade.createTypeByDefinition(NAME_SYMBOL);
     assertDeepEquals(astType, method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
   }

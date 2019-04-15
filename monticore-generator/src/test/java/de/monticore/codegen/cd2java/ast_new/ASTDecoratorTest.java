@@ -2,7 +2,7 @@ package de.monticore.codegen.cd2java.ast_new;
 
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
-import de.monticore.codegen.cd2java.factories.CDTypeFactory;
+import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.factory.NodeFactoryService;
 import de.monticore.codegen.cd2java.visitor_new.VisitorService;
@@ -10,7 +10,10 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -20,7 +23,8 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.cd2java.DecoratorAssert.*;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertVoid;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
@@ -30,7 +34,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
 
   private GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
-  private CDTypeFactory cdTypeFactory = CDTypeFactory.getInstance();
+  private CDTypeFacade cdTypeFacade = CDTypeFacade.getInstance();
 
   private ASTCDClass astClass;
 
@@ -67,7 +71,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAcceptMethod() {
     List<ASTCDMethod> methods = getMethodsBy("accept", 1, astClass);
-    ASTType visitorType = this.cdTypeFactory.createSimpleReferenceType("de.monticore.codegen.ast.ast._visitor.ASTVisitor");
+    ASTType visitorType = this.cdTypeFacade.createSimpleReferenceType("de.monticore.codegen.ast.ast._visitor.ASTVisitor");
 
     methods = methods.stream().filter(m -> visitorType.deepEquals(m.getCDParameter(0).getType())).collect(Collectors.toList());
     assertEquals(1, methods.size());
@@ -88,7 +92,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAcceptSuperMethod() {
     List<ASTCDMethod> methods = getMethodsBy("accept", 1, astClass);
-    ASTType visitorType = this.cdTypeFactory.createSimpleReferenceType("de.monticore.codegen.ast.super._visitor.SuperVisitor");
+    ASTType visitorType = this.cdTypeFacade.createSimpleReferenceType("de.monticore.codegen.ast.super._visitor.SuperVisitor");
 
     methods = methods.stream().filter(m -> visitorType.deepEquals(m.getCDParameter(0).getType())).collect(Collectors.toList());
     assertEquals(1, methods.size());
@@ -109,7 +113,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
   public void testConstructMethod() {
     ASTCDMethod method = getMethodBy("_construct", astClass);
     assertDeepEquals(PROTECTED, method.getModifier());
-    ASTType astType = this.cdTypeFactory.createSimpleReferenceType(astClass.getName());
+    ASTType astType = this.cdTypeFacade.createSimpleReferenceType(astClass.getName());
     assertDeepEquals(astType, method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
   }

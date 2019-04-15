@@ -10,20 +10,19 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-public class CDParameterFactory {
+public class CDParameterFacade {
 
-  private static CDParameterFactory cdParameterFactory;
+  private static CDParameterFacade cdParameterFacade;
 
-  private CDParameterFactory() {
+  private CDParameterFacade() {
   }
 
-  public static CDParameterFactory getInstance() {
-    if (cdParameterFactory == null) {
-      cdParameterFactory = new CDParameterFactory();
+  public static CDParameterFacade getInstance() {
+    if (cdParameterFacade == null) {
+      cdParameterFacade = new CDParameterFacade();
     }
-    return cdParameterFactory;
+    return cdParameterFacade;
   }
 
   public ASTCDParameter createParameter(final ASTType type, final String name) {
@@ -38,11 +37,11 @@ public class CDParameterFactory {
   }
 
   public ASTCDParameter createParameter(final Class<?> type, final String name) {
-    return createParameter(CDTypeFactory.getInstance().createSimpleReferenceType(type), name);
+    return createParameter(CDTypeFacade.getInstance().createSimpleReferenceType(type), name);
   }
 
   public ASTCDParameter createParameter(final Class<?> type) {
-    return createParameter(CDTypeFactory.getInstance().createSimpleReferenceType(type), StringUtils.uncapitalize(type.getSimpleName()));
+    return createParameter(CDTypeFacade.getInstance().createSimpleReferenceType(type), StringUtils.uncapitalize(type.getSimpleName()));
   }
 
   public ASTCDParameter createParameter(final ASTCDAttribute ast) {

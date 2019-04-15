@@ -52,8 +52,8 @@ public class CoCoInterfaceDecorator extends AbstractDecorator<ASTCDDefinition, L
 
   protected ASTCDMethod createCheckMethod() {
     ASTType parameterType = astService.getASTBaseInterface();
-    ASTCDParameter parameter = getCDParameterFactory().createParameter(parameterType, "node");
-    return getCDMethodFactory().createMethod(PUBLIC_ABSTRACT, CHECK, parameter);
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(parameterType, "node");
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, CHECK, parameter);
   }
 
   protected ASTCDInterface createCoCoInterface(ASTCDType type) {
@@ -66,7 +66,7 @@ public class CoCoInterfaceDecorator extends AbstractDecorator<ASTCDDefinition, L
 
   protected ASTCDMethod createCheckMethod(ASTCDType cdType) {
     ASTType parameterType = astService.getASTType(cdType);
-    ASTCDParameter parameter = getCDParameterFactory().createParameter(parameterType, "node");
-    return getCDMethodFactory().createMethod(PUBLIC_ABSTRACT, CHECK, parameter);
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(parameterType, "node");
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT, CHECK, parameter);
   }
 }

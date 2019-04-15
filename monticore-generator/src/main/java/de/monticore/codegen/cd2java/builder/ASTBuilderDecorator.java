@@ -40,7 +40,7 @@ public class ASTBuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClas
     builderClass.setSuperclass(createBuilderSuperClass(domainClass, builderClassName));
 
     if (!hasSuperClassOtherThanASTCNode(domainClass)) {
-      ASTType builderType = this.getCDTypeFactory().createSimpleReferenceType(builderClassName);
+      ASTType builderType = this.getCDTypeFacade().createSimpleReferenceType(builderClassName);
       builderClass.addAllCDMethods(createBuilderMethodForASTCNodeMethods(builderType));
     }
 
@@ -57,7 +57,7 @@ public class ASTBuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClas
     if (hasSuperClassOtherThanASTCNode(domainClass)) {
       superClass = domainClass.printSuperClass() + BUILDER_SUFFIX;
     }
-    return this.getCDTypeFactory().createSimpleReferenceType(superClass);
+    return this.getCDTypeFacade().createSimpleReferenceType(superClass);
   }
 
   protected boolean hasSuperClassOtherThanASTCNode(final ASTCDClass domainClass) {
@@ -67,7 +67,7 @@ public class ASTBuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClas
   protected List<ASTCDMethod> createBuilderMethodForASTCNodeMethods(final ASTType builderType) {
     List<ASTCDMethod> result = new ArrayList<>();
     for (ASTCNodeMethod astNodeMethod : ASTCNodeMethod.values()) {
-      ASTCDMethod method = this.getCDMethodFactory().createMethodByDefinition(astNodeMethod.signature);
+      ASTCDMethod method = this.getCDMethodFacade().createMethodByDefinition(astNodeMethod.signature);
       method.setReturnType(builderType);
       this.replaceTemplate(EMPTY_BODY, method, createImplementation(method));
       result.add(method);

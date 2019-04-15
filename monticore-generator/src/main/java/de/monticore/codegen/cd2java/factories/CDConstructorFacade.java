@@ -8,23 +8,23 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CDConstructorFactory {
+public class CDConstructorFacade {
 
-  private static CDConstructorFactory cdConstructorFactory;
+  private static CDConstructorFacade cdConstructorFacade;
 
-  private CDConstructorFactory() {
+  private CDConstructorFacade() {
   }
 
-  public static CDConstructorFactory getInstance() {
-    if (cdConstructorFactory == null) {
-      cdConstructorFactory = new CDConstructorFactory();
+  public static CDConstructorFacade getInstance() {
+    if (cdConstructorFacade == null) {
+      cdConstructorFacade = new CDConstructorFacade();
     }
-    return cdConstructorFactory;
+    return cdConstructorFacade;
   }
 
   public ASTCDConstructor createFullConstructor(final ASTModifier modifier, final ASTCDClass cdClass, final List<ASTCDAttribute> extraAttributes) {
-    List<ASTCDParameter> parameterList = CDParameterFactory.getInstance().createParameters(cdClass.getCDAttributeList());
-    parameterList.addAll(CDParameterFactory.getInstance().createParameters(extraAttributes));
+    List<ASTCDParameter> parameterList = CDParameterFacade.getInstance().createParameters(cdClass.getCDAttributeList());
+    parameterList.addAll(CDParameterFacade.getInstance().createParameters(extraAttributes));
     return createConstructor(modifier, cdClass.getName(), parameterList);
   }
 

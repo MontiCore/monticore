@@ -6,7 +6,6 @@ import de.monticore.types.TypesHelper;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTModifier;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTValue;
 import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisMill;
 import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParser;
 import org.apache.commons.lang3.StringUtils;
@@ -15,21 +14,21 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
-public class CDAttributeFactory {
+public class CDAttributeFacade {
 
-  private static CDAttributeFactory cdAttributeFactory;
+  private static CDAttributeFacade cdAttributeFacade;
 
   private final CD4AnalysisParser parser;
 
-  private CDAttributeFactory() {
+  private CDAttributeFacade() {
     this.parser = new CD4AnalysisParser();
   }
 
-  public static CDAttributeFactory getInstance() {
-    if (cdAttributeFactory == null) {
-      cdAttributeFactory = new CDAttributeFactory();
+  public static CDAttributeFacade getInstance() {
+    if (cdAttributeFacade == null) {
+      cdAttributeFacade = new CDAttributeFacade();
     }
-    return cdAttributeFactory;
+    return cdAttributeFacade;
   }
 
   public ASTCDAttribute createAttributeByDefinition(final String signature) {
@@ -58,19 +57,19 @@ public class CDAttributeFactory {
   }
 
   public ASTCDAttribute createAttribute(final ASTModifier modifier, final String type, final String name) {
-    return createAttribute(modifier, CDTypeFactory.getInstance().createSimpleReferenceType(type), name);
+    return createAttribute(modifier, CDTypeFacade.getInstance().createSimpleReferenceType(type), name);
   }
 
   public ASTCDAttribute createAttribute(final ASTModifier modifier, final String type) {
-    return createAttribute(modifier, CDTypeFactory.getInstance().createSimpleReferenceType(type), StringUtils.uncapitalize(type));
+    return createAttribute(modifier, CDTypeFacade.getInstance().createSimpleReferenceType(type), StringUtils.uncapitalize(type));
   }
 
   public ASTCDAttribute createAttribute(final ASTModifier modifier, final Class<?> type, final String name) {
-    return createAttribute(modifier, CDTypeFactory.getInstance().createSimpleReferenceType(type), name);
+    return createAttribute(modifier, CDTypeFacade.getInstance().createSimpleReferenceType(type), name);
   }
 
   public ASTCDAttribute createAttribute(final ASTModifier modifier, final Class<?> type) {
-    return createAttribute(modifier, CDTypeFactory.getInstance().createSimpleReferenceType(type), StringUtils.uncapitalize(type.getSimpleName()));
+    return createAttribute(modifier, CDTypeFacade.getInstance().createSimpleReferenceType(type), StringUtils.uncapitalize(type.getSimpleName()));
   }
 
 

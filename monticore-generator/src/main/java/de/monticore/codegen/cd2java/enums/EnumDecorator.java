@@ -53,14 +53,14 @@ public class EnumDecorator extends AbstractDecorator<ASTCDEnum, ASTCDEnum> {
   }
 
   protected ASTCDAttribute getIntValueAttribute() {
-    ASTType intType = getCDTypeFactory().createIntType();
-    return getCDAttributeFactory().createAttribute(PROTECTED, intType, INT_VALUE);
+    ASTType intType = getCDTypeFacade().createIntType();
+    return getCDAttributeFacade().createAttribute(PROTECTED, intType, INT_VALUE);
   }
 
   protected ASTCDConstructor getLiteralsConstructor(String enumName) {
-    ASTType intType = getCDTypeFactory().createIntType();
-    ASTCDParameter intParameter = getCDParameterFactory().createParameter(intType, INT_VALUE);
-    ASTCDConstructor constructor = getCDConstructorFactory().createConstructor(PRIVATE.build(), enumName, intParameter);
+    ASTType intType = getCDTypeFacade().createIntType();
+    ASTCDParameter intParameter = getCDParameterFacade().createParameter(intType, INT_VALUE);
+    ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PRIVATE.build(), enumName, intParameter);
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this." + INT_VALUE + " = " + INT_VALUE + ";"));
     return constructor;
   }

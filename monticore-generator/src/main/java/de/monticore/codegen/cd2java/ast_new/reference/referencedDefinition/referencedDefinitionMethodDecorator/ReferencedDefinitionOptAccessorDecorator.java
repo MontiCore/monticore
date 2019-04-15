@@ -26,7 +26,7 @@ public class ReferencedDefinitionOptAccessorDecorator extends OptionalAccessorDe
   protected ASTCDMethod createGetOptMethod(final ASTCDAttribute ast) {
     String name = String.format(GET_OPT, StringUtils.capitalize(ast.getName()));
     ASTType type = ast.getType().deepClone();
-    ASTCDMethod method = this.getCDMethodFactory().createMethod(PUBLIC, type, name);
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, type, name);
     String referencedSymbolType = symbolTableService.getReferencedSymbolTypeName(ast);
     String simpleName = symbolTableService.getSimpleSymbolName(referencedSymbolType);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("ast_new.refSymbolMethods.GetDefinitionOpt",

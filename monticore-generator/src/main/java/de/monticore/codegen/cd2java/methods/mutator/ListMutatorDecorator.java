@@ -5,7 +5,6 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -44,7 +43,7 @@ public class ListMutatorDecorator extends ListMethodDecorator {
 
   private ASTCDMethod createSetListMethod(ASTCDAttribute ast) {
     String signature = String.format(SET_LIST, capitalizedAttributeName, attributeType);
-    ASTCDMethod getList = this.getCDMethodFactory().createMethodByDefinition(signature);
+    ASTCDMethod getList = this.getCDMethodFacade().createMethodByDefinition(signature);
     this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint("methods.Set", ast));
     return getList;
   }

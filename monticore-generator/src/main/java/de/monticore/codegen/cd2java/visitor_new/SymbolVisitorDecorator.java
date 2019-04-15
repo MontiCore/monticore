@@ -54,12 +54,12 @@ public class SymbolVisitorDecorator extends AbstractDecorator<ASTCDCompilationUn
   }
 
   protected ASTCDMethod addVisitASTNodeMethods() {
-    ASTType astNodeType = getCDTypeFactory().createTypeByDefinition(SYMBOL_FULL_NAME);
+    ASTType astNodeType = getCDTypeFacade().createTypeByDefinition(SYMBOL_FULL_NAME);
     return visitorService.getVisitorMethod(VISIT, astNodeType);
   }
 
   protected ASTCDMethod addEndVisitASTNodeMethods() {
-    ASTType astNodeType = getCDTypeFactory().createTypeByDefinition(SYMBOL_FULL_NAME);
+    ASTType astNodeType = getCDTypeFacade().createTypeByDefinition(SYMBOL_FULL_NAME);
     return visitorService.getVisitorMethod(END_VISIT, astNodeType);
   }
 

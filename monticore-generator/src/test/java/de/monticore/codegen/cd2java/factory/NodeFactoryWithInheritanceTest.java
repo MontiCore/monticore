@@ -2,8 +2,8 @@ package de.monticore.codegen.cd2java.factory;
 
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
-import de.monticore.codegen.cd2java.factories.CDParameterFactory;
-import de.monticore.codegen.cd2java.factories.CDTypeFactory;
+import de.monticore.codegen.cd2java.factories.CDParameterFacade;
+import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -24,9 +24,9 @@ import static org.junit.Assert.*;
 
 public class NodeFactoryWithInheritanceTest extends DecoratorTestCase {
 
-  private CDTypeFactory cdTypeFacade;
+  private CDTypeFacade cdTypeFacade;
 
-  private CDParameterFactory cdParameterFacade;
+  private CDParameterFacade cdParameterFacade;
 
   private ASTCDClass factoryClass;
 
@@ -35,8 +35,8 @@ public class NodeFactoryWithInheritanceTest extends DecoratorTestCase {
   @Before
   public void setUp() {
     this.glex = new GlobalExtensionManagement();
-    this.cdTypeFacade = CDTypeFactory.getInstance();
-    this.cdParameterFacade = CDParameterFactory.getInstance();
+    this.cdTypeFacade = CDTypeFacade.getInstance();
+    this.cdParameterFacade = CDParameterFacade.getInstance();
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     ASTCDCompilationUnit compilationUnit = this.parse("de", "monticore", "codegen", "factory", "CGrammar");

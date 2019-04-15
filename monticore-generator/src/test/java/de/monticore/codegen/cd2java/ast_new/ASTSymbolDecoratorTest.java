@@ -2,7 +2,7 @@ package de.monticore.codegen.cd2java.ast_new;
 
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
-import de.monticore.codegen.cd2java.factories.CDTypeFactory;
+import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.codegen.cd2java.symboltable.SymbolTableService;
@@ -29,13 +29,13 @@ public class ASTSymbolDecoratorTest extends DecoratorTestCase {
 
   private ASTCDClass astClass;
 
-  private CDTypeFactory cdTypeFactory = CDTypeFactory.getInstance();
+  private CDTypeFacade cdTypeFacade = CDTypeFacade.getInstance();
 
   private static final String AST_SYMBOL = "de.monticore.codegen.ast.ast._symboltable.ASymbol";
 
   @Before
   public void setup() {
-    this.cdTypeFactory = CDTypeFactory.getInstance();
+    this.cdTypeFacade = CDTypeFacade.getInstance();
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "AST");
     ASTSymbolDecorator decorator = new ASTSymbolDecorator(this.glex, new MethodDecorator(glex), new SymbolTableService(ast));
@@ -70,7 +70,7 @@ public class ASTSymbolDecoratorTest extends DecoratorTestCase {
   public void testGetSymbolMethod() {
     ASTCDMethod method = getMethodBy("getASymbol", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
-    ASTType astType = this.cdTypeFactory.createTypeByDefinition(AST_SYMBOL);
+    ASTType astType = this.cdTypeFacade.createTypeByDefinition(AST_SYMBOL);
     assertDeepEquals(astType, method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
   }
@@ -98,7 +98,7 @@ public class ASTSymbolDecoratorTest extends DecoratorTestCase {
     assertVoid(method.getReturnType());
     assertEquals(1, method.sizeCDParameters());
     assertEquals("aSymbol", method.getCDParameter(0).getName());
-    ASTType astType = this.cdTypeFactory.createTypeByDefinition(AST_SYMBOL);
+    ASTType astType = this.cdTypeFacade.createTypeByDefinition(AST_SYMBOL);
     assertDeepEquals(astType, method.getCDParameter(0).getType());
   }
 

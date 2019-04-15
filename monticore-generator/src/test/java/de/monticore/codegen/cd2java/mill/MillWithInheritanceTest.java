@@ -2,7 +2,7 @@ package de.monticore.codegen.cd2java.mill;
 
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
-import de.monticore.codegen.cd2java.factories.CDTypeFactory;
+import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -27,7 +27,7 @@ import static org.junit.Assert.assertTrue;
 
 public class MillWithInheritanceTest extends DecoratorTestCase {
 
-  private CDTypeFactory cdTypeFacade;
+  private CDTypeFacade cdTypeFacade;
 
   private ASTCDClass millClass;
 
@@ -36,7 +36,7 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
   @Before
   public void setUp() {
     this.glex = new GlobalExtensionManagement();
-    this.cdTypeFacade = CDTypeFactory.getInstance();
+    this.cdTypeFacade = CDTypeFacade.getInstance();
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     ASTCDCompilationUnit compilationUnit = this.parse("de", "monticore", "codegen", "factory", "CGrammar");
