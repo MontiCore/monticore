@@ -7,7 +7,7 @@ import de.monticore.generating.templateengine.HookPoint;
 
 public abstract class AbstractDecorator<I, R> implements Decorator<I, R> {
 
-  private final GlobalExtensionManagement glex;
+  protected final GlobalExtensionManagement glex;
 
   private boolean templatesEnabled;
 

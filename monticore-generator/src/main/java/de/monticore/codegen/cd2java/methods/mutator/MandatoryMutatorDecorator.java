@@ -17,7 +17,7 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
 public class MandatoryMutatorDecorator extends AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> {
 
-  private static final String SET = "set%s";
+  protected static final String SET = "set%s";
 
   public MandatoryMutatorDecorator(final GlobalExtensionManagement glex) {
     super(glex);
@@ -28,7 +28,7 @@ public class MandatoryMutatorDecorator extends AbstractDecorator<ASTCDAttribute,
     return new ArrayList<>(Arrays.asList(createSetter(ast)));
   }
 
-  private ASTCDMethod createSetter(final ASTCDAttribute ast) {
+  protected ASTCDMethod createSetter(final ASTCDAttribute ast) {
     //todo find better util than the DecorationHelper
     String name = String.format(SET, StringUtils.capitalize(DecorationHelper.getNativeAttributeName(ast.getName())));
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, name, this.getCDParameterFacade().createParameters(ast));

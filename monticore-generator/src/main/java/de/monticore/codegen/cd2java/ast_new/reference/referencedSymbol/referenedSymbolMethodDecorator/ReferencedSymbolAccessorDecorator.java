@@ -5,7 +5,9 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 
 public class ReferencedSymbolAccessorDecorator extends AccessorDecorator {
 
-  public ReferencedSymbolAccessorDecorator(GlobalExtensionManagement glex) {
-    super(glex, new ReferencedSymbolOptAccessorDecorator(glex), new ReferencedSymbolOptAccessorDecorator(glex), new ReferencedSymbolListAccessorDecorator(glex));
+  public ReferencedSymbolAccessorDecorator(final GlobalExtensionManagement glex) {
+    super(glex, new ReferencedSymbolOptAccessorDecorator(glex),
+        new ReferencedSymbolOptAccessorDecorator(glex),
+        new ReferencedSymbolListAccessorDecorator(glex));
   }
 }

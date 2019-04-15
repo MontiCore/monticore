@@ -3,7 +3,7 @@ package de.monticore.codegen.cd2java.builder;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
-import de.monticore.codegen.cd2java.methods.MethodDecorator;
+import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -37,7 +37,7 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "builder", "Builder");
     originalClass = getClassBy("A", ast);
 
-    MethodDecorator methodDecorator = new MethodDecorator(glex);
+    AccessorDecorator methodDecorator = new AccessorDecorator(glex);
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, methodDecorator);
     this.builderClass = builderDecorator.decorate(originalClass);
   }

@@ -6,7 +6,9 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 
 public class ReferencedDefinitionAccessorDecorator extends AccessorDecorator {
 
-  public ReferencedDefinitionAccessorDecorator(GlobalExtensionManagement glex, SymbolTableService symbolTableService) {
-    super(glex, new ReferencedDefinitionOptAccessorDecorator(glex, symbolTableService), new ReferencedDefinitionOptAccessorDecorator(glex, symbolTableService), new ReferencedDefinitionListAccessorDecorator(glex, symbolTableService));
+  public ReferencedDefinitionAccessorDecorator(final GlobalExtensionManagement glex, SymbolTableService symbolTableService) {
+    super(glex, new ReferencedDefinitionOptAccessorDecorator(glex, symbolTableService),
+        new ReferencedDefinitionOptAccessorDecorator(glex, symbolTableService),
+        new ReferencedDefinitionListAccessorDecorator(glex, symbolTableService));
   }
 }

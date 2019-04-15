@@ -4,7 +4,6 @@ import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.ast_interface.ASTInterfaceDecorator;
 import de.monticore.codegen.cd2java.ast_interface.ASTLanguageInterfaceDecorator;
-import de.monticore.codegen.cd2java.ast_new.*;
 import de.monticore.codegen.cd2java.ast_new.reference.ASTReferenceDecorator;
 import de.monticore.codegen.cd2java.builder.ASTBuilderDecorator;
 import de.monticore.codegen.cd2java.builder.BuilderDecorator;
@@ -58,7 +57,7 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
 
     ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator = new ASTLanguageInterfaceDecorator(astService, visitorService);
 
-    BuilderDecorator builderDecorator = new BuilderDecorator(glex, new MethodDecorator(glex));
+    BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex));
     ASTBuilderDecorator astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator);
 
     NodeFactoryDecorator nodeFactoryDecorator = new NodeFactoryDecorator(glex);

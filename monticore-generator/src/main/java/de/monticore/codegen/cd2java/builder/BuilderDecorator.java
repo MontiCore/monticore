@@ -2,16 +2,16 @@ package de.monticore.codegen.cd2java.builder;
 
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.builder.buildermethods.BuilderMutatorMethodDecorator;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.factories.CDModifier;
-import de.monticore.codegen.cd2java.methods.MethodDecorator;
+import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,11 +30,11 @@ public class BuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> 
 
   public static final String IS_VALID = "isValid";
 
-  private final MethodDecorator methodDecorator;
+  private final AccessorDecorator accessorDecorator;
 
-  public BuilderDecorator(final GlobalExtensionManagement glex, final MethodDecorator methodDecorator) {
+  public BuilderDecorator(final GlobalExtensionManagement glex, final AccessorDecorator accessorDecorator) {
     super(glex);
-    this.methodDecorator = methodDecorator;
+    this.accessorDecorator = accessorDecorator;
   }
 
   @Override
@@ -69,29 +69,17 @@ public class BuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> 
     ASTCDMethod isValidMethod = this.getCDMethodFacade().createMethod(PUBLIC, this.getCDTypeFacade().createBooleanType(), IS_VALID);
     this.replaceTemplate(EMPTY_BODY, isValidMethod, new TemplateHookPoint("builder.IsValidMethod", mandatoryAttributes));
 
-
-    AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> accessorDecorator = this.methodDecorator.getAccessorDecorator();
-    AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> mutatorDecorator = this.methodDecorator.getMutatorDecorator();
-    mutatorDecorator.disableTemplates();
-
     List<ASTCDMethod> accessorMethods = builderAttributes.stream()
         .map(accessorDecorator::decorate)
         .flatMap(List::stream)
         .collect(Collectors.toList());
 
-    List<ASTCDMethod> mutatorMethods = new ArrayList<>();
-    for (ASTCDAttribute attribute : builderAttributes) {
-      List<ASTCDMethod> methods = mutatorDecorator.decorate(attribute);
-      for (ASTCDMethod m : methods) {
-        m.setReturnType(builderType);
-        String methodName = m.getName().substring(0, m.getName().length() - attribute.getName().length());
-        String parameterCall = m.getCDParameterList().stream()
-            .map(ASTCDParameter::getName)
-            .collect(Collectors.joining(", "));
-        this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("builder.MethodDelegate", attribute.getName(), methodName, parameterCall));
-      }
-      mutatorMethods.addAll(methods);
-    }
+    BuilderMutatorMethodDecorator mutatorDecorator = new BuilderMutatorMethodDecorator(glex, builderType);
+    List<ASTCDMethod> mutatorMethods = builderAttributes.stream()
+        .map(mutatorDecorator::decorate)
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
+
 
     return  CD4AnalysisMill.cDClassBuilder()
         .setModifier(modifier.build())

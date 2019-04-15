@@ -19,13 +19,13 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
 public class OptionalMutatorDecorator extends AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> {
 
-  private static final String SET = "set%s";
+  protected static final String SET = "set%s";
 
-  private static final String SET_OPT = "set%sOpt";
+  protected static final String SET_OPT = "set%sOpt";
 
-  private static final String SET_ABSENT = "set%sAbsent";
+  protected static final String SET_ABSENT = "set%sAbsent";
 
-  private String naiveAttributeName;
+  protected String naiveAttributeName;
 
   public OptionalMutatorDecorator(final GlobalExtensionManagement glex) {
     super(glex);
@@ -41,7 +41,7 @@ public class OptionalMutatorDecorator extends AbstractDecorator<ASTCDAttribute, 
     return Arrays.asList(set, setOpt, setAbsent);
   }
 
-  private ASTCDMethod createSetMethod(final ASTCDAttribute ast) {
+  protected ASTCDMethod createSetMethod(final ASTCDAttribute ast) {
     String name = String.format(SET, naiveAttributeName);
     ASTType parameterType = TypesHelper.getSimpleReferenceTypeFromOptional(ast.getType()).deepClone();
     ASTCDParameter parameter = this.getCDParameterFacade().createParameter(parameterType, ast.getName());
@@ -50,14 +50,14 @@ public class OptionalMutatorDecorator extends AbstractDecorator<ASTCDAttribute, 
     return method;
   }
 
-  private ASTCDMethod createSetOptMethod(final ASTCDAttribute ast) {
+  protected ASTCDMethod createSetOptMethod(final ASTCDAttribute ast) {
     String name = String.format(SET_OPT, naiveAttributeName);
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, name, this.getCDParameterFacade().createParameters(ast));
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.Set", ast));
     return method;
   }
 
-  private ASTCDMethod createSetAbsentMethod(final ASTCDAttribute ast) {
+  protected ASTCDMethod createSetAbsentMethod(final ASTCDAttribute ast) {
     String name = String.format(SET_ABSENT, naiveAttributeName);
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, name);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.SetAbsent", ast));
