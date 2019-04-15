@@ -33,10 +33,10 @@ ${tc.signature("astcdClass")}
     </#if>
   <#else>
     <#if genHelper.isListAstNode(attribute)>
-    get${methName?remove_ending("s")}List().forEach(s -> result.${attributeName}.add(s.deepClone()));
+    get${methName}List().forEach(s -> result.${attributeName}.add(s.deepClone()));
     <#elseif genHelper.isListType(typeName)>
-    for ( int i = 0; i < this.get${methName?remove_ending("s")}List().size() ; i++ ) {
-        result.add${methName?remove_ending("s")}(get${methName?remove_ending("s")}(i));
+    for ( int i = 0; i < this.get${methName}List().size() ; i++ ) {
+        result.add${methName}(get${methName(i)};
     }
     <#elseif genHelper.isString(typeName) || genHelper.isAttributeOfTypeEnum(attribute)>
     result.set${methName}(get${methName}());
