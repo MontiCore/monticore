@@ -2,6 +2,9 @@
 
 package de.monticore.expressions;
 
+/**
+ * This grammar defines ocl expressions
+*/
 component grammar OCLExpressions extends de.monticore.expressions.ExpressionsBasis {
 
 external EDeclaration;
@@ -252,4 +255,9 @@ external ExtType;
         |
         (Expression ("," Expression)*)
         ;
+
+    OCLEquivalentExpression implements Expression <107> =
+        left:Expression operator:"<=>" right:Expression;
+
+
 }
