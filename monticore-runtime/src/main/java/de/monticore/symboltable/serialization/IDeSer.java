@@ -5,8 +5,12 @@
  */
 package de.monticore.symboltable.serialization;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 import de.monticore.io.FileReaderWriter;
@@ -23,8 +27,8 @@ public interface IDeSer<T> {
   public String getSerializedKind();
   
   /**
-   * 
    * Serializes a given object of generic class parameter T and returns the resulting String.
+   * 
    * @param toSerialize
    * @return
    */
@@ -32,9 +36,10 @@ public interface IDeSer<T> {
   
   /**
    * Deserializes a given String and returns the resulting object of the generic class parameter T.
+   * 
    * @param serialized
    * @return
-   * @throws IOException 
+   * @throws IOException
    */
   public Optional<T> deserialize(String serialized);
   
@@ -46,6 +51,19 @@ public interface IDeSer<T> {
   default public Optional<T> load(Path path) {
     String deserialized = new FileReaderWriter().readFromFile(path);
     return deserialize(deserialized);
+  }
+  
+  default public Optional<T> load(URL url) {
+    Path path;
+    try {
+      path = Paths.get(new File(url.toURI()).getPath());
+      String deserialized = new FileReaderWriter().readFromFile(path);
+      return deserialize(deserialized);
+    }
+    catch (URISyntaxException e) {
+      e.printStackTrace();
+    }
+    return Optional.empty();
   }
   
 }

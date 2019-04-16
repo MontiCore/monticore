@@ -6,6 +6,7 @@ ${signature("className", "directSuperCds", "rules", "hcPath")}
 <#assign fqn = genHelper.getQualifiedGrammarName()?lower_case>
 <#assign package = genHelper.getTargetPackage()?lower_case>
 <#assign topAstName = genHelper.getQualifiedStartRuleName()>
+<#assign scopeName = "I"${grammarName}"Scope">;
 
 <#-- Copyright -->
 ${defineHookPoint("JavaCopyright")}
@@ -29,23 +30,23 @@ import java.util.Optional;
 
 public class ${className} implements ${grammarName}Visitor {
 
-  protected Deque<I${grammarName}Scope> scopeStack = new ArrayDeque<>();
+  protected Deque<${scopeName}> scopeStack = new ArrayDeque<>();
   
   /**
    * The first scope OTHER THAN THE GLOBAL SCOPE that has been created, i.e., added  to the scope
    * stack. This information helps to determine the top scope within this creation process.
    */
-  protected I${grammarName}Scope firstCreatedScope;
+  protected ${scopeName} firstCreatedScope;
   
   private ${grammarName}Visitor realThis = this;
 
   public ${className}(
-    final IAutomataScope enclosingScope) {
+    final ${scopeName} enclosingScope) {
   
     putOnStack(Log.errorIfNull(enclosingScope));
   }
   
-  public ${className}(final Deque<I${grammarName}Scope> scopeStack) {
+  public ${className}(final Deque<${scopeName}> scopeStack) {
     this.scopeStack = Log.errorIfNull(scopeStack);
   }
 
@@ -56,17 +57,17 @@ public class ${className} implements ${grammarName}Visitor {
     * @param rootNode the root node
     * @return the first scope that was created
     */
-  public I${grammarName}Scope createFromAST(${topAstName} rootNode) {
+  public ${scopeName} createFromAST(${topAstName} rootNode) {
     Log.errorIfNull(rootNode, "0xA7004${genHelper.getGeneratedErrorCode(ast)} Error by creating of the ${className} symbol table: top ast node is null");
     rootNode.accept(realThis);
     return getFirstCreatedScope();
   }
   
-  public I${grammarName}Scope getFirstCreatedScope() {
+  public ${scopeName} getFirstCreatedScope() {
     return firstCreatedScope;
   }
   
-  public void putOnStack(I${grammarName}Scope scope) {
+  public void putOnStack(${scopeName} scope) {
     Log.errorIfNull(scope);
     
     if (!scope.getEnclosingScope().isPresent() && getCurrentScope().isPresent()) {
@@ -95,24 +96,95 @@ public class ${className} implements ${grammarName}Visitor {
       this.realThis = realThis;
     }
   }
+  
+   public final Optional<${scopeName}> getCurrentScope() {
+    return Optional.ofNullable(scopeStack.peekLast());
+  }
+  
+  public final Optional<${scopeName}> removeCurrent${grammarName}Scope() {
+    return Optional.of(scopeStack.pollLast());
+  }
+
+  protected void set${grammarName}ScopeStack(final Deque<${scopeName}> scopeStack) {
+    this.scopeStack = scopeStack;
+  }
+  
+  public void setEnclosingScopeOfNodes(ASTNode root) {
+    EnclosingScopeOfNodesInitializer v = new EnclosingScopeOfNodesInitializer();
+    v.handle(root);
+  }
 
 <#list rules as ruleSymbol>
   <#assign ruleName = ruleSymbol.getName()>
   <#assign symbolName = genHelper.getQualifiedProdName(ruleSymbol) + "Symbol">
   <#assign astName = genHelper.getQualifiedASTName(ruleSymbol)>
+  <#assign isScopeSpanning = genHelper.isScopeSpanningSymbol(ruleSymbol)>
+  
+  @Override
+  public void visit(${astName} ast) {
+    ${symbolName} symbol = create_${ruleName}(ast);
+    initialize_${ruleName}(symbol, ast);
+    addToScopeAndLinkWithNode(symbol, ast);
+  }
 
-  <#if genHelper.isScopeSpanningSymbol(ruleSymbol)>
-    ${includeArgs("symboltable.symboltablecreators.ScopeSpanningSymbolMethods", ruleSymbol, symbolName, ruleName, astName)}
-  <#elseif genHelper.isSymbol(ruleSymbol)>
-    ${includeArgs("symboltable.symboltablecreators.SymbolMethods", ruleSymbol, symbolName, ruleName, astName)}
-  <#elseif genHelper.spansScope(ruleSymbol)>
-    ${includeArgs("symboltable.symboltablecreators.ScopeMethods", ruleSymbol, ruleName, astName)}
-  <#elseif genHelper.isStartRule(ruleSymbol)>
+  protected ${symbolName} create_${ruleName}(${astName} ast) {
+      return new ${symbolName}(ast.getName());
+  }
+
+  protected void initialize_${ruleName}(${symbolName} symbol, ${astName} ast) {
+  }
+
   @Override
   public void endVisit(${astName} ast) {
-    setEnclosingScopeOfNodes(ast);
+    removeCurrent${grammarName}Scope();
   }
-  </#if>
-</#list>
-
+  
+  public void addToScopeAndLinkWithNode(${symbolName} symbol, ${astName} astNode) {
+    addToScope(symbol);
+    setLinkBetweenSymbolAndNode(symbol, astNode);
+<#if isScopeSpanning>
+    putSpannedScopeOnStack(symbol);
+</#if>
+  }
+  
+  public void setLinkBetweenSymbolAndNode(${symbolName} symbol, ${astName} astNode) {
+    // symbol -> ast
+    symbol.setAstNode(astNode);
+    
+    // ast -> symbol
+    astNode.setSymbol2(symbol);
+    astNode.set${symbolName}(symbol);
+    astNode.setEnclosingScope2(symbol.getEnclosingScope());
+    
+<#if isScopeSpanning>
+    // ast -> spannedScope
+      astNode.setSpannedScope2(symbol.getSpannedScope());
+</#if>
+  }
+  
+  public void addToScope(${symbolName} symbol) {
+    if (!(symbol instanceof ISymbolReference)) {
+      if (getCurrentScope().isPresent()) {
+        getCurrentScope().get().add(symbol);
+      } else {
+        Log.warn("0xA50212 Symbol cannot be added to current scope, since no scope exists.");
+      }
     }
+  }
+  
+<#if isScopeSpanning>
+  public void setLinkBetweenSpannedScopeAndNode(${scopeName} scope, ${astName} astNode) {
+    // scope -> ast
+    scope.setAstNode(astNode);
+    
+    // ast -> scope
+    astNode.setSpannedScope2((${grammarName}Scope) scope);
+  }
+  
+  public void putSpannedScopeOnStack(${symbolName} symbol) {
+    Log.errorIfNull(symbol);
+    putOnStack( symbol.getSpanned${grammarName}Scope());
+  }
+</#if>
+</#list>
+}
