@@ -27,14 +27,24 @@ public class ASTLanguageInterfaceDecoratorTest extends DecoratorTestCase {
 
   private ASTCDInterface languageInterface;
 
+  private ASTCDCompilationUnit originalCompilationUnit;
+
+  private ASTCDCompilationUnit decoratedCompilationUnit;
+
   @Before
   public void setUp() {
     this.cdTypeFacade = CDTypeFacade.getInstance();
-    ASTCDCompilationUnit compilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
-    ASTService astService = new ASTService(compilationUnit);
-    VisitorService visitorService = new VisitorService(compilationUnit);
+    originalCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
+    ASTService astService = new ASTService(originalCompilationUnit);
+    VisitorService visitorService = new VisitorService(originalCompilationUnit);
     ASTLanguageInterfaceDecorator decorator = new ASTLanguageInterfaceDecorator(astService, visitorService);
-    this.languageInterface = decorator.decorate(compilationUnit);
+    decoratedCompilationUnit = originalCompilationUnit.deepClone();
+    this.languageInterface = decorator.decorate(decoratedCompilationUnit);
+  }
+
+  @Test
+  public void testCompilationUnitNotChanged() {
+    assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
   }
 
   @Test

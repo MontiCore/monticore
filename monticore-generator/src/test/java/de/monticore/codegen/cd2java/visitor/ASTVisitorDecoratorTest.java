@@ -36,27 +36,37 @@ public class ASTVisitorDecoratorTest extends DecoratorTestCase {
   private GlobalExtensionManagement glex;
 
   private static final String VISITOR_FULL_NAME = "de.monticore.codegen.ast.automaton._visitor.AutomatonVisitor";
-  
-  private static final String AST_AUTOMATON= "automaton._ast.ASTAutomaton";
 
-  private static final String AST_NODE="de.monticore.ast.ASTNode";
+  private static final String AST_AUTOMATON = "automaton._ast.ASTAutomaton";
 
-  private static final String AST_TRANSITION= "automaton._ast.ASTTransition";
+  private static final String AST_NODE = "de.monticore.ast.ASTNode";
 
-  private static final String AST_STATE= "automaton._ast.ASTState";
+  private static final String AST_TRANSITION = "automaton._ast.ASTTransition";
 
+  private static final String AST_STATE = "automaton._ast.ASTState";
+
+  private ASTCDCompilationUnit originalCompilationUnit;
+
+  private ASTCDCompilationUnit decoratedCompilationUnit;
 
   @Before
   public void setUp() {
     this.glex = new GlobalExtensionManagement();
     this.cdTypeFacade = CDTypeFacade.getInstance();
 
-    ASTCDCompilationUnit compilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
+    decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
+    originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("genHelper", new DecorationHelper());
-    ASTVisitorDecorator decorator = new ASTVisitorDecorator(this.glex, new VisitorDecorator(this.glex, new VisitorService(compilationUnit)), new VisitorService(compilationUnit));
-    this.visitorInterface = decorator.decorate(compilationUnit);
+    ASTVisitorDecorator decorator = new ASTVisitorDecorator(this.glex,
+        new VisitorDecorator(this.glex, new VisitorService(decoratedCompilationUnit)),
+        new VisitorService(decoratedCompilationUnit));
+    this.visitorInterface = decorator.decorate(decoratedCompilationUnit);
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
+  }
 
+  @Test
+  public void testCompilationUnitNotChanged() {
+    assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
   }
 
   @Test

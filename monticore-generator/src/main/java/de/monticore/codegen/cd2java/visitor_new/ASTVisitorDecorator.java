@@ -24,7 +24,8 @@ public class ASTVisitorDecorator extends AbstractDecorator<ASTCDCompilationUnit,
   }
 
   @Override
-  public ASTCDInterface decorate(ASTCDCompilationUnit compilationUnit) {
+  public ASTCDInterface decorate(ASTCDCompilationUnit ast) {
+    ASTCDCompilationUnit compilationUnit = ast.deepClone();
     //set classname to correct Name with path
     String astPath = compilationUnit.getCDDefinition().getName().toLowerCase() + AST_PACKAGE;
     for (ASTCDClass astcdClass : compilationUnit.getCDDefinition().getCDClassList()) {

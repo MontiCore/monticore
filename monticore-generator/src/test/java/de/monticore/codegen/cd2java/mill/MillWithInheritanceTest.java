@@ -13,11 +13,7 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertVoid;
@@ -33,15 +29,25 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
 
   private GlobalExtensionManagement glex;
 
+  private ASTCDCompilationUnit originalCompilationUnit;
+
+  private ASTCDCompilationUnit decoratedCompilationUnit;
+
   @Before
   public void setUp() {
     this.glex = new GlobalExtensionManagement();
     this.cdTypeFacade = CDTypeFacade.getInstance();
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
-    ASTCDCompilationUnit compilationUnit = this.parse("de", "monticore", "codegen", "factory", "CGrammar");
+    decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "factory", "CGrammar");
+    originalCompilationUnit = decoratedCompilationUnit.deepClone();
     MillDecorator decorator = new MillDecorator(this.glex);
-    this.millClass = decorator.decorate(compilationUnit);
+    this.millClass = decorator.decorate(decoratedCompilationUnit);
+  }
+
+  @Test
+  public void testCompilationUnitNotChanged() {
+    assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
   }
 
   @Test
@@ -172,16 +178,5 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, millClass, millClass);
     System.out.println(sb.toString());
-  }
-
-  @Ignore
-  @Test
-  public void testGeneratedCodeInFile() {
-    GeneratorSetup generatorSetup = new GeneratorSetup();
-    generatorSetup.setGlex(glex);
-    generatorSetup.setOutputDirectory(Paths.get("target/generated-test-sources/de/monticore/codegen/mill").toFile());
-    Path generatedFiles = Paths.get("CGrammarMill.java");
-    GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-    generatorEngine.generate(CoreTemplates.CLASS, generatedFiles, millClass, millClass);
   }
 }
