@@ -59,7 +59,7 @@ public class ListMutatorDecoratorTest {
     assertEquals(1,method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameterList().get(0);
     assertListOf(String.class, parameter.getType());
-    assertEquals("element", parameter.getName());
+    assertEquals("a", parameter.getName());
   }
 
   @Test
