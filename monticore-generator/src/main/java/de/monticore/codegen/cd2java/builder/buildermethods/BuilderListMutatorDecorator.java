@@ -40,7 +40,7 @@ public class BuilderListMutatorDecorator extends ListMutatorDecorator {
 
   @Override
   protected ASTCDMethod createSetListMethod(ASTCDAttribute ast) {
-    String signature = String.format(SET_LIST, capitalizedAttributeName, attributeType);
+    String signature = String.format(SET_LIST, capitalizedAttributeName, attributeType, ast.getName());
     ASTCDMethod method = this.getCDMethodFacade().createMethodByDefinition(signature);
     method.setReturnType(builderType);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("builder.Set", ast));

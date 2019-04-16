@@ -1,14 +1,14 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("attributes")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
-
 <#list attributes as attribute>
+  <#assign methName = genHelper.getNativeAttributeName(attribute.getName())?cap_first>
   <#if genHelper.isListType(attribute.printType())>
-    set${attribute.getName()?cap_first}List(${attribute.getName()});
+    set${methName}List(${attribute.getName()});
   <#elseif genHelper.isOptional(attribute.getType())>
-    set${attribute.getName()?cap_first}Opt(${attribute.getName()});
+    set${methName}Opt(${attribute.getName()});
   <#else>
-    set${attribute.getName()?cap_first}(${attribute.getName()});
+    set${methName}(${attribute.getName()});
   </#if>
 </#list>
 

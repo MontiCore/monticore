@@ -1,7 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("domainClass")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
-value = new ${domainClass.getName()}();
+    value = new ${domainClass.getName()}();
 <#list domainClass.getCDAttributeList() as attribute>
   <#assign methName = genHelper.getNativeAttributeName(attribute.getName())?cap_first>
   <#if genHelper.isListType(attribute.printType())>

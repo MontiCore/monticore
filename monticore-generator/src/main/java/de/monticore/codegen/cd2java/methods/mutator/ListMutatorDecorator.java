@@ -14,7 +14,7 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 public class ListMutatorDecorator extends ListMethodDecorator {
 
   //TODO distinguish between Methodnames with "s" oder without at the end of the Attributename
-  protected static final String SET_LIST = "public void set%sList(List<%s> element);";
+  protected static final String SET_LIST = "public void set%sList(List<%s> %s);";
   protected static final String CLEAR = "public void clear%s();";
   protected static final String ADD = "public boolean add%s(%s element);";
   protected static final String ADD_ALL = "public boolean addAll%s(Collection<? extends %s> collection);";
@@ -42,7 +42,7 @@ public class ListMutatorDecorator extends ListMethodDecorator {
   }
 
   protected ASTCDMethod createSetListMethod(ASTCDAttribute ast) {
-    String signature = String.format(SET_LIST, capitalizedAttributeName, attributeType);
+    String signature = String.format(SET_LIST, capitalizedAttributeName, attributeType, ast.getName());
     ASTCDMethod getList = this.getCDMethodFacade().createMethodByDefinition(signature);
     this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint("methods.Set", ast));
     return getList;
