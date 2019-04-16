@@ -10,5 +10,4 @@ public interface SymbolGenerator {
 
   void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
                 IterablePath handCodedPath, MCProdSymbol ruleSymbol, boolean isScopeSpanningSymbol);
-
 }

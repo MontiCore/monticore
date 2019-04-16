@@ -2,21 +2,25 @@
 
 package de.monticore.codegen.symboltable;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static de.monticore.codegen.GeneratorHelper.SCOPE;
-import static de.se_rwth.commons.logging.Log.debug;
-
-import java.io.File;
-import java.util.Collection;
-
+import com.google.common.collect.Lists;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar._ast.ASTSymbolRule;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.se_rwth.commons.Names;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
+
+import static com.google.common.collect.Lists.newArrayList;
+import static de.monticore.codegen.GeneratorHelper.SCOPE;
+import static de.se_rwth.commons.logging.Log.debug;
 
 public class SymbolTableGenerator {
 

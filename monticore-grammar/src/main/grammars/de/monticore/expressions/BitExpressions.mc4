@@ -2,13 +2,11 @@
 
 package de.monticore.expressions;
 
-component grammar ShiftExpressions extends de.monticore.expressions.ExpressionsBasis {
+/**
+ * This grammar defines binary expressions like <<, >>, >>>, &, ^ and |
+*/
 
-ThisExpression implements Expression <280> =
-	Expression "." "this";
-
-ArrayExpression implements Expression <250> =
-	Expression "[" indexExpression:Expression "]";
+component grammar BitExpressions extends de.monticore.expressions.ExpressionsBasis {
 
 interface ShiftExpression =
 	left:Expression shiftOp:"" right:Expression;
@@ -33,7 +31,15 @@ LogicalRightShiftExpression implements Expression <160>, ShiftExpression =
 	shiftOp:">" ">" {noSpace()}? ">" {noSpace()}? {_aNode.setShiftOp(">>>");}        
     right:Expression;
     
-PrimaryThisExpression implements Expression <320>
-	= "this";
+BinaryAndExpression implements Expression <120> =
+	left:Expression operator:"&"  right:Expression;
+
+BinaryXorExpression implements Expression <110> =
+	left:Expression operator:"^"  right:Expression;
+
+BinaryOrOpExpression implements Expression <100> =
+	left:Expression operator:"|"  right:Expression;
+
+
 
 }

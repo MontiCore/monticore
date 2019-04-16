@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("astType", "symbolTablePackage", "cd", "symbols")}
+${tc.signature("symbolVisitorName", "astType", "symbolTablePackage", "cd", "symbols")}
 <#assign genHelper = glex.getGlobalVar("visitorHelper")>
 
 <#-- Copyright -->
@@ -12,6 +12,7 @@ package ${genHelper.getVisitorPackage()};
 import ${symbolTablePackage}.*;
 </#if>
 import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.ISymbol;
 
 /**
  * Default symbol-visitor for the {@code ${genHelper.getCdName()}} language.<br>
@@ -27,7 +28,7 @@ import de.monticore.symboltable.Symbol;
  *   <li><b>Handling of nodes</b>: You may override the {@code handle(node)} methods, if you want to change its default implementation (depth-first iteration): {@code visit(node); traverse(node); endVisit(node);}<br><br></li>
  * </ul>
  */
-public interface ${genHelper.getSymbolVisitorType()} { 
+public interface ${symbolVisitorName} { 
 
   /**
    * Sets the visitor to use for handling and traversing nodes.
@@ -56,7 +57,7 @@ public interface ${genHelper.getSymbolVisitorType()} {
    * @see ${genHelper.getCdName()}DelegatorVisitor
    */
   default public ${genHelper.getSymbolVisitorType()} getRealThis() {
-    return this;
+    return (${genHelper.getSymbolVisitorType()}) this;
   }
   
   /* ------------------------------------------------------------------------*/
@@ -80,8 +81,18 @@ public interface ${genHelper.getSymbolVisitorType()} {
    */
   default public void endVisit(Symbol symbol) {
   }
-  
-  /* ------------------------------------------------------------------------*/
+
+  /**
+   * By default this method is not called, because the default visitor only
+   * visits a symbol in its dynamic runtime type. Use an InheritanceVisitor
+   * if you want to visit a node in its super types as well.
+   *
+   * @param symbol the symbol that is left
+   */
+  default public void handle(ISymbol symbol) {
+  }
+
+ /* ------------------------------------------------------------------------*/
   
   
   <#list symbols as symbol>

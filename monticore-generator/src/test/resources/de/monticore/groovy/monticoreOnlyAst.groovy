@@ -34,6 +34,6 @@ while (grammarIterator.hasNext()) {
     decorateCd(glex, astClassDiagramWithST, globalScope, handcodedPath)
     
     // Generate AST files
-    generate(glex, globalScope, astClassDiagramWithST, out, templatePath)
+    generate(glex, globalScope, astClassDiagramWithST, out, templatePath, handcodedPath)
   }
 }

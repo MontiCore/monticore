@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("astType", "symbolTablePackage", "cd", "existsST", "superScopeVisitors")}
+${tc.signature("scopeVisitorName", "astType", "symbolTablePackage", "cd", "existsST", "superScopeVisitors")}
 <#assign genHelper = glex.getGlobalVar("visitorHelper")>
 
 <#-- Copyright -->
@@ -11,6 +11,7 @@ package ${genHelper.getVisitorPackage()};
 <#if existsST>
 import ${symbolTablePackage}.*;
 </#if>
+import de.monticore.symboltable.ISymbol;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.Scope;
 
@@ -32,7 +33,7 @@ import java.util.Map.Entry;
  *   <li><b>Handling of nodes</b>: You may override the {@code handle(node)} methods, if you want to change its default implementation (depth-first iteration): {@code visit(node); traverse(node); endVisit(node);}<br><br></li>
  * </ul>
  */
-public interface ${genHelper.getScopeVisitorType()} extends ${genHelper.getSymbolVisitorType()} <#list superScopeVisitors as superScopeVisitor>, ${superScopeVisitor}</#list> {
+public interface ${scopeVisitorName} extends ${genHelper.getSymbolVisitorType()} <#list superScopeVisitors as superScopeVisitor>, ${superScopeVisitor}</#list> {
 
   /**
    * Sets the visitor to use for handling and traversing nodes.
@@ -61,7 +62,7 @@ public interface ${genHelper.getScopeVisitorType()} extends ${genHelper.getSymbo
    * @see ${genHelper.getCdName()}DelegatorVisitor
    */
   default public ${genHelper.getScopeVisitorType()} getRealThis() {
-    return this;
+    return (${genHelper.getScopeVisitorType()}) this;
   }
   
   /* ------------------------------------------------------------------------*/
@@ -94,6 +95,11 @@ public interface ${genHelper.getScopeVisitorType()} extends ${genHelper.getSymbo
   @Override
   default void endVisit(Symbol symbol) {
     ${genHelper.getSymbolVisitorType()}.super.endVisit(symbol);
+  }
+
+  @Override
+  default void handle(ISymbol symbol) {
+    ${genHelper.getSymbolVisitorType()}.super.handle(symbol);
   }
 
   /* ------------------------------------------------------------------------*/

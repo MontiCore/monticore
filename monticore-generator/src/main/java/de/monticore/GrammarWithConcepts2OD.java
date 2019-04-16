@@ -3,10 +3,10 @@
 package de.monticore;
 
 import de.monticore.expressions.assignmentexpressions._od.AssignmentExpressions2OD;
+import de.monticore.expressions.bitexpressions._od.BitExpressions2OD;
 import de.monticore.expressions.commonexpressions._od.CommonExpressions2OD;
 import de.monticore.expressions.expressionsbasis._od.ExpressionsBasis2OD;
 import de.monticore.expressions.javaclassexpressions._od.JavaClassExpressions2OD;
-import de.monticore.expressions.shiftexpressions._od.ShiftExpressions2OD;
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
 import de.monticore.grammar.concepts.antlr.antlr._od.Antlr2OD;
 import de.monticore.grammar.grammar._ast.ASTGrammarNode;
@@ -39,7 +39,7 @@ public class GrammarWithConcepts2OD extends Grammar_WithConcepts2OD {
     visitor.setAntlrVisitor(new Antlr2OD(printer, reporting));
     visitor.setGrammarVisitor(new Grammar2OD(printer, reporting));
     visitor.setJavaDSLVisitor(new JavaDSL2OD(printer, reporting));
-    visitor.setShiftExpressionsVisitor(new ShiftExpressions2OD(printer, reporting));
+    visitor.setBitExpressionsVisitor(new BitExpressions2OD(printer, reporting));
     visitor.setJavaClassExpressionsVisitor(new JavaClassExpressions2OD(printer, reporting));
     visitor.setMCBasicsVisitor(new MCBasics2OD(printer, reporting));
     visitor.setCommonExpressionsVisitor(new CommonExpressions2OD(printer, reporting));

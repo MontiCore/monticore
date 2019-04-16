@@ -77,7 +77,7 @@ for (astGrammar in getParsedGrammars()) {
   generateSymbolTable(glex, astGrammar, globalScope, astClassDiagram, out, handcodedPath)
 
   // M9: generate AST classes
-  generateEmfCompatible(glex, globalScope, astClassDiagram, out, templatePath)
+  generateEmfCompatible(glex, globalScope, astClassDiagram, out, templatePath, handcodedPath)
 
   info("Grammar " + astGrammar.getName() + " processed successfully!", LOG_ID)
 

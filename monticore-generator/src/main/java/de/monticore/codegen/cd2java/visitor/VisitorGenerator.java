@@ -2,6 +2,9 @@
 
 package de.monticore.codegen.cd2java.visitor;
 
+import static de.monticore.codegen.GeneratorHelper.getSimpleTypeNameToGenerate;
+import static de.se_rwth.commons.Names.getSimpleName;
+
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,6 +20,7 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.symboltable.MCProdSymbol;
+import de.monticore.io.paths.IterablePath;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
@@ -38,8 +42,8 @@ public class VisitorGenerator {
    * diagram.
    */
   public static void generate(GlobalExtensionManagement glex, GlobalScope globalScope,
-      ASTCDCompilationUnit astClassDiagram,
-      File outputDirectory) {
+      ASTCDCompilationUnit astClassDiagram, File outputDirectory, 
+      IterablePath handcodedPath) {
     final GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(outputDirectory);
     VisitorGeneratorHelper visitorHelper = new VisitorGeneratorHelper(astClassDiagram, globalScope);
@@ -58,32 +62,41 @@ public class VisitorGenerator {
     String path = Names.getPathFromPackage(visitorPackage);
     
     // simple visitor interface
-    final Path simpleVisitorFilePath = Paths.get(path, visitorHelper.getVisitorType() + ".java");
+    String simpleVisitorName = getSimpleTypeNameToGenerate(getSimpleName(visitorHelper.getVisitorType()),
+        visitorHelper.getVisitorPackage(), handcodedPath);
+    final Path simpleVisitorFilePath = Paths.get(path, simpleVisitorName + ".java");
     generator.generate("visitor.SimpleVisitor", simpleVisitorFilePath, astClassDiagram,
-        astClassDiagram.getCDDefinition(), astPackage, cd);
+        simpleVisitorName, astClassDiagram.getCDDefinition(), astPackage, cd);
     Log.trace(LOGGER_NAME, "Generated simple visitor for the diagram: " + diagramName);
     
     // inheritance visitor interface
+    String inheritanceVisitorName = getSimpleTypeNameToGenerate(getSimpleName(visitorHelper.getInheritanceVisitorType()),
+        visitorHelper.getVisitorPackage(), handcodedPath);
     final Path inheritanceVisitorFilePath = Paths
-        .get(path, visitorHelper.getInheritanceVisitorType() + ".java");
+        .get(path, inheritanceVisitorName + ".java");
     generator.generate("visitor.InheritanceVisitor", inheritanceVisitorFilePath, astClassDiagram,
-        astClassDiagram.getCDDefinition(), astPackage, cd);
+        inheritanceVisitorName, astClassDiagram.getCDDefinition(), astPackage, cd);
     Log.trace(LOGGER_NAME, "Generated inheritance visitor for the diagram: " + diagramName);
     
     // parent aware visitor interface
+    String parentAwareVisitorName = getSimpleTypeNameToGenerate(getSimpleName(diagramName + "ParentAwareVisitor"),
+        visitorHelper.getVisitorPackage(), handcodedPath);
     final Path parentAwareVisitorFilePath = Paths
-        .get(path, diagramName + "ParentAwareVisitor.java");
+        .get(path, parentAwareVisitorName + ".java");
     generator.generate("visitor.ParentAwareVisitor", parentAwareVisitorFilePath, astClassDiagram,
-        astClassDiagram.getCDDefinition(), astPackage, cd);
+        parentAwareVisitorName, astClassDiagram.getCDDefinition(), astPackage, cd);
     Log.trace(LOGGER_NAME, "Generated basic parent aware visitor for the diagram: " + diagramName);
     
     List<CDSymbol> allCds = visitorHelper.getAllCds(cd);
     
     // common delegator visitor
+    String commonDelegatorVisitorName = getSimpleTypeNameToGenerate(getSimpleName(visitorHelper.getDelegatorVisitorType()),
+        visitorHelper.getVisitorPackage(), handcodedPath);
     final Path commonDelegatorVisitorFilePath = Paths.get(path,
-        visitorHelper.getDelegatorVisitorType() + ".java");
+        commonDelegatorVisitorName + ".java");
     generator.generate("visitor.DelegatorVisitor", commonDelegatorVisitorFilePath,
-        astClassDiagram, astClassDiagram.getCDDefinition(), astPackage, allCds);
+        astClassDiagram, commonDelegatorVisitorName, astClassDiagram.getCDDefinition(), 
+        astPackage, allCds);
     Log.trace(LOGGER_NAME, "Generated delegator visitor for the diagram: " + diagramName);
     
     // symbol visitor interface
@@ -93,9 +106,11 @@ public class VisitorGenerator {
       SymbolTableGeneratorHelper stHelper = (SymbolTableGeneratorHelper) stHelperObj;
       symbols = stHelper.getAllSymbolDefiningRules();
     }
-    final Path symbolVisitorFilePath = Paths.get(path, visitorHelper.getSymbolVisitorType() + ".java");
+    String symbolVisitorName = getSimpleTypeNameToGenerate(getSimpleName(visitorHelper.getSymbolVisitorType()),
+        visitorHelper.getVisitorPackage(), handcodedPath);
+    final Path symbolVisitorFilePath = Paths.get(path, symbolVisitorName + ".java");
     generator.generate("visitor.SymbolVisitor", symbolVisitorFilePath, astClassDiagram,
-        astClassDiagram.getCDDefinition(), symbolTablePackage, cd, symbols);
+        symbolVisitorName, astClassDiagram.getCDDefinition(), symbolTablePackage, cd, symbols);
     Log.trace(LOGGER_NAME, "Generated symbol visitor for the diagram: " + diagramName);
     
     // scope visitor interface
@@ -114,9 +129,12 @@ public class VisitorGenerator {
         }
       }
     }
-    final Path scopeVisitorFilePath = Paths.get(path, visitorHelper.getScopeVisitorType() + ".java");
+    String scopeVisitorName = getSimpleTypeNameToGenerate(getSimpleName(visitorHelper.getScopeVisitorType()),
+        visitorHelper.getVisitorPackage(), handcodedPath);
+    final Path scopeVisitorFilePath = Paths.get(path, scopeVisitorName + ".java");
     generator.generate("visitor.ScopeVisitor", scopeVisitorFilePath, astClassDiagram,
-        astClassDiagram.getCDDefinition(), symbolTablePackage, cd, existsST, superScopeVisitors);
+        scopeVisitorName, astClassDiagram.getCDDefinition(), symbolTablePackage, cd, 
+        existsST, superScopeVisitors);
     Log.trace(LOGGER_NAME, "Generated scope visitor for the diagram: " + diagramName);
   }
   
