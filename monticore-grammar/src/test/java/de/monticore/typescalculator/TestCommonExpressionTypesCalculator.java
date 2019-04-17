@@ -22,20 +22,9 @@ public class TestCommonExpressionTypesCalculator extends CommonExpressionTypesCa
     result=getResult();
   }
 
-
-  @Override
-  public void visit(ASTIntExpression expr){
-
-  }
-
   @Override
   public void endVisit(ASTIntExpression expr){
     types.put(expr,new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT));
-  }
-
-  @Override
-  public void visit(ASTDoubleExpression expr){
-
   }
 
   @Override

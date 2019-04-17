@@ -81,7 +81,6 @@ public class CommonExpressionsTest {
   @Test
   public void moduloIntVisitorTest() throws IOException{
     TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
-    MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     TestCommonExpressionsParser p = new TestCommonExpressionsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("9%7");
     assertTrue(o.isPresent());
@@ -128,7 +127,6 @@ public class CommonExpressionsTest {
   @Test
   public void multIntVisitorTest() throws IOException{
     TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
-    MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     TestCommonExpressionsParser p = new TestCommonExpressionsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("9*7");
     assertTrue(o.isPresent());
@@ -164,7 +162,6 @@ public class CommonExpressionsTest {
   @Test
   public void divideIntVisitorTest() throws IOException{
     TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
-    MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     TestCommonExpressionsParser p = new TestCommonExpressionsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("9/7");
     assertTrue(o.isPresent());
@@ -200,7 +197,6 @@ public class CommonExpressionsTest {
   @Test
   public void minusIntVisitorTest() throws IOException{
     TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
-    MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     TestCommonExpressionsParser p = new TestCommonExpressionsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("9-7");
     assertTrue(o.isPresent());
@@ -236,7 +232,6 @@ public class CommonExpressionsTest {
   @Test
   public void plusDoubleVisitorTest() throws IOException{
     TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
-    MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     TestCommonExpressionsParser p = new TestCommonExpressionsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("9.13+7.73");
     assertTrue(o.isPresent());
@@ -272,7 +267,6 @@ public class CommonExpressionsTest {
   @Test
   public void moduloDoubleVisitorTest() throws IOException{
     TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
-    MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     TestCommonExpressionsParser p = new TestCommonExpressionsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("9.13%7.73");
     assertTrue(o.isPresent());
@@ -308,7 +302,6 @@ public class CommonExpressionsTest {
   @Test
   public void multDoubleVisitorTest() throws IOException{
     TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
-    MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     TestCommonExpressionsParser p = new TestCommonExpressionsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("9.13*7.73");
     assertTrue(o.isPresent());
@@ -344,7 +337,6 @@ public class CommonExpressionsTest {
   @Test
   public void divideDoubleVisitorTest() throws IOException{
     TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
-    MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     TestCommonExpressionsParser p = new TestCommonExpressionsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("9.13/7.73");
     assertTrue(o.isPresent());
@@ -380,7 +372,6 @@ public class CommonExpressionsTest {
   @Test
   public void minusDoubleVisitorTest() throws IOException{
     TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
-    MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     TestCommonExpressionsParser p = new TestCommonExpressionsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("9.13-7.73");
     assertTrue(o.isPresent());
@@ -437,7 +428,6 @@ public class CommonExpressionsTest {
   @Test
   public void plusIntDoubleVisitorTest() throws IOException{
     TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
-    MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     TestCommonExpressionsParser p = new TestCommonExpressionsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("9+7.73");
     Optional<ASTExpression> q = p.parse_StringExpression("7.4+3");
@@ -500,7 +490,6 @@ public class CommonExpressionsTest {
   @Test
   public void moduloIntDoubleVisitorTest() throws IOException{
     TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
-    MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     TestCommonExpressionsParser p = new TestCommonExpressionsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("9%7.73");
     Optional<ASTExpression> q = p.parse_StringExpression("7.4%3");
@@ -563,7 +552,6 @@ public class CommonExpressionsTest {
   @Test
   public void multIntDoubleVisitorTest() throws IOException{
     TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
-    MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     TestCommonExpressionsParser p = new TestCommonExpressionsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("9*7.73");
     Optional<ASTExpression> q = p.parse_StringExpression("7.4*3");
@@ -626,7 +614,6 @@ public class CommonExpressionsTest {
   @Test
   public void divideIntDoubleVisitorTest() throws IOException{
     TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
-    MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     TestCommonExpressionsParser p = new TestCommonExpressionsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("9/7.73");
     Optional<ASTExpression> q = p.parse_StringExpression("7.4/3");
@@ -689,7 +676,6 @@ public class CommonExpressionsTest {
   @Test
   public void minusIntDoubleVisitorTest() throws IOException{
     TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
-    MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     TestCommonExpressionsParser p = new TestCommonExpressionsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("9-7.73");
     Optional<ASTExpression> q = p.parse_StringExpression("7.4-3");
@@ -706,7 +692,6 @@ public class CommonExpressionsTest {
   @Test
   public void lessThanTest() throws IOException{
     TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
-    MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     TestCommonExpressionsParser p = new TestCommonExpressionsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("4<7");
     assertTrue(o.isPresent());
@@ -717,7 +702,6 @@ public class CommonExpressionsTest {
   @Test
   public void greaterThanTest() throws IOException{
     TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
-    MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     TestCommonExpressionsParser p = new TestCommonExpressionsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("15>9");
     assertTrue(o.isPresent());
@@ -739,7 +723,6 @@ public class CommonExpressionsTest {
   @Test
   public void greaterEqualTest() throws IOException{
     TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
-    MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     TestCommonExpressionsParser p = new TestCommonExpressionsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("4>=7");
     assertTrue(o.isPresent());
@@ -750,7 +733,6 @@ public class CommonExpressionsTest {
   @Test
   public void logicalNotTest() throws IOException{
     TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
-    MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     TestCommonExpressionsParser p = new TestCommonExpressionsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("!true");
     assertTrue(o.isPresent());
@@ -761,7 +743,6 @@ public class CommonExpressionsTest {
   @Test
   public void booleanOrOpTest() throws IOException{
     TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
-    MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     TestCommonExpressionsParser p = new TestCommonExpressionsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("true||false");
     assertTrue(o.isPresent());
@@ -772,7 +753,6 @@ public class CommonExpressionsTest {
   @Test
   public void booleanAndOpTest() throws IOException{
     TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
-    MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     TestCommonExpressionsParser p = new TestCommonExpressionsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("true&&true");
     assertTrue(o.isPresent());
@@ -783,7 +763,6 @@ public class CommonExpressionsTest {
   @Test
   public void notEqualsTest() throws IOException{
     TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
-    MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     TestCommonExpressionsParser p = new TestCommonExpressionsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("3!=4");
     assertTrue(o.isPresent());
@@ -794,7 +773,6 @@ public class CommonExpressionsTest {
   @Test
   public void equalsTest() throws IOException{
     TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
-    MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     TestCommonExpressionsParser p = new TestCommonExpressionsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("7==7");
     assertTrue(o.isPresent());
@@ -805,7 +783,6 @@ public class CommonExpressionsTest {
   @Test
   public void bracketTest() throws IOException{
     TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
-    MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     TestCommonExpressionsParser p = new TestCommonExpressionsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("(7+8)");
     assertTrue(o.isPresent());
@@ -813,7 +790,6 @@ public class CommonExpressionsTest {
     assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
 
     calc = new TestCommonExpressionTypesCalculator();
-    parser = new MCBasicTypesTestParser();
     p = new TestCommonExpressionsParser();
     o = p.parse_StringExpression("(7.56-2.67)");
     assertTrue(o.isPresent());
@@ -824,7 +800,6 @@ public class CommonExpressionsTest {
   @Test
   public void simpleAssignmentTest() throws IOException{
     TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
-    MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     TestCommonExpressionsParser p = new TestCommonExpressionsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("7+=9");
     assertTrue(o.isPresent());
@@ -853,7 +828,7 @@ public class CommonExpressionsTest {
   }
 
   @Test
-  public void combineOperations() throws IOException{
+  public void combineOperationsTest() throws IOException{
     TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
     MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     TestCommonExpressionsParser p = new TestCommonExpressionsParser();
@@ -893,17 +868,4 @@ public class CommonExpressionsTest {
     v.get().accept(calc);
     assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.BOOLEAN).deepEquals(calc.getResult()));
   }
-
-//  @Test
-//  public void distributiveTest() throws IOException{
-//    TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
-//    MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
-//    TestCommonExpressionsParser p = new TestCommonExpressionsParser();
-//    Optional<ASTExpression> o = p.parse_StringExpression("9*(7.73+3)");
-//
-//    assertTrue(o.isPresent());
-//    o.get().accept(calc);
-//    assertTrue(new ASTMCPrimitiveType(4).deepEquals(calc.getResult()));
-//  }
-
 }

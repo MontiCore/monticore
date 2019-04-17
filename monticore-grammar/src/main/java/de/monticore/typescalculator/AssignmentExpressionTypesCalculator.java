@@ -2,7 +2,6 @@ package de.monticore.typescalculator;
 
 import de.monticore.expressions.assignmentexpressions._ast.*;
 import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsInheritanceVisitor;
-import de.monticore.expressions.commonexpressions._ast.ASTDivideExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
@@ -25,9 +24,9 @@ public class AssignmentExpressionTypesCalculator implements AssignmentExpression
   public void endVisit(ASTIncSuffixExpression expr){
     ASTMCType result = null;
     if(types.containsKey(expr.getExpression())){
-      if(types.get(expr.getExpression()).deepEquals(ASTConstantsMCBasicTypes.INT)){
+      if(types.get(expr.getExpression()).deepEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT))){
         result=new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT);
-      }else if(types.get(expr.getExpression()).deepEquals(ASTConstantsMCBasicTypes.DOUBLE)){
+      }else if(types.get(expr.getExpression()).deepEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE))){
         result=new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE);
       }
     }
@@ -44,9 +43,9 @@ public class AssignmentExpressionTypesCalculator implements AssignmentExpression
   public void endVisit(ASTDecSuffixExpression expr){
     ASTMCType result = null;
     if(types.containsKey(expr.getExpression())){
-      if(types.get(expr.getExpression()).deepEquals(ASTConstantsMCBasicTypes.INT)){
+      if(types.get(expr.getExpression()).deepEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT))){
         result=new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT);
-      }else if(types.get(expr.getExpression()).deepEquals(ASTConstantsMCBasicTypes.DOUBLE)){
+      }else if(types.get(expr.getExpression()).deepEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE))){
         result=new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE);
       }
     }
@@ -63,9 +62,9 @@ public class AssignmentExpressionTypesCalculator implements AssignmentExpression
   public void endVisit(ASTIncPrefixExpression expr){
     ASTMCType result = null;
     if(types.containsKey(expr.getExpression())){
-      if(types.get(expr.getExpression()).deepEquals(ASTConstantsMCBasicTypes.INT)){
+      if(types.get(expr.getExpression()).deepEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT))){
         result=new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT);
-      }else if(types.get(expr.getExpression()).deepEquals(ASTConstantsMCBasicTypes.DOUBLE)){
+      }else if(types.get(expr.getExpression()).deepEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE))){
         result=new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE);
       }
     }
@@ -82,9 +81,9 @@ public class AssignmentExpressionTypesCalculator implements AssignmentExpression
   public void endVisit(ASTDecPrefixExpression expr){
     ASTMCType result = null;
     if(types.containsKey(expr.getExpression())){
-      if(types.get(expr.getExpression()).deepEquals(ASTConstantsMCBasicTypes.INT)){
+      if(types.get(expr.getExpression()).deepEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT))){
         result=new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT);
-      }else if(types.get(expr.getExpression()).deepEquals(ASTConstantsMCBasicTypes.DOUBLE)){
+      }else if(types.get(expr.getExpression()).deepEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE))){
         result=new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE);
       }
     }
@@ -101,9 +100,9 @@ public class AssignmentExpressionTypesCalculator implements AssignmentExpression
   public void endVisit(ASTPlusPrefixExpression expr){
     ASTMCType result = null;
     if(types.containsKey(expr.getExpression())){
-      if(types.get(expr.getExpression()).deepEquals(ASTConstantsMCBasicTypes.INT)){
+      if(types.get(expr.getExpression()).deepEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT))){
         result=new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT);
-      }else if(types.get(expr.getExpression()).deepEquals(ASTConstantsMCBasicTypes.DOUBLE)){
+      }else if(types.get(expr.getExpression()).deepEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE))){
         result=new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE);
       }
     }
@@ -120,9 +119,9 @@ public class AssignmentExpressionTypesCalculator implements AssignmentExpression
   public void endVisit(ASTMinusPrefixExpression expr){
     ASTMCType result = null;
     if(types.containsKey(expr.getExpression())){
-      if(types.get(expr.getExpression()).deepEquals(ASTConstantsMCBasicTypes.INT)){
+      if(types.get(expr.getExpression()).deepEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT))){
         result=new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT);
-      }else if(types.get(expr.getExpression()).deepEquals(ASTConstantsMCBasicTypes.DOUBLE)){
+      }else if(types.get(expr.getExpression()).deepEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE))){
         result=new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE);
       }
     }
@@ -236,13 +235,13 @@ public class AssignmentExpressionTypesCalculator implements AssignmentExpression
   private ASTMCType calculateTypeArithmetic(ASTExpression left, ASTExpression right){
     ASTMCType result = null;
     if(types.containsKey(left)&&types.containsKey(right)) {
-      if (types.get(left).deepEquals(ASTConstantsMCBasicTypes.INT) && types.get(right).deepEquals(ASTConstantsMCBasicTypes.INT)) {
+      if (types.get(left).deepEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT)) && types.get(right).deepEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT))) {
         result = new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT);
       }
-      else if (types.get(left).deepEquals(ASTConstantsMCBasicTypes.DOUBLE) && types.get(right).deepEquals(ASTConstantsMCBasicTypes.DOUBLE)) {
+      else if (types.get(left).deepEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE)) && types.get(right).deepEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE))) {
         result = new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE);
       }
-      else if (types.get(left).deepEquals(ASTConstantsMCBasicTypes.DOUBLE) && types.get(right).deepEquals(ASTConstantsMCBasicTypes.INT) || types.get(left).deepEquals(ASTConstantsMCBasicTypes.INT) && types.get(right).deepEquals(ASTConstantsMCBasicTypes.DOUBLE)) {
+      else if (types.get(left).deepEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE)) && types.get(right).deepEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT)) || types.get(left).deepEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT)) && types.get(right).deepEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE))) {
         result = new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE);
       }
     }
