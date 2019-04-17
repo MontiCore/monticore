@@ -5,21 +5,14 @@
  */
 package de.monticore.codegen.symboltable;
 
-import de.monticore.codegen.GeneratorHelper;
-import de.monticore.generating.GeneratorEngine;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._ast.ASTScopeRule;
-import de.monticore.grammar.symboltable.MCGrammarSymbol;
-import de.monticore.grammar.symboltable.MCProdSymbol;
-import de.monticore.io.paths.IterablePath;
-import de.se_rwth.commons.Names;
-
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
 
-import static de.monticore.codegen.GeneratorHelper.getSimpleTypeNameToGenerate;
-import static de.se_rwth.commons.Names.getSimpleName;
+import de.monticore.codegen.GeneratorHelper;
+import de.monticore.generating.GeneratorEngine;
+import de.monticore.grammar.symboltable.MCGrammarSymbol;
+import de.monticore.io.paths.IterablePath;
+import de.se_rwth.commons.Names;
 
 public class CommonSymbolInterfaceGenerator implements SymbolInterfaceGenerator {
 

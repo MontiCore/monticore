@@ -6,7 +6,7 @@ ${signature("className", "directSuperCds", "rules", "hcPath")}
 <#assign fqn = genHelper.getQualifiedGrammarName()?lower_case>
 <#assign package = genHelper.getTargetPackage()?lower_case>
 <#assign topAstName = genHelper.getQualifiedStartRuleName()>
-<#assign scopeName = "I"${grammarName}"Scope">;
+<#assign scopeName = "I"+grammarName+"Scope">
 
 <#-- Copyright -->
 ${defineHookPoint("JavaCopyright")}
@@ -97,7 +97,7 @@ public class ${className} implements ${grammarName}Visitor {
     }
   }
   
-   public final Optional<${scopeName}> getCurrentScope() {
+  public final Optional<${scopeName}> getCurrentScope() {
     return Optional.ofNullable(scopeStack.peekLast());
   }
   
@@ -116,10 +116,10 @@ public class ${className} implements ${grammarName}Visitor {
 
 <#list rules as ruleSymbol>
   <#assign ruleName = ruleSymbol.getName()>
-  <#assign symbolName = genHelper.getQualifiedProdName(ruleSymbol) + "Symbol">
+  <#assign symbolName = ruleSymbol.getName() + "Symbol">
   <#assign astName = genHelper.getQualifiedASTName(ruleSymbol)>
   <#assign isScopeSpanning = genHelper.isScopeSpanningSymbol(ruleSymbol)>
-  
+  // Methods for ${symbolName}
   @Override
   public void visit(${astName} ast) {
     ${symbolName} symbol = create_${ruleName}(ast);
@@ -183,7 +183,7 @@ public class ${className} implements ${grammarName}Visitor {
   
   public void putSpannedScopeOnStack(${symbolName} symbol) {
     Log.errorIfNull(symbol);
-    putOnStack( symbol.getSpanned${grammarName}Scope());
+    putOnStack( symbol.getSpannedScope());
   }
 </#if>
 </#list>

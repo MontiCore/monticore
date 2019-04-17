@@ -212,12 +212,23 @@ public class CdDecorator {
 
     if (prodSymbol.get().isSymbolDefinition()) {
       addSymbolAttributeAndMethods(clazz, symbolName, grammarSymbol);
+      addSymbolAttributeAndMethods2(clazz, symbolName, grammarSymbol);
+      
+      String scopeName = "I" + grammarSymbol.getName() + AstGeneratorHelper.SCOPE;
+      String qualifiedScopeName = grammarSymbol.getFullName().toLowerCase() + "." +
+          SymbolTableGenerator.PACKAGE + "." + scopeName;
+      addEnclosingScopeAttributeAndMethods2(clazz, qualifiedScopeName, grammarSymbol);
+    }
+    else {
+      addEnclosingScopeAttributeAndMethods2(clazz, "de.monticore.symboltable.IScope", grammarSymbol);
     }
     if (prodSymbol.get().isScopeDefinition()) {
-      addScopeAttributeAndMethods(clazz, symbolName, grammarSymbol);
+      addSpannedScopeAttributeAndMethods(clazz, grammarSymbol);
+      addSpannedScopeAttributeAndMethods2(clazz, grammarSymbol);
     }
   }
 
+  @Deprecated //Delete this and replace with addSymbolAttributeAndMethods2(..)
   protected void addSymbolAttributeAndMethods(ASTCDClass clazz, String name, MCGrammarSymbol grammarSymbol) {
     String symbolName = name + AstGeneratorHelper.SYMBOL;
     String qualifiedName = grammarSymbol.getFullName().toLowerCase() + "." +
@@ -233,8 +244,38 @@ public class CdDecorator {
     addSetter(clazz, symbolAttribute.get());
     addOptionalSetMethods(clazz, symbolAttribute.get(), symbolName);
   }
+  
+  protected void addSymbolAttributeAndMethods2(ASTCDClass clazz, String name, MCGrammarSymbol grammarSymbol) {
+    String symbolName = name + AstGeneratorHelper.SYMBOL;
+    String qualifiedName = grammarSymbol.getFullName().toLowerCase() + "." +
+        SymbolTableGenerator.PACKAGE + "." + symbolName;
+    symbolName = "symbol"+"2"; //TODO: Remove 2
 
-  protected void addScopeAttributeAndMethods(ASTCDClass clazz, String name, MCGrammarSymbol grammarSymbol) {
+    Optional<ASTCDAttribute> symbolAttribute = cdTransformation.addCdAttributeUsingDefinition(clazz,
+        "<<" + GeneratorHelper.SYMBOL +
+            ">> protected Optional<" + qualifiedName + "> " + symbolName + ";");
+
+    addGetter(clazz, symbolAttribute.get());
+    addOptionalGetMethods(clazz, symbolAttribute.get(), symbolName);
+    addSetter(clazz, symbolAttribute.get());
+    addOptionalSetMethods(clazz, symbolAttribute.get(), symbolName);
+  }
+  
+  protected void addEnclosingScopeAttributeAndMethods2(ASTCDClass clazz, String qualifiedName, MCGrammarSymbol grammarSymbol) {
+    String scopeName = "enclosingScope" +"2"; //TODO: Remove 2
+
+    Optional<ASTCDAttribute> scopeAttribute = cdTransformation.addCdAttributeUsingDefinition(clazz,
+        "<<" + GeneratorHelper.SCOPE +
+            ">> protected Optional<" + qualifiedName + "> " + scopeName + ";");
+
+    addGetter(clazz, scopeAttribute.get()); 
+    addOptionalGetMethods(clazz, scopeAttribute.get(), scopeName);
+    addSetter(clazz, scopeAttribute.get());
+    addOptionalSetMethods(clazz, scopeAttribute.get(), scopeName);
+  }
+  
+  @Deprecated
+  protected void addSpannedScopeAttributeAndMethods(ASTCDClass clazz,MCGrammarSymbol grammarSymbol) {
     String scopeName = grammarSymbol.getName() + AstGeneratorHelper.SCOPE;
     String qualifiedName = grammarSymbol.getFullName().toLowerCase() + "." +
         SymbolTableGenerator.PACKAGE + "." + scopeName;
@@ -245,6 +286,22 @@ public class CdDecorator {
             ">> protected Optional<" + qualifiedName + "> " + scopeName + ";");
 
     addGetter(clazz, scopeAttribute.get());
+    addOptionalGetMethods(clazz, scopeAttribute.get(), scopeName);
+    addSetter(clazz, scopeAttribute.get());
+    addOptionalSetMethods(clazz, scopeAttribute.get(), scopeName);
+  }
+  
+  protected void addSpannedScopeAttributeAndMethods2(ASTCDClass clazz, MCGrammarSymbol grammarSymbol) {
+    String scopeName = "I" + grammarSymbol.getName() + AstGeneratorHelper.SCOPE;
+    String qualifiedName = grammarSymbol.getFullName().toLowerCase() + "." +
+        SymbolTableGenerator.PACKAGE + "." + scopeName;
+    scopeName = "spannedScope" +"2"; //TODO: Remove 2
+
+    Optional<ASTCDAttribute> scopeAttribute = cdTransformation.addCdAttributeUsingDefinition(clazz,
+        "<<" + GeneratorHelper.SCOPE +
+            ">> protected Optional<" + qualifiedName + "> " + scopeName + ";");
+
+    addGetter(clazz, scopeAttribute.get()); 
     addOptionalGetMethods(clazz, scopeAttribute.get(), scopeName);
     addSetter(clazz, scopeAttribute.get());
     addOptionalSetMethods(clazz, scopeAttribute.get(), scopeName);

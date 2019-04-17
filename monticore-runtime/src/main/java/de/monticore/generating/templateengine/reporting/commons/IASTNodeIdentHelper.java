@@ -5,8 +5,11 @@ package de.monticore.generating.templateengine.reporting.commons;
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.GlobalScope;
+import de.monticore.symboltable.IScope;
+import de.monticore.symboltable.ISymbol;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.references.ISymbolReference;
 import de.monticore.symboltable.references.SymbolReference;
 
 public interface IASTNodeIdentHelper {
@@ -25,11 +28,21 @@ public interface IASTNodeIdentHelper {
   
   public String getIdent(ASTNode ast);
   
+  @Deprecated
   default public String getIdent(Symbol symbol) {
     return format(maskSpecialChars(symbol.getName()), "Symbol");
   }
   
+  @Deprecated
   default public String getIdent(SymbolReference<?> symbol) {
+    return format(maskSpecialChars(symbol.getName()), "SymbolReference");
+  }
+  
+  default public String getIdent(ISymbol<?> symbol) {
+    return format(maskSpecialChars(symbol.getName()), "Symbol");
+  }
+  
+  default public String getIdent(ISymbolReference<?,?,?> symbol) {
     return format(maskSpecialChars(symbol.getName()), "SymbolReference");
   }
   
@@ -43,11 +56,24 @@ public interface IASTNodeIdentHelper {
     return name;
   }
 
+  @Deprecated
   default public String getIdent(Scope scope) {
     String type;
     if (scope instanceof ArtifactScope) {
       type = "ArtifactScope";
     } else if (scope instanceof GlobalScope) {
+      type = "GlobalScope";
+    } else {
+      type = "Scope";
+    }
+    return format(maskSpecialChars(scope.getName().orElse("")), type);
+  }
+  
+  default public String getIdent(IScope scope) {
+    String type;
+    if (scope.getClass().getName().endsWith("ArtifactScope")) {
+      type = "ArtifactScope";
+    } else if (scope.getClass().getName().endsWith("ArtifactScope")) {
       type = "GlobalScope";
     } else {
       type = "Scope";

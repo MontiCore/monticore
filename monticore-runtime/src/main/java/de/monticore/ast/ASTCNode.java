@@ -103,22 +103,25 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
   // ----------------------------------------------------------------------
   // Handle the Optional Enclosing Scope
   // ----------------------------------------------------------------------
-
+  @Deprecated
   @Override
   public void setEnclosingScope(Scope enclosingScope) {
     this.enclosingScope = Optional.ofNullable(enclosingScope);
   }
 
+  @Deprecated
   @Override
   public void setEnclosingScopeOpt(Optional<? extends Scope> enclosingScopeOpt) {
     this.enclosingScope = enclosingScopeOpt;
   }
 
+  @Deprecated
   @Override
   public void setEnclosingScopeAbsent() {
     this.enclosingScope = Optional.empty();
   }
 
+  @Deprecated
   @Override
   public Scope getEnclosingScope() {
     if (getEnclosingScopeOpt().isPresent()) {
@@ -129,11 +132,13 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
     throw new IllegalStateException();
   }
 
+  @Deprecated
   @Override
   public Optional<? extends Scope> getEnclosingScopeOpt() {
     return this.enclosingScope;
   }
 
+  @Deprecated
   @Override
   public boolean isPresentEnclosingScope() {
     return enclosingScope.isPresent();
