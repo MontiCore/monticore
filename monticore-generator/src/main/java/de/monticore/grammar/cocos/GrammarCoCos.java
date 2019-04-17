@@ -52,6 +52,7 @@ public class GrammarCoCos {
     checker.addCoCo(new ReferenceSymbolNotName());
     checker.addCoCo(new ReferencedSymbolExists());
     checker.addCoCo(new ConservativeExtensionCheck());
+    checker.addCoCo(new NoTokenDefined());
 
     // checker.addCoCo(new NoNTInheritanceCycle());
 
