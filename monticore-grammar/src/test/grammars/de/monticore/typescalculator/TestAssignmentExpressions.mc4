@@ -1,0 +1,15 @@
+/* (c)  https://github.com/MontiCore/monticore */
+
+package de.monticore.typescalculator;
+
+grammar TestAssignmentExpressions extends de.monticore.expressions.AssignmentExpressions, de.monticore.MCBasics, de.monticore.MCBasicLiterals {
+  start Expression;
+  //FooBarBlub implements Expression = Name;
+
+  IntExpression implements Expression = SignedNatLiteral;
+
+  DoubleExpression implements Expression = SignedNatLiteral "." NatLiteral;
+
+  BooleanExpression implements Expression = bool: ["true" | "false"];
+
+}
