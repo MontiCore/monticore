@@ -159,21 +159,23 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
     for (ScopeDeserializationResult<I${languageName}Scope> subScope : subScopes) {
       subScope.getScope().setEnclosingScope(scope);
       if (subScope.hasSpanningSymbol()) {
-        if (stateSymbolDeSer.getSerializedKind().equals(subScope.getSpanningSymbolKind())) {
-          Optional<StateSymbol> spanningStateSymbol = scope.resolveStateLocally(subScope.getSpanningSymbolName());
-          if(spanningStateSymbol.isPresent()) {
-            subScope.getScope().setSpanningSymbol(spanningStateSymbol.get());
+      
+      
+<#assign else = "">
+<#list symbolNames?keys as symbol>
+      ${else} if (${symbol?lower_case}SymbolDeSer.getSerializedKind().equals(subScope.getSpanningSymbolKind())) {
+          Optional<${symbol}Symbol> spanningSymbol = scope.resolve${symbol}Locally(subScope.getSpanningSymbolName());
+          if(spanningSymbol.isPresent()) {
+            subScope.getScope().setSpanningSymbol(spanningSymbol.get());
           }
         }
-        else if (automatonSymbolDeSer.getSerializedKind().equals(subScope.getSpanningSymbolKind())) {
-          Optional<AutomatonSymbol> spanningAutomatonSymbol = scope.resolveAutomatonLocally(subScope.getSpanningSymbolName());
-          if(spanningAutomatonSymbol.isPresent()) {
-            subScope.getScope().setSpanningSymbol(spanningAutomatonSymbol.get());
-          }
-        }
+<#assign else = "else ">
+</#list>
+<#if symbolNames?keys?size gt 0>
         else {
           Log.error("Unknown spanning symbol kind "+subScope.getSpanningSymbolKind()+" in ${languageName}ScopeDeSer");
         }
+</#if>
       }
       subScopeList.add(subScope.getScope());
     }
