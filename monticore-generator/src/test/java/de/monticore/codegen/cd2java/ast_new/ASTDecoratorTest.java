@@ -15,11 +15,8 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -125,16 +122,5 @@ public class ASTDecoratorTest extends DecoratorTestCase {
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, astClass, astClass);
     System.out.println(sb.toString());
-  }
-
-  @Ignore
-  @Test
-  public void testGeneratedCodeInFile() {
-    GeneratorSetup generatorSetup = new GeneratorSetup();
-    generatorSetup.setGlex(glex);
-    generatorSetup.setOutputDirectory(Paths.get("target/generated-test-sources/de/monticore/codegen/ast").toFile());
-    Path generatedFiles = Paths.get("ASTAutomaton.java");
-    GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-    generatorEngine.generate(CoreTemplates.CLASS, generatedFiles, astClass, astClass);
   }
 }

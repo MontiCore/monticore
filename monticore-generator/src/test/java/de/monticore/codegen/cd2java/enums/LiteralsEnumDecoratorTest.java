@@ -25,14 +25,25 @@ public class LiteralsEnumDecoratorTest extends DecoratorTestCase {
 
   private GlobalExtensionManagement glex;
 
+  private ASTCDCompilationUnit decoratedCompilationUnit;
+
+  private ASTCDCompilationUnit originalCompilationUnit;
+
   @Before
   public void setUp() {
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
-    ASTCDCompilationUnit compilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
-    EnumDecorator decorator = new EnumDecorator(this.glex, new AccessorDecorator(glex), new ASTService(compilationUnit));
-    this.cdEnum = decorator.decorate(getEnumBy("AutomatonLiterals", compilationUnit));
+    decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
+    originalCompilationUnit= decoratedCompilationUnit.deepClone();
+
+    EnumDecorator decorator = new EnumDecorator(this.glex, new AccessorDecorator(glex), new ASTService(decoratedCompilationUnit));
+    this.cdEnum = decorator.decorate(getEnumBy("AutomatonLiterals", decoratedCompilationUnit));
+  }
+
+  @Test
+  public void testCompilationUnitNotChanged() {
+    assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
   }
 
   @Test

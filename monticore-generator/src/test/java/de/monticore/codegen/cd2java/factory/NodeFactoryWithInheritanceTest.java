@@ -12,11 +12,7 @@ import de.monticore.types.TypesPrinter;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
@@ -177,16 +173,4 @@ public class NodeFactoryWithInheritanceTest extends DecoratorTestCase {
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, factoryClass, factoryClass);
     System.out.println(sb.toString());
   }
-
-  @Ignore
-  @Test
-  public void testGeneratedCodeInFile() {
-    GeneratorSetup generatorSetup = new GeneratorSetup();
-    generatorSetup.setGlex(glex);
-    generatorSetup.setOutputDirectory(Paths.get("target/generated-test-sources/de/monticore/codegen/factory").toFile());
-    Path generatedFiles = Paths.get("CGrammarNodeFactory.java");
-    GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-    generatorEngine.generate(CoreTemplates.CLASS, generatedFiles, factoryClass, factoryClass);
-  }
-
 }

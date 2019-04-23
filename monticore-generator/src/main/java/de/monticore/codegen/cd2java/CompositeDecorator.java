@@ -1,6 +1,7 @@
 package de.monticore.codegen.cd2java;
 
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -8,7 +9,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public abstract class CompositeDecorator<T> extends AbstractDecorator<T, T> {
+public abstract class CompositeDecorator<T extends ASTCDType> extends AbstractDecorator<T, T> {
 
   private final Collection<AbstractDecorator<T, T>> decorators;
 
@@ -45,7 +46,7 @@ public abstract class CompositeDecorator<T> extends AbstractDecorator<T, T> {
 
   @Override
   public T decorate(final T input) {
-    Stream<T> stream = Stream.of(input);
+    Stream<T> stream = Stream.of((T) input.deepClone());
     for (AbstractDecorator<T, T> decorator : decorators) {
       stream = stream.map(decorator::decorate);
     }

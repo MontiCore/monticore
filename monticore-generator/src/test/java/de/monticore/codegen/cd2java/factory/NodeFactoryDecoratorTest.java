@@ -11,11 +11,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
@@ -31,6 +27,10 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
 
   private GlobalExtensionManagement glex;
 
+  private ASTCDCompilationUnit decoratedCompilationUnit;
+
+  private ASTCDCompilationUnit originalCompilationUnit;
+
   @Before
   public void setUp() {
     this.glex = new GlobalExtensionManagement();
@@ -38,9 +38,16 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
     this.cdParameterFacade = CDParameterFacade.getInstance();
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
-    ASTCDCompilationUnit compilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
+    decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
+    originalCompilationUnit = decoratedCompilationUnit.deepClone();
+
     NodeFactoryDecorator decorator = new NodeFactoryDecorator(this.glex);
-    this.factoryClass = decorator.decorate(compilationUnit);
+    this.factoryClass = decorator.decorate(decoratedCompilationUnit);
+  }
+
+  @Test
+  public void testCompilationUnitNotChanged() {
+    assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
   }
 
   @Test
@@ -154,7 +161,7 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
     assertTrue(PROTECTED.build().deepEquals(method.getModifier()));
     //test returnType
     ASTType returnType = cdTypeFacade.createTypeByDefinition("ASTAutomaton");
-    assertDeepEquals(returnType,method.getReturnType());
+    assertDeepEquals(returnType, method.getReturnType());
     //testParameter
     assertFalse(method.isEmptyCDParameters());
 
@@ -182,16 +189,4 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, factoryClass, factoryClass);
     System.out.println(sb.toString());
   }
-
-  @Ignore
-  @Test
-  public void testGeneratedCodeInFile() {
-    GeneratorSetup generatorSetup = new GeneratorSetup();
-    generatorSetup.setGlex(glex);
-    generatorSetup.setOutputDirectory(Paths.get("target/generated-test-sources/de/monticore/codegen/factory").toFile());
-    Path generatedFiles = Paths.get("AutomatonNodeFactory.java");
-    GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-    generatorEngine.generate(CoreTemplates.CLASS, generatedFiles, factoryClass, factoryClass);
-  }
-
 }

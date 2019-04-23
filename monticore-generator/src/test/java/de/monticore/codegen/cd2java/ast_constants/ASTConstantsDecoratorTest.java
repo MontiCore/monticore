@@ -30,15 +30,26 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
 
   private CDTypeFacade cdTypeFacade;
 
+  private ASTCDCompilationUnit decoratedCompilationUnit;
+
+  private ASTCDCompilationUnit originalCompilationUnit;
+
   @Before
   public void setUp() {
     this.cdTypeFacade = CDTypeFacade.getInstance();
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
-    ASTCDCompilationUnit compilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
+    decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
+    originalCompilationUnit = decoratedCompilationUnit.deepClone();
+    
     ASTConstantsDecorator decorator = new ASTConstantsDecorator(this.glex);
-    this.constantClass = decorator.decorate(compilationUnit);
+    this.constantClass = decorator.decorate(decoratedCompilationUnit);
+  }
+
+  @Test
+  public void testCompilationUnitNotChanged() {
+    assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
   }
 
   @Test

@@ -13,6 +13,7 @@ import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static org.junit.Assert.assertEquals;
 
@@ -22,16 +23,27 @@ public class ASTBuilderDecoratorTest extends DecoratorTestCase {
 
   private ASTCDClass builderClass;
 
+  private ASTCDCompilationUnit decoratedCompilationUnit;
+
+  private ASTCDCompilationUnit originalCompilationUnit;
+
   @Before
   public void setup() {
     LogStub.init();
-    ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "ast", "Builder");
-    ASTCDClass cdClass = getClassBy("A", ast);
+    decoratedCompilationUnit = parse("de", "monticore", "codegen", "ast", "Builder");
+    originalCompilationUnit = decoratedCompilationUnit.deepClone();
+
+    ASTCDClass cdClass = getClassBy("A", decoratedCompilationUnit);
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     AccessorDecorator methodDecorator = new AccessorDecorator(glex);
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, methodDecorator);
     ASTBuilderDecorator builderASTNodeDecorator = new ASTBuilderDecorator(glex, builderDecorator);
     this.builderClass = builderASTNodeDecorator.decorate(cdClass);
+  }
+
+  @Test
+  public void testCompilationUnitNotChanged() {
+    assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
   }
 
   @Test
