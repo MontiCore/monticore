@@ -31,21 +31,21 @@ import java.util.Optional;
 public class ${className} implements ${grammarName}Visitor {
 
   protected Deque<${scopeName}> scopeStack = new ArrayDeque<>();
-  
+
   /**
    * The first scope OTHER THAN THE GLOBAL SCOPE that has been created, i.e., added  to the scope
    * stack. This information helps to determine the top scope within this creation process.
    */
   protected ${scopeName} firstCreatedScope;
-  
+
   private ${grammarName}Visitor realThis = this;
 
   public ${className}(
     final ${scopeName} enclosingScope) {
-  
+
     putOnStack(Log.errorIfNull(enclosingScope));
   }
-  
+
   public ${className}(final Deque<${scopeName}> scopeStack) {
     this.scopeStack = Log.errorIfNull(scopeStack);
   }
@@ -62,14 +62,14 @@ public class ${className} implements ${grammarName}Visitor {
     rootNode.accept(realThis);
     return getFirstCreatedScope();
   }
-  
+
   public ${scopeName} getFirstCreatedScope() {
     return firstCreatedScope;
   }
-  
+
   public void putOnStack(${scopeName} scope) {
     Log.errorIfNull(scope);
-    
+
     if (!scope.getEnclosingScope().isPresent() && getCurrentScope().isPresent()) {
       scope.setEnclosingScope(getCurrentScope().get());
       getCurrentScope().get().addSubScope(scope);
@@ -78,11 +78,11 @@ public class ${className} implements ${grammarName}Visitor {
         Log.warn("0xA1043 The enclosing scope is not the same as the current scope on the stack.");
       }
     }
-    
+
     if (firstCreatedScope == null) {
       firstCreatedScope = scope;
     }
-    
+
     scopeStack.addLast(scope);
   }
 
@@ -96,11 +96,11 @@ public class ${className} implements ${grammarName}Visitor {
       this.realThis = realThis;
     }
   }
-  
+
   public final Optional<${scopeName}> getCurrentScope() {
     return Optional.ofNullable(scopeStack.peekLast());
   }
-  
+
   public final Optional<${scopeName}> removeCurrent${grammarName}Scope() {
     return Optional.of(scopeStack.pollLast());
   }
@@ -108,7 +108,7 @@ public class ${className} implements ${grammarName}Visitor {
   protected void set${grammarName}ScopeStack(final Deque<${scopeName}> scopeStack) {
     this.scopeStack = scopeStack;
   }
-  
+
   public void setEnclosingScopeOfNodes(ASTNode root) {
     EnclosingScopeOfNodesInitializer v = new EnclosingScopeOfNodesInitializer();
     v.handle(root);
@@ -138,7 +138,7 @@ public class ${className} implements ${grammarName}Visitor {
   public void endVisit(${astName} ast) {
     removeCurrent${grammarName}Scope();
   }
-  
+
   public void addToScopeAndLinkWithNode(${symbolName} symbol, ${astName} astNode) {
     addToScope(symbol);
     setLinkBetweenSymbolAndNode(symbol, astNode);
@@ -146,22 +146,22 @@ public class ${className} implements ${grammarName}Visitor {
     putSpannedScopeOnStack(symbol);
 </#if>
   }
-  
+
   public void setLinkBetweenSymbolAndNode(${symbolName} symbol, ${astName} astNode) {
     // symbol -> ast
     symbol.setAstNode(astNode);
-    
+
     // ast -> symbol
     astNode.setSymbol2(symbol);
     astNode.set${symbolName}(symbol);
     astNode.setEnclosingScope2(symbol.getEnclosingScope());
-    
+
 <#if isScopeSpanning>
     // ast -> spannedScope
       astNode.setSpannedScope2(symbol.getSpannedScope());
 </#if>
   }
-  
+
   public void addToScope(${symbolName} symbol) {
     if (!(symbol instanceof ISymbolReference)) {
       if (getCurrentScope().isPresent()) {
@@ -171,16 +171,16 @@ public class ${className} implements ${grammarName}Visitor {
       }
     }
   }
-  
+
 <#if isScopeSpanning>
   public void setLinkBetweenSpannedScopeAndNode(${scopeName} scope, ${astName} astNode) {
     // scope -> ast
     scope.setAstNode(astNode);
-    
+
     // ast -> scope
     astNode.setSpannedScope2((${grammarName}Scope) scope);
   }
-  
+
   public void putSpannedScopeOnStack(${symbolName} symbol) {
     Log.errorIfNull(symbol);
     putOnStack( symbol.getSpannedScope());

@@ -5,12 +5,9 @@ ${tc.signature("ruleName")}
 <#assign names = glex.getGlobalVar("nameHelper")>
 <#assign astNode = names.getQualifiedName(genHelper.getAstPackage(), "AST" + ruleName)>
   public Optional<${astNode}> getAstNode() {
-    if(this.getAstNode().isPresent()) {
-      return Optional.of((${astNode}) this.getAstNode().get());
-    }
-    return Optional.empty();
+    return Optional.ofNullable(node);
   }
-  
+
   public void setAstNode(${astNode} node) {
     this.node = node;
   }

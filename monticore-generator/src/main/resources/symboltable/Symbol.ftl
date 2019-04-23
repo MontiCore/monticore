@@ -39,19 +39,23 @@ import ${imp}._ast.*;
 public class ${className} ${superClass} ${superInterfaces} {
 
   protected I${languageName}Scope enclosingScope;
-  
+
   protected String fullName;
-  
+
   protected String name;
-  
+
   protected AST${ruleName} node;
-  
+
   protected String packageName;
 
   public ${className}(String name) {
     this.name = name;
+<#if isScopeSpanningSymbol>
+    spannedScope = createSpannedScope();
+    getSpannedScope().setSpanningSymbol(this);
+</#if>
   }
-  
+
 <#if isScopeSpanningSymbol>
   ${includeArgs("symboltable.symbols.SpannedScope", languageName)}
 </#if>
@@ -75,8 +79,8 @@ public class ${className} ${superClass} ${superInterfaces} {
   <#if ruleSymbol.isPresent()>
   ${includeArgs("symboltable.symbols.SymbolRule", ruleSymbol.get())}
   </#if>
-  
-  
+
+
 
   public I${languageName}Scope getEnclosingScope(){
     return this.enclosingScope;
@@ -85,39 +89,39 @@ public class ${className} ${superClass} ${superInterfaces} {
   public void setEnclosingScope(I${languageName}Scope newEnclosingScope){
     this.enclosingScope = newEnclosingScope;
   }
-  
-  @Override 
+
+  @Override
   public void setAccessModifier(AccessModifier accessModifier) {
     //TODO
   }
-  
+
   @Override public String getName() {
     return name;
   }
-  
+
   @Override public String getPackageName() {
     if (packageName == null) {
       packageName = determinePackageName();
     }
-  
+
     return packageName;
   }
-  
+
   public void setFullName(String fullName) {
     this.fullName = fullName;
   }
-  
+
   public String getFullName() {
     if (fullName == null) {
       fullName = determineFullName();
     }
-    
+
     return fullName;
   }
-  
+
   protected String determinePackageName() {
     Optional<I${languageName}Scope> optCurrentScope = Optional.ofNullable(enclosingScope);
-    
+
     while (optCurrentScope.isPresent()) {
       final I${languageName}Scope currentScope = optCurrentScope.get();
       if (currentScope.isSpannedBySymbol()) {
@@ -128,13 +132,13 @@ public class ${className} ${superClass} ${superInterfaces} {
       } else if (currentScope instanceof ${languageName}ArtifactScope) {
         return ((${languageName}ArtifactScope) currentScope).getPackageName();
       }
-      
+
       optCurrentScope = currentScope.getEnclosingScope();
     }
-    
+
     return "";
   }
-  
+
   /**
    * Determines <b>dynamically</b> the full name of the symbol.
    *
@@ -147,12 +151,12 @@ public class ${className} ${superClass} ${superInterfaces} {
       // should not be cached yet.
       return name;
     }
-    
+
     final Deque<String> nameParts = new ArrayDeque<>();
     nameParts.addFirst(name);
-    
+
     Optional<I${languageName}Scope> optCurrentScope = Optional.of(enclosingScope);
-    
+
     while (optCurrentScope.isPresent()) {
       final I${languageName}Scope currentScope = optCurrentScope.get();
       if (currentScope.isSpannedBySymbol()) {
@@ -163,7 +167,7 @@ public class ${className} ${superClass} ${superInterfaces} {
         nameParts.addFirst(currentScope.getSpanningSymbol().get().getFullName());
         break;
       }
-      
+
       if (!(currentScope instanceof I${languageName}GlobalScope)) {
         if (currentScope instanceof ${languageName}ArtifactScope) {
           // We have reached the artifact scope. Get the package name from the
@@ -181,7 +185,7 @@ public class ${className} ${superClass} ${superInterfaces} {
       }
       optCurrentScope = currentScope.getEnclosingScope();
     }
-    
+
     return Names.getQualifiedName(nameParts);
   }
 }
