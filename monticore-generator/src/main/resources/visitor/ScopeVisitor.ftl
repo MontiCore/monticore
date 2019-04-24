@@ -122,7 +122,7 @@ public interface ${scopeVisitorName} extends ${genHelper.getSymbolVisitorType()}
     default public void traverse(${scopeType} scope) {
       // traverse symbols within the scope
       <#list stHelper.getAllQualifiedSymbols() as qualifiedSymbol>
-          for (${stHelper.getSymbolNameFromQualifiedSymbol(qualifiedSymbol)} s : scope.getLocal${stHelper.getSymbolNameFromQualifiedSymbol(qualifiedSymbol)}s()) {
+          for (${qualifiedSymbol} s : scope.getLocal${stHelper.getSymbolNameFromQualifiedSymbol(qualifiedSymbol)}s()) {
             s.accept(getRealThis());
           }
       </#list>
