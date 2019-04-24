@@ -6,12 +6,12 @@ grammar TestCommonExpressions extends de.monticore.expressions.CommonExpressions
   start Expression;
   //FooBarBlub implements Expression = Name;
 
-  IntExpression implements Expression = SignedNatLiteral;
+  IntExpression implements Expression = "blabla";
 
-  DoubleExpression implements Expression = SignedNatLiteral "." NatLiteral;
+  DoubleExpression implements Expression = "blub";
 
-  BooleanExpression implements Expression = bool: ["true" | "false"];
+  BooleanExpression implements Expression = "bool";
 
-  ExtLiteral = "aisl";
+  ExtLiteral = Literal;
 
 }
