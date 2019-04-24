@@ -13,7 +13,7 @@ import java.util.Optional;
  * implement this interface directly. Instead, use one of its subtypes.
  *
  */
-public interface ISymbolReference<T extends ISymbol, S extends IScope, A extends ASTNode> {
+public interface ISymbolReference {
 
   /**
    * @return the reference name
@@ -23,17 +23,13 @@ public interface ISymbolReference<T extends ISymbol, S extends IScope, A extends
   /**
    * @return the corresponding ast node
    */
-  Optional<A> getAstNode();
+  Optional<? extends ASTNode> getAstNode();
 
-  /**
-   * @param node the corresponding ast node
-   */
-  void setAstNode(A node);
 
   /**
    * @return the referenced symbol
    */
-  T getReferencedSymbol();
+  ISymbol getReferencedSymbol();
 
   /**
    * @return true, if the referenced symbol exists.
@@ -48,6 +44,6 @@ public interface ISymbolReference<T extends ISymbol, S extends IScope, A extends
   /**
    * @return the enclosing scope of the reference itself
    */
-  S getEnclosingScope();
+  IScope getEnclosingScope();
 
 }

@@ -134,7 +134,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
     genEngine.generateNoA("symboltable.ScopeBuilder", builderFilePath, builderName, scopeName);
     genEngine.generateNoA("symboltable.serialization.ScopeDeSer", serializationFilePath, languageName , deserName, scopeRule, symbolNames);
 
-    genEngine.generateNoA("symboltable.ArtifactScope", artifactScopeFilePath, artifactScopeClassName, scopeClassName, languageName, symbolNames);
+    genEngine.generateNoA("symboltable.ArtifactScope", artifactScopeFilePath, artifactScopeClassName, scopeName, languageName, symbolNames);
     genEngine.generateNoA("symboltable.GlobalScope", globalScopeFilePath, globalScopeClassName, languageName);
     genEngine.generateNoA("symboltable.GlobalScopeInterface", globalScopeInterfaceFilePath, globalScopeInterfaceClassName, scopeClassName, languageName, symbolNames);
     

@@ -22,6 +22,7 @@ import java.util.function.Predicate;
 
 import com.google.common.collect.FluentIterable;
 
+import de.monticore.symboltable.ISymbol;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.names.CommonQualifiedNamesCalculator;
@@ -34,7 +35,7 @@ import de.se_rwth.commons.logging.Log;
 public class ${className} extends ${scopeClass} {
 
   private final String packageName;
-  
+
   private final List<ImportStatement> imports;
 
   private QualifiedNamesCalculator qualifiedNamesCalculator;
@@ -66,7 +67,7 @@ public class ${className} extends ${scopeClass} {
   @Override
   public Optional<String> getName() {
     if (!super.getName().isPresent()) {
-      final Optional<ICommon${languageName}Symbol<?>> topLevelSymbol = getTopLevelSymbol();
+      final Optional<ISymbol> topLevelSymbol = getTopLevelSymbol();
       if (topLevelSymbol.isPresent()) {
         setName(topLevelSymbol.get().getName());
       }
@@ -74,9 +75,12 @@ public class ${className} extends ${scopeClass} {
     return super.getName();
   }
 
-  public Optional<ICommon${languageName}Symbol<?>> getTopLevelSymbol() {
+  public Optional<ISymbol> getTopLevelSymbol() {
     if (getSubScopes().size() == 1) {
-      return getSubScopes().get(0).getSpanningSymbol();
+      if(getSubScopes().get(0).isSpannedBySymbol()) {
+        ISymbol scopeSpanningSymbol = getSubScopes().get(0).getSpanningSymbol().get();
+        return Optional.of(scopeSpanningSymbol);
+      }
     }
     // there is no top level symbol, if more than one sub scope exists.
     return Optional.empty();
@@ -85,7 +89,7 @@ public class ${className} extends ${scopeClass} {
   public String getPackageName() {
     return packageName;
   }
-  
+
     public void setQualifiedNamesCalculator(QualifiedNamesCalculator qualifiedNamesCalculator) {
     this.qualifiedNamesCalculator = Objects.requireNonNull(qualifiedNamesCalculator);
   }
@@ -93,7 +97,7 @@ public class ${className} extends ${scopeClass} {
   public List<ImportStatement> getImports() {
     return Collections.unmodifiableList(imports);
   }
-  
+
   @Override //TODO: Does not depend on a specific language. Move implementation to RTE?
   public boolean checkIfContinueAsSubScope(String symbolName) {
     if (this.exportsSymbols()) {
@@ -121,7 +125,7 @@ public class ${className} extends ${scopeClass} {
     }
     return false;
   }
-  
+
   @Override //TODO: Does not depend on a specific language. Move implementation to RTE?
   public String getRemainingNameForResolveDown(String symbolName) {
     final String packageAS = this.getPackageName();
@@ -136,8 +140,8 @@ public class ${className} extends ${scopeClass} {
 
     return remainingSymbolName;
   }
-  
-<#list symbolNames?keys as symbol> 
+
+<#list symbolNames?keys as symbol>
   /**
    * Starts the bottom-up inter-model resolution process.
    *
@@ -169,6 +173,6 @@ public class ${className} extends ${scopeClass} {
     }
     return result;
   }
-  
+
 </#list>
 }

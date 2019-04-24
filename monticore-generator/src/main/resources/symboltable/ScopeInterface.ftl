@@ -18,11 +18,11 @@ import java.util.stream.Collectors;
 
 import de.se_rwth.commons.logging.Log;
 import de.monticore.utils.Names;
-import de.monticore.symboltable.IScope;
+import de.monticore.symboltable.*;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException;
 
-public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScopes?join(", ")} </#if> extends IScope {
+public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScopes?join(", ")} <#else> extends IScope</#if>  {
 
 <#list symbolNames?keys as symbol>
   // all resolve Methods for ${symbol}Symbol
@@ -72,9 +72,9 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
       // 1. Conduct search locally in the current scope
     final Set<${symbolNames[symbol]}> resolved = this.resolve${symbol}ManyLocally(foundSymbols, name,
         modifier, predicate);
-    
+
     foundSymbols = foundSymbols | resolved.size() > 0;
-    
+
     final String resolveCall = "resolveDownMany(\"" + name + "\", \"" + "${symbolNames[symbol]}"
         + "\") in scope \"" + getName() + "\"";
     Log.trace("START " + resolveCall + ". Found #" + resolved.size() + " (local)", "");
@@ -90,7 +90,7 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
       }
     }
     Log.trace("END " + resolveCall + ". Found #" + resolved.size(), "");
-    
+
     return resolved;
   }
 
@@ -132,12 +132,12 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
     resolvedSymbols.addAll(resolvedFromEnclosing);
     return resolvedSymbols;
   }
-  
+
   default Set<${symbolNames[symbol]}> resolve${symbol}ManyLocally(boolean foundSymbols, String name, AccessModifier modifier,
       Predicate<${symbolNames[symbol]}> predicate) {
-    
+
     final Set<${symbolNames[symbol]}> resolvedSymbols = new LinkedHashSet<>();
-    
+
     try {
       // TODO remove filter?
       Optional<${symbolNames[symbol]}> resolvedSymbol = filter${symbol}(name,
@@ -149,20 +149,20 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
     catch (ResolvedSeveralEntriesForSymbolException e) {
       resolvedSymbols.addAll(e.getSymbols());
     }
-    
+
     // filter out symbols that are not included within the access modifier
     Set<${symbolNames[symbol]}> filteredSymbols = filterSymbolsByAccessModifier(modifier, resolvedSymbols);
     filteredSymbols = new LinkedHashSet<>(
         filteredSymbols.stream().filter(predicate).collect(Collectors.toSet()));
-    
+
     return filteredSymbols;
   }
-  
+
   default Optional<${symbolNames[symbol]}> filter${symbol}(String name, ListMultimap<String, ${symbolNames[symbol]}> symbols) {
     final Set<${symbolNames[symbol]}> resolvedSymbols = new LinkedHashSet<>();
-    
+
     final String simpleName = Names.getSimpleName(name);
-    
+
     if (symbols.containsKey(simpleName)) {
       for (${symbolNames[symbol]} symbol : symbols.get(simpleName)) {
         if (symbol.getName().equals(name) || symbol.getFullName().equals(name)) {
@@ -170,11 +170,11 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
         }
       }
     }
-    
+
     return getResolvedOrThrowException(resolvedSymbols);
   }
-  
-  
+
+
   default Collection<${symbolNames[symbol]}> continue${symbol}WithEnclosingScope(boolean foundSymbols, String name,  AccessModifier modifier,
       Predicate<${symbolNames[symbol]}> predicate) {
     if (checkIfContinueWithEnclosingScope(foundSymbols) && (getEnclosingScope().isPresent())) {
@@ -182,7 +182,7 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
     }
     return Collections.emptySet();
   }
-  
+
   default Collection<${symbolNames[symbol]}> continueAs${symbol}SubScope(boolean foundSymbols, String name, AccessModifier modifier, Predicate<${symbolNames[symbol]}> predicate){
     if (checkIfContinueAsSubScope(name)) {
       final String remainingSymbolName = getRemainingNameForResolveDown(name);
@@ -190,51 +190,43 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
     }
     return Collections.emptySet();
   }
-  
+
   /**
    * Adds the symbol to this scope. Also, this scope is set as the symbol's enclosing scope.
    */
   void add(${symbolNames[symbol]} symbol);
-  
+
   /**
    * removes the given symbol from this scope and unsets the enclosing scope relation.
    *
    * @param symbol the symbol to be removed
    */
   void remove(${symbolNames[symbol]} symbol);
-  
+
   default public Collection<${symbolNames[symbol]}> getLocal${symbol}Symbols() {
     return get${symbol}Symbols().values();
   }
-  
+
   ListMultimap<String, ${symbolNames[symbol]}> get${symbol}Symbols();
 
 </#list>
 
   <#assign langVisitorType = names.getQualifiedName(genHelper.getVisitorPackage(), genHelper.getGrammarSymbol().getName() + "ScopeVisitor")>
   public void accept(${langVisitorType} visitor);
-  
-  
-  Optional<ICommon${scopeName}Symbol<?>> getSpanningSymbol();
-  
-  /**
-   * @param symbol the symbol that spans this scope. For example, a Java method spans a
-   *               method scope.
-   */
-  void setSpanningSymbol(ICommon${scopeName}Symbol<?> symbol);
-  
-    
-  public Optional<I${scopeName}Scope> getEnclosingScope();
-  
+
+
+  public Optional<? extends I${scopeName}Scope> getEnclosingScope();
+
   public void setEnclosingScope(I${scopeName}Scope enclosingScope);
-  
+
+
   /**
    * Adds a sub subScope. In Java, for example, sub scopes of a class are the method scopes.
    *
    * @param subScope the sub scope to be added.
    */
   void addSubScope(I${scopeName}Scope subScope);
-  
+
   /**
    * Removes given <code>subScope</code>.
    *
@@ -242,6 +234,6 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
    */
   void removeSubScope(I${scopeName}Scope subScope);
 
-  public Collection<I${scopeName}Scope> getSubScopes();
+  public Collection<? extends I${scopeName}Scope> getSubScopes();
 }
 

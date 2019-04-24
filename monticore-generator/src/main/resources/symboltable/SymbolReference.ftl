@@ -29,7 +29,7 @@ import de.se_rwth.commons.logging.Log;
 /**
  * Represents a reference of {@link ${referencedSymbol}}.
  */
-public class ${className} extends ${referencedSymbol} implements ISymbolReference<${referencedSymbol}, I${languageName}Scope, ${astClass}> {
+public class ${className} extends ${referencedSymbol} implements ISymbolReference {
 
   protected AccessModifier accessModifier = AccessModifier.ALL_INCLUSION;
 
