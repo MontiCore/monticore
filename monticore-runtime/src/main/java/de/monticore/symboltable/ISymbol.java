@@ -16,7 +16,7 @@
  import static de.se_rwth.commons.SourcePosition.getDefaultSourcePosition;
  import static java.util.Collections.sort;
 
- public interface ISymbol<A extends ASTNode> {
+ public interface ISymbol {
 
    /**
     * @return the symbol name
@@ -61,9 +61,8 @@
    void setAccessModifier(AccessModifier accessModifier);
   
   
-   void setAstNode(A node);
   
-   public Optional<A> getAstNode();
+   public Optional<? extends ASTNode> getAstNode();
   
    /**
     * @return the position of this symbol in the source model. By default, it is the source position
@@ -78,7 +77,7 @@
      }
    }
   
-   default  <T extends ISymbol<?>> List<T> sortSymbolsByPosition(final Collection<T> unorderedSymbols) {
+   default  <T extends ISymbol> List<T> sortSymbolsByPosition(final Collection<T> unorderedSymbols) {
      final List<T> sortedSymbols = new ArrayList<>(unorderedSymbols);
     
      sort(sortedSymbols,

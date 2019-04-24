@@ -3,10 +3,9 @@
 
 package de.monticore.symboltable.resolving;
 
-import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.ISymbol;
 
-@Deprecated
-public interface SymbolAdapter<T extends Symbol> {
+public interface ISymbolAdapter<T extends ISymbol> {
 
   T getAdaptee();
 

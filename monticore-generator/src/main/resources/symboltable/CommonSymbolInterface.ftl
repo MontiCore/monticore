@@ -9,7 +9,7 @@ package ${genHelper.getTargetPackage()};
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.ISymbol;
 
-public interface ${interfaceName}<A extends ASTNode> extends ISymbol<A> {
+public interface ${interfaceName} extends ISymbol {
  <#assign langVisitorType = names.getQualifiedName(genHelper.getVisitorPackage(), genHelper.getGrammarSymbol().getName() + "SymbolVisitor")>
  public void accept(${langVisitorType} visitor);
 

@@ -20,6 +20,7 @@ build_dev:
   script:
     - "mvn $MAVEN_CLI_OPTS $MAVEN_OPTS deploy -Dpass=$password -Duser=$username -DdeployAtEnd=true"
     - curl --request POST --form "token=$Automaton" --form ref=hwc_symtab https://git.rwth-aachen.de/api/v4/projects/17630/trigger/pipeline
+    - - curl --request POST --form "token=$Automaton" --form ref=hwc_symtab_language_composition https://git.rwth-aachen.de/api/v4/projects/17630/trigger/pipeline
   only:
     - dev
     - newSymtab

@@ -18,6 +18,7 @@ import java.util.Optional;
 
 import ${symbolTablePackage}.*;
 import ${visitorPackage}.*;
+import de.monticore.symboltable.*;
 import de.monticore.symboltable.serialization.JsonConstants;
 import de.monticore.symboltable.serialization.JsonPrinter;
 
@@ -27,9 +28,9 @@ import de.monticore.symboltable.serialization.JsonPrinter;
  */
 public class ${symTabPrinterName}
     implements ${languageName}SymbolVisitor, ${languageName}ScopeVisitor {
-  
+
   JsonPrinter printer = new JsonPrinter();
-  
+
   public void visit(${languageName}ArtifactScope as) {
     printer.beginObject();
     printer.attribute(JsonConstants.KIND, as.getClass().getName());
@@ -39,7 +40,7 @@ public class ${symTabPrinterName}
     printer.attribute(JsonConstants.IMPORTS, as.getImports());
     printer.attribute(JsonConstants.SCOPE_SPANNING_SYMBOL,serializeScopeSpanningSymbol(as.getSpanningSymbol()));
   }
-  
+
   /**
    * @see ${languageName}ScopeVisitor#visit(${languageName}Scope)
    */
@@ -52,9 +53,9 @@ public class ${symTabPrinterName}
     printer.attribute(JsonConstants.EXPORTS_SYMBOLS, scope.exportsSymbols());
     printer.attribute(JsonConstants.SCOPE_SPANNING_SYMBOL,serializeScopeSpanningSymbol(scope.getSpanningSymbol()));
   }
-  
+
   protected Optional<String> serializeScopeSpanningSymbol(
-      Optional<ICommon${languageName}Symbol<?>> spanningSymbol) {
+      Optional<IScopeSpanningSymbol> spanningSymbol) {
     if (null != spanningSymbol && spanningSymbol.isPresent()) {
       JsonPrinter spPrinter = new JsonPrinter();
       spPrinter.beginObject();
@@ -65,7 +66,7 @@ public class ${symTabPrinterName}
     }
     return Optional.empty();
   }
-  
+
    /**
    * @see ${languageName}ScopeVisitor#traverse(${languageName}Scope)
    */
@@ -93,7 +94,7 @@ public class ${symTabPrinterName}
   public void endVisit(${languageName}Scope scope) {
     printer.endObject();
   }
-<#list symbols as symbol>    
+<#list symbols as symbol>
   /**
    * @see ${symbol.name}SymbolVisitor#visit(${symbol.name}Symbol)
    */
@@ -103,7 +104,7 @@ public class ${symTabPrinterName}
     printer.attribute(JsonConstants.KIND, symbol.getClass().getName());
     printer.attribute(JsonConstants.NAME, symbol.getName());
   }
-  
+
   /**
    * @see ${symbol.name}SymbolVisitor#endVisit(${symbol.name}Symbol)
    */
@@ -112,17 +113,17 @@ public class ${symTabPrinterName}
     printer.endObject();
   }
 </#list>
-  
-  
+
+
   @Override
   public ${languageName}SymbolTablePrinter getRealThis() {
     return this;
   }
-  
+
   public String getSerializedString() {
     return printer.toString();
   }
-  
+
   protected Collection<I${languageName}Scope> filterRelevantSubScopes(
       Collection<I${languageName}Scope> subScopes) {
     List<I${languageName}Scope> result = new ArrayList<>();
@@ -132,5 +133,5 @@ public class ${symTabPrinterName}
     }
     return result;
   }
-  
+
 }

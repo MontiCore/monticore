@@ -7,9 +7,9 @@ ${signature("className", "prodSymbol", "ruleSymbol", "imports", "isScopeSpanning
 <#assign superClass = "">
 
 <#if isScopeSpanningSymbol>
-<#assign superInterfaces = "implements ICommon" + languageName + "Symbol<AST"+ruleName+">, IScopeSpanningSymbol<I"+languageName+"Scope, AST"+ruleName+">">
+<#assign superInterfaces = "implements ICommon" + languageName + "Symbol"+", IScopeSpanningSymbol">
 <#else>
-<#assign superInterfaces = "implements ICommon" + languageName + "Symbol<AST"+ruleName+">">
+<#assign superInterfaces = "implements ICommon" + languageName + "Symbol">
 </#if>
 <#if ruleSymbol.isPresent()>
   <#if !ruleSymbol.get().isEmptySuperInterfaces()>
@@ -28,7 +28,7 @@ package ${genHelper.getTargetPackage()};
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Optional;
-import de.monticore.symboltable.IScopeSpanningSymbol;
+import de.monticore.symboltable.*;
 import de.se_rwth.commons.Names;
 import de.monticore.symboltable.modifiers.AccessModifier;
 
@@ -120,7 +120,7 @@ public class ${className} ${superClass} ${superInterfaces} {
   }
 
   protected String determinePackageName() {
-    Optional<I${languageName}Scope> optCurrentScope = Optional.ofNullable(enclosingScope);
+    Optional<? extends I${languageName}Scope> optCurrentScope = Optional.ofNullable(enclosingScope);
 
     while (optCurrentScope.isPresent()) {
       final I${languageName}Scope currentScope = optCurrentScope.get();
@@ -155,7 +155,7 @@ public class ${className} ${superClass} ${superInterfaces} {
     final Deque<String> nameParts = new ArrayDeque<>();
     nameParts.addFirst(name);
 
-    Optional<I${languageName}Scope> optCurrentScope = Optional.of(enclosingScope);
+    Optional<? extends I${languageName}Scope> optCurrentScope = Optional.of(enclosingScope);
 
     while (optCurrentScope.isPresent()) {
       final I${languageName}Scope currentScope = optCurrentScope.get();

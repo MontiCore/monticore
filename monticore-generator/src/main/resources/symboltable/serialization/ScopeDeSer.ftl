@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("languageName","className","scopeRule", "symbolNames")}
+${signature("languageName","className","scopeRule", "symbolNames", "spanningSymbols")}
 
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign superClass = " extends de.monticore.symboltable.CommonScope ">
@@ -35,7 +35,7 @@ public class ${className} implements IDeSer<I${languageName}Scope> {
 <#list symbolNames?keys as symbol>
 ${symbol}SymbolDeSer ${symbol?lower_case}SymbolDeSer = new ${symbol}SymbolDeSer();
 </#list>
-  
+
   /**
    * @see de.monticore.symboltable.serialization.IDeSer#serialize(java.lang.Object)
    */
@@ -45,7 +45,7 @@ ${symbol}SymbolDeSer ${symbol?lower_case}SymbolDeSer = new ${symbol}SymbolDeSer(
     toSerialize.accept(${className?lower_case}SymbolTablePrinter);
     return ${className?lower_case}SymbolTablePrinter.getSerializedString();
   }
-  
+
   /**
    * @throws IOException
    * @see de.monticore.symboltable.serialization.IDeSer#deserialize(java.lang.String)
@@ -87,7 +87,7 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
     }
     return Optional.empty();
   }
-  
+
   public Optional<ScopeDeserializationResult<I${languageName}Scope>> deserialize${languageName}Scope(JsonReader reader) {
     // Part 1: Initialize all attributes with default values
     I${languageName}Scope scope = null;
@@ -98,7 +98,7 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
 </#list>
     List<ScopeDeserializationResult<I${languageName}Scope>> subScopes = new ArrayList<>();
     Optional<SpanningSymbolReference> spanningSymbol = Optional.empty();
-    
+
     // Part 2: Read all available values from the Json string
     try {
       while (reader.hasNext()) {
@@ -138,7 +138,7 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
       e.printStackTrace();
       return Optional.empty();
     }
-    
+
     // Part 3: Construct the symbol/scope object
     scope = new ${languageName}Scope(isShadowingScope);
     scope.setName(name.orElse(null));
@@ -153,16 +153,16 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
     }
     return Optional.of(new ScopeDeserializationResult<I${languageName}Scope>(scope,spanningSymbol));
   }
-  
+
   protected List<I${languageName}Scope> linkSubScopes(I${languageName}Scope scope, List<ScopeDeserializationResult<I${languageName}Scope>> subScopes){
     List<I${languageName}Scope> subScopeList = new ArrayList<>();
     for (ScopeDeserializationResult<I${languageName}Scope> subScope : subScopes) {
       subScope.getScope().setEnclosingScope(scope);
       if (subScope.hasSpanningSymbol()) {
-      
-      
+
+
 <#assign else = "">
-<#list symbolNames?keys as symbol>
+<#list spanningSymbols?keys as symbol>
       ${else} if (${symbol?lower_case}SymbolDeSer.getSerializedKind().equals(subScope.getSpanningSymbolKind())) {
           Optional<${symbol}Symbol> spanningSymbol = scope.resolve${symbol}Locally(subScope.getSpanningSymbolName());
           if(spanningSymbol.isPresent()) {
@@ -181,7 +181,7 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
     }
     return subScopeList;
   }
-  
+
   protected SpanningSymbolReference deserializeSpanningSymbol(JsonReader reader) throws IOException {
     String kind = null;
     String name = null;
@@ -206,8 +206,8 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
     }
     return null;
   }
-  
-  //TODO: Generate this for all symbols in this scope 
+
+  //TODO: Generate this for all symbols in this scope
 <#list symbolNames?keys as symbol>
   protected List<${symbol}Symbol> deserializeLocal${symbol}Symbols(JsonReader reader)
       throws IOException {
@@ -225,7 +225,7 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
                   .deserialize${symbol}Symbol(reader);
               if (${symbol?lower_case}Symbol.isPresent()) {
                 symbols.add(${symbol?lower_case}Symbol.get());
-                
+
               }
             }
             else {
@@ -244,7 +244,7 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
     return symbols;
   }
   </#list>
-  
+
   protected List<ScopeDeserializationResult<I${languageName}Scope>> deserializeSubScopes(JsonReader reader)
       throws IOException {
     List<ScopeDeserializationResult<I${languageName}Scope>> subScopes = new ArrayList<>();
@@ -278,7 +278,7 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
     reader.endArray();
     return subScopes;
   }
-  
+
   /**
   * @see de.monticore.symboltable.serialization.IDeSer#getSerializedKind()
   */

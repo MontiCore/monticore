@@ -7,17 +7,15 @@ import de.monticore.symboltable.modifiers.IncludesAccessModifierSymbolPredicate;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException;
 import de.se_rwth.commons.Splitters;
 
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static com.google.common.collect.FluentIterable.from;
 import static de.se_rwth.commons.Joiners.DOT;
 import static java.util.stream.Collectors.toSet;
 
 public interface IScope  {
+  
+  Optional<? extends IScope> getEnclosingScope();
   
   
   /**
@@ -56,6 +54,11 @@ public interface IScope  {
    */
   void setAstNode(ASTNode node);
   
+  Optional<ASTNode> getAstNode();
+  
+  Optional<? extends IScopeSpanningSymbol> getSpanningSymbol();
+  
+  void setSpanningSymbol(IScopeSpanningSymbol symbol);
   
   /**
    * @param name of the scope
@@ -92,7 +95,7 @@ public interface IScope  {
     return false;
   }
   
-  default <T extends ISymbol<?>> Optional<T> getResolvedOrThrowException(final Collection<T> resolved) {
+  default <T extends ISymbol> Optional<T> getResolvedOrThrowException(final Collection<T> resolved) {
     if (resolved.size() == 1) {
       return Optional.of(resolved.iterator().next());
     }
@@ -104,7 +107,7 @@ public interface IScope  {
     return Optional.empty();
   }
   
-  default  <T extends ISymbol<?>> Set<T> filterSymbolsByAccessModifier(AccessModifier modifier, Collection<T> resolvedUnfiltered) {
+  default  <T extends ISymbol> Set<T> filterSymbolsByAccessModifier(AccessModifier modifier, Collection<T> resolvedUnfiltered) {
     return new LinkedHashSet<>(resolvedUnfiltered.stream().filter(new IncludesAccessModifierSymbolPredicate(modifier)).collect(toSet()));
   }
   

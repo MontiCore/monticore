@@ -2,13 +2,11 @@
 
 package de.monticore.symboltable;
 
-import de.monticore.ast.ASTNode;
-
-public interface IScopeSpanningSymbol<S extends IScope, A extends ASTNode> extends ISymbol<A> {
+public interface IScopeSpanningSymbol extends ISymbol {
 
   /**
    * @return the scope spanned by this symbol.
    */
-  S getSpannedScope();
+  IScope getSpannedScope();
 
 }

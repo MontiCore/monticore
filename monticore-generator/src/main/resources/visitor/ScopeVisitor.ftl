@@ -46,7 +46,7 @@ public interface ${scopeVisitorName} extends ${genHelper.getSymbolVisitorType()}
    * the visitor still can be reused, by implementing this method in a
    * decorator.
    * @param realThis the real instance to use for handling and traversing nodes.
-   * @see ${genHelper.getCdName()}DelegatorVisitor 
+   * @see ${genHelper.getCdName()}DelegatorVisitor
    */
   default public void setRealThis(${genHelper.getScopeVisitorType()} realThis) {
     throw new UnsupportedOperationException("0xA7011${genHelper.getGeneratedErrorCode(ast)} The setter for realThis is not implemented. You might want to implement a wrapper class to allow setting/getting realThis.");
@@ -64,15 +64,15 @@ public interface ${scopeVisitorName} extends ${genHelper.getSymbolVisitorType()}
   default public ${genHelper.getScopeVisitorType()} getRealThis() {
     return (${genHelper.getScopeVisitorType()}) this;
   }
-  
+
   /* ------------------------------------------------------------------------*/
-  
+
   /**
    * By default this method is not called, because the default visitor only
    * visits a scope in its dynamic runtime type. Use an InheritanceVisitor
    * if you want to visit a node in its super types as well.
    *
-   * @param scope the scope that is entered 
+   * @param scope the scope that is entered
    */
   default public void visit(Scope scope) {
   }
@@ -82,11 +82,11 @@ public interface ${scopeVisitorName} extends ${genHelper.getSymbolVisitorType()}
    * visits a scope in its dynamic runtime type. Use an InheritanceVisitor
    * if you want to visit a node in its super types as well.
    *
-   * @param scope the scope that is left 
+   * @param scope the scope that is left
    */
   default public void endVisit(Scope scope) {
   }
-  
+
   @Override
   default void visit(Symbol symbol) {
     ${genHelper.getSymbolVisitorType()}.super.visit(symbol);
@@ -108,17 +108,17 @@ public interface ${scopeVisitorName} extends ${genHelper.getSymbolVisitorType()}
 <#if existsST && glex.getGlobalVar("stHelper")?has_content>
   <#assign stHelper = glex.getGlobalVar("stHelper")>
   <#assign scopeType = astType.getName() + "Scope">
-  
+
       default public void visit(${scopeType} scope) {}
-      
+
       default public void endVisit(${scopeType} scope) {}
-      
+
       default public void handle(${scopeType} scope) {
         getRealThis().visit(scope);
         getRealThis().traverse(scope);
         getRealThis().endVisit(scope);
       }
-  
+
     default public void traverse(${scopeType} scope) {
       // traverse symbols within the scope
       <#list stHelper.getAllQualifiedSymbols() as qualifiedSymbol>
@@ -126,7 +126,7 @@ public interface ${scopeVisitorName} extends ${genHelper.getSymbolVisitorType()}
             s.accept(getRealThis());
           }
       </#list>
-      
+
       // traverse sub-scopes
       for (${"I" + stHelper.getGrammarSymbol().getName() + "Scope"} s : scope.getSubScopes()) {
         s.accept(getRealThis());
