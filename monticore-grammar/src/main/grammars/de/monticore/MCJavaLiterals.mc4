@@ -44,11 +44,7 @@ component grammar MCJavaLiterals extends de.monticore.MCBasicLiterals {
         @attribute source String-representation (including '"').
     */
   FloatLiteral implements NumericLiteral<100> =
-    // {isFloat(_input.LT(1).getText())}? source:Digits ;
-    //Digits "." (Digits | "+" | "-")+ |
-    //"." (Digits | "+" | "-")+ |
-    //(Digits | "+" | "-")+ ;
-    source:Num_Float ;
+     source:Num_Float ;
 
 
 
@@ -56,7 +52,6 @@ component grammar MCJavaLiterals extends de.monticore.MCBasicLiterals {
         @attribute source String-representation (including '"').
     */
   DoubleLiteral implements NumericLiteral<100> =
-    //{isDouble(_input.LT(1).getText())}? source:Digits ;
     source:Num_Double ;
 
 
@@ -195,40 +190,6 @@ component grammar MCJavaLiterals extends de.monticore.MCBasicLiterals {
 
    fragment token BinaryExponentIndicator
      = 'p' | 'P';
-
-
-   // §3.10.4 Character Literals
-   token Char
-     = '\'' (SingleCharacter|EscapeSequence) '\''
-     : {setText(getText().substring(1, getText().length() - 1));};
-
-   fragment token SingleCharacter
-     = ~ ('\'');
-
-
-   // §3.10.5 String Literals
-   token String
-     = '"' (StringCharacters)? '"'
-     : {setText(getText().substring(1, getText().length() - 1));};
-
-   fragment token StringCharacters
-     = (StringCharacter)+;
-
-   fragment token StringCharacter
-     = ~ ('"' | '\\') | EscapeSequence;
-
-   // §3.10.6 Escape Sequences for Character and String Literals
-   fragment token EscapeSequence
-     = '\\' ('b' | 't' | 'n' | 'f' | 'r' | '"' | '\'' | '\\') | OctalEscape | UnicodeEscape;
-
-   fragment token OctalEscape
-     = '\\' OctalDigit | '\\' OctalDigit OctalDigit | '\\' ZeroToThree OctalDigit OctalDigit;
-
-   fragment token UnicodeEscape
-     = '\\' 'u' HexDigit HexDigit HexDigit HexDigit;
-
-   fragment token ZeroToThree
-     = '0'..'3' ;
 
   /*========================================================================*/
   /*======================= AST DEFINITIONS ================================*/
