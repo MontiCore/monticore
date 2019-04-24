@@ -5,15 +5,11 @@ package de.monticore.symboltable.resolving;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
 
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 // TODO PN remove formal type argument, since not needed anymore
+@Deprecated
 public abstract class TransitiveAdaptedResolvingFilter<S extends Symbol>
     extends CommonAdaptedResolvingFilter<S> implements AdaptedResolvingFilter<S> {
 

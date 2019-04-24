@@ -1,10 +1,10 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className","scopeRule", "symbolNames", "superScopeVisitors")}
+${signature("className", "interfaceName","scopeRule", "symbolNames", "superScopeVisitors", "hasHWC")}
 
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign names = glex.getGlobalVar("nameHelper")>
 <#assign languageName = genHelper.getGrammarSymbol().getName()>
-<#assign superInterfaces = "implements I"+ className>
+<#assign superInterfaces = "implements "+ interfaceName>
 <#if scopeRule.isPresent()>
   <#if !scopeRule.get().isEmptySuperInterfaces()>
     <#assign superInterfaces = superInterfaces + ", "+ stHelper.printGenericTypes(scopeRule.get().getSuperInterfaceList())>
@@ -33,7 +33,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.*;
 import de.se_rwth.commons.logging.Log;
 
-public class ${className} ${superInterfaces} {
+public <#if hasHWC>abstract</#if> class ${className} ${superInterfaces} {
 
 <#list symbolNames?keys as symbol>
   protected ListMultimap<String, ${symbolNames[symbol]}> ${symbolNames[symbol]?lower_case}s = ArrayListMultimap.create();
@@ -170,7 +170,11 @@ public class ${className} ${superInterfaces} {
   }
 
   @Override public int getSymbolsSize() {
+    <#if (symbolNames?keys?size > 0)>
     return <#list symbolNames?keys as symbol>${symbolNames[symbol]?lower_case}s.size()<#sep> + </#sep></#list>;
+    <#else >
+      return 0;
+    </#if>
   }
 
 <#list symbolNames?keys as symbol>

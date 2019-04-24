@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className","scopeClass", "languageName", "symbolNames")}
+${signature("className","scopeClass", "languageName", "symbolNames", "hasHWC")}
 
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 
@@ -32,7 +32,7 @@ import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.logging.Log;
 
-public class ${className} extends ${scopeClass} {
+public <#if hasHWC>abstract</#if> class ${className} extends ${scopeClass} {
 
   private final String packageName;
 

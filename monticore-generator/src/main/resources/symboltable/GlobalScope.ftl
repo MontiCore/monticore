@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className", "languageName")}
+${signature("className", "languageName", "interfaceName", "hasHWC")}
 
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 
@@ -14,7 +14,7 @@ import de.monticore.io.paths.ModelPath;
 import java.util.Optional;
 import de.se_rwth.commons.logging.Log;
 
-public class ${className} extends ${languageName}Scope implements I${className} {
+public <#if hasHWC>abstract</#if> class ${className} extends ${languageName}Scope implements ${interfaceName} {
 
   protected ModelPath modelPath;
 

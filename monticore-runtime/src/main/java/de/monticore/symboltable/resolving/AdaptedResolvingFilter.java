@@ -5,6 +5,7 @@ package de.monticore.symboltable.resolving;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
 
+@Deprecated
 public interface AdaptedResolvingFilter<S extends Symbol> extends ResolvingFilter<S>{
 
   SymbolKind getSourceKind();
