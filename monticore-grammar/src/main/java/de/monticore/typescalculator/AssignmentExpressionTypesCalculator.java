@@ -5,7 +5,6 @@ import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpress
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSymbolTableCreator;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
 
@@ -149,8 +148,7 @@ public class AssignmentExpressionTypesCalculator implements AssignmentExpression
     }
   }
 
-  @Override
-  public void endVisit(ASTPlusAssignmentExpression expr){
+  public void calculatePlusAssignment(ASTRegularAssignmentExpression expr){
     ASTMCType result = calculateTypeArithmetic(expr.getLeft(),expr.getRight());
     if(types.containsKey(expr.getLeft())&&types.containsKey(expr.getRight())) {
       List<String> name = new ArrayList<>();
@@ -179,8 +177,7 @@ public class AssignmentExpressionTypesCalculator implements AssignmentExpression
     }
   }
 
-  @Override
-  public void endVisit(ASTMinusAssignmentExpression expr){
+  public void calculateMinusAssignment(ASTRegularAssignmentExpression expr){
     ASTMCType result = calculateTypeArithmetic(expr.getLeft(),expr.getRight());
     if(result!=null){
       this.result = result;
@@ -192,8 +189,7 @@ public class AssignmentExpressionTypesCalculator implements AssignmentExpression
     }
   }
 
-  @Override
-  public void endVisit(ASTMultAssignmentExpression expr){
+  public void calculateMultAssignment(ASTRegularAssignmentExpression expr){
     ASTMCType result = calculateTypeArithmetic(expr.getLeft(),expr.getRight());
     if(result!=null){
       this.result = result;
@@ -205,8 +201,7 @@ public class AssignmentExpressionTypesCalculator implements AssignmentExpression
     }
   }
 
-  @Override
-  public void endVisit(ASTDivideAssignmentExpression expr){
+  public void calculateDivideAssignment(ASTRegularAssignmentExpression expr){
     ASTMCType result = calculateTypeArithmetic(expr.getLeft(),expr.getRight());
     if(result!=null){
       this.result = result;
@@ -220,37 +215,63 @@ public class AssignmentExpressionTypesCalculator implements AssignmentExpression
 
   @Override
   public void endVisit(ASTRegularAssignmentExpression expr){
-    ASTMCType result = null;
-    Optional<EVariableSymbol> left = Optional.empty();
-    Optional<EVariableSymbol> right = Optional.empty();
-    if(types.get(expr.getLeft()).getEVariableSymbol()!=null&&types.get(expr.getRight()).getEVariableSymbol()!=null){
-      left = scope.resolveEVariable(types.get(expr.getLeft()).getEVariableSymbol().getName());
-      right = scope.resolveEVariable(types.get(expr.getRight()).getEVariableSymbol().getName());
-    }
+    if(expr.getOperator()==ASTConstantsAssignmentExpressions.PLUSEQUALS){
+      calculatePlusAssignment(expr);
+    }else if(expr.getOperator()==ASTConstantsAssignmentExpressions.MINUSEQUALS){
+      calculateMinusAssignment(expr);
+    }else if(expr.getOperator()==ASTConstantsAssignmentExpressions.STAREQUALS){
+      calculateMultAssignment(expr);
+    }else if(expr.getOperator()==ASTConstantsAssignmentExpressions.SLASHEQUALS){
+      calculateDivideAssignment(expr);
+    }else if(expr.getOperator()==ASTConstantsAssignmentExpressions.ANDEQUALS){
+      calculateAndAssigment(expr);
+    }else if(expr.getOperator()==ASTConstantsAssignmentExpressions.PIPEEQUALS){
+      calculateOrAssignment(expr);
+    }else if(expr.getOperator()==ASTConstantsAssignmentExpressions.GTGTEQUALS){
+      calculateDoubleRightAssignment(expr);
+    }else if(expr.getOperator()==ASTConstantsAssignmentExpressions.LTLTEQUALS){
+      calculateDoubleLeftAssignment(expr);
+    }else if(expr.getOperator()==ASTConstantsAssignmentExpressions.GTGTGTEQUALS){
+      calculateLogicalRightAssignment(expr);
+    }else if(expr.getOperator()==ASTConstantsAssignmentExpressions.ROOFEQUALS){
+      calculateBinaryXorAssignment(expr);
+    }else if(expr.getOperator()==ASTConstantsAssignmentExpressions.PERCENTEQUALS){
+      calculateModuloAssignment(expr);
+    }else {
+      ASTMCType result = null;
+      Optional<EVariableSymbol> left = Optional.empty();
+      Optional<EVariableSymbol> right = Optional.empty();
+      if (types.get(expr.getLeft()).getEVariableSymbol() != null && types.get(expr.getRight()).getEVariableSymbol() != null) {
+        left = scope.resolveEVariable(types.get(expr.getLeft()).getEVariableSymbol().getName());
+        right = scope.resolveEVariable(types.get(expr.getRight()).getEVariableSymbol().getName());
+      }
 
-    if(types.containsKey(expr.getLeft())&&types.containsKey(expr.getRight())){
-      if(types.get(expr.getLeft()).deepEqualsWithType(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE))&&types.get(expr.getRight()).deepEqualsWithType(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT))) {
-        result=new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE);
-      }else if(types.get(expr.getLeft()).deepEquals(types.get(expr.getRight()))){
-        result=types.get(expr.getLeft()).getASTMCType().deepClone();
-      }else if(left.isPresent()&&right.isPresent()){
-        if(left.get().getMCTypeSymbol().getSubtypes().contains(right.get().getMCTypeSymbol())){
-          result=types.get(expr.getLeft()).getASTMCType().deepClone();
+      if (types.containsKey(expr.getLeft()) && types.containsKey(expr.getRight())) {
+        if (types.get(expr.getLeft()).deepEqualsWithType(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE)) && types.get(expr.getRight()).deepEqualsWithType(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT))) {
+          result = new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE);
+        }
+        else if (types.get(expr.getLeft()).deepEquals(types.get(expr.getRight()))) {
+          result = types.get(expr.getLeft()).getASTMCType().deepClone();
+        }
+        else if (left.isPresent() && right.isPresent()) {
+          if (left.get().getMCTypeSymbol().getSubtypes().contains(right.get().getMCTypeSymbol())) {
+            result = types.get(expr.getLeft()).getASTMCType().deepClone();
+          }
         }
       }
-    }
-    if(result!=null){
-      this.result=result;
-      MCTypeSymbol res = new MCTypeSymbol(result.getBaseName());
-      res.setASTMCType(result);
-      types.put(expr,res);
-    }else{
-      throw new RuntimeException("the resulting type cannot be resolved");
+      if (result != null) {
+        this.result = result;
+        MCTypeSymbol res = new MCTypeSymbol(result.getBaseName());
+        res.setASTMCType(result);
+        types.put(expr, res);
+      }
+      else {
+        throw new RuntimeException("the resulting type cannot be resolved");
+      }
     }
   }
 
-  @Override
-  public void endVisit(ASTAndAssignmentExpression expr){
+  public void calculateAndAssigment(ASTRegularAssignmentExpression expr){
     //definiert auf boolean - boolean und ganzzahl - ganzzahl
     ASTMCType result = null;
     if(types.containsKey(expr.getLeft())&&types.containsKey(expr.getRight())){
@@ -270,8 +291,7 @@ public class AssignmentExpressionTypesCalculator implements AssignmentExpression
     }
   }
 
-  @Override
-  public void endVisit(ASTOrAssignmentExpression expr){
+  public void calculateOrAssignment(ASTRegularAssignmentExpression expr){
     //definiert auf boolean - boolean und ganzzahl - ganzzahl
     ASTMCType result = null;
     if(types.containsKey(expr.getLeft())&&types.containsKey(expr.getRight())){
@@ -291,8 +311,7 @@ public class AssignmentExpressionTypesCalculator implements AssignmentExpression
     }
   }
 
-  @Override
-  public void endVisit(ASTBinaryXorAssignmentExpression expr){
+  public void calculateBinaryXorAssignment(ASTRegularAssignmentExpression expr){
     //definiert auf boolean - boolean und ganzzahl - ganzzahl
     ASTMCType result = null;
     if(types.containsKey(expr.getLeft())&&types.containsKey(expr.getRight())){
@@ -312,8 +331,7 @@ public class AssignmentExpressionTypesCalculator implements AssignmentExpression
     }
   }
 
-  @Override
-  public void endVisit(ASTRightShiftAssignmentExpression expr){
+  public void calculateDoubleRightAssignment(ASTRegularAssignmentExpression expr){
     //definiert auf Ganzzahl - Ganzzahl
     ASTMCType result = null;
     if(types.containsKey(expr.getLeft())&&types.containsKey(expr.getRight())){
@@ -331,8 +349,7 @@ public class AssignmentExpressionTypesCalculator implements AssignmentExpression
     }
   }
 
-  @Override
-  public void endVisit(ASTLeftShiftAssignmentExpression expr){
+  public void calculateDoubleLeftAssignment(ASTRegularAssignmentExpression expr){
     //definiert auf Ganzzahl - Ganzzahl
     ASTMCType result = null;
     if(types.containsKey(expr.getLeft())&&types.containsKey(expr.getRight())){
@@ -350,8 +367,7 @@ public class AssignmentExpressionTypesCalculator implements AssignmentExpression
     }
   }
 
-  @Override
-  public void endVisit(ASTLogicalRightAssignmentExpression expr){
+  public void calculateLogicalRightAssignment(ASTRegularAssignmentExpression expr){
     //definiert auf Ganzzahl - Ganzzahl
     ASTMCType result = null;
     if(types.containsKey(expr.getLeft())&&types.containsKey(expr.getRight())){
@@ -369,8 +385,7 @@ public class AssignmentExpressionTypesCalculator implements AssignmentExpression
     }
   }
 
-  @Override
-  public void endVisit(ASTModuloAssignmentExpression expr){
+  public void calculateModuloAssignment(ASTRegularAssignmentExpression expr){
     ASTMCType result = calculateTypeArithmetic(expr.getLeft(),expr.getRight());
     if(result!=null){
       this.result = result;

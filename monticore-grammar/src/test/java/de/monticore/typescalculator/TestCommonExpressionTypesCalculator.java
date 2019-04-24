@@ -2,6 +2,7 @@ package de.monticore.typescalculator;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
+import de.monticore.mcbasicliterals._ast.ASTSignedNatLiteral;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
 import de.monticore.typescalculator.testcommonexpressions._ast.ASTBooleanExpression;

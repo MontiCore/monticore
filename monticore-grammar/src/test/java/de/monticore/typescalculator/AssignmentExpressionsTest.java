@@ -561,8 +561,8 @@ public class AssignmentExpressionsTest {
     Optional<ASTExpression> r = p.parse_StringExpression("varInt>>>=varInt+=4");
     Optional<ASTExpression> s = p.parse_StringExpression("varInt%=varDouble-=3");
     Optional<ASTExpression> t = p.parse_StringExpression("varInt&=varInt|=3");
-    //Optional<ASTExpression> u = p.parse_StringExpression("varDouble=varInt^=8");
-    Optional<ASTExpression> v = p.parse_StringExpression("varInt>>>=varInt+=varDouble*=9.6");
+    Optional<ASTExpression> u = p.parse_StringExpression("varDouble=varInt^=8");
+    Optional<ASTExpression> v = p.parse_StringExpression("varInt+=varDouble*=9.6");
 
     assertFalse(p.hasErrors());
     assertTrue(o.isPresent());
@@ -570,7 +570,7 @@ public class AssignmentExpressionsTest {
     assertTrue(r.isPresent());
     assertTrue(s.isPresent());
     assertTrue(t.isPresent());
-    //assertTrue(u.isPresent());
+    assertTrue(u.isPresent());
     assertTrue(v.isPresent());
 
     TestAssignmentExpressionTypesCalculator calc = new TestAssignmentExpressionTypesCalculator();
@@ -591,8 +591,8 @@ public class AssignmentExpressionsTest {
     t.get().accept(calc);
     assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
 
-//    u.get().accept(calc);
-//    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE).deepEquals(calc.getResult()));
+    u.get().accept(calc);
+    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE).deepEquals(calc.getResult()));
 
     v.get().accept(calc);
     assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE).deepEquals(calc.getResult()));

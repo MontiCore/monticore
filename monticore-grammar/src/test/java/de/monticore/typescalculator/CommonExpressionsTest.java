@@ -10,6 +10,7 @@ import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
 import de.monticore.typescalculator.testcommonexpressions._parser.TestCommonExpressionsParser;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -19,6 +20,7 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertTrue;
 
+@Ignore
 public class CommonExpressionsTest {
 
   private ExpressionsBasisScope scope;
