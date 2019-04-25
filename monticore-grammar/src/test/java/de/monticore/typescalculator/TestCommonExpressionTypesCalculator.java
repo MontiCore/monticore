@@ -1,7 +1,10 @@
 package de.monticore.typescalculator;
 
+import de.monticore.ast.ASTNode;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
+import de.monticore.mcbasicliterals._ast.ASTBooleanLiteral;
+import de.monticore.mcbasicliterals._ast.ASTCharLiteral;
 import de.monticore.mcbasicliterals._ast.ASTSignedNatLiteral;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
@@ -17,16 +20,19 @@ import java.util.Map;
 
 public class TestCommonExpressionTypesCalculator extends CommonExpressionTypesCalculator implements TestCommonExpressionsVisitor {
 
-  private Map<ASTExpression, MCTypeSymbol> types;
+  private Map<ASTNode, MCTypeSymbol> types;
 
   private ASTMCType result;
 
   private ExpressionsBasisScope scope;
 
+  private LiteralTypeCalculator literalsVisitor;
+
   public TestCommonExpressionTypesCalculator(){
     types=getTypes();
     result=getResult();
     scope=getScope();
+    literalsVisitor=getLiteralsVisitor();
   }
 
   @Override
@@ -52,7 +58,10 @@ public class TestCommonExpressionTypesCalculator extends CommonExpressionTypesCa
 
   @Override
   public void endVisit(ASTExtLiteral expr){
-
+    ASTMCType type = literalsVisitor.calculateType(expr);
+    MCTypeSymbol sym = new MCTypeSymbol(type.getBaseName());
+    sym.setASTMCType(type);
+    types.put(expr,sym);
   }
 
   public ASTMCType getResult() {
@@ -62,6 +71,10 @@ public class TestCommonExpressionTypesCalculator extends CommonExpressionTypesCa
   public void setScope(ExpressionsBasisScope scope){
     this.scope=scope;
     super.setScope(scope);
+  }
+
+  public void setLiteralsVisitor(LiteralTypeCalculator literalsVisitor){
+    this.literalsVisitor=literalsVisitor;
   }
 
   //TODO: ExtLiteral soll IntExpression, DoubleExpression und BooleanExpression ersetzen

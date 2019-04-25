@@ -1,5 +1,6 @@
 package de.monticore.typescalculator;
 
+import de.monticore.ast.ASTNode;
 import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
@@ -14,11 +15,13 @@ import java.util.Optional;
 
 public class CommonExpressionTypesCalculator implements CommonExpressionsVisitor {
 
-  private Map<ASTExpression, MCTypeSymbol> types;
+  private Map<ASTNode, MCTypeSymbol> types;
 
   private ASTMCType result;
 
   private ExpressionsBasisScope scope;
+
+  private LiteralTypeCalculator literalsVisitor;
 
   public CommonExpressionTypesCalculator(){
     types = new HashMap<>();
@@ -324,11 +327,11 @@ public class CommonExpressionTypesCalculator implements CommonExpressionsVisitor
     return result;
   }
 
-  public Map<ASTExpression, MCTypeSymbol> getTypes() {
+  public Map<ASTNode, MCTypeSymbol> getTypes() {
     return types;
   }
 
-  public void setTypes(Map<ASTExpression, MCTypeSymbol> types){
+  public void setTypes(Map<ASTNode, MCTypeSymbol> types){
     this.types = types;
   }
 
@@ -403,6 +406,14 @@ public class CommonExpressionTypesCalculator implements CommonExpressionsVisitor
 
   public ExpressionsBasisScope getScope(){
     return scope;
+  }
+
+  public void setLiteralsVisitor(LiteralTypeCalculator literalsVisitor){
+    this.literalsVisitor = literalsVisitor;
+  }
+
+  public LiteralTypeCalculator getLiteralsVisitor(){
+    return this.literalsVisitor;
   }
 
   //TODO: es fehlen noch LiteralExpr, CallExpr, NameExpr und QualifiedNameExpr, bisher nur fuer double und int alles implementiert
