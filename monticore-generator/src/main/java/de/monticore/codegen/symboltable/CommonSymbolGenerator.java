@@ -47,13 +47,13 @@ public class CommonSymbolGenerator implements SymbolGenerator {
             genHelper.getTargetPackage(), handCodedPath);
     String deserName = getSimpleTypeNameToGenerate(
         getSimpleName(className + SYMBOL + DESER),
-        genHelper.getTargetPackage(), handCodedPath);
+        genHelper.getSerializationTargetPackage(), handCodedPath);
 
     final Path filePath = get(getPathFromPackage(genHelper.getTargetPackage()),
             symbolName + ".java");
     final Path builderFilePath = get(getPathFromPackage(genHelper.getTargetPackage()),
             builderName + ".java");
-    final Path serializationFilePath = get(getPathFromPackage(genHelper.getTargetPackage()),"serialization",
+    final Path serializationFilePath = get(getPathFromPackage(genHelper.getSerializationTargetPackage()),
         deserName +".java");
 
     ASTMCGrammar grammar = genHelper.getGrammarSymbol().getAstGrammar().get();

@@ -5,15 +5,13 @@
  */
 package de.monticore.codegen.symboltable;
 
-import static de.monticore.codegen.GeneratorHelper.getSimpleTypeNameToGenerate;
-import static de.se_rwth.commons.Names.getPathFromPackage;
-import static de.se_rwth.commons.Names.getSimpleName;
-import static java.nio.file.Paths.get;
-
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
+import de.monticore.codegen.GeneratorHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.io.paths.IterablePath;
+import de.se_rwth.commons.Names;
 
 public class CommonSymbolTablePrinterGenerator implements SymbolTablePrinterGenerator {
   
@@ -29,11 +27,12 @@ public class CommonSymbolTablePrinterGenerator implements SymbolTablePrinterGene
   public void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
       IterablePath handCodedPath, String languageName) {
     
-    String className = getSimpleTypeNameToGenerate(
-        getSimpleName(languageName + "SymbolTablePrinter"),
-        genHelper.getTargetPackage(), handCodedPath);
+    String className = GeneratorHelper.getSimpleTypeNameToGenerate(
+        Names.getSimpleName(languageName + "SymbolTablePrinter"),
+        genHelper.getSerializationTargetPackage(), handCodedPath);
     
-    final Path filePath = get(getPathFromPackage(genHelper.getTargetPackage()), "serialization", className + ".java");
+    final Path filePath = Paths.get(
+        Names.getPathFromPackage(genHelper.getSerializationTargetPackage()), className + ".java");
     
     genEngine.generateNoA(TEMPLATE, filePath, languageName, className,
         genHelper.getSymbolTablePackage(), genHelper.getVisitorPackage(),

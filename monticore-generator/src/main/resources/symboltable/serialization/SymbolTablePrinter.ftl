@@ -116,7 +116,7 @@ public class ${symTabPrinterName}
 
 
   @Override
-  public ${languageName}SymbolTablePrinter getRealThis() {
+  public ${symTabPrinterName} getRealThis() {
     return this;
   }
 

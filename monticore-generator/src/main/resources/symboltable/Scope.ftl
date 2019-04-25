@@ -170,9 +170,9 @@ public <#if hasHWC>abstract</#if> class ${className} ${superInterfaces} {
   }
 
   @Override public int getSymbolsSize() {
-    <#if (symbolNames?keys?size > 0)>
+    <#if (symbolNames?keys?size gt 0)>
     return <#list symbolNames?keys as symbol>${symbolNames[symbol]?lower_case}s.size()<#sep> + </#sep></#list>;
-    <#else >
+    <#else>
       return 0;
     </#if>
   }

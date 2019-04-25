@@ -73,6 +73,13 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   public String getTargetPackage() {
     return getQualifiedGrammarName().toLowerCase() + "." + SymbolTableGenerator.PACKAGE;
   }
+  
+  /**
+   * @return the package for the generated symbol table files
+   */
+  public String getSerializationTargetPackage() {
+    return getTargetPackage() + "." + SymbolTableGenerator.SERIALIZATION_PACKAGE;
+  }
 
   /**
    * @return the qualified grammar's name

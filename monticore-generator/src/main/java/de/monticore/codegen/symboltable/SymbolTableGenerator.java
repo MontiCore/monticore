@@ -25,6 +25,8 @@ import static de.se_rwth.commons.logging.Log.debug;
 public class SymbolTableGenerator {
 
   public static final String PACKAGE = "_symboltable";
+  
+  public static final String SERIALIZATION_PACKAGE = "serialization";
 
   public static final String LOG = SymbolTableGenerator.class.getSimpleName();
 

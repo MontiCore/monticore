@@ -61,7 +61,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
         getSimpleName(scopeName + GeneratorHelper.BUILDER), _package, handCodedPath);
     
     String deserName = getSimpleTypeNameToGenerate(getSimpleName(scopeName + GeneratorHelper.DESER),
-        _package+".serialization", handCodedPath);
+        genHelper.getSerializationTargetPackage(), handCodedPath);
     
     String artifactScopeClassName = getSimpleTypeNameToGenerate(baseNameArtifactScope,
         _package, handCodedPath);
@@ -134,7 +134,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
     final Path interfaceFilePath = Paths
         .get(Names.getPathFromPackage(genHelper.getTargetPackage()), interfaceName + ".java");
     final Path serializationFilePath = Paths
-        .get(Names.getPathFromPackage(genHelper.getTargetPackage()),"serialization", deserName + ".java");
+        .get(Names.getPathFromPackage(genHelper.getSerializationTargetPackage()), deserName + ".java");
     final Path artifactScopeFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
         artifactScopeClassName + ".java");
     final Path globalScopeFilePath = Paths.get(Names.getPathFromPackage(genHelper.getTargetPackage()),
