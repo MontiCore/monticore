@@ -217,7 +217,9 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
 
   public Optional<? extends I${scopeName}Scope> getEnclosingScope();
 
-  public void setEnclosingScope(I${scopeName}Scope enclosingScope);
+  default public void setEnclosingScope(I${scopeName}Scope enclosingScope) {
+    Log.error("0xA7012${genHelper.getGeneratedErrorCode(ast)} The method \"setEnclosingScope\" of interface \"${interfaceName}\" is not implemented.");
+  }
 
 
   /**
@@ -225,14 +227,18 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
    *
    * @param subScope the sub scope to be added.
    */
-  void addSubScope(I${scopeName}Scope subScope);
+  default void addSubScope(I${scopeName}Scope subScope) {
+    Log.error("0xA7013${genHelper.getGeneratedErrorCode(ast)} The method \"addSubScope\" of interface \"${interfaceName}\" is not implemented.");
+  }
 
   /**
    * Removes given <code>subScope</code>.
    *
    * @param subScope the sub scope to be removed
    */
-  void removeSubScope(I${scopeName}Scope subScope);
+  default void removeSubScope(I${scopeName}Scope subScope) {
+    Log.error("0xA7014${genHelper.getGeneratedErrorCode(ast)} The method \"removeSubScope\" of interface \"${interfaceName}\" is not implemented.");
+  }
 
   public Collection<? extends I${scopeName}Scope> getSubScopes();
 }
