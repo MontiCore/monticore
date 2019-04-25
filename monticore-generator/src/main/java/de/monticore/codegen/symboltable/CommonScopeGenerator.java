@@ -93,27 +93,48 @@ public class CommonScopeGenerator implements ScopeGenerator {
     // Maps Symbol Name to Symbol Kind Name
     Map<String, String> symbolNamesWithSuperGrammar = new HashMap<>();
     for (MCProdSymbol sym : allSymbolDefiningRulesWithSuperGrammar) {
-      String name = getSimpleName(sym.getName());
-      String kind = genHelper.getQualifiedProdName(sym) + GeneratorHelper.SYMBOL;
-      symbolNamesWithSuperGrammar.put(name, kind);
+      String name;
+      if (sym.getSymbolDefinitionKind().isPresent()) {
+        name = getSimpleName(sym.getSymbolDefinitionKind().get() + GeneratorHelper.SYMBOL);
+      } else {
+        name =  getSimpleName(sym.getName()) + GeneratorHelper.SYMBOL;
+      }
+      String qualifiedName = genHelper.getQualifiedProdName(sym) + GeneratorHelper.SYMBOL;
+      symbolNamesWithSuperGrammar.put(name, qualifiedName);
     }
 
     // symbols that got overwritten by a nonterminal
     // needed so the scope does implement all methods from the interface
     // discuss if this is even allowed to do
     for (MCProdSymbol sym : genHelper.getAllOverwrittenSymbolProductions()) {
-      String name = getSimpleName(sym.getName());
-      String kind = genHelper.getQualifiedProdName(sym) + GeneratorHelper.SYMBOL;
-      symbolNamesWithSuperGrammar.put(name, kind);
+      String name;
+      if (sym.getSymbolDefinitionKind().isPresent()) {
+        name = getSimpleName(sym.getSymbolDefinitionKind().get() + GeneratorHelper.SYMBOL);
+      } else {
+        name =  getSimpleName(sym.getName()) + GeneratorHelper.SYMBOL;
+      }
+      String qualifiedName = genHelper.getQualifiedProdName(sym) + GeneratorHelper.SYMBOL;
+      symbolNamesWithSuperGrammar.put(name, qualifiedName);
     }
 
-    //list of superscopes that the interface must extend
-    Set<String> superScopes = new HashSet<>();
+    // list of all superscope interfaces of the current scope
+    Set<String> allSuperScopes = new HashSet<>();
+    for (CDSymbol cdSymbol : genHelper.getAllSuperCds(genHelper.getCd())) {
+      if (!genHelper.isComponentGrammar(cdSymbol.getFullName())) {
+        String qualifiedSymbolName = genHelper.getQualifiedScopeInterfaceType(cdSymbol);
+        if (!qualifiedSymbolName.isEmpty()) {
+          allSuperScopes.add(qualifiedSymbolName);
+        }
+      }
+    }
+
+    // list of local superscope interfaces that the interface must extend
+    Set<String> localSuperScopes = new HashSet<>();
     for (String symbol : genHelper.getSuperGrammarCds()) {
       if (!genHelper.isComponentGrammar(symbol)) {
         String qualifiedSymbolName = genHelper.getQualifiedScopeInterfaceType(symbol);
         if (!qualifiedSymbolName.isEmpty()) {
-          superScopes.add(qualifiedSymbolName);
+        	localSuperScopes.add(qualifiedSymbolName);
         }
       }
     }
@@ -147,8 +168,8 @@ public class CommonScopeGenerator implements ScopeGenerator {
 
     ASTMCGrammar grammar = genHelper.getGrammarSymbol().getAstGrammar().get();
     Optional<ASTScopeRule> scopeRule = grammar.getScopeRulesOpt();
-    genEngine.generateNoA("symboltable.Scope", scopeFilePath, scopeClassName, baseNameInterface, scopeRule, symbolNames, superScopeVisitors,existsHWCScopeImpl);
-    genEngine.generateNoA("symboltable.ScopeInterface", interfaceFilePath, interfaceName, symbolNames, superScopes, languageName);
+    genEngine.generateNoA("symboltable.Scope", scopeFilePath, scopeClassName, baseNameInterface, scopeRule, symbolNamesWithSuperGrammar, allSuperScopes, superScopeVisitors,existsHWCScopeImpl);
+    genEngine.generateNoA("symboltable.ScopeInterface", interfaceFilePath, interfaceName, symbolNames, localSuperScopes, languageName);
     genEngine.generateNoA("symboltable.ScopeBuilder", builderFilePath, builderName, scopeName);
     genEngine.generateNoA("symboltable.serialization.ScopeDeSer", serializationFilePath, languageName , deserName, scopeRule, symbolNames,spanningSymbolNames);
 

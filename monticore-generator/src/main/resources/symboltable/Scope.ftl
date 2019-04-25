@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className", "interfaceName","scopeRule", "symbolNames", "superScopeVisitors", "hasHWC")}
+${signature("className", "interfaceName","scopeRule", "symbolNames", "superScopes", "superScopeVisitors", "hasHWC")}
 
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign names = glex.getGlobalVar("nameHelper")>
@@ -36,7 +36,7 @@ import de.se_rwth.commons.logging.Log;
 public <#if hasHWC>abstract</#if> class ${className} ${superInterfaces} {
 
 <#list symbolNames?keys as symbol>
-  protected ListMultimap<String, ${symbolNames[symbol]}> ${symbolNames[symbol]?lower_case}s = ArrayListMultimap.create();
+  protected ListMultimap<String, ${symbolNames[symbol]}> ${symbol?lower_case}s = ArrayListMultimap.create();
 
 </#list>
   protected I${languageName}Scope enclosingScope;
@@ -171,7 +171,7 @@ public <#if hasHWC>abstract</#if> class ${className} ${superInterfaces} {
 
   @Override public int getSymbolsSize() {
     <#if (symbolNames?keys?size gt 0)>
-    return <#list symbolNames?keys as symbol>${symbolNames[symbol]?lower_case}s.size()<#sep> + </#sep></#list>;
+    return <#list symbolNames?keys as symbol>${symbol?lower_case}s.size()<#sep> + </#sep></#list>;
     <#else>
       return 0;
     </#if>
@@ -179,17 +179,17 @@ public <#if hasHWC>abstract</#if> class ${className} ${superInterfaces} {
 
 <#list symbolNames?keys as symbol>
   @Override public void add(${symbolNames[symbol]} symbol) {
-    this.${symbolNames[symbol]?lower_case}s.put(symbol.getName(), symbol);
+    this.${symbol?lower_case}s.put(symbol.getName(), symbol);
     symbol.setEnclosingScope(this);
 
   }
 
   @Override public void remove(${symbolNames[symbol]} symbol) {
-    this.${symbolNames[symbol]?lower_case}s.remove(symbol.getName(), symbol);
+    this.${symbol?lower_case}s.remove(symbol.getName(), symbol);
   }
 
-  public ListMultimap<String, ${symbolNames[symbol]}> get${symbolNames[symbol]}s() {
-    return this.${symbolNames[symbol]?lower_case}s;
+  public ListMultimap<String, ${symbolNames[symbol]}> get${symbol}s() {
+    return this.${symbol?lower_case}s;
   }
 
 </#list>
@@ -218,6 +218,23 @@ public <#if hasHWC>abstract</#if> class ${className} ${superInterfaces} {
     visitor.handle(this);
   </#if>
     }
+
+  <#list superScopes as superScope>
+  @Override
+  public void addSubScope(${superScope} subScope) {
+    addSubScope((I${languageName}Scope) subScope);
+  }
+
+  @Override
+  public void removeSubScope(${superScope} subScope) {
+    removeSubScope((I${languageName}Scope) subScope);
+  }
+
+  @Override
+  public void setEnclosingScope(${superScope} newEnclosingScope) {
+    setEnclosingScope((I${languageName}Scope) newEnclosingScope);
+  }
+  </#list>
 
   <#list superScopeVisitors as superScopeVisitor>
   public void accept(${superScopeVisitor} visitor) {
