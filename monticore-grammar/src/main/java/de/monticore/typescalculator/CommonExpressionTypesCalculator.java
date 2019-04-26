@@ -4,6 +4,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.types.mcbasictypes._ast.*;
@@ -300,12 +301,19 @@ public class CommonExpressionTypesCalculator implements CommonExpressionsVisitor
 
   @Override
   public void endVisit(ASTLiteralExpression expr){
-
+    ASTMCType type = literalsVisitor.calculateType(expr.getExtLiteral());
+    MCTypeSymbol sym = new MCTypeSymbol(type.getBaseName());
+    sym.setASTMCType(type);
+    types.put(expr,sym);
   }
 
   @Override
   public void endVisit(ASTCallExpression expr){
-
+    EMethodSymbol sym = expr.geteMethodSymbol();
+    ASTMCType ret = sym.getReturnType();
+    MCTypeSymbol symbol = new MCTypeSymbol(sym.getName());
+    symbol.setASTMCType(ret);
+    types.put(expr,symbol);
   }
 
   @Override

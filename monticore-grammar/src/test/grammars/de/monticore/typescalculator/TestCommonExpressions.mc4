@@ -2,7 +2,7 @@
 
 package de.monticore.typescalculator;
 
-grammar TestCommonExpressions extends de.monticore.expressions.CommonExpressions, de.monticore.MCBasics, de.monticore.MCBasicLiterals {
+grammar TestCommonExpressions extends de.monticore.expressions.CommonExpressionsWithLiterals, de.monticore.MCBasics, de.monticore.MCBasicLiterals {
   start Expression;
   //FooBarBlub implements Expression = Name;
 
@@ -11,7 +11,5 @@ grammar TestCommonExpressions extends de.monticore.expressions.CommonExpressions
   DoubleExpression implements Expression = "blub";
 
   BooleanExpression implements Expression = "bool";
-
-  ExtLiteral = Literal;
 
 }
