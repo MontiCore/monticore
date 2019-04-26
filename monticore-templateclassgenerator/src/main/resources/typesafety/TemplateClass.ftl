@@ -7,12 +7,14 @@ ${defineHookPoint("JavaCopyright")}
 
 package ${package};
 
-
+import java.util.Arrays;
 import java.nio.file.Path;
 import de.monticore.ast.ASTNode;
 import ${glex.getGlobalVar("TemplateClassPackage")}.${glex.getGlobalVar("TemplateClassSetupPackage")}.GeneratorConfig;
 import de.monticore.templateclassgenerator.util.GeneratorInterface;
 import de.monticore.symboltable.CommonSymbol;
+import de.monticore.ast.ASTNode;
+import de.monticore.generating.templateengine.ExtendedTemplateController;
 
 
 /**
@@ -69,7 +71,9 @@ public <#if isMainTemplate>abstract</#if> class ${classname} <#if isMainTemplate
   }
   
   protected void doGenerate(Path filePath, ASTNode node<#if parameters?has_content || !hasSignature>, </#if><#if !hasSignature>${defaultParam}<#else>${printedParams}</#if>) {
-    GeneratorConfig.getGeneratorEngine().generate("${fqnTemplateName?replace("\\","/")}", filePath, node<#if parameters?has_content || !hasSignature>, </#if><#if !hasSignature>${defaultParamName}<#else>${printedParamNames}</#if>);
+    ExtendedTemplateController tc = GeneratorConfig
+        .getTemplateController("${fqnTemplateName?replace("\\","/")}");
+    tc.writeArgs("${fqnTemplateName?replace("\\","/")}", filePath, node<#if parameters?has_content || !hasSignature>, </#if><#if !hasSignature>Arrays.asList(${defaultParamName})<#else>Arrays.asList(${printedParamNames})</#if>);
   }
   
   /**
@@ -89,7 +93,10 @@ public <#if isMainTemplate>abstract</#if> class ${classname} <#if isMainTemplate
   }
   
   protected String doGenerate(<#if !hasSignature>${defaultParam}<#else>${printedParams}</#if>) {
-    return GeneratorConfig.getGeneratorEngine().generate("${fqnTemplateName?replace("\\","/")}"<#if parameters?has_content || !hasSignature>, </#if><#if !hasSignature>${defaultParamName}<#else>${printedParamNames}</#if>);
+      ExtendedTemplateController tc = GeneratorConfig
+        .getTemplateController("${fqnTemplateName?replace("\\","/")}");
+    
+    return tc.includeArgs("${fqnTemplateName?replace("\\","/")}"<#if parameters?has_content || !hasSignature>, </#if><#if !hasSignature>Arrays.asList(${defaultParamName})<#else>Arrays.asList(${printedParamNames})</#if>).toString();
   }
   
   <#if result.isPresent()>
