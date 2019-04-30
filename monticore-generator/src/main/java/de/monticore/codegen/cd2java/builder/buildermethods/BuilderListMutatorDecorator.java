@@ -29,18 +29,19 @@ public class BuilderListMutatorDecorator extends ListMutatorDecorator {
     enableTemplates();
     for (ASTCDMethod m : methods) {
       m.setReturnType(builderType);
-      String methodName = m.getName().substring(0, m.getName().length() - attribute.getName().length());
+      int attributeIndex = m.getName().lastIndexOf(capitalizedAttributeNameWithOutS);
+      String methodName = m.getName().substring(0, attributeIndex);
       String parameterCall = m.getCDParameterList().stream()
           .map(ASTCDParameter::getName)
           .collect(Collectors.joining(", "));
-      this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("builder.MethodDelegate", attribute.getName(), methodName, parameterCall));
+      this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("builder.MethodDelegate", capitalizedAttributeNameWithOutS, methodName, parameterCall));
     }
     return methods;
   }
 
   @Override
   protected ASTCDMethod createSetListMethod(ASTCDAttribute ast) {
-    String signature = String.format(SET_LIST, capitalizedAttributeName, attributeType, ast.getName());
+    String signature = String.format(SET_LIST, capitalizedAttributeNameWithOutS, attributeType, ast.getName());
     ASTCDMethod method = this.getCDMethodFacade().createMethodByDefinition(signature);
     method.setReturnType(builderType);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("builder.Set", ast));

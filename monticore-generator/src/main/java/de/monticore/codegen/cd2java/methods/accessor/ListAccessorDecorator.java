@@ -47,7 +47,7 @@ public class ListAccessorDecorator extends ListMethodDecorator {
 
 
   protected ASTCDMethod createGetListMethod(ASTCDAttribute ast) {
-    String signature = String.format(GET_LIST, attributeType, capitalizedAttributeName);
+    String signature = String.format(GET_LIST, attributeType, capitalizedAttributeNameWithOutS);
     ASTCDMethod getList = this.getCDMethodFacade().createMethodByDefinition(signature);
     this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint("methods.Get", ast));
     return getList;
@@ -56,24 +56,24 @@ public class ListAccessorDecorator extends ListMethodDecorator {
   @Override
   protected List<String> getMethodSignatures() {
     return Arrays.asList(
-      String.format(CONTAINS, capitalizedAttributeName),
-      String.format(CONTAINS_ALL, capitalizedAttributeName),
-      String.format(IS_EMPTY, capitalizedAttributeName),
-      String.format(ITERATOR, attributeType, capitalizedAttributeName),
-      String.format(SIZE, capitalizedAttributeName),
-      String.format(TO_ARRAY, attributeType, capitalizedAttributeName, attributeType),
-      String.format(TO_ARRAY_, capitalizedAttributeName),
-      String.format(SPLITERATOR, attributeType, capitalizedAttributeName),
-      String.format(STREAM, attributeType, capitalizedAttributeName),
-      String.format(PARALLEL_STREAM, attributeType, capitalizedAttributeName),
-      String.format(GET, attributeType, capitalizedAttributeName),
-      String.format(INDEX_OF, capitalizedAttributeName),
-      String.format(LAST_INDEX_OF, capitalizedAttributeName),
-      String.format(EQUALS, capitalizedAttributeName),
-      String.format(HASHCODE, capitalizedAttributeName),
-      String.format(LIST_ITERATOR, attributeType, capitalizedAttributeName),
-      String.format(LIST_ITERATOR_, attributeType, capitalizedAttributeName),
-      String.format(SUBLIST, attributeType, capitalizedAttributeName)
+      String.format(CONTAINS, capitalizedAttributeNameWithOutS),
+      String.format(CONTAINS_ALL, capitalizedAttributeNameWithS),
+      String.format(IS_EMPTY, capitalizedAttributeNameWithS),
+      String.format(ITERATOR, attributeType, capitalizedAttributeNameWithS),
+      String.format(SIZE, capitalizedAttributeNameWithS),
+      String.format(TO_ARRAY, attributeType, capitalizedAttributeNameWithS, attributeType),
+      String.format(TO_ARRAY_, capitalizedAttributeNameWithS),
+      String.format(SPLITERATOR, attributeType, capitalizedAttributeNameWithS),
+      String.format(STREAM, attributeType, capitalizedAttributeNameWithS),
+      String.format(PARALLEL_STREAM, attributeType, capitalizedAttributeNameWithS),
+      String.format(GET, attributeType, capitalizedAttributeNameWithOutS),
+      String.format(INDEX_OF, capitalizedAttributeNameWithOutS),
+      String.format(LAST_INDEX_OF, capitalizedAttributeNameWithOutS),
+      String.format(EQUALS, capitalizedAttributeNameWithS),
+      String.format(HASHCODE, capitalizedAttributeNameWithS),
+      String.format(LIST_ITERATOR, attributeType, capitalizedAttributeNameWithS),
+      String.format(LIST_ITERATOR_, attributeType, capitalizedAttributeNameWithS),
+      String.format(SUBLIST, attributeType, capitalizedAttributeNameWithS)
     );
   }
 

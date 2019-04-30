@@ -21,7 +21,7 @@ public class ReferencedDefinitionListAccessorDecorator extends ListAccessorDecor
 
   @Override
   protected ASTCDMethod createGetListMethod(ASTCDAttribute ast) {
-    String signature = String.format(GET_LIST, attributeType, capitalizedAttributeName);
+    String signature = String.format(GET_LIST, attributeType, capitalizedAttributeNameWithS);
     ASTCDMethod getList = this.getCDMethodFacade().createMethodByDefinition(signature);
     String referencedSymbolType = symbolTableService.getReferencedSymbolTypeName(ast);
     String referencedNodeTypeAsList = ast.printType();

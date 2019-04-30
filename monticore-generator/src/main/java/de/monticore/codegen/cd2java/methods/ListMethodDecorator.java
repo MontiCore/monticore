@@ -19,7 +19,9 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 
 public abstract class ListMethodDecorator extends AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> {
 
-  protected String capitalizedAttributeName;
+  protected String capitalizedAttributeNameWithS;
+
+  protected String capitalizedAttributeNameWithOutS;
 
   protected String attributeType;
 
@@ -30,15 +32,18 @@ public abstract class ListMethodDecorator extends AbstractDecorator<ASTCDAttribu
   @Override
   public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
     //todo find better util than the DecorationHelper
-    this.capitalizedAttributeName = StringUtils.capitalize(DecorationHelper.getNativeAttributeName(ast.getName()));
+    this.capitalizedAttributeNameWithS = StringUtils.capitalize(DecorationHelper.getNativeAttributeName(ast.getName()));
+    this.capitalizedAttributeNameWithOutS = (capitalizedAttributeNameWithS.endsWith("s"))
+        ? capitalizedAttributeNameWithS.substring(0, capitalizedAttributeNameWithS.length() - 1) :
+        capitalizedAttributeNameWithS;
     this.attributeType = getTypeArgumentFromListType(ast.getType());
 
     List<ASTCDMethod> methods = getMethodSignatures().stream()
         .map(getCDMethodFacade()::createMethodByDefinition)
         .collect(Collectors.toList());
 
-    methods.forEach(m -> this.replaceTemplate(EMPTY_BODY, m, createListImplementation(m, capitalizedAttributeName)));
 
+    methods.forEach(m -> this.replaceTemplate(EMPTY_BODY, m, createListImplementation(m)));
     return methods;
   }
 
@@ -46,13 +51,14 @@ public abstract class ListMethodDecorator extends AbstractDecorator<ASTCDAttribu
 
   private String getTypeArgumentFromListType(ASTType type) {
     String typeString = TypesPrinter.printType(type);
-    int lastListIndex = typeString.lastIndexOf("List<")+5;
+    int lastListIndex = typeString.lastIndexOf("List<") + 5;
     return typeString.substring(lastListIndex, typeString.length() - 1);
   }
 
-  private HookPoint createListImplementation(final ASTCDMethod method, final String capitalizedAttributeName) {
-    String attributeName = StringUtils.uncapitalize(capitalizedAttributeName);
-    String methodName = method.getName().substring(0, method.getName().length() - capitalizedAttributeName.length());
+  private HookPoint createListImplementation(final ASTCDMethod method) {
+    String attributeName = StringUtils.uncapitalize(capitalizedAttributeNameWithOutS);
+    int attributeIndex = method.getName().lastIndexOf(capitalizedAttributeNameWithOutS);
+    String methodName = method.getName().substring(0, attributeIndex);
     String parameterCall = method.getCDParameterList().stream()
         .map(ASTCDParameter::getName)
         .collect(Collectors.joining(", "));
