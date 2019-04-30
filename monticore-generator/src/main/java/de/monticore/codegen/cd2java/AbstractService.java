@@ -5,6 +5,7 @@ import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
+import de.se_rwth.commons.JavaNamesHelper;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -75,4 +76,12 @@ public abstract class AbstractService<T extends AbstractService> {
   }
 
   protected abstract T createService(CDSymbol cdSymbol);
+
+  public static String getNativeAttributeName(String attributeName) {
+    if (!attributeName.startsWith(JavaNamesHelper.PREFIX_WHEN_WORD_IS_RESERVED)) {
+      return attributeName;
+    }
+    return attributeName.substring(JavaNamesHelper.PREFIX_WHEN_WORD_IS_RESERVED.length());
+  }
+
 }

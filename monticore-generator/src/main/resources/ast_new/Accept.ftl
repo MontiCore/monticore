@@ -1,7 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("astcdClass")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
-<#if genHelper.isSupertypeOfHWType(astcdClass.getName())>
+<#if astcdClass.getName()?ends_with("TOP")>
   <#assign plainName = astcdClass.getName()>
     // We allow a down cast here, because the subclass ${plainName} must exist
     // and only this subclass may exist in the AST and hence, only this class may

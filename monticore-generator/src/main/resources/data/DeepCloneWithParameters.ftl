@@ -36,7 +36,7 @@ ${tc.signature("astcdClass")}
     get${methName}List().forEach(s -> result.${attributeName}.add(s.deepClone()));
     <#elseif genHelper.isListType(typeName)>
     for ( int i = 0; i < this.get${methName}List().size() ; i++ ) {
-        result.add${methName}(get${methName}(i);
+        result.add${methName}(get${methName}(i));
     }
     <#elseif genHelper.isString(typeName) || genHelper.isAttributeOfTypeEnum(attribute)>
     result.set${methName}(get${methName}());
