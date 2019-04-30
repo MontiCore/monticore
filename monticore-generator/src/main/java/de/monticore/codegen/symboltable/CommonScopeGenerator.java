@@ -120,7 +120,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
     // list of all superscope interfaces of the current scope
     Set<String> allSuperScopes = new HashSet<>();
     for (CDSymbol cdSymbol : genHelper.getAllSuperCds(genHelper.getCd())) {
-      if (!genHelper.isComponentGrammar(cdSymbol.getFullName())) {
+      if (genHelper.hasSymbolTable(cdSymbol.getFullName())) {
         String qualifiedSymbolName = genHelper.getQualifiedScopeInterfaceType(cdSymbol);
         if (!qualifiedSymbolName.isEmpty()) {
           allSuperScopes.add(qualifiedSymbolName);
@@ -131,7 +131,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
     // list of local superscope interfaces that the interface must extend
     Set<String> localSuperScopes = new HashSet<>();
     for (String symbol : genHelper.getSuperGrammarCds()) {
-      if (!genHelper.isComponentGrammar(symbol)) {
+      if (genHelper.hasSymbolTable(symbol)) {
         String qualifiedSymbolName = genHelper.getQualifiedScopeInterfaceType(symbol);
         if (!qualifiedSymbolName.isEmpty()) {
         	localSuperScopes.add(qualifiedSymbolName);
