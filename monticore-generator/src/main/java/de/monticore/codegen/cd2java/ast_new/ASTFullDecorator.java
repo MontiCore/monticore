@@ -5,6 +5,8 @@ import de.monticore.codegen.cd2java.ast_new.reference.ASTReferenceDecorator;
 import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 
+import java.util.stream.Stream;
+
 public class ASTFullDecorator extends CompositeDecorator<ASTCDClass> {
 
   public ASTFullDecorator(final DataDecorator dataDecorator,
@@ -15,4 +17,9 @@ public class ASTFullDecorator extends CompositeDecorator<ASTCDClass> {
     super(dataDecorator, astDecorator, astSymbolDecorator, astScopeDecorator, astReferencedSymbolDecorator);
   }
 
+  @Override
+  public ASTCDClass decorate(final ASTCDClass input) {
+    Stream<ASTCDClass> stream = Stream.of(input.deepClone());
+    return super.applyDecorations(stream);
+  }
 }
