@@ -3,8 +3,8 @@ ${tc.include("core.Package")}
 
 ${tc.include("core.Imports")}
 
-${cdClass.printModifier()} class ${cdClass.getName()}
-<#if cdClass.isPresentSuperclass()>extends ${cdClass.printSuperClass()} </#if>
+${cdClass.printModifier()} class ${cdClass.getName()} <#rt><#lt>
+<#if cdClass.isPresentSuperclass()>extends ${cdClass.printSuperClass()} </#if> <#rt><#lt>
 <#if !cdClass.isEmptyInterfaces()>implements ${cdClass.printInterfaces()} </#if>{
 
 <#list cdClass.getCDAttributeList() as attribute>

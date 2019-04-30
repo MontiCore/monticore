@@ -3,7 +3,7 @@ ${tc.include("core.Package")}
 
 ${tc.include("core.Imports")}
 
-${cdInterface.printModifier()} interface ${cdInterface.getName()}
+${cdInterface.printModifier()} interface ${cdInterface.getName()} <#rt><#lt>
 <#if !cdInterface.isEmptyInterfaces()>extends ${cdInterface.printInterfaces()} </#if>{
 
 <#list cdInterface.getCDMethodList() as method>
