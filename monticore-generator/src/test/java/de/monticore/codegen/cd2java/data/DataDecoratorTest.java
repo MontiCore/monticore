@@ -250,4 +250,23 @@ public class DataDecoratorTest extends DecoratorTestCase {
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, dataClass, dataClass);
     System.out.println(sb.toString());
   }
+
+
+  @Test
+  public void testGeneratedAutomatonCode() {
+    GlobalExtensionManagement glex = new GlobalExtensionManagement();
+    ASTCDCompilationUnit cd = this.parse("de", "monticore", "codegen", "ast", "Automaton");
+    ASTCDClass clazz = getClassBy("ASTAutomaton", cd);
+
+    MethodDecorator methodDecorator = new MethodDecorator(glex);
+    DataDecorator dataDecorator = new DataDecorator(glex, methodDecorator, new ASTService(cd), new DataDecoratorUtil());
+    clazz = dataDecorator.decorate(clazz);
+
+    glex.setGlobalValue("astHelper", new DecorationHelper());
+    GeneratorSetup generatorSetup = new GeneratorSetup();
+    generatorSetup.setGlex(glex);
+    GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
+    StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, clazz, clazz);
+    System.out.println(sb.toString());
+  }
 }

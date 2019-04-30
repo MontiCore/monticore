@@ -311,6 +311,15 @@ public class MontiCoreTool {
     ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
     resolvingConfiguration.addDefaultFilters(cd4aLanguage.getResolvingFilters());
     GlobalScope symbolTable = new GlobalScope(modelPath,cd4aLanguage, resolvingConfiguration);
+
+    for (Map.Entry<ASTMCGrammar, ASTCDCompilationUnit> pair : input.entrySet()) {
+      ASTCDCompilationUnit cd = pair.getValue();
+      ASTCDCompilationUnit preparedCD = prepareCD(cd);
+      createSymbolsFromAST(preparedCD, symbolTable);
+      pair.setValue(preparedCD);
+    }
+
+
     for (Map.Entry<ASTMCGrammar, ASTCDCompilationUnit> pair : input.entrySet()) {
       ASTMCGrammar grammar = pair.getKey();
       ASTCDCompilationUnit cd = pair.getValue();
@@ -320,10 +329,8 @@ public class MontiCoreTool {
 
       // TODO replacing old decoration process
       // Pre-transform CD to fit decoration
-      ASTCDCompilationUnit preparedCD = prepareCD(cd, symbolTable);
-
       Collection<ASTCDCompilationUnit> decoratedCDs = Stream.of(
-          decorateWithAST(preparedCD, glex))
+          decorateWithAST(cd, glex))
           .collect(Collectors.toList());
 
       generate(decoratedCDs, glex);
@@ -332,13 +339,12 @@ public class MontiCoreTool {
     }
   }
 
-  private ASTCDCompilationUnit prepareCD(ASTCDCompilationUnit cd, GlobalScope symbolTable) {
+  private ASTCDCompilationUnit prepareCD(ASTCDCompilationUnit cd) {
     ASTCDCompilationUnit preparedCD = cd;
 
     TypeCD2JavaDecorator typeCD2JavaDecorator = new TypeCD2JavaDecorator();
     preparedCD = typeCD2JavaDecorator.decorate(preparedCD);
 
-    createSymbolsFromAST(preparedCD, symbolTable);
     return preparedCD;
   }
 
