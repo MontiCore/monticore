@@ -8,7 +8,6 @@ import com.google.common.collect.Maps;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
-import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.mc2cd.manipul.BaseInterfaceAddingManipulation;
 import de.monticore.codegen.mc2cd.transl.ConstantsTranslation;
@@ -29,7 +28,6 @@ import de.monticore.types.TypesPrinter;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.types.types._ast.TypesMill;
-import de.monticore.umlcd4a.CD4AnalysisHelper;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.umlcd4a.prettyprint.AstPrinter;
 import de.monticore.umlcd4a.prettyprint.CDPrettyPrinterConcreteVisitor;
@@ -115,6 +113,8 @@ public class CdDecorator {
   public void decorate(ASTCDCompilationUnit cdCompilationUnit) {
     AstGeneratorHelper astHelper = new AstGeneratorHelper(cdCompilationUnit, symbolTable);
     ASTCDDefinition cdDefinition = cdCompilationUnit.getCDDefinition();
+    CDPrettyPrinterConcreteVisitor pp = new CDPrettyPrinterConcreteVisitor(new IndentPrinter());
+    System.out.println(pp.prettyprint(cdCompilationUnit));
     List<ASTCDClass> nativeClasses = Lists.newArrayList(cdDefinition.getCDClassList());
 
     // Run over classdiagramm and converts cd types to mc-java types

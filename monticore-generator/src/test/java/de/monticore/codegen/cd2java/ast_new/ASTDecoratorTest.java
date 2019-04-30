@@ -50,6 +50,17 @@ public class ASTDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
+  public void testSuperClass() {
+    assertEquals("de.monticore.ast.ASTCNode", astClass.printSuperClass());
+  }
+
+  @Test
+  public void testBaseInterface() {
+    assertEquals(1, astClass.sizeInterfaces());
+    assertEquals("de.monticore.codegen.ast.ast._ast.ASTASTNode", astClass.printInterfaces());
+  }
+
+  @Test
   public void testEmptyAttributes() {
     assertEquals(0, astClass.getCDAttributeList().size());
   }

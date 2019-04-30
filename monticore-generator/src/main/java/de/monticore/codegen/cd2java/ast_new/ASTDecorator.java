@@ -18,8 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java.ast_new.ASTConstants.ACCEPT_METHOD;
-import static de.monticore.codegen.cd2java.ast_new.ASTConstants.CONSTRUCT_METHOD;
+import static de.monticore.codegen.cd2java.ast_new.ASTConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
@@ -55,6 +54,7 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
     clazz.addCDMethod(createAcceptMethod(clazz));
     clazz.addAllCDMethods(createAcceptSuperMethods(clazz));
     clazz.addCDMethod(getConstructMethod(clazz));
+    clazz.setSuperclass(getCDTypeFacade().createSimpleReferenceType(AST_NOEMF_INTERFACE));
 
     return clazz;
   }

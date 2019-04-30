@@ -23,12 +23,6 @@ ${tc.signature("astcdClass")}
       (this.${attrName}.isPresent() && !this.${attrName}.get().deepEqualsWithComments(comp.${attrName}.get(), forceSameOrder)) ) {
       return false;
     }
-       <#elseif genHelper.isAstNode(attribute)>
-    // comparing ${attrName}
-    if ( (this.${attrName} == null && comp.${attrName} != null) || 
-      (this.${attrName} != null && !this.${attrName}.deepEqualsWithComments(comp.${attrName}, forceSameOrder)) ) {
-      return false;
-    }
        <#elseif genHelper.isListAstNode(attribute)>
     // comparing ${attrName}
     if (this.${attrName}.size() != comp.${attrName}.size()) {
@@ -61,6 +55,12 @@ ${tc.signature("astcdClass")}
         }
       }
     }
+ <#elseif genHelper.isAstNode(attribute)>
+      // comparing ${attrName}
+      if ( (this.${attrName} == null && comp.${attrName} != null) ||
+        (this.${attrName} != null && !this.${attrName}.deepEqualsWithComments(comp.${attrName}, forceSameOrder)) ) {
+        return false;
+      }
        </#if>
      </#list>
     return true;     

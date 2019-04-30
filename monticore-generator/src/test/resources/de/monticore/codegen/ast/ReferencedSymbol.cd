@@ -5,19 +5,19 @@ import de.monticore.codegen.ast.Lexicals;
 classdiagram ReferencedSymbol {
 
     <<symbol>>
-    public class ASTFoo extends ASTCNode{
+    public class ASTFoo{
       protected String name;
     }
 
-    public class ASTBarMand extends ASTCNode{
+    public class ASTBarMand{
       <<referencedSymbol = "de.monticore.codegen.ast.referencedSymbol.FooSymbol">> protected String name;
     }
 
-    public class ASTBarOpt extends ASTCNode{
+    public class ASTBarOpt{
       <<referencedSymbol = "de.monticore.codegen.ast.referencedSymbol.FooSymbol">> protected Optional<String> name;
     }
 
-    public class ASTBarList extends ASTCNode{
+    public class ASTBarList{
        <<referencedSymbol = "de.monticore.codegen.ast.referencedSymbol.FooSymbol">> protected java.util.List<String> name;
     }
 }
