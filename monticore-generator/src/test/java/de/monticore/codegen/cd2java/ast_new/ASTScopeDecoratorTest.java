@@ -56,7 +56,7 @@ public class ASTScopeDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testScopeAttribute() {
-    ASTCDAttribute symbolAttribute = getAttributeBy("aSTScope", astClass);
+    ASTCDAttribute symbolAttribute = getAttributeBy("spannedASTScope", astClass);
     assertDeepEquals(PROTECTED, symbolAttribute.getModifier());
     assertOptionalOf(AST_SCOPE, symbolAttribute.getType());
   }
@@ -69,7 +69,7 @@ public class ASTScopeDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testGetScopeMethod() {
-    ASTCDMethod method = getMethodBy("getASTScope", astClass);
+    ASTCDMethod method = getMethodBy("getSpannedASTScope", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     ASTType astType = this.cdTypeFacade.createTypeByDefinition(AST_SCOPE);
     assertDeepEquals(astType, method.getReturnType());
@@ -78,7 +78,7 @@ public class ASTScopeDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testGetScopeOptMethod() {
-    ASTCDMethod method = getMethodBy("getASTScopeOpt", astClass);
+    ASTCDMethod method = getMethodBy("getSpannedASTScopeOpt", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertOptionalOf(AST_SCOPE, method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
@@ -86,7 +86,7 @@ public class ASTScopeDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testIsPresentScopeMethod() {
-    ASTCDMethod method = getMethodBy("isPresentASTScope", astClass);
+    ASTCDMethod method = getMethodBy("isPresentSpannedASTScope", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertBoolean(method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
@@ -94,11 +94,11 @@ public class ASTScopeDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testIsSetScopeMethod() {
-    ASTCDMethod method = getMethodBy("setASTScope", astClass);
+    ASTCDMethod method = getMethodBy("setSpannedASTScope", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertVoid(method.getReturnType());
     assertEquals(1, method.sizeCDParameters());
-    assertEquals("aSTScope", method.getCDParameter(0).getName());
+    assertEquals("spannedASTScope", method.getCDParameter(0).getName());
     ASTType astType = this.cdTypeFacade.createTypeByDefinition(AST_SCOPE);
     assertDeepEquals(astType, method.getCDParameter(0).getType());
   }
@@ -106,18 +106,18 @@ public class ASTScopeDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testIsSetScopeOptMethod() {
-    ASTCDMethod method = getMethodBy("setASTScopeOpt", astClass);
+    ASTCDMethod method = getMethodBy("setSpannedASTScopeOpt", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertVoid(method.getReturnType());
     assertEquals(1, method.sizeCDParameters());
-    assertEquals("aSTScope", method.getCDParameter(0).getName());
+    assertEquals("spannedASTScope", method.getCDParameter(0).getName());
     assertOptionalOf(AST_SCOPE, method.getCDParameter(0).getType());
   }
 
 
   @Test
   public void testIsSetScopeAbsentMethod() {
-    ASTCDMethod method = getMethodBy("setASTScopeAbsent", astClass);
+    ASTCDMethod method = getMethodBy("setSpannedASTScopeAbsent", astClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertVoid(method.getReturnType());
     assertTrue(method.isEmptyCDParameters());
