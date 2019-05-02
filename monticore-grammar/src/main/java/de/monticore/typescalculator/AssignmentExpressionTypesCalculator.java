@@ -1,5 +1,6 @@
 package de.monticore.typescalculator;
 
+import de.monticore.ast.ASTNode;
 import de.monticore.expressions.assignmentexpressions._ast.*;
 import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsInheritanceVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
@@ -12,7 +13,9 @@ import java.util.*;
 
 public class AssignmentExpressionTypesCalculator implements AssignmentExpressionsInheritanceVisitor {
 
-  private Map<ASTExpression, MCTypeSymbol> types;
+  private LiteralTypeCalculator literalsVisitor;
+
+  private Map<ASTNode, MCTypeSymbol> types;
 
   private ASTMCType result;
 
@@ -214,6 +217,22 @@ public class AssignmentExpressionTypesCalculator implements AssignmentExpression
   }
 
   @Override
+  public void endVisit(ASTLiteralExpression expr){
+    ASTMCType result=null;
+    if(types.containsKey(expr.getEExtLiteral())){
+      result=types.get(expr.getEExtLiteral()).getASTMCType();
+    }
+    if(result!=null){
+      this.result=result;
+      MCTypeSymbol res = new MCTypeSymbol(result.getBaseName());
+      res.setASTMCType(result);
+      types.put(expr,res);
+    }else{
+      throw new RuntimeException("the resulting type cannot be resolved");
+    }
+  }
+
+  @Override
   public void endVisit(ASTRegularAssignmentExpression expr){
     if(expr.getOperator()==ASTConstantsAssignmentExpressions.PLUSEQUALS){
       calculatePlusAssignment(expr);
@@ -397,7 +416,7 @@ public class AssignmentExpressionTypesCalculator implements AssignmentExpression
     }
   }
 
-  public Map<ASTExpression, MCTypeSymbol> getTypes() {
+  public Map<ASTNode, MCTypeSymbol> getTypes() {
     return types;
   }
 
@@ -427,6 +446,14 @@ public class AssignmentExpressionTypesCalculator implements AssignmentExpression
 
   public ExpressionsBasisScope getScope(){
     return scope;
+  }
+
+  public void setLiteralsVisitor(LiteralTypeCalculator literalsVisitor){
+    this.literalsVisitor=literalsVisitor;
+  }
+
+  public LiteralTypeCalculator getLiteralsVisitor(){
+    return literalsVisitor;
   }
 
   //TODO: bisher nur double und int behandelt, bei += auch String, es fehlen noch RegularAssignmentExpr, AndAssignmentExpr, OrAssignmentExpr, BinaryXorAssignmentExpr, RightShiftAssignmentExpr, LeftShiftAssignmentExpr, LogicalRightAssignmentExpr und die Tests

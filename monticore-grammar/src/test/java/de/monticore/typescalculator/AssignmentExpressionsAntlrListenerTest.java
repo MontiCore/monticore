@@ -6,7 +6,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-public class AssignmentExpressionsAntlrListenerTest implements TestAssignmentExpressionsAntlrListener {
+public abstract class AssignmentExpressionsAntlrListenerTest implements TestAssignmentExpressionsAntlrListener {
   @Override
   public void enterAssignmentExpression(TestAssignmentExpressionsAntlrParser.AssignmentExpressionContext ctx) {
     System.out.println("Enter AssignmentExpression");

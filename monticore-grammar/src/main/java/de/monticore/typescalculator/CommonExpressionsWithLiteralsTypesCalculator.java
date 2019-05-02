@@ -26,13 +26,13 @@ public class CommonExpressionsWithLiteralsTypesCalculator extends CommonExpressi
     types=super.getTypes();
   }
 
-//  @Override
-//  public void endVisit(ASTExtLiteral lit){
-//    ASTMCType type = literalsVisitor.calculateType(lit);
-//    MCTypeSymbol sym = new MCTypeSymbol(type.getBaseName());
-//    sym.setASTMCType(type);
-//    types.put(lit,sym);
-//  }
+  @Override
+  public void endVisit(ASTExtLiteral lit){
+    ASTMCType type = literalsVisitor.calculateType(lit.getLiteral());
+    MCTypeSymbol sym = new MCTypeSymbol(type.getBaseName());
+    sym.setASTMCType(type);
+    types.put(lit,sym);
+  }
 
   public ASTMCType getResult(){
     return super.getResult();

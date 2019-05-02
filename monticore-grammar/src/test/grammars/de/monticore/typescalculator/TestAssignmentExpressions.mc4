@@ -14,4 +14,6 @@ grammar TestAssignmentExpressions extends de.monticore.expressions.AssignmentExp
 
   NameExpression implements Expression = Name;
 
+  EExtLiteral = Literal;
+
 }

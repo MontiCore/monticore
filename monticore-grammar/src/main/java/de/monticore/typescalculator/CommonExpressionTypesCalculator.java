@@ -10,9 +10,7 @@ import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSc
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class CommonExpressionTypesCalculator implements CommonExpressionsVisitor {
 
@@ -301,33 +299,82 @@ public class CommonExpressionTypesCalculator implements CommonExpressionsVisitor
 
   @Override
   public void endVisit(ASTLiteralExpression expr){
-    ASTMCType type = literalsVisitor.calculateType(expr.getExtLiteral());
-    MCTypeSymbol sym = new MCTypeSymbol(type.getBaseName());
-    sym.setASTMCType(type);
-    types.put(expr,sym);
+    ASTMCType result = null;
+    if(types.containsKey(expr.getExtLiteral())){
+      result = types.get(expr.getExtLiteral()).getASTMCType();
+    }
+    if(result!=null) {
+      this.result=result;
+      MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
+      sym.setASTMCType(result);
+      types.put(expr, sym);
+    }else{
+      throw new RuntimeException("the resulting type cannot be calculated");
+    }
   }
 
   @Override
   public void endVisit(ASTCallExpression expr){
-    EMethodSymbol sym = expr.geteMethodSymbol();
-    ASTMCType ret = sym.getReturnType();
-    MCTypeSymbol symbol = new MCTypeSymbol(sym.getName());
-    symbol.setASTMCType(ret);
-    types.put(expr,symbol);
+    Optional<EMethodSymbol> sym = scope.resolveEMethod(expr.geteMethodSymbol().getName());
+    if(sym.isPresent()) {
+      if(sym.get().getReturnType().isPresentMCType()) {
+        ASTMCType ret = sym.get().getReturnType().getMCType();
+        this.result = ret;
+        MCTypeSymbol symbol = new MCTypeSymbol(sym.get().getName());
+        symbol.setASTMCType(ret);
+        types.put(expr, symbol);
+      }else{
+        List<String> name = new ArrayList<>();
+        name.add("void");
+        ASTMCType type=new ASTMCQualifiedType(new ASTMCQualifiedName(name));
+        this.result=type;
+        MCTypeSymbol symbol = new MCTypeSymbol("void");
+        symbol.setASTMCType(type);
+        types.put(expr,symbol);
+      }
+    }else{
+      throw new RuntimeException("the resulting type cannot be calculated");
+    }
+
   }
 
   @Override
   public void endVisit(ASTNameExpression expr){
     Optional<EVariableSymbol> optVar = scope.resolveEVariable(expr.getName());
+    Optional<EMethodSymbol> optMet = scope.resolveEMethod(expr.getName());
     if(optVar.isPresent()){
       EVariableSymbol var = optVar.get();
+      this.result=var.getMCTypeSymbol().getASTMCType();
       types.put(expr,var.getMCTypeSymbol());
+    }else if(optMet.isPresent()) {
+      ASTMCType type = null;
+      EMethodSymbol met = optMet.get();
+      if(met.getReturnType().isPresentMCType()){
+        type=met.getReturnType().getMCType();
+        this.result=type;
+        types.put(expr,met.getMCTypeSymbol());
+      }else{
+        List<String> name = new ArrayList<>();
+        name.add("void");
+        type = new ASTMCQualifiedType(new ASTMCQualifiedName(name));
+        this.result=type;
+        types.put(expr,met.getMCTypeSymbol());
+      }
+    }else{
+      throw new RuntimeException("the resulting type cannot be calculated");
     }
   }
 
   @Override
   public void endVisit(ASTQualifiedNameExpression expr){
-
+    Optional<EVariableSymbol> optVar = scope.resolveEVariable(expr.getName());
+    if(optVar.isPresent()){
+      EVariableSymbol var = optVar.get();
+      this.result=var.getMCTypeSymbol().getASTMCType();
+      types.put(expr,var.getMCTypeSymbol());
+    }else{
+      throw new RuntimeException("the resulting type cannot be calculated");
+    }
   }
 
 

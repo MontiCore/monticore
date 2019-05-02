@@ -1,20 +1,14 @@
 package de.monticore.typescalculator;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.expressions.commonexpressions._ast.ASTExtLiteralExt;
-import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsInheritanceVisitor;
 import de.monticore.expressions.commonexpressionswithliterals._visitor.CommonExpressionsWithLiteralsInheritanceVisitor;
-import de.monticore.mcbasicliterals._ast.ASTBooleanLiteral;
-import de.monticore.mcbasicliterals._ast.ASTCharLiteral;
-import de.monticore.mcbasicliterals._ast.ASTNatLiteral;
-import de.monticore.mcbasicliterals._ast.ASTStringLiteral;
-import de.monticore.mcbasicliterals._visitor.MCBasicLiteralsVisitor;
+import de.monticore.mcbasicliterals._ast.*;
 import de.monticore.types.mcbasictypes._ast.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BasicLiteralsTypeCalculator implements LiteralTypeCalculator, MCBasicLiteralsVisitor, CommonExpressionsWithLiteralsInheritanceVisitor {
+public class BasicLiteralsTypeCalculator implements LiteralTypeCalculator, CommonExpressionsWithLiteralsInheritanceVisitor {
 
   private ASTMCType type;
 
@@ -22,7 +16,7 @@ public class BasicLiteralsTypeCalculator implements LiteralTypeCalculator, MCBas
 
 
   @Override
-  public ASTMCType calculateType(ASTExtLiteralExt lit) {
+  public ASTMCType calculateType(ASTLiteral lit) {
     lit.accept(this);
     return type;
   }
