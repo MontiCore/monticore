@@ -2,7 +2,7 @@
 package de.monticore.types;
 
 
-grammar MCFullGenericTypes
+component grammar MCFullGenericTypes
        extends de.monticore.types.MCSimpleGenericTypes {
   start MCType;
 

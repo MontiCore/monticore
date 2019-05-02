@@ -101,7 +101,19 @@ public class MCLiteralsDecoder {
     }
     return Integer.parseInt(in, radix);
   }
-  
+
+  /**
+   * Decodes an int literal into an int
+   *
+   * @param s int literal as string including '"'
+   * @return decoded int
+   */
+  public static int decodeNat(String s) {
+    int radix = 10;
+    String in = removeUnderscores(s);
+    return Integer.parseInt(in, radix);
+  }
+
   /**
    * Decodes a long literal into a long
    * 
