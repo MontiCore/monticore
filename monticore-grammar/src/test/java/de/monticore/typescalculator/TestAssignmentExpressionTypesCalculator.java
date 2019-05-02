@@ -31,27 +31,6 @@ public class TestAssignmentExpressionTypesCalculator extends AssignmentExpressio
   }
 
   @Override
-  public void endVisit(ASTIntExpression expr){
-    MCTypeSymbol sym = new MCTypeSymbol("int");
-    sym.setASTMCType(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT));
-    types.put(expr,sym);
-  }
-
-  @Override
-  public void endVisit(ASTDoubleExpression expr){
-    MCTypeSymbol sym = new MCTypeSymbol("double");
-    sym.setASTMCType(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE));
-    types.put(expr,sym);
-  }
-
-  @Override
-  public void endVisit(ASTBooleanExpression expr){
-    MCTypeSymbol sym = new MCTypeSymbol("boolean");
-    sym.setASTMCType(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.BOOLEAN));
-    types.put(expr,sym);
-  }
-
-  @Override
   public void endVisit(ASTNameExpression expr){
     Optional<EVariableSymbol> var = scope.resolveEVariable(expr.getName());
     MCTypeSymbol sym = var.get().getMCTypeSymbol();

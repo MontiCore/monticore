@@ -1,7 +1,9 @@
 package de.monticore.typescalculator;
 
 import de.monticore.antlr4.MCConcreteParser;
+import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisLanguage;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
@@ -10,7 +12,6 @@ import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
 import de.monticore.typescalculator.testcommonexpressions._parser.TestCommonExpressionsParser;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -119,6 +120,35 @@ public class CommonExpressionsTest {
     symbolB.getMCTypeSymbol().setSupertypes(superTypes);
     scope.add(symbolB);
     scope.add(symbol);
+
+    symbol = new EVariableSymbol("varName");
+    name=new ArrayList<>();
+    name.add("Test");
+    typeSymbol= new MCTypeSymbol("Name");
+    ASTMCType type = MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build();
+    typeSymbol.setASTMCType(type);
+    typeSymbol.setEVariableSymbol(symbol);
+    symbol.setMCTypeSymbol(typeSymbol);
+    scope.add(symbol);
+
+    symbol = new EVariableSymbol("varQName");
+    name=new ArrayList<>();
+    name.add("se");
+    name.add("common");
+    name.add("Test");
+    typeSymbol= new MCTypeSymbol("se.common.Test");
+    type = MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build();
+    typeSymbol.setASTMCType(type);
+    typeSymbol.setEVariableSymbol(symbol);
+    symbol.setMCTypeSymbol(typeSymbol);
+    scope.add(symbol);
+
+    EMethodSymbol methodSymbol = new EMethodSymbol("call");
+    typeSymbol = new MCTypeSymbol("call");
+    typeSymbol.setMethodSymbol(methodSymbol);
+    methodSymbol.setMCTypeSymbol(typeSymbol);
+    methodSymbol.setReturnType(MCBasicTypesMill.mCReturnTypeBuilder().setMCType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build()).build());
+    scope.add(methodSymbol);
   }
 
   @Test
@@ -519,22 +549,69 @@ public class CommonExpressionsTest {
   }
 
   @Test
-  public void callTest(){
+  public void callTest() throws IOException{
+    TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
+    calc.setLiteralsVisitor(literalsVisitor);
+    calc.setScope(scope);
+    TestCommonExpressionsParser p = new TestCommonExpressionsParser();
+    Optional<ASTExpression> o = p.parse_StringExpression("call()");
 
+    assertTrue(o.isPresent());
+    ASTExpression expr = o.get();
+    ASTCallExpression call = (ASTCallExpression) expr;
+    call.seteMethodSymbol(scope.resolveEMethod("call").get());
+    call.accept(calc);
+    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
   }
 
   @Test
-  public void nameTest(){
+  public void nameTest() throws IOException{
+    TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
+    calc.setLiteralsVisitor(literalsVisitor);
+    calc.setScope(scope);
+    TestCommonExpressionsParser p = new TestCommonExpressionsParser();
+    Optional<ASTExpression> o = p.parse_StringExpression("varInt");
 
+    assertTrue(o.isPresent());
+    o.get().accept(calc);
+    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+
+    Optional<ASTExpression> q = p.parse_StringExpression("call");
+
+    assertTrue(q.isPresent());
+    q.get().accept(calc);
+    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
   }
 
   @Test
-  public void qualifiedNameTest(){
+  public void qualifiedNameTest() throws IOException{
+    TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
+    calc.setLiteralsVisitor(literalsVisitor);
+    calc.setScope(scope);
+    TestCommonExpressionsParser p = new TestCommonExpressionsParser();
+    Optional<ASTExpression> o = p.parse_StringExpression("a.b.c");
 
+    assertTrue(o.isPresent());
+    o.get().accept(calc);
+    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
   }
 
   @Test
-  public void literalTest(){
+  public void literalTest() throws IOException{
+    TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
+    calc.setLiteralsVisitor(literalsVisitor);
+    calc.setScope(scope);
+    TestCommonExpressionsParser p = new TestCommonExpressionsParser();
+    Optional<ASTExpression> o = p.parse_StringExpression("varInt");
 
+    assertTrue(o.isPresent());
+    o.get().accept(calc);
+    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+
+    Optional<ASTExpression> q = p.parse_StringExpression("true");
+
+    assertTrue(q.isPresent());
+    q.get().accept(calc);
+    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.BOOLEAN).deepEquals(calc.getResult()));
   }
 }
