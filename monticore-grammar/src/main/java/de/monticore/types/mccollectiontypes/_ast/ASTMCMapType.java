@@ -25,7 +25,7 @@ public class ASTMCMapType extends ASTMCMapTypeTOP {
     public String getBaseName() {
         return getName();
     }
-    @Override
+
     public void setNameList(List<String> names) {
         setName(names.get(0));
     }
@@ -36,7 +36,6 @@ public class ASTMCMapType extends ASTMCMapTypeTOP {
     }
 
 
-    @Override
     public void setMCTypeArgumentList(List<ASTMCTypeArgument> arguments) {
         setKey(arguments.get(0));
         setValue(arguments.get(1));

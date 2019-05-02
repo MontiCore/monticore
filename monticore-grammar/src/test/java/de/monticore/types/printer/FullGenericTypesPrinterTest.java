@@ -4,6 +4,8 @@ import de.monticore.types.FullGenericTypesPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes._ast.*;
 import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
+import de.se_rwth.commons.logging.Log;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -12,6 +14,12 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 public class FullGenericTypesPrinterTest {
+
+  @BeforeClass
+  public static void init() {
+    Log.enableFailQuick(false);
+  }
+
   @Test
   public void testPrintType() throws IOException {
     MCFullGenericTypesTestParser parser = new MCFullGenericTypesTestParser();
@@ -36,7 +44,7 @@ public class FullGenericTypesPrinterTest {
     assertEquals("?", FullGenericTypesPrinter.printType(astmcWildcardType.get()));
     assertEquals("? extends List", FullGenericTypesPrinter.printType(astmcWildcardType1.get()));
     assertEquals("? super Stream", FullGenericTypesPrinter.printType(astmcWildcardType2.get()));
-    assertEquals("java.util.List<List<String>>.c.d<e, f, g, h>", FullGenericTypesPrinter.printType(astmcMultipleGenericType.get()));
+    assertEquals("java.util.List<List<String>>.c.d<e,f,g,h>", FullGenericTypesPrinter.printType(astmcMultipleGenericType.get()));
     assertEquals("<a extends b &c &d, e extends f &g>", FullGenericTypesPrinter.printType(astmcTypeParameters.get()));
     assertEquals("a extends b &c &d", FullGenericTypesPrinter.printType(astmcTypeVariableDeclaration.get()));
     assertEquals("String[][][]", FullGenericTypesPrinter.printType(astmcArrayType.get()));
