@@ -50,10 +50,6 @@ public class ${className} ${superClass} ${superInterfaces} {
 
   public ${className}(String name) {
     this.name = name;
-<#if isScopeSpanningSymbol>
-    spannedScope = createSpannedScope();
-    getSpannedScope().setSpanningSymbol(this);
-</#if>
   }
 
 <#if isScopeSpanningSymbol>

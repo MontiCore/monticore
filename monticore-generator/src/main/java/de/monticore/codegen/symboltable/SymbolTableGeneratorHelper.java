@@ -499,7 +499,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
 
   /**
    * Computes a set of qualified symbols for all super grammars.
-   * 
+   *
    * @return a set of qualified inherited symbols
    */
   public Set<String> getQualifiedInheritedSymbols() {
@@ -514,7 +514,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
 
   /**
    * Retrieves the qualified symbols for a given grammar.
-   * 
+   *
    * @param grammarSymbol The given grammar symbol.
    * @return a set of qualified symbols.
    */
@@ -579,11 +579,11 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
 
     return ImmutableList.copyOf(ruleSymbolsWithName);
   }
-
+  
   /**
    * Checks whether the language related to the given class diagram symbol
    * generates a symbol table.
-   * 
+   *
    * @param cdSymbol The input class diagram symbol.
    * @return A boolean value if the language has a symbol table.
    */
@@ -596,9 +596,9 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   }
 
   /**
-   * Checks whether the language related to the given name of a class diagram 
+   * Checks whether the language related to the given name of a class diagram
    * symbol generates a symbol table.
-   * 
+   *
    * @param cdSymbolName The name of the input class diagram symbol.
    * @return A boolean value if the language has a symbol table.
    */

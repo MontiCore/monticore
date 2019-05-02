@@ -114,9 +114,13 @@ public class ${className} implements ${grammarName}Visitor {
     v.handle(root);
   }
 
+  public ${scopeName} createScope() {
+    return new ${grammarName+"Scope"}Builder().build();
+  }
+
 <#list rules as ruleSymbol>
   <#assign ruleName = ruleSymbol.getName()>
-  <#assign symbolName = ruleSymbol.getName() + "Symbol">
+  <#assign symbolName = genHelper.getQualifiedProdName(ruleSymbol)+"Symbol">
   <#assign astName = genHelper.getQualifiedASTName(ruleSymbol)>
   <#assign isScopeSpanning = genHelper.isScopeSpanningSymbol(ruleSymbol)>
   // Methods for ${symbolName}
@@ -143,7 +147,9 @@ public class ${className} implements ${grammarName}Visitor {
     addToScope(symbol);
     setLinkBetweenSymbolAndNode(symbol, astNode);
 <#if isScopeSpanning>
-    putSpannedScopeOnStack(symbol);
+  ${scopeName} scope = createScope();
+    putOnStack(scope);
+    symbol.setSpannedScope(scope);
 </#if>
   }
 
@@ -153,7 +159,7 @@ public class ${className} implements ${grammarName}Visitor {
 
     // ast -> symbol
     astNode.setSymbol2(symbol);
-    astNode.set${symbolName}(symbol);
+    astNode.set${genHelper.getSymbolNameFromQualifiedSymbol(symbolName)}(symbol);
     astNode.setEnclosingScope2(symbol.getEnclosingScope());
 
 <#if isScopeSpanning>
@@ -179,11 +185,6 @@ public class ${className} implements ${grammarName}Visitor {
 
     // ast -> scope
     astNode.setSpannedScope2((${grammarName}Scope) scope);
-  }
-
-  public void putSpannedScopeOnStack(${symbolName} symbol) {
-    Log.errorIfNull(symbol);
-    putOnStack( symbol.getSpannedScope());
   }
 </#if>
 </#list>

@@ -89,6 +89,17 @@ public class CommonScopeGenerator implements ScopeGenerator {
         spanningSymbolNames.put(name,kind);
       }
     }
+  
+    Map<String, String> allSymbols = new HashMap<String, String>();
+    Map<String, String> allSpanningSymbolNames = new HashMap<String, String>();
+    for (MCProdSymbol sym : allSymbolDefiningRulesWithSuperGrammar) {
+      String name = getSimpleName(sym.getName());
+      String kind = genHelper.getQualifiedProdName(sym) + GeneratorHelper.SYMBOL;
+      allSymbols.put(name, kind);
+      if(sym.isScopeDefinition()){
+        allSpanningSymbolNames.put(name,kind);
+      }
+    }
 
     // Maps Symbol Name to Symbol Kind Name
     Map<String, String> symbolNamesWithSuperGrammar = new HashMap<>();
@@ -175,7 +186,8 @@ public class CommonScopeGenerator implements ScopeGenerator {
 
     genEngine.generateNoA("symboltable.ArtifactScope", artifactScopeFilePath, artifactScopeClassName, baseNameClass, languageName, symbolNames,existsHWCArtifactScopeImpl);
     genEngine.generateNoA("symboltable.GlobalScope", globalScopeFilePath, globalScopeClassName, languageName, baseNameGlobalScopeInterface, existsHWCGlobalScopeImpl);
-    genEngine.generateNoA("symboltable.GlobalScopeInterface", globalScopeInterfaceFilePath, globalScopeInterfaceClassName, baseNameInterface, languageName, symbolNames);
+    
+    genEngine.generateNoA("symboltable.GlobalScopeInterface", globalScopeInterfaceFilePath, globalScopeInterfaceClassName, baseNameInterface, languageName, allSymbols);
     
 
   }

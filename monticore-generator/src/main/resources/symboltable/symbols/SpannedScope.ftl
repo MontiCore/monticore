@@ -5,11 +5,11 @@ ${tc.signature("languageName")}
 
   protected I${languageName}Scope spannedScope;
 
-  protected I${languageName}Scope createSpannedScope() {
-    return new ${languageName}Scope();
-  }
-  
   public I${languageName}Scope getSpannedScope() {
     return spannedScope;
   }
-  
+
+  public void setSpannedScope(I${languageName}Scope scope) {
+    this.spannedScope = scope;
+    getSpannedScope().setSpanningSymbol(this);
+  }
