@@ -73,7 +73,10 @@ public class DecorationHelper extends TypesHelper {
     if (!attrType.getActualTypeArguments().isEmpty()) {
       return false;
     }
-    return attrType.existsReferencedSymbol() && !attrType.isEnum();
+    //todo find if there is a way to check isASTNode before Types are changed
+    //because now the types are changed before and 'existsReferencedSymbol' searches for the old Types
+    //return attrType.existsReferencedSymbol() && !attrType.isEnum();
+    return true;
   }
 
   public boolean isOptionalAstNode(ASTCDAttribute attr) {

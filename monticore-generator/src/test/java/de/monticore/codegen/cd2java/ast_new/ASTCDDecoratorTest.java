@@ -22,11 +22,18 @@ import de.monticore.codegen.cd2java.visitor_new.VisitorService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.io.paths.ModelPath;
+import de.monticore.symboltable.GlobalScope;
+import de.monticore.symboltable.ResolvingConfiguration;
+import de.monticore.umlcd4a.CD4AnalysisLanguage;
+import de.monticore.umlcd4a.CD4AnalysisModelLoader;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.symboltable.CD4AnalysisSymbolTableCreator;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,6 +53,17 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     this.decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "AST");
     this.originalCompilationUnit = decoratedCompilationUnit.deepClone();
+
+    ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/de/monticore/codegen"));
+    CD4AnalysisLanguage cd4aLanguage = new CD4AnalysisLanguage();
+    ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
+    resolvingConfiguration.addDefaultFilters(cd4aLanguage.getResolvingFilters());
+
+    GlobalScope symbolTable = new GlobalScope(modelPath, cd4aLanguage, resolvingConfiguration);
+    CD4AnalysisModelLoader cd4aModelLoader = new CD4AnalysisModelLoader(cd4aLanguage);
+
+    CD4AnalysisSymbolTableCreator symbolTableCreator = cd4aModelLoader.getModelingLanguage().getSymbolTableCreator(resolvingConfiguration, symbolTable).get();
+
 
     ASTService astService = new ASTService(decoratedCompilationUnit);
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
@@ -74,7 +92,7 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
 
     ASTInterfaceDecorator astInterfaceDecorator = new ASTInterfaceDecorator(glex, astService, visitorService);
 
-    ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, fullDecorator, astLanguageInterfaceDecorator, astBuilderDecorator, nodeFactoryDecorator,
+    ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, symbolTableCreator, fullDecorator, astLanguageInterfaceDecorator, astBuilderDecorator, nodeFactoryDecorator,
         millDecorator, astConstantsDecorator, enumDecorator, astInterfaceDecorator);
     this.decoratedCompilationUnit = astcdDecorator.decorate(decoratedCompilationUnit);
   }

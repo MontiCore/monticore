@@ -376,7 +376,13 @@ public class MontiCoreTool {
 
     ASTInterfaceDecorator astInterfaceDecorator = new ASTInterfaceDecorator(glex, astService, visitorService);
 
-    ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, fullDecorator, astLanguageInterfaceDecorator,
+    CD4AnalysisLanguage cd4aLanguage = new CD4AnalysisLanguage();
+    ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
+    resolvingConfiguration.addDefaultFilters(cd4aLanguage.getResolvingFilters());
+    GlobalScope symbolTable = new GlobalScope(modelPath,cd4aLanguage, resolvingConfiguration);
+    CD4AnalysisSymbolTableCreator symbolTableCreator = cd4aModelLoader.getModelingLanguage().getSymbolTableCreator(resolvingConfiguration, symbolTable).get();
+
+    ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, symbolTableCreator, fullDecorator, astLanguageInterfaceDecorator,
         astBuilderDecorator, nodeFactoryDecorator, millDecorator, astConstantsDecorator, enumDecorator, astInterfaceDecorator);
     return astcdDecorator.decorate(cd);
   }

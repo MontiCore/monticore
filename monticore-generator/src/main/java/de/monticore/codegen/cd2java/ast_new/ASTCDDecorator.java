@@ -11,6 +11,7 @@ import de.monticore.codegen.cd2java.factory.NodeFactoryDecorator;
 import de.monticore.codegen.cd2java.mill.MillDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
+import de.monticore.umlcd4a.symboltable.CD4AnalysisSymbolTableCreator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,7 +39,10 @@ public class ASTCDDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTC
 
   private final ASTInterfaceDecorator astInterfaceDecorator;
 
+  private final CD4AnalysisSymbolTableCreator symbolTableCreator;
+
   public ASTCDDecorator(final GlobalExtensionManagement glex,
+                        final CD4AnalysisSymbolTableCreator symbolTableCreator,
                         final ASTFullDecorator astFullDecorator, final ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator,
                         final ASTBuilderDecorator astBuilderDecorator,
                         final NodeFactoryDecorator nodeFactoryDecorator, final MillDecorator millDecorator,
@@ -54,6 +58,7 @@ public class ASTCDDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTC
     this.astConstantsDecorator = astConstantsDecorator;
     this.enumDecorator = enumDecorator;
     this.astInterfaceDecorator = astInterfaceDecorator;
+    this.symbolTableCreator = symbolTableCreator;
   }
 
   @Override
@@ -81,6 +86,10 @@ public class ASTCDDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTC
       this.replaceTemplate(CoreTemplates.PACKAGE, cdInterface, createPackageHookPoint(astPackage));
     }
 
+    for (ASTCDEnum cdEnum : astCD.getCDEnumList()) {
+      this.replaceTemplate(CoreTemplates.PACKAGE, cdEnum, createPackageHookPoint(astPackage));
+    }
+
     return CD4AnalysisMill.cDCompilationUnitBuilder()
         .setPackageList(astPackage)
         .setCDDefinition(astCD)
@@ -88,7 +97,9 @@ public class ASTCDDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTC
   }
 
   private List<ASTCDClass> createASTClasses(final ASTCDCompilationUnit ast) {
-    return ast.getCDDefinition().getCDClassList().stream()
+    ASTCDCompilationUnit copyedCD = ast.deepClone();
+    symbolTableCreator.createFromAST(copyedCD);
+    return copyedCD.getCDDefinition().getCDClassList().stream()
         .map(astFullDecorator::decorate)
         .collect(Collectors.toList());
   }
