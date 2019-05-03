@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.factories.SuperSymbolHelper;
+import de.monticore.codegen.cd2java.typecd2java.TypeCD2JavaVisitor;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.types._ast.ASTType;
@@ -147,15 +148,21 @@ public class NodeFactoryDecorator extends AbstractDecorator<ASTCDCompilationUnit
       if (astNode.isPresent() && astNode.get() instanceof ASTCDDefinition) {
         //get super cddefinition
         ASTCDDefinition superDefinition = (ASTCDDefinition) astNode.get();
-        for (ASTCDClass superClass : superDefinition.getCDClassList()) {
-          String packageName = superSymbol.getFullName().toLowerCase() + "." + AST_PACKAGE + ".";
-          ASTType superAstType = this.getCDTypeFacade().createSimpleReferenceType(packageName + superClass.getName());
 
-          //add create method without parameters
-          addCreateDelegateMethod(superAstType, superClass.getName(), packageName, superSymbol.getName(), delegateMethodList);
-          if (!superClass.isEmptyCDAttributes()) {
-            //add create method with parameters
-            addCreateDelegateWithParamMethod(superAstType, superClass, packageName, superSymbol.getName(), delegateMethodList);
+        TypeCD2JavaVisitor visitor = new TypeCD2JavaVisitor();
+        CD4AnalysisMill.cDCompilationUnitBuilder().setCDDefinition(superDefinition).build().accept(visitor);
+
+        for (ASTCDClass superClass : superDefinition.getCDClassList()) {
+          if(!(superClass.isPresentModifier() && superClass.getModifier().isAbstract())){
+            String packageName = superSymbol.getFullName().toLowerCase() + "." + AST_PACKAGE + ".";
+            ASTType superAstType = this.getCDTypeFacade().createSimpleReferenceType(packageName + superClass.getName());
+
+            //add create method without parameters
+            addCreateDelegateMethod(superAstType, superClass.getName(), packageName, superSymbol.getName(), delegateMethodList);
+            if (!superClass.isEmptyCDAttributes()) {
+              //add create method with parameters
+              addCreateDelegateWithParamMethod(superAstType, superClass, packageName, superSymbol.getName(), delegateMethodList);
+            }
           }
         }
       }
