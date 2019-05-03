@@ -21,7 +21,7 @@ public class ASTMCOptionalType extends ASTMCOptionalTypeTOP {
     public String getBaseName() {
         return getName();
     }
-    @Override
+
     public void setNameList(List<String> names) {
         setName(names.get(0));
     }
@@ -31,7 +31,6 @@ public class ASTMCOptionalType extends ASTMCOptionalTypeTOP {
         return Lists.newArrayList(getMCTypeArgument());
     }
 
-    @Override
     public void setMCTypeArgumentList(List<ASTMCTypeArgument> arguments) {
         setMCTypeArgument(arguments.get(0));
     }

@@ -6,10 +6,7 @@ public interface ASTMCGenericType extends ASTMCGenericTypeTOP {
 
     List<String> getNameList() ;
 
-    void setNameList(List<String> names) ;
-
     List<ASTMCTypeArgument> getMCTypeArgumentList() ;
 
-    void setMCTypeArgumentList(List<ASTMCTypeArgument> arguments) ;
 
 }

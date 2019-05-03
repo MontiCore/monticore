@@ -2,7 +2,7 @@
 package de.monticore.types;
 
 
-grammar MCFullGenericTypes
+component grammar MCFullGenericTypes
        extends de.monticore.types.MCSimpleGenericTypes {
   start MCType;
 
@@ -21,9 +21,12 @@ grammar MCFullGenericTypes
   *   monticore.Generic1<TypeParam1>.GenericInnerClass<TypeParam2>
   */
   MCMultipleGenericType implements MCGenericType, MCType =
-       (MCBasicGenericType || "." )+ // complex qualification
-        "."  (Name || ".")+ ("<" (MCTypeArgument || ",")* ">")?
+       MCBasicGenericType  // complex Outer Type qualification
+        "."  (MCInnerType || ".")+
    ;
+
+
+  MCInnerType = Name ("<" (MCTypeArgument || ",")+ ">")?;
 
   /** ASTArrayType introduce array for arbitrary types
   */
