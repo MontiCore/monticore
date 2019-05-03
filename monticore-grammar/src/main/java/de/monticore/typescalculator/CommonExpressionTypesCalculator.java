@@ -411,7 +411,7 @@ public class CommonExpressionTypesCalculator implements CommonExpressionsVisitor
         this.result=result;
       }else if(variableSymbolopt.isPresent()){
         String fullName= variableSymbolopt.get().getFullName();
-        String[] parts = fullName.split(".");
+        String[] parts = fullName.split("\\.");
         ArrayList<String> nameList = new ArrayList<>();
         for(String s: parts){
           nameList.add(s);

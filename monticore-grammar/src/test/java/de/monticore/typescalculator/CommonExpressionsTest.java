@@ -612,7 +612,7 @@ public class CommonExpressionsTest {
     nameList.add("B");
     nameList.add("C");
     nameList.add("QName");
-    assertTrue(new ASTMCQualifiedType(new ASTMCQualifiedName()).deepEquals(calc.getResult()));
+    assertTrue(new ASTMCQualifiedType(new ASTMCQualifiedName(nameList)).deepEquals(calc.getResult()));
   }
 
   @Test
