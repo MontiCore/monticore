@@ -3,6 +3,7 @@ package de.monticore;
 import de.monticore.codegen.cd2java.CDGenerator;
 import de.monticore.codegen.cd2java.ast_interface.ASTInterfaceDecorator;
 import de.monticore.codegen.cd2java.ast_interface.ASTLanguageInterfaceDecorator;
+import de.monticore.codegen.cd2java.ast_interface.FullASTInterfaceDecorator;
 import de.monticore.codegen.cd2java.ast_new.*;
 import de.monticore.codegen.cd2java.ast_new.reference.ASTReferenceDecorator;
 import de.monticore.codegen.cd2java.builder.ASTBuilderDecorator;
@@ -15,6 +16,7 @@ import de.monticore.codegen.cd2java.cocos_new.CoCoService;
 import de.monticore.codegen.cd2java.constants.ASTConstantsDecorator;
 import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
+import de.monticore.codegen.cd2java.data.InterfaceDecorator;
 import de.monticore.codegen.cd2java.enums.EnumDecorator;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.factory.NodeFactoryDecorator;
@@ -374,7 +376,8 @@ public class MontiCoreTool {
     EnumDecorator enumDecorator = new EnumDecorator(glex, new AccessorDecorator(glex), astService);
 
     ASTInterfaceDecorator astInterfaceDecorator = new ASTInterfaceDecorator(glex, astService, visitorService);
-
+    InterfaceDecorator dataInterfaceDecorator = new InterfaceDecorator(glex, new DataDecoratorUtil(), new MethodDecorator(glex));
+    FullASTInterfaceDecorator fullASTInterfaceDecorator = new FullASTInterfaceDecorator(dataInterfaceDecorator, astInterfaceDecorator);
     CD4AnalysisLanguage cd4aLanguage = new CD4AnalysisLanguage();
     ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
     resolvingConfiguration.addDefaultFilters(cd4aLanguage.getResolvingFilters());
@@ -382,7 +385,7 @@ public class MontiCoreTool {
     CD4AnalysisSymbolTableCreator symbolTableCreator = cd4aModelLoader.getModelingLanguage().getSymbolTableCreator(resolvingConfiguration, symbolTable).get();
 
     ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, symbolTableCreator, fullDecorator, astLanguageInterfaceDecorator,
-        astBuilderDecorator, nodeFactoryDecorator, millDecorator, astConstantsDecorator, enumDecorator, astInterfaceDecorator);
+        astBuilderDecorator, nodeFactoryDecorator, millDecorator, astConstantsDecorator, enumDecorator, fullASTInterfaceDecorator);
     return astcdDecorator.decorate(cd);
   }
 

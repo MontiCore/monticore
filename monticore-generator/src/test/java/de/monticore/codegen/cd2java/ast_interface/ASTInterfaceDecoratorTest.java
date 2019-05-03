@@ -29,26 +29,17 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
 
   private GlobalExtensionManagement glex;
 
-  private ASTCDCompilationUnit decoratedCompilationUnit;
-
-  private ASTCDCompilationUnit originalCompilationUnit;
 
   @Before
   public void setUp() {
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
-    decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "data", "DataInterface");
-    originalCompilationUnit= decoratedCompilationUnit.deepClone();
+    ASTCDCompilationUnit astcdCompilationUnit = this.parse("de", "monticore", "codegen", "data", "DataInterface");
 
-    ASTCDInterface interfaceBy = getInterfaceBy("ASTA", decoratedCompilationUnit);
-    ASTInterfaceDecorator decorator = new ASTInterfaceDecorator(this.glex, new ASTService(decoratedCompilationUnit), new VisitorService(decoratedCompilationUnit));
+    ASTCDInterface interfaceBy = getInterfaceBy("ASTA", astcdCompilationUnit);
+    ASTInterfaceDecorator decorator = new ASTInterfaceDecorator(this.glex, new ASTService(astcdCompilationUnit), new VisitorService(astcdCompilationUnit));
     this.dataInterface = decorator.decorate(interfaceBy);
-  }
-
-  @Test
-  public void testCompilationUnitNotChanged() {
-    assertDeepEquals(decoratedCompilationUnit, originalCompilationUnit);
   }
 
   @Test

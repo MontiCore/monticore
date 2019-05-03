@@ -12,6 +12,7 @@ import de.monticore.codegen.cd2java.ast.CdDecorator;
 import de.monticore.codegen.cd2java.ast_emf.CdEmfDecorator;
 import de.monticore.codegen.cd2java.ast_interface.ASTInterfaceDecorator;
 import de.monticore.codegen.cd2java.ast_interface.ASTLanguageInterfaceDecorator;
+import de.monticore.codegen.cd2java.ast_interface.FullASTInterfaceDecorator;
 import de.monticore.codegen.cd2java.ast_new.*;
 import de.monticore.codegen.cd2java.ast_new.reference.ASTReferenceDecorator;
 import de.monticore.codegen.cd2java.builder.ASTBuilderDecorator;
@@ -20,6 +21,7 @@ import de.monticore.codegen.cd2java.cocos.CoCoGenerator;
 import de.monticore.codegen.cd2java.constants.ASTConstantsDecorator;
 import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
+import de.monticore.codegen.cd2java.data.InterfaceDecorator;
 import de.monticore.codegen.cd2java.enums.EnumDecorator;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.factory.NodeFactoryDecorator;
@@ -469,6 +471,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     EnumDecorator enumDecorator = new EnumDecorator(glex, new AccessorDecorator(glex), astService);
 
     ASTInterfaceDecorator astInterfaceDecorator = new ASTInterfaceDecorator(glex, astService, visitorService);
+    InterfaceDecorator dataInterfaceDecorator = new InterfaceDecorator(glex, new DataDecoratorUtil(), new MethodDecorator(glex));
+    FullASTInterfaceDecorator fullASTInterfaceDecorator = new FullASTInterfaceDecorator(dataInterfaceDecorator, astInterfaceDecorator);
 
     CD4AnalysisLanguage cd4aLanguage = new CD4AnalysisLanguage();
     ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
@@ -477,8 +481,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     CD4AnalysisSymbolTableCreator symbolTableCreator = cd4AnalysisLanguage.getSymbolTableCreator(resolvingConfiguration, symbolTable).get();
 
     ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, symbolTableCreator, fullDecorator, astLanguageInterfaceDecorator,
-        astBuilderDecorator, nodeFactoryDecorator, millDecorator, astConstantsDecorator, enumDecorator, astInterfaceDecorator);
-    ASTCDCompilationUnit compilationUnit= astcdDecorator.decorate(cd);
+        astBuilderDecorator, nodeFactoryDecorator, millDecorator, astConstantsDecorator, enumDecorator, fullASTInterfaceDecorator);
+    ASTCDCompilationUnit compilationUnit = astcdDecorator.decorate(cd);
 
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
     return topDecorator.decorate(compilationUnit);
@@ -486,11 +490,13 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
 
   public void generateFromCD(GlobalExtensionManagement glex, ASTCDCompilationUnit astClassDiagram,
-                                File outputDirectory, IterablePath handcodedPath) {
+                             File outputDirectory, IterablePath handcodedPath) {
     glex.setGlobalValue("astHelper", new DecorationHelper());
+    final String diagramName = astClassDiagram.getCDDefinition().getName();
     GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(outputDirectory);
     setup.setHandcodedPath(handcodedPath);
+    setup.setModelName(diagramName);
     setup.setGlex(glex);
     CDGenerator generator = new CDGenerator(setup);
     generator.generate(astClassDiagram);
@@ -505,20 +511,18 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param outputDirectory TODO
    */
   public void generateVisitors(GlobalExtensionManagement glex, GlobalScope globalScope,
-                               ASTCDCompilationUnit astClassDiagram, File outputDirectory, IterablePath templatePath,
+                               ASTCDCompilationUnit astClassDiagram, File outputDirectory,
                                IterablePath handcodedPath) {
     VisitorGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory, handcodedPath);
   }
 
   public void generateCocos(GlobalExtensionManagement glex, GlobalScope globalScope,
-                            ASTCDCompilationUnit astClassDiagram, File outputDirectory, IterablePath templatePath,
-                            IterablePath handcodedPath) {
+                            ASTCDCompilationUnit astClassDiagram, File outputDirectory) {
     CoCoGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
   }
 
   public void generateODs(GlobalExtensionManagement glex, GlobalScope globalScope,
-                          ASTCDCompilationUnit astClassDiagram, File outputDirectory, IterablePath templatePath,
-                          IterablePath handcodedPath) {
+                          ASTCDCompilationUnit astClassDiagram, File outputDirectory) {
     ODGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
   }
 

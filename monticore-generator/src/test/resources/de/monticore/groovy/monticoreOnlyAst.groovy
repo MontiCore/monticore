@@ -30,10 +30,14 @@ while (grammarIterator.hasNext()) {
     
     getCDOfParsedGrammar(astGrammar)
 
-    // Decorate AST-CD
-    decorateCd(glex, astClassDiagramWithST, globalScope, handcodedPath)
-    
-    // Generate AST files
-    generate(glex, globalScope, astClassDiagramWithST, out, templatePath, handcodedPath)
+    // M7: decorate Class Diagram AST
+
+    generateVisitors(glex, globalScope, astClassDiagramWithST, out, handcodedPath)
+    generateCocos(glex, globalScope, astClassDiagramWithST, out)
+    generateODs(glex, globalScope, astClassDiagramWithST, out)
+
+    decoratedASTClassDiagramm = decorateForASTPackage(glex, astClassDiagramWithST, modelPath, handcodedPath)
+    generateFromCD(glex, decoratedASTClassDiagramm, out, handcodedPath)
+
   }
 }

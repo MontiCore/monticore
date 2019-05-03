@@ -4,18 +4,13 @@ import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.ast_new.ASTService;
 import de.monticore.codegen.cd2java.visitor_new.VisitorService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.types._ast.ASTReferenceType;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
-import de.monticore.umlcd4a.cd4analysis._ast.CD4AnalysisMill;
-
-import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.ast_new.ASTConstants.ACCEPT_METHOD;
 import static de.monticore.codegen.cd2java.ast_new.ASTConstants.AST_INTERFACE;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC_ABSTRACT;
 
 public class ASTInterfaceDecorator extends AbstractDecorator<ASTCDInterface, ASTCDInterface> {
@@ -33,17 +28,11 @@ public class ASTInterfaceDecorator extends AbstractDecorator<ASTCDInterface, AST
 
   @Override
   public ASTCDInterface decorate(ASTCDInterface input) {
-    return CD4AnalysisMill.cDInterfaceBuilder()
-        .setModifier(PUBLIC.build())
-        .setName(input.getName())
-        .addCDMethod(getAcceptMethod(visitorService.getVisitorType()))
-        .addAllInterfaces(input.getInterfaceList().stream()
-            .map(ASTReferenceType::deepClone)
-            .collect(Collectors.toList()))
-        .addInterface(getCDTypeFacade().createReferenceTypeByDefinition(AST_INTERFACE))
-        .addInterface(astService.getASTBaseInterface())
-        .build()
-        ;
+    input.addCDMethod(getAcceptMethod(visitorService.getVisitorType()));
+    input.addInterface(getCDTypeFacade().createReferenceTypeByDefinition(AST_INTERFACE));
+    input.addInterface(astService.getASTBaseInterface());
+    input.clearCDAttributes();
+    return input;
   }
 
   protected ASTCDMethod getAcceptMethod(ASTType visitorType) {

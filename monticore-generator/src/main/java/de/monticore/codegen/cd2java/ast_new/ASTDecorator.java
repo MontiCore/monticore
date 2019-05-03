@@ -19,8 +19,7 @@ import java.util.List;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.ast_new.ASTConstants.*;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
-import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 
 public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
@@ -82,9 +81,15 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
   }
 
   protected ASTCDMethod getConstructMethod(ASTCDClass astClass) {
+    ASTCDMethod constructMethod;
     ASTType classType = this.getCDTypeFacade().createSimpleReferenceType(astClass.getName());
-    ASTCDMethod constructMethod = this.getCDMethodFacade().createMethod(PROTECTED, classType, CONSTRUCT_METHOD);
-    this.replaceTemplate(EMPTY_BODY, constructMethod, new StringHookPoint(this.nodeFactoryService.getCreateInvocation(astClass)));
+    if(astClass.isPresentModifier() && astClass.getModifier().isAbstract()){
+       constructMethod = this.getCDMethodFacade().createMethod(PROTECTED_ABSTRACT, classType, CONSTRUCT_METHOD);
+    }else {
+       constructMethod = this.getCDMethodFacade().createMethod(PROTECTED, classType, CONSTRUCT_METHOD);
+      this.replaceTemplate(EMPTY_BODY, constructMethod, new StringHookPoint(this.nodeFactoryService.getCreateInvocation(astClass)));
+    }
+
     return constructMethod;
   }
 }

@@ -2,8 +2,8 @@ package de.monticore.codegen.cd2java.ast_new;
 
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.CoreTemplates;
-import de.monticore.codegen.cd2java.ast_interface.ASTInterfaceDecorator;
 import de.monticore.codegen.cd2java.ast_interface.ASTLanguageInterfaceDecorator;
+import de.monticore.codegen.cd2java.ast_interface.FullASTInterfaceDecorator;
 import de.monticore.codegen.cd2java.builder.ASTBuilderDecorator;
 import de.monticore.codegen.cd2java.constants.ASTConstantsDecorator;
 import de.monticore.codegen.cd2java.enums.EnumDecorator;
@@ -37,18 +37,20 @@ public class ASTCDDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTC
 
   private final EnumDecorator enumDecorator;
 
-  private final ASTInterfaceDecorator astInterfaceDecorator;
+  private final FullASTInterfaceDecorator astInterfaceDecorator;
 
   private final CD4AnalysisSymbolTableCreator symbolTableCreator;
 
   public ASTCDDecorator(final GlobalExtensionManagement glex,
                         final CD4AnalysisSymbolTableCreator symbolTableCreator,
-                        final ASTFullDecorator astFullDecorator, final ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator,
+                        final ASTFullDecorator astFullDecorator,
+                        final ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator,
                         final ASTBuilderDecorator astBuilderDecorator,
-                        final NodeFactoryDecorator nodeFactoryDecorator, final MillDecorator millDecorator,
+                        final NodeFactoryDecorator nodeFactoryDecorator,
+                        final MillDecorator millDecorator,
                         final ASTConstantsDecorator astConstantsDecorator,
                         final EnumDecorator enumDecorator,
-                        ASTInterfaceDecorator astInterfaceDecorator) {
+                        final FullASTInterfaceDecorator astInterfaceDecorator) {
     super(glex);
     this.astFullDecorator = astFullDecorator;
     this.astLanguageInterfaceDecorator = astLanguageInterfaceDecorator;
