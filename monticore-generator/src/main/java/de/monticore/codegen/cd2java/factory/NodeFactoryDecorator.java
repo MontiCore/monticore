@@ -3,7 +3,6 @@ package de.monticore.codegen.cd2java.factory;
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.cd2java.AbstractDecorator;
-import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.factories.SuperSymbolHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -17,6 +16,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.codegen.cd2java.ast_new.ASTConstants.AST_PACKAGE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 import static de.monticore.codegen.cd2java.factory.NodeFactoryConstants.*;
 
@@ -148,7 +148,7 @@ public class NodeFactoryDecorator extends AbstractDecorator<ASTCDCompilationUnit
         //get super cddefinition
         ASTCDDefinition superDefinition = (ASTCDDefinition) astNode.get();
         for (ASTCDClass superClass : superDefinition.getCDClassList()) {
-          String packageName = superSymbol.getFullName().toLowerCase() + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;
+          String packageName = superSymbol.getFullName().toLowerCase() + "." + AST_PACKAGE + ".";
           ASTType superAstType = this.getCDTypeFacade().createSimpleReferenceType(packageName + superClass.getName());
 
           //add create method without parameters
