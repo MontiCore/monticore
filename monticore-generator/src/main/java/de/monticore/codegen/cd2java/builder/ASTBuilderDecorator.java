@@ -2,6 +2,7 @@ package de.monticore.codegen.cd2java.builder;
 
 import de.monticore.ast.ASTCNode;
 import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -27,9 +28,13 @@ public class ASTBuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClas
 
   private final BuilderDecorator builderDecorator;
 
-  public ASTBuilderDecorator(final GlobalExtensionManagement glex, final BuilderDecorator builderDecorator) {
+  private final AbstractService abstractService;
+
+  public ASTBuilderDecorator(final GlobalExtensionManagement glex, final BuilderDecorator builderDecorator,
+                             final AbstractService abstractService) {
     super(glex);
     this.builderDecorator = builderDecorator;
+    this.abstractService = abstractService;
   }
 
   @Override
@@ -55,7 +60,16 @@ public class ASTBuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClas
   protected ASTReferenceType createBuilderSuperClass(final ASTCDClass domainClass, final String builderClassName) {
     String superClass = String.format(DEFAULT_SUPER_CLASS, builderClassName);
     if (hasSuperClassOtherThanASTCNode(domainClass)) {
-      superClass = domainClass.printSuperClass() + BUILDER_SUFFIX;
+      superClass = domainClass.printSuperClass();
+      if (superClass.contains(".")) {
+        //change package to correct one
+        String superClassPackage = superClass.substring(0, superClass.lastIndexOf("."));
+        superClassPackage = superClassPackage.toLowerCase() + "." + abstractService.getSubPackage();
+        //get Name
+        String superClassName = superClass.substring(superClass.lastIndexOf("."));
+        //build package and name together
+        superClass = superClassPackage + superClassName + BUILDER_SUFFIX;
+      }
     }
     return this.getCDTypeFacade().createSimpleReferenceType(superClass);
   }

@@ -99,8 +99,8 @@ public class MontiCoreTool {
   }
 
   public MontiCoreTool(IterablePath grammars, ModelPath modelPath,
-      File out, File report, boolean force,
-      IterablePath handcodedPath, IterablePath templatePath) {
+                       File out, File report, boolean force,
+                       IterablePath handcodedPath, IterablePath templatePath) {
     this.grammars = grammars;
     this.modelPath = modelPath;
     this.out = out;
@@ -116,7 +116,7 @@ public class MontiCoreTool {
     resolvingConfiguration.addDefaultFilters(mcLanguage.getResolvingFilters());
     resolvingConfiguration.addDefaultFilters(cd4aLanguage.getResolvingFilters());
 
-    this.symbolTable =  new GlobalScope(modelPath, Arrays.asList(mcLanguage, cd4aLanguage), resolvingConfiguration);
+    this.symbolTable = new GlobalScope(modelPath, Arrays.asList(mcLanguage, cd4aLanguage), resolvingConfiguration);
     this.mcModelLoader = new MontiCoreGrammarModelLoader(mcLanguage);
     this.cd4aModelLoader = new CD4AnalysisModelLoader(cd4aLanguage);
   }
@@ -199,8 +199,7 @@ public class MontiCoreTool {
     Optional<MCGrammarSymbol> grammarSymbol = symbolTable.resolveDown(qualifiedName, MCGrammarSymbol.KIND);
     if (grammarSymbol.isPresent()) {
       return grammarSymbol.get().getAstGrammar();
-    }
-    else {
+    } else {
       return mcModelLoader.loadModelIntoScope(qualifiedName, modelPath, symbolTable, resolvingConfiguration);
     }
   }
@@ -232,7 +231,7 @@ public class MontiCoreTool {
   }
 
   private ASTCDCompilationUnit transformAndCreateSymbolTable(ASTMCGrammar astGrammar,
-      GlobalExtensionManagement glex) {
+                                                             GlobalExtensionManagement glex) {
     // transformation
     ASTCDCompilationUnit compUnit = new MC2CDTransformation(glex).apply(astGrammar);
     return createSymbolsFromAST(compUnit, symbolTable);
@@ -252,8 +251,7 @@ public class MontiCoreTool {
     if (cdSymbol.isPresent() && cdSymbol.get().getEnclosingScope().getAstNode().isPresent()) {
       result = (ASTCDCompilationUnit) cdSymbol.get().getEnclosingScope().getAstNode().get();
       Log.debug("Used present symbol table for " + cdSymbol.get().getFullName(), LOG_ID);
-    }
-    else {
+    } else {
       Optional<CD4AnalysisSymbolTableCreator> symbolTableCreatorOpt = cd4aModelLoader.getModelingLanguage().getSymbolTableCreator(resolvingConfiguration, symbolTable);
       if (symbolTableCreatorOpt.isPresent()) {
         CD4AnalysisSymbolTableCreator symbolTableCreator = symbolTableCreatorOpt.get();
@@ -312,7 +310,7 @@ public class MontiCoreTool {
     CD4AnalysisLanguage cd4aLanguage = new CD4AnalysisLanguage();
     ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
     resolvingConfiguration.addDefaultFilters(cd4aLanguage.getResolvingFilters());
-    GlobalScope symbolTable = new GlobalScope(modelPath,cd4aLanguage, resolvingConfiguration);
+    GlobalScope symbolTable = new GlobalScope(modelPath, cd4aLanguage, resolvingConfiguration);
 
     for (Map.Entry<ASTMCGrammar, ASTCDCompilationUnit> pair : input.entrySet()) {
       ASTCDCompilationUnit cd = pair.getValue();
@@ -365,7 +363,7 @@ public class MontiCoreTool {
     ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator = new ASTLanguageInterfaceDecorator(astService, visitorService);
 
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex));
-    ASTBuilderDecorator astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator);
+    ASTBuilderDecorator astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator, astService);
 
     NodeFactoryDecorator nodeFactoryDecorator = new NodeFactoryDecorator(glex);
 
@@ -381,7 +379,7 @@ public class MontiCoreTool {
     CD4AnalysisLanguage cd4aLanguage = new CD4AnalysisLanguage();
     ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
     resolvingConfiguration.addDefaultFilters(cd4aLanguage.getResolvingFilters());
-    GlobalScope symbolTable = new GlobalScope(modelPath,cd4aLanguage, resolvingConfiguration);
+    GlobalScope symbolTable = new GlobalScope(modelPath, cd4aLanguage, resolvingConfiguration);
     CD4AnalysisSymbolTableCreator symbolTableCreator = cd4aModelLoader.getModelingLanguage().getSymbolTableCreator(resolvingConfiguration, symbolTable).get();
 
     ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, symbolTableCreator, fullDecorator, astLanguageInterfaceDecorator,

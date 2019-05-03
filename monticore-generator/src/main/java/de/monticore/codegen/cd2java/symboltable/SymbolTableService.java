@@ -29,7 +29,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   @Override
-  protected String getSubPackage() {
+  public String getSubPackage() {
     return SymbolTableConstants.SYMBOL_TABLE_PACKGE;
   }
 

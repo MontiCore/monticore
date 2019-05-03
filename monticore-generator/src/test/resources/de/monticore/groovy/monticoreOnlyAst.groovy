@@ -18,7 +18,7 @@ while (grammarIterator.hasNext()) {
   astGrammar = parseGrammar(grammarIterator.next())
 
   if (astGrammar.isPresent()) {
-    astGrammar = astGrammar.get();
+    astGrammar = astGrammar.get()
 
     astGrammar = createSymbolsFromAST(globalScope, astGrammar)
 

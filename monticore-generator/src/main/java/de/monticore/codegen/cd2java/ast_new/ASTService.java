@@ -21,7 +21,7 @@ public class ASTService extends AbstractService<ASTService> {
   }
 
   @Override
-  protected String getSubPackage() {
+  public String getSubPackage() {
     return ASTConstants.AST_PACKAGE;
   }
 

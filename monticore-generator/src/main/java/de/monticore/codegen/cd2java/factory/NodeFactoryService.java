@@ -18,7 +18,7 @@ public class NodeFactoryService extends AbstractService<NodeFactoryService> {
   }
 
   @Override
-  protected String getSubPackage() {
+  public String getSubPackage() {
     return ASTConstants.AST_PACKAGE;
   }
 

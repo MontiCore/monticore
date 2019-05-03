@@ -26,7 +26,7 @@ public class VisitorService extends AbstractService<VisitorService> {
   }
 
   @Override
-  protected String getSubPackage() {
+  public String getSubPackage() {
     return VisitorConstants.VISITOR_PACKAGE;
   }
 

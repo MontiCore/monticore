@@ -18,7 +18,7 @@ public class CoCoService extends AbstractService<CoCoService> {
   }
 
   @Override
-  protected String getSubPackage() {
+  public String getSubPackage() {
     return CoCoConstants.COCO_PACKAGE;
   }
 

@@ -67,7 +67,7 @@ public abstract class AbstractService<T extends AbstractService> {
     return String.join(".", getBasePackage(), getCDName(), getSubPackage()).toLowerCase();
   }
 
-  protected abstract String getSubPackage();
+  public abstract String getSubPackage();
 
   public Collection<T> getServicesOfSuperCDs() {
     return getSuperCDs().stream()
