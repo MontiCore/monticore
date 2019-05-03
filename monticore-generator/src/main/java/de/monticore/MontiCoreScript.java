@@ -29,6 +29,7 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.codegen.cd2java.mill.MillDecorator;
 import de.monticore.codegen.cd2java.od.ODGenerator;
 import de.monticore.codegen.cd2java.symboltable.SymbolTableService;
+import de.monticore.codegen.cd2java.top.TopDecorator;
 import de.monticore.codegen.cd2java.typecd2java.TypeCD2JavaDecorator;
 import de.monticore.codegen.cd2java.visitor.VisitorGenerator;
 import de.monticore.codegen.cd2java.visitor_new.VisitorService;
@@ -427,9 +428,9 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param astClassDiagram - class diagram AST
    */
 
-  public ASTCDCompilationUnit decorateForASTPackage(GlobalExtensionManagement glex, ASTCDCompilationUnit astClassDiagram, ModelPath modelPath) {
+  public ASTCDCompilationUnit decorateForASTPackage(GlobalExtensionManagement glex, ASTCDCompilationUnit astClassDiagram, ModelPath modelPath, IterablePath handCodedPath) {
     ASTCDCompilationUnit astcdCompilationUnit = prepareCD(astClassDiagram);
-    return decorateWithAST(astcdCompilationUnit, glex, modelPath);
+    return decorateWithAST(astcdCompilationUnit, glex, modelPath, handCodedPath);
   }
 
   private ASTCDCompilationUnit prepareCD(ASTCDCompilationUnit cd) {
@@ -441,7 +442,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return preparedCD;
   }
 
-  private ASTCDCompilationUnit decorateWithAST(ASTCDCompilationUnit cd, GlobalExtensionManagement glex, ModelPath modelPath) {
+  private ASTCDCompilationUnit decorateWithAST(ASTCDCompilationUnit cd, GlobalExtensionManagement glex, ModelPath modelPath, IterablePath handCodedPath) {
     ASTService astService = new ASTService(cd);
     SymbolTableService symbolTableService = new SymbolTableService(cd);
     VisitorService visitorService = new VisitorService(cd);
@@ -477,7 +478,10 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, symbolTableCreator, fullDecorator, astLanguageInterfaceDecorator,
         astBuilderDecorator, nodeFactoryDecorator, millDecorator, astConstantsDecorator, enumDecorator, astInterfaceDecorator);
-    return astcdDecorator.decorate(cd);
+    ASTCDCompilationUnit compilationUnit= astcdDecorator.decorate(cd);
+
+    TopDecorator topDecorator = new TopDecorator(handCodedPath);
+    return topDecorator.decorate(compilationUnit);
   }
 
 
