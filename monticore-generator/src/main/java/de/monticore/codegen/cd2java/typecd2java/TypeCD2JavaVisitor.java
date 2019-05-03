@@ -22,6 +22,8 @@ public class TypeCD2JavaVisitor implements CD4AnalysisVisitor {
       String javaType = String.join(".", typeSymbol.get().getModelName().toLowerCase(), ASTConstants.AST_PACKAGE, typeSymbol.get().getName());
       node.setName(0, javaType);
     }
-    node.setNameList(new ArrayList<>(Arrays.asList(node.getName(0).split(PACKAGE_SEPARATOR))));
+    if(node.sizeNames() <= 1){
+      node.setNameList(new ArrayList<>(Arrays.asList(node.getName(0).split(PACKAGE_SEPARATOR))));
+    }
   }
 }
