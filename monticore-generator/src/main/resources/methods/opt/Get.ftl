@@ -1,9 +1,8 @@
-${tc.signature("attribute")}
-<#assign attributeName = attribute.getName()>
+${tc.signature("attribute", "naiveAttributeName")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
-        if (isPresent${attributeName?cap_first}()) {
-            return this.get${attributeName?cap_first}Opt().get();
+        if (isPresent${naiveAttributeName}()) {
+            return this.get${naiveAttributeName}Opt().get();
         }
-        Log.error("0xA7003${genHelper.getGeneratedErrorCode(attribute)} ${attributeName?cap_first} can't return a value. It is empty.");
+        Log.error("0xA7003${genHelper.getGeneratedErrorCode(attribute)} ${naiveAttributeName} can't return a value. It is empty.");
         // Normally this statement is not reachable
         throw new IllegalStateException();

@@ -37,7 +37,7 @@ public class OptionalAccessorDecorator extends AbstractDecorator<ASTCDAttribute,
     naiveAttributeName = StringUtils.capitalize(DecorationHelper.getNativeAttributeName(ast.getName()));
     ASTCDMethod get = createGetMethod(ast);
     ASTCDMethod getOpt = createGetOptMethod(ast);
-    ASTCDMethod isPresent = createIsPresentMethod(ast);
+    ASTCDMethod isPresent = createIsPresentMethod();
     return new ArrayList<>(Arrays.asList(get, getOpt, isPresent));
   }
 
@@ -45,7 +45,7 @@ public class OptionalAccessorDecorator extends AbstractDecorator<ASTCDAttribute,
     String name = String.format(GET, naiveAttributeName);
     ASTType type = TypesHelper.getSimpleReferenceTypeFromOptional(ast.getType().deepClone());
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, type, name);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.Get", ast));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.Get", ast, naiveAttributeName));
     return method;
   }
 
@@ -57,10 +57,10 @@ public class OptionalAccessorDecorator extends AbstractDecorator<ASTCDAttribute,
     return method;
   }
 
-  private ASTCDMethod createIsPresentMethod(final ASTCDAttribute ast) {
+  private ASTCDMethod createIsPresentMethod() {
     String name = String.format(IS_PRESENT, naiveAttributeName);
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, this.getCDTypeFacade().createBooleanType(), name);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.IsPresent", ast));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.IsPresent", naiveAttributeName));
     return method;
   }
 }

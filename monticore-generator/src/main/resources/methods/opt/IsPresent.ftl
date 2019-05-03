@@ -1,2 +1,2 @@
-${tc.signature("attribute")}
-    return get${attribute.getName()?cap_first}Opt().isPresent();
+${tc.signature("naiveAttributeName")}
+    return get${naiveAttributeName}Opt().isPresent();
