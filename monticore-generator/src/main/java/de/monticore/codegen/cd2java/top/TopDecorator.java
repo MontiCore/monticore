@@ -8,7 +8,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static de.monticore.codegen.cd2java.factories.CDModifier.*;
+import static de.monticore.codegen.cd2java.factories.CDModifier.PACKAGE_PRIVATE_ABSTRACT;
 
 public class TopDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
 
@@ -51,10 +51,8 @@ public class TopDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDC
     makeAbstract(cdClass);
     cdClass.setName(cdClass.getName() + TOP_SUFFIX);
 
-    cdClass.getCDConstructorList().forEach(constructor -> {
-      constructor.setName(constructor.getName() + TOP_SUFFIX);
-      makeAbstract(constructor.getModifier());
-    });
+    cdClass.getCDConstructorList().forEach(constructor ->
+        constructor.setName(constructor.getName() + TOP_SUFFIX));
   }
 
   private void applyTopMechanism(ASTCDInterface cdInterface) {
@@ -68,8 +66,7 @@ public class TopDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDC
   private void makeAbstract(ASTCDType type) {
     if (type.getModifierOpt().isPresent()) {
       makeAbstract(type.getModifierOpt().get());
-    }
-    else {
+    } else {
       type.setModifier(PACKAGE_PRIVATE_ABSTRACT.build());
     }
   }
