@@ -140,7 +140,9 @@ public class ${className} implements ${grammarName}Visitor {
 
   @Override
   public void endVisit(${astName} ast) {
+<#if isScopeSpanning>
     removeCurrent${grammarName}Scope();
+</#if>
   }
 
   public void addToScopeAndLinkWithNode(${symbolName} symbol, ${astName} astNode) {
