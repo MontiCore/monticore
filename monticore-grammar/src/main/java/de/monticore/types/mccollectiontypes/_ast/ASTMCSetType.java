@@ -21,7 +21,7 @@ public class ASTMCSetType extends ASTMCSetTypeTOP {
     public String getBaseName() {
         return getName();
     }
-    @Override
+
     public void setNameList(List<String> names) {
         setName(names.get(0));
     }
@@ -31,7 +31,6 @@ public class ASTMCSetType extends ASTMCSetTypeTOP {
         return Lists.newArrayList(getMCTypeArgument());
     }
 
-    @Override
     public void setMCTypeArgumentList(List<ASTMCTypeArgument> arguments) {
         setMCTypeArgument(arguments.get(0));
     }

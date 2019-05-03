@@ -79,5 +79,4 @@ component grammar MCBasicTypes extends de.monticore.MCBasics {
     /** ASTVoidType represents the return type "void".
     */
     MCVoidType = "void";
-
 }
