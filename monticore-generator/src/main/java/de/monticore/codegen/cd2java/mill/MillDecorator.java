@@ -16,6 +16,7 @@ import de.se_rwth.commons.StringTransformations;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
@@ -41,7 +42,14 @@ public class MillDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCD
   }
 
   public ASTCDClass decorate(ASTCDCompilationUnit compilationUnit) {
-    ASTCDDefinition astcdDefinition = compilationUnit.getCDDefinition();
+    ASTCDDefinition astcdDefinition = compilationUnit.getCDDefinition().deepClone();
+    //filter out all classes that are abstract
+    astcdDefinition.setCDClassList(astcdDefinition.getCDClassList()
+        .stream()
+        .filter(ASTCDClassTOP::isPresentModifier)
+        .filter(x -> !x.getModifier().isAbstract())
+        .collect(Collectors.toList()));
+
     String millClassName = astcdDefinition.getName() + MILL_SUFFIX;
     ASTType millType = this.getCDTypeFacade().createTypeByDefinition(millClassName);
     List<ASTCDClass> astcdClassList = Lists.newArrayList(astcdDefinition.getCDClassList());
@@ -124,9 +132,6 @@ public class MillDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCD
     List<ASTCDMethod> builderMethodsList = new ArrayList<>();
 
     for (ASTCDClass astcdClass : astcdClassList) {
-      if (astcdClass.isEmptyCDAttributes() || !astcdClass.isPresentModifier() || (astcdClass.getModifier().isAbstract() && !astcdClass.getName().endsWith("TOP"))) {
-        continue;
-      }
       String astName = astcdClass.getName();
       ASTType builderType = this.getCDTypeFacade().createSimpleReferenceType(astName + BUILDER);
 
@@ -152,9 +157,15 @@ public class MillDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCD
       if (astNode.isPresent() && astNode.get() instanceof ASTCDDefinition) {
         //get super cddefinition
         ASTCDDefinition superDefinition = (ASTCDDefinition) astNode.get();
+        //filter out all abstract classes
+        superDefinition.setCDClassList(superDefinition.getCDClassList()
+            .stream()
+            .filter(ASTCDClassTOP::isPresentModifier)
+            .filter(x -> !x.getModifier().isAbstract())
+            .collect(Collectors.toList()));
         for (ASTCDClass superClass : superDefinition.getCDClassList()) {
           String packageName = superSymbol.getFullName().toLowerCase() + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;
-          ASTType superAstType = this.getCDTypeFacade().createSimpleReferenceType(packageName + superClass.getName());
+          ASTType superAstType = this.getCDTypeFacade().createSimpleReferenceType(packageName + superClass.getName() + BUILDER);
 
           //add builder method
           ASTCDMethod createDelegateMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, superAstType, StringTransformations.uncapitalize(superClass.getName()) + BUILDER);
