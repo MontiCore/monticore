@@ -15,6 +15,7 @@ import ${genHelper.getSymbolTablePackage()}.*;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -177,9 +178,13 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
 <#assign else = "else ">
 </#list>
 <#if symbolNames?keys?size gt 0>
+  <#if spanningSymbols?keys?size gt 0>
         else {
           Log.error("Unknown spanning symbol kind "+subScope.getSpanningSymbolKind()+" in ${languageName}ScopeDeSer");
         }
+  <#else>
+        Log.error("Unknown spanning symbol kind "+subScope.getSpanningSymbolKind()+" in ${languageName}ScopeDeSer");
+  </#if>
 </#if>
       }
       subScopeList.add(subScope.getScope());
