@@ -5,11 +5,19 @@ import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
+import de.monticore.expressions.expressionsbasis._symboltable.ETypeSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
+import de.monticore.expressions.prettyprint2.CommonExpressionsPrettyPrinter;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
+import de.monticore.types.prettyprint.MCFullGenericTypesPrettyPrinter;
+import de.se_rwth.commons.logging.Log;
+import sun.security.krb5.internal.crypto.EType;
 
+import javax.swing.text.html.Option;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class CommonExpressionTypesCalculator implements CommonExpressionsVisitor {
@@ -341,39 +349,78 @@ public class CommonExpressionTypesCalculator implements CommonExpressionsVisitor
   @Override
   public void endVisit(ASTNameExpression expr){
     Optional<EVariableSymbol> optVar = scope.resolveEVariable(expr.getName());
-    Optional<EMethodSymbol> optMet = scope.resolveEMethod(expr.getName());
+    Optional<ETypeSymbol> optType = scope.resolveEType(expr.getName());
     if(optVar.isPresent()){
       EVariableSymbol var = optVar.get();
       this.result=var.getMCTypeSymbol().getASTMCType();
       types.put(expr,var.getMCTypeSymbol());
-    }else if(optMet.isPresent()) {
+    }else if(optType.isPresent()) {
       ASTMCType type = null;
-      EMethodSymbol met = optMet.get();
-      if(met.getReturnType().isPresentMCType()){
-        type=met.getReturnType().getMCType();
-        this.result=type;
-        types.put(expr,met.getMCTypeSymbol());
-      }else{
-        List<String> name = new ArrayList<>();
-        name.add("void");
-        type = new ASTMCQualifiedType(new ASTMCQualifiedName(name));
-        this.result=type;
-        types.put(expr,met.getMCTypeSymbol());
-      }
+      type = optType.get().getType();
+      this.result=type;
+      MCTypeSymbol sym = new MCTypeSymbol(type.getBaseName());
+      sym.setASTMCType(type);
+      types.put(expr,sym);
     }else{
-      throw new RuntimeException("the resulting type cannot be calculated");
+      Log.info("package oder methode vermutet","CommonExpressionTypesCalculator");
     }
   }
 
   @Override
-  public void endVisit(ASTQualifiedNameExpression expr){
-    Optional<EVariableSymbol> optVar = scope.resolveEVariable(expr.getName());
-    if(optVar.isPresent()){
-      EVariableSymbol var = optVar.get();
-      this.result=var.getMCTypeSymbol().getASTMCType();
-      types.put(expr,var.getMCTypeSymbol());
+  public void endVisit(ASTQualifiedNameExpression expr) {
+    ASTMCType result = null;
+    if(types.containsKey(expr)){
+      MCFullGenericTypesPrettyPrinter printer = new MCFullGenericTypesPrettyPrinter(new IndentPrinter());
+      String toResolve = printer.prettyprint(types.get(expr).getASTMCType())+expr.getName();
+      Optional<ETypeSymbol> typeSymbolopt = scope.resolveETypeDown(toResolve);//TODO: resolve statt resolveDown
+      Optional<EVariableSymbol> variableSymbolopt = scope.resolveEVariableDown(toResolve);//TODO: resolve statt resolveDown
+      if(typeSymbolopt.isPresent()){
+        String fullName= typeSymbolopt.get().getFullName();
+        String[] parts = fullName.split(".");
+        ArrayList<String> nameList = new ArrayList<>();
+        for(String s: parts){
+          nameList.add(s);
+        }
+        result= new ASTMCQualifiedType(new ASTMCQualifiedName(nameList));
+        this.result=result;
+      }else if(variableSymbolopt.isPresent()){
+        String fullName= variableSymbolopt.get().getFullName();
+        String[] parts = fullName.split(".");
+        ArrayList<String> nameList = new ArrayList<>();
+        for(String s: parts){
+          nameList.add(s);
+        }
+        result= new ASTMCQualifiedType(new ASTMCQualifiedName(nameList));
+        this.result=result;
+      }else{
+        Log.info("package oder methode vermutet","CommonExpressionTypesCalculator");
+      }
     }else{
-      throw new RuntimeException("the resulting type cannot be calculated");
+      CommonExpressionsPrettyPrinter printer = new CommonExpressionsPrettyPrinter(new IndentPrinter());
+      String toResolve = printer.prettyprint(expr);
+      Optional<ETypeSymbol> typeSymbolopt = scope.resolveETypeDown(toResolve);//TODO: resolve statt resolveDown
+      Optional<EVariableSymbol> variableSymbolopt = scope.resolveEVariableDown(toResolve);//TODO: resolve statt resolveDown
+      if(typeSymbolopt.isPresent()){
+        String fullName= typeSymbolopt.get().getFullName();
+        String[] parts = fullName.split(".");
+        ArrayList<String> nameList = new ArrayList<>();
+        for(String s: parts){
+          nameList.add(s);
+        }
+        result= new ASTMCQualifiedType(new ASTMCQualifiedName(nameList));
+        this.result=result;
+      }else if(variableSymbolopt.isPresent()){
+        String fullName= variableSymbolopt.get().getFullName();
+        String[] parts = fullName.split(".");
+        ArrayList<String> nameList = new ArrayList<>();
+        for(String s: parts){
+          nameList.add(s);
+        }
+        result= new ASTMCQualifiedType(new ASTMCQualifiedName(nameList));
+        this.result=result;
+      }else{
+        Log.info("package oder methode vermutet", "CommonExpressionTypesCalculator");
+      }
     }
   }
 
