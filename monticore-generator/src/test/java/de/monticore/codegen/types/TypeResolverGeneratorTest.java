@@ -2,17 +2,7 @@
 
 package de.monticore.codegen.types;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import com.google.common.io.Resources;
-
 import de.monticore.MontiCoreScript;
 import de.monticore.codegen.AstDependentGeneratorTest;
 import de.monticore.codegen.cd2java.types.TypeResolverGenerator;
@@ -22,6 +12,14 @@ import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.configuration.ConfigurationPropertiesMapContributor;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  *  on 01.11.2016.
@@ -119,7 +117,7 @@ public class TypeResolverGeneratorTest extends AstDependentGeneratorTest {
 
   @BeforeClass
   public static void setup() {
-    LogStub.init();
+   LogStub.init();
     Log.enableFailQuick(false);
   }
 

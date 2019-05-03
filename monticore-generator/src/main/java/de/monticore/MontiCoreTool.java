@@ -314,8 +314,9 @@ public class MontiCoreTool {
 
     for (Map.Entry<ASTMCGrammar, ASTCDCompilationUnit> pair : input.entrySet()) {
       ASTCDCompilationUnit cd = pair.getValue();
-      createSymbolsFromAST(cd, symbolTable);
-      pair.setValue(cd);
+      ASTCDCompilationUnit prepareCD = prepareCD(cd);
+      createSymbolsFromAST(prepareCD, symbolTable);
+      pair.setValue(prepareCD);
     }
 
 

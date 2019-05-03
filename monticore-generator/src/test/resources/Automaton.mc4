@@ -35,6 +35,6 @@ Transition =
   from:Name "-" input:Name ">" to:Name ";" ;
 
   Transition2 extends Transition =
-    from:Name "-" input:Name ">" to:Name ";" "foo";
+    "foo";
   
 }

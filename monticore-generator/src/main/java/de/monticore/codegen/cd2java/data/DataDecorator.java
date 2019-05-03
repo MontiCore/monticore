@@ -2,17 +2,15 @@ package de.monticore.codegen.cd2java.data;
 
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java.exception.DecorateException;
-import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
-import de.monticore.umlcd4a.symboltable.CDFieldSymbol;
-import de.monticore.umlcd4a.symboltable.CDSymbol;
-import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDConstructor;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,38 +59,9 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
   }
 
   protected ASTCDConstructor createFullConstructor(ASTCDClass clazz) {
-    List<ASTCDAttribute> allAttributesInHierarchy = getAllAttributesInHierarchy(clazz);
-    ASTCDConstructor fullConstructor = this.getCDConstructorFacade().createConstructor(PROTECTED, clazz.getName(), getCDParameterFacade().createParameters(allAttributesInHierarchy));
-    this.replaceTemplate(EMPTY_BODY, fullConstructor, new TemplateHookPoint("data.ConstructorAttributesSetter", allAttributesInHierarchy));
+    ASTCDConstructor fullConstructor = this.getCDConstructorFacade().createConstructor(PROTECTED, clazz.getName(), getCDParameterFacade().createParameters(clazz.getCDAttributeList()));
+    this.replaceTemplate(EMPTY_BODY, fullConstructor, new TemplateHookPoint("data.ConstructorAttributesSetter", clazz.getCDAttributeList()));
     return fullConstructor;
-  }
-
-  //todo move to constructor factory -> how use service in factory?
-  //todo may do this recursive?
-  protected List<ASTCDAttribute> getAllAttributesInHierarchy(ASTCDClass clazz) {
-    List<ASTCDAttribute> result = new ArrayList<>(clazz.getCDAttributeList());
-    //also consider super classes of super classes
-    while (clazz.isPresentSuperclass()) {
-      String superClassName = clazz.printSuperClass();
-      String superGrammarName = superClassName.substring(0, superClassName.lastIndexOf("."));
-      String superTypeName = superClassName.substring(superClassName.lastIndexOf(".") + 1);
-      CDSymbol superGrammar = service.resolveCD(superGrammarName);
-      if (superGrammar.getType(superTypeName).isPresent()) {
-        CDTypeSymbol cdTypeSymbol = superGrammar.getType(superTypeName).get();
-        for (CDFieldSymbol fieldSymbol : cdTypeSymbol.getFields()) {
-          if (clazz.getCDAttributeList().stream().noneMatch(a -> a.getName().equals(fieldSymbol.getName()))) {
-            result.add((ASTCDAttribute) fieldSymbol.getAstNode().orElseThrow(
-                () -> new DecorateException(DecoratorErrorCode.AST_FOR_CD_FIELD_SYMBOL_NOT_FOUND, fieldSymbol.getName())));
-          }
-        }
-        //go on with next super grammar
-        clazz = (ASTCDClass) cdTypeSymbol.getAstNode().orElseThrow(
-            () -> new DecorateException(DecoratorErrorCode.AST_FOR_CD_TYPE_SYMBOL_NOT_FOUND, cdTypeSymbol.getName()));
-      } else {
-        throw new DecorateException(DecoratorErrorCode.CD_TYPE_NOT_FOUND, superTypeName);
-      }
-    }
-    return result;
   }
 
   protected List<ASTCDMethod> getAllDataMethods(ASTCDClass clazz) {

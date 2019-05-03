@@ -60,16 +60,7 @@ public class ASTBuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClas
   protected ASTReferenceType createBuilderSuperClass(final ASTCDClass domainClass, final String builderClassName) {
     String superClass = String.format(DEFAULT_SUPER_CLASS, builderClassName);
     if (hasSuperClassOtherThanASTCNode(domainClass)) {
-      superClass = domainClass.printSuperClass();
-      if (superClass.contains(".")) {
-        //change package to correct one
-        String superClassPackage = superClass.substring(0, superClass.lastIndexOf("."));
-        superClassPackage = superClassPackage.toLowerCase() + "." + abstractService.getSubPackage();
-        //get Name
-        String superClassName = superClass.substring(superClass.lastIndexOf("."));
-        //build package and name together
-        superClass = superClassPackage + superClassName + BUILDER_SUFFIX;
-      }
+      superClass = domainClass.printSuperClass()+ BUILDER_SUFFIX;
     }
     return this.getCDTypeFacade().createSimpleReferenceType(superClass);
   }

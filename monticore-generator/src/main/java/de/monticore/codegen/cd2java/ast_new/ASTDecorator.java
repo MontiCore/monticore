@@ -18,7 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java.ast_new.ASTConstants.*;
+import static de.monticore.codegen.cd2java.ast_new.ASTConstants.ACCEPT_METHOD;
+import static de.monticore.codegen.cd2java.ast_new.ASTConstants.CONSTRUCT_METHOD;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 
@@ -44,19 +45,16 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
   @Override
   public ASTCDClass decorate(ASTCDClass clazz) {
-    if (!clazz.isPresentSuperclass()) {
-      clazz.setSuperclass(this.getCDTypeFacade().createSimpleReferenceType(ASTCNode.class));
-    }
-
     clazz.addInterface(this.astService.getASTBaseInterface());
-
     clazz.addCDMethod(createAcceptMethod(clazz));
     clazz.addAllCDMethods(createAcceptSuperMethods(clazz));
     clazz.addCDMethod(getConstructMethod(clazz));
-    clazz.setSuperclass(getCDTypeFacade().createSimpleReferenceType(AST_NOEMF_INTERFACE));
-
+    if (!clazz.isPresentSuperclass()) {
+      clazz.setSuperclass(this.getCDTypeFacade().createSimpleReferenceType(ASTCNode.class));
+    }
     return clazz;
   }
+
 
   protected ASTCDMethod createAcceptMethod(ASTCDClass astClass) {
     ASTCDParameter visitorParameter = this.getCDParameterFacade().createParameter(this.visitorService.getVisitorType(), VISITOR);

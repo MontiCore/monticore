@@ -7,7 +7,7 @@ public class TypeCD2JavaDecorator extends AbstractDecorator<ASTCDCompilationUnit
 
   @Override
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit compilationUnit) {
-    TypeCD2JavaVisitor visitor = new TypeCD2JavaVisitor(compilationUnit);
+    TypeCD2JavaVisitor visitor = new TypeCD2JavaVisitor();
     visitor.handle(compilationUnit);
     return compilationUnit;
   }
