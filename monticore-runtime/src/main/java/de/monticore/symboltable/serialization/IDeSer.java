@@ -48,11 +48,6 @@ public interface IDeSer<T> {
     new FileReaderWriter().storeInFile(path, serialized);
   }
   
-  default public Optional<T> load(Path path) {
-    String deserialized = new FileReaderWriter().readFromFile(path);
-    return deserialize(deserialized);
-  }
-  
   default public Optional<T> load(URL url) {
     Path path;
     try {

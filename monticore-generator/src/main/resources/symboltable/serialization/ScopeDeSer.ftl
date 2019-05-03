@@ -36,14 +36,18 @@ public class ${className} implements IDeSer<I${languageName}Scope> {
 ${symbol}SymbolDeSer ${symbol?lower_case}SymbolDeSer = new ${symbol}SymbolDeSer();
 </#list>
 
+  public void store(${languageName}ArtifactScope as, ${languageName}Language lang) {
+    store(as, as.getFilePath(lang));
+  }
+
   /**
    * @see de.monticore.symboltable.serialization.IDeSer#serialize(java.lang.Object)
    */
   @Override
   public String serialize(I${languageName}Scope toSerialize) {
-    ${languageName}SymbolTablePrinter ${className?lower_case}SymbolTablePrinter = new ${languageName}SymbolTablePrinter();
-    toSerialize.accept(${className?lower_case}SymbolTablePrinter);
-    return ${className?lower_case}SymbolTablePrinter.getSerializedString();
+    ${languageName}SymbolTablePrinter printer = new ${languageName}SymbolTablePrinter();
+    toSerialize.accept(printer);
+    return printer.getSerializedString();
   }
 
   /**
