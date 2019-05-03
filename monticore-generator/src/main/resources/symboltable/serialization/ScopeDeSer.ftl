@@ -35,9 +35,10 @@ public class ${className} implements IDeSer<I${languageName}Scope> {
 <#list symbolNames?keys as symbol>
 ${symbol}SymbolDeSer ${symbol?lower_case}SymbolDeSer = new ${symbol}SymbolDeSer();
 </#list>
+  
 
-  public void store(${languageName}ArtifactScope as, ${languageName}Language lang) {
-    store(as, as.getFilePath(lang));
+  public void store(${languageName}ArtifactScope as, ${languageName}Language lang, String symbolPath) {
+    store(as, Paths.get(symbolPath, as.getFilePath(lang).toString()));
   }
 
   /**
