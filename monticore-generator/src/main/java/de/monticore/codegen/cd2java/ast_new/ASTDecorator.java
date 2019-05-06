@@ -18,8 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java.ast_new.ASTConstants.ACCEPT_METHOD;
-import static de.monticore.codegen.cd2java.ast_new.ASTConstants.CONSTRUCT_METHOD;
+import static de.monticore.codegen.cd2java.ast_new.ASTConstants.*;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 
@@ -34,9 +33,9 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
   private final NodeFactoryService nodeFactoryService;
 
   public ASTDecorator(final GlobalExtensionManagement glex,
-      final ASTService astService,
-      final VisitorService visitorService,
-      final NodeFactoryService nodeFactoryService) {
+                      final ASTService astService,
+                      final VisitorService visitorService,
+                      final NodeFactoryService nodeFactoryService) {
     super(glex);
     this.astService = astService;
     this.visitorService = visitorService;
@@ -49,6 +48,7 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
     clazz.addCDMethod(createAcceptMethod(clazz));
     clazz.addAllCDMethods(createAcceptSuperMethods(clazz));
     clazz.addCDMethod(getConstructMethod(clazz));
+    clazz.addCDMethod(createGetChildrenMethod(clazz));
     if (!clazz.isPresentSuperclass()) {
       clazz.setSuperclass(this.getCDTypeFacade().createSimpleReferenceType(ASTCNode.class));
     }
@@ -61,6 +61,13 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
     ASTCDMethod acceptMethod = this.getCDMethodFacade().createMethod(PUBLIC, ACCEPT_METHOD, visitorParameter);
     this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint("ast_new.Accept", astClass));
     return acceptMethod;
+  }
+
+  protected ASTCDMethod createGetChildrenMethod(ASTCDClass astClass) {
+    ASTType astNodeType = getCDTypeFacade().createCollectionTypeOf(AST_INTERFACE);
+    ASTCDMethod getChildrenMethod = this.getCDMethodFacade().createMethod(PUBLIC, astNodeType, GET_CHILDREN_METHOD);
+    this.replaceTemplate(EMPTY_BODY, getChildrenMethod, new TemplateHookPoint("ast_new.GetChildren", astClass));
+    return getChildrenMethod;
   }
 
   protected List<ASTCDMethod> createAcceptSuperMethods(ASTCDClass astClass) {
@@ -81,10 +88,10 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
   protected ASTCDMethod getConstructMethod(ASTCDClass astClass) {
     ASTCDMethod constructMethod;
     ASTType classType = this.getCDTypeFacade().createSimpleReferenceType(astClass.getName());
-    if(astClass.isPresentModifier() && astClass.getModifier().isAbstract()){
-       constructMethod = this.getCDMethodFacade().createMethod(PROTECTED_ABSTRACT, classType, CONSTRUCT_METHOD);
-    }else {
-       constructMethod = this.getCDMethodFacade().createMethod(PROTECTED, classType, CONSTRUCT_METHOD);
+    if (astClass.isPresentModifier() && astClass.getModifier().isAbstract()) {
+      constructMethod = this.getCDMethodFacade().createMethod(PROTECTED_ABSTRACT, classType, CONSTRUCT_METHOD);
+    } else {
+      constructMethod = this.getCDMethodFacade().createMethod(PROTECTED, classType, CONSTRUCT_METHOD);
       this.replaceTemplate(EMPTY_BODY, constructMethod, new StringHookPoint(this.nodeFactoryService.getCreateInvocation(astClass)));
     }
 

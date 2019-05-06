@@ -51,7 +51,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperClass() {
-    assertEquals("de.monticore.ast.ASTCNode", astClass.printSuperClass());
+    assertEquals("ASTCNode", astClass.printSuperClass());
   }
 
   @Test
@@ -73,7 +73,7 @@ public class ASTDecoratorTest extends DecoratorTestCase {
   @Test
   public void testMethods() {
     assertFalse(astClass.getCDMethodList().isEmpty());
-    assertEquals(3, astClass.getCDMethodList().size());
+    assertEquals(4, astClass.getCDMethodList().size());
   }
 
   @Test
@@ -115,6 +115,18 @@ public class ASTDecoratorTest extends DecoratorTestCase {
     ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals(visitorType, parameter.getType());
     assertEquals("visitor", parameter.getName());
+  }
+
+  @Test
+  public void testGetChildrenMethod() {
+    ASTCDMethod method = getMethodBy("get_Children", astClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+
+    ASTType returnType = this.cdTypeFacade.createCollectionTypeOf("de.monticore.ast.ASTNode");
+    assertDeepEquals(returnType, method.getReturnType());
+
+    assertTrue(method.isEmptyCDParameters());
   }
 
   @Test
