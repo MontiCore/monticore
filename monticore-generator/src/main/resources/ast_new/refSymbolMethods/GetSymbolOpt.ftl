@@ -8,4 +8,4 @@ ${tc.signature("attributeName", "referencedSymbol", "isOptional")}
         return  enclosingScope.get().resolve(${attributeName}, ${referencedSymbol}.KIND);
 </#if>
      }
-     return ${attributeName}Symbol;
+     return ${attributeName};

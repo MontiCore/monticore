@@ -17,7 +17,7 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
 
 public class ASTReferencedDefinitionDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
-  private static final String DEFINITION = "Definition";
+  public static final String DEFINITION = "Definition";
 
   private final ReferencedDefinitionAccessorDecorator accessorDecorator;
 
@@ -56,7 +56,7 @@ public class ASTReferencedDefinitionDecorator extends AbstractDecorator<ASTCDCla
       //if the attribute is mandatory or optional
       symbolType = getCDTypeFacade().createOptionalTypeOf(referencedNode);
     }
-    ASTCDAttribute refSymbolAttribute = getCDAttributeFacade().createAttribute(PRIVATE, symbolType, astcdAttribute.getName() + DEFINITION);
+    ASTCDAttribute refSymbolAttribute = getCDAttributeFacade().createAttribute(PRIVATE, symbolType, astcdAttribute.getName());
     refSymbolAttribute.getModifier().setStereotype(astcdAttribute.getModifier().getStereotype().deepClone());
     return accessorDecorator.decorate(refSymbolAttribute);
   }

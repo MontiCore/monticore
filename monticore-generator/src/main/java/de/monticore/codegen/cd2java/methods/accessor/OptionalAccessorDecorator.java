@@ -19,13 +19,13 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
 public class OptionalAccessorDecorator extends AbstractDecorator<ASTCDAttribute, List<ASTCDMethod>> {
 
-  private static final String GET = "get%s";
+  protected static final String GET = "get%s";
 
   protected static final String GET_OPT = "get%sOpt";
 
-  private static final String IS_PRESENT = "isPresent%s";
+  protected static final String IS_PRESENT = "isPresent%s";
 
-  private String naiveAttributeName;
+  protected String naiveAttributeName;
 
   public OptionalAccessorDecorator(final GlobalExtensionManagement glex) {
     super(glex);
@@ -34,14 +34,18 @@ public class OptionalAccessorDecorator extends AbstractDecorator<ASTCDAttribute,
   @Override
   public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
     //todo find better util than the DecorationHelper
-    naiveAttributeName = StringUtils.capitalize(DecorationHelper.getNativeAttributeName(ast.getName()));
+    setNaiveAttributeName(ast);
     ASTCDMethod get = createGetMethod(ast);
     ASTCDMethod getOpt = createGetOptMethod(ast);
     ASTCDMethod isPresent = createIsPresentMethod();
     return new ArrayList<>(Arrays.asList(get, getOpt, isPresent));
   }
 
-  private ASTCDMethod createGetMethod(final ASTCDAttribute ast) {
+  protected void setNaiveAttributeName(ASTCDAttribute ast){
+    this.naiveAttributeName =StringUtils.capitalize(DecorationHelper.getNativeAttributeName(ast.getName()));
+  }
+
+  protected ASTCDMethod createGetMethod(final ASTCDAttribute ast) {
     String name = String.format(GET, naiveAttributeName);
     ASTType type = TypesHelper.getSimpleReferenceTypeFromOptional(ast.getType().deepClone());
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, type, name);
