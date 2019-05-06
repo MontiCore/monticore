@@ -2,12 +2,16 @@
 
 package de.monticore.expressions;
 
-component grammar OCLExpressions extends de.monticore.common.Common, de.monticore.expressions.ExpressionsBasis {
+/**
+ * This grammar defines ocl expressions
+*/
+component grammar OCLExpressions extends de.monticore.expressions.ExpressionsBasis {
 
 external EDeclaration;
+external ExtType;
 
     InstanceOfExpression implements Expression <50> =
-        leftExpression:Expression operator:"instanceof" Type;
+        left:Expression "instanceof" ExtType;
 
     TypeIfExpr implements Expression <100> =
         "typeif" condition:Expression
@@ -26,9 +30,9 @@ external EDeclaration;
         ElseExpressionPart;
 
     ImpliesExpression implements Expression <60> =
-        leftExpression:Expression
+        left:Expression
         "implies"
-        rightExpression:Expression;
+        right:Expression;
 
 	SingleLogicalORExpr implements Expression <80> =
 		left:Expression
@@ -92,16 +96,9 @@ external EDeclaration;
                    An expression where previous declarations are used.
     */
     LetinExpr implements Expression <100> =
-        "let" (declaration:EDeclaration ";")+
+        "let" (EDeclaration || ";")+
         "in" Expression;
 
-    /** ASTOCLLetDeclaration represents a list of let-declarations inside of a
-        let-statement. This contains variable- or method-declarations.
-        @attribute declarations
-               List of variable- or method-declarations.
-    */
-    LetDeclaration implements Expression <100> =
-        "let" (declaration:EDeclaration ";")+;
 
     /** ASTOCLIterateExpr is used to iterate collections. It differs from
         Java5-Iterator.
@@ -119,13 +116,13 @@ external EDeclaration;
     */
     IterateExpr implements Expression <100> =
         "iterate" "{"
-        iterationDeclarator:InExpr ";"
-        initDeclarator:EDeclaration ":"
-        accumulatorName:Name "=" accumulatorValue:Expression
+        iteration:InExpr ";"
+        init:EDeclaration ":"
+        Name "=" value:Expression
         "}";
 
     TypeCastExpression implements Expression <200> =
-    	"(" Type ")" Expression;
+    	"(" ExtType ")" Expression;
 
     ParenthizedExpression implements Expression <400> =
         "(" Expression ")"
@@ -135,10 +132,10 @@ external EDeclaration;
         shortform of "Auction a in Auction.allInstances").
     */
     InExpr implements Expression <50> =
-		Type
+		ExtType
 		varName:(Name || ",")+
 		|
-		Type?
+		ExtType?
 		varName:(Name || ",")+
 		("in" Expression)
         ;
@@ -171,7 +168,7 @@ external EDeclaration;
     */
     OCLQualifiedPrimary implements OCLPrimary <500> =
         (Name || ".")+
-        postfixQualification:OCLQualification?
+        postfix:OCLQualification?
         ("." OCLQualifiedPrimary)?
         ;
 
@@ -195,7 +192,7 @@ external EDeclaration;
     OCLAtPreQualification implements OCLQualification =
         atpre:["@pre"];
 
-    OCLTransitivQualification implements OCLQualification =
+    OCLTransitiveQualification implements OCLQualification =
         transitive:["**"];
 
 
@@ -210,7 +207,7 @@ external EDeclaration;
                    Optional Qualification.
     */
     OCLComprehensionPrimary implements OCLPrimary  <40> =
-        Type?
+        ExtType?
         "{" expression:OCLComprehensionExpr? "}"
         ("." qualification:OCLPrimary)?
         ;
@@ -258,4 +255,9 @@ external EDeclaration;
         |
         (Expression ("," Expression)*)
         ;
+
+    OCLEquivalentExpression implements Expression <107> =
+        left:Expression operator:"<=>" right:Expression;
+
+
 }

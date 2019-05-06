@@ -2,9 +2,11 @@
 
 package de.monticore;
 
-import de.monticore.assignmentexpressions._od.AssignmentExpressions2OD;
-import de.monticore.commonexpressions._od.CommonExpressions2OD;
-import de.monticore.expressionsbasis._od.ExpressionsBasis2OD;
+import de.monticore.expressions.assignmentexpressions._od.AssignmentExpressions2OD;
+import de.monticore.expressions.bitexpressions._od.BitExpressions2OD;
+import de.monticore.expressions.commonexpressions._od.CommonExpressions2OD;
+import de.monticore.expressions.expressionsbasis._od.ExpressionsBasis2OD;
+import de.monticore.expressions.javaclassexpressions._od.JavaClassExpressions2OD;
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
 import de.monticore.grammar.concepts.antlr.antlr._od.Antlr2OD;
 import de.monticore.grammar.grammar._ast.ASTGrammarNode;
@@ -13,14 +15,14 @@ import de.monticore.grammar.grammar_withconcepts._od.Grammar_WithConcepts2OD;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsDelegatorVisitor;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
 import de.monticore.java.javadsl._od.JavaDSL2OD;
-import de.monticore.javaclassexpressions._od.JavaClassExpressions2OD;
 import de.monticore.lexicals.lexicals._od.Lexicals2OD;
-import de.monticore.literals.literals._od.Literals2OD;
+import de.monticore.mcbasicliterals._od.MCBasicLiterals2OD;
 import de.monticore.mcbasics._od.MCBasics2OD;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.shiftexpressions._od.ShiftExpressions2OD;
-import de.monticore.types.types._od.Types2OD;
-
+import de.monticore.types.mcbasictypes._od.MCBasicTypes2OD;
+import de.monticore.types.mccollectiontypes._od.MCCollectionTypes2OD;
+import de.monticore.types.mcfullgenerictypes._od.MCFullGenericTypes2OD;
+import de.monticore.types.mcsimplegenerictypes._od.MCSimpleGenericTypes2OD;
 
 public class GrammarWithConcepts2OD extends Grammar_WithConcepts2OD {
     
@@ -37,15 +39,18 @@ public class GrammarWithConcepts2OD extends Grammar_WithConcepts2OD {
     visitor.setAntlrVisitor(new Antlr2OD(printer, reporting));
     visitor.setGrammarVisitor(new Grammar2OD(printer, reporting));
     visitor.setJavaDSLVisitor(new JavaDSL2OD(printer, reporting));
-    visitor.setLiteralsVisitor(new Literals2OD(printer, reporting));
-    visitor.setTypesVisitor(new Types2OD(printer, reporting));
-    visitor.setShiftExpressionsVisitor(new ShiftExpressions2OD(printer, reporting));
+    visitor.setBitExpressionsVisitor(new BitExpressions2OD(printer, reporting));
     visitor.setJavaClassExpressionsVisitor(new JavaClassExpressions2OD(printer, reporting));
     visitor.setMCBasicsVisitor(new MCBasics2OD(printer, reporting));
     visitor.setCommonExpressionsVisitor(new CommonExpressions2OD(printer, reporting));
     visitor.setAssignmentExpressionsVisitor(new AssignmentExpressions2OD(printer, reporting));
     visitor.setExpressionsBasisVisitor(new ExpressionsBasis2OD(printer, reporting));
     visitor.setLexicalsVisitor(new Lexicals2OD(printer, reporting));
+    visitor.setMCSimpleGenericTypesVisitor(new MCSimpleGenericTypes2OD(printer, reporting));
+    visitor.setMCFullGenericTypesVisitor(new MCFullGenericTypes2OD(printer, reporting));
+    visitor.setMCCollectionTypesVisitor(new MCCollectionTypes2OD(printer, reporting));
+    visitor.setMCBasicTypesVisitor(new MCBasicTypes2OD(printer, reporting));
+    visitor.setMCBasicLiteralsVisitor(new MCBasicLiterals2OD(printer, reporting));
     this.printer = printer;
   }
 

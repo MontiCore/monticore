@@ -11,7 +11,6 @@ ${defineHookPoint("JavaCopyright")}
 package ${package};
 
 import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.references.CommonSymbolReference;
 import de.monticore.symboltable.references.SymbolReference;
@@ -64,7 +63,7 @@ public class ${className} extends ${referencedSymbol} implements SymbolReference
   }
 
   @Override
-  public void setEnclosingScope(MutableScope scope) {
+  public void setEnclosingScope(Scope scope) {
     getReferencedSymbol().setEnclosingScope(scope);
   }
 
@@ -87,9 +86,9 @@ public class ${className} extends ${referencedSymbol} implements SymbolReference
 <#if !hwSymbolExists>
 
 <#-- the method could lead to type incompatibility, e.g., if
-     the referenced symbol returns a specific Scope or MutableScope. -->
+     the referenced symbol returns a specific Scope. -->
 
-<#if isScopeSpanningSymbol>
+  <#if isScopeSpanningSymbol>
   /*
    * Methods of ScopeSpanningSymbol interface
    */
@@ -97,7 +96,7 @@ public class ${className} extends ${referencedSymbol} implements SymbolReference
   public Scope getSpannedScope() {
     return getReferencedSymbol().getSpannedScope();
   }
-</#if>
+  </#if>
 
 
 </#if>

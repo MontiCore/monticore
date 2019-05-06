@@ -22,7 +22,7 @@ public class ASTMCListType extends ASTMCListTypeTOP {
         return getName();
     }
 
-    @Override
+
     public void setNameList(List<String> names) {
        setName(names.get(0));
     }
@@ -32,7 +32,7 @@ public class ASTMCListType extends ASTMCListTypeTOP {
         return Lists.newArrayList(getMCTypeArgument());
     }
 
-    @Override
+
     public void setMCTypeArgumentList(List<ASTMCTypeArgument> arguments) {
         setMCTypeArgument(arguments.get(0));
     }

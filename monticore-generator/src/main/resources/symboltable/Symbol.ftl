@@ -1,12 +1,12 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className", "prodSymbol", "ruleSymbol", "imports")}
+${signature("className", "ruleName", "ruleSymbol", "hasAst", "imports")}
 <#assign genHelper = glex.getGlobalVar("stHelper")>
-<#assign ruleName = prodSymbol.getName()>
+<#assign names = glex.getGlobalVar("nameHelper")>
 <#assign superClass = " extends de.monticore.symboltable.CommonSymbol">
-<#assign superInterfaces = "">
+<#assign superInterfaces = "implements ICommon" + genHelper.getGrammarSymbol().getName() + "Symbol">
 <#if ruleSymbol.isPresent()>
   <#if !ruleSymbol.get().isEmptySuperInterfaces()>
-    <#assign superInterfaces = "implements " + stHelper.printGenericTypes(ruleSymbol.get().getSuperInterfaceList())>
+    <#assign superInterfaces = ", " + stHelper.printGenericTypes(ruleSymbol.get().getSuperInterfaceList())>
   </#if>
   <#if !ruleSymbol.get().isEmptySuperClasss()>
     <#assign superClass = " extends " + stHelper.printGenericTypes(ruleSymbol.get().getSuperClassList())>
@@ -31,10 +31,57 @@ public class ${className} ${superClass} ${superInterfaces} {
     super(name, KIND);
   }
 
+<#if hasAst>
   ${includeArgs("symboltable.symbols.GetAstNodeMethod", ruleName)}
-  
+</#if>
+
+  <#assign langVisitorType = names.getQualifiedName(genHelper.getVisitorPackage(), genHelper.getGrammarSymbol().getName() + "SymbolVisitor")>
+   public void accept(${langVisitorType} visitor) {
+  <#if genHelper.isSupertypeOfHWType(className, "")>
+    <#assign plainName = className?remove_ending("TOP")>
+    if (this instanceof ${plainName}) {
+      visitor.handle((${plainName}) this);
+    } else {
+      throw new UnsupportedOperationException("0xA7010{genHelper.getGeneratedErrorCode(ast)} Only handwritten class ${plainName} is supported for the visitor");
+    }
+  <#else>
+    visitor.handle(this);
+  </#if>
+  }
+
   <#if ruleSymbol.isPresent()>
   ${includeArgs("symboltable.symbols.SymbolRule", ruleSymbol.get())}
   </#if>
 
+  protected I${genHelper.getGrammarSymbol().getName()}Scope enclosing${genHelper.getGrammarSymbol().getName()}Scope;
+
+  public I${genHelper.getGrammarSymbol().getName()}Scope getEnclosing${genHelper.getGrammarSymbol().getName()}Scope(){
+    return this.enclosing${genHelper.getGrammarSymbol().getName()}Scope;
+  }
+
+  public void setEnclosing${genHelper.getGrammarSymbol().getName()}Scope(I${genHelper.getGrammarSymbol().getName()}Scope newEnclosingScope){
+    this.enclosing${genHelper.getGrammarSymbol().getName()}Scope = newEnclosingScope;
+
+    /*
+    if ((this.enclosing${genHelper.getGrammarSymbol().getName()}Scope != null) && (newEnclosingScope != null)) {
+      if (this.enclosing${genHelper.getGrammarSymbol().getName()}Scope == newEnclosingScope) {
+        return;
+      }
+      warn("0xA1042 Scope \"" + getName() + "\" has already an enclosing scope.");
+    }
+
+    // remove this scope from current (old) enclosing scope, if exists.
+    if (this.enclosing${genHelper.getGrammarSymbol().getName()}Scope != null) {
+      this.enclosing${genHelper.getGrammarSymbol().getName()}Scope.removeSubScope(this);
+    }
+
+    // add this scope to new enclosing scope, if exists.
+    if (newEnclosingScope != null) {
+      newEnclosingScope.addSubScope(this);
+    }
+
+    // set new enclosing scope (or null)
+     this.enclosingScope = newEnclosingScope;
+    */
+  }
 }

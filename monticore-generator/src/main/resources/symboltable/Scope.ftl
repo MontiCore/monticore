@@ -1,7 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className","scopeRule", "symbolNames")}
+${signature("className","scopeRule", "symbolNames", "superScopeVisitors")}
 
 <#assign genHelper = glex.getGlobalVar("stHelper")>
+<#assign names = glex.getGlobalVar("nameHelper")>
 <#assign superClass = " extends de.monticore.symboltable.CommonScope ">
 <#assign superInterfaces = "implements I"+ className>
 <#if scopeRule.isPresent()>
@@ -27,7 +28,7 @@ import java.util.Collection;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.resolving.ResolvingInfo;
-import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Scope;
 
 public class ${className} ${superClass} ${superInterfaces} {
 
@@ -39,10 +40,10 @@ public class ${className} ${superClass} ${superInterfaces} {
     super(isShadowingScope);
   }
 
-  public ${className}(Optional<MutableScope> enclosingScope) {
+  public ${className}(Optional<Scope> enclosingScope) {
     super(enclosingScope, true);
-  }
-  
+    }
+
   <#list symbolNames?keys as symbol>
   // all resolve Methods for ${symbol}
   public Optional<${symbolNames[symbol]}> resolve${symbol}(String name) {
@@ -139,4 +140,28 @@ public class ${className} ${superClass} ${superInterfaces} {
       ${genHelper.printMethod(meth)}
     </#list>
   </#if>
-}
+  
+  <#assign langVisitorType = names.getQualifiedName(genHelper.getVisitorPackage(), genHelper.getGrammarSymbol().getName() + "ScopeVisitor")>
+    public void accept(${langVisitorType} visitor) {
+  <#if genHelper.isSupertypeOfHWType(className, "")>
+    <#assign plainName = className?remove_ending("TOP")>
+    if (this instanceof ${plainName}) {
+      visitor.handle((${plainName}) this);
+    } else {
+      throw new UnsupportedOperationException("0xA7010${genHelper.getGeneratedErrorCode(ast)} Only handwritten class ${plainName} is supported for the visitor");
+    }
+  <#else>
+    visitor.handle(this);
+  </#if>
+    }
+  
+  <#list superScopeVisitors as superScopeVisitor>
+  public void accept(${superScopeVisitor} visitor) {
+    if (visitor instanceof ${langVisitorType}) {
+      accept((${langVisitorType}) visitor);
+    } else {
+      throw new UnsupportedOperationException("0xA7010${genHelper.getGeneratedErrorCode(ast)} Scope node type ${className} expected a visitor of type ${langVisitorType}, but got ${superScopeVisitor}.");
+    }
+  }
+  </#list>
+    }

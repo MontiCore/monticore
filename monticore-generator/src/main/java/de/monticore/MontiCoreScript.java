@@ -232,13 +232,13 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param astCd
    * @param outputDirectory output directory for generated Java code
    */
-  public void generateSymbolTable(ASTMCGrammar astGrammar, GlobalScope symbolTable,
-      ASTCDCompilationUnit astCd,
-      File outputDirectory, IterablePath handcodedPath) {
+  public void generateSymbolTable(GlobalExtensionManagement glex, ASTMCGrammar astGrammar, 
+                                  GlobalScope symbolTable, ASTCDCompilationUnit astCd,
+                                  File outputDirectory, IterablePath handcodedPath) {
     Log.errorIfNull(astGrammar);
     SymbolTableGeneratorHelper genHelper = new SymbolTableGeneratorHelper(astGrammar, symbolTable, astCd);
     SymbolTableGenerator symbolTableGenerator = new SymbolTableGeneratorBuilder().build();
-    symbolTableGenerator.generate(astGrammar, genHelper, outputDirectory, handcodedPath);
+    symbolTableGenerator.generate(glex, astGrammar, genHelper, outputDirectory, handcodedPath);
   }
 
   /**
@@ -427,11 +427,12 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param outputDirectory TODO
    */
   public void generate(GlobalExtensionManagement glex, GlobalScope globalScope,
-      ASTCDCompilationUnit astClassDiagram, File outputDirectory, IterablePath templatePath) {
+      ASTCDCompilationUnit astClassDiagram, File outputDirectory, IterablePath templatePath, 
+      IterablePath handcodedPath) {
     boolean emfCompatible = false;
     AstGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory, templatePath,
         emfCompatible);
-    VisitorGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
+    VisitorGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory, handcodedPath);
     CoCoGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
     ODGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
   }
@@ -460,12 +461,12 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param outputDirectory - the name of the output directory
    */
   public void generateEmfCompatible(GlobalExtensionManagement glex,
-      GlobalScope globalScope,
-      ASTCDCompilationUnit astClassDiagram, File outputDirectory, IterablePath templatePath) {
+      GlobalScope globalScope, ASTCDCompilationUnit astClassDiagram, File outputDirectory, 
+      IterablePath templatePath, IterablePath handcodedPath) {
     boolean emfCompatible = true;
     AstGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory, templatePath,
         emfCompatible);
-    VisitorGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
+    VisitorGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory, handcodedPath);
     CoCoGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
     ODGenerator.generate(glex, globalScope, astClassDiagram, outputDirectory);
   }
@@ -604,7 +605,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         builder.addVariable("LOG_ID", LOG_ID);
         builder.addVariable("glex", new GlobalExtensionManagement());
         builder.addVariable("grammarIterator", mcConfig.getGrammars().getResolvedPaths());
-        builder.addVariable("reportManagerFactory", new MontiCoreReports(mcConfig.getReport().getAbsolutePath(),
+        builder.addVariable("reportManagerFactory", new MontiCoreReports(mcConfig.getOut().getAbsolutePath(),
+                mcConfig.getReport().getAbsolutePath(),
             mcConfig.getHandcodedPath(), mcConfig.getTemplatePath()));
       }
 

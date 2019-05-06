@@ -7,7 +7,7 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore</artifactId>
-    <version>5.0.3</version>
+    <version>5.0.5</version>
   </parent>
 
   <artifactId>monticore-cli</artifactId>

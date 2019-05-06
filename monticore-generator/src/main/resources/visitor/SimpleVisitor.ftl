@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("astType", "astPackage", "cd")}
+${tc.signature("simpleVisitorName", "astType", "astPackage", "cd")}
 <#assign genHelper = glex.getGlobalVar("visitorHelper")>
 
 <#-- Copyright -->
@@ -13,19 +13,19 @@ import ${astPackage}.${genHelper.getASTNodeBaseType()};
 import de.monticore.ast.ASTNode;
 
 /**
- * Default AST-visitor for the {@code ${genHelper.getCdName()}} language.<br/>
- * <br/>
- * <b>Running a visitor</b>: Starting a traversal of an AST with root {@code astNode} is as simple as calling {@code handle(astNode)}. Note that the visitor only handles nodes of language {@code ${genHelper.getCdName()}}.<br/>
- * <br/>
- * <b>Implementing a visitor:</b><br/>
- * You should never use {@code this}, but always make use of {@link #getRealThis()}. This ensures that the visitor can be reused by composition.<br/>
- * <br/>
+ * Default AST-visitor for the {@code ${genHelper.getCdName()}} language.<br>
+ * <br>
+ * <b>Running a visitor</b>: Starting a traversal of an AST with root {@code astNode} is as simple as calling {@code handle(astNode)}. Note that the visitor only handles nodes of language {@code ${genHelper.getCdName()}}.<br>
+ * <br>
+ * <b>Implementing a visitor:</b><br>
+ * You should never use {@code this}, but always make use of {@link #getRealThis()}. This ensures that the visitor can be reused by composition.<br>
+ * <br>
  * <ul>
- *   <li><b>Visiting nodes</b>: You may override the {@code visit(node)} and {@code endVisit(node)} methods to do something at specific AST-nodes.<br/><br/></li>
- *   <li><b>Traversal</b>: You may override the {@code traverse(node)} methods, if you want to change the climb down strategy for traversing children (e.g. ordering the children). Be aware of the underlying double-dispatch mechanism: probably you want to call {@code childNode.accept(getRealThis())} and <b>not</b> {@code handle(childNode)}<br/><br/></li>
- *   <li><b>Handling of nodes</b>: You may override the {@code handle(node)} methods, if you want to change its default implementation (depth-first iteration): {@code visit(node); traverse(node); endVisit(node);}<br/><br/></li>
+ *   <li><b>Visiting nodes</b>: You may override the {@code visit(node)} and {@code endVisit(node)} methods to do something at specific AST-nodes.<br><br></li>
+ *   <li><b>Traversal</b>: You may override the {@code traverse(node)} methods, if you want to change the climb down strategy for traversing children (e.g. ordering the children). Be aware of the underlying double-dispatch mechanism: probably you want to call {@code childNode.accept(getRealThis())} and <b>not</b> {@code handle(childNode)}<br><br></li>
+ *   <li><b>Handling of nodes</b>: You may override the {@code handle(node)} methods, if you want to change its default implementation (depth-first iteration): {@code visit(node); traverse(node); endVisit(node);}<br><br></li>
  * </ul>
- * <b>Special node type {@code ASTNode}:</b><br/>
+ * <b>Special node type {@code ASTNode}:</b><br>
  * Visitors do not provide handle or traverse methods for {@code ASTNode},
  * because handling and traversal are defined in the language depending node
  * types. However, an {@link ${genHelper.getInheritanceVisitorType()}} visits and
@@ -34,7 +34,7 @@ import de.monticore.ast.ASTNode;
  *
  * @see ${genHelper.getASTNodeBaseType()}#accept(${genHelper.getVisitorType()} visitor)
  */
-public interface ${genHelper.getVisitorType()} ${genHelper.getVisitorSuperInterfaces()} {
+public interface ${simpleVisitorName} ${genHelper.getVisitorSuperInterfaces()} {
 
   /**
    * Sets the visitor to use for handling and traversing nodes.
@@ -63,7 +63,7 @@ public interface ${genHelper.getVisitorType()} ${genHelper.getVisitorSuperInterf
    * @see ${genHelper.getCdName()}DelegatorVisitor
    */
   default public ${genHelper.getVisitorType()} getRealThis() {
-    return this;
+    return (${genHelper.getVisitorType()}) this;
   }
   
   /* ------------------------------------------------------------------------*/

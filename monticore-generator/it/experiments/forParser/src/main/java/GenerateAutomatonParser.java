@@ -16,7 +16,6 @@ import de.monticore.grammar.symboltable.MontiCoreGrammarLanguage;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.Scope;
 
 import de.monticore.grammar.symboltable.MontiCoreGrammarSymbolTableCreator;

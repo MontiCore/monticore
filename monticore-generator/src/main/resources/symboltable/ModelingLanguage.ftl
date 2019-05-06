@@ -17,8 +17,9 @@ import java.util.Optional;
 <#if !stHelper.getGrammarSymbol().isComponent()>
 import ${fqn}._parser.${grammarName}Parser;
 </#if>
-import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ResolvingConfiguration;
+import de.monticore.symboltable.serializing.IArtifactScopeSerializer;
 
 public abstract class ${className} extends de.monticore.CommonModelingLanguage {
 
@@ -41,13 +42,14 @@ public abstract class ${className} extends de.monticore.CommonModelingLanguage {
   <#if !skipSTGen>
   @Override
   public Optional<${grammarName}SymbolTableCreator> getSymbolTableCreator(
-      ResolvingConfiguration resolvingConfiguration, MutableScope enclosingScope) {
+      ResolvingConfiguration resolvingConfiguration, Scope enclosingScope) {
     return Optional.of(new ${grammarName}SymbolTableCreator(resolvingConfiguration, enclosingScope));
   }
 
   @Override
-  public Optional<${grammarName}ArtifactScopeSerializer> getSymbolTableDeserializer() {
-    return Optional.of(new ${grammarName}ArtifactScopeSerializer());
+  @Deprecated
+  public Optional<? extends IArtifactScopeSerializer> getSymbolTableDeserializer() {
+    return Optional.empty();
   }
   </#if>
 

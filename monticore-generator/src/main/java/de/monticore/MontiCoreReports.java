@@ -14,9 +14,11 @@ import de.monticore.io.paths.IterablePath;
  *
  */
 public class MontiCoreReports implements ReportManagerFactory {
-  
+
   private String outputDirectory;
-  
+
+  private String reportDirectory;
+
   private IterablePath handwrittenPath;
   
   private IterablePath templatePath;
@@ -24,20 +26,37 @@ public class MontiCoreReports implements ReportManagerFactory {
   /**
    * Constructor for de.monticore.MontiCoreReports
    */
+  @Deprecated
   protected MontiCoreReports(
-      String outputDirectory,
+      String reportDirectory,
       IterablePath handwrittenPath,
       IterablePath templatePath) {
-    this.outputDirectory = outputDirectory;
+    this.outputDirectory = reportDirectory;
+    this.reportDirectory = reportDirectory;
     this.handwrittenPath = handwrittenPath;
     this.templatePath = templatePath;
   }
-  
+
+  /**
+   * Constructor for de.monticore.MontiCoreReports
+   */
+  protected MontiCoreReports(
+          String outputDirectory,
+          String reportDiretory,
+          IterablePath handwrittenPath,
+          IterablePath templatePath) {
+    this.outputDirectory = outputDirectory;
+    this.reportDirectory = reportDiretory;
+    this.handwrittenPath = handwrittenPath;
+    this.templatePath = templatePath;
+  }
+
   /**
    * @see de.monticore.generating.templateengine.reporting.commons.ReportManager.ReportManagerFactory#provide(java.lang.String)
    */
   @Override
   public ReportManager provide(String modelName) {
+    String lowerCaseName = modelName.toLowerCase();
     MontiCoreNodeIdentifierHelper identifierHelper = new MontiCoreNodeIdentifierHelper();
     ReportingRepository repository = new ReportingRepository(identifierHelper);
     repository.initAllTemplates();
@@ -46,33 +65,34 @@ public class MontiCoreReports implements ReportManagerFactory {
     
     ReportManager reports = new ReportManager(this.outputDirectory);
     
-    SummaryReporter summary = new SummaryReporter(this.outputDirectory, modelName, repository);
-    GeneratedFilesReporter generated = new GeneratedFilesReporter(this.outputDirectory, modelName,
+    SummaryReporter summary = new SummaryReporter(this.reportDirectory, lowerCaseName, repository);
+    GeneratedFilesReporter generated = new GeneratedFilesReporter(this.reportDirectory, lowerCaseName,
         repository);
-    HandWrittenCodeReporter handwritten = new HandWrittenCodeReporter(this.outputDirectory,
-        modelName, repository);
-    TemplatesReporter templates = new TemplatesReporter(this.outputDirectory, modelName, repository);
-    HookPointReporter hookPoints = new HookPointReporter(this.outputDirectory, modelName,
+    HandWrittenCodeReporter handwritten = new HandWrittenCodeReporter(this.reportDirectory,
+        lowerCaseName, repository);
+    TemplatesReporter templates = new TemplatesReporter(this.reportDirectory, lowerCaseName, repository);
+    HookPointReporter hookPoints = new HookPointReporter(this.reportDirectory, lowerCaseName,
         repository);
-    InstantiationsReporter instantiations = new InstantiationsReporter(this.outputDirectory,
-        modelName);
-    VariablesReporter variables = new VariablesReporter(this.outputDirectory, modelName);
-    DetailedReporter detail = new DetailedReporter(this.outputDirectory, modelName, repository);
-    TemplateTreeReporter templateTree = new TemplateTreeReporter(this.outputDirectory, modelName);
-    InvolvedFilesReporter ioReporter = new InvolvedFilesReporter(this.outputDirectory);
-    NodeTreeReporter nodeTree = new NodeTreeReporter(this.outputDirectory, modelName, repository);
+    InstantiationsReporter instantiations = new InstantiationsReporter(this.reportDirectory,
+        lowerCaseName);
+    VariablesReporter variables = new VariablesReporter(this.reportDirectory, lowerCaseName);
+    DetailedReporter detail = new DetailedReporter(this.reportDirectory, lowerCaseName, repository);
+    TemplateTreeReporter templateTree = new TemplateTreeReporter(this.reportDirectory, lowerCaseName);
+    InvolvedFilesReporter ioReporter = new InvolvedFilesReporter(this.reportDirectory);
+    NodeTreeReporter nodeTree = new NodeTreeReporter(this.reportDirectory, lowerCaseName, repository);
     NodeTreeDecoratedReporter nodeTreeDecorated = new NodeTreeDecoratedReporter(
-        this.outputDirectory, modelName, repository);
-    NodeTypesReporter nodeTypes = new NodeTypesReporter(this.outputDirectory, modelName);
-    SymbolTableReporter symbolTable = new SymbolTableReporter(this.outputDirectory, modelName, repository);
-    TransformationReporter transformations = new TransformationReporter(this.outputDirectory,
-        modelName, repository);
-    ArtifactGmlReporter artifactGml = new ArtifactGmlReporter(this.outputDirectory, modelName);
-    ArtifactGVReporter artifactGV = new ArtifactGVReporter(this.outputDirectory, modelName);
+        this.reportDirectory, lowerCaseName, repository);
+    NodeTypesReporter nodeTypes = new NodeTypesReporter(this.reportDirectory, lowerCaseName);
+    SymbolTableReporter symbolTable = new SymbolTableReporter(this.reportDirectory, lowerCaseName, repository);
+    TransformationReporter transformations = new TransformationReporter(this.reportDirectory,
+        lowerCaseName, repository);
+    ArtifactGmlReporter artifactGml = new ArtifactGmlReporter(this.reportDirectory, lowerCaseName);
+    ArtifactGVReporter artifactGV = new ArtifactGVReporter(this.reportDirectory, lowerCaseName);
     InputOutputFilesReporter inputOutput = new InputOutputFilesReporter(this.outputDirectory);
-    ODReporter objDiagram = new ODReporter(this.outputDirectory, modelName, repository);
-    SuccessfulReporter finishReporter = new SuccessfulReporter(this.outputDirectory, modelName);
-    IncGenCheckReporter incGenCheck = new IncGenCheckReporter(this.outputDirectory);
+    ODReporter objDiagram = new ODReporter(this.reportDirectory, lowerCaseName, repository);
+    SuccessfulReporter finishReporter = new SuccessfulReporter(this.reportDirectory, lowerCaseName);
+    IncGenCheckReporter incGenCheck = new IncGenCheckReporter(this.outputDirectory, lowerCaseName);
+    IncGenGradleReporter gradleReporter = new IncGenGradleReporter(this.outputDirectory, lowerCaseName);
 
     reports.addReportEventHandler(summary); // 01_Summary
     reports.addReportEventHandler(generated); // 02_GeneratedFiles
@@ -95,6 +115,7 @@ public class MontiCoreReports implements ReportManagerFactory {
     reports.addReportEventHandler(finishReporter); // 19_Successful
     reports.addReportEventHandler(objDiagram); // ObjectDiagram
     reports.addReportEventHandler(incGenCheck); // IncGenCheck
+    reports.addReportEventHandler(gradleReporter);
 
     return reports;
   }

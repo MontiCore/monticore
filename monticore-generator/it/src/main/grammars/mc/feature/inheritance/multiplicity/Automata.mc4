@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.inheritance.multiplicity;
+
+/**
+ * This grammar defines a standard automaton example language.
+*/
+
+grammar Automata extends mc.common.Basics {
+    Automaton = "aut" (State | Transition)*;
+    State = ["initial"] | ["final"] "state" Name;
+    Transition = from: Name "->" to:Name;
+}

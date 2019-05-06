@@ -8,7 +8,6 @@ import de.monticore.ast.ASTNode;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
-import de.monticore.grammar.grammar._ast.ASTGenericType;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTMethod;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
@@ -24,7 +23,6 @@ import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
-import javax.naming.Name;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -113,15 +111,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
    * <code>name:Name</code> or <code>Name:Name</code>.
    */
   public Collection<MCProdSymbol> getAllSymbolDefiningRules() {
-    final Set<MCProdSymbol> ruleSymbolsWithName = new LinkedHashSet<>();
-
-    for (final MCProdSymbol rule : grammarSymbol.getProds()) {
-      if (rule.isSymbolDefinition() && rule.getName().equals(rule.getSymbolDefinitionKind().get())) {
-        ruleSymbolsWithName.add(rule);
-      }
-    }
-
-    return ImmutableList.copyOf(ruleSymbolsWithName);
+    return getAllSymbolDefiningRules(grammarSymbol);
   }
 
   public Collection<MCProdSymbol> getAllSymbolDefiningRulesInSuperGrammar() {
@@ -383,6 +373,18 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   public String getQualifiedVisitorType(CDSymbol cd) {
     return VisitorGeneratorHelper.getQualifiedVisitorType(cd.getFullName());
   }
+  
+  public String getQualifiedScopeVisitorType(CDSymbol cd) {
+    return VisitorGeneratorHelper.getQualifiedScopeVisitorType(cd.getFullName());
+  }
+  
+  public String getQualifiedScopeVisitorType(String symbol) {
+    Optional<CDSymbol> cdSymbol = this.cdSymbol.getEnclosingScope().resolve(symbol, CDSymbol.KIND);
+    if (cdSymbol.isPresent()) {
+      return getQualifiedScopeVisitorType(cdSymbol.get());
+    }
+    return "";
+  }
 
   public boolean spansScope(final MCProdSymbol rule) {
     return rule.isScopeDefinition();
@@ -440,21 +442,6 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     return code;
   }
 
-  public String printGenericTypes(List<ASTGenericType> types) {
-    if (types.isEmpty()) {
-      return "";
-    }
-    StringBuilder sb = new StringBuilder();
-    Grammar_WithConceptsPrettyPrinter pp = new Grammar_WithConceptsPrettyPrinter(new IndentPrinter());
-    String sep = "";
-    for (ASTGenericType typeName : types) {
-      sb.append(sep);
-      sb.append(pp.prettyprint(typeName));
-      sep = ", ";
-    }
-    return sb.toString();
-  }
-
   public String getQualifiedProdName(MCProdSymbol prod) {
     String prodName = prod.getFullName();
     prodName = SymbolTableGeneratorHelper
@@ -490,6 +477,49 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
         + cdName + SCOPE;
   }
 
+  
+  public Set<String> getAllQualifiedSymbols() {
+    Set<String> qualifiedSymbols = new LinkedHashSet<>();
+    
+    // add local and inherited qualified symbols
+    qualifiedSymbols.addAll(getQualifiedSymbolsFromGrammar(grammarSymbol));
+    qualifiedSymbols.addAll(getQualifiedInheritedSymbols());
+    return qualifiedSymbols;
+  }
+
+  /**
+   * Computes a set of qualified symbols for all super grammars.
+   * 
+   * @return a set of qualified inherited symbols
+   */
+  public Set<String> getQualifiedInheritedSymbols() {
+    Set<String> inheritedSymbols = new LinkedHashSet<>();
+    for (CDSymbol superCd : getAllSuperCds(cdSymbol)) {
+      // resolve super grammar and retrieve qualified symbols
+      MCGrammarSymbol grammarSymbol = cdSymbol.getEnclosingScope().<MCGrammarSymbol> resolve(superCd.getFullName(), MCGrammarSymbol.KIND).orElse(null);
+      inheritedSymbols.addAll(getQualifiedSymbolsFromGrammar(grammarSymbol));
+    }
+    return inheritedSymbols;
+  }
+
+  /**
+   * Retrieves the qualified symbols for a given grammar.
+   * 
+   * @param grammarSymbol The given grammar symbol.
+   * @return a set of qualified symbols.
+   */
+  public Set<String> getQualifiedSymbolsFromGrammar(MCGrammarSymbol grammarSymbol) {
+    Set<String> qualifiedSymbols = new LinkedHashSet<>();
+    if (grammarSymbol != null && grammarSymbol.getAstGrammar().isPresent()) {
+      String packageName = GeneratorHelper.getPackageName(grammarSymbol.getAstGrammar().get(), GeneratorHelper.SYMBOLTABLE_PACKAGE_SUFFIX);
+      // store qualified symbols
+      for (MCProdSymbol symbol : SymbolTableGeneratorHelper.getAllSymbolDefiningRules(grammarSymbol)) {
+        qualifiedSymbols.add(GeneratorHelper.getPackageName(packageName, symbol.getName() + GeneratorHelper.SYMBOL));
+      }
+    }
+    return qualifiedSymbols;
+  }
+
   public boolean hasSymbolDefiningRule(String symbol) {
     Optional<MCGrammarSymbol> grammarSymbol = cdSymbol.getEnclosingScope().resolve(symbol, MCGrammarSymbol.KIND);
     if (grammarSymbol.isPresent()) {
@@ -522,5 +552,22 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     return false;
   }
 
+  /**
+   * @param grammarSymbol The grammar that contains the symbol defining rule
+   * @return all rules using the nonterminal <code>Name</code>. If a usage name
+   *         is specified, it must be <code>name</code> (case insenstive), e.g.
+   *         <code>name:Name</code> or <code>Name:Name</code>.
+   */
+  public static Collection<MCProdSymbol> getAllSymbolDefiningRules(MCGrammarSymbol grammarSymbol) {
+    final Set<MCProdSymbol> ruleSymbolsWithName = new LinkedHashSet<>();
+    
+    for (final MCProdSymbol rule : grammarSymbol.getProds()) {
+      if (rule.isSymbolDefinition() && rule.getName().equals(rule.getSymbolDefinitionKind().get())) {
+        ruleSymbolsWithName.add(rule);
+      }
+    }
+
+    return ImmutableList.copyOf(ruleSymbolsWithName);
+  }
 
 }

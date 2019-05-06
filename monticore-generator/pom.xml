@@ -7,7 +7,7 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore</artifactId>
-    <version>5.0.3</version>
+    <version>5.0.5</version>
   </parent>
 
   <artifactId>monticore-generator</artifactId>
@@ -138,6 +138,12 @@
       <plugin>
         <artifactId>maven-source-plugin</artifactId>
       </plugin>
+
+      <!-- create grammar jar -->
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+      </plugin>
+
     </plugins>
   </build>
 

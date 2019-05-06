@@ -6,7 +6,7 @@
 
 grammar Automaton2 {
   State = "..." ;
-  ast State =
+  astrule State =
     reachableState:State*
     method public boolean isReachable(ASTState s) {
       return reachableStates.contains(s);

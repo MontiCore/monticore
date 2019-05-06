@@ -20,9 +20,8 @@ public class CommonSymbolKindGenerator implements SymbolKindGenerator {
 
   @Override
   public void generate(GeneratorEngine genEngine, SymbolTableGeneratorHelper genHelper,
-                       IterablePath handCodedPath, MCProdSymbol ruleSymbol) {
-    final String className = (ruleSymbol.getSymbolDefinitionKind().isPresent() ? ruleSymbol.getSymbolDefinitionKind().get() : ruleSymbol.getName()) + "Kind";
-    final String qualifiedClassName = getPackageName(genHelper.getTargetPackage(), "") + className;
+                       IterablePath handCodedPath, String className) {
+    final String qualifiedClassName = getPackageName(genHelper.getTargetPackage(), "") + className + "Kind";
 
     if (existsHandwrittenClass(handCodedPath, qualifiedClassName)) {
       // Symbol kind classes are very simple and small. Hence, skip their generation
@@ -30,9 +29,7 @@ public class CommonSymbolKindGenerator implements SymbolKindGenerator {
       return;
     }
 
-    final Path filePath = get(getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
-    if (ruleSymbol.getAstNode().isPresent()) {
-      genEngine.generate("symboltable.SymbolKind", filePath, ruleSymbol.getAstNode().get(), ruleSymbol);
-    }
+    final Path filePath = get(getPathFromPackage(genHelper.getTargetPackage()), className + "Kind.java");
+    genEngine.generateNoA("symboltable.SymbolKind", filePath, className);
   }
 }

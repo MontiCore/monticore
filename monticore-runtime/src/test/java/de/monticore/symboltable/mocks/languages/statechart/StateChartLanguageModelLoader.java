@@ -4,7 +4,7 @@ package de.monticore.symboltable.mocks.languages.statechart;
 
 import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.symboltable.ArtifactScope;
-import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.mocks.languages.statechart.asts.ASTStateChartCompilationUnit;
@@ -17,7 +17,7 @@ public class StateChartLanguageModelLoader extends ModelingLanguageModelLoader<A
   }
 
   @Override
-  protected void createSymbolTableFromAST(ASTStateChartCompilationUnit ast, String modelName, MutableScope enclosingScope, ResolvingConfiguration resolvingConfiguration) {
+  protected void createSymbolTableFromAST(ASTStateChartCompilationUnit ast, String modelName, Scope enclosingScope, ResolvingConfiguration resolvingConfiguration) {
     final StateChartLanguageSymbolTableCreator symbolTableCreator = getModelingLanguage().getSymbolTableCreator
         (resolvingConfiguration, enclosingScope).orElse(null);
 

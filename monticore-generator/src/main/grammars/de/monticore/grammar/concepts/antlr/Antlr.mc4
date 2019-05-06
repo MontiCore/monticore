@@ -17,7 +17,7 @@ component grammar Antlr extends de.monticore.lexicals.Lexicals {
 		   (AntlrParserAction | AntlrLexerAction)*
 		"}";
 		
-	ast ConceptAntlr =
+	astrule ConceptAntlr =
 		method public String toString() {
 			return "";
 		};

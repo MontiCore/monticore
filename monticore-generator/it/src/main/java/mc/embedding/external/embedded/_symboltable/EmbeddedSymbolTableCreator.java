@@ -3,7 +3,7 @@
 package mc.embedding.external.embedded._symboltable;
 
 import de.monticore.symboltable.ArtifactScope;
-import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import mc.embedding.external.embedded._ast.ASTText;
 import mc.embedding.external.embedded._visitor.EmbeddedVisitor;
@@ -16,7 +16,7 @@ import static java.util.Optional.empty;
 public class EmbeddedSymbolTableCreator extends EmbeddedSymbolTableCreatorTOP {
   private EmbeddedVisitor realThis = this;
 
-  public EmbeddedSymbolTableCreator(ResolvingConfiguration resolverConfig, MutableScope enclosingScope) {
+  public EmbeddedSymbolTableCreator(ResolvingConfiguration resolverConfig, Scope enclosingScope) {
     super(resolverConfig, enclosingScope);
 
     final ArtifactScope artifactScope = new ArtifactScope(empty(), "", new ArrayList<>());
@@ -25,7 +25,7 @@ public class EmbeddedSymbolTableCreator extends EmbeddedSymbolTableCreatorTOP {
   }
 
   public EmbeddedSymbolTableCreator(ResolvingConfiguration resolverConfig,
-      Deque<MutableScope> scopeStack) {
+      Deque<Scope> scopeStack) {
     super(resolverConfig, scopeStack);
   }
 

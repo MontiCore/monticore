@@ -2,11 +2,6 @@
 
 package de.monticore.symboltable;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-
-import java.util.Set;
-
 import com.google.common.collect.Sets;
 import de.monticore.symboltable.mocks.languages.entity.EntitySymbol;
 import de.monticore.symboltable.mocks.languages.entity.PropertySymbol;
@@ -18,6 +13,11 @@ import de.monticore.symboltable.types.JTypeSymbol;
 import de.monticore.symboltable.types.references.CommonJTypeReference;
 import de.monticore.symboltable.types.references.JTypeReference;
 import org.junit.Test;
+
+import java.util.Set;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 
 public class ModifierTest {
 
@@ -44,7 +44,7 @@ public class ModifierTest {
     entity.addProperty(defaultK);
     entity.addProperty(privateL);
    
-    MutableScope scope = entity.getMutableSpannedScope();
+    Scope scope = entity.getSpannedScope();
     
     Set<ResolvingFilter<? extends Symbol>> resolvingFilters = Sets.newLinkedHashSet();
     resolvingFilters.add(CommonResolvingFilter.create(PropertySymbol.KIND));
@@ -102,7 +102,7 @@ public class ModifierTest {
     entity.addProperty(defaultK);
     entity.addProperty(privateL);
 
-    MutableScope scope = entity.getMutableSpannedScope();
+    Scope scope = entity.getSpannedScope();
 
     Set<ResolvingFilter<? extends Symbol>> resolvingFilters = Sets.newLinkedHashSet();
     resolvingFilters.add(CommonResolvingFilter.create(PropertySymbol

@@ -10,7 +10,7 @@ import automaton._ast.ASTAutomaton;
 import automaton._ast.ASTState;
 import automaton._ast.ASTTransition;
 import de.monticore.symboltable.ArtifactScope;
-import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 
@@ -18,7 +18,7 @@ public class AutomatonSymbolTableCreator extends AutomatonSymbolTableCreatorTOP 
   
   public AutomatonSymbolTableCreator(
       final ResolvingConfiguration resolverConfig,
-      final MutableScope enclosingScope) {
+      final Scope enclosingScope) {
     super(resolverConfig, enclosingScope);
   }
 

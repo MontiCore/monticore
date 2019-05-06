@@ -268,38 +268,6 @@ public class HelperGrammar {
     }
   }
   
-  public static String printGenericType(ASTGenericType genericType) {
-    
-    StringBuilder b = new StringBuilder();
-    
-    b.append(Names.getQualifiedName(genericType.getNameList()));
-    
-    boolean first = true;
-    for (ASTGenericType t : genericType.getGenericTypeList()) {
-      if (first) {
-        b.append("<");
-        first = false;
-      }
-      else {
-        b.append(",");
-        
-      }
-      
-      b.append(printGenericType(t));
-    }
-    
-    if (!first) {
-      b.append(">");
-    }
-    
-    int dimension = genericType.getDimension();
-    for (int i = dimension; i > 0; i--) {
-      b.append("[]");
-    }
-    
-    return b.toString();
-  }
-  
   public static boolean hasValidName(ASTConstant astConstant) {
     if (astConstant.isPresentHumanName()) {
       return true;

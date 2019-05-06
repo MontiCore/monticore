@@ -19,7 +19,7 @@ public class BasicTypesPrinter {
   /**
    * We have a singleton.
    */
-  private BasicTypesPrinter() {
+  protected BasicTypesPrinter() {
   }
   
   /**
@@ -56,7 +56,7 @@ public class BasicTypesPrinter {
     if (type instanceof ASTMCObjectType) {
       return doPrintReferenceType((ASTMCObjectType) type);
     }
-    return "";
+    return "vxgcnfnhnhjggf";
   }
   
   /**

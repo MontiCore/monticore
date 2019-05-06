@@ -7,7 +7,7 @@ grammar GrammarForAST16 {
 
 B = "...";
 interface I;
-ast I =
+astrule I =
   y:B*;
 
 C implements I = "...";

@@ -5,21 +5,14 @@
  */
 package de.monticore.symboltable.mocks.languages.automaton;
 
-import java.lang.reflect.Type;
-import java.util.List;
-
-import com.google.common.collect.ImmutableList;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-
-import de.monticore.symboltable.MutableScope;
+import com.google.gson.*;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.serializing.CommonArtifactScopeSerializer;
 import de.monticore.symboltable.serializing.ISerialization;
 import de.monticore.symboltable.serializing.SymbolTableSerializationHelper;
+
+import java.lang.reflect.Type;
 
 public class AutomatonSerializer extends CommonArtifactScopeSerializer {
   
@@ -131,7 +124,7 @@ public class AutomatonSerializer extends CommonArtifactScopeSerializer {
         
         // Deserialize subscopes
         for(JsonElement e : jsonObject.get("subScopes").getAsJsonArray()) {
-          MutableScope subScope = context.deserialize(e, MutableScope.class);
+          Scope subScope = context.deserialize(e, Scope.class);
           result.addSubScope(subScope);
         }
         

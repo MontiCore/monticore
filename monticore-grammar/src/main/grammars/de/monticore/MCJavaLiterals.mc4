@@ -8,63 +8,13 @@ package de.monticore;
  * ease the reuse of literals structures in Java-like sublanguages, e.g., by 
  * grammar inheritance or grammar embedment.
  * The grammar contains literals from Java, e.g., Boolean, Char, String, ....
+ * Please note that Java has an extended syntax e.g. for integers using underscores
+ * or other kinds of encodings. They parse e.g. 999_999 or 0x3F2A
  *
- *
- * Version Aug. 31rd, 2015
 */
 
 component grammar MCJavaLiterals extends de.monticore.MCBasicLiterals {
 
-  /*========================================================================*/
-  /*======================= AST DEFINITIONS ================================*/
-  /*========================================================================*/
-
-
-  astrule IntLiteral = 
-    method public int getValue() {
-      try {
-        return de.monticore.MCLiteralsDecoder.decodeInt(getSource());
-      }
-      catch (NumberFormatException e) {
-        return 0;
-      }
-    }
-  ;
-  
-  astrule LongLiteral = 
-    method public long getValue() {
-      try {
-        return de.monticore.MCLiteralsDecoder.decodeLong(getSource());
-      }
-      catch (NumberFormatException e) {
-        return 0;
-      }
-    }
-  ;
-
-
-  astrule FloatLiteral = 
-    method public float getValue() {
-      try {
-        return de.monticore.MCLiteralsDecoder.decodeFloat(getSource());
-      }
-      catch (NumberFormatException e) {
-        return 0f;
-      }
-    }
-  ;
-
-
-  astrule DoubleLiteral = 
-    method public double getValue() {
-      try {
-        return de.monticore.MCLiteralsDecoder.decodeDouble(getSource());
-      }
-      catch (NumberFormatException e) {
-        return 0d;
-      }
-    }
-  ;
 
 
   /*========================================================================*/
@@ -94,11 +44,7 @@ component grammar MCJavaLiterals extends de.monticore.MCBasicLiterals {
         @attribute source String-representation (including '"').
     */
   FloatLiteral implements NumericLiteral<100> =
-    // {isFloat(_input.LT(1).getText())}? source:Digits ;
-    //Digits "." (Digits | "+" | "-")+ |
-    //"." (Digits | "+" | "-")+ |
-    //(Digits | "+" | "-")+ ;
-    source:Num_Float ;
+     source:Num_Float ;
 
 
 
@@ -106,7 +52,6 @@ component grammar MCJavaLiterals extends de.monticore.MCBasicLiterals {
         @attribute source String-representation (including '"').
     */
   DoubleLiteral implements NumericLiteral<100> =
-    //{isDouble(_input.LT(1).getText())}? source:Digits ;
     source:Num_Double ;
 
 
@@ -246,38 +191,35 @@ component grammar MCJavaLiterals extends de.monticore.MCBasicLiterals {
    fragment token BinaryExponentIndicator
      = 'p' | 'P';
 
-
-   // §3.10.4 Character Literals
-   token Char
-     = '\'' (SingleCharacter|EscapeSequence) '\''
-     : {setText(getText().substring(1, getText().length() - 1));};
-
-   fragment token SingleCharacter
-     = ~ ('\'');
+  /*========================================================================*/
+  /*======================= AST DEFINITIONS ================================*/
+  /*========================================================================*/
 
 
-   // §3.10.5 String Literals
-   token String
-     = '"' (StringCharacters)? '"'
-     : {setText(getText().substring(1, getText().length() - 1));};
+  astrule IntLiteral =
+    method public int getValue() {
+      return de.monticore.MCLiteralsDecoder.decodeInt(getSource());
+    }
+  ;
 
-   fragment token StringCharacters
-     = (StringCharacter)+;
+  astrule LongLiteral =
+    method public long getValue() {
+      return de.monticore.MCLiteralsDecoder.decodeLong(getSource());
+    }
+  ;
 
-   fragment token StringCharacter
-     = ~ ('"' | '\\') | EscapeSequence;
 
-   // §3.10.6 Escape Sequences for Character and String Literals
-   fragment token EscapeSequence
-     = '\\' ('b' | 't' | 'n' | 'f' | 'r' | '"' | '\'' | '\\') | OctalEscape | UnicodeEscape;
+  astrule FloatLiteral =
+    method public float getValue() {
+      return de.monticore.MCLiteralsDecoder.decodeFloat(getSource());
+    }
+  ;
 
-   fragment token OctalEscape
-     = '\\' OctalDigit | '\\' OctalDigit OctalDigit | '\\' ZeroToThree OctalDigit OctalDigit;
 
-   fragment token UnicodeEscape
-     = '\\' 'u' HexDigit HexDigit HexDigit HexDigit;
-
-   fragment token ZeroToThree
-     = '0'..'3' ;
+  astrule DoubleLiteral =
+    method public double getValue() {
+      return de.monticore.MCLiteralsDecoder.decodeDouble(getSource());
+    }
+  ;
 
  }

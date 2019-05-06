@@ -2,28 +2,31 @@
 
 package de.monticore.expressions;
 
+/**
+ * This grammar defines set expressions like union, intersection etc.
+*/
 component grammar SetExpressions extends de.monticore.expressions.CommonExpressions {
 
 
     IsInExpression implements Expression <190> =
-        leftExpression:Expression
+        elem:Expression
         operator:"isin"
-        rightExpression:Expression;
+        set:Expression;
 
     SetInExpression implements Expression <190> =
-        leftExpression:Expression
+        elem:Expression
         operator:"in"
-        rightExpression:Expression;
+        set:Expression;
 
     UnionExpressionInfix implements Expression <180> =
-        leftExpression:Expression
+        left:Expression
         "union"
-        rightExpression:Expression;
+        right:Expression;
 
     IntersectionExpressionInfix implements Expression <180> =
-        leftExpression:Expression
+        left:Expression
         "intersect"
-        rightExpression:Expression;
+        right:Expression;
 
     UnionExpressionPrefix implements Expression <170> =
         "union"
@@ -33,6 +36,7 @@ component grammar SetExpressions extends de.monticore.expressions.CommonExpressi
         "intersect"
         set:Expression;
 
+    // Logical expressions extended to sets of arguments
     SetAndExpression implements Expression <130> =
         "setand"
         set:Expression;

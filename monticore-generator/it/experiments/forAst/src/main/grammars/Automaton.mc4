@@ -9,7 +9,7 @@ grammar Automaton {
   State = "state" Name
     ("<<" ["initial"] ">>" | "<<" ["final"] ">>" )* ";" ;
   Transition = from:Name "-" input:Name ">" to:Name ";" ;
-  ast State =
+  astrule State =
     reachableStates:State*;
 
   Name = "...";

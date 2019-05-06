@@ -2,17 +2,17 @@
 
 package de.monticore.symboltable.resolving;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import com.google.common.collect.ImmutableList;
+import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.SymbolKind;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
-import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.SymbolKind;
-import de.se_rwth.commons.logging.Log;
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * Provides useful information of the current resolution process, e.g., the
@@ -29,7 +29,7 @@ public class ResolvingInfo {
   /**
    * A list of scopes that where involved in the resolving process until now.
    */
-  private final List<MutableScope> involvedScopes = new ArrayList<>();
+  private final List<Scope> involvedScopes = new ArrayList<>();
   private final List<SymbolKind> handledTargetKinds = new ArrayList<>();
 
   public ResolvingInfo(Collection<ResolvingFilter<? extends Symbol>> resolvingFilters) {
@@ -44,11 +44,11 @@ public class ResolvingInfo {
     this.areSymbolsFound = this.areSymbolsFound || areSymbolsFound;
   }
 
-  public void addInvolvedScope(final MutableScope scope) {
+  public void addInvolvedScope(final Scope scope) {
     involvedScopes.add(Log.errorIfNull(scope));
   }
 
-  public List<MutableScope> getInvolvedScopes() {
+  public List<Scope> getInvolvedScopes() {
     return ImmutableList.copyOf(involvedScopes);
   }
 

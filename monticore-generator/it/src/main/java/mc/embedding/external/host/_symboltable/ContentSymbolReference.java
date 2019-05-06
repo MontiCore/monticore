@@ -8,7 +8,6 @@
 package mc.embedding.external.host._symboltable;
 
 import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.references.CommonSymbolReference;
 import de.monticore.symboltable.references.SymbolReference;
@@ -58,7 +57,7 @@ public class ContentSymbolReference extends ContentSymbol implements SymbolRefer
   }
 
   @Override
-  public void setEnclosingScope(MutableScope scope) {
+  public void setEnclosingScope(Scope scope) {
     getReferencedSymbol().setEnclosingScope(scope);
   }
 

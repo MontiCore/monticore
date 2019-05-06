@@ -34,6 +34,6 @@ while (grammarIterator.hasNext()) {
     decorateEmfCd(glex, astClassDiagramWithST, globalScope, handcodedPath)
 
     // Generate AST files
-    generateEmfCompatible(glex, globalScope, astClassDiagramWithST, out, templatePath)
+    generateEmfCompatible(glex, globalScope, astClassDiagramWithST, out, templatePath, handcodedPath)
   }
 }

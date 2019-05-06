@@ -10,42 +10,6 @@ package de.monticore;
 
 component grammar MCBasicLiterals extends de.monticore.MCBasics {
 
-  /*========================================================================*/
-  /*======================= AST DEFINITIONS ================================*/
-  /*========================================================================*/
-
-  astrule BooleanLiteral =
-    method public boolean getValue() {
-      return this.source == ASTConstantsMCBasicLiterals.TRUE;
-    }
-  ;
-
-  astrule CharLiteral = 
-    method public char getValue() {
-      return de.monticore.MCLiteralsDecoder.decodeChar(getSource());
-    }
-  ;
-
-  astrule StringLiteral = 
-    method public String getValue() {
-      return de.monticore.MCLiteralsDecoder.decodeString(getSource());
-    }
-  ;
-
-   astrule NatLiteral = 
-    method public int getValue() {
-      return de.monticore.MCLiteralsDecoder.decodeInt(getSource());
-    }
-  ;
-
-  astrule SignedNatLiteral = 
-    method public int getValue() {
-      if (negative) {
-        return - de.monticore.MCLiteralsDecoder.decodeInt(getSource());
-      }
-      return de.monticore.MCLiteralsDecoder.decodeInt(getSource());
-    }
-  ;
 
 
   /*========================================================================*/
@@ -53,7 +17,8 @@ component grammar MCBasicLiterals extends de.monticore.MCBasics {
   /*========================================================================*/
 
   /** ASTLiteral is the interface for all literals (NullLiteral,
-        BooleanLiteral, CharLiteral, StringLiteral and all NumericLiterals)
+        BooleanLiteral, CharLiteral, StringLiteral and all NumericLiterals
+        without '-' at the beginning)
     */
   interface Literal;
 
@@ -66,7 +31,7 @@ component grammar MCBasicLiterals extends de.monticore.MCBasics {
 
 
   /** The interface ASTNumericLiteral combines the numeric literal types for
-        Integer, Long, Float and Double
+        Integer, Long, Float and Double without '-' at the beginning)
     */
   interface NumericLiteral extends Literal;
 
@@ -114,14 +79,49 @@ component grammar MCBasicLiterals extends de.monticore.MCBasics {
         @attribute source String-representation (including '"').
     */
   NatLiteral implements NumericLiteral<1> =
-    source:Digits;
+    Digits;
 
   /** ASTSignedNatLiteral represents a positive or negative Decimal number.
         @attribute source String-representation (including '"').
     */
   SignedNatLiteral implements SignedNumericLiteral<1> =
-     (negative:["-"])? source:Digits;
+     (negative:["-"])? Digits;
 
+   /** ASTLongLiteral represents a positive Decimal number.
+         @attribute source String-representation (including '"').
+     */
+   BasicLongLiteral implements NumericLiteral<1> =
+     Digits Name{is("l", "L")}?;
+
+   /** ASTSignedLongLiteral represents a positive or negative Decimal number.
+         @attribute source String-representation (including '"').
+     */
+   SignedBasicLongLiteral implements SignedNumericLiteral<1> =
+      (negative:["-"])? Digits Name{is("l", "L")}?;
+
+ /** ASTFloatLiteral represents a positive float.
+        @attribute source String-representation (including '"').
+    */
+  BasicFloatLiteral implements NumericLiteral<1> =
+    pre:Digits "." post:Digits Name{is("f", "F")}?;
+
+  /** ASTSignedFloatLiteral represents a positive or negative float.
+        @attribute source String-representation (including '"').
+    */
+  SignedBasicFloatLiteral implements SignedNumericLiteral<1> =
+     (negative:["-"])? pre:Digits "." post:Digits Name{is("f", "F")}?;
+
+  /** ASTDoubleLiteral represents a positive double.
+        @attribute source String-representation (including '"').
+    */
+  BasicDoubleLiteral implements NumericLiteral<1> =
+    pre:Digits "." post:Digits;
+
+  /** ASTSignedDoubleLiteral represents a positive or negative double.
+        @attribute source String-representation (including '"').
+    */
+  SignedBasicDoubleLiteral implements SignedNumericLiteral<1> =
+     (negative:["-"])? pre:Digits "." post:Digits;
 
   /*========================================================================*/
   /*============================ LEXER RULES ===============================*/
@@ -181,5 +181,98 @@ component grammar MCBasicLiterals extends de.monticore.MCBasics {
     = '0'..'7' ;
 
 
+  /*========================================================================*/
+  /*======================= AST DEFINITIONS ================================*/
+  /*========================================================================*/
+
+  astrule BooleanLiteral =
+    method public boolean getValue() {
+      return this.source == ASTConstantsMCBasicLiterals.TRUE;
+    }
+  ;
+
+  astrule CharLiteral =
+    method public char getValue() {
+      return de.monticore.MCLiteralsDecoder.decodeChar(getSource());
+    }
+  ;
+
+  astrule StringLiteral =
+    method public String getValue() {
+      return de.monticore.MCLiteralsDecoder.decodeString(getSource());
+    }
+  ;
+
+   astrule NatLiteral =
+    method public String getSource() {
+         return getDigits();
+    }
+    method public int getValue() {
+      return de.monticore.MCLiteralsDecoder.decodeNat(getSource());
+    }
+  ;
+
+  astrule SignedNatLiteral =
+    method public String getSource() {
+      return negative?"-":"" + getDigits();
+    }
+    method public int getValue() {
+      return de.monticore.MCLiteralsDecoder.decodeNat(getSource());
+    }
+  ;
+
+   astrule BasicLongLiteral =
+    method public String getSource() {
+         return getDigits() + "L";
+    }
+    method public long getValue() {
+      return de.monticore.MCLiteralsDecoder.decodeLong(getSource());
+    }
+  ;
+
+  astrule SignedBasicLongLiteral =
+    method public String getSource() {
+      return negative?"-":"" + getDigits() + "L";
+    }
+    method public long getValue() {
+      return de.monticore.MCLiteralsDecoder.decodeLong(getSource());
+    }
+  ;
+
+  astrule BasicFloatLiteral =
+    method public String getSource() {
+      return getPre() + "." + getPost() + "F";
+    }
+    method public float getValue() {
+      return de.monticore.MCLiteralsDecoder.decodeFloat(getSource());
+    }
+  ;
+
+  astrule SignedBasicFloatLiteral =
+    method public String getSource() {
+      return  isNegative()?"-":"" + getPre() + "." + getPost() + "F";
+    }
+    method public float getValue() {
+      return de.monticore.MCLiteralsDecoder.decodeFloat(getSource());
+    }
+  ;
+
+  astrule BasicDoubleLiteral =
+    method public String getSource() {
+      return getPre() + "." + getPost() + "D";
+    }
+    method public double getValue() {
+      return de.monticore.MCLiteralsDecoder.decodeDouble(getSource());
+    }
+  ;
+
+  astrule SignedBasicDoubleLiteral =
+    method public String getSource() {
+      return isNegative()?"-":"" + getPre() + "." + getPost() + "D";
+    }
+    method public double getValue() {
+      return de.monticore.MCLiteralsDecoder.decodeDouble(getSource());
+    }
+  ;
 }
 

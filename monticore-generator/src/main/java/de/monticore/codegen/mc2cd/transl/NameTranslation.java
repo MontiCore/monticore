@@ -3,13 +3,15 @@
 package de.monticore.codegen.mc2cd.transl;
 
 import de.monticore.grammar.grammar._ast.*;
+import de.monticore.types.BasicGenericsTypesPrinter;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.utils.Link;
 
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 
-import static de.monticore.codegen.mc2cd.TransformationHelper.*;
+import static de.monticore.codegen.mc2cd.TransformationHelper.getClassProdName;
+import static de.monticore.codegen.mc2cd.TransformationHelper.getUsageName;
 
 /**
  * This function copies over names from source to target nodes.
@@ -71,7 +73,7 @@ public class NameTranslation implements
         for (Link<ASTAdditionalAttribute, ASTCDAttribute> link : rootLink.getLinks(ASTAdditionalAttribute.class,
                 ASTCDAttribute.class)) {
             String name = link.source().getNameOpt().orElse(null);
-            String alternativeName = link.source().getGenericType().getTypeName();
+            String alternativeName = BasicGenericsTypesPrinter.printType(link.source().getMCType());
             String nameToUse = name != null ? name : alternativeName;
             link.target().setName(nameToUse);
         }

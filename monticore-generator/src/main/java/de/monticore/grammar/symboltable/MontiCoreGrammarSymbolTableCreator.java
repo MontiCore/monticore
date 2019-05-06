@@ -9,6 +9,9 @@ import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVi
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.*;
+import de.monticore.types.BasicGenericsTypesPrinter;
+import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.*;
 
@@ -38,7 +41,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
 
   public MontiCoreGrammarSymbolTableCreator(
           ResolvingConfiguration resolvingConfig,
-          MutableScope enclosingScope) {
+          Scope enclosingScope) {
     super(resolvingConfig, enclosingScope);
   }
 
@@ -435,8 +438,8 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
   }
 
   private void setSuperProdsAndTypes(MCProdSymbol prodSymbol, List<ASTRuleReference> superProds,
-                                     List<ASTGenericType> astSuperClasses, List<ASTRuleReference> superInterfaceProds,
-                                     List<ASTGenericType> astSuperInterfaces) {
+                                     List<ASTMCType> astSuperClasses, List<ASTRuleReference> superInterfaceProds,
+                                     List<ASTMCType> astSuperInterfaces) {
     final Scope enclosingScope = currentScope().get();
 
     // A extends B
@@ -447,8 +450,8 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
     }
 
     // A astextends B
-    for (ASTGenericType astSuperClass : astSuperClasses) {
-      MCProdOrTypeReference superClass = new MCProdOrTypeReference(astSuperClass.getTypeName(),
+    for (ASTMCType astSuperClass : astSuperClasses) {
+      MCProdOrTypeReference superClass = new MCProdOrTypeReference(BasicGenericsTypesPrinter.printType(astSuperClass),
               enclosingScope);
       prodSymbol.addAstSuperClass(superClass);
     }
@@ -461,8 +464,8 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
     }
 
     // A astimplements B
-    for (ASTGenericType astInterface : astSuperInterfaces) {
-      MCProdOrTypeReference superClass = new MCProdOrTypeReference(astInterface.getTypeName(),
+    for (ASTMCType astInterface : astSuperInterfaces) {
+      MCProdOrTypeReference superClass = new MCProdOrTypeReference(BasicGenericsTypesPrinter.printType(astInterface),
               enclosingScope);
       prodSymbol.addAstSuperInterface(superClass);
     }
@@ -570,11 +573,11 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
    */
   private void addAttributeInAST(MCProdSymbol mcProdSymbol, ASTAdditionalAttribute astAttribute) {
     String attributeName = astAttribute.getNameOpt()
-            .orElse(uncapitalize(astAttribute.getGenericType().getTypeName()));
+            .orElse(uncapitalize(BasicGenericsTypesPrinter.printType(astAttribute.getMCType())));
 
     MCProdAttributeSymbol astAttributeSymbol = new MCProdAttributeSymbol(attributeName);
     MCProdOrTypeReference attributeType = new MCProdOrTypeReference(
-            astAttribute.getGenericType().getTypeName(), mcProdSymbol.getSpannedScope());
+            BasicGenericsTypesPrinter.printType(astAttribute.getMCType()), mcProdSymbol.getSpannedScope());
     astAttributeSymbol.setTypeReference(attributeType);
 
     mcProdSymbol.addProdAttribute(astAttributeSymbol);

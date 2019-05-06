@@ -10,7 +10,7 @@ import de.monticore.CommonModelingLanguage;
 import de.monticore.ast.ASTNode;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
-import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 
@@ -40,7 +40,7 @@ public class MontiCoreGrammarLanguage extends CommonModelingLanguage {
 
   @Override
   public Optional<MontiCoreGrammarSymbolTableCreator> getSymbolTableCreator(
-          ResolvingConfiguration resolvingConfiguration, @Nullable MutableScope enclosingScope) {
+          ResolvingConfiguration resolvingConfiguration, @Nullable Scope enclosingScope) {
     return of(new MontiCoreGrammarSymbolTableCreator(
             resolvingConfiguration, enclosingScope));
   }

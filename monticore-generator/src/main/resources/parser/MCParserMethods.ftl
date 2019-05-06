@@ -10,7 +10,7 @@ ${tc.signature("ruleSymbol")}
    * 
    * @param filename Name of file to parse
    * @return Resulting AST
-   * @throws IOException 
+   * @throws IOException if something went wrong parsing the file
    */
   public Optional<${astClassName}> parse${parseRuleName?cap_first}(String filename) throws IOException {   
     ${parserName}AntlrParser parser = create(filename);    
@@ -27,7 +27,7 @@ ${tc.signature("ruleSymbol")}
    * 
    * @param reader Reader to parse from
    * @return Resulting AST
-   * @throws IOException 
+   * @throws IOException if something went wrong parsing the content of the reader
    * */
   public  Optional<${astClassName}> parse${parseRuleName?cap_first}(Reader reader) throws IOException {
  	${parserName}AntlrParser parser = create(reader);
@@ -44,7 +44,7 @@ ${tc.signature("ruleSymbol")}
    * 
    * @param str String to parse from
    * @return Resulting AST
-   * @throws IOException 
+   * @throws IOException if something went wrong parsing the string
    * */
   public  Optional<${astClassName}> parse_String${parseRuleName?cap_first}(String str) throws IOException {
     return parse${parseRuleName?cap_first}(new StringReader(str));

@@ -73,7 +73,7 @@ public class MontiCoreScriptTest {
   
   @BeforeClass
   public static void setup() {
-    LogStub.init();
+    Log.init();
     Log.enableFailQuick(false);
     for (AstAdditionalMethods additionalMethod : AstAdditionalMethods.class.getEnumConstants()) {
       additionalMethods.add(additionalMethod.name());
@@ -182,7 +182,7 @@ public class MontiCoreScriptTest {
     mc.createSymbolsFromAST(symbolTable, grammar);
     cdCompilationUnit = mc.deriveCD(grammar, new GlobalExtensionManagement(),
         symbolTable);
-    mc.generate(glex, symbolTable, cdCompilationUnit, outputPath, templatePath);
+    mc.generate(glex, symbolTable, cdCompilationUnit, outputPath, templatePath, IterablePath.empty());
   }
   
   /** {@link MontiCoreScript#run(Configuration)} */

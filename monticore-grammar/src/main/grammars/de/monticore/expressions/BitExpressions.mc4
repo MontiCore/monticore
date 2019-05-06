@@ -1,0 +1,45 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.expressions;
+
+/**
+ * This grammar defines binary expressions like <<, >>, >>>, &, ^ and |
+*/
+
+component grammar BitExpressions extends de.monticore.expressions.ExpressionsBasis {
+
+interface ShiftExpression =
+	left:Expression shiftOp:"" right:Expression;
+
+// It is not possible to define "<<", ">>" or ">>>" directly.
+// Parsing generic types like "List<List<String>>" otherwise lead to problems.
+// We therefor use the noSpsce workaraound to ensure that no space was
+// found between the previous two token.
+		
+LeftShiftExpression implements Expression <160>, ShiftExpression =
+	left:Expression 
+	shiftOp:"<" "<" {noSpace()}? {_aNode.setShiftOp("<<");}        
+    right:Expression;
+ 
+RightShiftExpression implements Expression <160>, ShiftExpression =
+	left:Expression 
+	shiftOp:">" ">" {noSpace()}? {_aNode.setShiftOp(">>");}        
+    right:Expression;
+
+LogicalRightShiftExpression implements Expression <160>, ShiftExpression =
+	left:Expression 
+	shiftOp:">" ">" {noSpace()}? ">" {noSpace()}? {_aNode.setShiftOp(">>>");}        
+    right:Expression;
+    
+BinaryAndExpression implements Expression <120> =
+	left:Expression operator:"&"  right:Expression;
+
+BinaryXorExpression implements Expression <110> =
+	left:Expression operator:"^"  right:Expression;
+
+BinaryOrOpExpression implements Expression <100> =
+	left:Expression operator:"|"  right:Expression;
+
+
+
+}

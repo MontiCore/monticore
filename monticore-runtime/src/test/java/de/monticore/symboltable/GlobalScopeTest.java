@@ -31,7 +31,7 @@ public class GlobalScopeTest {
     ResolvingConfiguration resolverConfig = new ResolvingConfiguration();
     resolverConfig.addDefaultFilter(CommonResolvingFilter.create(EntitySymbol.KIND));
 
-    final MutableScope globalScope =
+    final Scope globalScope =
         new GlobalScope(modelPath, entityLanguage, resolverConfig);
     
     EntitySymbol entitySymbol = globalScope.<EntitySymbol> resolve("models.E", EntitySymbol.KIND).orElse(null);

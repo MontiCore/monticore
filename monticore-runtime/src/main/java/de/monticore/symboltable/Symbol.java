@@ -1,18 +1,18 @@
  /* (c) https://github.com/MontiCore/monticore */
  package de.monticore.symboltable;
 
- import java.util.Optional;
-
  import de.monticore.ast.ASTNode;
  import de.monticore.symboltable.modifiers.AccessModifier;
  import de.monticore.symboltable.modifiers.BasicAccessModifier;
  import de.se_rwth.commons.SourcePosition;
- import de.se_rwth.commons.logging.Log;
+
+ import java.util.Optional;
 
  import static de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION;
  import static de.se_rwth.commons.SourcePosition.getDefaultSourcePosition;
  import static de.se_rwth.commons.logging.Log.errorIfNull;
 
+ @Deprecated
  public interface Symbol {
 
    /**
@@ -99,6 +99,6 @@
    /**
     * @param scope the enclosing scope of this symbol, i.e., the scope that defines this symbol.
     */
-   void setEnclosingScope(MutableScope scope);
+   void setEnclosingScope(Scope scope);
 
  }

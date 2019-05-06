@@ -10,7 +10,7 @@ import sm2._ast.ASTAutomaton;
 import sm2._ast.ASTState;
 import sm2._ast.ASTTransition;
 import de.monticore.symboltable.ArtifactScope;
-import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 
@@ -20,7 +20,7 @@ public class SM2SymbolTableCreator extends SM2SymbolTableCreatorTOP {
   
   public SM2SymbolTableCreator(
       final ResolvingConfiguration resolvingConfig,
-      final MutableScope enclosingScope) {
+      final Scope enclosingScope) {
     super(resolvingConfig, enclosingScope);
   }
 

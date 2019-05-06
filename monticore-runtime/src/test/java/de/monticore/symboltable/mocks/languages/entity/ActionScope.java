@@ -2,14 +2,14 @@
 
 package de.monticore.symboltable.mocks.languages.entity;
 
-import java.util.Optional;
-
 import de.monticore.symboltable.CommonScope;
-import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Scope;
+
+import java.util.Optional;
 
 public class ActionScope extends CommonScope {
 
-  public ActionScope(ActionSymbol spanningSymbol, Optional<MutableScope> enclosingScope) {
+  public ActionScope(ActionSymbol spanningSymbol, Optional<Scope> enclosingScope) {
     super(enclosingScope, true);
     setSpanningSymbol(spanningSymbol);
   }

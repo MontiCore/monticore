@@ -1,15 +1,12 @@
 package mc.feature.referencesymbol.supgrammarref._symboltable;
 
-import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
+import de.monticore.symboltable.Scope;
 import mc.feature.referencesymbol.reference._ast.ASTRand;
-import mc.feature.referencesymbol.reference._ast.ASTReferenceToTest;
 import mc.feature.referencesymbol.reference._ast.ASTTest;
 import mc.feature.referencesymbol.reference._symboltable.RandSymbol;
 import mc.feature.referencesymbol.reference._symboltable.TestSymbol;
 import mc.feature.referencesymbol.supgrammarref._ast.ASTSupRand;
-import mc.feature.referencesymbol.supgrammarref._symboltable.SupGrammarRefScope;
-import mc.feature.referencesymbol.supgrammarref._symboltable.SupGrammarRefSymbolTableCreatorTOP;
 
 import java.util.Deque;
 
@@ -20,11 +17,11 @@ public class SupGrammarRefSymbolTableCreator extends SupGrammarRefSymbolTableCre
   private ASTTest astTest;
 
 
-  public SupGrammarRefSymbolTableCreator(final ResolvingConfiguration resolvingConfig, final MutableScope enclosingScope) {
+  public SupGrammarRefSymbolTableCreator(final ResolvingConfiguration resolvingConfig, final Scope enclosingScope) {
     super(resolvingConfig, enclosingScope);
   }
 
-  public SupGrammarRefSymbolTableCreator(final ResolvingConfiguration resolvingConfig, final Deque<MutableScope> scopeStack) {
+  public SupGrammarRefSymbolTableCreator(final ResolvingConfiguration resolvingConfig, final Deque<Scope> scopeStack) {
     super(resolvingConfig, scopeStack);
   }
 
@@ -46,7 +43,8 @@ public class SupGrammarRefSymbolTableCreator extends SupGrammarRefSymbolTableCre
     setEnclosingScopeOfNodes(node);
   }
 
-  protected MutableScope create_SupRand(ASTSupRand ast) {
+  @Override
+  protected Scope create_SupRand(ASTSupRand ast) {
     // creates new shadowing scope
     SupGrammarRefScope a = new SupGrammarRefScope(true);
     a.setExportsSymbols(true);

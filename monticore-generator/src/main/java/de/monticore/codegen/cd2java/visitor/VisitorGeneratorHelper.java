@@ -18,6 +18,8 @@ import de.se_rwth.commons.Names;
 public class VisitorGeneratorHelper extends GeneratorHelper {
   
   public static final String VISITOR = "Visitor";
+  public static final String SYMBOL_VISITOR = "Symbol" + VISITOR;
+  public static final String SCOPE_VISITOR = "Scope" + VISITOR;
   
   public VisitorGeneratorHelper(ASTCDCompilationUnit topAst, GlobalScope symbolTable) {
     super(topAst, symbolTable);
@@ -135,12 +137,46 @@ public class VisitorGeneratorHelper extends GeneratorHelper {
   }
   
   /**
+   * @return type name of the language's symbol visitor interface
+   * @see #getQualifiedVisitorType()
+   */
+  public String getSymbolVisitorType() {
+    return getSymbolVisitorType(getCdName());
+  }
+  
+  /**
+   * @return type name of the language's scope visitor interface
+   * @see #getQualifiedVisitorType()
+   */
+  public String getScopeVisitorType() {
+    return getScopeVisitorType(getCdName());
+  }
+  
+  /**
    * @param cDName
    * @return type name of the language's visitor interface
    * @see #getQualifiedVisitorType()
    */
   public static String getVisitorType(String cDName) {
     return cDName + VISITOR;
+  }
+  
+  /**
+   * @param cDName
+   * @return type name of the language's symbol visitor interface
+   * @see #getQualifiedVisitorType()
+   */
+  public static String getSymbolVisitorType(String cDName) {
+    return cDName + SYMBOL_VISITOR;
+  }
+  
+  /**
+   * @param cDName
+   * @return type name of the language's scope visitor interface
+   * @see #getQualifiedVisitorType()
+   */
+  public static String getScopeVisitorType(String cDName) {
+    return cDName + SCOPE_VISITOR;
   }
   
   /**
@@ -210,6 +246,30 @@ public class VisitorGeneratorHelper extends GeneratorHelper {
     String packageName = getCdPackage(qualifiedLanguageName);
     String cdName = getCdName(qualifiedLanguageName);
     return getQualifiedVisitorType(packageName, cdName);
+  }
+  
+  /**
+   * @param packageName
+   * @param cdName
+   * @return full-qualified name of the language's scope visitor interface
+   * @see #getVisitorType()
+   */
+  public static String getQualifiedScopeVisitorType(String packageName, String cdName) {
+    return getPackageName(packageName, getVisitorPackageSuffix()) + "."
+        + getScopeVisitorType(cdName);
+  }
+  
+  /**
+   * Gets the full-qualified type of the languages scope visitor interface. For
+   * example, input "a.b.c.D" results in output "a.b.c.d._visitor.DScopeVisitor"
+   * 
+   * @param qualifiedLanguageName
+   * @return the languages full-qualified scope visitor interface
+   */
+  public static String getQualifiedScopeVisitorType(String qualifiedLanguageName) {
+    String packageName = getCdPackage(qualifiedLanguageName);
+    String cdName = getCdName(qualifiedLanguageName);
+    return getQualifiedScopeVisitorType(packageName, cdName);
   }
   
   /**

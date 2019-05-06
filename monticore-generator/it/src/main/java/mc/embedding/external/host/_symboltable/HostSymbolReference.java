@@ -8,10 +8,10 @@
 package mc.embedding.external.host._symboltable;
 
 import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.references.CommonSymbolReference;
 import de.monticore.symboltable.references.SymbolReference;
+
 import java.util.Collection;
 
 /**
@@ -59,7 +59,7 @@ public class HostSymbolReference extends HostSymbol implements SymbolReference<H
   }
 
   @Override
-  public void setEnclosingScope(MutableScope scope) {
+  public void setEnclosingScope(Scope scope) {
     getReferencedSymbol().setEnclosingScope(scope);
   }
 
