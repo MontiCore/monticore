@@ -4,11 +4,11 @@ import de.monticore.codegen.factory.BGrammar;
 
 classdiagram CGrammar {
 
-    public class ASTBlub extends ASTCNode {
+    public class ASTBlub{
       protected de.monticore.codegen.factory.agrammar._ast.ASTBar bar;
     }
 
-     public class ASTBli extends ASTCNode {
+     public class ASTBli{
       protected String name;
     }
 }

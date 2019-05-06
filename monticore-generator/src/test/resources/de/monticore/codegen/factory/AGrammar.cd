@@ -4,11 +4,11 @@ import de.monticore.codegen.ast.Lexicals;
 
 classdiagram AGrammar {
 
-    public class ASTFoo extends ASTCNode {
+    public class ASTFoo {
       protected String name;
     }
 
-     public class ASTBar extends ASTCNode {
+     public class ASTBar {
       protected de.monticore.codegen.factory.agrammar._ast.ASTFoo foo;
       protected String bar;
     }

@@ -45,7 +45,7 @@ public class FullConstructorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributesCount() {
-    assertEquals(1, subBClass.getCDAttributeList().size());
+    assertEquals(2, subBClass.getCDAttributeList().size());
   }
 
   @Test

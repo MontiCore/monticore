@@ -4,7 +4,7 @@ import de.monticore.codegen.factory.AGrammar;
 
 classdiagram BGrammar {
 
-  public class ASTB extends ASTCNode{
+  public class ASTB{
   }
 
 }

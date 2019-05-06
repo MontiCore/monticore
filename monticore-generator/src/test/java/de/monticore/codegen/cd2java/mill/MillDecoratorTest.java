@@ -138,7 +138,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
   public void testAutomatonBuilderMethod() {
     ASTCDMethod fooBarBuilder = millClass.getCDMethod(4);
     //test Method Name
-    assertEquals("aSTAutomatonBuilder", fooBarBuilder.getName());
+    assertEquals("automatonBuilder", fooBarBuilder.getName());
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
@@ -152,7 +152,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
   public void testProtectedAutomatonMethod() {
     ASTCDMethod fooBarBuilder = millClass.getCDMethod(5);
     //test Method Name
-    assertEquals("_aSTAutomatonBuilder", fooBarBuilder.getName());
+    assertEquals("_automatonBuilder", fooBarBuilder.getName());
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
@@ -167,7 +167,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
   public void testStateMethod() {
     ASTCDMethod fooBarBuilder = millClass.getCDMethod(6);
     //test Method Name
-    assertEquals("aSTStateBuilder", fooBarBuilder.getName());
+    assertEquals("stateBuilder", fooBarBuilder.getName());
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
@@ -181,7 +181,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
   public void testProtectedStateBuilderMethod() {
     ASTCDMethod fooBarBuilder = millClass.getCDMethod(7);
     //test Method Name
-    assertEquals("_aSTStateBuilder", fooBarBuilder.getName());
+    assertEquals("_stateBuilder", fooBarBuilder.getName());
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
@@ -196,7 +196,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
   public void testTransitionAMethod() {
     ASTCDMethod fooBarBuilder = millClass.getCDMethod(8);
     //test Method Name
-    assertEquals("aSTTransitionBuilder", fooBarBuilder.getName());
+    assertEquals("transitionBuilder", fooBarBuilder.getName());
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
@@ -210,7 +210,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
   public void testProtectedTransitionBuilderMethod() {
     ASTCDMethod fooBarBuilder = millClass.getCDMethod(9);
     //test Method Name
-    assertEquals("_aSTTransitionBuilder", fooBarBuilder.getName());
+    assertEquals("_transitionBuilder", fooBarBuilder.getName());
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType

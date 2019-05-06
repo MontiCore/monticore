@@ -132,11 +132,11 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
   public void testCBuilderMethod() {
     ASTCDMethod fooBarBuilder = millClass.getCDMethod(8);
     //test Method Name
-    assertEquals("aSTBBuilder", fooBarBuilder.getName());
+    assertEquals("bBuilder", fooBarBuilder.getName());
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
-    ASTType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.bgrammar._ast.ASTB");
+    ASTType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.bgrammar._ast.ASTBBuilder");
     assertDeepEquals(returnType, fooBarBuilder.getReturnType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(fooBarBuilder.getModifier()));
@@ -147,11 +147,11 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
   public void testFooBuilderMethod() {
     ASTCDMethod fooBarBuilder = millClass.getCDMethod(9);
     //test Method Name
-    assertEquals("aSTFooBuilder", fooBarBuilder.getName());
+    assertEquals("fooBuilder", fooBarBuilder.getName());
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
-    ASTType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.agrammar._ast.ASTFoo");
+    ASTType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.agrammar._ast.ASTFooBuilder");
     assertDeepEquals(returnType, fooBarBuilder.getReturnType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(fooBarBuilder.getModifier()));
@@ -161,11 +161,11 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
   public void tesBarBuilderMethod() {
     ASTCDMethod fooBarBuilder = millClass.getCDMethod(10);
     //test Method Name
-    assertEquals("aSTBarBuilder", fooBarBuilder.getName());
+    assertEquals("barBuilder", fooBarBuilder.getName());
     //test Parameters
     assertTrue(fooBarBuilder.isEmptyCDParameters());
     //test ReturnType
-    ASTType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.agrammar._ast.ASTBar");
+    ASTType returnType = cdTypeFacade.createTypeByDefinition("de.monticore.codegen.factory.agrammar._ast.ASTBarBuilder");
     assertDeepEquals(returnType, fooBarBuilder.getReturnType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(fooBarBuilder.getModifier()));

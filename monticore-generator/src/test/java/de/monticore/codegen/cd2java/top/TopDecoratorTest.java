@@ -3,21 +3,17 @@ package de.monticore.codegen.cd2java.top;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
-import de.monticore.umlcd4a.cd4analysis._parser.CD4AnalysisParser;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class TopDecoratorTest extends DecoratorTestCase {
 
@@ -49,7 +45,7 @@ public class TopDecoratorTest extends DecoratorTestCase {
     assertEquals(1, cdClass.getCDConstructorList().size());
     ASTCDConstructor constructor = cdClass.getCDConstructorList().get(0);
     assertEquals("CTOP", constructor.getName());
-    assertDeepEquals(PROTECTED_ABSTRACT, constructor.getModifier());
+    assertDeepEquals(PROTECTED, constructor.getModifier());
 
     assertEquals(1, ast.getCDInterfaceList().size());
     ASTCDInterface cdInterface = ast.getCDInterfaceList().get(0);
