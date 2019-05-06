@@ -1,5 +1,6 @@
 package de.monticore.codegen.cd2java.data;
 
+import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
@@ -7,16 +8,14 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.types._ast.ASTType;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDConstructor;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
+import de.monticore.umlcd4a.cd4analysis._ast.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
@@ -44,6 +43,7 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
     if (!clazz.getCDAttributeList().isEmpty()) {
       clazz.addCDConstructor(createFullConstructor(clazz));
     }
+    clazz.getCDAttributeList().forEach(this::addAttributeDefaultValues);
     clazz.addAllCDMethods(getAllDataMethods(clazz));
     clazz.addCDMethod(createDeepCloneWithParam(clazz));
     clazz.addAllCDMethods(clazz.getCDAttributeList().stream()
@@ -52,6 +52,15 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
         .collect(Collectors.toList()));
 
     return clazz;
+  }
+
+  protected void addAttributeDefaultValues(ASTCDAttribute attribute) {
+    if (GeneratorHelper.isListType(attribute.printType())) {
+      this.replaceTemplate(VALUE, attribute, new StringHookPoint("= new java.util.ArrayList<>()"));
+
+    } else if (GeneratorHelper.isOptional(attribute)) {
+      this.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
+    }
   }
 
   protected ASTCDConstructor createDefaultConstructor(ASTCDClass clazz) {

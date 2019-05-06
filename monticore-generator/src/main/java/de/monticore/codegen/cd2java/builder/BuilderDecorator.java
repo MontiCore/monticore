@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 public class BuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
@@ -61,7 +62,7 @@ public class BuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> 
 
 
     ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PROTECTED, builderClassName);
-    this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this."  + REAL_BUILDER + " = (" + builderClassName + ") this;"));
+    this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this." + REAL_BUILDER + " = (" + builderClassName + ") this;"));
 
     ASTCDMethod buildMethod = this.getCDMethodFacade().createMethod(modifier, domainType, BUILD_METHOD);
     this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint("builder.BuildMethod", domainClass, mandatoryAttributes));
@@ -80,8 +81,9 @@ public class BuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> 
         .flatMap(List::stream)
         .collect(Collectors.toList());
 
+    builderAttributes.forEach(this::addAttributeDefaultValues);
 
-    return  CD4AnalysisMill.cDClassBuilder()
+    return CD4AnalysisMill.cDClassBuilder()
         .setModifier(modifier.build())
         .setName(builderClassName)
         .addCDAttribute(realThisAttribute)
@@ -92,5 +94,14 @@ public class BuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> 
         .addAllCDMethods(accessorMethods)
         .addAllCDMethods(mutatorMethods)
         .build();
+  }
+
+  protected void addAttributeDefaultValues(ASTCDAttribute attribute) {
+    if (GeneratorHelper.isListType(attribute.printType())) {
+      this.replaceTemplate(VALUE, attribute, new StringHookPoint("= new java.util.ArrayList<>()"));
+
+    } else if (GeneratorHelper.isOptional(attribute)) {
+      this.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
+    }
   }
 }
