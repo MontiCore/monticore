@@ -12,8 +12,4 @@ grammar TestAssignmentExpressions extends de.monticore.expressions.AssignmentExp
 
   BooleanExpression implements Expression = bool: ["true" | "false"];
 
-  NameExpression implements Expression = Name;
-
-  EExtLiteral = Literal;
-
 }

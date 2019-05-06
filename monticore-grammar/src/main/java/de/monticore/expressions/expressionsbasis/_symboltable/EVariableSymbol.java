@@ -1,20 +1,14 @@
 package de.monticore.expressions.expressionsbasis._symboltable;
 
-import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 public class EVariableSymbol extends EVariableSymbolTOP {
-
-  private MCTypeSymbol type;
 
   public EVariableSymbol(String name) {
     super(name);
   }
 
-  public MCTypeSymbol getMCTypeSymbol() {
-    return type;
-  }
-
-  public void setMCTypeSymbol(MCTypeSymbol type) {
-    this.type = type;
+  public ASTMCType getType() {
+    throw new UnsupportedOperationException();
   }
 }

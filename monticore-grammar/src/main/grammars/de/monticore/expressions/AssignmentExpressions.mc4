@@ -8,19 +8,6 @@ package de.monticore.expressions;
 */
 
 component grammar AssignmentExpressions extends de.monticore.expressions.ExpressionsBasis {
-
-/**
- * When combining the languages you can decide later if you want to use the complete
- * literals defined in Java (extending MCJavaLiterals)
- * or if you want to use a smaller variant (extending MCBasicLiterals)
- */
- external EExtLiteral;
-
- NameExpression implements Expression <350>
-     = Name;
-
- LiteralExpression implements Expression <340>
-     = EExtLiteral;
 		
 IncSuffixExpression implements Expression <220> =
 	Expression "++";
@@ -42,40 +29,40 @@ DecPrefixExpression implements Expression <210> =
 	
 interface AssignmentExpression = left:Expression operator:"" right:Expression;
 
-RegularAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
-	left:Expression operator:["="|"+="|"-="|"*="|"/="|"&="|"|="|"^="|">>="|">>>="|"<<="|"%="]  right:Expression;
+RegularAssignmentExpression implements Expression <60>, AssignmentExpression =
+	left:Expression operator:"="  right:Expression;
 	
 PlusAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
-	left:Expression operator:"+y=" right:Expression;
+	left:Expression operator:"+=" right:Expression;
 	
 MinusAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
-	left:Expression operator:"-y=" right:Expression;
+	left:Expression operator:"-=" right:Expression;
 
 MultAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
-	left:Expression operator:"*y=" right:Expression;
+	left:Expression operator:"*=" right:Expression;
 
 DivideAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
-	left:Expression operator:"/y=" right:Expression;
+	left:Expression operator:"/=" right:Expression;
 
 AndAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
-	left:Expression operator:"&y=" right:Expression;
+	left:Expression operator:"&=" right:Expression;
 
 OrAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
-	left:Expression operator:"|y=" right:Expression;
+	left:Expression operator:"|=" right:Expression;
 
 BinaryXorAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
-	left:Expression operator:"^y=" right:Expression;
+	left:Expression operator:"^=" right:Expression;
 
 RightShiftAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
-	left:Expression operator:">>y=" right:Expression;
+	left:Expression operator:">>=" right:Expression;
 
 LogicalRightAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
-	left:Expression operator:">>>y=" right:Expression;
+	left:Expression operator:">>>=" right:Expression;
 
 LeftShiftAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
-	left:Expression operator:"<<y=" right:Expression;
+	left:Expression operator:"<<=" right:Expression;
 
 ModuloAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
-	left:Expression operator:"%y=" right:Expression;
+	left:Expression operator:"%=" right:Expression;
 
 }
