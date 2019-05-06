@@ -153,7 +153,7 @@ public class NodeFactoryDecorator extends AbstractDecorator<ASTCDCompilationUnit
         CD4AnalysisMill.cDCompilationUnitBuilder().setCDDefinition(superDefinition).build().accept(visitor);
 
         for (ASTCDClass superClass : superDefinition.getCDClassList()) {
-          if(!(superClass.isPresentModifier() && superClass.getModifier().isAbstract())){
+          if (!isClassOverwritten(superClass) && !(superClass.isPresentModifier() && superClass.getModifier().isAbstract())) {
             String packageName = superSymbol.getFullName().toLowerCase() + "." + AST_PACKAGE + ".";
             ASTType superAstType = this.getCDTypeFacade().createSimpleReferenceType(packageName + superClass.getName());
 
@@ -168,6 +168,11 @@ public class NodeFactoryDecorator extends AbstractDecorator<ASTCDCompilationUnit
       }
     }
     return delegateMethodList;
+  }
+
+  protected boolean isClassOverwritten(ASTCDClass astcdClass) {
+    //if there is a Class with the same name in the current CompilationUnit, then the methods are only generated once
+    return compilationUnit.getCDDefinition().getCDClassList().stream().anyMatch(x -> x.getName().endsWith(astcdClass.getName()));
   }
 
   protected void addCreateDelegateMethod(ASTType superAstType, String className, String packageName, String symbolName, List<ASTCDMethod> delegateMethodList) {

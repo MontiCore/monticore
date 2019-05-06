@@ -37,12 +37,14 @@ public class MillDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCD
 
   private static final String BUILDER = "Builder";
 
+  private ASTCDDefinition astcdDefinition;
+
   public MillDecorator(final GlobalExtensionManagement glex) {
     super(glex);
   }
 
   public ASTCDClass decorate(ASTCDCompilationUnit compilationUnit) {
-    ASTCDDefinition astcdDefinition = compilationUnit.getCDDefinition().deepClone();
+    astcdDefinition = compilationUnit.getCDDefinition().deepClone();
     //filter out all classes that are abstract and remove AST prefix
     astcdDefinition.setCDClassList(astcdDefinition.getCDClassList()
         .stream()
@@ -142,7 +144,7 @@ public class MillDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCD
       this.replaceTemplate(EMPTY_BODY, builderMethod, new TemplateHookPoint("mill.BuilderMethod", astName, methodName));
 
       // add protected Method for Builder
-      ASTCDMethod protectedMethod = this.getCDMethodFacade().createMethod(PROTECTED, builderType, "_" +methodName);
+      ASTCDMethod protectedMethod = this.getCDMethodFacade().createMethod(PROTECTED, builderType, "_" + methodName);
       builderMethodsList.add(protectedMethod);
       this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("mill.ProtectedBuilderMethod", TypesPrinter.printType(builderType)));
     }
@@ -165,19 +167,25 @@ public class MillDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCD
             .filter(x -> !x.getModifier().isAbstract())
             .collect(Collectors.toList()));
         for (ASTCDClass superClass : superDefinition.getCDClassList()) {
-          String packageName = superSymbol.getFullName().toLowerCase() + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;
-          ASTType superAstType = this.getCDTypeFacade().createSimpleReferenceType(packageName + superClass.getName() + BUILDER);
-          String methodName = StringTransformations.uncapitalize(superClass.getName().replaceFirst("AST", "")) + BUILDER;
+          if (!isClassOverwritten(superClass)) {
+            String packageName = superSymbol.getFullName().toLowerCase() + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;
+            ASTType superAstType = this.getCDTypeFacade().createSimpleReferenceType(packageName + superClass.getName() + BUILDER);
+            String methodName = StringTransformations.uncapitalize(superClass.getName().replaceFirst("AST", "")) + BUILDER;
 
-          //add builder method
-          ASTCDMethod createDelegateMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, superAstType, methodName);
-          this.replaceTemplate(EMPTY_BODY, createDelegateMethod, new TemplateHookPoint("mill.BuilderDelegatorMethod", packageName + superSymbol.getName(), methodName));
-          superMethods.add(createDelegateMethod);
+            //add builder method
+            ASTCDMethod createDelegateMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, superAstType, methodName);
+            this.replaceTemplate(EMPTY_BODY, createDelegateMethod, new TemplateHookPoint("mill.BuilderDelegatorMethod", packageName + superSymbol.getName(), methodName));
+            superMethods.add(createDelegateMethod);
+          }
         }
       }
     }
     return superMethods;
   }
 
+  protected boolean isClassOverwritten(ASTCDClass astcdClass) {
+    //if there is a Class with the same name in the current CompilationUnit, then the methods are only generated once
+    return astcdDefinition.getCDClassList().stream().anyMatch(x -> x.getName().endsWith(astcdClass.getName()));
+  }
 
 }
