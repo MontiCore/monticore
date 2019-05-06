@@ -3,7 +3,7 @@ plugins {
   id 'java-gradle-plugin'
   id 'maven-publish'
 }
-version = "5.0.5-SNAPSHOT"
+version = "5.0.5"
 group = "de.monticore"
 
 repositories {
@@ -18,9 +18,9 @@ repositories {
 dependencies {
   compile gradleApi()
   compile localGroovy()
-  compile group: 'de.monticore', name: 'monticore-cli', version: '5.0.5-SNAPSHOT'
-  compile group: 'de.monticore', name: 'monticore-runtime', version: '5.0.5-SNAPSHOT'
-  compile group: 'de.monticore', name: 'monticore-generator', version: '5.0.5-SNAPSHOT'
+  compile group: 'de.monticore', name: 'monticore-cli', version: '5.0.5'
+  compile group: 'de.monticore', name: 'monticore-runtime', version: '5.0.5'
+  compile group: 'de.monticore', name: 'monticore-generator', version: '5.0.5'
 }
 
 gradlePlugin.plugins {
