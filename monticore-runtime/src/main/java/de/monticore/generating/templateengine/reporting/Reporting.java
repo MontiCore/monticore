@@ -189,7 +189,7 @@ public class Reporting extends Slf4jLog {
     return singleton;
   }
 
-  @Deprecated // Delete afer release 5.0.5
+  @Deprecated // Delete afer release 5.0.6-SNAPSHOT
   public static void init(String reportDirectory, ReportManagerFactory factory) {
     init(reportDirectory, reportDirectory, factory);
   }

@@ -23,7 +23,7 @@ component grammar MCBasics {
     "//" (~('\n' |
       '\r' )
     )* : ->skip
-    // Replace this in MC 5.0.5 by storeComment()
+    // Replace this in MC 5.0.6-SNAPSHOT by storeComment()
     {
       if (getCompiler() != null) {
         de.monticore.ast.Comment _comment = new de.monticore.ast.Comment(getText());
@@ -42,7 +42,7 @@ component grammar MCBasics {
       '\r' )
     )*
     "*/" : -> skip
-    // Replace this in MC 5.0.5 by storeComment()
+    // Replace this in MC 5.0.6-SNAPSHOT by storeComment()
     {
       if (getCompiler() != null) {
         de.monticore.ast.Comment _comment = new de.monticore.ast.Comment(getText());
