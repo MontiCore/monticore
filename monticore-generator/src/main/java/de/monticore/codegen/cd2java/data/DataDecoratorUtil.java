@@ -76,10 +76,17 @@ public class DataDecoratorUtil extends AbstractDecorator<ASTCDType, List<ASTCDMe
 
   public ASTCDMethod createDeepClone(ASTCDType cdType) {
     // deep clone without parameters
-    ASTType type = getCDTypeFacade().createSimpleReferenceType(cdType.getName());
+    ASTType type = getCDTypeFacade().createSimpleReferenceType(getSimpleName(cdType));
     return getCDMethodFacade().createMethod(PUBLIC, type, DEEP_CLONE_METHOD);
   }
 
-
+  protected String getSimpleName(ASTCDType astcdType) {
+    //remove TOP from Classname if hwc exists
+    String simpleClassName = astcdType.getName();
+    if (simpleClassName.endsWith("TOP")) {
+      simpleClassName = simpleClassName.substring(0, simpleClassName.lastIndexOf("TOP"));
+    }
+    return simpleClassName;
+  }
   
 }

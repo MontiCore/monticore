@@ -1,8 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("astName")}
-      ${astName} comp;
-    if ((o instanceof ${astName})) {
-      comp = (${astName}) o;
+${tc.signature("simpleClassName")}
+      ${simpleClassName} comp;
+    if ((o instanceof ${simpleClassName})) {
+      comp = (${simpleClassName}) o;
     } else {
       return false;
     }

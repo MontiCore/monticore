@@ -74,6 +74,7 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
   }
 
   protected List<ASTCDMethod> getAllDataMethods(ASTCDClass clazz) {
+    String simpleClassName = dataDecoratorUtil.getSimpleName(clazz);
     List<ASTCDMethod> methods = new ArrayList<>();
     ASTCDParameter objectParameter = getCDParameterFacade().createParameter(Object.class, "o");
     ASTCDParameter forceSameOrderParameter = getCDParameterFacade().createParameter(getCDTypeFacade().createBooleanType(), "forceSameOrder");
@@ -83,7 +84,7 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
     methods.add(deepEqualsMethod);
 
     ASTCDMethod deepEqualsWithOrder = dataDecoratorUtil.createDeepEqualsWithOrderMethod(objectParameter, forceSameOrderParameter);
-    this.replaceTemplate(EMPTY_BODY, deepEqualsWithOrder, new TemplateHookPoint("data.DeepEqualsWithOrder", clazz));
+    this.replaceTemplate(EMPTY_BODY, deepEqualsWithOrder, new TemplateHookPoint("data.DeepEqualsWithOrder", clazz, simpleClassName));
     methods.add(deepEqualsWithOrder);
 
     ASTCDMethod deepEqualsWithComments = dataDecoratorUtil.createDeepEqualsWithComments(objectParameter);
@@ -91,15 +92,15 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
     methods.add(deepEqualsWithComments);
 
     ASTCDMethod deepEqualsWithCommentsWithOrder = dataDecoratorUtil.createDeepEqualsWithCommentsWithOrder(objectParameter, forceSameOrderParameter);
-    this.replaceTemplate(EMPTY_BODY, deepEqualsWithCommentsWithOrder, new TemplateHookPoint("data.DeepEqualsWithComments", clazz));
+    this.replaceTemplate(EMPTY_BODY, deepEqualsWithCommentsWithOrder, new TemplateHookPoint("data.DeepEqualsWithComments", clazz, simpleClassName));
     methods.add(deepEqualsWithCommentsWithOrder);
 
     ASTCDMethod equalAttributes = dataDecoratorUtil.createEqualAttributesMethod(objectParameter);
-    this.replaceTemplate(EMPTY_BODY, equalAttributes, new TemplateHookPoint("data.EqualAttributes", clazz));
+    this.replaceTemplate(EMPTY_BODY, equalAttributes, new TemplateHookPoint("data.EqualAttributes", clazz, simpleClassName));
     methods.add(equalAttributes);
 
     ASTCDMethod equalsWithComments = dataDecoratorUtil.createEqualsWithComments(objectParameter);
-    this.replaceTemplate(EMPTY_BODY, equalsWithComments, new TemplateHookPoint("data.EqualsWithComments", clazz.getName()));
+    this.replaceTemplate(EMPTY_BODY, equalsWithComments, new TemplateHookPoint("data.EqualsWithComments", simpleClassName));
     methods.add(equalsWithComments);
 
     ASTCDMethod deepClone = dataDecoratorUtil.createDeepClone(clazz);
@@ -110,10 +111,11 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
 
   protected ASTCDMethod createDeepCloneWithParam(ASTCDClass clazz) {
+    String simpleName = dataDecoratorUtil.getSimpleName(clazz);
     // deep clone with result parameter
-    ASTType classType = this.getCDTypeFacade().createSimpleReferenceType(clazz.getName());
+    ASTType classType = this.getCDTypeFacade().createSimpleReferenceType(simpleName);
     ASTCDParameter parameter = getCDParameterFacade().createParameter(classType, "result");
-    ASTCDMethod deepCloneWithParam = this.getCDMethodFacade().createMethod(PUBLIC, parameter.getType(), DEEP_CLONE_METHOD, parameter);
+    ASTCDMethod deepCloneWithParam = this.getCDMethodFacade().createMethod(PUBLIC, classType, DEEP_CLONE_METHOD, parameter);
     this.replaceTemplate(EMPTY_BODY, deepCloneWithParam, new TemplateHookPoint("data.DeepCloneWithParameters", clazz));
     return deepCloneWithParam;
   }

@@ -1,13 +1,12 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("astcdClass")}
-  <#assign astName = astcdClass.getName()>
+${tc.signature("astcdClass", "simpleClassName")}
   <#assign genHelper = glex.getGlobalVar("astHelper")>
    <#if genHelper.hasOnlyAstAttributes(astcdClass)>
-    return o instanceof ${astName};
+    return o instanceof ${simpleClassName};
    <#else>
-      ${astName} comp;
-    if ((o instanceof ${astName})) {
-      comp = (${astName}) o;
+      ${simpleClassName} comp;
+    if ((o instanceof ${simpleClassName})) {
+      comp = (${simpleClassName}) o;
     } else {
       return false;
     }

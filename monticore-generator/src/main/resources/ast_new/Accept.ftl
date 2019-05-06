@@ -2,7 +2,7 @@
 ${tc.signature("astcdClass")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
 <#if astcdClass.getName()?ends_with("TOP")>
-  <#assign plainName = astcdClass.getName()>
+  <#assign plainName = astcdClass.getName()?remove_ending("TOP")>
     // We allow a down cast here, because the subclass ${plainName} must exist
     // and only this subclass may exist in the AST and hence, only this class may
     // be handled by a visitor. All other cases are invalid an throw an exception!
