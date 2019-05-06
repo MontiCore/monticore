@@ -5,7 +5,7 @@
   <parent>
     <groupId>de.monticore</groupId>
     <artifactId>monticore</artifactId>
-    <version>5.0.5-SNAPSHOT</version>
+    <version>5.0.5</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -88,7 +88,7 @@
           <plugin>
             <groupId>de.monticore.mojo</groupId>
             <artifactId>monticore-maven-plugin</artifactId>
-            <version>5.0.5-SNAPSHOT</version><!--$NO-MVN-MAN-VER$ -->
+            <version>5.0.5</version><!--$NO-MVN-MAN-VER$ -->
             <executions>
               <execution>
                 <id>it-python</id>
@@ -173,7 +173,7 @@
           <plugin>
             <groupId>de.monticore.mojo</groupId>
             <artifactId>monticore-maven-plugin</artifactId>
-            <version>5.0.5-SNAPSHOT</version><!--$NO-MVN-MAN-VER$ -->
+            <version>5.0.5</version><!--$NO-MVN-MAN-VER$ -->
             <executions>
               <execution>
                 <id>it-python</id>
