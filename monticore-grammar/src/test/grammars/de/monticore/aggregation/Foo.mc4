@@ -2,11 +2,9 @@
 
 package de.monticore.aggregation;
 
-grammar Foo extends de.monticore.expressions.CommonExpressions, de.monticore.MCBasics {
+grammar Foo extends de.monticore.expressions.CommonExpressions, de.monticore.MCBasics, de.monticore.MCBasicLiterals {
 
   scope Bar = "bar" "{" Expression "}";
 
-  NameExpression implements Expression <350>
-      = Name;
-
+  ExtLiteral = Literal;
 }
