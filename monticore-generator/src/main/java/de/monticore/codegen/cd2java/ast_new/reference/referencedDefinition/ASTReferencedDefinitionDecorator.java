@@ -35,7 +35,7 @@ public class ASTReferencedDefinitionDecorator extends AbstractDecorator<ASTCDCla
     List<ASTCDAttribute> attributeList = new ArrayList<>();
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDAttribute astcdAttribute : input.getCDAttributeList()) {
-      if (symbolTableService.isReferencedSymbolAttribute(astcdAttribute)) {
+      if (symbolTableService.isReferencedSymbol(astcdAttribute)) {
         String referencedSymbolType = symbolTableService.getReferencedSymbolTypeName(astcdAttribute);
         //create referenced symbol attribute and methods
         methodList.addAll(getRefDefinitionMethods(astcdAttribute, referencedSymbolType));

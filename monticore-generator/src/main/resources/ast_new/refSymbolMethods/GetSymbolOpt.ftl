@@ -2,10 +2,10 @@
 ${tc.signature("attributeName", "referencedSymbol", "isOptional")}
 <#if isOptional>
      if(!${attributeName}.isPresent() && ${attributeName}.isPresent() && isPresentEnclosingScope()){
-        return  enclosingScope.get().resolve(${attributeName}.get(), ${referencedSymbol}.KIND);
-<#else >
+        return  enclosingScope.get().resolve(${attributeName?remove_ending("Symbol")}.get(), ${referencedSymbol}.KIND);
+<#else>
      if(!${attributeName}.isPresent() && ${attributeName} != null && isPresentEnclosingScope()){
-        return  enclosingScope.get().resolve(${attributeName}, ${referencedSymbol}.KIND);
+        return  enclosingScope.get().resolve(${attributeName?remove_ending("Symbol")}, ${referencedSymbol}.KIND);
 </#if>
      }
      return ${attributeName};

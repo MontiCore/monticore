@@ -79,7 +79,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf(SymbolTableConstants.SYMBOL_SUFFIX));
   }
 
-  public boolean isReferencedSymbolAttribute(ASTCDAttribute attribute) {
+  public boolean isReferencedSymbol(ASTCDAttribute attribute) {
     return attribute.isPresentModifier() && hasStereotype(attribute.getModifier(), MC2CDStereotypes.REFERENCED_SYMBOL);
   }
 

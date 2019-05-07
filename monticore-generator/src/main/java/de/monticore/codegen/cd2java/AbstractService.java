@@ -5,10 +5,7 @@ import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDStereoValue;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTModifier;
+import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.JavaNamesHelper;
 
@@ -96,6 +93,10 @@ public class AbstractService<T extends AbstractService> {
 
   public boolean isMethodBodyPresent(ASTCDMethod method) {
     return hasStereotype(method.getModifier(), MC2CDStereotypes.METHOD_BODY);
+  }
+
+  public boolean isReferencedSymbolAttribute(ASTCDAttribute attribute) {
+    return attribute.isPresentModifier() && hasStereotype(attribute.getModifier(), MC2CDStereotypes.REFERENCED_SYMBOL_ATTRIBUTE);
   }
 
   public String getMethodBody(ASTCDMethod method) {

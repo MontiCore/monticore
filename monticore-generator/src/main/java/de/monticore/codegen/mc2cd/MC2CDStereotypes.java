@@ -17,9 +17,13 @@ public enum MC2CDStereotypes {
    */
   EXTERNAL_TYPE("externalType"),
   /**
-   * Referenced symbol
+   * Referenced symbol eg. Name@State -> String name; attribute is a referenced Symbol
    */
   REFERENCED_SYMBOL("referencedSymbol"),
+  /**
+   * Symbol to which is referenced eg. Name@State -> Optional<StateSymbol> nameSymbol;
+   */
+  REFERENCED_SYMBOL_ATTRIBUTE("referencedSymbolAttribute"),
   /**
    * To add default implementation to method
    */

@@ -68,8 +68,12 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
   }
 
   protected ASTCDConstructor createFullConstructor(ASTCDClass clazz) {
-    ASTCDConstructor fullConstructor = this.getCDConstructorFacade().createConstructor(PROTECTED, clazz.getName(), getCDParameterFacade().createParameters(clazz.getCDAttributeList()));
-    this.replaceTemplate(EMPTY_BODY, fullConstructor, new TemplateHookPoint("data.ConstructorAttributesSetter", clazz.getCDAttributeList()));
+    //remove referenced symbol attributes, because they are only calculated
+    List<ASTCDAttribute> attributeList = clazz.deepClone().getCDAttributeList().stream()
+        .filter(x->!service.isReferencedSymbolAttribute(x))
+        .collect(Collectors.toList());
+    ASTCDConstructor fullConstructor = this.getCDConstructorFacade().createConstructor(PROTECTED, clazz.getName(), getCDParameterFacade().createParameters(attributeList));
+    this.replaceTemplate(EMPTY_BODY, fullConstructor, new TemplateHookPoint("data.ConstructorAttributesSetter", attributeList));
     return fullConstructor;
   }
 

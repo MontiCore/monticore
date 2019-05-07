@@ -35,7 +35,9 @@ public class ReferencedSymbolOptAccessorDecorator extends OptionalAccessorDecora
     //have to ask here if the original attribute was an optional or mandatory String attribute
     //the template has to be different
     if (clazz.isPresentModifier() && clazz.getModifier().isPresentStereotype()) {
-      return clazz.getModifier().getStereotype().getValueList().stream().anyMatch(v -> v.getName().equals(ASTReferencedSymbolDecorator.IS_OPTIONAL));
+      return clazz.getModifier().getStereotype().getValueList()
+          .stream()
+          .anyMatch(v -> v.getName().equals(ASTReferencedSymbolDecorator.IS_OPTIONAL));
     }
     return false;
   }
