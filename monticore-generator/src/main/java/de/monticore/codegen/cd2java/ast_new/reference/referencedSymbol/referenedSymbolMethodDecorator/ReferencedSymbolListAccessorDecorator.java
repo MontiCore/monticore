@@ -15,11 +15,16 @@ public class ReferencedSymbolListAccessorDecorator extends ListAccessorDecorator
   }
 
   @Override
+  public String getAttributeType(ASTCDAttribute attribute) {
+    return "Optional<" + getTypeArgumentFromListType(attribute.getType()) + ">";
+  }
+
+  @Override
   protected ASTCDMethod createGetListMethod(ASTCDAttribute ast) {
     String signature = String.format(GET_LIST, attributeType, capitalizedAttributeNameWithS);
     ASTCDMethod getList = this.getCDMethodFacade().createMethodByDefinition(signature);
     String referencedSymbolTypeAsList = ast.printType();
-    String referencedSymbolType = referencedSymbolTypeAsList.substring(5, referencedSymbolTypeAsList.length()-1);
+    String referencedSymbolType = referencedSymbolTypeAsList.substring(5, referencedSymbolTypeAsList.length() - 1);
     this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint("ast_new.refSymbolMethods.GetSymbolList", ast.getName(), referencedSymbolType));
     return getList;
   }

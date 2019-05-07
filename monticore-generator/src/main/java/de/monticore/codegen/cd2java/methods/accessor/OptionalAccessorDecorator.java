@@ -34,15 +34,15 @@ public class OptionalAccessorDecorator extends AbstractDecorator<ASTCDAttribute,
   @Override
   public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
     //todo find better util than the DecorationHelper
-    setNaiveAttributeName(ast);
+    this.naiveAttributeName = getNaiveAttributeName(ast);
     ASTCDMethod get = createGetMethod(ast);
     ASTCDMethod getOpt = createGetOptMethod(ast);
     ASTCDMethod isPresent = createIsPresentMethod();
     return new ArrayList<>(Arrays.asList(get, getOpt, isPresent));
   }
 
-  protected void setNaiveAttributeName(ASTCDAttribute ast){
-    this.naiveAttributeName =StringUtils.capitalize(DecorationHelper.getNativeAttributeName(ast.getName()));
+  protected String getNaiveAttributeName(ASTCDAttribute ast) {
+    return StringUtils.capitalize(DecorationHelper.getNativeAttributeName(ast.getName()));
   }
 
   protected ASTCDMethod createGetMethod(final ASTCDAttribute ast) {

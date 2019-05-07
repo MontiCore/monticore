@@ -32,11 +32,11 @@ public abstract class ListMethodDecorator extends AbstractDecorator<ASTCDAttribu
   @Override
   public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
     //todo find better util than the DecorationHelper
-    this.capitalizedAttributeNameWithS = StringUtils.capitalize(DecorationHelper.getNativeAttributeName(ast.getName()));
+    this.capitalizedAttributeNameWithS = getCapitalizedAttributeNameWithS(ast);
     this.capitalizedAttributeNameWithOutS = (capitalizedAttributeNameWithS.endsWith("s"))
         ? capitalizedAttributeNameWithS.substring(0, capitalizedAttributeNameWithS.length() - 1) :
         capitalizedAttributeNameWithS;
-    this.attributeType = getTypeArgumentFromListType(ast.getType());
+    this.attributeType = getAttributeType(ast);
 
     List<ASTCDMethod> methods = getMethodSignatures().stream()
         .map(getCDMethodFacade()::createMethodByDefinition)
@@ -49,7 +49,7 @@ public abstract class ListMethodDecorator extends AbstractDecorator<ASTCDAttribu
 
   protected abstract List<String> getMethodSignatures();
 
-  private String getTypeArgumentFromListType(ASTType type) {
+  protected String getTypeArgumentFromListType(ASTType type) {
     String typeString = TypesPrinter.printType(type);
     int lastListIndex = typeString.lastIndexOf("List<") + 5;
     return typeString.substring(lastListIndex, typeString.length() - 1);
@@ -65,5 +65,13 @@ public abstract class ListMethodDecorator extends AbstractDecorator<ASTCDAttribu
     String returnType = method.printReturnType();
 
     return new TemplateHookPoint("methods.MethodDelegate", attributeName, methodName, parameterCall, returnType);
+  }
+
+  public String getCapitalizedAttributeNameWithS(ASTCDAttribute attribute) {
+    return StringUtils.capitalize(DecorationHelper.getNativeAttributeName(attribute.getName()));
+  }
+
+  public String getAttributeType(ASTCDAttribute attribute) {
+    return getTypeArgumentFromListType(attribute.getType());
   }
 }

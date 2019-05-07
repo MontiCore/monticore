@@ -13,7 +13,6 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 
 public class ListAccessorDecorator extends ListMethodDecorator {
 
-  //TODO distinguish between Methodnames with "s" oder without at the end of the Attributename
   protected static final String GET_LIST = "public List<%s> get%sList();";
   private static final String CONTAINS = "public boolean contains%s(Object element);";
   private static final String CONTAINS_ALL = "public boolean containsAll%s(Collection<?> collection);";

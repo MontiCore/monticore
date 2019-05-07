@@ -171,7 +171,6 @@ public class DecorationHelper extends TypesHelper {
   }
 
   public static boolean isListType(String type) {
-    // TODO : use symbol table
     int index = type.indexOf('<');
     if (index != -1) {
       type = type.substring(0, index);

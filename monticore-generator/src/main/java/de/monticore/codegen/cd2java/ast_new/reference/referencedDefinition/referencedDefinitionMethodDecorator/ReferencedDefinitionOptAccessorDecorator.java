@@ -25,9 +25,9 @@ public class ReferencedDefinitionOptAccessorDecorator extends OptionalAccessorDe
   }
 
   @Override
-  public void setNaiveAttributeName(ASTCDAttribute astcdAttribute) {
+  public String getNaiveAttributeName(ASTCDAttribute astcdAttribute) {
     //add Definition to Method names
-    this.naiveAttributeName = StringUtils.capitalize(DecorationHelper.getNativeAttributeName(astcdAttribute.getName())) + DEFINITION;
+    return StringUtils.capitalize(DecorationHelper.getNativeAttributeName(astcdAttribute.getName())) + DEFINITION;
   }
 
   @Override

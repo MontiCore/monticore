@@ -13,7 +13,6 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 
 public class ListMutatorDecorator extends ListMethodDecorator {
 
-  //TODO distinguish between Methodnames with "s" oder without at the end of the Attributename
   protected static final String SET_LIST = "public void set%sList(List<%s> %s);";
   protected static final String CLEAR = "public void clear%s();";
   protected static final String ADD = "public boolean add%s(%s element);";

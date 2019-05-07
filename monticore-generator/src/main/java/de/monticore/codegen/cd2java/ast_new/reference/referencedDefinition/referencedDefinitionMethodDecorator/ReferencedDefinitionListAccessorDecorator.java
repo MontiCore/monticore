@@ -1,11 +1,13 @@
 package de.monticore.codegen.cd2java.ast_new.reference.referencedDefinition.referencedDefinitionMethodDecorator;
 
+import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.accessor.ListAccessorDecorator;
 import de.monticore.codegen.cd2java.symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
+import org.apache.commons.lang3.StringUtils;
 
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.ast_new.reference.referencedDefinition.ASTReferencedDefinitionDecorator.DEFINITION;
@@ -21,8 +23,18 @@ public class ReferencedDefinitionListAccessorDecorator extends ListAccessorDecor
   }
 
   @Override
+  public String getCapitalizedAttributeNameWithS(ASTCDAttribute attribute) {
+    return StringUtils.capitalize(DecorationHelper.getNativeAttributeName(attribute.getName())) + DEFINITION;
+  }
+
+  @Override
+  public String getAttributeType(ASTCDAttribute attribute) {
+    return "Optional<" + getTypeArgumentFromListType(attribute.getType()) + ">";
+  }
+
+  @Override
   protected ASTCDMethod createGetListMethod(ASTCDAttribute ast) {
-    String signature = String.format(GET_LIST, attributeType, capitalizedAttributeNameWithOutS + DEFINITION + "s");
+    String signature = String.format(GET_LIST, attributeType, capitalizedAttributeNameWithS);
     ASTCDMethod getList = this.getCDMethodFacade().createMethodByDefinition(signature);
     String referencedSymbolType = symbolTableService.getReferencedSymbolTypeName(ast);
     String referencedNodeTypeAsList = ast.printType();
