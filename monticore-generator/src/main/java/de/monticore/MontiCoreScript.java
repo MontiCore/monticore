@@ -5,6 +5,7 @@ package de.monticore;
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 import de.monticore.codegen.GeneratorHelper;
+import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CDGenerator;
 import de.monticore.codegen.cd2java.ast.AstGenerator;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
@@ -493,17 +494,19 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
 
-  public void generateFromCD(GlobalExtensionManagement glex, ASTCDCompilationUnit astClassDiagram,
+  public void generateFromCD(GlobalExtensionManagement glex,ASTCDCompilationUnit oldCD,  ASTCDCompilationUnit decoratedCD,
                              File outputDirectory, IterablePath handcodedPath) {
+    // need symboltable of the old cd
+    glex.setGlobalValue("service", new AbstractService(oldCD));
     glex.setGlobalValue("astHelper", new DecorationHelper());
-    final String diagramName = astClassDiagram.getCDDefinition().getName();
+    final String diagramName = decoratedCD.getCDDefinition().getName();
     GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(outputDirectory);
     setup.setHandcodedPath(handcodedPath);
     setup.setModelName(diagramName);
     setup.setGlex(glex);
     CDGenerator generator = new CDGenerator(setup);
-    generator.generate(astClassDiagram);
+    generator.generate(decoratedCD);
   }
 
   /**

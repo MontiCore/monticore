@@ -1,5 +1,6 @@
 package de.monticore.codegen.cd2java.ast_new;
 
+import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.ast_interface.ASTInterfaceDecorator;
@@ -55,6 +56,7 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     this.decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "AST");
     this.originalCompilationUnit = decoratedCompilationUnit.deepClone();
+    this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
     ModelPath modelPath = new ModelPath(Paths.get("src/test/resources/de/monticore/codegen"));
     CD4AnalysisLanguage cd4aLanguage = new CD4AnalysisLanguage();

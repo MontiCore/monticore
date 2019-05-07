@@ -1,5 +1,6 @@
 package de.monticore.codegen.cd2java.mill;
 
+import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
@@ -36,10 +37,13 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
   @Before
   public void setUp() {
     this.glex = new GlobalExtensionManagement();
+
     this.cdTypeFacade = CDTypeFacade.getInstance();
 
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "factory", "CGrammar");
+    glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
+
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     MillDecorator decorator = new MillDecorator(this.glex);
     this.millClass = decorator.decorate(decoratedCompilationUnit);

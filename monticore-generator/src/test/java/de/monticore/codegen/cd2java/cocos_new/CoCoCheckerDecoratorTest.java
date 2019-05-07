@@ -1,5 +1,6 @@
 package de.monticore.codegen.cd2java.cocos_new;
 
+import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
@@ -63,6 +64,8 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
   public void setup() {
     LogStub.init();
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "ast", "Automaton");
+    this.glex.setGlobalValue("service", new AbstractService(ast));
+
     MethodDecorator methodDecorator = new MethodDecorator(glex);
     CoCoCheckerDecorator coCoCheckerDecorator = new CoCoCheckerDecorator(glex, methodDecorator, new CoCoService(ast), new VisitorService(ast));
     this.cocoChecker = coCoCheckerDecorator.decorate(ast);

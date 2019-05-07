@@ -1,5 +1,6 @@
 package de.monticore.codegen.cd2java.visitor;
 
+import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
@@ -56,6 +57,8 @@ public class ASTVisitorDecoratorTest extends DecoratorTestCase {
 
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
+    this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
+
     this.glex.setGlobalValue("genHelper", new DecorationHelper());
     ASTVisitorDecorator decorator = new ASTVisitorDecorator(this.glex,
         new VisitorDecorator(this.glex, new VisitorService(decoratedCompilationUnit)),

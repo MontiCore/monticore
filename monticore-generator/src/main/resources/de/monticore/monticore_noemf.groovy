@@ -82,7 +82,7 @@ for (astGrammar in getParsedGrammars()) {
 
   // M7: decorate Class Diagram AST
   decoratedASTClassDiagramm = decorateForASTPackage(glex, astClassDiagram, modelPath, handcodedPath)
-  generateFromCD(glex, decoratedASTClassDiagramm, out, handcodedPath)
+  generateFromCD(glex, astClassDiagram, decoratedASTClassDiagramm, out, handcodedPath)
 
   Log.info("Grammar " + astGrammar.getName() + " processed successfully!", LOG_ID)
 

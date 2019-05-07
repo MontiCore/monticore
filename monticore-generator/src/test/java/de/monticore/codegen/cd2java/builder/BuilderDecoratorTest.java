@@ -1,5 +1,6 @@
 package de.monticore.codegen.cd2java.builder;
 
+import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
@@ -33,8 +34,10 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
   @Before
   public void setup() {
     LogStub.init();
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "builder", "Builder");
+    this.glex.setGlobalValue("service", new AbstractService(ast));
+    this.glex.setGlobalValue("astHelper", new DecorationHelper());
+
     originalClass = getClassBy("A", ast);
 
     AccessorDecorator methodDecorator = new AccessorDecorator(glex);

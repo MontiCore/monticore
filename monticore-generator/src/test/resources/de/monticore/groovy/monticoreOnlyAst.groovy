@@ -37,7 +37,7 @@ while (grammarIterator.hasNext()) {
     generateODs(glex, globalScope, astClassDiagramWithST, out)
 
     decoratedASTClassDiagramm = decorateForASTPackage(glex, astClassDiagramWithST, modelPath, handcodedPath)
-    generateFromCD(glex, decoratedASTClassDiagramm, out, handcodedPath)
+    generateFromCD(glex,astClassDiagramWithST, decoratedASTClassDiagramm, out, handcodedPath)
 
   }
 }

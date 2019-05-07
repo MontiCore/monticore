@@ -1,5 +1,6 @@
 package de.monticore.codegen.cd2java.ast_new.reference.referencedSymbol;
 
+import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.ast_new.reference.ASTReferenceDecorator;
@@ -36,6 +37,8 @@ public class ASTReferencedSymbolDecoratorMandatoryTest extends DecoratorTestCase
     this.cdTypeFacade = CDTypeFacade.getInstance();
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "ReferencedSymbol");
+    this.glex.setGlobalValue("service", new AbstractService(ast));
+
     ASTReferenceDecorator decorator = new ASTReferenceDecorator(this.glex, new SymbolTableService(ast));
     ASTCDClass clazz = getClassBy("ASTBarMand", ast);
     this.astClass = decorator.decorate(clazz);

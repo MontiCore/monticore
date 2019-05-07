@@ -1,5 +1,6 @@
 package de.monticore.codegen.cd2java.ast_interface;
 
+import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.ast_new.ASTService;
@@ -34,8 +35,9 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
   public void setUp() {
     this.glex = new GlobalExtensionManagement();
 
-    this.glex.setGlobalValue("astHelper", new DecorationHelper());
     ASTCDCompilationUnit astcdCompilationUnit = this.parse("de", "monticore", "codegen", "data", "DataInterface");
+    this.glex.setGlobalValue("service", new AbstractService(astcdCompilationUnit));
+    this.glex.setGlobalValue("astHelper", new DecorationHelper());
 
     ASTCDInterface interfaceBy = getInterfaceBy("ASTA", astcdCompilationUnit);
     ASTInterfaceDecorator decorator = new ASTInterfaceDecorator(this.glex, new ASTService(astcdCompilationUnit), new VisitorService(astcdCompilationUnit));

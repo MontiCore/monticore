@@ -1,5 +1,6 @@
 package de.monticore.codegen.cd2java.data;
 
+import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.ast_new.ASTService;
@@ -28,6 +29,7 @@ public class DataDecoratorTest extends DecoratorTestCase {
   public void setUp() {
     ASTCDCompilationUnit cd = this.parse("de", "monticore", "codegen", "data", "Data");
     ASTCDClass clazz = getClassBy("A", cd);
+    this.glex.setGlobalValue("service", new AbstractService(cd));
 
     MethodDecorator methodDecorator = new MethodDecorator(glex);
     DataDecorator dataDecorator = new DataDecorator(this.glex, methodDecorator, new ASTService(cd), new DataDecoratorUtil());
@@ -254,8 +256,8 @@ public class DataDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testGeneratedAutomatonCode() {
-    GlobalExtensionManagement glex = new GlobalExtensionManagement();
     ASTCDCompilationUnit cd = this.parse("de", "monticore", "codegen", "ast", "Automaton");
+
     ASTCDClass clazz = getClassBy("ASTAutomaton", cd);
 
     MethodDecorator methodDecorator = new MethodDecorator(glex);

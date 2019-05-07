@@ -1,5 +1,6 @@
 package de.monticore.codegen.cd2java.data;
 
+import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
@@ -30,6 +31,7 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
   public void setUp() {
     ASTCDCompilationUnit cd = this.parse("de", "monticore", "codegen", "data", "DataInterface");
     ASTCDInterface clazz = getInterfaceBy("ASTA", cd);
+    this.glex.setGlobalValue("service", new AbstractService(cd));
 
     MethodDecorator methodDecorator = new MethodDecorator(glex);
     InterfaceDecorator dataDecorator = new InterfaceDecorator(this.glex, new DataDecoratorUtil(), methodDecorator);

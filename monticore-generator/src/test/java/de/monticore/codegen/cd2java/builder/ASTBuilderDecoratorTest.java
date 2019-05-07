@@ -1,5 +1,6 @@
 package de.monticore.codegen.cd2java.builder;
 
+import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.ast_new.ASTService;
@@ -35,7 +36,9 @@ public class ASTBuilderDecoratorTest extends DecoratorTestCase {
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
 
     ASTCDClass cdClass = getClassBy("A", decoratedCompilationUnit);
+    this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
+
     AccessorDecorator methodDecorator = new AccessorDecorator(glex);
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, methodDecorator);
     ASTBuilderDecorator builderASTNodeDecorator = new ASTBuilderDecorator(glex, builderDecorator, new ASTService(decoratedCompilationUnit));

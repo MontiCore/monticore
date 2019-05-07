@@ -21,18 +21,22 @@ public enum MC2CDStereotypes {
    */
   REFERENCED_SYMBOL("referencedSymbol"),
   /**
-   * Referenced symbol
+   * To add default implementation to method
    */
   DEFAULT_IMPLEMENTATION("defaultImplementation"),
   /**
-   * Referenced symbol
+   * To mark class as symbol
    */
   SYMBOL("symbol"),
   /**
-   * Referenced symbol
+   * To mark class as scope
    */
-  SCOPE("scope");
-  
+  SCOPE("scope"),
+  /**
+   * To add bodies to methods
+   */
+  METHOD_BODY("methodBody");
+
   private final String stereotype;
   
   private MC2CDStereotypes(String stereotype) {

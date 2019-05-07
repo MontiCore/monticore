@@ -8,11 +8,8 @@ import de.monticore.umlcd4a.CD4AnalysisHelper;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTModifier;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.Names;
-
-import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.ast_new.ASTConstants.AST_PREFIX;
 import static de.monticore.utils.Names.getSimpleName;
@@ -83,21 +80,14 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public boolean isReferencedSymbolAttribute(ASTCDAttribute attribute) {
-    return hasStereotype(attribute.getModifierOpt(), MC2CDStereotypes.REFERENCED_SYMBOL);
+    return attribute.isPresentModifier() && hasStereotype(attribute.getModifier(), MC2CDStereotypes.REFERENCED_SYMBOL);
   }
 
   public boolean isSymbolClass(ASTCDClass clazz) {
-    return hasStereotype(clazz.getModifierOpt(), MC2CDStereotypes.SYMBOL);
+    return clazz.isPresentModifier() && hasStereotype(clazz.getModifier(), MC2CDStereotypes.SYMBOL);
   }
 
   public boolean isScopeClass(ASTCDClass clazz) {
-    return hasStereotype(clazz.getModifierOpt(), MC2CDStereotypes.SCOPE);
-  }
-
-  private boolean hasStereotype(Optional<ASTModifier> modifier, MC2CDStereotypes stereotype) {
-    if (modifier.isPresent() && modifier.get().isPresentStereotype()) {
-      return modifier.get().getStereotype().getValueList().stream().anyMatch(v -> v.getName().equals(stereotype.toString()));
-    }
-    return false;
+    return clazz.isPresentModifier() && hasStereotype(clazz.getModifier(), MC2CDStereotypes.SCOPE);
   }
 }

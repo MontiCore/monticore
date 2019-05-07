@@ -1,5 +1,6 @@
 package de.monticore.codegen.cd2java.ast_interface;
 
+import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.ast_new.ASTService;
@@ -31,10 +32,14 @@ public class ASTLanguageInterfaceDecoratorTest extends DecoratorTestCase {
 
   private ASTCDCompilationUnit decoratedCompilationUnit;
 
+  private GlobalExtensionManagement glex= new GlobalExtensionManagement();
+
   @Before
   public void setUp() {
     this.cdTypeFacade = CDTypeFacade.getInstance();
     originalCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
+    this.glex.setGlobalValue("service", new AbstractService(originalCompilationUnit));
+
     ASTService astService = new ASTService(originalCompilationUnit);
     VisitorService visitorService = new VisitorService(originalCompilationUnit);
     ASTLanguageInterfaceDecorator decorator = new ASTLanguageInterfaceDecorator(astService, visitorService);
@@ -78,7 +83,7 @@ public class ASTLanguageInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testGeneratedCode() {
     GeneratorSetup generatorSetup = new GeneratorSetup();
-    generatorSetup.setGlex(new GlobalExtensionManagement());
+    generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, languageInterface, languageInterface);
     System.out.println(sb.toString());

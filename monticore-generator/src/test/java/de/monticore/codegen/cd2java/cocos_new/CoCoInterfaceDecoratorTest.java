@@ -1,27 +1,26 @@
 package de.monticore.codegen.cd2java.cocos_new;
 
+import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.ast_new.ASTService;
-import de.monticore.codegen.cd2java.builder.BuilderDecorator;
-import de.monticore.codegen.cd2java.factories.DecorationHelper;
-import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.umlcd4a.cd4analysis._ast.*;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
 
-import static de.monticore.codegen.cd2java.DecoratorAssert.*;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
-import static de.monticore.codegen.cd2java.builder.BuilderDecorator.*;
-import static de.monticore.codegen.cd2java.factories.CDModifier.*;
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.*;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertVoid;
+import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC_ABSTRACT;
+import static org.junit.Assert.assertEquals;
 
 public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
 
@@ -33,6 +32,8 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
   public void setup() {
     LogStub.init();
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "cocos", "CoCos");
+    this.glex.setGlobalValue("service", new AbstractService(ast));
+
     CoCoInterfaceDecorator coCoInterfaceDecorator = new CoCoInterfaceDecorator(glex, new CoCoService(ast), new ASTService(ast));
     this.interfaces = coCoInterfaceDecorator.decorate(ast.getCDDefinition());
   }

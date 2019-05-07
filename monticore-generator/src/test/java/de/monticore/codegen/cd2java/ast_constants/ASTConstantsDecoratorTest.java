@@ -1,5 +1,6 @@
 package de.monticore.codegen.cd2java.ast_constants;
 
+import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.constants.ASTConstantsDecorator;
@@ -42,7 +43,9 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
-    
+    this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
+
+
     ASTConstantsDecorator decorator = new ASTConstantsDecorator(this.glex);
     this.constantClass = decorator.decorate(decoratedCompilationUnit);
   }

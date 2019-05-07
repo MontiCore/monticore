@@ -1,5 +1,6 @@
 package de.monticore.codegen.cd2java.data;
 
+import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.ast_new.ASTService;
@@ -31,6 +32,8 @@ public class FullConstructorTest extends DecoratorTestCase {
   public void setup() {
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "data", "SupData");
+    this.glex.setGlobalValue("service", new AbstractService(ast));
+
     DataDecorator dataDecorator = new DataDecorator(this.glex, new MethodDecorator(glex), new ASTService(ast), new DataDecoratorUtil());
     ASTCDClass clazz = getClassBy("SupB", ast);
     this.subBClass = dataDecorator.decorate(clazz);
