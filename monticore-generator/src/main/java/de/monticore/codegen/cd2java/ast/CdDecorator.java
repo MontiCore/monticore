@@ -396,7 +396,7 @@ public class CdDecorator {
 
     HookPoint getMethodBodyOpt = new TemplateHookPoint(
         "ast.symbolreferencemethods.GetReferencedDefinitionOpt",
-        attributeName, referencedSymbol, symbolName);
+        attributeName, referencedSymbol);
     replaceMethodBodyTemplate(clazz, String.format(AstOptionalGetMethods.getOpt.getDeclaration(), referencedNode, definitionName), getMethodBodyOpt);
 
     HookPoint getMethodBodyIsPresent = new TemplateHookPoint(
