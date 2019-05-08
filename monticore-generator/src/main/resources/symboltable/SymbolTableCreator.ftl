@@ -46,8 +46,8 @@ public class ${className} implements ${grammarName}Visitor {
     putOnStack(Log.errorIfNull(enclosingScope));
   }
 
-  public ${className}(final Deque<${scopeName}> scopeStack) {
-    this.scopeStack = Log.errorIfNull(scopeStack);
+  public ${className}(final Deque<? extends ${scopeName}> scopeStack) {
+    this.scopeStack = Log.errorIfNull((Deque<${scopeName}>)scopeStack);
   }
 
   /**
