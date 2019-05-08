@@ -52,6 +52,21 @@ public class BasicLiteralsTypeCalculator implements LiteralTypeCalculator, Commo
   }
 
   @Override
+  public void visit(ASTBasicDoubleLiteral lit){
+    type = MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build();
+  }
+
+  @Override
+  public void visit(ASTBasicFloatLiteral lit){
+    type = MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.FLOAT).build();
+  }
+
+  @Override
+  public void visit(ASTBasicLongLiteral lit){
+    type = MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.LONG).build();
+  }
+
+  @Override
   public void visit(ASTStringLiteral lit){
     List<String> name = new ArrayList<>();
     name.add("String");
