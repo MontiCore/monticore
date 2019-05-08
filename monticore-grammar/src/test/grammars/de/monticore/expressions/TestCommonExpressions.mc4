@@ -2,9 +2,10 @@
 
 package de.monticore.expressions;
 
-grammar TestCommonExpressions extends de.monticore.expressions.CommonExpressions, de.monticore.MCBasics {
+grammar TestCommonExpressions extends de.monticore.expressions.CommonExpressions, de.monticore.MCBasicLiterals,
+                                      de.monticore.MCBasics {
   start Expression;
-  //FooBarBlub implements Expression = Name;
-  NameExpression implements Expression = (Name || ".")+;
+
+  ExtLiteral = Literal;
 
 }
