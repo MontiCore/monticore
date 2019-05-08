@@ -4,6 +4,8 @@ import de.monticore.ast.ASTNode;
 import de.monticore.expressions.assignmentexpressions._ast.*;
 import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsInheritanceVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTExtLiteralExt;
+import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.types.mcbasictypes._ast.*;
@@ -12,20 +14,15 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
 
-public class AssignmentExpressionTypesCalculator implements AssignmentExpressionsInheritanceVisitor {
-
-  private LiteralTypeCalculator literalsVisitor;
+public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCalculator implements AssignmentExpressionsInheritanceVisitor {
 
   private final String errorCode="0xA0143 ";
 
-  private Map<ASTNode, MCTypeSymbol> types;
-
-  private ASTMCType result;
-
-  private ExpressionsBasisScope scope;
-
   public AssignmentExpressionTypesCalculator(){
-    types = new HashMap<>();
+    types = super.getTypes();
+    literalsVisitor=super.getLiteralsVisitor();
+    result=super.getResult();
+    scope=super.getScope();
   }
 
   @Override
@@ -221,19 +218,8 @@ public class AssignmentExpressionTypesCalculator implements AssignmentExpression
   }
 
   @Override
-  public void endVisit(ASTLiteralExpression expr){
-    ASTMCType result=null;
-    if(types.containsKey(expr.getEExtLiteral())){
-      result=types.get(expr.getEExtLiteral()).getASTMCType();
-    }
-    if(result!=null){
-      this.result=result;
-      MCTypeSymbol res = new MCTypeSymbol(result.getBaseName());
-      res.setASTMCType(result);
-      types.put(expr,res);
-    }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
-    }
+  public void endVisit(ASTExtLiteralExt expr){
+
   }
 
   @Override
@@ -420,14 +406,6 @@ public class AssignmentExpressionTypesCalculator implements AssignmentExpression
     }
   }
 
-  public Map<ASTNode, MCTypeSymbol> getTypes() {
-    return types;
-  }
-
-  public ASTMCType getResult() {
-    return result;
-  }
-
   private ASTMCType calculateTypeArithmetic(ASTExpression left, ASTExpression right){
     ASTMCType result = null;
     if(types.containsKey(left)&&types.containsKey(right)) {
@@ -443,22 +421,6 @@ public class AssignmentExpressionTypesCalculator implements AssignmentExpression
       }
     }
     return result;
-  }
-
-  public void setScope(ExpressionsBasisScope scope){
-    this.scope=scope;
-  }
-
-  public ExpressionsBasisScope getScope(){
-    return scope;
-  }
-
-  public void setLiteralsVisitor(LiteralTypeCalculator literalsVisitor){
-    this.literalsVisitor=literalsVisitor;
-  }
-
-  public LiteralTypeCalculator getLiteralsVisitor(){
-    return literalsVisitor;
   }
 
   //TODO: bisher nur double und int behandelt, bei += auch String, es fehlen noch RegularAssignmentExpr, AndAssignmentExpr, OrAssignmentExpr, BinaryXorAssignmentExpr, RightShiftAssignmentExpr, LeftShiftAssignmentExpr, LogicalRightAssignmentExpr und die Tests

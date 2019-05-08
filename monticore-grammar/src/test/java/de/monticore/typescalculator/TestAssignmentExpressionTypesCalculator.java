@@ -14,44 +14,7 @@ import de.monticore.typescalculator.testassignmentexpressions._visitor.TestAssig
 import java.util.Map;
 import java.util.Optional;
 
-public class TestAssignmentExpressionTypesCalculator extends AssignmentExpressionTypesCalculator implements TestAssignmentExpressionsVisitor {
-  private Map<ASTNode, MCTypeSymbol> types;
+public class TestAssignmentExpressionTypesCalculator extends AssignmentExpressionsWithLiteralsTypesCalculator implements TestAssignmentExpressionsVisitor {
 
-  private ASTMCType result;
 
-  private LiteralTypeCalculator literalsVisitor;
-
-  private ExpressionsBasisScope scope;
-
-  public TestAssignmentExpressionTypesCalculator(){
-    types=getTypes();
-    result=getResult();
-    scope=getScope();
-    literalsVisitor=getLiteralsVisitor();
-  }
-
-  @Override
-  public void endVisit(ASTNameExpression expr){
-    Optional<EVariableSymbol> var = scope.resolveEVariable(expr.getName());
-    MCTypeSymbol sym = var.get().getMCTypeSymbol();
-    types.put(expr,sym);
-  }
-
-  @Override
-  public void endVisit(ASTEExtLiteral expr){
-    ASTMCType type = literalsVisitor.calculateType(expr.getLiteral());
-    MCTypeSymbol sym = new MCTypeSymbol(type.getBaseName());
-    sym.setASTMCType(type);
-    types.put(expr,sym);
-  }
-
-  public void setScope(ExpressionsBasisScope scope){
-    this.scope=scope;
-    super.setScope(scope);
-  }
-
-  public void setLiteralsVisitor(LiteralTypeCalculator literalsVisitor){
-    this.literalsVisitor=literalsVisitor;
-    super.setLiteralsVisitor(literalsVisitor);
-  }
 }

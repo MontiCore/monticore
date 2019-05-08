@@ -9,18 +9,11 @@ package de.monticore.expressions;
 
 component grammar AssignmentExpressions extends de.monticore.expressions.ExpressionsBasis {
 
-/**
- * When combining the languages you can decide later if you want to use the complete
- * literals defined in Java (extending MCJavaLiterals)
- * or if you want to use a smaller variant (extending MCBasicLiterals)
- */
- external EExtLiteral;
-
- NameExpression implements Expression <350>
-     = Name;
-
- LiteralExpression implements Expression <340>
-     = EExtLiteral;
+// NameExpression implements Expression <350>
+//     = Name;
+//
+// LiteralExpression implements Expression <340>
+//     = EExtLiteral;
 		
 IncSuffixExpression implements Expression <220> =
 	Expression "++";

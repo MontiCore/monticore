@@ -29,16 +29,6 @@ public abstract class AssignmentExpressionsAntlrListenerTest implements TestAssi
   }
 
   @Override
-  public void enterBooleanExpression(TestAssignmentExpressionsAntlrParser.BooleanExpressionContext ctx) {
-    System.out.println("Enter BooleanExpression");
-  }
-
-  @Override
-  public void exitBooleanExpression(TestAssignmentExpressionsAntlrParser.BooleanExpressionContext ctx) {
-    System.out.println("Exit BooleanExpression");
-  }
-
-  @Override
   public void enterNameExpression_eof(TestAssignmentExpressionsAntlrParser.NameExpression_eofContext ctx) {
     System.out.println("Enter NameExpression eof");
 
@@ -179,18 +169,6 @@ public abstract class AssignmentExpressionsAntlrListenerTest implements TestAssi
   @Override
   public void exitExpression(TestAssignmentExpressionsAntlrParser.ExpressionContext ctx) {
     System.out.println("Exit Expression");
-
-  }
-
-  @Override
-  public void enterBooleanExpression_eof(TestAssignmentExpressionsAntlrParser.BooleanExpression_eofContext ctx) {
-    System.out.println("Enter BooleanExpression eof");
-
-  }
-
-  @Override
-  public void exitBooleanExpression_eof(TestAssignmentExpressionsAntlrParser.BooleanExpression_eofContext ctx) {
-    System.out.println("Exit BooleanExpression eof");
 
   }
 
@@ -494,41 +472,6 @@ public abstract class AssignmentExpressionsAntlrListenerTest implements TestAssi
 
   }
 
-  @Override
-  public void enterIntExpression_eof(TestAssignmentExpressionsAntlrParser.IntExpression_eofContext ctx) {
-    System.out.println("Enter IntExpression eof");
-
-  }
-
-  @Override
-  public void exitIntExpression_eof(TestAssignmentExpressionsAntlrParser.IntExpression_eofContext ctx) {
-    System.out.println("Exit IntExpression eof");
-
-  }
-
-  @Override
-  public void enterIntExpression(TestAssignmentExpressionsAntlrParser.IntExpressionContext ctx) {
-    System.out.println("Enter IntExpression");
-
-  }
-
-  @Override
-  public void exitIntExpression(TestAssignmentExpressionsAntlrParser.IntExpressionContext ctx) {
-    System.out.println("Exit IntExpression");
-
-  }
-
-  @Override
-  public void enterDoubleExpression_eof(TestAssignmentExpressionsAntlrParser.DoubleExpression_eofContext ctx) {
-    System.out.println("Enter DoubleExpression eof");
-
-  }
-
-  @Override
-  public void exitDoubleExpression_eof(TestAssignmentExpressionsAntlrParser.DoubleExpression_eofContext ctx) {
-    System.out.println("Exit DoubleExpression eof");
-
-  }
 
   @Override
   public void enterDecPrefixExpression_eof(TestAssignmentExpressionsAntlrParser.DecPrefixExpression_eofContext ctx) {
@@ -541,19 +484,6 @@ public abstract class AssignmentExpressionsAntlrListenerTest implements TestAssi
     System.out.println("exit DecPrefixExpression eof");
 
   }
-
-  @Override
-  public void enterDoubleExpression(TestAssignmentExpressionsAntlrParser.DoubleExpressionContext ctx) {
-    System.out.println("enter DoubleExpression");
-
-  }
-
-  @Override
-  public void exitDoubleExpression(TestAssignmentExpressionsAntlrParser.DoubleExpressionContext ctx) {
-    System.out.println("exit DoubleExpression");
-
-  }
-
 
   @Override
   public void visitTerminal(TerminalNode terminalNode) {
