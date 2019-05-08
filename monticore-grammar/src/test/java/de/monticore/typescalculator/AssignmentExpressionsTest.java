@@ -3,12 +3,10 @@ package de.monticore.typescalculator;
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.*;
-import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
-import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
 import de.monticore.typescalculator.testassignmentexpressions._parser.TestAssignmentExpressionsParser;
+import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,19 +35,20 @@ public class AssignmentExpressionsTest {
         return new TestAssignmentExpressionsParser();
       }
     };
+    Log.enableFailQuick(false);
 
     scope = new ExpressionsBasisScope();
     scope.setResolvingFilters(expressionsBasisLanguage.getResolvingFilters());
     EVariableSymbol symbol = new EVariableSymbol("varInt");
     MCTypeSymbol typeSymbol = new MCTypeSymbol("int");
-    typeSymbol.setASTMCType(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT));
+    typeSymbol.setASTMCType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build());
     typeSymbol.setEVariableSymbol(symbol);
     symbol.setMCTypeSymbol(typeSymbol);
     scope.add(symbol);
 
 //    symbol = new EVariableSymbol("varDouble");
 //    typeSymbol = new MCTypeSymbol("double");
-//    typeSymbol.setASTMCType(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE));
+//    typeSymbol.setASTMCType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build());
 //    typeSymbol.setEVariableSymbol(symbol);
 //    symbol.setMCTypeSymbol(typeSymbol);
 //    scope.add(symbol);
@@ -61,7 +60,7 @@ public class AssignmentExpressionsTest {
     name.add("String");
     typeSymbol = new MCTypeSymbol("java.lang.String");
     typeSymbol.setEVariableSymbol(symbol);
-    typeSymbol.setASTMCType(new ASTMCQualifiedType(new ASTMCQualifiedName(name)));
+    typeSymbol.setASTMCType(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build());
     symbol.setMCTypeSymbol(typeSymbol);
     scope.add(symbol);
 
@@ -71,14 +70,14 @@ public class AssignmentExpressionsTest {
     name.add("util");
     name.add("List");
     typeSymbol = new MCTypeSymbol("java.lang.String");
-    typeSymbol.setASTMCType(new ASTMCQualifiedType(new ASTMCQualifiedName(name)));
+    typeSymbol.setASTMCType(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build());
     typeSymbol.setEVariableSymbol(symbol);
     symbol.setMCTypeSymbol(typeSymbol);
     scope.add(symbol);
 
     symbol = new EVariableSymbol("varChar");
     typeSymbol= new MCTypeSymbol("char");
-    typeSymbol.setASTMCType(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.CHAR));
+    typeSymbol.setASTMCType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build());
     typeSymbol.setEVariableSymbol(symbol);
     symbol.setMCTypeSymbol(typeSymbol);
     scope.add(symbol);
@@ -89,7 +88,7 @@ public class AssignmentExpressionsTest {
     name.add("lang");
     name.add("Integer");
     typeSymbol=new MCTypeSymbol("java.lang.Integer");
-    typeSymbol.setASTMCType(new ASTMCQualifiedType(new ASTMCQualifiedName(name)));
+    typeSymbol.setASTMCType(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build());
     typeSymbol.setEVariableSymbol(symbol);
     symbol.setMCTypeSymbol(typeSymbol);
     scope.add(symbol);
@@ -99,7 +98,7 @@ public class AssignmentExpressionsTest {
     name.add("B");
     typeSymbol=new MCTypeSymbol("B");
     typeSymbol.setEVariableSymbol(symbolB);
-    typeSymbol.setASTMCType(new ASTMCQualifiedType(new ASTMCQualifiedName(name)));
+    typeSymbol.setASTMCType(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build());
     symbolB.setMCTypeSymbol(typeSymbol);
 
     symbol = new EVariableSymbol("varA");
@@ -109,7 +108,7 @@ public class AssignmentExpressionsTest {
     List<MCTypeSymbol> subtypes= new ArrayList<>();
     subtypes.add(symbolB.getMCTypeSymbol());
     typeSymbol.setSubtypes(subtypes);
-    typeSymbol.setASTMCType(new ASTMCQualifiedType(new ASTMCQualifiedName(name)));
+    typeSymbol.setASTMCType(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build());
     typeSymbol.setEVariableSymbol(symbol);
     symbol.setMCTypeSymbol(typeSymbol);
     List<MCTypeSymbol> superTypes= new ArrayList<>();
@@ -142,11 +141,11 @@ public class AssignmentExpressionsTest {
 
     assertTrue(o.isPresent());
     o.get().accept(calc);
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
 
     assertTrue(r.isPresent());
     r.get().accept(calc);
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
   }
 
   @Test
@@ -159,11 +158,11 @@ public class AssignmentExpressionsTest {
 
     assertTrue(o.isPresent());
     o.get().accept(calc);
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
 
     assertTrue(r.isPresent());
     r.get().accept(calc);
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
   }
 
   @Test
@@ -176,11 +175,11 @@ public class AssignmentExpressionsTest {
 
     assertTrue(o.isPresent());
     o.get().accept(calc);
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
 
     assertTrue(r.isPresent());
     r.get().accept(calc);
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
   }
 
   @Test
@@ -193,11 +192,11 @@ public class AssignmentExpressionsTest {
 
     assertTrue(o.isPresent());
     o.get().accept(calc);
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
 
     assertTrue(r.isPresent());
     r.get().accept(calc);
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
   }
 
   @Test
@@ -210,11 +209,11 @@ public class AssignmentExpressionsTest {
 
     assertTrue(o.isPresent());
     o.get().accept(calc);
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
 
     assertTrue(r.isPresent());
     r.get().accept(calc);
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
   }
 
   @Test
@@ -228,11 +227,11 @@ public class AssignmentExpressionsTest {
 
     assertTrue(o.isPresent());
     o.get().accept(calc);
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
 
     assertTrue(r.isPresent());
     r.get().accept(calc);
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
   }
 
   @Test
@@ -253,26 +252,26 @@ public class AssignmentExpressionsTest {
 
     assertTrue(o.isPresent());
     o.get().accept(calc);
-    assertEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).getBaseName(), calc.getResult().getBaseName());
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().getBaseName(), calc.getResult().getBaseName());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
 
 //    assertTrue(r.isPresent());
 //    r.get().accept(calc);
-//    assertEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).getBaseName(), calc.getResult().getBaseName());
-//    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+//    assertEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().getBaseName(), calc.getResult().getBaseName());
+//    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.getResult()));
 
 //    assertTrue(s.isPresent());
 //    s.get().accept(calc);
-//    assertEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE).getBaseName(), calc.getResult().getBaseName());
-//    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE).deepEquals(calc.getResult()));
+//    assertEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().getBaseName(), calc.getResult().getBaseName());
+//    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.getResult()));
 //
 //    assertTrue(t.isPresent());
 //    t.get().accept(calc);
-//    assertEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE), calc.getResult());
+//    assertEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build(), calc.getResult());
 
     assertTrue(u.isPresent());
     u.get().accept(calc);
-    assertTrue(new ASTMCQualifiedType(new ASTMCQualifiedName(name)).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(calc.getResult()));
 
   }
 
@@ -289,22 +288,22 @@ public class AssignmentExpressionsTest {
 
     assertTrue(o.isPresent());
     o.get().accept(calc);
-    assertEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).getBaseName(), calc.getResult().getBaseName());
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().getBaseName(), calc.getResult().getBaseName());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
 
 //    assertTrue(r.isPresent());
 //    r.get().accept(calc);
-//    assertEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE).getBaseName(), calc.getResult().getBaseName());
-//    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE).deepEquals(calc.getResult()));
+//    assertEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().getBaseName(), calc.getResult().getBaseName());
+//    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.getResult()));
 //
 //    assertTrue(s.isPresent());
 //    s.get().accept(calc);
-//    assertEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE).getBaseName(), calc.getResult().getBaseName());
-//    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE).deepEquals(calc.getResult()));
+//    assertEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().getBaseName(), calc.getResult().getBaseName());
+    ////    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.getResult()));
 
     //    assertTrue(t.isPresent());
     //    t.get().accept(calc);
-    //    assertEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT), calc.getResult());
+    //    assertEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build(), calc.getResult());
   }
 
   @Test
@@ -320,22 +319,22 @@ public class AssignmentExpressionsTest {
 
     assertTrue(o.isPresent());
     o.get().accept(calc);
-    assertEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).getBaseName(), calc.getResult().getBaseName());
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().getBaseName(), calc.getResult().getBaseName());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
 
-//    assertTrue(r.isPresent());
-//    r.get().accept(calc);
-//    assertEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE).getBaseName(), calc.getResult().getBaseName());
-//    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE).deepEquals(calc.getResult()));
-//
-//    assertTrue(s.isPresent());
-//    s.get().accept(calc);
-//    assertEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE).getBaseName(), calc.getResult().getBaseName());
-//    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE).deepEquals(calc.getResult()));
+    //    assertTrue(r.isPresent());
+    //    r.get().accept(calc);
+    //    assertEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().getBaseName(), calc.getResult().getBaseName());
+    //    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.getResult()));
     //
+    //    assertTrue(s.isPresent());
+    //    s.get().accept(calc);
+    //    assertEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().getBaseName(), calc.getResult().getBaseName());
+    ////    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.getResult()));
+
     //    assertTrue(t.isPresent());
     //    t.get().accept(calc);
-    //    assertEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE), calc.getResult());
+    //    assertEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build(), calc.getResult());
   }
 
   @Test
@@ -351,22 +350,22 @@ public class AssignmentExpressionsTest {
 
     assertTrue(o.isPresent());
     o.get().accept(calc);
-    assertEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).getBaseName(), calc.getResult().getBaseName());
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().getBaseName(), calc.getResult().getBaseName());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
 
-//    assertTrue(r.isPresent());
-//    r.get().accept(calc);
-//    assertEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE).getBaseName(), calc.getResult().getBaseName());
-//    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE).deepEquals(calc.getResult()));
-//
-//    assertTrue(s.isPresent());
-//    s.get().accept(calc);
-//    assertEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE).getBaseName(), calc.getResult().getBaseName());
-//    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE).deepEquals(calc.getResult()));
+    //    assertTrue(r.isPresent());
+    //    r.get().accept(calc);
+    //    assertEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().getBaseName(), calc.getResult().getBaseName());
+    //    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.getResult()));
     //
+    //    assertTrue(s.isPresent());
+    //    s.get().accept(calc);
+    //    assertEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().getBaseName(), calc.getResult().getBaseName());
+    ////    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.getResult()));
+
     //    assertTrue(t.isPresent());
     //    t.get().accept(calc);
-    //    assertEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE), calc.getResult());
+    //    assertEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build(), calc.getResult());
   }
 
   @Test
@@ -375,7 +374,7 @@ public class AssignmentExpressionsTest {
     Optional<ASTExpression> o = p.parse_StringExpression("varInt=3");
 //    Optional<ASTExpression> r = p.parse_StringExpression("varDouble=varInt");
 //    Optional<ASTExpression> s = p.parse_StringExpression("varDouble=12.7");
-//    Optional<ASTExpression> t = p.parse_StringExpression("varChar=12.7");
+//    Optional<ASTExpression> t = p.parse_StringExpression("varChar=12");
     Optional<ASTExpression> u = p.parse_StringExpression("varString=varString");
     Optional<ASTExpression> v = p.parse_StringExpression("varA=varB");
     TestAssignmentExpressionTypesCalculator calc = new TestAssignmentExpressionTypesCalculator();
@@ -388,33 +387,33 @@ public class AssignmentExpressionsTest {
 
     assertTrue(o.isPresent());
     o.get().accept(calc);
-    assertEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).getBaseName(), calc.getResult().getBaseName());
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().getBaseName(), calc.getResult().getBaseName());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
 
-//    assertTrue(r.isPresent());
-//    r.get().accept(calc);
-//    assertEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE).getBaseName(), calc.getResult().getBaseName());
-//    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE).deepEquals(calc.getResult()));
-//
-//    assertTrue(s.isPresent());
-//    s.get().accept(calc);
-//    assertEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE).getBaseName(), calc.getResult().getBaseName());
-//    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE).deepEquals(calc.getResult()));
+    //    assertTrue(r.isPresent());
+    //    r.get().accept(calc);
+    //    assertEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().getBaseName(), calc.getResult().getBaseName());
+    //    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.getResult()));
+    //
+    //    assertTrue(s.isPresent());
+    //    s.get().accept(calc);
+    //    assertEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().getBaseName(), calc.getResult().getBaseName());
+    ////    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.getResult()));
 
     //    assertTrue(t.isPresent());
     //    t.get().accept(calc);
-    //    assertEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.CHAR), calc.getResult());
+    //    assertEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build(), calc.getResult());
 
     assertTrue(u.isPresent());
     u.get().accept(calc);
-    assertTrue(new ASTMCQualifiedType(new ASTMCQualifiedName(name)).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(calc.getResult()));
 
     name=new ArrayList<>();
     name.add("A");
 
     assertTrue(v.isPresent());
     v.get().accept(calc);
-    assertTrue(new ASTMCQualifiedType(new ASTMCQualifiedName(name)).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(calc.getResult()));
   }
 
   @Test
@@ -429,15 +428,15 @@ public class AssignmentExpressionsTest {
 
     assertTrue(o.isPresent());
     o.get().accept(calc);
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
 
     assertTrue(r.isPresent());
     r.get().accept(calc);
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
 
     assertTrue(q.isPresent());
     q.get().accept(calc);
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.BOOLEAN).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build().deepEquals(calc.getResult()));
   }
 
   @Test
@@ -452,15 +451,15 @@ public class AssignmentExpressionsTest {
 
     assertTrue(o.isPresent());
     o.get().accept(calc);
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
 
     assertTrue(r.isPresent());
     r.get().accept(calc);
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
 
     assertTrue(q.isPresent());
     q.get().accept(calc);
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.BOOLEAN).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build().deepEquals(calc.getResult()));
   }
 
   @Test
@@ -475,15 +474,15 @@ public class AssignmentExpressionsTest {
 
     assertTrue(o.isPresent());
     o.get().accept(calc);
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
 
     assertTrue(r.isPresent());
     r.get().accept(calc);
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
 
     assertTrue(q.isPresent());
     q.get().accept(calc);
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.BOOLEAN).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build().deepEquals(calc.getResult()));
   }
 
   @Test
@@ -497,11 +496,11 @@ public class AssignmentExpressionsTest {
 
     assertTrue(o.isPresent());
     o.get().accept(calc);
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
 
     assertTrue(r.isPresent());
     r.get().accept(calc);
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
 
   }
 
@@ -516,11 +515,11 @@ public class AssignmentExpressionsTest {
 
     assertTrue(o.isPresent());
     o.get().accept(calc);
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
 
     assertTrue(r.isPresent());
     r.get().accept(calc);
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
   }
 
   @Test
@@ -534,11 +533,11 @@ public class AssignmentExpressionsTest {
 
     assertTrue(o.isPresent());
     o.get().accept(calc);
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
 
     assertTrue(r.isPresent());
     r.get().accept(calc);
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
   }
 
   @Test
@@ -554,22 +553,22 @@ public class AssignmentExpressionsTest {
 
     assertTrue(o.isPresent());
     o.get().accept(calc);
-    assertEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).getBaseName(), calc.getResult().getBaseName());
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().getBaseName(), calc.getResult().getBaseName());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
 
 //    assertTrue(r.isPresent());
 //    r.get().accept(calc);
-//    assertEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE).getBaseName(), calc.getResult().getBaseName());
-//    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE).deepEquals(calc.getResult()));
+//    assertEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().getBaseName(), calc.getResult().getBaseName());
+//    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.getResult()));
 //
 //    assertTrue(s.isPresent());
 //    s.get().accept(calc);
-//    assertEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE).getBaseName(), calc.getResult().getBaseName());
-//    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE).deepEquals(calc.getResult()));
+//    assertEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().getBaseName(), calc.getResult().getBaseName());
+//    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.getResult()));
     //
     //    assertTrue(t.isPresent());
     //    t.get().accept(calc);
-    //    assertEquals(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT), calc.getResult());
+    //    assertEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build(), calc.getResult());
   }
 
   @Test
@@ -597,25 +596,25 @@ public class AssignmentExpressionsTest {
     calc.setScope(scope);
 
 //    o.get().accept(calc);
-//    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE).deepEquals(calc.getResult()));
+//    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.getResult()));
 
     q.get().accept(calc);
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
 
     r.get().accept(calc);
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
 
 //    s.get().accept(calc);
-//    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE).deepEquals(calc.getResult()));
+//    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.getResult()));
 
     t.get().accept(calc);
-    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.INT).deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
 
 //    u.get().accept(calc);
-//    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE).deepEquals(calc.getResult()));
+//    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.getResult()));
 //
 //    v.get().accept(calc);
-//    assertTrue(new ASTMCPrimitiveType(ASTConstantsMCBasicTypes.DOUBLE).deepEquals(calc.getResult()));
+//    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.getResult()));
   }
 
 }
