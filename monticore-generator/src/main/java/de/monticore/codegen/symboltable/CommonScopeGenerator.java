@@ -89,6 +89,17 @@ public class CommonScopeGenerator implements ScopeGenerator {
         spanningSymbolNames.put(name,kind);
       }
     }
+  
+    Map<String, String> allSymbols = new HashMap<String, String>();
+    Map<String, String> allSpanningSymbolNames = new HashMap<String, String>();
+    for (MCProdSymbol sym : allSymbolDefiningRulesWithSuperGrammar) {
+      String name = getSimpleName(sym.getName());
+      String kind = genHelper.getQualifiedProdName(sym) + GeneratorHelper.SYMBOL;
+      allSymbols.put(name, kind);
+      if(sym.isScopeDefinition()){
+        allSpanningSymbolNames.put(name,kind);
+      }
+    }
 
     // Maps Symbol Name to Symbol Kind Name
     Map<String, String> symbolNamesWithSuperGrammar = new HashMap<>();
@@ -120,7 +131,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
     // list of all superscope interfaces of the current scope
     Set<String> allSuperScopes = new HashSet<>();
     for (CDSymbol cdSymbol : genHelper.getAllSuperCds(genHelper.getCd())) {
-      if (!genHelper.isComponentGrammar(cdSymbol.getFullName())) {
+      if (genHelper.hasSymbolTable(cdSymbol.getFullName())) {
         String qualifiedSymbolName = genHelper.getQualifiedScopeInterfaceType(cdSymbol);
         if (!qualifiedSymbolName.isEmpty()) {
           allSuperScopes.add(qualifiedSymbolName);
@@ -131,7 +142,7 @@ public class CommonScopeGenerator implements ScopeGenerator {
     // list of local superscope interfaces that the interface must extend
     Set<String> localSuperScopes = new HashSet<>();
     for (String symbol : genHelper.getSuperGrammarCds()) {
-      if (!genHelper.isComponentGrammar(symbol)) {
+      if (genHelper.hasSymbolTable(symbol)) {
         String qualifiedSymbolName = genHelper.getQualifiedScopeInterfaceType(symbol);
         if (!qualifiedSymbolName.isEmpty()) {
         	localSuperScopes.add(qualifiedSymbolName);
@@ -175,7 +186,8 @@ public class CommonScopeGenerator implements ScopeGenerator {
 
     genEngine.generateNoA("symboltable.ArtifactScope", artifactScopeFilePath, artifactScopeClassName, baseNameClass, languageName, symbolNames,existsHWCArtifactScopeImpl);
     genEngine.generateNoA("symboltable.GlobalScope", globalScopeFilePath, globalScopeClassName, languageName, baseNameGlobalScopeInterface, existsHWCGlobalScopeImpl);
-    genEngine.generateNoA("symboltable.GlobalScopeInterface", globalScopeInterfaceFilePath, globalScopeInterfaceClassName, baseNameInterface, languageName, symbolNames);
+    
+    genEngine.generateNoA("symboltable.GlobalScopeInterface", globalScopeInterfaceFilePath, globalScopeInterfaceClassName, baseNameInterface, languageName, allSymbols);
     
 
   }

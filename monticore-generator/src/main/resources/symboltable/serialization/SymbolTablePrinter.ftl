@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("languageName", "symTabPrinterName", "symbolTablePackage", "visitorPackage", "symbols")}
+${signature("languageName", "symTabPrinterName", "symbolTablePackage", "visitorPackage", "symbols", "scopeRule", "symbolRules")}
 
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign superClass = " extends de.monticore.symboltable.CommonScope ">
@@ -52,7 +52,21 @@ public class ${symTabPrinterName}
     printer.attribute(JsonConstants.IS_SHADOWING_SCOPE, scope.isShadowingScope());
     printer.attribute(JsonConstants.EXPORTS_SYMBOLS, scope.exportsSymbols());
     printer.attribute(JsonConstants.SCOPE_SPANNING_SYMBOL,serializeScopeSpanningSymbol(scope.getSpanningSymbol()));
+    
+<#if scopeRule.isPresent()>
+<#list scopeRule.get().getAdditionalAttributeList() as attr>
+    printer.attribute(${attr.name}, serialize${attr.name}(scope));
+</#list>
+</#if>
   }
+  
+<#if scopeRule.isPresent()>
+<#list scopeRule.get().getAdditionalAttributeList() as attr>
+    protected String serialize${attr.name}(${languageName}Scope scope) {
+      return scope.get${attr.name}().toString();
+    }
+</#list>
+</#if>
 
   protected Optional<String> serializeScopeSpanningSymbol(
       Optional<IScopeSpanningSymbol> spanningSymbol) {
@@ -95,6 +109,7 @@ public class ${symTabPrinterName}
     printer.endObject();
   }
 <#list symbols as symbol>
+
   /**
    * @see ${symbol.name}SymbolVisitor#visit(${symbol.name}Symbol)
    */
@@ -103,6 +118,11 @@ public class ${symTabPrinterName}
     printer.beginObject();
     printer.attribute(JsonConstants.KIND, symbol.getClass().getName());
     printer.attribute(JsonConstants.NAME, symbol.getName());
+    <#if symbolRules[symbol.name]??>
+    <#list symbolRules[symbol.name].getAdditionalAttributeList() as attr>
+    printer.attribute(${attr.name}, serialize${attr.name}(symbol));
+    </#list>
+    </#if>
   }
 
   /**
@@ -112,6 +132,15 @@ public class ${symTabPrinterName}
   public void endVisit(${symbol.name}Symbol symbol) {
     printer.endObject();
   }
+  
+<#if symbolRules[symbol.name]??>
+<#list symbolRules[symbol.name].getAdditionalAttributeList() as attr>
+    protected String serialize${attr.name}(${symbol.name}Symbol symbol) {
+      return symbol.get${attr.name}().toString();
+    }
+</#list>
+</#if>
+
 </#list>
 
 

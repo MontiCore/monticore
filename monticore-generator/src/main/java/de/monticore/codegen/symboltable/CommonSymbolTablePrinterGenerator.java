@@ -7,9 +7,15 @@ package de.monticore.codegen.symboltable;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.generating.GeneratorEngine;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar._ast.ASTScopeRule;
+import de.monticore.grammar.grammar._ast.ASTSymbolRule;
 import de.monticore.io.paths.IterablePath;
 import de.se_rwth.commons.Names;
 
@@ -34,8 +40,20 @@ public class CommonSymbolTablePrinterGenerator implements SymbolTablePrinterGene
     final Path filePath = Paths.get(
         Names.getPathFromPackage(genHelper.getSerializationTargetPackage()), className + ".java");
     
+    ASTMCGrammar grammar = genHelper.getGrammarSymbol().getAstGrammar().get();
+    Optional<ASTScopeRule> scopeRule = grammar.getScopeRulesOpt();
+    Map<String, ASTSymbolRule> symbolRules = getSymbolRules( grammar);
+    
     genEngine.generateNoA(TEMPLATE, filePath, languageName, className,
         genHelper.getSymbolTablePackage(), genHelper.getVisitorPackage(),
-        genHelper.getAllSymbolDefiningRules());
+        genHelper.getAllSymbolDefiningRules(), scopeRule, symbolRules);
+  }
+  
+  protected Map<String, ASTSymbolRule> getSymbolRules(ASTMCGrammar grammar) {
+    Map<String, ASTSymbolRule> result = new HashMap<String, ASTSymbolRule>();
+    for(ASTSymbolRule rule : grammar.getSymbolRuleList()) {
+      result.put(rule.getSymbol().getName(), rule);
+    }
+    return result;
   }
 }

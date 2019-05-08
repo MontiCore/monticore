@@ -6,7 +6,7 @@ ${signature("className", "existsHW")}
 <#assign fqn = genHelper.getQualifiedGrammarName()?lower_case>
 <#assign package = genHelper.getTargetPackage()?lower_case>
 <#assign skipSTGen = glex.getGlobalVar("skipSTGen")>
-<#assign symbols = genHelper.getAllSymbolDefiningRules()>
+<#assign symbols = genHelper.getAllSymbolDefiningRulesInSuperGrammar()>
 
 <#-- Copyright -->
 ${defineHookPoint("JavaCopyright")}
@@ -23,11 +23,11 @@ import ${fqn}._parser.${grammarName}Parser;
 </#if>
 
 public abstract class ${className} implements IModelingLanguage<${grammarName}ModelLoader> {
-  
+
   private ${grammarName}ModelLoader modelLoader;
-  
+
   private String name;
-  
+
   private String fileEnding;
 
   public ${className}(String langName, String fileEnding) {
@@ -52,32 +52,32 @@ public abstract class ${className} implements IModelingLanguage<${grammarName}Mo
   public ${grammarName}ModelLoader getModelLoader() {
      return modelLoader;
    }
-  
+
   @Override
   public String getName() {
     return name;
   }
-  
+
   @Override
   public String getFileExtension() {
     return fileEnding;
   }
 
-  <#if existsHW>  
+  <#if existsHW>
   abstract protected ${grammarName}ModelLoader provideModelLoader();
   <#else>
   protected ${grammarName}ModelLoader provideModelLoader() {
     return new ${grammarName}ModelLoader(this);
   }
   </#if>
-  
+
 <#list symbols as symbol>
   protected Set<String> calculateModelNamesFor${symbol.name}(String name) {
     final Set<String> modelNames = new LinkedHashSet<>();
     modelNames.add(name);
     return modelNames;
   }
-  
+
 </#list>
 
 }

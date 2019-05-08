@@ -15,6 +15,7 @@ import ${genHelper.getSymbolTablePackage()}.*;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,15 +36,20 @@ public class ${className} implements IDeSer<I${languageName}Scope> {
 <#list symbolNames?keys as symbol>
 ${symbol}SymbolDeSer ${symbol?lower_case}SymbolDeSer = new ${symbol}SymbolDeSer();
 </#list>
+  
+
+  public void store(${languageName}ArtifactScope as, ${languageName}Language lang, String symbolPath) {
+    store(as, Paths.get(symbolPath, as.getFilePath(lang).toString()));
+  }
 
   /**
    * @see de.monticore.symboltable.serialization.IDeSer#serialize(java.lang.Object)
    */
   @Override
   public String serialize(I${languageName}Scope toSerialize) {
-    ${languageName}SymbolTablePrinter ${className?lower_case}SymbolTablePrinter = new ${languageName}SymbolTablePrinter();
-    toSerialize.accept(${className?lower_case}SymbolTablePrinter);
-    return ${className?lower_case}SymbolTablePrinter.getSerializedString();
+    ${languageName}SymbolTablePrinter printer = new ${languageName}SymbolTablePrinter();
+    toSerialize.accept(printer);
+    return printer.getSerializedString();
   }
 
   /**
@@ -172,9 +178,13 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
 <#assign else = "else ">
 </#list>
 <#if symbolNames?keys?size gt 0>
+  <#if spanningSymbols?keys?size gt 0>
         else {
           Log.error("Unknown spanning symbol kind "+subScope.getSpanningSymbolKind()+" in ${languageName}ScopeDeSer");
         }
+  <#else>
+        Log.error("Unknown spanning symbol kind "+subScope.getSpanningSymbolKind()+" in ${languageName}ScopeDeSer");
+  </#if>
 </#if>
       }
       subScopeList.add(subScope.getScope());

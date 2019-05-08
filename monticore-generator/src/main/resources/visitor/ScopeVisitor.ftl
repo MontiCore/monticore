@@ -107,31 +107,33 @@ public interface ${scopeVisitorName} extends ${genHelper.getSymbolVisitorType()}
 
 <#if existsST && glex.getGlobalVar("stHelper")?has_content>
   <#assign stHelper = glex.getGlobalVar("stHelper")>
-  <#assign scopeType = astType.getName() + "Scope">
+  <#assign langScopeTypeList = [astType.getName() + "Scope"] + [astType.getName() + "ArtifactScope"]>
+  
+<#list langScopeTypeList as langScopeType>
+  default public void visit(${langScopeType} scope) {}
 
-      default public void visit(${scopeType} scope) {}
+  default public void endVisit(${langScopeType} scope) {}
 
-      default public void endVisit(${scopeType} scope) {}
+  default public void handle(${langScopeType} scope) {
+    getRealThis().visit(scope);
+    getRealThis().traverse(scope);
+    getRealThis().endVisit(scope);
+  }
 
-      default public void handle(${scopeType} scope) {
-        getRealThis().visit(scope);
-        getRealThis().traverse(scope);
-        getRealThis().endVisit(scope);
-      }
-
-    default public void traverse(${scopeType} scope) {
-      // traverse symbols within the scope
-      <#list stHelper.getAllQualifiedSymbols() as qualifiedSymbol>
-          for (${qualifiedSymbol} s : scope.getLocal${stHelper.getSymbolNameFromQualifiedSymbol(qualifiedSymbol)}s()) {
-            s.accept(getRealThis());
-          }
-      </#list>
-
-      // traverse sub-scopes
-      for (${"I" + stHelper.getGrammarSymbol().getName() + "Scope"} s : scope.getSubScopes()) {
-        s.accept(getRealThis());
-      }
+  default public void traverse(${langScopeType} scope) {
+    // traverse symbols within the scope
+<#list stHelper.getAllQualifiedSymbols() as qualifiedSymbol>
+    for (${qualifiedSymbol} s : scope.getLocal${stHelper.getSymbolNameFromQualifiedSymbol(qualifiedSymbol)}s()) {
+      s.accept(getRealThis());
     }
-</#if>
+</#list>
 
+    // traverse sub-scopes
+    for (${"I" + stHelper.getGrammarSymbol().getName() + "Scope"} s : scope.getSubScopes()) {
+      s.accept(getRealThis());
+    }
+  }
+
+</#list>
+</#if>
 }

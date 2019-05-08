@@ -10,6 +10,8 @@ ${defineHookPoint("JavaCopyright")}
 <#-- set package -->
 package ${genHelper.getTargetPackage()};
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -139,6 +141,11 @@ public <#if hasHWC>abstract</#if> class ${className} extends ${scopeClass} {
     }
 
     return remainingSymbolName;
+  }
+  
+  public Path getFilePath(${languageName}Language lang) {
+    String fileName = getName().orElse("symbols")+"."+lang.getSymbolFileExtension();
+    return Paths.get(getPackageName(), fileName);
   }
 
 <#list symbolNames?keys as symbol>

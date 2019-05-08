@@ -2,21 +2,17 @@
 
 package de.monticore.codegen.symboltable;
 
-import com.google.common.collect.Lists;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._ast.ASTSymbolRule;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.se_rwth.commons.Names;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Optional;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static de.monticore.codegen.GeneratorHelper.SCOPE;
@@ -99,7 +95,7 @@ public class SymbolTableGenerator {
      * skip generation of: ModelNameCalculator, SymbolTableCreator, Symbol,
      * SymbolKind, SymbolReference, ScopeSpanningSymbol, (Spanned) Scope and
      * ResolvingFilter */
-    final boolean skipSymbolTableGeneration = allSymbolDefiningRules.isEmpty() && allScopeSpanningRules.isEmpty();
+    final boolean skipSymbolTableGeneration = allSymbolDefiningRules.isEmpty() && allScopeSpanningRules.isEmpty() && allSymbolDefiningRulesWithSuperGrammar.isEmpty();
 
     final GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(outputPath);
@@ -113,7 +109,6 @@ public class SymbolTableGenerator {
         ruleNamesWithSuperGrammar);
     modelLoaderGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol);
 
-    if (!skipSymbolTableGeneration) {
       symbolTableCreatorGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol);
 
       for (MCProdSymbol ruleSymbol : allSymbolDefiningRules) {
@@ -121,7 +116,6 @@ public class SymbolTableGenerator {
         symbolReferenceGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol,
             genHelper.isScopeSpanningSymbol(ruleSymbol));
       }
-    }
     //a symbol interface and scope is generated for all grammars
     symbolInterfaceGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol);
     scopeGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol.getName() + SCOPE, allSymbolDefiningRules, allSymbolDefiningRulesWithSuperGrammar);
