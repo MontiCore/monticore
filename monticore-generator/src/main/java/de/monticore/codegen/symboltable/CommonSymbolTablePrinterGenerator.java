@@ -52,7 +52,7 @@ public class CommonSymbolTablePrinterGenerator implements SymbolTablePrinterGene
   protected Map<String, ASTSymbolRule> getSymbolRules(ASTMCGrammar grammar) {
     Map<String, ASTSymbolRule> result = new HashMap<String, ASTSymbolRule>();
     for(ASTSymbolRule rule : grammar.getSymbolRuleList()) {
-      result.put(rule.getSymbol().getName(), rule);
+      result.put(rule.getType(), rule);
     }
     return result;
   }
