@@ -7,7 +7,7 @@ import de.monticore.modelloader.IModelLoader;
 
 public interface IModelingLanguage<M extends IModelLoader> {
   
-  public static final String SYMBOL_FILE_ENDING = "symbols";
+  public static final String SYMBOL_FILE_ENDING = "sym";
 
   /**
    * @return the name of the modeling language, e.g., "MontiCore Grammar Language"

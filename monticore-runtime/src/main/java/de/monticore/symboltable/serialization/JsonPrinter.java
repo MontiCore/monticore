@@ -51,135 +51,14 @@ public class JsonPrinter {
   }
   
   /**
-   * Prints a Json collection with the given kind as key and the given collection of object values.
-   * Empty lists are serialized only, if serializeEmptyLists() is activated via the constructor. To
-   * serialize the passed objects, their toString() method is invoked. Complex objects should be
-   * serialized separately, before they are passed as parameter to this method!
-   * 
-   * @param kind The key of the Json attribute
-   * @param values The values of the Json attribute
+   * Prints the end of an object in Json notation.
    */
-  public void attribute(String kind, Collection<?> values) {
-    if (!values.isEmpty()) {
-      beginAttributeList(kind);
-      values.stream().forEach(o -> attribute(o));
-      endAttributeList();
+  public void endObject() {
+    printer.print("}");
+    if (0 == nestedListDepth) {
+      isFirstAttribute = true;
     }
-    else if (serializeEmptyLists) {
-      beginAttributeList(kind);
-      endAttributeList();
-    }
-  }
-  
-  /**
-   * Prints a Json attribute with the given kind as key and the given optional object value. To
-   * serialize the passed object if it is present, its toString() method is invoked. Absent
-   * optionals are serialized only, if serializeEmptyLists() is activated via the constructor.
-   * Complex objects should be serialized separately, before they are passed as parameter to this
-   * method!
-   * 
-   * @param kind The key of the Json attribute
-   * @param value The value of the Json attribute
-   */
-  public void attribute(String kind, Optional<?> value) {
-    if (null != value && value.isPresent()) {
-      attribute(kind, value.get());
-    }
-    else if (serializeEmptyLists) {
-      basicDataTypeAttribute(kind, null);
-    }
-  }
-  
-  public void attribute(Object value) {
-    String s = value.toString();
-    if (null != s && !"".equals(s)) {
-      printCommaIfNecessary();
-      printer.print("\"");
-      printer.print(s);
-      printer.print("\"");
-    }
-  }
-  
-  /**
-   * Prints a Json attribute with the given kind as key and the given double value, which is a basic
-   * data type in Json.
-   * 
-   * @param kind The key of the Json attribute
-   * @param value The double value of the Json attribute
-   */
-  public void attribute(String kind, double value) {
-    basicDataTypeAttribute(kind, value);
-  }
-  
-  /**
-   * Prints a Json attribute with the given kind as key and the given long value, which is a basic
-   * data type in Json.
-   * 
-   * @param kind The key of the Json attribute
-   * @param value The long value of the Json attribute
-   */
-  public void attribute(String kind, long value) {
-    basicDataTypeAttribute(kind, value);
-  }
-  
-  /**
-   * Prints a Json attribute with the given kind as key and the given float value, which is a basic
-   * data type in Json.
-   * 
-   * @param kind The key of the Json attribute
-   * @param value The float value of the Json attribute
-   */
-  public void attribute(String kind, float value) {
-    basicDataTypeAttribute(kind, value);
-  }
-  
-  /**
-   * Prints a Json attribute with the given kind as key and the given int value, which is a basic
-   * data type in Json.
-   * 
-   * @param kind The key of the Json attribute
-   * @param value The int value of the Json attribute
-   */
-  public void attribute(String kind, int value) {
-    basicDataTypeAttribute(kind, value);
-  }
-  
-  /**
-   * Prints a Json attribute with the given kind as key and the given boolean value, which is a
-   * basic data type in Json.
-   * 
-   * @param kind The key of the Json attribute
-   * @param value The boolean value of the Json attribute
-   */
-  public void attribute(String kind, boolean value) {
-    basicDataTypeAttribute(kind, value);
-  }
-  
-  /**
-   * Prints a Json attribute with the given kind as key and the given object value. To serialize the
-   * passed object, its toString() method is invoked. Complex objects should be serialized
-   * separately, before they are passed as parameter to this method!
-   * 
-   * @param kind The key of the Json attribute
-   * @param value The value of the Json attribute
-   */
-  public void attribute(String kind, Object value) {
-    String s = value.toString().trim();
-    boolean isFramedInQuotationMarks = s.length() > 0 && s.startsWith("\"") && s.endsWith("\"");
-    boolean isSerializedObject = s.length() > 0 && s.startsWith("{") && s.endsWith("}");
-    if (null != s && !"".equals(s)) {
-      printCommaIfNecessary();
-      printer.print("\"");
-      printer.print(kind);
-      printer.print("\":");
-      if (!isFramedInQuotationMarks && !isSerializedObject) {
-        printer.print("\"");
-      }
-      printer.print(s);
-      if (!isFramedInQuotationMarks && !isSerializedObject) {
-        printer.print("\"");
-      }
-    }
+    nestedObjectDepth--;
   }
   
   /**
@@ -216,15 +95,198 @@ public class JsonPrinter {
   }
   
   /**
-   * Prints the end of an object in Json notation.
+   * Prints a Json collection with the given kind as key and the given collection of object values.
+   * Empty lists are serialized only, if serializeEmptyLists() is activated via the constructor. To
+   * serialize the passed objects, their toString() method is invoked. Complex objects should be
+   * serialized separately, before they are passed as parameter to this method!
+   * 
+   * @param kind The key of the Json attribute
+   * @param values The values of the Json attribute
    */
-  public void endObject() {
-    printer.print("}");
-    if (0 == nestedListDepth) {
-      isFirstAttribute = true;
+  public void attribute(String kind, Collection<String> values) {
+    if (!values.isEmpty()) {
+      beginAttributeList(kind);
+      values.stream().forEach(o -> attribute(o));
+      endAttributeList();
     }
-    nestedObjectDepth--;
+    else if (serializeEmptyLists) {
+      beginAttributeList(kind);
+      endAttributeList();
+    }
   }
+  
+  /**
+   * Prints a Json attribute with the given kind as key and the given optional object value. To
+   * serialize the passed object if it is present, its toString() method is invoked. Absent
+   * optionals are serialized only, if serializeEmptyLists() is activated via the constructor.
+   * Complex objects should be serialized separately, before they are passed as parameter to this
+   * method!
+   * 
+   * @param kind The key of the Json attribute
+   * @param value The value of the Json attribute
+   */
+  public void attribute(String kind, Optional<String> value) {
+    if (null != value && value.isPresent()) {
+      attribute(kind, value.get());
+    }
+    else if (serializeEmptyLists) {
+      internalAttribute(kind, null);
+    }
+  }
+
+  /**
+   * Prints a Json attribute with the given kind as key and the given double value, which is a basic
+   * data type in Json.
+   * 
+   * @param kind The key of the Json attribute
+   * @param value The double value of the Json attribute
+   */
+  public void attribute(String kind, double value) {
+    internalAttribute(kind, value);
+  }
+  
+  /**
+   * Prints a Json attribute with the given kind as key and the given long value, which is a basic
+   * data type in Json.
+   * 
+   * @param kind The key of the Json attribute
+   * @param value The long value of the Json attribute
+   */
+  public void attribute(String kind, long value) {
+    internalAttribute(kind, value);
+  }
+  
+  /**
+   * Prints a Json attribute with the given kind as key and the given float value, which is a basic
+   * data type in Json.
+   * 
+   * @param kind The key of the Json attribute
+   * @param value The float value of the Json attribute
+   */
+  public void attribute(String kind, float value) {
+    internalAttribute(kind, value);
+  }
+  
+  /**
+   * Prints a Json attribute with the given kind as key and the given int value, which is a basic
+   * data type in Json.
+   * 
+   * @param kind The key of the Json attribute
+   * @param value The int value of the Json attribute
+   */
+  public void attribute(String kind, int value) {
+    internalAttribute(kind, value);
+  }
+  
+  /**
+   * Prints a Json attribute with the given kind as key and the given boolean value, which is a
+   * basic data type in Json.
+   * 
+   * @param kind The key of the Json attribute
+   * @param value The boolean value of the Json attribute
+   */
+  public void attribute(String kind, boolean value) {
+    internalAttribute(kind, value);
+  }
+  
+  /**
+   * Prints a Json attribute with the given kind as key and the given String value, which is a
+   * basic data type in Json.
+   * 
+   * @param kind The key of the Json attribute
+   * @param value The boolean value of the Json attribute
+   */
+  public void attribute(String kind, String value) {
+    internalAttribute(kind, preprocessString(value));
+  }
+  
+//  private void attribute(String kind, Object o) {
+//    Log.error("Objects of complex data types must be serialized before they can be stored! "+kind+": "+o);
+//  }
+  
+  /**
+   * Prints a Json attribute with the given kind as key and the given double value, which is a basic
+   * data type in Json.
+   * 
+   * @param kind The key of the Json attribute
+   * @param value The double value of the Json attribute
+   */
+  public void attribute(double value) {
+    internalAttribute(value);
+  }
+  
+  /**
+   * Prints a Json attribute with the given kind as key and the given long value, which is a basic
+   * data type in Json.
+   * 
+   * @param kind The key of the Json attribute
+   * @param value The long value of the Json attribute
+   */
+  public void attribute(long value) {
+    internalAttribute(value);
+  }
+  
+  /**
+   * Prints a Json attribute with the given kind as key and the given float value, which is a basic
+   * data type in Json.
+   * 
+   * @param kind The key of the Json attribute
+   * @param value The float value of the Json attribute
+   */
+  public void attribute(float value) {
+    internalAttribute(value);
+  }
+  
+  /**
+   * Prints a Json attribute with the given kind as key and the given int value, which is a basic
+   * data type in Json.
+   * 
+   * @param kind The key of the Json attribute
+   * @param value The int value of the Json attribute
+   */
+  public void attribute(int value) {
+    internalAttribute(value);
+  }
+  
+  /**
+   * Prints a Json attribute with the given kind as key and the given boolean value, which is a
+   * basic data type in Json.
+   * 
+   * @param kind The key of the Json attribute
+   * @param value The boolean value of the Json attribute
+   */
+  public void attribute(boolean value) {
+    internalAttribute(value);
+  }
+  
+  /**
+   * Prints a Json attribute with the given kind as key and the given String value, which is a
+   * basic data type in Json.
+   * 
+   * @param kind The key of the Json attribute
+   * @param value The boolean value of the Json attribute
+   */
+  public void attribute(String value) {
+    internalAttribute(preprocessString(value));
+  }
+  
+//  private void attribute(Object o) {
+//    Log.error("Objects of complex data types must be serialized before they can be stored! "+o);
+//  }
+  
+  protected String preprocessString(String string) {
+  String s = string.trim();
+  boolean isFramedInQuotationMarks = s.length() > 0 && s.startsWith("\"") && s.endsWith("\"");
+  boolean isSerializedObject = s.length() > 0 && s.startsWith("{") && s.endsWith("}");
+  string = JsonStringUtil.escapeSpecialChars(string);
+    if (!isFramedInQuotationMarks && !isSerializedObject) {
+      return "\""+string+"\"";
+    }
+    else {
+      return s;
+    }
+  }
+  
   
   /**
    * This method is for internal use of this class only. It prints a comma to separate attributes,
@@ -239,12 +301,27 @@ public class JsonPrinter {
     }
   }
   
-  private void basicDataTypeAttribute(String kind, Object value) {
+  private void internalAttribute(String kind, Object value) {
     printCommaIfNecessary();
     printer.print("\"");
     printer.print(kind);
     printer.print("\":");
     printer.print(value);
+  }
+  
+  private void internalAttribute(Object value) {
+    printCommaIfNecessary();
+    printer.print(value);
+  }
+  
+  public String getContent() {
+    if (0 != nestedListDepth) {
+      Log.error("Invalid nesting of Json lists in " + printer.getContent());
+    }
+    if (0 != nestedObjectDepth) {
+      Log.error("Invalid nesting of Json objects in " + printer.getContent());
+    }
+    return printer.getContent();
   }
   
   /**
@@ -254,16 +331,6 @@ public class JsonPrinter {
    */
   @Override
   public String toString() {
-    if (0 != nestedListDepth) {
-      Log.error("Invalid nesting of Json lists in " + this.toStringWithoutValidation());
-    }
-    if (0 != nestedObjectDepth) {
-      Log.error("Invalid nesting of Json objects in " + this.toStringWithoutValidation());
-    }
-    return toStringWithoutValidation();
-  }
-  
-  protected String toStringWithoutValidation() {
     return printer.getContent();
   }
   

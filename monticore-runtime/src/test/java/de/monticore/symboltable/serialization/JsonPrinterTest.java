@@ -28,6 +28,13 @@ import de.se_rwth.commons.logging.Log;
 public class JsonPrinterTest {
   
   @Test
+  public void testEscapeSequences() {
+    JsonPrinter printer = new JsonPrinter();
+    printer.attribute("\"\t\\\n\'");
+    assertEquals("\"\\\"\\t\\\\\\n\\'\"", printer.toString());
+  }
+  
+  @Test
   public void testEmptyObject() {
     JsonPrinter printer = new JsonPrinter();
     printer.beginObject();
@@ -113,7 +120,7 @@ public class JsonPrinterTest {
     printer.beginObject();
     printer.beginObject();
     printer.endObject();
-    printer.toString();
+    printer.getContent();
     assertEquals(1, Log.getFindings().size());
     
     Log.init();
@@ -122,7 +129,7 @@ public class JsonPrinterTest {
     printer.beginObject();
     printer.endObject();
     printer.endObject();
-    printer.toString();
+    printer.getContent();
     assertEquals(1, Log.getFindings().size());
     
     Log.init();
@@ -131,7 +138,7 @@ public class JsonPrinterTest {
     printer.beginAttributeList();
     printer.beginAttributeList();
     printer.endAttributeList();
-    printer.toString();
+    printer.getContent();
     assertEquals(1, Log.getFindings().size());
     
     Log.init();
@@ -140,7 +147,7 @@ public class JsonPrinterTest {
     printer.beginAttributeList();
     printer.endAttributeList();
     printer.endAttributeList();
-    printer.toString();
+    printer.getContent();
     assertEquals(1, Log.getFindings().size());
     
     Log.init();
@@ -151,7 +158,7 @@ public class JsonPrinterTest {
     printer.endAttributeList();
     printer.endAttributeList();
     printer.endObject();
-    printer.toString();
+    printer.getContent();
     assertEquals(1, Log.getFindings().size());
     
     //unmute Sytem.err
