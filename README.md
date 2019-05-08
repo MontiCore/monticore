@@ -17,3 +17,5 @@ and all files are UTF-8 without BOM.
 On Windows you should configure git to not automatically replace LF with CRLF during checkout by executing the following configuration:
 
     git config --global core.autocrlf input
+## Build Status
+ JavaDSL (dev)  [![JavaDSL (dev) pipeline status](https://git.rwth-aachen.de/monticore/javaDSL/badges/dev/pipeline.svg)](https://git.rwth-aachen.de/monticore/javaDSL/commits/dev)    
