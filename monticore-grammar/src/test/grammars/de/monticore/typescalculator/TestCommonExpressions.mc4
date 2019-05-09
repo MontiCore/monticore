@@ -2,16 +2,14 @@
 
 package de.monticore.typescalculator;
 
-grammar TestCommonExpressions extends de.monticore.expressions.CommonExpressions, de.monticore.MCBasics, de.monticore.MCBasicLiterals {
+grammar TestCommonExpressions extends de.monticore.expressions.CommonExpressionsWithLiterals, de.monticore.MCBasics, de.monticore.MCBasicLiterals {
   start Expression;
   //FooBarBlub implements Expression = Name;
 
-  IntExpression implements Expression = SignedNatLiteral;
+  IntExpression implements Expression = "blabla";
 
-  DoubleExpression implements Expression = SignedNatLiteral "." NatLiteral;
+  DoubleExpression implements Expression = "blub";
 
-  BooleanExpression implements Expression = bool: ["true" | "false"];
-
-  ExtLiteral = "aisl";
+  BooleanExpression implements Expression = "bool";
 
 }
