@@ -10,6 +10,7 @@ import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor;
 import de.monticore.expressions.prettyprint2.CommonExpressionsPrettyPrinter;
+import de.monticore.expressions.prettyprint2.ExpressionsBasisPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
@@ -104,7 +105,7 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
         Log.info("package or method suspected","CommonExpressionTypesCalculator");
       }
     }else{
-      CommonExpressionsPrettyPrinter printer = new CommonExpressionsPrettyPrinter(new IndentPrinter());
+      ExpressionsBasisPrettyPrinter printer = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
       String toResolve = printer.prettyprint(expr);
       Optional<ETypeSymbol> typeSymbolopt = scope.resolveETypeDown(toResolve);//TODO: resolve statt resolveDown
       Optional<EVariableSymbol> variableSymbolopt = scope.resolveEVariableDown(toResolve);//TODO: resolve statt resolveDown
