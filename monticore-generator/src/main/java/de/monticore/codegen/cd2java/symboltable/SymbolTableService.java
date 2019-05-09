@@ -12,6 +12,7 @@ import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.Names;
 
 import static de.monticore.codegen.cd2java.ast_new.ASTConstants.AST_PREFIX;
+import static de.monticore.codegen.cd2java.symboltable.SymbolTableConstants.INTERFACE_PREFIX;
 import static de.monticore.utils.Names.getSimpleName;
 import static de.se_rwth.commons.Names.getQualifier;
 
@@ -43,8 +44,16 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getPackage() + "." + getCDName() + SymbolTableConstants.SCOPE_SUFFIX;
   }
 
+  public String getScopeInterfaceTypeName() {
+    return getPackage() + "." + INTERFACE_PREFIX + getCDName() + SymbolTableConstants.SCOPE_SUFFIX;
+  }
+
   public ASTType getScopeType() {
     return getCDTypeFactory().createSimpleReferenceType(getScopeTypeName());
+  }
+
+  public ASTType getScopeIntefaceType() {
+    return getCDTypeFactory().createSimpleReferenceType(getScopeInterfaceTypeName());
   }
 
   public String getSymbolName(ASTCDClass clazz) {

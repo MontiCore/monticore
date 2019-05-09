@@ -55,7 +55,7 @@ public class ASTSymbolDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAttributes() {
     assertFalse(astClass.isEmptyCDAttributes());
-    assertEquals(1, astClass.sizeCDAttributes());
+    assertEquals(2, astClass.sizeCDAttributes());
   }
 
   @Test
@@ -66,8 +66,15 @@ public class ASTSymbolDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
+  public void testSymbol2Attribute() {
+    ASTCDAttribute symbolAttribute = getAttributeBy("symbol2", astClass);
+    assertDeepEquals(PROTECTED, symbolAttribute.getModifier());
+    assertOptionalOf("de.monticore.codegen.ast.ast._symboltable.ASymbol", symbolAttribute.getType());
+  }
+
+  @Test
   public void testMethods() {
-    assertEquals(6, astClass.getCDMethodList().size());
+    assertEquals(12, astClass.getCDMethodList().size());
   }
   
   @Test

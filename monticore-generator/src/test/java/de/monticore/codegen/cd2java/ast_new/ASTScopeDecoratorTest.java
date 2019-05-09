@@ -34,6 +34,8 @@ public class ASTScopeDecoratorTest extends DecoratorTestCase {
 
   private static final String AST_SCOPE = "de.monticore.codegen.ast.ast._symboltable.ASTScope";
 
+  private static final String AST_I_SCOPE = "de.monticore.codegen.ast.ast._symboltable.IASTScope";
+
   @Before
   public void setup() {
     this.cdTypeFacade = CDTypeFacade.getInstance();
@@ -55,19 +57,33 @@ public class ASTScopeDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAttributes() {
     assertFalse(astClass.isEmptyCDAttributes());
-    assertEquals(1, astClass.sizeCDAttributes());
+    assertEquals(3, astClass.sizeCDAttributes());
   }
 
   @Test
-  public void testScopeAttribute() {
+  public void testSpannedScopeAttribute() {
     ASTCDAttribute symbolAttribute = getAttributeBy("spannedASTScope", astClass);
     assertDeepEquals(PROTECTED, symbolAttribute.getModifier());
     assertOptionalOf(AST_SCOPE, symbolAttribute.getType());
   }
 
   @Test
+  public void testSpannedScope2Attribute() {
+    ASTCDAttribute symbolAttribute = getAttributeBy("spannedScope2", astClass);
+    assertDeepEquals(PROTECTED, symbolAttribute.getModifier());
+    assertOptionalOf(AST_I_SCOPE, symbolAttribute.getType());
+  }
+
+  @Test
+  public void testEnclosingScope2Attribute() {
+    ASTCDAttribute symbolAttribute = getAttributeBy("enclosingScope2", astClass);
+    assertDeepEquals(PROTECTED, symbolAttribute.getModifier());
+    assertOptionalOf(AST_I_SCOPE, symbolAttribute.getType());
+  }
+
+  @Test
   public void testMethods() {
-    assertEquals(6, astClass.getCDMethodList().size());
+    assertEquals(18, astClass.getCDMethodList().size());
   }
 
 
