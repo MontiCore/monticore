@@ -32,6 +32,7 @@ import de.monticore.modelloader.IModelLoader;
 import de.monticore.modelloader.ParserBasedAstProvider;
 import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
+import ${package}.serialization.*;
 
 public class ${className} implements de.monticore.modelloader.IModelLoader<${topAstName}, I${grammarName}Scope> {
 
@@ -81,6 +82,7 @@ public class ${className} implements de.monticore.modelloader.IModelLoader<${top
       for (${topAstName} ast : asts) {
         createSymbolTableFromAST(ast, qualifiedModelName, enclosingScope);
       }
+      showWarningIfParsedModels(asts, qualifiedModelName);
       return asts;
     }
     return Collections.emptySet();
@@ -107,7 +109,11 @@ public class ${className} implements de.monticore.modelloader.IModelLoader<${top
     
     final ModelCoordinate resolvedCoordinate = resolveSymbol(qualifiedModelName, modelPath);
     if (resolvedCoordinate.hasLocation()) {
-      // TODO AB
+      Optional<I${grammarName}Scope> deser  = new ${grammarName}ScopeDeSer().load(resolvedCoordinate.getLocation());
+      if(deser.isPresent()) {
+        enclosingScope.addSubScope(deser.get());
+        return true;
+      }
     }
     return false;
   }
@@ -128,15 +134,20 @@ public class ${className} implements de.monticore.modelloader.IModelLoader<${top
     return modelPath.resolveModel(qualifiedModel);
   }
   
-      // TODO move to Interface?
-  private ModelCoordinate resolveSymbol(final String qualifiedModelName, final ModelPath modelPath){
+  protected ModelCoordinate resolveSymbol(final String qualifiedModelName, final ModelPath modelPath){
     String simpleName = Names.getSimpleName(qualifiedModelName);
     Path qualifiedPath = Paths.get(
         Names.getPathFromQualifiedName(qualifiedModelName)).resolve(
-        simpleName + ".json");
+        simpleName + "." + getModelingLanguage().getSymbolFileExtension());
     ModelCoordinate qualifiedModel = ModelCoordinates.createQualifiedCoordinate(qualifiedPath);
     
     return modelPath.resolveModel(qualifiedModel);
+  }
+  
+  protected void showWarningIfParsedModels(Collection<?> asts, String modelName) {
+    if(!asts.isEmpty()) {
+      Log.warn("Symbol for model \""+modelName+"\" found in a model file that has not been translated yet. This works for compatibility reasons, but is deprecated and will be removed soon. Please adjust your building process.");
+    }
   }
   
 }
