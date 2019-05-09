@@ -1,10 +1,20 @@
  /* (c) https://github.com/MontiCore/monticore */
  package de.monticore.symboltable;
 
+ import de.monticore.ast.ASTNode;
  import de.monticore.symboltable.modifiers.AccessModifier;
  import de.monticore.symboltable.modifiers.BasicAccessModifier;
+ import de.se_rwth.commons.SourcePosition;
 
+ import java.util.ArrayList;
+ import java.util.Collection;
+ import java.util.List;
+ import java.util.Optional;
+
+ import static com.google.common.collect.ImmutableList.copyOf;
  import static de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION;
+ import static de.se_rwth.commons.SourcePosition.getDefaultSourcePosition;
+ import static java.util.Collections.sort;
 
  public interface ISymbol {
 
@@ -49,8 +59,31 @@
     * @param accessModifier the access modifier
     */
    void setAccessModifier(AccessModifier accessModifier);
-
-
-   
+  
+  
+  
+   public Optional<? extends ASTNode> getAstNode();
+  
+   /**
+    * @return the position of this symbol in the source model. By default, it is the source position
+    * of the ast node.
+    * @see #getAstNode()
+    */
+   default SourcePosition getSourcePosition() {
+     if (getAstNode().isPresent()) {
+       return getAstNode().get().get_SourcePositionStart();
+     } else {
+       return getDefaultSourcePosition();
+     }
+   }
+  
+   default  <T extends ISymbol> List<T> sortSymbolsByPosition(final Collection<T> unorderedSymbols) {
+     final List<T> sortedSymbols = new ArrayList<>(unorderedSymbols);
+    
+     sort(sortedSymbols,
+         (symbol1, symbol2) -> symbol1.getSourcePosition().compareTo(symbol2.getSourcePosition()));
+    
+     return copyOf(sortedSymbols);
+   }
    
  }

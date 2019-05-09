@@ -2,26 +2,17 @@
 
 package de.monticore.ast;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Optional;
-import java.util.Spliterator;
+import com.google.common.collect.Lists;
+import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.Symbol;
+import de.se_rwth.commons.SourcePosition;
+import de.se_rwth.commons.logging.Log;
+
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
-
-import de.se_rwth.commons.logging.Log;
-
-import com.google.common.collect.Lists;
-
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.ScopeSpanningSymbol;
-import de.monticore.symboltable.Symbol;
-import de.se_rwth.commons.SourcePosition;
 
 /**
  * Foundation class of all AST-classes Shouldn't be used in an implementation, all AST-classes also
@@ -43,7 +34,7 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
   protected Optional<? extends Scope> enclosingScope = Optional.empty();
 
   protected Optional<? extends Scope> spannedScope = Optional.empty();
-
+  
   public abstract ASTNode deepClone();
 
   // ----------------------------------------------------------------------
@@ -112,22 +103,25 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
   // ----------------------------------------------------------------------
   // Handle the Optional Enclosing Scope
   // ----------------------------------------------------------------------
-
+  @Deprecated
   @Override
   public void setEnclosingScope(Scope enclosingScope) {
     this.enclosingScope = Optional.ofNullable(enclosingScope);
   }
 
+  @Deprecated
   @Override
   public void setEnclosingScopeOpt(Optional<? extends Scope> enclosingScopeOpt) {
     this.enclosingScope = enclosingScopeOpt;
   }
 
+  @Deprecated
   @Override
   public void setEnclosingScopeAbsent() {
     this.enclosingScope = Optional.empty();
   }
 
+  @Deprecated
   @Override
   public Scope getEnclosingScope() {
     if (getEnclosingScopeOpt().isPresent()) {
@@ -138,11 +132,13 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
     throw new IllegalStateException();
   }
 
+  @Deprecated
   @Override
   public Optional<? extends Scope> getEnclosingScopeOpt() {
     return this.enclosingScope;
   }
 
+  @Deprecated
   @Override
   public boolean isPresentEnclosingScope() {
     return enclosingScope.isPresent();
@@ -584,5 +580,7 @@ public abstract class ASTCNode implements ASTNode, Cloneable {
   public Object[] toArray_PostComments() {
     return this.postcomments.toArray();
   }
+  
+  
 
 }

@@ -12,17 +12,9 @@ import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.resolving.AdaptedResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingInfo;
-import de.se_rwth.commons.logging.Log;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static de.monticore.symboltable.resolving.ResolvingFilter.getFiltersForTargetKind;
 import static de.se_rwth.commons.logging.Log.*;
@@ -30,6 +22,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
 import static java.util.stream.Collectors.toCollection;
 
+@Deprecated
 public final class GlobalScope extends CommonScope {
 
   private final ModelPath modelPath;

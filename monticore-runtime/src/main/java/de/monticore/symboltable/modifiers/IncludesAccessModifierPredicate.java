@@ -6,6 +6,7 @@ import com.google.common.base.Predicate;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolPredicate;
 
+@Deprecated
 public class IncludesAccessModifierPredicate implements SymbolPredicate {
 
   private final AccessModifier modifier;

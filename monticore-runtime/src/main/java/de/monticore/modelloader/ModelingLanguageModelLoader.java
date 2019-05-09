@@ -32,6 +32,7 @@ import static java.util.Optional.of;
 
 // TODO PN extract CommonModelLoader
 // TODO PN rename to ModelLoader
+@Deprecated
 public abstract class ModelingLanguageModelLoader<T extends ASTNode> {
 
   private final ModelingLanguage modelingLanguage;

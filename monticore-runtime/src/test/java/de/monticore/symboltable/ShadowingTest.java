@@ -10,6 +10,8 @@ import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.monticore.symboltable.types.JTypeSymbol;
 import de.monticore.symboltable.types.references.CommonJTypeReference;
 import de.monticore.symboltable.types.references.JTypeReference;
+
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -19,6 +21,8 @@ import static org.junit.Assert.*;
 
 public class ShadowingTest {
 
+  @Ignore
+  @Deprecated
   @Test
   public void testLocalScopeDoesNotShadowEnclosingScope() {
     CommonScope enclosingScope = new CommonScope(false);
@@ -57,6 +61,8 @@ public class ShadowingTest {
     }
   }
 
+  @Ignore
+  @Deprecated
   @Test
   public void testShadowingScopeShadowsEnclosingScope() {
     CommonScope enclosingScope = new CommonScope(false);
@@ -89,6 +95,8 @@ public class ShadowingTest {
     assertSame(v2, scope.resolve("var", PropertySymbol.KIND).get());
   }
 
+  @Ignore
+  @Deprecated
   @Test
   public void testLocalScopeShadowsGrandEnclosingScopeIfEnclosingIsShadowingScope() {
     CommonScopeMock grandGrandEnclosingScope = new CommonScopeMock(false); // true would have the same impact

@@ -21,6 +21,7 @@ import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 
+@Deprecated
 public class ArtifactScope extends CommonScope {
 
   private final String packageName;

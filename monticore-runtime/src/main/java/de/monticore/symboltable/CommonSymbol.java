@@ -4,8 +4,6 @@ package de.monticore.symboltable;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.modifiers.AccessModifier;
-import de.se_rwth.commons.Names;
-import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -17,6 +15,7 @@ import static de.se_rwth.commons.logging.Log.errorIfNull;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 
+@Deprecated
 public abstract class CommonSymbol implements Symbol {
 
   private final String name;

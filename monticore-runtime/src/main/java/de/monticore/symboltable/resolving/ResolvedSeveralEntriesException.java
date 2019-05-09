@@ -10,6 +10,7 @@ import de.monticore.symboltable.Symbol;
 
 import static com.google.common.collect.ImmutableList.copyOf;
 
+@Deprecated //Replaced by ResolvedSeveralEntriesForSymbolException
 public class ResolvedSeveralEntriesException extends RuntimeException {
 
   private static final long serialVersionUID = 931330102959575779L;

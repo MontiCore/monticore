@@ -2,14 +2,13 @@
 
 package de.monticore.generating.templateengine.reporting.commons;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import de.monticore.ast.ASTNode;
-import de.monticore.io.paths.IterablePath;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.references.SymbolReference;
-import de.se_rwth.commons.SourcePosition;
+import java.nio.file.Path;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 import org.reflections.util.ClasspathHelper;
@@ -17,12 +16,16 @@ import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 
-import java.nio.file.Path;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+
+import de.monticore.ast.ASTNode;
+import de.monticore.io.paths.IterablePath;
+import de.monticore.symboltable.ISymbol;
+import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.references.SymbolReference;
+import de.se_rwth.commons.SourcePosition;
 
 /**
  * ReportingRepository holds all used formatted ASTNode strings. All string
@@ -176,7 +179,22 @@ public class ReportingRepository {
    * @return representation of the ASTNode that contains either the position or
    * a unique identification number for the object
    */
+  @Deprecated
   public String getSymbolNameFormatted(Symbol symbol) {
+    String name = astNodeIdentHelper.getIdent(symbol);
+    return getNameFormatted(symbol, name, symbol.getSourcePosition());
+  }
+  
+  /**
+   * Method that converts the Symbol into a formatted string with a source
+   * position if this is possible. The structure of the string is
+   * @symbolName!symbolType(x,y) or @symbolName!symbolType(!ID).
+   * 
+   * @param symbol The symbol that should be converted into unique String
+   * @return representation of the ASTNode that contains either the position or
+   * a unique identification number for the object
+   */
+  public String getSymbolNameFormatted(ISymbol symbol) {
     String name = astNodeIdentHelper.getIdent(symbol);
     return getNameFormatted(symbol, name, symbol.getSourcePosition());
   }

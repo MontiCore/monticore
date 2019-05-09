@@ -14,6 +14,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.ImmutableList.copyOf;
 
+@Deprecated
 public abstract class CommonModelingLanguage implements ModelingLanguage {
 
   private final String fileEnding;

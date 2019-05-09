@@ -154,6 +154,7 @@ public class CdDecorator {
     for (ASTCDInterface interf : cdDefinition.getCDInterfaceList()) {
       addListMethods(interf, astHelper);
       addOptionalMethods(interf, astHelper);
+      addSymbolAndScopeAttributesAndMethods(interf, astHelper);
       addGetter(interf);
       addSetter(interf);
     }
@@ -191,61 +192,132 @@ public class CdDecorator {
     }
   }
 
-  protected void addSymbolAndScopeAttributesAndMethods(ASTCDClass clazz, AstGeneratorHelper astHelper) {
+  protected void addSymbolAndScopeAttributesAndMethods(ASTCDType cdType, AstGeneratorHelper astHelper) {
     MCGrammarSymbol grammarSymbol = astHelper.getGrammarSymbol();
     if (grammarSymbol == null) {
-      Log.warn("Symbol methods can not be generated, because the grammar symbol is not found");
+      Log.warn("0xA0117 Symbol methods can not be generated, because the grammar symbol is not found");
       return;
     }
 
-    String name = AstGeneratorHelper.getASTClassNameWithoutPrefix(clazz);
+    String name = AstGeneratorHelper.getASTClassNameWithoutPrefix(cdType);
     Optional<MCProdSymbol> prodSymbol = grammarSymbol.
         getSpannedScope().resolve(name, MCProdSymbol.KIND);
 
     if (!prodSymbol.isPresent()) {
-      Log.warn("Symbol methods can not be generated, prod symbol not found");
+      // Externe Produktionen werden nicht gefunden (der Name endet auf "Ext", steht
+      // aber in der Tabelle anders drin
+      // Das Symbol für den Interface-AST eienr Grammatik wird ebenfalls nicht gefunden
+      // ==> erstmal keine Warnung (Ansonsten sollte MontiCoreScriptTest angepasst werden)
       return;
     }
     String symbolName = prodSymbol.get().getSymbolDefinitionKind().orElse(name);
 
     if (prodSymbol.get().isSymbolDefinition()) {
-      addSymbolAttributeAndMethods(clazz, symbolName, grammarSymbol);
+      addSymbolAttributeAndMethods(cdType, symbolName, grammarSymbol);
+      addSymbolAttributeAndMethods2(cdType, symbolName, grammarSymbol);
+      
+      String scopeName = "I" + grammarSymbol.getName() + AstGeneratorHelper.SCOPE;
+      String qualifiedScopeName = grammarSymbol.getFullName().toLowerCase() + "." +
+          SymbolTableGenerator.PACKAGE + "." + scopeName;
+      addEnclosingScopeAttributeAndMethods2(cdType, qualifiedScopeName, grammarSymbol);
+    }
+    else {
+      addEnclosingScopeAttributeAndMethods2(cdType, "de.monticore.symboltable.IScope", grammarSymbol);
     }
     if (prodSymbol.get().isScopeDefinition()) {
-      addScopeAttributeAndMethods(clazz, symbolName, grammarSymbol);
+      addSpannedScopeAttributeAndMethods(cdType, grammarSymbol);
+      addSpannedScopeAttributeAndMethods2(cdType, grammarSymbol);
     }
   }
 
-  protected void addSymbolAttributeAndMethods(ASTCDClass clazz, String name, MCGrammarSymbol grammarSymbol) {
+  // TODO Ersetze diese Methode durch eine Methode in cdTransformations
+  private  Optional<ASTCDAttribute>  addCdAttributeUsingDefinition(ASTCDType cdType, String def) {
+    if (cdType instanceof ASTCDClass) {
+      return cdTransformation.addCdAttributeUsingDefinition((ASTCDClass) cdType, def);
+    }
+    if (cdType instanceof ASTCDInterface) {
+      return cdTransformation.addCdAttributeUsingDefinition((ASTCDInterface) cdType, def);
+    }
+    return Optional.empty();
+  }
+
+  @Deprecated //Delete this and replace with addSymbolAttributeAndMethods2(..)
+  protected void addSymbolAttributeAndMethods(ASTCDType cdType, String name, MCGrammarSymbol grammarSymbol) {
     String symbolName = name + AstGeneratorHelper.SYMBOL;
     String qualifiedName = grammarSymbol.getFullName().toLowerCase() + "." +
         SymbolTableGenerator.PACKAGE + "." + symbolName;
     symbolName = Character.toLowerCase(symbolName.charAt(0)) + symbolName.substring(1);
 
-    Optional<ASTCDAttribute> symbolAttribute = cdTransformation.addCdAttributeUsingDefinition(clazz,
+    Optional<ASTCDAttribute> symbolAttribute = addCdAttributeUsingDefinition(cdType,
         "<<" + GeneratorHelper.SYMBOL +
             ">> protected Optional<" + qualifiedName + "> " + symbolName + ";");
 
-    addGetter(clazz, symbolAttribute.get());
-    addOptionalGetMethods(clazz, symbolAttribute.get(), symbolName);
-    addSetter(clazz, symbolAttribute.get());
-    addOptionalSetMethods(clazz, symbolAttribute.get(), symbolName);
+    addGetter(cdType, symbolAttribute.get());
+    addOptionalGetMethods(cdType, symbolAttribute.get(), symbolName);
+    addSetter(cdType, symbolAttribute.get());
+    addOptionalSetMethods(cdType, symbolAttribute.get(), symbolName);
   }
+  
+  protected void addSymbolAttributeAndMethods2(ASTCDType cdType, String name, MCGrammarSymbol grammarSymbol) {
+    String symbolName = name + AstGeneratorHelper.SYMBOL;
+    String qualifiedName = grammarSymbol.getFullName().toLowerCase() + "." +
+        SymbolTableGenerator.PACKAGE + "." + symbolName;
+    symbolName = "symbol"+"2"; //TODO: Remove 2
 
-  protected void addScopeAttributeAndMethods(ASTCDClass clazz, String name, MCGrammarSymbol grammarSymbol) {
+    Optional<ASTCDAttribute> symbolAttribute = addCdAttributeUsingDefinition(cdType,
+        "<<" + GeneratorHelper.SYMBOL +
+            ">> protected Optional<" + qualifiedName + "> " + symbolName + ";");
+
+    addGetter(cdType, symbolAttribute.get());
+    addOptionalGetMethods(cdType, symbolAttribute.get(), symbolName);
+    addSetter(cdType, symbolAttribute.get());
+    addOptionalSetMethods(cdType, symbolAttribute.get(), symbolName);
+  }
+  
+  protected void addEnclosingScopeAttributeAndMethods2(ASTCDType cdType, String qualifiedName, MCGrammarSymbol grammarSymbol) {
+    String scopeName = "enclosingScope" +"2"; //TODO: Remove 2
+
+    Optional<ASTCDAttribute> scopeAttribute = addCdAttributeUsingDefinition(cdType,
+        "<<" + GeneratorHelper.SCOPE +
+            ">> protected Optional<" + qualifiedName + "> " + scopeName + ";");
+
+    addGetter(cdType, scopeAttribute.get());
+    addOptionalGetMethods(cdType, scopeAttribute.get(), scopeName);
+    addSetter(cdType, scopeAttribute.get());
+    addOptionalSetMethods(cdType, scopeAttribute.get(), scopeName);
+  }
+  
+  @Deprecated
+  protected void addSpannedScopeAttributeAndMethods(ASTCDType cdType,MCGrammarSymbol grammarSymbol) {
     String scopeName = grammarSymbol.getName() + AstGeneratorHelper.SCOPE;
     String qualifiedName = grammarSymbol.getFullName().toLowerCase() + "." +
         SymbolTableGenerator.PACKAGE + "." + scopeName;
     scopeName = "spanned" + scopeName;
 
-    Optional<ASTCDAttribute> scopeAttribute = cdTransformation.addCdAttributeUsingDefinition(clazz,
+    Optional<ASTCDAttribute> scopeAttribute = addCdAttributeUsingDefinition(cdType,
         "<<" + GeneratorHelper.SCOPE +
             ">> protected Optional<" + qualifiedName + "> " + scopeName + ";");
 
-    addGetter(clazz, scopeAttribute.get());
-    addOptionalGetMethods(clazz, scopeAttribute.get(), scopeName);
-    addSetter(clazz, scopeAttribute.get());
-    addOptionalSetMethods(clazz, scopeAttribute.get(), scopeName);
+    addGetter(cdType, scopeAttribute.get());
+    addOptionalGetMethods(cdType, scopeAttribute.get(), scopeName);
+    addSetter(cdType, scopeAttribute.get());
+    addOptionalSetMethods(cdType, scopeAttribute.get(), scopeName);
+  }
+  
+  protected void addSpannedScopeAttributeAndMethods2(ASTCDType cdType, MCGrammarSymbol grammarSymbol) {
+    String scopeName = "I" + grammarSymbol.getName() + AstGeneratorHelper.SCOPE;
+    String qualifiedName = grammarSymbol.getFullName().toLowerCase() + "." +
+        SymbolTableGenerator.PACKAGE + "." + scopeName;
+    scopeName = "spannedScope" +"2"; //TODO: Remove 2
+
+    Optional<ASTCDAttribute> scopeAttribute = addCdAttributeUsingDefinition(cdType,
+        "<<" + GeneratorHelper.SCOPE +
+            ">> protected Optional<" + qualifiedName + "> " + scopeName + ";");
+
+    addGetter(cdType, scopeAttribute.get());
+    addOptionalGetMethods(cdType, scopeAttribute.get(), scopeName);
+    addSetter(cdType, scopeAttribute.get());
+    addOptionalSetMethods(cdType, scopeAttribute.get(), scopeName);
   }
 
   protected void addReferencedSymbolAttributes(ASTCDClass clazz, AstGeneratorHelper astHelper) {
@@ -337,7 +409,7 @@ public class CdDecorator {
 
     HookPoint getMethodBodyOpt = new TemplateHookPoint(
         "ast.symbolreferencemethods.GetReferencedDefinitionOpt",
-        attributeName, referencedSymbol, symbolName);
+        attributeName, referencedSymbol);
     replaceMethodBodyTemplate(clazz, String.format(AstOptionalGetMethods.getOpt.getDeclaration(), referencedNode, definitionName), getMethodBodyOpt);
 
     HookPoint getMethodBodyIsPresent = new TemplateHookPoint(
@@ -961,6 +1033,12 @@ public class CdDecorator {
    */
   protected void addSetter(ASTCDInterface interf) {
     for (ASTCDAttribute attribute : interf.getCDAttributeList()) {
+      String methodName = GeneratorHelper.getPlainGetter(attribute);
+      if (interf.getCDMethodList().stream()
+              .filter(m -> methodName.equals(m.getName()) && m.getCDParameterList().isEmpty()).findAny()
+              .isPresent()) {
+        continue;
+      }
       addSetter(interf, attribute);
     }
   }

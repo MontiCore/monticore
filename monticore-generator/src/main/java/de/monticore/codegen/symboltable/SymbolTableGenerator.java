@@ -2,21 +2,17 @@
 
 package de.monticore.codegen.symboltable;
 
-import com.google.common.collect.Lists;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._ast.ASTSymbolRule;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.se_rwth.commons.Names;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Optional;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static de.monticore.codegen.GeneratorHelper.SCOPE;
@@ -25,6 +21,8 @@ import static de.se_rwth.commons.logging.Log.debug;
 public class SymbolTableGenerator {
 
   public static final String PACKAGE = "_symboltable";
+  
+  public static final String SERIALIZATION_PACKAGE = "serialization";
 
   public static final String LOG = SymbolTableGenerator.class.getSimpleName();
 
@@ -32,15 +30,7 @@ public class SymbolTableGenerator {
 
   private final ModelLoaderGenerator modelLoaderGenerator;
 
-  private final ModelNameCalculatorGenerator modelNameCalculatorGenerator;
-
-  private final ResolvingFilterGenerator resolvingFilterGenerator;
-
   private final SymbolGenerator symbolGenerator;
-
-  private final SymbolKindGenerator symbolKindGenerator;
-
-  private final ScopeSpanningSymbolGenerator scopeSpanningSymbolGenerator;
 
   private final ScopeGenerator scopeGenerator;
 
@@ -49,30 +39,26 @@ public class SymbolTableGenerator {
   private final SymbolTableCreatorGenerator symbolTableCreatorGenerator;
 
   private final SymbolInterfaceGenerator symbolInterfaceGenerator;
+  
+  private final SymbolTablePrinterGenerator symbolTablePrinterGenerator;
 
   protected SymbolTableGenerator(
       ModelingLanguageGenerator modelingLanguageGenerator,
       ModelLoaderGenerator modelLoaderGenerator,
-      ModelNameCalculatorGenerator modelNameCalculatorGenerator,
-      ResolvingFilterGenerator resolvingFilterGenerator,
       SymbolGenerator symbolGenerator,
-      SymbolKindGenerator symbolKindGenerator,
-      ScopeSpanningSymbolGenerator scopeSpanningSymbolGenerator,
       ScopeGenerator scopeGenerator,
       SymbolReferenceGenerator symbolReferenceGenerator,
       SymbolTableCreatorGenerator symbolTableCreatorGenerator,
-      SymbolInterfaceGenerator symbolInterfaceGenerator) {
+      SymbolInterfaceGenerator symbolInterfaceGenerator,
+      SymbolTablePrinterGenerator symbolTablePrinterGenerator) {
     this.modelingLanguageGenerator = modelingLanguageGenerator;
     this.modelLoaderGenerator = modelLoaderGenerator;
-    this.modelNameCalculatorGenerator = modelNameCalculatorGenerator;
-    this.resolvingFilterGenerator = resolvingFilterGenerator;
     this.symbolGenerator = symbolGenerator;
-    this.symbolKindGenerator = symbolKindGenerator;
     this.scopeGenerator = scopeGenerator;
-    this.scopeSpanningSymbolGenerator = scopeSpanningSymbolGenerator;
     this.symbolReferenceGenerator = symbolReferenceGenerator;
     this.symbolTableCreatorGenerator = symbolTableCreatorGenerator;
     this.symbolInterfaceGenerator = symbolInterfaceGenerator;
+    this.symbolTablePrinterGenerator = symbolTablePrinterGenerator;
   }
 
   public void generate(GlobalExtensionManagement glex, ASTMCGrammar astGrammar, SymbolTableGeneratorHelper genHelper,
@@ -109,7 +95,7 @@ public class SymbolTableGenerator {
      * skip generation of: ModelNameCalculator, SymbolTableCreator, Symbol,
      * SymbolKind, SymbolReference, ScopeSpanningSymbol, (Spanned) Scope and
      * ResolvingFilter */
-    final boolean skipSymbolTableGeneration = allSymbolDefiningRules.isEmpty() && allScopeSpanningRules.isEmpty();
+    final boolean skipSymbolTableGeneration = allSymbolDefiningRules.isEmpty() && allScopeSpanningRules.isEmpty() && allSymbolDefiningRulesWithSuperGrammar.isEmpty();
 
     final GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(outputPath);
@@ -123,53 +109,26 @@ public class SymbolTableGenerator {
         ruleNamesWithSuperGrammar);
     modelLoaderGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol);
 
-    if (!skipSymbolTableGeneration) {
-      modelNameCalculatorGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol,
-          ruleNames);
       symbolTableCreatorGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol);
 
-      Collection<ASTSymbolRule> symbolRuleList = genHelper.getGrammarSymbol().getAstGrammar().get().getSymbolRuleList();
-      Collection<ASTSymbolRule> refSymbolRuleList = Lists.newArrayList();
-      for (MCProdSymbol prodSymbol : allSymbolDefiningRules) {
-        Optional<ASTSymbolRule> symbolRule = Optional.empty();
-        for (ASTSymbolRule sr : symbolRuleList) {
-          if (sr.getType().equals(prodSymbol.getSymbolDefinitionKind().get())) {
-            symbolRule = Optional.of(sr);
-            ((ArrayList<ASTSymbolRule>) refSymbolRuleList).add(sr);
-            break;
-          }
-        }
-        generateSymbolOrScopeSpanningSymbol(genEngine, genHelper, Optional.of(prodSymbol), symbolRule, handCodedPath);
-        String className = (prodSymbol.getSymbolDefinitionKind().isPresent() ? prodSymbol.getSymbolDefinitionKind().get() : prodSymbol.getName());
-        symbolKindGenerator.generate(genEngine, genHelper, handCodedPath, className);
-        symbolReferenceGenerator.generate(genEngine, genHelper, handCodedPath, prodSymbol,
-            genHelper.isScopeSpanningSymbol(prodSymbol));
-        resolvingFilterGenerator.generate(genEngine, genHelper, handCodedPath, prodSymbol);
+      for (MCProdSymbol ruleSymbol : allSymbolDefiningRules) {
+        generateSymbolOrScopeSpanningSymbol(genEngine, genHelper, ruleSymbol, handCodedPath);
+        symbolReferenceGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol,
+            genHelper.isScopeSpanningSymbol(ruleSymbol));
       }
-      // Generate symbol for symbolrules without corresponding production
-      symbolRuleList.removeAll(refSymbolRuleList);
-      for (ASTSymbolRule sr: symbolRuleList) {
-        generateSymbolOrScopeSpanningSymbol(genEngine, genHelper,
-                Optional.<MCProdSymbol>empty(), Optional.of(sr), handCodedPath);
-        symbolKindGenerator.generate(genEngine, genHelper, handCodedPath, sr.getType());
-      }
-    }
     //a symbol interface and scope is generated for all grammars
     symbolInterfaceGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol);
     scopeGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol.getName() + SCOPE, allSymbolDefiningRules, allSymbolDefiningRulesWithSuperGrammar);
-
+    symbolTablePrinterGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol.getName());
 
     debug("End symbol table generation for the grammar " + astGrammar.getName(), LOG);
   }
 
   private void generateSymbolOrScopeSpanningSymbol(GeneratorEngine genEngine,
                                                    SymbolTableGeneratorHelper genHelper,
-                                                   Optional<MCProdSymbol> prodSymbol, Optional<ASTSymbolRule> symbolRule,
-                                                   IterablePath handCodedPath) {
-    if (prodSymbol.isPresent() && genHelper.isScopeSpanningSymbol(prodSymbol.get())) {
-      scopeSpanningSymbolGenerator.generate(genEngine, genHelper, handCodedPath, prodSymbol.get());
-    } else {
-      symbolGenerator.generate(genEngine, genHelper, handCodedPath, prodSymbol, symbolRule);
+                                                   MCProdSymbol ruleSymbol, IterablePath handCodedPath) {
+    if (ruleSymbol.getAstNode().isPresent()) {
+        symbolGenerator.generate(genEngine, genHelper, handCodedPath, ruleSymbol, genHelper.isScopeSpanningSymbol(ruleSymbol));
     }
   }
 

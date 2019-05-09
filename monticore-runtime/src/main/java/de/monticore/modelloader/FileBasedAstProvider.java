@@ -19,6 +19,7 @@ import java.util.Optional;
  * Builds ASTs by going straight to the hard disk and reading in the model.
  *
  */
+@Deprecated
 public final class FileBasedAstProvider<T extends ASTNode> implements AstProvider<T> {
 
   private final ModelingLanguage modelingLanguage;

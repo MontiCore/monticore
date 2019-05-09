@@ -2,17 +2,18 @@
 
 package de.monticore.symboltable.references;
 
-import java.util.Optional;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
+
+import java.util.Optional;
 
 /**
  * Represents a symbol reference and is the super type of all symbol references. Do not
  * implement this interface directly. Instead, use one of its subtypes.
  *
  */
+@Deprecated
 public interface SymbolReference<T extends Symbol> {
 
   /**

@@ -2,11 +2,12 @@
 
 package de.monticore.symboltable;
 
-import java.util.Optional;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.references.SymbolReference;
 
+import java.util.Optional;
+
+@Deprecated
 public interface SymbolTableCreator {
 
   void putSpannedScopeOnStack(ScopeSpanningSymbol symbol);

@@ -73,6 +73,13 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   public String getTargetPackage() {
     return getQualifiedGrammarName().toLowerCase() + "." + SymbolTableGenerator.PACKAGE;
   }
+  
+  /**
+   * @return the package for the generated symbol table files
+   */
+  public String getSerializationTargetPackage() {
+    return getTargetPackage() + "." + SymbolTableGenerator.SERIALIZATION_PACKAGE;
+  }
 
   /**
    * @return the qualified grammar's name
@@ -477,6 +484,9 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
         + cdName + SCOPE;
   }
 
+  public String getSymbolNameFromQualifiedSymbol (String qualifiedSymbol) {
+	  return qualifiedSymbol.substring(qualifiedSymbol.lastIndexOf(".") + 1);
+  }
   
   public Set<String> getAllQualifiedSymbols() {
     Set<String> qualifiedSymbols = new LinkedHashSet<>();
@@ -489,7 +499,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
 
   /**
    * Computes a set of qualified symbols for all super grammars.
-   * 
+   *
    * @return a set of qualified inherited symbols
    */
   public Set<String> getQualifiedInheritedSymbols() {
@@ -504,7 +514,7 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
 
   /**
    * Retrieves the qualified symbols for a given grammar.
-   * 
+   *
    * @param grammarSymbol The given grammar symbol.
    * @return a set of qualified symbols.
    */
@@ -569,5 +579,35 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
 
     return ImmutableList.copyOf(ruleSymbolsWithName);
   }
+  
+  /**
+   * Checks whether the language related to the given class diagram symbol
+   * generates a symbol table.
+   *
+   * @param cdSymbol The input class diagram symbol.
+   * @return A boolean value if the language has a symbol table.
+   */
+  public boolean hasSymbolTable(CDSymbol cdSymbol) {
+    Optional<MCGrammarSymbol> grammarSymbol = cdSymbol.getEnclosingScope().resolve(cdSymbol.getFullName(), MCGrammarSymbol.KIND);
+    if (grammarSymbol.isPresent() && grammarSymbol.get().getStartProd().isPresent()) {
+      return true;
+    }
+    return false;
+  }
 
+  /**
+   * Checks whether the language related to the given name of a class diagram
+   * symbol generates a symbol table.
+   *
+   * @param cdSymbolName The name of the input class diagram symbol.
+   * @return A boolean value if the language has a symbol table.
+   */
+  public boolean hasSymbolTable(String cdSymbolName) {
+    Optional<CDSymbol> cdSymbolOpt = resolveCd(cdSymbolName);
+    if (cdSymbolOpt.isPresent()) {
+      return hasSymbolTable(cdSymbolOpt.get());
+    } else {
+      return false;
+    }
+  }
 }

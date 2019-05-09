@@ -2,19 +2,16 @@
 
 package de.monticore.codegen.symboltable;
 
-import static de.monticore.codegen.GeneratorHelper.existsHandwrittenClass;
 import static de.monticore.codegen.GeneratorHelper.getSimpleTypeNameToGenerate;
 import static de.se_rwth.commons.Names.getPathFromPackage;
 import static de.se_rwth.commons.Names.getSimpleName;
 import static java.nio.file.Paths.get;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
-import de.se_rwth.commons.Names;
 
 public class CommonSymbolReferenceGenerator implements SymbolReferenceGenerator {
 
@@ -25,12 +22,10 @@ public class CommonSymbolReferenceGenerator implements SymbolReferenceGenerator 
     final String className = getSimpleTypeNameToGenerate(getSimpleName(ruleName + "SymbolReference"),
             genHelper.getTargetPackage(), handCodedPath);
 
-    boolean hwSymbolExists = existsHandwrittenClass(getSimpleName(ruleSymbol.getName() + "Symbol"), genHelper.getTargetPackage(), handCodedPath);
-
     final Path filePath = get(getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
     if (ruleSymbol.getAstNode().isPresent()) {
       genEngine.generate("symboltable.SymbolReference", filePath, ruleSymbol.getAstNode().get(),
-              className, ruleName, isScopeSpanningSymbol, hwSymbolExists);
+              className, ruleName);
     }
   }
 }

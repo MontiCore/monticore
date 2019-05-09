@@ -9,13 +9,11 @@ import static de.se_rwth.commons.Names.getSimpleName;
 import static java.nio.file.Paths.get;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
 import de.monticore.io.paths.IterablePath;
-import de.se_rwth.commons.Names;
 
 public class CommonModelingLanguageGenerator implements ModelingLanguageGenerator {
 
@@ -28,8 +26,8 @@ public class CommonModelingLanguageGenerator implements ModelingLanguageGenerato
     final Path filePath = get(getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
     final boolean existsHW = existsHandwrittenClass(getSimpleName(grammarSymbol.getFullName() + "Language"),
             genHelper.getTargetPackage(), handCodedPath);
-
+    
     genEngine.generate("symboltable.ModelingLanguage", filePath, grammarSymbol.getAstNode().get(),
-            className, grammarRuleNames, existsHW);
+            className, existsHW);
   }
 }

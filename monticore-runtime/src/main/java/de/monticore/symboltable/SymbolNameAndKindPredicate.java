@@ -5,6 +5,7 @@ package de.monticore.symboltable;
 
 import com.google.common.base.Predicate;
 
+@Deprecated
 public class SymbolNameAndKindPredicate implements SymbolPredicate {
 
   private final String symbolName;
