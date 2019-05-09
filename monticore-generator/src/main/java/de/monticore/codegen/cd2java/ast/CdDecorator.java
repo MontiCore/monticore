@@ -361,6 +361,7 @@ public class CdDecorator {
 
   protected void addReferencedSymbolOptMethods(ASTCDAttribute attribute, String referencedSymbol, ASTCDClass clazz) {
     String symboName = StringTransformations.capitalize(attribute.getName()) + "Symbol";
+    String simpleSymbolName = getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf("Symbol"));
 
     HookPoint getMethodBody = new TemplateHookPoint(
         "ast.symbolreferencemethods.GetReferencedSymbol",
@@ -369,7 +370,7 @@ public class CdDecorator {
 
     HookPoint getMethodBodyOpt = new TemplateHookPoint(
         "ast.symbolreferencemethods.GetReferencedSymbolOpt",
-        attribute.getName(), referencedSymbol, GeneratorHelper.isOptional(attribute));
+        attribute.getName(), simpleSymbolName, GeneratorHelper.isOptional(attribute));
     replaceMethodBodyTemplate(clazz, String.format(AstOptionalGetMethods.getOpt.getDeclaration(), referencedSymbol, symboName), getMethodBodyOpt);
 
     HookPoint getMethodBodyIsPresent = new TemplateHookPoint(
@@ -380,13 +381,14 @@ public class CdDecorator {
 
   public void addReferencedSymbolListMethods(ASTCDAttribute attribute, String referencedSymbol, ASTCDClass clazz) {
     //generation of normal getter
+    String simpleSymbolName = getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf("Symbol"));
     String attributeName = attribute.getName();
     String methodNameGetList = "get" + StringTransformations.capitalize(attributeName) + "SymbolList";
     String toParseOpt = "public " + "java.util.List<Optional<" + referencedSymbol + ">>" + " "
         + methodNameGetList + "() ;";
     HookPoint getMethodBodyOpt = new TemplateHookPoint(
         "ast.symbolreferencemethods.GetReferencedSymbolList.ftl",
-        attributeName, referencedSymbol);
+        attributeName, simpleSymbolName, referencedSymbol);
     replaceMethodBodyTemplate(clazz, toParseOpt, getMethodBodyOpt);
     //generation of other list methods
     String typeName = "Optional<" + referencedSymbol + ">";
@@ -427,7 +429,7 @@ public class CdDecorator {
     String toParse = "public java.util.List<Optional<" + referencedNode + ">> " + methodNameGet + "() ;";
     HookPoint getMethodBody = new TemplateHookPoint(
         "ast.symbolreferencemethods.GetReferencedDefinitionList",
-        attribute.getName(), referencedSymbol, symbolName, referencedNode);
+        attribute.getName(), referencedSymbol, referencedNode);
     replaceMethodBodyTemplate(clazz, toParse, getMethodBody);
 
     String typeName = "Optional<" + referencedNode + ">";

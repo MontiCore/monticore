@@ -480,10 +480,19 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
   }
 
   public String getQualifiedScopeInterfaceType(String packageName, String cdName) {
-    return getPackageName(packageName, SymbolTableGenerator.PACKAGE) + ".I"
-        + cdName + SCOPE;
+    return getPackageName(packageName, SymbolTableGenerator.PACKAGE) + "." 
+        + getScopeInterfaceType(cdName);
   }
-
+  
+  public String getScopeInterfaceType(String cdName) {
+    return "I" + cdName + SCOPE;
+  }
+  
+  public String getScopeInterfaceType(CDSymbol cdSymbol) {
+    String cdName = getCdName(cdSymbol.getFullName());
+    return getScopeInterfaceType(cdName);
+  }
+  
   public String getSymbolNameFromQualifiedSymbol (String qualifiedSymbol) {
 	  return qualifiedSymbol.substring(qualifiedSymbol.lastIndexOf(".") + 1);
   }
