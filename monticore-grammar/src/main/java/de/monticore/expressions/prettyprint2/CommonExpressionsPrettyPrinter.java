@@ -4,6 +4,9 @@ package de.monticore.expressions.prettyprint2;
 import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTQualifiedNameExpression;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 
@@ -18,20 +21,7 @@ public class CommonExpressionsPrettyPrinter implements CommonExpressionsVisitor 
     realThis = this;
   }
 
-  @Override
-  public void handle(ASTNameExpression node) {
-    CommentPrettyPrinter.printPreComments(node, getPrinter());
-    getPrinter().print(node.getName());
-    CommentPrettyPrinter.printPostComments(node, getPrinter());
-  }
 
-  @Override
-  public void handle(ASTQualifiedNameExpression node) {
-    CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getExpression().accept(getRealThis());
-    getPrinter().print("." + node.getName());
-    CommentPrettyPrinter.printPostComments(node, getPrinter());
-  }
 
   @Override
   public void handle(ASTMultExpression node) {
