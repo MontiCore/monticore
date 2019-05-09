@@ -1,0 +1,7 @@
+package de.monticore.expressions;
+
+grammar AssignmentExpressionsWithLiterals extends de.monticore.expressions.AssignmentExpressions, de.monticore.MCBasicLiterals {
+    start Expression;
+
+    ExtLiteral = Literal;
+}
