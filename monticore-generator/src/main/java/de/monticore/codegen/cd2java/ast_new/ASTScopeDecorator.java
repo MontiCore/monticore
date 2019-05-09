@@ -7,10 +7,6 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.symboltable.SymbolTableConstants.ENCLOSING_SCOPE;
@@ -32,28 +28,22 @@ public class ASTScopeDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass>
 
   @Override
   public ASTCDClass decorate(final ASTCDClass clazz) {
+    ASTType scopeInterfaceType = this.getCDTypeFacade().createOptionalTypeOf(symbolTableService.getScopeIntefaceType());
     if (symbolTableService.isScopeClass(clazz)) {
       //create attributes
-      List<ASTCDAttribute> scopeAttributes = createScopeAttributes();
-      clazz.addAllCDAttributes(scopeAttributes);
-      //create getter and setter for all attributes
-      List<ASTCDMethod> scopeMethods = new ArrayList<>();
-      for (ASTCDAttribute x : scopeAttributes) {
-        scopeMethods.addAll(methodDecorator.decorate(x));
-      }
-      clazz.addAllCDMethods(scopeMethods);
-    }
-    return clazz;
-  }
+      ASTCDAttribute spannedScopeAttribute = createSpannedScopeAttribute();
+      clazz.addCDAttribute(spannedScopeAttribute);
+      clazz.addAllCDMethods(methodDecorator.decorate(spannedScopeAttribute));
 
-  protected List<ASTCDAttribute> createScopeAttributes() {
-    List<ASTCDAttribute> attributeList = new ArrayList<>();
-    attributeList.add(createSpannedScopeAttribute());
-    // new attributes for new Symtab branch
-    ASTType scopeType = this.getCDTypeFacade().createOptionalTypeOf(symbolTableService.getScopeIntefaceType());
-    attributeList.add(createSpannedScope2Attribute(scopeType));
-    attributeList.add(createEnclosingScope2Attribute(scopeType));
-    return attributeList;
+      ASTCDAttribute spannedScope2Attribute = createSpannedScope2Attribute(scopeInterfaceType);
+      clazz.addCDAttribute(spannedScope2Attribute);
+      clazz.addAllCDMethods(methodDecorator.decorate(spannedScope2Attribute));
+    }
+    //always add enclosingScope2 attribute and methods
+    ASTCDAttribute enclosingScope2Attribute = createEnclosingScope2Attribute(scopeInterfaceType);
+    clazz.addCDAttribute(enclosingScope2Attribute);
+    clazz.addAllCDMethods(methodDecorator.decorate(enclosingScope2Attribute));
+    return clazz;
   }
 
   protected ASTCDAttribute createSpannedScopeAttribute() {
