@@ -195,13 +195,12 @@ public class CombineExpressionsTest {
   @Test
   public void testCombination() throws IOException{
     CombineExpressionsParser parser = new CombineExpressionsParser();
-    Optional<ASTExpression> p = parser.parse_StringExpression("varInt+=3+4");
+    Optional<ASTExpression> p = parser.parse_StringExpression("varDouble+=3+4");
 
     CombineExpressionsTypesCalculator calc = new CombineExpressionsTypesCalculator(scope,literalsVisitor);
-    calc.setScope(scope);
     assertTrue(p.isPresent());
     p.get().accept(calc.getRealThis());
 
-    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.getResult()));
   }
 }
