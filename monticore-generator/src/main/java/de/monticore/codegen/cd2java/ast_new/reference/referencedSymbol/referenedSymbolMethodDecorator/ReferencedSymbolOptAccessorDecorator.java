@@ -2,10 +2,9 @@ package de.monticore.codegen.cd2java.ast_new.reference.referencedSymbol.referene
 
 import de.monticore.codegen.cd2java.ast_new.reference.referencedSymbol.ASTReferencedSymbolDecorator;
 import de.monticore.codegen.cd2java.methods.accessor.OptionalAccessorDecorator;
+import de.monticore.codegen.cd2java.symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.TypesHelper;
-import de.monticore.types.TypesPrinter;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
@@ -16,8 +15,12 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PUBLIC;
 
 public class ReferencedSymbolOptAccessorDecorator extends OptionalAccessorDecorator {
 
-  public ReferencedSymbolOptAccessorDecorator(GlobalExtensionManagement glex) {
+  protected final SymbolTableService symbolTableService;
+
+
+  public ReferencedSymbolOptAccessorDecorator(final GlobalExtensionManagement glex, final SymbolTableService symbolTableService) {
     super(glex);
+    this.symbolTableService = symbolTableService;
   }
 
   @Override
@@ -25,9 +28,12 @@ public class ReferencedSymbolOptAccessorDecorator extends OptionalAccessorDecora
     String name = String.format(GET_OPT, StringUtils.capitalize(ast.getName()));
     ASTType type = ast.getType().deepClone();
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, type, name);
-    ASTType referencedSymbolType = TypesHelper.getSimpleReferenceTypeFromOptional(ast.getType().deepClone());
+    //create correct Type for resolveA method
+    String referencedProdName = symbolTableService.getResolveMethodNameSuffix(ast);
+    //create scopeInterface for cast od enclosingScope
+    String scopeInterfaceTypeName = symbolTableService.getScopeInterfaceTypeName();
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("ast_new.refSymbolMethods.GetSymbolOpt",
-        ast.getName(), TypesPrinter.printType(referencedSymbolType), isOptionalAttribute(ast)));
+        ast.getName(), referencedProdName, scopeInterfaceTypeName, isOptionalAttribute(ast)));
     return method;
   }
 
@@ -41,4 +47,5 @@ public class ReferencedSymbolOptAccessorDecorator extends OptionalAccessorDecora
     }
     return false;
   }
+
 }

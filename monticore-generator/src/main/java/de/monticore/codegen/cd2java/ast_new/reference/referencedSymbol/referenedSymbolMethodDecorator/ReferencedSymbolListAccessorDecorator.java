@@ -1,6 +1,7 @@
 package de.monticore.codegen.cd2java.ast_new.reference.referencedSymbol.referenedSymbolMethodDecorator;
 
 import de.monticore.codegen.cd2java.methods.accessor.ListAccessorDecorator;
+import de.monticore.codegen.cd2java.symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
@@ -10,8 +11,12 @@ import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 
 public class ReferencedSymbolListAccessorDecorator extends ListAccessorDecorator {
 
-  public ReferencedSymbolListAccessorDecorator(GlobalExtensionManagement glex) {
+  protected final SymbolTableService symbolTableService;
+
+  public ReferencedSymbolListAccessorDecorator(final GlobalExtensionManagement glex,
+                                               final SymbolTableService symbolTableService) {
     super(glex);
+    this.symbolTableService = symbolTableService;
   }
 
   @Override

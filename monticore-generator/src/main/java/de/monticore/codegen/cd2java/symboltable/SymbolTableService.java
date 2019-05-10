@@ -3,6 +3,8 @@ package de.monticore.codegen.cd2java.symboltable;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
+import de.monticore.types.TypesHelper;
+import de.monticore.types.TypesPrinter;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.CD4AnalysisHelper;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
@@ -13,6 +15,7 @@ import de.se_rwth.commons.Names;
 
 import static de.monticore.codegen.cd2java.ast_new.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java.symboltable.SymbolTableConstants.INTERFACE_PREFIX;
+import static de.monticore.codegen.cd2java.symboltable.SymbolTableConstants.SYMBOL_SUFFIX;
 import static de.monticore.utils.Names.getSimpleName;
 import static de.se_rwth.commons.Names.getQualifier;
 
@@ -98,5 +101,19 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public boolean isScopeClass(ASTCDClass clazz) {
     return clazz.isPresentModifier() && hasStereotype(clazz.getModifier(), MC2CDStereotypes.SCOPE);
+  }
+
+  public String getResolveMethodNameSuffix(ASTCDAttribute attribute) {
+    //get A for resolve A
+    ASTType referencedSymbolType = TypesHelper.getSimpleReferenceTypeFromOptional(attribute.getType().deepClone());
+    String referencedSymbolName = TypesPrinter.printType(referencedSymbolType);
+    //remove package
+    String simpleReferencedSymbolName = referencedSymbolName.contains(".")?
+        referencedSymbolName.substring(referencedSymbolName.lastIndexOf(".")+1):
+        referencedSymbolName;
+    //remove Symbol suffix
+    return simpleReferencedSymbolName.endsWith(SYMBOL_SUFFIX) ?
+        simpleReferencedSymbolName.substring(0, simpleReferencedSymbolName.lastIndexOf(SYMBOL_SUFFIX)) :
+        simpleReferencedSymbolName;
   }
 }

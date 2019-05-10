@@ -12,7 +12,7 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 public class ASTReferenceDecorator extends CompositeDecorator<ASTCDClass> {
 
   public ASTReferenceDecorator(GlobalExtensionManagement glex, SymbolTableService symbolTableService) {
-    this(new ASTReferencedSymbolDecorator(glex, new ReferencedSymbolAccessorDecorator(glex), symbolTableService),
+    this(new ASTReferencedSymbolDecorator(glex, new ReferencedSymbolAccessorDecorator(glex, symbolTableService), symbolTableService),
         new ASTReferencedDefinitionDecorator(glex, new ReferencedDefinitionAccessorDecorator(glex, symbolTableService), symbolTableService));
   }
 
