@@ -16,4 +16,6 @@ public class SymbolTableConstants {
 
   public static final String INTERFACE_PREFIX = "I";
 
+  public static final String SCOPE_INTERFACE_FULL_NAME = "de.monticore.symboltable.IScope";
+
 }

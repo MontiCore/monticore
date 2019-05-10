@@ -9,8 +9,7 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
-import static de.monticore.codegen.cd2java.symboltable.SymbolTableConstants.ENCLOSING_SCOPE;
-import static de.monticore.codegen.cd2java.symboltable.SymbolTableConstants.SPANNED_SCOPE;
+import static de.monticore.codegen.cd2java.symboltable.SymbolTableConstants.*;
 
 public class ASTScopeDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
@@ -38,11 +37,19 @@ public class ASTScopeDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass>
       ASTCDAttribute spannedScope2Attribute = createSpannedScope2Attribute(scopeInterfaceType);
       clazz.addCDAttribute(spannedScope2Attribute);
       clazz.addAllCDMethods(methodDecorator.decorate(spannedScope2Attribute));
+
+      //always add enclosingScope2 for attribute that has a scope
+      ASTCDAttribute enclosingScope2Attribute = createEnclosingScope2Attribute(scopeInterfaceType);
+      clazz.addCDAttribute(enclosingScope2Attribute);
+      clazz.addAllCDMethods(methodDecorator.decorate(enclosingScope2Attribute));
+    } else {
+      //always add enclosingScope2 attribute and methods with IScope
+      ASTCDAttribute enclosingScope2Attribute = createEnclosingScope2Attribute(
+          getCDTypeFacade().createOptionalTypeOf(SCOPE_INTERFACE_FULL_NAME));
+      clazz.addCDAttribute(enclosingScope2Attribute);
+      clazz.addAllCDMethods(methodDecorator.decorate(enclosingScope2Attribute));
     }
-    //always add enclosingScope2 attribute and methods
-    ASTCDAttribute enclosingScope2Attribute = createEnclosingScope2Attribute(scopeInterfaceType);
-    clazz.addCDAttribute(enclosingScope2Attribute);
-    clazz.addAllCDMethods(methodDecorator.decorate(enclosingScope2Attribute));
+
     return clazz;
   }
 
