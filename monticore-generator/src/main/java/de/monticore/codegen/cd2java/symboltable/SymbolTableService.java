@@ -15,7 +15,7 @@ import de.se_rwth.commons.Names;
 
 import static de.monticore.codegen.cd2java.ast_new.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java.symboltable.SymbolTableConstants.INTERFACE_PREFIX;
-import static de.monticore.codegen.cd2java.symboltable.SymbolTableConstants.SYMBOL_SUFFIX;
+import static de.monticore.codegen.cd2java.symboltable.SymbolTableConstants.SYMBOL_TABLE_PACKGE;
 import static de.monticore.utils.Names.getSimpleName;
 import static de.se_rwth.commons.Names.getQualifier;
 
@@ -31,7 +31,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   @Override
   public String getSubPackage() {
-    return SymbolTableConstants.SYMBOL_TABLE_PACKGE;
+    return SYMBOL_TABLE_PACKGE;
   }
 
   @Override
@@ -55,7 +55,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getCDTypeFactory().createSimpleReferenceType(getScopeTypeName());
   }
 
-  public ASTType getScopeIntefaceType() {
+  public ASTType getScopeInterfaceType() {
     return getCDTypeFactory().createSimpleReferenceType(getScopeInterfaceTypeName());
   }
 
@@ -79,12 +79,18 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     String referencedSymbol = CD4AnalysisHelper.getStereotypeValues(attribute,
         MC2CDStereotypes.REFERENCED_SYMBOL.toString()).get(0);
 
-    if (!getQualifier(referencedSymbol).isEmpty()) {
+    if (!getQualifier(referencedSymbol).isEmpty() && !referencedSymbol.contains(SYMBOL_TABLE_PACKGE)) {
       referencedSymbol = SymbolTableGeneratorHelper
           .getQualifiedSymbolType(getQualifier(referencedSymbol)
               .toLowerCase(), Names.getSimpleName(referencedSymbol));
     }
     return referencedSymbol;
+  }
+
+  public String getSimpleSymbolNameFromOptional(ASTType type) {
+    ASTType referencedSymbolType = TypesHelper.getSimpleReferenceTypeFromOptional(type.deepClone());
+    String referencedSymbol = TypesPrinter.printType(referencedSymbolType);
+    return getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf(SymbolTableConstants.SYMBOL_SUFFIX));
   }
 
   public String getSimpleSymbolName(String referencedSymbol) {
@@ -101,19 +107,5 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public boolean isScopeClass(ASTCDClass clazz) {
     return clazz.isPresentModifier() && hasStereotype(clazz.getModifier(), MC2CDStereotypes.SCOPE);
-  }
-
-  public String getResolveMethodNameSuffix(ASTCDAttribute attribute) {
-    //get A for resolve A
-    ASTType referencedSymbolType = TypesHelper.getSimpleReferenceTypeFromOptional(attribute.getType().deepClone());
-    String referencedSymbolName = TypesPrinter.printType(referencedSymbolType);
-    //remove package
-    String simpleReferencedSymbolName = referencedSymbolName.contains(".")?
-        referencedSymbolName.substring(referencedSymbolName.lastIndexOf(".")+1):
-        referencedSymbolName;
-    //remove Symbol suffix
-    return simpleReferencedSymbolName.endsWith(SYMBOL_SUFFIX) ?
-        simpleReferencedSymbolName.substring(0, simpleReferencedSymbolName.lastIndexOf(SYMBOL_SUFFIX)) :
-        simpleReferencedSymbolName;
   }
 }

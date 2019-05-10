@@ -80,10 +80,11 @@ public class ASTReferencedSymbolDecorator extends AbstractDecorator<ASTCDClass, 
       ASTType listType = getCDTypeFacade().createListTypeOf(optionalType);
       methodDecorationAttribute = getCDAttributeFacade().createAttribute(refSymbolAttribute.getModifier().deepClone(), listType, refSymbolAttribute.getName());
     } else if (wasAttributeOptional) {
-      //add stereotye to attribute to later in the method generation know if the original attribute was optional or mandatory
+      //add stereotype to attribute to later in the method generation know if the original attribute was optional or mandatory
       TransformationHelper.addStereotypeValue(methodDecorationAttribute.getModifier(), IS_OPTIONAL);
     }
-
+    //to later easy symbol type
+    TransformationHelper.addStereotypeValue(methodDecorationAttribute.getModifier(), MC2CDStereotypes.REFERENCED_SYMBOL.toString(), referencedSymbol);
     return accessorDecorator.decorate(methodDecorationAttribute);
   }
 

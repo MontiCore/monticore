@@ -28,9 +28,11 @@ public class ReferencedSymbolListAccessorDecorator extends ListAccessorDecorator
   protected ASTCDMethod createGetListMethod(ASTCDAttribute ast) {
     String signature = String.format(GET_LIST, attributeType, capitalizedAttributeNameWithS);
     ASTCDMethod getList = this.getCDMethodFacade().createMethodByDefinition(signature);
-    String referencedSymbolTypeAsList = ast.printType();
-    String referencedSymbolType = referencedSymbolTypeAsList.substring(5, referencedSymbolTypeAsList.length() - 1);
-    this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint("ast_new.refSymbolMethods.GetSymbolList", ast.getName(), referencedSymbolType));
+    String referencedSymbolType = symbolTableService.getReferencedSymbolTypeName(ast);
+    String simpleSymbolName = symbolTableService.getSimpleSymbolName(referencedSymbolType);
+    String scopeInterfaceTypeName = symbolTableService.getScopeInterfaceTypeName();
+    this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint("ast_new.refSymbolMethods.GetSymbolList",
+        ast.getName(), referencedSymbolType, simpleSymbolName, scopeInterfaceTypeName));
     return getList;
   }
 

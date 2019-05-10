@@ -4,6 +4,8 @@ import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.ast_new.reference.referencedDefinition.referencedDefinitionMethodDecorator.ReferencedDefinitionAccessorDecorator;
 import de.monticore.codegen.cd2java.symboltable.SymbolTableService;
+import de.monticore.codegen.mc2cd.MC2CDStereotypes;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
@@ -57,7 +59,7 @@ public class ASTReferencedDefinitionDecorator extends AbstractDecorator<ASTCDCla
       symbolType = getCDTypeFacade().createOptionalTypeOf(referencedNode);
     }
     ASTCDAttribute refSymbolAttribute = getCDAttributeFacade().createAttribute(PRIVATE, symbolType, astcdAttribute.getName());
-    refSymbolAttribute.getModifier().setStereotype(astcdAttribute.getModifier().getStereotype().deepClone());
+    TransformationHelper.addStereotypeValue(refSymbolAttribute.getModifier(), MC2CDStereotypes.REFERENCED_SYMBOL.toString(), referencedSymbol);
     return accessorDecorator.decorate(refSymbolAttribute);
   }
 }

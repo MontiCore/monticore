@@ -28,12 +28,12 @@ public class ReferencedSymbolOptAccessorDecorator extends OptionalAccessorDecora
     String name = String.format(GET_OPT, StringUtils.capitalize(ast.getName()));
     ASTType type = ast.getType().deepClone();
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, type, name);
-    //create correct Type for resolveA method
-    String referencedProdName = symbolTableService.getResolveMethodNameSuffix(ast);
+    //create correct Name A for resolveA method
+    String simpleSymbolName = symbolTableService.getSimpleSymbolName(symbolTableService.getReferencedSymbolTypeName(ast));
     //create scopeInterface for cast od enclosingScope
     String scopeInterfaceTypeName = symbolTableService.getScopeInterfaceTypeName();
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("ast_new.refSymbolMethods.GetSymbolOpt",
-        ast.getName(), referencedProdName, scopeInterfaceTypeName, isOptionalAttribute(ast)));
+        ast.getName(), simpleSymbolName, scopeInterfaceTypeName, isOptionalAttribute(ast)));
     return method;
   }
 
