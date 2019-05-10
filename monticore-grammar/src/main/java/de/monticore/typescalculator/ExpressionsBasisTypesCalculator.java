@@ -1,6 +1,7 @@
 package de.monticore.typescalculator;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.expressions.assignmentexpressionswithliterals._visitor.AssignmentExpressionsWithLiteralsVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
@@ -35,8 +36,21 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
 
   protected Map<ASTNode, MCTypeSymbol> types;
 
+  private ExpressionsBasisVisitor realThis;
+
+  @Override
+  public void setRealThis(ExpressionsBasisVisitor realThis){
+    this.realThis=realThis;
+  }
+
+  @Override
+  public ExpressionsBasisVisitor getRealThis(){
+    return realThis;
+  }
+
   public ExpressionsBasisTypesCalculator(){
     types=new HashMap<>();
+    realThis=this;
   }
 
   @Override

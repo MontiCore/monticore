@@ -1,6 +1,7 @@
 package de.monticore.typescalculator;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.expressions.assignmentexpressionswithliterals._visitor.AssignmentExpressionsWithLiteralsVisitor;
 import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
@@ -25,8 +26,21 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
   
   private final String errorCode="0xA0142 ";
 
+  private CommonExpressionsVisitor realThis;
+
+  @Override
+  public void setRealThis(CommonExpressionsVisitor realThis){
+    this.realThis=realThis;
+  }
+
+  @Override
+  public CommonExpressionsVisitor getRealThis(){
+    return realThis;
+  }
+
   public CommonExpressionTypesCalculator(){
     types = new HashMap<>();
+    realThis=this;
   }
 
   @Override

@@ -1,6 +1,7 @@
 package de.monticore.typescalculator;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsVisitor;
 import de.monticore.expressions.assignmentexpressionswithliterals._visitor.AssignmentExpressionsWithLiteralsVisitor;
 import de.monticore.expressions.assignmentexpressionswithliterals._ast.ASTExtLiteral;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
@@ -11,7 +12,20 @@ import java.util.Map;
 
 public class AssignmentExpressionsWithLiteralsTypesCalculator extends AssignmentExpressionTypesCalculator implements AssignmentExpressionsWithLiteralsVisitor {
 
+  private AssignmentExpressionsWithLiteralsVisitor realThis;
+
+  @Override
+  public void setRealThis(AssignmentExpressionsWithLiteralsVisitor realThis){
+    this.realThis=realThis;
+  }
+
+  @Override
+  public AssignmentExpressionsWithLiteralsVisitor getRealThis(){
+    return realThis;
+  }
+
   public AssignmentExpressionsWithLiteralsTypesCalculator(){
+    realThis=this;
     result=super.getResult();
     scope=super.getScope();
     literalsVisitor=super.getLiteralsVisitor();

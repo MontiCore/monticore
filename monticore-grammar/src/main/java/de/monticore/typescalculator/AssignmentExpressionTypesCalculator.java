@@ -3,6 +3,8 @@ package de.monticore.typescalculator;
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.assignmentexpressions._ast.*;
 import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsInheritanceVisitor;
+import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsVisitor;
+import de.monticore.expressions.assignmentexpressionswithliterals._visitor.AssignmentExpressionsWithLiteralsVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExtLiteralExt;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
@@ -18,7 +20,20 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
 
   private final String errorCode="0xA0143 ";
 
+  private AssignmentExpressionsVisitor realThis;
+
+  @Override
+  public void setRealThis(AssignmentExpressionsVisitor realThis){
+    this.realThis=realThis;
+  }
+
+  @Override
+  public AssignmentExpressionsVisitor getRealThis(){
+    return realThis;
+  }
+
   public AssignmentExpressionTypesCalculator(){
+    realThis=this;
     types = super.getTypes();
     literalsVisitor=super.getLiteralsVisitor();
     result=super.getResult();
