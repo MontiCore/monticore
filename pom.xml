@@ -6,7 +6,7 @@
 
   <groupId>de.monticore</groupId>
   <artifactId>monticore</artifactId>
-  <version>5.0.6.NewSymTab.Refactoring-SNAPSHOT</version>
+  <version>5.0.6.NewSymTab-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <!-- == PROJECT MODULES ================================================= -->
