@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.inherited.subsub;
+
+grammar Subsubgrammar extends mc.feature.inherited.sub.Subgrammar {
+
+//TODO: Obere Produktion eigentlich richtig, wegen Emf ausgewichen auf untere
+//  N = X? D;
+  N = D;
+//  P extends X = D;
+  
+  S = X*;
+  
+//  X = Y "HH" J D;
+ 
+}

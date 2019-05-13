@@ -17,14 +17,30 @@ public enum MC2CDStereotypes {
    */
   EXTERNAL_TYPE("externalType"),
   /**
-   * Referenced symbol
+   * Referenced symbol eg. Name@State -> String name; attribute is a referenced Symbol
    */
   REFERENCED_SYMBOL("referencedSymbol"),
   /**
-   * Referenced symbol
+   * Symbol to which is referenced eg. Name@State -> Optional<StateSymbol> nameSymbol;
    */
-  DEFAULT_IMPLEMENTATION("defaultImplementation");
-  
+  REFERENCED_SYMBOL_ATTRIBUTE("referencedSymbolAttribute"),
+  /**
+   * To add default implementation to method
+   */
+  DEFAULT_IMPLEMENTATION("defaultImplementation"),
+  /**
+   * To mark class as symbol
+   */
+  SYMBOL("symbol"),
+  /**
+   * To mark class as scope
+   */
+  SCOPE("scope"),
+  /**
+   * To add bodies to methods
+   */
+  METHOD_BODY("methodBody");
+
   private final String stereotype;
   
   private MC2CDStereotypes(String stereotype) {

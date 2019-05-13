@@ -1,0 +1,14 @@
+package de.monticore.codegen.factory;
+
+import de.monticore.codegen.factory.BGrammar;
+
+classdiagram CGrammar {
+
+    public class ASTBlub{
+      protected de.monticore.codegen.factory.agrammar._ast.ASTBar bar;
+    }
+
+     public class ASTBli{
+      protected String name;
+    }
+}

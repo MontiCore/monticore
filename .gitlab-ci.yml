@@ -24,6 +24,7 @@ build_dev:
   only:
     - dev
     - newSymtab
+    - refactoring_with_new_symtab
 
 #build_branches:
 #  stage: build

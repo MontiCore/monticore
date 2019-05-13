@@ -1,0 +1,12 @@
+package de.monticore.codegen.ast;
+
+import de.monticore.codegen.ast.Lexicals.*;
+
+classdiagram SymbolTest {
+
+    public class AutomatonSymbol {
+    }
+
+    public class StateSymbol {
+    }
+}

@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.visitors;
+
+grammar B extends mc.feature.visitors.A {
+  Y extends X = "y";
+}

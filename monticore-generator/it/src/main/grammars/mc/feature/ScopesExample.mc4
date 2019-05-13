@@ -1,0 +1,62 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature;
+
+grammar ScopesExample extends mc.grammar.lexicals.ItTestLexicals {
+
+    token CHAR = '\'' ( 'a'..'z' | 'A'..'Z' ) '\'';
+
+    token INT = ('0'..'9')+ ;
+
+    token FLOAT =	INT '.' INT;
+
+    token STRING = '"' ('a'..'z' | 'A'..'Z')* '"';
+
+	//a very simplified grammar.
+	ClassDefinition =  (public:["public"] | private:["private"] | protected:["protected"])?
+	        (final:["final"])?
+	        "class" Name ("extends" superclass:Name)? "{"
+			body:ClassBody
+    "}";
+
+	ClassBody =
+		( fields:Field | methods:Method | nestedClasses:ClassDefinition)*;
+
+
+
+	Method = (public:["public"] | private:["private"] | protected:["protected"])?
+			"method" Name  ("returns" returnType:Name)?  "{"
+			body:MethodBody
+	  		"}";
+
+
+	MethodBody =  (fields:Field | assigns:Assignement | increases:Increase | calls:MethodCall)*;
+
+
+	Field =  (public:["public"] | private:["private"] | protected:["protected"])?
+	         "field" type:Name  Name ";";
+
+	//actions are not used at the moment cause classgenwithingrammar cannot generate attributes of any type :(
+	Assignement =  varname:Name "=" (value:STRING
+										| var:Name // hier muss man sich merken, dass der Typ aufgelöst werden muss
+										            // oder besser: Type sollte nicht String sein sondern ein TypeUsage
+										            //TODO für Holger: es wäre toll, wenn ClassGenwithinGrammar beliegibe Attributtypen generieren/verstehen kann...
+										            //TODO für Steven: Ksann sie jetzt ...
+										| bool:"false" {_aNode.setType("Boolean");}
+										| bool:"true" {_aNode.setType("Boolean");}
+										| int:INT {_aNode.setType("Int");}
+										| float:FLOAT {_aNode.setType("Float");}
+										| call:MethodCall) ";";
+
+
+	Increase =  varname:Name "+" "+" ";";
+
+	MethodCall= methodName:Name "("  ")" ";";
+
+
+	//create places for type infos filled while parsing...
+	//not used at the moment cause classgenwithingrammar cannot generate attributes of any type :(
+	astrule Assignement =
+		type:Name;
+
+}

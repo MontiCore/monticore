@@ -1,0 +1,10 @@
+package de.monticore.codegen.ast;
+
+import de.monticore.codegen.ast.Super;
+
+classdiagram AST {
+
+    <<symbol, scope>>
+    class A {
+    }
+}

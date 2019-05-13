@@ -1,0 +1,8 @@
+package de.monticore.codegen.factory;
+
+grammar BGrammar extends  CGrammar{
+
+  Blub = Bar "blub";
+
+  Bli = Name "{" "}";
+}

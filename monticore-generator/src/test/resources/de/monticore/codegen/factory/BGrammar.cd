@@ -1,0 +1,10 @@
+package de.monticore.codegen.factory;
+
+import de.monticore.codegen.factory.AGrammar;
+
+classdiagram BGrammar {
+
+  public class ASTB{
+  }
+
+}

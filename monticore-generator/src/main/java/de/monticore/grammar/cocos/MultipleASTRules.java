@@ -11,7 +11,7 @@ import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * Checks that nonterminal names start lower-case.
+ * Checks that for each rule there exists max. one astrule
  *
 
  */

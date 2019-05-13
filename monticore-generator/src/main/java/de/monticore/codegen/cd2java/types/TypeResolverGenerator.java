@@ -3,6 +3,7 @@
 package de.monticore.codegen.cd2java.types;
 
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
+import de.monticore.codegen.cd2java.visitor.VisitorGeneratorHelper;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -33,6 +34,8 @@ public class TypeResolverGenerator {
     setup.setOutputDirectory(outputDirectory);
     TypeResolverGeneratorHelper typeResolverHelper = new TypeResolverGeneratorHelper(astClassDiagram, globalScope);
     glex.setGlobalValue("typeResolverHelper", typeResolverHelper);
+    VisitorGeneratorHelper visitorHelper = new VisitorGeneratorHelper(astClassDiagram, globalScope);
+    glex.setGlobalValue("visitorHelper",visitorHelper);
     setup.setGlex(glex);
     final GeneratorEngine generator = new GeneratorEngine(setup);
     final String diagramName = astClassDiagram.getCDDefinition().getName();
