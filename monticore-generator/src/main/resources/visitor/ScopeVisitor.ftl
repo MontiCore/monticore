@@ -8,9 +8,7 @@ ${defineHookPoint("JavaCopyright")}
 <#-- set package -->
 package ${genHelper.getVisitorPackage()};
 
-<#if existsST>
 import ${symbolTablePackage}.*;
-</#if>
 import de.monticore.symboltable.ISymbol;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.Scope;
@@ -105,10 +103,14 @@ public interface ${scopeVisitorName} extends ${genHelper.getSymbolVisitorType()}
   /* ------------------------------------------------------------------------*/
 
 
-<#if existsST && glex.getGlobalVar("stHelper")?has_content>
+<#if glex.getGlobalVar("stHelper")?has_content>
   <#assign stHelper = glex.getGlobalVar("stHelper")>
-  <#assign langScopeTypeList = [astType.getName() + "Scope"] + [astType.getName() + "ArtifactScope"]>
-  
+  <#if existsST>
+    <#assign langScopeTypeList = [astType.getName() + "Scope"] + [astType.getName() + "ArtifactScope"]>
+  <#else>
+    <#assign langScopeTypeList = [astType.getName() + "Scope"] >
+  </#if>
+
 <#list langScopeTypeList as langScopeType>
   default public void visit(${langScopeType} scope) {}
 
