@@ -27,6 +27,8 @@ import java.nio.file.Paths;
  */
 public class ParserGeneratorTest extends AstDependentGeneratorTest {
 
+  private static boolean doCompile = false;
+
   @BeforeClass
   public static void setup() {
     LogStub.init();
@@ -35,13 +37,13 @@ public class ParserGeneratorTest extends AstDependentGeneratorTest {
 
   public void testCommon() {
     astTest.testCommon();
-    testCorrect("mc/grammars/common/TestCommon.mc4");
+    testCorrect("mc/grammars/common/TestCommon.mc4", doCompile);
   }
 
   @Test
   public void testExpression() {
     astTest.testExpression();
-    testCorrect("de/monticore/expression/Expression.mc4");
+    testCorrect("de/monticore/expression/Expression.mc4", doCompile);
   }
 
   @Test
@@ -54,30 +56,30 @@ public class ParserGeneratorTest extends AstDependentGeneratorTest {
   @Test
   public void testInterfaceAttributes() {
     astTest.testInterfaceAttributes();;
-    testCorrect("de/monticore/InterfaceAttributes.mc4");
+    testCorrect("de/monticore/InterfaceAttributes.mc4", doCompile);
   }
 
    @Test
   public void testStatechart() {
     astTest.testStatechart();
-    testCorrect("de/monticore/statechart/Statechart.mc4");
+    testCorrect("de/monticore/statechart/Statechart.mc4", doCompile);
   }
 
   @Test
   public void testCdAttributes() {
     astTest.testCdAttributes();
-    testCorrect("de/monticore/CdAttributes.mc4");
+    testCorrect("de/monticore/CdAttributes.mc4", doCompile);
   }
 
   public void testScopesExample() {
     astTest.testScopesExample();
-    testCorrect("de/monticore/ScopesExample.mc4");
+    testCorrect("de/monticore/ScopesExample.mc4", doCompile);
   }
 
   @Test
   public void testHelloWorld() {
     astTest.testHelloWorld();
-    testCorrect("de/monticore/HelloWorld.mc4");
+    testCorrect("de/monticore/HelloWorld.mc4", doCompile);
   }
 
   @Test
@@ -99,7 +101,7 @@ public class ParserGeneratorTest extends AstDependentGeneratorTest {
   @Test
  public void testAction() {
    astTest.testAction();
-   testCorrect("de/monticore/Action.mc4");
+   testCorrect("de/monticore/Action.mc4", doCompile);
  }
 
   /**

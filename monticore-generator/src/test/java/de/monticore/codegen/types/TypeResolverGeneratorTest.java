@@ -26,6 +26,8 @@ import java.nio.file.Paths;
  */
 public class TypeResolverGeneratorTest extends AstDependentGeneratorTest {
 
+  private static boolean doCompile = false;
+
   @Override
   protected void dependencies(String... dependencies) {
     for (String dependency : dependencies) {
@@ -40,35 +42,35 @@ public class TypeResolverGeneratorTest extends AstDependentGeneratorTest {
   public void testFautomaton() {
     final String grammarPath = "de/monticore/fautomaton/action/Expression.mc4";
     astTest.testCorrect(grammarPath, false);
-    testCorrect(grammarPath);
+    testCorrect(grammarPath, doCompile);
   }
 
   @Test
   public void testStateChart() {
     final String grammarPath = "de/monticore/statechart/Statechart.mc4";
     astTest.testCorrect(grammarPath, false);
-    testCorrect(grammarPath);
+    testCorrect(grammarPath, doCompile);
   }
 
   @Test
   public void testSubgrammar() {
     final String grammarPath = "de/monticore/inherited/sub/Subgrammar.mc4";
     astTest.testCorrect(grammarPath, false);
-    testCorrect(grammarPath);
+    testCorrect(grammarPath, doCompile);
   }
 
   @Test
   public void testSuperGrammar() {
     final String grammarPath = "de/monticore/inherited/Supergrammar.mc4";
     astTest.testCorrect(grammarPath, false);
-    testCorrect(grammarPath);
+    testCorrect(grammarPath, doCompile);
   }
 
   @Test
   public void testLexicals() {
     final String grammarPath = "mc/grammars/lexicals/TestLexicals.mc4";
     astTest.testCorrect(grammarPath, false);
-    testCorrect(grammarPath);
+    testCorrect(grammarPath, doCompile);
   }
 
   /**
@@ -79,7 +81,7 @@ public class TypeResolverGeneratorTest extends AstDependentGeneratorTest {
     final String grammarPath = "mc/grammars/literals/TestLiterals.mc4";
     dependencies("mc/grammars/lexicals/TestLexicals.mc4");
     astTest.testCorrect(grammarPath, false);
-    testCorrect(grammarPath);
+    testCorrect(grammarPath, doCompile);
   }
 
   /**
@@ -90,7 +92,7 @@ public class TypeResolverGeneratorTest extends AstDependentGeneratorTest {
     final String grammarPath = "mc/grammars/types/TestTypes.mc4";
     dependencies("mc/grammars/lexicals/TestLexicals.mc4", "mc/grammars/literals/TestLiterals.mc4");
     astTest.testCorrect(grammarPath, false);
-    testCorrect(grammarPath);
+    testCorrect(grammarPath, doCompile);
   }
 
   /**
@@ -101,7 +103,7 @@ public class TypeResolverGeneratorTest extends AstDependentGeneratorTest {
     final String grammarPath = "mc/grammars/TestJavaDSL.mc4";
     dependencies("mc/grammars/lexicals/TestLexicals.mc4", "mc/grammars/literals/TestLiterals.mc4", "mc/grammars/types/TestTypes.mc4");
     astTest.testCorrect(grammarPath, false);
-    testCorrect(grammarPath);
+    testCorrect(grammarPath, doCompile);
   }
 
   /**
@@ -112,7 +114,7 @@ public class TypeResolverGeneratorTest extends AstDependentGeneratorTest {
     final String grammarPath = "mc/grammars/common/TestCommon.mc4";
     dependencies("mc/grammars/lexicals/TestLexicals.mc4", "mc/grammars/literals/TestLiterals.mc4", "mc/grammars/types/TestTypes.mc4");
     astTest.testCorrect(grammarPath, false);
-    testCorrect(grammarPath);
+    testCorrect(grammarPath, doCompile);
   }
 
   @BeforeClass
