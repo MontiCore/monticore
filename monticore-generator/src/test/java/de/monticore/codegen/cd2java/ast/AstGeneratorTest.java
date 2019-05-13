@@ -36,7 +36,7 @@ public class AstGeneratorTest extends GeneratorTest {
   /**
    * Shows if generated ast code has to be compiled
    */
-  private boolean doCompile = true;
+  private boolean doCompile = false;
   
   @BeforeClass
   public static void setup() {
