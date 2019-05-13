@@ -213,19 +213,16 @@ public class CdDecorator {
       return;
     }
     String symbolName = prodSymbol.get().getSymbolDefinitionKind().orElse(name);
+    String scopeName = "I" + grammarSymbol.getName() + AstGeneratorHelper.SCOPE;
+    String qualifiedScopeName = grammarSymbol.getFullName().toLowerCase() + "." +
+            SymbolTableGenerator.PACKAGE + "." + scopeName;
+    addEnclosingScopeAttributeAndMethods2(cdType, qualifiedScopeName, grammarSymbol);
 
     if (prodSymbol.get().isSymbolDefinition()) {
       addSymbolAttributeAndMethods(cdType, symbolName, grammarSymbol);
       addSymbolAttributeAndMethods2(cdType, symbolName, grammarSymbol);
-      
-      String scopeName = "I" + grammarSymbol.getName() + AstGeneratorHelper.SCOPE;
-      String qualifiedScopeName = grammarSymbol.getFullName().toLowerCase() + "." +
-          SymbolTableGenerator.PACKAGE + "." + scopeName;
-      addEnclosingScopeAttributeAndMethods2(cdType, qualifiedScopeName, grammarSymbol);
     }
-    else {
-      addEnclosingScopeAttributeAndMethods2(cdType, "de.monticore.symboltable.IScope", grammarSymbol);
-    }
+
     if (prodSymbol.get().isScopeDefinition()) {
       addSpannedScopeAttributeAndMethods(cdType, grammarSymbol);
       addSpannedScopeAttributeAndMethods2(cdType, grammarSymbol);
