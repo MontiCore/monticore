@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java.mill;
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.factories.SuperSymbolHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -39,8 +40,11 @@ public class MillDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCD
 
   private ASTCDDefinition astcdDefinition;
 
-  public MillDecorator(final GlobalExtensionManagement glex) {
+  private final AbstractService service;
+
+  public MillDecorator(final GlobalExtensionManagement glex, final AbstractService service) {
     super(glex);
+    this.service = service;
   }
 
   public ASTCDClass decorate(ASTCDCompilationUnit compilationUnit) {
@@ -166,26 +170,24 @@ public class MillDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCD
             .filter(ASTCDClassTOP::isPresentModifier)
             .filter(x -> !x.getModifier().isAbstract())
             .collect(Collectors.toList()));
+
         for (ASTCDClass superClass : superDefinition.getCDClassList()) {
-          if (!isClassOverwritten(superClass)) {
+          if (!service.isClassOverwritten(superClass, astcdDefinition.getCDClassList())) {
             String packageName = superSymbol.getFullName().toLowerCase() + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;
             ASTType superAstType = this.getCDTypeFacade().createSimpleReferenceType(packageName + superClass.getName() + BUILDER);
             String methodName = StringTransformations.uncapitalize(superClass.getName().replaceFirst("AST", "")) + BUILDER;
 
             //add builder method
             ASTCDMethod createDelegateMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, superAstType, methodName);
-            this.replaceTemplate(EMPTY_BODY, createDelegateMethod, new TemplateHookPoint("mill.BuilderDelegatorMethod", packageName + superSymbol.getName(), methodName));
-            superMethods.add(createDelegateMethod);
+            if (!service.isMethodAlreadyDefined(createDelegateMethod.getName(), superMethods)) {
+              this.replaceTemplate(EMPTY_BODY, createDelegateMethod, new TemplateHookPoint("mill.BuilderDelegatorMethod", packageName + superSymbol.getName(), methodName));
+              superMethods.add(createDelegateMethod);
+            }
           }
         }
       }
     }
     return superMethods;
-  }
-
-  protected boolean isClassOverwritten(ASTCDClass astcdClass) {
-    //if there is a Class with the same name in the current CompilationUnit, then the methods are only generated once
-    return astcdDefinition.getCDClassList().stream().anyMatch(x -> x.getName().endsWith(astcdClass.getName()));
   }
 
 }

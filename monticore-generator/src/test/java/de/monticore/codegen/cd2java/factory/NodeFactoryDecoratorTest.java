@@ -43,7 +43,7 @@ public class NodeFactoryDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
 
-    NodeFactoryDecorator decorator = new NodeFactoryDecorator(this.glex);
+    NodeFactoryDecorator decorator = new NodeFactoryDecorator(this.glex, new NodeFactoryService(decoratedCompilationUnit));
     this.factoryClass = decorator.decorate(decoratedCompilationUnit);
   }
 

@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java.mill;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
+import de.monticore.codegen.cd2java.ast_new.ASTService;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.generating.GeneratorEngine;
@@ -44,7 +45,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
-    MillDecorator decorator = new MillDecorator(this.glex);
+    MillDecorator decorator = new MillDecorator(this.glex, new ASTService(decoratedCompilationUnit));
     this.millClass = decorator.decorate(decoratedCompilationUnit);
   }
 

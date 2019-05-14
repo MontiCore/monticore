@@ -366,9 +366,9 @@ public class MontiCoreTool {
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex));
     ASTBuilderDecorator astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator, astService);
 
-    NodeFactoryDecorator nodeFactoryDecorator = new NodeFactoryDecorator(glex);
+    NodeFactoryDecorator nodeFactoryDecorator = new NodeFactoryDecorator(glex, nodeFactoryService);
 
-    MillDecorator millDecorator = new MillDecorator(glex);
+    MillDecorator millDecorator = new MillDecorator(glex, astService);
 
     ASTConstantsDecorator astConstantsDecorator = new ASTConstantsDecorator(glex);
 
