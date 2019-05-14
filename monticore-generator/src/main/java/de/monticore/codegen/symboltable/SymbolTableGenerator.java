@@ -72,9 +72,7 @@ public class SymbolTableGenerator {
 
     // Skip generation if no rules are defined in the grammar, since no top asts
     // will be generated.
-    if (!grammarSymbol.getStartProd().isPresent()) {
-      return;
-    }
+    
     debug("Start symbol table generation for the grammar " + astGrammar.getName(), LOG);
 
     // TODO PN consider only class rules?
@@ -119,7 +117,10 @@ public class SymbolTableGenerator {
     //a symbol interface and scope is generated for all grammars
     symbolInterfaceGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol);
     scopeGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol.getName() + SCOPE, allSymbolDefiningRules, allSymbolDefiningRulesWithSuperGrammar);
-    symbolTablePrinterGenerator.generate(genEngine, genHelper, handCodedPath, grammarSymbol.getName());
+    if(grammarSymbol.getStartProd().isPresent()) {
+      symbolTablePrinterGenerator
+          .generate(genEngine, genHelper, handCodedPath, grammarSymbol.getName());
+    }
 
     debug("End symbol table generation for the grammar " + astGrammar.getName(), LOG);
   }

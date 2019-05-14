@@ -2,18 +2,6 @@
 
 package de.monticore.codegen.cd2java.visitor;
 
-import static de.monticore.codegen.GeneratorHelper.getSimpleTypeNameToGenerate;
-import static de.se_rwth.commons.Names.getSimpleName;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.symboltable.SymbolTableGeneratorHelper;
 import de.monticore.generating.GeneratorEngine;
@@ -26,6 +14,14 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+
+import static de.monticore.codegen.GeneratorHelper.getSimpleTypeNameToGenerate;
+import static de.se_rwth.commons.Names.getSimpleName;
 
 /**
  * Generates the visitor infrastructure consisting of different default visitor
@@ -42,7 +38,7 @@ public class VisitorGenerator {
    * diagram.
    */
   public static void generate(GlobalExtensionManagement glex, GlobalScope globalScope,
-      ASTCDCompilationUnit astClassDiagram, File outputDirectory, 
+      ASTCDCompilationUnit astClassDiagram, File outputDirectory,
       IterablePath handcodedPath) {
     final GeneratorSetup setup = new GeneratorSetup();
     setup.setOutputDirectory(outputDirectory);
@@ -95,7 +91,7 @@ public class VisitorGenerator {
     final Path commonDelegatorVisitorFilePath = Paths.get(path,
         commonDelegatorVisitorName + ".java");
     generator.generate("visitor.DelegatorVisitor", commonDelegatorVisitorFilePath,
-        astClassDiagram, commonDelegatorVisitorName, astClassDiagram.getCDDefinition(), 
+        astClassDiagram, commonDelegatorVisitorName, astClassDiagram.getCDDefinition(),
         astPackage, allCds);
     Log.trace(LOGGER_NAME, "Generated delegator visitor for the diagram: " + diagramName);
     
@@ -133,7 +129,7 @@ public class VisitorGenerator {
         visitorHelper.getVisitorPackage(), handcodedPath);
     final Path scopeVisitorFilePath = Paths.get(path, scopeVisitorName + ".java");
     generator.generate("visitor.ScopeVisitor", scopeVisitorFilePath, astClassDiagram,
-        scopeVisitorName, astClassDiagram.getCDDefinition(), symbolTablePackage, cd, 
+        scopeVisitorName, astClassDiagram.getCDDefinition(), symbolTablePackage, cd,
         existsST, superScopeVisitors);
     Log.trace(LOGGER_NAME, "Generated scope visitor for the diagram: " + diagramName);
   }
