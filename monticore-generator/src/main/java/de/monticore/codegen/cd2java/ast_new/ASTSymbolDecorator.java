@@ -29,16 +29,8 @@ public class ASTSymbolDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass
   @Override
   public ASTCDClass decorate(final ASTCDClass clazz) {
     if (clazz.isPresentModifier() && symbolTableService.hasSymbolStereotype(clazz.getModifier())) {
-      Optional<String> symbolTypeValue = symbolTableService.getSymbolTypeValue(clazz.getModifier());
-      ASTType symbolType;
-      if (symbolTypeValue.isPresent()) {
-        // if symboltype was already defined in the grammar
-        symbolType = getCDTypeFacade().createOptionalTypeOf(symbolTypeValue.get());
-      } else {
-        // use default type
-        symbolType = this.getCDTypeFacade().createOptionalTypeOf(symbolTableService.getSymbolType(clazz));
-      }
-      // add attributes
+      ASTType symbolType = createSymbolType(clazz);
+
       String attributeName = StringUtils.uncapitalize(symbolTableService.getSymbolName(clazz));
 
       ASTCDAttribute symbolAttribute = createSymbolAttribute(symbolType, attributeName);
@@ -51,6 +43,18 @@ public class ASTSymbolDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass
       clazz.addAllCDMethods(methodDecorator.decorate(symbol2Attribute));
     }
     return clazz;
+  }
+
+  protected ASTType createSymbolType(ASTCDClass clazz) {
+    Optional<String> symbolTypeValue = symbolTableService.getSymbolTypeValue(clazz.getModifier());
+    ASTType symbolType;
+    if (symbolTypeValue.isPresent()) {
+      // if symboltype was already defined in the grammar
+      return getCDTypeFacade().createOptionalTypeOf(symbolTypeValue.get());
+    } else {
+      // use default type
+     return this.getCDTypeFacade().createOptionalTypeOf(symbolTableService.getSymbolType(clazz));
+    }
   }
 
 
