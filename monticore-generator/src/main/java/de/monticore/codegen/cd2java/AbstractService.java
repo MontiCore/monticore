@@ -9,6 +9,7 @@ import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.JavaNamesHelper;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -45,9 +46,24 @@ public class AbstractService<T extends AbstractService> {
   }
 
   public Collection<CDSymbol> getSuperCDs() {
-    return getCDSymbol().getImports().stream()
+    return getSuperCDs(getCDSymbol());
+  }
+
+  public Collection<CDSymbol> getSuperCDs(CDSymbol cdSymbol) {
+    // get direct parent CDSymbols
+    List<CDSymbol> directSuperCdSymbols = cdSymbol.getImports().stream()
         .map(this::resolveCD)
         .collect(Collectors.toList());
+    // search for super Cds in super Cds
+    List<CDSymbol> recursiveImportedCDSymbols = new ArrayList<>(directSuperCdSymbols);
+    for (CDSymbol superSymbol : directSuperCdSymbols) {
+      Collection<CDSymbol> superCDs = getSuperCDs(superSymbol);
+      superCDs.addAll(recursiveImportedCDSymbols);
+//      superCDs = superCDs.stream()
+//          .filter(c -> !c.getFullName().equals(superSymbol.getFullName()))
+//          .collect(Collectors.toList());
+    }
+    return recursiveImportedCDSymbols;
   }
 
   public CDSymbol resolveCD(String qualifiedName) {
