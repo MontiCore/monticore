@@ -9,6 +9,8 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Optional;
+
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
 
 public class ASTSymbolDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
@@ -27,8 +29,16 @@ public class ASTSymbolDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass
   @Override
   public ASTCDClass decorate(final ASTCDClass clazz) {
     if (symbolTableService.isSymbolClass(clazz)) {
+      Optional<String> symbolTypeValue = symbolTableService.getSymbolTypeValue(clazz);
+      ASTType symbolType;
+      if (symbolTypeValue.isPresent()) {
+        // if symboltype was already defined in the grammar
+        symbolType = getCDTypeFacade().createOptionalTypeOf(symbolTypeValue.get());
+      } else {
+        // use default type
+        symbolType = this.getCDTypeFacade().createOptionalTypeOf(symbolTableService.getSymbolType(clazz));
+      }
       // add attributes
-      ASTType symbolType = this.getCDTypeFacade().createOptionalTypeOf(symbolTableService.getSymbolType(clazz));
       String attributeName = StringUtils.uncapitalize(symbolTableService.getSymbolName(clazz));
 
       ASTCDAttribute symbolAttribute = createSymbolAttribute(symbolType, attributeName);

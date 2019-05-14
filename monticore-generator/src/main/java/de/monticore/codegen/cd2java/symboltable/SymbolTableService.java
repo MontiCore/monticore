@@ -13,6 +13,9 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.Names;
 
+import java.util.List;
+import java.util.Optional;
+
 import static de.monticore.codegen.cd2java.ast_new.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java.symboltable.SymbolTableConstants.INTERFACE_PREFIX;
 import static de.monticore.codegen.cd2java.symboltable.SymbolTableConstants.SYMBOL_TABLE_PACKGE;
@@ -103,6 +106,16 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public boolean isSymbolClass(ASTCDClass clazz) {
     return clazz.isPresentModifier() && hasStereotype(clazz.getModifier(), MC2CDStereotypes.SYMBOL);
+  }
+
+  public Optional<String> getSymbolTypeValue(ASTCDClass clazz) {
+    if (clazz.isPresentModifier()) {
+      List<String> stereotypeValues = getStereotypeValues(clazz.getModifier(), MC2CDStereotypes.SYMBOL);
+      if (!stereotypeValues.isEmpty()) {
+        return Optional.ofNullable(stereotypeValues.get(0));
+      }
+    }
+    return Optional.empty();
   }
 
   public boolean isScopeClass(ASTCDClass clazz) {
