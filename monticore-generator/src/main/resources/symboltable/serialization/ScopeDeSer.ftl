@@ -66,10 +66,6 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
         switch (key) {
           case JsonConstants.KIND:
             String kind = reader.nextString();
-            if (!kind.equals(getSerializedKind())) {
-              Log.error("Deserialization of symbol kind " + kind + " with DeSer "
-                  + this.getClass().getName() + " failed");
-            }
             if (kind.equals(getSerializedKind())) {
               Optional<ScopeDeserializationResult<I${languageName}Scope>> deserializedScope = deserialize${languageName}Scope(
                   reader);
