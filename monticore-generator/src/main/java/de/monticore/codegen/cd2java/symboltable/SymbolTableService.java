@@ -7,9 +7,7 @@ import de.monticore.types.TypesHelper;
 import de.monticore.types.TypesPrinter;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.CD4AnalysisHelper;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDClass;
-import de.monticore.umlcd4a.cd4analysis._ast.ASTCDCompilationUnit;
+import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.Names;
 
@@ -62,7 +60,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getCDTypeFactory().createSimpleReferenceType(getScopeInterfaceTypeName());
   }
 
-  public String getSymbolName(ASTCDClass clazz) {
+  public String getSymbolName(ASTCDType clazz) {
     if (clazz.getName().startsWith(AST_PREFIX)) {
       return clazz.getName().substring(AST_PREFIX.length()) + SymbolTableConstants.SYMBOL_SUFFIX;
     } else {
@@ -70,11 +68,11 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     }
   }
 
-  public String getSymbolTypeName(ASTCDClass clazz) {
+  public String getSymbolTypeName(ASTCDType clazz) {
     return getPackage() + "." + getSymbolName(clazz);
   }
 
-  public ASTType getSymbolType(ASTCDClass clazz) {
+  public ASTType getSymbolType(ASTCDType clazz) {
     return getCDTypeFactory().createSimpleReferenceType(getSymbolTypeName(clazz));
   }
 
@@ -104,21 +102,19 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return attribute.isPresentModifier() && hasStereotype(attribute.getModifier(), MC2CDStereotypes.REFERENCED_SYMBOL);
   }
 
-  public boolean isSymbolClass(ASTCDClass clazz) {
-    return clazz.isPresentModifier() && hasStereotype(clazz.getModifier(), MC2CDStereotypes.SYMBOL);
+  public boolean hasSymbolStereotype(ASTModifier modifier) {
+    return hasStereotype(modifier, MC2CDStereotypes.SYMBOL);
   }
 
-  public Optional<String> getSymbolTypeValue(ASTCDClass clazz) {
-    if (clazz.isPresentModifier()) {
-      List<String> stereotypeValues = getStereotypeValues(clazz.getModifier(), MC2CDStereotypes.SYMBOL);
+  public Optional<String> getSymbolTypeValue(ASTModifier modifier) {
+      List<String> stereotypeValues = getStereotypeValues(modifier, MC2CDStereotypes.SYMBOL);
       if (!stereotypeValues.isEmpty()) {
         return Optional.ofNullable(stereotypeValues.get(0));
       }
-    }
     return Optional.empty();
   }
 
-  public boolean isScopeClass(ASTCDClass clazz) {
+  public boolean hasScopeStereotype(ASTCDClass clazz) {
     return clazz.isPresentModifier() && hasStereotype(clazz.getModifier(), MC2CDStereotypes.SCOPE);
   }
 }

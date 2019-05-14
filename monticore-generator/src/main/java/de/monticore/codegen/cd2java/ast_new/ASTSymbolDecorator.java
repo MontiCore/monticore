@@ -28,8 +28,8 @@ public class ASTSymbolDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass
 
   @Override
   public ASTCDClass decorate(final ASTCDClass clazz) {
-    if (symbolTableService.isSymbolClass(clazz)) {
-      Optional<String> symbolTypeValue = symbolTableService.getSymbolTypeValue(clazz);
+    if (clazz.isPresentModifier() && symbolTableService.hasSymbolStereotype(clazz.getModifier())) {
+      Optional<String> symbolTypeValue = symbolTableService.getSymbolTypeValue(clazz.getModifier());
       ASTType symbolType;
       if (symbolTypeValue.isPresent()) {
         // if symboltype was already defined in the grammar

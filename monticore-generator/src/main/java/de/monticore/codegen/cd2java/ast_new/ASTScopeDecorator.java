@@ -28,7 +28,7 @@ public class ASTScopeDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass>
   @Override
   public ASTCDClass decorate(final ASTCDClass clazz) {
     ASTType scopeInterfaceType = this.getCDTypeFacade().createOptionalTypeOf(symbolTableService.getScopeInterfaceType());
-    if (symbolTableService.isScopeClass(clazz)) {
+    if (symbolTableService.hasScopeStereotype(clazz)) {
       //create attributes
       ASTCDAttribute spannedScopeAttribute = createSpannedScopeAttribute();
       clazz.addCDAttribute(spannedScopeAttribute);
