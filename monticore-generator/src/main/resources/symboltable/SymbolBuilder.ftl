@@ -22,7 +22,7 @@ public class ${className} {
   
   <#if symbolRule.isPresent()>
   <#list symbolRule.get().getAdditionalAttributeList() as attr>
-  <#assign attrType=genHelper.getQualifiedASTName(attr.getGenericType().getTypeName())>
+  <#assign attrType=genHelper.getQualifiedASTName(attr.getMCType().getBaseName())>
   protected ${attrType} ${attr.getName()};
   </#list>
   </#if>
@@ -33,7 +33,7 @@ public class ${className} {
     ${symbolName}Symbol ${symbolName?uncap_first}Symbol = new ${symbolName}Symbol(name);
     <#if symbolRule.isPresent()>
     <#list symbolRule.get().getAdditionalAttributeList() as attr>
-    <#assign attrType=genHelper.getQualifiedASTName(attr.getGenericType().getTypeName())>
+    <#assign attrType=genHelper.getQualifiedASTName(attr.getMCType().getBaseName())>
     ${symbolName?uncap_first}Symbol.set${attr.getName()?cap_first}(${attr.getName()});
     </#list>
     </#if>
@@ -47,7 +47,7 @@ public class ${className} {
   
   <#if symbolRule.isPresent()>
   <#list symbolRule.get().getAdditionalAttributeList() as attr>
-  <#assign attrType=genHelper.getQualifiedASTName(attr.getGenericType().getTypeName())>
+  <#assign attrType=genHelper.getQualifiedASTName(attr.getMCType().getBaseName())>
   public ${className} ${attr.getName()}(${attrType} ${attr.getName()}) {
     this.${attr.getName()} = ${attr.getName()};
     return this;
