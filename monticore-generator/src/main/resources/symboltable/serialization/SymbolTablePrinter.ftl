@@ -122,7 +122,7 @@ public class ${symTabPrinterName}
     printer.attribute(JsonConstants.NAME, symbol.getName());
     <#if symbolRules[symbol.name]??>
     <#list symbolRules[symbol.name].getAdditionalAttributeList() as attr>
-    printer.attribute(${attr.name}, serialize${attr.name}(symbol));
+    printer.attribute("${attr.name}", serialize${attr.name}(symbol));
     </#list>
     </#if>
   }
@@ -137,8 +137,17 @@ public class ${symTabPrinterName}
   
 <#if symbolRules[symbol.name]??>
 <#list symbolRules[symbol.name].getAdditionalAttributeList() as attr>
+  <#if attrType == "boolean" || attrType == "Boolean">
+    <#if attr.getName()?starts_with("is")>
+      <#assign methodName=attr.getName()>
+    <#else>
+      <#assign methodName="is" + attr.getName()?cap_first>
+    </#if>
+  <#else>
+    <#assign methodName="get" + attr.getName()?cap_first>
+  </#if>
     protected String serialize${attr.name}(${symbol.name}Symbol symbol) {
-      return symbol.get${attr.name}().toString();
+      return String.valueOf(symbol.${methodName}());
     }
 </#list>
 </#if>
