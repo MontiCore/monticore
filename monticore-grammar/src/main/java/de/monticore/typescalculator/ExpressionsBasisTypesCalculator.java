@@ -26,8 +26,6 @@ import java.util.Optional;
 
 public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor {
 
-  private final String errorCode = "0xA0144";
-
   protected ExpressionsBasisScope scope;
 
   protected LiteralTypeCalculator literalsVisitor;
@@ -65,7 +63,7 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
       sym.setASTMCType(result);
       types.put(expr, sym);
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0207 The resulting type cannot be calculated");
     }
   }
 
