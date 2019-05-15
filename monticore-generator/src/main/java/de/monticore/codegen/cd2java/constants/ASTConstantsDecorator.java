@@ -62,7 +62,7 @@ public class ASTConstantsDecorator extends AbstractDecorator<ASTCDCompilationUni
         .addAllCDAttributes(getConstantAttribute(enumConstants))
         .addCDAttribute(getSuperGrammarsAttribute(input))
         .addCDConstructor(getDefaultConstructor(className))
-        .addCDMethod(getGetAllLanguagesMethod())
+        .addCDMethod(getGetAllLanguagesMethod(input))
         .build();
   }
 
@@ -106,9 +106,10 @@ public class ASTConstantsDecorator extends AbstractDecorator<ASTCDCompilationUni
     return getCDConstructorFacade().createConstructor(PUBLIC, className);
   }
 
-  protected ASTCDMethod getGetAllLanguagesMethod() {
+  protected ASTCDMethod getGetAllLanguagesMethod(ASTCDCompilationUnit input) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC_STATIC, getCDTypeFacade().createTypeByDefinition("Collection<String>"), GET_ALL_LANGUAGES);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("ast_constants.GetAllLanguages"));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("ast_constants.GetAllLanguages",
+            SuperSymbolHelper.getSuperCDs(input)));
     return method;
   }
 }
