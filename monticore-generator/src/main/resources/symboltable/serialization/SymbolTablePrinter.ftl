@@ -29,11 +29,11 @@ import de.monticore.symboltable.serialization.JsonPrinter;
 public class ${symTabPrinterName}
     implements ${languageName}SymbolVisitor, ${languageName}ScopeVisitor {
 
-  JsonPrinter printer = new JsonPrinter();
+  protected JsonPrinter printer = new JsonPrinter();
 
   public void visit(${languageName}ArtifactScope as) {
     printer.beginObject();
-    printer.attribute(JsonConstants.KIND, as.getClass().getName());
+    printer.attribute(JsonConstants.KIND, "${symbolTablePackage}.${languageName}ArtifactScope");
     printer.attribute(JsonConstants.NAME, as.getName());
     printer.attribute(JsonConstants.PACKAGE, as.getPackageName());
     printer.attribute(JsonConstants.EXPORTS_SYMBOLS, as.exportsSymbols());
@@ -49,7 +49,7 @@ public class ${symTabPrinterName}
   @Override
   public void visit(${languageName}Scope scope) {
     printer.beginObject();
-    printer.attribute(JsonConstants.KIND, scope.getClass().getName());
+    printer.attribute(JsonConstants.KIND, "${symbolTablePackage}.${languageName}Scope");
     printer.attribute(JsonConstants.NAME, scope.getName());
     printer.attribute(JsonConstants.IS_SHADOWING_SCOPE, scope.isShadowingScope());
     printer.attribute(JsonConstants.EXPORTS_SYMBOLS, scope.exportsSymbols());
@@ -78,7 +78,7 @@ public class ${symTabPrinterName}
       spPrinter.attribute(JsonConstants.KIND, spanningSymbol.get().getClass().getName());
       spPrinter.attribute(JsonConstants.NAME, spanningSymbol.get().getName());
       spPrinter.endObject();
-      return Optional.ofNullable(spPrinter.toString());
+      return Optional.ofNullable(spPrinter.getContent());
     }
     return Optional.empty();
   }
@@ -118,7 +118,7 @@ public class ${symTabPrinterName}
   @Override
   public void visit(${symbol.name}Symbol symbol) {
     printer.beginObject();
-    printer.attribute(JsonConstants.KIND, symbol.getClass().getName());
+    printer.attribute(JsonConstants.KIND, "${symbolTablePackage}.${symbol.name}Symbol");
     printer.attribute(JsonConstants.NAME, symbol.getName());
     <#if symbolRules[symbol.name]??>
     <#list symbolRules[symbol.name].getAdditionalAttributeList() as attr>
@@ -162,7 +162,7 @@ public class ${symTabPrinterName}
   }
 
   public String getSerializedString() {
-    return printer.toString();
+    return printer.getContent();
   }
 
   protected Collection<I${languageName}Scope> filterRelevantSubScopes(

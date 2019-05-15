@@ -5,6 +5,8 @@ ${signature("languageName","className","symbolName", "symbolRule")}
 <#assign superClass = " extends de.monticore.symboltable.CommonScope ">
 <#assign superInterfaces = "">
 
+<#assign serializedKind = "${genHelper.getSymbolTablePackage()}.${symbolName}Symbol">
+
 <#-- Copyright -->
 ${defineHookPoint("JavaCopyright")}
 
@@ -53,9 +55,8 @@ public class ${className} implements IDeSer<${symbolName}Symbol> {
         switch (key) {
           case JsonConstants.KIND:
             String kind = reader.nextString();
-            if (!kind.equals(getSerializedKind())) {
-              Log.error("Deserialization of symbol kind " + kind + " with DeSer " + this.getClass()
-                  + " failed");
+            if (!kind.equals("${serializedKind}")) {
+              Log.error("0xA0607 Deserialization of \"" + kind + "\" with \"${className}\" failed");
             }
             else {
               Optional<${symbolName}Symbol> deserializedSymbol = deserialize${symbolName}Symbol(reader);
@@ -65,6 +66,7 @@ public class ${className} implements IDeSer<${symbolName}Symbol> {
             break;
           default:
             reader.skipValue();
+            Log.warn("Serialized \"${symbolName}Symbol\" contains unknown attribute key \""+key+"\"!");
             break;
         }
       }
@@ -93,13 +95,6 @@ public class ${className} implements IDeSer<${symbolName}Symbol> {
       while (reader.hasNext()) {
         String key = reader.nextName();
         switch (key) {
-          case JsonConstants.KIND:
-            String kind = reader.nextString();
-            if (!kind.equals(getSerializedKind())) {
-              Log.error("Deserialization of symbol kind " + kind + " with DeSer " + this.getClass()
-                  + " failed, because KIND was not the first attribute");
-            }
-            break;
           case JsonConstants.NAME:
             name = Optional.ofNullable(reader.nextString());
             break;
@@ -120,6 +115,7 @@ public class ${className} implements IDeSer<${symbolName}Symbol> {
 </#if>
           default:
             reader.skipValue();
+            Log.warn("Serialized \"${symbolName}Symbol\" contains unknown attribute key \""+key+"\"!");
             break;
         }
       }
@@ -149,6 +145,6 @@ public class ${className} implements IDeSer<${symbolName}Symbol> {
   */
   @Override
   public String getSerializedKind() {
-    return ${symbolName}Symbol.class.getName();
+    return "${serializedKind}";
   }
 }
