@@ -468,6 +468,22 @@ public class CommonExpressionsTest {
   }
 
   @Test
+  public void simpleAssignmentTest() throws IOException{
+    TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
+    calc.setLiteralsVisitor(literalsVisitor);
+    TestCommonExpressionsParser p = new TestCommonExpressionsParser();
+    Optional<ASTExpression> o = p.parse_StringExpression("7+=9");
+    assertTrue(o.isPresent());
+    o.get().accept(calc);
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
+
+    Optional<ASTExpression> r = p.parse_StringExpression("7.4+=9");
+    assertTrue(r.isPresent());
+    r.get().accept(calc);
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.getResult()));
+  }
+
+  @Test
   public void conditionalTest() throws IOException{
     TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
     calc.setLiteralsVisitor(literalsVisitor);

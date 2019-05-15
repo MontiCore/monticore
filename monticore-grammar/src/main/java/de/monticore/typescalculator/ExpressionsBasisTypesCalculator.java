@@ -170,8 +170,4 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
   protected Map<ASTNode, MCTypeSymbol> getTypes() {
     return types;
   }
-
-  public void setTypes(Map<ASTNode,MCTypeSymbol> types){
-    this.types=types;
-  }
 }
