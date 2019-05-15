@@ -114,15 +114,6 @@ public class CommonExpressionsPrettyPrinter implements CommonExpressionsVisitor 
   }
   
   @Override
-  public void handle(ASTSimpleAssignmentExpression node) {
-    CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeft().accept(getRealThis());
-    getPrinter().print(" += ");
-    node.getRight().accept(getRealThis());
-    CommentPrettyPrinter.printPostComments(node, getPrinter());
-  }
-  
-  @Override
   public void handle(ASTEqualsExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getLeft().accept(getRealThis());

@@ -257,26 +257,6 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
   }
 
   @Override
-  public void endVisit(ASTSimpleAssignmentExpression expr){
-    ASTMCType result = null;
-    if(types.containsKey(expr.getLeft())&&types.containsKey(expr.getRight())){
-      if(types.get(expr.getLeft()).deepEquals(types.get(expr.getRight()))){
-        result=types.get(expr.getRight()).getASTMCType();
-      }else if(types.get(expr.getLeft()).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build())&&types.get(expr.getRight()).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build())){
-        result=MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build();
-      }
-    }
-    if(result!=null){
-      MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-      sym.setASTMCType(result);
-      types.put(expr,sym);
-      this.result=result;
-    }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
-    }
-  }
-
-  @Override
   public void endVisit(ASTConditionalExpression expr){
     ASTMCType result = null;
     if(types.containsKey(expr.getTrueExpression())&&types.containsKey(expr.getFalseExpression())){
@@ -400,5 +380,9 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
     return result;
   }
 
-  //TODO: es fehlen noch LiteralExpr, CallExpr, NameExpr und QualifiedNameExpr, bisher nur fuer double und int alles implementiert
+  public void setTypes(Map<ASTNode,MCTypeSymbol> types){
+    this.types=types;
+  }
+
+  //TODO: es fehlt noch CallExpr, bisher nur fuer double und int alles implementiert
 }
