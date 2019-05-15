@@ -3,7 +3,7 @@
 package de.monticore.codegen.mc2cd.transl;
 
 import de.monticore.grammar.grammar._ast.*;
-import de.monticore.types.BasicGenericsTypesPrinter;
+import de.monticore.types.FullGenericTypesPrinter;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.utils.Link;
 
@@ -73,7 +73,7 @@ public class NameTranslation implements
         for (Link<ASTAdditionalAttribute, ASTCDAttribute> link : rootLink.getLinks(ASTAdditionalAttribute.class,
                 ASTCDAttribute.class)) {
             String name = link.source().getNameOpt().orElse(null);
-            String alternativeName = BasicGenericsTypesPrinter.printType(link.source().getMCType());
+            String alternativeName = FullGenericTypesPrinter.printType(link.source().getMCType());
             String nameToUse = name != null ? name : alternativeName;
             link.target().setName(nameToUse);
         }
