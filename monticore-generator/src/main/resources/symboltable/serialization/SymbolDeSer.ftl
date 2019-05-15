@@ -80,6 +80,13 @@ public class ${className} implements IDeSer<${symbolName}Symbol> {
   public Optional<${symbolName}Symbol> deserialize${symbolName}Symbol(JsonReader reader) {
     // Part 1: Initialize all attributes with default values
     Optional<String> name = Optional.empty();
+<#if symbolRule.isPresent()>
+<#list symbolRule.get().getAdditionalAttributeList() as attr>
+  <#assign attrName="_" + attr.getName()>
+  <#assign attrType=attr.getMCType().getBaseName()>
+    ${genHelper.getQualifiedASTName(attrType)} ${attrName} = ${genHelper.getDefaultInitValue(attrType)};
+</#list>   
+</#if>
     
     // Part 2: Read all available values from the Json string
     try {
@@ -96,6 +103,21 @@ public class ${className} implements IDeSer<${symbolName}Symbol> {
           case JsonConstants.NAME:
             name = Optional.ofNullable(reader.nextString());
             break;
+<#if symbolRule.isPresent()>
+<#list symbolRule.get().getAdditionalAttributeList() as attr>
+  <#assign attrName="_" + attr.getName()>
+  <#assign attrType=attr.getMCType().getBaseName()>
+         case "${attrName}":
+    <#if attr.getName()?starts_with("is")>
+      <#assign methodName=attr.getName()>
+    <#else>
+      <#assign methodName="is" + attr.getName()?cap_first>
+    </#if>
+   
+            ${attrName} = ${genHelper.getDeserializationCastString(attrType)} reader.next${genHelper.getDeserializationType(attrType)}();
+            break;
+</#list>  
+</#if>
           default:
             reader.skipValue();
             break;
@@ -110,6 +132,12 @@ public class ${className} implements IDeSer<${symbolName}Symbol> {
     // Part 3: Construct the symbol/scope object if all required information is available
     if (name.isPresent()) {
       ${symbolName}Symbol symbol = new ${symbolName}Symbol(name.get());
+<#if symbolRule.isPresent()>
+<#list symbolRule.get().getAdditionalAttributeList() as attr>
+<#assign attrName="_" + attr.getName()>
+      symbol.set${attr.getName()?cap_first}(${attrName});
+</#list>
+</#if>
       return Optional.ofNullable(symbol);
     }
     return Optional.empty();

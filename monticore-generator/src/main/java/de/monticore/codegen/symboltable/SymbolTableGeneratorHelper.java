@@ -296,6 +296,69 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
     }
     return "get";
   }
+  
+  public static String getDefaultInitValue(final String type) {
+    switch(type) {
+      case "boolean":
+        return "false";
+      case "int":
+        return "0";
+      case "float":
+        return "0.0f";
+      case "double":
+        return "0.0";
+      case "long":
+        return "0L";
+      case "byte":
+        return "0";
+      case "short":
+        return "0";
+      case "char":
+        return "0";
+      default:
+        return "null";
+    }
+  }
+  
+  public static String getDeserializationType(final String type) {
+    switch(type) {
+      case "boolean":
+        return "Boolean";
+      case "int":
+        return "Int";
+      case "float":
+        return "Double";
+      case "double":
+        return "Double";
+      case "long":
+        return "Long";
+      case "byte":
+        return "Int";
+      case "short":
+        return "Int";
+      case "char":
+        return "Int";
+      default:
+        return "String";
+    }
+  }
+  
+  public static String getDeserializationCastString(final String type) {
+    switch(type) {
+      case "float":
+        return "(double)";
+      case "long":
+        return "(long)";
+      case "byte":
+        return "(byte)";
+      case "short":
+        return "(short)";
+      case "char":
+        return "(char)";
+      default:
+        return "";
+    }
+  }
 
   /**
    * Returns true, if <code>name</code> is a valid Java name or can be
