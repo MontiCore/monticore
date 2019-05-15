@@ -438,5 +438,9 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
     return result;
   }
 
+  public void setTypes(Map<ASTNode,MCTypeSymbol> types){
+    this.types=types;
+  }
+
   //TODO: bisher nur double und int behandelt, bei += auch String, es fehlen noch RegularAssignmentExpr, AndAssignmentExpr, OrAssignmentExpr, BinaryXorAssignmentExpr, RightShiftAssignmentExpr, LeftShiftAssignmentExpr, LogicalRightAssignmentExpr und die Tests
 }

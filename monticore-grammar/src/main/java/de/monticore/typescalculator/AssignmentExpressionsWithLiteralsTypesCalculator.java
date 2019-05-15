@@ -67,4 +67,8 @@ public class AssignmentExpressionsWithLiteralsTypesCalculator extends Assignment
     this.literalsVisitor=literalsVisitor;
     super.setLiteralsVisitor(literalsVisitor);
   }
+
+  public void setTypes(Map<ASTNode,MCTypeSymbol> types){
+    this.types=types;
+  }
 }

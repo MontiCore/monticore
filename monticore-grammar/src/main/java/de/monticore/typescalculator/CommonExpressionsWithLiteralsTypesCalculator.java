@@ -41,4 +41,8 @@ public class CommonExpressionsWithLiteralsTypesCalculator extends CommonExpressi
     }
   }
 
+  public void setTypes(Map<ASTNode,MCTypeSymbol> types){
+    this.types=types;
+  }
+
 }

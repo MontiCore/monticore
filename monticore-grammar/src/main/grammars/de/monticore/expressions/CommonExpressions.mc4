@@ -62,6 +62,9 @@ BooleanOrOpExpression implements Expression <117>, InfixExpression =
 ConditionalExpression implements Expression <114> =
 	condition:Expression "?" trueExpression:Expression ":" falseExpression:Expression;
 
+SimpleAssignmentExpression implements Expression <111>, InfixExpression = <rightassoc>
+    left:Expression operator:"+=" right:Expression;
+
 BracketExpression implements Expression <310>
     =  "(" Expression ")";
     

@@ -400,5 +400,8 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
     return result;
   }
 
+  public void setTypes(Map<ASTNode,MCTypeSymbol> types){
+    this.types=types;
+  }
   //TODO: es fehlen noch LiteralExpr, CallExpr, NameExpr und QualifiedNameExpr, bisher nur fuer double und int alles implementiert
 }
