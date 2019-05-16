@@ -37,10 +37,10 @@ public class CombineExpressionsTypesCalculator extends CombineExpressionsDelegat
   private ExpressionsBasisTypesCalculator expressionsBasisTypesCalculator;
 
 
-  public CombineExpressionsTypesCalculator(ExpressionsBasisScope scope, LiteralTypeCalculator literalsVisitor){
+  public CombineExpressionsTypesCalculator(ExpressionsBasisScope scope){
     this.realThis=this;
     this.scope=scope;
-    this.literalsVisitor=literalsVisitor;
+    this.literalsVisitor=new BasicLiteralsTypeCalculator();
     this.types = new HashMap<>();
     commonExpressionsWithLiteralsTypesCalculator = new CommonExpressionsWithLiteralsTypesCalculator();
     commonExpressionsWithLiteralsTypesCalculator.setScope(scope);
@@ -71,6 +71,11 @@ public class CombineExpressionsTypesCalculator extends CombineExpressionsDelegat
     expressionsBasisTypesCalculator.setLiteralsVisitor(literalsVisitor);
     expressionsBasisTypesCalculator.setTypes(types);
     setExpressionsBasisVisitor(expressionsBasisTypesCalculator);
+  }
+
+  public ASTMCType calculateType(ASTExpression expr){
+    expr.accept(realThis);
+    return types.get(expr).getASTMCType();
   }
 
   @Override

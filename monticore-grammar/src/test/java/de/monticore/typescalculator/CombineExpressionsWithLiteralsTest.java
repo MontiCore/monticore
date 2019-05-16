@@ -171,7 +171,7 @@ public class CombineExpressionsWithLiteralsTest {
     assertTrue(p.isPresent());
     p.get().accept(calc.getRealThis());
 
-    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(p.get())));
 
   }
 
@@ -184,7 +184,7 @@ public class CombineExpressionsWithLiteralsTest {
     assertTrue(p.isPresent());
     p.get().accept(calc.getRealThis());
 
-    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(p.get())));
   }
 
   @Test
@@ -196,6 +196,6 @@ public class CombineExpressionsWithLiteralsTest {
     assertTrue(p.isPresent());
     p.get().accept(calc.getRealThis());
 
-    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.calculateType(p.get())));
   }
 }

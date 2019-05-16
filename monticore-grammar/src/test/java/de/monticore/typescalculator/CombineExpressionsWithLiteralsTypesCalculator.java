@@ -1,6 +1,7 @@
 package de.monticore.typescalculator;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
@@ -57,6 +58,11 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     combineExpressionsWithLiteralsTypesCalculator.setTypes(types);
     setCombineExpressionsWithLiteralsVisitor(combineExpressionsWithLiteralsTypesCalculator);
 
+  }
+
+  public ASTMCType calculateType(ASTExpression e){
+    e.accept(realThis);
+    return types.get(e).getASTMCType();
   }
 
   @Override

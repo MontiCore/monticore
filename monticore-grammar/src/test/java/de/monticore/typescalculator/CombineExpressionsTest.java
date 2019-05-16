@@ -172,11 +172,10 @@ public class CombineExpressionsTest {
     CombineExpressionsParser parser = new CombineExpressionsParser();
     Optional<ASTExpression> p = parser.parse_StringExpression("3+4");
 
-    CombineExpressionsTypesCalculator calc = new CombineExpressionsTypesCalculator(scope,literalsVisitor);
+    CombineExpressionsTypesCalculator calc = new CombineExpressionsTypesCalculator(scope);
     assertTrue(p.isPresent());
-    p.get().accept(calc.getRealThis());
 
-    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(p.get())));
 
   }
 
@@ -185,11 +184,11 @@ public class CombineExpressionsTest {
     CombineExpressionsParser parser = new CombineExpressionsParser();
     Optional<ASTExpression> p = parser.parse_StringExpression("3-=4");
 
-    CombineExpressionsTypesCalculator calc = new CombineExpressionsTypesCalculator(scope,literalsVisitor);
+    CombineExpressionsTypesCalculator calc = new CombineExpressionsTypesCalculator(scope);
     assertTrue(p.isPresent());
     p.get().accept(calc.getRealThis());
 
-    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(p.get())));
   }
 
   @Test
@@ -197,10 +196,10 @@ public class CombineExpressionsTest {
     CombineExpressionsParser parser = new CombineExpressionsParser();
     Optional<ASTExpression> p = parser.parse_StringExpression("varDouble+=3+4");
 
-    CombineExpressionsTypesCalculator calc = new CombineExpressionsTypesCalculator(scope,literalsVisitor);
+    CombineExpressionsTypesCalculator calc = new CombineExpressionsTypesCalculator(scope);
     assertTrue(p.isPresent());
     p.get().accept(calc.getRealThis());
 
-    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.getResult()));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.calculateType(p.get())));
   }
 }

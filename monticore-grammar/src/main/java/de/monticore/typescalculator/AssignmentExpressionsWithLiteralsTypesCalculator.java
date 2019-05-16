@@ -1,7 +1,6 @@
 package de.monticore.typescalculator;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsVisitor;
 import de.monticore.expressions.assignmentexpressionswithliterals._visitor.AssignmentExpressionsWithLiteralsVisitor;
 import de.monticore.expressions.assignmentexpressionswithliterals._ast.ASTExtLiteral;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
