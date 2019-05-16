@@ -11,7 +11,20 @@ import java.util.Map;
 
 public class AssignmentExpressionsWithLiteralsTypesCalculator extends AssignmentExpressionTypesCalculator implements AssignmentExpressionsWithLiteralsVisitor {
 
+  private AssignmentExpressionsWithLiteralsVisitor realThis;
+
+  @Override
+  public void setRealThis(AssignmentExpressionsWithLiteralsVisitor realThis){
+    this.realThis=realThis;
+  }
+
+  @Override
+  public AssignmentExpressionsWithLiteralsVisitor getRealThis(){
+    return realThis;
+  }
+
   public AssignmentExpressionsWithLiteralsTypesCalculator(){
+    realThis=this;
     result=super.getResult();
     scope=super.getScope();
     literalsVisitor=super.getLiteralsVisitor();
@@ -52,5 +65,9 @@ public class AssignmentExpressionsWithLiteralsTypesCalculator extends Assignment
   public void setLiteralsVisitor(LiteralTypeCalculator literalsVisitor){
     this.literalsVisitor=literalsVisitor;
     super.setLiteralsVisitor(literalsVisitor);
+  }
+
+  public void setTypes(Map<ASTNode,MCTypeSymbol> types){
+    this.types=types;
   }
 }

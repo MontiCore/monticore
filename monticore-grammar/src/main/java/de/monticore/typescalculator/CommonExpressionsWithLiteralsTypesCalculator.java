@@ -11,7 +11,20 @@ import java.util.Map;
 
 public class CommonExpressionsWithLiteralsTypesCalculator extends CommonExpressionTypesCalculator implements CommonExpressionsWithLiteralsVisitor {
 
+  private CommonExpressionsWithLiteralsVisitor realThis;
+
+  @Override
+  public void setRealThis(CommonExpressionsWithLiteralsVisitor realThis){
+    this.realThis=realThis;
+  }
+
+  @Override
+  public CommonExpressionsWithLiteralsVisitor getRealThis(){
+    return realThis;
+  }
+
   public CommonExpressionsWithLiteralsTypesCalculator(){
+    realThis=this;
     result=super.getResult();
     scope=super.getScope();
     literalsVisitor=super.getLiteralsVisitor();
@@ -26,6 +39,10 @@ public class CommonExpressionsWithLiteralsTypesCalculator extends CommonExpressi
       sym.setASTMCType(type);
       types.put(lit, sym);
     }
+  }
+
+  public void setTypes(Map<ASTNode,MCTypeSymbol> types){
+    this.types=types;
   }
 
 }

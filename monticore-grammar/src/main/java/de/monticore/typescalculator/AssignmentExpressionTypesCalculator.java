@@ -3,6 +3,8 @@ package de.monticore.typescalculator;
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.assignmentexpressions._ast.*;
 import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsInheritanceVisitor;
+import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsVisitor;
+import de.monticore.expressions.assignmentexpressionswithliterals._visitor.AssignmentExpressionsWithLiteralsVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExtLiteralExt;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
@@ -16,9 +18,20 @@ import java.util.*;
 
 public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCalculator implements AssignmentExpressionsInheritanceVisitor {
 
-  private final String errorCode="0xA0143 ";
+  private AssignmentExpressionsVisitor realThis;
+
+  @Override
+  public void setRealThis(AssignmentExpressionsVisitor realThis){
+    this.realThis=realThis;
+  }
+
+  @Override
+  public AssignmentExpressionsVisitor getRealThis(){
+    return realThis;
+  }
 
   public AssignmentExpressionTypesCalculator(){
+    realThis=this;
     types = super.getTypes();
     literalsVisitor=super.getLiteralsVisitor();
     result=super.getResult();
@@ -42,7 +55,7 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
       res.setASTMCType(result);
       types.put(expr,res);
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0170 The resulting type cannot be calculated");
     }
   }
 
@@ -63,7 +76,7 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
       res.setASTMCType(result);
       types.put(expr,res);
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0171 The resulting type cannot be calculated");
     }
   }
 
@@ -84,7 +97,7 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
       res.setASTMCType(result);
       types.put(expr,res);
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0172 The resulting type cannot be calculated");
     }
   }
 
@@ -105,7 +118,7 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
       res.setASTMCType(result);
       types.put(expr,res);
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0173 The resulting type cannot be calculated");
     }
   }
 
@@ -126,7 +139,7 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
       res.setASTMCType(result);
       types.put(expr,res);
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0174 The resulting type cannot be calculated");
     }
   }
 
@@ -147,7 +160,7 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
       res.setASTMCType(result);
       types.put(expr,res);
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0175 The resulting type cannot be calculated");
     }
   }
 
@@ -177,7 +190,7 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
       res.setASTMCType(result);
       types.put(expr,res);
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0176 The resulting type cannot be calculated");
     }
   }
 
@@ -189,7 +202,7 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
       res.setASTMCType(result);
       types.put(expr,res);
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0177 The resulting type cannot be calculated");
     }
   }
 
@@ -201,7 +214,7 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
       res.setASTMCType(result);
       types.put(expr,res);
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0178 The resulting type cannot be calculated");
     }
   }
 
@@ -213,13 +226,8 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
       res.setASTMCType(result);
       types.put(expr,res);
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0179 The resulting type cannot be calculated");
     }
-  }
-
-  @Override
-  public void endVisit(ASTExtLiteralExt expr){
-
   }
 
   @Override
@@ -275,7 +283,7 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
         types.put(expr, res);
       }
       else {
-        Log.error(errorCode+"The resulting type cannot be calculated");
+        Log.error("0xA0180 The resulting type cannot be calculated");
       }
     }
   }
@@ -296,7 +304,7 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
       sym.setASTMCType(result);
       types.put(expr,sym);
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0181 The resulting type cannot be calculated");
     }
   }
 
@@ -316,7 +324,7 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
       sym.setASTMCType(result);
       types.put(expr,sym);
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0182 The resulting type cannot be calculated");
     }
   }
 
@@ -336,7 +344,7 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
       sym.setASTMCType(result);
       types.put(expr,sym);
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0183 The resulting type cannot be calculated");
     }
   }
 
@@ -354,7 +362,7 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
       sym.setASTMCType(result);
       types.put(expr,sym);
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0184 The resulting type cannot be calculated");
     }
   }
 
@@ -372,7 +380,7 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
       sym.setASTMCType(result);
       types.put(expr,sym);
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0185 The resulting type cannot be calculated");
     }
   }
 
@@ -390,7 +398,7 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
       sym.setASTMCType(result);
       types.put(expr,sym);
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0186 The resulting type cannot be calculated");
     }
   }
 
@@ -402,7 +410,7 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
       res.setASTMCType(result);
       types.put(expr,res);
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0187 The resulting type cannot be calculated");
     }
   }
 
@@ -421,6 +429,10 @@ public class AssignmentExpressionTypesCalculator extends ExpressionsBasisTypesCa
       }
     }
     return result;
+  }
+
+  public void setTypes(Map<ASTNode,MCTypeSymbol> types){
+    this.types=types;
   }
 
   //TODO: bisher nur double und int behandelt, bei += auch String, es fehlen noch RegularAssignmentExpr, AndAssignmentExpr, OrAssignmentExpr, BinaryXorAssignmentExpr, RightShiftAssignmentExpr, LeftShiftAssignmentExpr, LogicalRightAssignmentExpr und die Tests

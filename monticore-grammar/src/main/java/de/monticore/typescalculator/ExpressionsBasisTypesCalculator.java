@@ -1,6 +1,7 @@
 package de.monticore.typescalculator;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.expressions.assignmentexpressionswithliterals._visitor.AssignmentExpressionsWithLiteralsVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
@@ -25,8 +26,6 @@ import java.util.Optional;
 
 public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor {
 
-  private final String errorCode = "0xA0144";
-
   protected ExpressionsBasisScope scope;
 
   protected LiteralTypeCalculator literalsVisitor;
@@ -35,8 +34,21 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
 
   protected Map<ASTNode, MCTypeSymbol> types;
 
+  private ExpressionsBasisVisitor realThis;
+
+  @Override
+  public void setRealThis(ExpressionsBasisVisitor realThis){
+    this.realThis=realThis;
+  }
+
+  @Override
+  public ExpressionsBasisVisitor getRealThis(){
+    return realThis;
+  }
+
   public ExpressionsBasisTypesCalculator(){
     types=new HashMap<>();
+    realThis=this;
   }
 
   @Override
@@ -51,7 +63,7 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
       sym.setASTMCType(result);
       types.put(expr, sym);
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0207 The resulting type cannot be calculated");
     }
   }
 
@@ -155,5 +167,9 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
 
   protected Map<ASTNode, MCTypeSymbol> getTypes() {
     return types;
+  }
+
+  public void setTypes(Map<ASTNode,MCTypeSymbol> types){
+    this.types=types;
   }
 }
