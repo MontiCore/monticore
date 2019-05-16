@@ -5,6 +5,8 @@ ${signature("languageName","className","symbolName", "symbolRule")}
 <#assign superClass = " extends de.monticore.symboltable.CommonScope ">
 <#assign superInterfaces = "">
 
+<#assign serializedKind = "${genHelper.getSymbolTablePackage()}.${symbolName}Symbol">
+
 <#-- Copyright -->
 ${defineHookPoint("JavaCopyright")}
 
@@ -53,9 +55,8 @@ public class ${className} implements IDeSer<${symbolName}Symbol> {
         switch (key) {
           case JsonConstants.KIND:
             String kind = reader.nextString();
-            if (!kind.equals(getSerializedKind())) {
-              Log.error("Deserialization of symbol kind " + kind + " with DeSer " + this.getClass()
-                  + " failed");
+            if (!kind.equals("${serializedKind}")) {
+              Log.error("0xA0607 Deserialization of \"" + kind + "\" with \"${className}\" failed");
             }
             else {
               Optional<${symbolName}Symbol> deserializedSymbol = deserialize${symbolName}Symbol(reader);
@@ -65,6 +66,7 @@ public class ${className} implements IDeSer<${symbolName}Symbol> {
             break;
           default:
             reader.skipValue();
+            Log.warn("Serialized \"${symbolName}Symbol\" contains unknown attribute key \""+key+"\"!");
             break;
         }
       }
@@ -80,24 +82,40 @@ public class ${className} implements IDeSer<${symbolName}Symbol> {
   public Optional<${symbolName}Symbol> deserialize${symbolName}Symbol(JsonReader reader) {
     // Part 1: Initialize all attributes with default values
     Optional<String> name = Optional.empty();
+<#if symbolRule.isPresent()>
+<#list symbolRule.get().getAdditionalAttributeList() as attr>
+  <#assign attrName="_" + attr.getName()>
+  <#assign attrType=attr.getMCType().getBaseName()>
+    ${genHelper.getQualifiedASTName(attrType)} ${attrName} = ${genHelper.getDefaultInitValue(attrType)};
+</#list>   
+</#if>
     
     // Part 2: Read all available values from the Json string
     try {
       while (reader.hasNext()) {
         String key = reader.nextName();
         switch (key) {
-          case JsonConstants.KIND:
-            String kind = reader.nextString();
-            if (!kind.equals(getSerializedKind())) {
-              Log.error("Deserialization of symbol kind " + kind + " with DeSer " + this.getClass()
-                  + " failed, because KIND was not the first attribute");
-            }
-            break;
           case JsonConstants.NAME:
             name = Optional.ofNullable(reader.nextString());
             break;
+<#if symbolRule.isPresent()>
+<#list symbolRule.get().getAdditionalAttributeList() as attr>
+  <#assign attrName="_" + attr.getName()>
+  <#assign attrType=attr.getMCType().getBaseName()>
+         case "${attrName}":
+    <#if attr.getName()?starts_with("is")>
+      <#assign methodName=attr.getName()>
+    <#else>
+      <#assign methodName="is" + attr.getName()?cap_first>
+    </#if>
+   
+            ${attrName} = ${genHelper.getDeserializationCastString(attrType)} reader.next${genHelper.getDeserializationType(attrType)}();
+            break;
+</#list>  
+</#if>
           default:
             reader.skipValue();
+            Log.warn("Serialized \"${symbolName}Symbol\" contains unknown attribute key \""+key+"\"!");
             break;
         }
       }
@@ -110,6 +128,12 @@ public class ${className} implements IDeSer<${symbolName}Symbol> {
     // Part 3: Construct the symbol/scope object if all required information is available
     if (name.isPresent()) {
       ${symbolName}Symbol symbol = new ${symbolName}Symbol(name.get());
+<#if symbolRule.isPresent()>
+<#list symbolRule.get().getAdditionalAttributeList() as attr>
+<#assign attrName="_" + attr.getName()>
+      symbol.set${attr.getName()?cap_first}(${attrName});
+</#list>
+</#if>
       return Optional.ofNullable(symbol);
     }
     return Optional.empty();
@@ -121,6 +145,6 @@ public class ${className} implements IDeSer<${symbolName}Symbol> {
   */
   @Override
   public String getSerializedKind() {
-    return ${symbolName}Symbol.class.getName();
+    return "${serializedKind}";
   }
 }

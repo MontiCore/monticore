@@ -4,6 +4,8 @@ ${signature("languageName","className","scopeRule", "symbolNames", "spanningSymb
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign superClass = " extends de.monticore.symboltable.CommonScope ">
 <#assign superInterfaces = "">
+<#assign serializedKind = "${genHelper.getSymbolTablePackage()}.${languageName}Scope">
+<#assign serializedASKind = "${genHelper.getSymbolTablePackage()}.${languageName}ArtifactScope">
 
 <#-- Copyright -->
 ${defineHookPoint("JavaCopyright")}
@@ -66,11 +68,7 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
         switch (key) {
           case JsonConstants.KIND:
             String kind = reader.nextString();
-            if (!kind.equals(getSerializedKind())) {
-              Log.error("Deserialization of symbol kind " + kind + " with DeSer "
-                  + this.getClass().getName() + " failed");
-            }
-            else {
+            if (kind.equals("${serializedKind}")) {
               Optional<ScopeDeserializationResult<I${languageName}Scope>> deserializedScope = deserialize${languageName}Scope(
                   reader);
               reader.endObject();
@@ -79,9 +77,22 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
               }
               return Optional.empty();
             }
-            break;
+            else if (kind.equals("${serializedASKind}")) {
+              Optional<ScopeDeserializationResult<${languageName}ArtifactScope>> deserializedScope = deserialize${languageName}ArtifactScope(
+                  reader);
+              reader.endObject();
+              if (deserializedScope.isPresent()) {
+                return Optional.ofNullable(deserializedScope.get().getScope());
+              }
+              return Optional.empty();
+            }
+            else {
+              Log.error("0xA0602 Deserialization of \"" + kind + "\" with \"${className}\" failed");
+              return Optional.empty();
+            }
           default:
             reader.skipValue();
+            Log.warn("Serialized \"${languageName}Scope\" contains unknown attribute key \""+key+"\"!");
             break;
         }
       }
@@ -110,13 +121,6 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
       while (reader.hasNext()) {
         String key = reader.nextName();
         switch (key) {
-          case JsonConstants.KIND:
-            String kind = reader.nextString();
-            if (!kind.equals(getSerializedKind())) {
-              Log.error("Deserialization of symbol kind " + kind + " with DeSer "
-                  + this.getClass().getName() + " failed");
-            }
-            break;
           case JsonConstants.NAME:
             name = Optional.ofNullable(reader.nextString());
             break;
@@ -136,6 +140,7 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
             break;
           default:
             reader.skipValue();
+            Log.warn("Serialized \"${languageName}Scope\" contains unknown attribute key \""+key+"\"!");
             break;
         }
       }
@@ -160,6 +165,70 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
     return Optional.of(new ScopeDeserializationResult<I${languageName}Scope>(scope,spanningSymbol));
   }
 
+  public Optional<ScopeDeserializationResult<${languageName}ArtifactScope>> deserialize${languageName}ArtifactScope(JsonReader reader) {
+    // Part 1: Initialize all attributes with default values
+    ${languageName}ArtifactScope scope = null;
+    Optional<String> name = Optional.empty();
+    boolean isShadowingScope = false;
+    String _package = "";
+<#list symbolNames?keys as symbol>
+    List<${symbol}Symbol> ${symbol?lower_case}Symbols = new ArrayList<>();
+</#list>
+    List<ScopeDeserializationResult<I${languageName}Scope>> subScopes = new ArrayList<>();
+    Optional<SpanningSymbolReference> spanningSymbol = Optional.empty();
+
+    // Part 2: Read all available values from the Json string
+    try {
+      while (reader.hasNext()) {
+        String key = reader.nextName();
+        switch (key) {
+          case JsonConstants.NAME:
+            name = Optional.ofNullable(reader.nextString());
+            break;
+          case JsonConstants.PACKAGE:
+            _package = reader.nextString();
+            break;
+          case JsonConstants.IS_SHADOWING_SCOPE:
+            isShadowingScope = reader.nextBoolean();
+            break;
+          case JsonConstants.SCOPE_SPANNING_SYMBOL:
+            spanningSymbol = Optional.ofNullable(deserializeSpanningSymbol(reader));
+            break;
+<#list symbolNames?keys as symbol>
+          case "${symbol?lower_case}Symbols":
+            ${symbol?lower_case}Symbols = deserializeLocal${symbol}Symbols(reader);
+            break;
+</#list>
+          case JsonConstants.SUBSCOPES:
+            subScopes = deserializeSubScopes(reader);
+            break;
+          default:
+            reader.skipValue();
+            Log.warn("Serialized \"${languageName}ArtifactScope\" contains unknown attribute key \""+key+"\"!");
+            break;
+        }
+      }
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+      return Optional.empty();
+    }
+
+    // Part 3: Construct the symbol/scope object
+    scope = new ${languageName}ArtifactScope(Optional.empty(), _package, new ArrayList<>());
+    scope.setName(name.orElse(null));
+<#list symbolNames?keys as symbol>
+    for (${symbol}Symbol s : ${symbol?lower_case}Symbols) {
+      scope.add(s);
+    }
+</#list>
+
+    for (I${languageName}Scope s : linkSubScopes(scope, subScopes)) {
+      scope.addSubScope(s);
+    }
+    return Optional.of(new ScopeDeserializationResult<${languageName}ArtifactScope>(scope,spanningSymbol));
+  }
+
   protected List<I${languageName}Scope> linkSubScopes(I${languageName}Scope scope, List<ScopeDeserializationResult<I${languageName}Scope>> subScopes){
     List<I${languageName}Scope> subScopeList = new ArrayList<>();
     for (ScopeDeserializationResult<I${languageName}Scope> subScope : subScopes) {
@@ -180,10 +249,10 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
 <#if symbolNames?keys?size gt 0>
   <#if spanningSymbols?keys?size gt 0>
         else {
-          Log.error("Unknown spanning symbol kind "+subScope.getSpanningSymbolKind()+" in ${languageName}ScopeDeSer");
+          Log.error("0xA0603 Unknown spanning symbol kind "+subScope.getSpanningSymbolKind()+" in ${className}");
         }
   <#else>
-        Log.error("Unknown spanning symbol kind "+subScope.getSpanningSymbolKind()+" in ${languageName}ScopeDeSer");
+        Log.error("0xA0604 Unknown spanning symbol kind "+subScope.getSpanningSymbolKind()+" in ${className}");
   </#if>
 </#if>
       }
@@ -207,6 +276,7 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
           break;
         default:
           reader.skipValue();
+          Log.warn("Serialized spanning symbol contains unknown attribute key \""+key+"\"!");
           break;
       }
     }
@@ -239,12 +309,12 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
               }
             }
             else {
-              Log.error("Deserialization of symbol kind " + kind + " with DeSer "
-                  + this.getClass().getName() + " failed");
+              Log.error("0xA0605 Deserialization of \"" + kind + "\" with \"${className}\" failed");
             }
             break;
           default:
             reader.skipValue();
+            Log.warn("Serialized \"${symbol}Symbol\" contains unknown attribute key \""+key+"\"!");
             break;
         }
       }
@@ -266,9 +336,8 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
         switch (key) {
           case JsonConstants.KIND:
             String kind = reader.nextString();
-            if (!kind.equals(getSerializedKind())) {
-              Log.error("Deserialization of symbol kind " + kind + " with DeSer "
-                  + this.getClass().getName() + " failed");
+            if (!kind.equals("${serializedKind}")) {
+              Log.error("0xA0606 Deserialization of \"" + kind + "\" with \"${className}\" failed");
             }
             else {
               Optional<ScopeDeserializationResult<I${languageName}Scope>> deserializedScope = deserialize${languageName}Scope(
@@ -280,6 +349,7 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
             break;
           default:
             reader.skipValue();
+            Log.warn("Serialized \"${languageName}Scope\" contains unknown attribute key \""+key+"\"!");
             break;
         }
       }
@@ -294,6 +364,10 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
   */
   @Override
   public String getSerializedKind() {
-    return ${languageName}Scope.class.getName();
+    return "${serializedKind}";
+  }
+  
+  public String getSerializedASKind() {
+    return "${serializedASKind}";
   }
 }

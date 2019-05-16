@@ -55,15 +55,20 @@ public class AbstractService<T extends AbstractService> {
         .map(this::resolveCD)
         .collect(Collectors.toList());
     // search for super Cds in super Cds
-    List<CDSymbol> recursiveImportedCDSymbols = new ArrayList<>(directSuperCdSymbols);
+    List<CDSymbol> resolvedCds = new ArrayList<>(directSuperCdSymbols);
     for (CDSymbol superSymbol : directSuperCdSymbols) {
       Collection<CDSymbol> superCDs = getSuperCDs(superSymbol);
-      superCDs.addAll(recursiveImportedCDSymbols);
-//      superCDs = superCDs.stream()
-//          .filter(c -> !c.getFullName().equals(superSymbol.getFullName()))
-//          .collect(Collectors.toList());
+      for (CDSymbol superCD: superCDs) {
+        if (!resolvedCds
+                .stream()
+                .filter(c -> c.getFullName().equals(superCD.getFullName()))
+                .findAny()
+                .isPresent()) {
+          resolvedCds.add(superCD);
+        }
+      }
     }
-    return recursiveImportedCDSymbols;
+    return resolvedCds;
   }
 
   public CDSymbol resolveCD(String qualifiedName) {

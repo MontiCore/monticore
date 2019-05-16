@@ -200,10 +200,6 @@ public class JsonPrinter {
     internalAttribute(kind, preprocessString(value));
   }
   
-//  private void attribute(String kind, Object o) {
-//    Log.error("Objects of complex data types must be serialized before they can be stored! "+kind+": "+o);
-//  }
-  
   /**
    * Prints a Json attribute with the given kind as key and the given double value, which is a basic
    * data type in Json.
@@ -270,10 +266,6 @@ public class JsonPrinter {
     internalAttribute(preprocessString(value));
   }
   
-//  private void attribute(Object o) {
-//    Log.error("Objects of complex data types must be serialized before they can be stored! "+o);
-//  }
-  
   protected String preprocessString(String string) {
   String s = string.trim();
   boolean isFramedInQuotationMarks = s.length() > 0 && s.startsWith("\"") && s.endsWith("\"");
@@ -316,10 +308,10 @@ public class JsonPrinter {
   
   public String getContent() {
     if (0 != nestedListDepth) {
-      Log.error("Invalid nesting of Json lists in " + printer.getContent());
+      Log.error("0xA0600 Invalid nesting of Json lists in " + printer.getContent());
     }
     if (0 != nestedObjectDepth) {
-      Log.error("Invalid nesting of Json objects in " + printer.getContent());
+      Log.error("0xA0601 Invalid nesting of Json objects in " + printer.getContent());
     }
     return printer.getContent();
   }
