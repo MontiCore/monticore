@@ -9,7 +9,7 @@ import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVi
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.*;
-import de.monticore.types.BasicGenericsTypesPrinter;
+import de.monticore.types.FullGenericTypesPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
@@ -451,7 +451,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
 
     // A astextends B
     for (ASTMCType astSuperClass : astSuperClasses) {
-      MCProdOrTypeReference superClass = new MCProdOrTypeReference(BasicGenericsTypesPrinter.printType(astSuperClass),
+      MCProdOrTypeReference superClass = new MCProdOrTypeReference(FullGenericTypesPrinter.printType(astSuperClass),
               enclosingScope);
       prodSymbol.addAstSuperClass(superClass);
     }
@@ -465,7 +465,7 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
 
     // A astimplements B
     for (ASTMCType astInterface : astSuperInterfaces) {
-      MCProdOrTypeReference superClass = new MCProdOrTypeReference(BasicGenericsTypesPrinter.printType(astInterface),
+      MCProdOrTypeReference superClass = new MCProdOrTypeReference(FullGenericTypesPrinter.printType(astInterface),
               enclosingScope);
       prodSymbol.addAstSuperInterface(superClass);
     }
@@ -573,11 +573,11 @@ public class MontiCoreGrammarSymbolTableCreator extends CommonSymbolTableCreator
    */
   private void addAttributeInAST(MCProdSymbol mcProdSymbol, ASTAdditionalAttribute astAttribute) {
     String attributeName = astAttribute.getNameOpt()
-            .orElse(uncapitalize(BasicGenericsTypesPrinter.printType(astAttribute.getMCType())));
+            .orElse(uncapitalize(FullGenericTypesPrinter.printType(astAttribute.getMCType())));
 
     MCProdAttributeSymbol astAttributeSymbol = new MCProdAttributeSymbol(attributeName);
     MCProdOrTypeReference attributeType = new MCProdOrTypeReference(
-            BasicGenericsTypesPrinter.printType(astAttribute.getMCType()), mcProdSymbol.getSpannedScope());
+            FullGenericTypesPrinter.printType(astAttribute.getMCType()), mcProdSymbol.getSpannedScope());
     astAttributeSymbol.setTypeReference(attributeType);
 
     mcProdSymbol.addProdAttribute(astAttributeSymbol);

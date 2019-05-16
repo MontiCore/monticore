@@ -7,7 +7,7 @@ import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.HelperGrammar;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.symboltable.MCProdSymbol;
-import de.monticore.types.BasicGenericsTypesPrinter;
+import de.monticore.types.FullGenericTypesPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.types._ast.ASTConstantsTypes;
 import de.monticore.types.types._ast.ASTType;
@@ -97,7 +97,7 @@ public class ReferenceTypeTranslation implements
         .map(ruleSymbol -> ruleSymbolToType(ruleSymbol, typeName));
     Optional<ASTType> byPrimitive = determineConstantsType(typeName)
         .map(TypesNodeFactory::createASTPrimitiveType);
-    return byReference.orElse(byPrimitive.orElse(createType(BasicGenericsTypesPrinter.printType(astGenericType))));
+    return byReference.orElse(byPrimitive.orElse(createType(FullGenericTypesPrinter.printType(astGenericType))));
   }
 
   private ASTType determineTypeToSet(String typeName, ASTMCGrammar astMCGrammar) {

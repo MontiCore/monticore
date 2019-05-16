@@ -6,7 +6,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.types.BasicGenericsTypesPrinter;
+import de.monticore.types.FullGenericTypesPrinter;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.utils.Link;
 
@@ -56,7 +56,7 @@ public class RemoveOverriddenAttributesTranslation implements
     boolean matchByTypeName = !usageName.isPresent() && attributesInASTLinkingToSameClass.stream()
         .filter(attributeInAST -> !attributeInAST.getNameOpt().isPresent())
         .map(ASTAdditionalAttribute::getMCType)
-        .map(BasicGenericsTypesPrinter::printType)
+        .map(FullGenericTypesPrinter::printType)
         .anyMatch(getName(source).orElse("")::equals);
 
     return matchByUsageName || matchByTypeName;
