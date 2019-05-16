@@ -29,11 +29,9 @@ public class CombineExpressionsWithLiteralsTest {
 
   private ArtifactScope artifactScope;
 
-  private ExpressionsBasisLanguage expressionsBasisLanguage;
-
   @Before
   public void setup(){
-    this.expressionsBasisLanguage=new ExpressionsBasisLanguage("CombineExpressionsWithLiterals","exp") {
+    ExpressionsBasisLanguage expressionsBasisLanguage=new ExpressionsBasisLanguage("CombineExpressionsWithLiterals","exp") {
       @Override
       public MCConcreteParser getParser() {
         return new CombineExpressionsWithLiteralsParser();

@@ -19,8 +19,6 @@ import static org.junit.Assert.*;
 
 public class AssignmentExpressionsTest {
 
-  private ExpressionsBasisLanguage expressionsBasisLanguage;
-
   private ExpressionsBasisScope scope;
 
   private LiteralTypeCalculator literalsVisitor = new BasicLiteralsTypeCalculator();
@@ -29,7 +27,7 @@ public class AssignmentExpressionsTest {
   public void setup() {
 
 
-    expressionsBasisLanguage = new ExpressionsBasisLanguage("AssignmentExpressions","exp") {
+    ExpressionsBasisLanguage expressionsBasisLanguage = new ExpressionsBasisLanguage("AssignmentExpressions","exp") {
       @Override
       public MCConcreteParser getParser() {
         return new TestAssignmentExpressionsParser();
@@ -558,7 +556,6 @@ public class AssignmentExpressionsTest {
 
     assertTrue(r.isPresent());
     r.get().accept(calc);
-    assertEquals(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().getBaseName(), calc.getResult().getBaseName());
     assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.getResult()));
 
     assertTrue(s.isPresent());
