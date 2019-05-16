@@ -49,7 +49,6 @@ public class ASTSymbolDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass
 
   protected ASTType createSymbolType(ASTCDClass clazz) {
     Optional<String> symbolTypeValue = symbolTableService.getSymbolTypeValue(clazz.getModifier());
-    ASTType symbolType;
     if (symbolTypeValue.isPresent()) {
       // if symboltype was already defined in the grammar
       return getCDTypeFacade().createOptionalTypeOf(symbolTypeValue.get());
