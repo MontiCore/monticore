@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
+import static de.monticore.codegen.cd2java.symboltable.SymbolTableConstants.SYMBOL_SUFFIX;
 
 public class ASTSymbolDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
@@ -31,7 +32,8 @@ public class ASTSymbolDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass
     if (clazz.isPresentModifier() && symbolTableService.hasSymbolStereotype(clazz.getModifier())) {
       ASTType symbolType = createSymbolType(clazz);
 
-      String attributeName = StringUtils.uncapitalize(symbolTableService.getSymbolName(clazz));
+      String attributeName = StringUtils.uncapitalize(symbolTableService.getSimpleSymbolNameFromOptional(symbolType)) + SYMBOL_SUFFIX;
+
 
       ASTCDAttribute symbolAttribute = createSymbolAttribute(symbolType, attributeName);
       clazz.addCDAttribute(symbolAttribute);
@@ -53,7 +55,7 @@ public class ASTSymbolDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass
       return getCDTypeFacade().createOptionalTypeOf(symbolTypeValue.get());
     } else {
       // use default type
-     return this.getCDTypeFacade().createOptionalTypeOf(symbolTableService.getSymbolType(clazz));
+      return this.getCDTypeFacade().createOptionalTypeOf(symbolTableService.getSymbolType(clazz));
     }
   }
 
