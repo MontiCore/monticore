@@ -58,12 +58,11 @@ public class AbstractService<T extends AbstractService> {
     List<CDSymbol> resolvedCds = new ArrayList<>(directSuperCdSymbols);
     for (CDSymbol superSymbol : directSuperCdSymbols) {
       Collection<CDSymbol> superCDs = getSuperCDs(superSymbol);
-      for (CDSymbol superCD: superCDs) {
-        if (!resolvedCds
-                .stream()
-                .filter(c -> c.getFullName().equals(superCD.getFullName()))
-                .findAny()
-                .isPresent()) {
+      for (CDSymbol superCD : superCDs) {
+        if (resolvedCds
+            .stream()
+            .noneMatch(c -> c.getFullName().equals(superCD.getFullName()))
+        ) {
           resolvedCds.add(superCD);
         }
       }
