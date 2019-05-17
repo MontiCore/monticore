@@ -1,10 +1,7 @@
 package de.monticore.typescalculator;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTQualifiedNameExpression;
+import de.monticore.expressions.expressionsbasis._ast.*;
 import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.ETypeSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
@@ -124,6 +121,8 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
         sym.setASTMCType(result);
         types.put(expr,sym);
       }else if(variableSymbolopt.isPresent()){
+        //check in TypesMap, ob Expression vorher in Map vorhanden --> muss Typ sein
+        //vllt mit keySet
         String fullName= variableSymbolopt.get().getFullName();
         String[] parts = fullName.split("\\.");
         ArrayList<String> nameList = new ArrayList<>();

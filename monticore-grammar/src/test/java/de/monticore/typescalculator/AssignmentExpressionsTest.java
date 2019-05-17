@@ -114,6 +114,20 @@ public class AssignmentExpressionsTest {
     symbolB.getMCTypeSymbol().setSupertypes(superTypes);
     scope.add(symbolB);
     scope.add(symbol);
+
+    symbol = new EVariableSymbol("varBool");
+    typeSymbol=new MCTypeSymbol("boolean");
+    typeSymbol.setEVariableSymbol(symbol);
+    typeSymbol.setASTMCType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build());
+    symbol.setMCTypeSymbol(typeSymbol);
+    scope.add(symbol);
+
+    symbol = new EVariableSymbol("varBool2");
+    typeSymbol=new MCTypeSymbol("boolean");
+    typeSymbol.setEVariableSymbol(symbol);
+    typeSymbol.setASTMCType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build());
+    symbol.setMCTypeSymbol(typeSymbol);
+    scope.add(symbol);
 }
 
   @Test
@@ -419,7 +433,7 @@ public class AssignmentExpressionsTest {
     TestAssignmentExpressionsParser p = new TestAssignmentExpressionsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("varInt&=3");
     Optional<ASTExpression> r = p.parse_StringExpression("varInt&=varInt");
-    Optional<ASTExpression> q = p.parse_StringExpression("true&=false");
+    Optional<ASTExpression> q = p.parse_StringExpression("varBool&=false");
     TestAssignmentExpressionTypesCalculator calc = new TestAssignmentExpressionTypesCalculator();
     calc.setLiteralsVisitor(literalsVisitor);
     calc.setScope(scope);
@@ -442,7 +456,7 @@ public class AssignmentExpressionsTest {
     TestAssignmentExpressionsParser p = new TestAssignmentExpressionsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("varInt|=3");
     Optional<ASTExpression> r = p.parse_StringExpression("varInt|=varInt");
-    Optional<ASTExpression> q = p.parse_StringExpression("true|=false");
+    Optional<ASTExpression> q = p.parse_StringExpression("varBool|=false");
     TestAssignmentExpressionTypesCalculator calc = new TestAssignmentExpressionTypesCalculator();
     calc.setLiteralsVisitor(literalsVisitor);
     calc.setScope(scope);
@@ -465,7 +479,7 @@ public class AssignmentExpressionsTest {
     TestAssignmentExpressionsParser p = new TestAssignmentExpressionsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("varInt^=3");
     Optional<ASTExpression> r = p.parse_StringExpression("varInt^=varInt");
-    Optional<ASTExpression> q = p.parse_StringExpression("true^=false");
+    Optional<ASTExpression> q = p.parse_StringExpression("varBool^=varBool2");
     TestAssignmentExpressionTypesCalculator calc = new TestAssignmentExpressionTypesCalculator();
     calc.setLiteralsVisitor(literalsVisitor);
     calc.setScope(scope);
