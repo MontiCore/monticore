@@ -78,12 +78,13 @@ public class ASTScopeDecoratorTest extends DecoratorTestCase {
   public void testEnclosingScope2Attribute() {
     ASTCDAttribute symbolAttribute = getAttributeBy("enclosingScope2", astClass);
     assertDeepEquals(PROTECTED, symbolAttribute.getModifier());
-    assertOptionalOf(AST_I_SCOPE, symbolAttribute.getType());
+    ASTType astType = this.cdTypeFacade.createTypeByDefinition(AST_I_SCOPE);
+    assertDeepEquals(astType, symbolAttribute.getType());
   }
 
   @Test
   public void testMethods() {
-    assertEquals(18, astClass.getCDMethodList().size());
+    assertEquals(14, astClass.getCDMethodList().size());
   }
 
 
