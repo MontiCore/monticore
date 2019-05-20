@@ -74,7 +74,7 @@ public class ASTFullDecoratorTest extends DecoratorTestCase {
   @Test
   public void testMethodSize() {
     assertFalse(astClass.getCDMethodList().isEmpty());
-    assertEquals(42, astClass.getCDMethodList().size());
+    assertEquals(38, astClass.getCDMethodList().size());
   }
 
 }

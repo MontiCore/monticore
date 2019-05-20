@@ -27,28 +27,23 @@ public class ASTScopeDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass>
 
   @Override
   public ASTCDClass decorate(final ASTCDClass clazz) {
-    ASTType scopeInterfaceType = this.getCDTypeFacade().createOptionalTypeOf(symbolTableService.getScopeInterfaceType());
+    ASTType scopeInterfaceType = symbolTableService.getScopeInterfaceType();
     if (symbolTableService.hasScopeStereotype(clazz)) {
       //create attributes
       ASTCDAttribute spannedScopeAttribute = createSpannedScopeAttribute();
       clazz.addCDAttribute(spannedScopeAttribute);
       clazz.addAllCDMethods(methodDecorator.decorate(spannedScopeAttribute));
 
-      ASTCDAttribute spannedScope2Attribute = createSpannedScope2Attribute(scopeInterfaceType);
+      ASTType optScopeInterfaceType = this.getCDTypeFacade().createOptionalTypeOf(symbolTableService.getScopeInterfaceType());
+      ASTCDAttribute spannedScope2Attribute = createSpannedScope2Attribute(optScopeInterfaceType);
       clazz.addCDAttribute(spannedScope2Attribute);
       clazz.addAllCDMethods(methodDecorator.decorate(spannedScope2Attribute));
-
-      //always add enclosingScope2 for attribute that has a scope
-      ASTCDAttribute enclosingScope2Attribute = createEnclosingScope2Attribute(scopeInterfaceType);
-      clazz.addCDAttribute(enclosingScope2Attribute);
-      clazz.addAllCDMethods(methodDecorator.decorate(enclosingScope2Attribute));
-    } else {
-      //always add enclosingScope2 attribute and methods with IScope
-      ASTCDAttribute enclosingScope2Attribute = createEnclosingScope2Attribute(
-          getCDTypeFacade().createOptionalTypeOf(SCOPE_INTERFACE_FULL_NAME));
-      clazz.addCDAttribute(enclosingScope2Attribute);
-      clazz.addAllCDMethods(methodDecorator.decorate(enclosingScope2Attribute));
     }
+
+    //always add enclosingScope2 for attribute that has a scope
+    ASTCDAttribute enclosingScope2Attribute = createEnclosingScope2Attribute(scopeInterfaceType);
+    clazz.addCDAttribute(enclosingScope2Attribute);
+    clazz.addAllCDMethods(methodDecorator.decorate(enclosingScope2Attribute));
 
     return clazz;
   }

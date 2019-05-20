@@ -194,15 +194,7 @@ public <#if hasHWC>abstract</#if> class ${className} ${superInterfaces} {
 
 </#list>
   <#if scopeRule.isPresent()>
-    <#list scopeRule.get().getAdditionalAttributeList() as attr>
-      <#assign attrName=attr.getName()>
-      <#assign attrType=attr.getGenericType().getTypeName()>
-      private ${genHelper.getQualifiedASTName(attrType)} ${attrName};
-    </#list>
-
-    <#list scopeRule.get().getMethodList() as meth>
-      ${genHelper.printMethod(meth)}
-    </#list>
+    ${includeArgs("symboltable.ScopeRule", scopeRule.get())}
   </#if>
 
   <#assign langVisitorType = names.getQualifiedName(genHelper.getVisitorPackage(), genHelper.getGrammarSymbol().getName() + "ScopeVisitor")>
