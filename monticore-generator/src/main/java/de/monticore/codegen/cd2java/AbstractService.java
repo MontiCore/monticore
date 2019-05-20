@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
+import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
@@ -21,6 +22,7 @@ public class AbstractService<T extends AbstractService> {
   private final CDSymbol cdSymbol;
 
   private final CDTypeFacade cdTypeFacade;
+
 
   public AbstractService(final ASTCDCompilationUnit compilationUnit) {
     this((CDSymbol) compilationUnit.getCDDefinition().getSymbol());
@@ -155,6 +157,13 @@ public class AbstractService<T extends AbstractService> {
     return definedMethods
         .stream()
         .anyMatch(x -> x.getName().equals(methodname));
+  }
+
+  public List<ASTCDMethod> getMethodsFromAttributeList(List<ASTCDAttribute> attributeList, MethodDecorator methodDecorator) {
+    return attributeList.stream()
+        .map(methodDecorator::decorate)
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
   }
 
 }

@@ -7,35 +7,36 @@ import com.google.common.io.Resources;
 import de.monticore.codegen.GeneratorHelper;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CDGenerator;
+import de.monticore.codegen.cd2java._ast.ASTCDDecorator;
+import de.monticore.codegen.cd2java._ast.ast_class.*;
+import de.monticore.codegen.cd2java._ast.ast_class.reference.ASTReferenceDecorator;
+import de.monticore.codegen.cd2java._ast.ast_interface.ASTInterfaceDecorator;
+import de.monticore.codegen.cd2java._ast.ast_interface.ASTLanguageInterfaceDecorator;
+import de.monticore.codegen.cd2java._ast.ast_interface.FullASTInterfaceDecorator;
+import de.monticore.codegen.cd2java._ast.builder.ASTBuilderDecorator;
+import de.monticore.codegen.cd2java._ast.builder.BuilderDecorator;
+import de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator;
+import de.monticore.codegen.cd2java._ast.enums.EnumDecorator;
+import de.monticore.codegen.cd2java._ast.factory.NodeFactoryDecorator;
+import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
+import de.monticore.codegen.cd2java._ast.mill.MillDecorator;
+import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
+import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.ast.AstGenerator;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
 import de.monticore.codegen.cd2java.ast.CdDecorator;
 import de.monticore.codegen.cd2java.ast_emf.CdEmfDecorator;
-import de.monticore.codegen.cd2java.ast_interface.ASTInterfaceDecorator;
-import de.monticore.codegen.cd2java.ast_interface.ASTLanguageInterfaceDecorator;
-import de.monticore.codegen.cd2java.ast_interface.FullASTInterfaceDecorator;
-import de.monticore.codegen.cd2java.ast_new.*;
-import de.monticore.codegen.cd2java.ast_new.reference.ASTReferenceDecorator;
-import de.monticore.codegen.cd2java.builder.ASTBuilderDecorator;
-import de.monticore.codegen.cd2java.builder.BuilderDecorator;
 import de.monticore.codegen.cd2java.cocos.CoCoGenerator;
-import de.monticore.codegen.cd2java.constants.ASTConstantsDecorator;
 import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
 import de.monticore.codegen.cd2java.data.InterfaceDecorator;
-import de.monticore.codegen.cd2java.enums.EnumDecorator;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
-import de.monticore.codegen.cd2java.factory.NodeFactoryDecorator;
-import de.monticore.codegen.cd2java.factory.NodeFactoryService;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
-import de.monticore.codegen.cd2java.mill.MillDecorator;
 import de.monticore.codegen.cd2java.od.ODGenerator;
-import de.monticore.codegen.cd2java.symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.top.TopDecorator;
 import de.monticore.codegen.cd2java.typecd2java.TypeCD2JavaDecorator;
 import de.monticore.codegen.cd2java.visitor.VisitorGenerator;
-import de.monticore.codegen.cd2java.visitor_new.VisitorService;
 import de.monticore.codegen.mc2cd.MC2CDTransformation;
 import de.monticore.codegen.mc2cd.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
@@ -456,11 +457,12 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     DataDecoratorUtil decoratorUtil = new DataDecoratorUtil();
 
     DataDecorator dataDecorator = new DataDecorator(glex, methodDecorator, astService, decoratorUtil);
-    ASTDecorator astDecorator = new ASTDecorator(glex, astService, visitorService, nodeFactoryService);
-    ASTSymbolDecorator astSymbolDecorator = new ASTSymbolDecorator(glex, methodDecorator, symbolTableService);
-    ASTScopeDecorator astScopeDecorator = new ASTScopeDecorator(glex, methodDecorator, symbolTableService);
+    ASTSymbolDecorator astSymbolDecorator = new ASTSymbolDecorator(glex, symbolTableService);
+    ASTScopeDecorator astScopeDecorator = new ASTScopeDecorator(glex, symbolTableService);
+    ASTDecorator astDecorator = new ASTDecorator(glex, astService, visitorService, nodeFactoryService, astSymbolDecorator, astScopeDecorator, methodDecorator);
+
     ASTReferenceDecorator astReferencedSymbolDecorator = new ASTReferenceDecorator(glex, symbolTableService);
-    ASTFullDecorator fullDecorator = new ASTFullDecorator(dataDecorator, astDecorator, astSymbolDecorator, astScopeDecorator, astReferencedSymbolDecorator);
+    ASTFullDecorator fullDecorator = new ASTFullDecorator(dataDecorator, astDecorator, astReferencedSymbolDecorator);
 
     ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator = new ASTLanguageInterfaceDecorator(astService, visitorService);
 
@@ -475,7 +477,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     EnumDecorator enumDecorator = new EnumDecorator(glex, new AccessorDecorator(glex), astService);
 
-    ASTInterfaceDecorator astInterfaceDecorator = new ASTInterfaceDecorator(glex, astService, visitorService);
+    ASTInterfaceDecorator astInterfaceDecorator = new ASTInterfaceDecorator(glex, astService, visitorService, astSymbolDecorator, astScopeDecorator, methodDecorator);
     InterfaceDecorator dataInterfaceDecorator = new InterfaceDecorator(glex, decoratorUtil, methodDecorator);
     FullASTInterfaceDecorator fullASTInterfaceDecorator = new FullASTInterfaceDecorator(dataInterfaceDecorator, astInterfaceDecorator);
 
@@ -494,7 +496,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
 
-  public void generateFromCD(GlobalExtensionManagement glex,ASTCDCompilationUnit oldCD,  ASTCDCompilationUnit decoratedCD,
+  public void generateFromCD(GlobalExtensionManagement glex, ASTCDCompilationUnit oldCD, ASTCDCompilationUnit decoratedCD,
                              File outputDirectory, IterablePath handcodedPath) {
     // need symboltable of the old cd
     glex.setGlobalValue("service", new AbstractService(oldCD));

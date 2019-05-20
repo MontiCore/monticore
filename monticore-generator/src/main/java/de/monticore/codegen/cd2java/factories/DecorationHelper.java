@@ -16,8 +16,8 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
 
-import static de.monticore.codegen.cd2java.ast_new.ASTConstants.AST_INTERFACE;
-import static de.monticore.codegen.cd2java.ast_new.ASTConstants.AST_PREFIX;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 
 public class DecorationHelper extends TypesHelper {
 
