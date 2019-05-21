@@ -3,25 +3,27 @@ package de.monticore.codegen.cd2java.ast_new;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
-import de.monticore.codegen.cd2java.ast_interface.ASTInterfaceDecorator;
-import de.monticore.codegen.cd2java.ast_interface.ASTLanguageInterfaceDecorator;
-import de.monticore.codegen.cd2java.ast_interface.FullASTInterfaceDecorator;
-import de.monticore.codegen.cd2java.ast_new.reference.ASTReferenceDecorator;
-import de.monticore.codegen.cd2java.builder.ASTBuilderDecorator;
-import de.monticore.codegen.cd2java.builder.BuilderDecorator;
-import de.monticore.codegen.cd2java.constants.ASTConstantsDecorator;
+import de.monticore.codegen.cd2java._ast.ASTCDDecorator;
+import de.monticore.codegen.cd2java._ast.ast_class.*;
+import de.monticore.codegen.cd2java._ast.ast_class.reference.ASTReferenceDecorator;
+import de.monticore.codegen.cd2java._ast.ast_interface.ASTInterfaceDecorator;
+import de.monticore.codegen.cd2java._ast.ast_interface.ASTLanguageInterfaceDecorator;
+import de.monticore.codegen.cd2java._ast.ast_interface.FullASTInterfaceDecorator;
+import de.monticore.codegen.cd2java._ast.builder.ASTBuilderDecorator;
+import de.monticore.codegen.cd2java._ast.builder.BuilderDecorator;
+import de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator;
+import de.monticore.codegen.cd2java._ast.enums.EnumDecorator;
+import de.monticore.codegen.cd2java._ast.factory.NodeFactoryDecorator;
+import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
+import de.monticore.codegen.cd2java._ast.mill.MillDecorator;
+import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
+import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
 import de.monticore.codegen.cd2java.data.InterfaceDecorator;
-import de.monticore.codegen.cd2java.enums.EnumDecorator;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
-import de.monticore.codegen.cd2java.factory.NodeFactoryDecorator;
-import de.monticore.codegen.cd2java.factory.NodeFactoryService;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
-import de.monticore.codegen.cd2java.mill.MillDecorator;
-import de.monticore.codegen.cd2java.symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java.visitor_new.VisitorService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -73,13 +75,14 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
     VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
     NodeFactoryService nodeFactoryService = new NodeFactoryService(decoratedCompilationUnit);
-
-    DataDecorator dataDecorator = new DataDecorator(glex, new MethodDecorator(glex), astService, new DataDecoratorUtil());
-    ASTDecorator astDecorator = new ASTDecorator(glex, astService, visitorService, nodeFactoryService);
-    ASTSymbolDecorator astSymbolDecorator = new ASTSymbolDecorator(glex, new MethodDecorator(glex), symbolTableService);
-    ASTScopeDecorator astScopeDecorator = new ASTScopeDecorator(glex, new MethodDecorator(glex), symbolTableService);
+    MethodDecorator methodDecorator = new MethodDecorator(glex);
+    DataDecorator dataDecorator = new DataDecorator(glex, methodDecorator, astService, new DataDecoratorUtil());
+    ASTSymbolDecorator astSymbolDecorator = new ASTSymbolDecorator(glex, symbolTableService);
+    ASTScopeDecorator astScopeDecorator = new ASTScopeDecorator(glex, symbolTableService);
+    ASTDecorator astDecorator = new ASTDecorator(glex, astService, visitorService, nodeFactoryService,
+        astSymbolDecorator, astScopeDecorator, methodDecorator);
     ASTReferenceDecorator astReferencedSymbolDecorator = new ASTReferenceDecorator(glex, symbolTableService);
-    ASTFullDecorator fullDecorator = new ASTFullDecorator(dataDecorator, astDecorator, astSymbolDecorator, astScopeDecorator, astReferencedSymbolDecorator);
+    ASTFullDecorator fullDecorator = new ASTFullDecorator(dataDecorator, astDecorator, astReferencedSymbolDecorator);
 
     ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator = new ASTLanguageInterfaceDecorator(astService, visitorService);
 
@@ -94,8 +97,9 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
 
     EnumDecorator enumDecorator = new EnumDecorator(glex, new AccessorDecorator(glex), astService);
 
-    ASTInterfaceDecorator astInterfaceDecorator = new ASTInterfaceDecorator(glex, astService, visitorService);
-    InterfaceDecorator dataInterfaceDecorator = new InterfaceDecorator(glex, new DataDecoratorUtil(), new MethodDecorator(glex));
+    ASTInterfaceDecorator astInterfaceDecorator = new ASTInterfaceDecorator(glex, astService, visitorService,
+        astSymbolDecorator, astScopeDecorator, methodDecorator);
+    InterfaceDecorator dataInterfaceDecorator = new InterfaceDecorator(glex, new DataDecoratorUtil(), methodDecorator);
     FullASTInterfaceDecorator fullASTInterfaceDecorator = new FullASTInterfaceDecorator(dataInterfaceDecorator, astInterfaceDecorator);
 
     ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, symbolTableCreator, fullDecorator, astLanguageInterfaceDecorator, astBuilderDecorator, nodeFactoryDecorator,

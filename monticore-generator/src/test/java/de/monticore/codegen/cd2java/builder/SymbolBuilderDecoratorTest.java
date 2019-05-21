@@ -3,6 +3,8 @@ package de.monticore.codegen.cd2java.builder;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
+import de.monticore.codegen.cd2java._ast.builder.BuilderDecorator;
+import de.monticore.codegen.cd2java._ast.builder.SymbolBuilderDecorator;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;

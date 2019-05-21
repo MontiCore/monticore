@@ -3,9 +3,14 @@ package de.monticore.codegen.cd2java.ast_interface;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
-import de.monticore.codegen.cd2java.ast_new.ASTService;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTScopeDecorator;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTSymbolDecorator;
+import de.monticore.codegen.cd2java._ast.ast_interface.ASTInterfaceDecorator;
+import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
+import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
-import de.monticore.codegen.cd2java.visitor_new.VisitorService;
+import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -38,9 +43,11 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDCompilationUnit astcdCompilationUnit = this.parse("de", "monticore", "codegen", "data", "DataInterface");
     this.glex.setGlobalValue("service", new AbstractService(astcdCompilationUnit));
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
-
+    SymbolTableService symbolTableService = new SymbolTableService(astcdCompilationUnit);
     ASTCDInterface interfaceBy = getInterfaceBy("ASTA", astcdCompilationUnit);
-    ASTInterfaceDecorator decorator = new ASTInterfaceDecorator(this.glex, new ASTService(astcdCompilationUnit), new VisitorService(astcdCompilationUnit));
+    ASTInterfaceDecorator decorator = new ASTInterfaceDecorator(this.glex, new ASTService(astcdCompilationUnit)
+        , new VisitorService(astcdCompilationUnit), new ASTSymbolDecorator(this.glex, symbolTableService),
+        new ASTScopeDecorator(this.glex, symbolTableService), new MethodDecorator(this.glex));
     this.dataInterface = decorator.decorate(interfaceBy);
   }
 
@@ -56,7 +63,7 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount(){
-    assertEquals(1, dataInterface.sizeCDMethods());
+    assertEquals(3, dataInterface.sizeCDMethods());
   }
 
   @Test

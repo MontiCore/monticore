@@ -1,6 +1,6 @@
 package de.monticore.codegen.cd2java.typecd2java;
 
-import de.monticore.codegen.cd2java.ast_new.ASTConstants;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.umlcd4a.cd4analysis._visitor.CD4AnalysisVisitor;
 import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
