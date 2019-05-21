@@ -24,9 +24,7 @@ import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.symboltable.references.ISymbolReference;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.Optional;
+import java.util.*;
 
 public class ${className} implements ${grammarName}Visitor {
 
@@ -57,10 +55,12 @@ public class ${className} implements ${grammarName}Visitor {
     * @param rootNode the root node
     * @return the first scope that was created
     */
-  public ${scopeName} createFromAST(${topAstName} rootNode) {
+  public ${grammarName}ArtifactScope createFromAST(${topAstName} rootNode) {
     Log.errorIfNull(rootNode, "0xA7004${genHelper.getGeneratedErrorCode(ast)} Error by creating of the ${className} symbol table: top ast node is null");
-    rootNode.accept(realThis);
-    return getFirstCreatedScope();
+    ${grammarName}ArtifactScope artifactScope = new ${grammarName}ArtifactScope(Optional.empty(), "", new ArrayList<>());
+    putOnStack(artifactScope);
+    rootNode.accept(getRealThis());
+    return artifactScope;
   }
 
   public ${scopeName} getFirstCreatedScope() {
@@ -115,7 +115,7 @@ public class ${className} implements ${grammarName}Visitor {
   }
 
   public ${scopeName} createScope() {
-    return new ${grammarName+"Scope"}Builder().build();
+    return  ${grammarName}SymTabMill.${grammarName?uncap_first+"Scope"}Builder().build();
   }
 
 <#list rules as ruleSymbol>

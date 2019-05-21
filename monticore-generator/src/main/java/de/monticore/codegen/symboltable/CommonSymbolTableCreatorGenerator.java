@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static de.monticore.codegen.GeneratorHelper.existsHandwrittenClass;
 import static de.monticore.codegen.GeneratorHelper.getSimpleTypeNameToGenerate;
@@ -40,13 +41,45 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
   
     Set<MCProdSymbol> allSymbols = Sets.newHashSet();
     allSymbols.addAll(genHelper.getAllSymbolDefiningRules());
-    allSymbols.addAll(genHelper.getAllSymbolDefiningRulesInSuperGrammar());
+//    allSymbols.addAll(genHelper.getAllSymbolDefiningRulesInSuperGrammar());
     List<CDSymbol> directSuperCds = genHelper.getDirectSuperCds(genHelper.getCd());
     if(grammarSymbol.getStartProd().isPresent()) {
       genEngine
           .generate("symboltable.SymbolTableCreator", filePath, grammarSymbol.getAstNode().get(),
               className, directSuperCds, allSymbols
               , handCodedPath);
+    
+      className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName() + "SymbolTableCreatorDelegator"),
+          genHelper.getTargetPackage(), handCodedPath);
+    
+      filePath = get(getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
+    
+      List<MCGrammarSymbol> supergrammars = grammarSymbol.getAllSuperGrammars().stream()
+          .filter(x->x.getStartProd().isPresent()).collect(Collectors.toList());
+      
+      genEngine
+          .generate("symboltable.SymbolTableCreatorDelegator", filePath, grammarSymbol.getAstNode().get(),
+              className, supergrammars , grammarSymbol.getStartProd().get());
+    
+      for(MCGrammarSymbol g : grammarSymbol.getAllSuperGrammars()) {
+        if(g.getStartProd().isPresent()) {
+          className = getSimpleTypeNameToGenerate(
+              getSimpleName(g.getFullName() + "STCFor" + grammarSymbol.getName()),
+              genHelper.getTargetPackage(), handCodedPath);
+  
+          filePath = get(getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
+  
+          String scopeName = "I" + grammarSymbol.getName() + "Scope";
+          String superGrammarScope = "I" + g.getName() + "Scope";
+          String superGrammarPackage = g.getPackageName().isEmpty() ?
+              g.getName().toLowerCase() :
+              g.getPackageName() + "." + g.getName().toLowerCase();
+          genEngine.generate("symboltable.SymbolTableCreatorForSuperGrammar", filePath,
+              grammarSymbol.getAstNode().get(), className, scopeName, g.getName(),
+              superGrammarScope, superGrammarPackage);
+        }
+      
+      }
     }
   
     String name = grammarSymbol.getName() + millName;
