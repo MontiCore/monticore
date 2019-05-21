@@ -57,16 +57,26 @@ public class ${symTabPrinterName}
     
 <#if scopeRule.isPresent()>
 <#list scopeRule.get().getAdditionalAttributeList() as attr>
-    printer.attribute(${attr.name}, serialize${attr.name}(scope));
+    printer.attribute("${attr.name}", serialize${attr.name}(scope));
 </#list>
 </#if>
   }
   
 <#if scopeRule.isPresent()>
 <#list scopeRule.get().getAdditionalAttributeList() as attr>
-    protected String serialize${attr.name}(${languageName}Scope scope) {
-      return scope.get${attr.name}().toString();
-    }
+  <#assign attrType=attr.getMCType().getBaseName()>
+  <#if attrType == "boolean" || attrType == "Boolean">
+    <#if attr.getName()?starts_with("is")>
+      <#assign methodName=attr.getName()>
+    <#else>
+      <#assign methodName="is" + attr.getName()?cap_first>
+    </#if>
+  <#else>
+    <#assign methodName="get" + attr.getName()?cap_first>
+  </#if>
+  protected String serialize${attr.name}(${languageName}Scope scope) {
+    return String.valueOf(scope.${methodName}());
+  }
 </#list>
 </#if>
 

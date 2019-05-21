@@ -107,12 +107,19 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
 
   public Optional<ScopeDeserializationResult<I${languageName}Scope>> deserialize${languageName}Scope(JsonReader reader) {
     // Part 1: Initialize all attributes with default values
-    I${languageName}Scope scope = null;
+    ${languageName}Scope scope = null;
     Optional<String> name = Optional.empty();
     boolean isShadowingScope = false;
 <#list symbolNames?keys as symbol>
     List<${symbol}Symbol> ${symbol?lower_case}Symbols = new ArrayList<>();
 </#list>
+<#if scopeRule.isPresent()>
+  <#list scopeRule.get().getAdditionalAttributeList() as attr>
+    <#assign attrName="_" + attr.getName()>
+    <#assign attrType=attr.getMCType().getBaseName()>
+    ${genHelper.getQualifiedASTName(attrType)} ${attrName} = ${genHelper.getDefaultInitValue(attrType)};
+  </#list>   
+</#if>
     List<ScopeDeserializationResult<I${languageName}Scope>> subScopes = new ArrayList<>();
     Optional<SpanningSymbolReference> spanningSymbol = Optional.empty();
 
@@ -135,6 +142,20 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
             ${symbol?lower_case}Symbols = deserializeLocal${symbol}Symbols(reader);
             break;
 </#list>
+<#if scopeRule.isPresent()>
+  <#list scopeRule.get().getAdditionalAttributeList() as attr>
+    <#assign attrName="_" + attr.getName()>
+    <#assign attrType=attr.getMCType().getBaseName()>
+          case "${attrName}":
+    <#if attr.getName()?starts_with("is")>
+      <#assign methodName=attr.getName()>
+    <#else>
+      <#assign methodName="is" + attr.getName()?cap_first>
+    </#if>
+            ${attrName} = ${genHelper.getDeserializationCastString(attrType)} reader.next${genHelper.getDeserializationType(attrType)}();
+            break;
+  </#list>  
+</#if>
           case JsonConstants.SUBSCOPES:
             subScopes = deserializeSubScopes(reader);
             break;
@@ -158,6 +179,12 @@ JsonReader reader = new JsonReader(new StringReader(serialized));
       scope.add(s);
     }
 </#list>
+<#if scopeRule.isPresent()>
+  <#list scopeRule.get().getAdditionalAttributeList() as attr>
+    <#assign attrName="_" + attr.getName()>
+      scope.set${attr.getName()?cap_first}(${attrName});
+  </#list>
+</#if>
 
     for (I${languageName}Scope s : linkSubScopes(scope, subScopes)) {
       scope.addSubScope(s);
