@@ -2,7 +2,10 @@ package de.monticore.codegen.cd2java._ast.ast_class;
 
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
+import de.monticore.codegen.mc2cd.MC2CDStereotypes;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.types._ast.ASTReferenceType;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
@@ -30,16 +33,20 @@ public class ASTScopeDecorator extends AbstractDecorator<ASTCDType, List<ASTCDAt
     ASTType scopeInterfaceType = symbolTableService.getScopeInterfaceType();
     if (clazz.getModifierOpt().isPresent() && symbolTableService.hasScopeStereotype(clazz.getModifierOpt().get())) {
       //create attributes
-      ASTCDAttribute spannedScopeAttribute = createSpannedScopeAttribute();
-      attributeList.add(spannedScopeAttribute);
+      attributeList.add(createSpannedScopeAttribute());
 
       ASTType optScopeInterfaceType = this.getCDTypeFacade().createOptionalTypeOf(symbolTableService.getScopeInterfaceType());
-      ASTCDAttribute spannedScope2Attribute = createSpannedScope2Attribute(optScopeInterfaceType);
-      attributeList.add(spannedScope2Attribute);
+      attributeList.add(createSpannedScope2Attribute(optScopeInterfaceType));
+    }
+
+    //add methods for super intrefaces because otherwise the class will not compile
+    for (ASTReferenceType referenceType : clazz.getInterfaceList()) {
+      ASTCDAttribute enclosingScope2Attribute = createEnclosingScope2Attribute(referenceType);
+      TransformationHelper.addStereotypeValue(enclosingScope2Attribute.getModifier(), MC2CDStereotypes.INHERITED.toString());
+      attributeList.add(enclosingScope2Attribute);
     }
     //always add enclosingScope2 for attribute that has a scope
-    ASTCDAttribute enclosingScope2Attribute = createEnclosingScope2Attribute(scopeInterfaceType);
-    attributeList.add(enclosingScope2Attribute);
+    attributeList.add(createEnclosingScope2Attribute(scopeInterfaceType));
 
     return attributeList;
   }

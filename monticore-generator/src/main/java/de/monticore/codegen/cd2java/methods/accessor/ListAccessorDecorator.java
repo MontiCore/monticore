@@ -75,9 +75,4 @@ public class ListAccessorDecorator extends ListMethodDecorator {
       String.format(SUBLIST, attributeType, capitalizedAttributeNameWithS)
     );
   }
-
-
-
-
-
 }

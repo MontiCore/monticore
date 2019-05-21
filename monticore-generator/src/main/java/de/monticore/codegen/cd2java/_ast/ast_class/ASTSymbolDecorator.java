@@ -34,9 +34,8 @@ public class ASTSymbolDecorator extends AbstractDecorator<ASTCDType, List<ASTCDA
 
       String attributeName = StringUtils.uncapitalize(symbolTableService.getSimpleSymbolNameFromOptional(symbolType)) + SYMBOL_SUFFIX;
 
-      attributeList.add( createSymbolAttribute(symbolType, attributeName));
+      attributeList.add(createSymbolAttribute(symbolType, attributeName));
       attributeList.add(createSymbol2Attribute(symbolType, attributeName));
-
     }
     return attributeList;
   }

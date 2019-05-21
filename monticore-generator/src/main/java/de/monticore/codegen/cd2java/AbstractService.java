@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
 import de.monticore.codegen.cd2java.factories.CDTypeFacade;
-import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
@@ -63,8 +62,7 @@ public class AbstractService<T extends AbstractService> {
       for (CDSymbol superCD : superCDs) {
         if (resolvedCds
             .stream()
-            .noneMatch(c -> c.getFullName().equals(superCD.getFullName()))
-        ) {
+            .noneMatch(c -> c.getFullName().equals(superCD.getFullName()))) {
           resolvedCds.add(superCD);
         }
       }
@@ -129,7 +127,7 @@ public class AbstractService<T extends AbstractService> {
     return "";
   }
 
-  protected boolean hasStereotype(ASTModifier modifier, MC2CDStereotypes stereotype) {
+  public boolean hasStereotype(ASTModifier modifier, MC2CDStereotypes stereotype) {
     if (modifier.isPresentStereotype()) {
       return modifier.getStereotype().getValueList().stream().anyMatch(v -> v.getName().equals(stereotype.toString()));
     }
@@ -157,13 +155,6 @@ public class AbstractService<T extends AbstractService> {
     return definedMethods
         .stream()
         .anyMatch(x -> x.getName().equals(methodname));
-  }
-
-  public List<ASTCDMethod> getMethodsFromAttributeList(List<ASTCDAttribute> attributeList, MethodDecorator methodDecorator) {
-    return attributeList.stream()
-        .map(methodDecorator::decorate)
-        .flatMap(List::stream)
-        .collect(Collectors.toList());
   }
 
 }

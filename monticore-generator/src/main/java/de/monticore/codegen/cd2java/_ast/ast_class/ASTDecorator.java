@@ -3,9 +3,11 @@ package de.monticore.codegen.cd2java._ast.ast_class;
 import de.monticore.ast.ASTCNode;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
+import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
+import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -39,13 +41,16 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
   private final MethodDecorator methodDecorator;
 
+  private final SymbolTableService symbolTableService;
+
   public ASTDecorator(final GlobalExtensionManagement glex,
                       final ASTService astService,
                       final VisitorService visitorService,
                       final NodeFactoryService nodeFactoryService,
                       final ASTSymbolDecorator symbolDecorator,
                       final ASTScopeDecorator scopeDecorator,
-                      final MethodDecorator methodDecorator) {
+                      final MethodDecorator methodDecorator,
+                      final SymbolTableService symbolTableService) {
     super(glex);
     this.astService = astService;
     this.visitorService = visitorService;
@@ -53,6 +58,7 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
     this.symbolDecorator = symbolDecorator;
     this.scopeDecorator = scopeDecorator;
     this.methodDecorator = methodDecorator;
+    this.symbolTableService = symbolTableService;
   }
 
   @Override
@@ -65,17 +71,31 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
     if (!clazz.isPresentSuperclass()) {
       clazz.setSuperclass(this.getCDTypeFacade().createSimpleReferenceType(ASTCNode.class));
     }
+
     List<ASTCDAttribute> symbolAttributes = symbolDecorator.decorate(clazz);
-    List<ASTCDMethod> symbolMethods = astService.getMethodsFromAttributeList(symbolAttributes, methodDecorator);
-    clazz.addAllCDAttributes(symbolAttributes);
-    clazz.addAllCDMethods(symbolMethods);
+    addSymboltableMethods(symbolAttributes, clazz);
 
     List<ASTCDAttribute> scopeAttributes = scopeDecorator.decorate(clazz);
-    List<ASTCDMethod> scopeMethods = astService.getMethodsFromAttributeList(scopeAttributes, methodDecorator);
-    clazz.addAllCDAttributes(scopeAttributes);
-    clazz.addAllCDMethods(scopeMethods);
+    addSymboltableMethods(scopeAttributes, clazz);
 
     return clazz;
+  }
+
+  protected void addSymboltableMethods(List<ASTCDAttribute> astcdAttributes, ASTCDClass clazz) {
+    for (ASTCDAttribute attribute : astcdAttributes) {
+      if (!astService.hasStereotype(attribute.getModifier(), MC2CDStereotypes.INHERITED)) {
+        clazz.addCDAttribute(attribute);
+        clazz.addAllCDMethods(methodDecorator.decorate(attribute));
+      } else {
+        methodDecorator.disableTemplates();
+//        String scopeInterfaceTypeName = symbolTableService.getScopeInterfaceTypeName();
+        List<ASTCDMethod> methods = methodDecorator.getMutatorDecorator().decorate(attribute);
+//        methods.forEach(m ->
+//            this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("ast_new.Accept", m, scopeInterfaceTypeName)));
+        methodDecorator.enableTemplates();
+        clazz.addAllCDMethods(methods);
+      }
+    }
   }
 
 

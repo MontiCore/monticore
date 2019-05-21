@@ -6,6 +6,7 @@ import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTSymbolDecorator;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
+import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
@@ -32,7 +33,7 @@ public class ASTInterfaceDecorator extends AbstractDecorator<ASTCDInterface, AST
   private final MethodDecorator methodDecorator;
 
   public ASTInterfaceDecorator(final GlobalExtensionManagement glex,
-                               final ASTService astService, 
+                               final ASTService astService,
                                final VisitorService visitorService,
                                final ASTSymbolDecorator symbolDecorator,
                                final ASTScopeDecorator scopeDecorator,
@@ -55,15 +56,28 @@ public class ASTInterfaceDecorator extends AbstractDecorator<ASTCDInterface, AST
     methodDecorator.disableTemplates();
 
     List<ASTCDAttribute> symbolAttributes = symbolDecorator.decorate(input);
-    List<ASTCDMethod> symbolMethods = astService.getMethodsFromAttributeList(symbolAttributes, methodDecorator);
-    symbolAttributes.forEach(x-> x.getModifier().setAbstract(true));
-    input.addAllCDMethods(symbolMethods);
+    symbolAttributes.forEach(x -> x.getModifier().setAbstract(true));
+    addSymboltableMethods(symbolAttributes, input);
 
     List<ASTCDAttribute> scopeAttributes = scopeDecorator.decorate(input);
-    List<ASTCDMethod> scopeMethods = astService.getMethodsFromAttributeList(scopeAttributes, methodDecorator);
-    scopeMethods.forEach(x-> x.getModifier().setAbstract(true));
-    input.addAllCDMethods(scopeMethods);
+    scopeAttributes.forEach(x -> x.getModifier().setAbstract(true));
+    addSymboltableMethods(scopeAttributes, input);
+
     return input;
+  }
+
+  protected void addSymboltableMethods(List<ASTCDAttribute> astcdAttributes, ASTCDInterface input) {
+    for (ASTCDAttribute attribute : astcdAttributes) {
+      if (!astService.hasStereotype(attribute.getModifier(), MC2CDStereotypes.INHERITED)) {
+        List<ASTCDMethod> methods = methodDecorator.decorate(attribute);
+        methods.forEach(x -> x.getModifier().setAbstract(true));
+        input.addAllCDMethods(methods);
+      } else {
+        List<ASTCDMethod> methods = methodDecorator.getMutatorDecorator().decorate(attribute);
+        methods.forEach(x -> x.getModifier().setAbstract(true));
+        input.addAllCDMethods(methods);
+      }
+    }
   }
 
   protected ASTCDMethod getAcceptMethod(ASTType visitorType) {
