@@ -14,7 +14,6 @@ import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
 import de.monticore.types.prettyprint.MCFullGenericTypesPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
-import sun.security.krb5.internal.crypto.EType;
 
 import java.util.*;
 
@@ -113,14 +112,7 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
       Optional<EMethodSymbol> methodSymbolopt = scope.resolveEMethodDown(toResolve);
       if(typeSymbolopt.isPresent()){
         String fullName= typeSymbolopt.get().getFullName();
-        String[] parts = fullName.split("\\.");
-        ArrayList<String> nameList = new ArrayList<>();
-        Collections.addAll(nameList,parts);
-        ASTMCType result= MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(nameList).build()).build();
-        this.result=result;
-        MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-        sym.setASTMCType(result);
-        types.put(expr,sym);
+        addToTypesMapQName(expr,fullName);
       }else if(variableSymbolopt.isPresent()){
         ExpressionsBasisPrettyPrinter printer = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
         String exprString = printer.prettyprint(expr);
@@ -169,27 +161,24 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
         }
 
         String fullName= variableSymbolopt.get().getFullName();
-        String[] parts = fullName.split("\\.");
-        ArrayList<String> nameList = new ArrayList<>();
-        Collections.addAll(nameList,parts);
-        ASTMCType result= MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(nameList).build()).build();
-        this.result=result;
-        MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-        sym.setASTMCType(result);
-        types.put(expr,sym);
+        addToTypesMapQName(expr,fullName);
       }else if(methodSymbolopt.isPresent()) {
         String fullName = methodSymbolopt.get().getFullName();
-        String[] parts = fullName.split("\\.");
-        ArrayList<String> nameList = new ArrayList<>();
-        Collections.addAll(nameList,parts);
-        ASTMCType result= MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(nameList).build()).build();
-        this.result=result;
-        MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-        sym.setASTMCType(result);
-        types.put(expr,sym);
+        addToTypesMapQName(expr,fullName);
       }else{
         Log.info("package suspected","ExpressionsBasisTypesCalculator");
       }
+  }
+
+  private void addToTypesMapQName (ASTExpression expr, String fullName){
+    String[] parts = fullName.split("\\.");
+    ArrayList<String> nameList = new ArrayList<>();
+    Collections.addAll(nameList,parts);
+    ASTMCType result= MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(nameList).build()).build();
+    this.result=result;
+    MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
+    sym.setASTMCType(result);
+    types.put(expr,sym);
   }
 
   public ASTMCType getResult() {

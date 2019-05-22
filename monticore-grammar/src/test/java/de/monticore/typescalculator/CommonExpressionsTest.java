@@ -9,7 +9,6 @@ import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisSc
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
-import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
 import de.monticore.typescalculator.testcommonexpressions._parser.TestCommonExpressionsParser;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
