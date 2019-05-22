@@ -14,6 +14,7 @@ import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
 import de.monticore.types.prettyprint.MCFullGenericTypesPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
+import sun.security.krb5.internal.crypto.EType;
 
 import java.util.*;
 
@@ -121,18 +122,22 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
         sym.setASTMCType(result);
         types.put(expr,sym);
       }else if(variableSymbolopt.isPresent()){
-        //check in TypesMap, ob Expression vorher in Map vorhanden --> muss Typ sein
-        //vllt mit keySet
         ExpressionsBasisPrettyPrinter printer = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
         String exprString = printer.prettyprint(expr);
         String[] stringParts = exprString.split("\\.");
         String beforeName="";
         if(stringParts.length!=1){
           for(int i=0;i<stringParts.length-1;i++){
-            beforeName+="."+stringParts[i];
+            beforeName+=stringParts[i]+".";
           }
-          if(!scope.resolveEType(beforeName).isPresent()){
-            Log.error("0xA0208 the resulting type cannot be calculated");
+          beforeName=beforeName.substring(0,beforeName.length()-1);
+          if(!scope.resolveETypeDown(beforeName).isPresent()){ //TODO: replace resolveDown with resolve
+            Log.info("package suspected","ExpressionsBasisTypesCalculator");
+          }else{
+            Optional<ETypeSymbol> typeSymbol = scope.resolveETypeDown(beforeName); //TODO: replace resolveDown with resolve
+            if(!typeSymbol.get().getVariableSymbols().contains(variableSymbolopt.get())){
+              Log.error("0xA208 the resulting type cannot be calculated");
+            }
           }
         }
 
@@ -156,7 +161,7 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
         sym.setASTMCType(result);
         types.put(expr,sym);
       }else{
-        Log.info("package suspected","CommonExpressionTypesCalculator");
+        Log.info("package suspected","ExpressionsBasisTypesCalculator");
       }
   }
 
