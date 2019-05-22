@@ -176,7 +176,7 @@ public class CombineExpressionsWithLiteralsTest {
   @Test
   public void testAssignmentExpressions() throws IOException{
     CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
-    Optional<ASTExpression> p = parser.parse_StringExpression("3-=4");
+    Optional<ASTExpression> p = parser.parse_StringExpression("varInt-=4");
 
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(scope);
     assertTrue(p.isPresent());

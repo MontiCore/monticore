@@ -174,7 +174,7 @@ public class CombineExpressionsTest {
   @Test
   public void testAssignmentExpressions() throws IOException{
     CombineExpressionsParser parser = new CombineExpressionsParser();
-    Optional<ASTExpression> p = parser.parse_StringExpression("3-=4");
+    Optional<ASTExpression> p = parser.parse_StringExpression("varInt-=4");
 
     CombineExpressionsTypesCalculator calc = new CombineExpressionsTypesCalculator(scope);
     assertTrue(p.isPresent());
