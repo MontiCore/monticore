@@ -29,11 +29,9 @@ public class CombineExpressionsWithLiteralsTest {
 
   private ArtifactScope artifactScope;
 
-  private ExpressionsBasisLanguage expressionsBasisLanguage;
-
   @Before
   public void setup(){
-    this.expressionsBasisLanguage=new ExpressionsBasisLanguage("CombineExpressionsWithLiterals","exp") {
+    ExpressionsBasisLanguage expressionsBasisLanguage=new ExpressionsBasisLanguage("CombineExpressionsWithLiterals","exp") {
       @Override
       public MCConcreteParser getParser() {
         return new CombineExpressionsWithLiteralsParser();
@@ -178,7 +176,7 @@ public class CombineExpressionsWithLiteralsTest {
   @Test
   public void testAssignmentExpressions() throws IOException{
     CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
-    Optional<ASTExpression> p = parser.parse_StringExpression("3-=4");
+    Optional<ASTExpression> p = parser.parse_StringExpression("varInt-=4");
 
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(scope);
     assertTrue(p.isPresent());

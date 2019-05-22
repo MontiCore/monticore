@@ -26,15 +26,13 @@ public class ExpressionsBasisTest {
 
   private ExpressionsBasisScope scope;
 
-  private ExpressionsBasisLanguage expressionsBasisLanguage;
-
   private LiteralTypeCalculator literalsVisitor;
 
   private ArtifactScope artifactScope;
 
   @Before
   public void setup(){
-    this.expressionsBasisLanguage=new ExpressionsBasisLanguage("CommonExpressions","exp") {
+    ExpressionsBasisLanguage expressionsBasisLanguage=new ExpressionsBasisLanguage("CommonExpressions","exp") {
       @Override
       public MCConcreteParser getParser() {
         return new TestCommonExpressionsParser();

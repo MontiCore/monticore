@@ -8,9 +8,7 @@ import de.monticore.typescalculator.combineexpressionswithliterals._visitor.Comb
 
 import java.util.Map;
 
-public class LiteralsTypesCalculator implements CombineExpressionsWithLiteralsVisitor {
-
-  private ASTMCType result;
+public class CombineExpressionsWithLiteralsExtLiteralTypesCalculator implements CombineExpressionsWithLiteralsVisitor {
 
   private BasicLiteralsTypeCalculator literalsVisitor;
 
@@ -41,11 +39,7 @@ public class LiteralsTypesCalculator implements CombineExpressionsWithLiteralsVi
     this.types = types;
   }
 
-  public ASTMCType getResult() {
-    return result;
-  }
-
-  public LiteralsTypesCalculator(){
+  public CombineExpressionsWithLiteralsExtLiteralTypesCalculator(){
     realThis=this;
     literalsVisitor=new BasicLiteralsTypeCalculator();
   }

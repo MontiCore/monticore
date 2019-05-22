@@ -1,5 +1,7 @@
 package de.monticore.typescalculator;
 
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.typescalculator.testcommonexpressions._visitor.TestCommonExpressionsVisitor;
 
 public class TestCommonExpressionTypesCalculator extends CommonExpressionsWithLiteralsTypesCalculator implements TestCommonExpressionsVisitor {
@@ -18,5 +20,10 @@ public class TestCommonExpressionTypesCalculator extends CommonExpressionsWithLi
   @Override
   public TestCommonExpressionsVisitor getRealThis(){
     return realThis;
+  }
+
+  public ASTMCType calculateType(ASTExpression expr){
+    expr.accept(realThis);
+    return types.get(expr).getASTMCType();
   }
 }

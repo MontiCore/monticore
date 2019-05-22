@@ -1,7 +1,6 @@
 package de.monticore.typescalculator;
 
 import de.monticore.antlr4.MCConcreteParser;
-import de.monticore.expressions.commonexpressions._ast.ASTPlusExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
@@ -13,7 +12,6 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
 import de.monticore.typescalculator.combineexpressions._parser.CombineExpressionsParser;
-import de.monticore.typescalculator.testcommonexpressions._parser.TestCommonExpressionsParser;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,13 +28,9 @@ public class CombineExpressionsTest {
 
   private ArtifactScope artifactScope;
 
-  private LiteralTypeCalculator literalsVisitor;
-
-  private ExpressionsBasisLanguage expressionsBasisLanguage;
-
   @Before
   public void setup(){
-    this.expressionsBasisLanguage=new ExpressionsBasisLanguage("CombineExpressions","exp") {
+    ExpressionsBasisLanguage expressionsBasisLanguage=new ExpressionsBasisLanguage("CombineExpressions","exp") {
       @Override
       public MCConcreteParser getParser() {
         return new CombineExpressionsParser();
@@ -48,8 +42,6 @@ public class CombineExpressionsTest {
     this.artifactScope=new ArtifactScope("",new ArrayList<>());
     artifactScope.addSubScope(scope);
     scope.setResolvingFilters(expressionsBasisLanguage.getResolvingFilters());
-
-    this.literalsVisitor=new BasicLiteralsTypeCalculator();
 
     EVariableSymbol symbol = new EVariableSymbol("varInt");
     MCTypeSymbol typeSymbol = new MCTypeSymbol("int");
@@ -182,7 +174,7 @@ public class CombineExpressionsTest {
   @Test
   public void testAssignmentExpressions() throws IOException{
     CombineExpressionsParser parser = new CombineExpressionsParser();
-    Optional<ASTExpression> p = parser.parse_StringExpression("3-=4");
+    Optional<ASTExpression> p = parser.parse_StringExpression("varInt-=4");
 
     CombineExpressionsTypesCalculator calc = new CombineExpressionsTypesCalculator(scope);
     assertTrue(p.isPresent());

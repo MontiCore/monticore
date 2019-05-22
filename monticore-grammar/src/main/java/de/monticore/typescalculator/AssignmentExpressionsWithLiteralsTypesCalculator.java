@@ -3,6 +3,7 @@ package de.monticore.typescalculator;
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.assignmentexpressionswithliterals._visitor.AssignmentExpressionsWithLiteralsVisitor;
 import de.monticore.expressions.assignmentexpressionswithliterals._ast.ASTExtLiteral;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
@@ -25,10 +26,6 @@ public class AssignmentExpressionsWithLiteralsTypesCalculator extends Assignment
 
   public AssignmentExpressionsWithLiteralsTypesCalculator(){
     realThis=this;
-    result=super.getResult();
-    scope=super.getScope();
-    literalsVisitor=super.getLiteralsVisitor();
-    types=super.getTypes();
   }
 
   @Override
@@ -69,5 +66,10 @@ public class AssignmentExpressionsWithLiteralsTypesCalculator extends Assignment
 
   public void setTypes(Map<ASTNode,MCTypeSymbol> types){
     this.types=types;
+  }
+
+  public ASTMCType calculateType(ASTExpression expr){
+    expr.accept(realThis);
+    return types.get(expr).getASTMCType();
   }
 }

@@ -1,7 +1,6 @@
 package de.monticore.typescalculator;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.expressions.commonexpressionswithliterals._visitor.CommonExpressionsWithLiteralsInheritanceVisitor;
 import de.monticore.mcbasicliterals._ast.*;
 import de.monticore.mcbasicliterals._visitor.MCBasicLiteralsVisitor;
 import de.monticore.types.mcbasictypes._ast.*;
@@ -79,4 +78,6 @@ public class BasicLiteralsTypeCalculator implements LiteralTypeCalculator {
     ASTMCQualifiedName qualifiedName = MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build();
     type = MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(qualifiedName).build();
   }
+
+
 }

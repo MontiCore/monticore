@@ -3,13 +3,9 @@ package de.monticore.typescalculator;
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
-import de.monticore.expressions.prettyprint2.ExpressionsBasisPrettyPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
-import de.monticore.typescalculator.combineexpressions._ast.ASTFoo;
 import de.monticore.typescalculator.combineexpressions._visitor.CombineExpressionsDelegatorVisitor;
-import de.monticore.typescalculator.combineexpressions._visitor.CombineExpressionsVisitor;
-import de.se_rwth.commons.logging.Log;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,11 +14,7 @@ public class CombineExpressionsTypesCalculator extends CombineExpressionsDelegat
 
   private CombineExpressionsDelegatorVisitor realThis;
 
-  private ASTMCType result;
-
   private LiteralTypeCalculator literalsVisitor;
-
-  private ExpressionsBasisScope scope;
 
   private Map<ASTNode, MCTypeSymbol> types;
 
@@ -39,7 +31,6 @@ public class CombineExpressionsTypesCalculator extends CombineExpressionsDelegat
 
   public CombineExpressionsTypesCalculator(ExpressionsBasisScope scope){
     this.realThis=this;
-    this.scope=scope;
     this.literalsVisitor=new BasicLiteralsTypeCalculator();
     this.types = new HashMap<>();
     commonExpressionsWithLiteralsTypesCalculator = new CommonExpressionsWithLiteralsTypesCalculator();
@@ -100,10 +91,6 @@ public class CombineExpressionsTypesCalculator extends CombineExpressionsDelegat
       return expressionsBasisTypesCalculator.getResult();
     }
     return null;
-  }
-
-  public void setScope(ExpressionsBasisScope scope){
-    this.scope=scope;
   }
 
   public void setLiteralsVisitor(LiteralTypeCalculator literalsVisitor){
