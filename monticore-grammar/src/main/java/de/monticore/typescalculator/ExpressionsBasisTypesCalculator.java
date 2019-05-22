@@ -123,6 +123,19 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
       }else if(variableSymbolopt.isPresent()){
         //check in TypesMap, ob Expression vorher in Map vorhanden --> muss Typ sein
         //vllt mit keySet
+        ExpressionsBasisPrettyPrinter printer = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
+        String exprString = printer.prettyprint(expr);
+        String[] stringParts = exprString.split("\\.");
+        String beforeName="";
+        if(stringParts.length!=1){
+          for(int i=0;i<stringParts.length-1;i++){
+            beforeName+="."+stringParts[i];
+          }
+          if(!scope.resolveEType(beforeName).isPresent()){
+            Log.error("0xA0208 the resulting type cannot be calculated");
+          }
+        }
+
         String fullName= variableSymbolopt.get().getFullName();
         String[] parts = fullName.split("\\.");
         ArrayList<String> nameList = new ArrayList<>();

@@ -4,6 +4,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -17,6 +18,7 @@ public class EMethodSymbol extends EMethodSymbolTOP {
 
   public EMethodSymbol(String name) {
     super(name);
+    arguments=new ArrayList<>();
   }
 
   public void setReturnType(ASTMCReturnType returnType){

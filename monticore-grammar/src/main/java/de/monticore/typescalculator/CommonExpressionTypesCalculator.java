@@ -6,6 +6,7 @@ import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisi
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
 import de.monticore.expressions.prettyprint2.CommonExpressionsPrettyPrinter;
+import de.monticore.expressions.prettyprint2.ExpressionsBasisPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
@@ -307,7 +308,9 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
     if(types.containsKey(expr.getExpression())) {
       CommonExpressionsPrettyPrinter printer = new CommonExpressionsPrettyPrinter(new IndentPrinter());
       String exprString = printer.prettyprint(expr);
-      Collection<EMethodSymbol> methodcollection = scope.resolveEMethodMany(exprString);
+      ExpressionsBasisPrettyPrinter prettyPrinter = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
+      String exp = prettyPrinter.prettyprint(expr.getExpression());
+      Collection<EMethodSymbol> methodcollection = scope.resolveEMethodDownMany(exp);
       List<EMethodSymbol> methodlist = new ArrayList<>(methodcollection);
       for (EMethodSymbol method : methodlist) {
         if (expr.getArguments().getExpressionList().size()==method.getArguments().size()){
@@ -319,13 +322,13 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
           }
           if(success){
             String nameString = printer.prettyprint(expr.getExpression());
-            if(method.getReturnType().isPresentMCType()&& (scope.resolveEType(nameString).isPresent()||scope.resolveEVariable(nameString).isPresent())){
+            if(method.getReturnType().isPresentMCType()){
               ASTMCType result=method.getReturnType().getMCType();
               this.result=result;
               MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
               sym.setASTMCType(result);
               types.put(expr,sym);
-            }else if(method.getReturnType().isPresentMCVoidType()&&(scope.resolveEVariable(nameString).isPresent()||scope.resolveEType(nameString).isPresent())){
+            }else if(method.getReturnType().isPresentMCVoidType()){
               List<String> name = new ArrayList<>();
               name.add("void");
               ASTMCType result = MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build();
