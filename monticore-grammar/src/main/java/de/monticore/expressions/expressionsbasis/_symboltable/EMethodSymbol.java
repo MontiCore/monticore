@@ -15,6 +15,7 @@ public class EMethodSymbol extends EMethodSymbolTOP {
   private ASTMCReturnType returnType;
   private MCTypeSymbol symbol;
   private List<MCTypeSymbol> arguments;
+  private List<EVariableSymbol> eVariableSymbols;
 
   public EMethodSymbol(String name) {
     super(name);
@@ -43,5 +44,13 @@ public class EMethodSymbol extends EMethodSymbolTOP {
 
   public void setArguments(List<MCTypeSymbol> arguments) {
     this.arguments = arguments;
+  }
+
+  public List<EVariableSymbol> geteVariableSymbols() {
+    return eVariableSymbols;
+  }
+
+  public void seteVariableSymbols(List<EVariableSymbol> eVariableSymbols) {
+    this.eVariableSymbols = eVariableSymbols;
   }
 }

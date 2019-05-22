@@ -131,12 +131,39 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
             beforeName+=stringParts[i]+".";
           }
           beforeName=beforeName.substring(0,beforeName.length()-1);
-          if(!scope.resolveETypeDown(beforeName).isPresent()){ //TODO: replace resolveDown with resolve
+          if(!scope.resolveETypeDown(beforeName).isPresent()&&scope.resolveEMethodDownMany(beforeName).isEmpty()){ //TODO: replace resolveDown with resolve
             Log.info("package suspected","ExpressionsBasisTypesCalculator");
           }else{
-            Optional<ETypeSymbol> typeSymbol = scope.resolveETypeDown(beforeName); //TODO: replace resolveDown with resolve
-            if(!typeSymbol.get().getVariableSymbols().contains(variableSymbolopt.get())){
-              Log.error("0xA208 the resulting type cannot be calculated");
+            if(scope.resolveETypeDown(beforeName).isPresent()) {
+              Optional<ETypeSymbol> typeSymbol = scope.resolveETypeDown(beforeName); //TODO: replace resolveDown with resolve
+              if (!typeSymbol.get().getVariableSymbols().contains(variableSymbolopt.get())) {
+                Log.error("0xA208 the resulting type cannot be calculated");
+              }
+            }else{
+              boolean success = true;
+              Collection<EMethodSymbol> methodSymbols = scope.resolveEMethodDownMany(beforeName);
+              for(EMethodSymbol methodSymbol:methodSymbols){
+                if(methodSymbol.getReturnType().isPresentMCVoidType()){
+                  success = false;
+                }else{
+                  ASTMCType returnType = methodSymbol.getReturnType().getMCType();
+                  if(returnType.getNameList().size()==1){
+                    String[] primitives = new String[]{"int","double","char","float","long","short","byte","boolean"};
+                    for(String primitive: primitives){
+                      if(primitive.equals(returnType.getBaseName())){
+                        success=false;
+                      }
+                    }
+                  }else{
+                    if(!methodSymbol.geteVariableSymbols().contains(variableSymbolopt.get())){
+                      success=false;
+                    }
+                  }
+                  if(!success){
+                    Log.error("0xA0208 the resulting type cannot be calculated");
+                  }
+                }
+              }
             }
           }
         }
