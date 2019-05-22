@@ -16,8 +16,6 @@ import de.monticore.grammar.grammar._ast.ASTMethodParameter;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.java.javadsl._ast.ASTBlockStatement;
 import de.monticore.types.FullGenericTypesPrinter;
-import de.monticore.types.FullGenericTypesPrinter;
-import de.monticore.types.SimpleGenericTypesPrinter;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.utils.Link;
 

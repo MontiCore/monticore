@@ -5,12 +5,9 @@ package de.monticore.grammar.cocos;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import de.monticore.grammar.grammar._ast.ASTGrammarReference;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.symboltable.MCGrammarSymbol;
-import de.monticore.grammar.symboltable.MCGrammarSymbolReference;
 import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.grammar.symboltable.MCProdSymbolReference;
 import de.se_rwth.commons.logging.Log;

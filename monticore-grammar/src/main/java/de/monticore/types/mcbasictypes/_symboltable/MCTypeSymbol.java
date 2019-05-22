@@ -1,7 +1,6 @@
 package de.monticore.types.mcbasictypes._symboltable;
 
 import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
-import de.monticore.expressions.expressionsbasis._symboltable.EVariableResolvingFilter;
 import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
