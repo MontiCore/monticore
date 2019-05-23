@@ -62,6 +62,13 @@ public class CombineExpressionsTypesCalculator extends CombineExpressionsDelegat
     expressionsBasisTypesCalculator.setLiteralsVisitor(literalsVisitor);
     expressionsBasisTypesCalculator.setTypes(types);
     setExpressionsBasisVisitor(expressionsBasisTypesCalculator);
+
+    BasicLiteralsTypeCalculator mcBasicLiteralsVisitor= new BasicLiteralsTypeCalculator();
+    mcBasicLiteralsVisitor.setTypes(types);
+    setMCBasicLiteralsVisitor(mcBasicLiteralsVisitor);
+
+    LiteralsBasisTypesCalculator literalsBasisTypesCalculator = new LiteralsBasisTypesCalculator();
+    setMCLiteralsBasisVisitor(literalsBasisTypesCalculator);
   }
 
   public ASTMCType calculateType(ASTExpression expr){

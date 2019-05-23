@@ -50,6 +50,7 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     setMCLiteralsBasisVisitor(literalsBasisTypesCalculator);
 
     BasicLiteralsTypeCalculator basicLiteralsTypeCalculator = new BasicLiteralsTypeCalculator();
+    basicLiteralsTypeCalculator.setTypes(types);
     setMCBasicLiteralsVisitor(basicLiteralsTypeCalculator);
 
   }

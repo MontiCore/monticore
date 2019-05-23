@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class BasicLiteralsTypeCalculator extends LiteralsBasisTypesCalculator implements MCBasicLiteralsVisitor {
 
-  private ASTMCType type;
+  private ASTMCType result;
 
   private MCBasicLiteralsVisitor realThis = this;
 
@@ -23,7 +23,15 @@ public class BasicLiteralsTypeCalculator extends LiteralsBasisTypesCalculator im
   @Override
   public ASTMCType calculateType(ASTLiteral lit) {
     lit.accept(this);
-    return type;
+    return result;
+  }
+
+  public void setTypes(Map<ASTNode, MCTypeSymbol> types) {
+    this.types = types;
+  }
+
+  public Map<ASTNode, MCTypeSymbol> getTypes() {
+    return types;
   }
 
   @Override
@@ -48,32 +56,50 @@ public class BasicLiteralsTypeCalculator extends LiteralsBasisTypesCalculator im
 
   @Override
   public void visit(ASTCharLiteral lit){
-    type= MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build();
+    result= MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build();
+    MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
+    sym.setASTMCType(result);
+    types.put(lit,sym);
   }
 
   @Override
   public void visit(ASTBooleanLiteral lit){
-    type = MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build();
+    result = MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build();
+    MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
+    sym.setASTMCType(result);
+    types.put(lit,sym);
   }
 
   @Override
   public void visit(ASTNatLiteral lit){
-    type = MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build();
+    result = MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build();
+    MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
+    sym.setASTMCType(result);
+    types.put(lit,sym);
   }
 
   @Override
   public void visit(ASTBasicDoubleLiteral lit){
-    type = MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build();
+    result = MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build();
+    MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
+    sym.setASTMCType(result);
+    types.put(lit,sym);
   }
 
   @Override
   public void visit(ASTBasicFloatLiteral lit){
-    type = MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.FLOAT).build();
+    result = MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.FLOAT).build();
+    MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
+    sym.setASTMCType(result);
+    types.put(lit,sym);
   }
 
   @Override
   public void visit(ASTBasicLongLiteral lit){
-    type = MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.LONG).build();
+    result = MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.LONG).build();
+    MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
+    sym.setASTMCType(result);
+    types.put(lit,sym);
   }
 
   @Override
@@ -81,7 +107,10 @@ public class BasicLiteralsTypeCalculator extends LiteralsBasisTypesCalculator im
     List<String> name = new ArrayList<>();
     name.add("String");
     ASTMCQualifiedName qualifiedName = MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build();
-    type = MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(qualifiedName).build();
+    result = MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(qualifiedName).build();
+    MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
+    sym.setASTMCType(result);
+    types.put(lit,sym);
   }
 
 
