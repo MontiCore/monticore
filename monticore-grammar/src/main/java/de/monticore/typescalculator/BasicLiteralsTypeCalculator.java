@@ -3,16 +3,21 @@ package de.monticore.typescalculator;
 import de.monticore.ast.ASTNode;
 import de.monticore.mcbasicliterals._ast.*;
 import de.monticore.mcbasicliterals._visitor.MCBasicLiteralsVisitor;
+import de.monticore.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.mcbasictypes._ast.*;
+import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public class BasicLiteralsTypeCalculator implements LiteralTypeCalculator {
+public class BasicLiteralsTypeCalculator extends LiteralsBasisTypesCalculator implements MCBasicLiteralsVisitor {
 
   private ASTMCType type;
 
   private MCBasicLiteralsVisitor realThis = this;
+
+  private Map<ASTNode, MCTypeSymbol> types;
 
 
   @Override

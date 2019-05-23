@@ -3,7 +3,7 @@
 package de.monticore.mcbasicliterals;
 
 import de.monticore.mcbasicliterals._ast.ASTBasicDoubleLiteral;
-import de.monticore.mcbasicliterals._ast.ASTLiteral;
+import de.monticore.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.testmcbasicliterals._parser.TestMCBasicLiteralsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;

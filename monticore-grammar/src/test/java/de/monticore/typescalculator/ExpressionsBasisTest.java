@@ -82,59 +82,76 @@ public class ExpressionsBasisTest {
     cscope.add(symbol);
   }
 
-  @Test
-  public void nameTest() throws IOException {
-    TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
-    calc.setLiteralsVisitor(literalsVisitor);
-    calc.setScope(scope);
-    TestCommonExpressionsParser p = new TestCommonExpressionsParser();
-    Optional<ASTExpression> o = p.parse_StringExpression("varInt");
-
-    assertTrue(o.isPresent());
-    o.get().accept(calc);
-    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
-  }
-
-  @Test
-  public void qualifiedNameTest() throws IOException{
-    TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
-    calc.setLiteralsVisitor(literalsVisitor);
-    calc.setScope(scope);
-    TestCommonExpressionsParser p = new TestCommonExpressionsParser();
-    Optional<ASTExpression> o = p.parse_StringExpression("A.B.C.QName");
-
-
-    assertTrue(o.isPresent());
-    o.get().accept(calc);
-    List<String> nameList = new ArrayList<>();
-    nameList.add("A");
-    nameList.add("B");
-    nameList.add("C");
-    nameList.add("QName");
-    assertTrue(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(nameList).build()).build().deepEquals(calc.getResult()));
-  }
-
-  @Test
-  public void literalTest() throws IOException{
-    TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
-    calc.setLiteralsVisitor(literalsVisitor);
-    calc.setScope(scope);
-    TestCommonExpressionsParser p = new TestCommonExpressionsParser();
-    Optional<ASTExpression> o = p.parse_StringExpression("varInt");
-
-    assertTrue(o.isPresent());
-    o.get().accept(calc);
-    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
-
-    Optional<ASTExpression> q = p.parse_StringExpression("true");
-
-    assertTrue(q.isPresent());
-    q.get().accept(calc);
-    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build().deepEquals(calc.getResult()));
-
-    Optional<ASTExpression> r = p.parse_StringExpression("varDouble");
-    assertTrue(r.isPresent());
-    r.get().accept(calc);
-    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.getResult()));
-  }
+//  @Test
+//  public void nameTest() throws IOException {
+//    TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
+//    calc.setLiteralsVisitor(literalsVisitor);
+//    calc.setScope(scope);
+//    TestCommonExpressionsParser p = new TestCommonExpressionsParser();
+//    Optional<ASTExpression> o = p.parse_StringExpression("varInt");
+//
+//    assertTrue(o.isPresent());
+//    o.get().accept(calc);
+//    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
+//    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(o.get())));
+//
+//  }
+//
+//  @Test
+//  public void qualifiedNameTest() throws IOException{
+//    TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
+//    calc.setLiteralsVisitor(literalsVisitor);
+//    calc.setScope(scope);
+//    TestCommonExpressionsParser p = new TestCommonExpressionsParser();
+//    Optional<ASTExpression> o = p.parse_StringExpression("A.B.C.QName");
+//
+//
+//    assertTrue(o.isPresent());
+//    o.get().accept(calc);
+//    List<String> nameList = new ArrayList<>();
+//    nameList.add("A");
+//    nameList.add("B");
+//    nameList.add("C");
+//    nameList.add("QName");
+//    assertTrue(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(nameList).build()).build().deepEquals(calc.getResult()));
+//    assertTrue(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(nameList).build()).build().deepEquals(calc.calculateType(o.get())));
+//
+//  }
+//
+//  @Test
+//  public void literalTest() throws IOException{
+//    TestCommonExpressionTypesCalculator calc = new TestCommonExpressionTypesCalculator();
+//    calc.setLiteralsVisitor(literalsVisitor);
+//    calc.setScope(scope);
+//    TestCommonExpressionsParser p = new TestCommonExpressionsParser();
+//    Optional<ASTExpression> o = p.parse_StringExpression("3");
+//
+//    assertTrue(o.isPresent());
+//    o.get().accept(calc);
+//    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.getResult()));
+//    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(o.get())));
+//
+//
+//    Optional<ASTExpression> q = p.parse_StringExpression("true");
+//
+//    assertTrue(q.isPresent());
+//    q.get().accept(calc);
+//    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build().deepEquals(calc.getResult()));
+//    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build().deepEquals(calc.calculateType(q.get())));
+//
+//
+//    Optional<ASTExpression> r = p.parse_StringExpression("4.5");
+//    assertTrue(r.isPresent());
+//    r.get().accept(calc);
+//    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.getResult()));
+//    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.calculateType(r.get())));
+//
+//    List<String> nameList = new ArrayList<>();
+//    nameList.add("String");
+//
+//    Optional<ASTExpression> s = p.parse_StringExpression("\"Hallo\"");
+//    assertTrue(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(nameList).build()).build().deepEquals(calc.getResult()));
+//    assertTrue(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(nameList).build()).build().deepEquals(calc.calculateType(s.get())));
+//
+//  }
 }

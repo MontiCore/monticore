@@ -195,7 +195,7 @@ public class CommonExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinte
   @Override
   public void handle(ASTLiteralExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getExtLiteral().accept(getRealThis());
+    node.getLiteral().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
 

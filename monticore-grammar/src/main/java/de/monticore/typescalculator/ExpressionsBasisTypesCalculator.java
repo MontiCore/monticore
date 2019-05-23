@@ -8,6 +8,7 @@ import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor;
 import de.monticore.expressions.prettyprint2.ExpressionsBasisPrettyPrinter;
+import de.monticore.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.MCBasicTypesMill;
@@ -47,8 +48,8 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
   @Override
   public void endVisit(ASTLiteralExpression expr){
     ASTMCType result = null;
-    if(types.containsKey(expr.getExtLiteral())){
-      result = types.get(expr.getExtLiteral()).getASTMCType();
+    if(types.containsKey(expr.getLiteral())){
+      result = types.get(expr.getLiteral()).getASTMCType();
     }
     if(result!=null) {
       this.result=result;
@@ -57,6 +58,17 @@ public class ExpressionsBasisTypesCalculator implements ExpressionsBasisVisitor 
       types.put(expr, sym);
     }else{
       Log.error("0xA0207 The resulting type cannot be calculated");
+    }
+  }
+
+  @Override
+  public void endVisit(ASTLiteral lit){
+    if(!types.containsKey(lit)) {
+      ASTMCType result = literalsVisitor.calculateType(lit);
+      MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
+      sym.setASTMCType(result);
+      this.result=result;
+      types.put(lit,sym);
     }
   }
 

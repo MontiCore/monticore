@@ -1,14 +1,14 @@
 package de.monticore.typescalculator;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
-import de.monticore.typescalculator.combineexpressionswithliterals._ast.ASTExtLiteral;
 import de.monticore.typescalculator.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsVisitor;
 
 import java.util.Map;
 
-public class CombineExpressionsWithLiteralsExtLiteralTypesCalculator implements CombineExpressionsWithLiteralsVisitor {
+public class CombineExpressionsWithLiteralsLiteralTypesCalculator implements CombineExpressionsWithLiteralsVisitor {
 
   private BasicLiteralsTypeCalculator literalsVisitor;
 
@@ -26,9 +26,9 @@ public class CombineExpressionsWithLiteralsExtLiteralTypesCalculator implements 
   }
 
   @Override
-  public void endVisit(ASTExtLiteral lit){
+  public void endVisit(ASTLiteral lit){
     if(!types.containsKey(lit)) {
-      ASTMCType type = literalsVisitor.calculateType(lit.getLiteral());
+      ASTMCType type = literalsVisitor.calculateType(lit);
       MCTypeSymbol sym = new MCTypeSymbol(type.getBaseName());
       sym.setASTMCType(type);
       types.put(lit, sym);
@@ -39,7 +39,7 @@ public class CombineExpressionsWithLiteralsExtLiteralTypesCalculator implements 
     this.types = types;
   }
 
-  public CombineExpressionsWithLiteralsExtLiteralTypesCalculator(){
+  public CombineExpressionsWithLiteralsLiteralTypesCalculator(){
     realThis=this;
     literalsVisitor=new BasicLiteralsTypeCalculator();
   }

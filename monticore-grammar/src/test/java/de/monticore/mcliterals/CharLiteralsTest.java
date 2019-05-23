@@ -3,7 +3,7 @@
 package de.monticore.mcliterals;
 
 import de.monticore.mcbasicliterals._ast.ASTCharLiteral;
-import de.monticore.mcbasicliterals._ast.ASTLiteral;
+import de.monticore.mcliteralsbasis._ast.ASTLiteral;
 import org.junit.Test;
 
 import java.io.IOException;

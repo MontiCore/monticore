@@ -2,14 +2,7 @@
 
 package de.monticore.expressions;
 
-component grammar ExpressionsBasis extends de.monticore.MCBasics {
-
-   /**
-    * When combining the languages you can decide later if you want to use the complete
-    * literals defined in Java (extending MCJavaLiterals)
-    * or if you want to use a smaller variant (extending MCBasicLiterals)
-    */
-  external ExtLiteral;
+component grammar ExpressionsBasis extends de.monticore.MCBasics, de.monticore.MCLiteralsBasis {
 	
   interface Expression;
 
@@ -23,7 +16,7 @@ component grammar ExpressionsBasis extends de.monticore.MCBasics {
     = Name;
 
   LiteralExpression implements Expression<340>
-    = ExtLiteral;
+    = Literal;
 
   QualifiedNameExpression implements Expression <290> =
   	Expression "." Name;

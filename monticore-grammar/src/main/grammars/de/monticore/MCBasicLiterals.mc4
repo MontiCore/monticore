@@ -8,19 +8,13 @@ package de.monticore;
  * The grammar contains literals from Java, e.g., Boolean, Char, String, ....
 */
 
-component grammar MCBasicLiterals extends de.monticore.MCBasics {
+component grammar MCBasicLiterals extends de.monticore.MCLiteralsBasis {
 
 
 
   /*========================================================================*/
   /*======================= INTERFACE DEFINITIONS ==========================*/
   /*========================================================================*/
-
-  /** ASTLiteral is the interface for all literals (NullLiteral,
-        BooleanLiteral, CharLiteral, StringLiteral and all NumericLiterals
-        without '-' at the beginning)
-    */
-  interface Literal;
 
 
   /** ASTSignedLiteral is the interface for all literals (NullLiteral,

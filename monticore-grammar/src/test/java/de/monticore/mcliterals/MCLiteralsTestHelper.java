@@ -2,8 +2,8 @@
 
 package de.monticore.mcliterals;
 
-import de.monticore.mcbasicliterals._ast.ASTLiteral;
 import de.monticore.mcbasicliterals._ast.ASTSignedLiteral;
+import de.monticore.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.testmcbasicliterals._parser.TestMCBasicLiteralsParser;
 import junit.framework.TestCase;
 
