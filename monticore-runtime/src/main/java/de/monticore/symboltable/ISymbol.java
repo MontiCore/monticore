@@ -77,7 +77,7 @@
      }
    }
   
-   default  <T extends ISymbol> List<T> sortSymbolsByPosition(final Collection<T> unorderedSymbols) {
+   static <T extends ISymbol> List<T> sortSymbolsByPosition(final Collection<T> unorderedSymbols) {
      final List<T> sortedSymbols = new ArrayList<>(unorderedSymbols);
     
      sort(sortedSymbols,
