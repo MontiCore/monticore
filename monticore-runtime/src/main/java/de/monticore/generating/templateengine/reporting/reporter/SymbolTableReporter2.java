@@ -2,54 +2,42 @@
 
 package de.monticore.generating.templateengine.reporting.reporter;
 
+import de.monticore.ast.ASTNode;
+import de.monticore.generating.templateengine.reporting.commons.AReporter;
+import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
+import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
+import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symboltable.*;
+import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.symboltable.modifiers.BasicAccessModifier;
+import de.monticore.symboltable.types.*;
+import de.monticore.symboltable.types.references.JTypeReference;
+import de.se_rwth.commons.Names;
+
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import de.monticore.ast.ASTNode;
-import de.monticore.generating.templateengine.reporting.commons.AReporter;
-import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
-import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
-import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.symboltable.ArtifactScope;
-import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.ImportStatement;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.ScopeSpanningSymbol;
-import de.monticore.symboltable.Scopes;
-import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.SymbolKind;
-import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.symboltable.modifiers.BasicAccessModifier;
-import de.monticore.symboltable.types.CommonJFieldSymbol;
-import de.monticore.symboltable.types.CommonJMethodSymbol;
-import de.monticore.symboltable.types.CommonJTypeSymbol;
-import de.monticore.symboltable.types.JFieldSymbol;
-import de.monticore.symboltable.types.JMethodSymbol;
-import de.monticore.symboltable.types.JTypeSymbol;
-import de.monticore.symboltable.types.references.JTypeReference;
-import de.se_rwth.commons.Names;
 
-@Deprecated
-public class SymbolTableReporter extends AReporter {
-  
+public class SymbolTableReporter2 extends AReporter {
+
   static final String SIMPLE_FILE_NAME = "13_SymbolTable";
-  
+
   protected final String outputDir;
-  
+
   protected final String modelName;
-  
+
   protected final ReportingRepository repository;
-  
+
   protected boolean printEmptyOptional = false;
-  
+
   protected boolean printAllFieldsCommented = false;
-  
+
   protected boolean printEmptyList = false;
-  
-  public SymbolTableReporter(
+
+  public SymbolTableReporter2(
       String outputDir,
       String modelName,
       ReportingRepository repository) {
@@ -74,13 +62,7 @@ public class SymbolTableReporter extends AReporter {
   @Override
   public void flush(ASTNode ast) {
     if (ast != null) {
-      Optional<? extends Scope> scope = ast.getSpannedScopeOpt();
-      while (scope.isPresent() && !(scope.get() instanceof GlobalScope)) {
-        scope = scope.get().getEnclosingScope();
-      }
-      if (scope.isPresent()) {
-        reportSymbolTableScope(scope.get());
-      }
+      // TODO for new symtab
     }
     writeFooter();
     super.flush(ast);
