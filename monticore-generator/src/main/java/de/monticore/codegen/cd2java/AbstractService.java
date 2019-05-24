@@ -88,7 +88,7 @@ public class AbstractService<T extends AbstractService> {
   }
 
   public String getPackage() {
-   return getPackage(getCDSymbol());
+    return getPackage(getCDSymbol());
   }
 
   public String getPackage(CDSymbol cdSymbol) {
@@ -163,6 +163,31 @@ public class AbstractService<T extends AbstractService> {
     return definedMethods
         .stream()
         .anyMatch(x -> x.getName().equals(methodname));
+  }
+
+  public List<ASTCDMethod> getMethodListWithoutDuplicates(List<ASTCDMethod> astRuleMethods, List<ASTCDMethod> attributeMethods) {
+    List<ASTCDMethod> methodList = new ArrayList<>(attributeMethods);
+    for (int i = 0; i < astRuleMethods.size(); i++) {
+      ASTCDMethod cdMethod = astRuleMethods.get(i);
+      for (int j = 0; j < attributeMethods.size(); j++) {
+        if (isSameMethodSignature(cdMethod, attributeMethods.get(j))) {
+          methodList.remove(attributeMethods.get(j));
+        }
+      }
+    }
+    return methodList;
+  }
+
+  protected boolean isSameMethodSignature(ASTCDMethod method1, ASTCDMethod method2) {
+    if (!method1.getName().equals(method2.getName()) || method1.sizeCDParameters() != method2.sizeCDParameters()) {
+      return false;
+    }
+    for (int i = 0; i < method1.getCDParameterList().size(); i++) {
+      if (!method1.getCDParameter(i).getType().deepEquals(method2.getCDParameter(i).getType())) {
+        return false;
+      }
+    }
+    return true;
   }
 
 }

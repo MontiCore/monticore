@@ -1,9 +1,11 @@
 package de.monticore.codegen.cd2java.data;
 
 import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDInterface;
+import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,20 +16,27 @@ public class InterfaceDecorator extends AbstractDecorator<ASTCDInterface, ASTCDI
 
   private final MethodDecorator methodDecorator;
 
+  private final AbstractService<?> service;
+
   public InterfaceDecorator(final GlobalExtensionManagement glex, final DataDecoratorUtil dataDecoratorUtil,
-                            final MethodDecorator methodDecorator) {
+                            final MethodDecorator methodDecorator, final AbstractService abstractService) {
     super(glex);
     this.dataDecoratorUtil = dataDecoratorUtil;
     this.methodDecorator = methodDecorator;
+    this.service = abstractService;
   }
 
   @Override
   public ASTCDInterface decorate(ASTCDInterface cdInterface) {
     cdInterface.addAllCDMethods(dataDecoratorUtil.decorate(cdInterface));
-    cdInterface.addAllCDMethods(cdInterface.getCDAttributeList().stream()
-          .map(methodDecorator::decorate)
-          .flatMap(List::stream)
-          .collect(Collectors.toList()));
+    List<ASTCDMethod> attributeMethods = cdInterface.getCDAttributeList().stream()
+        .map(methodDecorator::decorate)
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
+
+    cdInterface.addAllCDMethods(service.getMethodListWithoutDuplicates(cdInterface.getCDMethodList(), attributeMethods));
+
+
     cdInterface.getCDMethodList().forEach(m -> m.getModifier().setAbstract(true));
     cdInterface.getCDAttributeList().clear();
     return cdInterface;

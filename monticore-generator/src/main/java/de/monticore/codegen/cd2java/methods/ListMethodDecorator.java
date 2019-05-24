@@ -31,7 +31,6 @@ public abstract class ListMethodDecorator extends AbstractDecorator<ASTCDAttribu
 
   @Override
   public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
-    //todo find better util than the DecorationHelper
     this.capitalizedAttributeNameWithS = getCapitalizedAttributeNameWithS(ast);
     this.capitalizedAttributeNameWithOutS = (capitalizedAttributeNameWithS.endsWith("s"))
         ? capitalizedAttributeNameWithS.substring(0, capitalizedAttributeNameWithS.length() - 1) :
@@ -41,7 +40,6 @@ public abstract class ListMethodDecorator extends AbstractDecorator<ASTCDAttribu
     List<ASTCDMethod> methods = getMethodSignatures().stream()
         .map(getCDMethodFacade()::createMethodByDefinition)
         .collect(Collectors.toList());
-
 
     methods.forEach(m -> this.replaceTemplate(EMPTY_BODY, m, createListImplementation(m)));
     return methods;
@@ -68,6 +66,7 @@ public abstract class ListMethodDecorator extends AbstractDecorator<ASTCDAttribu
   }
 
   public String getCapitalizedAttributeNameWithS(ASTCDAttribute attribute) {
+    //todo find better util than the DecorationHelper
     return StringUtils.capitalize(DecorationHelper.getNativeAttributeName(attribute.getName()));
   }
 

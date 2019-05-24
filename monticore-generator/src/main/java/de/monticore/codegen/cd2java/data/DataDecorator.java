@@ -25,7 +25,7 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
   private final MethodDecorator methodDecorator;
 
-  private final AbstractService service;
+  private final AbstractService<?> service;
 
   private final DataDecoratorUtil dataDecoratorUtil;
 
@@ -46,12 +46,27 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
     clazz.getCDAttributeList().forEach(this::addAttributeDefaultValues);
     clazz.addAllCDMethods(getAllDataMethods(clazz));
     clazz.addCDMethod(createDeepCloneWithParam(clazz));
-    clazz.addAllCDMethods(clazz.getCDAttributeList().stream()
+
+    List<ASTCDMethod> attributeMethods = clazz.getCDAttributeList().stream()
         .map(methodDecorator::decorate)
         .flatMap(List::stream)
-        .collect(Collectors.toList()));
+        .collect(Collectors.toList());
+    //remove methods that are already defined by ast rules
+    clazz.addAllCDMethods(service.getMethodListWithoutDuplicates(clazz.getCDMethodList(), attributeMethods));
 
     return clazz;
+  }
+
+  protected boolean isSameMethodSignature(ASTCDMethod method1, ASTCDMethod method2) {
+    if (!method1.getName().equals(method2.getName()) || method1.sizeCDParameters() != method2.sizeCDParameters()) {
+      return false;
+    }
+    for (int i = 0; i < method1.getCDParameterList().size(); i++) {
+      if (!method1.getCDParameter(i).getType().deepEquals(method2.getCDParameter(i).getType())) {
+        return false;
+      }
+    }
+    return true;
   }
 
   protected void addAttributeDefaultValues(ASTCDAttribute attribute) {
@@ -70,7 +85,7 @@ public class DataDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
   protected ASTCDConstructor createFullConstructor(ASTCDClass clazz) {
     //remove referenced symbol attributes, because they are only calculated
     List<ASTCDAttribute> attributeList = clazz.deepClone().getCDAttributeList().stream()
-        .filter(x->!service.isReferencedSymbolAttribute(x))
+        .filter(x -> !service.isReferencedSymbolAttribute(x))
         .collect(Collectors.toList());
     ASTCDConstructor fullConstructor = this.getCDConstructorFacade().createConstructor(PROTECTED, clazz.getName(), getCDParameterFacade().createParameters(attributeList));
     this.replaceTemplate(EMPTY_BODY, fullConstructor, new TemplateHookPoint("data.ConstructorAttributesSetter", attributeList));
