@@ -53,7 +53,8 @@ public class ASTDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("astHelper", new DecorationHelper());
     SymbolTableService symbolTableService = new SymbolTableService(ast);
     ASTDecorator decorator = new ASTDecorator(this.glex, new ASTService(ast), new VisitorService(ast), new NodeFactoryService(ast),
-        new ASTSymbolDecorator(glex, symbolTableService), new ASTScopeDecorator(glex, symbolTableService), new MethodDecorator(glex));
+        new ASTSymbolDecorator(glex, symbolTableService), new ASTScopeDecorator(glex, symbolTableService), new MethodDecorator(glex),
+        new SymbolTableService(ast));
     ASTCDClass clazz = getClassBy("A", ast);
     this.astClass = decorator.decorate(clazz);
   }

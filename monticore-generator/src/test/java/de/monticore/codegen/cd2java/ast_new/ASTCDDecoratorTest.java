@@ -80,7 +80,7 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
     ASTSymbolDecorator astSymbolDecorator = new ASTSymbolDecorator(glex, symbolTableService);
     ASTScopeDecorator astScopeDecorator = new ASTScopeDecorator(glex, symbolTableService);
     ASTDecorator astDecorator = new ASTDecorator(glex, astService, visitorService, nodeFactoryService,
-        astSymbolDecorator, astScopeDecorator, methodDecorator);
+        astSymbolDecorator, astScopeDecorator, methodDecorator, symbolTableService);
     ASTReferenceDecorator astReferencedSymbolDecorator = new ASTReferenceDecorator(glex, symbolTableService);
     ASTFullDecorator fullDecorator = new ASTFullDecorator(dataDecorator, astDecorator, astReferencedSymbolDecorator);
 

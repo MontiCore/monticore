@@ -38,17 +38,18 @@ public class ASTScopeDecorator extends AbstractDecorator<ASTCDType, List<ASTCDAt
       ASTType optScopeInterfaceType = this.getCDTypeFacade().createOptionalTypeOf(symbolTableService.getScopeInterfaceType());
       attributeList.add(createSpannedScope2Attribute(optScopeInterfaceType));
     }
+    //always add enclosingScope2 for attribute that has a scope
+    attributeList.add(createEnclosingScope2Attribute(scopeInterfaceType));
 
     //add methods for super intrefaces because otherwise the class will not compile
+    //todo only add methods for scopes that are needed from the interfaces the class extends
+    //mechanism: search interfaces, get grammar from interface, add scope from grammar
     for (CDSymbol superCD : symbolTableService.getSuperCDs()) {
       ASTType superScopeInterfaceType = symbolTableService.getScopeInterfaceType(superCD);
       ASTCDAttribute enclosingScope2Attribute = createEnclosingScope2Attribute(superScopeInterfaceType);
       TransformationHelper.addStereotypeValue(enclosingScope2Attribute.getModifier(), MC2CDStereotypes.INHERITED.toString());
       attributeList.add(enclosingScope2Attribute);
     }
-    //always add enclosingScope2 for attribute that has a scope
-    attributeList.add(createEnclosingScope2Attribute(scopeInterfaceType));
-
     return attributeList;
   }
 
