@@ -48,11 +48,19 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public String getScopeTypeName() {
-    return getPackage() + "." + getCDName() + SymbolTableConstants.SCOPE_SUFFIX;
+    return getScopeTypeName(getCDSymbol());
+  }
+
+  public String getScopeTypeName(CDSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + cdSymbol.getName() + SymbolTableConstants.SCOPE_SUFFIX;
   }
 
   public String getScopeInterfaceTypeName() {
-    return getPackage() + "." + INTERFACE_PREFIX + getCDName() + SymbolTableConstants.SCOPE_SUFFIX;
+    return getScopeInterfaceTypeName(getCDSymbol());
+  }
+
+  public String getScopeInterfaceTypeName(CDSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + INTERFACE_PREFIX + cdSymbol.getName() + SymbolTableConstants.SCOPE_SUFFIX;
   }
 
   public ASTType getScopeType() {
@@ -61,6 +69,10 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public ASTType getScopeInterfaceType() {
     return getCDTypeFactory().createSimpleReferenceType(getScopeInterfaceTypeName());
+  }
+
+  public ASTType getScopeInterfaceType(CDSymbol cdSymbol) {
+    return getCDTypeFactory().createSimpleReferenceType(getScopeInterfaceTypeName(cdSymbol));
   }
 
   public String getSymbolName(ASTCDType clazz) {

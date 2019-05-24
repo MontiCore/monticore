@@ -79,15 +79,23 @@ public class AbstractService<T extends AbstractService> {
     return getCDSymbol().getName();
   }
 
+  private String getBasePackage(CDSymbol cdSymbol) {
+    return cdSymbol.getPackageName();
+  }
+
   private String getBasePackage() {
-    return getCDSymbol().getPackageName();
+    return getBasePackage(getCDSymbol());
   }
 
   public String getPackage() {
-    if (getBasePackage().isEmpty()) {
-      return String.join(".", getCDName(), getSubPackage()).toLowerCase();
+   return getPackage(getCDSymbol());
+  }
+
+  public String getPackage(CDSymbol cdSymbol) {
+    if (getBasePackage(cdSymbol).isEmpty()) {
+      return String.join(".", cdSymbol.getName(), getSubPackage()).toLowerCase();
     }
-    return String.join(".", getBasePackage(), getCDName(), getSubPackage()).toLowerCase();
+    return String.join(".", getBasePackage(cdSymbol), cdSymbol.getName(), getSubPackage()).toLowerCase();
   }
 
   public String getSubPackage() {

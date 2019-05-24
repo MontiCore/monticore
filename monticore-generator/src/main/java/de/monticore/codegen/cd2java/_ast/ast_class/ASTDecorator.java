@@ -3,7 +3,6 @@ package de.monticore.codegen.cd2java._ast.ast_class;
 import de.monticore.ast.ASTCNode;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._ast.factory.NodeFactoryService;
-import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.factories.DecorationHelper;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
@@ -41,16 +40,13 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
   private final MethodDecorator methodDecorator;
 
-  private final SymbolTableService symbolTableService;
-
   public ASTDecorator(final GlobalExtensionManagement glex,
                       final ASTService astService,
                       final VisitorService visitorService,
                       final NodeFactoryService nodeFactoryService,
                       final ASTSymbolDecorator symbolDecorator,
                       final ASTScopeDecorator scopeDecorator,
-                      final MethodDecorator methodDecorator,
-                      final SymbolTableService symbolTableService) {
+                      final MethodDecorator methodDecorator) {
     super(glex);
     this.astService = astService;
     this.visitorService = visitorService;
@@ -58,7 +54,6 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
     this.symbolDecorator = symbolDecorator;
     this.scopeDecorator = scopeDecorator;
     this.methodDecorator = methodDecorator;
-    this.symbolTableService = symbolTableService;
   }
 
   @Override
@@ -88,7 +83,6 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
         clazz.addAllCDMethods(methodDecorator.decorate(attribute));
       } else {
         methodDecorator.disableTemplates();
-//        String scopeInterfaceTypeName = symbolTableService.getScopeInterfaceTypeName();
         List<ASTCDMethod> methods = methodDecorator.getMutatorDecorator().decorate(attribute);
 //        methods.forEach(m ->
 //            this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("ast_new.Accept", m, scopeInterfaceTypeName)));
