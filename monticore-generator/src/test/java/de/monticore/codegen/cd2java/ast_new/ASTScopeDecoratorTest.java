@@ -80,7 +80,7 @@ public class ASTScopeDecoratorTest extends DecoratorTestCase {
     List<ASTCDAttribute> enclosingScope2 = attributes.stream().filter(x -> x.getName().equals("enclosingScope2")).collect(Collectors.toList());
     assertFalse(enclosingScope2.isEmpty());
     assertEquals(2, enclosingScope2.size());
-    ASTCDAttribute scope = enclosingScope2.get(0);
+    ASTCDAttribute scope = enclosingScope2.get(1);
     ASTModifier astModifier= PROTECTED.build();
     TransformationHelper.addStereotypeValue(astModifier, MC2CDStereotypes.INHERITED.toString());
     assertDeepEquals(astModifier, scope.getModifier());
@@ -92,7 +92,7 @@ public class ASTScopeDecoratorTest extends DecoratorTestCase {
     List<ASTCDAttribute> enclosingScope2 = attributes.stream().filter(x -> x.getName().equals("enclosingScope2")).collect(Collectors.toList());
     assertFalse(enclosingScope2.isEmpty());
     assertEquals(2, enclosingScope2.size());
-    ASTCDAttribute scope = enclosingScope2.get(1);
+    ASTCDAttribute scope = enclosingScope2.get(0);
     assertDeepEquals(PROTECTED, scope.getModifier());
     assertDeepEquals(AST_I_SCOPE, scope.getType());
   }
