@@ -108,8 +108,11 @@ public class ${className} implements IDeSer<${symbolName}Symbol> {
     <#else>
       <#assign methodName="is" + attr.getName()?cap_first>
     </#if>
-   
+   <#if attr.isPresentCard()>
+     // TODO ${attrName} = ${genHelper.getDeserializationCastString(attrType)} reader.next${genHelper.getDeserializationType(attrType)}();
+   <#else>
             ${attrName} = ${genHelper.getDeserializationCastString(attrType)} reader.next${genHelper.getDeserializationType(attrType)}();
+   </#if>
             break;
 </#list>  
 </#if>
@@ -131,7 +134,11 @@ public class ${className} implements IDeSer<${symbolName}Symbol> {
 <#if symbolRule.isPresent()>
 <#list symbolRule.get().getAdditionalAttributeList() as attr>
 <#assign attrName="_" + attr.getName()>
+  <#if attr.isPresentCard()>
+     // TODO symbol.set${attr.getName()?cap_first}(${attrName});
+  <#else>
       symbol.set${attr.getName()?cap_first}(${attrName});
+  </#if>
 </#list>
 </#if>
       return Optional.ofNullable(symbol);

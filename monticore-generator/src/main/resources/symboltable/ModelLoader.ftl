@@ -37,7 +37,7 @@ import ${package}.serialization.*;
 public class ${className} implements de.monticore.modelloader.IModelLoader<${topAstName}, I${grammarName}Scope> {
 
   protected final ${grammarName}Language language;
-  
+
   protected AstProvider<${topAstName}> astProvider;
 
   public ${className}(${grammarName}Language language) {
@@ -48,7 +48,7 @@ public class ${className} implements de.monticore.modelloader.IModelLoader<${top
   @Override
   public void createSymbolTableFromAST(final ${topAstName} ast, final String modelName, final I${grammarName}Scope enclosingScope) {
     <#if !skipSTGen>
-    final ${grammarName}SymbolTableCreator symbolTableCreator =
+    final ${grammarName}SymbolTableCreatorDelegator symbolTableCreator =
             getModelingLanguage().getSymbolTableCreator(enclosingScope);
 
     if (symbolTableCreator != null) {
@@ -73,10 +73,10 @@ public class ${className} implements de.monticore.modelloader.IModelLoader<${top
   public ${grammarName}Language getModelingLanguage() {
     return this.language;
   }
-  
+
   public Collection<${topAstName}> loadModelsIntoScope(final String qualifiedModelName,
       final ModelPath modelPath, I${grammarName}Scope enclosingScope) {
-    
+
     if (!loadSymbolsIntoScope(qualifiedModelName, modelPath, enclosingScope)) {
       final Collection<${topAstName}> asts = loadModels(qualifiedModelName, modelPath);
       for (${topAstName} ast : asts) {
@@ -87,12 +87,12 @@ public class ${className} implements de.monticore.modelloader.IModelLoader<${top
     }
     return Collections.emptySet();
   }
-  
+
   public Collection<${topAstName}> loadModels(final String qualifiedModelName, ModelPath modelPath){
     Preconditions.checkArgument(!Strings.isNullOrEmpty(qualifiedModelName));
-    
+
     final Collection<${topAstName}> foundModels = new ArrayList<>();
-    
+
     final ModelCoordinate resolvedCoordinate = resolve(qualifiedModelName, modelPath);
     if (resolvedCoordinate.hasLocation()) {
       final ${topAstName} ast = astProvider.getRootNode(resolvedCoordinate);
@@ -100,13 +100,13 @@ public class ${className} implements de.monticore.modelloader.IModelLoader<${top
           resolvedCoordinate.getQualifiedPath());
       foundModels.add(ast);
     }
-    
+
     return foundModels;
   }
-  
+
   public boolean loadSymbolsIntoScope(final String qualifiedModelName,
       final ModelPath modelPath, final I${grammarName}Scope enclosingScope)  {
-    
+
     final ModelCoordinate resolvedCoordinate = resolveSymbol(qualifiedModelName, modelPath);
     if (resolvedCoordinate.hasLocation()) {
       Optional<I${grammarName}Scope> deser  = new ${grammarName}ScopeDeSer().load(resolvedCoordinate.getLocation());
@@ -117,7 +117,7 @@ public class ${className} implements de.monticore.modelloader.IModelLoader<${top
     }
     return false;
   }
-  
+
   /**
    * @param qualifiedModelName example: "de.mc.statechartOne"
    * @return the resolved coordinate (the location of the model is set if
@@ -130,24 +130,24 @@ public class ${className} implements de.monticore.modelloader.IModelLoader<${top
         Names.getPathFromQualifiedName(qualifiedModelName)).resolve(
         simpleName + "." + getModelingLanguage().getFileExtension());
     ModelCoordinate qualifiedModel = ModelCoordinates.createQualifiedCoordinate(qualifiedPath);
-    
+
     return modelPath.resolveModel(qualifiedModel);
   }
-  
+
   protected ModelCoordinate resolveSymbol(final String qualifiedModelName, final ModelPath modelPath){
     String simpleName = Names.getSimpleName(qualifiedModelName);
     Path qualifiedPath = Paths.get(
         Names.getPathFromQualifiedName(qualifiedModelName)).resolve(
         simpleName + "." + getModelingLanguage().getSymbolFileExtension());
     ModelCoordinate qualifiedModel = ModelCoordinates.createQualifiedCoordinate(qualifiedPath);
-    
+
     return modelPath.resolveModel(qualifiedModel);
   }
-  
+
   protected void showWarningIfParsedModels(Collection<?> asts, String modelName) {
     if(!asts.isEmpty()) {
       Log.warn("Symbol for model \""+modelName+"\" found in a model file that has not been translated yet. This works for compatibility reasons, but is deprecated and will be removed soon. Please adjust your building process.");
     }
   }
-  
+
 }

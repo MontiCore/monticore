@@ -44,8 +44,8 @@ public abstract class ${className} implements IModelingLanguage<${grammarName}Mo
 </#if>
 
 <#if !skipSTGen>
-  public ${grammarName}SymbolTableCreator getSymbolTableCreator(I${grammarName}Scope enclosingScope) {
-    return new ${grammarName}SymbolTableCreator(enclosingScope);
+  public ${grammarName}SymbolTableCreatorDelegator getSymbolTableCreator(I${grammarName}Scope enclosingScope) {
+    return new ${grammarName}SymbolTableCreatorDelegator(enclosingScope);
   }
 </#if>
 

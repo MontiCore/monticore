@@ -10,6 +10,7 @@ import java.util.Optional;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.io.paths.IterablePath;
+import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.Scope;
 
 public interface IReportEventHandler {
@@ -210,8 +211,13 @@ public interface IReportEventHandler {
   /**
    * @param scope
    */
+  @Deprecated
   public void reportSymbolTableScope(Scope scope);
 
+  /**
+   * @param scope
+   */
+  public void reportSymbolTableScope(IScope scope);
   /**
    * @param className
    * @param methodName
