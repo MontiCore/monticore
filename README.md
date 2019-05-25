@@ -1,37 +1,83 @@
 [![Build Status](https://travis-ci.org/MontiCore/monticore.svg?branch=master)](https://travis-ci.org/MontiCore/monticore)
 
 
-# MontiCore - Language Workbench plus Tool Framework
-[MontiCore](http://www.monticore.de) is a language workbench for an efficient development of domain-specific languages (DSLs). It processes an extended grammar format which defines the DSL and generates components for processing the documents written in the DSL. Examples for these components are parser, AST classes, symboltables or pretty printers.This enables a user to rapidly define a language and use it together with the MontiCore-framework to build domain specific tools.
+# MontiCore - Language Workbench plus Tool Framework 
 
-## Licenses
-* [LGPL V3.0](https://github.com/MontiCore/monticore/tree/master/00.org/Licenses/LICENSE-LGPL.md) (for handwritten Java code)
-* [BSD-3-Clause](https://github.com/MontiCore/monticore/tree/master/00.org/Licenses/LICENSE-BSD3CLAUSE.md) (for templates and all generated artifacts)
+[MontiCore](http://www.monticore.de) is a language workbench for an  
+efficient development of domain-specific languages (DSLs). It processes 
+an extended grammar format which defines the DSL and generates 
+components for processing the documents written in the DSL. Examples 
+for these components are parser, AST classes, symboltables or pretty 
+printers. This enables a user to rapidly define a language and use it 
+together with the MontiCore-framework to build domain specific tools. 
 
-## License for Java code in the repository (informal description)
+Some MontiCore advantages are the reusability of predefined language 
+components, conservative extension and composition mechanisms and an 
+optimal integration of hand-written code into the generated tools. Its 
+grammar languages is rather comfortable. 
 
-This project is free software; you can redistribute it and/or
-modify it under the terms of the LGPL; either
-version 3.0 of the License, or (at your option) any later version.
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+## License overview (informal description)
 
-## License for for templates and all generated artifacts (informal description)
+Summary: This project is free software; you can redistribute the 
+MontiCore language workbench as follows:
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
+The MontiCore Languag Workbench deals with three levels of code 
+(MontiCore, tool derivates, product code). Each with different 
+licenses: 
 
-1. Redistributions of source code must retain a link to this copyright notice,
-this list of conditions and this disclaimer.
+* Product code: when you use a MontiCore tool derivate to generate 
+code, the generated code is absolutely free for each form of use 
+including commercial use without any license. 
 
-2. Redistributions in binary form must reproduce the above copyright notice,
-this list of conditions and the following disclaimer in the documentation
-and/or other materials provided with the distribution.
+* Tool derivate: when you derive a tool using the MontiCore language 
+workbench, then you mention that it is a MontiCore derivate. There is 
+no other restriction. (BSD 3 Clause license) 
 
-3. Neither the name of the copyright holder nor the names of its
-contributors may be used to endorse or promote products derived from this
-software without specific prior written permission.
+* MontiCore adaptations: you may also freely adapt MontiCore itself, 
+but then you have to mention MontiCore AND the resulting code is to be 
+pushed back into this LPGL repository (LGPL license). 
+
+As a consequence using MontiCore during development is rather flexible 
+and the final products do not have any restriction.
+
+ 
+
+## Licenses on files (informal description)
+
+The MontiCore language workbench contains three kinds of artifacts: 
+
+* Java-files that are executed in the MontiCore LWB. They are under 
+LGPL licence.
+
+* Java-files that belong to the runtime environment (RTE) and are thus 
+copied to the generated code. They are under BSD 3 Clause license.
+
+* Templates executed during generation. They are also under BSD 3 
+Clause license, because parts of them are copied to the generated code. 
+
+This approach achieves the goals described above.
+
+Please note that tool builders design their own templates and RTE to 
+generate the final product. 
+ 
+If questions appear e.g. on building an interpreter, please contact 
+monticore@se-rwth.de. 
+
+
+## Underlying  Licenses 
+
+The MontiCore 3 Level code license is built on:
+
+* [LGPL V3.0](https://github.com/MontiCore/monticore/tree/master/00.org/Licenses/LICENSE-LGPL.md) 
+(for explicietly handwritten Java code) 
+
+* [BSD-3-Clause](https://github.com/MontiCore/monticore/tree/master/00.org/Licenses/LICENSE-BSD3CLAUSE.md) 
+(for templates and all generated artifacts) 
+
+
+## General disclaimer
+
+(This comes from the the BSD 3 Clause license): 
 
 This software is provided by the copyright holders and contributors
 "as is" and any expressed or implied warranties, including, but not limited
@@ -45,14 +91,18 @@ liability, whether in contract, strict liability, or tort (including
 negligence or otherwise) arising in any way out of the use of this
 software, even if advised of the possibility of such damage.
 
-## Release Notes
+
+## Included Software
+
 This product includes the following software:
 * [AntLR](http://www.antlr.org/)
 * [FreeMarker](http://freemarker.org/)
 
-## Build
-Please make sure that your complete workspace only uses UNIX line endings (LF)
-and all files are UTF-8 without BOM.
-On Windows you should configure git to not automatically replace LF with CRLF during checkout by executing the following configuration:
+## Build 
+
+Please make sure that your complete workspace only uses UNIX line  
+endings (LF) and all files are UTF-8 without BOM. On Windows you should 
+configure git to not automatically replace LF with CRLF during checkout 
+by executing the following configuration: 
 
     git config --global core.autocrlf input
