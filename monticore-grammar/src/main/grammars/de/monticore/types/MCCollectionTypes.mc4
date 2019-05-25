@@ -1,47 +1,79 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types;
 
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
 /**
- * This grammar introduces basic generics List<>, Map<,>, Set<>
- * and Optional<>
+ * This grammar defines four generics: List<>, Map<,>, Set<>
+ * and Optional<> on top of basic types.
+ * 
+ * These four generics correspond to a typical predefined set of generic 
+ * types for example used in connection with UML class diagrams or the
+ * OCL.
+ * UML associations typically have those association multiplicities and 
+ * therefore these types are of interest.
+ * 
+ * This eases the reuse of type structures in languages similar to Java,
+ * that are somewhat simplified, e.g. without general generics.
+ *
+ * This grammar is part of a hierarchy of types, namely 
+ * * types.MCBasicTypes.mc4       
+ * * types/MCCollectionTypes.mc4  
+ * * types/MCSimpleGenericTypes.mc4
+ * * types/MCFullGenericTypes.mc4    
+ * also defining generics or arrays.
+ *
 */
+
 component grammar MCCollectionTypes
      extends de.monticore.types.MCBasicTypes {
 
-  start MCType;
 
+  /*=================================================================*/
+  
   /**
-  *  The interface ASTBasicGenerics can be used to restrict to BasicGenerics
-  *  even if a extended Grammar
-  * (MCGenericTypes.mc4) is included.
+   * MCGenericType covers the following four forms of generics.
+   * E.g. in visitors it can also be used to restrict to these 
+   * forms of generics even if further generics would be available.
   */
   interface MCGenericType extends MCObjectType;
 
 
-  // use LookAhead to avoid "List" etc. as keywords
+  /*=================================================================*/
+
+  /* The following definitions use the next-Command and thus  
+   * avoid "List" etc. to become keywords
+  */
 
   MCListType implements MCGenericType <200> =
-       { next("List") }? Name "<" MCTypeArgument ">";
+       {next("List")}? Name "<" MCTypeArgument ">";
 
   MCOptionalType implements MCGenericType <200> =
-      { next("Optional") }? Name "<" MCTypeArgument ">";
+       {next("Optional")}? Name "<" MCTypeArgument ">";
 
   MCMapType implements MCGenericType  <200> =
-      { next("Map") }? Name
+      {next("Map")}? Name
        "<" key:MCTypeArgument "," value:MCTypeArgument ">";
 
   MCSetType implements MCGenericType <200> =
-       { next("Set") }? Name "<" MCTypeArgument ">";
+       {next("Set")}? Name "<" MCTypeArgument ">";
+
+  /*=================================================================*/
+
 
   /**
-  *  ASTTypeArgument interface introduced here as QualifiedType,
-  *  more implementations to be added in subgrammars
+   *  ASTMCTypeArgument interface describes arguments of generic types.
+   *  Eg. such as qualified or primitive types.
+   *
+   * This is also an extension point for more general type arguments.
   */
-  interface MCTypeArgument ;
+  interface MCTypeArgument;
 
   MCBasicTypeArgument implements MCTypeArgument <200> =
        MCQualifiedType;
 
   MCPrimitiveTypeArgument implements MCTypeArgument <190> =
          MCPrimitiveType;
+
 }

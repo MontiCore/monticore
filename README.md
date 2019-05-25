@@ -16,7 +16,7 @@ components, conservative extension and composition mechanisms and an
 optimal integration of hand-written code into the generated tools. Its 
 grammar languages is rather comfortable. 
 
-## License overview (informal description)
+## License overview (informal description) 
 
 Summary: This project is free software; you can redistribute the 
 MontiCore language workbench as follows:
