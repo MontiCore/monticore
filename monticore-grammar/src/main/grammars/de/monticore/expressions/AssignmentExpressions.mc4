@@ -1,68 +1,98 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package de.monticore.expressions;
 
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+ 
 /**
- * This grammar defines assignment expressions like =, +=, etc. and suffix and prefix
+ * This grammar defines all Java expressions that have side effects, 
+ * such as assignment expressions like =, +=, etc. and suffix and prefix
  * expressions like ++, --, etc.
+ * 
+ * There are also other kinds of expressions defined in the 
+ * grammars mentioned below. These expression definitions can savely be 
+ * composed if desired.
+ * 
+ * This grammar is part of a hierarchy of types, namely 
+ * * expressions/ExpressionsBasis.mc4
+ * * --  expressions/CommonExpressions.mc4      
+ * * --  --  expressions/JavaClassExpressions.mc4
+ * * --  --  expressions/SetExpressions.mc4
+ * * --  expressions/AssignmentExpressions.mc4  
+ * * --  expressions/BitExpressions.mc4         
+ * * --  expressions/OCLExpressions.mc4
+ *
 */
 
 component grammar AssignmentExpressions extends de.monticore.expressions.ExpressionsBasis {
 		
-IncSuffixExpression implements Expression <220> =
+  /*=================================================================*/
+
+  IncSuffixExpression implements Expression <220> =
 	Expression "++";
         
-DecSuffixExpression implements Expression <220> =
+  DecSuffixExpression implements Expression <220> =
 	Expression "--";
         
-PlusPrefixExpression implements Expression <210> =
+  PlusPrefixExpression implements Expression <210> =
 	"+" Expression;
 
-MinusPrefixExpression implements Expression <210> =
+  MinusPrefixExpression implements Expression <210> =
 	"-" Expression;
 
-IncPrefixExpression implements Expression <210> =
+  /*=================================================================*/
+
+  IncPrefixExpression implements Expression <210> =
 	"++" Expression;
 
-DecPrefixExpression implements Expression <210> =
+  DecPrefixExpression implements Expression <210> =
 	"--" Expression;
 	
-interface AssignmentExpression = left:Expression operator:"" right:Expression;
+  /*=================================================================*/
 
-RegularAssignmentExpression implements Expression <60>, AssignmentExpression =
+  interface AssignmentExpression = left:Expression operator:"" right:Expression;
+
+
+  /*=================================================================*/
+
+  RegularAssignmentExpression implements Expression <60>, AssignmentExpression =
 	left:Expression operator:"="  right:Expression;
 	
-PlusAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+  PlusAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
 	left:Expression operator:"+=" right:Expression;
 	
-MinusAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+  MinusAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
 	left:Expression operator:"-=" right:Expression;
 
-MultAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+  MultAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
 	left:Expression operator:"*=" right:Expression;
 
-DivideAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+  DivideAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
 	left:Expression operator:"/=" right:Expression;
 
-AndAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+  ModuloAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+	left:Expression operator:"%=" right:Expression;
+
+  /*=================================================================*/
+
+  AndAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
 	left:Expression operator:"&=" right:Expression;
 
-OrAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+  OrAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
 	left:Expression operator:"|=" right:Expression;
 
-BinaryXorAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+  BinaryXorAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
 	left:Expression operator:"^=" right:Expression;
 
-RightShiftAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+  /*=================================================================*/
+
+  RightShiftAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
 	left:Expression operator:">>=" right:Expression;
 
-LogicalRightAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+  LogicalRightAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
 	left:Expression operator:">>>=" right:Expression;
 
-LeftShiftAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
+  LeftShiftAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
 	left:Expression operator:"<<=" right:Expression;
-
-ModuloAssignmentExpression implements Expression <60>, AssignmentExpression = <rightassoc>
-	left:Expression operator:"%=" right:Expression;
 
 }
