@@ -41,7 +41,6 @@ As a consequence using MontiCore during development is rather flexible
 and the final products do not have any restriction.
 
  
-
 ## MontiCore 3-level License on files (informal description)
 
 The MontiCore language workbench contains three kinds of artifacts: 
@@ -95,3 +94,9 @@ configure git to not automatically replace LF with CRLF during checkout
 by executing the following configuration: 
 
     git config --global core.autocrlf input
+
+
+## Further Information
+
+* [List of grammars](monticore-grammar/src/main/grammars/de/monticore/GRAMMARS.md)
+
