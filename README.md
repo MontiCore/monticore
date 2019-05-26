@@ -98,5 +98,8 @@ by executing the following configuration:
 
 ## Further Information
 
-* [List of grammars](monticore-grammar/src/main/grammars/de/monticore/GRAMMARS.md)
+* [**List of grammars**](monticore-grammar/src/main/grammars/de/monticore/GRAMMARS.md)
 
+* [Changelog](CHANGELOG.md)
+
+* [Licenses](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
