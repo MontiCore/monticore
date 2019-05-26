@@ -3,13 +3,13 @@
 
 # MontiCore - Language Workbench plus Tool Framework 
 
-[MontiCore](http://www.monticore.de) is a language workbench for an  
-efficient development of domain-specific languages (DSLs). It processes 
-an extended grammar format which defines the DSL and generates 
-components for processing the documents written in the DSL. Examples 
-for these components are parser, AST classes, symboltables or pretty 
-printers. This enables a user to rapidly define a language and use it 
-together with the MontiCore-framework to build domain specific tools. 
+[MontiCore](http://www.monticore.de) is a language workbench for an efficient 
+development of domain-specific languages (DSLs). It processes an extended 
+grammar format which defines the DSL and generates  components for processing 
+the documents written in the DSL. Examples for these components are parser, 
+AST classes, symboltables or pretty 
+printers. This enables a user to rapidly define a language and use it together 
+with the MontiCore-framework to build domain specific tools. 
 
 Some MontiCore advantages are the reusability of predefined language 
 components, conservative extension and composition mechanisms and an 
@@ -19,7 +19,7 @@ grammar languages is rather comfortable.
 ## License overview (informal description) 
 
 Summary: This project is free software; you can redistribute the 
-MontiCore language workbench as follows:
+MontiCore language workbench according to the following rules.
 
 The MontiCore Languag Workbench deals with three levels of code 
 (MontiCore, tool derivates, product code). Each with different 
@@ -42,7 +42,7 @@ and the final products do not have any restriction.
 
  
 
-## Licenses on files (informal description)
+## MontiCore 3-level License on files (informal description)
 
 The MontiCore language workbench contains three kinds of artifacts: 
 
@@ -64,7 +64,7 @@ If questions appear e.g. on building an interpreter, please contact
 monticore@se-rwth.de. 
 
 
-## Underlying  Licenses 
+## Underlying Licenses 
 
 The MontiCore 3 Level code license is built on:
 
@@ -77,7 +77,7 @@ The MontiCore 3 Level code license is built on:
 
 ## General disclaimer
 
-(This comes from the the BSD 3 Clause license): 
+(Repeated from the the BSD 3 Clause license): 
 
 This software is provided by the copyright holders and contributors
 "as is" and any expressed or implied warranties, including, but not limited
@@ -100,7 +100,7 @@ This product includes the following software:
 
 ## Build 
 
-Please make sure that your complete workspace only uses UNIX line  
+Please make sure that your complete workspace only uses UNIX line 
 endings (LF) and all files are UTF-8 without BOM. On Windows you should 
 configure git to not automatically replace LF with CRLF during checkout 
 by executing the following configuration: 
