@@ -22,7 +22,7 @@ form, which means that (1) composition with any other grammars,
 (2) extensions and adaptations and (3) handwritten extensions will 
 still work.
 
-1. **Intended to become stable (Beta)**:
+1. **Beta: In Stabilization**:
 Such a grammar is in the process of becoming stable. One might already 
 include the grammar, but some changes may still appear.
 (See task list for potential changes.)
@@ -40,7 +40,7 @@ The deprecated grammars are typically not listed in this overview.
 There may also be further unclarfied grammars around.
 
 
-## List of Grammars in package de.monticore
+## General: List of Grammars in package de.monticore
 
 ### MCBasics.mc4  (stable)
 * This grammar defines absolute basics, such as spaces, 
@@ -48,7 +48,7 @@ Java-like comments and Names.
 It should be useful in many languages.
   
   
-## List of Grammars in package de.monticore.types
+## Types: List of Grammars in package de.monticore.types
 
 These grammars generally deal with type definitions and build on each 
 other:
@@ -61,8 +61,8 @@ simplified, e.g. without generics.
 classes (also sometimes called "reference types").
  
 ### MCCollectionTypes.mc4 (stable)
-* This grammar defines four generics: List<>, Map<,>, Set<> and 
-Optional<> on top of basic types.
+* This grammar defines four generics: List<A>, Map<A,B>, Set<A> and 
+Optional<A> on top of basic types.
 * These four generics correspond to a typical predefined set of generic 
 types for example used in connection with UML class diagrams or the
 OCL. UML associations typically have those association multiplicities and 
@@ -87,15 +87,63 @@ types, then use a simpler version from above. Type checking ist tricky.
 
 
 
-## List of Grammars in package de.monticore.expressions
+## Expressions: List of Grammars in package de.monticore.expressions
 
-* expressions/AssignmentExpressions.mc4
-* expressions/BitExpressions.mc4
-* expressions/CommonExpressions.mc4
-* expressions/ExpressionsBasis.mc4
-* expressions/JavaClassExpressions.mc4
-* expressions/OCLExpressions.mc4
-* expressions/SetExpressions.mc4
+Expressions are defined in several grammars forming a (nonlinear) hierachy,
+so that developers can choose the optimal grammar they want to build on 
+for their language and combine these with the appropriate typing 
+infrastructure.
+
+This modularity of expressions and associated types greatly eases 
+the reuse of type structures in languages similar to Java.
+
+
+### ExpressionsBasis.mc4 (stable)
+* This grammar defines core interfaces for expressions and the 
+kinds of symbols necessary.
+* A hierarchy of conservative extensions to this grammar realize
+these interfaces in various forms.
+
+
+### CommonExpressions.mc4 (stable)
+* This grammar defines a typical standard set of operations for
+expressions. 
+* This is a subset of Java as well as OCL/P, 
+mainly for arithmetic, comparisons, variable use (v), 
+attribute use (o.att), method call (foo(arg,arg2)) and brackets (exp).
+
+
+### BitExpressions.mc4 (stable)
+* This grammar defines a typical standard set of operations for
+expressions. 
+* This is a subset of Java for binary expressions 
+like <<, >>, >>>, &, ^ and |
+
+
+### AssignmentExpressions.mc4 (stable)
+* This grammar defines all Java expressions that have side effects.
+* This includes assignment expressions like =, +=, etc. and 
+suffix and prefix expressions like ++, --, etc.
+
+
+### JavaClassExpressions.mc4 (stable)
+* This grammar defines Java specific class expressions like super, 
+this, type cast, etc.
+* This grammar should only be included, when a mapping to Java is
+intended and the full power of Java should be available in the 
+modelling language.
+
+
+### SetExpressions.mc4 (Beta: In Stabilization)
+* This grammar defines set expressions like union, intersection etc.
+these operations are typical for a logic with set operations, like 
+UML's OCL.
+
+
+### OCLExpressions.mc4 (Needs restructuring)
+* This grammar defines a expressions typical to UMLs OCL .
+* This grammar will be restructured especially for the non expression part.
+
 
 
 
