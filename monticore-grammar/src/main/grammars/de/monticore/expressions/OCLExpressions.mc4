@@ -5,8 +5,8 @@ package de.monticore.expressions;
  * This grammar defines a expressions typical to UMLs OCL 
  * 
  * There are also other kinds of expressions defined in the 
- * grammars mentioned below. These expression definitions can savely be 
- * composed if desired. 
+ * grammars mentioned below. These expression definitions can savely 
+ * (i.e. as conservative extensions) be composed if desired. 
  * Especially common expressions should be added.
  * 
  * This grammar is part of a hierarchy of types, namely 
