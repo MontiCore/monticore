@@ -154,7 +154,6 @@ UML's OCL.
 * lexicals/Lexicals.mc4
 * literals/Literals.mc4
 * MCBasicLiterals.mc4
-* MCBasics.mc4
 * MCCommon.mc4
 * MCHexNumbers.mc4
 * MCJavaLiterals.mc4
