@@ -5,7 +5,8 @@ package de.monticore;
  * Adaptations -- if any -- are conservative. */
 
 /**
- * This grammar defines types absolute basics, such as spaces. 
+ * This grammar defines absolute basics, such as spaces, 
+ * Java-like comments and Names. 
  * It should be useful in many languages.
  * 
 */

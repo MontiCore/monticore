@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/MontiCore/monticore.svg?branch=master)](https://travis-ci.org/MontiCore/monticore)
 
 
-# MontiCore - Language Workbench plus Tool Framework 
+# MontiCore - Language Workbench And Tool Framework 
 
 [MontiCore](http://www.monticore.de) is a language workbench for an efficient 
 development of domain-specific languages (DSLs). It processes an extended 
@@ -101,7 +101,7 @@ by executing the following configuration:
 * [**List of grammars**](monticore-grammar/src/main/grammars/de/monticore/GRAMMARS.md)
    allowing to define your own language efficiently
 
-* [**MontiCore Reference Manual**](https://www.monticore.de/)
+* [**MontiCore Reference Manual**](http://www.monticore.de/)
 
 * [Changelog](CHANGELOG.md) - Release Notes
 
