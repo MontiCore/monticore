@@ -27,6 +27,10 @@ Such a grammar is in the process of becoming stable. One might already
 include the grammar, but some changes may still appear.
 (See task list for potential changes.)
 
+1. **Alpha: Intention to become stable**:
+Such a grammar is relatively fresh, but intended to become stable 
+and useful. Changes may occur, e.g. when restructuring or bug fixing.
+
 1. **Deprecated**:
 The grammar should not be used anymore, it is deprecated and a newer
 version of the content exists in another grammar.
@@ -140,7 +144,7 @@ these operations are typical for a logic with set operations, like
 UML's OCL.
 
 
-### OCLExpressions.mc4 (Needs restructuring)
+### OCLExpressions.mc4 (Alpha: Needs restructuring)
 * This grammar defines a expressions typical to UMLs OCL .
 * This grammar will be restructured especially for the non expression part.
 
