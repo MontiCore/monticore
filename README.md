@@ -99,7 +99,10 @@ by executing the following configuration:
 ## Further Information
 
 * [**List of grammars**](monticore-grammar/src/main/grammars/de/monticore/GRAMMARS.md)
+   allowing to define your own language efficiently
 
-* [Changelog](CHANGELOG.md)
+* [**MontiCore Reference Manual**](https://www.monticore.de/)
 
-* [Licenses](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
+* [Changelog](CHANGELOG.md) - Release Notes
+
+* [Licenses](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md) - MontiCore 3-Level License
