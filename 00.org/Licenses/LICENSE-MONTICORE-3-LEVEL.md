@@ -55,6 +55,9 @@ copied to the generated code. They are under BSD 3 Clause license.
 * Templates executed during generation. They are also under BSD 3 
 Clause license, because parts of them are copied to the generated code. 
 
+As a result, a tool derivate (level 2) does not contain any LGPL code, 
+but only BSD 3 Clause code. Executing the tool derivate then 
+produces completely free code (level 1).
 
 If questions appear e.g. on using MontiCore itself in a product
 or building an interpreter, please contact monticore@se-rwth.de. 
