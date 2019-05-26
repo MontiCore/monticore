@@ -53,40 +53,35 @@ It should be useful in many languages.
 These grammars generally deal with type definitions and build on each 
 other:
 
-### types/MCBasicTypes.mc4 (stable)
+### MCBasicTypes.mc4 (stable)
 * This grammar defines basic types. This eases the reuse of type 
 structures in languages similar to Java, that are somewhat 
 simplified, e.g. without generics.
-
 * The grammar contains types from Java, e.g., primitives, void, 
 classes (also sometimes called "reference types").
  
-### types/MCCollectionTypes.mc4 (stable)
+### MCCollectionTypes.mc4 (stable)
 * This grammar defines four generics: List<>, Map<,>, Set<> and 
 Optional<> on top of basic types.
-
 * These four generics correspond to a typical predefined set of generic 
 types for example used in connection with UML class diagrams or the
 OCL. UML associations typically have those association multiplicities and 
 therefore these types are of interest.
-
 * This eases the reuse of type structures in languages similar to Java,
 that are somewhat simplified, e.g. without general generics.
 
 
-### types/MCSimpleGenericTypes.mc4 (stable)
+### MCSimpleGenericTypes.mc4 (stable)
 * This grammar introduces freely defined generic types
 such as Blubb<A>, Bla<B,C>, Foo<Blubb<D>>
-
 * These generics are covering a wide range of uses for generic types,
 although they don't cover type restrictions on the arguments, like in 
 Java. 
 
 
-### types/MCFullGenericTypes.mc4 (stable)
+### MCFullGenericTypes.mc4 (stable)
 * This grammar completes the type definitions to 
 support the full Java type system including wildcards Blubb<? extends A>
-
 * A general advice: When you are not sure that you need this kind of
 types, then use a simpler version from above. Type checking ist tricky.
 
