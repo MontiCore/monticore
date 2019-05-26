@@ -64,17 +64,6 @@ If questions appear e.g. on building an interpreter, please contact
 monticore@se-rwth.de. 
 
 
-## Underlying Licenses 
-
-The MontiCore 3 Level code license is built on:
-
-* [LGPL V3.0](https://github.com/MontiCore/monticore/tree/master/00.org/Licenses/LICENSE-LGPL.md) 
-(for explicietly handwritten Java code) 
-
-* [BSD-3-Clause](https://github.com/MontiCore/monticore/tree/master/00.org/Licenses/LICENSE-BSD3CLAUSE.md) 
-(for templates and all generated artifacts) 
-
-
 ## General disclaimer
 
 (Repeated from the the BSD 3 Clause license): 

@@ -26,11 +26,11 @@ The MontiCore Languag Workbench deals with three levels of code:
 Each level has its own and different license: 
 
 * (Level 3) MontiCore: the main LWB components are published under the 
-LGPL license (see there).
+LGPL license (see [LGPL V3.0](https://github.com/MontiCore/monticore/tree/master/00.org/Licenses/LICENSE-LGPL.md)).
 
 * (Level 2) Tool derivate: when a tool is derived using the MontiCore 
 language workbench, then the result falls under the BSD 3 Clause license 
-(see there).
+(see [BSD-3-Clause](https://github.com/MontiCore/monticore/tree/master/00.org/Licenses/LICENSE-BSD3CLAUSE.md)).
 
 * (Level 1) Product code: when a MontiCore tool derivate is used to 
 generate code, the generated code is absolutely free for each form of use 
@@ -64,12 +64,10 @@ or building an interpreter, please contact monticore@se-rwth.de.
 
 ## Underlying Licenses 
 
-The MontiCore 3 Level code license is built on:
+The MontiCore 3 Level license is built on:
 
 * [LGPL V3.0](https://github.com/MontiCore/monticore/tree/master/00.org/Licenses/LICENSE-LGPL.md) 
-(for explicietly handwritten Java code) 
 
 * [BSD-3-Clause](https://github.com/MontiCore/monticore/tree/master/00.org/Licenses/LICENSE-BSD3CLAUSE.md) 
-(for templates and all generated artifacts) 
 
 
