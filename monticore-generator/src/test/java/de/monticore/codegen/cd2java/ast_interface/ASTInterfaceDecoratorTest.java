@@ -63,7 +63,7 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount(){
-    assertEquals(2, dataInterface.sizeCDMethods());
+    assertEquals(3, dataInterface.sizeCDMethods());
   }
 
   @Test

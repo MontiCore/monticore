@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.prettyprint2;
 
-import de.monticore.expressions.commonexpressions._ast.ASTArguments;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.javaclassexpressions._ast.*;
 import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsVisitor;

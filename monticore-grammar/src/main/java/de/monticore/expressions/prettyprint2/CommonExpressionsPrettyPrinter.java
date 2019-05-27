@@ -5,18 +5,17 @@ import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTQualifiedNameExpression;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 
-public class CommonExpressionsPrettyPrinter implements CommonExpressionsVisitor {
+public class CommonExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter implements CommonExpressionsVisitor {
   
   protected CommonExpressionsVisitor realThis;
   
   protected IndentPrinter printer;
   
   public CommonExpressionsPrettyPrinter(IndentPrinter printer) {
+    super(printer);
     this.printer = printer;
     realThis = this;
   }

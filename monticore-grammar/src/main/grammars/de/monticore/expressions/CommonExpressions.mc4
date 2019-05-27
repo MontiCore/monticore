@@ -1,74 +1,120 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package de.monticore.expressions;
 
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
 /**
- * This grammar defines common arithmetic expressions like +,*,<,>,
+ * This grammar defines a typical standard set of operations for
+ * expressions. This is a subset of Java as well as OCL/P,
+ * mainly for arithmetic, comparisons, variable use (v),
+ * attribute use (o.att), method call (foo(arg,arg2)) and brackets (exp).
+ *
+ * There are also other kinds of expressions defined in the
+ * grammars mentioned below. These expression definitions can savely be
+ * composed if desired.
+ *
+ * The language developer may choose the subset of expressions
+ * of interest and combine these with the appropriate typing infrastructure
+ *
+ * This modularity of expressions and associated types greatly eases
+ * the reuse of type structures in languages similar to Java
+ *
+ * This grammar is part of a hierarchy of types, namely
+ * * expressions/ExpressionsBasis.mc4
+ * * --  expressions/CommonExpressions.mc4
+ * * --  --  expressions/JavaClassExpressions.mc4
+ * * --  --  expressions/SetExpressions.mc4
+ * * --  expressions/AssignmentExpressions.mc4
+ * * --  expressions/BitExpressions.mc4
+ * * --  expressions/OCLExpressions.mc4
+ *
 */
+
 component grammar CommonExpressions extends de.monticore.expressions.ExpressionsBasis {
 
+  /*=================================================================*/
+
+  /** InfixExpression is the common interface for all forms of
+   * infixes defined there. The operator contains the concrete value, e.g. "+"
+  */
+  interface InfixExpression = left:Expression operator:"" right:Expression;
 
 
-interface InfixExpression = left:Expression operator:"" right:Expression;
+  /*=================================================================*/
 
-CallExpression implements Expression <240> =
+  CallExpression implements Expression <240> =
 	Expression Arguments;
 
-BooleanNotExpression implements Expression <200> =
+  /*=================================================================*/
+
+  BooleanNotExpression implements Expression <200> =
 	"~"  Expression;
 
-LogicalNotExpression implements Expression <190> =
+  LogicalNotExpression implements Expression <190> =
 	"!" Expression;
 
-MultExpression implements Expression <180>, InfixExpression =
+  /*=================================================================*/
+
+  MultExpression implements Expression <180>, InfixExpression =
 	left:Expression operator:"*" right:Expression;
 
-DivideExpression implements Expression <180>, InfixExpression =
+  DivideExpression implements Expression <180>, InfixExpression =
 	left:Expression operator:"/" right:Expression;
 
-ModuloExpression implements Expression <180>, InfixExpression =
+  ModuloExpression implements Expression <180>, InfixExpression =
 	left:Expression operator:"%" right:Expression;
     
-PlusExpression implements Expression <170>, InfixExpression =
+  PlusExpression implements Expression <170>, InfixExpression =
 	left:Expression operator:"+" right:Expression;
         
-MinusExpression implements Expression <170>, InfixExpression =
+  MinusExpression implements Expression <170>, InfixExpression =
 	left:Expression operator:"-" right:Expression;
 
-LessEqualExpression implements Expression <150>, InfixExpression =
+  /*=================================================================*/
+
+  LessEqualExpression implements Expression <150>, InfixExpression =
 	left:Expression operator:"<=" right:Expression;
 	
-GreaterEqualExpression implements Expression <150>, InfixExpression =
+  GreaterEqualExpression implements Expression <150>, InfixExpression =
 	left:Expression operator:">=" right:Expression;
 	
-LessThanExpression implements Expression <150>, InfixExpression =
+  LessThanExpression implements Expression <150>, InfixExpression =
 	left:Expression operator:"<" right:Expression;
 	
-GreaterThanExpression implements Expression <150>, InfixExpression =
+  GreaterThanExpression implements Expression <150>, InfixExpression =
 	left:Expression operator:">" right:Expression;
 	        
-EqualsExpression implements Expression <130>, InfixExpression =
+  EqualsExpression implements Expression <130>, InfixExpression =
 	left:Expression operator:"==" right:Expression;
 	
-NotEqualsExpression implements Expression <130>, InfixExpression =
+  NotEqualsExpression implements Expression <130>, InfixExpression =
 	left:Expression operator:"!=" right:Expression;
 	        
-BooleanAndOpExpression implements Expression <120>, InfixExpression =
+  /*=================================================================*/
+
+  BooleanAndOpExpression implements Expression <120>, InfixExpression =
 	left:Expression operator:"&&" right:Expression;
 	
-BooleanOrOpExpression implements Expression <117>, InfixExpression =
+  BooleanOrOpExpression implements Expression <117>, InfixExpression =
 	left:Expression operator:"||" right:Expression;
 	
-ConditionalExpression implements Expression <114> =
+  /*=================================================================*/
+
+  ConditionalExpression implements Expression <114> =
 	condition:Expression "?" trueExpression:Expression ":" falseExpression:Expression;
 
-SimpleAssignmentExpression implements Expression <111>, InfixExpression = <rightassoc>
+  /*=================================================================*/
+
+  SimpleAssignmentExpression implements Expression <111>, InfixExpression = <rightassoc>
 	left:Expression operator:"+=" right:Expression;
 
-BracketExpression implements Expression <310>
+  /*=================================================================*/
+
+  BracketExpression implements Expression <310>
     =  "(" Expression ")";
     
-Arguments
+  Arguments
     =   "(" (Expression || ",")* ")";
     
 }

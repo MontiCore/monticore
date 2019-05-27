@@ -1,18 +1,18 @@
 package de.monticore.typescalculator;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.expressions.commonexpressionswithliterals._visitor.CommonExpressionsWithLiteralsInheritanceVisitor;
 import de.monticore.mcbasicliterals._ast.*;
+import de.monticore.mcbasicliterals._visitor.MCBasicLiteralsVisitor;
 import de.monticore.types.mcbasictypes._ast.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BasicLiteralsTypeCalculator implements LiteralTypeCalculator, CommonExpressionsWithLiteralsInheritanceVisitor {
+public class BasicLiteralsTypeCalculator implements LiteralTypeCalculator {
 
   private ASTMCType type;
 
-  private BasicLiteralsTypeCalculator realThis = this;
+  private MCBasicLiteralsVisitor realThis = this;
 
 
   @Override
@@ -22,8 +22,13 @@ public class BasicLiteralsTypeCalculator implements LiteralTypeCalculator, Commo
   }
 
   @Override
-  public BasicLiteralsTypeCalculator getRealThis() {
+  public MCBasicLiteralsVisitor getRealThis() {
     return realThis;
+  }
+
+  @Override
+  public void setRealThis(MCBasicLiteralsVisitor realThis){
+    this.realThis=realThis;
   }
 
   @Override
@@ -73,4 +78,6 @@ public class BasicLiteralsTypeCalculator implements LiteralTypeCalculator, Commo
     ASTMCQualifiedName qualifiedName = MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build();
     type = MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(qualifiedName).build();
   }
+
+
 }

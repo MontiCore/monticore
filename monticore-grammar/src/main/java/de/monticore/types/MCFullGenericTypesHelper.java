@@ -1,19 +1,12 @@
 package de.monticore.types;
 
 import com.google.common.base.Preconditions;
-import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCBasicTypeArgument;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCPrimitiveTypeArgument;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCArrayType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardType;
-import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
-import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
-
-import java.util.List;
 
 public class MCFullGenericTypesHelper extends MCSimpleGenericTypesHelper {
 

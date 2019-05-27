@@ -1,55 +1,83 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types;
 
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+/**
+ * This grammar completes the type definitions to 
+ * support the full Java type system including wildcards Blubb<? extends A>
+ *
+ * A general advice: When you are not sure that you need this kind of
+ * types, then use a simpler version.
+ * Type checking ist tricky.
+ * 
+ * This grammar is part of a hierarchy of types, namely 
+ * * types.MCBasicTypes.mc4       
+ * * types/MCCollectionTypes.mc4  
+ * * types/MCSimpleGenericTypes.mc4
+ * * types/MCFullGenericTypes.mc4    
+ *
+*/
 
 component grammar MCFullGenericTypes
        extends de.monticore.types.MCSimpleGenericTypes {
-  start MCType;
+
+  /*=================================================================*/
 
   /** ASTWildcardType represents a wildcard type in a type argument
-  *   (generics). It could also contain an upper- or lower bound.
+  *   (generics). It also contains either an upper- or a lower bound.
   *
   *   @attribute upperBound Supertye of the type argument
   *   @attribute lowerBound Subtype of the type argument
   */
   MCWildcardType implements MCTypeArgument =
-       "?" ( ("extends" upperBound:MCType) | ("super" lowerBound:MCType) )?;
+       "?" (  ("extends" upperBound:MCType) 
+            | ("super"   lowerBound:MCType) )?;
 
 
-  /** ASTMCComplexType is only used if referenced Type is
-  *   generic and has generic inner classes e.g.
-  *   monticore.Generic1<TypeParam1>.GenericInnerClass<TypeParam2>
+  /*=================================================================*/
+
+  /** ASTMCMultipleGenericType 
+   *  is only used for parsing, if referenced Type is
+   *  generic AND has generic inner classes e.g.
+   *  monticore.Generic1<TypeParam1>.GenericInnerClass<TypeParam2>
   */
   MCMultipleGenericType implements MCGenericType, MCType =
        MCBasicGenericType  // complex Outer Type qualification
         "."  (MCInnerType || ".")+
    ;
 
-
   MCInnerType = Name ("<" (MCTypeArgument || ",")+ ">")?;
+
+
+  /*=================================================================*/
 
   /** ASTArrayType introduce array for arbitrary types
   */
   MCArrayType implements MCType =
        MCType ("[" "]" {_aNode.setDimensions(_aNode.getDimensions()+1);} )+;
 
+  // counter dimensions counts the array depth
   astrule MCArrayType =
     dimensions:int;
 
-  /** ASTTypeParameters represents a list of generic parameter parenthesized
-  *   by '<...>' in type declarations (e.g., class-, interface-, method-, or
-  *   constructor declarations).
-  *   @attribute typeVariableDeclarations List of parameters
+
+  /*=================================================================*/
+
+  /** ASTTypeParameters represents a list of generic parameters enclosed
+   *  by '<...>' in generic type declarations 
+   *  @attribute typeVariableDeclarations List of parameters
   */
   MCTypeParameters =
     "<" (MCTypeVariableDeclaration || ",")+ ">";
 
-  /** ASTTypeVariableDeclaration represents the generic variable declaration
-  *   in '<'...'>' (e.g., in front of method or constructor declarations or
-  *   behind the class or interface name).
-  *   E.g.: public <T extends SuperClass> void test(T t)
-  *   @attribute name        Name of the type variable
-  *   @attribute upperBound Optional list of required super classes
+  /** ASTTypeVariableDeclaration represents a generic variable declaration
+   *  in '<'...'>' (e.g., in front of method or constructor declarations or
+   *  behind the class or interface name).
+   *  E.g.: public <T extends SuperClass> void test(T t)
+   *  @attribute name        Name of the type variable
+   *  @attribute upperBound Optional list of required super classes
   */
   MCTypeVariableDeclaration =
     Name ( "extends" upperBound:(MCType || "&")+ )?;

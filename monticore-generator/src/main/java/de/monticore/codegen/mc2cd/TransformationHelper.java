@@ -16,7 +16,7 @@ import de.monticore.grammar.symboltable.MCProdSymbol;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.GlobalScope;
-import de.monticore.types.BasicGenericsTypesPrinter;
+import de.monticore.types.FullGenericTypesPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.types._ast.*;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
@@ -413,17 +413,17 @@ public final class TransformationHelper {
       Optional<MCProdSymbol> typeSymbol, ASTMCType type,
       ASTMCGrammar grammar) {
     if (!typeSymbol.isPresent()) {
-      return BasicGenericsTypesPrinter.printType(type);
+      return FullGenericTypesPrinter.printType(type);
     }
     if (type.getNameList().size() > 1) {
-      return BasicGenericsTypesPrinter.printType(type);
+      return FullGenericTypesPrinter.printType(type);
     }
     String refGrammarName = getGrammarName(typeSymbol.get());
     if (grammar.isPresentSymbol()
         && grammar.getSymbol().getFullName().equals(refGrammarName)) {
-      return BasicGenericsTypesPrinter.printType(type);
+      return FullGenericTypesPrinter.printType(type);
     }
-    return refGrammarName + "." + BasicGenericsTypesPrinter.printType(type);
+    return refGrammarName + "." + FullGenericTypesPrinter.printType(type);
   }
 
   public static void addStereoType(ASTCDType type, String stereotypeName,
