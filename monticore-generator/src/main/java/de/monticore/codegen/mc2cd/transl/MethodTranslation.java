@@ -60,7 +60,7 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
     return rootLink;
   }
 
-  private ASTCDMethod translateASTMethodToASTCDMethodInterface(ASTMethod method) {
+  private ASTCDMethod createSimpleCDMethod(ASTMethod method) {
     ASTCDMethod cdMethod = CD4AnalysisNodeFactory.createASTCDMethod();
     cdMethod.setModifier(TransformationHelper.createPublicModifier());
     cdMethod.setName(method.getName());
@@ -70,6 +70,11 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
       String typeName = FullGenericTypesPrinter.printType(param.getType());
       cdMethod.getCDParameterList().add(TransformationHelper.createParameter(typeName, param.getName()));
     }
+    return cdMethod;
+  }
+
+  private ASTCDMethod translateASTMethodToASTCDMethodInterface(ASTMethod method) {
+    ASTCDMethod cdMethod = createSimpleCDMethod(method);
     if (method.getBody() instanceof ASTAction) {
       StringBuilder code = new StringBuilder();
       for (ASTBlockStatement action : ((ASTAction) method.getBody()).getBlockStatementList()) {
@@ -83,7 +88,7 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
             code.toString());
         HookPoint methodBody = new StringHookPoint(code.toString());
         glex.replaceTemplate(CdDecorator.EMPTY_BODY_TEMPLATE, cdMethod, methodBody);
-      }else {
+      } else {
         cdMethod.getModifier().setAbstract(true);
       }
     }
@@ -91,15 +96,7 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
   }
 
   private ASTCDMethod translateASTMethodToASTCDMethod(ASTMethod method) {
-    ASTCDMethod cdMethod = CD4AnalysisNodeFactory.createASTCDMethod();
-    cdMethod.setModifier(TransformationHelper.createPublicModifier());
-    cdMethod.setName(method.getName());
-    String dotSeparatedName = FullGenericTypesPrinter.printReturnType(method.getMCReturnType());
-    cdMethod.setReturnType(TransformationHelper.createSimpleReference(dotSeparatedName));
-    for (ASTMethodParameter param : method.getMethodParameterList()) {
-      String typeName = FullGenericTypesPrinter.printType(param.getType());
-      cdMethod.getCDParameterList().add(TransformationHelper.createParameter(typeName, param.getName()));
-    }
+    ASTCDMethod cdMethod = createSimpleCDMethod(method);
     if (method.getBody() instanceof ASTAction) {
       StringBuilder code = new StringBuilder();
       for (ASTBlockStatement action : ((ASTAction) method.getBody()).getBlockStatementList()) {
