@@ -1,10 +1,25 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package de.monticore.expressions;
 
 /**
- * This grammar defines ocl expressions
+ * This grammar defines a expressions typical to UMLs OCL 
+ * 
+ * There are also other kinds of expressions defined in the 
+ * grammars mentioned below. These expression definitions can savely 
+ * (i.e. as conservative extensions) be composed if desired. 
+ * Especially common expressions should be added.
+ * 
+ * This grammar is part of a hierarchy of types, namely 
+ * * expressions/ExpressionsBasis.mc4
+ * * --  expressions/CommonExpressions.mc4      
+ * * --  --  expressions/JavaClassExpressions.mc4
+ * * --  --  expressions/SetExpressions.mc4
+ * * --  expressions/AssignmentExpressions.mc4  
+ * * --  expressions/BitExpressions.mc4         
+ * * --  expressions/OCLExpressions.mc4
+ *
 */
+
 component grammar OCLExpressions extends de.monticore.expressions.ExpressionsBasis {
 
 external EDeclaration;

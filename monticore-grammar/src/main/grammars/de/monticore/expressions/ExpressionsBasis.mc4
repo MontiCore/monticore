@@ -1,22 +1,68 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package de.monticore.expressions;
 
-component grammar ExpressionsBasis extends de.monticore.MCBasics {
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
 
-   /**
-    * When combining the languages you can decide later if you want to use the complete
-    * literals defined in Java (extending MCJavaLiterals)
-    * or if you want to use a smaller variant (extending MCBasicLiterals)
-    */
-  external ExtLiteral;
+/**
+ * This grammar defines core interfaces for expressions and the
+ * kinds of symbols necessary.
+ * A hierarchy of conservative extensions to this grammar realize
+ * these interfaces in various forms.
+ *
+ * The language developer may choose the subset of expressions
+ * of interest and combine these with the appropriate typing infrastructure
+ *
+ * This modularity of expressions and associated types greatly eases
+ * the reuse of type structures in languages similar to Java
+ *
+ *
+ * This grammar is part of a hierarchy of types, namely
+ * * expressions/ExpressionsBasis.mc4
+ * * --  expressions/CommonExpressions.mc4
+ * * --  --  expressions/JavaClassExpressions.mc4
+ * * --  --  expressions/SetExpressions.mc4
+ * * --  expressions/AssignmentExpressions.mc4
+ * * --  expressions/BitExpressions.mc4
+ * * --  expressions/OCLExpressions.mc4
+ *
+*/
+
+component grammar ExpressionsBasis extends de.monticore.MCBasics {
 	
+  /*=================================================================*/
+
+  /*
+   * When combining the languages you can decide later if you want to use the complete
+   * literals defined in Java (extending MCJavaLiterals)
+   * or if you want to use a smaller variant (extending MCBasicLiterals)
+  */
+  external ExtLiteral;
+
+  /* Top level interface for all kinds of expressions
+  */
   interface Expression;
 
+
+  /*=================================================================*/
+
+  /* Three forms of symbols that are used and applied in
+   * expressions. They are typically defined outside of expressions
+   * (although there are exceptions).
+  */
+
+  /** EMethod describes methods that can be called in expressions.
+   * Methods have signatures (not described here).
+  */
   symbol EMethod = Name;
 
+  /** EVariable describes variables that can be used in expressions.
+   * EVariables have types (not described here).
+  */
   symbol EVariable = Name;
 
+  /** ETypes describes types that can expressions can have.
+  */
   symbol EType = Name;
 
   NameExpression implements Expression<350>
