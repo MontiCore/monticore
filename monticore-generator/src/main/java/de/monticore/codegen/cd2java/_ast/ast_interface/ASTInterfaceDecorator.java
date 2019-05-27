@@ -15,6 +15,7 @@ import de.monticore.umlcd4a.cd4analysis._ast.ASTCDMethod;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDParameter;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_METHOD;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
@@ -56,13 +57,17 @@ public class ASTInterfaceDecorator extends AbstractDecorator<ASTCDInterface, AST
     methodDecorator.disableTemplates();
 
     List<ASTCDAttribute> symbolAttributes = symbolDecorator.decorate(input);
-    symbolAttributes.forEach(x -> x.getModifier().setAbstract(true));
-    addSymboltableMethods(symbolAttributes, input);
+    List<ASTCDMethod> symbolMethods = astService.getMethodsFromAttributeList(symbolAttributes, methodDecorator);
+    symbolAttributes.forEach(x-> x.getModifier().setAbstract(true));
+    input.addAllCDMethods(symbolMethods);
 
     List<ASTCDAttribute> scopeAttributes = scopeDecorator.decorate(input);
-    scopeAttributes.forEach(x -> x.getModifier().setAbstract(true));
-    addSymboltableMethods(scopeAttributes, input);
-
+    List<ASTCDMethod> scopeMethods = scopeAttributes.stream()
+            .map(methodDecorator.getAccessorDecorator()::decorate)
+            .flatMap(List::stream)
+            .collect(Collectors.toList());
+    scopeMethods.forEach(x-> x.getModifier().setAbstract(true));
+    input.addAllCDMethods(scopeMethods);
     return input;
   }
 
