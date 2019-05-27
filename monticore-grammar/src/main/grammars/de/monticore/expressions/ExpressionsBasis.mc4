@@ -32,11 +32,14 @@ component grammar ExpressionsBasis extends de.monticore.MCBasics {
 	
   /*=================================================================*/
 
-  /*
-   * When combining the languages you can decide later if you want to use the complete
-   * literals defined in Java (extending MCJavaLiterals)
-   * or if you want to use a smaller variant (extending MCBasicLiterals)
-  */
+  /** ExtLiteral shall describe the form of literals.
+   * This is used to allow to add any forms of literals freely.
+   * This e.g. defers the decision to use the complete
+   * literals defined in Java (extending MCJavaLiterals, e.g. allowing 10_000)
+   * or or to use a smaller variant (extending MCBasicLiterals)
+   *
+   * This is an extension point that need to be filled.
+   */
   external ExtLiteral;
 
   /* Top level interface for all kinds of expressions
