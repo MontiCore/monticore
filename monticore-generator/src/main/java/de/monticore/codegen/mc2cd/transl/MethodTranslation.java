@@ -83,6 +83,8 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
             code.toString());
         HookPoint methodBody = new StringHookPoint(code.toString());
         glex.replaceTemplate(CdDecorator.EMPTY_BODY_TEMPLATE, cdMethod, methodBody);
+      }else {
+        cdMethod.getModifier().setAbstract(true);
       }
     }
     return cdMethod;
