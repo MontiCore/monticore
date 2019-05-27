@@ -1,7 +1,9 @@
 ${tc.signature("cdClass")}
+
 ${tc.include("core.Package")}
 
 ${tc.include("core.Imports")}
+import de.monticore.ast.ASTCNode;
 
 ${cdClass.printModifier()} class ${cdClass.getName()} <#rt><#lt>
 <#if cdClass.isPresentSuperclass()>extends ${cdClass.printSuperClass()} </#if> <#rt><#lt>
