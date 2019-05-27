@@ -25,10 +25,6 @@ public enum MC2CDStereotypes {
    */
   REFERENCED_SYMBOL_ATTRIBUTE("referencedSymbolAttribute"),
   /**
-   * To add default implementation to method
-   */
-  DEFAULT_IMPLEMENTATION("defaultImplementation"),
-  /**
    * To mark class as symbol
    */
   SYMBOL("symbol"),

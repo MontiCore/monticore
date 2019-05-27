@@ -28,16 +28,20 @@ public class InterfaceDecorator extends AbstractDecorator<ASTCDInterface, ASTCDI
 
   @Override
   public ASTCDInterface decorate(ASTCDInterface cdInterface) {
-    cdInterface.addAllCDMethods(dataDecoratorUtil.decorate(cdInterface));
+    //add abstract methods like deepClone, deepEquals etc.
+    List<ASTCDMethod> dataMethods = dataDecoratorUtil.decorate(cdInterface);
+    dataMethods.forEach(m -> m.getModifier().setAbstract(true));
+    cdInterface.addAllCDMethods(dataMethods);
+
+    //add abstract methods for attributes of the interface
     List<ASTCDMethod> attributeMethods = cdInterface.getCDAttributeList().stream()
         .map(methodDecorator::decorate)
         .flatMap(List::stream)
         .collect(Collectors.toList());
+    List<ASTCDMethod> methodListWithoutDuplicates = service.getMethodListWithoutDuplicates(cdInterface.getCDMethodList(), attributeMethods);
+    methodListWithoutDuplicates.forEach(m -> m.getModifier().setAbstract(true));
+    cdInterface.addAllCDMethods(methodListWithoutDuplicates);
 
-    cdInterface.addAllCDMethods(service.getMethodListWithoutDuplicates(cdInterface.getCDMethodList(), attributeMethods));
-
-
-    cdInterface.getCDMethodList().forEach(m -> m.getModifier().setAbstract(true));
     cdInterface.getCDAttributeList().clear();
     return cdInterface;
   }

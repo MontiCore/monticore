@@ -76,8 +76,11 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
         code.append(GeneratorHelper.getJavaPrettyPrinter().prettyprint(action));
       }
       if (!code.toString().isEmpty()) {
-        TransformationHelper.addStereoType(
-            cdMethod, MC2CDStereotypes.DEFAULT_IMPLEMENTATION.toString(), "");
+        // to save the body in the cd
+        // todo think of better version
+        TransformationHelper.addStereotypeValue(cdMethod.getModifier(),
+            MC2CDStereotypes.METHOD_BODY.toString(),
+            code.toString());
         HookPoint methodBody = new StringHookPoint(code.toString());
         glex.replaceTemplate(CdDecorator.EMPTY_BODY_TEMPLATE, cdMethod, methodBody);
       }

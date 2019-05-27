@@ -56,11 +56,9 @@ public class ASTInterfaceDecorator extends AbstractDecorator<ASTCDInterface, AST
     methodDecorator.disableTemplates();
 
     List<ASTCDAttribute> symbolAttributes = symbolDecorator.decorate(input);
-    symbolAttributes.forEach(x -> x.getModifier().setAbstract(true));
     addSymboltableMethods(symbolAttributes, input);
 
     List<ASTCDAttribute> scopeAttributes = scopeDecorator.decorate(input);
-    scopeAttributes.forEach(x -> x.getModifier().setAbstract(true));
     addSymboltableMethods(scopeAttributes, input);
 
     return input;

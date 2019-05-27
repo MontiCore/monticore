@@ -54,9 +54,7 @@ import static de.monticore.codegen.mc2cd.transl.ConstantsTranslation.CONSTANTS_E
 import static de.monticore.grammar.Multiplicity.multiplicityByAlternative;
 import static de.monticore.grammar.Multiplicity.multiplicityByIteration;
 import static de.se_rwth.commons.Names.getQualifier;
-import static de.se_rwth.commons.Names.getSimpleName;
 import static java.util.Collections.max;
-import static java.util.Collections.sort;
 
 public class GeneratorHelper extends TypesHelper {
 
@@ -741,10 +739,6 @@ public class GeneratorHelper extends TypesHelper {
 
   public static boolean isAbstract(ASTCDMethod method, ASTCDClass type) {
     return CD4AnalysisHelper.isAbstract(method);
-  }
-
-  public static boolean isDefault(ASTCDMethod method) {
-    return hasStereotype(method, MC2CDStereotypes.DEFAULT_IMPLEMENTATION.toString());
   }
 
   public static boolean isInherited(ASTCDAttribute attribute) {
