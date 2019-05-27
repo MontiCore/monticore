@@ -60,6 +60,7 @@ public class MillDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCD
     ASTType millType = this.getCDTypeFacade().createTypeByDefinition(millClassName);
     List<ASTCDClass> astcdClassList = Lists.newArrayList(astcdDefinition.getCDClassList());
 
+
     List<CDSymbol> superSymbolList = SuperSymbolHelper.getSuperCDs(compilationUnit);
 
     ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PROTECTED, millClassName);
@@ -163,15 +164,15 @@ public class MillDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCD
       Optional<ASTNode> astNode = superSymbol.getAstNode();
       if (astNode.isPresent() && astNode.get() instanceof ASTCDDefinition) {
         //get super cddefinition
-        ASTCDDefinition superDefinition = (ASTCDDefinition) astNode.get();
+        ASTCDDefinition superDefinition = (ASTCDDefinition) astNode.get().deepClone();
         //filter out all abstract classes
-        superDefinition.setCDClassList(superDefinition.getCDClassList()
+        List<ASTCDClass> copiedList = superDefinition.getCDClassList()
             .stream()
             .filter(ASTCDClassTOP::isPresentModifier)
             .filter(x -> !x.getModifier().isAbstract())
-            .collect(Collectors.toList()));
+            .collect(Collectors.toList());
 
-        for (ASTCDClass superClass : superDefinition.getCDClassList()) {
+        for (ASTCDClass superClass : copiedList) {
           if (!service.isClassOverwritten(superClass, astcdDefinition.getCDClassList())) {
             String packageName = superSymbol.getFullName().toLowerCase() + AstGeneratorHelper.AST_DOT_PACKAGE_SUFFIX_DOT;
             ASTType superAstType = this.getCDTypeFacade().createSimpleReferenceType(packageName + superClass.getName() + BUILDER);
