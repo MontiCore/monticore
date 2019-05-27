@@ -41,7 +41,7 @@ As a consequence using MontiCore during development is rather flexible
 and the final products do not have any restriction.
 
  
-## MontiCore 3-level License on files (informal description)
+## MontiCore 3-Level License on files (informal description)
 
 The MontiCore language workbench contains three kinds of artifacts: 
 
