@@ -374,7 +374,7 @@ public class MontiCoreTool {
 
     MillDecorator millDecorator = new MillDecorator(glex, astService);
 
-    ASTConstantsDecorator astConstantsDecorator = new ASTConstantsDecorator(glex);
+    ASTConstantsDecorator astConstantsDecorator = new ASTConstantsDecorator(glex, astService);
 
     EnumDecorator enumDecorator = new EnumDecorator(glex, new AccessorDecorator(glex), astService);
 

@@ -3,7 +3,6 @@ package de.monticore.codegen.cd2java._ast.factory;
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.cd2java.AbstractDecorator;
-import de.monticore.codegen.cd2java.factories.SuperSymbolHelper;
 import de.monticore.codegen.cd2java.typecd2java.TypeCD2JavaVisitor;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -146,7 +145,7 @@ public class NodeFactoryDecorator extends AbstractDecorator<ASTCDCompilationUnit
   protected List<ASTCDMethod> addFactoryDelegateMethods() {
     List<ASTCDMethod> delegateMethodList = new ArrayList<>();
     //get super symbols
-    for (CDSymbol superSymbol : SuperSymbolHelper.getSuperCDs(compilationUnit)) {
+    for (CDSymbol superSymbol : nodeFactoryService.getSuperCDs()) {
       Optional<ASTNode> astNode = superSymbol.getAstNode();
       if (astNode.isPresent() && astNode.get() instanceof ASTCDDefinition) {
         //get super cddefinition

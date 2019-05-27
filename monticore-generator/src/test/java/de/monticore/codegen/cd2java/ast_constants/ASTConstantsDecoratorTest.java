@@ -46,7 +46,7 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
 
 
-    ASTConstantsDecorator decorator = new ASTConstantsDecorator(this.glex);
+    ASTConstantsDecorator decorator = new ASTConstantsDecorator(this.glex, new AbstractService(decoratedCompilationUnit));
     this.constantClass = decorator.decorate(decoratedCompilationUnit);
   }
 

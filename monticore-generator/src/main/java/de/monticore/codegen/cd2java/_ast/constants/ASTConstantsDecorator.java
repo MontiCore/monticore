@@ -1,7 +1,7 @@
 package de.monticore.codegen.cd2java._ast.constants;
 
 import de.monticore.codegen.cd2java.AbstractDecorator;
-import de.monticore.codegen.cd2java.factories.SuperSymbolHelper;
+import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -9,6 +9,7 @@ import de.monticore.umlcd4a.cd4analysis._ast.*;
 import de.monticore.umlcd4a.symboltable.CDSymbol;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,8 +32,11 @@ public class ASTConstantsDecorator extends AbstractDecorator<ASTCDCompilationUni
 
   private static final String GET_ALL_LANGUAGES = "getAllLanguages";
 
-  public ASTConstantsDecorator(GlobalExtensionManagement glex) {
+  private final AbstractService<?> service;
+
+  public ASTConstantsDecorator(GlobalExtensionManagement glex, AbstractService abstractService) {
     super(glex);
+    this.service = abstractService;
   }
 
   @Override
@@ -54,15 +58,16 @@ public class ASTConstantsDecorator extends AbstractDecorator<ASTCDCompilationUni
             .collect(Collectors.toList()));
       }
     }
+    Collection<CDSymbol> superSymbolList = service.getSuperCDs();
     return CD4AnalysisMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
         .setName(className)
         .addCDAttribute(getLanguageAttribute(grammarName))
         .addCDAttribute(getDefaultAttribute())
         .addAllCDAttributes(getConstantAttribute(enumConstants))
-        .addCDAttribute(getSuperGrammarsAttribute(input))
+        .addCDAttribute(getSuperGrammarsAttribute(superSymbolList))
         .addCDConstructor(getDefaultConstructor(className))
-        .addCDMethod(getGetAllLanguagesMethod(input))
+        .addCDMethod(getGetAllLanguagesMethod(superSymbolList))
         .build();
   }
 
@@ -88,15 +93,13 @@ public class ASTConstantsDecorator extends AbstractDecorator<ASTCDCompilationUni
     return attribute;
   }
 
-  protected ASTCDAttribute getSuperGrammarsAttribute(ASTCDCompilationUnit compilationUnit) {
-    List<CDSymbol> superSymbolList = SuperSymbolHelper.getSuperCDs(compilationUnit);
-
+  protected ASTCDAttribute getSuperGrammarsAttribute(Collection<CDSymbol> superSymbolList) {
     List<String> superGrammarNames = superSymbolList.stream().map(CDSymbol::getFullName).map(x -> "\"" + x + "\"").collect(Collectors.toList());
     ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PUBLIC_STATIC, getCDTypeFacade().createArrayType(String.class, 1), SUPER_GRAMMARS);
-    if(!superSymbolList.isEmpty()){
+    if (!superSymbolList.isEmpty()) {
       String s = superGrammarNames.stream().reduce((a, b) -> a + ", " + b).get();
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= {" + s + "}"));
-    }else {
+    } else {
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= {}"));
     }
     return attribute;
@@ -106,10 +109,10 @@ public class ASTConstantsDecorator extends AbstractDecorator<ASTCDCompilationUni
     return getCDConstructorFacade().createConstructor(PUBLIC, className);
   }
 
-  protected ASTCDMethod getGetAllLanguagesMethod(ASTCDCompilationUnit input) {
+  protected ASTCDMethod getGetAllLanguagesMethod(Collection<CDSymbol> superCDs) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC_STATIC, getCDTypeFacade().createTypeByDefinition("Collection<String>"), GET_ALL_LANGUAGES);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("ast_constants.GetAllLanguages",
-            SuperSymbolHelper.getSuperCDs(input)));
+       superCDs));
     return method;
   }
 }

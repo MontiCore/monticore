@@ -5,7 +5,6 @@ import de.monticore.ast.ASTNode;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.ast.AstGeneratorHelper;
-import de.monticore.codegen.cd2java.factories.SuperSymbolHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.TypesPrinter;
@@ -15,6 +14,7 @@ import de.monticore.umlcd4a.symboltable.CDSymbol;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,7 +40,7 @@ public class MillDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCD
 
   private ASTCDDefinition astcdDefinition;
 
-  private final AbstractService service;
+  private final AbstractService<?> service;
 
   public MillDecorator(final GlobalExtensionManagement glex, final AbstractService service) {
     super(glex);
@@ -60,8 +60,7 @@ public class MillDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCD
     ASTType millType = this.getCDTypeFacade().createTypeByDefinition(millClassName);
     List<ASTCDClass> astcdClassList = Lists.newArrayList(astcdDefinition.getCDClassList());
 
-
-    List<CDSymbol> superSymbolList = SuperSymbolHelper.getSuperCDs(compilationUnit);
+    Collection<CDSymbol> superSymbolList = service.getSuperCDs();
 
     ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PROTECTED, millClassName);
 
@@ -129,7 +128,7 @@ public class MillDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCD
     return initMethod;
   }
 
-  protected ASTCDMethod addResetMethod(List<ASTCDClass> astcdClassList, List<CDSymbol> superSymbolList) {
+  protected ASTCDMethod addResetMethod(List<ASTCDClass> astcdClassList, Collection<CDSymbol> superSymbolList) {
     ASTCDMethod resetMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, RESET);
     this.replaceTemplate(EMPTY_BODY, resetMethod, new TemplateHookPoint("mill.ResetMethod", getAttributeNameList(astcdClassList), superSymbolList));
     return resetMethod;
@@ -157,7 +156,7 @@ public class MillDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCD
     return builderMethodsList;
   }
 
-  protected List<ASTCDMethod> addSuperBuilderMethods(List<CDSymbol> superSymbolList) {
+  protected List<ASTCDMethod> addSuperBuilderMethods(Collection<CDSymbol> superSymbolList) {
     List<ASTCDMethod> superMethods = new ArrayList<>();
     //get super symbols
     for (CDSymbol superSymbol : superSymbolList) {
