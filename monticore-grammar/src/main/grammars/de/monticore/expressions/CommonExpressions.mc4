@@ -106,11 +106,6 @@ component grammar CommonExpressions extends de.monticore.expressions.Expressions
 
   /*=================================================================*/
 
-  SimpleAssignmentExpression implements Expression <111>, InfixExpression = <rightassoc>
-	left:Expression operator:"+=" right:Expression;
-
-  /*=================================================================*/
-
   BracketExpression implements Expression <310>
     =  "(" Expression ")";
     
