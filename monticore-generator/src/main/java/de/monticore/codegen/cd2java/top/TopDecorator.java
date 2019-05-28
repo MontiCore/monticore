@@ -1,18 +1,13 @@
 package de.monticore.codegen.cd2java.top;
 
 import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static de.monticore.codegen.cd2java.factories.CDModifier.PACKAGE_PRIVATE_ABSTRACT;
 
 public class TopDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
-
-  private static final String JAVA_EXTENSION = ".java";
 
   private static final String TOP_SUFFIX = "TOP";
 
@@ -25,26 +20,20 @@ public class TopDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDC
   @Override
   public ASTCDCompilationUnit decorate(ASTCDCompilationUnit ast) {
     ASTCDDefinition cdDefinition = ast.getCDDefinition();
-    String packageName = String.join(File.separator, ast.getPackageList());
 
     cdDefinition.getCDClassList().stream()
-        .filter(cdClass -> existsHandwrittenClass(packageName, cdClass.getName()))
+        .filter(cdClass -> TransformationHelper.existsHandwrittenClass(targetPath, cdClass.getName()))
         .forEach(this::applyTopMechanism);
 
     cdDefinition.getCDInterfaceList().stream()
-        .filter(cdInterface -> existsHandwrittenClass(packageName, cdInterface.getName()))
+        .filter(cdInterface -> TransformationHelper.existsHandwrittenClass(targetPath, cdInterface.getName()))
         .forEach(this::applyTopMechanism);
 
     cdDefinition.getCDEnumList().stream()
-        .filter(cdEnum -> existsHandwrittenClass(packageName, cdEnum.getName()))
+        .filter(cdEnum -> TransformationHelper.existsHandwrittenClass(targetPath, cdEnum.getName()))
         .forEach(this::applyTopMechanism);
 
     return ast;
-  }
-
-  private boolean existsHandwrittenClass(String packageName, String simpleName) {
-    Path handwrittenFile = Paths.get(packageName, simpleName + JAVA_EXTENSION);
-    return targetPath.exists(handwrittenFile);
   }
 
   private void applyTopMechanism(ASTCDClass cdClass) {
