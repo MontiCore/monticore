@@ -11,10 +11,10 @@ public class TopDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDC
 
   private static final String TOP_SUFFIX = "TOP";
 
-  private final IterablePath targetPath;
+  private final IterablePath hwPath;
 
-  public TopDecorator(IterablePath targetPath) {
-    this.targetPath = targetPath;
+  public TopDecorator(IterablePath hwPath) {
+    this.hwPath = hwPath;
   }
 
   @Override
@@ -22,15 +22,15 @@ public class TopDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDC
     ASTCDDefinition cdDefinition = ast.getCDDefinition();
 
     cdDefinition.getCDClassList().stream()
-        .filter(cdClass -> TransformationHelper.existsHandwrittenClass(targetPath, cdClass.getName()))
+        .filter(cdClass -> TransformationHelper.existsHandwrittenClass(hwPath, cdClass.getName()))
         .forEach(this::applyTopMechanism);
 
     cdDefinition.getCDInterfaceList().stream()
-        .filter(cdInterface -> TransformationHelper.existsHandwrittenClass(targetPath, cdInterface.getName()))
+        .filter(cdInterface -> TransformationHelper.existsHandwrittenClass(hwPath, cdInterface.getName()))
         .forEach(this::applyTopMechanism);
 
     cdDefinition.getCDEnumList().stream()
-        .filter(cdEnum -> TransformationHelper.existsHandwrittenClass(targetPath, cdEnum.getName()))
+        .filter(cdEnum -> TransformationHelper.existsHandwrittenClass(hwPath, cdEnum.getName()))
         .forEach(this::applyTopMechanism);
 
     return ast;
