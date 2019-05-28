@@ -33,12 +33,18 @@ public class MCTask extends DefaultTask {
   public void handcodedPath(String... strings){
     handcodedPath.addAll(strings)
   }
+  @Input @Optional
+  public void modelPath(String... strings){
+    modelPath.addAll(strings)
+  }
+  
   
   @Input @Optional
   public void includeConfigs(String... configurations){
     includeConfigs.addAll(configurations)
   }
   
+  @Input @Optional
   String group = "MC"
   
   
