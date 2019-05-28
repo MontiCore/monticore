@@ -73,6 +73,14 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
     return cdMethod;
   }
 
+  private void addMethodBodyStereotype(ASTModifier modifier, StringBuilder code){
+    // to save the body in the cd
+    // todo think of better version
+    TransformationHelper.addStereotypeValue(modifier,
+        MC2CDStereotypes.METHOD_BODY.toString(),
+        code.toString());
+  }
+
   private ASTCDMethod translateASTMethodToASTCDMethodInterface(ASTMethod method) {
     ASTCDMethod cdMethod = createSimpleCDMethod(method);
     if (method.getBody() instanceof ASTAction) {
@@ -81,13 +89,10 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
         code.append(GeneratorHelper.getJavaPrettyPrinter().prettyprint(action));
       }
       if (!code.toString().isEmpty()) {
-        // to save the body in the cd
-        // todo think of better version
-        TransformationHelper.addStereotypeValue(cdMethod.getModifier(),
-            MC2CDStereotypes.METHOD_BODY.toString(),
-            code.toString());
         HookPoint methodBody = new StringHookPoint(code.toString());
         glex.replaceTemplate(CdDecorator.EMPTY_BODY_TEMPLATE, cdMethod, methodBody);
+
+        addMethodBodyStereotype(cdMethod.getModifier(), code);
       } else {
         cdMethod.getModifier().setAbstract(true);
       }
@@ -104,11 +109,8 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
       }
       HookPoint methodBody = new StringHookPoint(code.toString());
       glex.replaceTemplate(CdDecorator.EMPTY_BODY_TEMPLATE, cdMethod, methodBody);
-      // to save the body in the cd
-      // todo think of better version
-      TransformationHelper.addStereotypeValue(cdMethod.getModifier(),
-          MC2CDStereotypes.METHOD_BODY.toString(),
-          code.toString());
+
+      addMethodBodyStereotype(cdMethod.getModifier(), code);
     }
     return cdMethod;
   }
