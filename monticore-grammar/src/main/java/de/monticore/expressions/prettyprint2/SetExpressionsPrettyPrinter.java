@@ -70,14 +70,6 @@ public class SetExpressionsPrettyPrinter implements SetExpressionsVisitor {
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
-  @Override
-  public void handle(ASTSetXOrExpression node) {
-    CommentPrettyPrinter.printPreComments(node, getPrinter());
-    getPrinter().print(" setxor ");
-    node.getSet().accept(getRealThis());
-    CommentPrettyPrinter.printPostComments(node, getPrinter());
-  }
-  
   public IndentPrinter getPrinter() {
     return this.printer;
   }

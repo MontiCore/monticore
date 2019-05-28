@@ -2,7 +2,7 @@
 package de.monticore.expressions;
 
 /* This is intended to become(!) a MontiCore stable grammar.
- * TODO: Some of the operators (esp. SetXOrExpression) may yet be adapted */
+ */
  
 /**
  * This grammar defines set expressions like union, intersection etc.
@@ -66,9 +66,5 @@ component grammar SetExpressions extends de.monticore.expressions.CommonExpressi
 
   SetOrExpression implements Expression <130> =
       "setor" set:Expression;
-
-  @Deprecated
-  SetXOrExpression implements Expression <130> =
-      "setxor" set:Expression;
 
 }
