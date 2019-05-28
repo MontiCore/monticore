@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.nio.file.Path;
+import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.factories.CDModifier.*;
@@ -34,7 +35,7 @@ public class TopDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testHandWrittenClassFound() {
-    Mockito.when(targetPath.exists(Mockito.any(Path.class))).thenReturn(true);
+    Mockito.when(targetPath.getResolvedPath(Mockito.any(Path.class))).thenReturn(Optional.of(Mockito.mock(Path.class)));
     ASTCDDefinition ast = this.topDecorator.decorate(this.topCD).getCDDefinition();
 
     assertEquals(1, ast.getCDClassList().size());

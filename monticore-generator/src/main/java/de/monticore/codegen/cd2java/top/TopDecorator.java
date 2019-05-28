@@ -1,11 +1,12 @@
 package de.monticore.codegen.cd2java.top;
 
 import de.monticore.codegen.cd2java.AbstractDecorator;
-import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.io.paths.IterablePath;
 import de.monticore.umlcd4a.cd4analysis._ast.*;
 
 import static de.monticore.codegen.cd2java.factories.CDModifier.PACKAGE_PRIVATE_ABSTRACT;
+import static de.monticore.codegen.mc2cd.TransformationHelper.existsHandwrittenClass;
+import static de.monticore.utils.Names.constructQualifiedName;
 
 public class TopDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
 
@@ -22,15 +23,15 @@ public class TopDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCDC
     ASTCDDefinition cdDefinition = ast.getCDDefinition();
 
     cdDefinition.getCDClassList().stream()
-        .filter(cdClass -> TransformationHelper.existsHandwrittenClass(hwPath, cdClass.getName()))
+        .filter(cdClass -> existsHandwrittenClass(hwPath, constructQualifiedName(ast.getPackageList(),cdClass.getName())))
         .forEach(this::applyTopMechanism);
 
     cdDefinition.getCDInterfaceList().stream()
-        .filter(cdInterface -> TransformationHelper.existsHandwrittenClass(hwPath, cdInterface.getName()))
+        .filter(cdInterface -> existsHandwrittenClass(hwPath, constructQualifiedName(ast.getPackageList(),cdInterface.getName())))
         .forEach(this::applyTopMechanism);
 
     cdDefinition.getCDEnumList().stream()
-        .filter(cdEnum -> TransformationHelper.existsHandwrittenClass(hwPath, cdEnum.getName()))
+        .filter(cdEnum -> existsHandwrittenClass(hwPath, constructQualifiedName(ast.getPackageList(),cdEnum.getName())))
         .forEach(this::applyTopMechanism);
 
     return ast;
