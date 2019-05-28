@@ -22,7 +22,7 @@ public class ASTLanguageInterfaceDecorator extends AbstractDecorator<ASTCDCompil
   }
 
   @Override
-  public ASTCDInterface decorate(ASTCDCompilationUnit compilationUnit) {
+  public ASTCDInterface decorate(final ASTCDCompilationUnit compilationUnit) {
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setModifier(PUBLIC.build())
         .setName(astService.getASTBaseInterfaceSimpleName())

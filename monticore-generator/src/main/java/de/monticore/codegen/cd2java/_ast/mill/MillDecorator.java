@@ -47,7 +47,7 @@ public class MillDecorator extends AbstractDecorator<ASTCDCompilationUnit, ASTCD
     this.service = service;
   }
 
-  public ASTCDClass decorate(ASTCDCompilationUnit compilationUnit) {
+  public ASTCDClass decorate(final ASTCDCompilationUnit compilationUnit) {
     astcdDefinition = compilationUnit.getCDDefinition().deepClone();
     //filter out all classes that are abstract and remove AST prefix
     astcdDefinition.setCDClassList(astcdDefinition.getCDClassList()

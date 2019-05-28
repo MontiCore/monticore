@@ -40,7 +40,7 @@ public class ASTConstantsDecorator extends AbstractDecorator<ASTCDCompilationUni
   }
 
   @Override
-  public ASTCDClass decorate(ASTCDCompilationUnit input) {
+  public ASTCDClass decorate(final ASTCDCompilationUnit input) {
     String grammarName = input.getCDDefinition().getName();
     String className = AST_CONSTANTS + grammarName;
     Optional<ASTCDEnum> literalsEnum = input.getCDDefinition().getCDEnumList().stream()

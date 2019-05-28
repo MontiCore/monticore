@@ -33,7 +33,7 @@ public class NodeFactoryDecorator extends AbstractDecorator<ASTCDCompilationUnit
     this.nodeFactoryService = nodeFactoryService;
   }
 
-  public ASTCDClass decorate(ASTCDCompilationUnit astcdCompilationUnit) {
+  public ASTCDClass decorate(final ASTCDCompilationUnit astcdCompilationUnit) {
     this.compilationUnit = astcdCompilationUnit;
     ASTCDDefinition astcdDefinition = astcdCompilationUnit.getCDDefinition();
     String factoryClassName = astcdDefinition.getName() + NODE_FACTORY_SUFFIX;

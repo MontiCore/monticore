@@ -32,7 +32,7 @@ public class EnumDecorator extends AbstractDecorator<ASTCDEnum, ASTCDEnum> {
   }
 
   @Override
-  public ASTCDEnum decorate(ASTCDEnum input) {
+  public ASTCDEnum decorate(final ASTCDEnum input) {
     String enumName = input.getName();
     String constantClassName = astService.getASTConstantClassName();
     ASTCDAttribute intValueAttribute = getIntValueAttribute();

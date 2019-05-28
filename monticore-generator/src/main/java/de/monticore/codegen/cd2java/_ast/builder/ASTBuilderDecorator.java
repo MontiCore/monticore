@@ -38,7 +38,7 @@ public class ASTBuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClas
   }
 
   @Override
-  public ASTCDClass decorate(ASTCDClass domainClass) {
+  public ASTCDClass decorate(final ASTCDClass domainClass) {
     ASTCDClass builderClass = this.builderDecorator.decorate(domainClass);
     String builderClassName = builderClass.getName();
 
