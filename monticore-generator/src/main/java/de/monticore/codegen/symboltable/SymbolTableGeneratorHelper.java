@@ -319,9 +319,9 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
         return "null";
     }
   }
-  
+
   public static String getDeserializationType(final String type) {
-    switch(type) {
+    switch (type) {
       case "boolean":
         return "Boolean";
       case "int":
@@ -338,8 +338,10 @@ public class SymbolTableGeneratorHelper extends GeneratorHelper {
         return "Int";
       case "char":
         return "Int";
-      default:
+      case "String":
         return "String";
+      default:
+        return "";
     }
   }
   

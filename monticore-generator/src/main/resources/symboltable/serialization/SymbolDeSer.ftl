@@ -108,7 +108,7 @@ public class ${className} implements IDeSer<${symbolName}Symbol> {
     <#else>
       <#assign methodName="is" + attr.getName()?cap_first>
     </#if>
-   <#if attr.isPresentCard()>
+   <#if genHelper.getDeserializationType(attrType)?length==0>
      // TODO ${attrName} = ${genHelper.getDeserializationCastString(attrType)} reader.next${genHelper.getDeserializationType(attrType)}();
    <#else>
             ${attrName} = ${genHelper.getDeserializationCastString(attrType)} reader.next${genHelper.getDeserializationType(attrType)}();
