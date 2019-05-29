@@ -51,7 +51,7 @@ public class ExpressionsBasisPrettyPrinter implements ExpressionsBasisVisitor {
   @Override
   public void handle(ASTLiteralExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getExtLiteral().accept(getRealThis());
+    node.getLiteral().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
 
