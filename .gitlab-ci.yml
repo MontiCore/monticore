@@ -10,6 +10,9 @@ cache:
   key: ${CI_COMMIT_REF_SLUG} # Cache per branch
 
 
+before_script:
+    - chmod +x gradlew
+
 stages:
   - build
   - trigger
