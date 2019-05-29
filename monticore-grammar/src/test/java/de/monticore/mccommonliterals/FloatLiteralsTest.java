@@ -1,12 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package de.monticore.mcbasicliterals;
+package de.monticore.mccommonliterals;
 
-import de.monticore.mcbasicliterals._ast.ASTBasicFloatLiteral;
+import de.monticore.mccommonliterals._ast.ASTBasicFloatLiteral;
 import de.monticore.mcliteralsbasis._ast.ASTLiteral;
-import de.monticore.testmcbasicliterals._parser.TestMCBasicLiteralsParser;
+import de.monticore.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -25,7 +24,7 @@ public class FloatLiteralsTest {
   }
 
   private void checkFloatLiteral(float f, String s) throws IOException {
-    TestMCBasicLiteralsParser parser = new TestMCBasicLiteralsParser();
+    TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     Optional<ASTLiteral> lit = parser.parseLiteral(new StringReader(s));
     assertTrue(lit.isPresent());
     assertTrue(lit.get() instanceof ASTBasicFloatLiteral);
@@ -34,7 +33,7 @@ public class FloatLiteralsTest {
   }
 
   private void checkFalse(String s) throws IOException {
-    TestMCBasicLiteralsParser parser = new TestMCBasicLiteralsParser();
+    TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     Optional<ASTBasicFloatLiteral> lit = parser.parseBasicFloatLiteral(new StringReader(s));
     assertTrue(!lit.isPresent());
    }

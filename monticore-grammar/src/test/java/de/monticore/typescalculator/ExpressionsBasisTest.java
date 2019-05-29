@@ -1,7 +1,6 @@
 package de.monticore.typescalculator;
 
 import de.monticore.antlr4.MCConcreteParser;
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisLanguage;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
@@ -13,14 +12,8 @@ import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
 import de.monticore.typescalculator.testcommonexpressions._parser.TestCommonExpressionsParser;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
-import org.junit.Test;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.Assert.assertTrue;
 
 public class ExpressionsBasisTest {
 
@@ -45,7 +38,7 @@ public class ExpressionsBasisTest {
     artifactScope.addSubScope(scope);
     scope.setResolvingFilters(expressionsBasisLanguage.getResolvingFilters());
 
-    this.literalsVisitor=new BasicLiteralsTypeCalculator();
+    this.literalsVisitor=new CommonLiteralsTypesCalculator();
 
     EVariableSymbol symbol = new EVariableSymbol("varInt");
     MCTypeSymbol typeSymbol = new MCTypeSymbol("int");

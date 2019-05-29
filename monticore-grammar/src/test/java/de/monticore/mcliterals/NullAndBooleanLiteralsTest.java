@@ -2,8 +2,8 @@
 
 package de.monticore.mcliterals;
 
-import de.monticore.mcbasicliterals._ast.ASTBooleanLiteral;
-import de.monticore.mcbasicliterals._ast.ASTNullLiteral;
+import de.monticore.mccommonliterals._ast.ASTBooleanLiteral;
+import de.monticore.mccommonliterals._ast.ASTNullLiteral;
 import de.monticore.mcliteralsbasis._ast.ASTLiteral;
 import org.junit.Test;
 

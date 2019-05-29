@@ -2,7 +2,7 @@
 
 package de.monticore.expressions;
 
-grammar TestCommonExpressions extends de.monticore.expressions.CommonExpressions, de.monticore.MCBasicLiterals,
+grammar TestCommonExpressions extends de.monticore.expressions.CommonExpressions, de.monticore.MCCommonLiterals,
                                       de.monticore.MCBasics {
   start Expression;
 

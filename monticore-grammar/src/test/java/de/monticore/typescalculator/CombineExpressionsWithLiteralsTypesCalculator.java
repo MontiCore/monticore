@@ -49,9 +49,9 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     LiteralsBasisTypesCalculator literalsBasisTypesCalculator = new LiteralsBasisTypesCalculator();
     setMCLiteralsBasisVisitor(literalsBasisTypesCalculator);
 
-    BasicLiteralsTypeCalculator basicLiteralsTypeCalculator = new BasicLiteralsTypeCalculator();
+    CommonLiteralsTypesCalculator basicLiteralsTypeCalculator = new CommonLiteralsTypesCalculator();
     basicLiteralsTypeCalculator.setTypes(types);
-    setMCBasicLiteralsVisitor(basicLiteralsTypeCalculator);
+    setMCCommonLiteralsVisitor(basicLiteralsTypeCalculator);
 
   }
 

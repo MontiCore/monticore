@@ -2,9 +2,9 @@
 
 package de.monticore.mcliterals;
 
-import de.monticore.mcbasicliterals._ast.ASTSignedLiteral;
+import de.monticore.mccommonliterals._ast.ASTSignedLiteral;
 import de.monticore.mcliteralsbasis._ast.ASTLiteral;
-import de.monticore.testmcbasicliterals._parser.TestMCBasicLiteralsParser;
+import de.monticore.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import junit.framework.TestCase;
 
 import java.io.IOException;
@@ -48,7 +48,7 @@ public class MCLiteralsTestHelper {
    * @throws IOException
    */
   public ASTLiteral parseLiteral(String input) throws IOException {
-    TestMCBasicLiteralsParser parser = new TestMCBasicLiteralsParser();
+    TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     Optional<ASTLiteral> res = parser.parseLiteral(new StringReader(input));
     TestCase.assertTrue(res.isPresent());
     return res.get();
@@ -63,7 +63,7 @@ public class MCLiteralsTestHelper {
    */
   public ASTSignedLiteral parseSignedLiteral(String input)
       throws IOException {
-    TestMCBasicLiteralsParser parser = new TestMCBasicLiteralsParser();
+    TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     Optional<ASTSignedLiteral> res = parser.parseSignedLiteral(new StringReader(input));
     TestCase.assertTrue(res.isPresent());
     return res.get();

@@ -31,7 +31,7 @@ public class CombineExpressionsTypesCalculator extends CombineExpressionsDelegat
 
   public CombineExpressionsTypesCalculator(ExpressionsBasisScope scope){
     this.realThis=this;
-    this.literalsVisitor=new BasicLiteralsTypeCalculator();
+    this.literalsVisitor=new CommonLiteralsTypesCalculator();
     this.types = new HashMap<>();
     commonExpressionsWithLiteralsTypesCalculator = new CommonExpressionsWithLiteralsTypesCalculator();
     commonExpressionsWithLiteralsTypesCalculator.setScope(scope);
@@ -63,9 +63,9 @@ public class CombineExpressionsTypesCalculator extends CombineExpressionsDelegat
     expressionsBasisTypesCalculator.setTypes(types);
     setExpressionsBasisVisitor(expressionsBasisTypesCalculator);
 
-    BasicLiteralsTypeCalculator mcBasicLiteralsVisitor= new BasicLiteralsTypeCalculator();
+    CommonLiteralsTypesCalculator mcBasicLiteralsVisitor= new CommonLiteralsTypesCalculator();
     mcBasicLiteralsVisitor.setTypes(types);
-    setMCBasicLiteralsVisitor(mcBasicLiteralsVisitor);
+    setMCCommonLiteralsVisitor(mcBasicLiteralsVisitor);
 
     LiteralsBasisTypesCalculator literalsBasisTypesCalculator = new LiteralsBasisTypesCalculator();
     setMCLiteralsBasisVisitor(literalsBasisTypesCalculator);

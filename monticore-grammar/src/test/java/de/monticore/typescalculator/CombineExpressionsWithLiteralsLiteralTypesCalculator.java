@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class CombineExpressionsWithLiteralsLiteralTypesCalculator implements CombineExpressionsWithLiteralsVisitor {
 
-  private BasicLiteralsTypeCalculator literalsVisitor;
+  private CommonLiteralsTypesCalculator literalsVisitor;
 
   private Map<ASTNode, MCTypeSymbol> types;
 
@@ -41,6 +41,6 @@ public class CombineExpressionsWithLiteralsLiteralTypesCalculator implements Com
 
   public CombineExpressionsWithLiteralsLiteralTypesCalculator(){
     realThis=this;
-    literalsVisitor=new BasicLiteralsTypeCalculator();
+    literalsVisitor=new CommonLiteralsTypesCalculator();
   }
 }

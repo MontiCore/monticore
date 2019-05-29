@@ -13,7 +13,7 @@ package de.monticore;
  *
 */
 
-component grammar MCJavaLiterals extends de.monticore.MCBasicLiterals {
+component grammar MCJavaLiterals extends de.monticore.MCCommonLiterals {
 
 
 

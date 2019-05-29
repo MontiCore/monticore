@@ -21,7 +21,7 @@ public class AssignmentExpressionsTest {
 
   private ExpressionsBasisScope scope;
 
-  private LiteralTypeCalculator literalsVisitor = new BasicLiteralsTypeCalculator();
+  private LiteralTypeCalculator literalsVisitor = new CommonLiteralsTypesCalculator();
 
   @Before
   public void setup() {

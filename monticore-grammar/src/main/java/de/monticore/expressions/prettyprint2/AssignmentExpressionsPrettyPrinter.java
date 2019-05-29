@@ -6,6 +6,7 @@ import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpress
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
+import de.se_rwth.commons.logging.Log;
 
 public class AssignmentExpressionsPrettyPrinter implements AssignmentExpressionsVisitor {
   

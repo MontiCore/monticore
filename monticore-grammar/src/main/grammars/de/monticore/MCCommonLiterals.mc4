@@ -8,7 +8,7 @@ package de.monticore;
  * The grammar contains literals from Java, e.g., Boolean, Char, String, ....
 */
 
-component grammar MCBasicLiterals extends de.monticore.MCLiteralsBasis {
+component grammar MCCommonLiterals extends de.monticore.MCLiteralsBasis {
 
 
 
@@ -181,7 +181,7 @@ component grammar MCBasicLiterals extends de.monticore.MCLiteralsBasis {
 
   astrule BooleanLiteral =
     method public boolean getValue() {
-      return this.source == ASTConstantsMCBasicLiterals.TRUE;
+      return this.source == ASTConstantsMCCommonLiterals.TRUE;
     }
   ;
 

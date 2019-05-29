@@ -3,7 +3,7 @@ import java.util.*;
 import questionnaire._ast.*;
 import questionnaire._visitor.*;
 import de.monticore.ast.ASTNode;
-import de.monticore.mcbasicliterals._ast.*;
+import de.monticore.mccommonliterals._ast.*;
 
 import java.io.IOException;
 import org.antlr.v4.runtime.RecognitionException;
