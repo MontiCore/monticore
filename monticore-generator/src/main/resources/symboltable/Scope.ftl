@@ -26,8 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ListMultimap;
-import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.LinkedListMultimap;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.*;
@@ -36,7 +35,7 @@ import de.se_rwth.commons.logging.Log;
 public <#if hasHWC>abstract</#if> class ${className} ${superInterfaces} {
 
 <#list symbolNames?keys as symbol>
-  protected ListMultimap<String, ${symbolNames[symbol]}> ${symbol?lower_case}s = ArrayListMultimap.create();
+  protected LinkedListMultimap<String, ${symbolNames[symbol]}> ${symbol?lower_case}s = LinkedListMultimap.create();
 
 </#list>
   protected I${languageName}Scope enclosingScope;
@@ -188,7 +187,7 @@ public <#if hasHWC>abstract</#if> class ${className} ${superInterfaces} {
     this.${symbol?lower_case}s.remove(symbol.getName(), symbol);
   }
 
-  public ListMultimap<String, ${symbolNames[symbol]}> get${symbol}s() {
+  public LinkedListMultimap<String, ${symbolNames[symbol]}> get${symbol}s() {
     return this.${symbol?lower_case}s;
   }
 

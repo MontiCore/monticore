@@ -9,9 +9,10 @@ package ${genHelper.getTargetPackage()};
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.Set;
+import java.util.List;
 import java.util.Collection;
 import java.util.Collections;
-import com.google.common.collect.ListMultimap;
+import com.google.common.collect.LinkedListMultimap;
 import java.util.LinkedHashSet;
 
 import java.util.stream.Collectors;
@@ -158,7 +159,7 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
     return filteredSymbols;
   }
 
-  default Optional<${symbolNames[symbol]}> filter${symbol}(String name, ListMultimap<String, ${symbolNames[symbol]}> symbols) {
+  default Optional<${symbolNames[symbol]}> filter${symbol}(String name, LinkedListMultimap<String, ${symbolNames[symbol]}> symbols) {
     final Set<${symbolNames[symbol]}> resolvedSymbols = new LinkedHashSet<>();
 
     final String simpleName = Names.getSimpleName(name);
@@ -203,11 +204,11 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
    */
   void remove(${symbolNames[symbol]} symbol);
 
-  default public Collection<${symbolNames[symbol]}> getLocal${symbol}Symbols() {
+  default public List<${symbolNames[symbol]}> getLocal${symbol}Symbols() {
     return get${symbol}Symbols().values();
   }
 
-  ListMultimap<String, ${symbolNames[symbol]}> get${symbol}Symbols();
+  LinkedListMultimap<String, ${symbolNames[symbol]}> get${symbol}Symbols();
 
 </#list>
 
