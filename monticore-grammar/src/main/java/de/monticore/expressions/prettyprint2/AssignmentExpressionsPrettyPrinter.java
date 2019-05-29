@@ -25,7 +25,7 @@ public class AssignmentExpressionsPrettyPrinter implements AssignmentExpressions
     getPrinter().print("++");
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
-
+  
   @Override
   public void handle(ASTDecSuffixExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
@@ -33,7 +33,7 @@ public class AssignmentExpressionsPrettyPrinter implements AssignmentExpressions
     getPrinter().print("--");
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
-
+  
   @Override
   public void handle(ASTPlusPrefixExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
@@ -41,7 +41,7 @@ public class AssignmentExpressionsPrettyPrinter implements AssignmentExpressions
     node.getExpression().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
-
+  
   @Override
   public void handle(ASTMinusPrefixExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
@@ -70,36 +70,53 @@ public class AssignmentExpressionsPrettyPrinter implements AssignmentExpressions
   public void handle(ASTRegularAssignmentExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getLeft().accept(getRealThis());
-    if(node.getOperator()==ASTConstantsAssignmentExpressions.EQUALS) {
-      getPrinter().print("=");
-    }else if(node.getOperator()==ASTConstantsAssignmentExpressions.PERCENTEQUALS){
-      getPrinter().print("%=");
-    }else if(node.getOperator()==ASTConstantsAssignmentExpressions.ROOFEQUALS) {
-      getPrinter().print("^=");
-    }else if(node.getOperator()==ASTConstantsAssignmentExpressions.GTGTGTEQUALS){
-      getPrinter().print(">>>=");
-    }else if(node.getOperator()==ASTConstantsAssignmentExpressions.LTLTEQUALS){
-      getPrinter().print("<<=");
-    }else if(node.getOperator()==ASTConstantsAssignmentExpressions.GTGTEQUALS){
-      getPrinter().print(">>=");
-    }else if(node.getOperator()==ASTConstantsAssignmentExpressions.PIPEEQUALS){
-      getPrinter().print("|=");
-    }else if(node.getOperator()==ASTConstantsAssignmentExpressions.ANDEQUALS){
-      getPrinter().print("&=");
-    }else if(node.getOperator()==ASTConstantsAssignmentExpressions.SLASHEQUALS){
-      getPrinter().print("/=");
-    }else if(node.getOperator()==ASTConstantsAssignmentExpressions.STAREQUALS){
-      getPrinter().print("*=");
-    }else if(node.getOperator()==ASTConstantsAssignmentExpressions.PLUSEQUALS){
-      getPrinter().print("+=");
-    }else if(node.getOperator()==ASTConstantsAssignmentExpressions.MINUSEQUALS){
-      getPrinter().print("-=");
+    // ["="|"+="|"-="|"*="|"/="|"&="|"|="|"^="|">>="|">>>="|"<<="|"%="]
+    switch (node.getOperator()) {
+      case ASTConstantsAssignmentExpressions.EQUALS:
+        getPrinter().print(("="));
+        break;
+      case ASTConstantsAssignmentExpressions.PLUSEQUALS:
+        getPrinter().print(("+="));
+        break;
+      case ASTConstantsAssignmentExpressions.MINUSEQUALS:
+        getPrinter().print(("-="));
+        break;
+      case ASTConstantsAssignmentExpressions.STAREQUALS:
+        getPrinter().print(("*="));
+        break;
+      case ASTConstantsAssignmentExpressions.SLASHEQUALS:
+        getPrinter().print(("/="));
+        break;
+      case ASTConstantsAssignmentExpressions.ANDEQUALS:
+        getPrinter().print(("&="));
+        break;
+      case ASTConstantsAssignmentExpressions.PIPEEQUALS:
+        getPrinter().print(("|="));
+        break;
+      case ASTConstantsAssignmentExpressions.ROOFEQUALS:
+        getPrinter().print(("^="));
+        break;
+      case ASTConstantsAssignmentExpressions.GTGTEQUALS:
+        getPrinter().print((">>="));
+        break;
+      case ASTConstantsAssignmentExpressions.GTGTGTEQUALS:
+        getPrinter().print((">>>="));
+        break;
+      case ASTConstantsAssignmentExpressions.LTLTEQUALS:
+        getPrinter().print(("<<="));
+        break;
+      case ASTConstantsAssignmentExpressions.PERCENTEQUALS:
+        getPrinter().print(("%="));
+        break;
+      default:
+        Log.error("0xA0114 Missing implementation for RegularAssignmentExpression");
     }
-      node.getRight().accept(getRealThis());
+    node.getRight().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
-
-  public void printPlus(ASTPlusAssignmentExpression node) {
+  
+  @Override
+  public void handle(ASTPlusAssignmentExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getLeft().accept(getRealThis());
     getPrinter().print("+=");
@@ -107,7 +124,8 @@ public class AssignmentExpressionsPrettyPrinter implements AssignmentExpressions
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
-  public void printMinus(ASTMinusAssignmentExpression node) {
+  @Override
+  public void handle(ASTMinusAssignmentExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getLeft().accept(getRealThis());
     getPrinter().print("-=");
@@ -115,7 +133,8 @@ public class AssignmentExpressionsPrettyPrinter implements AssignmentExpressions
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
-  public void printMult(ASTMultAssignmentExpression node) {
+  @Override
+  public void handle(ASTMultAssignmentExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getLeft().accept(getRealThis());
     getPrinter().print("*=");
@@ -123,7 +142,8 @@ public class AssignmentExpressionsPrettyPrinter implements AssignmentExpressions
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
-  public void printDivide(ASTDivideAssignmentExpression node) {
+  @Override
+  public void handle(ASTDivideAssignmentExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getLeft().accept(getRealThis());
     getPrinter().print("/=");
@@ -131,7 +151,8 @@ public class AssignmentExpressionsPrettyPrinter implements AssignmentExpressions
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
-  public void printAnd(ASTAndAssignmentExpression node) {
+  @Override
+  public void handle(ASTAndAssignmentExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getLeft().accept(getRealThis());
     getPrinter().print("&=");
@@ -139,7 +160,8 @@ public class AssignmentExpressionsPrettyPrinter implements AssignmentExpressions
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
-  public void printOr(ASTOrAssignmentExpression node) {
+  @Override
+  public void handle(ASTOrAssignmentExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getLeft().accept(getRealThis());
     getPrinter().print("|=");
@@ -147,7 +169,8 @@ public class AssignmentExpressionsPrettyPrinter implements AssignmentExpressions
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
-  public void printBinaryXor(ASTBinaryXorAssignmentExpression node) {
+  @Override
+  public void handle(ASTBinaryXorAssignmentExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getLeft().accept(getRealThis());
     getPrinter().print("^=");
@@ -155,7 +178,8 @@ public class AssignmentExpressionsPrettyPrinter implements AssignmentExpressions
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
-  public void printRightShift(ASTRightShiftAssignmentExpression node) {
+  @Override
+  public void handle(ASTRightShiftAssignmentExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getLeft().accept(getRealThis());
     getPrinter().print(">>=");
@@ -163,7 +187,8 @@ public class AssignmentExpressionsPrettyPrinter implements AssignmentExpressions
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
-  public void printLogicalRight(ASTLogicalRightAssignmentExpression node) {
+  @Override
+  public void handle(ASTLogicalRightAssignmentExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getLeft().accept(getRealThis());
     getPrinter().print(">>>=");
@@ -171,7 +196,8 @@ public class AssignmentExpressionsPrettyPrinter implements AssignmentExpressions
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
-  public void printLeftShift(ASTLeftShiftAssignmentExpression node) {
+  @Override
+  public void handle(ASTLeftShiftAssignmentExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getLeft().accept(getRealThis());
     getPrinter().print("<<=");
@@ -179,7 +205,8 @@ public class AssignmentExpressionsPrettyPrinter implements AssignmentExpressions
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
   
-  public void printModulo(ASTModuloAssignmentExpression node) {
+  @Override
+  public void handle(ASTModuloAssignmentExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getLeft().accept(getRealThis());
     getPrinter().print("%=");

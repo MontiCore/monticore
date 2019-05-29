@@ -1,45 +1,73 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package de.monticore.expressions;
 
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+ 
 /**
- * This grammar defines binary expressions like <<, >>, >>>, &, ^ and |
+ * This grammar defines a typical standard set of operations for
+ * expressions. This is a subset of Java for binary expressions 
+ * like <<, >>, >>>, &, ^ and |
+ * 
+ * There are also other kinds of expressions defined in the 
+ * grammars mentioned below. These expression definitions can savely be 
+ * composed if desired.
+ * 
+ * This grammar is part of a hierarchy of types, namely 
+ * * expressions/ExpressionsBasis.mc4
+ * * --  expressions/CommonExpressions.mc4      
+ * * --  --  expressions/JavaClassExpressions.mc4
+ * * --  --  expressions/SetExpressions.mc4
+ * * --  expressions/AssignmentExpressions.mc4  
+ * * --  expressions/BitExpressions.mc4         
+ * * --  expressions/OCLExpressions.mc4
+ *
 */
 
 component grammar BitExpressions extends de.monticore.expressions.ExpressionsBasis {
 
-interface ShiftExpression =
+  /*=================================================================*/
+
+  interface ShiftExpression =
 	left:Expression shiftOp:"" right:Expression;
 
-// It is not possible to define "<<", ">>" or ">>>" directly.
-// Parsing generic types like "List<List<String>>" otherwise lead to problems.
-// We therefor use the noSpsce workaraound to ensure that no space was
-// found between the previous two token.
+  /* The priorities (160, 120 and 110) are compatible with the priorities
+   * of the other infix operations e.g. in CommonExpressions
+   * leading to Java' like priorization.
+  */
+  
+  /*=================================================================*/
+
+  /* It is not possible to define "<<", ">>" or ">>>" directly.
+   * Parsing generic types like "List<List<String>>" otherwise have problems.
+   * We use the noSpace workaraound to ensure that no space was
+   * found between the previous two token.
+  */
 		
-LeftShiftExpression implements Expression <160>, ShiftExpression =
+  LeftShiftExpression implements Expression <160>, ShiftExpression =
 	left:Expression 
 	shiftOp:"<" "<" {noSpace()}? {_aNode.setShiftOp("<<");}        
     right:Expression;
  
-RightShiftExpression implements Expression <160>, ShiftExpression =
+  RightShiftExpression implements Expression <160>, ShiftExpression =
 	left:Expression 
 	shiftOp:">" ">" {noSpace()}? {_aNode.setShiftOp(">>");}        
     right:Expression;
 
-LogicalRightShiftExpression implements Expression <160>, ShiftExpression =
+  LogicalRightShiftExpression implements Expression <160>, ShiftExpression =
 	left:Expression 
 	shiftOp:">" ">" {noSpace()}? ">" {noSpace()}? {_aNode.setShiftOp(">>>");}        
     right:Expression;
+
+  /*=================================================================*/
     
-BinaryAndExpression implements Expression <120> =
+  BinaryAndExpression implements Expression <120> =
 	left:Expression operator:"&"  right:Expression;
 
-BinaryXorExpression implements Expression <110> =
+  BinaryXorExpression implements Expression <110> =
 	left:Expression operator:"^"  right:Expression;
 
-BinaryOrOpExpression implements Expression <100> =
+  BinaryOrOpExpression implements Expression <100> =
 	left:Expression operator:"|"  right:Expression;
-
-
 
 }
