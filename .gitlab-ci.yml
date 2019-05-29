@@ -11,7 +11,7 @@ cache:
 
 
 before_script:
-    - chmod +x gradlew
+    - chmod +x monticore-gradle/gradlew
 
 stages:
   - build
