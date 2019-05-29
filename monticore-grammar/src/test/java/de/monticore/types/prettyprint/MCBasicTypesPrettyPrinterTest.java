@@ -174,4 +174,17 @@ public class MCBasicTypesPrettyPrinterTest {
     }
   }
 
+
+  @Test
+  public void printTypeMethodTest() {
+    MCBasicTypesTestParser mcBasicTypesParser= new MCBasicTypesTestParser();
+    String simpleReference = "de.monticore.types.prettyprint";
+    try {
+      Optional<? extends ASTMCType> type = mcBasicTypesParser.parse_StringMCQualifiedType(simpleReference);
+      assertEquals(type.get().printType().trim(),simpleReference.trim());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
 }
