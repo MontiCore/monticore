@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className", "directSuperCds", "rules", "hcPath")}
+${signature("className", "directSuperCds", "rules", "kinds", "hcPath")}
 
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign grammarName = ast.getName()?cap_first>
@@ -120,10 +120,11 @@ public class ${className} implements ${grammarName}Visitor {
 
 <#list rules as ruleSymbol>
   <#assign ruleName = ruleSymbol.getName()>
-  <#assign symbolName = genHelper.getQualifiedProdName(ruleSymbol)+"Symbol">
+  <#assign symbolName = ruleSymbol.getSymbolDefinitionKind().orElse("") + "Symbol">
   <#assign astName = genHelper.getQualifiedASTName(ruleSymbol)>
   <#assign isScopeSpanning = genHelper.isScopeSpanningSymbol(ruleSymbol)>
   // Methods for ${symbolName}
+<#if !ruleSymbol.isInterface()>
   @Override
   public void visit(${astName} ast) {
     ${symbolName} symbol = create_${ruleName}(ast);
@@ -170,7 +171,21 @@ public class ${className} implements ${grammarName}Visitor {
 </#if>
   }
 
-  public void addToScope(${symbolName} symbol) {
+  <#if isScopeSpanning>
+  public void setLinkBetweenSpannedScopeAndNode(${scopeName} scope, ${astName} astNode) {
+    // scope -> ast
+    scope.setAstNode(astNode);
+
+    // ast -> scope
+    astNode.setSpannedScope2((${grammarName}Scope) scope);
+  }
+  </#if>
+
+</#if>
+</#list>
+
+<#list kinds as kind>
+  public void addToScope(${kind}Symbol symbol) {
     if (!(symbol instanceof ISymbolReference)) {
       if (getCurrentScope().isPresent()) {
         getCurrentScope().get().add(symbol);
@@ -179,15 +194,5 @@ public class ${className} implements ${grammarName}Visitor {
       }
     }
   }
-
-<#if isScopeSpanning>
-  public void setLinkBetweenSpannedScopeAndNode(${scopeName} scope, ${astName} astNode) {
-    // scope -> ast
-    scope.setAstNode(astNode);
-
-    // ast -> scope
-    astNode.setSpannedScope2((${grammarName}Scope) scope);
-  }
-</#if>
 </#list>
 }

@@ -40,14 +40,16 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
     Path filePath = get(getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
   
     Set<MCProdSymbol> allSymbols = Sets.newHashSet();
-    allSymbols.addAll(genHelper.getAllSymbolDefiningRules());
+    Set<String> symbolKinds = Sets.newHashSet();
+    grammarSymbol.getProds().stream().filter(p -> p.isSymbolDefinition()).forEach(p -> allSymbols.add(p));
+    allSymbols.stream().filter(p -> p.isSymbolDefinition()).forEach(p -> symbolKinds.add(p.getSymbolDefinitionKind().orElse("")));
 //    allSymbols.addAll(genHelper.getAllSymbolDefiningRulesInSuperGrammar());
+
     List<CDSymbol> directSuperCds = genHelper.getDirectSuperCds(genHelper.getCd());
     if(grammarSymbol.getStartProd().isPresent()) {
       genEngine
           .generate("symboltable.SymbolTableCreator", filePath, grammarSymbol.getAstNode().get(),
-              className, directSuperCds, allSymbols
-              , handCodedPath);
+              className, directSuperCds, allSymbols, symbolKinds, handCodedPath);
     
       className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName() + "SymbolTableCreatorDelegator"),
           genHelper.getTargetPackage(), handCodedPath);
