@@ -1,6 +1,6 @@
 /* (c) Monticore license: https://github.com/MontiCore/monticore */
 
-grammar Automaton3 extends de.monticore.MCBasics, de.monticore.MCBasicLiterals {
+grammar Automaton3 extends de.monticore.MCBasics, de.monticore.MCCommonLiterals {
 
 Automaton =
   "automaton" Name "{" (State | Transition)* "}" ;
