@@ -16,6 +16,7 @@ public interface ASTMCType extends ASTMCTypeTOP {
     IndentPrinter printer = new IndentPrinter();
 
     MCFullGenericTypesPrettyPrinter vi = new MCFullGenericTypesPrettyPrinter(printer);
+    this.accept(vi);
     return vi.getPrinter().getContent();
   }
 }
