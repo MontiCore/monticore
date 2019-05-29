@@ -1,12 +1,7 @@
 /* (c) Monticore license: https://github.com/MontiCore/monticore */
-import java.util.*;
+import de.monticore.ast.ASTNode;
 import questionnaire._ast.*;
 import questionnaire._visitor.*;
-import de.monticore.ast.ASTNode;
-import de.monticore.mccommonliterals._ast.*;
-
-import java.io.IOException;
-import org.antlr.v4.runtime.RecognitionException;
 
 /**
  * Small pretty printer for questionnaires
