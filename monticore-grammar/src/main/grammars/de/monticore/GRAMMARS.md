@@ -151,21 +151,28 @@ UML's OCL.
 
 
 
-## Further grammars (status: unclarified):
+## Further grammars (status: to be handled):
+
+### Beta: to become stable soon
+
+* MCCommonLiterals.mc4
+* MCJavaLiterals.mc4
+
+### Alpha: also to become stable (one phase later)
 
 * Cardinality.mc4
 * Completeness.mc4
-* lexicals/Lexicals.mc4
-* literals/Literals.mc4
-* MCBasicLiterals.mc4
 * MCCommon.mc4
-* MCHexNumbers.mc4
-* MCJavaLiterals.mc4
-* MCNumbers.mc4
-* StringLiterals.mc4
 * UMLModifier.mc4
 * UMLStereotype.mc4
 
+### Examples for Grammars 
+
+These can also be used if someone is interested:
+
+* StringLiterals.mc4
+* MCHexNumbers.mc4
+* MCNumbers.mc4
 
 
 
