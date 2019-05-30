@@ -150,15 +150,14 @@ UML's OCL.
 
 
 
-
 ## Further grammars (status: to be handled):
 
-### Beta: to become stable soon
+### Beta: to become stable in the next iteration
 
 * MCCommonLiterals.mc4
 * MCJavaLiterals.mc4
 
-### Alpha: also to become stable (one phase later)
+### Alpha: also to become stable (one iteration later)
 
 * Cardinality.mc4
 * Completeness.mc4
