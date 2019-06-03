@@ -3,7 +3,7 @@
 package de.monticore.grammar.prettyprint;
 
 
-import de.monticore.MCBasicLiteralsPrettyPrinter;
+import de.monticore.MCCommonLiteralsPrettyPrinter;
 import de.monticore.MCJavaLiteralsPrettyPrinter;
 import de.monticore.expressions.assignmentexpressions._ast.ASTAssignmentExpressionsNode;
 import de.monticore.expressions.bitexpressions._ast.ASTBitExpressionsNode;
@@ -48,7 +48,7 @@ public class Grammar_WithConceptsPrettyPrinter implements Grammar_WithConceptsVi
     visitor.setMCBasicsVisitor(new MCBasicsPrettyPrinter(out));
     visitor.setJavaClassExpressionsVisitor(new JavaClassExpressionsPrettyPrinter(out));
     visitor.setBitExpressionsVisitor(new BitExpressionsPrettyPrinter(out));
-    visitor.setMCBasicLiteralsVisitor(new MCBasicLiteralsPrettyPrinter(out));
+    visitor.setMCCommonLiteralsVisitor(new MCCommonLiteralsPrettyPrinter(out));
     visitor.setMCBasicTypesVisitor(new MCBasicTypesPrettyPrinter(out));
     visitor.setMCCollectionTypesVisitor(new MCCollectionTypesPrettyPrinter(out));
     visitor.setMCFullGenericTypesVisitor(new MCFullGenericTypesPrettyPrinter(out));

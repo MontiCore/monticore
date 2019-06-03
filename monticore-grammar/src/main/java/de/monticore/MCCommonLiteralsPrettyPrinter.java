@@ -2,16 +2,16 @@
 
 package de.monticore;
 
-import de.monticore.mcbasicliterals._ast.*;
-import de.monticore.mcbasicliterals._visitor.MCBasicLiteralsVisitor;
+import de.monticore.mccommonliterals._ast.*;
+import de.monticore.mccommonliterals._visitor.MCCommonLiteralsVisitor;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.prettyprint.MCBasicsPrettyPrinter;
 
-public class MCBasicLiteralsPrettyPrinter extends MCBasicsPrettyPrinter implements MCBasicLiteralsVisitor {
+public class MCCommonLiteralsPrettyPrinter extends MCBasicsPrettyPrinter implements MCCommonLiteralsVisitor {
   
-  private MCBasicLiteralsVisitor realThis = this;
+  private MCCommonLiteralsVisitor realThis = this;
 
-  public MCBasicLiteralsPrettyPrinter(IndentPrinter printer) {
+  public MCCommonLiteralsPrettyPrinter(IndentPrinter printer) {
     super(printer);
   }
 
@@ -142,7 +142,7 @@ public class MCBasicLiteralsPrettyPrinter extends MCBasicsPrettyPrinter implemen
    * @param a A node from literal grammar.
    * @return String representation.
    */
-  public String prettyprint(ASTMCBasicLiteralsNode a) {
+  public String prettyprint(ASTMCCommonLiteralsNode a) {
     a.accept(getRealThis());
     return printer.getContent();
   }
@@ -151,7 +151,7 @@ public class MCBasicLiteralsPrettyPrinter extends MCBasicsPrettyPrinter implemen
    * @see de.monticore.literals.literals._visitor.LiteralsVisitor#setRealThis(de.monticore.literals.literals._visitor.LiteralsVisitor)
    */
   @Override
-  public void setRealThis(MCBasicLiteralsVisitor realThis) {
+  public void setRealThis(MCCommonLiteralsVisitor realThis) {
     this.realThis = realThis;
   }
 
@@ -159,7 +159,7 @@ public class MCBasicLiteralsPrettyPrinter extends MCBasicsPrettyPrinter implemen
    * @see de.monticore.literals.literals._visitor.LiteralsVisitor#getRealThis()
    */
   @Override
-  public MCBasicLiteralsVisitor getRealThis() {
+  public MCCommonLiteralsVisitor getRealThis() {
     return realThis;
   }
 

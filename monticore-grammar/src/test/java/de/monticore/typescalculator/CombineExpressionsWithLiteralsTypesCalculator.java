@@ -42,9 +42,16 @@ public class CombineExpressionsWithLiteralsTypesCalculator extends CombineExpres
     expressionsBasisTypesCalculator.setTypes(types);
     setExpressionsBasisVisitor(expressionsBasisTypesCalculator);
 
-    CombineExpressionsWithLiteralsExtLiteralTypesCalculator combineExpressionsWithCombineExpressionsWithLiteralsExtLiteralTypesCalculator = new CombineExpressionsWithLiteralsExtLiteralTypesCalculator();
-    combineExpressionsWithCombineExpressionsWithLiteralsExtLiteralTypesCalculator.setTypes(types);
-    setCombineExpressionsWithLiteralsVisitor(combineExpressionsWithCombineExpressionsWithLiteralsExtLiteralTypesCalculator);
+    CombineExpressionsWithLiteralsLiteralTypesCalculator combineExpressionsWithCombineExpressionsWithLiteralsLiteralTypesCalculator = new CombineExpressionsWithLiteralsLiteralTypesCalculator();
+    combineExpressionsWithCombineExpressionsWithLiteralsLiteralTypesCalculator.setTypes(types);
+    setCombineExpressionsWithLiteralsVisitor(combineExpressionsWithCombineExpressionsWithLiteralsLiteralTypesCalculator);
+
+    LiteralsBasisTypesCalculator literalsBasisTypesCalculator = new LiteralsBasisTypesCalculator();
+    setMCLiteralsBasisVisitor(literalsBasisTypesCalculator);
+
+    CommonLiteralsTypesCalculator basicLiteralsTypeCalculator = new CommonLiteralsTypesCalculator();
+    basicLiteralsTypeCalculator.setTypes(types);
+    setMCCommonLiteralsVisitor(basicLiteralsTypeCalculator);
 
   }
 

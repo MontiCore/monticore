@@ -146,18 +146,4 @@ public class SetExpressionsPrettyPrinterTest {
     assertTrue(assignment.deepEquals(ast.get()));
   }
   
-  @Test
-  public void testSetXOrExpression() throws IOException {
-    TestSetExpressionsParser parser = new TestSetExpressionsParser();
-    Optional<ASTExpression> ast = parser.parseExpression(new StringReader("setxor b"));
-    assertTrue(ast.isPresent());
-    assertFalse(parser.hasErrors());
-    ASTExpression assignment = ast.get();
-    PrimaryPrettyPrinter printer = new PrimaryPrettyPrinter(new IndentPrinter());
-    String output = printer.prettyprint(ast.get());
-    ast = parser.parseExpression(new StringReader(output));
-    assertFalse(parser.hasErrors());
-    assertTrue(ast.isPresent());
-    assertTrue(assignment.deepEquals(ast.get()));
-  }
 }

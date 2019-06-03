@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore;
+
+component grammar MCLiteralsBasis extends de.monticore.MCBasics {
+
+
+    /** ASTLiteral is the interface for all literals (NullLiteral,
+            BooleanLiteral, CharLiteral, StringLiteral and all NumericLiterals
+            without '-' at the beginning)
+     */
+    interface Literal;
+
+}

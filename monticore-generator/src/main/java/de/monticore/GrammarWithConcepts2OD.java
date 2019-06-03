@@ -16,7 +16,7 @@ import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsDe
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsVisitor;
 import de.monticore.java.javadsl._od.JavaDSL2OD;
 import de.monticore.lexicals.lexicals._od.Lexicals2OD;
-import de.monticore.mcbasicliterals._od.MCBasicLiterals2OD;
+import de.monticore.mccommonliterals._od.MCCommonLiterals2OD;
 import de.monticore.mcbasics._od.MCBasics2OD;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._od.MCBasicTypes2OD;
@@ -25,13 +25,13 @@ import de.monticore.types.mcfullgenerictypes._od.MCFullGenericTypes2OD;
 import de.monticore.types.mcsimplegenerictypes._od.MCSimpleGenericTypes2OD;
 
 public class GrammarWithConcepts2OD extends Grammar_WithConcepts2OD {
-    
+
   private Grammar_WithConceptsVisitor realThis = this;
-  
+
   private final Grammar_WithConceptsDelegatorVisitor visitor;
-  
+
   private IndentPrinter printer;
-  
+
   public GrammarWithConcepts2OD(IndentPrinter printer, ReportingRepository reporting) {
     super(printer, reporting);
     visitor = new Grammar_WithConceptsDelegatorVisitor();
@@ -50,7 +50,7 @@ public class GrammarWithConcepts2OD extends Grammar_WithConcepts2OD {
     visitor.setMCFullGenericTypesVisitor(new MCFullGenericTypes2OD(printer, reporting));
     visitor.setMCCollectionTypesVisitor(new MCCollectionTypes2OD(printer, reporting));
     visitor.setMCBasicTypesVisitor(new MCBasicTypes2OD(printer, reporting));
-    visitor.setMCBasicLiteralsVisitor(new MCBasicLiterals2OD(printer, reporting));
+    visitor.setMCCommonLiteralsVisitor(new MCCommonLiterals2OD(printer, reporting));
     this.printer = printer;
   }
 

@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package de.monticore.mcbasicliterals;
+package de.monticore.mccommonliterals;
 
-import de.monticore.mcbasicliterals._ast.ASTBasicLongLiteral;
-import de.monticore.mcbasicliterals._ast.ASTLiteral;
-import de.monticore.testmcbasicliterals._parser.TestMCBasicLiteralsParser;
+import de.monticore.mccommonliterals._ast.ASTBasicLongLiteral;
+import de.monticore.mcliteralsbasis._ast.ASTLiteral;
+import de.monticore.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -25,7 +25,7 @@ public class LongLiteralsTest {
   }
 
   private void checkLongLiteral(long l, String s) throws IOException {
-    TestMCBasicLiteralsParser parser = new TestMCBasicLiteralsParser();
+    TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     Optional<ASTLiteral> lit = parser.parseLiteral(new StringReader(s));
     assertTrue(lit.isPresent());
     assertTrue(lit.get() instanceof ASTBasicLongLiteral);
@@ -33,7 +33,7 @@ public class LongLiteralsTest {
   }
 
   private void checkFalse(String s) throws IOException {
-    TestMCBasicLiteralsParser parser = new TestMCBasicLiteralsParser();
+    TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     Optional<ASTBasicLongLiteral> lit = parser.parseBasicLongLiteral(new StringReader(s));
     assertTrue(!lit.isPresent());
   }

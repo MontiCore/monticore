@@ -1,12 +1,12 @@
 /* (c) Monticore license: https://github.com/MontiCore/monticore */
-import java.util.*;
+
+import de.monticore.ast.ASTNode;
+import de.monticore.mccommonliterals._ast.ASTMCCommonLiteralsNode;
+import de.monticore.mccommonliterals._ast.ASTNatLiteral;
 import questionnaire._ast.*;
 import questionnaire._visitor.*;
-import de.monticore.ast.ASTNode;
-import de.monticore.mcbasicliterals._ast.*;
 
-import java.io.IOException;
-import org.antlr.v4.runtime.RecognitionException;
+import java.util.Optional;
 
 /**
  * Small pretty printer for questionnaires
@@ -39,11 +39,11 @@ public class QuestionnaireTreePrinter implements
   }
 
   // interface ASTLiteralsNode (for all nodes of Literals grammar)
-  public void visit(ASTMCBasicLiteralsNode node) {
+  public void visit(ASTMCCommonLiteralsNode node) {
     print("[LN"+depth+"|");
   }
 
-  public void endVisit(ASTMCBasicLiteralsNode node) {
+  public void endVisit(ASTMCCommonLiteralsNode node) {
     print("|LN"+depth+"]");
   }
 
