@@ -1,7 +1,8 @@
-package de.monticore.codegen.cd2java._ast.builder;
+package de.monticore.codegen.cd2java._symboltable.builder;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java._ast.builder.BuilderDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.symboltable.Scope;
