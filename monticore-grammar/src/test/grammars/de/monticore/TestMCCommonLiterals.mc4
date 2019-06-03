@@ -2,6 +2,6 @@
 
 package de.monticore;
 
-grammar TestMCBasicLiterals extends de.monticore.MCBasicLiterals {
+grammar TestMCCommonLiterals extends de.monticore.MCCommonLiterals {
 
 }

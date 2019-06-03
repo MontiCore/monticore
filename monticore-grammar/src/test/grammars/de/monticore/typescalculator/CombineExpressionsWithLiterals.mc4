@@ -2,9 +2,7 @@
 
 package de.monticore.typescalculator;
 
-grammar CombineExpressionsWithLiterals extends de.monticore.expressions.AssignmentExpressions, de.monticore.expressions.CommonExpressions, de.monticore.MCBasicLiterals {
-
-    ExtLiteral = Literal;
+grammar CombineExpressionsWithLiterals extends de.monticore.expressions.AssignmentExpressions, de.monticore.expressions.CommonExpressions, de.monticore.MCCommonLiterals {
 
     Foo="bar" Expression;
 

@@ -12,17 +12,15 @@ import de.monticore.types.prettyprint.MCCollectionTypesPrettyPrinter;
 /**
  * This class provides methods for printing types as Strings. The TypesPrinter
  * is a singleton.
- * @deprecated to be removed in 5.0.8-SNAPSHOT
  */
-@Deprecated
-public class BasicGenericsTypesPrinter {
+public class CollectionTypesPrinter {
 
-  private static BasicGenericsTypesPrinter instance;
+  private static CollectionTypesPrinter instance;
 
   /**
    * We have a singleton.
    */
-  protected BasicGenericsTypesPrinter() {
+  protected CollectionTypesPrinter() {
   }
 
   /**
@@ -30,9 +28,9 @@ public class BasicGenericsTypesPrinter {
    *
    * @return The instance.
    */
-  private static BasicGenericsTypesPrinter getInstance() {
+  private static CollectionTypesPrinter getInstance() {
     if (instance == null) {
-      instance = new BasicGenericsTypesPrinter();
+      instance = new CollectionTypesPrinter();
     }
     return instance;
   }
@@ -46,7 +44,9 @@ public class BasicGenericsTypesPrinter {
     IndentPrinter printer = new IndentPrinter();
 
     MCCollectionTypesPrettyPrinter vi = new MCCollectionTypesPrettyPrinter(printer);
-    return vi.prettyprint(type);
+    type.accept(vi);
+
+    return vi.getPrinter().getContent();
   }
 
   public static String printType(ASTMCTypeArgument type) {
@@ -58,7 +58,8 @@ public class BasicGenericsTypesPrinter {
     IndentPrinter printer = new IndentPrinter();
 
     MCCollectionTypesPrettyPrinter vi = new MCCollectionTypesPrettyPrinter(printer);
-    return vi.prettyprint(type);
+    type.accept(vi);
+    return vi.getPrinter().getContent();
   }
 
   public static String printReturnType(ASTMCReturnType type){
@@ -69,7 +70,8 @@ public class BasicGenericsTypesPrinter {
     IndentPrinter printer = new IndentPrinter();
 
     MCCollectionTypesPrettyPrinter vi = new MCCollectionTypesPrettyPrinter(printer);
-    return vi.prettyprint(type);
+    type.accept(vi);
+    return vi.getPrinter().getContent();
   }
 
 }
