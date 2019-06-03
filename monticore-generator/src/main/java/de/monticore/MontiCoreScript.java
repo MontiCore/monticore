@@ -482,10 +482,9 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     InterfaceDecorator dataInterfaceDecorator = new InterfaceDecorator(glex, decoratorUtil, methodDecorator, astService);
     FullASTInterfaceDecorator fullASTInterfaceDecorator = new FullASTInterfaceDecorator(dataInterfaceDecorator, astInterfaceDecorator);
 
-    CD4AnalysisLanguage cd4aLanguage = new CD4AnalysisLanguage();
     ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-    resolvingConfiguration.addDefaultFilters(cd4aLanguage.getResolvingFilters());
-    GlobalScope symbolTable = new GlobalScope(modelPath, cd4aLanguage, resolvingConfiguration);
+    resolvingConfiguration.addDefaultFilters(cd4AnalysisLanguage.getResolvingFilters());
+    GlobalScope symbolTable = new GlobalScope(modelPath, cd4AnalysisLanguage, resolvingConfiguration);
     CD4AnalysisSymbolTableCreator symbolTableCreator = cd4AnalysisLanguage.getSymbolTableCreator(resolvingConfiguration, symbolTable).get();
 
     ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, symbolTableCreator, fullDecorator, astLanguageInterfaceDecorator,

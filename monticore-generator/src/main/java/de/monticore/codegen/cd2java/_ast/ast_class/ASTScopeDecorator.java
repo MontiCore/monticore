@@ -5,6 +5,7 @@ import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.types.types._ast.ASTType;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDAttribute;
 import de.monticore.umlcd4a.cd4analysis._ast.ASTCDType;
@@ -13,6 +14,7 @@ import de.monticore.umlcd4a.symboltable.CDSymbol;
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.ENCLOSING_SCOPE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SPANNED_SCOPE;
 import static de.monticore.codegen.cd2java.factories.CDModifier.PROTECTED;
@@ -57,14 +59,18 @@ public class ASTScopeDecorator extends AbstractDecorator<ASTCDType, List<ASTCDAt
     //todo replace with spannedScope2 some day
     ASTType scopeType = this.getCDTypeFacade().createOptionalTypeOf(symbolTableService.getScopeType());
     String attributeName = String.format(SPANNED_SCOPE, symbolTableService.getCDName());
-    return this.getCDAttributeFacade().createAttribute(PROTECTED, scopeType, attributeName);
+    ASTCDAttribute attribute = this.getCDAttributeFacade().createAttribute(PROTECTED, scopeType, attributeName);
+    this.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
+    return attribute;
   }
 
   protected ASTCDAttribute createSpannedScope2Attribute(ASTType scopeType) {
     //todo better name with the grammar name in the attributeName, like it was before
 //    String attributeName = String.format(SPANNED_SCOPE, symbolTableService.getCDName()) + "2";
     String attributeName = String.format(SPANNED_SCOPE, "") + "2";
-    return this.getCDAttributeFacade().createAttribute(PROTECTED, scopeType, attributeName);
+    ASTCDAttribute attribute = this.getCDAttributeFacade().createAttribute(PROTECTED, scopeType, attributeName);
+    this.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
+    return attribute;
   }
 
   protected ASTCDAttribute createEnclosingScope2Attribute(ASTType scopeType) {
