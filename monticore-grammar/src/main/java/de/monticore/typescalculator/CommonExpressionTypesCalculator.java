@@ -4,29 +4,32 @@ import de.monticore.ast.ASTNode;
 import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.EMethodSymbol;
-import de.monticore.expressions.expressionsbasis._symboltable.ETypeSymbol;
-import de.monticore.expressions.expressionsbasis._symboltable.EVariableSymbol;
-import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.expressions.prettyprint2.CommonExpressionsPrettyPrinter;
+import de.monticore.expressions.prettyprint2.ExpressionsBasisPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
-import de.monticore.types.prettyprint.MCFullGenericTypesPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
 
-import javax.swing.text.html.Option;
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalculator implements CommonExpressionsVisitor {
-  
-  private final String errorCode="0xA0142 ";
+
+  private CommonExpressionsVisitor realThis;
+
+  @Override
+  public void setRealThis(CommonExpressionsVisitor realThis){
+    this.realThis=realThis;
+  }
+
+  @Override
+  public CommonExpressionsVisitor getRealThis(){
+    return realThis;
+  }
 
   public CommonExpressionTypesCalculator(){
-    types = new HashMap<>();
+    realThis=this;
   }
 
   @Override
@@ -38,7 +41,7 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
       types.put(expr, sym);
       this.result = result;
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0188 The resulting type cannot be calculated");
     }
   }
 
@@ -51,7 +54,7 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
       types.put(expr, sym);
       this.result = result;
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0189 The resulting type cannot be calculated");
     }
   }
 
@@ -64,7 +67,7 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
       types.put(expr, sym);
       this.result = result;
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0190 The resulting type cannot be calculated");
     }
   }
 
@@ -77,7 +80,7 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
       types.put(expr, sym);
       this.result = result;
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0191 The resulting type cannot be calculated");
     }
   }
 
@@ -90,7 +93,7 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
       types.put(expr, sym);
       this.result = result;
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0192 The resulting type cannot be calculated");
     }
   }
   
@@ -103,7 +106,7 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
       types.put(expr, sym);
       this.result = result;
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0193 The resulting type cannot be calculated");
     }
   }
 
@@ -116,7 +119,7 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
       types.put(expr, sym);
       this.result = result;
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0194 The resulting type cannot be calculated");
     }
   }
 
@@ -129,7 +132,7 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
       types.put(expr, sym);
       this.result = result;
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0195 The resulting type cannot be calculated");
     }
   }
 
@@ -142,7 +145,7 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
       types.put(expr, sym);
       this.result = result;
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0196 The resulting type cannot be calculated");
     }
   }
 
@@ -155,7 +158,7 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
       types.put(expr, sym);
       this.result = result;
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0197 The resulting type cannot be calculated");
     }
   }
 
@@ -168,7 +171,7 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
       types.put(expr, sym);
       this.result = result;
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0198 The resulting type cannot be calculated");
     }
   }
 
@@ -186,7 +189,7 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
       types.put(expr, sym);
       this.result = result;
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0199 The resulting type cannot be calculated");
     }
   }
 
@@ -204,7 +207,7 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
       types.put(expr, sym);
       this.result = result;
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0200 The resulting type cannot be calculated");
     }
   }
 
@@ -222,7 +225,7 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
       types.put(expr, sym);
       this.result = result;
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0201 The resulting type cannot be calculated");
     }
   }
 
@@ -238,27 +241,7 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
       types.put(expr, sym);
       this.result = result;
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
-    }
-  }
-
-  @Override
-  public void endVisit(ASTSimpleAssignmentExpression expr){
-    ASTMCType result = null;
-    if(types.containsKey(expr.getLeft())&&types.containsKey(expr.getRight())){
-      if(types.get(expr.getLeft()).deepEquals(types.get(expr.getRight()))){
-        result=types.get(expr.getRight()).getASTMCType();
-      }else if(types.get(expr.getLeft()).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build())&&types.get(expr.getRight()).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build())){
-        result=MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build();
-      }
-    }
-    if(result!=null){
-      MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
-      sym.setASTMCType(result);
-      types.put(expr,sym);
-      this.result=result;
-    }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0202 The resulting type cannot be calculated");
     }
   }
 
@@ -276,7 +259,7 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
       this.result=result;
       types.put(expr,sym);
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0204 The resulting type cannot be calculated");
     }
   }
 
@@ -296,33 +279,54 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
       this.result=result;
       types.put(expr,sym);
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.error("0xA0205 The resulting type cannot be calculated");
     }
   }
 
   @Override
   public void endVisit(ASTCallExpression expr){
-    Optional<EMethodSymbol> sym = scope.resolveEMethod(expr.geteMethodSymbol().getName());
-    if(sym.isPresent()) {
-      if(sym.get().getReturnType().isPresentMCType()) {
-        ASTMCType ret = sym.get().getReturnType().getMCType();
-        this.result = ret;
-        MCTypeSymbol symbol = new MCTypeSymbol(sym.get().getName());
-        symbol.setASTMCType(ret);
-        types.put(expr, symbol);
-      }else{
-        List<String> name = new ArrayList<>();
-        name.add("void");
-        ASTMCType type=MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build();
-        this.result=type;
-        MCTypeSymbol symbol = new MCTypeSymbol("void");
-        symbol.setASTMCType(type);
-        types.put(expr,symbol);
+    if(types.containsKey(expr.getExpression())) {
+      CommonExpressionsPrettyPrinter printer = new CommonExpressionsPrettyPrinter(new IndentPrinter());
+      String exprString = printer.prettyprint(expr);
+      ExpressionsBasisPrettyPrinter prettyPrinter = new ExpressionsBasisPrettyPrinter(new IndentPrinter());
+      String exp = prettyPrinter.prettyprint(expr.getExpression());
+      Collection<EMethodSymbol> methodcollection = scope.resolveEMethodDownMany(exp);
+      List<EMethodSymbol> methodlist = new ArrayList<>(methodcollection);
+      for (EMethodSymbol method : methodlist) {
+        if (expr.getArguments().getExpressionList().size()==method.getArguments().size()){
+          boolean success = true;
+          for(int i=0;i<method.getArguments().size();i++){
+            if(!method.getArguments().get(i).getASTMCType().deepEquals(types.get(expr.getArguments().getExpressionList().get(i)))){
+              success = false;
+            }
+          }
+          if(success){
+            String nameString = printer.prettyprint(expr.getExpression());
+            if(method.getReturnType().isPresentMCType()){
+              ASTMCType result=method.getReturnType().getMCType();
+              this.result=result;
+              MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
+              sym.setASTMCType(result);
+              types.put(expr,sym);
+            }else if(method.getReturnType().isPresentMCVoidType()){
+              List<String> name = new ArrayList<>();
+              name.add("void");
+              ASTMCType result = MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build();
+              this.result=result;
+              MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
+              sym.setASTMCType(result);
+              types.put(expr,sym);
+            }else{
+              Log.error("0xA209 the resulting type cannot be resolved");
+            }
+          }else{
+            Log.error("0xA209 the resulting type cannot be resolved");
+          }
+        }
       }
     }else{
-      Log.error(errorCode+"The resulting type cannot be calculated");
+      Log.info("package suspected","CommonExpressionTypesCalculator");
     }
-
   }
 
   private ASTMCType calculateTypeArithmetic(ASTExpression left, ASTExpression right){
@@ -386,5 +390,13 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
     return result;
   }
 
+  public ASTMCType calculateType(ASTExpression expr){
+    expr.accept(realThis);
+    return types.get(expr).getASTMCType();
+  }
+
+  public void setTypes(Map<ASTNode,MCTypeSymbol> types){
+    this.types=types;
+  }
   //TODO: es fehlen noch LiteralExpr, CallExpr, NameExpr und QualifiedNameExpr, bisher nur fuer double und int alles implementiert
 }

@@ -1,12 +1,11 @@
 package de.monticore.types;
 
 
-import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
-import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
 import de.monticore.types.mccollectiontypeswithoutprimitivestest._parser.MCCollectionTypesWithoutPrimitivesTestParser;
 import de.se_rwth.commons.logging.Log;
@@ -36,7 +35,7 @@ public class MCCollectionTypesTest {
       MCCollectionTypesTestParser mcBasicTypesParser = new MCCollectionTypesTestParser();
       // .parseType(primitive);
 
-      Optional<ASTMCType> type = mcBasicTypesParser.parse_String(testType);
+      Optional<ASTMCType> type = mcBasicTypesParser.parse_StringMCType(testType);
 
       assertNotNull(type);
       assertTrue(type.isPresent());

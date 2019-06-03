@@ -1,64 +1,101 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package de.monticore.expressions;
 
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+ 
 /**
- * This grammar defines java specific class expressions like super, this, type cast, etc.
+ * This grammar defines Java specific class expressions like super, 
+ * this, type cast, etc.
+ * 
+ * This grammar should only be included, when a mapping to Java is
+ * intended and the full power of Java should be available in the 
+ * modelling language.
+ *  
+ * There are also other kinds of expressions defined in the 
+ * grammars mentioned below. These expression definitions can savely be 
+ * composed if desired.
+ * 
+ * The grammar has several extension points for types to be filled when used.
+ * 
+ * This grammar is part of a hierarchy of types, namely 
+ * * expressions/ExpressionsBasis.mc4
+ * * --  expressions/CommonExpressions.mc4      
+ * * --  --  expressions/JavaClassExpressions.mc4
+ * * --  --  expressions/SetExpressions.mc4
+ * * --  expressions/AssignmentExpressions.mc4  
+ * * --  expressions/BitExpressions.mc4         
+ * * --  expressions/OCLExpressions.mc4
+ *
 */
 
 component grammar JavaClassExpressions extends de.monticore.expressions.CommonExpressions {
 
-/**
- * When combining the languages you can decide later if you want to use the complete
- * type system of java (extending MCFullGenericType)
- * or if you want to use a smaller variant
- */
 
-external ExtType;
+  /*=================================================================*/
 
-external ExtReturnType;
+  /*
+   * The following are several extension points that allow to fill in the
+   * the desired type system:
+   *  e.g. the complete type system of java (extending MCFullGenericType)
+   *  or any smaller variant
+  */
 
-external ExtTypeArguments;
+  // Types
+  external ExtType;
 
-PrimaryThisExpression implements Expression <320>
+  // Types including a void return type
+  external ExtReturnType;
+
+  // Type arguments
+  external ExtTypeArguments;
+
+  /*=================================================================*/
+
+  PrimaryThisExpression implements Expression <320>
 	= "this";
 
-ThisExpression implements Expression <280> =
+  ThisExpression implements Expression <280> =
 	Expression "." "this";
 
-ArrayExpression implements Expression <250> =
+  ArrayExpression implements Expression <250> =
 	Expression "[" indexExpression:Expression "]";
 
-SuperExpression implements Expression <270> =
+  SuperExpression implements Expression <270> =
 	Expression "." "super" SuperSuffix;
 	
-GenericInvocationExpression implements Expression <260> =
+  GenericInvocationExpression implements Expression <260> =
 	Expression "." PrimaryGenericInvocationExpression;
 	
-TypeCastExpression implements Expression <230> =
+  TypeCastExpression implements Expression <230> =
 	"(" ExtType ")" Expression;
         
-PrimarySuperExpression implements Expression <330>
+  PrimarySuperExpression implements Expression <330>
 	= "super";
 	
-ClassExpression implements Expression <360>
+  /*=================================================================*/
+
+  ClassExpression implements Expression <360>
     = ExtReturnType "." "class";
    
-PrimaryGenericInvocationExpression implements Expression <370>
-    = ExtTypeArguments GenericInvocationSuffix
-    ;
+  PrimaryGenericInvocationExpression implements Expression <370>
+    = ExtTypeArguments GenericInvocationSuffix;
 
-GenericInvocationSuffix
+  GenericInvocationSuffix
     =   ["super"] SuperSuffix
     |   ["this"] Arguments
     |   Name Arguments
     ;
     
-SuperSuffix
+  SuperSuffix
     =   Arguments
     |   "." ExtTypeArguments? Name Arguments?
     ;
     
-InstanceofExpression implements Expression <140>
+  /*=================================================================*/
+
+  InstanceofExpression implements Expression <140>
 	= Expression "instanceof" ExtType;
+
+
 }

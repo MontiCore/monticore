@@ -2,8 +2,8 @@
 
 package de.monticore.mcjavaliterals;
 
-import de.monticore.mcbasicliterals._ast.ASTLiteral;
 import de.monticore.mcjavaliterals._ast.ASTLongLiteral;
+import de.monticore.mcliteralsbasis._ast.ASTLiteral;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;

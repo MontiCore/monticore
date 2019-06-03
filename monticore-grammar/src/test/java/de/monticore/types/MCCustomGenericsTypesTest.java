@@ -30,7 +30,7 @@ public class MCCustomGenericsTypesTest {
       System.out.println("Teste "+testType);
       MCSimpleGenericTypesTestParser mcBasicTypesParser = new MCSimpleGenericTypesTestParser();
 
-      Optional<ASTMCType> type = mcBasicTypesParser.parse_String(testType);
+      Optional<ASTMCType> type = mcBasicTypesParser.parse_StringMCType(testType);
 
       assertNotNull(type);
       assertTrue(type.isPresent());

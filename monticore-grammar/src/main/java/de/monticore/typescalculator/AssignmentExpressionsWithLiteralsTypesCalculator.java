@@ -3,6 +3,7 @@ package de.monticore.typescalculator;
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.assignmentexpressionswithliterals._visitor.AssignmentExpressionsWithLiteralsVisitor;
 import de.monticore.expressions.assignmentexpressionswithliterals._ast.ASTExtLiteral;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.ExpressionsBasisScope;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._symboltable.MCTypeSymbol;
@@ -11,11 +12,20 @@ import java.util.Map;
 
 public class AssignmentExpressionsWithLiteralsTypesCalculator extends AssignmentExpressionTypesCalculator implements AssignmentExpressionsWithLiteralsVisitor {
 
+  private AssignmentExpressionsWithLiteralsVisitor realThis;
+
+  @Override
+  public void setRealThis(AssignmentExpressionsWithLiteralsVisitor realThis){
+    this.realThis=realThis;
+  }
+
+  @Override
+  public AssignmentExpressionsWithLiteralsVisitor getRealThis(){
+    return realThis;
+  }
+
   public AssignmentExpressionsWithLiteralsTypesCalculator(){
-    result=super.getResult();
-    scope=super.getScope();
-    literalsVisitor=super.getLiteralsVisitor();
-    types=super.getTypes();
+    realThis=this;
   }
 
   @Override
@@ -52,5 +62,14 @@ public class AssignmentExpressionsWithLiteralsTypesCalculator extends Assignment
   public void setLiteralsVisitor(LiteralTypeCalculator literalsVisitor){
     this.literalsVisitor=literalsVisitor;
     super.setLiteralsVisitor(literalsVisitor);
+  }
+
+  public void setTypes(Map<ASTNode,MCTypeSymbol> types){
+    this.types=types;
+  }
+
+  public ASTMCType calculateType(ASTExpression expr){
+    expr.accept(realThis);
+    return types.get(expr).getASTMCType();
   }
 }

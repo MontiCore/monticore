@@ -12,7 +12,9 @@ import de.monticore.types.prettyprint.MCCollectionTypesPrettyPrinter;
 /**
  * This class provides methods for printing types as Strings. The TypesPrinter
  * is a singleton.
+ * @deprecated to be removed in 5.0.8-SNAPSHOT
  */
+@Deprecated
 public class BasicGenericsTypesPrinter {
 
   private static BasicGenericsTypesPrinter instance;

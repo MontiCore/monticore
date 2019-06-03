@@ -1,6 +1,5 @@
 package de.monticore.expressions.prettyprint2;
 
-import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
@@ -52,7 +51,7 @@ public class ExpressionsBasisPrettyPrinter implements ExpressionsBasisVisitor {
   @Override
   public void handle(ASTLiteralExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getExtLiteral().accept(getRealThis());
+    node.getLiteral().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
 

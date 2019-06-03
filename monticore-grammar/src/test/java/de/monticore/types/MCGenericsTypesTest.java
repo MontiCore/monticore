@@ -36,7 +36,7 @@ public class MCGenericsTypesTest {
       MCFullGenericTypesTestParser mcBasicTypesParser = new MCFullGenericTypesTestParser();
       // .parseType(primitive);
 
-      Optional<ASTMCType> type = mcBasicTypesParser.parse_String(testType);
+      Optional<ASTMCType> type = mcBasicTypesParser.parse_StringMCType(testType);
       assertNotNull(type);
       assertTrue(type.isPresent());
       assertTrue(type.get() instanceof ASTMCObjectType);
@@ -56,7 +56,7 @@ public class MCGenericsTypesTest {
       MCFullGenericTypesTestParser mcBasicTypesParser = new MCFullGenericTypesTestParser();
       // .parseType(primitive);
 
-      Optional<ASTMCType> type = mcBasicTypesParser.parse_String(testType);
+      Optional<ASTMCType> type = mcBasicTypesParser.parse_StringMCType(testType);
 
       assertNotNull(type);
       assertTrue(type.isPresent());

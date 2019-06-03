@@ -17,6 +17,7 @@ package de.monticore.literals;
  * Version Aug. 31rd, 2015
 */
 
+@Deprecated("Use de.monticore.MCBasicLiterals.mc4")
 component grammar Literals extends de.monticore.lexicals.Lexicals {
 
   /*========================================================================*/

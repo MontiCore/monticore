@@ -101,19 +101,6 @@
       <artifactId>junit</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>de.monticore.lang</groupId>
-      <artifactId>automaton</artifactId>
-      <version>0.0.2-SNAPSHOT</version>
-      <scope>runtime</scope>
-      <classifier>automaton-example</classifier>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
   </dependencies>
 
   <build>

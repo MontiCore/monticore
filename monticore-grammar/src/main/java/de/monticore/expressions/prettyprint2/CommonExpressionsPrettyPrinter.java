@@ -5,18 +5,17 @@ import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTQualifiedNameExpression;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 
-public class CommonExpressionsPrettyPrinter implements CommonExpressionsVisitor {
+public class CommonExpressionsPrettyPrinter extends ExpressionsBasisPrettyPrinter implements CommonExpressionsVisitor {
   
   protected CommonExpressionsVisitor realThis;
   
   protected IndentPrinter printer;
   
   public CommonExpressionsPrettyPrinter(IndentPrinter printer) {
+    super(printer);
     this.printer = printer;
     realThis = this;
   }
@@ -114,15 +113,6 @@ public class CommonExpressionsPrettyPrinter implements CommonExpressionsVisitor 
   }
   
   @Override
-  public void handle(ASTSimpleAssignmentExpression node) {
-    CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getLeft().accept(getRealThis());
-    getPrinter().print(" += ");
-    node.getRight().accept(getRealThis());
-    CommentPrettyPrinter.printPostComments(node, getPrinter());
-  }
-  
-  @Override
   public void handle(ASTEqualsExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getLeft().accept(getRealThis());
@@ -196,7 +186,7 @@ public class CommonExpressionsPrettyPrinter implements CommonExpressionsVisitor 
   @Override
   public void handle(ASTLiteralExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getExtLiteral().accept(getRealThis());
+    node.getLiteral().accept(getRealThis());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
 

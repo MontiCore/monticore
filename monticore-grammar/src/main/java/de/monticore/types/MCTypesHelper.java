@@ -4,7 +4,6 @@ package de.monticore.types;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import de.monticore.types.BasicGenericsTypesPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -21,7 +20,7 @@ import java.util.Optional;
 
 // TODO: improve implementations
 public class MCTypesHelper {
-  
+
   public static final String OPTIONAL = "Optional";
   
   public static boolean isOptional(ASTMCType type) {

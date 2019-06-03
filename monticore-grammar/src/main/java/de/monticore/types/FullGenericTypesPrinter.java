@@ -9,9 +9,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCTypeParameters;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCTypeVariableDeclaration;
-import de.monticore.types.prettyprint.MCCollectionTypesPrettyPrinter;
 import de.monticore.types.prettyprint.MCFullGenericTypesPrettyPrinter;
-import de.monticore.types.prettyprint.MCSimpleGenericTypesPrettyPrinter;
 
 /**
  * This class provides methods for printing types as Strings. The TypesPrinter

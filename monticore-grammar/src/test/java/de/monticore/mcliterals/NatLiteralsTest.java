@@ -2,8 +2,8 @@
 
 package de.monticore.mcliterals;
 
-import de.monticore.mcbasicliterals._ast.ASTNatLiteral;
-import de.monticore.testmcbasicliterals._parser.TestMCBasicLiteralsParser;
+import de.monticore.mccommonliterals._ast.ASTNatLiteral;
+import de.monticore.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -21,14 +21,14 @@ public class NatLiteralsTest {
   }
 
   private void checkNatLiteral(int i, String s) throws IOException {
-    TestMCBasicLiteralsParser parser = new TestMCBasicLiteralsParser();
+    TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     Optional<ASTNatLiteral> ast = parser.parse_StringNatLiteral(s);
     assertTrue(!parser.hasErrors());
     assertEquals(i, ast.get().getValue());
   }
   
   private void checkFailingNatLiteral(String s) throws IOException {
-    TestMCBasicLiteralsParser parser = new TestMCBasicLiteralsParser();
+    TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     parser.parse_StringNatLiteral(s);
     assertTrue(parser.hasErrors());    
   }

@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lexicals;
 
+@Deprecated("Use de.monticore.MCBasics")
 component grammar Lexicals {
  
   token Name =
