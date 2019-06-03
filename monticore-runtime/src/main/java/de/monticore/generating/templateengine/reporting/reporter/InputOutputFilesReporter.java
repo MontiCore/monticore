@@ -188,7 +188,7 @@ public class InputOutputFilesReporter extends AReporter {
     // this entirely resets the gathered information, hence the corresponding
     // event reportParseInputFile must only be called once for each actual input
     // file, i.e., the things that are parsed
-    this.reportingHelper = new ReportCreator(outputDirectory + File.separator + modelName);
+    this.reportingHelper = new ReportCreator(outputDirectory + File.separator + modelName.replaceAll("\\.", "/"));
     inputFiles.clear();
     hwcFiles.clear();
     outputFiles.clear();

@@ -2,14 +2,12 @@ package de.monticore.generating.templateengine.reporting.reporter;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.reporting.commons.AReporter;
-import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
 import de.monticore.io.paths.IterablePath;
 import org.antlr.v4.runtime.misc.OrderedHashSet;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -24,7 +22,7 @@ public class IncGenCheckReporter extends AReporter {
   String outputDir;
 
   public IncGenCheckReporter(String outputDir, String modelName) {
-    super(outputDir + File.separator + modelName, SIMPLE_FILE_NAME, "sh");
+    super(outputDir + File.separator + modelName.replaceAll("\\.", "/"), SIMPLE_FILE_NAME, "sh");
     this.outputDir = outputDir;
   }
 
