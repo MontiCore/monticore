@@ -92,7 +92,7 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
         methodDecorator.disableTemplates();
         List<ASTCDMethod> methods = methodDecorator.getMutatorDecorator().decorate(attribute);
         methods.forEach(m ->
-            this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("ast_new.symboltable.InheritedSetEnclosingScope", m,
+            this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("_ast.ast_class.symboltable.InheritedSetEnclosingScope", m,
                 TypesPrinter.printType(m.getCDParameter(0).getType()), scopeInterfaceType)));
         methodDecorator.enableTemplates();
         clazz.addAllCDMethods(methods);
@@ -104,14 +104,14 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
   protected ASTCDMethod createAcceptMethod(ASTCDClass astClass) {
     ASTCDParameter visitorParameter = this.getCDParameterFacade().createParameter(this.visitorService.getVisitorType(), VISITOR);
     ASTCDMethod acceptMethod = this.getCDMethodFacade().createMethod(PUBLIC, ASTConstants.ACCEPT_METHOD, visitorParameter);
-    this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint("ast_new.Accept", astClass));
+    this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint("_ast.ast_class.Accept", astClass));
     return acceptMethod;
   }
 
   protected ASTCDMethod createGetChildrenMethod(ASTCDClass astClass) {
     ASTType astNodeType = getCDTypeFacade().createCollectionTypeOf(ASTConstants.AST_INTERFACE);
     ASTCDMethod getChildrenMethod = this.getCDMethodFacade().createMethod(PUBLIC, astNodeType, ASTConstants.GET_CHILDREN_METHOD);
-    this.replaceTemplate(EMPTY_BODY, getChildrenMethod, new TemplateHookPoint("ast_new.GetChildren", astClass));
+    this.replaceTemplate(EMPTY_BODY, getChildrenMethod, new TemplateHookPoint("_ast.ast_class.GetChildren", astClass));
     return getChildrenMethod;
   }
 
@@ -123,7 +123,7 @@ public class ASTDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
       ASTCDMethod superAccept = this.getCDMethodFacade().createMethod(PUBLIC, ASTConstants.ACCEPT_METHOD, superVisitorParameter);
       String errorCode = DecorationHelper.getGeneratedErrorCode(astClass);
-      this.replaceTemplate(EMPTY_BODY, superAccept, new TemplateHookPoint("ast_new.AcceptSuper",
+      this.replaceTemplate(EMPTY_BODY, superAccept, new TemplateHookPoint("_ast.ast_class.AcceptSuper",
           this.visitorService.getVisitorFullTypeName(), errorCode, astClass.getName(), TypesPrinter.printType(superVisitorType)));
       result.add(superAccept);
     }

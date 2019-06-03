@@ -25,7 +25,7 @@ public class BuilderMandatoryMutatorDecorator extends MandatoryMutatorDecorator 
   protected ASTCDMethod createSetter(final ASTCDAttribute ast) {
     String name = String.format(SET, StringUtils.capitalize(DecorationHelper.getNativeAttributeName(ast.getName())));
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, builderType, name, this.getCDParameterFacade().createParameters(ast));
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("builder.Set", ast));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.Set", ast));
     return method;
   }
 }

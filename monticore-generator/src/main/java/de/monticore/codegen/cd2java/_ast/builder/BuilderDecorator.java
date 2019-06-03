@@ -21,7 +21,7 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.*;
 
 public class BuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
-  public static final String BUILD_INIT_TEMPLATE = "builder.BuildInit";
+  public static final String BUILD_INIT_TEMPLATE = "_ast.builder.BuildInit";
 
   public static final String BUILDER_SUFFIX = "Builder";
 
@@ -65,10 +65,10 @@ public class BuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> 
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this." + REAL_BUILDER + " = (" + builderClassName + ") this;"));
 
     ASTCDMethod buildMethod = this.getCDMethodFacade().createMethod(modifier, domainType, BUILD_METHOD);
-    this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint("builder.BuildMethod", domainClass, mandatoryAttributes));
+    this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint("_ast.builder.BuildMethod", domainClass, mandatoryAttributes));
 
     ASTCDMethod isValidMethod = this.getCDMethodFacade().createMethod(PUBLIC, this.getCDTypeFacade().createBooleanType(), IS_VALID);
-    this.replaceTemplate(EMPTY_BODY, isValidMethod, new TemplateHookPoint("builder.IsValidMethod", mandatoryAttributes));
+    this.replaceTemplate(EMPTY_BODY, isValidMethod, new TemplateHookPoint("_ast.builder.IsValidMethod", mandatoryAttributes));
 
     List<ASTCDMethod> accessorMethods = builderAttributes.stream()
         .map(accessorDecorator::decorate)

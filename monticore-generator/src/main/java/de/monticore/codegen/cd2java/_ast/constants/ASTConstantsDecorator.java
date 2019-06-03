@@ -111,7 +111,7 @@ public class ASTConstantsDecorator extends AbstractDecorator<ASTCDCompilationUni
 
   protected ASTCDMethod getGetAllLanguagesMethod(Collection<CDSymbol> superCDs) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC_STATIC, getCDTypeFacade().createTypeByDefinition("Collection<String>"), GET_ALL_LANGUAGES);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("ast_constants.GetAllLanguages",
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_constants.GetAllLanguages",
        superCDs));
     return method;
   }

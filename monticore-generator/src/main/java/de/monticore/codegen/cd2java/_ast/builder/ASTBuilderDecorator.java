@@ -24,7 +24,7 @@ public class ASTBuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClas
 
   private static final String DEFAULT_SUPER_CLASS = "de.monticore.ast.ASTNodeBuilder<%s>";
 
-  private static final String AST_BUILDER_INIT_TEMPLATE = "ast_new.builder.ASTCNodeInit";
+  private static final String AST_BUILDER_INIT_TEMPLATE = "_ast.ast_class.builder.ASTCNodeInit";
 
   private final BuilderDecorator builderDecorator;
 
@@ -85,7 +85,7 @@ public class ASTBuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClas
     String parameterCall = method.getCDParameterList().stream()
         .map(ASTCDParameter::getName)
         .collect(Collectors.joining(", "));
-    return new TemplateHookPoint("ast_new.builder.ASTCNodeMethodDelegate", methodName, parameterCall);
+    return new TemplateHookPoint("_ast.ast_class.builder.ASTCNodeMethodDelegate", methodName, parameterCall);
   }
 
   protected enum ASTCNodeMethod {

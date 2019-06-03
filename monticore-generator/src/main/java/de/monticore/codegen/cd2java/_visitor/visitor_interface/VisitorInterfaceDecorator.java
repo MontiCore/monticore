@@ -98,13 +98,13 @@ public class VisitorInterfaceDecorator extends AbstractDecorator<ASTCDCompilatio
 
   protected ASTCDMethod addHandleMethod(ASTType astType, boolean traverse) {
     ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, astType);
-    this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint("visitor_new.Handle", traverse));
+    this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint("_visitor.Handle", traverse));
     return handleMethod;
   }
 
   protected ASTCDMethod addTraversMethod(ASTType astType, ASTCDClass astcdClass) {
     ASTCDMethod traverseMethod = visitorService.getVisitorMethod(TRAVERSE, astType);
-    this.replaceTemplate(EMPTY_BODY, traverseMethod, new TemplateHookPoint("visitor_new.Traverse", astcdClass));
+    this.replaceTemplate(EMPTY_BODY, traverseMethod, new TemplateHookPoint("_visitor.Traverse", astcdClass));
     return traverseMethod;
   }
 }

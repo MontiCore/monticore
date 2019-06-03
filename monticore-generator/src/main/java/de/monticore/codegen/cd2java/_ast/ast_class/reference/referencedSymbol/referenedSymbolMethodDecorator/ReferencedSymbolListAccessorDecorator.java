@@ -31,7 +31,7 @@ public class ReferencedSymbolListAccessorDecorator extends ListAccessorDecorator
     String referencedSymbolType = symbolTableService.getReferencedSymbolTypeName(ast);
     String simpleSymbolName = symbolTableService.getSimpleSymbolName(referencedSymbolType);
     String scopeInterfaceTypeName = symbolTableService.getScopeInterfaceTypeName();
-    this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint("ast_new.refSymbolMethods.GetSymbolList",
+    this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.GetSymbolList",
         ast.getName(), referencedSymbolType, simpleSymbolName, scopeInterfaceTypeName));
     return getList;
   }

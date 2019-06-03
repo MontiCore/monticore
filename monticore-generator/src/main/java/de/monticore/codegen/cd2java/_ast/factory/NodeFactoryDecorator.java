@@ -81,7 +81,7 @@ public class NodeFactoryDecorator extends AbstractDecorator<ASTCDCompilationUnit
 
   protected ASTCDMethod addGetFactoryMethod(ASTType factoryType, String factoryClassName) {
     ASTCDMethod getFactoryMethod = this.getCDMethodFacade().createMethod(PRIVATE_STATIC, factoryType, GET_FACTORY_METHOD);
-    this.replaceTemplate(EMPTY_BODY, getFactoryMethod, new TemplateHookPoint("nodefactory.GetFactory", factoryClassName));
+    this.replaceTemplate(EMPTY_BODY, getFactoryMethod, new TemplateHookPoint("_ast.nodefactory.GetFactory", factoryClassName));
     return getFactoryMethod;
   }
 
@@ -119,25 +119,25 @@ public class NodeFactoryDecorator extends AbstractDecorator<ASTCDCompilationUnit
 
   protected ASTCDMethod addCreateMethod(String astName, ASTType astType) {
     ASTCDMethod createWithoutParameters = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, astType, CREATE_METHOD + astName);
-    this.replaceTemplate(EMPTY_BODY, createWithoutParameters, new TemplateHookPoint("ast.factorymethods.Create", astName));
+    this.replaceTemplate(EMPTY_BODY, createWithoutParameters, new TemplateHookPoint("_ast.nodefactory.Create", astName));
     return createWithoutParameters;
   }
 
   protected ASTCDMethod addDoCreateMethod(String astName, ASTType astType) {
     ASTCDMethod doCreateWithoutParameters = this.getCDMethodFacade().createMethod(PROTECTED, astType, DO_CREATE_METHOD + astName);
-    this.replaceTemplate(EMPTY_BODY, doCreateWithoutParameters, new TemplateHookPoint("ast.factorymethods.DoCreate", astName));
+    this.replaceTemplate(EMPTY_BODY, doCreateWithoutParameters, new TemplateHookPoint("_ast.nodefactory.DoCreate", astName));
     return doCreateWithoutParameters;
   }
 
   protected ASTCDMethod addCreateWithParamMethod(String astName, ASTType astType, List<ASTCDParameter> params, String paramCall) {
     ASTCDMethod createWithParameters = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, astType, CREATE_METHOD + astName, params);
-    this.replaceTemplate(EMPTY_BODY, createWithParameters, new TemplateHookPoint("ast.factorymethods.CreateWithParams", astName, paramCall));
+    this.replaceTemplate(EMPTY_BODY, createWithParameters, new TemplateHookPoint("_ast.nodefactory.CreateWithParams", astName, paramCall));
     return createWithParameters;
   }
 
   protected ASTCDMethod addDoCreateWithParamMethod(String astName, ASTType astType, List<ASTCDParameter> params, String paramCall) {
     ASTCDMethod doCreateWithParameters = this.getCDMethodFacade().createMethod(PROTECTED, astType, DO_CREATE_METHOD + astName, params);
-    this.replaceTemplate(EMPTY_BODY, doCreateWithParameters, new TemplateHookPoint("ast.factorymethods.DoCreateWithParams", astName, paramCall));
+    this.replaceTemplate(EMPTY_BODY, doCreateWithParameters, new TemplateHookPoint("_ast.nodefactory.DoCreateWithParams", astName, paramCall));
     return doCreateWithParameters;
   }
 
@@ -176,7 +176,7 @@ public class NodeFactoryDecorator extends AbstractDecorator<ASTCDCompilationUnit
 
   protected ASTCDMethod addCreateDelegateMethod(ASTType superAstType, String className, String packageName, String symbolName) {
     ASTCDMethod createDelegateMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, superAstType, CREATE_METHOD + className);
-    this.replaceTemplate(EMPTY_BODY, createDelegateMethod, new TemplateHookPoint("nodefactory.CreateDelegateMethod", packageName + symbolName, className, ""));
+    this.replaceTemplate(EMPTY_BODY, createDelegateMethod, new TemplateHookPoint("_ast.nodefactory.CreateDelegateMethod", packageName + symbolName, className, ""));
     return createDelegateMethod;
   }
 
@@ -187,7 +187,7 @@ public class NodeFactoryDecorator extends AbstractDecorator<ASTCDCompilationUnit
         .collect(Collectors.joining(", "));
 
     ASTCDMethod createDelegateWithParamMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC, superAstType, CREATE_METHOD + superClass.getName(), params);
-    this.replaceTemplate(EMPTY_BODY, createDelegateWithParamMethod, new TemplateHookPoint("nodefactory.CreateDelegateMethod", packageName + symbolName, superClass.getName(), paramCall));
+    this.replaceTemplate(EMPTY_BODY, createDelegateWithParamMethod, new TemplateHookPoint("_ast.nodefactory.CreateDelegateMethod", packageName + symbolName, superClass.getName(), paramCall));
     return createDelegateWithParamMethod;
   }
 }

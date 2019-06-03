@@ -32,7 +32,7 @@ public class ReferencedSymbolOptAccessorDecorator extends OptionalAccessorDecora
     String simpleSymbolName = symbolTableService.getSimpleSymbolName(symbolTableService.getReferencedSymbolTypeName(ast));
     //create scopeInterface for cast od enclosingScope
     String scopeInterfaceTypeName = symbolTableService.getScopeInterfaceTypeName();
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("ast_new.refSymbolMethods.GetSymbolOpt",
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.GetSymbolOpt",
         ast.getName(), simpleSymbolName, scopeInterfaceTypeName, isOptionalAttribute(ast)));
     return method;
   }

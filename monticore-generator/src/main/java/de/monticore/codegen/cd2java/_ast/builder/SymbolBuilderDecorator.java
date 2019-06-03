@@ -19,7 +19,7 @@ import static de.monticore.codegen.cd2java.factories.CDModifier.PRIVATE;
 
 public class SymbolBuilderDecorator extends AbstractDecorator<ASTCDClass, ASTCDClass> {
 
-  private static final String SYMBOL_BUILD_INIT_TEMPLATE = "symboltable_new.builder.SymbolInit";
+  private static final String SYMBOL_BUILD_INIT_TEMPLATE = "_symboltable.builder.SymbolInit";
 
   private final BuilderDecorator builderDecorator;
 

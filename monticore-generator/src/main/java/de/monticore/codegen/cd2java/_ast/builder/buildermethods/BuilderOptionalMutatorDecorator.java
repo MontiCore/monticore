@@ -30,7 +30,7 @@ public class BuilderOptionalMutatorDecorator extends OptionalMutatorDecorator {
     ASTCDParameter parameter = this.getCDParameterFacade().createParameter(parameterType, attribute.getName());
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, name, parameter);
     method.setReturnType(this.builderType);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("builder.opt.Set", attribute));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.opt.Set", attribute));
     return method;
   }
 
@@ -40,7 +40,7 @@ public class BuilderOptionalMutatorDecorator extends OptionalMutatorDecorator {
     String name = String.format(SET_OPT, naiveAttributeName);
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, name, this.getCDParameterFacade().createParameters(attribute));
     method.setReturnType(this.builderType);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("builder.Set", attribute));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.Set", attribute));
     return method;
   }
 
@@ -50,7 +50,7 @@ public class BuilderOptionalMutatorDecorator extends OptionalMutatorDecorator {
     String name = String.format(SET_ABSENT, naiveAttributeName);
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, name);
     method.setReturnType(this.builderType);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("builder.opt.SetAbsent", attribute));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.opt.SetAbsent", attribute));
     return method;
   }
 }

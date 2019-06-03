@@ -45,9 +45,9 @@ public class SymbolVisitorDecorator extends AbstractDecorator<ASTCDCompilationUn
     ASTCDInterface astcdInterface = visitorInterfaceDecorator.decorate(compilationUnit);
 
     astcdInterface.getCDMethodList().stream().filter(m -> TRAVERSE.equals(m.getName())).forEach(m ->
-        this.replaceTemplate("visitor_new.Traverse", m, new TemplateHookPoint(EMPTY_BODY, astcdInterface)));
+        this.replaceTemplate("_visitor.Traverse", m, new TemplateHookPoint(EMPTY_BODY, astcdInterface)));
     astcdInterface.getCDMethodList().stream().filter(m -> HANDLE.equals(m.getName())).forEach(m ->
-        this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("visitor_new.Handle", true)));
+        this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("_visitor.Handle", true)));
 
     astcdInterface.addCDMethod(addVisitASTNodeMethods());
     astcdInterface.addCDMethod(addEndVisitASTNodeMethods());

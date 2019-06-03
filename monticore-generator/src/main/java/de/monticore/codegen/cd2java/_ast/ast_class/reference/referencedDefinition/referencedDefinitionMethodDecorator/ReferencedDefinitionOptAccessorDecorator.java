@@ -36,7 +36,7 @@ public class ReferencedDefinitionOptAccessorDecorator extends OptionalAccessorDe
     ASTType type = ast.getType().deepClone();
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC, type, name);
     String referencedSymbolType = symbolTableService.getReferencedSymbolTypeName(ast);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("ast_new.refSymbolMethods.GetDefinitionOpt",
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_class.refSymbolMethods.GetDefinitionOpt",
         ast.getName(), referencedSymbolType));
     return method;
   }
