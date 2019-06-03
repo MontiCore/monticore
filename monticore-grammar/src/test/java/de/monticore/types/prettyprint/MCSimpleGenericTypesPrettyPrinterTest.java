@@ -1,6 +1,7 @@
 package de.monticore.types.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
 import de.monticore.types.mcsimplegenerictypestest._parser.MCSimpleGenericTypesTestParser;
@@ -13,8 +14,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class MCSimpleGenericTypesPrettyPrinterTest {
 
@@ -74,4 +74,24 @@ public class MCSimpleGenericTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertTrue(typeArgument.deepEquals(ast.get()));
   }
+
+  @Test
+  public void testMultipleMCCustomTypeArgument() throws IOException {
+    String type = "java.util.List<socnet.Person<Konto>,List<boolean>>";
+    MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
+    Optional<ASTMCType> ast = parser.parse_StringMCType(type);
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    Optional<ASTMCType> astBefore = ast;
+    MCSimpleGenericTypesPrettyPrinter printer = new MCSimpleGenericTypesPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+
+    assertEquals(type,output);
+
+    ast = parser.parse_StringMCType(output);
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(astBefore.get().deepEquals(ast.get()));
+  }
+
 }
