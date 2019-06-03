@@ -10,6 +10,9 @@ cache:
   key: ${CI_COMMIT_REF_SLUG} # Cache per branch
 
 
+before_script:
+    - chmod +x monticore-gradle/gradlew
+
 stages:
   - build
   - trigger
@@ -19,13 +22,16 @@ build_dev:
   stage: build
   script:
     - "mvn $MAVEN_CLI_OPTS $MAVEN_OPTS deploy -Dpass=$password -Duser=$username -DdeployAtEnd=true"
+    - cd monticore-gradle
+    - "./gradlew build"
+    - "./gradlew publish"
     - curl --request POST --form "token=$Automaton" --form ref=hwc_symtab https://git.rwth-aachen.de/api/v4/projects/17630/trigger/pipeline
     - curl --request POST --form "token=$Automaton" --form ref=hwc_symtab_language_composition https://git.rwth-aachen.de/api/v4/projects/17630/trigger/pipeline
   only:
     - dev
     - newSymtab
     - refactoring_with_new_symtab
-
+    
 #build_branches:
 #  stage: build
 #  script:
