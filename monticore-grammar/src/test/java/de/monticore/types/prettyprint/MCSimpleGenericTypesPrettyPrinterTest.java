@@ -75,7 +75,6 @@ public class MCSimpleGenericTypesPrettyPrinterTest {
     assertTrue(typeArgument.deepEquals(ast.get()));
   }
 
-
   @Test
   public void testMultipleMCCustomTypeArgument() throws IOException {
     String type = "java.util.List<socnet.Person<Konto>,List<boolean>>";
@@ -94,4 +93,5 @@ public class MCSimpleGenericTypesPrettyPrinterTest {
     assertTrue(ast.isPresent());
     assertTrue(astBefore.get().deepEquals(ast.get()));
   }
+
 }
