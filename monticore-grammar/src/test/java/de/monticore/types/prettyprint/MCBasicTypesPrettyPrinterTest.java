@@ -173,5 +173,4 @@ public class MCBasicTypesPrettyPrinterTest {
       e.printStackTrace();
     }
   }
-
 }
