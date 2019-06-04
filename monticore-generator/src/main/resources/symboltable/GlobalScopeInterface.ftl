@@ -26,32 +26,12 @@ public interface ${className} extends ${interfaceName} {
 
   ${languageName}Language get${languageName}Language();
 
-  default void cache(${languageName}ModelLoader modelLoader, String calculatedModelName) {
-    // TODO cache which models are loaded
-    //    if (modelName2ModelLoaderCache.containsKey(calculatedModelName)) {
-    //      modelName2ModelLoaderCache.get(calculatedModelName).add(modelLoader);
-    //    } else {
-    //      final Set<ModelingLanguageModelLoader<? extends ASTNode>> ml = new LinkedHashSet<>();
-    //      ml.add(modelLoader);
-    //      modelName2ModelLoaderCache.put(calculatedModelName, ml);
-    //    }
-  }
+  void cache(${languageName}ModelLoader modelLoader, String calculatedModelName);
 
-  default boolean continueWithModelLoader(String calculatedModelName, ${languageName}ModelLoader modelLoader) {
-    // TODO cache which models are loaded
-    //    return !modelName2ModelLoaderCache.containsKey(calculatedModelName)
-    //        || !modelName2ModelLoaderCache.get(calculatedModelName).contains(modelLoader);
-    return true;
-  }
-
+  boolean continueWithModelLoader(String calculatedModelName, ${languageName}ModelLoader modelLoader);
   default boolean checkIfContinueAsSubScope(String symbolName) {
     return false;
   }
-
-
-
-
-
 
 <#list symbolNames?keys as symbol>
   default Collection<${symbolNames[symbol]}> resolve${symbol}Many(boolean foundSymbols,

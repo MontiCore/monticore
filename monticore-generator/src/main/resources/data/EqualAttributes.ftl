@@ -13,7 +13,7 @@ ${tc.signature("astcdClass", "simpleClassName")}
       <#-- TODO: attributes of super class - use symbol table -->
        <#list astcdClass.getCDAttributeList()  as attribute>
          <#assign attributeName = attribute.getName()>
-         <#if !genHelper.isAstNode(attribute) && !genHelper.isOptionalAstNode(attribute) && !genHelper.isListAstNode(attribute)>
+         <#if !genHelper.isSimpleAstNode(attribute) && !genHelper.isOptionalAstNode(attribute) && !genHelper.isListAstNode(attribute)>
 	// comparing ${attributeName} 
 	      <#if genHelper.isPrimitive(attribute.getType())>
     if (!(this.${attributeName} == comp.${attributeName})) {

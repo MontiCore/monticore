@@ -9,7 +9,7 @@ ${tc.signature("astcdClass")}
   <#assign methName = genHelper.getNativeAttributeName(attribute.getName())?cap_first>
   <#assign attrType = attribute.getType()>
   <#assign typeName = genHelper.printType(attribute.getType())>
-  <#if genHelper.isAstNode(attribute)>
+  <#if genHelper.isSimpleAstNode(attribute)>
     result.set${methName}(get${methName}().deepClone());
   <#elseif genHelper.isPrimitive(attrType)>
     result.set${methName}(${genHelper.getPlainGetter(attribute)}());

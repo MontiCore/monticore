@@ -71,7 +71,7 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
 
   default public Collection<${symbolNames[symbol]}> resolve${symbol}DownMany(boolean foundSymbols, String name, AccessModifier modifier, Predicate<${symbolNames[symbol]}> predicate) {
       // 1. Conduct search locally in the current scope
-    final Set<${symbolNames[symbol]}> resolved = this.resolve${symbol}ManyLocally(foundSymbols, name,
+    final Set<${symbolNames[symbol]}> resolved = this.resolve${symbol}LocallyMany(foundSymbols, name,
         modifier, predicate);
 
     foundSymbols = foundSymbols | resolved.size() > 0;
@@ -98,7 +98,7 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
   // resolveLocally Method for ${symbol}Symbol
   default public Optional<${symbolNames[symbol]}> resolve${symbol}Locally(String name) {
     return getResolvedOrThrowException(
-        this.resolve${symbol}ManyLocally(false, name,  AccessModifier.ALL_INCLUSION, x -> true));
+        this.resolve${symbol}LocallyMany(false, name,  AccessModifier.ALL_INCLUSION, x -> true));
   }
 
   // all resolveImported Methods for ${symbol}Symbol
@@ -128,13 +128,13 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
   }
 
   default public Collection<${symbolNames[symbol]}> resolve${symbol}Many(boolean foundSymbols, String name, AccessModifier modifier, Predicate<${symbolNames[symbol]}> predicate)  {
-    final Set<${symbolNames[symbol]}> resolvedSymbols = this.resolve${symbol}ManyLocally(foundSymbols, name, modifier, predicate);
+    final Set<${symbolNames[symbol]}> resolvedSymbols = this.resolve${symbol}LocallyMany(foundSymbols, name, modifier, predicate);
     final Collection<${symbolNames[symbol]}> resolvedFromEnclosing = continue${symbol}WithEnclosingScope((foundSymbols | resolvedSymbols.size() > 0), name, modifier, predicate);
     resolvedSymbols.addAll(resolvedFromEnclosing);
     return resolvedSymbols;
   }
 
-  default Set<${symbolNames[symbol]}> resolve${symbol}ManyLocally(boolean foundSymbols, String name, AccessModifier modifier,
+  default Set<${symbolNames[symbol]}> resolve${symbol}LocallyMany(boolean foundSymbols, String name, AccessModifier modifier,
       Predicate<${symbolNames[symbol]}> predicate) {
 
     final Set<${symbolNames[symbol]}> resolvedSymbols = new LinkedHashSet<>();
@@ -157,6 +157,17 @@ public interface ${interfaceName} <#if superScopes?size != 0>extends ${superScop
         filteredSymbols.stream().filter(predicate).collect(Collectors.toSet()));
 
     return filteredSymbols;
+  }
+
+  /**
+   * @deprecated use the method resolve${symbol}LocallyMany instead
+   *             this one will be deleted soon
+   */
+
+  @Deprecated
+  default Set<${symbolNames[symbol]}> resolve${symbol}ManyLocally(boolean foundSymbols, String name, AccessModifier modifier,
+          Predicate<${symbolNames[symbol]}> predicate) {
+    return resolve${symbol}LocallyMany(foundSymbols, name, modifier, predicate);
   }
 
   default Optional<${symbolNames[symbol]}> filter${symbol}(String name, LinkedListMultimap<String, ${symbolNames[symbol]}> symbols) {
