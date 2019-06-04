@@ -18,7 +18,8 @@
     <module>monticore-maven</module>
     <module>monticore-runtime</module>
     <module>monticore-emf-runtime</module>
-	<module>monticore-templateclassgenerator</module>
+    <module>monticore-templateclassgenerator</module>
+    <module>monticore-emf-grammar</module>
   </modules>
 
   <!-- == PROJECT PROPERTIES ============================================== -->
@@ -819,14 +820,14 @@
 
   <profiles>
     <profile>
-      <!-- the bootstrap profile; setting <inherited> to false prevents from 
+      <!-- the bootstrap profile; setting <inherited> to false prevents from
         doing this in the modules -->
       <id>bootstrap</id>
       <properties>
         <monticore.plugin>${bootstrap.version}</monticore.plugin>
       </properties>
       <build>
-        <!-- this is what happens for building the bootstrap temporary local 
+        <!-- this is what happens for building the bootstrap temporary local
           release -->
         <plugins>
           <plugin>
@@ -927,8 +928,8 @@
     </profile>
     <profile>
       <id>in-bootstrap</id>
-      <!-- this profile determines what happens (or not) after the temporary 
-        bootstrap version has been built; e.g. set properties such that the temporary 
+      <!-- this profile determines what happens (or not) after the temporary
+        bootstrap version has been built; e.g. set properties such that the temporary
         bootstrap version is used for this build -->
       <properties>
         <monticore.plugin>${bootstrap.parent}</monticore.plugin>
