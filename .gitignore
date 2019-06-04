@@ -8,3 +8,4 @@ target/
 *.factorypath
 /monticore-gradle/.gradle
 /monticore-gradle/build
+.mvn/extensions.xml
