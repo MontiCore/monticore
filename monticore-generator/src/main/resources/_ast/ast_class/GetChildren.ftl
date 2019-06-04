@@ -4,7 +4,7 @@ ${tc.signature("cdClass")}
     java.util.LinkedList<de.monticore.ast.ASTNode> result = new java.util.LinkedList<de.monticore.ast.ASTNode>();
     <#list cdClass.getCDAttributeList() as attr>
       <#assign attrGetter = genHelper.getPlainGetter(attr)>
-      <#if genHelper.isAstNode(attr)>
+      <#if genHelper.isSimpleAstNode(attr)>
         if ( ${attrGetter}() != null ) {
           result.add(${attrGetter}());
         }

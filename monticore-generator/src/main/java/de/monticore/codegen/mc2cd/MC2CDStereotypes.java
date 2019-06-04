@@ -35,17 +35,21 @@ public enum MC2CDStereotypes {
   /**
    * To add bodies to methods
    */
-  METHOD_BODY("methodBody");
+  METHOD_BODY("methodBody"),
+  /**
+   * To add bodies to methods
+   */
+  AST_TYPE("astType");
 
   private final String stereotype;
-  
+
   private MC2CDStereotypes(String stereotype) {
     this.stereotype = stereotype;
   }
-  
+
   @Override
   public String toString() {
     return stereotype;
   }
-  
+
 }

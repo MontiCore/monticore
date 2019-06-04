@@ -54,7 +54,7 @@ ${tc.signature("astcdClass", "simpleClassName")}
         }
       }
     }
- <#elseif genHelper.isAstNode(attribute)>
+ <#elseif genHelper.isSimpleAstNode(attribute)>
       // comparing ${attrName}
       if ( (this.${attrName} == null && comp.${attrName} != null) ||
         (this.${attrName} != null && !this.${attrName}.deepEqualsWithComments(comp.${attrName}, forceSameOrder)) ) {
