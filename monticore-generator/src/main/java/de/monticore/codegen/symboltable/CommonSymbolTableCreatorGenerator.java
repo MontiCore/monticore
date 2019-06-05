@@ -39,17 +39,25 @@ public class CommonSymbolTableCreatorGenerator implements SymbolTableCreatorGene
 
     Path filePath = get(getPathFromPackage(genHelper.getTargetPackage()), className + ".java");
   
-    Set<MCProdSymbol> allSymbols = Sets.newHashSet();
+    Set<MCProdSymbol> symbolDefiningRules = Sets.newHashSet();
+    Set<MCProdSymbol> nonSymbolDefiningRules = Sets.newHashSet();
     Set<String> symbolKinds = Sets.newHashSet();
-    grammarSymbol.getProds().stream().filter(p -> p.isSymbolDefinition()).forEach(p -> allSymbols.add(p));
-    allSymbols.stream().filter(p -> p.isSymbolDefinition()).forEach(p -> symbolKinds.add(p.getSymbolDefinitionKind().orElse("")));
-//    allSymbols.addAll(genHelper.getAllSymbolDefiningRulesInSuperGrammar());
+
+    for(MCProdSymbol rule: grammarSymbol.getProds()) {
+      if(rule.isSymbolDefinition()) {
+        symbolDefiningRules.add(rule);
+      }
+      else {
+        nonSymbolDefiningRules.add(rule);
+      }
+    }
+    symbolDefiningRules.stream().forEach(p -> symbolKinds.add(p.getSymbolDefinitionKind().orElse("")));
 
     List<CDSymbol> directSuperCds = genHelper.getDirectSuperCds(genHelper.getCd());
     if(grammarSymbol.getStartProd().isPresent()) {
       genEngine
           .generate("symboltable.SymbolTableCreator", filePath, grammarSymbol.getAstNode().get(),
-              className, directSuperCds, allSymbols, symbolKinds, handCodedPath);
+              className, directSuperCds, symbolDefiningRules, nonSymbolDefiningRules, symbolKinds, handCodedPath);
     
       className = getSimpleTypeNameToGenerate(getSimpleName(grammarSymbol.getFullName() + "SymbolTableCreatorDelegator"),
           genHelper.getTargetPackage(), handCodedPath);

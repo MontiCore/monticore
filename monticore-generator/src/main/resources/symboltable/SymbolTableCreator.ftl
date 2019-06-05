@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("className", "directSuperCds", "rules", "kinds", "hcPath")}
+${signature("className", "directSuperCds", "symbolDefiningRules", "nonSymbolDefiningRules", "kinds", "hcPath")}
 
 <#assign genHelper = glex.getGlobalVar("stHelper")>
 <#assign grammarName = ast.getName()?cap_first>
@@ -109,16 +109,11 @@ public class ${className} implements ${grammarName}Visitor {
     this.scopeStack = scopeStack;
   }
 
-  public void setEnclosingScopeOfNodes(ASTNode root) {
-    EnclosingScopeOfNodesInitializer v = new EnclosingScopeOfNodesInitializer();
-    v.handle(root);
-  }
-
   public ${scopeName} createScope() {
     return  ${grammarName}SymTabMill.${grammarName?uncap_first+"Scope"}Builder().build();
   }
 
-<#list rules as ruleSymbol>
+<#list symbolDefiningRules as ruleSymbol>
   <#assign ruleName = ruleSymbol.getName()>
   <#assign symbolName = ruleSymbol.getSymbolDefinitionKind().orElse("") + "Symbol">
   <#assign astName = genHelper.getQualifiedASTName(ruleSymbol)>
@@ -182,6 +177,19 @@ public class ${className} implements ${grammarName}Visitor {
   </#if>
 
 </#if>
+</#list>
+
+<#list nonSymbolDefiningRules as ruleSymbol>
+  @Override
+  public void visit(AST${ruleSymbol.getName()} node) {
+    if (getCurrentScope().isPresent()) {
+      node.setEnclosingScope2(getCurrentScope().get());
+    }
+    else {
+      Log.error("Could not set enclosing scope of ASTNode \"" + node
+          + "\", because no scope is set yet!");
+    }
+  }
 </#list>
 
 <#list kinds as kind>
