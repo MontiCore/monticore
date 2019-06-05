@@ -71,6 +71,12 @@ public class TypesCalculatorHelper {
       return MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build();
     }
     name.remove("Double");
+    name.add("String");
+    if(type.getBaseName().equals("String") || MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(type)) {
+      name.remove("java");
+      name.remove("lang");
+      return MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build();
+    }
 
     return type;
   }

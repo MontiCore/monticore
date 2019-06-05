@@ -240,7 +240,7 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
   public void endVisit(ASTBracketExpression expr){
     ASTMCType result = null;
     if(types.containsKey(expr.getExpression())){
-      result=types.get(expr.getExpression()).getASTMCType();
+      result=types.get(expr.getExpression()).getASTMCType().deepClone();
     }
     if(result!=null) {
       MCTypeSymbol sym = new MCTypeSymbol(result.getBaseName());
@@ -258,7 +258,7 @@ public class CommonExpressionTypesCalculator extends ExpressionsBasisTypesCalcul
     if(types.containsKey(expr.getTrueExpression())&&types.containsKey(expr.getFalseExpression())){
       if(types.containsKey(expr.getCondition())&&types.get(expr.getCondition()).deepEqualsWithType(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build())){
         if(types.get(expr.getTrueExpression()).getASTMCType().deepEquals(types.get(expr.getFalseExpression()).getASTMCType())){
-          result=types.get(expr.getFalseExpression()).getASTMCType();
+          result=types.get(expr.getFalseExpression()).getASTMCType().deepClone();
         }else{
           result=getBinaryNumericPromotion(expr.getTrueExpression(),expr.getFalseExpression());
         }

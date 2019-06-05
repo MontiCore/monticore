@@ -220,30 +220,53 @@ public class CombineExpressionsWithLiteralsTest {
     CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(scope);
     Optional<ASTExpression> o = p.parse_StringExpression("4++");
-    Optional<ASTExpression> r = p.parse_StringExpression("7++");
+    Optional<ASTExpression> r = p.parse_StringExpression("7.3++");
+    Optional<ASTExpression> q = p.parse_StringExpression("8l++");
+    Optional<ASTExpression> s = p.parse_StringExpression("\'a\'++");
+    Optional<ASTExpression> t = p.parse_StringExpression("4.5f++");
 
     assertTrue(o.isPresent());
     assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(o.get())));
 
 
     assertTrue(r.isPresent());
-    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(r.get())));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.calculateType(r.get())));
 
+    assertTrue(q.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.LONG).build().deepEquals(calc.calculateType(q.get())));
+
+    assertTrue(s.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(s.get())));
+
+    assertTrue(t.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.FLOAT).build().deepEquals(calc.calculateType(t.get())));
   }
 
   @Test
   public void decSuffixTest() throws IOException{
     CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(scope);
-    Optional<ASTExpression> o = p.parse_StringExpression("9--");
-    Optional<ASTExpression> r = p.parse_StringExpression("34--");
+    Optional<ASTExpression> o = p.parse_StringExpression("4--");
+    Optional<ASTExpression> r = p.parse_StringExpression("7.3--");
+    Optional<ASTExpression> q = p.parse_StringExpression("8l--");
+    Optional<ASTExpression> s = p.parse_StringExpression("\'a\'--");
+    Optional<ASTExpression> t = p.parse_StringExpression("4.5f--");
 
     assertTrue(o.isPresent());
     assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(o.get())));
 
 
     assertTrue(r.isPresent());
-    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(r.get())));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.calculateType(r.get())));
+
+    assertTrue(q.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.LONG).build().deepEquals(calc.calculateType(q.get())));
+
+    assertTrue(s.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(s.get())));
+
+    assertTrue(t.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.FLOAT).build().deepEquals(calc.calculateType(t.get())));
 
   }
 
@@ -251,15 +274,27 @@ public class CombineExpressionsWithLiteralsTest {
   public void incPrefixTest() throws IOException{
     CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(scope);
-    Optional<ASTExpression> o = p.parse_StringExpression("++2");
-    Optional<ASTExpression> r = p.parse_StringExpression("++23");
+    Optional<ASTExpression> o = p.parse_StringExpression("++4");
+    Optional<ASTExpression> r = p.parse_StringExpression("++7.3");
+    Optional<ASTExpression> q = p.parse_StringExpression("++8l");
+    Optional<ASTExpression> s = p.parse_StringExpression("++\'a\'");
+    Optional<ASTExpression> t = p.parse_StringExpression("++4.5f");
 
     assertTrue(o.isPresent());
     assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(o.get())));
 
 
     assertTrue(r.isPresent());
-    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(r.get())));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.calculateType(r.get())));
+
+    assertTrue(q.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.LONG).build().deepEquals(calc.calculateType(q.get())));
+
+    assertTrue(s.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(s.get())));
+
+    assertTrue(t.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.FLOAT).build().deepEquals(calc.calculateType(t.get())));
 
   }
 
@@ -267,15 +302,27 @@ public class CombineExpressionsWithLiteralsTest {
   public void decPrefixTest() throws IOException{
     CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(scope);
-    Optional<ASTExpression> o = p.parse_StringExpression("--28");
-    Optional<ASTExpression> r = p.parse_StringExpression("--12");
+    Optional<ASTExpression> o = p.parse_StringExpression("--4");
+    Optional<ASTExpression> r = p.parse_StringExpression("--7.3");
+    Optional<ASTExpression> q = p.parse_StringExpression("--8l");
+    Optional<ASTExpression> s = p.parse_StringExpression("--\'a\'");
+    Optional<ASTExpression> t = p.parse_StringExpression("--4.5f");
 
     assertTrue(o.isPresent());
     assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(o.get())));
 
 
     assertTrue(r.isPresent());
-    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(r.get())));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.calculateType(r.get())));
+
+    assertTrue(q.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.LONG).build().deepEquals(calc.calculateType(q.get())));
+
+    assertTrue(s.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(s.get())));
+
+    assertTrue(t.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.FLOAT).build().deepEquals(calc.calculateType(t.get())));
 
   }
 
@@ -284,14 +331,26 @@ public class CombineExpressionsWithLiteralsTest {
     CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(scope);
     Optional<ASTExpression> o = p.parse_StringExpression("+4");
-    Optional<ASTExpression> r = p.parse_StringExpression("+52");
+    Optional<ASTExpression> r = p.parse_StringExpression("+7.3");
+    Optional<ASTExpression> q = p.parse_StringExpression("+8l");
+    Optional<ASTExpression> s = p.parse_StringExpression("+\'a\'");
+    Optional<ASTExpression> t = p.parse_StringExpression("+4.5f");
 
     assertTrue(o.isPresent());
     assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(o.get())));
 
 
     assertTrue(r.isPresent());
-    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(r.get())));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.calculateType(r.get())));
+
+    assertTrue(q.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.LONG).build().deepEquals(calc.calculateType(q.get())));
+
+    assertTrue(s.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(s.get())));
+
+    assertTrue(t.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.FLOAT).build().deepEquals(calc.calculateType(t.get())));
 
   }
 
@@ -300,14 +359,26 @@ public class CombineExpressionsWithLiteralsTest {
     CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(scope);
     Optional<ASTExpression> o = p.parse_StringExpression("-varInt");
-    Optional<ASTExpression> r = p.parse_StringExpression("-96");
+    Optional<ASTExpression> r = p.parse_StringExpression("-7.3");
+    Optional<ASTExpression> q = p.parse_StringExpression("-8l");
+    Optional<ASTExpression> s = p.parse_StringExpression("-\'a\'");
+    Optional<ASTExpression> t = p.parse_StringExpression("-4.5f");
 
     assertTrue(o.isPresent());
     assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(o.get())));
 
 
     assertTrue(r.isPresent());
-    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(r.get())));
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.calculateType(r.get())));
+
+    assertTrue(q.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.LONG).build().deepEquals(calc.calculateType(q.get())));
+
+    assertTrue(s.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(s.get())));
+
+    assertTrue(t.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.FLOAT).build().deepEquals(calc.calculateType(t.get())));
 
   }
 
@@ -319,6 +390,9 @@ public class CombineExpressionsWithLiteralsTest {
     Optional<ASTExpression> s = p.parse_StringExpression("varDouble+=12.7");
     Optional<ASTExpression> t = p.parse_StringExpression("varChar+=12");
     Optional<ASTExpression> u = p.parse_StringExpression("varString+=varString");
+    Optional<ASTExpression> v = p.parse_StringExpression("varChar+=13.3f");
+    Optional<ASTExpression> w = p.parse_StringExpression("varDouble+=3L");
+    Optional<ASTExpression> x = p.parse_StringExpression("varString+=13.2");
     List<String> name = new ArrayList<>();
     name.add("java");
     name.add("lang");
@@ -337,13 +411,23 @@ public class CombineExpressionsWithLiteralsTest {
     assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.calculateType(s.get())));
 
 
-    //    assertTrue(t.isPresent());
-    //    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(t.get())));
+    assertTrue(t.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build().deepEquals(calc.calculateType(t.get())));
 
 
     assertTrue(u.isPresent());
     assertTrue(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(calc.calculateType(u.get())));
 
+    assertTrue(v.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build().deepEquals(calc.calculateType(v.get())));
+
+    assertTrue(w.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.calculateType(w.get())));
+
+    name.remove("java");
+    name.remove("lang");
+    assertTrue(x.isPresent());
+    assertTrue(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(calc.calculateType(x.get())));
 
   }
 
@@ -354,6 +438,8 @@ public class CombineExpressionsWithLiteralsTest {
     Optional<ASTExpression> r = p.parse_StringExpression("varDouble-=5");
     Optional<ASTExpression> s = p.parse_StringExpression("varDouble-=12.7");
     Optional<ASTExpression> t = p.parse_StringExpression("varChar-=12");
+    Optional<ASTExpression> v = p.parse_StringExpression("varChar-=13.3f");
+    Optional<ASTExpression> w = p.parse_StringExpression("varDouble-=3L");
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(scope);
 
     assertTrue(o.isPresent());
@@ -368,8 +454,15 @@ public class CombineExpressionsWithLiteralsTest {
     assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.calculateType(s.get())));
 
 
-    //    assertTrue(t.isPresent());
-    //    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(t.get())));
+    assertTrue(t.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build().deepEquals(calc.calculateType(t.get())));
+
+    assertTrue(v.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build().deepEquals(calc.calculateType(v.get())));
+
+
+    assertTrue(w.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.calculateType(w.get())));
 
   }
 
@@ -380,6 +473,8 @@ public class CombineExpressionsWithLiteralsTest {
     Optional<ASTExpression> r = p.parse_StringExpression("varDouble*=5");
     Optional<ASTExpression> s = p.parse_StringExpression("varDouble*=12.7");
     Optional<ASTExpression> t = p.parse_StringExpression("varChar*=12.7");
+    Optional<ASTExpression> v = p.parse_StringExpression("varChar*=13.3f");
+    Optional<ASTExpression> w = p.parse_StringExpression("varDouble*=3L");
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(scope);
 
     assertTrue(o.isPresent());
@@ -394,8 +489,15 @@ public class CombineExpressionsWithLiteralsTest {
     assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.calculateType(s.get())));
 
 
-    //    assertTrue(t.isPresent());
-    //    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(t.get())));
+    assertTrue(t.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build().deepEquals(calc.calculateType(t.get())));
+
+    assertTrue(v.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build().deepEquals(calc.calculateType(v.get())));
+
+
+    assertTrue(w.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.calculateType(w.get())));
   }
 
   @Test
@@ -405,6 +507,8 @@ public class CombineExpressionsWithLiteralsTest {
     Optional<ASTExpression> r = p.parse_StringExpression("varDouble/=5");
     Optional<ASTExpression> s = p.parse_StringExpression("varDouble/=12.7");
     Optional<ASTExpression> t = p.parse_StringExpression("varChar/=12.7");
+    Optional<ASTExpression> v = p.parse_StringExpression("varChar/=13.3f");
+    Optional<ASTExpression> w = p.parse_StringExpression("varDouble/=3L");
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(scope);
 
     assertTrue(o.isPresent());
@@ -419,19 +523,27 @@ public class CombineExpressionsWithLiteralsTest {
     assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.calculateType(s.get())));
 
 
-    //    assertTrue(t.isPresent());
-    //    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(t.get())));
+    assertTrue(t.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build().deepEquals(calc.calculateType(t.get())));
+
+    assertTrue(v.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build().deepEquals(calc.calculateType(v.get())));
+
+
+    assertTrue(w.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.calculateType(w.get())));
   }
 
   @Test
   public void regularAssignmentTest() throws IOException{
     CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
-    Optional<ASTExpression> o = p.parse_StringExpression("varInt=3");
+    Optional<ASTExpression> o = p.parse_StringExpression("varInt=3.5f");
     Optional<ASTExpression> r = p.parse_StringExpression("varDouble=varInt");
     Optional<ASTExpression> s = p.parse_StringExpression("varDouble=12.7");
     Optional<ASTExpression> t = p.parse_StringExpression("varChar=12");
     Optional<ASTExpression> u = p.parse_StringExpression("varString=varString");
     Optional<ASTExpression> v = p.parse_StringExpression("varA=varB");
+    Optional<ASTExpression> w = p.parse_StringExpression("varChar=\'a\'");
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(scope);
     List<String> name = new ArrayList<>();
     name.add("java");
@@ -450,8 +562,8 @@ public class CombineExpressionsWithLiteralsTest {
     assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.calculateType(s.get())));
 
 
-    //    assertTrue(t.isPresent());
-    //    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build().deepEquals(calc.calculateType(t.get())));
+    assertTrue(t.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build().deepEquals(calc.calculateType(t.get())));
 
 
     assertTrue(u.isPresent());
@@ -464,6 +576,8 @@ public class CombineExpressionsWithLiteralsTest {
     assertTrue(v.isPresent());
     assertTrue(MCBasicTypesMill.mCQualifiedTypeBuilder().setMCQualifiedName(MCBasicTypesMill.mCQualifiedNameBuilder().setPartList(name).build()).build().deepEquals(calc.calculateType(v.get())));
 
+    assertTrue(w.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build().deepEquals(calc.calculateType(w.get())));
   }
 
   @Test
@@ -472,6 +586,8 @@ public class CombineExpressionsWithLiteralsTest {
     Optional<ASTExpression> o = p.parse_StringExpression("varInt&=3");
     Optional<ASTExpression> r = p.parse_StringExpression("varInt&=varInt");
     Optional<ASTExpression> q = p.parse_StringExpression("varBool&=false");
+    Optional<ASTExpression> s = p.parse_StringExpression("varInt&=7L");
+    Optional<ASTExpression> t = p.parse_StringExpression("varChar&=3L");
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(scope);
 
     assertTrue(o.isPresent());
@@ -484,6 +600,12 @@ public class CombineExpressionsWithLiteralsTest {
 
     assertTrue(q.isPresent());
     assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build().deepEquals(calc.calculateType(q.get())));
+
+    assertTrue(s.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(s.get())));
+
+    assertTrue(t.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build().deepEquals(calc.calculateType(t.get())));
 
   }
 
@@ -493,6 +615,8 @@ public class CombineExpressionsWithLiteralsTest {
     Optional<ASTExpression> o = p.parse_StringExpression("varInt|=3");
     Optional<ASTExpression> r = p.parse_StringExpression("varInt|=varInt");
     Optional<ASTExpression> q = p.parse_StringExpression("varBool|=false");
+    Optional<ASTExpression> s = p.parse_StringExpression("varInt|=7L");
+    Optional<ASTExpression> t = p.parse_StringExpression("varChar|=3L");
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(scope);
 
     assertTrue(o.isPresent());
@@ -505,6 +629,12 @@ public class CombineExpressionsWithLiteralsTest {
 
     assertTrue(q.isPresent());
     assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build().deepEquals(calc.calculateType(q.get())));
+
+    assertTrue(s.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(s.get())));
+
+    assertTrue(t.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build().deepEquals(calc.calculateType(t.get())));
   }
 
   @Test
@@ -513,6 +643,8 @@ public class CombineExpressionsWithLiteralsTest {
     Optional<ASTExpression> o = p.parse_StringExpression("varInt^=3");
     Optional<ASTExpression> r = p.parse_StringExpression("varInt^=varInt");
     Optional<ASTExpression> q = p.parse_StringExpression("varBool^=varBool2");
+    Optional<ASTExpression> s = p.parse_StringExpression("varInt^=7L");
+    Optional<ASTExpression> t = p.parse_StringExpression("varChar^=3L");
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(scope);
 
     assertTrue(o.isPresent());
@@ -525,6 +657,12 @@ public class CombineExpressionsWithLiteralsTest {
 
     assertTrue(q.isPresent());
     assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.BOOLEAN).build().deepEquals(calc.calculateType(q.get())));
+
+    assertTrue(s.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(s.get())));
+
+    assertTrue(t.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build().deepEquals(calc.calculateType(t.get())));
   }
 
   @Test
@@ -532,6 +670,8 @@ public class CombineExpressionsWithLiteralsTest {
     CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("varInt>>=3");
     Optional<ASTExpression> r = p.parse_StringExpression("varInt>>=varInt");
+    Optional<ASTExpression> s = p.parse_StringExpression("varInt>>=7L");
+    Optional<ASTExpression> t = p.parse_StringExpression("varChar>>=3L");
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(scope);
 
     assertTrue(o.isPresent());
@@ -541,7 +681,11 @@ public class CombineExpressionsWithLiteralsTest {
     assertTrue(r.isPresent());
     assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(r.get())));
 
+    assertTrue(s.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(s.get())));
 
+    assertTrue(t.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build().deepEquals(calc.calculateType(t.get())));
   }
 
   @Test
@@ -549,6 +693,8 @@ public class CombineExpressionsWithLiteralsTest {
     CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("varInt<<=3");
     Optional<ASTExpression> r = p.parse_StringExpression("varInt<<=varInt");
+    Optional<ASTExpression> s = p.parse_StringExpression("varInt<<=7L");
+    Optional<ASTExpression> t = p.parse_StringExpression("varChar<<=3L");
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(scope);
 
     assertTrue(o.isPresent());
@@ -557,6 +703,12 @@ public class CombineExpressionsWithLiteralsTest {
 
     r.get().accept(calc);
     assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(r.get())));
+
+    assertTrue(s.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(s.get())));
+
+    assertTrue(t.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build().deepEquals(calc.calculateType(t.get())));
   }
 
   @Test
@@ -564,6 +716,8 @@ public class CombineExpressionsWithLiteralsTest {
     CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
     Optional<ASTExpression> o = p.parse_StringExpression("varInt>>>=3");
     Optional<ASTExpression> r = p.parse_StringExpression("varInt>>>=varInt");
+    Optional<ASTExpression> s = p.parse_StringExpression("varInt>>>=7L");
+    Optional<ASTExpression> t = p.parse_StringExpression("varChar>>>=3L");
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(scope);
 
     assertTrue(o.isPresent());
@@ -572,6 +726,12 @@ public class CombineExpressionsWithLiteralsTest {
 
     assertTrue(r.isPresent());
     assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(r.get())));
+
+    assertTrue(s.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(s.get())));
+
+    assertTrue(t.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build().deepEquals(calc.calculateType(t.get())));
   }
 
   @Test
@@ -581,6 +741,8 @@ public class CombineExpressionsWithLiteralsTest {
     Optional<ASTExpression> r = p.parse_StringExpression("varDouble%=5");
     Optional<ASTExpression> s = p.parse_StringExpression("varDouble%=12.7");
     Optional<ASTExpression> t = p.parse_StringExpression("varChar%=12.7");
+    Optional<ASTExpression> v = p.parse_StringExpression("varChar%=13.3f");
+    Optional<ASTExpression> w = p.parse_StringExpression("varDouble%=3L");
     CombineExpressionsWithLiteralsTypesCalculator calc = new CombineExpressionsWithLiteralsTypesCalculator(scope);
 
     assertTrue(o.isPresent());
@@ -595,8 +757,15 @@ public class CombineExpressionsWithLiteralsTest {
     assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.calculateType(s.get())));
 
 
-    //    assertTrue(t.isPresent());
-    //    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.INT).build().deepEquals(calc.calculateType(t.get())));
+    assertTrue(t.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build().deepEquals(calc.calculateType(t.get())));
+
+    assertTrue(v.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.CHAR).build().deepEquals(calc.calculateType(v.get())));
+
+
+    assertTrue(w.isPresent());
+    assertTrue(MCBasicTypesMill.mCPrimitiveTypeBuilder().setPrimitive(ASTConstantsMCBasicTypes.DOUBLE).build().deepEquals(calc.calculateType(w.get())));
   }
 
 
